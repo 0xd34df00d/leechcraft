@@ -123,7 +123,9 @@ namespace Launchy
 		for (const auto& id : FavMgr_->GetFavorites ())
 			if (auto item = MakeItem (id))
 				items << item;
-		Model_->invisibleRootItem ()->appendRows (items);
+
+		if (!items.isEmpty ())
+			Model_->invisibleRootItem ()->appendRows (items);
 	}
 
 	void QuarkManager::addItem (const QString& id)

@@ -1,18 +1,15 @@
 import QtQuick 1.1
 
 QtObject {
-    function getAbsPos(field, item) {
-        var result = 0;
-        while (item)
-        {
-            result += item[field];
-            item = item.parent;
-        }
-        return result;
+    function getTooltipPos(item) {
+        var absPoint = item.mapToItem(quarkDisplayRoot, item.x, item.y);
+        absPoint = quarkProxy.mapToGlobal(absPoint.x, absPoint.y);
+        absPoint.x += quarkDisplayRoot.width;
+        return absPoint;
     }
 
     function showTooltip(item, func) {
-        var absPoint = quarkProxy.mapToGlobal(getAbsPos("x", item), getAbsPos("y", item));
-        func(absPoint.x + quarkDisplayRoot.width, absPoint.y);
+        var absPoint = getTooltipPos(item);
+        func(absPoint.x, absPoint.y);
     }
 }
