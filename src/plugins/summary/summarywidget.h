@@ -45,12 +45,17 @@ namespace Summary
 
 		Ui::SummaryWidget Ui_;
 		QTimer *FilterTimer_;
-		QList<QComboBox*> AdditionalBoxes_;
+
+		SearchWidget *SearchWidget_;
+
 		std::unique_ptr<QToolBar> Toolbar_;
 		static QObject *S_ParentMultiTabs_;
+
+		QSortFilterProxyModel *Sorter_;
 	public:
 		SummaryWidget (QWidget* = 0);
 		virtual ~SummaryWidget ();
+
 		static void SetParentMultiTabs (QObject*);
 
 		void Remove ();
@@ -71,6 +76,7 @@ namespace Summary
 	private:
 		void ReconnectModelSpecific ();
 		void ConnectObject (QObject*);
+		SearchWidget* CreateSearchWidget ();
 		void ReinitToolbar ();
 		QList<QAction*> CreateProxyActions (const QList<QAction*>&) const;
 	private slots:

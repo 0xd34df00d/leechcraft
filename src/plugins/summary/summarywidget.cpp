@@ -25,6 +25,7 @@
 #include <QWidgetAction>
 #include <QCloseEvent>
 #include <QSortFilterProxyModel>
+#include <QLineEdit>
 #include <QtDebug>
 #include <interfaces/structures.h>
 #include <interfaces/ijobholder.h>
@@ -32,6 +33,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/imwproxy.h>
+#include <util/gui/clearlineeditaddon.h>
 #include "core.h"
 #include "summary.h"
 #include "modeldelegate.h"
@@ -42,10 +44,50 @@ namespace Summary
 {
 	QObject *SummaryWidget::S_ParentMultiTabs_ = 0;
 
+	class SearchWidget : public QWidget
+	{
+		QLineEdit *Edit_;
+	public:
+		SearchWidget (SummaryWidget *summary)
+		: Edit_ (new QLineEdit)
+		{
+			auto lay = new QHBoxLayout;
+			setLayout (lay);
+
+			Edit_->setPlaceholderText (SummaryWidget::tr ("Search..."));
+			Edit_->setMaximumWidth (400);
+			Edit_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Fixed);
+			lay->addStretch ();
+			lay->addWidget (Edit_, 0, Qt::AlignRight);
+			new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Edit_);
+
+			connect (Edit_,
+					SIGNAL (textChanged (QString)),
+					summary,
+					SLOT (filterParametersChanged ()));
+			connect (Edit_,
+					SIGNAL (returnPressed ()),
+					summary,
+					SLOT (feedFilterParameters ()));
+		}
+
+		QString GetText () const
+		{
+			return Edit_->text ();
+		}
+
+		void SetText (const QString& text)
+		{
+			Edit_->setText (text);
+		}
+	};
+
 	SummaryWidget::SummaryWidget (QWidget *parent)
 	: QWidget (parent)
 	, FilterTimer_ (new QTimer)
+	, SearchWidget_ (0)
 	, Toolbar_ (new QToolBar)
+	, Sorter_ (Core::Instance ().GetTasksModel ())
 	{
 		Toolbar_->setWindowTitle ("Summary");
 		connect (Toolbar_.get (),
@@ -70,7 +112,40 @@ namespace Summary
 		Q_FOREACH (QObject *plugin, pm->GetAllCastableRoots<IJobHolder*> ())
 			ConnectObject (plugin);
 
-		filterParametersChanged ();
+		Ui_.PluginsTasksTree_->setModel (Sorter_);
+
+		connect (Sorter_,
+				SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)),
+				this,
+				SLOT (checkDataChanged (const QModelIndex&, const QModelIndex&)));
+		connect (Sorter_,
+				SIGNAL (modelAboutToBeReset ()),
+				this,
+				SLOT (handleReset ()));
+		connect (Sorter_,
+				SIGNAL (rowsAboutToBeRemoved (const QModelIndex&, int, int)),
+				this,
+				SLOT (checkRowsToBeRemoved (const QModelIndex&, int, int)));
+		connect (Ui_.PluginsTasksTree_->selectionModel (),
+				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (updatePanes (QModelIndex, QModelIndex)));
+		connect (Ui_.PluginsTasksTree_->selectionModel (),
+				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (syncSelection (QModelIndex)),
+				Qt::QueuedConnection);
+
+		QHeaderView *itemsHeader = Ui_.PluginsTasksTree_->header ();
+		QFontMetrics fm = fontMetrics ();
+		itemsHeader->resizeSection (0,
+				fm.width ("Average download job or torrent name is just like this."));
+		itemsHeader->resizeSection (1,
+				fm.width ("Of the download."));
+		itemsHeader->resizeSection (2,
+				fm.width ("99.99% (1024.0 kb from 1024.0 kb at 1024.0 kb/s)"));
+
+		ReconnectModelSpecific ();
 	}
 
 	void SummaryWidget::ReconnectModelSpecific ()
@@ -124,6 +199,8 @@ namespace Summary
 		Ui_.ControlsDockWidget_->setWidget (0);
 		if (widget)
 			widget->setParent (0);
+
+		delete Sorter_;
 	}
 
 	void SummaryWidget::SetParentMultiTabs (QObject *parent)
@@ -156,12 +233,20 @@ namespace Summary
 		return qobject_cast<Summary*> (S_ParentMultiTabs_)->GetTabClasses ().first ();
 	}
 
+	SearchWidget* SummaryWidget::CreateSearchWidget ()
+	{
+		return new SearchWidget (this);
+	}
+
 	void SummaryWidget::ReinitToolbar ()
 	{
 		Q_FOREACH (QAction *action, Toolbar_->actions ())
 			if (!qobject_cast<QWidgetAction*> (action))
 				delete action;
+
 		Toolbar_->clear ();
+		SearchWidget_ = CreateSearchWidget ();
+		Toolbar_->addWidget (SearchWidget_);
 	}
 
 	QList<QAction*> SummaryWidget::CreateProxyActions (const QList<QAction*>& actions) const
@@ -281,18 +366,17 @@ namespace Summary
 			Ui_.PluginsTasksTree_->selectionModel ()->clear ();
 	}
 
-	void SummaryWidget::updatePanes (const QModelIndex& newIndex,
-			const QModelIndex& oldIndex)
+	void SummaryWidget::updatePanes (const QModelIndex& newIndex, const QModelIndex& oldIndex)
 	{
-		QToolBar *controls = Core::Instance ()
-					.GetControls (newIndex);
-
-		QWidget *addiInfo = Core::Instance ()
-					.GetAdditionalInfo (newIndex);
+		QToolBar *controls = Core::Instance ().GetControls (newIndex);
+		QWidget *addiInfo = Core::Instance ().GetAdditionalInfo (newIndex);
 
 		if (oldIndex.isValid () &&
 				addiInfo != Ui_.ControlsDockWidget_->widget ())
 			Ui_.ControlsDockWidget_->hide ();
+
+		if (Core::Instance ().SameModel (newIndex, oldIndex))
+			return;
 
 		ReinitToolbar ();
 		if (newIndex.isValid ())
@@ -307,8 +391,8 @@ namespace Summary
 						action->setIcon (Core::Instance ().GetProxy ()->GetIcon (ai));
 				}
 
-				QList<QAction*> proxies = CreateProxyActions (controls->actions ());
-				Toolbar_->addActions (proxies);
+				const auto& proxies = CreateProxyActions (controls->actions ());
+				Toolbar_->insertActions (Toolbar_->actions ().first (), proxies);
 			}
 			if (addiInfo != Ui_.ControlsDockWidget_->widget ())
 				Ui_.ControlsDockWidget_->setWidget (addiInfo);
@@ -335,53 +419,7 @@ namespace Summary
 
 	void SummaryWidget::feedFilterParameters ()
 	{
-		QItemSelectionModel *selection = Ui_.PluginsTasksTree_->selectionModel ();
-		if (selection)
-			selection->setCurrentIndex (QModelIndex (), QItemSelectionModel::Clear);
-
-		// TODO we could just create/get the filter model once per SummaryWidget.
-		QAbstractItemModel *old = Ui_.PluginsTasksTree_->model ();
-		auto tasksModel = Core::Instance ().GetTasksModel ();
-		if (Ui_.PluginsTasksTree_->selectionModel ())
-			Ui_.PluginsTasksTree_->selectionModel ()->deleteLater ();
-		Ui_.PluginsTasksTree_->setModel (tasksModel);
-		delete old;
-
-		connect (tasksModel,
-				SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)),
-				this,
-				SLOT (checkDataChanged (const QModelIndex&, const QModelIndex&)));
-		connect (tasksModel,
-				SIGNAL (modelAboutToBeReset ()),
-				this,
-				SLOT (handleReset ()));
-		connect (tasksModel,
-				SIGNAL (rowsAboutToBeRemoved (const QModelIndex&, int, int)),
-				this,
-				SLOT (checkRowsToBeRemoved (const QModelIndex&, int, int)));
-		connect (Ui_.PluginsTasksTree_->selectionModel (),
-				SIGNAL (currentRowChanged (const QModelIndex&,
-						const QModelIndex&)),
-				this,
-				SLOT (updatePanes (const QModelIndex&,
-						const QModelIndex&)));
-		connect (Ui_.PluginsTasksTree_->selectionModel (),
-				SIGNAL (currentRowChanged (const QModelIndex&,
-						const QModelIndex&)),
-				this,
-				SLOT (syncSelection (const QModelIndex&)),
-				Qt::QueuedConnection);
-
-		QHeaderView *itemsHeader = Ui_.PluginsTasksTree_->header ();
-		QFontMetrics fm = fontMetrics ();
-		itemsHeader->resizeSection (0,
-				fm.width ("Average download job or torrent name is just like this."));
-		itemsHeader->resizeSection (1,
-				fm.width ("Of the download."));
-		itemsHeader->resizeSection (2,
-				fm.width ("99.99% (1024.0 kb from 1024.0 kb at 1024.0 kb/s)"));
-
-		ReconnectModelSpecific ();
+		Sorter_->setFilterFixedString (SearchWidget_->GetText ());
 	}
 
 	void SummaryWidget::on_PluginsTasksTree__customContextMenuRequested (const QPoint& pos)
