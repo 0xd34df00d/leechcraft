@@ -65,6 +65,8 @@ namespace LHTR
 		void InsertHTML (const QString&);
 		void SetTagsMappings (const Replacements_t&, const Replacements_t&);
 		void ExecJS (const QString&);
+
+		bool eventFilter (QObject*, QEvent*);
 	private:
 		void InternalSetBgColor (const QColor&);
 

@@ -43,7 +43,10 @@ namespace AdvancedNotifications
 			return;
 
 		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
-		QApplication::alert (rootWM->GetPreferredWindow ());
+		auto win = rootWM->GetPreferredWindow ();
+
+		if (!win->isActiveWindow ())
+			QApplication::alert (win);
 	}
 }
 }

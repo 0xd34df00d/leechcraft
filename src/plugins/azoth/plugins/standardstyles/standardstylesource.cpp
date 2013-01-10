@@ -53,9 +53,18 @@ namespace StandardStyles
 		return StylesLoader_->GetSubElemModel ();
 	}
 
-	QUrl StandardStyleSource::GetBaseURL (const QString&) const
+	QUrl StandardStyleSource::GetBaseURL (const QString& pack) const
 	{
-		return QUrl ();
+		const auto& path = StylesLoader_->GetPath (QStringList (pack + "/viewcontents.html"));
+		if (path.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty base URL for"
+					<< pack;
+			return QUrl ();
+		}
+
+		return QUrl::fromLocalFile (QFileInfo (path).absolutePath ());
 	}
 
 	QString StandardStyleSource::GetHTMLTemplate (const QString& pack,

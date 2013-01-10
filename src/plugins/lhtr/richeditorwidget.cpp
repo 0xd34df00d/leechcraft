@@ -29,6 +29,7 @@
 #include <QInputDialog>
 #include <QTextDocument>
 #include <QToolButton>
+#include <QKeyEvent>
 #include <QXmlStreamWriter>
 #include <QNetworkRequest>
 #include <QtDebug>
@@ -136,6 +137,8 @@ namespace LHTR
 
 		handleBgColorSettings ();
 		XmlSettingsManager::Instance ().RegisterObject ("BgColor", this, "handleBgColorSettings");
+
+		Ui_.View_->installEventFilter (this);
 
 		Ui_.View_->setPage (new EditorPage (Ui_.View_));
 		Ui_.View_->page ()->setContentEditable (true);
@@ -378,6 +381,32 @@ namespace LHTR
 	void RichEditorWidget::ExecJS (const QString& js)
 	{
 		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
+	}
+
+	bool RichEditorWidget::eventFilter (QObject*, QEvent *event)
+	{
+		if (event->type () != QEvent::KeyPress && event->type () != QEvent::KeyRelease)
+			return false;
+
+		auto keyEv = static_cast<QKeyEvent*> (event);
+		if (keyEv->key () != Qt::Key_Tab)
+			return false;
+
+		auto frame = Ui_.View_->page ()->mainFrame ();
+		const auto isParagraph = frame->evaluateJavaScript ("findParent(window.getSelection().getRangeAt(0).endContainer, 'p') != null");
+		if (!isParagraph.toBool ())
+			return false;
+
+		if (event->type () == QEvent::KeyRelease)
+			return true;
+
+		QString js;
+		js += "var p = findParent(window.getSelection().getRangeAt(0).endContainer, 'p');";
+		js += "p.style.textIndent = '2em';";
+
+		frame->evaluateJavaScript (js);
+
+		return true;
 	}
 
 	void RichEditorWidget::InternalSetBgColor (const QColor& color)
@@ -722,7 +751,7 @@ namespace LHTR
 
 	void RichEditorWidget::handleInsertLink ()
 	{
-		if (!Ui_.View_->selectedText ().isEmpty ())
+		if (Ui_.View_->hasSelection ())
 		{
 			const QString& url = QInputDialog::getText (this,
 					tr ("Insert link"), tr ("Enter URL:"));
