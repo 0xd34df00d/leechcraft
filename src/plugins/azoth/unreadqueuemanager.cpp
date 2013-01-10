@@ -58,8 +58,8 @@ namespace Azoth
 		if (mw)
 		{
 			mw->show ();
-			mw->activateWindow ();
 			mw->raise ();
+			mw->activateWindow ();
 		}
 	}
 
