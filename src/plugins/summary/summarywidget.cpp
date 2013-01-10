@@ -24,8 +24,8 @@
 #include <QMainWindow>
 #include <QWidgetAction>
 #include <QCloseEvent>
+#include <QSortFilterProxyModel>
 #include <QtDebug>
-#include <interfaces/ifinder.h>
 #include <interfaces/structures.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/core/icoreproxy.h>
@@ -33,7 +33,6 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/imwproxy.h>
 #include "core.h"
-#include "searchwidget.h"
 #include "summary.h"
 #include "modeldelegate.h"
 
@@ -47,11 +46,7 @@ namespace Summary
 	: QWidget (parent)
 	, FilterTimer_ (new QTimer)
 	, Toolbar_ (new QToolBar)
-	, SearchWidget_ (new SearchWidget)
 	{
-		ActionSearch_ = SearchWidget_->toggleViewAction ();
-		ActionSearch_->setProperty ("ActionIcon", "edit-find");
-		ActionSearch_->setShortcut (tr ("Ctrl+F"));
 		Toolbar_->setWindowTitle ("Summary");
 		connect (Toolbar_.get (),
 				SIGNAL (actionTriggered (QAction*)),
@@ -62,22 +57,6 @@ namespace Summary
 		Ui_.setupUi (this);
 		Ui_.PluginsTasksTree_->setItemDelegate (new ModelDelegate (this));
 
-		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
-		rootWM->GetMWProxy (0)->AddDockWidget (Qt::LeftDockWidgetArea, SearchWidget_);
-		rootWM->GetMWProxy (0)->AssociateDockWidget (SearchWidget_, this);
-
-		QCloseEvent searchCloseEvent;
-		qApp->sendEvent (SearchWidget_, &searchCloseEvent);
-		SearchWidget_->hide ();
-
-		Q_FOREACH (QObject *plugin, Core::Instance ().GetProxy ()->
-				GetPluginsManager ()->GetAllCastableRoots<IFinder*> ())
-			connect (plugin,
-					SIGNAL (categoriesChanged (const QStringList&,
-							const QStringList&)),
-					this,
-					SLOT (handleCategoriesChanged ()));
-
 		FilterTimer_->setSingleShot (true);
 		FilterTimer_->setInterval (800);
 		connect (FilterTimer_,
@@ -87,25 +66,9 @@ namespace Summary
 
 		Ui_.ControlsDockWidget_->hide ();
 
-		connect (SearchWidget_->GetFilterLine (),
-				SIGNAL (textEdited (const QString&)),
-				this,
-				SLOT (filterParametersChanged ()));
-		connect (SearchWidget_,
-				SIGNAL (paramsChanged ()),
-				this,
-				SLOT (filterParametersChanged ()));
-		connect (SearchWidget_->GetFilterLine (),
-				SIGNAL (returnPressed ()),
-				this,
-				SLOT (filterReturnPressed ()));
-
-		QList<QObject*> plugins = Core::Instance ().GetProxy ()->
-			GetPluginsManager ()->GetAllCastableRoots<IJobHolder*> ();
-		Q_FOREACH (QObject *plugin, plugins)
+		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
+		Q_FOREACH (QObject *plugin, pm->GetAllCastableRoots<IJobHolder*> ())
 			ConnectObject (plugin);
-
-		SearchWidget_->SetPossibleCategories (GetUniqueCategories () + QStringList ("downloads"));
 
 		filterParametersChanged ();
 	}
@@ -121,9 +84,8 @@ namespace Summary
 					object, \
 					SLOT (handleTasksTreeSelection##sl (arg1, arg2)));
 
-		QList<QObject*> plugins = Core::Instance ().GetProxy ()->
-			GetPluginsManager ()->GetAllCastableRoots<IJobHolder*> ();
-		Q_FOREACH (QObject *object, plugins)
+		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
+		Q_FOREACH (QObject *object, pm->GetAllCastableRoots<IJobHolder*> ())
 		{
 			const QMetaObject *mo = object->metaObject ();
 
@@ -162,8 +124,6 @@ namespace Summary
 		Ui_.ControlsDockWidget_->setWidget (0);
 		if (widget)
 			widget->setParent (0);
-
-		delete SearchWidget_;
 	}
 
 	void SummaryWidget::SetParentMultiTabs (QObject *parent)
@@ -196,126 +156,12 @@ namespace Summary
 		return qobject_cast<Summary*> (S_ParentMultiTabs_)->GetTabClasses ().first ();
 	}
 
-	void SummaryWidget::SetQuery (QStringList query)
-	{
-		if (query.isEmpty ())
-			return;
-
-		SearchWidget_->GetFilterLine ()->setText (query.takeFirst ());
-
-		if (!query.isEmpty ())
-			SearchWidget_->SelectCategories (query);
-
-		feedFilterParameters ();
-
-		emit tabRecoverDataChanged ();
-	}
-
-	QStringList SummaryWidget::GetUniqueCategories () const
-	{
-		QStringList result;
-		Q_FOREACH (IFinder *plugin, Core::Instance ().GetProxy ()->
-				GetPluginsManager ()->GetAllCastableTo<IFinder*> ())
-			result += plugin->GetCategories ();
-		result.removeDuplicates ();
-		result.sort ();
-		return result;
-	}
-
-	void SummaryWidget::FillCombobox (QComboBox *box)
-	{
-		box->addItem ("downloads");
-		box->addItems (GetUniqueCategories ());
-		box->adjustSize ();
-	}
-
-	QString SummaryWidget::GetQuery () const
-	{
-		QString query = SearchWidget_->GetFilterLine ()->text ();
-
-		QString prepend;
-		QStringList categories = SearchWidget_->GetCategories ();
-		if (categories.size ())
-		{
-			prepend = QString ("ca:\"%1\"")
-				.arg (categories.takeFirst ());
-			Q_FOREACH (const QString& cat, categories)
-				prepend += QString (" OR ca:\"%1\"").arg (cat);
-		}
-
-		prepend = QString ("(%1) ").arg (prepend);
-		prepend += "t:";
-		switch (SearchWidget_->GetFilterType ()->currentIndex ())
-		{
-			case 0:
-				prepend += 'f';
-				break;
-			case 1:
-				prepend += 'w';
-				break;
-			case 2:
-				prepend += 'r';
-				break;
-			case 3:
-				prepend += 't';
-				break;
-			default:
-				prepend += 'f';
-				qWarning () << Q_FUNC_INFO
-					<< "unknown Type index"
-					<< SearchWidget_->GetFilterType ()->currentIndex ()
-					<< SearchWidget_->GetFilterType ()->currentText ();
-				break;
-		}
-
-		prepend += ' ';
-		query.prepend (prepend);
-		return query;
-	}
-
-	Query2 SummaryWidget::GetQuery2 () const
-	{
-		Query2 result;
-		result.Query_ = SearchWidget_->GetFilterLine ()->text ();
-		result.Categories_ = SearchWidget_->GetCategories ();
-		result.Op_ = SearchWidget_->IsOr () ?
-			Query2::OPOr :
-			Query2::OPAnd;
-		switch (SearchWidget_->GetFilterType ()->currentIndex ())
-		{
-			case 0:
-				result.Type_ = Query2::TString;
-				break;
-			case 1:
-				result.Type_ = Query2::TWildcard;
-				break;
-			case 2:
-				result.Type_ = Query2::TRegexp;
-				break;
-			case 3:
-				result.Type_ = Query2::TTags;
-				break;
-			default:
-				result.Type_ = Query2::TString;
-				qWarning () << Q_FUNC_INFO
-					<< "unknown Type index"
-					<< SearchWidget_->GetFilterType ()->currentIndex ()
-					<< SearchWidget_->GetFilterType ()->currentText ();
-				break;
-		}
-
-		return result;
-	}
-
 	void SummaryWidget::ReinitToolbar ()
 	{
 		Q_FOREACH (QAction *action, Toolbar_->actions ())
-			if (action != ActionSearch_ &&
-					!qobject_cast<QWidgetAction*> (action))
+			if (!qobject_cast<QWidgetAction*> (action))
 				delete action;
 		Toolbar_->clear ();
-		Toolbar_->addAction (ActionSearch_);
-		Toolbar_->addSeparator ();
 	}
 
 	QList<QAction*> SummaryWidget::CreateProxyActions (const QList<QAction*>& actions) const
@@ -363,18 +209,12 @@ namespace Summary
 		QByteArray result;
 		QDataStream out (&result, QIODevice::WriteOnly);
 		out << static_cast<quint8> (1);
-
-		const auto& query = GetQuery2 ();
-		out << (QStringList (query.Query_) + query.Categories_);
 		return result;
 	}
 
 	QString SummaryWidget::GetTabRecoverName () const
 	{
-		const auto& query = GetQuery2 ();
-		return query.Query_.isEmpty () ?
-				GetTabClassInfo ().VisibleName_ :
-				GetTabClassInfo ().VisibleName_ + ": " + query.Query_;
+		return GetTabClassInfo ().VisibleName_;
 	}
 
 	QIcon SummaryWidget::GetTabRecoverIcon () const
@@ -393,31 +233,11 @@ namespace Summary
 					<< "unknown version";
 			return;
 		}
-
-		QStringList query;
-		in >> query;
-		if (!query.isEmpty ())
-			SetQuery (query);
 	}
 
-	void SummaryWidget::SmartDeselect (SummaryWidget *newFocus)
+	void SummaryWidget::SetUpdatesEnabled (bool)
 	{
-#ifdef QT_DEBUG
-		qDebug () << "SmartDeselect" << newFocus << this;
-#endif
-		if (newFocus &&
-				newFocus != this)
-		{
-			if (Ui_.PluginsTasksTree_->selectionModel ())
-			{
-				Ui_.PluginsTasksTree_->selectionModel ()->clear ();
-				Ui_.PluginsTasksTree_->selectionModel ()->clearSelection ();
-				Ui_.PluginsTasksTree_->selectionModel ()->
-					setCurrentIndex (QModelIndex (), QItemSelectionModel::ClearAndSelect);
-			}
-			ReinitToolbar ();
-			Ui_.ControlsDockWidget_->hide ();
-		}
+		// TODO implement this
 	}
 
 	Ui::SummaryWidget SummaryWidget::GetUi () const
@@ -427,9 +247,6 @@ namespace Summary
 
 	void SummaryWidget::handleActionTriggered (QAction *proxyAction)
 	{
-		if (proxyAction == ActionSearch_)
-			return;
-
 		QAction *action = qobject_cast<QAction*> (proxyAction->
 				data ().value<QObject*> ());
 		QItemSelectionModel *selModel =
@@ -522,9 +339,9 @@ namespace Summary
 		if (selection)
 			selection->setCurrentIndex (QModelIndex (), QItemSelectionModel::Clear);
 
-		const Query2& query = GetQuery2 ();
+		// TODO we could just create/get the filter model once per SummaryWidget.
 		QAbstractItemModel *old = Ui_.PluginsTasksTree_->model ();
-		Util::MergeModel *tasksModel = Core::Instance ().GetTasksModel (query);
+		auto tasksModel = Core::Instance ().GetTasksModel ();
 		if (Ui_.PluginsTasksTree_->selectionModel ())
 			Ui_.PluginsTasksTree_->selectionModel ()->deleteLater ();
 		Ui_.PluginsTasksTree_->setModel (tasksModel);
@@ -564,20 +381,7 @@ namespace Summary
 		itemsHeader->resizeSection (2,
 				fm.width ("99.99% (1024.0 kb from 1024.0 kb at 1024.0 kb/s)"));
 
-		QString newName;
-		if (query.Query_.size ())
-			newName = tr ("S: %1 [%2]")
-					.arg (query.Query_)
-					.arg (query.Categories_.join ("; "));
-		else
-			newName = tr ("Summary [%1]")
-					.arg (query.Categories_.join ("; "));
-
 		ReconnectModelSpecific ();
-
-		emit changeTabName (newName);
-		emit queryUpdated (query);
-		emit raiseTab (this);
 	}
 
 	void SummaryWidget::on_PluginsTasksTree__customContextMenuRequested (const QPoint& pos)
@@ -596,13 +400,6 @@ namespace Summary
 		menu->addActions (CreateProxyActions (sourceMenu->actions ()));
 		menu->setTitle (sourceMenu->title ());
 		menu->popup (Ui_.PluginsTasksTree_->viewport ()->mapToGlobal (pos));
-	}
-
-	void SummaryWidget::handleCategoriesChanged ()
-	{
-		const QStringList& currentCats = GetUniqueCategories ();
-
-		SearchWidget_->SetPossibleCategories (currentCats + QStringList ("downloads"));
 	}
 
 	void SummaryWidget::syncSelection (const QModelIndex& current)

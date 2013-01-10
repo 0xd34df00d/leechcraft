@@ -30,7 +30,6 @@ SET (SRCS
 	categorymerger.cpp
 	filtermodel.cpp
 	operationalmodel.cpp
-	searchwidget.cpp
 	summarytagsfilter.cpp
 	modeldelegate.cpp
 	)
@@ -43,13 +42,11 @@ SET (HEADERS
 	categorymerger.h
 	filtermodel.h
 	operationalmodel.h
-	searchwidget.h
 	summarytagsfilter.h
 	modeldelegate.h
 	)
 SET (FORMS
 	summarywidget.ui
-	searchwidget.ui
 	)
 SET (RESOURCES summaryresources.qrc)
 CreateTrs ("summary" "ar;be;de;en;es;fr;it;ru_RU;uk_UA" COMPILED_TRANSLATIONS)

@@ -47,8 +47,6 @@ namespace Summary
 		QTimer *FilterTimer_;
 		QList<QComboBox*> AdditionalBoxes_;
 		std::unique_ptr<QToolBar> Toolbar_;
-		QAction *ActionSearch_;
-		SearchWidget *SearchWidget_;
 		static QObject *S_ParentMultiTabs_;
 	public:
 		SummaryWidget (QWidget* = 0);
@@ -67,20 +65,14 @@ namespace Summary
 
 		void RestoreState (const QByteArray&);
 
-		void SmartDeselect (SummaryWidget*);
+		void SetUpdatesEnabled (bool);
+
 		Ui::SummaryWidget GetUi () const;
-		void SetQuery (QStringList);
 	private:
 		void ReconnectModelSpecific ();
 		void ConnectObject (QObject*);
-		QStringList GetUniqueCategories () const;
-		void FillCombobox (QComboBox*);
-		QString GetQuery () const;
-		Query2 GetQuery2 () const;
 		void ReinitToolbar ();
 		QList<QAction*> CreateProxyActions (const QList<QAction*>&) const;
-	public slots:
-		void handleCategoriesChanged ();
 	private slots:
 		void handleActionTriggered (QAction*);
 		void checkDataChanged (const QModelIndex&, const QModelIndex&);
@@ -94,8 +86,6 @@ namespace Summary
 		void syncSelection (const QModelIndex&);
 	signals:
 		void changeTabName (const QString&);
-		void queryUpdated (const QString&);
-		void queryUpdated (const LeechCraft::Summary::Query2&);
 		void raiseTab (QWidget*);
 		void needToClose ();
 

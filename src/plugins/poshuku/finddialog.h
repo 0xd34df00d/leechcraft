@@ -36,8 +36,14 @@ namespace Poshuku
 		virtual ~FindDialog ();
 
 		void SetText (const QString&);
+		QString GetText () const;
+
 		void SetSuccessful (bool);
 		void Focus ();
+
+		/* This one doesn't take direction in account.
+		 */
+		QWebPage::FindFlags GetFlags () const;
 	private slots:
 		void on_Pattern__textChanged (const QString&);
 		void on_FindButton__released ();
