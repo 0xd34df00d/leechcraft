@@ -25,7 +25,6 @@
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include "summarywidget.h"
-#include "requestnormalizer.h"
 #include "summarytagsfilter.h"
 
 namespace LeechCraft

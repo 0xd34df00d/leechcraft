@@ -25,11 +25,6 @@ SET (SRCS
 	summary.cpp
 	core.cpp
 	summarywidget.cpp
-	requestparser.cpp
-	requestnormalizer.cpp
-	categorymerger.cpp
-	filtermodel.cpp
-	operationalmodel.cpp
 	summarytagsfilter.cpp
 	modeldelegate.cpp
 	)
@@ -37,11 +32,6 @@ SET (HEADERS
 	summary.h
 	core.h
 	summarywidget.h
-	requestparser.h
-	requestnormalizer.h
-	categorymerger.h
-	filtermodel.h
-	operationalmodel.h
 	summarytagsfilter.h
 	modeldelegate.h
 	)
