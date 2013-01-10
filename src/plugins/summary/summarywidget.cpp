@@ -85,7 +85,7 @@ namespace Summary
 	SummaryWidget::SummaryWidget (QWidget *parent)
 	: QWidget (parent)
 	, FilterTimer_ (new QTimer)
-	, SearchWidget_ (0)
+	, SearchWidget_ (CreateSearchWidget ())
 	, Toolbar_ (new QToolBar)
 	, Sorter_ (Core::Instance ().GetTasksModel ())
 	{
@@ -94,7 +94,8 @@ namespace Summary
 				SIGNAL (actionTriggered (QAction*)),
 				this,
 				SLOT (handleActionTriggered (QAction*)));
-		ReinitToolbar ();
+
+		Toolbar_->addWidget (SearchWidget_);
 
 		Ui_.setupUi (this);
 		Ui_.PluginsTasksTree_->setItemDelegate (new ModelDelegate (this));
@@ -241,12 +242,16 @@ namespace Summary
 	void SummaryWidget::ReinitToolbar ()
 	{
 		Q_FOREACH (QAction *action, Toolbar_->actions ())
-			if (!qobject_cast<QWidgetAction*> (action))
+		{
+			auto wa = qobject_cast<QWidgetAction*> (action);
+			if (!wa)
+			{
+				Toolbar_->removeAction (action);
 				delete action;
-
-		Toolbar_->clear ();
-		SearchWidget_ = CreateSearchWidget ();
-		Toolbar_->addWidget (SearchWidget_);
+			}
+			else if (wa->defaultWidget () != SearchWidget_)
+				Toolbar_->removeAction (action);
+		}
 	}
 
 	QList<QAction*> SummaryWidget::CreateProxyActions (const QList<QAction*>& actions) const

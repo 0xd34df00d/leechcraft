@@ -46,7 +46,7 @@ namespace Summary
 		Ui::SummaryWidget Ui_;
 		QTimer *FilterTimer_;
 
-		SearchWidget *SearchWidget_;
+		SearchWidget * const SearchWidget_;
 
 		std::unique_ptr<QToolBar> Toolbar_;
 		static QObject *S_ParentMultiTabs_;
