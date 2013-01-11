@@ -129,7 +129,14 @@ namespace Summary
 	{
 		// TODO check this — passed model could be not MergeModel anymore.
 		int starting = 0;
-		auto modIter = dynamic_cast<Util::MergeModel*> (model)->GetModelForRow (index, &starting);
+		auto merger = dynamic_cast<Util::MergeModel*> (model);
+		if (!merger)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "could not get model" << model;
+			return QStringList ();
+		}
+		auto modIter = merger->GetModelForRow (index, &starting);
 
 		QStringList ids = (*modIter)->data ((*modIter)->
 				index (index - starting, 0), RoleTags).toStringList ();
