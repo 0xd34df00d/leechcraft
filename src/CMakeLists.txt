@@ -204,7 +204,6 @@ OPTION (ENABLE_FTP "Build LCFTP, the FTP client" OFF)
 OPTION (ENABLE_JUFFED "Build JuffEd, the advanced text editor" OFF)
 OPTION (ENABLE_OTZERKALU "Build Otzerkalu, which allows one to download web sites recursively" OFF)
 OPTION (ENABLE_LAURE "Build Laure, the new generation audio/video player" OFF)
-OPTION (ENABLE_TRANSPARENTARCH "Build TransparentArch, the plugin for transparent access to archives in various formats" OFF)
 OPTION (ENABLE_SIDEBAR "Build Sidebar, a nice side bar with quick launch, tabs and tray areas" OFF)
 
 ENABLE_TESTING ()
@@ -371,10 +370,6 @@ ENDIF (ENABLE_SHELLOPEN)
 IF (ENABLE_LAURE)
 	ADD_SUBDIRECTORY (plugins/laure)
 ENDIF (ENABLE_LAURE)
-
-IF (ENABLE_TRANSPARENTARCH)
-	ADD_SUBDIRECTORY (plugins/transparentarch)
-ENDIF (ENABLE_TRANSPARENTARCH)
 
 IF (ENABLE_JUFFED)
 	ADD_SUBDIRECTORY (plugins/juffed)
