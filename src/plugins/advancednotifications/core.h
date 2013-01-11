@@ -32,29 +32,31 @@ namespace Util
 namespace AdvancedNotifications
 {
 	class NotificationRulesWidget;
+	class RulesManager;
 
 	class Core : public QObject
 	{
 		Q_OBJECT
-		
+
 		ICoreProxy_ptr Proxy_;
-		
+
+		RulesManager *RulesManager_;
 		NotificationRulesWidget *NRW_;
 		std::shared_ptr<Util::ResourceLoader> AudioThemeLoader_;
-		
+
 		Core ();
 	public:
 		static Core& Instance ();
 		void Release ();
-		
+
 		ICoreProxy_ptr GetProxy () const;
 		void SetProxy (ICoreProxy_ptr);
-		
+
 		NotificationRulesWidget* GetNRW ();
 		std::shared_ptr<Util::ResourceLoader> GetAudioThemeLoader () const;
 
 		QList<NotificationRule> GetRules (const Entity&) const;
-		
+
 		void SendEntity (const Entity&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
