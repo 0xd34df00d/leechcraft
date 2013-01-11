@@ -199,7 +199,6 @@ IF (APPLE)
 ENDIF (APPLE)
 
 # Defunct
-OPTION (ENABLE_FTP "Build LCFTP, the FTP client" OFF)
 OPTION (ENABLE_JUFFED "Build JuffEd, the advanced text editor" OFF)
 OPTION (ENABLE_OTZERKALU "Build Otzerkalu, which allows one to download web sites recursively" OFF)
 OPTION (ENABLE_LAURE "Build Laure, the new generation audio/video player" OFF)
@@ -277,10 +276,6 @@ ENDIF (ENABLE_POSHUKU)
 IF (ENABLE_HTTP)
 	ADD_SUBDIRECTORY (plugins/cstp)
 ENDIF (ENABLE_HTTP)
-
-IF (ENABLE_FTP)
-	ADD_SUBDIRECTORY (plugins/lcftp)
-ENDIF (ENABLE_FTP)
 
 IF (ENABLE_LMP)
 	ADD_SUBDIRECTORY (plugins/lmp)
