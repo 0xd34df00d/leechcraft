@@ -199,7 +199,6 @@ IF (APPLE)
 ENDIF (APPLE)
 
 # Defunct
-OPTION (ENABLE_TABPP "Build Tab++, the enhanced tab manager" OFF)
 OPTION (ENABLE_FTP "Build LCFTP, the FTP client" OFF)
 OPTION (ENABLE_JUFFED "Build JuffEd, the advanced text editor" OFF)
 OPTION (ENABLE_OTZERKALU "Build Otzerkalu, which allows one to download web sites recursively" OFF)
@@ -326,10 +325,6 @@ ENDIF (ENABLE_KINOTIFY)
 IF (ENABLE_AUSCRIE)
 	ADD_SUBDIRECTORY (plugins/auscrie)
 ENDIF (ENABLE_AUSCRIE)
-
-IF (ENABLE_TABPP)
-	ADD_SUBDIRECTORY (plugins/tabpp)
-ENDIF (ENABLE_TABPP)
 
 IF (ENABLE_AZOTH)
 	ADD_SUBDIRECTORY (plugins/azoth)
