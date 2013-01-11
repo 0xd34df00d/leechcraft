@@ -202,7 +202,6 @@ ENDIF (APPLE)
 OPTION (ENABLE_JUFFED "Build JuffEd, the advanced text editor" OFF)
 OPTION (ENABLE_OTZERKALU "Build Otzerkalu, which allows one to download web sites recursively" OFF)
 OPTION (ENABLE_LAURE "Build Laure, the new generation audio/video player" OFF)
-OPTION (ENABLE_SIDEBAR "Build Sidebar, a nice side bar with quick launch, tabs and tray areas" OFF)
 
 ENABLE_TESTING ()
 
@@ -392,10 +391,6 @@ ENDIF (ENABLE_BLACKDASH)
 IF (ENABLE_KNOWHOW)
 	ADD_SUBDIRECTORY (plugins/knowhow)
 ENDIF (ENABLE_KNOWHOW)
-
-IF (ENABLE_SIDEBAR)
-	ADD_SUBDIRECTORY (plugins/sidebar)
-ENDIF (ENABLE_SIDEBAR)
 
 IF (ENABLE_SB2)
 	ADD_SUBDIRECTORY (plugins/sb2)
