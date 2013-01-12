@@ -16,14 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_ADVANCEDNOTIFICATIONS_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_ADVANCEDNOTIFICATIONS_H
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iactionsexporter.h>
+#include <interfaces/iquarkcomponentprovider.h>
 
 namespace LeechCraft
 {
@@ -37,14 +38,17 @@ namespace AdvancedNotifications
 				 , public IEntityHandler
 				 , public IHaveSettings
 				 , public IActionsExporter
+				 , public IQuarkComponentProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IEntityHandler IHaveSettings IActionsExporter)
+		Q_INTERFACES (IInfo IEntityHandler IHaveSettings IActionsExporter IQuarkComponentProvider)
 
 		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		std::shared_ptr<GeneralHandler> GeneralHandler_;
 		EnableSoundActionManager *EnableSoundMgr_;
+		
+		QuarkComponent Component_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -60,6 +64,8 @@ namespace AdvancedNotifications
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+		
+		QuarkComponents_t GetComponents () const;
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 
@@ -67,5 +73,3 @@ namespace AdvancedNotifications
 	};
 }
 }
-
-#endif

@@ -22,11 +22,13 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/resourceloader.h>
 #include <util/util.h>
+#include <util/sys/paths.h>
 #include "generalhandler.h"
 #include "xmlsettingsmanager.h"
 #include "notificationruleswidget.h"
 #include "core.h"
 #include "enablesoundactionmanager.h"
+#include "rulesmanager.h"
 
 namespace LeechCraft
 {
@@ -59,6 +61,9 @@ namespace AdvancedNotifications
 				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)));
 
 		EnableSoundMgr_ = new EnableSoundActionManager (this);
+
+		Component_.Url_ = QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, "advancednotifications", "ANQuark.qml"));
+		Component_.DynamicProps_.push_back ({ "AN_rulesManager", Core::Instance ().GetRulesManager () });
 	}
 
 	void Plugin::SecondInit ()
@@ -121,6 +126,11 @@ namespace AdvancedNotifications
 		QList<QAction*> result;
 		result << EnableSoundMgr_->GetActions (aep);
 		return result;
+	}
+
+	QuarkComponents_t Plugin::GetComponents () const
+	{
+		return { Component_ };
 	}
 }
 }
