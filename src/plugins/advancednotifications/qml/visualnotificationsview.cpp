@@ -25,6 +25,7 @@
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
+#include <util/qml/themeimageprovider.h>
 #include <interfaces/core/icoreproxy.h>
 #include "eventproxyobject.h"
 #include "../core.h"
@@ -61,6 +62,10 @@ namespace AdvancedNotifications
 		auto proxy = Core::Instance ().GetProxy ();
 		rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
+		engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
+
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
+			engine ()->addImportPath (cand);
 	}
 
 	void VisualNotificationsView::SetEvents (const QList<EventData>& events)
