@@ -20,10 +20,14 @@
 #include <QFile>
 #include <QDeclarativeContext>
 #include <QDeclarativeError>
+#include <QDeclarativeEngine>
 #include <QtDebug>
 #include <util/util.h>
 #include <util/sys/paths.h>
+#include <util/qml/colorthemeproxy.h>
+#include <interfaces/core/icoreproxy.h>
 #include "eventproxyobject.h"
+#include "../core.h"
 
 namespace LeechCraft
 {
@@ -53,6 +57,10 @@ namespace AdvancedNotifications
 		qDebug () << Q_FUNC_INFO << "created";
 
 		Location_ = QUrl::fromLocalFile (fileLocation);
+
+		auto proxy = Core::Instance ().GetProxy ();
+		rootContext ()->setContextProperty ("colorProxy",
+				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
 	}
 
 	void VisualNotificationsView::SetEvents (const QList<EventData>& events)
