@@ -20,6 +20,7 @@
 #include <QStandardItemModel>
 #include <QSettings>
 #include <QCoreApplication>
+#include <QtDebug>
 #include "constants.h"
 
 namespace LeechCraft
@@ -287,7 +288,10 @@ namespace AdvancedNotifications
 	{
 		Rules_ [idx].SetEnabled (enabled);
 		if (auto item = RulesModel_->item (idx))
+		{
+			item->setData (enabled, RulesModel::Roles::IsRuleEnabled);
 			item->setCheckState (enabled ? Qt::Checked : Qt::Unchecked);
+		}
 	}
 
 	void RulesManager::reset ()
@@ -312,6 +316,7 @@ namespace AdvancedNotifications
 
 		const int idx = item->row ();
 		const bool newState = item->checkState () == Qt::Checked;
+		item->setData (newState, RulesModel::Roles::IsRuleEnabled);
 
 		if (newState == Rules_.at (idx).IsEnabled () ||
 				Rules_.at (idx).IsNull ())
