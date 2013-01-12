@@ -88,7 +88,6 @@ namespace Xoox
 	EntryBase::~EntryBase ()
 	{
 		qDeleteAll (AllMessages_);
-		qDeleteAll (UnreadMessages_);
 		qDeleteAll (Actions_);
 		delete VCardDialog_;
 	}
