@@ -42,6 +42,11 @@ namespace AdvancedNotifications
 		xsdPropChanged ();
 	}
 
+	QAction* EnableSoundActionManager::GetAction () const
+	{
+		return EnableAction_;
+	}
+
 	QList<QAction*> EnableSoundActionManager::GetActions (ActionsEmbedPlace aep) const
 	{
 		QList<QAction*> result;
