@@ -60,6 +60,7 @@ Rectangle {
         anchors.bottom: parent.bottom
 
         model: rulesManager.getRulesModel()
+        clip: true
 
         delegate: Rectangle {
             width: rulesListView.width
