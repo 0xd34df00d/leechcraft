@@ -74,6 +74,11 @@ namespace AdvancedNotifications
 		Proxy_ = proxy;
 	}
 
+	RulesManager* Core::GetRulesManager () const
+	{
+		return RulesManager_;
+	}
+
 	NotificationRulesWidget* Core::GetNRW ()
 	{
 		if (!NRW_)
