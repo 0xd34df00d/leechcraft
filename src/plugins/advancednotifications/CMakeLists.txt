@@ -28,6 +28,7 @@ SET (SRCS
 	wmurgenthandler.cpp
 	rulesmanager.cpp
 	quarkproxy.cpp
+	actionsmodel.cpp
 	qml/visualnotificationsview.cpp
 	qml/eventproxyobject.cpp
 	qml/actionsproxyobject.cpp
@@ -51,6 +52,7 @@ SET (HEADERS
 	wmurgenthandler.h
 	rulesmanager.h
 	quarkproxy.h
+	actionsmodel.h
 	qml/visualnotificationsview.h
 	qml/eventproxyobject.h
 	qml/actionsproxyobject.h
