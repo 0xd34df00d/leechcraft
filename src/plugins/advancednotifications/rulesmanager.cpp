@@ -26,9 +26,31 @@ namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
+	namespace
+	{
+		class RulesModel : public QStandardItemModel
+		{
+		public:
+			enum Roles
+			{
+				RuleName = Qt::UserRole + 1,
+				IsRuleEnabled
+			};
+
+			RulesModel (QObject *parent)
+			: QStandardItemModel (parent)
+			{
+				QHash<int, QByteArray> roleNames;
+				roleNames [Roles::RuleName] = "ruleName";
+				roleNames [Roles::IsRuleEnabled] = "isRuleEnabled";
+				setRoleNames (roleNames);
+			}
+		};
+	}
+
 	RulesManager::RulesManager (QObject *parent)
 	: QObject (parent)
-	, RulesModel_ (new QStandardItemModel (this))
+	, RulesModel_ (new RulesModel (this))
 	{
 		Cat2HR_ [CatIM] = tr ("Instant messaging");
 		Type2HR_ [TypeIMAttention] = tr ("Attention request");
@@ -81,10 +103,7 @@ namespace AdvancedNotifications
 		if (idx == -1)
 			return;
 
-		Rules_ [idx].SetEnabled (enabled);
-		QStandardItem *item = RulesModel_->item (idx);
-		if (item)
-			item->setCheckState (enabled ? Qt::Checked : Qt::Unchecked);
+		setRuleEnabled (idx, enabled);
 	}
 
 	void RulesManager::UpdateRule (const QModelIndex& index, const NotificationRule& rule)
@@ -216,6 +235,12 @@ namespace AdvancedNotifications
 
 		items.first ()->setCheckable (true);
 		items.first ()->setCheckState (rule.IsEnabled () ? Qt::Checked : Qt::Unchecked);
+
+		for (auto item : items)
+		{
+			item->setData (rule.GetName (), RulesModel::Roles::RuleName);
+			item->setData (rule.IsEnabled (), RulesModel::Roles::IsRuleEnabled);
+		}
 
 		return items;
 	}
