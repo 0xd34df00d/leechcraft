@@ -29,6 +29,7 @@
 #include "core.h"
 #include "enablesoundactionmanager.h"
 #include "rulesmanager.h"
+#include "quarkproxy.h"
 
 namespace LeechCraft
 {
@@ -64,6 +65,7 @@ namespace AdvancedNotifications
 
 		Component_.Url_ = QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, "advancednotifications", "ANQuark.qml"));
 		Component_.DynamicProps_.push_back ({ "AN_rulesManager", Core::Instance ().GetRulesManager () });
+		Component_.DynamicProps_.push_back ({ "AN_proxy", new QuarkProxy });
 	}
 
 	void Plugin::SecondInit ()

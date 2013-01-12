@@ -23,7 +23,8 @@ Rectangle {
                 x: global.x,
                 y: global.y,
                 existing: "toggle",
-                "rulesManager": AN_rulesManager
+                "rulesManager": AN_rulesManager,
+                "proxy": AN_proxy
             };
             quarkProxy.openWindow(sourceURL, "RulesListView.qml", params);
         }

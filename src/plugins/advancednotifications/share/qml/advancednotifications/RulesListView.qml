@@ -3,7 +3,7 @@ import org.LC.common 1.0
 
 Rectangle {
     width: 500
-    height: Math.min(400, rulesListView.contentHeight)
+    height: Math.min(400, rulesListView.contentHeight + actionsView.contentHeight)
 
     radius: 3
     gradient: Gradient {
@@ -21,9 +21,43 @@ Rectangle {
 
     signal closeRequested()
 
+    GridView {
+        id: actionsView
+
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        height: contentHeight
+
+        cellWidth: 36
+        cellHeight: 36
+
+        model: proxy.getActionsModel()
+
+        delegate: Rectangle {
+            width: actionsView.cellWidth
+            height: actionsView.cellHeight
+
+            color: "transparent"
+
+            ActionButton {
+                width: 32
+                height: 32
+                anchors.centerIn: parent
+
+                actionIconURL: "image://ThemeIcons/" + iconName
+                isHighlight: isActionChecked
+                onTriggered: proxy.getActionsModel().triggerAction(index)
+            }
+        }
+    }
+
     ListView {
         id: rulesListView
-        anchors.fill: parent
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: actionsView.bottom
+        anchors.bottom: parent.bottom
 
         model: rulesManager.getRulesModel()
 
@@ -57,7 +91,7 @@ Rectangle {
                 anchors.leftMargin: 4
                 anchors.verticalCenter: parent.verticalCenter
 
-                actionIconURL: "image://ThemeIcons/dialog-ok"
+                actionIconURL: isRuleEnabled ? "image://ThemeIcons/dialog-ok" : "image://ThemeIcons/dialog-cancel"
 
                 isHighlight: isRuleEnabled
                 onTriggered: rulesManager.setRuleEnabled(index, !isRuleEnabled)
