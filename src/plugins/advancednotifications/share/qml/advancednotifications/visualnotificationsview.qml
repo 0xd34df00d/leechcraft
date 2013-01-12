@@ -1,4 +1,5 @@
 import QtQuick 1.0
+import org.LC.common 1.0
 import "."
 
 Rectangle {
@@ -68,16 +69,19 @@ Rectangle {
                 anchors.leftMargin: 4
             }
 
-            TextButton {
+            ActionButton {
                 id: dismissButton
 
-                text: "×"
-                onClicked: { model.modelData.dismissEvent() }
+                actionIconURL: "image://ThemeIcons/dialog-close"
+                onTriggered: model.modelData.dismissEvent()
 
                 anchors.top: parent.top
                 anchors.topMargin: 2
                 anchors.right: parent.right
                 anchors.rightMargin: 5
+                width: 24
+                height: 24
+                transparentStyle: true
             }
 
             ListView {
