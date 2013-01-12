@@ -31,7 +31,6 @@ namespace LeechCraft
 namespace AdvancedNotifications
 {
 	class GeneralHandler;
-	class EnableSoundActionManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -46,8 +45,7 @@ namespace AdvancedNotifications
 		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		std::shared_ptr<GeneralHandler> GeneralHandler_;
-		EnableSoundActionManager *EnableSoundMgr_;
-		
+
 		QuarkComponent Component_;
 	public:
 		void Init (ICoreProxy_ptr);
@@ -64,7 +62,7 @@ namespace AdvancedNotifications
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
-		
+
 		QuarkComponents_t GetComponents () const;
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
