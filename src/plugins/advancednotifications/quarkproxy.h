@@ -24,11 +24,17 @@ namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
+	class ActionsModel;
+
 	class QuarkProxy : public QObject
 	{
 		Q_OBJECT
+
+		ActionsModel *ActionsModel_;
 	public:
 		QuarkProxy (QObject* = 0);
+	public slots:
+		QVariant getActionsModel () const;
 	};
 }
 }

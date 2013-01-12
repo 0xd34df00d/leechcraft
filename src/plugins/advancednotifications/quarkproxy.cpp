@@ -17,6 +17,9 @@
  **********************************************************************/
 
 #include "quarkproxy.h"
+#include <QStandardItemModel>
+#include "actionsmodel.h"
+#include "enablesoundactionmanager.h"
 
 namespace LeechCraft
 {
@@ -24,7 +27,15 @@ namespace AdvancedNotifications
 {
 	QuarkProxy::QuarkProxy (QObject *parent)
 	: QObject (parent)
+	, ActionsModel_ (new ActionsModel (this))
 	{
+		auto soundMgr = new EnableSoundActionManager (this);
+		ActionsModel_->AddAction (soundMgr->GetAction ());
+	}
+
+	QVariant QuarkProxy::getActionsModel () const
+	{
+		return QVariant::fromValue<QObject*> (ActionsModel_);
 	}
 }
 }
