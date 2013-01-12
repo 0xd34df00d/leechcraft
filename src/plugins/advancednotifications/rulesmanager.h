@@ -62,7 +62,10 @@ namespace AdvancedNotifications
 		void removeRule (const QModelIndex&);
 		void moveUp (const QModelIndex&);
 		void moveDown (const QModelIndex&);
+		void setRuleEnabled (int index, bool enabled);
 		void reset ();
+
+		QVariant getRulesModel () const;
 	private slots:
 		void handleItemChanged (QStandardItem*);
 	};

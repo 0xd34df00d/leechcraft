@@ -258,6 +258,13 @@ namespace AdvancedNotifications
 		SaveSettings ();
 	}
 
+	void RulesManager::setRuleEnabled (int idx, bool enabled)
+	{
+		Rules_ [idx].SetEnabled (enabled);
+		if (auto item = RulesModel_->item (idx))
+			item->setCheckState (enabled ? Qt::Checked : Qt::Unchecked);
+	}
+
 	void RulesManager::reset ()
 	{
 		Rules_.clear ();
@@ -266,6 +273,11 @@ namespace AdvancedNotifications
 		LoadDefaultRules ();
 		ResetModel ();
 		SaveSettings ();
+	}
+
+	QVariant RulesManager::getRulesModel () const
+	{
+		return QVariant::fromValue<QObject*> (RulesModel_);
 	}
 
 	void RulesManager::handleItemChanged (QStandardItem *item)
