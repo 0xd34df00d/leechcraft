@@ -89,8 +89,8 @@ namespace ChatHistory
 				"VALUES (:id, :account_id, :date, :direction, :message, :variant, :type);");
 
 		UsersForAccountGetter_ = QSqlQuery (*DB_);
-		UsersForAccountGetter_.prepare ("SELECT DISTINCT azoth_history.Id, EntryID FROM azoth_users, azoth_history "
-				"WHERE azoth_history.Id = azoth_users.Id AND AccountID = :account_id;");
+		UsersForAccountGetter_.prepare ("SELECT DISTINCT azoth_acc2users.UserId, EntryID FROM azoth_users, azoth_acc2users "
+				"WHERE azoth_acc2users.UserId = azoth_users.Id AND azoth_acc2users.AccountID = :account_id;");
 
 		Date2Pos_ = QSqlQuery (*DB_);
 		Date2Pos_.prepare ("SELECT COUNT(1) FROM azoth_history "
