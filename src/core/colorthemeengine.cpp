@@ -18,6 +18,7 @@
 
 #include "colorthemeengine.h"
 #include <algorithm>
+#include <map>
 #include <QFile>
 #include <QStringList>
 #include <QApplication>
@@ -85,8 +86,34 @@ namespace LeechCraft
 
 	namespace
 	{
+		QPalette::ColorRole ColorRoleFromStr (const QString& str)
+		{
+			static const std::map<QString, QPalette::ColorRole> map =
+			{
+				{ "Window", QPalette::Window },
+				{ "WindowText", QPalette::WindowText },
+				{ "BrightText", QPalette::BrightText },
+				{ "Base", QPalette::Base },
+				{ "AlternateBase", QPalette::AlternateBase },
+				{ "Text", QPalette::Text },
+				{ "ToolTipBase", QPalette::ToolTipBase },
+				{ "ToolTipText", QPalette::ToolTipText },
+				{ "Button", QPalette::Button },
+				{ "ButtonText", QPalette::ButtonText }
+			};
+			auto pres = map.find (str);
+			return pres == map.end () ? QPalette::Window : pres->second;
+		}
+
 		QColor ParseColor (const QVariant& var)
 		{
+			const auto& str = var.toString ();
+			if (str.startsWith ("Palette."))
+			{
+				const auto role = ColorRoleFromStr (str.mid (QString ("Palette.").size ()));
+				return QApplication::palette ().color (role);
+			}
+
 			const auto& elems = var.toStringList ();
 			if (elems.size () != 3)
 			{

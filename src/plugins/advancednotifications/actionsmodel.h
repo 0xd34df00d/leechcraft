@@ -16,10 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_ENABLESOUNDACTIONMANAGER_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_ENABLESOUNDACTIONMANAGER_H
-#include <QObject>
-#include <interfaces/iactionsexporter.h>
+#pragma once
+
+#include <QStandardItemModel>
 
 class QAction;
 
@@ -27,22 +26,25 @@ namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	class EnableSoundActionManager : public QObject
+	class ActionsModel : public QStandardItemModel
 	{
 		Q_OBJECT
 
-		QAction *EnableAction_;
+		QList<QAction*> Actions_;
 	public:
-		EnableSoundActionManager (QObject* = 0);
+		enum Roles
+		{
+			IconName = Qt::UserRole + 1,
+			IsActionChecked
+		};
 
-		QAction* GetAction () const;
+		ActionsModel (QObject*);
 
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+		void AddAction (QAction*);
+	public slots:
+		void triggerAction (int);
 	private slots:
-		void xsdPropChanged ();
-		void enableSounds (bool);
+		void handleActionToggled (bool);
 	};
 }
 }
-
-#endif

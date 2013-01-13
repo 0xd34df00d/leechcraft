@@ -9,9 +9,9 @@ HoveredBorderColor=255,255,255
 PressedBorderColor=0,0,0
 
 [Panel]
-TopColor=0,0,0
-BottomColor=0,0,0
-TextColor=170,170,170
+TopColor=Palette.Window
+BottomColor=Palette.Window
+TextColor=Palette.WindowText
 
 [TextBox]
 TopColor=5,5,5

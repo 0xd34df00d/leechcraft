@@ -1,4 +1,5 @@
 import QtQuick 1.0
+import org.LC.common 1.0
 import "."
 
 Rectangle {
@@ -8,8 +9,14 @@ Rectangle {
     smooth: true
     radius: 5
     gradient: Gradient {
-        GradientStop { position: 0.0; color: "#CF414141" }
-        GradientStop { position: 1.0; color: "#CF1A1A1A" }
+        GradientStop {
+            position: 0
+            color: colorProxy.color_TextView_TopColor
+        }
+        GradientStop {
+            position: 1
+            color: colorProxy.color_TextView_BottomColor
+        }
     }
 
     Component {
@@ -22,9 +29,17 @@ Rectangle {
             smooth: true
             radius: 5
             gradient: Gradient {
-                GradientStop { position: 0.0; color: "#DF3A3A3A" }
-                GradientStop { position: 1.0; color: "#DF101010" }
+                GradientStop {
+                    position: 0
+                    color: colorProxy.color_TextBox_TopColor
+                }
+                GradientStop {
+                    position: 1
+                    color: colorProxy.color_TextBox_BottomColor
+                }
             }
+            border.color: colorProxy.color_TextBox_BorderColor
+            border.width: 1
 
             Image {
                 id: eventPic
@@ -46,7 +61,7 @@ Rectangle {
                 width: parent.width - eventPic.width - eventPic.anchors.leftMargin - anchors.leftMargin - dismissButton.width - 10
 
                 text: extendedText
-                color: "lightgrey"
+                color: colorProxy.color_TextBox_TextColor
 
                 anchors.top: parent.top
                 anchors.topMargin: 2
@@ -54,16 +69,19 @@ Rectangle {
                 anchors.leftMargin: 4
             }
 
-            TextButton {
+            ActionButton {
                 id: dismissButton
 
-                text: "×"
-                onClicked: { model.modelData.dismissEvent() }
+                actionIconURL: "image://ThemeIcons/dialog-close"
+                onTriggered: model.modelData.dismissEvent()
 
                 anchors.top: parent.top
                 anchors.topMargin: 2
                 anchors.right: parent.right
                 anchors.rightMargin: 5
+                width: 24
+                height: 24
+                transparentStyle: true
             }
 
             ListView {

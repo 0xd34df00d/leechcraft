@@ -18,7 +18,6 @@
 
 #include "notificationruleswidget.h"
 #include <algorithm>
-#include <QSettings>
 #include <QStandardItemModel>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -32,46 +31,18 @@
 #include "matchconfigdialog.h"
 #include "typedmatchers.h"
 #include "core.h"
+#include "rulesmanager.h"
+#include "constants.h"
 
 namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	const QString CatIM = "org.LC.AdvNotifications.IM";
-	const QString TypeIMAttention = "org.LC.AdvNotifications.IM.AttentionDrawn";
-	const QString TypeIMIncFile = "org.LC.AdvNotifications.IM.IncomingFile";
-	const QString TypeIMIncMsg = "org.LC.AdvNotifications.IM.IncomingMessage";
-	const QString TypeIMMUCHighlight = "org.LC.AdvNotifications.IM.MUCHighlightMessage";
-	const QString TypeIMMUCInvite = "org.LC.AdvNotifications.IM.MUCInvitation";
-	const QString TypeIMMUCMsg = "org.LC.AdvNotifications.IM.MUCMessage";
-	const QString TypeIMStatusChange = "org.LC.AdvNotifications.IM.StatusChange";
-	const QString TypeIMSubscrGrant = "org.LC.AdvNotifications.IM.Subscr.Granted";
-	const QString TypeIMSubscrRevoke = "org.LC.AdvNotifications.IM.Subscr.Revoked";
-	const QString TypeIMSubscrRequest = "org.LC.AdvNotifications.IM.Subscr.Requested";
-	const QString TypeIMSubscrSub = "org.LC.AdvNotifications.IM.Subscr.Subscribed";
-	const QString TypeIMSubscrUnsub = "org.LC.AdvNotifications.IM.Subscr.Unsubscribed";
-
-	const QString CatOrganizer = "org.LC.AdvNotifications.Organizer";
-	const QString TypeOrganizerEventDue = "org.LC.AdvNotifications.Organizer.EventDue";
-
-	NotificationRulesWidget::NotificationRulesWidget (QWidget *parent)
+	NotificationRulesWidget::NotificationRulesWidget (RulesManager *rm, QWidget *parent)
 	: QWidget (parent)
-	, RulesModel_ (new QStandardItemModel (this))
+	, RM_ (rm)
 	, MatchesModel_ (new QStandardItemModel (this))
 	{
-		Cat2HR_ [CatIM] = tr ("Instant messaging");
-		Type2HR_ [TypeIMAttention] = tr ("Attention request");
-		Type2HR_ [TypeIMIncFile] = tr ("Incoming file transfer request");
-		Type2HR_ [TypeIMIncMsg] = tr ("Incoming chat message");
-		Type2HR_ [TypeIMMUCHighlight] = tr ("MUC highlight");
-		Type2HR_ [TypeIMMUCInvite] = tr ("MUC invitation");
-		Type2HR_ [TypeIMMUCMsg] = tr ("General MUC message");
-		Type2HR_ [TypeIMStatusChange] = tr ("Contact status change");
-		Type2HR_ [TypeIMSubscrGrant] = tr ("Authorization granted");
-		Type2HR_ [TypeIMSubscrRevoke] = tr ("Authorization revoked");
-		Type2HR_ [TypeIMSubscrRequest] = tr ("Authorization requested");
-		Type2HR_ [TypeIMSubscrSub] = tr ("Contact subscribed");
-		Type2HR_ [TypeIMSubscrUnsub] = tr ("Contact unsubscribed");
 		Cat2Types_ [CatIM] << TypeIMAttention
 				<< TypeIMIncFile
 				<< TypeIMIncMsg
@@ -85,12 +56,10 @@ namespace AdvancedNotifications
 				<< TypeIMSubscrSub
 				<< TypeIMSubscrUnsub;
 
-		Cat2HR_ [CatOrganizer] = tr ("Organizer");
-		Type2HR_ [TypeOrganizerEventDue] = tr ("Event is due");
 		Cat2Types_ [CatOrganizer] << TypeOrganizerEventDue;
 
 		Ui_.setupUi (this);
-		Ui_.RulesTree_->setModel (RulesModel_);
+		Ui_.RulesTree_->setModel (RM_->GetRulesModel ());
 		Ui_.MatchesTree_->setModel (MatchesModel_);
 
 		connect (Ui_.RulesTree_->selectionModel (),
@@ -98,130 +67,14 @@ namespace AdvancedNotifications
 				this,
 				SLOT (handleItemSelected (QModelIndex)));
 
-		connect (RulesModel_,
-				SIGNAL (itemChanged (QStandardItem*)),
-				this,
-				SLOT (handleItemChanged (QStandardItem*)));
-
-		Q_FOREACH (const QString& cat, Cat2HR_.keys ())
-			Ui_.EventCat_->addItem (Cat2HR_ [cat], cat);
+		const auto& cat2hr = RM_->GetCategory2HR ();
+		for (const QString& cat : cat2hr.keys ())
+			Ui_.EventCat_->addItem (cat2hr [cat], cat);
 		on_EventCat__activated (0);
-
-		LoadSettings ();
 
 		XmlSettingsManager::Instance ().RegisterObject ("AudioTheme",
 				this, "resetAudioFileBox");
 		resetAudioFileBox ();
-	}
-
-	QList<NotificationRule> NotificationRulesWidget::GetRules () const
-	{
-		return Rules_;
-	}
-
-	void NotificationRulesWidget::SetRuleEnabled (const NotificationRule& rule, bool enabled)
-	{
-		const int idx = Rules_.indexOf (rule);
-		if (idx == -1)
-			return;
-
-		Rules_ [idx].SetEnabled (enabled);
-		QStandardItem *item = RulesModel_->item (idx);
-		if (item)
-			item->setCheckState (enabled ? Qt::Checked : Qt::Unchecked);
-	}
-
-	void NotificationRulesWidget::LoadDefaultRules (int version)
-	{
-		if (version <= 0)
-		{
-			NotificationRule chatMsg (tr ("Incoming chat messages"), CatIM,
-					QStringList (TypeIMIncMsg));
-			chatMsg.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint);
-			chatMsg.SetAudioParams (AudioParams ("im-incoming-message"));
-			Rules_ << chatMsg;
-
-			NotificationRule mucHigh (tr ("MUC highlights"), CatIM,
-					QStringList (TypeIMMUCHighlight));
-			mucHigh.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint);
-			mucHigh.SetAudioParams (AudioParams ("im-muc-highlight"));
-			Rules_ << mucHigh;
-
-			NotificationRule mucInv (tr ("MUC invitations"), CatIM,
-					QStringList (TypeIMMUCInvite));
-			mucInv.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint);
-			mucInv.SetAudioParams (AudioParams ("im-attention"));
-			Rules_ << mucInv;
-
-			NotificationRule incFile (tr ("Incoming file transfers"), CatIM,
-					QStringList (TypeIMIncFile));
-			incFile.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint);
-			Rules_ << incFile;
-
-			NotificationRule subscrReq (tr ("Subscription requests"), CatIM,
-					QStringList (TypeIMSubscrRequest));
-			subscrReq.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint);
-			subscrReq.SetAudioParams (AudioParams ("im-auth-requested"));
-			Rules_ << subscrReq;
-
-			NotificationRule subscrChanges (tr ("Subscription changes"), CatIM,
-					QStringList (TypeIMSubscrRevoke)
-						<< TypeIMSubscrGrant
-						<< TypeIMSubscrSub
-						<< TypeIMSubscrUnsub);
-			subscrChanges.SetMethods (NMVisual | NMTray);
-			Rules_ << subscrChanges;
-
-			NotificationRule attentionDrawn (tr ("Attention requests"), CatIM,
-					QStringList (TypeIMAttention));
-			attentionDrawn.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint);
-			attentionDrawn.SetAudioParams (AudioParams ("im-attention"));
-			Rules_ << attentionDrawn;
-		}
-
-		if (version == -1 || version == 1)
-		{
-			NotificationRule eventDue (tr ("Event is due"), CatOrganizer,
-					QStringList (TypeOrganizerEventDue));
-			eventDue.SetMethods (NMVisual | NMTray | NMAudio);
-			eventDue.SetAudioParams (AudioParams ("org-event-due"));
-			Rules_ << eventDue;
-		}
-	}
-
-	void NotificationRulesWidget::LoadSettings ()
-	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_AdvancedNotifications");
-		settings.beginGroup ("rules");
-		Rules_ = settings.value ("RulesList").value<QList<NotificationRule>> ();
-		int rulesVersion = settings.value ("DefaultRulesVersion", 1).toInt ();
-
-		const int currentDefVersion = 2;
-		if (Rules_.isEmpty ())
-			LoadDefaultRules (0);
-
-		const bool shouldSave = rulesVersion < currentDefVersion;
-		while (rulesVersion < currentDefVersion)
-			LoadDefaultRules (rulesVersion++);
-		if (shouldSave)
-			SaveSettings ();
-
-		settings.setValue ("DefaultRulesVersion", currentDefVersion);
-		settings.endGroup ();
-
-		ResetModel ();
-	}
-
-	void NotificationRulesWidget::ResetModel ()
-	{
-		RulesModel_->clear ();
-		RulesModel_->setHorizontalHeaderLabels (QStringList (tr ("Name"))
-				<< tr ("Category")
-				<< tr ("Type"));
-
-		Q_FOREACH (const NotificationRule& rule, Rules_)
-			RulesModel_->appendRow (RuleToRow (rule));
 	}
 
 	void NotificationRulesWidget::ResetMatchesModel ()
@@ -282,29 +135,10 @@ namespace AdvancedNotifications
 		rule.SetCmdParams (CmdParams (Ui_.CommandLineEdit_->text ().simplified (), cmdArgs));
 
 		const QModelIndex& curIdx = Ui_.RulesTree_->currentIndex ();
-		QStandardItem *item = RulesModel_->itemFromIndex (curIdx.sibling (curIdx.row (), 0));
-		rule.SetEnabled (item ? item->checkState () == Qt::Checked : true);
-
+		rule.SetEnabled (curIdx.sibling (curIdx.row (), 0).data (Qt::CheckStateRole) == Qt::Checked);
 		rule.SetSingleShot (Ui_.RuleSingleShot_->checkState () == Qt::Checked);
 
 		return rule;
-	}
-
-	QList<QStandardItem*> NotificationRulesWidget::RuleToRow (const NotificationRule& rule) const
-	{
-		QStringList hrTypes;
-		Q_FOREACH (const QString& type, rule.GetTypes ())
-			hrTypes << Type2HR_ [type];
-
-		QList<QStandardItem*> items;
-		items << new QStandardItem (rule.GetName ());
-		items << new QStandardItem (Cat2HR_ [rule.GetCategory ()]);
-		items << new QStandardItem (hrTypes.join ("; "));
-
-		items.first ()->setCheckable (true);
-		items.first ()->setCheckState (rule.IsEnabled () ? Qt::Checked : Qt::Unchecked);
-
-		return items;
 	}
 
 	QList<QStandardItem*> NotificationRulesWidget::MatchToRow (const FieldMatch& match) const
@@ -339,22 +173,13 @@ namespace AdvancedNotifications
 		return items;
 	}
 
-	void NotificationRulesWidget::SaveSettings () const
-	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_AdvancedNotifications");
-		settings.beginGroup ("rules");
-		settings.setValue ("RulesList", QVariant::fromValue<QList<NotificationRule>> (Rules_));
-		settings.endGroup ();
-	}
-
 	void NotificationRulesWidget::handleItemSelected (const QModelIndex& index)
 	{
 		resetAudioFileBox ();
 		Ui_.CommandArgsTree_->clear ();
 		Ui_.CommandLineEdit_->setText (QString ());
 
-		const NotificationRule& rule = Rules_.value (index.row ());
+		const NotificationRule& rule = RM_->GetRulesList ().value (index.row ());
 
 		const int catIdx = Ui_.EventCat_->findData (rule.GetCategory ());
 		Ui_.EventCat_->setCurrentIndex (std::max (catIdx, 0));
@@ -418,27 +243,9 @@ namespace AdvancedNotifications
 					Qt::Unchecked);
 	}
 
-	void NotificationRulesWidget::handleItemChanged (QStandardItem *item)
-	{
-		if (item->column ())
-			return;
-
-		const int idx = item->row ();
-		const bool newState = item->checkState () == Qt::Checked;
-
-		if (newState == Rules_.at (idx).IsEnabled () ||
-				Rules_.at (idx).IsNull ())
-			return;
-
-		Rules_ [idx].SetEnabled (newState);
-
-		SaveSettings ();
-	}
-
 	void NotificationRulesWidget::on_AddRule__released ()
 	{
-		Rules_.prepend (NotificationRule ());
-		RulesModel_->insertRow (0, RuleToRow (NotificationRule ()));
+		RM_->prependRule ();
 	}
 
 	void NotificationRulesWidget::on_UpdateRule__released ()
@@ -447,43 +254,17 @@ namespace AdvancedNotifications
 		if (!index.isValid ())
 			return;
 
-		const NotificationRule& rule = GetRuleFromUI ();
-		if (rule.IsNull ())
-			return;
-
-		const int row = index.row ();
-		Rules_ [row] = rule;
-		int i = 0;
-		Q_FOREACH (QStandardItem *item, RuleToRow (rule))
-			RulesModel_->setItem (row, i++, item);
-
-		SaveSettings ();
+		RM_->UpdateRule (index, GetRuleFromUI ());
 	}
 
 	void NotificationRulesWidget::on_MoveRuleUp__released ()
 	{
-		const QModelIndex& index = Ui_.RulesTree_->currentIndex ();
-		const int row = index.row ();
-		if (row < 1)
-			return;
-
-		std::swap (Rules_ [row - 1], Rules_ [row]);
-		RulesModel_->insertRow (row, RulesModel_->takeRow (row - 1));
-
-		SaveSettings ();
+		RM_->moveUp (Ui_.RulesTree_->currentIndex ());
 	}
 
 	void NotificationRulesWidget::on_MoveRuleDown__released ()
 	{
-		const QModelIndex& index = Ui_.RulesTree_->currentIndex ();
-		const int row = index.row () + 1;
-		if (row < 0 || row >= RulesModel_->rowCount ())
-			return;
-
-		std::swap (Rules_ [row - 1], Rules_ [row]);
-		RulesModel_->insertRow (row - 1, RulesModel_->takeRow (row));
-
-		SaveSettings ();
+		RM_->moveDown (Ui_.RulesTree_->currentIndex ());
 	}
 
 	void NotificationRulesWidget::on_RemoveRule__released ()
@@ -492,10 +273,7 @@ namespace AdvancedNotifications
 		if (!index.isValid ())
 			return;
 
-		RulesModel_->removeRow (index.row ());
-		Rules_.removeAt (index.row ());
-
-		SaveSettings ();
+		RM_->removeRule (index);
 	}
 
 	void NotificationRulesWidget::on_DefaultRules__released ()
@@ -507,12 +285,7 @@ namespace AdvancedNotifications
 					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
-		Rules_.clear ();
-		RulesModel_->clear ();
-
-		LoadDefaultRules ();
-		ResetModel ();
-		SaveSettings ();
+		RM_->reset ();
 	}
 
 	void NotificationRulesWidget::on_AddMatch__released ()
@@ -541,7 +314,7 @@ namespace AdvancedNotifications
 		const FieldMatch& match = dia.GetFieldMatch ();
 		Matches_ [row] = match;
 		int i = 0;
-		Q_FOREACH (QStandardItem *item, MatchToRow (match))
+		for (QStandardItem *item : MatchToRow (match))
 			MatchesModel_->setItem (row, i++, item);
 	}
 
@@ -560,9 +333,9 @@ namespace AdvancedNotifications
 		const QString& catId = Ui_.EventCat_->itemData (idx).toString ();
 		Ui_.EventTypes_->clear ();
 
-		Q_FOREACH (const QString& type, Cat2Types_ [catId])
+		for (const QString& type : Cat2Types_ [catId])
 		{
-			const QString& hr = Type2HR_ [type];
+			const QString& hr = RM_->GetType2HR () [type];
 			QTreeWidgetItem *item = new QTreeWidgetItem (QStringList (hr));
 			item->setData (0, Qt::UserRole, type);
 			item->setCheckState (0, Qt::Unchecked);
@@ -633,7 +406,6 @@ namespace AdvancedNotifications
 			return;
 
 		new QTreeWidgetItem (Ui_.CommandArgsTree_, QStringList (text));
-		SaveSettings ();
 	}
 
 	void NotificationRulesWidget::on_ModifyArgument__released()
@@ -652,8 +424,6 @@ namespace AdvancedNotifications
 			return;
 
 		item->setText (0, newText);
-
-		SaveSettings ();
 	}
 
 	void NotificationRulesWidget::on_RemoveArgument__released()
@@ -663,8 +433,6 @@ namespace AdvancedNotifications
 			return;
 
 		delete Ui_.CommandArgsTree_->takeTopLevelItem (index.row ());
-
-		SaveSettings ();
 	}
 
 	void NotificationRulesWidget::resetAudioFileBox ()

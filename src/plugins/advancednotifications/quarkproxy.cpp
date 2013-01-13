@@ -16,33 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_ENABLESOUNDACTIONMANAGER_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_ENABLESOUNDACTIONMANAGER_H
-#include <QObject>
-#include <interfaces/iactionsexporter.h>
-
-class QAction;
+#include "quarkproxy.h"
+#include <QStandardItemModel>
+#include "actionsmodel.h"
+#include "enablesoundactionmanager.h"
 
 namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	class EnableSoundActionManager : public QObject
+	QuarkProxy::QuarkProxy (QObject *parent)
+	: QObject (parent)
+	, ActionsModel_ (new ActionsModel (this))
 	{
-		Q_OBJECT
+		auto soundMgr = new EnableSoundActionManager (this);
+		ActionsModel_->AddAction (soundMgr->GetAction ());
+	}
 
-		QAction *EnableAction_;
-	public:
-		EnableSoundActionManager (QObject* = 0);
-
-		QAction* GetAction () const;
-
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
-	private slots:
-		void xsdPropChanged ();
-		void enableSounds (bool);
-	};
+	QVariant QuarkProxy::getActionsModel () const
+	{
+		return QVariant::fromValue<QObject*> (ActionsModel_);
+	}
 }
 }
-
-#endif

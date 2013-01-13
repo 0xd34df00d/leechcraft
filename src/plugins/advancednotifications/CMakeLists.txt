@@ -26,6 +26,12 @@ SET (SRCS
 	cmdrunhandler.cpp
 	enablesoundactionmanager.cpp
 	wmurgenthandler.cpp
+	rulesmanager.cpp
+	quarkproxy.cpp
+	actionsmodel.cpp
+	qml/visualnotificationsview.cpp
+	qml/eventproxyobject.cpp
+	qml/actionsproxyobject.cpp
 	)
 SET (HEADERS
 	advancednotifications.h
@@ -44,6 +50,12 @@ SET (HEADERS
 	cmdrunhandler.h
 	enablesoundactionmanager.h
 	wmurgenthandler.h
+	rulesmanager.h
+	quarkproxy.h
+	actionsmodel.h
+	qml/visualnotificationsview.h
+	qml/eventproxyobject.h
+	qml/actionsproxyobject.h
 	)
 SET (FORMS
 	notificationruleswidget.ui
@@ -52,20 +64,7 @@ SET (FORMS
 	stringlikematcherconfigwidget.ui
 	)
 
-IF (QT_QTDECLARATIVE_FOUND)
-	ADD_DEFINITIONS(-DHAVE_QML=1)
-
-	SET (SRCS ${SRCS}
-		qml/visualnotificationsview.cpp
-		qml/eventproxyobject.cpp
-		qml/actionsproxyobject.cpp
-		)
-	SET (HEADERS ${HEADERS}
-		qml/visualnotificationsview.h
-		qml/eventproxyobject.h
-		qml/actionsproxyobject.h
-		)
-ENDIF (QT_QTDECLARATIVE_FOUND)
+ADD_DEFINITIONS(-DHAVE_QML=1)
 
 SET (RESOURCES advancednotificationsresources.qrc)
 

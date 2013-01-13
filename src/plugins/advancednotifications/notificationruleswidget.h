@@ -30,39 +30,29 @@ namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
+	class RulesManager;
+
 	class NotificationRulesWidget : public QWidget
 	{
 		Q_OBJECT
 
 		Ui::NotificationRulesWidget Ui_;
 
-		QMap<QString, QString> Cat2HR_;
-		QMap<QString, QString> Type2HR_;
-		QMap<QString, QStringList> Cat2Types_;
+		RulesManager *RM_;
 
-		QList<NotificationRule> Rules_;
-		QStandardItemModel *RulesModel_;
+		QMap<QString, QStringList> Cat2Types_;
 
 		FieldMatches_t Matches_;
 		QStandardItemModel *MatchesModel_;
 	public:
-		NotificationRulesWidget (QWidget* = 0);
-
-		QList<NotificationRule> GetRules () const;
-		void SetRuleEnabled (const NotificationRule&, bool);
+		NotificationRulesWidget (RulesManager*, QWidget* = 0);
 	private:
-		void LoadDefaultRules (int = -1);
-		void LoadSettings ();
-		void ResetModel ();
 		void ResetMatchesModel ();
 		QStringList GetSelectedTypes () const;
 		NotificationRule GetRuleFromUI () const;
-		QList<QStandardItem*> RuleToRow (const NotificationRule&) const;
 		QList<QStandardItem*> MatchToRow (const FieldMatch&) const;
-		void SaveSettings () const;
 	private slots:
 		void handleItemSelected (const QModelIndex&);
-		void handleItemChanged (QStandardItem*);
 
 		void on_AddRule__released ();
 		void on_UpdateRule__released ();

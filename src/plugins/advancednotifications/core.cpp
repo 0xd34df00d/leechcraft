@@ -20,6 +20,7 @@
 #include <util/resourceloader.h>
 #include "notificationruleswidget.h"
 #include "typedmatchers.h"
+#include "rulesmanager.h"
 
 namespace LeechCraft
 {
@@ -38,7 +39,8 @@ namespace AdvancedNotifications
 	}
 
 	Core::Core ()
-	: NRW_ (0)
+	: RulesManager_ (new RulesManager (this))
+	, NRW_ (0)
 	, AudioThemeLoader_ (new Util::ResourceLoader ("sounds/"))
 	{
 		AudioThemeLoader_->AddLocalPrefix ();
@@ -59,6 +61,7 @@ namespace AdvancedNotifications
 	void Core::Release ()
 	{
 		AudioThemeLoader_.reset ();
+		delete RulesManager_;
 	}
 
 	ICoreProxy_ptr Core::GetProxy () const
@@ -71,10 +74,15 @@ namespace AdvancedNotifications
 		Proxy_ = proxy;
 	}
 
+	RulesManager* Core::GetRulesManager () const
+	{
+		return RulesManager_;
+	}
+
 	NotificationRulesWidget* Core::GetNRW ()
 	{
 		if (!NRW_)
-			NRW_ = new NotificationRulesWidget;
+			NRW_ = new NotificationRulesWidget (RulesManager_);
 		return NRW_;
 	}
 
@@ -89,7 +97,7 @@ namespace AdvancedNotifications
 
 		QList<NotificationRule> result;
 
-		Q_FOREACH (const NotificationRule& rule, NRW_->GetRules ())
+		for (const NotificationRule& rule : RulesManager_->GetRulesList ())
 		{
 			if (!rule.IsEnabled ())
 				continue;
@@ -113,7 +121,7 @@ namespace AdvancedNotifications
 				continue;
 
 			if (rule.IsSingleShot ())
-				NRW_->SetRuleEnabled (rule, false);
+				RulesManager_->SetRuleEnabled (rule, false);
 
 			result << rule;
 			break;
