@@ -210,7 +210,14 @@ namespace ChatHistory
 					"Id INTEGER UNIQUE ON CONFLICT REPLACE REFERENCES azoth_users (Id), "
 					"VisibleName TEXT "
 					");";
+		table2query ["azoth_acc2users"] = "CREATE TABLE azoth_acc2users ("
+					"AccountId INTEGER, "
+					"UserId INTEGER, "
+					"UNIQUE (AccountId, UserId)"
+					");";
 		const QStringList& tables = DB_->tables ();
+		const bool hadAcc2User = tables.contains ("azoth_acc2users");
+
 		Q_FOREACH (const QString& table, table2query.keys ())
 		{
 			if (tables.contains (table))
@@ -222,6 +229,17 @@ namespace ChatHistory
 				Util::DBLock::DumpError (query);
 				throw std::runtime_error ("Unable to create tables for Azoth history");
 			}
+		}
+
+		if (!hadAcc2User)
+		{
+			qDebug () << Q_FUNC_INFO << "upgrading to acc2users table";
+			if (!query.exec ("INSERT INTO azoth_acc2users (AccountId, UserId) SELECT DISTINCT AccountId, Id FROM azoth_history;"))
+			{
+				Util::DBLock::DumpError (query);
+				query.exec ("DROP TABLE azoth_acc2users");
+			}
+			qDebug () << "done";
 		}
 
 		lock.Good ();
