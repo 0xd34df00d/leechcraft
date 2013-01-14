@@ -64,10 +64,6 @@ namespace LMP
 				SIGNAL (gotArtistImage (QString, QUrl)),
 				this,
 				SIGNAL (gotArtistImage (QString, QUrl)));
-		connect (Manager_,
-				SIGNAL (previewRequested (QString, QString, int)),
-				Core::Instance ().GetPreviewHandler (),
-				SLOT (previewTrack (QString, QString, int)));
 	}
 
 	void BioWidget::SetCurrentArtist (const QString& artist)
