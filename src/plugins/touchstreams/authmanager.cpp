@@ -100,6 +100,7 @@ namespace TouchStreams
 			return;
 
 		RequestURL (AuthURL);
+		IsRequesting_ = true;
 	}
 
 	bool AuthManager::CheckIsBlank (QUrl location)
