@@ -483,7 +483,6 @@ namespace Aggregator
 		if (allCategories.size ())
 		{
 			Impl_->ItemCategorySelector_->setPossibleSelections (allCategories);
-			Impl_->ItemCategorySelector_->selectAll ();
 			if (XmlSettingsManager::Instance ()->
 					property ("ShowCategorySelector").toBool ())
 			Impl_->ItemCategorySelector_->show ();
