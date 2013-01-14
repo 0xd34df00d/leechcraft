@@ -127,7 +127,7 @@ namespace AdvancedNotifications
 
 	QuarkComponents_t Plugin::GetComponents () const
 	{
-		return { Component_ };
+		return QuarkComponents_t () << Component_;
 	}
 }
 }
