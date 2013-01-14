@@ -104,7 +104,7 @@ namespace Monocle
 
 		QPoint GetViewportCenter () const;
 		int GetCurrentPage () const;
-		void SetCurrentPage (int);
+		void SetCurrentPage (int, bool immediate = false);
 		void Relayout (double);
 
 		void ClearViewActions ();

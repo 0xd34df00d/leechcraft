@@ -494,7 +494,7 @@ namespace Monocle
 		return pos == Pages_.end () ? -1 : std::distance (Pages_.begin (), pos);
 	}
 
-	void DocumentTab::SetCurrentPage (int idx)
+	void DocumentTab::SetCurrentPage (int idx, bool immediate)
 	{
 		if (idx < 0 || idx >= Pages_.size ())
 			return;
@@ -507,6 +507,10 @@ namespace Monocle
 				Ui_.PagesView_->viewport ()->contentsRect ().height ());
 		int yCenter = pos.y () + visibleHeight / 2;
 
+		if (immediate)
+			Ui_.PagesView_->centerOn (xCenter, yCenter);
+		else
+			Ui_.PagesView_->SmoothCenterOn (xCenter, yCenter);
 	}
 
 	void DocumentTab::Relayout (double scale)
