@@ -871,7 +871,9 @@ namespace Monocle
 
 	void DocumentTab::handleScaleChosen (int)
 	{
+		const auto page = GetCurrentPage ();
 		Relayout (GetCurrentScale ());
+		SetCurrentPage (page);
 
 		emit tabRecoverDataChanged ();
 	}
