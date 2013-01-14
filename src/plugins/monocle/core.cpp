@@ -22,6 +22,7 @@
 #include "pixmapcachemanager.h"
 #include "recentlyopenedmanager.h"
 #include "defaultbackendmanager.h"
+#include "docstatemanager.h"
 
 namespace LeechCraft
 {
@@ -31,6 +32,7 @@ namespace Monocle
 	: CacheManager_ (new PixmapCacheManager (this))
 	, ROManager_ (new RecentlyOpenedManager (this))
 	, DefaultBackendManager_ (new DefaultBackendManager (this))
+	, DocStateManager_ (new DocStateManager (this))
 	{
 	}
 
@@ -102,6 +104,11 @@ namespace Monocle
 	DefaultBackendManager* Core::GetDefaultBackendManager () const
 	{
 		return DefaultBackendManager_;
+	}
+
+	DocStateManager* Core::GetDocStateManager () const
+	{
+		return DocStateManager_;
 	}
 }
 }

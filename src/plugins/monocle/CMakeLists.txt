@@ -23,6 +23,7 @@ SET (SRCS
 	recentlyopenedmanager.cpp
 	choosebackenddialog.cpp
 	defaultbackendmanager.cpp
+	docstatemanager.cpp
 	)
 SET (FORMS
 	documenttab.ui

@@ -19,46 +19,29 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/monocle/ibackendplugin.h>
-#include <interfaces/core/icoreproxy.h>
+#include <QDir>
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-	class RecentlyOpenedManager;
-	class PixmapCacheManager;
-	class DefaultBackendManager;
-	class DocStateManager;
+	enum class LayoutMode;
 
-	class Core : public QObject
+	class DocStateManager : public QObject
 	{
-		Q_OBJECT
-
-		ICoreProxy_ptr Proxy_;
-		QList<QObject*> Backends_;
-
-		PixmapCacheManager *CacheManager_;
-		RecentlyOpenedManager *ROManager_;
-		DefaultBackendManager *DefaultBackendManager_;
-		DocStateManager *DocStateManager_;
-
-		Core ();
+		QDir DocDir_;
 	public:
-		static Core& Instance ();
+		struct State
+		{
+			int CurrentPage_;
+			LayoutMode Lay_;
+			double CurrentScale_;
+		};
 
-		void SetProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetProxy () const;
+		DocStateManager (QObject* = 0);
 
-		void AddPlugin (QObject*);
-
-		bool CanLoadDocument (const QString&);
-		IDocument_ptr LoadDocument (const QString&);
-
-		PixmapCacheManager* GetPixmapCacheManager () const;
-		RecentlyOpenedManager* GetROManager () const;
-		DefaultBackendManager* GetDefaultBackendManager () const;
-		DocStateManager* GetDocStateManager () const;
+		void SetState (const QString&, const State&);
+		State GetState (const QString&) const;
 	};
 }
 }
