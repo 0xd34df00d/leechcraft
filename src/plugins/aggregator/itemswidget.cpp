@@ -137,11 +137,6 @@ namespace Aggregator
 				this,
 				SLOT (updateItemsFilter ()));
 
-		connect (this,
-				SIGNAL (currentChannelChanged (const QModelIndex&)),
-				this,
-				SLOT (channelChanged (const QModelIndex&)));
-
 		QHeaderView *itemsHeader = Impl_->Ui_.Items_->header ();
 		QFontMetrics fm = fontMetrics ();
 		int dateTimeSize = fm.width (QDateTime::currentDateTime ()
@@ -460,8 +455,7 @@ namespace Aggregator
 		Impl_->LastSelectedChannel_ = si;
 
 		QModelIndex index = si;
-		QSortFilterProxyModel *f = Impl_->ChannelsFilter_;
-		if (f)
+		if (QSortFilterProxyModel *f = Impl_->ChannelsFilter_)
 			index = f->mapToSource (index);
 
 		try
@@ -475,7 +469,31 @@ namespace Aggregator
 			Impl_->LastSelectedChannel_ = QModelIndex ();
 			Impl_->CurrentItemsModel_->Reset (-1);
 		}
-		emit currentChannelChanged (index);
+
+		Impl_->Ui_.Items_->scrollToTop ();
+		currentItemChanged ();
+
+		if (!isVisible ())
+			return;
+
+		const auto& items = Impl_->CurrentItemsModel_->GetAllItems ();
+		const auto& allCategories = Core::Instance ().GetCategories (items);
+		Impl_->ItemsFilterModel_->categorySelectionChanged (allCategories);
+
+		if (allCategories.size ())
+		{
+			Impl_->ItemCategorySelector_->setPossibleSelections (allCategories);
+			Impl_->ItemCategorySelector_->selectAll ();
+			if (XmlSettingsManager::Instance ()->
+					property ("ShowCategorySelector").toBool ())
+			Impl_->ItemCategorySelector_->show ();
+			RestoreSplitter ();
+		}
+		else
+		{
+			Impl_->ItemCategorySelector_->setPossibleSelections (QStringList ());
+			Impl_->ItemCategorySelector_->hide ();
+		}
 	}
 
 	void ItemsWidget::ConstructBrowser ()
@@ -1047,33 +1065,6 @@ namespace Aggregator
 		{
 			SetMergeMode (false);
 			SetMergeMode (true);
-		}
-	}
-
-	void ItemsWidget::channelChanged (const QModelIndex& mapped)
-	{
-		Impl_->Ui_.Items_->scrollToTop ();
-		currentItemChanged ();
-
-		if (!isVisible ())
-			return;
-
-		QStringList allCategories = Core::Instance ().GetCategories (mapped);
-		Impl_->ItemsFilterModel_->categorySelectionChanged (allCategories);
-
-		if (allCategories.size ())
-		{
-			Impl_->ItemCategorySelector_->setPossibleSelections (allCategories);
-			Impl_->ItemCategorySelector_->selectAll ();
-			if (XmlSettingsManager::Instance ()->
-					property ("ShowCategorySelector").toBool ())
-			Impl_->ItemCategorySelector_->show ();
-			RestoreSplitter ();
-		}
-		else
-		{
-			Impl_->ItemCategorySelector_->setPossibleSelections (QStringList ());
-			Impl_->ItemCategorySelector_->hide ();
 		}
 	}
 

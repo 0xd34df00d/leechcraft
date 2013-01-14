@@ -717,7 +717,11 @@ namespace Aggregator
 
 		items_shorts_t items;
 		StorageBackend_->GetItems (items, cs.ChannelID_);
+		return GetCategories (items);
+	}
 
+	QStringList Core::GetCategories (const items_shorts_t& items) const
+	{
 		QStringList result;
 		QSet<QString> unique;
 		for (const auto& item : items)

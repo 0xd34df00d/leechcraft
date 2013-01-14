@@ -81,6 +81,11 @@ namespace Aggregator
 		return CurrentItems_ [index.row ()];
 	}
 
+	const items_shorts_t& ItemsListModel::GetAllItems () const
+	{
+		return CurrentItems_;
+	}
+
 	bool ItemsListModel::IsItemRead (int item) const
 	{
 		return !CurrentItems_ [item].Unread_;
@@ -98,8 +103,7 @@ namespace Aggregator
 		CurrentItems_.clear ();
 		if (channel != static_cast<IDType_t> (-1))
 		{
-			Core::Instance ().GetStorageBackend ()->
-				GetItems (CurrentItems_, channel);
+			Core::Instance ().GetStorageBackend ()->GetItems (CurrentItems_, channel);
 			if (!CurrentItems_.empty ())
 				MayBeRichText_ = Qt::mightBeRichText (CurrentItems_.at (0).Title_);
 		}
