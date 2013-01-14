@@ -146,6 +146,8 @@ namespace Monocle
 		void handleCopyAsImage ();
 		void handleCopyAsText ();
 
+		void showDocInfo ();
+
 		void delayedCenterOn (const QPoint&);
 
 		void handleScaleChosen (int);

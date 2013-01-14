@@ -46,6 +46,7 @@
 #include "recentlyopenedmanager.h"
 #include "common.h"
 #include "docstatemanager.h"
+#include "docinfodialog.h"
 
 namespace LeechCraft
 {
@@ -438,6 +439,16 @@ namespace Monocle
 				this,
 				SLOT (setSelectionMode (bool)));
 		Toolbar_->addAction (selectModeAction);
+
+		Toolbar_->addSeparator ();
+
+		auto infoAction = new QAction (tr ("Document info..."), this);
+		infoAction->setProperty ("ActionIcon", "dialog-information");
+		connect (infoAction,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (showDocInfo ()));
+		Toolbar_->addAction (infoAction);
 	}
 
 	double DocumentTab::GetCurrentScale () const
@@ -934,6 +945,16 @@ namespace Monocle
 
 		const auto& text = ihtc->GetTextContent (pageItem->GetPageNum (), bounding);
 		QApplication::clipboard ()->setText (text);
+	}
+
+	void DocumentTab::showDocInfo ()
+	{
+		if (!CurrentDoc_)
+			return;
+
+		auto dia = new DocInfoDialog (CurrentDocPath_, CurrentDoc_->GetDocumentInfo (), this);
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->show ();
 	}
 
 	void DocumentTab::delayedCenterOn (const QPoint& point)
