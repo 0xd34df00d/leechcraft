@@ -520,7 +520,9 @@ namespace Monocle
 		if (!CurrentDoc_)
 			return;
 
-		Q_FOREACH (auto item, Pages_)
+		const auto pageWas = GetCurrentPage ();
+
+		for (auto item : Pages_)
 			item->SetScale (scale, scale);
 
 		for (int i = 0, pagesCount = Pages_.size (); i < pagesCount; ++i)
@@ -545,7 +547,8 @@ namespace Monocle
 			Onload_.Num_ = -1;
 		}
 		else
-			SetCurrentPage (std::max (GetCurrentPage (), 0));
+			SetCurrentPage (std::max (pageWas, 0), true);
+
 		updateNumLabel ();
 	}
 
@@ -877,9 +880,7 @@ namespace Monocle
 
 	void DocumentTab::handleScaleChosen (int)
 	{
-		const auto page = GetCurrentPage ();
 		Relayout (GetCurrentScale ());
-		SetCurrentPage (page);
 
 		emit tabRecoverDataChanged ();
 	}
