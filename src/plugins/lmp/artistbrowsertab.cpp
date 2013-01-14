@@ -19,6 +19,7 @@
 #include "artistbrowsertab.h"
 #include <interfaces/media/iartistbiofetcher.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <util/gui/clearlineeditaddon.h>
 #include "similarviewmanager.h"
 #include "bioviewmanager.h"
 #include "core.h"
@@ -41,6 +42,8 @@ namespace LMP
 
 		BioMgr_->InitWithSource ();
 		SimilarMgr_->InitWithSource ();
+
+		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.ArtistNameEdit_);
 	}
 
 	TabClassInfo ArtistBrowserTab::GetTabClassInfo () const
