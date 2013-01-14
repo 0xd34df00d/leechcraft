@@ -45,6 +45,7 @@
 #include "presenterwidget.h"
 #include "recentlyopenedmanager.h"
 #include "common.h"
+#include "docstatemanager.h"
 
 namespace LeechCraft
 {
@@ -63,6 +64,7 @@ namespace Monocle
 	, LayMode_ (LayoutMode::OnePage)
 	, MouseMode_ (MouseMode::Move)
 	, RelayoutScheduled_ (true)
+	, SaveStateScheduled_ (false)
 	, Onload_ ({ -1, 0, 0 })
 	{
 		Ui_.setupUi (this);
@@ -206,6 +208,9 @@ namespace Monocle
 
 	bool DocumentTab::SetDoc (const QString& path)
 	{
+		if (SaveStateScheduled_)
+			saveState ();
+
 		auto document = Core::Instance ().LoadDocument (path);
 		if (!document || !document->IsValid ())
 		{
@@ -218,6 +223,9 @@ namespace Monocle
 						.arg ("<em>" + path + "</em>"));
 			return false;
 		}
+
+		const auto& state = Core::Instance ()
+				.GetDocStateManager ()->GetState (QFileInfo (path).fileName ());
 
 		Core::Instance ().GetROManager ()->RecordOpened (path);
 
@@ -240,8 +248,10 @@ namespace Monocle
 			if (isa)
 				isa->GetAnnotations (i);
 		}
-		Ui_.PagesView_->ensureVisible (Pages_.value (0), Margin, Margin);
-		Relayout (GetCurrentScale ());
+
+		LayMode_ = state.Lay_;
+		Relayout (state.CurrentScale_ > 0 ? state.CurrentScale_ : GetCurrentScale ());
+		SetCurrentPage (state.CurrentPage_, 0);
 
 		updateNumLabel ();
 
@@ -620,6 +630,36 @@ namespace Monocle
 		Relayout (GetCurrentScale ());
 	}
 
+	void DocumentTab::saveState ()
+	{
+		if (!SaveStateScheduled_)
+			return;
+
+		SaveStateScheduled_ = false;
+
+		if (CurrentDocPath_.isEmpty ())
+			return;
+
+		const auto& filename = QFileInfo (CurrentDocPath_).fileName ();
+		Core::Instance ().GetDocStateManager ()->SetState (filename,
+				{
+					GetCurrentPage (),
+					LayMode_,
+					GetCurrentScale ()
+				});
+	}
+
+	void DocumentTab::scheduleSaveState ()
+	{
+		if (SaveStateScheduled_)
+			return;
+
+		QTimer::singleShot (1000,
+				this,
+				SLOT (saveState ()));
+		SaveStateScheduled_ = true;
+	}
+
 	void DocumentTab::handleRecentOpenAction (QAction *action)
 	{
 		const auto& path = action->property ("Path").toString ();
@@ -717,11 +757,15 @@ namespace Monocle
 	void DocumentTab::handleGoPrev ()
 	{
 		SetCurrentPage (GetCurrentPage () - (LayMode_ == LayoutMode::OnePage ? 1 : 2));
+
+		scheduleSaveState ();
 	}
 
 	void DocumentTab::handleGoNext ()
 	{
 		SetCurrentPage (GetCurrentPage () + (LayMode_ == LayoutMode::OnePage ? 1 : 2));
+
+		scheduleSaveState ();
 	}
 
 	void DocumentTab::navigateNumLabel ()
@@ -732,6 +776,8 @@ namespace Monocle
 			text = text.left (pos - 1);
 
 		SetCurrentPage (text.trimmed ().toInt () - 1);
+
+		scheduleSaveState ();
 	}
 
 	void DocumentTab::updateNumLabel ()
@@ -767,18 +813,28 @@ namespace Monocle
 
 	void DocumentTab::showOnePage ()
 	{
+		if (LayMode_ == LayoutMode::OnePage)
+			return;
+
 		LayMode_ = LayoutMode::OnePage;
 		Relayout (GetCurrentScale ());
 
 		emit tabRecoverDataChanged ();
+
+		scheduleSaveState ();
 	}
 
 	void DocumentTab::showTwoPages ()
 	{
+		if (LayMode_ == LayoutMode::TwoPages)
+			return;
+
 		LayMode_ = LayoutMode::TwoPages;
 		Relayout (GetCurrentScale ());
 
 		emit tabRecoverDataChanged ();
+
+		scheduleSaveState ();
 	}
 
 	void DocumentTab::syncUIToLayMode ()
@@ -888,6 +944,8 @@ namespace Monocle
 	void DocumentTab::handleScaleChosen (int)
 	{
 		Relayout (GetCurrentScale ());
+
+		scheduleSaveState ();
 
 		emit tabRecoverDataChanged ();
 	}

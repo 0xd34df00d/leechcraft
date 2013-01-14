@@ -74,6 +74,7 @@ namespace Monocle
 		} MouseMode_;
 
 		bool RelayoutScheduled_;
+		bool SaveStateScheduled_;
 
 		struct OnloadData
 		{
@@ -117,6 +118,9 @@ namespace Monocle
 
 		void scheduleRelayout ();
 		void handleRelayout ();
+
+		void scheduleSaveState ();
+		void saveState ();
 
 		void handleRecentOpenAction (QAction*);
 
