@@ -89,8 +89,8 @@ namespace ChatHistory
 				"VALUES (:id, :account_id, :date, :direction, :message, :variant, :type);");
 
 		UsersForAccountGetter_ = QSqlQuery (*DB_);
-		UsersForAccountGetter_.prepare ("SELECT DISTINCT azoth_history.Id, EntryID FROM azoth_users, azoth_history "
-				"WHERE azoth_history.Id = azoth_users.Id AND AccountID = :account_id;");
+		UsersForAccountGetter_.prepare ("SELECT DISTINCT azoth_acc2users.UserId, EntryID FROM azoth_users, azoth_acc2users "
+				"WHERE azoth_acc2users.UserId = azoth_users.Id AND azoth_acc2users.AccountID = :account_id;");
 
 		Date2Pos_ = QSqlQuery (*DB_);
 		Date2Pos_.prepare ("SELECT COUNT(1) FROM azoth_history "
@@ -143,7 +143,7 @@ namespace ChatHistory
 		HistoryClearer_.prepare ("DELETE FROM azoth_history WHERE Id = :entry_id AND AccountID = :account_id;");
 
 		EntryCacheGetter_ = QSqlQuery (*DB_);
-		EntryCacheGetter_.prepare ("SELECT VisibleName FROM azoth_entrycache WHERE Id = :id;");
+		EntryCacheGetter_.prepare ("SELECT Id, VisibleName FROM azoth_entrycache;");
 
 		EntryCacheSetter_ = QSqlQuery (*DB_);
 		EntryCacheSetter_.prepare ("INSERT OR REPLACE INTO azoth_entrycache (Id, VisibleName) "
@@ -170,6 +170,8 @@ namespace ChatHistory
 					<< "unable to get saved accounts, we would be a bit more inefficient"
 					<< e.what ();
 		}
+
+		PrepareEntryCache ();
 	}
 
 	void Storage::InitializeTables ()
@@ -210,7 +212,14 @@ namespace ChatHistory
 					"Id INTEGER UNIQUE ON CONFLICT REPLACE REFERENCES azoth_users (Id), "
 					"VisibleName TEXT "
 					");";
+		table2query ["azoth_acc2users"] = "CREATE TABLE azoth_acc2users ("
+					"AccountId INTEGER, "
+					"UserId INTEGER, "
+					"UNIQUE (AccountId, UserId)"
+					");";
 		const QStringList& tables = DB_->tables ();
+		const bool hadAcc2User = tables.contains ("azoth_acc2users");
+
 		Q_FOREACH (const QString& table, table2query.keys ())
 		{
 			if (tables.contains (table))
@@ -222,6 +231,17 @@ namespace ChatHistory
 				Util::DBLock::DumpError (query);
 				throw std::runtime_error ("Unable to create tables for Azoth history");
 			}
+		}
+
+		if (!hadAcc2User)
+		{
+			qDebug () << Q_FUNC_INFO << "upgrading to acc2users table";
+			if (!query.exec ("INSERT INTO azoth_acc2users (AccountId, UserId) SELECT DISTINCT AccountId, Id FROM azoth_history;"))
+			{
+				Util::DBLock::DumpError (query);
+				query.exec ("DROP TABLE azoth_acc2users");
+			}
+			qDebug () << "done";
 		}
 
 		lock.Good ();
@@ -282,6 +302,22 @@ namespace ChatHistory
 					<< "with:"
 					<< e.what ();
 		}
+	}
+
+	void Storage::PrepareEntryCache ()
+	{
+		if (!EntryCacheGetter_.exec ())
+		{
+			Util::DBLock::DumpError (EntryCacheGetter_);
+			return;
+		}
+
+		while (EntryCacheGetter_.next ())
+			EntryCache_ [EntryCacheGetter_.value (0).toInt ()] = EntryCacheGetter_.value (1).toString ();
+
+		EntryCacheGetter_.finish ();
+
+		qDebug () << Q_FUNC_INFO << "loaded" << EntryCache_.size () << "entries";
 	}
 
 	QHash<QString, qint32> Storage::GetAccounts()
@@ -513,10 +549,16 @@ namespace ChatHistory
 			}
 		}
 
-		EntryCacheSetter_.bindValue (":id", Users_ [entryID]);
-		EntryCacheSetter_.bindValue (":visible_name", data ["VisibleName"]);
-		if (!EntryCacheSetter_.exec ())
-			Util::DBLock::DumpError (EntryCacheSetter_);
+		auto userId = Users_ [entryID];
+		if (!EntryCache_.contains (userId))
+		{
+			EntryCacheSetter_.bindValue (":id", userId);
+			EntryCacheSetter_.bindValue (":visible_name", data ["VisibleName"]);
+			if (!EntryCacheSetter_.exec ())
+				Util::DBLock::DumpError (EntryCacheSetter_);
+
+			EntryCache_ [userId] = data ["VisibleName"].toString ();
+		}
 
 		const QString& accountID = data ["AccountID"].toString ();
 		if (!Accounts_.contains (accountID))
@@ -535,7 +577,7 @@ namespace ChatHistory
 			}
 		}
 
-		MessageDumper_.bindValue (":id", Users_ [entryID]);
+		MessageDumper_.bindValue (":id", userId);
 		MessageDumper_.bindValue (":account_id", Accounts_ [accountID]);
 		MessageDumper_.bindValue (":date", data ["DateTime"]);
 		MessageDumper_.bindValue (":direction", data ["Direction"]);
@@ -600,15 +642,8 @@ namespace ChatHistory
 		{
 			const int id = UsersForAccountGetter_.value (0).toInt ();
 			result << UsersForAccountGetter_.value (1).toString ();
-
-			EntryCacheGetter_.bindValue (":id", id);
-			if (!EntryCacheGetter_.exec ())
-				Util::DBLock::DumpError (EntryCacheGetter_);
-
-			EntryCacheGetter_.next ();
-			cachedNames << EntryCacheGetter_.value (0).toString ();
+			cachedNames << EntryCache_.value (id);
 		}
-		EntryCacheGetter_.finish ();
 
 		emit gotUsersForAccount (result, accountId, cachedNames);
 	}
