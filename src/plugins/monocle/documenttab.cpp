@@ -503,8 +503,10 @@ namespace Monocle
 		const auto& rect = page->boundingRect ();
 		const auto& pos = page->scenePos ();
 		int xCenter = pos.x () + rect.width () / 2;
-		int yCenter = pos.y () + Ui_.PagesView_->viewport ()->contentsRect ().height () / 2;
-		Ui_.PagesView_->SmoothCenterOn (xCenter, yCenter);
+		const auto visibleHeight = std::min (static_cast<int> (rect.height ()),
+				Ui_.PagesView_->viewport ()->contentsRect ().height ());
+		int yCenter = pos.y () + visibleHeight / 2;
+
 	}
 
 	void DocumentTab::Relayout (double scale)
