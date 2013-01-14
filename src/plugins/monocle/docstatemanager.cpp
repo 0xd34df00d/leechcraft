@@ -72,9 +72,23 @@ namespace Monocle
 		State result = { 0, LayoutMode::OnePage, -1 };
 #ifdef SANE_JSON
 		const auto& filename = DocDir_.absoluteFilePath (GetFileName (id));
+		if (!QFile::exists (filename))
+			return result;
 
 		bp::ptree pt;
-		bp::read_json (filename.toUtf8 ().constData (), pt);
+		try
+		{
+			bp::read_json (filename.toUtf8 ().constData (), pt);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error reading"
+					<< filename
+					<< e.what ();
+			return result;
+		}
+
 		if (auto page = pt.get_optional<int> ("page"))
 			result.CurrentPage_ = *page;
 		if (auto scale = pt.get_optional<double> ("scale"))
