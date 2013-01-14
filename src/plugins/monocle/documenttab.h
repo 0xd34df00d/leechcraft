@@ -54,6 +54,9 @@ namespace Monocle
 		QAction *ZoomIn_;
 		QLineEdit *PageNumLabel_;
 
+		QAction *LayOnePage_;
+		QAction *LayTwoPages_;
+
 		QDockWidget *DockTOC_;
 		TOCWidget *TOCWidget_;
 
@@ -131,6 +134,7 @@ namespace Monocle
 
 		void showOnePage ();
 		void showTwoPages ();
+		void syncUIToLayMode ();
 
 		void setMoveMode (bool);
 		void setSelectionMode (bool);

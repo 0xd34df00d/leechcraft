@@ -384,26 +384,26 @@ namespace Monocle
 		Toolbar_->addSeparator ();
 
 		auto viewGroup = new QActionGroup (this);
-		auto onePage = new QAction (tr ("One page"), this);
-		onePage->setProperty ("ActionIcon", "page-simple");
-		onePage->setCheckable (true);
-		onePage->setChecked (true);
-		onePage->setActionGroup (viewGroup);
-		connect (onePage,
+		LayOnePage_ = new QAction (tr ("One page"), this);
+		LayOnePage_->setProperty ("ActionIcon", "page-simple");
+		LayOnePage_->setCheckable (true);
+		LayOnePage_->setChecked (true);
+		LayOnePage_->setActionGroup (viewGroup);
+		connect (LayOnePage_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (showOnePage ()));
-		Toolbar_->addAction (onePage);
+		Toolbar_->addAction (LayOnePage_);
 
-		auto twoPages = new QAction (tr ("Two pages"), this);
-		twoPages->setProperty ("ActionIcon", "page-2sides");
-		twoPages->setCheckable (true);
-		twoPages->setActionGroup (viewGroup);
-		connect (twoPages,
+		LayTwoPages_ = new QAction (tr ("Two pages"), this);
+		LayTwoPages_->setProperty ("ActionIcon", "page-2sides");
+		LayTwoPages_->setCheckable (true);
+		LayTwoPages_->setActionGroup (viewGroup);
+		connect (LayTwoPages_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (showTwoPages ()));
-		Toolbar_->addAction (twoPages);
+		Toolbar_->addAction (LayTwoPages_);
 
 		Toolbar_->addSeparator ();
 
@@ -779,6 +779,12 @@ namespace Monocle
 		Relayout (GetCurrentScale ());
 
 		emit tabRecoverDataChanged ();
+	}
+
+	void DocumentTab::syncUIToLayMode ()
+	{
+		auto action = LayMode_ == LayoutMode::OnePage ? LayOnePage_ : LayTwoPages_;
+		action->setChecked (true);
 	}
 
 	void DocumentTab::setMoveMode (bool enable)
