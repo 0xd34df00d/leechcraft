@@ -44,6 +44,7 @@
 #include "tocwidget.h"
 #include "presenterwidget.h"
 #include "recentlyopenedmanager.h"
+#include "common.h"
 
 namespace LeechCraft
 {

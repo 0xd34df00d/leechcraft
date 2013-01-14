@@ -31,6 +31,8 @@ namespace LeechCraft
 {
 namespace Monocle
 {
+	enum class LayoutMode;
+
 	class PageGraphicsItem;
 	class TOCWidget;
 
@@ -60,11 +62,7 @@ namespace Monocle
 		QList<PageGraphicsItem*> Pages_;
 		QGraphicsScene Scene_;
 
-		enum class LayoutMode
-		{
-			OnePage,
-			TwoPages
-		} LayMode_;
+		LayoutMode LayMode_;
 
 		enum class MouseMode
 		{
