@@ -177,7 +177,7 @@ namespace LMP
 
 		uint qHash (const SamenessCheckInfo& info)
 		{
-			return (qHash (info.Artist_) << 20) + (qHash (info.Title_) << 8) + info.Length_;
+			return qHash (info.Artist_ + '|' + info.Title_ + '|' + QString::number (info.Length_));
 		}
 	}
 
@@ -186,13 +186,22 @@ namespace LMP
 		auto pending = qobject_cast<Media::IPendingAudioSearch*> (sender ());
 
 		QList<Phonon::MediaSource> sources;
+		QSet<QUrl> urls;
 		QSet<SamenessCheckInfo> infos;
 		for (const auto& res : pending->GetResults ())
 		{
-			const SamenessCheckInfo checkInfo { res.Info_.Album_, res.Info_.Title_, res.Info_.Length_ };
+			if (urls.contains (res.Source_))
+				continue;
+			urls.insert (res.Source_);
+
+			const SamenessCheckInfo checkInfo
+			{
+				res.Info_.Album_.toLower ().trimmed (),
+				res.Info_.Title_.toLower ().trimmed (),
+				res.Info_.Length_
+			};
 			if (infos.contains (checkInfo))
 				continue;
-
 			infos << checkInfo;
 
 			Player_->PrepareURLInfo (res.Source_, MediaInfo::FromAudioInfo (res.Info_));
