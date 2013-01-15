@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "artistbrowsertab.h"
+#include <QMessageBox>
 #include <interfaces/media/iartistbiofetcher.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <util/gui/clearlineeditaddon.h>
@@ -77,7 +78,13 @@ namespace LMP
 		auto provs = Core::Instance ().GetProxy ()->GetPluginsManager ()->
 				GetAllCastableTo<Media::IArtistBioFetcher*> ();
 		if (provs.isEmpty ())
+		{
+			QMessageBox::critical (this,
+					"LeechCraft",
+					tr ("There aren't any plugins that can fetch biography. Check if "
+						"you have installed for example the LastFMScrobble plugin."));
 			return;
+		}
 
 		auto artist = Ui_.ArtistNameEdit_->text ().trimmed ();
 
