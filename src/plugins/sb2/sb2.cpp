@@ -133,7 +133,7 @@ namespace SB2
 		else
 			launcher->handlePluginsAvailable ();
 
-		auto tray = new TrayComponent (Proxy_);
+		auto tray = new TrayComponent (Proxy_, view);
 		mgr->RegisterInternalComponent (tray->GetComponent ());
 		if (init)
 			connect (this,
