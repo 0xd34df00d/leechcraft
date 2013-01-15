@@ -23,7 +23,7 @@
 #include <QSet>
 #include <QFutureWatcher>
 #include <QIcon>
-#include "collectiontypes.h"
+#include "interfaces/lmp/collectiontypes.h"
 #include "mediainfo.h"
 
 class QStandardItemModel;
