@@ -48,7 +48,7 @@ namespace LMP
 					this,
 					SLOT (rotateQueue ()));
 
-		Queue_ << Media::AlbumInfo { artist.Name_, album->Name_ };
+		Queue_.push_back ({ artist.Name_, album->Name_ });
 	}
 
 	void AlbumArtManager::rotateQueue ()
