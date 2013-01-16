@@ -183,7 +183,12 @@ namespace LMP
 	{
 		Model_->clear ();
 
-		AAMgr_->CheckAlbumArt (GetArtist (), GetAlbum (), true);
+		const auto& artist = GetArtist ();
+		const auto& album = GetAlbum ();
+		if (artist.isEmpty () || album.isEmpty ())
+			return;
+
+		AAMgr_->CheckAlbumArt (artist, album, true);
 		RequestScheduled_ = false;
 	}
 
