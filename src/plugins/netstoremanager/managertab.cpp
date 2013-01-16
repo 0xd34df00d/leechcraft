@@ -196,16 +196,19 @@ namespace NetStoreManager
 
 	void ManagerTab::SaveModelState (const QModelIndex& parent)
 	{
-		for (int i = 0; i < Model_->rowCount (parent); ++i)
-		{
-			QStandardItem *item = !parent.isValid () ?
-				Model_->item (i) :
-				Model_->itemFromIndex (parent)->child (i);
+		auto currentAcc = GetCurrentAccount ();
 
+		auto parentItem = parent.isValid () ?
+				Model_->itemFromIndex (parent) :
+				Model_->invisibleRootItem ();
+
+		for (int i = 0; i < parentItem->rowCount (); ++i)
+		{
+			auto item = parentItem->child (i);
 			const auto& index = Model_->indexFromItem (item);
-			Account2ItemExpandState_ [GetCurrentAccount ()]
-					.insert (item->data (ListingRole::ID).toString (),
-							Ui_.FilesTree_->isExpanded (index));
+
+			const auto& id = item->data (ListingRole::ID).toString ();
+			Account2ItemExpandState_ [currentAcc] [id] = Ui_.FilesTree_->isExpanded (index);
 
 			if (item->hasChildren ())
 				SaveModelState (index);
