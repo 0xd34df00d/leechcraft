@@ -369,6 +369,7 @@ namespace Azoth
 		auto data = event->mimeData ();
 		if (data->hasText ())
 			event->acceptProposedAction ();
+#if QT_VERSION >= 0x040800
 		else if (data->hasUrls ())
 		{
 			for (const auto& url : data->urls ())
@@ -379,6 +380,7 @@ namespace Azoth
 					break;
 				}
 		}
+#endif
 	}
 
 	void ChatTab::HandleDrop (QDropEvent *event)
