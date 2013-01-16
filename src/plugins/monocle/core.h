@@ -29,6 +29,7 @@ namespace Monocle
 	class RecentlyOpenedManager;
 	class PixmapCacheManager;
 	class DefaultBackendManager;
+	class DocStateManager;
 
 	class Core : public QObject
 	{
@@ -36,9 +37,11 @@ namespace Monocle
 
 		ICoreProxy_ptr Proxy_;
 		QList<QObject*> Backends_;
+
 		PixmapCacheManager *CacheManager_;
 		RecentlyOpenedManager *ROManager_;
 		DefaultBackendManager *DefaultBackendManager_;
+		DocStateManager *DocStateManager_;
 
 		Core ();
 	public:
@@ -55,6 +58,7 @@ namespace Monocle
 		PixmapCacheManager* GetPixmapCacheManager () const;
 		RecentlyOpenedManager* GetROManager () const;
 		DefaultBackendManager* GetDefaultBackendManager () const;
+		DocStateManager* GetDocStateManager () const;
 	};
 }
 }

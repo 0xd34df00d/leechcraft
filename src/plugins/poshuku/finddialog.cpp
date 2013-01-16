@@ -37,6 +37,11 @@ namespace Poshuku
 		Ui_.Pattern_->setText (text);
 	}
 
+	QString FindDialog::GetText () const
+	{
+		return Ui_.Pattern_->text ();
+	}
+
 	void FindDialog::SetSuccessful (bool success)
 	{
 		QString ss = QString ("QLineEdit {"
@@ -54,6 +59,15 @@ namespace Poshuku
 		Ui_.Pattern_->setFocus ();
 	}
 
+	QWebPage::FindFlags FindDialog::GetFlags () const
+	{
+		QWebPage::FindFlags flags;
+		if (Ui_.MatchCase_->checkState () == Qt::Checked)
+			flags |= QWebPage::FindCaseSensitively;
+		if (Ui_.WrapAround_->checkState () == Qt::Checked)
+			flags |= QWebPage::FindWrapsAroundDocument;
+	}
+
 	void FindDialog::on_Pattern__textChanged (const QString& newText)
 	{
 		Ui_.FindButton_->setEnabled (!newText.isEmpty ());
@@ -61,13 +75,9 @@ namespace Poshuku
 
 	void FindDialog::on_FindButton__released ()
 	{
-		QWebPage::FindFlags flags;
+		auto flags = GetFlags ();
 		if (Ui_.SearchBackwards_->checkState () == Qt::Checked)
 			flags |= QWebPage::FindBackward;
-		if (Ui_.MatchCase_->checkState () == Qt::Checked)
-			flags |= QWebPage::FindCaseSensitively;
-		if (Ui_.WrapAround_->checkState () == Qt::Checked)
-			flags |= QWebPage::FindWrapsAroundDocument;
 
 		emit next (Ui_.Pattern_->text (), flags);
 	}

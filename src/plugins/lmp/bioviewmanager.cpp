@@ -228,9 +228,15 @@ namespace LMP
 	void BioViewManager::handleAlbumPreviewRequested (int index)
 	{
 		qDebug () << Q_FUNC_INFO;
-		auto ph = Core::Instance ().GetPreviewHandler ();
+
+		QList<QPair<QString, int>> tracks;
 		for (const auto& track : Album2Tracks_.at (index))
-			ph->previewTrack (track.Name_, CurrentArtist_, track.Length_);
+			tracks.push_back ({ track.Name_, track.Length_ });
+
+		const auto& album = DiscoModel_->item (index)->data (DiscoModel::Roles::AlbumName).toString ();
+
+		auto ph = Core::Instance ().GetPreviewHandler ();
+		ph->previewAlbum (CurrentArtist_, album, tracks);
 	}
 
 	void BioViewManager::handleLink (const QString& link)

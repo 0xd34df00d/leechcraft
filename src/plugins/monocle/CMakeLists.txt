@@ -23,11 +23,14 @@ SET (SRCS
 	recentlyopenedmanager.cpp
 	choosebackenddialog.cpp
 	defaultbackendmanager.cpp
+	docstatemanager.cpp
+	docinfodialog.cpp
 	)
 SET (FORMS
 	documenttab.ui
 	tocwidget.ui
 	choosebackenddialog.ui
+	docinfodialog.ui
 	)
 SET (RESOURCES monocleresources.qrc)
 CreateTrs ("monocle" "en;ru_RU" COMPILED_TRANSLATIONS)

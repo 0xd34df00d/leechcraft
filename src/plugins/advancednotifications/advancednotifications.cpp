@@ -22,11 +22,13 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/resourceloader.h>
 #include <util/util.h>
+#include <util/sys/paths.h>
 #include "generalhandler.h"
 #include "xmlsettingsmanager.h"
 #include "notificationruleswidget.h"
 #include "core.h"
-#include "enablesoundactionmanager.h"
+#include "rulesmanager.h"
+#include "quarkproxy.h"
 
 namespace LeechCraft
 {
@@ -58,7 +60,9 @@ namespace AdvancedNotifications
 				this,
 				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)));
 
-		EnableSoundMgr_ = new EnableSoundActionManager (this);
+		Component_.Url_ = QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, "advancednotifications", "ANQuark.qml"));
+		Component_.DynamicProps_.push_back ({ "AN_rulesManager", Core::Instance ().GetRulesManager () });
+		Component_.DynamicProps_.push_back ({ "AN_proxy", new QuarkProxy });
 	}
 
 	void Plugin::SecondInit ()
@@ -116,11 +120,14 @@ namespace AdvancedNotifications
 		return SettingsDialog_;
 	}
 
-	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace aep) const
+	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace) const
 	{
-		QList<QAction*> result;
-		result << EnableSoundMgr_->GetActions (aep);
-		return result;
+		return QList<QAction*> ();
+	}
+
+	QuarkComponents_t Plugin::GetComponents () const
+	{
+		return QuarkComponents_t () << Component_;
 	}
 }
 }

@@ -27,6 +27,7 @@
 #include <util/qml/widthiconprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/iactionsexporter.h>
+#include "sbview.h"
 
 namespace LeechCraft
 {
@@ -102,12 +103,13 @@ namespace SB2
 		const QString ImageProviderID = "SB2_TrayActionImage";
 	}
 
-	TrayComponent::TrayComponent (ICoreProxy_ptr proxy, QObject *parent)
+	TrayComponent::TrayComponent (ICoreProxy_ptr proxy, SBView *view, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, Model_ (new TrayModel (this))
 	, ImageProv_ (new ActionImageProvider (proxy))
 	, NextActionId_ (0)
+	, View_ (view)
 	{
 		Component_.Url_ = QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, "sb2", "TrayComponent.qml"));
 		Component_.DynamicProps_ << QPair<QString, QObject*> ("SB2_trayModel", Model_);
@@ -171,6 +173,7 @@ namespace SB2
 
 		for (auto act : acts)
 		{
+			View_->addAction (act);
 			connect (act,
 					SIGNAL (destroyed ()),
 					this,

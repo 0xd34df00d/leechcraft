@@ -102,7 +102,6 @@ namespace Aggregator
 		void handleItemDataUpdated (Item_ptr, Channel_ptr);
 	private slots:
 		void invalidateMergeMode ();
-		void channelChanged (const QModelIndex&);
 		void on_ActionHideReadItems__triggered ();
 		void on_ActionShowAsTape__triggered ();
 		void on_ActionMarkItemAsUnread__triggered ();
@@ -119,8 +118,6 @@ namespace Aggregator
 		void updateItemsFilter ();
 		void selectorVisiblityChanged ();
 		void navBarVisibilityChanged ();
-	signals:
-		void currentChannelChanged (const QModelIndex&);
 	};
 }
 }

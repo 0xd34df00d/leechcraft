@@ -47,6 +47,7 @@ namespace Aggregator
 		void Selected (const QModelIndex&);
 		void MarkItemReadStatus (const QModelIndex&, bool);
 		const ItemShort& GetItem (const QModelIndex&) const;
+		const items_shorts_t& GetAllItems () const;
 		bool IsItemRead (int) const;
 		QStringList GetCategories (int) const;
 		void Reset (const IDType_t&);

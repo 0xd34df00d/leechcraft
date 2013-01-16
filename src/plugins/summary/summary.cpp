@@ -108,25 +108,6 @@ namespace Summary
 		return icon;
 	}
 
-	QStringList Summary::Provides () const
-	{
-		return QStringList ();
-	}
-
-	QStringList Summary::Needs () const
-	{
-		return QStringList ();
-	}
-
-	QStringList Summary::Uses () const
-	{
-		return QStringList ();
-	}
-
-	void Summary::SetProvider (QObject*, const QString&)
-	{
-	}
-
 	TabClasses_t Summary::GetTabClasses () const
 	{
 		return TabClasses_;
@@ -140,18 +121,6 @@ namespace Summary
 			qWarning () << Q_FUNC_INFO
 					<< "unknown tab class"
 					<< tabClass;
-	}
-
-	EntityTestHandleResult Summary::CouldHandle (const LeechCraft::Entity& e) const
-	{
-		EntityTestHandleResult result;
-		result.HandlePriority_ = Core::Instance ().CouldHandle (e) ? 1000 : 0;
-		return result;
-	}
-
-	void Summary::Handle (LeechCraft::Entity e)
-	{
-		Core::Instance ().Handle (e);
 	}
 
 	QModelIndex Summary::MapToSource (const QModelIndex& index) const

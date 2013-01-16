@@ -31,6 +31,8 @@ namespace LeechCraft
 {
 namespace Monocle
 {
+	enum class LayoutMode;
+
 	class PageGraphicsItem;
 	class TOCWidget;
 
@@ -52,6 +54,9 @@ namespace Monocle
 		QAction *ZoomIn_;
 		QLineEdit *PageNumLabel_;
 
+		QAction *LayOnePage_;
+		QAction *LayTwoPages_;
+
 		QDockWidget *DockTOC_;
 		TOCWidget *TOCWidget_;
 
@@ -60,11 +65,7 @@ namespace Monocle
 		QList<PageGraphicsItem*> Pages_;
 		QGraphicsScene Scene_;
 
-		enum class LayoutMode
-		{
-			OnePage,
-			TwoPages
-		} LayMode_;
+		LayoutMode LayMode_;
 
 		enum class MouseMode
 		{
@@ -73,6 +74,7 @@ namespace Monocle
 		} MouseMode_;
 
 		bool RelayoutScheduled_;
+		bool SaveStateScheduled_;
 
 		struct OnloadData
 		{
@@ -104,7 +106,7 @@ namespace Monocle
 
 		QPoint GetViewportCenter () const;
 		int GetCurrentPage () const;
-		void SetCurrentPage (int);
+		void SetCurrentPage (int, bool immediate = false);
 		void Relayout (double);
 
 		void ClearViewActions ();
@@ -116,6 +118,9 @@ namespace Monocle
 
 		void scheduleRelayout ();
 		void handleRelayout ();
+
+		void scheduleSaveState ();
+		void saveState ();
 
 		void handleRecentOpenAction (QAction*);
 
@@ -133,12 +138,15 @@ namespace Monocle
 
 		void showOnePage ();
 		void showTwoPages ();
+		void syncUIToLayMode ();
 
 		void setMoveMode (bool);
 		void setSelectionMode (bool);
 
 		void handleCopyAsImage ();
 		void handleCopyAsText ();
+
+		void showDocInfo ();
 
 		void delayedCenterOn (const QPoint&);
 

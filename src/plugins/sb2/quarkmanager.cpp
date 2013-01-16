@@ -19,6 +19,7 @@
 #include "quarkmanager.h"
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
+#include <QDeclarativeImageProvider>
 #include <QStandardItem>
 #include <QDialog>
 #include <QVBoxLayout>
@@ -38,6 +39,30 @@ namespace LeechCraft
 namespace SB2
 {
 	const int IconSize = 32;
+
+	namespace
+	{
+		class ImageProvProxy : public QDeclarativeImageProvider
+		{
+			QDeclarativeImageProvider *Wrapped_;
+		public:
+			ImageProvProxy (QDeclarativeImageProvider *other)
+			: QDeclarativeImageProvider (other->imageType ())
+			, Wrapped_ (other)
+			{
+			}
+
+			QImage requestImage (const QString& id, QSize *size, const QSize& requestedSize)
+			{
+				return Wrapped_->requestImage (id, size, requestedSize);
+			}
+
+			QPixmap requestPixmap (const QString& id, QSize *size, const QSize& requestedSize)
+			{
+				return Wrapped_->requestPixmap (id, size, requestedSize);
+			}
+		};
+	}
 
 	QuarkManager::QuarkManager (const QuarkComponent& comp,
 			ViewManager *manager, ICoreProxy_ptr proxy)
@@ -65,7 +90,7 @@ namespace SB2
 		auto engine = manager->GetView ()->engine ();
 		for (const auto& pair : comp.ImageProviders_)
 			if (!engine->imageProvider (pair.first))
-				engine->addImageProvider (pair.first, pair.second);
+				engine->addImageProvider (pair.first, new ImageProvProxy (pair.second));
 
 		CreateSettings ();
 	}

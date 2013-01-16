@@ -67,7 +67,6 @@ namespace LMP
 		void handleLink (const QString&);
 	signals:
 		void gotArtistImage (const QString&, const QUrl&);
-		void previewRequested (const QString&, const QString&, int);
 	};
 }
 }

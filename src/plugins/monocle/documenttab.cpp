@@ -44,6 +44,9 @@
 #include "tocwidget.h"
 #include "presenterwidget.h"
 #include "recentlyopenedmanager.h"
+#include "common.h"
+#include "docstatemanager.h"
+#include "docinfodialog.h"
 
 namespace LeechCraft
 {
@@ -62,6 +65,7 @@ namespace Monocle
 	, LayMode_ (LayoutMode::OnePage)
 	, MouseMode_ (MouseMode::Move)
 	, RelayoutScheduled_ (true)
+	, SaveStateScheduled_ (false)
 	, Onload_ ({ -1, 0, 0 })
 	{
 		Ui_.setupUi (this);
@@ -205,6 +209,9 @@ namespace Monocle
 
 	bool DocumentTab::SetDoc (const QString& path)
 	{
+		if (SaveStateScheduled_)
+			saveState ();
+
 		auto document = Core::Instance ().LoadDocument (path);
 		if (!document || !document->IsValid ())
 		{
@@ -217,6 +224,9 @@ namespace Monocle
 						.arg ("<em>" + path + "</em>"));
 			return false;
 		}
+
+		const auto& state = Core::Instance ()
+				.GetDocStateManager ()->GetState (QFileInfo (path).fileName ());
 
 		Core::Instance ().GetROManager ()->RecordOpened (path);
 
@@ -239,8 +249,10 @@ namespace Monocle
 			if (isa)
 				isa->GetAnnotations (i);
 		}
-		Ui_.PagesView_->ensureVisible (Pages_.value (0), Margin, Margin);
-		Relayout (GetCurrentScale ());
+
+		LayMode_ = state.Lay_;
+		Relayout (state.CurrentScale_ > 0 ? state.CurrentScale_ : GetCurrentScale ());
+		SetCurrentPage (state.CurrentPage_, 0);
 
 		updateNumLabel ();
 
@@ -383,26 +395,26 @@ namespace Monocle
 		Toolbar_->addSeparator ();
 
 		auto viewGroup = new QActionGroup (this);
-		auto onePage = new QAction (tr ("One page"), this);
-		onePage->setProperty ("ActionIcon", "page-simple");
-		onePage->setCheckable (true);
-		onePage->setChecked (true);
-		onePage->setActionGroup (viewGroup);
-		connect (onePage,
+		LayOnePage_ = new QAction (tr ("One page"), this);
+		LayOnePage_->setProperty ("ActionIcon", "page-simple");
+		LayOnePage_->setCheckable (true);
+		LayOnePage_->setChecked (true);
+		LayOnePage_->setActionGroup (viewGroup);
+		connect (LayOnePage_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (showOnePage ()));
-		Toolbar_->addAction (onePage);
+		Toolbar_->addAction (LayOnePage_);
 
-		auto twoPages = new QAction (tr ("Two pages"), this);
-		twoPages->setProperty ("ActionIcon", "page-2sides");
-		twoPages->setCheckable (true);
-		twoPages->setActionGroup (viewGroup);
-		connect (twoPages,
+		LayTwoPages_ = new QAction (tr ("Two pages"), this);
+		LayTwoPages_->setProperty ("ActionIcon", "page-2sides");
+		LayTwoPages_->setCheckable (true);
+		LayTwoPages_->setActionGroup (viewGroup);
+		connect (LayTwoPages_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (showTwoPages ()));
-		Toolbar_->addAction (twoPages);
+		Toolbar_->addAction (LayTwoPages_);
 
 		Toolbar_->addSeparator ();
 
@@ -427,6 +439,16 @@ namespace Monocle
 				this,
 				SLOT (setSelectionMode (bool)));
 		Toolbar_->addAction (selectModeAction);
+
+		Toolbar_->addSeparator ();
+
+		auto infoAction = new QAction (tr ("Document info..."), this);
+		infoAction->setProperty ("ActionIcon", "dialog-information");
+		connect (infoAction,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (showDocInfo ()));
+		Toolbar_->addAction (infoAction);
 	}
 
 	double DocumentTab::GetCurrentScale () const
@@ -494,7 +516,7 @@ namespace Monocle
 		return pos == Pages_.end () ? -1 : std::distance (Pages_.begin (), pos);
 	}
 
-	void DocumentTab::SetCurrentPage (int idx)
+	void DocumentTab::SetCurrentPage (int idx, bool immediate)
 	{
 		if (idx < 0 || idx >= Pages_.size ())
 			return;
@@ -503,8 +525,14 @@ namespace Monocle
 		const auto& rect = page->boundingRect ();
 		const auto& pos = page->scenePos ();
 		int xCenter = pos.x () + rect.width () / 2;
-		int yCenter = pos.y () + Ui_.PagesView_->viewport ()->contentsRect ().height () / 2;
-		Ui_.PagesView_->SmoothCenterOn (xCenter, yCenter);
+		const auto visibleHeight = std::min (static_cast<int> (rect.height ()),
+				Ui_.PagesView_->viewport ()->contentsRect ().height ());
+		int yCenter = pos.y () + visibleHeight / 2;
+
+		if (immediate)
+			Ui_.PagesView_->centerOn (xCenter, yCenter);
+		else
+			Ui_.PagesView_->SmoothCenterOn (xCenter, yCenter);
 	}
 
 	void DocumentTab::Relayout (double scale)
@@ -514,7 +542,9 @@ namespace Monocle
 		if (!CurrentDoc_)
 			return;
 
-		Q_FOREACH (auto item, Pages_)
+		const auto pageWas = GetCurrentPage ();
+
+		for (auto item : Pages_)
 			item->SetScale (scale, scale);
 
 		for (int i = 0, pagesCount = Pages_.size (); i < pagesCount; ++i)
@@ -539,7 +569,8 @@ namespace Monocle
 			Onload_.Num_ = -1;
 		}
 		else
-			SetCurrentPage (std::max (GetCurrentPage (), 0));
+			SetCurrentPage (std::max (pageWas, 0), true);
+
 		updateNumLabel ();
 	}
 
@@ -608,6 +639,36 @@ namespace Monocle
 			return;
 
 		Relayout (GetCurrentScale ());
+	}
+
+	void DocumentTab::saveState ()
+	{
+		if (!SaveStateScheduled_)
+			return;
+
+		SaveStateScheduled_ = false;
+
+		if (CurrentDocPath_.isEmpty ())
+			return;
+
+		const auto& filename = QFileInfo (CurrentDocPath_).fileName ();
+		Core::Instance ().GetDocStateManager ()->SetState (filename,
+				{
+					GetCurrentPage (),
+					LayMode_,
+					GetCurrentScale ()
+				});
+	}
+
+	void DocumentTab::scheduleSaveState ()
+	{
+		if (SaveStateScheduled_)
+			return;
+
+		QTimer::singleShot (1000,
+				this,
+				SLOT (saveState ()));
+		SaveStateScheduled_ = true;
 	}
 
 	void DocumentTab::handleRecentOpenAction (QAction *action)
@@ -707,11 +768,15 @@ namespace Monocle
 	void DocumentTab::handleGoPrev ()
 	{
 		SetCurrentPage (GetCurrentPage () - (LayMode_ == LayoutMode::OnePage ? 1 : 2));
+
+		scheduleSaveState ();
 	}
 
 	void DocumentTab::handleGoNext ()
 	{
 		SetCurrentPage (GetCurrentPage () + (LayMode_ == LayoutMode::OnePage ? 1 : 2));
+
+		scheduleSaveState ();
 	}
 
 	void DocumentTab::navigateNumLabel ()
@@ -722,6 +787,8 @@ namespace Monocle
 			text = text.left (pos - 1);
 
 		SetCurrentPage (text.trimmed ().toInt () - 1);
+
+		scheduleSaveState ();
 	}
 
 	void DocumentTab::updateNumLabel ()
@@ -757,18 +824,34 @@ namespace Monocle
 
 	void DocumentTab::showOnePage ()
 	{
+		if (LayMode_ == LayoutMode::OnePage)
+			return;
+
 		LayMode_ = LayoutMode::OnePage;
 		Relayout (GetCurrentScale ());
 
 		emit tabRecoverDataChanged ();
+
+		scheduleSaveState ();
 	}
 
 	void DocumentTab::showTwoPages ()
 	{
+		if (LayMode_ == LayoutMode::TwoPages)
+			return;
+
 		LayMode_ = LayoutMode::TwoPages;
 		Relayout (GetCurrentScale ());
 
 		emit tabRecoverDataChanged ();
+
+		scheduleSaveState ();
+	}
+
+	void DocumentTab::syncUIToLayMode ()
+	{
+		auto action = LayMode_ == LayoutMode::OnePage ? LayOnePage_ : LayTwoPages_;
+		action->setChecked (true);
 	}
 
 	void DocumentTab::setMoveMode (bool enable)
@@ -864,6 +947,16 @@ namespace Monocle
 		QApplication::clipboard ()->setText (text);
 	}
 
+	void DocumentTab::showDocInfo ()
+	{
+		if (!CurrentDoc_)
+			return;
+
+		auto dia = new DocInfoDialog (CurrentDocPath_, CurrentDoc_->GetDocumentInfo (), this);
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->show ();
+	}
+
 	void DocumentTab::delayedCenterOn (const QPoint& point)
 	{
 		Ui_.PagesView_->SmoothCenterOn (point.x (), point.y ());
@@ -872,6 +965,8 @@ namespace Monocle
 	void DocumentTab::handleScaleChosen (int)
 	{
 		Relayout (GetCurrentScale ());
+
+		scheduleSaveState ();
 
 		emit tabRecoverDataChanged ();
 	}

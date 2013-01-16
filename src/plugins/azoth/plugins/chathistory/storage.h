@@ -56,8 +56,11 @@ namespace ChatHistory
 		QSqlQuery HistoryClearer_;
 		QSqlQuery EntryCacheSetter_;
 		QSqlQuery EntryCacheGetter_;
+
 		QHash<QString, qint32> Users_;
 		QHash<QString, qint32> Accounts_;
+
+		QHash<qint32, QString> EntryCache_;
 
 		struct RawSearchResult
 		{
@@ -78,6 +81,8 @@ namespace ChatHistory
 		QHash<QString, qint32> GetUsers ();
 		qint32 GetUserID (const QString&);
 		void AddUser (const QString& id);
+
+		void PrepareEntryCache ();
 
 		QHash<QString, qint32> GetAccounts ();
 		qint32 GetAccountID (const QString&);

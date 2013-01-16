@@ -200,15 +200,9 @@ IF (APPLE)
 ENDIF (APPLE)
 
 # Defunct
-OPTION (ENABLE_EISKALTDCPP "Build EiskaltDC++ client" OFF)
-OPTION (ENABLE_TABPP "Build Tab++, the enhanced tab manager" OFF)
-OPTION (ENABLE_FTP "Build LCFTP, the FTP client" OFF)
 OPTION (ENABLE_JUFFED "Build JuffEd, the advanced text editor" OFF)
 OPTION (ENABLE_OTZERKALU "Build Otzerkalu, which allows one to download web sites recursively" OFF)
 OPTION (ENABLE_LAURE "Build Laure, the new generation audio/video player" OFF)
-OPTION (ENABLE_TRANSPARENTARCH "Build TransparentArch, the plugin for transparent access to archives in various formats" OFF)
-OPTION (ENABLE_VFSCORE "Build VFS core" OFF)
-OPTION (ENABLE_SIDEBAR "Build Sidebar, a nice side bar with quick launch, tabs and tray areas" OFF)
 
 ENABLE_TESTING ()
 
@@ -283,10 +277,6 @@ IF (ENABLE_HTTP)
 	ADD_SUBDIRECTORY (plugins/cstp)
 ENDIF (ENABLE_HTTP)
 
-IF (ENABLE_FTP)
-	ADD_SUBDIRECTORY (plugins/lcftp)
-ENDIF (ENABLE_FTP)
-
 IF (ENABLE_LMP)
 	ADD_SUBDIRECTORY (plugins/lmp)
 ENDIF (ENABLE_LMP)
@@ -331,13 +321,6 @@ IF (ENABLE_AUSCRIE)
 	ADD_SUBDIRECTORY (plugins/auscrie)
 ENDIF (ENABLE_AUSCRIE)
 
-IF (ENABLE_TABPP)
-	ADD_SUBDIRECTORY (plugins/tabpp)
-ENDIF (ENABLE_TABPP)
-
-IF (ENABLE_EISKALTDCPP)
-	ADD_SUBDIRECTORY (plugins/eiskaltdcpp)
-ENDIF (ENABLE_EISKALTDCPP)
 IF (ENABLE_AZOTH)
 	ADD_SUBDIRECTORY (plugins/azoth)
 ENDIF (ENABLE_AZOTH)
@@ -378,10 +361,6 @@ IF (ENABLE_LAURE)
 	ADD_SUBDIRECTORY (plugins/laure)
 ENDIF (ENABLE_LAURE)
 
-IF (ENABLE_TRANSPARENTARCH)
-	ADD_SUBDIRECTORY (plugins/transparentarch)
-ENDIF (ENABLE_TRANSPARENTARCH)
-
 IF (ENABLE_JUFFED)
 	ADD_SUBDIRECTORY (plugins/juffed)
 ENDIF (ENABLE_JUFFED)
@@ -410,17 +389,9 @@ IF (ENABLE_BLACKDASH)
 	ADD_SUBDIRECTORY (plugins/blackdash)
 ENDIF (ENABLE_BLACKDASH)
 
-IF (ENABLE_VFSCORE)
-	ADD_SUBDIRECTORY (plugins/vfscore)
-ENDIF (ENABLE_VFSCORE)
-
 IF (ENABLE_KNOWHOW)
 	ADD_SUBDIRECTORY (plugins/knowhow)
 ENDIF (ENABLE_KNOWHOW)
-
-IF (ENABLE_SIDEBAR)
-	ADD_SUBDIRECTORY (plugins/sidebar)
-ENDIF (ENABLE_SIDEBAR)
 
 IF (ENABLE_SB2)
 	ADD_SUBDIRECTORY (plugins/sb2)

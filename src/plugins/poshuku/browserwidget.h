@@ -60,6 +60,8 @@ namespace Poshuku
 		QToolBar *ToolBar_;
 		QAction *Add2Favorites_;
 		QAction *Find_;
+		QAction *FindNext_;
+		QAction *FindPrevious_;
 		QAction *Print_;
 		QAction *PrintPreview_;
 		QAction *ScreenSave_;
@@ -159,6 +161,8 @@ namespace Poshuku
 		void handleReloadPeriodically ();
 		void handleAdd2Favorites ();
 		void handleFind ();
+		void handleFindNext ();
+		void handleFindPrevious ();
 		void findText (const QString&, QWebPage::FindFlags);
 		void handleViewPrint (QWebFrame*);
 		void handlePrinting ();

@@ -717,17 +717,17 @@ namespace Aggregator
 
 		items_shorts_t items;
 		StorageBackend_->GetItems (items, cs.ChannelID_);
+		return GetCategories (items);
+	}
 
+	QStringList Core::GetCategories (const items_shorts_t& items) const
+	{
 		QStringList result;
-		for (items_shorts_t::const_iterator i = items.begin (),
-				end = items.end (); i != end; ++i)
-		{
-			QStringList categories = i->Categories_;
-			for (QStringList::const_iterator j = categories.begin (),
-					endJ = categories.end (); j != endJ; ++j)
-				if (!result.contains (*j) && j->size ())
-					result << *j;
-		}
+		QSet<QString> unique;
+		for (const auto& item : items)
+			for (const auto& category : item.Categories_)
+				unique << category;
+		result = unique.toList ();
 		std::sort (result.begin (), result.end ());
 		return result;
 	}

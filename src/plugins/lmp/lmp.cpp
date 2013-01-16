@@ -73,7 +73,7 @@ namespace LMP
 		{
 			GetUniqueID () + "_artistBrowser",
 			tr ("Artist browser"),
-			tr ("Allows to browse information about different artists."),
+			tr ("Allows one to browse information about different artists."),
 			GetIcon (),
 			35,
 			TFSuggestOpening | TFOpenableByRequest

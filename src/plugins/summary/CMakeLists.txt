@@ -25,12 +25,6 @@ SET (SRCS
 	summary.cpp
 	core.cpp
 	summarywidget.cpp
-	requestparser.cpp
-	requestnormalizer.cpp
-	categorymerger.cpp
-	filtermodel.cpp
-	operationalmodel.cpp
-	searchwidget.cpp
 	summarytagsfilter.cpp
 	modeldelegate.cpp
 	)
@@ -38,18 +32,11 @@ SET (HEADERS
 	summary.h
 	core.h
 	summarywidget.h
-	requestparser.h
-	requestnormalizer.h
-	categorymerger.h
-	filtermodel.h
-	operationalmodel.h
-	searchwidget.h
 	summarytagsfilter.h
 	modeldelegate.h
 	)
 SET (FORMS
 	summarywidget.ui
-	searchwidget.ui
 	)
 SET (RESOURCES summaryresources.qrc)
 CreateTrs ("summary" "ar;be;de;en;es;fr;it;ru_RU;uk_UA" COMPILED_TRANSLATIONS)

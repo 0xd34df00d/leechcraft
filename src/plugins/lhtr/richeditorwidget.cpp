@@ -682,7 +682,7 @@ namespace LHTR
 			for (int j = 0; j < dia.GetColumns (); ++j)
 			{
 				w.writeStartElement ("td");
-				w.writeAttribute ("style", "border: 1px solid black; min-width: 1em; height: 1em;");
+				w.writeAttribute ("style", "border: 1px solid black; min-width: 1em; height: 1.5em;");
 				w.writeEndElement ();
 			}
 			w.writeEndElement ();
@@ -704,7 +704,7 @@ namespace LHTR
 		js += "for (var j = 0; j < row.cells.length; ++j)";
 		js += "{";
 		js += "    var newCell = newRow.insertCell(j);";
-		js += "    newCell.setAttribute('style', 'border: 1px solid black; min-width: 1em; height: 1em;');";
+		js += "    newCell.setAttribute('style', 'border: 1px solid black; min-width: 1em; height: 1.5em;');";
 		js += "}";
 
 		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
@@ -721,7 +721,7 @@ namespace LHTR
 		js += "for (var r = 0; r < table.rows.length; ++r)";
 		js += "{";
 		js += "    var newCell = table.rows[r].insertCell(colIdx);";
-		js += "    newCell.setAttribute('style', 'border: 1px solid black; min-width: 1em; height: 1em;');";
+		js += "    newCell.setAttribute('style', 'border: 1px solid black; min-width: 1em; height: 1.5em;');";
 		js += "}";
 
 		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
