@@ -18,6 +18,7 @@
 
 #include "player.h"
 #include <algorithm>
+#include <random>
 #include <QStandardItemModel>
 #include <QFileInfo>
 #include <QDir>
@@ -714,8 +715,25 @@ namespace LMP
 	Phonon::MediaSource Player::GetRandomBy (QList<Phonon::MediaSource>::const_iterator pos,
 			std::function<T (Phonon::MediaSource)> feature) const
 	{
-		auto randPos = [] (const QList<Phonon::MediaSource>& sources)
-			{ return qrand () % sources.size (); };
+		auto randPos = [&feature] (const QList<Phonon::MediaSource>& sources) -> int
+		{
+			QHash<T, QList<int>> fVals;
+			for (int i = 0; i < sources.size (); ++i)
+				fVals [feature (sources.at (i))] << i;
+
+			static std::random_device generator;
+			std::uniform_int_distribution<int> dist (0, sources.size () - 1);
+			auto fIdx = std::uniform_int_distribution<int> (0, fVals.size () - 1) (generator);
+
+			auto fPos = fVals.begin ();
+			std::advance (fPos, fIdx);
+			const auto& positions = *fPos;
+			if (positions.size () < 2)
+				return positions [0];
+
+			auto posIdx = std::uniform_int_distribution<int> (0, positions.size () - 1) (generator);
+			return positions [posIdx];
+		};
 		auto rand = [&randPos] (const QList<Phonon::MediaSource>& sources)
 			{ return sources.at (randPos (sources)); };
 
