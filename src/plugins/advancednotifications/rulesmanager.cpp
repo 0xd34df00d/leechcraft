@@ -27,6 +27,18 @@ namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
+	QDataStream& operator<< (QDataStream& out, const NotificationRule& r)
+	{
+		r.Save (out);
+		return out;
+	}
+
+	QDataStream& operator>> (QDataStream& in, NotificationRule& r)
+	{
+		r.Load (in);
+		return in;
+	}
+
 	namespace
 	{
 		class RulesModel : public QStandardItemModel
@@ -53,6 +65,11 @@ namespace AdvancedNotifications
 	: QObject (parent)
 	, RulesModel_ (new RulesModel (this))
 	{
+		qRegisterMetaType<NotificationRule> ("LeechCraft::AdvancedNotifications::NotificationRule");
+		qRegisterMetaTypeStreamOperators<NotificationRule> ("LeechCraft::AdvancedNotifications::NotificationRule");
+		qRegisterMetaType<QList<NotificationRule>> ("QList<LeechCraft::AdvancedNotifications::NotificationRule>");
+		qRegisterMetaTypeStreamOperators<QList<NotificationRule>> ("QList<LeechCraft::AdvancedNotifications::NotificationRule>");
+
 		Cat2HR_ [CatIM] = tr ("Instant messaging");
 		Type2HR_ [TypeIMAttention] = tr ("Attention request");
 		Type2HR_ [TypeIMIncFile] = tr ("Incoming file transfer request");
@@ -216,6 +233,7 @@ namespace AdvancedNotifications
 
 	void RulesManager::SaveSettings () const
 	{
+		qDebug () << Q_FUNC_INFO;
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_AdvancedNotifications");
 		settings.beginGroup ("rules");
