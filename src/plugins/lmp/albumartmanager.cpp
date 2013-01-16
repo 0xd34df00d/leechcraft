@@ -43,36 +43,16 @@ namespace LMP
 		if (!album->CoverPath_.isEmpty ())
 			return;
 
+		CheckAlbumArt (artist.Name_, album->Name_, false);
+	}
+
+	void AlbumArtManager::CheckAlbumArt (const QString& artist, const QString& album, bool preview)
+	{
 		if (Queue_.isEmpty ())
 			QTimer::singleShot (500,
 					this,
 					SLOT (rotateQueue ()));
-
-		Queue_.push_back ({ artist.Name_, album->Name_ });
-	}
-
-	void AlbumArtManager::rotateQueue ()
-	{
-		auto provs = Core::Instance ().GetProxy ()->
-				GetPluginsManager ()->GetAllCastableRoots<Media::IAlbumArtProvider*> ();
-		const auto& album = Queue_.takeFirst ();
-		Q_FOREACH (auto provObj, provs)
-		{
-			auto prov = qobject_cast<Media::IAlbumArtProvider*> (provObj);
-			connect (provObj,
-					SIGNAL (gotAlbumArt (Media::AlbumInfo, QList<QImage>)),
-					this,
-					SLOT (handleGotAlbumArt (Media::AlbumInfo, QList<QImage>)),
-					Qt::UniqueConnection);
-			prov->RequestAlbumArt (album);
-		}
-		if (!provs.isEmpty ())
-			NumRequests_ [album] = provs.size ();
-
-		if (!Queue_.isEmpty ())
-			QTimer::singleShot (500,
-					this,
-					SLOT (rotateQueue ()));
+		Queue_.push_back ({ { artist, album }, preview });
 	}
 
 	void AlbumArtManager::handleGotAlbumArt (const Media::AlbumInfo& info, const QList<QImage>& images)
@@ -111,6 +91,32 @@ namespace LMP
 				this,
 				SLOT (handleSaved ()));
 		watcher->setFuture (QtConcurrent::run (std::function<void (void)> ([image, fullPath] () { image.save (fullPath, "PNG", 100); })));
+	}
+
+	void AlbumArtManager::rotateQueue ()
+	{
+		auto provs = Core::Instance ().GetProxy ()->
+				GetPluginsManager ()->GetAllCastableRoots<Media::IAlbumArtProvider*> ();
+		const auto& task = Queue_.takeFirst ();
+		for (auto provObj : provs)
+		{
+			auto prov = qobject_cast<Media::IAlbumArtProvider*> (provObj);
+			prov->RequestAlbumArt (task.Info_);
+			connect (provObj,
+					SIGNAL (gotAlbumArt (Media::AlbumInfo, QList<QImage>)),
+					this,
+					task.PreviewMode_ ?
+							SIGNAL (gotImages (Media::AlbumInfo, QList<QImage>)) :
+							SLOT (handleGotAlbumArt (Media::AlbumInfo, QList<QImage>)),
+					Qt::UniqueConnection);
+		}
+		if (!provs.isEmpty ())
+			NumRequests_ [task.Info_] = provs.size ();
+
+		if (!Queue_.isEmpty ())
+			QTimer::singleShot (500,
+					this,
+					SLOT (rotateQueue ()));
 	}
 
 	void AlbumArtManager::handleSaved ()
