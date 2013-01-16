@@ -710,9 +710,46 @@ namespace LMP
 		CurrentStation_.reset ();
 	}
 
+	template<typename T>
+	Phonon::MediaSource Player::GetRandomBy (QList<Phonon::MediaSource>::const_iterator pos,
+			std::function<T (Phonon::MediaSource)> feature) const
+	{
+		auto randPos = [] (const QList<Phonon::MediaSource>& sources)
+			{ return qrand () % sources.size (); };
+		auto rand = [&randPos] (const QList<Phonon::MediaSource>& sources)
+			{ return sources.at (randPos (sources)); };
+
+		if (pos == CurrentQueue_.end ())
+			return rand (CurrentQueue_);
+
+		const auto& current = feature (*pos);
+		++pos;
+		if (pos != CurrentQueue_.end () && feature (*pos) == current)
+			return *pos;
+
+		auto modifiedQueue = CurrentQueue_;
+		auto endPos = std::remove_if (modifiedQueue.begin (), modifiedQueue.end (),
+				[&current, &feature, this] (decltype (modifiedQueue.at (0)) source)
+					{ return feature (source) == current; });
+		modifiedQueue.erase (endPos, modifiedQueue.end ());
+		if (modifiedQueue.isEmpty ())
+			return rand (CurrentQueue_);
+
+		pos = modifiedQueue.begin () + randPos (modifiedQueue);
+		const auto& origFeature = feature (*pos);
+		while (pos != modifiedQueue.begin ())
+		{
+			if (feature (*(pos - 1)) != origFeature)
+				break;
+			--pos;
+		}
+		return *pos;
+	}
+
 	Phonon::MediaSource Player::GetNextSource (const Phonon::MediaSource& current) const
 	{
 		auto pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
+
 		switch (PlayMode_)
 		{
 		case PlayMode::Sequential:
@@ -721,7 +758,17 @@ namespace LMP
 			else
 				return Phonon::MediaSource ();
 		case PlayMode::Shuffle:
-			return CurrentQueue_.at (qrand () % CurrentQueue_.size ());
+			return GetRandomBy<int> (pos,
+					[&CurrentQueue_] (const Phonon::MediaSource& source)
+						{ return CurrentQueue_.indexOf (source); });
+		case PlayMode::ShuffleAlbums:
+			return GetRandomBy<QString> (pos,
+					[this] (const Phonon::MediaSource& source)
+						{ return GetMediaInfo (source).Album_; });
+		case PlayMode::ShuffleArtists:
+			return GetRandomBy<QString> (pos,
+					[this] (const Phonon::MediaSource& source)
+						{ return GetMediaInfo (source).Artist_; });
 		case PlayMode::RepeatTrack:
 			return current;
 		case PlayMode::RepeatAlbum:
