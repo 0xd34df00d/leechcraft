@@ -24,6 +24,7 @@
 #include <QDateTime>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/idndtab.h>
 #include <interfaces/ihaverecoverabletabs.h>
 #include "interfaces/azoth/azothcommon.h"
 #include "ui_chattab.h"
@@ -45,9 +46,10 @@ namespace Azoth
 	class ChatTab : public QWidget
 				  , public ITabWidget
 				  , public IRecoverableTab
+				  , public IDNDTab
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget IRecoverableTab)
+		Q_INTERFACES (ITabWidget IRecoverableTab IDNDTab)
 
 		static QObject *S_ParentMultiTabs_;
 		static TabClassInfo S_TabClass_;
@@ -116,6 +118,10 @@ namespace Azoth
 		QByteArray GetTabRecoverData () const;
 		QString GetTabRecoverName () const;
 		QIcon GetTabRecoverIcon () const;
+
+		void FillMimeData (QMimeData*);
+		void HandleDragEnter (QDragMoveEvent*);
+		void HandleDrop (QDropEvent*);
 
 		void HandleMUCParticipantsChanged ();
 

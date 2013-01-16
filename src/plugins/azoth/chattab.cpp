@@ -352,6 +352,44 @@ namespace Azoth
 				QPixmap::fromImage (avatar);
 	}
 
+	void ChatTab::FillMimeData (QMimeData *data)
+	{
+		if (auto entry = GetEntry<ICLEntry> ())
+		{
+			const auto& id = entry->GetHumanReadableID ();
+			data->setText (id);
+#if QT_VERSION >= 0x040800
+			data->setUrls ({ id });
+#endif
+		}
+	}
+
+	void ChatTab::HandleDragEnter (QDragMoveEvent *event)
+	{
+		auto data = event->mimeData ();
+		if (data->hasText ())
+			event->acceptProposedAction ();
+		else if (data->hasUrls ())
+		{
+			for (const auto& url : data->urls ())
+				if (url.isLocalFile () &&
+						QFile::exists (url.toLocalFile ()))
+				{
+					event->acceptProposedAction ();
+					break;
+				}
+		}
+	}
+
+	void ChatTab::HandleDrop (QDropEvent *event)
+	{
+		auto data = event->mimeData ();
+		if (data->hasUrls ())
+			handleFilesDropped (data->urls ());
+		else if (data->hasText ())
+			appendMessageText (data->text ());
+	}
+
 	void ChatTab::HandleMUCParticipantsChanged ()
 	{
 		IMUCEntry *muc = GetEntry<IMUCEntry> ();
