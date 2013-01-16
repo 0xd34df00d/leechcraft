@@ -75,8 +75,7 @@ namespace LMP
 
 				const auto& pattern = filterRegExp ().pattern ();
 
-				if (type == LocalCollection::NodeType::Artist ||
-					type == LocalCollection::NodeType::Album)
+				if (type != LocalCollection::NodeType::Track)
 					for (int i = 0, rc = sourceModel ()->rowCount (source); i < rc; ++i)
 						if (filterAcceptsRow (i, source))
 							return true;

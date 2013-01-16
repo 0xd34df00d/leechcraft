@@ -530,7 +530,7 @@ namespace LMP
 					PresentPaths_ << track.FilePath_;
 		}
 
-		Q_FOREACH (const auto& artist, artists)
+		for (const auto& artist : artists)
 		{
 			albumCount += artist.Albums_.size ();
 
@@ -544,7 +544,7 @@ namespace LMP
 						item->setData (NodeType::Artist, Role::Node);
 					},
 					CollectionModel_);
-			Q_FOREACH (auto album, artist.Albums_)
+			for (auto album : artist.Albums_)
 			{
 				trackCount += album->Tracks_.size ();
 
@@ -573,7 +573,7 @@ namespace LMP
 					AlbumID2ArtistID_ [album->ID_] = artist.ID_;
 				}
 
-				Q_FOREACH (const auto& track, album->Tracks_)
+				for (const auto& track : album->Tracks_)
 				{
 					const QString& name = QString::fromUtf8 ("%1 — %2")
 							.arg (track.Number_)
@@ -583,6 +583,7 @@ namespace LMP
 					item->setData (track.Number_, Role::TrackNumber);
 					item->setData (track.Name_, Role::TrackTitle);
 					item->setData (track.FilePath_, Role::TrackPath);
+					item->setData (track.Genres_, Role::TrackGenres);
 					item->setData (NodeType::Track, Role::Node);
 					albumItem->appendRow (item);
 

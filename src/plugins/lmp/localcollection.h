@@ -94,7 +94,8 @@ namespace LMP
 			AlbumArt,
 			TrackNumber,
 			TrackTitle,
-			TrackPath
+			TrackPath,
+			TrackGenres
 		};
 
 		enum class DynamicPlaylist
