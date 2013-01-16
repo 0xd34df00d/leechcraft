@@ -123,6 +123,8 @@ namespace LMP
 
 		bool IsReady () const;
 
+		AlbumArtManager* GetAlbumArtManager () const;
+
 		QAbstractItemModel* GetCollectionModel () const;
 		void Enqueue (const QModelIndex&, Player*);
 		void Enqueue (const QList<QModelIndex>&, Player*);

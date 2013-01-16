@@ -144,6 +144,11 @@ namespace LMP
 		return IsReady_;
 	}
 
+	AlbumArtManager* LocalCollection::GetAlbumArtManager () const
+	{
+		return AlbumArtMgr_;
+	}
+
 	QAbstractItemModel* LocalCollection::GetCollectionModel () const
 	{
 		return Sorter_;
