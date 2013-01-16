@@ -97,7 +97,7 @@ namespace LMP
 		void handleFullRaiseRequested ();
 		void showCollectionStats ();
 
-		void handleArtistBrowseRequested (const QString&);
+		void handleArtistBrowseRequested (const QString&, const DynPropertiesList_t& = DynPropertiesList_t ());
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);
