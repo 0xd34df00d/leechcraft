@@ -21,6 +21,7 @@
 #include <QKeyEvent>
 #include <QTimer>
 #include <QtConcurrentMap>
+#include <util/gui/clearlineeditaddon.h>
 #include "core.h"
 #include "albumartmanager.h"
 
@@ -68,6 +69,9 @@ namespace LMP
 		Ui_.ArtistLine_->installEventFilter (new ReturnPressSwallower (this));
 		Ui_.AlbumLine_->setText (album);
 		Ui_.AlbumLine_->installEventFilter (new ReturnPressSwallower (this));
+
+		new Util::ClearLineEditAddon (Ui_.ArtistLine_);
+		new Util::ClearLineEditAddon (Ui_.AlbumLine_);
 
 		Ui_.ArtView_->setModel (Model_);
 
