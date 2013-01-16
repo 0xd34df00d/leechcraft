@@ -216,7 +216,13 @@ namespace LeechCraft
 
 	void SeparateTabBar::dragEnterEvent (QDragEnterEvent *event)
 	{
-		if (IsLastTab_ && tabAt (event->pos ()) == count () - 1)
+		dragMoveEvent (event);
+	}
+
+	void SeparateTabBar::dragMoveEvent (QDragMoveEvent *event)
+	{
+		const auto tabIdx = tabAt (event->pos ());
+		if (IsLastTab_ && tabIdx == count () - 1)
 			return;
 
 		auto data = event->mimeData ();
@@ -224,8 +230,10 @@ namespace LeechCraft
 		if (formats.contains ("x-leechcraft/tab-drag-action") &&
 				data->data ("x-leechcraft/tab-drag-action") == "reordering")
 			event->acceptProposedAction ();
+		else
+			TabWidget_->setCurrentIndex (tabIdx);
 
-		if (auto idt = qobject_cast<IDNDTab*> (TabWidget_->Widget (tabAt (event->pos ()))))
+		if (auto idt = qobject_cast<IDNDTab*> (TabWidget_->Widget (tabIdx)))
 			idt->HandleDragEnter (event);
 	}
 
