@@ -19,6 +19,7 @@
 #include "albumartmanagerdialog.h"
 #include <QStandardItemModel>
 #include <QKeyEvent>
+#include <QFileDialog>
 #include <QTimer>
 #include <QtConcurrentMap>
 #include <util/gui/clearlineeditaddon.h>
@@ -125,6 +126,24 @@ namespace LMP
 
 		const auto& img = FullImages_ [idx.row ()];
 		AAMgr_->handleGotAlbumArt (SourceInfo_, { img });
+	}
+
+	void AlbumArtManagerDialog::on_BrowseButton__released ()
+	{
+		const auto& filename = QFileDialog::getOpenFileName (this,
+				tr ("Choose album art"),
+				QDir::homePath (),
+				tr ("Images (*png *.jpg *.jpeg);;All files (*.*)"));
+		if (filename.isEmpty ())
+			return;
+
+		QImage image (filename);
+		if (image.isNull ())
+			return;
+
+#if QT_VERSION >= 0x040800
+		handleImages ({ GetArtist (), GetAlbum () }, { image });
+#endif
 	}
 
 	namespace

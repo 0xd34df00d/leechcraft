@@ -52,6 +52,7 @@ namespace LMP
 	public slots:
 		void accept ();
 	private slots:
+		void on_BrowseButton__released ();
 		void handleImages (const Media::AlbumInfo&, const QList<QImage>&);
 		void handleResized ();
 		void request ();
