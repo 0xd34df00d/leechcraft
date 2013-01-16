@@ -141,12 +141,12 @@ namespace LeechCraft
 			GetInstalledLangsModel ());
 
 		XmlSettingsDialog_->SetDataSource ("IconSet",
-			new QStringListModel (IconThemeEngine::Instance ().ListIcons ()));
+				new QStringListModel (IconThemeEngine::Instance ().ListIcons ()));
 		XmlSettingsManager::Instance ()->RegisterObject ("IconSet", this, "updateIconSet");
 		updateIconSet ();
 
 		XmlSettingsDialog_->SetDataSource ("ColorTheme",
-			new QStringListModel (ColorThemeEngine::Instance ().ListThemes ()));
+				ColorThemeEngine::Instance ().GetThemesModel ());
 		XmlSettingsManager::Instance ()->RegisterObject ("ColorTheme", this, "updateColorTheme");
 		updateColorTheme ();
 
