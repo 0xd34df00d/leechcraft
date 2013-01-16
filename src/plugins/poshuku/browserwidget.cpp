@@ -828,7 +828,7 @@ namespace Poshuku
 		data->setImageData (image);
 	}
 
-	void BrowserWidget::HandleDragEnter (QDragEnterEvent *event)
+	void BrowserWidget::HandleDragEnter (QDragMoveEvent *event)
 	{
 		if (event->mimeData ()->hasUrls ())
 			event->acceptProposedAction ();

@@ -21,7 +21,7 @@
 #include <QtPlugin>
 
 class QDropEvent;
-class QDragEnterEvent;
+class QDragMoveEvent;
 class QMimeData;
 
 class IDNDTab
@@ -31,7 +31,7 @@ public:
 
 	virtual void FillMimeData (QMimeData*) = 0;
 
-	virtual void HandleDragEnter (QDragEnterEvent*) = 0;
+	virtual void HandleDragEnter (QDragMoveEvent*) = 0;
 
 	virtual void HandleDrop (QDropEvent*) = 0;
 };

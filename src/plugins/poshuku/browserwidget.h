@@ -141,7 +141,7 @@ namespace Poshuku
 		TabClassInfo GetTabClassInfo () const;
 
 		void FillMimeData (QMimeData*);
-		void HandleDragEnter (QDragEnterEvent*);
+		void HandleDragEnter (QDragMoveEvent*);
 		void HandleDrop (QDropEvent*);
 
 		void SetTabRecoverData (const QByteArray&);
