@@ -233,7 +233,6 @@ namespace AdvancedNotifications
 
 	void RulesManager::SaveSettings () const
 	{
-		qDebug () << Q_FUNC_INFO;
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_AdvancedNotifications");
 		settings.beginGroup ("rules");
