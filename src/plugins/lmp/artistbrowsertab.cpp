@@ -67,6 +67,29 @@ namespace LMP
 		return 0;
 	}
 
+	QByteArray ArtistBrowserTab::GetTabRecoverData () const
+	{
+		const auto& artist = Ui_.ArtistNameEdit_->text ();
+		if (artist.isEmpty ())
+			return QByteArray ();
+
+		QByteArray result;
+		QDataStream stream (&result, QIODevice::WriteOnly);
+		stream << QByteArray ("artistbrowser") << artist;
+		return result;
+	}
+
+	QIcon ArtistBrowserTab::GetTabRecoverIcon () const
+	{
+		return TC_.Icon_;
+	}
+
+	QString ArtistBrowserTab::GetTabRecoverName () const
+	{
+		const auto& artist = Ui_.ArtistNameEdit_->text ();
+		return artist.isEmpty () ? QString () : tr ("Artist browser: %1");
+	}
+
 	void ArtistBrowserTab::Browse (const QString& artist)
 	{
 		Ui_.ArtistNameEdit_->setText (artist);
@@ -90,6 +113,8 @@ namespace LMP
 
 		BioMgr_->Request (provs.first (), artist);
 		SimilarMgr_->DefaultRequest (artist);
+
+		emit tabRecoverDataChanged ();
 	}
 }
 }
