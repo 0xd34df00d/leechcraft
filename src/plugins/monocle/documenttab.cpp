@@ -32,6 +32,10 @@
 #include <QClipboard>
 #include <QtDebug>
 #include <QTimer>
+#include <QMimeData>
+#include <QDragMoveEvent>
+#include <QDropEvent>
+#include <QUrl>
 #include <interfaces/imwproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include "interfaces/monocle/ihavetoc.h"
@@ -155,6 +159,46 @@ namespace Monocle
 		}
 
 		return result;
+	}
+
+	void DocumentTab::FillMimeData (QMimeData *data)
+	{
+		if (CurrentDocPath_.isEmpty ())
+			return;
+
+		data->setUrls ({ QUrl::fromLocalFile (CurrentDocPath_) });
+		data->setText (QFileInfo (CurrentDocPath_).fileName ());
+	}
+
+	void DocumentTab::HandleDragEnter (QDragMoveEvent *event)
+	{
+		auto data = event->mimeData ();
+
+		if (!data->hasUrls ())
+			return;
+
+		const auto& url = data->urls ().first ();
+		if (!url.isLocalFile () || !QFile::exists (url.toLocalFile ()))
+			return;
+
+		const auto& localPath = url.toLocalFile ();
+		if (Core::Instance ().CanLoadDocument (localPath))
+			event->acceptProposedAction ();
+	}
+
+	void DocumentTab::HandleDrop (QDropEvent *event)
+	{
+		auto data = event->mimeData ();
+
+		if (!data->hasUrls ())
+			return;
+
+		const auto& url = data->urls ().first ();
+		if (!url.isLocalFile () || !QFile::exists (url.toLocalFile ()))
+			return;
+
+		SetDoc (url.toLocalFile ());
+		event->acceptProposedAction ();
 	}
 
 	void DocumentTab::RecoverState (const QByteArray& data)
