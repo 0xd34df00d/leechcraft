@@ -70,7 +70,17 @@ namespace LMP
 
 		--NumRequests_ [info];
 
-		const auto& image = images.value (0);
+		auto imgCmp = [] (const QImage& l, const QImage& r) { return l.width () < r.width (); };
+
+		const auto& image = images.size () > 1 ?
+				*std::max_element (images.begin (), images.end (), imgCmp) :
+				images.value (0);
+
+		if (BestSizes_.value (info).width () >= image.width ())
+			return;
+
+		BestSizes_ [info] = image.size ();
+
 		if (image.isNull ())
 		{
 			if (!NumRequests_ [info])

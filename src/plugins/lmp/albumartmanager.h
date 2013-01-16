@@ -40,6 +40,8 @@ namespace LMP
 		};
 		QList<TaskQueue> Queue_;
 		QHash<Media::AlbumInfo, int> NumRequests_;
+
+		QHash<Media::AlbumInfo, QSize> BestSizes_;
 	public:
 		AlbumArtManager (QObject* = 0);
 
