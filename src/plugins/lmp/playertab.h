@@ -82,6 +82,7 @@ namespace LMP
 
 		QAction *CollectionShowTrackProps_;
 		QAction *CollectionShowAlbumArt_;
+		QAction *CollectionShowAAManager_;
 		QAction *CollectionRemove_;
 		QAction *CollectionDelete_;
 		QListWidget *NavButtons_;
@@ -126,6 +127,7 @@ namespace LMP
 		void handleScanProgress (int);
 		void showCollectionTrackProps ();
 		void showCollectionAlbumArt ();
+		void showAlbumArtManager ();
 		void handleCollectionRemove ();
 		void handleCollectionDelete ();
 		void loadFromCollection ();

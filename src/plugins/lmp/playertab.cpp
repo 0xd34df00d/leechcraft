@@ -49,6 +49,7 @@
 
 #ifdef ENABLE_MPRIS
 #include "mpris/instance.h"
+#include "albumartmanagerdialog.h"
 #endif
 
 Q_DECLARE_METATYPE (Phonon::MediaSource);
@@ -443,6 +444,13 @@ namespace LMP
 				SLOT (showCollectionAlbumArt ()));
 		Ui_.CollectionTree_->addAction (CollectionShowAlbumArt_);
 
+		CollectionShowAAManager_ = new QAction (tr ("Album art manager..."), Ui_.CollectionTree_);
+		connect (CollectionShowAAManager_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (showAlbumArtManager ()));
+		Ui_.CollectionTree_->addAction (CollectionShowAAManager_);
+
 		Ui_.CollectionTree_->addAction (Util::CreateSeparator (Ui_.CollectionTree_));
 
 		CollectionRemove_ = new QAction (tr ("Remove from collection..."), Ui_.CollectionTree_);
@@ -767,6 +775,19 @@ namespace LMP
 		ShowAlbumArt (path, QCursor::pos ());
 	}
 
+	void PlayerTab::showAlbumArtManager ()
+	{
+		auto aamgr = Core::Instance ().GetLocalCollection ()->GetAlbumArtManager ();
+
+		const auto& index = Ui_.CollectionTree_->currentIndex ();
+		const auto& album = index.data (LocalCollection::Role::AlbumName).toString ();
+		const auto& artist= index.data (LocalCollection::Role::ArtistName).toString ();
+
+		auto dia = new AlbumArtManagerDialog (artist, album, aamgr, this);
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->show ();
+	}
+
 	namespace
 	{
 		template<typename T>
@@ -850,6 +871,7 @@ namespace LMP
 		const int nodeType = index.data (LocalCollection::Role::Node).value<int> ();
 		CollectionShowTrackProps_->setEnabled (nodeType == LocalCollection::NodeType::Track);
 		CollectionShowAlbumArt_->setEnabled (nodeType == LocalCollection::NodeType::Album);
+		CollectionShowAAManager_->setEnabled (nodeType == LocalCollection::NodeType::Album);
 	}
 
 	void PlayerTab::handlePlayerAvailable (bool available)
