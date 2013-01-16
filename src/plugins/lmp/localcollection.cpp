@@ -557,13 +557,14 @@ namespace LMP
 
 				auto albumItem = GetItem (Album2Item_,
 						album->ID_,
-						[album] (QStandardItem *item)
+						[album, artist] (QStandardItem *item)
 						{
 							item->setText (QString::fromUtf8 ("%1 — %2")
 									.arg (album->Year_)
 									.arg (album->Name_));
 							item->setData (album->Year_, Role::AlbumYear);
 							item->setData (album->Name_, Role::AlbumName);
+							item->setData (artist.Name_, Role::ArtistName);
 							item->setData (NodeType::Album, Role::Node);
 							if (!album->CoverPath_.isEmpty ())
 								item->setData (album->CoverPath_, Role::AlbumArt);
