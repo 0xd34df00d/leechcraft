@@ -777,7 +777,7 @@ namespace LMP
 				return Phonon::MediaSource ();
 		case PlayMode::Shuffle:
 			return GetRandomBy<int> (pos,
-					[&CurrentQueue_] (const Phonon::MediaSource& source)
+					[this] (const Phonon::MediaSource& source)
 						{ return CurrentQueue_.indexOf (source); });
 		case PlayMode::ShuffleAlbums:
 			return GetRandomBy<QString> (pos,
