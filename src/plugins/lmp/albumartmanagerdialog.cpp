@@ -70,8 +70,8 @@ namespace LMP
 		Ui_.AlbumLine_->setText (album);
 		Ui_.AlbumLine_->installEventFilter (new ReturnPressSwallower (this));
 
-		new Util::ClearLineEditAddon (Ui_.ArtistLine_);
-		new Util::ClearLineEditAddon (Ui_.AlbumLine_);
+		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.ArtistLine_);
+		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.AlbumLine_);
 
 		Ui_.ArtView_->setModel (Model_);
 
