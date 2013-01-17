@@ -816,6 +816,32 @@ namespace Poshuku
 		return Core::Instance ().GetTabClass ();
 	}
 
+	void BrowserWidget::FillMimeData (QMimeData *data)
+	{
+		const auto& url = WebView_->url ();
+#if QT_VERSION >= 0x040800
+		if (!url.isEmpty () && url.isValid ())
+			data->setUrls ({ url });
+#endif
+		QImage image (WebView_->size (), QImage::Format_ARGB32);
+		WebView_->render (&image);
+		data->setImageData (image);
+	}
+
+	void BrowserWidget::HandleDragEnter (QDragMoveEvent *event)
+	{
+		if (event->mimeData ()->hasUrls ())
+			event->acceptProposedAction ();
+	}
+
+	void BrowserWidget::HandleDrop (QDropEvent *event)
+	{
+		const auto& urls = event->mimeData ()->urls ();
+		if (!urls.isEmpty ())
+			SetURL (urls.first ());
+		event->acceptProposedAction ();
+	}
+
 	void BrowserWidget::SetTabRecoverData (const QByteArray& data)
 	{
 		QUrl url;

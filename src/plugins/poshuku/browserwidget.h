@@ -23,6 +23,7 @@
 #include <QTime>
 #include <qwebpage.h>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/idndtab.h>
 #include <interfaces/iwebbrowser.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/structures.h>
@@ -50,10 +51,15 @@ namespace Poshuku
 						, public IBrowserWidget
 						, public IWebWidget
 						, public ITabWidget
+						, public IDNDTab
 						, public IRecoverableTab
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Poshuku::IBrowserWidget IWebWidget ITabWidget IRecoverableTab)
+		Q_INTERFACES (LeechCraft::Poshuku::IBrowserWidget
+				IWebWidget
+				ITabWidget
+				IDNDTab
+				IRecoverableTab)
 
 		Ui::BrowserWidget Ui_;
 
@@ -133,6 +139,10 @@ namespace Poshuku
 		QMap<QString, QList<QAction*>> GetWindowMenus () const;
 		QObject* ParentMultiTabs ();
 		TabClassInfo GetTabClassInfo () const;
+
+		void FillMimeData (QMimeData*);
+		void HandleDragEnter (QDragMoveEvent*);
+		void HandleDrop (QDropEvent*);
 
 		void SetTabRecoverData (const QByteArray&);
 		QByteArray GetTabRecoverData () const;

@@ -18,44 +18,46 @@
 
 #pragma once
 
-#include <QObject>
-#include <QPalette>
-#include <QHash>
-#include <interfaces/core/icolorthememanager.h>
+#include <QDialog>
+#include <interfaces/media/ialbumartprovider.h>
+#include "ui_albumartmanagerdialog.h"
 
-class QAbstractItemModel;
-class QSettings;
+class QStandardItemModel;
 
 namespace LeechCraft
 {
-	namespace Util
-	{
-		class ResourceLoader;
-	}
+namespace LMP
+{
+	class AlbumArtManager;
 
-	class ColorThemeEngine : public QObject
-						   , public IColorThemeManager
+	class AlbumArtManagerDialog : public QDialog
 	{
 		Q_OBJECT
-		Q_INTERFACES (IColorThemeManager)
 
-		QPalette StartupPalette_;
-		QHash<QString, QHash<QString, QColor>> QMLColors_;
+		AlbumArtManager * const AAMgr_;
 
-		Util::ResourceLoader *Loader_;
+		Ui::AlbumArtManagerDialog Ui_;
 
-		ColorThemeEngine ();
+		QStandardItemModel *Model_;
+		QList<QImage> FullImages_;
+
+		const Media::AlbumInfo SourceInfo_;
+
+		bool RequestScheduled_;
 	public:
-		static ColorThemeEngine& Instance ();
+		AlbumArtManagerDialog (const QString& artist, const QString& album, AlbumArtManager*, QWidget* = 0);
 
-		QColor GetQMLColor (const QString& section, const QString& key);
-		QObject* GetObject ();
-
-		QAbstractItemModel* GetThemesModel () const;
-		void SetTheme (const QString&);
-	private:
-		void FillQML (QSettings&);
-	signals:
-		void themeChanged ();
+		QString GetArtist () const;
+		QString GetAlbum () const;
+	public slots:
+		void accept ();
+	private slots:
+		void on_BrowseButton__released ();
+		void handleImages (const Media::AlbumInfo&, const QList<QImage>&);
+		void handleResized ();
+		void request ();
+		void requestScheduled ();
+		void scheduleRequest ();
 	};
+}
 }

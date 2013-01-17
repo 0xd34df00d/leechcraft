@@ -32,16 +32,28 @@ namespace LMP
 		Q_OBJECT
 
 		QDir AADir_;
-		QList<Media::AlbumInfo> Queue_;
+
+		struct TaskQueue
+		{
+			Media::AlbumInfo Info_;
+			bool PreviewMode_;
+		};
+		QList<TaskQueue> Queue_;
 		QHash<Media::AlbumInfo, int> NumRequests_;
+
+		QHash<Media::AlbumInfo, QSize> BestSizes_;
 	public:
 		AlbumArtManager (QObject* = 0);
 
 		void CheckAlbumArt (const Collection::Artist&, Collection::Album_ptr);
+		void CheckAlbumArt (const QString& artist, const QString& album, bool preview);
+	public slots:
+		void handleGotAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
 	private slots:
 		void rotateQueue ();
-		void handleGotAlbumArt (const Media::AlbumInfo&, const QList<QImage>&);
 		void handleSaved ();
+	signals:
+		void gotImages (const Media::AlbumInfo&, const QList<QImage>&);
 	};
 }
 }

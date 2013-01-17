@@ -22,6 +22,7 @@
 #include <QComboBox>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaverecoverabletabs.h>
+#include <interfaces/idndtab.h>
 #include "interfaces/monocle/idocument.h"
 #include "ui_documenttab.h"
 
@@ -39,9 +40,10 @@ namespace Monocle
 	class DocumentTab : public QWidget
 					  , public ITabWidget
 					  , public IRecoverableTab
+					  , public IDNDTab
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget IRecoverableTab)
+		Q_INTERFACES (ITabWidget IRecoverableTab IDNDTab)
 
 		Ui::DocumentTab Ui_;
 
@@ -93,6 +95,10 @@ namespace Monocle
 		QString GetTabRecoverName () const;
 		QIcon GetTabRecoverIcon () const;
 		QByteArray GetTabRecoverData () const;
+
+		void FillMimeData (QMimeData*);
+		void HandleDragEnter (QDragMoveEvent*);
+		void HandleDrop (QDropEvent*);
 
 		void RecoverState (const QByteArray&);
 

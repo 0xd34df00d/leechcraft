@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <functional>
 #include <QObject>
 #include <phonon/mediasource.h>
 #include <phonon/path.h>
@@ -69,6 +70,8 @@ namespace LMP
 		{
 			Sequential,
 			Shuffle,
+			ShuffleAlbums,
+			ShuffleArtists,
 			RepeatTrack,
 			RepeatAlbum,
 			RepeatWhole
@@ -132,6 +135,9 @@ namespace LMP
 
 		void UnsetRadio ();
 
+		template<typename T>
+		Phonon::MediaSource GetRandomBy (QList<Phonon::MediaSource>::const_iterator,
+				std::function<T (Phonon::MediaSource)>) const;
 		Phonon::MediaSource GetNextSource (const Phonon::MediaSource&) const;
 	public slots:
 		void play (const QModelIndex&);

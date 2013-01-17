@@ -18,44 +18,22 @@
 
 #pragma once
 
-#include <QObject>
-#include <QPalette>
-#include <QHash>
-#include <interfaces/core/icolorthememanager.h>
+#include <QtPlugin>
 
-class QAbstractItemModel;
-class QSettings;
+class QDropEvent;
+class QDragMoveEvent;
+class QMimeData;
 
-namespace LeechCraft
+class IDNDTab
 {
-	namespace Util
-	{
-		class ResourceLoader;
-	}
+public:
+	virtual ~IDNDTab () {}
 
-	class ColorThemeEngine : public QObject
-						   , public IColorThemeManager
-	{
-		Q_OBJECT
-		Q_INTERFACES (IColorThemeManager)
+	virtual void FillMimeData (QMimeData*) = 0;
 
-		QPalette StartupPalette_;
-		QHash<QString, QHash<QString, QColor>> QMLColors_;
+	virtual void HandleDragEnter (QDragMoveEvent*) = 0;
 
-		Util::ResourceLoader *Loader_;
+	virtual void HandleDrop (QDropEvent*) = 0;
+};
 
-		ColorThemeEngine ();
-	public:
-		static ColorThemeEngine& Instance ();
-
-		QColor GetQMLColor (const QString& section, const QString& key);
-		QObject* GetObject ();
-
-		QAbstractItemModel* GetThemesModel () const;
-		void SetTheme (const QString&);
-	private:
-		void FillQML (QSettings&);
-	signals:
-		void themeChanged ();
-	};
-}
+Q_DECLARE_INTERFACE (IDNDTab, "org.Deviant.LeechCraft.IDNDTab/1.0");

@@ -20,6 +20,7 @@
 
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/ihaverecoverabletabs.h>
 #include "ui_artistbrowsertab.h"
 
 namespace LeechCraft
@@ -31,9 +32,10 @@ namespace LMP
 
 	class ArtistBrowserTab : public QWidget
 						   , public ITabWidget
+						   , public IRecoverableTab
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
+		Q_INTERFACES (ITabWidget IRecoverableTab)
 
 		const TabClassInfo TC_;
 		QObject * const Plugin_;
@@ -50,11 +52,17 @@ namespace LMP
 		void Remove ();
 		QToolBar* GetToolBar () const;
 
+		QByteArray GetTabRecoverData () const;
+		QIcon GetTabRecoverIcon () const;
+		QString GetTabRecoverName () const;
+
 		void Browse (const QString&);
 	private slots:
 		void on_ArtistNameEdit__returnPressed ();
 	signals:
 		void removeTab (QWidget*);
+
+		void tabRecoverDataChanged ();
 	};
 }
 }

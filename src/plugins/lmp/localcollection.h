@@ -94,7 +94,8 @@ namespace LMP
 			AlbumArt,
 			TrackNumber,
 			TrackTitle,
-			TrackPath
+			TrackPath,
+			TrackGenres
 		};
 
 		enum class DynamicPlaylist
@@ -121,6 +122,8 @@ namespace LMP
 		void FinalizeInit ();
 
 		bool IsReady () const;
+
+		AlbumArtManager* GetAlbumArtManager () const;
 
 		QAbstractItemModel* GetCollectionModel () const;
 		void Enqueue (const QModelIndex&, Player*);

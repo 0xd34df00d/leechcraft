@@ -60,6 +60,7 @@ namespace LeechCraft
 		void mousePressEvent (QMouseEvent*);
 		void mouseMoveEvent (QMouseEvent*);
 		void dragEnterEvent (QDragEnterEvent*);
+		void dragMoveEvent (QDragMoveEvent*);
 		void dropEvent (QDropEvent*);
 
 		void mouseDoubleClickEvent (QMouseEvent*);

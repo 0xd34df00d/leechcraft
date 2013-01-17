@@ -144,6 +144,11 @@ namespace LMP
 		return IsReady_;
 	}
 
+	AlbumArtManager* LocalCollection::GetAlbumArtManager () const
+	{
+		return AlbumArtMgr_;
+	}
+
 	QAbstractItemModel* LocalCollection::GetCollectionModel () const
 	{
 		return Sorter_;
@@ -530,7 +535,7 @@ namespace LMP
 					PresentPaths_ << track.FilePath_;
 		}
 
-		Q_FOREACH (const auto& artist, artists)
+		for (const auto& artist : artists)
 		{
 			albumCount += artist.Albums_.size ();
 
@@ -544,7 +549,7 @@ namespace LMP
 						item->setData (NodeType::Artist, Role::Node);
 					},
 					CollectionModel_);
-			Q_FOREACH (auto album, artist.Albums_)
+			for (auto album : artist.Albums_)
 			{
 				trackCount += album->Tracks_.size ();
 
@@ -552,13 +557,14 @@ namespace LMP
 
 				auto albumItem = GetItem (Album2Item_,
 						album->ID_,
-						[album] (QStandardItem *item)
+						[album, artist] (QStandardItem *item)
 						{
 							item->setText (QString::fromUtf8 ("%1 — %2")
 									.arg (album->Year_)
 									.arg (album->Name_));
 							item->setData (album->Year_, Role::AlbumYear);
 							item->setData (album->Name_, Role::AlbumName);
+							item->setData (artist.Name_, Role::ArtistName);
 							item->setData (NodeType::Album, Role::Node);
 							if (!album->CoverPath_.isEmpty ())
 								item->setData (album->CoverPath_, Role::AlbumArt);
@@ -573,7 +579,7 @@ namespace LMP
 					AlbumID2ArtistID_ [album->ID_] = artist.ID_;
 				}
 
-				Q_FOREACH (const auto& track, album->Tracks_)
+				for (const auto& track : album->Tracks_)
 				{
 					const QString& name = QString::fromUtf8 ("%1 — %2")
 							.arg (track.Number_)
@@ -583,6 +589,7 @@ namespace LMP
 					item->setData (track.Number_, Role::TrackNumber);
 					item->setData (track.Name_, Role::TrackTitle);
 					item->setData (track.FilePath_, Role::TrackPath);
+					item->setData (track.Genres_, Role::TrackGenres);
 					item->setData (NodeType::Track, Role::Node);
 					albumItem->appendRow (item);
 
