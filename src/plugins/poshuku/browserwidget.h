@@ -23,6 +23,7 @@
 #include <QTime>
 #include <qwebpage.h>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/idndtab.h>
 #include <interfaces/iwebbrowser.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/structures.h>
@@ -50,16 +51,23 @@ namespace Poshuku
 						, public IBrowserWidget
 						, public IWebWidget
 						, public ITabWidget
+						, public IDNDTab
 						, public IRecoverableTab
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Poshuku::IBrowserWidget IWebWidget ITabWidget IRecoverableTab)
+		Q_INTERFACES (LeechCraft::Poshuku::IBrowserWidget
+				IWebWidget
+				ITabWidget
+				IDNDTab
+				IRecoverableTab)
 
 		Ui::BrowserWidget Ui_;
 
 		QToolBar *ToolBar_;
 		QAction *Add2Favorites_;
 		QAction *Find_;
+		QAction *FindNext_;
+		QAction *FindPrevious_;
 		QAction *Print_;
 		QAction *PrintPreview_;
 		QAction *ScreenSave_;
@@ -132,6 +140,10 @@ namespace Poshuku
 		QObject* ParentMultiTabs ();
 		TabClassInfo GetTabClassInfo () const;
 
+		void FillMimeData (QMimeData*);
+		void HandleDragEnter (QDragMoveEvent*);
+		void HandleDrop (QDropEvent*);
+
 		void SetTabRecoverData (const QByteArray&);
 		QByteArray GetTabRecoverData () const;
 		QString GetTabRecoverName () const;
@@ -159,6 +171,8 @@ namespace Poshuku
 		void handleReloadPeriodically ();
 		void handleAdd2Favorites ();
 		void handleFind ();
+		void handleFindNext ();
+		void handleFindPrevious ();
 		void findText (const QString&, QWebPage::FindFlags);
 		void handleViewPrint (QWebFrame*);
 		void handlePrinting ();

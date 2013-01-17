@@ -35,6 +35,8 @@ namespace AdvancedNotifications
 	public:
 		EnableSoundActionManager (QObject* = 0);
 
+		QAction* GetAction () const;
+
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 	private slots:
 		void xsdPropChanged ();

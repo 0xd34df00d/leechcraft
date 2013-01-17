@@ -33,6 +33,7 @@ enum class ActionsEmbedPlace;
 namespace SB2
 {
 	class ActionImageProvider;
+	class SBView;
 
 	class TrayComponent : public QObject
 	{
@@ -51,8 +52,10 @@ namespace SB2
 			Beginning,
 			End
 		};
+
+		SBView *View_;
 	public:
-		TrayComponent (ICoreProxy_ptr, QObject* parent = 0);
+		TrayComponent (ICoreProxy_ptr, SBView*, QObject* parent = 0);
 
 		QuarkComponent GetComponent () const;
 		void HandleDock (QDockWidget*, bool);

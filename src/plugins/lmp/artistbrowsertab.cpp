@@ -17,8 +17,10 @@
  **********************************************************************/
 
 #include "artistbrowsertab.h"
+#include <QMessageBox>
 #include <interfaces/media/iartistbiofetcher.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <util/gui/clearlineeditaddon.h>
 #include "similarviewmanager.h"
 #include "bioviewmanager.h"
 #include "core.h"
@@ -41,6 +43,8 @@ namespace LMP
 
 		BioMgr_->InitWithSource ();
 		SimilarMgr_->InitWithSource ();
+
+		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.ArtistNameEdit_);
 	}
 
 	TabClassInfo ArtistBrowserTab::GetTabClassInfo () const
@@ -63,6 +67,29 @@ namespace LMP
 		return 0;
 	}
 
+	QByteArray ArtistBrowserTab::GetTabRecoverData () const
+	{
+		const auto& artist = Ui_.ArtistNameEdit_->text ();
+		if (artist.isEmpty ())
+			return QByteArray ();
+
+		QByteArray result;
+		QDataStream stream (&result, QIODevice::WriteOnly);
+		stream << QByteArray ("artistbrowser") << artist;
+		return result;
+	}
+
+	QIcon ArtistBrowserTab::GetTabRecoverIcon () const
+	{
+		return TC_.Icon_;
+	}
+
+	QString ArtistBrowserTab::GetTabRecoverName () const
+	{
+		const auto& artist = Ui_.ArtistNameEdit_->text ();
+		return artist.isEmpty () ? QString () : tr ("Artist browser: %1");
+	}
+
 	void ArtistBrowserTab::Browse (const QString& artist)
 	{
 		Ui_.ArtistNameEdit_->setText (artist);
@@ -74,12 +101,20 @@ namespace LMP
 		auto provs = Core::Instance ().GetProxy ()->GetPluginsManager ()->
 				GetAllCastableTo<Media::IArtistBioFetcher*> ();
 		if (provs.isEmpty ())
+		{
+			QMessageBox::critical (this,
+					"LeechCraft",
+					tr ("There aren't any plugins that can fetch biography. Check if "
+						"you have installed for example the LastFMScrobble plugin."));
 			return;
+		}
 
 		auto artist = Ui_.ArtistNameEdit_->text ().trimmed ();
 
 		BioMgr_->Request (provs.first (), artist);
 		SimilarMgr_->DefaultRequest (artist);
+
+		emit tabRecoverDataChanged ();
 	}
 }
 }

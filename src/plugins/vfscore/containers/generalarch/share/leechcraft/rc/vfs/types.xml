@@ -1,7 +1,0 @@
-<vfstypes>
-	<type extension="zip" arch="ZIP"/>
-	<type extension="jisp" arch="ZIP">
-		<swallow-first-dir/>
-		<description>Icon packs for Psi/Psi+.</description>
-	</type>
-</vfstypes>

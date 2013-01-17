@@ -336,19 +336,24 @@ namespace LMP
 		QMenu *playMode = new QMenu (tr ("Play mode"));
 		playButton->setMenu (playMode);
 
-		const std::vector<Player::PlayMode> modes = { Player::PlayMode::Sequential,
-				Player::PlayMode::Shuffle, Player::PlayMode::RepeatTrack,
-				Player::PlayMode::RepeatAlbum, Player::PlayMode::RepeatWhole };
-		const std::vector<QString> names = { tr ("Sequential"),
-				tr ("Shuffle"), tr ("Repeat track"),
-				tr ("Repeat album"), tr ("Repeat whole") };
-		PlayModesGroup_ = new QActionGroup (this);
-		for (size_t i = 0; i < modes.size (); ++i)
+		const std::vector<std::pair<Player::PlayMode, QString>> modes =
 		{
-			QAction *action = new QAction (names [i], this);
-			action->setProperty ("PlayMode", static_cast<int> (modes.at (i)));
+			{ Player::PlayMode::Sequential, tr ("Sequential")},
+			{ Player::PlayMode::Shuffle, tr ("Shuffle")},
+			{ Player::PlayMode::ShuffleAlbums, tr ("Shuffle albums")},
+			{ Player::PlayMode::ShuffleArtists, tr ("Shuffle artists")},
+			{ Player::PlayMode::RepeatTrack, tr ("Repeat track")},
+			{ Player::PlayMode::RepeatAlbum, tr ("Repeat album")},
+			{ Player::PlayMode::RepeatWhole, tr ("Repeat whole")}
+		};
+		PlayModesGroup_ = new QActionGroup (this);
+		bool hadChecked = false;
+		for (const auto& pair : modes)
+		{
+			QAction *action = new QAction (pair.second, this);
+			action->setProperty ("PlayMode", static_cast<int> (pair.first));
 			action->setCheckable (true);
-			action->setChecked (!i);
+			action->setChecked (!(hadChecked = true));
 			action->setActionGroup (PlayModesGroup_);
 			playMode->addAction (action);
 

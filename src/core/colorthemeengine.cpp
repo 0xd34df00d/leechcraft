@@ -17,7 +17,9 @@
  **********************************************************************/
 
 #include "colorthemeengine.h"
+#include <util/resourceloader.h>
 #include <algorithm>
+#include <map>
 #include <QFile>
 #include <QStringList>
 #include <QApplication>
@@ -28,7 +30,11 @@
 namespace LeechCraft
 {
 	ColorThemeEngine::ColorThemeEngine ()
+	: Loader_ (new Util::ResourceLoader ("themes/", this))
 	{
+		Loader_->AddLocalPrefix ();
+		Loader_->AddGlobalPrefix ();
+		Loader_->SetCacheParams (1, 0);
 	}
 
 	ColorThemeEngine& ColorThemeEngine::Instance ()
@@ -49,44 +55,34 @@ namespace LeechCraft
 
 	namespace
 	{
-		QStringList GetCandidates ()
+		QPalette::ColorRole ColorRoleFromStr (const QString& str)
 		{
-			QStringList candidates;
-#ifdef Q_OS_WIN32
-			candidates << QApplication::applicationDirPath () + "/share/leechcraft/themes/";
-#elif defined (Q_OS_MAC)
-			candidates << QApplication::applicationDirPath () + "/../Resources/share/themes/";
-#else
-			candidates << "/usr/local/share/leechcraft/themes/"
-					<< "/usr/share/leechcraft/themes/";
-#endif
-			return candidates;
-		}
-
-		QStringList FindThemes ()
-		{
-			QStringList result;
-			for (const auto& candidate : GetCandidates ())
+			static const std::map<QString, QPalette::ColorRole> map =
 			{
-				QDir dir (candidate);
-				const auto& list = dir.entryList (QDir::Dirs | QDir::NoDotAndDotDot);
-				result += list;
-			}
-			result.removeDuplicates ();
-			std::sort (result.begin (), result.end ());
-			return result;
+				{ "Window", QPalette::Window },
+				{ "WindowText", QPalette::WindowText },
+				{ "BrightText", QPalette::BrightText },
+				{ "Base", QPalette::Base },
+				{ "AlternateBase", QPalette::AlternateBase },
+				{ "Text", QPalette::Text },
+				{ "ToolTipBase", QPalette::ToolTipBase },
+				{ "ToolTipText", QPalette::ToolTipText },
+				{ "Button", QPalette::Button },
+				{ "ButtonText", QPalette::ButtonText }
+			};
+			auto pres = map.find (str);
+			return pres == map.end () ? QPalette::Window : pres->second;
 		}
-	}
 
-	QStringList ColorThemeEngine::ListThemes () const
-	{
-		return FindThemes ();
-	}
-
-	namespace
-	{
 		QColor ParseColor (const QVariant& var)
 		{
+			const auto& str = var.toString ();
+			if (str.startsWith ("Palette."))
+			{
+				const auto role = ColorRoleFromStr (str.mid (QString ("Palette.").size ()));
+				return QApplication::palette ().color (role);
+			}
+
 			const auto& elems = var.toStringList ();
 			if (elems.size () != 3)
 			{
@@ -146,17 +142,14 @@ namespace LeechCraft
 		}
 	}
 
+	QAbstractItemModel* ColorThemeEngine::GetThemesModel () const
+	{
+		return Loader_->GetSubElemModel ();
+	}
+
 	void ColorThemeEngine::SetTheme (const QString& themeName)
 	{
-		const auto& candidates = GetCandidates ();
-
-		QString themePath;
-		for (const auto& path : candidates)
-			if (QFile::exists (path + themeName))
-			{
-				themePath = path + themeName;
-				break;
-			}
+		const auto& themePath = Loader_->GetPath (QStringList (themeName));
 
 		if (themePath.isEmpty ())
 		{

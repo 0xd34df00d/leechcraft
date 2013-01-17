@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "collectiontypes.h"
+#include "interfaces/lmp/collectiontypes.h"
 
 namespace LeechCraft
 {

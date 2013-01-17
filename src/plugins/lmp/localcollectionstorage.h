@@ -23,7 +23,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include "mediainfo.h"
-#include "collectiontypes.h"
+#include "interfaces/lmp/collectiontypes.h"
 
 namespace LeechCraft
 {

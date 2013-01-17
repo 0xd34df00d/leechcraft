@@ -23,7 +23,7 @@
 #include <QSet>
 #include <QFutureWatcher>
 #include <QIcon>
-#include "collectiontypes.h"
+#include "interfaces/lmp/collectiontypes.h"
 #include "mediainfo.h"
 
 class QStandardItemModel;
@@ -94,7 +94,8 @@ namespace LMP
 			AlbumArt,
 			TrackNumber,
 			TrackTitle,
-			TrackPath
+			TrackPath,
+			TrackGenres
 		};
 
 		enum class DynamicPlaylist
@@ -121,6 +122,8 @@ namespace LMP
 		void FinalizeInit ();
 
 		bool IsReady () const;
+
+		AlbumArtManager* GetAlbumArtManager () const;
 
 		QAbstractItemModel* GetCollectionModel () const;
 		void Enqueue (const QModelIndex&, Player*);

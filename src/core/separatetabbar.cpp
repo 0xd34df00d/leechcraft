@@ -24,6 +24,7 @@
 #include <QApplication>
 #include <QtDebug>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/idndtab.h>
 #include "coreproxy.h"
 #include "separatetabwidget.h"
 #include "core.h"
@@ -196,10 +197,18 @@ namespace LeechCraft
 		auto px = QPixmap::grabWidget (widget);
 		px = px.scaledToWidth (px.width () / 2, Qt::SmoothTransformation);
 
-		auto drag = new QDrag (this);
+		auto idt = qobject_cast<IDNDTab*> (widget);
+
 		auto data = new QMimeData ();
-		data->setData ("x-leechcraft/tab-drag-action", "reordering");
-		data->setData ("x-leechcraft/tab-tabclass", itw->GetTabClassInfo ().TabClass_);
+		if (!idt || QApplication::keyboardModifiers () == Qt::ControlModifier)
+		{
+			data->setData ("x-leechcraft/tab-drag-action", "reordering");
+			data->setData ("x-leechcraft/tab-tabclass", itw->GetTabClassInfo ().TabClass_);
+		}
+		else if (idt)
+			idt->FillMimeData (data);
+
+		auto drag = new QDrag (this);
 		drag->setMimeData (data);
 		drag->setPixmap (px);
 		drag->exec ();
@@ -207,7 +216,13 @@ namespace LeechCraft
 
 	void SeparateTabBar::dragEnterEvent (QDragEnterEvent *event)
 	{
-		if (IsLastTab_ && tabAt (event->pos ()) == count () - 1)
+		dragMoveEvent (event);
+	}
+
+	void SeparateTabBar::dragMoveEvent (QDragMoveEvent *event)
+	{
+		const auto tabIdx = tabAt (event->pos ());
+		if (IsLastTab_ && tabIdx == count () - 1)
 			return;
 
 		auto data = event->mimeData ();
@@ -215,19 +230,32 @@ namespace LeechCraft
 		if (formats.contains ("x-leechcraft/tab-drag-action") &&
 				data->data ("x-leechcraft/tab-drag-action") == "reordering")
 			event->acceptProposedAction ();
+		else
+			TabWidget_->setCurrentIndex (tabIdx);
+
+		if (auto idt = qobject_cast<IDNDTab*> (TabWidget_->Widget (tabIdx)))
+			idt->HandleDragEnter (event);
 	}
 
 	void SeparateTabBar::dropEvent (QDropEvent *event)
 	{
-		const int from = tabAt (DragStartPos_);
+		auto data = event->mimeData ();
+
 		const int to = tabAt (event->pos ());
+		auto widget = TabWidget_->Widget (to);
+		if (data->data ("x-leechcraft/tab-drag-action") == "reordering")
+		{
+			const int from = tabAt (DragStartPos_);
 
-		if (from == to || (IsLastTab_ && to == count () - 1))
-			return;
+			if (from == to || (IsLastTab_ && to == count () - 1))
+				return;
 
-		moveTab (from, to);
-		emit releasedMouseAfterMove (to);
-		event->acceptProposedAction ();
+			moveTab (from, to);
+			emit releasedMouseAfterMove (to);
+			event->acceptProposedAction ();
+		}
+		else if (auto idt = qobject_cast<IDNDTab*> (widget))
+			idt->HandleDrop (event);
 	}
 
 	void SeparateTabBar::mouseDoubleClickEvent (QMouseEvent *event)

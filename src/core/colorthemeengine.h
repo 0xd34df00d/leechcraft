@@ -23,10 +23,16 @@
 #include <QHash>
 #include <interfaces/core/icolorthememanager.h>
 
+class QAbstractItemModel;
 class QSettings;
 
 namespace LeechCraft
 {
+	namespace Util
+	{
+		class ResourceLoader;
+	}
+
 	class ColorThemeEngine : public QObject
 						   , public IColorThemeManager
 	{
@@ -36,6 +42,8 @@ namespace LeechCraft
 		QPalette StartupPalette_;
 		QHash<QString, QHash<QString, QColor>> QMLColors_;
 
+		Util::ResourceLoader *Loader_;
+
 		ColorThemeEngine ();
 	public:
 		static ColorThemeEngine& Instance ();
@@ -43,7 +51,7 @@ namespace LeechCraft
 		QColor GetQMLColor (const QString& section, const QString& key);
 		QObject* GetObject ();
 
-		QStringList ListThemes () const;
+		QAbstractItemModel* GetThemesModel () const;
 		void SetTheme (const QString&);
 	private:
 		void FillQML (QSettings&);

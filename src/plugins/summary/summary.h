@@ -24,7 +24,6 @@
 #include <QTranslator>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
-#include <interfaces/ientityhandler.h>
 #include <interfaces/isummaryrepresentation.h>
 #include <interfaces/ihaverecoverabletabs.h>
 
@@ -35,12 +34,11 @@ namespace Summary
 	class Summary : public QObject
 					, public IInfo
 					, public IHaveTabs
-					, public IEntityHandler
 					, public ISummaryRepresentation
 					, public IHaveRecoverableTabs
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IEntityHandler ISummaryRepresentation IHaveRecoverableTabs)
+		Q_INTERFACES (IInfo IHaveTabs ISummaryRepresentation IHaveRecoverableTabs)
 
 		std::auto_ptr<QTranslator> Translator_;
 		TabClasses_t TabClasses_;
@@ -52,16 +50,9 @@ namespace Summary
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-		QStringList Provides () const;
-		QStringList Needs () const;
-		QStringList Uses () const;
-		void SetProvider (QObject*, const QString&);
 
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
-
-		EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
-		void Handle (LeechCraft::Entity);
 
 		QModelIndex MapToSource (const QModelIndex&) const;
 		QTreeView* GetCurrentView () const;

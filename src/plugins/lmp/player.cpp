@@ -18,6 +18,7 @@
 
 #include "player.h"
 #include <algorithm>
+#include <random>
 #include <QStandardItemModel>
 #include <QFileInfo>
 #include <QDir>
@@ -710,9 +711,63 @@ namespace LMP
 		CurrentStation_.reset ();
 	}
 
+	template<typename T>
+	Phonon::MediaSource Player::GetRandomBy (QList<Phonon::MediaSource>::const_iterator pos,
+			std::function<T (Phonon::MediaSource)> feature) const
+	{
+		auto randPos = [&feature] (const QList<Phonon::MediaSource>& sources) -> int
+		{
+			QHash<T, QList<int>> fVals;
+			for (int i = 0; i < sources.size (); ++i)
+				fVals [feature (sources.at (i))] << i;
+
+			static std::random_device generator;
+			std::uniform_int_distribution<int> dist (0, sources.size () - 1);
+			auto fIdx = std::uniform_int_distribution<int> (0, fVals.size () - 1) (generator);
+
+			auto fPos = fVals.begin ();
+			std::advance (fPos, fIdx);
+			const auto& positions = *fPos;
+			if (positions.size () < 2)
+				return positions [0];
+
+			auto posIdx = std::uniform_int_distribution<int> (0, positions.size () - 1) (generator);
+			return positions [posIdx];
+		};
+		auto rand = [&randPos] (const QList<Phonon::MediaSource>& sources)
+			{ return sources.at (randPos (sources)); };
+
+		if (pos == CurrentQueue_.end ())
+			return rand (CurrentQueue_);
+
+		const auto& current = feature (*pos);
+		++pos;
+		if (pos != CurrentQueue_.end () && feature (*pos) == current)
+			return *pos;
+
+		auto modifiedQueue = CurrentQueue_;
+		auto endPos = std::remove_if (modifiedQueue.begin (), modifiedQueue.end (),
+				[&current, &feature, this] (decltype (modifiedQueue.at (0)) source)
+					{ return feature (source) == current; });
+		modifiedQueue.erase (endPos, modifiedQueue.end ());
+		if (modifiedQueue.isEmpty ())
+			return rand (CurrentQueue_);
+
+		pos = modifiedQueue.begin () + randPos (modifiedQueue);
+		const auto& origFeature = feature (*pos);
+		while (pos != modifiedQueue.begin ())
+		{
+			if (feature (*(pos - 1)) != origFeature)
+				break;
+			--pos;
+		}
+		return *pos;
+	}
+
 	Phonon::MediaSource Player::GetNextSource (const Phonon::MediaSource& current) const
 	{
 		auto pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
+
 		switch (PlayMode_)
 		{
 		case PlayMode::Sequential:
@@ -721,7 +776,17 @@ namespace LMP
 			else
 				return Phonon::MediaSource ();
 		case PlayMode::Shuffle:
-			return CurrentQueue_.at (qrand () % CurrentQueue_.size ());
+			return GetRandomBy<int> (pos,
+					[this] (const Phonon::MediaSource& source)
+						{ return CurrentQueue_.indexOf (source); });
+		case PlayMode::ShuffleAlbums:
+			return GetRandomBy<QString> (pos,
+					[this] (const Phonon::MediaSource& source)
+						{ return GetMediaInfo (source).Album_; });
+		case PlayMode::ShuffleArtists:
+			return GetRandomBy<QString> (pos,
+					[this] (const Phonon::MediaSource& source)
+						{ return GetMediaInfo (source).Artist_; });
 		case PlayMode::RepeatTrack:
 			return current;
 		case PlayMode::RepeatAlbum:

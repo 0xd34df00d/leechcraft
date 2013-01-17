@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QtPlugin>
+#include "collectiontypes.h"
 
 namespace LeechCraft
 {
@@ -28,6 +29,8 @@ namespace LMP
 	{
 	public:
 		virtual ~ILocalCollection () {}
+
+		virtual Collection::Artists_t GetAllArtists () const = 0;
 	};
 }
 }

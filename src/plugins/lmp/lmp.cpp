@@ -73,7 +73,7 @@ namespace LMP
 		{
 			GetUniqueID () + "_artistBrowser",
 			tr ("Artist browser"),
-			tr ("Allows to browse information about different artists."),
+			tr ("Allows one to browse information about different artists."),
 			GetIcon (),
 			35,
 			TFSuggestOpening | TFOpenableByRequest
@@ -306,16 +306,24 @@ namespace LMP
 
 	void Plugin::RecoverTabs (const QList<LeechCraft::TabRecoverInfo>& infos)
 	{
-		Q_FOREACH (const auto& recInfo, infos)
+		for (const auto& recInfo : infos)
 		{
-			qDebug () << Q_FUNC_INFO << recInfo.Data_;
+			QDataStream stream (recInfo.Data_);
+			QByteArray key;
+			stream >> key;
 
 			if (recInfo.Data_ == "playertab")
 			{
-				Q_FOREACH (const auto& pair, recInfo.DynProperties_)
+				for (const auto& pair : recInfo.DynProperties_)
 					PlayerTab_->setProperty (pair.first, pair.second);
 
 				TabOpenRequested (PlayerTC_.TabClass_);
+			}
+			else if (key == "artistbrowser")
+			{
+				QString artist;
+				stream >> artist;
+				handleArtistBrowseRequested (artist, recInfo.DynProperties_);
 			}
 			else
 				qWarning () << Q_FUNC_INFO
@@ -351,9 +359,13 @@ namespace LMP
 		dia->show ();
 	}
 
-	void Plugin::handleArtistBrowseRequested (const QString& artist)
+	void Plugin::handleArtistBrowseRequested (const QString& artist, const DynPropertiesList_t& props)
 	{
 		auto tab = new ArtistBrowserTab (ArtistBrowserTC_, this);
+
+		for (const auto& pair : props)
+			tab->setProperty (pair.first, pair.second);
+
 		emit addNewTab (tr ("Artist browser"), tab);
 		emit raiseTab (tab);
 

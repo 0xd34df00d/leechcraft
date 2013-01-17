@@ -105,6 +105,8 @@ namespace MPRIS
 			return "Playlist";
 		case Player::PlayMode::Sequential:
 		case Player::PlayMode::Shuffle:
+		case Player::PlayMode::ShuffleAlbums:
+		case Player::PlayMode::ShuffleArtists:
 			return "None";
 		}
 		return "None";

@@ -19,11 +19,15 @@
 #pragma once
 
 #include <QObject>
+#include <QPair>
+#include <QHash>
+#include <QStringList>
 
 namespace Media
 {
-	class IAudioPile;
 	struct AudioSearchRequest;
+	class IAudioPile;
+	class IPendingAudioSearch;
 }
 
 namespace LeechCraft
@@ -39,14 +43,27 @@ namespace LMP
 		Player *Player_;
 
 		QList<Media::IAudioPile*> Providers_;
+
+		QHash<QString, QHash<QString, QHash<QString, int>>> Artist2Album2Tracks_;
+
+		struct PendingTrackInfo
+		{
+			QString Artist_;
+			QString Album_;
+			QString Track_;
+		};
+		QHash<Media::IPendingAudioSearch*, PendingTrackInfo> Pending2Track_;
 	public:
 		PreviewHandler (Player*, QObject*);
 	public slots:
-		void previewArtist (const QString&);
-		void previewTrack (const QString&, const QString&);
-		void previewTrack (const QString&, const QString&, int);
+		void previewArtist (const QString& artist);
+		void previewTrack (const QString& track, const QString& artist);
+		void previewTrack (const QString& track, const QString& artist, int length);
+		void previewAlbum (const QString& artist, const QString& album,
+				const QList<QPair<QString, int>>& tracks);
 	private:
-		void RequestPreview (const Media::AudioSearchRequest&);
+		QList<Media::IPendingAudioSearch*> RequestPreview (const Media::AudioSearchRequest&);
+		void CheckPendingAlbum (Media::IPendingAudioSearch*);
 	private slots:
 		void handlePendingReady ();
 	};

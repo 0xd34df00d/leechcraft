@@ -91,6 +91,7 @@ SET (SRCS
 	bioviewmanager.cpp
 	similarviewmanager.cpp
 	artistbrowsertab.cpp
+	albumartmanagerdialog.cpp
 	sync/cloudwidget.cpp
 	sync/clouduploadmanager.cpp
 	sync/clouduploader.cpp
@@ -127,6 +128,7 @@ SET (FORMS
 	sortingcriteriadialog.ui
 	hypeswidget.ui
 	artistbrowsertab.ui
+	albumartmanagerdialog.ui
 	sync/cloudwidget.ui
 	sync/devicesbrowserwidget.ui
 	sync/transcodingparamswidget.ui
@@ -159,7 +161,6 @@ TARGET_LINK_LIBRARIES (leechcraft_lmp
 	)
 
 INSTALL (TARGETS leechcraft_lmp DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 INSTALL (FILES lmpsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 INSTALL (DIRECTORY interfaces DESTINATION include/leechcraft)
 

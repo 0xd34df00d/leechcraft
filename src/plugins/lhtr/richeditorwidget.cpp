@@ -29,6 +29,7 @@
 #include <QInputDialog>
 #include <QTextDocument>
 #include <QToolButton>
+#include <QKeyEvent>
 #include <QXmlStreamWriter>
 #include <QNetworkRequest>
 #include <QtDebug>
@@ -136,6 +137,8 @@ namespace LHTR
 
 		handleBgColorSettings ();
 		XmlSettingsManager::Instance ().RegisterObject ("BgColor", this, "handleBgColorSettings");
+
+		Ui_.View_->installEventFilter (this);
 
 		Ui_.View_->setPage (new EditorPage (Ui_.View_));
 		Ui_.View_->page ()->setContentEditable (true);
@@ -378,6 +381,32 @@ namespace LHTR
 	void RichEditorWidget::ExecJS (const QString& js)
 	{
 		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
+	}
+
+	bool RichEditorWidget::eventFilter (QObject*, QEvent *event)
+	{
+		if (event->type () != QEvent::KeyPress && event->type () != QEvent::KeyRelease)
+			return false;
+
+		auto keyEv = static_cast<QKeyEvent*> (event);
+		if (keyEv->key () != Qt::Key_Tab)
+			return false;
+
+		auto frame = Ui_.View_->page ()->mainFrame ();
+		const auto isParagraph = frame->evaluateJavaScript ("findParent(window.getSelection().getRangeAt(0).endContainer, 'p') != null");
+		if (!isParagraph.toBool ())
+			return false;
+
+		if (event->type () == QEvent::KeyRelease)
+			return true;
+
+		QString js;
+		js += "var p = findParent(window.getSelection().getRangeAt(0).endContainer, 'p');";
+		js += "p.style.textIndent = '2em';";
+
+		frame->evaluateJavaScript (js);
+
+		return true;
 	}
 
 	void RichEditorWidget::InternalSetBgColor (const QColor& color)
@@ -653,7 +682,7 @@ namespace LHTR
 			for (int j = 0; j < dia.GetColumns (); ++j)
 			{
 				w.writeStartElement ("td");
-				w.writeAttribute ("style", "border: 1px solid black; min-width: 1em; height: 1em;");
+				w.writeAttribute ("style", "border: 1px solid black; min-width: 1em; height: 1.5em;");
 				w.writeEndElement ();
 			}
 			w.writeEndElement ();
@@ -675,7 +704,7 @@ namespace LHTR
 		js += "for (var j = 0; j < row.cells.length; ++j)";
 		js += "{";
 		js += "    var newCell = newRow.insertCell(j);";
-		js += "    newCell.setAttribute('style', 'border: 1px solid black; min-width: 1em; height: 1em;');";
+		js += "    newCell.setAttribute('style', 'border: 1px solid black; min-width: 1em; height: 1.5em;');";
 		js += "}";
 
 		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
@@ -692,7 +721,7 @@ namespace LHTR
 		js += "for (var r = 0; r < table.rows.length; ++r)";
 		js += "{";
 		js += "    var newCell = table.rows[r].insertCell(colIdx);";
-		js += "    newCell.setAttribute('style', 'border: 1px solid black; min-width: 1em; height: 1em;');";
+		js += "    newCell.setAttribute('style', 'border: 1px solid black; min-width: 1em; height: 1.5em;');";
 		js += "}";
 
 		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
@@ -722,7 +751,7 @@ namespace LHTR
 
 	void RichEditorWidget::handleInsertLink ()
 	{
-		if (!Ui_.View_->selectedText ().isEmpty ())
+		if (Ui_.View_->hasSelection ())
 		{
 			const QString& url = QInputDialog::getText (this,
 					tr ("Insert link"), tr ("Enter URL:"));

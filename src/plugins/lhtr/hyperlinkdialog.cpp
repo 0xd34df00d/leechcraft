@@ -63,7 +63,6 @@ namespace LHTR
 	void HyperlinkDialog::checkCanAccept ()
 	{
 		const bool can = !GetLink ().isEmpty () && !GetText ().isEmpty ();
-		qDebug () << Q_FUNC_INFO << can << GetLink () << GetText ();
 		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (can);
 	}
 }

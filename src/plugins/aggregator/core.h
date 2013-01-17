@@ -185,7 +185,10 @@ namespace Aggregator
 			*/
 		void SetTagsForIndex (const QString&, const QModelIndex&);
 		void UpdateFavicon (const QModelIndex&);
+
 		QStringList GetCategories (const QModelIndex&) const;
+		QStringList GetCategories (const items_shorts_t&) const;
+
 		Feed::FeedSettings GetFeedSettings (const QModelIndex&) const;
 		void SetFeedSettings (const Feed::FeedSettings&);
 		void UpdateFeed (const QModelIndex&);

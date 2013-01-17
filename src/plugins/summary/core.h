@@ -22,9 +22,9 @@
 #include <QHash>
 #include <util/models/mergemodel.h>
 #include <interfaces/iinfo.h>
-#include <interfaces/ifinder.h>
 #include <interfaces/ihaverecoverabletabs.h>
 
+class QSortFilterProxyModel;
 class QTreeView;
 
 namespace LeechCraft
@@ -34,27 +34,6 @@ namespace Summary
 	class SummaryWidget;
 	class TreeViewReemitter;
 
-	struct Query2
-	{
-		QString Query_;
-		QStringList Categories_;
-		enum Operation
-		{
-			OPAnd,
-			OPOr
-		} Op_;
-
-		enum Type
-		{
-			TString,
-			TWildcard,
-			TRegexp,
-			TTags
-		} Type_;
-
-		QHash<QString, QHash<QString, QVariant>> Params_;
-	};
-
 	class Core : public QObject
 	{
 		Q_OBJECT
@@ -62,12 +41,10 @@ namespace Summary
 		ICoreProxy_ptr Proxy_;
 
 		/** Default merge model for the Downloads category with
-			* all the downloaders and such stuff.
-			*/
+		 * all the downloaders and such stuff.
+		 */
 		std::shared_ptr<Util::MergeModel> MergeModel_;
 		SummaryWidget *Current_;
-		QList<SummaryWidget*> Others_;
-		mutable QHash<QAbstractItemModel*, QList<IFindProxy_ptr>> KeepProxiesThisWay_;
 
 		Core ();
 	public:
@@ -79,9 +56,6 @@ namespace Summary
 		void SecondInit ();
 
 		QTreeView* GetCurrentView () const;
-
-		bool CouldHandle (const LeechCraft::Entity&) const;
-		void Handle (LeechCraft::Entity);
 
 		/** Returns true if both indexes belong to the same model. If
 			* both indexes are invalid, true is returned.
@@ -135,7 +109,7 @@ namespace Summary
 			*
 			* For example, this is used in the Summary.
 			*/
-		Util::MergeModel* GetTasksModel (const Query2& query) const;
+		QSortFilterProxyModel* GetTasksModel () const;
 
 		/** Returns list of tags for a given row using given model. It's
 			* assumed that the passed model is actually a MergeModel.
@@ -163,13 +137,11 @@ namespace Summary
 	public slots:
 		void handleNewTabRequested ();
 	private:
-		void MadeCurrent (SummaryWidget*);
 		SummaryWidget* CreateSummaryWidget ();
 	private slots:
 		void handleChangeTabName (const QString&);
 		void handleCurrentTabChanged (int);
 		void handleNeedToClose ();
-		void handleTaskModelDestroyed ();
 		void handleWindow (int);
 		void handlePluginInjected (QObject*);
 	signals:
@@ -184,5 +156,3 @@ namespace Summary
 	};
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::Summary::Query2);

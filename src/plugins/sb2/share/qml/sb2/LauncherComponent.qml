@@ -75,7 +75,7 @@ Rectangle {
                         id: fadeInInterval
                         interval: SB2Launcher_FadeInTimeout
 
-                        onTriggered: commonJS.showTooltip(tcItem, function(x, y) { SB2_launcherProxy.tabListRequested(tabClassID, x, y + pregap.height) })
+                        onTriggered: commonJS.showTooltip(tcButton, function(x, y) { SB2_launcherProxy.tabListRequested(tabClassID, x, y) })
                     }
 
                     onTriggered: SB2_launcherProxy.tabOpenRequested(tabClassID)

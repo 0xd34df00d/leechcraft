@@ -92,7 +92,7 @@ void CategorySelector::setPossibleSelections (QStringList mytags)
 			continue;
 
 		auto item = new QTreeWidgetItem (QStringList (*i));
-		item->setCheckState (0, Qt::Unchecked);
+		item->setCheckState (0, Qt::Checked);
 		item->setData (0, RoleTag, *i);
 		items << item;
 	}
