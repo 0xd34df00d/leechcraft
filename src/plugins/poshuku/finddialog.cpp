@@ -66,6 +66,7 @@ namespace Poshuku
 			flags |= QWebPage::FindCaseSensitively;
 		if (Ui_.WrapAround_->checkState () == Qt::Checked)
 			flags |= QWebPage::FindWrapsAroundDocument;
+		return flags;
 	}
 
 	void FindDialog::on_Pattern__textChanged (const QString& newText)
