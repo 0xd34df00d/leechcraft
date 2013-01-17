@@ -66,6 +66,7 @@ namespace Pierre
 				bool);
 	private slots:
 		void handleGotActions (const QList<QAction*>&, LeechCraft::ActionsEmbedPlace);
+		void handleWindow (int);
 		void fillMenu ();
 	};
 }
