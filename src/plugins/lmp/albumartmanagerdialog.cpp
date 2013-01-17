@@ -133,7 +133,7 @@ namespace LMP
 		const auto& filename = QFileDialog::getOpenFileName (this,
 				tr ("Choose album art"),
 				QDir::homePath (),
-				tr ("Images (*png *.jpg *.jpeg);;All files (*.*)"));
+				tr ("Images (*.png *.jpg *.jpeg);;All files (*.*)"));
 		if (filename.isEmpty ())
 			return;
 
