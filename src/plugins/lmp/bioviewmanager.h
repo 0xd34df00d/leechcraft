@@ -29,7 +29,7 @@ class QStandardItem;
 namespace Media
 {
 	class IArtistBioFetcher;
-	class AlbumInfo;
+	struct AlbumInfo;
 }
 
 namespace LeechCraft

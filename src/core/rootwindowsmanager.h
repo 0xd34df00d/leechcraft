@@ -34,7 +34,7 @@ namespace LeechCraft
 							 , public IRootWindowsManager
 	{
 		Q_OBJECT
-		Q_INTERFACES (IRootWindowsManager);
+		Q_INTERFACES (IRootWindowsManager)
 
 		struct WinData
 		{
