@@ -31,7 +31,7 @@ namespace LMP
 
 	ILocalCollection* LMPProxy::GetLocalCollection () const
 	{
-		return 0;
+		return Core::Instance ().GetLocalCollection ();
 	}
 
 	QString LMPProxy::FindAlbumArt (const QString& near, bool includeCollection) const
