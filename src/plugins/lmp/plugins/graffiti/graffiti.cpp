@@ -18,6 +18,7 @@
 
 #include "graffiti.h"
 #include <QIcon>
+#include "graffititab.h"
 
 namespace LeechCraft
 {
@@ -27,6 +28,15 @@ namespace Graffiti
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		TaggerTC_ =
+		{
+			GetUniqueID () + "_Tagger",
+			tr ("LMP Graffiti tagger tab"),
+			GetInfo (),
+			GetIcon (),
+			0,
+			TFOpenableByRequest
+		};
 	}
 
 	void Plugin::SecondInit ()
@@ -64,9 +74,33 @@ namespace Graffiti
 		return result;
 	}
 
+	TabClasses_t Plugin::GetTabClasses () const
+	{
+		return { TaggerTC_ };
+	}
+
+	void Plugin::TabOpenRequested (const QByteArray& tabClass)
+	{
+		if (TaggerTC_.TabClass_ == tabClass)
+		{
+			auto tab = new GraffitiTab (LMPProxy_, TaggerTC_, this);
+			emit addNewTab (TaggerTC_.VisibleName_, tab);
+			emit raiseTab (tab);
+
+			connect (tab,
+					SIGNAL (removeTab (QWidget*)),
+					this,
+					SIGNAL (removeTab (QWidget*)));
+		}
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "unknown tab class"
+					<< tabClass;
+	}
+
 	void Plugin::SetLMPProxy (ILMPProxy_ptr proxy)
 	{
-		Proxy_ = proxy;
+		LMPProxy_ = proxy;
 	}
 }
 }

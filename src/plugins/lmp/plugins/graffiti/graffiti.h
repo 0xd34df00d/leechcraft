@@ -23,6 +23,7 @@
 #include <libmtp.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/ihavetabs.h>
 #include <interfaces/lmp/ilmpplugin.h>
 
 namespace LeechCraft
@@ -34,14 +35,18 @@ namespace Graffiti
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
+				 , public IHaveTabs
 				 , public ILMPPlugin
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IPlugin2
+				IHaveTabs
 				LeechCraft::LMP::ILMPPlugin)
 
-		ILMPProxy_ptr Proxy_;
+		ILMPProxy_ptr LMPProxy_;
+
+		TabClassInfo TaggerTC_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
@@ -53,7 +58,17 @@ namespace Graffiti
 
 		QSet<QByteArray> GetPluginClasses () const;
 
+		TabClasses_t GetTabClasses () const;
+		void TabOpenRequested (const QByteArray& tabClass);
+
 		void SetLMPProxy (ILMPProxy_ptr);
+	signals:
+		void addNewTab (const QString&, QWidget*);
+		void removeTab (QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void raiseTab (QWidget*);
+		void statusBarChanged (QWidget*, const QString&);
 	};
 }
 }
