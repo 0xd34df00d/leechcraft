@@ -31,7 +31,7 @@ namespace Graffiti
 		TaggerTC_ =
 		{
 			GetUniqueID () + "_Tagger",
-			tr ("LMP Graffiti tagger tab"),
+			"LMP Graffiti",
 			GetInfo (),
 			GetIcon (),
 			0,
