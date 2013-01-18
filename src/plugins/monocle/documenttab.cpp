@@ -35,7 +35,9 @@
 #include <QMimeData>
 #include <QDragMoveEvent>
 #include <QDropEvent>
+#include <QImageWriter>
 #include <QUrl>
+#include <util/util.h>
 #include <interfaces/imwproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include "interfaces/monocle/ihavetoc.h"
@@ -51,6 +53,7 @@
 #include "common.h"
 #include "docstatemanager.h"
 #include "docinfodialog.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -627,6 +630,19 @@ namespace Monocle
 		}
 	}
 
+	QImage DocumentTab::GetSelectionImg ()
+	{
+		const auto& bounding = Scene_.selectionArea ().boundingRect ();
+		if (bounding.isEmpty ())
+			return QImage ();
+
+		QImage image (bounding.size ().toSize (), QImage::Format_ARGB32);
+		QPainter painter (&image);
+		Scene_.render (&painter, QRectF (), bounding);
+		painter.end ();
+		return image;
+	}
+
 	void DocumentTab::handleNavigateRequested (QString path, int num, double x, double y)
 	{
 		if (!path.isEmpty ())
@@ -928,8 +944,17 @@ namespace Monocle
 				SLOT (handleCopyAsImage ()));
 		Ui_.PagesView_->addAction (copyAsImage);
 
+		auto saveAsImage = new QAction (tr ("Save selection as image..."), this);
+		connect (saveAsImage,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleSaveAsImage ()));
+		Ui_.PagesView_->addAction (saveAsImage);
+
 		if (qobject_cast<IHaveTextContent*> (CurrentDoc_->GetObject ()))
 		{
+			Ui_.PagesView_->addAction (Util::CreateSeparator (Ui_.PagesView_));
+
 			auto copyAsText = new QAction (tr ("Copy selection as text"), this);
 			connect (copyAsText,
 					SIGNAL (triggered ()),
@@ -941,16 +966,33 @@ namespace Monocle
 
 	void DocumentTab::handleCopyAsImage ()
 	{
-		const auto& bounding = Scene_.selectionArea ().boundingRect ();
-		if (bounding.isEmpty ())
+		QApplication::clipboard ()->setImage (GetSelectionImg ());
+	}
+
+	void DocumentTab::handleSaveAsImage ()
+	{
+		const auto& image = GetSelectionImg ();
+		if (image.isNull ())
 			return;
 
-		QImage image (bounding.size ().toSize (), QImage::Format_ARGB32);
-		QPainter painter (&image);
-		Scene_.render (&painter, QRectF (), bounding);
-		painter.end ();
+		const auto& previous = XmlSettingsManager::Instance ()
+				.Property ("SelectionImageSavePath", QDir::homePath ()).toString ();
+		const auto& filename = QFileDialog::getSaveFileName (this,
+				tr ("Save selection as"),
+				previous,
+				tr ("PNG images (*.png)"));
+		if (filename.isEmpty ())
+			return;
 
-		QApplication::clipboard ()->setImage (image);
+		const QFileInfo saveFI (filename);
+		XmlSettingsManager::Instance ().setProperty ("SelectionImageSavePath",
+				saveFI.absoluteFilePath ());
+		const auto& userSuffix = saveFI.suffix ().toLatin1 ();
+		const auto& supported = QImageWriter::supportedImageFormats ();
+		const auto suffix = supported.contains (userSuffix) ?
+				userSuffix :
+				QByteArray ("PNG");
+		image.save (filename, suffix, 100);
 	}
 
 	void DocumentTab::handleCopyAsText ()

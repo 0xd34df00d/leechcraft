@@ -116,6 +116,8 @@ namespace Monocle
 		void Relayout (double);
 
 		void ClearViewActions ();
+
+		QImage GetSelectionImg ();
 	private slots:
 		void handleNavigateRequested (QString, int, double, double);
 
@@ -150,6 +152,7 @@ namespace Monocle
 		void setSelectionMode (bool);
 
 		void handleCopyAsImage ();
+		void handleSaveAsImage ();
 		void handleCopyAsText ();
 
 		void showDocInfo ();
