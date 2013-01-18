@@ -36,6 +36,7 @@ namespace LMP
 		ILocalCollection* GetLocalCollection () const;
 		ITagResolver* GetTagResolver () const;
 		QString FindAlbumArt (const QString&, bool) const;
+		QList<QFileInfo> RecIterateInfo (const QString&, bool);
 	};
 }
 }

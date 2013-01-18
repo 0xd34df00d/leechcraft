@@ -21,6 +21,7 @@
 #include "util.h"
 #include "localcollection.h"
 #include "localfileresolver.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -43,6 +44,11 @@ namespace LMP
 	QString LMPProxy::FindAlbumArt (const QString& near, bool includeCollection) const
 	{
 		return FindAlbumArtPath (near, !includeCollection);
+	}
+
+	QList<QFileInfo> LMPProxy::RecIterateInfo (const QString& path, bool followSymLinks)
+	{
+		return LMP::RecIterateInfo (path, followSymLinks);
 	}
 }
 }
