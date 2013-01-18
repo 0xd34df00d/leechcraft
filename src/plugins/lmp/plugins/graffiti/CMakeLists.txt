@@ -13,6 +13,7 @@ INCLUDE_DIRECTORIES (${LMP_INCLUDE_DIR}
 SET (GRAFFITI_SRCS
 	graffiti.cpp
 	graffititab.cpp
+	filesmodel.cpp
 	)
 SET (GRAFFITI_FORMS
 	graffititab.ui
