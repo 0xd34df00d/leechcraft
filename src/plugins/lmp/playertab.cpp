@@ -46,10 +46,10 @@
 #include "aalabeleventfilter.h"
 #include "nowplayingpixmaphandler.h"
 #include "previewhandler.h"
+#include "albumartmanagerdialog.h"
 
 #ifdef ENABLE_MPRIS
 #include "mpris/instance.h"
-#include "albumartmanagerdialog.h"
 #endif
 
 Q_DECLARE_METATYPE (Phonon::MediaSource);

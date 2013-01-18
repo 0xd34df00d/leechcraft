@@ -32,7 +32,7 @@ namespace GmailNotifier
 	class QuarkManager : public QObject
 	{
 		Q_OBJECT
-		Q_PROPERTY (int msgCount READ GetMsgCount NOTIFY msgCountChanged);
+		Q_PROPERTY (int msgCount READ GetMsgCount NOTIFY msgCountChanged)
 
 		ICoreProxy_ptr Proxy_;
 
