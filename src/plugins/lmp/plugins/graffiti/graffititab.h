@@ -31,6 +31,8 @@ namespace LMP
 {
 namespace Graffiti
 {
+	class FilesModel;
+
 	class GraffitiTab : public QWidget
 					  , public ITabWidget
 	{
@@ -45,6 +47,7 @@ namespace Graffiti
 		Ui::GraffitiTab Ui_;
 
 		QFileSystemModel *FSModel_;
+		FilesModel *FilesModel_;
 	public:
 		GraffitiTab (ILMPProxy_ptr, const TabClassInfo&, QObject*);
 
@@ -52,6 +55,10 @@ namespace Graffiti
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+	private slots:
+		void on_DirectoryTree__activated (const QModelIndex&);
+		void handleIterateFinished ();
+		void handleScanFinished ();
 	signals:
 		void removeTab (QWidget*);
 	};
