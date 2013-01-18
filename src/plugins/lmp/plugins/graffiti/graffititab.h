@@ -57,6 +57,7 @@ namespace Graffiti
 		QToolBar* GetToolBar () const;
 	private slots:
 		void on_DirectoryTree__activated (const QModelIndex&);
+		void currentFileChanged (const QModelIndex&);
 		void handleIterateFinished ();
 		void handleScanFinished ();
 	signals:

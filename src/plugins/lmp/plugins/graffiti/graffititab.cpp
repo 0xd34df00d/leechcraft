@@ -48,6 +48,11 @@ namespace Graffiti
 		Ui_.DirectoryTree_->setModel (FSModel_);
 
 		Ui_.FilesList_->setModel (FilesModel_);
+
+		connect (Ui_.FilesList_->selectionModel (),
+				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (currentFileChanged (QModelIndex)));
 	}
 
 	TabClassInfo GraffitiTab::GetTabClassInfo () const
@@ -84,6 +89,17 @@ namespace Graffiti
 
 		auto worker = [this, path] () { return LMPProxy_->RecIterateInfo (path, false); };
 		watcher->setFuture (QtConcurrent::run (std::function<QList<QFileInfo> ()> (worker)));
+	}
+
+	void GraffitiTab::currentFileChanged (const QModelIndex& index)
+	{
+		const auto& infoData = FilesModel_->data (index, FilesModel::Roles::MediaInfoRole);
+		const auto& info = infoData.value<MediaInfo> ();
+
+		Ui_.Album_->setText (info.Album_);
+		Ui_.Artist_->setText (info.Artist_);
+		Ui_.Title_->setText (info.Title_);
+		Ui_.Year_->setValue (info.Year_);
 	}
 
 	void GraffitiTab::handleIterateFinished ()

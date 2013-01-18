@@ -41,9 +41,7 @@ namespace Graffiti
 
 			QString Name_;
 
-			QString Title_;
-			QString Album_;
-			QString Artist_;
+			MediaInfo Info_;
 
 			File (const QFileInfo&);
 		};
@@ -59,6 +57,11 @@ namespace Graffiti
 			MaxColumn
 		};
 	public:
+		enum Roles
+		{
+			MediaInfoRole = Qt::UserRole + 1
+		};
+
 		FilesModel (QObject*);
 
 		QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
@@ -71,6 +74,8 @@ namespace Graffiti
 		void AddFiles (const QList<QFileInfo>&);
 		void SetInfos (const QList<MediaInfo>&);
 		void Clear ();
+	private:
+		QList<File>::iterator FindFile (const QString&);
 	};
 }
 }

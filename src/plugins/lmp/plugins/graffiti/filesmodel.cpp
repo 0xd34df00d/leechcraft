@@ -70,6 +70,12 @@ namespace Graffiti
 
 	QVariant FilesModel::data (const QModelIndex& index, int role) const
 	{
+		if (!index.isValid ())
+			return QVariant ();
+
+		if (role == Roles::MediaInfoRole)
+			return QVariant::fromValue (Files_.at (index.row ()).Info_);
+
 		if (role != Qt::DisplayRole)
 			return QVariant ();
 
@@ -79,11 +85,11 @@ namespace Graffiti
 		case Columns::Filename:
 			return file.Name_;
 		case Columns::Artist:
-			return file.Artist_;
+			return file.Info_.Artist_;
 		case Columns::Album:
-			return file.Album_;
+			return file.Info_.Album_;
 		case Columns::Title:
-			return file.Title_;
+			return file.Info_.Title_;
 		}
 
 		qWarning () << Q_FUNC_INFO
@@ -106,14 +112,11 @@ namespace Graffiti
 	{
 		for (const auto& info : infos)
 		{
-			const auto pos = std::find_if (Files_.begin (), Files_.end (),
-					[&info] (const File& file) { return file.Path_ == info.LocalPath_; });
+			const auto pos = FindFile (info.LocalPath_);
 			if (pos == Files_.end ())
 				continue;
 
-			pos->Title_ = info.Title_;
-			pos->Album_ = info.Album_;
-			pos->Artist_ = info.Artist_;
+			pos->Info_ = info;
 
 			const auto row = std::distance (Files_.begin (), pos);
 			emit dataChanged (index (row, 0), index (row, Columns::MaxColumn - 1));
@@ -128,6 +131,12 @@ namespace Graffiti
 		beginRemoveRows (QModelIndex (), 0, Files_.size ());
 		Files_.clear ();
 		endRemoveRows ();
+	}
+
+	QList<FilesModel::File>::iterator FilesModel::FindFile (const QString& path)
+	{
+		return std::find_if (Files_.begin (), Files_.end (),
+				[&path] (const File& file) { return file.Path_ == path; });
 	}
 }
 }
