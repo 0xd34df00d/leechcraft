@@ -20,6 +20,7 @@
 #include "core.h"
 #include "util.h"
 #include "localcollection.h"
+#include "localfileresolver.h"
 
 namespace LeechCraft
 {
@@ -32,6 +33,11 @@ namespace LMP
 	ILocalCollection* LMPProxy::GetLocalCollection () const
 	{
 		return Core::Instance ().GetLocalCollection ();
+	}
+
+	ITagResolver* LMPProxy::GetTagResolver () const
+	{
+		return Core::Instance ().GetLocalFileResolver ();
 	}
 
 	QString LMPProxy::FindAlbumArt (const QString& near, bool includeCollection) const

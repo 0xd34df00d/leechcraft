@@ -18,45 +18,31 @@
 
 #pragma once
 
-#include <stdexcept>
-#include <QObject>
-#include <QHash>
-#include <QReadWriteLock>
-#include <QMutex>
-#include <QDateTime>
-#include <taglib/fileref.h>
-#include "interfaces/lmp/itagresolver.h"
-#include "mediainfo.h"
+#include <QtPlugin>
+
+class QMutex;
+
+namespace TagLib
+{
+	class FileRef;
+}
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class ResolveError : public std::runtime_error
+	struct MediaInfo;
+
+	class ITagResolver
 	{
-		QString Path_;
 	public:
-		ResolveError (const QString&, const std::string&);
-		~ResolveError () throw ();
+		virtual ~ITagResolver () {}
 
-		QString GetPath () const;
-	};
-
-	class LocalFileResolver : public QObject
-							, public ITagResolver
-	{
-		Q_OBJECT
-		Q_INTERFACES (LeechCraft::LMP::ITagResolver)
-
-		QMutex TaglibMutex_;
-		QReadWriteLock CacheLock_;
-		QHash<QString, QPair<QDateTime, MediaInfo>> Cache_;
-	public:
-		LocalFileResolver (QObject* = 0);
-
-		TagLib::FileRef GetFileRef (const QString&) const;
-		MediaInfo ResolveInfo (const QString&);
-		QMutex& GetMutex ();
+		virtual TagLib::FileRef GetFileRef (const QString&) const = 0;
+		virtual MediaInfo ResolveInfo (const QString&) = 0;
+		virtual QMutex& GetMutex () = 0;
 	};
 }
 }
+
+Q_DECLARE_INTERFACE (LeechCraft::LMP::ITagResolver, "org.LeechCraft.LMP.ITagResolver/1.0");

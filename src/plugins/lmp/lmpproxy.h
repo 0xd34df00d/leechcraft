@@ -34,6 +34,7 @@ namespace LMP
 		LMPProxy ();
 
 		ILocalCollection* GetLocalCollection () const;
+		ITagResolver* GetTagResolver () const;
 		QString FindAlbumArt (const QString&, bool) const;
 	};
 }

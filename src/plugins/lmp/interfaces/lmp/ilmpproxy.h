@@ -28,6 +28,7 @@ namespace LeechCraft
 namespace LMP
 {
 	class ILocalCollection;
+	class ITagResolver;
 
 	class ILMPProxy
 	{
@@ -35,6 +36,8 @@ namespace LMP
 		virtual ~ILMPProxy () {}
 
 		virtual ILocalCollection* GetLocalCollection () const = 0;
+
+		virtual ITagResolver* GetTagResolver () const = 0;
 
 		virtual QString FindAlbumArt (const QString& near, bool includeCollection = true) const = 0;
 	};
