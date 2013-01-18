@@ -18,4 +18,37 @@
 
 #pragma once
 
-#include "interfaces/lmp/mediainfo.h"
+#include <QStringList>
+#include <QMetaType>
+#include <interfaces/media/audiostructs.h>
+
+namespace LeechCraft
+{
+namespace LMP
+{
+	struct MediaInfo
+	{
+		QString LocalPath_;
+
+		QString Artist_;
+		QString Album_;
+		QString Title_;
+
+		QStringList Genres_;
+
+		qint32 Length_;
+		qint32 Year_;
+		qint32 TrackNumber_;
+
+		MediaInfo& operator= (const Media::AudioInfo&);
+
+		bool IsUseless () const;
+
+		operator Media::AudioInfo () const;
+
+		static MediaInfo FromAudioInfo (const Media::AudioInfo&);
+	};
+}
+}
+
+Q_DECLARE_METATYPE (LeechCraft::LMP::MediaInfo);

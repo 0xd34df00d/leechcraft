@@ -19,56 +19,57 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/core/ihookproxy.h>
+#include <QHash>
+#include <libmtp.h>
 #include <interfaces/iinfo.h>
-#include <interfaces/iactionsexporter.h>
 #include <interfaces/iplugin2.h>
-#include <interfaces/ientityhandler.h>
-
-class QMenuBar;
-class QSystemTrayIcon;
+#include <interfaces/ihavetabs.h>
+#include <interfaces/lmp/ilmpplugin.h>
 
 namespace LeechCraft
 {
-namespace Pierre
+namespace LMP
+{
+namespace Graffiti
 {
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
-				 , public IEntityHandler
+				 , public IHaveTabs
+				 , public ILMPPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IEntityHandler)
+		Q_INTERFACES (IInfo
+				IPlugin2
+				IHaveTabs
+				LeechCraft::LMP::ILMPPlugin)
 
-		QMenuBar *MenuBar_;
-		ICoreProxy_ptr Proxy_;
+		ILMPProxy_ptr LMPProxy_;
 
-		QMenu *TrayIconMenu_;
+		TabClassInfo TaggerTC_;
 	public:
-		void Init (ICoreProxy_ptr);
+		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
-		QByteArray GetUniqueID () const;
 		void Release ();
+		QByteArray GetUniqueID () const;
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
 
-		EntityTestHandleResult CouldHandle (const Entity&) const;
-		void Handle (Entity);
-	public slots:
-		void hookGonnaFillMenu (LeechCraft::IHookProxy_ptr);
-		void hookTrayIconCreated (LeechCraft::IHookProxy_ptr,
-				QSystemTrayIcon*);
-		void hookTrayIconVisibilityChanged (LeechCraft::IHookProxy_ptr,
-				QSystemTrayIcon*,
-				bool);
-	private slots:
-		void handleGotActions (const QList<QAction*>&, LeechCraft::ActionsEmbedPlace);
-		void handleWindow (int);
-		void fillMenu ();
+		TabClasses_t GetTabClasses () const;
+		void TabOpenRequested (const QByteArray& tabClass);
+
+		void SetLMPProxy (ILMPProxy_ptr);
+	signals:
+		void addNewTab (const QString&, QWidget*);
+		void removeTab (QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void raiseTab (QWidget*);
+		void statusBarChanged (QWidget*, const QString&);
 	};
 }
 }
-
+}

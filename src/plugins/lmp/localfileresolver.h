@@ -25,6 +25,7 @@
 #include <QMutex>
 #include <QDateTime>
 #include <taglib/fileref.h>
+#include "interfaces/lmp/itagresolver.h"
 #include "mediainfo.h"
 
 namespace LeechCraft
@@ -42,8 +43,10 @@ namespace LMP
 	};
 
 	class LocalFileResolver : public QObject
+							, public ITagResolver
 	{
 		Q_OBJECT
+		Q_INTERFACES (LeechCraft::LMP::ITagResolver)
 
 		QMutex TaglibMutex_;
 		QReadWriteLock CacheLock_;

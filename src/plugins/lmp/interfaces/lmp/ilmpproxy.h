@@ -20,6 +20,7 @@
 
 #include <memory>
 #include <QtPlugin>
+#include <QFileInfo>
 
 class QPixmap;
 
@@ -28,6 +29,7 @@ namespace LeechCraft
 namespace LMP
 {
 	class ILocalCollection;
+	class ITagResolver;
 
 	class ILMPProxy
 	{
@@ -36,7 +38,11 @@ namespace LMP
 
 		virtual ILocalCollection* GetLocalCollection () const = 0;
 
+		virtual ITagResolver* GetTagResolver () const = 0;
+
 		virtual QString FindAlbumArt (const QString& near, bool includeCollection = true) const = 0;
+
+		virtual QList<QFileInfo> RecIterateInfo (const QString& dirPath, bool followSymlinks = false) = 0;
 	};
 
 	typedef std::shared_ptr<ILMPProxy> ILMPProxy_Ptr;

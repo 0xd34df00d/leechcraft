@@ -24,6 +24,7 @@
 #include <QFutureWatcher>
 #include <QIcon>
 #include "interfaces/lmp/collectiontypes.h"
+#include "interfaces/lmp/ilocalcollection.h"
 #include "mediainfo.h"
 
 class QStandardItemModel;
@@ -42,8 +43,10 @@ namespace LMP
 	class LocalCollectionWatcher;
 
 	class LocalCollection : public QObject
+						  , public ILocalCollection
 	{
 		Q_OBJECT
+		Q_INTERFACES (LeechCraft::LMP::ILocalCollection)
 
 		bool IsReady_;
 

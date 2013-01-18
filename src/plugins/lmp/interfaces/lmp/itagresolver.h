@@ -18,4 +18,31 @@
 
 #pragma once
 
-#include "interfaces/lmp/mediainfo.h"
+#include <QtPlugin>
+
+class QMutex;
+
+namespace TagLib
+{
+	class FileRef;
+}
+
+namespace LeechCraft
+{
+namespace LMP
+{
+	struct MediaInfo;
+
+	class ITagResolver
+	{
+	public:
+		virtual ~ITagResolver () {}
+
+		virtual TagLib::FileRef GetFileRef (const QString&) const = 0;
+		virtual MediaInfo ResolveInfo (const QString&) = 0;
+		virtual QMutex& GetMutex () = 0;
+	};
+}
+}
+
+Q_DECLARE_INTERFACE (LeechCraft::LMP::ITagResolver, "org.LeechCraft.LMP.ITagResolver/1.0");

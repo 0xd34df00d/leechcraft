@@ -24,6 +24,7 @@
 #include <QSystemTrayIcon>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/imwproxy.h>
 #include <interfaces/iactionsexporter.h>
@@ -43,7 +44,14 @@ namespace Pierre
 		Proxy_ = proxy;
 		MenuBar_ = new QMenuBar (0);
 
-		FS::AddAction (Proxy_->GetMainWindow ());
+		auto rootWM = proxy->GetRootWindowsManager ();
+		for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
+			handleWindow (i);
+
+		connect (rootWM->GetObject (),
+				SIGNAL (windowAdded (int)),
+				this,
+				SLOT (handleWindow (int)));
 	}
 
 	void Plugin::SecondInit ()
@@ -124,13 +132,20 @@ namespace Pierre
 				SLOT (fillMenu ()));
 	}
 
+	void Plugin::handleWindow (int index)
+	{
+		auto rootWM = Proxy_->GetRootWindowsManager ();
+		FS::AddAction (rootWM->GetMainWindow (index));
+	}
+
 	void Plugin::fillMenu ()
 	{
-		auto menu = Proxy_->GetMWProxy ()->GetMainMenu ();
+		auto rootWM = Proxy_->GetRootWindowsManager ();
+		auto menu = rootWM->GetMWProxy (0)->GetMainMenu ();
 
 		QMenu *lcMenu = 0;
 		QList<QAction*> firstLevelActions;
-		Q_FOREACH (auto action, menu->actions ())
+		for (auto action : menu->actions ())
 			if (action->menu ())
 			{
 				MenuBar_->addAction (action);
@@ -144,7 +159,7 @@ namespace Pierre
 				firstLevelActions << action;
 			}
 
-		Q_FOREACH (auto act, firstLevelActions)
+		for (auto act : firstLevelActions)
 			lcMenu->addAction (act);
 
 		if (!lcMenu->actions ().isEmpty ())
@@ -152,11 +167,12 @@ namespace Pierre
 
 		const auto& actors = Proxy_->GetPluginsManager ()->
 				GetAllCastableRoots<IActionsExporter*> ();
-		Q_FOREACH (auto actor, actors)
+		for (auto actor : actors)
 			connect (actor,
 					SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)),
 					this,
-					SLOT (handleGotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)));
+					SLOT (handleGotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)),
+					Qt::UniqueConnection);
 	}
 }
 }
