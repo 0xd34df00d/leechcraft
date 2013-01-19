@@ -19,8 +19,6 @@
 #pragma once
 
 #include <QObject>
-#include <QHash>
-#include <libmtp.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavetabs.h>
