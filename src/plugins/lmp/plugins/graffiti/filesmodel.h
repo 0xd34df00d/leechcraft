@@ -43,6 +43,7 @@ namespace Graffiti
 
 			MediaInfo Info_;
 			MediaInfo OrigInfo_;
+			bool IsChanged_;
 
 			File (const QFileInfo&);
 		};

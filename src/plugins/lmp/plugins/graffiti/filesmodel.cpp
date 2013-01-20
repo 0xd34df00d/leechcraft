@@ -18,6 +18,7 @@
 
 #include "filesmodel.h"
 #include <QtDebug>
+#include <QColor>
 
 namespace LeechCraft
 {
@@ -28,6 +29,7 @@ namespace Graffiti
 	FilesModel::File::File (const QFileInfo& fi)
 	: Path_ (fi.absoluteFilePath ())
 	, Name_ (fi.fileName ())
+	, IsChanged_ (false)
 	{
 	}
 
@@ -73,31 +75,39 @@ namespace Graffiti
 		if (!index.isValid ())
 			return QVariant ();
 
-		if (role == Roles::MediaInfoRole)
-			return QVariant::fromValue (Files_.at (index.row ()).Info_);
-		else if (role == Roles::OrigMediaInfo)
-			return QVariant::fromValue (Files_.at (index.row ()).OrigInfo_);
-
-		if (role != Qt::DisplayRole)
-			return QVariant ();
-
-		const auto& file = Files_.at (index.row ());
-		switch (index.column ())
+		switch (role)
 		{
-		case Columns::Filename:
-			return file.Name_;
-		case Columns::Artist:
-			return file.Info_.Artist_;
-		case Columns::Album:
-			return file.Info_.Album_;
-		case Columns::Title:
-			return file.Info_.Title_;
-		}
+		case Qt::DisplayRole:
+		{
+			const auto& file = Files_.at (index.row ());
+			switch (index.column ())
+			{
+			case Columns::Filename:
+				return file.Name_;
+			case Columns::Artist:
+				return file.Info_.Artist_;
+			case Columns::Album:
+				return file.Info_.Album_;
+			case Columns::Title:
+				return file.Info_.Title_;
+			}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown column"
-				<< index.column ();
-		return QVariant ();
+			qWarning () << Q_FUNC_INFO
+					<< "unknown column"
+					<< index.column ();
+			return QVariant ();
+		}
+		case Qt::ForegroundRole:
+			return Files_.at (index.row ()).IsChanged_ ?
+					QVariant::fromValue (QColor (Qt::red)) :
+					QVariant ();
+		case Roles::MediaInfoRole:
+			return QVariant::fromValue (Files_.at (index.row ()).Info_);
+		case Roles::OrigMediaInfo:
+			return QVariant::fromValue (Files_.at (index.row ()).OrigInfo_);
+		default:
+			return QVariant ();
+		}
 	}
 
 	void FilesModel::AddFiles (const QList<QFileInfo>& files)
@@ -137,7 +147,13 @@ namespace Graffiti
 		}
 
 		const int row = idx.row ();
-		Files_ [row].Info_ = info;
+		auto& file = Files_ [row];
+
+		if (file.Info_ == info)
+			return;
+
+		file.Info_ = info;
+		file.IsChanged_ = info != file.OrigInfo_;
 		emit dataChanged (index (row, 0), index (row, Columns::MaxColumn - 1));
 	}
 
