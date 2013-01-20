@@ -75,6 +75,8 @@ namespace Graffiti
 
 		if (role == Roles::MediaInfoRole)
 			return QVariant::fromValue (Files_.at (index.row ()).Info_);
+		else if (role == Roles::OrigMediaInfo)
+			return QVariant::fromValue (Files_.at (index.row ()).OrigInfo_);
 
 		if (role != Qt::DisplayRole)
 			return QVariant ();
@@ -117,6 +119,7 @@ namespace Graffiti
 				continue;
 
 			pos->Info_ = info;
+			pos->OrigInfo_ = info;
 
 			const auto row = std::distance (Files_.begin (), pos);
 			emit dataChanged (index (row, 0), index (row, Columns::MaxColumn - 1));
@@ -146,6 +149,15 @@ namespace Graffiti
 		beginRemoveRows (QModelIndex (), 0, Files_.size ());
 		Files_.clear ();
 		endRemoveRows ();
+	}
+
+	QList<QPair<MediaInfo, MediaInfo>> FilesModel::GetModified () const
+	{
+		QList<QPair<MediaInfo, MediaInfo>> result;
+		for (const auto& file : Files_)
+			if (file.Info_ != file.OrigInfo_)
+				result.push_back ({ file.Info_, file.OrigInfo_ });
+		return result;
 	}
 
 	QList<FilesModel::File>::iterator FilesModel::FindFile (const QString& path)

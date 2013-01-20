@@ -42,6 +42,7 @@ namespace Graffiti
 			QString Name_;
 
 			MediaInfo Info_;
+			MediaInfo OrigInfo_;
 
 			File (const QFileInfo&);
 		};
@@ -59,7 +60,8 @@ namespace Graffiti
 	public:
 		enum Roles
 		{
-			MediaInfoRole = Qt::UserRole + 1
+			MediaInfoRole = Qt::UserRole + 1,
+			OrigMediaInfo
 		};
 
 		FilesModel (QObject*);
@@ -77,6 +79,8 @@ namespace Graffiti
 		void UpdateInfo (const QModelIndex&, const MediaInfo&);
 
 		void Clear ();
+
+		QList<QPair<MediaInfo, MediaInfo>> GetModified () const;
 	private:
 		QList<File>::iterator FindFile (const QString&);
 	};
