@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/lmp/ilmpplugin.h>
@@ -50,6 +51,10 @@ namespace Graffiti
 
 		QFileSystemModel *FSModel_;
 		FilesModel *FilesModel_;
+
+		std::shared_ptr<QToolBar> Toolbar_;
+		QAction *Save_;
+		QAction *Revert_;
 	public:
 		GraffitiTab (ILMPProxy_ptr, const TabClassInfo&, QObject*);
 
@@ -65,6 +70,9 @@ namespace Graffiti
 		void on_Album__textEdited (const QString&);
 		void on_Title__textEdited (const QString&);
 		void on_Year__valueChanged (int);
+
+		void save ();
+		void revert ();
 
 		void on_DirectoryTree__activated (const QModelIndex&);
 		void currentFileChanged (const QModelIndex&);
