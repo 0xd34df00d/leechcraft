@@ -46,6 +46,7 @@ namespace Graffiti
 		FSModel_->setFilter (QDir::Dirs | QDir::NoDotAndDotDot);
 		FSModel_->setReadOnly (true);
 		Ui_.DirectoryTree_->setModel (FSModel_);
+		Ui_.DirectoryTree_->setRootIndex (FSModel_->index (QDir::homePath ()));
 
 		Ui_.FilesList_->setModel (FilesModel_);
 
@@ -75,6 +76,42 @@ namespace Graffiti
 		return 0;
 	}
 
+	template<typename T, typename F>
+	void GraffitiTab::UpdateData (const T& newData, F getter)
+	{
+		static_assert (std::is_lvalue_reference<typename std::result_of<F (MediaInfo&)>::type>::value,
+				"functor doesn't return an lvalue reference");
+
+		const auto& selected = Ui_.FilesList_->selectionModel ()->selectedRows ();
+		for (const auto& index : selected)
+		{
+			const auto& infoData = index.data (FilesModel::Roles::MediaInfoRole);
+			auto info = infoData.template value<MediaInfo> ();
+			getter (info) = newData;
+			FilesModel_->UpdateInfo (index, info);
+		}
+	}
+
+	void GraffitiTab::on_Artist__textEdited (const QString& artist)
+	{
+		UpdateData (artist, [] (MediaInfo& info) -> QString& { return info.Artist_; });
+	}
+
+	void GraffitiTab::on_Album__textEdited (const QString& album)
+	{
+		UpdateData (album, [] (MediaInfo& info) -> QString& { return info.Album_; });
+	}
+
+	void GraffitiTab::on_Title__textEdited (const QString& title)
+	{
+		UpdateData (title, [] (MediaInfo& info) -> QString& { return info.Title_; });
+	}
+
+	void GraffitiTab::on_Year__valueChanged (int year)
+	{
+		UpdateData (year, [] (MediaInfo& info) -> int& { return info.Year_; });
+	}
+
 	void GraffitiTab::on_DirectoryTree__activated (const QModelIndex& index)
 	{
 		setEnabled (false);
@@ -99,7 +136,10 @@ namespace Graffiti
 		Ui_.Album_->setText (info.Album_);
 		Ui_.Artist_->setText (info.Artist_);
 		Ui_.Title_->setText (info.Title_);
+
+		Ui_.Year_->blockSignals (true);
 		Ui_.Year_->setValue (info.Year_);
+		Ui_.Year_->blockSignals (false);
 	}
 
 	void GraffitiTab::handleIterateFinished ()

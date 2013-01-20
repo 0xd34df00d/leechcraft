@@ -29,6 +29,8 @@ namespace LeechCraft
 {
 namespace LMP
 {
+struct MediaInfo;
+
 namespace Graffiti
 {
 	class FilesModel;
@@ -55,7 +57,15 @@ namespace Graffiti
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+	private:
+		template<typename T, typename F>
+		void UpdateData (const T& newData, F getter);
 	private slots:
+		void on_Artist__textEdited (const QString&);
+		void on_Album__textEdited (const QString&);
+		void on_Title__textEdited (const QString&);
+		void on_Year__valueChanged (int);
+
 		void on_DirectoryTree__activated (const QModelIndex&);
 		void currentFileChanged (const QModelIndex&);
 		void handleIterateFinished ();
