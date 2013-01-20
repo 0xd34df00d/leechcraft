@@ -72,7 +72,10 @@ namespace Graffiti
 		QVariant data (const QModelIndex&, int) const;
 
 		void AddFiles (const QList<QFileInfo>&);
+
 		void SetInfos (const QList<MediaInfo>&);
+		void UpdateInfo (const QModelIndex&, const MediaInfo&);
+
 		void Clear ();
 	private:
 		QList<File>::iterator FindFile (const QString&);

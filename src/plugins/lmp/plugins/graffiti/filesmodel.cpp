@@ -123,6 +123,21 @@ namespace Graffiti
 		}
 	}
 
+	void FilesModel::UpdateInfo (const QModelIndex& idx, const MediaInfo& info)
+	{
+		if (!idx.isValid ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid index"
+					<< idx;
+			return;
+		}
+
+		const int row = idx.row ();
+		Files_ [row].Info_ = info;
+		emit dataChanged (index (row, 0), index (row, Columns::MaxColumn - 1));
+	}
+
 	void FilesModel::Clear ()
 	{
 		if (Files_.isEmpty ())
