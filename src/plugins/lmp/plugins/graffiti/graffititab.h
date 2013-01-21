@@ -55,6 +55,7 @@ namespace Graffiti
 		std::shared_ptr<QToolBar> Toolbar_;
 		QAction *Save_;
 		QAction *Revert_;
+		QAction *RenameFiles_;
 	public:
 		GraffitiTab (ILMPProxy_ptr, const TabClassInfo&, QObject*);
 
@@ -73,6 +74,7 @@ namespace Graffiti
 
 		void save ();
 		void revert ();
+		void renameFiles ();
 
 		void on_DirectoryTree__activated (const QModelIndex&);
 		void currentFileChanged (const QModelIndex&);

@@ -29,6 +29,7 @@
 #include <interfaces/lmp/itagresolver.h>
 #include <interfaces/lmp/mediainfo.h>
 #include "filesmodel.h"
+#include "renamedialog.h"
 
 namespace LeechCraft
 {
@@ -59,11 +60,19 @@ namespace Graffiti
 				this,
 				SLOT (currentFileChanged (QModelIndex)));
 
-		Save_ = Toolbar_->addAction (tr ("Save"), this, SLOT (save ()));
+		Save_ = Toolbar_->addAction (tr ("Save"),
+				this, SLOT (save ()));
 		Save_->setProperty ("ActionIcon", "document-save");
 
-		Revert_ = Toolbar_->addAction (tr ("Revert"), this, SLOT (revert ()));
+		Revert_ = Toolbar_->addAction (tr ("Revert"),
+				this, SLOT (revert ()));
 		Revert_->setProperty ("ActionIcon", "document-revert");
+
+		Toolbar_->addSeparator ();
+
+		RenameFiles_ = Toolbar_->addAction (tr ("Rename files"),
+				this, SLOT (renameFiles ()));
+		RenameFiles_->setProperty ("ActionIcon", "edit-rename");
 	}
 
 	TabClassInfo GraffitiTab::GetTabClassInfo () const
@@ -189,6 +198,21 @@ namespace Graffiti
 		Revert_->setEnabled (false);
 
 		currentFileChanged (Ui_.FilesList_->currentIndex ());
+	}
+
+	void GraffitiTab::renameFiles ()
+	{
+		QList<MediaInfo> infos;
+		for (const auto& index : Ui_.FilesList_->selectionModel ()->selectedRows ())
+			infos << index.data (FilesModel::Roles::MediaInfoRole).value<MediaInfo> ();
+		if (infos.isEmpty ())
+			return;
+
+		auto dia = new RenameDialog (LMPProxy_, this);
+		dia->SetInfos (infos);
+
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->show ();
 	}
 
 	void GraffitiTab::on_DirectoryTree__activated (const QModelIndex& index)
