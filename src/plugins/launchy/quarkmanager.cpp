@@ -18,6 +18,7 @@
 
 #include "quarkmanager.h"
 #include <QStandardItemModel>
+#include <util/util.h>
 #include "favoritesmanager.h"
 #include "itemsfinder.h"
 #include "item.h"
@@ -34,7 +35,8 @@ namespace Launchy
 		public:
 			enum Roles
 			{
-				PermanentID = Qt::UserRole + 1
+				PermanentID = Qt::UserRole + 1,
+				AppName
 			};
 
 			LaunchModel (QObject *parent)
@@ -42,6 +44,7 @@ namespace Launchy
 			{
 				QHash<int, QByteArray> roleNames;
 				roleNames [Roles::PermanentID] = "permanentID";
+				roleNames [Roles::AppName] = "appName";
 				setRoleNames (roleNames);
 			}
 		};
@@ -95,6 +98,18 @@ namespace Launchy
 
 		auto modelItem = new QStandardItem;
 		modelItem->setData (item->GetPermanentID (), LaunchModel::Roles::PermanentID);
+
+		const auto& curLang = Util::GetLanguage ().toLower ();
+
+		auto descr = item->GetComment (curLang);
+		if (descr.isEmpty ())
+			descr = item->GetGenericName (curLang);
+
+		auto name = item->GetName (curLang);
+		if (!descr.isEmpty ())
+			name += " (" + descr + ")";
+		modelItem->setData (name, LaunchModel::Roles::AppName);
+
 		return modelItem;
 	}
 

@@ -21,6 +21,7 @@ Rectangle {
             height: width
 
             actionIconURL: "image://LaunchyItemIcons/" + permanentID
+            textTooltip: appName
 
             onTriggered: Launchy_proxy.launch(permanentID)
 
