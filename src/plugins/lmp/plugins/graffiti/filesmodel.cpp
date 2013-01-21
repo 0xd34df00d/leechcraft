@@ -130,6 +130,7 @@ namespace Graffiti
 
 			pos->Info_ = info;
 			pos->OrigInfo_ = info;
+			pos->IsChanged_ = false;
 
 			const auto row = std::distance (Files_.begin (), pos);
 			emit dataChanged (index (row, 0), index (row, Columns::MaxColumn - 1));
