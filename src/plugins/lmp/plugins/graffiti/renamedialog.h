@@ -42,11 +42,16 @@ namespace Graffiti
 
 		QStandardItemModel *PreviewModel_;
 
-		QList<MediaInfo> Infos_;
+		QList<QPair<MediaInfo, QString>> Infos_;
 	public:
 		RenameDialog (ILMPProxy_Ptr, QWidget* = 0);
 
 		void SetInfos (const QList<MediaInfo>&);
+	private:
+		QList<QPair<QString, QString>> GetRenames () const;
+		void Rename (const QList<QPair<QString, QString>>&);
+	public slots:
+		void accept ();
 	private slots:
 		void updatePreview ();
 	};

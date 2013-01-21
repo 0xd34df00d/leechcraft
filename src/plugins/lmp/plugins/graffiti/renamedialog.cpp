@@ -18,6 +18,9 @@
 
 #include "renamedialog.h"
 #include <QStandardItemModel>
+#include <QMessageBox>
+#include <QDir>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -47,19 +50,60 @@ namespace Graffiti
 
 	void RenameDialog::SetInfos (const QList<MediaInfo>& infos)
 	{
-		Infos_ = infos;
+		Infos_.clear ();
+		for (const auto& info : infos)
+			Infos_.push_back ({ info, QFileInfo (info.LocalPath_).fileName () });
 
 		PreviewModel_->clear ();
 		PreviewModel_->setHorizontalHeaderLabels ({ tr ("Source name"), tr ("Target name") });
 
-		for (const auto& info : infos)
+		for (const auto& info : Infos_)
 		{
 			auto sourceItem = new QStandardItem;
-			sourceItem->setText (QFileInfo (info.LocalPath_).fileName ());
+			sourceItem->setText (info.second);
 			PreviewModel_->appendRow ({ sourceItem, new QStandardItem });
 		}
 
 		updatePreview ();
+	}
+
+	QList<QPair<QString, QString>> RenameDialog::GetRenames () const
+	{
+		QList<QPair<QString, QString>> result;
+		for (const auto& info : Infos_)
+			if (QFileInfo (info.first.LocalPath_).fileName () != info.second)
+				result.push_back ({ info.first.LocalPath_, info.second });
+		return result;
+	}
+
+	void RenameDialog::Rename (const QList<QPair<QString, QString>>& pairs)
+	{
+		for (const auto& pair : pairs)
+		{
+			const QFileInfo sourceInfo (pair.first);
+			auto sourceDir = sourceInfo.absoluteDir ();
+			if (!sourceDir.rename (sourceInfo.fileName (), pair.second))
+				qWarning () << Q_FUNC_INFO
+						<< "failed to rename"
+						<< sourceInfo.fileName ()
+						<< "to"
+						<< pair.second;
+		}
+	}
+
+	void RenameDialog::accept ()
+	{
+		std::shared_ptr<void> guard (nullptr, [this] (void*) { QDialog::accept (); });
+
+		const auto& toRename = GetRenames ();
+		if (toRename.isEmpty ())
+			return;
+
+		if (QMessageBox::question (this,
+				"LMP Graffiti",
+				tr ("Are you sure you want to rename %n file(s)?", 0, toRename.size ()),
+				QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+			Rename (toRename);
 	}
 
 	void RenameDialog::updatePreview ()
@@ -68,14 +112,14 @@ namespace Graffiti
 		const bool hasExtension = pattern.contains ('.');
 
 		int row = 0;
-		for (const auto& info : Infos_)
+		for (auto& info : Infos_)
 		{
-			auto name = Proxy_->PerformSubstitutions (pattern, info);
+			info.second = Proxy_->PerformSubstitutions (pattern, info.first);
 			if (!hasExtension)
-				name += '.' + QFileInfo (info.LocalPath_).suffix ();
+				info.second += '.' + QFileInfo (info.first.LocalPath_).suffix ();
 
 			auto item = PreviewModel_->item (row++, 1);
-			item->setText (name);
+			item->setText (info.second);
 		}
 	}
 }
