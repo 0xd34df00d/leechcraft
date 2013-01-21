@@ -17,9 +17,11 @@ SET (GRAFFITI_SRCS
 	graffiti.cpp
 	graffititab.cpp
 	filesmodel.cpp
+	renamedialog.cpp
 	)
 SET (GRAFFITI_FORMS
 	graffititab.ui
+	renamedialog.ui
 	)
 QT4_WRAP_UI (GRAFFITI_UIS_H ${GRAFFITI_FORMS})
 
