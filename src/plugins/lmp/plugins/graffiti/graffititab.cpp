@@ -26,11 +26,14 @@
 #include <QtDebug>
 #include <fileref.h>
 #include <tpropertymap.h>
+#include <util/tags/tagscompletionmodel.h>
+#include <util/tags/tagscompleter.h>
 #include <interfaces/lmp/ilmpproxy.h>
 #include <interfaces/lmp/itagresolver.h>
 #include <interfaces/lmp/mediainfo.h>
 #include "filesmodel.h"
 #include "renamedialog.h"
+#include "genres.h"
 
 namespace LeechCraft
 {
@@ -74,6 +77,15 @@ namespace Graffiti
 		RenameFiles_ = Toolbar_->addAction (tr ("Rename files"),
 				this, SLOT (renameFiles ()));
 		RenameFiles_->setProperty ("ActionIcon", "edit-rename");
+
+		Ui_.Genre_->SetSeparator (" / ");
+
+		auto model = new Util::TagsCompletionModel (this);
+		model->UpdateTags (Genres);
+		auto completer = new Util::TagsCompleter (Ui_.Genre_, this);
+		completer->OverrideModel (model);
+
+		Ui_.Genre_->AddSelector ();
 	}
 
 	TabClassInfo GraffitiTab::GetTabClassInfo () const
