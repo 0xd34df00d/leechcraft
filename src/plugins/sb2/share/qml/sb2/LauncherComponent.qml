@@ -67,6 +67,7 @@ Rectangle {
                     height: rootRect.launcherItemHeight
 
                     actionIconURL: tabClassIcon
+                    textTooltip: tabClassName
                     isHighlight: openedTabsCount
                     isStrongHighlight: openedTabsCount
                     isCurrent: isCurrentTab

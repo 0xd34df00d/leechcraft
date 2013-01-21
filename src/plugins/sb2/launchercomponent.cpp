@@ -45,6 +45,7 @@ namespace SB2
 			{
 				TabClassIcon = Qt::UserRole + 1,
 				TabClassID,
+				TabClassName,
 				OpenedTabsCount,
 				IsCurrentTab,
 				CanOpenTab,
@@ -57,6 +58,7 @@ namespace SB2
 				QHash<int, QByteArray> roleNames;
 				roleNames [Roles::TabClassIcon] = "tabClassIcon";
 				roleNames [Roles::TabClassID] = "tabClassID";
+				roleNames [Roles::TabClassName] = "tabClassName";
 				roleNames [Roles::OpenedTabsCount] = "openedTabsCount";
 				roleNames [Roles::IsCurrentTab] = "isCurrentTab";
 				roleNames [Roles::CanOpenTab] = "canOpenTab";
@@ -187,6 +189,7 @@ namespace SB2
 		auto item = new QStandardItem;
 		item->setData (prefix + tc.TabClass_, LauncherModel::Roles::TabClassIcon);
 		item->setData (tc.TabClass_, LauncherModel::Roles::TabClassID);
+		item->setData (tc.VisibleName_, LauncherModel::Roles::TabClassName);
 		item->setData (0, LauncherModel::Roles::OpenedTabsCount);
 		item->setData (false, LauncherModel::Roles::IsCurrentTab);
 		item->setData (false, LauncherModel::Roles::CanOpenTab);
