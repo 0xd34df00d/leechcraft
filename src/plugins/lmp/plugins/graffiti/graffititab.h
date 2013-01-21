@@ -70,6 +70,7 @@ namespace Graffiti
 		void on_Artist__textEdited (const QString&);
 		void on_Album__textEdited (const QString&);
 		void on_Title__textEdited (const QString&);
+		void on_Genre__textEdited (const QString&);
 		void on_Year__valueChanged (int);
 
 		void save ();

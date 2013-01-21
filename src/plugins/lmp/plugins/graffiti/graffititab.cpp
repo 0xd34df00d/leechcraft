@@ -25,6 +25,7 @@
 #include <QFutureWatcher>
 #include <QtDebug>
 #include <fileref.h>
+#include <tpropertymap.h>
 #include <interfaces/lmp/ilmpproxy.h>
 #include <interfaces/lmp/itagresolver.h>
 #include <interfaces/lmp/mediainfo.h>
@@ -130,6 +131,15 @@ namespace Graffiti
 	void GraffitiTab::on_Title__textEdited (const QString& title)
 	{
 		UpdateData (title, [] (MediaInfo& info) -> QString& { return info.Title_; });
+	}
+
+	void GraffitiTab::on_Genre__textEdited (const QString& genreString)
+	{
+		auto genres = genreString.split ('/', QString::SkipEmptyParts);
+		for (auto& genre : genres)
+			genre = genre.trimmed ();
+
+		UpdateData (genres, [] (MediaInfo& info) -> QStringList& { return info.Genres_; });
 	}
 
 	void GraffitiTab::on_Year__valueChanged (int year)
@@ -239,6 +249,7 @@ namespace Graffiti
 		Ui_.Album_->setText (info.Album_);
 		Ui_.Artist_->setText (info.Artist_);
 		Ui_.Title_->setText (info.Title_);
+		Ui_.Genre_->setText (info.Genres_.join (" / "));
 
 		Ui_.Year_->blockSignals (true);
 		Ui_.Year_->setValue (info.Year_);
