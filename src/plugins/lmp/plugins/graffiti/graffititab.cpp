@@ -34,6 +34,7 @@
 #include "filesmodel.h"
 #include "renamedialog.h"
 #include "genres.h"
+#include "fileswatcher.h"
 
 namespace LeechCraft
 {
@@ -47,6 +48,7 @@ namespace Graffiti
 	, Plugin_ (plugin)
 	, FSModel_ (new QFileSystemModel (this))
 	, FilesModel_ (new FilesModel (this))
+	, FilesWatcher_ (new FilesWatcher (this))
 	, Toolbar_ (new QToolBar ("Graffiti"))
 	{
 		Ui_.setupUi (this);
@@ -86,6 +88,11 @@ namespace Graffiti
 		completer->OverrideModel (model);
 
 		Ui_.Genre_->AddSelector ();
+
+		connect (FilesWatcher_,
+				SIGNAL (rereadFiles ()),
+				this,
+				SLOT (handleRereadFiles ()));
 	}
 
 	TabClassInfo GraffitiTab::GetTabClassInfo () const
@@ -241,6 +248,8 @@ namespace Graffiti
 	{
 		setEnabled (false);
 		FilesModel_->Clear ();
+		FilesWatcher_->Clear ();
+
 		const auto& path = FSModel_->filePath (index);
 
 		auto watcher = new QFutureWatcher<QList<QFileInfo>> ();
@@ -268,12 +277,20 @@ namespace Graffiti
 		Ui_.Year_->blockSignals (false);
 	}
 
+	void GraffitiTab::handleRereadFiles ()
+	{
+		const auto& current = Ui_.DirectoryTree_->currentIndex ();
+		on_DirectoryTree__activated (current);
+	}
+
 	void GraffitiTab::handleIterateFinished ()
 	{
 		auto watcher = dynamic_cast<QFutureWatcher<QList<QFileInfo>>*> (sender ());
 		watcher->deleteLater ();
 
 		const auto& files = watcher->result ();
+
+		FilesWatcher_->AddFiles (files);
 		FilesModel_->AddFiles (files);
 
 		auto resolver = LMPProxy_->GetTagResolver ();
