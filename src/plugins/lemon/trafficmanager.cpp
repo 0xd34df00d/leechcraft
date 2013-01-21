@@ -69,6 +69,10 @@ namespace Lemon
 				SIGNAL (configurationAdded (QNetworkConfiguration)),
 				this,
 				SLOT (addConfiguration (QNetworkConfiguration)));
+		connect (ConfManager_,
+				SIGNAL (configurationRemoved (QNetworkConfiguration)),
+				this,
+				SLOT (removeConfiguration (QNetworkConfiguration)));
 
 		ConfManager_->updateConfigurations ();
 
@@ -167,6 +171,22 @@ namespace Lemon
 		item->setData (0, IfacesModel::Roles::MaxUpSpeed);
 
 		info.LastSession_ = sess;
+	}
+
+	void TrafficManager::removeConfiguration (const QNetworkConfiguration& conf)
+	{
+		for (const auto& info : ActiveInterfaces_)
+		{
+			if (info.LastSession_->configuration () != conf)
+				continue;
+
+			const auto& iface = info.LastSession_->interface ();
+
+			Model_->removeRow (info.Item_->row ());
+
+			ActiveInterfaces_.remove (iface.humanReadableName ());
+			break;
+		}
 	}
 
 	void TrafficManager::updateCounters ()
