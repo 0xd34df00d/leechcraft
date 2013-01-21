@@ -204,6 +204,8 @@ namespace Graffiti
 						<< "unable to save file"
 						<< newInfo.LocalPath_;
 		}
+
+		handleRereadFiles ();
 	}
 
 	void GraffitiTab::revert ()
