@@ -80,6 +80,10 @@ namespace LMP
 			if (!mask.endsWith (ext))
 				mask += "." + ext;
 
+			mask.replace ('/', '_');
+			mask.replace ('?', '_');
+			mask.replace ('*', '_');
+
 			return true;
 		}
 	}

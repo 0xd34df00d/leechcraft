@@ -18,6 +18,7 @@
 
 #include "filesmodel.h"
 #include <QtDebug>
+#include <QColor>
 
 namespace LeechCraft
 {
@@ -28,6 +29,7 @@ namespace Graffiti
 	FilesModel::File::File (const QFileInfo& fi)
 	: Path_ (fi.absoluteFilePath ())
 	, Name_ (fi.fileName ())
+	, IsChanged_ (false)
 	{
 	}
 
@@ -73,29 +75,39 @@ namespace Graffiti
 		if (!index.isValid ())
 			return QVariant ();
 
-		if (role == Roles::MediaInfoRole)
-			return QVariant::fromValue (Files_.at (index.row ()).Info_);
-
-		if (role != Qt::DisplayRole)
-			return QVariant ();
-
-		const auto& file = Files_.at (index.row ());
-		switch (index.column ())
+		switch (role)
 		{
-		case Columns::Filename:
-			return file.Name_;
-		case Columns::Artist:
-			return file.Info_.Artist_;
-		case Columns::Album:
-			return file.Info_.Album_;
-		case Columns::Title:
-			return file.Info_.Title_;
-		}
+		case Qt::DisplayRole:
+		{
+			const auto& file = Files_.at (index.row ());
+			switch (index.column ())
+			{
+			case Columns::Filename:
+				return file.Name_;
+			case Columns::Artist:
+				return file.Info_.Artist_;
+			case Columns::Album:
+				return file.Info_.Album_;
+			case Columns::Title:
+				return file.Info_.Title_;
+			}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown column"
-				<< index.column ();
-		return QVariant ();
+			qWarning () << Q_FUNC_INFO
+					<< "unknown column"
+					<< index.column ();
+			return QVariant ();
+		}
+		case Qt::ForegroundRole:
+			return Files_.at (index.row ()).IsChanged_ ?
+					QVariant::fromValue (QColor (Qt::red)) :
+					QVariant ();
+		case Roles::MediaInfoRole:
+			return QVariant::fromValue (Files_.at (index.row ()).Info_);
+		case Roles::OrigMediaInfo:
+			return QVariant::fromValue (Files_.at (index.row ()).OrigInfo_);
+		default:
+			return QVariant ();
+		}
 	}
 
 	void FilesModel::AddFiles (const QList<QFileInfo>& files)
@@ -117,10 +129,32 @@ namespace Graffiti
 				continue;
 
 			pos->Info_ = info;
+			pos->OrigInfo_ = info;
 
 			const auto row = std::distance (Files_.begin (), pos);
 			emit dataChanged (index (row, 0), index (row, Columns::MaxColumn - 1));
 		}
+	}
+
+	void FilesModel::UpdateInfo (const QModelIndex& idx, const MediaInfo& info)
+	{
+		if (!idx.isValid ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid index"
+					<< idx;
+			return;
+		}
+
+		const int row = idx.row ();
+		auto& file = Files_ [row];
+
+		if (file.Info_ == info)
+			return;
+
+		file.Info_ = info;
+		file.IsChanged_ = info != file.OrigInfo_;
+		emit dataChanged (index (row, 0), index (row, Columns::MaxColumn - 1));
 	}
 
 	void FilesModel::Clear ()
@@ -131,6 +165,15 @@ namespace Graffiti
 		beginRemoveRows (QModelIndex (), 0, Files_.size ());
 		Files_.clear ();
 		endRemoveRows ();
+	}
+
+	QList<QPair<MediaInfo, MediaInfo>> FilesModel::GetModified () const
+	{
+		QList<QPair<MediaInfo, MediaInfo>> result;
+		for (const auto& file : Files_)
+			if (file.Info_ != file.OrigInfo_)
+				result.push_back ({ file.Info_, file.OrigInfo_ });
+		return result;
 	}
 
 	QList<FilesModel::File>::iterator FilesModel::FindFile (const QString& path)

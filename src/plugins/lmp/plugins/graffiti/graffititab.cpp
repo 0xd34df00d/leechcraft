@@ -19,13 +19,17 @@
 #include "graffititab.h"
 #include <functional>
 #include <QFileSystemModel>
+#include <QToolBar>
+#include <QMessageBox>
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <QtDebug>
+#include <fileref.h>
 #include <interfaces/lmp/ilmpproxy.h>
 #include <interfaces/lmp/itagresolver.h>
 #include <interfaces/lmp/mediainfo.h>
 #include "filesmodel.h"
+#include "renamedialog.h"
 
 namespace LeechCraft
 {
@@ -39,6 +43,7 @@ namespace Graffiti
 	, Plugin_ (plugin)
 	, FSModel_ (new QFileSystemModel (this))
 	, FilesModel_ (new FilesModel (this))
+	, Toolbar_ (new QToolBar ("Graffiti"))
 	{
 		Ui_.setupUi (this);
 
@@ -46,6 +51,7 @@ namespace Graffiti
 		FSModel_->setFilter (QDir::Dirs | QDir::NoDotAndDotDot);
 		FSModel_->setReadOnly (true);
 		Ui_.DirectoryTree_->setModel (FSModel_);
+		Ui_.DirectoryTree_->setRootIndex (FSModel_->index (QDir::homePath ()));
 
 		Ui_.FilesList_->setModel (FilesModel_);
 
@@ -53,6 +59,20 @@ namespace Graffiti
 				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
 				this,
 				SLOT (currentFileChanged (QModelIndex)));
+
+		Save_ = Toolbar_->addAction (tr ("Save"),
+				this, SLOT (save ()));
+		Save_->setProperty ("ActionIcon", "document-save");
+
+		Revert_ = Toolbar_->addAction (tr ("Revert"),
+				this, SLOT (revert ()));
+		Revert_->setProperty ("ActionIcon", "document-revert");
+
+		Toolbar_->addSeparator ();
+
+		RenameFiles_ = Toolbar_->addAction (tr ("Rename files"),
+				this, SLOT (renameFiles ()));
+		RenameFiles_->setProperty ("ActionIcon", "edit-rename");
 	}
 
 	TabClassInfo GraffitiTab::GetTabClassInfo () const
@@ -72,7 +92,127 @@ namespace Graffiti
 
 	QToolBar* GraffitiTab::GetToolBar () const
 	{
-		return 0;
+		return Toolbar_.get ();
+	}
+
+	template<typename T, typename F>
+	void GraffitiTab::UpdateData (const T& newData, F getter)
+	{
+		static_assert (std::is_lvalue_reference<typename std::result_of<F (MediaInfo&)>::type>::value,
+				"functor doesn't return an lvalue reference");
+
+		const auto& selected = Ui_.FilesList_->selectionModel ()->selectedRows ();
+		for (const auto& index : selected)
+		{
+			const auto& infoData = index.data (FilesModel::Roles::MediaInfoRole);
+			auto info = infoData.template value<MediaInfo> ();
+			getter (info) = newData;
+			FilesModel_->UpdateInfo (index, info);
+		}
+
+		if (!selected.isEmpty ())
+		{
+			Save_->setEnabled (true);
+			Revert_->setEnabled (true);
+		}
+	}
+
+	void GraffitiTab::on_Artist__textEdited (const QString& artist)
+	{
+		UpdateData (artist, [] (MediaInfo& info) -> QString& { return info.Artist_; });
+	}
+
+	void GraffitiTab::on_Album__textEdited (const QString& album)
+	{
+		UpdateData (album, [] (MediaInfo& info) -> QString& { return info.Album_; });
+	}
+
+	void GraffitiTab::on_Title__textEdited (const QString& title)
+	{
+		UpdateData (title, [] (MediaInfo& info) -> QString& { return info.Title_; });
+	}
+
+	void GraffitiTab::on_Year__valueChanged (int year)
+	{
+		UpdateData (year, [] (MediaInfo& info) -> int& { return info.Year_; });
+	}
+
+	void GraffitiTab::save ()
+	{
+		const auto& modified = FilesModel_->GetModified ();
+		if (modified.isEmpty ())
+			return;
+
+		if (QMessageBox::question (this,
+				"LMP Graffiti",
+				tr ("Do you really want to accept changes to %n file(s)?", 0, modified.size ()),
+				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
+
+		ITagResolver *resolver = LMPProxy_->GetTagResolver ();
+
+		auto toTLStr = [] (const QString& str)
+		{
+			return TagLib::String (str.toUtf8 ().constData (), TagLib::String::UTF8);
+		};
+
+		for (const auto& pair : modified)
+		{
+			const auto& newInfo = pair.first;
+
+			QMutexLocker locker (&resolver->GetMutex ());
+			auto file = resolver->GetFileRef (newInfo.LocalPath_);
+			auto tag = file.tag ();
+
+			tag->setArtist (toTLStr (newInfo.Artist_));
+			tag->setAlbum (toTLStr (newInfo.Album_));
+			tag->setTitle (toTLStr (newInfo.Title_));
+			tag->setYear (newInfo.Year_);
+			tag->setGenre (toTLStr (newInfo.Genres_.join (" / ")));
+
+			if (!file.save ())
+				qWarning () << Q_FUNC_INFO
+						<< "unable to save file"
+						<< newInfo.LocalPath_;
+		}
+	}
+
+	void GraffitiTab::revert ()
+	{
+		const auto& modified = FilesModel_->GetModified ();
+		if (modified.isEmpty ())
+			return;
+
+		if (QMessageBox::question (this,
+				"LMP Graffiti",
+				tr ("Do you really want to revert changes to %n file(s)?", 0, modified.size ()),
+				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
+
+		QList<MediaInfo> origs;
+		for (const auto& pair : modified)
+			origs << pair.second;
+		FilesModel_->SetInfos (origs);
+
+		Save_->setEnabled (false);
+		Revert_->setEnabled (false);
+
+		currentFileChanged (Ui_.FilesList_->currentIndex ());
+	}
+
+	void GraffitiTab::renameFiles ()
+	{
+		QList<MediaInfo> infos;
+		for (const auto& index : Ui_.FilesList_->selectionModel ()->selectedRows ())
+			infos << index.data (FilesModel::Roles::MediaInfoRole).value<MediaInfo> ();
+		if (infos.isEmpty ())
+			return;
+
+		auto dia = new RenameDialog (LMPProxy_, this);
+		dia->SetInfos (infos);
+
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->show ();
 	}
 
 	void GraffitiTab::on_DirectoryTree__activated (const QModelIndex& index)
@@ -99,7 +239,10 @@ namespace Graffiti
 		Ui_.Album_->setText (info.Album_);
 		Ui_.Artist_->setText (info.Artist_);
 		Ui_.Title_->setText (info.Title_);
+
+		Ui_.Year_->blockSignals (true);
 		Ui_.Year_->setValue (info.Year_);
+		Ui_.Year_->blockSignals (false);
 	}
 
 	void GraffitiTab::handleIterateFinished ()

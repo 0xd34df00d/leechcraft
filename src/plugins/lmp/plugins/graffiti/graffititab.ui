@@ -20,7 +20,14 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <widget class="QTreeView" name="DirectoryTree_"/>
-     <widget class="QTreeView" name="FilesList_"/>
+     <widget class="QTreeView" name="FilesList_">
+      <property name="selectionMode">
+       <enum>QAbstractItemView::ExtendedSelection</enum>
+      </property>
+      <property name="rootIsDecorated">
+       <bool>false</bool>
+      </property>
+     </widget>
      <widget class="QFrame" name="frame">
       <property name="minimumSize">
        <size>

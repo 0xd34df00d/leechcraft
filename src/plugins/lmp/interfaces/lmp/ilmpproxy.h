@@ -18,9 +18,12 @@
 
 #pragma once
 
+#include <functional>
 #include <memory>
 #include <QtPlugin>
 #include <QFileInfo>
+#include <QMap>
+#include <QVariant>
 
 class QPixmap;
 
@@ -30,6 +33,7 @@ namespace LMP
 {
 	class ILocalCollection;
 	class ITagResolver;
+	struct MediaInfo;
 
 	class ILMPProxy
 	{
@@ -42,7 +46,13 @@ namespace LMP
 
 		virtual QString FindAlbumArt (const QString& near, bool includeCollection = true) const = 0;
 
-		virtual QList<QFileInfo> RecIterateInfo (const QString& dirPath, bool followSymlinks = false) = 0;
+		virtual QList<QFileInfo> RecIterateInfo (const QString& dirPath, bool followSymlinks = false) const = 0;
+
+		virtual QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters () const = 0;
+
+		virtual QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters () const = 0;
+
+		virtual QString PerformSubstitutions (QString mask, const MediaInfo& info) const = 0;
 	};
 
 	typedef std::shared_ptr<ILMPProxy> ILMPProxy_Ptr;

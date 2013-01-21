@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/lmp/ilmpplugin.h>
@@ -29,6 +30,8 @@ namespace LeechCraft
 {
 namespace LMP
 {
+struct MediaInfo;
+
 namespace Graffiti
 {
 	class FilesModel;
@@ -48,6 +51,11 @@ namespace Graffiti
 
 		QFileSystemModel *FSModel_;
 		FilesModel *FilesModel_;
+
+		std::shared_ptr<QToolBar> Toolbar_;
+		QAction *Save_;
+		QAction *Revert_;
+		QAction *RenameFiles_;
 	public:
 		GraffitiTab (ILMPProxy_ptr, const TabClassInfo&, QObject*);
 
@@ -55,7 +63,19 @@ namespace Graffiti
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+	private:
+		template<typename T, typename F>
+		void UpdateData (const T& newData, F getter);
 	private slots:
+		void on_Artist__textEdited (const QString&);
+		void on_Album__textEdited (const QString&);
+		void on_Title__textEdited (const QString&);
+		void on_Year__valueChanged (int);
+
+		void save ();
+		void revert ();
+		void renameFiles ();
+
 		void on_DirectoryTree__activated (const QModelIndex&);
 		void currentFileChanged (const QModelIndex&);
 		void handleIterateFinished ();

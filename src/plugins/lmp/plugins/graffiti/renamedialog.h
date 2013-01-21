@@ -18,10 +18,12 @@
 
 #pragma once
 
-#include <QAbstractItemModel>
-#include <QFileInfo>
-#include <QStringList>
+#include <QDialog>
+#include <interfaces/lmp/ilmpproxy.h>
 #include <interfaces/lmp/mediainfo.h>
+#include "ui_renamedialog.h"
+
+class QStandardItemModel;
 
 namespace LeechCraft
 {
@@ -29,61 +31,29 @@ namespace LMP
 {
 namespace Graffiti
 {
-	class FilesModel : public QAbstractItemModel
+	class RenameDialog : public QDialog
 	{
 		Q_OBJECT
 
-		const QStringList Headers_;
+		const ILMPProxy_Ptr Proxy_;
+		decltype (ILMPProxy_Ptr ()->GetSubstGetters ()) Getters_;
 
-		struct File
-		{
-			QString Path_;
+		Ui::RenameDialog Ui_;
 
-			QString Name_;
+		QStandardItemModel *PreviewModel_;
 
-			MediaInfo Info_;
-			MediaInfo OrigInfo_;
-			bool IsChanged_;
-
-			File (const QFileInfo&);
-		};
-		QList<File> Files_;
-
-		enum Columns
-		{
-			Title,
-			Album,
-			Artist,
-			Filename,
-
-			MaxColumn
-		};
+		QList<QPair<MediaInfo, QString>> Infos_;
 	public:
-		enum Roles
-		{
-			MediaInfoRole = Qt::UserRole + 1,
-			OrigMediaInfo
-		};
-
-		FilesModel (QObject*);
-
-		QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
-		QModelIndex parent (const QModelIndex&) const;
-		int rowCount (const QModelIndex&) const;
-		int columnCount (const QModelIndex&) const;
-		QVariant headerData (int, Qt::Orientation, int) const;
-		QVariant data (const QModelIndex&, int) const;
-
-		void AddFiles (const QList<QFileInfo>&);
+		RenameDialog (ILMPProxy_Ptr, QWidget* = 0);
 
 		void SetInfos (const QList<MediaInfo>&);
-		void UpdateInfo (const QModelIndex&, const MediaInfo&);
-
-		void Clear ();
-
-		QList<QPair<MediaInfo, MediaInfo>> GetModified () const;
 	private:
-		QList<File>::iterator FindFile (const QString&);
+		QList<QPair<QString, QString>> GetRenames () const;
+		void Rename (const QList<QPair<QString, QString>>&);
+	public slots:
+		void accept ();
+	private slots:
+		void updatePreview ();
 	};
 }
 }

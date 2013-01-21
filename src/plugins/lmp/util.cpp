@@ -201,16 +201,56 @@ namespace LMP
 		label->installEventFilter (new AADisplayEventFilter (label));
 	}
 
+	namespace
+	{
+		template<typename K, typename V>
+		QMap<K, V> MakeMap (std::initializer_list<QPair<K, V>> l)
+		{
+			QMap<K, V> result;
+			for (const auto& pair : l)
+				result [pair.first] = pair.second;
+			return result;
+		}
+	}
+
+	QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters ()
+	{
+		return MakeMap<QString, std::function<QString (MediaInfo)>> ({
+				{ "$artist", [] (const MediaInfo& info) { return info.Artist_; } },
+				{ "$album", [] (const MediaInfo& info) { return info.Album_; } },
+				{ "$title", [] (const MediaInfo& info) { return info.Title_; } },
+				{ "$year", [] (const MediaInfo& info) { return QString::number (info.Year_); } },
+				{ "$trackNumber", [] (const MediaInfo& info)
+					{
+						auto trackNumStr = QString::number (info.TrackNumber_);
+						if (info.TrackNumber_ < 10)
+							trackNumStr.prepend ('0');
+						return trackNumStr;
+					} }
+			});
+	}
+
+	QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters ()
+	{
+		return MakeMap<QString, std::function<void (MediaInfo&, QString)>> ({
+				{ "$artist", [] (MediaInfo& info, const QString& val) { info.Artist_ = val; } },
+				{ "$album", [] (MediaInfo& info, const QString& val) { info.Album_= val; } },
+				{ "$title", [] (MediaInfo& info, const QString& val) { info.Title_ = val; } },
+				{ "$year", [] (MediaInfo& info, const QString& val) { info.Year_ = val.toInt (); } },
+				{ "$trackNumber", [] (MediaInfo& info, QString val)
+					{
+						if (val.size () == 2 && val.at (0) == '0')
+							val = val.mid (1);
+						info.TrackNumber_ = val.toInt ();
+					} }
+			});
+	}
+
 	QString PerformSubstitutions (QString mask, const MediaInfo& info)
 	{
-		mask.replace ("$artist", info.Artist_);
-		mask.replace ("$year", QString::number (info.Year_));
-		mask.replace ("$album", info.Album_);
-		QString trackNumStr = QString::number (info.TrackNumber_);
-		if (info.TrackNumber_ < 10)
-			trackNumStr.prepend ('0');
-		mask.replace ("$trackNumber", trackNumStr);
-		mask.replace ("$title", info.Title_);
+		const auto& getters = GetSubstGetters ();
+		for (const auto& key : getters.keys ())
+			mask.replace (key, getters [key] (info));
 		return mask;
 	}
 
