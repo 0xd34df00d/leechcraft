@@ -53,6 +53,7 @@ namespace LeechCraft
 			Q_OBJECT
 
 			QString Caption_;
+			QString Separator_;
 		public:
 			/** @brief Constructor.
 			 *
@@ -63,7 +64,6 @@ namespace LeechCraft
 			 * @param[in] parent Pointer to parent widget.
 			 */
 			CategorySelector (QWidget *parent = 0);
-			virtual ~CategorySelector ();
 
 			/** @brief Sets the caption of this selector.
 			 *
@@ -94,6 +94,22 @@ namespace LeechCraft
 			 * @param[in] subset The list of items to select.
 			 */
 			void SetSelections (const QStringList& subset);
+
+			/** @brief Returns the separator for the tags.
+			 *
+			 * The default separator is "; ".
+			 *
+			 * @sa SetSeparator()
+			 */
+			UTIL_API QString GetSeparator () const;
+
+			/** @brief Sets the separator for the tags.
+			 *
+			 * This function doesn't update the text in the line edit.
+			 *
+			 * @sa GetSeparator()
+			 */
+			UTIL_API void SetSeparator (const QString&);
 		protected:
 			/** @brief Checks whether after the move event the selector
 			 * won't be beoynd the screen. if it would, moves back.

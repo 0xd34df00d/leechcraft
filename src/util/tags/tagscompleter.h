@@ -50,6 +50,8 @@ namespace LeechCraft
 
 			UTIL_API static QAbstractItemModel *CompletionModel_;
 			friend class LeechCraft::TagsManager;
+
+			TagsLineEdit *Edit_;
 		public:
 			/** @brief Constructs the completer.
 			 *

@@ -30,6 +30,7 @@ QAbstractItemModel *LeechCraft::Util::TagsCompleter::CompletionModel_ = 0;
 
 TagsCompleter::TagsCompleter (TagsLineEdit *toComplete, QObject *parent)
 : QCompleter (parent)
+, Edit_ (toComplete)
 {
 	setCompletionRole (Qt::DisplayRole);
 	setModel (CompletionModel_);
@@ -43,9 +44,9 @@ void TagsCompleter::OverrideModel (QAbstractItemModel *model)
 
 QStringList TagsCompleter::splitPath (const QString& string) const
 {
-	QStringList splitted = string.split (";", QString::SkipEmptyParts);
-	QStringList result;
-	Q_FOREACH (QString s, splitted)
-		result << s.trimmed ();
+	const auto& sep = Edit_->GetSeparator ().trimmed ();
+	auto result = string.split (sep, QString::SkipEmptyParts);
+	for (auto& s : result)
+		s = s.trimmed ();
 	return result;
 }

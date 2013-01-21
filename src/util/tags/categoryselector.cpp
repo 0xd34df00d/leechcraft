@@ -33,6 +33,7 @@ const int RoleTag = 52;
 
 CategorySelector::CategorySelector (QWidget *parent)
 : QTreeWidget (parent)
+, Separator_ ("; ")
 {
 	setWindowTitle (tr ("Tags selector"));
 	setWindowFlags (Qt::Tool | Qt::WindowStaysOnTopHint);
@@ -63,10 +64,6 @@ CategorySelector::CategorySelector (QWidget *parent)
 	addAction (none);
 
 	setContextMenuPolicy (Qt::ActionsContextMenu);
-}
-
-CategorySelector::~CategorySelector ()
-{
 }
 
 void CategorySelector::SetCaption (const QString& caption)
@@ -137,6 +134,16 @@ void CategorySelector::SetSelections (const QStringList& tags)
 	blockSignals (false);
 }
 
+QString CategorySelector::GetSeparator () const
+{
+	return Separator_;
+}
+
+void CategorySelector::SetSeparator (const QString& sep)
+{
+	Separator_ = sep;
+}
+
 void CategorySelector::moveEvent (QMoveEvent *e)
 {
 	QWidget::moveEvent (e);
@@ -197,7 +204,7 @@ void CategorySelector::selectNone ()
 
 void CategorySelector::lineTextChanged (const QString& text)
 {
-	QStringList tags = text.split ("; ", QString::SkipEmptyParts);
+	QStringList tags = text.split (Separator_, QString::SkipEmptyParts);
 	SetSelections (tags);
 }
 
