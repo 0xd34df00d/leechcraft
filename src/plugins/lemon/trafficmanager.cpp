@@ -184,7 +184,7 @@ namespace Lemon
 
 			Model_->removeRow (info.Item_->row ());
 
-			ActiveInterfaces_.remove (iface.humanReadableName ());
+			ActiveInterfaces_.remove (iface.name ());
 			break;
 		}
 	}
