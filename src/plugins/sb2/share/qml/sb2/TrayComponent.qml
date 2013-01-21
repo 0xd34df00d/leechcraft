@@ -25,6 +25,7 @@ Rectangle {
 
             isHighlight: actionObject.checked
             actionIconURL: actionIcon
+            textTooltip: actionText
             hoverScalesIcons: false
 
             onTriggered: actionObject.trigger()
