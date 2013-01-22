@@ -21,6 +21,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iactionsexporter.h>
+#include <interfaces/ihaveshortcuts.h>
 
 namespace LeechCraft
 {
@@ -29,9 +30,10 @@ namespace TabsList
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IActionsExporter
+				 , public IHaveShortcuts
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IActionsExporter)
+		Q_INTERFACES (IInfo IActionsExporter IHaveShortcuts)
 
 		ICoreProxy_ptr Proxy_;
 		QAction *ShowList_;
@@ -45,6 +47,9 @@ namespace TabsList
 		QIcon GetIcon () const;
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+
+		QMap<QString, ActionInfo> GetActionInfo () const;
+		void SetShortcut (const QString&, const QKeySequences_t&);
 	private slots:
 		void handleShowList ();
 		void navigateToTab ();

@@ -88,6 +88,21 @@ namespace TabsList
 		return actions;
 	}
 
+	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
+	{
+		QMap<QString, ActionInfo> result;
+		result ["ShowList"] = ActionInfo (ShowList_->text (),
+				ShowList_->shortcut (),
+				Proxy_->GetIcon (ShowList_->property ("ActionIcon").toString ()));
+		return result;
+	}
+
+	void Plugin::SetShortcut (const QString&, const QKeySequences_t& seqs)
+	{
+		ShowList_->setShortcuts (seqs);
+	}
+
+
 	namespace
 	{
 		class ListEventFilter : public QObject
