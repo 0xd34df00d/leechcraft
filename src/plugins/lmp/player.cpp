@@ -128,13 +128,10 @@ namespace LMP
 
 				const auto& urls = data->urls ();
 				QList<Phonon::MediaSource> sources;
-				std::transform (urls.begin (), urls.end (), std::back_inserter (sources),
-						[] (decltype (urls.front ()) url)
-						{
-							return url.scheme () == "file" ?
-									Phonon::MediaSource (url.toLocalFile ()) :
-									Phonon::MediaSource (url);
-						});
+				for (const auto& url : urls)
+					sources << url.scheme () == "file" ?
+							Phonon::MediaSource (url.toLocalFile ()) :
+							Phonon::MediaSource (url);
 
 				auto afterIdx = row >= 0 ?
 						parent.child (row, 0) :
@@ -166,7 +163,7 @@ namespace LMP
 					existingQueue << sources;
 				else
 				{
-					Q_FOREACH (const auto& src, sources)
+					for (const auto& src : sources)
 						pos = existingQueue.insert (pos, src) + 1;
 				}
 
