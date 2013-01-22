@@ -22,6 +22,8 @@
 #include <QDeclarativeContext>
 #include <QtDebug>
 #include <QDir>
+#include <QSettings>
+#include <QCoreApplication>
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
@@ -84,6 +86,8 @@ namespace SB2
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
 		View_->engine ()->addImageProvider (ImageProviderID, new Util::ThemeImageProvider (proxy));
 		View_->setSource (QUrl::fromLocalFile (file));
+
+		LoadRemovedList ();
 	}
 
 	SBView* ViewManager::GetView () const
@@ -120,7 +124,7 @@ namespace SB2
 		}
 
 		auto mgr = Quark2Manager_.take (url);
-		RemovedIDs_ << mgr->GetID ();
+		AddToRemoved (mgr->GetID ());
 	}
 
 	void ViewManager::RemoveQuark (const QString& id)
@@ -140,7 +144,7 @@ namespace SB2
 			return;
 
 		auto mgr = Quark2Manager_.take (url);
-		RemovedIDs_ << mgr->GetID ();
+		AddToRemoved (mgr->GetID ());
 	}
 
 	void ViewManager::UnhideQuark (const QuarkComponent& component, QuarkManager_ptr manager)
@@ -148,7 +152,7 @@ namespace SB2
 		if (!manager)
 			return;
 
-		RemovedIDs_.remove (manager->GetID ());
+		RemoveFromRemoved (manager->GetID ());
 
 		AddComponent (component, manager);
 	}
@@ -247,6 +251,36 @@ namespace SB2
 			result << c;
 		}
 		return result;
+	}
+
+	void ViewManager::AddToRemoved (const QString& id)
+	{
+		RemovedIDs_ << id;
+		SaveRemovedList ();
+	}
+
+	void ViewManager::RemoveFromRemoved (const QString& id)
+	{
+		RemovedIDs_.remove (id);
+		SaveRemovedList ();
+	}
+
+	void ViewManager::SaveRemovedList ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_SB2");
+		settings.beginGroup ("RemovedList");
+		settings.setValue ("IDs", QStringList (RemovedIDs_.toList ()));
+		settings.endGroup ();
+	}
+
+	void ViewManager::LoadRemovedList ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_SB2");
+		settings.beginGroup ("RemovedList");
+		RemovedIDs_ = QSet<QString>::fromList (settings.value ("IDs").toStringList ());
+		settings.endGroup ();
 	}
 }
 }

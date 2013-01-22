@@ -73,6 +73,12 @@ namespace SB2
 		void AddComponent (const QuarkComponent&);
 		void AddComponent (const QuarkComponent&, QuarkManager_ptr);
 		QList<QuarkComponent> ScanRootDir (const QDir&) const;
+
+		void AddToRemoved (const QString&);
+		void RemoveFromRemoved (const QString&);
+
+		void SaveRemovedList ();
+		void LoadRemovedList ();
 	};
 }
 }
