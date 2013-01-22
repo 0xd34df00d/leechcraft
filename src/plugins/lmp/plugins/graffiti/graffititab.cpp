@@ -25,7 +25,6 @@
 #include <QFutureWatcher>
 #include <QtDebug>
 #include <fileref.h>
-#include <tpropertymap.h>
 #include <util/tags/tagscompletionmodel.h>
 #include <util/tags/tagscompleter.h>
 #include <interfaces/lmp/ilmpproxy.h>
