@@ -22,6 +22,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iactionsexporter.h>
+#include <interfaces/ihaveshortcuts.h>
 
 class QAction;
 
@@ -36,10 +37,12 @@ namespace Glance
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IActionsExporter
+				 , public IHaveShortcuts
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IActionsExporter)
+		Q_INTERFACES (IInfo IActionsExporter IHaveShortcuts)
 
+		ICoreProxy_ptr Proxy_;
 		QAction *ActionGlance_;
 		GlanceShower *Glance_;
 	public:
@@ -52,6 +55,9 @@ namespace Glance
 		QIcon GetIcon () const;
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+
+		QMap<QString, ActionInfo> GetActionInfo () const;
+		void SetShortcut (const QString&, const QKeySequences_t&);
 	public slots:
 		void on_ActionGlance__triggered ();
 	signals:
