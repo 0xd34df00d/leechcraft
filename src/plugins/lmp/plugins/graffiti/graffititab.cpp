@@ -57,7 +57,6 @@ namespace Graffiti
 		FSModel_->setFilter (QDir::Dirs | QDir::NoDotAndDotDot);
 		FSModel_->setReadOnly (true);
 		Ui_.DirectoryTree_->setModel (FSModel_);
-		Ui_.DirectoryTree_->setRootIndex (FSModel_->index (QDir::homePath ()));
 
 		Ui_.FilesList_->setModel (FilesModel_);
 
