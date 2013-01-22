@@ -129,9 +129,23 @@ namespace LMP
 				const auto& urls = data->urls ();
 				QList<Phonon::MediaSource> sources;
 				for (const auto& url : urls)
-					sources << url.scheme () == "file" ?
-							Phonon::MediaSource (url.toLocalFile ()) :
-							Phonon::MediaSource (url);
+				{
+					if (url.scheme () != "file")
+					{
+						sources << Phonon::MediaSource (url);
+						continue;
+					}
+
+					const auto& localPath = url.toLocalFile ();
+					if (QFileInfo (localPath).isFile ())
+					{
+						sources << Phonon::MediaSource (localPath);
+						continue;
+					}
+
+					for (const auto& path : RecIterate (localPath, true))
+						sources << Phonon::MediaSource (path);
+				}
 
 				auto afterIdx = row >= 0 ?
 						parent.child (row, 0) :
