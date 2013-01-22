@@ -116,6 +116,7 @@ namespace Glance
 
 	void Plugin::SetShortcut (const QString&, const QKeySequences_t& seqs)
 	{
+		ActionGlance_->setShortcuts (seqs);
 	}
 }
 }
