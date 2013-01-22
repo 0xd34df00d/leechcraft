@@ -49,6 +49,7 @@ namespace SB2
 
 		QHash<QUrl, QuarkManager_ptr> Quark2Manager_;
 		QSet<QString> RemovedIDs_;
+		QStringList PreviousQuarkOrder_;
 
 		QList<QuarkComponent> InternalComponents_;
 	public:
@@ -77,8 +78,11 @@ namespace SB2
 		void AddToRemoved (const QString&);
 		void RemoveFromRemoved (const QString&);
 
-		void SaveRemovedList ();
+		void SaveRemovedList () const;
 		void LoadRemovedList ();
+
+		void SaveQuarkOrder ();
+		void LoadQuarkOrder ();
 	};
 }
 }
