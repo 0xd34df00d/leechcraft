@@ -259,7 +259,7 @@ namespace Graffiti
 				this,
 				SLOT (handleIterateFinished ()));
 
-		auto worker = [this, path] () { return LMPProxy_->RecIterateInfo (path, false); };
+		auto worker = [this, path] () { return LMPProxy_->RecIterateInfo (path, true); };
 		watcher->setFuture (QtConcurrent::run (std::function<QList<QFileInfo> ()> (worker)));
 	}
 
