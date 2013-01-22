@@ -63,6 +63,8 @@ Rectangle {
         clip: true
 
         delegate: Rectangle {
+            id: itemRect
+
             width: rulesListView.width
             height: ruleEnableButton.height + 8
 
@@ -71,10 +73,12 @@ Rectangle {
             radius: 3
             gradient: Gradient {
                 GradientStop {
+                    id: upperStop
                     position: 0
                     color: colorProxy.color_TextBox_TopColor
                 }
                 GradientStop {
+                    id: lowerStop
                     position: 1
                     color: colorProxy.color_TextBox_BottomColor
                 }
@@ -111,6 +115,33 @@ Rectangle {
                 color: colorProxy.color_TextBox_TitleTextColor
                 elide: Text.ElideMiddle
             }
+
+            MouseArea {
+                id: rectMouseArea
+                anchors.fill: parent
+                hoverEnabled: true
+                onReleased: ruleEnableButton.triggered()
+            }
+
+            states: [
+                State {
+                    name: "hovered"
+                    when: rectMouseArea.containsMouse
+                    PropertyChanges { target: itemRect; border.color: colorProxy.color_TextBox_HighlightBorderColor}
+                    PropertyChanges { target: upperStop; color: colorProxy.color_TextBox_HighlightTopColor }
+                    PropertyChanges { target: lowerStop; color: colorProxy.color_TextBox_HighlightBottomColor }
+                }
+            ]
+
+            transitions: [
+                Transition {
+                    from: ""
+                    to: "hovered"
+                    reversible: true
+                    PropertyAnimation { properties: "border.color"; duration: 200 }
+                    PropertyAnimation { properties: "color"; duration: 200 }
+                }
+            ]
         }
     }
 }
