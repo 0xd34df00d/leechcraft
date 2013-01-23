@@ -231,6 +231,20 @@ namespace Graffiti
 
 	void GraffitiTab::renameFiles ()
 	{
+		if (!FilesModel_->GetModified ().isEmpty ())
+		{
+			auto res = QMessageBox::question (this,
+					"LMP Graffiti",
+					tr ("You have unsaved files with changed tags. Do you want to save or discard those changes?"),
+					QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+			if (res == QMessageBox::Save)
+				save ();
+			else if (res == QMessageBox::Discard)
+				revert ();
+			else
+				return;
+		}
+
 		QList<MediaInfo> infos;
 		for (const auto& index : Ui_.FilesList_->selectionModel ()->selectedRows ())
 			infos << index.data (FilesModel::Roles::MediaInfoRole).value<MediaInfo> ();
