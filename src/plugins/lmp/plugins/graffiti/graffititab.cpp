@@ -67,6 +67,7 @@ namespace Graffiti
 		Save_ = Toolbar_->addAction (tr ("Save"),
 				this, SLOT (save ()));
 		Save_->setProperty ("ActionIcon", "document-save");
+		Save_->setShortcut (QString ("Ctrl+S"));
 
 		Revert_ = Toolbar_->addAction (tr ("Revert"),
 				this, SLOT (revert ()));
