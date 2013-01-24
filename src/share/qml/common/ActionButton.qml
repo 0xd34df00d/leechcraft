@@ -16,6 +16,8 @@ Item {
 
     property alias isHovered: actionMouseArea.containsMouse
 
+    property string textTooltip
+
     signal triggered()
     signal hovered()
     signal hoverLeft()
@@ -80,6 +82,8 @@ Item {
             cache: false
         }
 
+        Common { id: buttCommon }
+
         MouseArea {
             id: actionMouseArea
 
@@ -88,7 +92,11 @@ Item {
 
             onClicked: actionRoot.triggered()
             onPressAndHold: actionRoot.held()
-            onEntered: actionRoot.hovered()
+            onEntered: {
+                actionRoot.hovered();
+                if (textTooltip.length > 0)
+                    buttCommon.showTextTooltip(actionMouseArea, textTooltip);
+            }
             onExited: actionRoot.hoverLeft()
         }
     }

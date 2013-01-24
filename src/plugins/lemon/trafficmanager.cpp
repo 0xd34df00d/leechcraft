@@ -21,6 +21,7 @@
 #include <QNetworkConfigurationManager>
 #include <QNetworkSession>
 #include <QTimer>
+#include <util/util.h>
 #include "core.h"
 #include "platformbackend.h"
 
@@ -39,7 +40,9 @@ namespace Lemon
 				BearerType,
 				IconName,
 				UpSpeed,
+				UpSpeedPretty,
 				DownSpeed,
+				DownSpeedPretty,
 				MaxUpSpeed,
 				MaxDownSpeed
 			};
@@ -52,7 +55,9 @@ namespace Lemon
 				roleNames [Roles::BearerType] = "bearerType";
 				roleNames [Roles::IconName] = "iconName";
 				roleNames [Roles::UpSpeed] = "upSpeed";
+				roleNames [Roles::UpSpeedPretty] = "upSpeedPretty";
 				roleNames [Roles::DownSpeed] = "downSpeed";
+				roleNames [Roles::DownSpeedPretty] = "downSpeedPretty";
 				roleNames [Roles::MaxUpSpeed] = "maxUpSpeed";
 				roleNames [Roles::MaxDownSpeed] = "maxDownSpeed";
 				setRoleNames (roleNames);
@@ -69,6 +74,10 @@ namespace Lemon
 				SIGNAL (configurationAdded (QNetworkConfiguration)),
 				this,
 				SLOT (addConfiguration (QNetworkConfiguration)));
+		connect (ConfManager_,
+				SIGNAL (configurationRemoved (QNetworkConfiguration)),
+				this,
+				SLOT (removeConfiguration (QNetworkConfiguration)));
 
 		ConfManager_->updateConfigurations ();
 
@@ -169,6 +178,22 @@ namespace Lemon
 		info.LastSession_ = sess;
 	}
 
+	void TrafficManager::removeConfiguration (const QNetworkConfiguration& conf)
+	{
+		for (const auto& info : ActiveInterfaces_)
+		{
+			if (info.LastSession_->configuration () != conf)
+				continue;
+
+			const auto& iface = info.LastSession_->interface ();
+
+			Model_->removeRow (info.Item_->row ());
+
+			ActiveInterfaces_.remove (iface.name ());
+			break;
+		}
+	}
+
 	void TrafficManager::updateCounters ()
 	{
 		auto backend = Core::Instance ().GetPlatformBackend ();
@@ -185,12 +210,13 @@ namespace Lemon
 
 			const auto& bytesStats = backend->GetCurrentNumBytes (name);
 
-			auto updateCounts = [&info, backtrack] (const qint64 now,
-					qint64& prev, QList<qint64>& list, IfacesModel::Roles role) -> qint64
+			auto updateCounts = [&info, backtrack] (const qint64 now, qint64& prev,
+					QList<qint64>& list, IfacesModel::Roles role, const QString& text) -> qint64
 			{
 				const auto diff = now - prev;
 
 				info.Item_->setData (diff, role);
+				info.Item_->setData (text.arg (Util::MakePrettySize (diff)), role + 1);
 
 				list << diff;
 				if (list.size () > backtrack)
@@ -200,10 +226,10 @@ namespace Lemon
 				return diff;
 			};
 
-			updateCounts (bytesStats.Down_,
-					info.PrevRead_, info.DownSpeeds_, IfacesModel::Roles::DownSpeed);
-			updateCounts (bytesStats.Up_,
-					info.PrevWritten_, info.UpSpeeds_, IfacesModel::Roles::UpSpeed);
+			updateCounts (bytesStats.Down_, info.PrevRead_, info.DownSpeeds_,
+					IfacesModel::Roles::DownSpeed, tr ("Download speed: %1/s"));
+			updateCounts (bytesStats.Up_, info.PrevWritten_, info.UpSpeeds_,
+					IfacesModel::Roles::UpSpeed, tr ("Upload speed: %1/s"));
 
 			auto updateMax = [&info] (const QList<qint64>& speeds, IfacesModel::Roles role)
 			{

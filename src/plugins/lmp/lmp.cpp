@@ -74,7 +74,7 @@ namespace LMP
 			GetUniqueID () + "_artistBrowser",
 			tr ("Artist browser"),
 			tr ("Allows one to browse information about different artists."),
-			GetIcon (),
+			QIcon (":/lmp/resources/images/lmp_artist_browser.svg"),
 			35,
 			TFSuggestOpening | TFOpenableByRequest
 		};

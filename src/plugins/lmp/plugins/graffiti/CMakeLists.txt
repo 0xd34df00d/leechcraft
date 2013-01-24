@@ -18,6 +18,7 @@ SET (GRAFFITI_SRCS
 	graffititab.cpp
 	filesmodel.cpp
 	renamedialog.cpp
+	fileswatcher.cpp
 	)
 SET (GRAFFITI_FORMS
 	graffititab.ui

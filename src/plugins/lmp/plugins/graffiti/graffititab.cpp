@@ -25,11 +25,15 @@
 #include <QFutureWatcher>
 #include <QtDebug>
 #include <fileref.h>
+#include <util/tags/tagscompletionmodel.h>
+#include <util/tags/tagscompleter.h>
 #include <interfaces/lmp/ilmpproxy.h>
 #include <interfaces/lmp/itagresolver.h>
 #include <interfaces/lmp/mediainfo.h>
 #include "filesmodel.h"
 #include "renamedialog.h"
+#include "genres.h"
+#include "fileswatcher.h"
 
 namespace LeechCraft
 {
@@ -43,6 +47,7 @@ namespace Graffiti
 	, Plugin_ (plugin)
 	, FSModel_ (new QFileSystemModel (this))
 	, FilesModel_ (new FilesModel (this))
+	, FilesWatcher_ (new FilesWatcher (this))
 	, Toolbar_ (new QToolBar ("Graffiti"))
 	{
 		Ui_.setupUi (this);
@@ -51,7 +56,6 @@ namespace Graffiti
 		FSModel_->setFilter (QDir::Dirs | QDir::NoDotAndDotDot);
 		FSModel_->setReadOnly (true);
 		Ui_.DirectoryTree_->setModel (FSModel_);
-		Ui_.DirectoryTree_->setRootIndex (FSModel_->index (QDir::homePath ()));
 
 		Ui_.FilesList_->setModel (FilesModel_);
 
@@ -73,6 +77,20 @@ namespace Graffiti
 		RenameFiles_ = Toolbar_->addAction (tr ("Rename files"),
 				this, SLOT (renameFiles ()));
 		RenameFiles_->setProperty ("ActionIcon", "edit-rename");
+
+		Ui_.Genre_->SetSeparator (" / ");
+
+		auto model = new Util::TagsCompletionModel (this);
+		model->UpdateTags (Genres);
+		auto completer = new Util::TagsCompleter (Ui_.Genre_, this);
+		completer->OverrideModel (model);
+
+		Ui_.Genre_->AddSelector ();
+
+		connect (FilesWatcher_,
+				SIGNAL (rereadFiles ()),
+				this,
+				SLOT (handleRereadFiles ()));
 	}
 
 	TabClassInfo GraffitiTab::GetTabClassInfo () const
@@ -132,6 +150,15 @@ namespace Graffiti
 		UpdateData (title, [] (MediaInfo& info) -> QString& { return info.Title_; });
 	}
 
+	void GraffitiTab::on_Genre__textEdited (const QString& genreString)
+	{
+		auto genres = genreString.split ('/', QString::SkipEmptyParts);
+		for (auto& genre : genres)
+			genre = genre.trimmed ();
+
+		UpdateData (genres, [] (MediaInfo& info) -> QStringList& { return info.Genres_; });
+	}
+
 	void GraffitiTab::on_Year__valueChanged (int year)
 	{
 		UpdateData (year, [] (MediaInfo& info) -> int& { return info.Year_; });
@@ -175,6 +202,8 @@ namespace Graffiti
 						<< "unable to save file"
 						<< newInfo.LocalPath_;
 		}
+
+		handleRereadFiles ();
 	}
 
 	void GraffitiTab::revert ()
@@ -219,6 +248,8 @@ namespace Graffiti
 	{
 		setEnabled (false);
 		FilesModel_->Clear ();
+		FilesWatcher_->Clear ();
+
 		const auto& path = FSModel_->filePath (index);
 
 		auto watcher = new QFutureWatcher<QList<QFileInfo>> ();
@@ -227,7 +258,7 @@ namespace Graffiti
 				this,
 				SLOT (handleIterateFinished ()));
 
-		auto worker = [this, path] () { return LMPProxy_->RecIterateInfo (path, false); };
+		auto worker = [this, path] () { return LMPProxy_->RecIterateInfo (path, true); };
 		watcher->setFuture (QtConcurrent::run (std::function<QList<QFileInfo> ()> (worker)));
 	}
 
@@ -239,10 +270,17 @@ namespace Graffiti
 		Ui_.Album_->setText (info.Album_);
 		Ui_.Artist_->setText (info.Artist_);
 		Ui_.Title_->setText (info.Title_);
+		Ui_.Genre_->setText (info.Genres_.join (" / "));
 
 		Ui_.Year_->blockSignals (true);
 		Ui_.Year_->setValue (info.Year_);
 		Ui_.Year_->blockSignals (false);
+	}
+
+	void GraffitiTab::handleRereadFiles ()
+	{
+		const auto& current = Ui_.DirectoryTree_->currentIndex ();
+		on_DirectoryTree__activated (current);
 	}
 
 	void GraffitiTab::handleIterateFinished ()
@@ -251,6 +289,8 @@ namespace Graffiti
 		watcher->deleteLater ();
 
 		const auto& files = watcher->result ();
+
+		FilesWatcher_->AddFiles (files);
 		FilesModel_->AddFiles (files);
 
 		auto resolver = LMPProxy_->GetTagResolver ();

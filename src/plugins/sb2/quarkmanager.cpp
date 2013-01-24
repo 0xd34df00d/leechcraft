@@ -190,7 +190,19 @@ namespace SB2
 			return;
 		}
 
-		const auto& varMap = QJson::Parser ().parse (&file).toMap ();
+		QJson::Parser parser;
+		bool ok = false;
+		const auto& varMap = parser.parse (&file, &ok).toMap ();
+		if (!ok)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "failed to parse"
+					<< manifestName
+					<< parser.errorLine ()
+					<< parser.errorString ();
+			return;
+		}
+
 		Name_ = varMap ["quarkName"].toString ();
 		Areas_ = varMap ["areas"].toStringList ();
 

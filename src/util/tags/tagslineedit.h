@@ -42,8 +42,10 @@ namespace LeechCraft
 
 			friend class TagsCompleter;
 
-			std::auto_ptr<CategorySelector> CategorySelector_;
+			std::unique_ptr<CategorySelector> CategorySelector_;
 			TagsCompleter *Completer_;
+
+			QString Separator_;
 		public:
 			/** @brief Constructs the line edit widget.
 			 *
@@ -52,14 +54,31 @@ namespace LeechCraft
 			 * @param[in] parent Parent widget.
 			 */
 			UTIL_API TagsLineEdit (QWidget *parent);
+
 			/** @brief Adds the selector widget to the line edit.
 			 *
 			 * Because this function uses the completion model, it should be
-			 * used after the association with a TagsCompleter.
+			 * used after a TagsCompleter has been set on this line edit.
 			 *
 			 * @sa TagsCompleter
 			 */
 			UTIL_API void AddSelector ();
+
+			/** @brief Returns the separator for the tags.
+			 *
+			 * The default separator is "; ".
+			 *
+			 * @sa SetSeparator()
+			 */
+			UTIL_API QString GetSeparator () const;
+
+			/** @brief Sets the separator for the tags.
+			 *
+			 * This function doesn't update the text in the line edit.
+			 *
+			 * @sa GetSeparator()
+			 */
+			UTIL_API void SetSeparator (const QString&);
 		public slots:
 			/** @brief Completes the string.
 			 *

@@ -16,37 +16,47 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "tagscompleter.h"
-#include <algorithm>
-#include <QtDebug>
-#include <QWidget>
+#include "fileswatcher.h"
+#include <QFileSystemWatcher>
+#include <QSet>
 #include <QStringList>
-#include <QLineEdit>
-#include "tagslineedit.h"
 
-using namespace LeechCraft::Util;
-
-QAbstractItemModel *LeechCraft::Util::TagsCompleter::CompletionModel_ = 0;
-
-TagsCompleter::TagsCompleter (TagsLineEdit *toComplete, QObject *parent)
-: QCompleter (parent)
-, Edit_ (toComplete)
+namespace LeechCraft
 {
-	setCompletionRole (Qt::DisplayRole);
-	setModel (CompletionModel_);
-	toComplete->SetCompleter (this);
+namespace LMP
+{
+namespace Graffiti
+{
+	FilesWatcher::FilesWatcher (QObject *parent)
+	: QObject (parent)
+	, Watcher_ (new QFileSystemWatcher (this))
+	{
+		connect (Watcher_,
+				SIGNAL (directoryChanged (QString)),
+				this,
+				SIGNAL (rereadFiles ()));
+	}
+
+	void FilesWatcher::Clear ()
+	{
+		const auto& dirs = Watcher_->directories ();
+		if (!dirs.isEmpty ())
+			Watcher_->removePaths (dirs);
+	}
+
+	void FilesWatcher::AddFiles (const QList<QFileInfo>& infos)
+	{
+		QSet<QString> existingDirs;
+		for (const auto& info : infos)
+		{
+			const auto& dir = info.absolutePath ();
+			if (existingDirs.contains (dir))
+				continue;
+
+			existingDirs << dir;
+			Watcher_->addPath (dir);
+		}
+	}
 }
-
-void TagsCompleter::OverrideModel (QAbstractItemModel *model)
-{
-	setModel (model);
 }
-
-QStringList TagsCompleter::splitPath (const QString& string) const
-{
-	const auto& sep = Edit_->GetSeparator ().trimmed ();
-	auto result = string.split (sep, QString::SkipEmptyParts);
-	for (auto& s : result)
-		s = s.trimmed ();
-	return result;
 }

@@ -74,6 +74,7 @@ namespace Lemon
 		int GetBacktrackSize () const;
 	private slots:
 		void addConfiguration (const QNetworkConfiguration&);
+		void removeConfiguration (const QNetworkConfiguration&);
 		void updateCounters ();
 	signals:
 		void updated ();

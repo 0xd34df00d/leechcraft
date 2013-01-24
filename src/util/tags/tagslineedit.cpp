@@ -31,12 +31,14 @@ using namespace LeechCraft::Util;
 TagsLineEdit::TagsLineEdit (QWidget *parent)
 : QLineEdit (parent)
 , Completer_ (0)
+, Separator_ ("; ")
 {
 }
 
 void TagsLineEdit::AddSelector ()
 {
 	CategorySelector_.reset (new CategorySelector (parentWidget ()));
+	CategorySelector_->SetSeparator (Separator_);
 	CategorySelector_->hide ();
 
 	QAbstractItemModel *model = Completer_->model ();
@@ -62,6 +64,18 @@ void TagsLineEdit::AddSelector ()
 			SLOT (lineTextChanged (const QString&)));
 }
 
+QString TagsLineEdit::GetSeparator () const
+{
+	return Separator_;
+}
+
+void TagsLineEdit::SetSeparator (const QString& sep)
+{
+	Separator_ = sep;
+	if (CategorySelector_)
+		CategorySelector_->SetSeparator (sep);
+}
+
 void TagsLineEdit::insertTag (const QString& completion)
 {
 	if (Completer_->widget () != this)
@@ -70,9 +84,9 @@ void TagsLineEdit::insertTag (const QString& completion)
 	QString wtext = text ();
 	if (completion.startsWith (wtext))
 		wtext.clear ();
-	int pos = wtext.lastIndexOf ("; ");
+	int pos = wtext.lastIndexOf (Separator_);
 	if (pos >= 0)
-		wtext = wtext.left (pos).append ("; ");
+		wtext = wtext.left (pos).append (Separator_);
 	else
 		wtext.clear ();
 	wtext.append (completion);
@@ -89,14 +103,14 @@ void TagsLineEdit::handleTagsUpdated (const QStringList& tags)
 
 void TagsLineEdit::setTags (const QStringList& tags)
 {
-	setText (tags.join ("; "));
+	setText (tags.join (Separator_));
 	if (CategorySelector_.get ())
 		CategorySelector_->SetSelections (tags);
 }
 
 void TagsLineEdit::handleSelectionChanged (const QStringList& tags)
 {
-	setText (tags.join ("; "));
+	setText (tags.join (Separator_));
 
 	emit tagsChosen ();
 }
@@ -180,7 +194,11 @@ void TagsLineEdit::SetCompleter (TagsCompleter *c)
 
 QString TagsLineEdit::textUnderCursor () const
 {
-	QRegExp rx (";\\s*");
+	auto rxStr = Separator_;
+	rxStr.replace (' ', "\\s*");
+
+	QRegExp rx (rxStr);
+
 	QString wtext = text ();
 	int pos = cursorPosition () - 1;
 	int last = wtext.indexOf (rx, pos);

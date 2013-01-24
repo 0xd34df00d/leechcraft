@@ -35,6 +35,7 @@ struct MediaInfo;
 namespace Graffiti
 {
 	class FilesModel;
+	class FilesWatcher;
 
 	class GraffitiTab : public QWidget
 					  , public ITabWidget
@@ -51,6 +52,7 @@ namespace Graffiti
 
 		QFileSystemModel *FSModel_;
 		FilesModel *FilesModel_;
+		FilesWatcher *FilesWatcher_;
 
 		std::shared_ptr<QToolBar> Toolbar_;
 		QAction *Save_;
@@ -70,6 +72,7 @@ namespace Graffiti
 		void on_Artist__textEdited (const QString&);
 		void on_Album__textEdited (const QString&);
 		void on_Title__textEdited (const QString&);
+		void on_Genre__textEdited (const QString&);
 		void on_Year__valueChanged (int);
 
 		void save ();
@@ -78,6 +81,8 @@ namespace Graffiti
 
 		void on_DirectoryTree__activated (const QModelIndex&);
 		void currentFileChanged (const QModelIndex&);
+		void handleRereadFiles ();
+
 		void handleIterateFinished ();
 		void handleScanFinished ();
 	signals:

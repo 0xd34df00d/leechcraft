@@ -38,11 +38,12 @@ namespace Glance
 	{
 		Util::InstallTranslator ("glance");
 
+		Proxy_ = proxy;
 		Core::Instance ().SetProxy (proxy);
 
 		ActionGlance_ = new QAction (GetName (), this);
 		ActionGlance_->setToolTip ("Show the quick overview of tabs");
-		ActionGlance_->setShortcut (QKeySequence ("Ctrl+G"));
+		ActionGlance_->setShortcut (QKeySequence ("Ctrl+Shift+G"));
 		ActionGlance_->setShortcutContext (Qt::ApplicationShortcut);
 		ActionGlance_->setProperty ("ActionIcon", "view-list-icons");
 		ActionGlance_->setProperty ("Action/ID", GetUniqueID () + "_glance");
@@ -102,6 +103,20 @@ namespace Glance
 		if (aep == ActionsEmbedPlace::QuickLaunch)
 			result << ActionGlance_;
 		return result;
+	}
+
+	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
+	{
+		QMap<QString, ActionInfo> result;
+		result ["ShowList"] = ActionInfo (ActionGlance_->text (),
+				ActionGlance_->shortcut (),
+				Proxy_->GetIcon (ActionGlance_->property ("ActionIcon").toString ()));
+		return result;
+	}
+
+	void Plugin::SetShortcut (const QString&, const QKeySequences_t& seqs)
+	{
+		ActionGlance_->setShortcuts (seqs);
 	}
 }
 }

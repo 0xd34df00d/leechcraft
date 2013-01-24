@@ -16,37 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "tagscompleter.h"
-#include <algorithm>
-#include <QtDebug>
-#include <QWidget>
-#include <QStringList>
-#include <QLineEdit>
-#include "tagslineedit.h"
+#pragma once
 
-using namespace LeechCraft::Util;
+#include <QObject>
+#include <QFileInfo>
 
-QAbstractItemModel *LeechCraft::Util::TagsCompleter::CompletionModel_ = 0;
+class QFileSystemWatcher;
 
-TagsCompleter::TagsCompleter (TagsLineEdit *toComplete, QObject *parent)
-: QCompleter (parent)
-, Edit_ (toComplete)
+namespace LeechCraft
 {
-	setCompletionRole (Qt::DisplayRole);
-	setModel (CompletionModel_);
-	toComplete->SetCompleter (this);
+namespace LMP
+{
+namespace Graffiti
+{
+	class FilesWatcher : public QObject
+	{
+		Q_OBJECT
+
+		QFileSystemWatcher *Watcher_;
+	public:
+		FilesWatcher (QObject* = 0);
+
+		void Clear ();
+		void AddFiles (const QList<QFileInfo>&);
+	signals:
+		void rereadFiles ();
+	};
 }
-
-void TagsCompleter::OverrideModel (QAbstractItemModel *model)
-{
-	setModel (model);
 }
-
-QStringList TagsCompleter::splitPath (const QString& string) const
-{
-	const auto& sep = Edit_->GetSeparator ().trimmed ();
-	auto result = string.split (sep, QString::SkipEmptyParts);
-	for (auto& s : result)
-		s = s.trimmed ();
-	return result;
 }

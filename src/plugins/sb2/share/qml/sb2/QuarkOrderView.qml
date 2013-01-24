@@ -4,7 +4,7 @@ import org.LC.common 1.0
 Rectangle {
     id: rootRect
     width: 500
-    height: Math.min(600, closeItemButton.height + quarkListView.count * 36)
+    height: Math.min(600, quarkListView.count * 36)
     smooth: true
     focus: true
 
@@ -23,27 +23,9 @@ Rectangle {
 
     color: "transparent"
 
-    ActionButton {
-        id: closeItemButton
-
-        width: 16
-        height: 16
-
-        anchors.top: parent.top
-        anchors.right: parent.right
-
-        actionIconURL: "image://ThemeIcons/tab-close"
-        transparentStyle: true
-
-        onTriggered: rootRect.closeRequested()
-    }
-
     Column {
         id: quarkListColumn
-        anchors.top: closeItemButton.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
+        anchors.fill: parent
         Repeater {
             id: quarkListView
             model: quarkListModel

@@ -18,6 +18,7 @@
 
 #include "quarkproxy.h"
 #include <QGraphicsObject>
+#include <QToolTip>
 #include <QtDebug>
 #include <interfaces/iquarkcomponentprovider.h>
 #include <util/util.h>
@@ -46,6 +47,11 @@ namespace SB2
 	QPoint QuarkProxy::mapToGlobal (double x, double y)
 	{
 		return Manager_->GetView ()->mapToGlobal (QPoint (x, y));
+	}
+
+	void QuarkProxy::showTextTooltip (int x, int y, const QString& str)
+	{
+		QToolTip::showText (QPoint (x, y), str);
 	}
 
 	void QuarkProxy::showSettings (const QUrl& url)

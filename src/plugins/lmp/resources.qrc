@@ -1,6 +1,7 @@
 <RCC>
   <qresource prefix="/lmp">
 	<file>resources/images/lmp.svg</file>
+	<file>resources/images/lmp_artist_browser.svg</file>
 	<file>resources/qml/BioView.qml</file>
 	<file>resources/qml/ReleasesView.qml</file>
 	<file>resources/qml/SimilarView.qml</file>

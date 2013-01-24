@@ -10,6 +10,8 @@ Rectangle {
 
     color: "transparent"
 
+    property variant tooltip
+
     ListView {
         id: indicatorsView
         anchors.fill: parent
@@ -24,9 +26,25 @@ Rectangle {
             color: "transparent"
 
             ActionButton {
+                id: indicatorButton
+
                 anchors.fill: parent
                 actionIconURL: "image://ThemeIcons/" + iconName + '/' + width
+
                 onTriggered: Lemon_proxy.showGraph(ifaceName)
+                onHovered: {
+                    var global = commonJS.getTooltipPos(indicatorButton);
+                    var params = {
+                        "x": global.x,
+                        "y": global.y,
+                        "ifaceName": ifaceName,
+                        "upSpeed": upSpeedPretty,
+                        "downSpeed": downSpeedPretty,
+                        "colorProxy": colorProxy
+                    };
+                    tooltip = quarkProxy.openWindow(sourceURL, "Tooltip.qml", params);
+                }
+                onHoverLeft: if (tooltip != null) tooltip.closeRequested()
 
                 Rectangle {
                     anchors.left: parent.left

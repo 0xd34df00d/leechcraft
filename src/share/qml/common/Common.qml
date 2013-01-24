@@ -12,4 +12,9 @@ QtObject {
         var absPoint = getTooltipPos(item);
         func(absPoint.x, absPoint.y);
     }
+
+    function showTextTooltip(item, text) {
+        var absPoint = getTooltipPos(item);
+        quarkProxy.showTextTooltip(absPoint.x, absPoint.y, text);
+    }
 }
