@@ -49,6 +49,7 @@ namespace Graffiti
 	, FilesModel_ (new FilesModel (this))
 	, FilesWatcher_ (new FilesWatcher (this))
 	, Toolbar_ (new QToolBar ("Graffiti"))
+	, IsChangingCurrent_ (false)
 	{
 		Ui_.setupUi (this);
 
@@ -117,6 +118,9 @@ namespace Graffiti
 	template<typename T, typename F>
 	void GraffitiTab::UpdateData (const T& newData, F getter)
 	{
+		if (IsChangingCurrent_)
+			return;
+
 		static_assert (std::is_lvalue_reference<typename std::result_of<F (MediaInfo&)>::type>::value,
 				"functor doesn't return an lvalue reference");
 
@@ -151,7 +155,7 @@ namespace Graffiti
 		UpdateData (title, [] (MediaInfo& info) -> QString& { return info.Title_; });
 	}
 
-	void GraffitiTab::on_Genre__textEdited (const QString& genreString)
+	void GraffitiTab::on_Genre__textChanged (const QString& genreString)
 	{
 		auto genres = genreString.split ('/', QString::SkipEmptyParts);
 		for (auto& genre : genres)
@@ -282,14 +286,16 @@ namespace Graffiti
 		const auto& infoData = FilesModel_->data (index, FilesModel::Roles::MediaInfoRole);
 		const auto& info = infoData.value<MediaInfo> ();
 
+		IsChangingCurrent_ = true;
+
 		Ui_.Album_->setText (info.Album_);
 		Ui_.Artist_->setText (info.Artist_);
 		Ui_.Title_->setText (info.Title_);
 		Ui_.Genre_->setText (info.Genres_.join (" / "));
 
-		Ui_.Year_->blockSignals (true);
 		Ui_.Year_->setValue (info.Year_);
-		Ui_.Year_->blockSignals (false);
+
+		IsChangingCurrent_ = false;
 	}
 
 	void GraffitiTab::handleRereadFiles ()

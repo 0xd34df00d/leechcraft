@@ -58,6 +58,8 @@ namespace Graffiti
 		QAction *Save_;
 		QAction *Revert_;
 		QAction *RenameFiles_;
+
+		bool IsChangingCurrent_;
 	public:
 		GraffitiTab (ILMPProxy_ptr, const TabClassInfo&, QObject*);
 
@@ -72,7 +74,7 @@ namespace Graffiti
 		void on_Artist__textEdited (const QString&);
 		void on_Album__textEdited (const QString&);
 		void on_Title__textEdited (const QString&);
-		void on_Genre__textEdited (const QString&);
+		void on_Genre__textChanged (const QString&);
 		void on_Year__valueChanged (int);
 
 		void save ();
