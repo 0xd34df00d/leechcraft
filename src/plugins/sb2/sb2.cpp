@@ -118,7 +118,16 @@ namespace SB2
 		auto rootWM = Proxy_->GetRootWindowsManager ();
 		auto mwProxy = rootWM->GetMWProxy (index);
 		auto ictw = rootWM->GetTabWidget (index);
-		mwProxy->AddSideWidget (view);
+
+		auto toolbar = new QToolBar ();
+		toolbar->addWidget (view);
+		view->setVisible (true);
+		connect (toolbar,
+				SIGNAL (orientationChanged (Qt::Orientation)),
+				mgr,
+				SLOT (setOrientation (Qt::Orientation)));
+		rootWM->GetMainWindow (index)->addToolBar (Qt::LeftToolBarArea, toolbar);
+
 		rootWM->GetMainWindow (index)->statusBar ()->hide ();
 
 		mgr->RegisterInternalComponent ((new LCMenuComponent (mwProxy))->GetComponent ());

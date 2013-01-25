@@ -6,10 +6,11 @@ import org.LC.common 1.0
 Rectangle {
     id: rootRect
 
-    width: parent.width
-    property real launcherItemHeight: parent.width
-    property real currentGapSize: (launcherItemHeight + Math.sqrt(8 * launcherItemHeight)) / 4
-    height: launcherColumn.height + 2 + (addTCButton.visible ? addTCButton.height : 0)
+    property real itemSize: parent.quarkBaseSize
+    property real longDim: Math.max(launcherColumn.rows, launcherColumn.columns) * itemSize + 2 + (addTCButton.visible ? addTCButton.height : 0)
+
+    width: viewOrient == "vertical" ? itemSize : longDim
+    height: viewOrient == "vertical" ? longDim : itemSize
 
     radius: 2
 
@@ -38,33 +39,28 @@ Rectangle {
         }
     }
 
-    Column {
+    Grid {
         id: launcherColumn
         anchors.top: parent.top
-        anchors.topMargin: 1
+        anchors.left: parent.left
+
+        columns: viewOrient == "vertical" ? 1 : launcherItemRepeater.count
+        rows: viewOrient == "vertical" ? launcherItemRepeater.count : 1
+
         Repeater {
             id: launcherItemRepeater
             model: SB2_launcherModel
             Item {
                 id: tcItem
 
-                height: rootRect.launcherItemHeight + pregap.height + postgap.height
-                width: rootRect.width
-
-                Item {
-                    id: pregap
-                    height: (index && isCurrentTab) ? rootRect.currentGapSize : 0
-                    Behavior on height { PropertyAnimation { duration: 100 } }
-                    anchors.top: parent.top
-                }
+                height: rootRect.itemSize
+                width: rootRect.itemSize
 
                 ActionButton {
                     id: tcButton
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.top: pregap.bottom
 
-                    height: rootRect.launcherItemHeight
+                    height: rootRect.itemSize
+                    width: rootRect.itemSize
 
                     actionIconURL: tabClassIcon
                     textTooltip: tabClassName
@@ -124,13 +120,6 @@ Rectangle {
                             }
                         ]
                     }
-                }
-
-                Item {
-                    id: postgap
-                    height: (index != launcherItemRepeater.count - 1 && isCurrentTab) ? rootRect.currentGapSize : 0
-                    Behavior on height { PropertyAnimation { duration: 100 } }
-                    anchors.bottom: parent.bottom
                 }
             }
         }

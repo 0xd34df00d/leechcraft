@@ -4,8 +4,8 @@ import org.LC.common 1.0
 Rectangle {
     id: rootRect
 
-    width: parent.width
-    height: parent.width
+    width: parent.quarkBaseSize
+    height: parent.quarkBaseSize
 
     radius: 2
 

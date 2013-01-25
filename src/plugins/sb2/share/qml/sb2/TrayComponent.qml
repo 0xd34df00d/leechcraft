@@ -4,8 +4,8 @@ import org.LC.common 1.0
 Rectangle {
     id: rootRect
 
-    width: parent.width
-    property real trayItemHeight: parent.width
+    width: parent.quarkBaseSize
+    property real trayItemHeight: parent.quarkBaseSize
     height: trayView.count * trayItemHeight
 
     radius: 2
