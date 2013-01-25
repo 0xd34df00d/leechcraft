@@ -46,7 +46,7 @@ namespace Hestia
 
 	IBloggingPlatform::BloggingPlatfromFeatures LocalBloggingPlatform::GetFeatures () const
 	{
-		return BPFNone;
+		return BPFLocalBlog;
 	}
 
 	QObjectList LocalBloggingPlatform::GetRegisteredAccounts ()

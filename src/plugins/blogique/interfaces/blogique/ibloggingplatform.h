@@ -73,7 +73,14 @@ namespace Blogique
 			/** This blogging platform supports downloading of all posts for
 			 * backup in localstorage.
 			 */
-			BPFSupportsBackup = 0x8
+			BPFSupportsBackup = 0x8,
+
+			/** This feature characterizes local blogging platfrom.
+			 *
+			 * @Note This feature ignores BPFSuppportBackup and
+			 * includes BPFSupportsRegistration.
+			*/
+			BPFLocalBlog = 0x16
 		};
 		Q_DECLARE_FLAGS (BloggingPlatfromFeatures, BloggingPlatfromFeature)
 
