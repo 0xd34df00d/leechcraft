@@ -121,6 +121,7 @@ namespace SB2
 
 		auto toolbar = new QToolBar ();
 		toolbar->addWidget (view);
+		toolbar->setFloatable (false);
 		view->setVisible (true);
 		connect (toolbar,
 				SIGNAL (orientationChanged (Qt::Orientation)),
