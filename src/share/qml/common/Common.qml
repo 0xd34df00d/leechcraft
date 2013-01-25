@@ -4,7 +4,10 @@ QtObject {
     function getTooltipPos(item) {
         var absPoint = item.mapToItem(quarkDisplayRoot, 0, 0);
         absPoint = quarkProxy.mapToGlobal(absPoint.x, absPoint.y);
-        absPoint.x += quarkDisplayRoot.width;
+        if (viewOrient == "vertical")
+            absPoint.x += quarkDisplayRoot.width;
+        else
+            absPoint.y += quarkDisplayRoot.height;
         return absPoint;
     }
 
