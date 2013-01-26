@@ -114,11 +114,17 @@ namespace SB2
 
 	void QuarkProxy::quarkOrderRequested (int x, int y)
 	{
-		auto view = new QuarkOrderView (Manager_, Proxy_);
-		view->move (Util::FitRectScreen ({ x, y }, view->size ()));
-		view->show ();
+		if (QuarkOrderView_)
+		{
+			QuarkOrderView_->deleteLater ();
+			return;
+		}
 
-		connect (view,
+		QuarkOrderView_ = new QuarkOrderView (Manager_, Proxy_);
+		QuarkOrderView_->move (Util::FitRectScreen ({ x, y }, QuarkOrderView_->size ()));
+		QuarkOrderView_->show ();
+
+		connect (QuarkOrderView_,
 				SIGNAL (quarkClassHovered (QString)),
 				this,
 				SLOT (handleExtHoveredQuarkClass (QString)));
