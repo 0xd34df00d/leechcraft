@@ -36,7 +36,7 @@
        </property>
        <item>
         <property name="text">
-         <string>$trackNumber - $artist - $title</string>
+         <string notr="true">$trackNumber - $artist - $title</string>
         </property>
        </item>
       </widget>
