@@ -25,6 +25,7 @@ SET (GRAFFITI_FORMS
 	renamedialog.ui
 	)
 QT4_WRAP_UI (GRAFFITI_UIS_H ${GRAFFITI_FORMS})
+CreateTrsUpTarget("lmp_graffiti" "en;ru_RU" "${GRAFFITI_SRCS}" "${GRAFFITI_FORMS}" "")
 
 ADD_DEFINITIONS (${MTP_DEFINITIONS})
 
