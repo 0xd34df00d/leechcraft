@@ -24,7 +24,8 @@
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <QtDebug>
-#include <fileref.h>
+#include <taglib/fileref.h>
+#include <taglib/tag.h>
 #include <util/tags/tagscompletionmodel.h>
 #include <util/tags/tagscompleter.h>
 #include <interfaces/lmp/ilmpproxy.h>
