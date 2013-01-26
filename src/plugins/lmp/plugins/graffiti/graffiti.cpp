@@ -18,6 +18,7 @@
 
 #include "graffiti.h"
 #include <QIcon>
+#include <util/util.h>
 #include "graffititab.h"
 
 namespace LeechCraft
@@ -28,6 +29,8 @@ namespace Graffiti
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Util::InstallTranslator ("lmp_graffiti");
+
 		TaggerTC_ =
 		{
 			GetUniqueID () + "_Tagger",
