@@ -35,9 +35,13 @@ namespace LeechCraft
 {
 namespace MusicZombie
 {
+	QMutex Chroma::CodecMutex_ (QMutex::NonRecursive);
+	QMutex Chroma::RegisterMutex_ (QMutex::NonRecursive);
+
 	Chroma::Chroma ()
 	: Ctx_ (chromaprint_new (CHROMAPRINT_ALGORITHM_DEFAULT))
 	{
+		QMutexLocker locker (&RegisterMutex_);
 		av_register_all ();
 	}
 
@@ -46,8 +50,9 @@ namespace MusicZombie
 		chromaprint_free (Ctx_);
 	}
 
-	QByteArray Chroma::operator() (const QString& filename)
+	Chroma::Result Chroma::operator() (const QString& filename)
 	{
+		QMutexLocker locker (&CodecMutex_);
 		std::shared_ptr<AVFormatContext> formatCtx;
 		{
 			AVFormatContext *formatCtxRaw = nullptr;
@@ -67,11 +72,12 @@ namespace MusicZombie
 		for (unsigned int i = 0; i < formatCtx->nb_streams; ++i)
 		{
 			codecCtx.reset (formatCtx->streams [i]->codec,
-					[&codecOpened] (AVCodecContext *ctx)
+					[&codecOpened, this] (AVCodecContext *ctx)
 					{
 						if (codecOpened)
+						{
 							avcodec_close (ctx);
-						avcodec_close (ctx);
+						}
 					});
 			if (codecCtx && codecCtx->codec_type == AVMEDIA_TYPE_AUDIO)
 			{
@@ -87,8 +93,11 @@ namespace MusicZombie
 		if (!codec)
 			throw std::runtime_error ("unknown codec");
 
-		if (avcodec_open (codecCtx.get (), codec) < 0)
-			throw std::runtime_error ("couldn't open the codec");
+		{
+			//QMutexLocker locker (&CodecMutex_);
+			if (avcodec_open (codecCtx.get (), codec) < 0)
+				throw std::runtime_error ("couldn't open the codec");
+		}
 		codecOpened = true;
 
 		if (codecCtx->channels <= 0)
@@ -163,7 +172,10 @@ namespace MusicZombie
 		QByteArray result (fingerprint);
 		chromaprint_dealloc (fingerprint);
 
-		return result;
+		const double divideFactor = 1. / av_q2d (stream->time_base);
+		const double duration = stream->duration / divideFactor;
+
+		return { result, static_cast<int> (duration) };
 	}
 }
 }

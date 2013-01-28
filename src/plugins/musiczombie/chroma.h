@@ -18,9 +18,10 @@
 
 #pragma once
 
+#include <QByteArray>
+#include <QMutex>
 #include <chromaprint.h>
 
-class QByteArray;
 class QString;
 
 namespace LeechCraft
@@ -30,13 +31,22 @@ namespace MusicZombie
 	class Chroma
 	{
 		ChromaprintContext *Ctx_;
+
+		static QMutex RegisterMutex_;
+		static QMutex CodecMutex_;
 	public:
+		struct Result
+		{
+			QByteArray FP_;
+			int Duration_;
+		};
+
 		Chroma ();
 		~Chroma ();
 
 		Chroma (const Chroma&) = delete;
 
-		QByteArray operator() (const QString&);
+		Result operator() (const QString&);
 	};
 }
 }
