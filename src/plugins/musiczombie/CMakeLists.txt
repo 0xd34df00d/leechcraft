@@ -31,7 +31,10 @@ SET (SRCS
 	pendingdisco.cpp
 	)
 IF (WITH_MUSICZOMBIE_CHROMAPRINT)
-	SET (SRCS ${SRCS} chroma.cpp)
+	SET (SRCS
+		${SRCS}
+		chroma.cpp
+		pendingtagsfetch.cpp)
 ENDIF (WITH_MUSICZOMBIE_CHROMAPRINT)
 
 ADD_LIBRARY (leechcraft_musiczombie SHARED
