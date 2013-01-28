@@ -35,6 +35,8 @@
 #include "renamedialog.h"
 #include "genres.h"
 #include "fileswatcher.h"
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/media/itagsfetcher.h>
 
 namespace LeechCraft
 {
@@ -42,8 +44,9 @@ namespace LMP
 {
 namespace Graffiti
 {
-	GraffitiTab::GraffitiTab (ILMPProxy_ptr proxy, const TabClassInfo& tc, QObject *plugin)
-	: LMPProxy_ (proxy)
+	GraffitiTab::GraffitiTab (ICoreProxy_ptr coreProxy, ILMPProxy_ptr proxy, const TabClassInfo& tc, QObject *plugin)
+	: CoreProxy_ (coreProxy)
+	, LMPProxy_ (proxy)
 	, TC_ (tc)
 	, Plugin_ (plugin)
 	, FSModel_ (new QFileSystemModel (this))
@@ -80,6 +83,12 @@ namespace Graffiti
 		RenameFiles_ = Toolbar_->addAction (tr ("Rename files"),
 				this, SLOT (renameFiles ()));
 		RenameFiles_->setProperty ("ActionIcon", "edit-rename");
+
+		Toolbar_->addSeparator ();
+
+		GetTags_ = Toolbar_->addAction (tr ("Fetch tags"),
+				this, SLOT (fetchTags ()));
+		GetTags_->setProperty ("ActionIcon", "download");
 
 		Ui_.Genre_->SetSeparator (" / ");
 
@@ -262,6 +271,30 @@ namespace Graffiti
 
 		dia->setAttribute (Qt::WA_DeleteOnClose);
 		dia->show ();
+	}
+
+	void GraffitiTab::fetchTags ()
+	{
+		auto provs = CoreProxy_->GetPluginsManager ()->GetAllCastableTo<Media::ITagsFetcher*> ();
+		if (provs.isEmpty ())
+			return;
+
+		auto prov = provs.first ();
+
+		for (const auto& index : Ui_.FilesList_->selectionModel ()->selectedRows ())
+		{
+			const auto& info = index.data (FilesModel::Roles::MediaInfoRole).value<MediaInfo> ();
+			auto pending = prov->FetchTags (info.LocalPath_);
+			connect (pending->GetObject (),
+					SIGNAL (ready (QString, Media::AudioInfo)),
+					this,
+					SLOT (handleTagsFetched (QString, Media::AudioInfo)));
+		}
+	}
+
+	void GraffitiTab::handleTagsFetched (const QString& filename, const Media::AudioInfo& info)
+	{
+		qDebug () << Q_FUNC_INFO;
 	}
 
 	void GraffitiTab::on_DirectoryTree__activated (const QModelIndex& index)
