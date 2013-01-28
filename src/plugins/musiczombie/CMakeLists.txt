@@ -2,6 +2,9 @@ CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 PROJECT (leechcraft_musiczombie)
 INCLUDE (InitLCPlugin OPTIONAL)
 
+SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+FIND_PACKAGE (FFmpeg REQUIRED)
+
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
 INCLUDE (${QT_USE_FILE})
@@ -14,6 +17,7 @@ SET (SRCS
 	musiczombie.cpp
 	artistlookup.cpp
 	pendingdisco.cpp
+	chroma.cpp
 	)
 
 ADD_LIBRARY (leechcraft_musiczombie SHARED
@@ -24,5 +28,9 @@ ADD_LIBRARY (leechcraft_musiczombie SHARED
 TARGET_LINK_LIBRARIES (leechcraft_musiczombie
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
+	${AVFORMAT_LIBRARIES}
+	${AVCODEC_LIBRARIES}
+	${AVUTIL_LIBRARIES}
+	chromaprint
 	)
 INSTALL (TARGETS leechcraft_musiczombie DESTINATION ${LC_PLUGINS_DEST})

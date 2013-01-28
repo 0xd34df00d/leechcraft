@@ -33,9 +33,7 @@ extern "C"
 
 namespace LeechCraft
 {
-namespace LMP
-{
-namespace Graffiti
+namespace MusicZombie
 {
 	Chroma::Chroma ()
 	: Ctx_ (chromaprint_new (CHROMAPRINT_ALGORITHM_DEFAULT))
@@ -167,6 +165,5 @@ namespace Graffiti
 
 		return result;
 	}
-}
 }
 }

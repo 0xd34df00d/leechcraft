@@ -25,9 +25,7 @@ class QString;
 
 namespace LeechCraft
 {
-namespace LMP
-{
-namespace Graffiti
+namespace MusicZombie
 {
 	class Chroma
 	{
@@ -40,6 +38,5 @@ namespace Graffiti
 
 		QByteArray operator() (const QString&);
 	};
-}
 }
 }
