@@ -195,10 +195,11 @@ namespace UDisks2
 		const bool isPartition = !partitionIface->property ("Type").toString ().isEmpty ();
 
 		const auto& slaveTo = partitionIface->property ("Table").value<QDBusObjectPath> ();
-		const bool isRemovable = driveIface->property ("MediaRemovable").toBool ();
+		const bool isRemovable = driveIface->property ("Removable").toBool ();
 		qDebug () << str << slaveTo.path () << isPartition << isRemovable;
 		if ((!isPartition && !isRemovable) || Unremovables_.contains (slaveTo.path ()))
 		{
+			qDebug () << "detected as unremovable";
 			Unremovables_ << str;
 			return false;
 		}
