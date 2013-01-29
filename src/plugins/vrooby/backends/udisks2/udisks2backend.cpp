@@ -257,7 +257,7 @@ namespace UDisks2
 		if (!item)
 			return;
 
-		const bool isRemovable = ifaces.Drive_->property ("MediaRemovable").toBool ();
+		const bool isRemovable = ifaces.Drive_->property ("Removable").toBool ();
 		const bool isPartition = !ifaces.Partition_->property ("Type").toString ().isEmpty ();
 
 		const auto& vendor = ifaces.Drive_->property ("Vendor").toString () +
