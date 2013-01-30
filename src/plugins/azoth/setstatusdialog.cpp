@@ -18,6 +18,7 @@
 
 #include "setstatusdialog.h"
 #include "xmlsettingsmanager.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -32,6 +33,25 @@ namespace Azoth
 					.arg (st)
 					.toUtf8 ();
 		}
+
+		State GetStateForIndex (int index)
+		{
+			switch (index)
+			{
+				case 1:
+					return SChat;
+				case 2:
+					return SAway;
+				case 3:
+					return SDND;
+				case 4:
+					return SXA;
+				case 5:
+					return SOffline;
+				default:
+					return SOnline;
+			}
+		}
 	}
 
 	SetStatusDialog::SetStatusDialog (const QString& context, QWidget *parent)
@@ -45,25 +65,15 @@ namespace Azoth
 				SIGNAL (accepted ()),
 				this,
 				SLOT (save ()));
+
+		for (int i = 0; i < Ui_.StatusBox_->count (); ++i)
+			Ui_.StatusBox_->setItemIcon (i,
+					Core::Instance ().GetIconForState (GetStateForIndex (i)));
 	}
 
 	State SetStatusDialog::GetState () const
 	{
-		switch (Ui_.StatusBox_->currentIndex ())
-		{
-		case 1:
-			return SChat;
-		case 2:
-			return SAway;
-		case 3:
-			return SDND;
-		case 4:
-			return SXA;
-		case 5:
-			return SOffline;
-		default:
-			return SOnline;
-		}
+		return GetStateForIndex (Ui_.StatusBox_->currentIndex ());
 	}
 
 	QString SetStatusDialog::GetStatusText () const
