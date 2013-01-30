@@ -2158,8 +2158,15 @@ namespace Azoth
 
 			if (entry->GetEntryType () & ICLEntry::ETMUC)
 			{
-				QStandardItem *item = Entry2Items_ [entry].first ();
-				OpenChat (CLModel_->indexFromItem (item));
+				auto mucEntry = qobject_cast<IMUCEntry*> (item);
+
+				const bool open = XmlSettingsManager::Instance ()
+						.property ("OpenTabsForAutojoin").toBool ();
+				if (open || !mucEntry->IsAutojoined ())
+				{
+					QStandardItem *item = Entry2Items_ [entry].first ();
+					OpenChat (CLModel_->indexFromItem (item));
+				}
 			}
 
 			ChatTabsManager_->HandleEntryAdded (entry);

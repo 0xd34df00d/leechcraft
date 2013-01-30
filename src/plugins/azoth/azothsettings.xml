@@ -247,6 +247,9 @@
 			<item type="checkbox" property="LeaveConfOnClose" default="false">
 				<label value="Leave conferences when closing their tabs" />
 			</item>
+			<item type="checkbox" property="OpenTabsForAutojoin" default="false">
+				<label value="Open tabs for autojoined conferences" />
+			</item>
 		</tab>
 		<tab>
 			<label value="Notifications" />
