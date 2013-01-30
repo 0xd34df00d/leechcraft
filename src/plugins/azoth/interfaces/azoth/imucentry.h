@@ -100,6 +100,15 @@ namespace Azoth
 		 */
 		virtual QList<QObject*> GetParticipants () = 0;
 
+		/** @brief Whether this MUC room was automatically joined.
+		 *
+		 * Azoth uses this, for example, to avoid auto-opening MUCs that
+		 * where joined as a result of bookmarks/autojoin list.
+		 *
+		 * @return Whether the room was autojoined.
+		 */
+		virtual bool IsAutojoined () const = 0;
+
 		/** @brief Requests to join the room.
 		 *
 		 * If the we aren't joined to this MUC (for example, there was a

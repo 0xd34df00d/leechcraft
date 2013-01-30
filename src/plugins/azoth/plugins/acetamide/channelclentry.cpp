@@ -245,6 +245,11 @@ namespace Acetamide
 		return ICH_->GetParticipants ();
 	}
 
+	bool ChannelCLEntry::IsAutojoined () const
+	{
+		return false;
+	}
+
 	// TODO implement this
 	void ChannelCLEntry::Join ()
 	{
