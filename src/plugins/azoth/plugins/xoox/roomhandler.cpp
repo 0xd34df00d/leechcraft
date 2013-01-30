@@ -47,12 +47,13 @@ namespace Xoox
 
 	RoomHandler::RoomHandler (const QString& jid,
 			const QString& ourNick,
+			bool asAutojoin,
 			GlooxAccount* account)
 	: Account_ (account)
 	, MUCManager_ (Account_->GetClientConnection ()->GetMUCManager ())
 	, RoomJID_ (jid)
 	, Room_ (MUCManager_->addRoom (jid))
-	, CLEntry_ (new RoomCLEntry (this, Account_))
+	, CLEntry_ (new RoomCLEntry (this, asAutojoin, Account_))
 	, HadRequestedPassword_ (false)
 	{
 		const QString& server = jid.split ('@', QString::SkipEmptyParts).value (1);

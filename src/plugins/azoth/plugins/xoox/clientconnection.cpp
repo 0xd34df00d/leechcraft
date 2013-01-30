@@ -425,7 +425,7 @@ namespace Xoox
 		SelfContact_->UpdateJID (jid);
 	}
 
-	RoomCLEntry* ClientConnection::JoinRoom (const QString& jid, const QString& nick)
+	RoomCLEntry* ClientConnection::JoinRoom (const QString& jid, const QString& nick, bool asAutojoin)
 	{
 		if (RoomHandlers_.contains (jid))
 		{
@@ -444,7 +444,7 @@ namespace Xoox
 				JoinQueue_.erase (pos);
 		}
 
-		RoomHandler *rh = new RoomHandler (jid, nick, Account_);
+		RoomHandler *rh = new RoomHandler (jid, nick, asAutojoin, Account_);
 		RoomHandlers_ [jid] = rh;
 		return rh->GetCLEntry ();
 	}
@@ -1220,13 +1220,14 @@ namespace Xoox
 				this,
 				SLOT (handleBookmarksReceived (const QXmppBookmarkSet&)));
 
-		Q_FOREACH (const QXmppBookmarkConference& conf, set.conferences ())
+		for (const auto& conf : set.conferences ())
 		{
 			if (!conf.autoJoin ())
 				continue;
 
 			JoinQueueItem item =
 			{
+				true,
 				conf.jid (),
 				conf.nickName ()
 			};
@@ -1244,13 +1245,12 @@ namespace Xoox
 		if (JoinQueue_.isEmpty ())
 			return;
 
-		GlooxProtocol *proto =
-				qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
+		auto proto = qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
 		if (!qobject_cast<IProxyObject*> (proto->GetProxyObject ())->IsAutojoinAllowed ())
 			return;
 
 		const JoinQueueItem& it = JoinQueue_.takeFirst ();
-		emit gotRosterItems (QList<QObject*> () << JoinRoom (it.RoomJID_, it.Nickname_));
+		emit gotRosterItems (QList<QObject*> () << JoinRoom (it.RoomJID_, it.Nickname_, it.AsAutojoin_));
 
 		if (!JoinQueue_.isEmpty ())
 			QTimer::singleShot (800,
