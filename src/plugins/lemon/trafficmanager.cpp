@@ -88,7 +88,7 @@ namespace Lemon
 		connect (timer,
 				SIGNAL (timeout ()),
 				this,
-				SLOT(updateCounters ()));
+				SLOT (updateCounters ()));
 		timer->start (1000);
 	}
 
