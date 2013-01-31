@@ -78,6 +78,8 @@ namespace Liznoo
 
 		void handleSuspendRequested ();
 		void handleHibernateRequested ();
+
+		void handlePushButton (const QString&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);

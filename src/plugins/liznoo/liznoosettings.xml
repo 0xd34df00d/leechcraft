@@ -26,4 +26,13 @@
 			</item>
 		</groupbox>
 	</page>
+	<page>
+		<label value="Debug" />
+		<item type="pushbutton" name="TestSleep">
+			<label value="Send sleep event to other plugins" />
+		</item>
+		<item type="pushbutton" name="TestWake">
+			<label value="Send wake up event to other plugins" />
+		</item>
+	</page>
 </settings>

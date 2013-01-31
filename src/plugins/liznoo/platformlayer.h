@@ -40,7 +40,7 @@ namespace Liznoo
 			Hibernate
 		};
 		virtual void ChangeState (PowerState);
-	protected:
+
 		void EmitGonnaSleep (int);
 		void EmitWokeUp ();
 	signals:
