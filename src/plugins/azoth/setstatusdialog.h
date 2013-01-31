@@ -32,6 +32,12 @@ namespace Azoth
 
 		Ui::SetStatusDialog Ui_;
 		QString Context_;
+
+		enum Roles
+		{
+			ItemState = Qt::UserRole + 1,
+			StateText
+		};
 	public:
 		SetStatusDialog (const QString& context, QWidget* = 0);
 
