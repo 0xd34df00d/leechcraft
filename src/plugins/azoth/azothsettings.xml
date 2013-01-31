@@ -356,6 +356,10 @@
 				<label value="Offline:" />
 			</item>
 		</groupbox>
+		<groupbox>
+			<label value="Custom statuses" />
+			<item type="dataview" property="CustomStatusesView" label="own" />
+		</groupbox>
 	</page>
 	<page>
 		<label value="Devices" />

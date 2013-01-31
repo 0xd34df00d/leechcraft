@@ -76,6 +76,7 @@
 #include "unreadqueuemanager.h"
 #include "chatstyleoptionmanager.h"
 #include "riexhandler.h"
+#include "customstatusesmanager.h"
 
 Q_DECLARE_METATYPE (QList<QColor>);
 
@@ -311,6 +312,7 @@ namespace Azoth
 	{
 		Proxy_ = proxy;
 		ShortcutManager_.reset (new Util::ShortcutManager (proxy));
+		CustomStatusesManager_.reset (new CustomStatusesManager);
 	}
 
 	ICoreProxy_ptr Core::GetProxy () const
@@ -348,6 +350,11 @@ namespace Azoth
 	Util::ShortcutManager* Core::GetShortcutManager () const
 	{
 		return ShortcutManager_.get ();
+	}
+
+	CustomStatusesManager* Core::GetCustomStatusesManager() const
+	{
+		return CustomStatusesManager_.get ();
 	}
 
 	QSet<QByteArray> Core::GetExpectedPluginClasses () const

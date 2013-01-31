@@ -16,38 +16,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_SETSTATUSDIALOG_H
-#define PLUGINS_AZOTH_SETSTATUSDIALOG_H
-#include <QDialog>
+#pragma once
+
+#include <QObject>
+#include <QVariantList>
+#include <QModelIndexList>
 #include "interfaces/azoth/azothcommon.h"
-#include "ui_setstatusdialog.h"
+
+class QAbstractItemModel;
+class QStandardItemModel;
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	class SetStatusDialog : public QDialog
+	class CustomStatusesManager : public QObject
 	{
 		Q_OBJECT
 
-		Ui::SetStatusDialog Ui_;
-		QString Context_;
-
-		enum Roles
-		{
-			ItemState = Qt::UserRole + 1,
-			StateText
-		};
+		QStandardItemModel *Model_;
 	public:
-		SetStatusDialog (const QString& context, QWidget* = 0);
+		struct CustomState
+		{
+			QString Name_;
+			State State_;
+			QString Text_;
+		};
 
-		State GetState () const;
-		QString GetStatusText () const;
-	private slots:
-		void save ();
-		void on_StatusBox__currentIndexChanged ();
+		CustomStatusesManager (QObject* = 0);
+
+		QAbstractItemModel* GetModel () const;
+		QList<CustomState> GetStates () const;
+	private:
+		void Save ();
+		void Load ();
+
+		void Add (const CustomState&);
+		CustomState GetCustom (int) const;
+	public slots:
+		void addRequested (const QString&, const QVariantList&);
+		void removeRequested (const QString&, const QModelIndexList&);
 	};
 }
 }
-
-#endif
