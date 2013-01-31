@@ -368,6 +368,15 @@ namespace LeechCraft
 			else
 				return result;
 		}
+
+		template<typename K, typename V>
+		QMap<K, V> MakeMap (std::initializer_list<QPair<K, V>> l)
+		{
+			QMap<K, V> result;
+			for (const auto& pair : l)
+				result [pair.first] = pair.second;
+			return result;
+		}
 	};
 };
 

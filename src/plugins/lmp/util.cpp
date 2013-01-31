@@ -26,10 +26,10 @@
 #include <QApplication>
 #include <QKeyEvent>
 #include <phonon/mediasource.h>
+#include <util/util.h>
 #include "core.h"
 #include "localcollection.h"
 #include "xmlsettingsmanager.h"
-#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -200,22 +200,9 @@ namespace LMP
 		label->activateWindow ();
 		label->installEventFilter (new AADisplayEventFilter (label));
 	}
-
-	namespace
-	{
-		template<typename K, typename V>
-		QMap<K, V> MakeMap (std::initializer_list<QPair<K, V>> l)
-		{
-			QMap<K, V> result;
-			for (const auto& pair : l)
-				result [pair.first] = pair.second;
-			return result;
-		}
-	}
-
 	QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters ()
 	{
-		return MakeMap<QString, std::function<QString (MediaInfo)>> ({
+		return Util::MakeMap<QString, std::function<QString (MediaInfo)>> ({
 				{ "$artist", [] (const MediaInfo& info) { return info.Artist_; } },
 				{ "$album", [] (const MediaInfo& info) { return info.Album_; } },
 				{ "$title", [] (const MediaInfo& info) { return info.Title_; } },
@@ -232,7 +219,7 @@ namespace LMP
 
 	QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters ()
 	{
-		return MakeMap<QString, std::function<void (MediaInfo&, QString)>> ({
+		return Util::MakeMap<QString, std::function<void (MediaInfo&, QString)>> ({
 				{ "$artist", [] (MediaInfo& info, const QString& val) { info.Artist_ = val; } },
 				{ "$album", [] (MediaInfo& info, const QString& val) { info.Album_= val; } },
 				{ "$title", [] (MediaInfo& info, const QString& val) { info.Title_ = val; } },
