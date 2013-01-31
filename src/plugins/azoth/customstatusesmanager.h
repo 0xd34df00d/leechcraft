@@ -36,14 +36,23 @@ namespace Azoth
 
 		QStandardItemModel *Model_;
 	public:
+		struct CustomState
+		{
+			QString Name_;
+			State State_;
+			QString Text_;
+		};
+
 		CustomStatusesManager (QObject* = 0);
 
 		QAbstractItemModel* GetModel () const;
+		QList<CustomState> GetStates () const;
 	private:
 		void Save ();
 		void Load ();
 
-		void Add (const QString&, State, const QString&);
+		void Add (const CustomState&);
+		CustomState GetCustom (int) const;
 	public slots:
 		void addRequested (const QString&, const QVariantList&);
 		void removeRequested (const QString&, const QModelIndexList&);

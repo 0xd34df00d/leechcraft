@@ -70,6 +70,14 @@ namespace Azoth
 		return Model_;
 	}
 
+	QList<CustomStatusesManager::CustomState> CustomStatusesManager::GetStates () const
+	{
+		QList<CustomState> result;
+		for (int i = 0; i < Model_->rowCount (); ++i)
+			result << GetCustom (i);
+		return result;
+	}
+
 	void CustomStatusesManager::Save ()
 	{
 		QSettings settings (QCoreApplication::organizationName (),
@@ -79,9 +87,10 @@ namespace Azoth
 		for (int i = 0; i < Model_->rowCount (); ++i)
 		{
 			settings.setArrayIndex (i);
-			settings.setValue ("Name", Model_->item (i, 0)->text ());
-			settings.setValue ("State", Model_->item (i, 1)->data ().toInt ());
-			settings.setValue ("Text", Model_->item (i, 2)->text ());
+			const auto& state = GetCustom (i);
+			settings.setValue ("Name", state.Name_);
+			settings.setValue ("State", static_cast<int> (state.State_));
+			settings.setValue ("Text", state.Text_);
 		}
 		settings.endArray ();
 		settings.endGroup ();
@@ -99,23 +108,33 @@ namespace Azoth
 			const auto state = static_cast<State> (settings.value ("State").toInt ());
 			const auto& text = settings.value ("Text").toString ();
 
-			Add (name, state, text);
+			Add ({ name, state, text });
 		}
 		settings.endArray ();
 		settings.endGroup ();
 	}
 
-	void CustomStatusesManager::Add (const QString& name, State state, const QString& text)
+	void CustomStatusesManager::Add (const CustomState& state)
 	{
 		ProxyObject proxy;
 
 		QList<QStandardItem*> row;
-		row << new QStandardItem (name);
-		row << new QStandardItem (Core::Instance ().GetIconForState (state),
-				proxy.StateToString (state));
-		row << new QStandardItem (text);
+		row << new QStandardItem (state.Name_);
+		row << new QStandardItem (Core::Instance ().GetIconForState (state.State_),
+				proxy.StateToString (state.State_));
+		row << new QStandardItem (state.Text_);
 		Model_->appendRow (row);
-		row.at (1)->setData (static_cast<int> (state));
+		row.at (1)->setData (static_cast<int> (state.State_));
+	}
+
+	CustomStatusesManager::CustomState CustomStatusesManager::GetCustom (int i) const
+	{
+		return
+		{
+			Model_->item (i, 0)->text (),
+			static_cast<State> (Model_->item (i, 1)->data ().toInt ()),
+			Model_->item (i, 2)->text (),
+		};
 	}
 
 	void CustomStatusesManager::addRequested (const QString&, const QVariantList& vars)
@@ -130,7 +149,7 @@ namespace Azoth
 		const auto& name = vars.at (0).toString ();
 		const auto state = vars.at (1).value<State> ();
 		const auto& text = vars.at (2).toString ();
-		Add (name, state, text);
+		Add ({ name, state, text });
 
 		Save ();
 	}
