@@ -23,6 +23,7 @@
 #include <QLineEdit>
 #include <QLabel>
 #include <QDialogButtonBox>
+#include <QComboBox>
 #include <QtDebug>
 #include "../widgets/dataviewwidget.h"
 #include "../filepicker.h"
@@ -106,7 +107,7 @@ namespace LeechCraft
 
 	namespace
 	{
-		QWidget* GetEditor (DataSources::DataFieldType type)
+		QWidget* GetEditor (DataSources::DataFieldType type, const QVariant& valuesInfo)
 		{
 			switch (type)
 			{
@@ -117,6 +118,18 @@ namespace LeechCraft
 				return new QLineEdit ();
 			case DataSources::DataFieldType::LocalPath:
 				return new FilePicker (FilePicker::Type::ExistingDirectory);
+			case DataSources::DataFieldType::Enum:
+			{
+				auto box = new QComboBox;
+				for (const auto& var : valuesInfo.toList ())
+				{
+					const auto& map = var.toMap ();
+					box->addItem (map ["Icon"].value<QIcon> (),
+							map ["Name"].toString (),
+							map ["ID"]);
+				}
+				return box;
+			}
 			default:
 				return 0;
 			}
@@ -133,6 +146,11 @@ namespace LeechCraft
 				return qobject_cast<QLineEdit*> (editor)->text ();
 			case DataSources::DataFieldType::LocalPath:
 				return qobject_cast<FilePicker*> (editor)->GetText ();
+			case DataSources::DataFieldType::Enum:
+			{
+				auto box = qobject_cast<QComboBox*> (editor);
+				return box->itemData (box->currentIndex ());
+			}
 			default:
 				return QVariant ();
 			}
@@ -151,8 +169,14 @@ namespace LeechCraft
 		}
 
 		QAbstractItemModel *model = view->GetModel ();
-		QList<DataSources::DataFieldType> types;
-		QStringList names;
+
+		struct ColumnInfo
+		{
+			DataSources::DataFieldType Type_;
+			QVariant ValuesInfo_;
+			QString Name_;
+		};
+		QList<ColumnInfo> infos;
 		for (int i = 0, size = model->columnCount (); i < size; ++i)
 		{
 			const auto& hData = model->headerData (i, Qt::Horizontal,
@@ -160,19 +184,19 @@ namespace LeechCraft
 			auto type = static_cast<DataSources::DataFieldType> (hData.value<int> ());
 			if (type != DataSources::DataFieldType::None)
 			{
-				types << type;
-				names << model->headerData (i, Qt::Horizontal, Qt::DisplayRole).toString ();
+				const auto& name = model->headerData (i, Qt::Horizontal, Qt::DisplayRole).toString ();
+				const auto& values = model->headerData (i, Qt::Horizontal, DataSources::DataSourceRole::FieldValues);
+				infos.push_back ({ type, values, name });
 			}
 		}
 
 		QDialog dia (XSD_);
 		QGridLayout *lay = new QGridLayout ();
 		dia.setLayout (lay);
-		for (int i = 0, size = types.size (); i < size; ++i)
+		for (const auto& info : infos)
 		{
-			QLabel *name = new QLabel (names.at (i));
-			DataSources::DataFieldType type = types.at (i);
-			QWidget *w = GetEditor (type);
+			QLabel *name = new QLabel (info.Name_);
+			QWidget *w = GetEditor (info.Type_, info.ValuesInfo_);
 			const int row = lay->rowCount ();
 			lay->addWidget (name, row, 0, Qt::AlignRight);
 			lay->addWidget (w, row, 1);
@@ -192,10 +216,10 @@ namespace LeechCraft
 		if (dia.exec () == QDialog::Accepted)
 		{
 			QVariantList datas;
-			for (int i = 0, size = types.size (); i < size; ++i)
+			for (int i = 0, size = infos.size (); i < size; ++i)
 			{
 				QWidget *w = lay->itemAt (2 * i + 1)->widget ();
-				datas << GetData (w, types.at (i));
+				datas << GetData (w, infos.at (i).Type_);
 			}
 			if (!QMetaObject::invokeMethod (model->parent (),
 						"addRequested",
