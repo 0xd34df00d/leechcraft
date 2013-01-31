@@ -56,19 +56,20 @@ namespace Poshuku
 		};
 
 		FavoritesModel (QObject* = 0);
-		virtual ~FavoritesModel ();
+		~FavoritesModel ();
 
-		virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
-		virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-		virtual Qt::ItemFlags flags (const QModelIndex&) const;
-		virtual QVariant headerData (int, Qt::Orientation,
-				int = Qt::DisplayRole) const;
-		virtual QModelIndex index (int, int,
-				const QModelIndex& = QModelIndex()) const;
-		virtual QModelIndex parent (const QModelIndex&) const;
-		virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
-		virtual bool setData (const QModelIndex&, const QVariant&,
-				int = Qt::EditRole);
+		int columnCount (const QModelIndex& = QModelIndex ()) const;
+		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
+		Qt::ItemFlags flags (const QModelIndex&) const;
+		QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
+		QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
+		QModelIndex parent (const QModelIndex&) const;
+		int rowCount (const QModelIndex& = QModelIndex ()) const;
+		bool setData (const QModelIndex&, const QVariant&, int = Qt::EditRole);
+
+		Qt::DropActions supportedDropActions () const;
+		QStringList mimeTypes () const;
+		bool dropMimeData (const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent);
 
 		void EditBookmark (const QModelIndex&);
 		void ChangeURL (const QModelIndex&, const QString&);

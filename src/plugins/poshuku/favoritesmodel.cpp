@@ -20,6 +20,8 @@
 #include <algorithm>
 #include <QTimer>
 #include <QtDebug>
+#include <QMimeData>
+#include <QFileInfo>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include <util/defaulthookproxy.h>
@@ -96,7 +98,10 @@ namespace Poshuku
 
 	Qt::ItemFlags FavoritesModel::flags (const QModelIndex& index) const
 	{
-		Qt::ItemFlags result = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+		Qt::ItemFlags result = Qt::ItemIsEnabled |
+				Qt::ItemIsSelectable |
+				Qt::ItemIsDragEnabled |
+				Qt::ItemIsDropEnabled;
 		if (index.column () == ColumnTags)
 			result |= Qt::ItemIsEditable;
 		return result;
@@ -165,13 +170,14 @@ namespace Poshuku
 		}
 	}
 
-	QModelIndex FavoritesModel::addItem (const QString& title, const QString& url,
-			const QStringList& visibleTags)
+	QModelIndex FavoritesModel::addItem (const QString& title,
+			const QString& url, const QStringList& visibleTags)
 	{
 		QStringList tags;
-		Q_FOREACH (const QString& vt, visibleTags)
-			tags << Core::Instance ().GetProxy ()->
-					GetTagsManager ()->GetID (vt);
+		auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
+		for (const QString& vt : visibleTags)
+			tags << tm->GetID (vt);
+
 		FavoritesItem item =
 		{
 			title,
@@ -212,6 +218,38 @@ namespace Poshuku
 		}
 
 		return result;
+	}
+
+	Qt::DropActions FavoritesModel::supportedDropActions () const
+	{
+		return static_cast<Qt::DropActions> (Qt::CopyAction | Qt::MoveAction | Qt::LinkAction);
+	}
+
+	QStringList FavoritesModel::mimeTypes () const
+	{
+		return QStringList ("text/uri-list");
+	}
+
+	bool FavoritesModel::dropMimeData (const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex& parent)
+	{
+		const auto& urls = data->urls ();
+
+		QStringList visibleTags;
+		if (data->hasFormat ("x-leechcraft/tag"))
+		{
+			auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
+			const auto& visible = tm->GetTag (data->data ("x-leechcraft/tag"));
+			if (!visible.isEmpty ())
+				visibleTags << visible;
+		}
+
+		if (urls.size () == 1 && !data->text ().isEmpty ())
+			addItem (data->text (), urls.first ().toString (), visibleTags);
+		else if (!urls.isEmpty ())
+			for (const auto& url : urls)
+				addItem (QFileInfo (url.path ()).fileName (), url.toString (), visibleTags);
+
+		return true;
 	}
 
 	void FavoritesModel::EditBookmark (const QModelIndex& source)
