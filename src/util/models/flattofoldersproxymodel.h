@@ -48,13 +48,17 @@ namespace LeechCraft
 
 			void SetTagsManager (ITagsManager*);
 
-			virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
-			virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-			virtual QVariant headerData (int, Qt::Orientation, int) const;
-			virtual Qt::ItemFlags flags (const QModelIndex&) const;
-			virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
-			virtual QModelIndex parent (const QModelIndex&) const;
-			virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
+			int columnCount (const QModelIndex& = QModelIndex ()) const;
+			QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
+			QVariant headerData (int, Qt::Orientation, int) const;
+			Qt::ItemFlags flags (const QModelIndex&) const;
+			QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
+			QModelIndex parent (const QModelIndex&) const;
+			int rowCount (const QModelIndex& = QModelIndex ()) const;
+
+			Qt::DropActions supportedDropActions () const;
+			QStringList mimeTypes () const;
+			bool dropMimeData (const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex& parent);
 
 			void SetSourceModel (QAbstractItemModel*);
 			QAbstractItemModel* GetSourceModel () const;
