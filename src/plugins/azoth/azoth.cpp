@@ -50,6 +50,7 @@
 #include "searchwidget.h"
 #include "chatstyleoptionmanager.h"
 #include "colorlisteditorwidget.h"
+#include "customstatusesmanager.h"
 
 namespace LeechCraft
 {
@@ -382,6 +383,9 @@ namespace Azoth
 				SLOT (saveAccountVisibility (IAccount*)));
 
 		XmlSettingsDialog_->SetCustomWidget ("ColorListEditor", new ColorListEditorWidget);
+
+		XmlSettingsDialog_->SetDataSource ("CustomStatusesView",
+				Core::Instance ().GetCustomStatusesManager ()->GetModel ());
 	}
 
 	void Plugin::InitMW ()
