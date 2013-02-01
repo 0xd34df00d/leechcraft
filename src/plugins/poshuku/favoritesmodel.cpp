@@ -230,6 +230,30 @@ namespace Poshuku
 		return QStringList ("text/uri-list");
 	}
 
+	QMimeData* FavoritesModel::mimeData (const QModelIndexList& indexes) const
+	{
+		if (indexes.isEmpty ())
+			return 0;
+
+		QList<QUrl> urls;
+		QStringList texts;
+		QList<int> rows;
+		for (const auto& index : indexes)
+			if (!rows.contains (index.row ()))
+				rows << index.row ();
+		for (const auto& row : rows)
+		{
+			const auto& item = Items_ [row];
+			urls << QUrl (item.URL_);
+			texts << item.Title_;
+		}
+
+		auto data = new QMimeData ();
+		data->setUrls (urls);
+		data->setText (texts.join (";"));
+		return data;
+	}
+
 	bool FavoritesModel::dropMimeData (const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex& parent)
 	{
 		const auto& urls = data->urls ();
