@@ -58,6 +58,7 @@ namespace LeechCraft
 
 			Qt::DropActions supportedDropActions () const;
 			QStringList mimeTypes () const;
+			QMimeData* mimeData (const QModelIndexList& indexes) const;
 			bool dropMimeData (const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex& parent);
 
 			void SetSourceModel (QAbstractItemModel*);

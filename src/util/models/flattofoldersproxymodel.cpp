@@ -195,6 +195,32 @@ namespace LeechCraft
 					QAbstractItemModel::mimeTypes ();
 		}
 
+		QMimeData* FlatToFoldersProxyModel::mimeData (const QModelIndexList& indexes) const
+		{
+			if (!SourceModel_)
+				return QAbstractItemModel::mimeData (indexes);
+
+			QModelIndexList sourceIdxs;
+			for (const auto& index : indexes)
+			{
+				auto item = static_cast<FlatTreeItem*> (index.internalPointer ());
+				switch (item->Type_)
+				{
+				case FlatTreeItem::Type::TItem:
+					sourceIdxs << MapToSource (index);
+					break;
+				case FlatTreeItem::Type::TFolder:
+					for (const auto& subItem : item->C_)
+						sourceIdxs << subItem->Index_;
+					break;
+				default:
+					break;
+				}
+			}
+
+			return SourceModel_->mimeData (sourceIdxs);
+		}
+
 		bool FlatToFoldersProxyModel::dropMimeData (const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent)
 		{
 			if (!SourceModel_)
