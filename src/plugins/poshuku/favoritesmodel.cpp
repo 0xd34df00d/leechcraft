@@ -280,8 +280,22 @@ namespace Poshuku
 				visibleTags << visible;
 		}
 
+		auto tryAddUrl = [&visibleTags, this] (const QString& title, const QUrl& url) -> void
+		{
+			const auto pos = std::find_if (Items_.begin (), Items_.end (),
+					[&title] (const FavoritesItem& item) { return item.Title_ == title; });
+			if (pos == Items_.end ())
+				addItem (title, url.toString (), visibleTags);
+			else
+			{
+				auto tags = pos->Tags_;
+				tags += visibleTags;
+				setData (index (std::distance (Items_.begin (), pos), ColumnTags), tags);
+			}
+		};
+
 		if (urls.size () == 1 && !data->text ().isEmpty ())
-			addItem (data->text (), urls.first ().toString (), visibleTags);
+			tryAddUrl (data->text (), urls.first ());
 		else if (!urls.isEmpty ())
 		{
 			auto texts = data->text ().split (';', QString::SkipEmptyParts);
@@ -293,7 +307,7 @@ namespace Poshuku
 			}
 
 			for (const auto& pair : zip (texts, urls))
-				addItem (boost::get<0> (pair), boost::get<1> (pair).toString (), visibleTags);
+				tryAddUrl (boost::get<0> (pair), boost::get<1> (pair));
 		}
 
 		return true;
