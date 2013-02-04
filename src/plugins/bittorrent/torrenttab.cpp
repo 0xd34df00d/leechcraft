@@ -242,23 +242,6 @@ namespace BitTorrent
 				this,
 				SLOT (handleFastSpeedComboboxes ()));
 				*/
-
-		/*
-		QMenu *contextMenu = new QMenu (tr ("Torrents actions"));
-		contextMenu->addAction (RemoveTorrent_.get ());
-		contextMenu->addSeparator ();
-		contextMenu->addAction (MoveUp_.get ());
-		contextMenu->addAction (MoveDown_.get ());
-		contextMenu->addAction (MoveToTop_.get ());
-		contextMenu->addAction (MoveToBottom_.get ());
-		contextMenu->addSeparator ();
-		contextMenu->addAction (ForceReannounce_.get ());
-		contextMenu->addAction (ForceRecheck_.get ());
-		contextMenu->addAction (MoveFiles_.get ());
-		contextMenu->addAction (ChangeTrackers_.get ());
-		contextMenu->addAction (MakeMagnetLink_.get ());
-		Core::Instance ()->SetMenu (contextMenu);
-		*/
 	}
 
 	TabClassInfo TorrentTab::GetTabClassInfo () const
