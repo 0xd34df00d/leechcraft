@@ -305,6 +305,18 @@ namespace BitTorrent
 
 	void TorrentTab::setActionsEnabled ()
 	{
+#if QT_VERSION >= 0x040800
+		const auto& actions =
+		{
+			Resume_, Stop_, MakeMagnetLink_, RemoveTorrent_,
+			MoveUp_, MoveDown_, MoveToTop_, MoveToBottom_,
+			ForceReannounce_, ForceRecheck_, MoveFiles_, ChangeTrackers_
+		};
+		const bool enable = Ui_.TorrentsView_->currentIndex ().isValid ();
+
+		for (auto action : actions)
+			action->setEnabled (enable);
+#endif
 	}
 
 	void TorrentTab::on_TorrentsView__customContextMenuRequested (const QPoint& point)
