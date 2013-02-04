@@ -307,6 +307,19 @@ namespace BitTorrent
 	{
 	}
 
+	void TorrentTab::on_TorrentsView__customContextMenuRequested (const QPoint& point)
+	{
+#if QT_VERSION >= 0x040800
+		QMenu menu;
+		menu.addActions ({ Resume_, Stop_, MakeMagnetLink_, RemoveTorrent_ });
+		menu.addSeparator ();
+		menu.addActions ({ MoveToTop_, MoveUp_, MoveDown_, MoveToBottom_ });
+		menu.addSeparator ();
+		menu.addActions ({ ForceReannounce_, ForceRecheck_, MoveFiles_, ChangeTrackers_ });
+		menu.exec (Ui_.TorrentsView_->viewport ()->mapToGlobal (point));
+#endif
+	}
+
 	void TorrentTab::on_OpenTorrent__triggered ()
 	{
 		AddTorrent dia;

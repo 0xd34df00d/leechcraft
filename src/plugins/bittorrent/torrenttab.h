@@ -73,6 +73,8 @@ namespace BitTorrent
 		void handleTorrentSelected (const QModelIndex&);
 		void setActionsEnabled ();
 
+		void on_TorrentsView__customContextMenuRequested (const QPoint&);
+
 		void on_OpenTorrent__triggered ();
 		void on_OpenMultipleTorrents__triggered ();
 		void on_IPFilter__triggered ();
