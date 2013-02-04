@@ -34,7 +34,7 @@ namespace Azoth
 	: QObject (parent)
 	, Model_ (new QStandardItemModel (this))
 	{
-		Model_->setColumnCount (2);
+		Model_->setColumnCount (3);
 
 #if QT_VERSION >= 0x040800
 		Model_->setHorizontalHeaderLabels ({tr ("Name"), tr ("Status"), tr ("Text") });
