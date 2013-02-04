@@ -220,6 +220,10 @@ namespace BitTorrent
 		Toolbar_->addAction (MakeMagnetLink_);
 
 		setActionsEnabled ();
+		connect (Ui_.TorrentsView_->selectionModel (),
+				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (setActionsEnabled ()));
 		/*
 		Toolbar_->addSeparator ();
 		DownSelectorAction_ = new SpeedSelectorAction ("Down", this);
