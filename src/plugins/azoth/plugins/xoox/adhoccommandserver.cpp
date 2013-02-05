@@ -409,6 +409,7 @@ namespace Xoox
 			{
 				QXmppMessage msg (QString (), to, msgObj->GetMessage ().body ());
 				msg.setStamp (msgObj->GetDateTime ());
+				msg.setXhtml (msgObj->GetRichBody ());
 
 				const QString& var = msgObj->GetOtherVariant ();
 				const QString& from = var.isEmpty () ?
