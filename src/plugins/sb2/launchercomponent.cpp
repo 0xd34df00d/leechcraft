@@ -29,6 +29,8 @@
 #include "tablistview.h"
 #include "launcherdroparea.h"
 #include "tabunhidelistview.h"
+#include "viewmanager.h"
+#include "sbview.h"
 
 Q_DECLARE_METATYPE (QSet<QByteArray>);
 
@@ -94,11 +96,12 @@ namespace SB2
 		const QString ImageProviderID = "SB2_TabClassImage";
 	}
 
-	LauncherComponent::LauncherComponent (ICoreTabWidget *ictw, ICoreProxy_ptr proxy, QObject *parent)
+	LauncherComponent::LauncherComponent (ICoreTabWidget *ictw, ICoreProxy_ptr proxy, ViewManager *view, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, ICTW_ (ictw)
 	, Model_ (new LauncherModel (this))
+	, View_ (view)
 	, ImageProv_ (new TabClassImageProvider (proxy))
 	{
 		qmlRegisterType<LauncherDropArea> ("SB2", 1, 0, "LauncherDropArea");
@@ -299,7 +302,8 @@ namespace SB2
 		}
 
 		auto list = new TabUnhideListView (tcs, Proxy_);
-		list->move (x, y);
+		list->move (Util::FitRectScreen ({ x, y },
+					list->size () + View_->GetView ()->minimumSizeHint ()));
 		list->show ();
 		list->setFocus ();
 		connect (list,
@@ -324,7 +328,8 @@ namespace SB2
 			delete CurrentTabList_;
 
 		auto view = new TabListView (tc, widgets, ICTW_, Proxy_);
-		view->move (x, y);
+		view->move (Util::FitRectScreen ({ x, y }, 
+					view->size () + View_->GetView ()->minimumSizeHint ()));
 		view->show ();
 		view->setFocus ();
 

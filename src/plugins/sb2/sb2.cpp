@@ -133,7 +133,7 @@ namespace SB2
 
 		mgr->RegisterInternalComponent ((new LCMenuComponent (mwProxy))->GetComponent ());
 
-		auto launcher = new LauncherComponent (ictw, Proxy_);
+		auto launcher = new LauncherComponent (ictw, Proxy_, mgr);
 		mgr->RegisterInternalComponent (launcher->GetComponent ());
 		if (init)
 			connect (this,
