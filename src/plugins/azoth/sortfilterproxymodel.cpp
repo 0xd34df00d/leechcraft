@@ -193,12 +193,15 @@ namespace Azoth
 			}
 			else if (type == Core::CLETCategory)
 			{
-				if (!sourceModel ()->rowCount (idx))
-					return false;
-
 				if (!ShowOffline_ &&
 						!idx.data (Core::CLRNumOnline).toInt ())
 					return false;
+
+				for (int subRow = 0; subRow < sourceModel ()->rowCount (idx); ++subRow)
+					if (filterAcceptsRow (subRow, idx))
+						return true;
+
+				return false;
 			}
 			else if (type == Core::CLETAccount)
 			{
