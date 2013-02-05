@@ -18,6 +18,8 @@ QtObject {
 
     function showTextTooltip(item, text) {
         var absPoint = getTooltipPos(item);
+        if (viewOrient != "vertical")
+            absPoint.x += quarkDisplayRoot.height;
         quarkProxy.showTextTooltip(absPoint.x, absPoint.y, text);
     }
 }
