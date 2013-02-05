@@ -111,7 +111,7 @@ namespace Kinotify
 		int timeout = Proxy_->GetSettingsManager ()->
 				property ("FinishedDownloadMessageTimeout").toInt () * 1000;
 
-		KinotifyWidget *notificationWidget = new KinotifyWidget (timeout);
+		KinotifyWidget *notificationWidget = new KinotifyWidget (Proxy_, timeout);
 		notificationWidget->SetThemeLoader (ThemeLoader_);
 		notificationWidget->SetEntity (e);
 

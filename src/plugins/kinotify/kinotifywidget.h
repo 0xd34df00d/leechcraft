@@ -40,6 +40,7 @@ namespace Kinotify
 		Q_OBJECT
 		Q_PROPERTY (qreal opacity READ windowOpacity WRITE setWindowOpacity)
 
+		ICoreProxy_ptr Proxy_;
 		QString Title_;
 		QString Body_;
 		QString ImagePath_;
@@ -60,7 +61,7 @@ namespace Kinotify
 
 		Entity E_;
 	public:
-		KinotifyWidget (int timeout = 0, QWidget *widget = 0, int animationTimeout = 300);
+		KinotifyWidget (ICoreProxy_ptr, int timeout = 0, QWidget *widget = 0, int animationTimeout = 300);
 		void SetThemeLoader (std::shared_ptr<Util::ResourceLoader>);
 
 		static void ClearThemeCache ();
