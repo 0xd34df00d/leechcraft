@@ -17,7 +17,8 @@
 				<label value="Don't show notifications when there is a fullscreen application" />
 			</item>
 			<item type="checkbox" property="FollowMouse" default="true">
-				<label value="Show notification on the screen that contains the mouse at the moment" />
+				<label value="Show notification on the screen containing the mouse" />
+				<tooltip>If this option is disabled notifications are shown on the screen containing the LeechCraft window.</tooltip>
 			</item>
 			<item type="combobox" property="NotifyPosition">
 				<label value="Notificator position:" />
