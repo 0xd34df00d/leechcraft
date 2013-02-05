@@ -407,7 +407,7 @@ namespace Xoox
 
 			Q_FOREACH (GlooxMessage *msgObj, base->GetUnreadMessages ())
 			{
-				QXmppMessage msg (QString (), to, msgObj->GetBody ());
+				QXmppMessage msg (QString (), to, msgObj->GetMessage ().body ());
 				msg.setStamp (msgObj->GetDateTime ());
 
 				const QString& var = msgObj->GetOtherVariant ();
