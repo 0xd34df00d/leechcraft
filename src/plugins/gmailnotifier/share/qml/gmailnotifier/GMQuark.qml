@@ -53,6 +53,6 @@ Rectangle {
             border.width: 1
         }
 
-        onTriggered: commonJS.showTooltip(rootRect, function(x, y) { GMN_proxy.showMailList(x, y) })
+        onTriggered: commonJS.showTooltip(rootRect, function(x, y) { GMN_proxy.showMailList(x, y, viewOrient == "vertical" ? quarkDisplayRoot.width : quarkDisplayRoot.height) })
     }
 }

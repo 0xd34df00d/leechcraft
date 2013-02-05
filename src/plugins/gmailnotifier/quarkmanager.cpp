@@ -18,6 +18,7 @@
 
 #include "quarkmanager.h"
 #include <QtDebug>
+#include <QApplication>
 #include <util/util.h>
 #include "maillistview.h"
 
@@ -45,7 +46,7 @@ namespace GmailNotifier
 			emit msgCountChanged ();
 	}
 
-	void QuarkManager::showMailList (int x, int y)
+	void QuarkManager::showMailList (int x, int y, int sizeInc)
 	{
 		if (MailListView_)
 		{
@@ -54,7 +55,9 @@ namespace GmailNotifier
 		}
 
 		MailListView_ = new MailListView (Infos_, Proxy_);
-		MailListView_->move (Util::FitRectScreen (QPoint (x, y), MailListView_->size ()));
+		qApp->processEvents ();
+		MailListView_->move (Util::FitRectScreen ({ x, y },
+				MailListView_->size () + QSize (sizeInc, sizeInc)));
 		MailListView_->show ();
 	}
 }
