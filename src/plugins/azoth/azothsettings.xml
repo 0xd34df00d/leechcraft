@@ -74,6 +74,9 @@
 		</tab>
 		<tab>
 			<label value="Contact list" />
+			<item type="checkbox" property="ShowSelfContacts" default="true">
+				<label value="Show self-contacts" />
+			</item>
 			<item type="checkbox" property="ShowMenuBar" default="true">
 				<label value="Show toolbar on top of the contact list" />
 			</item>

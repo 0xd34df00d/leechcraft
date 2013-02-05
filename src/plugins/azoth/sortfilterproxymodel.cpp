@@ -34,6 +34,7 @@ namespace Azoth
 	, MUCMode_ (false)
 	, OrderByStatus_ (true)
 	, HideMUCParts_ (false)
+	, ShowSelfContacts_ (true)
 	, MUCEntry_ (0)
 	{
 		setDynamicSortFilter (true);
@@ -46,6 +47,10 @@ namespace Azoth
 		XmlSettingsManager::Instance ().RegisterObject ("HideMUCPartsInWholeCL",
 				this, "handleHideMUCPartsChanged");
 		handleHideMUCPartsChanged ();
+
+		XmlSettingsManager::Instance ().RegisterObject ("ShowSelfContacts",
+				this, "handleShowSelfContactsChanged");
+		handleShowSelfContactsChanged ();
 	}
 
 	void SortFilterProxyModel::SetMUCMode (bool muc)
@@ -99,6 +104,13 @@ namespace Azoth
 	{
 		HideMUCParts_ = XmlSettingsManager::Instance ()
 				.property ("HideMUCPartsInWholeCL").toBool ();
+		invalidate ();
+	}
+
+	void SortFilterProxyModel::handleShowSelfContactsChanged ()
+	{
+		ShowSelfContacts_ = XmlSettingsManager::Instance ()
+				.property ("ShowSelfContacts").toBool ();
 		invalidate ();
 	}
 
@@ -173,6 +185,10 @@ namespace Azoth
 
 				if (HideMUCParts_ &&
 						entry->GetEntryType () == ICLEntry::ETPrivateChat)
+					return false;
+
+				if (!ShowSelfContacts_ &&
+						entry->GetEntryFeatures () & ICLEntry::FSelfContact)
 					return false;
 			}
 			else if (type == Core::CLETCategory)
