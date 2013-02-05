@@ -47,7 +47,7 @@ namespace Xoox
 
 	ICLEntry::Features SelfContact::GetEntryFeatures () const
 	{
-		return FSupportsGrouping | FPermanentEntry;
+		return FSupportsGrouping | FPermanentEntry | FSelfContact;
 	}
 
 	ICLEntry::EntryType SelfContact::GetEntryType () const
