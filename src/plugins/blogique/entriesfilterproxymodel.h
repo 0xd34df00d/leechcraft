@@ -16,42 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "calendarwidget.h"
-#include <QPainter>
+#pragma once
+
+#include <QSortFilterProxyModel>
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-	CalendarWidget::CalendarWidget (QWidget *parent)
-	: QCalendarWidget (parent)
+	class EntriesFilterProxyModel : public QSortFilterProxyModel
 	{
-	}
-
-	void CalendarWidget::SetStatistic (const QMap<QDate, int>& statistic)
-	{
-		Date2EntriesCount_ = statistic;
-		update ();
-	}
-
-	void CalendarWidget::paintCell (QPainter *painter, const QRect& rect, const QDate& date) const
-	{
-		QCalendarWidget::paintCell (painter, rect, date);
-		
-		if (Date2EntriesCount_.contains (date) &&
-				Date2EntriesCount_ [date])
-		{
-			painter->save ();
-			painter->setBrush (QBrush (Qt::blue));
-			const QPointF points [3] =
-			{
-				QPointF (rect.x (), rect.bottom () - 8),
-				QPointF (rect.x () + 8, rect.bottom ()),
-				QPointF (rect.x (), rect.bottom ())
-			};
-			painter->drawPolygon (points, 3);
-			painter->restore ();
-		}
-	}
+	public:
+		EntriesFilterProxyModel (QObject *parent = 0);
+	protected:
+		bool filterAcceptsRow (int sourceRow,
+				const QModelIndex& sourceParent);
+	};
 }
 }
+

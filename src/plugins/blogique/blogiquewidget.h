@@ -36,6 +36,8 @@ namespace Blogique
 	class IBlogiqueSideWidget;
 	class IAccount;
 	class LocalStorage;
+	class LocalEntriesWidget;
+	class RemoteEntriesWidget;
 
 	class BlogiqueWidget : public QWidget
 						,  public ITabWidget
@@ -46,17 +48,6 @@ namespace Blogique
 		enum BlogiqueSideWidgets
 		{
 			PostOptionsWidget = 2
-		};
-
-		enum EntryIdRole
-		{
-			DBIdRole = Qt::UserRole + 1
-		};
-
-		enum Columns
-		{
-			Date,
-			Subject
 		};
 
 		static QObject *S_ParentMultiTabs_;
@@ -70,25 +61,18 @@ namespace Blogique
 		QComboBox *PostTargetBox_;
 		QAction *PostTargetAction_;
 
+		LocalEntriesWidget *LocalEntriesWidget_;
+		RemoteEntriesWidget *RemoteEntriesWidget_;
 		QHash<int, IAccount*> Id2Account_;
 		int PrevAccountId_;
 		QList<QWidget*> SidePluginsWidgets_;
 
 		QStandardItemModel *PostsViewModel_;
-		QStandardItemModel *DraftsViewModel_;
 
 		LocalStorage *Storage_;
 
 		QHash<QStandardItem*, Entry> DraftItem2Entry_;
 		QHash<QStandardItem*, Entry> PostItem2Entry_;
-
-		QAction *OpenDraftInNewTab_;
-		QAction *OpenDraftInCurrentTab_;
-		QAction *OpenEntryInNewTab_;
-		QAction *OpenEntryInCurrentTab_;
-
-		QAction *LoadLocalEntries_;
-		QList<QAction*> LoadActions_;
 
 		qlonglong DraftID_;
 		qlonglong EntryID_;
@@ -109,23 +93,14 @@ namespace Blogique
 		void SetToolBarActions ();
 		void SetDefaultSideWidgets ();
 		void RemovePostingTargetsWidget ();
-		void FillPostingStatistic ();
 
 		void ClearEntry ();
 
-		QList<QStandardItem*> CreateItemsRow (const Entry& entry) const;
-
 		Entry GetCurrentEntry ();
 
-		void LoadDrafts ();
 		Entry LoadFullDraft (qlonglong draftID);
-		void RemoveDraft (qlonglong id);
 
-		void LoadEntries ();
 		Entry LoadEntry (qlonglong Id);
-
-		void FillPostsView (const QList<Entry>& entries);
-		void FillDraftsView (const QList<Entry>& entries);
 
 	private slots:
 		void handleCurrentAccountChanged (int id);
@@ -136,7 +111,6 @@ namespace Blogique
 		void saveSplitterPosition (int, int);
 		void on_SideWidget__dockLocationChanged (Qt::DockWidgetArea area);
 		void on_UpdateProfile__triggered ();
-		void on_RemoveDraft__released ();
 		void on_PublishDraft__released ();
 		void on_RemoveRemotePost__released ();
 		void on_Edit__released ();

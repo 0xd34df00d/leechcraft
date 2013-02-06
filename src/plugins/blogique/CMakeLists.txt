@@ -21,10 +21,14 @@ SET (SRCS
 	blogiquewidget.cpp
 	calendarwidget.cpp
 	core.cpp
+	entriesfilterproxymodel.cpp
+	localentrieswidget.cpp
 	localstorage.cpp
 	pluginproxy.cpp
 	profiledialog.cpp
+	remoteentrieswidget.cpp
 	updateentriesdialog.cpp
+	utils.cpp
 	xmlsettingsmanager.cpp
 	)
 
@@ -37,10 +41,14 @@ SET (HEADERS
 	blogiquewidget.h
 	calendarwidget.h
 	core.h
+	entriesfilterproxymodel.h
+	localentrieswidget.h
 	localstorage.h
 	pluginproxy.h
 	profiledialog.h
+	remoteentrieswidget.h
 	updateentriesdialog.h
+	utils.h
 	xmlsettingsmanager.h
 	)
 
@@ -48,7 +56,9 @@ SET (FORMS accountslistwidget.ui
 	accountsselectdialog.ui
 	addaccountwizardfirstpage.ui
 	blogiquewidget.ui
+	localentrieswidget.ui
 	profiledialog.ui
+	remoteentrieswidget.ui
 	updateentriesdialog.ui
 	)
 
@@ -79,8 +89,8 @@ INSTALL (FILES blogiquesettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 SET (BLOGIQUE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
-OPTION (ENABLE_BLOGIQUE_METIDA "Build Metida, LiveJournal blogging platform support for Blogique" ON)
-OPTION (ENABLE_BLOGIQUE_HESTIA "Build Hestia, platform support local blogging" ON)
+OPTION (ENABLE_BLOGIQUE_METIDA "Build Metida, LiveJournal blogging platform" ON)
+OPTION (ENABLE_BLOGIQUE_HESTIA "Build Hestia, local blogging platform" ON)
 
 IF (ENABLE_BLOGIQUE_METIDA)
 	ADD_SUBDIRECTORY (plugins/metida)

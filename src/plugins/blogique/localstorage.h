@@ -76,16 +76,23 @@ namespace Blogique
 		QSqlQuery GetEntryTags_;
 
 	public:
+		enum class Mode
+		{
+			ShortMode,
+			FullMode
+		};
+
 		LocalStorage (QObject *obj = 0);
 
 		void AddAccount (const QByteArray& accounId);
 
 		qlonglong SaveDraft (const QByteArray& accountID, const Entry& e);
 		void UpdateDraft (qlonglong id, const Entry& e);
-		void RemoveDraft (const QByteArray& accountId, qlonglong id);
-		QList<Entry> GetDrafts (const QByteArray& accountId);
+		void RemoveLocalEntry (const QByteArray& accountId, qlonglong id);
+		QList<Entry> GetLocalEntries (const QByteArray& accountId, Mode mode);
 		QList<Entry> GetShortDrafts (const QByteArray& accountId);
-		Entry GetFullDraft (const QByteArray& accountId, qlonglong draftId);
+		QMap<QDate, int> GetLocalEntriesCountByDate (const QByteArray& accountId);
+		Entry GetFullLocalEntry (const QByteArray& accountId, qlonglong draftId);
 
 		void SaveEntries (const QByteArray& accountID, const QList<Entry>& events);
 		void UpdateEntry (const Entry& e);

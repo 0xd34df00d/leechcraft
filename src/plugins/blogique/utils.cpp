@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2010-2013  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,42 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "calendarwidget.h"
-#include <QPainter>
+#include "utils.h"
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-	CalendarWidget::CalendarWidget (QWidget *parent)
-	: QCalendarWidget (parent)
+namespace Utils
+{
+	QList<QStandardItem*> CreateEntriesViewRow (const Entry& entry)
 	{
-	}
+		QStandardItem *dateItem = new QStandardItem (entry.Date_.date ()
+		.toString (Qt::SystemLocaleShortDate) +
+		" " +
+		entry.Date_.time ().toString ("hh:mm"));
+		dateItem->setData (entry.EntryId_, Utils::EntryIdRole::DBIdRole);
+		dateItem->setEditable (false);
+		dateItem->setData (entry.Subject_, Qt::ToolTipRole);
+		QStandardItem *itemSubj = new QStandardItem (entry.Subject_);
+		itemSubj->setEditable (false);
+		itemSubj->setData (entry.Subject_, Qt::ToolTipRole);
 
-	void CalendarWidget::SetStatistic (const QMap<QDate, int>& statistic)
-	{
-		Date2EntriesCount_ = statistic;
-		update ();
+		return { dateItem, itemSubj };
 	}
-
-	void CalendarWidget::paintCell (QPainter *painter, const QRect& rect, const QDate& date) const
-	{
-		QCalendarWidget::paintCell (painter, rect, date);
-		
-		if (Date2EntriesCount_.contains (date) &&
-				Date2EntriesCount_ [date])
-		{
-			painter->save ();
-			painter->setBrush (QBrush (Qt::blue));
-			const QPointF points [3] =
-			{
-				QPointF (rect.x (), rect.bottom () - 8),
-				QPointF (rect.x () + 8, rect.bottom ()),
-				QPointF (rect.x (), rect.bottom ())
-			};
-			painter->drawPolygon (points, 3);
-			painter->restore ();
-		}
-	}
+}
 }
 }
