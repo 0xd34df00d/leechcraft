@@ -58,6 +58,7 @@ namespace LHTR
 		QString GetContents (ContentType) const;
 		void SetContents (const QString&, ContentType);
 		void AppendAction (QAction*);
+		void AppendSeparator ();
 		void RemoveAction (QAction*);
 		QAction* GetEditorAction (EditorAction);
 		void SetBackgroundColor (const QColor&);
