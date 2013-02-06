@@ -31,8 +31,11 @@
 #include <QPropertyAnimation>
 #include <QFinalState>
 #include <QWebHitTestResult>
+#include <QMainWindow>
 #include <util/resourceloader.h>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include "notificationaction.h"
 #include "xmlsettingsmanager.h"
 
@@ -42,8 +45,9 @@ namespace Kinotify
 {
 	QMap<QString, QString> KinotifyWidget::ThemeCache_;
 
-	KinotifyWidget::KinotifyWidget (int timeout, QWidget *widget, int animationTimout)
+	KinotifyWidget::KinotifyWidget (ICoreProxy_ptr proxy, int timeout, QWidget *widget, int animationTimout)
 	: QWebView (widget)
+	, Proxy_ (proxy)
 	, Timeout_ (timeout)
 	, AnimationTime_ (animationTimout)
 	, Action_ (new NotificationAction (this))
@@ -337,10 +341,16 @@ namespace Kinotify
 
 	void KinotifyWidget::SetWidgetPlace ()
 	{
-		const auto& curPos = QCursor::pos ();
+		const bool followMouse = XmlSettingsManager::Instance ()->
+				property ("FollowMouse").toBool ();
+
+		auto desktop = QApplication::desktop ();
+		auto rootWM = Proxy_->GetRootWindowsManager ();
+		const auto& geometry = followMouse ?
+				desktop->availableGeometry (QCursor::pos ()) :
+				desktop->availableGeometry (rootWM->GetPreferredWindow ());
 
 		QPoint point;
-		const QRect& geometry = QApplication::desktop ()->availableGeometry (curPos);
 		const auto& placeStr = XmlSettingsManager::Instance ()->
 				property ("NotifyPosition").toString ();
 		if (placeStr.startsWith ("Top"))

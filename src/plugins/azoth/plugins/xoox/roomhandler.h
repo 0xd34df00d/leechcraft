@@ -56,7 +56,8 @@ namespace Xoox
 
 		QXmppDiscoveryIq ServerDisco_;
 	public:
-		RoomHandler (const QString& roomJID, const QString& ourNick, GlooxAccount*);
+		RoomHandler (const QString& roomJID, const QString& ourNick,
+				bool asAutojoin, GlooxAccount*);
 
 		QString GetRoomJID () const;
 		RoomCLEntry* GetCLEntry ();

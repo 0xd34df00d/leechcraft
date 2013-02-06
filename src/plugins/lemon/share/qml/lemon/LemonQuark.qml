@@ -4,9 +4,9 @@ import org.LC.common 1.0
 Rectangle {
     id: rootRect
 
-    width: parent.width
-    property real indicatorItemHeight: parent.width
-    height: indicatorsView.count * indicatorItemHeight
+    property real itemSize: parent.quarkBaseSize
+    width: viewOrient == "vertical" ? itemSize : (indicatorsView.count * itemSize)
+    height: viewOrient == "vertical" ? (indicatorsView.count * itemSize) : itemSize
 
     color: "transparent"
 
@@ -19,9 +19,11 @@ Rectangle {
 
         model: Lemon_infoModel
 
+        orientation: viewOrient == "vertical" ? ListView.Vertical : ListView.Horizontal
+
         delegate: Rectangle {
-            width: indicatorItemHeight
-            height: indicatorItemHeight
+            width: rootRect.itemSize
+            height: rootRect.itemSize
 
             color: "transparent"
 
@@ -30,6 +32,7 @@ Rectangle {
 
                 anchors.fill: parent
                 actionIconURL: "image://ThemeIcons/" + iconName + '/' + width
+                transparentStyle: true
 
                 onTriggered: Lemon_proxy.showGraph(ifaceName)
                 onHovered: {

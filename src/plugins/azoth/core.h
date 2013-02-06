@@ -72,6 +72,7 @@ namespace Azoth
 	class ServiceDiscoveryWidget;
 	class UnreadQueueManager;
 	class ChatStyleOptionManager;
+	class CustomStatusesManager;
 
 	class Core : public QObject
 	{
@@ -145,6 +146,7 @@ namespace Azoth
 		std::shared_ptr<UnreadQueueManager> UnreadQueueManager_;
 		QMap<QByteArray, std::shared_ptr<ChatStyleOptionManager>> StyleOptionManagers_;
 		std::shared_ptr<Util::ShortcutManager> ShortcutManager_;
+		std::shared_ptr<CustomStatusesManager> CustomStatusesManager_;
 
 		Core ();
 	public:
@@ -187,6 +189,7 @@ namespace Azoth
 		IEmoticonResourceSource* GetCurrentEmoSource () const;
 		ChatStyleOptionManager* GetChatStylesOptionsManager (const QByteArray&) const;
 		Util::ShortcutManager* GetShortcutManager () const;
+		CustomStatusesManager* GetCustomStatusesManager () const;
 
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);

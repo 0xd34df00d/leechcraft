@@ -42,7 +42,7 @@ namespace Azoth
 			break;
 		}
 
-		const auto& focusArr = focusKey.toArray ();
+		const auto& focusArr = !focusKey.isNull () ? focusKey.toArray () : QByteArray ();
 		Q_FOREACH (const QCA::PGPKey& key, Keys_)
 		{
 			Ui_.KeyCombo_->addItem (key.primaryUserId () + " (" + key.keyId () + ")");

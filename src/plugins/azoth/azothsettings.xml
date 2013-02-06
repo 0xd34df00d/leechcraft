@@ -74,6 +74,9 @@
 		</tab>
 		<tab>
 			<label value="Contact list" />
+			<item type="checkbox" property="ShowSelfContacts" default="true">
+				<label value="Show self-contacts" />
+			</item>
 			<item type="checkbox" property="ShowMenuBar" default="true">
 				<label value="Show toolbar on top of the contact list" />
 			</item>
@@ -247,6 +250,9 @@
 			<item type="checkbox" property="LeaveConfOnClose" default="false">
 				<label value="Leave conferences when closing their tabs" />
 			</item>
+			<item type="checkbox" property="OpenTabsForAutojoin" default="false">
+				<label value="Open tabs for autojoined conferences" />
+			</item>
 		</tab>
 		<tab>
 			<label value="Notifications" />
@@ -352,6 +358,10 @@
 			<item type="lineedit" property="DefaultStatus0" translatable="true" default="I turned off my machine to get some life">
 				<label value="Offline:" />
 			</item>
+		</groupbox>
+		<groupbox>
+			<label value="Custom statuses" />
+			<item type="dataview" property="CustomStatusesView" label="own" />
 		</groupbox>
 	</page>
 	<page>

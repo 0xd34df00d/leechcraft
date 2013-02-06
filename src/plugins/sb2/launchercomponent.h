@@ -35,6 +35,7 @@ struct QuarkComponent;
 
 namespace SB2
 {
+	class ViewManager;
 	class TabClassImageProvider;
 	class TabListView;
 
@@ -46,6 +47,8 @@ namespace SB2
 		ICoreTabWidget *ICTW_;
 		QStandardItemModel *Model_;
 		QuarkComponent Component_;
+		
+		ViewManager *View_;
 
 		TabClassImageProvider *ImageProv_;
 		QHash<QByteArray, IHaveTabs*> TC2Obj_;
@@ -58,7 +61,7 @@ namespace SB2
 
 		bool FirstRun_;
 	public:
-		LauncherComponent (ICoreTabWidget*, ICoreProxy_ptr, QObject* = 0);
+		LauncherComponent (ICoreTabWidget*, ICoreProxy_ptr, ViewManager*, QObject* = 0);
 
 		QuarkComponent GetComponent () const;
 	private:

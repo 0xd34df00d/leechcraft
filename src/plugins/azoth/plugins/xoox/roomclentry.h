@@ -51,6 +51,7 @@ namespace Xoox
 
 		friend class RoomHandler;
 
+		const bool IsAutojoined_;
 		GlooxAccount *Account_;
 		QList<QObject*> AllMessages_;
 		RoomHandler *RH_;
@@ -61,7 +62,7 @@ namespace Xoox
 
 		mutable QAction *ActionRequestVoice_;
 	public:
-		RoomCLEntry (RoomHandler*, GlooxAccount*);
+		RoomCLEntry (RoomHandler*, bool, GlooxAccount*);
 
 		RoomHandler* GetRoomHandler () const;
 
@@ -95,6 +96,7 @@ namespace Xoox
 		QString GetMUCSubject () const;
 		void SetMUCSubject (const QString&);
 		QList<QObject*> GetParticipants ();
+		bool IsAutojoined () const;
 		void Join ();
 		void Leave (const QString&);
 		QString GetNick () const;

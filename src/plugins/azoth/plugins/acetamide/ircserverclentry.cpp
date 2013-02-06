@@ -122,6 +122,11 @@ namespace Acetamide
 		return QList<QObject*> ();
 	}
 
+	bool IrcServerCLEntry::IsAutojoined () const
+	{
+		return false;
+	}
+
 	void IrcServerCLEntry::Join ()
 	{
 		ISH_->GetParser ()->NickCommand (QStringList () << ISH_->GetNickName ());

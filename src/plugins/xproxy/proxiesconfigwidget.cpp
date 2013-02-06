@@ -98,10 +98,23 @@ namespace XProxy
 		reject ();
 	}
 
-	QList<Proxy> ProxiesConfigWidget::FindMatching (const QString& reqHost, int reqPort, const QString& proto)
+	QList<Proxy> ProxiesConfigWidget::FindMatching (const QString& reqHost, int reqPort, const QString& proto) const
 	{
+		static const std::map<QString, int> proto2port =
+		{
+			{ "http", 80 },
+			{ "https", 443 }
+		};
+
+		if (reqPort < 0 && !proto.isEmpty ())
+		{
+			const auto pos = proto2port.find (proto.toLower ());
+			if (pos != proto2port.end ())
+				reqPort = pos->second;
+		}
+
 		QList<Proxy> result;
-		Q_FOREACH (const auto& pair, Entries_)
+		for (const auto& pair : Entries_)
 		{
 			const auto& target = pair.first;
 			if (target.Port_ && reqPort > 0 && target.Port_ != reqPort)

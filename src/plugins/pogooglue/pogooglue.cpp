@@ -101,8 +101,6 @@ namespace Pogooglue
 
 	void Plugin::GoogleIt (QString text)
 	{
-		text.replace ('+', "%2B");
-		text.replace (' ', '+');
 		QString urlStr = QString ("http://www.google.com/search?q=%2"
 				"&client=leechcraft_poshuku"
 				"&ie=utf-8"

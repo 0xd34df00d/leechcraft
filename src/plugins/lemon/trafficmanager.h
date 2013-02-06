@@ -75,6 +75,8 @@ namespace Lemon
 	private slots:
 		void addConfiguration (const QNetworkConfiguration&);
 		void removeConfiguration (const QNetworkConfiguration&);
+		void handleConfigChanged (const QNetworkConfiguration&);
+
 		void updateCounters ();
 	signals:
 		void updated ();

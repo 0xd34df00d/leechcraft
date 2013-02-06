@@ -43,7 +43,7 @@ namespace GmailNotifier
 
 		int GetMsgCount () const;
 	public slots:
-		void showMailList (int x, int y);
+		void showMailList (int x, int y, int sizeIncrement);
 		void handleConversations (const ConvInfos_t&);
 	signals:
 		void msgCountChanged ();

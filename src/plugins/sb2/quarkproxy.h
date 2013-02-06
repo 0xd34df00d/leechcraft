@@ -33,6 +33,7 @@ namespace SB2
 {
 	class ViewManager;
 	class DeclarativeWindow;
+	class QuarkOrderView;
 
 	class QuarkProxy : public QObject
 	{
@@ -45,6 +46,7 @@ namespace SB2
 		QString ExtHoveredQuarkClass_;
 
 		QHash<QUrl, QPointer<DeclarativeWindow>> URL2LastOpened_;
+		QPointer<QuarkOrderView> QuarkOrderView_;
 	public:
 		QuarkProxy (ViewManager*, ICoreProxy_ptr, QObject* = 0);
 

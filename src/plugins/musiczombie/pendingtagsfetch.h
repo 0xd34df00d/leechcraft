@@ -16,45 +16,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_SORTFILTERPROXYMODEL_H
-#define PLUGINS_AZOTH_SORTFILTERPROXYMODEL_H
-#include <QSortFilterProxyModel>
+#pragma once
+
+#include <QObject>
+#include <interfaces/media/itagsfetcher.h>
+
+class QNetworkAccessManager;
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Util
 {
-	class SortFilterProxyModel : public QSortFilterProxyModel
+	class QueueManager;
+}
+
+namespace MusicZombie
+{
+	class PendingTagsFetch : public QObject
+						   , public Media::IPendingTagsFetch
 	{
 		Q_OBJECT
+		Q_INTERFACES (Media::IPendingTagsFetch)
 
-		bool ShowOffline_;
-		bool MUCMode_;
-		bool OrderByStatus_;
-		bool HideMUCParts_;
-		bool ShowSelfContacts_;
-		QObject *MUCEntry_;
+		Util::QueueManager * const Queue_;
+		QNetworkAccessManager * const NAM_;
+
+		const QString Filename_;
+
+		Media::AudioInfo Info_;
 	public:
-		SortFilterProxyModel (QObject* = 0);
+		PendingTagsFetch (Util::QueueManager*, QNetworkAccessManager*, const QString&);
 
-		void SetMUCMode (bool);
-		bool IsMUCMode () const;
-		void SetMUC (QObject*);
-	public slots:
-		void showOfflineContacts (bool);
+		QObject* GetObject ();
+		Media::AudioInfo GetResult () const;
+	private:
+		void Request (const QByteArray&, int);
 	private slots:
-		void handleStatusOrderingChanged ();
-		void handleHideMUCPartsChanged ();
-		void handleShowSelfContactsChanged ();
-		void handleMUCDestroyed ();
-	protected:
-		bool filterAcceptsRow (int, const QModelIndex&) const;
-		bool lessThan (const QModelIndex&, const QModelIndex&) const;
+		void handleGotFingerprint ();
+		void handleReplyFinished ();
 	signals:
-		void mucMode ();
-		void wholeMode ();
+		void ready (const QString&, const Media::AudioInfo&);
 	};
 }
 }
-
-#endif

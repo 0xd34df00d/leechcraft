@@ -16,45 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_SORTFILTERPROXYMODEL_H
-#define PLUGINS_AZOTH_SORTFILTERPROXYMODEL_H
-#include <QSortFilterProxyModel>
+#pragma once
 
-namespace LeechCraft
+#include <QtPlugin>
+#include "audiostructs.h"
+
+namespace Media
 {
-namespace Azoth
-{
-	class SortFilterProxyModel : public QSortFilterProxyModel
+	class IPendingTagsFetch
 	{
-		Q_OBJECT
-
-		bool ShowOffline_;
-		bool MUCMode_;
-		bool OrderByStatus_;
-		bool HideMUCParts_;
-		bool ShowSelfContacts_;
-		QObject *MUCEntry_;
 	public:
-		SortFilterProxyModel (QObject* = 0);
+		virtual ~IPendingTagsFetch () {}
 
-		void SetMUCMode (bool);
-		bool IsMUCMode () const;
-		void SetMUC (QObject*);
-	public slots:
-		void showOfflineContacts (bool);
-	private slots:
-		void handleStatusOrderingChanged ();
-		void handleHideMUCPartsChanged ();
-		void handleShowSelfContactsChanged ();
-		void handleMUCDestroyed ();
+		virtual QObject* GetObject () = 0;
+		virtual AudioInfo GetResult () const = 0;
 	protected:
-		bool filterAcceptsRow (int, const QModelIndex&) const;
-		bool lessThan (const QModelIndex&, const QModelIndex&) const;
-	signals:
-		void mucMode ();
-		void wholeMode ();
+		virtual void ready (const QString& filename, const Media::AudioInfo& info) = 0;
+	};
+
+	class ITagsFetcher
+	{
+	public:
+		virtual ~ITagsFetcher () {}
+
+		virtual IPendingTagsFetch* FetchTags (const QString&) = 0;
 	};
 }
-}
 
-#endif
+Q_DECLARE_INTERFACE (Media::IPendingTagsFetch, "org.LeechCraft.Media.IPendingTagsFetch/1.0");
+Q_DECLARE_INTERFACE (Media::ITagsFetcher, "org.LeechCraft.Media.ITagsFetcher/1.0");

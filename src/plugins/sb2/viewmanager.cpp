@@ -85,6 +85,9 @@ namespace SB2
 		View_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
 		View_->engine ()->addImageProvider (ImageProviderID, new Util::ThemeImageProvider (proxy));
+
+		setOrientation (Qt::Vertical);
+
 		View_->setSource (QUrl::fromLocalFile (file));
 
 		LoadRemovedList ();
@@ -331,6 +334,23 @@ namespace SB2
 		settings.beginGroup ("QuarkOrder");
 		PreviousQuarkOrder_ = settings.value ("IDs").toStringList ();
 		settings.endGroup ();
+	}
+
+	void ViewManager::setOrientation (Qt::Orientation orientation)
+	{
+		switch (orientation)
+		{
+		case Qt::Vertical:
+			View_->resize (View_->minimumSize ());
+			View_->setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Expanding);
+			View_->rootContext ()->setContextProperty ("viewOrient", "vertical");
+			break;
+		case Qt::Horizontal:
+			View_->resize (View_->minimumSize ());
+			View_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Preferred);
+			View_->rootContext ()->setContextProperty ("viewOrient", "horizontal");
+			break;
+		}
 	}
 }
 }

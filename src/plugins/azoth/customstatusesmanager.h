@@ -16,45 +16,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_SORTFILTERPROXYMODEL_H
-#define PLUGINS_AZOTH_SORTFILTERPROXYMODEL_H
-#include <QSortFilterProxyModel>
+#pragma once
+
+#include <QObject>
+#include <QVariantList>
+#include <QModelIndexList>
+#include "interfaces/azoth/azothcommon.h"
+
+class QAbstractItemModel;
+class QStandardItemModel;
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	class SortFilterProxyModel : public QSortFilterProxyModel
+	class CustomStatusesManager : public QObject
 	{
 		Q_OBJECT
 
-		bool ShowOffline_;
-		bool MUCMode_;
-		bool OrderByStatus_;
-		bool HideMUCParts_;
-		bool ShowSelfContacts_;
-		QObject *MUCEntry_;
+		QStandardItemModel *Model_;
 	public:
-		SortFilterProxyModel (QObject* = 0);
+		struct CustomState
+		{
+			QString Name_;
+			State State_;
+			QString Text_;
+		};
 
-		void SetMUCMode (bool);
-		bool IsMUCMode () const;
-		void SetMUC (QObject*);
+		CustomStatusesManager (QObject* = 0);
+
+		QAbstractItemModel* GetModel () const;
+		QList<CustomState> GetStates () const;
+	private:
+		void Save ();
+		void Load ();
+
+		void Add (const CustomState&);
+		CustomState GetCustom (int) const;
 	public slots:
-		void showOfflineContacts (bool);
-	private slots:
-		void handleStatusOrderingChanged ();
-		void handleHideMUCPartsChanged ();
-		void handleShowSelfContactsChanged ();
-		void handleMUCDestroyed ();
-	protected:
-		bool filterAcceptsRow (int, const QModelIndex&) const;
-		bool lessThan (const QModelIndex&, const QModelIndex&) const;
-	signals:
-		void mucMode ();
-		void wholeMode ();
+		void addRequested (const QString&, const QVariantList&);
+		void removeRequested (const QString&, const QModelIndexList&);
 	};
 }
 }
-
-#endif

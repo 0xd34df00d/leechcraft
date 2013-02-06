@@ -133,7 +133,11 @@ namespace Azoth
 
 			/** This entry supports moving between different groups.
 			 */
-			FSupportsGrouping = 0x0100
+			FSupportsGrouping = 0x0100,
+
+			/** This entry represents a self-contact, for example, in XMPP.
+			 */
+			FSelfContact = 0x0200
 		};
 
 		Q_DECLARE_FLAGS (Features, Feature)

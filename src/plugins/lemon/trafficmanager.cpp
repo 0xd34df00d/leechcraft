@@ -78,6 +78,10 @@ namespace Lemon
 				SIGNAL (configurationRemoved (QNetworkConfiguration)),
 				this,
 				SLOT (removeConfiguration (QNetworkConfiguration)));
+		connect (ConfManager_,
+				SIGNAL (configurationChanged (QNetworkConfiguration)),
+				this,
+				SLOT (handleConfigChanged (QNetworkConfiguration)));
 
 		ConfManager_->updateConfigurations ();
 
@@ -88,7 +92,7 @@ namespace Lemon
 		connect (timer,
 				SIGNAL (timeout ()),
 				this,
-				SLOT(updateCounters ()));
+				SLOT (updateCounters ()));
 		timer->start (1000);
 	}
 
@@ -185,13 +189,18 @@ namespace Lemon
 			if (info.LastSession_->configuration () != conf)
 				continue;
 
-			const auto& iface = info.LastSession_->interface ();
-
 			Model_->removeRow (info.Item_->row ());
-
-			ActiveInterfaces_.remove (iface.name ());
+			ActiveInterfaces_.remove (info.Name_);
 			break;
 		}
+	}
+
+	void TrafficManager::handleConfigChanged (const QNetworkConfiguration& conf)
+	{
+		if (conf.state () == QNetworkConfiguration::Active)
+			addConfiguration (conf);
+		else
+			removeConfiguration (conf);
 	}
 
 	void TrafficManager::updateCounters ()

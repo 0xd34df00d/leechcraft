@@ -16,45 +16,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_SORTFILTERPROXYMODEL_H
-#define PLUGINS_AZOTH_SORTFILTERPROXYMODEL_H
-#include <QSortFilterProxyModel>
+#pragma once
+
+#include <QByteArray>
+#include <QMutex>
+#include <chromaprint.h>
+
+class QString;
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace MusicZombie
 {
-	class SortFilterProxyModel : public QSortFilterProxyModel
+	class Chroma
 	{
-		Q_OBJECT
+		ChromaprintContext *Ctx_;
 
-		bool ShowOffline_;
-		bool MUCMode_;
-		bool OrderByStatus_;
-		bool HideMUCParts_;
-		bool ShowSelfContacts_;
-		QObject *MUCEntry_;
+		static QMutex RegisterMutex_;
+		static QMutex CodecMutex_;
 	public:
-		SortFilterProxyModel (QObject* = 0);
+		struct Result
+		{
+			QByteArray FP_;
+			int Duration_;
+		};
 
-		void SetMUCMode (bool);
-		bool IsMUCMode () const;
-		void SetMUC (QObject*);
-	public slots:
-		void showOfflineContacts (bool);
-	private slots:
-		void handleStatusOrderingChanged ();
-		void handleHideMUCPartsChanged ();
-		void handleShowSelfContactsChanged ();
-		void handleMUCDestroyed ();
-	protected:
-		bool filterAcceptsRow (int, const QModelIndex&) const;
-		bool lessThan (const QModelIndex&, const QModelIndex&) const;
-	signals:
-		void mucMode ();
-		void wholeMode ();
+		Chroma ();
+		~Chroma ();
+
+		Chroma (const Chroma&) = delete;
+
+		Result operator() (const QString&);
 	};
 }
 }
-
-#endif

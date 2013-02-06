@@ -87,13 +87,16 @@ namespace Poshuku
 	, ReloadTimer_ (new QTimer (this))
 	, HtmlMode_ (false)
 	, Own_ (true)
-	, LinkTextItem_ (new QLabel (this))
 	{
-		LinkTextItem_->setWindowFlags (Qt::ToolTip);
+		Ui_.setupUi (this);
+
+		LinkTextItem_ = new QLabel (Ui_.WebFrame_);
+		LinkTextItem_->setAutoFillBackground (true);
+		LinkTextItem_->setTextFormat (Qt::TextFormat::PlainText);
+		LinkTextItem_->setMargin (4);
 		LinkTextItem_->raise ();
 		LinkTextItem_->hide ();
 
-		Ui_.setupUi (this);
 		Core::Instance ().GetPluginManager ()->RegisterHookable (this);
 		Ui_.Sidebar_->AddPage (tr ("Bookmarks"), new BookmarksWidget);
 		Ui_.Sidebar_->AddPage (tr ("History"), new HistoryWidget);
@@ -964,9 +967,10 @@ namespace Poshuku
 			return;
 		}
 
-		const QFontMetrics metrics (LinkTextItem_->font ());
+		const auto& metrics = LinkTextItem_->fontMetrics ();
 		msg = metrics.elidedText (msg, Qt::ElideMiddle, WebView_->rect ().width () * 5 / 11);
-		LinkTextItem_->setTextFormat (Qt::TextFormat::PlainText);
+		const auto margin = LinkTextItem_->margin ();
+		LinkTextItem_->setFixedSize (metrics.width (msg) + 2 * margin, metrics.height () + 2 * margin);
 		LinkTextItem_->setText (msg);
 
 		const auto& localCursorPos = WebView_->mapFromGlobal (QCursor::pos ());
@@ -974,10 +978,11 @@ namespace Poshuku
 		const int textHeight = metrics.boundingRect (msg).height ();
 		const qreal y = WebView_->rect ().height () - textHeight - 7;
 		const qreal x = QRect (QPoint (0, y), LinkTextItem_->size ()).contains (localCursorPos) ?
-				WebView_->rect ().width () - LinkTextItem_->width () + 1 :
-				1;
-		LinkTextItem_->move (WebView_->mapToGlobal (QPoint (x, y)));
+				WebView_->rect ().width () - LinkTextItem_->width () + margin :
+				margin;
+		LinkTextItem_->move (x, y);
 		LinkTextItem_->show ();
+		LinkTextItem_->raise ();
 	}
 
 	void BrowserWidget::handleURLFrameLoad (const QString& text)

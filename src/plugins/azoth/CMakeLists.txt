@@ -116,6 +116,7 @@ SET (SRCS
 	pendinguploadpaster.cpp
 	contactdropfilter.cpp
 	colorlisteditorwidget.cpp
+	customstatusesmanager.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -169,6 +170,7 @@ SET (HEADERS
 	pendinguploadpaster.h
 	contactdropfilter.h
 	colorlisteditorwidget.h
+	customstatusesmanager.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
 	)

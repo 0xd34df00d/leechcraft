@@ -139,6 +139,7 @@ namespace Xoox
 
 		struct JoinQueueItem
 		{
+			bool AsAutojoin_;
 			QString RoomJID_;
 			QString Nickname_;
 		};
@@ -180,7 +181,7 @@ namespace Xoox
 		/** Joins the room and returns the contact list
 		 * entry representing that room.
 		 */
-		RoomCLEntry* JoinRoom (const QString& room, const QString& user);
+		RoomCLEntry* JoinRoom (const QString& room, const QString& user, bool asAutojoin = false);
 		void Unregister (RoomHandler*);
 
 		void CreateEntry (const QString&);

@@ -81,9 +81,11 @@ namespace SB2
 
 		int x = varMap.take ("x").toInt ();
 		int y = varMap.take ("y").toInt ();
-
+		
 		auto window = new DeclarativeWindow (newUrl, varMap, Proxy_);
-		window->move (Util::FitRectScreen ({ x, y }, window->size ()));
+		auto size = window->size ();
+		size += Manager_->GetView ()->minimumSizeHint ();
+		window->move (Util::FitRectScreen ({ x, y }, size));
 		window->show ();
 
 		URL2LastOpened_ [newUrl] = window;
@@ -108,17 +110,25 @@ namespace SB2
 			return;
 
 		auto unhide = new QuarkUnhideListView (toAdd, Manager_, Proxy_, Manager_->GetView ());
-		unhide->move (x, y);
+		unhide->move (Util::FitRectScreen ({ x, y },
+					unhide->size () + Manager_->GetView ()->minimumSizeHint ()));
 		unhide->show ();
 	}
 
 	void QuarkProxy::quarkOrderRequested (int x, int y)
 	{
-		auto view = new QuarkOrderView (Manager_, Proxy_);
-		view->move (Util::FitRectScreen ({ x, y }, view->size ()));
-		view->show ();
+		if (QuarkOrderView_)
+		{
+			QuarkOrderView_->deleteLater ();
+			return;
+		}
 
-		connect (view,
+		QuarkOrderView_ = new QuarkOrderView (Manager_, Proxy_);
+		QuarkOrderView_->move (Util::FitRectScreen ({ x, y },
+					QuarkOrderView_->size () + Manager_->GetView ()->minimumSizeHint ()));
+		QuarkOrderView_->show ();
+
+		connect (QuarkOrderView_,
 				SIGNAL (quarkClassHovered (QString)),
 				this,
 				SLOT (handleExtHoveredQuarkClass (QString)));
