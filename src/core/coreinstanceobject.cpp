@@ -122,6 +122,14 @@ namespace LeechCraft
 	{
 		CoreShortcutManager_->SetObject (this);
 
+#ifndef Q_OS_MAC
+		const auto sysModifier = Qt::CTRL;
+#else
+		const auto sysModifier = Qt::ALT;
+#endif
+		CoreShortcutManager_->RegisterActionInfo ("SwitchToPrevTab",
+				{ tr ("Switch to previously active tab"), sysModifier + Qt::Key_Space, QIcon () });
+
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"coresettings.xml");
 		connect (XmlSettingsDialog_.get (),
