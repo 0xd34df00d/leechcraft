@@ -25,6 +25,7 @@
 #include "interfaces/core/icoreproxy.h"
 
 class QAction;
+class QShortcut;
 class IShortcutProxy;
 
 namespace LeechCraft
@@ -39,6 +40,7 @@ namespace Util
 		QObject *ContextObj_;
 
 		QHash<QString, QList<QAction*>> Actions_;
+		QHash<QString, QList<QShortcut*>> Shortcuts_;
 
 		QMap<QString, ActionInfo> ActionInfo_;
 	public:
@@ -46,14 +48,17 @@ namespace Util
 
 		UTIL_API void SetObject (QObject*);
 		UTIL_API void RegisterAction (const QString& id, QAction *act, bool update = false);
-		UTIL_API void RegisterActionInfo (const QString& id, const ActionInfo&);
-		UTIL_API void SetShortcut (const QString& id, const QKeySequences_t&);
+		UTIL_API void RegisterShortcut (const QString& id,
+				const ActionInfo& info, QShortcut *shortcut, bool update = false);
+		UTIL_API void RegisterActionInfo (const QString& id, const ActionInfo& info);
+		UTIL_API void SetShortcut (const QString& id, const QKeySequences_t&) const;
 		UTIL_API QMap<QString, ActionInfo> GetActionInfo () const;
 
 		typedef QPair<QString, QAction*> IDPair_t;
 		UTIL_API ShortcutManager& operator<< (const QPair<QString, QAction*>&);
 	private slots:
 		void handleActionDestroyed ();
+		void handleShortcutDestroyed ();
 	};
 }
 }
