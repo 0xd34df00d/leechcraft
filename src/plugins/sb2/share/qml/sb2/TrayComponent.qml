@@ -30,6 +30,7 @@ Rectangle {
             actionIconURL: actionIcon
             textTooltip: actionText
             hoverScalesIcons: false
+            transparentStyle: true
 
             onTriggered: actionObject.trigger()
         }
