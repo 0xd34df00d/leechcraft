@@ -90,8 +90,11 @@ namespace SB2
 
 		void SaveQuarkOrder ();
 		void LoadQuarkOrder ();
+
+		int GetWindowIndex () const;
 	public slots:
 		void setOrientation (Qt::Orientation);
+		void handleToolbarTopLevel (bool);
 	};
 }
 }

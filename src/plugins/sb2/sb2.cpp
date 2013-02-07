@@ -121,7 +121,6 @@ namespace SB2
 		auto mwProxy = rootWM->GetMWProxy (index);
 		auto ictw = rootWM->GetTabWidget (index);
 
-		win->addToolBar (Qt::LeftToolBarArea, mgr->GetToolbar ());
 		win->statusBar ()->hide ();
 
 		mgr->RegisterInternalComponent ((new LCMenuComponent (mwProxy))->GetComponent ());
