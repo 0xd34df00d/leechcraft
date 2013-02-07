@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "core.h"
+#include <cmath>
 #include <QMetaObject>
 #include <QVariant>
 #include <QSettings>
@@ -141,10 +142,16 @@ namespace ChatHistory
 		if (msg->GetMessageType () != IMessage::MTChatMessage &&
 			msg->GetMessageType () != IMessage::MTMUCMessage)
 			return;
+
 		if (msg->GetBody ().isEmpty ())
 			return;
+
 		if (msg->GetDirection () == IMessage::DOut &&
 				msg->GetMessageType () == IMessage::MTMUCMessage)
+			return;
+
+		if (msg->GetMessageType () == IMessage::MTMUCMessage &&
+				std::abs (msg->GetDateTime ().secsTo (QDateTime::currentDateTime ())) >= 2)
 			return;
 
 		ICLEntry *entry = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
