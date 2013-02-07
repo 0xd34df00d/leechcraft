@@ -206,6 +206,8 @@ namespace Xoox
 		handleVersionSettingsChanged ();
 		XmlSettingsManager::Instance ().RegisterObject ("AdvertiseQtVersion",
 				this, "handleVersionSettingsChanged");
+		XmlSettingsManager::Instance ().RegisterObject ("AdvertiseOSVersion",
+				this, "handleVersionSettingsChanged");
 
 		connect (Client_,
 				SIGNAL (connected ()),
