@@ -53,6 +53,7 @@ namespace SB2
 		const QString& GetExtHoveredQuarkClass () const;
 	public slots:
 		QPoint mapToGlobal (double, double);
+		QPoint getShiftDiff () const;
 		void showTextTooltip (int, int, const QString&);
 		void showSettings (const QUrl&);
 		void removeQuark (const QUrl&);
