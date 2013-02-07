@@ -23,6 +23,7 @@
 #include <QPainter>
 #include <QApplication>
 #include <util/util.h>
+#include <util/gui/util.h>
 #include <util/gui/unhoverdeletemixin.h>
 #include "generalhandler.h"
 #include "xmlsettingsmanager.h"
