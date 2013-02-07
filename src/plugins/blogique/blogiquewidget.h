@@ -67,15 +67,6 @@ namespace Blogique
 		int PrevAccountId_;
 		QList<QWidget*> SidePluginsWidgets_;
 
-		QStandardItemModel *PostsViewModel_;
-
-		LocalStorage *Storage_;
-
-		QHash<QStandardItem*, Entry> DraftItem2Entry_;
-		QHash<QStandardItem*, Entry> PostItem2Entry_;
-
-		qlonglong DraftID_;
-		qlonglong EntryID_;
 	public:
 		BlogiqueWidget (QWidget *parent = 0);
 
@@ -84,8 +75,6 @@ namespace Blogique
 		QToolBar* GetToolBar () const;
 		void Remove ();
 
-		void FillWidget (const Entry& e, bool isDraft = false,
-				const QByteArray& accId = QByteArray ());
 
 		static void SetParentMultiTabs (QObject *tab);
 	private:
@@ -93,37 +82,31 @@ namespace Blogique
 		void SetToolBarActions ();
 		void SetDefaultSideWidgets ();
 		void RemovePostingTargetsWidget ();
+		void FillWidget (const Entry& e, const QByteArray& accId = QByteArray ());
 
 		void ClearEntry ();
 
 		Entry GetCurrentEntry ();
 
-		Entry LoadFullDraft (qlonglong draftID);
-
-		Entry LoadEntry (qlonglong Id);
-
 	private slots:
 		void handleCurrentAccountChanged (int id);
+		void fillCurrentTabWithEntry (const Entry& entry);
+		void fillNewTabWithEntry (const Entry& entry, const QByteArray& accountId);
+
+
 		void newEntry ();
 		void saveEntry ();
 		void saveNewEntry ();
 		void submit (const Entry& e = Entry ());
-		void saveSplitterPosition (int, int);
 		void on_SideWidget__dockLocationChanged (Qt::DockWidgetArea area);
 		void on_UpdateProfile__triggered ();
-		void on_PublishDraft__released ();
-		void on_RemoveRemotePost__released ();
-		void on_Edit__released ();
-		void on_PostsView__doubleClicked (const QModelIndex& index);
 		void handleOpenEntryInCurrentTab (const QModelIndex& index = QModelIndex ());
 		void handleOpenEntryInNewTab (const QModelIndex& index = QModelIndex ());
-		void on_LocalEntriesView__doubleClicked (const QModelIndex& index);
 		void handleOpenDraftInCurrentTab (const QModelIndex& index = QModelIndex ());
 		void handleOpenDraftInNewTab (const QModelIndex& index = QModelIndex ());
 
 		void loadPostsByDate (const QDate& date);
 
-		void handleGotEntries (const QList<Entry>& entries = QList<Entry> ());
 		void handleStorageUpdated ();
 
 		void loadLocalEntries ();

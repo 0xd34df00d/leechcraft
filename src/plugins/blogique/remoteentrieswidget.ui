@@ -80,7 +80,7 @@
     </widget>
    </item>
    <item row="2" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="0,0,0">
+    <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="0,0">
      <item>
       <widget class="QToolButton" name="LoadRemoteEntries_">
        <property name="sizePolicy">
@@ -97,16 +97,6 @@
        </property>
        <property name="popupMode">
         <enum>QToolButton::InstantPopup</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="EditRemoteEntry_">
-       <property name="toolTip">
-        <string>Post will be opened for editing in current tab.</string>
-       </property>
-       <property name="text">
-        <string>Edit</string>
        </property>
       </widget>
      </item>

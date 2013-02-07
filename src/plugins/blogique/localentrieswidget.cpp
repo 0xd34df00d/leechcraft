@@ -93,6 +93,9 @@ namespace Blogique
 
 	void LocalEntriesWidget::LoadLocalEntries ()
 	{
+		if (!Account_)
+			return;
+
 		QList<Entry> entries;
 		try
 		{

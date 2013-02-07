@@ -97,7 +97,7 @@ namespace Blogique
 		void addNewTab (const QString& name, QWidget *tab);
 		void removeTab (QWidget *tab);
 
-		void gotEntries (const QList<Entry>& entries);
+		void gotEntries (QObject *acc, const QList<Entry>& entries);
 		void storageUpdated ();
 	};
 }

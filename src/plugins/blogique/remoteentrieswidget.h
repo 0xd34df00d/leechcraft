@@ -58,6 +58,9 @@ namespace Blogique
 		void handleOpenRemoteEntryInCurrentTab (const QModelIndex& index = QModelIndex ());
 		void handleOpenRemoteEntryInNewTab (const QModelIndex& index = QModelIndex ());
 		void on_RemoteEntriesFilter__textChanged (const QString& text);
+		void on_RemoveRemoteEntry__released ();
+		void handleGotEntries (QObject *acc, const QList<Entry>& entries);
+		void on_RemoteEntriesView__doubleClicked (const QModelIndex& index);
 
 	signals:
 		void fillCurrentWidgetWithRemoteEntry (const Entry& e);

@@ -18,6 +18,7 @@
 
 #include "remoteentrieswidget.h"
 #include <stdexcept>
+#include <QMessageBox>
 #include <QStandardItemModel>
 #include "entriesfilterproxymodel.h"
 #include "xmlsettingsmanager.h"
@@ -70,6 +71,11 @@ namespace Blogique
 		Ui_.RemoteEntriesView_->setContextMenuPolicy (Qt::ActionsContextMenu);
 		Ui_.RemoteEntriesView_->addActions ({ openRemoteEntryInNewTab,
 				openRemoteEntryInCurrentTab });
+
+		connect (&Core::Instance (),
+				SIGNAL (gotEntries (QObject*, QList<Entry>)),
+				this,
+				SLOT (handleGotEntries (QObject*, QList<Entry>)));
 	}
 
 	QString RemoteEntriesWidget::GetName () const
@@ -112,6 +118,7 @@ namespace Blogique
 	void RemoteEntriesWidget::FillView (const QList<Entry>& entries)
 	{
 		RemoteEntriesModel_->removeRows (0, RemoteEntriesModel_->rowCount());
+		Item2Entry_.clear ();
 		for (const auto& entry : entries)
 		{
 			const auto& items = Utils::CreateEntriesViewRow (entry);
@@ -132,14 +139,14 @@ namespace Blogique
 		QMap<QDate, int> statistic;
 		try
 		{
-			statistic = Core::Instance ().GetStorage ()
-					->GetEntriesCountByDate (Account_->GetAccountID ());
+			statistic = Core::Instance ().GetStorage ()->
+					GetEntriesCountByDate (Account_->GetAccountID ());
 		}
 		catch (const std::runtime_error& e)
 		{
 			qWarning () << Q_FUNC_INFO
-			<< "error fetching entries"
-			<< e.what ();
+					<< "error fetching entries"
+					<< e.what ();
 		}
 
 		Ui_.RemoteEntriesCalendar_->SetStatistic (statistic);
@@ -180,33 +187,38 @@ namespace Blogique
 
 	void RemoteEntriesWidget::handleOpenRemoteEntryInCurrentTab (const QModelIndex& index)
 	{
-		QModelIndex idx = index.isValid () ?
-			index :
-			Ui_.RemoteEntriesView_->currentIndex ();
-		if (!idx.isValid ())
+		auto sourceIndex = FilterProxyModel_->mapToSource (index);
+		if (!index.isValid () ||
+				!sourceIndex.isValid ())
 			return;
 
-		idx = idx.sibling (idx.row (), Utils::EntriesViewColumns::Date);
-		const Entry& e = LoadFullEntry (idx.data (Utils::EntryIdRole::DBIdRole)
-				.toLongLong ());
+		if (!Account_)
+			return;
+
+		sourceIndex = sourceIndex.sibling (sourceIndex.row (),
+				Utils::EntriesViewColumns::Date);
+		const Entry& e = Item2Entry_ [RemoteEntriesModel_->itemFromIndex (sourceIndex)];
+		if (e.IsEmpty ())
+			return;
 
 		emit fillCurrentWidgetWithRemoteEntry (e);
 	}
 
 	void RemoteEntriesWidget::handleOpenRemoteEntryInNewTab (const QModelIndex& index)
 	{
-		QModelIndex idx = index.isValid () ?
-			index :
-			Ui_.RemoteEntriesView_->currentIndex ();
-		if (!idx.isValid ())
+		auto sourceIndex = FilterProxyModel_->mapToSource (index);
+		if (!index.isValid () ||
+				!sourceIndex.isValid ())
 			return;
 
 		if (!Account_)
 			return;
 
-		idx = idx.sibling (idx.row (), Utils::EntriesViewColumns::Date);
-		const Entry& e = LoadFullEntry (idx.data (Utils::EntryIdRole::DBIdRole)
-				.toLongLong ());
+		sourceIndex = sourceIndex.sibling (sourceIndex.row (),
+				Utils::EntriesViewColumns::Date);
+		const Entry& e = Item2Entry_ [RemoteEntriesModel_->itemFromIndex (sourceIndex)];
+		if (e.IsEmpty ())
+			return;
 
 		emit fillNewWidgetWithRemoteEntry (e, Account_->GetAccountID ());
 	}
@@ -214,6 +226,66 @@ namespace Blogique
 	void RemoteEntriesWidget::on_RemoteEntriesFilter__textChanged (const QString& text)
 	{
 		FilterProxyModel_->setFilterFixedString (text);
+	}
+
+	void RemoteEntriesWidget::on_RemoveRemoteEntry__released ()
+	{
+		const auto& idx = Ui_.RemoteEntriesView_->currentIndex ();
+		auto sourceIndex = FilterProxyModel_->mapToSource (idx);
+		if (!idx.isValid () ||
+				!sourceIndex.isValid ())
+			return;
+
+		if (!Account_)
+			return;
+
+		sourceIndex = sourceIndex.sibling (sourceIndex.row (),
+				Utils::EntriesViewColumns::Date);
+		const Entry& e = Item2Entry_ [RemoteEntriesModel_->itemFromIndex (sourceIndex)];
+		if (e.IsEmpty ())
+			return;
+
+		if (QMessageBox::question (this, "LeechCraft",
+			tr ("Do you want to remove this entry from blog?"),
+				QMessageBox::Ok | QMessageBox::Cancel,
+		QMessageBox::Cancel) == QMessageBox::Ok)
+			Account_->RemoveEntry (e);
+	}
+
+	void RemoteEntriesWidget::handleGotEntries (QObject *acc,
+			const QList<Entry>& entries)
+	{
+		if (acc != Account_->GetObject ())
+			return;
+
+		FillView (entries);
+	}
+
+	void RemoteEntriesWidget::on_RemoteEntriesView__doubleClicked (const QModelIndex& index)
+	{
+		if (XmlSettingsManager::Instance ()
+				.property ("OpenEntryByDblClick").toString () == "CurrentTab")
+		{
+			int res = QMessageBox::question (this,
+					"LeechCraft Blogique",
+					tr ("You have unsaved changes in your current tab."
+							" Do you want to open this entry in a new tab instead?"),
+					QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+			switch (res)
+			{
+				case QMessageBox::Yes:
+					handleOpenRemoteEntryInNewTab (index);
+					break;
+				case QMessageBox::No:
+					handleOpenRemoteEntryInCurrentTab (index);
+					break;
+				case QMessageBox::Cancel:
+				default:
+					break;
+			}
+		}
+		else
+			handleOpenRemoteEntryInNewTab (index);
 	}
 }
 }

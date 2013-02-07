@@ -56,10 +56,6 @@ namespace Blogique
 	, LocalEntriesWidget_ (new LocalEntriesWidget)
 	, RemoteEntriesWidget_ (new RemoteEntriesWidget)
 	, PrevAccountId_ (-1)
-	, PostsViewModel_ (new QStandardItemModel (this))
-	, Storage_ (Core::Instance ().GetStorage ())
-	, DraftID_ (-1)
-	, EntryID_ (-1)
 	{
 		Ui_.setupUi (this);
 
@@ -84,13 +80,18 @@ namespace Blogique
 				SIGNAL (addNewTab (QString, QWidget*)));
 
 		connect (&Core::Instance (),
-				SIGNAL (gotEntries (QList<Entry>)),
-				this,
-				SLOT (handleGotEntries (QList<Entry>)));
-		connect (&Core::Instance (),
 				SIGNAL (storageUpdated ()),
 				this,
 				SLOT (handleStorageUpdated ()));
+
+		connect (RemoteEntriesWidget_,
+				SIGNAL(fillCurrentWidgetWithRemoteEntry (Entry)),
+				this,
+				SLOT (fillCurrentTabWithEntry (Entry)));
+		connect (RemoteEntriesWidget_,
+				SIGNAL(fillNewWidgetWithRemoteEntry (Entry,QByteArray)),
+				this,
+				SLOT (fillNewTabWithEntry (Entry, QByteArray)));
 	}
 
 	QObject* BlogiqueWidget::ParentMultiTabs ()
@@ -117,7 +118,7 @@ namespace Blogique
 		deleteLater ();
 	}
 
-	void BlogiqueWidget::FillWidget (const Entry& e, bool isDraft, const QByteArray& accId)
+	void BlogiqueWidget::FillWidget (const Entry& e, const QByteArray& accId)
 	{
 		for (int i = 0; !accId.isEmpty () && i < AccountsBox_->count (); ++i)
 		{
@@ -157,17 +158,6 @@ namespace Blogique
 			default:
 				break;
 			}
-		}
-
-		if (isDraft)
-		{
-			DraftID_ = e.EntryId_;
-			EntryID_ = -1;
-		}
-		else
-		{
-			EntryID_ = e.EntryId_;
-			DraftID_ = -1;
 		}
 	}
 
@@ -383,51 +373,13 @@ namespace Blogique
 		e.Tags_ = tags;
 		e.PostOptions_ = postOptions;
 		e.CustomData_ = customData;
-
+/*
 		if (EntryID_ > 0)
 			e.EntryId_ = EntryID_;
 		else if (DraftID_ > 0)
-			e.EntryId_ = DraftID_;
+			e.EntryId_ = DraftID_;*/
 
 		return e;
-	}
-
-	Entry BlogiqueWidget::LoadFullDraft (qlonglong draftID)
-	{
-// 		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
-// 		if (!acc)
-// 			return Entry ();
-//
-// 		try
-// 		{
-// 			return Storage_->GetFullDraft (acc->GetAccountID (), draftID);
-// 		}
-// 		catch (const std::runtime_error& e)
-// 		{
-// 			qWarning () << Q_FUNC_INFO
-// 					<< "error fetching full draft"
-// 					<< e.what ();
-// 			return Entry ();
-// 		}
-	}
-
-	Entry BlogiqueWidget::LoadEntry (qlonglong entryId)
-	{
-// 		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
-// 		if (!acc)
-// 			return Entry ();
-//
-// 		try
-// 		{
-// 			return Storage_->GetEntry (acc->GetAccountID (), entryId);
-// 		}
-// 		catch (const std::runtime_error& e)
-// 		{
-// 			qWarning () << Q_FUNC_INFO
-// 					<< "error fetching event"
-// 					<< e.what ();
-// 			return Entry ();
-// 		}
 	}
 
 	void BlogiqueWidget::handleCurrentAccountChanged (int id)
@@ -515,6 +467,19 @@ namespace Blogique
 		PrevAccountId_ = id;
 	}
 
+	void BlogiqueWidget::fillCurrentTabWithEntry (const Entry& entry)
+	{
+		FillWidget (entry);
+	}
+
+	void BlogiqueWidget::fillNewTabWithEntry (const Entry& entry,
+			const QByteArray& accountId)
+	{
+		auto w = Core::Instance ().CreateBlogiqueWidget ();
+		w->FillWidget (entry, accountId);
+		emit addNewTab ("Blogique", w);
+	}
+
 	void BlogiqueWidget::newEntry ()
 	{
 // 		//TODO ask about save.
@@ -572,14 +537,14 @@ namespace Blogique
 
 	void BlogiqueWidget::submit (const Entry& event)
 	{
-// 		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
-// 		if (!acc)
-// 			return;
-//
-// 		const auto& e = event.IsEmpty () ?
-// 			GetCurrentEntry () :
-// 			event;
-//
+		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		if (!acc)
+			return;
+
+		const auto& e = event.IsEmpty () ?
+			GetCurrentEntry () :
+			event;
+
 // 		if (!e.IsEmpty ())
 // 		{
 // 			if (EntryID_ > 0)
@@ -606,80 +571,29 @@ namespace Blogique
 // 		}
 	}
 
-	void BlogiqueWidget::saveSplitterPosition (int, int)
-	{
-// 		XmlSettingsManager::Instance ().setProperty ("CalendarSplitterPosition",
-// 				Ui_.CalendarSplitter_->saveState ());
-	}
-
 	void BlogiqueWidget::on_SideWidget__dockLocationChanged (Qt::DockWidgetArea area)
 	{
-// 		if (area != Qt::AllDockWidgetAreas &&
-// 				area != Qt::NoDockWidgetArea)
-// 			XmlSettingsManager::Instance ().setProperty ("DockWidgetArea", area);
+		if (area != Qt::AllDockWidgetAreas &&
+				area != Qt::NoDockWidgetArea)
+			XmlSettingsManager::Instance ().setProperty ("DockWidgetArea", area);
 	}
 
 	void BlogiqueWidget::on_UpdateProfile__triggered ()
 	{
-// 		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
-// 		if (!acc)
-// 			return;
-//
-// 		acc->updateProfile ();
-	}
-
-	void BlogiqueWidget::on_PublishDraft__released ()
-	{
-// 		QModelIndex idx = Ui_.LocalEntriesView_->currentIndex ();
-// 		if (!idx.isValid ())
-// 			return;
-
-// 		idx = idx.sibling (idx.row (), Columns::Date);
-// 		const Entry& e = LoadFullDraft (idx.data (EntryIdRole::DBIdRole).toLongLong ());
-// 		if (e.IsEmpty ())
-// 			return;
-//
-// 		submit (e);
-	}
-
-	void BlogiqueWidget::on_RemoveRemotePost__released ()
-	{/*
-		if (!Ui_.PostsView_->currentIndex ().isValid ())
-			return;
-
 		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
 		if (!acc)
 			return;
 
-		auto idx = Ui_.PostsView_->currentIndex ();
-		idx = idx.sibling (idx.row (), Columns::Date);
-		const Entry& e = LoadEntry (idx.data (EntryIdRole::DBIdRole).toLongLong ());
-		if (e.IsEmpty ())
-			return;
-
-		if (QMessageBox::question (this, "LeechCraft",
-				tr ("Do you want to remove this entry from blog?"),
-				QMessageBox::Ok | QMessageBox::Cancel,
-				QMessageBox::Cancel) == QMessageBox::Ok)
-			acc->RemoveEntry (e);*/
+		acc->updateProfile ();
 	}
 
-	void BlogiqueWidget::on_Edit__released ()
-	{
-// 		const QModelIndex& currentIndex = Ui_.PostsView_->currentIndex ();
-// 		if (!currentIndex.isValid ())
-// 			return;
-//
-// 		handleOpenEntryInCurrentTab (currentIndex);
-	}
-
-	void BlogiqueWidget::on_PostsView__doubleClicked (const QModelIndex& index)
-	{
+// 	void BlogiqueWidget::on_PostsView__doubleClicked (const QModelIndex& index)
+// 	{
 // 		XmlSettingsManager::Instance ()
 // 				.property ("OpenEntryByDblClick").toString () == "CurrentTab" ?
 // 			handleOpenEntryInCurrentTab (index) :
 // 			handleOpenEntryInNewTab (index);
-	}
+// 	}
 
 	void BlogiqueWidget::handleOpenEntryInCurrentTab (const QModelIndex& index)
 	{
@@ -714,13 +628,13 @@ namespace Blogique
 // 		emit addNewTab ("Blogique", newTab);
 	}
 
-	void BlogiqueWidget::on_LocalEntriesView__doubleClicked (const QModelIndex& index)
-	{
+// 	void BlogiqueWidget::on_LocalEntriesView__doubleClicked (const QModelIndex& index)
+// 	{
 // 		XmlSettingsManager::Instance ()
 // 				.property ("OpenDraftByDblClick").toString () == "CurrentTab" ?
 // 			handleOpenDraftInCurrentTab (index) :
 // 			handleOpenDraftInNewTab (index);
-	}
+// 	}
 
 	void BlogiqueWidget::handleOpenDraftInCurrentTab (const QModelIndex& index)
 	{
@@ -774,12 +688,6 @@ namespace Blogique
 // 		}
 //
 // 		FillPostsView (entries);
-	}
-
-	void BlogiqueWidget::handleGotEntries (const QList<Entry>& entries)
-	{
-// 		handleLoadEntries (entries);
-// 		LoadDrafts ();
 	}
 
 	void BlogiqueWidget::handleStorageUpdated ()
