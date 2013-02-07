@@ -24,6 +24,7 @@
 #include <QDir>
 #include <QSettings>
 #include <QCoreApplication>
+#include <QToolBar>
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
@@ -63,11 +64,13 @@ namespace SB2
 		};
 	}
 
-	ViewManager::ViewManager (ICoreProxy_ptr proxy, QObject *parent)
+	ViewManager::ViewManager (ICoreProxy_ptr proxy, QMainWindow *window, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, ViewItemsModel_ (new ViewItemsModel (this))
 	, View_ (new SBView)
+	, Toolbar_ (new QToolBar)
+	, Window_ (window)
 	{
 		const auto& file = Util::GetSysPath (Util::SysPath::QML, "sb2", "SideView.qml");
 		if (file.isEmpty ())
@@ -92,11 +95,29 @@ namespace SB2
 
 		LoadRemovedList ();
 		LoadQuarkOrder ();
+
+		Toolbar_->addWidget (View_);
+		Toolbar_->setFloatable (false);
+		View_->setVisible (true);
+		connect (Toolbar_,
+				SIGNAL (orientationChanged (Qt::Orientation)),
+				this,
+				SLOT (setOrientation (Qt::Orientation)));
 	}
 
 	SBView* ViewManager::GetView () const
 	{
 		return View_;
+	}
+
+	QToolBar* ViewManager::GetToolbar () const
+	{
+		return Toolbar_;
+	}
+
+	QMainWindow* ViewManager::GetManagedWindow () const
+	{
+		return Window_;
 	}
 
 	void ViewManager::SecondInit ()

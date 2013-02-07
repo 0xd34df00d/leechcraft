@@ -25,8 +25,10 @@
 #include <QSet>
 #include <interfaces/core/icoreproxy.h>
 
+class QMainWindow;
 class QDir;
 class QStandardItemModel;
+class QToolBar;
 
 namespace LeechCraft
 {
@@ -46,6 +48,9 @@ namespace SB2
 		ICoreProxy_ptr Proxy_;
 		QStandardItemModel *ViewItemsModel_;
 		SBView *View_;
+		QToolBar *Toolbar_;
+
+		QMainWindow *Window_;
 
 		QHash<QUrl, QuarkManager_ptr> Quark2Manager_;
 		QSet<QString> RemovedIDs_;
@@ -53,9 +58,11 @@ namespace SB2
 
 		QList<QuarkComponent> InternalComponents_;
 	public:
-		ViewManager (ICoreProxy_ptr, QObject* = 0);
+		ViewManager (ICoreProxy_ptr, QMainWindow*, QObject* = 0);
 
 		SBView* GetView () const;
+		QToolBar* GetToolbar () const;
+		QMainWindow* GetManagedWindow () const;
 
 		void SecondInit ();
 		void RegisterInternalComponent (const QuarkComponent&);
