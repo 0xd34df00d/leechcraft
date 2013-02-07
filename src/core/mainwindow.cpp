@@ -521,7 +521,7 @@ void MainWindow::on_ActionShowToolBar__triggered (bool visible)
 	auto bar = rootWM->GetTabManager (this)->GetToolBar (Ui_.MainTabWidget_->CurrentIndex ());
 
 	if (bar)
-		bar->setVisible (IsToolBarVisible_);
+		bar->setMaximumHeight (IsToolBarVisible_ ? 1000 : 0);
 }
 
 namespace
