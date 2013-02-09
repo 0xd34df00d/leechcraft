@@ -70,22 +70,22 @@ namespace AdvancedNotifications
 		qRegisterMetaType<QList<NotificationRule>> ("QList<LeechCraft::AdvancedNotifications::NotificationRule>");
 		qRegisterMetaTypeStreamOperators<QList<NotificationRule>> ("QList<LeechCraft::AdvancedNotifications::NotificationRule>");
 
-		Cat2HR_ [CatIM] = tr ("Instant messaging");
-		Type2HR_ [TypeIMAttention] = tr ("Attention request");
-		Type2HR_ [TypeIMIncFile] = tr ("Incoming file transfer request");
-		Type2HR_ [TypeIMIncMsg] = tr ("Incoming chat message");
-		Type2HR_ [TypeIMMUCHighlight] = tr ("MUC highlight");
-		Type2HR_ [TypeIMMUCInvite] = tr ("MUC invitation");
-		Type2HR_ [TypeIMMUCMsg] = tr ("General MUC message");
-		Type2HR_ [TypeIMStatusChange] = tr ("Contact status change");
-		Type2HR_ [TypeIMSubscrGrant] = tr ("Authorization granted");
-		Type2HR_ [TypeIMSubscrRevoke] = tr ("Authorization revoked");
-		Type2HR_ [TypeIMSubscrRequest] = tr ("Authorization requested");
-		Type2HR_ [TypeIMSubscrSub] = tr ("Contact subscribed");
-		Type2HR_ [TypeIMSubscrUnsub] = tr ("Contact unsubscribed");
+		Cat2HR_ [AN::CatIM] = tr ("Instant messaging");
+		Type2HR_ [AN::TypeIMAttention] = tr ("Attention request");
+		Type2HR_ [AN::TypeIMIncFile] = tr ("Incoming file transfer request");
+		Type2HR_ [AN::TypeIMIncMsg] = tr ("Incoming chat message");
+		Type2HR_ [AN::TypeIMMUCHighlight] = tr ("MUC highlight");
+		Type2HR_ [AN::TypeIMMUCInvite] = tr ("MUC invitation");
+		Type2HR_ [AN::TypeIMMUCMsg] = tr ("General MUC message");
+		Type2HR_ [AN::TypeIMStatusChange] = tr ("Contact status change");
+		Type2HR_ [AN::TypeIMSubscrGrant] = tr ("Authorization granted");
+		Type2HR_ [AN::TypeIMSubscrRevoke] = tr ("Authorization revoked");
+		Type2HR_ [AN::TypeIMSubscrRequest] = tr ("Authorization requested");
+		Type2HR_ [AN::TypeIMSubscrSub] = tr ("Contact subscribed");
+		Type2HR_ [AN::TypeIMSubscrUnsub] = tr ("Contact unsubscribed");
 
-		Cat2HR_ [CatOrganizer] = tr ("Organizer");
-		Type2HR_ [TypeOrganizerEventDue] = tr ("Event is due");
+		Cat2HR_ [AN::CatOrganizer] = tr ("Organizer");
+		Type2HR_ [AN::TypeOrganizerEventDue] = tr ("Event is due");
 
 		LoadSettings ();
 
@@ -142,45 +142,45 @@ namespace AdvancedNotifications
 	{
 		if (version <= 0)
 		{
-			NotificationRule chatMsg (tr ("Incoming chat messages"), CatIM,
-					QStringList (TypeIMIncMsg));
+			NotificationRule chatMsg (tr ("Incoming chat messages"), AN::CatIM,
+					QStringList (AN::TypeIMIncMsg));
 			chatMsg.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint);
 			chatMsg.SetAudioParams (AudioParams ("im-incoming-message"));
 			Rules_ << chatMsg;
 
-			NotificationRule mucHigh (tr ("MUC highlights"), CatIM,
-					QStringList (TypeIMMUCHighlight));
+			NotificationRule mucHigh (tr ("MUC highlights"), AN::CatIM,
+					QStringList (AN::TypeIMMUCHighlight));
 			mucHigh.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint);
 			mucHigh.SetAudioParams (AudioParams ("im-muc-highlight"));
 			Rules_ << mucHigh;
 
-			NotificationRule mucInv (tr ("MUC invitations"), CatIM,
-					QStringList (TypeIMMUCInvite));
+			NotificationRule mucInv (tr ("MUC invitations"), AN::CatIM,
+					QStringList (AN::TypeIMMUCInvite));
 			mucInv.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint);
 			mucInv.SetAudioParams (AudioParams ("im-attention"));
 			Rules_ << mucInv;
 
-			NotificationRule incFile (tr ("Incoming file transfers"), CatIM,
-					QStringList (TypeIMIncFile));
+			NotificationRule incFile (tr ("Incoming file transfers"), AN::CatIM,
+					QStringList (AN::TypeIMIncFile));
 			incFile.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint);
 			Rules_ << incFile;
 
-			NotificationRule subscrReq (tr ("Subscription requests"), CatIM,
-					QStringList (TypeIMSubscrRequest));
+			NotificationRule subscrReq (tr ("Subscription requests"), AN::CatIM,
+					QStringList (AN::TypeIMSubscrRequest));
 			subscrReq.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint);
 			subscrReq.SetAudioParams (AudioParams ("im-auth-requested"));
 			Rules_ << subscrReq;
 
-			NotificationRule subscrChanges (tr ("Subscription changes"), CatIM,
-					QStringList (TypeIMSubscrRevoke)
-						<< TypeIMSubscrGrant
-						<< TypeIMSubscrSub
-						<< TypeIMSubscrUnsub);
+			NotificationRule subscrChanges (tr ("Subscription changes"), AN::CatIM,
+					QStringList (AN::TypeIMSubscrRevoke)
+						<< AN::TypeIMSubscrGrant
+						<< AN::TypeIMSubscrSub
+						<< AN::TypeIMSubscrUnsub);
 			subscrChanges.SetMethods (NMVisual | NMTray);
 			Rules_ << subscrChanges;
 
-			NotificationRule attentionDrawn (tr ("Attention requests"), CatIM,
-					QStringList (TypeIMAttention));
+			NotificationRule attentionDrawn (tr ("Attention requests"), AN::CatIM,
+					QStringList (AN::TypeIMAttention));
 			attentionDrawn.SetMethods (NMVisual | NMTray | NMAudio | NMUrgentHint);
 			attentionDrawn.SetAudioParams (AudioParams ("im-attention"));
 			Rules_ << attentionDrawn;
@@ -188,8 +188,8 @@ namespace AdvancedNotifications
 
 		if (version == -1 || version == 1)
 		{
-			NotificationRule eventDue (tr ("Event is due"), CatOrganizer,
-					QStringList (TypeOrganizerEventDue));
+			NotificationRule eventDue (tr ("Event is due"), AN::CatOrganizer,
+					QStringList (AN::TypeOrganizerEventDue));
 			eventDue.SetMethods (NMVisual | NMTray | NMAudio);
 			eventDue.SetAudioParams (AudioParams ("org-event-due"));
 			Rules_ << eventDue;

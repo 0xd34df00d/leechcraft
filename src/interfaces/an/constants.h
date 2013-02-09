@@ -22,7 +22,7 @@
 
 namespace LeechCraft
 {
-namespace AdvancedNotifications
+namespace AN
 {
 	const QString CatIM = "org.LC.AdvNotifications.IM";
 	const QString TypeIMAttention = "org.LC.AdvNotifications.IM.AttentionDrawn";

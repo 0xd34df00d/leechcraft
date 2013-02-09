@@ -43,20 +43,20 @@ namespace AdvancedNotifications
 	, RM_ (rm)
 	, MatchesModel_ (new QStandardItemModel (this))
 	{
-		Cat2Types_ [CatIM] << TypeIMAttention
-				<< TypeIMIncFile
-				<< TypeIMIncMsg
-				<< TypeIMMUCHighlight
-				<< TypeIMMUCInvite
-				<< TypeIMMUCMsg
-				<< TypeIMStatusChange
-				<< TypeIMSubscrGrant
-				<< TypeIMSubscrRequest
-				<< TypeIMSubscrRevoke
-				<< TypeIMSubscrSub
-				<< TypeIMSubscrUnsub;
+		Cat2Types_ [AN::CatIM] << AN::TypeIMAttention
+				<< AN::TypeIMIncFile
+				<< AN::TypeIMIncMsg
+				<< AN::TypeIMMUCHighlight
+				<< AN::TypeIMMUCInvite
+				<< AN::TypeIMMUCMsg
+				<< AN::TypeIMStatusChange
+				<< AN::TypeIMSubscrGrant
+				<< AN::TypeIMSubscrRequest
+				<< AN::TypeIMSubscrRevoke
+				<< AN::TypeIMSubscrSub
+				<< AN::TypeIMSubscrUnsub;
 
-		Cat2Types_ [CatOrganizer] << TypeOrganizerEventDue;
+		Cat2Types_ [AN::CatOrganizer] << AN::TypeOrganizerEventDue;
 
 		Ui_.setupUi (this);
 		Ui_.RulesTree_->setModel (RM_->GetRulesModel ());
