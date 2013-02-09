@@ -23,6 +23,7 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <interfaces/ianemitter.h>
+#include <interfaces/an/constants.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <util/resourceloader.h>
@@ -32,7 +33,6 @@
 #include "typedmatchers.h"
 #include "core.h"
 #include "rulesmanager.h"
-#include "constants.h"
 
 namespace LeechCraft
 {

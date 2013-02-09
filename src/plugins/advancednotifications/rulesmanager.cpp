@@ -21,7 +21,7 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <QtDebug>
-#include "constants.h"
+#include <interfaces/an/constants.h>
 
 namespace LeechCraft
 {

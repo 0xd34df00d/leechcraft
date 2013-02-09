@@ -40,5 +40,9 @@ namespace AdvancedNotifications
 
 	const QString CatOrganizer = "org.LC.AdvNotifications.Organizer";
 	const QString TypeOrganizerEventDue = "org.LC.AdvNotifications.Organizer.EventDue";
+
+	const QString CatDownloads = "org.LC.AdvNotifications.Downloads";
+	const QString TypeDownloadFinished = "org.LC.AdvNotifications.Downloads.DownloadFinished";
+	const QString TypeDownloadError = "org.LC.AdvNotifications.Downloads.DownloadError";
 }
 }
