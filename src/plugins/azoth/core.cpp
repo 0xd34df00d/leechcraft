@@ -38,6 +38,7 @@
 #include <util/notificationactionhandler.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/an/constants.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include "interfaces/azoth/iprotocolplugin.h"
@@ -1427,7 +1428,7 @@ namespace Azoth
 		e.Mime_ += "+advanced";
 
 		BuildNotification (e, entry);
-		e.Additional_ ["org.LC.AdvNotifications.EventType"] = "org.LC.AdvNotifications.IM.StatusChange";
+		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMStatusChange;
 		e.Additional_ ["NotificationPixmap"] =
 				QVariant::fromValue<QPixmap> (QPixmap::fromImage (entry->GetAvatar ()));
 
@@ -1766,14 +1767,14 @@ namespace Azoth
 
 	void Core::FillANFields ()
 	{
-		const QStringList commonFields = QStringList ("org.LC.AdvNotifications.IM.MUCHighlightMessage")
-						<< "org.LC.AdvNotifications.IM.MUCMessage"
-						<< "org.LC.AdvNotifications.IM.IncomingMessage"
-						<< "org.LC.AdvNotifications.IM.AttentionDrawn"
-						<< "org.LC.AdvNotifications.IM.Subscr.Granted"
-						<< "org.LC.AdvNotifications.IM.Subscr.Revoked"
-						<< "org.LC.AdvNotifications.IM.Subscr.Requested"
-						<< "org.LC.AdvNotifications.IM.StatusChange";
+		const QStringList commonFields = QStringList (AN::TypeIMMUCHighlight)
+						<< AN::TypeIMMUCMsg
+						<< AN::TypeIMIncMsg
+						<< AN::TypeIMAttention
+						<< AN::TypeIMSubscrGrant
+						<< AN::TypeIMSubscrRevoke
+						<< AN::TypeIMSubscrRequest
+						<< AN::TypeIMStatusChange;
 
 		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.Msg",
 				tr ("Message body"),
@@ -1803,7 +1804,7 @@ namespace Azoth
 				tr ("New status"),
 				tr ("The new status string of the contact."),
 				QVariant::String,
-				QStringList ("org.LC.AdvNotifications.IM.StatusChange"));
+				QStringList (AN::TypeIMStatusChange));
 	}
 
 	namespace
@@ -2524,8 +2525,8 @@ namespace Azoth
 		if (msg->GetMessageType () == IMessage::MTMUCMessage)
 		{
 			e.Additional_ ["org.LC.AdvNotifications.EventType"] = isHighlightMsg ?
-					"org.LC.AdvNotifications.IM.MUCHighlightMessage" :
-					"org.LC.AdvNotifications.IM.MUCMessage";
+					AN::TypeIMMUCHighlight :
+					AN::TypeIMMUCMsg;
 			e.Additional_ ["NotificationPixmap"] =
 					QVariant::fromValue<QPixmap> (QPixmap::fromImage (other->GetAvatar ()));
 
@@ -2539,8 +2540,7 @@ namespace Azoth
 		}
 		else
 		{
-			e.Additional_ ["org.LC.AdvNotifications.EventType"] =
-					"org.LC.AdvNotifications.IM.IncomingMessage";
+			e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMIncMsg;
 			e.Additional_ ["org.LC.AdvNotifications.FullText"] =
 				tr ("%n message(s) from", 0, count) +
 						' ' + other->GetEntryName ();
@@ -2587,8 +2587,7 @@ namespace Azoth
 		BuildNotification (e, entry);
 		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
 				"org.LC.Plugins.Azoth.AuthRequestFrom/" + entry->GetEntryID ();
-		e.Additional_ ["org.LC.AdvNotifications.EventType"] =
-				"org.LC.AdvNotifications.IM.Subscr.Requested";
+		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMSubscrRequest;
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = str;
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
 		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = msg;
@@ -2629,8 +2628,7 @@ namespace Azoth
 		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
 				"org.LC.Plugins.Azoth.AttentionDrawnBy/" + entry->GetEntryID ();
 		e.Additional_ ["org.LC.AdvNotifications.DeltaCount"] = 1;
-		e.Additional_ ["org.LC.AdvNotifications.EventType"] =
-				"org.LC.AdvNotifications.IM.AttentionDrawn";
+		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMAttention;
 		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = tr ("Attention requested");
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = tr ("Attention requested by %1")
 				.arg (entry->GetEntryName ());
@@ -2785,7 +2783,7 @@ namespace Azoth
 			return;
 
 		NotifyWithReason (entryObj, msg, Q_FUNC_INFO,
-				"org.LC.AdvNotifications.IM.Subscr.Subscribed",
+				AN::TypeIMSubscrSub,
 				tr ("%1 (%2) subscribed to us."),
 				tr ("%1 (%2) subscribed to us: %3."));
 	}
@@ -2799,7 +2797,7 @@ namespace Azoth
 			return;
 
 		NotifyWithReason (entryObj, msg, Q_FUNC_INFO,
-				"org.LC.AdvNotifications.IM.Subscr.Unsubscribed",
+				AN::TypeIMSubscrUnsub,
 				tr ("%1 (%2) unsubscribed from us."),
 				tr ("%1 (%2) unsubscribed from us: %3."));
 	}
@@ -2829,7 +2827,7 @@ namespace Azoth
 			return;
 
 		NotifyWithReason (entryObj, msg, Q_FUNC_INFO,
-				"org.LC.AdvNotifications.IM.Subscr.Revoked",
+				AN::TypeIMSubscrRevoke,
 				tr ("%1 (%2) cancelled our subscription."),
 				tr ("%1 (%2) cancelled our subscription: %3."));
 	}
@@ -2841,7 +2839,7 @@ namespace Azoth
 			return;
 
 		NotifyWithReason (entryObj, msg, Q_FUNC_INFO,
-				"org.LC.AdvNotifications.IM.Subscr.Granted",
+				AN::TypeIMSubscrGrant,
 				tr ("%1 (%2) granted subscription."),
 				tr ("%1 (%2) granted subscription: %3."));
 	}
@@ -2871,12 +2869,11 @@ namespace Azoth
 
 		Entity e = Util::MakeNotification ("Azoth", str, PInfo_);
 		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Azoth";
-		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] =
-				"org.LC.AdvNotifications.IM";
+		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = AN::CatIM;
 		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList (name);
 		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
 				"org.LC.Plugins.Azoth.Invited/" + name + '/' + inviter;
-		e.Additional_ ["org.LC.AdvNotifications.EventType"] = "org.LC.AdvNotifications.IM.MUCInvitation";
+		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMMUCInvite;
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = str;
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
 		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = reason;
