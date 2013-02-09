@@ -143,10 +143,10 @@ namespace SB2
 					tray,
 					SLOT (handlePluginsAvailable ()));
 		else
+		{
 			tray->handlePluginsAvailable ();
-
-		if (!init)
 			mgr->SecondInit ();
+		}
 
 		Managers_.push_back ({ mgr, tray });
 	}
