@@ -31,6 +31,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/ijobholder.h>
+#include <interfaces/an/constants.h>
 #include <util/util.h>
 #include "task.h"
 #include "xmlsettingsmanager.h"
@@ -573,26 +574,41 @@ namespace CSTP
 
 		taskdscr->File_->close ();
 
-		bool notifyUser = !(taskdscr->Parameters_ & LeechCraft::DoNotNotifyUser);
+		bool notifyUser = !(taskdscr->Parameters_ & LeechCraft::DoNotNotifyUser) &&
+				!(taskdscr->Parameters_ & LeechCraft::Internal);
+
+		if (notifyUser)
+		{
+			QString text = err ?
+					tr ("Failed downloading %1 (%2).")
+						.arg (url)
+						.arg (errorStr) :
+					tr ("Finished downloading %1 (%2).")
+						.arg (filename)
+						.arg (url);
+			auto e = Util::MakeNotification ("CSTP", text, err ? PCritical_ : PInfo_);
+			e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.CSTP";
+			e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = AN::CatDownloads;
+			e.Additional_ ["org.LC.AdvNotifications.EventID"] = "org.LC.Plugins.CSTP.DLFinished/" + url;
+			e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList (QUrl (url).host ());
+
+			e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeOrganizerEventDue;
+			e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
+			e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = text;
+			e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
+			emit gotEntity (e);
+		}
 
 		if (!err)
 		{
-			if (notifyUser)
-			{
-				QString text = tr ("Download finished: %1\n%2")
-					.arg (filename)
-					.arg (url);
-				emit gotEntity (Util::MakeNotification ("CSTP", text, PInfo_));
-			}
 			bool silence = taskdscr->Parameters_ & LeechCraft::DoNotAnnounceEntity;
-			LeechCraft::TaskParameters tp = taskdscr->Parameters_;
+			auto tp = taskdscr->Parameters_;
 			Remove (taskdscr);
 			emit taskFinished (id);
 			if (!silence)
 			{
-				tp |= LeechCraft::IsDownloaded;
-				LeechCraft::Entity e =
-					LeechCraft::Util::MakeEntity (QUrl::fromLocalFile (filename),
+				tp |= IsDownloaded;
+				auto e = Util::MakeEntity (QUrl::fromLocalFile (filename),
 						url,
 						tp);
 				e.Additional_ [" Tags"] = tags;
