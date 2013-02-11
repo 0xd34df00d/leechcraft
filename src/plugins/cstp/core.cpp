@@ -35,6 +35,7 @@
 #include <interfaces/an/constants.h>
 #include <util/util.h>
 #include <util/notificationactionhandler.h>
+#include <util/xpc/util.h>
 #include "task.h"
 #include "xmlsettingsmanager.h"
 #include "morphfile.h"
@@ -588,17 +589,14 @@ namespace CSTP
 					tr ("Finished downloading %1 (%2).")
 						.arg (filename)
 						.arg (url);
-			auto e = Util::MakeNotification ("CSTP", text, err ? PCritical_ : PInfo_);
-			e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.CSTP";
-			e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = AN::CatDownloads;
-			e.Additional_ ["org.LC.AdvNotifications.EventID"] = "org.LC.Plugins.CSTP.DLFinished/" + url;
-			e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList (QUrl (url).host ());
 
-			e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeOrganizerEventDue;
-			e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
-			e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = text;
-			e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
-
+			auto e = Util::MakeAN ("CSTP",
+					text,
+					err ? PCritical_ : PInfo_,
+					"org.LeechCraft.CSTP",
+					AN::CatDownloads,
+					err ? AN::TypeDownloadError : AN::TypeDownloadFinished,
+					"org.LC.Plugins.CSTP.DLFinished/" + url, QStringList (QUrl (url).host ()));
 			if (!err)
 			{
 				auto nah = new Util::NotificationActionHandler (e);
