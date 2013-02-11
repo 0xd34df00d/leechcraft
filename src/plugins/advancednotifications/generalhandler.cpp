@@ -18,6 +18,7 @@
 
 #include "generalhandler.h"
 #include <interfaces/structures.h>
+#include <interfaces/an/constants.h>
 #include <interfaces/core/icoreproxy.h>
 #include "systemtrayhandler.h"
 #include "visualhandler.h"
@@ -47,8 +48,9 @@ namespace AdvancedNotifications
 				this,
 				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)));
 
-		Cat2IconName_ ["org.LC.AdvNotifications.IM"] = "mail-unread-new";
-		Cat2IconName_ ["org.LC.AdvNotifications.Organizer"] = "view-calendar";
+		Cat2IconName_ [AN::CatDownloads] = "folder-downloads";
+		Cat2IconName_ [AN::CatIM] = "mail-unread-new";
+		Cat2IconName_ [AN::CatOrganizer] = "view-calendar";
 	}
 
 	void GeneralHandler::Handle (const Entity& e)
