@@ -18,6 +18,7 @@
 
 #include "itemssortfilterproxymodel.h"
 #include <QtDebug>
+#include <QTimer>
 #include "modelroles.h"
 
 namespace LeechCraft
@@ -40,7 +41,9 @@ namespace Launchy
 	void ItemsSortFilterProxyModel::SetAppFilterText (const QString& text)
 	{
 		AppFilterText_ = text;
-		invalidateFilter ();
+		QTimer::singleShot (0,
+				this,
+				SLOT (invalidateFilterSlot ()));
 	}
 
 	bool ItemsSortFilterProxyModel::filterAcceptsRow (int row, const QModelIndex&) const
@@ -74,6 +77,11 @@ namespace Launchy
 	void ItemsSortFilterProxyModel::setCategoryNames (const QStringList& cats)
 	{
 		CategoryNames_ = cats;
+		invalidateFilter ();
+	}
+
+	void ItemsSortFilterProxyModel::invalidateFilterSlot ()
+	{
 		invalidateFilter ();
 	}
 }
