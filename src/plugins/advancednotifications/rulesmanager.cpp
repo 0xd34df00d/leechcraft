@@ -87,6 +87,10 @@ namespace AdvancedNotifications
 		Cat2HR_ [AN::CatOrganizer] = tr ("Organizer");
 		Type2HR_ [AN::TypeOrganizerEventDue] = tr ("Event is due");
 
+		Cat2HR_ [AN::CatDownloads] = tr ("Downloads");
+		Type2HR_ [AN::TypeDownloadError] = tr ("Download error");
+		Type2HR_ [AN::TypeDownloadFinished] = tr ("Download finished");
+
 		LoadSettings ();
 
 		connect (RulesModel_,
@@ -194,6 +198,20 @@ namespace AdvancedNotifications
 			eventDue.SetAudioParams (AudioParams ("org-event-due"));
 			Rules_ << eventDue;
 		}
+
+		if (version == -1 || version == 2)
+		{
+			NotificationRule downloadFinished (tr ("Download finished"), AN::CatDownloads,
+					QStringList (AN::TypeDownloadFinished));
+			downloadFinished.SetMethods (NMVisual | NMTray | NMAudio);
+			Rules_ << downloadFinished;
+
+			NotificationRule downloadError (tr ("Download error"), AN::CatDownloads,
+					QStringList (AN::TypeDownloadError));
+			downloadError.SetMethods (NMVisual | NMTray | NMAudio);
+			downloadError.SetAudioParams (AudioParams ("error"));
+			Rules_ << downloadError;
+		}
 	}
 
 	void RulesManager::LoadSettings ()
@@ -204,7 +222,7 @@ namespace AdvancedNotifications
 		Rules_ = settings.value ("RulesList").value<QList<NotificationRule>> ();
 		int rulesVersion = settings.value ("DefaultRulesVersion", 1).toInt ();
 
-		const int currentDefVersion = 2;
+		const int currentDefVersion = 3;
 		if (Rules_.isEmpty ())
 			LoadDefaultRules (0);
 

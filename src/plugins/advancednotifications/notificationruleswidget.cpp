@@ -58,6 +58,9 @@ namespace AdvancedNotifications
 
 		Cat2Types_ [AN::CatOrganizer] << AN::TypeOrganizerEventDue;
 
+		Cat2Types_ [AN::CatDownloads] << AN::TypeDownloadError
+				<< AN::TypeDownloadFinished;
+
 		Ui_.setupUi (this);
 		Ui_.RulesTree_->setModel (RM_->GetRulesModel ());
 		Ui_.MatchesTree_->setModel (MatchesModel_);
