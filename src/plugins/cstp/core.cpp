@@ -28,11 +28,13 @@
 #include <QStringList>
 #include <QtDebug>
 #include <QRegExp>
+#include <QDesktopServices>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/an/constants.h>
 #include <util/util.h>
+#include <util/notificationactionhandler.h>
 #include "task.h"
 #include "xmlsettingsmanager.h"
 #include "morphfile.h"
@@ -596,6 +598,29 @@ namespace CSTP
 			e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
 			e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = text;
 			e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
+
+			if (!err)
+			{
+				auto nah = new Util::NotificationActionHandler (e);
+				nah->AddFunction (tr ("Handle..."), [this, filename] ()
+						{
+							auto e = Util::MakeEntity (QUrl::fromLocalFile (filename),
+									QString (),
+									LeechCraft::FromUserInitiated);
+							emit gotEntity (e);
+						});
+				nah->AddFunction (tr ("Open externally"),
+						[filename] ()
+						{
+							QDesktopServices::openUrl (QUrl::fromLocalFile (filename));
+						});
+				nah->AddFunction (tr ("Show folder"),
+						[filename] ()
+						{
+							QDesktopServices::openUrl (QFileInfo (filename).absolutePath ());
+						});
+			}
+
 			emit gotEntity (e);
 		}
 
