@@ -24,11 +24,37 @@ Rectangle {
 
     signal browseInfo(string artist)
 
+    TextButton {
+        id: modeButton
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        onReleased: modeState.state = (modeState.state == "topsMode" ? "newsMode" : "topsMode")
+
+        Item {
+            id: modeState
+            states: [
+                State {
+                    name: "topsMode"
+                    PropertyChanges { target: modeButton; text: newsText }
+                    PropertyChanges { target: artistsView; model: topArtistsModel }
+                    PropertyChanges { target: hypedTracksView; model: topTracksModel }
+                },
+                State {
+                    name: "newsMode"
+                    PropertyChanges { target: modeButton; text: topsText }
+                    PropertyChanges { target: artistsView; model: newArtistsModel }
+                    PropertyChanges { target: hypedTracksView; model: newTracksModel }
+                }
+            ]
+            state: "topsMode"
+        }
+    }
+
     Rectangle {
         id: artistsRect
 
         anchors.left: parent.left
-        anchors.top: parent.top
+        anchors.top: modeButton.bottom
         anchors.bottom: parent.bottom
         width: parent.width / 2
 
@@ -109,7 +135,7 @@ Rectangle {
 
     Rectangle {
         anchors.left: artistsRect.right
-        anchors.top: parent.top
+        anchors.top: modeButton.bottom
         anchors.bottom: parent.bottom
         anchors.right: parent.right
 
@@ -143,32 +169,6 @@ Rectangle {
                 font.pointSize: 14
                 color: colorProxy.color_TextView_TitleTextColor
                 anchors.centerIn: parent
-            }
-
-            TextButton {
-                id: modeButton
-                anchors.top: parent.top
-                anchors.right: parent.right
-                onReleased: modeState.state = (modeState.state == "topsMode" ? "newsMode" : "topsMode")
-
-                Item {
-                    id: modeState
-                    states: [
-                        State {
-                            name: "topsMode"
-                            PropertyChanges { target: modeButton; text: newsText }
-                            PropertyChanges { target: artistsView; model: topArtistsModel }
-                            PropertyChanges { target: hypedTracksView; model: topTracksModel }
-                        },
-                        State {
-                            name: "newsMode"
-                            PropertyChanges { target: modeButton; text: topsText }
-                            PropertyChanges { target: artistsView; model: newArtistsModel }
-                            PropertyChanges { target: hypedTracksView; model: newTracksModel }
-                        }
-                    ]
-                    state: "topsMode"
-                }
             }
         }
 
