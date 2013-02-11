@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/azoth/lastseen">
+    <file>resources/images/lastseen.svg</file>
+  </qresource>
+</RCC>
