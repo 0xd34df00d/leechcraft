@@ -65,7 +65,7 @@ namespace AdvancedNotifications
 		void on_ModifyMatch__released ();
 		void on_RemoveMatch__released ();
 
-		void on_EventCat__activated (int);
+		void on_EventCat__currentIndexChanged (int);
 
 		void on_NotifyVisual__stateChanged (int);
 		void on_NotifySysTray__stateChanged (int);

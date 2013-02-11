@@ -73,7 +73,7 @@ namespace AdvancedNotifications
 		const auto& cat2hr = RM_->GetCategory2HR ();
 		for (const QString& cat : cat2hr.keys ())
 			Ui_.EventCat_->addItem (cat2hr [cat], cat);
-		on_EventCat__activated (0);
+		on_EventCat__currentIndexChanged (0);
 
 		XmlSettingsManager::Instance ().RegisterObject ("AudioTheme",
 				this, "resetAudioFileBox");
@@ -331,7 +331,7 @@ namespace AdvancedNotifications
 		MatchesModel_->removeRow (index.row ());
 	}
 
-	void NotificationRulesWidget::on_EventCat__activated (int idx)
+	void NotificationRulesWidget::on_EventCat__currentIndexChanged (int idx)
 	{
 		const QString& catId = Ui_.EventCat_->itemData (idx).toString ();
 		Ui_.EventTypes_->clear ();
