@@ -717,7 +717,7 @@ namespace Xoox
 
 	QByteArray GlooxAccount::Serialize () const
 	{
-		quint16 version = 6;
+		quint16 version = 7;
 
 		QByteArray result;
 		{
@@ -737,7 +737,7 @@ namespace Xoox
 		QDataStream in (data);
 		in >> version;
 
-		if (version < 1 || version > 6)
+		if (version < 1 || version > 7)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"

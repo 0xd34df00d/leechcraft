@@ -373,6 +373,7 @@ namespace Xoox
 				conf.setPort (port);
 			conf.setKeepAliveInterval (Settings_->GetKAParams ().first);
 			conf.setKeepAliveTimeout (Settings_->GetKAParams ().second);
+			conf.setStreamSecurityMode (Settings_->GetTLSMode ());
 			Client_->connectToServer (conf, pres);
 
 			FirstTimeConnect_ = false;

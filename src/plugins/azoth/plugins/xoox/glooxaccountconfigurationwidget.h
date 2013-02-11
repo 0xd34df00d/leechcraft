@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXACCOUNTCONFIGURATIONWIDGET_H
 #include <QWidget>
 #include <QXmppTransferManager.h>
+#include <QXmppConfiguration.h>
 #include "ui_glooxaccountconfigurationwidget.h"
 
 namespace LeechCraft
@@ -59,6 +60,9 @@ namespace Xoox
 
 		bool GetFileLogEnabled () const;
 		void SetFileLogEnabled (bool);
+
+		QXmppConfiguration::StreamSecurityMode GetTLSMode () const;
+		void SetTLSMode (QXmppConfiguration::StreamSecurityMode);
 
 		QXmppTransferJob::Methods GetFTMethods () const;
 		void SetFTMethods (QXmppTransferJob::Methods);
