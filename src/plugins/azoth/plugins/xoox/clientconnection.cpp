@@ -388,11 +388,7 @@ namespace Xoox
 			IsConnected_ = false;
 			Q_FOREACH (const QString& jid, JID2CLEntry_.keys ())
 			{
-				GlooxCLEntry *entry = JID2CLEntry_ [jid];
-				Q_FOREACH (const QString& var, entry->Variants ())
-					entry->SetStatus (EntryStatus (SOffline, QString ()),
-							var, QXmppPresence (QXmppPresence::Unavailable));
-				JID2CLEntry_.remove (jid);
+				auto entry = JID2CLEntry_.take (jid);
 				ODSEntries_ [jid] = entry;
 				entry->Convert2ODS ();
 			}
