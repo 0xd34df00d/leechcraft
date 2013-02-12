@@ -124,8 +124,13 @@ namespace Xoox
 		emit availableVariantsChanged (Variants ());
 	}
 
-	void SelfContact::RemoveVariant (const QString& resource)
+	void SelfContact::RemoveVariant (const QString& resource, bool thisInstance)
 	{
+		if (thisInstance)
+			for (const auto& otherResource : Status2Prio_.keys ())
+				if (otherResource != resource)
+					RemoveVariant (otherResource, false);
+
 		Status2Prio_.remove (resource);
 		CurrentStatus_.remove (resource);
 

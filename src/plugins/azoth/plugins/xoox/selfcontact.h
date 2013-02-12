@@ -54,7 +54,7 @@ namespace Xoox
 		QList<QAction*> GetActions () const;
 
 		void UpdatePriority (const QString&, int);
-		void RemoveVariant (const QString&);
+		void RemoveVariant (const QString&, bool);
 		QString GetJID () const;
 		void UpdateJID (const QString&);
 	private slots:

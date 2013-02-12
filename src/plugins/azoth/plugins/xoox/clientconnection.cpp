@@ -396,7 +396,7 @@ namespace Xoox
 				ODSEntries_ [jid] = entry;
 				entry->Convert2ODS ();
 			}
-			SelfContact_->RemoveVariant (OurResource_);
+			SelfContact_->RemoveVariant (OurResource_, true);
 		}
 
 		if (state.State_ == SOffline &&
@@ -1024,7 +1024,8 @@ namespace Xoox
 
 		if (jid == OurBareJID_)
 		{
-			if (OurJID_ == pres.from ())
+			const bool thisInstance = OurResource_ == resource;
+			if (thisInstance)
 				emit statusChanged (XooxUtil::PresenceToStatus (pres));
 
 			if (pres.type () == QXmppPresence::Available)
@@ -1034,7 +1035,7 @@ namespace Xoox
 				SelfContact_->SetStatus (XooxUtil::PresenceToStatus (pres), resource, pres);
 			}
 			else
-				SelfContact_->RemoveVariant (resource);
+				SelfContact_->RemoveVariant (resource, thisInstance);
 
 			return;
 		}
