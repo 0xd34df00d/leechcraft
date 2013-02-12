@@ -50,6 +50,7 @@ namespace Xoox
 				int timeout, int perShot, QObject* = 0);
 
 		void Schedule (const QString&, Priority = PLow, bool report = false);
+		void Clear ();
 	private slots:
 		void handleFetch ();
 	};

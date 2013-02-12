@@ -67,6 +67,11 @@ namespace Xoox
 		}
 	}
 
+	void FetchQueue::Clear ()
+	{
+		Queue_.clear ();
+	}
+
 	void FetchQueue::handleFetch ()
 	{
 		int num = std::min (PerShot_, Queue_.size ());
