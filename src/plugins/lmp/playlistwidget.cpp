@@ -296,6 +296,14 @@ namespace LMP
 		SetPlayModeButton ();
 		SetSortOrderButton ();
 
+		auto shuffleAction = new QAction (tr ("Shuffle tracks"), Ui_.Playlist_);
+		shuffleAction->setProperty ("ActionIcon", "media-playlist-shuffle");
+		connect (shuffleAction,
+				SIGNAL (triggered ()),
+				Player_,
+				SLOT (shufflePlaylist ()));
+		PlaylistToolbar_->addAction (shuffleAction);
+
 		MoveUpButtonAction_ = PlaylistToolbar_->addWidget (moveUpButton);
 		MoveDownButtonAction_ = PlaylistToolbar_->addWidget (moveDownButton);
 		EnableMoveButtons (false);
