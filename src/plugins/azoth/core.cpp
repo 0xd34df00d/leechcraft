@@ -1039,9 +1039,13 @@ namespace Azoth
 			return;
 
 		connect (clEntry->GetObject (),
-				SIGNAL (statusChanged (const EntryStatus&, const QString&)),
+				SIGNAL (statusChanged (EntryStatus, QString)),
 				this,
-				SLOT (handleStatusChanged (const EntryStatus&, const QString&)));
+				SLOT (handleStatusChanged (EntryStatus, QString)));
+		connect (clEntry->GetObject (),
+				SIGNAL (availableVariantsChanged (QStringList)),
+				this,
+				SLOT (handleVariantsChanged (QStringList)));
 		connect (clEntry->GetObject (),
 				SIGNAL (availableVariantsChanged (const QStringList&)),
 				this,
@@ -2295,6 +2299,20 @@ namespace Azoth
 		}
 
 		HandleStatusChanged (status, entry, variant, true);
+	}
+
+	void Core::handleVariantsChanged (const QStringList& newVariants)
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "sender is not a ICLEntry:"
+					<< sender ();
+			return;
+		}
+
+		HandleStatusChanged (entry->GetStatus (), entry, QString (), false);
 	}
 
 	void Core::handleEntryPEPEvent (const QString&)
