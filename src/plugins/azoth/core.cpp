@@ -1341,45 +1341,46 @@ namespace Azoth
 
 		cleanupBR ();
 
-		if (entry->GetEntryType () != ICLEntry::ETPrivateChat)
-			Q_FOREACH (const QString& variant, variants)
+		for (const QString& variant : variants)
+		{
+			const QMap<QString, QVariant>& info = entry->GetClientInfo (variant);
+			if (info.isEmpty ())
+				continue;
+
+			tip += "<hr />";
+			if (!variant.isEmpty ())
 			{
-				const QMap<QString, QVariant>& info = entry->GetClientInfo (variant);
-				if (info.isEmpty ())
-					continue;
-
-				tip += "<hr />";
-				if (!variant.isEmpty ())
-					tip += "<strong>" + variant;
-
+				tip += "<strong>" + variant;
 				if (info.contains ("priority"))
 					tip += " (" + QString::number (info.value ("priority").toInt ()) + ")";
 				tip += "</strong><br />";
+			}
+			if (!variant.isEmpty () || variants.size () > 1)
 				tip += Status2Str (entry->GetStatus (variant), PluginProxyObject_);
 
-				if (info.contains ("client_name"))
-					tip += "<br />" + tr ("Using:") + ' ' + Qt::escape (info.value ("client_name").toString ());
-				if (info.contains ("client_version"))
-					tip += " " + Qt::escape (info.value ("client_version").toString ());
-				if (info.contains ("client_remote_name"))
-					tip += "<br />" + tr ("Claiming:") + ' ' + Qt::escape (info.value ("client_remote_name").toString ());
-				if (info.contains ("client_os"))
-					tip += "<br />" + tr ("OS:") + ' ' + Qt::escape (info.value ("client_os").toString ());
+			if (info.contains ("client_name"))
+				tip += "<br />" + tr ("Using:") + ' ' + Qt::escape (info.value ("client_name").toString ());
+			if (info.contains ("client_version"))
+				tip += " " + Qt::escape (info.value ("client_version").toString ());
+			if (info.contains ("client_remote_name"))
+				tip += "<br />" + tr ("Claiming:") + ' ' + Qt::escape (info.value ("client_remote_name").toString ());
+			if (info.contains ("client_os"))
+				tip += "<br />" + tr ("OS:") + ' ' + Qt::escape (info.value ("client_os").toString ());
 
-				if (info.contains ("user_mood"))
-					FormatMood (tip, info ["user_mood"].toMap ());
-				if (info.contains ("user_activity"))
-					FormatActivity (tip, info ["user_activity"].toMap ());
-				if (info.contains ("user_tune"))
-					FormatTune (tip, info ["user_tune"].toMap ());
+			if (info.contains ("user_mood"))
+				FormatMood (tip, info ["user_mood"].toMap ());
+			if (info.contains ("user_activity"))
+				FormatActivity (tip, info ["user_activity"].toMap ());
+			if (info.contains ("user_tune"))
+				FormatTune (tip, info ["user_tune"].toMap ());
 
-				if (info.contains ("custom_user_visible_map"))
-				{
-					const QVariantMap& map = info ["custom_user_visible_map"].toMap ();
-					Q_FOREACH (const QString& key, map.keys ())
-						tip += "<br />" + key + ": " + Qt::escape (map [key].toString ()) + "<br />";
-				}
+			if (info.contains ("custom_user_visible_map"))
+			{
+				const QVariantMap& map = info ["custom_user_visible_map"].toMap ();
+				for (const QString& key : map.keys ())
+					tip += "<br />" + key + ": " + Qt::escape (map [key].toString ()) + "<br />";
 			}
+		}
 
 		cleanupBR ();
 
