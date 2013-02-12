@@ -89,7 +89,11 @@ namespace Xoox
 
 	QStringList SelfContact::Variants () const
 	{
-		return Prio2Status_.values ();
+		auto result = Status2Prio_.keys ();
+		std::sort (result.begin (), result.end (),
+				[this] (const QString& left, const QString& right)
+					{ return Status2Prio_ [left] > Status2Prio_ [right]; });
+		return result;
 	}
 
 	EntryStatus SelfContact::GetStatus (const QString& resource) const
@@ -115,14 +119,14 @@ namespace Xoox
 
 	void SelfContact::UpdatePriority (const QString& resource, int prio)
 	{
-		Prio2Status_.remove (Prio2Status_.key (resource));
-		Prio2Status_ [prio] = resource;
+		Status2Prio_.remove (resource);
+		Status2Prio_ [resource] = prio;
 		emit availableVariantsChanged (Variants ());
 	}
 
 	void SelfContact::RemoveVariant (const QString& resource)
 	{
-		Prio2Status_.remove (Prio2Status_.key (resource));
+		Status2Prio_.remove (resource);
 		CurrentStatus_.remove (resource);
 
 		EntryBase::SetStatus (EntryStatus (SOffline, QString ()),

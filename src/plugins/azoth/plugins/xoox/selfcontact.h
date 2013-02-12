@@ -34,7 +34,7 @@ namespace Xoox
 		QString BareJID_;
 		QString Resource_;
 
-		QMap<int, QString> Prio2Status_;
+		QMap<QString, int> Status2Prio_;
 	public:
 		SelfContact (const QString&, GlooxAccount*);
 
