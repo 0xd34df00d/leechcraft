@@ -80,6 +80,7 @@
 #include "customstatusesmanager.h"
 
 Q_DECLARE_METATYPE (QList<QColor>);
+Q_DECLARE_METATYPE (QPointer<QObject>);
 
 namespace LeechCraft
 {
@@ -283,6 +284,7 @@ namespace Azoth
 
 		qRegisterMetaType<IMessage*> ("LeechCraft::Azoth::IMessage*");
 		qRegisterMetaType<IMessage*> ("IMessage*");
+		qRegisterMetaType<QPointer<QObject>> ("QPointer<QObject>");
 
 		XmlSettingsManager::Instance ().RegisterObject ("StatusIcons",
 				this, "updateStatusIconset");
@@ -1460,7 +1462,10 @@ namespace Azoth
 		Util::QIODevice_ptr icon = GetIconPathForState (state);
 
 		if (rebuildTooltip)
-			RebuildTooltip (entry);
+			QMetaObject::invokeMethod (this,
+					"delayedRebuildTooltip",
+					Qt::QueuedConnection,
+					Q_ARG (QPointer<QObject>, entry->GetObject ()));
 
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 		{
@@ -1942,6 +1947,18 @@ namespace Azoth
 					this,
 					SLOT (handleAccountRemoved (QObject*)));
 		}
+	}
+
+	void Core::delayedRebuildTooltip (QPointer<QObject> entryObj)
+	{
+		if (!entryObj)
+			return;
+
+		auto entry = qobject_cast<ICLEntry*> (entryObj);
+		if (!entry)
+			return;
+
+		RebuildTooltip (entry);
 	}
 
 	void Core::addAccount (QObject *accObject)
