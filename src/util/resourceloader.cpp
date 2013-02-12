@@ -181,7 +181,7 @@ namespace LeechCraft
 					LocalPrefixesChain_ + GlobalPrefixesChain_)
 				Q_FOREACH (const QString& path, pathVariants)
 				{
-					const QString& can = QFileInfo (prefix + RelativePath_ + path).canonicalFilePath ();
+					const QString& can = QFileInfo (prefix + RelativePath_ + path).absoluteFilePath ();
 					if (QFile::exists (can))
 						return can;
 				}
