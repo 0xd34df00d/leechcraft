@@ -381,6 +381,10 @@ namespace Xoox
 
 		if (state.State_ == SOffline)
 		{
+			VCardQueue_->Clear ();
+			CapsQueue_->Clear ();
+			VersionQueue_->Clear ();
+
 			IsConnected_ = false;
 			Q_FOREACH (const QString& jid, JID2CLEntry_.keys ())
 			{
