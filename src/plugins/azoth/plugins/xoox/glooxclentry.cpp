@@ -136,10 +136,14 @@ namespace Xoox
 
 	void GlooxCLEntry::Convert2ODS ()
 	{
+		const auto& prevVariants = Variants ();
+
 		ODS_ = ToOfflineDataSource ();
 		CurrentStatus_.clear ();
+		if (prevVariants.isEmpty ())
+			return;
+
 		emit availableVariantsChanged (QStringList ());
-		emit statusChanged (EntryStatus (SOffline, QString ()), QString ());
 	}
 
 	QString GlooxCLEntry::JIDFromID (GlooxAccount *acc, const QString& id)
