@@ -200,6 +200,7 @@ namespace LMP
 		label->activateWindow ();
 		label->installEventFilter (new AADisplayEventFilter (label));
 	}
+
 	QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters ()
 	{
 		return Util::MakeMap<QString, std::function<QString (MediaInfo)>> ({
