@@ -124,7 +124,7 @@ namespace Xoox
 					const auto& id = Client_->vCardManager ().requestVCard (str);
 					ErrorMgr_->Whitelist (id, report);
 				},
-				OurJID_.contains ("gmail.com") ? 1700 : 600, 1, this))
+				OurJID_.contains ("gmail.com") ? 3000 : 1500, 1, this))
 	, CapsQueue_ (new FetchQueue ([this] (QString str, bool report)
 				{
 					const auto& id = DiscoveryManager_->requestInfo (str, "");
