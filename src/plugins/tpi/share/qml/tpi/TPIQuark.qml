@@ -5,16 +5,26 @@ import "."
 Rectangle {
     id: rootRect
 
-    width: parent.width
-    height: tasksView.count * 10
+    property real length: tasksView.count * 10
+    width: viewOrient == "vertical" ? parent.quarkBaseSize : length
+    height: viewOrient == "vertical" ? length : parent.quarkBaseSize
 
     ListView {
         id: tasksView
 
-        anchors.fill: parent
+        width: parent.parent.quarkBaseSize
+        height: parent.length
         interactive: false
 
         model: TPI_infoModel
+
+        transform: Rotation {
+            origin.x: 0
+            origin.y: 0
+            axis { x: 1; y: 1; z: 0 }
+
+            angle: viewOrient == "vertical" ? 0 : 180
+        }
 
         delegate: Rectangle {
             width: parent.width
