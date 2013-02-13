@@ -118,6 +118,10 @@ namespace SB2
 				SLOT (handleToolbarTopLevel (bool)));
 
 		window->addToolBar (static_cast<Qt::ToolBarArea> (pos), Toolbar_);
+#ifdef Q_OS_MAC
+		// dunno WTF
+		window->show ();
+#endif
 	}
 
 	SBView* ViewManager::GetView () const
