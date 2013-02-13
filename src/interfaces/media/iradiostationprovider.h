@@ -44,7 +44,7 @@ namespace Media
 		MaxRadioRole
 	};
 
-	class IRadioStationProvider
+	class Q_DECL_EXPORT IRadioStationProvider
 	{
 	public:
 		virtual ~IRadioStationProvider () {}

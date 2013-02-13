@@ -77,7 +77,7 @@ Q_DECLARE_METATYPE (LeechCraft::ActionInfo);
  *
  * @sa IHaveShortcuts::SetShortcutProxy().
  */
-class IShortcutProxy
+class Q_DECL_EXPORT IShortcutProxy
 {
 public:
 	/** @brief Returns a QKeySequence for the given action.
@@ -100,7 +100,7 @@ public:
 	virtual ~IShortcutProxy () { }
 };
 
-class IHaveShortcuts
+class Q_DECL_EXPORT IHaveShortcuts
 {
 public:
 	/** @brief Sets shortcut's list of key sequences if it has been changed.

@@ -36,7 +36,7 @@ namespace Media
 		QUrl ReleaseURL_;
 	};
 
-	class IRecentReleases
+	class Q_DECL_EXPORT IRecentReleases
 	{
 	public:
 		virtual ~IRecentReleases () {}

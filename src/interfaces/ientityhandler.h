@@ -33,7 +33,7 @@ struct EntityTestHandleResult;
  *
  * @sa IDownload
  */
-class IEntityHandler
+class Q_DECL_EXPORT IEntityHandler
 {
 public:
 	/** @brief Returns whether plugin can handle given entity.

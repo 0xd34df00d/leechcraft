@@ -28,7 +28,7 @@ namespace VFS
 	class IContainerEngine;
 	class IProtocolEngine;
 
-	class IEngineProvider
+	class Q_DECL_EXPORT IEngineProvider
 	{
 	public:
 		virtual ~IEngineProvider () {}

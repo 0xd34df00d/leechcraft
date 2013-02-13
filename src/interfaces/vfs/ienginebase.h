@@ -26,7 +26,7 @@ namespace LeechCraft
 {
 namespace VFS
 {
-	class IEngineBase
+	class Q_DECL_EXPORT IEngineBase
 	{
 	public:
 		virtual ~IEngineBase () {}

@@ -23,7 +23,7 @@
 
 class QUrl;
 
-class IWebFileStorage
+class Q_DECL_EXPORT IWebFileStorage
 {
 public:
 	virtual ~IWebFileStorage () {}

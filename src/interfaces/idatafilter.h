@@ -37,7 +37,7 @@
  * GetFilterVariants(). The chosen variant should then be passed in
  * the "DataFilter" element of the Entity::Additional_ map.
  */
-class IDataFilter
+class Q_DECL_EXPORT IDataFilter
 {
 public:
 	struct FilterVariant

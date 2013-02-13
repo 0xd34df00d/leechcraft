@@ -47,7 +47,7 @@
  *
  * Of course, each plugin adaptor should also implement at least IInfo.
  */
-class IPluginAdaptor
+class Q_DECL_EXPORT IPluginAdaptor
 {
 public:
 	virtual ~IPluginAdaptor () {}

@@ -31,7 +31,7 @@ namespace LeechCraft
 {
 	/** Possible content types a text editor could handle.
 	 */
-	enum class ContentType
+	enum class Q_DECL_EXPORT ContentType
 	{
 		/** HTML content. The corresponding editor should provide WYSIWYG
 		 * capabilities or at least some fancy highlighting for HTML.
@@ -45,7 +45,7 @@ namespace LeechCraft
 
 	/** Enumeration for some standard editor actions.
 	 */
-	enum class EditorAction
+	enum class Q_DECL_EXPORT EditorAction
 	{
 		Find,
 		Replace
@@ -68,7 +68,7 @@ namespace LeechCraft
  *
  * @sa IAdvancedHTMLEditor
  */
-class IEditorWidget
+class Q_DECL_EXPORT IEditorWidget
 {
 public:
 	virtual ~IEditorWidget () {}
@@ -178,7 +178,7 @@ protected:
  * user tag). These lists are passed to the SetTagsMappings() function,
  * the first list called html2rich and the second called rich2html.
  */
-class IAdvancedHTMLEditor
+class Q_DECL_EXPORT IAdvancedHTMLEditor
 {
 public:
 	virtual ~IAdvancedHTMLEditor () {}
@@ -223,7 +223,7 @@ public:
  * (Snails) would use such editor widget to allow the user to write posts
  * or mails.
  */
-class ITextEditor
+class Q_DECL_EXPORT ITextEditor
 {
 public:
 	virtual ~ITextEditor () {}

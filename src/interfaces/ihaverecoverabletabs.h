@@ -41,7 +41,7 @@ class QIcon;
  *
  * @sa IHaveRecoverableTabs
  */
-class IRecoverableTab
+class Q_DECL_EXPORT IRecoverableTab
 {
 public:
 	virtual ~IRecoverableTab () {}
@@ -137,7 +137,7 @@ namespace LeechCraft
  *
  * @sa IRecoverableTab, LeechCraft::TabRecoverInfo, IHaveTabs
  */
-class IHaveRecoverableTabs
+class Q_DECL_EXPORT IHaveRecoverableTabs
 {
 public:
 	virtual ~IHaveRecoverableTabs () {}

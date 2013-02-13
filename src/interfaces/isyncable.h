@@ -56,7 +56,7 @@ Q_DECLARE_METATYPE (LeechCraft::Sync::ChainID_t);
  * To notify about new deltas, the following signal is expected:
  * newDeltasAvailable(const ChainID_t& chain)
  */
-class ISyncable
+class Q_DECL_EXPORT ISyncable
 {
 public:
 	virtual ~ISyncable () {}

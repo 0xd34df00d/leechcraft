@@ -25,7 +25,7 @@
 
 namespace Media
 {
-	enum class EventAttendType
+	enum class Q_DECL_EXPORT EventAttendType
 	{
 		None,
 		Maybe,
@@ -63,7 +63,7 @@ namespace Media
 
 	typedef QList<EventInfo> EventInfos_t;
 
-	class IEventsProvider
+	class Q_DECL_EXPORT IEventsProvider
 	{
 	public:
 		virtual ~IEventsProvider () {}

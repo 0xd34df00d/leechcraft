@@ -25,7 +25,7 @@ namespace LeechCraft
 	struct Entity;
 }
 
-class IEntityManager
+class Q_DECL_EXPORT IEntityManager
 {
 public:
 	struct DelegationResult

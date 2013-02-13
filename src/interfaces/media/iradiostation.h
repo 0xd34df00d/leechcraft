@@ -27,7 +27,7 @@ namespace Media
 {
 	struct AudioInfo;
 
-	class IRadioStation
+	class Q_DECL_EXPORT IRadioStation
 	{
 	public:
 		virtual ~IRadioStation () {}

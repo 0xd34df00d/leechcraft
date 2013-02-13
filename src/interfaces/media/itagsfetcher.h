@@ -23,7 +23,7 @@
 
 namespace Media
 {
-	class IPendingTagsFetch
+	class Q_DECL_EXPORT IPendingTagsFetch
 	{
 	public:
 		virtual ~IPendingTagsFetch () {}
@@ -34,7 +34,7 @@ namespace Media
 		virtual void ready (const QString& filename, const Media::AudioInfo& info) = 0;
 	};
 
-	class ITagsFetcher
+	class Q_DECL_EXPORT ITagsFetcher
 	{
 	public:
 		virtual ~ITagsFetcher () {}
