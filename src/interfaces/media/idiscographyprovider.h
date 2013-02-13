@@ -36,7 +36,7 @@ namespace Media
 		QString Name_;
 		int Year_;
 
-		enum class Q_DECL_EXPORT Type
+		enum class Type
 		{
 			Standard,
 			EP,

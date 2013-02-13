@@ -25,7 +25,7 @@
 
 namespace Media
 {
-	enum class Q_DECL_EXPORT EventAttendType
+	enum class EventAttendType
 	{
 		None,
 		Maybe,

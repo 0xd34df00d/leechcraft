@@ -59,7 +59,7 @@ namespace Media
 
 		virtual QString GetServiceName () const = 0;
 
-		enum class Q_DECL_EXPORT HypeType
+		enum class HypeType
 		{
 			NewArtists,
 			NewTracks,
