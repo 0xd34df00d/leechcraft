@@ -31,7 +31,7 @@ namespace LeechCraft
 {
 	/** Possible content types a text editor could handle.
 	 */
-	enum class Q_DECL_EXPORT ContentType
+	enum class ContentType
 	{
 		/** HTML content. The corresponding editor should provide WYSIWYG
 		 * capabilities or at least some fancy highlighting for HTML.
@@ -45,7 +45,7 @@ namespace LeechCraft
 
 	/** Enumeration for some standard editor actions.
 	 */
-	enum class Q_DECL_EXPORT EditorAction
+	enum class EditorAction
 	{
 		Find,
 		Replace

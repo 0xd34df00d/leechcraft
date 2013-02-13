@@ -26,7 +26,7 @@ class QAction;
 
 namespace LeechCraft
 {
-	enum class Q_DECL_EXPORT ActionsEmbedPlace
+	enum class ActionsEmbedPlace
 	{
 		ToolsMenu,
 		CommonContextMenu,
