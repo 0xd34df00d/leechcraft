@@ -37,7 +37,7 @@ namespace LeechCraft
 	typedef QList<QuarkComponent> QuarkComponents_t;
 }
 
-class IQuarkComponentProvider
+class Q_DECL_EXPORT IQuarkComponentProvider
 {
 public:
 	virtual ~IQuarkComponentProvider () {}

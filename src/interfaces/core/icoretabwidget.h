@@ -31,7 +31,7 @@ class QMenu;
  *
  * This interface is for communication with the core tab widget.
  */
-class ICoreTabWidget
+class Q_DECL_EXPORT ICoreTabWidget
 {
 public:
 	virtual ~ICoreTabWidget () {}

@@ -54,7 +54,7 @@ typedef std::shared_ptr<ICoreProxy> ICoreProxy_ptr;
  * only basic initialization/allocation stuff like allocation memory for
  * the objects.
  */
-class IInfo
+class Q_DECL_EXPORT IInfo
 {
 public:
 	/** @brief Initializes the plugin.

@@ -52,14 +52,14 @@ namespace Media
 		QUrl ArtistPage_;
 	};
 
-	class IHypesProvider
+	class Q_DECL_EXPORT IHypesProvider
 	{
 	public:
 		virtual ~IHypesProvider () {}
 
 		virtual QString GetServiceName () const = 0;
 
-		enum class HypeType
+		enum class Q_DECL_EXPORT HypeType
 		{
 			NewArtists,
 			NewTracks,

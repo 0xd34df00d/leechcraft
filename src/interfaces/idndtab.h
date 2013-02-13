@@ -24,7 +24,7 @@ class QDropEvent;
 class QDragMoveEvent;
 class QMimeData;
 
-class IDNDTab
+class Q_DECL_EXPORT IDNDTab
 {
 public:
 	virtual ~IDNDTab () {}

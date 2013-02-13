@@ -36,7 +36,7 @@ namespace Media
 		QString Name_;
 		int Year_;
 
-		enum class Type
+		enum class Q_DECL_EXPORT Type
 		{
 			Standard,
 			EP,
@@ -47,7 +47,7 @@ namespace Media
 		QList<QList<ReleaseTrackInfo>> TrackInfos_;
 	};
 
-	class IPendingDisco
+	class Q_DECL_EXPORT IPendingDisco
 	{
 	public:
 		virtual ~IPendingDisco () {}
@@ -60,7 +60,7 @@ namespace Media
 		virtual void error (const QString&) = 0;
 	};
 
-	class IDiscographyProvider
+	class Q_DECL_EXPORT IDiscographyProvider
 	{
 	public:
 		virtual ~IDiscographyProvider () {}

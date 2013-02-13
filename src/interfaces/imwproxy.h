@@ -31,7 +31,7 @@ class QMenu;
  * All the interaction with LeechCraft main window should be done
  * through this interface.
  */
-class IMWProxy
+class Q_DECL_EXPORT IMWProxy
 {
 public:
 	enum WidgetArea

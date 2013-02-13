@@ -29,7 +29,7 @@ class QWizardPage;
  * insert into the wizard in GetWizardPages(). Of course, it can return
  * different pages each time.
  */
-class IStartupWizard
+class Q_DECL_EXPORT IStartupWizard
 {
 public:
 	virtual ~IStartupWizard () {}

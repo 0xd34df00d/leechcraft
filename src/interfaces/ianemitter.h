@@ -121,7 +121,7 @@ namespace LeechCraft
  *
  * @sa LeechCraft::ANFieldData
  */
-class IANEmitter
+class Q_DECL_EXPORT IANEmitter
 {
 public:
 	virtual ~IANEmitter () {}

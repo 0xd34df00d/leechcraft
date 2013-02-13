@@ -43,7 +43,7 @@ namespace Media
 		return qHash (info.Album_.toUtf8 () + '\0' + info.Artist_.toUtf8 ());
 	}
 
-	class IAlbumArtProvider
+	class Q_DECL_EXPORT IAlbumArtProvider
 	{
 	public:
 		virtual ~IAlbumArtProvider () {}

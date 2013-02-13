@@ -26,7 +26,7 @@
  * This interface is to be implemented by the objects that represent
  * loaded scripts.
  */
-class IScript
+class Q_DECL_EXPORT IScript
 {
 public:
 	virtual ~IScript () {}
@@ -82,7 +82,7 @@ typedef std::shared_ptr<IScript> IScript_ptr;
  *
  * @sa IScriptLoader, IScript
  */
-class IScriptLoaderInstance
+class Q_DECL_EXPORT IScriptLoaderInstance
 {
 public:
 	virtual ~IScriptLoaderInstance () {}
@@ -152,7 +152,7 @@ public:
  *
  * @sa IScriptLoaderInstance
  */
-class IScriptLoader
+class Q_DECL_EXPORT IScriptLoader
 {
 public:
 	virtual ~IScriptLoader () {}
