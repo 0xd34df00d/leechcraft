@@ -80,7 +80,8 @@ namespace TPI
 		if (!TooltipView_)
 			TooltipView_ = new TooltipView (ModelMgr_->GetModel (), Proxy_->GetColorThemeManager ());
 
-		TooltipView_->move (Util::FitRectScreen ({ x, y }, TooltipView_->size (), Util::NoOverlap, shift));
+		TooltipView_->move (Util::FitRectScreen ({ x, y },
+				TooltipView_->size (), Util::NoOverlap, shift));
 		TooltipView_->show ();
 		TooltipView_->Hovered ();
 	}
