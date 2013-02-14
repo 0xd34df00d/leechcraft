@@ -898,6 +898,8 @@ namespace Xoox
 
 		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
 			rh->Join ();
+
+		PrivacyListsManager_->QueryLists ();
 	}
 
 	void ClientConnection::handleDisconnected ()
