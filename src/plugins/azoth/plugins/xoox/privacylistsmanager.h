@@ -78,6 +78,8 @@ namespace Xoox
 		void SetStanzaTypes (StanzaTypes);
 	};
 
+	bool operator== (const PrivacyListItem&, const PrivacyListItem&);
+
 	class PrivacyList
 	{
 		QString Name_;

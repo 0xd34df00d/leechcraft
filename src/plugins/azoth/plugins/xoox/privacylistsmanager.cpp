@@ -164,6 +164,14 @@ namespace Xoox
 		Stanzas_ = st;
 	}
 
+	bool operator== (const PrivacyListItem& left, const PrivacyListItem& right)
+	{
+		return left.GetAction () == right.GetAction () &&
+				left.GetType() == right.GetType () &&
+				left.GetStanzaTypes () == right.GetStanzaTypes () &&
+				left.GetValue () == right.GetValue ();
+	}
+
 	PrivacyList::PrivacyList (const QString& name)
 	: Name_ (name)
 	{
