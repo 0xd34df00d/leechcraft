@@ -1519,7 +1519,6 @@ namespace Xoox
 				entry = new GlooxCLEntry (bareJID, Account_);
 				JID2CLEntry_ [bareJID] = entry;
 				ScheduleFetchVCard (bareJID, false);
-				FetchVersion (bareJID, false);
 			}
 		}
 		else
