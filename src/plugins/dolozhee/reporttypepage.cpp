@@ -58,7 +58,7 @@ namespace Dolozhee
 			return;
 
 		auto rw = static_cast<ReportWizard*> (wizard ());
-		QNetworkRequest req (QUrl ("http://dev.leechcraft.org/projects/leechcraft/issue_categories.xml"));
+		QNetworkRequest req (QUrl ("http://dev.leechcraft.org/projects/leechcraft.xml?include=issue_categories"));
 		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/xml");
 		auto reply = rw->GetNAM ()->get (req);
 		connect (reply,
@@ -103,12 +103,14 @@ namespace Dolozhee
 			return;
 		}
 
-		auto category = doc.documentElement ().firstChildElement ("issue_category");
+		auto category = doc.documentElement ()
+				.firstChildElement ("issue_categories")
+				.firstChildElement ("issue_category");
 		while (!category.isNull ())
 		{
 			std::shared_ptr<void> guard (static_cast<void*> (0),
 					[&category] (void*) { category = category.nextSiblingElement ("issue_category"); });
-			const auto& idText = category.firstChildElement ("id").text ();
+			const auto& idText = category.attribute ("id");
 			bool ok = false;
 			const int id = idText.toInt (&ok);
 			if (!ok)
@@ -119,7 +121,7 @@ namespace Dolozhee
 				continue;
 			}
 
-			const auto& name = category.firstChildElement ("name").text ();
+			const auto& name = category.attribute ("name");
 
 			Ui_.CatCombo_->addItem (name, id);
 		}
