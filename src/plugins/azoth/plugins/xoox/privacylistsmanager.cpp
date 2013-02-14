@@ -282,6 +282,9 @@ namespace Xoox
 		iq.setExtensions (QXmppElementList () << query);
 
 		client ()->sendPacket (iq);
+
+		CurrentName_ = name;
+		QueryList (name);
 	}
 
 	void PrivacyListsManager::SetList (const PrivacyList& list)
@@ -295,6 +298,17 @@ namespace Xoox
 		iq.setExtensions (QXmppElementList () << query);
 
 		client ()->sendPacket (iq);
+
+		if (list.GetName () == CurrentName_)
+		{
+			CurrentList_ = list;
+			emit currentListFetched (list);
+		}
+	}
+
+	const PrivacyList& PrivacyListsManager::GetCurrentList () const
+	{
+		return CurrentList_;
 	}
 
 	QStringList PrivacyListsManager::discoveryFeatures () const
@@ -346,7 +360,11 @@ namespace Xoox
 			listElem = listElem.nextSiblingElement ("list");
 		}
 
+		CurrentName_ = active.isEmpty () ? def : active;;
+
 		emit gotLists (lists, active, def);
+
+		QueryList (CurrentName_);
 	}
 
 	void PrivacyListsManager::HandleList (const QDomElement& elem)
@@ -355,6 +373,12 @@ namespace Xoox
 
 		PrivacyList list;
 		list.Parse (query.firstChildElement ("list"));
+
+		if (list.GetName () == CurrentName_)
+		{
+			CurrentList_ = list;
+			currentListFetched (list);
+		}
 
 		emit gotList (list);
 	}
