@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "selfcontact.h"
+#include <algorithm>
 #include <QXmppVCardManager.h>
 #include "clientconnection.h"
 #include "vcarddialog.h"
