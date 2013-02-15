@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "velvetbird.h"
+#include "protomanager.h"
 
 namespace LeechCraft
 {
@@ -26,6 +27,7 @@ namespace VelvetBird
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		ProtoMgr_ = new ProtoManager;
 	}
 
 	void Plugin::SecondInit ()
