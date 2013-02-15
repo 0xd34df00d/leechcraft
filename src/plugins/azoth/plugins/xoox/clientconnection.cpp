@@ -692,7 +692,11 @@ namespace Xoox
 	{
 		const QString& jid = entry->GetJID ();
 
-		Client_->rosterManager ().removeItem (jid);
+		auto& rm = Client_->rosterManager ();
+		if (rm.getRosterBareJids ().contains (jid))
+			rm.removeItem (jid);
+		else
+			handleRosterItemRemoved (jid);
 
 		if (ODSEntries_.contains (jid))
 			delete ODSEntries_.take (jid);
