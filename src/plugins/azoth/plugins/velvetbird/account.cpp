@@ -18,6 +18,7 @@
 
 #include "account.h"
 #include <QtDebug>
+#include <util/passutils.h>
 #include "protocol.h"
 
 namespace LeechCraft
@@ -98,8 +99,29 @@ namespace VelvetBird
 		return EntryStatus ();
 	}
 
-	void Account::ChangeState (const EntryStatus&)
+	void Account::ChangeState (const EntryStatus& status)
 	{
+		if (!purple_account_get_password (Account_))
+		{
+			const auto& str = Util::GetPassword ("Azoth." + GetAccountID (),
+					tr ("Enter password for account %1:").arg (GetAccountName ()), Proto_, true);
+			if (str.isEmpty ())
+				return;
+
+			purple_account_set_password (Account_, str.toUtf8 ().constData ());
+		}
+
+		if (status.State_ == SOffline)
+		{
+			if (!purple_account_is_disconnected (Account_))
+				purple_account_disconnect (Account_);
+			return;
+		}
+
+		if (!purple_account_is_connected (Account_) && !purple_account_is_connecting (Account_))
+			purple_account_connect (Account_);
+
+		purple_account_set_status (Account_, purple_primitive_get_id_from_type (PURPLE_STATUS_AVAILABLE), true, NULL);
 	}
 
 	void Account::Authorize (QObject*)

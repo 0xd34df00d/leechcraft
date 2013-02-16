@@ -20,6 +20,8 @@
 #include <QIcon>
 #include <QFormLayout>
 #include <QtDebug>
+#include <interfaces/core/ientitymanager.h>
+#include <interfaces/structures.h>
 #include "account.h"
 #include "accregfirstpage.h"
 

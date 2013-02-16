@@ -144,6 +144,21 @@ namespace VelvetBird
 			NULL,
 			NULL
 		};
+
+		PurpleConnectionUiOps ConnUiOps =
+		{
+			NULL,
+			[] (PurpleConnection *gc) { qDebug () << Q_FUNC_INFO << "connected"; },
+			[] (PurpleConnection *gc) { qDebug () << Q_FUNC_INFO << "disconnected"; },
+			NULL,
+			[] (PurpleConnection *gc, const char *text) { qDebug () << Q_FUNC_INFO << "disconnected with error" << text; },
+			NULL,
+			NULL,
+			NULL,
+			NULL,
+			NULL,
+			NULL
+		};
 	}
 
 	ProtoManager::ProtoManager (ICoreProxy_ptr proxy, QObject *parent)
@@ -156,6 +171,7 @@ namespace VelvetBird
 		purple_core_set_ui_ops (&UiOps);
 		purple_eventloop_set_ui_ops (&EvLoopOps);
 		purple_idle_set_ui_ops (&IdleOps);
+		purple_connections_set_ui_ops (&ConnUiOps);
 
 		if (!purple_core_init ("leechcraft.azoth"))
 		{
@@ -174,8 +190,18 @@ namespace VelvetBird
 			auto item = static_cast<PurplePlugin*> (protos->data);
 			protos = protos->next;
 
-			Protocols_ << new Protocol (item, proxy, parent);
-			id2proto [Protocols_.last ()->GetPurpleID ()] = Protocols_.last ();
+			auto proto = new Protocol (item, proxy, parent);
+			Protocols_ << proto;
+			id2proto [proto->GetPurpleID ()] = proto;
+
+			connect (proto,
+					SIGNAL (gotEntity (LeechCraft::Entity)),
+					this,
+					SIGNAL (gotEntity (LeechCraft::Entity)));
+			connect (proto,
+					SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
+					this,
+					SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
 		}
 
 		auto accs = purple_accounts_get_all ();

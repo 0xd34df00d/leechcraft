@@ -23,6 +23,8 @@
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace Azoth
 {
 namespace VelvetBird
@@ -39,6 +41,9 @@ namespace VelvetBird
 		ProtoManager (ICoreProxy_ptr, QObject*);
 
 		QList<QObject*> GetProtoObjs () const;
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }
