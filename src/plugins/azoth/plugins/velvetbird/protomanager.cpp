@@ -123,6 +123,11 @@ namespace VelvetBird
 			NULL,
 			NULL
 		};
+
+		PurpleIdleUiOps IdleOps =
+		{
+			[] () { return time_t (); }
+		};
 	}
 
 	ProtoManager::ProtoManager (ICoreProxy_ptr proxy, QObject *parent)
@@ -134,6 +139,7 @@ namespace VelvetBird
 
 		purple_core_set_ui_ops (&UiOps);
 		purple_eventloop_set_ui_ops (&EvLoopOps);
+		purple_idle_set_ui_ops (&IdleOps);
 
 		if (!purple_core_init ("leechcraft.azoth"))
 		{
