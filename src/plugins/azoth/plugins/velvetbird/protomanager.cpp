@@ -159,12 +159,16 @@ namespace VelvetBird
 			NULL,
 			NULL
 		};
+
+		PurpleBlistUiOps BListUiOps = {};
 	}
 
 	ProtoManager::ProtoManager (ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
 	{
+		purple_debug_set_enabled (true);
+
 		const auto& dir = Util::CreateIfNotExists ("azoth/velvetbird/purple");
 		purple_util_set_user_dir (dir.absolutePath ().toUtf8 ().constData ());
 
@@ -173,12 +177,17 @@ namespace VelvetBird
 		purple_idle_set_ui_ops (&IdleOps);
 		purple_connections_set_ui_ops (&ConnUiOps);
 
+		purple_blist_set_ui_ops (&BListUiOps);
+
 		if (!purple_core_init ("leechcraft.azoth"))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "failed initializing libpurple";
 			return;
 		}
+
+		purple_set_blist (purple_blist_new ());
+		purple_blist_load ();
 
 		purple_accounts_set_ui_ops (&AccUiOps);
 
