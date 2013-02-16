@@ -89,6 +89,9 @@ namespace SB2
 		View_->rootContext ()->setContextProperty ("quarkProxy", new QuarkProxy (this, proxy, this));
 		View_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
+		View_->rootContext ()->setContextProperty ("SB2_settingsModeTooltip", tr ("Settings mode"));
+		View_->rootContext ()->setContextProperty ("SB2_quarkOrderTooltip", tr ("Quarks order"));
+		View_->rootContext ()->setContextProperty ("SB2_addQuarkTooltip", tr ("Add quark"));
 		View_->engine ()->addImageProvider (ImageProviderID, new Util::ThemeImageProvider (proxy));
 
 		QSettings settings (QCoreApplication::organizationName (),
