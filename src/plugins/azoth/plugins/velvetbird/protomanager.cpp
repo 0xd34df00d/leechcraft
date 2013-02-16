@@ -141,7 +141,12 @@ namespace VelvetBird
 		}
 
 		auto protos = purple_plugins_get_protocols ();
-		qDebug () << g_list_length (protos);
+		while (protos)
+		{
+			auto item = static_cast<PurplePlugin*> (protos->data);
+			Plugins_ << item;
+			protos = protos->next;
+		}
 	}
 }
 }

@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QObject>
+#include <plugin.h>
 
 namespace LeechCraft
 {
@@ -29,6 +30,8 @@ namespace VelvetBird
 	class ProtoManager : public QObject
 	{
 		Q_OBJECT
+
+		QList<PurplePlugin*> Plugins_;
 	public:
 		ProtoManager (QObject* = 0);
 	};
