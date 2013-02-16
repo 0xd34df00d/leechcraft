@@ -21,6 +21,8 @@
 #include <libpurple/purple.h>
 #include <libpurple/core.h>
 #include <libpurple/plugin.h>
+#include "protocol.h"
+#include "account.h"
 
 namespace LeechCraft
 {
@@ -122,16 +124,54 @@ namespace VelvetBird
 			NULL,
 			NULL
 		};
+
+		PurpleIdleUiOps IdleOps =
+		{
+			[] () { return time_t (); }
+		};
+
+		PurpleAccountUiOps AccUiOps =
+		{
+			NULL,
+			[] (PurpleAccount *acc, PurpleStatus *status)
+				{ static_cast<Account*> (acc->ui_data)->HandleStatus (status); },
+			NULL,
+			NULL,
+			NULL,
+
+			NULL,
+			NULL,
+			NULL,
+			NULL
+		};
+
+		PurpleConnectionUiOps ConnUiOps =
+		{
+			NULL,
+			[] (PurpleConnection *gc) { qDebug () << Q_FUNC_INFO << "connected"; },
+			[] (PurpleConnection *gc) { qDebug () << Q_FUNC_INFO << "disconnected"; },
+			NULL,
+			[] (PurpleConnection *gc, const char *text) { qDebug () << Q_FUNC_INFO << "disconnected with error" << text; },
+			NULL,
+			NULL,
+			NULL,
+			NULL,
+			NULL,
+			NULL
+		};
 	}
 
-	ProtoManager::ProtoManager (QObject *parent)
+	ProtoManager::ProtoManager (ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
+	, Proxy_ (proxy)
 	{
 		const auto& dir = Util::CreateIfNotExists ("azoth/velvetbird/purple");
 		purple_util_set_user_dir (dir.absolutePath ().toUtf8 ().constData ());
 
 		purple_core_set_ui_ops (&UiOps);
 		purple_eventloop_set_ui_ops (&EvLoopOps);
+		purple_idle_set_ui_ops (&IdleOps);
+		purple_connections_set_ui_ops (&ConnUiOps);
 
 		if (!purple_core_init ("leechcraft.azoth"))
 		{
@@ -140,13 +180,46 @@ namespace VelvetBird
 			return;
 		}
 
+		purple_accounts_set_ui_ops (&AccUiOps);
+
+		QMap<QByteArray, Protocol*> id2proto;
+
 		auto protos = purple_plugins_get_protocols ();
 		while (protos)
 		{
 			auto item = static_cast<PurplePlugin*> (protos->data);
-			Plugins_ << item;
 			protos = protos->next;
+
+			auto proto = new Protocol (item, proxy, parent);
+			Protocols_ << proto;
+			id2proto [proto->GetPurpleID ()] = proto;
+
+			connect (proto,
+					SIGNAL (gotEntity (LeechCraft::Entity)),
+					this,
+					SIGNAL (gotEntity (LeechCraft::Entity)));
+			connect (proto,
+					SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
+					this,
+					SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
 		}
+
+		auto accs = purple_accounts_get_all ();
+		while (accs)
+		{
+			auto acc = static_cast<PurpleAccount*> (accs->data);
+			accs = accs->next;
+
+			id2proto [purple_account_get_protocol_id (acc)]->PushAccount (acc);
+		}
+	}
+
+	QList<QObject*> ProtoManager::GetProtoObjs () const
+	{
+		QList<QObject*> result;
+		for (auto proto : Protocols_)
+			result << proto;
+		return result;
 	}
 }
 }

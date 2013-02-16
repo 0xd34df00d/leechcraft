@@ -18,10 +18,8 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/azoth/iprotocolplugin.h>
+#include <QWidget>
+#include "ui_accregfirstpage.h"
 
 namespace LeechCraft
 {
@@ -29,37 +27,13 @@ namespace Azoth
 {
 namespace VelvetBird
 {
-	class ProtoManager;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public IProtocolPlugin
+	class AccRegFirstPage : public QWidget
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin)
-
-		ProtoManager *ProtoMgr_;
+		Ui::AccRegFirstPage Ui_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
+		AccRegFirstPage (QWidget* = 0);
+
 		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		QSet<QByteArray> GetPluginClasses () const;
-
-		QObject* GetObject ();
-		QList<QObject*> GetProtocols () const;
-	public slots:
-		void initPlugin (QObject*);
-	signals:
-		void gotNewProtocols (const QList<QObject*>&);
-	
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }

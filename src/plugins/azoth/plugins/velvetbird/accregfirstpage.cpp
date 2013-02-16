@@ -16,12 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/azoth/iprotocolplugin.h>
+#include "accregfirstpage.h"
 
 namespace LeechCraft
 {
@@ -29,38 +24,16 @@ namespace Azoth
 {
 namespace VelvetBird
 {
-	class ProtoManager;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public IProtocolPlugin
+	AccRegFirstPage::AccRegFirstPage (QWidget *parent)
+	: QWidget (parent)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin)
+		Ui_.setupUi (this);
+	}
 
-		ProtoManager *ProtoMgr_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		QSet<QByteArray> GetPluginClasses () const;
-
-		QObject* GetObject ();
-		QList<QObject*> GetProtocols () const;
-	public slots:
-		void initPlugin (QObject*);
-	signals:
-		void gotNewProtocols (const QList<QObject*>&);
-	
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-	};
+	QString AccRegFirstPage::GetName () const
+	{
+		return Ui_.Name_->text ();
+	}
 }
 }
 }
