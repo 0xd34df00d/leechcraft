@@ -22,6 +22,7 @@ ADD_DEFINITIONS (${LIBPURPLE_DEFINITIONS})
 SET (VELVETBIRD_SRCS
 	velvetbird.cpp
 	protomanager.cpp
+	protocol.cpp
 	)
 SET (VELVETBIRD_FORMS
 	)
