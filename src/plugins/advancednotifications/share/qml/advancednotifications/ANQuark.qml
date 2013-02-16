@@ -16,6 +16,7 @@ Rectangle {
 
         anchors.fill: parent
         actionIconURL: "image://ThemeIcons/preferences-desktop-notification"
+        textTooltip: AN_quarkTooltip
 
         onTriggered: {
             var global = commonJS.getTooltipPos(anButton);
