@@ -18,7 +18,10 @@
 
 #include "protocol.h"
 #include <QIcon>
+#include <QFormLayout>
 #include <QtDebug>
+#include "account.h"
+#include "accregfirstpage.h"
 
 namespace LeechCraft
 {
@@ -45,7 +48,10 @@ namespace VelvetBird
 
 	QList<QObject*> Protocol::GetRegisteredAccounts ()
 	{
-		return {};
+		QList<QObject*> result;
+		for (auto acc : Accounts_)
+			result << acc;
+		return result;
 	}
 
 	QObject* Protocol::GetParentProtocolPlugin () const
@@ -60,7 +66,7 @@ namespace VelvetBird
 
 	QIcon Protocol::GetProtocolIcon () const
 	{
-		QByteArray id (purple_plugin_get_id (PPlug_));
+		auto id = GetPurpleID ();
 		if (id.startsWith ("prpl-"))
 			id.remove (0, 5);
 
@@ -72,16 +78,32 @@ namespace VelvetBird
 
 	QByteArray Protocol::GetProtocolID () const
 	{
-		return QByteArray ("VelvetBird.") + purple_plugin_get_id (PPlug_);
+		return "VelvetBird." + GetPurpleID ();
 	}
 
 	QList<QWidget*> Protocol::GetAccountRegistrationWidgets (IProtocol::AccountAddOptions opts)
 	{
-		return {};
+		auto nameWidget = new AccRegFirstPage ();
+		return { nameWidget };
 	}
 
 	void Protocol::RegisterAccount (const QString& name, const QList<QWidget*>& widgets)
 	{
+		auto nameWidget = dynamic_cast<AccRegFirstPage*> (widgets.value (0));
+		if (!nameWidget)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "incorrect widgets"
+					<< widgets;
+			return;
+		}
+
+		auto pacc = purple_account_new (nameWidget->GetName ().toUtf8 ().constData (),
+				GetPurpleID ().constData ());
+		purple_account_set_alias (pacc, name.toUtf8 ().constData ());
+		purple_accounts_add (pacc);
+
+		PushAccount (pacc);
 	}
 
 	QWidget* Protocol::GetMUCJoinWidget ()
@@ -89,9 +111,28 @@ namespace VelvetBird
 		return 0;
 	}
 
-	void Protocol::RemoveAccount (QObject *account)
+	void Protocol::RemoveAccount (QObject *accObj)
 	{
+		auto acc = qobject_cast<Account*> (accObj);
+		emit accountRemoved (accObj);
+
+		purple_accounts_delete (acc->GetPurpleAcc ());
+		delete acc;
 	}
+
+	QByteArray Protocol::GetPurpleID () const
+	{
+		return purple_plugin_get_id (PPlug_);
+	}
+
+	void Protocol::PushAccount (PurpleAccount *pacc)
+	{
+		const auto& name = QString::fromUtf8 (purple_account_get_alias (pacc));
+		auto account = new Account (name, pacc, this);
+		Accounts_ << account;
+		emit accountAdded (account);
+	}
+
 }
 }
 }

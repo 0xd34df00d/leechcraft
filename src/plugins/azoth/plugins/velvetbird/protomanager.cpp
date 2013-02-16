@@ -142,15 +142,25 @@ namespace VelvetBird
 			return;
 		}
 
+		QMap<QByteArray, Protocol*> id2proto;
+
 		auto protos = purple_plugins_get_protocols ();
 		while (protos)
 		{
 			auto item = static_cast<PurplePlugin*> (protos->data);
 			protos = protos->next;
 
-			qDebug () << purple_plugin_get_id (item);
-
 			Protocols_ << new Protocol (item, proxy, parent);
+			id2proto [Protocols_.last ()->GetPurpleID ()] = Protocols_.last ();
+		}
+
+		auto accs = purple_accounts_get_all ();
+		while (accs)
+		{
+			auto acc = static_cast<PurpleAccount*> (accs->data);
+			accs = accs->next;
+
+			id2proto [purple_account_get_protocol_id (acc)]->PushAccount (acc);
 		}
 	}
 

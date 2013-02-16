@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <plugin.h>
+#include <account.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/azoth/iprotocol.h>
 
@@ -29,6 +30,8 @@ namespace Azoth
 {
 namespace VelvetBird
 {
+	class Account;
+
 	class Protocol : public QObject
 				   , public IProtocol
 	{
@@ -37,6 +40,8 @@ namespace VelvetBird
 
 		ICoreProxy_ptr Proxy_;
 		PurplePlugin *PPlug_;
+
+		QList<Account*> Accounts_;
 	public:
 		Protocol (PurplePlugin*, ICoreProxy_ptr, QObject* = 0);
 
@@ -51,6 +56,9 @@ namespace VelvetBird
 		void RegisterAccount (const QString&, const QList<QWidget*>&);
 		QWidget* GetMUCJoinWidget ();
 		void RemoveAccount (QObject*);
+
+		QByteArray GetPurpleID () const;
+		void PushAccount (PurpleAccount*);
 	signals:
 		void accountAdded (QObject*);
 		void accountRemoved (QObject*);
