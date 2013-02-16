@@ -19,7 +19,7 @@
 #pragma once
 
 #include <QObject>
-#include <plugin.h>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -27,13 +27,18 @@ namespace Azoth
 {
 namespace VelvetBird
 {
+	class Protocol;
+
 	class ProtoManager : public QObject
 	{
 		Q_OBJECT
 
-		QList<PurplePlugin*> Plugins_;
+		ICoreProxy_ptr Proxy_;
+		QList<Protocol*> Protocols_;
 	public:
-		ProtoManager (QObject* = 0);
+		ProtoManager (ICoreProxy_ptr, QObject*);
+
+		QList<QObject*> GetProtoObjs () const;
 	};
 }
 }

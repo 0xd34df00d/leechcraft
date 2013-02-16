@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "protomanager.h"
+#include "protocol.h"
 #include <util/util.h>
 #include <libpurple/purple.h>
 #include <libpurple/core.h>
@@ -124,8 +125,9 @@ namespace VelvetBird
 		};
 	}
 
-	ProtoManager::ProtoManager (QObject *parent)
+	ProtoManager::ProtoManager (ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
+	, Proxy_ (proxy)
 	{
 		const auto& dir = Util::CreateIfNotExists ("azoth/velvetbird/purple");
 		purple_util_set_user_dir (dir.absolutePath ().toUtf8 ().constData ());
@@ -144,9 +146,20 @@ namespace VelvetBird
 		while (protos)
 		{
 			auto item = static_cast<PurplePlugin*> (protos->data);
-			Plugins_ << item;
 			protos = protos->next;
+
+			qDebug () << purple_plugin_get_id (item);
+
+			Protocols_ << new Protocol (item, proxy, parent);
 		}
+	}
+
+	QList<QObject*> ProtoManager::GetProtoObjs () const
+	{
+		QList<QObject*> result;
+		for (auto proto : Protocols_)
+			result << proto;
+		return result;
 	}
 }
 }

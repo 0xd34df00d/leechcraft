@@ -27,7 +27,7 @@ namespace VelvetBird
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		ProtoMgr_ = new ProtoManager;
+		ProtoMgr_ = new ProtoManager (proxy, this);
 	}
 
 	void Plugin::SecondInit ()
@@ -73,7 +73,7 @@ namespace VelvetBird
 
 	QList<QObject*> Plugin::GetProtocols () const
 	{
-		return {};
+		return ProtoMgr_->GetProtoObjs ();
 	}
 
 	void Plugin::initPlugin (QObject *proxy)
