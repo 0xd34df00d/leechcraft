@@ -17,11 +17,12 @@
  **********************************************************************/
 
 #include "protomanager.h"
-#include "protocol.h"
 #include <util/util.h>
 #include <libpurple/purple.h>
 #include <libpurple/core.h>
 #include <libpurple/plugin.h>
+#include "protocol.h"
+#include "account.h"
 
 namespace LeechCraft
 {
@@ -128,6 +129,21 @@ namespace VelvetBird
 		{
 			[] () { return time_t (); }
 		};
+
+		PurpleAccountUiOps AccUiOps =
+		{
+			NULL,
+			[] (PurpleAccount *acc, PurpleStatus *status)
+				{ static_cast<Account*> (acc->ui_data)->HandleStatus (status); },
+			NULL,
+			NULL,
+			NULL,
+
+			NULL,
+			NULL,
+			NULL,
+			NULL
+		};
 	}
 
 	ProtoManager::ProtoManager (ICoreProxy_ptr proxy, QObject *parent)
@@ -147,6 +163,8 @@ namespace VelvetBird
 					<< "failed initializing libpurple";
 			return;
 		}
+
+		purple_accounts_set_ui_ops (&AccUiOps);
 
 		QMap<QByteArray, Protocol*> id2proto;
 

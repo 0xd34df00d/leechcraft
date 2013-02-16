@@ -62,6 +62,8 @@ namespace VelvetBird
 		void RequestAuth (const QString&, const QString&, const QString&, const QStringList&);
 		void RemoveEntry (QObject*);
 		QObject* GetTransferManager () const;
+
+		void HandleStatus (PurpleStatus*);
 	signals:
 		void accountRenamed (const QString&);
 		void gotCLItems (const QList<QObject*>&);

@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "account.h"
+#include <QtDebug>
 #include "protocol.h"
 
 namespace LeechCraft
@@ -120,6 +121,11 @@ namespace VelvetBird
 	QObject* Account::GetTransferManager() const
 	{
 		return 0;
+	}
+
+	void Account::HandleStatus (PurpleStatus *status)
+	{
+		qDebug () << Q_FUNC_INFO;
 	}
 }
 }
