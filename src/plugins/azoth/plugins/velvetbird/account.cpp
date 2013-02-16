@@ -33,6 +33,7 @@ namespace VelvetBird
 	, Account_ (acc)
 	, Proto_ (proto)
 	{
+		HandleStatus (purple_account_get_active_status (acc));
 	}
 
 	PurpleAccount* Account::GetPurpleAcc () const
@@ -115,12 +116,12 @@ namespace VelvetBird
 		{
 			if (!purple_account_is_disconnected (Account_))
 				purple_account_disconnect (Account_);
+			purple_account_set_enabled (Account_, "leechcraft.azoth", false);
 			return;
 		}
 
-		if (!purple_account_is_connected (Account_) && !purple_account_is_connecting (Account_))
-			purple_account_connect (Account_);
-
+		if (!purple_account_get_enabled (Account_, "leechcraft.azoth"))
+			purple_account_set_enabled (Account_, "leechcraft.azoth", true);
 		purple_account_set_status (Account_, purple_primitive_get_id_from_type (PURPLE_STATUS_AVAILABLE), true, NULL);
 	}
 
@@ -147,7 +148,8 @@ namespace VelvetBird
 
 	void Account::HandleStatus (PurpleStatus *status)
 	{
-		qDebug () << Q_FUNC_INFO;
+		qDebug () << Q_FUNC_INFO << status;
+		qDebug () << purple_status_get_id (status) << purple_status_get_name (status);
 	}
 }
 }
