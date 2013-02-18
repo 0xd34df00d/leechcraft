@@ -21,6 +21,7 @@
 #include <util/passutils.h>
 #include "protocol.h"
 #include "util.h"
+#include "buddy.h"
 
 namespace LeechCraft
 {
@@ -59,7 +60,10 @@ namespace VelvetBird
 
 	QList<QObject*> Account::GetCLEntries ()
 	{
-		return {};
+		QList<QObject*> result;
+		for (auto buddy : Buddies_)
+			result << buddy;
+		return result;
 	}
 
 	QString Account::GetAccountName () const
@@ -147,9 +151,21 @@ namespace VelvetBird
 	{
 	}
 
-	QObject* Account::GetTransferManager() const
+	QObject* Account::GetTransferManager () const
 	{
 		return 0;
+	}
+
+	void Account::UpdateBuddy (PurpleBuddy *purpleBuddy)
+	{
+		if (!Buddies_.contains (purpleBuddy))
+		{
+			auto buddy = new Buddy (purpleBuddy, this);
+			Buddies_ [purpleBuddy] = buddy;
+			emit gotCLItems ({ buddy });
+		}
+
+		Buddies_ [purpleBuddy]->Update ();
 	}
 
 	void Account::HandleStatus (PurpleStatus *status)
