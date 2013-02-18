@@ -170,10 +170,7 @@ namespace VelvetBird
 
 	void Account::HandleStatus (PurpleStatus *status)
 	{
-		const auto id = purple_status_get_id (status);
-		const auto message = purple_status_get_attr_string (status, "message");
-		CurrentStatus_ = EntryStatus (FromPurpleState (purple_primitive_get_type_from_id (id)),
-				message ? QString::fromUtf8 (message) : QString ());
+		CurrentStatus_ = FromPurpleStatus (status);
 		emit statusChanged (CurrentStatus_);
 	}
 }

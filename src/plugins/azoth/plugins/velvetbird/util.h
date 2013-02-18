@@ -26,10 +26,14 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+struct EntryStatus;
+
 namespace VelvetBird
 {
 	State FromPurpleState (PurpleStatusPrimitive);
 	PurpleStatusPrimitive ToPurpleState (State);
+
+	EntryStatus FromPurpleStatus (PurpleStatus*);
 }
 }
 }
