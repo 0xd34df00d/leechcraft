@@ -51,10 +51,52 @@ namespace VelvetBird
 			return uiInfo;
 		}
 
+		class Debugger
+		{
+			QFile File_;
+		public:
+			Debugger ()
+			: File_ (Util::CreateIfNotExists ("azoth/velvetbird").absoluteFilePath ("purple.log"))
+			{
+			}
+
+			void print (PurpleDebugLevel level, const char *cat, const char *msg)
+			{
+				static const auto levels = Util::MakeMap<PurpleDebugLevel, QString> ({
+						{ PURPLE_DEBUG_ALL, "ALL" },
+						{ PURPLE_DEBUG_MISC, "MISC" },
+						{ PURPLE_DEBUG_INFO, "INFO" },
+						{ PURPLE_DEBUG_WARNING, "WARN" },
+						{ PURPLE_DEBUG_ERROR, "ERR" },
+						{ PURPLE_DEBUG_FATAL, "FATAL" }
+					});
+
+				QString data = "[" + levels [level] + "] " + cat + ": " + msg + "\n";
+				File_.open (QIODevice::WriteOnly);
+				File_.write (data.toUtf8 ());
+				File_.close ();
+			}
+		};
+
+		PurpleDebugUiOps DbgUiOps =
+		{
+			[] (PurpleDebugLevel level, const char *cat, const char *msg)
+			{
+				static Debugger dbg;
+				dbg.print (level, cat, msg);
+			},
+			[] (PurpleDebugLevel, const char*) -> gboolean { return true; },
+
+			NULL,
+			NULL,
+			NULL,
+			NULL
+		};
+
 		PurpleCoreUiOps UiOps =
 		{
 			NULL,
-			NULL,
+			[] () { purple_debug_set_ui_ops (&DbgUiOps); },
 			NULL,
 			NULL,
 			GetUIInfo,
@@ -221,6 +263,8 @@ namespace VelvetBird
 
 			id2proto [purple_account_get_protocol_id (acc)]->PushAccount (acc);
 		}
+
+		purple_accounts_restore_current_statuses ();
 	}
 
 	QList<QObject*> ProtoManager::GetProtoObjs () const
