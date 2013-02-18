@@ -66,6 +66,7 @@ namespace LeechCraft
 			{
 				qDebug () << "adding" << path;
 				QPluginLoader_ptr loader (new QPluginLoader (path));
+				loader->setLoadHints (QLibrary::ResolveAllSymbolsHint | QLibrary::ExportExternalSymbolsHint);
 				PluginContainers_.push_back (loader);
 			}
 		}
@@ -661,7 +662,7 @@ namespace LeechCraft
 			if (settings.value ("AllowLoad", true).toBool ())
 				PluginContainers_.push_back (loader);
 
-			loader->setLoadHints (QLibrary::ExportExternalSymbolsHint);
+			loader->setLoadHints (QLibrary::ResolveAllSymbolsHint | QLibrary::ExportExternalSymbolsHint);
 
 			AvailablePlugins_.push_back (loader);
 

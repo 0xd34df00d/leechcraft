@@ -20,6 +20,7 @@
 #include <QIcon>
 #include <QAbstractItemModel>
 #include <util/sys/paths.h>
+#include <util/gui/util.h>
 #include "infomodelmanager.h"
 #include "tooltipview.h"
 
@@ -74,12 +75,13 @@ namespace TPI
 		return Components_;
 	}
 
-	void Plugin::hovered (double x, double y)
+	void Plugin::hovered (int x, int y, const QPoint& shift)
 	{
 		if (!TooltipView_)
 			TooltipView_ = new TooltipView (ModelMgr_->GetModel (), Proxy_->GetColorThemeManager ());
 
-		TooltipView_->move (x, y);
+		TooltipView_->move (Util::FitRectScreen ({ x, y },
+				TooltipView_->size (), Util::NoOverlap, shift));
 		TooltipView_->show ();
 		TooltipView_->Hovered ();
 	}

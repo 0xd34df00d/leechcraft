@@ -29,7 +29,7 @@ namespace Media
 		ArtistInfo BasicInfo_;
 	};
 
-	class IPendingArtistBio
+	class Q_DECL_EXPORT IPendingArtistBio
 	{
 	public:
 		virtual ~IPendingArtistBio () {}
@@ -42,7 +42,7 @@ namespace Media
 		virtual void error () = 0;
 	};
 
-	class IArtistBioFetcher
+	class Q_DECL_EXPORT IArtistBioFetcher
 	{
 	public:
 		virtual ~IArtistBioFetcher () {}

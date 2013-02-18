@@ -220,6 +220,10 @@ namespace BitTorrent
 		Toolbar_->addAction (MakeMagnetLink_);
 
 		setActionsEnabled ();
+		connect (Ui_.TorrentsView_->selectionModel (),
+				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (setActionsEnabled ()));
 		/*
 		Toolbar_->addSeparator ();
 		DownSelectorAction_ = new SpeedSelectorAction ("Down", this);
@@ -238,23 +242,6 @@ namespace BitTorrent
 				this,
 				SLOT (handleFastSpeedComboboxes ()));
 				*/
-
-		/*
-		QMenu *contextMenu = new QMenu (tr ("Torrents actions"));
-		contextMenu->addAction (RemoveTorrent_.get ());
-		contextMenu->addSeparator ();
-		contextMenu->addAction (MoveUp_.get ());
-		contextMenu->addAction (MoveDown_.get ());
-		contextMenu->addAction (MoveToTop_.get ());
-		contextMenu->addAction (MoveToBottom_.get ());
-		contextMenu->addSeparator ();
-		contextMenu->addAction (ForceReannounce_.get ());
-		contextMenu->addAction (ForceRecheck_.get ());
-		contextMenu->addAction (MoveFiles_.get ());
-		contextMenu->addAction (ChangeTrackers_.get ());
-		contextMenu->addAction (MakeMagnetLink_.get ());
-		Core::Instance ()->SetMenu (contextMenu);
-		*/
 	}
 
 	TabClassInfo TorrentTab::GetTabClassInfo () const
@@ -305,6 +292,31 @@ namespace BitTorrent
 
 	void TorrentTab::setActionsEnabled ()
 	{
+#if QT_VERSION >= 0x040800
+		const auto& actions =
+		{
+			Resume_, Stop_, MakeMagnetLink_, RemoveTorrent_,
+			MoveUp_, MoveDown_, MoveToTop_, MoveToBottom_,
+			ForceReannounce_, ForceRecheck_, MoveFiles_, ChangeTrackers_
+		};
+		const bool enable = Ui_.TorrentsView_->currentIndex ().isValid ();
+
+		for (auto action : actions)
+			action->setEnabled (enable);
+#endif
+	}
+
+	void TorrentTab::on_TorrentsView__customContextMenuRequested (const QPoint& point)
+	{
+#if QT_VERSION >= 0x040800
+		QMenu menu;
+		menu.addActions ({ Resume_, Stop_, MakeMagnetLink_, RemoveTorrent_ });
+		menu.addSeparator ();
+		menu.addActions ({ MoveToTop_, MoveUp_, MoveDown_, MoveToBottom_ });
+		menu.addSeparator ();
+		menu.addActions ({ ForceReannounce_, ForceRecheck_, MoveFiles_, ChangeTrackers_ });
+		menu.exec (Ui_.TorrentsView_->viewport ()->mapToGlobal (point));
+#endif
 	}
 
 	void TorrentTab::on_OpenTorrent__triggered ()

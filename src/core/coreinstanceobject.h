@@ -23,6 +23,7 @@
 #include "interfaces/ihavesettings.h"
 #include "interfaces/ihavetabs.h"
 #include "interfaces/ipluginready.h"
+#include "interfaces/ihaveshortcuts.h"
 
 class IShortcutProxy;
 
@@ -32,14 +33,20 @@ namespace LeechCraft
 	class CorePlugin2Manager;
 	class ShortcutManager;
 
+	namespace Util
+	{
+		class ShortcutManager;
+	}
+
 	class CoreInstanceObject : public QObject
-							  , public IInfo
-							  , public IHaveSettings
-							  , public IHaveTabs
-							  , public IPluginReady
+							 , public IInfo
+							 , public IHaveSettings
+							 , public IHaveTabs
+							 , public IHaveShortcuts
+							 , public IPluginReady
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings IHaveTabs IPluginReady)
+		Q_INTERFACES (IInfo IHaveSettings IHaveTabs IHaveShortcuts IPluginReady)
 
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 		TabClasses_t Classes_;
@@ -49,6 +56,8 @@ namespace LeechCraft
 		CorePlugin2Manager *CorePlugin2Manager_;
 
 		ShortcutManager *ShortcutManager_;
+
+		Util::ShortcutManager *CoreShortcutManager_;
 	public:
 		CoreInstanceObject (QObject* = 0);
 
@@ -68,6 +77,10 @@ namespace LeechCraft
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
 
+		// IHaveShortcuts
+		QMap<QString, ActionInfo> GetActionInfo () const;
+		void SetShortcut (const QString& id, const QKeySequences_t& sequences);
+
 		// IPluginReady
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
@@ -78,6 +91,7 @@ namespace LeechCraft
 
 		IShortcutProxy* GetShortcutProxy () const;
 		ShortcutManager* GetShortcutManager () const;
+		Util::ShortcutManager* GetCoreShortcutManager () const;
 	private:
 		void BuildNewTabModel ();
 	private slots:

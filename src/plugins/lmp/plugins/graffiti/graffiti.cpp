@@ -18,6 +18,7 @@
 
 #include "graffiti.h"
 #include <QIcon>
+#include <util/util.h>
 #include "graffititab.h"
 
 namespace LeechCraft
@@ -26,8 +27,12 @@ namespace LMP
 {
 namespace Graffiti
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("lmp_graffiti");
+
+		CoreProxy_ = proxy;
+
 		TaggerTC_ =
 		{
 			GetUniqueID () + "_Tagger",
@@ -83,7 +88,7 @@ namespace Graffiti
 	{
 		if (TaggerTC_.TabClass_ == tabClass)
 		{
-			auto tab = new GraffitiTab (LMPProxy_, TaggerTC_, this);
+			auto tab = new GraffitiTab (CoreProxy_, LMPProxy_, TaggerTC_, this);
 			emit addNewTab (TaggerTC_.VisibleName_, tab);
 			emit raiseTab (tab);
 

@@ -124,7 +124,7 @@ namespace Xoox
 					const auto& id = Client_->vCardManager ().requestVCard (str);
 					ErrorMgr_->Whitelist (id, report);
 				},
-				OurJID_.contains ("gmail.com") ? 1700 : 600, 1, this))
+				OurJID_.contains ("gmail.com") ? 3000 : 1500, 1, this))
 	, CapsQueue_ (new FetchQueue ([this] (QString str, bool report)
 				{
 					const auto& id = DiscoveryManager_->requestInfo (str, "");
@@ -205,6 +205,8 @@ namespace Xoox
 		vm.setClientName ("LeechCraft Azoth");
 		handleVersionSettingsChanged ();
 		XmlSettingsManager::Instance ().RegisterObject ("AdvertiseQtVersion",
+				this, "handleVersionSettingsChanged");
+		XmlSettingsManager::Instance ().RegisterObject ("AdvertiseOSVersion",
 				this, "handleVersionSettingsChanged");
 
 		connect (Client_,
@@ -371,6 +373,7 @@ namespace Xoox
 				conf.setPort (port);
 			conf.setKeepAliveInterval (Settings_->GetKAParams ().first);
 			conf.setKeepAliveTimeout (Settings_->GetKAParams ().second);
+			conf.setStreamSecurityMode (Settings_->GetTLSMode ());
 			Client_->connectToServer (conf, pres);
 
 			FirstTimeConnect_ = false;
@@ -378,18 +381,18 @@ namespace Xoox
 
 		if (state.State_ == SOffline)
 		{
+			VCardQueue_->Clear ();
+			CapsQueue_->Clear ();
+			VersionQueue_->Clear ();
+
 			IsConnected_ = false;
 			Q_FOREACH (const QString& jid, JID2CLEntry_.keys ())
 			{
-				GlooxCLEntry *entry = JID2CLEntry_ [jid];
-				Q_FOREACH (const QString& var, entry->Variants ())
-					entry->SetStatus (EntryStatus (SOffline, QString ()),
-							var, QXmppPresence (QXmppPresence::Unavailable));
-				JID2CLEntry_.remove (jid);
+				auto entry = JID2CLEntry_.take (jid);
 				ODSEntries_ [jid] = entry;
 				entry->Convert2ODS ();
 			}
-			SelfContact_->RemoveVariant (OurResource_);
+			SelfContact_->RemoveVariant (OurResource_, true);
 		}
 
 		if (state.State_ == SOffline &&
@@ -425,7 +428,7 @@ namespace Xoox
 		SelfContact_->UpdateJID (jid);
 	}
 
-	RoomCLEntry* ClientConnection::JoinRoom (const QString& jid, const QString& nick)
+	RoomCLEntry* ClientConnection::JoinRoom (const QString& jid, const QString& nick, bool asAutojoin)
 	{
 		if (RoomHandlers_.contains (jid))
 		{
@@ -444,7 +447,7 @@ namespace Xoox
 				JoinQueue_.erase (pos);
 		}
 
-		RoomHandler *rh = new RoomHandler (jid, nick, Account_);
+		RoomHandler *rh = new RoomHandler (jid, nick, asAutojoin, Account_);
 		RoomHandlers_ [jid] = rh;
 		return rh->GetCLEntry ();
 	}
@@ -689,7 +692,11 @@ namespace Xoox
 	{
 		const QString& jid = entry->GetJID ();
 
-		Client_->rosterManager ().removeItem (jid);
+		auto& rm = Client_->rosterManager ();
+		if (rm.getRosterBareJids ().contains (jid))
+			rm.removeItem (jid);
+		else
+			handleRosterItemRemoved (jid);
 
 		if (ODSEntries_.contains (jid))
 			delete ODSEntries_.take (jid);
@@ -895,6 +902,8 @@ namespace Xoox
 
 		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
 			rh->Join ();
+
+		PrivacyListsManager_->QueryLists ();
 	}
 
 	void ClientConnection::handleDisconnected ()
@@ -1017,7 +1026,8 @@ namespace Xoox
 
 		if (jid == OurBareJID_)
 		{
-			if (OurJID_ == pres.from ())
+			const bool thisInstance = OurResource_ == resource;
+			if (thisInstance)
 				emit statusChanged (XooxUtil::PresenceToStatus (pres));
 
 			if (pres.type () == QXmppPresence::Available)
@@ -1027,7 +1037,7 @@ namespace Xoox
 				SelfContact_->SetStatus (XooxUtil::PresenceToStatus (pres), resource, pres);
 			}
 			else
-				SelfContact_->RemoveVariant (resource);
+				SelfContact_->RemoveVariant (resource, thisInstance);
 
 			return;
 		}
@@ -1220,13 +1230,14 @@ namespace Xoox
 				this,
 				SLOT (handleBookmarksReceived (const QXmppBookmarkSet&)));
 
-		Q_FOREACH (const QXmppBookmarkConference& conf, set.conferences ())
+		for (const auto& conf : set.conferences ())
 		{
 			if (!conf.autoJoin ())
 				continue;
 
 			JoinQueueItem item =
 			{
+				true,
 				conf.jid (),
 				conf.nickName ()
 			};
@@ -1244,13 +1255,12 @@ namespace Xoox
 		if (JoinQueue_.isEmpty ())
 			return;
 
-		GlooxProtocol *proto =
-				qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
+		auto proto = qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
 		if (!qobject_cast<IProxyObject*> (proto->GetProxyObject ())->IsAutojoinAllowed ())
 			return;
 
 		const JoinQueueItem& it = JoinQueue_.takeFirst ();
-		emit gotRosterItems (QList<QObject*> () << JoinRoom (it.RoomJID_, it.Nickname_));
+		emit gotRosterItems (QList<QObject*> () << JoinRoom (it.RoomJID_, it.Nickname_, it.AsAutojoin_));
 
 		if (!JoinQueue_.isEmpty ())
 			QTimer::singleShot (800,
@@ -1513,7 +1523,6 @@ namespace Xoox
 				entry = new GlooxCLEntry (bareJID, Account_);
 				JID2CLEntry_ [bareJID] = entry;
 				ScheduleFetchVCard (bareJID, false);
-				FetchVersion (bareJID, false);
 			}
 		}
 		else

@@ -63,7 +63,7 @@ namespace XProxy
 		ProxiesConfigWidget (QWidget* = 0);
 
 		QList<Proxy> FindMatching (const QString& reqHost, int reqPort,
-				const QString& proto = QString ());
+				const QString& proto = QString ()) const;
 	private:
 		void LoadSettings ();
 		void SaveSettings () const;

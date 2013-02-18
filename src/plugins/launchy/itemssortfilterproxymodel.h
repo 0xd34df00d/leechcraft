@@ -41,6 +41,8 @@ namespace Launchy
 		bool filterAcceptsRow (int, const QModelIndex&) const;
 	public slots:
 		void setCategoryNames (const QStringList&);
+	private slots:
+		void invalidateFilterSlot ();
 	signals:
 		void appFilterTextChanged ();
 	};

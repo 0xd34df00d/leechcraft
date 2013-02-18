@@ -23,7 +23,7 @@
 
 namespace Media
 {
-	class IPendingSimilarArtists
+	class Q_DECL_EXPORT IPendingSimilarArtists
 	{
 	public:
 		virtual ~IPendingSimilarArtists () {}

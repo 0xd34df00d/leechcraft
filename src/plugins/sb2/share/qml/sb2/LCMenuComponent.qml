@@ -4,8 +4,8 @@ import org.LC.common 1.0
 Rectangle {
     id: rootRect
 
-    width: parent.width
-    height: parent.width
+    width: parent.quarkBaseSize
+    height: parent.quarkBaseSize
 
     radius: 2
 
@@ -19,5 +19,6 @@ Rectangle {
         onHeld: SB2_menuComponentProxy.execMenu()
 
         actionIconURL: SB2_menuComponentLCIcon
+        textTooltip: SB2_menuTooltipString
     }
 }

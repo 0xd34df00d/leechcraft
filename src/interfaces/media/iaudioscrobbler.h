@@ -22,7 +22,7 @@
 
 namespace Media
 {
-	class IAudioScrobbler
+	class Q_DECL_EXPORT IAudioScrobbler
 	{
 	public:
 		virtual ~IAudioScrobbler () {}

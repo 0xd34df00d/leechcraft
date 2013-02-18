@@ -23,6 +23,7 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <interfaces/ianemitter.h>
+#include <interfaces/an/constants.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <util/resourceloader.h>
@@ -32,7 +33,6 @@
 #include "typedmatchers.h"
 #include "core.h"
 #include "rulesmanager.h"
-#include "constants.h"
 
 namespace LeechCraft
 {
@@ -43,20 +43,23 @@ namespace AdvancedNotifications
 	, RM_ (rm)
 	, MatchesModel_ (new QStandardItemModel (this))
 	{
-		Cat2Types_ [CatIM] << TypeIMAttention
-				<< TypeIMIncFile
-				<< TypeIMIncMsg
-				<< TypeIMMUCHighlight
-				<< TypeIMMUCInvite
-				<< TypeIMMUCMsg
-				<< TypeIMStatusChange
-				<< TypeIMSubscrGrant
-				<< TypeIMSubscrRequest
-				<< TypeIMSubscrRevoke
-				<< TypeIMSubscrSub
-				<< TypeIMSubscrUnsub;
+		Cat2Types_ [AN::CatIM] << AN::TypeIMAttention
+				<< AN::TypeIMIncFile
+				<< AN::TypeIMIncMsg
+				<< AN::TypeIMMUCHighlight
+				<< AN::TypeIMMUCInvite
+				<< AN::TypeIMMUCMsg
+				<< AN::TypeIMStatusChange
+				<< AN::TypeIMSubscrGrant
+				<< AN::TypeIMSubscrRequest
+				<< AN::TypeIMSubscrRevoke
+				<< AN::TypeIMSubscrSub
+				<< AN::TypeIMSubscrUnsub;
 
-		Cat2Types_ [CatOrganizer] << TypeOrganizerEventDue;
+		Cat2Types_ [AN::CatOrganizer] << AN::TypeOrganizerEventDue;
+
+		Cat2Types_ [AN::CatDownloads] << AN::TypeDownloadError
+				<< AN::TypeDownloadFinished;
 
 		Ui_.setupUi (this);
 		Ui_.RulesTree_->setModel (RM_->GetRulesModel ());
@@ -70,7 +73,7 @@ namespace AdvancedNotifications
 		const auto& cat2hr = RM_->GetCategory2HR ();
 		for (const QString& cat : cat2hr.keys ())
 			Ui_.EventCat_->addItem (cat2hr [cat], cat);
-		on_EventCat__activated (0);
+		on_EventCat__currentIndexChanged (0);
 
 		XmlSettingsManager::Instance ().RegisterObject ("AudioTheme",
 				this, "resetAudioFileBox");
@@ -328,7 +331,7 @@ namespace AdvancedNotifications
 		MatchesModel_->removeRow (index.row ());
 	}
 
-	void NotificationRulesWidget::on_EventCat__activated (int idx)
+	void NotificationRulesWidget::on_EventCat__currentIndexChanged (int idx)
 	{
 		const QString& catId = Ui_.EventCat_->itemData (idx).toString ();
 		Ui_.EventTypes_->clear ();

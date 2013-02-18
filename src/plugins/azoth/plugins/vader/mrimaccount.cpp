@@ -401,7 +401,11 @@ namespace Vader
 	MRIMBuddy* MRIMAccount::GetBuddy (const Proto::ContactInfo& info)
 	{
 		if (Buddies_.contains (info.Email_))
-			return Buddies_ [info.Email_];
+		{
+			auto buddy = Buddies_ [info.Email_];
+			buddy->UpdateInfo (info);
+			return buddy;
+		}
 
 		MRIMBuddy *buddy = new MRIMBuddy (info, this);
 		Buddies_ [info.Email_] = buddy;

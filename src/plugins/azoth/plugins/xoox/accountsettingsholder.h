@@ -22,6 +22,7 @@
 #include <QString>
 #include <QPair>
 #include <QXmppTransferManager.h>
+#include <QXmppConfiguration.h>
 
 namespace LeechCraft
 {
@@ -52,6 +53,8 @@ namespace Xoox
 		bool FileLogEnabled_;
 
 		int Priority_;
+
+		QXmppConfiguration::StreamSecurityMode TLSMode_;
 
 		QXmppTransferJob::Methods FTMethods_;
 		bool UseSOCKS5Proxy_;
@@ -97,6 +100,9 @@ namespace Xoox
 		QXmppTransferJob::Methods GetFTMethods () const;
 		void SetFTMethods (QXmppTransferJob::Methods);
 
+		QXmppConfiguration::StreamSecurityMode GetTLSMode () const;
+		void SetTLSMode (QXmppConfiguration::StreamSecurityMode);
+
 		bool GetUseSOCKS5Proxy () const;
 		void SetUseSOCKS5Proxy (bool);
 
@@ -115,6 +121,7 @@ namespace Xoox
 		void kaParamsChanged (const QPair<int, int>&);
 		void fileLogChanged (bool);
 		void priorityChanged (int);
+		void tlsModeChanged (QXmppConfiguration::StreamSecurityMode);
 
 		void fileTransferSettingsChanged ();
 

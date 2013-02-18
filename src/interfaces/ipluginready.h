@@ -34,7 +34,7 @@
  * classes, which is returned by IPlugin2::GetPluginClasses() and by
  * IPluginReady::GetExpectedPluginClasses().
  */
-class IPluginReady
+class Q_DECL_EXPORT IPluginReady
 {
 public:
 	virtual ~IPluginReady () {}

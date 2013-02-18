@@ -138,7 +138,7 @@ class QAction;
 /** @brief This interface defines methods that should be implemented in
  * widgets added to the main tab widget.
  */
-class ITabWidget
+class Q_DECL_EXPORT ITabWidget
 {
 public:
 	virtual ~ITabWidget () {}
@@ -285,7 +285,7 @@ public:
  *
  * @sa ITabWidget, LeechCraft::TabClassInfo
  */
-class IHaveTabs
+class Q_DECL_EXPORT IHaveTabs
 {
 public:
 	virtual ~IHaveTabs () {}

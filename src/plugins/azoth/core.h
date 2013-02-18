@@ -72,6 +72,7 @@ namespace Azoth
 	class ServiceDiscoveryWidget;
 	class UnreadQueueManager;
 	class ChatStyleOptionManager;
+	class CustomStatusesManager;
 
 	class Core : public QObject
 	{
@@ -145,6 +146,7 @@ namespace Azoth
 		std::shared_ptr<UnreadQueueManager> UnreadQueueManager_;
 		QMap<QByteArray, std::shared_ptr<ChatStyleOptionManager>> StyleOptionManagers_;
 		std::shared_ptr<Util::ShortcutManager> ShortcutManager_;
+		std::shared_ptr<CustomStatusesManager> CustomStatusesManager_;
 
 		Core ();
 	public:
@@ -187,6 +189,7 @@ namespace Azoth
 		IEmoticonResourceSource* GetCurrentEmoSource () const;
 		ChatStyleOptionManager* GetChatStylesOptionsManager (const QByteArray&) const;
 		Util::ShortcutManager* GetShortcutManager () const;
+		CustomStatusesManager* GetCustomStatusesManager () const;
 
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
@@ -421,6 +424,8 @@ namespace Azoth
 	private slots:
 		void handleNewProtocols (const QList<QObject*>&);
 
+		void delayedRebuildTooltip (QPointer<QObject> entryObj);
+
 		/** Handles a new account. This account may be both a new one
 		 * (added as a result of user's actions) and already existing
 		 * one (in case it was just read from settings, for example).
@@ -462,6 +467,10 @@ namespace Azoth
 		/** Handles the status change of a CL entry to new status.
 		 */
 		void handleStatusChanged (const EntryStatus& status, const QString& variant);
+
+		/** Removes the old unneeded variants.
+		 */
+		void handleVariantsChanged (const QStringList& newVariants);
 
 		/** Handles ICLEntry's PEP-like (XEP-0163) event from the given
 		 * variant.

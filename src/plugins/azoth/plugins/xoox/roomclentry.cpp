@@ -34,8 +34,9 @@ namespace Azoth
 {
 namespace Xoox
 {
-	RoomCLEntry::RoomCLEntry (RoomHandler *rh, GlooxAccount *account)
+	RoomCLEntry::RoomCLEntry (RoomHandler *rh, bool isAutojoined, GlooxAccount *account)
 	: QObject (rh)
+	, IsAutojoined_ (isAutojoined)
 	, Account_ (account)
 	, RH_ (rh)
 	, ActionRequestVoice_ (0)
@@ -231,6 +232,11 @@ namespace Xoox
 	QList<QObject*> RoomCLEntry::GetParticipants ()
 	{
 		return RH_->GetParticipants ();
+	}
+
+	bool RoomCLEntry::IsAutojoined () const
+	{
+		return IsAutojoined_;
 	}
 
 	void RoomCLEntry::Join ()

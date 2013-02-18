@@ -75,9 +75,16 @@ namespace Lemon
 
 	void Plugin::showGraph (const QString& ifaceName)
 	{
+		if (auto dia = Iface2Dialog_ [ifaceName])
+		{
+			delete dia;
+			return;
+		}
+
 		auto dia = new TrafficDialog (ifaceName, TrafficMgr_);
 		dia->setAttribute (Qt::WA_DeleteOnClose);
 		dia->show ();
+		Iface2Dialog_ [ifaceName] = dia;
 	}
 }
 }

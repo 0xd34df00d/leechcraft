@@ -95,6 +95,7 @@ namespace Acetamide
 		QString GetMUCSubject () const;
 		void SetMUCSubject (const QString&);
 		QList<QObject*> GetParticipants ();
+		bool IsAutojoined () const;
 		void Join ();
 		void Leave (const QString&);
 		QString GetNick () const;

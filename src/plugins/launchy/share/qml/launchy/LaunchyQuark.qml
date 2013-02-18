@@ -4,8 +4,9 @@ import org.LC.common 1.0
 Rectangle {
     id: rootRect
 
-    width: parent.width
-    height: width * launchView.count
+    property real itemSize: parent.quarkBaseSize
+    width: viewOrient == "vertical" ? itemSize : (itemSize * launchView.count)
+    height: viewOrient == "vertical" ? (itemSize * launchView.count) : itemSize
     color: "transparent"
 
     ListView {
@@ -14,14 +15,17 @@ Rectangle {
         anchors.fill: parent
         model: Launchy_itemModel
 
+        orientation: viewOrient == "vertical" ? ListView.Vertical : ListView.Horizontal
+
         delegate: ActionButton {
             id: launchViewDelegate
 
-            width: rootRect.width
+            width: rootRect.itemSize
             height: width
 
             actionIconURL: "image://LaunchyItemIcons/" + permanentID
             textTooltip: appName
+            transparentStyle: true
 
             onTriggered: Launchy_proxy.launch(permanentID)
 

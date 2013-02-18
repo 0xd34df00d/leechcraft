@@ -18,6 +18,7 @@
 
 #include "flattofoldersproxymodel.h"
 #include <QSet>
+#include <QMimeData>
 #include <QItemSelectionRange>
 #include <interfaces/iinfo.h>
 #include <interfaces/core/itagsmanager.h>
@@ -126,11 +127,14 @@ namespace LeechCraft
 
 		Qt::ItemFlags FlatToFoldersProxyModel::flags (const QModelIndex& index) const
 		{
-			FlatTreeItem *fti = ToFlat (index);
-			if (fti->Type_ == FlatTreeItem::TItem)
+			auto fti = ToFlat (index);
+			if (fti && fti->Type_ == FlatTreeItem::TItem)
 				return fti->Index_.flags ();
 			else
-				return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+				return Qt::ItemIsSelectable |
+						Qt::ItemIsEnabled |
+						Qt::ItemIsDragEnabled |
+						Qt::ItemIsDropEnabled;
 		}
 
 		QModelIndex FlatToFoldersProxyModel::index (int row, int column,
@@ -175,6 +179,71 @@ namespace LeechCraft
 				return ToFlat (index)->C_.size ();
 			else
 				return Root_->C_.size ();
+		}
+
+		Qt::DropActions FlatToFoldersProxyModel::supportedDropActions() const
+		{
+			return SourceModel_ ?
+					SourceModel_->supportedDropActions () :
+					QAbstractItemModel::supportedDropActions ();
+		}
+
+		QStringList FlatToFoldersProxyModel::mimeTypes() const
+		{
+			return SourceModel_ ?
+					SourceModel_->mimeTypes () :
+					QAbstractItemModel::mimeTypes ();
+		}
+
+		QMimeData* FlatToFoldersProxyModel::mimeData (const QModelIndexList& indexes) const
+		{
+			if (!SourceModel_)
+				return QAbstractItemModel::mimeData (indexes);
+
+			QModelIndexList sourceIdxs;
+			for (const auto& index : indexes)
+			{
+				auto item = static_cast<FlatTreeItem*> (index.internalPointer ());
+				switch (item->Type_)
+				{
+				case FlatTreeItem::Type::TItem:
+					sourceIdxs << MapToSource (index);
+					break;
+				case FlatTreeItem::Type::TFolder:
+					for (const auto& subItem : item->C_)
+						sourceIdxs << subItem->Index_;
+					break;
+				default:
+					break;
+				}
+			}
+
+			return SourceModel_->mimeData (sourceIdxs);
+		}
+
+		bool FlatToFoldersProxyModel::dropMimeData (const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent)
+		{
+			if (!SourceModel_)
+				return false;
+
+			QMimeData modified;
+			for (const auto& format : data->formats ())
+				modified.setData (format, data->data (format));
+
+			if (auto ptr = static_cast<FlatTreeItem*> (parent.internalPointer ()))
+			{
+				switch (ptr->Type_)
+				{
+				case FlatTreeItem::Type::TFolder:
+				case FlatTreeItem::Type::TItem:
+					modified.setData ("x-leechcraft/tag", ptr->Tag_.toLatin1 ());
+					break;
+				default:
+					break;
+				}
+			}
+
+			return SourceModel_->dropMimeData (&modified, action, -1, -1, QModelIndex ());
 		}
 
 		void FlatToFoldersProxyModel::SetSourceModel (QAbstractItemModel *model)

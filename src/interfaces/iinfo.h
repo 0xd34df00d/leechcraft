@@ -54,7 +54,7 @@ typedef std::shared_ptr<ICoreProxy> ICoreProxy_ptr;
  * only basic initialization/allocation stuff like allocation memory for
  * the objects.
  */
-class IInfo
+class Q_DECL_EXPORT IInfo
 {
 public:
 	/** @brief Initializes the plugin.
@@ -348,7 +348,7 @@ public:
 
 Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0");
 
-#define CURRENT_API_LEVEL 12
+#define CURRENT_API_LEVEL 13
 
 #define LC_EXPORT_PLUGIN(name,file) Q_EXPORT_PLUGIN2(name, file) \
 	extern "C"\

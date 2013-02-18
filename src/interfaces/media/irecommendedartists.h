@@ -24,7 +24,7 @@ namespace Media
 {
 	class IPendingSimilarArtists;
 
-	class IRecommendedArtists
+	class Q_DECL_EXPORT IRecommendedArtists
 	{
 	public:
 		virtual ~IRecommendedArtists () {}

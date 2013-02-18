@@ -6,8 +6,8 @@ Rectangle {
 
     visible: GMN_proxy.msgCount > 0
 
-    width: parent.width
-    height: GMN_proxy.msgCount > 0 ? parent.width : 0
+    width: GMN_proxy.msgCount > 0 ? parent.quarkBaseSize : 0
+    height: width
 
     color: "transparent"
 
@@ -53,6 +53,6 @@ Rectangle {
             border.width: 1
         }
 
-        onTriggered: commonJS.showTooltip(rootRect, function(x, y) { GMN_proxy.showMailList(x, y) })
+        onTriggered: commonJS.showTooltip(rootRect, function(x, y) { GMN_proxy.showMailList(x, y, quarkProxy.getShiftDiff()) })
     }
 }

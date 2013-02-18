@@ -21,10 +21,16 @@
 #include <memory>
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/lmp/ilmpplugin.h>
 #include "ui_graffititab.h"
 
 class QFileSystemModel;
+
+namespace Media
+{
+	struct AudioInfo;
+}
 
 namespace LeechCraft
 {
@@ -43,6 +49,7 @@ namespace Graffiti
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
 
+		ICoreProxy_ptr CoreProxy_;
 		ILMPProxy_ptr LMPProxy_;
 
 		const TabClassInfo TC_;
@@ -58,8 +65,11 @@ namespace Graffiti
 		QAction *Save_;
 		QAction *Revert_;
 		QAction *RenameFiles_;
+		QAction *GetTags_;
+
+		bool IsChangingCurrent_;
 	public:
-		GraffitiTab (ILMPProxy_ptr, const TabClassInfo&, QObject*);
+		GraffitiTab (ICoreProxy_ptr, ILMPProxy_ptr, const TabClassInfo&, QObject*);
 
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
@@ -72,12 +82,15 @@ namespace Graffiti
 		void on_Artist__textEdited (const QString&);
 		void on_Album__textEdited (const QString&);
 		void on_Title__textEdited (const QString&);
-		void on_Genre__textEdited (const QString&);
+		void on_Genre__textChanged (const QString&);
 		void on_Year__valueChanged (int);
 
 		void save ();
 		void revert ();
 		void renameFiles ();
+		void fetchTags ();
+
+		void handleTagsFetched (const QString&, const Media::AudioInfo&);
 
 		void on_DirectoryTree__activated (const QModelIndex&);
 		void currentFileChanged (const QModelIndex&);

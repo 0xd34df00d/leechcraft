@@ -948,6 +948,15 @@ namespace LMP
 				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
 	}
 
+	void Player::shufflePlaylist ()
+	{
+		SetPlayMode (PlayMode::Sequential);
+
+		auto queue = GetQueue ();
+		std::random_shuffle (queue.begin (), queue.end ());
+		ReplaceQueue (queue, false);
+	}
+
 	void Player::handleSorted ()
 	{
 		auto watcher = dynamic_cast<QFutureWatcher<QList<QPair<Phonon::MediaSource, MediaInfo>>>*> (sender ());

@@ -18,6 +18,9 @@
 
 #include "setstatusdialog.h"
 #include "xmlsettingsmanager.h"
+#include "core.h"
+#include "customstatusesmanager.h"
+#include "proxyobject.h"
 
 namespace LeechCraft
 {
@@ -32,6 +35,25 @@ namespace Azoth
 					.arg (st)
 					.toUtf8 ();
 		}
+
+		State GetStateForIndex (int index)
+		{
+			switch (index)
+			{
+				case 1:
+					return SChat;
+				case 2:
+					return SAway;
+				case 3:
+					return SDND;
+				case 4:
+					return SXA;
+				case 5:
+					return SOffline;
+				default:
+					return SOnline;
+			}
+		}
 	}
 
 	SetStatusDialog::SetStatusDialog (const QString& context, QWidget *parent)
@@ -45,25 +67,36 @@ namespace Azoth
 				SIGNAL (accepted ()),
 				this,
 				SLOT (save ()));
+
+		for (int i = 0; i < Ui_.StatusBox_->count (); ++i)
+		{
+			const auto state = GetStateForIndex (i);
+			Ui_.StatusBox_->setItemIcon (i, Core::Instance ().GetIconForState (state));
+			Ui_.StatusBox_->setItemData (i, QVariant::fromValue (state), Roles::ItemState);
+
+			const auto& name = BuildSettingName (Context_, state);
+			const auto& str = XmlSettingsManager::Instance ().property (name).toString ();
+			Ui_.StatusBox_->setItemData (i, str, Roles::StateText);
+		}
+
+		const auto& customs = Core::Instance ().GetCustomStatusesManager ()->GetStates ();
+		for (const auto& custom : customs)
+		{
+			const auto state = custom.State_;
+			const auto& name = custom.Name_ + " (" + ProxyObject ().StateToString (state) + ")";
+			Ui_.StatusBox_->addItem (Core::Instance ().GetIconForState (state), name);
+
+			const auto pos = Ui_.StatusBox_->count () - 1;
+			Ui_.StatusBox_->setItemData (pos,
+					QVariant::fromValue (state), Roles::ItemState);
+			Ui_.StatusBox_->setItemData (pos, custom.Text_, Roles::StateText);
+		}
 	}
 
 	State SetStatusDialog::GetState () const
 	{
-		switch (Ui_.StatusBox_->currentIndex ())
-		{
-		case 1:
-			return SChat;
-		case 2:
-			return SAway;
-		case 3:
-			return SDND;
-		case 4:
-			return SXA;
-		case 5:
-			return SOffline;
-		default:
-			return SOnline;
-		}
+		const auto idx = Ui_.StatusBox_->currentIndex ();
+		return Ui_.StatusBox_->itemData (idx, Roles::ItemState).value<State> ();
 	}
 
 	QString SetStatusDialog::GetStatusText () const
@@ -79,9 +112,8 @@ namespace Azoth
 
 	void SetStatusDialog::on_StatusBox__currentIndexChanged ()
 	{
-		const auto& name = BuildSettingName (Context_, GetState ());
-		const auto& str = XmlSettingsManager::Instance ().property (name).toString ();
-		Ui_.StatusText_->setText (str);
+		const auto idx = Ui_.StatusBox_->currentIndex ();
+		Ui_.StatusText_->setText (Ui_.StatusBox_->itemData (idx, Roles::StateText).toString ());
 	}
 }
 }

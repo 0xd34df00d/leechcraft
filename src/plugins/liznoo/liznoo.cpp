@@ -86,6 +86,11 @@ namespace Liznoo
 				this,
 				SLOT (handleHibernateRequested ()));
 		Hibernate_->setProperty ("ActionIcon", "system-suspend-hibernate");
+
+		connect (XSD_.get (),
+				SIGNAL (pushButtonClicked (QString)),
+				this,
+				SLOT (handlePushButton (QString)));
 	}
 
 	void Plugin::SecondInit ()
@@ -362,6 +367,21 @@ namespace Liznoo
 	void Plugin::handleHibernateRequested ()
 	{
 		PL_->ChangeState (PlatformLayer::PowerState::Hibernate);
+	}
+
+	void Plugin::handlePushButton (const QString& button)
+	{
+		if (!PL_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "platform backend unavailable";
+			return;
+		}
+
+		if (button == "TestSleep")
+			PL_->EmitGonnaSleep (1000);
+		else if (button == "TestWake")
+			PL_->EmitWokeUp ();
 	}
 }
 }

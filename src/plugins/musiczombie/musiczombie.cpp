@@ -22,6 +22,10 @@
 #include <util/queuemanager.h>
 #include "pendingdisco.h"
 
+#ifdef WITH_CHROMAPRINT
+#include "pendingtagsfetch.h"
+#endif
+
 namespace LeechCraft
 {
 namespace MusicZombie
@@ -29,6 +33,8 @@ namespace MusicZombie
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Queue_ = new Util::QueueManager (500);
+		AcoustidQueue_ = new Util::QueueManager (350);
+
 		Proxy_ = proxy;
 	}
 
@@ -77,6 +83,14 @@ namespace MusicZombie
 		return new PendingDisco (Queue_, artist, release,
 				Proxy_->GetNetworkAccessManager (), this);
 	}
+
+#ifdef WITH_CHROMAPRINT
+	Media::IPendingTagsFetch* Plugin::FetchTags (const QString& filename)
+	{
+		return new PendingTagsFetch (AcoustidQueue_,
+				Proxy_->GetNetworkAccessManager (), filename);
+	}
+#endif
 }
 }
 

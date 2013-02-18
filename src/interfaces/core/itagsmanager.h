@@ -29,7 +29,7 @@ class QAbstractItemModel;
  * Object returned by the GetObject() function emits these signals:
  * - tagsUpdated(const QStringList& tags) when the tags are updated.
  */
-class ITagsManager
+class Q_DECL_EXPORT ITagsManager
 {
 public:
 	typedef QString tag_id;

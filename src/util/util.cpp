@@ -32,7 +32,6 @@
 #include <QUrl>
 #include <QAction>
 #include <QBuffer>
-#include <QDesktopWidget>
 #include <QPainter>
 #include <QtDebug>
 
@@ -351,20 +350,6 @@ QVariantList LeechCraft::Util::GetPersistentData (const QList<QVariant>& keys,
 			Q_ARG (QObject**, 0));
 
 	return values;
-}
-
-QPoint LeechCraft::Util::FitRectScreen (QPoint pos, const QSize& size)
-{
-	const QRect& geometry = QApplication::desktop ()->screenGeometry (pos);
-	const bool dropDown = pos.y () + size.height () < geometry.height () + geometry.y ();
-	const bool dropRight = pos.x () + size.width () < geometry.width () + geometry.x ();
-
-	if (!dropDown)
-		pos.ry () -= size.height ();
-	if (!dropRight)
-		pos.rx () -= size.width ();
-
-	return pos;
 }
 
 namespace

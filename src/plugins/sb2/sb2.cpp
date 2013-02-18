@@ -112,18 +112,20 @@ namespace SB2
 
 	void Plugin::handleWindow (int index, bool init)
 	{
-		auto mgr = new ViewManager (Proxy_, this);
+		auto rootWM = Proxy_->GetRootWindowsManager ();
+		auto win = rootWM->GetMainWindow (index);
+
+		auto mgr = new ViewManager (Proxy_, win, this);
 		auto view = mgr->GetView ();
 
-		auto rootWM = Proxy_->GetRootWindowsManager ();
 		auto mwProxy = rootWM->GetMWProxy (index);
 		auto ictw = rootWM->GetTabWidget (index);
-		mwProxy->AddSideWidget (view);
-		rootWM->GetMainWindow (index)->statusBar ()->hide ();
+
+		win->statusBar ()->hide ();
 
 		mgr->RegisterInternalComponent ((new LCMenuComponent (mwProxy))->GetComponent ());
 
-		auto launcher = new LauncherComponent (ictw, Proxy_);
+		auto launcher = new LauncherComponent (ictw, Proxy_, mgr);
 		mgr->RegisterInternalComponent (launcher->GetComponent ());
 		if (init)
 			connect (this,
@@ -141,10 +143,10 @@ namespace SB2
 					tray,
 					SLOT (handlePluginsAvailable ()));
 		else
+		{
 			tray->handlePluginsAvailable ();
-
-		if (!init)
 			mgr->SecondInit ();
+		}
 
 		Managers_.push_back ({ mgr, tray });
 	}

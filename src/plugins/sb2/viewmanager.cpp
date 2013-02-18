@@ -24,11 +24,14 @@
 #include <QDir>
 #include <QSettings>
 #include <QCoreApplication>
+#include <QToolBar>
+#include <QMainWindow>
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
 #include <interfaces/iquarkcomponentprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include "sbview.h"
 #include "quarkproxy.h"
 #include "quarkmanager.h"
@@ -63,11 +66,13 @@ namespace SB2
 		};
 	}
 
-	ViewManager::ViewManager (ICoreProxy_ptr proxy, QObject *parent)
+	ViewManager::ViewManager (ICoreProxy_ptr proxy, QMainWindow *window, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, ViewItemsModel_ (new ViewItemsModel (this))
 	, View_ (new SBView)
+	, Toolbar_ (new QToolBar (tr ("SB2 panel")))
+	, Window_ (window)
 	{
 		const auto& file = Util::GetSysPath (Util::SysPath::QML, "sb2", "SideView.qml");
 		if (file.isEmpty ())
@@ -84,16 +89,57 @@ namespace SB2
 		View_->rootContext ()->setContextProperty ("quarkProxy", new QuarkProxy (this, proxy, this));
 		View_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
+		View_->rootContext ()->setContextProperty ("SB2_settingsModeTooltip", tr ("Settings mode"));
+		View_->rootContext ()->setContextProperty ("SB2_quarkOrderTooltip", tr ("Quarks order"));
+		View_->rootContext ()->setContextProperty ("SB2_addQuarkTooltip", tr ("Add quark"));
 		View_->engine ()->addImageProvider (ImageProviderID, new Util::ThemeImageProvider (proxy));
+
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_SB2");
+		settings.beginGroup ("Toolbars");
+		const auto& posSettingName = "Pos_" + QString::number (GetWindowIndex ());
+		auto pos = settings.value (posSettingName, static_cast<int> (Qt::LeftToolBarArea)).toInt ();
+		settings.endGroup ();
+
+		setOrientation ((pos == Qt::LeftToolBarArea || pos == Qt::RightToolBarArea) ? Qt::Vertical : Qt::Horizontal);
+
 		View_->setSource (QUrl::fromLocalFile (file));
 
 		LoadRemovedList ();
 		LoadQuarkOrder ();
+
+		Toolbar_->addWidget (View_);
+		Toolbar_->setFloatable (false);
+		View_->setVisible (true);
+		connect (Toolbar_,
+				SIGNAL (orientationChanged (Qt::Orientation)),
+				this,
+				SLOT (setOrientation (Qt::Orientation)));
+		connect (Toolbar_,
+				SIGNAL (topLevelChanged (bool)),
+				this,
+				SLOT (handleToolbarTopLevel (bool)));
+
+		window->addToolBar (static_cast<Qt::ToolBarArea> (pos), Toolbar_);
+#ifdef Q_OS_MAC
+		// dunno WTF
+		window->show ();
+#endif
 	}
 
 	SBView* ViewManager::GetView () const
 	{
 		return View_;
+	}
+
+	QToolBar* ViewManager::GetToolbar () const
+	{
+		return Toolbar_;
+	}
+
+	QMainWindow* ViewManager::GetManagedWindow () const
+	{
+		return Window_;
 	}
 
 	void ViewManager::SecondInit ()
@@ -330,6 +376,43 @@ namespace SB2
 				QCoreApplication::applicationName () + "_SB2");
 		settings.beginGroup ("QuarkOrder");
 		PreviousQuarkOrder_ = settings.value ("IDs").toStringList ();
+		settings.endGroup ();
+	}
+
+	int ViewManager::GetWindowIndex () const
+	{
+		auto rootWM = Proxy_->GetRootWindowsManager ();
+		return rootWM->GetWindowIndex (Window_);
+	}
+
+	void ViewManager::setOrientation (Qt::Orientation orientation)
+	{
+		switch (orientation)
+		{
+		case Qt::Vertical:
+			View_->resize (View_->minimumSize ());
+			View_->setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Expanding);
+			View_->rootContext ()->setContextProperty ("viewOrient", "vertical");
+			break;
+		case Qt::Horizontal:
+			View_->resize (View_->minimumSize ());
+			View_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Preferred);
+			View_->rootContext ()->setContextProperty ("viewOrient", "horizontal");
+			break;
+		}
+	}
+
+	void ViewManager::handleToolbarTopLevel (bool topLevel)
+	{
+		if (topLevel)
+			return;
+
+		const auto pos = Window_->toolBarArea (Toolbar_);
+
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_SB2");
+		settings.beginGroup ("Toolbars");
+		settings.setValue ("Pos_" + QString::number (GetWindowIndex ()), static_cast<int> (pos));
 		settings.endGroup ();
 	}
 }

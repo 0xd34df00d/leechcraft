@@ -42,11 +42,12 @@ namespace Graffiti
 				IHaveTabs
 				LeechCraft::LMP::ILMPPlugin)
 
+		ICoreProxy_ptr CoreProxy_;
 		ILMPProxy_ptr LMPProxy_;
 
 		TabClassInfo TaggerTC_;
 	public:
-		void Init (ICoreProxy_ptr proxy);
+		void Init (ICoreProxy_ptr);
 		void SecondInit ();
 		void Release ();
 		QByteArray GetUniqueID () const;

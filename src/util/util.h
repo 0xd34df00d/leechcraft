@@ -283,8 +283,6 @@ namespace LeechCraft
 		UTIL_API QVariantList GetPersistentData (const QList<QVariant>& keys,
 				QObject *object);
 
-		UTIL_API QPoint FitRectScreen (QPoint pos, const QSize& size);
-
 		UTIL_API QPixmap DrawOverlayText (QPixmap px, const QString& text, QFont font, const QPen& pen);
 
 		/** @brief Returns an element for a given tags list.
@@ -367,6 +365,15 @@ namespace LeechCraft
 			}
 			else
 				return result;
+		}
+
+		template<typename K, typename V>
+		QMap<K, V> MakeMap (std::initializer_list<QPair<K, V>> l)
+		{
+			QMap<K, V> result;
+			for (const auto& pair : l)
+				result [pair.first] = pair.second;
+			return result;
 		}
 	};
 };

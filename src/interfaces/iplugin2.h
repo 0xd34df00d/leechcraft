@@ -34,7 +34,7 @@
  * class, which is returned by IPlugin2::GetPluginClasses() and by
  * IPluginReady::GetExpectedPluginClasses().
  */
-class IPlugin2
+class Q_DECL_EXPORT IPlugin2
 {
 public:
 	/** @brief Returns the plugin classes of this second-level plugin.

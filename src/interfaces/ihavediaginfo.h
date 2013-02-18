@@ -22,7 +22,7 @@
 
 class QString;
 
-class IHaveDiagInfo
+class Q_DECL_EXPORT IHaveDiagInfo
 {
 public:
 	virtual ~IHaveDiagInfo () {}

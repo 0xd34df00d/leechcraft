@@ -51,10 +51,11 @@ namespace SB2
 	, Proxy_ (proxy)
 	{
 		Component_.Url_ = QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, "sb2", "LCMenuComponent.qml"));
-		Component_.DynamicProps_ << QPair<QString, QObject*> ("SB2_menuComponentProxy", this);
+		Component_.DynamicProps_.append ({ "SB2_menuComponentProxy", this });
 
-		Component_.StaticProps_ << QPair<QString, QVariant> ("SB2_menuComponentLCIcon", "image://" + ImageProviderID + "/icon");
-		Component_.ImageProviders_ << QPair<QString, QDeclarativeImageProvider*> (ImageProviderID, new LCMenuImageProvider);
+		Component_.StaticProps_.append ({ "SB2_menuComponentLCIcon", "image://" + ImageProviderID + "/icon" });
+		Component_.StaticProps_.append ({ "SB2_menuTooltipString", tr ("LeechCraft menu") });
+		Component_.ImageProviders_.append ({ ImageProviderID, new LCMenuImageProvider });
 
 		Proxy_->HideMainMenu ();
 	}

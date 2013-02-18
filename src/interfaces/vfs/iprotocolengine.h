@@ -24,7 +24,7 @@ namespace LeechCraft
 {
 namespace VFS
 {
-	class IProtocolEngine
+	class Q_DECL_EXPORT IProtocolEngine
 	{
 	public:
 		virtual ~IProtocolEngine () {}

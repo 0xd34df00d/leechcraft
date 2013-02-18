@@ -4,8 +4,8 @@ import org.LC.common 1.0
 Rectangle {
     id: rootRect
 
-    width: parent.width
-    height: parent.width
+    width: parent.quarkBaseSize
+    height: parent.quarkBaseSize
 
     color: "transparent"
 
@@ -16,6 +16,7 @@ Rectangle {
 
         anchors.fill: parent
         actionIconURL: "image://ThemeIcons/preferences-desktop-notification"
+        textTooltip: AN_quarkTooltip
 
         onTriggered: {
             var global = commonJS.getTooltipPos(anButton);

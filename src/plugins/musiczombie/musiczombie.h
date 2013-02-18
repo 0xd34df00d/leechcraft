@@ -22,6 +22,10 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/media/idiscographyprovider.h>
 
+#ifdef WITH_CHROMAPRINT
+#include <interfaces/media/itagsfetcher.h>
+#endif
+
 namespace LeechCraft
 {
 namespace Util
@@ -34,12 +38,20 @@ namespace MusicZombie
 	class Plugin : public QObject
 				 , public IInfo
 				 , public Media::IDiscographyProvider
+#ifdef WITH_CHROMAPRINT
+				 , public Media::ITagsFetcher
+#endif
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo Media::IDiscographyProvider)
+#ifdef WITH_CHROMAPRINT
+		Q_INTERFACES (Media::ITagsFetcher)
+#endif
 
 		ICoreProxy_ptr Proxy_;
+
 		Util::QueueManager *Queue_;
+		Util::QueueManager *AcoustidQueue_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -53,6 +65,10 @@ namespace MusicZombie
 
 		Media::IPendingDisco* GetDiscography (const QString&);
 		Media::IPendingDisco* GetReleaseInfo (const QString&, const QString&);
+
+#ifdef WITH_CHROMAPRINT
+		Media::IPendingTagsFetch* FetchTags (const QString&);
+#endif
 	};
 }
 }

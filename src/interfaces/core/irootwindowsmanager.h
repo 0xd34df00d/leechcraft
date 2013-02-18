@@ -25,7 +25,7 @@ class QMainWindow;
 class ICoreTabWidget;
 class IMWProxy;
 
-class IRootWindowsManager
+class Q_DECL_EXPORT IRootWindowsManager
 {
 public:
 	virtual ~IRootWindowsManager () {}

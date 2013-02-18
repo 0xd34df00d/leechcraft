@@ -116,6 +116,7 @@ SET (SRCS
 	pendinguploadpaster.cpp
 	contactdropfilter.cpp
 	colorlisteditorwidget.cpp
+	customstatusesmanager.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -169,6 +170,7 @@ SET (HEADERS
 	pendinguploadpaster.h
 	contactdropfilter.h
 	colorlisteditorwidget.h
+	customstatusesmanager.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
 	)
@@ -266,6 +268,7 @@ OPTION (ENABLE_AZOTH_ROSENTHAL "Build Rosenthal, spellchecker plugin for Azoth" 
 OPTION (ENABLE_AZOTH_SHX "Build ShX, shell command runner" ON)
 OPTION (ENABLE_AZOTH_STANDARDSTYLES "Build support for standard Azoth styles" ON)
 OPTION (ENABLE_AZOTH_VADER "Build support for the MRIM protocol" ON)
+OPTION (ENABLE_AZOTH_VELVETBIRD "Build libpurple support plugin" OFF)
 OPTION (ENABLE_AZOTH_XOOX "Build Xoox, the QXmpp-aided XMPP support for Azoth" ON)
 OPTION (ENABLE_AZOTH_XTAZY "Build Xtazy for publishing current user tune" ON)
 OPTION (ENABLE_AZOTH_ZHEET "Build Zheet, the libmsn-based Windows Live support for Azoth" OFF)
@@ -342,6 +345,9 @@ ENDIF (ENABLE_AZOTH_STANDARDSTYLES)
 IF (ENABLE_AZOTH_VADER)
 	ADD_SUBDIRECTORY (plugins/vader)
 ENDIF (ENABLE_AZOTH_VADER)
+IF (ENABLE_AZOTH_VELVETBIRD)
+	ADD_SUBDIRECTORY (plugins/velvetbird)
+ENDIF (ENABLE_AZOTH_VELVETBIRD)
 IF (ENABLE_AZOTH_XOOX)
 	ADD_SUBDIRECTORY (plugins/xoox)
 ENDIF (ENABLE_AZOTH_XOOX)

@@ -4,9 +4,10 @@ import org.LC.common 1.0
 Rectangle {
     id: rootRect
 
-    width: parent.width
-    property real trayItemHeight: parent.width
-    height: trayView.count * trayItemHeight
+    property real itemSize: parent.quarkBaseSize
+    property real length: trayView.count * itemSize
+    width: viewOrient == "vertical" ? itemSize : length
+    height: viewOrient == "vertical" ? length : itemSize
 
     radius: 2
 
@@ -19,14 +20,16 @@ Rectangle {
 
         model: SB2_trayModel
 
+        orientation: viewOrient == "vertical" ? ListView.Vertical : ListView.Horizontal
+
         delegate: ActionButton {
-            height: rootRect.trayItemHeight
-            width: rootRect.width
+            height: rootRect.itemSize
+            width: rootRect.itemSize
 
             isHighlight: actionObject.checked
             actionIconURL: actionIcon
             textTooltip: actionText
-            hoverScalesIcons: false
+            transparentStyle: true
 
             onTriggered: actionObject.trigger()
         }

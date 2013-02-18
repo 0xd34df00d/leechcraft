@@ -35,7 +35,7 @@
  * - pluginInjected(QObject*), which is emitted after a successful
  *   plugin injection.
  */
-class IPluginsManager
+class Q_DECL_EXPORT IPluginsManager
 {
 public:
 	virtual ~IPluginsManager () {}

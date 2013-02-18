@@ -60,7 +60,7 @@ namespace LeechCraft
 	 *
 	 * @sa Util::DefaultHookProxy
 	 */
-	class IHookProxy
+	class Q_DECL_EXPORT IHookProxy
 	{
 	public:
 		virtual ~IHookProxy () {}

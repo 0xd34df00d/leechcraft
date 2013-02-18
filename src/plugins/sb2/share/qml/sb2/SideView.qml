@@ -6,6 +6,7 @@ Rectangle {
     anchors.fill: parent
 
     property alias settingsMode: enableSettingsModeButton.settingsMode
+    property bool isVert: viewOrient == "vertical"
 
     Common { id: commonJS }
 
@@ -22,12 +23,13 @@ Rectangle {
 
     ActionButton {
         id: enableSettingsModeButton
+        width: isVert ? parent.width : parent.height
         height: width
-        anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
 
         actionIconURL: "image://ThemeIcons/preferences-plugin"
+        textTooltip: SB2_settingsModeTooltip
 
         property bool settingsMode: false
         onTriggered: { isHighlight = !isHighlight; settingsMode = !settingsMode; }
@@ -36,12 +38,13 @@ Rectangle {
     ActionButton {
         id: setQuarkOrderButton
         visible: enableSettingsModeButton.settingsMode
+        width: isVert ? parent.width : parent.height
         height: width
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: addQuarkButton.top
+        anchors.bottom: isVert ? addQuarkButton.top : undefined
+        anchors.right: isVert ? undefined : addQuarkButton.left
 
         actionIconURL: "image://ThemeIcons/format-list-unordered"
+        textTooltip: SB2_quarkOrderTooltip
 
         onTriggered: commonJS.showTooltip(setQuarkOrderButton, function(x, y) { quarkProxy.quarkOrderRequested(x, y) })
     }
@@ -50,12 +53,13 @@ Rectangle {
         id: addQuarkButton
 
         visible: enableSettingsModeButton.settingsMode
+        width: isVert ? parent.width : parent.height
         height: width
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: enableSettingsModeButton.top
+        anchors.bottom: isVert ? enableSettingsModeButton.top : undefined
+        anchors.right: isVert ? undefined : enableSettingsModeButton.left
 
         actionIconURL: "image://ThemeIcons/list-add"
+        textTooltip: SB2_addQuarkTooltip
 
         onTriggered: commonJS.showTooltip(addQuarkButton, function(x, y) { quarkProxy.quarkAddRequested(x, y) })
     }
@@ -65,29 +69,30 @@ Rectangle {
 
         anchors.top: parent.top
         anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: setQuarkOrderButton.top
+        anchors.right: isVert ? parent.right : setQuarkOrderButton.left
+        anchors.bottom: isVert ? setQuarkOrderButton.top : parent.bottom
 
         model: itemsModel
         spacing: 2
 
+        orientation: isVert ? ListView.Vertical : ListView.Horizontal
+
         delegate: Rectangle {
             id: itemsDelegate
 
-            height: itemLoader.height
-            width: itemsView.width
+            height: isVert ? itemLoader.height : itemsView.height
+            width: isVert ? itemsView.width : itemLoader.width
 
             color: "transparent"
 
             Loader {
                 id: itemLoader
 
+                property real quarkBaseSize: isVert ? width : height
+
                 source: sourceURL
-                height: item.height
-                anchors.left: itemsDelegate.left
-                anchors.right: itemsDelegate.right
-                anchors.leftMargin: 1
-                anchors.rightMargin: 1
+                height: isVert ? item.height : itemsDelegate.height
+                width: isVert ? itemsDelegate.width : item.width
 
                 clip: true
             }

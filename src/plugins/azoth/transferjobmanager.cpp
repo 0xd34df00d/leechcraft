@@ -25,6 +25,7 @@
 #include <QToolBar>
 #include <QAction>
 #include <interfaces/ijobholder.h>
+#include <interfaces/an/constants.h>
 #include <util/util.h>
 #include <util/notificationactionhandler.h>
 #include "interfaces/azoth/iclentry.h"
@@ -345,8 +346,7 @@ namespace Azoth
 				tr ("Incoming file") :
 				tr ("Incoming file: %1")
 					.arg ("<br />" + job->GetComment ());
-		e.Additional_ ["org.LC.AdvNotifications.EventType"] =
-				"org.LC.AdvNotifications.IM.IncomingFile";
+		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMIncFile;
 
 		Util::NotificationActionHandler *nh =
 				new Util::NotificationActionHandler (e, this);

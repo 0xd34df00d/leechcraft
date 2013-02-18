@@ -20,6 +20,7 @@
 #include <QString>
 #include <QWizard>
 #include <util/util.h>
+#include <interfaces/an/constants.h>
 #include <interfaces/structures.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
@@ -35,8 +36,7 @@ namespace Azoth
 		e.Additional_ ["NotificationPixmap"] =
 				QVariant::fromValue<QPixmap> (QPixmap::fromImage (other->GetAvatar ()));
 		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Azoth";
-		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] =
-				"org.LC.AdvNotifications.IM";
+		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = AN::CatIM;
 		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
 				"org.LC.Plugins.Azoth.IncomingMessageFrom/" + other->GetEntryID ();
 

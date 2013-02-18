@@ -18,8 +18,12 @@
 
 #include "favoritesmodel.h"
 #include <algorithm>
+#include <boost/iterator/zip_iterator.hpp>
+#include <boost/range.hpp>
 #include <QTimer>
 #include <QtDebug>
+#include <QMimeData>
+#include <QFileInfo>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include <util/defaulthookproxy.h>
@@ -96,7 +100,10 @@ namespace Poshuku
 
 	Qt::ItemFlags FavoritesModel::flags (const QModelIndex& index) const
 	{
-		Qt::ItemFlags result = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+		Qt::ItemFlags result = Qt::ItemIsEnabled |
+				Qt::ItemIsSelectable |
+				Qt::ItemIsDragEnabled |
+				Qt::ItemIsDropEnabled;
 		if (index.column () == ColumnTags)
 			result |= Qt::ItemIsEditable;
 		return result;
@@ -165,13 +172,14 @@ namespace Poshuku
 		}
 	}
 
-	QModelIndex FavoritesModel::addItem (const QString& title, const QString& url,
-			const QStringList& visibleTags)
+	QModelIndex FavoritesModel::addItem (const QString& title,
+			const QString& url, const QStringList& visibleTags)
 	{
 		QStringList tags;
-		Q_FOREACH (const QString& vt, visibleTags)
-			tags << Core::Instance ().GetProxy ()->
-					GetTagsManager ()->GetID (vt);
+		auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
+		for (const QString& vt : visibleTags)
+			tags << tm->GetID (vt);
+
 		FavoritesItem item =
 		{
 			title,
@@ -212,6 +220,97 @@ namespace Poshuku
 		}
 
 		return result;
+	}
+
+	Qt::DropActions FavoritesModel::supportedDropActions () const
+	{
+		return static_cast<Qt::DropActions> (Qt::CopyAction | Qt::MoveAction | Qt::LinkAction);
+	}
+
+	QStringList FavoritesModel::mimeTypes () const
+	{
+		return QStringList ("text/uri-list");
+	}
+
+	QMimeData* FavoritesModel::mimeData (const QModelIndexList& indexes) const
+	{
+		if (indexes.isEmpty ())
+			return 0;
+
+		QList<QUrl> urls;
+		QStringList texts;
+		QList<int> rows;
+		for (const auto& index : indexes)
+			if (!rows.contains (index.row ()))
+				rows << index.row ();
+		for (const auto& row : rows)
+		{
+			const auto& item = Items_ [row];
+			urls << QUrl (item.URL_);
+			texts << item.Title_;
+		}
+
+		auto data = new QMimeData ();
+		data->setUrls (urls);
+		data->setText (texts.join (";"));
+		return data;
+	}
+
+	namespace
+	{
+		template <typename... T>
+		auto zip (const T&... containers) -> boost::iterator_range<boost::zip_iterator<decltype (boost::make_tuple (std::begin (containers)...))>>
+		{
+			auto zip_begin = boost::make_zip_iterator (boost::make_tuple (std::begin (containers)...));
+			auto zip_end = boost::make_zip_iterator (boost::make_tuple (std::end (containers)...));
+			return boost::make_iterator_range (zip_begin, zip_end);
+		}
+	}
+
+	bool FavoritesModel::dropMimeData (const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex& parent)
+	{
+		const auto& urls = data->urls ();
+
+		QStringList visibleTags;
+		if (data->hasFormat ("x-leechcraft/tag"))
+		{
+			auto tm = Core::Instance ().GetProxy ()->GetTagsManager ();
+			const auto& visible = tm->GetTag (data->data ("x-leechcraft/tag"));
+			if (!visible.isEmpty ())
+				visibleTags << visible;
+		}
+
+		auto tryAddUrl = [&visibleTags, this] (const QString& title, const QUrl& url) -> void
+		{
+			const auto pos = std::find_if (Items_.begin (), Items_.end (),
+					[&title] (const FavoritesItem& item) { return item.Title_ == title; });
+			if (pos == Items_.end ())
+				addItem (title, url.toString (), visibleTags);
+			else
+			{
+				auto tags = pos->Tags_;
+				tags += visibleTags;
+				setData (index (std::distance (Items_.begin (), pos), ColumnTags), tags);
+			}
+		};
+
+		if (urls.size () == 1 && !data->text ().isEmpty ())
+			tryAddUrl (data->text (), urls.first ());
+		else if (!urls.isEmpty ())
+		{
+			auto texts = data->text ().split (';', QString::SkipEmptyParts);
+			if (texts.size () != urls.size ())
+			{
+				texts.clear ();
+				for (const auto& url : urls)
+					texts << QFileInfo (url.path ()).fileName ();
+			}
+
+			for (const auto& pair : zip (texts, urls))
+				tryAddUrl (boost::get<0> (pair), boost::get<1> (pair));
+		}
+
+		return true;
 	}
 
 	void FavoritesModel::EditBookmark (const QModelIndex& source)

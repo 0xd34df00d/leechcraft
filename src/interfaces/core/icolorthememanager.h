@@ -20,7 +20,7 @@
 
 class QColor;
 
-class IColorThemeManager
+class Q_DECL_EXPORT IColorThemeManager
 {
 public:
 	virtual ~IColorThemeManager () {}

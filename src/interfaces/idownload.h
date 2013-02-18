@@ -45,7 +45,7 @@ struct EntityTestHandleResult;
  *
  * @sa IJobHolder, IEntityHandler
  */
-class IDownload
+class Q_DECL_EXPORT IDownload
 {
 public:
 	enum Error
