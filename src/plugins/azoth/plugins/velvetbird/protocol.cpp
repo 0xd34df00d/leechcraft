@@ -134,7 +134,7 @@ namespace VelvetBird
 		Accounts_ << account;
 		emit accountAdded (account);
 
-		pacc->ui_data = this;
+		pacc->ui_data = account;
 	}
 }
 }
