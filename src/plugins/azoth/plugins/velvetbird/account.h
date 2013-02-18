@@ -39,6 +39,8 @@ namespace VelvetBird
 		QString Name_;
 		PurpleAccount *Account_;
 		Protocol *Proto_;
+
+		EntryStatus CurrentStatus_;
 	public:
 		Account (const QString&, PurpleAccount*, Protocol*);
 

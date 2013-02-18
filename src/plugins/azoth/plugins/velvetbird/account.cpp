@@ -20,6 +20,7 @@
 #include <QtDebug>
 #include <util/passutils.h>
 #include "protocol.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -97,7 +98,7 @@ namespace VelvetBird
 
 	EntryStatus Account::GetState () const
 	{
-		return EntryStatus ();
+		return CurrentStatus_;
 	}
 
 	void Account::ChangeState (const EntryStatus& status)
@@ -122,7 +123,12 @@ namespace VelvetBird
 
 		if (!purple_account_get_enabled (Account_, "leechcraft.azoth"))
 			purple_account_set_enabled (Account_, "leechcraft.azoth", true);
-		purple_account_set_status (Account_, purple_primitive_get_id_from_type (PURPLE_STATUS_AVAILABLE), true, NULL);
+		purple_account_set_status (Account_,
+				purple_primitive_get_id_from_type (ToPurpleState (status.State_)),
+				true,
+				"message",
+				status.StatusString_.toUtf8 ().constData (),
+				NULL);
 	}
 
 	void Account::Authorize (QObject*)
@@ -148,8 +154,11 @@ namespace VelvetBird
 
 	void Account::HandleStatus (PurpleStatus *status)
 	{
-		qDebug () << Q_FUNC_INFO << status;
-		qDebug () << purple_status_get_id (status) << purple_status_get_name (status);
+		const auto id = purple_status_get_id (status);
+		const auto message = purple_status_get_attr_string (status, "message");
+		CurrentStatus_ = EntryStatus (FromPurpleState (purple_primitive_get_type_from_id (id)),
+				message ? QString::fromUtf8 (message) : QString ());
+		emit statusChanged (CurrentStatus_);
 	}
 }
 }
