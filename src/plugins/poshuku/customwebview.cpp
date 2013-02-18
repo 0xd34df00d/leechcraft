@@ -94,7 +94,7 @@ namespace Poshuku
 		connect (this,
 				SIGNAL (loadFinished (bool)),
 				this,
-				SLOT (handleLoadFinished ()));
+				SLOT (handleLoadFinished (bool)));
 
 		connect (page,
 				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
