@@ -47,6 +47,7 @@ namespace VelvetBird
 
 		void Show (PurpleBuddyList*);
 		void Update (PurpleBuddyList*, PurpleBlistNode*);
+		void Remove (PurpleBuddyList*, PurpleBlistNode*);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

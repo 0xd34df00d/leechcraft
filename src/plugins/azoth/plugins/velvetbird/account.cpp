@@ -174,6 +174,16 @@ namespace VelvetBird
 		Buddies_ [purpleBuddy]->Update ();
 	}
 
+	void Account::RemoveBuddy (PurpleBuddy *purpleBuddy)
+	{
+		auto buddy = Buddies_.take (purpleBuddy);
+		if (!buddy)
+			return;
+
+		emit removedCLItems ({ buddy });
+		buddy->deleteLater ();
+	}
+
 	void Account::HandleStatus (PurpleStatus *status)
 	{
 		CurrentStatus_ = FromPurpleStatus (status);

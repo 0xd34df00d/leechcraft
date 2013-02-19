@@ -209,6 +209,8 @@ namespace VelvetBird
 			[] (PurpleBuddyList *list) { static_cast<ProtoManager*> (list->ui_data)->Show (list); },
 			[] (PurpleBuddyList *list, PurpleBlistNode *node)
 				{ static_cast<ProtoManager*> (list->ui_data)->Update (list, node); },
+			[] (PurpleBuddyList *list, PurpleBlistNode *node)
+				{ static_cast<ProtoManager*> (list->ui_data)->Remove (list, node); },
 			NULL
 		};
 	}
@@ -300,6 +302,16 @@ namespace VelvetBird
 		auto buddy = reinterpret_cast<PurpleBuddy*> (node);
 		auto account = static_cast<Account*> (buddy->account->ui_data);
 		account->UpdateBuddy (buddy);
+	}
+
+	void ProtoManager::Remove (PurpleBuddyList*, PurpleBlistNode *node)
+	{
+		if (node->type != PURPLE_BLIST_BUDDY_NODE)
+			return;
+
+		auto buddy = reinterpret_cast<PurpleBuddy*> (node);
+		auto account = static_cast<Account*> (buddy->account->ui_data);
+		account->RemoveBuddy (buddy);
 	}
 }
 }

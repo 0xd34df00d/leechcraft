@@ -69,6 +69,7 @@ namespace VelvetBird
 		QObject* GetTransferManager () const;
 
 		void UpdateBuddy (PurpleBuddy*);
+		void RemoveBuddy (PurpleBuddy*);
 		void HandleStatus (PurpleStatus*);
 	signals:
 		void accountRenamed (const QString&);
