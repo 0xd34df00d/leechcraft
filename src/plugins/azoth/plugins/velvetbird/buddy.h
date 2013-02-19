@@ -69,6 +69,7 @@ namespace VelvetBird
 		QMap<QString, QVariant> GetClientInfo (const QString& variant) const;
 		void MarkMsgsRead ();
 
+		PurpleBuddy* GetPurpleBuddy () const;
 		void Update ();
 	signals:
 		void gotMessage (QObject*);

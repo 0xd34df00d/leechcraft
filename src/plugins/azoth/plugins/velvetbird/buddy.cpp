@@ -141,6 +141,11 @@ namespace VelvetBird
 	{
 	}
 
+	PurpleBuddy* Buddy::GetPurpleBuddy () const
+	{
+		return Buddy_;
+	}
+
 	void Buddy::Update ()
 	{
 		if (Name_ != GetEntryName ())
