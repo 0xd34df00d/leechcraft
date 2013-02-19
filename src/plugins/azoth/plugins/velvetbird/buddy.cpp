@@ -77,7 +77,7 @@ namespace VelvetBird
 
 	QStringList Buddy::Groups () const
 	{
-		return QStringList ();
+		return Group_.isEmpty () ? QStringList () : QStringList (Group_);
 	}
 
 	void Buddy::SetGroups (const QStringList& groups)
@@ -154,6 +154,14 @@ namespace VelvetBird
 		{
 			Status_ = status;
 			emit statusChanged (Status_, QString ());
+		}
+
+		auto groupNode = purple_buddy_get_group (Buddy_);
+		const auto& newGroup = groupNode ? QString::fromUtf8 (groupNode->name) : QString ();
+		if (newGroup != Group_)
+		{
+			Group_ = newGroup;
+			emit groupsChanged ({ Group_ });
 		}
 	}
 }

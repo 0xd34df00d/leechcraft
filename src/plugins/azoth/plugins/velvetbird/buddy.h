@@ -41,6 +41,8 @@ namespace VelvetBird
 
 		QString Name_;
 		EntryStatus Status_;
+
+		QString Group_;
 	public:
 		Buddy (PurpleBuddy*, Account*);
 
