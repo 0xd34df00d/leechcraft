@@ -61,8 +61,9 @@ namespace VelvetBird
 		return QString::fromUtf8 (purple_buddy_get_alias (Buddy_));
 	}
 
-	void Buddy::SetEntryName (const QString&)
+	void Buddy::SetEntryName (const QString& name)
 	{
+		purple_blist_rename_buddy (Buddy_, name.toUtf8 ().constData ());
 	}
 
 	QString Buddy::GetEntryID () const
