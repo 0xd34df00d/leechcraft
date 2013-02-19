@@ -153,8 +153,11 @@ namespace VelvetBird
 		purple_account_add_buddy_with_invite (Account_, buddy, msg.toUtf8 ().constData ());
 	}
 
-	void Account::RemoveEntry (QObject*)
+	void Account::RemoveEntry (QObject *entryObj)
 	{
+		auto buddy = qobject_cast<Buddy*> (entryObj);
+		purple_account_remove_buddy (Account_, buddy->GetPurpleBuddy (), NULL);
+		purple_blist_remove_buddy (buddy->GetPurpleBuddy ());
 	}
 
 	QObject* Account::GetTransferManager () const
