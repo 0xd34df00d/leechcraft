@@ -63,7 +63,7 @@ namespace VelvetBird
 
 	void Buddy::SetEntryName (const QString& name)
 	{
-		purple_blist_rename_buddy (Buddy_, name.toUtf8 ().constData ());
+		purple_blist_alias_buddy (Buddy_, name.toUtf8 ().constData ());
 	}
 
 	QString Buddy::GetEntryID () const
