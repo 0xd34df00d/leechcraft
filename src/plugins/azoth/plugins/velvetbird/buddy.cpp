@@ -18,7 +18,9 @@
 
 #include "buddy.h"
 #include <QImage>
+#include <QtDebug>
 #include "account.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -31,6 +33,7 @@ namespace VelvetBird
 	, Account_ (account)
 	, Buddy_ (buddy)
 	{
+		Update ();
 	}
 
 	QObject* Buddy::GetObject ()
@@ -106,7 +109,7 @@ namespace VelvetBird
 
 	EntryStatus Buddy::GetStatus (const QString& variant) const
 	{
-		return EntryStatus ();
+		return Status_;
 	}
 
 	QImage Buddy::GetAvatar () const
@@ -139,6 +142,19 @@ namespace VelvetBird
 
 	void Buddy::Update ()
 	{
+		if (Name_ != GetEntryName ())
+		{
+			Name_ = GetEntryName ();
+			emit nameChanged (Name_);
+		}
+
+		auto purpleStatus = purple_presence_get_active_status (Buddy_->presence);
+		const auto& status = FromPurpleStatus (purpleStatus);
+		if (status != Status_)
+		{
+			Status_ = status;
+			emit statusChanged (Status_, QString ());
+		}
 	}
 }
 }
