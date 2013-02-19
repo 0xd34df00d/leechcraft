@@ -143,8 +143,14 @@ namespace VelvetBird
 	{
 	}
 
-	void Account::RequestAuth (const QString&, const QString&, const QString&, const QStringList&)
+	void Account::RequestAuth (const QString& entry,
+			const QString& msg, const QString& name, const QStringList&)
 	{
+		auto buddy = purple_buddy_new (Account_,
+				entry.toUtf8 ().constData (),
+				name.isEmpty () ? nullptr : name.toUtf8 ().constData ());
+		purple_blist_add_buddy (buddy, NULL, NULL, NULL);
+		purple_account_add_buddy_with_invite (Account_, buddy, msg.toUtf8 ().constData ());
 	}
 
 	void Account::RemoveEntry (QObject*)
