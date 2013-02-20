@@ -73,7 +73,7 @@ namespace VelvetBird
 
 	QString Account::GetOurNick () const
 	{
-		return QString ();
+		return QString::fromUtf8 (purple_account_get_name_for_display (Account_));
 	}
 
 	void Account::RenameAccount (const QString& name)
