@@ -21,6 +21,7 @@
 #include <QtDebug>
 #include "account.h"
 #include "util.h"
+#include "convimmessage.h"
 
 namespace LeechCraft
 {
@@ -90,18 +91,22 @@ namespace VelvetBird
 		return QStringList ();
 	}
 
-	QObject* Buddy::CreateMessage (IMessage::MessageType type, const QString& variant, const QString& body)
+	QObject* Buddy::CreateMessage (IMessage::MessageType, const QString&, const QString& body)
 	{
-		return 0;
+		return new ConvIMMessage (body, IMessage::DOut, this);
 	}
 
 	QList<QObject*> Buddy::GetAllMessages () const
 	{
-		return QList<QObject*> ();
+		QList<QObject*> result;
+		for (auto msg : Messages_)
+			result << msg;
+		return result;
 	}
 
 	void Buddy::PurgeMessages (const QDateTime& before)
 	{
+		// TODO
 	}
 
 	void Buddy::SetChatPartState (ChatPartState state, const QString& variant)
@@ -139,6 +144,40 @@ namespace VelvetBird
 
 	void Buddy::MarkMsgsRead ()
 	{
+	}
+
+	void Buddy::Send (ConvIMMessage *msg)
+	{
+		Store (msg);
+
+		if (!PurpleConv_)
+		{
+			PurpleConv_.reset (purple_conversation_new (PURPLE_CONV_TYPE_IM,
+						Account_->GetPurpleAcc (),
+						purple_buddy_get_name (Buddy_)),
+					purple_conversation_destroy);
+			PurpleConv_->ui_data = this;
+			purple_conversation_set_logging (PurpleConv_.get (), false);
+		}
+
+		purple_conv_im_send (PurpleConv_->u.im, msg->GetBody ().toUtf8 ().constData ());
+	}
+
+	void Buddy::Store (ConvIMMessage *msg)
+	{
+		Messages_ << msg;
+		emit gotMessage (msg);
+	}
+
+	void Buddy::HandleMessage (const char *who, const char *body, PurpleMessageFlags flags, time_t time)
+	{
+		if (flags & PURPLE_MESSAGE_SEND)
+			return;
+
+		auto msg = new ConvIMMessage (QString::fromUtf8 (body), IMessage::DIn, this);
+		if (time)
+			msg->SetDateTime (QDateTime::fromTime_t (time));
+		Store (msg);
 	}
 
 	PurpleBuddy* Buddy::GetPurpleBuddy () const

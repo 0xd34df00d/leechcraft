@@ -23,6 +23,7 @@
 #include <libpurple/plugin.h>
 #include "protocol.h"
 #include "account.h"
+#include "buddy.h"
 
 namespace LeechCraft
 {
@@ -213,6 +214,23 @@ namespace VelvetBird
 				{ static_cast<ProtoManager*> (list->ui_data)->Remove (list, node); },
 			NULL
 		};
+
+		PurpleConversationUiOps ConvUiOps =
+		{
+			NULL,
+			NULL,
+			NULL,
+			[] (PurpleConversation *conv, const char *who, const char *message, PurpleMessageFlags flags, time_t mtime)
+			{
+				qDebug () << Q_FUNC_INFO << who << QString::fromUtf8 (message) << conv->ui_data;
+				static_cast<Buddy*> (conv->ui_data)->HandleMessage (who, message, flags, mtime);
+			},
+			[] (PurpleConversation *conv, const char *name, const char *alias, const char *message, PurpleMessageFlags flags, time_t mtime)
+			{
+				qDebug () << Q_FUNC_INFO << name << alias << message;
+			},
+			NULL
+		};
 	}
 
 	ProtoManager::ProtoManager (ICoreProxy_ptr proxy, QObject *parent)
@@ -232,6 +250,8 @@ namespace VelvetBird
 		purple_set_blist (purple_blist_new ());
 		purple_blist_set_ui_data (this);
 		purple_blist_set_ui_ops (&BListUiOps);
+
+		purple_conversations_set_ui_ops (&ConvUiOps);
 
 		if (!purple_core_init ("leechcraft.azoth"))
 		{
