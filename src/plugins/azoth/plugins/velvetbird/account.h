@@ -29,6 +29,7 @@ namespace Azoth
 namespace VelvetBird
 {
 	class Protocol;
+	class Buddy;
 
 	class Account : public QObject
 				  , public IAccount
@@ -39,6 +40,10 @@ namespace VelvetBird
 		QString Name_;
 		PurpleAccount *Account_;
 		Protocol *Proto_;
+
+		EntryStatus CurrentStatus_;
+
+		QHash<PurpleBuddy*, Buddy*> Buddies_;
 	public:
 		Account (const QString&, PurpleAccount*, Protocol*);
 
@@ -63,6 +68,7 @@ namespace VelvetBird
 		void RemoveEntry (QObject*);
 		QObject* GetTransferManager () const;
 
+		void UpdateBuddy (PurpleBuddy*);
 		void HandleStatus (PurpleStatus*);
 	signals:
 		void accountRenamed (const QString&);

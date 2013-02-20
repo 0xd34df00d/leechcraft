@@ -51,10 +51,52 @@ namespace VelvetBird
 			return uiInfo;
 		}
 
+		class Debugger
+		{
+			QFile File_;
+		public:
+			Debugger ()
+			: File_ (Util::CreateIfNotExists ("azoth/velvetbird").absoluteFilePath ("purple.log"))
+			{
+			}
+
+			void print (PurpleDebugLevel level, const char *cat, const char *msg)
+			{
+				static const auto levels = Util::MakeMap<PurpleDebugLevel, QString> ({
+						{ PURPLE_DEBUG_ALL, "ALL" },
+						{ PURPLE_DEBUG_MISC, "MISC" },
+						{ PURPLE_DEBUG_INFO, "INFO" },
+						{ PURPLE_DEBUG_WARNING, "WARN" },
+						{ PURPLE_DEBUG_ERROR, "ERR" },
+						{ PURPLE_DEBUG_FATAL, "FATAL" }
+					});
+
+				QString data = "[" + levels [level] + "] " + cat + ": " + msg + "\n";
+				File_.open (QIODevice::WriteOnly);
+				File_.write (data.toUtf8 ());
+				File_.close ();
+			}
+		};
+
+		PurpleDebugUiOps DbgUiOps =
+		{
+			[] (PurpleDebugLevel level, const char *cat, const char *msg)
+			{
+				static Debugger dbg;
+				dbg.print (level, cat, msg);
+			},
+			[] (PurpleDebugLevel, const char*) -> gboolean { return true; },
+
+			NULL,
+			NULL,
+			NULL,
+			NULL
+		};
+
 		PurpleCoreUiOps UiOps =
 		{
 			NULL,
-			NULL,
+			[] () { purple_debug_set_ui_ops (&DbgUiOps); },
 			NULL,
 			NULL,
 			GetUIInfo,
@@ -160,7 +202,15 @@ namespace VelvetBird
 			NULL
 		};
 
-		PurpleBlistUiOps BListUiOps = {};
+		PurpleBlistUiOps BListUiOps =
+		{
+			NULL,
+			NULL,
+			[] (PurpleBuddyList *list) { static_cast<ProtoManager*> (list->ui_data)->Show (list); },
+			[] (PurpleBuddyList *list, PurpleBlistNode *node)
+				{ static_cast<ProtoManager*> (list->ui_data)->Update (list, node); },
+			NULL
+		};
 	}
 
 	ProtoManager::ProtoManager (ICoreProxy_ptr proxy, QObject *parent)
@@ -177,6 +227,8 @@ namespace VelvetBird
 		purple_idle_set_ui_ops (&IdleOps);
 		purple_connections_set_ui_ops (&ConnUiOps);
 
+		purple_set_blist (purple_blist_new ());
+		purple_blist_set_ui_data (this);
 		purple_blist_set_ui_ops (&BListUiOps);
 
 		if (!purple_core_init ("leechcraft.azoth"))
@@ -185,9 +237,6 @@ namespace VelvetBird
 					<< "failed initializing libpurple";
 			return;
 		}
-
-		purple_set_blist (purple_blist_new ());
-		purple_blist_load ();
 
 		purple_accounts_set_ui_ops (&AccUiOps);
 
@@ -221,6 +270,13 @@ namespace VelvetBird
 
 			id2proto [purple_account_get_protocol_id (acc)]->PushAccount (acc);
 		}
+
+		purple_blist_load ();
+	}
+
+	void ProtoManager::PluginsAvailable ()
+	{
+		purple_accounts_restore_current_statuses ();
 	}
 
 	QList<QObject*> ProtoManager::GetProtoObjs () const
@@ -229,6 +285,21 @@ namespace VelvetBird
 		for (auto proto : Protocols_)
 			result << proto;
 		return result;
+	}
+
+	void ProtoManager::Show (PurpleBuddyList *list)
+	{
+		qDebug () << Q_FUNC_INFO << list;
+	}
+
+	void ProtoManager::Update (PurpleBuddyList*, PurpleBlistNode *node)
+	{
+		if (node->type != PURPLE_BLIST_BUDDY_NODE)
+			return;
+
+		auto buddy = reinterpret_cast<PurpleBuddy*> (node);
+		auto account = static_cast<Account*> (buddy->account->ui_data);
+		account->UpdateBuddy (buddy);
 	}
 }
 }

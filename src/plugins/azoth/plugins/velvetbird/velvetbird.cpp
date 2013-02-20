@@ -40,6 +40,7 @@ namespace VelvetBird
 
 	void Plugin::SecondInit ()
 	{
+		ProtoMgr_->PluginsAvailable ();
 	}
 
 	void Plugin::Release ()

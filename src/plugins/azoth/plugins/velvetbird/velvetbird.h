@@ -57,7 +57,7 @@ namespace VelvetBird
 		void initPlugin (QObject*);
 	signals:
 		void gotNewProtocols (const QList<QObject*>&);
-	
+
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};

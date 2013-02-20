@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QObject>
+#include <blist.h>
 #include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
@@ -40,7 +41,12 @@ namespace VelvetBird
 	public:
 		ProtoManager (ICoreProxy_ptr, QObject*);
 
+		void PluginsAvailable ();
+
 		QList<QObject*> GetProtoObjs () const;
+
+		void Show (PurpleBuddyList*);
+		void Update (PurpleBuddyList*, PurpleBlistNode*);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

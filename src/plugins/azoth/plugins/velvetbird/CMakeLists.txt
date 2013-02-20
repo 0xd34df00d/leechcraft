@@ -27,6 +27,7 @@ SET (VELVETBIRD_SRCS
 	account.cpp
 	accregfirstpage.cpp
 	util.cpp
+	buddy.cpp
 	)
 SET (VELVETBIRD_FORMS
 	accregfirstpage.ui

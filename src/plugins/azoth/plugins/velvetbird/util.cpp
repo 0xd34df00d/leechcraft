@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "util.h"
+#include <interfaces/azoth/iclentry.h>
 
 namespace LeechCraft
 {
@@ -63,6 +64,14 @@ namespace VelvetBird
 		default:
 			return PURPLE_STATUS_UNSET;
 		}
+	}
+
+	EntryStatus FromPurpleStatus (PurpleStatus *status)
+	{
+		const auto id = purple_status_get_id (status);
+		const auto message = purple_status_get_attr_string (status, "message");
+		return EntryStatus (FromPurpleState (purple_primitive_get_type_from_id (id)),
+				message ? QString::fromUtf8 (message) : QString ());
 	}
 }
 }
