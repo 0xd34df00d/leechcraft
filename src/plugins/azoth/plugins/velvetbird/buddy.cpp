@@ -169,6 +169,12 @@ namespace VelvetBird
 		emit gotMessage (msg);
 	}
 
+	void Buddy::SetConv (PurpleConversation *conv)
+	{
+		PurpleConv_.reset (conv, purple_conversation_destroy);
+		PurpleConv_->ui_data = this;
+	}
+
 	void Buddy::HandleMessage (const char *who, const char *body, PurpleMessageFlags flags, time_t time)
 	{
 		if (flags & PURPLE_MESSAGE_SEND)

@@ -187,6 +187,20 @@ namespace VelvetBird
 		buddy->deleteLater ();
 	}
 
+	void Account::HandleConvLessMessage (PurpleConversation *conv,
+			const char *who, const char *message, PurpleMessageFlags flags, time_t mtime)
+	{
+		for (auto buddy : Buddies_)
+		{
+			if (buddy->GetHumanReadableID () != who)
+				continue;
+
+			buddy->SetConv (conv);
+			buddy->HandleMessage (who, message, flags, mtime);
+			break;
+		}
+	}
+
 	void Account::HandleStatus (PurpleStatus *status)
 	{
 		CurrentStatus_ = FromPurpleStatus (status);

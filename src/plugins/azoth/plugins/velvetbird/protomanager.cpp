@@ -222,8 +222,11 @@ namespace VelvetBird
 			NULL,
 			[] (PurpleConversation *conv, const char *who, const char *message, PurpleMessageFlags flags, time_t mtime)
 			{
-				qDebug () << Q_FUNC_INFO << who << QString::fromUtf8 (message) << conv->ui_data;
-				static_cast<Buddy*> (conv->ui_data)->HandleMessage (who, message, flags, mtime);
+				if (conv->ui_data)
+					static_cast<Buddy*> (conv->ui_data)->HandleMessage (who, message, flags, mtime);
+				else
+					static_cast<Account*> (conv->account->ui_data)->
+							HandleConvLessMessage (conv, who, message, flags, mtime);
 			},
 			[] (PurpleConversation *conv, const char *name, const char *alias, const char *message, PurpleMessageFlags flags, time_t mtime)
 			{

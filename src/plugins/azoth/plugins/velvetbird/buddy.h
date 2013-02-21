@@ -78,6 +78,7 @@ namespace VelvetBird
 
 		void Send (ConvIMMessage*);
 		void Store (ConvIMMessage*);
+		void SetConv (PurpleConversation*);
 		void HandleMessage (const char*, const char*, PurpleMessageFlags, time_t);
 
 		PurpleBuddy* GetPurpleBuddy () const;
