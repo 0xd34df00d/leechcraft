@@ -275,7 +275,7 @@ namespace Blogique
 		auto acc = qobject_cast<IAccount*> (sender ());
 		if (!acc)
 			return;
-		Storage_->SaveEntries (acc->GetAccountID (), entries);
+// 		Storage_->SaveEntries (acc->GetAccountID (), entries);
 		emit storageUpdated ();
 
 		SendEntity (Util::MakeNotification ("Blogique",
@@ -291,14 +291,14 @@ namespace Blogique
 		if (!acc)
 			return;
 
-		if (QMessageBox::question (Proxy_->GetRootWindowsManager ()->GetPreferredWindow (),
-				"LeechCraft",
-				tr ("Entry was removed successfully.\nRemove entry from local storage?"),
-				QMessageBox::Ok | QMessageBox::No,
-				QMessageBox::No) == QMessageBox::No)
-			Storage_->MoveFromEntriesToDrafts (acc->GetAccountID (), itemId);
-		else
-			Storage_->RemoveEntry (acc->GetAccountID (), itemId);
+// 		if (QMessageBox::question (Proxy_->GetRootWindowsManager ()->GetPreferredWindow (),
+// 				"LeechCraft",
+// 				tr ("Entry was removed successfully.\nRemove entry from local storage?"),
+// 				QMessageBox::Ok | QMessageBox::No,
+// 				QMessageBox::No) == QMessageBox::No)
+// 			Storage_->MoveFromEntriesToDrafts (acc->GetAccountID (), itemId);
+// 		else
+// 			Storage_->RemoveEntry (acc->GetAccountID (), itemId);
 
 		emit storageUpdated ();
 	}
@@ -308,7 +308,7 @@ namespace Blogique
 		if (entries.isEmpty ())
 			return;
 
-		Storage_->UpdateEntry (entries.first ());
+// 		Storage_->UpdateEntry (entries.first ());
 		emit storageUpdated ();
 
 		SendEntity (Util::MakeNotification ("Blogique",
@@ -322,7 +322,7 @@ namespace Blogique
 		if (!acc)
 			return;
 
-		Storage_->SaveEntries (acc->GetAccountID (), entries);
+// 		Storage_->SaveEntries (acc->GetAccountID (), entries);
 		emit storageUpdated ();
 	}
 
@@ -340,9 +340,9 @@ namespace Blogique
 		if (!acc)
 			return;
 
-		Storage_->SaveEntries (acc->GetAccountID (), entries);
+// 		Storage_->SaveEntries (acc->GetAccountID (), entries);
 		emit storageUpdated ();
-		emit gotEntries (entries);
+		emit gotEntries (sender (), entries);
 	}
 
 }

@@ -16,42 +16,49 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "calendarwidget.h"
-#include <QPainter>
+#pragma once
+
+#include <QObject>
+#include <interfaces/iinfo.h>
+#include <interfaces/iplugin2.h>
+#include <interfaces/blogique/ibloggingplatformplugin.h>
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-	CalendarWidget::CalendarWidget (QWidget *parent)
-	: QCalendarWidget (parent)
+namespace Hestia
+{
+	class Plugin : public QObject
+				, public IInfo
+				, public IPlugin2
+				, public IBloggingPlatformPlugin
 	{
-	}
+		Q_OBJECT
+		Q_INTERFACES (IInfo IPlugin2
+				LeechCraft::Blogique::IBloggingPlatformPlugin)
 
-	void CalendarWidget::SetStatistic (const QMap<QDate, int>& statistic)
-	{
-		Date2EntriesCount_ = statistic;
-		update ();
-	}
+	public:
+		void Init (ICoreProxy_ptr proxy);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-	void CalendarWidget::paintCell (QPainter *painter, const QRect& rect, const QDate& date) const
-	{
-		QCalendarWidget::paintCell (painter, rect, date);
-		
-		if (Date2EntriesCount_.contains (date) &&
-				Date2EntriesCount_ [date])
-		{
-			painter->save ();
-			painter->setBrush (QBrush (Qt::blue));
-			const QPointF points [3] =
-			{
-				QPointF (rect.x (), rect.bottom () - 8),
-				QPointF (rect.x () + 8, rect.bottom ()),
-				QPointF (rect.x (), rect.bottom ())
-			};
-			painter->drawPolygon (points, 3);
-			painter->restore ();
-		}
-	}
+		QSet<QByteArray> GetPluginClasses () const;
+
+		QObject* GetObject ();
+		QList<QObject*> GetBloggingPlatforms () const;
+
+	public slots:
+		void initPlugin (QObject *proxy);
+
+	signals:
+		void gotEntity (const LeechCraft::Entity& e);
+		void delegateEntity (const LeechCraft::Entity& e, int *id, QObject **obj);
+	};
+}
 }
 }

@@ -240,7 +240,7 @@ namespace Blogique
 		}
 	}
 
-	QList<Entry> LocalStorage::GetDrafts (const QByteArray& accountId)
+	QList<Entry> LocalStorage::GetLocalEntries (const QByteArray& accountId, Mode mode)
 	{
 		GetDrafts_.bindValue (":account_id", QString::fromUtf8 (accountId));
 		if (!GetDrafts_.exec ())
@@ -275,7 +275,7 @@ namespace Blogique
 		return list;
 	}
 
-	Entry LocalStorage::GetFullDraft (const QByteArray& accountId, qlonglong draftId)
+	Entry LocalStorage::GetFullLocalEntry (const QByteArray& accountId, qlonglong draftId)
 	{
 		GetFullDraft_.bindValue (":account_id", QString::fromUtf8 (accountId));
 		GetFullDraft_.bindValue (":draft_id", draftId);
@@ -330,7 +330,12 @@ namespace Blogique
 		return list;
 	}
 
-	void LocalStorage::RemoveDraft (const QByteArray& accountId, qlonglong id)
+	QMap<QDate, int> LocalStorage::GetLocalEntriesCountByDate (const QByteArray& accountId)
+	{
+		return QMap<QDate, int> ();
+	}
+
+	void LocalStorage::RemoveLocalEntry (const QByteArray& accountId, qlonglong id)
 	{
 		RemoveDraft_.bindValue (":account_id", accountId);
 		RemoveDraft_.bindValue (":id", id);

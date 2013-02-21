@@ -16,42 +16,57 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "calendarwidget.h"
-#include <QPainter>
+#pragma once
+
+#include <memory>
+#include <QObject>
+#include <QSet>
+#include <QUrl>
+#include <interfaces/structures.h>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-	CalendarWidget::CalendarWidget (QWidget *parent)
-	: QCalendarWidget (parent)
-	{
-	}
+class IPluginProxy;
 
-	void CalendarWidget::SetStatistic (const QMap<QDate, int>& statistic)
-	{
-		Date2EntriesCount_ = statistic;
-		update ();
-	}
+namespace Hestia
+{
+	class LocalBloggingPlatform;
 
-	void CalendarWidget::paintCell (QPainter *painter, const QRect& rect, const QDate& date) const
+	class Core : public QObject
 	{
-		QCalendarWidget::paintCell (painter, rect, date);
-		
-		if (Date2EntriesCount_.contains (date) &&
-				Date2EntriesCount_ [date])
-		{
-			painter->save ();
-			painter->setBrush (QBrush (Qt::blue));
-			const QPointF points [3] =
-			{
-				QPointF (rect.x (), rect.bottom () - 8),
-				QPointF (rect.x () + 8, rect.bottom ()),
-				QPointF (rect.x (), rect.bottom ())
-			};
-			painter->drawPolygon (points, 3);
-			painter->restore ();
-		}
-	}
+		Q_OBJECT
+
+		ICoreProxy_ptr Proxy_;
+		QObjectList BlogPlatformPlugins_;
+		std::shared_ptr<LocalBloggingPlatform> Platform_;
+		QObject *PluginProxy_;
+
+		Core ();
+		Q_DISABLE_COPY (Core)
+	public:
+		static Core& Instance ();
+
+		void SecondInit ();
+		void Release ();
+
+		void CreateBloggingPlatfroms (QObject *parentPlatform);
+		void SetCoreProxy (ICoreProxy_ptr proxy);
+		ICoreProxy_ptr GetCoreProxy ();
+
+		QObjectList GetBloggingPlatforms () const;
+
+		void SetPluginProxy (QObject *pluginProxy);
+		IPluginProxy* GetPluginProxy ();
+
+		void SendEntity (const Entity& e);
+
+	signals:
+		void gotEntity (LeechCraft::Entity e);
+		void delegateEntity (LeechCraft::Entity e, int *id, QObject **obj);
+	};
+}
 }
 }
