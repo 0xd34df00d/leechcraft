@@ -129,7 +129,7 @@ namespace SB2
 		auto rootWM = Proxy_->GetRootWindowsManager ();
 		auto win = rootWM->GetMainWindow (index);
 
-		auto mgr = new ViewManager (Proxy_, win, this);
+		auto mgr = new ViewManager (Proxy_, ShortcutMgr_, win, this);
 		auto view = mgr->GetView ();
 
 		auto mwProxy = rootWM->GetMWProxy (index);

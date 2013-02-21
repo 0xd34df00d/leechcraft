@@ -34,6 +34,11 @@ namespace LeechCraft
 {
 struct QuarkComponent;
 
+namespace Util
+{
+	class ShortcutManager;
+}
+
 namespace SB2
 {
 	class SBView;
@@ -58,7 +63,7 @@ namespace SB2
 
 		QList<QuarkComponent> InternalComponents_;
 	public:
-		ViewManager (ICoreProxy_ptr, QMainWindow*, QObject* = 0);
+		ViewManager (ICoreProxy_ptr, Util::ShortcutManager*, QMainWindow*, QObject* = 0);
 
 		SBView* GetView () const;
 		QToolBar* GetToolbar () const;
