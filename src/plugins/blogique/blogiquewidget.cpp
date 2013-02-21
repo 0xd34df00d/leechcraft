@@ -35,11 +35,11 @@
 #include "interfaces/blogique/ipostoptionswidget.h"
 #include "blogique.h"
 #include "core.h"
-#include "xmlsettingsmanager.h"
-#include "localstorage.h"
-#include "updateentriesdialog.h"
 #include "localentrieswidget.h"
+#include "localstorage.h"
 #include "remoteentrieswidget.h"
+#include "updateentriesdialog.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -53,9 +53,11 @@ namespace Blogique
 	, PostEditWidget_ (0)
 	, ToolBar_ (new QToolBar)
 	, PostTargetAction_ (0)
-	, LocalEntriesWidget_ (0)
-	, RemoteEntriesWidget_ (0)
+	, LocalEntriesWidget_ (new LocalEntriesWidget)
+	, RemoteEntriesWidget_ (new RemoteEntriesWidget)
 	, PrevAccountId_ (-1)
+	, EntryType_ (EntryType::None)
+	, EntryChanged_ (false)
 	{
 		Ui_.setupUi (this);
 
@@ -79,17 +81,20 @@ namespace Blogique
 				&Core::Instance (),
 				SIGNAL (addNewTab (QString, QWidget*)));
 
-		connect (&Core::Instance (),
-				SIGNAL (storageUpdated ()),
-				this,
-				SLOT (handleStorageUpdated ()));
-
 		connect (RemoteEntriesWidget_,
 				SIGNAL(fillCurrentWidgetWithRemoteEntry (Entry)),
 				this,
 				SLOT (fillCurrentTabWithEntry (Entry)));
 		connect (RemoteEntriesWidget_,
 				SIGNAL(fillNewWidgetWithRemoteEntry (Entry,QByteArray)),
+				this,
+				SLOT (fillNewTabWithEntry (Entry, QByteArray)));
+		connect (LocalEntriesWidget_,
+				SIGNAL(fillCurrentWidgetWithLocalEntry (Entry)),
+				this,
+				SLOT (fillCurrentTabWithEntry (Entry)));
+		connect (LocalEntriesWidget_,
+				SIGNAL(fillNewWidgetWithLocalEntry (Entry,QByteArray)),
 				this,
 				SLOT (fillNewTabWithEntry (Entry, QByteArray)));
 	}
@@ -130,6 +135,7 @@ namespace Blogique
 			}
 		}
 
+		EntryType_ = e.EntryType_;
 		Ui_.Subject_->setText (e.Subject_);
 		PostEdit_->SetContents (e.Content_, ContentType::HTML);
 
@@ -188,13 +194,14 @@ namespace Blogique
 				continue;
 			}
 
+			connect (w,
+					SIGNAL (textChanged ()),
+					this,
+					SLOT (handleTextChanged ()));
 			PostEditWidget_ = w;
 			editFrameLay->addWidget (w);
 			break;
 		}
-
-		RemoteEntriesWidget_ = new RemoteEntriesWidget (PostEdit_);
-		LocalEntriesWidget_ = new LocalEntriesWidget (PostEdit_);
 	}
 
 	void BlogiqueWidget::SetToolBarActions ()
@@ -376,11 +383,7 @@ namespace Blogique
 		e.Tags_ = tags;
 		e.PostOptions_ = postOptions;
 		e.CustomData_ = customData;
-/*
-		if (EntryID_ > 0)
-			e.EntryId_ = EntryID_;
-		else if (DraftID_ > 0)
-			e.EntryId_ = DraftID_;*/
+		e.EntryType_ = EntryType_;
 
 		return e;
 	}
@@ -472,7 +475,31 @@ namespace Blogique
 
 	void BlogiqueWidget::fillCurrentTabWithEntry (const Entry& entry)
 	{
-		FillWidget (entry);
+		if (EntryChanged_)
+		{
+			IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+			if (!acc)
+				return;
+			int res = QMessageBox::question (this,
+					"LeechCraft Blogique",
+					tr ("You have unsaved changes in your current tab."
+						" Do you want to open this entry in a new tab instead?"),
+					QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+			switch (res)
+			{
+				case QMessageBox::Yes:
+					fillNewTabWithEntry (entry, acc->GetAccountID ());
+					break;
+				case QMessageBox::No:
+					FillWidget (entry);
+					break;
+				case QMessageBox::Cancel:
+				default:
+					return;
+			}
+		}
+		else
+			FillWidget (entry);
 	}
 
 	void BlogiqueWidget::fillNewTabWithEntry (const Entry& entry,
@@ -483,59 +510,90 @@ namespace Blogique
 		emit addNewTab ("Blogique", w);
 	}
 
+	void BlogiqueWidget::handleTextChanged ()
+	{
+		EntryChanged_ = true;
+	}
+
 	void BlogiqueWidget::newEntry ()
 	{
-// 		//TODO ask about save.
-// 		DraftID_ = -1;
-// 		EntryID_ = -1;
-// 		ClearEntry ();
+		if (EntryChanged_)
+		{
+			int res = QMessageBox::question (this,
+					"LeechCraft Blogique",
+					tr ("Do you want to save current entry?"),
+					QMessageBox::Yes | QMessageBox::No);
+			switch (res)
+			{
+				case QMessageBox::Yes:
+					saveEntry ();
+					ClearEntry ();
+					break;
+				case QMessageBox::No:
+					ClearEntry ();
+					break;
+				default:
+					return;
+			}
+		}
+		else
+			ClearEntry ();
 	}
 
 	void BlogiqueWidget::saveEntry ()
 	{
-// 		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
-// 		if (!acc)
-// 			return;
-//
-// 		const Entry& e = GetCurrentEntry ();
-// 		if (!e.IsEmpty ())
-// 			try
-// 			{
-// 				if (DraftID_ == -1)
-// 					DraftID_ = Storage_->SaveDraft (acc->GetAccountID (), e);
-// 				else
-// 					Storage_->UpdateDraft (DraftID_, e);
-// 			}
-// 			catch (const std::runtime_error& e)
-// 			{
-// 				qWarning () << Q_FUNC_INFO
-// 						<< "error saving draft"
-// 						<< e.what ();
-// 			}
-//
-// 		LoadDrafts ();
+		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		if (!acc)
+			return;
+
+		EntryChanged_ = false;
+		const Entry& e = GetCurrentEntry ();
+		if (!e.IsEmpty ())
+			try
+			{
+				switch (e.EntryType_)
+				{
+				case EntryType::LocalEntry:
+					//TODO update entry
+					break;
+				case EntryType::RemoteEntry:
+				case EntryType::None:
+					//TODO save as new local entry
+					EntryType_ = EntryType::LocalEntry;
+					return;
+				}
+			}
+			catch (const std::runtime_error& e)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "error saving draft"
+						<< e.what ();
+			}
+
+		//TODO reload local entries widget
 	}
 
 	void BlogiqueWidget::saveNewEntry ()
 	{
-// 		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
-// 		if (!acc)
-// 			return;
-//
-// 		const Entry& e = GetCurrentEntry ();
-// 		if (!e.IsEmpty ())
-// 			try
-// 			{
-// 				DraftID_ = Storage_->SaveDraft (acc->GetAccountID (), e);
-// 			}
-// 			catch (const std::runtime_error& e)
-// 			{
-// 				qWarning () << Q_FUNC_INFO
-// 						<< "error saving draft"
-// 						<< e.what ();
-// 			}
-//
-// 		LoadDrafts ();
+		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		if (!acc)
+			return;
+
+		const Entry& e = GetCurrentEntry ();
+		if (!e.IsEmpty ())
+			try
+			{
+				EntryType_ = EntryType::LocalEntry;
+				//TODO save as new local entry
+			}
+			catch (const std::runtime_error& e)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "error saving draft"
+						<< e.what ();
+			}
+
+		//TODO reload local entries widget
 	}
 
 	void BlogiqueWidget::submit (const Entry& event)
@@ -544,6 +602,7 @@ namespace Blogique
 		if (!acc)
 			return;
 
+		EntryChanged_ = false;
 		const auto& e = event.IsEmpty () ?
 			GetCurrentEntry () :
 			event;

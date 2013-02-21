@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QWidget>
+#include <boost/graph/graph_concepts.hpp>
 #include <interfaces/ihavetabs.h>
 #include "interfaces/blogique/iaccount.h"
 #include "ui_blogiquewidget.h"
@@ -67,6 +68,10 @@ namespace Blogique
 		int PrevAccountId_;
 		QList<QWidget*> SidePluginsWidgets_;
 
+		EntryType EntryType_;
+
+		bool EntryChanged_;
+
 	public:
 		BlogiqueWidget (QWidget *parent = 0);
 
@@ -93,6 +98,7 @@ namespace Blogique
 		void fillCurrentTabWithEntry (const Entry& entry);
 		void fillNewTabWithEntry (const Entry& entry, const QByteArray& accountId);
 
+		void handleTextChanged ();
 
 		void newEntry ();
 		void saveEntry ();

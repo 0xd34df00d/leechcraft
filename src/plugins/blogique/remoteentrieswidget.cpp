@@ -20,7 +20,6 @@
 #include <stdexcept>
 #include <QMessageBox>
 #include <QStandardItemModel>
-#include <interfaces/itexteditor.h>
 #include "entriesfilterproxymodel.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
@@ -30,11 +29,9 @@ namespace LeechCraft
 {
 namespace Blogique
 {
-	RemoteEntriesWidget::RemoteEntriesWidget (IEditorWidget *iew,
-			QWidget *parent, Qt::WindowFlags f)
+	RemoteEntriesWidget::RemoteEntriesWidget (QWidget *parent, Qt::WindowFlags f)
 	: QWidget (parent, f)
 	, Account_ (0)
-	, Editor_ (iew)
 	, RemoteEntriesModel_ (new QStandardItemModel (this))
 	, FilterProxyModel_ (new EntriesFilterProxyModel (this))
 	{
@@ -169,10 +166,11 @@ namespace Blogique
 
 		sourceIndex = sourceIndex.sibling (sourceIndex.row (),
 				Utils::EntriesViewColumns::Date);
-		const Entry& e = Item2Entry_ [RemoteEntriesModel_->itemFromIndex (sourceIndex)];
+		Entry e = Item2Entry_ [RemoteEntriesModel_->itemFromIndex (sourceIndex)];
 		if (e.IsEmpty ())
 			return;
 
+		e.EntryType_ = EntryType::RemoteEntry;
 		emit fillCurrentWidgetWithRemoteEntry (e);
 	}
 
@@ -211,28 +209,7 @@ namespace Blogique
 
 	void RemoteEntriesWidget::handleOpenRemoteEntryInCurrentTab (const QModelIndex& index)
 	{
-		if (!Editor_->GetContents (ContentType::PlainText).isEmpty ())
-		{
-			int res = QMessageBox::question (this,
-					"LeechCraft Blogique",
-					tr ("You have unsaved changes in your current tab."
-						" Do you want to open this entry in a new tab instead?"),
-					QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
-			switch (res)
-			{
-				case QMessageBox::Yes:
-					handleOpenRemoteEntryInNewTab (index);
-					break;
-				case QMessageBox::No:
-					FillCurrentTab (index);
-					break;
-				case QMessageBox::Cancel:
-				default:
-					return;
-			}
-		}
-		else
-			FillCurrentTab (index);
+		FillCurrentTab (index);
 	}
 
 	void RemoteEntriesWidget::handleOpenRemoteEntryInNewTab (const QModelIndex& index)
@@ -249,10 +226,11 @@ namespace Blogique
 
 		sourceIndex = sourceIndex.sibling (sourceIndex.row (),
 				Utils::EntriesViewColumns::Date);
-		const Entry& e = Item2Entry_ [RemoteEntriesModel_->itemFromIndex (sourceIndex)];
+		Entry e = Item2Entry_ [RemoteEntriesModel_->itemFromIndex (sourceIndex)];
 		if (e.IsEmpty ())
 			return;
 
+		e.EntryType_ = EntryType::RemoteEntry;
 		emit fillNewWidgetWithRemoteEntry (e, Account_->GetAccountID ());
 	}
 

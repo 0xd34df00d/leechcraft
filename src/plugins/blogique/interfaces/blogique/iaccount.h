@@ -31,6 +31,14 @@ namespace LeechCraft
 {
 namespace Blogique
 {
+	enum class EntryType
+	{
+		None,
+		LocalEntry,
+		RemoteEntry
+	};
+
+
 	struct Entry
 	{
 		QString Target_;
@@ -42,9 +50,11 @@ namespace Blogique
 		QVariantMap CustomData_;
 		qlonglong EntryId_;
 		QUrl EntryUrl_;
+		EntryType EntryType_;
 
 		Entry ()
 		: EntryId_ (-1)
+		, EntryType_ (EntryType::None)
 		{
 		}
 

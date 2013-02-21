@@ -28,7 +28,7 @@ namespace LeechCraft
 namespace Blogique
 {
 
-		class BlogiqueWidget;
+	class BlogiqueWidget;
 	struct Entry;
 	class BackupManager;
 	class LocalStorage;
