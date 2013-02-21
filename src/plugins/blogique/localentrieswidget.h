@@ -22,6 +22,7 @@
 #include "interfaces/blogique/iaccount.h"
 #include "ui_localentrieswidget.h"
 
+class IEditorWidget;
 class QStandardItemModel;
 class QStandardItem;
 
@@ -38,12 +39,14 @@ namespace Blogique
 		Ui::LocalEntriesWidget Ui_;
 
 		IAccount *Account_;
+		IEditorWidget *Editor_;
 		QStandardItemModel *LocalEntriesModel_;
 		EntriesFilterProxyModel *FilterProxyModel_;
 		QHash<QStandardItem*, Entry> Item2Entry_;
 
 	public:
-		explicit LocalEntriesWidget (QWidget *parent = 0, Qt::WindowFlags f = 0);
+		explicit LocalEntriesWidget (IEditorWidget *iew,
+				QWidget *parent = 0, Qt::WindowFlags f = 0);
 		QString GetName () const;
 		void SetAccount (IAccount *account);
 		void LoadLocalEntries ();
@@ -51,6 +54,7 @@ namespace Blogique
 		Entry LoadFullEntry (qint64 id);
 		void FillView (const QList<Entry>& entries);
 		void FillStatistic ();
+		void FillCurrentTab (const QModelIndex& index = QModelIndex ());
 
 		void RemoveLocalEntry (qint64 id);
 
@@ -65,6 +69,7 @@ namespace Blogique
 		void handleShowAllEntries ();
 		void on_RemoveLocalEntry__released ();
 		void on_PublishLocalEntry__released ();
+		void on_LocalEntriesView__doubleClicked (const QModelIndex& index);
 
 	signals:
 		void fillCurrentWidgetWithLocalEntry (const Entry& e);

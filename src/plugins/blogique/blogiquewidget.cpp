@@ -53,8 +53,8 @@ namespace Blogique
 	, PostEditWidget_ (0)
 	, ToolBar_ (new QToolBar)
 	, PostTargetAction_ (0)
-	, LocalEntriesWidget_ (new LocalEntriesWidget)
-	, RemoteEntriesWidget_ (new RemoteEntriesWidget)
+	, LocalEntriesWidget_ (0)
+	, RemoteEntriesWidget_ (0)
 	, PrevAccountId_ (-1)
 	{
 		Ui_.setupUi (this);
@@ -192,6 +192,9 @@ namespace Blogique
 			editFrameLay->addWidget (w);
 			break;
 		}
+
+		RemoteEntriesWidget_ = new RemoteEntriesWidget (PostEdit_);
+		LocalEntriesWidget_ = new LocalEntriesWidget (PostEdit_);
 	}
 
 	void BlogiqueWidget::SetToolBarActions ()
@@ -585,154 +588,6 @@ namespace Blogique
 			return;
 
 		acc->updateProfile ();
-	}
-
-// 	void BlogiqueWidget::on_PostsView__doubleClicked (const QModelIndex& index)
-// 	{
-// 		XmlSettingsManager::Instance ()
-// 				.property ("OpenEntryByDblClick").toString () == "CurrentTab" ?
-// 			handleOpenEntryInCurrentTab (index) :
-// 			handleOpenEntryInNewTab (index);
-// 	}
-
-	void BlogiqueWidget::handleOpenEntryInCurrentTab (const QModelIndex& index)
-	{
-// 		QModelIndex idx = index.isValid () ?
-// 				index :
-// 				Ui_.PostsView_->currentIndex ();
-// 		if (!idx.isValid ())
-// 			return;
-//
-// 		idx = idx.sibling (idx.row (), Columns::Date);
-// 		const Entry& e = LoadEntry (idx.data (EntryIdRole::DBIdRole).toLongLong ());
-// 		FillWidget (e);
-	}
-
-	void BlogiqueWidget::handleOpenEntryInNewTab (const QModelIndex& index)
-	{
-// 		QModelIndex idx = index.isValid () ?
-// 				index :
-// 				Ui_.PostsView_->currentIndex ();
-// 		if (!idx.isValid ())
-// 			return;
-//
-// 		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
-// 		if (!acc)
-// 			return;
-//
-// 		idx = idx.sibling (idx.row (), Columns::Date);
-// 		const Entry& e = LoadEntry (idx.data (EntryIdRole::DBIdRole).toLongLong ());
-//
-// 		auto newTab = Core::Instance ().CreateBlogiqueWidget ();
-// 		newTab->FillWidget (e, false, acc->GetAccountID ());
-// 		emit addNewTab ("Blogique", newTab);
-	}
-
-// 	void BlogiqueWidget::on_LocalEntriesView__doubleClicked (const QModelIndex& index)
-// 	{
-// 		XmlSettingsManager::Instance ()
-// 				.property ("OpenDraftByDblClick").toString () == "CurrentTab" ?
-// 			handleOpenDraftInCurrentTab (index) :
-// 			handleOpenDraftInNewTab (index);
-// 	}
-
-	void BlogiqueWidget::handleOpenDraftInCurrentTab (const QModelIndex& index)
-	{
-// 		QModelIndex idx = index.isValid () ?
-// 			index :
-// 			Ui_.LocalEntriesView_->currentIndex ();
-// 		if (!idx.isValid ())
-// 			return;
-//
-// 		idx = idx.sibling (idx.row (), Columns::Date);
-// 		const Entry& e = LoadFullDraft (idx.data (EntryIdRole::DBIdRole).toLongLong ());
-// 		FillWidget (e, true);
-	}
-
-	void BlogiqueWidget::handleOpenDraftInNewTab (const QModelIndex& index)
-	{
-// 		QModelIndex idx = index.isValid () ?
-// 				index :
-// 				Ui_.LocalEntriesView_->currentIndex ();
-// 		if (!idx.isValid ())
-// 			return;
-//
-// 		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
-// 		if (!acc)
-// 			return;
-//
-// 		idx = idx.sibling (idx.row (), Columns::Date);
-// 		const Entry& e = LoadFullDraft (idx.data (EntryIdRole::DBIdRole).toLongLong ());
-//
-// 		auto newTab = Core::Instance ().CreateBlogiqueWidget ();
-// 		newTab->FillWidget (e, true, acc->GetAccountID ());
-// 		emit addNewTab ("Blogique", newTab);
-	}
-
-	void BlogiqueWidget::loadPostsByDate (const QDate& date)
-	{
-// 		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
-// 		if (!acc)
-// 			return;
-//
-// 		QList<Entry> entries;
-// 		try
-// 		{
-// 			entries = Storage_->GetEntriesByDate (acc->GetAccountID (), date);
-// 		}
-// 		catch (const std::runtime_error& e)
-// 		{
-// 			qWarning () << Q_FUNC_INFO
-// 					<< "error fetching entries"
-// 					<< e.what ();
-// 		}
-//
-// 		FillPostsView (entries);
-	}
-
-	void BlogiqueWidget::handleStorageUpdated ()
-	{
-// 		LoadDrafts ();
-	}
-
-	void BlogiqueWidget::loadLocalEntries ()
-	{
-// 		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
-// 		if (!acc)
-// 			return;
-//
-// 		int count = XmlSettingsManager::Instance ()
-// 				.Property ("LastLocalEntriesToView", 20).toInt ();
-// 		if (XmlSettingsManager::Instance ().Property ("LocalLoadAsk", true).toBool ())
-// 		{
-// 			UpdateEntriesDialog dlg;
-// 			if (dlg.exec () == QDialog::Rejected)
-// 				return;
-// 			count = dlg.GetCount ();
-// 		}
-//
-// 		QList<Entry> entries;
-// 		try
-// 		{
-// 			entries = Storage_->GetLastEntries (acc->GetAccountID (), count);
-// 		}
-// 		catch (const std::runtime_error& err)
-// 		{
-// 			qWarning () << Q_FUNC_INFO
-// 					<< "error fetching entries"
-// 					<< err.what ();
-// 		}
-// 		FillPostsView (entries);
-	}
-
-	void BlogiqueWidget::handleLoadEntries (const QList<Entry>& entries)
-	{
-// 		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
-// 		if (!acc)
-// 			return;
-//
-// 		FillPostsView (entries);
-// 		FillPostingStatistic ();
 	}
 
 }

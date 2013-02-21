@@ -20,6 +20,7 @@
 #include <stdexcept>
 #include <QMessageBox>
 #include <QStandardItemModel>
+#include <interfaces/itexteditor.h>
 #include "entriesfilterproxymodel.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
@@ -29,10 +30,11 @@ namespace LeechCraft
 {
 namespace Blogique
 {
-	RemoteEntriesWidget::RemoteEntriesWidget (QWidget *parent,
-			Qt::WindowFlags f)
+	RemoteEntriesWidget::RemoteEntriesWidget (IEditorWidget *iew,
+			QWidget *parent, Qt::WindowFlags f)
 	: QWidget (parent, f)
 	, Account_ (0)
+	, Editor_ (iew)
 	, RemoteEntriesModel_ (new QStandardItemModel (this))
 	, FilterProxyModel_ (new EntriesFilterProxyModel (this))
 	{
@@ -54,12 +56,12 @@ namespace Blogique
 				this,
 				SLOT (loadPostsByDate (QDate)));
 
-		QAction *openRemoteEntryInNewTab = new QAction (tr ("Open in new tab"), this);
-		QAction *openRemoteEntryInCurrentTab = new QAction (tr ("Open here"), this);
-
 		RemoteEntriesModel_->setHorizontalHeaderLabels ({ tr ("Date"), tr ("Name") });
 		FilterProxyModel_->setSourceModel (RemoteEntriesModel_);
 		Ui_.RemoteEntriesView_->setModel (FilterProxyModel_);
+
+		QAction *openRemoteEntryInNewTab = new QAction (tr ("Open in new tab"), this);
+		QAction *openRemoteEntryInCurrentTab = new QAction (tr ("Open here"), this);
 		connect (openRemoteEntryInCurrentTab,
 				SIGNAL (triggered ()),
 				this,
@@ -68,6 +70,7 @@ namespace Blogique
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleOpenRemoteEntryInNewTab ()));
+
 		Ui_.RemoteEntriesView_->setContextMenuPolicy (Qt::ActionsContextMenu);
 		Ui_.RemoteEntriesView_->addActions ({ openRemoteEntryInNewTab,
 				openRemoteEntryInCurrentTab });
@@ -152,6 +155,27 @@ namespace Blogique
 		Ui_.RemoteEntriesCalendar_->SetStatistic (statistic);
 	}
 
+	void RemoteEntriesWidget::FillCurrentTab (const QModelIndex& index)
+	{
+		auto sourceIndex = index.isValid () ?
+			FilterProxyModel_->mapToSource (index) :
+			FilterProxyModel_->mapToSource (Ui_.RemoteEntriesView_->currentIndex ());
+
+		if (!sourceIndex.isValid ())
+			return;
+
+		if (!Account_)
+			return;
+
+		sourceIndex = sourceIndex.sibling (sourceIndex.row (),
+				Utils::EntriesViewColumns::Date);
+		const Entry& e = Item2Entry_ [RemoteEntriesModel_->itemFromIndex (sourceIndex)];
+		if (e.IsEmpty ())
+			return;
+
+		emit fillCurrentWidgetWithRemoteEntry (e);
+	}
+
 	void RemoteEntriesWidget::clear ()
 	{
 		FillView (QList<Entry> ());
@@ -161,7 +185,7 @@ namespace Blogique
 	{
 		XmlSettingsManager::Instance ()
 				.setProperty ("RemoteEntriesCalendarSplitterPosition",
-						Ui_.RemoteEntriesCalendarSplitter_->saveState ());
+					Ui_.RemoteEntriesCalendarSplitter_->saveState ());
 	}
 
 	void RemoteEntriesWidget::loadPostsByDate (const QDate& date)
@@ -187,28 +211,37 @@ namespace Blogique
 
 	void RemoteEntriesWidget::handleOpenRemoteEntryInCurrentTab (const QModelIndex& index)
 	{
-		auto sourceIndex = FilterProxyModel_->mapToSource (index);
-		if (!index.isValid () ||
-				!sourceIndex.isValid ())
-			return;
-
-		if (!Account_)
-			return;
-
-		sourceIndex = sourceIndex.sibling (sourceIndex.row (),
-				Utils::EntriesViewColumns::Date);
-		const Entry& e = Item2Entry_ [RemoteEntriesModel_->itemFromIndex (sourceIndex)];
-		if (e.IsEmpty ())
-			return;
-
-		emit fillCurrentWidgetWithRemoteEntry (e);
+		if (!Editor_->GetContents (ContentType::PlainText).isEmpty ())
+		{
+			int res = QMessageBox::question (this,
+					"LeechCraft Blogique",
+					tr ("You have unsaved changes in your current tab."
+						" Do you want to open this entry in a new tab instead?"),
+					QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+			switch (res)
+			{
+				case QMessageBox::Yes:
+					handleOpenRemoteEntryInNewTab (index);
+					break;
+				case QMessageBox::No:
+					FillCurrentTab (index);
+					break;
+				case QMessageBox::Cancel:
+				default:
+					return;
+			}
+		}
+		else
+			FillCurrentTab (index);
 	}
 
 	void RemoteEntriesWidget::handleOpenRemoteEntryInNewTab (const QModelIndex& index)
 	{
-		auto sourceIndex = FilterProxyModel_->mapToSource (index);
-		if (!index.isValid () ||
-				!sourceIndex.isValid ())
+		auto sourceIndex = index.isValid () ?
+			FilterProxyModel_->mapToSource (index) :
+			FilterProxyModel_->mapToSource (Ui_.RemoteEntriesView_->currentIndex ());
+
+		if (!sourceIndex.isValid ())
 			return;
 
 		if (!Account_)
@@ -263,28 +296,9 @@ namespace Blogique
 
 	void RemoteEntriesWidget::on_RemoteEntriesView__doubleClicked (const QModelIndex& index)
 	{
-		if (XmlSettingsManager::Instance ()
-				.property ("OpenEntryByDblClick").toString () == "CurrentTab")
-		{
-			int res = QMessageBox::question (this,
-					"LeechCraft Blogique",
-					tr ("You have unsaved changes in your current tab."
-							" Do you want to open this entry in a new tab instead?"),
-					QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
-			switch (res)
-			{
-				case QMessageBox::Yes:
-					handleOpenRemoteEntryInNewTab (index);
-					break;
-				case QMessageBox::No:
-					handleOpenRemoteEntryInCurrentTab (index);
-					break;
-				case QMessageBox::Cancel:
-				default:
-					break;
-			}
-		}
-		else
+		XmlSettingsManager::Instance ()
+				.property ("OpenEntryByDblClick").toString () == "CurrentTab" ?
+			handleOpenRemoteEntryInCurrentTab (index) :
 			handleOpenRemoteEntryInNewTab (index);
 	}
 }

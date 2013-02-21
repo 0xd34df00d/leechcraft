@@ -100,17 +100,6 @@ namespace Blogique
 		void submit (const Entry& e = Entry ());
 		void on_SideWidget__dockLocationChanged (Qt::DockWidgetArea area);
 		void on_UpdateProfile__triggered ();
-		void handleOpenEntryInCurrentTab (const QModelIndex& index = QModelIndex ());
-		void handleOpenEntryInNewTab (const QModelIndex& index = QModelIndex ());
-		void handleOpenDraftInCurrentTab (const QModelIndex& index = QModelIndex ());
-		void handleOpenDraftInNewTab (const QModelIndex& index = QModelIndex ());
-
-		void loadPostsByDate (const QDate& date);
-
-		void handleStorageUpdated ();
-
-		void loadLocalEntries ();
-		void handleLoadEntries (const QList<Entry>& entries);
 
 	signals:
 		void removeTab (QWidget *tab);

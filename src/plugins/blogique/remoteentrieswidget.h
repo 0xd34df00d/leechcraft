@@ -21,6 +21,7 @@
 #include <QWidget>
 #include "ui_remoteentrieswidget.h"
 
+class IEditorWidget;
 class QStandardItemModel;
 class QStandardItem;
 
@@ -36,19 +37,22 @@ namespace Blogique
 
 		Ui::RemoteEntriesWidget Ui_;
 		IAccount *Account_;
+		IEditorWidget *Editor_;
 		QStandardItemModel *RemoteEntriesModel_;
 		EntriesFilterProxyModel *FilterProxyModel_;
 		QHash<QStandardItem*, Entry> Item2Entry_;
 		QList<QAction*> LoadActions_;
 
 	public:
-		explicit RemoteEntriesWidget (QWidget *parent = 0, Qt::WindowFlags f = 0);
+		explicit RemoteEntriesWidget (IEditorWidget *iew,
+				QWidget *parent = 0, Qt::WindowFlags f = 0);
 		QString GetName () const;
 		void SetAccount (IAccount *account);
 	private:
 		Entry LoadFullEntry (qint64 id);
 		void FillView (const QList<Entry>& entries);
 		void FillStatistic ();
+		void FillCurrentTab (const QModelIndex& index = QModelIndex ());
 
 	public slots:
 		void clear ();

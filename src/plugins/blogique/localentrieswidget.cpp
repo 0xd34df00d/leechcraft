@@ -20,6 +20,7 @@
 #include <stdexcept>
 #include <QStandardItemModel>
 #include <QMessageBox>
+#include <interfaces/itexteditor.h>
 #include <util/util.h>
 #include "core.h"
 #include "entriesfilterproxymodel.h"
@@ -31,9 +32,11 @@ namespace LeechCraft
 {
 namespace Blogique
 {
-	LocalEntriesWidget::LocalEntriesWidget (QWidget *parent, Qt::WindowFlags f)
+	LocalEntriesWidget::LocalEntriesWidget (IEditorWidget *iew,
+			QWidget *parent, Qt::WindowFlags f)
 	: QWidget (parent, f)
 	, Account_ (0)
+	, Editor_ (iew)
 	, LocalEntriesModel_ (new QStandardItemModel (this))
 	, FilterProxyModel_ (new EntriesFilterProxyModel (this))
 	{
@@ -220,19 +223,51 @@ namespace Blogique
 		FillView (entries);
 	}
 
-	void LocalEntriesWidget::handleOpenLocalEntryInCurrentTab (const QModelIndex& index)
+	void LocalEntriesWidget::FillCurrentTab (const QModelIndex& index)
 	{
-		QModelIndex idx = index.isValid () ?
-			index :
-			Ui_.LocalEntriesView_->currentIndex ();
-		if (!idx.isValid ())
+		auto sourceIndex = index.isValid () ?
+			FilterProxyModel_->mapToSource (index) :
+			FilterProxyModel_->mapToSource (Ui_.LocalEntriesView_->currentIndex ());
+
+		if (!sourceIndex.isValid ())
 			return;
 
-		idx = idx.sibling (idx.row (), Utils::EntriesViewColumns::Date);
-		const Entry& e = LoadFullEntry (idx.data (Utils::EntryIdRole::DBIdRole)
-				.toLongLong ());
+		if (!Account_)
+			return;
+
+		sourceIndex = sourceIndex.sibling (sourceIndex.row (),
+				Utils::EntriesViewColumns::Date);
+		const Entry& e = Item2Entry_ [LocalEntriesModel_->itemFromIndex (sourceIndex)];
+		if (e.IsEmpty ())
+			return;
 
 		emit fillCurrentWidgetWithLocalEntry (e);
+	}
+
+	void LocalEntriesWidget::handleOpenLocalEntryInCurrentTab (const QModelIndex& index)
+	{
+		if (!Editor_->GetContents (ContentType::PlainText).isEmpty ())
+		{
+			int res = QMessageBox::question (this,
+					"LeechCraft Blogique",
+					tr ("You have unsaved changes in your current tab."
+						" Do you want to open this entry in a new tab instead?"),
+					QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+			switch (res)
+			{
+				case QMessageBox::Yes:
+					handleOpenLocalEntryInNewTab (index);
+					break;
+				case QMessageBox::No:
+					FillCurrentTab (index);
+					break;
+				case QMessageBox::Cancel:
+				default:
+					return;
+			}
+		}
+		else
+			FillCurrentTab (index);
 	}
 
 	void LocalEntriesWidget::handleOpenLocalEntryInNewTab (const QModelIndex& index)
@@ -311,6 +346,14 @@ namespace Blogique
 	void LocalEntriesWidget::on_PublishLocalEntry__released ()
 	{
 
+	}
+
+	void LocalEntriesWidget::on_LocalEntriesView__doubleClicked (const QModelIndex& index)
+	{
+		XmlSettingsManager::Instance ()
+				.property ("OpenEntryByDblClick").toString () == "CurrentTab" ?
+			handleOpenLocalEntryInCurrentTab (index) :
+			handleOpenLocalEntryInNewTab (index);
 	}
 
 }

@@ -25,6 +25,7 @@ namespace Blogique
 	EntriesFilterProxyModel::EntriesFilterProxyModel (QObject *parent)
 	: QSortFilterProxyModel (parent)
 	{
+		setDynamicSortFilter (true);
 	}
 
 	bool EntriesFilterProxyModel::filterAcceptsRow (int sourceRow,
