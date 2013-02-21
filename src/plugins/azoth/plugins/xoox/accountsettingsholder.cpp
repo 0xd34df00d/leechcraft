@@ -39,6 +39,7 @@ namespace Xoox
 	, KAParams_ (qMakePair (90, 60))
 	, FileLogEnabled_ (false)
 	, Priority_ (5)
+	, TLSMode_ (QXmppConfiguration::TLSEnabled)
 	, FTMethods_ (QXmppTransferJob::AnyMethod)
 	, UseSOCKS5Proxy_ (false)
 	{
@@ -58,6 +59,10 @@ namespace Xoox
 				SIGNAL (portChanged (int)),
 				this,
 				SLOT (scheduleReconnect ()));
+		connect (this,
+				SIGNAL (tlsModeChanged (QXmppConfiguration::StreamSecurityMode)),
+				this,
+				SLOT (scheduleReconnect ()));
 	}
 
 	void AccountSettingsHolder::Serialize (QDataStream& ostr) const
@@ -74,7 +79,8 @@ namespace Xoox
 			<< static_cast<bool> (FTMethods_ & QXmppTransferJob::InBandMethod)
 			<< static_cast<bool> (FTMethods_ & QXmppTransferJob::SocksMethod)
 			<< UseSOCKS5Proxy_
-			<< SOCKS5Proxy_;
+			<< SOCKS5Proxy_
+			<< static_cast<quint8> (TLSMode_);
 	}
 
 	void AccountSettingsHolder::Deserialize (QDataStream& in, quint16 version)
@@ -106,6 +112,12 @@ namespace Xoox
 			if (useSocks)
 				FTMethods_ |= QXmppTransferJob::SocksMethod;
 		}
+		if (version >= 7)
+		{
+			quint8 mode = 0;
+			in >> mode;
+			TLSMode_ = static_cast<decltype (TLSMode_)> (mode);
+		}
 	}
 
 	void AccountSettingsHolder::OpenConfigDialog ()
@@ -131,6 +143,7 @@ namespace Xoox
 		dia->W ()->SetFTMethods (GetFTMethods ());
 		dia->W ()->SetUseSOCKS5Proxy (GetUseSOCKS5Proxy ());
 		dia->W ()->SetSOCKS5Proxy (GetSOCKS5Proxy ());
+		dia->W ()->SetTLSMode (GetTLSMode ());
 
 		if (dia->exec () == QDialog::Rejected)
 			return;
@@ -150,6 +163,7 @@ namespace Xoox
 		SetFTMethods (w->GetFTMethods ());
 		SetUseSOCKS5Proxy (w->GetUseSOCKS5Proxy ());
 		SetSOCKS5Proxy (w->GetSOCKS5Proxy ());
+		SetTLSMode (w->GetTLSMode ());
 
 		const QString& pass = w->GetPassword ();
 		if (!pass.isNull ())
@@ -304,6 +318,20 @@ namespace Xoox
 
 		FTMethods_ = methods;
 		emit fileTransferSettingsChanged ();
+	}
+
+	QXmppConfiguration::StreamSecurityMode AccountSettingsHolder::GetTLSMode () const
+	{
+		return TLSMode_;
+	}
+
+	void AccountSettingsHolder::SetTLSMode (QXmppConfiguration::StreamSecurityMode mode)
+	{
+		if (mode == TLSMode_)
+			return;
+
+		TLSMode_ = mode;
+		emit tlsModeChanged (TLSMode_);
 	}
 
 	bool AccountSettingsHolder::GetUseSOCKS5Proxy () const

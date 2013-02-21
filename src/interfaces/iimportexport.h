@@ -28,7 +28,7 @@
  * other persistent storage and wants LeechCraft to know about it, it
  * should implement this interface.
  */
-class IImportExport
+class Q_DECL_EXPORT IImportExport
 {
 public:
 	/** @brief Loads settings.

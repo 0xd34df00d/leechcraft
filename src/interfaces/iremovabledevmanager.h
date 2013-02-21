@@ -61,7 +61,7 @@ namespace LeechCraft
 	};
 }
 
-class IRemovableDevManager
+class Q_DECL_EXPORT IRemovableDevManager
 {
 public:
 	virtual ~IRemovableDevManager () {}

@@ -48,7 +48,7 @@ namespace Media
 
 	Q_DECLARE_FLAGS (QueryOptions, QueryOption);
 
-	class ILyricsFinder
+	class Q_DECL_EXPORT ILyricsFinder
 	{
 	public:
 		virtual ~ILyricsFinder () {}

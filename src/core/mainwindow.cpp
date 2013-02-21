@@ -29,6 +29,7 @@
 #include <QDockWidget>
 #include <util/util.h>
 #include <util/defaulthookproxy.h>
+#include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihavetabs.h>
 #include "core.h"
@@ -520,7 +521,7 @@ void MainWindow::on_ActionShowToolBar__triggered (bool visible)
 	auto bar = rootWM->GetTabManager (this)->GetToolBar (Ui_.MainTabWidget_->CurrentIndex ());
 
 	if (bar)
-		bar->setVisible (IsToolBarVisible_);
+		bar->setMaximumHeight (IsToolBarVisible_ ? 1000 : 0);
 }
 
 namespace
@@ -725,6 +726,8 @@ void LeechCraft::MainWindow::InitializeShortcuts ()
 	auto rootWM = Core::Instance ().GetRootWindowsManager ();
 	auto tm = rootWM->GetTabManager (this);
 
+	auto sm = Core::Instance ().GetCoreInstanceObject ()->GetCoreShortcutManager ();
+
 	connect (new QShortcut (QKeySequence ("Ctrl+["), this),
 			SIGNAL (activated ()),
 			tm,
@@ -753,7 +756,10 @@ void LeechCraft::MainWindow::InitializeShortcuts ()
 			SIGNAL (activated ()),
 			Ui_.MainTabWidget_,
 			SLOT (handleNewTabShortcutActivated ()));
-	connect (new QShortcut (QKeySequence (sysModifier + Qt::Key_Space), this),
+
+	auto prevTabSC = new QShortcut (QKeySequence (sysModifier + Qt::Key_Space), this);
+	sm->RegisterShortcut ("SwitchToPrevTab", ActionInfo (), prevTabSC, true);
+	connect (prevTabSC,
 			SIGNAL (activated ()),
 			Ui_.MainTabWidget_,
 			SLOT (setPreviousTab ()));

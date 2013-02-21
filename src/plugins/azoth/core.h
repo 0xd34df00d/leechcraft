@@ -424,6 +424,8 @@ namespace Azoth
 	private slots:
 		void handleNewProtocols (const QList<QObject*>&);
 
+		void delayedRebuildTooltip (QPointer<QObject> entryObj);
+
 		/** Handles a new account. This account may be both a new one
 		 * (added as a result of user's actions) and already existing
 		 * one (in case it was just read from settings, for example).
@@ -465,6 +467,10 @@ namespace Azoth
 		/** Handles the status change of a CL entry to new status.
 		 */
 		void handleStatusChanged (const EntryStatus& status, const QString& variant);
+
+		/** Removes the old unneeded variants.
+		 */
+		void handleVariantsChanged (const QStringList& newVariants);
 
 		/** Handles ICLEntry's PEP-like (XEP-0163) event from the given
 		 * variant.

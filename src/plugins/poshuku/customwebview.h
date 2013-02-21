@@ -79,7 +79,7 @@ namespace Poshuku
 		void zoomReset ();
 	private slots:
 		void remakeURL (const QUrl&);
-		void handleLoadFinished ();
+		void handleLoadFinished (bool);
 		void openLinkHere ();
 		void openLinkInNewTab ();
 		void saveLink ();

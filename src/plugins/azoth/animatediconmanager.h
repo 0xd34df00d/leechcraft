@@ -74,12 +74,13 @@ namespace Azoth
 			if (dev && dev->atEnd ())
 				dev->seek (0);
 			QImageReader reader (dev);
-			const int w = reader.size ().width ();
-			const int h = reader.size ().height ();
+			QImage image = reader.read ();
+			const int w = image.size ().width ();
+			const int h = image.size ().height ();
 			if (w == h &&
 					reader.imageCount () <= 1)
 			{
-				Setter_ (t, QIcon (QPixmap::fromImage (reader.read ())));
+				Setter_ (t, QIcon (QPixmap::fromImage (image)));
 				return;
 			}
 
@@ -87,7 +88,6 @@ namespace Azoth
 			QList<QImage> images;
 			if (reader.supportsAnimation ())
 			{
-				QImage image = reader.read ();
 				while (!image.isNull ())
 				{
 					images << image;
@@ -98,7 +98,6 @@ namespace Azoth
 			}
 			else if (!(w % h))
 			{
-				QImage image = reader.read ();
 				int frame = 0;
 				while (frame * h < w)
 				{

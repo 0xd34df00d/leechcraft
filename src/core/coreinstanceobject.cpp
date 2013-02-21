@@ -23,6 +23,7 @@
 #include <QStringListModel>
 #include <QStyleFactory>
 #include <util/util.h>
+#include <util/shortcuts/shortcutmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "pluginmanagerdialog.h"
@@ -34,6 +35,7 @@
 #include "coreplugin2manager.h"
 #include "acceptlangwidget.h"
 #include "shortcutmanager.h"
+#include "coreproxy.h"
 
 namespace LeechCraft
 {
@@ -116,7 +118,18 @@ namespace LeechCraft
 	, SettingsTab_ (new SettingsTab)
 	, CorePlugin2Manager_ (new CorePlugin2Manager)
 	, ShortcutManager_ (new ShortcutManager)
+	, CoreShortcutManager_ (new Util::ShortcutManager (ICoreProxy_ptr (new CoreProxy)))
 	{
+		CoreShortcutManager_->SetObject (this);
+
+#ifndef Q_OS_MAC
+		const auto sysModifier = Qt::CTRL;
+#else
+		const auto sysModifier = Qt::ALT;
+#endif
+		CoreShortcutManager_->RegisterActionInfo ("SwitchToPrevTab",
+				{ tr ("Switch to previously active tab"), sysModifier + Qt::Key_Space, QIcon () });
+
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"coresettings.xml");
 		connect (XmlSettingsDialog_.get (),
@@ -218,6 +231,16 @@ namespace LeechCraft
 					<< tabClass;
 	}
 
+	QMap<QString, ActionInfo> CoreInstanceObject::GetActionInfo () const
+	{
+		return CoreShortcutManager_->GetActionInfo ();
+	}
+
+	void CoreInstanceObject::SetShortcut (const QString& id, const QKeySequences_t& sequences)
+	{
+		CoreShortcutManager_->SetShortcut (id, sequences);
+	}
+
 	QSet<QByteArray> CoreInstanceObject::GetExpectedPluginClasses () const
 	{
 		QSet<QByteArray> result;
@@ -248,6 +271,11 @@ namespace LeechCraft
 	ShortcutManager* CoreInstanceObject::GetShortcutManager () const
 	{
 		return ShortcutManager_;
+	}
+
+	Util::ShortcutManager* CoreInstanceObject::GetCoreShortcutManager () const
+	{
+		return CoreShortcutManager_;
 	}
 
 	void CoreInstanceObject::BuildNewTabModel ()

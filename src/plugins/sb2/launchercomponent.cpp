@@ -20,7 +20,7 @@
 #include <QStandardItemModel>
 #include <QtDebug>
 #include <QtDeclarative>
-#include <util/util.h>
+#include <util/gui/util.h>
 #include <util/sys/paths.h>
 #include <util/qml/widthiconprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -328,7 +328,7 @@ namespace SB2
 			delete CurrentTabList_;
 
 		auto view = new TabListView (tc, widgets, ICTW_, Proxy_);
-		view->move (Util::FitRectScreen ({ x, y }, 
+		view->move (Util::FitRectScreen ({ x, y },
 					view->size () + View_->GetView ()->minimumSizeHint ()));
 		view->show ();
 		view->setFocus ();

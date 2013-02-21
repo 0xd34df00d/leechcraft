@@ -128,6 +128,16 @@ namespace Xoox
 		Ui_.FileLogCheckbox_->setCheckState (log ? Qt::Checked : Qt::Unchecked);
 	}
 
+	QXmppConfiguration::StreamSecurityMode GlooxAccountConfigurationWidget::GetTLSMode () const
+	{
+		return static_cast<QXmppConfiguration::StreamSecurityMode> (Ui_.TLSMode_->currentIndex ());
+	}
+
+	void GlooxAccountConfigurationWidget::SetTLSMode (QXmppConfiguration::StreamSecurityMode mode)
+	{
+		Ui_.TLSMode_->setCurrentIndex (mode);
+	}
+
 	QXmppTransferJob::Methods GlooxAccountConfigurationWidget::GetFTMethods () const
 	{
 		QXmppTransferJob::Methods result;

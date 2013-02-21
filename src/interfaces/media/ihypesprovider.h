@@ -52,7 +52,7 @@ namespace Media
 		QUrl ArtistPage_;
 	};
 
-	class IHypesProvider
+	class Q_DECL_EXPORT IHypesProvider
 	{
 	public:
 		virtual ~IHypesProvider () {}

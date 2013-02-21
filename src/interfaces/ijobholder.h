@@ -118,7 +118,7 @@ namespace LeechCraft
  * @sa CustomDataRoles
  * @sa ProcessState
  */
-class IJobHolder
+class Q_DECL_EXPORT IJobHolder
 {
 public:
 	/** @brief Returns the item representation model.

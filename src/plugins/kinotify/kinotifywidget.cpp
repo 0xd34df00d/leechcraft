@@ -34,6 +34,7 @@
 #include <QMainWindow>
 #include <util/resourceloader.h>
 #include <util/util.h>
+#include <util/gui/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include "notificationaction.h"
@@ -363,7 +364,7 @@ namespace Kinotify
 		else
 			point.setX (geometry.right () - 5);
 
-		QRect place (Util::FitRectScreen (point, DefaultSize_), DefaultSize_);
+		QRect place (Util::FitRectScreen (point, DefaultSize_, Util::FitFlag::NoOverlap), DefaultSize_);
 		setGeometry (place);
 	}
 

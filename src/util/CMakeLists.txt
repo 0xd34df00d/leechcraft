@@ -15,6 +15,7 @@ SET (SRCS
 	gui/flowlayout.cpp
 	gui/selectablebrowser.cpp
 	gui/unhoverdeletemixin.cpp
+	gui/util.cpp
 	models/flattenfiltermodel.cpp
 	models/flattofoldersproxymodel.cpp
 	models/listmodel.cpp
@@ -32,6 +33,7 @@ SET (SRCS
 	tags/tagslineedit.cpp
 	tags/tagsfiltermodel.cpp
 	xpc/stddatafiltermenucreator.cpp
+	xpc/util.cpp
 	util.cpp
 	dblock.cpp
 	customcookiejar.cpp
@@ -55,6 +57,7 @@ SET (HEADERS
 	gui/flowlayout.h
 	gui/selectablebrowser.h
 	gui/unhoverdeletemixin.h
+	gui/util.h
 	models/flattenfiltermodel.h
 	models/flattofoldersproxymodel.h
 	models/listmodel.h
@@ -72,6 +75,7 @@ SET (HEADERS
 	tags/tagslineedit.h
 	tags/tagsfiltermodel.h
 	xpc/stddatafiltermenucreator.h
+	xpc/util.h
 	util.h
 	dblock.h
 	customcookiejar.h

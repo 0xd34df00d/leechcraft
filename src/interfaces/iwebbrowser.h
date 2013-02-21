@@ -29,7 +29,7 @@
  * implement this interface in order to communicate with other modules
  * of LeechCraft.
  */
-class IWebWidget
+class Q_DECL_EXPORT IWebWidget
 {
 public:
 	virtual ~IWebWidget () {}
@@ -84,7 +84,7 @@ class QWebView;
 
 /** @brief Base class for plugins that provide a web browser.
  */
-class IWebBrowser
+class Q_DECL_EXPORT IWebBrowser
 {
 public:
 	/** @brief Opens the url in the web browser itself.

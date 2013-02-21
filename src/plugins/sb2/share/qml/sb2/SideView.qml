@@ -29,6 +29,7 @@ Rectangle {
         anchors.bottom: parent.bottom
 
         actionIconURL: "image://ThemeIcons/preferences-plugin"
+        textTooltip: SB2_settingsModeTooltip
 
         property bool settingsMode: false
         onTriggered: { isHighlight = !isHighlight; settingsMode = !settingsMode; }
@@ -43,6 +44,7 @@ Rectangle {
         anchors.right: isVert ? undefined : addQuarkButton.left
 
         actionIconURL: "image://ThemeIcons/format-list-unordered"
+        textTooltip: SB2_quarkOrderTooltip
 
         onTriggered: commonJS.showTooltip(setQuarkOrderButton, function(x, y) { quarkProxy.quarkOrderRequested(x, y) })
     }
@@ -57,6 +59,7 @@ Rectangle {
         anchors.right: isVert ? undefined : enableSettingsModeButton.left
 
         actionIconURL: "image://ThemeIcons/list-add"
+        textTooltip: SB2_addQuarkTooltip
 
         onTriggered: commonJS.showTooltip(addQuarkButton, function(x, y) { quarkProxy.quarkAddRequested(x, y) })
     }

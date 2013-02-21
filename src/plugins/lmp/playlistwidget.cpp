@@ -55,21 +55,15 @@ namespace LMP
 			Player *Player_;
 			QTreeView *View_;
 			QSortFilterProxyModel *PlaylistFilter_;
-			QLineEdit *FilterLine_;
-			QAction *FilterToggle_;
 		public:
 			PlaylistTreeEventFilter (Player* player,
 					QTreeView *view,
 					QSortFilterProxyModel *filter,
-					QLineEdit *filterLine,
-					QAction *filterToggle,
 					QObject *parent = 0)
 			: QObject (parent)
 			, Player_ (player)
 			, View_ (view)
 			, PlaylistFilter_ (filter)
-			, FilterLine_ (filterLine)
-			, FilterToggle_ (filterToggle)
 			{
 			}
 
@@ -88,15 +82,6 @@ namespace LMP
 					Player_->play (PlaylistFilter_->mapToSource (View_->currentIndex ()));
 					return true;
 				}
-
-				if (key == Qt::Key_F &&
-						keyEvent->modifiers () == Qt::CTRL)
-				{
-					FilterLine_->setVisible (!FilterLine_->isVisible ());
-					FilterToggle_->toggle ();
-					return true;
-				}
-
 				return false;
 			}
 		};
@@ -206,8 +191,8 @@ namespace LMP
 
 		Ui_.PlaylistLayout_->addWidget (PlaylistToolbar_);
 
-		InitToolbarActions ();
 		InitViewActions ();
+		InitToolbarActions ();
 
 		auto model = Player_->GetPlaylistModel ();
 		connect (model,
@@ -229,9 +214,7 @@ namespace LMP
 
 		Ui_.Playlist_->installEventFilter (new PlaylistTreeEventFilter (Player_,
 					Ui_.Playlist_,
-					PlaylistFilter_,
-					Ui_.SearchPlaylist_,
-					ActionToggleSearch_));
+					PlaylistFilter_));
 	}
 
 	void PlaylistWidget::InitToolbarActions ()
@@ -313,6 +296,14 @@ namespace LMP
 		SetPlayModeButton ();
 		SetSortOrderButton ();
 
+		auto shuffleAction = new QAction (tr ("Shuffle tracks"), Ui_.Playlist_);
+		shuffleAction->setProperty ("ActionIcon", "media-playlist-shuffle");
+		connect (shuffleAction,
+				SIGNAL (triggered ()),
+				Player_,
+				SLOT (shufflePlaylist ()));
+		PlaylistToolbar_->addAction (shuffleAction);
+
 		MoveUpButtonAction_ = PlaylistToolbar_->addWidget (moveUpButton);
 		MoveDownButtonAction_ = PlaylistToolbar_->addWidget (moveDownButton);
 		EnableMoveButtons (false);
@@ -326,6 +317,10 @@ namespace LMP
 		auto redo = UndoStack_->createRedoAction (this);
 		redo->setProperty ("ActionIcon", "edit-redo");
 		PlaylistToolbar_->addAction (redo);
+
+		PlaylistToolbar_->addSeparator ();
+
+		PlaylistToolbar_->addAction (ActionToggleSearch_);
 	}
 
 	void PlaylistWidget::SetPlayModeButton ()
@@ -486,6 +481,7 @@ namespace LMP
 		ActionToggleSearch_ = new QAction (tr ("Toggle search field"), Ui_.Playlist_);
 		ActionToggleSearch_->setShortcut (QKeySequence::Find);
 		ActionToggleSearch_->setCheckable (true);
+		ActionToggleSearch_->setProperty ("ActionIcon", "edit-find");
 		connect (ActionToggleSearch_,
 				SIGNAL (toggled (bool)),
 				Ui_.SearchPlaylist_,

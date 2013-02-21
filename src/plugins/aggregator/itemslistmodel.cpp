@@ -202,6 +202,22 @@ namespace Aggregator
 		return ItemHeaders_.size ();
 	}
 
+	namespace
+	{
+		void RemoveTag (const QString& name, QString& str)
+		{
+			int startPos = 0;
+			while ((startPos = str.indexOf ("<" + name, startPos, Qt::CaseInsensitive)) > 0)
+			{
+				const int end = str.indexOf ('>', startPos);
+				if (end < 0)
+					return;
+
+				str.remove (startPos, end - startPos + 1);
+			}
+		}
+	}
+
 	QVariant ItemsListModel::data (const QModelIndex& index, int role) const
 	{
 		if (!index.isValid () || index.row () >= rowCount ())
@@ -292,10 +308,14 @@ namespace Aggregator
 				result += "<br />";
 			}
 			result += "<br />";
+
 			const int maxDescriptionSize = 1000;
-			result += item->Description_.left (maxDescriptionSize);
-			if (item->Description_.size () > maxDescriptionSize)
+			auto descr = item->Description_;
+			RemoveTag ("img", descr);
+			result += descr.left (maxDescriptionSize);
+			if (descr.size () > maxDescriptionSize)
 				result += "...";
+
 			return result;
 		}
 		else if (role == Qt::BackgroundRole)

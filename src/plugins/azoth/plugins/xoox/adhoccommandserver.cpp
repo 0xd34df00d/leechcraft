@@ -398,7 +398,6 @@ namespace Xoox
 	{
 		const QString& to = sourceElem.attribute ("from");
 
-		QList<GlooxMessage*> msgs;
 		Q_FOREACH (QObject *obj, Conn_->GetCLEntries ())
 		{
 			EntryBase *base = qobject_cast<EntryBase*> (obj);

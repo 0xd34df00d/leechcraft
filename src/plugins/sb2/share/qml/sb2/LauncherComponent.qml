@@ -23,10 +23,12 @@ Rectangle {
     ActionButton {
         id: addTCButton
         visible: quarkDisplayRoot.settingsMode
-        anchors.bottom: parent.bottom
-        anchors.horizontalCenter: parent.horizontalCenter
-        width: parent.width * 2 / 3
-        height: parent.width * 2 / 3
+        anchors.bottom: viewOrient == "vertical" ? parent.bottom : undefined
+        anchors.right: viewOrient == "vertical" ? undefined : parent.right
+        anchors.horizontalCenter: viewOrient == "vertical" ? parent.horizontalCenter : undefined
+        anchors.verticalCenter: viewOrient == "vertical" ? undefined : parent.verticalCenter
+        width: parent.itemSize * 2 / 3
+        height: parent.itemSize * 2 / 3
 
         actionIconURL: "image://ThemeIcons/list-add"
 

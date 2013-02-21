@@ -200,6 +200,7 @@ namespace LMP
 		label->activateWindow ();
 		label->installEventFilter (new AADisplayEventFilter (label));
 	}
+
 	QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters ()
 	{
 		return Util::MakeMap<QString, std::function<QString (MediaInfo)>> ({
@@ -207,7 +208,7 @@ namespace LMP
 				{ "$album", [] (const MediaInfo& info) { return info.Album_; } },
 				{ "$title", [] (const MediaInfo& info) { return info.Title_; } },
 				{ "$year", [] (const MediaInfo& info) { return QString::number (info.Year_); } },
-				{ "$trackNumber", [] (const MediaInfo& info)
+				{ "$trackNumber", [] (const MediaInfo& info) -> QString
 					{
 						auto trackNumStr = QString::number (info.TrackNumber_);
 						if (info.TrackNumber_ < 10)

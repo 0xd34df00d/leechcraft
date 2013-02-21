@@ -28,10 +28,14 @@
 #include <QStringList>
 #include <QtDebug>
 #include <QRegExp>
+#include <QDesktopServices>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/ijobholder.h>
+#include <interfaces/an/constants.h>
 #include <util/util.h>
+#include <util/notificationactionhandler.h>
+#include <util/xpc/util.h>
 #include "task.h"
 #include "xmlsettingsmanager.h"
 #include "morphfile.h"
@@ -573,26 +577,61 @@ namespace CSTP
 
 		taskdscr->File_->close ();
 
-		bool notifyUser = !(taskdscr->Parameters_ & LeechCraft::DoNotNotifyUser);
+		bool notifyUser = !(taskdscr->Parameters_ & LeechCraft::DoNotNotifyUser) &&
+				!(taskdscr->Parameters_ & LeechCraft::Internal);
+
+		if (notifyUser)
+		{
+			QString text = err ?
+					tr ("Failed downloading %1 (%2).")
+						.arg (url)
+						.arg (errorStr) :
+					tr ("Finished downloading %1 (%2).")
+						.arg (filename)
+						.arg (url);
+
+			auto e = Util::MakeAN ("CSTP",
+					text,
+					err ? PCritical_ : PInfo_,
+					"org.LeechCraft.CSTP",
+					AN::CatDownloads,
+					err ? AN::TypeDownloadError : AN::TypeDownloadFinished,
+					"org.LC.Plugins.CSTP.DLFinished/" + url, QStringList (QUrl (url).host ()));
+			if (!err)
+			{
+				auto nah = new Util::NotificationActionHandler (e);
+				nah->AddFunction (tr ("Handle..."), [this, filename] ()
+						{
+							auto e = Util::MakeEntity (QUrl::fromLocalFile (filename),
+									QString (),
+									LeechCraft::FromUserInitiated);
+							emit gotEntity (e);
+						});
+				nah->AddFunction (tr ("Open externally"),
+						[filename] ()
+						{
+							QDesktopServices::openUrl (QUrl::fromLocalFile (filename));
+						});
+				nah->AddFunction (tr ("Show folder"),
+						[filename] ()
+						{
+							QDesktopServices::openUrl (QFileInfo (filename).absolutePath ());
+						});
+			}
+
+			emit gotEntity (e);
+		}
 
 		if (!err)
 		{
-			if (notifyUser)
-			{
-				QString text = tr ("Download finished: %1\n%2")
-					.arg (filename)
-					.arg (url);
-				emit gotEntity (Util::MakeNotification ("CSTP", text, PInfo_));
-			}
 			bool silence = taskdscr->Parameters_ & LeechCraft::DoNotAnnounceEntity;
-			LeechCraft::TaskParameters tp = taskdscr->Parameters_;
+			auto tp = taskdscr->Parameters_;
 			Remove (taskdscr);
 			emit taskFinished (id);
 			if (!silence)
 			{
-				tp |= LeechCraft::IsDownloaded;
-				LeechCraft::Entity e =
-					LeechCraft::Util::MakeEntity (QUrl::fromLocalFile (filename),
+				tp |= IsDownloaded;
+				auto e = Util::MakeEntity (QUrl::fromLocalFile (filename),
 						url,
 						tp);
 				e.Additional_ [" Tags"] = tags;

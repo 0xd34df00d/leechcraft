@@ -36,7 +36,7 @@ namespace LeechCraft
  * interface if they want to appear in a common settings configuration
  * dialog.
  */
-class IHaveSettings
+class Q_DECL_EXPORT IHaveSettings
 {
 public:
 	/** @brief Gets the settings dialog manager object from the plugin.

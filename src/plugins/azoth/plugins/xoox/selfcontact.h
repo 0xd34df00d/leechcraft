@@ -34,7 +34,7 @@ namespace Xoox
 		QString BareJID_;
 		QString Resource_;
 
-		QMap<int, QString> Prio2Status_;
+		QMap<QString, int> Status2Prio_;
 	public:
 		SelfContact (const QString&, GlooxAccount*);
 
@@ -54,7 +54,7 @@ namespace Xoox
 		QList<QAction*> GetActions () const;
 
 		void UpdatePriority (const QString&, int);
-		void RemoveVariant (const QString&);
+		void RemoveVariant (const QString&, bool);
 		QString GetJID () const;
 		void UpdateJID (const QString&);
 	private slots:

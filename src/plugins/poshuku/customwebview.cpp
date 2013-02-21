@@ -94,7 +94,7 @@ namespace Poshuku
 		connect (this,
 				SIGNAL (loadFinished (bool)),
 				this,
-				SLOT (handleLoadFinished ()));
+				SLOT (handleLoadFinished (bool)));
 
 		connect (page,
 				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
@@ -544,9 +544,10 @@ namespace Poshuku
 		emit urlChanged (URLToProperString (url));
 	}
 
-	void CustomWebView::handleLoadFinished ()
+	void CustomWebView::handleLoadFinished (bool ok)
 	{
-		remakeURL (url ());
+		if (ok)
+			remakeURL (url ());
 	}
 
 	void CustomWebView::openLinkHere ()

@@ -32,6 +32,7 @@
 #include "clientconnection.h"
 #include "capsmanager.h"
 #include "gwoptionsdialog.h"
+#include "privacylistsmanager.h"
 
 namespace LeechCraft
 {
@@ -97,6 +98,7 @@ namespace Xoox
 	, BareJID_ (jid)
 	, AuthRequested_ (false)
 	{
+		Initialize ();
 	}
 
 	GlooxCLEntry::GlooxCLEntry (OfflineDataSource_ptr ods, GlooxAccount *parent)
@@ -117,6 +119,30 @@ namespace Xoox
 		}
 
 		SetVCard (ods->VCardIq_);
+
+		Initialize ();
+	}
+
+	void GlooxCLEntry::Initialize ()
+	{
+		BlockContact_ = new QAction (tr ("Block contact"), this);
+		BlockContact_->setToolTip (tr ("Add this user to the active privacy list "
+					"(not all servers support this feature)."));
+		BlockContact_->setProperty ("ActionIcon", "im-ban-user");
+		BlockContact_->setCheckable (true);
+		connect (BlockContact_,
+				SIGNAL (triggered (bool)),
+				this,
+				SLOT (addToPrivacyList (bool)));
+
+		auto lists = Account_->GetClientConnection ()->GetPrivacyListsManager ();
+		connect (lists,
+				SIGNAL (currentListFetched (PrivacyList)),
+				this,
+				SLOT (checkIsBlocked (PrivacyList)));
+		const auto& current = lists->GetCurrentList ();
+		if (!current.GetItems ().isEmpty ())
+			checkIsBlocked (current);
 	}
 
 	OfflineDataSource_ptr GlooxCLEntry::ToOfflineDataSource () const
@@ -136,10 +162,14 @@ namespace Xoox
 
 	void GlooxCLEntry::Convert2ODS ()
 	{
+		const auto& prevVariants = Variants ();
+
 		ODS_ = ToOfflineDataSource ();
 		CurrentStatus_.clear ();
+		if (prevVariants.isEmpty ())
+			return;
+
 		emit availableVariantsChanged (QStringList ());
-		emit statusChanged (EntryStatus (SOffline, QString ()), QString ());
 	}
 
 	QString GlooxCLEntry::JIDFromID (GlooxAccount *acc, const QString& id)
@@ -372,6 +402,7 @@ namespace Xoox
 			GWActions_.clear ();
 
 		result += GWActions_;
+		result += BlockContact_;
 
 		return result;
 	}
@@ -461,6 +492,57 @@ namespace Xoox
 		auto dia = new GWOptionsDialog (Account_->GetClientConnection ()->GetClient (), GetJID ());
 		dia->setAttribute (Qt::WA_DeleteOnClose);
 		dia->show ();
+	}
+
+	void GlooxCLEntry::checkIsBlocked (const PrivacyList& list)
+	{
+		const auto& items = list.GetItems ();
+
+		const auto& jid = GetJID ();
+		const auto pos = std::find_if (items.begin (), items.end (),
+				[&jid] (const PrivacyListItem& item)
+				{
+					return item.GetType () == PrivacyListItem::TJid &&
+							item.GetAction () == PrivacyListItem::ADeny &&
+							item.GetValue () == jid;
+				});
+		BlockContact_->setChecked (pos != items.end ());
+	}
+
+	void GlooxCLEntry::addToPrivacyList (bool add)
+	{
+		const auto& jid = GetJID ();
+
+		auto lists = Account_->GetClientConnection ()->GetPrivacyListsManager ();
+
+		auto current = lists->GetCurrentList ();
+		auto items = current.GetItems ();
+		for (const auto& item : items)
+		{
+			if (item.GetType () != PrivacyListItem::TJid)
+				continue;
+
+			if (item.GetValue () != jid)
+				continue;
+
+			if ((item.GetAction () == PrivacyListItem::AAllow && !add) ||
+				(item.GetAction () == PrivacyListItem::ADeny && add))
+				return;
+
+			if (!add)
+			{
+				items.removeAll (item);
+				break;
+			}
+		}
+		if (add)
+			items.append (PrivacyListItem (jid, PrivacyListItem::TJid));
+
+		if (items.size () == current.GetItems ().size ())
+			return;
+
+		current.SetItems (items);
+		lists->SetList (current);
 	}
 }
 }

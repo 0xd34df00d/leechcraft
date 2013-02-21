@@ -98,10 +98,11 @@ namespace LeechCraft
 
 	int RootWindowsManager::GetWindowForTab (ITabWidget *tab) const
 	{
+		auto tabWidget = dynamic_cast<QWidget*> (tab);
 		for (int i = 0; i < GetWindowsCount (); ++i)
 		{
 			const auto tw = Windows_ [i].Window_->GetTabWidget ();
-			if (tw->IndexOf (dynamic_cast<QWidget*> (tab)) >= 0)
+			if (tw->IndexOf (tabWidget) >= 0)
 				return i;
 		}
 

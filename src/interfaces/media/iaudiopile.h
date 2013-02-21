@@ -25,7 +25,7 @@ class QObject;
 
 namespace Media
 {
-	class IPendingAudioSearch
+	class Q_DECL_EXPORT IPendingAudioSearch
 	{
 	public:
 		virtual ~IPendingAudioSearch () {}
@@ -59,7 +59,7 @@ namespace Media
 		}
 	};
 
-	class IAudioPile
+	class Q_DECL_EXPORT IAudioPile
 	{
 	public:
 		virtual ~IAudioPile () {}

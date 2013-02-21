@@ -76,7 +76,7 @@ namespace Azoth
 
 			const auto& name = BuildSettingName (Context_, state);
 			const auto& str = XmlSettingsManager::Instance ().property (name).toString ();
-			Ui_.StatusBox_->setItemData (i, str, Roles::ItemState);
+			Ui_.StatusBox_->setItemData (i, str, Roles::StateText);
 		}
 
 		const auto& customs = Core::Instance ().GetCustomStatusesManager ()->GetStates ();

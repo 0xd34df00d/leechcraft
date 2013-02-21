@@ -78,6 +78,8 @@ namespace Xoox
 		void SetStanzaTypes (StanzaTypes);
 	};
 
+	bool operator== (const PrivacyListItem&, const PrivacyListItem&);
+
 	class PrivacyList
 	{
 		QString Name_;
@@ -105,6 +107,9 @@ namespace Xoox
 			QTGetList
 		};
 		QMap<QString, QueryType> ID2Type_;
+
+		QString CurrentName_;
+		PrivacyList CurrentList_;
 	public:
 		enum ListType
 		{
@@ -117,6 +122,8 @@ namespace Xoox
 		void ActivateList (const QString&, ListType = LTActive);
 		void SetList (const PrivacyList&);
 
+		const PrivacyList& GetCurrentList () const;
+
 		QStringList discoveryFeatures () const;
 		bool handleStanza (const QDomElement&);
 	private:
@@ -125,6 +132,7 @@ namespace Xoox
 	signals:
 		void gotLists (const QStringList&, const QString&, const QString&);
 		void gotList (const PrivacyList&);
+		void currentListFetched (const PrivacyList&);
 	};
 }
 }

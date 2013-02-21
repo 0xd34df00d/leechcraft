@@ -32,7 +32,7 @@
  * @sa IDownload
  * @sa IJobHolder
  */
-class ITaggableJobs
+class Q_DECL_EXPORT ITaggableJobs
 {
 public:
 	/** @brief Sets the list with tags for a job.

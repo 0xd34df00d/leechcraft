@@ -20,6 +20,7 @@
 #include <QIcon>
 #include <QAction>
 #include <util/util.h>
+#include <util/gui/util.h>
 
 #ifdef ENABLE_UDISKS
 #include "backends/udisks/udisksbackend.h"

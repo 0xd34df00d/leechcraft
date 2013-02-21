@@ -51,7 +51,7 @@ class IRootWindowsManager;
  * Allows one to talk with LeechCraft, requesting and getting various
  * services.
  */
-class ICoreProxy
+class Q_DECL_EXPORT ICoreProxy
 {
 public:
 	virtual ~ICoreProxy () {}

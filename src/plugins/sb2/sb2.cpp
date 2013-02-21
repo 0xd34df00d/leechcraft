@@ -112,24 +112,16 @@ namespace SB2
 
 	void Plugin::handleWindow (int index, bool init)
 	{
-		auto mgr = new ViewManager (Proxy_, this);
+		auto rootWM = Proxy_->GetRootWindowsManager ();
+		auto win = rootWM->GetMainWindow (index);
+
+		auto mgr = new ViewManager (Proxy_, win, this);
 		auto view = mgr->GetView ();
 
-		auto rootWM = Proxy_->GetRootWindowsManager ();
 		auto mwProxy = rootWM->GetMWProxy (index);
 		auto ictw = rootWM->GetTabWidget (index);
 
-		auto toolbar = new QToolBar ();
-		toolbar->addWidget (view);
-		toolbar->setFloatable (false);
-		view->setVisible (true);
-		connect (toolbar,
-				SIGNAL (orientationChanged (Qt::Orientation)),
-				mgr,
-				SLOT (setOrientation (Qt::Orientation)));
-		rootWM->GetMainWindow (index)->addToolBar (Qt::LeftToolBarArea, toolbar);
-
-		rootWM->GetMainWindow (index)->statusBar ()->hide ();
+		win->statusBar ()->hide ();
 
 		mgr->RegisterInternalComponent ((new LCMenuComponent (mwProxy))->GetComponent ());
 
@@ -151,10 +143,10 @@ namespace SB2
 					tray,
 					SLOT (handlePluginsAvailable ()));
 		else
+		{
 			tray->handlePluginsAvailable ();
-
-		if (!init)
 			mgr->SecondInit ();
+		}
 
 		Managers_.push_back ({ mgr, tray });
 	}

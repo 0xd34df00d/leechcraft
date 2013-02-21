@@ -23,7 +23,7 @@
 #include <QUrl>
 #include <QtPlugin>
 
-class IVideoWidget
+class Q_DECL_EXPORT IVideoWidget
 {
 public:
 	virtual ~IVideoWidget () {}
@@ -38,7 +38,7 @@ public:
 	virtual QWidget* Widget () = 0;
 };
 
-class IMediaPlayer
+class Q_DECL_EXPORT IMediaPlayer
 {
 public:
 	virtual IVideoWidget* CreateWidget () const = 0;

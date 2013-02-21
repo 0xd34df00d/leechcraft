@@ -27,6 +27,7 @@ namespace LeechCraft
 namespace Lemon
 {
 	class TrafficManager;
+	class TrafficDialog;
 	class ActionsManager;
 
 	class Plugin : public QObject
@@ -38,6 +39,8 @@ namespace Lemon
 
 		TrafficManager *TrafficMgr_;
 		QuarkComponent PanelComponent_;
+
+		QMap<QString, QPointer<TrafficDialog>> Iface2Dialog_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

@@ -23,7 +23,7 @@
 class QModelIndex;
 class QTreeView;
 
-class ISummaryRepresentation
+class Q_DECL_EXPORT ISummaryRepresentation
 {
 public:
 	virtual ~ISummaryRepresentation () {}

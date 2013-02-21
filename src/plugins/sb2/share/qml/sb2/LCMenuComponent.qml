@@ -19,5 +19,6 @@ Rectangle {
         onHeld: SB2_menuComponentProxy.execMenu()
 
         actionIconURL: SB2_menuComponentLCIcon
+        textTooltip: SB2_menuTooltipString
     }
 }

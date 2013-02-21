@@ -76,7 +76,7 @@ namespace LeechCraft
  * that would be embedded into the LeechCraft main area. Every single
  * subrequest should represent its results via this model.
  */
-class IFindProxy
+class Q_DECL_EXPORT IFindProxy
 {
 public:
 	virtual ~IFindProxy () {}
@@ -130,7 +130,7 @@ typedef std::shared_ptr<IFindProxy> IFindProxy_ptr;
  *
  * @sa IFindProxy
  */
-class IFinder
+class Q_DECL_EXPORT IFinder
 {
 public:
 	virtual ~IFinder () {}

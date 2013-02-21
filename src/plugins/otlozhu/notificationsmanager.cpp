@@ -19,6 +19,7 @@
 #include "notificationsmanager.h"
 #include <QTimer>
 #include <util/util.h>
+#include <interfaces/an/constants.h>
 #include "todostorage.h"
 
 namespace LeechCraft
@@ -57,11 +58,11 @@ namespace Otlozhu
 		auto e = Util::MakeNotification ("Otlozhu", notify, PInfo_);
 
 		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Otlozhu";
-		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = "org.LC.AdvNotifications.Organizer";
+		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = AN::CatOrganizer;
 		e.Additional_ ["org.LC.AdvNotifications.EventID"] = "org.LC.Plugins.Otlozhu.EventDue/" + NextEvent_->GetID ();
 		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList (NextEvent_->GetTitle ());
 
-		e.Additional_ ["org.LC.AdvNotifications.EventType"] = "org.LC.AdvNotifications.Organizer.EventDue";
+		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeOrganizerEventDue;
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = notify;
 		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = notify;
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;

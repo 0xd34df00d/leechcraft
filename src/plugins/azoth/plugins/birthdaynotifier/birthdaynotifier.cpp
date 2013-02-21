@@ -21,6 +21,7 @@
 #include <QIcon>
 #include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <interfaces/an/constants.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iaccount.h>
@@ -105,11 +106,11 @@ namespace BirthdayNotifier
 		auto e = Util::MakeNotification (tr ("Birthday reminder"), notify, PInfo_);
 
 		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = GetUniqueID ();
-		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = "org.LC.AdvNotifications.Organizer";
+		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = AN::CatOrganizer;
 		e.Additional_ ["org.LC.AdvNotifications.EventID"] = "org.LC.Plugins.Azoth.BirthdayNotifier.Birthday/" + entry->GetEntryID ();
 		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList (hrId);
 
-		e.Additional_ ["org.LC.AdvNotifications.EventType"] = "org.LC.AdvNotifications.Organizer.EventDue";
+		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeOrganizerEventDue;
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = notify;
 		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = notify;
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;

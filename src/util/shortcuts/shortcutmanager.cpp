@@ -18,6 +18,7 @@
 
 #include "shortcutmanager.h"
 #include <QAction>
+#include <QShortcut>
 #include "interfaces/ihaveshortcuts.h"
 
 namespace LeechCraft
@@ -55,15 +56,34 @@ namespace Util
 					CoreProxy_->GetShortcutProxy ()->GetShortcuts (ContextObj_, id));
 	}
 
-	void ShortcutManager::RegisterActionInfo (const QString& id, const ActionInfo& info)
+	void ShortcutManager::RegisterShortcut (const QString& id, const ActionInfo& info, QShortcut* shortcut, bool update)
 	{
-		ActionInfo_ [id] = info;
+		Shortcuts_ [id] << shortcut;
+		connect (shortcut,
+				SIGNAL (destroyed ()),
+				this,
+				SLOT (handleShortcutDestroyed ()));
+
+		RegisterActionInfo (id, info);
+
+		if (update)
+			SetShortcut (id,
+					CoreProxy_->GetShortcutProxy ()->GetShortcuts (ContextObj_, id));
 	}
 
-	void ShortcutManager::SetShortcut (const QString& id, const QKeySequences_t& seqs)
+	void ShortcutManager::RegisterActionInfo (const QString& id, const ActionInfo& info)
 	{
-		Q_FOREACH (QAction *act, Actions_ [id])
+		if (!ActionInfo_.contains (id))
+			ActionInfo_ [id] = info;
+	}
+
+	void ShortcutManager::SetShortcut (const QString& id, const QKeySequences_t& seqs) const
+	{
+		for (auto act : Actions_ [id])
 			act->setShortcuts (seqs);
+
+		for (auto sc : Shortcuts_ [id])
+			sc->setKey (seqs.value (0));
 	}
 
 	QMap<QString, ActionInfo> ShortcutManager::GetActionInfo () const
@@ -79,10 +99,16 @@ namespace Util
 
 	void ShortcutManager::handleActionDestroyed ()
 	{
-		QAction *act = static_cast<QAction*> (sender ());
-
-		Q_FOREACH (const QString& id, Actions_.keys ())
+		auto act = static_cast<QAction*> (sender ());
+		for (const auto& id : Actions_.keys ())
 			Actions_ [id].removeAll (act);
+	}
+
+	void ShortcutManager::handleShortcutDestroyed()
+	{
+		auto sc = static_cast<QShortcut*> (sender ());
+		for (const auto& id : Shortcuts_.keys ())
+			Shortcuts_ [id].removeAll (sc);
 	}
 }
 }
