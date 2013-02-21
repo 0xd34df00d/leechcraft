@@ -63,7 +63,7 @@ namespace VelvetBird
 
 	QString Protocol::GetProtocolName () const
 	{
-		return QString::fromUtf8 (purple_plugin_get_name (PPlug_));
+		return QString::fromUtf8 (purple_plugin_get_name (PPlug_)) + " (by libpurple)";
 	}
 
 	QIcon Protocol::GetProtocolIcon () const
