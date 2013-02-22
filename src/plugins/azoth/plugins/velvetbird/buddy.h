@@ -18,8 +18,10 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <blist.h>
+#include <conversation.h>
 #include <interfaces/azoth/iclentry.h>
 
 namespace LeechCraft
@@ -29,6 +31,7 @@ namespace Azoth
 namespace VelvetBird
 {
 	class Account;
+	class ConvIMMessage;
 
 	class Buddy : public QObject
 				, public ICLEntry
@@ -38,6 +41,15 @@ namespace VelvetBird
 
 		Account *Account_;
 		PurpleBuddy *Buddy_;
+
+		QString Name_;
+		EntryStatus Status_;
+
+		QString Group_;
+
+		QList<ConvIMMessage*> Messages_;
+
+		std::shared_ptr<PurpleConversation> PurpleConv_;
 	public:
 		Buddy (PurpleBuddy*, Account*);
 
@@ -64,6 +76,12 @@ namespace VelvetBird
 		QMap<QString, QVariant> GetClientInfo (const QString& variant) const;
 		void MarkMsgsRead ();
 
+		void Send (ConvIMMessage*);
+		void Store (ConvIMMessage*);
+		void SetConv (PurpleConversation*);
+		void HandleMessage (const char*, const char*, PurpleMessageFlags, time_t);
+
+		PurpleBuddy* GetPurpleBuddy () const;
 		void Update ();
 	signals:
 		void gotMessage (QObject*);

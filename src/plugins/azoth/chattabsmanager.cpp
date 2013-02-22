@@ -206,7 +206,11 @@ namespace Azoth
 			return;
 
 		if (msg->GetMessageType () == IMessage::MTChatMessage)
-			OpenChat (qobject_cast<ICLEntry*> (msg->OtherPart ()));
+		{
+			auto entry = qobject_cast<ICLEntry*> (msg->OtherPart ());
+			if (!Entry2Tab_.contains (entry->GetEntryID ()))
+				OpenChat (entry);
+		}
 	}
 
 	void ChatTabsManager::SetChatEnabled (const QString& id, bool enabled)

@@ -28,6 +28,7 @@ SET (VELVETBIRD_SRCS
 	accregfirstpage.cpp
 	util.cpp
 	buddy.cpp
+	convimmessage.cpp
 	)
 SET (VELVETBIRD_FORMS
 	accregfirstpage.ui

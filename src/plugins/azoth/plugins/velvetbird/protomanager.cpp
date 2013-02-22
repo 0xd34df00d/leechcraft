@@ -23,6 +23,7 @@
 #include <libpurple/plugin.h>
 #include "protocol.h"
 #include "account.h"
+#include "buddy.h"
 
 namespace LeechCraft
 {
@@ -209,6 +210,28 @@ namespace VelvetBird
 			[] (PurpleBuddyList *list) { static_cast<ProtoManager*> (list->ui_data)->Show (list); },
 			[] (PurpleBuddyList *list, PurpleBlistNode *node)
 				{ static_cast<ProtoManager*> (list->ui_data)->Update (list, node); },
+			[] (PurpleBuddyList *list, PurpleBlistNode *node)
+				{ static_cast<ProtoManager*> (list->ui_data)->Remove (list, node); },
+			NULL
+		};
+
+		PurpleConversationUiOps ConvUiOps =
+		{
+			NULL,
+			NULL,
+			NULL,
+			[] (PurpleConversation *conv, const char *who, const char *message, PurpleMessageFlags flags, time_t mtime)
+			{
+				if (conv->ui_data)
+					static_cast<Buddy*> (conv->ui_data)->HandleMessage (who, message, flags, mtime);
+				else
+					static_cast<Account*> (conv->account->ui_data)->
+							HandleConvLessMessage (conv, who, message, flags, mtime);
+			},
+			[] (PurpleConversation *conv, const char *name, const char *alias, const char *message, PurpleMessageFlags flags, time_t mtime)
+			{
+				qDebug () << Q_FUNC_INFO << name << alias << message;
+			},
 			NULL
 		};
 	}
@@ -230,6 +253,8 @@ namespace VelvetBird
 		purple_set_blist (purple_blist_new ());
 		purple_blist_set_ui_data (this);
 		purple_blist_set_ui_ops (&BListUiOps);
+
+		purple_conversations_set_ui_ops (&ConvUiOps);
 
 		if (!purple_core_init ("leechcraft.azoth"))
 		{
@@ -300,6 +325,16 @@ namespace VelvetBird
 		auto buddy = reinterpret_cast<PurpleBuddy*> (node);
 		auto account = static_cast<Account*> (buddy->account->ui_data);
 		account->UpdateBuddy (buddy);
+	}
+
+	void ProtoManager::Remove (PurpleBuddyList*, PurpleBlistNode *node)
+	{
+		if (node->type != PURPLE_BLIST_BUDDY_NODE)
+			return;
+
+		auto buddy = reinterpret_cast<PurpleBuddy*> (node);
+		auto account = static_cast<Account*> (buddy->account->ui_data);
+		account->RemoveBuddy (buddy);
 	}
 }
 }

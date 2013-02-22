@@ -73,7 +73,7 @@ namespace VelvetBird
 
 	QString Account::GetOurNick () const
 	{
-		return QString ();
+		return QString::fromUtf8 (purple_account_get_name_for_display (Account_));
 	}
 
 	void Account::RenameAccount (const QString& name)
@@ -143,12 +143,21 @@ namespace VelvetBird
 	{
 	}
 
-	void Account::RequestAuth (const QString&, const QString&, const QString&, const QStringList&)
+	void Account::RequestAuth (const QString& entry,
+			const QString& msg, const QString& name, const QStringList&)
 	{
+		auto buddy = purple_buddy_new (Account_,
+				entry.toUtf8 ().constData (),
+				name.isEmpty () ? nullptr : name.toUtf8 ().constData ());
+		purple_blist_add_buddy (buddy, NULL, NULL, NULL);
+		purple_account_add_buddy_with_invite (Account_, buddy, msg.toUtf8 ().constData ());
 	}
 
-	void Account::RemoveEntry (QObject*)
+	void Account::RemoveEntry (QObject *entryObj)
 	{
+		auto buddy = qobject_cast<Buddy*> (entryObj);
+		purple_account_remove_buddy (Account_, buddy->GetPurpleBuddy (), NULL);
+		purple_blist_remove_buddy (buddy->GetPurpleBuddy ());
 	}
 
 	QObject* Account::GetTransferManager () const
@@ -166,6 +175,30 @@ namespace VelvetBird
 		}
 
 		Buddies_ [purpleBuddy]->Update ();
+	}
+
+	void Account::RemoveBuddy (PurpleBuddy *purpleBuddy)
+	{
+		auto buddy = Buddies_.take (purpleBuddy);
+		if (!buddy)
+			return;
+
+		emit removedCLItems ({ buddy });
+		buddy->deleteLater ();
+	}
+
+	void Account::HandleConvLessMessage (PurpleConversation *conv,
+			const char *who, const char *message, PurpleMessageFlags flags, time_t mtime)
+	{
+		for (auto buddy : Buddies_)
+		{
+			if (buddy->GetHumanReadableID () != who)
+				continue;
+
+			buddy->SetConv (conv);
+			buddy->HandleMessage (who, message, flags, mtime);
+			break;
+		}
 	}
 
 	void Account::HandleStatus (PurpleStatus *status)

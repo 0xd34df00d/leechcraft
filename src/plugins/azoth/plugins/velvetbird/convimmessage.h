@@ -19,38 +19,41 @@
 #pragma once
 
 #include <QObject>
-#include <blist.h>
-#include <interfaces/core/icoreproxy.h>
+#include <interfaces/azoth/imessage.h>
 
 namespace LeechCraft
 {
-struct Entity;
-
 namespace Azoth
 {
 namespace VelvetBird
 {
-	class Protocol;
+	class Buddy;
 
-	class ProtoManager : public QObject
+	class ConvIMMessage : public QObject
+						, public IMessage
 	{
 		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Azoth::IMessage)
 
-		ICoreProxy_ptr Proxy_;
-		QList<Protocol*> Protocols_;
+		Buddy * const Buddy_;
+		QString Body_;
+		Direction Dir_;
+		QDateTime Timestamp_;
 	public:
-		ProtoManager (ICoreProxy_ptr, QObject*);
+		ConvIMMessage (const QString&, Direction, Buddy*);
 
-		void PluginsAvailable ();
-
-		QList<QObject*> GetProtoObjs () const;
-
-		void Show (PurpleBuddyList*);
-		void Update (PurpleBuddyList*, PurpleBlistNode*);
-		void Remove (PurpleBuddyList*, PurpleBlistNode*);
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
+		QObject* GetObject ();
+		void Send ();
+		void Store ();
+		Direction GetDirection () const;
+		MessageType GetMessageType () const;
+		MessageSubType GetMessageSubType () const;
+		QObject* OtherPart () const;
+		QString GetOtherVariant () const;
+		QString GetBody () const;
+		void SetBody (const QString& body);
+		QDateTime GetDateTime () const;
+		void SetDateTime (const QDateTime& timestamp);
 	};
 }
 }

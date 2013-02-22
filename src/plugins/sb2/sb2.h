@@ -22,11 +22,17 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/ihaveshortcuts.h>
 
 class QDockWidget;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class ShortcutManager;
+}
+
 namespace SB2
 {
 	class ViewManager;
@@ -35,9 +41,10 @@ namespace SB2
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
+				 , public IHaveShortcuts
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
+		Q_INTERFACES (IInfo IPlugin2 IHaveShortcuts)
 
 		ICoreProxy_ptr Proxy_;
 
@@ -47,6 +54,8 @@ namespace SB2
 			TrayComponent *Tray_;
 		};
 		QList<WindowInfo> Managers_;
+
+		Util::ShortcutManager *ShortcutMgr_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -57,6 +66,9 @@ namespace SB2
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
+
+		QMap<QString, ActionInfo> GetActionInfo () const;
+		void SetShortcut (const QString&, const QKeySequences_t&);
 	public slots:
 		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr,
 				QMainWindow*, QDockWidget*, bool);
