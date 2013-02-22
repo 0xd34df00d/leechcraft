@@ -170,6 +170,8 @@ namespace LeechCraft
 #endif
 
 		CheckStartupPass ();
+
+		Core::Instance ();
 		InitSettings ();
 
 		setQuitOnLastWindowClosed (false);
