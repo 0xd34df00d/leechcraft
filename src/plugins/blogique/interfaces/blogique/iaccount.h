@@ -34,8 +34,8 @@ namespace Blogique
 	enum class EntryType
 	{
 		None,
-		LocalEntry,
-		RemoteEntry
+		BlogEntry,
+		Draft
 	};
 
 
