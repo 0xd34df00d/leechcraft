@@ -63,7 +63,7 @@ namespace LeechCraft
 	, Filter_ (new SMFilterProxyModel (this))
 	{
 		Filter_->setDynamicSortFilter (true);
-		Model_->setHorizontalHeaderLabels (QStringList (tr ("Name")) << tr ("Shortcut"));
+		Model_->setHorizontalHeaderLabels (QStringList (tr ("Name")) << tr ("Shortcut") << tr ("Alternate"));
 		Filter_->setSourceModel (Model_);
 		Filter_->sort (0);
 
@@ -140,7 +140,6 @@ namespace LeechCraft
 			// FIXME use all the sequences here, not the first one
 			const auto& sequences = settings.value (name,
 					QVariant::fromValue<QKeySequences_t> (info [name].Seqs_)).value<QKeySequences_t> ();
-			const auto& sequence = sequences.value (0);
 
 			auto first = new QStandardItem (info [name].UserVisibleText_);
 			first->setIcon (info [name].Icon_);
@@ -149,7 +148,8 @@ namespace LeechCraft
 
 			QList<QStandardItem*> itemRow;
 			itemRow << first;
-			itemRow << new QStandardItem (sequence.toString ());
+			itemRow << new QStandardItem (sequences.value (0).toString ());
+			itemRow << new QStandardItem (sequences.value (1).toString ());
 			deEdit (itemRow);
 			parentRow.at (0)->appendRow (itemRow);
 
@@ -198,15 +198,22 @@ namespace LeechCraft
 		KeySequencer dia (this);
 		if (dia.exec () == QDialog::Rejected)
 			return;
+		
+		const int numSeqs = 2;
 
-		QKeySequences_t newSeqs;
-		newSeqs << dia.GetResult ();
 		if (item->data (Roles::OldSequence).isNull ())
 			item->setData (item->data (Roles::Sequence), Roles::OldSequence);
+		
+		auto newSeqs = item->data (Roles::Sequence).value<QKeySequences_t> ();
+		if (newSeqs.size () < numSeqs)
+			newSeqs << QKeySequence ();
+		newSeqs [prIndex.column () - 1] = dia.GetResult ();
+		newSeqs.removeAll (QKeySequence ());
 		item->setData (QVariant::fromValue<QKeySequences_t> (newSeqs), Roles::Sequence);
 
-		Model_->itemFromIndex (index.sibling (index.row (), 1))->
-				setText (newSeqs.value (0).toString ());
+		for (int i = 0; i < numSeqs; ++i)
+			Model_->itemFromIndex (index.sibling (index.row (), i + 1))->
+					setText (newSeqs.value (i).toString ());
 	}
 
 	void ShortcutManager::accept ()
