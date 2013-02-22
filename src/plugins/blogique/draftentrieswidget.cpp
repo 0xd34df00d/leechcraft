@@ -54,7 +54,7 @@ namespace Blogique
 		connect (Ui_.DraftEntriesCalendar_,
 				SIGNAL (activated (QDate)),
 				this,
-				SLOT (loadPostsByDate (QDate)));
+				SLOT (loadDraftsByDate (QDate)));
 
 		QAction *openDraftEntryInNewTab = new QAction (tr ("Open in new tab"), this);
 		QAction *openDraftEntryInCurrentTab = new QAction (tr ("Open here"), this);

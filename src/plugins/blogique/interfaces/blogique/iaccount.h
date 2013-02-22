@@ -48,7 +48,7 @@ namespace Blogique
 		QStringList Tags_;
 		QVariantMap PostOptions_;
 		QVariantMap CustomData_;
-		qlonglong EntryId_;
+		qint64 EntryId_;
 		QUrl EntryUrl_;
 		EntryType EntryType_;
 

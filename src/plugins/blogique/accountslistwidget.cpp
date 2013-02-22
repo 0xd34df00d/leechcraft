@@ -27,7 +27,7 @@
 #include "addaccountwizardfirstpage.h"
 #include "core.h"
 #include "profiledialog.h"
-#include "localstorage.h"
+#include "storagemanager.h"
 
 namespace LeechCraft
 {
@@ -101,7 +101,7 @@ namespace Blogique
 
 		try
 		{
-			Core::Instance ().GetStorage ()->AddAccount (acc->GetAccountID ());
+			Core::Instance ().GetStorageManager ()->AddAccount (acc->GetAccountID ());
 		}
 		catch (const std::runtime_error& e)
 		{

@@ -19,23 +19,63 @@
 #pragma once
 
 #include <QObject>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 #include "interfaces/blogique/iaccount.h"
 
 namespace LeechCraft
 {
 namespace Blogique
 {
+	enum class Mode
+	{
+		ShortMode,
+		FullMode
+	};
+
 	class StorageManager : public QObject
 	{
 		Q_OBJECT
+		QSqlDatabase BlogiqueDB_;
+
+		QSqlQuery AddAccount_;
+
+		QSqlQuery AddDraft_;
+		QSqlQuery UpdateDraft_;
+		QSqlQuery RemoveDraft_;
+
+		QSqlQuery GetDrafts_;
+		QSqlQuery GetShortDrafts_;
+		QSqlQuery GetFullDraft_;
+
+		QSqlQuery AddDraftPostOptions_;
+		QSqlQuery UpdateDraftPostOptions_;
+		QSqlQuery GetDraftPostOptions_;
+
+		QSqlQuery AddDraftCustomOptions_;
+		QSqlQuery UpdateDraftCustomOptions_;
+		QSqlQuery GetDraftCustomOptions_;
+
+		QSqlQuery AddDraftTag_;
+		QSqlQuery RemoveDraftTags_;
+		QSqlQuery GetDraftTags_;
 
 	public:
 		explicit StorageManager (QObject *parent = 0);
 
 		void AddAccount (const QByteArray& accounId);
 
+		qint64 SaveNewDraft (const Entry& e);
+		void RemoveDraft (qint64 draftId);
+		QList<Entry> GetDrafts (Mode mode);
+		QMap<QDate, int> GetDraftsCountByDate ();
+		Entry GetFullDraft (qint64 draftId);
+	private:
+		void CreateTables ();
+		void PrepareQueries ();
+
 	public slots:
-		void saveNewDraft (const Entry& e);
+		void updateDraft (const Entry& e, qint64 draftId);
 	};
 }
 }
