@@ -19,7 +19,7 @@
 #pragma once
 
 #include <QWidget>
-#include "ui_remoteentrieswidget.h"
+#include "ui_blogentrieswidget.h"
 
 class QStandardItemModel;
 class QStandardItem;
@@ -30,19 +30,19 @@ namespace Blogique
 {
 	class EntriesFilterProxyModel;
 
-	class RemoteEntriesWidget : public QWidget
+	class BlogEntriesWidget : public QWidget
 	{
 		Q_OBJECT
 
-		Ui::RemoteEntriesWidget Ui_;
+		Ui::BlogEntriesWidget Ui_;
 		IAccount *Account_;
-		QStandardItemModel *RemoteEntriesModel_;
+		QStandardItemModel *BlogEntriesModel_;
 		EntriesFilterProxyModel *FilterProxyModel_;
 		QHash<QStandardItem*, Entry> Item2Entry_;
 		QList<QAction*> LoadActions_;
 
 	public:
-		explicit RemoteEntriesWidget (QWidget *parent = 0, Qt::WindowFlags f = 0);
+		explicit BlogEntriesWidget (QWidget *parent = 0, Qt::WindowFlags f = 0);
 		QString GetName () const;
 		void SetAccount (IAccount *account);
 	private:
@@ -56,16 +56,16 @@ namespace Blogique
 	private slots:
 		void saveSplitterPosition (int pos, int index);
 		void loadPostsByDate (const QDate& date);
-		void handleOpenRemoteEntryInCurrentTab (const QModelIndex& index = QModelIndex ());
-		void handleOpenRemoteEntryInNewTab (const QModelIndex& index = QModelIndex ());
-		void on_RemoteEntriesFilter__textChanged (const QString& text);
-		void on_RemoveRemoteEntry__released ();
+		void handleOpenBlogEntryInCurrentTab (const QModelIndex& index = QModelIndex ());
+		void handleOpenBlogEntryInNewTab (const QModelIndex& index = QModelIndex ());
+		void on_BlogEntriesFilter__textChanged (const QString& text);
+		void on_RemoveBlogEntry__released ();
 		void handleGotEntries (QObject *acc, const QList<Entry>& entries);
-		void on_RemoteEntriesView__doubleClicked (const QModelIndex& index);
+		void on_BlogEntriesView__doubleClicked (const QModelIndex& index);
 
 	signals:
-		void fillCurrentWidgetWithRemoteEntry (const Entry& e);
-		void fillNewWidgetWithRemoteEntry (const Entry& e, const QByteArray& accId);
+		void fillCurrentWidgetWithBlogEntry (const Entry& e);
+		void fillNewWidgetWithBlogEntry (const Entry& e, const QByteArray& accId);
 	};
 }
 }

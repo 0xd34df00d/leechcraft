@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>RemoteEntriesWidget</class>
- <widget class="QWidget" name="RemoteEntriesWidget">
+ <class>BlogEntriesWidget</class>
+ <widget class="QWidget" name="BlogEntriesWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,15 +11,15 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string/>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QSplitter" name="RemoteEntriesCalendarSplitter_">
+    <widget class="QSplitter" name="BlogEntriesCalendarSplitter_">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <widget class="LeechCraft::Blogique::CalendarWidget" name="RemoteEntriesCalendar_">
+     <widget class="LeechCraft::Blogique::CalendarWidget" name="BlogEntriesCalendar_">
       <property name="firstDayOfWeek">
        <enum>Qt::Monday</enum>
       </property>
@@ -45,12 +45,12 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="RemoteEntriesFilter_"/>
+          <widget class="QLineEdit" name="BlogEntriesFilter_"/>
          </item>
         </layout>
        </item>
        <item>
-        <widget class="QTreeView" name="RemoteEntriesView_">
+        <widget class="QTreeView" name="BlogEntriesView_">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -82,7 +82,7 @@
    <item row="2" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="0,0">
      <item>
-      <widget class="QToolButton" name="LoadRemoteEntries_">
+      <widget class="QToolButton" name="LoadBlogEntries_">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -101,7 +101,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="RemoveRemoteEntry_">
+      <widget class="QPushButton" name="RemoveBlogEntry_">
        <property name="toolTip">
         <string>Post will be removed from local storage and from user's blog.</string>
        </property>
@@ -126,7 +126,7 @@
   <connection>
    <sender>CalendarVisibility_</sender>
    <signal>toggled(bool)</signal>
-   <receiver>RemoteEntriesCalendar_</receiver>
+   <receiver>BlogEntriesCalendar_</receiver>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
