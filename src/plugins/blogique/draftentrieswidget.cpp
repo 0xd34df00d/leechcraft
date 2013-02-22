@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "localentrieswidget.h"
+#include "draftentrieswidget.h"
 #include <stdexcept>
 #include <QStandardItemModel>
 #include <QMessageBox>
@@ -26,72 +26,74 @@
 #include "localstorage.h"
 #include "utils.h"
 #include "xmlsettingsmanager.h"
+#include "interfaces/blogique/ibloggingplatform.h"
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-	LocalEntriesWidget::LocalEntriesWidget (QWidget *parent, Qt::WindowFlags f)
+	DraftEntriesWidget::DraftEntriesWidget (QWidget *parent, Qt::WindowFlags f)
 	: QWidget (parent, f)
 	, Account_ (0)
-	, LocalEntriesModel_ (new QStandardItemModel (this))
+	, DraftEntriesModel_ (new QStandardItemModel (this))
 	, FilterProxyModel_ (new EntriesFilterProxyModel (this))
 	{
 		Ui_.setupUi (this);
 
-		if (!Ui_.LocalEntriesCalendarSplitter_->
+		if (!Ui_.DraftEntriesCalendarSplitter_->
 				restoreState (XmlSettingsManager::Instance ()
-					.property ("LocalEntriesCalendarSplitterPosition")
+					.property ("DraftEntriesCalendarSplitterPosition")
 						.toByteArray ()))
-			Ui_.LocalEntriesCalendarSplitter_->setStretchFactor (1, 4);
+			Ui_.DraftEntriesCalendarSplitter_->setStretchFactor (1, 4);
 
-		connect (Ui_.LocalEntriesCalendarSplitter_,
+		connect (Ui_.DraftEntriesCalendarSplitter_,
 				SIGNAL (splitterMoved (int, int)),
 				this,
 				SLOT (saveSplitterPosition (int, int)));
 
-		connect (Ui_.LocalEntriesCalendar_,
+		connect (Ui_.DraftEntriesCalendar_,
 				SIGNAL (activated (QDate)),
 				this,
 				SLOT (loadPostsByDate (QDate)));
 
-		QAction *openLocalEntryInNewTab = new QAction (tr ("Open in new tab"), this);
-		QAction *openLocalEntryInCurrentTab = new QAction (tr ("Open here"), this);
+		QAction *openDraftEntryInNewTab = new QAction (tr ("Open in new tab"), this);
+		QAction *openDraftEntryInCurrentTab = new QAction (tr ("Open here"), this);
 		QAction *showAllEntries = new QAction (tr ("Show all entries"), this);
 
-		LocalEntriesModel_->setHorizontalHeaderLabels ({ tr ("Date"), tr ("Name") });
-		FilterProxyModel_->setSourceModel (LocalEntriesModel_);
-		Ui_.LocalEntriesView_->setModel (FilterProxyModel_);
-		connect (openLocalEntryInCurrentTab,
+		DraftEntriesModel_->setHorizontalHeaderLabels ({ tr ("Date"), tr ("Name") });
+		FilterProxyModel_->setSourceModel (DraftEntriesModel_);
+		Ui_.DraftEntriesView_->setModel (FilterProxyModel_);
+		connect (openDraftEntryInCurrentTab,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (handleOpenLocalEntryInCurrentTab ()));
-		connect (openLocalEntryInNewTab,
+				SLOT (handleOpenDraftEntryInCurrentTab ()));
+		connect (openDraftEntryInNewTab,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (handleOpenLocalEntryInNewTab ()));
+				SLOT (handleOpenDraftEntryInNewTab ()));
 		connect (showAllEntries,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleShowAllEntries ()));
-		Ui_.LocalEntriesView_->setContextMenuPolicy (Qt::ActionsContextMenu);
-		Ui_.LocalEntriesView_->addActions ({ openLocalEntryInNewTab,
-				openLocalEntryInCurrentTab,
-				Util::CreateSeparator (Ui_.LocalEntriesView_),
+		Ui_.DraftEntriesView_->setContextMenuPolicy (Qt::ActionsContextMenu);
+		Ui_.DraftEntriesView_->addActions ({ openDraftEntryInNewTab,
+				openDraftEntryInCurrentTab,
+				Util::CreateSeparator (Ui_.DraftEntriesView_),
 				showAllEntries });
 	}
 
-	QString LocalEntriesWidget::GetName () const
+	QString DraftEntriesWidget::GetName () const
 	{
-		return tr ("Local entries");
+		return tr ("Drafts");
 	}
 
-	void LocalEntriesWidget::SetAccount (IAccount *account)
+	void DraftEntriesWidget::SetAccount (IAccount *account)
 	{
 		Account_ = account;
+		BloggingPLatform_ = qobject_cast<IBloggingPlatform*> (Account_->GetParentBloggingPlatform ());
 	}
 
-	void LocalEntriesWidget::LoadLocalEntries ()
+	void DraftEntriesWidget::LoadDraftEntries ()
 	{
 		if (!Account_)
 			return;
@@ -99,9 +101,10 @@ namespace Blogique
 		QList<Entry> entries;
 		try
 		{
-			entries = Core::Instance ().GetStorage ()->
-					GetLocalEntries (Account_->GetAccountID (),
-							LocalStorage::Mode::ShortMode);
+			//TODO
+// 			entries = Core::Instance ().GetStorage ()->
+// 					GetDraftEntries (Account_->GetAccountID (),
+// 							DraftStorage::Mode::ShortMode);
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -114,15 +117,17 @@ namespace Blogique
 		FillStatistic ();
 	}
 
-	Entry LocalEntriesWidget::LoadFullEntry (qint64 id)
+	Entry DraftEntriesWidget::LoadFullEntry (qint64 id)
 	{
 		if (!Account_)
 			return Entry ();
 
 		try
 		{
-			return Core::Instance ().GetStorage ()->
-					GetFullLocalEntry (Account_->GetAccountID (), id);
+			return Entry ();
+			//TODO
+// 			return Core::Instance ().GetStorage ()->
+// 					GetFullDraftEntry (Account_->GetAccountID (), id);
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -133,22 +138,22 @@ namespace Blogique
 		}
 	}
 
-	void LocalEntriesWidget::FillView (const QList<Entry>& entries)
+	void DraftEntriesWidget::FillView (const QList<Entry>& entries)
 	{
-		LocalEntriesModel_->removeRows (0, LocalEntriesModel_->rowCount());
+		DraftEntriesModel_->removeRows (0, DraftEntriesModel_->rowCount());
 		for (const auto& entry : entries)
 		{
 			const auto& items = Utils::CreateEntriesViewRow (entry);
 			if (items.isEmpty ())
 				continue;
 
-			LocalEntriesModel_->appendRow (items);
+			DraftEntriesModel_->appendRow (items);
 			Item2Entry_ [items.first ()] = entry;
 		}
-		Ui_.LocalEntriesView_->resizeColumnToContents (0);
+		Ui_.DraftEntriesView_->resizeColumnToContents (0);
 	}
 
-	void LocalEntriesWidget::FillStatistic ()
+	void DraftEntriesWidget::FillStatistic ()
 	{
 		if (!Account_)
 			return;
@@ -156,8 +161,9 @@ namespace Blogique
 		QMap<QDate, int> statistic;
 		try
 		{
-				statistic = Core::Instance ().GetStorage ()
-						->GetLocalEntriesCountByDate (Account_->GetAccountID ());
+			//TODO
+// 			statistic = Core::Instance ().GetStorage ()->
+// 					GetDraftEntriesCountByDate (Account_->GetAccountID ());
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -166,18 +172,18 @@ namespace Blogique
 					<< e.what ();
 		}
 
-		Ui_.LocalEntriesCalendar_->SetStatistic (statistic);
+		Ui_.DraftEntriesCalendar_->SetStatistic (statistic);
 	}
 
-	void LocalEntriesWidget::RemoveLocalEntry (qint64 id)
+	void DraftEntriesWidget::RemoveDraftEntry (qint64 id)
 	{
 		if (!Account_)
 			return;
 
 		try
 		{
-			Core::Instance ().GetStorage ()->
-					RemoveLocalEntry (Account_->GetAccountID (), id);
+// 			Core::Instance ().GetStorage ()->
+// 					RemoveDraftEntry (Account_->GetAccountID (), id);
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -187,19 +193,19 @@ namespace Blogique
 		}
 	}
 
-	void LocalEntriesWidget::clear ()
+	void DraftEntriesWidget::clear ()
 	{
 		FillView (QList<Entry> ());
 	}
 
-	void LocalEntriesWidget::saveSplitterPosition (int pos, int index)
+	void DraftEntriesWidget::saveSplitterPosition (int pos, int index)
 	{
 		XmlSettingsManager::Instance ()
-				.setProperty ("LocalEntriesCalendarSplitterPosition",
-						Ui_.LocalEntriesCalendarSplitter_->saveState ());
+				.setProperty ("DraftEntriesCalendarSplitterPosition",
+						Ui_.DraftEntriesCalendarSplitter_->saveState ());
 	}
 
-	void LocalEntriesWidget::loadPostsByDate (const QDate& date)
+	void DraftEntriesWidget::loadDraftsByDate (const QDate& date)
 	{
 		if (!Account_)
 			return;
@@ -207,8 +213,8 @@ namespace Blogique
 		QList<Entry> entries;
 		try
 		{
-			entries = Core::Instance ().GetStorage ()->
-					GetEntriesByDate (Account_->GetAccountID (), date);
+// 			entries = Core::Instance ().GetStorage ()->
+// 					GetEntriesByDate (Account_->GetAccountID (), date);
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -220,11 +226,11 @@ namespace Blogique
 		FillView (entries);
 	}
 
-	void LocalEntriesWidget::FillCurrentTab (const QModelIndex& index)
+	void DraftEntriesWidget::FillCurrentTab (const QModelIndex& index)
 	{
 		auto sourceIndex = index.isValid () ?
 			FilterProxyModel_->mapToSource (index) :
-			FilterProxyModel_->mapToSource (Ui_.LocalEntriesView_->currentIndex ());
+			FilterProxyModel_->mapToSource (Ui_.DraftEntriesView_->currentIndex ());
 
 		if (!sourceIndex.isValid ())
 			return;
@@ -234,24 +240,24 @@ namespace Blogique
 
 		sourceIndex = sourceIndex.sibling (sourceIndex.row (),
 				Utils::EntriesViewColumns::Date);
-		Entry e = Item2Entry_ [LocalEntriesModel_->itemFromIndex (sourceIndex)];
+		Entry e = Item2Entry_ [DraftEntriesModel_->itemFromIndex (sourceIndex)];
 		if (e.IsEmpty ())
 			return;
 
-		e.EntryType_ = EntryType::LocalEntry;
-		emit fillCurrentWidgetWithLocalEntry (e);
+		e.EntryType_ = EntryType::BlogEntry;
+		emit fillCurrentWidgetWithDraftEntry (e);
 	}
 
-	void LocalEntriesWidget::handleOpenLocalEntryInCurrentTab (const QModelIndex& index)
+	void DraftEntriesWidget::handleOpenDraftEntryInCurrentTab (const QModelIndex& index)
 	{
 		FillCurrentTab (index);
 	}
 
-	void LocalEntriesWidget::handleOpenLocalEntryInNewTab (const QModelIndex& index)
+	void DraftEntriesWidget::handleOpenDraftEntryInNewTab (const QModelIndex& index)
 	{
 		QModelIndex idx = index.isValid () ?
 				index :
-				Ui_.LocalEntriesView_->currentIndex ();
+				Ui_.DraftEntriesView_->currentIndex ();
 		if (!idx.isValid ())
 			return;
 
@@ -264,23 +270,23 @@ namespace Blogique
 		if (e.IsEmpty ())
 			return;
 
-		e.EntryType_ = EntryType::LocalEntry;
-		emit fillNewWidgetWithLocalEntry (e, Account_->GetAccountID ());
+		e.EntryType_ = EntryType::BlogEntry;
+		emit fillNewWidgetWithDraftEntry (e, Account_->GetAccountID ());
 	}
 
-	void LocalEntriesWidget::on_LocalEntriesFilter__textChanged (const QString& text)
+	void DraftEntriesWidget::on_DraftEntriesFilter__textChanged (const QString& text)
 	{
 		FilterProxyModel_->setFilterFixedString (text);
 	}
 
-	void LocalEntriesWidget::handleShowAllEntries ()
+	void DraftEntriesWidget::handleShowAllEntries ()
 	{
 		QList<Entry> entries;
 		try
 		{
-			entries = Core::Instance ().GetStorage ()->
-					GetLocalEntries (Account_->GetAccountID (),
-							LocalStorage::Mode::ShortMode);
+// 			entries = Core::Instance ().GetStorage ()->
+// 					GetDraftEntries (Account_->GetAccountID (),
+// 							DraftStorage::Mode::ShortMode);
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -292,14 +298,14 @@ namespace Blogique
 		FillView (entries);
 	}
 
-	void LocalEntriesWidget::on_RemoveLocalEntry__released ()
+	void DraftEntriesWidget::on_RemoveDraftEntry__released ()
 	{
-		QModelIndex idx = Ui_.LocalEntriesView_->currentIndex ();
+		QModelIndex idx = Ui_.DraftEntriesView_->currentIndex ();
 		if (!idx.isValid ())
 			return;
 
 		if (XmlSettingsManager::Instance ()
-				.Property ("ConfirmLocalEntryRemoving", true).toBool ())
+				.Property ("ConfirmDraftEntryRemoving", true).toBool ())
 		{
 			QMessageBox mbox (QMessageBox::Question,
 					"LeechCraft",
@@ -315,25 +321,25 @@ namespace Blogique
 				return;
 			else if (mbox.clickedButton () == &always)
 				XmlSettingsManager::Instance ()
-						.setProperty ("ConfirmLocalEntryRemoving", false);
+						.setProperty ("ConfirmDraftEntryRemoving", false);
 		}
 
 		idx = idx.sibling (idx.row (), Utils::EntriesViewColumns::Date);
-		RemoveLocalEntry (idx.data (Utils::EntryIdRole::DBIdRole).toLongLong ());
-		LocalEntriesModel_->removeRow (idx.row ());
+		RemoveDraftEntry (idx.data (Utils::EntryIdRole::DBIdRole).toLongLong ());
+		DraftEntriesModel_->removeRow (idx.row ());
 	}
 
-	void LocalEntriesWidget::on_PublishLocalEntry__released ()
+	void DraftEntriesWidget::on_PublishDraftEntry__released ()
 	{
 
 	}
 
-	void LocalEntriesWidget::on_LocalEntriesView__doubleClicked (const QModelIndex& index)
+	void DraftEntriesWidget::on_DraftEntriesView__doubleClicked (const QModelIndex& index)
 	{
 		XmlSettingsManager::Instance ()
 				.property ("OpenEntryByDblClick").toString () == "CurrentTab" ?
-			handleOpenLocalEntryInCurrentTab (index) :
-			handleOpenLocalEntryInNewTab (index);
+			handleOpenDraftEntryInCurrentTab (index) :
+			handleOpenDraftEntryInNewTab (index);
 	}
 
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>LocalEntriesWidget</class>
- <widget class="QWidget" name="LocalEntriesWidget">
+ <class>DraftEntriesWidget</class>
+ <widget class="QWidget" name="DraftEntriesWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,15 +11,15 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string/>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0" colspan="2">
-    <widget class="QSplitter" name="LocalEntriesCalendarSplitter_">
+    <widget class="QSplitter" name="DraftEntriesCalendarSplitter_">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <widget class="LeechCraft::Blogique::CalendarWidget" name="LocalEntriesCalendar_">
+     <widget class="LeechCraft::Blogique::CalendarWidget" name="DraftEntriesCalendar_">
       <property name="gridVisible">
        <bool>true</bool>
       </property>
@@ -39,12 +39,12 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="LocalEntriesFilter_"/>
+          <widget class="QLineEdit" name="DraftEntriesFilter_"/>
          </item>
         </layout>
        </item>
        <item>
-        <widget class="QTreeView" name="LocalEntriesView_">
+        <widget class="QTreeView" name="DraftEntriesView_">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -71,7 +71,7 @@
     </widget>
    </item>
    <item row="2" column="0">
-    <widget class="QPushButton" name="RemoveLocalEntry_">
+    <widget class="QPushButton" name="RemoveDraftEntry_">
      <property name="toolTip">
       <string>Remove draft from local storage.</string>
      </property>
@@ -81,7 +81,7 @@
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QPushButton" name="PublishLocalEntry_">
+    <widget class="QPushButton" name="PublishDraftEntry_">
      <property name="toolTip">
       <string>Publish draft to user's blog.</string>
      </property>
@@ -104,7 +104,7 @@
   <connection>
    <sender>CalendarVisibility_</sender>
    <signal>toggled(bool)</signal>
-   <receiver>LocalEntriesCalendar_</receiver>
+   <receiver>DraftEntriesCalendar_</receiver>
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
