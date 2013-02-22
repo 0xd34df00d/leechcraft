@@ -498,6 +498,13 @@ namespace LHTR
 		dia->show ();
 	}
 
+	void RichEditorWidget::handleBgColorSettings ()
+	{
+		const auto& color = XmlSettingsManager::Instance ()
+				.property ("BgColor").value<QColor> ();
+		InternalSetBgColor (color);
+	}
+
 	void RichEditorWidget::handleLinkClicked (const QUrl& url)
 	{
 		const auto& e = Util::MakeEntity (url, QString (), FromUserInitiated | OnlyHandle);
@@ -823,13 +830,6 @@ namespace LHTR
 	void RichEditorWidget::handleReplace ()
 	{
 		OpenFindReplace (false);
-	}
-
-	void RichEditorWidget::handleBgColorSettings ()
-	{
-		const auto& color = XmlSettingsManager::Instance ()
-				.property ("BgColor").value<QColor> ();
-		InternalSetBgColor (color);
 	}
 }
 }
