@@ -31,7 +31,7 @@ namespace Blogique
 	class BlogiqueWidget;
 	struct Entry;
 	class BackupManager;
-	class LocalStorage;
+	class StorageManager;
 	class IAccount;
 	class IBloggingPlatform;
 	class PluginProxy;
@@ -43,7 +43,7 @@ namespace Blogique
 		ICoreProxy_ptr Proxy_;
 		QObjectList BlogPlatformPlugins_;
 		std::shared_ptr<PluginProxy> PluginProxy_;
-		LocalStorage *Storage_;
+		StorageManager *StorageManager_;
 		BackupManager *BackupManager_;
 
 		Core ();
@@ -64,7 +64,7 @@ namespace Blogique
 		void SendEntity (const Entity& e);
 		void DelayedProfilesUpdate ();
 
-		LocalStorage* GetStorage () const;
+		StorageManager* GetStorageManager () const;
 		BackupManager* GetBackupManager () const;
 
 		BlogiqueWidget* CreateBlogiqueWidget ();

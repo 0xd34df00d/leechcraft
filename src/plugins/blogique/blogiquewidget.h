@@ -36,9 +36,8 @@ namespace Blogique
 {
 	class IBlogiqueSideWidget;
 	class IAccount;
-	class LocalStorage;
-	class LocalEntriesWidget;
-	class RemoteEntriesWidget;
+	class DraftEntriesWidget;
+	class BlogEntriesWidget;
 
 	class BlogiqueWidget : public QWidget
 						,  public ITabWidget
@@ -62,13 +61,14 @@ namespace Blogique
 		QComboBox *PostTargetBox_;
 		QAction *PostTargetAction_;
 
-		LocalEntriesWidget *LocalEntriesWidget_;
-		RemoteEntriesWidget *RemoteEntriesWidget_;
+		DraftEntriesWidget *DraftEntriesWidget_;
+		BlogEntriesWidget *BlogEntriesWidget_;
 		QHash<int, IAccount*> Id2Account_;
 		int PrevAccountId_;
 		QList<QWidget*> SidePluginsWidgets_;
 
 		EntryType EntryType_;
+		qint64 DraftId_;
 
 		bool EntryChanged_;
 
@@ -79,7 +79,6 @@ namespace Blogique
 		TabClassInfo GetTabClassInfo () const;
 		QToolBar* GetToolBar () const;
 		void Remove ();
-
 
 		static void SetParentMultiTabs (QObject *tab);
 	private:
@@ -101,8 +100,8 @@ namespace Blogique
 		void handleTextChanged ();
 
 		void newEntry ();
-		void saveEntry ();
-		void saveNewEntry ();
+		void saveEntry (const Entry& e = Entry ());
+		void saveNewEntry (const Entry& e = Entry ());
 		void submit (const Entry& e = Entry ());
 		void on_SideWidget__dockLocationChanged (Qt::DockWidgetArea area);
 		void on_UpdateProfile__triggered ();

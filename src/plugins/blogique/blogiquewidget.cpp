@@ -35,11 +35,12 @@
 #include "interfaces/blogique/ipostoptionswidget.h"
 #include "blogique.h"
 #include "core.h"
-#include "localentrieswidget.h"
+#include "draftentrieswidget.h"
 #include "localstorage.h"
-#include "remoteentrieswidget.h"
+#include "blogentrieswidget.h"
 #include "updateentriesdialog.h"
 #include "xmlsettingsmanager.h"
+#include "storagemanager.h"
 
 namespace LeechCraft
 {
@@ -53,10 +54,11 @@ namespace Blogique
 	, PostEditWidget_ (0)
 	, ToolBar_ (new QToolBar)
 	, PostTargetAction_ (0)
-	, LocalEntriesWidget_ (new LocalEntriesWidget)
-	, RemoteEntriesWidget_ (new RemoteEntriesWidget)
+	, DraftEntriesWidget_ (new DraftEntriesWidget)
+	, BlogEntriesWidget_ (new BlogEntriesWidget)
 	, PrevAccountId_ (-1)
 	, EntryType_ (EntryType::None)
+	, DraftId_ (-1)
 	, EntryChanged_ (false)
 	{
 		Ui_.setupUi (this);
@@ -81,20 +83,20 @@ namespace Blogique
 				&Core::Instance (),
 				SIGNAL (addNewTab (QString, QWidget*)));
 
-		connect (RemoteEntriesWidget_,
-				SIGNAL(fillCurrentWidgetWithRemoteEntry (Entry)),
+		connect (BlogEntriesWidget_,
+				SIGNAL(fillCurrentWidgetWithBlogEntry (Entry)),
 				this,
 				SLOT (fillCurrentTabWithEntry (Entry)));
-		connect (RemoteEntriesWidget_,
-				SIGNAL(fillNewWidgetWithRemoteEntry (Entry,QByteArray)),
+		connect (BlogEntriesWidget_,
+				SIGNAL(fillNewWidgetWithBlogEntry (Entry,QByteArray)),
 				this,
 				SLOT (fillNewTabWithEntry (Entry, QByteArray)));
-		connect (LocalEntriesWidget_,
-				SIGNAL(fillCurrentWidgetWithLocalEntry (Entry)),
+		connect (DraftEntriesWidget_,
+				SIGNAL(fillCurrentWidgetWithDraftEntry (Entry)),
 				this,
 				SLOT (fillCurrentTabWithEntry (Entry)));
-		connect (LocalEntriesWidget_,
-				SIGNAL(fillNewWidgetWithLocalEntry (Entry,QByteArray)),
+		connect (DraftEntriesWidget_,
+				SIGNAL(fillNewWidgetWithDraftEntry (Entry, QByteArray)),
 				this,
 				SLOT (fillNewTabWithEntry (Entry, QByteArray)));
 	}
@@ -136,6 +138,9 @@ namespace Blogique
 		}
 
 		EntryType_ = e.EntryType_;
+		DraftId_ = (EntryType_ == EntryType::Draft) ?
+			e.EntryId_ :
+			-1;
 		Ui_.Subject_->setText (e.Subject_);
 		PostEdit_->SetContents (e.Content_, ContentType::HTML);
 
@@ -285,7 +290,7 @@ namespace Blogique
 			auto w = Ui_.Tools_->widget (i);
 			w->deleteLater ();
 		}
-		Ui_.Tools_->addItem (LocalEntriesWidget_, LocalEntriesWidget_->GetName ());
+		Ui_.Tools_->addItem (DraftEntriesWidget_, DraftEntriesWidget_->GetName ());
 	}
 
 	void BlogiqueWidget::RemovePostingTargetsWidget ()
@@ -331,9 +336,6 @@ namespace Blogique
 
 	Entry BlogiqueWidget::GetCurrentEntry ()
 	{
-		if (!AccountsBox_->count ())
-			return Entry ();
-
 		const QString& content = PostEdit_->GetContents (ContentType::HTML);
 		if (content.isEmpty ())
 		{
@@ -410,27 +412,13 @@ namespace Blogique
 		ToolBar_->insertAction (Ui_.OpenInBrowser_, Ui_.UpdateProfile_);
 
 		auto account = Id2Account_ [id];
-		LocalEntriesWidget_->SetAccount (account);
-		RemoteEntriesWidget_->SetAccount (account);
+		DraftEntriesWidget_->SetAccount (account);
+		BlogEntriesWidget_->SetAccount (account);
 
 		auto ibp = qobject_cast<IBloggingPlatform*> (account->
 				GetParentBloggingPlatform ());
 
-		if (!(ibp->GetFeatures () & IBloggingPlatform::BPFLocalBlog))
-		{
-			if (Ui_.Tools_->indexOf (RemoteEntriesWidget_) == -1)
-				Ui_.Tools_->addItem (RemoteEntriesWidget_,
-						RemoteEntriesWidget_->GetName ());
-			else
-				RemoteEntriesWidget_->clear ();
-		}
-		else
-		{
-			int index = Ui_.Tools_->indexOf (RemoteEntriesWidget_);
-			if (index != -1)
-				Ui_.Tools_->removeItem (index);
-			LocalEntriesWidget_->clear ();
-		}
+		BlogEntriesWidget_->clear ();
 
 		if (ibp->GetFeatures () & IBloggingPlatform::BPFSelectablePostDestination)
 		{
@@ -447,6 +435,16 @@ namespace Blogique
 
 		for (auto action : ibp->GetEditorActions ())
 			PostEdit_->AppendAction (action);
+
+		bool exists = false;
+		for (int i = 0; i < Ui_.Tools_->count (); ++i)
+			if (Ui_.Tools_->widget (i) == BlogEntriesWidget_)
+			{
+				exists = true;
+				break;
+			}
+		if (!exists)
+			Ui_.Tools_->insertItem (0, BlogEntriesWidget_, BlogEntriesWidget_->GetName ());
 
 		for (auto w : ibp->GetBlogiqueSideWidgets ())
 		{
@@ -467,9 +465,6 @@ namespace Blogique
 			Ui_.Tools_->addItem (w, ibsw->GetName ());
 		}
 
-// 		LoadDrafts ();
-// 		LoadEntries ();
-//
 		PrevAccountId_ = id;
 	}
 
@@ -540,26 +535,24 @@ namespace Blogique
 			ClearEntry ();
 	}
 
-	void BlogiqueWidget::saveEntry ()
+	void BlogiqueWidget::saveEntry (const Entry& entry)
 	{
-		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
-		if (!acc)
-			return;
-
 		EntryChanged_ = false;
-		const Entry& e = GetCurrentEntry ();
+		const Entry& e = entry.IsEmpty () ?
+			GetCurrentEntry () :
+			entry;
 		if (!e.IsEmpty ())
 			try
 			{
+				EntryType_ = EntryType::Draft;
 				switch (e.EntryType_)
 				{
-				case EntryType::LocalEntry:
-					//TODO update entry
+				case EntryType::Draft:
+					Core::Instance ().GetStorageManager ()->updateDraft (e, DraftId_);
 					break;
-				case EntryType::RemoteEntry:
+				case EntryType::BlogEntry:
 				case EntryType::None:
-					//TODO save as new local entry
-					EntryType_ = EntryType::LocalEntry;
+					DraftId_ = Core::Instance ().GetStorageManager ()->SaveNewDraft (e);
 					return;
 				}
 			}
@@ -569,22 +562,20 @@ namespace Blogique
 						<< "error saving draft"
 						<< e.what ();
 			}
-
-		//TODO reload local entries widget
 	}
 
-	void BlogiqueWidget::saveNewEntry ()
+	void BlogiqueWidget::saveNewEntry (const Entry& entry)
 	{
-		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
-		if (!acc)
-			return;
+		EntryChanged_ = false;
+		const Entry& e = entry.IsEmpty () ?
+			GetCurrentEntry () :
+			entry;
 
-		const Entry& e = GetCurrentEntry ();
 		if (!e.IsEmpty ())
 			try
 			{
-				EntryType_ = EntryType::LocalEntry;
-				//TODO save as new local entry
+				EntryType_ = EntryType::Draft;
+				DraftId_ = Core::Instance ().GetStorageManager ()->SaveNewDraft (e);
 			}
 			catch (const std::runtime_error& e)
 			{
@@ -592,8 +583,6 @@ namespace Blogique
 						<< "error saving draft"
 						<< e.what ();
 			}
-
-		//TODO reload local entries widget
 	}
 
 	void BlogiqueWidget::submit (const Entry& event)
@@ -607,8 +596,8 @@ namespace Blogique
 			GetCurrentEntry () :
 			event;
 
-// 		if (!e.IsEmpty ())
-// 		{
+		if (!e.IsEmpty ())
+		{
 // 			if (EntryID_ > 0)
 // 			{
 // 				QMessageBox mbox (QMessageBox::Question,
@@ -630,7 +619,7 @@ namespace Blogique
 // 			}
 // 			else
 // 				acc->submit (e);
-// 		}
+		}
 	}
 
 	void BlogiqueWidget::on_SideWidget__dockLocationChanged (Qt::DockWidgetArea area)

@@ -503,6 +503,13 @@ namespace LHTR
 		dia->show ();
 	}
 
+	void RichEditorWidget::handleBgColorSettings ()
+	{
+		const auto& color = XmlSettingsManager::Instance ()
+				.property ("BgColor").value<QColor> ();
+		InternalSetBgColor (color);
+	}
+
 	void RichEditorWidget::handleLinkClicked (const QUrl& url)
 	{
 		const auto& e = Util::MakeEntity (url, QString (), FromUserInitiated | OnlyHandle);
@@ -556,11 +563,20 @@ namespace LHTR
 
 	void RichEditorWidget::setupJS ()
 	{
-		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript ("function findParent(item, name)"
+		auto frame = Ui_.View_->page ()->mainFrame ();
+		frame->evaluateJavaScript ("function findParent(item, name)"
 				"{"
 				"	while (item.tagName == null || item.tagName.toLowerCase() != name)"
 				"		item = item.parentNode; return item;"
 				"}");
+
+		frame->addToJavaScriptWindowObject ("LHTR", this);
+		frame->evaluateJavaScript ("var f = function() { window.LHTR.textChanged() }; "
+				"window.addEventListener('DOMContentLoaded', f);"
+				"window.addEventListener('DOMSubtreeModified', f);"
+				"window.addEventListener('DOMAttrModified', f);"
+				"window.addEventListener('DOMNodeInserted', f);"
+				"window.addEventListener('DOMNodeRemoved', f);");
 	}
 
 	void RichEditorWidget::on_HTML__textChanged ()
@@ -828,13 +844,6 @@ namespace LHTR
 	void RichEditorWidget::handleReplace ()
 	{
 		OpenFindReplace (false);
-	}
-
-	void RichEditorWidget::handleBgColorSettings ()
-	{
-		const auto& color = XmlSettingsManager::Instance ()
-				.property ("BgColor").value<QColor> ();
-		InternalSetBgColor (color);
 	}
 }
 }

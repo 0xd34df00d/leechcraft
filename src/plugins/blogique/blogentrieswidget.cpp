@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "remoteentrieswidget.h"
+#include "blogentrieswidget.h"
 #include <stdexcept>
 #include <QMessageBox>
 #include <QStandardItemModel>
@@ -29,48 +29,48 @@ namespace LeechCraft
 {
 namespace Blogique
 {
-	RemoteEntriesWidget::RemoteEntriesWidget (QWidget *parent, Qt::WindowFlags f)
+	BlogEntriesWidget::BlogEntriesWidget (QWidget *parent, Qt::WindowFlags f)
 	: QWidget (parent, f)
 	, Account_ (0)
-	, RemoteEntriesModel_ (new QStandardItemModel (this))
+	, BlogEntriesModel_ (new QStandardItemModel (this))
 	, FilterProxyModel_ (new EntriesFilterProxyModel (this))
 	{
 		Ui_.setupUi (this);
 
-		if (!Ui_.RemoteEntriesCalendarSplitter_->
+		if (!Ui_.BlogEntriesCalendarSplitter_->
 				restoreState (XmlSettingsManager::Instance ()
 					.property ("LocalEntriesCalendarSplitterPosition")
 					.toByteArray ()))
-			Ui_.RemoteEntriesCalendarSplitter_->setStretchFactor (1, 4);
+			Ui_.BlogEntriesCalendarSplitter_->setStretchFactor (1, 4);
 
-		connect (Ui_.RemoteEntriesCalendarSplitter_,
+		connect (Ui_.BlogEntriesCalendarSplitter_,
 				SIGNAL (splitterMoved (int, int)),
 				this,
 				SLOT (saveSplitterPosition (int, int)));
 
-		connect (Ui_.RemoteEntriesCalendar_,
+		connect (Ui_.BlogEntriesCalendar_,
 				SIGNAL (activated (QDate)),
 				this,
 				SLOT (loadPostsByDate (QDate)));
 
-		RemoteEntriesModel_->setHorizontalHeaderLabels ({ tr ("Date"), tr ("Name") });
-		FilterProxyModel_->setSourceModel (RemoteEntriesModel_);
-		Ui_.RemoteEntriesView_->setModel (FilterProxyModel_);
+		BlogEntriesModel_->setHorizontalHeaderLabels ({ tr ("Date"), tr ("Name") });
+		FilterProxyModel_->setSourceModel (BlogEntriesModel_);
+		Ui_.BlogEntriesView_->setModel (FilterProxyModel_);
 
-		QAction *openRemoteEntryInNewTab = new QAction (tr ("Open in new tab"), this);
-		QAction *openRemoteEntryInCurrentTab = new QAction (tr ("Open here"), this);
-		connect (openRemoteEntryInCurrentTab,
+		QAction *openBlogEntryInNewTab = new QAction (tr ("Open in new tab"), this);
+		QAction *openBlogEntryInCurrentTab = new QAction (tr ("Open here"), this);
+		connect (openBlogEntryInCurrentTab,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (handleOpenRemoteEntryInCurrentTab ()));
-		connect (openRemoteEntryInNewTab,
+				SLOT (handleOpenBlogEntryInCurrentTab ()));
+		connect (openBlogEntryInNewTab,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (handleOpenRemoteEntryInNewTab ()));
+				SLOT (handleOpenBlogEntryInNewTab ()));
 
-		Ui_.RemoteEntriesView_->setContextMenuPolicy (Qt::ActionsContextMenu);
-		Ui_.RemoteEntriesView_->addActions ({ openRemoteEntryInNewTab,
-				openRemoteEntryInCurrentTab });
+		Ui_.BlogEntriesView_->setContextMenuPolicy (Qt::ActionsContextMenu);
+		Ui_.BlogEntriesView_->addActions ({ openBlogEntryInNewTab,
+				openBlogEntryInCurrentTab });
 
 		connect (&Core::Instance (),
 				SIGNAL (gotEntries (QObject*, QList<Entry>)),
@@ -78,33 +78,35 @@ namespace Blogique
 				SLOT (handleGotEntries (QObject*, QList<Entry>)));
 	}
 
-	QString RemoteEntriesWidget::GetName () const
+	QString BlogEntriesWidget::GetName () const
 	{
-		return tr ("Remote entries");
+		return tr ("Blog entries");
 	}
 
-	void RemoteEntriesWidget::SetAccount (IAccount *account)
+	void BlogEntriesWidget::SetAccount (IAccount *account)
 	{
 		for (auto act : LoadActions_)
-			Ui_.LoadRemoteEntries_->removeAction (act);
+			Ui_.LoadBlogEntries_->removeAction (act);
 		LoadActions_.clear ();
 
 		Account_ = account;
 
 		auto actions = account->GetUpdateActions ();
-		Ui_.LoadRemoteEntries_->addActions (actions);
+		Ui_.LoadBlogEntries_->addActions (actions);
 		LoadActions_ = actions;
 	}
 
-	Entry RemoteEntriesWidget::LoadFullEntry (qint64 id)
+	Entry BlogEntriesWidget::LoadFullEntry (qint64 id)
 	{
 		if (!Account_)
 			return Entry ();
 
 		try
 		{
-			return Core::Instance ().GetStorage ()->
-					GetEntry (Account_->GetAccountID (), id);
+			//TODO
+			return Entry ();
+// 			return Core::Instance ().GetStorage ()->
+// 					GetEntry (Account_->GetAccountID (), id);
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -115,9 +117,9 @@ namespace Blogique
 		}
 	}
 
-	void RemoteEntriesWidget::FillView (const QList<Entry>& entries)
+	void BlogEntriesWidget::FillView (const QList<Entry>& entries)
 	{
-		RemoteEntriesModel_->removeRows (0, RemoteEntriesModel_->rowCount());
+		BlogEntriesModel_->removeRows (0, BlogEntriesModel_->rowCount());
 		Item2Entry_.clear ();
 		for (const auto& entry : entries)
 		{
@@ -125,13 +127,13 @@ namespace Blogique
 			if (items.isEmpty ())
 				continue;
 
-			RemoteEntriesModel_->appendRow (items);
+			BlogEntriesModel_->appendRow (items);
 			Item2Entry_ [items.first ()] = entry;
 		}
-		Ui_.RemoteEntriesView_->resizeColumnToContents (0);
+		Ui_.BlogEntriesView_->resizeColumnToContents (0);
 	}
 
-	void RemoteEntriesWidget::FillStatistic ()
+	void BlogEntriesWidget::FillStatistic ()
 	{
 		if (!Account_)
 			return;
@@ -139,8 +141,9 @@ namespace Blogique
 		QMap<QDate, int> statistic;
 		try
 		{
-			statistic = Core::Instance ().GetStorage ()->
-					GetEntriesCountByDate (Account_->GetAccountID ());
+			//TODO
+// 			statistic = Core::Instance ().GetStorage ()->
+// 					GetEntriesCountByDate (Account_->GetAccountID ());
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -149,14 +152,14 @@ namespace Blogique
 					<< e.what ();
 		}
 
-		Ui_.RemoteEntriesCalendar_->SetStatistic (statistic);
+		Ui_.BlogEntriesCalendar_->SetStatistic (statistic);
 	}
 
-	void RemoteEntriesWidget::FillCurrentTab (const QModelIndex& index)
+	void BlogEntriesWidget::FillCurrentTab (const QModelIndex& index)
 	{
 		auto sourceIndex = index.isValid () ?
 			FilterProxyModel_->mapToSource (index) :
-			FilterProxyModel_->mapToSource (Ui_.RemoteEntriesView_->currentIndex ());
+			FilterProxyModel_->mapToSource (Ui_.BlogEntriesView_->currentIndex ());
 
 		if (!sourceIndex.isValid ())
 			return;
@@ -166,27 +169,27 @@ namespace Blogique
 
 		sourceIndex = sourceIndex.sibling (sourceIndex.row (),
 				Utils::EntriesViewColumns::Date);
-		Entry e = Item2Entry_ [RemoteEntriesModel_->itemFromIndex (sourceIndex)];
+		Entry e = Item2Entry_ [BlogEntriesModel_->itemFromIndex (sourceIndex)];
 		if (e.IsEmpty ())
 			return;
 
-		e.EntryType_ = EntryType::RemoteEntry;
-		emit fillCurrentWidgetWithRemoteEntry (e);
+		e.EntryType_ = EntryType::BlogEntry;
+		emit fillCurrentWidgetWithBlogEntry (e);
 	}
 
-	void RemoteEntriesWidget::clear ()
+	void BlogEntriesWidget::clear ()
 	{
 		FillView (QList<Entry> ());
 	}
 
-	void RemoteEntriesWidget::saveSplitterPosition (int pos, int index)
+	void BlogEntriesWidget::saveSplitterPosition (int pos, int index)
 	{
 		XmlSettingsManager::Instance ()
-				.setProperty ("RemoteEntriesCalendarSplitterPosition",
-					Ui_.RemoteEntriesCalendarSplitter_->saveState ());
+				.setProperty ("BlogEntriesCalendarSplitterPosition",
+					Ui_.BlogEntriesCalendarSplitter_->saveState ());
 	}
 
-	void RemoteEntriesWidget::loadPostsByDate (const QDate& date)
+	void BlogEntriesWidget::loadPostsByDate (const QDate& date)
 	{
 		if (!Account_)
 			return;
@@ -194,8 +197,9 @@ namespace Blogique
 		QList<Entry> entries;
 		try
 		{
-			entries = Core::Instance ().GetStorage ()->
-					GetEntriesByDate (Account_->GetAccountID (), date);
+			//TODO
+// 			entries = Core::Instance ().GetStorage ()->
+// 					GetEntriesByDate (Account_->GetAccountID (), date);
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -207,16 +211,16 @@ namespace Blogique
 		FillView (entries);
 	}
 
-	void RemoteEntriesWidget::handleOpenRemoteEntryInCurrentTab (const QModelIndex& index)
+	void BlogEntriesWidget::handleOpenBlogEntryInCurrentTab (const QModelIndex& index)
 	{
 		FillCurrentTab (index);
 	}
 
-	void RemoteEntriesWidget::handleOpenRemoteEntryInNewTab (const QModelIndex& index)
+	void BlogEntriesWidget::handleOpenBlogEntryInNewTab (const QModelIndex& index)
 	{
 		auto sourceIndex = index.isValid () ?
 			FilterProxyModel_->mapToSource (index) :
-			FilterProxyModel_->mapToSource (Ui_.RemoteEntriesView_->currentIndex ());
+			FilterProxyModel_->mapToSource (Ui_.BlogEntriesView_->currentIndex ());
 
 		if (!sourceIndex.isValid ())
 			return;
@@ -226,22 +230,22 @@ namespace Blogique
 
 		sourceIndex = sourceIndex.sibling (sourceIndex.row (),
 				Utils::EntriesViewColumns::Date);
-		Entry e = Item2Entry_ [RemoteEntriesModel_->itemFromIndex (sourceIndex)];
+		Entry e = Item2Entry_ [BlogEntriesModel_->itemFromIndex (sourceIndex)];
 		if (e.IsEmpty ())
 			return;
 
-		e.EntryType_ = EntryType::RemoteEntry;
-		emit fillNewWidgetWithRemoteEntry (e, Account_->GetAccountID ());
+		e.EntryType_ = EntryType::BlogEntry;
+		emit fillNewWidgetWithBlogEntry (e, Account_->GetAccountID ());
 	}
 
-	void RemoteEntriesWidget::on_RemoteEntriesFilter__textChanged (const QString& text)
+	void BlogEntriesWidget::on_BlogEntriesFilter__textChanged (const QString& text)
 	{
 		FilterProxyModel_->setFilterFixedString (text);
 	}
 
-	void RemoteEntriesWidget::on_RemoveRemoteEntry__released ()
+	void BlogEntriesWidget::on_RemoveBlogEntry__released ()
 	{
-		const auto& idx = Ui_.RemoteEntriesView_->currentIndex ();
+		const auto& idx = Ui_.BlogEntriesView_->currentIndex ();
 		auto sourceIndex = FilterProxyModel_->mapToSource (idx);
 		if (!idx.isValid () ||
 				!sourceIndex.isValid ())
@@ -252,7 +256,7 @@ namespace Blogique
 
 		sourceIndex = sourceIndex.sibling (sourceIndex.row (),
 				Utils::EntriesViewColumns::Date);
-		const Entry& e = Item2Entry_ [RemoteEntriesModel_->itemFromIndex (sourceIndex)];
+		const Entry& e = Item2Entry_ [BlogEntriesModel_->itemFromIndex (sourceIndex)];
 		if (e.IsEmpty ())
 			return;
 
@@ -263,7 +267,7 @@ namespace Blogique
 			Account_->RemoveEntry (e);
 	}
 
-	void RemoteEntriesWidget::handleGotEntries (QObject *acc,
+	void BlogEntriesWidget::handleGotEntries (QObject *acc,
 			const QList<Entry>& entries)
 	{
 		if (acc != Account_->GetObject ())
@@ -272,12 +276,12 @@ namespace Blogique
 		FillView (entries);
 	}
 
-	void RemoteEntriesWidget::on_RemoteEntriesView__doubleClicked (const QModelIndex& index)
+	void BlogEntriesWidget::on_BlogEntriesView__doubleClicked (const QModelIndex& index)
 	{
 		XmlSettingsManager::Instance ()
 				.property ("OpenEntryByDblClick").toString () == "CurrentTab" ?
-			handleOpenRemoteEntryInCurrentTab (index) :
-			handleOpenRemoteEntryInNewTab (index);
+			handleOpenBlogEntryInCurrentTab (index) :
+			handleOpenBlogEntryInNewTab (index);
 	}
 }
 }

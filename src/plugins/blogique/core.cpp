@@ -28,7 +28,7 @@
 #include "interfaces/blogique/ibloggingplatformplugin.h"
 #include "interfaces/blogique/ibloggingplatform.h"
 #include "pluginproxy.h"
-#include "localstorage.h"
+#include "storagemanager.h"
 #include "backupmanager.h"
 #include "blogiquewidget.h"
 
@@ -38,7 +38,7 @@ namespace Blogique
 {
 	Core::Core ()
 	: PluginProxy_ (std::make_shared<PluginProxy> ())
-	, Storage_ (new LocalStorage (this))
+	, StorageManager_ (new StorageManager (this))
 	, BackupManager_ (new BackupManager (this))
 	{
 	}
@@ -133,9 +133,9 @@ namespace Blogique
 		QTimer::singleShot (15000, this, SLOT (updateProfiles ()));
 	}
 
-	LocalStorage* Core::GetStorage () const
+	StorageManager* Core::GetStorageManager () const
 	{
-		return Storage_;
+		return StorageManager_;
 	}
 
 	BackupManager* Core::GetBackupManager () const
