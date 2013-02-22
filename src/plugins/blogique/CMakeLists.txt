@@ -18,15 +18,16 @@ SET (SRCS
 	addaccountwizardfirstpage.cpp
 	backupmanager.cpp
 	blogique.cpp
+	blogentrieswidget.cpp
 	blogiquewidget.cpp
 	calendarwidget.cpp
 	core.cpp
+	draftentrieswidget.cpp
 	entriesfilterproxymodel.cpp
-	localentrieswidget.cpp
 	localstorage.cpp
 	pluginproxy.cpp
 	profiledialog.cpp
-	remoteentrieswidget.cpp
+	storagemanager.cpp
 	updateentriesdialog.cpp
 	utils.cpp
 	xmlsettingsmanager.cpp
@@ -38,15 +39,16 @@ SET (HEADERS
 	addaccountwizardfirstpage.h
 	backupmanager.h
 	blogique.h
+	blogentrieswidget.h
 	blogiquewidget.h
 	calendarwidget.h
 	core.h
+	draftentrieswidget.h
 	entriesfilterproxymodel.h
-	localentrieswidget.h
 	localstorage.h
 	pluginproxy.h
 	profiledialog.h
-	remoteentrieswidget.h
+	storagemanager.h
 	updateentriesdialog.h
 	utils.h
 	xmlsettingsmanager.h
@@ -55,10 +57,10 @@ SET (HEADERS
 SET (FORMS accountslistwidget.ui
 	accountsselectdialog.ui
 	addaccountwizardfirstpage.ui
+	blogentrieswidget.ui
 	blogiquewidget.ui
-	localentrieswidget.ui
+	draftentrieswidget.ui
 	profiledialog.ui
-	remoteentrieswidget.ui
 	updateentriesdialog.ui
 	)
 
