@@ -807,6 +807,11 @@ namespace Xoox
 		BMManager_->setBookmarks (set);
 	}
 
+	QXmppBookmarkManager* ClientConnection::GetBMManager () const
+	{
+		return BMManager_;
+	}
+
 	GlooxMessage* ClientConnection::CreateMessage (IMessage::MessageType type,
 			const QString& resource, const QString& body, const QString& jid)
 	{
