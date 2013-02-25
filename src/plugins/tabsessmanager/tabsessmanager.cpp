@@ -248,6 +248,17 @@ namespace TabSessManager
 
 		if (!tab->GetTabRecoverData ().isEmpty ())
 			handleTabRecoverDataChanged ();
+
+		const auto& posProp = widget->property ("TabSessManager/Position");
+		if (posProp.isValid ())
+		{
+			const auto prevPos = posProp.toInt ();
+
+			const auto tabWidget = rootWM->GetTabWidget (windowIndex);
+			const auto currentIdx = tabWidget->IndexOf (widget);
+			if (prevPos < tabWidget->WidgetCount () && currentIdx != prevPos)
+				tabWidget->MoveTab (currentIdx, prevPos);
+		}
 	}
 
 	void Plugin::handleRemoveTab (QWidget *widget)
@@ -269,7 +280,7 @@ namespace TabSessManager
 		if (recoverData.isEmpty ())
 			return;
 
-		const TabUncloseInfo info
+		TabUncloseInfo info
 		{
 			{
 				recoverData,
@@ -277,6 +288,11 @@ namespace TabSessManager
 			},
 			qobject_cast<IHaveRecoverableTabs*> (tab->ParentMultiTabs ())
 		};
+
+		const auto rootWM = Proxy_->GetRootWindowsManager ();
+		const auto winIdx = rootWM->GetWindowForTab (tab);
+		const auto tabIdx = rootWM->GetTabWidget (winIdx)->IndexOf (widget);
+		info.RecInfo_.DynProperties_.append ({ "TabSessManager/Position", tabIdx });
 
 		const auto pos = std::find_if (UncloseAct2Data_.begin (), UncloseAct2Data_.end (),
 				[&info] (const TabUncloseInfo& that) { return that.RecInfo_.Data_ == info.RecInfo_.Data_; });
