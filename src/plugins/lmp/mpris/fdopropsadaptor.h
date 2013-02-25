@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QDBusAbstractAdaptor>
+#include <QDBusVariant>
 
 namespace LeechCraft
 {
@@ -35,6 +36,8 @@ namespace MPRIS
 		FDOPropsAdaptor (QObject*);
 
 		void Notify (const QString& iface, const QString& prop, const QVariant& val);
+	public slots:
+		QDBusVariant Get (const QString& iface, const QString& prop);
 	signals:
 		void PropertiesChanged (const QString&, const QVariantMap&, const QStringList&);
 	};

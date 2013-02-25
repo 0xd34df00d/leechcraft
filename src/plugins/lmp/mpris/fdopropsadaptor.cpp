@@ -19,6 +19,10 @@
 #include "fdopropsadaptor.h"
 #include <QVariantMap>
 #include <QStringList>
+#include <QMetaMethod>
+#include <QDBusConnection>
+#include <QDBusContext>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -29,6 +33,36 @@ namespace MPRIS
 	FDOPropsAdaptor::FDOPropsAdaptor (QObject *parent)
 	: QDBusAbstractAdaptor (parent)
 	{
+	}
+
+	QDBusVariant FDOPropsAdaptor::Get (const QString& iface, const QString& prop)
+	{
+		auto adaptors = parent ()->findChildren<QDBusAbstractAdaptor*> ();
+		for (const auto& child : adaptors)
+		{
+			const auto mo = child->metaObject ();
+
+			if (!iface.isEmpty ())
+			{
+				const auto idx = mo->indexOfClassInfo ("D-Bus Interface");
+				if (idx == -1)
+					continue;
+
+				const auto& info = mo->classInfo (idx);
+				if (iface != info.value ())
+					continue;
+			}
+
+			const auto idx = mo->indexOfProperty (prop.toUtf8 ().constData ());
+			if (idx != -1)
+				return QDBusVariant (mo->property (idx).read (child));
+		}
+
+		auto context = dynamic_cast<QDBusContext*> (parent ());
+		if (context->calledFromDBus ())
+			context->sendErrorReply (QDBusError::InvalidMember, "no such property " + prop);
+
+		return QDBusVariant (QVariant ());
 	}
 
 	void FDOPropsAdaptor::Notify (const QString& iface, const QString& prop, const QVariant& val)
