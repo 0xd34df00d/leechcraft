@@ -27,6 +27,7 @@
 #include "utils.h"
 #include "xmlsettingsmanager.h"
 #include "interfaces/blogique/ibloggingplatform.h"
+#include "storagemanager.h"
 
 namespace LeechCraft
 {
@@ -34,7 +35,6 @@ namespace Blogique
 {
 	DraftEntriesWidget::DraftEntriesWidget (QWidget *parent, Qt::WindowFlags f)
 	: QWidget (parent, f)
-	, Account_ (0)
 	, DraftEntriesModel_ (new QStandardItemModel (this))
 	, FilterProxyModel_ (new EntriesFilterProxyModel (this))
 	{
@@ -74,7 +74,7 @@ namespace Blogique
 		connect (showAllEntries,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (handleShowAllEntries ()));
+				SLOT(loadDraftEntries ()));
 		Ui_.DraftEntriesView_->setContextMenuPolicy (Qt::ActionsContextMenu);
 		Ui_.DraftEntriesView_->addActions ({ openDraftEntryInNewTab,
 				openDraftEntryInCurrentTab,
@@ -87,53 +87,17 @@ namespace Blogique
 		return tr ("Drafts");
 	}
 
-	void DraftEntriesWidget::SetAccount (IAccount *account)
-	{
-		Account_ = account;
-		BloggingPLatform_ = qobject_cast<IBloggingPlatform*> (Account_->GetParentBloggingPlatform ());
-	}
-
-	void DraftEntriesWidget::LoadDraftEntries ()
-	{
-		if (!Account_)
-			return;
-
-		QList<Entry> entries;
-		try
-		{
-			//TODO
-// 			entries = Core::Instance ().GetStorage ()->
-// 					GetDraftEntries (Account_->GetAccountID (),
-// 							DraftStorage::Mode::ShortMode);
-		}
-		catch (const std::runtime_error& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "error fetching short drafts"
-					<< e.what ();
-		}
-
-		FillView (entries);
-		FillStatistic ();
-	}
-
 	Entry DraftEntriesWidget::LoadFullEntry (qint64 id)
 	{
-		if (!Account_)
-			return Entry ();
-
 		try
 		{
-			return Entry ();
-			//TODO
-// 			return Core::Instance ().GetStorage ()->
-// 					GetFullDraftEntry (Account_->GetAccountID (), id);
+			return Core::Instance ().GetStorageManager ()->GetFullDraft (id);
 		}
 		catch (const std::runtime_error& e)
 		{
 			qWarning () << Q_FUNC_INFO
-				<< "error fetching full local entry"
-				<< e.what ();
+					<< "error fetching full local entry"
+					<< e.what ();
 			return Entry ();
 		}
 	}
@@ -155,15 +119,11 @@ namespace Blogique
 
 	void DraftEntriesWidget::FillStatistic ()
 	{
-		if (!Account_)
-			return;
-
 		QMap<QDate, int> statistic;
 		try
 		{
-			//TODO
-// 			statistic = Core::Instance ().GetStorage ()->
-// 					GetDraftEntriesCountByDate (Account_->GetAccountID ());
+			statistic = Core::Instance ().GetStorageManager ()->
+					GetDraftsCountByDate ();
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -177,13 +137,9 @@ namespace Blogique
 
 	void DraftEntriesWidget::RemoveDraftEntry (qint64 id)
 	{
-		if (!Account_)
-			return;
-
 		try
 		{
-// 			Core::Instance ().GetStorage ()->
-// 					RemoveDraftEntry (Account_->GetAccountID (), id);
+			Core::Instance ().GetStorageManager ()->RemoveDraft (id);
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -198,6 +154,25 @@ namespace Blogique
 		FillView (QList<Entry> ());
 	}
 
+	void DraftEntriesWidget::loadDraftEntries ()
+	{
+		QList<Entry> entries;
+		try
+		{
+			entries = Core::Instance ().GetStorageManager ()->
+					GetDrafts (Mode::ShortMode);
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error fetching short drafts"
+					<< e.what ();
+		}
+
+		FillView (entries);
+		FillStatistic ();
+	}
+
 	void DraftEntriesWidget::saveSplitterPosition (int pos, int index)
 	{
 		XmlSettingsManager::Instance ()
@@ -207,14 +182,11 @@ namespace Blogique
 
 	void DraftEntriesWidget::loadDraftsByDate (const QDate& date)
 	{
-		if (!Account_)
-			return;
-
 		QList<Entry> entries;
 		try
 		{
-// 			entries = Core::Instance ().GetStorage ()->
-// 					GetEntriesByDate (Account_->GetAccountID (), date);
+			entries = Core::Instance ().GetStorageManager ()->
+					GetDraftsByDate (date);
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -233,9 +205,6 @@ namespace Blogique
 			FilterProxyModel_->mapToSource (Ui_.DraftEntriesView_->currentIndex ());
 
 		if (!sourceIndex.isValid ())
-			return;
-
-		if (!Account_)
 			return;
 
 		sourceIndex = sourceIndex.sibling (sourceIndex.row (),
@@ -261,9 +230,6 @@ namespace Blogique
 		if (!idx.isValid ())
 			return;
 
-		if (!Account_)
-			return;
-
 		idx = idx.sibling (idx.row (), Utils::EntriesViewColumns::Date);
 		Entry e = LoadFullEntry (idx.data (Utils::EntryIdRole::DBIdRole)
 				.toLongLong ());
@@ -271,31 +237,12 @@ namespace Blogique
 			return;
 
 		e.EntryType_ = EntryType::BlogEntry;
-		emit fillNewWidgetWithDraftEntry (e, Account_->GetAccountID ());
+		emit fillNewWidgetWithDraftEntry (e);
 	}
 
 	void DraftEntriesWidget::on_DraftEntriesFilter__textChanged (const QString& text)
 	{
 		FilterProxyModel_->setFilterFixedString (text);
-	}
-
-	void DraftEntriesWidget::handleShowAllEntries ()
-	{
-		QList<Entry> entries;
-		try
-		{
-// 			entries = Core::Instance ().GetStorage ()->
-// 					GetDraftEntries (Account_->GetAccountID (),
-// 							DraftStorage::Mode::ShortMode);
-		}
-		catch (const std::runtime_error& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "error fetching entries"
-					<< e.what ();
-		}
-
-		FillView (entries);
 	}
 
 	void DraftEntriesWidget::on_RemoveDraftEntry__released ()

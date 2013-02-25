@@ -38,8 +38,6 @@ namespace Blogique
 
 		Ui::DraftEntriesWidget Ui_;
 
-		IAccount *Account_;
-		IBloggingPlatform *BloggingPLatform_;
 		QStandardItemModel *DraftEntriesModel_;
 		EntriesFilterProxyModel *FilterProxyModel_;
 		QHash<QStandardItem*, Entry> Item2Entry_;
@@ -47,8 +45,6 @@ namespace Blogique
 	public:
 		explicit DraftEntriesWidget (QWidget *parent = 0, Qt::WindowFlags f = 0);
 		QString GetName () const;
-		void SetAccount (IAccount *account);
-		void LoadDraftEntries ();
 	private:
 		Entry LoadFullEntry (qint64 id);
 		void FillView (const QList<Entry>& entries);
@@ -59,13 +55,13 @@ namespace Blogique
 
 	public slots:
 		void clear ();
+		void loadDraftEntries ();
 	private slots:
 		void saveSplitterPosition (int pos, int index);
 		void loadDraftsByDate (const QDate& date);
 		void handleOpenDraftEntryInCurrentTab (const QModelIndex& index = QModelIndex ());
 		void handleOpenDraftEntryInNewTab (const QModelIndex& index = QModelIndex ());
 		void on_DraftEntriesFilter__textChanged (const QString& text);
-		void handleShowAllEntries ();
 		void on_RemoveDraftEntry__released ();
 		void on_PublishDraftEntry__released ();
 		void on_DraftEntriesView__doubleClicked (const QModelIndex& index);

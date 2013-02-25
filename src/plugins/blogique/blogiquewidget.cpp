@@ -99,6 +99,8 @@ namespace Blogique
 				SIGNAL(fillNewWidgetWithDraftEntry (Entry, QByteArray)),
 				this,
 				SLOT (fillNewTabWithEntry (Entry, QByteArray)));
+		
+		DraftEntriesWidget_->loadDraftEntries ();
 	}
 
 	QObject* BlogiqueWidget::ParentMultiTabs ()
@@ -170,6 +172,8 @@ namespace Blogique
 				break;
 			}
 		}
+
+		EntryChanged_ = false;
 	}
 
 	void BlogiqueWidget::SetParentMultiTabs (QObject *tab)
@@ -288,6 +292,7 @@ namespace Blogique
 		for (int i = 0; i < Ui_.Tools_->count (); ++i)
 		{
 			auto w = Ui_.Tools_->widget (i);
+			Ui_.Tools_->removeItem (i);
 			w->deleteLater ();
 		}
 		Ui_.Tools_->addItem (DraftEntriesWidget_, DraftEntriesWidget_->GetName ());
@@ -345,46 +350,42 @@ namespace Blogique
 			return Entry ();
 		}
 
-		QVariantMap postOptions, customData;
-		QDateTime dt;
-		QStringList tags;
-		for (auto w : SidePluginsWidgets_)
+		Entry e;
+		if (EntryType_ == EntryType::BlogEntry)
 		{
-			auto ibsw = qobject_cast<IBlogiqueSideWidget*> (w);
-			if (!ibsw)
-				continue;
-
-			switch (ibsw->GetWidgetType ())
+			for (auto w : SidePluginsWidgets_)
 			{
+				auto ibsw = qobject_cast<IBlogiqueSideWidget*> (w);
+				if (!ibsw)
+					continue;
+
+				switch (ibsw->GetWidgetType ())
+				{
 				case SideWidgetType::PostOptionsSideWidget:
 				{
-					postOptions.unite (ibsw->GetPostOptions ());
+					e.PostOptions_.unite (ibsw->GetPostOptions ());
 					auto ipow = qobject_cast<IPostOptionsWidget*> (w);
 					if (!ipow)
 						continue;
 
-					if (dt.isNull ())
-						dt = ipow->GetPostDate ();
-					if (tags.isEmpty ())
-						tags = ipow->GetTags ();
+					e.Date_ = ipow->GetPostDate ();
+					e.Tags_ = ipow->GetTags ();
 					break;
 				}
 				case SideWidgetType::CustomSideWidget:
-					customData.unite (ibsw->GetCustomData ());
+					e.CustomData_.unite (ibsw->GetCustomData ());
 					break;
 				default:
 					break;
+				}
 			}
 		}
+		else
+			e.Date_ = QDateTime::currentDateTime ();
 
-		Entry e;
 		e.Target_ = PostTargetBox_->currentText ();
 		e.Content_ = content;
 		e.Subject_ = Ui_.Subject_->text ();
-		e.Date_ = dt;
-		e.Tags_ = tags;
-		e.PostOptions_ = postOptions;
-		e.CustomData_ = customData;
 		e.EntryType_ = EntryType_;
 
 		return e;
@@ -412,7 +413,6 @@ namespace Blogique
 		ToolBar_->insertAction (Ui_.OpenInBrowser_, Ui_.UpdateProfile_);
 
 		auto account = Id2Account_ [id];
-		DraftEntriesWidget_->SetAccount (account);
 		BlogEntriesWidget_->SetAccount (account);
 
 		auto ibp = qobject_cast<IBloggingPlatform*> (account->
@@ -482,15 +482,15 @@ namespace Blogique
 					QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
 			switch (res)
 			{
-				case QMessageBox::Yes:
-					fillNewTabWithEntry (entry, acc->GetAccountID ());
-					break;
-				case QMessageBox::No:
-					FillWidget (entry);
-					break;
-				case QMessageBox::Cancel:
-				default:
-					return;
+			case QMessageBox::Yes:
+				fillNewTabWithEntry (entry, acc->GetAccountID ());
+				break;
+			case QMessageBox::No:
+				FillWidget (entry);
+				break;
+			case QMessageBox::Cancel:
+			default:
+				return;
 			}
 		}
 		else
@@ -520,15 +520,15 @@ namespace Blogique
 					QMessageBox::Yes | QMessageBox::No);
 			switch (res)
 			{
-				case QMessageBox::Yes:
-					saveEntry ();
-					ClearEntry ();
-					break;
-				case QMessageBox::No:
-					ClearEntry ();
-					break;
-				default:
-					return;
+			case QMessageBox::Yes:
+				saveEntry ();
+				ClearEntry ();
+				break;
+			case QMessageBox::No:
+				ClearEntry ();
+				break;
+			default:
+				return;
 			}
 		}
 		else
@@ -538,22 +538,23 @@ namespace Blogique
 	void BlogiqueWidget::saveEntry (const Entry& entry)
 	{
 		EntryChanged_ = false;
+		EntryType_ = EntryType::Draft;
 		const Entry& e = entry.IsEmpty () ?
 			GetCurrentEntry () :
 			entry;
 		if (!e.IsEmpty ())
+		{
 			try
 			{
-				EntryType_ = EntryType::Draft;
 				switch (e.EntryType_)
 				{
 				case EntryType::Draft:
-					Core::Instance ().GetStorageManager ()->updateDraft (e, DraftId_);
+					DraftId_ = Core::Instance ().GetStorageManager ()->UpdateDraft (e, DraftId_);
 					break;
 				case EntryType::BlogEntry:
 				case EntryType::None:
 					DraftId_ = Core::Instance ().GetStorageManager ()->SaveNewDraft (e);
-					return;
+					break;
 				}
 			}
 			catch (const std::runtime_error& e)
@@ -562,19 +563,25 @@ namespace Blogique
 						<< "error saving draft"
 						<< e.what ();
 			}
+		}
+		else
+			EntryType_ = EntryType::None;
+
+		DraftEntriesWidget_->loadDraftEntries ();
 	}
 
 	void BlogiqueWidget::saveNewEntry (const Entry& entry)
 	{
 		EntryChanged_ = false;
+		EntryType_ = EntryType::Draft;
 		const Entry& e = entry.IsEmpty () ?
 			GetCurrentEntry () :
 			entry;
 
 		if (!e.IsEmpty ())
+		{
 			try
 			{
-				EntryType_ = EntryType::Draft;
 				DraftId_ = Core::Instance ().GetStorageManager ()->SaveNewDraft (e);
 			}
 			catch (const std::runtime_error& e)
@@ -583,6 +590,11 @@ namespace Blogique
 						<< "error saving draft"
 						<< e.what ();
 			}
+		}
+		else
+			EntryType_ = EntryType::None;
+
+		DraftEntriesWidget_->loadDraftEntries ();
 	}
 
 	void BlogiqueWidget::submit (const Entry& event)
