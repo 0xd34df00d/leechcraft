@@ -38,6 +38,9 @@ namespace MPRIS
 		void Notify (const QString& iface, const QString& prop, const QVariant& val);
 	public slots:
 		QDBusVariant Get (const QString& iface, const QString& prop);
+		void Set (const QString& iface, const QString& prop, const QDBusVariant&);
+	private:
+		bool GetProperty (const QString&, const QString&, QMetaProperty*, QObject**) const;
 	signals:
 		void PropertiesChanged (const QString&, const QVariantMap&, const QStringList&);
 	};
