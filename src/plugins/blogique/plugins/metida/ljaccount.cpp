@@ -440,8 +440,8 @@ namespace Metida
 		props.CurrentLocation_ = postOptions.value ("place").toString ();
 		props.CurrentMusic_ = postOptions.value ("music").toString ();
 
-		int currentMoodId = postOptions.value ("moodId").toInt ();
-		if (!currentMoodId)
+		int currentMoodId = postOptions.value ("moodId", -1).toInt ();
+		if (currentMoodId == -1)
 			props.CurrentMood_ = postOptions.value ("mood").toString ();
 		else
 			props.CurrentMoodId_ = currentMoodId;

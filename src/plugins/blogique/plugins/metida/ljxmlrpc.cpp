@@ -970,7 +970,7 @@ namespace Metida
 						ljEvent.Tags_ = tags;
 					}
 					else if (fieldEntry.Name () == "url")
-						ljEvent.Url_ = QUrl (fieldEntry.ValueToString ().replace ("http://", "http://" + login));
+						ljEvent.Url_ = QUrl (fieldEntry.ValueToString ());
 					else if (fieldEntry.Name () == "anum")
 						ljEvent.ANum_ = fieldEntry.ValueToInt ();
 					else if (fieldEntry.Name () == "security")
