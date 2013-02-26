@@ -274,6 +274,7 @@ namespace Blogique
 		idx = idx.sibling (idx.row (), Utils::EntriesViewColumns::Date);
 		RemoveDraftEntry (idx.data (Utils::EntryIdRole::DBIdRole).toLongLong ());
 		DraftEntriesModel_->removeRow (idx.row ());
+		FillStatistic ();
 	}
 
 	void DraftEntriesWidget::on_PublishDraftEntry__released ()
