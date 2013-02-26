@@ -20,7 +20,6 @@
 
 #include <QCalendarWidget>
 #include <QMap>
-#include "localstorage.h"
 
 namespace LeechCraft
 {
