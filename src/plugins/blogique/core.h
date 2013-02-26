@@ -27,9 +27,8 @@ namespace LeechCraft
 {
 namespace Blogique
 {
-
-	class BlogiqueWidget;
 	struct Entry;
+	class BlogiqueWidget;
 	class BackupManager;
 	class StorageManager;
 	class IAccount;
@@ -96,9 +95,6 @@ namespace Blogique
 
 		void addNewTab (const QString& name, QWidget *tab);
 		void removeTab (QWidget *tab);
-
-		void gotEntries (QObject *acc, const QList<Entry>& entries);
-		void storageUpdated ();
 	};
 }
 }
