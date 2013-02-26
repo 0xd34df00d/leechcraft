@@ -142,6 +142,12 @@ namespace Blogique
 		 */
 		virtual void GetLastEntries (int count) = 0;
 
+		/** @brief Requests entries by date;
+		 *
+		 * @param[in] date Specified date.
+		 */
+		virtual void GetEntriesByDate (const QDate& date) = 0;
+
 		/** @brief Remove entry from blog.
 		 *
 		 * @param[in] entry Entry to remove.
@@ -156,6 +162,12 @@ namespace Blogique
 
 		virtual QList<QAction*> GetUpdateActions () const = 0;
 
+		/** @brief Requests the number of entries per day;
+		 *
+		 */
+		virtual void RequestStatistics () = 0;
+
+
 		/** @brief Submit post to blog.
 		 *
 		 * @param[in] event Posting event.
@@ -168,6 +180,7 @@ namespace Blogique
 		virtual void updateProfile () = 0;
 
 		virtual void backup () = 0;
+
 
 	protected:
 		/** @brief This signal should be emitted when account is renamed.
@@ -193,6 +206,9 @@ namespace Blogique
 
 		//TODO
 		virtual void entryUpdated (const QList<Entry>& entries) = 0;
+
+		//TODO
+		virtual void gotBlogStatistics (const QMap<QDate, int>& statistics) = 0;
 
 		/** @brief This signal should be emitted when account want to backup
 		 * some amount of entries.
