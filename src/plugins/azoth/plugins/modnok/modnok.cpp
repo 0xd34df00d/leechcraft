@@ -45,10 +45,11 @@ namespace Modnok
 				this, "handleCacheSize");
 		handleCacheSize ();
 
-		XmlSettingsManager::Instance ().RegisterObject ("HorizontalDPI",
-				this, "clearCaches");
-		XmlSettingsManager::Instance ().RegisterObject ("VerticalDPI",
-				this, "clearCaches");
+		QList<QByteArray> invalidates;
+		invalidates << "HorizontalDPI"
+				<< "VerticalDPI"
+				<< "TextColor";
+		XmlSettingsManager::Instance ().RegisterObject (invalidates, this, "clearCaches");
 
 		QStringList candidates;
 		candidates << "/usr/local/bin"
