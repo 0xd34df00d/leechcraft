@@ -278,7 +278,7 @@ namespace Blogique
 		GetFullDraft_.prepare ("SELECT Id, Entry, Date, Subject FROM drafts "
 				"WHERE Id = :draft_id;");
 		GetDraftsByDate_ = QSqlQuery (BlogiqueDB_);
-		GetDraftsByDate_.prepare ("SELECT Id, Entry, Date, Subject FROM entries "
+		GetDraftsByDate_.prepare ("SELECT Id, Entry, Date, Subject FROM drafts "
 				"WHERE date (Date) = :date;");
 		GetDraftsCountByDate_ = QSqlQuery (BlogiqueDB_);
 		GetDraftsCountByDate_.prepare ("SELECT date (Date), COUNT (Id) FROM drafts "
