@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QWidget>
+#include "interfaces/blogique/iaccount.h"
 #include "ui_blogentrieswidget.h"
 
 class QStandardItemModel;
