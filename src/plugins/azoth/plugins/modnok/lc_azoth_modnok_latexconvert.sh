@@ -23,7 +23,7 @@ color1="white"
 color2="black"
 trans=1
 noformula=0
-aa=1
+aa=0
 extra_header="$HOME/.tex2im_header"
 
 if [ -f ~/.tex2imrc ]; then
