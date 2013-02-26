@@ -86,10 +86,10 @@ namespace LeechCraft
 		QDomElement option = item.firstChildElement ("option");
 		while (!option.isNull ())
 		{
-			const QList<QImage>& images = XSD_->GetImages (option);
-			if (images.size ())
+			const auto& images = XSD_->GetImages (option);
+			if (!images.isEmpty ())
 			{
-				const QIcon& icon = QIcon (QPixmap::fromImage (images.at (0)));
+				const QIcon icon (QPixmap::fromImage (images.at (0)));
 				box->addItem (icon,
 						XSD_->GetLabel (option),
 						option.attribute ("name"));
@@ -97,6 +97,17 @@ namespace LeechCraft
 			else
 				box->addItem (XSD_->GetLabel (option),
 						option.attribute ("name"));
+
+			auto setColor = [&option, box] (const QString& attr, Qt::ItemDataRole role) -> void
+			{
+				if (option.hasAttribute (attr))
+				{
+					const QColor color (option.attribute (attr));
+					box->setItemData (box->count () - 1, color, role);
+				}
+			};
+			setColor ("color", Qt::ForegroundRole);
+			setColor ("bgcolor", Qt::BackgroundRole);
 
 			option = option.nextSiblingElement ("option");
 		}
