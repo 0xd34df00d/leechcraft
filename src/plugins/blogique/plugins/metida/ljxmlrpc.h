@@ -73,21 +73,18 @@ namespace Metida
 		void BackupEvents ();
 		void GetLastEvents (int count);
 		void GetChangedEvents (const QDateTime& dt);
+		void GetEventsByDate (const QDate& date);
 
 		void RemoveEvent (const LJEvent& event);
 		void UpdateEvent (const LJEvent& event);
-	private:
 
+		void RequestStatistics ();
+	private:
 		void GenerateChallenge () const;
 		void ValidateAccountData (const QString& login,
 				const QString& pass, const QString& challenge);
 		void RequestFriendsInfo (const QString& login,
 				const QString& pass, const QString& challenge);
-		void ParseForError (const QByteArray& content);
-		void ParseFriends (const QDomDocument& doc);
-
-		QList<LJEvent> ParseFullEvents (const QDomDocument& doc);
-
 		void AddNewFriendRequest (const QString& username,
 				const QString& bgcolor, const QString& fgcolor,
 				int groupId, const QString& challenge);
@@ -106,8 +103,19 @@ namespace Metida
 
 		void GetLastEventsRequest (int count, const QString& challenge);
 		void GetChangedEventsRequest (const QDateTime& dt, const QString& challenge);
+		void GetEventsByDateRequest (const QDate& date, const QString& challenge);
 		void GetParticularEventRequest (int id, RequestType prt,
 				const QString& challenge);
+
+		void BlogStatisticsRequest (const QString& challenge);
+
+		void ParseForError (const QByteArray& content);
+		void ParseFriends (const QDomDocument& doc);
+
+		QList<LJEvent> ParseFullEvents (const QDomDocument& doc);
+
+		QMap<QDate, int> ParseStatistics (const QDomDocument& doc);
+		
 
 	private slots:
 		void handleChallengeReplyFinished ();
@@ -117,10 +125,11 @@ namespace Metida
 		void handleReplyWithProfileUpdate ();
 		void handlePostEventReplyFinished ();
 		void handleBackupEventsReplyFinished ();
-		void handleGetLastEventsReplyFinished ();
+		void handleGotEventsReplyFinished ();
 		void handleRemoveEventReplyFinished ();
 		void handleUpdateEventReplyFinished ();
 		void handleGetParticularEventReplyFinished ();
+		void handleBlogStatisticsReplyFinished ();
 
 	signals:
 		void validatingFinished (bool success);
@@ -135,6 +144,8 @@ namespace Metida
 		void gettingEvents2BackupFinished ();
 
 		void gotEvents (const QList<LJEvent>& events);
+
+		void gotStatistics (const QMap<QDate, int>& statistics);
 	};
 }
 }

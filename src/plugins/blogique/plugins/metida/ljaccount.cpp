@@ -88,6 +88,10 @@ namespace Metida
 				SIGNAL (gotEvents (QList<LJEvent>)),
 				this,
 				SLOT (handleGotEvents (QList<LJEvent>)));
+		connect (LJXmlRpc_,
+				SIGNAL (gotStatistics (QMap<QDate,int>)),
+				this,
+				SIGNAL (gotBlogStatistics (QMap<QDate,int>)));
 
 		connect (LoadLastEvents_,
 				SIGNAL (triggered ()),
@@ -165,6 +169,11 @@ namespace Metida
 		LJXmlRpc_->GetLastEvents (count);
 	}
 
+	void LJAccount::GetEntriesByDate (const QDate& date)
+	{
+		LJXmlRpc_->GetEventsByDate (date);
+	}
+
 	namespace
 	{
 		LJEventProperties GetLJEventPropetriesFromMap (const QVariantMap& map)
@@ -239,6 +248,11 @@ namespace Metida
 	void LJAccount::UpdateEntry (const Entry& entry)
 	{
 		LJXmlRpc_->UpdateEvent (Entry2LJEvent (entry));
+	}
+
+	void LJAccount::RequestStatistics ()
+	{
+		LJXmlRpc_->RequestStatistics ();
 	}
 
 	QList<QAction*> LJAccount::GetUpdateActions () const

@@ -130,8 +130,11 @@ namespace Metida
 		QObject* GetProfile ();
 
 		void GetLastEntries (int count);
+		void GetEntriesByDate (const QDate& date);
 		void RemoveEntry (const Entry& entry);
 		void UpdateEntry (const Entry& entry);
+
+		void RequestStatistics ();
 
 		QList<QAction*> GetUpdateActions () const;
 
@@ -168,7 +171,6 @@ namespace Metida
 
 		void handleLoadLastEvents ();
 		void handleLoadChangedEvents ();
-
 	signals:
 		void accountRenamed (const QString& newName);
 		void accountSettingsChanged ();
@@ -182,6 +184,8 @@ namespace Metida
 		void gettingEntries2BackupFinished ();
 
 		void gotEntries (const QList<Entry>& entries);
+
+		void gotBlogStatistics (const QMap<QDate, int>& statistics);
 	};
 }
 }
