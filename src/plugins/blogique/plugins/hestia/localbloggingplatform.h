@@ -27,6 +27,8 @@ namespace Blogique
 {
 namespace Hestia
 {
+	class LocalBlogAccount;
+
 	class LocalBloggingPlatform: public QObject
 								, public IBloggingPlatform
 	{
@@ -35,6 +37,7 @@ namespace Hestia
 
 		QObject *ParentBlogginPlatfromPlugin_;
 		QObject *PluginProxy_;
+		QList<LocalBlogAccount*> Accounts_;
 
 		enum BloqiqueSidePosition
 		{
