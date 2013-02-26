@@ -21,13 +21,12 @@
 #include <QStandardItemModel>
 #include <QMessageBox>
 #include <util/util.h>
+#include "interfaces/blogique/ibloggingplatform.h"
 #include "core.h"
 #include "entriesfilterproxymodel.h"
-#include "localstorage.h"
+#include "storagemanager.h"
 #include "utils.h"
 #include "xmlsettingsmanager.h"
-#include "interfaces/blogique/ibloggingplatform.h"
-#include "storagemanager.h"
 
 namespace LeechCraft
 {
@@ -55,6 +54,11 @@ namespace Blogique
 				SIGNAL (activated (QDate)),
 				this,
 				SLOT (loadDraftsByDate (QDate)));
+		
+		connect (Ui_.CalendarVisibility_,
+				SIGNAL (toggled (bool)),
+				this,
+				SLOT (handleCalendarVisibilityChanged (bool)));
 
 		QAction *openDraftEntryInNewTab = new QAction (tr ("Open in new tab"), this);
 		QAction *openDraftEntryInCurrentTab = new QAction (tr ("Open here"), this);
@@ -80,6 +84,9 @@ namespace Blogique
 				openDraftEntryInCurrentTab,
 				Util::CreateSeparator (Ui_.DraftEntriesView_),
 				showAllEntries });
+		
+		Ui_.CalendarVisibility_->setChecked (XmlSettingsManager::Instance ()
+				.Property ("ShowDraftCalendar", true).toBool ());
 	}
 
 	QString DraftEntriesWidget::GetName () const
@@ -288,6 +295,11 @@ namespace Blogique
 				.property ("OpenEntryByDblClick").toString () == "CurrentTab" ?
 			handleOpenDraftEntryInCurrentTab (index) :
 			handleOpenDraftEntryInNewTab (index);
+	}
+
+	void DraftEntriesWidget::handleCalendarVisibilityChanged (bool visible)
+	{
+		XmlSettingsManager::Instance ().setProperty ("ShowDraftCalendar", visible);
 	}
 
 }

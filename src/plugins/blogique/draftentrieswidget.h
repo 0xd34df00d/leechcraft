@@ -65,6 +65,7 @@ namespace Blogique
 		void on_RemoveDraftEntry__released ();
 		void on_PublishDraftEntry__released ();
 		void on_DraftEntriesView__doubleClicked (const QModelIndex& index);
+		void handleCalendarVisibilityChanged (bool visible);
 
 	signals:
 		void fillCurrentWidgetWithDraftEntry (const Entry& e);
