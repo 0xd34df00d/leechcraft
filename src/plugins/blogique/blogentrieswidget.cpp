@@ -77,11 +77,6 @@ namespace Blogique
 		Ui_.BlogEntriesView_->addActions ({ openBlogEntryInNewTab,
 				openBlogEntryInCurrentTab });
 
-		connect (&Core::Instance (),
-				SIGNAL (gotEntries (QObject*, QList<Entry>)),
-				this,
-				SLOT (handleGotEntries (QObject*, QList<Entry>)));
-
 		Ui_.CalendarVisibility_->setChecked (XmlSettingsManager::Instance ()
 				.Property ("ShowBlogPostsCalendar", true).toBool ());
 	}
@@ -114,27 +109,6 @@ namespace Blogique
 		LoadActions_ = actions;
 
 		Account_->RequestStatistics ();
-	}
-
-	Entry BlogEntriesWidget::LoadFullEntry (qint64 id)
-	{
-		if (!Account_)
-			return Entry ();
-
-		try
-		{
-			//TODO
-			return Entry ();
-// 			return Core::Instance ().GetStorage ()->
-// 					GetEntry (Account_->GetAccountID (), id);
-		}
-		catch (const std::runtime_error& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "error fetching full local entry"
-					<< e.what ();
-			return Entry ();
-		}
 	}
 
 	void BlogEntriesWidget::FillCurrentTab (const QModelIndex& index)
@@ -257,15 +231,6 @@ namespace Blogique
 				QMessageBox::Ok | QMessageBox::Cancel,
 		QMessageBox::Cancel) == QMessageBox::Ok)
 			Account_->RemoveEntry (e);
-	}
-
-	void BlogEntriesWidget::handleGotEntries (QObject *acc,
-			const QList<Entry>& entries)
-	{
-		if (acc != Account_->GetObject ())
-			return;
-
-		fillView (entries);
 	}
 
 	void BlogEntriesWidget::on_BlogEntriesView__doubleClicked (const QModelIndex& index)

@@ -47,7 +47,6 @@ namespace Blogique
 		QString GetName () const;
 		void SetAccount (IAccount *account);
 	private:
-		Entry LoadFullEntry (qint64 id);
 		void FillCurrentTab (const QModelIndex& index = QModelIndex ());
 
 	public slots:
@@ -61,7 +60,6 @@ namespace Blogique
 		void handleOpenBlogEntryInNewTab (const QModelIndex& index = QModelIndex ());
 		void on_BlogEntriesFilter__textChanged (const QString& text);
 		void on_RemoveBlogEntry__released ();
-		void handleGotEntries (QObject *acc, const QList<Entry>& entries);
 		void on_BlogEntriesView__doubleClicked (const QModelIndex& index);
 		void handleCalendarVisibilityChanged (bool visible);
 
