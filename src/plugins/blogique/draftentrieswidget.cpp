@@ -220,7 +220,7 @@ namespace Blogique
 		if (e.IsEmpty ())
 			return;
 
-		e.EntryType_ = EntryType::BlogEntry;
+		e.EntryType_ = EntryType::Draft;
 		emit fillCurrentWidgetWithDraftEntry (e);
 	}
 
@@ -243,7 +243,7 @@ namespace Blogique
 		if (e.IsEmpty ())
 			return;
 
-		e.EntryType_ = EntryType::BlogEntry;
+		e.EntryType_ = EntryType::Draft;
 		emit fillNewWidgetWithDraftEntry (e);
 	}
 
