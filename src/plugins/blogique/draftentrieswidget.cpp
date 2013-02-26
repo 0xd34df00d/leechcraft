@@ -54,7 +54,7 @@ namespace Blogique
 				SIGNAL (activated (QDate)),
 				this,
 				SLOT (loadDraftsByDate (QDate)));
-		
+
 		connect (Ui_.CalendarVisibility_,
 				SIGNAL (toggled (bool)),
 				this,
@@ -84,7 +84,7 @@ namespace Blogique
 				openDraftEntryInCurrentTab,
 				Util::CreateSeparator (Ui_.DraftEntriesView_),
 				showAllEntries });
-		
+
 		Ui_.CalendarVisibility_->setChecked (XmlSettingsManager::Instance ()
 				.Property ("ShowDraftCalendar", true).toBool ());
 	}
