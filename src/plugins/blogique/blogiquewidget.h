@@ -68,7 +68,7 @@ namespace Blogique
 		QList<QWidget*> SidePluginsWidgets_;
 
 		EntryType EntryType_;
-		qint64 DraftId_;
+		qint64 EntryId_;
 
 		bool EntryChanged_;
 

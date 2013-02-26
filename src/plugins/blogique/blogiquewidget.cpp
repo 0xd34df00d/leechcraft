@@ -58,7 +58,7 @@ namespace Blogique
 	, BlogEntriesWidget_ (new BlogEntriesWidget)
 	, PrevAccountId_ (-1)
 	, EntryType_ (EntryType::None)
-	, DraftId_ (-1)
+	, EntryId_ (-1)
 	, EntryChanged_ (false)
 	{
 		Ui_.setupUi (this);
@@ -99,7 +99,7 @@ namespace Blogique
 				SIGNAL(fillNewWidgetWithDraftEntry (Entry, QByteArray)),
 				this,
 				SLOT (fillNewTabWithEntry (Entry, QByteArray)));
-		
+
 		DraftEntriesWidget_->loadDraftEntries ();
 	}
 
@@ -140,9 +140,7 @@ namespace Blogique
 		}
 
 		EntryType_ = e.EntryType_;
-		DraftId_ = (EntryType_ == EntryType::Draft) ?
-			e.EntryId_ :
-			-1;
+		EntryId_ = e.EntryId_;
 		Ui_.Subject_->setText (e.Subject_);
 		PostEdit_->SetContents (e.Content_, ContentType::HTML);
 
@@ -337,6 +335,7 @@ namespace Blogique
 				break;
 			}
 		}
+		EntryChanged_ = false;
 	}
 
 	Entry BlogiqueWidget::GetCurrentEntry ()
@@ -351,42 +350,38 @@ namespace Blogique
 		}
 
 		Entry e;
-		if (EntryType_ == EntryType::BlogEntry)
+		for (auto w : SidePluginsWidgets_)
 		{
-			for (auto w : SidePluginsWidgets_)
+			auto ibsw = qobject_cast<IBlogiqueSideWidget*> (w);
+			if (!ibsw)
+				continue;
+
+			switch (ibsw->GetWidgetType ())
 			{
-				auto ibsw = qobject_cast<IBlogiqueSideWidget*> (w);
-				if (!ibsw)
+			case SideWidgetType::PostOptionsSideWidget:
+			{
+				e.PostOptions_.unite (ibsw->GetPostOptions ());
+				auto ipow = qobject_cast<IPostOptionsWidget*> (w);
+				if (!ipow)
 					continue;
 
-				switch (ibsw->GetWidgetType ())
-				{
-				case SideWidgetType::PostOptionsSideWidget:
-				{
-					e.PostOptions_.unite (ibsw->GetPostOptions ());
-					auto ipow = qobject_cast<IPostOptionsWidget*> (w);
-					if (!ipow)
-						continue;
-
-					e.Date_ = ipow->GetPostDate ();
-					e.Tags_ = ipow->GetTags ();
-					break;
-				}
-				case SideWidgetType::CustomSideWidget:
-					e.CustomData_.unite (ibsw->GetCustomData ());
-					break;
-				default:
-					break;
-				}
+				e.Date_ = ipow->GetPostDate ();
+				e.Tags_ = ipow->GetTags ();
+				break;
+			}
+			case SideWidgetType::CustomSideWidget:
+				e.CustomData_.unite (ibsw->GetCustomData ());
+				break;
+			default:
+				break;
 			}
 		}
-		else
-			e.Date_ = QDateTime::currentDateTime ();
 
 		e.Target_ = PostTargetBox_->currentText ();
 		e.Content_ = content;
 		e.Subject_ = Ui_.Subject_->text ();
 		e.EntryType_ = EntryType_;
+		e.EntryId_ = EntryId_;
 
 		return e;
 	}
@@ -549,11 +544,11 @@ namespace Blogique
 				switch (e.EntryType_)
 				{
 				case EntryType::Draft:
-					DraftId_ = Core::Instance ().GetStorageManager ()->UpdateDraft (e, DraftId_);
+					EntryId_ = Core::Instance ().GetStorageManager ()->UpdateDraft (e, EntryId_);
 					break;
 				case EntryType::BlogEntry:
 				case EntryType::None:
-					DraftId_ = Core::Instance ().GetStorageManager ()->SaveNewDraft (e);
+					EntryId_ = Core::Instance ().GetStorageManager ()->SaveNewDraft (e);
 					break;
 				}
 			}
@@ -582,7 +577,7 @@ namespace Blogique
 		{
 			try
 			{
-				DraftId_ = Core::Instance ().GetStorageManager ()->SaveNewDraft (e);
+				EntryId_ = Core::Instance ().GetStorageManager ()->SaveNewDraft (e);
 			}
 			catch (const std::runtime_error& e)
 			{
@@ -610,27 +605,27 @@ namespace Blogique
 
 		if (!e.IsEmpty ())
 		{
-// 			if (EntryID_ > 0)
-// 			{
-// 				QMessageBox mbox (QMessageBox::Question,
-// 						"LeechCraft",
-// 						tr ("Do you want to update entry or to post new one?"),
-// 						QMessageBox::Yes | QMessageBox::Cancel,
-// 						this);
-// 				mbox.setDefaultButton (QMessageBox::Cancel);
-// 				mbox.setButtonText (QMessageBox::Yes, tr ("Update post"));
-// 				QPushButton newPostButton (tr ("Post new"));
-// 				mbox.addButton (&newPostButton, QMessageBox::AcceptRole);
-//
-// 				if (mbox.exec () == QMessageBox::Cancel)
-// 					return;
-// 				else if (mbox.clickedButton () == &newPostButton)
-// 					acc->submit (e);
-// 				else
-// 					acc->UpdateEntry (e);
-// 			}
-// 			else
-// 				acc->submit (e);
+			if (EntryType_ == EntryType::BlogEntry)
+			{
+				QMessageBox mbox (QMessageBox::Question,
+						"LeechCraft",
+						tr ("Do you want to update entry or to post new one?"),
+						QMessageBox::Yes | QMessageBox::Cancel,
+						this);
+				mbox.setDefaultButton (QMessageBox::Cancel);
+				mbox.setButtonText (QMessageBox::Yes, tr ("Update post"));
+				QPushButton newPostButton (tr ("Post new"));
+				mbox.addButton (&newPostButton, QMessageBox::AcceptRole);
+
+				if (mbox.exec () == QMessageBox::Cancel)
+					return;
+				else if (mbox.clickedButton () == &newPostButton)
+					acc->submit (e);
+				else
+					acc->UpdateEntry (e);
+			}
+			else
+				acc->submit (e);
 		}
 	}
 
