@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QWidget>
+#include "interfaces/blogique/iaccount.h"
 #include "ui_blogentrieswidget.h"
 
 class QStandardItemModel;
@@ -46,22 +47,21 @@ namespace Blogique
 		QString GetName () const;
 		void SetAccount (IAccount *account);
 	private:
-		Entry LoadFullEntry (qint64 id);
-		void FillView (const QList<Entry>& entries);
-		void FillStatistic ();
 		void FillCurrentTab (const QModelIndex& index = QModelIndex ());
 
 	public slots:
 		void clear ();
 	private slots:
+		void fillView (const QList<Entry>& entries);
+		void fillStatistic (const QMap<QDate, int>& statistics);
 		void saveSplitterPosition (int pos, int index);
 		void loadPostsByDate (const QDate& date);
 		void handleOpenBlogEntryInCurrentTab (const QModelIndex& index = QModelIndex ());
 		void handleOpenBlogEntryInNewTab (const QModelIndex& index = QModelIndex ());
 		void on_BlogEntriesFilter__textChanged (const QString& text);
 		void on_RemoveBlogEntry__released ();
-		void handleGotEntries (QObject *acc, const QList<Entry>& entries);
 		void on_BlogEntriesView__doubleClicked (const QModelIndex& index);
+		void handleCalendarVisibilityChanged (bool visible);
 
 	signals:
 		void fillCurrentWidgetWithBlogEntry (const Entry& e);

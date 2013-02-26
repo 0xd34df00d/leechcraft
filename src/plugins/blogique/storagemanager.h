@@ -47,18 +47,8 @@ namespace Blogique
 		QSqlQuery GetDrafts_;
 		QSqlQuery GetShortDrafts_;
 		QSqlQuery GetFullDraft_;
-
-		QSqlQuery AddDraftPostOptions_;
-		QSqlQuery UpdateDraftPostOptions_;
-		QSqlQuery GetDraftPostOptions_;
-
-		QSqlQuery AddDraftCustomOptions_;
-		QSqlQuery UpdateDraftCustomOptions_;
-		QSqlQuery GetDraftCustomOptions_;
-
-		QSqlQuery AddDraftTag_;
-		QSqlQuery RemoveDraftTags_;
-		QSqlQuery GetDraftTags_;
+		QSqlQuery GetDraftsByDate_;
+		QSqlQuery GetDraftsCountByDate_;
 
 	public:
 		explicit StorageManager (QObject *parent = 0);
@@ -66,16 +56,15 @@ namespace Blogique
 		void AddAccount (const QByteArray& accounId);
 
 		qint64 SaveNewDraft (const Entry& e);
+		qint64 UpdateDraft (const Entry& e, qint64 draftId);
 		void RemoveDraft (qint64 draftId);
 		QList<Entry> GetDrafts (Mode mode);
+		QList<Entry> GetDraftsByDate (const QDate& date);
 		QMap<QDate, int> GetDraftsCountByDate ();
 		Entry GetFullDraft (qint64 draftId);
 	private:
 		void CreateTables ();
 		void PrepareQueries ();
-
-	public slots:
-		void updateDraft (const Entry& e, qint64 draftId);
 	};
 }
 }

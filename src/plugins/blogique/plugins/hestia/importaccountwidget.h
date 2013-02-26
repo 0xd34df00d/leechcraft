@@ -18,25 +18,29 @@
 
 #pragma once
 
-#include <QCalendarWidget>
-#include <QMap>
+#include <QWidget>
+#include "ui_importaccountwidget.h"
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-	class CalendarWidget : public QCalendarWidget
+namespace Hestia
+{
+	class ImportAccountWidget : public QWidget
 	{
 		Q_OBJECT
 
-		QMap<QDate, int> Date2EntriesCount_;
+		Ui::ImportAccountWidget Ui_;
 	public:
-		CalendarWidget (QWidget *parent = 0);
-		void SetStatistic (const QMap<QDate, int>& statistic);
+		ImportAccountWidget (QWidget *parent = 0);
 
-	protected:
-		void paintCell (QPainter *painter, const QRect& rect, const QDate& date) const;
+		void SetAccountBasePath (const QString& path);
+		QString GetAccountBasePath () const;
+
+	private slots:
+		void on_OpenAccountBase__released ();
 	};
 }
 }
-
+}

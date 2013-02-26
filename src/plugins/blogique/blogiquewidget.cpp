@@ -58,7 +58,7 @@ namespace Blogique
 	, BlogEntriesWidget_ (new BlogEntriesWidget)
 	, PrevAccountId_ (-1)
 	, EntryType_ (EntryType::None)
-	, DraftId_ (-1)
+	, EntryId_ (-1)
 	, EntryChanged_ (false)
 	{
 		Ui_.setupUi (this);
@@ -99,6 +99,8 @@ namespace Blogique
 				SIGNAL(fillNewWidgetWithDraftEntry (Entry, QByteArray)),
 				this,
 				SLOT (fillNewTabWithEntry (Entry, QByteArray)));
+
+		DraftEntriesWidget_->loadDraftEntries ();
 	}
 
 	QObject* BlogiqueWidget::ParentMultiTabs ()
@@ -138,9 +140,7 @@ namespace Blogique
 		}
 
 		EntryType_ = e.EntryType_;
-		DraftId_ = (EntryType_ == EntryType::Draft) ?
-			e.EntryId_ :
-			-1;
+		EntryId_ = e.EntryId_;
 		Ui_.Subject_->setText (e.Subject_);
 		PostEdit_->SetContents (e.Content_, ContentType::HTML);
 
@@ -170,6 +170,8 @@ namespace Blogique
 				break;
 			}
 		}
+
+		EntryChanged_ = false;
 	}
 
 	void BlogiqueWidget::SetParentMultiTabs (QObject *tab)
@@ -288,6 +290,7 @@ namespace Blogique
 		for (int i = 0; i < Ui_.Tools_->count (); ++i)
 		{
 			auto w = Ui_.Tools_->widget (i);
+			Ui_.Tools_->removeItem (i);
 			w->deleteLater ();
 		}
 		Ui_.Tools_->addItem (DraftEntriesWidget_, DraftEntriesWidget_->GetName ());
@@ -332,6 +335,7 @@ namespace Blogique
 				break;
 			}
 		}
+		EntryChanged_ = false;
 	}
 
 	Entry BlogiqueWidget::GetCurrentEntry ()
@@ -345,9 +349,7 @@ namespace Blogique
 			return Entry ();
 		}
 
-		QVariantMap postOptions, customData;
-		QDateTime dt;
-		QStringList tags;
+		Entry e;
 		for (auto w : SidePluginsWidgets_)
 		{
 			auto ibsw = qobject_cast<IBlogiqueSideWidget*> (w);
@@ -356,36 +358,30 @@ namespace Blogique
 
 			switch (ibsw->GetWidgetType ())
 			{
-				case SideWidgetType::PostOptionsSideWidget:
-				{
-					postOptions.unite (ibsw->GetPostOptions ());
-					auto ipow = qobject_cast<IPostOptionsWidget*> (w);
-					if (!ipow)
-						continue;
+			case SideWidgetType::PostOptionsSideWidget:
+			{
+				e.PostOptions_.unite (ibsw->GetPostOptions ());
+				auto ipow = qobject_cast<IPostOptionsWidget*> (w);
+				if (!ipow)
+					continue;
 
-					if (dt.isNull ())
-						dt = ipow->GetPostDate ();
-					if (tags.isEmpty ())
-						tags = ipow->GetTags ();
-					break;
-				}
-				case SideWidgetType::CustomSideWidget:
-					customData.unite (ibsw->GetCustomData ());
-					break;
-				default:
-					break;
+				e.Date_ = ipow->GetPostDate ();
+				e.Tags_ = ipow->GetTags ();
+				break;
+			}
+			case SideWidgetType::CustomSideWidget:
+				e.CustomData_.unite (ibsw->GetCustomData ());
+				break;
+			default:
+				break;
 			}
 		}
 
-		Entry e;
 		e.Target_ = PostTargetBox_->currentText ();
 		e.Content_ = content;
 		e.Subject_ = Ui_.Subject_->text ();
-		e.Date_ = dt;
-		e.Tags_ = tags;
-		e.PostOptions_ = postOptions;
-		e.CustomData_ = customData;
 		e.EntryType_ = EntryType_;
+		e.EntryId_ = EntryId_;
 
 		return e;
 	}
@@ -412,7 +408,6 @@ namespace Blogique
 		ToolBar_->insertAction (Ui_.OpenInBrowser_, Ui_.UpdateProfile_);
 
 		auto account = Id2Account_ [id];
-		DraftEntriesWidget_->SetAccount (account);
 		BlogEntriesWidget_->SetAccount (account);
 
 		auto ibp = qobject_cast<IBloggingPlatform*> (account->
@@ -482,15 +477,15 @@ namespace Blogique
 					QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
 			switch (res)
 			{
-				case QMessageBox::Yes:
-					fillNewTabWithEntry (entry, acc->GetAccountID ());
-					break;
-				case QMessageBox::No:
-					FillWidget (entry);
-					break;
-				case QMessageBox::Cancel:
-				default:
-					return;
+			case QMessageBox::Yes:
+				fillNewTabWithEntry (entry, acc->GetAccountID ());
+				break;
+			case QMessageBox::No:
+				FillWidget (entry);
+				break;
+			case QMessageBox::Cancel:
+			default:
+				return;
 			}
 		}
 		else
@@ -520,15 +515,15 @@ namespace Blogique
 					QMessageBox::Yes | QMessageBox::No);
 			switch (res)
 			{
-				case QMessageBox::Yes:
-					saveEntry ();
-					ClearEntry ();
-					break;
-				case QMessageBox::No:
-					ClearEntry ();
-					break;
-				default:
-					return;
+			case QMessageBox::Yes:
+				saveEntry ();
+				ClearEntry ();
+				break;
+			case QMessageBox::No:
+				ClearEntry ();
+				break;
+			default:
+				return;
 			}
 		}
 		else
@@ -538,22 +533,23 @@ namespace Blogique
 	void BlogiqueWidget::saveEntry (const Entry& entry)
 	{
 		EntryChanged_ = false;
+		EntryType_ = EntryType::Draft;
 		const Entry& e = entry.IsEmpty () ?
 			GetCurrentEntry () :
 			entry;
 		if (!e.IsEmpty ())
+		{
 			try
 			{
-				EntryType_ = EntryType::Draft;
 				switch (e.EntryType_)
 				{
 				case EntryType::Draft:
-					Core::Instance ().GetStorageManager ()->updateDraft (e, DraftId_);
+					EntryId_ = Core::Instance ().GetStorageManager ()->UpdateDraft (e, EntryId_);
 					break;
 				case EntryType::BlogEntry:
 				case EntryType::None:
-					DraftId_ = Core::Instance ().GetStorageManager ()->SaveNewDraft (e);
-					return;
+					EntryId_ = Core::Instance ().GetStorageManager ()->SaveNewDraft (e);
+					break;
 				}
 			}
 			catch (const std::runtime_error& e)
@@ -562,20 +558,26 @@ namespace Blogique
 						<< "error saving draft"
 						<< e.what ();
 			}
+		}
+		else
+			EntryType_ = EntryType::None;
+
+		DraftEntriesWidget_->loadDraftEntries ();
 	}
 
 	void BlogiqueWidget::saveNewEntry (const Entry& entry)
 	{
 		EntryChanged_ = false;
+		EntryType_ = EntryType::Draft;
 		const Entry& e = entry.IsEmpty () ?
 			GetCurrentEntry () :
 			entry;
 
 		if (!e.IsEmpty ())
+		{
 			try
 			{
-				EntryType_ = EntryType::Draft;
-				DraftId_ = Core::Instance ().GetStorageManager ()->SaveNewDraft (e);
+				EntryId_ = Core::Instance ().GetStorageManager ()->SaveNewDraft (e);
 			}
 			catch (const std::runtime_error& e)
 			{
@@ -583,6 +585,11 @@ namespace Blogique
 						<< "error saving draft"
 						<< e.what ();
 			}
+		}
+		else
+			EntryType_ = EntryType::None;
+
+		DraftEntriesWidget_->loadDraftEntries ();
 	}
 
 	void BlogiqueWidget::submit (const Entry& event)
@@ -598,27 +605,27 @@ namespace Blogique
 
 		if (!e.IsEmpty ())
 		{
-// 			if (EntryID_ > 0)
-// 			{
-// 				QMessageBox mbox (QMessageBox::Question,
-// 						"LeechCraft",
-// 						tr ("Do you want to update entry or to post new one?"),
-// 						QMessageBox::Yes | QMessageBox::Cancel,
-// 						this);
-// 				mbox.setDefaultButton (QMessageBox::Cancel);
-// 				mbox.setButtonText (QMessageBox::Yes, tr ("Update post"));
-// 				QPushButton newPostButton (tr ("Post new"));
-// 				mbox.addButton (&newPostButton, QMessageBox::AcceptRole);
-//
-// 				if (mbox.exec () == QMessageBox::Cancel)
-// 					return;
-// 				else if (mbox.clickedButton () == &newPostButton)
-// 					acc->submit (e);
-// 				else
-// 					acc->UpdateEntry (e);
-// 			}
-// 			else
-// 				acc->submit (e);
+			if (EntryType_ == EntryType::BlogEntry)
+			{
+				QMessageBox mbox (QMessageBox::Question,
+						"LeechCraft",
+						tr ("Do you want to update entry or to post new one?"),
+						QMessageBox::Yes | QMessageBox::Cancel,
+						this);
+				mbox.setDefaultButton (QMessageBox::Cancel);
+				mbox.setButtonText (QMessageBox::Yes, tr ("Update post"));
+				QPushButton newPostButton (tr ("Post new"));
+				mbox.addButton (&newPostButton, QMessageBox::AcceptRole);
+
+				if (mbox.exec () == QMessageBox::Cancel)
+					return;
+				else if (mbox.clickedButton () == &newPostButton)
+					acc->submit (e);
+				else
+					acc->UpdateEntry (e);
+			}
+			else
+				acc->submit (e);
 		}
 	}
 

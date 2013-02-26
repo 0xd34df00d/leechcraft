@@ -16,27 +16,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QCalendarWidget>
-#include <QMap>
+#include "importaccountwidget.h"
+#include <QFileDialog>
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-	class CalendarWidget : public QCalendarWidget
+namespace Hestia
+{
+	ImportAccountWidget::ImportAccountWidget (QWidget *parent)
+	: QWidget (parent)
 	{
-		Q_OBJECT
+		Ui_.setupUi (this);
+	}
 
-		QMap<QDate, int> Date2EntriesCount_;
-	public:
-		CalendarWidget (QWidget *parent = 0);
-		void SetStatistic (const QMap<QDate, int>& statistic);
+	void ImportAccountWidget::on_OpenAccountBase__released ()
+	{
+		QString path = QFileDialog::getOpenFileName (this,
+				tr ("Open account base"),
+				QDir::homePath (),
+				tr ("Account bases (*.db)"));
 
-	protected:
-		void paintCell (QPainter *painter, const QRect& rect, const QDate& date) const;
-	};
+		if (path.isEmpty ())
+			return;
+
+		SetAccountBasePath (path);
+	}
+
+	void ImportAccountWidget::SetAccountBasePath (const QString& path)
+	{
+		Ui_.AccountBasePath_->setText (path);
+	}
+
+	QString ImportAccountWidget::GetAccountBasePath() const
+	{
+		return Ui_.AccountBasePath_->text ();
+	}
+
 }
 }
-
+}

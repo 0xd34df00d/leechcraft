@@ -53,6 +53,11 @@ namespace Blogique
 				this,
 				SLOT (loadPostsByDate (QDate)));
 
+		connect (Ui_.CalendarVisibility_,
+				SIGNAL (toggled (bool)),
+				this,
+				SLOT (handleCalendarVisibilityChanged (bool)));
+
 		BlogEntriesModel_->setHorizontalHeaderLabels ({ tr ("Date"), tr ("Name") });
 		FilterProxyModel_->setSourceModel (BlogEntriesModel_);
 		Ui_.BlogEntriesView_->setModel (FilterProxyModel_);
@@ -72,10 +77,8 @@ namespace Blogique
 		Ui_.BlogEntriesView_->addActions ({ openBlogEntryInNewTab,
 				openBlogEntryInCurrentTab });
 
-		connect (&Core::Instance (),
-				SIGNAL (gotEntries (QObject*, QList<Entry>)),
-				this,
-				SLOT (handleGotEntries (QObject*, QList<Entry>)));
+		Ui_.CalendarVisibility_->setChecked (XmlSettingsManager::Instance ()
+				.Property ("ShowBlogPostsCalendar", true).toBool ());
 	}
 
 	QString BlogEntriesWidget::GetName () const
@@ -90,69 +93,22 @@ namespace Blogique
 		LoadActions_.clear ();
 
 		Account_ = account;
+		connect (Account_->GetObject (),
+				SIGNAL (gotBlogStatistics (QMap<QDate, int>)),
+				this,
+				SLOT (fillStatistic (QMap<QDate,int>)),
+				Qt::UniqueConnection);
+		connect (Account_->GetObject (),
+				SIGNAL (gotEntries (QList<Entry>)),
+				this,
+				SLOT (fillView (QList<Entry>)),
+				Qt::UniqueConnection);
 
 		auto actions = account->GetUpdateActions ();
 		Ui_.LoadBlogEntries_->addActions (actions);
 		LoadActions_ = actions;
-	}
 
-	Entry BlogEntriesWidget::LoadFullEntry (qint64 id)
-	{
-		if (!Account_)
-			return Entry ();
-
-		try
-		{
-			//TODO
-			return Entry ();
-// 			return Core::Instance ().GetStorage ()->
-// 					GetEntry (Account_->GetAccountID (), id);
-		}
-		catch (const std::runtime_error& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "error fetching full local entry"
-					<< e.what ();
-			return Entry ();
-		}
-	}
-
-	void BlogEntriesWidget::FillView (const QList<Entry>& entries)
-	{
-		BlogEntriesModel_->removeRows (0, BlogEntriesModel_->rowCount());
-		Item2Entry_.clear ();
-		for (const auto& entry : entries)
-		{
-			const auto& items = Utils::CreateEntriesViewRow (entry);
-			if (items.isEmpty ())
-				continue;
-
-			BlogEntriesModel_->appendRow (items);
-			Item2Entry_ [items.first ()] = entry;
-		}
-		Ui_.BlogEntriesView_->resizeColumnToContents (0);
-	}
-
-	void BlogEntriesWidget::FillStatistic ()
-	{
-		if (!Account_)
-			return;
-
-		QMap<QDate, int> statistic;
-		try
-		{
-			//TODO
-// 			statistic = Core::Instance ().GetStorage ()->
-// 					GetEntriesCountByDate (Account_->GetAccountID ());
-		}
-		catch (const std::runtime_error& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "error fetching entries"
-					<< e.what ();
-		}
-
-		Ui_.BlogEntriesCalendar_->SetStatistic (statistic);
+		Account_->RequestStatistics ();
 	}
 
 	void BlogEntriesWidget::FillCurrentTab (const QModelIndex& index)
@@ -179,7 +135,31 @@ namespace Blogique
 
 	void BlogEntriesWidget::clear ()
 	{
-		FillView (QList<Entry> ());
+		fillView (QList<Entry> ());
+	}
+
+	void BlogEntriesWidget::fillView (const QList<Entry>& entries)
+	{
+		BlogEntriesModel_->removeRows (0, BlogEntriesModel_->rowCount());
+		Item2Entry_.clear ();
+		for (const auto& entry : entries)
+		{
+			const auto& items = Utils::CreateEntriesViewRow (entry);
+			if (items.isEmpty ())
+				continue;
+
+			BlogEntriesModel_->appendRow (items);
+			Item2Entry_ [items.first ()] = entry;
+		}
+		Ui_.BlogEntriesView_->resizeColumnToContents (0);
+	}
+
+	void BlogEntriesWidget::fillStatistic (const QMap<QDate, int>& statistics)
+	{
+		if (!Account_)
+			return;
+
+		Ui_.BlogEntriesCalendar_->SetStatistic (statistics);
 	}
 
 	void BlogEntriesWidget::saveSplitterPosition (int pos, int index)
@@ -194,21 +174,7 @@ namespace Blogique
 		if (!Account_)
 			return;
 
-		QList<Entry> entries;
-		try
-		{
-			//TODO
-// 			entries = Core::Instance ().GetStorage ()->
-// 					GetEntriesByDate (Account_->GetAccountID (), date);
-		}
-		catch (const std::runtime_error& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "error fetching entries"
-					<< e.what ();
-		}
-
-		FillView (entries);
+		Account_->GetEntriesByDate (date);
 	}
 
 	void BlogEntriesWidget::handleOpenBlogEntryInCurrentTab (const QModelIndex& index)
@@ -267,15 +233,6 @@ namespace Blogique
 			Account_->RemoveEntry (e);
 	}
 
-	void BlogEntriesWidget::handleGotEntries (QObject *acc,
-			const QList<Entry>& entries)
-	{
-		if (acc != Account_->GetObject ())
-			return;
-
-		FillView (entries);
-	}
-
 	void BlogEntriesWidget::on_BlogEntriesView__doubleClicked (const QModelIndex& index)
 	{
 		XmlSettingsManager::Instance ()
@@ -283,5 +240,12 @@ namespace Blogique
 			handleOpenBlogEntryInCurrentTab (index) :
 			handleOpenBlogEntryInNewTab (index);
 	}
+
+	void BlogEntriesWidget::handleCalendarVisibilityChanged (bool visible)
+	{
+		XmlSettingsManager::Instance ().setProperty ("ShowBlogPostsCalendar",
+				visible);
+	}
+
 }
 }

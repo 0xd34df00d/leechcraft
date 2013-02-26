@@ -219,10 +219,6 @@ namespace Blogique
 				this,
 				SLOT (handleEntryUpdated (QList<Entry>)));
 		connect (accObj,
-				SIGNAL (gotEntries (QList<Entry>)),
-				this,
-				SLOT (handleGotEntries (QList<Entry>)));
-		connect (accObj,
 				SIGNAL (gotEntries2Backup (QList<Entry>)),
 				this,
 				SLOT (handleGotEntries2Backup (QList<Entry>)));
@@ -275,8 +271,6 @@ namespace Blogique
 		auto acc = qobject_cast<IAccount*> (sender ());
 		if (!acc)
 			return;
-// 		Storage_->SaveEntries (acc->GetAccountID (), entries);
-		emit storageUpdated ();
 
 		SendEntity (Util::MakeNotification ("Blogique",
 				tr ("Entry was posted successfully:") +
@@ -291,25 +285,15 @@ namespace Blogique
 		if (!acc)
 			return;
 
-// 		if (QMessageBox::question (Proxy_->GetRootWindowsManager ()->GetPreferredWindow (),
-// 				"LeechCraft",
-// 				tr ("Entry was removed successfully.\nRemove entry from local storage?"),
-// 				QMessageBox::Ok | QMessageBox::No,
-// 				QMessageBox::No) == QMessageBox::No)
-// 			Storage_->MoveFromEntriesToDrafts (acc->GetAccountID (), itemId);
-// 		else
-// 			Storage_->RemoveEntry (acc->GetAccountID (), itemId);
-
-		emit storageUpdated ();
+		SendEntity (Util::MakeNotification ("Blogique",
+				tr ("Entry was removed successfully."),
+				Priority::PInfo_));
 	}
 
 	void Core::handleEntryUpdated (const QList<Entry>& entries)
 	{
 		if (entries.isEmpty ())
 			return;
-
-// 		Storage_->UpdateEntry (entries.first ());
-		emit storageUpdated ();
 
 		SendEntity (Util::MakeNotification ("Blogique",
 				tr ("Entry was updated successfully."),
@@ -321,9 +305,7 @@ namespace Blogique
 		auto acc = qobject_cast<IAccount*> (sender ());
 		if (!acc)
 			return;
-
-// 		Storage_->SaveEntries (acc->GetAccountID (), entries);
-		emit storageUpdated ();
+		//TODO
 	}
 
 	void Core::handleGettingEntries2BackupFinished ()
@@ -331,20 +313,7 @@ namespace Blogique
 		SendEntity (Util::MakeNotification ("Blogique",
 				tr ("Entries were backuped successfully."),
 				Priority::PInfo_));
-		emit storageUpdated ();
 	}
-
-	void Core::handleGotEntries (const QList<Entry>& entries)
-	{
-		auto acc = qobject_cast<IAccount*> (sender ());
-		if (!acc)
-			return;
-
-// 		Storage_->SaveEntries (acc->GetAccountID (), entries);
-		emit storageUpdated ();
-		emit gotEntries (sender (), entries);
-	}
-
 }
 }
 

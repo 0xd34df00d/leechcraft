@@ -92,46 +92,34 @@ namespace Blogique
 
 		const qint64 id = AddDraft_.lastInsertId ().toLongLong ();
 
-		for (const auto& tag : e.Tags_)
-		{
-			if (tag.isEmpty ())
-				continue;
+		lock.Good ();
+		return id;
+	}
 
-			AddDraftTag_.bindValue (":tag", tag);
-			AddDraftTag_.bindValue (":draft_id", id);
-			if (!AddDraftTag_.exec ())
-			{
-				Util::DBLock::DumpError (AddDraftTag_);
-				throw std::runtime_error ("unable to add draft's tag");
-			}
-		}
+	qint64 StorageManager::UpdateDraft (const Entry& e, qint64 draftId)
+	{
+		Util::DBLock lock (BlogiqueDB_);
+		lock.Init ();
 
-		for (const auto& key : e.PostOptions_.keys ())
+		Entry entry = GetFullDraft (draftId);
+		if (entry.IsEmpty ())
+			draftId = SaveNewDraft (e);
+		else
 		{
-			AddDraftPostOptions_.bindValue (":draft_id", id);
-			AddDraftPostOptions_.bindValue (":name", key);
-			AddDraftPostOptions_.bindValue (":value", e.PostOptions_.value (key));
-			if (!AddDraftPostOptions_.exec ())
+			UpdateDraft_.bindValue (":entry", e.Content_);
+			UpdateDraft_.bindValue (":date", e.Date_);
+			UpdateDraft_.bindValue (":subject", e.Subject_);
+			UpdateDraft_.bindValue (":draft_id", draftId);
+			if (!UpdateDraft_.exec ())
 			{
-				Util::DBLock::DumpError (AddDraftPostOptions_);
-				throw std::runtime_error ("unable to add draft params");
-			}
-		}
-
-		for (const auto& key : e.CustomData_.keys ())
-		{
-			AddDraftCustomOptions_.bindValue (":draft_id", id);
-			AddDraftCustomOptions_.bindValue (":name", key);
-			AddDraftCustomOptions_.bindValue (":value", e.CustomData_.value (key));
-			if (!AddDraftCustomOptions_.exec ())
-			{
-				Util::DBLock::DumpError (AddDraftCustomOptions_);
-				throw std::runtime_error ("unable to add draft params");
+				Util::DBLock::DumpError (UpdateDraft_);
+				throw std::runtime_error ("unable to update draft");
 			}
 		}
 
 		lock.Good ();
-		return id;
+
+		return draftId;
 	}
 
 	void StorageManager::RemoveDraft (qint64 draftId)
@@ -141,42 +129,6 @@ namespace Blogique
 		{
 			Util::DBLock::DumpError (RemoveDraft_);
 			throw std::runtime_error ("unable to remove draft");
-		}
-	}
-
-	namespace
-	{
-		QVariantMap GetEntryOptions (QSqlQuery query)
-		{
-			if (!query.exec ())
-			{
-				Util::DBLock::DumpError (query);
-				throw std::runtime_error ("unable to get entry's params");
-			}
-
-			QVariantMap map;
-			while (query.next ())
-				map.insert (query.value (1).toString (), query.value (2));
-			query.finish ();
-
-			return map;
-		}
-
-		QStringList GetTags (QSqlQuery query)
-		{
-			if (!query.exec ())
-			{
-				Util::DBLock::DumpError (query);
-				throw std::runtime_error ("unable to get entry's tag");
-			}
-
-			QStringList tags;
-			while (query.next ())
-				tags << query.value (1).toString ();
-
-			query.finish ();
-
-			return tags;
 		}
 	}
 
@@ -192,23 +144,11 @@ namespace Blogique
 		while (GetDrafts_.next ())
 		{
 			Entry e;
-			const int draftId = GetDrafts_.value (0).toInt ();
-			e.EntryId_ = draftId;
+			e.EntryId_ = GetDrafts_.value (0).toInt ();
 			e.Content_ = GetDrafts_.value (1).toString ();
 			e.Date_ = GetDrafts_.value (2).toDateTime ();
 			e.Subject_ = GetDrafts_.value (3).toString ();
 
-			if (mode == Mode::FullMode)
-			{
-				GetDraftTags_.bindValue (":draft_id", draftId);
-				e.Tags_ = GetTags (GetDraftTags_);
-
-				GetDraftPostOptions_.bindValue (":draft_id", draftId);
-				e.PostOptions_ = GetEntryOptions (GetDraftPostOptions_);
-
-				GetDraftCustomOptions_.bindValue (":draft_id", draftId);
-				e.CustomData_ = GetEntryOptions (GetDraftCustomOptions_);
-			}
 			list << e;
 		}
 		GetDrafts_.finish ();
@@ -216,14 +156,68 @@ namespace Blogique
 		return list;
 	}
 
+	QList<Entry> StorageManager::GetDraftsByDate (const QDate& date)
+	{
+		GetDraftsByDate_.bindValue (":date", date.toString ("yyyy-MM-dd"));
+		if (!GetDraftsByDate_.exec ())
+		{
+			Util::DBLock::DumpError (GetDraftsByDate_);
+			throw std::runtime_error ("unable to get drafts");
+		}
+
+		QList<Entry> list;
+		while (GetDraftsByDate_.next ())
+		{
+			Entry e;
+			e.EntryId_ = GetDraftsByDate_.value (0).toInt ();
+			e.Content_ = GetDraftsByDate_.value (1).toString ();
+			e.Date_ = GetDraftsByDate_.value (2).toDateTime ();
+			e.Subject_ = GetDraftsByDate_.value (3).toString ();
+
+			list << e;
+		}
+		GetDraftsByDate_.finish ();
+
+		return list;
+	}
+
 	QMap<QDate, int> StorageManager::GetDraftsCountByDate ()
 	{
+		if (!GetDraftsCountByDate_.exec ())
+		{
+			Util::DBLock::DumpError (GetDraftsCountByDate_);
+			throw std::runtime_error ("unable to get entries");
+		}
 
+		QMap<QDate, int> statistic;
+		while (GetDraftsCountByDate_.next ())
+			statistic.insert (GetDraftsCountByDate_.value (0).toDate (),
+					GetDraftsCountByDate_.value (1).toInt ());
+		GetDraftsCountByDate_.finish ();
+
+		return statistic;
 	}
 
 	Entry StorageManager::GetFullDraft (qint64 draftId)
 	{
+		GetFullDraft_.bindValue (":draft_id", draftId);
+		if (!GetFullDraft_.exec ())
+		{
+			Util::DBLock::DumpError (GetFullDraft_);
+			throw std::runtime_error ("unable to get full draft by id");
+		}
 
+		Entry e;
+		while (GetFullDraft_.next ())
+		{
+			e.EntryId_ = draftId;
+			e.Content_ = GetFullDraft_.value (1).toString ();
+			e.Date_ = GetFullDraft_.value (2).toDateTime ();
+			e.Subject_ = GetFullDraft_.value (3).toString ();
+		}
+		GetFullDraft_.finish ();
+
+		return e;
 	}
 
 	void StorageManager::CreateTables ()
@@ -238,23 +232,6 @@ namespace Blogique
 				"Entry TEXT, "
 				"Date DATE, "
 				"Subject TEXT "
-				");";
-		table2query ["draft_post_options"] = "CREATE TABLE IF NOT EXISTS draft_post_options ("
-				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
-				"DraftID INTEGER NOT NULL REFERENCES drafts (Id) ON DELETE CASCADE, "
-				"Name TEXT, "
-				"Value TEXT "
-				");";
-		table2query ["draft_custom_options"] = "CREATE TABLE IF NOT EXISTS draft_custom_options ("
-				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
-				"DraftID INTEGER NOT NULL REFERENCES drafts (Id) ON DELETE CASCADE, "
-				"Name TEXT, "
-				"Value TEXT "
-				");";
-		table2query ["draft_tags"] = "CREATE TABLE IF NOT EXISTS draft_tags ("
-				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
-				"Tag TEXT NOT NULL, "
-				"DraftId INTEGER NOT NULL REFERENCES drafts (Id) ON DELETE CASCADE "
 				");";
 
 		Util::DBLock lock (BlogiqueDB_);
@@ -300,97 +277,12 @@ namespace Blogique
 		GetFullDraft_ = QSqlQuery (BlogiqueDB_);
 		GetFullDraft_.prepare ("SELECT Id, Entry, Date, Subject FROM drafts "
 				"WHERE Id = :draft_id;");
-
-		AddDraftPostOptions_ = QSqlQuery (BlogiqueDB_);
-		AddDraftPostOptions_.prepare ("INSERT INTO draft_post_options "
-				"(DraftId, Name, Value) VALUES (:draft_id, :name, :value);");
-		UpdateDraftPostOptions_ = QSqlQuery (BlogiqueDB_);
-		UpdateDraftPostOptions_.prepare ("UPDATE draft_post_options SET Value = :value "
-				"WHERE DraftId = :draft_id AND Name = :name;");
-		GetDraftPostOptions_ = QSqlQuery (BlogiqueDB_);
-		GetDraftPostOptions_.prepare ("SELECT Id, Name, Value FROM draft_post_options "
-				"WHERE DraftID = :draft_id;");
-
-		AddDraftCustomOptions_ = QSqlQuery (BlogiqueDB_);
-		AddDraftCustomOptions_.prepare ("INSERT INTO draft_custom_options "
-				"(DraftId, Name, Value) VALUES (:draft_id, :name, :value);");
-		UpdateDraftCustomOptions_ = QSqlQuery (BlogiqueDB_);
-		UpdateDraftCustomOptions_.prepare ("UPDATE draft_custom_options "
-				"SET Value = :val WHERE DraftId = :draft_id AND Name = :name;");
-		GetDraftCustomOptions_ = QSqlQuery (BlogiqueDB_);
-		GetDraftCustomOptions_.prepare ("SELECT Id, Name, Value FROM draft_custom_options "
-				"WHERE DraftID = :draft_id;");
-
-		AddDraftTag_ = QSqlQuery (BlogiqueDB_);
-		AddDraftTag_.prepare ("INSERT INTO draft_tags "
-				"(Tag, DraftId) VALUES (:tag, :draft_id);");
-		RemoveDraftTags_ = QSqlQuery (BlogiqueDB_);
-		RemoveDraftTags_.prepare ("DELETE FROM draft_tags WHERE DraftID = :draft_id;");
-		GetDraftTags_ = QSqlQuery (BlogiqueDB_);
-		GetDraftTags_.prepare ("SELECT Id, Tag FROM draft_tags WHERE DraftID = :draft_id;");
-	}
-
-	void StorageManager::updateDraft (const Entry& e, qint64 draftId)
-	{
-		Util::DBLock lock (BlogiqueDB_);
-		lock.Init ();
-
-		UpdateDraft_.bindValue (":entry", e.Content_);
-		UpdateDraft_.bindValue (":date", e.Date_);
-		UpdateDraft_.bindValue (":subject", e.Subject_);
-		UpdateDraft_.bindValue (":draft_id", draftId);
-		if (!UpdateDraft_.exec ())
-		{
-			Util::DBLock::DumpError (UpdateDraft_);
-			throw std::runtime_error ("unable to update draft");
-		}
-
-		RemoveDraftTags_.bindValue (":draft_id", draftId);
-		if (!RemoveDraftTags_.exec ())
-		{
-			Util::DBLock::DumpError (RemoveDraftTags_);
-			throw std::runtime_error ("unable to remove draft's tags");
-		}
-
-		for (const auto& tag : e.Tags_)
-		{
-			if (tag.isEmpty ())
-				continue;
-
-			AddDraftTag_.bindValue (":tag", tag);
-			AddDraftTag_.bindValue (":draft_id", draftId);
-			if (!AddDraftTag_.exec ())
-			{
-				Util::DBLock::DumpError (AddDraftTag_);
-				throw std::runtime_error ("unable to add draft's tag");
-			}
-		}
-
-		for (const auto& key : e.PostOptions_.keys ())
-		{
-			UpdateDraftPostOptions_.bindValue (":draft_id", draftId);
-			UpdateDraftPostOptions_.bindValue (":name", key);
-			UpdateDraftPostOptions_.bindValue (":value", e.PostOptions_.value (key));
-			if (!UpdateDraftPostOptions_.exec ())
-			{
-				Util::DBLock::DumpError (UpdateDraftPostOptions_);
-				throw std::runtime_error ("unable to update draft post option");
-			}
-		}
-
-		for (const auto& key : e.CustomData_.keys ())
-		{
-			UpdateDraftCustomOptions_.bindValue (":draft_id", draftId);
-			UpdateDraftCustomOptions_.bindValue (":name", key);
-			UpdateDraftCustomOptions_.bindValue (":value", e.PostOptions_.value (key));
-			if (!UpdateDraftCustomOptions_.exec ())
-			{
-				Util::DBLock::DumpError (UpdateDraftCustomOptions_);
-				throw std::runtime_error ("unable to update draft custom option");
-			}
-		}
-
-		lock.Good ();
+		GetDraftsByDate_ = QSqlQuery (BlogiqueDB_);
+		GetDraftsByDate_.prepare ("SELECT Id, Entry, Date, Subject FROM drafts "
+				"WHERE date (Date) = :date;");
+		GetDraftsCountByDate_ = QSqlQuery (BlogiqueDB_);
+		GetDraftsCountByDate_.prepare ("SELECT date (Date), COUNT (Id) FROM drafts "
+				" GROUP BY date (Date);");
 	}
 
 }

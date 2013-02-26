@@ -58,19 +58,11 @@ namespace Metida
 				Qt::UserRole);
 		map ["allowMask"] = AllowMask_;
 
-		const bool noMood = Ui_.Mood_->currentText ().isEmpty ();
-		map ["noMood"] = noMood;
-
-		if (!noMood)
-		{
-			int index = Ui_.Mood_->findText (Ui_.Mood_->currentText ());
-			int moodId = Ui_.Mood_->itemData (index).toInt ();
-			if (index == -1 ||
-					!moodId)
-				map ["mood"] = Ui_.Mood_->currentText ();
-			else
-				map ["moodId"] = moodId;
-		}
+		const bool customMood = (Ui_.Mood_->itemData (Ui_.Mood_->currentIndex ()) == QVariant::Invalid);
+		if (!customMood)
+			map ["moodId"] = Ui_.Mood_->itemData (Ui_.Mood_->currentIndex ()).toInt ();
+		else
+			map ["mood"] = Ui_.Mood_->currentText ();
 
 		map ["place"] = Ui_.Place_->text ();
 		map ["music"] = Ui_.Music_->text ();
@@ -111,27 +103,21 @@ namespace Metida
 
 		//TODO AllowMask_
 
-		if (map.contains ("noMood") &&
-				map ["noMood"].toBool ())
-			Ui_.Mood_->setCurrentIndex (-1);
+		const QString& mood = map ["mood"].toString ();
+		if (!mood.isEmpty ())
+		{
+			Ui_.Mood_->addItem (mood);
+			Ui_.Mood_->setCurrentIndex (Ui_.Mood_->count () - 1);
+		}
 		else
 		{
-			const QString& mood = map ["mood"].toString ();
-			if (!mood.isEmpty ())
-			{
-				Ui_.Mood_->addItem (mood);
-				Ui_.Mood_->setCurrentIndex (Ui_.Mood_->count () - 1);
-			}
-			else
-			{
-				int moodId = map ["moodId"].toInt ();
-				for (int i = 0; i < Ui_.Mood_->count (); ++i)
-					if (Ui_.Mood_->itemData (i, Qt::UserRole).toInt () == moodId)
-					{
-						Ui_.Mood_->setCurrentIndex (i);
-						break;
-					}
-			}
+			int moodId = map ["moodId"].toInt ();
+			for (int i = 0; i < Ui_.Mood_->count (); ++i)
+				if (Ui_.Mood_->itemData (i).toInt () == moodId)
+				{
+					Ui_.Mood_->setCurrentIndex (i);
+					break;
+				}
 		}
 
 		Ui_.Place_->setText (map ["place"].toString ());
@@ -210,6 +196,7 @@ namespace Metida
 			return;
 
 		Ui_.Mood_->clear ();
+		Ui_.Mood_->addItem (QString ());
 		for (const auto& mood : profile->GetProfileData ().Moods_)
 			Ui_.Mood_->addItem (mood.Name_, mood.Id_);
 

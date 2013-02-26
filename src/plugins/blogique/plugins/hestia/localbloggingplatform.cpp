@@ -25,6 +25,8 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/passutils.h>
 #include "core.h"
+#include "importaccountwidget.h"
+#include "localblogaccount.h"
 
 namespace LeechCraft
 {
@@ -75,19 +77,46 @@ namespace Hestia
 		return "Blogique.Hestia.LocalBlog";
 	}
 
-	QList<QWidget*> LocalBloggingPlatform::GetAccountRegistrationWidgets (IBloggingPlatform::AccountAddOptions)
+	QList<QWidget*> LocalBloggingPlatform::GetAccountRegistrationWidgets (IBloggingPlatform::AccountAddOptions opts)
 	{
 		QList<QWidget*> result;
+		if (!(opts & IBloggingPlatform::AAORegisterNewAccount))
+			result << new ImportAccountWidget ();
 		return result;
 	}
 
 	void LocalBloggingPlatform::RegisterAccount (const QString& name,
 			const QList<QWidget*>& widgets)
 	{
+		auto w = qobject_cast<ImportAccountWidget*> (widgets.value (0));
+		if (!w)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "got invalid widgets"
+					<< widgets;
+			return;
+		}
+
+		LocalBlogAccount *account = new LocalBlogAccount (name, this);
+		account->FillSettings (w);
+
+		const QString& path = w->GetAccountBasePath ();
+		if (!path.isEmpty ())
+			Accounts_ << account;
+		saveAccounts ();
+		emit accountAdded (account);
+		account->Init ();
 	}
 
 	void LocalBloggingPlatform::RemoveAccount (QObject *account)
 	{
+		LocalBlogAccount*acc = qobject_cast<LocalBlogAccount*> (account);
+		if (Accounts_.removeAll (acc))
+		{
+			emit accountRemoved (account);
+			account->deleteLater ();
+			saveAccounts ();
+		}
 	}
 
 	QList<QAction*> LocalBloggingPlatform::GetEditorActions () const
@@ -117,10 +146,46 @@ namespace Hestia
 
 	void LocalBloggingPlatform::RestoreAccounts ()
 	{
+		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
+				QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () +
+				"_Blogique_Hestia_Accounts");
+		int size = settings.beginReadArray ("Accounts");
+		for (int i = 0; i < size; ++i)
+		{
+			settings.setArrayIndex (i);
+			QByteArray data = settings.value ("SerializedData").toByteArray ();
+			LocalBlogAccount *acc = LocalBlogAccount::Deserialize (data, this);
+			if (!acc)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unserializable acount"
+						<< i;
+				continue;
+			}
+			Accounts_ << acc;
+			emit accountAdded (acc);
+
+			acc->Init ();
+		}
+		settings.endArray ();
 	}
 
 	void LocalBloggingPlatform::saveAccounts ()
 	{
+		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
+				QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () +
+				"_Blogique_Hestia_Accounts");
+		settings.beginWriteArray ("Accounts");
+		for (int i = 0, size = Accounts_.size (); i < size; ++i)
+		{
+			settings.setArrayIndex (i);
+			settings.setValue ("SerializedData",
+					Accounts_.at (i)->Serialize ());
+		}
+		settings.endArray ();
+		settings.sync ();
 	}
 }
 }
