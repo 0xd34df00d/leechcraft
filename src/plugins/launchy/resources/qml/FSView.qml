@@ -14,6 +14,13 @@ Rectangle {
 
     Keys.onEscapePressed: rootRect.closeRequested()
 
+    Keys.forwardTo: [itemsView, appsFilterInput]
+
+    Keys.onLeftPressed: itemsView.moveCurrentIndexLeft()
+    Keys.onRightPressed: itemsView.moveCurrentIndexRight()
+    Keys.onUpPressed: itemsView.moveCurrentIndexUp()
+    Keys.onDownPressed: itemsView.moveCurrentIndexDown()
+
     Rectangle {
         id: catsContainer
 
@@ -151,6 +158,9 @@ Rectangle {
 
         model: itemsModel
 
+        focus: true
+        keyNavigationWraps: true
+
         delegate: Rectangle {
             id: itemsViewDelegate
 
@@ -158,7 +168,7 @@ Rectangle {
             height: itemsView.cellHeight
             radius: 5
 
-            color: itemMouseArea.containsMouse ? "#AAA51E00" : "#33222222"
+            color: (itemMouseArea.containsMouse || GridView.isCurrentItem) ? "#AAA51E00" : "#33222222"
             Behavior on color { PropertyAnimation {} }
 
             Image {
