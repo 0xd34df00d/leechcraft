@@ -43,6 +43,7 @@ namespace Poshuku
 		completer->setModel (Core::Instance ().GetURLCompletionModel ());
 		completer->setCompletionRole (URLCompletionModel::RoleURL);
 		completer->setCompletionMode (QCompleter::UnfilteredPopupCompletion);
+		completer->setMaxVisibleItems (15);
 		setCompleter (completer);
 
 		ClearButton_ = new QToolButton (this);
