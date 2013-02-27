@@ -20,6 +20,8 @@ Rectangle {
     Keys.onRightPressed: itemsView.moveCurrentIndexRight()
     Keys.onUpPressed: itemsView.moveCurrentIndexUp()
     Keys.onDownPressed: itemsView.moveCurrentIndexDown()
+    Keys.onEnterPressed: itemsView.currentItem.trigger()
+    Keys.onReturnPressed: itemsView.currentItem.trigger()
 
     Rectangle {
         id: catsContainer
@@ -126,7 +128,7 @@ Rectangle {
 
         color: "#cccccccc"
 
-        TextEdit {
+        TextInput {
             id: appsFilterInput
             anchors.left: parent.left
             anchors.right: parent.right
@@ -135,7 +137,6 @@ Rectangle {
             font.pointSize: 12
             font.italic: true
             focus: true
-            textFormat: TextEdit.PlainText
         }
 
         Binding {
@@ -202,7 +203,7 @@ Rectangle {
                 anchors.fill: parent
                 hoverEnabled: true
 
-                onClicked: rootRect.itemSelected(itemID)
+                onClicked: trigger()
 
                 onEntered: itemDescriptionLabel.text = itemDescription
                 onExited: itemDescriptionLabel.text = ""
@@ -225,6 +226,10 @@ Rectangle {
 
             GridView.onAdd: SequentialAnimation {
                 NumberAnimation { target: itemsViewDelegate; property: "opacity"; from: 0; to: 1; duration: 250; easing.type: Easing.InOutQuad }
+            }
+
+            function trigger() {
+                rootRect.itemSelected(itemID);
             }
         }
     }
