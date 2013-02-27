@@ -30,6 +30,24 @@
 				<option name="white" color="white" bgcolor="black">
 					<label value="White" />
 				</option>
+				<option name="blue" color="blue">
+					<label value="Blue" />
+				</option>
+				<option name="cyan" color="cyan">
+					<label value="Cyan" />
+				</option>
+				<option name="green" color="green">
+					<label value="Green" />
+				</option>
+				<option name="magenta" color="magenta">
+					<label value="Magenta" />
+				</option>
+				<option name="red" color="red">
+					<label value="Red" />
+				</option>
+				<option name="yellow" color="yellow">
+					<label value="Yellow" />
+				</option>
 			</item>
 		</groupbox>
 		<groupbox>
