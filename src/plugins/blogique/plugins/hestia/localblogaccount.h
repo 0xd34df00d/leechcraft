@@ -28,8 +28,8 @@ namespace Blogique
 {
 namespace Hestia
 {
-
-			class ImportAccountWidget;
+	class AccountStorage;
+	class ImportAccountWidget;
 	class LocalBloggingPlatform;
 
 	class LocalBlogAccount : public QObject
@@ -40,8 +40,9 @@ namespace Hestia
 
 		LocalBloggingPlatform *ParentBloggingPlatform_;
 		QString Name_;
-		bool IsValidated_;
+		bool IsValid_;
 		QString DatabasePath_;
+		AccountStorage *AccountStorage_;
 
 	public:
 		LocalBlogAccount (const QString& name, QObject *parent = 0);
@@ -54,7 +55,7 @@ namespace Hestia
 		QByteArray GetAccountID () const;
 		void OpenConfigurationDialog ();
 
-		bool IsValidated () const;
+		bool IsValid () const;
 		QObject* GetProfile ();
 
 		void RemoveEntry (const Entry& entry);
@@ -79,6 +80,9 @@ namespace Hestia
 
 	signals:
 		void accountRenamed (const QString& newName);
+		void accountSettingsChanged ();
+		void accountValidated (bool validated);
+
 		void entryPosted (const QList<Entry>& entries);
 		void entryRemoved (int itemId);
 		void entryUpdated (const QList<Entry>& entries);

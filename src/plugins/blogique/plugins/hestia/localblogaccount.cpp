@@ -18,8 +18,9 @@
 
 #include "localblogaccount.h"
 #include <QtDebug>
-#include "localbloggingplatform.h"
+#include "accountstorage.h"
 #include "importaccountwidget.h"
+#include "localbloggingplatform.h"
 
 namespace LeechCraft
 {
@@ -31,7 +32,8 @@ namespace Hestia
 	: QObject (parent)
 	, ParentBloggingPlatform_ (qobject_cast<LocalBloggingPlatform*> (parent))
 	, Name_ (name)
-	, IsValidated_ (false)
+	, IsValid_ (false)
+	, AccountStorage_ (new AccountStorage (this))
 	{
 	}
 
@@ -71,9 +73,9 @@ namespace Hestia
 
 	}
 
-	bool LocalBlogAccount::IsValidated () const
+	bool LocalBlogAccount::IsValid () const
 	{
-		return IsValidated_;
+		return IsValid_;
 	}
 
 	QObject* LocalBlogAccount::GetProfile ()
@@ -83,7 +85,6 @@ namespace Hestia
 
 	void LocalBlogAccount::RemoveEntry (const LeechCraft::Blogique::Entry& entry)
 	{
-
 	}
 
 	void LocalBlogAccount::UpdateEntry (const LeechCraft::Blogique::Entry& entry)
@@ -98,18 +99,15 @@ namespace Hestia
 
 	void LocalBlogAccount::RequestStatistics ()
 	{
-
 	}
 
 
 	void LocalBlogAccount::GetEntriesByDate (const QDate& date)
 	{
-
 	}
 
 	void LocalBlogAccount::GetLastEntries (int count)
 	{
-
 	}
 
 	void LocalBlogAccount::FillSettings (ImportAccountWidget *widget)
@@ -120,6 +118,15 @@ namespace Hestia
 
 	void LocalBlogAccount::Init ()
 	{
+		connect (this,
+				SIGNAL (accountValidated (bool)),
+				ParentBloggingPlatform_,
+				SLOT (handleAccountValidated (bool)));
+
+		connect (this,
+				SIGNAL (accountSettingsChanged ()),
+				ParentBloggingPlatform_,
+				SLOT (saveAccounts ()));
 	}
 
 	QByteArray LocalBlogAccount::Serialize () const
@@ -131,7 +138,7 @@ namespace Hestia
 			ostr << ver
 					<< Name_
 					<< DatabasePath_
-					<< IsValidated_;
+					<< IsValid_;
 		}
 
 		return result;
@@ -155,14 +162,15 @@ namespace Hestia
 		in >> name;
 		LocalBlogAccount *result = new LocalBlogAccount (name, parent);
 		in >> result->DatabasePath_
-				>> result->IsValidated_;
+				>> result->IsValid_;
 
 		return result;
 	}
 
 	void LocalBlogAccount::Validate ()
 	{
-
+		IsValid_ = AccountStorage_->CheckDatabase (DatabasePath_);
+		emit accountValidated (IsValid_);
 	}
 
 	void LocalBlogAccount::updateProfile ()

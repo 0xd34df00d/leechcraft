@@ -107,7 +107,7 @@ namespace Metida
 		LJXmlRPC *LJXmlRpc_;
 		QString Name_;
 		QString Login_;
-		bool IsValidated_;
+		bool IsValid_;
 		std::shared_ptr<LJProfile> LJProfile_;
 
 		QAction *LoadLastEvents_;
@@ -123,7 +123,7 @@ namespace Metida
 		void RenameAccount (const QString& name);
 		QByteArray GetAccountID () const;
 		void OpenConfigurationDialog ();
-		bool IsValidated () const;
+		bool IsValid () const;
 
 		QString GetPassword () const;
 
