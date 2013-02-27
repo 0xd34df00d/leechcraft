@@ -43,7 +43,7 @@ namespace Metida
 	, ParentBloggingPlatform_ (qobject_cast<LJBloggingPlatform*> (parent))
 	, LJXmlRpc_ (new LJXmlRPC (this, this))
 	, Name_ (name)
-	, IsValidated_ (false)
+	, IsValid_ (false)
 	, LJProfile_ (std::make_shared<LJProfile> (this))
 	, LoadLastEvents_ (new QAction (tr ("Last entries"), this))
 	, LoadChangedEvents_ (new QAction (tr ("Changed entries"), this))
@@ -148,9 +148,9 @@ namespace Metida
 		FillSettings (dia->ConfWidget ());
 	}
 
-	bool LJAccount::IsValidated () const
+	bool LJAccount::IsValid () const
 	{
-		return IsValidated_;
+		return IsValid_;
 	}
 
 	QString LJAccount::GetPassword () const
@@ -282,7 +282,7 @@ namespace Metida
 			ostr << ver
 					<< Name_
 					<< Login_
-					<< IsValidated_
+					<< IsValid_
 					<< LJProfile_->GetProfileData ();
 		}
 
@@ -308,7 +308,7 @@ namespace Metida
 		in >> name;
 		LJAccount *result = new LJAccount (name, parent);
 		in >> result->Login_
-				>> result->IsValidated_;
+				>> result->IsValid_;
 
 		if (ver == 2)
 		{
@@ -366,14 +366,14 @@ namespace Metida
 
 	void LJAccount::handleValidatingFinished (bool success)
 	{
-		IsValidated_ = success;
+		IsValid_ = success;
 		qDebug () << Q_FUNC_INFO
 				<< "account"
 				<< GetAccountID ()
 				<< "validating result is"
-				<< IsValidated_;
+				<< IsValid_;
 
-		emit accountValidated (IsValidated_);
+		emit accountValidated (IsValid_);
 		emit accountSettingsChanged ();
 	}
 

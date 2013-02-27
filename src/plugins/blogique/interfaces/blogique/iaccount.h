@@ -124,11 +124,11 @@ namespace Blogique
 
 		/** @brief Returns validation state of account.
 		 *
-		 * If account not validated it can't be used for blogging.
+		 * If account not valid it can't be used for blogging.
 		 *
 		 * @return Validation state of the account.
 		 */
-		virtual bool IsValidated () const = 0;
+		virtual bool IsValid () const = 0;
 
 		/** @brief Returns the pointer to account's profile.
 		 *

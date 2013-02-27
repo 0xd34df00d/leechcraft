@@ -70,8 +70,7 @@ namespace Hestia
 
 	private slots:
 		void saveAccounts ();
-		void handleAddLJUser ();
-		void handleAddLJCut ();
+		void handleAccountValidated (bool valid);
 
 	signals:
 		void accountAdded (QObject *account);

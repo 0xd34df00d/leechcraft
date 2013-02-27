@@ -88,7 +88,7 @@ namespace Blogique
 		QStandardItem *item = new QStandardItem (acc->GetAccountName ());
 		item->setIcon (ibp ? ibp->GetBloggingPlatformIcon () : QIcon ());
 		item->setEditable (false);
-		QStandardItem *itemValidated = new QStandardItem (acc->IsValidated () ?
+		QStandardItem *itemValidated = new QStandardItem (acc->IsValid () ?
 				tr ("Validated") :
 				tr ("Not validated"));
 		itemValidated->setEditable (false);
@@ -269,7 +269,7 @@ namespace Blogique
 
 			Ui_.Profile_->setEnabled ((ibp->GetFeatures () &
 					IBloggingPlatform::BPFSupportsProfiles) &&
-					acc->IsValidated ());
+					acc->IsValid ());
 		}
 	}
 

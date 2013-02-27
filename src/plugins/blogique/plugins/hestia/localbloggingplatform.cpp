@@ -24,6 +24,7 @@
 #include <QMainWindow>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/passutils.h>
+#include <util/util.h>
 #include "core.h"
 #include "importaccountwidget.h"
 #include "localblogaccount.h"
@@ -164,8 +165,12 @@ namespace Hestia
 				continue;
 			}
 			Accounts_ << acc;
-			emit accountAdded (acc);
+			if (!acc->IsValid ())
+				Core::Instance ().SendEntity (Util::MakeNotification ("Blogique",
+						tr ("You have invalid account data."),
+						PWarning_));
 
+			emit accountAdded (acc);
 			acc->Init ();
 		}
 		settings.endArray ();
@@ -187,6 +192,21 @@ namespace Hestia
 		settings.endArray ();
 		settings.sync ();
 	}
+
+	void LocalBloggingPlatform::handleAccountValidated (bool valid)
+	{
+		IAccount *acc = qobject_cast<IAccount*> (sender ());
+		if (!acc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "is not an IAccount";;
+			return;
+		}
+
+		emit accountValidated (acc->GetObject (), valid);
+	}
+
 }
 }
 }
