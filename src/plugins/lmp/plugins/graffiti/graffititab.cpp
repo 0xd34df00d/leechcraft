@@ -28,6 +28,9 @@
 #include <taglib/tag.h>
 #include <util/tags/tagscompletionmodel.h>
 #include <util/tags/tagscompleter.h>
+#include <util/gui/clearlineeditaddon.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/media/itagsfetcher.h>
 #include <interfaces/lmp/ilmpproxy.h>
 #include <interfaces/lmp/itagresolver.h>
 #include <interfaces/lmp/mediainfo.h>
@@ -35,8 +38,6 @@
 #include "renamedialog.h"
 #include "genres.h"
 #include "fileswatcher.h"
-#include <interfaces/core/ipluginsmanager.h>
-#include <interfaces/media/itagsfetcher.h>
 
 namespace LeechCraft
 {
@@ -56,6 +57,10 @@ namespace Graffiti
 	, IsChangingCurrent_ (false)
 	{
 		Ui_.setupUi (this);
+		new Util::ClearLineEditAddon (coreProxy, Ui_.Album_);
+		new Util::ClearLineEditAddon (coreProxy, Ui_.Artist_);
+		new Util::ClearLineEditAddon (coreProxy, Ui_.Title_);
+		new Util::ClearLineEditAddon (coreProxy, Ui_.Genre_);
 
 		FSModel_->setRootPath (QDir::homePath ());
 		FSModel_->setFilter (QDir::Dirs | QDir::NoDotAndDotDot);
