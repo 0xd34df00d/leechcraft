@@ -175,15 +175,18 @@ namespace TabSessManager
 		{
 			for (auto tab : list)
 			{
-				ITabWidget *tw = qobject_cast<ITabWidget*> (tab);
+				auto rec = qobject_cast<IRecoverableTab*> (tab);
+				if (!rec)
+					continue;
+
+				auto tw = qobject_cast<ITabWidget*> (tab);
 				if (!tw)
 					continue;
 
-				IInfo *plugin = qobject_cast<IInfo*> (tw->ParentMultiTabs ());
+				auto plugin = qobject_cast<IInfo*> (tw->ParentMultiTabs ());
 				if (!plugin)
 					continue;
 
-				auto rec = qobject_cast<IRecoverableTab*> (tab);
 				const auto& data = rec->GetTabRecoverData ();
 				if (data.isEmpty ())
 					continue;
@@ -214,10 +217,6 @@ namespace TabSessManager
 
 	void Plugin::handleNewTab (const QString&, QWidget *widget)
 	{
-		auto tab = qobject_cast<IRecoverableTab*> (widget);
-		if (!tab)
-			return;
-
 		auto rootWM = Proxy_->GetRootWindowsManager ();
 		auto windowIndex = rootWM->GetWindowForTab (qobject_cast<ITabWidget*> (widget));
 
@@ -239,6 +238,10 @@ namespace TabSessManager
 
 		Tabs_ [windowIndex] << widget;
 
+		auto tab = qobject_cast<IRecoverableTab*> (widget);
+		if (!tab)
+			return;
+
 		connect (widget,
 				SIGNAL (tabRecoverDataChanged ()),
 				this,
@@ -248,6 +251,17 @@ namespace TabSessManager
 
 		if (!tab->GetTabRecoverData ().isEmpty ())
 			handleTabRecoverDataChanged ();
+
+		const auto& posProp = widget->property ("TabSessManager/Position");
+		if (posProp.isValid ())
+		{
+			const auto prevPos = posProp.toInt ();
+
+			const auto tabWidget = rootWM->GetTabWidget (windowIndex);
+			const auto currentIdx = tabWidget->IndexOf (widget);
+			if (prevPos < tabWidget->WidgetCount () && currentIdx != prevPos)
+				tabWidget->MoveTab (currentIdx, prevPos);
+		}
 	}
 
 	void Plugin::handleRemoveTab (QWidget *widget)
@@ -269,7 +283,7 @@ namespace TabSessManager
 		if (recoverData.isEmpty ())
 			return;
 
-		const TabUncloseInfo info
+		TabUncloseInfo info
 		{
 			{
 				recoverData,
@@ -277,6 +291,11 @@ namespace TabSessManager
 			},
 			qobject_cast<IHaveRecoverableTabs*> (tab->ParentMultiTabs ())
 		};
+
+		const auto rootWM = Proxy_->GetRootWindowsManager ();
+		const auto winIdx = rootWM->GetWindowForTab (tab);
+		const auto tabIdx = rootWM->GetTabWidget (winIdx)->IndexOf (widget);
+		info.RecInfo_.DynProperties_.append ({ "TabSessManager/Position", tabIdx });
 
 		const auto pos = std::find_if (UncloseAct2Data_.begin (), UncloseAct2Data_.end (),
 				[&info] (const TabUncloseInfo& that) { return that.RecInfo_.Data_ == info.RecInfo_.Data_; });
@@ -307,7 +326,13 @@ namespace TabSessManager
 
 	void Plugin::handleTabMoved (int from, int to)
 	{
-		if (std::max (from, to) >= Tabs_.size () ||
+		const auto rootWM = Proxy_->GetRootWindowsManager ();
+		const auto tabWidget = qobject_cast<ICoreTabWidget*> (sender ());
+		const auto pos = rootWM->GetTabWidgetIndex (tabWidget);
+
+		auto& tabs = Tabs_ [pos];
+
+		if (std::max (from, to) >= tabs.size () ||
 			std::min (from, to) < 0)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -320,8 +345,8 @@ namespace TabSessManager
 			return;
 		}
 
-		auto tab = Tabs_.takeAt (from);
-		Tabs_.insert (to, tab);
+		auto tab = tabs.takeAt (from);
+		tabs.insert (to, tab);
 
 		handleTabRecoverDataChanged ();
 	}

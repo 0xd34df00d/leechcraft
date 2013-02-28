@@ -36,7 +36,7 @@ namespace MPRIS
 		new MediaPlayer2Adaptor (tab, player);
 		new PlayerAdaptor (fdo, player);
 
-		QDBusConnection::sessionBus ().registerService ("org.mpris.MediaPlayer2.LMP_" + QString::number (reinterpret_cast<quint64> (player)));
+		QDBusConnection::sessionBus ().registerService ("org.mpris.MediaPlayer2.LMP");
 		QDBusConnection::sessionBus ().registerObject ("/org/mpris/MediaPlayer2", player);
 	}
 }

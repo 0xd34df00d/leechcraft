@@ -22,6 +22,33 @@
 			<item type="spinbox" property="VerticalDPI" default="150" minimum="10" maximum="900">
 				<label value="Vertical DPI:" />
 			</item>
+			<item type="combobox" property="TextColor">
+				<label value="Text color:" />
+				<option name="black" default="true" color="black">
+					<label value="Black" />
+				</option>
+				<option name="white" color="white" bgcolor="black">
+					<label value="White" />
+				</option>
+				<option name="blue" color="blue">
+					<label value="Blue" />
+				</option>
+				<option name="cyan" color="cyan">
+					<label value="Cyan" />
+				</option>
+				<option name="green" color="green">
+					<label value="Green" />
+				</option>
+				<option name="magenta" color="magenta">
+					<label value="Magenta" />
+				</option>
+				<option name="red" color="red">
+					<label value="Red" />
+				</option>
+				<option name="yellow" color="yellow">
+					<label value="Yellow" />
+				</option>
+			</item>
 		</groupbox>
 		<groupbox>
 			<label value="Performance" />
