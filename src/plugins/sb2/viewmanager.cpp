@@ -309,6 +309,9 @@ namespace SB2
 					added = true;
 					break;
 				}
+
+				if (added)
+					break;
 			}
 			if (!added)
 				ViewItemsModel_->appendRow (item);
