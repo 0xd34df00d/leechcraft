@@ -75,13 +75,13 @@ namespace TPI
 		return Components_;
 	}
 
-	void Plugin::hovered (int x, int y, const QPoint& shift)
+	void Plugin::hovered (int x, int y, const QRect& geometry)
 	{
 		if (!TooltipView_)
 			TooltipView_ = new TooltipView (ModelMgr_->GetModel (), Proxy_->GetColorThemeManager ());
 
-		TooltipView_->move (Util::FitRectScreen ({ x, y },
-				TooltipView_->size (), Util::NoOverlap, shift));
+		TooltipView_->move (Util::FitRect ({ x, y },
+				TooltipView_->size (), geometry, Util::NoOverlap));
 		TooltipView_->show ();
 		TooltipView_->Hovered ();
 	}
