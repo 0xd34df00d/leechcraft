@@ -12,25 +12,28 @@ INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR}
 	)
 
 SET (HESTIA_SRCS
+	accountconfigurationdialog.cpp
+	accountconfigurationwidget.cpp
 	accountstorage.cpp
 	core.cpp
 	hestia.cpp
-	importaccountwidget.cpp
 	localblogaccount.cpp
 	localbloggingplatform.cpp
 	)
 
 SET (HESTIA_HEADERS
+	accountconfigurationdialog.h
 	accountstorage.h
 	core.h
 	hestia.h
-	importaccountwidget.h
+	accountconfigurationwidget.h
 	localblogaccount.h
 	localbloggingplatform.h
 	)
 
 SET (HESTIA_FORMS
-	importaccountwidget.ui
+	accountconfigurationdialog.ui
+	accountconfigurationwidget.ui
  	)
 
 # SET (HESTIA_RESOURCES blogiquehestiaresources.qrc)

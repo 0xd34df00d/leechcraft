@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "importaccountwidget.h"
-#include <QFileDialog>
+#include "accountconfigurationdialog.h"
 
 namespace LeechCraft
 {
@@ -25,35 +24,19 @@ namespace Blogique
 {
 namespace Hestia
 {
-	ImportAccountWidget::ImportAccountWidget (QWidget *parent)
-	: QWidget (parent)
+	AccountConfigurationDialog::AccountConfigurationDialog (QWidget *parent)
+	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
 	}
 
-	void ImportAccountWidget::on_OpenAccountBase__released ()
+	AccountConfigurationWidget* AccountConfigurationDialog::ConfWidget ()
 	{
-		QString path = QFileDialog::getOpenFileName (this,
-				tr ("Open account base"),
-				QDir::homePath (),
-				tr ("Account bases (*.db)"));
-
-		if (path.isEmpty ())
-			return;
-
-		SetAccountBasePath (path);
-	}
-
-	void ImportAccountWidget::SetAccountBasePath (const QString& path)
-	{
-		Ui_.AccountBasePath_->setText (path);
-	}
-
-	QString ImportAccountWidget::GetAccountBasePath() const
-	{
-		return Ui_.AccountBasePath_->text ();
+		return Ui_.ConfWidget_;
 	}
 
 }
 }
 }
+
+

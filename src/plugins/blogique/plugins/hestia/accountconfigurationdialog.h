@@ -18,8 +18,8 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_importaccountwidget.h"
+#include <QDialog>
+#include "ui_accountconfigurationdialog.h"
 
 namespace LeechCraft
 {
@@ -27,19 +27,14 @@ namespace Blogique
 {
 namespace Hestia
 {
-	class ImportAccountWidget : public QWidget
+	class AccountConfigurationWidget;
+
+	class AccountConfigurationDialog : public QDialog
 	{
-		Q_OBJECT
-
-		Ui::ImportAccountWidget Ui_;
+		Ui::AccountConfigurationDialog Ui_;
 	public:
-		ImportAccountWidget (QWidget *parent = 0);
-
-		void SetAccountBasePath (const QString& path);
-		QString GetAccountBasePath () const;
-
-	private slots:
-		void on_OpenAccountBase__released ();
+		AccountConfigurationDialog (QWidget *parent = 0);
+		AccountConfigurationWidget* ConfWidget ();
 	};
 }
 }

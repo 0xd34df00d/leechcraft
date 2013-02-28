@@ -29,7 +29,7 @@ namespace Blogique
 namespace Hestia
 {
 	class AccountStorage;
-	class ImportAccountWidget;
+	class AccountConfigurationWidget;
 	class LocalBloggingPlatform;
 
 	class LocalBlogAccount : public QObject
@@ -65,7 +65,7 @@ namespace Hestia
 		void GetEntriesByDate (const QDate& date);
 		void GetLastEntries (int count);
 
-		void FillSettings (ImportAccountWidget *widget);
+		void FillSettings (AccountConfigurationWidget *widget);
 		void Init ();
 
 		QByteArray Serialize () const;

@@ -19,8 +19,9 @@
 #include "localblogaccount.h"
 #include <QtDebug>
 #include "accountstorage.h"
-#include "importaccountwidget.h"
+#include "accountconfigurationwidget.h"
 #include "localbloggingplatform.h"
+#include "accountconfigurationdialog.h"
 
 namespace LeechCraft
 {
@@ -70,7 +71,15 @@ namespace Hestia
 
 	void LocalBlogAccount::OpenConfigurationDialog ()
 	{
+		std::unique_ptr<AccountConfigurationDialog> dia (new AccountConfigurationDialog (0));
 
+		if (!DatabasePath_.isEmpty ())
+			dia->ConfWidget ()->SetAccountBasePath (DatabasePath_);
+
+		if (dia->exec () == QDialog::Rejected)
+			return;
+
+		FillSettings (dia->ConfWidget ());
 	}
 
 	bool LocalBlogAccount::IsValid () const
@@ -110,10 +119,20 @@ namespace Hestia
 	{
 	}
 
-	void LocalBlogAccount::FillSettings (ImportAccountWidget *widget)
+	void LocalBlogAccount::FillSettings (AccountConfigurationWidget *widget)
 	{
 		DatabasePath_ = widget->GetAccountBasePath ();
-		Validate ();
+		if (DatabasePath_.isEmpty ())
+			return;
+
+		if (widget->GetOption () & IBloggingPlatform::AAORegisterNewAccount)
+		{
+			IsValid_ = true;
+			AccountStorage_->Init (DatabasePath_);
+			emit accountValidated (IsValid_);
+		}
+		else
+			Validate ();
 	}
 
 	void LocalBlogAccount::Init ()

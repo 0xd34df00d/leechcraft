@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ImportAccountWidget</class>
- <widget class="QWidget" name="ImportAccountWidget">
+ <class>AccountConfigurationWidget</class>
+ <widget class="QWidget" name="AccountConfigurationWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -17,9 +17,9 @@
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="Label_">
        <property name="text">
-        <string>Path to existing account base:</string>
+        <string/>
        </property>
       </widget>
      </item>

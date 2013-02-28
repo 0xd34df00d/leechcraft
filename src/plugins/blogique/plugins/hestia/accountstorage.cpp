@@ -109,7 +109,7 @@ namespace Hestia
 	void AccountStorage::CreateTables ()
 	{
 		QMap<QString, QString> table2query;
-		table2query ["entries"] = "CREATE TABLE IF NOT EXISTS drafts ("
+		table2query ["entries"] = "CREATE TABLE IF NOT EXISTS entries ("
 				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
 				"Entry TEXT, "
 				"Date DATE, "
@@ -162,14 +162,14 @@ namespace Hestia
 				"GROUP BY date (Date);");
 
 		AddEntryTag_ = QSqlQuery (AccountDB_);
-		AddEntryTag_.prepare ("INSERT INTO entry_tags "
+		AddEntryTag_.prepare ("INSERT INTO tags "
 				"(Tag, EntryID) VALUES (:tag, (SELECT Id FROM entries "
 				"WHERE EntryId = :entry_id));");
 		RemoveEntryTags_ = QSqlQuery (AccountDB_);
-		RemoveEntryTags_.prepare ("DELETE FROM entry_tags WHERE EntryID = ("
+		RemoveEntryTags_.prepare ("DELETE FROM tags WHERE EntryID = ("
 				" SELECT Id FROM entries WHERE EntryId = :entry_id);");
 		GetEntryTags_ = QSqlQuery (AccountDB_);
-		GetEntryTags_.prepare ("SELECT Id, Tag FROM entry_tags WHERE EntryID = ("
+		GetEntryTags_.prepare ("SELECT Id, Tag FROM tags WHERE EntryID = ("
 				" SELECT Id FROM entries WHERE EntryId = :entry_id);");
 	}
 
