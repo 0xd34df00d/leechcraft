@@ -164,11 +164,6 @@ namespace Metida
 		return LJProfile_.get ();
 	}
 
-	void LJAccount::GetLastEntries (int count)
-	{
-		LJXmlRpc_->GetLastEvents (count);
-	}
-
 	void LJAccount::GetEntriesByDate (const QDate& date)
 	{
 		LJXmlRpc_->GetEventsByDate (date);
