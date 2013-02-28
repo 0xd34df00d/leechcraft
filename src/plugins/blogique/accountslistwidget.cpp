@@ -138,6 +138,16 @@ namespace Blogique
 		Item2Account_.remove (item);
 		AccountsModel_->removeRow (item->row ());
 		Account2Item_.remove (acc);
+		try
+		{
+			Core::Instance ().GetStorageManager ()->RemoveAccount (acc->GetAccountID ());
+		}
+		catch (const std::runtime_error& e)
+		{
+			QMessageBox::warning (this,
+					tr ("LeechCraft"),
+					tr ("Error removing account."));
+		}
 	}
 
 	void AccountsListWidget::handleAccountValidated (QObject *accObj, bool validated)

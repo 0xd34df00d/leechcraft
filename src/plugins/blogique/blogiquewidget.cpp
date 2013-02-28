@@ -298,7 +298,8 @@ namespace Blogique
 
 	void BlogiqueWidget::RemovePostingTargetsWidget ()
 	{
-		if (PostTargetAction_->isVisible ())
+		if (PostTargetAction_ &&
+				PostTargetAction_->isVisible ())
 		{
 			PostTargetAction_->setVisible (false);
 			PostTargetBox_->clear ();

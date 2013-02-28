@@ -39,6 +39,7 @@ namespace Blogique
 		QSqlDatabase BlogiqueDB_;
 
 		QSqlQuery AddAccount_;
+		QSqlQuery RemoveAccount_;
 
 		QSqlQuery AddDraft_;
 		QSqlQuery UpdateDraft_;
@@ -54,6 +55,7 @@ namespace Blogique
 		explicit StorageManager (QObject *parent = 0);
 
 		void AddAccount (const QByteArray& accounId);
+		void RemoveAccount (const QByteArray& accounId);
 
 		qint64 SaveNewDraft (const Entry& e);
 		qint64 UpdateDraft (const Entry& e, qint64 draftId);

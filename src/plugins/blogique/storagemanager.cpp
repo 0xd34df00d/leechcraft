@@ -76,6 +76,21 @@ namespace Blogique
 		lock.Good ();
 	}
 
+	void StorageManager::RemoveAccount (const QByteArray& accounId)
+	{
+		Util::DBLock lock (BlogiqueDB_);
+		lock.Init ();
+
+		RemoveAccount_.bindValue (":account_id", QString::fromUtf8 (accounId));
+		if (!RemoveAccount_.exec ())
+		{
+			Util::DBLock::DumpError (RemoveAccount_);
+			throw std::runtime_error ("unable to remove account");
+		}
+
+		lock.Good ();
+	}
+
 	qint64 StorageManager::SaveNewDraft (const Entry& e)
 	{
 		Util::DBLock lock (BlogiqueDB_);
@@ -258,6 +273,8 @@ namespace Blogique
 		AddAccount_ = QSqlQuery (BlogiqueDB_);
 		AddAccount_.prepare ("INSERT OR IGNORE INTO accounts (AccountID) "
 				"VALUES (:account_id);");
+		RemoveAccount_ = QSqlQuery (BlogiqueDB_);
+		RemoveAccount_.prepare ("DELETE FROM accounts WHERE AccountID = :account_id;");
 
 		AddDraft_ = QSqlQuery (BlogiqueDB_);
 		AddDraft_.prepare ("INSERT INTO drafts (Entry, Date, Subject) "
