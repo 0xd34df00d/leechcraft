@@ -167,7 +167,7 @@ namespace Blogique
 		try
 		{
 			entries = Core::Instance ().GetStorageManager ()->
-					GetDrafts (Mode::ShortMode);
+					GetDrafts (StorageManager::Mode::ShortMode);
 		}
 		catch (const std::runtime_error& e)
 		{

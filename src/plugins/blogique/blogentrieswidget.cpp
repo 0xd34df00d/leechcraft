@@ -136,7 +136,6 @@ namespace Blogique
 	void BlogEntriesWidget::clear ()
 	{
 		fillView (QList<Entry> ());
-		fillStatistic (QMap<QDate, int> ());
 	}
 
 	void BlogEntriesWidget::fillView (const QList<Entry>& entries)

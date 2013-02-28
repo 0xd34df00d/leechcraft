@@ -149,6 +149,8 @@ namespace Blogique
 
 	QList<Entry> StorageManager::GetDrafts (Mode mode)
 	{
+		Q_UNUSED (mode);
+
 		if (!GetDrafts_.exec ())
 		{
 			Util::DBLock::DumpError (GetDrafts_);

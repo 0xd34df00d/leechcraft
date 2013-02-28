@@ -27,12 +27,6 @@ namespace LeechCraft
 {
 namespace Blogique
 {
-	enum class Mode
-	{
-		ShortMode,
-		FullMode
-	};
-
 	class StorageManager : public QObject
 	{
 		Q_OBJECT
@@ -52,6 +46,12 @@ namespace Blogique
 		QSqlQuery GetDraftsCountByDate_;
 
 	public:
+		enum class Mode
+		{
+			ShortMode,
+			FullMode
+		};
+
 		explicit StorageManager (QObject *parent = 0);
 
 		void AddAccount (const QByteArray& accounId);

@@ -277,6 +277,8 @@ namespace Blogique
 					QString (" <a href=\"%1\">%1</a>\n")
 						.arg (entries.value (0).EntryUrl_.toString ()),
 				Priority::PInfo_));
+
+		acc->RequestStatistics ();
 	}
 
 	void Core::handleEntryRemoved (int itemId)
@@ -288,16 +290,22 @@ namespace Blogique
 		SendEntity (Util::MakeNotification ("Blogique",
 				tr ("Entry was removed successfully."),
 				Priority::PInfo_));
+		acc->RequestStatistics ();
 	}
 
 	void Core::handleEntryUpdated (const QList<Entry>& entries)
 	{
+		auto acc = qobject_cast<IAccount*> (sender ());
+		if (!acc)
+			return;
+
 		if (entries.isEmpty ())
 			return;
 
 		SendEntity (Util::MakeNotification ("Blogique",
 				tr ("Entry was updated successfully."),
 				Priority::PInfo_));
+		acc->RequestStatistics ();
 	}
 
 	void Core::handleGotEntries2Backup (const QList<Entry>& entries)
