@@ -62,6 +62,13 @@ namespace Graffiti
 		FSModel_->setReadOnly (true);
 		Ui_.DirectoryTree_->setModel (FSModel_);
 
+		auto idx = FSModel_->index (QDir::homePath ());
+		while (idx.isValid ())
+		{
+			Ui_.DirectoryTree_->expand (idx);
+			idx = idx.parent ();
+		}
+
 		Ui_.FilesList_->setModel (FilesModel_);
 
 		connect (Ui_.FilesList_->selectionModel (),
