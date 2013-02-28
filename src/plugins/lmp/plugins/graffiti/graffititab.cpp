@@ -157,17 +157,17 @@ namespace Graffiti
 		}
 	}
 
-	void GraffitiTab::on_Artist__textEdited (const QString& artist)
+	void GraffitiTab::on_Artist__textChanged (const QString& artist)
 	{
 		UpdateData (artist, [] (MediaInfo& info) -> QString& { return info.Artist_; });
 	}
 
-	void GraffitiTab::on_Album__textEdited (const QString& album)
+	void GraffitiTab::on_Album__textChanged (const QString& album)
 	{
 		UpdateData (album, [] (MediaInfo& info) -> QString& { return info.Album_; });
 	}
 
-	void GraffitiTab::on_Title__textEdited (const QString& title)
+	void GraffitiTab::on_Title__textChanged (const QString& title)
 	{
 		UpdateData (title, [] (MediaInfo& info) -> QString& { return info.Title_; });
 	}

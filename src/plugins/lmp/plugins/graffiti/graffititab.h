@@ -79,9 +79,9 @@ namespace Graffiti
 		template<typename T, typename F>
 		void UpdateData (const T& newData, F getter);
 	private slots:
-		void on_Artist__textEdited (const QString&);
-		void on_Album__textEdited (const QString&);
-		void on_Title__textEdited (const QString&);
+		void on_Artist__textChanged (const QString&);
+		void on_Album__textChanged (const QString&);
+		void on_Title__textChanged (const QString&);
 		void on_Genre__textChanged (const QString&);
 		void on_Year__valueChanged (int);
 
