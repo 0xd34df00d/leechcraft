@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QObject>
+#include <QLibrary>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/azoth/iprotocolplugin.h>
@@ -39,6 +40,7 @@ namespace VelvetBird
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin)
 
+		QLibrary PurpleLib_;
 		ProtoManager *ProtoMgr_;
 	public:
 		void Init (ICoreProxy_ptr);

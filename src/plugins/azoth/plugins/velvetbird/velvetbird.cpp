@@ -27,6 +27,17 @@ namespace VelvetBird
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		ProtoMgr_ = 0;
+
+		PurpleLib_.setLoadHints (QLibrary::ExportExternalSymbolsHint | QLibrary::ResolveAllSymbolsHint);
+		PurpleLib_.setFileName ("purple");
+		if (!PurpleLib_.load ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to re-load libpurple, disabling VelvetBird";
+			return;
+		}
+
 		ProtoMgr_ = new ProtoManager (proxy, this);
 		connect (ProtoMgr_,
 				SIGNAL (gotEntity (LeechCraft::Entity)),
@@ -40,11 +51,13 @@ namespace VelvetBird
 
 	void Plugin::SecondInit ()
 	{
-		ProtoMgr_->PluginsAvailable ();
+		if (ProtoMgr_)
+			ProtoMgr_->PluginsAvailable ();
 	}
 
 	void Plugin::Release ()
 	{
+		PurpleLib_.unload ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -82,7 +95,7 @@ namespace VelvetBird
 
 	QList<QObject*> Plugin::GetProtocols () const
 	{
-		return ProtoMgr_->GetProtoObjs ();
+		return ProtoMgr_ ? ProtoMgr_->GetProtoObjs () : QList<QObject*> ();
 	}
 
 	void Plugin::initPlugin (QObject *proxy)
