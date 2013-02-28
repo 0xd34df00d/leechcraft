@@ -56,14 +56,14 @@ namespace MusicZombie
 		std::shared_ptr<AVFormatContext> formatCtx;
 		{
 			AVFormatContext *formatCtxRaw = nullptr;
-			if (avformat_open_input (&formatCtxRaw, filename.toLatin1  ().constData (), nullptr, nullptr))
+			if (avformat_open_input (&formatCtxRaw, filename.toLatin1 ().constData (), nullptr, nullptr))
 				throw std::runtime_error ("error opening file");
 
 			formatCtx.reset (formatCtxRaw,
 					[] (AVFormatContext *ctx) { avformat_close_input (&ctx); });
 		}
 
-		if (avformat_find_stream_info (formatCtx.get (), nullptr) < 0)
+		if (av_find_stream_info (formatCtx.get ()) < 0)
 			throw std::runtime_error ("could not find stream");
 
 		bool codecOpened = false;
@@ -75,9 +75,7 @@ namespace MusicZombie
 					[&codecOpened, this] (AVCodecContext *ctx)
 					{
 						if (codecOpened)
-						{
 							avcodec_close (ctx);
-						}
 					});
 			if (codecCtx && codecCtx->codec_type == AVMEDIA_TYPE_AUDIO)
 			{
@@ -119,7 +117,7 @@ namespace MusicZombie
 		auto remaining = maxLength * codecCtx->channels * codecCtx->sample_rate;
 		chromaprint_start (Ctx_, codecCtx->sample_rate, codecCtx->channels);
 
-		const int bufferSize = AVCODEC_MAX_AUDIO_FRAME_SIZE * sizeof (int16_t);
+		const int bufferSize = AVCODEC_MAX_AUDIO_FRAME_SIZE * 2;
 		int16_t *buffer = static_cast<int16_t*> (av_malloc (bufferSize + 16));
 
 		while (true)
@@ -142,16 +140,21 @@ namespace MusicZombie
 				tmpPacket.size -= consumed;
 
 				if (bufferUsed <= 0 || bufferUsed >= bufferSize)
+				{
+					if (bufferUsed)
+						qWarning () << "invalid size returned";
 					continue;
+				}
 
-				const auto length = std::min (remaining, AVCODEC_MAX_AUDIO_FRAME_SIZE);
+				const auto length = std::min (remaining, bufferUsed / 2);
 				if (!chromaprint_feed (Ctx_, buffer, length))
 					throw std::runtime_error ("fingerprint calculation failed");
 
 				if (maxLength)
 				{
 					remaining -= length;
-					finished = remaining <= 0;
+					if (finished = remaining <= 0)
+						break;
 				}
 			}
 
