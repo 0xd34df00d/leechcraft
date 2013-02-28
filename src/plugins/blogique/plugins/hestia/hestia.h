@@ -21,7 +21,9 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/ihavesettings.h>
 #include <interfaces/blogique/ibloggingplatformplugin.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 
 namespace LeechCraft
 {
@@ -31,12 +33,15 @@ namespace Hestia
 {
 	class Plugin : public QObject
 				, public IInfo
+				, public IHaveSettings
 				, public IPlugin2
 				, public IBloggingPlatformPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings
 				LeechCraft::Blogique::IBloggingPlatformPlugin)
+
+		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 
 	public:
 		void Init (ICoreProxy_ptr proxy);
@@ -48,6 +53,8 @@ namespace Hestia
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		QObject* GetObject ();
 		QList<QObject*> GetBloggingPlatforms () const;

@@ -21,6 +21,7 @@
 #include <QIcon>
 #include <util/util.h>
 #include <interfaces/structures.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -31,7 +32,9 @@ namespace Hestia
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Util::InstallTranslator ("blogique_hestia");
-
+		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
+		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
+				"blogiquehestiasettings.xml");
 		Core::Instance ().SetCoreProxy (proxy);
 		Core::Instance ().CreateBloggingPlatfroms (this);
 
@@ -80,6 +83,11 @@ namespace Hestia
 		QSet<QByteArray> classes;
 		classes << "org.LeechCraft.Plugins.Blogique.Plugins.IBlogPlatformPlugin";
 		return classes;
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XmlSettingsDialog_;
 	}
 
 	QObject* Plugin::GetObject ()

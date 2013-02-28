@@ -2,6 +2,7 @@ CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 PROJECT (leechcraft_blogique_hestia)
 INCLUDE (InitLCPlugin OPTIONAL)
 
+SET (QT_USE_QTSQL TRUE)
 INCLUDE (${QT_USE_FILE})
 
 INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR}
@@ -19,6 +20,8 @@ SET (HESTIA_SRCS
 	hestia.cpp
 	localblogaccount.cpp
 	localbloggingplatform.cpp
+	postoptionswidget.cpp
+	xmlsettingsmanager.cpp
 	)
 
 SET (HESTIA_HEADERS
@@ -29,16 +32,19 @@ SET (HESTIA_HEADERS
 	accountconfigurationwidget.h
 	localblogaccount.h
 	localbloggingplatform.h
+	postoptionswidget.h
+	xmlsettingsmanager.h
 	)
 
 SET (HESTIA_FORMS
 	accountconfigurationdialog.ui
 	accountconfigurationwidget.ui
+	postoptionswidget.ui
  	)
 
 # SET (HESTIA_RESOURCES blogiquehestiaresources.qrc)
 
-# CreateTrVars ("blogique_metida" "de;en;es;fr;it;ru_RU;uk_UA" METIDA_TRANSLATIONS METIDA_COMPILED_TRANSLATIONS)
+# CreateTrVars ("blogique_hestia" "de;en;es;fr;it;ru_RU;uk_UA" HESTIA_TRANSLATIONS HESTIA_COMPILED_TRANSLATIONS)
 
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (HESTIA_MOC_SRCS ${HESTIA_HEADERS})
@@ -47,9 +53,9 @@ QT4_WRAP_UI (HESTIA_UIS_H ${HESTIA_FORMS})
 QT4_ADD_RESOURCES (HESTIA_RCCS ${HESTIA_RESOURCES})
 
 # ADD_CUSTOM_COMMAND (OUTPUT
-# 	${METIDA_COMPILED_TRANSLATIONS}
-# 	COMMAND "${QT_LRELEASE_EXECUTABLE}" ${METIDA_TRANSLATIONS}
-# 	DEPENDS ${METIDA_TRANSLATIONS}
+# 	${HESTIA_COMPILED_TRANSLATIONS}
+# 	COMMAND "${QT_LRELEASE_EXECUTABLE}" ${HESTIA_TRANSLATIONS}
+# 	DEPENDS ${HESTIA_TRANSLATIONS}
 # 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 # 	)
 
@@ -70,3 +76,5 @@ INSTALL (TARGETS leechcraft_blogique_hestia
 		DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${HESTIA_COMPILED_TRANSLATIONS}
 		DESTINATION ${LC_TRANSLATIONS_DEST})
+INSTALL (FILES blogiquehestiasettings.xml
+		DESTINATION ${LC_SETTINGS_DEST})

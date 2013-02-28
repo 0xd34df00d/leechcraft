@@ -17,11 +17,13 @@
  **********************************************************************/
 
 #include "localblogaccount.h"
+#include <stdexcept>
 #include <QtDebug>
-#include "accountstorage.h"
-#include "accountconfigurationwidget.h"
-#include "localbloggingplatform.h"
 #include "accountconfigurationdialog.h"
+#include "accountconfigurationwidget.h"
+#include "accountstorage.h"
+#include "localbloggingplatform.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -35,7 +37,12 @@ namespace Hestia
 	, Name_ (name)
 	, IsValid_ (false)
 	, AccountStorage_ (new AccountStorage (this))
+	, LoadAllEvents_ (new QAction (tr ("All entries"), this))
 	{
+		connect (LoadAllEvents_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleLoadAllEvents ()));
 	}
 
 	QObject* LocalBlogAccount::GetObject ()
@@ -92,31 +99,63 @@ namespace Hestia
 		return 0;
 	}
 
-	void LocalBlogAccount::RemoveEntry (const LeechCraft::Blogique::Entry& entry)
+	void LocalBlogAccount::RemoveEntry (const Entry& entry)
 	{
+		try
+		{
+			AccountStorage_->RemoveEntry (entry.EntryId_);
+			emit entryRemoved (entry.EntryId_);
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+		}
 	}
 
-	void LocalBlogAccount::UpdateEntry (const LeechCraft::Blogique::Entry& entry)
+	void LocalBlogAccount::UpdateEntry (const Entry& entry)
 	{
-
+		try
+		{
+			AccountStorage_->UpdateEntry (entry, entry.EntryId_);
+			emit entryUpdated ({ entry });
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+		}
 	}
 
 	QList<QAction*> LocalBlogAccount::GetUpdateActions () const
 	{
-		return QList<QAction*> ();
+		return { LoadAllEvents_ };
 	}
 
 	void LocalBlogAccount::RequestStatistics ()
 	{
+		try
+		{
+			emit gotBlogStatistics (AccountStorage_->GetEntriesCountByDate ());
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+		}
 	}
-
 
 	void LocalBlogAccount::GetEntriesByDate (const QDate& date)
 	{
-	}
-
-	void LocalBlogAccount::GetLastEntries (int count)
-	{
+		try
+		{
+			emit gotEntries (AccountStorage_->GetEntriesByDate (date));
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+		}
 	}
 
 	void LocalBlogAccount::FillSettings (AccountConfigurationWidget *widget)
@@ -146,6 +185,9 @@ namespace Hestia
 				SIGNAL (accountSettingsChanged ()),
 				ParentBloggingPlatform_,
 				SLOT (saveAccounts ()));
+
+		if (IsValid_)
+			AccountStorage_->Init (DatabasePath_);
 	}
 
 	QByteArray LocalBlogAccount::Serialize () const
@@ -194,17 +236,37 @@ namespace Hestia
 
 	void LocalBlogAccount::updateProfile ()
 	{
-
 	}
 
-	void LocalBlogAccount::submit (const Entry& event)
+	void LocalBlogAccount::submit (const Entry& e)
 	{
-
+		try
+		{
+			AccountStorage_->SaveNewEntry (e);
+			emit entryPosted ({ e });
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+		}
 	}
 
 	void LocalBlogAccount::backup ()
 	{
+	}
 
+	void LocalBlogAccount::handleLoadAllEvents ()
+	{
+		try
+		{
+			emit gotEntries (AccountStorage_->GetEntries (AccountStorage::Mode::FullMode));
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+		}
 	}
 
 }
