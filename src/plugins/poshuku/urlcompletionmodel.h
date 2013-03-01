@@ -20,6 +20,7 @@
 #define PLUGINS_POSHUKU_URLCOMPLETIONMODEL_H
 #include <QAbstractItemModel>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/poshuku/iurlcompletionmodel.h>
 #include "historymodel.h"
 
 namespace LeechCraft
@@ -27,8 +28,10 @@ namespace LeechCraft
 namespace Poshuku
 {
 	class URLCompletionModel : public QAbstractItemModel
+							 , public IURLCompletionModel
 	{
 		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Poshuku::IURLCompletionModel)
 
 		mutable bool Valid_;
 		mutable history_items_t Items_;
@@ -50,10 +53,11 @@ namespace Poshuku
 				const QModelIndex& = QModelIndex()) const;
 		virtual QModelIndex parent (const QModelIndex&) const;
 		virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
+
+		void AddItem (const QString& title, const QString& url, size_t pos);
 	public slots:
 		void setBase (const QString&);
 		void handleItemAdded (const HistoryItem&);
-		void addItem (const QString& title, const QString& url);
 	signals:
 		void baseUpdated (QObject*);
 
