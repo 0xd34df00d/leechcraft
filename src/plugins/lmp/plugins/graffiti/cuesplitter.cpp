@@ -20,6 +20,14 @@
 #include <QTime>
 #include <QFile>
 #include <QtDebug>
+#include <QTimer>
+#include <QDir>
+#include <QProcess>
+
+#ifdef Q_OS_UNIX
+#include <sys/time.h>
+#include <sys/resource.h>
+#endif
 
 namespace LeechCraft
 {
@@ -44,6 +52,14 @@ namespace Graffiti
 		{
 			QString Filename_;
 			QList<Track> Tracks_;
+
+			bool IsValid () const
+			{
+				for (const auto& track : Tracks_)
+					if (!track.StartPos_.isValid ())
+						return false;
+				return true;
+			}
 		};
 
 		struct Cue
@@ -55,6 +71,14 @@ namespace Graffiti
 			QString Genre_;
 
 			QList<File> Files_;
+
+			bool IsValid () const
+			{
+				for (const auto& file : Files_)
+					if (!file.IsValid ())
+						return false;
+				return true;
+			}
 		};
 
 		QString ChopQuotes (QString str)
@@ -127,7 +151,7 @@ namespace Graffiti
 			const auto endQuote = line.lastIndexOf ('"');
 
 			File file;
-			file.Filename_ = QString::fromUtf8 (line.mid (startQuote + 1, startQuote - endQuote - 2));
+			file.Filename_ = QString::fromUtf8 (line.mid (startQuote + 1, endQuote - startQuote - 1));
 
 			while (i != end)
 			{
@@ -138,12 +162,15 @@ namespace Graffiti
 			}
 
 			Track *prevTrack = 0;
+			int index = 1;
 			for (auto& track : file.Tracks_)
 			{
 				if (prevTrack)
 					prevTrack->EndPos_ = track.StartPos_;
 
 				prevTrack = &track;
+				if (!track.Index_)
+					track.Index_ = index++;
 			}
 
 			result.Files_ << file;
@@ -192,9 +219,18 @@ namespace Graffiti
 
 	CueSplitter::CueSplitter (const QString& cueFile, const QString& dir, QObject *parent)
 	: QObject (parent)
+	, CueFile_ (cueFile)
+	, Dir_ (dir)
 	{
-		const auto& cue = ParseCue (cueFile);
-		qDebug () << cue.Album_ << cue.Performer_ << cue.Date_;
+		QTimer::singleShot (0,
+				this,
+				SLOT (split ()));
+	}
+
+	void CueSplitter::split ()
+	{
+		const auto& cue = ParseCue (CueFile_);
+		qDebug () << cue.IsValid () << cue.Album_ << cue.Performer_ << cue.Date_;
 		for (const auto& file : cue.Files_)
 		{
 			qDebug () << "\t" << file.Filename_;
@@ -203,6 +239,83 @@ namespace Graffiti
 				qDebug () << "\t\t" << track.Index_ << track.Title_ << track.StartPos_ << track.EndPos_;
 			}
 		}
+
+		if (!cue.IsValid ())
+		{
+			emit error (tr ("Cue file is invalid"));
+			deleteLater ();
+			return;
+		}
+
+		for (const auto& file : cue.Files_)
+		{
+			const QDir dir (Dir_);
+			if (!dir.exists (file.Filename_))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< file.Filename_
+						<< "not found";
+				emit error (tr ("No such file %1.").arg (file.Filename_));
+				continue;
+			}
+
+			const auto& path = dir.absoluteFilePath (file.Filename_);
+
+			for (const auto& track : file.Tracks_)
+				SplitQueue_.append ({
+						path,
+						dir.absoluteFilePath (QString::number (track.Index_) + ".flac"),
+						track.Index_,
+						track.StartPos_,
+						track.EndPos_
+					});
+		}
+
+		scheduleNext ();
+	}
+
+	void CueSplitter::scheduleNext ()
+	{
+		if (SplitQueue_.isEmpty ())
+		{
+			deleteLater ();
+			return;
+		}
+
+		const auto& item = SplitQueue_.takeFirst ();
+
+		auto makeTime = [] (const QTime& time)
+		{
+			return QString ("%1:%2.%3")
+					.arg (time.hour () * 60 + time.minute ())
+					.arg (time.second ())
+					.arg (time.msec () / 10);
+		};
+
+		QStringList args { "-8" };
+		if (item.From_ != QTime (0, 0))
+			args << ("--skip=" + makeTime (item.From_));
+		if (item.To_.isValid ())
+			args << ("--until=" + makeTime (item.To_));
+		args << item.SourceFile_ << "-o" << item.TargetFile_;
+
+		auto process = new QProcess (this);
+		process->start ("flac", args);
+
+		connect (process,
+				SIGNAL (finished (int)),
+				this,
+				SLOT (handleProcessFinished (int)));
+
+#ifdef Q_OS_UNIX
+		setpriority (PRIO_PROCESS, process->pid (), 19);
+#endif
+	}
+
+	void CueSplitter::handleProcessFinished (int code)
+	{
+		sender ()->deleteLater ();
+		scheduleNext ();
 	}
 }
 }

@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QObject>
+#include <QTime>
 
 namespace LeechCraft
 {
@@ -29,8 +30,27 @@ namespace Graffiti
 	class CueSplitter : public QObject
 	{
 		Q_OBJECT
+
+		const QString CueFile_;
+		const QString Dir_;
+
+		struct SplitQueueItem
+		{
+			const QString SourceFile_;
+			const QString TargetFile_;
+			const int Index_;
+			const QTime From_;
+			const QTime To_;
+		};
+		QList<SplitQueueItem> SplitQueue_;
 	public:
 		CueSplitter (const QString& cue, const QString& dir, QObject* = 0);
+	private slots:
+		void split ();
+		void scheduleNext ();
+		void handleProcessFinished (int);
+	signals:
+		void error (const QString&);
 	};
 }
 }
