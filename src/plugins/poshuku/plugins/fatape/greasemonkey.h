@@ -23,7 +23,7 @@
 #include <QSettings>
 #include <QVariant>
 #include <QWebFrame>
-#include <interfaces/iproxyobject.h>
+#include <interfaces/poshuku/iproxyobject.h>
 #include "userscript.h"
 
 namespace LeechCraft
@@ -35,7 +35,7 @@ namespace FatApe
 	class GreaseMonkey : public QObject
 	{
 		Q_OBJECT
-		
+
 		QWebFrame *Frame_;
 		IProxyObject *Proxy_;
 		UserScript Script_;

@@ -26,7 +26,7 @@
 #include <QWebPage>
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
-#include <interfaces/poshukutypes.h>
+#include <interfaces/poshuku/poshukutypes.h>
 #include <interfaces/core/ihookproxy.h>
 #include "filter.h"
 

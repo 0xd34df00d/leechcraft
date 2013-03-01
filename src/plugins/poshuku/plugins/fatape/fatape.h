@@ -26,7 +26,7 @@
 #include <QWebPage>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
-#include <interfaces/iproxyobject.h>
+#include <interfaces/poshuku/iproxyobject.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/core/ihookproxy.h>
 

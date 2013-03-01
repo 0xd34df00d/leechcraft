@@ -34,7 +34,7 @@
 #include <util/defaulthookproxy.h>
 #include <util/xpc/stddatafiltermenucreator.h>
 #include <interfaces/core/icoreproxy.h>
-#include "interfaces/poshukutypes.h"
+#include "interfaces/poshuku/poshukutypes.h"
 #include "core.h"
 #include "customwebpage.h"
 #include "browserwidget.h"

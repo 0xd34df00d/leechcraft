@@ -21,7 +21,7 @@
 #include <QHash>
 #include <qwebpluginfactory.h>
 #include <interfaces/core/ihookproxy.h>
-#include "interfaces/iwebplugin.h"
+#include "interfaces/poshuku/iwebplugin.h"
 
 namespace LeechCraft
 {

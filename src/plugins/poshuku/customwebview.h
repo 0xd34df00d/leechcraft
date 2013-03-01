@@ -21,7 +21,7 @@
 #include <qwebview.h>
 #include <interfaces/structures.h>
 #include <interfaces/core/ihookproxy.h>
-#include "interfaces/poshukutypes.h"
+#include "interfaces/poshuku/poshukutypes.h"
 #include "pageformsdata.h"
 
 class QTimer;
