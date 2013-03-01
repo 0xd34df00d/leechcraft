@@ -66,6 +66,7 @@ namespace Graffiti
 		QAction *Revert_;
 		QAction *RenameFiles_;
 		QAction *GetTags_;
+		QAction *SplitCue_;
 
 		bool IsChangingCurrent_;
 	public:
@@ -89,6 +90,7 @@ namespace Graffiti
 		void revert ();
 		void renameFiles ();
 		void fetchTags ();
+		void splitCue ();
 
 		void handleTagsFetched (const QString&, const Media::AudioInfo&);
 

@@ -21,6 +21,7 @@
 #include <QFileSystemModel>
 #include <QToolBar>
 #include <QMessageBox>
+#include <QInputDialog>
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <QtDebug>
@@ -38,6 +39,7 @@
 #include "renamedialog.h"
 #include "genres.h"
 #include "fileswatcher.h"
+#include "cuesplitter.h"
 
 namespace LeechCraft
 {
@@ -101,6 +103,11 @@ namespace Graffiti
 		GetTags_ = Toolbar_->addAction (tr ("Fetch tags"),
 				this, SLOT (fetchTags ()));
 		GetTags_->setProperty ("ActionIcon", "download");
+
+		SplitCue_ = Toolbar_->addAction (tr ("Split CUE..."),
+				this, SLOT (splitCue ()));
+		SplitCue_->setProperty ("ActionIcon", "split");
+		SplitCue_->setEnabled (false);
 
 		Ui_.Genre_->SetSeparator (" / ");
 
@@ -304,6 +311,42 @@ namespace Graffiti
 		}
 	}
 
+	void GraffitiTab::splitCue ()
+	{
+		const auto& curDirIdx = Ui_.DirectoryTree_->currentIndex ();
+		if (!curDirIdx.isValid ())
+			return;
+
+		const auto& path = FSModel_->filePath (curDirIdx);
+		const QDir dir (path);
+
+		const auto& cues = dir.entryList ({ "*.cue" });
+		if (cues.isEmpty ())
+		{
+			QMessageBox::critical (this,
+					"LMP Graffiti",
+					tr ("No cue sheets are available in this directory."));
+			return;
+		}
+
+		QString cue;
+		if (cues.size () >= 2)
+		{
+			cue = QInputDialog::getItem (this,
+					"Select cue sheet",
+					tr ("Select cue sheet to use for splitting:"),
+					cues,
+					0,
+					false);
+			if (cue.isEmpty ())
+				return;
+		}
+		else
+			cue = cues.first ();
+
+		new CueSplitter (cue, path);
+	}
+
 	namespace
 	{
 		template<typename T>
@@ -383,6 +426,8 @@ namespace Graffiti
 
 		auto worker = [this, path] () { return LMPProxy_->RecIterateInfo (path, true); };
 		watcher->setFuture (QtConcurrent::run (std::function<QList<QFileInfo> ()> (worker)));
+
+		SplitCue_->setEnabled (!QDir (path).entryList ({ "*.cue" }).isEmpty ());
 	}
 
 	void GraffitiTab::currentFileChanged (const QModelIndex& index)
