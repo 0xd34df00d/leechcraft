@@ -158,7 +158,7 @@ namespace MusicZombie
 				if (maxLength)
 				{
 					remaining -= length;
-					if (finished = (remaining <= 0))
+					if ((finished = (remaining <= 0)))
 						break;
 				}
 			}
