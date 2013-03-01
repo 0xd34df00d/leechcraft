@@ -247,6 +247,18 @@ namespace Graffiti
 			return;
 		}
 
+		auto makeFilename = [&cue] (const Track& track) -> QString
+		{
+			auto filename = QString::number (track.Index_);
+			if (!cue.Performer_.isEmpty ())
+				filename += " - " + cue.Performer_;
+			if (!cue.Album_.isEmpty ())
+				filename += " - " + cue.Album_;
+			if (!track.Title_.isEmpty ())
+				filename += " - " + track.Title_;
+			return filename += ".flac";
+		};
+
 		for (const auto& file : cue.Files_)
 		{
 			const QDir dir (Dir_);
@@ -264,10 +276,15 @@ namespace Graffiti
 			for (const auto& track : file.Tracks_)
 				SplitQueue_.append ({
 						path,
-						dir.absoluteFilePath (QString::number (track.Index_) + ".flac"),
+						dir.absoluteFilePath (makeFilename (track)),
 						track.Index_,
 						track.StartPos_,
-						track.EndPos_
+						track.EndPos_,
+						track.Performer_,
+						cue.Album_,
+						track.Title_,
+						cue.Date_,
+						cue.Genre_
 					});
 		}
 
@@ -297,6 +314,19 @@ namespace Graffiti
 			args << ("--skip=" + makeTime (item.From_));
 		if (item.To_.isValid ())
 			args << ("--until=" + makeTime (item.To_));
+
+		auto addTag = [&args] (const QString& name, const QString& value)
+		{
+			if (!value.isEmpty ())
+				args << ("--tag=" + name + "=" + value);
+		};
+		addTag ("ARTIST", item.Artist_);
+		addTag ("ALBUM", item.Album_);
+		addTag ("TITLE", item.Title_);
+		addTag ("TRACKNUMBER", QString::number (item.Index_));
+		addTag ("GENRE", item.Genre_);
+		addTag ("DATE", item.Date_ > 0 ? QString::number (item.Date_) : QString ());
+
 		args << item.SourceFile_ << "-o" << item.TargetFile_;
 
 		auto process = new QProcess (this);

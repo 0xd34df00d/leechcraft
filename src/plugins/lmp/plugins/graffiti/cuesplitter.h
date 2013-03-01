@@ -41,6 +41,12 @@ namespace Graffiti
 			const int Index_;
 			const QTime From_;
 			const QTime To_;
+
+			const QString Artist_;
+			const QString Album_;
+			const QString Title_;
+			const int Date_;
+			const QString Genre_;
 		};
 		QList<SplitQueueItem> SplitQueue_;
 	public:
