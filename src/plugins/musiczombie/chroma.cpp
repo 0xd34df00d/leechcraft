@@ -52,7 +52,6 @@ namespace MusicZombie
 
 	Chroma::Result Chroma::operator() (const QString& filename)
 	{
-		QMutexLocker locker (&CodecMutex_);
 		std::shared_ptr<AVFormatContext> formatCtx;
 		{
 			AVFormatContext *formatCtxRaw = nullptr;
@@ -63,8 +62,11 @@ namespace MusicZombie
 					[] (AVFormatContext *ctx) { avformat_close_input (&ctx); });
 		}
 
-		if (av_find_stream_info (formatCtx.get ()) < 0)
-			throw std::runtime_error ("could not find stream");
+		{
+			QMutexLocker locker (&CodecMutex_);
+			if (av_find_stream_info (formatCtx.get ()) < 0)
+				throw std::runtime_error ("could not find stream");
+		}
 
 		bool codecOpened = false;
 		std::shared_ptr<AVCodecContext> codecCtx;
@@ -75,7 +77,10 @@ namespace MusicZombie
 					[&codecOpened, this] (AVCodecContext *ctx)
 					{
 						if (codecOpened)
+						{
+							QMutexLocker locker (&CodecMutex_);
 							avcodec_close (ctx);
+						}
 					});
 			if (codecCtx && codecCtx->codec_type == AVMEDIA_TYPE_AUDIO)
 			{
@@ -92,8 +97,8 @@ namespace MusicZombie
 			throw std::runtime_error ("unknown codec");
 
 		{
-			//QMutexLocker locker (&CodecMutex_);
-			if (avcodec_open (codecCtx.get (), codec) < 0)
+			QMutexLocker locker (&CodecMutex_);
+			if (avcodec_open2 (codecCtx.get (), codec, nullptr) < 0)
 				throw std::runtime_error ("couldn't open the codec");
 		}
 		codecOpened = true;
