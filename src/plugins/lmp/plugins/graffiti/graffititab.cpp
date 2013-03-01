@@ -30,7 +30,9 @@
 #include <util/tags/tagscompletionmodel.h>
 #include <util/tags/tagscompleter.h>
 #include <util/gui/clearlineeditaddon.h>
+#include <util/util.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/media/itagsfetcher.h>
 #include <interfaces/lmp/ilmpproxy.h>
 #include <interfaces/lmp/itagresolver.h>
@@ -344,7 +346,15 @@ namespace Graffiti
 		else
 			cue = cues.first ();
 
-		new CueSplitter (cue, path);
+		auto splitter = new CueSplitter (cue, path);
+		connect (splitter,
+				SIGNAL (error (QString)),
+				this,
+				SLOT (handleCueSplitError (QString)));
+		connect (splitter,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleCueSplitFinished ()));
 	}
 
 	namespace
@@ -495,6 +505,20 @@ namespace Graffiti
 
 		FilesModel_->SetInfos (watcher->result ());
 		setEnabled (true);
+	}
+
+	void GraffitiTab::handleCueSplitError (const QString& error)
+	{
+		const auto& e = Util::MakeNotification ("LMP Graffiti", error, PCritical_);
+		CoreProxy_->GetEntityManager ()->HandleEntity (e);
+	}
+
+	void GraffitiTab::handleCueSplitFinished ()
+	{
+		const auto& e = Util::MakeNotification ("LMP Graffiti",
+				tr ("Finished splitting CUE file"),
+				PInfo_);
+		CoreProxy_->GetEntityManager ()->HandleEntity (e);
 	}
 }
 }

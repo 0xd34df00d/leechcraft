@@ -57,6 +57,7 @@ namespace Graffiti
 		void handleProcessFinished (int);
 	signals:
 		void error (const QString&);
+		void finished ();
 	};
 }
 }

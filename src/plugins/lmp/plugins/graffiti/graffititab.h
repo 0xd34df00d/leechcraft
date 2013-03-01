@@ -100,6 +100,9 @@ namespace Graffiti
 
 		void handleIterateFinished ();
 		void handleScanFinished ();
+
+		void handleCueSplitError (const QString&);
+		void handleCueSplitFinished ();
 	signals:
 		void removeTab (QWidget*);
 	};

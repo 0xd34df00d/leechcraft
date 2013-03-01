@@ -296,6 +296,7 @@ namespace Graffiti
 		if (SplitQueue_.isEmpty ())
 		{
 			deleteLater ();
+			emit finished ();
 			return;
 		}
 
