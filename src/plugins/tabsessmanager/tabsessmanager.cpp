@@ -267,8 +267,7 @@ namespace TabSessManager
 	void Plugin::handleRemoveTab (QWidget *widget)
 	{
 		auto tab = qobject_cast<ITabWidget*> (widget);
-		auto recTab = qobject_cast<IRecoverableTab*> (widget);
-		if (!recTab || !tab)
+		if (!tab)
 			return;
 
 		auto removeGuard = [this, widget] (void*)
@@ -278,6 +277,10 @@ namespace TabSessManager
 			handleTabRecoverDataChanged ();
 		};
 		std::shared_ptr<void> guard (static_cast<void*> (0), removeGuard);
+
+		auto recTab = qobject_cast<IRecoverableTab*> (widget);
+		if (!recTab)
+			return;
 
 		const auto& recoverData = recTab->GetTabRecoverData ();
 		if (recoverData.isEmpty ())
