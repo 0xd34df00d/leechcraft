@@ -139,6 +139,7 @@ namespace Graffiti
 	void GraffitiTab::Remove ()
 	{
 		emit removeTab (this);
+		deleteLater ();
 	}
 
 	QToolBar* GraffitiTab::GetToolBar () const
