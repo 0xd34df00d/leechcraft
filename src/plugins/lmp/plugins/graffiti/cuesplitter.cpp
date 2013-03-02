@@ -337,6 +337,10 @@ namespace Graffiti
 				SIGNAL (finished (int)),
 				this,
 				SLOT (handleProcessFinished (int)));
+		connect (process,
+				SIGNAL (error (QProcess::ProcessError)),
+				this,
+				SLOT (handleProcessError ()));
 
 #ifdef Q_OS_UNIX
 		setpriority (PRIO_PROCESS, process->pid (), 19);
@@ -346,6 +350,23 @@ namespace Graffiti
 	void CueSplitter::handleProcessFinished (int code)
 	{
 		sender ()->deleteLater ();
+		scheduleNext ();
+	}
+
+	void CueSplitter::handleProcessError ()
+	{
+		auto process = qobject_cast<QProcess*> (sender ());
+		process->deleteLater ();
+
+		const auto& errorString = tr ("Failed to start recoder: %1.")
+				.arg (process->errorString ());
+
+		if (!EmittedErrors_.contains (errorString))
+		{
+			emit error (errorString);
+			EmittedErrors_ << errorString;
+		}
+
 		scheduleNext ();
 	}
 }

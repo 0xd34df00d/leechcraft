@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <QTime>
+#include <QSet>
 
 namespace LeechCraft
 {
@@ -49,12 +50,15 @@ namespace Graffiti
 			const QString Genre_;
 		};
 		QList<SplitQueueItem> SplitQueue_;
+
+		QSet<QString> EmittedErrors_;
 	public:
 		CueSplitter (const QString& cue, const QString& dir, QObject* = 0);
 	private slots:
 		void split ();
 		void scheduleNext ();
 		void handleProcessFinished (int);
+		void handleProcessError ();
 	signals:
 		void error (const QString&);
 		void finished ();
