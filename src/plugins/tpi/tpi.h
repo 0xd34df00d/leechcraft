@@ -53,7 +53,7 @@ namespace TPI
 
 		QuarkComponents_t GetComponents () const;
 	public slots:
-		void hovered (int, int, const QPoint&);
+		void hovered (int, int, const QRect&);
 		void hoverLeft ();
 	};
 }

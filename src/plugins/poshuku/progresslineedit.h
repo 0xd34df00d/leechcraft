@@ -20,7 +20,7 @@
 #define PLUGINS_POSHUKU_PROGRESSLINEEDIT_H
 #include <QKeyEvent>
 #include <QLineEdit>
-#include "interfaces/iaddressbar.h"
+#include "interfaces/poshuku/iaddressbar.h"
 
 class QModelIndex;
 class QToolBar;

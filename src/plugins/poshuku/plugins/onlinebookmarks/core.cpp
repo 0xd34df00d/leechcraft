@@ -21,7 +21,7 @@
 #include <QDateTime>
 #include <QTimer>
 #include <interfaces/iplugin2.h>
-#include <interfaces/iproxyobject.h>
+#include <interfaces/poshuku/iproxyobject.h>
 #include <interfaces/iserviceplugin.h>
 #include <util/util.h>
 #include "accountssettings.h"

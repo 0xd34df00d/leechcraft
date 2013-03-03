@@ -22,7 +22,7 @@
 #include <QReadWriteLock>
 #include <QRegExp>
 #include <QWebFrame>
-#include <interfaces/iproxyobject.h>
+#include <interfaces/poshuku/iproxyobject.h>
 
 namespace LeechCraft
 {

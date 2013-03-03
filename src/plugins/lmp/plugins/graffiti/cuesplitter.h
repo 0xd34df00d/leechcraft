@@ -18,55 +18,51 @@
 
 #pragma once
 
-#include <QStringList>
-#include <QMetaType>
-#include <interfaces/media/audiostructs.h>
-#include "lmpconfig.h"
+#include <QObject>
+#include <QTime>
+#include <QSet>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	struct LMP_API MediaInfo
+namespace Graffiti
+{
+	class CueSplitter : public QObject
 	{
-		QString LocalPath_;
+		Q_OBJECT
 
-		QString Artist_;
-		QString Album_;
-		QString Title_;
+		const QString CueFile_;
+		const QString Dir_;
 
-		QStringList Genres_;
+		struct SplitQueueItem
+		{
+			const QString SourceFile_;
+			const QString TargetFile_;
+			const int Index_;
+			const QTime From_;
+			const QTime To_;
 
-		qint32 Length_;
-		qint32 Year_;
-		qint32 TrackNumber_;
+			const QString Artist_;
+			const QString Album_;
+			const QString Title_;
+			const int Date_;
+			const QString Genre_;
+		};
+		QList<SplitQueueItem> SplitQueue_;
 
-		MediaInfo& operator= (const Media::AudioInfo&);
-
-		bool IsUseless () const;
-
-		operator Media::AudioInfo () const;
-
-		static MediaInfo FromAudioInfo (const Media::AudioInfo&);
+		QSet<QString> EmittedErrors_;
+	public:
+		CueSplitter (const QString& cue, const QString& dir, QObject* = 0);
+	private slots:
+		void split ();
+		void scheduleNext ();
+		void handleProcessFinished (int);
+		void handleProcessError ();
+	signals:
+		void error (const QString&);
+		void finished ();
 	};
-
-	inline bool operator== (const MediaInfo& l, const MediaInfo& r)
-	{
-		return l.LocalPath_ == r.LocalPath_ &&
-			l.Artist_ == r.Artist_ &&
-			l.Album_ == r.Album_ &&
-			l.Title_ == r.Title_ &&
-			l.Genres_ == r.Genres_ &&
-			l.Length_ == r.Length_ &&
-			l.Year_ == r.Year_ &&
-			l.TrackNumber_ == r.TrackNumber_;
-	}
-
-	inline bool operator!= (const MediaInfo& l, const MediaInfo& r)
-	{
-		return !(l == r);
-	}
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::LMP::MediaInfo);
+}

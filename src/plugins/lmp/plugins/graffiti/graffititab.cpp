@@ -21,6 +21,7 @@
 #include <QFileSystemModel>
 #include <QToolBar>
 #include <QMessageBox>
+#include <QInputDialog>
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <QtDebug>
@@ -28,6 +29,11 @@
 #include <taglib/tag.h>
 #include <util/tags/tagscompletionmodel.h>
 #include <util/tags/tagscompleter.h>
+#include <util/gui/clearlineeditaddon.h>
+#include <util/util.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/ientitymanager.h>
+#include <interfaces/media/itagsfetcher.h>
 #include <interfaces/lmp/ilmpproxy.h>
 #include <interfaces/lmp/itagresolver.h>
 #include <interfaces/lmp/mediainfo.h>
@@ -35,8 +41,7 @@
 #include "renamedialog.h"
 #include "genres.h"
 #include "fileswatcher.h"
-#include <interfaces/core/ipluginsmanager.h>
-#include <interfaces/media/itagsfetcher.h>
+#include "cuesplitter.h"
 
 namespace LeechCraft
 {
@@ -56,11 +61,22 @@ namespace Graffiti
 	, IsChangingCurrent_ (false)
 	{
 		Ui_.setupUi (this);
+		new Util::ClearLineEditAddon (coreProxy, Ui_.Album_);
+		new Util::ClearLineEditAddon (coreProxy, Ui_.Artist_);
+		new Util::ClearLineEditAddon (coreProxy, Ui_.Title_);
+		new Util::ClearLineEditAddon (coreProxy, Ui_.Genre_);
 
 		FSModel_->setRootPath (QDir::homePath ());
 		FSModel_->setFilter (QDir::Dirs | QDir::NoDotAndDotDot);
 		FSModel_->setReadOnly (true);
 		Ui_.DirectoryTree_->setModel (FSModel_);
+
+		auto idx = FSModel_->index (QDir::homePath ());
+		while (idx.isValid ())
+		{
+			Ui_.DirectoryTree_->expand (idx);
+			idx = idx.parent ();
+		}
 
 		Ui_.FilesList_->setModel (FilesModel_);
 
@@ -90,6 +106,11 @@ namespace Graffiti
 				this, SLOT (fetchTags ()));
 		GetTags_->setProperty ("ActionIcon", "download");
 
+		SplitCue_ = Toolbar_->addAction (tr ("Split CUE..."),
+				this, SLOT (splitCue ()));
+		SplitCue_->setProperty ("ActionIcon", "split");
+		SplitCue_->setEnabled (false);
+
 		Ui_.Genre_->SetSeparator (" / ");
 
 		auto model = new Util::TagsCompletionModel (this);
@@ -118,6 +139,7 @@ namespace Graffiti
 	void GraffitiTab::Remove ()
 	{
 		emit removeTab (this);
+		deleteLater ();
 	}
 
 	QToolBar* GraffitiTab::GetToolBar () const
@@ -150,17 +172,17 @@ namespace Graffiti
 		}
 	}
 
-	void GraffitiTab::on_Artist__textEdited (const QString& artist)
+	void GraffitiTab::on_Artist__textChanged (const QString& artist)
 	{
 		UpdateData (artist, [] (MediaInfo& info) -> QString& { return info.Artist_; });
 	}
 
-	void GraffitiTab::on_Album__textEdited (const QString& album)
+	void GraffitiTab::on_Album__textChanged (const QString& album)
 	{
 		UpdateData (album, [] (MediaInfo& info) -> QString& { return info.Album_; });
 	}
 
-	void GraffitiTab::on_Title__textEdited (const QString& title)
+	void GraffitiTab::on_Title__textChanged (const QString& title)
 	{
 		UpdateData (title, [] (MediaInfo& info) -> QString& { return info.Title_; });
 	}
@@ -292,9 +314,111 @@ namespace Graffiti
 		}
 	}
 
-	void GraffitiTab::handleTagsFetched (const QString& filename, const Media::AudioInfo& info)
+	void GraffitiTab::splitCue ()
 	{
-		qDebug () << Q_FUNC_INFO;
+		const auto& curDirIdx = Ui_.DirectoryTree_->currentIndex ();
+		if (!curDirIdx.isValid ())
+			return;
+
+		const auto& path = FSModel_->filePath (curDirIdx);
+		const QDir dir (path);
+
+		const auto& cues = dir.entryList ({ "*.cue" });
+		if (cues.isEmpty ())
+		{
+			QMessageBox::critical (this,
+					"LMP Graffiti",
+					tr ("No cue sheets are available in this directory."));
+			return;
+		}
+
+		QString cue;
+		if (cues.size () >= 2)
+		{
+			cue = QInputDialog::getItem (this,
+					"Select cue sheet",
+					tr ("Select cue sheet to use for splitting:"),
+					cues,
+					0,
+					false);
+			if (cue.isEmpty ())
+				return;
+		}
+		else
+			cue = cues.first ();
+
+		auto splitter = new CueSplitter (cue, path);
+		connect (splitter,
+				SIGNAL (error (QString)),
+				this,
+				SLOT (handleCueSplitError (QString)));
+		connect (splitter,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleCueSplitFinished ()));
+	}
+
+	namespace
+	{
+		template<typename T>
+		bool IsEmptyData (const T&)
+		{
+			static_assert (!sizeof (T), "unknown data type");
+			return false;
+		}
+
+		template<>
+		bool IsEmptyData<QString> (const QString& str)
+		{
+			return str.isEmpty ();
+		}
+
+		template<>
+		bool IsEmptyData<int> (const int& val)
+		{
+			return !val;
+		}
+
+		template<>
+		bool IsEmptyData<QStringList> (const QStringList& list)
+		{
+			return list.isEmpty ();
+		}
+
+		template<typename F>
+		void UpgradeInfo (MediaInfo& info, MediaInfo& other, F getter)
+		{
+			static_assert (std::is_lvalue_reference<typename std::result_of<F (MediaInfo&)>::type>::value,
+					"functor doesn't return an lvalue reference");
+
+			auto& data = getter (info);
+			const auto& otherData = getter (other);
+			if (!IsEmptyData (otherData) && IsEmptyData (data))
+				data = otherData;
+		}
+	}
+
+	void GraffitiTab::handleTagsFetched (const QString& filename, const Media::AudioInfo& result)
+	{
+		const auto& index = FilesModel_->FindIndex (filename);
+		if (!index.isValid ())
+			return;
+
+		auto newInfo = MediaInfo::FromAudioInfo (result);
+
+		auto info = index.data (FilesModel::Roles::MediaInfoRole).value<MediaInfo> ();
+		UpgradeInfo (info, newInfo, [] (MediaInfo& info) -> QString& { return info.Title_; });
+		UpgradeInfo (info, newInfo, [] (MediaInfo& info) -> QString& { return info.Artist_; });
+		UpgradeInfo (info, newInfo, [] (MediaInfo& info) -> QString& { return info.Album_; });
+		UpgradeInfo (info, newInfo, [] (MediaInfo& info) -> int& { return info.Year_; });
+		UpgradeInfo (info, newInfo, [] (MediaInfo& info) -> int& { return info.TrackNumber_; });
+		UpgradeInfo (info, newInfo, [] (MediaInfo& info) -> QStringList& { return info.Genres_; });
+		FilesModel_->UpdateInfo (index, info);
+
+		const auto& curIdx = Ui_.FilesList_->selectionModel ()->currentIndex ();
+		const auto& curInfo = curIdx.data (FilesModel::Roles::MediaInfoRole).value<MediaInfo> ();
+		if (curInfo.LocalPath_ == filename)
+			currentFileChanged (curIdx);
 	}
 
 	void GraffitiTab::on_DirectoryTree__activated (const QModelIndex& index)
@@ -313,6 +437,8 @@ namespace Graffiti
 
 		auto worker = [this, path] () { return LMPProxy_->RecIterateInfo (path, true); };
 		watcher->setFuture (QtConcurrent::run (std::function<QList<QFileInfo> ()> (worker)));
+
+		SplitCue_->setEnabled (!QDir (path).entryList ({ "*.cue" }).isEmpty ());
 	}
 
 	void GraffitiTab::currentFileChanged (const QModelIndex& index)
@@ -380,6 +506,20 @@ namespace Graffiti
 
 		FilesModel_->SetInfos (watcher->result ());
 		setEnabled (true);
+	}
+
+	void GraffitiTab::handleCueSplitError (const QString& error)
+	{
+		const auto& e = Util::MakeNotification ("LMP Graffiti", error, PCritical_);
+		CoreProxy_->GetEntityManager ()->HandleEntity (e);
+	}
+
+	void GraffitiTab::handleCueSplitFinished ()
+	{
+		const auto& e = Util::MakeNotification ("LMP Graffiti",
+				tr ("Finished splitting CUE file"),
+				PInfo_);
+		CoreProxy_->GetEntityManager ()->HandleEntity (e);
 	}
 }
 }

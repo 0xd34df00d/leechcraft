@@ -28,10 +28,18 @@ namespace Util
 {
 	QPoint FitRectScreen (QPoint pos, const QSize& size, FitFlags flags, const QPoint& shiftAdd)
 	{
-		const QRect& geometry = QApplication::desktop ()->screenGeometry (pos);
+		return FitRect (pos, size, QApplication::desktop ()->screenGeometry (pos), flags, shiftAdd);
+	}
 
+	QPoint FitRect (QPoint pos, const QSize& size, const QRect& geometry,
+			FitFlags flags, const QPoint& shiftAdd)
+	{
 		int xDiff = std::max (0, pos.x () + size.width () - (geometry.width () + geometry.x ()));
+		if (!xDiff)
+			xDiff = std::min (0, pos.x () - geometry.x ());
 		int yDiff = std::max (0, pos.y () + size.height () - (geometry.height () + geometry.y ()));
+		if (!yDiff)
+			yDiff = std::min (0, pos.y () - geometry.y ());
 
 		if (flags & FitFlag::NoOverlap)
 		{
@@ -49,12 +57,13 @@ namespace Util
 			}
 		}
 
-		if (xDiff > 0)
+		if (xDiff)
 			pos.rx () -= xDiff + shiftAdd.x ();
-		if (yDiff > 0)
+		if (yDiff)
 			pos.ry () -= yDiff + shiftAdd.y ();
 
 		return pos;
 	}
+
 }
 }

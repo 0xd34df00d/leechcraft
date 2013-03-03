@@ -26,8 +26,8 @@
 #include <util/basehookinterconnector.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/core/ihookproxy.h>
-#include "interfaces/poshukutypes.h"
-#include "interfaces/iwebplugin.h"
+#include "interfaces/poshuku/poshukutypes.h"
+#include "interfaces/poshuku/iwebplugin.h"
 
 class QWebView;
 class QContextMenuEvent;

@@ -29,7 +29,7 @@
 #include <interfaces/structures.h>
 #include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/core/ihookproxy.h>
-#include "interfaces/ibrowserwidget.h"
+#include "interfaces/poshuku/ibrowserwidget.h"
 #include "ui_browserwidget.h"
 
 class QToolBar;

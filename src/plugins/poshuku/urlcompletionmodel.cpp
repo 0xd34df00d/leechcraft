@@ -92,7 +92,7 @@ namespace Poshuku
 		return Items_.size ();
 	}
 
-	void URLCompletionModel::addItem (const QString& title, const QString& url)
+	void URLCompletionModel::AddItem (const QString& title, const QString& url, size_t pos)
 	{
 		HistoryItem item =
 		{
@@ -101,8 +101,10 @@ namespace Poshuku
 			url
 		};
 
-		beginInsertRows (QModelIndex (), 0, 0);
-		Items_.insert (Items_.begin (), item);
+		pos = std::min (Items_.size (), pos);
+
+		beginInsertRows (QModelIndex (), pos, pos);
+		Items_.insert (Items_.begin () + pos, item);
 		endInsertRows ();
 	}
 

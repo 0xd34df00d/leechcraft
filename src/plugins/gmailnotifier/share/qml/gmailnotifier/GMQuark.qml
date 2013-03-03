@@ -53,6 +53,6 @@ Rectangle {
             border.width: 1
         }
 
-        onTriggered: commonJS.showTooltip(rootRect, function(x, y) { GMN_proxy.showMailList(x, y, quarkProxy.getShiftDiff()) })
+        onTriggered: commonJS.showTooltip(rootRect, function(x, y) { GMN_proxy.showMailList(x, y, quarkProxy.getWinRect()) })
     }
 }

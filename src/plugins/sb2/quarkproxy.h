@@ -51,13 +51,15 @@ namespace SB2
 		QuarkProxy (ViewManager*, ICoreProxy_ptr, QObject* = 0);
 
 		const QString& GetExtHoveredQuarkClass () const;
+	private:
+		QRect GetFreeCoords () const;
 	public slots:
 		QPoint mapToGlobal (double, double);
-		QPoint getShiftDiff () const;
 		void showTextTooltip (int, int, const QString&);
 		void showSettings (const QUrl&);
 		void removeQuark (const QUrl&);
 		QVariant openWindow (const QUrl&, const QString&, const QVariant&);
+		QRect getWinRect ();
 
 		void quarkAddRequested (int, int);
 		void quarkOrderRequested (int, int);

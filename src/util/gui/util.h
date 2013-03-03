@@ -22,6 +22,7 @@
 #include <util/utilconfig.h>
 
 class QSize;
+class QRect;
 
 namespace LeechCraft
 {
@@ -35,7 +36,10 @@ namespace Util
 
 	Q_DECLARE_FLAGS (FitFlags, FitFlag);
 
-	UTIL_API QPoint FitRectScreen (QPoint pos, const QSize& size, FitFlags flags = NoFlags, const QPoint& shiftAdd = QPoint (0, 0));
+	UTIL_API QPoint FitRectScreen (QPoint pos, const QSize& size,
+			FitFlags flags = NoFlags, const QPoint& shiftAdd = QPoint (0, 0));
+	UTIL_API QPoint FitRect (QPoint pos, const QSize& size, const QRect& geometry,
+			FitFlags flags = NoFlags, const QPoint& shiftAdd = QPoint (0, 0));
 }
 }
 

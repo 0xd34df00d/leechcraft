@@ -18,7 +18,7 @@
 
 #include "flashonclickplugin.h"
 #include <QDebug>
-#include <interfaces/iflashoverrider.h>
+#include <interfaces/poshuku/iflashoverrider.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "flashplaceholder.h"

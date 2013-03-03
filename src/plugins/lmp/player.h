@@ -22,7 +22,7 @@
 #include <QObject>
 
 #ifdef ENABLE_MPRIS
-#include <QDBusContext>
+#include <qdbuscontext.h>
 #endif
 
 #include <phonon/mediasource.h>

@@ -46,7 +46,7 @@ namespace GmailNotifier
 			emit msgCountChanged ();
 	}
 
-	void QuarkManager::showMailList (int x, int y, const QPoint& shift)
+	void QuarkManager::showMailList (int x, int y, const QRect& geometry)
 	{
 		if (MailListView_)
 		{
@@ -56,8 +56,8 @@ namespace GmailNotifier
 
 		MailListView_ = new MailListView (Infos_, Proxy_);
 		qApp->processEvents ();
-		MailListView_->move (Util::FitRectScreen ({ x, y }, MailListView_->size (),
-				Util::FitFlag::NoOverlap, shift));
+		MailListView_->move (Util::FitRect ({ x, y }, MailListView_->size (), geometry,
+				Util::FitFlag::NoOverlap));
 		MailListView_->show ();
 	}
 }

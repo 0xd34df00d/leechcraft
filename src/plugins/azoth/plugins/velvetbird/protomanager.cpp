@@ -240,6 +240,10 @@ namespace VelvetBird
 	: QObject (parent)
 	, Proxy_ (proxy)
 	{
+	}
+
+	void ProtoManager::PluginsAvailable ()
+	{
 		purple_debug_set_enabled (true);
 
 		const auto& dir = Util::CreateIfNotExists ("azoth/velvetbird/purple");
@@ -273,7 +277,7 @@ namespace VelvetBird
 			auto item = static_cast<PurplePlugin*> (protos->data);
 			protos = protos->next;
 
-			auto proto = new Protocol (item, proxy, parent);
+			auto proto = new Protocol (item, Proxy_, this);
 			Protocols_ << proto;
 			id2proto [proto->GetPurpleID ()] = proto;
 
@@ -297,10 +301,6 @@ namespace VelvetBird
 		}
 
 		purple_blist_load ();
-	}
-
-	void ProtoManager::PluginsAvailable ()
-	{
 		purple_accounts_restore_current_statuses ();
 	}
 
