@@ -20,6 +20,11 @@
 
 #include <functional>
 #include <QObject>
+
+#ifdef ENABLE_MPRIS
+#include <QDBusContext>
+#endif
+
 #include <phonon/mediasource.h>
 #include <phonon/path.h>
 #include <interfaces/media/iradiostation.h>
@@ -46,6 +51,9 @@ namespace LMP
 	struct MediaInfo;
 
 	class Player : public QObject
+#ifdef ENABLE_MPRIS
+				 , public QDBusContext
+#endif
 	{
 		Q_OBJECT
 

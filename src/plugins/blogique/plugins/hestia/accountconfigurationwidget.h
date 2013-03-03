@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,31 +18,33 @@
 
 #pragma once
 
-#include <QDBusAbstractAdaptor>
-#include <QDBusVariant>
+#include <QWidget>
+#include <interfaces/blogique/ibloggingplatform.h>
+#include "ui_accountconfigurationwidget.h"
 
 namespace LeechCraft
 {
-namespace LMP
+namespace Blogique
 {
-namespace MPRIS
+namespace Hestia
 {
-	class FDOPropsAdaptor : public QDBusAbstractAdaptor
+	class AccountConfigurationWidget : public QWidget
 	{
 		Q_OBJECT
 
-		Q_CLASSINFO ("D-Bus Interface", "org.freedesktop.DBus.Properties")
-	public:
-		FDOPropsAdaptor (QObject*);
+		Ui::AccountConfigurationWidget Ui_;
+		IBloggingPlatform::AccountAddOptions Option_;
 
-		void Notify (const QString& iface, const QString& prop, const QVariant& val);
-	public slots:
-		QDBusVariant Get (const QString& iface, const QString& prop);
-		void Set (const QString& iface, const QString& prop, const QDBusVariant&);
-	private:
-		bool GetProperty (const QString&, const QString&, QMetaProperty*, QObject**) const;
-	signals:
-		void PropertiesChanged (const QString&, const QVariantMap&, const QStringList&);
+	public:
+		AccountConfigurationWidget (QWidget *parent = 0,
+				IBloggingPlatform::AccountAddOptions option = IBloggingPlatform::AAONoOptions);
+
+		void SetAccountBasePath (const QString& path);
+		QString GetAccountBasePath () const;
+		IBloggingPlatform::AccountAddOptions GetOption () const;
+
+	private slots:
+		void on_OpenAccountBase__released ();
 	};
 }
 }

@@ -23,7 +23,7 @@ color1="white"
 color2="black"
 trans=1
 noformula=0
-aa=1
+aa=0
 extra_header="$HOME/.tex2im_header"
 
 if [ -f ~/.tex2imrc ]; then
@@ -192,7 +192,7 @@ cd $tmpdir
 for f in $homedir/*.eps; do
     test -f ${f##*/} || ln -s $f . # multi-processing!
 done
-latex -interaction=batchmode -halt-on-error out.tex > /dev/null
+latex -interaction=batchmode -halt-on-error out.tex
 [ ! -e out.dvi ] && exit 1;
 cd "$homedir"
 dvips -o $tmpdir/out.eps -E $tmpdir/out.dvi 2> /dev/null

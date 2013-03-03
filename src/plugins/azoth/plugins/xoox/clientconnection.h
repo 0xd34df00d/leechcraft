@@ -241,8 +241,11 @@ namespace Xoox
 		void FetchVCard (const QString&, bool reportErrors = false);
 		void FetchVCard (const QString&, VCardCallback_t, bool reportErrors = false);
 		void FetchVersion (const QString&, bool reportErrors = false);
+
 		QXmppBookmarkSet GetBookmarks () const;
 		void SetBookmarks (const QXmppBookmarkSet&);
+		QXmppBookmarkManager* GetBMManager () const;
+
 		GlooxMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&, const QString&);
 

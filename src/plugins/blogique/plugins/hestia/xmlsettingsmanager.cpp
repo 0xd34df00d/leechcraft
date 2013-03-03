@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "importaccountwidget.h"
-#include <QFileDialog>
+#include "xmlsettingsmanager.h"
+#include <QApplication>
 
 namespace LeechCraft
 {
@@ -25,35 +25,27 @@ namespace Blogique
 {
 namespace Hestia
 {
-	ImportAccountWidget::ImportAccountWidget (QWidget *parent)
-	: QWidget (parent)
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		Ui_.setupUi (this);
+		Util::BaseSettingsManager::Init ();
 	}
 
-	void ImportAccountWidget::on_OpenAccountBase__released ()
+	XmlSettingsManager& XmlSettingsManager::Instance ()
 	{
-		QString path = QFileDialog::getOpenFileName (this,
-				tr ("Open account base"),
-				QDir::homePath (),
-				tr ("Account bases (*.db)"));
-
-		if (path.isEmpty ())
-			return;
-
-		SetAccountBasePath (path);
+		static XmlSettingsManager xsm;
+		return xsm;
 	}
 
-	void ImportAccountWidget::SetAccountBasePath (const QString& path)
+	void XmlSettingsManager::EndSettings (QSettings*) const
 	{
-		Ui_.AccountBasePath_->setText (path);
 	}
 
-	QString ImportAccountWidget::GetAccountBasePath() const
+	QSettings* XmlSettingsManager::BeginSettings () const
 	{
-		return Ui_.AccountBasePath_->text ();
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Blogique_Hestia");
+		return settings;
 	}
-
 }
 }
 }

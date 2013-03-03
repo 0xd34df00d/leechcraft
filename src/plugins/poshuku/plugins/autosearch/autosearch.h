@@ -18,31 +18,47 @@
 
 #pragma once
 
-#include <QDBusAbstractAdaptor>
-#include <QDBusVariant>
+#include <QObject>
+#include <interfaces/iinfo.h>
+#include <interfaces/iplugin2.h>
+#include <interfaces/core/ihookproxy.h>
+
+class QNetworkReply;
 
 namespace LeechCraft
 {
-namespace LMP
+namespace Poshuku
 {
-namespace MPRIS
+namespace Autosearch
 {
-	class FDOPropsAdaptor : public QDBusAbstractAdaptor
+	class Plugin : public QObject
+				 , public IInfo
+				 , public IPlugin2
 	{
 		Q_OBJECT
+		Q_INTERFACES (IInfo IPlugin2)
 
-		Q_CLASSINFO ("D-Bus Interface", "org.freedesktop.DBus.Properties")
+		ICoreProxy_ptr Proxy_;
+
+		QMap<QNetworkReply*, QObject*> Reply2Model_;
+		QMap<QObject*, QNetworkReply*> Model2Reply_;
 	public:
-		FDOPropsAdaptor (QObject*);
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-		void Notify (const QString& iface, const QString& prop, const QVariant& val);
+		QSet<QByteArray> GetPluginClasses () const;
 	public slots:
-		QDBusVariant Get (const QString& iface, const QString& prop);
-		void Set (const QString& iface, const QString& prop, const QDBusVariant&);
-	private:
-		bool GetProperty (const QString&, const QString&, QMetaProperty*, QObject**) const;
-	signals:
-		void PropertiesChanged (const QString&, const QVariantMap&, const QStringList&);
+		void hookURLCompletionNewStringRequested (LeechCraft::IHookProxy_ptr proxy,
+				QObject *model,
+				const QString& string,
+				int historyItems);
+	private slots:
+		void handleReply ();
 	};
 }
 }

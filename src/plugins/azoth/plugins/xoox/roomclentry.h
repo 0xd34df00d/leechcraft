@@ -27,6 +27,8 @@
 #include <interfaces/azoth/imucperms.h>
 #include <interfaces/azoth/iconfigurablemuc.h>
 
+class QXmppBookmarkSet;
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -126,6 +128,7 @@ namespace Xoox
 		void HandleNewParticipants (const QList<ICLEntry*>&);
 		void HandleSubjectChanged (const QString&);
 	private slots:
+		void handleBookmarks (const QXmppBookmarkSet&);
 		void reemitStatusChange (const EntryStatus&);
 	signals:
 		void gotMessage (QObject*);

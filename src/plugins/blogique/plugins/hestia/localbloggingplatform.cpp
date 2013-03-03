@@ -25,9 +25,10 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/passutils.h>
 #include <util/util.h>
+#include "accountconfigurationwidget.h"
 #include "core.h"
-#include "importaccountwidget.h"
 #include "localblogaccount.h"
+#include "postoptionswidget.h"
 
 namespace LeechCraft
 {
@@ -55,6 +56,8 @@ namespace Hestia
 	QObjectList LocalBloggingPlatform::GetRegisteredAccounts ()
 	{
 		QObjectList result;
+		for (auto acc : Accounts_)
+				result << acc;
 		return result;
 	}
 
@@ -81,15 +84,14 @@ namespace Hestia
 	QList<QWidget*> LocalBloggingPlatform::GetAccountRegistrationWidgets (IBloggingPlatform::AccountAddOptions opts)
 	{
 		QList<QWidget*> result;
-		if (!(opts & IBloggingPlatform::AAORegisterNewAccount))
-			result << new ImportAccountWidget ();
+		result << new AccountConfigurationWidget (0, opts);
 		return result;
 	}
 
 	void LocalBloggingPlatform::RegisterAccount (const QString& name,
 			const QList<QWidget*>& widgets)
 	{
-		auto w = qobject_cast<ImportAccountWidget*> (widgets.value (0));
+		auto w = qobject_cast<AccountConfigurationWidget*> (widgets.value (0));
 		if (!w)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -127,7 +129,7 @@ namespace Hestia
 
 	QList<QWidget*> LocalBloggingPlatform::GetBlogiqueSideWidgets () const
 	{
-		return QList<QWidget*> ();
+		return { new PostOptionsWidget };
 	}
 
 	void LocalBloggingPlatform::SetPluginProxy (QObject *proxy)

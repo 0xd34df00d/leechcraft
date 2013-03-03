@@ -662,6 +662,31 @@ namespace Azoth
 	void ChatTab::handleRichTextToggled ()
 	{
 		PrepareTheme ();
+
+		const bool defaultSetting = XmlSettingsManager::Instance ()
+				.property ("ShowRichTextMessageBody").toBool ();
+
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth");
+		settings.beginGroup ("RichTextStates");
+
+		auto enabled = settings.value ("Enabled").toStringList ();
+		auto disabled = settings.value ("Disabled").toStringList ();
+
+		if (ToggleRichText_->isChecked () == defaultSetting)
+		{
+			enabled.removeAll (EntryID_);
+			disabled.removeAll (EntryID_);
+		}
+		else if (defaultSetting)
+			disabled << EntryID_;
+		else
+			enabled << EntryID_;
+
+		settings.setValue ("Enabled", enabled);
+		settings.setValue ("Disabled", disabled);
+
+		settings.endGroup ();
 	}
 
 	void ChatTab::handleQuoteSelection ()
@@ -1310,6 +1335,15 @@ namespace Azoth
 				SLOT (handleRichTextToggled ()));
 		TabToolbar_->addAction (ToggleRichText_);
 		TabToolbar_->addSeparator ();
+
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth");
+		settings.beginGroup ("RichTextStates");
+		if (settings.value ("Enabled").toStringList ().contains (EntryID_))
+			ToggleRichText_->setChecked (true);
+		else if (settings.value ("Disabled").toStringList ().contains (EntryID_))
+			ToggleRichText_->setChecked (false);
+		settings.endGroup ();
 
 		const auto& quoteInfo = infos ["org.LeechCraft.Azoth.QuoteSelected"];
 		QAction *quoteSelection = new QAction (tr ("Quote selection"), this);

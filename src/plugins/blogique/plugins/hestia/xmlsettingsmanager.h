@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,31 +18,24 @@
 
 #pragma once
 
-#include <QDBusAbstractAdaptor>
-#include <QDBusVariant>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
-namespace LMP
+namespace Blogique
 {
-namespace MPRIS
+namespace Hestia
 {
-	class FDOPropsAdaptor : public QDBusAbstractAdaptor
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
 		Q_OBJECT
 
-		Q_CLASSINFO ("D-Bus Interface", "org.freedesktop.DBus.Properties")
+		XmlSettingsManager ();
 	public:
-		FDOPropsAdaptor (QObject*);
-
-		void Notify (const QString& iface, const QString& prop, const QVariant& val);
-	public slots:
-		QDBusVariant Get (const QString& iface, const QString& prop);
-		void Set (const QString& iface, const QString& prop, const QDBusVariant&);
-	private:
-		bool GetProperty (const QString&, const QString&, QMetaProperty*, QObject**) const;
-	signals:
-		void PropertiesChanged (const QString&, const QVariantMap&, const QStringList&);
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
 	};
 }
 }

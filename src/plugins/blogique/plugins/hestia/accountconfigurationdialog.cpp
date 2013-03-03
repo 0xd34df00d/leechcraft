@@ -16,10 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QWidget>
-#include "ui_importaccountwidget.h"
+#include "accountconfigurationdialog.h"
 
 namespace LeechCraft
 {
@@ -27,20 +24,19 @@ namespace Blogique
 {
 namespace Hestia
 {
-	class ImportAccountWidget : public QWidget
+	AccountConfigurationDialog::AccountConfigurationDialog (QWidget *parent)
+	: QDialog (parent)
 	{
-		Q_OBJECT
+		Ui_.setupUi (this);
+	}
 
-		Ui::ImportAccountWidget Ui_;
-	public:
-		ImportAccountWidget (QWidget *parent = 0);
+	AccountConfigurationWidget* AccountConfigurationDialog::ConfWidget ()
+	{
+		return Ui_.ConfWidget_;
+	}
 
-		void SetAccountBasePath (const QString& path);
-		QString GetAccountBasePath () const;
-
-	private slots:
-		void on_OpenAccountBase__released ();
-	};
 }
 }
 }
+
+

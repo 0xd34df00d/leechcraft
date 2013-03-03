@@ -29,7 +29,7 @@ namespace Blogique
 namespace Hestia
 {
 	class AccountStorage;
-	class ImportAccountWidget;
+	class AccountConfigurationWidget;
 	class LocalBloggingPlatform;
 
 	class LocalBlogAccount : public QObject
@@ -43,6 +43,8 @@ namespace Hestia
 		bool IsValid_;
 		QString DatabasePath_;
 		AccountStorage *AccountStorage_;
+
+		QAction *LoadAllEvents_;
 
 	public:
 		LocalBlogAccount (const QString& name, QObject *parent = 0);
@@ -63,9 +65,8 @@ namespace Hestia
 		QList<QAction*> GetUpdateActions () const;
 		void RequestStatistics ();
 		void GetEntriesByDate (const QDate& date);
-		void GetLastEntries (int count);
 
-		void FillSettings (ImportAccountWidget *widget);
+		void FillSettings (AccountConfigurationWidget *widget);
 		void Init ();
 
 		QByteArray Serialize () const;
@@ -78,6 +79,8 @@ namespace Hestia
 		void submit (const Entry& event);
 		void backup ();
 
+		void handleLoadAllEvents ();
+
 	signals:
 		void accountRenamed (const QString& newName);
 		void accountSettingsChanged ();
@@ -86,6 +89,7 @@ namespace Hestia
 		void entryPosted (const QList<Entry>& entries);
 		void entryRemoved (int itemId);
 		void entryUpdated (const QList<Entry>& entries);
+		void gotEntries (const QList<Entry>& entries);
 		void gotEntries2Backup (const QList<Entry>& entries);
 		void gettingEntries2BackupFinished ();
 		void gotBlogStatistics (const QMap<QDate, int>& statistics);

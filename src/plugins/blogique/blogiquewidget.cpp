@@ -298,7 +298,8 @@ namespace Blogique
 
 	void BlogiqueWidget::RemovePostingTargetsWidget ()
 	{
-		if (PostTargetAction_->isVisible ())
+		if (PostTargetAction_ &&
+				PostTargetAction_->isVisible ())
 		{
 			PostTargetAction_->setVisible (false);
 			PostTargetBox_->clear ();
@@ -382,6 +383,7 @@ namespace Blogique
 		e.Subject_ = Ui_.Subject_->text ();
 		e.EntryType_ = EntryType_;
 		e.EntryId_ = EntryId_;
+		e.Date_ = !e.Date_.isNull () ? e.Date_ : QDateTime::currentDateTime ();
 
 		return e;
 	}

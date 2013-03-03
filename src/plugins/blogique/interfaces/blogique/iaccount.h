@@ -136,12 +136,6 @@ namespace Blogique
 		 */
 		virtual QObject* GetProfile () = 0;
 
-		/** @brief Fetch last entries from blog.
-		 *
-		 * @param[in] count Amount of entries to fetch.
-		 */
-		virtual void GetLastEntries (int count) = 0;
-
 		/** @brief Requests entries by date;
 		 *
 		 * @param[in] date Specified date.
@@ -209,6 +203,9 @@ namespace Blogique
 
 		//TODO
 		virtual void gotBlogStatistics (const QMap<QDate, int>& statistics) = 0;
+
+		//TODO
+		virtual void gotEntries (const QList<Entry>& entries) = 0;
 
 		/** @brief This signal should be emitted when account want to backup
 		 * some amount of entries.

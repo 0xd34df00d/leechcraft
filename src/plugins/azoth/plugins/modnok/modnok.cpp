@@ -45,10 +45,11 @@ namespace Modnok
 				this, "handleCacheSize");
 		handleCacheSize ();
 
-		XmlSettingsManager::Instance ().RegisterObject ("HorizontalDPI",
-				this, "clearCaches");
-		XmlSettingsManager::Instance ().RegisterObject ("VerticalDPI",
-				this, "clearCaches");
+		QList<QByteArray> invalidates;
+		invalidates << "HorizontalDPI"
+				<< "VerticalDPI"
+				<< "TextColor";
+		XmlSettingsManager::Instance ().RegisterObject (invalidates, this, "clearCaches");
 
 		QStringList candidates;
 		candidates << "/usr/local/bin"
@@ -130,14 +131,16 @@ namespace Modnok
 
 		const QString& filename = Util::GetTemporaryName ("lc_azoth_modnok.XXXXXX.png");
 
-		const int dpiX = XmlSettingsManager::Instance ()
-				.property ("HorizontalDPI").toInt ();
-		const int dpiY = XmlSettingsManager::Instance ()
-				.property ("VerticalDPI").toInt ();
+		const int dpiX = XmlSettingsManager::Instance ().property ("HorizontalDPI").toInt ();
+		const int dpiY = XmlSettingsManager::Instance ().property ("VerticalDPI").toInt ();
+		const auto& color = XmlSettingsManager::Instance ().property ("TextColor").toString ();
 
 		QStringList args;
 		args << QString ("-r %1x%2").arg (dpiX).arg (dpiY);
 		args << QString ("-o %1").arg (filename);
+		args << "-t" << color;
+		if (color == "white")
+			args << "-b" << "black";
 
 		// TODO
 		const QString& incPath = QString ();
@@ -146,7 +149,9 @@ namespace Modnok
 
 		args << formula;
 
-		QProcess::execute (ConvScriptPath_, args);
+		QProcess process;
+		process.start (ConvScriptPath_, args);
+		process.waitForFinished (5000);
 
 		QImage img (filename);
 		FormulasCache_.insert (formula, new QImage (filename), img.byteCount () / 1024);

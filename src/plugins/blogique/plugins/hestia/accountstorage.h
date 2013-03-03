@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <interfaces/blogique/iaccount.h>
 
 namespace LeechCraft
 {
@@ -54,11 +55,25 @@ namespace Hestia
 		QSqlQuery GetEntryTags_;
 
 	public:
+		enum class Mode
+		{
+			ShortMode,
+			FullMode
+		};
+
 		explicit AccountStorage (LocalBlogAccount *acc, QObject *parent = 0);
 
 		void Init (const QString& dbPath);
 		bool IsReady () const;
 		bool CheckDatabase (const QString& dbPath);
+
+		qint64 SaveNewEntry (const Entry& e);
+		qint64 UpdateEntry (const Entry& e, qint64 entryId);
+		void RemoveEntry(qint64 entryId);
+		QList<Entry> GetEntries (Mode mode);
+		QList<Entry> GetEntriesByDate (const QDate& date);
+		QMap<QDate, int> GetEntriesCountByDate ();
+		Entry GetFullEntry (qint64 entryId);
 	private:
 		void CreateTables ();
 		void PrepareQueries ();
