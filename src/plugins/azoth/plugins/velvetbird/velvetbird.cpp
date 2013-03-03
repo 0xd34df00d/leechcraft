@@ -34,7 +34,8 @@ namespace VelvetBird
 		if (!PurpleLib_.load ())
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "unable to re-load libpurple, disabling VelvetBird";
+					<< "unable to re-load libpurple, disabling VelvetBird:"
+					<< PurpleLib_.errorString ();
 			return;
 		}
 
