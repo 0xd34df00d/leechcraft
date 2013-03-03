@@ -33,9 +33,13 @@ namespace VelvetBird
 		PurpleLib_.setFileName ("purple");
 		if (!PurpleLib_.load ())
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to re-load libpurple, disabling VelvetBird";
-			return;
+			PurpleLib_.setFileName ("libpurple.so.0");
+			if (!PurpleLib_.load ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to re-load libpurple, disabling VelvetBird";
+				return;
+			}
 		}
 
 		ProtoMgr_ = new ProtoManager (proxy, this);
