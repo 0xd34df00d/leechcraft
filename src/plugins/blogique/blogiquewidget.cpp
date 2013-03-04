@@ -36,7 +36,6 @@
 #include "blogique.h"
 #include "core.h"
 #include "draftentrieswidget.h"
-#include "localstorage.h"
 #include "blogentrieswidget.h"
 #include "updateentriesdialog.h"
 #include "xmlsettingsmanager.h"
@@ -82,21 +81,25 @@ namespace Blogique
 				SIGNAL (addNewTab (QString, QWidget*)),
 				&Core::Instance (),
 				SIGNAL (addNewTab (QString, QWidget*)));
+		connect (this,
+				SIGNAL (changeTabName (QWidget*, QString)),
+				&Core::Instance (),
+				SIGNAL (changeTabName (QWidget*, QString)));
 
 		connect (BlogEntriesWidget_,
-				SIGNAL(fillCurrentWidgetWithBlogEntry (Entry)),
+				SIGNAL (fillCurrentWidgetWithBlogEntry (Entry)),
 				this,
 				SLOT (fillCurrentTabWithEntry (Entry)));
 		connect (BlogEntriesWidget_,
-				SIGNAL(fillNewWidgetWithBlogEntry (Entry,QByteArray)),
+				SIGNAL (fillNewWidgetWithBlogEntry (Entry,QByteArray)),
 				this,
 				SLOT (fillNewTabWithEntry (Entry, QByteArray)));
 		connect (DraftEntriesWidget_,
-				SIGNAL(fillCurrentWidgetWithDraftEntry (Entry)),
+				SIGNAL (fillCurrentWidgetWithDraftEntry (Entry)),
 				this,
 				SLOT (fillCurrentTabWithEntry (Entry)));
 		connect (DraftEntriesWidget_,
-				SIGNAL(fillNewWidgetWithDraftEntry (Entry, QByteArray)),
+				SIGNAL (fillNewWidgetWithDraftEntry (Entry, QByteArray)),
 				this,
 				SLOT (fillNewTabWithEntry (Entry, QByteArray)));
 
@@ -383,7 +386,8 @@ namespace Blogique
 		e.Subject_ = Ui_.Subject_->text ();
 		e.EntryType_ = EntryType_;
 		e.EntryId_ = EntryId_;
-		e.Date_ = !e.Date_.isNull () ? e.Date_ : QDateTime::currentDateTime ();
+		if (e.Date_.isNull ())
+			e.Date_ = QDateTime::currentDateTime ();
 
 		return e;
 	}
@@ -487,11 +491,13 @@ namespace Blogique
 				break;
 			case QMessageBox::Cancel:
 			default:
-				return;
+				break;
 			}
 		}
 		else
 			FillWidget (entry);
+
+		emit changeTabName (this, entry.Subject_);
 	}
 
 	void BlogiqueWidget::fillNewTabWithEntry (const Entry& entry,
@@ -500,6 +506,7 @@ namespace Blogique
 		auto w = Core::Instance ().CreateBlogiqueWidget ();
 		w->FillWidget (entry, accountId);
 		emit addNewTab ("Blogique", w);
+		emit changeTabName (w, entry.Subject_);
 	}
 
 	void BlogiqueWidget::handleTextChanged ()

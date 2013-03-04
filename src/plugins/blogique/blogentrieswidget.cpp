@@ -96,7 +96,7 @@ namespace Blogique
 		connect (Account_->GetObject (),
 				SIGNAL (gotBlogStatistics (QMap<QDate, int>)),
 				this,
-				SLOT (fillStatistic (QMap<QDate,int>)),
+				SLOT (fillStatistic (QMap<QDate, int>)),
 				Qt::UniqueConnection);
 		connect (Account_->GetObject (),
 				SIGNAL (gotEntries (QList<Entry>)),
@@ -104,33 +104,40 @@ namespace Blogique
 				SLOT (fillView (QList<Entry>)),
 				Qt::UniqueConnection);
 
-		auto actions = account->GetUpdateActions ();
-		Ui_.LoadBlogEntries_->addActions (actions);
-		LoadActions_ = actions;
+		LoadActions_ = account->GetUpdateActions ();
+		Ui_.LoadBlogEntries_->addActions (LoadActions_);
 
 		Account_->RequestStatistics ();
 	}
 
-	void BlogEntriesWidget::FillCurrentTab (const QModelIndex& index)
+	Entry BlogEntriesWidget::GetEntry (const QModelIndex& index)
 	{
 		auto sourceIndex = index.isValid () ?
 			FilterProxyModel_->mapToSource (index) :
 			FilterProxyModel_->mapToSource (Ui_.BlogEntriesView_->currentIndex ());
 
 		if (!sourceIndex.isValid ())
-			return;
+			return Entry ();
 
 		if (!Account_)
-			return;
+			return Entry ();
 
 		sourceIndex = sourceIndex.sibling (sourceIndex.row (),
 				Utils::EntriesViewColumns::Date);
 		Entry e = Item2Entry_ [BlogEntriesModel_->itemFromIndex (sourceIndex)];
 		if (e.IsEmpty ())
-			return;
+			return Entry ();
 
 		e.EntryType_ = EntryType::BlogEntry;
-		emit fillCurrentWidgetWithBlogEntry (e);
+
+		return e;
+	}
+
+	void BlogEntriesWidget::FillCurrentTab (const QModelIndex& index)
+	{
+		const auto& e = GetEntry (index);
+		if (!e.IsEmpty ())
+			emit fillCurrentWidgetWithBlogEntry (e);
 	}
 
 	void BlogEntriesWidget::clear ()
@@ -140,7 +147,7 @@ namespace Blogique
 
 	void BlogEntriesWidget::fillView (const QList<Entry>& entries)
 	{
-		BlogEntriesModel_->removeRows (0, BlogEntriesModel_->rowCount());
+		BlogEntriesModel_->removeRows (0, BlogEntriesModel_->rowCount ());
 		Item2Entry_.clear ();
 		for (const auto& entry : entries)
 		{
@@ -184,24 +191,9 @@ namespace Blogique
 
 	void BlogEntriesWidget::handleOpenBlogEntryInNewTab (const QModelIndex& index)
 	{
-		auto sourceIndex = index.isValid () ?
-			FilterProxyModel_->mapToSource (index) :
-			FilterProxyModel_->mapToSource (Ui_.BlogEntriesView_->currentIndex ());
-
-		if (!sourceIndex.isValid ())
-			return;
-
-		if (!Account_)
-			return;
-
-		sourceIndex = sourceIndex.sibling (sourceIndex.row (),
-				Utils::EntriesViewColumns::Date);
-		Entry e = Item2Entry_ [BlogEntriesModel_->itemFromIndex (sourceIndex)];
-		if (e.IsEmpty ())
-			return;
-
-		e.EntryType_ = EntryType::BlogEntry;
-		emit fillNewWidgetWithBlogEntry (e, Account_->GetAccountID ());
+		const auto& e = GetEntry (index);
+		if (!e.IsEmpty ())
+			emit fillNewWidgetWithBlogEntry (e, Account_->GetAccountID ());
 	}
 
 	void BlogEntriesWidget::on_BlogEntriesFilter__textChanged (const QString& text)
@@ -227,9 +219,10 @@ namespace Blogique
 			return;
 
 		if (QMessageBox::question (this, "LeechCraft",
-			tr ("Do you want to remove this entry from blog?"),
+				tr ("Are you sure you want to delete entry %1 from the blog?")
+						.arg ("<em>" + e.Subject_ + "</em>"),
 				QMessageBox::Ok | QMessageBox::Cancel,
-		QMessageBox::Cancel) == QMessageBox::Ok)
+				QMessageBox::Cancel) == QMessageBox::Ok)
 			Account_->RemoveEntry (e);
 	}
 

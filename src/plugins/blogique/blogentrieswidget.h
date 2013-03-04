@@ -47,6 +47,7 @@ namespace Blogique
 		QString GetName () const;
 		void SetAccount (IAccount *account);
 	private:
+		Entry GetEntry (const QModelIndex& index = QModelIndex ());
 		void FillCurrentTab (const QModelIndex& index = QModelIndex ());
 
 	public slots:

@@ -94,8 +94,7 @@ namespace Blogique
 		}
 
 		Ui_.RegisterAccount_->setEnabled (platform->GetFeatures () &
-				(IBloggingPlatform::BPFSupportsRegistration |
-						IBloggingPlatform::BPFLocalBlog));
+				(IBloggingPlatform::BPFSupportsRegistration));
 
 		const int currentId = wizard ()->currentId ();
 		Q_FOREACH (const int id, wizard ()->pageIds ())

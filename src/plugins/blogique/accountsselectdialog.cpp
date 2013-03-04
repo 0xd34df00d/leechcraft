@@ -41,8 +41,7 @@ namespace Blogique
 		{
 			auto ibp = qobject_cast<IBloggingPlatform*> (acc->GetParentBloggingPlatform ());
 			if (!ibp ||
-					(ibp->GetFeatures () & IBloggingPlatform::BPFLocalBlog) ||
- 					!(ibp->GetFeatures () & IBloggingPlatform::BPFSupportsBackup))
+					!(ibp->GetFeatures () & IBloggingPlatform::BPFSupportsBackup))
 				continue;
 
 			QStandardItem *item = new QStandardItem (acc->GetAccountName ());

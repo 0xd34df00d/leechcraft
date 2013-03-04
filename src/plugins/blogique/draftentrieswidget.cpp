@@ -78,7 +78,7 @@ namespace Blogique
 		connect (showAllEntries,
 				SIGNAL (triggered ()),
 				this,
-				SLOT(loadDraftEntries ()));
+				SLOT (loadDraftEntries ()));
 		Ui_.DraftEntriesView_->setContextMenuPolicy (Qt::ActionsContextMenu);
 		Ui_.DraftEntriesView_->addActions ({ openDraftEntryInNewTab,
 				openDraftEntryInCurrentTab,
@@ -94,24 +94,27 @@ namespace Blogique
 		return tr ("Drafts");
 	}
 
-	Entry DraftEntriesWidget::LoadFullEntry (qint64 id)
+	namespace
 	{
-		try
+		Entry LoadFullEntry (qint64 id)
 		{
-			return Core::Instance ().GetStorageManager ()->GetFullDraft (id);
-		}
-		catch (const std::runtime_error& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "error fetching full local entry"
-					<< e.what ();
-			return Entry ();
+			try
+			{
+				return Core::Instance ().GetStorageManager ()->GetFullDraft (id);
+			}
+			catch (const std::runtime_error& e)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "error fetching full local entry"
+						<< e.what ();
+				return Entry ();
+			}
 		}
 	}
 
 	void DraftEntriesWidget::FillView (const QList<Entry>& entries)
 	{
-		DraftEntriesModel_->removeRows (0, DraftEntriesModel_->rowCount());
+		DraftEntriesModel_->removeRows (0, DraftEntriesModel_->rowCount ());
 		for (const auto& entry : entries)
 		{
 			const auto& items = Utils::CreateEntriesViewRow (entry);
