@@ -18,55 +18,21 @@
 
 #pragma once
 
-#include <QStringList>
-#include <QMetaType>
-#include <interfaces/media/audiostructs.h>
-#include "lmpconfig.h"
+#include <QtPlugin>
 
 namespace LeechCraft
 {
-namespace LMP
+namespace Poshuku
 {
-	struct LMP_API MediaInfo
+	class IURLCompletionModel
 	{
-		QString LocalPath_;
+	public:
+		virtual ~IURLCompletionModel () {}
 
-		QString Artist_;
-		QString Album_;
-		QString Title_;
-
-		QStringList Genres_;
-
-		qint32 Length_;
-		qint32 Year_;
-		qint32 TrackNumber_;
-
-		MediaInfo& operator= (const Media::AudioInfo&);
-
-		bool IsUseless () const;
-
-		operator Media::AudioInfo () const;
-
-		static MediaInfo FromAudioInfo (const Media::AudioInfo&);
+		virtual void AddItem (const QString& title, const QString& url, size_t pos) = 0;
 	};
-
-	inline bool operator== (const MediaInfo& l, const MediaInfo& r)
-	{
-		return l.LocalPath_ == r.LocalPath_ &&
-			l.Artist_ == r.Artist_ &&
-			l.Album_ == r.Album_ &&
-			l.Title_ == r.Title_ &&
-			l.Genres_ == r.Genres_ &&
-			l.Length_ == r.Length_ &&
-			l.Year_ == r.Year_ &&
-			l.TrackNumber_ == r.TrackNumber_;
-	}
-
-	inline bool operator!= (const MediaInfo& l, const MediaInfo& r)
-	{
-		return !(l == r);
-	}
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::LMP::MediaInfo);
+Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IURLCompletionModel,
+		"org.Deviant.LeechCraft.Poshuku.IURLCompletionModel/1.0");

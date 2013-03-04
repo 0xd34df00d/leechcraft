@@ -47,70 +47,41 @@ namespace SB2
 		return ExtHoveredQuarkClass_;
 	}
 
-	namespace
+	QRect QuarkProxy::GetFreeCoords () const
 	{
-		QPoint GetFixDiff (ViewManager *manager)
-		{
-			auto bar = manager->GetToolbar ();
-			switch (manager->GetManagedWindow ()->toolBarArea (bar))
-			{
-			case Qt::LeftToolBarArea:
-			case Qt::RightToolBarArea:
-				return QPoint (bar->width (), 0);
-			case Qt::TopToolBarArea:
-			case Qt::BottomToolBarArea:
-				return QPoint (0, bar->height ());
-			default:
-				return QPoint (0, 0);
-			}
-		}
+		auto window = Manager_->GetManagedWindow ();
+		auto bar = Manager_->GetToolbar ();
 
-		QPoint GetShiftDiff (ViewManager *manager)
+		QRect result = window->rect ();
+		result.moveTopLeft (window->mapToGlobal ({ 0, 0 }));
+		switch (window->toolBarArea (bar))
 		{
-			auto bar = manager->GetToolbar ();
-			switch (manager->GetManagedWindow ()->toolBarArea (bar))
-			{
-			case Qt::LeftToolBarArea:
-				return QPoint (0, -bar->width ());
-			case Qt::RightToolBarArea:
-				return QPoint (bar->width (), -bar->width ());
-			case Qt::TopToolBarArea:
-				return QPoint (-bar->height (), 0);
-			case Qt::BottomToolBarArea:
-				return QPoint (-bar->height (), bar->height ());
-			default:
-				return QPoint (0, 0);
-			}
+		case Qt::LeftToolBarArea:
+			result.setLeft (result.left () + bar->width ());
+			break;
+		case Qt::RightToolBarArea:
+			result.setRight (result.right () - bar->width ());
+			break;
+		case Qt::TopToolBarArea:
+			result.setTop (result.top () + bar->height ());
+			break;
+		case Qt::BottomToolBarArea:
+			result.setBottom (result.bottom () - bar->height ());
+			break;
+		default:
+			break;
 		}
-
-		int GetBarDim (ViewManager *manager)
-		{
-			auto bar = manager->GetToolbar ();
-			return bar->orientation () == Qt::Horizontal ? bar->height () : bar->width ();
-		}
-
-		template<typename T>
-		void FixCoords (T& x, T& y, ViewManager *manager)
-		{
-			const auto& diff = GetFixDiff (manager);
-			x += diff.x ();
-			y += diff.y ();
-		}
+		return result;
 	}
 
 	QPoint QuarkProxy::mapToGlobal (double x, double y)
 	{
-		return Manager_->GetView ()->mapToGlobal (QPoint (x, y) + GetFixDiff (Manager_));
-	}
-
-	QPoint QuarkProxy::getShiftDiff () const
-	{
-		return GetShiftDiff (Manager_);
+		return Manager_->GetView ()->mapToGlobal (QPoint (x, y));
 	}
 
 	void QuarkProxy::showTextTooltip (int x, int y, const QString& str)
 	{
-		QToolTip::showText (QPoint (x + GetFixDiff (Manager_).y (), y), str);
+		QToolTip::showText ({ x, y }, str);
 	}
 
 	void QuarkProxy::showSettings (const QUrl& url)
@@ -143,13 +114,18 @@ namespace SB2
 
 		auto window = new DeclarativeWindow (newUrl, varMap, Proxy_);
 		qApp->processEvents ();
-		window->move (Util::FitRectScreen ({ x, y }, window->size (),
-				Util::FitFlag::NoOverlap, GetShiftDiff (Manager_)));
+		window->move (Util::FitRect ({ x, y }, window->size (), GetFreeCoords (),
+				Util::FitFlag::NoOverlap));
 		window->show ();
 
 		URL2LastOpened_ [newUrl] = window;
 
 		return QVariant::fromValue<QObject*> (window->rootObject ());
+	}
+
+	QRect QuarkProxy::getWinRect ()
+	{
+		return GetFreeCoords ();
 	}
 
 	void QuarkProxy::quarkAddRequested (int x, int y)
@@ -169,8 +145,8 @@ namespace SB2
 			return;
 
 		auto unhide = new QuarkUnhideListView (toAdd, Manager_, Proxy_, Manager_->GetView ());
-		unhide->move (Util::FitRectScreen ({ x, y }, unhide->size (),
-				Util::FitFlag::NoOverlap, GetShiftDiff (Manager_)));
+		unhide->move (Util::FitRect ({ x, y }, unhide->size (), GetFreeCoords (),
+				Util::FitFlag::NoOverlap));
 		unhide->show ();
 	}
 
@@ -183,8 +159,8 @@ namespace SB2
 		}
 
 		QuarkOrderView_ = new QuarkOrderView (Manager_, Proxy_);
-		QuarkOrderView_->move (Util::FitRectScreen ({ x, y }, QuarkOrderView_->size (),
-				Util::FitFlag::NoOverlap, GetShiftDiff (Manager_)));
+		QuarkOrderView_->move (Util::FitRect ({ x, y }, QuarkOrderView_->size (), GetFreeCoords (),
+				Util::FitFlag::NoOverlap));
 		QuarkOrderView_->show ();
 
 		connect (QuarkOrderView_,

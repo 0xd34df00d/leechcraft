@@ -168,6 +168,14 @@ namespace Graffiti
 		endRemoveRows ();
 	}
 
+	QModelIndex FilesModel::FindIndex (const QString& path) const
+	{
+		const auto pos = FindFile (path);
+		return pos == Files_.end () ?
+				QModelIndex () :
+				createIndex (std::distance (Files_.begin (), pos), 0);
+	}
+
 	QList<QPair<MediaInfo, MediaInfo>> FilesModel::GetModified () const
 	{
 		QList<QPair<MediaInfo, MediaInfo>> result;
@@ -178,6 +186,12 @@ namespace Graffiti
 	}
 
 	QList<FilesModel::File>::iterator FilesModel::FindFile (const QString& path)
+	{
+		return std::find_if (Files_.begin (), Files_.end (),
+				[&path] (const File& file) { return file.Path_ == path; });
+	}
+
+	QList<FilesModel::File>::const_iterator FilesModel::FindFile (const QString& path) const
 	{
 		return std::find_if (Files_.begin (), Files_.end (),
 				[&path] (const File& file) { return file.Path_ == path; });

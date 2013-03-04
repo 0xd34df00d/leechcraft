@@ -17,11 +17,12 @@
  **********************************************************************/
 
 #include "autosearch.h"
-#include <interfaces/core/icoreproxy.h>
+#include <boost/property_tree/json_parser.hpp>
 #include <QUrl>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <boost/property_tree/json_parser.hpp>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/poshuku/iurlcompletionmodel.h>
 
 namespace LeechCraft
 {
@@ -117,14 +118,6 @@ namespace Autosearch
 		auto model = Reply2Model_.take (reply);
 		Model2Reply_.remove (model);
 
-		/*
-		if (data.count ('[') > 1)
-		{
-			data.chop (1);
-			data = data.mid (data.indexOf ('[', 2));
-		}
-		*/
-
 		boost::property_tree::ptree pt;
 		try
 		{
@@ -139,20 +132,21 @@ namespace Autosearch
 			return;
 		}
 
+		auto iURLCompleter = qobject_cast<IURLCompletionModel*> (model);
+
 		for (const auto& v : pt)
 		{
 			const auto& sub = v.second;
 			if (!sub.get<std::string> ("").empty ())
 				continue;
 
+			auto pos = 5;
 			for (const auto& subv : sub)
 			{
 				const auto& str = QString::fromUtf8 (subv.second.get<std::string> ("").c_str ());
-				QMetaObject::invokeMethod (model,
-						"addItem",
-						Q_ARG (QString, str),
-						Q_ARG (QString, str));
+				iURLCompleter->AddItem (str, str, pos++);
 			}
+			break;
 		}
 	}
 }

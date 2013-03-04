@@ -18,30 +18,24 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/poshuku/iwebplugin.h>
+#include <QtGlobal>
 
-namespace LeechCraft
-{
-namespace Poshuku
-{
-namespace CleanWeb
-{
-	class FlashOnClickPlugin : public QObject
-								, public IWebPlugin
-	{
-		Q_OBJECT
+#if defined(Q_CC_GNU)
 
-		Q_INTERFACES (LeechCraft::Poshuku::IWebPlugin)
-	public:
-		FlashOnClickPlugin (QObject* = 0);
+# if defined(leechcraft_lmp_EXPORTS)
+#  define LMP_API __attribute__ ((visibility("default")))
+# else
+#  define LMP_API
+# endif
 
-		QWebPluginFactory::Plugin Plugin (bool) const;
-		QWidget* Create (const QString&,
-				const QUrl&,
-				const QStringList&,
-				const QStringList&);
-	};
-}
-}
-}
+#elif defined(Q_CC_MSVC)
+
+# if defined(leechcraft_lmp_EXPORTS)
+#  define LMP_API __declspec(dllexport)
+# else
+#  define LMP_API __declspec(dllimport)
+# endif
+
+#else
+# define LMP_API
+#endif

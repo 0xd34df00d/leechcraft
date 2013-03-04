@@ -29,8 +29,8 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/istartupwizard.h>
-#include <interfaces/iwebplugin.h>
-#include <interfaces/poshukutypes.h>
+#include <interfaces/poshuku/iwebplugin.h>
+#include <interfaces/poshuku/poshukutypes.h>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 

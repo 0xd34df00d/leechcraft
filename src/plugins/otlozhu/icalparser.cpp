@@ -21,8 +21,8 @@
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/fusion/adapted.hpp>
 #include <QtDebug>
-#include "core.h"
 #include <interfaces/core/itagsmanager.h>
+#include "core.h"
 
 namespace LeechCraft
 {

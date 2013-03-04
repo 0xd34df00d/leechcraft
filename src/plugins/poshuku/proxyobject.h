@@ -19,7 +19,7 @@
 #ifndef PLUGINS_POSHUKU_PROXYOBJECT_H
 #define PLUGINS_POSHUKU_PROXYOBJECT_H
 #include <QObject>
-#include "interfaces/iproxyobject.h"
+#include "interfaces/poshuku/iproxyobject.h"
 
 namespace LeechCraft
 {
