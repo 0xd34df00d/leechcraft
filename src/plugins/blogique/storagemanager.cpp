@@ -46,6 +46,7 @@ namespace Blogique
 		{
 			QSqlQuery query (BlogiqueDB_);
 			query.exec ("PRAGMA foreign_keys = ON;");
+			query.exec ("PRAGMA synchronous = OFF;");
 		}
 
 		try

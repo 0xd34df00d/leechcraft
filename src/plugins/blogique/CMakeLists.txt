@@ -24,7 +24,6 @@ SET (SRCS
 	core.cpp
 	draftentrieswidget.cpp
 	entriesfilterproxymodel.cpp
-	localstorage.cpp
 	pluginproxy.cpp
 	profiledialog.cpp
 	storagemanager.cpp
@@ -45,7 +44,6 @@ SET (HEADERS
 	core.h
 	draftentrieswidget.h
 	entriesfilterproxymodel.h
-	localstorage.h
 	pluginproxy.h
 	profiledialog.h
 	storagemanager.h

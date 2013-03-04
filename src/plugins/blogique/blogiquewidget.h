@@ -19,7 +19,6 @@
 #pragma once
 
 #include <QWidget>
-#include <boost/graph/graph_concepts.hpp>
 #include <interfaces/ihavetabs.h>
 #include "interfaces/blogique/iaccount.h"
 #include "ui_blogiquewidget.h"
@@ -109,6 +108,7 @@ namespace Blogique
 	signals:
 		void removeTab (QWidget *tab);
 		void addNewTab (const QString& name, QWidget *tab);
+		void changeTabName (QWidget *content, const QString& name);
 	};
 }
 }

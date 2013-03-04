@@ -122,22 +122,24 @@ namespace GoogleDrive
 		if (ids.isEmpty ())
 			return;
 
-		const QString& itemId = ids.value (0).value (0);
-		if (!ask)
+		for (const auto& id : ids)
 		{
-			DriveManager_->RemoveEntry (itemId);
-			return;
+			const QString& itemId = id.value (0);
+			if (!ask)
+				DriveManager_->RemoveEntry (itemId);
+			else
+			{
+				auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
+				auto res = QMessageBox::warning (rootWM->GetPreferredWindow (),
+						tr ("Remove item"),
+						tr ("Are you sure you want to delete %1? This action cannot be undone."
+								"<br><i>Note: if you delete a directory then all files in it will also be deleted.</i>")
+									.arg (Items_ [itemId].Name_),
+						QMessageBox::Ok | QMessageBox::Cancel);
+				if (res == QMessageBox::Ok)
+					DriveManager_->RemoveEntry (itemId);
+			}
 		}
-
-		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
-		auto res = QMessageBox::warning (rootWM->GetPreferredWindow (),
-				tr ("Remove item"),
-				tr ("Are you sure you want to delete %1? This action cannot be undone."
-						"<br><i>Note: if you delete a directory then all files in it will also be deleted.</i>")
-							.arg (Items_ [itemId].Name_),
-				QMessageBox::Ok | QMessageBox::Cancel);
-		if (res == QMessageBox::Ok)
-			DriveManager_->RemoveEntry (itemId);
 	}
 
 	QStringList Account::GetListingHeaders () const
@@ -158,7 +160,9 @@ namespace GoogleDrive
 	{
 		if (ids.isEmpty ())
 			return;
-		DriveManager_->MoveEntryToTrash (ids.value (0).value (0));
+
+		for (const auto& id : ids)
+			DriveManager_->MoveEntryToTrash (id.value (0));
 	}
 
 	void Account::RestoreFromTrash (const QList<QStringList>& ids)

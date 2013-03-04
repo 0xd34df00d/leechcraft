@@ -95,6 +95,7 @@ namespace Blogique
 
 		void addNewTab (const QString& name, QWidget *tab);
 		void removeTab (QWidget *tab);
+		void changeTabName (QWidget *content, const QString& name);
 	};
 }
 }

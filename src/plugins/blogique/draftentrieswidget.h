@@ -46,7 +46,6 @@ namespace Blogique
 		explicit DraftEntriesWidget (QWidget *parent = 0, Qt::WindowFlags f = 0);
 		QString GetName () const;
 	private:
-		Entry LoadFullEntry (qint64 id);
 		void FillView (const QList<Entry>& entries);
 		void FillStatistic ();
 		void FillCurrentTab (const QModelIndex& index = QModelIndex ());

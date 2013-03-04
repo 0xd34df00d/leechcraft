@@ -60,6 +60,7 @@ namespace Hestia
 		{
 			QSqlQuery query (AccountDB_);
 			query.exec ("PRAGMA foreign_keys = ON;");
+			query.exec ("PRAGMA synchronous = OFF;");
 		}
 
 		try
@@ -83,7 +84,8 @@ namespace Hestia
 	bool AccountStorage::CheckDatabase (const QString& dbPath)
 	{
 		QSqlDatabase db = QSqlDatabase::addDatabase ("QSQLITE",
-				QString ("Validating_DataBase"));
+				QString ("Validating_DataBase_%1")
+					.arg (QString::fromUtf8 (Account_->GetAccountID ())));
 		db.setDatabaseName (dbPath);
 
 		bool entriesTable = false;
@@ -252,7 +254,7 @@ namespace Hestia
 
 	QList<Entry> AccountStorage::GetEntriesByDate (const QDate& date)
 	{
-		GetEntriesByDate_.bindValue (":date", date.toString ("yyyy-MM-dd"));
+		GetEntriesByDate_.bindValue (":date", date);
 		if (!GetEntriesByDate_.exec ())
 		{
 			Util::DBLock::DumpError (GetEntriesByDate_);

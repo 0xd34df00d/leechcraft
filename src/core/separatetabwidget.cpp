@@ -173,6 +173,7 @@ namespace LeechCraft
 			return;
 
 		MainTabBar_->setTabText (index, text);
+		MainTabBar_->setTabToolTip (index, text);
 		if (!text.isEmpty ())
 			TabNames_ [index] = text;
 	}
