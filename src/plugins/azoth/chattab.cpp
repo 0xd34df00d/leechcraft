@@ -138,6 +138,7 @@ namespace Azoth
 		Ui_.setupUi (this);
 		Ui_.View_->installEventFilter (new ZoomEventFilter (Ui_.View_));
 		Ui_.MsgEdit_->installEventFilter (new CopyFilter (Ui_.View_));
+		MUCEventLog_->installEventFilter (this);
 
 		auto dropFilter = new ContactDropFilter (this);
 		Ui_.View_->installEventFilter (dropFilter);
@@ -429,6 +430,14 @@ namespace Azoth
 	QString ChatTab::GetSelectedVariant () const
 	{
 		return Ui_.VariantBox_->currentText ();
+	}
+
+	bool ChatTab::eventFilter (QObject *obj, QEvent *event)
+	{
+		if (obj == MUCEventLog_ && event->type () == QEvent::Close)
+			Ui_.MUCEventsButton_->setChecked (false);
+
+		return false;
 	}
 
 	void ChatTab::messageSend ()
