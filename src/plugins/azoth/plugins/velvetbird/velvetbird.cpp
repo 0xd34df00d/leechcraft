@@ -54,10 +54,15 @@ namespace VelvetBird
 	{
 		if (ProtoMgr_)
 			ProtoMgr_->PluginsAvailable ();
+
+		emit gotNewProtocols (GetProtocols ());
 	}
 
 	void Plugin::Release ()
 	{
+		if (ProtoMgr_)
+			ProtoMgr_->Release ();
+
 		PurpleLib_.unload ();
 	}
 

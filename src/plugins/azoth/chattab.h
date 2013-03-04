@@ -129,6 +129,8 @@ namespace Azoth
 
 		QObject* GetCLEntry () const;
 		QString GetSelectedVariant () const;
+
+		bool eventFilter (QObject*, QEvent*);
 	public slots:
 		void prepareMessageText (const QString&);
 		void appendMessageText (const QString&);

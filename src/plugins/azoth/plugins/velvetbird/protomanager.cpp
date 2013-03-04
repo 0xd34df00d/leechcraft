@@ -177,7 +177,10 @@ namespace VelvetBird
 		{
 			NULL,
 			[] (PurpleAccount *acc, PurpleStatus *status)
-				{ static_cast<Account*> (acc->ui_data)->HandleStatus (status); },
+			{
+				if (acc->ui_data)
+					static_cast<Account*> (acc->ui_data)->HandleStatus (status);
+			},
 			NULL,
 			NULL,
 			NULL,
@@ -302,6 +305,13 @@ namespace VelvetBird
 
 		purple_blist_load ();
 		purple_accounts_restore_current_statuses ();
+	}
+
+	void ProtoManager::Release ()
+	{
+		Protocols_.clear ();
+
+		purple_core_quit ();
 	}
 
 	QList<QObject*> ProtoManager::GetProtoObjs () const
