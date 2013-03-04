@@ -54,6 +54,8 @@ namespace VelvetBird
 	{
 		if (ProtoMgr_)
 			ProtoMgr_->PluginsAvailable ();
+
+		emit gotNewProtocols (GetProtocols ());
 	}
 
 	void Plugin::Release ()
