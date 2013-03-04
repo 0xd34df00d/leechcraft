@@ -34,6 +34,7 @@
 #include <util/defaulthookproxy.h>
 #include <util/util.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/gui/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "interfaces/azoth/iclentry.h"
@@ -2036,7 +2037,8 @@ namespace Azoth
 		if (!on)
 			return;
 
-		MUCEventLog_->move (QCursor::pos ());
+		MUCEventLog_->move (Util::FitRectScreen (QCursor::pos () + QPoint (2, 2),
+					MUCEventLog_->size ()));
 	}
 
 	void ChatTab::handleSeparateMUCLog ()
