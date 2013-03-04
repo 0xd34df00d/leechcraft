@@ -307,6 +307,13 @@ namespace VelvetBird
 		purple_accounts_restore_current_statuses ();
 	}
 
+	void ProtoManager::Release ()
+	{
+		Protocols_.clear ();
+
+		purple_core_quit ();
+	}
+
 	QList<QObject*> ProtoManager::GetProtoObjs () const
 	{
 		QList<QObject*> result;

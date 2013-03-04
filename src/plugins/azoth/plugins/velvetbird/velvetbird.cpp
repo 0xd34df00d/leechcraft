@@ -60,6 +60,9 @@ namespace VelvetBird
 
 	void Plugin::Release ()
 	{
+		if (ProtoMgr_)
+			ProtoMgr_->Release ();
+
 		PurpleLib_.unload ();
 	}
 
