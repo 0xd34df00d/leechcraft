@@ -123,7 +123,7 @@ namespace LeechCraft
 		authors << ContributorInfo ("Georg Rudoy", "0xd34df00d",
 				"0xd34df00d@0xd34df00d.me", "0xd34df00d@gmail.com",
 				QStringList (tr ("Lead developer and original author.")),
-				QList<int> () << 2006 << 2007 << 2008 << 2009 << 2010 << 2011 << 2012);
+				QList<int> () << 2006 << 2007 << 2008 << 2009 << 2010 << 2011 << 2012 << 2013);
 		authors << ContributorInfo ("Oleg Linkin", "magog",
 				"magog@gentoo.ru", "MaledictusDeMagog@gmail.com",
 				QStringList (tr ("Blogique module."))
@@ -133,7 +133,7 @@ namespace LeechCraft
 					<< tr ("Firefox importer in New Life.")
 					<< tr ("Chrome-style tabs.")
 					<< tr ("Various patches."),
-				QList<int> () << 2010 << 2011 << 2012);
+				QList<int> () << 2010 << 2011 << 2012 << 2013);
 
 		QList<ContributorInfo> contribs;
 		contribs << ContributorInfo (QString (), "Akon32",
@@ -156,17 +156,17 @@ namespace LeechCraft
 		contribs << ContributorInfo ("Azer Abdullaev", "Like-all",
 				QString (), "lik3a11@gmail.com",
 				QStringList (tr ("Shaitan plugin")) << tr ("Artwork."),
-				QList<int> () << 2011 << 2012);
+				QList<int> () << 2011 << 2012 << 2013);
 		contribs << ContributorInfo ("Boris Pek", "Tehnick",
 				QString (), "tehnick-8@mail.ru",
 				QStringList (tr ("Debian/Ubuntu maintainership."))
 					<< tr ("Small fixes."),
-				QList<int> () << 2011 << 2012);
+				QList<int> () << 2011 << 2012 << 2013);
 		contribs << ContributorInfo ("Dimitriy Ryazantcev", "DJm00n",
 				"djm00n@jabber.ru", "dimitriy.ryazantcev@gmail.com",
 				QStringList (tr ("Windows maintainership."))
 					<< tr ("Windows fixes."),
-				QList<int> () << 2011 << 2012);
+				QList<int> () << 2011 << 2012 << 2013);
 		contribs << ContributorInfo ("Elena Belova", "Zereal",
 				"elena.zereal@neko.im", "zereal25@gmail.com",
 				QStringList (tr ("French translations."))
