@@ -27,10 +27,10 @@ namespace LeechCraft
 {
 namespace Blogique
 {
-	StorageManager::StorageManager (QObject *parent)
+	StorageManager::StorageManager (const QByteArray& id, QObject *parent)
 	: QObject (parent)
 	, BlogiqueDB_ (QSqlDatabase::addDatabase ("QSQLITE",
-		QString ("Blogique_DataBase")))
+		QString ("%1_DataBase").arg (QString::fromUtf8 (id))))
 	{
 		BlogiqueDB_.setDatabaseName (Util::CreateIfNotExists ("blogique")
 				.filePath ("blogique.db"));
@@ -106,10 +106,8 @@ namespace Blogique
 			throw std::runtime_error ("unable to add draft");
 		}
 
-		const qint64 id = AddDraft_.lastInsertId ().toLongLong ();
-
 		lock.Good ();
-		return id;
+		return AddDraft_.lastInsertId ().toLongLong ();
 	}
 
 	qint64 StorageManager::UpdateDraft (const Entry& e, qint64 draftId)
@@ -176,7 +174,7 @@ namespace Blogique
 
 	QList<Entry> StorageManager::GetDraftsByDate (const QDate& date)
 	{
-		GetDraftsByDate_.bindValue (":date", date.toString ("yyyy-MM-dd"));
+		GetDraftsByDate_.bindValue (":date", date);
 		if (!GetDraftsByDate_.exec ())
 		{
 			Util::DBLock::DumpError (GetDraftsByDate_);
@@ -226,13 +224,14 @@ namespace Blogique
 		}
 
 		Entry e;
-		while (GetFullDraft_.next ())
+		if (GetFullDraft_.next ())
 		{
 			e.EntryId_ = draftId;
 			e.Content_ = GetFullDraft_.value (1).toString ();
 			e.Date_ = GetFullDraft_.value (2).toDateTime ();
 			e.Subject_ = GetFullDraft_.value (3).toString ();
 		}
+
 		GetFullDraft_.finish ();
 
 		return e;

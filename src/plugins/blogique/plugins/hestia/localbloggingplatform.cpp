@@ -83,9 +83,7 @@ namespace Hestia
 
 	QList<QWidget*> LocalBloggingPlatform::GetAccountRegistrationWidgets (IBloggingPlatform::AccountAddOptions opts)
 	{
-		QList<QWidget*> result;
-		result << new AccountConfigurationWidget (0, opts);
-		return result;
+		return { new AccountConfigurationWidget (0, opts) };
 	}
 
 	void LocalBloggingPlatform::RegisterAccount (const QString& name,
@@ -105,15 +103,17 @@ namespace Hestia
 
 		const QString& path = w->GetAccountBasePath ();
 		if (!path.isEmpty ())
+		{
 			Accounts_ << account;
-		saveAccounts ();
-		emit accountAdded (account);
-		account->Init ();
+			saveAccounts ();
+			emit accountAdded (account);
+			account->Init ();
+		}
 	}
 
 	void LocalBloggingPlatform::RemoveAccount (QObject *account)
 	{
-		LocalBlogAccount*acc = qobject_cast<LocalBlogAccount*> (account);
+		auto acc = qobject_cast<LocalBlogAccount*> (account);
 		if (Accounts_.removeAll (acc))
 		{
 			emit accountRemoved (account);
@@ -152,7 +152,7 @@ namespace Hestia
 		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
 				QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () +
-				"_Blogique_Hestia_Accounts");
+					"_Blogique_Hestia_Accounts");
 		int size = settings.beginReadArray ("Accounts");
 		for (int i = 0; i < size; ++i)
 		{
@@ -183,7 +183,7 @@ namespace Hestia
 		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
 				QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () +
-				"_Blogique_Hestia_Accounts");
+					"_Blogique_Hestia_Accounts");
 		settings.beginWriteArray ("Accounts");
 		for (int i = 0, size = Accounts_.size (); i < size; ++i)
 		{
@@ -192,7 +192,6 @@ namespace Hestia
 					Accounts_.at (i)->Serialize ());
 		}
 		settings.endArray ();
-		settings.sync ();
 	}
 
 	void LocalBloggingPlatform::handleAccountValidated (bool valid)
