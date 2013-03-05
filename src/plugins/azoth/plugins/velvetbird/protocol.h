@@ -61,6 +61,8 @@ namespace VelvetBird
 
 		QByteArray GetPurpleID () const;
 		void PushAccount (PurpleAccount*);
+
+		ICoreProxy_ptr GetCoreProxy () const;
 	signals:
 		void accountAdded (QObject*);
 		void accountRemoved (QObject*);

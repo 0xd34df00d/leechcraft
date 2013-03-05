@@ -50,6 +50,11 @@
 #include "rootwindowsmanager.h"
 #include "config.h"
 
+#ifdef Q_OS_MAC
+#include <QProxyStyle>
+#include <QStyleFactory>
+#endif
+
 #ifdef Q_OS_WIN32
 #include "winwarndialog.h"
 #endif
@@ -461,6 +466,28 @@ namespace LeechCraft
 		XmlSettingsManager::Instance ()->Release ();
 	}
 
+#ifdef Q_OS_MAC
+	namespace
+	{
+		class ToolbarFixerProxy : public QProxyStyle
+		{
+		public:
+			ToolbarFixerProxy (QStyle *other)
+			: QProxyStyle (other)
+			{
+			}
+
+			int pixelMetric (PixelMetric metric, const QStyleOption *opt, const QWidget *w) const
+			{
+				auto result = baseStyle ()->pixelMetric (metric, opt, w);
+				if (metric == PM_ToolBarIconSize)
+					result = std::min (24, result);
+				return result;
+			}
+		};
+	}
+#endif
+
 	void Application::handleAppStyle ()
 	{
 		auto style = XmlSettingsManager::Instance ()->property ("AppQStyle").toString ();
@@ -476,7 +503,12 @@ namespace LeechCraft
 #endif
 		}
 
+#ifdef Q_OS_MAC
+		if (auto styleObj = QStyleFactory::create (style))
+			setStyle (new ToolbarFixerProxy (styleObj));
+#else
 		setStyle (style);
+#endif
 	}
 
 	void Application::handleLanguage ()

@@ -71,9 +71,12 @@ namespace VelvetBird
 		void UpdateBuddy (PurpleBuddy*);
 		void RemoveBuddy (PurpleBuddy*);
 
+		void HandleDisconnect (PurpleConnectionError, const char*);
 		void HandleConvLessMessage (PurpleConversation*,
 			const char*, const char*, PurpleMessageFlags, time_t);
 		void HandleStatus (PurpleStatus*);
+	private slots:
+		void handleAuthFailure (const LeechCraft::Azoth::EntryStatus&);
 	signals:
 		void accountRenamed (const QString&);
 		void gotCLItems (const QList<QObject*>&);

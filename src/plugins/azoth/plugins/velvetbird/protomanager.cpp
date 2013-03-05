@@ -197,10 +197,13 @@ namespace VelvetBird
 			[] (PurpleConnection *gc) { qDebug () << Q_FUNC_INFO << "connected"; },
 			[] (PurpleConnection *gc) { qDebug () << Q_FUNC_INFO << "disconnected"; },
 			NULL,
-			[] (PurpleConnection *gc, const char *text) { qDebug () << Q_FUNC_INFO << "disconnected with error" << text; },
 			NULL,
 			NULL,
 			NULL,
+			[] (PurpleConnection *gc, PurpleConnectionError reason, const char *text)
+			{
+				static_cast<Account*> (gc->account->ui_data)->HandleDisconnect (reason, text);
+			},
 			NULL,
 			NULL,
 			NULL

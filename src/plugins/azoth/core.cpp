@@ -284,6 +284,7 @@ namespace Azoth
 
 		qRegisterMetaType<IMessage*> ("LeechCraft::Azoth::IMessage*");
 		qRegisterMetaType<IMessage*> ("IMessage*");
+		qRegisterMetaType<EntryStatus> ("LeechCraft::Azoth::EntryStatus");
 		qRegisterMetaType<QPointer<QObject>> ("QPointer<QObject>");
 
 		XmlSettingsManager::Instance ().RegisterObject ("StatusIcons",
