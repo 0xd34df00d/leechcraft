@@ -1,4 +1,5 @@
 <RCC>
   <qresource prefix="/azoth/velvetbird">
+    <file>resources/images/velvetbird.svg</file>
   </qresource>
 </RCC>
