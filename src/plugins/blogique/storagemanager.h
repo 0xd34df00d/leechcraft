@@ -52,7 +52,7 @@ namespace Blogique
 			FullMode
 		};
 
-		explicit StorageManager (QObject *parent = 0);
+		explicit StorageManager (const QByteArray& id, QObject *parent = 0);
 
 		void AddAccount (const QByteArray& accounId);
 		void RemoveAccount (const QByteArray& accounId);

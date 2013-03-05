@@ -27,10 +27,10 @@ namespace LeechCraft
 {
 namespace Blogique
 {
-	StorageManager::StorageManager (QObject *parent)
+	StorageManager::StorageManager (const QByteArray& id, QObject *parent)
 	: QObject (parent)
 	, BlogiqueDB_ (QSqlDatabase::addDatabase ("QSQLITE",
-		QString ("Blogique_DataBase")))
+		QString ("%1_DataBase").arg (QString::fromUtf8 (id))))
 	{
 		BlogiqueDB_.setDatabaseName (Util::CreateIfNotExists ("blogique")
 				.filePath ("blogique.db"));
