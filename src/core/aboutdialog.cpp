@@ -145,6 +145,10 @@ namespace LeechCraft
 				QString (), "aleks.lifey@gmail.com",
 				QStringList (tr ("Initial PKGBUILDs for Arch Linux.")),
 				QList<int> () << 2009);
+		contribs << ContributorInfo ("Aleksey Golovin", "rioky",
+				"rioky@jabber.ru", "nekolayer@yandex.ru",
+				QStringList (tr ("openSUSE packages maintainer.")),
+				QList<int> () << 2012);
 		contribs << ContributorInfo ("Alexander Batischev", "Minoru",
 				QString (), "eual.jp@gmail.com",
 				QStringList (tr ("Ukrainian translations.")),
@@ -162,6 +166,11 @@ namespace LeechCraft
 				QStringList (tr ("Debian/Ubuntu maintainership."))
 					<< tr ("Small fixes."),
 				QList<int> () << 2011 << 2012 << 2013);
+		contribs << ContributorInfo ("Dmitriy Perlow", "DA(P).DarkneSS",
+				"darkness@jabber.org.by", "dap@open.by",
+				QStringList (tr ("openSUSE maintainership."))
+					<< tr ("Lackman packages."),
+				QList<int> () << 2012 << 2013);
 		contribs << ContributorInfo ("Dimitriy Ryazantcev", "DJm00n",
 				"djm00n@jabber.ru", "dimitriy.ryazantcev@gmail.com",
 				QStringList (tr ("Windows maintainership."))
@@ -198,6 +207,10 @@ namespace LeechCraft
 				"part1zancheg@gmail.com", "part1zancheg@gmail.com",
 				QStringList (tr ("Extensive and thorough testing.")),
 				QList<int> () << 2010 << 2011);
+		contribs << ContributorInfo (QString (), "Mellon",
+				QString (), "qmellon@gmail.com",
+				QStringList ("Extensive and thorough testing."),
+				QList<int> () << 2012 << 2013);
 		contribs << ContributorInfo (QString (), "Miha",
 				QString (), "miha@52.ru",
 				QStringList ("OpenSUSE package maintainer."),
@@ -224,6 +237,11 @@ namespace LeechCraft
 				QString (), "home@sejros.mp",
 				QStringList (tr ("Esperanto translations")),
 				QList<int> () << 2009);
+		contribs << ContributorInfo ("Sergey Kuzmin", "pendruk",
+				"pendruk@leechcraft.org", "pendruk@gmail.com",
+				QStringList (tr ("Azoth theming."))
+					<< tr ("Lackman packages."),
+				QList<int> () << 2012 << 2013);
 		contribs << ContributorInfo (QString (), "V0id",
 				QString (), "getbusy@mail.ru",
 				QStringList (tr ("Aggregator fixes and improvements."))
