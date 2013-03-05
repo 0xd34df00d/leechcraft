@@ -93,7 +93,7 @@ namespace Blogique
 
 	QByteArray Plugin::GetUniqueID () const
 	{
-		return "org.LeechCraft.Blogique";
+		return Core::Instance ().GetUniqueID ();
 	}
 
 	void Plugin::Release ()

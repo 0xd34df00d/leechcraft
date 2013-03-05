@@ -39,6 +39,7 @@ namespace Blogique
 	{
 		Q_OBJECT
 
+		QByteArray UniqueID_;
 		ICoreProxy_ptr Proxy_;
 		QObjectList BlogPlatformPlugins_;
 		std::shared_ptr<PluginProxy> PluginProxy_;
@@ -50,6 +51,8 @@ namespace Blogique
 
 	public:
 		static Core& Instance ();
+
+		QByteArray GetUniqueID () const;
 
 		void SetCoreProxy (ICoreProxy_ptr proxy);
 		ICoreProxy_ptr GetCoreProxy ();

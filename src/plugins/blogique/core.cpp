@@ -37,8 +37,9 @@ namespace LeechCraft
 namespace Blogique
 {
 	Core::Core ()
-	: PluginProxy_ (std::make_shared<PluginProxy> ())
-	, StorageManager_ (new StorageManager (this))
+	: UniqueID_ ("org.LeechCraft.Blogique")
+	, PluginProxy_ (std::make_shared<PluginProxy> ())
+	, StorageManager_ (new StorageManager (UniqueID_, this))
 	, BackupManager_ (new BackupManager (this))
 	{
 	}
@@ -47,6 +48,11 @@ namespace Blogique
 	{
 		static Core c;
 		return c;
+	}
+
+	QByteArray Core::GetUniqueID () const
+	{
+		return UniqueID_;
 	}
 
 	void Core::SetCoreProxy (ICoreProxy_ptr proxy)
