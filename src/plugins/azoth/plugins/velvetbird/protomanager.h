@@ -43,6 +43,8 @@ namespace VelvetBird
 
 		void PluginsAvailable ();
 
+		void Release ();
+
 		QList<QObject*> GetProtoObjs () const;
 
 		void Show (PurpleBuddyList*);
