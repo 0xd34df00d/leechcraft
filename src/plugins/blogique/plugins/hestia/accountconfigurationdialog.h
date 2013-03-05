@@ -18,25 +18,24 @@
 
 #pragma once
 
-#include <QCalendarWidget>
-#include <QMap>
+#include <QDialog>
+#include "ui_accountconfigurationdialog.h"
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-	class CalendarWidget : public QCalendarWidget
+namespace Hestia
+{
+	class AccountConfigurationWidget;
+
+	class AccountConfigurationDialog : public QDialog
 	{
-		Q_OBJECT
-
-		QMap<QDate, int> Date2EntriesCount_;
+		Ui::AccountConfigurationDialog Ui_;
 	public:
-		CalendarWidget (QWidget *parent = 0);
-		void SetStatistic (const QMap<QDate, int>& statistic);
-
-	protected:
-		void paintCell (QPainter *painter, const QRect& rect, const QDate& date) const;
+		AccountConfigurationDialog (QWidget *parent = 0);
+		AccountConfigurationWidget* ConfWidget ();
 	};
 }
 }
-
+}

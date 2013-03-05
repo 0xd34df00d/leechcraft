@@ -18,54 +18,54 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavetabs.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/blogique/ibloggingplatformplugin.h>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <QSet>
+#include <QUrl>
+#include <interfaces/structures.h>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-namespace Metida
+class IPluginProxy;
+
+namespace Hestia
 {
-	class Plugin : public QObject
-				, public IInfo
-				, public IHaveSettings
-				, public IPlugin2
-				, public IBloggingPlatformPlugin
+	class LocalBloggingPlatform;
+
+	class Core : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings IPlugin2
-				LeechCraft::Blogique::IBloggingPlatformPlugin)
 
-		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+		ICoreProxy_ptr Proxy_;
+		QObjectList BlogPlatformPlugins_;
+		std::shared_ptr<LocalBloggingPlatform> Platform_;
+		QObject *PluginProxy_;
 
+		Core ();
+		Q_DISABLE_COPY (Core)
 	public:
-		void Init (ICoreProxy_ptr proxy);
+		static Core& Instance ();
+
 		void SecondInit ();
-		QByteArray GetUniqueID () const;
 		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		void CreateBloggingPlatfroms (QObject *parentPlatform);
+		void SetCoreProxy (ICoreProxy_ptr proxy);
+		ICoreProxy_ptr GetCoreProxy ();
 
-		QSet<QByteArray> GetPluginClasses () const;
+		QObjectList GetBloggingPlatforms () const;
 
-		QObject* GetObject ();
-		QList<QObject*> GetBloggingPlatforms () const;
+		void SetPluginProxy (QObject *pluginProxy);
+		IPluginProxy* GetPluginProxy ();
 
-	public slots:
-		void initPlugin (QObject *proxy);
+		void SendEntity (const Entity& e);
 
 	signals:
-		void gotEntity (const LeechCraft::Entity& e);
-		void delegateEntity (const LeechCraft::Entity& e, int *id, QObject **obj);
+		void gotEntity (LeechCraft::Entity e);
+		void delegateEntity (LeechCraft::Entity e, int *id, QObject **obj);
 	};
 }
 }

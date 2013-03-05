@@ -35,7 +35,8 @@ namespace Blogique
 {
 	class IBlogiqueSideWidget;
 	class IAccount;
-	class LocalStorage;
+	class DraftEntriesWidget;
+	class BlogEntriesWidget;
 
 	class BlogiqueWidget : public QWidget
 						,  public ITabWidget
@@ -46,17 +47,6 @@ namespace Blogique
 		enum BlogiqueSideWidgets
 		{
 			PostOptionsWidget = 2
-		};
-
-		enum EntryIdRole
-		{
-			DBIdRole = Qt::UserRole + 1
-		};
-
-		enum Columns
-		{
-			Date,
-			Subject
 		};
 
 		static QObject *S_ParentMultiTabs_;
@@ -70,28 +60,17 @@ namespace Blogique
 		QComboBox *PostTargetBox_;
 		QAction *PostTargetAction_;
 
+		DraftEntriesWidget *DraftEntriesWidget_;
+		BlogEntriesWidget *BlogEntriesWidget_;
 		QHash<int, IAccount*> Id2Account_;
 		int PrevAccountId_;
 		QList<QWidget*> SidePluginsWidgets_;
 
-		QStandardItemModel *PostsViewModel_;
-		QStandardItemModel *DraftsViewModel_;
+		EntryType EntryType_;
+		qint64 EntryId_;
 
-		LocalStorage *Storage_;
+		bool EntryChanged_;
 
-		QHash<QStandardItem*, Entry> DraftItem2Entry_;
-		QHash<QStandardItem*, Entry> PostItem2Entry_;
-
-		QAction *OpenDraftInNewTab_;
-		QAction *OpenDraftInCurrentTab_;
-		QAction *OpenEntryInNewTab_;
-		QAction *OpenEntryInCurrentTab_;
-
-		QAction *LoadLocalEntries_;
-		QList<QAction*> LoadActions_;
-
-		qlonglong DraftID_;
-		qlonglong EntryID_;
 	public:
 		BlogiqueWidget (QWidget *parent = 0);
 
@@ -100,64 +79,36 @@ namespace Blogique
 		QToolBar* GetToolBar () const;
 		void Remove ();
 
-		void FillWidget (const Entry& e, bool isDraft = false,
-				const QByteArray& accId = QByteArray ());
-
 		static void SetParentMultiTabs (QObject *tab);
 	private:
 		void SetTextEditor ();
 		void SetToolBarActions ();
 		void SetDefaultSideWidgets ();
 		void RemovePostingTargetsWidget ();
-		void FillPostingStatistic ();
+		void FillWidget (const Entry& e, const QByteArray& accId = QByteArray ());
 
 		void ClearEntry ();
 
-		QList<QStandardItem*> CreateItemsRow (const Entry& entry) const;
-
 		Entry GetCurrentEntry ();
-
-		void LoadDrafts ();
-		Entry LoadFullDraft (qlonglong draftID);
-		void RemoveDraft (qlonglong id);
-
-		void LoadEntries ();
-		Entry LoadEntry (qlonglong Id);
-
-		void FillPostsView (const QList<Entry>& entries);
-		void FillDraftsView (const QList<Entry>& entries);
 
 	private slots:
 		void handleCurrentAccountChanged (int id);
+		void fillCurrentTabWithEntry (const Entry& entry);
+		void fillNewTabWithEntry (const Entry& entry, const QByteArray& accountId);
+
+		void handleTextChanged ();
+
 		void newEntry ();
-		void saveEntry ();
-		void saveNewEntry ();
+		void saveEntry (const Entry& e = Entry ());
+		void saveNewEntry (const Entry& e = Entry ());
 		void submit (const Entry& e = Entry ());
-		void saveSplitterPosition (int, int);
 		void on_SideWidget__dockLocationChanged (Qt::DockWidgetArea area);
 		void on_UpdateProfile__triggered ();
-		void on_RemoveDraft__released ();
-		void on_PublishDraft__released ();
-		void on_RemoveRemotePost__released ();
-		void on_Edit__released ();
-		void on_PostsView__doubleClicked (const QModelIndex& index);
-		void handleOpenEntryInCurrentTab (const QModelIndex& index = QModelIndex ());
-		void handleOpenEntryInNewTab (const QModelIndex& index = QModelIndex ());
-		void on_LocalEntriesView__doubleClicked (const QModelIndex& index);
-		void handleOpenDraftInCurrentTab (const QModelIndex& index = QModelIndex ());
-		void handleOpenDraftInNewTab (const QModelIndex& index = QModelIndex ());
-
-		void loadPostsByDate (const QDate& date);
-
-		void handleGotEntries (const QList<Entry>& entries = QList<Entry> ());
-		void handleStorageUpdated ();
-
-		void loadLocalEntries ();
-		void handleLoadEntries (const QList<Entry>& entries);
 
 	signals:
 		void removeTab (QWidget *tab);
 		void addNewTab (const QString& name, QWidget *tab);
+		void changeTabName (QWidget *content, const QString& name);
 	};
 }
 }

@@ -134,6 +134,8 @@ public:
 	 */
 	virtual void AppendAction (QAction *action) = 0;
 
+	virtual void AppendSeparator () = 0;
+
 	/** @brief Removes a custom action from the editor.
 	 *
 	 * This function removes a custom action previously added by

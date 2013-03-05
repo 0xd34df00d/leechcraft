@@ -16,27 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QCalendarWidget>
-#include <QMap>
+#include "xmlsettingsmanager.h"
+#include <QApplication>
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-	class CalendarWidget : public QCalendarWidget
+namespace Hestia
+{
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		Q_OBJECT
+		Util::BaseSettingsManager::Init ();
+	}
 
-		QMap<QDate, int> Date2EntriesCount_;
-	public:
-		CalendarWidget (QWidget *parent = 0);
-		void SetStatistic (const QMap<QDate, int>& statistic);
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager xsm;
+		return xsm;
+	}
 
-	protected:
-		void paintCell (QPainter *painter, const QRect& rect, const QDate& date) const;
-	};
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
+
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Blogique_Hestia");
+		return settings;
+	}
 }
 }
-
+}

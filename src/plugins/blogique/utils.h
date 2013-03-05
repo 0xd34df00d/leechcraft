@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2010-2013  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,25 +18,27 @@
 
 #pragma once
 
-#include <QCalendarWidget>
-#include <QMap>
+#include <QStandardItem>
+#include "interfaces/blogique/iaccount.h"
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-	class CalendarWidget : public QCalendarWidget
+namespace Utils
+{
+	enum EntriesViewColumns
 	{
-		Q_OBJECT
-
-		QMap<QDate, int> Date2EntriesCount_;
-	public:
-		CalendarWidget (QWidget *parent = 0);
-		void SetStatistic (const QMap<QDate, int>& statistic);
-
-	protected:
-		void paintCell (QPainter *painter, const QRect& rect, const QDate& date) const;
+		Date,
+		Subject
 	};
-}
-}
 
+	enum EntryIdRole
+	{
+		DBIdRole = Qt::UserRole + 1
+	};
+
+	QList<QStandardItem*> CreateEntriesViewRow (const Entry& entry);
+}
+}
+}

@@ -18,25 +18,25 @@
 
 #pragma once
 
-#include <QCalendarWidget>
-#include <QMap>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-	class CalendarWidget : public QCalendarWidget
+namespace Hestia
+{
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
 		Q_OBJECT
 
-		QMap<QDate, int> Date2EntriesCount_;
+		XmlSettingsManager ();
 	public:
-		CalendarWidget (QWidget *parent = 0);
-		void SetStatistic (const QMap<QDate, int>& statistic);
-
+		static XmlSettingsManager& Instance ();
 	protected:
-		void paintCell (QPainter *painter, const QRect& rect, const QDate& date) const;
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
 	};
 }
 }
-
+}

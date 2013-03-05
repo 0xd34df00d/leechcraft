@@ -205,6 +205,8 @@ namespace NetStoreManager
 		for (int i = 0; i < parentItem->rowCount (); ++i)
 		{
 			auto item = parentItem->child (i);
+			if (!item)
+				continue;
 			const auto& index = Model_->indexFromItem (item);
 
 			const auto& id = item->data (ListingRole::ID).toString ();
