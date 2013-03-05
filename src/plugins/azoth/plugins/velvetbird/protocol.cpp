@@ -136,6 +136,11 @@ namespace VelvetBird
 
 		pacc->ui_data = account;
 	}
+
+	ICoreProxy_ptr Protocol::GetCoreProxy () const
+	{
+		return Proxy_;
+	}
 }
 }
 }
