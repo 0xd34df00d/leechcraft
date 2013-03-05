@@ -89,9 +89,9 @@ namespace Metida
 				this,
 				SLOT (handleGotEvents (QList<LJEvent>)));
 		connect (LJXmlRpc_,
-				SIGNAL (gotStatistics (QMap<QDate,int>)),
+				SIGNAL (gotStatistics (QMap<QDate, int>)),
 				this,
-				SIGNAL (gotBlogStatistics (QMap<QDate,int>)));
+				SIGNAL (gotBlogStatistics (QMap<QDate, int>)));
 
 		connect (LoadLastEvents_,
 				SIGNAL (triggered ()),

@@ -27,9 +27,9 @@ namespace Utils
 	QList<QStandardItem*> CreateEntriesViewRow (const Entry& entry)
 	{
 		QStandardItem *dateItem = new QStandardItem (entry.Date_.date ()
-		.toString (Qt::SystemLocaleShortDate) +
-		" " +
-		entry.Date_.time ().toString ("hh:mm"));
+				.toString (Qt::SystemLocaleShortDate) +
+				" " +
+				entry.Date_.time ().toString ("hh:mm"));
 		dateItem->setData (entry.EntryId_, Utils::EntryIdRole::DBIdRole);
 		dateItem->setEditable (false);
 		dateItem->setData (entry.Subject_, Qt::ToolTipRole);

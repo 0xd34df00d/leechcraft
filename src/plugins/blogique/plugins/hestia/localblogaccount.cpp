@@ -78,15 +78,15 @@ namespace Hestia
 
 	void LocalBlogAccount::OpenConfigurationDialog ()
 	{
-		std::unique_ptr<AccountConfigurationDialog> dia (new AccountConfigurationDialog (0));
+		AccountConfigurationDialog dia;
 
 		if (!DatabasePath_.isEmpty ())
-			dia->ConfWidget ()->SetAccountBasePath (DatabasePath_);
+			dia.ConfWidget ()->SetAccountBasePath (DatabasePath_);
 
-		if (dia->exec () == QDialog::Rejected)
+		if (dia.exec () == QDialog::Rejected)
 			return;
 
-		FillSettings (dia->ConfWidget ());
+		FillSettings (dia.ConfWidget ());
 	}
 
 	bool LocalBlogAccount::IsValid () const

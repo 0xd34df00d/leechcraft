@@ -19,7 +19,6 @@
 #pragma once
 
 #include <QObject>
-#include <boost/graph/graph_concepts.hpp>
 #include <interfaces/blogique/iaccount.h>
 
 namespace LeechCraft
