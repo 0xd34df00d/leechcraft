@@ -19,6 +19,8 @@
 #include "account.h"
 #include <QtDebug>
 #include <util/passutils.h>
+#include <util/util.h>
+#include <interfaces/core/ientitymanager.h>
 #include "protocol.h"
 #include "util.h"
 #include "buddy.h"
@@ -189,6 +191,26 @@ namespace VelvetBird
 		buddy->deleteLater ();
 	}
 
+	void Account::HandleDisconnect (PurpleConnectionError error, const char *text)
+	{
+		const auto& prevStatus = GetState ();
+
+		CurrentStatus_ = EntryStatus ();
+		emit statusChanged (CurrentStatus_);
+
+		const auto& eNotify = Util::MakeNotification (GetAccountName (),
+				tr ("Connection error: %1.")
+					.arg (QString::fromUtf8 (text)),
+				PCritical_);
+		Proto_->GetCoreProxy ()->GetEntityManager ()->HandleEntity (eNotify);
+
+		if (error == PURPLE_CONNECTION_ERROR_AUTHENTICATION_FAILED)
+			QMetaObject::invokeMethod (this,
+					"handleAuthFailure",
+					Qt::QueuedConnection,
+					Q_ARG (LeechCraft::Azoth::EntryStatus, prevStatus));
+	}
+
 	void Account::HandleConvLessMessage (PurpleConversation *conv,
 			const char *who, const char *message, PurpleMessageFlags flags, time_t mtime)
 	{
@@ -206,7 +228,23 @@ namespace VelvetBird
 	void Account::HandleStatus (PurpleStatus *status)
 	{
 		CurrentStatus_ = FromPurpleStatus (status);
+		qDebug () << Q_FUNC_INFO << CurrentStatus_.State_;
 		emit statusChanged (CurrentStatus_);
+	}
+
+	void Account::handleAuthFailure (const EntryStatus& prevStatus)
+	{
+		ChangeState (EntryStatus ());
+		const auto& str = Util::GetPassword ("Azoth." + GetAccountID (),
+				tr ("Enter password for account %1:").arg (GetAccountName ()), Proto_, false);
+		if (str.isEmpty ())
+			return;
+
+		purple_account_set_password (Account_, str.toUtf8 ().constData ());
+
+		ChangeState (prevStatus);
+
+		HandleStatus (purple_account_get_active_status (Account_));
 	}
 }
 }
