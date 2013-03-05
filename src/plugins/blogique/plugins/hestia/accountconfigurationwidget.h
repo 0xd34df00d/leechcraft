@@ -18,25 +18,34 @@
 
 #pragma once
 
-#include <QCalendarWidget>
-#include <QMap>
+#include <QWidget>
+#include <interfaces/blogique/ibloggingplatform.h>
+#include "ui_accountconfigurationwidget.h"
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-	class CalendarWidget : public QCalendarWidget
+namespace Hestia
+{
+	class AccountConfigurationWidget : public QWidget
 	{
 		Q_OBJECT
 
-		QMap<QDate, int> Date2EntriesCount_;
-	public:
-		CalendarWidget (QWidget *parent = 0);
-		void SetStatistic (const QMap<QDate, int>& statistic);
+		Ui::AccountConfigurationWidget Ui_;
+		IBloggingPlatform::AccountAddOptions Option_;
 
-	protected:
-		void paintCell (QPainter *painter, const QRect& rect, const QDate& date) const;
+	public:
+		AccountConfigurationWidget (QWidget *parent = 0,
+				IBloggingPlatform::AccountAddOptions option = IBloggingPlatform::AAONoOptions);
+
+		void SetAccountBasePath (const QString& path);
+		QString GetAccountBasePath () const;
+		IBloggingPlatform::AccountAddOptions GetOption () const;
+
+	private slots:
+		void on_OpenAccountBase__released ();
 	};
 }
 }
-
+}

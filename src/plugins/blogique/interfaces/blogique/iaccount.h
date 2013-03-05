@@ -31,6 +31,14 @@ namespace LeechCraft
 {
 namespace Blogique
 {
+	enum class EntryType
+	{
+		None,
+		BlogEntry,
+		Draft
+	};
+
+
 	struct Entry
 	{
 		QString Target_;
@@ -40,11 +48,13 @@ namespace Blogique
 		QStringList Tags_;
 		QVariantMap PostOptions_;
 		QVariantMap CustomData_;
-		qlonglong EntryId_;
+		qint64 EntryId_;
 		QUrl EntryUrl_;
+		EntryType EntryType_;
 
 		Entry ()
 		: EntryId_ (-1)
+		, EntryType_ (EntryType::None)
 		{
 		}
 
@@ -114,11 +124,11 @@ namespace Blogique
 
 		/** @brief Returns validation state of account.
 		 *
-		 * If account not validated it can't be used for blogging.
+		 * If account not valid it can't be used for blogging.
 		 *
 		 * @return Validation state of the account.
 		 */
-		virtual bool IsValidated () const = 0;
+		virtual bool IsValid () const = 0;
 
 		/** @brief Returns the pointer to account's profile.
 		 *
@@ -126,11 +136,11 @@ namespace Blogique
 		 */
 		virtual QObject* GetProfile () = 0;
 
-		/** @brief Fetch last entries from blog.
+		/** @brief Requests entries by date;
 		 *
-		 * @param[in] count Amount of entries to fetch.
+		 * @param[in] date Specified date.
 		 */
-		virtual void GetLastEntries (int count) = 0;
+		virtual void GetEntriesByDate (const QDate& date) = 0;
 
 		/** @brief Remove entry from blog.
 		 *
@@ -146,6 +156,12 @@ namespace Blogique
 
 		virtual QList<QAction*> GetUpdateActions () const = 0;
 
+		/** @brief Requests the number of entries per day;
+		 *
+		 */
+		virtual void RequestStatistics () = 0;
+
+
 		/** @brief Submit post to blog.
 		 *
 		 * @param[in] event Posting event.
@@ -158,6 +174,7 @@ namespace Blogique
 		virtual void updateProfile () = 0;
 
 		virtual void backup () = 0;
+
 
 	protected:
 		/** @brief This signal should be emitted when account is renamed.
@@ -183,6 +200,12 @@ namespace Blogique
 
 		//TODO
 		virtual void entryUpdated (const QList<Entry>& entries) = 0;
+
+		//TODO
+		virtual void gotBlogStatistics (const QMap<QDate, int>& statistics) = 0;
+
+		//TODO
+		virtual void gotEntries (const QList<Entry>& entries) = 0;
 
 		/** @brief This signal should be emitted when account want to backup
 		 * some amount of entries.

@@ -20,9 +20,8 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
-#include <interfaces/ihavetabs.h>
-#include <interfaces/ihavesettings.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/ihavesettings.h>
 #include <interfaces/blogique/ibloggingplatformplugin.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
@@ -30,7 +29,7 @@ namespace LeechCraft
 {
 namespace Blogique
 {
-namespace Metida
+namespace Hestia
 {
 	class Plugin : public QObject
 				, public IInfo
@@ -39,7 +38,7 @@ namespace Metida
 				, public IBloggingPlatformPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings IPlugin2
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings
 				LeechCraft::Blogique::IBloggingPlatformPlugin)
 
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
@@ -53,9 +52,9 @@ namespace Metida
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-
 		QSet<QByteArray> GetPluginClasses () const;
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		QObject* GetObject ();
 		QList<QObject*> GetBloggingPlatforms () const;

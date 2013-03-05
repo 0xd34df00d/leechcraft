@@ -16,27 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QCalendarWidget>
-#include <QMap>
+#include "accountconfigurationdialog.h"
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-	class CalendarWidget : public QCalendarWidget
+namespace Hestia
+{
+	AccountConfigurationDialog::AccountConfigurationDialog (QWidget *parent)
+	: QDialog (parent)
 	{
-		Q_OBJECT
+		Ui_.setupUi (this);
+	}
 
-		QMap<QDate, int> Date2EntriesCount_;
-	public:
-		CalendarWidget (QWidget *parent = 0);
-		void SetStatistic (const QMap<QDate, int>& statistic);
+	AccountConfigurationWidget* AccountConfigurationDialog::ConfWidget ()
+	{
+		return Ui_.ConfWidget_;
+	}
 
-	protected:
-		void paintCell (QPainter *painter, const QRect& rect, const QDate& date) const;
-	};
 }
 }
+}
+
 

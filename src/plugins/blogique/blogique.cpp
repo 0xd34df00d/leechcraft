@@ -68,6 +68,10 @@ namespace Blogique
 				SIGNAL (removeTab (QWidget*)),
 				this,
 				SIGNAL (removeTab (QWidget*)));
+		connect (&Core::Instance (),
+				SIGNAL (changeTabName (QWidget*, QString)),
+				this,
+				SIGNAL (changeTabName (QWidget*, QString)));
 
 		BackupBlog_ = new QAction (tr ("Backup"), this);
 		BackupBlog_->setProperty ("ActionIcon", "document-export");

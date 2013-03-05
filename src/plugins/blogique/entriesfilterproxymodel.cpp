@@ -16,27 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QCalendarWidget>
-#include <QMap>
+#include "entriesfilterproxymodel.h"
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-	class CalendarWidget : public QCalendarWidget
+	EntriesFilterProxyModel::EntriesFilterProxyModel (QObject *parent)
+	: QSortFilterProxyModel (parent)
 	{
-		Q_OBJECT
+		setDynamicSortFilter (true);
+	}
 
-		QMap<QDate, int> Date2EntriesCount_;
-	public:
-		CalendarWidget (QWidget *parent = 0);
-		void SetStatistic (const QMap<QDate, int>& statistic);
-
-	protected:
-		void paintCell (QPainter *painter, const QRect& rect, const QDate& date) const;
-	};
+	bool EntriesFilterProxyModel::filterAcceptsRow (int sourceRow,
+			const QModelIndex& sourceParent)
+	{
+		const QModelIndex& index = sourceModel ()->index (sourceRow, 0, sourceParent);
+		return sourceModel ()->data (index).toString ().contains (filterRegExp ());
+	}
 }
 }
-

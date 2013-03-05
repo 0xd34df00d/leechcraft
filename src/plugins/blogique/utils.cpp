@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2010-2013  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,27 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QCalendarWidget>
-#include <QMap>
+#include "utils.h"
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-	class CalendarWidget : public QCalendarWidget
+namespace Utils
+{
+	QList<QStandardItem*> CreateEntriesViewRow (const Entry& entry)
 	{
-		Q_OBJECT
+		QStandardItem *dateItem = new QStandardItem (entry.Date_.date ()
+				.toString (Qt::SystemLocaleShortDate) +
+				" " +
+				entry.Date_.time ().toString ("hh:mm"));
+		dateItem->setData (entry.EntryId_, Utils::EntryIdRole::DBIdRole);
+		dateItem->setEditable (false);
+		dateItem->setData (entry.Subject_, Qt::ToolTipRole);
+		QStandardItem *itemSubj = new QStandardItem (entry.Subject_);
+		itemSubj->setEditable (false);
+		itemSubj->setData (entry.Subject_, Qt::ToolTipRole);
 
-		QMap<QDate, int> Date2EntriesCount_;
-	public:
-		CalendarWidget (QWidget *parent = 0);
-		void SetStatistic (const QMap<QDate, int>& statistic);
-
-	protected:
-		void paintCell (QPainter *painter, const QRect& rect, const QDate& date) const;
-	};
+		return { dateItem, itemSubj };
+	}
 }
 }
-
+}

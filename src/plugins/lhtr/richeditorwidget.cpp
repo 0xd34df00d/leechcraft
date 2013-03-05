@@ -343,6 +343,11 @@ namespace LHTR
 		ViewBar_->addAction (act);
 	}
 
+	void RichEditorWidget::AppendSeparator ()
+	{
+		ViewBar_->addSeparator ();
+	}
+
 	void RichEditorWidget::RemoveAction (QAction *act)
 	{
 		ViewBar_->removeAction (act);
