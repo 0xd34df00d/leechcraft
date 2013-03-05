@@ -21,7 +21,6 @@
 #include <QtDebug>
 #include <QCryptographicHash>
 #include <QDateTime>
-#include <QNetworkReply>
 #include <QXmlQuery>
 #include <util/sysinfo.h>
 #include "profiletypes.h"
@@ -265,6 +264,10 @@ namespace Metida
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleChallengeReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
 	void LJXmlRPC::ValidateAccountData (const QString& login,
@@ -300,6 +303,10 @@ namespace Metida
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleValidateReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
 	void LJXmlRPC::RequestFriendsInfo (const QString& login,
@@ -323,6 +330,10 @@ namespace Metida
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleRequestFriendsInfoFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
 	void LJXmlRPC::AddNewFriendRequest (const QString& username,
@@ -360,6 +371,10 @@ namespace Metida
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleAddNewFriendReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
 	void LJXmlRPC::DeleteFriendRequest (const QString& username, const QString& challenge)
@@ -387,6 +402,10 @@ namespace Metida
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleReplyWithProfileUpdate ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
 	void LJXmlRPC::AddGroupRequest (const QString& name, bool isPublic, int id,
@@ -415,6 +434,10 @@ namespace Metida
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleReplyWithProfileUpdate ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
 	void LJXmlRPC::DeleteGroupRequest (int id, const QString& challenge)
@@ -442,6 +465,10 @@ namespace Metida
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleReplyWithProfileUpdate ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
 	void LJXmlRPC::PostEventRequest (const LJEvent& event, const QString& challenge)
@@ -522,6 +549,10 @@ namespace Metida
 				SIGNAL (finished ()),
 				this,
 				SLOT (handlePostEventReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
 	void LJXmlRPC::RemoveEventRequest (const LJEvent& event, const QString& challenge)
@@ -546,6 +577,10 @@ namespace Metida
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleRemoveEventReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
 	void LJXmlRPC::UpdateEventRequest (const LJEvent& event, const QString& challenge)
@@ -629,6 +664,10 @@ namespace Metida
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleUpdateEventReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
 	void LJXmlRPC::BackupEventsRequest (int skip, const QString& challenge)
@@ -660,6 +699,10 @@ namespace Metida
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleBackupEventsReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
 	void LJXmlRPC::GetLastEventsRequest (int count, const QString& challenge)
@@ -685,6 +728,10 @@ namespace Metida
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleGotEventsReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
 	void LJXmlRPC::GetChangedEventsRequest (const QDateTime& dt, const QString& challenge)
@@ -710,6 +757,10 @@ namespace Metida
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleGotEventsReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
 	void LJXmlRPC::GetEventsByDateRequest (const QDate& date, const QString& challenge)
@@ -739,6 +790,10 @@ namespace Metida
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleGotEventsReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
 	void LJXmlRPC::GetParticularEventRequest (int id, RequestType prt,
@@ -766,6 +821,10 @@ namespace Metida
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleGetParticularEventReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
 	void LJXmlRPC::BlogStatisticsRequest (const QString& challenge)
@@ -786,6 +845,10 @@ namespace Metida
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleBlogStatisticsReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
 	void LJXmlRPC::ParseForError (const QByteArray& content)
@@ -1499,6 +1562,14 @@ namespace Metida
 		}
 
 		ParseForError (content);
+	}
+
+	void LJXmlRPC::handleNetworkError(QNetworkReply::NetworkError err)
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+		emit networkError (err, reply->errorString ());
 	}
 
 }

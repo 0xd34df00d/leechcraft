@@ -57,13 +57,17 @@ namespace Metida
 				this,
 				SLOT (handleValidatingFinished (bool)));
 		connect (LJXmlRpc_,
-				SIGNAL (error (int, const QString&)),
+				SIGNAL (error (int, QString)),
 				this,
-				SLOT (handleXmlRpcError (int, const QString&)));
+				SLOT (handleXmlRpcError (int, QString)));
 		connect (LJXmlRpc_,
-				SIGNAL (profileUpdated (const LJProfileData&)),
+				SIGNAL (networkError (int, QString)),
+				this,
+				SLOT (handleNetworkError (int, QString)));
+		connect (LJXmlRpc_,
+				SIGNAL (profileUpdated (LJProfileData)),
 				LJProfile_.get (),
-				SLOT (handleProfileUpdate (const LJProfileData&)));
+				SLOT (handleProfileUpdate (LJProfileData)));
 		connect (LJXmlRpc_,
 				SIGNAL (eventPosted (QList<LJEvent>)),
 				this,
@@ -384,6 +388,21 @@ namespace Metida
 				tr ("%1 (original message: %2)")
 						.arg (MetidaUtils::GetLocalizedErrorMessage (errorCode),
 						msgInEng),
+				PWarning_));
+	}
+
+	void LJAccount::handleNetworkError(int errorCode, const QString& msgInEng)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< "error code:"
+				<< errorCode
+				<< "error text:"
+				<< msgInEng;
+
+		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique",
+				tr ("%1 (error code: %2)")
+					.arg (msgInEng)
+					.arg (errorCode),
 				PWarning_));
 	}
 
