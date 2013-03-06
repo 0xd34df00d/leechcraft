@@ -32,27 +32,8 @@ SET (SRCS
 	xmlsettingsmanager.cpp
 	)
 
-SET (HEADERS
-	accountslistwidget.h
-	accountsselectdialog.h
-	addaccountwizardfirstpage.h
-	backupmanager.h
-	blogique.h
-	blogentrieswidget.h
-	blogiquewidget.h
-	calendarwidget.h
-	core.h
-	draftentrieswidget.h
-	entriesfilterproxymodel.h
-	pluginproxy.h
-	profiledialog.h
-	storagemanager.h
-	updateentriesdialog.h
-	utils.h
-	xmlsettingsmanager.h
-	)
-
-SET (FORMS accountslistwidget.ui
+SET (FORMS
+	accountslistwidget.ui
 	accountsselectdialog.ui
 	addaccountwizardfirstpage.ui
 	blogentrieswidget.ui
@@ -64,19 +45,18 @@ SET (FORMS accountslistwidget.ui
 
 SET (RESOURCES blogiqueresources.qrc)
 
-IF (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+CreateTrs ("blogique" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("blogique" "en;ru_RU" "${SRCS}" "${FORMS}" "blogiquesettings.xml")
 
 QT4_WRAP_UI (FORMS_HEADERS ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 ADD_LIBRARY (leechcraft_blogique SHARED
 	${SRCS}
-	${HEADERS}
 	${MOC_SRCS}
 	${FORMS_HEADERS}
 	${RCCS}
+	${COMPILED_TRANSLATIONS}
 	)
 
 TARGET_LINK_LIBRARIES (leechcraft_blogique
