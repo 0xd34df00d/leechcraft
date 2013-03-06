@@ -307,7 +307,7 @@ namespace VelvetBird
 		}
 
 		purple_blist_load ();
-		purple_accounts_restore_current_statuses ();
+		purple_savedstatus_activate (purple_savedstatus_get_startup ());
 	}
 
 	void ProtoManager::Release ()
