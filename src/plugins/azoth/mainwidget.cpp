@@ -40,65 +40,12 @@
 #include "actionsmanager.h"
 #include "accountactionsmanager.h"
 #include "bookmarksmanagerdialog.h"
+#include "keyboardrosterfixer.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	namespace
-	{
-		class KeyboardRosterFixer : public QObject
-		{
-			QTreeView *View_;
-			bool IsSearching_;
-		public:
-			KeyboardRosterFixer (QTreeView *view, QObject *parent = 0)
-			: QObject (parent)
-			, View_ (view)
-			, IsSearching_ (false)
-			{
-			}
-		protected:
-			bool eventFilter (QObject*, QEvent *e)
-			{
-				if (e->type () != QEvent::KeyPress &&
-					e->type () != QEvent::KeyRelease)
-					return false;
-
-				QKeyEvent *ke = static_cast<QKeyEvent*> (e);
-				if (!IsSearching_)
-				{
-					switch (ke->key ())
-					{
-					case Qt::Key_Space:
-					case Qt::Key_Right:
-					case Qt::Key_Left:
-						qApp->sendEvent (View_, e);
-						return true;
-					default:
-						;
-					}
-				}
-
-				switch (ke->key ())
-				{
-				case Qt::Key_Down:
-				case Qt::Key_Up:
-				case Qt::Key_PageDown:
-				case Qt::Key_PageUp:
-				case Qt::Key_Enter:
-				case Qt::Key_Return:
-					IsSearching_ = false;
-					qApp->sendEvent (View_, e);
-					return true;
-				default:
-					IsSearching_ = true;
-					return false;
-				}
-			}
-		};
-	}
-
 	MainWidget::MainWidget (QWidget *parent)
 	: QWidget (parent)
 	, MainMenu_ (new QMenu (tr ("Azoth menu"), this))

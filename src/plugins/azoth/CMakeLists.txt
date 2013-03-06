@@ -118,6 +118,7 @@ SET (SRCS
 	colorlisteditorwidget.cpp
 	customstatusesmanager.cpp
 	userslistwidget.cpp
+	keyboardrosterfixer.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -173,6 +174,7 @@ SET (HEADERS
 	colorlisteditorwidget.h
 	customstatusesmanager.h
 	userslistwidget.h
+	keyboardrosterfixer.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
 	)
