@@ -414,12 +414,7 @@ namespace Azoth
 	{
 		IMUCEntry *muc = GetEntry<IMUCEntry> ();
 		if (!muc)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< GetEntry<QObject> ()
-					<< "doesn't implement IMUCEntry";
 			return;
-		}
 
 		const int parts = muc->GetParticipants ().size ();
 		const QString& text = tr ("%1 (%n participant(s))", 0, parts)
