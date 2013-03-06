@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "util.h"
+#include <QtDebug>
 #include <interfaces/azoth/iclentry.h>
 
 namespace LeechCraft
@@ -66,11 +67,14 @@ namespace VelvetBird
 		}
 	}
 
-	EntryStatus FromPurpleStatus (PurpleStatus *status)
+	EntryStatus FromPurpleStatus (PurpleAccount *account, PurpleStatus *status)
 	{
 		const auto id = purple_status_get_id (status);
+		const auto statusType = purple_account_get_status_type (account, id);
+
 		const auto message = purple_status_get_attr_string (status, "message");
-		return EntryStatus (FromPurpleState (purple_primitive_get_type_from_id (id)),
+
+		return EntryStatus (FromPurpleState (purple_status_type_get_primitive (statusType)),
 				message ? QString::fromUtf8 (message) : QString ());
 	}
 }

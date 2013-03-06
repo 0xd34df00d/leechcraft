@@ -132,8 +132,11 @@ namespace VelvetBird
 
 		if (!purple_account_get_enabled (Account_, "leechcraft.azoth"))
 			purple_account_set_enabled (Account_, "leechcraft.azoth", true);
+
+		auto type = purple_account_get_status_type_with_primitive (Account_, ToPurpleState (status.State_));
+		auto statusId = type ? purple_status_type_get_id (type) : "available";
 		purple_account_set_status (Account_,
-				purple_primitive_get_id_from_type (ToPurpleState (status.State_)),
+				statusId,
 				true,
 				"message",
 				status.StatusString_.toUtf8 ().constData (),
@@ -233,7 +236,7 @@ namespace VelvetBird
 
 	void Account::HandleStatus (PurpleStatus *status)
 	{
-		CurrentStatus_ = status ? FromPurpleStatus (status) : EntryStatus ();
+		CurrentStatus_ = status ? FromPurpleStatus (Account_, status) : EntryStatus ();
 		qDebug () << Q_FUNC_INFO << CurrentStatus_.State_;
 		emit statusChanged (CurrentStatus_);
 

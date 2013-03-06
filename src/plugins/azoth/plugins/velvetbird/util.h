@@ -33,7 +33,7 @@ namespace VelvetBird
 	State FromPurpleState (PurpleStatusPrimitive);
 	PurpleStatusPrimitive ToPurpleState (State);
 
-	EntryStatus FromPurpleStatus (PurpleStatus*);
+	EntryStatus FromPurpleStatus (PurpleAccount*, PurpleStatus*);
 }
 }
 }

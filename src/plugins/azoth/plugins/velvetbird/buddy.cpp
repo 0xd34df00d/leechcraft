@@ -200,7 +200,7 @@ namespace VelvetBird
 		}
 
 		auto purpleStatus = purple_presence_get_active_status (Buddy_->presence);
-		const auto& status = FromPurpleStatus (purpleStatus);
+		const auto& status = FromPurpleStatus (Account_->GetPurpleAcc (), purpleStatus);
 		if (status != Status_)
 		{
 			Status_ = status;
