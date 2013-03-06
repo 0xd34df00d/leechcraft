@@ -34,10 +34,14 @@ SET (SRCS
 	declarativewindow.cpp
 	)
 
+SET (SB2_RESOURCES sb2resources.qrc)
+QT4_ADD_RESOURCES (SB2_RCCS ${SB2_RESOURCES})
+
 ADD_LIBRARY (leechcraft_sb2 SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
+	${SB2_RCCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_sb2
 	${QT_LIBRARIES}
