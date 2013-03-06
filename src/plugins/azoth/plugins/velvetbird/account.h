@@ -74,7 +74,10 @@ namespace VelvetBird
 		void HandleDisconnect (PurpleConnectionError, const char*);
 		void HandleConvLessMessage (PurpleConversation*,
 			const char*, const char*, PurpleMessageFlags, time_t);
+		void UpdateStatus ();
 		void HandleStatus (PurpleStatus*);
+	public slots:
+		void updateIcon ();
 	private slots:
 		void handleAuthFailure (const LeechCraft::Azoth::EntryStatus&);
 	signals:

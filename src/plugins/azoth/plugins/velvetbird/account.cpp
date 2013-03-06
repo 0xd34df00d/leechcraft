@@ -18,6 +18,7 @@
 
 #include "account.h"
 #include <QtDebug>
+#include <QTimer>
 #include <util/passutils.h>
 #include <util/util.h>
 #include <interfaces/core/ientitymanager.h>
@@ -37,7 +38,7 @@ namespace VelvetBird
 	, Account_ (acc)
 	, Proto_ (proto)
 	{
-		HandleStatus (purple_account_get_active_status (acc));
+		UpdateStatus ();
 	}
 
 	PurpleAccount* Account::GetPurpleAcc () const
@@ -225,11 +226,33 @@ namespace VelvetBird
 		}
 	}
 
+	void Account::UpdateStatus ()
+	{
+		HandleStatus (purple_account_get_active_status (Account_));
+	}
+
 	void Account::HandleStatus (PurpleStatus *status)
 	{
-		CurrentStatus_ = FromPurpleStatus (status);
+		CurrentStatus_ = status ? FromPurpleStatus (status) : EntryStatus ();
 		qDebug () << Q_FUNC_INFO << CurrentStatus_.State_;
 		emit statusChanged (CurrentStatus_);
+
+		QTimer::singleShot (5000, this, SLOT (updateIcon ()));
+	}
+
+	void Account::updateIcon ()
+	{
+		auto img = purple_buddy_icons_find_account_icon (Account_);
+		if (!img)
+			return;
+
+		const auto data = purple_imgstore_get_data (img);
+		const auto size = purple_imgstore_get_size (img);
+
+		auto image = QImage::fromData (reinterpret_cast<const uchar*> (data), size);
+		qDebug () << Q_FUNC_INFO << image.isNull ();
+
+		purple_imgstore_unref (img);
 	}
 
 	void Account::handleAuthFailure (const EntryStatus& prevStatus)
