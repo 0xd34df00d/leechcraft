@@ -57,13 +57,17 @@ namespace Metida
 				this,
 				SLOT (handleValidatingFinished (bool)));
 		connect (LJXmlRpc_,
-				SIGNAL (error (int, const QString&)),
+				SIGNAL (error (int, QString)),
 				this,
-				SLOT (handleXmlRpcError (int, const QString&)));
+				SLOT (handleXmlRpcError (int, QString)));
 		connect (LJXmlRpc_,
-				SIGNAL (profileUpdated (const LJProfileData&)),
+				SIGNAL (networkError (int, QString)),
+				this,
+				SLOT (handleNetworkError (int, QString)));
+		connect (LJXmlRpc_,
+				SIGNAL (profileUpdated (LJProfileData)),
 				LJProfile_.get (),
-				SLOT (handleProfileUpdate (const LJProfileData&)));
+				SLOT (handleProfileUpdate (LJProfileData)));
 		connect (LJXmlRpc_,
 				SIGNAL (eventPosted (QList<LJEvent>)),
 				this,
@@ -387,6 +391,21 @@ namespace Metida
 				PWarning_));
 	}
 
+	void LJAccount::handleNetworkError (int errorCode, const QString& msgInEng)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< "error code:"
+				<< errorCode
+				<< "error text:"
+				<< msgInEng;
+
+		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique",
+				tr ("%1 (error code: %2)")
+					.arg (msgInEng)
+					.arg (errorCode),
+				PWarning_));
+	}
+
 	void LJAccount::updateProfile ()
 	{
 		LJXmlRpc_->UpdateProfileInfo ();
@@ -435,11 +454,9 @@ namespace Metida
 		props.CurrentLocation_ = postOptions.value ("place").toString ();
 		props.CurrentMusic_ = postOptions.value ("music").toString ();
 
-		int currentMoodId = postOptions.value ("moodId", -1).toInt ();
-		if (currentMoodId == -1)
+		props.CurrentMoodId_ = postOptions.value ("moodId", -1).toInt ();
+		if (props.CurrentMoodId_ == -1)
 			props.CurrentMood_ = postOptions.value ("mood").toString ();
-		else
-			props.CurrentMoodId_ = currentMoodId;
 
 		props.ShowInFriendsPage_ = postOptions.value ("showInFriendsPage").toBool ();
 

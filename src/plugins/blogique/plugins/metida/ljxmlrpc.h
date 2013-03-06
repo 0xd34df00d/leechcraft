@@ -24,6 +24,7 @@
 #include <QPair>
 #include <QDomElement>
 #include <QNetworkRequest>
+#include <QNetworkReply>
 #include "core.h"
 #include "profiletypes.h"
 #include "ljaccount.h"
@@ -130,11 +131,13 @@ namespace Metida
 		void handleUpdateEventReplyFinished ();
 		void handleGetParticularEventReplyFinished ();
 		void handleBlogStatisticsReplyFinished ();
+		void handleNetworkError (QNetworkReply::NetworkError error);
 
 	signals:
 		void validatingFinished (bool success);
 		void profileUpdated (const LJProfileData& profile);
 		void error (int code, const QString& msg);
+		void networkError (int code, const QString& msg);
 
 		void eventPosted (const QList<LJEvent>& events);
 		void eventUpdated (const QList<LJEvent>& events);
