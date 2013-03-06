@@ -32,14 +32,11 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_4">
          <item>
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>Filter:</string>
+          <widget class="QLineEdit" name="DraftEntriesFilter_">
+           <property name="placeholderText">
+            <string>Search...</string>
            </property>
           </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="DraftEntriesFilter_"/>
          </item>
         </layout>
        </item>
