@@ -123,6 +123,8 @@ namespace Azoth
 		void HandleDragEnter (QDragMoveEvent*);
 		void HandleDrop (QDropEvent*);
 
+		void ShowUsersList ();
+
 		void HandleMUCParticipantsChanged ();
 
 		void SetEnabled (bool);

@@ -66,6 +66,7 @@
 #include "msgformatterwidget.h"
 #include "actionsmanager.h"
 #include "contactdropfilter.h"
+#include "userslistwidget.h"
 
 namespace LeechCraft
 {
@@ -392,6 +393,21 @@ namespace Azoth
 			handleFilesDropped (data->urls ());
 		else if (data->hasText ())
 			appendMessageText (data->text ());
+	}
+
+	void ChatTab::ShowUsersList ()
+	{
+		IMUCEntry *muc = GetEntry<IMUCEntry> ();
+		if (!muc)
+			return;
+
+		const auto& parts = muc->GetParticipants ();
+		UsersListWidget w (parts, this);
+		if (w.exec () != QDialog::Accepted)
+			return;
+
+		if (auto part = w.GetActivatedParticipant ())
+			InsertNick (qobject_cast<ICLEntry*> (part)->GetEntryName ());
 	}
 
 	void ChatTab::HandleMUCParticipantsChanged ()
