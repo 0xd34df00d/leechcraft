@@ -84,9 +84,12 @@ namespace Azoth
 #endif
 		void handleActionShareContactsTriggered ();
 		void handleActionVCardTriggered ();
+
 		void handleActionInviteTriggered ();
 		void handleActionLeaveTriggered ();
 		void handleActionAddToBookmarks ();
+		void handleActionUsersList ();
+
 		void handleActionConfigureMUC ();
 		void handleActionAuthorizeTriggered ();
 		void handleActionDenyAuthTriggered ();

@@ -103,6 +103,7 @@ namespace Azoth
 		result << id2action.value ("leave");
 		result << id2action.value ("addtobm");
 		result << id2action.value ("configuremuc");
+		result << id2action.value ("userslist");
 		result << id2action.value ("authorize");
 		result << id2action.value ("denyauth");
 		result << entry->GetActions ();
@@ -477,6 +478,17 @@ namespace Azoth
 			Entry2Actions_ [entry] ["addtobm"] = bookmarks;
 			Action2Areas_ [bookmarks] << CLEAAContactListCtxtMenu
 					<< CLEAAToolbar;
+
+			QAction *userList = new QAction (tr ("MUC users..."), entry->GetObject ());
+			userList->setProperty ("ActionIcon", "system-users");
+			userList->setShortcut (QString ("Ctrl+M"));
+			connect (userList,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleActionUsersList ()));
+			Entry2Actions_ [entry] ["userslist"] = userList;
+			Action2Areas_ [userList] << CLEAAToolbar;
+			sm->RegisterAction ("org.LeechCraft.Azoth.MUCUsers", userList, true);
 
 			if (qobject_cast<IConfigurableMUC*> (entry->GetObject ()))
 			{
@@ -1054,6 +1066,16 @@ namespace Azoth
 		BookmarksManagerDialog *dia = new BookmarksManagerDialog ();
 		dia->SuggestSaving (entry->GetObject ());
 		dia->show ();
+	}
+
+	void ActionsManager::handleActionUsersList ()
+	{
+		auto entry = sender ()->property ("Azoth/Entry").value<ICLEntry*> ();
+
+		auto chatWidget = Core::Instance ().GetChatTabsManager ()->OpenChat (entry);
+		auto tab = qobject_cast<ChatTab*> (chatWidget);
+
+		tab->ShowUsersList ();
 	}
 
 	void ActionsManager::handleActionConfigureMUC ()

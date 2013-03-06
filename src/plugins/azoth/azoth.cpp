@@ -314,6 +314,10 @@ namespace Azoth
 				ActionInfo (tr ("Leave"),
 						QString (),
 						proxy->GetIcon ("irc-close-channel")));
+		sm->RegisterActionInfo ("org.LeechCraft.Azoth.MUCUsers",
+				ActionInfo (tr ("Show MUC users list"),
+						QString ("Ctrl+M"),
+						proxy->GetIcon ("irc-close-channel")));
 	}
 
 	void Plugin::InitSettings ()
