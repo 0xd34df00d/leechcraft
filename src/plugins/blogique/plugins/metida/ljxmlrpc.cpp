@@ -1569,6 +1569,7 @@ namespace Metida
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		if (!reply)
 			return;
+		reply->deleteLater ();
 		emit networkError (err, reply->errorString ());
 	}
 

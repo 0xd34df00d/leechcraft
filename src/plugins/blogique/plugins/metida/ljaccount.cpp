@@ -391,7 +391,7 @@ namespace Metida
 				PWarning_));
 	}
 
-	void LJAccount::handleNetworkError(int errorCode, const QString& msgInEng)
+	void LJAccount::handleNetworkError (int errorCode, const QString& msgInEng)
 	{
 		qWarning () << Q_FUNC_INFO
 				<< "error code:"
