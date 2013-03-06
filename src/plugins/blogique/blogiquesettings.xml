@@ -15,10 +15,10 @@
 			-->
 			<item type="combobox" property="OpenDraftByDblClick" >
 				<label lang="en" value="Open draft by double click in:" />
-				<option name="CurrentTab" default="true" >
+				<option name="CurrentTab" >
 					<label lang="en" value="Current tab" />
 				</option>
-				<option name="NewTab">
+				<option name="NewTab" default="true" >
 					<label lang="en" value="New tab" />
 				</option>
 			</item>
@@ -27,10 +27,10 @@
 			<label lang="en" value="RemotePosts" />
 			<item type="combobox" property="OpenEntryByDblClick" >
 				<label lang="en" value="Open entry by double click in:" />
-				<option name="CurrentTab" default="true" >
+				<option name="CurrentTab" >
 					<label lang="en" value="Current tab" />
 				</option>
-				<option name="NewTab">
+				<option name="NewTab" default="true" >
 					<label lang="en" value="New tab" />
 				</option>
 			</item>
