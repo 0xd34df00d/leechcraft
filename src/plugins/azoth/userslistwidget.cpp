@@ -21,6 +21,7 @@
 #include <QStandardItemModel>
 #include <util/gui/clearlineeditaddon.h>
 #include "core.h"
+#include "keyboardrosterfixer.h"
 
 namespace LeechCraft
 {
@@ -61,7 +62,7 @@ namespace Azoth
 				Filter_,
 				SLOT (setFilterFixedString (QString)));
 		Ui_.ListView_->setModel (Filter_);
-		Ui_.ListView_->sortByColumn (0);
+		Ui_.ListView_->sortByColumn (0, Qt::AscendingOrder);
 
 		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.FilterLine_);
 
@@ -72,6 +73,7 @@ namespace Azoth
 
 		Ui_.ListView_->setFocusProxy (Ui_.FilterLine_);
 		Ui_.ListView_->setFocus ();
+		Ui_.FilterLine_->installEventFilter (new KeyboardRosterFixer (Ui_.ListView_, this));
 	}
 
 	QObject* UsersListWidget::GetActivatedParticipant () const
