@@ -156,6 +156,7 @@ namespace Metida
 	public slots:
 		void handleValidatingFinished (bool success);
 		void handleXmlRpcError (int errorCode, const QString& msgInEng);
+		void handleNetworkError (int errorCode, const QString& msgInEng);
 		void updateProfile ();
 
 		void submit (const Entry& event);

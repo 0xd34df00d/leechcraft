@@ -62,7 +62,10 @@ namespace Metida
 		if (!customMood)
 			map ["moodId"] = Ui_.Mood_->itemData (Ui_.Mood_->currentIndex ()).toInt ();
 		else
+		{
 			map ["mood"] = Ui_.Mood_->currentText ();
+			map ["moodId"] = -1;
+		}
 
 		map ["place"] = Ui_.Place_->text ();
 		map ["music"] = Ui_.Music_->text ();
