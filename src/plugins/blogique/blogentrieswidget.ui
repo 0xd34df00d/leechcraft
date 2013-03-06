@@ -90,7 +90,7 @@
         </sizepolicy>
        </property>
        <property name="toolTip">
-        <string>Show last entries.</string>
+        <string>Show last entries</string>
        </property>
        <property name="text">
         <string>Load</string>
@@ -103,7 +103,7 @@
      <item>
       <widget class="QPushButton" name="RemoveBlogEntry_">
        <property name="toolTip">
-        <string>Post will be removed from local storage and from user's blog.</string>
+        <string>Post will be removed from local storage and from user's blog</string>
        </property>
        <property name="text">
         <string>Remove</string>

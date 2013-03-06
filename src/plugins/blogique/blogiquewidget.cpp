@@ -349,7 +349,7 @@ namespace Blogique
 		{
 			QMessageBox::warning (this,
 					tr ("LeechCraft"),
-					tr ("Entry can't be emprty."));
+					tr ("Entry can't be empty."));
 			return Entry ();
 		}
 
