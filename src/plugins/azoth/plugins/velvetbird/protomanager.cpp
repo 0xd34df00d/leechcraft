@@ -194,8 +194,14 @@ namespace VelvetBird
 		PurpleConnectionUiOps ConnUiOps =
 		{
 			NULL,
-			[] (PurpleConnection *gc) { qDebug () << Q_FUNC_INFO << "connected"; },
-			[] (PurpleConnection *gc) { qDebug () << Q_FUNC_INFO << "disconnected"; },
+			[] (PurpleConnection *gc)
+			{
+				static_cast<Account*> (gc->account->ui_data)->UpdateStatus ();
+			},
+			[] (PurpleConnection *gc)
+			{
+				static_cast<Account*> (gc->account->ui_data)->UpdateStatus ();
+			},
 			NULL,
 			NULL,
 			NULL,
@@ -240,6 +246,18 @@ namespace VelvetBird
 			},
 			NULL
 		};
+
+		PurpleNotifyUiOps NotifyUiOps
+		{
+			NULL,
+			NULL,
+			NULL,
+			NULL,
+			NULL,
+			NULL,
+			[] (PurpleConnection *gc, const char *who, PurpleNotifyUserInfo *user_info) -> void* { qDebug () << Q_FUNC_INFO; return 0; },
+			NULL
+		};
 	}
 
 	ProtoManager::ProtoManager (ICoreProxy_ptr proxy, QObject *parent)
@@ -265,6 +283,11 @@ namespace VelvetBird
 		purple_blist_set_ui_ops (&BListUiOps);
 
 		purple_conversations_set_ui_ops (&ConvUiOps);
+		purple_accounts_set_ui_ops (&AccUiOps);
+		purple_notify_set_ui_ops (&NotifyUiOps);
+
+		purple_imgstore_init ();
+		purple_buddy_icons_init ();
 
 		if (!purple_core_init ("leechcraft.azoth"))
 		{
@@ -272,8 +295,6 @@ namespace VelvetBird
 					<< "failed initializing libpurple";
 			return;
 		}
-
-		purple_accounts_set_ui_ops (&AccUiOps);
 
 		QMap<QByteArray, Protocol*> id2proto;
 
