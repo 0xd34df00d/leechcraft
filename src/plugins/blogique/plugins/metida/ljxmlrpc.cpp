@@ -141,6 +141,13 @@ namespace Metida
 		GenerateChallenge ();
 	}
 
+	void LJXmlRPC::RequestInbox ()
+	{
+		ApiCallQueue_ << [this] (const QString& challenge)
+				{ InboxRequest (challenge); };
+		GenerateChallenge ();
+	}
+
 	namespace
 	{
 		QPair<QDomElement, QDomElement> GetStartPart (const QString& name,
@@ -845,6 +852,33 @@ namespace Metida
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleBlogStatisticsReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void LJXmlRPC::InboxRequest (const QString& challenge)
+	{
+		QDomDocument document ("InboxRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.getinbox", document);
+		document.appendChild (result.first);
+		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
+				Account_->GetPassword (), challenge, document);
+		element.appendChild (GetSimpleMemberElement ("skip", "int",
+				"100", document));
+		element.appendChild (GetSimpleMemberElement ("lastsync", "string",
+				"1980-01-01 00:00:00", document));
+		element.appendChild (GetSimpleMemberElement ("extended", "boolean",
+				"true", document));
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+		GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+				document.toByteArray ());
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleInboxReplyFinished ()));
 		connect (reply,
 				SIGNAL (error (QNetworkReply::NetworkError)),
 				this,
@@ -1562,6 +1596,28 @@ namespace Metida
 		}
 
 		ParseForError (content);
+	}
+
+	void LJXmlRPC::handleInboxReplyFinished ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		QDomDocument document;
+		QByteArray content = CreateDomDocumentFromReply (reply, document);
+		if (content.isEmpty ())
+			return;
+
+		qDebug () << document.toByteArray ();/*
+
+		if (document.elementsByTagName ("fault").isEmpty ())
+		{
+			emit gotStatistics (ParseStatistics (document));
+			return;
+		}
+
+		ParseForError (content);*/
 	}
 
 	void LJXmlRPC::handleNetworkError(QNetworkReply::NetworkError err)

@@ -254,6 +254,11 @@ namespace Metida
 		LJXmlRpc_->RequestStatistics ();
 	}
 
+	void LJAccount::RequestInbox ()
+	{
+		LJXmlRpc_->RequestInbox ();
+	}
+
 	QList<QAction*> LJAccount::GetUpdateActions () const
 	{
 		return { LoadLastEvents_, LoadChangedEvents_ };

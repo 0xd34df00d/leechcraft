@@ -134,6 +134,7 @@ namespace Metida
 		void UpdateEntry (const Entry& entry);
 
 		void RequestStatistics ();
+		void RequestInbox ();
 
 		QList<QAction*> GetUpdateActions () const;
 

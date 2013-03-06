@@ -23,7 +23,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <util/util.h>
-#include <interfaces/blogique/iaccount.h>
+#include "ljaccount.h"
 #include "core.h"
 #include "profilewidget.h"
 
@@ -118,6 +118,15 @@ namespace Metida
 				std::back_inserter (result));
 
 		return result.value (0, -1);
+	}
+
+	void LJProfile::RequestInbox ()
+	{
+		auto acc = qobject_cast<LJAccount*> (ParentAccount_);
+		if (!acc)
+			return;
+
+		acc->RequestInbox ();
 	}
 
 	void LJProfile::SaveAvatar (QUrl avatarUrl)

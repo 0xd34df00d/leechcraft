@@ -43,6 +43,8 @@ namespace Metida
 	{
 		Ui_.setupUi (this);
 
+		FillMessagesUi ();
+
 		Ui_.FriendsView_->setModel (FriendsModel_);
 		Ui_.FriendsView_->setDropIndicatorShown (true);
 
@@ -66,6 +68,9 @@ namespace Metida
 				.Property ("ColoringFriendsList", true).toBool ());
 
 		updateProfile ();
+
+		if (XmlSettingsManager::Instance ().Property ("FirstInboxRequest", true).toBool ())
+			Profile_->RequestInbox ();
 	}
 
 	void ProfileWidget::RereadProfileData ()
@@ -165,6 +170,21 @@ namespace Metida
 		CommunitiesModel_->clear ();
 		CommunitiesModel_->setHorizontalHeaderLabels ({ tr ("Name") });
 		FillCommunities (data.Communities_);
+	}
+
+	void ProfileWidget::FillMessagesUi ()
+	{
+		Ui_.Category_->addItems ({ tr ("All"),
+				tr ("Incoming"),
+				tr ("Friend updates"),
+				tr ("Entries and comments"),
+				tr ("Flagged"),
+				tr ("Sent") });
+		Ui_.FriendsUpdates_->addItems ({ tr ("All"),
+				tr ("Birthdays"),
+				tr ("New friends") });
+
+		Ui_.Category_->setCurrentIndex (MCAll);
 	}
 
 	void ProfileWidget::updateProfile ()
@@ -319,6 +339,16 @@ namespace Metida
 			return;
 
 		account->AddNewFriend (username, bgColor, fgColor, groupId);
+	}
+
+	void ProfileWidget::on_Category__currentIndexChanged (int index)
+	{
+		Ui_.FriendsUpdates_->setVisible (index == MCFriendUpdates);
+	}
+
+	void ProfileWidget::on_FriendsUpdates__currentIndexChanged (int index)
+	{
+
 	}
 
 }

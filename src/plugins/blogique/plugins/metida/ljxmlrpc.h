@@ -80,6 +80,8 @@ namespace Metida
 		void UpdateEvent (const LJEvent& event);
 
 		void RequestStatistics ();
+
+		void RequestInbox ();
 	private:
 		void GenerateChallenge () const;
 		void ValidateAccountData (const QString& login,
@@ -110,13 +112,15 @@ namespace Metida
 
 		void BlogStatisticsRequest (const QString& challenge);
 
+		void InboxRequest (const QString& challenge);
+
 		void ParseForError (const QByteArray& content);
 		void ParseFriends (const QDomDocument& doc);
 
 		QList<LJEvent> ParseFullEvents (const QDomDocument& doc);
 
 		QMap<QDate, int> ParseStatistics (const QDomDocument& doc);
-		
+
 
 	private slots:
 		void handleChallengeReplyFinished ();
@@ -131,6 +135,8 @@ namespace Metida
 		void handleUpdateEventReplyFinished ();
 		void handleGetParticularEventReplyFinished ();
 		void handleBlogStatisticsReplyFinished ();
+		void handleInboxReplyFinished ();
+
 		void handleNetworkError (QNetworkReply::NetworkError error);
 
 	signals:

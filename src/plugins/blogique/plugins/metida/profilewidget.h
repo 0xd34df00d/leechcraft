@@ -49,6 +49,23 @@ namespace Metida
 			Name
 		};
 
+		enum MessageCategory
+		{
+			MCAll,
+			MCIncoming,
+			MCFriendUpdates,
+			MCEntriesAndComments,
+			MCFlagged,
+			MCSent
+		};
+
+		enum FriendUpdatesCategory
+		{
+			FUCAll,
+			FUCBirthdays,
+			FUCNewFriends
+		};
+
 		LJProfile *Profile_;
 		FriendsModel *FriendsModel_;
 		QStandardItemModel *CommunitiesModel_;
@@ -61,6 +78,7 @@ namespace Metida
 		void FillFriends (const QList<LJFriendGroup>& groups);
 		void FillCommunities (const QStringList& communities);
 		void ReFillModels ();
+		void FillMessagesUi ();
 
 	public slots:
 		void updateProfile ();
@@ -72,6 +90,8 @@ namespace Metida
 		void on_UpdateProfile__released ();
 		void handleUserGroupChanged (const QString& username,
 				const QString& bgColor, const QString& fgColor, int groupId);
+		void on_Category__currentIndexChanged (int index);
+		void on_FriendsUpdates__currentIndexChanged (int index);
 
 	signals:
 		void coloringItemChanged ();
