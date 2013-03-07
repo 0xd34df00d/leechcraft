@@ -158,33 +158,25 @@ namespace Choroid
 		FilesModel_->clear ();
 		QMLFilesModel_->clear ();
 
-		QStringList headers;
-		headers << tr ("Name")
-			<< tr ("Size")
-			<< tr ("Last modified");
-		FilesModel_->setHorizontalHeaderLabels (headers);
+		FilesModel_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Size"), tr ("Last modified") });
 
-		QStringList nf;
-		nf << "*.jpg"
-			<< "*.png"
-			<< "*.svg"
-			<< "*.gif";
-
-		Q_FOREACH (const QFileInfo& info,
-				QDir (path).entryInfoList (nf, QDir::Files, QDir::Name))
+		const QStringList nf { "*.jpg", "*.png", "*.svg", "*.gif" };
+		for (const auto& info : QDir (path).entryInfoList (nf, QDir::Files, QDir::Name))
 		{
 			const QString& absPath = info.absoluteFilePath ();
 
-			QList<QStandardItem*> row;
-			row << new QStandardItem (info.fileName ());
-			row << new QStandardItem (Util::MakePrettySize (info.size ()));
-			row << new QStandardItem (info.lastModified ().toString ());
+			QList<QStandardItem*> row
+			{
+				new QStandardItem (info.fileName ()),
+				new QStandardItem (Util::MakePrettySize (info.size ())),
+				new QStandardItem (info.lastModified ().toString ())
+			};
 
 			row.first ()->setData (absPath, CRFilePath);
 
 			FilesModel_->appendRow (row);
 
-			QStandardItem *qmlItem = new QStandardItem (info.fileName ());
+			auto qmlItem = new QStandardItem (info.fileName ());
 			qmlItem->setData (info.fileName (), ILRFilename);
 			qmlItem->setData (Util::MakePrettySize (info.size ()), ILRFileSize);
 			qmlItem->setData (QUrl::fromLocalFile (absPath), ILRImage);
@@ -214,7 +206,7 @@ namespace Choroid
 			qWarning () << Q_FUNC_INFO
 					<< "got errors:"
 					<< DeclView_->errors ().size ();
-			Q_FOREACH (const QDeclarativeError& error, DeclView_->errors ())
+			for (const QDeclarativeError& error : DeclView_->errors ())
 				qWarning () << error.toString ()
 						<< "["
 						<< error.description ()
