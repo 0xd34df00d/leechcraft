@@ -55,12 +55,12 @@ namespace Choroid
 
 		enum CustomRoles
 		{
-			CRFilePath = 100
+			CRFilePath = Qt::UserRole + 1
 		};
 
 		enum ImagesListRoles
 		{
-			ILRFilename = 100,
+			ILRFilename = Qt::UserRole + 1,
 			ILRImage,
 			ILRFileSize
 		};
