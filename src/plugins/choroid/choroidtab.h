@@ -23,6 +23,7 @@
 #include <QWidget>
 #include <QDeclarativeView>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/core/icoreproxy.h>
 #include "ui_choroidtab.h"
 
 class QFileSystemModel;
@@ -44,6 +45,7 @@ namespace Choroid
 
 		const TabClassInfo TabClass_;
 		QObject *Parent_;
+		ICoreProxy_ptr Proxy_;
 
 		Ui::ChoroidTab Ui_;
 
@@ -72,7 +74,7 @@ namespace Choroid
 
 		std::function<bool (const QFileInfo&, const QFileInfo&)> CurrentSorter_;
 	public:
-		ChoroidTab (const TabClassInfo&, QObject*);
+		ChoroidTab (const TabClassInfo&, ICoreProxy_ptr, QObject*);
 		~ChoroidTab ();
 
 		TabClassInfo GetTabClassInfo () const;

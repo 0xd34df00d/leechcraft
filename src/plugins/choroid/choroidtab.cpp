@@ -45,9 +45,10 @@ namespace Choroid
 		using QStandardItemModel::setRoleNames;
 	};
 
-	ChoroidTab::ChoroidTab (const TabClassInfo& tc, QObject *parent)
+	ChoroidTab::ChoroidTab (const TabClassInfo& tc, ICoreProxy_ptr proxy, QObject *parent)
 	: TabClass_ (tc)
 	, Parent_ (parent)
+	, Proxy_ (proxy)
 	, DeclView_ (new QDeclarativeView)
 	, QMLFilesModel_ (new QMLItemModel)
 	, FSModel_ (new QFileSystemModel (this))
@@ -186,6 +187,7 @@ namespace Choroid
 		sortByName ();
 
 		auto sortModeButton = new QToolButton ();
+		sortModeButton->setIcon (Proxy_->GetIcon ("view-sort-ascending"));
 		sortModeButton->setText (tr ("Sort mode"));
 		sortModeButton->setPopupMode (QToolButton::InstantPopup);
 		sortModeButton->setMenu (SortMenu_);
