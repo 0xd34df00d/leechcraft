@@ -1,4 +1,4 @@
-import QtQuick 1.0
+import QtQuick 1.1
 
 Rectangle {
     id: imgView
@@ -12,58 +12,75 @@ Rectangle {
         imgView.state = 'singleImageMode'
     }
 
+    SystemPalette {
+        id: sysPalette
+        colorGroup: SystemPalette.Active
+    }
+
+    color: sysPalette.window
+
     Component {
         id: imageListDelegate
 
         Item {
-            width: imagesGrid.cellWidth - 2
-            height: imagesGrid.cellHeight - 2
-            clip: true
+            width: imagesGrid.cellWidth
+            height: imagesGrid.cellHeight
 
-            Image {
-                id: theImage
-
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.top: parent.top
-                anchors.bottom: nameLabel.top
-                fillMode: Image.PreserveAspectFit
-                smooth: true
+            Item {
+                anchors.fill: parent
+                anchors.topMargin: parent.height * 0.05
+                anchors.bottomMargin: parent.height * 0.05
+                anchors.leftMargin: parent.width * 0.05
+                anchors.rightMargin: parent.width * 0.05
                 clip: true
-                asynchronous: true
 
-                source: image
+                Image {
+                    id: theImage
 
-                MouseArea {
-                    anchors.fill: parent
-                    acceptedButtons: Qt.LeftButton
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.bottom: nameLabel.top
+                    fillMode: Image.PreserveAspectFit
+                    smooth: true
+                    clip: true
+                    asynchronous: true
 
-                    onClicked: imgView.imageSelected(image)
+                    source: image
+
+                    MouseArea {
+                        anchors.fill: parent
+                        acceptedButtons: Qt.LeftButton
+
+                        onClicked: imgView.imageSelected(image)
+                    }
                 }
-            }
 
-            Text {
-                id: nameLabel
+                Text {
+                    id: nameLabel
 
-                anchors.bottom: filesizeLabel.top
-                anchors.horizontalCenter: parent.horizontalCenter
-                width: parent.width
+                    anchors.bottom: filesizeLabel.top
+                    anchors.left: parent.left
+                    width: imagesGrid.cellWidth * 0.9
 
-                text: filename
-                wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-                horizontalAlignment: Text.AlignHCenter
-            }
+                    text: filename
+                    elide: Text.ElideRight
+                    horizontalAlignment: Text.AlignHCenter
 
-            Text {
-                id: filesizeLabel
+                    textFormat: Text.PlainText
+                }
 
-                anchors.bottom: parent.bottom
-                anchors.horizontalCenter: parent.horizontalCenter
-                width: parent.width
+                Text {
+                    id: filesizeLabel
 
-                text: filesize
-                font.italic: true
-                horizontalAlignment: Text.AlignHCenter
+                    anchors.bottom: parent.bottom
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    width: parent.width
+
+                    text: filesize
+                    font.italic: true
+                    horizontalAlignment: Text.AlignHCenter
+                }
             }
         }
     }
