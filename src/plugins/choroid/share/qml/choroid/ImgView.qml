@@ -43,7 +43,6 @@ Rectangle {
                     anchors.bottom: nameLabel.top
                     fillMode: Image.PreserveAspectFit
                     smooth: true
-                    clip: true
                     asynchronous: true
 
                     source: image
