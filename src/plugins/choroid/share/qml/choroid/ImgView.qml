@@ -26,6 +26,7 @@ Rectangle {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.top: parent.top
+                anchors.bottom: nameLabel.top
                 fillMode: Image.PreserveAspectFit
                 smooth: true
                 clip: true
@@ -42,9 +43,10 @@ Rectangle {
             }
 
             Text {
-                id: textFilename
+                id: nameLabel
 
-                anchors { top: theImage.bottom; horizontalCenter: parent.horizontalCenter }
+                anchors.bottom: filesizeLabel.top
+                anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width
 
                 text: filename
@@ -53,9 +55,10 @@ Rectangle {
             }
 
             Text {
-                id: textFilesize
+                id: filesizeLabel
 
-                anchors { top: textFilename.bottom; horizontalCenter: parent.horizontalCenter; bottom: parent.bottom }
+                anchors.bottom: parent.bottom
+                anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width
 
                 text: filesize
@@ -139,8 +142,8 @@ Rectangle {
             from: "*"
             to: "singleImageMode"
 
-            NumberAnimation { target: imagesGridContainer; property: "opacity"; to: 0.1; duration: 500 }
-            NumberAnimation { target: singleImageContainer; property: "opacity"; to: 1; duration: 300 }
+            NumberAnimation { target: imagesGridContainer; property: "opacity"; to: 0.1; duration: 300 }
+            NumberAnimation { target: singleImageContainer; property: "opacity"; to: 1; duration: 120 }
         }
     ]
 }
