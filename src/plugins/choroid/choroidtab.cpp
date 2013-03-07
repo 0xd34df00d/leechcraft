@@ -23,6 +23,7 @@
 #include <QDateTime>
 #include <QVBoxLayout>
 #include <QGraphicsObject>
+#include <QToolButton>
 #include <QDeclarativeContext>
 #include <QDeclarativeError>
 #include <util/util.h>
@@ -88,6 +89,15 @@ namespace Choroid
 				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
 				this,
 				SLOT (handleFileChanged (QModelIndex)));
+
+		Bar_ = new QToolBar;
+
+		SetSortMenu ();
+	}
+
+	ChoroidTab::~ChoroidTab ()
+	{
+		delete Bar_;
 	}
 
 	TabClassInfo ChoroidTab::GetTabClassInfo () const
@@ -107,7 +117,7 @@ namespace Choroid
 
 	QToolBar* ChoroidTab::GetToolBar () const
 	{
-		return 0;
+		return Bar_;
 	}
 
 	void ChoroidTab::LoadQML ()
@@ -147,11 +157,91 @@ namespace Choroid
 				SLOT (handleQMLImageSelected (QString)));
 	}
 
+	void ChoroidTab::SetSortMenu ()
+	{
+		auto sortGroup = new QActionGroup (this);
+
+		SortMenu_ = new QMenu;
+		auto byName = SortMenu_->addAction (tr ("By name"),
+				this, SLOT (sortByName ()));
+		byName->setCheckable (true);
+		byName->setChecked (true);
+		sortGroup->addAction (byName);
+
+		auto byDate = SortMenu_->addAction (tr ("By date"),
+				this, SLOT (sortByDate ()));
+		byDate->setCheckable (true);
+		sortGroup->addAction (byDate);
+
+		auto bySize = SortMenu_->addAction (tr ("By size"),
+				this, SLOT (sortBySize ()));
+		bySize->setCheckable (true);
+		sortGroup->addAction (bySize);
+
+		auto byNumber = SortMenu_->addAction (tr ("By number"),
+				this, SLOT (sortByNumber ()));
+		byNumber->setCheckable (true);
+		sortGroup->addAction (byNumber);
+
+		sortByName ();
+
+		auto sortModeButton = new QToolButton ();
+		sortModeButton->setText (tr ("Sort mode"));
+		sortModeButton->setPopupMode (QToolButton::InstantPopup);
+		sortModeButton->setMenu (SortMenu_);
+
+		Bar_->addWidget (sortModeButton);
+	}
+
 	void ChoroidTab::ShowImage (const QString& path)
 	{
 		QMetaObject::invokeMethod (DeclView_->rootObject (),
 				"showSingleImage",
 				Q_ARG (QVariant, QUrl::fromLocalFile (path)));
+	}
+
+	void ChoroidTab::sortByName ()
+	{
+		CurrentSorter_ = [] (const QFileInfo& left, const QFileInfo& right)
+		{
+			return QString::localeAwareCompare (left.fileName (), right.fileName ()) < 0;
+		};
+		reload ();
+	}
+
+	void ChoroidTab::sortByDate ()
+	{
+		CurrentSorter_ = [] (const QFileInfo& left, const QFileInfo& right)
+			{ return left.created () < right.created (); };
+		reload ();
+	}
+
+	void ChoroidTab::sortBySize ()
+	{
+		CurrentSorter_ = [] (const QFileInfo& left, const QFileInfo& right)
+			{ return left.size () < right.size (); };
+		reload ();
+	}
+
+	void ChoroidTab::sortByNumber ()
+	{
+		CurrentSorter_ = [] (const QFileInfo& left, const QFileInfo& right) -> bool
+		{
+			auto toNumber = [] (const QString& string) -> int
+			{
+				QString result;
+				std::copy_if (string.begin (), string.end (), std::back_inserter (result),
+						[] (decltype (string.at (0)) c) { return c.isDigit (); });
+				return result.toInt ();
+			};
+			return toNumber (left.fileName ()) < toNumber (right.fileName ());
+		};
+		reload ();
+	}
+
+	void ChoroidTab::reload ()
+	{
+		handleDirTreeCurrentChanged (Ui_.DirTree_->currentIndex ());
 	}
 
 	void ChoroidTab::handleDirTreeCurrentChanged (const QModelIndex& index)
@@ -164,10 +254,16 @@ namespace Choroid
 
 		FilesModel_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Size"), tr ("Last modified") });
 
+		if (!index.isValid ())
+			return;
+
 		QList<QStandardItem*> qmlItems;
 
 		const QStringList nf { "*.jpg", "*.png", "*.svg", "*.gif" };
-		for (const auto& info : QDir (path).entryInfoList (nf, QDir::Files, QDir::Name))
+		auto entries = QDir (path).entryInfoList (nf, QDir::Files, QDir::Name | QDir::IgnoreCase);
+		std::sort (entries.begin (), entries.end (), CurrentSorter_);
+
+		for (const auto& info : entries)
 		{
 			const QString& absPath = info.absoluteFilePath ();
 

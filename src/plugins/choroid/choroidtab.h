@@ -17,8 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_CHOROID_CHOROIDTAB_H
-#define PLUGINS_CHOROID_CHOROIDTAB_H
+#pragma once
+
+#include <functional>
 #include <QWidget>
 #include <QDeclarativeView>
 #include <interfaces/ihavetabs.h>
@@ -53,6 +54,9 @@ namespace Choroid
 		QFileSystemModel *FSModel_;
 		QStandardItemModel *FilesModel_;
 
+		QToolBar *Bar_;
+		QMenu *SortMenu_;
+
 		enum CustomRoles
 		{
 			CRFilePath = Qt::UserRole + 1
@@ -65,8 +69,11 @@ namespace Choroid
 			ILRFileSize,
 			ILRFileInfo
 		};
+
+		std::function<bool (const QFileInfo&, const QFileInfo&)> CurrentSorter_;
 	public:
 		ChoroidTab (const TabClassInfo&, QObject*);
+		~ChoroidTab ();
 
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
@@ -74,8 +81,16 @@ namespace Choroid
 		QToolBar* GetToolBar () const;
 	private:
 		void LoadQML ();
+		void SetSortMenu ();
 		void ShowImage (const QString&);
 	private slots:
+		void sortByName ();
+		void sortByDate ();
+		void sortBySize ();
+		void sortByNumber ();
+
+		void reload ();
+
 		void handleDirTreeCurrentChanged (const QModelIndex&);
 		void handleFileChanged (const QModelIndex&);
 		void handleQMLImageSelected (const QString&);
@@ -85,5 +100,3 @@ namespace Choroid
 	};
 }
 }
-
-#endif
