@@ -27,6 +27,8 @@
 #include <QDeclarativeError>
 #include <util/util.h>
 
+Q_DECLARE_METATYPE (QFileInfo);
+
 namespace LeechCraft
 {
 namespace Choroid
@@ -162,6 +164,8 @@ namespace Choroid
 
 		FilesModel_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Size"), tr ("Last modified") });
 
+		QList<QStandardItem*> qmlItems;
+
 		const QStringList nf { "*.jpg", "*.png", "*.svg", "*.gif" };
 		for (const auto& info : QDir (path).entryInfoList (nf, QDir::Files, QDir::Name))
 		{
@@ -182,8 +186,11 @@ namespace Choroid
 			qmlItem->setData (info.fileName (), ILRFilename);
 			qmlItem->setData (Util::MakePrettySize (info.size ()), ILRFileSize);
 			qmlItem->setData (QUrl::fromLocalFile (absPath), ILRImage);
-			QMLFilesModel_->appendRow (qmlItem);
+			qmlItem->setData (QVariant::fromValue (info), ILRFileInfo);
+			qmlItems << qmlItem;
 		}
+
+		QMLFilesModel_->invisibleRootItem ()->appendRows (qmlItems);
 	}
 
 	void ChoroidTab::handleFileChanged (const QModelIndex& index)

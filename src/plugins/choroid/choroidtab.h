@@ -62,7 +62,8 @@ namespace Choroid
 		{
 			ILRFilename = Qt::UserRole + 1,
 			ILRImage,
-			ILRFileSize
+			ILRFileSize,
+			ILRFileInfo
 		};
 	public:
 		ChoroidTab (const TabClassInfo&, QObject*);
