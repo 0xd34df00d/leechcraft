@@ -96,7 +96,11 @@ namespace Metida
 				SIGNAL (gotStatistics (QMap<QDate, int>)),
 				this,
 				SIGNAL (gotBlogStatistics (QMap<QDate, int>)));
-
+		connect (LJXmlRpc_,
+				SIGNAL (gotMessages (QList<LJInbox::Message*>)),
+				LJProfile_.get (),
+				SLOT (handleGotMessages (QList<LJInbox::Message*>)));
+		
 		connect (LoadLastEvents_,
 				SIGNAL (triggered ()),
 				this,
@@ -256,7 +260,13 @@ namespace Metida
 
 	void LJAccount::RequestInbox ()
 	{
-		LJXmlRpc_->RequestInbox ();
+		XmlSettingsManager::Instance ().Property ("FirstInboxDownload", true).toBool () ?
+			LJXmlRpc_->RequestFullInbox () :
+			LJXmlRpc_->RequestLastInbox (XmlSettingsManager::Instance ()
+					.Property ("LastInboxUpdateDate",
+						QDateTime::fromString ("1970-01-01T00:00:00",
+								"yyyy-MM-ddThh:mm:ss")).toDateTime ());
+		
 	}
 
 	QList<QAction*> LJAccount::GetUpdateActions () const

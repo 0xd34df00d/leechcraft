@@ -48,6 +48,7 @@ namespace Metida
 		const int MaxGetEventsCount_;
 
 		QHash<QNetworkReply*, int> Reply2Skip_;
+		QHash<QNetworkReply*, bool> Reply2InboxBackup_;
 
 		enum class RequestType
 		{
@@ -81,7 +82,8 @@ namespace Metida
 
 		void RequestStatistics ();
 
-		void RequestInbox ();
+		void RequestFullInbox ();
+		void RequestLastInbox (const QDateTime& from);
 	private:
 		void GenerateChallenge () const;
 		void ValidateAccountData (const QString& login,
@@ -112,7 +114,8 @@ namespace Metida
 
 		void BlogStatisticsRequest (const QString& challenge);
 
-		void InboxRequest (const QString& challenge);
+		void InboxRequest (const QString& challenge, bool backup = false,
+				const QDateTime& from = QDateTime ());
 
 		void ParseForError (const QByteArray& content);
 		void ParseFriends (const QDomDocument& doc);
@@ -155,6 +158,8 @@ namespace Metida
 		void gotEvents (const QList<LJEvent>& events);
 
 		void gotStatistics (const QMap<QDate, int>& statistics);
+		
+		void gotMessages (const QList<LJInbox::Message*>& msgs);
 	};
 }
 }

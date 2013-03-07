@@ -20,7 +20,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -297,17 +297,26 @@
            </property>
           </spacer>
          </item>
+         <item>
+          <widget class="QPushButton" name="Prevous_">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="Next_">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
        <item row="1" column="0">
         <widget class="QTreeView" name="InboxView_"/>
        </item>
       </layout>
-      <zorder>label</zorder>
-      <zorder>InboxView_</zorder>
-      <zorder>MarkRead_</zorder>
-      <zorder>MarkUnread_</zorder>
-      <zorder>Category_</zorder>
      </widget>
     </widget>
    </item>

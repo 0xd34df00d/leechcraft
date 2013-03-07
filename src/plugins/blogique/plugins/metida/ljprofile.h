@@ -68,6 +68,7 @@ namespace Metida
 
 	public slots:
 		void handleProfileUpdate (const LJProfileData& profile);
+		void handleGotMessages (const QList<LJInbox::Message*>& msgs);
 	private slots:
 		void handleAvatarDownloadFinished ();
 		void handleOtherAvatarDownloadFinished ();

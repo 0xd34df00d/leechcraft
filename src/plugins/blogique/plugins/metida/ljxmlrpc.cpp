@@ -141,10 +141,17 @@ namespace Metida
 		GenerateChallenge ();
 	}
 
-	void LJXmlRPC::RequestInbox ()
+	void LJXmlRPC::RequestFullInbox ()
 	{
 		ApiCallQueue_ << [this] (const QString& challenge)
-				{ InboxRequest (challenge); };
+				{ InboxRequest (challenge, true, QDateTime::currentDateTime ()); };
+		GenerateChallenge ();
+	}
+
+	void LJXmlRPC::RequestLastInbox (const QDateTime& from)
+	{
+		ApiCallQueue_ << [this, from] (const QString& challenge)
+				{ InboxRequest (challenge, false, from); };
 		GenerateChallenge ();
 	}
 
@@ -858,23 +865,24 @@ namespace Metida
 				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
-	void LJXmlRPC::InboxRequest (const QString& challenge)
+	void LJXmlRPC::InboxRequest (const QString& challenge, bool backup,
+				const QDateTime& from)
 	{
 		QDomDocument document ("InboxRequest");
 		auto result = GetStartPart ("LJ.XMLRPC.getinbox", document);
 		document.appendChild (result.first);
 		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
 				Account_->GetPassword (), challenge, document);
-		element.appendChild (GetSimpleMemberElement ("skip", "int",
-				"100", document));
-		element.appendChild (GetSimpleMemberElement ("lastsync", "string",
-				"1980-01-01 00:00:00", document));
+		element.appendChild (GetSimpleMemberElement (!backup ? "lastsync" : "before", "string",
+				QString::number (from.toTime_t ()), document));
+
 		element.appendChild (GetSimpleMemberElement ("extended", "boolean",
 				"true", document));
 
 		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-		GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-				document.toByteArray ());
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+		Reply2InboxBackup_ [reply] = backup;
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -1598,6 +1606,240 @@ namespace Metida
 		ParseForError (content);
 	}
 
+	namespace
+	{
+		LJInbox::Message* CreateParticularMessage (const QVariant& message,
+				int type)
+		{
+			LJInbox::Message *msg = 0;
+			switch (type)
+			{
+				case LJInbox::JournalNewComment:
+					msg = new LJInbox::MessageNewComment;
+					break;
+				case LJInbox::UserMessageRecvd:
+					msg = new LJInbox::MessageRecvd;
+					break;
+				case LJInbox::UserMessageSent:
+					msg = new LJInbox::MessageSent;
+					break;
+				default:
+					msg = new LJInbox::Message;
+					break;
+			}
+
+			msg->Type_ = type;
+
+			QList<QPair<QString, QString>> list;
+			for (const auto& field : message.toList ())
+			{
+				auto fieldEntry = field.value<LJParserTypes::LJParseProfileEntry> ();
+				if (fieldEntry.Name () == "when")
+					msg->When_ = QDateTime::fromTime_t (fieldEntry.ValueToLongLong ());
+				else if (fieldEntry.Name () == "state")
+					msg->State_ = (fieldEntry.ValueToString () == "R") ? 
+						LJInbox::MessageState::Read : 
+						LJInbox::MessageState::UnRead;
+				else if (fieldEntry.Name () == "qid")
+					msg->Id_ = fieldEntry.ValueToInt ();
+				else if (fieldEntry.Name () == "typename")
+					msg->TypeString_ = fieldEntry.ValueToString ();
+				else if (fieldEntry.Name () == "extended")
+				{
+					for (const auto& extended : fieldEntry.Value ())
+					{
+						auto extendedEntry = extended.value<LJParserTypes::LJParseProfileEntry> ();
+						if (extendedEntry.Name () == "body")
+							msg->ExtendedText_ = extendedEntry.ValueToString ();
+						else if (extendedEntry.Name () == "subject_raw")
+							msg->ExtendedSubject_ = extendedEntry.ValueToString ();
+						else if (extendedEntry.Name () == "dtalkid")
+							msg->ExternalId_ = extendedEntry.ValueToInt ();
+					}
+				}
+				else if (type == LJInbox::JournalNewComment)
+				{
+					if  (fieldEntry.Name () == "journal")
+					{
+						auto commentMsg = static_cast<LJInbox::MessageNewComment*> (msg);
+						commentMsg->Journal_ = fieldEntry.ValueToString ();
+					}
+					else if (fieldEntry.Name () == "action")
+					{
+						auto commentMsg = static_cast<LJInbox::MessageNewComment*> (msg);
+						commentMsg->Action_ = fieldEntry.ValueToString ();
+					}
+					else if (fieldEntry.Name () == "entry")
+					{
+						auto commentMsg = static_cast<LJInbox::MessageNewComment*> (msg);
+						commentMsg->Url_ = fieldEntry.ValueToUrl ();
+					}
+					else if (fieldEntry.Name () == "comment")
+					{
+						auto commentMsg = static_cast<LJInbox::MessageNewComment*> (msg);
+						commentMsg->ReplyUrl_ = fieldEntry.ValueToUrl ();
+					}
+					else if (fieldEntry.Name () == "poster")
+					{
+						auto commentMsg = static_cast<LJInbox::MessageNewComment*> (msg);
+						commentMsg->AuthorName_ = fieldEntry.ValueToString ();
+					}
+				}
+				else if (fieldEntry.Name () == "subject")
+				{
+					switch (type)
+					{
+					case LJInbox::JournalNewComment:
+					{
+						auto commentMsg = static_cast<LJInbox::MessageNewComment*> (msg);
+						commentMsg->Subject_ = fieldEntry.ValueToString ();
+						break;
+					}
+					case LJInbox::UserMessageRecvd:
+					{
+						auto recvdMsg = static_cast<LJInbox::MessageRecvd*> (msg);
+						recvdMsg->Subject_ = fieldEntry.ValueToString ();
+						break;
+					}
+					case LJInbox::UserMessageSent:
+					{
+						auto sentMsg = static_cast<LJInbox::MessageSent*> (msg);
+						sentMsg->Subject_ = fieldEntry.ValueToString ();
+						break;
+					}
+					default:
+						break;
+					}
+				}
+				else if (type == LJInbox::UserMessageRecvd)
+				{
+					if (fieldEntry.Name () == "from")
+					{
+						auto recvdMsg = static_cast<LJInbox::MessageRecvd*> (msg);
+						recvdMsg->From_ = fieldEntry.ValueToString ();
+					}
+					else if (fieldEntry.Name () == "msgid")
+					{
+						auto recvdMsg = static_cast<LJInbox::MessageRecvd*> (msg);
+						recvdMsg->MessageId_ = fieldEntry.ValueToInt ();
+					}
+					else if (fieldEntry.Name () == "parent" )
+					{
+						auto recvdMsg = static_cast<LJInbox::MessageRecvd*> (msg);
+						recvdMsg->ParentId_ = fieldEntry.ValueToInt ();
+					}
+				}
+				else if (fieldEntry.Name () == "picture")
+				{
+					switch (type)
+					{
+					case LJInbox::UserMessageRecvd:
+					{
+						auto recvdMsg = static_cast<LJInbox::MessageRecvd*> (msg);
+						recvdMsg->PictureUrl_ = fieldEntry.ValueToUrl ();
+						break;
+					}
+					case LJInbox::UserMessageSent:
+					{
+						auto sentMsg = static_cast<LJInbox::MessageSent*> (msg);
+						sentMsg->PictureUrl_ = fieldEntry.ValueToUrl ();
+						break;
+					}
+					default:
+						break;
+					}
+				}
+				else if (fieldEntry.Name () == "body")
+				{
+					switch (type)
+					{
+					case LJInbox::UserMessageRecvd:
+					{
+						auto recvdMsg = static_cast<LJInbox::MessageRecvd*> (msg);
+						recvdMsg->Body_ = fieldEntry.ValueToString ();
+						break;
+					}
+					case LJInbox::UserMessageSent:
+					{
+						auto sentMsg = static_cast<LJInbox::MessageSent*> (msg);
+						sentMsg->Body_ = fieldEntry.ValueToString ();
+						break;
+					}
+					default:
+						break;
+					}
+				}
+				else if (type == LJInbox::UserMessageSent &&
+						fieldEntry.Name () == "to")
+				{
+					auto sentMsg = static_cast<LJInbox::MessageSent*> (msg);
+					sentMsg->To_ = fieldEntry.ValueToString ();
+				}
+				else if (fieldEntry.Name () != "type")
+					list << qMakePair (fieldEntry.Name (), fieldEntry.ValueToString ());
+			}
+			
+			if (!list.isEmpty ())
+				qDebug () << msg->Id_ << msg->Type_ << list;
+			
+			return msg;
+		}
+
+		LJInbox::Message* CreateLJMessage (const QVariant& message)
+		{
+			for (const auto& field : message.toList ())
+			{
+				auto fieldEntry = field.value<LJParserTypes::LJParseProfileEntry> ();
+				if (fieldEntry.Name () == "type")
+				{
+					switch (fieldEntry.ValueToInt ())
+					{
+						case LJInbox::JournalNewComment:
+							return CreateParticularMessage (message, LJInbox::JournalNewComment);
+						case LJInbox::UserMessageRecvd:
+							return CreateParticularMessage (message, LJInbox::UserMessageRecvd);
+						case LJInbox::UserMessageSent:
+							return CreateParticularMessage (message, LJInbox::UserMessageSent);
+						default:
+							return CreateParticularMessage (message, fieldEntry.ValueToInt ());
+					}
+				}
+			};
+			
+			return 0;
+		}
+
+		QList<LJInbox::Message*> ParseMessages (QDomDocument document)
+		{
+			QList<LJInbox::Message*> msgs;
+			const auto& firstStructElement = document.elementsByTagName ("struct");
+			if (firstStructElement.at (0).isNull ())
+				return msgs;
+			
+			const auto& members = firstStructElement.at (0).childNodes ();
+			for (int i = 0, count = members.count (); i < count; ++i)
+			{
+				const QDomNode& member = members.at (i);
+				if (!member.isElement () ||
+						member.toElement ().tagName () != "member")
+					continue;
+
+				auto res = ParseMember (member);
+				if (res.Name () == "items")
+					for (const auto& message : res.Value ())
+					{
+						auto msg = CreateLJMessage (message);
+						if (msg->ExternalId_ != -1)
+							msgs << msg;
+					}
+			}
+
+			msgs.removeAll (0);
+
+			return msgs;
+		}
+	}
+	
 	void LJXmlRPC::handleInboxReplyFinished ()
 	{
 		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
@@ -1609,15 +1851,26 @@ namespace Metida
 		if (content.isEmpty ())
 			return;
 
-		qDebug () << document.toByteArray ();/*
-
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
-			emit gotStatistics (ParseStatistics (document));
+			const auto& msgs = ParseMessages (document);
+			emit gotMessages (msgs);
+
+			if (Reply2InboxBackup_.value (reply, false) && !msgs.isEmpty ())
+			{
+				QDateTime when = msgs.last ()->When_.addSecs (-1);
+				ApiCallQueue_ << [this, when, reply] (const QString& challenge)
+						{ InboxRequest (challenge,
+								Reply2InboxBackup_.take (reply), when); };
+				GenerateChallenge ();
+				return;
+			}
+			
+			qDebug () << Q_FUNC_INFO << "backup inbox finished";
 			return;
 		}
 
-		ParseForError (content);*/
+		ParseForError (content);
 	}
 
 	void LJXmlRPC::handleNetworkError(QNetworkReply::NetworkError err)

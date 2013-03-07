@@ -43,6 +43,8 @@ namespace Metida
 	{
 		Ui_.setupUi (this);
 
+		
+
 		FillMessagesUi ();
 
 		Ui_.FriendsView_->setModel (FriendsModel_);
@@ -185,6 +187,9 @@ namespace Metida
 				tr ("New friends") });
 
 		Ui_.Category_->setCurrentIndex (MCAll);
+		
+		Ui_.Next_->setIcon (Core::Instance ().GetCoreProxy ()->GetIcon ("go-next"));
+		Ui_.Prevous_->setIcon (Core::Instance ().GetCoreProxy ()->GetIcon ("go-previous"));
 	}
 
 	void ProfileWidget::updateProfile ()
