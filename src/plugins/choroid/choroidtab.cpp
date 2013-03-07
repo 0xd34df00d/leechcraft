@@ -52,8 +52,10 @@ namespace Choroid
 	{
 		Ui_.setupUi (this);
 
-		Ui_.ViewFrame_->setLayout (new QVBoxLayout ());
-		Ui_.ViewFrame_->layout ()->addWidget (DeclView_);
+		auto lay = new QVBoxLayout ();
+		lay->setContentsMargins (0, 0, 0, 0);
+		Ui_.ViewFrame_->setLayout (lay);
+		lay->addWidget (DeclView_);
 
 		connect (DeclView_,
 				SIGNAL (statusChanged (QDeclarativeView::Status)),
