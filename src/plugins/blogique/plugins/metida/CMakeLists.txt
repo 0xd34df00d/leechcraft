@@ -26,6 +26,7 @@ SET (METIDA_SRCS
 	ljfriendentry.cpp
 	ljprofile.cpp
 	ljxmlrpc.cpp
+	localstorage.cpp
 	metida.cpp
 	postoptionswidget.cpp
 	profiletypes.cpp
@@ -49,6 +50,7 @@ SET (METIDA_HEADERS
 	ljfriendentry.h
 	ljprofile.h
 	ljxmlrpc.h
+	localstorage.h
 	metida.h
 	postoptionswidget.h
 	profiletypes.h

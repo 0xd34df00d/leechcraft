@@ -28,6 +28,7 @@
 #include "ljaccount.h"
 #include "ljaccountconfigurationwidget.h"
 #include "postoptionswidget.h"
+#include "localstorage.h"
 
 namespace LeechCraft
 {
@@ -127,6 +128,8 @@ namespace Metida
 		saveAccounts ();
 		emit accountAdded (account);
 		account->Init ();
+
+		Core::Instance ().GetLocalStorage ()->AddAccount (account->GetAccountID ());
 	}
 
 	void LJBloggingPlatform::RemoveAccount (QObject *account)
@@ -135,6 +138,7 @@ namespace Metida
 		if (LJAccounts_.removeAll (acc))
 		{
 			emit accountRemoved (account);
+			Core::Instance ().GetLocalStorage ()->RemoveAccount (acc->GetAccountID ());
 			account->deleteLater ();
 			saveAccounts ();
 		}

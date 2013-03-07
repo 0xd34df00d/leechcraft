@@ -1634,17 +1634,18 @@ namespace Metida
 			for (const auto& field : message.toList ())
 			{
 				auto fieldEntry = field.value<LJParserTypes::LJParseProfileEntry> ();
-				if (fieldEntry.Name () == "when")
+				const QString name = fieldEntry.Name ();
+				if (name == "when")
 					msg->When_ = QDateTime::fromTime_t (fieldEntry.ValueToLongLong ());
-				else if (fieldEntry.Name () == "state")
-					msg->State_ = (fieldEntry.ValueToString () == "R") ? 
-						LJInbox::MessageState::Read : 
+				else if (name == "state")
+					msg->State_ = (fieldEntry.ValueToString () == "R") ?
+						LJInbox::MessageState::Read :
 						LJInbox::MessageState::UnRead;
-				else if (fieldEntry.Name () == "qid")
+				else if (name == "qid")
 					msg->Id_ = fieldEntry.ValueToInt ();
-				else if (fieldEntry.Name () == "typename")
+				else if (name == "typename")
 					msg->TypeString_ = fieldEntry.ValueToString ();
-				else if (fieldEntry.Name () == "extended")
+				else if (name == "extended")
 				{
 					for (const auto& extended : fieldEntry.Value ())
 					{
@@ -1659,33 +1660,19 @@ namespace Metida
 				}
 				else if (type == LJInbox::JournalNewComment)
 				{
-					if  (fieldEntry.Name () == "journal")
-					{
-						auto commentMsg = static_cast<LJInbox::MessageNewComment*> (msg);
+					auto commentMsg = static_cast<LJInbox::MessageNewComment*> (msg);
+					if  (name == "journal")
 						commentMsg->Journal_ = fieldEntry.ValueToString ();
-					}
-					else if (fieldEntry.Name () == "action")
-					{
-						auto commentMsg = static_cast<LJInbox::MessageNewComment*> (msg);
+					else if (name == "action")
 						commentMsg->Action_ = fieldEntry.ValueToString ();
-					}
-					else if (fieldEntry.Name () == "entry")
-					{
-						auto commentMsg = static_cast<LJInbox::MessageNewComment*> (msg);
+					else if (name == "entry")
 						commentMsg->Url_ = fieldEntry.ValueToUrl ();
-					}
-					else if (fieldEntry.Name () == "comment")
-					{
-						auto commentMsg = static_cast<LJInbox::MessageNewComment*> (msg);
+					else if (name == "comment")
 						commentMsg->ReplyUrl_ = fieldEntry.ValueToUrl ();
-					}
-					else if (fieldEntry.Name () == "poster")
-					{
-						auto commentMsg = static_cast<LJInbox::MessageNewComment*> (msg);
+					else if (name == "poster")
 						commentMsg->AuthorName_ = fieldEntry.ValueToString ();
-					}
 				}
-				else if (fieldEntry.Name () == "subject")
+				else if (name == "subject")
 				{
 					switch (type)
 					{
@@ -1713,23 +1700,15 @@ namespace Metida
 				}
 				else if (type == LJInbox::UserMessageRecvd)
 				{
-					if (fieldEntry.Name () == "from")
-					{
-						auto recvdMsg = static_cast<LJInbox::MessageRecvd*> (msg);
+					auto recvdMsg = static_cast<LJInbox::MessageRecvd*> (msg);
+					if (name == "from")
 						recvdMsg->From_ = fieldEntry.ValueToString ();
-					}
-					else if (fieldEntry.Name () == "msgid")
-					{
-						auto recvdMsg = static_cast<LJInbox::MessageRecvd*> (msg);
+					else if (name == "msgid")
 						recvdMsg->MessageId_ = fieldEntry.ValueToInt ();
-					}
-					else if (fieldEntry.Name () == "parent" )
-					{
-						auto recvdMsg = static_cast<LJInbox::MessageRecvd*> (msg);
+					else if (name == "parent" )
 						recvdMsg->ParentId_ = fieldEntry.ValueToInt ();
-					}
 				}
-				else if (fieldEntry.Name () == "picture")
+				else if (name == "picture")
 				{
 					switch (type)
 					{
@@ -1749,7 +1728,7 @@ namespace Metida
 						break;
 					}
 				}
-				else if (fieldEntry.Name () == "body")
+				else if (name == "body")
 				{
 					switch (type)
 					{
@@ -1770,18 +1749,18 @@ namespace Metida
 					}
 				}
 				else if (type == LJInbox::UserMessageSent &&
-						fieldEntry.Name () == "to")
+						name == "to")
 				{
 					auto sentMsg = static_cast<LJInbox::MessageSent*> (msg);
 					sentMsg->To_ = fieldEntry.ValueToString ();
 				}
-				else if (fieldEntry.Name () != "type")
-					list << qMakePair (fieldEntry.Name (), fieldEntry.ValueToString ());
+				else if (name != "type")
+					list << qMakePair (name, fieldEntry.ValueToString ());
 			}
-			
+
 			if (!list.isEmpty ())
 				qDebug () << msg->Id_ << msg->Type_ << list;
-			
+
 			return msg;
 		}
 
@@ -1805,7 +1784,7 @@ namespace Metida
 					}
 				}
 			};
-			
+
 			return 0;
 		}
 
@@ -1815,7 +1794,7 @@ namespace Metida
 			const auto& firstStructElement = document.elementsByTagName ("struct");
 			if (firstStructElement.at (0).isNull ())
 				return msgs;
-			
+
 			const auto& members = firstStructElement.at (0).childNodes ();
 			for (int i = 0, count = members.count (); i < count; ++i)
 			{
@@ -1839,7 +1818,7 @@ namespace Metida
 			return msgs;
 		}
 	}
-	
+
 	void LJXmlRPC::handleInboxReplyFinished ()
 	{
 		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
@@ -1865,7 +1844,7 @@ namespace Metida
 				GenerateChallenge ();
 				return;
 			}
-			
+
 			qDebug () << Q_FUNC_INFO << "backup inbox finished";
 			return;
 		}
