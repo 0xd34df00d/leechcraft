@@ -103,6 +103,7 @@ namespace Choroid
 		void handleQMLImageSelected (const QString&);
 		void showNextImage ();
 		void showPrevImage ();
+		void goUp ();
 
 		void handleStatusChanged (QDeclarativeView::Status);
 	signals:

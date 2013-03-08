@@ -97,6 +97,10 @@ namespace Choroid
 
 		Bar_->addSeparator ();
 
+		auto up = Bar_->addAction (tr ("Up"),
+				this, SLOT (goUp ()));
+		up->setProperty ("ActionIcon", "go-up");
+
 		auto prev = Bar_->addAction (tr ("Previous"),
 				this, SLOT (showNextImage ()));
 		prev->setProperty ("ActionIcon", "go-previous");
@@ -365,6 +369,17 @@ namespace Choroid
 			prev = QMLFilesModel_->rowCount () - 1;
 		const auto& url = QMLFilesModel_->item (prev)->data (ILRImage).value<QUrl> ();
 		ShowImage (url);
+	}
+
+	void ChoroidTab::goUp ()
+	{
+		if (!CurrentImage_.isEmpty ())
+			ShowImage (QUrl ());
+		else
+		{
+			const auto& parentIdx = Ui_.DirTree_->currentIndex ().parent ();
+			Ui_.DirTree_->setCurrentIndex (parentIdx);
+		}
 	}
 
 	void ChoroidTab::handleStatusChanged (QDeclarativeView::Status status)

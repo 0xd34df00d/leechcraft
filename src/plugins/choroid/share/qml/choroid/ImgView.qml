@@ -29,8 +29,8 @@ Rectangle {
     signal prevImageRequested()
 
     function showSingleImage(url) {
-        singleImage.source = url
-        imgView.state = 'singleImageMode'
+        singleImage.source = url;
+        imgView.state = url != '' ? 'singleImageMode' : '';
     }
 
     SystemPalette {
