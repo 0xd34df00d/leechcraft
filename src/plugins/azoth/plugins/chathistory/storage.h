@@ -93,6 +93,8 @@ namespace ChatHistory
 		RawSearchResult Search (const QString& text, int shift);
 		void SearchDate (qint32, qint32, const QDateTime&);
 	public slots:
+		void regenUsersCache ();
+
 		void addMessage (const QVariantMap&);
 		void getOurAccounts ();
 		void getUsersForAccount (const QString&);

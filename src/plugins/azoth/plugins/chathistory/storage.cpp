@@ -234,15 +234,7 @@ namespace ChatHistory
 		}
 
 		if (!hadAcc2User)
-		{
-			qDebug () << Q_FUNC_INFO << "upgrading to acc2users table";
-			if (!query.exec ("INSERT INTO azoth_acc2users (AccountId, UserId) SELECT DISTINCT AccountId, Id FROM azoth_history;"))
-			{
-				Util::DBLock::DumpError (query);
-				query.exec ("DROP TABLE azoth_acc2users");
-			}
-			qDebug () << "done";
-		}
+			regenUsersCache ();
 
 		lock.Good ();
 	}
@@ -514,6 +506,17 @@ namespace ChatHistory
 		Date2Pos_.finish ();
 
 		emit gotSearchPosition (Accounts_.key (accountId), Users_.key (entryId), index);
+	}
+
+	void Storage::regenUsersCache ()
+	{
+		QSqlQuery query (*DB_);
+		if (!query.exec ("DELETE FROM azoth_acc2users;") ||
+			!query.exec ("INSERT INTO azoth_acc2users (AccountId, UserId) SELECT DISTINCT AccountId, Id FROM azoth_history;"))
+		{
+			Util::DBLock::DumpError (query);
+			query.exec ("DROP TABLE azoth_acc2users");
+		}
 	}
 
 	void Storage::addMessage (const QVariantMap& data)

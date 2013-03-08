@@ -86,6 +86,8 @@ namespace ChatHistory
 		void Search (const QString& accountId, const QString& entryId, const QDateTime& dt);
 		void GetDaysForSheet (const QString& accountId, const QString& entryId, int year, int month);
 		void ClearHistory (const QString& accountId, const QString& entryId);
+
+		void RegenUsersCache ();
 	private:
 		void LoadDisabled ();
 		void SaveDisabled ();

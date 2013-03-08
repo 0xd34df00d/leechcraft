@@ -110,6 +110,8 @@ namespace ChatHistory
 		void handleGotChatLogs (const QString&,
 				const QString&, int, int, const QVariant&);
 
+		void handlePushButton (const QString&);
+
 		void handleHistoryRequested ();
 		void handleEntryHistoryRequested ();
 		void handleEntryEnableHistoryRequested (bool);

@@ -277,6 +277,13 @@ namespace ChatHistory
 				Q_ARG (QString, entryId));
 	}
 
+	void Core::RegenUsersCache ()
+	{
+		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
+				"regenUsersCache",
+				Qt::QueuedConnection);
+	}
+
 	void Core::LoadDisabled ()
 	{
 		QSettings settings (QCoreApplication::organizationName (),
