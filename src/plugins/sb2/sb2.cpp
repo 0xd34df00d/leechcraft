@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,7 +94,8 @@ namespace SB2
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		static QIcon icon (":/resources/images/sb2.svg");
+		return icon;
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

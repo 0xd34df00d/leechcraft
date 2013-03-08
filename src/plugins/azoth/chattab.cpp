@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,6 +66,7 @@
 #include "msgformatterwidget.h"
 #include "actionsmanager.h"
 #include "contactdropfilter.h"
+#include "userslistwidget.h"
 
 namespace LeechCraft
 {
@@ -394,16 +395,26 @@ namespace Azoth
 			appendMessageText (data->text ());
 	}
 
+	void ChatTab::ShowUsersList ()
+	{
+		IMUCEntry *muc = GetEntry<IMUCEntry> ();
+		if (!muc)
+			return;
+
+		const auto& parts = muc->GetParticipants ();
+		UsersListWidget w (parts, this);
+		if (w.exec () != QDialog::Accepted)
+			return;
+
+		if (auto part = w.GetActivatedParticipant ())
+			InsertNick (qobject_cast<ICLEntry*> (part)->GetEntryName ());
+	}
+
 	void ChatTab::HandleMUCParticipantsChanged ()
 	{
 		IMUCEntry *muc = GetEntry<IMUCEntry> ();
 		if (!muc)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< GetEntry<QObject> ()
-					<< "doesn't implement IMUCEntry";
 			return;
-		}
 
 		const int parts = muc->GetParticipants ().size ();
 		const QString& text = tr ("%1 (%n participant(s))", 0, parts)

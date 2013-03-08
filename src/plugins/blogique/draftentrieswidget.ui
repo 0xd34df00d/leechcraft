@@ -32,14 +32,11 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_4">
          <item>
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>Filter:</string>
+          <widget class="QLineEdit" name="DraftEntriesFilter_">
+           <property name="placeholderText">
+            <string>Search...</string>
            </property>
           </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="DraftEntriesFilter_"/>
          </item>
         </layout>
        </item>
@@ -73,7 +70,7 @@
    <item row="2" column="0">
     <widget class="QPushButton" name="RemoveDraftEntry_">
      <property name="toolTip">
-      <string>Remove draft from local storage.</string>
+      <string>Remove draft from local storage</string>
      </property>
      <property name="text">
       <string>Remove</string>
@@ -83,7 +80,7 @@
    <item row="2" column="1">
     <widget class="QPushButton" name="PublishDraftEntry_">
      <property name="toolTip">
-      <string>Publish draft to user's blog.</string>
+      <string>Publish draft to user's blog</string>
      </property>
      <property name="text">
       <string>Publish</string>

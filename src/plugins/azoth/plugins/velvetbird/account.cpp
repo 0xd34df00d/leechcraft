@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 
 #include "account.h"
 #include <QtDebug>
+#include <QTimer>
 #include <util/passutils.h>
 #include <util/util.h>
 #include <interfaces/core/ientitymanager.h>
@@ -37,7 +38,7 @@ namespace VelvetBird
 	, Account_ (acc)
 	, Proto_ (proto)
 	{
-		HandleStatus (purple_account_get_active_status (acc));
+		UpdateStatus ();
 	}
 
 	PurpleAccount* Account::GetPurpleAcc () const
@@ -131,8 +132,11 @@ namespace VelvetBird
 
 		if (!purple_account_get_enabled (Account_, "leechcraft.azoth"))
 			purple_account_set_enabled (Account_, "leechcraft.azoth", true);
+
+		auto type = purple_account_get_status_type_with_primitive (Account_, ToPurpleState (status.State_));
+		auto statusId = type ? purple_status_type_get_id (type) : "available";
 		purple_account_set_status (Account_,
-				purple_primitive_get_id_from_type (ToPurpleState (status.State_)),
+				statusId,
 				true,
 				"message",
 				status.StatusString_.toUtf8 ().constData (),
@@ -225,11 +229,33 @@ namespace VelvetBird
 		}
 	}
 
+	void Account::UpdateStatus ()
+	{
+		HandleStatus (purple_account_get_active_status (Account_));
+	}
+
 	void Account::HandleStatus (PurpleStatus *status)
 	{
-		CurrentStatus_ = FromPurpleStatus (status);
+		CurrentStatus_ = status ? FromPurpleStatus (Account_, status) : EntryStatus ();
 		qDebug () << Q_FUNC_INFO << CurrentStatus_.State_;
 		emit statusChanged (CurrentStatus_);
+
+		QTimer::singleShot (5000, this, SLOT (updateIcon ()));
+	}
+
+	void Account::updateIcon ()
+	{
+		auto img = purple_buddy_icons_find_account_icon (Account_);
+		if (!img)
+			return;
+
+		const auto data = purple_imgstore_get_data (img);
+		const auto size = purple_imgstore_get_size (img);
+
+		auto image = QImage::fromData (reinterpret_cast<const uchar*> (data), size);
+		qDebug () << Q_FUNC_INFO << image.isNull ();
+
+		purple_imgstore_unref (img);
 	}
 
 	void Account::handleAuthFailure (const EntryStatus& prevStatus)

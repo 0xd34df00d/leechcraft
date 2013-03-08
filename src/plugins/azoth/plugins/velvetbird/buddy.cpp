@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ namespace VelvetBird
 
 	ICLEntry::Features Buddy::GetEntryFeatures () const
 	{
-		return ICLEntry::FPermanentEntry;
+		return ICLEntry::FPermanentEntry | ICLEntry::FSupportsGrouping;
 	}
 
 	ICLEntry::EntryType Buddy::GetEntryType () const
@@ -84,6 +84,21 @@ namespace VelvetBird
 
 	void Buddy::SetGroups (const QStringList& groups)
 	{
+		const auto& newGroup = groups.value (0);
+
+		PurpleGroup *group = 0;
+		if (!newGroup.isEmpty ())
+		{
+			const auto& utf8 = newGroup.toUtf8 ();
+			group = purple_find_group (utf8.constData ());
+			if (!group)
+			{
+				group = purple_group_new (utf8.constData ());
+				purple_blist_add_group (group, nullptr);
+			}
+		}
+
+		purple_blist_add_buddy (Buddy_, nullptr, group, nullptr);
 	}
 
 	QStringList Buddy::Variants () const
@@ -200,7 +215,7 @@ namespace VelvetBird
 		}
 
 		auto purpleStatus = purple_presence_get_active_status (Buddy_->presence);
-		const auto& status = FromPurpleStatus (purpleStatus);
+		const auto& status = FromPurpleStatus (Account_->GetPurpleAcc (), purpleStatus);
 		if (status != Status_)
 		{
 			Status_ = status;

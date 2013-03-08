@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,7 +78,7 @@ namespace Autosearch
 	{
 		if (Model2Reply_.contains (model))
 		{
-			auto reply = Model2Reply_ [model];
+			auto reply = Model2Reply_.take (model);
 			Reply2Model_.remove (reply);
 			delete reply;
 		}

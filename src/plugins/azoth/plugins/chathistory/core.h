@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,6 +86,8 @@ namespace ChatHistory
 		void Search (const QString& accountId, const QString& entryId, const QDateTime& dt);
 		void GetDaysForSheet (const QString& accountId, const QString& entryId, int year, int month);
 		void ClearHistory (const QString& accountId, const QString& entryId);
+
+		void RegenUsersCache ();
 	private:
 		void LoadDisabled ();
 		void SaveDisabled ();

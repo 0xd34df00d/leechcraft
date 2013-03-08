@@ -24,7 +24,7 @@
 			</item>
 		</groupbox>
 		<groupbox>
-			<label lang="en" value="RemotePosts" />
+			<label lang="en" value="Remote posts" />
 			<item type="combobox" property="OpenEntryByDblClick" >
 				<label lang="en" value="Open entry by double click in:" />
 				<option name="CurrentTab" >

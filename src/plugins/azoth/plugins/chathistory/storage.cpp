@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,6 +64,10 @@ namespace ChatHistory
 			throw std::runtime_error ("unable to open Azoth history database");
 		}
 
+		QSqlQuery pragma (*DB_);
+		pragma.exec ("PRAGMA foreign_keys = ON;");
+		pragma.exec ("PRAGMA synchronous = OFF;");
+
 		InitializeTables ();
 
 		UserSelector_ = QSqlQuery (*DB_);
@@ -89,8 +93,8 @@ namespace ChatHistory
 				"VALUES (:id, :account_id, :date, :direction, :message, :variant, :type);");
 
 		UsersForAccountGetter_ = QSqlQuery (*DB_);
-		UsersForAccountGetter_.prepare ("SELECT DISTINCT azoth_acc2users.UserId, EntryID FROM azoth_users, azoth_acc2users "
-				"WHERE azoth_acc2users.UserId = azoth_users.Id AND azoth_acc2users.AccountID = :account_id;");
+		UsersForAccountGetter_.prepare ("SELECT DISTINCT azoth_acc2users2.UserId, EntryID FROM azoth_users, azoth_acc2users2 "
+				"WHERE azoth_acc2users2.UserId = azoth_users.Id AND azoth_acc2users2.AccountID = :account_id;");
 
 		Date2Pos_ = QSqlQuery (*DB_);
 		Date2Pos_.prepare ("SELECT COUNT(1) FROM azoth_history "
@@ -142,12 +146,18 @@ namespace ChatHistory
 		HistoryClearer_ = QSqlQuery (*DB_);
 		HistoryClearer_.prepare ("DELETE FROM azoth_history WHERE Id = :entry_id AND AccountID = :account_id;");
 
+		UserClearer_ = QSqlQuery (*DB_);
+		UserClearer_.prepare ("DELETE FROM azoth_users WHERE Id = :user_id;");
+
 		EntryCacheGetter_ = QSqlQuery (*DB_);
 		EntryCacheGetter_.prepare ("SELECT Id, VisibleName FROM azoth_entrycache;");
 
 		EntryCacheSetter_ = QSqlQuery (*DB_);
 		EntryCacheSetter_.prepare ("INSERT OR REPLACE INTO azoth_entrycache (Id, VisibleName) "
 				"VALUES (:id, :visible_name);");
+
+		EntryCacheClearer_ = QSqlQuery (*DB_);
+		EntryCacheClearer_.prepare ("DELETE FROM azoth_entrycache WHERE Id = :user_id;");
 
 		try
 		{
@@ -209,16 +219,19 @@ namespace ChatHistory
 					"Type INTEGER, "
 					"UNIQUE (Id, AccountId, Date, Direction, Message, Variant, Type) ON CONFLICT IGNORE);";
 		table2query ["azoth_entrycache"] = "CREATE TABLE azoth_entrycache ("
-					"Id INTEGER UNIQUE ON CONFLICT REPLACE REFERENCES azoth_users (Id), "
+					"Id INTEGER UNIQUE ON CONFLICT REPLACE REFERENCES azoth_users (Id) ON DELETE CASCADE, "
 					"VisibleName TEXT "
 					");";
-		table2query ["azoth_acc2users"] = "CREATE TABLE azoth_acc2users ("
-					"AccountId INTEGER, "
-					"UserId INTEGER, "
+		table2query ["azoth_acc2users2"] = "CREATE TABLE azoth_acc2users2 ("
+					"AccountId INTEGER REFERENCES azoth_accounts (Id) ON DELETE CASCADE, "
+					"UserId INTEGER REFERENCES azoth_users (Id) ON DELETE CASCADE, "
 					"UNIQUE (AccountId, UserId)"
 					");";
 		const QStringList& tables = DB_->tables ();
-		const bool hadAcc2User = tables.contains ("azoth_acc2users");
+		const bool hadAcc2User = tables.contains ("azoth_acc2users2");
+
+		if (tables.contains ("azoth_acc2users"))
+			query.exec ("DROP TABLE azoth_acc2users;");
 
 		Q_FOREACH (const QString& table, table2query.keys ())
 		{
@@ -234,15 +247,7 @@ namespace ChatHistory
 		}
 
 		if (!hadAcc2User)
-		{
-			qDebug () << Q_FUNC_INFO << "upgrading to acc2users table";
-			if (!query.exec ("INSERT INTO azoth_acc2users (AccountId, UserId) SELECT DISTINCT AccountId, Id FROM azoth_history;"))
-			{
-				Util::DBLock::DumpError (query);
-				query.exec ("DROP TABLE azoth_acc2users");
-			}
-			qDebug () << "done";
-		}
+			regenUsersCache ();
 
 		lock.Good ();
 	}
@@ -280,7 +285,7 @@ namespace ChatHistory
 		return result;
 	}
 
-	void Storage::AddUser (const QString& id)
+	void Storage::AddUser (const QString& id, const QString& accountId)
 	{
 		UserInserter_.bindValue (":entry_id", id);
 		if (!UserInserter_.exec ())
@@ -290,9 +295,10 @@ namespace ChatHistory
 		}
 		UserInserter_.finish ();
 
+		qint32 numericId = 0;
 		try
 		{
-			Users_ [id] = GetUserID (id);
+			numericId = GetUserID (id);
 		}
 		catch (const std::exception& e)
 		{
@@ -301,7 +307,17 @@ namespace ChatHistory
 					<< id
 					<< "with:"
 					<< e.what ();
+			return;
 		}
+
+		Users_ [id] = numericId;
+
+		QSqlQuery acc2users (*DB_);
+		acc2users.prepare ("INSERT INTO azoth_acc2users2 (AccountId, UserId) VALUES (:accId, :userId);");
+		acc2users.bindValue (":accId", Accounts_ [accountId]);
+		acc2users.bindValue (":userId", numericId);
+		if (!acc2users.exec ())
+			Util::DBLock::DumpError (UserInserter_);
 	}
 
 	void Storage::PrepareEntryCache ()
@@ -516,6 +532,17 @@ namespace ChatHistory
 		emit gotSearchPosition (Accounts_.key (accountId), Users_.key (entryId), index);
 	}
 
+	void Storage::regenUsersCache ()
+	{
+		QSqlQuery query (*DB_);
+		if (!query.exec ("DELETE FROM azoth_acc2users2;") ||
+			!query.exec ("INSERT INTO azoth_acc2users2 (AccountId, UserId) SELECT DISTINCT AccountId, Id FROM azoth_history;"))
+		{
+			Util::DBLock::DumpError (query);
+			query.exec ("DROP TABLE azoth_acc2users2");
+		}
+	}
+
 	void Storage::addMessage (const QVariantMap& data)
 	{
 		Util::DBLock lock (*DB_);
@@ -531,13 +558,29 @@ namespace ChatHistory
 			return;
 		}
 
-		const QString& entryID = data ["EntryID"].toString ();
+		const QString& accountID = data ["AccountID"].toString ();
+		if (!Accounts_.contains (accountID))
+		{
+			try
+			{
+				AddAccount (accountID);
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< accountID
+						<< "unable to add account ID to the DB:"
+						<< e.what ();
+				return;
+			}
+		}
 
+		const QString& entryID = data ["EntryID"].toString ();
 		if (!Users_.contains (entryID))
 		{
 			try
 			{
-				AddUser (entryID);
+				AddUser (entryID, accountID);
 			}
 			catch (const std::exception& e)
 			{
@@ -558,23 +601,6 @@ namespace ChatHistory
 				Util::DBLock::DumpError (EntryCacheSetter_);
 
 			EntryCache_ [userId] = data ["VisibleName"].toString ();
-		}
-
-		const QString& accountID = data ["AccountID"].toString ();
-		if (!Accounts_.contains (accountID))
-		{
-			try
-			{
-				AddAccount (accountID);
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< accountID
-						<< "unable to add account ID to the DB:"
-						<< e.what ();
-				return;
-			}
 		}
 
 		MessageDumper_.bindValue (":id", userId);
@@ -804,11 +830,26 @@ namespace ChatHistory
 					<< entryId;
 			return;
 		}
-		HistoryClearer_.bindValue (":entry_id", Users_ [entryId]);
+
+		Util::DBLock lock (*DB_);
+		lock.Init ();
+
+		const auto userId = Users_.take (entryId);
+		HistoryClearer_.bindValue (":entry_id", userId);
 		HistoryClearer_.bindValue (":account_id", Accounts_ [accountId]);
 
 		if (!HistoryClearer_.exec ())
 			Util::DBLock::DumpError (HistoryClearer_);
+
+		EntryCacheClearer_.bindValue (":user_id", userId);
+		if (!EntryCacheClearer_.exec ())
+			Util::DBLock::DumpError (EntryCacheClearer_);
+
+		UserClearer_.bindValue (":user_id", userId);
+		if (!UserClearer_.exec ())
+			Util::DBLock::DumpError (UserClearer_);
+
+		lock.Good ();
 	}
 }
 }

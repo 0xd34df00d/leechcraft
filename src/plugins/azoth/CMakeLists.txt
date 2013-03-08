@@ -117,6 +117,8 @@ SET (SRCS
 	contactdropfilter.cpp
 	colorlisteditorwidget.cpp
 	customstatusesmanager.cpp
+	userslistwidget.cpp
+	keyboardrosterfixer.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -171,6 +173,8 @@ SET (HEADERS
 	contactdropfilter.h
 	colorlisteditorwidget.h
 	customstatusesmanager.h
+	userslistwidget.h
+	keyboardrosterfixer.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
 	)
@@ -201,6 +205,7 @@ SET (FORMS
 	microblogstab.ui
 	filesenddialog.ui
 	colorlisteditorwidget.ui
+	userslistwidget.ui
 	)
 SET (RESOURCES azothresources.qrc)
 

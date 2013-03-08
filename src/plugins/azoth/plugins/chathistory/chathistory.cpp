@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,10 @@ namespace ChatHistory
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothchathistorysettings.xml");
+		connect (XSD_.get (),
+				SIGNAL (pushButtonClicked (QString)),
+				this,
+				SLOT (handlePushButton (QString)));
 
 		Core::Instance ()->SetCoreProxy (proxy);
 
@@ -293,6 +297,12 @@ namespace ChatHistory
 		}
 
 		emit gotLastMessages (entryObj, result);
+	}
+
+	void Plugin::handlePushButton (const QString& name)
+	{
+		if (name == "RegenUsersCache")
+			Core::Instance ()->RegenUsersCache ();
 	}
 
 	void Plugin::handleHistoryRequested ()
