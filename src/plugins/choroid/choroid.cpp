@@ -25,8 +25,10 @@ namespace LeechCraft
 {
 namespace Choroid
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+
 		TabInfo_.TabClass_ = "ChoroidTab";
 		TabInfo_.VisibleName_ = "Choroid";
 		TabInfo_.Description_ = tr ("Image viewer tab");
@@ -74,7 +76,7 @@ namespace Choroid
 	{
 		if (tabClass == "ChoroidTab")
 		{
-			ChoroidTab *t = new ChoroidTab (TabInfo_, this);
+			auto t = new ChoroidTab (TabInfo_, Proxy_, this);
 
 			connect (t,
 					SIGNAL (removeTab (QWidget*)),

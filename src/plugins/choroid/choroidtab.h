@@ -17,11 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_CHOROID_CHOROIDTAB_H
-#define PLUGINS_CHOROID_CHOROIDTAB_H
+#pragma once
+
+#include <functional>
 #include <QWidget>
 #include <QDeclarativeView>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/core/icoreproxy.h>
 #include "ui_choroidtab.h"
 
 class QFileSystemModel;
@@ -43,6 +45,7 @@ namespace Choroid
 
 		const TabClassInfo TabClass_;
 		QObject *Parent_;
+		ICoreProxy_ptr Proxy_;
 
 		Ui::ChoroidTab Ui_;
 
@@ -53,19 +56,26 @@ namespace Choroid
 		QFileSystemModel *FSModel_;
 		QStandardItemModel *FilesModel_;
 
+		QToolBar *Bar_;
+		QMenu *SortMenu_;
+
 		enum CustomRoles
 		{
-			CRFilePath = 100
+			CRFilePath = Qt::UserRole + 1
 		};
 
 		enum ImagesListRoles
 		{
-			ILRFilename = 100,
+			ILRFilename = Qt::UserRole + 1,
 			ILRImage,
-			ILRFileSize
+			ILRFileSize,
+			ILRFileInfo
 		};
+
+		std::function<bool (const QFileInfo&, const QFileInfo&)> CurrentSorter_;
 	public:
-		ChoroidTab (const TabClassInfo&, QObject*);
+		ChoroidTab (const TabClassInfo&, ICoreProxy_ptr, QObject*);
+		~ChoroidTab ();
 
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
@@ -73,8 +83,16 @@ namespace Choroid
 		QToolBar* GetToolBar () const;
 	private:
 		void LoadQML ();
+		void SetSortMenu ();
 		void ShowImage (const QString&);
 	private slots:
+		void sortByName ();
+		void sortByDate ();
+		void sortBySize ();
+		void sortByNumber ();
+
+		void reload ();
+
 		void handleDirTreeCurrentChanged (const QModelIndex&);
 		void handleFileChanged (const QModelIndex&);
 		void handleQMLImageSelected (const QString&);
@@ -84,5 +102,3 @@ namespace Choroid
 	};
 }
 }
-
-#endif
