@@ -278,6 +278,9 @@ namespace Choroid
 
 			row.first ()->setData (absPath, CRFilePath);
 
+			for (auto item : row)
+				item->setEditable (false);
+
 			FilesModel_->appendRow (row);
 
 			auto qmlItem = new QStandardItem (info.fileName ());
