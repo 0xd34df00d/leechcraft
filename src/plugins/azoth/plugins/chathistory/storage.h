@@ -54,8 +54,10 @@ namespace ChatHistory
 		QSqlQuery LogsSearcherWOContactAccount_;
 		QSqlQuery HistoryGetter_;
 		QSqlQuery HistoryClearer_;
+		QSqlQuery UserClearer_;
 		QSqlQuery EntryCacheSetter_;
 		QSqlQuery EntryCacheGetter_;
+		QSqlQuery EntryCacheClearer_;
 
 		QHash<QString, qint32> Users_;
 		QHash<QString, qint32> Accounts_;

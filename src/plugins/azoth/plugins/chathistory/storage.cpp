@@ -146,12 +146,18 @@ namespace ChatHistory
 		HistoryClearer_ = QSqlQuery (*DB_);
 		HistoryClearer_.prepare ("DELETE FROM azoth_history WHERE Id = :entry_id AND AccountID = :account_id;");
 
+		UserClearer_ = QSqlQuery (*DB_);
+		UserClearer_.prepare ("DELETE FROM azoth_users WHERE Id = :user_id;");
+
 		EntryCacheGetter_ = QSqlQuery (*DB_);
 		EntryCacheGetter_.prepare ("SELECT Id, VisibleName FROM azoth_entrycache;");
 
 		EntryCacheSetter_ = QSqlQuery (*DB_);
 		EntryCacheSetter_.prepare ("INSERT OR REPLACE INTO azoth_entrycache (Id, VisibleName) "
 				"VALUES (:id, :visible_name);");
+
+		EntryCacheClearer_ = QSqlQuery (*DB_);
+		EntryCacheClearer_.prepare ("DELETE FROM azoth_entrycache WHERE Id = :user_id;");
 
 		try
 		{
@@ -213,7 +219,7 @@ namespace ChatHistory
 					"Type INTEGER, "
 					"UNIQUE (Id, AccountId, Date, Direction, Message, Variant, Type) ON CONFLICT IGNORE);";
 		table2query ["azoth_entrycache"] = "CREATE TABLE azoth_entrycache ("
-					"Id INTEGER UNIQUE ON CONFLICT REPLACE REFERENCES azoth_users (Id), "
+					"Id INTEGER UNIQUE ON CONFLICT REPLACE REFERENCES azoth_users (Id) ON DELETE CASCADE, "
 					"VisibleName TEXT "
 					");";
 		table2query ["azoth_acc2users"] = "CREATE TABLE azoth_acc2users ("
@@ -811,11 +817,26 @@ namespace ChatHistory
 					<< entryId;
 			return;
 		}
-		HistoryClearer_.bindValue (":entry_id", Users_ [entryId]);
+
+		Util::DBLock lock (*DB_);
+		lock.Init ();
+
+		const auto userId = Users_.take (entryId);
+		HistoryClearer_.bindValue (":entry_id", userId);
 		HistoryClearer_.bindValue (":account_id", Accounts_ [accountId]);
 
 		if (!HistoryClearer_.exec ())
 			Util::DBLock::DumpError (HistoryClearer_);
+
+		EntryCacheClearer_.bindValue (":user_id", userId);
+		if (!EntryCacheClearer_.exec ())
+			Util::DBLock::DumpError (EntryCacheClearer_);
+
+		UserClearer_.bindValue (":user_id", userId);
+		if (!UserClearer_.exec ())
+			Util::DBLock::DumpError (UserClearer_);
+
+		lock.Good ();
 	}
 }
 }
