@@ -64,6 +64,10 @@ namespace ChatHistory
 			throw std::runtime_error ("unable to open Azoth history database");
 		}
 
+		QSqlQuery pragma (*DB_);
+		pragma.exec ("PRAGMA foreign_keys = ON;");
+		pragma.exec ("PRAGMA synchronous = OFF;");
+
 		InitializeTables ();
 
 		UserSelector_ = QSqlQuery (*DB_);
