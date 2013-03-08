@@ -82,7 +82,7 @@ namespace ChatHistory
 
 		QHash<QString, qint32> GetUsers ();
 		qint32 GetUserID (const QString&);
-		void AddUser (const QString& id);
+		void AddUser (const QString& id, const QString& accountId);
 
 		void PrepareEntryCache ();
 

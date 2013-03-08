@@ -93,8 +93,8 @@ namespace ChatHistory
 				"VALUES (:id, :account_id, :date, :direction, :message, :variant, :type);");
 
 		UsersForAccountGetter_ = QSqlQuery (*DB_);
-		UsersForAccountGetter_.prepare ("SELECT DISTINCT azoth_acc2users.UserId, EntryID FROM azoth_users, azoth_acc2users "
-				"WHERE azoth_acc2users.UserId = azoth_users.Id AND azoth_acc2users.AccountID = :account_id;");
+		UsersForAccountGetter_.prepare ("SELECT DISTINCT azoth_acc2users2.UserId, EntryID FROM azoth_users, azoth_acc2users2 "
+				"WHERE azoth_acc2users2.UserId = azoth_users.Id AND azoth_acc2users2.AccountID = :account_id;");
 
 		Date2Pos_ = QSqlQuery (*DB_);
 		Date2Pos_.prepare ("SELECT COUNT(1) FROM azoth_history "
@@ -222,13 +222,16 @@ namespace ChatHistory
 					"Id INTEGER UNIQUE ON CONFLICT REPLACE REFERENCES azoth_users (Id) ON DELETE CASCADE, "
 					"VisibleName TEXT "
 					");";
-		table2query ["azoth_acc2users"] = "CREATE TABLE azoth_acc2users ("
-					"AccountId INTEGER, "
-					"UserId INTEGER, "
+		table2query ["azoth_acc2users2"] = "CREATE TABLE azoth_acc2users2 ("
+					"AccountId INTEGER REFERENCES azoth_accounts (Id) ON DELETE CASCADE, "
+					"UserId INTEGER REFERENCES azoth_users (Id) ON DELETE CASCADE, "
 					"UNIQUE (AccountId, UserId)"
 					");";
 		const QStringList& tables = DB_->tables ();
-		const bool hadAcc2User = tables.contains ("azoth_acc2users");
+		const bool hadAcc2User = tables.contains ("azoth_acc2users2");
+
+		if (tables.contains ("azoth_acc2users"))
+			query.exec ("DROP TABLE azoth_acc2users;");
 
 		Q_FOREACH (const QString& table, table2query.keys ())
 		{
@@ -282,7 +285,7 @@ namespace ChatHistory
 		return result;
 	}
 
-	void Storage::AddUser (const QString& id)
+	void Storage::AddUser (const QString& id, const QString& accountId)
 	{
 		UserInserter_.bindValue (":entry_id", id);
 		if (!UserInserter_.exec ())
@@ -292,9 +295,10 @@ namespace ChatHistory
 		}
 		UserInserter_.finish ();
 
+		qint32 numericId = 0;
 		try
 		{
-			Users_ [id] = GetUserID (id);
+			numericId = GetUserID (id);
 		}
 		catch (const std::exception& e)
 		{
@@ -303,7 +307,17 @@ namespace ChatHistory
 					<< id
 					<< "with:"
 					<< e.what ();
+			return;
 		}
+
+		Users_ [id] = numericId;
+
+		QSqlQuery acc2users (*DB_);
+		acc2users.prepare ("INSERT INTO azoth_acc2users2 (AccountId, UserId) VALUES (:accId, :userId);");
+		acc2users.bindValue (":accId", Accounts_ [accountId]);
+		acc2users.bindValue (":userId", numericId);
+		if (!acc2users.exec ())
+			Util::DBLock::DumpError (UserInserter_);
 	}
 
 	void Storage::PrepareEntryCache ()
@@ -521,11 +535,11 @@ namespace ChatHistory
 	void Storage::regenUsersCache ()
 	{
 		QSqlQuery query (*DB_);
-		if (!query.exec ("DELETE FROM azoth_acc2users;") ||
-			!query.exec ("INSERT INTO azoth_acc2users (AccountId, UserId) SELECT DISTINCT AccountId, Id FROM azoth_history;"))
+		if (!query.exec ("DELETE FROM azoth_acc2users2;") ||
+			!query.exec ("INSERT INTO azoth_acc2users2 (AccountId, UserId) SELECT DISTINCT AccountId, Id FROM azoth_history;"))
 		{
 			Util::DBLock::DumpError (query);
-			query.exec ("DROP TABLE azoth_acc2users");
+			query.exec ("DROP TABLE azoth_acc2users2");
 		}
 	}
 
@@ -544,13 +558,29 @@ namespace ChatHistory
 			return;
 		}
 
-		const QString& entryID = data ["EntryID"].toString ();
+		const QString& accountID = data ["AccountID"].toString ();
+		if (!Accounts_.contains (accountID))
+		{
+			try
+			{
+				AddAccount (accountID);
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< accountID
+						<< "unable to add account ID to the DB:"
+						<< e.what ();
+				return;
+			}
+		}
 
+		const QString& entryID = data ["EntryID"].toString ();
 		if (!Users_.contains (entryID))
 		{
 			try
 			{
-				AddUser (entryID);
+				AddUser (entryID, accountID);
 			}
 			catch (const std::exception& e)
 			{
@@ -571,23 +601,6 @@ namespace ChatHistory
 				Util::DBLock::DumpError (EntryCacheSetter_);
 
 			EntryCache_ [userId] = data ["VisibleName"].toString ();
-		}
-
-		const QString& accountID = data ["AccountID"].toString ();
-		if (!Accounts_.contains (accountID))
-		{
-			try
-			{
-				AddAccount (accountID);
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< accountID
-						<< "unable to add account ID to the DB:"
-						<< e.what ();
-				return;
-			}
 		}
 
 		MessageDumper_.bindValue (":id", userId);
