@@ -78,7 +78,7 @@ namespace Autosearch
 	{
 		if (Model2Reply_.contains (model))
 		{
-			auto reply = Model2Reply_ [model];
+			auto reply = Model2Reply_.take (model);
 			Reply2Model_.remove (reply);
 			delete reply;
 		}
