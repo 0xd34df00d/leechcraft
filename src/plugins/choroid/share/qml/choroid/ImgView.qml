@@ -3,9 +3,30 @@ import QtQuick 1.1
 Rectangle {
     id: imgView
 
-    Keys.onEscapePressed: { imgView.state = '' }
+    Keys.onPressed: {
+        switch (event.key)
+        {
+        case Qt.Key_PageDown:
+        case Qt.Key_Space:
+        case Qt.Key_Right:
+            console.log("next");
+            imgView.nextImageRequested();
+            event.accepted = true;
+            break;
+        case Qt.Key_Left:
+            imgView.prevImageRequested();
+            event.accepted = true;
+            break;
+        case Qt.Key_Escape:
+            imgView.state = '';
+            event.accepted = true;
+            break;
+        }
+    }
 
     signal imageSelected(string imageId)
+    signal nextImageRequested()
+    signal prevImageRequested()
 
     function showSingleImage(url) {
         singleImage.source = url
@@ -46,13 +67,6 @@ Rectangle {
                     asynchronous: true
 
                     source: image
-
-                    MouseArea {
-                        anchors.fill: parent
-                        acceptedButtons: Qt.LeftButton
-
-                        onClicked: imgView.imageSelected(image)
-                    }
                 }
 
                 Text {
@@ -79,6 +93,13 @@ Rectangle {
                     text: filesize
                     font.italic: true
                     horizontalAlignment: Text.AlignHCenter
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    acceptedButtons: Qt.LeftButton
+
+                    onClicked: imgView.imageSelected(image)
                 }
             }
         }
