@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QPoint>
+#include <QMetaType>
 
 namespace LeechCraft
 {
@@ -29,6 +30,7 @@ namespace Monocle
 		int Page_;
 		QPoint Position_;
 	public:
+		Bookmark ();
 		Bookmark (int page, const QPoint& position);
 
 		int GetPage () const;
@@ -41,3 +43,5 @@ namespace Monocle
 	QDataStream& operator>> (QDataStream&, Bookmark&);
 }
 }
+
+Q_DECLARE_METATYPE (LeechCraft::Monocle::Bookmark)
