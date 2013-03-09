@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QObject>
+#include <QUrl>
 #include <interfaces/monocle/idocument.h>
 #include <libspectre/spectre.h>
 
@@ -34,6 +35,7 @@ namespace Postrus
 		Q_OBJECT
 
 		SpectreDocument *SD_;
+		QUrl DocURL_;
 	public:
 		Document (const QString&, QObject* = 0);
 		~Document ();
@@ -45,6 +47,7 @@ namespace Postrus
 		QSize GetPageSize (int) const;
 		QImage RenderPage (int, double xRes, double yRes);
 		QList<ILink_ptr> GetPageLinks (int);
+		QUrl GetDocURL () const;
 	signals:
 		void navigateRequested (const QString&, int, double, double);
 	};

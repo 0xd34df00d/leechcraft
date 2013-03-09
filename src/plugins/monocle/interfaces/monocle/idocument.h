@@ -25,6 +25,8 @@
 #include <QDateTime>
 #include "ilink.h"
 
+class QUrl;
+
 namespace LeechCraft
 {
 namespace Monocle
@@ -59,6 +61,8 @@ namespace Monocle
 		virtual QImage RenderPage (int, double xRes, double yRes) = 0;
 
 		virtual QList<ILink_ptr> GetPageLinks (int) = 0;
+
+		virtual QUrl GetDocURL () const = 0;
 	protected:
 		virtual void navigateRequested (const QString&, int pageNum, double x, double y) = 0;
 	};

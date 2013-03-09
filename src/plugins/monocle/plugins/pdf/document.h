@@ -20,6 +20,7 @@
 
 #include <memory>
 #include <QObject>
+#include <QUrl>
 #include <interfaces/monocle/idocument.h>
 #include <interfaces/monocle/ihavetoc.h>
 #include <interfaces/monocle/ihavetextcontent.h>
@@ -52,6 +53,7 @@ namespace PDF
 
 		PDocument_ptr PDocument_;
 		TOCEntryLevel_t TOC_;
+		QUrl DocURL_;
 	public:
 		Document (const QString&, QObject* = 0);
 
@@ -62,6 +64,7 @@ namespace PDF
 		QSize GetPageSize (int) const;
 		QImage RenderPage (int, double, double);
 		QList<ILink_ptr> GetPageLinks (int);
+		QUrl GetDocURL () const;
 
 		TOCEntryLevel_t GetTOC ();
 

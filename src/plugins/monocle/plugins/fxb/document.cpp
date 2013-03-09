@@ -30,6 +30,7 @@ namespace FXB
 {
 	Document::Document (const QString& filename, QObject *parent)
 	: QObject (parent)
+	, DocURL_ (QUrl::fromLocalFile (filename))
 	{
 		QFile file (filename);
 		if (!file.open (QIODevice::ReadOnly))
@@ -65,6 +66,11 @@ namespace FXB
 	DocumentInfo Document::GetDocumentInfo () const
 	{
 		return Info_;
+	}
+
+	QUrl Document::GetDocURL () const
+	{
+		return DocURL_;
 	}
 
 	TOCEntryLevel_t Document::GetTOC ()

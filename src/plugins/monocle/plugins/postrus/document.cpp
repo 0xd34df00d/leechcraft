@@ -28,6 +28,7 @@ namespace Postrus
 	Document::Document (const QString& path, QObject *parent)
 	: QObject (parent)
 	, SD_ (spectre_document_new ())
+	, DocURL_ (QUrl::fromLocalFile (path))
 	{
 		spectre_document_load (SD_, path.toUtf8 ().constData ());
 	}
@@ -107,6 +108,11 @@ namespace Postrus
 	QList<ILink_ptr> Document::GetPageLinks (int)
 	{
 		return QList<ILink_ptr> ();
+	}
+
+	QUrl Document::GetDocURL () const
+	{
+		return DocURL_;
 	}
 }
 }

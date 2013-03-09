@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QObject>
+#include <QUrl>
 #include <interfaces/monocle/ihavetoc.h>
 #include "documentadapter.h"
 
@@ -37,11 +38,13 @@ namespace FXB
 
 		DocumentInfo Info_;
 		TOCEntryLevel_t TOC_;
+		QUrl DocURL_;
 	public:
 		Document (const QString&, QObject* = 0);
 
 		QObject* GetObject ();
 		DocumentInfo GetDocumentInfo () const;
+		QUrl GetDocURL () const;
 
 		TOCEntryLevel_t GetTOC ();
 
