@@ -18,6 +18,7 @@
 
 #include "bookmark.h"
 #include <QDataStream>
+#include <QDomElement>
 #include <QtDebug>
 
 namespace LeechCraft
@@ -29,10 +30,21 @@ namespace Monocle
 	{
 	}
 
-	Bookmark::Bookmark (int page, const QPoint& position)
-	: Page_ (page)
+	Bookmark::Bookmark (const QString& name, int page, const QPoint& position)
+	: Name_ (name)
+	, Page_ (page)
 	, Position_ (position)
 	{
+	}
+
+	QString Bookmark::GetName () const
+	{
+		return Name_;
+	}
+
+	void Bookmark::SetName (const QString& name)
+	{
+		Name_ = name;
 	}
 
 	int Bookmark::GetPage () const
@@ -55,9 +67,34 @@ namespace Monocle
 		Position_ = p;
 	}
 
+	void Bookmark::ToXML (QDomElement& elem, QDomDocument& doc) const
+	{
+		auto pageElem = doc.createElement ("page");
+		pageElem.setAttribute ("num", Page_);
+		elem.appendChild (pageElem);
+
+		auto posElem = doc.createElement ("pos");
+		posElem.setAttribute ("x", Position_.x ());
+		posElem.setAttribute ("y", Position_.y ());
+		elem.appendChild (posElem);
+
+		elem.setAttribute ("name", Name_);
+	}
+
+	Bookmark Bookmark::FromXML (const QDomElement& elem)
+	{
+		const auto page = elem.firstChildElement ("page").attribute ("num").toInt ();
+		const auto& posElem = elem.firstChildElement ("pos");
+		const auto& name = elem.attribute ("name");
+		return Bookmark (name,
+				page,
+				{ posElem.attribute ("x").toInt (), posElem.attribute ("y").toInt () });
+	}
+
 	QDataStream& operator<< (QDataStream& out, const Bookmark& bm)
 	{
 		return out << static_cast<quint8> (1)
+				<< bm.GetName ()
 				<< bm.GetPage ()
 				<< bm.GetPosition ();
 	}
@@ -74,13 +111,13 @@ namespace Monocle
 			return in;
 		}
 
+		QString name;
 		int page = 0;
 		QPoint p;
 
-		in >> page >> p;
+		in >> name >> page >> p;
 
-		bm.SetPage (page);
-		bm.SetPosition (p);
+		bm = Bookmark (name, page, p);
 
 		return in;
 	}
