@@ -59,7 +59,7 @@ namespace Monocle
 		QAction *LayOnePage_;
 		QAction *LayTwoPages_;
 
-		QDockWidget *DockTOC_;
+		QDockWidget *DockWidget_;
 		TOCWidget *TOCWidget_;
 
 		IDocument_ptr CurrentDoc_;
