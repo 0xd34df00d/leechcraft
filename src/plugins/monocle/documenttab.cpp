@@ -54,6 +54,7 @@
 #include "docstatemanager.h"
 #include "docinfodialog.h"
 #include "xmlsettingsmanager.h"
+#include "bookmarkswidget.h"
 
 namespace LeechCraft
 {
@@ -67,8 +68,9 @@ namespace Monocle
 	, Toolbar_ (new QToolBar ("Monocle"))
 	, ScalesBox_ (0)
 	, PageNumLabel_ (0)
-	, DockTOC_ (0)
+	, DockWidget_ (0)
 	, TOCWidget_ (new TOCWidget ())
+	, BMWidget_ (new BookmarksWidget ())
 	, LayMode_ (LayoutMode::OnePage)
 	, MouseMode_ (MouseMode::Move)
 	, RelayoutScheduled_ (true)
@@ -83,20 +85,30 @@ namespace Monocle
 
 		new FileWatcher (this);
 
-		DockTOC_ = new QDockWidget (tr ("Table of contents"));
-		DockTOC_->setFeatures (QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
-		DockTOC_->setWidget (TOCWidget_);
+		auto proxy = Core::Instance ().GetProxy ();
+		const auto& tocIcon = proxy->GetIcon ("view-table-of-contents-ltr");
 
-		const auto& icon = Core::Instance ().GetProxy ()->GetIcon ("view-table-of-contents-ltr");
-		DockTOC_->setWindowIcon (icon);
-		DockTOC_->toggleViewAction ()->setIcon (icon);
+		auto dockTabWidget = new QTabWidget;
+		dockTabWidget->setTabPosition (QTabWidget::West);
+		dockTabWidget->addTab (TOCWidget_, tocIcon, tr ("Table of contents"));
+		dockTabWidget->addTab (BMWidget_,
+				proxy->GetIcon ("favorites"),
+				tr ("Bookmarks"));
+
+		DockWidget_ = new QDockWidget (tr ("Monocle dock"));
+		DockWidget_->setFeatures (QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
+		DockWidget_->setWidget (dockTabWidget);
+
+		DockWidget_->setWindowIcon (tocIcon);
+		DockWidget_->toggleViewAction ()->setIcon (tocIcon);
+
 		Toolbar_->addSeparator ();
-		Toolbar_->addAction (DockTOC_->toggleViewAction ());
+		Toolbar_->addAction (DockWidget_->toggleViewAction ());
 
 		auto mw = Core::Instance ().GetProxy ()->GetRootWindowsManager ()->GetMWProxy (0);
-		mw->AddDockWidget (Qt::RightDockWidgetArea, DockTOC_);
-		mw->AssociateDockWidget (DockTOC_, this);
-		mw->ToggleViewActionVisiblity (DockTOC_, false);
+		mw->AddDockWidget (Qt::RightDockWidgetArea, DockWidget_);
+		mw->AssociateDockWidget (DockWidget_, this);
+		mw->ToggleViewActionVisiblity (DockWidget_, false);
 
 		connect (Ui_.PagesView_,
 				SIGNAL (sizeChanged ()),
@@ -117,7 +129,7 @@ namespace Monocle
 
 	void DocumentTab::Remove ()
 	{
-		delete DockTOC_;
+		delete DockWidget_;
 		emit removeTab (this);
 		deleteLater ();
 	}
@@ -307,9 +319,9 @@ namespace Monocle
 		if (auto toc = qobject_cast<IHaveTOC*> (CurrentDoc_->GetObject ()))
 			topLevel = toc->GetTOC ();
 		TOCWidget_->SetTOC (topLevel);
-		DockTOC_->setEnabled (!topLevel.isEmpty ());
-		if (DockTOC_->toggleViewAction ()->isChecked () == topLevel.isEmpty ())
-			DockTOC_->toggleViewAction ()->trigger ();
+		DockWidget_->setEnabled (!topLevel.isEmpty ());
+		if (DockWidget_->toggleViewAction ()->isChecked () == topLevel.isEmpty ())
+			DockWidget_->toggleViewAction ()->trigger ();
 
 		connect (CurrentDoc_->GetObject (),
 				SIGNAL (navigateRequested (QString, int, double, double)),

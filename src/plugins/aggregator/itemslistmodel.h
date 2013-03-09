@@ -37,7 +37,6 @@ namespace Aggregator
 		int CurrentRow_;
 		// First is ParentURL_ and second is Title_
 		IDType_t CurrentChannel_;
-		bool MayBeRichText_;
 	public:
 		ItemsListModel (QObject* = 0);
 

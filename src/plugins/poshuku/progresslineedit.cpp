@@ -69,7 +69,8 @@ namespace Poshuku
 		connect (this,
 				SIGNAL (textEdited (const QString&)),
 				Core::Instance ().GetURLCompletionModel (),
-				SLOT (setBase (const QString&)));
+				SLOT (setBase (const QString&)),
+				Qt::QueuedConnection);
 
 		connect (this,
 				SIGNAL (textChanged (const QString&)),

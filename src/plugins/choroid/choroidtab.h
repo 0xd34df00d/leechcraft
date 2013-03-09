@@ -28,6 +28,7 @@
 
 class QFileSystemModel;
 class QStandardItemModel;
+class QStandardItem;
 class QFileInfo;
 class QDeclarativeView;
 
@@ -56,6 +57,8 @@ namespace Choroid
 		QFileSystemModel *FSModel_;
 		QStandardItemModel *FilesModel_;
 
+		QUrl CurrentImage_;
+
 		QToolBar *Bar_;
 		QMenu *SortMenu_;
 
@@ -68,8 +71,7 @@ namespace Choroid
 		{
 			ILRFilename = Qt::UserRole + 1,
 			ILRImage,
-			ILRFileSize,
-			ILRFileInfo
+			ILRFileSize
 		};
 
 		std::function<bool (const QFileInfo&, const QFileInfo&)> CurrentSorter_;
@@ -85,6 +87,8 @@ namespace Choroid
 		void LoadQML ();
 		void SetSortMenu ();
 		void ShowImage (const QString&);
+		void ShowImage (const QUrl&);
+		QStandardItem* FindFileItem (const QString&);
 	private slots:
 		void sortByName ();
 		void sortByDate ();
@@ -95,7 +99,12 @@ namespace Choroid
 
 		void handleDirTreeCurrentChanged (const QModelIndex&);
 		void handleFileChanged (const QModelIndex&);
+
 		void handleQMLImageSelected (const QString&);
+		void showNextImage ();
+		void showPrevImage ();
+		void goUp ();
+
 		void handleStatusChanged (QDeclarativeView::Status);
 	signals:
 		void removeTab (QWidget*);

@@ -30,6 +30,7 @@ namespace PDF
 	Document::Document (const QString& path, QObject *parent)
 	: QObject (parent)
 	, PDocument_ (Poppler::Document::load (path))
+	, DocURL_ (QUrl::fromLocalFile (path))
 	{
 		if (!PDocument_)
 			return;
@@ -97,6 +98,11 @@ namespace PDF
 			result << ILink_ptr (new Link (this, link));
 
 		return result;
+	}
+
+	QUrl Document::GetDocURL () const
+	{
+		return DocURL_;
 	}
 
 	TOCEntryLevel_t Document::GetTOC ()

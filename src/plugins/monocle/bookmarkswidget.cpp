@@ -16,42 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QUrl>
-#include <interfaces/monocle/ihavetoc.h>
-#include "documentadapter.h"
+#include "bookmarkswidget.h"
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-namespace FXB
-{
-	class Document : public QObject
-				  , public DocumentAdapter
-				  , public IHaveTOC
+	BookmarksWidget::BookmarksWidget (QWidget *parent)
+	: QWidget (parent)
 	{
-		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Monocle::IDocument LeechCraft::Monocle::IHaveTOC)
+		Ui_.setupUi (this);
+	}
 
-		DocumentInfo Info_;
-		TOCEntryLevel_t TOC_;
-		QUrl DocURL_;
-	public:
-		Document (const QString&, QObject* = 0);
-
-		QObject* GetObject ();
-		DocumentInfo GetDocumentInfo () const;
-		QUrl GetDocURL () const;
-
-		TOCEntryLevel_t GetTOC ();
-
-		void RequestNavigation (int);
-	signals:
-		void navigateRequested (const QString&, int pageNum, double x, double y);
-	};
-}
+	void BookmarksWidget::HandleDoc (IDocument_ptr doc)
+	{
+	}
 }
 }
