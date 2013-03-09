@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include "profiletypes.h"
 
 namespace LeechCraft
 {
@@ -47,6 +48,7 @@ namespace Metida
 		QSqlQuery AddSentMessageParams_;
 
 		QSqlQuery GetAllMessages_;
+		QSqlQuery GetLimitedMessages_;
 		QSqlQuery GetMessage_;
 
 	public:
@@ -54,9 +56,18 @@ namespace Metida
 
 		void AddAccount (const QByteArray& accounId);
 		void RemoveAccount (const QByteArray& accounId);
+
+		void AddMessage (LJInbox::Message *msg, const QByteArray& accounId);
+
+		QList<LJInbox::Message*> GetAllMessages (const QByteArray& accounId);
+		QList<LJInbox::Message*> GetLimitedMessages (int limit, int offset,
+				LJInbox::MessageType type, const QByteArray& accounId);
+		LJInbox::Message* GetMessage (int messageId, const QByteArray& accounId);
 	private:
 		void CreateTables ();
 		void PrepareQueries ();
+		void FillBasicMessage (LJInbox::Message *msg, QSqlQuery getQuery);
+		LJInbox::Message* GetMessage (QSqlQuery getQuery);
 	};
 }
 }

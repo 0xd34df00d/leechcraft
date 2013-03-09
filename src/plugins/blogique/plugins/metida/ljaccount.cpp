@@ -31,6 +31,7 @@
 #include "utils.h"
 #include "xmlsettingsmanager.h"
 #include "updatetypedialog.h"
+#include "localstorage.h"
 
 namespace LeechCraft
 {
@@ -100,7 +101,11 @@ namespace Metida
 				SIGNAL (gotMessages (QList<LJInbox::Message*>)),
 				LJProfile_.get (),
 				SLOT (handleGotMessages (QList<LJInbox::Message*>)));
-		
+		connect (LJXmlRpc_,
+				 SIGNAL (gotMessagesFinished ()),
+				 LJProfile_.get (),
+				 SIGNAL (gotMessagesFinished ()));
+
 		connect (LoadLastEvents_,
 				SIGNAL (triggered ()),
 				this,
@@ -266,7 +271,6 @@ namespace Metida
 					.Property ("LastInboxUpdateDate",
 						QDateTime::fromString ("1970-01-01T00:00:00",
 								"yyyy-MM-ddThh:mm:ss")).toDateTime ());
-		
 	}
 
 	QList<QAction*> LJAccount::GetUpdateActions () const
@@ -556,7 +560,6 @@ namespace Metida
 
 		LJXmlRpc_->GetChangedEvents (dt);
 	}
-
 }
 }
 }

@@ -49,7 +49,6 @@ namespace Metida
 			Name
 		};
 
-<<<<<<< HEAD
 		LJProfile *Profile_;
 		FriendsModel *FriendsModel_;
 		QStandardItemModel *CommunitiesModel_;
@@ -61,15 +60,12 @@ namespace Metida
 		const int MessageCountOnPage_;
 
 	public:
-=======
->>>>>>> parent of 2c57894... Blogique Metida: workng with messages
 		enum MessageCategory
 		{
 			MCAll,
 			MCIncoming,
 			MCFriendUpdates,
 			MCEntriesAndComments,
-			MCFlagged,
 			MCSent
 		};
 
@@ -80,12 +76,6 @@ namespace Metida
 			FUCNewFriends
 		};
 
-		LJProfile *Profile_;
-		FriendsModel *FriendsModel_;
-		QStandardItemModel *CommunitiesModel_;
-		QHash<QStandardItem*, LJFriendGroup> Item2FriendGroup_;
-		QHash<QStandardItem*, LJFriendEntry_ptr> Item2Friend_;
-	public:
 		ProfileWidget (LJProfile *profile, QWidget *parent = 0);
 	private:
 		void RereadProfileData ();
@@ -93,9 +83,11 @@ namespace Metida
 		void FillCommunities (const QStringList& communities);
 		void ReFillModels ();
 		void FillMessagesUi ();
+		void FillInboxView (int limit, int offset);
 
 	public slots:
 		void updateProfile ();
+		void handleGotMessagesFinished ();
 	private slots:
 		void on_ColoringFriendsList__toggled (bool toggle);
 		void on_Add__released ();
@@ -106,6 +98,9 @@ namespace Metida
 				const QString& bgColor, const QString& fgColor, int groupId);
 		void on_Category__currentIndexChanged (int index);
 		void on_FriendsUpdates__currentIndexChanged (int index);
+
+		void on_Next__released ();
+		void on_Previous__released ();
 
 	signals:
 		void coloringItemChanged ();
