@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QWidget>
+#include "interfaces/monocle/idocument.h"
 #include "ui_bookmarkswidget.h"
 
 namespace LeechCraft
@@ -32,6 +33,8 @@ namespace Monocle
 		Ui::BookmarksWidget Ui_;
 	public:
 		BookmarksWidget (QWidget* = 0);
+
+		void HandleDoc (IDocument_ptr);
 	};
 }
 }

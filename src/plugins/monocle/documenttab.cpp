@@ -54,6 +54,7 @@
 #include "docstatemanager.h"
 #include "docinfodialog.h"
 #include "xmlsettingsmanager.h"
+#include "bookmarkswidget.h"
 
 namespace LeechCraft
 {
@@ -69,6 +70,7 @@ namespace Monocle
 	, PageNumLabel_ (0)
 	, DockWidget_ (0)
 	, TOCWidget_ (new TOCWidget ())
+	, BMWidget_ (new BookmarksWidget ())
 	, LayMode_ (LayoutMode::OnePage)
 	, MouseMode_ (MouseMode::Move)
 	, RelayoutScheduled_ (true)
@@ -83,11 +85,15 @@ namespace Monocle
 
 		new FileWatcher (this);
 
-		const auto& tocIcon = Core::Instance ().GetProxy ()->GetIcon ("view-table-of-contents-ltr");
+		auto proxy = Core::Instance ().GetProxy ();
+		const auto& tocIcon = proxy->GetIcon ("view-table-of-contents-ltr");
 
 		auto dockTabWidget = new QTabWidget;
 		dockTabWidget->setTabPosition (QTabWidget::West);
 		dockTabWidget->addTab (TOCWidget_, tocIcon, tr ("Table of contents"));
+		dockTabWidget->addTab (BMWidget_,
+				proxy->GetIcon ("favorites"),
+				tr ("Bookmarks"));
 
 		DockWidget_ = new QDockWidget (tr ("Monocle dock"));
 		DockWidget_->setFeatures (QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
