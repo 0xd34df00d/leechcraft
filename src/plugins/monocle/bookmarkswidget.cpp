@@ -27,5 +27,9 @@ namespace Monocle
 	{
 		Ui_.setupUi (this);
 	}
+
+	void BookmarksWidget::HandleDoc (IDocument_ptr doc)
+	{
+	}
 }
 }

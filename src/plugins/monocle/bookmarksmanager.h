@@ -18,23 +18,31 @@
 
 #pragma once
 
-#include <QWidget>
+#include <QObject>
+#include <QtXml/QDomDocument>
 #include "interfaces/monocle/idocument.h"
-#include "ui_bookmarkswidget.h"
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-	class BookmarksWidget : public QWidget
+	class Bookmark;
+
+	class BookmarksManager : public QObject
 	{
-		Q_OBJECT
-
-		Ui::BookmarksWidget Ui_;
+		QDomDocument BookmarksDOM_;
 	public:
-		BookmarksWidget (QWidget* = 0);
+		BookmarksManager (QObject* = 0);
 
-		void HandleDoc (IDocument_ptr);
+		void AddBookmark (IDocument_ptr, const Bookmark&);
+		QList<Bookmark> GetBookmarks (IDocument_ptr) const;
+	private:
+		QDomElement GetDocElem (const QString&) const;
+		QDomElement GetDocElem (const QString&);
+
+		void Load ();
+		bool LoadSaved ();
+		void Save () const;
 	};
 }
 }

@@ -2,6 +2,7 @@ CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 PROJECT (leechcraft_monocle)
 INCLUDE (InitLCPlugin OPTIONAL)
 
+SET (QT_USE_QTXML TRUE)
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -26,6 +27,8 @@ SET (SRCS
 	docstatemanager.cpp
 	docinfodialog.cpp
 	bookmarkswidget.cpp
+	bookmarksmanager.cpp
+	bookmark.cpp
 	)
 SET (FORMS
 	documenttab.ui

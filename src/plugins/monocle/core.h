@@ -30,6 +30,7 @@ namespace Monocle
 	class PixmapCacheManager;
 	class DefaultBackendManager;
 	class DocStateManager;
+	class BookmarksManager;
 
 	class Core : public QObject
 	{
@@ -42,6 +43,7 @@ namespace Monocle
 		RecentlyOpenedManager *ROManager_;
 		DefaultBackendManager *DefaultBackendManager_;
 		DocStateManager *DocStateManager_;
+		BookmarksManager *BookmarksManager_;
 
 		Core ();
 	public:
@@ -59,6 +61,7 @@ namespace Monocle
 		RecentlyOpenedManager* GetROManager () const;
 		DefaultBackendManager* GetDefaultBackendManager () const;
 		DocStateManager* GetDocStateManager () const;
+		BookmarksManager* GetBookmarksManager () const;
 	};
 }
 }

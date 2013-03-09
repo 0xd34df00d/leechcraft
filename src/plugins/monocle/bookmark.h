@@ -21,22 +21,31 @@
 #include <QPoint>
 #include <QMetaType>
 
+class QDomElement;
+class QDomDocument;
+
 namespace LeechCraft
 {
 namespace Monocle
 {
 	class Bookmark
 	{
+		QString Name_;
 		int Page_;
 		QPoint Position_;
 	public:
 		Bookmark ();
-		Bookmark (int page, const QPoint& position);
+		Bookmark (const QString&, int page, const QPoint& position);
 
+		QString GetName () const;
+		void SetName (const QString&);
 		int GetPage () const;
 		void SetPage (int);
 		QPoint GetPosition () const;
 		void SetPosition (const QPoint& p);
+
+		void ToXML (QDomElement&, QDomDocument&) const;
+		static Bookmark FromXML (const QDomElement&);
 	};
 
 	QDataStream& operator<< (QDataStream&, const Bookmark&);
