@@ -44,6 +44,7 @@ namespace Metida
 	, CommunitiesModel_ (new QStandardItemModel (this))
 	, MessagesModel_ (new QStandardItemModel (this))
 	, PageNumber_ (0)
+	, MessageCountOnPage_ (20)
 	{
 		Ui_.setupUi (this);
 
@@ -198,6 +199,13 @@ namespace Metida
 		Ui_.Previous_->setIcon (Core::Instance ().GetCoreProxy ()->GetIcon ("go-previous"));
 
 		Ui_.InboxView_->setModel (MessagesModel_);
+
+		MessagesModel_->setHorizontalHeaderLabels ({ tr ("Date"),
+				tr ("Read"),
+				tr ("Subject"),
+				tr ("Description") });
+
+		FillInboxView (20, 0);
 	}
 
 	namespace
@@ -230,44 +238,75 @@ namespace Metida
 				return LJInbox::MessageType::NoType;
 			}
 		}
-	}
 
-	namespace
-	{
-		QString GetTextFromMessageType (LJInbox::MessageType mt)
+		QPair<QString, QString> GetTextFromMessageType (LJInbox::MessageType mt)
 		{
 			switch (mt)
 			{
 			case LJInbox::MessageType::NoType:
-				return QString ();
+				return { QString (), QString () };
 			case LJInbox::MessageType::Friended:
+				return { QObject::tr ("Friends event"),
+						QObject::tr ("One user has friended you") };
 			case LJInbox::MessageType::Defriended:
+				return { QObject::tr ("Friends event"),
+						QObject::tr ("One user has defriended you") };
 			case LJInbox::MessageType::InvitedFriendJoins:
-				return QObject::tr ("Friends event");
+				return { QObject::tr ("Friends event"),
+						QObject::tr ("Invited friend joins") };
 			case LJInbox::MessageType::Birthday:
-				return QObject::tr ("Birthday event");
+				return { QObject::tr ("Birthday event"),
+						QObject::tr ("One of your friends has birthday") };
 			case LJInbox::MessageType::CommunityInvite:
+				return { QObject::tr ("Commumity event"),
+						QObject::tr ("Invite to community") };
 			case LJInbox::MessageType::CommunityJoinApprove:
+				return { QObject::tr ("Commumity event"),
+						QObject::tr ("Your join request was approved") };
 			case LJInbox::MessageType::CommunityJoinReject:
+				return { QObject::tr ("Commumity event"),
+						QObject::tr ("Your join request was rejected") };
 			case LJInbox::MessageType::CommunityJoinRequest:
-				return QObject::tr ("Commumity event");
+				return { QObject::tr ("Commumity event"),
+						QObject::tr ("You have got join request") };
 			case LJInbox::MessageType::JournalNewComment:
+				return { QObject::tr ("Journal event"),
+						QObject::tr ("You have new comment") };
 			case LJInbox::MessageType::JournalNewEntry:
-				return QObject::tr ("Journal event");
+				return { QObject::tr ("Journal event"),
+						QObject::tr ("You have new entry") };
 			case LJInbox::MessageType::NewUserpic:
+				return { QObject::tr ("User event"),
+						QObject::tr ("Userpic was updated") };
 			case LJInbox::MessageType::UserMessageRecvd:
+				return { QObject::tr ("User event"),
+						QObject::tr ("Message received") };
 			case LJInbox::MessageType::UserMessageSent:
+				return { QObject::tr ("User event"),
+						QObject::tr ("Message sent") };
 			case LJInbox::MessageType::UserNewComment:
+				return { QObject::tr ("User event"),
+						QObject::tr ("You have new comment") };
 			case LJInbox::MessageType::UserNewEntry:
+				return { QObject::tr ("User event"),
+						QObject::tr ("You have new entry") };
 			case LJInbox::MessageType::UserExpunged:
+				return { QObject::tr ("User event"),
+						QObject::tr ("User was expunged") };
 			case LJInbox::MessageType::NewVGift:
-				return QObject::tr ("User event");
+				return { QObject::tr ("User event"),
+						QObject::tr ("You got new gift") };
 			case LJInbox::MessageType::OfficialPost:
+				return { QObject::tr ("Official event"),
+						QObject::tr ("New official post in news community") };
 			case LJInbox::MessageType::SupOfficialPost:
+				return { QObject::tr ("Official"),
+						QObject::tr ("New SUP official post") };
 			case LJInbox::MessageType::PermSale:
-				return QObject::tr ("Official LJ event");
+				return { QObject::tr ("Account event"),
+						QString () };
 			default:
-				return QString ();
+				return { QString (), QString () };
 			}
 		}
 
@@ -277,14 +316,29 @@ namespace Metida
 			QStandardItem *stateItem = new QStandardItem (msg->State_ == LJInbox::MessageState::Read ? "R" : "U");
 
 			QStandardItem *subjectItem = 0;
+			QStandardItem *textItem = 0;
 			if (!msg->ExtendedSubject_.isEmpty ())
 				subjectItem = new QStandardItem (msg->ExtendedSubject_);
 			else if (!msg->TypeString_.isEmpty ())
+			{
 				subjectItem = new QStandardItem (msg->TypeString_);
+				if (msg->TypeString_ == "CommentReply")
+					textItem = new QStandardItem (QObject::tr ("You have new comment"));
+			}
 			else
-				subjectItem = new QStandardItem (GetTextFromMessageType (static_cast<LJInbox::MessageType> (msg->Type_)));
+			{
+				auto pair = GetTextFromMessageType (static_cast<LJInbox::MessageType> (msg->Type_));
+				subjectItem = new QStandardItem (pair.first);
+				textItem = new QStandardItem (pair.second);
+			}
 
-			QStandardItem *textItem = new QStandardItem (msg->ExtendedText_);
+			if (!textItem)
+				textItem = new QStandardItem (msg->ExtendedText_);
+
+			whenItem->setEditable (false);
+			stateItem->setEditable (false);
+			subjectItem->setEditable (false);
+			textItem->setEditable (false);
 
 			return { whenItem, stateItem, subjectItem, textItem };
 		}
@@ -292,6 +346,7 @@ namespace Metida
 
 	void ProfileWidget::FillInboxView (int limit, int offset)
 	{
+		MessagesModel_->removeRows (0, MessagesModel_->rowCount ());
 		try
 		{
 			auto mc = static_cast<ProfileWidget::MessageCategory> (Ui_.Category_->
@@ -300,13 +355,19 @@ namespace Metida
 				Ui_.FriendsUpdates_->itemData (Ui_.FriendsUpdates_->currentIndex ()).toInt () :
 				FUCAll);
 			auto msgs = Core::Instance ().GetLocalStorage ()->GetLimitedMessages (20,
-					PageNumber_,
+					offset,
 					MessageTypeFromCategory (mc, fuc),
 					qobject_cast<IAccount*> (Profile_->GetParentAccount ())->
 							GetAccountID ());
 
 			for (auto msg : msgs)
+			{
 				MessagesModel_->appendRow (GetRowFromMessage (msg));
+				Ui_.InboxView_->resizeColumnToContents (0);
+				Ui_.InboxView_->resizeColumnToContents (1);
+				Ui_.InboxView_->resizeColumnToContents (2);
+				Ui_.InboxView_->resizeColumnToContents (3);
+			}
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -487,6 +548,8 @@ namespace Metida
 	void ProfileWidget::on_Next__released ()
 	{
 		FillInboxView (20, 20 * ++PageNumber_);
+		if (!MessagesModel_->rowCount ())
+			on_Previous__released ();
 	}
 
 	void ProfileWidget::on_Previous__released ()

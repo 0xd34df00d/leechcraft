@@ -57,6 +57,7 @@ namespace Metida
 
 		QStandardItemModel *MessagesModel_;
 		int PageNumber_;
+		const int MessageCountOnPage_;
 
 	public:
 		enum MessageCategory
