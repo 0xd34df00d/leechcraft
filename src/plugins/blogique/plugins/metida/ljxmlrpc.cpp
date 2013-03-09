@@ -26,7 +26,6 @@
 #include "profiletypes.h"
 #include "ljfriendentry.h"
 #include "utils.h"
-#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -1631,6 +1630,7 @@ namespace Metida
 
 			msg->Type_ = type;
 
+			QList<QPair<QString, QString>> list;
 			for (const auto& field : message.toList ())
 			{
 				auto fieldEntry = field.value<LJParserTypes::LJParseProfileEntry> ();
@@ -1754,7 +1754,13 @@ namespace Metida
 					auto sentMsg = static_cast<LJInbox::MessageSent*> (msg);
 					sentMsg->To_ = fieldEntry.ValueToString ();
 				}
+				else if (name != "type")
+					list << qMakePair (name, fieldEntry.ValueToString ());
 			}
+
+			if (!list.isEmpty ())
+				qDebug () << msg->Id_ << msg->Type_ << list;
+
 			return msg;
 		}
 
@@ -1800,7 +1806,11 @@ namespace Metida
 				auto res = ParseMember (member);
 				if (res.Name () == "items")
 					for (const auto& message : res.Value ())
-						msgs << CreateLJMessage (message);
+					{
+						auto msg = CreateLJMessage (message);
+						if (msg->ExternalId_ != -1)
+							msgs << msg;
+					}
 			}
 
 			msgs.removeAll (0);
@@ -1824,8 +1834,7 @@ namespace Metida
 		{
 			const auto& msgs = ParseMessages (document);
 			emit gotMessages (msgs);
-			XmlSettingsManager::Instance ().setProperty ("LastInboxUpdateDate",
-					   QDateTime::currentDateTime ());
+
 			if (Reply2InboxBackup_.value (reply, false) && !msgs.isEmpty ())
 			{
 				QDateTime when = msgs.last ()->When_.addSecs (-1);
@@ -1836,9 +1845,7 @@ namespace Metida
 				return;
 			}
 
-			emit gotMessagesFinished ();
-			XmlSettingsManager::Instance ().setProperty ("FirstInboxDownload",
-					true);
+			qDebug () << Q_FUNC_INFO << "backup inbox finished";
 			return;
 		}
 

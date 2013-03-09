@@ -158,9 +158,8 @@ namespace Metida
 		void gotEvents (const QList<LJEvent>& events);
 
 		void gotStatistics (const QMap<QDate, int>& statistics);
-
+		
 		void gotMessages (const QList<LJInbox::Message*>& msgs);
-		void gotMessagesFinished ();
 	};
 }
 }

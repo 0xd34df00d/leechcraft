@@ -128,6 +128,7 @@ namespace Metida
 		saveAccounts ();
 		emit accountAdded (account);
 		account->Init ();
+
 		Core::Instance ().GetLocalStorage ()->AddAccount (account->GetAccountID ());
 	}
 
@@ -191,7 +192,6 @@ namespace Metida
 			emit accountAdded (acc);
 
 			acc->Init ();
-			Core::Instance ().GetLocalStorage ()->AddAccount (acc->GetAccountID ());
 		}
 		settings.endArray ();
 	}

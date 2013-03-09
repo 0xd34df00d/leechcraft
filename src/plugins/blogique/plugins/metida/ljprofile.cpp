@@ -26,7 +26,6 @@
 #include "ljaccount.h"
 #include "core.h"
 #include "profilewidget.h"
-#include "localstorage.h"
 
 namespace LeechCraft
 {
@@ -80,9 +79,9 @@ namespace Metida
 	void LJProfile::AddFriends (const QList<LJFriendEntry_ptr>& friends)
 	{
 		ProfileData_.Friends_ << friends;
-		std::sort (ProfileData_.Friends_.begin (), ProfileData_.Friends_.end (),
+		std::sort (ProfileData_.Friends_.begin (), ProfileData_.Friends_.end (), 
 				CompareFriends);
-		ProfileData_.Friends_.erase (std::unique (ProfileData_.Friends_.begin (),
+		ProfileData_.Friends_.erase (std::unique (ProfileData_.Friends_.begin (), 
 				ProfileData_.Friends_.end (),
 				[] (decltype (ProfileData_.Friends_.front ()) fr1,
 						decltype (ProfileData_.Friends_.front ()) fr2)
@@ -180,12 +179,71 @@ namespace Metida
 
 	void LJProfile::handleGotMessages (const QList<LJInbox::Message*>& msgs)
 	{
-		auto acc = qobject_cast<IAccount*> (ParentAccount_);
-		if (!acc)
-			return;
-
 		for (const auto& msg : msgs)
-			Core::Instance ().GetLocalStorage ()->AddMessage (msg, acc->GetAccountID ());
+		{
+			switch (msg->Type_)
+			{
+				case LJInbox::JournalNewComment:
+				{
+					auto commentMsg = static_cast<LJInbox::MessageNewComment*> (msg);
+					qDebug () << commentMsg->Id_
+							<< commentMsg->Type_
+							<< commentMsg->TypeString_
+							<< commentMsg->When_
+							<< commentMsg->ExternalId_
+							<< commentMsg->ExtendedSubject_
+							<< commentMsg->ExtendedText_
+							<< commentMsg->Action_
+							<< commentMsg->AuthorName_
+							<< commentMsg->Journal_
+							<< commentMsg->ReplyUrl_
+							<< commentMsg->Subject_
+							<< commentMsg->Url_;
+					break;
+				}
+				case LJInbox::UserMessageRecvd:
+				{
+					auto recvdMsg = static_cast<LJInbox::MessageRecvd*> (msg);
+					qDebug () << recvdMsg->Id_
+							<< recvdMsg->Type_
+							<< recvdMsg->TypeString_
+							<< recvdMsg->When_
+							<< recvdMsg->ExternalId_
+							<< recvdMsg->ExtendedSubject_
+							<< recvdMsg->ExtendedText_
+							<< recvdMsg->Body_
+							<< recvdMsg->From_
+							<< recvdMsg->MessageId_
+							<< recvdMsg->ParentId_
+							<< recvdMsg->PictureUrl_;
+					break;
+				}
+				case LJInbox::UserMessageSent:
+				{
+					auto sentMsg = static_cast<LJInbox::MessageSent*> (msg);
+// 					qDebug () << sentMsg->Id_
+// 							<< sentMsg->Type_
+// 							<< sentMsg->TypeString_
+// 							<< sentMsg->When_
+// 							<< sentMsg->ExternalId_
+// 							<< sentMsg->ExtendedSubject_
+// 							<< sentMsg->ExtendedText_
+// 							<< sentMsg->Body_
+// 							<< sentMsg->PictureUrl_
+// 							<< sentMsg->Subject_
+// 							<< sentMsg->To_;
+					break;
+				}
+				default:
+					qDebug () << msg->Id_
+							<< msg->Type_
+							<< msg->When_
+							<< msg->ExternalId_
+							<< msg->ExtendedSubject_
+							<< msg->ExtendedText_;
+					break;
+			}
+		}
 	}
 
 	void LJProfile::handleAvatarDownloadFinished ()
