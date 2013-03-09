@@ -16,42 +16,73 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QUrl>
-#include <interfaces/monocle/ihavetoc.h>
-#include "documentadapter.h"
+#include "bookmark.h"
+#include <QDataStream>
+#include <QtDebug>
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-namespace FXB
-{
-	class Document : public QObject
-				  , public DocumentAdapter
-				  , public IHaveTOC
+	Bookmark::Bookmark ()
+	: Page_ (0)
 	{
-		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Monocle::IDocument LeechCraft::Monocle::IHaveTOC)
+	}
 
-		DocumentInfo Info_;
-		TOCEntryLevel_t TOC_;
-		QUrl DocURL_;
-	public:
-		Document (const QString&, QObject* = 0);
+	Bookmark::Bookmark (int page, const QPoint& position)
+	: Page_ (page)
+	, Position_ (position)
+	{
+	}
 
-		QObject* GetObject ();
-		DocumentInfo GetDocumentInfo () const;
-		QUrl GetDocURL () const;
+	int Bookmark::GetPage () const
+	{
+		return Page_;
+	}
 
-		TOCEntryLevel_t GetTOC ();
+	void Bookmark::SetPage (int page)
+	{
+		Page_ = page;
+	}
 
-		void RequestNavigation (int);
-	signals:
-		void navigateRequested (const QString&, int pageNum, double x, double y);
-	};
-}
+	QPoint Bookmark::GetPosition () const
+	{
+		return Position_;
+	}
+
+	void Bookmark::SetPosition (const QPoint& p)
+	{
+		Position_ = p;
+	}
+
+	QDataStream& operator<< (QDataStream& out, const Bookmark& bm)
+	{
+		return out << static_cast<quint8> (1)
+				<< bm.GetPage ()
+				<< bm.GetPosition ();
+	}
+
+	QDataStream& operator>> (QDataStream& in, Bookmark& bm)
+	{
+		quint8 version = 0;
+		in >> version;
+		if (version != 1)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown version"
+					<< version;
+			return in;
+		}
+
+		int page = 0;
+		QPoint p;
+
+		in >> page >> p;
+
+		bm.SetPage (page);
+		bm.SetPosition (p);
+
+		return in;
+	}
 }
 }

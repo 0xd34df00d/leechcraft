@@ -18,58 +18,30 @@
 
 #pragma once
 
-#include <memory>
-#include <QImage>
+#include <QPoint>
 #include <QMetaType>
-#include <QStringList>
-#include <QDateTime>
-#include "ilink.h"
-
-class QUrl;
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-	struct DocumentInfo
+	class Bookmark
 	{
-		QString Title_;
-		QString Subject_;
-		QString Author_;
-
-		QStringList Genres_;
-		QStringList Keywords_;
-
-		QDateTime Date_;
-	};
-
-	class IDocument
-	{
+		int Page_;
+		QPoint Position_;
 	public:
-		virtual ~IDocument () {}
+		Bookmark ();
+		Bookmark (int page, const QPoint& position);
 
-		virtual QObject* GetObject () = 0;
-
-		virtual bool IsValid () const = 0;
-
-		virtual DocumentInfo GetDocumentInfo () const = 0;
-
-		virtual int GetNumPages () const = 0;
-
-		virtual QSize GetPageSize (int) const = 0;
-
-		virtual QImage RenderPage (int, double xRes, double yRes) = 0;
-
-		virtual QList<ILink_ptr> GetPageLinks (int) = 0;
-
-		virtual QUrl GetDocURL () const = 0;
-	protected:
-		virtual void navigateRequested (const QString&, int pageNum, double x, double y) = 0;
+		int GetPage () const;
+		void SetPage (int);
+		QPoint GetPosition () const;
+		void SetPosition (const QPoint& p);
 	};
 
-	typedef std::shared_ptr<IDocument> IDocument_ptr;
+	QDataStream& operator<< (QDataStream&, const Bookmark&);
+	QDataStream& operator>> (QDataStream&, Bookmark&);
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::IDocument,
-		"org.LeechCraft.Monocle.IDocument/1.0");
+Q_DECLARE_METATYPE (LeechCraft::Monocle::Bookmark)

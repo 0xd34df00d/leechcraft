@@ -18,58 +18,20 @@
 
 #pragma once
 
-#include <memory>
-#include <QImage>
-#include <QMetaType>
-#include <QStringList>
-#include <QDateTime>
-#include "ilink.h"
-
-class QUrl;
+#include <QWidget>
+#include "ui_bookmarkswidget.h"
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-	struct DocumentInfo
+	class BookmarksWidget : public QWidget
 	{
-		QString Title_;
-		QString Subject_;
-		QString Author_;
+		Q_OBJECT
 
-		QStringList Genres_;
-		QStringList Keywords_;
-
-		QDateTime Date_;
-	};
-
-	class IDocument
-	{
+		Ui::BookmarksWidget Ui_;
 	public:
-		virtual ~IDocument () {}
-
-		virtual QObject* GetObject () = 0;
-
-		virtual bool IsValid () const = 0;
-
-		virtual DocumentInfo GetDocumentInfo () const = 0;
-
-		virtual int GetNumPages () const = 0;
-
-		virtual QSize GetPageSize (int) const = 0;
-
-		virtual QImage RenderPage (int, double xRes, double yRes) = 0;
-
-		virtual QList<ILink_ptr> GetPageLinks (int) = 0;
-
-		virtual QUrl GetDocURL () const = 0;
-	protected:
-		virtual void navigateRequested (const QString&, int pageNum, double x, double y) = 0;
+		BookmarksWidget (QWidget* = 0);
 	};
-
-	typedef std::shared_ptr<IDocument> IDocument_ptr;
 }
 }
-
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::IDocument,
-		"org.LeechCraft.Monocle.IDocument/1.0");

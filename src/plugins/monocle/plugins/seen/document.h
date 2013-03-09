@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <QHash>
+#include <QUrl>
 #include <libdjvu/ddjvuapi.h>
 #include <libdjvu/miniexp.h>
 #include <interfaces/monocle/idocument.h>
@@ -49,6 +50,8 @@ namespace Seen
 		QHash<int, QSize> Sizes_;
 		QHash<int, ddjvu_page_t*> PendingRenders_;
 		QHash<ddjvu_page_t*, int> PendingRendersNums_;
+
+		QUrl DocURL_;
 	public:
 		Document (const QString&, ddjvu_context_t*, DocManager*);
 		~Document ();
@@ -60,6 +63,7 @@ namespace Seen
 		QSize GetPageSize (int) const;
 		QImage RenderPage (int, double xRes, double yRes);
 		QList<ILink_ptr> GetPageLinks (int);
+		QUrl GetDocURL () const;
 
 		ddjvu_document_t* GetNativeDoc () const;
 
