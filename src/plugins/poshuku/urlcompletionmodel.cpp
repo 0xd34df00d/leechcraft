@@ -131,8 +131,6 @@ namespace Poshuku
 				Items_ = newItems;
 			}
 		}
-
-		emit baseUpdated (sender ());
 	}
 
 	void URLCompletionModel::handleItemAdded (const HistoryItem&)

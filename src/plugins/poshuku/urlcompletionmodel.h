@@ -59,8 +59,6 @@ namespace Poshuku
 		void setBase (const QString&);
 		void handleItemAdded (const HistoryItem&);
 	signals:
-		void baseUpdated (QObject*);
-
 		// Plugin API
 		void hookURLCompletionNewStringRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *model,
