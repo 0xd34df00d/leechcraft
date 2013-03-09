@@ -92,7 +92,8 @@ namespace Metida
 
 		enum MessageType
 		{
-			Friended = 1,
+			NoType = 0,
+			Friended,
 			Birthday,
 			CommunityInvite,
 			CommunityJoinApprove,
@@ -114,7 +115,7 @@ namespace Metida
 			UserNewComment,
 			UserNewEntry
 		};
-		
+
 		struct Message
 		{
 			int Id_;
@@ -125,7 +126,7 @@ namespace Metida
 			QString ExtendedSubject_;
 			QString ExtendedText_;
 			int ExternalId_;
-			
+
 			Message ()
 			: Id_(-1)
 			, State_ (MessageState::UnRead)
@@ -152,7 +153,7 @@ namespace Metida
 			QString Body_;
 			int MessageId_;
 			int ParentId_;
-			
+
 			MessageRecvd ()
 			: Message ()
 			, MessageId_ (-1)

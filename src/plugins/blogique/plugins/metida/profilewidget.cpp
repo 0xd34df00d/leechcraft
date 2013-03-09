@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "profilewidget.h"
+#include <stdexcept>
 #include <QtDebug>
 #include <QMessageBox>
 #include <util/util.h>
@@ -28,6 +29,7 @@
 #include "addeditentrydialog.h"
 #include "friendsmodel.h"
 #include "core.h"
+#include "localstorage.h"
 
 namespace LeechCraft
 {
@@ -40,12 +42,17 @@ namespace Metida
 	, Profile_ (profile)
 	, FriendsModel_ (new FriendsModel (this))
 	, CommunitiesModel_ (new QStandardItemModel (this))
+	, MessagesModel_ (new QStandardItemModel (this))
+	, PageNumber_ (0)
 	{
 		Ui_.setupUi (this);
 
-		
-
 		FillMessagesUi ();
+
+		connect (profile,
+				SIGNAL(gotMessagesFinished ()),
+				this,
+				SLOT (handleGotMessagesFinished ()));
 
 		Ui_.FriendsView_->setModel (FriendsModel_);
 		Ui_.FriendsView_->setDropIndicatorShown (true);
@@ -71,8 +78,7 @@ namespace Metida
 
 		updateProfile ();
 
-		if (XmlSettingsManager::Instance ().Property ("FirstInboxRequest", true).toBool ())
-			Profile_->RequestInbox ();
+		Profile_->RequestInbox ();
 	}
 
 	void ProfileWidget::RereadProfileData ()
@@ -176,20 +182,137 @@ namespace Metida
 
 	void ProfileWidget::FillMessagesUi ()
 	{
-		Ui_.Category_->addItems ({ tr ("All"),
-				tr ("Incoming"),
-				tr ("Friend updates"),
-				tr ("Entries and comments"),
-				tr ("Flagged"),
-				tr ("Sent") });
-		Ui_.FriendsUpdates_->addItems ({ tr ("All"),
-				tr ("Birthdays"),
-				tr ("New friends") });
+		Ui_.Category_->addItem (tr ("All"), MCAll);
+		Ui_.Category_->addItem (tr ("Incoming"), MCIncoming);
+		Ui_.Category_->addItem (tr ("Friend updates"), MCFriendUpdates);
+		Ui_.Category_->addItem (tr ("Entries and comments"), MCEntriesAndComments);
+		Ui_.Category_->addItem (tr ("Sent"), MCSent);
+
+		Ui_.FriendsUpdates_->addItem (tr ("All"), FUCAll);
+		Ui_.FriendsUpdates_->addItem (tr ("Birthdays"), FUCBirthdays);
+		Ui_.FriendsUpdates_->addItem (tr ("New friends"), FUCNewFriends);
 
 		Ui_.Category_->setCurrentIndex (MCAll);
-		
+
 		Ui_.Next_->setIcon (Core::Instance ().GetCoreProxy ()->GetIcon ("go-next"));
-		Ui_.Prevous_->setIcon (Core::Instance ().GetCoreProxy ()->GetIcon ("go-previous"));
+		Ui_.Previous_->setIcon (Core::Instance ().GetCoreProxy ()->GetIcon ("go-previous"));
+
+		Ui_.InboxView_->setModel (MessagesModel_);
+	}
+
+	namespace
+	{
+		LJInbox::MessageType MessageTypeFromCategory (ProfileWidget::MessageCategory category,
+				ProfileWidget::FriendUpdatesCategory friendsCategory)
+		{
+			switch (category)
+			{
+			case ProfileWidget::MCAll:
+				return LJInbox::MessageType::NoType;
+			case ProfileWidget::MCIncoming:
+				return LJInbox::MessageType::UserMessageRecvd;
+			case ProfileWidget::MCFriendUpdates:
+				switch (friendsCategory)
+				{
+				case ProfileWidget::FUCBirthdays:
+					return LJInbox::MessageType::Birthday;
+				case ProfileWidget::FUCNewFriends:
+					return LJInbox::MessageType::Friended;
+				case ProfileWidget::FUCAll:
+				default:
+					return LJInbox::MessageType::NoType;
+				}
+			case ProfileWidget::MCEntriesAndComments:
+				return LJInbox::MessageType::JournalNewComment;
+			case ProfileWidget::MCSent:
+				return LJInbox::MessageType::UserMessageSent;
+			default:
+				return LJInbox::MessageType::NoType;
+			}
+		}
+	}
+
+	namespace
+	{
+		QString GetTextFromMessageType (LJInbox::MessageType mt)
+		{
+			switch (mt)
+			{
+			case LJInbox::MessageType::NoType:
+				return QString ();
+			case LJInbox::MessageType::Friended:
+			case LJInbox::MessageType::Defriended:
+			case LJInbox::MessageType::InvitedFriendJoins:
+				return QObject::tr ("Friends event");
+			case LJInbox::MessageType::Birthday:
+				return QObject::tr ("Birthday event");
+			case LJInbox::MessageType::CommunityInvite:
+			case LJInbox::MessageType::CommunityJoinApprove:
+			case LJInbox::MessageType::CommunityJoinReject:
+			case LJInbox::MessageType::CommunityJoinRequest:
+				return QObject::tr ("Commumity event");
+			case LJInbox::MessageType::JournalNewComment:
+			case LJInbox::MessageType::JournalNewEntry:
+				return QObject::tr ("Journal event");
+			case LJInbox::MessageType::NewUserpic:
+			case LJInbox::MessageType::UserMessageRecvd:
+			case LJInbox::MessageType::UserMessageSent:
+			case LJInbox::MessageType::UserNewComment:
+			case LJInbox::MessageType::UserNewEntry:
+			case LJInbox::MessageType::UserExpunged:
+			case LJInbox::MessageType::NewVGift:
+				return QObject::tr ("User event");
+			case LJInbox::MessageType::OfficialPost:
+			case LJInbox::MessageType::SupOfficialPost:
+			case LJInbox::MessageType::PermSale:
+				return QObject::tr ("Official LJ event");
+			default:
+				return QString ();
+			}
+		}
+
+		QList<QStandardItem*> GetRowFromMessage (LJInbox::Message *msg)
+		{
+			QStandardItem *whenItem = new QStandardItem (msg->When_.toString (Qt::DefaultLocaleShortDate));
+			QStandardItem *stateItem = new QStandardItem (msg->State_ == LJInbox::MessageState::Read ? "R" : "U");
+
+			QStandardItem *subjectItem = 0;
+			if (!msg->ExtendedSubject_.isEmpty ())
+				subjectItem = new QStandardItem (msg->ExtendedSubject_);
+			else if (!msg->TypeString_.isEmpty ())
+				subjectItem = new QStandardItem (msg->TypeString_);
+			else
+				subjectItem = new QStandardItem (GetTextFromMessageType (static_cast<LJInbox::MessageType> (msg->Type_)));
+
+			QStandardItem *textItem = new QStandardItem (msg->ExtendedText_);
+
+			return { whenItem, stateItem, subjectItem, textItem };
+		}
+	}
+
+	void ProfileWidget::FillInboxView (int limit, int offset)
+	{
+		try
+		{
+			auto mc = static_cast<ProfileWidget::MessageCategory> (Ui_.Category_->
+					itemData (Ui_.Category_->currentIndex ()).toInt ());
+			auto fuc = static_cast<ProfileWidget::FriendUpdatesCategory> ((mc == MCFriendUpdates) ?
+				Ui_.FriendsUpdates_->itemData (Ui_.FriendsUpdates_->currentIndex ()).toInt () :
+				FUCAll);
+			auto msgs = Core::Instance ().GetLocalStorage ()->GetLimitedMessages (20,
+					PageNumber_,
+					MessageTypeFromCategory (mc, fuc),
+					qobject_cast<IAccount*> (Profile_->GetParentAccount ())->
+							GetAccountID ());
+
+			for (auto msg : msgs)
+				MessagesModel_->appendRow (GetRowFromMessage (msg));
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+		}
 	}
 
 	void ProfileWidget::updateProfile ()
@@ -199,6 +322,11 @@ namespace Metida
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "Profile is set to 0";
+	}
+
+	void ProfileWidget::handleGotMessagesFinished ()
+	{
+		FillInboxView (20, 0);
 	}
 
 	void ProfileWidget::on_ColoringFriendsList__toggled (bool toggle)
@@ -354,6 +482,19 @@ namespace Metida
 	void ProfileWidget::on_FriendsUpdates__currentIndexChanged (int index)
 	{
 
+	}
+
+	void ProfileWidget::on_Next__released ()
+	{
+		FillInboxView (20, 20 * ++PageNumber_);
+	}
+
+	void ProfileWidget::on_Previous__released ()
+	{
+		if (PageNumber_ == 0)
+			return;
+
+		FillInboxView (20, 20 * --PageNumber_);
 	}
 
 }

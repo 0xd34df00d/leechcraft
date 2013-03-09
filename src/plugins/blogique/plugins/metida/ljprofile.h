@@ -75,6 +75,7 @@ namespace Metida
 
 	signals:
 		void profileUpdated ();
+		void gotMessagesFinished ();
 	};
 }
 }
