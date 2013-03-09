@@ -94,6 +94,20 @@ namespace Choroid
 		Bar_ = new QToolBar;
 
 		SetSortMenu ();
+
+		Bar_->addSeparator ();
+
+		auto up = Bar_->addAction (tr ("Up"),
+				this, SLOT (goUp ()));
+		up->setProperty ("ActionIcon", "go-up");
+
+		auto prev = Bar_->addAction (tr ("Previous"),
+				this, SLOT (showNextImage ()));
+		prev->setProperty ("ActionIcon", "go-previous");
+
+		auto next = Bar_->addAction (tr ("Next"),
+				this, SLOT (showNextImage ()));
+		next->setProperty ("ActionIcon", "go-next");
 	}
 
 	ChoroidTab::~ChoroidTab ()
@@ -156,6 +170,14 @@ namespace Choroid
 				SIGNAL (imageSelected (QString)),
 				this,
 				SLOT (handleQMLImageSelected (QString)));
+		connect (item,
+				SIGNAL (nextImageRequested ()),
+				this,
+				SLOT (showNextImage ()));
+		connect (item,
+				SIGNAL (prevImageRequested ()),
+				this,
+				SLOT (showPrevImage ()));
 	}
 
 	void ChoroidTab::SetSortMenu ()
@@ -197,9 +219,26 @@ namespace Choroid
 
 	void ChoroidTab::ShowImage (const QString& path)
 	{
+		ShowImage (QUrl::fromLocalFile (path));
+	}
+
+	void ChoroidTab::ShowImage (const QUrl& url)
+	{
 		QMetaObject::invokeMethod (DeclView_->rootObject (),
 				"showSingleImage",
-				Q_ARG (QVariant, QUrl::fromLocalFile (path)));
+				Q_ARG (QVariant, url));
+		CurrentImage_ = url;
+	}
+
+	QStandardItem* ChoroidTab::FindFileItem (const QString& filename)
+	{
+		for (int i = 0; i < QMLFilesModel_->rowCount (); ++i)
+		{
+			auto item = QMLFilesModel_->item (i);
+			if (item->data (ILRFilename).toString () == filename)
+				return item;
+		}
+		return 0;
 	}
 
 	void ChoroidTab::sortByName ()
@@ -278,13 +317,15 @@ namespace Choroid
 
 			row.first ()->setData (absPath, CRFilePath);
 
+			for (auto item : row)
+				item->setEditable (false);
+
 			FilesModel_->appendRow (row);
 
 			auto qmlItem = new QStandardItem (info.fileName ());
 			qmlItem->setData (info.fileName (), ILRFilename);
 			qmlItem->setData (Util::MakePrettySize (info.size ()), ILRFileSize);
 			qmlItem->setData (QUrl::fromLocalFile (absPath), ILRImage);
-			qmlItem->setData (QVariant::fromValue (info), ILRFileInfo);
 			qmlItems << qmlItem;
 		}
 
@@ -303,7 +344,42 @@ namespace Choroid
 
 	void ChoroidTab::handleQMLImageSelected (const QString& url)
 	{
-		ShowImage (QUrl (url).toLocalFile ());
+		ShowImage (QUrl (url));
+	}
+
+	void ChoroidTab::showNextImage ()
+	{
+		auto current = FindFileItem (QFileInfo (CurrentImage_.path ()).fileName ());
+		if (!current)
+			return;
+
+		const auto rc = QMLFilesModel_->rowCount ();
+		const auto& url = QMLFilesModel_->item ((current->row () + 1) % rc)->data (ILRImage).value<QUrl> ();
+		ShowImage (url);
+	}
+
+	void ChoroidTab::showPrevImage ()
+	{
+		auto current = FindFileItem (QFileInfo (CurrentImage_.path ()).fileName ());
+		if (!current)
+			return;
+
+		auto prev = current->row () - 1;
+		if (prev < 0)
+			prev = QMLFilesModel_->rowCount () - 1;
+		const auto& url = QMLFilesModel_->item (prev)->data (ILRImage).value<QUrl> ();
+		ShowImage (url);
+	}
+
+	void ChoroidTab::goUp ()
+	{
+		if (!CurrentImage_.isEmpty ())
+			ShowImage (QUrl ());
+		else
+		{
+			const auto& parentIdx = Ui_.DirTree_->currentIndex ().parent ();
+			Ui_.DirTree_->setCurrentIndex (parentIdx);
+		}
 	}
 
 	void ChoroidTab::handleStatusChanged (QDeclarativeView::Status status)

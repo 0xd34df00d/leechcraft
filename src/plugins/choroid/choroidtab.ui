@@ -33,7 +33,11 @@
           <enum>Qt::Vertical</enum>
          </property>
          <widget class="QTreeView" name="DirTree_"/>
-         <widget class="QTreeView" name="FilesList_"/>
+         <widget class="QTreeView" name="FilesList_">
+          <property name="rootIsDecorated">
+           <bool>false</bool>
+          </property>
+         </widget>
         </widget>
        </item>
       </layout>
