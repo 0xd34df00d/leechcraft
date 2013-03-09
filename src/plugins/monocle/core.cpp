@@ -23,6 +23,7 @@
 #include "recentlyopenedmanager.h"
 #include "defaultbackendmanager.h"
 #include "docstatemanager.h"
+#include "bookmarksmanager.h"
 
 namespace LeechCraft
 {
@@ -33,6 +34,7 @@ namespace Monocle
 	, ROManager_ (new RecentlyOpenedManager (this))
 	, DefaultBackendManager_ (new DefaultBackendManager (this))
 	, DocStateManager_ (new DocStateManager (this))
+	, BookmarksManager_ (new BookmarksManager (this))
 	{
 	}
 
@@ -109,6 +111,11 @@ namespace Monocle
 	DocStateManager* Core::GetDocStateManager () const
 	{
 		return DocStateManager_;
+	}
+
+	BookmarksManager* Core::GetBookmarksManager () const
+	{
+		return BookmarksManager_;
 	}
 }
 }
