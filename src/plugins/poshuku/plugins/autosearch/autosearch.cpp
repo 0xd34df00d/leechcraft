@@ -17,10 +17,10 @@
  **********************************************************************/
 
 #include "autosearch.h"
-#include <boost/property_tree/json_parser.hpp>
 #include <QUrl>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QDomDocument>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/poshuku/iurlcompletionmodel.h>
 
@@ -87,10 +87,9 @@ namespace Autosearch
 			return;
 
 		QUrl reqUrl ("http://clients1.google.com/complete/search");
-		reqUrl.addQueryItem ("q", string);
-		reqUrl.addQueryItem ("client", "firefox");
 		reqUrl.addQueryItem ("hl", "en");
 		reqUrl.addQueryItem ("output", "toolbar");
+		reqUrl.addQueryItem ("q", string);
 
 		auto reply = Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (reqUrl));
 		connect (reply,
@@ -113,40 +112,30 @@ namespace Autosearch
 			return;
 		}
 
-		auto data = reply->readAll ();
+		const auto& data = reply->readAll ();
 
 		auto model = Reply2Model_.take (reply);
 		Model2Reply_.remove (model);
 
-		boost::property_tree::ptree pt;
-		try
-		{
-			std::istringstream istr (data.constData ());
-			boost::property_tree::read_json (istr, pt);
-		}
-		catch (const std::exception& e)
+		QDomDocument doc;
+		if (!doc.setContent (data))
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "error reading reply"
-					<< e.what ();
+					<< "unable to read reply";
 			return;
 		}
 
 		auto iURLCompleter = qobject_cast<IURLCompletionModel*> (model);
 
-		for (const auto& v : pt)
+		auto suggestion = doc.documentElement ().firstChildElement ("CompleteSuggestion");
+		auto pos = 5;
+		while (!suggestion.isNull ())
 		{
-			const auto& sub = v.second;
-			if (!sub.get<std::string> ("").empty ())
-				continue;
+			const auto& str = suggestion.firstChildElement ("suggestion").attribute ("data");
 
-			auto pos = 5;
-			for (const auto& subv : sub)
-			{
-				const auto& str = QString::fromUtf8 (subv.second.get<std::string> ("").c_str ());
-				iURLCompleter->AddItem (str, str, pos++);
-			}
-			break;
+			iURLCompleter->AddItem (str, str, pos++);
+
+			suggestion = suggestion.nextSiblingElement ("CompleteSuggestion");
 		}
 	}
 }
