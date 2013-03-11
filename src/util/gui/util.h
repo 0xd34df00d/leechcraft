@@ -23,6 +23,8 @@
 
 class QSize;
 class QRect;
+class QPixmap;
+class QLabel;
 
 namespace LeechCraft
 {
@@ -40,6 +42,8 @@ namespace Util
 			FitFlags flags = NoFlags, const QPoint& shiftAdd = QPoint (0, 0));
 	UTIL_API QPoint FitRect (QPoint pos, const QSize& size, const QRect& geometry,
 			FitFlags flags = NoFlags, const QPoint& shiftAdd = QPoint (0, 0));
+
+	UTIL_API QLabel* ShowPixmapLabel (const QPixmap&, const QPoint& pos = QPoint ());
 }
 }
 

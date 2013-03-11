@@ -20,6 +20,10 @@
 #include <QSize>
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QKeyEvent>
+#include <QTimer>
+#include <QDesktopWidget>
+#include <QLabel>
 #include <QtDebug>
 
 namespace LeechCraft
@@ -65,5 +69,62 @@ namespace Util
 		return pos;
 	}
 
+	namespace
+	{
+		class AADisplayEventFilter : public QObject
+		{
+			QWidget *Display_;
+		public:
+			AADisplayEventFilter (QWidget *display)
+			: QObject (display)
+			, Display_ (display)
+			{
+			}
+		protected:
+			bool eventFilter (QObject*, QEvent *event)
+			{
+				bool shouldClose = false;
+				switch (event->type ())
+				{
+				case QEvent::KeyRelease:
+					shouldClose = static_cast<QKeyEvent*> (event)->key () == Qt::Key_Escape;
+					break;
+				case QEvent::MouseButtonRelease:
+					shouldClose = true;
+					break;
+				default:
+					break;
+				}
+
+				if (!shouldClose)
+					return false;
+
+				QTimer::singleShot (0,
+						Display_,
+						SLOT (close ()));
+				return true;
+			}
+		};
+	}
+
+	QLabel* ShowPixmapLabel (const QPixmap& srcPx, const QPoint& pos)
+	{
+		const auto& availGeom = QApplication::desktop ()->availableGeometry (pos).size () * 0.9;
+
+		auto px = srcPx;
+		if (px.size ().width () > availGeom.width () ||
+			px.size ().height () > availGeom.height ())
+			px = px.scaled (availGeom, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+		auto label = new QLabel;
+		label->setWindowFlags (Qt::Tool);
+		label->setAttribute (Qt::WA_DeleteOnClose);
+		label->setFixedSize (px.size ());
+		label->setPixmap (px);
+		label->show ();
+		label->activateWindow ();
+		label->installEventFilter (new AADisplayEventFilter (label));
+		return label;
+	}
 }
 }
