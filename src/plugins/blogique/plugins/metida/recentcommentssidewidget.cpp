@@ -34,6 +34,7 @@ namespace Metida
 	{
 		Ui_.setupUi (this);
 
+		Ui_.View_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
 		Ui_.View_->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,
 				"blogique/metida", "recentcomments.qml")));
 	}
