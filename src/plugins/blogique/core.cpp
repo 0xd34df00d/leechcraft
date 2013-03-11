@@ -24,6 +24,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/util.h>
+#include <util/notificationactionhandler.h>
 #include "interfaces/blogique/iaccount.h"
 #include "interfaces/blogique/ibloggingplatformplugin.h"
 #include "interfaces/blogique/ibloggingplatform.h"
@@ -278,16 +279,26 @@ namespace Blogique
 		if (!acc)
 			return;
 
-		SendEntity (Util::MakeNotification ("Blogique",
+		auto e = Util::MakeNotification ("Blogique",
 				tr ("Entry was posted successfully:") +
 					QString (" <a href=\"%1\">%1</a>\n")
 						.arg (entries.value (0).EntryUrl_.toString ()),
-				Priority::PInfo_));
-
+				Priority::PInfo_);
+		Util::NotificationActionHandler *nh = new Util::NotificationActionHandler (e, this);
+		nh->AddFunction (tr ("Open Link"),
+				[this, entries] () 
+				{
+					Entity urlEntity = Util::MakeEntity (entries.value (0).EntryUrl_,
+							QString (),
+							static_cast<TaskParameters> (OnlyHandle | FromUserInitiated));
+					Core::Instance ().SendEntity (urlEntity);
+				});
+		nh->AddDependentObject (this);
+		emit gotEntity (e);
 		acc->RequestStatistics ();
 	}
 
-	void Core::handleEntryRemoved (int itemId)
+	void Core::handleEntryRemoved (int)
 	{
 		auto acc = qobject_cast<IAccount*> (sender ());
 		if (!acc)
@@ -314,7 +325,7 @@ namespace Blogique
 		acc->RequestStatistics ();
 	}
 
-	void Core::handleGotEntries2Backup (const QList<Entry>& entries)
+	void Core::handleGotEntries2Backup (const QList<Entry>& )
 	{
 		auto acc = qobject_cast<IAccount*> (sender ());
 		if (!acc)
