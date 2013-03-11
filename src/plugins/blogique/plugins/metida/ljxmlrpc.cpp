@@ -142,17 +142,17 @@ namespace Metida
 		GenerateChallenge ();
 	}
 
-	void LJXmlRPC::RequestFullInbox ()
+	void LJXmlRPC::RequestLastInbox ()
 	{
 		ApiCallQueue_ << [this] (const QString& challenge)
-				{ InboxRequest (challenge, true, QDateTime::currentDateTime ()); };
+				{ InboxRequest (challenge); };
 		GenerateChallenge ();
 	}
 
-	void LJXmlRPC::RequestLastInbox (const QDateTime& from)
+	void LJXmlRPC::RequestRecentCommments ()
 	{
-		ApiCallQueue_ << [this, from] (const QString& challenge)
-				{ InboxRequest (challenge, false, from); };
+		ApiCallQueue_ << [this] (const QString& challenge)
+				{ RecentCommentsRequest (challenge); };
 		GenerateChallenge ();
 	}
 
@@ -842,6 +842,43 @@ namespace Metida
 				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
+	void LJXmlRPC::GetMultipleEventsRequest (QStringList ids, RequestType rt,
+			const QString& challenge)
+	{
+		QDomDocument document ("GetParticularEventsRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.getevents", document);
+		document.appendChild (result.first);
+		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
+				Account_->GetPassword (), challenge, document);
+
+		element.appendChild (GetSimpleMemberElement ("prefersubject", "boolean",
+				"true", document));
+		element.appendChild (GetSimpleMemberElement ("noprops", "boolean",
+				"true", document));
+		element.appendChild (GetSimpleMemberElement ("notags", "boolean",
+				"true", document));
+		element.appendChild (GetSimpleMemberElement ("selecttype", "string",
+				"multiple", document));
+		element.appendChild (GetSimpleMemberElement ("itemids", "int",
+				ids.join (","), document));
+		element.appendChild (GetSimpleMemberElement ("usejournal", "string",
+				Account_->GetOurLogin (), document));
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+		Reply2RequestType_ [reply] = rt;
+
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleGetMultipleEventsReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
 	void LJXmlRPC::BlogStatisticsRequest (const QString& challenge)
 	{
 		QDomDocument document ("BlogStatisticsRequest");
@@ -866,28 +903,50 @@ namespace Metida
 				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
-	void LJXmlRPC::InboxRequest (const QString& challenge, bool backup,
-				const QDateTime& from)
+	void LJXmlRPC::InboxRequest (const QString& challenge)
 	{
 		QDomDocument document ("InboxRequest");
 		auto result = GetStartPart ("LJ.XMLRPC.getinbox", document);
 		document.appendChild (result.first);
 		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
 				Account_->GetPassword (), challenge, document);
-		element.appendChild (GetSimpleMemberElement (!backup ? "lastsync" : "before", "string",
-				QString::number (from.toTime_t ()), document));
-
-		element.appendChild (GetSimpleMemberElement ("extended", "boolean",
-				"true", document));
+		element.appendChild (GetSimpleMemberElement ("before",
+				"string",
+				QString::number (QDateTime::currentDateTime ().toTime_t ()),
+				document));
 
 		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
 				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
 						document.toByteArray ());
-		Reply2InboxBackup_ [reply] = backup;
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleInboxReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void LJXmlRPC::RecentCommentsRequest (const QString& challenge)
+	{
+		QDomDocument document ("REecentCommentsRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.getrecentcomments", document);
+		document.appendChild (result.first);
+		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
+				Account_->GetPassword (), challenge, document);
+
+		element.appendChild (GetSimpleMemberElement ("itemshow", "int",
+				XmlSettingsManager::Instance ().Property ("RecentCommentsNumber", 10).toString (),
+				document));
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleRecentCommentsReplyFinished ()));
 		connect (reply,
 				SIGNAL (error (QNetworkReply::NetworkError)),
 				this,
@@ -1587,6 +1646,60 @@ namespace Metida
 		ParseForError (content);
 	}
 
+	namespace
+	{
+		bool ComapreCommentEntries (const LJCommentEntry& left, const LJCommentEntry& right)
+		{
+			return left.PostingDate_ > right.PostingDate_;
+		}
+	}
+
+	void LJXmlRPC::handleGetMultipleEventsReplyFinished ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		QDomDocument document;
+		QByteArray content = CreateDomDocumentFromReply (reply, document);
+		if (content.isEmpty ())
+			return;
+
+		qDebug () << document.toByteArray ();
+		if (document.elementsByTagName ("fault").isEmpty ())
+		{
+			const auto& events = ParseFullEvents (document);
+
+			switch (Reply2RequestType_.take (reply))
+			{
+			case RequestType::RecentComments:
+			{
+				for (const auto& pairKey : Id2CommentEntry_.keys ())
+					for (const auto& event : events)
+					{
+						qDebug () << pairKey.first << event.ItemID_ << event.DItemID_;
+						if (event.ItemID_ == pairKey.first)
+						{
+							Id2CommentEntry_ [pairKey].NodeSubject_ = event.Event_;
+							Id2CommentEntry_ [pairKey].NodeUrl_ = event.Url_;
+						}
+					}
+
+				auto comments = Id2CommentEntry_.values ();
+				std::sort (comments.begin (), comments.end (), ComapreCommentEntries);
+				emit gotRecentComments (comments);
+				break;
+			}
+			default:
+				break;
+			}
+
+			return;
+		}
+
+		ParseForError (content);
+	}
+
 	void LJXmlRPC::handleBlogStatisticsReplyFinished ()
 	{
 		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
@@ -1609,185 +1722,11 @@ namespace Metida
 
 	namespace
 	{
-		LJInbox::Message* CreateParticularMessage (const QVariant& message,
-				int type)
+		bool IsUnreadMessagesExists (QDomDocument document)
 		{
-			LJInbox::Message *msg = 0;
-			switch (type)
-			{
-				case LJInbox::JournalNewComment:
-					msg = new LJInbox::MessageNewComment;
-					break;
-				case LJInbox::UserMessageRecvd:
-					msg = new LJInbox::MessageRecvd;
-					break;
-				case LJInbox::UserMessageSent:
-					msg = new LJInbox::MessageSent;
-					break;
-				default:
-					msg = new LJInbox::Message;
-					break;
-			}
-
-			msg->Type_ = type;
-
-			for (const auto& field : message.toList ())
-			{
-				auto fieldEntry = field.value<LJParserTypes::LJParseProfileEntry> ();
-				const QString name = fieldEntry.Name ();
-				if (name == "when")
-					msg->When_ = QDateTime::fromTime_t (fieldEntry.ValueToLongLong ());
-				else if (name == "state")
-					msg->State_ = (fieldEntry.ValueToString () == "R") ?
-						LJInbox::MessageState::Read :
-						LJInbox::MessageState::UnRead;
-				else if (name == "qid")
-					msg->Id_ = fieldEntry.ValueToInt ();
-				else if (name == "typename")
-					msg->TypeString_ = fieldEntry.ValueToString ();
-				else if (name == "extended")
-				{
-					for (const auto& extended : fieldEntry.Value ())
-					{
-						auto extendedEntry = extended.value<LJParserTypes::LJParseProfileEntry> ();
-						if (extendedEntry.Name () == "body")
-							msg->ExtendedText_ = extendedEntry.ValueToString ();
-						else if (extendedEntry.Name () == "subject_raw")
-							msg->ExtendedSubject_ = extendedEntry.ValueToString ();
-						else if (extendedEntry.Name () == "dtalkid")
-							msg->ExternalId_ = extendedEntry.ValueToInt ();
-					}
-				}
-				else if (type == LJInbox::JournalNewComment)
-				{
-					auto commentMsg = static_cast<LJInbox::MessageNewComment*> (msg);
-					if  (name == "journal")
-						commentMsg->Journal_ = fieldEntry.ValueToString ();
-					else if (name == "action")
-						commentMsg->Action_ = fieldEntry.ValueToString ();
-					else if (name == "entry")
-						commentMsg->Url_ = fieldEntry.ValueToUrl ();
-					else if (name == "comment")
-						commentMsg->ReplyUrl_ = fieldEntry.ValueToUrl ();
-					else if (name == "poster")
-						commentMsg->AuthorName_ = fieldEntry.ValueToString ();
-				}
-				else if (name == "subject")
-				{
-					switch (type)
-					{
-					case LJInbox::JournalNewComment:
-					{
-						auto commentMsg = static_cast<LJInbox::MessageNewComment*> (msg);
-						commentMsg->Subject_ = fieldEntry.ValueToString ();
-						break;
-					}
-					case LJInbox::UserMessageRecvd:
-					{
-						auto recvdMsg = static_cast<LJInbox::MessageRecvd*> (msg);
-						recvdMsg->Subject_ = fieldEntry.ValueToString ();
-						break;
-					}
-					case LJInbox::UserMessageSent:
-					{
-						auto sentMsg = static_cast<LJInbox::MessageSent*> (msg);
-						sentMsg->Subject_ = fieldEntry.ValueToString ();
-						break;
-					}
-					default:
-						break;
-					}
-				}
-				else if (type == LJInbox::UserMessageRecvd)
-				{
-					auto recvdMsg = static_cast<LJInbox::MessageRecvd*> (msg);
-					if (name == "from")
-						recvdMsg->From_ = fieldEntry.ValueToString ();
-					else if (name == "msgid")
-						recvdMsg->MessageId_ = fieldEntry.ValueToInt ();
-					else if (name == "parent" )
-						recvdMsg->ParentId_ = fieldEntry.ValueToInt ();
-				}
-				else if (name == "picture")
-				{
-					switch (type)
-					{
-					case LJInbox::UserMessageRecvd:
-					{
-						auto recvdMsg = static_cast<LJInbox::MessageRecvd*> (msg);
-						recvdMsg->PictureUrl_ = fieldEntry.ValueToUrl ();
-						break;
-					}
-					case LJInbox::UserMessageSent:
-					{
-						auto sentMsg = static_cast<LJInbox::MessageSent*> (msg);
-						sentMsg->PictureUrl_ = fieldEntry.ValueToUrl ();
-						break;
-					}
-					default:
-						break;
-					}
-				}
-				else if (name == "body")
-				{
-					switch (type)
-					{
-					case LJInbox::UserMessageRecvd:
-					{
-						auto recvdMsg = static_cast<LJInbox::MessageRecvd*> (msg);
-						recvdMsg->Body_ = fieldEntry.ValueToString ();
-						break;
-					}
-					case LJInbox::UserMessageSent:
-					{
-						auto sentMsg = static_cast<LJInbox::MessageSent*> (msg);
-						sentMsg->Body_ = fieldEntry.ValueToString ();
-						break;
-					}
-					default:
-						break;
-					}
-				}
-				else if (type == LJInbox::UserMessageSent &&
-						name == "to")
-				{
-					auto sentMsg = static_cast<LJInbox::MessageSent*> (msg);
-					sentMsg->To_ = fieldEntry.ValueToString ();
-				}
-			}
-			return msg;
-		}
-
-		LJInbox::Message* CreateLJMessage (const QVariant& message)
-		{
-			for (const auto& field : message.toList ())
-			{
-				auto fieldEntry = field.value<LJParserTypes::LJParseProfileEntry> ();
-				if (fieldEntry.Name () == "type")
-				{
-					switch (fieldEntry.ValueToInt ())
-					{
-						case LJInbox::JournalNewComment:
-							return CreateParticularMessage (message, LJInbox::JournalNewComment);
-						case LJInbox::UserMessageRecvd:
-							return CreateParticularMessage (message, LJInbox::UserMessageRecvd);
-						case LJInbox::UserMessageSent:
-							return CreateParticularMessage (message, LJInbox::UserMessageSent);
-						default:
-							return CreateParticularMessage (message, fieldEntry.ValueToInt ());
-					}
-				}
-			};
-
-			return 0;
-		}
-
-		QList<LJInbox::Message*> ParseMessages (QDomDocument document)
-		{
-			QList<LJInbox::Message*> msgs;
 			const auto& firstStructElement = document.elementsByTagName ("struct");
 			if (firstStructElement.at (0).isNull ())
-				return msgs;
+				return false;
 
 			const auto& members = firstStructElement.at (0).childNodes ();
 			for (int i = 0, count = members.count (); i < count; ++i)
@@ -1800,12 +1739,16 @@ namespace Metida
 				auto res = ParseMember (member);
 				if (res.Name () == "items")
 					for (const auto& message : res.Value ())
-						msgs << CreateLJMessage (message);
+						for (const auto& field : message.toList ())
+						{
+							auto fieldEntry = field.value<LJParserTypes::LJParseProfileEntry> ();
+							if (fieldEntry.Name () == "state" &&
+									fieldEntry.ValueToString ().toLower () == "n")
+								return true;
+						}
 			}
 
-			msgs.removeAll (0);
-
-			return msgs;
+			return false;
 		}
 	}
 
@@ -1822,23 +1765,115 @@ namespace Metida
 
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
-			const auto& msgs = ParseMessages (document);
-			emit gotMessages (msgs);
+			emit unreadMessagesExists (IsUnreadMessagesExists (document));
 			XmlSettingsManager::Instance ().setProperty ("LastInboxUpdateDate",
 					   QDateTime::currentDateTime ());
-			if (Reply2InboxBackup_.value (reply, false) && !msgs.isEmpty ())
+			return;
+		}
+
+		ParseForError (content);
+	}
+
+	namespace
+	{
+		LJCommentEntry ParseComment (const QVariantList& comments)
+		{
+			LJCommentEntry comment;
+			for (const auto& field : comments)
 			{
-				QDateTime when = msgs.last ()->When_.addSecs (-1);
-				ApiCallQueue_ << [this, when, reply] (const QString& challenge)
-						{ InboxRequest (challenge,
-								Reply2InboxBackup_.take (reply), when); };
-				GenerateChallenge ();
-				return;
+				auto fieldEntry = field.value<LJParserTypes::LJParseProfileEntry> ();
+				if (fieldEntry.Name () == "nodeid")
+					comment.NodeId_ = fieldEntry.ValueToInt ();
+				else if (fieldEntry.Name () == "subject")
+					comment.Subject_ = fieldEntry.ValueToString ();
+				else if (fieldEntry.Name () == "posterid")
+					comment.PosterId_ = fieldEntry.ValueToInt ();
+				else if (fieldEntry.Name () == "state")
+				{
+					CommentState state = CommentState::Active;
+					if (fieldEntry.ValueToString ().toLower () == "f")
+						state = CommentState::Frozen;
+					else if (fieldEntry.ValueToString ().toLower () == "s")
+						state = CommentState::Secure;
+					else if (fieldEntry.ValueToString ().toLower () == "d")
+						state = CommentState::Deleted;
+					else
+						state = CommentState::Active;
+					comment.State_ = state;
+				}
+				else if (fieldEntry.Name () == "jtalkid")
+					comment.ReplyId_ = fieldEntry.ValueToInt ();
+				else if (fieldEntry.Name () == "parenttalkid")
+					comment.ParentReplyId_ = fieldEntry.ValueToInt ();
+				else if (fieldEntry.Name () == "postername")
+					comment.PosterName_ = fieldEntry.ValueToString ();
+				else if (fieldEntry.Name () == "text")
+					comment.Text_ = fieldEntry.ValueToString ();
+				else if (fieldEntry.Name () == "datepostunix")
+					comment.PostingDate_ = QDateTime::fromTime_t (fieldEntry.ValueToLongLong ());
 			}
 
-			emit gotMessagesFinished ();
-			XmlSettingsManager::Instance ().setProperty ("FirstInboxDownload",
-					true);
+			return comment;
+		}
+
+		QList<LJCommentEntry> ParseComments (QDomDocument document)
+		{
+			QList<LJCommentEntry> comments;
+			const auto& firstStructElement = document.elementsByTagName ("struct");
+			if (firstStructElement.at (0).isNull ())
+				return comments;
+
+			const auto& members = firstStructElement.at (0).childNodes ();
+			for (int i = 0, count = members.count (); i < count; ++i)
+			{
+				const QDomNode& member = members.at (i);
+				if (!member.isElement () ||
+						member.toElement ().tagName () != "member")
+					continue;
+
+				auto res = ParseMember (member);
+				if (res.Name () == "comments")
+					for (const auto& message : res.Value ())
+						comments << ParseComment (message.toList ());
+			}
+
+			return comments;
+		}
+	}
+
+	void LJXmlRPC::handleRecentCommentsReplyFinished ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		QDomDocument document;
+		QByteArray content = CreateDomDocumentFromReply (reply, document);
+		if (content.isEmpty ())
+			return;
+
+		qDebug () << document.toByteArray ();
+		if (document.elementsByTagName ("fault").isEmpty ())
+		{
+			QStringList ids;
+			for (auto comment : ParseComments (document))
+			{
+				auto pairKey = qMakePair (comment.NodeId_, comment.ReplyId_);
+				if (!Id2CommentEntry_.contains (pairKey))
+				{
+					Id2CommentEntry_ [pairKey] = comment;
+					ids << QString::number (comment.NodeId_);
+				}
+			}
+
+			if (!ids.isEmpty ())
+			{
+				ApiCallQueue_ << [this, ids] (const QString& challenge)
+						{ GetMultipleEventsRequest (ids, RequestType::RecentComments, challenge); };
+				GenerateChallenge ();
+			}
+
+// 			emit gotRecentComments (ParseComments (document));
 			return;
 		}
 

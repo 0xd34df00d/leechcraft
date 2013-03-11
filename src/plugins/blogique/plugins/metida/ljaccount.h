@@ -37,6 +37,7 @@ namespace Metida
 	class LJBloggingPlatform;
 	class LJXmlRPC;
 	class LJProfile;
+	class RecentCommentsModel;
 
 	struct LJEventProperties
 	{
@@ -113,6 +114,8 @@ namespace Metida
 		QAction *LoadLastEvents_;
 		QAction *LoadChangedEvents_;
 
+		RecentCommentsModel *RecentCommentsModel_;
+
 	public:
 		LJAccount (const QString& name, QObject *parent = 0);
 
@@ -135,6 +138,7 @@ namespace Metida
 
 		void RequestStatistics ();
 		void RequestInbox ();
+		void RequestRecentComments ();
 
 		QList<QAction*> GetUpdateActions () const;
 
@@ -173,6 +177,9 @@ namespace Metida
 		void handleLoadLastEvents ();
 		void handleLoadChangedEvents ();
 
+		void handleUnreadMessagesExists (bool exists);
+		void handleGotRecentComments (const QList<LJCommentEntry>& comments);
+
 	signals:
 		void accountRenamed (const QString& newName);
 		void accountSettingsChanged ();
@@ -188,6 +195,7 @@ namespace Metida
 		void gotEntries (const QList<Entry>& entries);
 
 		void gotBlogStatistics (const QMap<QDate, int>& statistics);
+
 	};
 }
 }

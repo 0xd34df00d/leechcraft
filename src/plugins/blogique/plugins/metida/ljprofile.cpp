@@ -123,15 +123,6 @@ namespace Metida
 		return result.value (0, -1);
 	}
 
-	void LJProfile::RequestInbox ()
-	{
-		auto acc = qobject_cast<LJAccount*> (ParentAccount_);
-		if (!acc)
-			return;
-
-		acc->RequestInbox ();
-	}
-
 	void LJProfile::SaveAvatar (QUrl avatarUrl)
 	{
 		if (avatarUrl.isEmpty ())
@@ -176,16 +167,6 @@ namespace Metida
 			SaveOthersAvatars (ProfileData_.AvatarsID_.value (i),
 					ProfileData_.AvatarsUrls_.value (i));
 		emit profileUpdated ();
-	}
-
-	void LJProfile::handleGotMessages (const QList<LJInbox::Message*>& msgs)
-	{
-		auto acc = qobject_cast<IAccount*> (ParentAccount_);
-		if (!acc)
-			return;
-
-		for (const auto& msg : msgs)
-			Core::Instance ().GetLocalStorage ()->AddMessage (msg, acc->GetAccountID ());
 	}
 
 	void LJProfile::handleAvatarDownloadFinished ()

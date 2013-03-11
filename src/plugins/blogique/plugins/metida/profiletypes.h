@@ -60,6 +60,37 @@ namespace Metida
 		QList<QUrl> AvatarsUrls_;
 	};
 
+	enum class CommentState
+	{
+		Frozen,
+		Secure,
+		Active,
+		Deleted
+	};
+
+	struct LJCommentEntry
+	{
+		int NodeId_;
+		QString Subject_;
+		int PosterId_;
+		CommentState State_;
+		int ReplyId_;
+		int ParentReplyId_;
+		QString PosterName_;
+		QString Text_;
+		QDateTime PostingDate_;
+		QString NodeSubject_;
+		QUrl NodeUrl_;
+
+		LJCommentEntry ()
+		: NodeId_ (-1)
+		, PosterId_ (-1)
+		, State_ (CommentState::Active)
+		, ReplyId_ (-1)
+		, ParentReplyId_ (-1)
+		{}
+	};
+
 	namespace LJParserTypes
 	{
 		class LJParseProfileEntry
@@ -79,94 +110,6 @@ namespace Metida
 			qint64 ValueToLongLong () const;
 			int ValueToInt () const;
 			QUrl ValueToUrl () const;
-		};
-	}
-
-	namespace LJInbox
-	{
-		enum class MessageState
-		{
-			Read,
-			UnRead
-		};
-
-		enum MessageType
-		{
-			NoType = 0,
-			Friended,
-			Birthday,
-			CommunityInvite,
-			CommunityJoinApprove,
-			CommunityJoinReject,
-			CommunityJoinRequest,
-			Defriended,
-			InvitedFriendJoins,
-			JournalNewComment,
-			JournalNewEntry,
-			NewUserpic,
-			NewVGift,
-			OfficialPost,
-			PermSale,
-			PollVote,
-			SupOfficialPost,
-			UserExpunged,
-			UserMessageRecvd,
-			UserMessageSent,
-			UserNewComment,
-			UserNewEntry
-		};
-
-		struct Message
-		{
-			int Id_;
-			QDateTime When_;
-			MessageState State_;
-			int Type_;
-			QString TypeString_;
-			QString ExtendedSubject_;
-			QString ExtendedText_;
-			int ExternalId_;
-
-			Message ()
-			: Id_(-1)
-			, State_ (MessageState::UnRead)
-			, Type_ (-1)
-			, ExternalId_ (-1)
-			{};
-		};
-
-		struct MessageNewComment : public Message
-		{
-			QString Journal_;
-			QString Action_;
-			QUrl Url_;
-			QUrl ReplyUrl_;
-			QString AuthorName_;
-			QString Subject_;
-		};
-
-		struct MessageRecvd : public Message
-		{
-			QString From_;
-			QUrl PictureUrl_;
-			QString Subject_;
-			QString Body_;
-			int MessageId_;
-			int ParentId_;
-
-			MessageRecvd ()
-			: Message ()
-			, MessageId_ (-1)
-			, ParentId_ (-1)
-			{};
-		};
-
-		struct MessageSent : public Message
-		{
-			QString To_;
-			QUrl PictureUrl_;
-			QString Subject_;
-			QString Body_;
 		};
 	}
 

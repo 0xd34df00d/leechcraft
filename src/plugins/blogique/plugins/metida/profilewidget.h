@@ -55,39 +55,16 @@ namespace Metida
 		QHash<QStandardItem*, LJFriendGroup> Item2FriendGroup_;
 		QHash<QStandardItem*, LJFriendEntry_ptr> Item2Friend_;
 
-		QStandardItemModel *MessagesModel_;
-		int PageNumber_;
-		const int MessageCountOnPage_;
-
 	public:
-		enum MessageCategory
-		{
-			MCAll,
-			MCIncoming,
-			MCFriendUpdates,
-			MCEntriesAndComments,
-			MCSent
-		};
-
-		enum FriendUpdatesCategory
-		{
-			FUCAll,
-			FUCBirthdays,
-			FUCNewFriends
-		};
-
 		ProfileWidget (LJProfile *profile, QWidget *parent = 0);
 	private:
 		void RereadProfileData ();
 		void FillFriends (const QList<LJFriendGroup>& groups);
 		void FillCommunities (const QStringList& communities);
 		void ReFillModels ();
-		void FillMessagesUi ();
-		void FillInboxView (int limit, int offset);
 
 	public slots:
 		void updateProfile ();
-		void handleGotMessagesFinished ();
 	private slots:
 		void on_ColoringFriendsList__toggled (bool toggle);
 		void on_Add__released ();
@@ -96,11 +73,6 @@ namespace Metida
 		void on_UpdateProfile__released ();
 		void handleUserGroupChanged (const QString& username,
 				const QString& bgColor, const QString& fgColor, int groupId);
-		void on_Category__currentIndexChanged (int index);
-		void on_FriendsUpdates__currentIndexChanged (int index);
-
-		void on_Next__released ();
-		void on_Previous__released ();
 
 	signals:
 		void coloringItemChanged ();

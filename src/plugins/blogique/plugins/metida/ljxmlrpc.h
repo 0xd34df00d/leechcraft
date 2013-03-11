@@ -25,6 +25,7 @@
 #include <QDomElement>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <boost/concept_check.hpp>
 #include "core.h"
 #include "profiletypes.h"
 #include "ljaccount.h"
@@ -48,14 +49,16 @@ namespace Metida
 		const int MaxGetEventsCount_;
 
 		QHash<QNetworkReply*, int> Reply2Skip_;
-		QHash<QNetworkReply*, bool> Reply2InboxBackup_;
 
 		enum class RequestType
 		{
 			Update,
-			Post
+			Post,
+			RecentComments,
+			Tags
 		};
 		QHash<QNetworkReply*, RequestType> Reply2RequestType_;
+		QMap<QPair<int, int>, LJCommentEntry> Id2CommentEntry_;
 
 	public:
 		LJXmlRPC (LJAccount *acc, QObject *parent = 0);
@@ -82,8 +85,8 @@ namespace Metida
 
 		void RequestStatistics ();
 
-		void RequestFullInbox ();
-		void RequestLastInbox (const QDateTime& from);
+		void RequestLastInbox ();
+		void RequestRecentCommments ();
 	private:
 		void GenerateChallenge () const;
 		void ValidateAccountData (const QString& login,
@@ -111,11 +114,13 @@ namespace Metida
 		void GetEventsByDateRequest (const QDate& date, const QString& challenge);
 		void GetParticularEventRequest (int id, RequestType prt,
 				const QString& challenge);
+		void GetMultipleEventsRequest (QStringList ids, RequestType rt,
+				const QString& challenge);
 
 		void BlogStatisticsRequest (const QString& challenge);
 
-		void InboxRequest (const QString& challenge, bool backup = false,
-				const QDateTime& from = QDateTime ());
+		void InboxRequest (const QString& challenge);
+		void RecentCommentsRequest (const QString& challenge);
 
 		void ParseForError (const QByteArray& content);
 		void ParseFriends (const QDomDocument& doc);
@@ -123,7 +128,6 @@ namespace Metida
 		QList<LJEvent> ParseFullEvents (const QDomDocument& doc);
 
 		QMap<QDate, int> ParseStatistics (const QDomDocument& doc);
-
 
 	private slots:
 		void handleChallengeReplyFinished ();
@@ -137,8 +141,10 @@ namespace Metida
 		void handleRemoveEventReplyFinished ();
 		void handleUpdateEventReplyFinished ();
 		void handleGetParticularEventReplyFinished ();
+		void handleGetMultipleEventsReplyFinished ();
 		void handleBlogStatisticsReplyFinished ();
 		void handleInboxReplyFinished ();
+		void handleRecentCommentsReplyFinished ();
 
 		void handleNetworkError (QNetworkReply::NetworkError error);
 
@@ -159,8 +165,8 @@ namespace Metida
 
 		void gotStatistics (const QMap<QDate, int>& statistics);
 
-		void gotMessages (const QList<LJInbox::Message*>& msgs);
-		void gotMessagesFinished ();
+		void unreadMessagesExists (bool exists);
+		void gotRecentComments (const QList<LJCommentEntry>& comments);
 	};
 }
 }

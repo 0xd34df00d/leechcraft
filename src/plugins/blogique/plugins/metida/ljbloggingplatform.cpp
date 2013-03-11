@@ -21,6 +21,7 @@
 #include <QInputDialog>
 #include <QSettings>
 #include <QtDebug>
+#include <QTimer>
 #include <QMainWindow>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/passutils.h>
@@ -29,6 +30,8 @@
 #include "ljaccountconfigurationwidget.h"
 #include "postoptionswidget.h"
 #include "localstorage.h"
+#include "recentcommentssidewidget.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -45,6 +48,8 @@ namespace Metida
 	, LJCut_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("view-split-top-bottom"),
 			"Cut", this))
 	, FirstSeparator_ (new QAction (this))
+	, MessageCheckingTimer_ (new QTimer (this))
+	, CommentsCheckingTimer_ (new QTimer (this))
 	{
 		FirstSeparator_->setSeparator (true);
 
@@ -56,6 +61,22 @@ namespace Metida
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleAddLJCut ()));
+
+		connect (MessageCheckingTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (checkForMessages ()));
+		connect (CommentsCheckingTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (checkForComments ()));
+
+		XmlSettingsManager::Instance ().RegisterObject ("CheckingInboxEnabled",
+				this, "handleMessageChecking");
+		XmlSettingsManager::Instance ().RegisterObject ("CheckingCommentsEnabled",
+				this, "handleCommentsChecking");
+		handleMessageChecking ();
+		handleCommentsChecking ();
 	}
 
 	QObject* LJBloggingPlatform::GetObject ()
@@ -150,7 +171,7 @@ namespace Metida
 
 	QList<QWidget*> LJBloggingPlatform::GetBlogiqueSideWidgets () const
 	{
-		return { new PostOptionsWidget };
+		return { new PostOptionsWidget, new RecentCommentsSideWidget };
 	}
 
 	void LJBloggingPlatform::SetPluginProxy (QObject *proxy)
@@ -240,6 +261,36 @@ namespace Metida
 		}
 
 		emit accountValidated (acc->GetObject (), validated);
+	}
+
+	void LJBloggingPlatform::handleMessageChecking ()
+	{
+		if (XmlSettingsManager::Instance ().Property ("CheckingInboxEnabled", true).toBool ())
+			MessageCheckingTimer_->start (XmlSettingsManager::Instance ()
+					.property ("UpdateInboxInterval").toInt () * 1000);
+		else if (MessageCheckingTimer_->isActive ())
+			MessageCheckingTimer_->stop ();
+	}
+
+	void LJBloggingPlatform::handleCommentsChecking ()
+	{
+		if (XmlSettingsManager::Instance ().Property ("CheckingCommentsEnabled", true).toBool ())
+			CommentsCheckingTimer_->start (XmlSettingsManager::Instance ()
+					.property ("UpdateCommentsInterval").toInt () * 60 * 1000);
+		else if (CommentsCheckingTimer_->isActive ())
+			CommentsCheckingTimer_->stop ();
+	}
+
+	void LJBloggingPlatform::checkForMessages ()
+	{
+		for (auto account : LJAccounts_)
+			account->RequestInbox ();
+	}
+
+	void LJBloggingPlatform::checkForComments ()
+	{
+		for (auto account : LJAccounts_)
+			account->RequestRecentComments ();
 	}
 
 }

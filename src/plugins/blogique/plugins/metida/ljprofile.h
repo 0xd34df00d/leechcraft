@@ -61,21 +61,18 @@ namespace Metida
 
 		int GetFreeGroupId () const;
 
-		void RequestInbox ();
 	private:
 		void SaveAvatar (QUrl url = QUrl ());
 		void SaveOthersAvatars (const QString& id, const QUrl& url);
 
 	public slots:
 		void handleProfileUpdate (const LJProfileData& profile);
-		void handleGotMessages (const QList<LJInbox::Message*>& msgs);
 	private slots:
 		void handleAvatarDownloadFinished ();
 		void handleOtherAvatarDownloadFinished ();
 
 	signals:
 		void profileUpdated ();
-		void gotMessagesFinished ();
 	};
 }
 }

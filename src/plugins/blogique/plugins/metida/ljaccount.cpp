@@ -21,6 +21,7 @@
 #include <QtDebug>
 #include <util/passutils.h>
 #include <util/util.h>
+#include <util/notificationactionhandler.h>
 #include "core.h"
 #include "ljaccountconfigurationwidget.h"
 #include "ljaccountconfigurationdialog.h"
@@ -32,6 +33,7 @@
 #include "xmlsettingsmanager.h"
 #include "updatetypedialog.h"
 #include "localstorage.h"
+#include "recentcommentsmodel.h"
 
 namespace LeechCraft
 {
@@ -48,6 +50,7 @@ namespace Metida
 	, LJProfile_ (std::make_shared<LJProfile> (this))
 	, LoadLastEvents_ (new QAction (tr ("Last entries"), this))
 	, LoadChangedEvents_ (new QAction (tr ("Changed entries"), this))
+	, RecentCommentsModel_ (new RecentCommentsModel (this))
 	{
 		qRegisterMetaType<LJProfileData> ("LJProfileData");
 		qRegisterMetaTypeStreamOperators<QList<LJFriendGroup>> ("QList<LJFriendGroup>");
@@ -98,13 +101,13 @@ namespace Metida
 				this,
 				SIGNAL (gotBlogStatistics (QMap<QDate, int>)));
 		connect (LJXmlRpc_,
-				SIGNAL (gotMessages (QList<LJInbox::Message*>)),
-				LJProfile_.get (),
-				SLOT (handleGotMessages (QList<LJInbox::Message*>)));
+				SIGNAL (unreadMessagesExists (bool)),
+				this,
+				SLOT (handleUnreadMessagesExists (bool)));
 		connect (LJXmlRpc_,
-				 SIGNAL (gotMessagesFinished ()),
-				 LJProfile_.get (),
-				 SIGNAL (gotMessagesFinished ()));
+				SIGNAL (gotRecentComments (QList<LJCommentEntry>)),
+				this,
+				SLOT (handleGotRecentComments (QList<LJCommentEntry>)));
 
 		connect (LoadLastEvents_,
 				SIGNAL (triggered ()),
@@ -265,12 +268,12 @@ namespace Metida
 
 	void LJAccount::RequestInbox ()
 	{
-		XmlSettingsManager::Instance ().Property ("FirstInboxDownload", true).toBool () ?
-			LJXmlRpc_->RequestFullInbox () :
-			LJXmlRpc_->RequestLastInbox (XmlSettingsManager::Instance ()
-					.Property ("LastInboxUpdateDate",
-						QDateTime::fromString ("1970-01-01T00:00:00",
-								"yyyy-MM-ddThh:mm:ss")).toDateTime ());
+		LJXmlRpc_->RequestLastInbox ();
+	}
+
+	void LJAccount::RequestRecentComments ()
+	{
+		LJXmlRpc_->RequestRecentCommments ();
 	}
 
 	QList<QAction*> LJAccount::GetUpdateActions () const
@@ -560,6 +563,47 @@ namespace Metida
 
 		LJXmlRpc_->GetChangedEvents (dt);
 	}
+
+	void LJAccount::handleUnreadMessagesExists (bool exists)
+	{
+		if (exists)
+		{
+			Entity e = Util::MakeNotification ("Blogique Metida",
+					tr ("Your have unread messages on account %1")
+							.arg ("<em>" + GetAccountName () + "</em>"),
+					Priority::PInfo_);
+			Util::NotificationActionHandler *nh =
+					new Util::NotificationActionHandler (e, this);
+			nh->AddFunction (tr ("Open inbox"),
+					[this] ()
+					{
+						Entity urlEntity = Util::MakeEntity (QUrl ("http://livejournal.com/inbox/"),
+								QString (),
+								static_cast<TaskParameters> (OnlyHandle | FromUserInitiated));
+						Core::Instance ().SendEntity (urlEntity);
+					});
+			nh->AddDependentObject (GetObject ());
+			Core::Instance ().SendEntity (e);
+		}
+	}
+
+	void LJAccount::handleGotRecentComments (const QList<LJCommentEntry>& comments)
+	{
+		for (auto comment : comments)
+			qDebug () << Q_FUNC_INFO
+					<< comment.NodeId_
+					<< comment.Subject_
+					<< comment.PosterId_
+					<< comment.ReplyId_
+					<< comment.ParentReplyId_
+					<< comment.PosterName_
+					<< comment.Text_
+					<< comment.PostingDate_
+					<< comment.NodeSubject_
+					<< comment.NodeUrl_;
+
+	}
+
 }
 }
 }
