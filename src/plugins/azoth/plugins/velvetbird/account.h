@@ -47,6 +47,8 @@ namespace VelvetBird
 	public:
 		Account (const QString&, PurpleAccount*, Protocol*);
 
+		void Release ();
+
 		PurpleAccount* GetPurpleAcc () const;
 
 		QObject* GetObject ();

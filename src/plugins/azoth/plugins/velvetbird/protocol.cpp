@@ -38,6 +38,15 @@ namespace VelvetBird
 	{
 	}
 
+	void Protocol::Release ()
+	{
+		for (auto acc : Accounts_)
+		{
+			acc->Release ();
+			emit accountRemoved (acc);
+		}
+	}
+
 	QObject* Protocol::GetObject()
 	{
 		return this;
