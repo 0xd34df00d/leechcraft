@@ -124,6 +124,7 @@ namespace Util
 		label->show ();
 		label->activateWindow ();
 		label->installEventFilter (new AADisplayEventFilter (label));
+		label->move (pos);
 		return label;
 	}
 }
