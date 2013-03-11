@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,9 +22,15 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/iquarkcomponentprovider.h>
+#include <interfaces/ihaveshortcuts.h>
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class ShortcutManager;
+}
+
 namespace Launchy
 {
 	class ItemsFinder;
@@ -33,14 +39,17 @@ namespace Launchy
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IActionsExporter
+				 , public IHaveShortcuts
 				 , public IQuarkComponentProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IActionsExporter IQuarkComponentProvider)
+		Q_INTERFACES (IInfo IActionsExporter IHaveShortcuts IQuarkComponentProvider)
 
 		ICoreProxy_ptr Proxy_;
 		ItemsFinder *Finder_;
 		FavoritesManager *FavManager_;
+
+		Util::ShortcutManager *ShortcutMgr_;
 		QAction *FSLauncher_;
 
 		QuarkComponent LaunchQuark_;
@@ -54,6 +63,9 @@ namespace Launchy
 		QIcon GetIcon () const;
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+
+		QMap<QString, ActionInfo> GetActionInfo () const;
+		void SetShortcut (const QString& id, const QKeySequences_t& sequences);
 
 		QuarkComponents_t GetComponents () const;
 	private slots:

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,6 +58,7 @@ namespace LHTR
 		QString GetContents (ContentType) const;
 		void SetContents (const QString&, ContentType);
 		void AppendAction (QAction*);
+		void AppendSeparator ();
 		void RemoveAction (QAction*);
 		QAction* GetEditorAction (EditorAction);
 		void SetBackgroundColor (const QColor&);

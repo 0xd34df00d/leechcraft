@@ -28,7 +28,7 @@
 #include "interfaces/blogique/ibloggingplatformplugin.h"
 #include "interfaces/blogique/ibloggingplatform.h"
 #include "pluginproxy.h"
-#include "localstorage.h"
+#include "storagemanager.h"
 #include "backupmanager.h"
 #include "blogiquewidget.h"
 
@@ -37,8 +37,9 @@ namespace LeechCraft
 namespace Blogique
 {
 	Core::Core ()
-	: PluginProxy_ (std::make_shared<PluginProxy> ())
-	, Storage_ (new LocalStorage (this))
+	: UniqueID_ ("org.LeechCraft.Blogique")
+	, PluginProxy_ (std::make_shared<PluginProxy> ())
+	, StorageManager_ (new StorageManager (UniqueID_, this))
 	, BackupManager_ (new BackupManager (this))
 	{
 	}
@@ -47,6 +48,11 @@ namespace Blogique
 	{
 		static Core c;
 		return c;
+	}
+
+	QByteArray Core::GetUniqueID () const
+	{
+		return UniqueID_;
 	}
 
 	void Core::SetCoreProxy (ICoreProxy_ptr proxy)
@@ -133,9 +139,9 @@ namespace Blogique
 		QTimer::singleShot (15000, this, SLOT (updateProfiles ()));
 	}
 
-	LocalStorage* Core::GetStorage () const
+	StorageManager* Core::GetStorageManager () const
 	{
-		return Storage_;
+		return StorageManager_;
 	}
 
 	BackupManager* Core::GetBackupManager () const
@@ -219,10 +225,6 @@ namespace Blogique
 				this,
 				SLOT (handleEntryUpdated (QList<Entry>)));
 		connect (accObj,
-				SIGNAL (gotEntries (QList<Entry>)),
-				this,
-				SLOT (handleGotEntries (QList<Entry>)));
-		connect (accObj,
 				SIGNAL (gotEntries2Backup (QList<Entry>)),
 				this,
 				SLOT (handleGotEntries2Backup (QList<Entry>)));
@@ -275,14 +277,14 @@ namespace Blogique
 		auto acc = qobject_cast<IAccount*> (sender ());
 		if (!acc)
 			return;
-		Storage_->SaveEntries (acc->GetAccountID (), entries);
-		emit storageUpdated ();
 
 		SendEntity (Util::MakeNotification ("Blogique",
 				tr ("Entry was posted successfully:") +
 					QString (" <a href=\"%1\">%1</a>\n")
 						.arg (entries.value (0).EntryUrl_.toString ()),
 				Priority::PInfo_));
+
+		acc->RequestStatistics ();
 	}
 
 	void Core::handleEntryRemoved (int itemId)
@@ -291,29 +293,25 @@ namespace Blogique
 		if (!acc)
 			return;
 
-		if (QMessageBox::question (Proxy_->GetRootWindowsManager ()->GetPreferredWindow (),
-				"LeechCraft",
-				tr ("Entry was removed successfully.\nRemove entry from local storage?"),
-				QMessageBox::Ok | QMessageBox::No,
-				QMessageBox::No) == QMessageBox::No)
-			Storage_->MoveFromEntriesToDrafts (acc->GetAccountID (), itemId);
-		else
-			Storage_->RemoveEntry (acc->GetAccountID (), itemId);
-
-		emit storageUpdated ();
+		SendEntity (Util::MakeNotification ("Blogique",
+				tr ("Entry was removed successfully."),
+				Priority::PInfo_));
+		acc->RequestStatistics ();
 	}
 
 	void Core::handleEntryUpdated (const QList<Entry>& entries)
 	{
-		if (entries.isEmpty ())
+		auto acc = qobject_cast<IAccount*> (sender ());
+		if (!acc)
 			return;
 
-		Storage_->UpdateEntry (entries.first ());
-		emit storageUpdated ();
+		if (entries.isEmpty ())
+			return;
 
 		SendEntity (Util::MakeNotification ("Blogique",
 				tr ("Entry was updated successfully."),
 				Priority::PInfo_));
+		acc->RequestStatistics ();
 	}
 
 	void Core::handleGotEntries2Backup (const QList<Entry>& entries)
@@ -321,9 +319,7 @@ namespace Blogique
 		auto acc = qobject_cast<IAccount*> (sender ());
 		if (!acc)
 			return;
-
-		Storage_->SaveEntries (acc->GetAccountID (), entries);
-		emit storageUpdated ();
+		//TODO
 	}
 
 	void Core::handleGettingEntries2BackupFinished ()
@@ -331,20 +327,7 @@ namespace Blogique
 		SendEntity (Util::MakeNotification ("Blogique",
 				tr ("Entries were backuped successfully."),
 				Priority::PInfo_));
-		emit storageUpdated ();
 	}
-
-	void Core::handleGotEntries (const QList<Entry>& entries)
-	{
-		auto acc = qobject_cast<IAccount*> (sender ());
-		if (!acc)
-			return;
-
-		Storage_->SaveEntries (acc->GetAccountID (), entries);
-		emit storageUpdated ();
-		emit gotEntries (entries);
-	}
-
 }
 }
 

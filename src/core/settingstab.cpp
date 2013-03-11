@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +47,9 @@ namespace LeechCraft
 		Ui_.setupUi (this);
 		Ui_.ListContents_->setLayout (new QVBoxLayout);
 		Ui_.DialogContents_->setLayout (new QVBoxLayout);
+
+		const auto catsWidth = Ui_.Cats_->minimumSize ().width ();
+		Ui_.CatsSplitter_->setSizes ({ catsWidth, catsWidth * 5 });
 
 		ActionBack_->setProperty ("ActionIcon", "go-previous");
 		connect (ActionBack_,
@@ -271,9 +274,10 @@ namespace LeechCraft
 			if (icon.isNull ())
 				icon = QIcon (":/resources/images/defaultpluginicon.svg");
 
-			auto item = new QListWidgetItem (icon, itemName);
-			item->setTextAlignment (Qt::AlignCenter);
-			Ui_.Cats_->addItem (item);
+			auto item = new QTreeWidgetItem (QStringList (itemName));
+			item->setIcon (0, icon);
+			item->setToolTip (0, itemName);
+			Ui_.Cats_->addTopLevelItem (item);
 
 			if (Obj2SearchMatchingPages_.contains (ihs) &&
 					!Obj2SearchMatchingPages_ [ihs].contains (pgId))
@@ -336,12 +340,14 @@ namespace LeechCraft
 		Toolbar_->addAction (ActionCancel_);
 		addSearchBox ();
 
+		/*
 		const int width = Ui_.Cats_->viewport ()->width ();
 		auto gridSize = Ui_.Cats_->gridSize ();
 		gridSize.setWidth (width);
 		Q_FOREACH (auto item, Item2Page_.keys ())
 			item->setSizeHint (gridSize);
 		Ui_.Cats_->setGridSize (gridSize);
+		*/
 	}
 
 	void SettingsTab::handleSearch (const QString& text)
@@ -443,7 +449,7 @@ namespace LeechCraft
 			pair.first->GetSettingsDialog ()->reject ();
 	}
 
-	void SettingsTab::on_Cats__currentItemChanged (QListWidgetItem *current)
+	void SettingsTab::on_Cats__currentItemChanged (QTreeWidgetItem *current)
 	{
 		const auto& pair = Item2Page_ [current];
 		if (!pair.first)

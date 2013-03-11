@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,6 @@ namespace Aggregator
 	: QAbstractItemModel (parent)
 	, CurrentRow_ (-1)
 	, CurrentChannel_ (-1)
-	, MayBeRichText_ (false)
 	{
 		ItemHeaders_ << tr ("Name") << tr ("Date");
 		connect (&Core::Instance (),
@@ -102,11 +101,7 @@ namespace Aggregator
 		CurrentRow_ = -1;
 		CurrentItems_.clear ();
 		if (channel != static_cast<IDType_t> (-1))
-		{
 			Core::Instance ().GetStorageBackend ()->GetItems (CurrentItems_, channel);
-			if (!CurrentItems_.empty ())
-				MayBeRichText_ = Qt::mightBeRichText (CurrentItems_.at (0).Title_);
-		}
 		reset ();
 	}
 
@@ -117,11 +112,8 @@ namespace Aggregator
 		CurrentItems_.clear ();
 
 		StorageBackend *sb = Core::Instance ().GetStorageBackend ();
-		Q_FOREACH (const IDType_t& itemId, items)
+		for (const IDType_t& itemId : items)
 			CurrentItems_.push_back (sb->GetItem (itemId)->ToShort ());
-
-		if (!CurrentItems_.empty ())
-			MayBeRichText_ = Qt::mightBeRichText (CurrentItems_.at (0).Title_);
 
 		reset ();
 	}
@@ -229,14 +221,23 @@ namespace Aggregator
 			{
 				case 0:
 					{
-						QString title = CurrentItems_ [index.row ()].Title_;
-						if (MayBeRichText_ &&
-								Qt::mightBeRichText (title))
+						auto title = CurrentItems_ [index.row ()].Title_;
+						auto pos = 0;
+						while ((pos = title.indexOf ('<', pos)) != -1)
 						{
-							QTextDocument doc;
-							doc.setHtml (title);
-							title = doc.toPlainText ();
+							auto end = title.indexOf ('>', pos);
+							if (end > 0)
+								title.remove (pos, end - pos + 1);
+							else
+								break;
 						}
+
+						title.replace ("&laquo;", QString::fromUtf8 ("«"));
+						title.replace ("&raquo;", QString::fromUtf8 ("»"));
+						title.replace ("&quot;", "\"");
+						title.replace ("&ndash;", "-");
+						title.replace ("&mdash;", QString::fromUtf8 ("—"));
+
 						return title;
 					}
 				case 1:

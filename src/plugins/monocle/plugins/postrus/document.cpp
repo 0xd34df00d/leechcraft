@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ namespace Postrus
 	Document::Document (const QString& path, QObject *parent)
 	: QObject (parent)
 	, SD_ (spectre_document_new ())
+	, DocURL_ (QUrl::fromLocalFile (path))
 	{
 		spectre_document_load (SD_, path.toUtf8 ().constData ());
 	}
@@ -107,6 +108,11 @@ namespace Postrus
 	QList<ILink_ptr> Document::GetPageLinks (int)
 	{
 		return QList<ILink_ptr> ();
+	}
+
+	QUrl Document::GetDocURL () const
+	{
+		return DocURL_;
 	}
 }
 }

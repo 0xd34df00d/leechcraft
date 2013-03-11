@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ namespace PDF
 	Document::Document (const QString& path, QObject *parent)
 	: QObject (parent)
 	, PDocument_ (Poppler::Document::load (path))
+	, DocURL_ (QUrl::fromLocalFile (path))
 	{
 		if (!PDocument_)
 			return;
@@ -97,6 +98,11 @@ namespace PDF
 			result << ILink_ptr (new Link (this, link));
 
 		return result;
+	}
+
+	QUrl Document::GetDocURL () const
+	{
+		return DocURL_;
 	}
 
 	TOCEntryLevel_t Document::GetTOC ()

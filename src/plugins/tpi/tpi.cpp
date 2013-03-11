@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,13 +75,13 @@ namespace TPI
 		return Components_;
 	}
 
-	void Plugin::hovered (int x, int y, const QPoint& shift)
+	void Plugin::hovered (int x, int y, const QRect& geometry)
 	{
 		if (!TooltipView_)
 			TooltipView_ = new TooltipView (ModelMgr_->GetModel (), Proxy_->GetColorThemeManager ());
 
-		TooltipView_->move (Util::FitRectScreen ({ x, y },
-				TooltipView_->size (), Util::NoOverlap, shift));
+		TooltipView_->move (Util::FitRect ({ x, y },
+				TooltipView_->size (), geometry, Util::NoOverlap));
 		TooltipView_->show ();
 		TooltipView_->Hovered ();
 	}

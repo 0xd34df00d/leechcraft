@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  * Copyright (C) 2012 Dimitriy Ryazantcev
  *
  * This program is free software: you can redistribute it and/or modify

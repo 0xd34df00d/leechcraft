@@ -37,7 +37,7 @@ namespace Blogique
 	void CalendarWidget::paintCell (QPainter *painter, const QRect& rect, const QDate& date) const
 	{
 		QCalendarWidget::paintCell (painter, rect, date);
-
+		
 		if (Date2EntriesCount_.contains (date) &&
 				Date2EntriesCount_ [date])
 		{

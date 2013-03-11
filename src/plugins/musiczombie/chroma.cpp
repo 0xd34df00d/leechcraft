@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,19 +52,21 @@ namespace MusicZombie
 
 	Chroma::Result Chroma::operator() (const QString& filename)
 	{
-		QMutexLocker locker (&CodecMutex_);
 		std::shared_ptr<AVFormatContext> formatCtx;
 		{
 			AVFormatContext *formatCtxRaw = nullptr;
-			if (avformat_open_input (&formatCtxRaw, filename.toLatin1  ().constData (), nullptr, nullptr))
+			if (avformat_open_input (&formatCtxRaw, filename.toLatin1 ().constData (), nullptr, nullptr))
 				throw std::runtime_error ("error opening file");
 
 			formatCtx.reset (formatCtxRaw,
 					[] (AVFormatContext *ctx) { avformat_close_input (&ctx); });
 		}
 
-		if (avformat_find_stream_info (formatCtx.get (), nullptr) < 0)
-			throw std::runtime_error ("could not find stream");
+		{
+			QMutexLocker locker (&CodecMutex_);
+			if (av_find_stream_info (formatCtx.get ()) < 0)
+				throw std::runtime_error ("could not find stream");
+		}
 
 		bool codecOpened = false;
 		std::shared_ptr<AVCodecContext> codecCtx;
@@ -76,6 +78,7 @@ namespace MusicZombie
 					{
 						if (codecOpened)
 						{
+							QMutexLocker locker (&CodecMutex_);
 							avcodec_close (ctx);
 						}
 					});
@@ -94,8 +97,8 @@ namespace MusicZombie
 			throw std::runtime_error ("unknown codec");
 
 		{
-			//QMutexLocker locker (&CodecMutex_);
-			if (avcodec_open (codecCtx.get (), codec) < 0)
+			QMutexLocker locker (&CodecMutex_);
+			if (avcodec_open2 (codecCtx.get (), codec, nullptr) < 0)
 				throw std::runtime_error ("couldn't open the codec");
 		}
 		codecOpened = true;
@@ -119,7 +122,7 @@ namespace MusicZombie
 		auto remaining = maxLength * codecCtx->channels * codecCtx->sample_rate;
 		chromaprint_start (Ctx_, codecCtx->sample_rate, codecCtx->channels);
 
-		const int bufferSize = AVCODEC_MAX_AUDIO_FRAME_SIZE * sizeof (int16_t);
+		const int bufferSize = AVCODEC_MAX_AUDIO_FRAME_SIZE * 2;
 		int16_t *buffer = static_cast<int16_t*> (av_malloc (bufferSize + 16));
 
 		while (true)
@@ -142,16 +145,21 @@ namespace MusicZombie
 				tmpPacket.size -= consumed;
 
 				if (bufferUsed <= 0 || bufferUsed >= bufferSize)
+				{
+					if (bufferUsed)
+						qWarning () << "invalid size returned";
 					continue;
+				}
 
-				const auto length = std::min (remaining, AVCODEC_MAX_AUDIO_FRAME_SIZE);
+				const auto length = std::min (remaining, bufferUsed / 2);
 				if (!chromaprint_feed (Ctx_, buffer, length))
 					throw std::runtime_error ("fingerprint calculation failed");
 
 				if (maxLength)
 				{
 					remaining -= length;
-					finished = remaining <= 0;
+					if ((finished = (remaining <= 0)))
+						break;
 				}
 			}
 

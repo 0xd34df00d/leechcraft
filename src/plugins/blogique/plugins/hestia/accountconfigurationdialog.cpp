@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,28 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_INTERFACES_IPROXYOBJECT_H
-#define PLUGINS_POSHUKU_INTERFACES_IPROXYOBJECT_H
-#include <QtPlugin>
-
-class QUrl;
+#include "accountconfigurationdialog.h"
 
 namespace LeechCraft
 {
-namespace Poshuku
+namespace Blogique
 {
-	class IProxyObject
+namespace Hestia
+{
+	AccountConfigurationDialog::AccountConfigurationDialog (QWidget *parent)
+	: QDialog (parent)
 	{
-	public:
-		virtual QObject* GetHistoryModel () const = 0;
-		virtual QObject* GetFavoritesModel () const = 0;
-		virtual QObject* OpenInNewTab (const QUrl& url,
-				bool inverted = false) const = 0;
-	};
+		Ui_.setupUi (this);
+	}
+
+	AccountConfigurationWidget* AccountConfigurationDialog::ConfWidget ()
+	{
+		return Ui_.ConfWidget_;
+	}
+
+}
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IProxyObject,
-		"org.Deviant.LeechCraft.Poshuku.IProxyObject/1.0");
 
-#endif

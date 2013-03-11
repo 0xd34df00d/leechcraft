@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  * Copyright (C) 2011 ForNeVeR
  *
  * This program is free software: you can redistribute it and/or modify
@@ -34,6 +34,7 @@ namespace Choroid
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveTabs);
 
+		ICoreProxy_ptr Proxy_;
 		TabClassInfo TabInfo_;
 	public:
 		void Init (ICoreProxy_ptr);

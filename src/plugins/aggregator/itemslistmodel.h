@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,6 @@ namespace Aggregator
 		int CurrentRow_;
 		// First is ParentURL_ and second is Title_
 		IDType_t CurrentChannel_;
-		bool MayBeRichText_;
 	public:
 		ItemsListModel (QObject* = 0);
 

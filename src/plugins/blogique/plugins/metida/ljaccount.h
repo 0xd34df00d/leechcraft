@@ -107,7 +107,7 @@ namespace Metida
 		LJXmlRPC *LJXmlRpc_;
 		QString Name_;
 		QString Login_;
-		bool IsValidated_;
+		bool IsValid_;
 		std::shared_ptr<LJProfile> LJProfile_;
 
 		QAction *LoadLastEvents_;
@@ -123,15 +123,17 @@ namespace Metida
 		void RenameAccount (const QString& name);
 		QByteArray GetAccountID () const;
 		void OpenConfigurationDialog ();
-		bool IsValidated () const;
+		bool IsValid () const;
 
 		QString GetPassword () const;
 
 		QObject* GetProfile ();
 
-		void GetLastEntries (int count);
+		void GetEntriesByDate (const QDate& date);
 		void RemoveEntry (const Entry& entry);
 		void UpdateEntry (const Entry& entry);
+
+		void RequestStatistics ();
 
 		QList<QAction*> GetUpdateActions () const;
 
@@ -154,6 +156,7 @@ namespace Metida
 	public slots:
 		void handleValidatingFinished (bool success);
 		void handleXmlRpcError (int errorCode, const QString& msgInEng);
+		void handleNetworkError (int errorCode, const QString& msgInEng);
 		void updateProfile ();
 
 		void submit (const Entry& event);
@@ -182,6 +185,8 @@ namespace Metida
 		void gettingEntries2BackupFinished ();
 
 		void gotEntries (const QList<Entry>& entries);
+
+		void gotBlogStatistics (const QMap<QDate, int>& statistics);
 	};
 }
 }

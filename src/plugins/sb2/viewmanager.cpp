@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,9 +26,11 @@
 #include <QCoreApplication>
 #include <QToolBar>
 #include <QMainWindow>
+#include <QAction>
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
+#include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/iquarkcomponentprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -66,7 +68,7 @@ namespace SB2
 		};
 	}
 
-	ViewManager::ViewManager (ICoreProxy_ptr proxy, QMainWindow *window, QObject *parent)
+	ViewManager::ViewManager (ICoreProxy_ptr proxy, Util::ShortcutManager *shortcutMgr, QMainWindow *window, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, ViewItemsModel_ (new ViewItemsModel (this))
@@ -120,6 +122,12 @@ namespace SB2
 				this,
 				SLOT (handleToolbarTopLevel (bool)));
 
+		auto toggleAct = Toolbar_->toggleViewAction ();
+		toggleAct->setProperty ("ActionIcon", "layer-visible-on");
+		toggleAct->setShortcut (QString ("Ctrl+J,S"));
+		shortcutMgr->RegisterAction ("TogglePanel", toggleAct, true);
+
+		window->addAction (toggleAct);
 		window->addToolBar (static_cast<Qt::ToolBarArea> (pos), Toolbar_);
 #ifdef Q_OS_MAC
 		// dunno WTF
@@ -301,6 +309,9 @@ namespace SB2
 					added = true;
 					break;
 				}
+
+				if (added)
+					break;
 			}
 			if (!added)
 				ViewItemsModel_->appendRow (item);

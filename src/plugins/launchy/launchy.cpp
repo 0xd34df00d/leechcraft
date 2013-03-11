@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #include <QAction>
 #include <util/util.h>
 #include <util/sys/paths.h>
+#include <util/shortcuts/shortcutmanager.h>
 #include "itemsfinder.h"
 #include "fsdisplayer.h"
 #include "favoritesmanager.h"
@@ -41,12 +42,18 @@ namespace Launchy
 
 		FavManager_ = new FavoritesManager;
 
+		ShortcutMgr_ = new Util::ShortcutManager (proxy, this);
+		ShortcutMgr_->SetObject (this);
+
 		FSLauncher_ = new QAction (tr ("Open fullscreen launcher..."), this);
 		FSLauncher_->setProperty ("ActionIcon", "system-run");
+		FSLauncher_->setShortcut (QString ("Meta+R"));
 		connect (FSLauncher_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleFSRequested ()));
+
+		ShortcutMgr_->RegisterAction ("FSLauncher", FSLauncher_, true);
 
 		auto itemImageProv = new ItemImageProvider;
 		auto quarkMgr = new QuarkManager (proxy, FavManager_, Finder_, itemImageProv);
@@ -90,6 +97,16 @@ namespace Launchy
 		if (aep == ActionsEmbedPlace::LCTray)
 			result << FSLauncher_;
 		return result;
+	}
+
+	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
+	{
+		return ShortcutMgr_->GetActionInfo ();
+	}
+
+	void Plugin::SetShortcut (const QString& id, const QKeySequences_t& sequences)
+	{
+		ShortcutMgr_->SetShortcut (id, sequences);
 	}
 
 	QuarkComponents_t Plugin::GetComponents () const

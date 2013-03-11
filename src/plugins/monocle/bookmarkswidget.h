@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,27 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_INTERFACES_IFLASHOVERRIDER_H
-#define PLUGINS_POSHUKU_INTERFACES_IFLASHOVERRIDER_H
-#include <QtPlugin>
+#pragma once
 
-class QUrl;
+#include <QWidget>
+#include "interfaces/monocle/idocument.h"
+#include "ui_bookmarkswidget.h"
 
 namespace LeechCraft
 {
-namespace Poshuku
+namespace Monocle
 {
-	class IFlashOverrider
+	class BookmarksWidget : public QWidget
 	{
-	public:
-		virtual ~IFlashOverrider () {}
+		Q_OBJECT
 
-		virtual bool WouldOverrideFlash (const QUrl&) const = 0;
+		Ui::BookmarksWidget Ui_;
+	public:
+		BookmarksWidget (QWidget* = 0);
+
+		void HandleDoc (IDocument_ptr);
 	};
 }
 }
-
-Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IFlashOverrider,
-		"org.Deviant.LeechCraft.Poshuku.IFlashOverrider/1.0");
-
-#endif

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@
 #include <util/defaulthookproxy.h>
 #include <util/util.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/gui/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "interfaces/azoth/iclentry.h"
@@ -65,6 +66,7 @@
 #include "msgformatterwidget.h"
 #include "actionsmanager.h"
 #include "contactdropfilter.h"
+#include "userslistwidget.h"
 
 namespace LeechCraft
 {
@@ -137,6 +139,7 @@ namespace Azoth
 		Ui_.setupUi (this);
 		Ui_.View_->installEventFilter (new ZoomEventFilter (Ui_.View_));
 		Ui_.MsgEdit_->installEventFilter (new CopyFilter (Ui_.View_));
+		MUCEventLog_->installEventFilter (this);
 
 		auto dropFilter = new ContactDropFilter (this);
 		Ui_.View_->installEventFilter (dropFilter);
@@ -392,16 +395,26 @@ namespace Azoth
 			appendMessageText (data->text ());
 	}
 
+	void ChatTab::ShowUsersList ()
+	{
+		IMUCEntry *muc = GetEntry<IMUCEntry> ();
+		if (!muc)
+			return;
+
+		const auto& parts = muc->GetParticipants ();
+		UsersListWidget w (parts, this);
+		if (w.exec () != QDialog::Accepted)
+			return;
+
+		if (auto part = w.GetActivatedParticipant ())
+			InsertNick (qobject_cast<ICLEntry*> (part)->GetEntryName ());
+	}
+
 	void ChatTab::HandleMUCParticipantsChanged ()
 	{
 		IMUCEntry *muc = GetEntry<IMUCEntry> ();
 		if (!muc)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< GetEntry<QObject> ()
-					<< "doesn't implement IMUCEntry";
 			return;
-		}
 
 		const int parts = muc->GetParticipants ().size ();
 		const QString& text = tr ("%1 (%n participant(s))", 0, parts)
@@ -428,6 +441,14 @@ namespace Azoth
 	QString ChatTab::GetSelectedVariant () const
 	{
 		return Ui_.VariantBox_->currentText ();
+	}
+
+	bool ChatTab::eventFilter (QObject *obj, QEvent *event)
+	{
+		if (obj == MUCEventLog_ && event->type () == QEvent::Close)
+			Ui_.MUCEventsButton_->setChecked (false);
+
+		return false;
 	}
 
 	void ChatTab::messageSend ()
@@ -662,6 +683,31 @@ namespace Azoth
 	void ChatTab::handleRichTextToggled ()
 	{
 		PrepareTheme ();
+
+		const bool defaultSetting = XmlSettingsManager::Instance ()
+				.property ("ShowRichTextMessageBody").toBool ();
+
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth");
+		settings.beginGroup ("RichTextStates");
+
+		auto enabled = settings.value ("Enabled").toStringList ();
+		auto disabled = settings.value ("Disabled").toStringList ();
+
+		if (ToggleRichText_->isChecked () == defaultSetting)
+		{
+			enabled.removeAll (EntryID_);
+			disabled.removeAll (EntryID_);
+		}
+		else if (defaultSetting)
+			disabled << EntryID_;
+		else
+			enabled << EntryID_;
+
+		settings.setValue ("Enabled", enabled);
+		settings.setValue ("Disabled", disabled);
+
+		settings.endGroup ();
 	}
 
 	void ChatTab::handleQuoteSelection ()
@@ -1310,6 +1356,15 @@ namespace Azoth
 				SLOT (handleRichTextToggled ()));
 		TabToolbar_->addAction (ToggleRichText_);
 		TabToolbar_->addSeparator ();
+
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth");
+		settings.beginGroup ("RichTextStates");
+		if (settings.value ("Enabled").toStringList ().contains (EntryID_))
+			ToggleRichText_->setChecked (true);
+		else if (settings.value ("Disabled").toStringList ().contains (EntryID_))
+			ToggleRichText_->setChecked (false);
+		settings.endGroup ();
 
 		const auto& quoteInfo = infos ["org.LeechCraft.Azoth.QuoteSelected"];
 		QAction *quoteSelection = new QAction (tr ("Quote selection"), this);
@@ -2002,7 +2057,8 @@ namespace Azoth
 		if (!on)
 			return;
 
-		MUCEventLog_->move (QCursor::pos ());
+		MUCEventLog_->move (Util::FitRectScreen (QCursor::pos () + QPoint (2, 2),
+					MUCEventLog_->size ()));
 	}
 
 	void ChatTab::handleSeparateMUCLog ()

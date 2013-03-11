@@ -43,7 +43,7 @@ namespace Metida
 	, ParentBloggingPlatform_ (qobject_cast<LJBloggingPlatform*> (parent))
 	, LJXmlRpc_ (new LJXmlRPC (this, this))
 	, Name_ (name)
-	, IsValidated_ (false)
+	, IsValid_ (false)
 	, LJProfile_ (std::make_shared<LJProfile> (this))
 	, LoadLastEvents_ (new QAction (tr ("Last entries"), this))
 	, LoadChangedEvents_ (new QAction (tr ("Changed entries"), this))
@@ -57,13 +57,17 @@ namespace Metida
 				this,
 				SLOT (handleValidatingFinished (bool)));
 		connect (LJXmlRpc_,
-				SIGNAL (error (int, const QString&)),
+				SIGNAL (error (int, QString)),
 				this,
-				SLOT (handleXmlRpcError (int, const QString&)));
+				SLOT (handleXmlRpcError (int, QString)));
 		connect (LJXmlRpc_,
-				SIGNAL (profileUpdated (const LJProfileData&)),
+				SIGNAL (networkError (int, QString)),
+				this,
+				SLOT (handleNetworkError (int, QString)));
+		connect (LJXmlRpc_,
+				SIGNAL (profileUpdated (LJProfileData)),
 				LJProfile_.get (),
-				SLOT (handleProfileUpdate (const LJProfileData&)));
+				SLOT (handleProfileUpdate (LJProfileData)));
 		connect (LJXmlRpc_,
 				SIGNAL (eventPosted (QList<LJEvent>)),
 				this,
@@ -88,6 +92,10 @@ namespace Metida
 				SIGNAL (gotEvents (QList<LJEvent>)),
 				this,
 				SLOT (handleGotEvents (QList<LJEvent>)));
+		connect (LJXmlRpc_,
+				SIGNAL (gotStatistics (QMap<QDate, int>)),
+				this,
+				SIGNAL (gotBlogStatistics (QMap<QDate, int>)));
 
 		connect (LoadLastEvents_,
 				SIGNAL (triggered ()),
@@ -144,9 +152,9 @@ namespace Metida
 		FillSettings (dia->ConfWidget ());
 	}
 
-	bool LJAccount::IsValidated () const
+	bool LJAccount::IsValid () const
 	{
-		return IsValidated_;
+		return IsValid_;
 	}
 
 	QString LJAccount::GetPassword () const
@@ -160,9 +168,9 @@ namespace Metida
 		return LJProfile_.get ();
 	}
 
-	void LJAccount::GetLastEntries (int count)
+	void LJAccount::GetEntriesByDate (const QDate& date)
 	{
-		LJXmlRpc_->GetLastEvents (count);
+		LJXmlRpc_->GetEventsByDate (date);
 	}
 
 	namespace
@@ -241,6 +249,11 @@ namespace Metida
 		LJXmlRpc_->UpdateEvent (Entry2LJEvent (entry));
 	}
 
+	void LJAccount::RequestStatistics ()
+	{
+		LJXmlRpc_->RequestStatistics ();
+	}
+
 	QList<QAction*> LJAccount::GetUpdateActions () const
 	{
 		return { LoadLastEvents_, LoadChangedEvents_ };
@@ -268,7 +281,7 @@ namespace Metida
 			ostr << ver
 					<< Name_
 					<< Login_
-					<< IsValidated_
+					<< IsValid_
 					<< LJProfile_->GetProfileData ();
 		}
 
@@ -294,7 +307,7 @@ namespace Metida
 		in >> name;
 		LJAccount *result = new LJAccount (name, parent);
 		in >> result->Login_
-				>> result->IsValidated_;
+				>> result->IsValid_;
 
 		if (ver == 2)
 		{
@@ -352,14 +365,14 @@ namespace Metida
 
 	void LJAccount::handleValidatingFinished (bool success)
 	{
-		IsValidated_ = success;
+		IsValid_ = success;
 		qDebug () << Q_FUNC_INFO
 				<< "account"
 				<< GetAccountID ()
 				<< "validating result is"
-				<< IsValidated_;
+				<< IsValid_;
 
-		emit accountValidated (IsValidated_);
+		emit accountValidated (IsValid_);
 		emit accountSettingsChanged ();
 	}
 
@@ -375,6 +388,21 @@ namespace Metida
 				tr ("%1 (original message: %2)")
 						.arg (MetidaUtils::GetLocalizedErrorMessage (errorCode),
 						msgInEng),
+				PWarning_));
+	}
+
+	void LJAccount::handleNetworkError (int errorCode, const QString& msgInEng)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< "error code:"
+				<< errorCode
+				<< "error text:"
+				<< msgInEng;
+
+		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique",
+				tr ("%1 (error code: %2)")
+					.arg (msgInEng)
+					.arg (errorCode),
 				PWarning_));
 	}
 
@@ -426,11 +454,9 @@ namespace Metida
 		props.CurrentLocation_ = postOptions.value ("place").toString ();
 		props.CurrentMusic_ = postOptions.value ("music").toString ();
 
-		int currentMoodId = postOptions.value ("moodId").toInt ();
-		if (!currentMoodId)
+		props.CurrentMoodId_ = postOptions.value ("moodId", -1).toInt ();
+		if (props.CurrentMoodId_ == -1)
 			props.CurrentMood_ = postOptions.value ("mood").toString ();
-		else
-			props.CurrentMoodId_ = currentMoodId;
 
 		props.ShowInFriendsPage_ = postOptions.value ("showInFriendsPage").toBool ();
 

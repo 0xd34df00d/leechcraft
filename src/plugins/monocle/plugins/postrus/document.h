@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QObject>
+#include <QUrl>
 #include <interfaces/monocle/idocument.h>
 #include <libspectre/spectre.h>
 
@@ -34,6 +35,7 @@ namespace Postrus
 		Q_OBJECT
 
 		SpectreDocument *SD_;
+		QUrl DocURL_;
 	public:
 		Document (const QString&, QObject* = 0);
 		~Document ();
@@ -45,6 +47,7 @@ namespace Postrus
 		QSize GetPageSize (int) const;
 		QImage RenderPage (int, double xRes, double yRes);
 		QList<ILink_ptr> GetPageLinks (int);
+		QUrl GetDocURL () const;
 	signals:
 		void navigateRequested (const QString&, int, double, double);
 	};

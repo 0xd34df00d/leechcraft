@@ -27,7 +27,7 @@
 #include "addaccountwizardfirstpage.h"
 #include "core.h"
 #include "profiledialog.h"
-#include "localstorage.h"
+#include "storagemanager.h"
 
 namespace LeechCraft
 {
@@ -88,7 +88,7 @@ namespace Blogique
 		QStandardItem *item = new QStandardItem (acc->GetAccountName ());
 		item->setIcon (ibp ? ibp->GetBloggingPlatformIcon () : QIcon ());
 		item->setEditable (false);
-		QStandardItem *itemValidated = new QStandardItem (acc->IsValidated () ?
+		QStandardItem *itemValidated = new QStandardItem (acc->IsValid () ?
 				tr ("Validated") :
 				tr ("Not validated"));
 		itemValidated->setEditable (false);
@@ -101,7 +101,7 @@ namespace Blogique
 
 		try
 		{
-			Core::Instance ().GetStorage ()->AddAccount (acc->GetAccountID ());
+			Core::Instance ().GetStorageManager ()->AddAccount (acc->GetAccountID ());
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -138,6 +138,16 @@ namespace Blogique
 		Item2Account_.remove (item);
 		AccountsModel_->removeRow (item->row ());
 		Account2Item_.remove (acc);
+		try
+		{
+			Core::Instance ().GetStorageManager ()->RemoveAccount (acc->GetAccountID ());
+		}
+		catch (const std::runtime_error& e)
+		{
+			QMessageBox::warning (this,
+					tr ("LeechCraft"),
+					tr ("Error removing account."));
+		}
 	}
 
 	void AccountsListWidget::handleAccountValidated (QObject *accObj, bool validated)
@@ -269,7 +279,7 @@ namespace Blogique
 
 			Ui_.Profile_->setEnabled ((ibp->GetFeatures () &
 					IBloggingPlatform::BPFSupportsProfiles) &&
-					acc->IsValidated ());
+					acc->IsValid ());
 		}
 	}
 

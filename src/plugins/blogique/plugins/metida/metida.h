@@ -23,8 +23,8 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iplugin2.h>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/blogique/ibloggingplatformplugin.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 
 namespace LeechCraft
 {

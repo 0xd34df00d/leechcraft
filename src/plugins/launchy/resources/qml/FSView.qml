@@ -14,6 +14,15 @@ Rectangle {
 
     Keys.onEscapePressed: rootRect.closeRequested()
 
+    Keys.forwardTo: [itemsView, appsFilterInput]
+
+    Keys.onLeftPressed: itemsView.moveCurrentIndexLeft()
+    Keys.onRightPressed: itemsView.moveCurrentIndexRight()
+    Keys.onUpPressed: itemsView.moveCurrentIndexUp()
+    Keys.onDownPressed: itemsView.moveCurrentIndexDown()
+    Keys.onEnterPressed: itemsView.currentItem.trigger()
+    Keys.onReturnPressed: itemsView.currentItem.trigger()
+
     Rectangle {
         id: catsContainer
 
@@ -119,7 +128,7 @@ Rectangle {
 
         color: "#cccccccc"
 
-        TextEdit {
+        TextInput {
             id: appsFilterInput
             anchors.left: parent.left
             anchors.right: parent.right
@@ -128,7 +137,6 @@ Rectangle {
             font.pointSize: 12
             font.italic: true
             focus: true
-            textFormat: TextEdit.PlainText
         }
 
         Binding {
@@ -151,6 +159,9 @@ Rectangle {
 
         model: itemsModel
 
+        focus: true
+        keyNavigationWraps: true
+
         delegate: Rectangle {
             id: itemsViewDelegate
 
@@ -158,7 +169,7 @@ Rectangle {
             height: itemsView.cellHeight
             radius: 5
 
-            color: itemMouseArea.containsMouse ? "#AAA51E00" : "#33222222"
+            color: (itemMouseArea.containsMouse || GridView.isCurrentItem) ? "#AAA51E00" : "#33222222"
             Behavior on color { PropertyAnimation {} }
 
             Image {
@@ -192,7 +203,7 @@ Rectangle {
                 anchors.fill: parent
                 hoverEnabled: true
 
-                onClicked: rootRect.itemSelected(itemID)
+                onClicked: trigger()
 
                 onEntered: itemDescriptionLabel.text = itemDescription
                 onExited: itemDescriptionLabel.text = ""
@@ -215,6 +226,10 @@ Rectangle {
 
             GridView.onAdd: SequentialAnimation {
                 NumberAnimation { target: itemsViewDelegate; property: "opacity"; from: 0; to: 1; duration: 250; easing.type: Easing.InOutQuad }
+            }
+
+            function trigger() {
+                rootRect.itemSelected(itemID);
             }
         }
     }

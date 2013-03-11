@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,7 +92,7 @@ namespace Poshuku
 		return Items_.size ();
 	}
 
-	void URLCompletionModel::addItem (const QString& title, const QString& url)
+	void URLCompletionModel::AddItem (const QString& title, const QString& url, size_t pos)
 	{
 		HistoryItem item =
 		{
@@ -101,8 +101,10 @@ namespace Poshuku
 			url
 		};
 
-		beginInsertRows (QModelIndex (), 0, 0);
-		Items_.insert (Items_.begin (), item);
+		pos = std::min (Items_.size (), pos);
+
+		beginInsertRows (QModelIndex (), pos, pos);
+		Items_.insert (Items_.begin () + pos, item);
 		endInsertRows ();
 	}
 
@@ -129,8 +131,6 @@ namespace Poshuku
 				Items_ = newItems;
 			}
 		}
-
-		emit baseUpdated (sender ());
 	}
 
 	void URLCompletionModel::handleItemAdded (const HistoryItem&)

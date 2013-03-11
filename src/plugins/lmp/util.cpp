@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,14 +19,12 @@
 #include "util.h"
 #include <algorithm>
 #include <QDirIterator>
-#include <QTimer>
 #include <QPixmap>
-#include <QDesktopWidget>
-#include <QLabel>
 #include <QApplication>
-#include <QKeyEvent>
+#include <QLabel>
 #include <phonon/mediasource.h>
 #include <util/util.h>
+#include <util/gui/util.h>
 #include "core.h"
 #include "localcollection.h"
 #include "xmlsettingsmanager.h"
@@ -141,64 +139,14 @@ namespace LMP
 		return QPixmap (FindAlbumArtPath (near, ignoreCollection));
 	}
 
-	namespace
-	{
-		class AADisplayEventFilter : public QObject
-		{
-			QWidget *Display_;
-		public:
-			AADisplayEventFilter (QWidget *display)
-			: QObject (display)
-			, Display_ (display)
-			{
-			}
-		protected:
-			bool eventFilter (QObject*, QEvent *event)
-			{
-				bool shouldClose = false;
-				switch (event->type ())
-				{
-				case QEvent::KeyRelease:
-					shouldClose = static_cast<QKeyEvent*> (event)->key () == Qt::Key_Escape;
-					break;
-				case QEvent::MouseButtonRelease:
-					shouldClose = true;
-					break;
-				default:
-					break;
-				}
-
-				if (!shouldClose)
-					return false;
-
-				QTimer::singleShot (0,
-						Display_,
-						SLOT (close ()));
-				return true;
-			}
-		};
-	}
-
 	void ShowAlbumArt (const QString& near, const QPoint& pos)
 	{
 		auto px = FindAlbumArt (near);
 		if (px.isNull ())
 			return;
 
-		const auto& availGeom = QApplication::desktop ()->availableGeometry (pos).size () * 0.9;
-		if (px.size ().width () > availGeom.width () ||
-			px.size ().height () > availGeom.height ())
-			px = px.scaled (availGeom, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
-		auto label = new QLabel;
+		auto label = Util::ShowPixmapLabel (px, pos);
 		label->setWindowTitle (QObject::tr ("Album art"));
-		label->setWindowFlags (Qt::Tool);
-		label->setAttribute (Qt::WA_DeleteOnClose);
-		label->setFixedSize (px.size ());
-		label->setPixmap (px);
-		label->show ();
-		label->activateWindow ();
-		label->installEventFilter (new AADisplayEventFilter (label));
 	}
 
 	QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters ()

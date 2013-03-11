@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -241,8 +241,11 @@ namespace Xoox
 		void FetchVCard (const QString&, bool reportErrors = false);
 		void FetchVCard (const QString&, VCardCallback_t, bool reportErrors = false);
 		void FetchVersion (const QString&, bool reportErrors = false);
+
 		QXmppBookmarkSet GetBookmarks () const;
 		void SetBookmarks (const QXmppBookmarkSet&);
+		QXmppBookmarkManager* GetBMManager () const;
+
 		GlooxMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&, const QString&);
 

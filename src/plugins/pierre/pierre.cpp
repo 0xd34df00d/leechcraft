@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,8 +43,11 @@ namespace Pierre
 
 		Proxy_ = proxy;
 		MenuBar_ = new QMenuBar (0);
+	}
 
-		auto rootWM = proxy->GetRootWindowsManager ();
+	void Plugin::SecondInit ()
+	{
+		auto rootWM = Proxy_->GetRootWindowsManager ();
 		for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
 			handleWindow (i);
 
@@ -52,10 +55,6 @@ namespace Pierre
 				SIGNAL (windowAdded (int)),
 				this,
 				SLOT (handleWindow (int)));
-	}
-
-	void Plugin::SecondInit ()
-	{
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -134,6 +133,7 @@ namespace Pierre
 
 	void Plugin::handleWindow (int index)
 	{
+		qDebug () << Q_FUNC_INFO;
 		auto rootWM = Proxy_->GetRootWindowsManager ();
 		FS::AddAction (rootWM->GetMainWindow (index));
 	}

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,11 @@
 #include "fdopropsadaptor.h"
 #include <QVariantMap>
 #include <QStringList>
+#include <QMetaMethod>
+#include <QDBusConnection>
+#include <QDBusContext>
+#include <QDBusVariant>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -36,6 +41,68 @@ namespace MPRIS
 		QVariantMap changes;
 		changes [prop] = val;
 		emit PropertiesChanged (iface, changes, QStringList ());
+	}
+
+	QDBusVariant FDOPropsAdaptor::Get (const QString& iface, const QString& propName)
+	{
+		QObject *child = 0;
+		QMetaProperty prop;
+		if (!GetProperty (iface, propName, &prop, &child))
+			return QDBusVariant (QVariant ());
+
+		return QDBusVariant (prop.read (child));
+	}
+
+	void FDOPropsAdaptor::Set (const QString& iface, const QString& propName, const QDBusVariant& value)
+	{
+		QObject *child = 0;
+		QMetaProperty prop;
+		if (!GetProperty (iface, propName, &prop, &child))
+			return;
+
+		if (!prop.isWritable ())
+		{
+			auto context = dynamic_cast<QDBusContext*> (parent ());
+			if (context->calledFromDBus ())
+				context->sendErrorReply (QDBusError::AccessDenied, propName + " isn't writable");
+			return;
+		}
+
+		prop.write (child, value.variant ());
+	}
+
+	bool FDOPropsAdaptor::GetProperty (const QString& iface, const QString& prop, QMetaProperty *propObj, QObject **childObject) const
+	{
+		auto adaptors = parent ()->findChildren<QDBusAbstractAdaptor*> ();
+		for (const auto& child : adaptors)
+		{
+			const auto mo = child->metaObject ();
+
+			if (!iface.isEmpty ())
+			{
+				const auto idx = mo->indexOfClassInfo ("D-Bus Interface");
+				if (idx == -1)
+					continue;
+
+				const auto& info = mo->classInfo (idx);
+				if (iface != info.value ())
+					continue;
+			}
+
+			const auto idx = mo->indexOfProperty (prop.toUtf8 ().constData ());
+			if (idx != -1)
+			{
+				*propObj = mo->property (idx);
+				*childObject = child;
+				return true;
+			}
+		}
+
+		auto context = dynamic_cast<QDBusContext*> (parent ());
+		if (context->calledFromDBus ())
+			context->sendErrorReply (QDBusError::InvalidMember, "no such property " + prop);
+
+		return false;
 	}
 }
 }

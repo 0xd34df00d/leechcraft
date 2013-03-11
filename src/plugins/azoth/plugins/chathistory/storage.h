@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,8 +54,10 @@ namespace ChatHistory
 		QSqlQuery LogsSearcherWOContactAccount_;
 		QSqlQuery HistoryGetter_;
 		QSqlQuery HistoryClearer_;
+		QSqlQuery UserClearer_;
 		QSqlQuery EntryCacheSetter_;
 		QSqlQuery EntryCacheGetter_;
+		QSqlQuery EntryCacheClearer_;
 
 		QHash<QString, qint32> Users_;
 		QHash<QString, qint32> Accounts_;
@@ -80,7 +82,7 @@ namespace ChatHistory
 
 		QHash<QString, qint32> GetUsers ();
 		qint32 GetUserID (const QString&);
-		void AddUser (const QString& id);
+		void AddUser (const QString& id, const QString& accountId);
 
 		void PrepareEntryCache ();
 
@@ -93,6 +95,8 @@ namespace ChatHistory
 		RawSearchResult Search (const QString& text, int shift);
 		void SearchDate (qint32, qint32, const QDateTime&);
 	public slots:
+		void regenUsersCache ();
+
 		void addMessage (const QVariantMap&);
 		void getOurAccounts ();
 		void getUsersForAccount (const QString&);

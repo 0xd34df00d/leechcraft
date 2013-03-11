@@ -51,7 +51,7 @@ Rectangle {
         anchors.fill: parent
         hoverEnabled: true
 
-        onEntered: commonJS.showTooltip(rootRect, function(x, y) { TPI_proxy.hovered(x, y, quarkProxy.getShiftDiff()) })
+        onEntered: commonJS.showTooltip(rootRect, function(x, y) { TPI_proxy.hovered(x, y, quarkProxy.getWinRect()) })
         onExited: TPI_proxy.hoverLeft()
     }
 }

@@ -28,15 +28,16 @@ SET (VELVETBIRD_SRCS
 	accregfirstpage.cpp
 	util.cpp
 	buddy.cpp
+	convimmessage.cpp
 	)
 SET (VELVETBIRD_FORMS
 	accregfirstpage.ui
 	)
-#SET (VELVETBIRD_RESOURCES azothvelvetbirdresources.qrc)
+SET (VELVETBIRD_RESOURCES azothvelvetbirdresources.qrc)
 #CreateTrs ("azoth_velvetbird" "en;ru_RU;uk_UA" VELVETBIRD_COMPILED_TRANSLATIONS)
 
 QT4_WRAP_UI (VELVETBIRD_UIS_H ${VELVETBIRD_FORMS})
-#QT4_ADD_RESOURCES (VELVETBIRD_RCCS ${VELVETBIRD_RESOURCES})
+QT4_ADD_RESOURCES (VELVETBIRD_RCCS ${VELVETBIRD_RESOURCES})
 
 ADD_LIBRARY (leechcraft_azoth_velvetbird SHARED
 	${VELVETBIRD_COMPILED_TRANSLATIONS}

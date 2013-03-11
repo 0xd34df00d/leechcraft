@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,14 +28,18 @@
  * Data filter plugins provide some means to manipulate and alter data.
  * Examples of such plugins are image uploaders to various image bins,
  * text finders, etc.
+ * 
+ * The list of possible data filter variants (that is, image bins
+ * supported by a single plugin) is returned from the GetFilterVariants()
+ * function.
  *
  * Plugins implementing this interface are also expected to implement
  * IEntityHandler, considering (and accepting) entities with MIME
- * "x-leechcraft/data-filter-request".
- *
- * The list of possible data filter variants is returned from
- * GetFilterVariants(). The chosen variant should then be passed in
- * the "DataFilter" element of the Entity::Additional_ map.
+ * "x-leechcraft/data-filter-request". Such entities will contain the
+ * entity to filter (like, a piece of text or an image) in the
+ * Entity::Entity_ field and may contain the "DataFilter" key in the
+ * Entity::Additional_ map with the name of the exact filter variant
+ * to use (if user has already selected it).
  */
 class Q_DECL_EXPORT IDataFilter
 {

@@ -1,37 +1,99 @@
-import QtQuick 1.0
+import QtQuick 1.1
 
 Rectangle {
     id: imgView
 
-    Keys.onEscapePressed: { imgView.state = '' }
+    Keys.onPressed: {
+        switch (event.key)
+        {
+        case Qt.Key_PageDown:
+        case Qt.Key_Space:
+        case Qt.Key_Right:
+            console.log("next");
+            imgView.nextImageRequested();
+            event.accepted = true;
+            break;
+        case Qt.Key_Left:
+            imgView.prevImageRequested();
+            event.accepted = true;
+            break;
+        case Qt.Key_Escape:
+            imgView.state = '';
+            event.accepted = true;
+            break;
+        }
+    }
 
     signal imageSelected(string imageId)
+    signal nextImageRequested()
+    signal prevImageRequested()
 
     function showSingleImage(url) {
-        singleImage.source = url
-        imgView.state = 'singleImageMode'
+        singleImage.source = url;
+        imgView.state = url != '' ? 'singleImageMode' : '';
     }
+
+    SystemPalette {
+        id: sysPalette
+        colorGroup: SystemPalette.Active
+    }
+
+    color: sysPalette.window
 
     Component {
         id: imageListDelegate
 
         Item {
-            width: imagesGrid.cellWidth - 2
-            height: imagesGrid.cellHeight - 2
-            clip: true
+            width: imagesGrid.cellWidth
+            height: imagesGrid.cellHeight
 
-            Image {
-                id: theImage
-
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.top: parent.top
-                fillMode: Image.PreserveAspectFit
-                smooth: true
+            Item {
+                anchors.fill: parent
+                anchors.topMargin: parent.height * 0.05
+                anchors.bottomMargin: parent.height * 0.05
+                anchors.leftMargin: parent.width * 0.05
+                anchors.rightMargin: parent.width * 0.05
                 clip: true
-                asynchronous: true
 
-                source: image
+                Image {
+                    id: theImage
+
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.bottom: nameLabel.top
+                    fillMode: Image.PreserveAspectFit
+                    smooth: true
+                    asynchronous: true
+
+                    source: image
+                }
+
+                Text {
+                    id: nameLabel
+
+                    anchors.bottom: filesizeLabel.top
+                    anchors.left: parent.left
+                    width: imagesGrid.cellWidth * 0.9
+
+                    text: filename
+                    elide: Text.ElideRight
+                    horizontalAlignment: Text.AlignHCenter
+
+                    textFormat: Text.PlainText
+                }
+
+                Text {
+                    id: filesizeLabel
+
+                    anchors.bottom: parent.bottom
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    width: parent.width
+
+                    text: filesize
+                    font.italic: true
+                    horizontalAlignment: Text.AlignHCenter
+                }
 
                 MouseArea {
                     anchors.fill: parent
@@ -39,28 +101,6 @@ Rectangle {
 
                     onClicked: imgView.imageSelected(image)
                 }
-            }
-
-            Text {
-                id: textFilename
-
-                anchors { top: theImage.bottom; horizontalCenter: parent.horizontalCenter }
-                width: parent.width
-
-                text: filename
-                wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-                horizontalAlignment: Text.AlignHCenter
-            }
-
-            Text {
-                id: textFilesize
-
-                anchors { top: textFilename.bottom; horizontalCenter: parent.horizontalCenter; bottom: parent.bottom }
-                width: parent.width
-
-                text: filesize
-                font.italic: true
-                horizontalAlignment: Text.AlignHCenter
             }
         }
     }
@@ -139,8 +179,8 @@ Rectangle {
             from: "*"
             to: "singleImageMode"
 
-            NumberAnimation { target: imagesGridContainer; property: "opacity"; to: 0.1; duration: 500 }
-            NumberAnimation { target: singleImageContainer; property: "opacity"; to: 1; duration: 300 }
+            NumberAnimation { target: imagesGridContainer; property: "opacity"; to: 0.1; duration: 300 }
+            NumberAnimation { target: singleImageContainer; property: "opacity"; to: 1; duration: 120 }
         }
     ]
 }

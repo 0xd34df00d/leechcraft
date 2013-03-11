@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,6 +56,8 @@ namespace ChatHistory
 	, EntryToFocus_ (entry)
 	{
 		Ui_.setupUi (this);
+		Ui_.VertSplitter_->setStretchFactor (0, 0);
+		Ui_.VertSplitter_->setStretchFactor (1, 4);
 
 		auto proxy = Core::Instance ()->GetCoreProxy ();
 		new Util::ClearLineEditAddon (proxy, Ui_.ContactsSearch_);
@@ -217,6 +219,7 @@ namespace ChatHistory
 
 			QStandardItem *item = new QStandardItem (name);
 			item->setData (user, MRIDRole);
+			item->setToolTip (name);
 			ContactsModel_->appendRow (item);
 
 			if (!ourFocus && user == focusId)

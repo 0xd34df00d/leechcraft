@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,8 @@
 #include <QStringList>
 #include <QDateTime>
 #include "ilink.h"
+
+class QUrl;
 
 namespace LeechCraft
 {
@@ -59,6 +61,8 @@ namespace Monocle
 		virtual QImage RenderPage (int, double xRes, double yRes) = 0;
 
 		virtual QList<ILink_ptr> GetPageLinks (int) = 0;
+
+		virtual QUrl GetDocURL () const = 0;
 	protected:
 		virtual void navigateRequested (const QString&, int pageNum, double x, double y) = 0;
 	};

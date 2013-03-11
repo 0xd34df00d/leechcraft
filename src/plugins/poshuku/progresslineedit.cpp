@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,7 @@ namespace Poshuku
 		completer->setModel (Core::Instance ().GetURLCompletionModel ());
 		completer->setCompletionRole (URLCompletionModel::RoleURL);
 		completer->setCompletionMode (QCompleter::UnfilteredPopupCompletion);
+		completer->setMaxVisibleItems (15);
 		setCompleter (completer);
 
 		ClearButton_ = new QToolButton (this);
@@ -68,7 +69,8 @@ namespace Poshuku
 		connect (this,
 				SIGNAL (textEdited (const QString&)),
 				Core::Instance ().GetURLCompletionModel (),
-				SLOT (setBase (const QString&)));
+				SLOT (setBase (const QString&)),
+				Qt::QueuedConnection);
 
 		connect (this,
 				SIGNAL (textChanged (const QString&)),

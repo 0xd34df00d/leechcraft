@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,13 +51,15 @@ namespace SB2
 		QuarkProxy (ViewManager*, ICoreProxy_ptr, QObject* = 0);
 
 		const QString& GetExtHoveredQuarkClass () const;
+	private:
+		QRect GetFreeCoords () const;
 	public slots:
 		QPoint mapToGlobal (double, double);
-		QPoint getShiftDiff () const;
 		void showTextTooltip (int, int, const QString&);
 		void showSettings (const QUrl&);
 		void removeQuark (const QUrl&);
 		QVariant openWindow (const QUrl&, const QString&, const QVariant&);
+		QRect getWinRect ();
 
 		void quarkAddRequested (int, int);
 		void quarkOrderRequested (int, int);

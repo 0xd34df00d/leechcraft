@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -284,6 +284,7 @@ namespace Azoth
 
 		qRegisterMetaType<IMessage*> ("LeechCraft::Azoth::IMessage*");
 		qRegisterMetaType<IMessage*> ("IMessage*");
+		qRegisterMetaType<EntryStatus> ("LeechCraft::Azoth::EntryStatus");
 		qRegisterMetaType<QPointer<QObject>> ("QPointer<QObject>");
 
 		XmlSettingsManager::Instance ().RegisterObject ("StatusIcons",
@@ -2142,6 +2143,11 @@ namespace Azoth
 		Q_FOREACH (ICLEntry *entry, Entry2Items_.keys ())
 			if (entry->GetParentAccount () == account)
 				Entry2Items_.remove (entry);
+
+		disconnect (account,
+				0,
+				this,
+				0);
 	}
 
 	void Core::handleGotCLItems (const QList<QObject*>& items)

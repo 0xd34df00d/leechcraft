@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,6 +49,11 @@
 #include "coreinstanceobject.h"
 #include "rootwindowsmanager.h"
 #include "config.h"
+
+#ifdef Q_OS_MAC
+#include <QProxyStyle>
+#include <QStyleFactory>
+#endif
 
 #ifdef Q_OS_WIN32
 #include "winwarndialog.h"
@@ -170,6 +175,8 @@ namespace LeechCraft
 #endif
 
 		CheckStartupPass ();
+
+		Core::Instance ();
 		InitSettings ();
 
 		setQuitOnLastWindowClosed (false);
@@ -459,6 +466,28 @@ namespace LeechCraft
 		XmlSettingsManager::Instance ()->Release ();
 	}
 
+#ifdef Q_OS_MAC
+	namespace
+	{
+		class ToolbarFixerProxy : public QProxyStyle
+		{
+		public:
+			ToolbarFixerProxy (QStyle *other)
+			: QProxyStyle (other)
+			{
+			}
+
+			int pixelMetric (PixelMetric metric, const QStyleOption *opt, const QWidget *w) const
+			{
+				auto result = baseStyle ()->pixelMetric (metric, opt, w);
+				if (metric == PM_ToolBarIconSize)
+					result = std::min (24, result);
+				return result;
+			}
+		};
+	}
+#endif
+
 	void Application::handleAppStyle ()
 	{
 		auto style = XmlSettingsManager::Instance ()->property ("AppQStyle").toString ();
@@ -474,7 +503,12 @@ namespace LeechCraft
 #endif
 		}
 
+#ifdef Q_OS_MAC
+		if (auto styleObj = QStyleFactory::create (style))
+			setStyle (new ToolbarFixerProxy (styleObj));
+#else
 		setStyle (style);
+#endif
 	}
 
 	void Application::handleLanguage ()

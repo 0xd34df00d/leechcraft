@@ -18,55 +18,45 @@ SET (SRCS
 	addaccountwizardfirstpage.cpp
 	backupmanager.cpp
 	blogique.cpp
+	blogentrieswidget.cpp
 	blogiquewidget.cpp
 	calendarwidget.cpp
 	core.cpp
-	localstorage.cpp
+	draftentrieswidget.cpp
+	entriesfilterproxymodel.cpp
 	pluginproxy.cpp
 	profiledialog.cpp
+	storagemanager.cpp
 	updateentriesdialog.cpp
+	utils.cpp
 	xmlsettingsmanager.cpp
 	)
 
-SET (HEADERS
-	accountslistwidget.h
-	accountsselectdialog.h
-	addaccountwizardfirstpage.h
-	backupmanager.h
-	blogique.h
-	blogiquewidget.h
-	calendarwidget.h
-	core.h
-	localstorage.h
-	pluginproxy.h
-	profiledialog.h
-	updateentriesdialog.h
-	xmlsettingsmanager.h
-	)
-
-SET (FORMS accountslistwidget.ui
+SET (FORMS
+	accountslistwidget.ui
 	accountsselectdialog.ui
 	addaccountwizardfirstpage.ui
+	blogentrieswidget.ui
 	blogiquewidget.ui
+	draftentrieswidget.ui
 	profiledialog.ui
 	updateentriesdialog.ui
 	)
 
 SET (RESOURCES blogiqueresources.qrc)
 
-IF (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+CreateTrs ("blogique" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("blogique" "en;ru_RU" "${SRCS}" "${FORMS}" "blogiquesettings.xml")
 
 QT4_WRAP_UI (FORMS_HEADERS ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 ADD_LIBRARY (leechcraft_blogique SHARED
 	${SRCS}
-	${HEADERS}
 	${MOC_SRCS}
 	${FORMS_HEADERS}
 	${RCCS}
+	${COMPILED_TRANSLATIONS}
 	)
 
 TARGET_LINK_LIBRARIES (leechcraft_blogique
@@ -79,8 +69,13 @@ INSTALL (FILES blogiquesettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 SET (BLOGIQUE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
-OPTION (ENABLE_BLOGIQUE_METIDA "Build Metida, LiveJournal blogging platform support for Blogique" ON)
+OPTION (ENABLE_BLOGIQUE_METIDA "Build Metida, LiveJournal blogging platform" ON)
+OPTION (ENABLE_BLOGIQUE_HESTIA "Build Hestia, local blogging platform" ON)
 
 IF (ENABLE_BLOGIQUE_METIDA)
 	ADD_SUBDIRECTORY (plugins/metida)
 ENDIF (ENABLE_BLOGIQUE_METIDA)
+
+IF (ENABLE_BLOGIQUE_HESTIA)
+	ADD_SUBDIRECTORY (plugins/hestia)
+ENDIF (ENABLE_BLOGIQUE_HESTIA)

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,29 +16,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef POSHUKU_CONFIG_H
-#define POSHUKU_CONFIG_H
-#include <QtGlobal>
+#pragma once
 
-#if defined(Q_CC_GNU)
+#include <QObject>
+#include <interfaces/azoth/imessage.h>
 
-# if defined(leechcraft_poshuku_EXPORTS)
-#  define POSHUKU_API __attribute__ ((visibility("default")))
-# else
-#  define POSHUKU_API
-# endif
+namespace LeechCraft
+{
+namespace Azoth
+{
+namespace VelvetBird
+{
+	class Buddy;
 
-#elif defined(Q_CC_MSVC)
+	class ConvIMMessage : public QObject
+						, public IMessage
+	{
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Azoth::IMessage)
 
-# if defined(leechcraft_poshuku_EXPORTS)
-#  define POSHUKU_API __declspec(dllexport)
-# else
-#  define POSHUKU_API __declspec(dllimport)
-# endif
+		Buddy * const Buddy_;
+		QString Body_;
+		Direction Dir_;
+		QDateTime Timestamp_;
+	public:
+		ConvIMMessage (const QString&, Direction, Buddy*);
 
-#else
-# define POSHUKU_API
-#endif
-
-#endif
-
+		QObject* GetObject ();
+		void Send ();
+		void Store ();
+		Direction GetDirection () const;
+		MessageType GetMessageType () const;
+		MessageSubType GetMessageSubType () const;
+		QObject* OtherPart () const;
+		QString GetOtherVariant () const;
+		QString GetBody () const;
+		void SetBody (const QString& body);
+		QDateTime GetDateTime () const;
+		void SetDateTime (const QDateTime& timestamp);
+	};
+}
+}
+}

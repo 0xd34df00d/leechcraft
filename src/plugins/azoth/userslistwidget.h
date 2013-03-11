@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,27 +16,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_IBROWSERWIDGET_H
-#define PLUGINS_POSHUKU_IBROWSERWIDGET_H
+#pragma once
 
-class QWebView;
-class QLineEdit;
+#include <QDialog>
+#include "ui_userslistwidget.h"
+
+class QStandardItemModel;
+class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
-namespace Poshuku
+namespace Azoth
 {
-	class IBrowserWidget
+	class UsersListWidget : public QDialog
 	{
-	public:
-		virtual ~IBrowserWidget () {}
+		Q_OBJECT
 
-		virtual QLineEdit* GetURLEdit () const = 0;
+		Ui::UsersListWidget Ui_;
+
+		QSortFilterProxyModel *Filter_;
+		QStandardItemModel *PartsModel_;
+	public:
+		UsersListWidget (const QList<QObject*>&, QWidget* = 0);
+
+		QObject* GetActivatedParticipant () const;
 	};
 }
 }
-
-Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IBrowserWidget,
-		"org.Deviant.LeechCraft.Poshuku.IBrowserWidget/1.0");
-
-#endif

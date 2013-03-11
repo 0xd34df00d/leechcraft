@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QDBusAbstractAdaptor>
+#include <QDBusVariant>
 
 namespace LeechCraft
 {
@@ -35,6 +36,11 @@ namespace MPRIS
 		FDOPropsAdaptor (QObject*);
 
 		void Notify (const QString& iface, const QString& prop, const QVariant& val);
+	public slots:
+		QDBusVariant Get (const QString& iface, const QString& prop);
+		void Set (const QString& iface, const QString& prop, const QDBusVariant&);
+	private:
+		bool GetProperty (const QString&, const QString&, QMetaProperty*, QObject**) const;
 	signals:
 		void PropertiesChanged (const QString&, const QVariantMap&, const QStringList&);
 	};

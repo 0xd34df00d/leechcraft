@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ namespace Seen
 	, Doc_ (ddjvu_document_create_by_filename_utf8 (Context_, file.toUtf8 ().constData (), 1))
 	, RenderFormat_ (ddjvu_format_create (DDJVU_FORMAT_RGBMASK32, 4, FormatMask))
 	, DocMgr_ (mgr)
+	, DocURL_ (QUrl::fromLocalFile (file))
 	{
 		ddjvu_format_set_row_order (RenderFormat_, 1);
 		ddjvu_format_set_y_direction (RenderFormat_, 1);
@@ -120,6 +121,11 @@ namespace Seen
 	QList<ILink_ptr> Document::GetPageLinks (int)
 	{
 		return QList<ILink_ptr> ();
+	}
+
+	QUrl Document::GetDocURL () const
+	{
+		return DocURL_;
 	}
 
 	ddjvu_document_t* Document::GetNativeDoc () const

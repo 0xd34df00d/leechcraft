@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 #include <QImage>
 #include <QtDebug>
 #include <QXmppMucManager.h>
+#include <QXmppBookmarkManager.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/azothutil.h>
 #include "glooxaccount.h"
@@ -34,6 +35,10 @@ namespace Azoth
 {
 namespace Xoox
 {
+	namespace
+	{
+	}
+
 	RoomCLEntry::RoomCLEntry (RoomHandler *rh, bool isAutojoined, GlooxAccount *account)
 	: QObject (rh)
 	, IsAutojoined_ (isAutojoined)
@@ -79,6 +84,11 @@ namespace Xoox
 		Translations_ ["member"] = tr ("Member");
 		Translations_ ["admin"] = tr ("Admin");
 		Translations_ ["owner"] = tr ("Owner");
+
+		connect (Account_->GetClientConnection ()->GetBMManager (),
+				SIGNAL (bookmarksReceived (QXmppBookmarkSet)),
+				this,
+				SLOT (handleBookmarks (QXmppBookmarkSet)));
 	}
 
 	RoomHandler* RoomCLEntry::GetRoomHandler () const
@@ -108,6 +118,10 @@ namespace Xoox
 
 	QString RoomCLEntry::GetEntryName () const
 	{
+		for (const auto& bm : Account_->GetClientConnection ()->GetBookmarks ().conferences ())
+			if (bm.jid () == RH_->GetRoomJID () && !bm.name ().isEmpty ())
+				return bm.name ();
+
 		return RH_->GetRoomJID ();
 	}
 
@@ -527,6 +541,16 @@ namespace Xoox
 	void RoomCLEntry::HandleSubjectChanged (const QString& subj)
 	{
 		emit mucSubjectChanged (subj);
+	}
+
+	void RoomCLEntry::handleBookmarks (const QXmppBookmarkSet& set)
+	{
+		for (const auto& bm : set.conferences ())
+			if (bm.jid () == RH_->GetRoomJID () && !bm.name ().isEmpty ())
+			{
+				emit nameChanged (bm.name ());
+				break;
+			}
 	}
 
 	void RoomCLEntry::reemitStatusChange (const EntryStatus& status)

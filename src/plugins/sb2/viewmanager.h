@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,11 @@ namespace LeechCraft
 {
 struct QuarkComponent;
 
+namespace Util
+{
+	class ShortcutManager;
+}
+
 namespace SB2
 {
 	class SBView;
@@ -58,7 +63,7 @@ namespace SB2
 
 		QList<QuarkComponent> InternalComponents_;
 	public:
-		ViewManager (ICoreProxy_ptr, QMainWindow*, QObject* = 0);
+		ViewManager (ICoreProxy_ptr, Util::ShortcutManager*, QMainWindow*, QObject* = 0);
 
 		SBView* GetView () const;
 		QToolBar* GetToolbar () const;

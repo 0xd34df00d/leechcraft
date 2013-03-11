@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +47,8 @@ namespace VelvetBird
 	public:
 		Protocol (PurplePlugin*, ICoreProxy_ptr, QObject* = 0);
 
+		void Release ();
+
 		QObject* GetObject ();
 		ProtocolFeatures GetFeatures () const;
 		QList<QObject*> GetRegisteredAccounts ();
@@ -61,6 +63,8 @@ namespace VelvetBird
 
 		QByteArray GetPurpleID () const;
 		void PushAccount (PurpleAccount*);
+
+		ICoreProxy_ptr GetCoreProxy () const;
 	signals:
 		void accountAdded (QObject*);
 		void accountRemoved (QObject*);

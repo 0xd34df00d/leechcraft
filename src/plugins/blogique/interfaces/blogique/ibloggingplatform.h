@@ -53,7 +53,7 @@ namespace Blogique
 		{
 			/** None of these features are supported by the blogging platform.
 			 */
-			BPFNone = 0x0,
+			BPFNone = 0,
 
 			/** This blogging platform provides API for supporting
 			 * registering new accounts from client.
@@ -73,7 +73,7 @@ namespace Blogique
 			/** This blogging platform supports downloading of all posts for
 			 * backup in localstorage.
 			 */
-			BPFSupportsBackup = 0x8
+			BPFSupportsBackup = 0x8,
 		};
 		Q_DECLARE_FLAGS (BloggingPlatfromFeatures, BloggingPlatfromFeature)
 

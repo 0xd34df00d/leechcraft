@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,9 +81,12 @@ namespace Graffiti
 
 		void Clear ();
 
+		QModelIndex FindIndex (const QString& path) const;
+
 		QList<QPair<MediaInfo, MediaInfo>> GetModified () const;
 	private:
 		QList<File>::iterator FindFile (const QString&);
+		QList<File>::const_iterator FindFile (const QString&) const;
 	};
 }
 }

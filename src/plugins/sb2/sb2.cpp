@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 #include <QGraphicsEffect>
 #include <QtDeclarative>
 #include <QtDebug>
+#include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/imwproxy.h>
@@ -40,6 +41,9 @@ namespace SB2
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+
+		ShortcutMgr_ = new Util::ShortcutManager (proxy, this);
+		ShortcutMgr_->SetObject (this);
 
 		qmlRegisterType<QGraphicsBlurEffect> ("Effects", 1, 0, "Blur");
 		qmlRegisterType<QGraphicsColorizeEffect> ("Effects", 1, 0, "Colorize");
@@ -90,7 +94,8 @@ namespace SB2
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		static QIcon icon (":/resources/images/sb2.svg");
+		return icon;
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
@@ -98,6 +103,16 @@ namespace SB2
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Core.Plugins/1.0";
 		return result;
+	}
+
+	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
+	{
+		return ShortcutMgr_->GetActionInfo ();
+	}
+
+	void Plugin::SetShortcut (const QString& id, const QKeySequences_t& seqs)
+	{
+		ShortcutMgr_->SetShortcut (id, seqs);
 	}
 
 	void Plugin::hookDockWidgetActionVisToggled (IHookProxy_ptr proxy,
@@ -115,7 +130,7 @@ namespace SB2
 		auto rootWM = Proxy_->GetRootWindowsManager ();
 		auto win = rootWM->GetMainWindow (index);
 
-		auto mgr = new ViewManager (Proxy_, win, this);
+		auto mgr = new ViewManager (Proxy_, ShortcutMgr_, win, this);
 		auto view = mgr->GetView ();
 
 		auto mwProxy = rootWM->GetMWProxy (index);

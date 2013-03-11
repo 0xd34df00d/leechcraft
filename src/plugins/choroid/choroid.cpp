@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  * Copyright (C) 2011 ForNeVeR
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,8 +25,10 @@ namespace LeechCraft
 {
 namespace Choroid
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+
 		TabInfo_.TabClass_ = "ChoroidTab";
 		TabInfo_.VisibleName_ = "Choroid";
 		TabInfo_.Description_ = tr ("Image viewer tab");
@@ -74,7 +76,7 @@ namespace Choroid
 	{
 		if (tabClass == "ChoroidTab")
 		{
-			ChoroidTab *t = new ChoroidTab (TabInfo_, this);
+			auto t = new ChoroidTab (TabInfo_, Proxy_, this);
 
 			connect (t,
 					SIGNAL (removeTab (QWidget*)),

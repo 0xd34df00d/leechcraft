@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -144,9 +144,15 @@ namespace LeechCraft
 
 			bool shouldAsk = false;
 			if (e.Parameters_ & FromUserInitiated && !(e.Parameters_ & AutoAccept))
-				shouldAsk = numDownloaders || (XmlSettingsManager::Instance ()->property ("DontAskWhenSingle").toBool () ?
-							numHandlers > 1 :
-							numHandlers);
+			{
+				const bool askHandlers = XmlSettingsManager::Instance ()->property ("DontAskWhenSingle").toBool () ?
+						numHandlers > 1 :
+						numHandlers;
+				const bool askDownloaders = (e.Parameters_ & IsDownloaded) ?
+						numDownloaders > 1 :
+						numDownloaders;
+				shouldAsk = askHandlers || askDownloaders || (numHandlers && numDownloaders);
+			}
 
 			if (shouldAsk)
 			{

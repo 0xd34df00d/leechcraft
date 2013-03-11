@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -206,7 +206,11 @@ namespace Azoth
 			return;
 
 		if (msg->GetMessageType () == IMessage::MTChatMessage)
-			OpenChat (qobject_cast<ICLEntry*> (msg->OtherPart ()));
+		{
+			auto entry = qobject_cast<ICLEntry*> (msg->OtherPart ());
+			if (!Entry2Tab_.contains (entry->GetEntryID ()))
+				OpenChat (entry);
+		}
 	}
 
 	void ChatTabsManager::SetChatEnabled (const QString& id, bool enabled)

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,18 @@ namespace VelvetBird
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		ProtoMgr_ = 0;
+
+		PurpleLib_.setLoadHints (QLibrary::ExportExternalSymbolsHint | QLibrary::ResolveAllSymbolsHint);
+		PurpleLib_.setFileNameAndVersion ("purple", 0);
+		if (!PurpleLib_.load ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to re-load libpurple, disabling VelvetBird:"
+					<< PurpleLib_.errorString ();
+			return;
+		}
+
 		ProtoMgr_ = new ProtoManager (proxy, this);
 		connect (ProtoMgr_,
 				SIGNAL (gotEntity (LeechCraft::Entity)),
@@ -40,11 +52,18 @@ namespace VelvetBird
 
 	void Plugin::SecondInit ()
 	{
-		ProtoMgr_->PluginsAvailable ();
+		if (ProtoMgr_)
+			ProtoMgr_->PluginsAvailable ();
+
+		emit gotNewProtocols (GetProtocols ());
 	}
 
 	void Plugin::Release ()
 	{
+		if (ProtoMgr_)
+			ProtoMgr_->Release ();
+
+		PurpleLib_.unload ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -82,7 +101,7 @@ namespace VelvetBird
 
 	QList<QObject*> Plugin::GetProtocols () const
 	{
-		return ProtoMgr_->GetProtoObjs ();
+		return ProtoMgr_ ? ProtoMgr_->GetProtoObjs () : QList<QObject*> ();
 	}
 
 	void Plugin::initPlugin (QObject *proxy)

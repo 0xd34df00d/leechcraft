@@ -21,7 +21,6 @@
 #include <QtDebug>
 #include <QCryptographicHash>
 #include <QDateTime>
-#include <QNetworkReply>
 #include <QXmlQuery>
 #include <util/sysinfo.h>
 #include "profiletypes.h"
@@ -78,6 +77,67 @@ namespace Metida
 	{
 		ApiCallQueue_ << [id, this] (const QString& challenge)
 				{ DeleteGroupRequest (id, challenge); };
+		GenerateChallenge ();
+	}
+
+	void LJXmlRPC::UpdateProfileInfo ()
+	{
+		Validate (Account_->GetOurLogin (), Account_->GetPassword ());
+	}
+
+	void LJXmlRPC::Submit (const LJEvent& event)
+	{
+		ApiCallQueue_ << [event, this] (const QString& challenge)
+				{ PostEventRequest (event, challenge); };
+		GenerateChallenge ();
+	}
+
+	void LJXmlRPC::BackupEvents ()
+	{
+		ApiCallQueue_ << [this] (const QString& challenge)
+				{ BackupEventsRequest (0, challenge); };
+		GenerateChallenge ();
+	}
+
+	void LJXmlRPC::GetLastEvents (int count)
+	{
+		ApiCallQueue_ << [count, this] (const QString& challenge)
+				{ GetLastEventsRequest (count, challenge); };
+		GenerateChallenge ();
+	}
+
+	void LJXmlRPC::GetChangedEvents (const QDateTime& dt)
+	{
+		ApiCallQueue_ << [dt, this] (const QString& challenge)
+				{ GetChangedEventsRequest (dt, challenge); };
+		GenerateChallenge ();
+	}
+
+	void LJXmlRPC::GetEventsByDate (const QDate& date)
+	{
+		ApiCallQueue_ << [date, this] (const QString& challenge)
+				{ GetEventsByDateRequest (date, challenge); };
+		GenerateChallenge ();
+	}
+
+	void LJXmlRPC::RemoveEvent (const LJEvent& event)
+	{
+		ApiCallQueue_ << [event, this] (const QString& challenge)
+				{ RemoveEventRequest (event, challenge); };
+		GenerateChallenge ();
+	}
+
+	void LJXmlRPC::UpdateEvent (const LJEvent& event)
+	{
+		ApiCallQueue_ << [event, this] (const QString& challenge)
+				{ UpdateEventRequest (event, challenge); };
+		GenerateChallenge ();
+	}
+
+	void LJXmlRPC::RequestStatistics ()
+	{
+		ApiCallQueue_ << [this] (const QString& challenge)
+				{ BlogStatisticsRequest (challenge); };
 		GenerateChallenge ();
 	}
 
@@ -157,6 +217,32 @@ namespace Metida
 
 			return request;
 		}
+
+		QString GetPassword (const QString& password, const QString& challenge)
+		{
+			const QByteArray passwordHash = QCryptographicHash::hash (password.toUtf8 (),
+					QCryptographicHash::Md5).toHex ();
+			return QCryptographicHash::hash ((challenge + passwordHash).toUtf8 (),
+					QCryptographicHash::Md5).toHex ();
+		}
+
+		QDomElement FillServicePart (QDomElement parentElement,
+				const QString& login, const QString& password,
+				const QString& challenge, QDomDocument document)
+		{
+			parentElement.appendChild (GetSimpleMemberElement ("auth_method", "string",
+					"challenge", document));
+			parentElement.appendChild (GetSimpleMemberElement ("auth_challenge", "string",
+					challenge, document));
+			parentElement.appendChild (GetSimpleMemberElement ("username", "string",
+					login, document));
+			parentElement.appendChild (GetSimpleMemberElement ("auth_response", "string",
+					GetPassword (password, challenge), document));
+			parentElement.appendChild (GetSimpleMemberElement ("ver", "int",
+					"1", document));
+
+			return parentElement;
+		}
 	}
 
 	void LJXmlRPC::GenerateChallenge () const
@@ -178,17 +264,10 @@ namespace Metida
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleChallengeReplyFinished ()));
-	}
-
-	namespace
-	{
-		QString GetPassword (const QString& password, const QString& challenge)
-		{
-			const QByteArray passwordHash = QCryptographicHash::hash (password.toUtf8 (),
-					QCryptographicHash::Md5).toHex ();
-			return QCryptographicHash::hash ((challenge + passwordHash).toUtf8 (),
-				QCryptographicHash::Md5).toHex ();
-		}
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
 	void LJXmlRPC::ValidateAccountData (const QString& login,
@@ -198,30 +277,22 @@ namespace Metida
 		auto result = GetStartPart ("LJ.XMLRPC.login", document);
 		document.appendChild (result.first);
 
-		result.second.appendChild (GetSimpleMemberElement ("auth_method", "string",
-				"challenge", document));
-		result.second.appendChild (GetSimpleMemberElement ("auth_challenge", "string",
-				challenge, document));
-		result.second.appendChild (GetSimpleMemberElement ("username", "string",
-				login, document));
-		result.second.appendChild (GetSimpleMemberElement ("auth_response", "string",
-				GetPassword (password, challenge), document));
-		result.second.appendChild (GetSimpleMemberElement ("ver", "int",
-				"1", document));
-		result.second.appendChild (GetSimpleMemberElement ("clientversion", "string",
+		auto element = FillServicePart (result.second,
+				login, password, challenge, document);
+		element.appendChild (GetSimpleMemberElement ("clientversion", "string",
 				Util::SysInfo::GetOSName () +
-						"-LeechCraft Blogique: " +
-						Core::Instance ().GetCoreProxy ()->GetVersion (),
+					"-LeechCraft Blogique: " +
+					Core::Instance ().GetCoreProxy ()->GetVersion (),
 				document));
-		result.second.appendChild (GetSimpleMemberElement ("getmoods", "int",
+		element.appendChild (GetSimpleMemberElement ("getmoods", "int",
 				"0", document));
-		result.second.appendChild (GetSimpleMemberElement ("getmenus", "int",
+		element.appendChild (GetSimpleMemberElement ("getmenus", "int",
 				"0", document));
-		result.second.appendChild (GetSimpleMemberElement ("getpickws", "int",
+		element.appendChild (GetSimpleMemberElement ("getpickws", "int",
 				"1", document));
-		result.second.appendChild (GetSimpleMemberElement ("getpickwurls", "int",
+		element.appendChild (GetSimpleMemberElement ("getpickwurls", "int",
 				"1", document));
-		result.second.appendChild (GetSimpleMemberElement ("getcaps", "int",
+		element.appendChild (GetSimpleMemberElement ("getcaps", "int",
 				"1", document));
 
 		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
@@ -232,6 +303,10 @@ namespace Metida
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleValidateReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
 	void LJXmlRPC::RequestFriendsInfo (const QString& login,
@@ -240,21 +315,13 @@ namespace Metida
 		QDomDocument document ("GetFriendsInfo");
 		auto result = GetStartPart ("LJ.XMLRPC.getfriends", document);
 		document.appendChild (result.first);
+		auto element = FillServicePart (result.second,
+				login, password, challenge, document);
+		element.appendChild (GetSimpleMemberElement ("includebdays", "boolean",
+				"1", document));
+		element.appendChild (GetSimpleMemberElement ("includefriendof", "boolean",
+				"1", document));
 
-		result.second.appendChild (GetSimpleMemberElement ("auth_method", "string",
-				"challenge", document));
-		result.second.appendChild (GetSimpleMemberElement ("auth_challenge", "string",
-				challenge, document));
-		result.second.appendChild (GetSimpleMemberElement ("username", "string",
-				login, document));
-		result.second.appendChild (GetSimpleMemberElement ("auth_response", "string",
-				GetPassword (password, challenge), document));
-		result.second.appendChild (GetSimpleMemberElement ("ver", "int",
-				"1", document));
-		result.second.appendChild (GetSimpleMemberElement ("includebdays", "boolean",
-				"1", document));
-		result.second.appendChild (GetSimpleMemberElement ("includefriendof", "boolean",
-				"1", document));
 		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
 				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
 						document.toByteArray ());
@@ -263,6 +330,525 @@ namespace Metida
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleRequestFriendsInfoFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void LJXmlRPC::AddNewFriendRequest (const QString& username,
+			const QString& bgcolor, const QString& fgcolor,
+			int groupId, const QString& challenge)
+	{
+		QDomDocument document ("AddNewFriendRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.editfriends", document);
+		document.appendChild (result.first);
+
+		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
+				Account_->GetPassword (), challenge, document);
+
+		auto array = GetComplexMemberElement ("add", "array", document);
+ 		element.appendChild (array.first);
+		auto structField = document.createElement ("struct");
+		array.second.appendChild (structField);
+
+		structField.appendChild (GetSimpleMemberElement ("username", "string",
+				username, document));
+		if (!fgcolor.isEmpty ())
+			structField.appendChild (GetSimpleMemberElement ("fgcolor", "string",
+					fgcolor, document));
+		if (!bgcolor.isEmpty ())
+			structField.appendChild (GetSimpleMemberElement ("bgcolor", "string",
+					bgcolor, document));
+		structField.appendChild (GetSimpleMemberElement ("groupmask", "int",
+				QString::number (groupId), document));
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleAddNewFriendReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void LJXmlRPC::DeleteFriendRequest (const QString& username, const QString& challenge)
+	{
+		QDomDocument document ("DeleteFriendRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.editfriends", document);
+		document.appendChild (result.first);
+		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
+				Account_->GetPassword (), challenge, document);
+
+		auto array = GetComplexMemberElement ("delete", "array", document);
+		element.appendChild (array.first);
+		QDomElement valueField = document.createElement ("value");
+		array.second.appendChild (valueField);
+		QDomElement valueType = document.createElement ("string");
+		valueField.appendChild (valueType);
+		QDomText text = document.createTextNode (username);
+		valueType.appendChild (text);
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleReplyWithProfileUpdate ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void LJXmlRPC::AddGroupRequest (const QString& name, bool isPublic, int id,
+			const QString& challenge)
+	{
+		QDomDocument document ("AddNewFriendRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.editfriendgroups", document);
+		document.appendChild (result.first);
+		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
+				Account_->GetPassword (), challenge, document);
+
+		auto data = GetComplexMemberElement ("set", "struct", document);
+		element.appendChild (data.first);
+		auto subStruct = GetComplexMemberElement (QString::number (id), "struct", document);
+		data.second.appendChild (subStruct.first);
+		subStruct.second.appendChild (GetSimpleMemberElement ("name", "string",
+				name, document));
+		subStruct.second.appendChild (GetSimpleMemberElement ("public", "boolean",
+				 isPublic ? "1" : "0", document));
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleReplyWithProfileUpdate ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void LJXmlRPC::DeleteGroupRequest (int id, const QString& challenge)
+	{
+		QDomDocument document ("DeleteGroupRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.editfriendgroups", document);
+		document.appendChild (result.first);
+		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
+				Account_->GetPassword (), challenge, document);
+
+		auto array = GetComplexMemberElement ("delete", "array", document);
+		element.appendChild (array.first);
+		QDomElement valueField = document.createElement ("value");
+		array.second.appendChild (valueField);
+		QDomElement valueType = document.createElement ("int");
+		valueField.appendChild (valueType);
+		QDomText text = document.createTextNode (QString::number (id));
+		valueType.appendChild (text);
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						  document.toByteArray ());
+
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleReplyWithProfileUpdate ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void LJXmlRPC::PostEventRequest (const LJEvent& event, const QString& challenge)
+	{
+		QDomDocument document ("PostEventRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.postevent", document);
+		document.appendChild (result.first);
+		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
+				Account_->GetPassword (), challenge, document);
+
+		element.appendChild (GetSimpleMemberElement ("event", "string",
+				event.Event_, document));
+		element.appendChild (GetSimpleMemberElement ("subject", "string",
+				event.Subject_, document));
+		element.appendChild (GetSimpleMemberElement ("security", "string",
+				MetidaUtils::GetStringForAccess (event.Security_), document));
+		if (event.Security_ == Access::FriendsOnly)
+			element.appendChild (GetSimpleMemberElement ("allowmask", "int",
+					QString::number (BitMaskForFriendsOnlyComments_), document));
+		else if (event.Security_ == Access::Custom)
+			element.appendChild (GetSimpleMemberElement ("allowmask", "int",
+					QString::number (event.AllowMask_), document));
+			element.appendChild (GetSimpleMemberElement ("year", "int",
+				QString::number (event.DateTime_.date ().year ()), document));
+		element.appendChild (GetSimpleMemberElement ("mon", "int",
+				QString::number (event.DateTime_.date ().month ()), document));
+		element.appendChild (GetSimpleMemberElement ("day", "int",
+				QString::number (event.DateTime_.date ().day ()), document));
+		element.appendChild (GetSimpleMemberElement ("hour", "int",
+				QString::number (event.DateTime_.time ().hour ()), document));
+		element.appendChild (GetSimpleMemberElement ("min", "int",
+				QString::number (event.DateTime_.time ().minute ()), document));
+		element.appendChild (GetSimpleMemberElement ("usejournal", "string",
+				Account_->GetOurLogin (), document));
+
+		auto propsStruct = GetComplexMemberElement ("props", "struct", document);
+		element.appendChild (propsStruct.first);
+		propsStruct.second.appendChild (GetSimpleMemberElement ("current_location",
+				"string", event.Props_.CurrentLocation_, document));
+		if (event.Props_.CurrentMoodId_ == -1)
+			propsStruct.second.appendChild (GetSimpleMemberElement ("current_mood",
+					"string", event.Props_.CurrentMood_, document));
+		else
+			propsStruct.second.appendChild (GetSimpleMemberElement ("current_moodid",
+					"int", QString::number (event.Props_.CurrentMoodId_), document));
+		propsStruct.second.appendChild (GetSimpleMemberElement ("current_music",
+				"string", event.Props_.CurrentMusic_, document));
+		propsStruct.second.appendChild (GetSimpleMemberElement ("opt_nocomments",
+				"boolean", event.Props_.CommentsManagement_ == CommentsManagement::DisableComments ?
+					"1" :
+					"0",
+				document));
+		propsStruct.second.appendChild (GetSimpleMemberElement ("opt_noemail",
+				"boolean", event.Props_.CommentsManagement_ == CommentsManagement::WithoutNotification ?
+					"1" :
+					"0",
+				document));
+		QString screening = MetidaUtils::GetStringFromCommentsManagment (event.Props_.CommentsManagement_);
+		if (!screening.isEmpty ())
+			propsStruct.second.appendChild (GetSimpleMemberElement ("opt_screening",
+					"string", screening, document));
+		propsStruct.second.appendChild (GetSimpleMemberElement ("adult_content",
+				"string",
+				MetidaUtils::GetStringForAdultContent (event.Props_.AdultContent_),
+				document));
+		propsStruct.second.appendChild (GetSimpleMemberElement ("taglist",
+				"string", event.Tags_.join (","), document));
+		propsStruct.second.appendChild (GetSimpleMemberElement ("useragent",
+				"string", "LeechCraft Blogique", document));
+		propsStruct.second.appendChild (GetSimpleMemberElement ("picture_keyword",
+				"string", event.Props_.PostAvatar_, document));
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handlePostEventReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void LJXmlRPC::RemoveEventRequest (const LJEvent& event, const QString& challenge)
+	{
+		QDomDocument document ("BackupEventsRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.editevent", document);
+		document.appendChild (result.first);
+		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
+				Account_->GetPassword (), challenge, document);
+
+		element.appendChild (GetSimpleMemberElement ("itemid", "int",
+				QString::number (event.ItemID_), document));
+		element.appendChild (GetSimpleMemberElement ("event", "string",
+				QString (), document));
+		element.appendChild (GetSimpleMemberElement ("usejournal", "string",
+				Account_->GetOurLogin (), document));
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleRemoveEventReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void LJXmlRPC::UpdateEventRequest (const LJEvent& event, const QString& challenge)
+	{
+		QDomDocument document ("EditEventRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.editevent", document);
+		document.appendChild (result.first);
+		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
+				Account_->GetPassword (), challenge, document);
+
+		element.appendChild (GetSimpleMemberElement ("itemid", "int",
+				QString::number (event.ItemID_), document));
+		element.appendChild (GetSimpleMemberElement ("event", "string",
+				event.Event_, document));
+		element.appendChild (GetSimpleMemberElement ("subject", "string",
+				event.Subject_, document));
+
+		element.appendChild (GetSimpleMemberElement ("security", "string",
+				MetidaUtils::GetStringForAccess (event.Security_), document));
+		if (event.Security_ == Access::FriendsOnly)
+			element.appendChild (GetSimpleMemberElement ("allowmask", "int",
+					QString::number (BitMaskForFriendsOnlyComments_), document));
+		else if (event.Security_ == Access::Custom)
+			element.appendChild (GetSimpleMemberElement ("allowmask", "int",
+					QString::number (event.AllowMask_), document));
+		element.appendChild (GetSimpleMemberElement ("year", "int",
+				QString::number (event.DateTime_.date ().year ()), document));
+		element.appendChild (GetSimpleMemberElement ("mon", "int",
+				QString::number (event.DateTime_.date ().month ()), document));
+		element.appendChild (GetSimpleMemberElement ("day", "int",
+				QString::number (event.DateTime_.date ().day ()), document));
+		element.appendChild (GetSimpleMemberElement ("hour", "int",
+				QString::number (event.DateTime_.time ().hour ()), document));
+		element.appendChild (GetSimpleMemberElement ("min", "int",
+				QString::number (event.DateTime_.time ().minute ()), document));
+		element.appendChild (GetSimpleMemberElement ("usejournal", "string",
+				Account_->GetOurLogin (), document));
+
+		auto propsStruct = GetComplexMemberElement ("props", "struct", document);
+		element.appendChild (propsStruct.first);
+		propsStruct.second.appendChild (GetSimpleMemberElement ("current_location",
+				"string", event.Props_.CurrentLocation_, document));
+		if (!event.Props_.CurrentMood_.isEmpty ())
+			propsStruct.second.appendChild (GetSimpleMemberElement ("current_mood",
+					"string", event.Props_.CurrentMood_, document));
+		else
+			propsStruct.second.appendChild (GetSimpleMemberElement ("current_moodid",
+					"int", QString::number (event.Props_.CurrentMoodId_), document));
+		propsStruct.second.appendChild (GetSimpleMemberElement ("current_music",
+				"string", event.Props_.CurrentMusic_, document));
+		propsStruct.second.appendChild (GetSimpleMemberElement ("opt_nocomments",
+				"boolean", event.Props_.CommentsManagement_ == CommentsManagement::DisableComments ?
+					"1" :
+					"0",
+				document));
+		propsStruct.second.appendChild (GetSimpleMemberElement ("opt_noemail",
+				"boolean", event.Props_.CommentsManagement_ == CommentsManagement::WithoutNotification ?
+					"1" :
+					"0",
+				document));
+		QString screening = MetidaUtils::GetStringFromCommentsManagment (event.Props_.CommentsManagement_);
+		if (!screening.isEmpty ())
+			propsStruct.second.appendChild (GetSimpleMemberElement ("opt_screening",
+					"string", screening, document));
+		propsStruct.second.appendChild (GetSimpleMemberElement ("adult_content",
+				"string",
+				MetidaUtils::GetStringForAdultContent (event.Props_.AdultContent_),
+				document));
+		propsStruct.second.appendChild (GetSimpleMemberElement ("taglist",
+				"string", event.Tags_.join (","), document));
+		propsStruct.second.appendChild (GetSimpleMemberElement ("useragent",
+				"string", "LeechCraft Blogique", document));
+		propsStruct.second.appendChild (GetSimpleMemberElement ("picture_keyword",
+				"string", event.Props_.PostAvatar_, document));
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleUpdateEventReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void LJXmlRPC::BackupEventsRequest (int skip, const QString& challenge)
+	{
+		QDomDocument document ("BackupEventsRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.getevents", document);
+		document.appendChild (result.first);
+		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
+				Account_->GetPassword (), challenge, document);
+
+		element.appendChild (GetSimpleMemberElement ("selecttype", "string",
+				"before", document));
+		element.appendChild (GetSimpleMemberElement ("howmany", "int",
+				QString::number (MaxGetEventsCount_), document));
+		element.appendChild (GetSimpleMemberElement ("skip", "int",
+				QString::number (skip), document));
+		element.appendChild (GetSimpleMemberElement ("before", "string",
+				QDateTime::currentDateTime ().toString ("yyyy-MM-dd hh:mm:ss"),
+				document));
+		element.appendChild (GetSimpleMemberElement ("usejournal", "string",
+				Account_->GetOurLogin (), document));
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+				document.toByteArray ());
+		Reply2Skip_ [reply] = skip;
+
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleBackupEventsReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void LJXmlRPC::GetLastEventsRequest (int count, const QString& challenge)
+	{
+		QDomDocument document ("GetLastEventsRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.getevents", document);
+		document.appendChild (result.first);
+		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
+				Account_->GetPassword (), challenge, document);
+
+		element.appendChild (GetSimpleMemberElement ("selecttype", "string",
+				"lastn", document));
+		element.appendChild (GetSimpleMemberElement ("howmany", "int",
+				QString::number (count), document));
+		element.appendChild (GetSimpleMemberElement ("usejournal", "string",
+				Account_->GetOurLogin (), document));
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleGotEventsReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void LJXmlRPC::GetChangedEventsRequest (const QDateTime& dt, const QString& challenge)
+	{
+		QDomDocument document ("GetLastEventsRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.getevents", document);
+		document.appendChild (result.first);
+		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
+				Account_->GetPassword (), challenge, document);
+
+		element.appendChild (GetSimpleMemberElement ("selecttype", "string",
+				"syncitems", document));
+		element.appendChild (GetSimpleMemberElement ("lastsync", "string",
+				dt.toString ("yyyy-MM-dd hh:mm:ss"), document));
+		element.appendChild (GetSimpleMemberElement ("usejournal", "string",
+				Account_->GetOurLogin (), document));
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleGotEventsReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void LJXmlRPC::GetEventsByDateRequest (const QDate& date, const QString& challenge)
+	{
+		QDomDocument document ("GetLastEventsRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.getevents", document);
+		document.appendChild (result.first);
+		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
+				Account_->GetPassword (), challenge, document);
+
+		element.appendChild (GetSimpleMemberElement ("selecttype", "string",
+				"day", document));
+		element.appendChild (GetSimpleMemberElement ("year", "int",
+				QString::number (date.year ()), document));
+		element.appendChild (GetSimpleMemberElement ("month", "int",
+				QString::number (date.month ()), document));
+		element.appendChild (GetSimpleMemberElement ("day", "int",
+				QString::number (date.day ()), document));
+		element.appendChild (GetSimpleMemberElement ("usejournal", "string",
+				Account_->GetOurLogin (), document));
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleGotEventsReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void LJXmlRPC::GetParticularEventRequest (int id, RequestType prt,
+			const QString& challenge)
+	{
+		QDomDocument document ("GetParticularEventsRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.getevents", document);
+		document.appendChild (result.first);
+		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
+				Account_->GetPassword (), challenge, document);
+
+		element.appendChild (GetSimpleMemberElement ("selecttype", "string",
+				"one", document));
+		element.appendChild (GetSimpleMemberElement ("itemid", "int",
+				QString::number (id), document));
+		element.appendChild (GetSimpleMemberElement ("usejournal", "string",
+				Account_->GetOurLogin (), document));
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+		Reply2RequestType_ [reply] = prt;
+
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleGetParticularEventReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void LJXmlRPC::BlogStatisticsRequest (const QString& challenge)
+	{
+		QDomDocument document ("BlogStatisticsRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.getdaycounts", document);
+		document.appendChild (result.first);
+		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
+				Account_->GetPassword (), challenge, document);
+
+		element.appendChild (GetSimpleMemberElement ("usejournal", "string",
+				Account_->GetOurLogin (), document));
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleBlogStatisticsReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
 	void LJXmlRPC::ParseForError (const QByteArray& content)
@@ -371,7 +957,7 @@ namespace Metida
 						fr->SetBirthday (fieldEntry.ValueToString ());
 
 					if (parentKey == "friends" ||
-							parentKey == "added")
+						parentKey == "added")
 						fr->SetMyFriend (true);
 
 					if (parentKey == "friendofs")
@@ -379,14 +965,14 @@ namespace Metida
 				}
 
 				if (!isCommunity ||
-						personal)
+					personal)
 				{
 					if (parentKey == "friendofs" &&
-							frHash.contains (fr->GetUserName ()))
+						frHash.contains (fr->GetUserName ()))
 						frHash [fr->GetUserName ()]->SetFriendOf (true);
 					else if ((parentKey == "friends" ||
-							parentKey == "added") &&
-							frHash.contains (fr->GetUserName ()))
+						parentKey == "added") &&
+						frHash.contains (fr->GetUserName ()))
 						frHash [fr->GetUserName ()]->SetMyFriend (true);
 					else
 						frHash [fr->GetUserName ()] = fr;
@@ -439,19 +1025,19 @@ namespace Metida
 					ljEvent.DItemID_ = fieldEntry.ValueToLongLong ();
 				else if (fieldEntry.Name () == "eventtime")
 					ljEvent.DateTime_ = QDateTime::fromString (fieldEntry.ValueToString (),
-							"yyyy-MM-dd hh:mm:ss");
-				else if (fieldEntry.Name () == "props")
-				{
-					QStringList tags;
-					ljEvent.Props_ = CreateLJEventPropetries (tags, fieldEntry.Value ());
-					ljEvent.Tags_ = tags;
-				}
-				else if (fieldEntry.Name () == "url")
-					ljEvent.Url_ = QUrl (fieldEntry.ValueToString ().replace ("http://", "http://" + login));
-				else if (fieldEntry.Name () == "anum")
-					ljEvent.ANum_ = fieldEntry.ValueToInt ();
-				else if (fieldEntry.Name () == "security")
-					ljEvent.Security_ = MetidaUtils::GetAccessForString (fieldEntry.ValueToString ());
+															   "yyyy-MM-dd hh:mm:ss");
+					else if (fieldEntry.Name () == "props")
+					{
+						QStringList tags;
+						ljEvent.Props_ = CreateLJEventPropetries (tags, fieldEntry.Value ());
+						ljEvent.Tags_ = tags;
+					}
+					else if (fieldEntry.Name () == "url")
+						ljEvent.Url_ = QUrl (fieldEntry.ValueToString ());
+					else if (fieldEntry.Name () == "anum")
+						ljEvent.ANum_ = fieldEntry.ValueToInt ();
+					else if (fieldEntry.Name () == "security")
+						ljEvent.Security_ = MetidaUtils::GetAccessForString (fieldEntry.ValueToString ());
 			}
 
 			return ljEvent;
@@ -494,7 +1080,7 @@ namespace Metida
 		{
 			const QDomNode& member = members.at (i);
 			if (!member.isElement () ||
-					member.toElement ().tagName () != "member")
+				member.toElement ().tagName () != "member")
 				continue;
 
 			auto res = ParseMember (member);
@@ -506,564 +1092,45 @@ namespace Metida
 		return events;
 	}
 
-	void LJXmlRPC::AddNewFriendRequest (const QString& username,
-			const QString& bgcolor, const QString& fgcolor,
-			int groupId, const QString& challenge)
+	QMap<QDate, int> LJXmlRPC::ParseStatistics (const QDomDocument& document)
 	{
-		QDomDocument document ("AddNewFriendRequest");
-		auto result = GetStartPart ("LJ.XMLRPC.editfriends", document);
-		document.appendChild (result.first);
+		QMap<QDate, int> statistics;
 
-		result.second.appendChild (GetSimpleMemberElement ("auth_method", "string",
-				"challenge", document));
-		result.second.appendChild (GetSimpleMemberElement ("auth_challenge", "string",
-				challenge, document));
-		result.second.appendChild (GetSimpleMemberElement ("username", "string",
-				Account_->GetOurLogin (), document));
-		result.second.appendChild (GetSimpleMemberElement ("auth_response", "string",
-				GetPassword (Account_->GetPassword (), challenge), document));
-		result.second.appendChild (GetSimpleMemberElement ("ver", "int",
-				"1", document));
+		const auto& firstStructElement = document.elementsByTagName ("struct");
+		if (firstStructElement.at (0).isNull ())
+			return statistics;
 
-		auto array = GetComplexMemberElement ("add", "array", document);
- 		result.second.appendChild (array.first);
-		auto structField = document.createElement ("struct");
-		array.second.appendChild (structField);
+		const auto& members = firstStructElement.at (0).childNodes ();
+		for (int i = 0, count = members.count (); i < count; ++i)
+		{
+			const QDomNode& member = members.at (i);
+			if (!member.isElement () ||
+				member.toElement ().tagName () != "member")
+				continue;
 
-		structField.appendChild (GetSimpleMemberElement ("username", "string",
-				username, document));
-		if (!fgcolor.isEmpty ())
-			structField.appendChild (GetSimpleMemberElement ("fgcolor", "string",
-					fgcolor, document));
-		if (!bgcolor.isEmpty ())
-			structField.appendChild (GetSimpleMemberElement ("bgcolor", "string",
-					bgcolor, document));
-		structField.appendChild (GetSimpleMemberElement ("groupmask", "int",
-				QString::number (groupId), document));
+			auto res = ParseMember (member);
+			if (res.Name () == "daycounts")
+				for (const auto& element : res.Value ())
+				{
+					int count = 0;
+					QDate date;
+					for (const auto& arrayElem : element.toList ())
+					{
+						auto entry = arrayElem.value<LJParserTypes::LJParseProfileEntry> ();
+						if (entry.Name () == "count")
+							count = entry.ValueToInt ();
+						else if (entry.Name () == "date")
+							date = QDate::fromString (entry.ValueToString (),
+									"yyyy-MM-dd");
+					}
 
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
+					statistics [date] = count;
+				}
+		}
 
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleAddNewFriendReplyFinished ()));
+		return statistics;
 	}
 
-	void LJXmlRPC::DeleteFriendRequest (const QString& username, const QString& challenge)
-	{
-		QDomDocument document ("DeleteFriendRequest");
-		auto result = GetStartPart ("LJ.XMLRPC.editfriends", document);
-		document.appendChild (result.first);
-
-		result.second.appendChild (GetSimpleMemberElement ("auth_method", "string",
-				"challenge", document));
-		result.second.appendChild (GetSimpleMemberElement ("auth_challenge", "string",
-				challenge, document));
-		result.second.appendChild (GetSimpleMemberElement ("username", "string",
-				Account_->GetOurLogin (), document));
-		result.second.appendChild (GetSimpleMemberElement ("auth_response", "string",
-				GetPassword (Account_->GetPassword (), challenge), document));
-		result.second.appendChild (GetSimpleMemberElement ("ver", "int",
-				"1", document));
-
-		auto array = GetComplexMemberElement ("delete", "array", document);
-		result.second.appendChild (array.first);
-		QDomElement valueField = document.createElement ("value");
-		array.second.appendChild (valueField);
-		QDomElement valueType = document.createElement ("string");
-		valueField.appendChild (valueType);
-		QDomText text = document.createTextNode (username);
-		valueType.appendChild (text);
-
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
-
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleReplyWithProfileUpdate ()));
-	}
-
-	void LJXmlRPC::AddGroupRequest (const QString& name, bool isPublic, int id,
-			const QString& challenge)
-	{
-		QDomDocument document ("AddNewFriendRequest");
-		auto result = GetStartPart ("LJ.XMLRPC.editfriendgroups", document);
-		document.appendChild (result.first);
-
-		result.second.appendChild (GetSimpleMemberElement ("auth_method", "string",
-				"challenge", document));
-		result.second.appendChild (GetSimpleMemberElement ("auth_challenge", "string",
-				challenge, document));
-		result.second.appendChild (GetSimpleMemberElement ("username", "string",
-				Account_->GetOurLogin (), document));
-		result.second.appendChild (GetSimpleMemberElement ("auth_response", "string",
-				GetPassword (Account_->GetPassword (), challenge), document));
-		result.second.appendChild (GetSimpleMemberElement ("ver", "int",
-				"1", document));
-
-		auto data = GetComplexMemberElement ("set", "struct", document);
-		result.second.appendChild (data.first);
-		auto subStruct = GetComplexMemberElement (QString::number (id), "struct", document);
-		data.second.appendChild (subStruct.first);
-		subStruct.second.appendChild (GetSimpleMemberElement ("name", "string",
-				name, document));
-		subStruct.second.appendChild (GetSimpleMemberElement ("public", "boolean",
-				 isPublic ? "1" : "0", document));
-
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
-
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleReplyWithProfileUpdate ()));
-	}
-
-	void LJXmlRPC::DeleteGroupRequest (int id, const QString& challenge)
-	{
-		QDomDocument document ("DeleteGroupRequest");
-		auto result = GetStartPart ("LJ.XMLRPC.editfriendgroups", document);
-		document.appendChild (result.first);
-
-		result.second.appendChild (GetSimpleMemberElement ("auth_method", "string",
-				"challenge", document));
-		result.second.appendChild (GetSimpleMemberElement ("auth_challenge", "string",
-				challenge, document));
-		result.second.appendChild (GetSimpleMemberElement ("username", "string",
-				Account_->GetOurLogin (), document));
-		result.second.appendChild (GetSimpleMemberElement ("auth_response", "string",
-				GetPassword (Account_->GetPassword (), challenge), document));
-		result.second.appendChild (GetSimpleMemberElement ("ver", "int",
-				"1", document));
-
-		auto array = GetComplexMemberElement ("delete", "array", document);
-		result.second.appendChild (array.first);
-		QDomElement valueField = document.createElement ("value");
-		array.second.appendChild (valueField);
-		QDomElement valueType = document.createElement ("int");
-		valueField.appendChild (valueType);
-		QDomText text = document.createTextNode (QString::number (id));
-		valueType.appendChild (text);
-
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						  document.toByteArray ());
-
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleReplyWithProfileUpdate ()));
-	}
-
-	void LJXmlRPC::PostEventRequest (const LJEvent& event, const QString& challenge)
-	{
-		QDomDocument document ("PostEventRequest");
-		auto result = GetStartPart ("LJ.XMLRPC.postevent", document);
-		document.appendChild (result.first);
-
-		result.second.appendChild (GetSimpleMemberElement ("auth_method", "string",
-				"challenge", document));
-		result.second.appendChild (GetSimpleMemberElement ("auth_challenge", "string",
-				challenge, document));
-		result.second.appendChild (GetSimpleMemberElement ("username", "string",
-				Account_->GetOurLogin (), document));
-		result.second.appendChild (GetSimpleMemberElement ("auth_response", "string",
-				GetPassword (Account_->GetPassword (), challenge), document));
-		result.second.appendChild (GetSimpleMemberElement ("ver", "int",
-				"1", document));
-
-		result.second.appendChild (GetSimpleMemberElement ("event", "string",
-				event.Event_, document));
-		result.second.appendChild (GetSimpleMemberElement ("subject", "string",
-				event.Subject_, document));
-		result.second.appendChild (GetSimpleMemberElement ("security", "string",
-				MetidaUtils::GetStringForAccess (event.Security_), document));
-		if (event.Security_ == Access::FriendsOnly)
-			result.second.appendChild (GetSimpleMemberElement ("allowmask", "int",
-					QString::number (BitMaskForFriendsOnlyComments_), document));
-		else if (event.Security_ == Access::Custom)
-			result.second.appendChild (GetSimpleMemberElement ("allowmask", "int",
-					QString::number (event.AllowMask_), document));
-		result.second.appendChild (GetSimpleMemberElement ("year", "int",
-				QString::number (event.DateTime_.date ().year ()), document));
-		result.second.appendChild (GetSimpleMemberElement ("mon", "int",
-				QString::number (event.DateTime_.date ().month ()), document));
-		result.second.appendChild (GetSimpleMemberElement ("day", "int",
-				QString::number (event.DateTime_.date ().day ()), document));
-		result.second.appendChild (GetSimpleMemberElement ("hour", "int",
-				QString::number (event.DateTime_.time ().hour ()), document));
-		result.second.appendChild (GetSimpleMemberElement ("min", "int",
-				QString::number (event.DateTime_.time ().minute ()), document));
-		result.second.appendChild (GetSimpleMemberElement ("usejournal", "string",
-				Account_->GetOurLogin (), document));
-
-		auto propsStruct = GetComplexMemberElement ("props", "struct", document);
-		result.second.appendChild (propsStruct.first);
-		propsStruct.second.appendChild (GetSimpleMemberElement ("current_location",
-				"string", event.Props_.CurrentLocation_, document));
-		if (!event.Props_.CurrentMood_.isEmpty ())
-			propsStruct.second.appendChild (GetSimpleMemberElement ("current_mood",
-					"string", event.Props_.CurrentMood_, document));
-		else
-			propsStruct.second.appendChild (GetSimpleMemberElement ("current_moodid",
-					"int", QString::number (event.Props_.CurrentMoodId_), document));
-		propsStruct.second.appendChild (GetSimpleMemberElement ("current_music",
-				"string", event.Props_.CurrentMusic_, document));
-		propsStruct.second.appendChild (GetSimpleMemberElement ("opt_nocomments",
-				"boolean", event.Props_.CommentsManagement_ == CommentsManagement::DisableComments ?
-					"1" :
-					"0",
-				document));
-		propsStruct.second.appendChild (GetSimpleMemberElement ("opt_noemail",
-				"boolean", event.Props_.CommentsManagement_ == CommentsManagement::WithoutNotification ?
-					"1" :
-					"0",
-				document));
-		QString screening = MetidaUtils::GetStringFromCommentsManagment (event.Props_.CommentsManagement_);
-		if (!screening.isEmpty ())
-			propsStruct.second.appendChild (GetSimpleMemberElement ("opt_screening",
-					"string", screening, document));
-		propsStruct.second.appendChild (GetSimpleMemberElement ("adult_content",
-				"string",
-				MetidaUtils::GetStringForAdultContent (event.Props_.AdultContent_),
-				document));
-		propsStruct.second.appendChild (GetSimpleMemberElement ("taglist",
-				"string", event.Tags_.join (","), document));
-		propsStruct.second.appendChild (GetSimpleMemberElement ("useragent",
-				"string", "LeechCraft Blogique", document));
-		propsStruct.second.appendChild (GetSimpleMemberElement ("picture_keyword",
-				"string", event.Props_.PostAvatar_, document));
-
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
-
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handlePostEventReplyFinished ()));
-	}
-
-	void LJXmlRPC::RemoveEventRequest (const LJEvent& event, const QString& challenge)
-	{
-		QDomDocument document ("BackupEventsRequest");
-		auto result = GetStartPart ("LJ.XMLRPC.editevent", document);
-		document.appendChild (result.first);
-
-		result.second.appendChild (GetSimpleMemberElement ("auth_method", "string",
-				"challenge", document));
-		result.second.appendChild (GetSimpleMemberElement ("auth_challenge", "string",
-				challenge, document));
-		result.second.appendChild (GetSimpleMemberElement ("username", "string",
-				Account_->GetOurLogin (), document));
-		result.second.appendChild (GetSimpleMemberElement ("auth_response", "string",
-				GetPassword (Account_->GetPassword (), challenge), document));
-		result.second.appendChild (GetSimpleMemberElement ("ver", "int",
-				"1", document));
-
-		result.second.appendChild (GetSimpleMemberElement ("itemid", "int",
-				QString::number (event.ItemID_), document));
-		result.second.appendChild (GetSimpleMemberElement ("event", "string",
-				QString (), document));
-		result.second.appendChild (GetSimpleMemberElement ("usejournal", "string",
-				Account_->GetOurLogin (), document));
-
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleRemoveEventReplyFinished ()));
-	}
-
-	void LJXmlRPC::UpdateEventRequest (const LJEvent& event, const QString& challenge)
-	{
-		QDomDocument document ("EditEventRequest");
-		auto result = GetStartPart ("LJ.XMLRPC.editevent", document);
-		document.appendChild (result.first);
-
-		result.second.appendChild (GetSimpleMemberElement ("auth_method", "string",
-				"challenge", document));
-		result.second.appendChild (GetSimpleMemberElement ("auth_challenge", "string",
-				challenge, document));
-		result.second.appendChild (GetSimpleMemberElement ("username", "string",
-				Account_->GetOurLogin (), document));
-		result.second.appendChild (GetSimpleMemberElement ("auth_response", "string",
-				GetPassword (Account_->GetPassword (), challenge), document));
-		result.second.appendChild (GetSimpleMemberElement ("ver", "int",
-				"1", document));
-
-		result.second.appendChild (GetSimpleMemberElement ("itemid", "int",
-				QString::number (event.ItemID_), document));
-		result.second.appendChild (GetSimpleMemberElement ("event", "string",
-				event.Event_, document));
-		result.second.appendChild (GetSimpleMemberElement ("subject", "string",
-				event.Subject_, document));
-
-		result.second.appendChild (GetSimpleMemberElement ("security", "string",
-				MetidaUtils::GetStringForAccess (event.Security_), document));
-		if (event.Security_ == Access::FriendsOnly)
-			result.second.appendChild (GetSimpleMemberElement ("allowmask", "int",
-					QString::number (BitMaskForFriendsOnlyComments_), document));
-		else if (event.Security_ == Access::Custom)
-			result.second.appendChild (GetSimpleMemberElement ("allowmask", "int",
-					QString::number (event.AllowMask_), document));
-		result.second.appendChild (GetSimpleMemberElement ("year", "int",
-				QString::number (event.DateTime_.date ().year ()), document));
-		result.second.appendChild (GetSimpleMemberElement ("mon", "int",
-				QString::number (event.DateTime_.date ().month ()), document));
-		result.second.appendChild (GetSimpleMemberElement ("day", "int",
-				QString::number (event.DateTime_.date ().day ()), document));
-		result.second.appendChild (GetSimpleMemberElement ("hour", "int",
-				QString::number (event.DateTime_.time ().hour ()), document));
-		result.second.appendChild (GetSimpleMemberElement ("min", "int",
-				QString::number (event.DateTime_.time ().minute ()), document));
-		result.second.appendChild (GetSimpleMemberElement ("usejournal", "string",
-				Account_->GetOurLogin (), document));
-
-		auto propsStruct = GetComplexMemberElement ("props", "struct", document);
-		result.second.appendChild (propsStruct.first);
-		propsStruct.second.appendChild (GetSimpleMemberElement ("current_location",
-				"string", event.Props_.CurrentLocation_, document));
-		if (!event.Props_.CurrentMood_.isEmpty ())
-			propsStruct.second.appendChild (GetSimpleMemberElement ("current_mood",
-					"string", event.Props_.CurrentMood_, document));
-		else
-			propsStruct.second.appendChild (GetSimpleMemberElement ("current_moodid",
-					"int", QString::number (event.Props_.CurrentMoodId_), document));
-		propsStruct.second.appendChild (GetSimpleMemberElement ("current_music",
-				"string", event.Props_.CurrentMusic_, document));
-		propsStruct.second.appendChild (GetSimpleMemberElement ("opt_nocomments",
-				"boolean", event.Props_.CommentsManagement_ == CommentsManagement::DisableComments ?
-					"1" :
-					"0",
-				document));
-		propsStruct.second.appendChild (GetSimpleMemberElement ("opt_noemail",
-				"boolean", event.Props_.CommentsManagement_ == CommentsManagement::WithoutNotification ?
-					"1" :
-					"0",
-				document));
-		QString screening = MetidaUtils::GetStringFromCommentsManagment (event.Props_.CommentsManagement_);
-		if (!screening.isEmpty ())
-			propsStruct.second.appendChild (GetSimpleMemberElement ("opt_screening",
-					"string", screening, document));
-		propsStruct.second.appendChild (GetSimpleMemberElement ("adult_content",
-				"string",
-				MetidaUtils::GetStringForAdultContent (event.Props_.AdultContent_),
-				document));
-		propsStruct.second.appendChild (GetSimpleMemberElement ("taglist",
-				"string", event.Tags_.join (","), document));
-		propsStruct.second.appendChild (GetSimpleMemberElement ("useragent",
-				"string", "LeechCraft Blogique", document));
-		propsStruct.second.appendChild (GetSimpleMemberElement ("picture_keyword",
-				"string", event.Props_.PostAvatar_, document));
-
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
-
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleUpdateEventReplyFinished ()));
-	}
-
-	void LJXmlRPC::BackupEventsRequest (int skip, const QString& challenge)
-	{
-		QDomDocument document ("BackupEventsRequest");
-		auto result = GetStartPart ("LJ.XMLRPC.getevents", document);
-		document.appendChild (result.first);
-
-		result.second.appendChild (GetSimpleMemberElement ("auth_method", "string",
-				"challenge", document));
-		result.second.appendChild (GetSimpleMemberElement ("auth_challenge", "string",
-				challenge, document));
-		result.second.appendChild (GetSimpleMemberElement ("username", "string",
-				Account_->GetOurLogin (), document));
-		result.second.appendChild (GetSimpleMemberElement ("auth_response", "string",
-				GetPassword (Account_->GetPassword (), challenge), document));
-		result.second.appendChild (GetSimpleMemberElement ("ver", "int",
-				"1", document));
-
-		result.second.appendChild (GetSimpleMemberElement ("selecttype", "string",
-				"before", document));
-		result.second.appendChild (GetSimpleMemberElement ("howmany", "int",
-				QString::number (MaxGetEventsCount_), document));
-		result.second.appendChild (GetSimpleMemberElement ("skip", "int",
-				QString::number (skip), document));
-		result.second.appendChild (GetSimpleMemberElement ("before", "string",
-				QDateTime::currentDateTime ().toString ("yyyy-MM-dd hh:mm:ss"),
-				document));
-		result.second.appendChild (GetSimpleMemberElement ("usejournal", "string",
-				Account_->GetOurLogin (), document));
-
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-				document.toByteArray ());
-		Reply2Skip_ [reply] = skip;
-
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleBackupEventsReplyFinished ()));
-	}
-
-	void LJXmlRPC::GetLastEventsRequest (int count, const QString& challenge)
-	{
-		QDomDocument document ("GetLastEventsRequest");
-		auto result = GetStartPart ("LJ.XMLRPC.getevents", document);
-		document.appendChild (result.first);
-
-		result.second.appendChild (GetSimpleMemberElement ("auth_method", "string",
-				"challenge", document));
-		result.second.appendChild (GetSimpleMemberElement ("auth_challenge", "string",
-				challenge, document));
-		result.second.appendChild (GetSimpleMemberElement ("username", "string",
-				Account_->GetOurLogin (), document));
-		result.second.appendChild (GetSimpleMemberElement ("auth_response", "string",
-				GetPassword (Account_->GetPassword (), challenge), document));
-		result.second.appendChild (GetSimpleMemberElement ("ver", "int",
-				"1", document));
-
-		result.second.appendChild (GetSimpleMemberElement ("selecttype", "string",
-				"lastn", document));
-		result.second.appendChild (GetSimpleMemberElement ("howmany", "int",
-				QString::number (count), document));
-		result.second.appendChild (GetSimpleMemberElement ("usejournal", "string",
-				Account_->GetOurLogin (), document));
-
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
-
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleGetLastEventsReplyFinished ()));
-	}
-
-	void LJXmlRPC::GetChangedEventsRequest (const QDateTime& dt, const QString& challenge)
-	{
-		QDomDocument document ("GetLastEventsRequest");
-		auto result = GetStartPart ("LJ.XMLRPC.getevents", document);
-		document.appendChild (result.first);
-
-		result.second.appendChild (GetSimpleMemberElement ("auth_method", "string",
-				"challenge", document));
-		result.second.appendChild (GetSimpleMemberElement ("auth_challenge", "string",
-				challenge, document));
-		result.second.appendChild (GetSimpleMemberElement ("username", "string",
-				Account_->GetOurLogin (), document));
-		result.second.appendChild (GetSimpleMemberElement ("auth_response", "string",
-				GetPassword (Account_->GetPassword (), challenge), document));
-		result.second.appendChild (GetSimpleMemberElement ("ver", "int",
-				"1", document));
-
-		result.second.appendChild (GetSimpleMemberElement ("selecttype", "string",
-				"syncitems", document));
-		result.second.appendChild (GetSimpleMemberElement ("lastsync", "string",
-				dt.toString ("yyyy-MM-dd hh:mm:ss"), document));
-		result.second.appendChild (GetSimpleMemberElement ("usejournal", "string",
-				Account_->GetOurLogin (), document));
-
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
-
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleGetLastEventsReplyFinished ()));
-	}
-
-	void LJXmlRPC::GetParticularEventRequest (int id, RequestType prt,
-			const QString& challenge)
-	{
-		QDomDocument document ("GetParticularEventsRequest");
-		auto result = GetStartPart ("LJ.XMLRPC.getevents", document);
-		document.appendChild (result.first);
-
-		result.second.appendChild (GetSimpleMemberElement ("auth_method", "string",
-				"challenge", document));
-		result.second.appendChild (GetSimpleMemberElement ("auth_challenge", "string",
-				challenge, document));
-		result.second.appendChild (GetSimpleMemberElement ("username", "string",
-				Account_->GetOurLogin (), document));
-		result.second.appendChild (GetSimpleMemberElement ("auth_response", "string",
-				GetPassword (Account_->GetPassword (), challenge), document));
-		result.second.appendChild (GetSimpleMemberElement ("ver", "int",
-				"1", document));
-
-		result.second.appendChild (GetSimpleMemberElement ("selecttype", "string",
-				"one", document));
-		result.second.appendChild (GetSimpleMemberElement ("itemid", "int",
-				QString::number (id), document));
-		result.second.appendChild (GetSimpleMemberElement ("usejournal", "string",
-				Account_->GetOurLogin (), document));
-
-		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
-						document.toByteArray ());
-		Reply2RequestType_ [reply] = prt;
-
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleGetParticularEventReplyFinished ()));
-	}
-
-	void LJXmlRPC::UpdateProfileInfo ()
-	{
-		Validate (Account_->GetOurLogin (), Account_->GetPassword ());
-	}
-
-	void LJXmlRPC::Submit (const LJEvent& event)
-	{
-		ApiCallQueue_ << [event, this] (const QString& challenge)
-				{ PostEventRequest (event, challenge); };
-		GenerateChallenge ();
-	}
-
-	void LJXmlRPC::BackupEvents ()
-	{
-		ApiCallQueue_ << [this] (const QString& challenge)
-				{ BackupEventsRequest (0, challenge); };
-		GenerateChallenge ();
-	}
-
-	void LJXmlRPC::GetLastEvents (int count)
-	{
-		ApiCallQueue_ << [count, this] (const QString& challenge)
-				{ GetLastEventsRequest (count, challenge); };
-		GenerateChallenge ();
-	}
-
-	void LJXmlRPC::GetChangedEvents (const QDateTime& dt)
-	{
-		ApiCallQueue_ << [dt, this] (const QString& challenge)
-				{ GetChangedEventsRequest (dt, challenge); };
-		GenerateChallenge ();
-	}
-
-	void LJXmlRPC::RemoveEvent (const LJEvent& event)
-	{
-		ApiCallQueue_ << [event, this] (const QString& challenge)
-				{ RemoveEventRequest (event, challenge); };
-		GenerateChallenge ();
-	}
-
-	void LJXmlRPC::UpdateEvent (const LJEvent& event)
-	{
-		ApiCallQueue_ << [event, this] (const QString& challenge)
-				{ UpdateEventRequest (event, challenge); };
-		GenerateChallenge ();
-	}
 
 	namespace
 	{
@@ -1090,6 +1157,7 @@ namespace Metida
 			return content;
 		}
 	}
+
 	void LJXmlRPC::handleChallengeReplyFinished ()
 	{
 		QDomDocument document;
@@ -1388,7 +1456,7 @@ namespace Metida
 		ParseForError (content);
 	}
 
-	void LJXmlRPC::handleGetLastEventsReplyFinished ()
+	void LJXmlRPC::handleGotEventsReplyFinished ()
 	{
 		QDomDocument document;
 		QByteArray content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
@@ -1459,21 +1527,50 @@ namespace Metida
 			const auto& events = ParseFullEvents (document);
 			switch (rt)
 			{
-				case RequestType::Post:
-					emit eventPosted (events);
-					break;
-				case RequestType::Update:
-					emit eventUpdated (events);
-					break;
-				default:
-					emit gotEvents (events);
-					break;
+			case RequestType::Post:
+				emit eventPosted (events);
+				break;
+			case RequestType::Update:
+				emit eventUpdated (events);
+				break;
+			default:
+				emit gotEvents (events);
+				break;
 			}
 
 			return;
 		}
 
 		ParseForError (content);
+	}
+
+	void LJXmlRPC::handleBlogStatisticsReplyFinished ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		QDomDocument document;
+		QByteArray content = CreateDomDocumentFromReply (reply, document);
+		if (content.isEmpty ())
+			return;
+
+		if (document.elementsByTagName ("fault").isEmpty ())
+		{
+			emit gotStatistics (ParseStatistics (document));
+			return;
+		}
+
+		ParseForError (content);
+	}
+
+	void LJXmlRPC::handleNetworkError(QNetworkReply::NetworkError err)
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+		reply->deleteLater ();
+		emit networkError (err, reply->errorString ());
 	}
 
 }

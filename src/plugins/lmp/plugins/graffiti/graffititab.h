@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,6 +66,7 @@ namespace Graffiti
 		QAction *Revert_;
 		QAction *RenameFiles_;
 		QAction *GetTags_;
+		QAction *SplitCue_;
 
 		bool IsChangingCurrent_;
 	public:
@@ -79,9 +80,9 @@ namespace Graffiti
 		template<typename T, typename F>
 		void UpdateData (const T& newData, F getter);
 	private slots:
-		void on_Artist__textEdited (const QString&);
-		void on_Album__textEdited (const QString&);
-		void on_Title__textEdited (const QString&);
+		void on_Artist__textChanged (const QString&);
+		void on_Album__textChanged (const QString&);
+		void on_Title__textChanged (const QString&);
 		void on_Genre__textChanged (const QString&);
 		void on_Year__valueChanged (int);
 
@@ -89,6 +90,7 @@ namespace Graffiti
 		void revert ();
 		void renameFiles ();
 		void fetchTags ();
+		void splitCue ();
 
 		void handleTagsFetched (const QString&, const Media::AudioInfo&);
 
@@ -98,6 +100,9 @@ namespace Graffiti
 
 		void handleIterateFinished ();
 		void handleScanFinished ();
+
+		void handleCueSplitError (const QString&);
+		void handleCueSplitFinished ();
 	signals:
 		void removeTab (QWidget*);
 	};

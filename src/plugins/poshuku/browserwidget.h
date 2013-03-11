@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
 #include <interfaces/structures.h>
 #include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/core/ihookproxy.h>
-#include "interfaces/ibrowserwidget.h"
+#include "interfaces/poshuku/ibrowserwidget.h"
 #include "ui_browserwidget.h"
 
 class QToolBar;

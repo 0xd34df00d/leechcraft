@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,32 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_INTERFACES_POSHUKUTYPES_H
-#define PLUGINS_POSHUKU_INTERFACES_POSHUKUTYPES_H
+#include "xmlsettingsmanager.h"
+#include <QApplication>
 
 namespace LeechCraft
 {
-namespace Poshuku
+namespace Blogique
 {
-	/** Enumeration describing the part of menu that's being constructed
-	 * inside QWebView's subclass' contextMenuEvent.
-	 */
-	enum WebViewCtxMenuStage
+namespace Hestia
+{
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		/// Just the beginning of menu construction.
-		WVSStart,
-		/// Stage related to clicking on a hyperlink finished.
-		WVSAfterLink,
-		/// Stage related to clicking on an image finished.
-		WVSAfterImage,
-		/// Stage related to clicking with having some selected text
-		/// finished.
-		WVSAfterSelectedText,
-		/// The standard set of actions was embedded. This stage is just
-		/// before executing the menu.
-		WVSAfterFinish
-	};
-}
-}
+		Util::BaseSettingsManager::Init ();
+	}
 
-#endif
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager xsm;
+		return xsm;
+	}
+
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
+
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Blogique_Hestia");
+		return settings;
+	}
+}
+}
+}

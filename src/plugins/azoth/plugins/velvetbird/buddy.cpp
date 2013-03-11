@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,10 @@
 
 #include "buddy.h"
 #include <QImage>
+#include <QtDebug>
 #include "account.h"
+#include "util.h"
+#include "convimmessage.h"
 
 namespace LeechCraft
 {
@@ -31,6 +34,7 @@ namespace VelvetBird
 	, Account_ (account)
 	, Buddy_ (buddy)
 	{
+		Update ();
 	}
 
 	QObject* Buddy::GetObject ()
@@ -45,7 +49,7 @@ namespace VelvetBird
 
 	ICLEntry::Features Buddy::GetEntryFeatures () const
 	{
-		return ICLEntry::FPermanentEntry;
+		return ICLEntry::FPermanentEntry | ICLEntry::FSupportsGrouping;
 	}
 
 	ICLEntry::EntryType Buddy::GetEntryType () const
@@ -58,8 +62,9 @@ namespace VelvetBird
 		return QString::fromUtf8 (purple_buddy_get_alias (Buddy_));
 	}
 
-	void Buddy::SetEntryName (const QString&)
+	void Buddy::SetEntryName (const QString& name)
 	{
+		purple_blist_alias_buddy (Buddy_, name.toUtf8 ().constData ());
 	}
 
 	QString Buddy::GetEntryID () const
@@ -74,11 +79,26 @@ namespace VelvetBird
 
 	QStringList Buddy::Groups () const
 	{
-		return QStringList ();
+		return Group_.isEmpty () ? QStringList () : QStringList (Group_);
 	}
 
 	void Buddy::SetGroups (const QStringList& groups)
 	{
+		const auto& newGroup = groups.value (0);
+
+		PurpleGroup *group = 0;
+		if (!newGroup.isEmpty ())
+		{
+			const auto& utf8 = newGroup.toUtf8 ();
+			group = purple_find_group (utf8.constData ());
+			if (!group)
+			{
+				group = purple_group_new (utf8.constData ());
+				purple_blist_add_group (group, nullptr);
+			}
+		}
+
+		purple_blist_add_buddy (Buddy_, nullptr, group, nullptr);
 	}
 
 	QStringList Buddy::Variants () const
@@ -86,18 +106,22 @@ namespace VelvetBird
 		return QStringList ();
 	}
 
-	QObject* Buddy::CreateMessage (IMessage::MessageType type, const QString& variant, const QString& body)
+	QObject* Buddy::CreateMessage (IMessage::MessageType, const QString&, const QString& body)
 	{
-		return 0;
+		return new ConvIMMessage (body, IMessage::DOut, this);
 	}
 
 	QList<QObject*> Buddy::GetAllMessages () const
 	{
-		return QList<QObject*> ();
+		QList<QObject*> result;
+		for (auto msg : Messages_)
+			result << msg;
+		return result;
 	}
 
 	void Buddy::PurgeMessages (const QDateTime& before)
 	{
+		// TODO
 	}
 
 	void Buddy::SetChatPartState (ChatPartState state, const QString& variant)
@@ -106,7 +130,7 @@ namespace VelvetBird
 
 	EntryStatus Buddy::GetStatus (const QString& variant) const
 	{
-		return EntryStatus ();
+		return Status_;
 	}
 
 	QImage Buddy::GetAvatar () const
@@ -137,8 +161,74 @@ namespace VelvetBird
 	{
 	}
 
+	void Buddy::Send (ConvIMMessage *msg)
+	{
+		Store (msg);
+
+		if (!PurpleConv_)
+		{
+			PurpleConv_.reset (purple_conversation_new (PURPLE_CONV_TYPE_IM,
+						Account_->GetPurpleAcc (),
+						purple_buddy_get_name (Buddy_)),
+					purple_conversation_destroy);
+			PurpleConv_->ui_data = this;
+			purple_conversation_set_logging (PurpleConv_.get (), false);
+		}
+
+		purple_conv_im_send (PurpleConv_->u.im, msg->GetBody ().toUtf8 ().constData ());
+	}
+
+	void Buddy::Store (ConvIMMessage *msg)
+	{
+		Messages_ << msg;
+		emit gotMessage (msg);
+	}
+
+	void Buddy::SetConv (PurpleConversation *conv)
+	{
+		PurpleConv_.reset (conv, purple_conversation_destroy);
+		PurpleConv_->ui_data = this;
+	}
+
+	void Buddy::HandleMessage (const char *who, const char *body, PurpleMessageFlags flags, time_t time)
+	{
+		if (flags & PURPLE_MESSAGE_SEND)
+			return;
+
+		auto msg = new ConvIMMessage (QString::fromUtf8 (body), IMessage::DIn, this);
+		if (time)
+			msg->SetDateTime (QDateTime::fromTime_t (time));
+		Store (msg);
+	}
+
+	PurpleBuddy* Buddy::GetPurpleBuddy () const
+	{
+		return Buddy_;
+	}
+
 	void Buddy::Update ()
 	{
+		if (Name_ != GetEntryName ())
+		{
+			Name_ = GetEntryName ();
+			emit nameChanged (Name_);
+		}
+
+		auto purpleStatus = purple_presence_get_active_status (Buddy_->presence);
+		const auto& status = FromPurpleStatus (Account_->GetPurpleAcc (), purpleStatus);
+		if (status != Status_)
+		{
+			Status_ = status;
+			emit statusChanged (Status_, QString ());
+		}
+
+		auto groupNode = purple_buddy_get_group (Buddy_);
+		const auto& newGroup = groupNode ? QString::fromUtf8 (groupNode->name) : QString ();
+		if (newGroup != Group_)
+		{
+			Group_ = newGroup;
+			emit groupsChanged ({ Group_ });
+		}
 	}
 }
 }

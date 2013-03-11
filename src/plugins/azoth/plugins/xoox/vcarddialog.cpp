@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@
 #include "useravatarmanager.h"
 #include "vcardlisteditdialog.h"
 #include "accountsettingsholder.h"
+#include <util/gui/util.h>
 
 namespace LeechCraft
 {
@@ -49,6 +50,8 @@ namespace Xoox
 				SLOT (setNote ()));
 
 		Ui_.EditBirthday_->setVisible (false);
+
+		Ui_.LabelPhoto_->installEventFilter (this);
 	}
 
 	VCardDialog::VCardDialog (EntryBase *entry, QWidget *parent)
@@ -79,6 +82,8 @@ namespace Xoox
 
 		InitConnections (entry);
 		rebuildClientInfo ();
+
+		Ui_.LabelPhoto_->installEventFilter (this);
 	}
 
 	void VCardDialog::UpdateInfo (const QXmppVCardIq& vcard)
@@ -104,17 +109,7 @@ namespace Xoox
 
 		Ui_.EditURL_->setText (vcard.url ());
 
-		QPixmap px = QPixmap::fromImage (QImage::fromData (vcard.photo ()));
-		if (!px.isNull ())
-		{
-			const QSize& maxPx = Ui_.LabelPhoto_->maximumSize ();
-			if (px.width () > maxPx.width () ||
-					px.height () > maxPx.height ())
-				px = px.scaled (maxPx, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-			Ui_.LabelPhoto_->setPixmap (px);
-		}
-		else
-			Ui_.LabelPhoto_->setText (tr ("No photo"));
+		SetPixmapLabel (QPixmap::fromImage (QImage::fromData (vcard.photo ())));
 
 		/* TODO wait until newer QXmpp
 		Ui_.OrgName_->setText (vcard.orgName ());
@@ -123,6 +118,39 @@ namespace Xoox
 		Ui_.Role_->setText (vcard.role ());
 		Ui_.About_->setPlainText (vcard.desc ());
 		*/
+	}
+
+	bool VCardDialog::eventFilter (QObject *object, QEvent *event)
+	{
+		if (object == Ui_.LabelPhoto_ &&
+			event->type () == QEvent::MouseButtonRelease &&
+			!ShownPixmap_.isNull ())
+		{
+			auto label = Util::ShowPixmapLabel (ShownPixmap_,
+					static_cast<QMouseEvent*> (event)->globalPos ());
+			label->setWindowTitle (tr ("%1's avatar").arg (JID_));
+		}
+
+		return false;
+	}
+
+	void VCardDialog::SetPixmapLabel (QPixmap px)
+	{
+		Ui_.LabelPhoto_->unsetCursor ();
+
+		ShownPixmap_ = px;
+
+		if (!px.isNull ())
+		{
+			const QSize& maxPx = Ui_.LabelPhoto_->maximumSize ();
+			if (px.width () > maxPx.width () ||
+					px.height () > maxPx.height ())
+				px = px.scaled (maxPx, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+			Ui_.LabelPhoto_->setPixmap (px);
+			Ui_.LabelPhoto_->setCursor (Qt::PointingHandCursor);
+		}
+		else
+			Ui_.LabelPhoto_->setText (tr ("No photo"));
 	}
 
 	void VCardDialog::BuildPhones (const QXmppVCardPhoneList& phonesList)
@@ -459,7 +487,7 @@ namespace Xoox
 			px = px.scaled (size, size,
 					Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
-		Ui_.LabelPhoto_->setPixmap (px);
+		SetPixmapLabel (px);
 	}
 
 	void VCardDialog::on_PhotoClear__released ()

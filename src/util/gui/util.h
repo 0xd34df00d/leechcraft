@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,9 @@
 #include <util/utilconfig.h>
 
 class QSize;
+class QRect;
+class QPixmap;
+class QLabel;
 
 namespace LeechCraft
 {
@@ -35,7 +38,12 @@ namespace Util
 
 	Q_DECLARE_FLAGS (FitFlags, FitFlag);
 
-	UTIL_API QPoint FitRectScreen (QPoint pos, const QSize& size, FitFlags flags = NoFlags, const QPoint& shiftAdd = QPoint (0, 0));
+	UTIL_API QPoint FitRectScreen (QPoint pos, const QSize& size,
+			FitFlags flags = NoFlags, const QPoint& shiftAdd = QPoint (0, 0));
+	UTIL_API QPoint FitRect (QPoint pos, const QSize& size, const QRect& geometry,
+			FitFlags flags = NoFlags, const QPoint& shiftAdd = QPoint (0, 0));
+
+	UTIL_API QLabel* ShowPixmapLabel (const QPixmap&, const QPoint& pos = QPoint ());
 }
 }
 
