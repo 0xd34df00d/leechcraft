@@ -56,6 +56,8 @@ namespace ChatHistory
 	, EntryToFocus_ (entry)
 	{
 		Ui_.setupUi (this);
+		Ui_.VertSplitter_->setStretchFactor (0, 0);
+		Ui_.VertSplitter_->setStretchFactor (1, 4);
 
 		auto proxy = Core::Instance ()->GetCoreProxy ();
 		new Util::ClearLineEditAddon (proxy, Ui_.ContactsSearch_);
