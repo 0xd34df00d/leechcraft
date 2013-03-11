@@ -102,6 +102,10 @@ namespace Blogique
 				SIGNAL (fillNewWidgetWithDraftEntry (Entry, QByteArray)),
 				this,
 				SLOT (fillNewTabWithEntry (Entry, QByteArray)));
+		connect (Ui_.Subject_,
+				SIGNAL (textChanged (QString)),
+				this,
+				SLOT (handleEntryChanged (QString)));
 
 		DraftEntriesWidget_->loadDraftEntries ();
 	}
@@ -207,7 +211,7 @@ namespace Blogique
 			connect (w,
 					SIGNAL (textChanged ()),
 					this,
-					SLOT (handleTextChanged ()));
+					SLOT (handleEntryChanged ()));
 			PostEditWidget_ = w;
 			editFrameLay->addWidget (w);
 			break;
@@ -392,6 +396,14 @@ namespace Blogique
 		return e;
 	}
 
+	void BlogiqueWidget::handleAutoSave ()
+	{
+		if (!EntryChanged_)
+			return;
+
+		saveEntry ();
+	}
+
 	void BlogiqueWidget::handleCurrentAccountChanged (int id)
 	{
 		if (Id2Account_.isEmpty ())
@@ -405,7 +417,10 @@ namespace Blogique
 				PostEdit_->RemoveAction (action);
 
 			for (auto w : SidePluginsWidgets_)
+			{
+				w->disconnect ();
 				w->deleteLater ();
+			}
 			SidePluginsWidgets_.clear ();
 
 			RemovePostingTargetsWidget ();
@@ -509,7 +524,7 @@ namespace Blogique
 		emit changeTabName (w, entry.Subject_);
 	}
 
-	void BlogiqueWidget::handleTextChanged ()
+	void BlogiqueWidget::handleEntryChanged (const QString&)
 	{
 		EntryChanged_ = true;
 	}
@@ -653,7 +668,6 @@ namespace Blogique
 
 		acc->updateProfile ();
 	}
-
 }
 }
 

@@ -23,6 +23,8 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/structures.h>
 
+class QTimer;
+
 namespace LeechCraft
 {
 namespace Blogique
@@ -45,6 +47,8 @@ namespace Blogique
 		std::shared_ptr<PluginProxy> PluginProxy_;
 		StorageManager *StorageManager_;
 		BackupManager *BackupManager_;
+
+		QTimer *AutoSaveTimer_;
 
 		Core ();
 		Q_DISABLE_COPY (Core)
@@ -86,6 +90,8 @@ namespace Blogique
 		void handleGotEntries2Backup (const QList<Entry>& entries);
 		void handleGettingEntries2BackupFinished ();
 
+		void handleAutoSaveIntervalChanged ();
+
 	signals:
 		void accountAdded (QObject *account);
 		void accountRemoved (QObject *account);
@@ -97,6 +103,8 @@ namespace Blogique
 		void addNewTab (const QString& name, QWidget *tab);
 		void removeTab (QWidget *tab);
 		void changeTabName (QWidget *content, const QString& name);
+
+		void needAutoSave ();
 	};
 }
 }

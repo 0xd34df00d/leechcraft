@@ -32,6 +32,7 @@
 #include "storagemanager.h"
 #include "backupmanager.h"
 #include "blogiquewidget.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -42,7 +43,15 @@ namespace Blogique
 	, PluginProxy_ (std::make_shared<PluginProxy> ())
 	, StorageManager_ (new StorageManager (UniqueID_, this))
 	, BackupManager_ (new BackupManager (this))
+	, AutoSaveTimer_ (new QTimer (this))
 	{
+		connect (AutoSaveTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SIGNAL (needAutoSave ()));
+		XmlSettingsManager::Instance ().RegisterObject ("AutoSave",
+				this, "handleAutoSaveIntervalChanged");
+		handleAutoSaveIntervalChanged ();
 	}
 
 	Core& Core::Instance ()
@@ -157,6 +166,10 @@ namespace Blogique
 				SIGNAL (removeTab (QWidget*)),
 				&Core::Instance (),
 				SIGNAL (removeTab (QWidget*)));
+		connect (&Core::Instance (),
+				SIGNAL (needAutoSave ()),
+				newTab,
+				SLOT (handleAutoSave ()));
 
 		return newTab;
 	}
@@ -286,7 +299,7 @@ namespace Blogique
 				Priority::PInfo_);
 		Util::NotificationActionHandler *nh = new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Open Link"),
-				[this, entries] () 
+				[this, entries] ()
 				{
 					Entity urlEntity = Util::MakeEntity (entries.value (0).EntryUrl_,
 							QString (),
@@ -338,6 +351,13 @@ namespace Blogique
 		SendEntity (Util::MakeNotification ("Blogique",
 				tr ("Entries were backuped successfully."),
 				Priority::PInfo_));
+	}
+
+
+	void Core::handleAutoSaveIntervalChanged ()
+	{
+		AutoSaveTimer_->start (XmlSettingsManager::Instance ()
+				.property ("AutoSave").toInt () * 1000);
 	}
 }
 }

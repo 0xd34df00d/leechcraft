@@ -91,12 +91,15 @@ namespace Blogique
 
 		Entry GetCurrentEntry ();
 
+	public slots:
+		void handleAutoSave ();
+
 	private slots:
 		void handleCurrentAccountChanged (int id);
 		void fillCurrentTabWithEntry (const Entry& entry);
 		void fillNewTabWithEntry (const Entry& entry, const QByteArray& accountId);
 
-		void handleTextChanged ();
+		void handleEntryChanged (const QString& str = QString ());
 
 		void newEntry ();
 		void saveEntry (const Entry& e = Entry ());
