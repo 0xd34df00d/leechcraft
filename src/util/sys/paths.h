@@ -27,7 +27,8 @@ namespace Util
 {
 	enum class SysPath
 	{
-		QML
+		QML,
+		Share
 	};
 
 	UTIL_API QStringList GetPathCandidates (SysPath path, QString suffix);
