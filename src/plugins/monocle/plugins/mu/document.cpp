@@ -44,6 +44,7 @@ namespace Mu
 	Document::Document (const QString& filename, fz_context *ctx)
 	: MuCtx_ (ctx)
 	, MuDoc_ (pdf_open_document (ctx, filename.toUtf8 ().constData ()))
+	, URL_ (QUrl::fromLocalFile (filename))
 	{
 	}
 
@@ -126,6 +127,11 @@ namespace Mu
 	QList<ILink_ptr> Document::GetPageLinks (int)
 	{
 		return QList<ILink_ptr> ();
+	}
+
+	QUrl Document::GetDocURL () const
+	{
+		return URL_;
 	}
 }
 }

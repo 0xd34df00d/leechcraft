@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QObject>
+#include <QUrl>
 
 extern "C"
 {
@@ -41,6 +42,8 @@ namespace Mu
 
 		fz_context *MuCtx_;
 		pdf_document *MuDoc_;
+
+		QUrl URL_;
 	public:
 		Document (const QString&, fz_context*);
 		~Document ();
@@ -52,6 +55,7 @@ namespace Mu
 		QSize GetPageSize (int) const;
 		QImage RenderPage (int, double xRes, double yRes);
 		QList<ILink_ptr> GetPageLinks (int);
+		QUrl GetDocURL () const;
 	signals:
 		void navigateRequested (const QString& , int pageNum, double x, double y);
 	};
