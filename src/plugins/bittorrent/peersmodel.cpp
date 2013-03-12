@@ -18,8 +18,10 @@
 
 #include <numeric>
 #include <QTimer>
+#include <QApplication>
 #include <QtDebug>
 #include <util/util.h>
+#include <util/sys/paths.h>
 #include "core.h"
 #include "peersmodel.h"
 
@@ -42,15 +44,7 @@ namespace BitTorrent
 			<< tr ("Client")
 			<< tr ("Available pieces");
 
-		QStringList flagCands;
-		flagCands << "/usr/local/share/leechcraft/global_icons/flags"
-				<< "/usr/share/leechcraft/global_icons/flags";
-		Q_FOREACH (const auto& cand, flagCands)
-			if (QFile::exists (cand))
-			{
-				FlagsPath_ = cand + '/';
-				break;
-			}
+		FlagsPath_ = Util::GetSysPath (Util::SysPath::Share, "global_icons/flags", QString ());
 
 		auto timer = new QTimer (this);
 		connect (timer,
