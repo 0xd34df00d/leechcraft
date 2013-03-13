@@ -319,9 +319,7 @@ namespace Monocle
 		if (auto toc = qobject_cast<IHaveTOC*> (CurrentDoc_->GetObject ()))
 			topLevel = toc->GetTOC ();
 		TOCWidget_->SetTOC (topLevel);
-		DockWidget_->setEnabled (!topLevel.isEmpty ());
-		if (DockWidget_->toggleViewAction ()->isChecked () == topLevel.isEmpty ())
-			DockWidget_->toggleViewAction ()->trigger ();
+		TOCWidget_->setEnabled (!topLevel.isEmpty ());
 
 		connect (CurrentDoc_->GetObject (),
 				SIGNAL (navigateRequested (QString, int, double, double)),
