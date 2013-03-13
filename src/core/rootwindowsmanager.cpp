@@ -195,9 +195,13 @@ namespace LeechCraft
 
 	void RootWindowsManager::add (const QString& name, QWidget *w)
 	{
+		auto itw = qobject_cast<ITabWidget*> (w);
+
+		if (GetWindowForTab (itw) != -1)
+			return;
+
 		const int winIdx = GetPreferredWindowIndex ();
 
-		auto itw = qobject_cast<ITabWidget*> (w);
 		const int oldWinIdx = GetWindowForTab (itw);
 		if (oldWinIdx >= 0 && oldWinIdx != winIdx)
 		{

@@ -319,9 +319,7 @@ namespace Monocle
 		if (auto toc = qobject_cast<IHaveTOC*> (CurrentDoc_->GetObject ()))
 			topLevel = toc->GetTOC ();
 		TOCWidget_->SetTOC (topLevel);
-		DockWidget_->setEnabled (!topLevel.isEmpty ());
-		if (DockWidget_->toggleViewAction ()->isChecked () == topLevel.isEmpty ())
-			DockWidget_->toggleViewAction ()->trigger ();
+		TOCWidget_->setEnabled (!topLevel.isEmpty ());
 
 		connect (CurrentDoc_->GetObject (),
 				SIGNAL (navigateRequested (QString, int, double, double)),
@@ -346,6 +344,46 @@ namespace Monocle
 		}
 
 		return true;
+	}
+
+	int DocumentTab::GetCurrentPage () const
+	{
+		const auto& center = GetViewportCenter ();
+		auto item = Ui_.PagesView_->itemAt (center - QPoint (1, 1));
+		if (!item)
+			item = Ui_.PagesView_->itemAt (center - QPoint (Margin, Margin));
+		auto pos = std::find_if (Pages_.begin (), Pages_.end (),
+				[item] (decltype (Pages_.front ()) e) { return e == item; });
+		return pos == Pages_.end () ? -1 : std::distance (Pages_.begin (), pos);
+	}
+
+	void DocumentTab::SetCurrentPage (int idx, bool immediate)
+	{
+		if (idx < 0 || idx >= Pages_.size ())
+			return;
+
+		auto page = Pages_.at (idx);
+		const auto& rect = page->boundingRect ();
+		const auto& pos = page->scenePos ();
+		int xCenter = pos.x () + rect.width () / 2;
+		const auto visibleHeight = std::min (static_cast<int> (rect.height ()),
+				Ui_.PagesView_->viewport ()->contentsRect ().height ());
+		int yCenter = pos.y () + visibleHeight / 2;
+
+		if (immediate)
+			Ui_.PagesView_->centerOn (xCenter, yCenter);
+		else
+			Ui_.PagesView_->SmoothCenterOn (xCenter, yCenter);
+	}
+
+	QPoint DocumentTab::GetCurrentCenter () const
+	{
+		return Ui_.PagesView_->GetCurrentCenter ();
+	}
+
+	void DocumentTab::CenterOn (const QPoint& point)
+	{
+		Ui_.PagesView_->SmoothCenterOn (point.x (), point.y ());
 	}
 
 	void DocumentTab::SetupToolbar ()
@@ -562,36 +600,6 @@ namespace Monocle
 	{
 		const auto& rect = Ui_.PagesView_->viewport ()->contentsRect ();
 		return QPoint (rect.width (), rect.height ()) / 2;
-	}
-
-	int DocumentTab::GetCurrentPage () const
-	{
-		const auto& center = GetViewportCenter ();
-		auto item = Ui_.PagesView_->itemAt (center - QPoint (1, 1));
-		if (!item)
-			item = Ui_.PagesView_->itemAt (center - QPoint (Margin, Margin));
-		auto pos = std::find_if (Pages_.begin (), Pages_.end (),
-				[item] (decltype (Pages_.front ()) e) { return e == item; });
-		return pos == Pages_.end () ? -1 : std::distance (Pages_.begin (), pos);
-	}
-
-	void DocumentTab::SetCurrentPage (int idx, bool immediate)
-	{
-		if (idx < 0 || idx >= Pages_.size ())
-			return;
-
-		auto page = Pages_.at (idx);
-		const auto& rect = page->boundingRect ();
-		const auto& pos = page->scenePos ();
-		int xCenter = pos.x () + rect.width () / 2;
-		const auto visibleHeight = std::min (static_cast<int> (rect.height ()),
-				Ui_.PagesView_->viewport ()->contentsRect ().height ());
-		int yCenter = pos.y () + visibleHeight / 2;
-
-		if (immediate)
-			Ui_.PagesView_->centerOn (xCenter, yCenter);
-		else
-			Ui_.PagesView_->SmoothCenterOn (xCenter, yCenter);
 	}
 
 	void DocumentTab::Relayout (double scale)
