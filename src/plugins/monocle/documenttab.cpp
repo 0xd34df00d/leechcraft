@@ -376,6 +376,16 @@ namespace Monocle
 			Ui_.PagesView_->SmoothCenterOn (xCenter, yCenter);
 	}
 
+	QPoint DocumentTab::GetCurrentCenter () const
+	{
+		return Ui_.PagesView_->GetCurrentCenter ();
+	}
+
+	void DocumentTab::CenterOn (const QPoint& point)
+	{
+		Ui_.PagesView_->SmoothCenterOn (point.x (), point.y ());
+	}
+
 	void DocumentTab::SetupToolbar ()
 	{
 		auto open = new QAction (tr ("Open..."), this);
