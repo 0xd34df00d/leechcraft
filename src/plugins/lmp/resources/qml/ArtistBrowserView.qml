@@ -18,7 +18,7 @@ Rectangle {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.bottom: parent.bottom
-        width: parent.width * 2 / 3
+        width: parent.width / 1.618
 
         BioView {
             onLinkActivated: rootRect.linkActivated(id)
