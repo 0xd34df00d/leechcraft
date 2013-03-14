@@ -1060,6 +1060,15 @@ namespace LMP
 		Core::Instance ().GetPlaylistManager ()->
 				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
 
+		const auto& song = XmlSettingsManager::Instance ().property ("LastSong").toString ();
+		if (!song.isEmpty ())
+		{
+			const auto pos = std::find_if (CurrentQueue_.begin (), CurrentQueue_.end (),
+					[&song] (decltype (CurrentQueue_.front ()) item) { qDebug () << item.fileName (); return song == item.fileName (); });
+			if (pos != CurrentQueue_.end ())
+				Source_->setCurrentSource (*pos);
+		}
+
 		const auto& currentSource = Source_->currentSource ();
 		if (Items_.contains (currentSource))
 			Items_ [currentSource]->setData (true, Role::IsCurrent);
@@ -1069,15 +1078,6 @@ namespace LMP
 	{
 		auto staticMgr = Core::Instance ().GetPlaylistManager ()->GetStaticManager ();
 		Enqueue (staticMgr->GetOnLoadPlaylist ());
-
-		const auto& song = XmlSettingsManager::Instance ().property ("LastSong").toString ();
-		if (!song.isEmpty ())
-		{
-			const auto pos = std::find_if (CurrentQueue_.begin (), CurrentQueue_.end (),
-					[&song] (decltype (CurrentQueue_.front ()) item) { return song == item.fileName (); });
-			if (pos != CurrentQueue_.end ())
-				Source_->setCurrentSource (*pos);
-		}
 	}
 
 	void Player::handleStationError (const QString& error)
