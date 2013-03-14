@@ -105,6 +105,8 @@ namespace Blogique
 		void changeTabName (QWidget *content, const QString& name);
 
 		void needAutoSave ();
+
+		void entryPosted ();
 	};
 }
 }

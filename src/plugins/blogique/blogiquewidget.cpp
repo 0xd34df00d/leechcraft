@@ -21,6 +21,7 @@
 #include <QComboBox>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QProgressBar>
 #include <QPushButton>
 #include <QStandardItemModel>
 #include <QWidgetAction>
@@ -53,6 +54,8 @@ namespace Blogique
 	, PostEditWidget_ (0)
 	, ToolBar_ (new QToolBar)
 	, PostTargetAction_ (0)
+	, SubmitProgressBar_ (0)
+	, ProgressBarAction_ (0)
 	, DraftEntriesWidget_ (new DraftEntriesWidget)
 	, BlogEntriesWidget_ (new BlogEntriesWidget)
 	, PrevAccountId_ (-1)
@@ -290,6 +293,11 @@ namespace Blogique
 				.property ("LastActiveAccountName").toString (),
 					Qt::MatchFixedString);
 		handleCurrentAccountChanged (index == -1 ? 0 : index);
+
+		SubmitProgressBar_ = new QProgressBar;
+		ProgressBarAction_ = ToolBar_->addWidget (SubmitProgressBar_);
+		SubmitProgressBar_->setOrientation (Qt::Horizontal);
+		ProgressBarAction_->setVisible (false);
 	}
 
 	void BlogiqueWidget::SetDefaultSideWidgets ()
@@ -402,6 +410,11 @@ namespace Blogique
 			return;
 
 		saveEntry ();
+	}
+
+	void BlogiqueWidget::handleEntryPosted ()
+	{
+		ProgressBarAction_->setVisible (false);
 	}
 
 	void BlogiqueWidget::handleCurrentAccountChanged (int id)
@@ -650,6 +663,9 @@ namespace Blogique
 			}
 			else
 				acc->submit (e);
+
+			ProgressBarAction_->setVisible (true);
+			SubmitProgressBar_->setRange (0, 0);
 		}
 	}
 

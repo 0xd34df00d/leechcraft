@@ -170,6 +170,10 @@ namespace Blogique
 				SIGNAL (needAutoSave ()),
 				newTab,
 				SLOT (handleAutoSave ()));
+		connect (&Core::Instance (),
+				SIGNAL (entryPosted ()),
+				newTab,
+				SLOT (handleEntryPosted ()));
 
 		return newTab;
 	}
@@ -309,6 +313,7 @@ namespace Blogique
 		nh->AddDependentObject (this);
 		emit gotEntity (e);
 		acc->RequestStatistics ();
+		emit entryPosted ();
 	}
 
 	void Core::handleEntryRemoved (int)

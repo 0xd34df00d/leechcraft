@@ -28,6 +28,7 @@ class QStandardItemModel;
 class IEditorWidget;
 class QToolBar;
 class QComboBox;
+class QProgressBar;
 
 namespace LeechCraft
 {
@@ -59,6 +60,8 @@ namespace Blogique
 		QComboBox *AccountsBox_;
 		QComboBox *PostTargetBox_;
 		QAction *PostTargetAction_;
+		QProgressBar *SubmitProgressBar_;
+		QAction *ProgressBarAction_;
 
 		DraftEntriesWidget *DraftEntriesWidget_;
 		BlogEntriesWidget *BlogEntriesWidget_;
@@ -93,6 +96,7 @@ namespace Blogique
 
 	public slots:
 		void handleAutoSave ();
+		void handleEntryPosted ();
 
 	private slots:
 		void handleCurrentAccountChanged (int id);
