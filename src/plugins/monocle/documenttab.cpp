@@ -449,6 +449,10 @@ namespace Monocle
 				SIGNAL (valueChanged (int)),
 				this,
 				SIGNAL (tabRecoverDataChanged ()));
+		connect (Ui_.PagesView_->verticalScrollBar (),
+				SIGNAL (valueChanged (int)),
+				this,
+				SLOT (scheduleSaveState ()));
 		Toolbar_->addWidget (PageNumLabel_);
 
 		auto next = new QAction (tr ("Next page"), this);
