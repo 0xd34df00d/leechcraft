@@ -94,7 +94,7 @@ namespace Azoth
 				result << id2action.value (permClass);
 		result << id2action.value ("sep_afterroles");
 		result << id2action.value ("add_contact");
-		result << id2action.value ("copy_id");
+		result << id2action.value ("copy_muc_id");
 		result << id2action.value ("sep_afterjid");
 		result << id2action.value ("managepgp");
 		result << id2action.value ("shareRIEX");
@@ -436,7 +436,7 @@ namespace Azoth
 					SIGNAL (triggered ()),
 					this,
 					SLOT (handleActionCopyMUCPartID ()));
-			Entry2Actions_ [entry] ["copy_id"] = copyId;
+			Entry2Actions_ [entry] ["copy_muc_id"] = copyId;
 			Action2Areas_ [copyId] << CLEAAContactListCtxtMenu
 					<< CLEAAChatCtxtMenu;
 
@@ -645,8 +645,8 @@ namespace Azoth
 			const QString& realJid = mucEntry->GetRealID (entry->GetObject ());
 			Entry2Actions_ [entry] ["add_contact"]->setEnabled (!realJid.isEmpty ());
 			Entry2Actions_ [entry] ["add_contact"]->setProperty ("Azoth/RealID", realJid);
-			Entry2Actions_ [entry] ["copy_id"]->setEnabled (!realJid.isEmpty ());
-			Entry2Actions_ [entry] ["copy_id"]->setProperty ("Azoth/RealID", realJid);
+			Entry2Actions_ [entry] ["copy_muc_id"]->setEnabled (!realJid.isEmpty ());
+			Entry2Actions_ [entry] ["copy_muc_id"]->setProperty ("Azoth/RealID", realJid);
 		}
 	}
 
