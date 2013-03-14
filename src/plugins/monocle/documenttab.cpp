@@ -70,7 +70,7 @@ namespace Monocle
 	, PageNumLabel_ (0)
 	, DockWidget_ (0)
 	, TOCWidget_ (new TOCWidget ())
-	, BMWidget_ (new BookmarksWidget ())
+	, BMWidget_ (new BookmarksWidget (this))
 	, LayMode_ (LayoutMode::OnePage)
 	, MouseMode_ (MouseMode::Move)
 	, RelayoutScheduled_ (true)
@@ -378,7 +378,7 @@ namespace Monocle
 
 	QPoint DocumentTab::GetCurrentCenter () const
 	{
-		return Ui_.PagesView_->GetCurrentCenter ();
+		return Ui_.PagesView_->GetCurrentCenter ().toPoint ();
 	}
 
 	void DocumentTab::CenterOn (const QPoint& point)
