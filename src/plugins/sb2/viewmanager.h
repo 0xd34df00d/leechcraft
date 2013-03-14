@@ -68,6 +68,7 @@ namespace SB2
 		SBView* GetView () const;
 		QToolBar* GetToolbar () const;
 		QMainWindow* GetManagedWindow () const;
+		QRect GetFreeCoords () const;
 
 		void SecondInit ();
 		void RegisterInternalComponent (const QuarkComponent&);
