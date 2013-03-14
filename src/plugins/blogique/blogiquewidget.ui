@@ -143,6 +143,11 @@
     <string>New post</string>
    </property>
   </action>
+  <action name="SubmitTo_">
+   <property name="text">
+    <string>Submit to...</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

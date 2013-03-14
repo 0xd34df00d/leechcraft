@@ -57,10 +57,9 @@ namespace Blogique
 		IEditorWidget *PostEdit_;
 		QWidget *PostEditWidget_;
 		QToolBar *ToolBar_;
-		QComboBox *AccountsBox_;
+		QAction *AccountsBoxAction_;
 		QComboBox *PostTargetBox_;
 		QAction *PostTargetAction_;
-		QProgressBar *SubmitProgressBar_;
 		QAction *ProgressBarAction_;
 
 		DraftEntriesWidget *DraftEntriesWidget_;
@@ -109,6 +108,7 @@ namespace Blogique
 		void saveEntry (const Entry& e = Entry ());
 		void saveNewEntry (const Entry& e = Entry ());
 		void submit (const Entry& e = Entry ());
+		void submitTo (const Entry& e = Entry ());
 		void on_SideWidget__dockLocationChanged (Qt::DockWidgetArea area);
 		void on_UpdateProfile__triggered ();
 

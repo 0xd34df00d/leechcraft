@@ -41,6 +41,7 @@
 #include "updateentriesdialog.h"
 #include "xmlsettingsmanager.h"
 #include "storagemanager.h"
+#include "submittodialog.h"
 
 namespace LeechCraft
 {
@@ -54,7 +55,6 @@ namespace Blogique
 	, PostEditWidget_ (0)
 	, ToolBar_ (new QToolBar)
 	, PostTargetAction_ (0)
-	, SubmitProgressBar_ (0)
 	, ProgressBarAction_ (0)
 	, DraftEntriesWidget_ (new DraftEntriesWidget)
 	, BlogEntriesWidget_ (new BlogEntriesWidget)
@@ -139,12 +139,13 @@ namespace Blogique
 
 	void BlogiqueWidget::FillWidget (const Entry& e, const QByteArray& accId)
 	{
-		for (int i = 0; !accId.isEmpty () && i < AccountsBox_->count (); ++i)
+		QComboBox *accountBox = qobject_cast<QComboBox*> (ToolBar_->widgetForAction (AccountsBoxAction_));
+		for (int i = 0; accountBox &&  !accId.isEmpty () && i < accountBox->count (); ++i)
 		{
 			if (Id2Account_.contains (i) &&
 					Id2Account_ [i]->GetAccountID () == accId)
 			{
-				AccountsBox_->setCurrentIndex (i);
+				accountBox->setCurrentIndex (i);
 				break;
 			}
 		}
@@ -251,9 +252,13 @@ namespace Blogique
 				this,
 				SLOT (submit ()));
 
-		Ui_.OpenInBrowser_->setProperty ("ActionIcon", "applications-internet");
-		ToolBar_->addAction (Ui_.OpenInBrowser_);
+		Ui_.SubmitTo_->setProperty ("ActionIcon", "mail-folder-outbox");
+		connect (Ui_.SubmitTo_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (submitTo ()));
 
+		Ui_.OpenInBrowser_->setProperty ("ActionIcon", "applications-internet");
 		Ui_.UpdateProfile_->setProperty ("ActionIcon", "view-refresh");
 
 		ToolBar_->addSeparator ();
@@ -273,30 +278,31 @@ namespace Blogique
 			PostEdit_->AppendSeparator ();
 		}
 
-		AccountsBox_ = new QComboBox ();
-		connect (AccountsBox_,
+		QComboBox *accountsBox = new QComboBox ();
+		connect (accountsBox,
 				SIGNAL (currentIndexChanged (int)),
 				this,
 				SLOT (handleCurrentAccountChanged (int)));
 
 		for (IAccount *acc : Core::Instance ().GetAccounts ())
 		{
-			AccountsBox_->addItem (acc->GetAccountName ());
-			Id2Account_ [AccountsBox_->count () - 1] = acc;
+			accountsBox->addItem (acc->GetAccountName ());
+			Id2Account_ [accountsBox->count () - 1] = acc;
 		}
 
-		ToolBar_->addWidget (AccountsBox_);
+		AccountsBoxAction_ = ToolBar_->addWidget (accountsBox);
 
 		PostTargetBox_ = new QComboBox;
 
-		int index = AccountsBox_->findText (XmlSettingsManager::Instance ()
+		int index = accountsBox->findText (XmlSettingsManager::Instance ()
 				.property ("LastActiveAccountName").toString (),
 					Qt::MatchFixedString);
 		handleCurrentAccountChanged (index == -1 ? 0 : index);
 
-		SubmitProgressBar_ = new QProgressBar;
-		ProgressBarAction_ = ToolBar_->addWidget (SubmitProgressBar_);
-		SubmitProgressBar_->setOrientation (Qt::Horizontal);
+		QProgressBar *submitProgressBar = new QProgressBar;
+		submitProgressBar->setRange (0, 0);
+		ProgressBarAction_ = ToolBar_->addWidget (submitProgressBar);
+		submitProgressBar->setOrientation (Qt::Horizontal);
 		ProgressBarAction_->setVisible (false);
 	}
 
@@ -431,15 +437,18 @@ namespace Blogique
 
 			for (auto w : SidePluginsWidgets_)
 			{
-				w->disconnect ();
-				w->deleteLater ();
+				int index = Ui_.Tools_->indexOf (w);
+				Ui_.Tools_->removeItem (index);
+				if (w)
+				{
+					w->disconnect ();
+					w->deleteLater ();
+				}
 			}
 			SidePluginsWidgets_.clear ();
 
 			RemovePostingTargetsWidget ();
 		}
-
-		ToolBar_->insertAction (Ui_.OpenInBrowser_, Ui_.UpdateProfile_);
 
 		auto account = Id2Account_ [id];
 		BlogEntriesWidget_->SetAccount (account);
@@ -462,10 +471,25 @@ namespace Blogique
 					PostTargetBox_->addItem (target.first, target.second);
 		}
 
+		if (ibp->GetFeatures () & IBloggingPlatform::BPFLocalBlog)
+		{
+			ToolBar_->removeAction (Ui_.OpenInBrowser_);
+			ToolBar_->removeAction (Ui_.UpdateProfile_);
+			ToolBar_->insertAction (AccountsBoxAction_, Ui_.SubmitTo_);
+		}
+		else
+		{
+			ToolBar_->removeAction (Ui_.SubmitTo_);
+			ToolBar_->insertAction (AccountsBoxAction_, Ui_.OpenInBrowser_);
+			if (ibp->GetFeatures () & IBloggingPlatform::BPFSupportsProfiles)
+				ToolBar_->insertAction (AccountsBoxAction_, Ui_.UpdateProfile_);
+		}
+
 		for (auto action : ibp->GetEditorActions ())
 			PostEdit_->AppendAction (action);
 
 		bool exists = false;
+
 		for (int i = 0; i < Ui_.Tools_->count (); ++i)
 			if (Ui_.Tools_->widget (i) == BlogEntriesWidget_)
 			{
@@ -501,7 +525,10 @@ namespace Blogique
 	{
 		if (EntryChanged_)
 		{
-			IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+			QComboBox *accountBox = qobject_cast<QComboBox*> (ToolBar_->widgetForAction (AccountsBoxAction_));
+			if (!accountBox)
+				return;
+			IAccount *acc = Id2Account_.value (accountBox->currentIndex ());
 			if (!acc)
 				return;
 			int res = QMessageBox::question (this,
@@ -631,7 +658,10 @@ namespace Blogique
 
 	void BlogiqueWidget::submit (const Entry& event)
 	{
-		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		QComboBox *accountBox = qobject_cast<QComboBox*> (ToolBar_->widgetForAction (AccountsBoxAction_));
+		if (!accountBox)
+			return;
+		IAccount *acc = Id2Account_.value (accountBox->currentIndex ());
 		if (!acc)
 			return;
 
@@ -665,7 +695,20 @@ namespace Blogique
 				acc->submit (e);
 
 			ProgressBarAction_->setVisible (true);
-			SubmitProgressBar_->setRange (0, 0);
+		}
+	}
+
+	void BlogiqueWidget::submitTo (const Entry& e)
+	{
+		SubmitToDialog dlg;
+		if (dlg.exec () == QDialog::Rejected)
+			return;
+
+		for (auto pair : dlg.GetPostingTargets ())
+		{
+			auto e = GetCurrentEntry ();
+			e.Target_ = pair.second;
+			pair.first->submit (e);
 		}
 	}
 
@@ -678,7 +721,11 @@ namespace Blogique
 
 	void BlogiqueWidget::on_UpdateProfile__triggered ()
 	{
-		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		QComboBox *accountBox = qobject_cast<QComboBox*> (ToolBar_->widgetForAction (AccountsBoxAction_));
+		if (!accountBox)
+			return;
+
+		IAccount *acc = Id2Account_.value (accountBox->currentIndex ());
 		if (!acc)
 			return;
 

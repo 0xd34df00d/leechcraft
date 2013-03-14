@@ -27,6 +27,7 @@
 #include "storagemanager.h"
 #include "utils.h"
 #include "xmlsettingsmanager.h"
+#include "submittodialog.h"
 
 namespace LeechCraft
 {
@@ -289,7 +290,21 @@ namespace Blogique
 
 	void DraftEntriesWidget::on_PublishDraftEntry__released ()
 	{
+		QModelIndex idx = Ui_.DraftEntriesView_->currentIndex ();
+		if (!idx.isValid ())
+			return;
+		idx = idx.sibling (idx.row (), Utils::EntriesViewColumns::Date);
 
+		SubmitToDialog dlg;
+		if (dlg.exec () == QDialog::Rejected)
+			return;
+
+		for (auto pair : dlg.GetPostingTargets ())
+		{
+			auto e = Item2Entry_ [DraftEntriesModel_->itemFromIndex (idx)];
+			e.Target_ = pair.second;
+			pair.first->submit (e);
+		}
 	}
 
 	void DraftEntriesWidget::on_DraftEntriesView__doubleClicked (const QModelIndex& index)
