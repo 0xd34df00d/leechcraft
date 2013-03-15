@@ -19,7 +19,6 @@
 #pragma once
 
 #include <memory>
-#include <functional>
 #include <QObject>
 #include <QSet>
 #include <interfaces/blogique/iaccount.h>
@@ -117,14 +116,6 @@ namespace Metida
 
 		RecentCommentsModel *RecentCommentsModel_;
 
-		enum class LastUpdateType
-		{
-			NoType,
-			LastEntries,
-			ChangedEntries
-		};
-		LastUpdateType LastUpdateType_;
-
 	public:
 		LJAccount (const QString& name, QObject *parent = 0);
 
@@ -145,7 +136,6 @@ namespace Metida
 		void RemoveEntry (const Entry& entry);
 		void UpdateEntry (const Entry& entry);
 
-		void RequestLastEntries (int count);
 		void RequestStatistics ();
 		void RequestInbox ();
 		void RequestRecentComments ();
@@ -167,8 +157,6 @@ namespace Metida
 
 		void AddGroup (const QString& name, bool isPublic, int id);
 		void DeleteGroup (int id);
-	private:
-		void CallLastUpdateMethod ();
 
 	public slots:
 		void handleValidatingFinished (bool success);
@@ -181,7 +169,6 @@ namespace Metida
 
 		void handleEventPosted (const QList<LJEvent>& entries);
 		void handleEventUpdated (const QList<LJEvent>& entries);
-		void handleEventRemoved (int id);
 
 		void handleGotEvents2Backup (const QList<LJEvent>& events);
 		void handleGettingEvents2BackupFinished ();
@@ -197,8 +184,6 @@ namespace Metida
 		void accountRenamed (const QString& newName);
 		void accountSettingsChanged ();
 		void accountValidated (bool validated);
-
-		void requestEntriesBegin ();
 
 		void entryPosted (const QList<Entry>& entries);
 		void entryUpdated (const QList<Entry>& entries);
