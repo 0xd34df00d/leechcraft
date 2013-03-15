@@ -18,6 +18,7 @@
 
 #include "bookmarkswidget.h"
 #include <QToolBar>
+#include <QStandardItemModel>
 #include "documenttab.h"
 #include "bookmark.h"
 #include "core.h"
@@ -31,19 +32,39 @@ namespace Monocle
 	: QWidget (parent)
 	, Tab_ (tab)
 	, Toolbar_ (new QToolBar ())
+	, BMModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
+		Ui_.BookmarksView_->setModel (BMModel_);
 		Ui_.MainLayout_->insertWidget (0, Toolbar_);
 
-		Toolbar_->addAction (tr ("Add bookmark"),
+		HandleDoc ({});
+
+		auto addBm = Toolbar_->addAction (tr ("Add bookmark"),
 				this, SLOT (handleAddBookmark ()));
+		addBm->setProperty ("ActionIcon", "bookmark-new");
 	}
 
 	void BookmarksWidget::HandleDoc (IDocument_ptr doc)
 	{
-		setEnabled (doc == nullptr);
-
+		setEnabled (doc != nullptr);
 		Doc_ = doc;
+
+		BMModel_->clear ();
+		BMModel_->setHorizontalHeaderLabels ({ tr ("Name") });
+
+		if (!doc)
+			return;
+
+		for (const auto& bm : Core::Instance ().GetBookmarksManager ()->GetBookmarks (doc))
+			AddBMToTree (bm);
+	}
+
+	void BookmarksWidget::AddBMToTree (const Bookmark& bm)
+	{
+		auto item = new QStandardItem (bm.GetName ());
+		item->setEditable (false);
+		BMModel_->appendRow (item);
 	}
 
 	void BookmarksWidget::handleAddBookmark ()
@@ -54,8 +75,9 @@ namespace Monocle
 		const auto page = Tab_->GetCurrentPage ();
 		const auto& center = Tab_->GetCurrentCenter ();
 
-		Bookmark bm (tr ("Page %1"), page, center);
+		Bookmark bm (tr ("Page %1").arg (page + 1), page, center);
 		Core::Instance ().GetBookmarksManager ()->AddBookmark (Doc_, bm);
+		AddBMToTree (bm);
 	}
 }
 }
