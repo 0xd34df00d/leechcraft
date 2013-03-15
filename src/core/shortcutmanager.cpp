@@ -198,14 +198,14 @@ namespace LeechCraft
 		KeySequencer dia (this);
 		if (dia.exec () == QDialog::Rejected)
 			return;
-		
+
 		const int numSeqs = 2;
 
 		if (item->data (Roles::OldSequence).isNull ())
 			item->setData (item->data (Roles::Sequence), Roles::OldSequence);
-		
+
 		auto newSeqs = item->data (Roles::Sequence).value<QKeySequences_t> ();
-		if (newSeqs.size () < numSeqs)
+		while (newSeqs.size () < numSeqs)
 			newSeqs << QKeySequence ();
 		newSeqs [std::max (prIndex.column () - 1, 0)] = dia.GetResult ();
 		newSeqs.removeAll (QKeySequence ());
