@@ -252,6 +252,36 @@ namespace Hestia
 		return list;
 	}
 
+	QList<Entry> AccountStorage::GetNumberOfEntries (AccountStorage::Mode mode, int count)
+	{
+		Q_UNUSED (mode);
+
+		GetNumberEntries_.bindValue (":limit", count);
+		if (!GetNumberEntries_.exec ())
+		{
+			Util::DBLock::DumpError (GetNumberEntries_);
+			throw std::runtime_error ("unable to get entries");
+		}
+
+		QList<Entry> list;
+		while (GetNumberEntries_.next ())
+		{
+			Entry e;
+			e.EntryId_ = GetNumberEntries_.value (0).toLongLong ();
+			e.Content_ = GetNumberEntries_.value (1).toString ();
+			e.Date_ = GetNumberEntries_.value (2).toDateTime ();
+			e.Subject_ =GetNumberEntries_.value (3).toString ();
+
+			GetNumberEntries_.bindValue (":entry_id", e.EntryId_);
+			e.Tags_ = GetTags (GetNumberEntries_);
+
+			list << e;
+		}
+		GetNumberEntries_.finish ();
+
+		return list;
+	}
+
 	QList<Entry> AccountStorage::GetEntriesByDate (const QDate& date)
 	{
 		GetEntriesByDate_.bindValue (":date", date);
@@ -370,6 +400,9 @@ namespace Hestia
 		GetEntries_ = QSqlQuery (AccountDB_);
 		GetEntries_.prepare ("SELECT Id, Entry, Date, Subject FROM entries "
 				"ORDER BY Date DESC;");
+		GetNumberEntries_ = QSqlQuery (AccountDB_);
+		GetNumberEntries_.prepare ("SELECT Id, Entry, Date, Subject FROM entries "
+				"ORDER BY Date DESC LIMIT :limit;");
 		GetEntriesByDate_= QSqlQuery (AccountDB_);
 		GetEntriesByDate_.prepare ("SELECT Id, Entry, Date, Subject FROM entries "
 				"WHERE date (Date) = :date;");

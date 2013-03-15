@@ -45,6 +45,7 @@ namespace Hestia
 		QSqlQuery UpdateEntry_;
 
 		QSqlQuery GetEntries_;
+		QSqlQuery GetNumberEntries_;
 		QSqlQuery GetShortEntries_;
 		QSqlQuery GetFullEntry_;
 		QSqlQuery GetEntriesByDate_;
@@ -71,6 +72,7 @@ namespace Hestia
 		qint64 UpdateEntry (const Entry& e, qint64 entryId);
 		void RemoveEntry(qint64 entryId);
 		QList<Entry> GetEntries (Mode mode);
+		QList<Entry> GetNumberOfEntries (Mode mode, int count);
 		QList<Entry> GetEntriesByDate (const QDate& date);
 		QMap<QDate, int> GetEntriesCountByDate ();
 		Entry GetFullEntry (qint64 entryId);

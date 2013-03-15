@@ -38,6 +38,7 @@ namespace Hestia
 	, IsValid_ (false)
 	, AccountStorage_ (new AccountStorage (this))
 	, LoadAllEvents_ (new QAction (tr ("All entries"), this))
+	, DefaultPostsNUmber_ (20)
 	{
 		connect (LoadAllEvents_,
 				SIGNAL (triggered ()),
@@ -130,6 +131,20 @@ namespace Hestia
 	QList<QAction*> LocalBlogAccount::GetUpdateActions () const
 	{
 		return { LoadAllEvents_ };
+	}
+
+	void LocalBlogAccount::RequestLastEntries (int count)
+	{
+		try
+		{
+			emit gotEntries (AccountStorage_->GetNumberOfEntries (AccountStorage::Mode::FullMode,
+					DefaultPostsNUmber_));
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+		}
 	}
 
 	void LocalBlogAccount::RequestStatistics ()
