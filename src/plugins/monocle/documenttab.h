@@ -107,14 +107,18 @@ namespace Monocle
 		void ReloadDoc (const QString&);
 
 		bool SetDoc (const QString&);
+
+		int GetCurrentPage () const;
+		void SetCurrentPage (int, bool immediate = false);
+
+		QPoint GetCurrentCenter () const;
+		void CenterOn (const QPoint&);
 	private:
 		void SetupToolbar ();
 
 		double GetCurrentScale () const;
 
 		QPoint GetViewportCenter () const;
-		int GetCurrentPage () const;
-		void SetCurrentPage (int, bool immediate = false);
 		void Relayout (double);
 
 		void ClearViewActions ();

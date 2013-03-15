@@ -45,6 +45,16 @@ namespace Util
 					<< "/usr/share/leechcraft/qml/" + suffix;
 #endif
 			return candidates;
+		case SysPath::Share:
+#ifdef Q_OS_WIN32
+			candidates << QApplication::applicationDirPath () + "/share/" + suffix;
+#elif defined (Q_OS_MAC)
+			candidates << QApplication::applicationDirPath () + "/../Resources/share/" + suffix;
+#else
+			candidates << "/usr/local/share/leechcraft/" + suffix
+					<< "/usr/share/leechcraft/" + suffix;
+#endif
+			return candidates;
 		}
 
 		qWarning () << Q_FUNC_INFO
@@ -55,7 +65,7 @@ namespace Util
 
 	QString GetSysPath (SysPath path, const QString& suffix, const QString& filename)
 	{
-		for (const QString& cand : GetPathCandidates (SysPath::QML, suffix))
+		for (const QString& cand : GetPathCandidates (path, suffix))
 			if (QFile::exists (cand + filename))
 				return cand + filename;
 

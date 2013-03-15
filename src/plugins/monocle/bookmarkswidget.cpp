@@ -17,19 +17,45 @@
  **********************************************************************/
 
 #include "bookmarkswidget.h"
+#include <QToolBar>
+#include "documenttab.h"
+#include "bookmark.h"
+#include "core.h"
+#include "bookmarksmanager.h"
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-	BookmarksWidget::BookmarksWidget (QWidget *parent)
+	BookmarksWidget::BookmarksWidget (DocumentTab *tab, QWidget *parent)
 	: QWidget (parent)
+	, Tab_ (tab)
+	, Toolbar_ (new QToolBar ())
 	{
 		Ui_.setupUi (this);
+		Ui_.MainLayout_->insertWidget (0, Toolbar_);
+
+		Toolbar_->addAction (tr ("Add bookmark"),
+				this, SLOT (handleAddBookmark ()));
 	}
 
 	void BookmarksWidget::HandleDoc (IDocument_ptr doc)
 	{
+		setEnabled (doc == nullptr);
+
+		Doc_ = doc;
+	}
+
+	void BookmarksWidget::handleAddBookmark ()
+	{
+		if (!Doc_)
+			return;
+
+		const auto page = Tab_->GetCurrentPage ();
+		const auto& center = Tab_->GetCurrentCenter ();
+
+		Bookmark bm (tr ("Page %1"), page, center);
+		Core::Instance ().GetBookmarksManager ()->AddBookmark (Doc_, bm);
 	}
 }
 }

@@ -47,6 +47,8 @@ namespace VelvetBird
 	public:
 		Protocol (PurplePlugin*, ICoreProxy_ptr, QObject* = 0);
 
+		void Release ();
+
 		QObject* GetObject ();
 		ProtocolFeatures GetFeatures () const;
 		QList<QObject*> GetRegisteredAccounts ();

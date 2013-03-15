@@ -41,6 +41,11 @@ namespace VelvetBird
 		UpdateStatus ();
 	}
 
+	void Account::Release ()
+	{
+		emit removedCLItems (GetCLEntries ());
+	}
+
 	PurpleAccount* Account::GetPurpleAcc () const
 	{
 		return Account_;

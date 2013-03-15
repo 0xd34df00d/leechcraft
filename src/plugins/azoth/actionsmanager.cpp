@@ -94,10 +94,11 @@ namespace Azoth
 				result << id2action.value (permClass);
 		result << id2action.value ("sep_afterroles");
 		result << id2action.value ("add_contact");
-		result << id2action.value ("copy_id");
+		result << id2action.value ("copy_muc_id");
 		result << id2action.value ("sep_afterjid");
 		result << id2action.value ("managepgp");
 		result << id2action.value ("shareRIEX");
+		result << id2action.value ("copy_id");
 		result << id2action.value ("vcard");
 		result << id2action.value ("invite");
 		result << id2action.value ("leave");
@@ -236,6 +237,15 @@ namespace Azoth
 		Action2Areas_ [openChat] << CLEAAContactListCtxtMenu;
 		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
 			Action2Areas_ [openChat] << CLEAAChatCtxtMenu;
+
+		auto copyEntryId = new QAction (tr ("Copy full entry ID"), entry->GetObject ());
+		copyEntryId->setProperty ("ActionIcon", "edit-copy");
+		connect (copyEntryId,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleActionCopyEntryIDTriggered ()));
+		Action2Areas_ [copyEntryId] << CLEAAContactListCtxtMenu;
+		Entry2Actions_ [entry] ["copy_id"] = copyEntryId;
 
 		if (advEntry)
 		{
@@ -436,7 +446,7 @@ namespace Azoth
 					SIGNAL (triggered ()),
 					this,
 					SLOT (handleActionCopyMUCPartID ()));
-			Entry2Actions_ [entry] ["copy_id"] = copyId;
+			Entry2Actions_ [entry] ["copy_muc_id"] = copyId;
 			Action2Areas_ [copyId] << CLEAAContactListCtxtMenu
 					<< CLEAAChatCtxtMenu;
 
@@ -645,8 +655,8 @@ namespace Azoth
 			const QString& realJid = mucEntry->GetRealID (entry->GetObject ());
 			Entry2Actions_ [entry] ["add_contact"]->setEnabled (!realJid.isEmpty ());
 			Entry2Actions_ [entry] ["add_contact"]->setProperty ("Azoth/RealID", realJid);
-			Entry2Actions_ [entry] ["copy_id"]->setEnabled (!realJid.isEmpty ());
-			Entry2Actions_ [entry] ["copy_id"]->setProperty ("Azoth/RealID", realJid);
+			Entry2Actions_ [entry] ["copy_muc_id"]->setEnabled (!realJid.isEmpty ());
+			Entry2Actions_ [entry] ["copy_muc_id"]->setProperty ("Azoth/RealID", realJid);
 		}
 	}
 
@@ -692,6 +702,23 @@ namespace Azoth
 		ICLEntry *entry = action->
 				property ("Azoth/Entry").value<ICLEntry*> ();
 		Core::Instance ().GetChatTabsManager ()->OpenChat (entry);
+	}
+
+	void ActionsManager::handleActionCopyEntryIDTriggered ()
+	{
+		auto action = qobject_cast<QAction*> (sender ());
+
+		if (!action)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "is not a QAction";
+			return;
+		}
+
+		auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
+		const auto& id = entry->GetHumanReadableID ();
+		QApplication::clipboard ()->setText (id, QClipboard::Clipboard);
 	}
 
 	void ActionsManager::handleActionDrawAttention ()

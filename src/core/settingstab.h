@@ -43,7 +43,7 @@ namespace LeechCraft
 		QString LastSearch_;
 		QHash<QToolButton*, QObject*> Button2SettableRoot_;
 		QHash<IHaveSettings*, QList<int>> Obj2SearchMatchingPages_;
-		QHash<QListWidgetItem*, QPair<IHaveSettings*, int>> Item2Page_;
+		QHash<QTreeWidgetItem*, QPair<IHaveSettings*, int>> Item2Page_;
 	public:
 		SettingsTab (QWidget* = 0);
 
@@ -65,7 +65,7 @@ namespace LeechCraft
 		void handleBackRequested ();
 		void handleApply ();
 		void handleCancel ();
-		void on_Cats__currentItemChanged (QListWidgetItem*);
+		void on_Cats__currentItemChanged (QTreeWidgetItem*);
 	signals:
 		void remove (QWidget*);
 	};

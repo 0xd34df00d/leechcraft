@@ -48,12 +48,18 @@ namespace Xoox
 		QXmppVCardIq VCard_;
 
 		bool PhotoChanged_;
+
+		QPixmap ShownPixmap_;
 	public:
 		VCardDialog (GlooxAccount*, QWidget* = 0);
 		VCardDialog (EntryBase*, QWidget* = 0);
 
 		void UpdateInfo (const QXmppVCardIq&);
+
+		bool eventFilter (QObject*, QEvent*);
 	private:
+		void SetPixmapLabel (QPixmap);
+
 		void BuildPhones (const QXmppVCardPhoneList&);
 		void BuildEmails (const QXmppVCardEmailList&);
 		void BuildAddresses (const QXmppVCardAddressList&);

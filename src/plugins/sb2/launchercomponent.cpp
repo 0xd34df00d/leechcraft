@@ -302,8 +302,7 @@ namespace SB2
 		}
 
 		auto list = new TabUnhideListView (tcs, Proxy_);
-		list->move (Util::FitRectScreen ({ x, y },
-					list->size () + View_->GetView ()->minimumSizeHint ()));
+		list->move (Util::FitRect ({ x, y }, list->size (), View_->GetFreeCoords ()));
 		list->show ();
 		list->setFocus ();
 		connect (list,
@@ -328,8 +327,7 @@ namespace SB2
 			delete CurrentTabList_;
 
 		auto view = new TabListView (tc, widgets, ICTW_, Proxy_);
-		view->move (Util::FitRectScreen ({ x, y },
-					view->size () + View_->GetView ()->minimumSizeHint ()));
+		view->move (Util::FitRect ({ x, y }, view->size (), View_->GetFreeCoords ()));
 		view->show ();
 		view->setFocus ();
 

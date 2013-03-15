@@ -150,6 +150,30 @@ namespace SB2
 		return Window_;
 	}
 
+	QRect ViewManager::GetFreeCoords () const
+	{
+		QRect result = Window_->rect ();
+		result.moveTopLeft (Window_->mapToGlobal ({ 0, 0 }));
+		switch (Window_->toolBarArea (Toolbar_))
+		{
+		case Qt::LeftToolBarArea:
+			result.setLeft (result.left () + Toolbar_->width ());
+			break;
+		case Qt::RightToolBarArea:
+			result.setRight (result.right () - Toolbar_->width ());
+			break;
+		case Qt::TopToolBarArea:
+			result.setTop (result.top () + Toolbar_->height ());
+			break;
+		case Qt::BottomToolBarArea:
+			result.setBottom (result.bottom () - Toolbar_->height ());
+			break;
+		default:
+			break;
+		}
+		return result;
+	}
+
 	void ViewManager::SecondInit ()
 	{
 		for (const auto& component : FindAllQuarks ())

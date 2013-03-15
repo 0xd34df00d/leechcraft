@@ -333,6 +333,8 @@ namespace VelvetBird
 
 	void ProtoManager::Release ()
 	{
+		for (auto proto : Protocols_)
+			proto->Release ();
 		Protocols_.clear ();
 
 		purple_core_quit ();

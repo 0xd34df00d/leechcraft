@@ -18,16 +18,16 @@ IF (MSVC)
 ENDIF (MSVC)
 IF (UNIX OR (WIN32 AND MINGW))
 	SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -std=c++0x")
-	
+
 	IF (NOT APPLE)
 		SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--as-needed")
 		SET (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--as-needed")
 	ENDIF (NOT APPLE)
-	
+
 	IF (EXTRA_WARNINGS)
 		SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 	ENDIF (EXTRA_WARNINGS)
-	
+
 	IF (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang") AND ENABLE_CLANG_QUIRKS)
 		MESSAGE (STATUS "Enable Clang-specific quirks for Qt...")
 		SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DQ_COMPILER_RVALUE_REFS -DQ_COMPILER_DECLTYPE")
@@ -563,9 +563,9 @@ IF (UNIX)
 ENDIF (UNIX)
 
 INSTALL (DIRECTORY util/ DESTINATION include/leechcraft/util/
-	PATTERN ".h")
+	FILES_MATCHING PATTERN "*.h")
 INSTALL (DIRECTORY interfaces/ DESTINATION include/leechcraft/interfaces/
-	PATTERN ".h")
+	FILES_MATCHING PATTERN "*.h")
 INSTALL (FILES xmlsettingsdialog/xmlsettingsdialog.h DESTINATION include/leechcraft/xmlsettingsdialog/)
 INSTALL (FILES xmlsettingsdialog/basesettingsmanager.h DESTINATION include/leechcraft/xmlsettingsdialog/)
 INSTALL (FILES xmlsettingsdialog/xsdconfig.h DESTINATION include/leechcraft/xmlsettingsdialog/)
@@ -578,8 +578,7 @@ INSTALL (FILES InitLCPlugin.cmake DESTINATION share/cmake/Modules)
 INSTALL (DIRECTORY share/leechcraft/ DESTINATION ${LC_SHARE_DEST})
 INSTALL (DIRECTORY share/qml/common DESTINATION ${LC_QML_DEST}/org/LC)
 
-INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor
-	PATTERN ".svn" EXCLUDE)
+INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor)
 IF (UNIX AND NOT APPLE)
 	INSTALL (FILES data/leechcraft.1.gz DESTINATION share/man/man1)
 	INSTALL (FILES freedesktop/leechcraft.desktop DESTINATION share/applications)

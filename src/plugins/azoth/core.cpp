@@ -2143,6 +2143,11 @@ namespace Azoth
 		Q_FOREACH (ICLEntry *entry, Entry2Items_.keys ())
 			if (entry->GetParentAccount () == account)
 				Entry2Items_.remove (entry);
+
+		disconnect (account,
+				0,
+				this,
+				0);
 	}
 
 	void Core::handleGotCLItems (const QList<QObject*>& items)
