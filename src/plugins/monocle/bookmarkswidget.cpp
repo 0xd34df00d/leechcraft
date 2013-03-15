@@ -28,6 +28,14 @@ namespace LeechCraft
 {
 namespace Monocle
 {
+	namespace
+	{
+		enum Roles
+		{
+			RBookmark = Qt::UserRole + 1
+		};
+	}
+
 	BookmarksWidget::BookmarksWidget (DocumentTab *tab, QWidget *parent)
 	: QWidget (parent)
 	, Tab_ (tab)
@@ -64,6 +72,7 @@ namespace Monocle
 	{
 		auto item = new QStandardItem (bm.GetName ());
 		item->setEditable (false);
+		item->setData (QVariant::fromValue<Bookmark> (bm), Roles::RBookmark);
 		BMModel_->appendRow (item);
 	}
 
@@ -78,6 +87,12 @@ namespace Monocle
 		Bookmark bm (tr ("Page %1").arg (page + 1), page, center);
 		Core::Instance ().GetBookmarksManager ()->AddBookmark (Doc_, bm);
 		AddBMToTree (bm);
+	}
+
+	void BookmarksWidget::on_BookmarksView__activated (const QModelIndex& idx)
+	{
+		const auto& bm = idx.sibling (idx.row (), 0).data (Roles::RBookmark).value<Bookmark> ();
+		Tab_->CenterOn (bm.GetPosition ());
 	}
 }
 }

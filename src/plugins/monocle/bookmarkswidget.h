@@ -51,6 +51,7 @@ namespace Monocle
 		void AddBMToTree (const Bookmark&);
 	private slots:
 		void handleAddBookmark ();
+		void on_BookmarksView__activated (const QModelIndex&);
 	};
 }
 }
