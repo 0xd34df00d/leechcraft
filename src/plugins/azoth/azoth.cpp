@@ -473,24 +473,26 @@ namespace Azoth
 	{
 		TabClassInfo chatTab =
 		{
-			"ChatTab",
+			"LeechCraft.Azoth.ChatTab",
 			tr ("Chat"),
 			tr ("A tab with a chat session"),
 			QIcon (":/plugins/azoth/resources/images/chattabclass.svg"),
 			0,
 			TFEmpty
 		};
-		ChatTab::SetTabClassInfo (chatTab);
+		ChatTab::SetChatTabClassInfo (chatTab);
 
 		TabClassInfo mucTab =
 		{
-			"MUCTab",
+			"LeechCraft.Azoth.MUCTab",
 			tr ("MUC"),
 			tr ("A multiuser conference"),
-			QIcon (),
-			50,
-			TFOpenableByRequest
+			Core::Instance ().GetProxy ()->GetIcon ("system-users"),
+			0,
+			TFEmpty
 		};
+		ChatTab::SetMUCTabClassInfo (mucTab);
+
 		TabClassInfo searchTab =
 		{
 			"Search",
