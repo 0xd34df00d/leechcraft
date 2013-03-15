@@ -146,7 +146,7 @@ namespace LeechCraft
 		}
 	}
 
-	void DockManager::handleTabMove (int tab, int from, int to)
+	void DockManager::handleTabMove (int from, int to, int tab)
 	{
 		auto rootWM = Core::Instance ().GetRootWindowsManager ();
 
