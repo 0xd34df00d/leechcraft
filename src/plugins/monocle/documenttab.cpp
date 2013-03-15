@@ -297,6 +297,8 @@ namespace Monocle
 		const auto& title = QFileInfo (path).fileName ();
 		emit changeTabName (this, title);
 
+		BMWidget_->HandleDoc (CurrentDoc_);
+
 		auto isa = qobject_cast<ISupportAnnotations*> (CurrentDoc_->GetObject ());
 
 		for (int i = 0, size = CurrentDoc_->GetNumPages (); i < size; ++i)
