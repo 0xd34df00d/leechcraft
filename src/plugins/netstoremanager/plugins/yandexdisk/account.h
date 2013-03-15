@@ -70,7 +70,7 @@ namespace YandexDisk
 		void SetAccountName (const QString&);
 		QString GetAccountName () const;
 		QObject* GetParentPlugin () const;
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		AccountFeatures GetAccountFeatures () const;
 		void Upload (const QString&);
 

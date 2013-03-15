@@ -201,7 +201,7 @@ namespace LeechCraft
 			 * standard icon extensions, that is, the path variants are
 			 * basename + (".svg", ".png", ".jpg")
 			 *
-			 * @note If possible, consider using LoadIcon() or
+			 * @note If possible, consider using GetIconDevice() or
 			 * LoadPixmap() functions and enabling the cache. That may
 			 * speed things up considerably.
 			 *
@@ -209,7 +209,7 @@ namespace LeechCraft
 			 * extension.
 			 * @return The first found full path or null string
 			 *
-			 * @sa GetPath(), LoadIcon()
+			 * @sa GetPath(), GetIconDevice()
 			 */
 			QString GetIconPath (const QString& basename) const;
 
@@ -254,7 +254,7 @@ namespace LeechCraft
 			 *
 			 * @sa GetIconPath(), LoadPixmap()
 			 */
-			QIODevice_ptr LoadIcon (const QString& basename, bool open = false) const;
+			QIODevice_ptr GetIconDevice (const QString& basename, bool open = false) const;
 
 			/** @brief Returns the pixmap for the given basename.
 			 *
@@ -270,7 +270,7 @@ namespace LeechCraft
 			 * @return The QPixmap from the found path, or a null pixmap
 			 * if nothing is found, or if pixmap parsing is failed.
 			 *
-			 * @sa GetIconPath(), LoadIcon()
+			 * @sa GetIconPath(), GetIconDevice()
 			 */
 			QPixmap LoadPixmap (const QString& basename) const;
 

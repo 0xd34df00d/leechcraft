@@ -165,7 +165,7 @@ namespace Azoth
 		CurrentEditor_ = 0;
 
 		IAccount *account = Ui_.AccountBox_->itemData (index).value<IAccount*> ();
-		ISupportBookmarks *supBms = qobject_cast<ISupportBookmarks*> (account->GetObject ());
+		ISupportBookmarks *supBms = qobject_cast<ISupportBookmarks*> (account->GetQObject ());
 		IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
 		IMUCJoinWidget *joiner = Proto2Joiner_ [proto->GetProtocolID ()];
 		if (!joiner)
@@ -250,7 +250,7 @@ namespace Azoth
 			return;
 		}
 
-		qobject_cast<ISupportBookmarks*> (account->GetObject ())->SetBookmarkedMUCs (datas);
+		qobject_cast<ISupportBookmarks*> (account->GetQObject ())->SetBookmarkedMUCs (datas);
 
 		on_AccountBox__currentIndexChanged (index);
 	}

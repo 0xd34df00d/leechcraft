@@ -78,7 +78,7 @@ namespace LMP
 
 		virtual QString GetSyncSystemName () const = 0;
 
-		virtual QObject* GetObject () = 0;
+		virtual QObject* GetQObject () = 0;
 
 		virtual void SetFileInfo (const QString& origLocalPath, const UnmountableFileInfo& info) = 0;
 

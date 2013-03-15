@@ -115,7 +115,7 @@ namespace Azoth
 
 		IAccount *acc = index
 				.data (RAccObj).value<IAccount*> ();
-		ISupportPGP *pgpAcc = qobject_cast<ISupportPGP*> (acc->GetObject ());
+		ISupportPGP *pgpAcc = qobject_cast<ISupportPGP*> (acc->GetQObject ());
 		if (!pgpAcc)
 		{
 			QMessageBox::warning (this,
@@ -164,7 +164,7 @@ namespace Azoth
 					<< "doesn't implement IProtocol";
 			return;
 		}
-		proto->RemoveAccount (acc->GetObject ());
+		proto->RemoveAccount (acc->GetQObject ());
 	}
 
 	void AccountsListWidget::handleItemChanged (QStandardItem *item)
@@ -187,7 +187,7 @@ namespace Azoth
 			qWarning () << Q_FUNC_INFO
 					<< "account"
 					<< acc->GetAccountName ()
-					<< acc->GetObject ()
+					<< acc->GetQObject ()
 					<< "from"
 					<< sender ()
 					<< "not found here";

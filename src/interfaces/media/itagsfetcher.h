@@ -28,7 +28,7 @@ namespace Media
 	public:
 		virtual ~IPendingTagsFetch () {}
 
-		virtual QObject* GetObject () = 0;
+		virtual QObject* GetQObject () = 0;
 		virtual AudioInfo GetResult () const = 0;
 	protected:
 		virtual void ready (const QString& filename, const Media::AudioInfo& info) = 0;

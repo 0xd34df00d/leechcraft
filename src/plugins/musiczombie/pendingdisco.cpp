@@ -58,7 +58,7 @@ namespace MusicZombie
 			}, this);
 	}
 
-	QObject* PendingDisco::GetObject ()
+	QObject* PendingDisco::GetQObject ()
 	{
 		return this;
 	}

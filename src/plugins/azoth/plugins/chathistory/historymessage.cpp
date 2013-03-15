@@ -38,7 +38,7 @@ namespace ChatHistory
 	{
 	}
 
-	QObject* HistoryMessage::GetObject ()
+	QObject* HistoryMessage::GetQObject ()
 	{
 		return this;
 	}

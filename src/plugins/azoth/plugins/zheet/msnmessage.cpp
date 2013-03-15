@@ -73,7 +73,7 @@ namespace Zheet
 		emit messageDelivered ();
 	}
 
-	QObject* MSNMessage::GetObject ()
+	QObject* MSNMessage::GetQObject ()
 	{
 		return this;
 	}

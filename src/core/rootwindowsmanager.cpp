@@ -73,7 +73,7 @@ namespace LeechCraft
 		return true;
 	}
 
-	QObject* RootWindowsManager::GetObject ()
+	QObject* RootWindowsManager::GetQObject ()
 	{
 		return this;
 	}

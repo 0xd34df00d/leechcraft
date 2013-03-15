@@ -73,7 +73,7 @@ namespace LeechCraft
 		explicit SeparateTabWidget (QWidget *parent = 0);
 		void SetWindow (MainWindow*);
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 
 		int WidgetCount () const;
 		QWidget* Widget (int index) const;

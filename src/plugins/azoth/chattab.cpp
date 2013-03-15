@@ -479,7 +479,7 @@ namespace Azoth
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
 		proxy->SetValue ("text", text);
-		emit hookMessageWillCreated (proxy, this, e->GetObject (), type, variant);
+		emit hookMessageWillCreated (proxy, this, e->GetQObject (), type, variant);
 		if (proxy->IsCancelled ())
 			return;
 
@@ -512,7 +512,7 @@ namespace Azoth
 			richMsg->SetRichBody (richText);
 
 		proxy.reset (new Util::DefaultHookProxy ());
-		emit hookMessageCreated (proxy, this, msg->GetObject ());
+		emit hookMessageCreated (proxy, this, msg->GetQObject ());
 		if (proxy->IsCancelled ())
 			return;
 
@@ -1629,7 +1629,7 @@ namespace Azoth
 			return;
 		}
 
-		QObject *entryObj = entry->GetObject ();
+		QObject *entryObj = entry->GetQObject ();
 
 		const QObjectList& histories = Core::Instance ().GetProxy ()->
 				GetPluginsManager ()->GetAllCastableRoots<IHistoryPlugin*> ();
@@ -1657,12 +1657,12 @@ namespace Azoth
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "message's other part doesn't implement ICLEntry"
-					<< msg->GetObject ()
+					<< msg->GetQObject ()
 					<< msg->OtherPart ();
 			return;
 		}
 
-		if (msg->GetObject ()->property ("Azoth/HiddenMessage").toBool ())
+		if (msg->GetQObject ()->property ("Azoth/HiddenMessage").toBool ())
 			return;
 
 		ICLEntry *parent = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
@@ -1693,7 +1693,7 @@ namespace Azoth
 		}
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookGonnaAppendMsg (proxy, msg->GetObject ());
+		emit hookGonnaAppendMsg (proxy, msg->GetQObject ());
 		if (proxy->IsCancelled ())
 			return;
 
@@ -1719,7 +1719,7 @@ namespace Azoth
 		};
 
 		if (!Core::Instance ().AppendMessageByTemplate (frame,
-				msg->GetObject (), info))
+				msg->GetQObject (), info))
 			qWarning () << Q_FUNC_INFO
 					<< "unhandled append message :(";
 	}
@@ -1756,12 +1756,12 @@ namespace Azoth
 
 	bool ChatTab::ProcessOutgoingMsg (ICLEntry *entry, QString& text)
 	{
-		IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (entry->GetObject ());
+		IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
 		if (entry->GetEntryType () != ICLEntry::ETMUC ||
 				!mucEntry)
 			return false;
 
-		IMUCPerms *mucPerms = qobject_cast<IMUCPerms*> (entry->GetObject ());
+		IMUCPerms *mucPerms = qobject_cast<IMUCPerms*> (entry->GetQObject ());
 
 		if (text.startsWith ("/nick "))
 		{
@@ -1779,12 +1779,12 @@ namespace Azoth
 		}
 		else if (text.startsWith ("/kick ") && mucPerms)
 		{
-			PerformRoleAction (mucPerms->GetKickPerm (), entry->GetObject (), text.mid (6));
+			PerformRoleAction (mucPerms->GetKickPerm (), entry->GetQObject (), text.mid (6));
 			return true;
 		}
 		else if (text.startsWith ("/ban ") && mucPerms)
 		{
-			PerformRoleAction (mucPerms->GetBanPerm (), entry->GetObject (), text.mid (5));
+			PerformRoleAction (mucPerms->GetBanPerm (), entry->GetQObject (), text.mid (5));
 			return true;
 		}
 		else if (text == "/names")

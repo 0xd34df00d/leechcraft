@@ -246,7 +246,7 @@ namespace LeechCraft
 			return Load (QStringList (pathVariant), open);
 		}
 
-		QIODevice_ptr ResourceLoader::LoadIcon (const QString& basename, bool open) const
+		QIODevice_ptr ResourceLoader::GetIconDevice (const QString& basename, bool open) const
 		{
 			return Load (IconizeBasename (basename), open);
 		}
@@ -256,7 +256,7 @@ namespace LeechCraft
 			if (CachePixmaps_.contains (basename))
 				return *CachePixmaps_ [basename];
 
-			auto dev = LoadIcon (basename, true);
+			auto dev = GetIconDevice (basename, true);
 			if (!dev)
 				return QPixmap ();
 

@@ -48,7 +48,7 @@ namespace LMP
 	public:
 		virtual ~ICloudStoragePlugin () {}
 
-		virtual QObject* GetObject () = 0;
+		virtual QObject* GetQObject () = 0;
 
 		virtual QString GetCloudName () const = 0;
 

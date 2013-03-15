@@ -51,7 +51,7 @@ namespace VelvetBird
 
 		PurpleAccount* GetPurpleAcc () const;
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QObject* GetParentProtocol () const;
 		AccountFeatures GetAccountFeatures () const;
 		QList<QObject*> GetCLEntries ();

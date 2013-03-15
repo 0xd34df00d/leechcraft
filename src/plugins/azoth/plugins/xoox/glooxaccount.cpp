@@ -184,7 +184,7 @@ namespace Xoox
 		return SettingsHolder_;
 	}
 
-	QObject* GlooxAccount::GetObject ()
+	QObject* GlooxAccount::GetQObject ()
 	{
 		return this;
 	}

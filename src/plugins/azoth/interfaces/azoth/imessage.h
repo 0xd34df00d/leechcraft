@@ -173,7 +173,7 @@ namespace Azoth
 
 		/** @brief Returns this message as a QObject.
 		 */
-		virtual QObject* GetObject () = 0;
+		virtual QObject* GetQObject () = 0;
 
 		/** @brief Sends the message.
 		 *

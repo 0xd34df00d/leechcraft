@@ -53,7 +53,7 @@ namespace VelvetBird
 	public:
 		Buddy (PurpleBuddy*, Account*);
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QObject* GetParentAccount () const;
 		Features GetEntryFeatures () const;
 		EntryType GetEntryType () const;

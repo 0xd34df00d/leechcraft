@@ -53,7 +53,7 @@ namespace Acetamide
 	{
 	}
 
-	QObject* ServerCommandMessage::GetObject ()
+	QObject* ServerCommandMessage::GetQObject ()
 	{
 		return this;
 	}

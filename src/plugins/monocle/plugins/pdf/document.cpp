@@ -42,7 +42,7 @@ namespace PDF
 		BuildTOC ();
 	}
 
-	QObject* Document::GetObject ()
+	QObject* Document::GetQObject ()
 	{
 		return this;
 	}

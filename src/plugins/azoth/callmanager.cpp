@@ -58,7 +58,7 @@ namespace Azoth
 		if (!ismc)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< entry->GetObject ()
+					<< entry->GetQObject ()
 					<< "parent account doesn't support media calls";
 			return 0;
 		}

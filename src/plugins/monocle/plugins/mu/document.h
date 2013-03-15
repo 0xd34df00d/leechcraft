@@ -48,7 +48,7 @@ namespace Mu
 		Document (const QString&, fz_context*);
 		~Document ();
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		bool IsValid () const;
 		DocumentInfo GetDocumentInfo () const;
 		int GetNumPages () const;

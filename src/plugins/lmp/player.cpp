@@ -40,8 +40,8 @@
 #include "playlistparsers/playlistfactory.h"
 
 #if defined(Q_OS_WIN32)
-	#ifdef GetObject
-		#undef GetObject
+	#ifdef GetQObject
+		#undef GetQObject
 	#endif
 #endif
 
@@ -499,15 +499,15 @@ namespace LMP
 
 		CurrentStation_ = station;
 
-		connect (CurrentStation_->GetObject (),
+		connect (CurrentStation_->GetQObject (),
 				SIGNAL (gotError (const QString&)),
 				this,
 				SLOT (handleStationError (const QString&)));
-		connect (CurrentStation_->GetObject (),
+		connect (CurrentStation_->GetQObject (),
 				SIGNAL (gotNewStream (QUrl, Media::AudioInfo)),
 				this,
 				SLOT (handleRadioStream (QUrl, Media::AudioInfo)));
-		connect (CurrentStation_->GetObject (),
+		connect (CurrentStation_->GetQObject (),
 				SIGNAL (gotPlaylist (QString, QString)),
 				this,
 				SLOT (handleGotRadioPlaylist (QString, QString)));

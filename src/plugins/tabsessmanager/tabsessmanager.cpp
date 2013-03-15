@@ -80,11 +80,11 @@ namespace TabSessManager
 		for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
 			handleWindow (i);
 
-		connect (rootWM->GetObject (),
+		connect (rootWM->GetQObject (),
 				SIGNAL (windowAdded (int)),
 				this,
 				SLOT (handleWindow (int)));
-		connect (rootWM->GetObject (),
+		connect (rootWM->GetQObject (),
 				SIGNAL (windowRemoved (int)),
 				this,
 				SLOT (handleWindowRemoved (int)));
@@ -549,7 +549,7 @@ namespace TabSessManager
 	void Plugin::handleWindow (int index)
 	{
 		Tabs_ << QList<QObject*> ();
-		connect (Proxy_->GetRootWindowsManager ()->GetTabWidget (index)->GetObject (),
+		connect (Proxy_->GetRootWindowsManager ()->GetTabWidget (index)->GetQObject (),
 				SIGNAL (tabWasMoved (int, int)),
 				this,
 				SLOT (handleTabMoved (int, int)));

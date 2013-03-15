@@ -58,7 +58,7 @@ namespace GoogleDrive
 	public:
 		Account (const QString& name, QObject *parentPlugin = 0);
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QObject* GetParentPlugin () const;
 		QByteArray GetUniqueID () const;
 		AccountFeatures GetAccountFeatures () const;

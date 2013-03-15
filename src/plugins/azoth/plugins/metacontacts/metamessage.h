@@ -41,7 +41,7 @@ namespace Metacontacts
 	public:
 		MetaMessage (QObject*, MetaEntry*);
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		void Send ();
 		void Store ();
 		Direction GetDirection () const;

@@ -48,7 +48,7 @@ namespace LeechCraft
 		return QMLColors_ [section] [key];
 	}
 
-	QObject* ColorThemeEngine::GetObject ()
+	QObject* ColorThemeEngine::GetQObject ()
 	{
 		return this;
 	}

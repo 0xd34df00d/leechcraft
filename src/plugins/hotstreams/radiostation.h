@@ -40,7 +40,7 @@ namespace HotStreams
 	public:
 		RadioStation (const QUrl&, const QString&, QNetworkAccessManager*, const QString&);
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QString GetRadioName () const;
 		void RequestNewStream ();
 	private slots:

@@ -37,7 +37,7 @@ namespace VelvetBird
 		Update ();
 	}
 
-	QObject* Buddy::GetObject ()
+	QObject* Buddy::GetQObject ()
 	{
 		return this;
 	}

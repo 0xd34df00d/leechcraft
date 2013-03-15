@@ -39,7 +39,7 @@ namespace HotStreams
 				SLOT (handlePlaylistFetched ()));
 	}
 
-	QObject* RadioStation::GetObject ()
+	QObject* RadioStation::GetQObject ()
 	{
 		return this;
 	}

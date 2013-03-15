@@ -91,7 +91,7 @@ public:
 	 *
 	 * @return This script loader instance as a QObject.
 	 */
-	virtual QObject* GetObject () = 0;
+	virtual QObject* GetQObject () = 0;
 
 	/** @brief Adds a global load prefix.
 	 *

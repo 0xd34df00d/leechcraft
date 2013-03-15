@@ -264,7 +264,7 @@ namespace Azoth
 						continue;
 
 					widget->SetIdentifyingData (data);
-					widget->Join (acc->GetObject ());
+					widget->Join (acc->GetQObject ());
 					widgetObj->deleteLater ();
 				}
 			}

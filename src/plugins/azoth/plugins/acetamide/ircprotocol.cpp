@@ -68,7 +68,7 @@ namespace Acetamide
 		ProxyObject_ = po;
 	}
 
-	QObject* IrcProtocol::GetObject ()
+	QObject* IrcProtocol::GetQObject ()
 	{
 		return this;
 	}

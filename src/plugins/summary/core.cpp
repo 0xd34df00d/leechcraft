@@ -61,12 +61,12 @@ namespace Summary
 		for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
 			handleWindow (i);
 
-		connect (rootWM->GetObject (),
+		connect (rootWM->GetQObject (),
 				SIGNAL (windodwAdded (int)),
 				this,
 				SLOT (handleWindow (int)));
 
-		connect (Proxy_->GetPluginsManager ()->GetObject (),
+		connect (Proxy_->GetPluginsManager ()->GetQObject (),
 				SIGNAL (pluginInjected (QObject*)),
 				this,
 				SLOT (handlePluginInjected (QObject*)));
@@ -267,7 +267,7 @@ namespace Summary
 	void Core::handleWindow (int index)
 	{
 		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
-		connect (rootWM->GetTabWidget (index)->GetObject (),
+		connect (rootWM->GetTabWidget (index)->GetQObject (),
 				SIGNAL (currentChanged (int)),
 				this,
 				SLOT (handleCurrentTabChanged (int)));

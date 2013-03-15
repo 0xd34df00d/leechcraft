@@ -100,7 +100,7 @@ namespace Xoox
 		virtual ~EntryBase ();
 
 		// ICLEntry
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QList<QObject*> GetAllMessages () const;
 		void PurgeMessages (const QDateTime&);
 		void SetChatPartState (ChatPartState, const QString&);

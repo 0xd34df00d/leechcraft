@@ -31,7 +31,7 @@ namespace LMP
 	: QObject (parent)
 	, Cloud_ (cloud)
 	{
-		connect (Cloud_->GetObject (),
+		connect (Cloud_->GetQObject (),
 				SIGNAL (uploadFinished (QString, LeechCraft::LMP::CloudStorageError, QString)),
 				this,
 				SLOT (handleUploadFinished (QString, LeechCraft::LMP::CloudStorageError, QString)),

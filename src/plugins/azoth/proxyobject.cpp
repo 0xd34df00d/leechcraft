@@ -189,7 +189,7 @@ namespace Azoth
 	{
 		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
 			if (acc->GetAccountID () == accID)
-				return acc->GetObject ();
+				return acc->GetQObject ();
 
 		return 0;
 	}
@@ -198,7 +198,7 @@ namespace Azoth
 	{
 		QList<QObject*> result;
 		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
-			result << acc->GetObject ();
+			result << acc->GetQObject ();
 		return result;
 	}
 

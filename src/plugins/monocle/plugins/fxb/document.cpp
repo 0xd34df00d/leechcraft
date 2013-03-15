@@ -58,7 +58,7 @@ namespace FXB
 		TOC_ = conv.GetTOC ();
 	}
 
-	QObject* Document::GetObject ()
+	QObject* Document::GetQObject ()
 	{
 		return this;
 	}

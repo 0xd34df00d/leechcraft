@@ -299,7 +299,7 @@ namespace Monocle
 
 		BMWidget_->HandleDoc (CurrentDoc_);
 
-		auto isa = qobject_cast<ISupportAnnotations*> (CurrentDoc_->GetObject ());
+		auto isa = qobject_cast<ISupportAnnotations*> (CurrentDoc_->GetQObject ());
 
 		for (int i = 0, size = CurrentDoc_->GetNumPages (); i < size; ++i)
 		{
@@ -318,12 +318,12 @@ namespace Monocle
 		updateNumLabel ();
 
 		TOCEntryLevel_t topLevel;
-		if (auto toc = qobject_cast<IHaveTOC*> (CurrentDoc_->GetObject ()))
+		if (auto toc = qobject_cast<IHaveTOC*> (CurrentDoc_->GetQObject ()))
 			topLevel = toc->GetTOC ();
 		TOCWidget_->SetTOC (topLevel);
 		TOCWidget_->setEnabled (!topLevel.isEmpty ());
 
-		connect (CurrentDoc_->GetObject (),
+		connect (CurrentDoc_->GetQObject (),
 				SIGNAL (navigateRequested (QString, int, double, double)),
 				this,
 				SLOT (handleNavigateRequested (QString, int, double, double)),
@@ -333,13 +333,13 @@ namespace Monocle
 
 		emit tabRecoverDataChanged ();
 
-		if (qobject_cast<IDynamicDocument*> (CurrentDoc_->GetObject ()))
+		if (qobject_cast<IDynamicDocument*> (CurrentDoc_->GetQObject ()))
 		{
-			connect (CurrentDoc_->GetObject (),
+			connect (CurrentDoc_->GetQObject (),
 					SIGNAL (pageSizeChanged (int)),
 					this,
 					SLOT (handlePageSizeChanged (int)));
-			connect (CurrentDoc_->GetObject (),
+			connect (CurrentDoc_->GetQObject (),
 					SIGNAL (pageContentsChanged (int)),
 					this,
 					SLOT (handlePageContentsChanged (int)));
@@ -977,7 +977,7 @@ namespace Monocle
 				SLOT (handleSaveAsImage ()));
 		Ui_.PagesView_->addAction (saveAsImage);
 
-		if (qobject_cast<IHaveTextContent*> (CurrentDoc_->GetObject ()))
+		if (qobject_cast<IHaveTextContent*> (CurrentDoc_->GetQObject ()))
 		{
 			Ui_.PagesView_->addAction (Util::CreateSeparator (Ui_.PagesView_));
 
@@ -1023,7 +1023,7 @@ namespace Monocle
 
 	void DocumentTab::handleCopyAsText ()
 	{
-		auto ihtc = qobject_cast<IHaveTextContent*> (CurrentDoc_->GetObject ());
+		auto ihtc = qobject_cast<IHaveTextContent*> (CurrentDoc_->GetQObject ());
 		if (!ihtc)
 			return;
 

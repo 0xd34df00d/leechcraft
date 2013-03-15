@@ -46,7 +46,7 @@ namespace Lastfmscrobble
 				SLOT (handleError ()));
 	}
 
-	QObject* PendingArtistBio::GetObject ()
+	QObject* PendingArtistBio::GetQObject ()
 	{
 		return this;
 	}

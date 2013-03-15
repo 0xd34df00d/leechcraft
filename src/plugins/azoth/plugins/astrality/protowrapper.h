@@ -57,7 +57,7 @@ namespace Astrality
 		QVariantMap GetParamsFromWidgets (const QList<QWidget*>&) const;
 		AccountWrapper::Settings GetSettingsFromWidgets (const QList<QWidget*>&) const;
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		ProtocolFeatures GetFeatures () const;
 		QList<QObject*> GetRegisteredAccounts ();
 		QObject* GetParentProtocolPlugin () const;

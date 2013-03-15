@@ -235,24 +235,24 @@ namespace NetStoreManager
 		{
 			const QString& dirPath = dirs [key].toString ();
 			auto isa = AM_->GetAccountFromUniqueID (key);
-			auto isfl = qobject_cast<ISupportFileListings*> (isa->GetObject ());
+			auto isfl = qobject_cast<ISupportFileListings*> (isa->GetQObject ());
 			if (!isfl)
 			{
 				qWarning () << Q_FUNC_INFO
-						<< isa->GetObject ()
+						<< isa->GetQObject ()
 						<< "isn't an ISupportFileListings. Synchronization will not work.";
 				continue;
 			}
 
-			connect (isa->GetObject (),
+			connect (isa->GetQObject (),
 					SIGNAL (gotListing (QList<QList<QStandardItem*>>)),
 					this,
 					SLOT (handleGotListing (QList<QList<QStandardItem*>>)));
-			connect (isa->GetObject (),
+			connect (isa->GetQObject (),
 					SIGNAL (gotNewItem (QList<QStandardItem*>, QStringList)),
 					this,
 					SLOT (handleGotNewItem (QList<QStandardItem*>, QStringList)));
-			connect (isa->GetObject (),
+			connect (isa->GetQObject (),
 					SIGNAL (gotChanges (QList<Change>)),
 					this,
 					SLOT (handleGotChanges (QList<Change>)));
@@ -272,7 +272,7 @@ namespace NetStoreManager
 				continue;
 
 			// TODO finish this
-			auto isfl = qobject_cast<ISupportFileListings*> (account->GetObject ());
+			auto isfl = qobject_cast<ISupportFileListings*> (account->GetQObject ());
 			isfl->RequestChanges ();
 		}
 	}
@@ -295,11 +295,11 @@ namespace NetStoreManager
 			if (!path.startsWith (basePath))
 				continue;
 
-			auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [basePath]->GetObject ());
+			auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [basePath]->GetQObject ());
 			if (!isfl)
 			{
 				qWarning () << Q_FUNC_INFO
-						<< Path2Account_ [basePath]->GetObject ()
+						<< Path2Account_ [basePath]->GetQObject ()
 						<< "isn't an ISupportFileListings";
 				continue;
 			}
@@ -329,11 +329,11 @@ namespace NetStoreManager
 			if (!path.startsWith (basePath))
 				continue;
 
-			auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [basePath]->GetObject ());
+			auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [basePath]->GetQObject ());
 			if (!isfl)
 			{
 				qWarning () << Q_FUNC_INFO
-						<< Path2Account_ [basePath]->GetObject ()
+						<< Path2Account_ [basePath]->GetQObject ()
 						<< "isn't an ISupportFileListings";
 				continue;
 			}
@@ -360,11 +360,11 @@ namespace NetStoreManager
 			if (!path.startsWith (basePath))
 				continue;
 
-			auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [basePath]->GetObject ());
+			auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [basePath]->GetQObject ());
 			if (!isfl)
 			{
 				qWarning () << Q_FUNC_INFO
-						<< Path2Account_ [basePath]->GetObject ()
+						<< Path2Account_ [basePath]->GetQObject ()
 						<< "isn't an ISupportFileListings";
 				continue;
 			}
@@ -390,11 +390,11 @@ namespace NetStoreManager
 			if (!path.startsWith (basePath))
 				continue;
 
-			auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [basePath]->GetObject ());
+			auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [basePath]->GetQObject ());
 			if (!isfl)
 			{
 				qWarning () << Q_FUNC_INFO
-						<< Path2Account_ [basePath]->GetObject ()
+						<< Path2Account_ [basePath]->GetQObject ()
 						<< "isn't an ISupportFileListings";
 				continue;
 			}
@@ -422,11 +422,11 @@ namespace NetStoreManager
 			if (!oldPath.startsWith (basePath))
 				continue;
 
-			auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [basePath]->GetObject ());
+			auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [basePath]->GetQObject ());
 			if (!isfl)
 			{
 				qWarning () << Q_FUNC_INFO
-						<< Path2Account_ [basePath]->GetObject ()
+						<< Path2Account_ [basePath]->GetQObject ()
 						<< "isn't an ISupportFileListings";
 				continue;
 			}
@@ -450,11 +450,11 @@ namespace NetStoreManager
 			if (oldPath.startsWith (basePath) &&
 					newPath.startsWith (basePath))
 			{
-				auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [basePath]->GetObject ());
+				auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [basePath]->GetQObject ());
 				if (!isfl)
 				{
 					qWarning () << Q_FUNC_INFO
-							<< Path2Account_ [basePath]->GetObject ()
+							<< Path2Account_ [basePath]->GetQObject ()
 							<< "isn't an ISupportFileListings";
 					continue;
 				}
@@ -502,11 +502,11 @@ namespace NetStoreManager
 			if (!path.startsWith (basePath))
 				continue;
 
-			auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [basePath]->GetObject ());
+			auto isfl = qobject_cast<ISupportFileListings*> (Path2Account_ [basePath]->GetQObject ());
 			if (!isfl)
 			{
 				qWarning () << Q_FUNC_INFO
-						<< Path2Account_ [basePath]->GetObject ()
+						<< Path2Account_ [basePath]->GetQObject ()
 						<< "isn't an ISupportFileListings";
 				continue;
 			}
@@ -668,7 +668,7 @@ namespace NetStoreManager
 		IStorageAccount *isa = dp.Account_;
 		QString path = dp.Path_;
 
-		auto isfl = qobject_cast<ISupportFileListings*> (isa->GetObject ());
+		auto isfl = qobject_cast<ISupportFileListings*> (isa->GetQObject ());
 		if (!isfl)
 			return;
 

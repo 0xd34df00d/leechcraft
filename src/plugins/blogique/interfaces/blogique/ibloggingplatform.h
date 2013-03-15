@@ -98,7 +98,7 @@ namespace Blogique
 		 *
 		 * @return Blogging platform object as QObject.
 		 */
-		virtual QObject* GetObject () = 0;
+		virtual QObject* GetQObject () = 0;
 
 		/** Returns the list of features supported by this blogging platform.
 		 */

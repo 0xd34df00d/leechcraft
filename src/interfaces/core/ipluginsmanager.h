@@ -162,7 +162,7 @@ public:
 	 *
 	 * @return The plugin manager as a QObject.
 	 */
-	virtual QObject* GetObject () = 0;
+	virtual QObject* GetQObject () = 0;
 };
 
 Q_DECLARE_INTERFACE (IPluginsManager, "org.Deviant.LeechCraft.IPluginsManager/1.0");

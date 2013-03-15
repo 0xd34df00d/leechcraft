@@ -51,7 +51,7 @@ namespace Acetamide
 		EntryBase (IrcAccount* = 0);
 		virtual ~EntryBase ();
 
-		virtual QObject* GetObject ();
+		virtual QObject* GetQObject ();
 		virtual QList<QObject*> GetAllMessages () const;
 		void PurgeMessages (const QDateTime&);
 		void SetChatPartState (ChatPartState, const QString&);

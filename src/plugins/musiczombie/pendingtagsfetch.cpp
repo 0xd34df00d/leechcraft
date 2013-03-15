@@ -63,7 +63,7 @@ namespace MusicZombie
 		watcher->setFuture (future);
 	}
 
-	QObject* PendingTagsFetch::GetObject ()
+	QObject* PendingTagsFetch::GetQObject ()
 	{
 		return this;
 	}

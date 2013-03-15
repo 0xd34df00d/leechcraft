@@ -51,7 +51,7 @@ namespace Pierre
 		for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
 			handleWindow (i);
 
-		connect (rootWM->GetObject (),
+		connect (rootWM->GetQObject (),
 				SIGNAL (windowAdded (int)),
 				this,
 				SLOT (handleWindow (int)));

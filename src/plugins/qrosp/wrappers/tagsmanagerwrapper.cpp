@@ -26,7 +26,7 @@ namespace Qrosp
 	TagsManagerWrapper::TagsManagerWrapper (ITagsManager *manager)
 	: Manager_ (manager)
 	{
-		connect (Manager_->GetObject (),
+		connect (Manager_->GetQObject (),
 				SIGNAL (tagsUpdated (const QStringList&)),
 				this,
 				SIGNAL (tagsUpdated (const QStringList&)));
@@ -62,9 +62,9 @@ namespace Qrosp
 		return Manager_->GetModel ();
 	}
 
-	QObject* TagsManagerWrapper::GetObject ()
+	QObject* TagsManagerWrapper::GetQObject ()
 	{
-		return Manager_->GetObject ();
+		return Manager_->GetQObject ();
 	}
 }
 }

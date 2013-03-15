@@ -70,7 +70,7 @@ namespace Metacontacts
 
 	void MetaEntry::AddRealObject (ICLEntry *entry)
 	{
-		QObject *entryObj = entry->GetObject ();
+		QObject *entryObj = entry->GetQObject ();
 
 		AvailableRealEntries_ << entryObj;
 		UnavailableRealEntries_.removeAll (entry->GetEntryID ());
@@ -92,7 +92,7 @@ namespace Metacontacts
 		return Variant2RealVariant_.key (pair);
 	}
 
-	QObject* MetaEntry::GetObject ()
+	QObject* MetaEntry::GetQObject ()
 	{
 		return this;
 	}

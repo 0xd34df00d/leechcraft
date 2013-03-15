@@ -45,7 +45,7 @@ namespace TouchStreams
 		AuthMgr_->GetAuthKey ();
 	}
 
-	QObject* AudioSearch::GetObject ()
+	QObject* AudioSearch::GetQObject ()
 	{
 		return this;
 	}

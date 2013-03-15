@@ -167,7 +167,7 @@ namespace Azoth
 		 *
 		 * @return Contact list entry as QObject.
 		 */
-		virtual QObject* GetObject () = 0;
+		virtual QObject* GetQObject () = 0;
 
 		/** Returns the pointer to the parent account that this entry
 		 * belongs to.

@@ -76,7 +76,7 @@ namespace Xoox
 		DateTime_ = Message_.stamp ();
 	}
 
-	QObject* GlooxMessage::GetObject ()
+	QObject* GlooxMessage::GetQObject ()
 	{
 		return this;
 	}

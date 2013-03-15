@@ -39,7 +39,7 @@ namespace Metacontacts
 	public:
 		MetaAccount (MetaProtocol*);
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QObject* GetParentProtocol () const;
 		AccountFeatures GetAccountFeatures () const;
 		QList<QObject*> GetCLEntries ();

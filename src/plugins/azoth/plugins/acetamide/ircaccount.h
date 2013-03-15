@@ -72,7 +72,7 @@ namespace Acetamide
 		IrcAccount (const QString&, QObject*);
 		void Init ();
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QObject* GetParentProtocol () const;
 		AccountFeatures GetAccountFeatures () const;
 		QList<QObject*> GetCLEntries ();

@@ -61,7 +61,7 @@ namespace Zheet
 		void SetID (int);
 		void SetDelivered ();
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		void Send ();
 		void Store ();
 		Direction GetDirection () const;

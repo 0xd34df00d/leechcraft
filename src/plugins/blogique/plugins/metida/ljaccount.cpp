@@ -107,7 +107,7 @@ namespace Metida
 				SLOT (handleLoadChangedEvents ()));
 	}
 
-	QObject* LJAccount::GetObject ()
+	QObject* LJAccount::GetQObject ()
 	{
 		return this;
 	}

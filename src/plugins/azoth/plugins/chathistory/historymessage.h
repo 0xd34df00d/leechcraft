@@ -45,7 +45,7 @@ namespace ChatHistory
 				const QString& body,
 				const QDateTime& datetime);
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		void Send ();
 		void Store ();
 		Direction GetDirection () const;

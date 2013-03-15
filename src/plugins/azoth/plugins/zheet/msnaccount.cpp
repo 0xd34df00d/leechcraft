@@ -205,7 +205,7 @@ namespace Zheet
 		Conn_->removeFromList (MSN::LST_BL, ZheetUtil::ToStd (pass));
 	}
 
-	QObject* MSNAccount::GetObject ()
+	QObject* MSNAccount::GetQObject ()
 	{
 		return this;
 	}

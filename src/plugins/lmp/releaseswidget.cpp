@@ -152,11 +152,11 @@ namespace LMP
 			if (discoProv)
 			{
 				auto pending = discoProv->GetReleaseInfo (release.Artist_, release.Title_);
-				connect (pending->GetObject (),
+				connect (pending->GetQObject (),
 						SIGNAL (ready ()),
 						this,
 						SLOT (handleReleaseInfo ()));
-				Pending2Release_ [pending->GetObject ()] = { release.Artist_, release.Title_ };
+				Pending2Release_ [pending->GetQObject ()] = { release.Artist_, release.Title_ };
 			}
 		}
 	}

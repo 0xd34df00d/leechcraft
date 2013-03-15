@@ -57,7 +57,7 @@ namespace PDF
 	public:
 		Document (const QString&, QObject* = 0);
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		bool IsValid () const;
 		DocumentInfo GetDocumentInfo () const;
 		int GetNumPages () const;

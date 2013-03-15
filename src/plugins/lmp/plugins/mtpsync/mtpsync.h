@@ -62,7 +62,7 @@ namespace MTPSync
 		void SetLMPProxy (ILMPProxy_ptr);
 
 		QString GetSyncSystemName () const;
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		UnmountableDevInfos_t AvailableDevices () const;
 		void SetFileInfo (const QString& origLocalPath, const UnmountableFileInfo& info);
 		void Upload (const QString& localPath, const QString& origLocalPath, const QByteArray& to, const QByteArray& storageId);

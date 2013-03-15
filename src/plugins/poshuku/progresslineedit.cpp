@@ -83,7 +83,7 @@ namespace Poshuku
 		return IsCompleting_;
 	}
 
-	QObject* ProgressLineEdit::GetObject ()
+	QObject* ProgressLineEdit::GetQObject ()
 	{
 		return this;
 	}

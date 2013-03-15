@@ -55,11 +55,11 @@ namespace SB2
 		for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
 			handleWindow (i, true);
 
-		connect (rootWM->GetObject (),
+		connect (rootWM->GetQObject (),
 				SIGNAL (windowAdded (int)),
 				this,
 				SLOT (handleWindow (int)));
-		connect (rootWM->GetObject (),
+		connect (rootWM->GetQObject (),
 				SIGNAL (windowRemoved (int)),
 				this,
 				SLOT (handleWindowRemoved (int)));

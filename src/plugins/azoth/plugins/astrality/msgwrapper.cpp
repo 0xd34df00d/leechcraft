@@ -58,7 +58,7 @@ namespace Astrality
 				SIGNAL (gotEntity (LeechCraft::Entity)));
 	}
 
-	QObject* MsgWrapper::GetObject ()
+	QObject* MsgWrapper::GetQObject ()
 	{
 		return this;
 	}

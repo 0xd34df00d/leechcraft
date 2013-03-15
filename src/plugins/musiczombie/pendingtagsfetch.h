@@ -47,7 +47,7 @@ namespace MusicZombie
 	public:
 		PendingTagsFetch (Util::QueueManager*, QNetworkAccessManager*, const QString&);
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		Media::AudioInfo GetResult () const;
 	private:
 		void Request (const QByteArray&, int);

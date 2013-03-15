@@ -49,7 +49,7 @@ namespace NetStoreManager
 		virtual ~IStorageAccount () {}
 
 		virtual QObject* GetParentPlugin () const = 0;
-		virtual QObject* GetObject () = 0;
+		virtual QObject* GetQObject () = 0;
 
 		virtual QByteArray GetUniqueID () const = 0;
 

@@ -55,7 +55,7 @@ namespace Acetamide
 				MessageSubType,
 				ChannelParticipantEntry_ptr = ChannelParticipantEntry_ptr ());
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		void Send ();
 		void Store ();
 		Direction GetDirection () const;

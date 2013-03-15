@@ -50,7 +50,7 @@ namespace Delicious
 		return FNone;
 	}
 
-	QObject* DeliciousService::GetObject ()
+	QObject* DeliciousService::GetQObject ()
 	{
 		return this;
 	}
@@ -205,7 +205,7 @@ namespace Delicious
 		{
 			QObjectList list;
 			Q_FOREACH (DeliciousAccount *acc, Accounts_)
-				list << acc->GetObject ();
+				list << acc->GetQObject ();
 
 			emit accountAdded (list);
 		}
@@ -266,7 +266,7 @@ namespace Delicious
 				account->SetPassword (Reply2Request_ [reply].Password_);
 				Accounts_ << account;
 				saveAccounts ();
-				emit accountAdded (QObjectList () <<  account->GetObject ());
+				emit accountAdded (QObjectList () <<  account->GetQObject ());
 				msg = tr ("Authentication successfull.");
 				priority = LeechCraft::PInfo_;
 			}

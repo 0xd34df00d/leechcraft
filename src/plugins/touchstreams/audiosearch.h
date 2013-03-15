@@ -49,7 +49,7 @@ namespace TouchStreams
 	public:
 		AudioSearch (ICoreProxy_ptr, const Media::AudioSearchRequest&, AuthManager*, Util::QueueManager*, QObject* = 0);
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QList<Result> GetResults () const;
 	private slots:
 		void handleGotAuthKey (const QString&);
