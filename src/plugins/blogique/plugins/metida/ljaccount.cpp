@@ -51,6 +51,7 @@ namespace Metida
 	, LoadLastEvents_ (new QAction (tr ("Last entries"), this))
 	, LoadChangedEvents_ (new QAction (tr ("Changed entries"), this))
 	, RecentCommentsModel_ (new RecentCommentsModel (this))
+	, LastUpdateType_ (LastUpdateType::LastEntries)
 	{
 		qRegisterMetaType<LJProfileData> ("LJProfileData");
 		qRegisterMetaTypeStreamOperators<QList<LJFriendGroup>> ("QList<LJFriendGroup>");
@@ -79,7 +80,7 @@ namespace Metida
 		connect (LJXmlRpc_,
 				SIGNAL (eventRemoved (int)),
 				this,
-				SIGNAL (entryRemoved (int)));
+				SLOT (handleEventRemoved (int)));
 		connect (LJXmlRpc_,
 				SIGNAL (eventUpdated (QList<LJEvent>)),
 				this,
@@ -261,6 +262,12 @@ namespace Metida
 		LJXmlRpc_->UpdateEvent (Entry2LJEvent (entry));
 	}
 
+	void LJAccount::RequestLastEntries (int count)
+	{
+		emit requestEntriesBegin ();
+		LJXmlRpc_->GetLastEvents (count);
+	}
+
 	void LJAccount::RequestStatistics ()
 	{
 		LJXmlRpc_->RequestStatistics ();
@@ -385,6 +392,28 @@ namespace Metida
 		LJXmlRpc_->DeleteGroup (id);
 	}
 
+	void LJAccount::CallLastUpdateMethod ()
+	{
+		switch (LastUpdateType_)
+		{
+		case LastUpdateType::LastEntries:
+			emit requestEntriesBegin ();
+			LJXmlRpc_->GetLastEvents (XmlSettingsManager::Instance ()
+					.Property ("LoadEntriesToView", 20).toInt ());
+			break;
+		case LastUpdateType::ChangedEntries:
+			emit requestEntriesBegin ();
+			LJXmlRpc_->GetChangedEvents (XmlSettingsManager::Instance ()
+					.Property ("ChangedDateToView",
+						QDateTime::fromString ("01.01.1980 00:00", "dd.MM.yyyy hh:mm"))
+							.toDateTime ());
+			break;
+		case LastUpdateType::NoType:
+		default:
+			break;
+		}
+	}
+
 	void LJAccount::handleValidatingFinished (bool success)
 	{
 		IsValid_ = success;
@@ -502,6 +531,7 @@ namespace Metida
 			entries << LJEvent2Entry (ljEvent, Login_);
 
 		emit entryPosted (entries);
+		CallLastUpdateMethod ();
 	}
 
 	void LJAccount::handleEventUpdated (const QList<LJEvent>& events)
@@ -511,6 +541,13 @@ namespace Metida
 			entries << LJEvent2Entry (ljEvent, Login_);
 
 		emit entryUpdated (entries);
+		CallLastUpdateMethod ();
+	}
+
+	void LJAccount::handleEventRemoved (int id)
+	{
+		emit entryRemoved (id);
+		CallLastUpdateMethod ();
 	}
 
 	void LJAccount::handleGotEvents2Backup (const QList<LJEvent>& ljEvents)
@@ -547,6 +584,8 @@ namespace Metida
 			count = dlg.GetCount ();
 		}
 
+		LastUpdateType_ = LastUpdateType::LastEntries;
+		emit requestEntriesBegin ();
 		LJXmlRpc_->GetLastEvents (count);
 	}
 
@@ -561,6 +600,8 @@ namespace Metida
 			dt = dlg.GetDateTime ();
 		}
 
+		LastUpdateType_ = LastUpdateType::ChangedEntries;
+		emit requestEntriesBegin ();
 		LJXmlRpc_->GetChangedEvents (dt);
 	}
 
