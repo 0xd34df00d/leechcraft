@@ -19,6 +19,9 @@
    </property>
    <item>
     <widget class="QTreeView" name="BookmarksView_">
+     <property name="contextMenuPolicy">
+      <enum>Qt::ActionsContextMenu</enum>
+     </property>
      <property name="rootIsDecorated">
       <bool>false</bool>
      </property>

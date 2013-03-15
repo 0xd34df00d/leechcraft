@@ -51,6 +51,11 @@ namespace Monocle
 		auto addBm = Toolbar_->addAction (tr ("Add bookmark"),
 				this, SLOT (handleAddBookmark ()));
 		addBm->setProperty ("ActionIcon", "bookmark-new");
+
+		auto removeBookmark = Toolbar_->addAction (tr ("Remove bookmark"),
+				this, SLOT (handleRemoveBookmark ()));
+		removeBookmark->setProperty ("ActionIcon", "list-remove");
+		Ui_.BookmarksView_->addAction (removeBookmark);
 	}
 
 	void BookmarksWidget::HandleDoc (IDocument_ptr doc)
@@ -58,13 +63,18 @@ namespace Monocle
 		setEnabled (doc != nullptr);
 		Doc_ = doc;
 
+		ReloadBookmarks ();
+	}
+
+	void BookmarksWidget::ReloadBookmarks ()
+	{
 		BMModel_->clear ();
 		BMModel_->setHorizontalHeaderLabels ({ tr ("Name") });
 
-		if (!doc)
+		if (!Doc_)
 			return;
 
-		for (const auto& bm : Core::Instance ().GetBookmarksManager ()->GetBookmarks (doc))
+		for (const auto& bm : Core::Instance ().GetBookmarksManager ()->GetBookmarks (Doc_))
 			AddBMToTree (bm);
 	}
 
@@ -87,6 +97,19 @@ namespace Monocle
 		Bookmark bm (tr ("Page %1").arg (page + 1), page, center);
 		Core::Instance ().GetBookmarksManager ()->AddBookmark (Doc_, bm);
 		AddBMToTree (bm);
+	}
+
+	void BookmarksWidget::handleRemoveBookmark ()
+	{
+		auto idx = Ui_.BookmarksView_->currentIndex ();
+		if (!idx.isValid ())
+			return;
+
+		idx = idx.sibling (idx.row (), 0);
+		const auto& bm = idx.data (Roles::RBookmark).value<Bookmark> ();
+		Core::Instance ().GetBookmarksManager ()->RemoveBookmark (Doc_, bm);
+
+		ReloadBookmarks ();
 	}
 
 	void BookmarksWidget::on_BookmarksView__activated (const QModelIndex& idx)

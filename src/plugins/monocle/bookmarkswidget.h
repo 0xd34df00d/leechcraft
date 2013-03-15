@@ -48,9 +48,11 @@ namespace Monocle
 
 		void HandleDoc (IDocument_ptr);
 	private:
+		void ReloadBookmarks ();
 		void AddBMToTree (const Bookmark&);
 	private slots:
 		void handleAddBookmark ();
+		void handleRemoveBookmark ();
 		void on_BookmarksView__activated (const QModelIndex&);
 	};
 }
