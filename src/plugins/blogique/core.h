@@ -106,7 +106,10 @@ namespace Blogique
 
 		void needAutoSave ();
 
+		void requestEntriesBegin ();
+
 		void entryPosted ();
+		void entryRemoved ();
 	};
 }
 }

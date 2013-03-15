@@ -108,6 +108,7 @@ namespace Blogique
 		Ui_.LoadBlogEntries_->addActions (LoadActions_);
 
 		Account_->RequestStatistics ();
+		Account_->RequestLastEntries ();
 	}
 
 	Entry BlogEntriesWidget::GetEntry (const QModelIndex& index)
@@ -159,6 +160,7 @@ namespace Blogique
 			Item2Entry_ [items.first ()] = entry;
 		}
 		Ui_.BlogEntriesView_->resizeColumnToContents (0);
+		emit entriesListUpdated ();
 	}
 
 	void BlogEntriesWidget::fillStatistic (const QMap<QDate, int>& statistics)
@@ -223,7 +225,10 @@ namespace Blogique
 						.arg ("<em>" + e.Subject_ + "</em>"),
 				QMessageBox::Ok | QMessageBox::Cancel,
 				QMessageBox::Cancel) == QMessageBox::Ok)
+		{
+			emit removingEntryBegin ();
 			Account_->RemoveEntry (e);
+		}
 	}
 
 	void BlogEntriesWidget::on_BlogEntriesView__doubleClicked (const QModelIndex& index)

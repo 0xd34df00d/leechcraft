@@ -72,7 +72,7 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <layout class="QGridLayout" name="gridLayout_2">
+      <layout class="QGridLayout" name="DockWidgetGridLayout_">
        <property name="margin">
         <number>0</number>
        </property>

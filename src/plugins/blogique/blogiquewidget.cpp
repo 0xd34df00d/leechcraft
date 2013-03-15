@@ -54,6 +54,7 @@ namespace Blogique
 	, PostEdit_ (0)
 	, PostEditWidget_ (0)
 	, ToolBar_ (new QToolBar)
+	, ProgressToolBar_ (new QToolBar (this))
 	, PostTargetAction_ (0)
 	, ProgressBarAction_ (0)
 	, DraftEntriesWidget_ (new DraftEntriesWidget)
@@ -75,8 +76,12 @@ namespace Blogique
 		mw->ToggleViewActionVisiblity (Ui_.SideWidget_, false);
 
 		SetTextEditor ();
-
 		SetDefaultSideWidgets ();
+
+		connect (&Core::Instance (),
+				SIGNAL (requestEntriesBegin ()),
+				this,
+				SLOT (handleRequestEntriesBegin ()));
 
 		SetToolBarActions ();
 
@@ -97,6 +102,14 @@ namespace Blogique
 				SIGNAL (fillNewWidgetWithBlogEntry (Entry,QByteArray)),
 				this,
 				SLOT (fillNewTabWithEntry (Entry, QByteArray)));
+		connect (BlogEntriesWidget_,
+				SIGNAL (removingEntryBegin ()),
+				this,
+				SLOT (handleRemovingEntryBegin ()));
+		connect (BlogEntriesWidget_,
+				SIGNAL (entriesListUpdated ()),
+				this,
+				SLOT (handleRequestEntriesEnd ()));
 		connect (DraftEntriesWidget_,
 				SIGNAL (fillCurrentWidgetWithDraftEntry (Entry)),
 				this,
@@ -290,6 +303,13 @@ namespace Blogique
 			Id2Account_ [accountsBox->count () - 1] = acc;
 		}
 
+		QProgressBar *submitProgressBar = new QProgressBar;
+		submitProgressBar->setRange (0, 0);
+		ProgressBarLabelAction_ = ProgressToolBar_->addWidget (new QLabel);
+		ProgressBarAction_ = ProgressToolBar_->addWidget (submitProgressBar);
+		submitProgressBar->setOrientation (Qt::Horizontal);
+		ShowProgress (false);
+
 		AccountsBoxAction_ = ToolBar_->addWidget (accountsBox);
 
 		PostTargetBox_ = new QComboBox;
@@ -299,15 +319,13 @@ namespace Blogique
 					Qt::MatchFixedString);
 		handleCurrentAccountChanged (index == -1 ? 0 : index);
 
-		QProgressBar *submitProgressBar = new QProgressBar;
-		submitProgressBar->setRange (0, 0);
-		ProgressBarAction_ = ToolBar_->addWidget (submitProgressBar);
-		submitProgressBar->setOrientation (Qt::Horizontal);
-		ProgressBarAction_->setVisible (false);
 	}
 
 	void BlogiqueWidget::SetDefaultSideWidgets ()
 	{
+		Ui_.DockWidgetGridLayout_->addWidget (Ui_.Tools_, 1, 0);
+		Ui_.DockWidgetGridLayout_->addWidget (ProgressToolBar_, 0, 0);
+
 		for (int i = 0; i < Ui_.Tools_->count (); ++i)
 		{
 			auto w = Ui_.Tools_->widget (i);
@@ -410,6 +428,14 @@ namespace Blogique
 		return e;
 	}
 
+	void BlogiqueWidget::ShowProgress (bool visible, const QString& labelText)
+	{
+		ProgressBarLabelAction_->setVisible (visible);
+		auto label = static_cast<QLabel*> (ProgressToolBar_->widgetForAction (ProgressBarLabelAction_));
+		label->setText (labelText);
+		ProgressBarAction_->setVisible (visible);
+	}
+
 	void BlogiqueWidget::handleAutoSave ()
 	{
 		if (!EntryChanged_)
@@ -420,7 +446,7 @@ namespace Blogique
 
 	void BlogiqueWidget::handleEntryPosted ()
 	{
-		ProgressBarAction_->setVisible (false);
+		ShowProgress (false);
 	}
 
 	void BlogiqueWidget::handleCurrentAccountChanged (int id)
@@ -569,6 +595,28 @@ namespace Blogique
 		EntryChanged_ = true;
 	}
 
+	void BlogiqueWidget::handleRemovingEntryBegin ()
+	{
+		ShowProgress (true, tr ("Remove entry..."));
+	}
+
+	void BlogiqueWidget::handleEntryRemoved ()
+	{
+		ShowProgress (false);
+	}
+
+	void BlogiqueWidget::handleRequestEntriesBegin ()
+	{
+		qDebug () << Q_FUNC_INFO;
+		ShowProgress (true, tr ("Update entries..."));
+	}
+
+	void BlogiqueWidget::handleRequestEntriesEnd ()
+	{
+		qDebug () << Q_FUNC_INFO;
+		ShowProgress (false);
+	}
+
 	void BlogiqueWidget::newEntry ()
 	{
 		if (EntryChanged_)
@@ -694,7 +742,7 @@ namespace Blogique
 			else
 				acc->submit (e);
 
-			ProgressBarAction_->setVisible (true);
+			ShowProgress (true, tr ("Post entry..."));
 		}
 	}
 

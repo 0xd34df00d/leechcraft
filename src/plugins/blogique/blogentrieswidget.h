@@ -67,6 +67,9 @@ namespace Blogique
 	signals:
 		void fillCurrentWidgetWithBlogEntry (const Entry& e);
 		void fillNewWidgetWithBlogEntry (const Entry& e, const QByteArray& accId);
+
+		void removingEntryBegin ();
+		void entriesListUpdated ();
 	};
 }
 }

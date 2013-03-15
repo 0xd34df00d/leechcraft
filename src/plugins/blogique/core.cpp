@@ -174,6 +174,10 @@ namespace Blogique
 				SIGNAL (entryPosted ()),
 				newTab,
 				SLOT (handleEntryPosted ()));
+		connect (&Core::Instance (),
+				SIGNAL (entryRemoved ()),
+				newTab,
+				SLOT (handleEntryRemoved ()));
 
 		return newTab;
 	}
@@ -230,6 +234,10 @@ namespace Blogique
 			return;
 		}
 
+		connect (accObj,
+				SIGNAL (requestEntriesBegin ()),
+				this,
+				SIGNAL (requestEntriesBegin ()));
 		connect (accObj,
 				SIGNAL (entryPosted (QList<Entry>)),
 				this,
@@ -326,6 +334,7 @@ namespace Blogique
 				tr ("Entry was removed successfully."),
 				Priority::PInfo_));
 		acc->RequestStatistics ();
+		emit entryRemoved ();
 	}
 
 	void Core::handleEntryUpdated (const QList<Entry>& entries)
@@ -357,7 +366,6 @@ namespace Blogique
 				tr ("Entries were backuped successfully."),
 				Priority::PInfo_));
 	}
-
 
 	void Core::handleAutoSaveIntervalChanged ()
 	{

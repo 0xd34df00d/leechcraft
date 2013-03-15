@@ -57,9 +57,11 @@ namespace Blogique
 		IEditorWidget *PostEdit_;
 		QWidget *PostEditWidget_;
 		QToolBar *ToolBar_;
+		QToolBar *ProgressToolBar_;
 		QAction *AccountsBoxAction_;
 		QComboBox *PostTargetBox_;
 		QAction *PostTargetAction_;
+		QAction *ProgressBarLabelAction_;
 		QAction *ProgressBarAction_;
 
 		DraftEntriesWidget *DraftEntriesWidget_;
@@ -93,9 +95,14 @@ namespace Blogique
 
 		Entry GetCurrentEntry ();
 
+		void ShowProgress (bool visible, const QString& labelText = QString ());
+
 	public slots:
 		void handleAutoSave ();
 		void handleEntryPosted ();
+		void handleEntryRemoved ();
+		void handleRequestEntriesBegin ();
+		void handleRequestEntriesEnd ();
 
 	private slots:
 		void handleCurrentAccountChanged (int id);
@@ -103,6 +110,7 @@ namespace Blogique
 		void fillNewTabWithEntry (const Entry& entry, const QByteArray& accountId);
 
 		void handleEntryChanged (const QString& str = QString ());
+		void handleRemovingEntryBegin ();
 
 		void newEntry ();
 		void saveEntry (const Entry& e = Entry ());
