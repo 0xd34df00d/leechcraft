@@ -1064,7 +1064,7 @@ namespace LMP
 		if (!song.isEmpty ())
 		{
 			const auto pos = std::find_if (CurrentQueue_.begin (), CurrentQueue_.end (),
-					[&song] (decltype (CurrentQueue_.front ()) item) { qDebug () << item.fileName (); return song == item.fileName (); });
+					[&song] (decltype (CurrentQueue_.front ()) item) { return song == item.fileName (); });
 			if (pos != CurrentQueue_.end ())
 				Source_->setCurrentSource (*pos);
 		}
