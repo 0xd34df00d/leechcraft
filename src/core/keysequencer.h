@@ -28,7 +28,7 @@ class KeySequencer : public QDialog
 	Ui::KeySequencer Ui_;
 	QKeySequence Result_;
 public:
-	KeySequencer (QWidget* = 0);
+	KeySequencer (const QString&, QWidget* = 0);
 	QKeySequence GetResult () const;
 protected:
 	virtual void keyPressEvent (QKeyEvent*);
