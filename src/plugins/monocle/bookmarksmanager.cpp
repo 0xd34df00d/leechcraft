@@ -112,9 +112,10 @@ namespace Monocle
 		if (LoadSaved ())
 			return;
 
-		auto docElem = BookmarksDOM_.documentElement ();
+		auto docElem = BookmarksDOM_.createElement ("bookmarks");
 		docElem.setTagName ("bookmarks");
 		docElem.setAttribute ("version", "1");
+		BookmarksDOM_.appendChild (docElem);
 	}
 
 	bool BookmarksManager::LoadSaved ()
