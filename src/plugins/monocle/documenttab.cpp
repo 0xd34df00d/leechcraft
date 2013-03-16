@@ -775,11 +775,16 @@ namespace Monocle
 
 	void DocumentTab::selectFile ()
 	{
+		const auto& prevPath = XmlSettingsManager::Instance ()
+				.Property ("LastOpenFileName", QDir::homePath ()).toString ();
 		const auto& path = QFileDialog::getOpenFileName (this,
 					tr ("Select file"),
-					QDir::homePath ());
+					prevPath);
 		if (path.isEmpty ())
 			return;
+
+		XmlSettingsManager::Instance ()
+				.setProperty ("LastOpenFileName", QFileInfo (path).absolutePath ());
 
 		SetDoc (path);
 	}
