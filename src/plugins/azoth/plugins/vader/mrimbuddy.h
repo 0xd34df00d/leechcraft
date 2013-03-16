@@ -98,7 +98,7 @@ namespace Vader
 		void UpdateID (qint64);
 
 		// ICLEntry
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QObject* GetParentAccount () const;
 		Features GetEntryFeatures () const;
 		EntryType GetEntryType () const;

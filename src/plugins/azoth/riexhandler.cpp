@@ -133,7 +133,7 @@ namespace RIEX
 
 			ICLEntry *entry = entries [item.ID_];
 			if (item.Groups_.isEmpty ())
-				acc->RemoveEntry (entry->GetObject ());
+				acc->RemoveEntry (entry->GetQObject ());
 			else
 			{
 				QStringList newGroups = entry->Groups ();

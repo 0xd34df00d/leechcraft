@@ -105,7 +105,7 @@ namespace GoogleDrive
 		return XmlSettingsDialog_;
 	}
 
-	QObject* Plugin::GetObject ()
+	QObject* Plugin::GetQObject ()
 	{
 		return this;
 	}

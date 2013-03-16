@@ -38,7 +38,7 @@ namespace Postrus
 		spectre_document_free (SD_);
 	}
 
-	QObject* Document::GetObject ()
+	QObject* Document::GetQObject ()
 	{
 		return this;
 	}

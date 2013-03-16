@@ -42,7 +42,7 @@ namespace Blogique
 		 *
 		 * @return The protocol plugin as a QObject.
 		 */
-		virtual QObject* GetObject () = 0;
+		virtual QObject* GetQObject () = 0;
 
 		/** @brief Returns the blogging platforms list provided by this plugin.
 		 *

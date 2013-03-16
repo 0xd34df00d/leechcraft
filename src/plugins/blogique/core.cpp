@@ -207,15 +207,15 @@ namespace Blogique
 			Q_FOREACH (QObject *accObj, platform->GetRegisteredAccounts ())
 				addAccount (accObj);
 
-			connect (platform->GetObject (),
+			connect (platform->GetQObject (),
 					SIGNAL (accountAdded (QObject*)),
 					this,
 					SLOT (addAccount (QObject*)));
-			connect (platform->GetObject (),
+			connect (platform->GetQObject (),
 					SIGNAL (accountRemoved (QObject*)),
 					this,
 					SLOT (handleAccountRemoved (QObject*)));
-			connect (platform->GetObject (),
+			connect (platform->GetQObject (),
 					SIGNAL (accountValidated (QObject*, bool)),
 					this,
 					SLOT (handleAccountValidated (QObject*, bool)));

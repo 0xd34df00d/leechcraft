@@ -35,6 +35,8 @@ namespace Monocle
 		BookmarksManager (QObject* = 0);
 
 		void AddBookmark (IDocument_ptr, const Bookmark&);
+		void RemoveBookmark (IDocument_ptr, const Bookmark&);
+
 		QList<Bookmark> GetBookmarks (IDocument_ptr) const;
 	private:
 		QDomElement GetDocElem (const QString&) const;

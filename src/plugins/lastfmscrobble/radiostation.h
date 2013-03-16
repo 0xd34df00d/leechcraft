@@ -50,7 +50,7 @@ namespace Lastfmscrobble
 				const QString& param,
 				const QString& visibleName);
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		void RequestNewStream ();
 		QString GetRadioName () const;
 	private:

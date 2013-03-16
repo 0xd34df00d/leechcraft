@@ -18,7 +18,14 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QTreeView" name="BookmarksView_"/>
+    <widget class="QTreeView" name="BookmarksView_">
+     <property name="contextMenuPolicy">
+      <enum>Qt::ActionsContextMenu</enum>
+     </property>
+     <property name="rootIsDecorated">
+      <bool>false</bool>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

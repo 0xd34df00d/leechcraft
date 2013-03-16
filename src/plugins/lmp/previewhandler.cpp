@@ -93,7 +93,7 @@ namespace LMP
 		for (auto prov : Providers_)
 		{
 			auto pending = prov->Search (req);
-			connect (pending->GetObject (),
+			connect (pending->GetQObject (),
 					SIGNAL (ready ()),
 					this,
 					SLOT (handlePendingReady ()));

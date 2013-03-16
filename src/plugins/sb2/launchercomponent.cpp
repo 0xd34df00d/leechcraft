@@ -114,7 +114,7 @@ namespace SB2
 		Component_.DynamicProps_ << QPair<QString, QObject*> ("SB2_launcherProxy", this);
 		Component_.ImageProviders_ << QPair<QString, QDeclarativeImageProvider*> (ImageProviderID, ImageProv_);
 
-		connect (ICTW_->GetObject (),
+		connect (ICTW_->GetQObject (),
 				SIGNAL (currentChanged (int)),
 				this,
 				SLOT (handleCurrentTabChanged (int)));

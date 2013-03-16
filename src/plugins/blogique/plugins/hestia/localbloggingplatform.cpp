@@ -43,7 +43,7 @@ namespace Hestia
 	{
 	}
 
-	QObject* LocalBloggingPlatform::GetObject ()
+	QObject* LocalBloggingPlatform::GetQObject ()
 	{
 		return this;
 	}
@@ -205,7 +205,7 @@ namespace Hestia
 			return;
 		}
 
-		emit accountValidated (acc->GetObject (), valid);
+		emit accountValidated (acc->GetQObject (), valid);
 	}
 
 }

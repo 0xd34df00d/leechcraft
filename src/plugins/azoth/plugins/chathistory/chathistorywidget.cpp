@@ -174,7 +174,7 @@ namespace ChatHistory
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "invalid entry account for entry"
-						<< EntryToFocus_->GetObject ();
+						<< EntryToFocus_->GetQObject ();
 				return;
 			}
 

@@ -40,7 +40,7 @@ namespace ReadItLater
 	{
 	}
 
-	QObject* ReadItLaterAccount::GetObject ()
+	QObject* ReadItLaterAccount::GetQObject ()
 	{
 		return this;
 	}

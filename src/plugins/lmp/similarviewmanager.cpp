@@ -79,11 +79,11 @@ namespace LMP
 			if (!obj)
 				continue;
 
-			connect (obj->GetObject (),
+			connect (obj->GetQObject (),
 					SIGNAL (error ()),
-					obj->GetObject (),
+					obj->GetQObject (),
 					SLOT (deleteLater ()));
-			connect (obj->GetObject (),
+			connect (obj->GetQObject (),
 					SIGNAL (ready ()),
 					this,
 					SLOT (handleSimilarReady ()));

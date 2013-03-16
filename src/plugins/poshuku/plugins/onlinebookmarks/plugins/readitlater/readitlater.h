@@ -56,7 +56,7 @@ namespace ReadItLater
 
 		QSet<QByteArray> GetPluginClasses () const;
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QObject* GetBookmarksService () const;
 	signals:
 		void gotEntity (const LeechCraft::Entity&);

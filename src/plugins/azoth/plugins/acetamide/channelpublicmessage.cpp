@@ -57,7 +57,7 @@ namespace Acetamide
 	{
 	}
 
-	QObject* ChannelPublicMessage::GetObject ()
+	QObject* ChannelPublicMessage::GetQObject ()
 	{
 		return this;
 	}

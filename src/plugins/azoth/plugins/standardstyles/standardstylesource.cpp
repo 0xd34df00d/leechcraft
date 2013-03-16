@@ -182,7 +182,7 @@ namespace StandardStyles
 		if (body.isEmpty ())
 			body = msg->GetBody ();
 
-		body = Proxy_->FormatBody (body, msg->GetObject ());
+		body = Proxy_->FormatBody (body, msg->GetQObject ());
 
 		const QString dateBegin ("<span class='datetime'>");
 		const QString dateEnd ("</span>");
@@ -198,7 +198,7 @@ namespace StandardStyles
 		QString statusIconName;
 
 		QString string = dateBegin + '[' +
-				Proxy_->FormatDate (msg->GetDateTime (), msg->GetObject ()) +
+				Proxy_->FormatDate (msg->GetDateTime (), msg->GetQObject ()) +
 				']' + dateEnd;
 		string.append (' ');
 		switch (msg->GetDirection ())
@@ -220,14 +220,14 @@ namespace StandardStyles
 				{
 					body = body.mid (3);
 					string.append ("* ");
-					string.append (Proxy_->FormatNickname (entryName, msg->GetObject (), nickColor));
+					string.append (Proxy_->FormatNickname (entryName, msg->GetQObject (), nickColor));
 					string.append (' ');
 					divClass = "slashmechatmsg";
 				}
 				else
 				{
 					string.append (preNick);
-					string.append (Proxy_->FormatNickname (entryName, msg->GetObject (), nickColor));
+					string.append (Proxy_->FormatNickname (entryName, msg->GetQObject (), nickColor));
 					string.append (postNick);
 					string.append (' ');
 					if (divClass.isEmpty ())
@@ -275,14 +275,14 @@ namespace StandardStyles
 			{
 				body = body.mid (3);
 				string.append ("* ");
-				string.append (Proxy_->FormatNickname (nick, msg->GetObject (), nickColor));
+				string.append (Proxy_->FormatNickname (nick, msg->GetQObject (), nickColor));
 				string.append (' ');
 				divClass = "slashmechatmsg";
 			}
 			else
 			{
 				string.append (preNick);
-				string.append (Proxy_->FormatNickname (nick, msg->GetObject (), nickColor));
+				string.append (Proxy_->FormatNickname (nick, msg->GetQObject (), nickColor));
 				string.append (postNick);
 				string.append (' ');
 			}

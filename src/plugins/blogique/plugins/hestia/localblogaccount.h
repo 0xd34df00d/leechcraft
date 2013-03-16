@@ -50,7 +50,7 @@ namespace Hestia
 	public:
 		LocalBlogAccount (const QString& name, QObject *parent = 0);
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QObject* GetParentBloggingPlatform () const;
 		QString GetAccountName () const;
 		QString GetOurLogin () const;

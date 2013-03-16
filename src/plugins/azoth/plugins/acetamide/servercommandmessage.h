@@ -52,7 +52,7 @@ namespace Acetamide
 				IrcServerCLEntry*,
 				MessageType,
 				MessageSubType);
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		void Send ();
 		void Store ();
 		Direction GetDirection () const;

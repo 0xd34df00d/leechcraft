@@ -159,7 +159,7 @@ namespace ChatHistory
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "message's other part doesn't implement ICLEntry"
-					<< msg->GetObject ()
+					<< msg->GetQObject ()
 					<< msg->OtherPart ();
 			return;
 		}

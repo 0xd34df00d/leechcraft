@@ -37,7 +37,7 @@ namespace HotStreams
 	public:
 		StringListRadioStation (const QList<QUrl>&, const QString&);
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QString GetRadioName () const;
 		void RequestNewStream ();
 	private slots:

@@ -59,7 +59,7 @@ namespace Blogique
 		Q_FOREACH (IBloggingPlatform *platform, platforms)
 			Ui_.BloggingPlatformBox_->addItem (platform->GetBloggingPlatformIcon (),
 					platform->GetBloggingPlatformName (),
-					QVariant::fromValue<QObject*> (platform->GetObject ()));
+					QVariant::fromValue<QObject*> (platform->GetQObject ()));
 
 		connect (wizard (),
 				SIGNAL (accepted ()),

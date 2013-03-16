@@ -93,12 +93,12 @@ namespace Blogique
 		LoadActions_.clear ();
 
 		Account_ = account;
-		connect (Account_->GetObject (),
+		connect (Account_->GetQObject (),
 				SIGNAL (gotBlogStatistics (QMap<QDate, int>)),
 				this,
 				SLOT (fillStatistic (QMap<QDate, int>)),
 				Qt::UniqueConnection);
-		connect (Account_->GetObject (),
+		connect (Account_->GetQObject (),
 				SIGNAL (gotEntries (QList<Entry>)),
 				this,
 				SLOT (fillView (QList<Entry>)),

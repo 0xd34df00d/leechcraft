@@ -72,7 +72,7 @@ namespace Xoox
 		ProxyObject_ = po;
 	}
 
-	QObject* GlooxProtocol::GetObject ()
+	QObject* GlooxProtocol::GetQObject ()
 	{
 		return this;
 	}

@@ -45,7 +45,7 @@ namespace Vader
 			emit accountRemoved (acc);
 	}
 
-	QObject* MRIMProtocol::GetObject ()
+	QObject* MRIMProtocol::GetQObject ()
 	{
 		return this;
 	}

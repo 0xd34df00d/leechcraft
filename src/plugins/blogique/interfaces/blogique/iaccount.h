@@ -76,7 +76,7 @@ namespace Blogique
 		 *
 		 * @return Account object as QObject.
 		 */
-		virtual QObject* GetObject () = 0;
+		virtual QObject* GetQObject () = 0;
 
 		/** @brief Returns the pointer to the parent blogging platform that this
 		 * account belongs to.

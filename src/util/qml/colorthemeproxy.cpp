@@ -28,7 +28,7 @@ namespace Util
 	: QObject (parent)
 	, Manager_ (manager)
 	{
-		connect (manager->GetObject (),
+		connect (manager->GetQObject (),
 				SIGNAL (themeChanged ()),
 				this,
 				SIGNAL (colorsChanged ()));

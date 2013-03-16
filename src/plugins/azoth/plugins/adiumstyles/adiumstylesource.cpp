@@ -548,7 +548,7 @@ namespace AdiumStyles
 					image = other->GetAvatar ();
 				else if (acc)
 				{
-					IExtSelfInfoAccount *self = qobject_cast<IExtSelfInfoAccount*> (acc->GetObject ());
+					IExtSelfInfoAccount *self = qobject_cast<IExtSelfInfoAccount*> (acc->GetQObject ());
 					if (self)
 						image = self->GetSelfAvatar ();
 				}

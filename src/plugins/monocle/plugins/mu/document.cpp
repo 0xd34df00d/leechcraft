@@ -53,7 +53,7 @@ namespace Mu
 		pdf_close_document (MuDoc_);
 	}
 
-	QObject* Document::GetObject ()
+	QObject* Document::GetQObject ()
 	{
 		return this;
 	}

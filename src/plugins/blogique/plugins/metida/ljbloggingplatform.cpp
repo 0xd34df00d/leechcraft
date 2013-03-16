@@ -79,7 +79,7 @@ namespace Metida
 		handleCommentsChecking ();
 	}
 
-	QObject* LJBloggingPlatform::GetObject ()
+	QObject* LJBloggingPlatform::GetQObject ()
 	{
 		return this;
 	}
@@ -260,7 +260,7 @@ namespace Metida
 			return;
 		}
 
-		emit accountValidated (acc->GetObject (), validated);
+		emit accountValidated (acc->GetQObject (), validated);
 	}
 
 	void LJBloggingPlatform::handleMessageChecking ()

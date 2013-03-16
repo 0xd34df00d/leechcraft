@@ -42,7 +42,7 @@ namespace Azoth
 		 *
 		 * @return The protocol plugin as a QObject.
 		 */
-		virtual QObject* GetObject () = 0;
+		virtual QObject* GetQObject () = 0;
 
 		/** @brief Returns the protocols list provided by this plugin.
 		 *

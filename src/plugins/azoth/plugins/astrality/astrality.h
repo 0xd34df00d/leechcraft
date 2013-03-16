@@ -55,7 +55,7 @@ namespace Astrality
 
 		QSet<QByteArray> GetPluginClasses () const;
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QList<QObject*> GetProtocols () const;
 	public slots:
 		void initPlugin (QObject*);

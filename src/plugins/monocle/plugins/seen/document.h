@@ -56,7 +56,7 @@ namespace Seen
 		Document (const QString&, ddjvu_context_t*, DocManager*);
 		~Document ();
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		bool IsValid () const;
 		DocumentInfo GetDocumentInfo () const;
 		int GetNumPages () const;

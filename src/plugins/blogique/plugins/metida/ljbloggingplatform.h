@@ -54,7 +54,7 @@ namespace Metida
 	public:
 		LJBloggingPlatform (QObject *parent = 0);
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		BloggingPlatfromFeatures GetFeatures () const;
 		QObjectList GetRegisteredAccounts ();
 		QObject* GetParentBloggingPlatformPlugin () const;

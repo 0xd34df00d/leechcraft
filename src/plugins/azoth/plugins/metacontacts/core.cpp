@@ -293,7 +293,7 @@ namespace Metacontacts
 		QMetaObject::invokeMethod (this,
 				"removedCLItems",
 				Qt::QueuedConnection,
-				Q_ARG (QList<QObject*>, QList<QObject*> () << real->GetObject ()));
+				Q_ARG (QList<QObject*>, QList<QObject*> () << real->GetQObject ()));
 
 		ScheduleSaveEntries ();
 	}

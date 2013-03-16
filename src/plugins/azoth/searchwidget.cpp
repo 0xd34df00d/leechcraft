@@ -48,7 +48,7 @@ namespace Azoth
 
 		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
 		{
-			QObject *accObj = acc->GetObject ();
+			QObject *accObj = acc->GetQObject ();
 			IHaveSearch *search = qobject_cast<IHaveSearch*> (accObj);
 			if (!search)
 				continue;

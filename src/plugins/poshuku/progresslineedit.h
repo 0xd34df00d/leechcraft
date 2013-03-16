@@ -48,7 +48,7 @@ namespace Poshuku
 		ProgressLineEdit (QWidget* = 0);
 
 		bool IsCompleting () const;
-		QObject* GetObject ();
+		QObject* GetQObject ();
 
 		int ButtonsCount () const;
 		QToolButton* AddAction (QAction*, bool = false);

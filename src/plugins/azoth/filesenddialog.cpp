@@ -103,7 +103,7 @@ namespace Azoth
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "null Xfer manager for"
-					<< Entry_->GetObject ();
+					<< Entry_->GetQObject ();
 			return;
 		}
 

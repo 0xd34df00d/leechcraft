@@ -56,7 +56,7 @@ namespace LeechCraft
 		QString Join (const QStringList&) const;
 		QString JoinIDs (const QStringList&) const;
 		QAbstractItemModel* GetModel ();
-		QObject* GetObject ();
+		QObject* GetQObject ();
 
 		void RemoveTag (const QModelIndex&);
 		void SetTag (const QModelIndex&, const QString&);

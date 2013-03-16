@@ -59,6 +59,22 @@ namespace Monocle
 		Save ();
 	}
 
+	void BookmarksManager::RemoveBookmark (IDocument_ptr doc, const Bookmark& bm)
+	{
+		auto fileElem = GetDocElem (GetDocID (doc));
+
+		auto bmElem = fileElem.firstChildElement ("bm");
+		while (!bmElem.isNull ())
+		{
+			auto next = bmElem.nextSiblingElement ("bm");
+			if (Bookmark::FromXML (bmElem) == bm)
+				fileElem.removeChild (bmElem);
+			bmElem = next;
+		}
+
+		Save ();
+	}
+
 	QList<Bookmark> BookmarksManager::GetBookmarks (IDocument_ptr doc) const
 	{
 		QList<Bookmark> result;
@@ -112,9 +128,10 @@ namespace Monocle
 		if (LoadSaved ())
 			return;
 
-		auto docElem = BookmarksDOM_.documentElement ();
+		auto docElem = BookmarksDOM_.createElement ("bookmarks");
 		docElem.setTagName ("bookmarks");
 		docElem.setAttribute ("version", "1");
+		BookmarksDOM_.appendChild (docElem);
 	}
 
 	bool BookmarksManager::LoadSaved ()

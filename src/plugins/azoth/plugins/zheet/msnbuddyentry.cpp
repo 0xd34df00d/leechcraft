@@ -102,7 +102,7 @@ namespace Zheet
 		return ContactID_;
 	}
 
-	QObject* MSNBuddyEntry::GetObject ()
+	QObject* MSNBuddyEntry::GetQObject ()
 	{
 		return this;
 	}

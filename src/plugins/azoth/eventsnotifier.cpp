@@ -34,7 +34,7 @@ namespace Azoth
 
 	void EventsNotifier::RegisterEntry (ICLEntry *entry)
 	{
-		QObject *entryObj = entry->GetObject ();
+		QObject *entryObj = entry->GetQObject ();
 
 		connect (entryObj,
 				SIGNAL (chatPartStateChanged (const ChatPartState&, const QString&)),
@@ -79,7 +79,7 @@ namespace Azoth
 					new Util::NotificationActionHandler (e, this);
 			nh->AddFunction (tr ("Open chat"),
 					[entry] () { Core::Instance ().GetChatTabsManager ()->OpenChat (entry); });
-			nh->AddDependentObject (entry->GetObject ());
+			nh->AddDependentObject (entry->GetQObject ());
 			emit gotEntity (e);
 		}
 	}

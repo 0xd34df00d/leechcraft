@@ -100,7 +100,7 @@ namespace Azoth
 		 *
 		 * @return Account object as QObject.
 		 */
-		virtual QObject* GetObject () = 0;
+		virtual QObject* GetQObject () = 0;
 
 		/** @brief Returns the pointer to the parent protocol that this
 		 * account belongs to.

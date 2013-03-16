@@ -71,7 +71,7 @@ namespace Launchy
 			return result;
 		}
 
-		QIcon LoadIcon (ICoreProxy_ptr proxy, QString name)
+		QIcon GetIconDevice (ICoreProxy_ptr proxy, QString name)
 		{
 			if (name.isEmpty ())
 				return QIcon ();
@@ -128,7 +128,7 @@ namespace Launchy
 				continue;
 			}
 
-			item->SetIcon (LoadIcon (Proxy_, item->GetIconName ()));
+			item->SetIcon (GetIconDevice (Proxy_, item->GetIconName ()));
 
 			for (const auto& cat : item->GetCategories ())
 				if (!cat.startsWith ("X-"))

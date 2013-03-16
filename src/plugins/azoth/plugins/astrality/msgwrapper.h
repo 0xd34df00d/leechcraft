@@ -53,7 +53,7 @@ namespace Astrality
 				Tp::ContactMessengerPtr, EntryWrapper*,
 				MessageType, MessageSubType = MSTOther);
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		void Send ();
 		void Store ();
 		Direction GetDirection () const;

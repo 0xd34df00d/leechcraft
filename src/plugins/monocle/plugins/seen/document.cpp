@@ -52,7 +52,7 @@ namespace Seen
 		ddjvu_document_release (Doc_);
 	}
 
-	QObject* Document::GetObject ()
+	QObject* Document::GetQObject ()
 	{
 		return this;
 	}

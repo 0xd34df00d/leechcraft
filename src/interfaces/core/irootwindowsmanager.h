@@ -30,7 +30,7 @@ class Q_DECL_EXPORT IRootWindowsManager
 public:
 	virtual ~IRootWindowsManager () {}
 
-	virtual QObject* GetObject () = 0;
+	virtual QObject* GetQObject () = 0;
 
 	virtual int GetWindowsCount () const = 0;
 

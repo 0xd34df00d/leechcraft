@@ -33,7 +33,7 @@ namespace Metacontacts
 	{
 	}
 
-	QObject* MetaMessage::GetObject ()
+	QObject* MetaMessage::GetQObject ()
 	{
 		return this;
 	}

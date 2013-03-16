@@ -82,7 +82,7 @@ namespace MTPSync
 		return "MTP";
 	}
 
-	QObject* Plugin::GetObject ()
+	QObject* Plugin::GetQObject ()
 	{
 		return this;
 	}

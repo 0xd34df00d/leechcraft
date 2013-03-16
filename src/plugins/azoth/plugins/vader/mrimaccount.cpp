@@ -168,7 +168,7 @@ namespace Vader
 		Conn_->RequestInfo (email);
 	}
 
-	QObject* MRIMAccount::GetObject ()
+	QObject* MRIMAccount::GetQObject ()
 	{
 		return this;
 	}

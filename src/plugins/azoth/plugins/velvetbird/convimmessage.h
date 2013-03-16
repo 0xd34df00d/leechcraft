@@ -42,7 +42,7 @@ namespace VelvetBird
 	public:
 		ConvIMMessage (const QString&, Direction, Buddy*);
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		void Send ();
 		void Store ();
 		Direction GetDirection () const;

@@ -40,7 +40,7 @@ namespace Postrus
 		Document (const QString&, QObject* = 0);
 		~Document ();
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		bool IsValid () const;
 		DocumentInfo GetDocumentInfo () const;
 		int GetNumPages () const;

@@ -46,7 +46,7 @@ namespace Hestia
 				SLOT (handleLoadAllEvents ()));
 	}
 
-	QObject* LocalBlogAccount::GetObject ()
+	QObject* LocalBlogAccount::GetQObject ()
 	{
 		return this;
 	}

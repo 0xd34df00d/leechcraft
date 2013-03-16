@@ -40,11 +40,11 @@ namespace NetStoreManager
 		Q_FOREACH (QObject *acc, plug->GetAccounts ())
 			handleAccountAdded (acc);
 
-		connect (plug->GetObject (),
+		connect (plug->GetQObject (),
 				SIGNAL (accountAdded (QObject*)),
 				this,
 				SLOT (handleAccountAdded (QObject*)));
-		connect (plug->GetObject (),
+		connect (plug->GetQObject (),
 				SIGNAL (accountRemoved (QObject*)),
 				this,
 				SLOT (handleAccountRemoved (QObject*)));

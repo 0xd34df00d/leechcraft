@@ -42,7 +42,7 @@ namespace FXB
 	public:
 		Document (const QString&, QObject* = 0);
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		DocumentInfo GetDocumentInfo () const;
 		QUrl GetDocURL () const;
 

@@ -52,7 +52,7 @@ namespace Media
 	public:
 		virtual ~IPendingDisco () {}
 
-		virtual QObject* GetObject () = 0;
+		virtual QObject* GetQObject () = 0;
 
 		virtual QList<ReleaseInfo> GetReleases () const = 0;
 	protected:

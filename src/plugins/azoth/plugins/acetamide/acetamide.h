@@ -54,7 +54,7 @@ namespace Acetamide
 
 		QSet<QByteArray> GetPluginClasses () const;
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QList<QObject*> GetProtocols () const;
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	public slots:

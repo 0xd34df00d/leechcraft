@@ -39,7 +39,7 @@ namespace Qrosp
 	public:
 		ScriptLoaderInstance (const QString&, QObject* = 0);
 		
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		void AddGlobalPrefix ();
 		void AddLocalPrefix (QString prefix);
 		QStringList EnumerateScripts () const;

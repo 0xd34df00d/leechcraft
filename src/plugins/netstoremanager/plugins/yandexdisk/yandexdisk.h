@@ -55,7 +55,7 @@ namespace YandexDisk
 
 		QSet<QByteArray> GetPluginClasses () const;
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QString GetStorageName () const;
 		QIcon GetStorageIcon () const;
 		void RegisterAccount (const QString&);

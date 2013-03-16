@@ -82,7 +82,7 @@ namespace Astrality
 		return C_;
 	}
 
-	QObject* EntryWrapper::GetObject ()
+	QObject* EntryWrapper::GetQObject ()
 	{
 		return this;
 	}

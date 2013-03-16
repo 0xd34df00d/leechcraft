@@ -79,7 +79,7 @@ namespace Vader
 		void RequestInfo (const QString&);
 
 		// IAccount
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QObject* GetParentProtocol () const;
 		AccountFeatures GetAccountFeatures () const;
 		QList<QObject*> GetCLEntries ();

@@ -30,7 +30,7 @@ namespace Media
 	public:
 		virtual ~IPendingAudioSearch () {}
 
-		virtual QObject* GetObject () = 0;
+		virtual QObject* GetQObject () = 0;
 
 		struct Result
 		{

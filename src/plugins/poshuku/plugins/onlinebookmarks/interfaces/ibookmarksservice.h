@@ -49,7 +49,7 @@ namespace OnlineBookmarks
 		//
 		virtual Features GetFeatures () const = 0;
 
-		virtual QObject* GetObject () = 0;
+		virtual QObject* GetQObject () = 0;
 
 		//
 		virtual QString GetServiceName () const = 0;

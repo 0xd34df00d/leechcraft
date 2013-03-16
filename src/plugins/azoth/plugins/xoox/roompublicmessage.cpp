@@ -77,7 +77,7 @@ namespace Xoox
 		ClientConnection::Split (msg.from (), &FromJID_, &FromVariant_);
 	}
 
-	QObject* RoomPublicMessage::GetObject ()
+	QObject* RoomPublicMessage::GetQObject ()
 	{
 		return this;
 	}

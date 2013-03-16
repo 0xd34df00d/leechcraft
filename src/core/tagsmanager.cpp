@@ -177,7 +177,7 @@ QAbstractItemModel* TagsManager::GetModel ()
 	return this;
 }
 
-QObject* TagsManager::GetObject ()
+QObject* TagsManager::GetQObject ()
 {
 	return this;
 }

@@ -540,7 +540,7 @@ namespace Blogique
 			}
 
 			SidePluginsWidgets_ << w;
-			ibsw->SetAccount (account->GetObject ());
+			ibsw->SetAccount (account->GetQObject ());
 			Ui_.Tools_->addItem (w, ibsw->GetName ());
 		}
 

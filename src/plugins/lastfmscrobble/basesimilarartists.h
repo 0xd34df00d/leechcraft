@@ -39,7 +39,7 @@ namespace Lastfmscrobble
 	public:
 		BaseSimilarArtists (const QString&, int, QObject* = 0);
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QString GetSourceArtistName () const;
 		Media::SimilarityInfos_t GetSimilar () const;
 	private:

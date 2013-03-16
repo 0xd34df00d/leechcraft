@@ -97,7 +97,7 @@ namespace LMP
 		CurrentArtist_ = artist;
 
 		auto pending = fetcher->RequestArtistBio (CurrentArtist_);
-		connect (pending->GetObject (),
+		connect (pending->GetQObject (),
 				SIGNAL (ready ()),
 				this,
 				SLOT (handleBioReady ()));
@@ -106,7 +106,7 @@ namespace LMP
 		for (auto prov : pm->GetAllCastableTo<Media::IDiscographyProvider*> ())
 		{
 			auto fetcher = prov->GetDiscography (CurrentArtist_);
-			connect (fetcher->GetObject (),
+			connect (fetcher->GetQObject (),
 					SIGNAL (ready ()),
 					this,
 					SLOT (handleDiscographyReady ()));

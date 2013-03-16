@@ -43,7 +43,7 @@ public:
 	 *
 	 * @return The core tab widget as a QObject.
 	*/
-	virtual QObject* GetObject () = 0;
+	virtual QObject* GetQObject () = 0;
 
 	/** @brief Returns the number of widgets associated with tabs.
 	 *

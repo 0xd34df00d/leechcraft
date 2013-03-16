@@ -63,7 +63,7 @@ namespace Blogique
 				SLOT (handleAccountDoubleClicked (const QModelIndex&)));
 
 		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
-			addAccount (acc->GetObject ());
+			addAccount (acc->GetQObject ());
 
 		AccountsModel_->setHorizontalHeaderLabels ({tr ("Account"), tr ("Validated")});
 		Ui_.Accounts_->setModel (AccountsModel_);
@@ -127,7 +127,7 @@ namespace Blogique
 			qWarning () << Q_FUNC_INFO
 					<< "account"
 					<< acc->GetAccountName ()
-					<< acc->GetObject ()
+					<< acc->GetQObject ()
 					<< "from"
 					<< sender ()
 					<< "not found here";
@@ -166,7 +166,7 @@ namespace Blogique
 			qWarning () << Q_FUNC_INFO
 					<< "account"
 					<< acc->GetAccountName ()
-					<< acc->GetObject ()
+					<< acc->GetQObject ()
 					<< "from"
 					<< sender ()
 					<< "not found here";
@@ -235,7 +235,7 @@ namespace Blogique
 					<< "doesn't implement IBloggingPlatform";
 			return;
 		}
-		ibp->RemoveAccount (acc->GetObject ());
+		ibp->RemoveAccount (acc->GetQObject ());
 	}
 
 	void AccountsListWidget::on_Profile__released ()

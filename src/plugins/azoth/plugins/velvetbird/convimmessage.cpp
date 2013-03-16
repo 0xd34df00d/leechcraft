@@ -34,7 +34,7 @@ namespace VelvetBird
 	{
 	}
 
-	QObject* ConvIMMessage::GetObject ()
+	QObject* ConvIMMessage::GetQObject ()
 	{
 		return this;
 	}

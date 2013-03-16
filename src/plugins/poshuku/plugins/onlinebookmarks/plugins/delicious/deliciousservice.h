@@ -68,7 +68,7 @@ namespace Delicious
 		DeliciousService (ICoreProxy_ptr);
 		void Prepare ();
 		IBookmarksService::Features GetFeatures () const;
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QString GetServiceName () const;
 		QIcon GetServiceIcon () const;
 		QWidget* GetAuthWidget ();

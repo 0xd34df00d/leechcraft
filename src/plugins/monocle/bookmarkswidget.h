@@ -22,6 +22,7 @@
 #include "interfaces/monocle/idocument.h"
 #include "ui_bookmarkswidget.h"
 
+class QStandardItemModel;
 class QToolBar;
 
 namespace LeechCraft
@@ -29,6 +30,7 @@ namespace LeechCraft
 namespace Monocle
 {
 	class DocumentTab;
+	class Bookmark;
 
 	class BookmarksWidget : public QWidget
 	{
@@ -38,13 +40,20 @@ namespace Monocle
 		DocumentTab *Tab_;
 		QToolBar *Toolbar_;
 
+		QStandardItemModel *BMModel_;
+
 		IDocument_ptr Doc_;
 	public:
 		BookmarksWidget (DocumentTab*, QWidget* = 0);
 
 		void HandleDoc (IDocument_ptr);
+	private:
+		void ReloadBookmarks ();
+		void AddBMToTree (const Bookmark&);
 	private slots:
 		void handleAddBookmark ();
+		void handleRemoveBookmark ();
+		void on_BookmarksView__activated (const QModelIndex&);
 	};
 }
 }

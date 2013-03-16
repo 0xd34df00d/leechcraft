@@ -35,7 +35,7 @@ namespace OnlineBookmarks
 		virtual ~IAccount () {};
 
 		//
-		virtual QObject* GetObject () = 0;
+		virtual QObject* GetQObject () = 0;
 
 		//
 		virtual QObject* GetParentService () const = 0;
