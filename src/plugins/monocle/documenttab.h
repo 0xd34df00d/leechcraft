@@ -105,8 +105,9 @@ namespace Monocle
 		void RecoverState (const QByteArray&);
 
 		void ReloadDoc (const QString&);
-
 		bool SetDoc (const QString&);
+
+		QList<QAction*> CreateViewCtxMenuActions ();
 
 		int GetCurrentPage () const;
 		void SetCurrentPage (int, bool immediate = false);
@@ -121,9 +122,8 @@ namespace Monocle
 		QPoint GetViewportCenter () const;
 		void Relayout (double);
 
-		void ClearViewActions ();
-
 		QImage GetSelectionImg ();
+		QString GetSelectionText () const;
 	private slots:
 		void handleNavigateRequested (QString, int, double, double);
 

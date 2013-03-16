@@ -80,6 +80,7 @@ namespace Monocle
 		Ui_.setupUi (this);
 		Ui_.PagesView_->setScene (&Scene_);
 		Ui_.PagesView_->setBackgroundBrush (palette ().brush (QPalette::Dark));
+		Ui_.PagesView_->SetDocumentTab (this);
 
 		SetupToolbar ();
 
@@ -346,6 +347,41 @@ namespace Monocle
 		}
 
 		return true;
+	}
+
+	QList<QAction*> DocumentTab::CreateViewCtxMenuActions ()
+	{
+		QList<QAction*> result;
+
+		auto copyAsImage = new QAction (tr ("Copy selection as image"), this);
+		connect (copyAsImage,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleCopyAsImage ()));
+		result << copyAsImage;
+
+		auto saveAsImage = new QAction (tr ("Save selection as image..."), this);
+		connect (saveAsImage,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleSaveAsImage ()));
+		result << saveAsImage;
+
+		if (qobject_cast<IHaveTextContent*> (CurrentDoc_->GetQObject ()))
+		{
+			result << Util::CreateSeparator (this);
+
+			const auto& selText = GetSelectionText ();
+			auto copyAsText = new QAction (tr ("Copy selection as text"), this);
+			connect (copyAsText,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleCopyAsText ()));
+			copyAsText->setProperty ("Monocle/Text", selText);
+			result << copyAsText;
+		}
+
+		return result;
 	}
 
 	int DocumentTab::GetCurrentPage () const
@@ -647,15 +683,6 @@ namespace Monocle
 		updateNumLabel ();
 	}
 
-	void DocumentTab::ClearViewActions ()
-	{
-		Q_FOREACH (auto act, Ui_.PagesView_->actions ())
-		{
-			Ui_.PagesView_->removeAction (act);
-			act->deleteLater ();
-		}
-	}
-
 	QImage DocumentTab::GetSelectionImg ()
 	{
 		const auto& bounding = Scene_.selectionArea ().boundingRect ();
@@ -668,6 +695,44 @@ namespace Monocle
 		painter.end ();
 		return image;
 	}
+
+	QString DocumentTab::GetSelectionText () const
+	{
+		auto ihtc = qobject_cast<IHaveTextContent*> (CurrentDoc_->GetQObject ());
+		if (!ihtc)
+			return QString ();
+
+		const auto& selectionBound = Scene_.selectionArea ().boundingRect ();
+
+		auto bounding = Ui_.PagesView_->mapFromScene (selectionBound).boundingRect ();
+		if (bounding.isEmpty () ||
+				bounding.width () < 4 ||
+				bounding.height () < 4)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "selection area is empty";
+			return QString ();
+		}
+
+		auto item = Ui_.PagesView_->itemAt (bounding.topLeft ());
+		auto pageItem = dynamic_cast<PageGraphicsItem*> (item);
+		if (!pageItem)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "page item is null for"
+					<< bounding.topLeft ();
+			return QString ();
+		}
+
+		bounding = item->mapFromScene (selectionBound).boundingRect ().toRect ();
+
+		const auto scale = GetCurrentScale ();
+		bounding.moveTopLeft (bounding.topLeft () / scale);
+		bounding.setSize (bounding.size () / scale);
+
+		return ihtc->GetTextContent (pageItem->GetPageNum (), bounding);
+	}
+
 
 	void DocumentTab::handleNavigateRequested (QString path, int num, double x, double y)
 	{
@@ -952,8 +1017,6 @@ namespace Monocle
 
 		MouseMode_ = MouseMode::Move;
 		Ui_.PagesView_->SetShowReleaseMenu (false);
-
-		ClearViewActions ();
 		Ui_.PagesView_->setDragMode (QGraphicsView::ScrollHandDrag);
 	}
 
@@ -964,35 +1027,7 @@ namespace Monocle
 
 		MouseMode_ = MouseMode::Select;
 		Ui_.PagesView_->SetShowReleaseMenu (true);
-
-		ClearViewActions ();
 		Ui_.PagesView_->setDragMode (QGraphicsView::RubberBandDrag);
-
-		auto copyAsImage = new QAction (tr ("Copy selection as image"), this);
-		connect (copyAsImage,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleCopyAsImage ()));
-		Ui_.PagesView_->addAction (copyAsImage);
-
-		auto saveAsImage = new QAction (tr ("Save selection as image..."), this);
-		connect (saveAsImage,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleSaveAsImage ()));
-		Ui_.PagesView_->addAction (saveAsImage);
-
-		if (qobject_cast<IHaveTextContent*> (CurrentDoc_->GetQObject ()))
-		{
-			Ui_.PagesView_->addAction (Util::CreateSeparator (Ui_.PagesView_));
-
-			auto copyAsText = new QAction (tr ("Copy selection as text"), this);
-			connect (copyAsText,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleCopyAsText ()));
-			Ui_.PagesView_->addAction (copyAsText);
-		}
 	}
 
 	void DocumentTab::handleCopyAsImage ()
@@ -1028,39 +1063,7 @@ namespace Monocle
 
 	void DocumentTab::handleCopyAsText ()
 	{
-		auto ihtc = qobject_cast<IHaveTextContent*> (CurrentDoc_->GetQObject ());
-		if (!ihtc)
-			return;
-
-		const auto& selectionBound = Scene_.selectionArea ().boundingRect ();
-
-		auto bounding = Ui_.PagesView_->mapFromScene (selectionBound).boundingRect ();
-		if (bounding.isEmpty () ||
-				bounding.width () < 4 ||
-				bounding.height () < 4)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "selection area is empty";
-			return;
-		}
-
-		auto item = Ui_.PagesView_->itemAt (bounding.topLeft ());
-		auto pageItem = dynamic_cast<PageGraphicsItem*> (item);
-		if (!pageItem)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "page item is null for"
-					<< bounding.topLeft ();
-			return;
-		}
-
-		bounding = item->mapFromScene (selectionBound).boundingRect ().toRect ();
-
-		const auto scale = GetCurrentScale ();
-		bounding.moveTopLeft (bounding.topLeft () / scale);
-		bounding.setSize (bounding.size () / scale);
-
-		const auto& text = ihtc->GetTextContent (pageItem->GetPageNum (), bounding);
+		const auto& text = sender ()->property ("Monocle/Text").toString ();
 		QApplication::clipboard ()->setText (text);
 	}
 

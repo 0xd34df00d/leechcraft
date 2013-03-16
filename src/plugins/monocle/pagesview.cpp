@@ -21,6 +21,7 @@
 #include <QMouseEvent>
 #include <QTimeLine>
 #include "xmlsettingsmanager.h"
+#include "documenttab.h"
 
 namespace LeechCraft
 {
@@ -31,12 +32,18 @@ namespace Monocle
 	, ShowReleaseMenu_ (false)
 	, ShowOnNextRelease_ (false)
 	, ScrollTimeline_ (new QTimeLine (400, this))
+	, DocTab_ (0)
 	{
 		ScrollTimeline_->setFrameRange (0, 100);
 		connect (ScrollTimeline_,
 				SIGNAL (frameChanged (int)),
 				this,
 				SLOT (handleSmoothScroll (int)));
+	}
+
+	void PagesView::SetDocumentTab (DocumentTab *tab)
+	{
+		DocTab_ = tab;
 	}
 
 	void PagesView::SetShowReleaseMenu (bool show)
@@ -83,7 +90,10 @@ namespace Monocle
 		if (ShowOnNextRelease_)
 		{
 			auto menu = new QMenu;
-			menu->addActions (actions ());
+
+			auto actions = DocTab_->CreateViewCtxMenuActions ();
+
+			menu->addActions (actions);
 			menu->popup (event->globalPos ());
 			menu->setAttribute (Qt::WA_DeleteOnClose);
 			menu->show ();
