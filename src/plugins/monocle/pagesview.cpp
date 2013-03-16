@@ -92,6 +92,11 @@ namespace Monocle
 			auto menu = new QMenu;
 
 			auto actions = DocTab_->CreateViewCtxMenuActions ();
+			for (auto act : actions)
+				connect (menu,
+						SIGNAL (destroyed (QObject*)),
+						act,
+						SLOT (deleteLater ()));
 
 			menu->addActions (actions);
 			menu->popup (event->globalPos ());
