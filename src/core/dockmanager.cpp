@@ -129,7 +129,6 @@ namespace LeechCraft
 
 	void DockManager::handleDockDestroyed ()
 	{
-		qDebug () << Q_FUNC_INFO;
 		auto dock = static_cast<QDockWidget*> (sender ());
 		TabAssociations_.remove (dock);
 		ToggleAct2Dock_.remove (ToggleAct2Dock_.key (dock));
