@@ -1,53 +1,48 @@
 import QtQuick 1.1
+import Effects 1.0
 
 Rectangle
 {
-	id: recentCommentsRect
-	anchors.fill: parent
+	id: rootRect
 
-	ListModel
+	gradient: Gradient
 	{
-		id: commentsModel
-
-		ListElement
+		GradientStop
 		{
-			subject: "subject"
-			body: "body"
-			date: "date"
-			author: "author"
+			position: 0
+			color: colorProxy.color_TextView_TopColor
 		}
-
-		ListElement
+		GradientStop
 		{
-			subject: "subject1"
-			body: "body1"
-			date: "date1"
-			author: "author1"
-		}
-
-		ListElement
-		{
-			subject: "subject2"
-			body: "body2"
-			date: "date2"
-			author: "author2"
+			position: 1
+			color: colorProxy.color_TextView_BottomColor
 		}
 	}
 
+	anchors.fill: parent
+
+	signal linkActivated (string url)
+
 	ListView
 	{
-		id: recentCommentsView
+		id: recentCommentsListView
 		clip: true
 		anchors.fill: parent
-		model: commentsModel;
-		highlight: Rectangle { color: "#DCDCDC"; }
+		model: recentCommentsModel;
 		focus: true
 
 		boundsBehavior: Flickable.StopAtBounds;
-		delegate: Item {
-			height: 80
+		delegate: Item
+		{
+			height: 100
 			width: parent.width
 			smooth: true
+
+			effect: Blur
+			{
+				id: recentCommentsBlur
+				blurRadius: 0.0
+			}
 
 			Rectangle
 			{
@@ -61,63 +56,134 @@ Rectangle
 
 				radius: 3
 
+				gradient: Gradient
+				{
+					GradientStop
+					{
+						position: 0
+						id: upperStop
+						color: colorProxy.color_TextBox_TopColor
+					}
+					GradientStop
+					{
+						position: 1
+						id: lowerStop
+						color: colorProxy.color_TextBox_BottomColor
+					}
+				}
+
 				border.width: 1
-				border.color: "black"
+				border.color: colorProxy.color_TextBox_BorderColor
 				smooth: true
 
 				Text
 				{
 					id: subjectText
-					text: subject
+
+					text: nodeSubject
+
 					font.bold: true
 					font.underline: true
 					font.pointSize: 12
-					color: "black"
+
+					color: colorProxy.color_TextBox_TitleTextColor
+
 					anchors.top: parent.top
-					anchors.topMargin: 2
+					anchors.topMargin: 1
 					anchors.left: delegateRect.left
 					anchors.leftMargin: 5
 					anchors.right: delegateRect.right
 					anchors.rightMargin: 5
 				}
 
-				Text {
-					id: bodyText
-					text: body
-					color: "black"
-					anchors.top: subjectText.bottom
-					anchors.topMargin: 2
-					anchors.left: delegateRect.left
-					anchors.leftMargin: 5
-					anchors.right: delegateRect.right
-					anchors.rightMargin: 5
+				Text
+				{
+					id: commentText
+
+					width: parent.width
+					height: 50
+					text: commentBody
+					textFormat: Text.RichText
+					wrapMode: Text.WordWrap
 					elide: Text.ElideRight
+
+					clip: true
+
+					color: colorProxy.color_TextBox_TextColor
+
+					anchors.top: subjectText.bottom
+					anchors.topMargin: 1
+					anchors.left: delegateRect.left
+					anchors.leftMargin: 5
+					anchors.right: delegateRect.right
+					anchors.rightMargin: 5
+				}
+
+				Text
+				{
+					id: commentInfoText
+
 					font.pointSize: 8
-				}
 
-				Text {
-					id: dateText
-					text: date
-					color: "black"
-					anchors.top: bodyText.bottom
-					anchors.topMargin: 2
+					text: commentInfo
+					elide: Text.ElideRight
+
+					color: colorProxy.color_TextBox_Aux1TextColor
+
 					anchors.left: delegateRect.left
 					anchors.leftMargin: 5
 					anchors.right: delegateRect.right
 					anchors.rightMargin: 5
+					anchors.bottom: delegateRect.bottom
+					anchors.bottomMargin: 1
 				}
 
-				Text {
-					id: authorText
-					text: author
-					color: "black"
-					anchors.top: dateText.bottom
-					anchors.topMargin: 2
-					anchors.left: delegateRect.left
-					anchors.leftMargin: 5
-					anchors.right: delegateRect.right
-					anchors.rightMargin: 5
+				MouseArea
+				{
+					id: subjectTextMouseArea
+					anchors.fill: subjectText
+					hoverEnabled: true
+					z: 1
+
+					onEntered:
+						recentCommentsView.setItemCursor (subjectTextMouseArea, "PointingHandCursor");
+					onExited:
+						recentCommentsView.setItemCursor (subjectTextMouseArea, "ArrowCursor");
+					onClicked:
+						rootRect.linkActivated (nodeUrl)
 				}
+
+				MouseArea
+				{
+					id: rectMouseArea
+					z: 0
+					anchors.fill: parent
+					hoverEnabled: true
+				}
+
+				states:
+				[
+					State
+					{
+						name: "hovered"
+						when: rectMouseArea.containsMouse
+						PropertyChanges { target: delegateRect; border.color: colorProxy.color_TextBox_HighlightBorderColor }
+						PropertyChanges { target: upperStop; color: colorProxy.color_TextBox_HighlightTopColor }
+						PropertyChanges { target: lowerStop; color: colorProxy.color_TextBox_HighlightBottomColor }
+					}
+				]
+
+				transitions:
+				[
+					Transition
+					{
+						from: ""
+						to: "hovered"
+						reversible: true
+						PropertyAnimation { properties: "border.color"; duration: 200 }
+						PropertyAnimation { properties: "color"; duration: 200 }
+					}
+				]
 			}
 		}
 	}

@@ -16,7 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "recentcommentsmodel.h"
+#include "recentcommentsview.h"
+#include <QGraphicsObject>
 
 namespace LeechCraft
 {
@@ -24,18 +25,21 @@ namespace Blogique
 {
 namespace Metida
 {
-	RecentCommentsModel::RecentCommentsModel (QObject *parent)
-	: QStandardItemModel (parent)
+	RecentCommentsView::RecentCommentsView (QWidget *parent)
+	: QDeclarativeView (parent)
 	{
-		QHash<int, QByteArray> roleNames;
-		roleNames [NodeSubject] = "nodeSubject";
-		roleNames [NodeUrl] = "nodeUrl";
-		roleNames [CommentBody] = "commentBody";
-		roleNames [CommentBodyUrl] = "commentUrl";
-		roleNames [CommentInfo] = "commentInfo";
-		setRoleNames (roleNames);
 	}
 
+	void RecentCommentsView::setItemCursor (QGraphicsObject *object, const QString& shape)
+	{
+		Q_ASSERT (object);
+
+		Qt::CursorShape cursor = (shape == "PointingHandCursor") ?
+			Qt::PointingHandCursor :
+			Qt::ArrowCursor;
+
+		object->setCursor (QCursor (cursor));
+	}
 }
 }
 }

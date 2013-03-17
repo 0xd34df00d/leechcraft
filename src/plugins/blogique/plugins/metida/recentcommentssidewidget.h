@@ -30,6 +30,7 @@ namespace Blogique
 namespace Metida
 {
 	class LJAccount;
+	class RecentCommentsModel;
 
 	class RecentCommentsSideWidget : public QWidget
 								, public IBlogiqueSideWidget
@@ -39,6 +40,7 @@ namespace Metida
 
 		Ui::RecentCommentsWidget Ui_;
 		LJAccount *LJAccount_;
+		RecentCommentsModel *RecentCommentsModel_;
 
 	public:
 		explicit RecentCommentsSideWidget (QWidget* parent = 0);
@@ -50,6 +52,10 @@ namespace Metida
 		QVariantMap GetCustomData () const;
 		void SetCustomData (const QVariantMap& map);
 		void SetAccount (QObject *accountObj);
+
+	public slots:
+		void handleGotRecentComents (const QList<LJCommentEntry>& comments);
+		void handleLinkActivated (const QString& link);
 	};
 }
 }

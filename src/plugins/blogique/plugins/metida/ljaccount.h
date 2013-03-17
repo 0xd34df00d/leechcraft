@@ -115,8 +115,6 @@ namespace Metida
 		QAction *LoadLastEvents_;
 		QAction *LoadChangedEvents_;
 
-		RecentCommentsModel *RecentCommentsModel_;
-
 		enum class LastUpdateType
 		{
 			NoType,
@@ -191,7 +189,6 @@ namespace Metida
 		void handleLoadChangedEvents ();
 
 		void handleUnreadMessagesExists (bool exists);
-		void handleGotRecentComments (const QList<LJCommentEntry>& comments);
 
 	signals:
 		void accountRenamed (const QString& newName);
@@ -208,6 +205,7 @@ namespace Metida
 		void gettingEntries2BackupFinished ();
 
 		void gotEntries (const QList<Entry>& entries);
+		void gotRecentComments (const QList<LJCommentEntry>& comments);
 
 		void gotBlogStatistics (const QMap<QDate, int>& statistics);
 

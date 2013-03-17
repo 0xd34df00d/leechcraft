@@ -34,6 +34,7 @@ SET (METIDA_SRCS
 	profilewidget.cpp
 	recentcommentsmodel.cpp
 	recentcommentssidewidget.cpp
+	recentcommentsview.cpp
 	selectgroupsdialog.cpp
 	updatetypedialog.cpp
 	utils.cpp
@@ -58,8 +59,9 @@ SET (METIDA_HEADERS
 	postoptionswidget.h
 	profiletypes.h
 	profilewidget.h
-	recentcommentsmodel.cpp
+	recentcommentsmodel.h
 	recentcommentssidewidget.h
+	recentcommentsview.h
 	selectgroupsdialog.h
 	updatetypedialog.h
 	utils.h

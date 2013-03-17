@@ -19,8 +19,15 @@
 #include "recentcommentssidewidget.h"
 #include <QtDebug>
 #include <QUrl>
+#include <QDeclarativeContext>
+#include <QGraphicsObject>
 #include <util/sys/paths.h>
+#include <util/qml/colorthemeproxy.h>
+#include <util/util.h>
+#include "core.h"
 #include "ljaccount.h"
+#include "recentcommentsmodel.h"
+#include "recentcommentsview.h"
 
 namespace LeechCraft
 {
@@ -31,12 +38,28 @@ namespace Metida
 	RecentCommentsSideWidget::RecentCommentsSideWidget (QWidget *parent)
 	: QWidget (parent)
 	, LJAccount_ (0)
+	, RecentCommentsModel_ (new RecentCommentsModel (this))
 	{
 		Ui_.setupUi (this);
 
-		Ui_.View_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
-		Ui_.View_->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,
+		auto view = new RecentCommentsView (this);
+		Ui_.GridLayout_->addWidget (view);
+
+		view->setResizeMode (QDeclarativeView::SizeRootObjectToView);
+		view->rootContext ()->setContextProperty ("colorProxy",
+				new Util::ColorThemeProxy (Core::Instance ()
+						.GetCoreProxy ()->GetColorThemeManager ()));
+		view->rootContext ()->setContextProperty ("recentCommentsModel",
+				RecentCommentsModel_);
+		view->rootContext ()->setContextProperty ("recentCommentsView",
+				view);
+		view->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,
 				"blogique/metida", "recentcomments.qml")));
+
+		connect (view->rootObject (),
+				SIGNAL (linkActivated (QString)),
+				this,
+				SLOT (handleLinkActivated (QString)));
 	}
 
 	QString RecentCommentsSideWidget::GetName () const
@@ -70,6 +93,39 @@ namespace Metida
 	void RecentCommentsSideWidget::SetAccount (QObject* accountObj)
 	{
 		LJAccount_ = qobject_cast<LJAccount*> (accountObj);
+		if (LJAccount_)
+			connect (accountObj,
+					SIGNAL (gotRecentComments (QList<LJCommentEntry>)),
+					this,
+					SLOT (handleGotRecentComents (QList<LJCommentEntry>)),
+					Qt::UniqueConnection);
+	}
+
+	void RecentCommentsSideWidget::handleGotRecentComents (const QList<LJCommentEntry>& comments)
+	{
+		for (auto comment : comments)
+		{
+			QStandardItem *item = new QStandardItem;
+			item->setData (comment.NodeSubject_, RecentCommentsModel::NodeSubject);
+			item->setData (comment.NodeUrl_, RecentCommentsModel::NodeUrl);
+			item->setData (comment.Text_, RecentCommentsModel::CommentBody);
+			item->setData ("", RecentCommentsModel::CommentBodyUrl);
+			item->setData (tr ("by %1 on %2")
+						.arg (comment.PosterName_.isEmpty () ?
+							tr ("Anonymous") :
+							comment.PosterName_)
+						.arg (comment.PostingDate_.toString (Qt::DefaultLocaleShortDate)),
+					RecentCommentsModel::CommentInfo);
+
+			RecentCommentsModel_->appendRow (item);
+		}
+	}
+
+	void RecentCommentsSideWidget::handleLinkActivated (const QString& link)
+	{
+		Core::Instance ().SendEntity (Util::MakeEntity (link,
+				QString (),
+				OnlyHandle | FromUserInitiated));
 	}
 
 }

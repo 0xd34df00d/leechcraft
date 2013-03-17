@@ -1665,7 +1665,6 @@ namespace Metida
 		if (content.isEmpty ())
 			return;
 
-		qDebug () << document.toByteArray ();
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
 			const auto& events = ParseFullEvents (document);
@@ -1677,7 +1676,6 @@ namespace Metida
 				for (const auto& pairKey : Id2CommentEntry_.keys ())
 					for (const auto& event : events)
 					{
-						qDebug () << pairKey.first << event.ItemID_ << event.DItemID_;
 						if (event.ItemID_ == pairKey.first)
 						{
 							Id2CommentEntry_ [pairKey].NodeSubject_ = event.Event_;
@@ -1852,7 +1850,6 @@ namespace Metida
 		if (content.isEmpty ())
 			return;
 
-		qDebug () << document.toByteArray ();
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
 			QStringList ids;
@@ -1873,7 +1870,6 @@ namespace Metida
 				GenerateChallenge ();
 			}
 
-// 			emit gotRecentComments (ParseComments (document));
 			return;
 		}
 

@@ -33,7 +33,6 @@
 #include "xmlsettingsmanager.h"
 #include "updatetypedialog.h"
 #include "localstorage.h"
-#include "recentcommentsmodel.h"
 
 namespace LeechCraft
 {
@@ -50,7 +49,6 @@ namespace Metida
 	, LJProfile_ (std::make_shared<LJProfile> (this))
 	, LoadLastEvents_ (new QAction (tr ("Last entries"), this))
 	, LoadChangedEvents_ (new QAction (tr ("Changed entries"), this))
-	, RecentCommentsModel_ (new RecentCommentsModel (this))
 	, LastUpdateType_ (LastUpdateType::LastEntries)
 	{
 		qRegisterMetaType<LJProfileData> ("LJProfileData");
@@ -108,7 +106,7 @@ namespace Metida
 		connect (LJXmlRpc_,
 				SIGNAL (gotRecentComments (QList<LJCommentEntry>)),
 				this,
-				SLOT (handleGotRecentComments (QList<LJCommentEntry>)));
+				SIGNAL (gotRecentComments (QList<LJCommentEntry>)));
 
 		connect (LoadLastEvents_,
 				SIGNAL (triggered ()),
@@ -626,23 +624,6 @@ namespace Metida
 			nh->AddDependentObject (this);
 			Core::Instance ().SendEntity (e);
 		}
-	}
-
-	void LJAccount::handleGotRecentComments (const QList<LJCommentEntry>& comments)
-	{
-		for (auto comment : comments)
-			qDebug () << Q_FUNC_INFO
-					<< comment.NodeId_
-					<< comment.Subject_
-					<< comment.PosterId_
-					<< comment.ReplyId_
-					<< comment.ParentReplyId_
-					<< comment.PosterName_
-					<< comment.Text_
-					<< comment.PostingDate_
-					<< comment.NodeSubject_
-					<< comment.NodeUrl_;
-
 	}
 
 }

@@ -31,6 +31,15 @@ namespace Metida
 		Q_OBJECT
 
 	public:
+		enum CommentRoles
+		{
+			NodeSubject = Qt::UserRole + 1,
+			NodeUrl,
+			CommentBody,
+			CommentBodyUrl,
+			CommentInfo
+		};
+
 		explicit RecentCommentsModel (QObject *parent = 0);
 	};
 }
