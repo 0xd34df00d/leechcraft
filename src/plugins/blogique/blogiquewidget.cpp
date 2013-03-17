@@ -163,6 +163,13 @@ namespace Blogique
 			}
 		}
 
+		IAccount *acc = Id2Account_.value (accountBox->currentIndex ());
+		auto ibp = qobject_cast<IBloggingPlatform*> (acc->GetParentBloggingPlatform ());
+		if (ibp &&
+				(ibp->GetFeatures () & IBloggingPlatform::BPFSelectablePostDestination) &&
+				PostTargetBox_)
+			PostTargetBox_->setCurrentIndex (PostTargetBox_->findText (e.Target_, Qt::MatchFixedString));
+
 		EntryType_ = e.EntryType_;
 		EntryId_ = e.EntryId_;
 		Ui_.Subject_->setText (e.Subject_);
@@ -201,6 +208,47 @@ namespace Blogique
 	void BlogiqueWidget::SetParentMultiTabs (QObject *tab)
 	{
 		S_ParentMultiTabs_ = tab;
+	}
+
+	QByteArray BlogiqueWidget::GetTabRecoverData () const
+	{
+		QByteArray result;
+		auto entry = GetCurrentEntry ();
+		if (entry.IsEmpty ())
+			return result;
+
+		QByteArray accId;
+		QComboBox *accountBox = qobject_cast<QComboBox*> (ToolBar_->widgetForAction (AccountsBoxAction_));
+		if (accountBox)
+		{
+			IAccount *acc = Id2Account_.value (accountBox->currentIndex ());
+			if (acc)
+				accId = acc->GetAccountID ();
+		}
+		QDataStream stream (&result, QIODevice::WriteOnly);
+		stream << qint64 (1)
+			<< entry.Subject_
+			<< entry.Content_
+			<< entry.Date_
+			<< entry.Tags_
+			<< entry.Target_
+			<< entry.PostOptions_
+			<< entry.CustomData_
+			<< accId;
+
+		return result;
+	}
+
+	QString BlogiqueWidget::GetTabRecoverName () const
+	{
+		return !Ui_.Subject_->text ().isEmpty () ?
+			Ui_.Subject_->text () :
+			tr ("No subject");
+	}
+
+	QIcon BlogiqueWidget::GetTabRecoverIcon () const
+	{
+		return Core::Instance ().GetIcon ();
 	}
 
 	void BlogiqueWidget::SetTextEditor ()
@@ -378,12 +426,12 @@ namespace Blogique
 		EntryChanged_ = false;
 	}
 
-	Entry BlogiqueWidget::GetCurrentEntry ()
+	Entry BlogiqueWidget::GetCurrentEntry () const
 	{
 		const QString& content = PostEdit_->GetContents (ContentType::HTML);
 		if (content.isEmpty ())
 		{
-			QMessageBox::warning (this,
+			QMessageBox::warning (0,
 					tr ("LeechCraft"),
 					tr ("Entry can't be empty."));
 			return Entry ();
@@ -593,6 +641,7 @@ namespace Blogique
 	void BlogiqueWidget::handleEntryChanged (const QString&)
 	{
 		EntryChanged_ = true;
+		emit tabRecoverDataChanged ();
 	}
 
 	void BlogiqueWidget::handleRemovingEntryBegin ()
@@ -607,13 +656,11 @@ namespace Blogique
 
 	void BlogiqueWidget::handleRequestEntriesBegin ()
 	{
-		qDebug () << Q_FUNC_INFO;
 		ShowProgress (true, tr ("Update entries..."));
 	}
 
 	void BlogiqueWidget::handleRequestEntriesEnd ()
 	{
-		qDebug () << Q_FUNC_INFO;
 		ShowProgress (false);
 	}
 
@@ -746,7 +793,7 @@ namespace Blogique
 		}
 	}
 
-	void BlogiqueWidget::submitTo (const Entry& e)
+	void BlogiqueWidget::submitTo (const Entry&)
 	{
 		SubmitToDialog dlg;
 		if (dlg.exec () == QDialog::Rejected)

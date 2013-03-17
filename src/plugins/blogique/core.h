@@ -57,6 +57,7 @@ namespace Blogique
 		static Core& Instance ();
 
 		QByteArray GetUniqueID () const;
+		QIcon GetIcon () const;
 
 		void SetCoreProxy (ICoreProxy_ptr proxy);
 		ICoreProxy_ptr GetCoreProxy ();

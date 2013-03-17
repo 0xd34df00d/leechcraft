@@ -65,6 +65,12 @@ namespace Blogique
 		return UniqueID_;
 	}
 
+	QIcon Core::GetIcon () const
+	{
+		static QIcon icon (":/plugins/blogique/resources/images/blogique.svg");
+		return icon;
+	}
+
 	void Core::SetCoreProxy (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
