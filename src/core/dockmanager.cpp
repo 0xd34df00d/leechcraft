@@ -159,6 +159,7 @@ namespace LeechCraft
 	{
 		auto thisWindow = RootWM_->GetWindowForTab (qobject_cast<ITabWidget*> (tabWidget));
 
+		QList<QDockWidget*> toShow;
 		for (auto dock : TabAssociations_.keys ())
 		{
 			auto otherWidget = TabAssociations_ [dock];
@@ -169,8 +170,11 @@ namespace LeechCraft
 			if (otherWidget != tabWidget)
 				dock->setVisible (false);
 			else if (!ForcefullyClosed_.contains (dock))
-				dock->setVisible (true);
+				toShow << dock;
 		}
+
+		for (auto dock : toShow)
+			dock->setVisible (true);
 	}
 
 	void DockManager::handleWindow (int index)
