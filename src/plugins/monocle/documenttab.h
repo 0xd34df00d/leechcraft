@@ -166,6 +166,8 @@ namespace Monocle
 		void delayedCenterOn (const QPoint&);
 
 		void handleScaleChosen (int);
+
+		void handleDockLocation (Qt::DockWidgetArea);
 	signals:
 		void changeTabName (QWidget*, const QString&);
 		void removeTab (QWidget*);
