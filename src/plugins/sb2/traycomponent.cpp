@@ -129,7 +129,7 @@ namespace SB2
 		return Component_;
 	}
 
-	void TrayComponent::HandleDock (QDockWidget *dw, bool visible)
+	void TrayComponent::HandleDockAction (QDockWidget *dw, bool visible)
 	{
 		QAction *act = dw->toggleViewAction ();
 		if (!visible)
@@ -205,6 +205,11 @@ namespace SB2
 			Model_->removeRow (item->row ());
 
 		ImageProv_->RemoveAction (action);
+
+		disconnect (action,
+				0,
+				this,
+				0);
 	}
 
 	void TrayComponent::handlePluginsAvailable ()

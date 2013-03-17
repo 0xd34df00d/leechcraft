@@ -58,7 +58,7 @@ namespace SB2
 		TrayComponent (ICoreProxy_ptr, SBView*, QObject* parent = 0);
 
 		QuarkComponent GetComponent () const;
-		void HandleDock (QDockWidget*, bool);
+		void HandleDockAction (QDockWidget*, bool);
 	private:
 		QStandardItem* FindItem (QAction*) const;
 		void AddActions (const QList<QAction*>&, ActionPos);
