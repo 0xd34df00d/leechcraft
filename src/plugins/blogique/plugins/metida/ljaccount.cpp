@@ -623,7 +623,7 @@ namespace Metida
 								static_cast<TaskParameters> (OnlyHandle | FromUserInitiated));
 						Core::Instance ().SendEntity (urlEntity);
 					});
-			nh->AddDependentObject (GetObject ());
+			nh->AddDependentObject (this);
 			Core::Instance ().SendEntity (e);
 		}
 	}
