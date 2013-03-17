@@ -38,6 +38,7 @@
 #include <QImageWriter>
 #include <QUrl>
 #include <util/util.h>
+#include <util/xpc/stddatafiltermenucreator.h>
 #include <interfaces/imwproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include "interfaces/monocle/ihavetoc.h"
@@ -349,39 +350,28 @@ namespace Monocle
 		return true;
 	}
 
-	QList<QAction*> DocumentTab::CreateViewCtxMenuActions ()
+	void DocumentTab::CreateViewCtxMenuActions (QMenu *menu)
 	{
-		QList<QAction*> result;
+		auto copyAsImage = menu->addAction (tr ("Copy selection as image"),
+				this, SLOT (handleCopyAsImage ()));
 
-		auto copyAsImage = new QAction (tr ("Copy selection as image"), this);
-		connect (copyAsImage,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleCopyAsImage ()));
-		result << copyAsImage;
-
-		auto saveAsImage = new QAction (tr ("Save selection as image..."), this);
-		connect (saveAsImage,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleSaveAsImage ()));
-		result << saveAsImage;
+		auto saveAsImage = menu->addAction (tr ("Save selection as image..."),
+				this, SLOT (handleSaveAsImage ()));
 
 		if (qobject_cast<IHaveTextContent*> (CurrentDoc_->GetQObject ()))
 		{
-			result << Util::CreateSeparator (this);
+			menu->addSeparator ();
 
 			const auto& selText = GetSelectionText ();
-			auto copyAsText = new QAction (tr ("Copy selection as text"), this);
-			connect (copyAsText,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleCopyAsText ()));
-			copyAsText->setProperty ("Monocle/Text", selText);
-			result << copyAsText;
-		}
 
-		return result;
+			auto copyAsText = menu->addAction (tr ("Copy selection as text"),
+					this, SLOT (handleCopyAsText ()));
+			copyAsText->setProperty ("Monocle/Text", selText);
+
+			new Util::StdDataFilterMenuCreator (selText,
+					Core::Instance ().GetProxy ()->GetEntityManager (),
+					menu);
+		}
 	}
 
 	int DocumentTab::GetCurrentPage () const

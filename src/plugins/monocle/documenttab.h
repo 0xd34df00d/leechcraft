@@ -107,7 +107,7 @@ namespace Monocle
 		void ReloadDoc (const QString&);
 		bool SetDoc (const QString&);
 
-		QList<QAction*> CreateViewCtxMenuActions ();
+		void CreateViewCtxMenuActions (QMenu*);
 
 		int GetCurrentPage () const;
 		void SetCurrentPage (int, bool immediate = false);
