@@ -26,6 +26,8 @@ namespace LeechCraft
 {
 namespace Monocle
 {
+	class DocumentTab;
+
 	class PagesView : public QGraphicsView
 	{
 		Q_OBJECT
@@ -34,12 +36,14 @@ namespace Monocle
 		bool ShowOnNextRelease_;
 
 		QTimeLine *ScrollTimeline_;
+		DocumentTab *DocTab_;
 
 		QPair<qreal, qreal> XPath_;
 		QPair<qreal, qreal> YPath_;
 	public:
 		PagesView (QWidget* = 0);
 
+		void SetDocumentTab (DocumentTab*);
 		void SetShowReleaseMenu (bool);
 
 		QPointF GetCurrentCenter () const;
