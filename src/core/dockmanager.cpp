@@ -63,6 +63,8 @@ namespace LeechCraft
 		const auto winIdx = rootWM->GetWindowForTab (qobject_cast<ITabWidget*> (tab));
 		if (winIdx >= 0)
 			handleTabChanged (rootWM->GetTabManager (winIdx)->GetCurrentWidget ());
+		else
+			dock->setVisible (false);
 
 		auto toggleAct = dock->toggleViewAction ();
 		ToggleAct2Dock_ [toggleAct] = dock;
