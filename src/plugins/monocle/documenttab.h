@@ -78,7 +78,6 @@ namespace Monocle
 			Select
 		} MouseMode_;
 
-		bool RelayoutScheduled_;
 		bool SaveStateScheduled_;
 
 		struct OnloadData
@@ -126,11 +125,7 @@ namespace Monocle
 	private slots:
 		void handleNavigateRequested (QString, int, double, double);
 
-		void handlePageSizeChanged (int);
 		void handlePageContentsChanged (int);
-
-		void scheduleRelayout ();
-		void handleRelayout ();
 
 		void scheduleSaveState ();
 		void saveState ();

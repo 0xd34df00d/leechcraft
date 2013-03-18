@@ -19,7 +19,9 @@
 #include "pageslayoutmanager.h"
 #include <QGraphicsScene>
 #include <QScrollBar>
+#include <QTimer>
 #include <QtDebug>
+#include "interfaces/monocle/idynamicdocument.h"
 #include "pagesview.h"
 #include "pagegraphicsitem.h"
 #include "common.h"
@@ -37,13 +39,31 @@ namespace Monocle
 	, LayMode_ (LayoutMode::OnePage)
 	, ScaleMode_ (ScaleMode::FitWidth)
 	, FixedScale_ (1)
+	, RelayoutScheduled_ (true)
 	{
+		connect (View_,
+				SIGNAL (sizeChanged ()),
+				this,
+				SLOT (scheduleRelayout ()),
+				Qt::QueuedConnection);
 	}
 
 	void PagesLayoutManager::HandleDoc (IDocument_ptr doc, const QList<PageGraphicsItem*>& pages)
 	{
 		CurrentDoc_ = doc;
 		Pages_ = pages;
+
+		if (qobject_cast<IDynamicDocument*> (CurrentDoc_->GetQObject ()))
+		{
+			connect (CurrentDoc_->GetQObject (),
+					SIGNAL (pageSizeChanged (int)),
+					this,
+					SLOT (handlePageSizeChanged (int)));
+			connect (CurrentDoc_->GetQObject (),
+					SIGNAL (pageContentsChanged (int)),
+					this,
+					SLOT (handlePageContentsChanged (int)));
+		}
 	}
 
 	LayoutMode PagesLayoutManager::GetLayoutMode () const
@@ -164,6 +184,8 @@ namespace Monocle
 
 	void PagesLayoutManager::Relayout ()
 	{
+		RelayoutScheduled_ = false;
+
 		const auto scale = GetCurrentScale ();
 		const auto pageWas = GetCurrentPage ();
 
@@ -188,6 +210,30 @@ namespace Monocle
 		Scene_->setSceneRect (Scene_->itemsBoundingRect ());
 
 		SetCurrentPage (std::max (pageWas, 0), true);
+	}
+
+	void PagesLayoutManager::scheduleRelayout ()
+	{
+		if (RelayoutScheduled_)
+			return;
+
+		QTimer::singleShot (500,
+				this,
+				SLOT (handleRelayout ()));
+		RelayoutScheduled_ = true;
+	}
+
+	void PagesLayoutManager::handleRelayout ()
+	{
+		if (!RelayoutScheduled_)
+			return;
+
+		Relayout ();
+	}
+
+	void PagesLayoutManager::handlePageSizeChanged (int)
+	{
+		scheduleRelayout ();
 	}
 }
 }

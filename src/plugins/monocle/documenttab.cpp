@@ -21,7 +21,6 @@
 #include <QToolBar>
 #include <QComboBox>
 #include <QFileDialog>
-#include <QScrollBar>
 #include <QLineEdit>
 #include <QMenu>
 #include <QToolButton>
@@ -31,11 +30,12 @@
 #include <QDockWidget>
 #include <QClipboard>
 #include <QtDebug>
-#include <QTimer>
 #include <QMimeData>
 #include <QDragMoveEvent>
 #include <QDropEvent>
 #include <QImageWriter>
+#include <QTimer>
+#include <QScrollBar>
 #include <QUrl>
 #include <util/util.h>
 #include <util/xpc/stddatafiltermenucreator.h>
@@ -75,7 +75,6 @@ namespace Monocle
 	, TOCWidget_ (new TOCWidget ())
 	, BMWidget_ (new BookmarksWidget (this))
 	, MouseMode_ (MouseMode::Move)
-	, RelayoutScheduled_ (true)
 	, SaveStateScheduled_ (false)
 	, Onload_ ({ -1, 0, 0 })
 	{
@@ -122,12 +121,6 @@ namespace Monocle
 				SIGNAL (dockLocationChanged (Qt::DockWidgetArea)),
 				this,
 				SLOT (handleDockLocation (Qt::DockWidgetArea)));
-
-		connect (Ui_.PagesView_,
-				SIGNAL (sizeChanged ()),
-				this,
-				SLOT (scheduleRelayout ()),
-				Qt::QueuedConnection);
 	}
 
 	TabClassInfo DocumentTab::GetTabClassInfo () const
@@ -356,16 +349,10 @@ namespace Monocle
 		emit tabRecoverDataChanged ();
 
 		if (qobject_cast<IDynamicDocument*> (CurrentDoc_->GetQObject ()))
-		{
-			connect (CurrentDoc_->GetQObject (),
-					SIGNAL (pageSizeChanged (int)),
-					this,
-					SLOT (handlePageSizeChanged (int)));
 			connect (CurrentDoc_->GetQObject (),
 					SIGNAL (pageContentsChanged (int)),
 					this,
 					SLOT (handlePageContentsChanged (int)));
-		}
 
 		return true;
 	}
@@ -587,8 +574,6 @@ namespace Monocle
 
 	void DocumentTab::Relayout ()
 	{
-		RelayoutScheduled_ = false;
-
 		if (!CurrentDoc_)
 			return;
 
@@ -682,34 +667,10 @@ namespace Monocle
 		}
 	}
 
-	void DocumentTab::handlePageSizeChanged (int)
-	{
-		scheduleRelayout ();
-	}
-
 	void DocumentTab::handlePageContentsChanged (int idx)
 	{
 		auto pageItem = Pages_.at (idx);
 		pageItem->UpdatePixmap ();
-	}
-
-	void DocumentTab::scheduleRelayout ()
-	{
-		if (RelayoutScheduled_)
-			return;
-
-		QTimer::singleShot (500,
-				this,
-				SLOT (handleRelayout ()));
-		RelayoutScheduled_ = true;
-	}
-
-	void DocumentTab::handleRelayout ()
-	{
-		if (!RelayoutScheduled_)
-			return;
-
-		Relayout ();
 	}
 
 	void DocumentTab::saveState ()

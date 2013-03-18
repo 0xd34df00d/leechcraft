@@ -48,6 +48,8 @@ namespace Monocle
 
 		ScaleMode ScaleMode_;
 		double FixedScale_;
+
+		bool RelayoutScheduled_;
 	public:
 		PagesLayoutManager (PagesView*, QObject* = 0);
 
@@ -67,6 +69,11 @@ namespace Monocle
 		double GetCurrentScale () const;
 
 		void Relayout ();
+	public slots:
+		void scheduleRelayout ();
+		void handleRelayout ();
+	private slots:
+		void handlePageSizeChanged (int);
 	};
 }
 }
