@@ -214,8 +214,7 @@ namespace Lastfmscrobble
 			eventElem = eventElem.nextSiblingElement ("event");
 		}
 
-		if (!result.isEmpty ())
-			emit gotRecommendedEvents (result);
+		emit gotRecommendedEvents (result);
 	}
 
 	void RecEventsFetcher::handleError ()
