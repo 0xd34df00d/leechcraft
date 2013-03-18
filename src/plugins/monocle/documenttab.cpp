@@ -589,7 +589,6 @@ namespace Monocle
 
 		LayoutManager_->Relayout ();
 
-		qDebug () << Q_FUNC_INFO << Onload_.Num_;
 		if (Onload_.Num_ >= 0)
 		{
 			handleNavigateRequested (QString (), Onload_.Num_, Onload_.X_, Onload_.Y_);
