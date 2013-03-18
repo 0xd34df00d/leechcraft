@@ -16,27 +16,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QWidget>
-#include "interfaces/monocle/idocument.h"
-#include "ui_thumbspage.h"
+#include "thumbswidget.h"
+#include "pageslayoutmanager.h"
+#include "pagegraphicsitem.h"
+#include "common.h"
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-	class ThumbsPage : public QWidget
+	ThumbsWidget::ThumbsWidget (QWidget *parent)
+	: QWidget (parent)
 	{
-		Q_OBJECT
+		Ui_.setupUi (this);
+		Ui_.ThumbsView_->setScene (&Scene_);
 
-		Ui::ThumbsPage Ui_;
+		LayoutMgr_ = new PagesLayoutManager (Ui_.ThumbsView_, this);
+		LayoutMgr_->SetScaleMode (ScaleMode::FitWidth);
+	}
 
-		IDocument_ptr Doc_;
-	public:
-		ThumbsPage (QWidget* = 0);
+	void ThumbsWidget::HandleDoc (IDocument_ptr doc)
+	{
+		Scene_.clear ();
+		CurrentDoc_ = doc;
 
-		void HandleDoc (IDocument_ptr);
-	};
+		if (!doc)
+			return;
+
+		QList<PageGraphicsItem*> pages;
+		for (int i = 0, size = CurrentDoc_->GetNumPages (); i < size; ++i)
+		{
+			auto item = new PageGraphicsItem (CurrentDoc_, i);
+			Scene_.addItem (item);
+			pages << item;
+		}
+
+		LayoutMgr_->HandleDoc (CurrentDoc_, pages);
+		LayoutMgr_->Relayout ();
+	}
 }
 }
+

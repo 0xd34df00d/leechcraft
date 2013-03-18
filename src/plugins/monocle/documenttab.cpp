@@ -57,6 +57,7 @@
 #include "xmlsettingsmanager.h"
 #include "bookmarkswidget.h"
 #include "pageslayoutmanager.h"
+#include "thumbswidget.h"
 
 namespace LeechCraft
 {
@@ -74,6 +75,7 @@ namespace Monocle
 	, DockWidget_ (new QDockWidget (tr ("Monocle dock")))
 	, TOCWidget_ (new TOCWidget ())
 	, BMWidget_ (new BookmarksWidget (this))
+	, ThumbsWidget_ (new ThumbsWidget ())
 	, MouseMode_ (MouseMode::Move)
 	, SaveStateScheduled_ (false)
 	, Onload_ ({ -1, 0, 0 })
@@ -94,10 +96,12 @@ namespace Monocle
 
 		auto dockTabWidget = new QTabWidget;
 		dockTabWidget->setTabPosition (QTabWidget::West);
-		dockTabWidget->addTab (TOCWidget_, tocIcon, tr ("Table of contents"));
+		dockTabWidget->addTab (TOCWidget_,
+				tocIcon, tr ("Table of contents"));
 		dockTabWidget->addTab (BMWidget_,
-				proxy->GetIcon ("favorites"),
-				tr ("Bookmarks"));
+				proxy->GetIcon ("favorites"), tr ("Bookmarks"));
+		dockTabWidget->addTab (ThumbsWidget_,
+				proxy->GetIcon ("view-preview"), tr ("Thumbnails"));
 
 		DockWidget_->setFeatures (QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
 		DockWidget_->setWidget (dockTabWidget);
@@ -135,7 +139,12 @@ namespace Monocle
 
 	void DocumentTab::Remove ()
 	{
-		delete DockWidget_;
+		DockWidget_->widget ()->deleteLater ();
+		DockWidget_->deleteLater ();
+		TOCWidget_->deleteLater ();
+		BMWidget_->deleteLater ();
+		ThumbsWidget_->deleteLater ();
+
 		emit removeTab (this);
 		deleteLater ();
 	}
@@ -305,8 +314,6 @@ namespace Monocle
 		const auto& title = QFileInfo (path).fileName ();
 		emit changeTabName (this, title);
 
-		BMWidget_->HandleDoc (CurrentDoc_);
-
 		auto isa = qobject_cast<ISupportAnnotations*> (CurrentDoc_->GetQObject ());
 
 		for (int i = 0, size = CurrentDoc_->GetNumPages (); i < size; ++i)
@@ -353,6 +360,9 @@ namespace Monocle
 					SIGNAL (pageContentsChanged (int)),
 					this,
 					SLOT (handlePageContentsChanged (int)));
+
+		BMWidget_->HandleDoc (CurrentDoc_);
+		ThumbsWidget_->HandleDoc (CurrentDoc_);
 
 		return true;
 	}
@@ -579,6 +589,7 @@ namespace Monocle
 
 		LayoutManager_->Relayout ();
 
+		qDebug () << Q_FUNC_INFO << Onload_.Num_;
 		if (Onload_.Num_ >= 0)
 		{
 			handleNavigateRequested (QString (), Onload_.Num_, Onload_.X_, Onload_.Y_);

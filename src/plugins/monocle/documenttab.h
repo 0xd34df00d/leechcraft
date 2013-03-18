@@ -38,6 +38,7 @@ namespace Monocle
 	class PageGraphicsItem;
 	class TOCWidget;
 	class BookmarksWidget;
+	class ThumbsWidget;
 
 	class DocumentTab : public QWidget
 					  , public ITabWidget
@@ -66,6 +67,7 @@ namespace Monocle
 		QDockWidget *DockWidget_;
 		TOCWidget *TOCWidget_;
 		BookmarksWidget *BMWidget_;
+		ThumbsWidget *ThumbsWidget_;
 
 		IDocument_ptr CurrentDoc_;
 		QString CurrentDocPath_;

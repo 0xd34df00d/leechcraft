@@ -16,22 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "thumbspage.h"
+#pragma once
+
+#include <QWidget>
+#include "interfaces/monocle/idocument.h"
+#include "ui_thumbswidget.h"
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-	ThumbsPage::ThumbsPage (QWidget *parent)
-	: QWidget (parent)
-	{
-		Ui_.setupUi (this);
-	}
+	class PagesLayoutManager;
 
-	void ThumbsPage::HandleDoc (IDocument_ptr doc)
+	class ThumbsWidget : public QWidget
 	{
-		Doc_ = doc;
-	}
+		Q_OBJECT
+
+		Ui::ThumbsWidget Ui_;
+		QGraphicsScene Scene_;
+
+		PagesLayoutManager *LayoutMgr_;
+
+		IDocument_ptr CurrentDoc_;
+	public:
+		ThumbsWidget (QWidget* = 0);
+
+		void HandleDoc (IDocument_ptr);
+	};
 }
 }
-
