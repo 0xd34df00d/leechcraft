@@ -56,23 +56,24 @@
 #include "docinfodialog.h"
 #include "xmlsettingsmanager.h"
 #include "bookmarkswidget.h"
+#include "pageslayoutmanager.h"
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-	const int Margin = 10;
-
 	DocumentTab::DocumentTab (const TabClassInfo& tc, QObject *parent)
 	: TC_ (tc)
 	, ParentPlugin_ (parent)
 	, Toolbar_ (new QToolBar ("Monocle"))
 	, ScalesBox_ (0)
 	, PageNumLabel_ (0)
-	, DockWidget_ (0)
+	, LayOnePage_ (0)
+	, LayTwoPages_ (0)
+	, LayoutManager_ (0)
+	, DockWidget_ (new QDockWidget (tr ("Monocle dock")))
 	, TOCWidget_ (new TOCWidget ())
 	, BMWidget_ (new BookmarksWidget (this))
-	, LayMode_ (LayoutMode::OnePage)
 	, MouseMode_ (MouseMode::Move)
 	, RelayoutScheduled_ (true)
 	, SaveStateScheduled_ (false)
@@ -82,6 +83,8 @@ namespace Monocle
 		Ui_.PagesView_->setScene (&Scene_);
 		Ui_.PagesView_->setBackgroundBrush (palette ().brush (QPalette::Dark));
 		Ui_.PagesView_->SetDocumentTab (this);
+
+		LayoutManager_ = new PagesLayoutManager (Ui_.PagesView_, this);
 
 		SetupToolbar ();
 
@@ -97,7 +100,6 @@ namespace Monocle
 				proxy->GetIcon ("favorites"),
 				tr ("Bookmarks"));
 
-		DockWidget_ = new QDockWidget (tr ("Monocle dock"));
 		DockWidget_->setFeatures (QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
 		DockWidget_->setWidget (dockTabWidget);
 
@@ -171,10 +173,10 @@ namespace Monocle
 		QDataStream out (&result, QIODevice::WriteOnly);
 		out << static_cast<quint8> (1)
 			<< CurrentDocPath_
-			<< GetCurrentScale ()
+			<< LayoutManager_->GetCurrentScale ()
 			<< Ui_.PagesView_->mapToScene (GetViewportCenter ()).toPoint ();
 
-		switch (LayMode_)
+		switch (LayoutManager_->GetLayoutMode ())
 		{
 		case LayoutMode::OnePage:
 			out << QByteArray ("one");
@@ -250,12 +252,14 @@ namespace Monocle
 			>> modeStr;
 
 		if (modeStr == "one")
-			LayMode_ = LayoutMode::OnePage;
+			LayoutManager_->SetLayoutMode (LayoutMode::OnePage);
 		else if (modeStr == "two")
-			LayMode_ = LayoutMode::TwoPages;
+			LayoutManager_->SetLayoutMode (LayoutMode::TwoPages);
 
 		SetDoc (path);
-		Relayout (scale);
+		LayoutManager_->SetScaleMode (ScaleMode::Fixed);
+		LayoutManager_->SetFixedScale (scale);
+		Relayout ();
 		QMetaObject::invokeMethod (this,
 				"delayedCenterOn",
 				Qt::QueuedConnection,
@@ -322,9 +326,16 @@ namespace Monocle
 				isa->GetAnnotations (i);
 		}
 
-		LayMode_ = state.Lay_;
-		Relayout (state.CurrentScale_ > 0 ? state.CurrentScale_ : GetCurrentScale ());
-		SetCurrentPage (state.CurrentPage_, 0);
+		LayoutManager_->HandleDoc (CurrentDoc_, Pages_);
+
+		LayoutManager_->SetLayoutMode (state.Lay_);
+		if (state.CurrentScale_ > 0)
+		{
+			LayoutManager_->SetScaleMode (ScaleMode::Fixed);
+			LayoutManager_->SetFixedScale (state.CurrentScale_);
+		}
+		Relayout ();
+		SetCurrentPage (state.CurrentPage_, false);
 
 		updateNumLabel ();
 
@@ -385,32 +396,12 @@ namespace Monocle
 
 	int DocumentTab::GetCurrentPage () const
 	{
-		const auto& center = GetViewportCenter ();
-		auto item = Ui_.PagesView_->itemAt (center - QPoint (1, 1));
-		if (!item)
-			item = Ui_.PagesView_->itemAt (center - QPoint (Margin, Margin));
-		auto pos = std::find_if (Pages_.begin (), Pages_.end (),
-				[item] (decltype (Pages_.front ()) e) { return e == item; });
-		return pos == Pages_.end () ? -1 : std::distance (Pages_.begin (), pos);
+		return LayoutManager_->GetCurrentPage ();
 	}
 
 	void DocumentTab::SetCurrentPage (int idx, bool immediate)
 	{
-		if (idx < 0 || idx >= Pages_.size ())
-			return;
-
-		auto page = Pages_.at (idx);
-		const auto& rect = page->boundingRect ();
-		const auto& pos = page->scenePos ();
-		int xCenter = pos.x () + rect.width () / 2;
-		const auto visibleHeight = std::min (static_cast<int> (rect.height ()),
-				Ui_.PagesView_->viewport ()->contentsRect ().height ());
-		int yCenter = pos.y () + visibleHeight / 2;
-
-		if (immediate)
-			Ui_.PagesView_->centerOn (xCenter, yCenter);
-		else
-			Ui_.PagesView_->SmoothCenterOn (xCenter, yCenter);
+		LayoutManager_->SetCurrentPage (idx, immediate);
 	}
 
 	QPoint DocumentTab::GetCurrentCenter () const
@@ -589,95 +580,25 @@ namespace Monocle
 		Toolbar_->addAction (infoAction);
 	}
 
-	double DocumentTab::GetCurrentScale () const
-	{
-		if (!CurrentDoc_)
-			return 1;
-
-		auto calcRatio = [this] (std::function<double (const QSize&)> dimGetter) -> double
-		{
-			if (Pages_.isEmpty ())
-				return 1.0;
-			int pageIdx = GetCurrentPage ();
-			if (pageIdx < 0)
-				pageIdx = 0;
-
-			double dim = dimGetter (CurrentDoc_->GetPageSize (pageIdx));
-			auto size = Ui_.PagesView_->maximumViewportSize ();
-			size.rwidth () -= Ui_.PagesView_->verticalScrollBar ()->size ().width ();
-			size.rheight () -= Ui_.PagesView_->horizontalScrollBar ()->size ().height ();
-
-			const int margin = 3;
-			size.rwidth () -= 2 * margin;
-			size.rheight () -= 2 * margin;
-
-			return dimGetter (size) / dim;
-		};
-
-		const int idx = ScalesBox_->currentIndex ();
-		switch (idx)
-		{
-		case 0:
-		{
-			auto ratio = calcRatio ([] (const QSize& size) { return size.width (); });
-			if (LayMode_ != LayoutMode::OnePage)
-				ratio /= 2;
-			return ratio;
-		}
-		case 1:
-		{
-			auto wRatio = calcRatio ([] (const QSize& size) { return size.width (); });
-			if (LayMode_ != LayoutMode::OnePage)
-				wRatio /= 2;
-			auto hRatio = calcRatio ([] (const QSize& size) { return size.height (); });
-			return std::min (wRatio, hRatio);
-		}
-		default:
-			return ScalesBox_->itemData (idx).toDouble ();
-		}
-	}
-
 	QPoint DocumentTab::GetViewportCenter () const
 	{
-		const auto& rect = Ui_.PagesView_->viewport ()->contentsRect ();
-		return QPoint (rect.width (), rect.height ()) / 2;
+		return LayoutManager_->GetViewportCenter ();
 	}
 
-	void DocumentTab::Relayout (double scale)
+	void DocumentTab::Relayout ()
 	{
 		RelayoutScheduled_ = false;
 
 		if (!CurrentDoc_)
 			return;
 
-		const auto pageWas = GetCurrentPage ();
+		LayoutManager_->Relayout ();
 
-		for (auto item : Pages_)
-			item->SetScale (scale, scale);
-
-		for (int i = 0, pagesCount = Pages_.size (); i < pagesCount; ++i)
-		{
-			const auto& size = CurrentDoc_->GetPageSize (i) * scale;
-			auto page = Pages_ [i];
-			switch (LayMode_)
-			{
-			case LayoutMode::OnePage:
-				page->setPos (0, Margin + (size.height () + Margin) * i);
-				break;
-			case LayoutMode::TwoPages:
-				page->setPos ((i % 2) * (Margin / 3 + size.width ()), Margin + (size.height () + Margin) * (i / 2));
-				break;
-			}
-		}
-
-		Scene_.setSceneRect (Scene_.itemsBoundingRect ());
 		if (Onload_.Num_ >= 0)
 		{
 			handleNavigateRequested (QString (), Onload_.Num_, Onload_.X_, Onload_.Y_);
 			Onload_.Num_ = -1;
 		}
-		else
-			SetCurrentPage (std::max (pageWas, 0), true);
 
 		updateNumLabel ();
 	}
@@ -725,7 +646,7 @@ namespace Monocle
 
 		bounding = item->mapFromScene (selectionBound).boundingRect ().toRect ();
 
-		const auto scale = GetCurrentScale ();
+		const auto scale = LayoutManager_->GetCurrentScale ();
 		bounding.moveTopLeft (bounding.topLeft () / scale);
 		bounding.setSize (bounding.size () / scale);
 
@@ -788,7 +709,7 @@ namespace Monocle
 		if (!RelayoutScheduled_)
 			return;
 
-		Relayout (GetCurrentScale ());
+		Relayout ();
 	}
 
 	void DocumentTab::saveState ()
@@ -805,8 +726,8 @@ namespace Monocle
 		Core::Instance ().GetDocStateManager ()->SetState (filename,
 				{
 					GetCurrentPage (),
-					LayMode_,
-					GetCurrentScale ()
+					LayoutManager_->GetLayoutMode (),
+					LayoutManager_->GetCurrentScale ()
 				});
 	}
 
@@ -922,14 +843,14 @@ namespace Monocle
 
 	void DocumentTab::handleGoPrev ()
 	{
-		SetCurrentPage (GetCurrentPage () - (LayMode_ == LayoutMode::OnePage ? 1 : 2));
+		SetCurrentPage (GetCurrentPage () - LayoutManager_->GetLayoutModeCount ());
 
 		scheduleSaveState ();
 	}
 
 	void DocumentTab::handleGoNext ()
 	{
-		SetCurrentPage (GetCurrentPage () + (LayMode_ == LayoutMode::OnePage ? 1 : 2));
+		SetCurrentPage (GetCurrentPage () + LayoutManager_->GetLayoutModeCount ());
 
 		scheduleSaveState ();
 	}
@@ -979,11 +900,8 @@ namespace Monocle
 
 	void DocumentTab::showOnePage ()
 	{
-		if (LayMode_ == LayoutMode::OnePage)
-			return;
-
-		LayMode_ = LayoutMode::OnePage;
-		Relayout (GetCurrentScale ());
+		LayoutManager_->SetLayoutMode (LayoutMode::OnePage);
+		Relayout ();
 
 		emit tabRecoverDataChanged ();
 
@@ -992,11 +910,8 @@ namespace Monocle
 
 	void DocumentTab::showTwoPages ()
 	{
-		if (LayMode_ == LayoutMode::TwoPages)
-			return;
-
-		LayMode_ = LayoutMode::TwoPages;
-		Relayout (GetCurrentScale ());
+		LayoutManager_->SetLayoutMode (LayoutMode::TwoPages);
+		Relayout ();
 
 		emit tabRecoverDataChanged ();
 
@@ -1005,7 +920,9 @@ namespace Monocle
 
 	void DocumentTab::syncUIToLayMode ()
 	{
-		auto action = LayMode_ == LayoutMode::OnePage ? LayOnePage_ : LayTwoPages_;
+		auto action = LayoutManager_->GetLayoutMode () == LayoutMode::OnePage ?
+				LayOnePage_ :
+				LayTwoPages_;
 		action->setChecked (true);
 	}
 
@@ -1081,9 +998,23 @@ namespace Monocle
 		Ui_.PagesView_->SmoothCenterOn (point.x (), point.y ());
 	}
 
-	void DocumentTab::handleScaleChosen (int)
+	void DocumentTab::handleScaleChosen (int idx)
 	{
-		Relayout (GetCurrentScale ());
+		switch (idx)
+		{
+		case 0:
+			LayoutManager_->SetScaleMode (ScaleMode::FitWidth);
+			break;
+		case 1:
+			LayoutManager_->SetScaleMode (ScaleMode::FitPage);
+			break;
+		default:
+			LayoutManager_->SetScaleMode (ScaleMode::Fixed);
+			LayoutManager_->SetFixedScale (ScalesBox_->itemData (idx).toDouble ());
+			break;
+		}
+
+		Relayout ();
 
 		scheduleSaveState ();
 

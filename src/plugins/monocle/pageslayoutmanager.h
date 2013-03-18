@@ -18,21 +18,55 @@
 
 #pragma once
 
+#include <QObject>
+#include "interfaces/monocle/idocument.h"
+
+class QGraphicsScene;
+
 namespace LeechCraft
 {
 namespace Monocle
 {
-	enum class LayoutMode
-	{
-		OnePage,
-		TwoPages
-	};
+	enum class LayoutMode;
+	enum class ScaleMode;
 
-	enum class ScaleMode
+	class PagesView;
+	class PageGraphicsItem;
+
+	class PagesLayoutManager : public QObject
 	{
-		Fixed,
-		FitWidth,
-		FitPage
+		Q_OBJECT
+
+		PagesView * const View_;
+		QGraphicsScene * const Scene_;
+
+		IDocument_ptr CurrentDoc_;
+
+		QList<PageGraphicsItem*> Pages_;
+
+		LayoutMode LayMode_;
+
+		ScaleMode ScaleMode_;
+		double FixedScale_;
+	public:
+		PagesLayoutManager (PagesView*, QObject* = 0);
+
+		void HandleDoc (IDocument_ptr, const QList<PageGraphicsItem*>&);
+
+		LayoutMode GetLayoutMode () const;
+		void SetLayoutMode (LayoutMode);
+		int GetLayoutModeCount () const;
+
+		QPoint GetViewportCenter () const;
+
+		int GetCurrentPage () const;
+		void SetCurrentPage (int, bool);
+
+		void SetScaleMode (ScaleMode mode);
+		void SetFixedScale (double);
+		double GetCurrentScale () const;
+
+		void Relayout ();
 	};
 }
 }

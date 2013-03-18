@@ -30,6 +30,7 @@ SET (SRCS
 	bookmarksmanager.cpp
 	bookmark.cpp
 	thumbspage.cpp
+	pageslayoutmanager.cpp
 	)
 SET (FORMS
 	documenttab.ui

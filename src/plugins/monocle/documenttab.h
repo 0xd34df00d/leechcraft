@@ -34,6 +34,7 @@ namespace Monocle
 {
 	enum class LayoutMode;
 
+	class PagesLayoutManager;
 	class PageGraphicsItem;
 	class TOCWidget;
 	class BookmarksWidget;
@@ -60,6 +61,8 @@ namespace Monocle
 		QAction *LayOnePage_;
 		QAction *LayTwoPages_;
 
+		PagesLayoutManager *LayoutManager_;
+
 		QDockWidget *DockWidget_;
 		TOCWidget *TOCWidget_;
 		BookmarksWidget *BMWidget_;
@@ -68,8 +71,6 @@ namespace Monocle
 		QString CurrentDocPath_;
 		QList<PageGraphicsItem*> Pages_;
 		QGraphicsScene Scene_;
-
-		LayoutMode LayMode_;
 
 		enum class MouseMode
 		{
@@ -117,10 +118,8 @@ namespace Monocle
 	private:
 		void SetupToolbar ();
 
-		double GetCurrentScale () const;
-
 		QPoint GetViewportCenter () const;
-		void Relayout (double);
+		void Relayout ();
 
 		QImage GetSelectionImg ();
 		QString GetSelectionText () const;
