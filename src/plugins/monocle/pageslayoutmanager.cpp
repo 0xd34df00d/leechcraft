@@ -59,10 +59,6 @@ namespace Monocle
 					SIGNAL (pageSizeChanged (int)),
 					this,
 					SLOT (handlePageSizeChanged (int)));
-			connect (CurrentDoc_->GetQObject (),
-					SIGNAL (pageContentsChanged (int)),
-					this,
-					SLOT (handlePageContentsChanged (int)));
 		}
 	}
 
