@@ -63,6 +63,8 @@ namespace LeechCraft
 		const auto winIdx = rootWM->GetWindowForTab (qobject_cast<ITabWidget*> (tab));
 		if (winIdx >= 0)
 			handleTabChanged (rootWM->GetTabManager (winIdx)->GetCurrentWidget ());
+		else
+			dock->setVisible (false);
 
 		auto toggleAct = dock->toggleViewAction ();
 		ToggleAct2Dock_ [toggleAct] = dock;
@@ -129,7 +131,6 @@ namespace LeechCraft
 
 	void DockManager::handleDockDestroyed ()
 	{
-		qDebug () << Q_FUNC_INFO;
 		auto dock = static_cast<QDockWidget*> (sender ());
 		TabAssociations_.remove (dock);
 		ToggleAct2Dock_.remove (ToggleAct2Dock_.key (dock));
@@ -158,6 +159,7 @@ namespace LeechCraft
 	{
 		auto thisWindow = RootWM_->GetWindowForTab (qobject_cast<ITabWidget*> (tabWidget));
 
+		QList<QDockWidget*> toShow;
 		for (auto dock : TabAssociations_.keys ())
 		{
 			auto otherWidget = TabAssociations_ [dock];
@@ -168,8 +170,11 @@ namespace LeechCraft
 			if (otherWidget != tabWidget)
 				dock->setVisible (false);
 			else if (!ForcefullyClosed_.contains (dock))
-				dock->setVisible (true);
+				toShow << dock;
 		}
+
+		for (auto dock : toShow)
+			dock->setVisible (true);
 	}
 
 	void DockManager::handleWindow (int index)

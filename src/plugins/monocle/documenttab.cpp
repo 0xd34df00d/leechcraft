@@ -107,10 +107,19 @@ namespace Monocle
 		Toolbar_->addSeparator ();
 		Toolbar_->addAction (DockWidget_->toggleViewAction ());
 
+		auto dwa = static_cast<Qt::DockWidgetArea> (XmlSettingsManager::Instance ()
+				.Property ("DockWidgetArea", Qt::RightDockWidgetArea).toInt ());
+		if (dwa == Qt::NoDockWidgetArea)
+			dwa = Qt::RightDockWidgetArea;
+
 		auto mw = Core::Instance ().GetProxy ()->GetRootWindowsManager ()->GetMWProxy (0);
-		mw->AddDockWidget (Qt::RightDockWidgetArea, DockWidget_);
+		mw->AddDockWidget (dwa, DockWidget_);
 		mw->AssociateDockWidget (DockWidget_, this);
 		mw->ToggleViewActionVisiblity (DockWidget_, false);
+		connect (DockWidget_,
+				SIGNAL (dockLocationChanged (Qt::DockWidgetArea)),
+				this,
+				SLOT (handleDockLocation (Qt::DockWidgetArea)));
 
 		connect (Ui_.PagesView_,
 				SIGNAL (sizeChanged ()),
@@ -1079,6 +1088,13 @@ namespace Monocle
 		scheduleSaveState ();
 
 		emit tabRecoverDataChanged ();
+	}
+
+	void DocumentTab::handleDockLocation (Qt::DockWidgetArea area)
+	{
+		if (area != Qt::AllDockWidgetAreas &&
+				area != Qt::NoDockWidgetArea)
+			XmlSettingsManager::Instance ().setProperty ("DockWidgetArea", area);
 	}
 }
 }

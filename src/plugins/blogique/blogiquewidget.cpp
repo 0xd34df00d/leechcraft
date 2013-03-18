@@ -70,7 +70,9 @@ namespace Blogique
 				.Property ("DockWidgetArea", Qt::RightDockWidgetArea).toInt ());
 		if (dwa == Qt::NoDockWidgetArea)
 			dwa = Qt::RightDockWidgetArea;
-		auto mw = Core::Instance ().GetCoreProxy ()->GetRootWindowsManager ()->GetMWProxy (0);
+
+		auto rootWM = Core::Instance ().GetCoreProxy ()->GetRootWindowsManager ();
+		auto mw = rootWM->GetMWProxy (rootWM->GetPreferredWindowIndex ());
 		mw->AddDockWidget (dwa, Ui_.SideWidget_);
 		mw->AssociateDockWidget (Ui_.SideWidget_, this);
 		mw->ToggleViewActionVisiblity (Ui_.SideWidget_, false);
