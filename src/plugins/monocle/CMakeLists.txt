@@ -29,6 +29,7 @@ SET (SRCS
 	bookmarkswidget.cpp
 	bookmarksmanager.cpp
 	bookmark.cpp
+	thumbspage.cpp
 	)
 SET (FORMS
 	documenttab.ui
@@ -36,6 +37,7 @@ SET (FORMS
 	choosebackenddialog.ui
 	docinfodialog.ui
 	bookmarkswidget.ui
+	thumbspage.ui
 	)
 SET (RESOURCES monocleresources.qrc)
 CreateTrs ("monocle" "en;ru_RU" COMPILED_TRANSLATIONS)
