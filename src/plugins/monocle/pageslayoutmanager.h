@@ -50,6 +50,9 @@ namespace Monocle
 		double FixedScale_;
 
 		bool RelayoutScheduled_;
+
+		double HorMargin_;
+		double VertMargin_;
 	public:
 		PagesLayoutManager (PagesView*, QObject* = 0);
 
@@ -67,6 +70,8 @@ namespace Monocle
 		void SetScaleMode (ScaleMode mode);
 		void SetFixedScale (double);
 		double GetCurrentScale () const;
+
+		void SetMargins (double horizontal, double vertical);
 
 		void Relayout ();
 	public slots:

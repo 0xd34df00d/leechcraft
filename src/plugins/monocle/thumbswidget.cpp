@@ -30,9 +30,11 @@ namespace Monocle
 	{
 		Ui_.setupUi (this);
 		Ui_.ThumbsView_->setScene (&Scene_);
+		Ui_.ThumbsView_->setBackgroundBrush (palette ().brush (QPalette::Dark));
 
 		LayoutMgr_ = new PagesLayoutManager (Ui_.ThumbsView_, this);
 		LayoutMgr_->SetScaleMode (ScaleMode::FitWidth);
+		LayoutMgr_->SetMargins (4, 0);
 	}
 
 	void ThumbsWidget::HandleDoc (IDocument_ptr doc)

@@ -40,6 +40,8 @@ namespace Monocle
 	, ScaleMode_ (ScaleMode::FitWidth)
 	, FixedScale_ (1)
 	, RelayoutScheduled_ (true)
+	, HorMargin_ (0)
+	, VertMargin_ (0)
 	{
 		connect (View_,
 				SIGNAL (sizeChanged ()),
@@ -139,7 +141,7 @@ namespace Monocle
 			if (pageIdx < 0)
 				pageIdx = 0;
 
-			double dim = dimGetter (CurrentDoc_->GetPageSize (pageIdx));
+			double dim = dimGetter (CurrentDoc_->GetPageSize (pageIdx) + QSize (2 * HorMargin_, 2 * VertMargin_));
 			auto size = View_->maximumViewportSize ();
 			size.rwidth () -= View_->verticalScrollBar ()->size ().width ();
 			size.rheight () -= View_->horizontalScrollBar ()->size ().height ();
@@ -178,6 +180,12 @@ namespace Monocle
 		return 1;
 	}
 
+	void PagesLayoutManager::SetMargins (double horizontal, double vertical)
+	{
+		HorMargin_ = horizontal;
+		VertMargin_ = vertical;
+	}
+
 	void PagesLayoutManager::Relayout ()
 	{
 		RelayoutScheduled_ = false;
@@ -203,7 +211,8 @@ namespace Monocle
 			}
 		}
 
-		Scene_->setSceneRect (Scene_->itemsBoundingRect ());
+		Scene_->setSceneRect (Scene_->itemsBoundingRect ()
+					.adjusted (-HorMargin_, -VertMargin_, 0, 0));
 
 		SetCurrentPage (std::max (pageWas, 0), true);
 	}
