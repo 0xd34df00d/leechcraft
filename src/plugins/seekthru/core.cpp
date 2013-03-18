@@ -382,11 +382,11 @@ namespace LeechCraft
 			QStringList Core::GetCategories () const
 			{
 				QStringList result;
-				for (QList<Description>::const_iterator i = Descriptions_.begin (),
-						end = Descriptions_.end (); i != end; ++i)
-					Q_FOREACH (QString tag, i->Tags_)
+				for (const auto& descr : Descriptions_)
+					for (const auto& tag : descr.Tags_)
 						result += Proxy_->GetTagsManager ()->GetTag (tag);
 
+				result.removeAll (QString ());
 				result.sort ();
 				result.erase (std::unique (result.begin (), result.end ()), result.end ());
 

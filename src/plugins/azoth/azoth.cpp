@@ -487,7 +487,7 @@ namespace Azoth
 			"LeechCraft.Azoth.MUCTab",
 			tr ("MUC"),
 			tr ("A multiuser conference"),
-			Core::Instance ().GetProxy ()->GetIcon ("system-users"),
+			QIcon (":/plugins/azoth/resources/images/muctabclass.svg"),
 			0,
 			TFEmpty
 		};

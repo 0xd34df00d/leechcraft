@@ -60,38 +60,25 @@ namespace Util
 			auto idf = qobject_cast<IDataFilter*> (plugin);
 			if (!idf)
 				continue;
+
 			const auto& vars = idf->GetFilterVariants ();
-			if (!vars.isEmpty ())
+
+			if (vars.isEmpty ())
+				continue;
+
+			auto searchMenu = menu->addMenu (ii->GetIcon (), idf->GetFilterVerb ());
+			searchMenu->menuAction ()->setIcon (ii->GetIcon ());
+			for (const auto& var : vars)
 			{
-				auto searchMenu = menu->addMenu (ii->GetIcon (), idf->GetFilterVerb ());
-				searchMenu->menuAction ()->setIcon (ii->GetIcon ());
-				for (const auto& var : vars)
-				{
-					auto act = searchMenu->addAction (var.Name_);
-					const DataFilterActionInfo info =
-					{
-						entity,
-						plugin,
-						var.ID_
-					};
-					act->setData (QVariant::fromValue (info));
-					connect (act,
-							SIGNAL (triggered ()),
-							this,
-							SLOT (handleDataFilterAction ()));
-				}
-			}
-			else
-			{
-				auto searchAct = menu->addAction (ii->GetIcon (), idf->GetFilterVerb ());
-				const DataFilterActionInfo info
+				auto act = searchMenu->addAction (var.Name_);
+				const DataFilterActionInfo info =
 				{
 					entity,
 					plugin,
-					QByteArray ()
+					var.ID_
 				};
-				searchAct->setData (QVariant::fromValue (info));
-				connect (searchAct,
+				act->setData (QVariant::fromValue (info));
+				connect (act,
 						SIGNAL (triggered ()),
 						this,
 						SLOT (handleDataFilterAction ()));
