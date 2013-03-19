@@ -58,6 +58,11 @@ namespace Monocle
 		LayoutMgr_->HandleDoc (CurrentDoc_, pages);
 		LayoutMgr_->Relayout ();
 	}
+
+	void ThumbsWidget::handleCurrentPage (int page)
+	{
+		LayoutMgr_->SetCurrentPage (page, false);
+	}
 }
 }
 
