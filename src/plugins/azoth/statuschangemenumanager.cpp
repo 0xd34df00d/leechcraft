@@ -101,6 +101,7 @@ namespace Azoth
 		for (const auto& custom : customs)
 		{
 			auto action = menu->addAction (custom.Name_, info.Obj_, info.Slot_);
+			action->setIcon (Core::Instance ().GetIconForState (custom.State_));
 			action->setProperty ("Azoth/TargetState", QVariant::fromValue<State> (custom.State_));
 			action->setProperty ("Azoth/TargetText", custom.Text_);
 		}
