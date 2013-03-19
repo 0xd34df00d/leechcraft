@@ -149,12 +149,12 @@ namespace Azoth
 		MenuButton_->setIcon (MainMenu_->icon ());
 		MenuButton_->setPopupMode (QToolButton::InstantPopup);
 
-		MenuChangeStatus_ = CreateStatusChangeMenu (SLOT (handleChangeStatusRequested ()), true);
-		TrayChangeStatus_ = CreateStatusChangeMenu (SLOT (handleChangeStatusRequested ()), true);
+		MenuChangeStatus_ = CreateStatusChangeMenu (SLOT (handleChangeStatusRequested ()));
+		TrayChangeStatus_ = CreateStatusChangeMenu (SLOT (handleChangeStatusRequested ()));
 
 		MenuChangeStatus_->menuAction ()->setProperty ("ActionIcon", "im-status-message-edit");
 
-		FastStatusButton_->setMenu (CreateStatusChangeMenu (SLOT (fastStateChangeRequested ()), true));
+		FastStatusButton_->setMenu (CreateStatusChangeMenu (SLOT (fastStateChangeRequested ())));
 		FastStatusButton_->setDefaultAction (new QAction (tr ("Set status"), this));
 		updateFastStatusButton (SOffline);
 		connect (FastStatusButton_->defaultAction (),
@@ -243,7 +243,7 @@ namespace Azoth
 		addBottomAct (ActionCLMode_);
 	}
 
-	QMenu* MainWidget::CreateStatusChangeMenu (const char *slot, bool withCustom)
+	QMenu* MainWidget::CreateStatusChangeMenu (const char *slot)
 	{
 		QMenu *result = new QMenu (tr ("Change status"), this);
 		result->addAction (Core::Instance ().GetIconForState (SOnline),
@@ -271,13 +271,11 @@ namespace Azoth
 					setProperty ("Azoth/TargetState",
 							QVariant::fromValue<State> (SOffline));
 
-		if (withCustom)
-		{
-			result->addSeparator ();
-			result->addAction (tr ("Custom..."),
-					this,
-					SLOT (handleChangeStatusRequested ()));
-		}
+		result->addSeparator ();
+		result->addAction (tr ("Custom..."),
+				this,
+				SLOT (handleChangeStatusRequested ()));
+
 		return result;
 	}
 

@@ -65,7 +65,7 @@ namespace Azoth
 		QMenu* GetChangeStatusMenu () const;
 	private:
 		void CreateMenu ();
-		QMenu* CreateStatusChangeMenu (const char*, bool withCustom = false);
+		QMenu* CreateStatusChangeMenu (const char*);
 	public slots:
 		void handleAccountVisibilityChanged ();
 	private slots:
