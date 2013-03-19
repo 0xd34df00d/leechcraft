@@ -19,6 +19,7 @@
 #include "statuschangemenumanager.h"
 #include <QMenu>
 #include "core.h"
+#include "customstatusesmanager.h"
 
 namespace LeechCraft
 {
@@ -58,9 +59,68 @@ namespace Azoth
 							QVariant::fromValue<State> (SOffline));
 
 		result->addSeparator ();
-		result->addAction (tr ("Custom..."), obj, slot);
+		auto customAct = result->addAction (tr ("Custom..."), obj, slot);
+
+		connect (result,
+				SIGNAL (aboutToShow ()),
+				this,
+				SLOT (updateCustomStatuses ()));
+		connect (result,
+				SIGNAL (destroyed (QObject*)),
+				this,
+				SLOT (handleMenuDestroyed ()));
+
+		Infos_ [result] = { obj, slot, customAct };
 
 		return result;
+	}
+
+	void StatusChangeMenuManager::updateCustomStatuses ()
+	{
+		if (!Infos_.contains (sender ()))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown menu"
+					<< sender ()
+					<< Infos_.keys ();
+			return;
+		}
+
+		const auto& info = Infos_ [sender ()];
+
+		std::shared_ptr<QMenu> oldMenu (info.CustomAction_->menu ());
+
+		const auto& customs = Core::Instance ().GetCustomStatusesManager ()->GetStates ();
+		if (customs.isEmpty ())
+		{
+			info.CustomAction_->setMenu (nullptr);
+			return;
+		}
+
+		auto menu = new QMenu;
+		for (const auto& custom : customs)
+		{
+			auto action = menu->addAction (custom.Name_, info.Obj_, info.Slot_);
+			action->setProperty ("Azoth/TargetState", QVariant::fromValue<State> (custom.State_));
+			action->setProperty ("Azoth/TargetText", custom.Text_);
+		}
+
+		menu->addSeparator ();
+
+		menu->addAction (tr ("Custom..."), info.Obj_, info.Slot_);
+
+		info.CustomAction_->setMenu (menu);
+	}
+
+	void StatusChangeMenuManager::handleMenuDestroyed ()
+	{
+		const auto& info = Infos_.take (sender ());
+		if (info.CustomAction_)
+		{
+			auto menu = info.CustomAction_->menu ();
+			info.CustomAction_->setMenu (nullptr);
+			delete menu;
+		}
 	}
 }
 }

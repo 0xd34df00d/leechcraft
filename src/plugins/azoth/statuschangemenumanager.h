@@ -19,8 +19,10 @@
 #pragma once
 
 #include <QObject>
+#include <QHash>
 
 class QMenu;
+class QAction;
 
 namespace LeechCraft
 {
@@ -29,10 +31,21 @@ namespace Azoth
 	class StatusChangeMenuManager : public QObject
 	{
 		Q_OBJECT
+
+		struct MenuInfo
+		{
+			QObject *Obj_;
+			const char *Slot_;
+			QAction *CustomAction_;
+		};
+		QHash<QObject*, MenuInfo> Infos_;
 	public:
 		StatusChangeMenuManager (QObject* = 0);
 
 		QMenu* CreateMenu (QObject *obj, const char *slot, QWidget *parent = 0);
+	private slots:
+		void updateCustomStatuses ();
+		void handleMenuDestroyed ();
 	};
 }
 }
