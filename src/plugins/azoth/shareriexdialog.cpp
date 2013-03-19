@@ -78,7 +78,7 @@ namespace Azoth
 		return result;
 	}
 
-	QString ShareRIEXDialog::GetMessage () const
+	QString ShareRIEXDialog::GetShareMessage () const
 	{
 		return Ui_.Message_->toPlainText ();
 	}

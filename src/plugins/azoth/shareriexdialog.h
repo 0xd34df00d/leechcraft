@@ -42,7 +42,7 @@ namespace Azoth
 		ShareRIEXDialog (ICLEntry*, QWidget* = 0);
 
 		QList<ICLEntry*> GetSelectedEntries () const;
-		QString GetMessage () const;
+		QString GetShareMessage () const;
 		bool ShouldSuggestGroups () const;
 	private slots:
 		void fillModel ();
