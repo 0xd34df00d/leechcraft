@@ -466,7 +466,11 @@ namespace Azoth
 		State state = FastStatusButton_->
 				property ("Azoth/TargetState").value<State> ();
 
-		EntryStatus status (state, QString ());
+		const auto& propName = "DefaultStatus" + QString::number (state);
+		const auto& text = XmlSettingsManager::Instance ()
+				.property (propName.toLatin1 ()).toString ();
+
+		EntryStatus status (state, text);
 		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
 			if (acc->IsShownInRoster ())
 				acc->ChangeState (status);
