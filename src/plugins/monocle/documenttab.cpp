@@ -726,7 +726,7 @@ namespace Monocle
 		if (SaveStateScheduled_)
 			return;
 
-		QTimer::singleShot (1000,
+		QTimer::singleShot (5000,
 				this,
 				SLOT (saveState ()));
 		SaveStateScheduled_ = true;
