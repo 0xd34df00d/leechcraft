@@ -41,6 +41,7 @@
 #include "accountactionsmanager.h"
 #include "bookmarksmanagerdialog.h"
 #include "keyboardrosterfixer.h"
+#include "statuschangemenumanager.h"
 
 namespace LeechCraft
 {
@@ -56,6 +57,7 @@ namespace Azoth
 	, ActionShowOffline_ (0)
 	, BottomBar_ (new QToolBar (tr ("Azoth bar"), this))
 	, AccountActsMgr_ (new AccountActionsManager (this, this))
+	, StatusMenuMgr_ (new StatusChangeMenuManager (this))
 	{
 		connect (AccountActsMgr_,
 				SIGNAL (gotConsoleWidget (ConsoleWidget*)),
@@ -149,12 +151,12 @@ namespace Azoth
 		MenuButton_->setIcon (MainMenu_->icon ());
 		MenuButton_->setPopupMode (QToolButton::InstantPopup);
 
-		MenuChangeStatus_ = CreateStatusChangeMenu (SLOT (handleChangeStatusRequested ()));
-		TrayChangeStatus_ = CreateStatusChangeMenu (SLOT (handleChangeStatusRequested ()));
+		MenuChangeStatus_ = StatusMenuMgr_->CreateMenu (this, SLOT (handleChangeStatusRequested ()), this);
+		TrayChangeStatus_ = StatusMenuMgr_->CreateMenu (this, SLOT (handleChangeStatusRequested ())), this;
 
 		MenuChangeStatus_->menuAction ()->setProperty ("ActionIcon", "im-status-message-edit");
 
-		FastStatusButton_->setMenu (CreateStatusChangeMenu (SLOT (fastStateChangeRequested ())));
+		FastStatusButton_->setMenu (StatusMenuMgr_->CreateMenu (this, SLOT (fastStateChangeRequested ()), this));
 		FastStatusButton_->setDefaultAction (new QAction (tr ("Set status"), this));
 		updateFastStatusButton (SOffline);
 		connect (FastStatusButton_->defaultAction (),
@@ -241,42 +243,6 @@ namespace Azoth
 		addBottomAct (addContact);
 		addBottomAct (ActionShowOffline_);
 		addBottomAct (ActionCLMode_);
-	}
-
-	QMenu* MainWidget::CreateStatusChangeMenu (const char *slot)
-	{
-		QMenu *result = new QMenu (tr ("Change status"), this);
-		result->addAction (Core::Instance ().GetIconForState (SOnline),
-				tr ("Online"), this, slot)->
-					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<State> (SOnline));
-		result ->addAction (Core::Instance ().GetIconForState (SChat),
-				tr ("Free to chat"), this, slot)->
-					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<State> (SChat));
-		result ->addAction (Core::Instance ().GetIconForState (SAway),
-				tr ("Away"), this, slot)->
-					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<State> (SAway));
-		result ->addAction (Core::Instance ().GetIconForState (SDND),
-				tr ("DND"), this, slot)->
-					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<State> (SDND));
-		result ->addAction (Core::Instance ().GetIconForState (SXA),
-				tr ("Not available"), this, slot)->
-					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<State> (SXA));
-		result ->addAction (Core::Instance ().GetIconForState (SOffline),
-				tr ("Offline"), this, slot)->
-					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<State> (SOffline));
-
-		result->addSeparator ();
-		result->addAction (tr ("Custom..."),
-				this,
-				SLOT (handleChangeStatusRequested ()));
-
-		return result;
 	}
 
 	void MainWidget::handleAccountVisibilityChanged ()
@@ -454,8 +420,14 @@ namespace Azoth
 
 	void MainWidget::fastStateChangeRequested ()
 	{
-		updateFastStatusButton (sender ()->
-					property ("Azoth/TargetState").value<State> ());
+		const auto& stateVar = sender ()->property ("Azoth/TargetState");
+		if (stateVar.isNull ())
+		{
+			handleChangeStatusRequested ();
+			return;
+		}
+
+		updateFastStatusButton (stateVar.value<State> ());
 		applyFastStatus ();
 	}
 
