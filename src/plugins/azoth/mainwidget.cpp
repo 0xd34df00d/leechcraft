@@ -152,7 +152,7 @@ namespace Azoth
 		MenuButton_->setPopupMode (QToolButton::InstantPopup);
 
 		MenuChangeStatus_ = StatusMenuMgr_->CreateMenu (this, SLOT (handleChangeStatusRequested ()), this);
-		TrayChangeStatus_ = StatusMenuMgr_->CreateMenu (this, SLOT (handleChangeStatusRequested ())), this;
+		TrayChangeStatus_ = StatusMenuMgr_->CreateMenu (this, SLOT (handleChangeStatusRequested ()), this);
 
 		MenuChangeStatus_->menuAction ()->setProperty ("ActionIcon", "im-status-message-edit");
 
