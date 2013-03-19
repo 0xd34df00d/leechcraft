@@ -22,6 +22,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -40,6 +41,13 @@ namespace LeechCraft
 						SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&)),
 						this,
 						SLOT (handleCurrentChanged (const QModelIndex&)));
+
+				auto menu = new QMenu (Ui_.ButtonAdd_);
+				Ui_.ButtonAdd_->setMenu (menu);
+
+				menu->addAction (tr ("From searchplugins.net..."),
+						this,
+						SLOT (handleOpenURL ()))->setData (QUrl ("http://searchplugins.net"));
 			}
 
 			void SearchersList::handleCurrentChanged (const QModelIndex& current)
@@ -118,6 +126,15 @@ namespace LeechCraft
 				Core::Instance ().SetTags (Current_,
 						Core::Instance ().GetProxy ()->
 							GetTagsManager ()->Split (Ui_.Tags_->text ()));
+			}
+
+			void SearchersList::handleOpenURL ()
+			{
+				auto act = qobject_cast<QAction*> (sender ());
+
+				const auto& e = Util::MakeEntity (act->data (),
+						QString (), FromUserInitiated | OnlyHandle);
+				emit gotEntity (e);
 			}
 		};
 	};
