@@ -42,6 +42,8 @@ namespace Monocle
 		ThumbsWidget (QWidget* = 0);
 
 		void HandleDoc (IDocument_ptr);
+	signals:
+		void pageClicked (int);
 	};
 }
 }

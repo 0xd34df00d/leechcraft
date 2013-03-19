@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "thumbswidget.h"
+#include <QtDebug>
 #include "pageslayoutmanager.h"
 #include "pagegraphicsitem.h"
 #include "common.h"
@@ -34,7 +35,7 @@ namespace Monocle
 
 		LayoutMgr_ = new PagesLayoutManager (Ui_.ThumbsView_, this);
 		LayoutMgr_->SetScaleMode (ScaleMode::FitWidth);
-		LayoutMgr_->SetMargins (4, 0);
+		LayoutMgr_->SetMargins (10, 0);
 	}
 
 	void ThumbsWidget::HandleDoc (IDocument_ptr doc)
@@ -50,6 +51,7 @@ namespace Monocle
 		{
 			auto item = new PageGraphicsItem (CurrentDoc_, i);
 			Scene_.addItem (item);
+			item->SetReleaseHandler ([this] (int page, const QPointF&) { emit pageClicked (page); });
 			pages << item;
 		}
 
