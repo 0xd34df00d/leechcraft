@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <functional>
 #include <QGraphicsPixmapItem>
 #include "interfaces/monocle/idocument.h"
 
@@ -39,9 +40,13 @@ namespace Monocle
 		double YScale_;
 
 		bool Invalid_;
+
+		std::function<void (int, QPointF)> ReleaseHandler_;
 	public:
 		PageGraphicsItem (IDocument_ptr, int, QGraphicsItem* = 0);
 		~PageGraphicsItem ();
+
+		void SetReleaseHandler (std::function<void (int, QPointF)>);
 
 		void SetScale (double, double);
 		int GetPageNum () const;

@@ -49,6 +49,11 @@ namespace Monocle
 		Core::Instance ().GetPixmapCacheManager ()->PixmapDeleted (this);
 	}
 
+	void PageGraphicsItem::SetReleaseHandler (std::function<void (int, QPointF)> handler)
+	{
+		ReleaseHandler_ = handler;
+	}
+
 	void PageGraphicsItem::SetScale (double xs, double ys)
 	{
 		XScale_ = xs;
@@ -130,7 +135,7 @@ namespace Monocle
 	void PageGraphicsItem::mousePressEvent (QGraphicsSceneMouseEvent *event)
 	{
 		PressedLink_ = FindLink (event->pos ());
-		if (PressedLink_)
+		if (PressedLink_ || ReleaseHandler_)
 			return;
 
 		QGraphicsItem::mousePressEvent (event);
@@ -144,6 +149,8 @@ namespace Monocle
 		if (!handle)
 		{
 			QGraphicsItem::mouseReleaseEvent (event);
+			if (ReleaseHandler_)
+				ReleaseHandler_ (PageNum_, event->pos ());
 			return;
 		}
 
