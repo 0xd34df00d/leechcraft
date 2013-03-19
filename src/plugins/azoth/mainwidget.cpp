@@ -393,10 +393,18 @@ namespace Azoth
 		EntryStatus status;
 		if (!stateVar.isNull ())
 		{
-			State state = stateVar.value<State> ();
-			const QString& propName = "DefaultStatus" + QString::number (state);
-			const QString& text = XmlSettingsManager::Instance ()
-					.property (propName.toLatin1 ()).toString ();
+			auto state = stateVar.value<State> ();
+
+			const auto& textVar = action->property ("Azoth/TargetText");
+			QString text;
+			if (!textVar.isNull ())
+				text = textVar.toString ();
+			else
+			{
+				const auto& propName = "DefaultStatus" + QString::number (state);
+				text = XmlSettingsManager::Instance ()
+						.property (propName.toLatin1 ()).toString ();
+			}
 			status = EntryStatus (state, text);
 		}
 		else
