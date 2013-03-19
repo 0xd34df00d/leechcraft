@@ -108,7 +108,7 @@ namespace Azoth
 
 		menu->addSeparator ();
 
-		menu->addAction (tr ("Custom..."), info.Obj_, info.Slot_);
+		menu->addAction (tr ("Other..."), info.Obj_, info.Slot_);
 
 		info.CustomAction_->setMenu (menu);
 	}
