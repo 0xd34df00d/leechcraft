@@ -130,6 +130,15 @@ namespace Monocle
 				SIGNAL (dockLocationChanged (Qt::DockWidgetArea)),
 				this,
 				SLOT (handleDockLocation (Qt::DockWidgetArea)));
+
+		connect (this,
+				SIGNAL (currentPageChanged (int)),
+				this,
+				SLOT (updateNumLabel ()));
+		connect (this,
+				SIGNAL (currentPageChanged (int)),
+				ThumbsWidget_,
+				SLOT (handleCurrentPage (int)));
 	}
 
 	TabClassInfo DocumentTab::GetTabClassInfo () const
@@ -342,7 +351,7 @@ namespace Monocle
 		Relayout ();
 		SetCurrentPage (state.CurrentPage_, false);
 
-		updateNumLabel ();
+		checkCurrentPageChange (true);
 
 		TOCEntryLevel_t topLevel;
 		if (auto toc = qobject_cast<IHaveTOC*> (CurrentDoc_->GetQObject ()))
@@ -474,7 +483,7 @@ namespace Monocle
 		connect (Ui_.PagesView_->verticalScrollBar (),
 				SIGNAL (valueChanged (int)),
 				this,
-				SLOT (updateNumLabel ()));
+				SLOT (checkCurrentPageChange ()));
 		connect (Ui_.PagesView_->verticalScrollBar (),
 				SIGNAL (valueChanged (int)),
 				this,
@@ -600,7 +609,7 @@ namespace Monocle
 			Onload_.Num_ = -1;
 		}
 
-		updateNumLabel ();
+		checkCurrentPageChange (true);
 	}
 
 	QImage DocumentTab::GetSelectionImg ()
@@ -857,6 +866,16 @@ namespace Monocle
 				" / " +
 				QString::number (CurrentDoc_->GetNumPages ());
 		PageNumLabel_->setText (str);
+	}
+
+	void DocumentTab::checkCurrentPageChange (bool force)
+	{
+		auto current = GetCurrentPage ();
+		if (PrevCurrentPage_ == current && !force)
+			return;
+
+		PrevCurrentPage_ = current;
+		emit currentPageChanged (current);
 	}
 
 	void DocumentTab::zoomOut ()

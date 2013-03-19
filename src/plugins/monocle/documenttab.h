@@ -82,6 +82,8 @@ namespace Monocle
 
 		bool SaveStateScheduled_;
 
+		int PrevCurrentPage_;
+
 		struct OnloadData
 		{
 			int Num_;
@@ -124,6 +126,8 @@ namespace Monocle
 
 		QImage GetSelectionImg ();
 		QString GetSelectionText () const;
+
+		void UpdateNumLabel ();
 	private slots:
 		void handleNavigateRequested (QString, int, double, double);
 		void handleThumbnailClicked (int);
@@ -143,6 +147,7 @@ namespace Monocle
 		void handleGoNext ();
 		void navigateNumLabel ();
 		void updateNumLabel ();
+		void checkCurrentPageChange (bool force = false);
 
 		void zoomOut ();
 		void zoomIn ();
@@ -172,6 +177,8 @@ namespace Monocle
 		void tabRecoverDataChanged ();
 
 		void fileLoaded (const QString&);
+
+		void currentPageChanged (int);
 	};
 }
 }
