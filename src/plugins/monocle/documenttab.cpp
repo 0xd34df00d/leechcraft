@@ -103,6 +103,11 @@ namespace Monocle
 		dockTabWidget->addTab (ThumbsWidget_,
 				proxy->GetIcon ("view-preview"), tr ("Thumbnails"));
 
+		connect (ThumbsWidget_,
+				SIGNAL (pageClicked (int)),
+				this,
+				SLOT (handleThumbnailClicked (int)));
+
 		DockWidget_->setFeatures (QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
 		DockWidget_->setWidget (dockTabWidget);
 
@@ -675,6 +680,11 @@ namespace Monocle
 			const auto& mapped = page->mapToScene (size.width () * x, size.height () * y);
 			Ui_.PagesView_->SmoothCenterOn (mapped.x (), mapped.y ());
 		}
+	}
+
+	void DocumentTab::handleThumbnailClicked (int num)
+	{
+		SetCurrentPage (num);
 	}
 
 	void DocumentTab::handlePageContentsChanged (int idx)

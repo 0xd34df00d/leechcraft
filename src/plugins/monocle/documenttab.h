@@ -126,6 +126,7 @@ namespace Monocle
 		QString GetSelectionText () const;
 	private slots:
 		void handleNavigateRequested (QString, int, double, double);
+		void handleThumbnailClicked (int);
 
 		void handlePageContentsChanged (int);
 
