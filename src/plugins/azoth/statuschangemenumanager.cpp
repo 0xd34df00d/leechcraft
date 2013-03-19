@@ -59,7 +59,7 @@ namespace Azoth
 							QVariant::fromValue<State> (SOffline));
 
 		result->addSeparator ();
-		auto customAct = result->addAction (tr ("Custom..."), obj, slot);
+		auto customAct = result->addAction (QString (), obj, slot);
 
 		connect (result,
 				SIGNAL (aboutToShow ()),
@@ -93,6 +93,7 @@ namespace Azoth
 		const auto& customs = Core::Instance ().GetCustomStatusesManager ()->GetStates ();
 		if (customs.isEmpty ())
 		{
+			info.CustomAction_->setText (tr ("Custom..."));
 			info.CustomAction_->setMenu (nullptr);
 			return;
 		}
@@ -110,6 +111,7 @@ namespace Azoth
 
 		menu->addAction (tr ("Other..."), info.Obj_, info.Slot_);
 
+		info.CustomAction_->setText (tr ("Custom"));
 		info.CustomAction_->setMenu (menu);
 	}
 
