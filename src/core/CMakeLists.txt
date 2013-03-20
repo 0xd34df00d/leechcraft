@@ -60,6 +60,7 @@ SET (SRCS
 	entitymanager.cpp
 	colorthemeengine.cpp
 	rootwindowsmanager.cpp
+	docktoolbarmanager.cpp
 	)
 SET (FORMS
 	commonjobadder.ui

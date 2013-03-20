@@ -32,6 +32,7 @@ namespace LeechCraft
 {
 	class MainWindow;
 	class RootWindowsManager;
+	class DockToolbarManager;
 
 	class DockManager : public QObject
 	{
@@ -46,6 +47,8 @@ namespace LeechCraft
 		QSet<QDockWidget*> ForcefullyClosed_;
 
 		QHash<QDockWidget*, MainWindow*> Dock2Window_;
+
+		QHash<MainWindow*, DockToolbarManager*> Window2DockToolbarMgr_;
 	public:
 		DockManager (RootWindowsManager*, QObject* = 0);
 

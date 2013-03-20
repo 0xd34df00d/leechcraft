@@ -60,11 +60,16 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 , Guard_ (new ToolbarGuard (this))
 , IsQuitting_ (false)
 , IsToolBarVisible_ (true)
+, LeftDockToolbar_ (new QToolBar ())
+, RightDockToolbar_ (new QToolBar ())
 {
 	installEventFilter (new ChildActionEventFilter (this));
 
 	Ui_.setupUi (this);
 	Ui_.MainTabWidget_->SetWindow (this);
+
+	addToolBar (Qt::LeftToolBarArea, LeftDockToolbar_);
+	addToolBar (Qt::RightToolBarArea, RightDockToolbar_);
 }
 
 void LeechCraft::MainWindow::Init ()
@@ -160,14 +165,14 @@ void LeechCraft::MainWindow::HideMainMenu ()
 	Ui_.ActionMenu_->setVisible (false);
 }
 
-QWidget* LeechCraft::MainWindow::GetDockListWidget (Qt::DockWidgetArea area) const
+QToolBar* LeechCraft::MainWindow::GetDockListWidget (Qt::DockWidgetArea area) const
 {
 	switch (area)
 	{
 	case Qt::LeftDockWidgetArea:
-		return Ui_.LeftDockButtons_;
+		return LeftDockToolbar_;
 	case Qt::RightDockWidgetArea:
-		return Ui_.RightDockButtons_;
+		return RightDockToolbar_;
 	default:
 		return 0;
 	}

@@ -71,6 +71,9 @@ namespace LeechCraft
 		QMenu *MenuTools_;
 
 		bool IsToolBarVisible_;
+		
+		QToolBar *LeftDockToolbar_;
+		QToolBar *RightDockToolbar_;
 	public:
 		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
 		void Init ();
@@ -84,7 +87,7 @@ namespace LeechCraft
 		QMenu* GetMainMenu () const;
 		void HideMainMenu ();
 
-		QWidget* GetDockListWidget (Qt::DockWidgetArea) const;
+		QToolBar* GetDockListWidget (Qt::DockWidgetArea) const;
 
 		void AddMenus (const QMap<QString, QList<QAction*>>&);
 		void RemoveMenus (const QMap<QString, QList<QAction*>>&);

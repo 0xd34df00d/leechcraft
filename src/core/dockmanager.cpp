@@ -19,12 +19,14 @@
 #include "dockmanager.h"
 #include <QDockWidget>
 #include <QToolButton>
+#include <QToolBar>
 #include <util/defaulthookproxy.h>
 #include <interfaces/ihavetabs.h>
 #include "tabmanager.h"
 #include "core.h"
 #include "rootwindowsmanager.h"
 #include "mainwindow.h"
+#include "docktoolbarmanager.h"
 
 namespace LeechCraft
 {
@@ -51,6 +53,8 @@ namespace LeechCraft
 				SIGNAL (destroyed (QObject*)),
 				this,
 				SLOT (handleDockDestroyed ()));
+
+		Window2DockToolbarMgr_ [win]->AddDock (dw, area);
 	}
 
 	void DockManager::AssociateDockWidget (QDockWidget *dock, QWidget *tab)
@@ -83,10 +87,9 @@ namespace LeechCraft
 		if (proxy->IsCancelled ())
 			return;
 
-		QAction *act = widget->toggleViewAction ();
-
-		// TODO
 		/*
+		// TODO
+		QAction *act = widget->toggleViewAction ();
 		if (!visible)
 			MenuView_->removeAction (act);
 		else
@@ -157,24 +160,32 @@ namespace LeechCraft
 
 	void DockManager::handleTabChanged (QWidget *tabWidget)
 	{
-		auto thisWindow = RootWM_->GetWindowForTab (qobject_cast<ITabWidget*> (tabWidget));
+		auto thisWindowIdx = RootWM_->GetWindowForTab (qobject_cast<ITabWidget*> (tabWidget));
+		auto thisWindow = static_cast<MainWindow*> (RootWM_->GetMainWindow (thisWindowIdx));
+		auto toolbarMgr = Window2DockToolbarMgr_ [thisWindow];
 
 		QList<QDockWidget*> toShow;
 		for (auto dock : TabAssociations_.keys ())
 		{
 			auto otherWidget = TabAssociations_ [dock];
 			auto otherWindow = RootWM_->GetWindowIndex (Dock2Window_ [dock]);
-			if (otherWindow != thisWindow)
+			if (otherWindow != thisWindowIdx)
 				continue;
 
 			if (otherWidget != tabWidget)
+			{
 				dock->setVisible (false);
+				toolbarMgr->RemoveDock (dock);
+			}
 			else if (!ForcefullyClosed_.contains (dock))
 				toShow << dock;
 		}
 
 		for (auto dock : toShow)
+		{
 			dock->setVisible (true);
+			toolbarMgr->AddDock (dock, thisWindow->dockWidgetArea (dock));
+		}
 	}
 
 	void DockManager::handleWindow (int index)
@@ -182,5 +193,7 @@ namespace LeechCraft
 		auto win = static_cast<MainWindow*> (RootWM_->GetMainWindow (index));
 		win->GetDockListWidget (Qt::LeftDockWidgetArea)->hide ();
 		win->GetDockListWidget (Qt::RightDockWidgetArea)->hide ();
+
+		Window2DockToolbarMgr_ [win] = new DockToolbarManager (win);
 	}
 }
