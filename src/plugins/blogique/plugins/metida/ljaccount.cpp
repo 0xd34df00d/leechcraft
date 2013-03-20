@@ -607,7 +607,7 @@ namespace Metida
 		if (exists)
 		{
 			Entity e = Util::MakeNotification ("Blogique Metida",
-					tr ("You have unread messages on account %1")
+					tr ("You have unread messages in account %1")
 							.arg ("<em>" + GetAccountName () + "</em>"),
 					Priority::PInfo_);
 			Util::NotificationActionHandler *nh =

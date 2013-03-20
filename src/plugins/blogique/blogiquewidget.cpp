@@ -163,7 +163,7 @@ namespace Blogique
 	}
 
 	void BlogiqueWidget::FillWidget (const Entry& e, const QByteArray& accId)
-	{;
+	{
 		for (int i = 0; !accId.isEmpty () && i < AccountsBox_->count (); ++i)
 		{
 			if (Id2Account_.contains (i) &&
