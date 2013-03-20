@@ -191,8 +191,6 @@ namespace Monocle
 
 	void PagesLayoutManager::Relayout ()
 	{
-		RelayoutScheduled_ = false;
-
 		const auto scale = GetCurrentScale ();
 		const auto pageWas = GetCurrentPage ();
 
@@ -218,6 +216,12 @@ namespace Monocle
 					.adjusted (-HorMargin_, -VertMargin_, 0, 0));
 
 		SetCurrentPage (std::max (pageWas, 0), true);
+
+		if (RelayoutScheduled_)
+		{
+			RelayoutScheduled_ = false;
+			emit scheduledRelayoutFinished ();
+		}
 	}
 
 	void PagesLayoutManager::scheduleRelayout ()
@@ -237,6 +241,7 @@ namespace Monocle
 			return;
 
 		Relayout ();
+		emit scheduledRelayoutFinished ();
 	}
 
 	void PagesLayoutManager::handlePageSizeChanged (int)

@@ -80,6 +80,8 @@ namespace Monocle
 		void handleRelayout ();
 	private slots:
 		void handlePageSizeChanged (int);
+	signals:
+		void scheduledRelayoutFinished ();
 	};
 }
 }
