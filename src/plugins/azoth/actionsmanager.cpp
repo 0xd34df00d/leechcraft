@@ -1000,7 +1000,7 @@ namespace Azoth
 			items << item;
 		}
 
-		riex->SuggestItems (items, entry->GetQObject (), dia.GetMessage ());
+		riex->SuggestItems (items, entry->GetQObject (), dia.GetShareMessage ());
 	}
 
 	void ActionsManager::handleActionVCardTriggered ()
@@ -1032,7 +1032,7 @@ namespace Azoth
 			return;
 
 		const QString& id = dia.GetID ();
-		const QString& msg = dia.GetMessage ();
+		const QString& msg = dia.GetInviteMessage ();
 		if (id.isEmpty ())
 			return;
 

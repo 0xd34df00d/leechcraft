@@ -67,22 +67,29 @@
 #include "actionsmanager.h"
 #include "contactdropfilter.h"
 #include "userslistwidget.h"
+#include "util.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
 	QObject *ChatTab::S_ParentMultiTabs_ = 0;
-	TabClassInfo ChatTab::S_TabClass_;
+	TabClassInfo ChatTab::S_ChatTabClass_;
+	TabClassInfo ChatTab::S_MUCTabClass_;
 
 	void ChatTab::SetParentMultiTabs (QObject *obj)
 	{
 		S_ParentMultiTabs_ = obj;
 	}
 
-	void ChatTab::SetTabClassInfo (const TabClassInfo& tc)
+	void ChatTab::SetChatTabClassInfo (const TabClassInfo& tc)
 	{
-		S_TabClass_ = tc;
+		S_ChatTabClass_ = tc;
+	}
+
+	void ChatTab::SetMUCTabClassInfo (const TabClassInfo& tc)
+	{
+		S_MUCTabClass_ = tc;
 	}
 
 	class CopyFilter : public QObject
@@ -252,7 +259,7 @@ namespace Azoth
 
 	TabClassInfo ChatTab::GetTabClassInfo () const
 	{
-		return S_TabClass_;
+		return IsMUC_ ? S_MUCTabClass_ : S_ChatTabClass_;
 	}
 
 	QList<QAction*> ChatTab::GetTabBarContextMenuActions () const

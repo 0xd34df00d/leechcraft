@@ -37,7 +37,7 @@ namespace Azoth
 		MUCInviteDialog (IAccount*, QWidget* = 0);
 
 		QString GetID () const;
-		QString GetMessage () const;
+		QString GetInviteMessage () const;
 	private slots:
 		void on_Invitee__currentIndexChanged ();
 		void on_Invitee__editTextChanged ();

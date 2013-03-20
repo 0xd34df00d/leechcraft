@@ -35,6 +35,7 @@ namespace Azoth
 	class ServiceDiscoveryWidget;
 	class MicroblogsTab;
 	class AccountActionsManager;
+	class StatusChangeMenuManager;
 
 	class MainWidget : public QWidget
 	{
@@ -58,6 +59,8 @@ namespace Azoth
 
 		QMap<QString, bool> FstLevelExpands_;
 		QMap<QString, QMap<QString, bool>> SndLevelExpands_;
+
+		StatusChangeMenuManager *StatusMenuMgr_;
 	public:
 		MainWidget (QWidget* = 0);
 
@@ -65,7 +68,6 @@ namespace Azoth
 		QMenu* GetChangeStatusMenu () const;
 	private:
 		void CreateMenu ();
-		QMenu* CreateStatusChangeMenu (const char*, bool withCustom = false);
 	public slots:
 		void handleAccountVisibilityChanged ();
 	private slots:

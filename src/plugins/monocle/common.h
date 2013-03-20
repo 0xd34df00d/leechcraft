@@ -27,5 +27,12 @@ namespace Monocle
 		OnePage,
 		TwoPages
 	};
+
+	enum class ScaleMode
+	{
+		Fixed,
+		FitWidth,
+		FitPage
+	};
 }
 }

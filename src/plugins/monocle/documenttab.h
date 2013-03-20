@@ -34,9 +34,11 @@ namespace Monocle
 {
 	enum class LayoutMode;
 
+	class PagesLayoutManager;
 	class PageGraphicsItem;
 	class TOCWidget;
 	class BookmarksWidget;
+	class ThumbsWidget;
 
 	class DocumentTab : public QWidget
 					  , public ITabWidget
@@ -60,16 +62,17 @@ namespace Monocle
 		QAction *LayOnePage_;
 		QAction *LayTwoPages_;
 
+		PagesLayoutManager *LayoutManager_;
+
 		QDockWidget *DockWidget_;
 		TOCWidget *TOCWidget_;
 		BookmarksWidget *BMWidget_;
+		ThumbsWidget *ThumbsWidget_;
 
 		IDocument_ptr CurrentDoc_;
 		QString CurrentDocPath_;
 		QList<PageGraphicsItem*> Pages_;
 		QGraphicsScene Scene_;
-
-		LayoutMode LayMode_;
 
 		enum class MouseMode
 		{
@@ -77,8 +80,9 @@ namespace Monocle
 			Select
 		} MouseMode_;
 
-		bool RelayoutScheduled_;
 		bool SaveStateScheduled_;
+
+		int PrevCurrentPage_;
 
 		struct OnloadData
 		{
@@ -105,8 +109,9 @@ namespace Monocle
 		void RecoverState (const QByteArray&);
 
 		void ReloadDoc (const QString&);
-
 		bool SetDoc (const QString&);
+
+		void CreateViewCtxMenuActions (QMenu*);
 
 		int GetCurrentPage () const;
 		void SetCurrentPage (int, bool immediate = false);
@@ -116,22 +121,18 @@ namespace Monocle
 	private:
 		void SetupToolbar ();
 
-		double GetCurrentScale () const;
-
 		QPoint GetViewportCenter () const;
-		void Relayout (double);
-
-		void ClearViewActions ();
+		void Relayout ();
 
 		QImage GetSelectionImg ();
+		QString GetSelectionText () const;
+
+		void UpdateNumLabel ();
 	private slots:
 		void handleNavigateRequested (QString, int, double, double);
+		void handleThumbnailClicked (int);
 
-		void handlePageSizeChanged (int);
 		void handlePageContentsChanged (int);
-
-		void scheduleRelayout ();
-		void handleRelayout ();
 
 		void scheduleSaveState ();
 		void saveState ();
@@ -146,6 +147,7 @@ namespace Monocle
 		void handleGoNext ();
 		void navigateNumLabel ();
 		void updateNumLabel ();
+		void checkCurrentPageChange (bool force = false);
 
 		void zoomOut ();
 		void zoomIn ();
@@ -166,6 +168,8 @@ namespace Monocle
 		void delayedCenterOn (const QPoint&);
 
 		void handleScaleChosen (int);
+
+		void handleDockLocation (Qt::DockWidgetArea);
 	signals:
 		void changeTabName (QWidget*, const QString&);
 		void removeTab (QWidget*);
@@ -173,6 +177,8 @@ namespace Monocle
 		void tabRecoverDataChanged ();
 
 		void fileLoaded (const QString&);
+
+		void currentPageChanged (int);
 	};
 }
 }

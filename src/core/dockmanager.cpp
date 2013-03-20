@@ -44,21 +44,13 @@ namespace LeechCraft
 	void DockManager::AddDockWidget (QDockWidget *dw, Qt::DockWidgetArea area)
 	{
 		auto win = static_cast<MainWindow*> (RootWM_->GetPreferredWindow ());
-		win->addDockWidget (area, dw);
+		win->addDockWidget (area, dw, Qt::Horizontal);
 		Dock2Window_ [dw] = win;
-
-		connect (dw,
-				SIGNAL (dockLocationChanged (Qt::DockWidgetArea)),
-				this,
-				SLOT (handleDockLocationChanged (Qt::DockWidgetArea)));
 
 		connect (dw,
 				SIGNAL (destroyed (QObject*)),
 				this,
 				SLOT (handleDockDestroyed ()));
-
-		TabifyDW (dw, area);
-		Area2Widgets_ [area] << dw;
 	}
 
 	void DockManager::AssociateDockWidget (QDockWidget *dock, QWidget *tab)
@@ -71,6 +63,8 @@ namespace LeechCraft
 		const auto winIdx = rootWM->GetWindowForTab (qobject_cast<ITabWidget*> (tab));
 		if (winIdx >= 0)
 			handleTabChanged (rootWM->GetTabManager (winIdx)->GetCurrentWidget ());
+		else
+			dock->setVisible (false);
 
 		auto toggleAct = dock->toggleViewAction ();
 		ToggleAct2Dock_ [toggleAct] = dock;
@@ -100,18 +94,6 @@ namespace LeechCraft
 		*/
 	}
 
-	void DockManager::TabifyDW (QDockWidget *dw, Qt::DockWidgetArea area)
-	{
-		auto widgets = Area2Widgets_ [area];
-		widgets.removeAll (dw);
-		if (!widgets.isEmpty ())
-		{
-			Dock2Window_ [dw]->tabifyDockWidget (dw, widgets.last ());
-			dw->show ();
-			dw->raise ();
-		}
-	}
-
 	bool DockManager::eventFilter (QObject *obj, QEvent *event)
 	{
 		if (event->type () != QEvent::Close)
@@ -126,27 +108,7 @@ namespace LeechCraft
 		return false;
 	}
 
-	namespace
-	{
-		Qt::DockWidgetArea Reverse (Qt::DockWidgetArea area)
-		{
-			switch (area)
-			{
-			case Qt::LeftDockWidgetArea:
-				return Qt::RightDockWidgetArea;
-			case Qt::RightDockWidgetArea:
-				return Qt::LeftDockWidgetArea;
-			case Qt::TopDockWidgetArea:
-				return Qt::BottomDockWidgetArea;
-			case Qt::BottomDockWidgetArea:
-				return Qt::TopDockWidgetArea;
-			default:
-				return area;
-			}
-		}
-	}
-
-	void DockManager::handleTabMove (int tab, int from, int to)
+	void DockManager::handleTabMove (int from, int to, int tab)
 	{
 		auto rootWM = Core::Instance ().GetRootWindowsManager ();
 
@@ -163,7 +125,7 @@ namespace LeechCraft
 				const auto area = fromWin->dockWidgetArea (dw);
 
 				fromWin->removeDockWidget (dw);
-				toWin->addDockWidget (Reverse (area), dw);
+				toWin->addDockWidget (area, dw, Qt::Horizontal);
 			}
 	}
 
@@ -173,26 +135,7 @@ namespace LeechCraft
 		TabAssociations_.remove (dock);
 		ToggleAct2Dock_.remove (ToggleAct2Dock_.key (dock));
 		ForcefullyClosed_.remove (dock);
-
-		for (const auto& key : Area2Widgets_.keys ())
-			Area2Widgets_ [key].removeAll (dock);
-	}
-
-	void DockManager::handleDockLocationChanged (Qt::DockWidgetArea area)
-	{
-		auto dw = qobject_cast<QDockWidget*> (sender ());
-		if (!dw)
-			return;
-
-		Qt::DockWidgetArea from = Qt::NoDockWidgetArea;
-		Q_FOREACH (from, Area2Widgets_.keys ())
-		{
-			if (Area2Widgets_ [from].removeAll (dw))
-				break;
-			from = Qt::NoDockWidgetArea;
-		}
-
-		Area2Widgets_ [area] << dw;
+		Dock2Window_.remove (dock);
 	}
 
 	void DockManager::handleDockToggled (bool isVisible)
@@ -214,16 +157,24 @@ namespace LeechCraft
 
 	void DockManager::handleTabChanged (QWidget *tabWidget)
 	{
-		Q_FOREACH (QDockWidget *dock, TabAssociations_.keys ())
+		auto thisWindow = RootWM_->GetWindowForTab (qobject_cast<ITabWidget*> (tabWidget));
+
+		QList<QDockWidget*> toShow;
+		for (auto dock : TabAssociations_.keys ())
 		{
-			if (TabAssociations_ [dock] != tabWidget)
+			auto otherWidget = TabAssociations_ [dock];
+			auto otherWindow = RootWM_->GetWindowIndex (Dock2Window_ [dock]);
+			if (otherWindow != thisWindow)
+				continue;
+
+			if (otherWidget != tabWidget)
 				dock->setVisible (false);
 			else if (!ForcefullyClosed_.contains (dock))
-			{
-				dock->setVisible (true);
-				TabifyDW (dock, Dock2Window_ [dock]->dockWidgetArea (dock));
-			}
+				toShow << dock;
 		}
+
+		for (auto dock : toShow)
+			dock->setVisible (true);
 	}
 
 	void DockManager::handleWindow (int index)
@@ -231,5 +182,6 @@ namespace LeechCraft
 		auto win = static_cast<MainWindow*> (RootWM_->GetMainWindow (index));
 		win->GetDockListWidget (Qt::LeftDockWidgetArea)->hide ();
 		win->GetDockListWidget (Qt::RightDockWidgetArea)->hide ();
+		win->setDockNestingEnabled (true);
 	}
 }

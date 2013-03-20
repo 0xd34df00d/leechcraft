@@ -28,6 +28,85 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief Proxy for QML files to use colors from current color theme.
+	 *
+	 * LeechCraft has a concept of color themes which allows to have a
+	 * consistent look for different plugins and components, both based
+	 * on good old QWidgets and for new QML ones. This class provides
+	 * easy access for the current and up-to-date values of colors of the
+	 * current current color theme via its properties. Property binding
+	 * in QML allows one to automatically handle color theme changes and
+	 * updated without recreating the components.
+	 *
+	 * This class should be used as following:
+	 * -# an object of this class is created, passed with an
+	 *    IColorThemeManager (which could be obtained from ICoreProxy);
+	 * -# the object is added to the QML context of the view containing
+	 *    the component via QDeclarativeContext::setContextPropery();
+	 * -# the corresponding properties of component are bound to the
+	 *    properties of this object.
+	 *
+	 * The first two steps are as easy as following:
+	 * <code>
+	 * \code{.cpp}
+	 * ICoreProxy_ptr proxy; // core proxy object passed to IInfo::Init()
+	 * View_->rootContext ()->setContextProperty ("colorProxy",
+	 *		 new Util::ColorThemeProxy (proxy->GetColorThemeManager ()));
+	 * \endcode
+	 *
+	 * Here the color theme proxy object is added by the "colorProxy"
+	 * name.
+	 *
+	 * Using the added object is pretty easy too:
+	 * \code{.qml}
+	 * Rectangle {
+	 *		anchors.fill: parent
+	 *		radius: 5
+	 *		smooth: true
+	 *		border.color: colorProxy.color_TextBox_BorderColor
+	 *		border.width: 1
+	 *		gradient: Gradient {
+	 *			GradientStop {
+	 *				position: 0
+	 *				id: upperStop
+	 *				color: colorProxy.color_TextBox_TopColor
+	 *			}
+	 *			GradientStop {
+	 *				position: 1
+	 *				id: lowerStop
+	 *				color: colorProxy.color_TextBox_BottomColor
+	 *			}
+	 *		}
+	 *	}
+	 * \endcode
+	 *
+	 * The colors can also be used in the states and dynamic elements,
+	 * for example:
+	 * \code{.qml}
+	 * states: [
+	 *		State {
+	 *			name: "hovered"
+	 *			PropertyChanges { target: tabRect; border.color: colorProxy.color_TextBox_HighlightBorderColor }
+	 *			PropertyChanges { target: upperStop; color: colorProxy.color_TextBox_HighlightTopColor }
+	 *			PropertyChanges { target: lowerStop; color: colorProxy.color_TextBox_HighlightBottomColor }
+	 *		}
+	 *	]
+	 *	transitions: [
+	 *		Transition {
+	 *			from: ""
+	 *			to: "hovered"
+	 *			reversible: true
+	 *			PropertyAnimation { properties: "border.color"; duration: 200 }
+	 *			PropertyAnimation { properties: "color"; duration: 200 }
+	 *		}
+	 *	]
+	 * \endcode
+	 *
+	 * Good examples of color proxy usage are in LMP and SB2 plugins,
+	 * for example.
+	 *
+	 * @sa ICoreProxy, IInfo
+	 */
 	class UTIL_API ColorThemeProxy : public QObject
 	{
 		Q_OBJECT
@@ -108,7 +187,13 @@ namespace Util
 	Q_PROPERTY(QColor color_Panel_TextColor READ GetPanelTextColor NOTIFY colorsChanged) QColor GetPanelTextColor () const { return GetColor ("Panel", "TextColor"); }
 #endif
 	public slots:
-		QColor setAlpha (QColor, qreal);
+		/** @brief Returns the color with the alpha channel set to the given value.
+		 *
+		 * @param[in] color The color whose alpha value should be changed.
+		 * @param[in] alpha The new alpha value. 0 is fully transparent,
+		 * 1 is fully opaque.
+		 */
+		QColor setAlpha (QColor color, qreal alpha);
 	private:
 		QColor GetColor (const QString&, const QString&) const;
 	signals:

@@ -55,13 +55,10 @@ namespace LeechCraft
 		void ToggleViewActionVisiblity (QDockWidget*, bool);
 	protected:
 		bool eventFilter (QObject*, QEvent*);
-	private:
-		void TabifyDW (QDockWidget*, Qt::DockWidgetArea);
 	public slots:
 		void handleTabMove (int, int, int);
 	private slots:
 		void handleDockDestroyed ();
-		void handleDockLocationChanged (Qt::DockWidgetArea);
 		void handleDockToggled (bool);
 		void handleTabChanged (QWidget*);
 

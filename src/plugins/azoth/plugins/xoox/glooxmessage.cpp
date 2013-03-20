@@ -190,7 +190,7 @@ namespace Xoox
 			emit messageDelivered ();
 	}
 
-	QXmppMessage GlooxMessage::GetMessage () const
+	QXmppMessage GlooxMessage::GetNativeMessage () const
 	{
 		return Message_;
 	}

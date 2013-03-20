@@ -16,24 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef KEYSEQUENCER_H
-#define KEYSEQUENCER_H
-#include <QDialog>
-#include "ui_keysequencer.h"
+#pragma once
 
-class KeySequencer : public QDialog
+#include <QWidget>
+#include "interfaces/monocle/idocument.h"
+#include "ui_thumbswidget.h"
+
+namespace LeechCraft
 {
-	Q_OBJECT
+namespace Monocle
+{
+	class PagesLayoutManager;
 
-	Ui::KeySequencer Ui_;
-	QKeySequence Result_;
-public:
-	KeySequencer (const QString&, QWidget* = 0);
-	QKeySequence GetResult () const;
-protected:
-	virtual void keyPressEvent (QKeyEvent*);
-	virtual void keyReleaseEvent (QKeyEvent*);
-};
+	class ThumbsWidget : public QWidget
+	{
+		Q_OBJECT
 
-#endif
+		Ui::ThumbsWidget Ui_;
+		QGraphicsScene Scene_;
 
+		PagesLayoutManager *LayoutMgr_;
+
+		IDocument_ptr CurrentDoc_;
+	public:
+		ThumbsWidget (QWidget* = 0);
+
+		void HandleDoc (IDocument_ptr);
+	public slots:
+		void handleCurrentPage (int);
+	signals:
+		void pageClicked (int);
+	};
+}
+}

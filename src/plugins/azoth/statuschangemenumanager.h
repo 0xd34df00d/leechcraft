@@ -16,24 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef KEYSEQUENCER_H
-#define KEYSEQUENCER_H
-#include <QDialog>
-#include "ui_keysequencer.h"
+#pragma once
 
-class KeySequencer : public QDialog
+#include <QObject>
+#include <QHash>
+
+class QMenu;
+class QAction;
+
+namespace LeechCraft
 {
-	Q_OBJECT
+namespace Azoth
+{
+	class StatusChangeMenuManager : public QObject
+	{
+		Q_OBJECT
 
-	Ui::KeySequencer Ui_;
-	QKeySequence Result_;
-public:
-	KeySequencer (const QString&, QWidget* = 0);
-	QKeySequence GetResult () const;
-protected:
-	virtual void keyPressEvent (QKeyEvent*);
-	virtual void keyReleaseEvent (QKeyEvent*);
-};
+		struct MenuInfo
+		{
+			QObject *Obj_;
+			const char *Slot_;
+			QAction *CustomAction_;
+		};
+		QHash<QObject*, MenuInfo> Infos_;
+	public:
+		StatusChangeMenuManager (QObject* = 0);
 
-#endif
-
+		QMenu* CreateMenu (QObject *obj, const char *slot, QWidget *parent = 0);
+	private slots:
+		void updateCustomStatuses ();
+		void handleMenuDestroyed ();
+	};
+}
+}

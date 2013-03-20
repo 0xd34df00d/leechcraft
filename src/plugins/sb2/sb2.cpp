@@ -121,7 +121,7 @@ namespace SB2
 		auto rootWM = Proxy_->GetRootWindowsManager ();
 		const int idx = rootWM->GetWindowIndex (win);
 
-		Managers_ [idx].Tray_->HandleDock (dw, visible);
+		Managers_ [idx].Tray_->HandleDockAction (dw, visible);
 		proxy->CancelDefault ();
 	}
 

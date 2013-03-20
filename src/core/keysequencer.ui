@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>262</width>
-    <height>62</height>
+    <height>79</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -20,6 +20,13 @@
    <string>Press key sequence</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="DescLabel_">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
    <item>
     <widget class="QLabel" name="Shortcut_">
      <property name="styleSheet">

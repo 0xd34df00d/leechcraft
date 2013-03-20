@@ -20,10 +20,11 @@
 #include <QKeyEvent>
 #include <QtDebug>
 
-KeySequencer::KeySequencer (QWidget *parent)
+KeySequencer::KeySequencer (const QString& labelStr, QWidget *parent)
 : QDialog (parent)
 {
 	Ui_.setupUi (this);
+	Ui_.DescLabel_->setText (labelStr);
 }
 
 QKeySequence KeySequencer::GetResult () const

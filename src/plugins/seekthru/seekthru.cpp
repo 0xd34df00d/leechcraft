@@ -71,7 +71,13 @@ namespace LeechCraft
 				XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 				XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 						"seekthrusettings.xml");
-				XmlSettingsDialog_->SetCustomWidget ("SearchersList", new SearchersList);
+
+				auto searchersList = new SearchersList;
+				connect (searchersList,
+						SIGNAL (gotEntity (LeechCraft::Entity)),
+						this,
+						SIGNAL (gotEntity (LeechCraft::Entity)));
+				XmlSettingsDialog_->SetCustomWidget ("SearchersList", searchersList);
 
 				Chains_ << Sync::ChainID_t ("osengines");
 			}

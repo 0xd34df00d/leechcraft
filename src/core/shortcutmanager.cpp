@@ -195,15 +195,17 @@ namespace LeechCraft
 		if (!item || item->data (Roles::OriginalName).isNull ())
 			return;
 
-		KeySequencer dia (this);
+		KeySequencer dia (prIndex.column () == 2 ?
+					tr ("Set alternate shortcut:") :
+					tr ("Set primary shortcut:"),
+				this);
 		if (dia.exec () == QDialog::Rejected)
 			return;
-
-		const int numSeqs = 2;
 
 		if (item->data (Roles::OldSequence).isNull ())
 			item->setData (item->data (Roles::Sequence), Roles::OldSequence);
 
+		const int numSeqs = 2;
 		auto newSeqs = item->data (Roles::Sequence).value<QKeySequences_t> ();
 		while (newSeqs.size () < numSeqs)
 			newSeqs << QKeySequence ();
