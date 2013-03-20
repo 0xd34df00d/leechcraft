@@ -20,22 +20,9 @@
 
 #include <QtGlobal>
 
-#if defined(Q_CC_GNU)
-
 # if defined(leechcraft_lmp_EXPORTS)
-#  define LMP_API __attribute__ ((visibility("default")))
+#  define LMP_API Q_DECL_EXPORT
 # else
-#  define LMP_API
-# endif
-
-#elif defined(Q_CC_MSVC)
-
-# if defined(leechcraft_lmp_EXPORTS)
-#  define LMP_API __declspec(dllexport)
-# else
-#  define LMP_API __declspec(dllimport)
-# endif
-
-#else
-# define LMP_API
+#  define LMP_API Q_DECL_IMPORT
 #endif
+
