@@ -59,7 +59,7 @@ namespace Liznoo
 		Energy_->attach (Ui_.PercentPlot_);
 
 		QwtLegend *legend = new QwtLegend;
-		legend->setItemMode (QwtLegend::ClickableItem);
+		legend->setDefaultItemMode (QwtLegendData::Clickable);
 		Ui_.PercentPlot_->insertLegend (legend, QwtPlot::BottomLegend);
 	}
 
