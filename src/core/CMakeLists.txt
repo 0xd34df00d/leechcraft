@@ -61,51 +61,6 @@ SET (SRCS
 	colorthemeengine.cpp
 	rootwindowsmanager.cpp
 	)
-SET (HEADERS
-	mainwindow.h
-	commonjobadder.h
-	core.h
-	pluginmanager.h
-	xmlsettingsmanager.h
-	pluginmanagerdialog.h
-	iconthemeengine.h
-	childactioneventfilter.h
-	tabmanager.h
-	authenticationdialog.h
-	sslerrorsdialog.h
-	storagebackend.h
-	sqlstoragebackend.h
-	debugmessagehandler.h
-	application.h
-	handlerchoicedialog.h
-	shortcutmanager.h
-	keysequencer.h
-	networkdiskcache.h
-	networkaccessmanager.h
-	coreproxy.h
-	tagsmanager.h
-	tagsviewer.h
-	aboutdialog.h
-	startupwizard.h
-	localsockethandler.h
-	toolbarguard.h
-	newtabmenumanager.h
-	wizardtypechoicepage.h
-	plugintreebuilder.h
-	coreinstanceobject.h
-	settingstab.h
-	separatetabbar.h
-	separatetabwidget.h
-	mwproxy.h
-	winwarndialog.h
-	coreplugin2manager.h
-	dockmanager.h
-	acceptlangwidget.h
-	entitymanager.h
-	colorthemeengine.h
-	rootwindowsmanager.h
-	interfaces/structures.h
-	)
 SET (FORMS
 	commonjobadder.ui
 	leechcraft.ui
@@ -138,7 +93,6 @@ ADD_EXECUTABLE (leechcraft WIN32
 	../config.h
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${UIS_H}
 	${RCC}
 	)
