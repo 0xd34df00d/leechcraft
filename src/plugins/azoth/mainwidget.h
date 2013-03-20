@@ -76,7 +76,6 @@ namespace Azoth
 		void on_CLTree__customContextMenuRequested (const QPoint&);
 		void handleChangeStatusRequested ();
 		void fastStateChangeRequested ();
-		void applyFastStatus ();
 
 		void handleEntryActivationType ();
 		void handleCatRenameTriggered ();

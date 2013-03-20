@@ -157,12 +157,8 @@ namespace Azoth
 		MenuChangeStatus_->menuAction ()->setProperty ("ActionIcon", "im-status-message-edit");
 
 		FastStatusButton_->setMenu (StatusMenuMgr_->CreateMenu (this, SLOT (fastStateChangeRequested ()), this));
-		FastStatusButton_->setDefaultAction (new QAction (tr ("Set status"), this));
+		FastStatusButton_->setPopupMode (QToolButton::InstantPopup);
 		updateFastStatusButton (SOffline);
-		connect (FastStatusButton_->defaultAction (),
-				SIGNAL (triggered ()),
-				this,
-				SLOT (applyFastStatus ()));
 
 		XmlSettingsManager::Instance ().RegisterObject ("ShowMenuBar",
 				this, "menuBarVisibilityToggled");
@@ -252,9 +248,7 @@ namespace Azoth
 
 	void MainWidget::updateFastStatusButton (State state)
 	{
-		FastStatusButton_->defaultAction ()->setIcon (Core::Instance ().GetIconForState (state));
-		FastStatusButton_->setProperty ("Azoth/TargetState",
-				QVariant::fromValue<State> (state));
+		FastStatusButton_->setIcon (Core::Instance ().GetIconForState (state));
 	}
 
 	void MainWidget::treeActivated (const QModelIndex& index)
@@ -366,6 +360,20 @@ namespace Azoth
 		menu->exec (Ui_.CLTree_->mapToGlobal (pos));
 		menu->deleteLater ();
 	}
+	
+	namespace
+	{
+		QString GetStatusText (QObject *object, State state)
+		{
+			const auto& textVar = object->property ("Azoth/TargetText");
+			if (!textVar.isNull ())
+				return textVar.toString ();
+			
+			const auto& propName = "DefaultStatus" + QString::number (state);
+			return XmlSettingsManager::Instance ()
+					.property (propName.toLatin1 ()).toString ();
+		}
+	}
 
 	void MainWidget::handleChangeStatusRequested ()
 	{
@@ -393,19 +401,8 @@ namespace Azoth
 		EntryStatus status;
 		if (!stateVar.isNull ())
 		{
-			auto state = stateVar.value<State> ();
-
-			const auto& textVar = action->property ("Azoth/TargetText");
-			QString text;
-			if (!textVar.isNull ())
-				text = textVar.toString ();
-			else
-			{
-				const auto& propName = "DefaultStatus" + QString::number (state);
-				text = XmlSettingsManager::Instance ()
-						.property (propName.toLatin1 ()).toString ();
-			}
-			status = EntryStatus (state, text);
+			const auto state = stateVar.value<State> ();
+			status = EntryStatus (state, GetStatusText (action, state));
 		}
 		else
 		{
@@ -420,8 +417,9 @@ namespace Azoth
 			acc->ChangeState (status);
 		else
 		{
-			Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
-				acc->ChangeState (status);
+			for (IAccount *acc : Core::Instance ().GetAccounts ())
+				if (acc->IsShownInRoster ())
+					acc->ChangeState (status);
 			updateFastStatusButton (status.State_);
 		}
 	}
@@ -435,21 +433,11 @@ namespace Azoth
 			return;
 		}
 
-		updateFastStatusButton (stateVar.value<State> ());
-		applyFastStatus ();
-	}
-
-	void MainWidget::applyFastStatus ()
-	{
-		State state = FastStatusButton_->
-				property ("Azoth/TargetState").value<State> ();
-
-		const auto& propName = "DefaultStatus" + QString::number (state);
-		const auto& text = XmlSettingsManager::Instance ()
-				.property (propName.toLatin1 ()).toString ();
-
-		EntryStatus status (state, text);
-		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
+		const auto state = stateVar.value<State> ();
+		updateFastStatusButton (state);
+		
+		const EntryStatus status (state, GetStatusText (sender (), state));
+		for (IAccount *acc : Core::Instance ().GetAccounts ())
 			if (acc->IsShownInRoster ())
 				acc->ChangeState (status);
 	}
