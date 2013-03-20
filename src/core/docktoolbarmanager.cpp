@@ -75,7 +75,17 @@ namespace LeechCraft
 
 	void DockToolbarManager::RemoveDock (QDockWidget *dw)
 	{
-		HandleDockDestroyed (dw, dw->toggleViewAction ());
+		auto toggleAct = dw->toggleViewAction ();
+		disconnect (dw,
+				SIGNAL (dockLocationChanged (Qt::DockWidgetArea)),
+				this,
+				SLOT (updateDockLocation (Qt::DockWidgetArea)));
+		disconnect (toggleAct,
+				SIGNAL (toggled (bool)),
+				this,
+				SLOT (handleActionToggled (bool)));
+		
+		HandleDockDestroyed (dw, toggleAct);
 	}
 
 	/* Both dw and act can be already dead and gone here.
