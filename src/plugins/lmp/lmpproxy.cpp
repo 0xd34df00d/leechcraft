@@ -41,9 +41,9 @@ namespace LMP
 		return Core::Instance ().GetLocalFileResolver ();
 	}
 
-	QString LMPProxy::FindAlbumArt (const QString& near, bool includeCollection) const
+	QString LMPProxy::FindAlbumArt (const QString& nearPath, bool includeCollection) const
 	{
-		return FindAlbumArtPath (near, !includeCollection);
+		return FindAlbumArtPath (nearPath, !includeCollection);
 	}
 
 	QList<QFileInfo> LMPProxy::RecIterateInfo (const QString& path, bool followSymLinks) const
