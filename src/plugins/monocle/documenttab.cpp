@@ -683,8 +683,8 @@ namespace Monocle
 
 			const auto& pageRect = page->mapToScene (page->boundingRect ());
 			const auto& xsect = visibleRect.intersected (pageRect);
-			const auto& pageXsect = page->mapFromScene (xsect);
-			rects [page->GetPageNum ()] = pageXsect.boundingRect ().toAlignedRect ();
+			const auto& pageXsect = page->MapToDoc (page->mapFromScene (xsect).boundingRect ());
+			rects [page->GetPageNum ()] = pageXsect.toAlignedRect ();
 		}
 
 		emit pagesVisibilityChanged (rects);
