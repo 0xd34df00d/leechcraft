@@ -40,6 +40,8 @@ namespace LeechCraft
 		};
 		init (Qt::LeftDockWidgetArea);
 		init (Qt::RightDockWidgetArea);
+		init (Qt::TopDockWidgetArea);
+		init (Qt::BottomDockWidgetArea);
 	}
 
 	void DockToolbarManager::AddDock (QDockWidget *dw, Qt::DockWidgetArea area)
