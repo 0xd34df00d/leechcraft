@@ -75,6 +75,8 @@ namespace Blogique
 
 		auto rootWM = Core::Instance ().GetCoreProxy ()->GetRootWindowsManager ();
 		auto mw = rootWM->GetMWProxy (rootWM->GetPreferredWindowIndex ());
+		Ui_.SideWidget_->setWindowIcon (Core::Instance ().GetIcon ());
+		Ui_.SideWidget_->toggleViewAction ()->setIcon (Core::Instance ().GetIcon ());
 		mw->AddDockWidget (dwa, Ui_.SideWidget_);
 		mw->AssociateDockWidget (Ui_.SideWidget_, this);
 		mw->ToggleViewActionVisiblity (Ui_.SideWidget_, false);
