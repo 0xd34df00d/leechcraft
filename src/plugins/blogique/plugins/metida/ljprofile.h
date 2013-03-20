@@ -60,6 +60,7 @@ namespace Metida
 		QList<LJFriendGroup> GetFriendGroups () const;
 
 		int GetFreeGroupId () const;
+
 	private:
 		void SaveAvatar (QUrl url = QUrl ());
 		void SaveOthersAvatars (const QString& id, const QUrl& url);

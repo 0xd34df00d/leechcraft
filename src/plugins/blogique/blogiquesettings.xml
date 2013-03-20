@@ -8,11 +8,6 @@
 		<label value="Behavior" />
 		<groupbox>
 			<label lang="en" value="Local entries" />
-<!--			<item type="spinbox" property="AutoSaveDraft" default="5" minimum="1" maximum="60" step="1">
-				<label value="Draft save timeout:" />
-				<suffix value=" min" />
-			</item>
-			-->
 			<item type="combobox" property="OpenDraftByDblClick" >
 				<label lang="en" value="Open draft by double click in:" />
 				<option name="CurrentTab" >
@@ -33,6 +28,13 @@
 				<option name="NewTab" default="true" >
 					<label lang="en" value="New tab" />
 				</option>
+			</item>
+		</groupbox>
+		<groupbox>
+			<label lang="en" value="Editor options" />
+			<item type="spinbox" property="AutoSave" default="120" minimum="10" maximum="3600">
+				<label value="Autosave interval:" />
+				<suffix value=" s" />
 			</item>
 		</groupbox>
 	</page>

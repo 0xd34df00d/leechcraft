@@ -48,8 +48,7 @@ namespace Blogique
 		/** @brief Returns a type of blogique side widget.
 		*
 		* If type of widget is SideWidgetType::PostOptionsSideWidget widget should
-		* implement IPostOptionsWidget interface and ICustomSideWidget interface
-		* if type of widget is SideWidgetType::CustomSideWidget.
+		* implement IPostOptionsWidget interface.
 		*
 		* @return SideWidgetType of blogique side widget.
 		*
@@ -69,7 +68,7 @@ namespace Blogique
 		virtual QVariantMap GetPostOptions () const = 0;
 
 		/** @brief Fill widget with post options.
-		 * 
+		 *
 		 * If type of widget is not a SideWidgetType::PostOptionsSideWidget widget
 		 * shouldn't do anything.
 		 *
@@ -89,7 +88,7 @@ namespace Blogique
 		virtual QVariantMap GetCustomData () const = 0;
 
 		/** @brief Fill widget with custom data.
-		 * 
+		 *
 		 * If type of widget is a SideWidgetType::PostOptionsSideWidget widget
 		 * shouldn't do anything.
 		 *

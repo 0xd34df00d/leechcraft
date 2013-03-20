@@ -26,7 +26,9 @@ SET (SRCS
 	entriesfilterproxymodel.cpp
 	pluginproxy.cpp
 	profiledialog.cpp
+	selecttargetdelegate.cpp
 	storagemanager.cpp
+	submittodialog.cpp
 	updateentriesdialog.cpp
 	utils.cpp
 	xmlsettingsmanager.cpp
@@ -40,6 +42,7 @@ SET (FORMS
 	blogiquewidget.ui
 	draftentrieswidget.ui
 	profiledialog.ui
+	submittodialog.ui
 	updateentriesdialog.ui
 	)
 

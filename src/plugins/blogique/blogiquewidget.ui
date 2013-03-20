@@ -72,7 +72,7 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <layout class="QGridLayout" name="gridLayout_2">
+      <layout class="QGridLayout" name="DockWidgetGridLayout_">
        <property name="margin">
         <number>0</number>
        </property>
@@ -141,6 +141,11 @@
   <action name="NewEntry_">
    <property name="text">
     <string>New post</string>
+   </property>
+  </action>
+  <action name="SubmitTo_">
+   <property name="text">
+    <string>Submit to...</string>
    </property>
   </action>
  </widget>

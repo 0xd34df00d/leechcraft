@@ -2,6 +2,7 @@ CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 PROJECT (leechcraft_blogique_metida)
 INCLUDE (InitLCPlugin OPTIONAL)
 
+SET (QT_USE_QTDECLARATIVE TRUE)
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
 SET (QT_USE_QTXMLPATTERNS TRUE)
@@ -26,10 +27,14 @@ SET (METIDA_SRCS
 	ljfriendentry.cpp
 	ljprofile.cpp
 	ljxmlrpc.cpp
+	localstorage.cpp
 	metida.cpp
 	postoptionswidget.cpp
 	profiletypes.cpp
 	profilewidget.cpp
+	recentcommentsmodel.cpp
+	recentcommentssidewidget.cpp
+	recentcommentsview.cpp
 	selectgroupsdialog.cpp
 	updatetypedialog.cpp
 	utils.cpp
@@ -49,10 +54,14 @@ SET (METIDA_HEADERS
 	ljfriendentry.h
 	ljprofile.h
 	ljxmlrpc.h
+	localstorage.h
 	metida.h
 	postoptionswidget.h
 	profiletypes.h
 	profilewidget.h
+	recentcommentsmodel.h
+	recentcommentssidewidget.h
+	recentcommentsview.h
 	selectgroupsdialog.h
 	updatetypedialog.h
 	utils.h
@@ -65,6 +74,7 @@ SET (METIDA_FORMS
 	ljaccountconfigurationwidget.ui
 	profilewidget.ui
 	postoptionswidget.ui
+	recentcommentssidewidget.ui
 	selectgroupsdialog.ui
 	updatetypedialog.ui
 	)
@@ -105,3 +115,4 @@ INSTALL (FILES ${METIDA_COMPILED_TRANSLATIONS}
 		DESTINATION ${LC_TRANSLATIONS_DEST})
 INSTALL (FILES blogiquemetidasettings.xml
 		DESTINATION ${LC_SETTINGS_DEST})
+INSTALL(DIRECTORY share/qml/blogique DESTINATION ${LC_QML_DEST})
