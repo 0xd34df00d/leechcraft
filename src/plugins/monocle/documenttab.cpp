@@ -139,6 +139,10 @@ namespace Monocle
 				SIGNAL (currentPageChanged (int)),
 				ThumbsWidget_,
 				SLOT (handleCurrentPage (int)));
+		connect (this,
+				SIGNAL (pagesVisibilityChanged (QMap<int, QRect>)),
+				ThumbsWidget_,
+				SLOT (updatePagesVisibility (QMap<int, QRect>)));
 	}
 
 	TabClassInfo DocumentTab::GetTabClassInfo () const
@@ -662,6 +666,29 @@ namespace Monocle
 		return ihtc->GetTextContent (pageItem->GetPageNum (), bounding);
 	}
 
+	void DocumentTab::RegenPageVisibility ()
+	{
+		if (receivers (SIGNAL (pagesVisibilityChanged (QMap<int, QRect>))) <= 0)
+			return;
+
+		const auto& viewRect = Ui_.PagesView_->viewport ()->rect ();
+		const auto& visibleRect = Ui_.PagesView_->mapToScene (viewRect);
+
+		QMap<int, QRect> rects;
+		for (auto item : Ui_.PagesView_->items (viewRect))
+		{
+			auto page = dynamic_cast<PageGraphicsItem*> (item);
+			if (!page)
+				continue;
+
+			const auto& pageRect = page->mapToScene (page->boundingRect ());
+			const auto& xsect = visibleRect.intersected (pageRect);
+			const auto& pageXsect = page->mapFromScene (xsect);
+			rects [page->GetPageNum ()] = pageXsect.boundingRect ().toAlignedRect ();
+		}
+
+		emit pagesVisibilityChanged (rects);
+	}
 
 	void DocumentTab::handleNavigateRequested (QString path, int num, double x, double y)
 	{
@@ -870,6 +897,8 @@ namespace Monocle
 
 	void DocumentTab::checkCurrentPageChange (bool force)
 	{
+		RegenPageVisibility ();
+
 		auto current = GetCurrentPage ();
 		if (PrevCurrentPage_ == current && !force)
 			return;

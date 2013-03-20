@@ -127,7 +127,7 @@ namespace Monocle
 		QImage GetSelectionImg ();
 		QString GetSelectionText () const;
 
-		void UpdateNumLabel ();
+		void RegenPageVisibility ();
 	private slots:
 		void handleNavigateRequested (QString, int, double, double);
 		void handleThumbnailClicked (int);
@@ -179,6 +179,7 @@ namespace Monocle
 		void fileLoaded (const QString&);
 
 		void currentPageChanged (int);
+		void pagesVisibilityChanged (const QMap<int, QRect>&);
 	};
 }
 }
