@@ -38,7 +38,6 @@ namespace LeechCraft
 		struct AreaInfo
 		{
 			QToolBar *Bar_;
-			QList<QDockWidget*> DockOrder_;
 		};
 		QMap<Qt::DockWidgetArea, AreaInfo> Area2Info_;
 		QMap<QAction*, QDockWidget*> Action2Widget_;

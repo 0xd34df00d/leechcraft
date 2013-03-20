@@ -55,7 +55,7 @@ namespace LeechCraft
 		auto toggleAct = dw->toggleViewAction ();
 
 		bar->addAction (toggleAct);
-		if (!bar->isVisible ())
+		if (bar->actions ().size () >= 2)
 			bar->show ();
 
 		Action2Widget_ [toggleAct] = dw;
@@ -84,15 +84,16 @@ namespace LeechCraft
 	{
 		for (auto& info : Area2Info_)
 		{
-			info.DockOrder_.removeAll (dw);
 			if (info.Bar_->actions ().contains (act))
 				info.Bar_->removeAction (act);
 
-			if (info.Bar_->actions ().isEmpty ())
+			const auto& remaining = info.Bar_->actions ();
+			if (remaining.size () < 2)
 				info.Bar_->hide ();
-			else if (!info.DockOrder_.isEmpty ())
+			
+			if (!remaining.isEmpty ())
 				QTimer::singleShot (0,
-						info.DockOrder_.last (),
+						Action2Widget_ [remaining.last ()],
 						SLOT (show ()));
 		}
 
@@ -101,6 +102,9 @@ namespace LeechCraft
 
 	void DockToolbarManager::UpdateActionGroup (QAction *action, bool enabled)
 	{
+		if (!enabled)
+			return;
+
 		const auto& assocs = action->associatedWidgets ();
 
 		for (auto& info : Area2Info_)
@@ -108,20 +112,11 @@ namespace LeechCraft
 			if (!assocs.contains (info.Bar_))
 				continue;
 
-			if (!enabled)
-			{
-				info.DockOrder_.removeAll (Action2Widget_.value (action));
-				continue;
-			}
-
 			for (auto otherAct : info.Bar_->actions ())
 				if (otherAct != action && otherAct->isChecked ())
 				{
 					auto dw = Action2Widget_ [otherAct];
 					dw->hide ();
-
-					info.DockOrder_.removeAll (dw);
-					info.DockOrder_ << dw;
 				}
 		}
 	}
