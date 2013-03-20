@@ -128,15 +128,21 @@ namespace LeechCraft
 				const auto area = fromWin->dockWidgetArea (dw);
 
 				fromWin->removeDockWidget (dw);
-				toWin->addDockWidget (area, dw, Qt::Horizontal);
+				Window2DockToolbarMgr_ [fromWin]->RemoveDock (dw);
+				toWin->addDockWidget (area, dw);
+				Window2DockToolbarMgr_ [toWin]->AddDock (dw, area);
 			}
 	}
 
 	void DockManager::handleDockDestroyed ()
 	{
 		auto dock = static_cast<QDockWidget*> (sender ());
+
+		auto toggleAct = ToggleAct2Dock_.key (dock);
+		Window2DockToolbarMgr_ [Dock2Window_ [dock]]->HandleDockDestroyed (dock, toggleAct);
+
 		TabAssociations_.remove (dock);
-		ToggleAct2Dock_.remove (ToggleAct2Dock_.key (dock));
+		ToggleAct2Dock_.remove (toggleAct);
 		ForcefullyClosed_.remove (dock);
 		Dock2Window_.remove (dock);
 	}

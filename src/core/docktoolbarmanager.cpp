@@ -20,6 +20,7 @@
 #include <QToolBar>
 #include <QDockWidget>
 #include <QActionGroup>
+#include <QTimer>
 #include "mainwindow.h"
 
 namespace LeechCraft
@@ -67,33 +68,59 @@ namespace LeechCraft
 				SLOT (handleActionToggled (bool)));
 
 		if (toggleAct->isChecked ())
-			UpdateActionGroup (toggleAct);
+			UpdateActionGroup (toggleAct, true);
 	}
 
 	void DockToolbarManager::RemoveDock (QDockWidget *dw)
 	{
-		for (const auto& info : Area2Info_)
-		{
-			info.Bar_->removeAction (dw->toggleViewAction ());
-			if (info.Bar_->actions ().isEmpty ())
-				info.Bar_->hide ();
-		}
-
-		Action2Widget_.remove (Action2Widget_.key (dw));
+		HandleDockDestroyed (dw, dw->toggleViewAction ());
 	}
 
-	void DockToolbarManager::UpdateActionGroup (QAction *action)
+	/* Both dw and act can be already dead and gone here.
+	 */
+	void DockToolbarManager::HandleDockDestroyed (QDockWidget *dw, QAction *act)
+	{
+		for (auto& info : Area2Info_)
+		{
+			info.DockOrder_.removeAll (dw);
+			if (info.Bar_->actions ().contains (act))
+				info.Bar_->removeAction (act);
+
+			if (info.Bar_->actions ().isEmpty ())
+				info.Bar_->hide ();
+			else if (!info.DockOrder_.isEmpty ())
+				QTimer::singleShot (0,
+						info.DockOrder_.last (),
+						SLOT (show ()));
+		}
+
+		Action2Widget_.remove (act);
+	}
+
+	void DockToolbarManager::UpdateActionGroup (QAction *action, bool enabled)
 	{
 		const auto& assocs = action->associatedWidgets ();
 
-		for (const auto& info : Area2Info_)
+		for (auto& info : Area2Info_)
 		{
 			if (!assocs.contains (info.Bar_))
 				continue;
 
+			if (!enabled)
+			{
+				info.DockOrder_.removeAll (Action2Widget_.value (action));
+				continue;
+			}
+
 			for (auto otherAct : info.Bar_->actions ())
 				if (otherAct != action && otherAct->isChecked ())
-					Action2Widget_ [otherAct]->hide ();
+				{
+					auto dw = Action2Widget_ [otherAct];
+					dw->hide ();
+
+					info.DockOrder_.removeAll (dw);
+					info.DockOrder_ << dw;
+				}
 		}
 	}
 
@@ -106,9 +133,6 @@ namespace LeechCraft
 
 	void DockToolbarManager::handleActionToggled (bool enabled)
 	{
-		if (!enabled)
-			return;
-
-		UpdateActionGroup (qobject_cast<QAction*> (sender ()));
+		UpdateActionGroup (qobject_cast<QAction*> (sender ()), enabled);
 	}
 }

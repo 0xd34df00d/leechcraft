@@ -38,6 +38,7 @@ namespace LeechCraft
 		struct AreaInfo
 		{
 			QToolBar *Bar_;
+			QList<QDockWidget*> DockOrder_;
 		};
 		QMap<Qt::DockWidgetArea, AreaInfo> Area2Info_;
 		QMap<QAction*, QDockWidget*> Action2Widget_;
@@ -46,8 +47,9 @@ namespace LeechCraft
 
 		void AddDock (QDockWidget*, Qt::DockWidgetArea);
 		void RemoveDock (QDockWidget*);
+		void HandleDockDestroyed (QDockWidget*, QAction*);
 	private:
-		void UpdateActionGroup (QAction*);
+		void UpdateActionGroup (QAction*, bool);
 	private slots:
 		void updateDockLocation (Qt::DockWidgetArea);
 		void handleActionToggled (bool);
