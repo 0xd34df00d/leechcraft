@@ -57,6 +57,7 @@ namespace Monocle
 		PagesLayoutManager (PagesView*, QObject* = 0);
 
 		void HandleDoc (IDocument_ptr, const QList<PageGraphicsItem*>&);
+		const QList<PageGraphicsItem*>& GetPages () const;
 
 		LayoutMode GetLayoutMode () const;
 		void SetLayoutMode (LayoutMode);

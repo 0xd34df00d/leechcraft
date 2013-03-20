@@ -55,13 +55,16 @@ namespace Monocle
 		CurrentDoc_ = doc;
 		Pages_ = pages;
 
-		if (qobject_cast<IDynamicDocument*> (CurrentDoc_->GetQObject ()))
-		{
+		if (CurrentDoc_ && qobject_cast<IDynamicDocument*> (CurrentDoc_->GetQObject ()))
 			connect (CurrentDoc_->GetQObject (),
 					SIGNAL (pageSizeChanged (int)),
 					this,
 					SLOT (handlePageSizeChanged (int)));
-		}
+	}
+
+	const QList<PageGraphicsItem*>& PagesLayoutManager::GetPages () const
+	{
+		return Pages_;
 	}
 
 	LayoutMode PagesLayoutManager::GetLayoutMode () const
