@@ -426,10 +426,11 @@ namespace Blogique
 		EntryChanged_ = false;
 	}
 
-	Entry BlogiqueWidget::GetCurrentEntry () const
+	Entry BlogiqueWidget::GetCurrentEntry (bool interactive) const
 	{
 		const QString& content = PostEdit_->GetContents (ContentType::HTML);
-		if (content.isEmpty ())
+		if (interactive &&
+				content.isEmpty ())
 		{
 			QMessageBox::warning (0,
 					tr ("LeechCraft"),
@@ -688,7 +689,7 @@ namespace Blogique
 		EntryChanged_ = false;
 		EntryType_ = EntryType::Draft;
 		const Entry& e = entry.IsEmpty () ?
-			GetCurrentEntry () :
+			GetCurrentEntry (true) :
 			entry;
 		if (!e.IsEmpty ())
 		{
@@ -723,7 +724,7 @@ namespace Blogique
 		EntryChanged_ = false;
 		EntryType_ = EntryType::Draft;
 		const Entry& e = entry.IsEmpty () ?
-			GetCurrentEntry () :
+			GetCurrentEntry (true) :
 			entry;
 
 		if (!e.IsEmpty ())
@@ -753,7 +754,7 @@ namespace Blogique
 
 		EntryChanged_ = false;
 		const auto& e = event.IsEmpty () ?
-			GetCurrentEntry () :
+			GetCurrentEntry (true) :
 			event;
 
 		if (!e.IsEmpty ())
@@ -793,7 +794,7 @@ namespace Blogique
 		for (const auto& pair : dlg.GetPostingTargets ())
 		{
 			auto e = entry.IsEmpty () ?
-				GetCurrentEntry () :
+				GetCurrentEntry (true) :
 				entry;
 			e.Target_ = pair.second;
 			pair.first->submit (e);

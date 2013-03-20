@@ -101,7 +101,7 @@ namespace Blogique
 
 		void ClearEntry ();
 
-		Entry GetCurrentEntry () const;
+		Entry GetCurrentEntry (bool interactive = false) const;
 
 		void ShowProgress (const QString& labelText = QString ());
 
