@@ -34,6 +34,7 @@ class IPluginProxy;
 namespace Metida
 {
 	class LJBloggingPlatform;
+	class LocalStorage;
 
 	class Core : public QObject
 	{
@@ -43,11 +44,15 @@ namespace Metida
 		QObjectList BlogPlatformPlugins_;
 		std::shared_ptr<LJBloggingPlatform> LJPlatform_;
 		QObject *PluginProxy_;
+		QByteArray PluginId_;
+		LocalStorage *Storage_;
 
 		Core ();
 		Q_DISABLE_COPY (Core)
 	public:
 		static Core& Instance ();
+
+		QByteArray GetUniqueID () const;
 
 		void SecondInit ();
 		void Release ();
@@ -60,6 +65,8 @@ namespace Metida
 
 		void SetPluginProxy (QObject *pluginProxy);
 		IPluginProxy* GetPluginProxy ();
+
+		LocalStorage* GetLocalStorage () const;
 
 		void SendEntity (const Entity& e);
 

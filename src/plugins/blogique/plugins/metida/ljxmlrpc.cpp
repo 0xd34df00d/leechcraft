@@ -26,6 +26,7 @@
 #include "profiletypes.h"
 #include "ljfriendentry.h"
 #include "utils.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -138,6 +139,20 @@ namespace Metida
 	{
 		ApiCallQueue_ << [this] (const QString& challenge)
 				{ BlogStatisticsRequest (challenge); };
+		GenerateChallenge ();
+	}
+
+	void LJXmlRPC::RequestLastInbox ()
+	{
+		ApiCallQueue_ << [this] (const QString& challenge)
+				{ InboxRequest (challenge); };
+		GenerateChallenge ();
+	}
+
+	void LJXmlRPC::RequestRecentCommments ()
+	{
+		ApiCallQueue_ << [this] (const QString& challenge)
+				{ RecentCommentsRequest (challenge); };
 		GenerateChallenge ();
 	}
 
@@ -827,6 +842,43 @@ namespace Metida
 				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
+	void LJXmlRPC::GetMultipleEventsRequest (const QStringList& ids, RequestType rt,
+			const QString& challenge)
+	{
+		QDomDocument document ("GetParticularEventsRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.getevents", document);
+		document.appendChild (result.first);
+		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
+				Account_->GetPassword (), challenge, document);
+
+		element.appendChild (GetSimpleMemberElement ("prefersubject", "boolean",
+				"true", document));
+		element.appendChild (GetSimpleMemberElement ("noprops", "boolean",
+				"true", document));
+		element.appendChild (GetSimpleMemberElement ("notags", "boolean",
+				"true", document));
+		element.appendChild (GetSimpleMemberElement ("selecttype", "string",
+				"multiple", document));
+		element.appendChild (GetSimpleMemberElement ("itemids", "int",
+				ids.join (","), document));
+		element.appendChild (GetSimpleMemberElement ("usejournal", "string",
+				Account_->GetOurLogin (), document));
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+		Reply2RequestType_ [reply] = rt;
+
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleGetMultipleEventsReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
 	void LJXmlRPC::BlogStatisticsRequest (const QString& challenge)
 	{
 		QDomDocument document ("BlogStatisticsRequest");
@@ -845,6 +897,56 @@ namespace Metida
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleBlogStatisticsReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void LJXmlRPC::InboxRequest (const QString& challenge)
+	{
+		QDomDocument document ("InboxRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.getinbox", document);
+		document.appendChild (result.first);
+		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
+				Account_->GetPassword (), challenge, document);
+		element.appendChild (GetSimpleMemberElement ("before",
+				"string",
+				QString::number (QDateTime::currentDateTime ().toTime_t ()),
+				document));
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleInboxReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void LJXmlRPC::RecentCommentsRequest (const QString& challenge)
+	{
+		QDomDocument document ("REecentCommentsRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.getrecentcomments", document);
+		document.appendChild (result.first);
+		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
+				Account_->GetPassword (), challenge, document);
+
+		element.appendChild (GetSimpleMemberElement ("itemshow", "int",
+				XmlSettingsManager::Instance ().Property ("RecentCommentsNumber", 10).toString (),
+				document));
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleRecentCommentsReplyFinished ()));
 		connect (reply,
 				SIGNAL (error (QNetworkReply::NetworkError)),
 				this,
@@ -1544,7 +1646,15 @@ namespace Metida
 		ParseForError (content);
 	}
 
-	void LJXmlRPC::handleBlogStatisticsReplyFinished ()
+	namespace
+	{
+		bool ComapreCommentEntries (const LJCommentEntry& left, const LJCommentEntry& right)
+		{
+			return left.PostingDate_ > right.PostingDate_;
+		}
+	}
+
+	void LJXmlRPC::handleGetMultipleEventsReplyFinished ()
 	{
 		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
 		if (!reply)
@@ -1557,6 +1667,47 @@ namespace Metida
 
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
+			const auto& events = ParseFullEvents (document);
+
+			switch (Reply2RequestType_.take (reply))
+			{
+			case RequestType::RecentComments:
+			{
+				for (const auto& pairKey : Id2CommentEntry_.keys ())
+					for (const auto& event : events)
+					{
+						if (event.ItemID_ == pairKey.first)
+						{
+							Id2CommentEntry_ [pairKey].NodeSubject_ = event.Event_;
+							Id2CommentEntry_ [pairKey].NodeUrl_ = event.Url_;
+						}
+					}
+
+				auto comments = Id2CommentEntry_.values ();
+				std::sort (comments.begin (), comments.end (), ComapreCommentEntries);
+				emit gotRecentComments (comments);
+				break;
+			}
+			default:
+				break;
+			}
+
+			return;
+		}
+
+		ParseForError (content);
+	}
+
+	void LJXmlRPC::handleBlogStatisticsReplyFinished ()
+	{
+		QDomDocument document;
+		QByteArray content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
+				document);
+		if (content.isEmpty ())
+			return;
+
+		if (document.elementsByTagName ("fault").isEmpty ())
+		{
 			emit gotStatistics (ParseStatistics (document));
 			return;
 		}
@@ -1564,7 +1715,159 @@ namespace Metida
 		ParseForError (content);
 	}
 
-	void LJXmlRPC::handleNetworkError(QNetworkReply::NetworkError err)
+	namespace
+	{
+		bool IsUnreadMessagesExist (QDomDocument document)
+		{
+			const auto& firstStructElement = document.elementsByTagName ("struct");
+			if (firstStructElement.at (0).isNull ())
+				return false;
+
+			const auto& members = firstStructElement.at (0).childNodes ();
+			for (int i = 0, count = members.count (); i < count; ++i)
+			{
+				const QDomNode& member = members.at (i);
+				if (!member.isElement () ||
+						member.toElement ().tagName () != "member")
+					continue;
+
+				auto res = ParseMember (member);
+				if (res.Name () == "items")
+					for (const auto& message : res.Value ())
+						for (const auto& field : message.toList ())
+						{
+							auto fieldEntry = field.value<LJParserTypes::LJParseProfileEntry> ();
+							if (fieldEntry.Name () == "state" &&
+									fieldEntry.ValueToString ().toLower () == "n")
+								return true;
+						}
+			}
+
+			return false;
+		}
+	}
+
+	void LJXmlRPC::handleInboxReplyFinished ()
+	{
+		QDomDocument document;
+		QByteArray content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
+				document);
+		if (content.isEmpty ())
+			return;
+
+		if (document.elementsByTagName ("fault").isEmpty ())
+		{
+			emit unreadMessagesExist (IsUnreadMessagesExist (document));
+			XmlSettingsManager::Instance ().setProperty ("LastInboxUpdateDate",
+					   QDateTime::currentDateTime ());
+			return;
+		}
+
+		ParseForError (content);
+	}
+
+	namespace
+	{
+		LJCommentEntry ParseComment (const QVariantList& comments)
+		{
+			LJCommentEntry comment;
+			for (const auto& field : comments)
+			{
+				auto fieldEntry = field.value<LJParserTypes::LJParseProfileEntry> ();
+				if (fieldEntry.Name () == "nodeid")
+					comment.NodeId_ = fieldEntry.ValueToInt ();
+				else if (fieldEntry.Name () == "subject")
+					comment.Subject_ = fieldEntry.ValueToString ();
+				else if (fieldEntry.Name () == "posterid")
+					comment.PosterId_ = fieldEntry.ValueToInt ();
+				else if (fieldEntry.Name () == "state")
+				{
+					CommentState state = CommentState::Active;
+					if (fieldEntry.ValueToString ().toLower () == "f")
+						state = CommentState::Frozen;
+					else if (fieldEntry.ValueToString ().toLower () == "s")
+						state = CommentState::Secure;
+					else if (fieldEntry.ValueToString ().toLower () == "d")
+						state = CommentState::Deleted;
+					else
+						state = CommentState::Active;
+					comment.State_ = state;
+				}
+				else if (fieldEntry.Name () == "jtalkid")
+					comment.ReplyId_ = fieldEntry.ValueToInt ();
+				else if (fieldEntry.Name () == "parenttalkid")
+					comment.ParentReplyId_ = fieldEntry.ValueToInt ();
+				else if (fieldEntry.Name () == "postername")
+					comment.PosterName_ = fieldEntry.ValueToString ();
+				else if (fieldEntry.Name () == "text")
+					comment.Text_ = fieldEntry.ValueToString ();
+				else if (fieldEntry.Name () == "datepostunix")
+					comment.PostingDate_ = QDateTime::fromTime_t (fieldEntry.ValueToLongLong ());
+			}
+
+			return comment;
+		}
+
+		QList<LJCommentEntry> ParseComments (const QDomDocument& document)
+		{
+			QList<LJCommentEntry> comments;
+			const auto& firstStructElement = document.elementsByTagName ("struct");
+			if (firstStructElement.at (0).isNull ())
+				return comments;
+
+			const auto& members = firstStructElement.at (0).childNodes ();
+			for (int i = 0, count = members.count (); i < count; ++i)
+			{
+				const QDomNode& member = members.at (i);
+				if (!member.isElement () ||
+						member.toElement ().tagName () != "member")
+					continue;
+
+				auto res = ParseMember (member);
+				if (res.Name () == "comments")
+					for (const auto& message : res.Value ())
+						comments << ParseComment (message.toList ());
+			}
+
+			return comments;
+		}
+	}
+
+	void LJXmlRPC::handleRecentCommentsReplyFinished ()
+	{
+		QDomDocument document;
+		QByteArray content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
+				document);
+		if (content.isEmpty ())
+			return;
+
+		if (document.elementsByTagName ("fault").isEmpty ())
+		{
+			QStringList ids;
+			for (auto comment : ParseComments (document))
+			{
+				auto pairKey = qMakePair (comment.NodeId_, comment.ReplyId_);
+				if (!Id2CommentEntry_.contains (pairKey))
+				{
+					Id2CommentEntry_ [pairKey] = comment;
+					ids << QString::number (comment.NodeId_);
+				}
+			}
+
+			if (!ids.isEmpty ())
+			{
+				ApiCallQueue_ << [this, ids] (const QString& challenge)
+						{ GetMultipleEventsRequest (ids, RequestType::RecentComments, challenge); };
+				GenerateChallenge ();
+			}
+
+			return;
+		}
+
+		ParseForError (content);
+	}
+
+	void LJXmlRPC::handleNetworkError (QNetworkReply::NetworkError err)
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		if (!reply)
