@@ -81,20 +81,13 @@ namespace Metida
 
 	void LocalStorage::RemoveAccount (const QByteArray& accounId)
 	{
-		Util::DBLock lock (MetidaDB_);
-		lock.Init ();
-
 		RemoveAccount_.bindValue (":account_id", QString::fromUtf8 (accounId));
 		if (!RemoveAccount_.exec ())
 		{
 			Util::DBLock::DumpError (RemoveAccount_);
 			throw std::runtime_error ("unable to remove account");
 		}
-
-		lock.Good ();
 	}
-
-	
 
 	void LocalStorage::CreateTables ()
 	{

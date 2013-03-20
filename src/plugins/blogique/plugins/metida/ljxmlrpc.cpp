@@ -842,7 +842,7 @@ namespace Metida
 				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
-	void LJXmlRPC::GetMultipleEventsRequest (QStringList ids, RequestType rt,
+	void LJXmlRPC::GetMultipleEventsRequest (const QStringList& ids, RequestType rt,
 			const QString& challenge)
 	{
 		QDomDocument document ("GetParticularEventsRequest");
@@ -1700,12 +1700,9 @@ namespace Metida
 
 	void LJXmlRPC::handleBlogStatisticsReplyFinished ()
 	{
-		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-			return;
-
 		QDomDocument document;
-		QByteArray content = CreateDomDocumentFromReply (reply, document);
+		QByteArray content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
+				document);
 		if (content.isEmpty ())
 			return;
 
@@ -1720,7 +1717,7 @@ namespace Metida
 
 	namespace
 	{
-		bool IsUnreadMessagesExists (QDomDocument document)
+		bool IsUnreadMessagesExist (QDomDocument document)
 		{
 			const auto& firstStructElement = document.elementsByTagName ("struct");
 			if (firstStructElement.at (0).isNull ())
@@ -1752,18 +1749,15 @@ namespace Metida
 
 	void LJXmlRPC::handleInboxReplyFinished ()
 	{
-		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-			return;
-
 		QDomDocument document;
-		QByteArray content = CreateDomDocumentFromReply (reply, document);
+		QByteArray content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
+				document);
 		if (content.isEmpty ())
 			return;
 
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
-			emit unreadMessagesExists (IsUnreadMessagesExists (document));
+			emit unreadMessagesExist (IsUnreadMessagesExist (document));
 			XmlSettingsManager::Instance ().setProperty ("LastInboxUpdateDate",
 					   QDateTime::currentDateTime ());
 			return;
@@ -1814,7 +1808,7 @@ namespace Metida
 			return comment;
 		}
 
-		QList<LJCommentEntry> ParseComments (QDomDocument document)
+		QList<LJCommentEntry> ParseComments (const QDomDocument& document)
 		{
 			QList<LJCommentEntry> comments;
 			const auto& firstStructElement = document.elementsByTagName ("struct");
@@ -1841,12 +1835,9 @@ namespace Metida
 
 	void LJXmlRPC::handleRecentCommentsReplyFinished ()
 	{
-		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-			return;
-
 		QDomDocument document;
-		QByteArray content = CreateDomDocumentFromReply (reply, document);
+		QByteArray content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
+				document);
 		if (content.isEmpty ())
 			return;
 
@@ -1876,7 +1867,7 @@ namespace Metida
 		ParseForError (content);
 	}
 
-	void LJXmlRPC::handleNetworkError(QNetworkReply::NetworkError err)
+	void LJXmlRPC::handleNetworkError (QNetworkReply::NetworkError err)
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		if (!reply)

@@ -109,7 +109,6 @@ namespace Metida
 			item->setData (comment.NodeSubject_, RecentCommentsModel::NodeSubject);
 			item->setData (comment.NodeUrl_, RecentCommentsModel::NodeUrl);
 			item->setData (comment.Text_, RecentCommentsModel::CommentBody);
-			item->setData ("", RecentCommentsModel::CommentBodyUrl);
 			item->setData (tr ("by %1 on %2")
 						.arg (comment.PosterName_.isEmpty () ?
 							tr ("Anonymous") :

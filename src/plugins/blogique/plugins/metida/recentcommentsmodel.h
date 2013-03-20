@@ -36,7 +36,6 @@ namespace Metida
 			NodeSubject = Qt::UserRole + 1,
 			NodeUrl,
 			CommentBody,
-			CommentBodyUrl,
 			CommentInfo
 		};
 

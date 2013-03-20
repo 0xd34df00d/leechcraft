@@ -38,7 +38,6 @@ namespace Blogique
 		QStandardItemModel *Model_;
 		QHash<QStandardItem*, IAccount*> Item2Account_;
 
-
 	public:
 		enum Columns
 		{

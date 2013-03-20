@@ -156,12 +156,12 @@ namespace Blogique
 
 		virtual QList<QAction*> GetUpdateActions () const = 0;
 
-		/** @brief Requests the number of entries per day;
+		/** @brief Requests the number of entries per day.
 		 *
 		 */
 		virtual void RequestStatistics () = 0;
 
-		/** @brief Requests last entries;
+		/** @brief Requests last entries.
 		 *
 		 */
 		virtual void RequestLastEntries (int count = 0) = 0;

@@ -100,9 +100,9 @@ namespace Metida
 				this,
 				SIGNAL (gotBlogStatistics (QMap<QDate, int>)));
 		connect (LJXmlRpc_,
-				SIGNAL (unreadMessagesExists (bool)),
+				SIGNAL (unreadMessagesExist (bool)),
 				this,
-				SLOT (handleUnreadMessagesExists (bool)));
+				SLOT (handleUnreadMessagesExist (bool)));
 		connect (LJXmlRpc_,
 				SIGNAL (gotRecentComments (QList<LJCommentEntry>)),
 				this,
@@ -403,8 +403,7 @@ namespace Metida
 			emit requestEntriesBegin ();
 			LJXmlRpc_->GetChangedEvents (XmlSettingsManager::Instance ()
 					.Property ("ChangedDateToView",
-						QDateTime::fromString ("01.01.1980 00:00", "dd.MM.yyyy hh:mm"))
-							.toDateTime ());
+							QDateTime ({ 1980, 1, 1 }, { 0, 0 })).toDateTime ());
 			break;
 		case LastUpdateType::NoType:
 		default:
@@ -603,12 +602,12 @@ namespace Metida
 		LJXmlRpc_->GetChangedEvents (dt);
 	}
 
-	void LJAccount::handleUnreadMessagesExists (bool exists)
+	void LJAccount::handleUnreadMessagesExist (bool exists)
 	{
 		if (exists)
 		{
 			Entity e = Util::MakeNotification ("Blogique Metida",
-					tr ("Your have unread messages on account %1")
+					tr ("You have unread messages on account %1")
 							.arg ("<em>" + GetAccountName () + "</em>"),
 					Priority::PInfo_);
 			Util::NotificationActionHandler *nh =

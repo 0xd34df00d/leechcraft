@@ -226,7 +226,7 @@ namespace Blogique
 				QMessageBox::Ok | QMessageBox::Cancel,
 				QMessageBox::Cancel) == QMessageBox::Ok)
 		{
-			emit removingEntryBegin ();
+			emit entryAboutToBeRemoved ();
 			Account_->RemoveEntry (e);
 		}
 	}

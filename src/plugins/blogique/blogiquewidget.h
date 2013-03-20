@@ -61,9 +61,11 @@ namespace Blogique
 		QToolBar *ToolBar_;
 		QToolBar *ProgressToolBar_;
 		QAction *AccountsBoxAction_;
+		QComboBox *AccountsBox_;
 		QComboBox *PostTargetBox_;
 		QAction *PostTargetAction_;
 		QAction *ProgressBarLabelAction_;
+		QLabel *ProgressBarLabel_;
 		QAction *ProgressBarAction_;
 
 		DraftEntriesWidget *DraftEntriesWidget_;
@@ -101,7 +103,7 @@ namespace Blogique
 
 		Entry GetCurrentEntry () const;
 
-		void ShowProgress (bool visible, const QString& labelText = QString ());
+		void ShowProgress (const QString& labelText = QString ());
 
 	public slots:
 		void handleAutoSave ();

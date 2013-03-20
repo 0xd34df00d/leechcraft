@@ -55,6 +55,8 @@ namespace Blogique
 	, PostEditWidget_ (0)
 	, ToolBar_ (new QToolBar)
 	, ProgressToolBar_ (new QToolBar (this))
+	, AccountsBoxAction_ (0)
+	, AccountsBox_ (new QComboBox ())
 	, PostTargetAction_ (0)
 	, ProgressBarAction_ (0)
 	, DraftEntriesWidget_ (new DraftEntriesWidget)
@@ -125,6 +127,14 @@ namespace Blogique
 				this,
 				SLOT (handleEntryChanged (QString)));
 
+		QProgressBar *submitProgressBar = new QProgressBar;
+		submitProgressBar->setRange (0, 0);
+		ProgressBarLabel_ = new QLabel;
+		ProgressBarLabelAction_ = ProgressToolBar_->addWidget (ProgressBarLabel_);
+		ProgressBarAction_ = ProgressToolBar_->addWidget (submitProgressBar);
+		submitProgressBar->setOrientation (Qt::Horizontal);
+		ShowProgress ();
+
 		DraftEntriesWidget_->loadDraftEntries ();
 	}
 
@@ -153,19 +163,18 @@ namespace Blogique
 	}
 
 	void BlogiqueWidget::FillWidget (const Entry& e, const QByteArray& accId)
-	{
-		QComboBox *accountBox = qobject_cast<QComboBox*> (ToolBar_->widgetForAction (AccountsBoxAction_));
-		for (int i = 0; accountBox &&  !accId.isEmpty () && i < accountBox->count (); ++i)
+	{;
+		for (int i = 0; !accId.isEmpty () && i < AccountsBox_->count (); ++i)
 		{
 			if (Id2Account_.contains (i) &&
 					Id2Account_ [i]->GetAccountID () == accId)
 			{
-				accountBox->setCurrentIndex (i);
+				AccountsBox_->setCurrentIndex (i);
 				break;
 			}
 		}
 
-		IAccount *acc = Id2Account_.value (accountBox->currentIndex ());
+		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
 		auto ibp = qobject_cast<IBloggingPlatform*> (acc->GetParentBloggingPlatform ());
 		if (ibp &&
 				(ibp->GetFeatures () & IBloggingPlatform::BPFSelectablePostDestination) &&
@@ -220,23 +229,20 @@ namespace Blogique
 			return result;
 
 		QByteArray accId;
-		QComboBox *accountBox = qobject_cast<QComboBox*> (ToolBar_->widgetForAction (AccountsBoxAction_));
-		if (accountBox)
-		{
-			IAccount *acc = Id2Account_.value (accountBox->currentIndex ());
-			if (acc)
-				accId = acc->GetAccountID ();
-		}
+		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		if (acc)
+			accId = acc->GetAccountID ();
+
 		QDataStream stream (&result, QIODevice::WriteOnly);
 		stream << qint64 (1)
-			<< entry.Subject_
-			<< entry.Content_
-			<< entry.Date_
-			<< entry.Tags_
-			<< entry.Target_
-			<< entry.PostOptions_
-			<< entry.CustomData_
-			<< accId;
+				<< entry.Subject_
+				<< entry.Content_
+				<< entry.Date_
+				<< entry.Tags_
+				<< entry.Target_
+				<< entry.PostOptions_
+				<< entry.CustomData_
+				<< accId;
 
 		return result;
 	}
@@ -341,30 +347,22 @@ namespace Blogique
 			PostEdit_->AppendSeparator ();
 		}
 
-		QComboBox *accountsBox = new QComboBox ();
-		connect (accountsBox,
+		connect (AccountsBox_,
 				SIGNAL (currentIndexChanged (int)),
 				this,
 				SLOT (handleCurrentAccountChanged (int)));
 
 		for (IAccount *acc : Core::Instance ().GetAccounts ())
 		{
-			accountsBox->addItem (acc->GetAccountName ());
-			Id2Account_ [accountsBox->count () - 1] = acc;
+			AccountsBox_->addItem (acc->GetAccountName ());
+			Id2Account_ [AccountsBox_->count () - 1] = acc;
 		}
 
-		QProgressBar *submitProgressBar = new QProgressBar;
-		submitProgressBar->setRange (0, 0);
-		ProgressBarLabelAction_ = ProgressToolBar_->addWidget (new QLabel);
-		ProgressBarAction_ = ProgressToolBar_->addWidget (submitProgressBar);
-		submitProgressBar->setOrientation (Qt::Horizontal);
-		ShowProgress (false);
-
-		AccountsBoxAction_ = ToolBar_->addWidget (accountsBox);
+		AccountsBoxAction_ = ToolBar_->addWidget (AccountsBox_);
 
 		PostTargetBox_ = new QComboBox;
 
-		int index = accountsBox->findText (XmlSettingsManager::Instance ()
+		int index = AccountsBox_->findText (XmlSettingsManager::Instance ()
 				.property ("LastActiveAccountName").toString (),
 					Qt::MatchFixedString);
 		handleCurrentAccountChanged (index == -1 ? 0 : index);
@@ -478,12 +476,11 @@ namespace Blogique
 		return e;
 	}
 
-	void BlogiqueWidget::ShowProgress (bool visible, const QString& labelText)
+	void BlogiqueWidget::ShowProgress (const QString& labelText)
 	{
-		ProgressBarLabelAction_->setVisible (visible);
-		auto label = static_cast<QLabel*> (ProgressToolBar_->widgetForAction (ProgressBarLabelAction_));
-		label->setText (labelText);
-		ProgressBarAction_->setVisible (visible);
+		ProgressBarLabelAction_->setVisible (!labelText.isEmpty ());
+		ProgressBarLabel_->setText (labelText);
+		ProgressBarAction_->setVisible (!labelText.isEmpty ());
 	}
 
 	void BlogiqueWidget::handleAutoSave ()
@@ -496,7 +493,7 @@ namespace Blogique
 
 	void BlogiqueWidget::handleEntryPosted ()
 	{
-		ShowProgress (false);
+		ShowProgress ();
 	}
 
 	void BlogiqueWidget::handleCurrentAccountChanged (int id)
@@ -516,14 +513,15 @@ namespace Blogique
 				int index = Ui_.Tools_->indexOf (w);
 				Ui_.Tools_->removeItem (index);
 				if (w)
-				{
-					w->disconnect ();
 					w->deleteLater ();
-				}
 			}
 			SidePluginsWidgets_.clear ();
 
 			RemovePostingTargetsWidget ();
+
+			ToolBar_->removeAction (Ui_.OpenInBrowser_);
+			ToolBar_->removeAction (Ui_.UpdateProfile_);
+			ToolBar_->removeAction (Ui_.SubmitTo_);
 		}
 
 		auto account = Id2Account_ [id];
@@ -533,6 +531,7 @@ namespace Blogique
 				GetParentBloggingPlatform ());
 
 		BlogEntriesWidget_->clear ();
+
 
 		if (ibp->GetFeatures () & IBloggingPlatform::BPFSelectablePostDestination)
 		{
@@ -547,15 +546,11 @@ namespace Blogique
 					PostTargetBox_->addItem (target.first, target.second);
 		}
 
+
 		if (ibp->GetFeatures () & IBloggingPlatform::BPFLocalBlog)
-		{
-			ToolBar_->removeAction (Ui_.OpenInBrowser_);
-			ToolBar_->removeAction (Ui_.UpdateProfile_);
 			ToolBar_->insertAction (AccountsBoxAction_, Ui_.SubmitTo_);
-		}
 		else
 		{
-			ToolBar_->removeAction (Ui_.SubmitTo_);
 			ToolBar_->insertAction (AccountsBoxAction_, Ui_.OpenInBrowser_);
 			if (ibp->GetFeatures () & IBloggingPlatform::BPFSupportsProfiles)
 				ToolBar_->insertAction (AccountsBoxAction_, Ui_.UpdateProfile_);
@@ -601,10 +596,7 @@ namespace Blogique
 	{
 		if (EntryChanged_)
 		{
-			QComboBox *accountBox = qobject_cast<QComboBox*> (ToolBar_->widgetForAction (AccountsBoxAction_));
-			if (!accountBox)
-				return;
-			IAccount *acc = Id2Account_.value (accountBox->currentIndex ());
+			IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
 			if (!acc)
 				return;
 			int res = QMessageBox::question (this,
@@ -648,22 +640,22 @@ namespace Blogique
 
 	void BlogiqueWidget::handleRemovingEntryBegin ()
 	{
-		ShowProgress (true, tr ("Remove entry..."));
+		ShowProgress (tr ("Removing entry..."));
 	}
 
 	void BlogiqueWidget::handleEntryRemoved ()
 	{
-		ShowProgress (false);
+		ShowProgress ();
 	}
 
 	void BlogiqueWidget::handleRequestEntriesBegin ()
 	{
-		ShowProgress (true, tr ("Update entries..."));
+		ShowProgress (tr ("Updating entries..."));
 	}
 
 	void BlogiqueWidget::handleRequestEntriesEnd ()
 	{
-		ShowProgress (false);
+		ShowProgress ();
 	}
 
 	void BlogiqueWidget::newEntry ()
@@ -755,10 +747,7 @@ namespace Blogique
 
 	void BlogiqueWidget::submit (const Entry& event)
 	{
-		QComboBox *accountBox = qobject_cast<QComboBox*> (ToolBar_->widgetForAction (AccountsBoxAction_));
-		if (!accountBox)
-			return;
-		IAccount *acc = Id2Account_.value (accountBox->currentIndex ());
+		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
 		if (!acc)
 			return;
 
@@ -791,19 +780,21 @@ namespace Blogique
 			else
 				acc->submit (e);
 
-			ShowProgress (true, tr ("Post entry..."));
+			ShowProgress (tr ("Posting entry..."));
 		}
 	}
 
-	void BlogiqueWidget::submitTo (const Entry&)
+	void BlogiqueWidget::submitTo (const Entry& entry)
 	{
 		SubmitToDialog dlg;
 		if (dlg.exec () == QDialog::Rejected)
 			return;
 
-		for (auto pair : dlg.GetPostingTargets ())
+		for (const auto& pair : dlg.GetPostingTargets ())
 		{
-			auto e = GetCurrentEntry ();
+			auto e = entry.IsEmpty () ?
+				GetCurrentEntry () :
+				entry;
 			e.Target_ = pair.second;
 			pair.first->submit (e);
 		}
@@ -818,11 +809,7 @@ namespace Blogique
 
 	void BlogiqueWidget::on_UpdateProfile__triggered ()
 	{
-		QComboBox *accountBox = qobject_cast<QComboBox*> (ToolBar_->widgetForAction (AccountsBoxAction_));
-		if (!accountBox)
-			return;
-
-		IAccount *acc = Id2Account_.value (accountBox->currentIndex ());
+		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
 		if (!acc)
 			return;
 

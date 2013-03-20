@@ -29,7 +29,6 @@
 #include "addeditentrydialog.h"
 #include "friendsmodel.h"
 #include "core.h"
-#include "localstorage.h"
 
 namespace LeechCraft
 {

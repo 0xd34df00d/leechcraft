@@ -68,7 +68,7 @@ namespace Blogique
 		void fillCurrentWidgetWithBlogEntry (const Entry& e);
 		void fillNewWidgetWithBlogEntry (const Entry& e, const QByteArray& accId);
 
-		void removingEntryBegin ();
+		void entryAboutToBeRemoved ();
 		void entriesListUpdated ();
 	};
 }

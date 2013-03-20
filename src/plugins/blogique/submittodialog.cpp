@@ -17,11 +17,11 @@
  **********************************************************************/
 
 #include "submittodialog.h"
-#include "core.h"
+#include <QStandardItemModel>
 #include "interfaces/blogique/iaccount.h"
 #include "interfaces/blogique/ibloggingplatform.h"
+#include "core.h"
 #include "selecttargetdelegate.h"
-#include <QStandardItemModel>
 
 namespace LeechCraft
 {
@@ -75,7 +75,7 @@ namespace Blogique
 				continue;
 
 			auto account = Item2Account_.value (accItem);
-			auto ibp = qobject_cast<LeechCraft::Blogique::IBloggingPlatform*> (account->GetParentBloggingPlatform ());
+			auto ibp = qobject_cast<IBloggingPlatform*> (account->GetParentBloggingPlatform ());
 			if (!ibp)
 				continue;
 

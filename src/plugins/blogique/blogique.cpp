@@ -166,10 +166,8 @@ namespace Blogique
 		Q_FOREACH (const TabRecoverInfo& recInfo, infos)
 		{
 			QDataStream str (recInfo.Data_);
-			qint64 version;
+			qint8 version;
 			str >> version;
-
-			qDebug () << Q_FUNC_INFO << version;
 
 			if (version == 1)
 			{

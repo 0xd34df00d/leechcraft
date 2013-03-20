@@ -25,7 +25,6 @@
 #include <QDomElement>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <boost/concept_check.hpp>
 #include "core.h"
 #include "profiletypes.h"
 #include "ljaccount.h"
@@ -114,7 +113,7 @@ namespace Metida
 		void GetEventsByDateRequest (const QDate& date, const QString& challenge);
 		void GetParticularEventRequest (int id, RequestType prt,
 				const QString& challenge);
-		void GetMultipleEventsRequest (QStringList ids, RequestType rt,
+		void GetMultipleEventsRequest (const QStringList& ids, RequestType rt,
 				const QString& challenge);
 
 		void BlogStatisticsRequest (const QString& challenge);
@@ -165,7 +164,7 @@ namespace Metida
 
 		void gotStatistics (const QMap<QDate, int>& statistics);
 
-		void unreadMessagesExists (bool exists);
+		void unreadMessagesExist (bool exists);
 		void gotRecentComments (const QList<LJCommentEntry>& comments);
 	};
 }

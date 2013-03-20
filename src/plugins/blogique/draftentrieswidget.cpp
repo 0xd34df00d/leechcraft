@@ -299,7 +299,7 @@ namespace Blogique
 		if (dlg.exec () == QDialog::Rejected)
 			return;
 
-		for (auto pair : dlg.GetPostingTargets ())
+		for (const auto& pair : dlg.GetPostingTargets ())
 		{
 			auto e = Item2Entry_ [DraftEntriesModel_->itemFromIndex (idx)];
 			e.Target_ = pair.second;

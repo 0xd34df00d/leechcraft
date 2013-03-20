@@ -19,7 +19,6 @@
 #pragma once
 
 #include <memory>
-#include <functional>
 #include <QObject>
 #include <QSet>
 #include <interfaces/blogique/iaccount.h>
@@ -38,7 +37,6 @@ namespace Metida
 	class LJBloggingPlatform;
 	class LJXmlRPC;
 	class LJProfile;
-	class RecentCommentsModel;
 
 	struct LJEventProperties
 	{
@@ -188,7 +186,7 @@ namespace Metida
 		void handleLoadLastEvents ();
 		void handleLoadChangedEvents ();
 
-		void handleUnreadMessagesExists (bool exists);
+		void handleUnreadMessagesExist (bool exists);
 
 	signals:
 		void accountRenamed (const QString& newName);

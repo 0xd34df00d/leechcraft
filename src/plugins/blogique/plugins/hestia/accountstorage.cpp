@@ -270,7 +270,7 @@ namespace Hestia
 			e.EntryId_ = GetNumberEntries_.value (0).toLongLong ();
 			e.Content_ = GetNumberEntries_.value (1).toString ();
 			e.Date_ = GetNumberEntries_.value (2).toDateTime ();
-			e.Subject_ =GetNumberEntries_.value (3).toString ();
+			e.Subject_ = GetNumberEntries_.value (3).toString ();
 
 			GetNumberEntries_.bindValue (":entry_id", e.EntryId_);
 			e.Tags_ = GetTags (GetNumberEntries_);

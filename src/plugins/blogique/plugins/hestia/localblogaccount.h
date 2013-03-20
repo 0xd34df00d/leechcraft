@@ -45,7 +45,7 @@ namespace Hestia
 
 		QAction *LoadAllEvents_;
 
-		const int DefaultPostsNUmber_;
+		const int DefaultPostsNumber_;
 
 	public:
 		LocalBlogAccount (const QString& name, QObject *parent = 0);

@@ -31,7 +31,6 @@ namespace Metida
 		roleNames [NodeSubject] = "nodeSubject";
 		roleNames [NodeUrl] = "nodeUrl";
 		roleNames [CommentBody] = "commentBody";
-		roleNames [CommentBodyUrl] = "commentUrl";
 		roleNames [CommentInfo] = "commentInfo";
 		setRoleNames (roleNames);
 	}

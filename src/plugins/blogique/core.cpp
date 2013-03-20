@@ -48,7 +48,7 @@ namespace Blogique
 		connect (AutoSaveTimer_,
 				SIGNAL (timeout ()),
 				this,
-				SIGNAL (needAutoSave ()));
+				SIGNAL (checkAutoSave ()));
 		XmlSettingsManager::Instance ().RegisterObject ("AutoSave",
 				this, "handleAutoSaveIntervalChanged");
 		handleAutoSaveIntervalChanged ();
@@ -173,7 +173,7 @@ namespace Blogique
 				&Core::Instance (),
 				SIGNAL (removeTab (QWidget*)));
 		connect (&Core::Instance (),
-				SIGNAL (needAutoSave ()),
+				SIGNAL (checkAutoSave ()),
 				newTab,
 				SLOT (handleAutoSave ()));
 		connect (&Core::Instance (),
@@ -322,9 +322,8 @@ namespace Blogique
 					Entity urlEntity = Util::MakeEntity (entries.value (0).EntryUrl_,
 							QString (),
 							static_cast<TaskParameters> (OnlyHandle | FromUserInitiated));
-					Core::Instance ().SendEntity (urlEntity);
+					SendEntity (urlEntity);
 				});
-		nh->AddDependentObject (this);
 		emit gotEntity (e);
 		acc->RequestStatistics ();
 		emit entryPosted ();
@@ -358,7 +357,7 @@ namespace Blogique
 		acc->RequestStatistics ();
 	}
 
-	void Core::handleGotEntries2Backup (const QList<Entry>& )
+	void Core::handleGotEntries2Backup (const QList<Entry>&)
 	{
 		auto acc = qobject_cast<IAccount*> (sender ());
 		if (!acc)

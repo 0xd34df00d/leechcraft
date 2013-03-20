@@ -38,7 +38,7 @@ namespace Hestia
 	, IsValid_ (false)
 	, AccountStorage_ (new AccountStorage (this))
 	, LoadAllEvents_ (new QAction (tr ("All entries"), this))
-	, DefaultPostsNUmber_ (20)
+	, DefaultPostsNumber_ (20)
 	{
 		connect (LoadAllEvents_,
 				SIGNAL (triggered ()),
@@ -138,7 +138,7 @@ namespace Hestia
 		try
 		{
 			emit gotEntries (AccountStorage_->GetNumberOfEntries (AccountStorage::Mode::FullMode,
-					DefaultPostsNUmber_));
+					DefaultPostsNumber_));
 		}
 		catch (const std::runtime_error& e)
 		{

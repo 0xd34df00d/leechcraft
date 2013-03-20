@@ -105,7 +105,7 @@ namespace Blogique
 		void removeTab (QWidget *tab);
 		void changeTabName (QWidget *content, const QString& name);
 
-		void needAutoSave ();
+		void checkAutoSave ();
 
 		void requestEntriesBegin ();
 
