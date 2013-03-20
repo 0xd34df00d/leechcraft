@@ -70,7 +70,10 @@ namespace LeechCraft
 				SLOT (handleActionToggled (bool)));
 
 		if (toggleAct->isChecked ())
+		{
 			UpdateActionGroup (toggleAct, true);
+			QTimer::singleShot (0, dw, SLOT (show ()));
+		}
 	}
 
 	void DockToolbarManager::RemoveDock (QDockWidget *dw)
