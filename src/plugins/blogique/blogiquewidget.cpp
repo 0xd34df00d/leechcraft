@@ -87,6 +87,13 @@ namespace Blogique
 				this,
 				SLOT (handleRequestEntriesBegin ()));
 
+		QProgressBar *submitProgressBar = new QProgressBar;
+		submitProgressBar->setRange (0, 0);
+		ProgressBarLabel_ = new QLabel;
+		ProgressBarLabelAction_ = ProgressToolBar_->addWidget (ProgressBarLabel_);
+		ProgressBarAction_ = ProgressToolBar_->addWidget (submitProgressBar);
+		submitProgressBar->setOrientation (Qt::Horizontal);
+		
 		SetToolBarActions ();
 
 		connect (this,
@@ -127,12 +134,6 @@ namespace Blogique
 				this,
 				SLOT (handleEntryChanged (QString)));
 
-		QProgressBar *submitProgressBar = new QProgressBar;
-		submitProgressBar->setRange (0, 0);
-		ProgressBarLabel_ = new QLabel;
-		ProgressBarLabelAction_ = ProgressToolBar_->addWidget (ProgressBarLabel_);
-		ProgressBarAction_ = ProgressToolBar_->addWidget (submitProgressBar);
-		submitProgressBar->setOrientation (Qt::Horizontal);
 		ShowProgress ();
 
 		DraftEntriesWidget_->loadDraftEntries ();
