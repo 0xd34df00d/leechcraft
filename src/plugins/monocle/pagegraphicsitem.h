@@ -51,6 +51,9 @@ namespace Monocle
 		void SetScale (double, double);
 		int GetPageNum () const;
 
+		QRectF MapFromDoc (const QRectF&) const;
+		QRectF MapToDoc (const QRectF&) const;
+
 		void ClearPixmap ();
 		void UpdatePixmap ();
 	protected:

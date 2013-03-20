@@ -74,6 +74,28 @@ namespace Monocle
 		return PageNum_;
 	}
 
+	QRectF PageGraphicsItem::MapFromDoc (const QRectF& rect) const
+	{
+		return
+		{
+			rect.x () * XScale_,
+			rect.y () * YScale_,
+			rect.width () * XScale_,
+			rect.height () * YScale_
+		};
+	}
+
+	QRectF PageGraphicsItem::MapToDoc (const QRectF& rect) const
+	{
+		return
+		{
+			rect.x () / XScale_,
+			rect.y () / YScale_,
+			rect.width () / XScale_,
+			rect.height () / YScale_
+		};
+	}
+
 	void PageGraphicsItem::ClearPixmap ()
 	{
 		auto size = Doc_->GetPageSize (PageNum_);
