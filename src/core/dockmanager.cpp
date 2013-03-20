@@ -44,7 +44,7 @@ namespace LeechCraft
 	void DockManager::AddDockWidget (QDockWidget *dw, Qt::DockWidgetArea area)
 	{
 		auto win = static_cast<MainWindow*> (RootWM_->GetPreferredWindow ());
-		win->addDockWidget (area, dw, Qt::Horizontal);
+		win->addDockWidget (area, dw);
 		Dock2Window_ [dw] = win;
 
 		connect (dw,
@@ -182,6 +182,5 @@ namespace LeechCraft
 		auto win = static_cast<MainWindow*> (RootWM_->GetMainWindow (index));
 		win->GetDockListWidget (Qt::LeftDockWidgetArea)->hide ();
 		win->GetDockListWidget (Qt::RightDockWidgetArea)->hide ();
-		win->setDockNestingEnabled (true);
 	}
 }
