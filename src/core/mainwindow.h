@@ -74,6 +74,8 @@ namespace LeechCraft
 		
 		QToolBar *LeftDockToolbar_;
 		QToolBar *RightDockToolbar_;
+		QToolBar *TopDockToolbar_;
+		QToolBar *BottomDockToolbar_;
 	public:
 		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
 		void Init ();
