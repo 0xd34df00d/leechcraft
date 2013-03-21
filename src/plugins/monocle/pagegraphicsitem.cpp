@@ -18,6 +18,8 @@
 
 #include "pagegraphicsitem.h"
 #include <QtDebug>
+#include <QtConcurrentRun>
+#include <QFutureWatcher>
 #include <QGraphicsSceneMouseEvent>
 #include <QCursor>
 #include <QApplication>
@@ -118,8 +120,33 @@ namespace Monocle
 	{
 		if (Invalid_)
 		{
-			const auto& img = Doc_->RenderPage (PageNum_, XScale_, YScale_);
-			setPixmap (QPixmap::fromImage (img));
+			auto backendObj = Doc_->GetBackendPlugin ();
+			if (qobject_cast<IBackendPlugin*> (backendObj)->IsThreaded ())
+			{
+				auto watcher = new QFutureWatcher<QImage> ();
+				connect (watcher,
+						SIGNAL (finished ()),
+						this,
+						SLOT (handlePixmapRendered ()));
+
+				std::function<QImage ()> worker ([this] ()
+						{
+							return Doc_->RenderPage (PageNum_, XScale_, YScale_);
+						});
+				watcher->setFuture (QtConcurrent::run (worker));
+
+				auto size = Doc_->GetPageSize (PageNum_);
+				size.rwidth () *= XScale_;
+				size.rheight () *= YScale_;
+				QPixmap px (size);
+				px.fill ();
+				setPixmap (px);
+			}
+			else
+			{
+				const auto& img = Doc_->RenderPage (PageNum_, XScale_, YScale_);
+				setPixmap (QPixmap::fromImage (img));
+			}
 			LayoutLinks ();
 			Invalid_ = false;
 
@@ -186,7 +213,7 @@ namespace Monocle
 		const auto& rect = boundingRect ();
 		const auto width = rect.width ();
 		const auto height = rect.height ();
-		Q_FOREACH (ILink_ptr link, Links_)
+		for (auto link : Links_)
 		{
 			const auto& area = link->GetArea ();
 			const QRect linkRect (width * area.left (), height * area.top (),
@@ -197,10 +224,19 @@ namespace Monocle
 
 	ILink_ptr PageGraphicsItem::FindLink (const QPointF& point)
 	{
-		Q_FOREACH (const auto& pair, Rect2Link_)
+		for (const auto& pair : Rect2Link_)
 			if (pair.first.contains (point.toPoint ()))
 				return pair.second;
 		return ILink_ptr ();
+	}
+
+	void PageGraphicsItem::handlePixmapRendered ()
+	{
+		auto watcher = dynamic_cast<QFutureWatcher<QImage>*> (sender ());
+		watcher->deleteLater ();
+
+		const auto& img = watcher->result ();
+		setPixmap (QPixmap::fromImage (img));
 	}
 }
 }
