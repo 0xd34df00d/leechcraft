@@ -54,9 +54,12 @@ namespace PDF
 		PDocument_ptr PDocument_;
 		TOCEntryLevel_t TOC_;
 		QUrl DocURL_;
-	public:
-		Document (const QString&, QObject* = 0);
 
+		QObject *Plugin_;
+	public:
+		Document (const QString&, QObject*);
+
+		QObject* GetBackendPlugin () const;
 		QObject* GetQObject ();
 		bool IsValid () const;
 		DocumentInfo GetDocumentInfo () const;

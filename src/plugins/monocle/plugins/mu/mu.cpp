@@ -73,7 +73,7 @@ namespace Mu
 
 	IDocument_ptr Plugin::LoadDocument (const QString& file)
 	{
-		return IDocument_ptr (new Document (file, MuCtx_));
+		return IDocument_ptr (new Document (file, MuCtx_, this));
 	}
 }
 }

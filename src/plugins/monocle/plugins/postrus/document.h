@@ -36,10 +36,13 @@ namespace Postrus
 
 		SpectreDocument *SD_;
 		QUrl DocURL_;
+
+		QObject *Plugin_;
 	public:
-		Document (const QString&, QObject* = 0);
+		Document (const QString&, QObject*);
 		~Document ();
 
+		QObject* GetBackendPlugin () const;
 		QObject* GetQObject ();
 		bool IsValid () const;
 		DocumentInfo GetDocumentInfo () const;

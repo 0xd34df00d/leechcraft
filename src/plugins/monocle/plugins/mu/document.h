@@ -44,10 +44,13 @@ namespace Mu
 		pdf_document *MuDoc_;
 
 		QUrl URL_;
+
+		QObject *Plugin_;
 	public:
-		Document (const QString&, fz_context*);
+		Document (const QString&, fz_context*, QObject*);
 		~Document ();
 
+		QObject* GetBackendPlugin () const;
 		QObject* GetQObject ();
 		bool IsValid () const;
 		DocumentInfo GetDocumentInfo () const;

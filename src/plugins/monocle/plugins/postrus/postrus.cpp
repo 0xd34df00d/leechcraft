@@ -67,12 +67,12 @@ namespace Postrus
 
 	bool Plugin::CanLoadDocument (const QString& file)
 	{
-		return Document (file).IsValid ();
+		return Document (file, this).IsValid ();
 	}
 
 	IDocument_ptr Plugin::LoadDocument (const QString& file)
 	{
-		return IDocument_ptr (new Document (file));
+		return IDocument_ptr (new Document (file, this));
 	}
 }
 }

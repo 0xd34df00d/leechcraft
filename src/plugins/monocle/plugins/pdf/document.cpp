@@ -27,10 +27,10 @@ namespace Monocle
 {
 namespace PDF
 {
-	Document::Document (const QString& path, QObject *parent)
-	: QObject (parent)
-	, PDocument_ (Poppler::Document::load (path))
+	Document::Document (const QString& path, QObject *plugin)
+	: PDocument_ (Poppler::Document::load (path))
 	, DocURL_ (QUrl::fromLocalFile (path))
+	, Plugin_ (plugin)
 	{
 		if (!PDocument_)
 			return;
@@ -40,6 +40,11 @@ namespace PDF
 		PDocument_->setRenderHint (Poppler::Document::TextHinting);
 
 		BuildTOC ();
+	}
+
+	QObject* Document::GetBackendPlugin () const
+	{
+		return Plugin_;
 	}
 
 	QObject* Document::GetQObject ()
