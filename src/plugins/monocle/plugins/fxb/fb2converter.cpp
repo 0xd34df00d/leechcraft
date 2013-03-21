@@ -44,6 +44,7 @@ namespace FXB
 	, SectionLevel_ (0)
 	{
 		Result_->setPageSize (QSize (600, 800));
+		Result_->setUndoRedoEnabled (false);
 
 		const auto& docElem = FB2_.documentElement ();
 		if (docElem.tagName () != "FictionBook")
@@ -276,13 +277,11 @@ namespace FXB
 
 	void FB2Converter::HandlePara (const QDomElement& tagElem)
 	{
-		auto fmt = Cursor_->blockFormat ();
+		QTextBlockFormat fmt;
 		fmt.setTextIndent (20);
-		Cursor_->setBlockFormat (fmt);
+		Cursor_->insertBlock (fmt);
 
 		HandleParaWONL (tagElem);
-
-		Cursor_->insertBlock ();
 	}
 
 	void FB2Converter::HandleParaWONL (const QDomElement& tagElem)
@@ -295,15 +294,7 @@ namespace FXB
 
 			if (child.isText ())
 			{
-				auto fmt = Cursor_->charFormat ();
-				auto newFmt = fmt;
-				newFmt.setForeground (Qt::black);
-				Cursor_->setCharFormat (newFmt);
-
 				Cursor_->insertText (child.toText ().data ());
-
-				Cursor_->setCharFormat (fmt);
-
 				continue;
 			}
 
