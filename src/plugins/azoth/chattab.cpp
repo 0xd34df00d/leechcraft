@@ -37,6 +37,7 @@
 #include <util/gui/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/imessage.h"
 #include "interfaces/azoth/irichtextmessage.h"
@@ -68,6 +69,7 @@
 #include "contactdropfilter.h"
 #include "userslistwidget.h"
 #include "util.h"
+#include "proxyobject.h"
 
 namespace LeechCraft
 {
@@ -734,6 +736,15 @@ namespace Azoth
 		cur.insertText (toInsert);
 	}
 
+	void ChatTab::handleOpenLastLink ()
+	{
+		if (LastLink_.isEmpty ())
+			return;
+
+		const auto& e = Util::MakeEntity (QUrl (LastLink_), QString (), static_cast<TaskParameters> (FromUserInitiated | OnlyHandle));
+		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
+	}
+
 	void ChatTab::handleFileOffered (QObject *jobObj)
 	{
 		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
@@ -1386,6 +1397,11 @@ namespace Azoth
 		sm->RegisterAction ("org.LeechCraft.Azoth.QuoteSelected", quoteSelection, true);
 
 		Ui_.View_->SetQuoteAction (quoteSelection);
+
+		const auto& openLinkInfo = infos ["org.LeechCraft.Azoth.OpenLastLink"];
+		auto shortcut = new QShortcut (openLinkInfo.Seqs_.value (0),
+				this, SLOT (handleOpenLastLink ()), 0, Qt::WidgetWithChildrenShortcut);
+		sm->RegisterShortcut ("org.LeechCraft.Azoth.OpenLastLink", openLinkInfo, shortcut);
 	}
 
 	void ChatTab::InitEntry ()
@@ -1724,6 +1740,10 @@ namespace Azoth
 			Core::Instance ().GetChatTabsManager ()->IsActiveChat (GetEntry<ICLEntry> ()),
 			ToggleRichText_->isChecked ()
 		};
+
+		const auto& links = ProxyObject ().FindLinks (msg->GetBody ());
+		if (!links.isEmpty ())
+			LastLink_ = links.last ();
 
 		if (!Core::Instance ().AppendMessageByTemplate (frame,
 				msg->GetQObject (), info))

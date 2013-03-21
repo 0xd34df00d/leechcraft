@@ -92,6 +92,7 @@ namespace Azoth
 		QTimer *TypeTimer_;
 
 		ChatPartState PreviousState_;
+		QString LastLink_;
 	public:
 		static void SetParentMultiTabs (QObject*);
 		static void SetChatTabClassInfo (const TabClassInfo&);
@@ -160,6 +161,7 @@ namespace Azoth
 		void handleHistoryBack ();
 		void handleRichTextToggled ();
 		void handleQuoteSelection ();
+		void handleOpenLastLink ();
 #ifdef ENABLE_MEDIACALLS
 		void handleCallRequested ();
 		void handleCall (QObject*);
