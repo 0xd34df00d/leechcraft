@@ -7,13 +7,15 @@ find_path (QWT_INCLUDE_DIRS
 	NAMES qwt_plot.h
 	PATHS
 	/usr/local/include/qwt-qt4
+	/usr/local/include/qwt6
 	/usr/local/include/qwt
 	/usr/include/qwt-qt4
+	/usr/include/qwt6
 	/usr/include/qwt
 )
 
 find_library (QWT_LIBRARIES
-	NAMES qwt-qt4 qwt
+	NAMES qwt-qt4 qwt6 qwt
 	PATHS /usr/local/lib /usr/lib
 )
 
