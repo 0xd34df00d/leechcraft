@@ -26,6 +26,7 @@
 #include <QTimer>
 #include <util/util.h>
 #include <util/gui/clearlineeditaddon.h>
+#include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/core/icoreproxy.h>
 #include "interfaces/azoth/iclentry.h"
 #include "core.h"
@@ -223,6 +224,8 @@ namespace Azoth
 
 		ActionCLMode_->setCheckable (true);
 		ActionCLMode_->setProperty ("ActionIcon", "meeting-attending");
+		ActionCLMode_->setShortcut (QString ("Ctrl+Shift+R"));
+		Core::Instance ().GetShortcutManager ()->RegisterAction ("org.LeechCraft.Azoth.CLMode", ActionCLMode_, true);
 		connect (ActionCLMode_,
 				SIGNAL (toggled (bool)),
 				this,
@@ -360,7 +363,7 @@ namespace Azoth
 		menu->exec (Ui_.CLTree_->mapToGlobal (pos));
 		menu->deleteLater ();
 	}
-	
+
 	namespace
 	{
 		QString GetStatusText (QObject *object, State state)
@@ -368,7 +371,7 @@ namespace Azoth
 			const auto& textVar = object->property ("Azoth/TargetText");
 			if (!textVar.isNull ())
 				return textVar.toString ();
-			
+
 			const auto& propName = "DefaultStatus" + QString::number (state);
 			return XmlSettingsManager::Instance ()
 					.property (propName.toLatin1 ()).toString ();
@@ -435,7 +438,7 @@ namespace Azoth
 
 		const auto state = stateVar.value<State> ();
 		updateFastStatusButton (state);
-		
+
 		const EntryStatus status (state, GetStatusText (sender (), state));
 		for (IAccount *acc : Core::Instance ().GetAccounts ())
 			if (acc->IsShownInRoster ())
