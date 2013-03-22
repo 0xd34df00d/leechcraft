@@ -225,7 +225,7 @@ namespace Azoth
 		ActionCLMode_->setCheckable (true);
 		ActionCLMode_->setProperty ("ActionIcon", "meeting-attending");
 		ActionCLMode_->setShortcut (QString ("Ctrl+Shift+R"));
-		Core::Instance ().GetShortcutManager ()->RegisterAction ("org.LeechCraft.Azoth.CLMode", ActionCLMode_, true);
+		Core::Instance ().GetShortcutManager ()->RegisterAction ("org.LeechCraft.Azoth.CLMode", ActionCLMode_);
 		connect (ActionCLMode_,
 				SIGNAL (toggled (bool)),
 				this,
