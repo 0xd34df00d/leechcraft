@@ -177,9 +177,9 @@ namespace Azoth
 		qobject_cast<QVBoxLayout*> (layout ())->insertWidget (0, BottomBar_);
 	}
 
-	QList<QAction*> MainWidget::GetMenuActions()
+	QList<QAction*> MainWidget::GetMenuActions ()
 	{
-		return QList<QAction*> () << MainMenu_->actions ();
+		return MainMenu_->actions ();
 	}
 
 	QMenu* MainWidget::GetChangeStatusMenu () const
