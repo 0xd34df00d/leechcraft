@@ -929,9 +929,30 @@ namespace Monocle
 
 	void DocumentTab::zoomOut ()
 	{
+		auto currentMatchingIndex = ScalesBox_->currentIndex ();
 		const int minIdx = 2;
-		auto newIndex = std::max (ScalesBox_->currentIndex () - 1, minIdx);
+		switch (ScalesBox_->currentIndex ())
+		{
+		case 0:
+		case 1:
+		{
+			const auto scale = LayoutManager_->GetCurrentScale ();
+			for (auto i = minIdx; i < ScalesBox_->count (); ++i)
+				if (ScalesBox_->itemData (i).toDouble () > scale)
+				{
+					currentMatchingIndex = i;
+					break;
+				}
+
+			if (currentMatchingIndex == ScalesBox_->currentIndex ())
+				currentMatchingIndex = ScalesBox_->count () - 1;
+			break;
+		}
+		}
+
+		auto newIndex = std::max (currentMatchingIndex - 1, minIdx);
 		ScalesBox_->setCurrentIndex (newIndex);
+		handleScaleChosen (newIndex);
 
 		ZoomOut_->setEnabled (newIndex > minIdx);
 		ZoomIn_->setEnabled (true);
@@ -940,8 +961,26 @@ namespace Monocle
 	void DocumentTab::zoomIn ()
 	{
 		const auto maxIdx = ScalesBox_->count () - 1;
+
 		auto newIndex = std::min (ScalesBox_->currentIndex () + 1, maxIdx);
+		switch (ScalesBox_->currentIndex ())
+		{
+		case 0:
+		case 1:
+			const auto scale = LayoutManager_->GetCurrentScale ();
+			for (auto i = 2; i <= maxIdx; ++i)
+				if (ScalesBox_->itemData (i).toDouble () > scale)
+				{
+					newIndex = i;
+					break;
+				}
+			if (ScalesBox_->currentIndex () == newIndex)
+				newIndex = maxIdx;
+			break;
+		}
+
 		ScalesBox_->setCurrentIndex (newIndex);
+		handleScaleChosen (newIndex);
 
 		ZoomOut_->setEnabled (true);
 		ZoomIn_->setEnabled (newIndex < maxIdx);
