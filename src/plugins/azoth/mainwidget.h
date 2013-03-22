@@ -73,7 +73,9 @@ namespace Azoth
 	private slots:
 		void updateFastStatusButton (LeechCraft::Azoth::State);
 		void treeActivated (const QModelIndex&);
+		void showAllUsersList ();
 		void on_CLTree__customContextMenuRequested (const QPoint&);
+
 		void handleChangeStatusRequested ();
 		void fastStateChangeRequested ();
 
