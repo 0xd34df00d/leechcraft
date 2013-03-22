@@ -1715,36 +1715,47 @@ namespace Metida
 		ParseForError (content);
 	}
 
-	namespace
+	bool LJXmlRPC::IsUnreadMessagesExist (const QDomDocument& document)
 	{
-		bool IsUnreadMessagesExist (QDomDocument document)
-		{
-			const auto& firstStructElement = document.elementsByTagName ("struct");
-			if (firstStructElement.at (0).isNull ())
-				return false;
-
-			const auto& members = firstStructElement.at (0).childNodes ();
-			for (int i = 0, count = members.count (); i < count; ++i)
-			{
-				const QDomNode& member = members.at (i);
-				if (!member.isElement () ||
-						member.toElement ().tagName () != "member")
-					continue;
-
-				auto res = ParseMember (member);
-				if (res.Name () == "items")
-					for (const auto& message : res.Value ())
-						for (const auto& field : message.toList ())
-						{
-							auto fieldEntry = field.value<LJParserTypes::LJParseProfileEntry> ();
-							if (fieldEntry.Name () == "state" &&
-									fieldEntry.ValueToString ().toLower () == "n")
-								return true;
-						}
-			}
-
+		const auto& firstStructElement = document.elementsByTagName ("struct");
+		if (firstStructElement.at (0).isNull ())
 			return false;
+
+		const auto& members = firstStructElement.at (0).childNodes ();
+		bool exists = false;
+		for (int i = 0, count = members.count (); i < count; ++i)
+		{
+			const QDomNode& member = members.at (i);
+			if (!member.isElement () ||
+					member.toElement ().tagName () != "member")
+				continue;
+
+			auto res = ParseMember (member);
+			qint64 id = -1;
+			if (res.Name () == "items")
+				for (const auto& message : res.Value ())
+				{
+					for (const auto& field : message.toList ())
+					{
+						auto fieldEntry = field.value<LJParserTypes::LJParseProfileEntry> ();
+						if (fieldEntry.Name () == "qid")
+							id = fieldEntry.ValueToLongLong ();
+						if (fieldEntry.Name () == "state" &&
+								fieldEntry.ValueToString ().toLower () == "n")
+							exists = true;
+					}
+
+					if (exists)
+					{
+						if (MessagesIds_.contains (id))
+							exists = false;
+						else
+							MessagesIds_ << id;
+					}
+				}
 		}
+
+		return exists;
 	}
 
 	void LJXmlRPC::handleInboxReplyFinished ()

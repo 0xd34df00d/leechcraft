@@ -58,6 +58,7 @@ namespace Metida
 		};
 		QHash<QNetworkReply*, RequestType> Reply2RequestType_;
 		QMap<QPair<int, int>, LJCommentEntry> Id2CommentEntry_;
+		QList<qint64> MessagesIds_;
 
 	public:
 		LJXmlRPC (LJAccount *acc, QObject *parent = 0);
@@ -119,6 +120,7 @@ namespace Metida
 		void BlogStatisticsRequest (const QString& challenge);
 
 		void InboxRequest (const QString& challenge);
+		bool IsUnreadMessagesExist (const QDomDocument& document);
 		void RecentCommentsRequest (const QString& challenge);
 
 		void ParseForError (const QByteArray& content);
