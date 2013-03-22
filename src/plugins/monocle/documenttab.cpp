@@ -516,7 +516,7 @@ namespace Monocle
 			ScalesBox_->addItem (QString::number (scale * 100) + '%', scale);
 		ScalesBox_->setCurrentIndex (0);
 		connect (ScalesBox_,
-				SIGNAL (currentIndexChanged (int)),
+				SIGNAL (activated (int)),
 				this,
 				SLOT (handleScaleChosen (int)));
 		Toolbar_->addWidget (ScalesBox_);
