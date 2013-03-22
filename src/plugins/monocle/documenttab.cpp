@@ -346,10 +346,10 @@ namespace Monocle
 
 		LayoutManager_->HandleDoc (CurrentDoc_, Pages_);
 
-		LayoutManager_->SetLayoutMode (state.Lay_);
 		if (state.CurrentScale_ > 0)
 		{
-			LayoutManager_->SetScaleMode (ScaleMode::Fixed);
+			LayoutManager_->SetLayoutMode (state.Lay_);
+			LayoutManager_->SetScaleMode (state.ScaleMode_);
 			LayoutManager_->SetFixedScale (state.CurrentScale_);
 		}
 		Relayout ();
@@ -744,7 +744,8 @@ namespace Monocle
 				{
 					GetCurrentPage (),
 					LayoutManager_->GetLayoutMode (),
-					LayoutManager_->GetCurrentScale ()
+					LayoutManager_->GetCurrentScale (),
+					LayoutManager_->GetScaleMode ()
 				});
 	}
 
