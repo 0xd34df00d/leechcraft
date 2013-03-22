@@ -351,6 +351,33 @@ namespace Monocle
 			LayoutManager_->SetLayoutMode (state.Lay_);
 			LayoutManager_->SetScaleMode (state.ScaleMode_);
 			LayoutManager_->SetFixedScale (state.CurrentScale_);
+
+			switch (state.ScaleMode_)
+			{
+			case ScaleMode::FitWidth:
+				ScalesBox_->setCurrentIndex (0);
+				break;
+			case ScaleMode::FitPage:
+				ScalesBox_->setCurrentIndex (1);
+				break;
+			case ScaleMode::Fixed:
+			{
+				const auto scaleIdx = ScalesBox_->findData (state.CurrentScale_);
+				if (scaleIdx >= 0)
+					ScalesBox_->setCurrentIndex (scaleIdx);
+				break;
+			}
+			}
+
+			switch (state.Lay_)
+			{
+			case LayoutMode::OnePage:
+				LayOnePage_->setChecked (true);
+				break;
+			case LayoutMode::TwoPages:
+				LayTwoPages_->setChecked (true);
+				break;
+			}
 		}
 		Relayout ();
 		SetCurrentPage (state.CurrentPage_, false);
