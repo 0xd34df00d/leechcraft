@@ -369,15 +369,7 @@ namespace Monocle
 			}
 			}
 
-			switch (state.Lay_)
-			{
-			case LayoutMode::OnePage:
-				LayOnePage_->setChecked (true);
-				break;
-			case LayoutMode::TwoPages:
-				LayTwoPages_->setChecked (true);
-				break;
-			}
+			syncUIToLayMode ();
 		}
 		Relayout ();
 		SetCurrentPage (state.CurrentPage_, false);
