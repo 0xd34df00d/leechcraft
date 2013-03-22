@@ -542,6 +542,7 @@ namespace Monocle
 
 		ZoomOut_ = new QAction (tr ("Zoom out"), this);
 		ZoomOut_->setProperty ("ActionIcon", "zoom-out");
+		ZoomOut_->setShortcut (QString ("Ctrl+-"));
 		connect (ZoomOut_,
 				SIGNAL (triggered ()),
 				this,
@@ -550,6 +551,7 @@ namespace Monocle
 
 		ZoomIn_ = new QAction (tr ("Zoom in"), this);
 		ZoomIn_->setProperty ("ActionIcon", "zoom-in");
+		ZoomIn_->setShortcut (QString ("Ctrl+="));
 		connect (ZoomIn_,
 				SIGNAL (triggered ()),
 				this,
