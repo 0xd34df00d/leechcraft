@@ -1715,47 +1715,36 @@ namespace Metida
 		ParseForError (content);
 	}
 
-	bool LJXmlRPC::IsUnreadMessagesExist (const QDomDocument& document)
+	namespace
 	{
-		const auto& firstStructElement = document.elementsByTagName ("struct");
-		if (firstStructElement.at (0).isNull ())
-			return false;
-
-		const auto& members = firstStructElement.at (0).childNodes ();
-		bool exists = false;
-		for (int i = 0, count = members.count (); i < count; ++i)
+		bool IsUnreadMessagesExist (QDomDocument document)
 		{
-			const QDomNode& member = members.at (i);
-			if (!member.isElement () ||
-					member.toElement ().tagName () != "member")
-				continue;
+			const auto& firstStructElement = document.elementsByTagName ("struct");
+			if (firstStructElement.at (0).isNull ())
+				return false;
 
-			auto res = ParseMember (member);
-			qint64 id = -1;
-			if (res.Name () == "items")
-				for (const auto& message : res.Value ())
-				{
-					for (const auto& field : message.toList ())
-					{
-						auto fieldEntry = field.value<LJParserTypes::LJParseProfileEntry> ();
-						if (fieldEntry.Name () == "qid")
-							id = fieldEntry.ValueToLongLong ();
-						if (fieldEntry.Name () == "state" &&
-								fieldEntry.ValueToString ().toLower () == "n")
-							exists = true;
-					}
+			const auto& members = firstStructElement.at (0).childNodes ();
+			for (int i = 0, count = members.count (); i < count; ++i)
+			{
+				const QDomNode& member = members.at (i);
+				if (!member.isElement () ||
+						member.toElement ().tagName () != "member")
+					continue;
 
-					if (exists)
-					{
-						if (MessagesIds_.contains (id))
-							exists = false;
-						else
-							MessagesIds_ << id;
-					}
-				}
+				auto res = ParseMember (member);
+				if (res.Name () == "items")
+					for (const auto& message : res.Value ())
+						for (const auto& field : message.toList ())
+						{
+							auto fieldEntry = field.value<LJParserTypes::LJParseProfileEntry> ();
+							if (fieldEntry.Name () == "state" &&
+									fieldEntry.ValueToString ().toLower () == "n")
+								return true;
+						}
+			}
+
+			return false;
 		}
-
-		return exists;
 	}
 
 	void LJXmlRPC::handleInboxReplyFinished ()
