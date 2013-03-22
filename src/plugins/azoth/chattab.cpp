@@ -411,7 +411,7 @@ namespace Azoth
 			return;
 
 		const auto& parts = muc->GetParticipants ();
-		UsersListWidget w (parts, this);
+		UsersListWidget w (parts, [] (ICLEntry *entry) { return entry->GetEntryName (); }, this);
 		if (w.exec () != QDialog::Accepted)
 			return;
 
