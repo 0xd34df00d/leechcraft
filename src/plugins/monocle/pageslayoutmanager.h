@@ -68,7 +68,8 @@ namespace Monocle
 		int GetCurrentPage () const;
 		void SetCurrentPage (int, bool);
 
-		void SetScaleMode (ScaleMode mode);
+		void SetScaleMode (ScaleMode);
+		ScaleMode GetScaleMode () const;
 		void SetFixedScale (double);
 		double GetCurrentScale () const;
 

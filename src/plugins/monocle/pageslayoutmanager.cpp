@@ -39,7 +39,7 @@ namespace Monocle
 	, LayMode_ (LayoutMode::OnePage)
 	, ScaleMode_ (ScaleMode::FitWidth)
 	, FixedScale_ (1)
-	, RelayoutScheduled_ (true)
+	, RelayoutScheduled_ (false)
 	, HorMargin_ (0)
 	, VertMargin_ (0)
 	{
@@ -124,6 +124,11 @@ namespace Monocle
 	void PagesLayoutManager::SetScaleMode (ScaleMode mode)
 	{
 		ScaleMode_ = mode;
+	}
+
+	ScaleMode PagesLayoutManager::GetScaleMode () const
+	{
+		return ScaleMode_;
 	}
 
 	void PagesLayoutManager::SetFixedScale (double scale)
