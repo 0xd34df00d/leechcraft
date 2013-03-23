@@ -32,7 +32,7 @@ namespace LeechCraft
 		connect (Ui_.Modify_,
 				SIGNAL (released ()),
 				this,
-				SLOT (modifyRequested ()));
+				SIGNAL (modifyRequested ()));
 		connect (Ui_.Remove_,
 				SIGNAL (released ()),
 				this,
