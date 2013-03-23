@@ -19,12 +19,13 @@
 #include "rootwindowsmanager.h"
 #include <iterator>
 #include <algorithm>
+#include <interfaces/ihavetabs.h>
 #include "core.h"
 #include "mainwindow.h"
 #include "mwproxy.h"
 #include "tabmanager.h"
 #include "dockmanager.h"
-#include <interfaces/ihavetabs.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -94,6 +95,39 @@ namespace LeechCraft
 				return i;
 
 		return 0;
+	}
+
+	int RootWindowsManager::GetPreferredWindowIndex (ITabWidget *itw) const
+	{
+		const auto& winMode = XmlSettingsManager::Instance ()->
+				property ("WindowSelectionMode").toString ();
+		if (winMode == "current")
+			return GetPreferredWindowIndex ();
+
+		const auto& thisTC = itw->GetTabClassInfo ().TabClass_;
+
+		QPair<int, int> currentMax { -1, 0 };
+		for (int i = 0; i < GetWindowsCount (); ++i)
+		{
+			const auto tm = Windows_ [i].TM_;
+
+			int count = 0;
+			const auto widgetCount = tm->GetWidgetCount ();
+			if (!widgetCount)
+				return i;
+
+			for (int j = 0; j < widgetCount; ++j)
+			{
+				auto other = qobject_cast<ITabWidget*> (tm->GetWidget (j));
+				if (other->GetTabClassInfo ().TabClass_ == thisTC)
+					++count;
+			}
+
+			if (count > currentMax.second)
+				currentMax = { i, count };
+		}
+
+		return currentMax.first;
 	}
 
 	int RootWindowsManager::GetWindowForTab (ITabWidget *tab) const
@@ -200,7 +234,7 @@ namespace LeechCraft
 		if (GetWindowForTab (itw) != -1)
 			return;
 
-		const int winIdx = GetPreferredWindowIndex ();
+		int winIdx = GetPreferredWindowIndex (itw);
 
 		const int oldWinIdx = GetWindowForTab (itw);
 		if (oldWinIdx >= 0 && oldWinIdx != winIdx)
@@ -208,6 +242,12 @@ namespace LeechCraft
 			const auto& oldData = Windows_ [oldWinIdx];
 			emit tabIsRemoving (winIdx, oldData.Window_->GetTabWidget ()->IndexOf (w));
 			oldData.TM_->remove (w);
+		}
+
+		if (winIdx == -1)
+		{
+			CreateWindow ();
+			winIdx = Windows_.size () - 1;
 		}
 
 		Windows_ [winIdx].TM_->add (name, w);
