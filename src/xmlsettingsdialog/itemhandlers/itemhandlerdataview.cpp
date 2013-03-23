@@ -157,6 +157,34 @@ namespace LeechCraft
 		}
 	}
 
+	namespace
+	{
+		struct ColumnInfo
+		{
+			DataSources::DataFieldType Type_;
+			QVariant ValuesInfo_;
+			QString Name_;
+		};
+
+		QList<ColumnInfo> GetColumnInfos (QAbstractItemModel *model)
+		{
+			QList<ColumnInfo> infos;
+			for (int i = 0, size = model->columnCount (); i < size; ++i)
+			{
+				const auto& hData = model->headerData (i, Qt::Horizontal,
+						DataSources::DataSourceRole::FieldType);
+				auto type = static_cast<DataSources::DataFieldType> (hData.value<int> ());
+				if (type != DataSources::DataFieldType::None)
+				{
+					const auto& name = model->headerData (i, Qt::Horizontal, Qt::DisplayRole).toString ();
+					const auto& values = model->headerData (i, Qt::Horizontal, DataSources::DataSourceRole::FieldValues);
+					infos.push_back ({ type, values, name });
+				}
+			}
+			return infos;
+		}
+	}
+
 	void ItemHandlerDataView::handleAddRequested ()
 	{
 		DataViewWidget *view = qobject_cast<DataViewWidget*> (sender ());
@@ -170,25 +198,7 @@ namespace LeechCraft
 
 		QAbstractItemModel *model = view->GetModel ();
 
-		struct ColumnInfo
-		{
-			DataSources::DataFieldType Type_;
-			QVariant ValuesInfo_;
-			QString Name_;
-		};
-		QList<ColumnInfo> infos;
-		for (int i = 0, size = model->columnCount (); i < size; ++i)
-		{
-			const auto& hData = model->headerData (i, Qt::Horizontal,
-					DataSources::DataSourceRole::FieldType);
-			auto type = static_cast<DataSources::DataFieldType> (hData.value<int> ());
-			if (type != DataSources::DataFieldType::None)
-			{
-				const auto& name = model->headerData (i, Qt::Horizontal, Qt::DisplayRole).toString ();
-				const auto& values = model->headerData (i, Qt::Horizontal, DataSources::DataSourceRole::FieldValues);
-				infos.push_back ({ type, values, name });
-			}
-		}
+		const auto& infos = GetColumnInfos (model);
 
 		QDialog dia (XSD_);
 		QGridLayout *lay = new QGridLayout ();
@@ -213,21 +223,22 @@ namespace LeechCraft
 				SLOT (reject ()));
 		lay->addWidget (buttons, lay->rowCount (), 0, 1, -1);
 
-		if (dia.exec () == QDialog::Accepted)
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		QVariantList datas;
+		for (int i = 0, size = infos.size (); i < size; ++i)
 		{
-			QVariantList datas;
-			for (int i = 0, size = infos.size (); i < size; ++i)
-			{
-				QWidget *w = lay->itemAt (2 * i + 1)->widget ();
-				datas << GetData (w, infos.at (i).Type_);
-			}
-			if (!QMetaObject::invokeMethod (model->parent (),
-						"addRequested",
-						Q_ARG (QString, view->objectName ()),
-						Q_ARG (QVariantList, datas)))
-				qWarning () << Q_FUNC_INFO
-						<< "invokeMethod for \"addRequested\" failed";
+			auto w = lay->itemAt (2 * i + 1)->widget ();
+			datas << GetData (w, infos.at (i).Type_);
 		}
+		if (!QMetaObject::invokeMethod (model->parent (),
+					"addRequested",
+					Q_ARG (QString, view->objectName ()),
+					Q_ARG (QVariantList, datas)))
+			qWarning () << Q_FUNC_INFO
+					<< "invokeMethod for \"addRequested\" failed";
+	}
 	}
 
 	void ItemHandlerDataView::handleRemoveRequested ()
