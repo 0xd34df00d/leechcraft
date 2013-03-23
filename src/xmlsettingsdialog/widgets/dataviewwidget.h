@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_DATAVIEWWIDGET_H
-#define XMLSETTINGSDIALOG_ITEMHANDLERS_DATAVIEWWIDGET_H
+#pragma once
+
 #include <QWidget>
 #include "ui_dataviewwidget.h"
 
@@ -36,11 +36,11 @@ namespace LeechCraft
 
 		void SetModel (QAbstractItemModel*);
 		QAbstractItemModel* GetModel () const;
+		QModelIndex GetCurrentIndex () const;
 		QModelIndexList GetSelectedRows () const;
 	signals:
 		void addRequested ();
+		void modifyRequested ();
 		void removeRequested ();
 	};
 }
-
-#endif
