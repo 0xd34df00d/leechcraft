@@ -66,6 +66,7 @@ namespace LeechCraft
 		void handleTabChanged (QWidget*);
 
 		void handleWindow (int);
+		void handleWindowDestroyed ();
 	signals:
 		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr, QMainWindow*, QDockWidget*, bool);
 	};
