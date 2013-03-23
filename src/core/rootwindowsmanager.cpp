@@ -250,6 +250,7 @@ namespace LeechCraft
 			winIdx = Windows_.size () - 1;
 		}
 
+		Windows_ [winIdx].Window_->setWindowRole (itw->GetTabClassInfo ().TabClass_);
 		Windows_ [winIdx].TM_->add (name, w);
 		emit tabAdded (winIdx, Windows_ [winIdx].Window_->GetTabWidget ()->IndexOf (w));
 	}
