@@ -44,8 +44,11 @@ namespace LeechCraft
 		QVariant GetObjectValue (QObject*) const;
 	private:
 		void SetDataSource (const QString&, QAbstractItemModel*);
+
+		QVariantList GetAddVariants (QAbstractItemModel*);
 	private slots:
 		void handleAddRequested ();
+		void handleModifyRequested ();
 		void handleRemoveRequested ();
 	};
 }

@@ -51,6 +51,10 @@ namespace LeechCraft
 				this,
 				SLOT (handleAddRequested ()));
 		connect (view,
+				SIGNAL (modifyRequested ()),
+				this,
+				SLOT (handleModifyRequested ()));
+		connect (view,
 				SIGNAL (removeRequested ()),
 				this,
 				SLOT (handleRemoveRequested ()));
@@ -185,19 +189,8 @@ namespace LeechCraft
 		}
 	}
 
-	void ItemHandlerDataView::handleAddRequested ()
+	QVariantList ItemHandlerDataView::GetAddVariants (QAbstractItemModel *model)
 	{
-		DataViewWidget *view = qobject_cast<DataViewWidget*> (sender ());
-		if (!view)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender is not a DataViewWidget"
-					<< sender ();
-			return;
-		}
-
-		QAbstractItemModel *model = view->GetModel ();
-
 		const auto& infos = GetColumnInfos (model);
 
 		QDialog dia (XSD_);
@@ -224,7 +217,7 @@ namespace LeechCraft
 		lay->addWidget (buttons, lay->rowCount (), 0, 1, -1);
 
 		if (dia.exec () != QDialog::Accepted)
-			return;
+			return QVariantList ();
 
 		QVariantList datas;
 		for (int i = 0, size = infos.size (); i < size; ++i)
@@ -232,6 +225,25 @@ namespace LeechCraft
 			auto w = lay->itemAt (2 * i + 1)->widget ();
 			datas << GetData (w, infos.at (i).Type_);
 		}
+		return datas;
+	}
+
+	void ItemHandlerDataView::handleAddRequested ()
+	{
+		DataViewWidget *view = qobject_cast<DataViewWidget*> (sender ());
+		if (!view)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "sender is not a DataViewWidget"
+					<< sender ();
+			return;
+		}
+
+		auto model = view->GetModel ();
+		const auto& datas = GetAddVariants (model);
+		if (datas.isEmpty ())
+			return;
+
 		if (!QMetaObject::invokeMethod (model->parent (),
 					"addRequested",
 					Q_ARG (QString, view->objectName ()),
@@ -239,6 +251,34 @@ namespace LeechCraft
 			qWarning () << Q_FUNC_INFO
 					<< "invokeMethod for \"addRequested\" failed";
 	}
+
+	void ItemHandlerDataView::handleModifyRequested ()
+	{
+		DataViewWidget *view = qobject_cast<DataViewWidget*> (sender ());
+		if (!view)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "sender is not a DataViewWidget"
+					<< sender ();
+			return;
+		}
+
+		const auto& selected = view->GetCurrentIndex ();
+		if (!selected.isValid ())
+			return;
+
+		auto model = view->GetModel ();
+		const auto& datas = GetAddVariants (model);
+		if (datas.isEmpty ())
+			return;
+
+		if (!QMetaObject::invokeMethod (model->parent (),
+					"modifyRequested",
+					Q_ARG (QString, view->objectName ()),
+					Q_ARG (int, selected.row ()),
+					Q_ARG (QVariantList, datas)))
+			qWarning () << Q_FUNC_INFO
+					<< "invokeMethod for \"addRequested\" failed";
 	}
 
 	void ItemHandlerDataView::handleRemoveRequested ()
