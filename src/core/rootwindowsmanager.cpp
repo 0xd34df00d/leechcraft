@@ -27,6 +27,11 @@
 #include "dockmanager.h"
 #include "xmlsettingsmanager.h"
 
+#ifdef Q_OS_UNIX
+#include <X11/Xutil.h>
+#include <QX11Info>
+#endif
+
 namespace LeechCraft
 {
 	RootWindowsManager::RootWindowsManager (QObject *parent)
@@ -227,6 +232,24 @@ namespace LeechCraft
 				sender ()->property ("ToWindowIndex").toInt ());
 	}
 
+	namespace
+	{
+#ifdef Q_OS_UNIX
+		void SetWMClass (QWidget *w, QByteArray name)
+		{
+			XClassHint hint;
+			hint.res_class = name.data ();
+			hint.res_name = strdup ("leechcraft");
+			XSetClassHint (QX11Info::display (), w->winId (), &hint);
+			free (hint.res_name);
+		}
+#else
+		void SetWMClass (QWidget*, QByteArray)
+		{
+		}
+#endif
+	}
+
 	void RootWindowsManager::add (const QString& name, QWidget *w)
 	{
 		auto itw = qobject_cast<ITabWidget*> (w);
@@ -250,7 +273,9 @@ namespace LeechCraft
 			winIdx = Windows_.size () - 1;
 		}
 
-		Windows_ [winIdx].Window_->setWindowRole (itw->GetTabClassInfo ().TabClass_);
+		const auto& tc = itw->GetTabClassInfo ().TabClass_;
+		Windows_ [winIdx].Window_->setWindowRole (tc);
+		SetWMClass (Windows_ [winIdx].Window_, tc);
 		Windows_ [winIdx].TM_->add (name, w);
 		emit tabAdded (winIdx, Windows_ [winIdx].Window_->GetTabWidget ()->IndexOf (w));
 	}
