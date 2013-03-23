@@ -139,6 +139,26 @@ namespace LeechCraft
 			}
 		}
 
+		void SetData (QWidget *editor, DataSources::DataFieldType type, const QVariant& var)
+		{
+			switch (type)
+			{
+			case DataSources::DataFieldType::Integer:
+				qobject_cast<QSpinBox*> (editor)->setValue (var.toInt ());
+				break;
+			case DataSources::DataFieldType::String:
+			case DataSources::DataFieldType::Url:
+				qobject_cast<QLineEdit*> (editor)->setText (var.toString ());
+				break;
+			case DataSources::DataFieldType::LocalPath:
+				qobject_cast<FilePicker*> (editor)->SetText (var.toString ());
+				break;
+			case DataSources::DataFieldType::Enum:
+				// unsupported yet
+				break;
+			}
+		}
+
 		QVariant GetData (QWidget *editor, DataSources::DataFieldType type)
 		{
 			switch (type)
