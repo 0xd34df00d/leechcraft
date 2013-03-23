@@ -209,17 +209,22 @@ namespace LeechCraft
 		}
 	}
 
-	QVariantList ItemHandlerDataView::GetAddVariants (QAbstractItemModel *model)
+	QVariantList ItemHandlerDataView::GetAddVariants (QAbstractItemModel *model, const QVariantList& existing)
 	{
 		const auto& infos = GetColumnInfos (model);
 
 		QDialog dia (XSD_);
 		QGridLayout *lay = new QGridLayout ();
 		dia.setLayout (lay);
-		for (const auto& info : infos)
+		for (int i = 0; i < infos.size (); ++i)
 		{
+			const auto& info = infos.at (i);
+
 			QLabel *name = new QLabel (info.Name_);
+
 			QWidget *w = GetEditor (info.Type_, info.ValuesInfo_);
+			SetData (w, info.Type_, existing.value (i));
+
 			const int row = lay->rowCount ();
 			lay->addWidget (name, row, 0, Qt::AlignRight);
 			lay->addWidget (w, row, 1);
@@ -269,7 +274,9 @@ namespace LeechCraft
 					Q_ARG (QString, view->objectName ()),
 					Q_ARG (QVariantList, datas)))
 			qWarning () << Q_FUNC_INFO
-					<< "invokeMethod for \"addRequested\" failed";
+					<< "invokeMethod on "
+					<< model->parent ()
+					<< " for \"addRequested\" failed";
 	}
 
 	void ItemHandlerDataView::handleModifyRequested ()
@@ -288,7 +295,11 @@ namespace LeechCraft
 			return;
 
 		auto model = view->GetModel ();
-		const auto& datas = GetAddVariants (model);
+		QVariantList existingData;
+		for (int i = 0; i < model->columnCount (); ++i)
+			existingData << model->index (selected.row (), i).data ();
+
+		const auto& datas = GetAddVariants (model, existingData);
 		if (datas.isEmpty ())
 			return;
 
@@ -298,7 +309,9 @@ namespace LeechCraft
 					Q_ARG (int, selected.row ()),
 					Q_ARG (QVariantList, datas)))
 			qWarning () << Q_FUNC_INFO
-					<< "invokeMethod for \"addRequested\" failed";
+					<< "invokeMethod on "
+					<< model->parent ()
+					<< " for \"modifyRequested\" failed";
 	}
 
 	void ItemHandlerDataView::handleRemoveRequested ()
@@ -322,11 +335,15 @@ namespace LeechCraft
 		if (!indexes.size ())
 			return;
 
-		if (!QMetaObject::invokeMethod (view->GetModel ()->parent (),
+		auto model = view->GetModel ();
+
+		if (!QMetaObject::invokeMethod (model->parent (),
 					"removeRequested",
 					Q_ARG (QString, view->objectName ()),
 					Q_ARG (QModelIndexList, indexes)))
 			qWarning () << Q_FUNC_INFO
-					<< "invokeMethod for \"removeRequested\" failed";
+					<< "invokeMethod on "
+					<< model->parent ()
+					<< " for \"removeRequested\" failed";
 	}
 }

@@ -45,7 +45,7 @@ namespace LeechCraft
 	private:
 		void SetDataSource (const QString&, QAbstractItemModel*);
 
-		QVariantList GetAddVariants (QAbstractItemModel*);
+		QVariantList GetAddVariants (QAbstractItemModel*, const QVariantList& = QVariantList ());
 	private slots:
 		void handleAddRequested ();
 		void handleModifyRequested ();
