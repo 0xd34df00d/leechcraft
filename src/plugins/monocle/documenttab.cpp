@@ -108,7 +108,8 @@ namespace Monocle
 				this,
 				SLOT (handleThumbnailClicked (int)));
 
-		DockWidget_->setFeatures (QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
+		DockWidget_->setFeatures (QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable);
+		DockWidget_->setAllowedAreas (Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 		DockWidget_->setWidget (dockTabWidget);
 
 		DockWidget_->setWindowIcon (tocIcon);
