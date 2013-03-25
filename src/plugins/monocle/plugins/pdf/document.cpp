@@ -134,14 +134,17 @@ namespace PDF
 		return QList<IAnnotation_ptr> ();
 	}
 
-	QMap<int, QList<QRectF>> Document::GetTextPositions (const QString& text)
+	QMap<int, QList<QRectF>> Document::GetTextPositions (const QString& text, Qt::CaseSensitivity cs)
 	{
 		QMap<int, QList<QRectF>> result;
 #if POPPLER_VERSION_MAJOR > 0 || POPPLER_VERSION_MINOR >= 22
 		for (auto i = 0, count = PDocument_->numPages (); i < count; ++i)
 		{
 			std::unique_ptr<Poppler::Page> page (PDocument_->page (i));
-			const auto& rects = page->search (text, Poppler::Page::CaseInsensitive);
+			const auto& rects = page->search (text,
+					cs == Qt::CaseSensitive ?
+						Poppler::Page::CaseSensitive :
+						Poppler::Page::CaseInsensitive);
 			if (!rects.isEmpty ())
 				result [i] = rects;
 		}

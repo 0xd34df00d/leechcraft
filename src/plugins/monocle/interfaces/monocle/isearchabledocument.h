@@ -31,7 +31,7 @@ namespace Monocle
 	public:
 		virtual ~ISearchableDocument () {}
 
-		virtual QMap<int, QList<QRectF>> GetTextPositions (const QString&) = 0;
+		virtual QMap<int, QList<QRectF>> GetTextPositions (const QString&, Qt::CaseSensitivity) = 0;
 	};
 }
 }

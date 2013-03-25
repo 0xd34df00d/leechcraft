@@ -78,7 +78,7 @@ namespace PDF
 
 		QList<IAnnotation_ptr> GetAnnotations (int) const;
 
-		QMap<int, QList<QRectF>> GetTextPositions (const QString&);
+		QMap<int, QList<QRectF>> GetTextPositions (const QString&, Qt::CaseSensitivity);
 
 		void RequestNavigation (const QString&, int, double, double);
 	private:
