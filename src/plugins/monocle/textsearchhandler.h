@@ -31,6 +31,7 @@ namespace LeechCraft
 namespace Monocle
 {
 	class PageGraphicsItem;
+	class PagesLayoutManager;
 
 	class TextSearchHandler : public QObject
 	{
@@ -38,6 +39,7 @@ namespace Monocle
 
 		QGraphicsView * const View_;
 		QGraphicsScene * const Scene_;
+		PagesLayoutManager * const LayoutMgr_;
 
 		IDocument_ptr Doc_;
 		QList<PageGraphicsItem*> Pages_;
@@ -47,7 +49,7 @@ namespace Monocle
 		QList<QGraphicsRectItem*> CurrentHighlights_;
 		int CurrentRectIndex_;
 	public:
-		TextSearchHandler (QGraphicsView*, QObject* = 0);
+		TextSearchHandler (QGraphicsView*, PagesLayoutManager*, QObject* = 0);
 
 		void HandleDoc (IDocument_ptr, const QList<PageGraphicsItem*>&);
 

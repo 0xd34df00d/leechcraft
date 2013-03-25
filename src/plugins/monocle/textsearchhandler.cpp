@@ -22,15 +22,17 @@
 #include <QtDebug>
 #include "interfaces/monocle/isearchabledocument.h"
 #include "pagegraphicsitem.h"
+#include "pageslayoutmanager.h"
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-	TextSearchHandler::TextSearchHandler (QGraphicsView *view, QObject *parent)
+	TextSearchHandler::TextSearchHandler (QGraphicsView *view, PagesLayoutManager *mgr, QObject *parent)
 	: QObject (parent)
 	, View_ (view)
 	, Scene_ (view->scene ())
+	, LayoutMgr_ (mgr)
 	, CurrentRectIndex_ (-1)
 	{
 	}
@@ -136,6 +138,11 @@ namespace Monocle
 		item->setOpacity (0.6);
 		item->setPen ({ Qt::black });
 		CurrentRectIndex_ = index;
+
+		auto pageItem = static_cast<PageGraphicsItem*> (item->parentItem ());
+		const auto pageIdx = LayoutMgr_->GetPages ().indexOf (pageItem);
+		if (pageIdx >= 0)
+			LayoutMgr_->SetCurrentPage (pageIdx, false);
 	}
 }
 }

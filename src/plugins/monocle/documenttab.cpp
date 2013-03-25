@@ -105,7 +105,7 @@ namespace Monocle
 		Ui_.PagesView_->SetDocumentTab (this);
 
 		LayoutManager_ = new PagesLayoutManager (Ui_.PagesView_, this);
-		SearchHandler_ = new TextSearchHandler (Ui_.PagesView_, this);
+		SearchHandler_ = new TextSearchHandler (Ui_.PagesView_, LayoutManager_, this);
 
 		FindDialog_ = new FindDialog (SearchHandler_, this);
 		FindDialog_->hide ();
