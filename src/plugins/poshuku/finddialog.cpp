@@ -23,69 +23,35 @@ namespace LeechCraft
 namespace Poshuku
 {
 	FindDialog::FindDialog (QWidget *parent)
-	: Util::PageNotification (parent)
-	{
-		Ui_.setupUi (this);
-	}
-
-	FindDialog::~FindDialog ()
+	: Util::FindNotification (parent)
 	{
 	}
 
-	void FindDialog::SetText (const QString& text)
+	namespace
 	{
-		Ui_.Pattern_->setText (text);
+		QWebPage::FindFlags ToPageFlags (Util::FindNotification::FindFlags flags)
+		{
+			QWebPage::FindFlags pageFlags;
+			auto check = [&pageFlags, flags] (Util::FindNotification::FindFlag ourFlag, QWebPage::FindFlag pageFlag)
+			{
+				if (flags & ourFlag)
+					pageFlags |= pageFlag;
+			};
+			check (Util::FindNotification::FindCaseSensitively, QWebPage::FindCaseSensitively);
+			check (Util::FindNotification::FindBackwards, QWebPage::FindBackward);
+			check (Util::FindNotification::FindWrapsAround, QWebPage::FindWrapsAroundDocument);
+			return pageFlags;
+		}
 	}
 
-	QString FindDialog::GetText () const
+	QWebPage::FindFlags FindDialog::GetPageFlags () const
 	{
-		return Ui_.Pattern_->text ();
+		return ToPageFlags (GetFlags ());
 	}
 
-	void FindDialog::SetSuccessful (bool success)
+	void FindDialog::handleNext (const QString& text, FindFlags flags)
 	{
-		QString ss = QString ("QLineEdit {"
-				"background-color:rgb(");
-		if (success)
-			ss.append ("0,255");
-		else
-			ss.append ("255,0");
-		ss.append (",0) }");
-		Ui_.Pattern_->setStyleSheet (ss);
-	}
-
-	void FindDialog::Focus ()
-	{
-		Ui_.Pattern_->setFocus ();
-	}
-
-	QWebPage::FindFlags FindDialog::GetFlags () const
-	{
-		QWebPage::FindFlags flags;
-		if (Ui_.MatchCase_->checkState () == Qt::Checked)
-			flags |= QWebPage::FindCaseSensitively;
-		if (Ui_.WrapAround_->checkState () == Qt::Checked)
-			flags |= QWebPage::FindWrapsAroundDocument;
-		return flags;
-	}
-
-	void FindDialog::on_Pattern__textChanged (const QString& newText)
-	{
-		Ui_.FindButton_->setEnabled (!newText.isEmpty ());
-	}
-
-	void FindDialog::on_FindButton__released ()
-	{
-		auto flags = GetFlags ();
-		if (Ui_.SearchBackwards_->checkState () == Qt::Checked)
-			flags |= QWebPage::FindBackward;
-
-		emit next (Ui_.Pattern_->text (), flags);
-	}
-
-	void FindDialog::reject ()
-	{
-		hide ();
+		emit next (text, ToPageFlags (flags));
 	}
 }
 }

@@ -12,6 +12,7 @@ INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIRS}
 
 SET (SRCS
 	gui/clearlineeditaddon.cpp
+	gui/findnotification.cpp
 	gui/flowlayout.cpp
 	gui/pagenotification.cpp
 	gui/selectablebrowser.cpp
@@ -55,6 +56,7 @@ SET (SRCS
 	)
 SET (FORMS
 	backendselector.ui
+	gui/findnotification.ui
 	)
 IF (USE_QT5)
 	qt5_wrap_ui (UIS_H ${FORMS})

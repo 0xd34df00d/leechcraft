@@ -129,7 +129,6 @@ SET (HEADERS
 	)
 SET (FORMS
 	browserwidget.ui
-	finddialog.ui
 	screenshotsavedialog.ui
 	cookieseditdialog.ui
 	sourceviewer.ui

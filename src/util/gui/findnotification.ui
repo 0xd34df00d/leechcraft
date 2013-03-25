@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>FindDialog</class>
- <widget class="QWidget" name="FindDialog">
+ <class>FindNotification</class>
+ <widget class="QWidget" name="FindNotification">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -12,10 +12,6 @@
   </property>
   <property name="windowTitle">
    <string>Find</string>
-  </property>
-  <property name="windowIcon">
-   <iconset resource="resources.qrc">
-    <normaloff>:/resources/images/poshuku.svg</normaloff>:/resources/images/poshuku.svg</iconset>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>

@@ -18,24 +18,48 @@
 
 #pragma once
 
-#include <qwebpage.h>
-#include <util/gui/findnotification.h>
+#include <util/utilconfig.h>
+#include "pagenotification.h"
+
+namespace Ui
+{
+	class FindNotification;
+}
 
 namespace LeechCraft
 {
-namespace Poshuku
+namespace Util
 {
-	class FindDialog : public Util::FindNotification
+	class UTIL_API FindNotification : public PageNotification
 	{
 		Q_OBJECT
-	public:
-		FindDialog (QWidget*);
 
-		QWebPage::FindFlags GetPageFlags () const;
+		Ui::FindNotification *Ui_;
+	public:
+		enum FindFlag
+		{
+			FindCaseSensitively,
+			FindBackwards,
+			FindWrapsAround
+		};
+		Q_DECLARE_FLAGS (FindFlags, FindFlag)
+
+		FindNotification (QWidget*);
+		~FindNotification ();
+
+		void SetText (const QString&);
+		QString GetText () const;
+
+		void SetSuccessful (bool);
+		void Focus ();
+
+		FindFlags GetFlags () const;
 	protected:
-		void handleNext (const QString&, FindFlags);
-	signals:
-		void next (const QString&, QWebPage::FindFlags);
+		virtual void handleNext (const QString&, FindFlags) = 0;
+	private slots:
+		void on_Pattern__textChanged (const QString&);
+		void on_FindButton__released ();
+		virtual void reject ();
 	};
 }
 }
