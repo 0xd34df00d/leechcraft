@@ -30,7 +30,7 @@ namespace Monocle
 						   , public QGraphicsPixmapItem
 	{
 		Q_OBJECT
-		
+
 		IDocument_ptr Doc_;
 		const int PageNum_;
 
@@ -45,6 +45,8 @@ namespace Monocle
 		bool Invalid_;
 
 		std::function<void (int, QPointF)> ReleaseHandler_;
+
+		QMap<QGraphicsRectItem*, QRectF> Item2DocRect_;
 	public:
 		PageGraphicsItem (IDocument_ptr, int, QGraphicsItem* = 0);
 		~PageGraphicsItem ();
@@ -56,6 +58,9 @@ namespace Monocle
 
 		QRectF MapFromDoc (const QRectF&) const;
 		QRectF MapToDoc (const QRectF&) const;
+
+		void RegisterChildRect (QGraphicsRectItem*, const QRectF&);
+		void UnregisterChildRect (QGraphicsRectItem*);
 
 		void ClearPixmap ();
 		void UpdatePixmap ();
