@@ -19,14 +19,14 @@
 #ifndef PLUGINS_POSHUKU_FINDDIALOG_H
 #define PLUGINS_POSHUKU_FINDDIALOG_H
 #include <qwebpage.h>
-#include "notification.h"
+#include <util/gui/pagenotification.h>
 #include "ui_finddialog.h"
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	class FindDialog : public Notification
+	class FindDialog : public Util::PageNotification
 	{
 		Q_OBJECT
 

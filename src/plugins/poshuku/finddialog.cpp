@@ -23,7 +23,7 @@ namespace LeechCraft
 namespace Poshuku
 {
 	FindDialog::FindDialog (QWidget *parent)
-	: Notification (parent)
+	: Util::PageNotification (parent)
 	{
 		Ui_.setupUi (this);
 	}
