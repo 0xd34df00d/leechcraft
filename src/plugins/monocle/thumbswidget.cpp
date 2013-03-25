@@ -36,11 +36,17 @@ namespace Monocle
 		LayoutMgr_ = new PagesLayoutManager (Ui_.ThumbsView_, this);
 		LayoutMgr_->SetScaleMode (ScaleMode::FitWidth);
 		LayoutMgr_->SetMargins (10, 0);
+
+		connect (LayoutMgr_,
+				SIGNAL (scheduledRelayoutFinished ()),
+				this,
+				SLOT (handleRelayouted ()));
 	}
 
 	void ThumbsWidget::HandleDoc (IDocument_ptr doc)
 	{
 		Scene_.clear ();
+		CurrentAreaRects_.clear ();
 		CurrentDoc_ = doc;
 
 		if (!doc)
@@ -59,9 +65,54 @@ namespace Monocle
 		LayoutMgr_->Relayout ();
 	}
 
+	void ThumbsWidget::updatePagesVisibility (const QMap<int, QRect>& page2rect)
+	{
+		LastVisibleAreas_ = page2rect;
+
+		if (page2rect.size () != CurrentAreaRects_.size ())
+		{
+			for (auto rect : CurrentAreaRects_)
+			{
+				Scene_.removeItem (rect);
+				delete rect;
+			}
+			CurrentAreaRects_.clear ();
+
+			const auto& brush = palette ().brush (QPalette::Dark);
+			for (int i = 0; i < page2rect.size (); ++i)
+			{
+				auto item = Scene_.addRect ({}, { Qt::black }, brush);
+				item->setZValue (1);
+				item->setOpacity (0.3);
+				CurrentAreaRects_ << item;
+			}
+		}
+
+		const auto& pages = LayoutMgr_->GetPages ();
+
+		int rectIdx = 0;
+		for (auto i = page2rect.begin (); i != page2rect.end (); ++i, ++rectIdx)
+		{
+			const auto pageNum = i.key ();
+			if (pageNum >= pages.size ())
+				continue;
+
+			auto page = pages.at (pageNum);
+
+			const auto& docRect = *i;
+			const auto& sceneRect = page->mapToScene (page->MapFromDoc (docRect)).boundingRect ();
+			CurrentAreaRects_ [rectIdx]->setRect (sceneRect);
+		}
+	}
+
 	void ThumbsWidget::handleCurrentPage (int page)
 	{
 		LayoutMgr_->SetCurrentPage (page, false);
+	}
+
+	void ThumbsWidget::handleRelayouted ()
+	{
+		updatePagesVisibility (LastVisibleAreas_);
 	}
 }
 }

@@ -26,8 +26,11 @@ namespace LeechCraft
 {
 namespace Monocle
 {
-	class PageGraphicsItem : public QGraphicsPixmapItem
+	class PageGraphicsItem : public QObject
+						   , public QGraphicsPixmapItem
 	{
+		Q_OBJECT
+		
 		IDocument_ptr Doc_;
 		const int PageNum_;
 
@@ -51,6 +54,9 @@ namespace Monocle
 		void SetScale (double, double);
 		int GetPageNum () const;
 
+		QRectF MapFromDoc (const QRectF&) const;
+		QRectF MapToDoc (const QRectF&) const;
+
 		void ClearPixmap ();
 		void UpdatePixmap ();
 	protected:
@@ -62,6 +68,8 @@ namespace Monocle
 	private:
 		void LayoutLinks ();
 		ILink_ptr FindLink (const QPointF&);
+	private slots:
+		void handlePixmapRendered ();
 	};
 }
 }

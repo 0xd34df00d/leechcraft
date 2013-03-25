@@ -57,6 +57,7 @@ namespace Monocle
 		PagesLayoutManager (PagesView*, QObject* = 0);
 
 		void HandleDoc (IDocument_ptr, const QList<PageGraphicsItem*>&);
+		const QList<PageGraphicsItem*>& GetPages () const;
 
 		LayoutMode GetLayoutMode () const;
 		void SetLayoutMode (LayoutMode);
@@ -67,7 +68,8 @@ namespace Monocle
 		int GetCurrentPage () const;
 		void SetCurrentPage (int, bool);
 
-		void SetScaleMode (ScaleMode mode);
+		void SetScaleMode (ScaleMode);
+		ScaleMode GetScaleMode () const;
 		void SetFixedScale (double);
 		double GetCurrentScale () const;
 
@@ -79,6 +81,8 @@ namespace Monocle
 		void handleRelayout ();
 	private slots:
 		void handlePageSizeChanged (int);
+	signals:
+		void scheduledRelayoutFinished ();
 	};
 }
 }

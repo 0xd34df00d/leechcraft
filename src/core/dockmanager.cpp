@@ -19,12 +19,14 @@
 #include "dockmanager.h"
 #include <QDockWidget>
 #include <QToolButton>
+#include <QToolBar>
 #include <util/defaulthookproxy.h>
 #include <interfaces/ihavetabs.h>
 #include "tabmanager.h"
 #include "core.h"
 #include "rootwindowsmanager.h"
 #include "mainwindow.h"
+#include "docktoolbarmanager.h"
 
 namespace LeechCraft
 {
@@ -44,13 +46,15 @@ namespace LeechCraft
 	void DockManager::AddDockWidget (QDockWidget *dw, Qt::DockWidgetArea area)
 	{
 		auto win = static_cast<MainWindow*> (RootWM_->GetPreferredWindow ());
-		win->addDockWidget (area, dw, Qt::Horizontal);
+		win->addDockWidget (area, dw);
 		Dock2Window_ [dw] = win;
 
 		connect (dw,
 				SIGNAL (destroyed (QObject*)),
 				this,
 				SLOT (handleDockDestroyed ()));
+
+		Window2DockToolbarMgr_ [win]->AddDock (dw, area);
 	}
 
 	void DockManager::AssociateDockWidget (QDockWidget *dock, QWidget *tab)
@@ -83,10 +87,9 @@ namespace LeechCraft
 		if (proxy->IsCancelled ())
 			return;
 
-		QAction *act = widget->toggleViewAction ();
-
-		// TODO
 		/*
+		// TODO
+		QAction *act = widget->toggleViewAction ();
 		if (!visible)
 			MenuView_->removeAction (act);
 		else
@@ -125,15 +128,21 @@ namespace LeechCraft
 				const auto area = fromWin->dockWidgetArea (dw);
 
 				fromWin->removeDockWidget (dw);
-				toWin->addDockWidget (area, dw, Qt::Horizontal);
+				Window2DockToolbarMgr_ [fromWin]->RemoveDock (dw);
+				toWin->addDockWidget (area, dw);
+				Window2DockToolbarMgr_ [toWin]->AddDock (dw, area);
 			}
 	}
 
 	void DockManager::handleDockDestroyed ()
 	{
 		auto dock = static_cast<QDockWidget*> (sender ());
+
+		auto toggleAct = ToggleAct2Dock_.key (dock);
+		Window2DockToolbarMgr_ [Dock2Window_ [dock]]->HandleDockDestroyed (dock, toggleAct);
+
 		TabAssociations_.remove (dock);
-		ToggleAct2Dock_.remove (ToggleAct2Dock_.key (dock));
+		ToggleAct2Dock_.remove (toggleAct);
 		ForcefullyClosed_.remove (dock);
 		Dock2Window_.remove (dock);
 	}
@@ -157,31 +166,48 @@ namespace LeechCraft
 
 	void DockManager::handleTabChanged (QWidget *tabWidget)
 	{
-		auto thisWindow = RootWM_->GetWindowForTab (qobject_cast<ITabWidget*> (tabWidget));
+		auto thisWindowIdx = RootWM_->GetWindowForTab (qobject_cast<ITabWidget*> (tabWidget));
+		auto thisWindow = static_cast<MainWindow*> (RootWM_->GetMainWindow (thisWindowIdx));
+		auto toolbarMgr = Window2DockToolbarMgr_ [thisWindow];
 
 		QList<QDockWidget*> toShow;
 		for (auto dock : TabAssociations_.keys ())
 		{
 			auto otherWidget = TabAssociations_ [dock];
 			auto otherWindow = RootWM_->GetWindowIndex (Dock2Window_ [dock]);
-			if (otherWindow != thisWindow)
+			if (otherWindow != thisWindowIdx)
 				continue;
 
 			if (otherWidget != tabWidget)
+			{
 				dock->setVisible (false);
+				toolbarMgr->RemoveDock (dock);
+			}
 			else if (!ForcefullyClosed_.contains (dock))
 				toShow << dock;
 		}
 
 		for (auto dock : toShow)
+		{
 			dock->setVisible (true);
+			toolbarMgr->AddDock (dock, thisWindow->dockWidgetArea (dock));
+		}
 	}
 
 	void DockManager::handleWindow (int index)
 	{
 		auto win = static_cast<MainWindow*> (RootWM_->GetMainWindow (index));
-		win->GetDockListWidget (Qt::LeftDockWidgetArea)->hide ();
-		win->GetDockListWidget (Qt::RightDockWidgetArea)->hide ();
-		win->setDockNestingEnabled (true);
+		Window2DockToolbarMgr_ [win] = new DockToolbarManager (win);
+
+		connect (win,
+				SIGNAL (destroyed (QObject*)),
+				this,
+				SLOT (handleWindowDestroyed ()));
+	}
+
+	void DockManager::handleWindowDestroyed ()
+	{
+		auto win = static_cast<MainWindow*> (sender ());
+		Window2DockToolbarMgr_.remove (win);
 	}
 }

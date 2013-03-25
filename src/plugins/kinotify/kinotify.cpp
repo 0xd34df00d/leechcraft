@@ -20,8 +20,9 @@
 #include <QMainWindow>
 #include <QIcon>
 #include <QTimer>
-#include <interfaces/entitytesthandleresult.h>
 #include <util/resourceloader.h>
+#include <util/util.h>
+#include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/core/icoreproxy.h>
 #include "kinotifywidget.h"
@@ -34,6 +35,8 @@ namespace Kinotify
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("kinotify");
+		
 		Proxy_ = proxy;
 
 		ThemeLoader_.reset (new Util::ResourceLoader ("kinotify/themes/notification"));

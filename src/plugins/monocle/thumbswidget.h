@@ -38,12 +38,18 @@ namespace Monocle
 		PagesLayoutManager *LayoutMgr_;
 
 		IDocument_ptr CurrentDoc_;
+
+		QList<QGraphicsRectItem*> CurrentAreaRects_;
+		QMap<int, QRect> LastVisibleAreas_;
 	public:
 		ThumbsWidget (QWidget* = 0);
 
 		void HandleDoc (IDocument_ptr);
 	public slots:
+		void updatePagesVisibility (const QMap<int, QRect>&);
 		void handleCurrentPage (int);
+	private slots:
+		void handleRelayouted ();
 	signals:
 		void pageClicked (int);
 	};

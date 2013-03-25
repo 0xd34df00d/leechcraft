@@ -33,6 +33,7 @@ SET (HEADERS
 	)
 SET (RESOURCES kinotifyresources.qrc)
 CreateTrs ("kinotify" "ar;de;en;es;fr;it;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("kinotify" "en;ru_RU" "${SRCS}" "${FORMS}" "kinotifysettings.xml")
 
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})

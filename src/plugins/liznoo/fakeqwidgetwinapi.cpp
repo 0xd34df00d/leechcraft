@@ -18,6 +18,7 @@
  **********************************************************************/
 
 #include "fakeqwidgetwinapi.h"
+#include <objbase.h>
 
 namespace LeechCraft 
 {
@@ -73,13 +74,13 @@ namespace Liznoo
 					reinterpret_cast<PPOWERBROADCAST_SETTING> (message->lParam);
 
 				if (sizeof (GUID) == rcvd_setting->DataLength &&
-					rcvd_setting->PowerSetting == GUID_POWERSCHEME_PERSONALITY)
+					IsEqualGUID (rcvd_setting->PowerSetting, GUID_POWERSCHEME_PERSONALITY))
 					prepareSchemeChange (rcvd_setting);
 				else if (sizeof (int) == rcvd_setting->DataLength &&
-					rcvd_setting->PowerSetting == GUID_ACDC_POWER_SOURCE)
+					IsEqualGUID (rcvd_setting->PowerSetting, GUID_ACDC_POWER_SOURCE))
 					preparePowerSourceChange (rcvd_setting);
 				else if (sizeof (int) == rcvd_setting->DataLength &&
-					rcvd_setting->PowerSetting == GUID_BATTERY_PERCENTAGE_REMAINING)
+					IsEqualGUID (rcvd_setting->PowerSetting, GUID_BATTERY_PERCENTAGE_REMAINING))
 					prepareBatteryStateChange (rcvd_setting);
 			}
 		}

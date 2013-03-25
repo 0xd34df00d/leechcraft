@@ -41,16 +41,22 @@ namespace Mu
 		}
 	}
 
-	Document::Document (const QString& filename, fz_context *ctx)
+	Document::Document (const QString& filename, fz_context *ctx, QObject *plugin)
 	: MuCtx_ (ctx)
 	, MuDoc_ (pdf_open_document (ctx, filename.toUtf8 ().constData ()))
 	, URL_ (QUrl::fromLocalFile (filename))
+	, Plugin_ (plugin)
 	{
 	}
 
 	Document::~Document ()
 	{
 		pdf_close_document (MuDoc_);
+	}
+
+	QObject* Document::GetBackendPlugin () const
+	{
+		return Plugin_;
 	}
 
 	QObject* Document::GetQObject ()

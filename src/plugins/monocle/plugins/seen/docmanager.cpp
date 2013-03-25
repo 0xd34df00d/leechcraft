@@ -33,7 +33,7 @@ namespace Seen
 
 	std::shared_ptr<Document> DocManager::LoadDocument (const QString& file)
 	{
-		std::shared_ptr<Document> doc (new Document (file, Context_, this));
+		std::shared_ptr<Document> doc (new Document (file, Context_, parent (), this));
 		Documents_ [doc->GetNativeDoc ()] = doc;
 		return doc;
 	}

@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "profilewidget.h"
+#include <stdexcept>
 #include <QtDebug>
 #include <QMessageBox>
 #include <util/util.h>
@@ -320,7 +321,6 @@ namespace Metida
 
 		account->AddNewFriend (username, bgColor, fgColor, groupId);
 	}
-
 }
 }
 }

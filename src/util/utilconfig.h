@@ -20,24 +20,10 @@
 #define UTIL_CONFIG_H
 #include <QtGlobal>
 
-#if defined(Q_CC_GNU)
-
 # if defined(lcutil_EXPORTS)
-#  define UTIL_API __attribute__ ((visibility("default")))
+#  define UTIL_API Q_DECL_EXPORT
 # else
-#  define UTIL_API
-# endif
-
-#elif defined(Q_CC_MSVC)
-
-# if defined(lcutil_EXPORTS)
-#  define UTIL_API __declspec(dllexport)
-# else
-#  define UTIL_API __declspec(dllimport)
-# endif
-
-#else
-# define UTIL_API
+#  define UTIL_API Q_DECL_IMPORT
 #endif
 
 #endif

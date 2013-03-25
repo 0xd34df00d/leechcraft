@@ -21,6 +21,7 @@
 #include <QComboBox>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QProgressBar>
 #include <QPushButton>
 #include <QStandardItemModel>
 #include <QWidgetAction>
@@ -40,6 +41,7 @@
 #include "updateentriesdialog.h"
 #include "xmlsettingsmanager.h"
 #include "storagemanager.h"
+#include "submittodialog.h"
 
 namespace LeechCraft
 {
@@ -52,7 +54,11 @@ namespace Blogique
 	, PostEdit_ (0)
 	, PostEditWidget_ (0)
 	, ToolBar_ (new QToolBar)
+	, ProgressToolBar_ (new QToolBar (this))
+	, AccountsBoxAction_ (0)
+	, AccountsBox_ (new QComboBox ())
 	, PostTargetAction_ (0)
+	, ProgressBarAction_ (0)
 	, DraftEntriesWidget_ (new DraftEntriesWidget)
 	, BlogEntriesWidget_ (new BlogEntriesWidget)
 	, PrevAccountId_ (-1)
@@ -69,14 +75,27 @@ namespace Blogique
 
 		auto rootWM = Core::Instance ().GetCoreProxy ()->GetRootWindowsManager ();
 		auto mw = rootWM->GetMWProxy (rootWM->GetPreferredWindowIndex ());
+		Ui_.SideWidget_->setWindowIcon (Core::Instance ().GetIcon ());
+		Ui_.SideWidget_->toggleViewAction ()->setIcon (Core::Instance ().GetIcon ());
 		mw->AddDockWidget (dwa, Ui_.SideWidget_);
 		mw->AssociateDockWidget (Ui_.SideWidget_, this);
 		mw->ToggleViewActionVisiblity (Ui_.SideWidget_, false);
 
 		SetTextEditor ();
-
 		SetDefaultSideWidgets ();
 
+		connect (&Core::Instance (),
+				SIGNAL (requestEntriesBegin ()),
+				this,
+				SLOT (handleRequestEntriesBegin ()));
+
+		QProgressBar *submitProgressBar = new QProgressBar;
+		submitProgressBar->setRange (0, 0);
+		ProgressBarLabel_ = new QLabel;
+		ProgressBarLabelAction_ = ProgressToolBar_->addWidget (ProgressBarLabel_);
+		ProgressBarAction_ = ProgressToolBar_->addWidget (submitProgressBar);
+		submitProgressBar->setOrientation (Qt::Horizontal);
+		
 		SetToolBarActions ();
 
 		connect (this,
@@ -96,6 +115,14 @@ namespace Blogique
 				SIGNAL (fillNewWidgetWithBlogEntry (Entry,QByteArray)),
 				this,
 				SLOT (fillNewTabWithEntry (Entry, QByteArray)));
+		connect (BlogEntriesWidget_,
+				SIGNAL (removingEntryBegin ()),
+				this,
+				SLOT (handleRemovingEntryBegin ()));
+		connect (BlogEntriesWidget_,
+				SIGNAL (entriesListUpdated ()),
+				this,
+				SLOT (handleRequestEntriesEnd ()));
 		connect (DraftEntriesWidget_,
 				SIGNAL (fillCurrentWidgetWithDraftEntry (Entry)),
 				this,
@@ -104,6 +131,12 @@ namespace Blogique
 				SIGNAL (fillNewWidgetWithDraftEntry (Entry, QByteArray)),
 				this,
 				SLOT (fillNewTabWithEntry (Entry, QByteArray)));
+		connect (Ui_.Subject_,
+				SIGNAL (textChanged (QString)),
+				this,
+				SLOT (handleEntryChanged (QString)));
+
+		ShowProgress ();
 
 		DraftEntriesWidget_->loadDraftEntries ();
 	}
@@ -143,6 +176,13 @@ namespace Blogique
 				break;
 			}
 		}
+
+		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		auto ibp = qobject_cast<IBloggingPlatform*> (acc->GetParentBloggingPlatform ());
+		if (ibp &&
+				(ibp->GetFeatures () & IBloggingPlatform::BPFSelectablePostDestination) &&
+				PostTargetBox_)
+			PostTargetBox_->setCurrentIndex (PostTargetBox_->findText (e.Target_, Qt::MatchFixedString));
 
 		EntryType_ = e.EntryType_;
 		EntryId_ = e.EntryId_;
@@ -184,6 +224,44 @@ namespace Blogique
 		S_ParentMultiTabs_ = tab;
 	}
 
+	QByteArray BlogiqueWidget::GetTabRecoverData () const
+	{
+		QByteArray result;
+		auto entry = GetCurrentEntry ();
+		if (entry.IsEmpty ())
+			return result;
+
+		QByteArray accId;
+		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		if (acc)
+			accId = acc->GetAccountID ();
+
+		QDataStream stream (&result, QIODevice::WriteOnly);
+		stream << qint64 (1)
+				<< entry.Subject_
+				<< entry.Content_
+				<< entry.Date_
+				<< entry.Tags_
+				<< entry.Target_
+				<< entry.PostOptions_
+				<< entry.CustomData_
+				<< accId;
+
+		return result;
+	}
+
+	QString BlogiqueWidget::GetTabRecoverName () const
+	{
+		return !Ui_.Subject_->text ().isEmpty () ?
+			Ui_.Subject_->text () :
+			tr ("No subject");
+	}
+
+	QIcon BlogiqueWidget::GetTabRecoverIcon () const
+	{
+		return Core::Instance ().GetIcon ();
+	}
+
 	void BlogiqueWidget::SetTextEditor ()
 	{
 		auto plugs = Core::Instance ().GetCoreProxy ()->
@@ -209,7 +287,7 @@ namespace Blogique
 			connect (w,
 					SIGNAL (textChanged ()),
 					this,
-					SLOT (handleTextChanged ()));
+					SLOT (handleEntryChanged ()));
 			PostEditWidget_ = w;
 			editFrameLay->addWidget (w);
 			break;
@@ -246,9 +324,13 @@ namespace Blogique
 				this,
 				SLOT (submit ()));
 
-		Ui_.OpenInBrowser_->setProperty ("ActionIcon", "applications-internet");
-		ToolBar_->addAction (Ui_.OpenInBrowser_);
+		Ui_.SubmitTo_->setProperty ("ActionIcon", "mail-folder-outbox");
+		connect (Ui_.SubmitTo_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (submitTo ()));
 
+		Ui_.OpenInBrowser_->setProperty ("ActionIcon", "applications-internet");
 		Ui_.UpdateProfile_->setProperty ("ActionIcon", "view-refresh");
 
 		ToolBar_->addSeparator ();
@@ -268,7 +350,6 @@ namespace Blogique
 			PostEdit_->AppendSeparator ();
 		}
 
-		AccountsBox_ = new QComboBox ();
 		connect (AccountsBox_,
 				SIGNAL (currentIndexChanged (int)),
 				this,
@@ -280,7 +361,7 @@ namespace Blogique
 			Id2Account_ [AccountsBox_->count () - 1] = acc;
 		}
 
-		ToolBar_->addWidget (AccountsBox_);
+		AccountsBoxAction_ = ToolBar_->addWidget (AccountsBox_);
 
 		PostTargetBox_ = new QComboBox;
 
@@ -288,10 +369,14 @@ namespace Blogique
 				.property ("LastActiveAccountName").toString (),
 					Qt::MatchFixedString);
 		handleCurrentAccountChanged (index == -1 ? 0 : index);
+
 	}
 
 	void BlogiqueWidget::SetDefaultSideWidgets ()
 	{
+		Ui_.DockWidgetGridLayout_->addWidget (Ui_.Tools_, 1, 0);
+		Ui_.DockWidgetGridLayout_->addWidget (ProgressToolBar_, 0, 0);
+
 		for (int i = 0; i < Ui_.Tools_->count (); ++i)
 		{
 			auto w = Ui_.Tools_->widget (i);
@@ -344,12 +429,13 @@ namespace Blogique
 		EntryChanged_ = false;
 	}
 
-	Entry BlogiqueWidget::GetCurrentEntry ()
+	Entry BlogiqueWidget::GetCurrentEntry (bool interactive) const
 	{
 		const QString& content = PostEdit_->GetContents (ContentType::HTML);
-		if (content.isEmpty ())
+		if (interactive &&
+				content.isEmpty ())
 		{
-			QMessageBox::warning (this,
+			QMessageBox::warning (0,
 					tr ("LeechCraft"),
 					tr ("Entry can't be empty."));
 			return Entry ();
@@ -394,6 +480,26 @@ namespace Blogique
 		return e;
 	}
 
+	void BlogiqueWidget::ShowProgress (const QString& labelText)
+	{
+		ProgressBarLabelAction_->setVisible (!labelText.isEmpty ());
+		ProgressBarLabel_->setText (labelText);
+		ProgressBarAction_->setVisible (!labelText.isEmpty ());
+	}
+
+	void BlogiqueWidget::handleAutoSave ()
+	{
+		if (!EntryChanged_)
+			return;
+
+		saveEntry ();
+	}
+
+	void BlogiqueWidget::handleEntryPosted ()
+	{
+		ShowProgress ();
+	}
+
 	void BlogiqueWidget::handleCurrentAccountChanged (int id)
 	{
 		if (Id2Account_.isEmpty ())
@@ -407,13 +513,20 @@ namespace Blogique
 				PostEdit_->RemoveAction (action);
 
 			for (auto w : SidePluginsWidgets_)
-				w->deleteLater ();
+			{
+				int index = Ui_.Tools_->indexOf (w);
+				Ui_.Tools_->removeItem (index);
+				if (w)
+					w->deleteLater ();
+			}
 			SidePluginsWidgets_.clear ();
 
 			RemovePostingTargetsWidget ();
-		}
 
-		ToolBar_->insertAction (Ui_.OpenInBrowser_, Ui_.UpdateProfile_);
+			ToolBar_->removeAction (Ui_.OpenInBrowser_);
+			ToolBar_->removeAction (Ui_.UpdateProfile_);
+			ToolBar_->removeAction (Ui_.SubmitTo_);
+		}
 
 		auto account = Id2Account_ [id];
 		BlogEntriesWidget_->SetAccount (account);
@@ -422,6 +535,7 @@ namespace Blogique
 				GetParentBloggingPlatform ());
 
 		BlogEntriesWidget_->clear ();
+
 
 		if (ibp->GetFeatures () & IBloggingPlatform::BPFSelectablePostDestination)
 		{
@@ -436,10 +550,21 @@ namespace Blogique
 					PostTargetBox_->addItem (target.first, target.second);
 		}
 
+
+		if (ibp->GetFeatures () & IBloggingPlatform::BPFLocalBlog)
+			ToolBar_->insertAction (AccountsBoxAction_, Ui_.SubmitTo_);
+		else
+		{
+			ToolBar_->insertAction (AccountsBoxAction_, Ui_.OpenInBrowser_);
+			if (ibp->GetFeatures () & IBloggingPlatform::BPFSupportsProfiles)
+				ToolBar_->insertAction (AccountsBoxAction_, Ui_.UpdateProfile_);
+		}
+
 		for (auto action : ibp->GetEditorActions ())
 			PostEdit_->AppendAction (action);
 
 		bool exists = false;
+
 		for (int i = 0; i < Ui_.Tools_->count (); ++i)
 			if (Ui_.Tools_->widget (i) == BlogEntriesWidget_)
 			{
@@ -511,9 +636,30 @@ namespace Blogique
 		emit changeTabName (w, entry.Subject_);
 	}
 
-	void BlogiqueWidget::handleTextChanged ()
+	void BlogiqueWidget::handleEntryChanged (const QString&)
 	{
 		EntryChanged_ = true;
+		emit tabRecoverDataChanged ();
+	}
+
+	void BlogiqueWidget::handleRemovingEntryBegin ()
+	{
+		ShowProgress (tr ("Removing entry..."));
+	}
+
+	void BlogiqueWidget::handleEntryRemoved ()
+	{
+		ShowProgress ();
+	}
+
+	void BlogiqueWidget::handleRequestEntriesBegin ()
+	{
+		ShowProgress (tr ("Updating entries..."));
+	}
+
+	void BlogiqueWidget::handleRequestEntriesEnd ()
+	{
+		ShowProgress ();
 	}
 
 	void BlogiqueWidget::newEntry ()
@@ -546,7 +692,7 @@ namespace Blogique
 		EntryChanged_ = false;
 		EntryType_ = EntryType::Draft;
 		const Entry& e = entry.IsEmpty () ?
-			GetCurrentEntry () :
+			GetCurrentEntry (true) :
 			entry;
 		if (!e.IsEmpty ())
 		{
@@ -581,7 +727,7 @@ namespace Blogique
 		EntryChanged_ = false;
 		EntryType_ = EntryType::Draft;
 		const Entry& e = entry.IsEmpty () ?
-			GetCurrentEntry () :
+			GetCurrentEntry (true) :
 			entry;
 
 		if (!e.IsEmpty ())
@@ -611,7 +757,7 @@ namespace Blogique
 
 		EntryChanged_ = false;
 		const auto& e = event.IsEmpty () ?
-			GetCurrentEntry () :
+			GetCurrentEntry (true) :
 			event;
 
 		if (!e.IsEmpty ())
@@ -637,6 +783,24 @@ namespace Blogique
 			}
 			else
 				acc->submit (e);
+
+			ShowProgress (tr ("Posting entry..."));
+		}
+	}
+
+	void BlogiqueWidget::submitTo (const Entry& entry)
+	{
+		SubmitToDialog dlg;
+		if (dlg.exec () == QDialog::Rejected)
+			return;
+
+		for (const auto& pair : dlg.GetPostingTargets ())
+		{
+			auto e = entry.IsEmpty () ?
+				GetCurrentEntry (true) :
+				entry;
+			e.Target_ = pair.second;
+			pair.first->submit (e);
 		}
 	}
 
@@ -655,7 +819,6 @@ namespace Blogique
 
 		acc->updateProfile ();
 	}
-
 }
 }
 

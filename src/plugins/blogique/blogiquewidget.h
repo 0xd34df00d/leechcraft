@@ -20,6 +20,7 @@
 
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/ihaverecoverabletabs.h>
 #include "interfaces/blogique/iaccount.h"
 #include "ui_blogiquewidget.h"
 
@@ -28,6 +29,7 @@ class QStandardItemModel;
 class IEditorWidget;
 class QToolBar;
 class QComboBox;
+class QProgressBar;
 
 namespace LeechCraft
 {
@@ -39,10 +41,11 @@ namespace Blogique
 	class BlogEntriesWidget;
 
 	class BlogiqueWidget : public QWidget
-						,  public ITabWidget
+						, public ITabWidget
+						, public IRecoverableTab
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
+		Q_INTERFACES (ITabWidget IRecoverableTab)
 
 		enum BlogiqueSideWidgets
 		{
@@ -56,9 +59,14 @@ namespace Blogique
 		IEditorWidget *PostEdit_;
 		QWidget *PostEditWidget_;
 		QToolBar *ToolBar_;
+		QToolBar *ProgressToolBar_;
+		QAction *AccountsBoxAction_;
 		QComboBox *AccountsBox_;
 		QComboBox *PostTargetBox_;
 		QAction *PostTargetAction_;
+		QAction *ProgressBarLabelAction_;
+		QLabel *ProgressBarLabel_;
+		QAction *ProgressBarAction_;
 
 		DraftEntriesWidget *DraftEntriesWidget_;
 		BlogEntriesWidget *BlogEntriesWidget_;
@@ -80,28 +88,43 @@ namespace Blogique
 		void Remove ();
 
 		static void SetParentMultiTabs (QObject *tab);
+
+		QByteArray GetTabRecoverData () const;
+		QString GetTabRecoverName () const;
+		QIcon GetTabRecoverIcon () const;
+		void FillWidget (const Entry& e, const QByteArray& accId = QByteArray ());
 	private:
 		void SetTextEditor ();
 		void SetToolBarActions ();
 		void SetDefaultSideWidgets ();
 		void RemovePostingTargetsWidget ();
-		void FillWidget (const Entry& e, const QByteArray& accId = QByteArray ());
 
 		void ClearEntry ();
 
-		Entry GetCurrentEntry ();
+		Entry GetCurrentEntry (bool interactive = false) const;
+
+		void ShowProgress (const QString& labelText = QString ());
+
+	public slots:
+		void handleAutoSave ();
+		void handleEntryPosted ();
+		void handleEntryRemoved ();
+		void handleRequestEntriesBegin ();
+		void handleRequestEntriesEnd ();
 
 	private slots:
 		void handleCurrentAccountChanged (int id);
 		void fillCurrentTabWithEntry (const Entry& entry);
 		void fillNewTabWithEntry (const Entry& entry, const QByteArray& accountId);
 
-		void handleTextChanged ();
+		void handleEntryChanged (const QString& str = QString ());
+		void handleRemovingEntryBegin ();
 
 		void newEntry ();
 		void saveEntry (const Entry& e = Entry ());
 		void saveNewEntry (const Entry& e = Entry ());
 		void submit (const Entry& e = Entry ());
+		void submitTo (const Entry& e = Entry ());
 		void on_SideWidget__dockLocationChanged (Qt::DockWidgetArea area);
 		void on_UpdateProfile__triggered ();
 
@@ -109,6 +132,8 @@ namespace Blogique
 		void removeTab (QWidget *tab);
 		void addNewTab (const QString& name, QWidget *tab);
 		void changeTabName (QWidget *content, const QString& name);
+
+		void tabRecoverDataChanged ();
 	};
 }
 }

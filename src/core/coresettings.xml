@@ -100,6 +100,15 @@
 					<label lang="en" value="Select the tab to the left of the one being removed" />
 				</option>
 			</item>
+			<item type="combobox" property="WindowSelectionMode">
+				<label lang="en" value="Window selection mode for a new tab:" />
+				<option name="current" default="true">
+					<label value="Always select current window" />
+				</option>
+				<option name="perTabClass">
+					<label  value="Select based on tab class" />
+				</option>
+			</item>
 			<item type="checkbox" property="DontAskWhenSingle" default="true">
 				<label lang="en" value="Automatically accept task when there is only one handler" />
 			</item>

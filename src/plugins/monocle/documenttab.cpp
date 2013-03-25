@@ -108,7 +108,8 @@ namespace Monocle
 				this,
 				SLOT (handleThumbnailClicked (int)));
 
-		DockWidget_->setFeatures (QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
+		DockWidget_->setFeatures (QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable);
+		DockWidget_->setAllowedAreas (Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 		DockWidget_->setWidget (dockTabWidget);
 
 		DockWidget_->setWindowIcon (tocIcon);
@@ -139,6 +140,10 @@ namespace Monocle
 				SIGNAL (currentPageChanged (int)),
 				ThumbsWidget_,
 				SLOT (handleCurrentPage (int)));
+		connect (this,
+				SIGNAL (pagesVisibilityChanged (QMap<int, QRect>)),
+				ThumbsWidget_,
+				SLOT (updatePagesVisibility (QMap<int, QRect>)));
 	}
 
 	TabClassInfo DocumentTab::GetTabClassInfo () const
@@ -342,11 +347,30 @@ namespace Monocle
 
 		LayoutManager_->HandleDoc (CurrentDoc_, Pages_);
 
-		LayoutManager_->SetLayoutMode (state.Lay_);
 		if (state.CurrentScale_ > 0)
 		{
-			LayoutManager_->SetScaleMode (ScaleMode::Fixed);
+			LayoutManager_->SetLayoutMode (state.Lay_);
+			LayoutManager_->SetScaleMode (state.ScaleMode_);
 			LayoutManager_->SetFixedScale (state.CurrentScale_);
+
+			switch (state.ScaleMode_)
+			{
+			case ScaleMode::FitWidth:
+				ScalesBox_->setCurrentIndex (0);
+				break;
+			case ScaleMode::FitPage:
+				ScalesBox_->setCurrentIndex (1);
+				break;
+			case ScaleMode::Fixed:
+			{
+				const auto scaleIdx = ScalesBox_->findData (state.CurrentScale_);
+				if (scaleIdx >= 0)
+					ScalesBox_->setCurrentIndex (scaleIdx);
+				break;
+			}
+			}
+
+			syncUIToLayMode ();
 		}
 		Relayout ();
 		SetCurrentPage (state.CurrentPage_, false);
@@ -512,13 +536,14 @@ namespace Monocle
 			ScalesBox_->addItem (QString::number (scale * 100) + '%', scale);
 		ScalesBox_->setCurrentIndex (0);
 		connect (ScalesBox_,
-				SIGNAL (currentIndexChanged (int)),
+				SIGNAL (activated (int)),
 				this,
 				SLOT (handleScaleChosen (int)));
 		Toolbar_->addWidget (ScalesBox_);
 
 		ZoomOut_ = new QAction (tr ("Zoom out"), this);
 		ZoomOut_->setProperty ("ActionIcon", "zoom-out");
+		ZoomOut_->setShortcut (QString ("Ctrl+-"));
 		connect (ZoomOut_,
 				SIGNAL (triggered ()),
 				this,
@@ -527,6 +552,7 @@ namespace Monocle
 
 		ZoomIn_ = new QAction (tr ("Zoom in"), this);
 		ZoomIn_->setProperty ("ActionIcon", "zoom-in");
+		ZoomIn_->setShortcut (QString ("Ctrl+="));
 		connect (ZoomIn_,
 				SIGNAL (triggered ()),
 				this,
@@ -662,6 +688,29 @@ namespace Monocle
 		return ihtc->GetTextContent (pageItem->GetPageNum (), bounding);
 	}
 
+	void DocumentTab::RegenPageVisibility ()
+	{
+		if (receivers (SIGNAL (pagesVisibilityChanged (QMap<int, QRect>))) <= 0)
+			return;
+
+		const auto& viewRect = Ui_.PagesView_->viewport ()->rect ();
+		const auto& visibleRect = Ui_.PagesView_->mapToScene (viewRect);
+
+		QMap<int, QRect> rects;
+		for (auto item : Ui_.PagesView_->items (viewRect))
+		{
+			auto page = dynamic_cast<PageGraphicsItem*> (item);
+			if (!page)
+				continue;
+
+			const auto& pageRect = page->mapToScene (page->boundingRect ());
+			const auto& xsect = visibleRect.intersected (pageRect);
+			const auto& pageXsect = page->MapToDoc (page->mapFromScene (xsect).boundingRect ());
+			rects [page->GetPageNum ()] = pageXsect.toAlignedRect ();
+		}
+
+		emit pagesVisibilityChanged (rects);
+	}
 
 	void DocumentTab::handleNavigateRequested (QString path, int num, double x, double y)
 	{
@@ -717,7 +766,8 @@ namespace Monocle
 				{
 					GetCurrentPage (),
 					LayoutManager_->GetLayoutMode (),
-					LayoutManager_->GetCurrentScale ()
+					LayoutManager_->GetCurrentScale (),
+					LayoutManager_->GetScaleMode ()
 				});
 	}
 
@@ -870,6 +920,8 @@ namespace Monocle
 
 	void DocumentTab::checkCurrentPageChange (bool force)
 	{
+		RegenPageVisibility ();
+
 		auto current = GetCurrentPage ();
 		if (PrevCurrentPage_ == current && !force)
 			return;
@@ -880,9 +932,30 @@ namespace Monocle
 
 	void DocumentTab::zoomOut ()
 	{
+		auto currentMatchingIndex = ScalesBox_->currentIndex ();
 		const int minIdx = 2;
-		auto newIndex = std::max (ScalesBox_->currentIndex () - 1, minIdx);
+		switch (ScalesBox_->currentIndex ())
+		{
+		case 0:
+		case 1:
+		{
+			const auto scale = LayoutManager_->GetCurrentScale ();
+			for (auto i = minIdx; i < ScalesBox_->count (); ++i)
+				if (ScalesBox_->itemData (i).toDouble () > scale)
+				{
+					currentMatchingIndex = i;
+					break;
+				}
+
+			if (currentMatchingIndex == ScalesBox_->currentIndex ())
+				currentMatchingIndex = ScalesBox_->count () - 1;
+			break;
+		}
+		}
+
+		auto newIndex = std::max (currentMatchingIndex - 1, minIdx);
 		ScalesBox_->setCurrentIndex (newIndex);
+		handleScaleChosen (newIndex);
 
 		ZoomOut_->setEnabled (newIndex > minIdx);
 		ZoomIn_->setEnabled (true);
@@ -891,8 +964,26 @@ namespace Monocle
 	void DocumentTab::zoomIn ()
 	{
 		const auto maxIdx = ScalesBox_->count () - 1;
+
 		auto newIndex = std::min (ScalesBox_->currentIndex () + 1, maxIdx);
+		switch (ScalesBox_->currentIndex ())
+		{
+		case 0:
+		case 1:
+			const auto scale = LayoutManager_->GetCurrentScale ();
+			for (auto i = 2; i <= maxIdx; ++i)
+				if (ScalesBox_->itemData (i).toDouble () > scale)
+				{
+					newIndex = i;
+					break;
+				}
+			if (ScalesBox_->currentIndex () == newIndex)
+				newIndex = maxIdx;
+			break;
+		}
+
 		ScalesBox_->setCurrentIndex (newIndex);
+		handleScaleChosen (newIndex);
 
 		ZoomOut_->setEnabled (true);
 		ZoomIn_->setEnabled (newIndex < maxIdx);

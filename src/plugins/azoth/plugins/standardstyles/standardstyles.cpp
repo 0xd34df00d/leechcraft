@@ -57,7 +57,8 @@ namespace StandardStyles
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		static QIcon icon (":/azoth/standardstyles/resources/images/standardstyles.svg");
+		return icon;
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

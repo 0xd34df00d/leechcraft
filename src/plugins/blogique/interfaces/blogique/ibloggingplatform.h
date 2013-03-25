@@ -74,6 +74,10 @@ namespace Blogique
 			 * backup in localstorage.
 			 */
 			BPFSupportsBackup = 0x8,
+
+			/** This blogging platform only for local blog
+			 */
+			BPFLocalBlog = 0x10
 		};
 		Q_DECLARE_FLAGS (BloggingPlatfromFeatures, BloggingPlatfromFeature)
 

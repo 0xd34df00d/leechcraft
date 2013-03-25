@@ -24,8 +24,9 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ipluginready.h>
 #include <interfaces/iactionsexporter.h>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/ihaverecoverabletabs.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 
 class QWebView;
 namespace LeechCraft
@@ -38,9 +39,11 @@ namespace Blogique
 				, public IHaveSettings
 				, public IPluginReady
 				, public IActionsExporter
+				, public IHaveRecoverableTabs
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IPluginReady IActionsExporter)
+		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IPluginReady IActionsExporter
+				IHaveRecoverableTabs)
 
 		TabClasses_t TabClasses_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
@@ -65,6 +68,8 @@ namespace Blogique
 		void AddPlugin (QObject* plugin);
 
 		QList<QAction*> GetActions (ActionsEmbedPlace area) const;
+
+		void RecoverTabs (const QList<TabRecoverInfo>& infos);
 	private:
 		void CreateTab ();
 

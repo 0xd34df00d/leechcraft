@@ -113,6 +113,14 @@ namespace Metida
 		QAction *LoadLastEvents_;
 		QAction *LoadChangedEvents_;
 
+		enum class LastUpdateType
+		{
+			NoType,
+			LastEntries,
+			ChangedEntries
+		};
+		LastUpdateType LastUpdateType_;
+
 	public:
 		LJAccount (const QString& name, QObject *parent = 0);
 
@@ -133,7 +141,10 @@ namespace Metida
 		void RemoveEntry (const Entry& entry);
 		void UpdateEntry (const Entry& entry);
 
+		void RequestLastEntries (int count);
 		void RequestStatistics ();
+		void RequestInbox ();
+		void RequestRecentComments ();
 
 		QList<QAction*> GetUpdateActions () const;
 
@@ -152,6 +163,8 @@ namespace Metida
 
 		void AddGroup (const QString& name, bool isPublic, int id);
 		void DeleteGroup (int id);
+	private:
+		void CallLastUpdateMethod ();
 
 	public slots:
 		void handleValidatingFinished (bool success);
@@ -164,6 +177,7 @@ namespace Metida
 
 		void handleEventPosted (const QList<LJEvent>& entries);
 		void handleEventUpdated (const QList<LJEvent>& entries);
+		void handleEventRemoved (int id);
 
 		void handleGotEvents2Backup (const QList<LJEvent>& events);
 		void handleGettingEvents2BackupFinished ();
@@ -172,10 +186,14 @@ namespace Metida
 		void handleLoadLastEvents ();
 		void handleLoadChangedEvents ();
 
+		void handleUnreadMessagesExist (bool exists);
+
 	signals:
 		void accountRenamed (const QString& newName);
 		void accountSettingsChanged ();
 		void accountValidated (bool validated);
+
+		void requestEntriesBegin ();
 
 		void entryPosted (const QList<Entry>& entries);
 		void entryUpdated (const QList<Entry>& entries);
@@ -185,8 +203,10 @@ namespace Metida
 		void gettingEntries2BackupFinished ();
 
 		void gotEntries (const QList<Entry>& entries);
+		void gotRecentComments (const QList<LJCommentEntry>& comments);
 
 		void gotBlogStatistics (const QMap<QDate, int>& statistics);
+
 	};
 }
 }

@@ -39,7 +39,7 @@ namespace Monocle
 	, LayMode_ (LayoutMode::OnePage)
 	, ScaleMode_ (ScaleMode::FitWidth)
 	, FixedScale_ (1)
-	, RelayoutScheduled_ (true)
+	, RelayoutScheduled_ (false)
 	, HorMargin_ (0)
 	, VertMargin_ (0)
 	{
@@ -55,13 +55,16 @@ namespace Monocle
 		CurrentDoc_ = doc;
 		Pages_ = pages;
 
-		if (qobject_cast<IDynamicDocument*> (CurrentDoc_->GetQObject ()))
-		{
+		if (CurrentDoc_ && qobject_cast<IDynamicDocument*> (CurrentDoc_->GetQObject ()))
 			connect (CurrentDoc_->GetQObject (),
 					SIGNAL (pageSizeChanged (int)),
 					this,
 					SLOT (handlePageSizeChanged (int)));
-		}
+	}
+
+	const QList<PageGraphicsItem*>& PagesLayoutManager::GetPages () const
+	{
+		return Pages_;
 	}
 
 	LayoutMode PagesLayoutManager::GetLayoutMode () const
@@ -121,6 +124,11 @@ namespace Monocle
 	void PagesLayoutManager::SetScaleMode (ScaleMode mode)
 	{
 		ScaleMode_ = mode;
+	}
+
+	ScaleMode PagesLayoutManager::GetScaleMode () const
+	{
+		return ScaleMode_;
 	}
 
 	void PagesLayoutManager::SetFixedScale (double scale)
@@ -188,8 +196,6 @@ namespace Monocle
 
 	void PagesLayoutManager::Relayout ()
 	{
-		RelayoutScheduled_ = false;
-
 		const auto scale = GetCurrentScale ();
 		const auto pageWas = GetCurrentPage ();
 
@@ -215,6 +221,12 @@ namespace Monocle
 					.adjusted (-HorMargin_, -VertMargin_, 0, 0));
 
 		SetCurrentPage (std::max (pageWas, 0), true);
+
+		if (RelayoutScheduled_)
+		{
+			RelayoutScheduled_ = false;
+			emit scheduledRelayoutFinished ();
+		}
 	}
 
 	void PagesLayoutManager::scheduleRelayout ()
@@ -234,6 +246,7 @@ namespace Monocle
 			return;
 
 		Relayout ();
+		emit scheduledRelayoutFinished ();
 	}
 
 	void PagesLayoutManager::handlePageSizeChanged (int)

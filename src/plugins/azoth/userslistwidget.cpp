@@ -35,7 +35,8 @@ namespace Azoth
 		};
 	}
 
-	UsersListWidget::UsersListWidget (const QList<QObject*>& parts, QWidget *parent)
+	UsersListWidget::UsersListWidget (const QList<QObject*>& parts,
+			std::function<QString (ICLEntry*)> nameGetter, QWidget *parent)
 	: QDialog (parent,
 			static_cast<Qt::WindowFlags> (Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint))
 	, Filter_ (new QSortFilterProxyModel (this))
@@ -47,7 +48,7 @@ namespace Azoth
 		{
 			auto entry = qobject_cast<ICLEntry*> (part);
 
-			auto item = new QStandardItem (entry->GetEntryName ());
+			auto item = new QStandardItem (nameGetter (entry));
 			item->setData (QVariant::fromValue (part), PLRObject);
 			item->setEditable (false);
 

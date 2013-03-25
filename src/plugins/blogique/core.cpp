@@ -24,6 +24,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/util.h>
+#include <util/notificationactionhandler.h>
 #include "interfaces/blogique/iaccount.h"
 #include "interfaces/blogique/ibloggingplatformplugin.h"
 #include "interfaces/blogique/ibloggingplatform.h"
@@ -31,6 +32,7 @@
 #include "storagemanager.h"
 #include "backupmanager.h"
 #include "blogiquewidget.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -41,7 +43,15 @@ namespace Blogique
 	, PluginProxy_ (std::make_shared<PluginProxy> ())
 	, StorageManager_ (new StorageManager (UniqueID_, this))
 	, BackupManager_ (new BackupManager (this))
+	, AutoSaveTimer_ (new QTimer (this))
 	{
+		connect (AutoSaveTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SIGNAL (checkAutoSave ()));
+		XmlSettingsManager::Instance ().RegisterObject ("AutoSave",
+				this, "handleAutoSaveIntervalChanged");
+		handleAutoSaveIntervalChanged ();
 	}
 
 	Core& Core::Instance ()
@@ -53,6 +63,12 @@ namespace Blogique
 	QByteArray Core::GetUniqueID () const
 	{
 		return UniqueID_;
+	}
+
+	QIcon Core::GetIcon () const
+	{
+		static QIcon icon (":/plugins/blogique/resources/images/blogique.svg");
+		return icon;
 	}
 
 	void Core::SetCoreProxy (ICoreProxy_ptr proxy)
@@ -156,6 +172,18 @@ namespace Blogique
 				SIGNAL (removeTab (QWidget*)),
 				&Core::Instance (),
 				SIGNAL (removeTab (QWidget*)));
+		connect (&Core::Instance (),
+				SIGNAL (checkAutoSave ()),
+				newTab,
+				SLOT (handleAutoSave ()));
+		connect (&Core::Instance (),
+				SIGNAL (entryPosted ()),
+				newTab,
+				SLOT (handleEntryPosted ()));
+		connect (&Core::Instance (),
+				SIGNAL (entryRemoved ()),
+				newTab,
+				SLOT (handleEntryRemoved ()));
 
 		return newTab;
 	}
@@ -212,6 +240,10 @@ namespace Blogique
 			return;
 		}
 
+		connect (accObj,
+				SIGNAL (requestEntriesBegin ()),
+				this,
+				SIGNAL (requestEntriesBegin ()));
 		connect (accObj,
 				SIGNAL (entryPosted (QList<Entry>)),
 				this,
@@ -278,16 +310,26 @@ namespace Blogique
 		if (!acc)
 			return;
 
-		SendEntity (Util::MakeNotification ("Blogique",
+		auto e = Util::MakeNotification ("Blogique",
 				tr ("Entry was posted successfully:") +
 					QString (" <a href=\"%1\">%1</a>\n")
 						.arg (entries.value (0).EntryUrl_.toString ()),
-				Priority::PInfo_));
-
+				Priority::PInfo_);
+		Util::NotificationActionHandler *nh = new Util::NotificationActionHandler (e, this);
+		nh->AddFunction (tr ("Open Link"),
+				[this, entries] ()
+				{
+					Entity urlEntity = Util::MakeEntity (entries.value (0).EntryUrl_,
+							QString (),
+							static_cast<TaskParameters> (OnlyHandle | FromUserInitiated));
+					SendEntity (urlEntity);
+				});
+		emit gotEntity (e);
 		acc->RequestStatistics ();
+		emit entryPosted ();
 	}
 
-	void Core::handleEntryRemoved (int itemId)
+	void Core::handleEntryRemoved (int)
 	{
 		auto acc = qobject_cast<IAccount*> (sender ());
 		if (!acc)
@@ -297,6 +339,7 @@ namespace Blogique
 				tr ("Entry was removed successfully."),
 				Priority::PInfo_));
 		acc->RequestStatistics ();
+		emit entryRemoved ();
 	}
 
 	void Core::handleEntryUpdated (const QList<Entry>& entries)
@@ -314,7 +357,7 @@ namespace Blogique
 		acc->RequestStatistics ();
 	}
 
-	void Core::handleGotEntries2Backup (const QList<Entry>& entries)
+	void Core::handleGotEntries2Backup (const QList<Entry>&)
 	{
 		auto acc = qobject_cast<IAccount*> (sender ());
 		if (!acc)
@@ -327,6 +370,12 @@ namespace Blogique
 		SendEntity (Util::MakeNotification ("Blogique",
 				tr ("Entries were backuped successfully."),
 				Priority::PInfo_));
+	}
+
+	void Core::handleAutoSaveIntervalChanged ()
+	{
+		AutoSaveTimer_->start (XmlSettingsManager::Instance ()
+				.property ("AutoSave").toInt () * 1000);
 	}
 }
 }

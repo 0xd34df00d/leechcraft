@@ -318,6 +318,10 @@ namespace Azoth
 				ActionInfo (tr ("Show MUC users list"),
 						QString ("Ctrl+M"),
 						proxy->GetIcon ("irc-close-channel")));
+		sm->RegisterActionInfo ("org.LeechCraft.Azoth.OpenLastLink",
+				ActionInfo (tr ("Open last link in chat"),
+						QString ("Ctrl+O"),
+						proxy->GetIcon ("document-open-remote")));
 	}
 
 	void Plugin::InitSettings ()
