@@ -37,4 +37,4 @@ namespace Monocle
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::ISearchableDocument,
-		"org.LeechCraft.Monocle.IDynamicDocument/1.0");
+		"org.LeechCraft.Monocle.ISearchableDocument/1.0");
