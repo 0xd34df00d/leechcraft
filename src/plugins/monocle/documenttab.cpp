@@ -409,9 +409,11 @@ namespace Monocle
 	{
 		auto copyAsImage = menu->addAction (tr ("Copy selection as image"),
 				this, SLOT (handleCopyAsImage ()));
+		copyAsImage->setProperty ("ActionIcon", "image-x-generic");
 
 		auto saveAsImage = menu->addAction (tr ("Save selection as image..."),
 				this, SLOT (handleSaveAsImage ()));
+		saveAsImage->setProperty ("ActionIcon", "document-save");
 
 		if (qobject_cast<IHaveTextContent*> (CurrentDoc_->GetQObject ()))
 		{
@@ -422,6 +424,7 @@ namespace Monocle
 			auto copyAsText = menu->addAction (tr ("Copy selection as text"),
 					this, SLOT (handleCopyAsText ()));
 			copyAsText->setProperty ("Monocle/Text", selText);
+			copyAsText->setProperty ("ActionIcon", "edit-copy");
 
 			new Util::StdDataFilterMenuCreator (selText,
 					Core::Instance ().GetProxy ()->GetEntityManager (),
