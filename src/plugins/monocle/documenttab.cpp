@@ -333,16 +333,11 @@ namespace Monocle
 		const auto& title = QFileInfo (path).fileName ();
 		emit changeTabName (this, title);
 
-		auto isa = qobject_cast<ISupportAnnotations*> (CurrentDoc_->GetQObject ());
-
 		for (int i = 0, size = CurrentDoc_->GetNumPages (); i < size; ++i)
 		{
 			auto item = new PageGraphicsItem (CurrentDoc_, i);
 			Scene_.addItem (item);
 			Pages_ << item;
-
-			if (isa)
-				isa->GetAnnotations (i);
 		}
 
 		LayoutManager_->HandleDoc (CurrentDoc_, Pages_);
