@@ -29,6 +29,10 @@ namespace LeechCraft
 				SIGNAL (released ()),
 				this,
 				SIGNAL (addRequested ()));
+		connect (Ui_.Modify_,
+				SIGNAL (released ()),
+				this,
+				SIGNAL (modifyRequested ()));
 		connect (Ui_.Remove_,
 				SIGNAL (released ()),
 				this,
@@ -53,6 +57,11 @@ namespace LeechCraft
 	QAbstractItemModel* DataViewWidget::GetModel () const
 	{
 		return Ui_.View_->model ();
+	}
+
+	QModelIndex DataViewWidget::GetCurrentIndex () const
+	{
+		return Ui_.View_->currentIndex ();
 	}
 
 	QModelIndexList DataViewWidget::GetSelectedRows () const

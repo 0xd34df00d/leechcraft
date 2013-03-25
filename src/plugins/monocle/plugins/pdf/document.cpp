@@ -133,6 +133,19 @@ namespace PDF
 		return QList<IAnnotation_ptr> ();
 	}
 
+	QMap<int, QList<QRectF>> Document::GetTextPositions (const QString& text)
+	{
+		QMap<int, QList<QRectF>> result;
+		for (auto i = 0, count = PDocument_->numPages (); i < count; ++i)
+		{
+			std::unique_ptr<Poppler::Page> page (PDocument_->page (i));
+			const auto& rects = page->search (text, Poppler::Page::CaseInsensitive);
+			if (!rects.isEmpty ())
+				result [i] = rects;
+		}
+		return result;
+	}
+
 	void Document::RequestNavigation (const QString& filename,
 			int page, double x, double y)
 	{

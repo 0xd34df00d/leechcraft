@@ -51,10 +51,11 @@ namespace Azoth
 		void Save ();
 		void Load ();
 
-		void Add (const CustomState&);
+		void Add (const CustomState&, int = -1);
 		CustomState GetCustom (int) const;
 	public slots:
 		void addRequested (const QString&, const QVariantList&);
+		void modifyRequested (const QString&, int, const QVariantList&);
 		void removeRequested (const QString&, const QModelIndexList&);
 	};
 }

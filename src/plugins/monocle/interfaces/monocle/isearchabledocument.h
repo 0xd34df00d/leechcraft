@@ -18,29 +18,23 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_dataviewwidget.h"
+#include <QRectF>
+#include <QMap>
+#include <QtPlugin>
 
 namespace LeechCraft
 {
-	class DataViewWidget : public QWidget
+namespace Monocle
+{
+	class ISearchableDocument
 	{
-		Q_OBJECT
-
-		Ui::DataViewWidget Ui_;
 	public:
-		DataViewWidget (QWidget* = 0);
+		virtual ~ISearchableDocument () {}
 
-		void DisableAddition ();
-		void DisableRemoval ();
-
-		void SetModel (QAbstractItemModel*);
-		QAbstractItemModel* GetModel () const;
-		QModelIndex GetCurrentIndex () const;
-		QModelIndexList GetSelectedRows () const;
-	signals:
-		void addRequested ();
-		void modifyRequested ();
-		void removeRequested ();
+		virtual QMap<int, QList<QRectF>> GetTextPositions (const QString&) = 0;
 	};
 }
+}
+
+Q_DECLARE_INTERFACE (LeechCraft::Monocle::ISearchableDocument,
+		"org.LeechCraft.Monocle.IDynamicDocument/1.0");
