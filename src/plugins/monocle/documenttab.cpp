@@ -342,31 +342,7 @@ namespace Monocle
 
 		LayoutManager_->HandleDoc (CurrentDoc_, Pages_);
 
-		if (state.CurrentScale_ > 0)
-		{
-			LayoutManager_->SetLayoutMode (state.Lay_);
-			LayoutManager_->SetScaleMode (state.ScaleMode_);
-			LayoutManager_->SetFixedScale (state.CurrentScale_);
-
-			switch (state.ScaleMode_)
-			{
-			case ScaleMode::FitWidth:
-				ScalesBox_->setCurrentIndex (0);
-				break;
-			case ScaleMode::FitPage:
-				ScalesBox_->setCurrentIndex (1);
-				break;
-			case ScaleMode::Fixed:
-			{
-				const auto scaleIdx = ScalesBox_->findData (state.CurrentScale_);
-				if (scaleIdx >= 0)
-					ScalesBox_->setCurrentIndex (scaleIdx);
-				break;
-			}
-			}
-
-			syncUIToLayMode ();
-		}
+		recoverDocState (state);
 		Relayout ();
 		SetCurrentPage (state.CurrentPage_, false);
 
@@ -1013,6 +989,35 @@ namespace Monocle
 				LayOnePage_ :
 				LayTwoPages_;
 		action->setChecked (true);
+	}
+
+	void DocumentTab::recoverDocState (DocStateManager::State state)
+	{
+		if (state.CurrentScale_ <= 0)
+			return;
+
+		LayoutManager_->SetLayoutMode (state.Lay_);
+		LayoutManager_->SetScaleMode (state.ScaleMode_);
+		LayoutManager_->SetFixedScale (state.CurrentScale_);
+
+		switch (state.ScaleMode_)
+		{
+		case ScaleMode::FitWidth:
+			ScalesBox_->setCurrentIndex (0);
+			break;
+		case ScaleMode::FitPage:
+			ScalesBox_->setCurrentIndex (1);
+			break;
+		case ScaleMode::Fixed:
+		{
+			const auto scaleIdx = ScalesBox_->findData (state.CurrentScale_);
+			if (scaleIdx >= 0)
+				ScalesBox_->setCurrentIndex (scaleIdx);
+			break;
+		}
+		}
+
+		syncUIToLayMode ();
 	}
 
 	void DocumentTab::setMoveMode (bool enable)
