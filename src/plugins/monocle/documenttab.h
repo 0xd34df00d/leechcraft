@@ -24,6 +24,7 @@
 #include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/idndtab.h>
 #include "interfaces/monocle/idocument.h"
+#include "docstatemanager.h"
 #include "ui_documenttab.h"
 
 class QDockWidget;
@@ -155,6 +156,8 @@ namespace Monocle
 		void showOnePage ();
 		void showTwoPages ();
 		void syncUIToLayMode ();
+
+		void recoverDocState (DocStateManager::State);
 
 		void setMoveMode (bool);
 		void setSelectionMode (bool);

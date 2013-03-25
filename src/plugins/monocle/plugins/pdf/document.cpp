@@ -19,6 +19,7 @@
 #include "document.h"
 #include <QtDebug>
 #include <poppler-qt4.h>
+#include <poppler-version.h>
 #include "links.h"
 
 namespace LeechCraft
@@ -136,6 +137,7 @@ namespace PDF
 	QMap<int, QList<QRectF>> Document::GetTextPositions (const QString& text)
 	{
 		QMap<int, QList<QRectF>> result;
+#if POPPLER_VERSION_MAJOR > 0 || POPPLER_VERSION_MINOR >= 22
 		for (auto i = 0, count = PDocument_->numPages (); i < count; ++i)
 		{
 			std::unique_ptr<Poppler::Page> page (PDocument_->page (i));
@@ -143,6 +145,7 @@ namespace PDF
 			if (!rects.isEmpty ())
 				result [i] = rects;
 		}
+#endif
 		return result;
 	}
 

@@ -16,21 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_NOTIFICATION_H
-#define PLUGINS_POSHUKU_NOTIFICATION_H
-#include <QWidget>
+#include "pagenotification.h"
+#include <stdexcept>
+#include <QVBoxLayout>
 
 namespace LeechCraft
 {
-namespace Poshuku
+namespace Util
 {
-	class Notification : public QWidget
+	PageNotification::PageNotification (QWidget *widget)
+	: QWidget (widget)
 	{
-		Q_OBJECT
-	public:
-		Notification (QWidget* = 0);
-	};
+		QVBoxLayout *lay = qobject_cast<QVBoxLayout*> (widget->layout ());
+		if (!lay)
+			throw std::runtime_error ("Passed parent object has no QVBoxLayout");
+		lay->addWidget (this);
+	}
 }
 }
-
-#endif

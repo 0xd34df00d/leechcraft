@@ -16,38 +16,50 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_POSHUKU_PASSWORDREMEMBER_H
-#define PLUGINS_POSHUKU_PLUGINS_POSHUKU_PASSWORDREMEMBER_H
-#include <util/gui/pagenotification.h>
-#include "pageformsdata.h"
-#include "ui_passwordremember.h"
+#pragma once
+
+#include <util/utilconfig.h>
+#include "pagenotification.h"
+
+namespace Ui
+{
+	class FindNotification;
+}
 
 namespace LeechCraft
 {
-struct Entity;
-
-namespace Poshuku
+namespace Util
 {
-	class PasswordRemember : public Util::PageNotification
+	class UTIL_API FindNotification : public PageNotification
 	{
 		Q_OBJECT
 
-		Ui::PasswordRemember Ui_;
-		PageFormsData_t TempData_;
+		Ui::FindNotification *Ui_;
 	public:
-		PasswordRemember (QWidget* = 0);
-	public slots:
-		void add (const PageFormsData_t&);
-	private:
-		bool Changed (const ElementsData_t&, const QString&);
+		enum FindFlag
+		{
+			FindCaseSensitively,
+			FindBackwards,
+			FindWrapsAround
+		};
+		Q_DECLARE_FLAGS (FindFlags, FindFlag)
+
+		FindNotification (QWidget*);
+		~FindNotification ();
+
+		void SetText (const QString&);
+		QString GetText () const;
+
+		void SetSuccessful (bool);
+		void Focus ();
+
+		FindFlags GetFlags () const;
+	protected:
+		virtual void handleNext (const QString&, FindFlags) = 0;
 	private slots:
-		void on_Remember__released ();
-		void on_NotNow__released ();
-		void on_Never__released ();
-	signals:
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
+		void on_Pattern__textChanged (const QString&);
+		void on_FindButton__released ();
+		virtual void reject ();
 	};
 }
 }
-
-#endif

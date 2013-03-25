@@ -333,55 +333,24 @@ namespace Monocle
 		const auto& title = QFileInfo (path).fileName ();
 		emit changeTabName (this, title);
 
-		auto isa = qobject_cast<ISupportAnnotations*> (CurrentDoc_->GetQObject ());
-
 		for (int i = 0, size = CurrentDoc_->GetNumPages (); i < size; ++i)
 		{
 			auto item = new PageGraphicsItem (CurrentDoc_, i);
 			Scene_.addItem (item);
 			Pages_ << item;
-
-			if (isa)
-				isa->GetAnnotations (i);
 		}
 
 		LayoutManager_->HandleDoc (CurrentDoc_, Pages_);
 
-		if (state.CurrentScale_ > 0)
-		{
-			LayoutManager_->SetLayoutMode (state.Lay_);
-			LayoutManager_->SetScaleMode (state.ScaleMode_);
-			LayoutManager_->SetFixedScale (state.CurrentScale_);
-
-			switch (state.ScaleMode_)
-			{
-			case ScaleMode::FitWidth:
-				ScalesBox_->setCurrentIndex (0);
-				break;
-			case ScaleMode::FitPage:
-				ScalesBox_->setCurrentIndex (1);
-				break;
-			case ScaleMode::Fixed:
-			{
-				const auto scaleIdx = ScalesBox_->findData (state.CurrentScale_);
-				if (scaleIdx >= 0)
-					ScalesBox_->setCurrentIndex (scaleIdx);
-				break;
-			}
-			}
-
-			syncUIToLayMode ();
-		}
+		recoverDocState (state);
 		Relayout ();
 		SetCurrentPage (state.CurrentPage_, false);
 
 		checkCurrentPageChange (true);
 
 		TOCEntryLevel_t topLevel;
-		if (auto toc = qobject_cast<IHaveTOC*> (CurrentDoc_->GetQObject ()))
-			topLevel = toc->GetTOC ();
-		TOCWidget_->SetTOC (topLevel);
-		TOCWidget_->setEnabled (!topLevel.isEmpty ());
+		auto toc = qobject_cast<IHaveTOC*> (CurrentDoc_->GetQObject ());
+		TOCWidget_->SetTOC (toc ? toc->GetTOC () : TOCEntryLevel_t ());
 
 		connect (CurrentDoc_->GetQObject (),
 				SIGNAL (navigateRequested (QString, int, double, double)),
@@ -409,9 +378,11 @@ namespace Monocle
 	{
 		auto copyAsImage = menu->addAction (tr ("Copy selection as image"),
 				this, SLOT (handleCopyAsImage ()));
+		copyAsImage->setProperty ("ActionIcon", "image-x-generic");
 
 		auto saveAsImage = menu->addAction (tr ("Save selection as image..."),
 				this, SLOT (handleSaveAsImage ()));
+		saveAsImage->setProperty ("ActionIcon", "document-save");
 
 		if (qobject_cast<IHaveTextContent*> (CurrentDoc_->GetQObject ()))
 		{
@@ -422,6 +393,7 @@ namespace Monocle
 			auto copyAsText = menu->addAction (tr ("Copy selection as text"),
 					this, SLOT (handleCopyAsText ()));
 			copyAsText->setProperty ("Monocle/Text", selText);
+			copyAsText->setProperty ("ActionIcon", "edit-copy");
 
 			new Util::StdDataFilterMenuCreator (selText,
 					Core::Instance ().GetProxy ()->GetEntityManager (),
@@ -1015,6 +987,35 @@ namespace Monocle
 				LayOnePage_ :
 				LayTwoPages_;
 		action->setChecked (true);
+	}
+
+	void DocumentTab::recoverDocState (DocStateManager::State state)
+	{
+		if (state.CurrentScale_ <= 0)
+			return;
+
+		LayoutManager_->SetLayoutMode (state.Lay_);
+		LayoutManager_->SetScaleMode (state.ScaleMode_);
+		LayoutManager_->SetFixedScale (state.CurrentScale_);
+
+		switch (state.ScaleMode_)
+		{
+		case ScaleMode::FitWidth:
+			ScalesBox_->setCurrentIndex (0);
+			break;
+		case ScaleMode::FitPage:
+			ScalesBox_->setCurrentIndex (1);
+			break;
+		case ScaleMode::Fixed:
+		{
+			const auto scaleIdx = ScalesBox_->findData (state.CurrentScale_);
+			if (scaleIdx >= 0)
+				ScalesBox_->setCurrentIndex (scaleIdx);
+			break;
+		}
+		}
+
+		syncUIToLayMode ();
 	}
 
 	void DocumentTab::setMoveMode (bool enable)

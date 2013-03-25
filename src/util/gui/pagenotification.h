@@ -16,21 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "notification.h"
-#include <stdexcept>
-#include <QVBoxLayout>
+#pragma once
+
+#include <QWidget>
+#include <util/utilconfig.h>
 
 namespace LeechCraft
 {
-namespace Poshuku
+namespace Util
 {
-	Notification::Notification (QWidget *parent)
-	: QWidget (parent)
+	class UTIL_API PageNotification : public QWidget
 	{
-		QVBoxLayout *lay = qobject_cast<QVBoxLayout*> (parent->layout ());
-		if (!lay)
-			throw std::runtime_error ("Passed parent object has no QVBoxLayout");
-		lay->addWidget (this);
-	}
+	public:
+		PageNotification (QWidget*);
+	};
 }
 }
