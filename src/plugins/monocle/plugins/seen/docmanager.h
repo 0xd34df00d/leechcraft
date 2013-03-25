@@ -40,7 +40,7 @@ namespace Seen
 		ddjvu_context_t *Context_;
 		QHash<ddjvu_document_t*, std::weak_ptr<Document>> Documents_;
 	public:
-		DocManager (ddjvu_context_t*, QObject* = 0);
+		DocManager (ddjvu_context_t*, QObject*);
 
 		std::shared_ptr<Document> LoadDocument (const QString&);
 		void Unregister (ddjvu_document_t*);

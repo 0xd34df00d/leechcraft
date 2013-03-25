@@ -43,6 +43,9 @@ namespace Metida
 		QAction *LJCut_;
 		QAction *FirstSeparator_;
 
+		QTimer *MessageCheckingTimer_;
+		QTimer *CommentsCheckingTimer_;
+
 		enum BloqiqueSidePosition
 		{
 			First,
@@ -51,7 +54,7 @@ namespace Metida
 	public:
 		LJBloggingPlatform (QObject *parent = 0);
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		BloggingPlatfromFeatures GetFeatures () const;
 		QObjectList GetRegisteredAccounts ();
 		QObject* GetParentBloggingPlatformPlugin () const;
@@ -78,6 +81,10 @@ namespace Metida
 		void handleAddLJCut ();
 	public slots:
 		void handleAccountValidated (bool validated);
+		void handleMessageChecking ();
+		void handleCommentsChecking ();
+		void checkForMessages ();
+		void checkForComments ();
 
 	signals:
 		void accountAdded (QObject *account);

@@ -39,10 +39,13 @@ namespace FXB
 		DocumentInfo Info_;
 		TOCEntryLevel_t TOC_;
 		QUrl DocURL_;
-	public:
-		Document (const QString&, QObject* = 0);
 
-		QObject* GetObject ();
+		QObject *Plugin_;
+	public:
+		Document (const QString&, QObject*);
+
+		QObject* GetBackendPlugin () const;
+		QObject* GetQObject ();
 		DocumentInfo GetDocumentInfo () const;
 		QUrl GetDocURL () const;
 

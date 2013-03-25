@@ -52,7 +52,7 @@ namespace Azoth
 
 			Ui_.ProtoBox_->addItem (proto->GetProtocolIcon (),
 					proto->GetProtocolName (),
-					QVariant::fromValue<QObject*> (proto->GetObject ()));
+					QVariant::fromValue<QObject*> (proto->GetQObject ()));
 		}
 			
 		connect (wizard (),

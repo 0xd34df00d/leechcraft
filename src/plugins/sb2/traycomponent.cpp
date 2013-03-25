@@ -129,7 +129,7 @@ namespace SB2
 		return Component_;
 	}
 
-	void TrayComponent::HandleDock (QDockWidget *dw, bool visible)
+	void TrayComponent::HandleDockAction (QDockWidget *dw, bool visible)
 	{
 		QAction *act = dw->toggleViewAction ();
 		if (!visible)
@@ -187,7 +187,8 @@ namespace SB2
 			const auto& idStr = QString::number (NextActionId_);
 
 			auto item = new QStandardItem;
-			item->setData (act->text (), TrayModel::Roles::ActionText);
+			item->setData (act->toolTip ().isEmpty () ? act->text () : act->toolTip (),
+					TrayModel::Roles::ActionText);
 			item->setData (prefix + idStr + "/0", TrayModel::Roles::ActionIcon);
 			item->setData (QVariant::fromValue<QObject*> (act), TrayModel::Roles::ActionObject);
 			Model_->insertRow (insRow++, item);
@@ -205,6 +206,11 @@ namespace SB2
 			Model_->removeRow (item->row ());
 
 		ImageProv_->RemoveAction (action);
+
+		disconnect (action,
+				0,
+				this,
+				0);
 	}
 
 	void TrayComponent::handlePluginsAvailable ()

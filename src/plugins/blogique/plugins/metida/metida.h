@@ -57,7 +57,7 @@ namespace Metida
 
 		QSet<QByteArray> GetPluginClasses () const;
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QList<QObject*> GetBloggingPlatforms () const;
 
 	public slots:

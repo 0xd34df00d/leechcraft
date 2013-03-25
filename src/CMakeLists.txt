@@ -16,6 +16,12 @@ IF (MSVC)
 	SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 	INCLUDE (LibHelperWin32Macros)
 ENDIF (MSVC)
+IF (WIN32)
+	ADD_DEFINITIONS (-DWIN32_LEAN_AND_MEAN) # Don't include not needed headers with a lot of useless macross definitions
+	ADD_DEFINITIONS (-D_WIN32_WINNT=0x0600) # Use Windows Vista definitions. Needed by Liznoo and KInotify
+	ADD_DEFINITIONS (-DWINVER=0x0600)
+	ADD_DEFINITIONS (-DNTDDI_VERSION=0x0600)
+ENDIF (WIN32)
 IF (UNIX OR (WIN32 AND MINGW))
 	SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -std=c++0x")
 

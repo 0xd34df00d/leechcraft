@@ -93,12 +93,12 @@ namespace Blogique
 		LoadActions_.clear ();
 
 		Account_ = account;
-		connect (Account_->GetObject (),
+		connect (Account_->GetQObject (),
 				SIGNAL (gotBlogStatistics (QMap<QDate, int>)),
 				this,
 				SLOT (fillStatistic (QMap<QDate, int>)),
 				Qt::UniqueConnection);
-		connect (Account_->GetObject (),
+		connect (Account_->GetQObject (),
 				SIGNAL (gotEntries (QList<Entry>)),
 				this,
 				SLOT (fillView (QList<Entry>)),
@@ -108,6 +108,7 @@ namespace Blogique
 		Ui_.LoadBlogEntries_->addActions (LoadActions_);
 
 		Account_->RequestStatistics ();
+		Account_->RequestLastEntries ();
 	}
 
 	Entry BlogEntriesWidget::GetEntry (const QModelIndex& index)
@@ -159,6 +160,7 @@ namespace Blogique
 			Item2Entry_ [items.first ()] = entry;
 		}
 		Ui_.BlogEntriesView_->resizeColumnToContents (0);
+		emit entriesListUpdated ();
 	}
 
 	void BlogEntriesWidget::fillStatistic (const QMap<QDate, int>& statistics)
@@ -223,7 +225,10 @@ namespace Blogique
 						.arg ("<em>" + e.Subject_ + "</em>"),
 				QMessageBox::Ok | QMessageBox::Cancel,
 				QMessageBox::Cancel) == QMessageBox::Ok)
+		{
+			emit entryAboutToBeRemoved ();
 			Account_->RemoveEntry (e);
+		}
 	}
 
 	void BlogEntriesWidget::on_BlogEntriesView__doubleClicked (const QModelIndex& index)

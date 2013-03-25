@@ -25,10 +25,10 @@ namespace Monocle
 {
 namespace Postrus
 {
-	Document::Document (const QString& path, QObject *parent)
-	: QObject (parent)
-	, SD_ (spectre_document_new ())
+	Document::Document (const QString& path, QObject *plugin)
+	: SD_ (spectre_document_new ())
 	, DocURL_ (QUrl::fromLocalFile (path))
+	, Plugin_ (plugin)
 	{
 		spectre_document_load (SD_, path.toUtf8 ().constData ());
 	}
@@ -38,7 +38,12 @@ namespace Postrus
 		spectre_document_free (SD_);
 	}
 
-	QObject* Document::GetObject ()
+	QObject* Document::GetBackendPlugin () const
+	{
+		return Plugin_;
+	}
+
+	QObject* Document::GetQObject ()
 	{
 		return this;
 	}

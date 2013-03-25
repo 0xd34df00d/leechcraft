@@ -2,6 +2,7 @@
   <qresource prefix="/plugins/azoth">
     <file>resources/images/azoth.svg</file>
 	<file>resources/images/chattabclass.svg</file>
+	<file>resources/images/muctabclass.svg</file>
 	<file>resources/images/console.svg</file>
 	<file>resources/images/searchtab.svg</file>
 	<file>resources/images/sdtab.svg</file>

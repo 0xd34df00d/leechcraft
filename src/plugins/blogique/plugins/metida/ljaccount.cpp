@@ -21,6 +21,7 @@
 #include <QtDebug>
 #include <util/passutils.h>
 #include <util/util.h>
+#include <util/notificationactionhandler.h>
 #include "core.h"
 #include "ljaccountconfigurationwidget.h"
 #include "ljaccountconfigurationdialog.h"
@@ -31,6 +32,7 @@
 #include "utils.h"
 #include "xmlsettingsmanager.h"
 #include "updatetypedialog.h"
+#include "localstorage.h"
 
 namespace LeechCraft
 {
@@ -47,6 +49,7 @@ namespace Metida
 	, LJProfile_ (std::make_shared<LJProfile> (this))
 	, LoadLastEvents_ (new QAction (tr ("Last entries"), this))
 	, LoadChangedEvents_ (new QAction (tr ("Changed entries"), this))
+	, LastUpdateType_ (LastUpdateType::LastEntries)
 	{
 		qRegisterMetaType<LJProfileData> ("LJProfileData");
 		qRegisterMetaTypeStreamOperators<QList<LJFriendGroup>> ("QList<LJFriendGroup>");
@@ -75,7 +78,7 @@ namespace Metida
 		connect (LJXmlRpc_,
 				SIGNAL (eventRemoved (int)),
 				this,
-				SIGNAL (entryRemoved (int)));
+				SLOT (handleEventRemoved (int)));
 		connect (LJXmlRpc_,
 				SIGNAL (eventUpdated (QList<LJEvent>)),
 				this,
@@ -96,6 +99,14 @@ namespace Metida
 				SIGNAL (gotStatistics (QMap<QDate, int>)),
 				this,
 				SIGNAL (gotBlogStatistics (QMap<QDate, int>)));
+		connect (LJXmlRpc_,
+				SIGNAL (unreadMessagesExist (bool)),
+				this,
+				SLOT (handleUnreadMessagesExist (bool)));
+		connect (LJXmlRpc_,
+				SIGNAL (gotRecentComments (QList<LJCommentEntry>)),
+				this,
+				SIGNAL (gotRecentComments (QList<LJCommentEntry>)));
 
 		connect (LoadLastEvents_,
 				SIGNAL (triggered ()),
@@ -107,7 +118,7 @@ namespace Metida
 				SLOT (handleLoadChangedEvents ()));
 	}
 
-	QObject* LJAccount::GetObject ()
+	QObject* LJAccount::GetQObject ()
 	{
 		return this;
 	}
@@ -249,9 +260,25 @@ namespace Metida
 		LJXmlRpc_->UpdateEvent (Entry2LJEvent (entry));
 	}
 
+	void LJAccount::RequestLastEntries (int count)
+	{
+		emit requestEntriesBegin ();
+		LJXmlRpc_->GetLastEvents (count);
+	}
+
 	void LJAccount::RequestStatistics ()
 	{
 		LJXmlRpc_->RequestStatistics ();
+	}
+
+	void LJAccount::RequestInbox ()
+	{
+		LJXmlRpc_->RequestLastInbox ();
+	}
+
+	void LJAccount::RequestRecentComments ()
+	{
+		LJXmlRpc_->RequestRecentCommments ();
 	}
 
 	QList<QAction*> LJAccount::GetUpdateActions () const
@@ -361,6 +388,27 @@ namespace Metida
 	void LJAccount::DeleteGroup (int id)
 	{
 		LJXmlRpc_->DeleteGroup (id);
+	}
+
+	void LJAccount::CallLastUpdateMethod ()
+	{
+		switch (LastUpdateType_)
+		{
+		case LastUpdateType::LastEntries:
+			emit requestEntriesBegin ();
+			LJXmlRpc_->GetLastEvents (XmlSettingsManager::Instance ()
+					.Property ("LoadEntriesToView", 20).toInt ());
+			break;
+		case LastUpdateType::ChangedEntries:
+			emit requestEntriesBegin ();
+			LJXmlRpc_->GetChangedEvents (XmlSettingsManager::Instance ()
+					.Property ("ChangedDateToView",
+							QDateTime ({ 1980, 1, 1 }, { 0, 0 })).toDateTime ());
+			break;
+		case LastUpdateType::NoType:
+		default:
+			break;
+		}
 	}
 
 	void LJAccount::handleValidatingFinished (bool success)
@@ -480,6 +528,7 @@ namespace Metida
 			entries << LJEvent2Entry (ljEvent, Login_);
 
 		emit entryPosted (entries);
+		CallLastUpdateMethod ();
 	}
 
 	void LJAccount::handleEventUpdated (const QList<LJEvent>& events)
@@ -489,6 +538,13 @@ namespace Metida
 			entries << LJEvent2Entry (ljEvent, Login_);
 
 		emit entryUpdated (entries);
+		CallLastUpdateMethod ();
+	}
+
+	void LJAccount::handleEventRemoved (int id)
+	{
+		emit entryRemoved (id);
+		CallLastUpdateMethod ();
 	}
 
 	void LJAccount::handleGotEvents2Backup (const QList<LJEvent>& ljEvents)
@@ -525,6 +581,8 @@ namespace Metida
 			count = dlg.GetCount ();
 		}
 
+		LastUpdateType_ = LastUpdateType::LastEntries;
+		emit requestEntriesBegin ();
 		LJXmlRpc_->GetLastEvents (count);
 	}
 
@@ -539,7 +597,32 @@ namespace Metida
 			dt = dlg.GetDateTime ();
 		}
 
+		LastUpdateType_ = LastUpdateType::ChangedEntries;
+		emit requestEntriesBegin ();
 		LJXmlRpc_->GetChangedEvents (dt);
+	}
+
+	void LJAccount::handleUnreadMessagesExist (bool exists)
+	{
+		if (exists)
+		{
+			Entity e = Util::MakeNotification ("Blogique Metida",
+					tr ("You have unread messages in account %1")
+							.arg ("<em>" + GetAccountName () + "</em>"),
+					Priority::PInfo_);
+			Util::NotificationActionHandler *nh =
+					new Util::NotificationActionHandler (e, this);
+			nh->AddFunction (tr ("Open inbox"),
+					[this] ()
+					{
+						Entity urlEntity = Util::MakeEntity (QUrl ("http://livejournal.com/inbox/"),
+								QString (),
+								static_cast<TaskParameters> (OnlyHandle | FromUserInitiated));
+						Core::Instance ().SendEntity (urlEntity);
+					});
+			nh->AddDependentObject (this);
+			Core::Instance ().SendEntity (e);
+		}
 	}
 
 }

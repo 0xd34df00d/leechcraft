@@ -90,7 +90,7 @@ namespace LeechCraft
 		CoreInstanceObject_->GetCorePluginManager ()->RegisterHookable (DM_);
 
 		connect (RootWindowsManager_.get (),
-				SIGNAL (tabWillBeMovedXWindows (int, int, int)),
+				SIGNAL (tabIsMoving (int, int, int)),
 				DM_,
 				SLOT (handleTabMove (int, int, int)));
 

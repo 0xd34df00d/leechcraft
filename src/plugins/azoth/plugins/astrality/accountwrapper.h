@@ -55,7 +55,7 @@ namespace Astrality
 		AccountWrapper (Tp::AccountPtr, QObject*);
 
 		// IAccount
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QObject* GetParentProtocol () const;
 		AccountFeatures GetAccountFeatures () const;
 		QList<QObject*> GetCLEntries ();

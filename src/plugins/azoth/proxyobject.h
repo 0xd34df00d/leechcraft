@@ -63,6 +63,7 @@ namespace Azoth
 		Util::ResourceLoader* GetResourceLoader (PublicResourceLoader) const;
 		QIcon GetIconForState (State) const;
 		void FormatLinks (QString&);
+		QStringList FindLinks (const QString&);
 	};
 }
 }

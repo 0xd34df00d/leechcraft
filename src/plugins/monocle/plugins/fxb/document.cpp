@@ -28,9 +28,9 @@ namespace Monocle
 {
 namespace FXB
 {
-	Document::Document (const QString& filename, QObject *parent)
-	: QObject (parent)
-	, DocURL_ (QUrl::fromLocalFile (filename))
+	Document::Document (const QString& filename, QObject *plugin)
+	: DocURL_ (QUrl::fromLocalFile (filename))
+	, Plugin_ (plugin)
 	{
 		QFile file (filename);
 		if (!file.open (QIODevice::ReadOnly))
@@ -58,7 +58,12 @@ namespace FXB
 		TOC_ = conv.GetTOC ();
 	}
 
-	QObject* Document::GetObject ()
+	QObject* Document::GetBackendPlugin () const
+	{
+		return Plugin_;
+	}
+
+	QObject* Document::GetQObject ()
 	{
 		return this;
 	}

@@ -34,7 +34,7 @@ namespace Lastfmscrobble
 	{
 	}
 
-	QObject* BaseSimilarArtists::GetObject ()
+	QObject* BaseSimilarArtists::GetQObject ()
 	{
 		return this;
 	}

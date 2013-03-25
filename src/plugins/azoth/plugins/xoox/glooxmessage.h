@@ -63,7 +63,7 @@ namespace Xoox
 				ClientConnection *conn);
 
 		// IMessage
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		void Send ();
 		void Store ();
 		Direction GetDirection () const;
@@ -86,7 +86,7 @@ namespace Xoox
 
 		void SetDelivered (bool);
 
-		QXmppMessage GetMessage () const;
+		QXmppMessage GetNativeMessage () const;
 	signals:
 		void messageDelivered ();
 	};

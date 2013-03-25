@@ -48,7 +48,7 @@ namespace MusicZombie
 	public:
 		PendingDisco (Util::QueueManager*, const QString&, const QString&, QNetworkAccessManager*, QObject* = 0);
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 
 		QList<Media::ReleaseInfo> GetReleases () const;
 	private:

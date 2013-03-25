@@ -56,7 +56,7 @@ namespace Hestia
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QList<QObject*> GetBloggingPlatforms () const;
 
 	public slots:

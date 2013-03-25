@@ -41,9 +41,11 @@ namespace Mu
 		}
 	}
 
-	Document::Document (const QString& filename, fz_context *ctx)
+	Document::Document (const QString& filename, fz_context *ctx, QObject *plugin)
 	: MuCtx_ (ctx)
 	, MuDoc_ (pdf_open_document (ctx, filename.toUtf8 ().constData ()))
+	, URL_ (QUrl::fromLocalFile (filename))
+	, Plugin_ (plugin)
 	{
 	}
 
@@ -52,7 +54,12 @@ namespace Mu
 		pdf_close_document (MuDoc_);
 	}
 
-	QObject* Document::GetObject ()
+	QObject* Document::GetBackendPlugin () const
+	{
+		return Plugin_;
+	}
+
+	QObject* Document::GetQObject ()
 	{
 		return this;
 	}
@@ -126,6 +133,11 @@ namespace Mu
 	QList<ILink_ptr> Document::GetPageLinks (int)
 	{
 		return QList<ILink_ptr> ();
+	}
+
+	QUrl Document::GetDocURL () const
+	{
+		return URL_;
 	}
 }
 }

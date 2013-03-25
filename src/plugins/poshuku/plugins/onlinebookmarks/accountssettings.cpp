@@ -75,14 +75,14 @@ namespace OnlineBookmarks
 
 			Service2AuthWidget_ [ibs] = widget;
 
-			connect (ibs->GetObject (),
+			connect (ibs->GetQObject (),
 					SIGNAL (accountAdded (QObjectList)),
 					this,
 					SLOT (addAccount (QObjectList)));
 
 			connect (this,
 					SIGNAL (accountRemoved (QObject*)),
-					ibs->GetObject (),
+					ibs->GetQObject (),
 					SLOT (removeAccount (QObject*)));
 		}
 	}
@@ -132,7 +132,7 @@ namespace OnlineBookmarks
 			if (item->checkState () == Qt::Checked)
 			{
 				Item2Account_ [item]->SetSyncing (true);
-				accounts << Item2Account_ [item]->GetObject ();
+				accounts << Item2Account_ [item]->GetQObject ();
 			}
 
 		Q_FOREACH (IBookmarksService *service, Item2Service_.values ())
@@ -159,8 +159,8 @@ namespace OnlineBookmarks
 
 		QStandardItem *item = AccountsModel_->itemFromIndex (parentIndex)->child (row, 0);
 
-		Core::Instance ().DeletePassword (Item2Account_ [item]->GetObject ());
-		emit accountRemoved (Item2Account_ [item]->GetObject ());
+		Core::Instance ().DeletePassword (Item2Account_ [item]->GetQObject ());
+		emit accountRemoved (Item2Account_ [item]->GetQObject ());
 
 		AccountsModel_->removeRow (current.row (), parentIndex);
 		Id2Account_.remove (Item2Account_ [item]->GetAccountID ());
@@ -278,7 +278,7 @@ namespace OnlineBookmarks
 
 			accounts << accObj;
 
-			const QModelIndex& index = GetServiceIndex (ibs->GetObject ());
+			const QModelIndex& index = GetServiceIndex (ibs->GetQObject ());
 			QStandardItem *parentItem = 0;
 			if (!index.isValid ())
 			{
@@ -300,8 +300,8 @@ namespace OnlineBookmarks
 			{
 				Core::Instance ().AddActiveAccount (accObj);
 				IBookmarksService *ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
-				ibs->DownloadBookmarks (account->GetObject (), account->GetLastDownloadDateTime ());
-				ibs->UploadBookmarks (account->GetObject (), Core::Instance ().GetAllBookmarks ());
+				ibs->DownloadBookmarks (account->GetQObject (), account->GetLastDownloadDateTime ());
+				ibs->UploadBookmarks (account->GetQObject (), Core::Instance ().GetAllBookmarks ());
 			}
 
 			Item2Account_ [item] = account;

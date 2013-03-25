@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2010-2013  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,21 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_NOTIFICATION_H
-#define PLUGINS_POSHUKU_NOTIFICATION_H
-#include <QWidget>
+#include "recentcommentsmodel.h"
 
 namespace LeechCraft
 {
-namespace Poshuku
+namespace Blogique
 {
-	class Notification : public QWidget
+namespace Metida
+{
+	RecentCommentsModel::RecentCommentsModel (QObject *parent)
+	: QStandardItemModel (parent)
 	{
-		Q_OBJECT
-	public:
-		Notification (QWidget* = 0);
-	};
-}
-}
+		QHash<int, QByteArray> roleNames;
+		roleNames [NodeSubject] = "nodeSubject";
+		roleNames [NodeUrl] = "nodeUrl";
+		roleNames [CommentBody] = "commentBody";
+		roleNames [CommentInfo] = "commentInfo";
+		setRoleNames (roleNames);
+	}
 
-#endif
+}
+}
+}

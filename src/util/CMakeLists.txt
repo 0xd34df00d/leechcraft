@@ -12,7 +12,9 @@ INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIRS}
 
 SET (SRCS
 	gui/clearlineeditaddon.cpp
+	gui/findnotification.cpp
 	gui/flowlayout.cpp
+	gui/pagenotification.cpp
 	gui/selectablebrowser.cpp
 	gui/unhoverdeletemixin.cpp
 	gui/util.cpp
@@ -52,51 +54,9 @@ SET (SRCS
 	queuemanager.cpp
 	shortcuts/shortcutmanager.cpp
 	)
-SET (HEADERS
-	gui/clearlineeditaddon.h
-	gui/flowlayout.h
-	gui/selectablebrowser.h
-	gui/unhoverdeletemixin.h
-	gui/util.h
-	models/flattenfiltermodel.h
-	models/flattofoldersproxymodel.h
-	models/listmodel.h
-	models/mergemodel.h
-	models/treeitem.h
-	qml/colorthemeproxy.h
-	qml/widthiconprovider.h
-	qml/themeimageprovider.h
-	sync/syncdeltamanager.h
-	sync/syncops.h
-	sys/paths.h
-	tags/categoryselector.h
-	tags/tagscompleter.h
-	tags/tagscompletionmodel.h
-	tags/tagslineedit.h
-	tags/tagsfiltermodel.h
-	xpc/stddatafiltermenucreator.h
-	xpc/util.h
-	util.h
-	dblock.h
-	customcookiejar.h
-	backendselector.h
-	structuresops.h
-	defaulthookproxy.h
-	basehookinterconnector.h
-	fileremoveguard.h
-	exceptions.h
-	customnetworkreply.h
-	resourceloader.h
-	notificationactionhandler.h
-	socketerrorstrings.h
-	sysinfo.h
-	passutils.h
-	queuemanager.h
-	shortcuts/shortcutmanager.h
-	idpool.h
-	)
 SET (FORMS
 	backendselector.ui
+	gui/findnotification.ui
 	)
 IF (USE_QT5)
 	qt5_wrap_ui (UIS_H ${FORMS})
@@ -118,12 +78,9 @@ ADD_DEFINITIONS(-DQT_PLUGIN)
 ADD_DEFINITIONS(-DQT_NO_DEBUG)
 ADD_DEFINITIONS(-DQT_SHARED)
 ADD_DEFINITIONS(-DQT_GUI_LIB)
-IF (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+
 ADD_LIBRARY (lcutil SHARED
 	${SRCS}
-	${MOC_SRCS}
 	${UIS_H}
 	)
 TARGET_LINK_LIBRARIES (lcutil

@@ -307,7 +307,7 @@ namespace Graffiti
 		{
 			const auto& info = index.data (FilesModel::Roles::MediaInfoRole).value<MediaInfo> ();
 			auto pending = prov->FetchTags (info.LocalPath_);
-			connect (pending->GetObject (),
+			connect (pending->GetQObject (),
 					SIGNAL (ready (QString, Media::AudioInfo)),
 					this,
 					SLOT (handleTagsFetched (QString, Media::AudioInfo)));

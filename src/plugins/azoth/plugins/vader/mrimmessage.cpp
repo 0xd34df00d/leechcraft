@@ -52,7 +52,7 @@ namespace Vader
 		emit messageDelivered ();
 	}
 
-	QObject* MRIMMessage::GetObject ()
+	QObject* MRIMMessage::GetQObject ()
 	{
 		return this;
 	}

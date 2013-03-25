@@ -40,7 +40,7 @@ namespace Delicious
 	{
 	}
 
-	QObject* DeliciousAccount::GetObject ()
+	QObject* DeliciousAccount::GetQObject ()
 	{
 		return this;
 	}

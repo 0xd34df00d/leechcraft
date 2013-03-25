@@ -106,7 +106,7 @@ namespace Acetamide
 		return ICH_;
 	}
 
-	QObject* ChannelCLEntry::GetObject ()
+	QObject* ChannelCLEntry::GetQObject ()
 	{
 		return this;
 	}
@@ -312,7 +312,7 @@ namespace Acetamide
 	{
 		QObjectList objs;
 		Q_FOREACH (ICLEntry *e, parts)
-			objs << e->GetObject ();
+			objs << e->GetQObject ();
 		emit gotNewParticipants (objs);
 	}
 

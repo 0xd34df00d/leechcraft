@@ -603,7 +603,7 @@ namespace LeechCraft
 		settings.endGroup ();
 	}
 
-	QObject* PluginManager::GetObject ()
+	QObject* PluginManager::GetQObject ()
 	{
 		return this;
 	}

@@ -96,7 +96,7 @@ namespace Xoox
 		return RH_;
 	}
 
-	QObject* RoomCLEntry::GetObject ()
+	QObject* RoomCLEntry::GetQObject ()
 	{
 		return this;
 	}
@@ -534,7 +534,7 @@ namespace Xoox
 	{
 		QObjectList objs;
 		Q_FOREACH (ICLEntry *e, parts)
-			objs << e->GetObject ();
+			objs << e->GetQObject ();
 		emit gotNewParticipants (objs);
 	}
 

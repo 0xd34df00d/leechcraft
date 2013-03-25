@@ -51,7 +51,7 @@ namespace Acetamide
 		QObject* GetProxyObject () const;
 		void SetProxyObject (QObject*);
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		ProtocolFeatures GetFeatures () const;
 		QList<QObject*> GetRegisteredAccounts ();
 

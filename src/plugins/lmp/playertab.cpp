@@ -647,11 +647,11 @@ namespace LMP
 				auto obj = similar->GetSimilarArtists (info.Artist_, 15);
 				if (!obj)
 					continue;
-				connect (obj->GetObject (),
+				connect (obj->GetQObject (),
 						SIGNAL (error ()),
 						this,
 						SLOT (handleSimilarError ()));
-				connect (obj->GetObject (),
+				connect (obj->GetQObject (),
 						SIGNAL (ready ()),
 						this,
 						SLOT (handleSimilarReady ()));

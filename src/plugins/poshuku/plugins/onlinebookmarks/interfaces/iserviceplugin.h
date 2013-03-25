@@ -30,7 +30,7 @@ namespace OnlineBookmarks
 	public:
 		virtual ~IServicePlugin () {};
 
-		virtual QObject* GetObject () = 0;
+		virtual QObject* GetQObject () = 0;
 
 		virtual QObject* GetBookmarksService () const = 0;
 	};

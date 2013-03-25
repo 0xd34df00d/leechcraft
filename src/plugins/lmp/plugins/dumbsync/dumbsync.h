@@ -62,7 +62,7 @@ namespace DumbSync
 
 		void SetLMPProxy (ILMPProxy_ptr);
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QString GetSyncSystemName () const;
 		SyncConfLevel CouldSync (const QString&);
 		void Upload (const QString& localPath, const QString& origLocalPath,

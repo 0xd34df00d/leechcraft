@@ -91,6 +91,12 @@ namespace Monocle
 				{ posElem.attribute ("x").toInt (), posElem.attribute ("y").toInt () });
 	}
 
+	bool operator== (const Bookmark& b1, const Bookmark& b2)
+	{
+		return b1.GetPosition () == b2.GetPosition () &&
+			b1.GetName () == b2.GetName ();
+	}
+
 	QDataStream& operator<< (QDataStream& out, const Bookmark& bm)
 	{
 		return out << static_cast<quint8> (1)

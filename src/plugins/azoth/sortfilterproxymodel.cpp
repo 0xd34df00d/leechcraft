@@ -238,8 +238,8 @@ namespace Azoth
 				lE->GetParentCLEntry () == rE->GetParentCLEntry ())
 			if (IMUCPerms *lp = qobject_cast<IMUCPerms*> (lE->GetParentCLEntry ()))
 			{
-				bool less = lp->IsLessByPerm (lE->GetObject (), rE->GetObject ());
-				bool more = lp->IsLessByPerm (rE->GetObject (), lE->GetObject ());
+				bool less = lp->IsLessByPerm (lE->GetQObject (), rE->GetQObject ());
+				bool more = lp->IsLessByPerm (rE->GetQObject (), lE->GetQObject ());
 				if (less || more)
 					return more;
 			}

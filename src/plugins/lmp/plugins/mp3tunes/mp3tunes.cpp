@@ -107,7 +107,7 @@ namespace MP3Tunes
 	{
 	}
 
-	QObject* Plugin::GetObject ()
+	QObject* Plugin::GetQObject ()
 	{
 		return this;
 	}

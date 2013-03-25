@@ -119,64 +119,7 @@ SET (SRCS
 	customstatusesmanager.cpp
 	userslistwidget.cpp
 	keyboardrosterfixer.cpp
-	)
-SET (HEADERS
-	azoth.h
-	core.h
-	mainwidget.h
-	chattabsmanager.h
-	chattab.h
-	sortfilterproxymodel.h
-	accountslistwidget.h
-	setstatusdialog.h
-	pluginmanager.h
-	proxyobject.h
-	textedit.h
-	xmlsettingsmanager.h
-	contactlistdelegate.h
-	addcontactdialog.h
-	joinconferencedialog.h
-	groupeditordialog.h
-	transferjobmanager.h
-	addaccountwizardfirstpage.h
-	bookmarksmanagerdialog.h
-	accounthandlerchooserdialog.h
-	util.h
-	simpledialog.h
-	servicediscoverywidget.h
-	eventsnotifier.h
-	zoomeventfilter.h
-	drawattentiondialog.h
-	consolewidget.h
-	activitydialog.h
-	mooddialog.h
-	callmanager.h
-	clmodel.h
-	callchatwidget.h
-	chattabwebview.h
-	locationdialog.h
-	msgformatterwidget.h
-	acceptriexdialog.h
-	shareriexdialog.h
-	searchwidget.h
-	mucinvitedialog.h
-	groupsenddialog.h
-	actionsmanager.h
-	importmanager.h
-	accountactionsmanager.h
-	unreadqueuemanager.h
-	chatstyleoptionmanager.h
-	microblogstab.h
-	riexhandler.h
-	filesenddialog.h
-	pendinguploadpaster.h
-	contactdropfilter.h
-	colorlisteditorwidget.h
-	customstatusesmanager.h
-	userslistwidget.h
-	keyboardrosterfixer.h
-	animatediconmanager.h
-	sourcetrackingmodel.h
+	statuschangemenumanager.cpp
 	)
 SET (FORMS
 	mainwidget.ui
@@ -210,16 +153,12 @@ SET (FORMS
 SET (RESOURCES azothresources.qrc)
 
 IF (ENABLE_CRYPT)
-	SET (HEADERS ${HEADERS} pgpkeyselectiondialog.h)
 	SET (SRCS ${SRCS} pgpkeyselectiondialog.cpp)
 	SET (FORMS ${FORMS} pgpkeyselectiondialog.ui)
 ENDIF (ENABLE_CRYPT)
 
 CreateTrs ("azoth" "en;es;ru_RU;tt;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("azoth" "en;ru_RU" "${SRCS}" "${FORMS}" "azothsettings.xml")
-IF (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
@@ -231,7 +170,6 @@ ENDIF (WIN32)
 ADD_LIBRARY (leechcraft_azoth SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${UIS_H}
 	${RCCS}
 	)

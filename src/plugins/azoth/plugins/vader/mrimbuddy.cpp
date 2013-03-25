@@ -211,7 +211,7 @@ namespace Vader
 		Info_.ContactID_ = id;
 	}
 
-	QObject* MRIMBuddy::GetObject ()
+	QObject* MRIMBuddy::GetQObject ()
 	{
 		return this;
 	}

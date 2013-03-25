@@ -37,6 +37,7 @@
 #include <util/gui/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/imessage.h"
 #include "interfaces/azoth/irichtextmessage.h"
@@ -67,22 +68,30 @@
 #include "actionsmanager.h"
 #include "contactdropfilter.h"
 #include "userslistwidget.h"
+#include "util.h"
+#include "proxyobject.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
 	QObject *ChatTab::S_ParentMultiTabs_ = 0;
-	TabClassInfo ChatTab::S_TabClass_;
+	TabClassInfo ChatTab::S_ChatTabClass_;
+	TabClassInfo ChatTab::S_MUCTabClass_;
 
 	void ChatTab::SetParentMultiTabs (QObject *obj)
 	{
 		S_ParentMultiTabs_ = obj;
 	}
 
-	void ChatTab::SetTabClassInfo (const TabClassInfo& tc)
+	void ChatTab::SetChatTabClassInfo (const TabClassInfo& tc)
 	{
-		S_TabClass_ = tc;
+		S_ChatTabClass_ = tc;
+	}
+
+	void ChatTab::SetMUCTabClassInfo (const TabClassInfo& tc)
+	{
+		S_MUCTabClass_ = tc;
 	}
 
 	class CopyFilter : public QObject
@@ -252,7 +261,7 @@ namespace Azoth
 
 	TabClassInfo ChatTab::GetTabClassInfo () const
 	{
-		return S_TabClass_;
+		return IsMUC_ ? S_MUCTabClass_ : S_ChatTabClass_;
 	}
 
 	QList<QAction*> ChatTab::GetTabBarContextMenuActions () const
@@ -402,7 +411,7 @@ namespace Azoth
 			return;
 
 		const auto& parts = muc->GetParticipants ();
-		UsersListWidget w (parts, this);
+		UsersListWidget w (parts, [] (ICLEntry *entry) { return entry->GetEntryName (); }, this);
 		if (w.exec () != QDialog::Accepted)
 			return;
 
@@ -479,7 +488,7 @@ namespace Azoth
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
 		proxy->SetValue ("text", text);
-		emit hookMessageWillCreated (proxy, this, e->GetObject (), type, variant);
+		emit hookMessageWillCreated (proxy, this, e->GetQObject (), type, variant);
 		if (proxy->IsCancelled ())
 			return;
 
@@ -512,7 +521,7 @@ namespace Azoth
 			richMsg->SetRichBody (richText);
 
 		proxy.reset (new Util::DefaultHookProxy ());
-		emit hookMessageCreated (proxy, this, msg->GetObject ());
+		emit hookMessageCreated (proxy, this, msg->GetQObject ());
 		if (proxy->IsCancelled ())
 			return;
 
@@ -725,6 +734,15 @@ namespace Azoth
 		const QString& toInsert = split.join ("\n");
 		QTextCursor cur = Ui_.MsgEdit_->textCursor ();
 		cur.insertText (toInsert);
+	}
+
+	void ChatTab::handleOpenLastLink ()
+	{
+		if (LastLink_.isEmpty ())
+			return;
+
+		const auto& e = Util::MakeEntity (QUrl (LastLink_), QString (), static_cast<TaskParameters> (FromUserInitiated | OnlyHandle));
+		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void ChatTab::handleFileOffered (QObject *jobObj)
@@ -1379,6 +1397,11 @@ namespace Azoth
 		sm->RegisterAction ("org.LeechCraft.Azoth.QuoteSelected", quoteSelection, true);
 
 		Ui_.View_->SetQuoteAction (quoteSelection);
+
+		const auto& openLinkInfo = infos ["org.LeechCraft.Azoth.OpenLastLink"];
+		auto shortcut = new QShortcut (openLinkInfo.Seqs_.value (0),
+				this, SLOT (handleOpenLastLink ()), 0, Qt::WidgetWithChildrenShortcut);
+		sm->RegisterShortcut ("org.LeechCraft.Azoth.OpenLastLink", openLinkInfo, shortcut);
 	}
 
 	void ChatTab::InitEntry ()
@@ -1629,7 +1652,7 @@ namespace Azoth
 			return;
 		}
 
-		QObject *entryObj = entry->GetObject ();
+		QObject *entryObj = entry->GetQObject ();
 
 		const QObjectList& histories = Core::Instance ().GetProxy ()->
 				GetPluginsManager ()->GetAllCastableRoots<IHistoryPlugin*> ();
@@ -1657,12 +1680,12 @@ namespace Azoth
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "message's other part doesn't implement ICLEntry"
-					<< msg->GetObject ()
+					<< msg->GetQObject ()
 					<< msg->OtherPart ();
 			return;
 		}
 
-		if (msg->GetObject ()->property ("Azoth/HiddenMessage").toBool ())
+		if (msg->GetQObject ()->property ("Azoth/HiddenMessage").toBool ())
 			return;
 
 		ICLEntry *parent = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
@@ -1693,7 +1716,7 @@ namespace Azoth
 		}
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookGonnaAppendMsg (proxy, msg->GetObject ());
+		emit hookGonnaAppendMsg (proxy, msg->GetQObject ());
 		if (proxy->IsCancelled ())
 			return;
 
@@ -1718,8 +1741,12 @@ namespace Azoth
 			ToggleRichText_->isChecked ()
 		};
 
+		const auto& links = ProxyObject ().FindLinks (msg->GetBody ());
+		if (!links.isEmpty ())
+			LastLink_ = links.last ();
+
 		if (!Core::Instance ().AppendMessageByTemplate (frame,
-				msg->GetObject (), info))
+				msg->GetQObject (), info))
 			qWarning () << Q_FUNC_INFO
 					<< "unhandled append message :(";
 	}
@@ -1756,12 +1783,12 @@ namespace Azoth
 
 	bool ChatTab::ProcessOutgoingMsg (ICLEntry *entry, QString& text)
 	{
-		IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (entry->GetObject ());
+		IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
 		if (entry->GetEntryType () != ICLEntry::ETMUC ||
 				!mucEntry)
 			return false;
 
-		IMUCPerms *mucPerms = qobject_cast<IMUCPerms*> (entry->GetObject ());
+		IMUCPerms *mucPerms = qobject_cast<IMUCPerms*> (entry->GetQObject ());
 
 		if (text.startsWith ("/nick "))
 		{
@@ -1779,12 +1806,12 @@ namespace Azoth
 		}
 		else if (text.startsWith ("/kick ") && mucPerms)
 		{
-			PerformRoleAction (mucPerms->GetKickPerm (), entry->GetObject (), text.mid (6));
+			PerformRoleAction (mucPerms->GetKickPerm (), entry->GetQObject (), text.mid (6));
 			return true;
 		}
 		else if (text.startsWith ("/ban ") && mucPerms)
 		{
-			PerformRoleAction (mucPerms->GetBanPerm (), entry->GetObject (), text.mid (5));
+			PerformRoleAction (mucPerms->GetBanPerm (), entry->GetQObject (), text.mid (5));
 			return true;
 		}
 		else if (text == "/names")

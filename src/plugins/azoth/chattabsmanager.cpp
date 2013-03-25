@@ -190,11 +190,11 @@ namespace Azoth
 			return;
 
 		SetChatEnabled (entry->GetEntryID (), false);
-		disconnect (entry->GetObject (),
+		disconnect (entry->GetQObject (),
 				0,
 				this,
 				0);
-		disconnect (entry->GetObject (),
+		disconnect (entry->GetQObject (),
 				0,
 				Entry2Tab_ [entry->GetEntryID ()],
 				0);

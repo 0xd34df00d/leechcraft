@@ -52,11 +52,14 @@ namespace Seen
 		QHash<ddjvu_page_t*, int> PendingRendersNums_;
 
 		QUrl DocURL_;
+
+		QObject *Plugin_;
 	public:
-		Document (const QString&, ddjvu_context_t*, DocManager*);
+		Document (const QString&, ddjvu_context_t*, QObject*, DocManager*);
 		~Document ();
 
-		QObject* GetObject ();
+		QObject* GetBackendPlugin () const;
+		QObject* GetQObject ();
 		bool IsValid () const;
 		DocumentInfo GetDocumentInfo () const;
 		int GetNumPages () const;

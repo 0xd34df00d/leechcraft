@@ -32,7 +32,7 @@ namespace Media
 	public:
 		virtual ~IRadioStation () {}
 
-		virtual QObject* GetObject () = 0;
+		virtual QObject* GetQObject () = 0;
 
 		virtual void RequestNewStream () = 0;
 

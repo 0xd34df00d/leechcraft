@@ -95,17 +95,17 @@ namespace NetStoreManager
 
 			if (acc->GetAccountFeatures () & AccountFeature::FileListings)
 			{
-				connect (acc->GetObject (),
+				connect (acc->GetQObject (),
 						SIGNAL (gotListing (const QList<QList<QStandardItem*>>&)),
 						this,
 						SLOT (handleGotListing (const QList<QList<QStandardItem*>>&)));
 
-				connect (acc->GetObject (),
+				connect (acc->GetQObject (),
 						SIGNAL (gotFileUrl (const QUrl&, const QStringList&)),
 						this,
 						SLOT (handleGotFileUrl (const QUrl&, const QStringList&)));
 
-				connect (acc->GetObject (),
+				connect (acc->GetQObject (),
 						SIGNAL (gotNewItem (QList<QStandardItem*>, QStringList)),
 						this,
 						SLOT (handleGotNewItem (QList<QStandardItem*>, QStringList)));
@@ -178,7 +178,7 @@ namespace NetStoreManager
 		if (ids.isEmpty ())
 			return;
 
-		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 		func (sfl, ids);
 	}
 
@@ -190,7 +190,7 @@ namespace NetStoreManager
 		if (!acc)
 			return;
 
-		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 		Model_->setHorizontalHeaderLabels (sfl->GetListingHeaders ());
 	}
 
@@ -292,7 +292,7 @@ namespace NetStoreManager
 	void ManagerTab::handleGotListing (const QList<QList<QStandardItem*>>& items)
 	{
 		IStorageAccount *acc = GetCurrentAccount ();
-		if (!acc || sender () != acc->GetObject ())
+		if (!acc || sender () != acc->GetQObject ())
 			return;
 
 		if (items.isEmpty ())
@@ -301,7 +301,7 @@ namespace NetStoreManager
 			ClearFilesModel ();
 			return;
 		}
-		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 		const bool trashSupporting = sfl &&
 				sfl->GetListingOps () & ListingOp::TrashSupporting;
 
@@ -371,7 +371,7 @@ namespace NetStoreManager
 		if (id.isEmpty ())
 			return;
 
-		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 		sfl->RequestUrl (QList<QStringList> () << id);
 	}
 
@@ -396,12 +396,12 @@ namespace NetStoreManager
 		if (!acc)
 			return;
 
-		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 		if (sfl)
 			sfl->EmptyTrash (GetTrashedFiles ());
 		else
 			qWarning () << Q_FUNC_INFO
-					<< acc->GetObject ()
+					<< acc->GetQObject ()
 					<< "is not an ISupportFileListings object";
 	}
 
@@ -411,7 +411,7 @@ namespace NetStoreManager
 		if (!acc)
 			return;
 
-		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 		if (!(sfl->GetListingOps () & ListingOp::DirectorySupport))
 			return;
 
@@ -438,7 +438,7 @@ namespace NetStoreManager
 		if (!acc)
 			return;
 
-		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 		if (!(sfl->GetListingOps () & ListingOp::DirectorySupport))
 			return;
 
@@ -480,7 +480,7 @@ namespace NetStoreManager
 
 		on_Update__released ();
 
-		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 		DeleteFile_->setEnabled (sfl->GetListingOps () & ListingOp::Delete);
 		MoveToTrash_->setEnabled (sfl->GetListingOps () & ListingOp::TrashSupporting);
 	}
@@ -495,7 +495,7 @@ namespace NetStoreManager
 
 		Model_->clear ();
 
-		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 		sfl->RefreshListing ();
 		Model_->setHorizontalHeaderLabels (sfl->GetListingHeaders ());
 	}
@@ -562,7 +562,7 @@ namespace NetStoreManager
 		if (!acc)
 			return;
 
-		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 		sfl->Copy (itemId, newParentId);
 	}
 
@@ -573,7 +573,7 @@ namespace NetStoreManager
 		if (!acc)
 			return;
 
-		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 		sfl->Move (itemId, newParentId);
 	}
 
@@ -583,7 +583,7 @@ namespace NetStoreManager
 		if (!acc)
 			return;
 
-		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 		sfl->RestoreFromTrash (QList<QStringList> () << id);
 	}
 
@@ -593,7 +593,7 @@ namespace NetStoreManager
 		if (!acc)
 			return;
 
-		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 		sfl->MoveToTrash (QList<QStringList> () << id);
 	}
 

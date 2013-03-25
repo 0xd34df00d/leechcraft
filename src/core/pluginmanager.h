@@ -103,7 +103,7 @@ namespace LeechCraft
 
 		void SetAllPlugins (Qt::CheckState);
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 
 		QObject* GetProvider (const QString&) const;
 

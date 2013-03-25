@@ -273,7 +273,7 @@ namespace Azoth
 		auto jWidget = proto->GetMUCJoinWidget ();
 		IMUCJoinWidget *imjw = qobject_cast<IMUCJoinWidget*> (jWidget);
 		imjw->SetIdentifyingData (bmData.toMap ());
-		imjw->Join (account->GetObject ());
+		imjw->Join (account->GetQObject ());
 
 		jWidget->deleteLater ();
 	}
@@ -364,7 +364,7 @@ namespace Azoth
 		if (!account)
 			return;
 
-		QObject *obj = account->GetObject ();
+		QObject *obj = account->GetQObject ();
 		ISupportGeolocation *loc = qobject_cast<ISupportGeolocation*> (obj);
 		if (!loc)
 		{
@@ -388,7 +388,7 @@ namespace Azoth
 			return;
 
 		auto w = new ServiceDiscoveryWidget ();
-		w->SetAccount (account->GetObject ());
+		w->SetAccount (account->GetQObject ());
 		emit gotSDWidget (w);
 	}
 
@@ -400,7 +400,7 @@ namespace Azoth
 
 		if (!Account2CW_.contains (account))
 		{
-			ConsoleWidget *cw = new ConsoleWidget (account->GetObject ());
+			ConsoleWidget *cw = new ConsoleWidget (account->GetQObject ());
 			Account2CW_ [account] = cw;
 			connect (cw,
 					SIGNAL (removeTab (QWidget*)),

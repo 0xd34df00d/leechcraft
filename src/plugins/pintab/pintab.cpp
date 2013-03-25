@@ -37,7 +37,7 @@ namespace PinTab
 		Util::InstallTranslator ("pintab");
 
 		MainTabWidget_ = proxy->GetRootWindowsManager ()->GetTabWidget (0);
-		connect (MainTabWidget_->GetObject (),
+		connect (MainTabWidget_->GetQObject (),
 				SIGNAL (tabInserted (int)),
 				this,
 				SLOT (checkPinState (int)));

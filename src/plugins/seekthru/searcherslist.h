@@ -23,6 +23,8 @@
 
 namespace LeechCraft
 {
+	struct Entity;
+
 	namespace Plugins
 	{
 		namespace SeekThru
@@ -40,6 +42,10 @@ namespace LeechCraft
 				void on_ButtonAdd__released ();
 				void on_ButtonRemove__released ();
 				void on_Tags__editingFinished ();
+
+				void handleOpenURL ();
+			signals:
+				void gotEntity (const LeechCraft::Entity&);
 			};
 		};
 	};

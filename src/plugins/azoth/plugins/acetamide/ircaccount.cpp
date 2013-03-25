@@ -81,7 +81,7 @@ namespace Acetamide
 				SIGNAL (gotConsolePacket (QByteArray, int, QString)));
 	}
 
-	QObject* IrcAccount::GetObject ()
+	QObject* IrcAccount::GetQObject ()
 	{
 		return this;
 	}

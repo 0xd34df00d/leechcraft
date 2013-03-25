@@ -61,7 +61,7 @@ namespace Acetamide
 			Message_.Stamp_ = QDateTime::currentDateTime ();
 	}
 
-	QObject* IrcMessage::GetObject ()
+	QObject* IrcMessage::GetQObject ()
 	{
 		return this;
 	}

@@ -48,7 +48,7 @@ namespace Azoth
 
 		Q_FOREACH (IProtocol *proto, Core::Instance ().GetProtocols ())
 		{
-			ISupportImport *isi = qobject_cast<ISupportImport*> (proto->GetObject ());
+			ISupportImport *isi = qobject_cast<ISupportImport*> (proto->GetQObject ());
 			if (!isi || isi->GetImportProtocolID () != protoId)
 				continue;
 
@@ -90,7 +90,7 @@ namespace Azoth
 				histMap ["EntryID"] = entryIDcache [origID];
 			else
 			{
-				const QString& realID = isi->GetEntryID (origID, acc->GetObject ());
+				const QString& realID = isi->GetEntryID (origID, acc->GetQObject ());
 				entryIDcache [origID] = realID;
 				histMap ["EntryID"] = realID;
 			}
@@ -117,7 +117,7 @@ namespace Azoth
 		const QString& accName = e.Additional_ ["AccountName"].toString ();
 
 		auto accs = Core::Instance ().GetAccounts ([] (IProtocol *proto)
-				{ return qobject_cast<ISupportImport*> (proto->GetObject ()); });
+				{ return qobject_cast<ISupportImport*> (proto->GetQObject ()); });
 		IAccount *acc = 0;
 		Q_FOREACH (acc, accs)
 			if (acc->GetAccountName () == accName)
@@ -134,7 +134,7 @@ namespace Azoth
 
 		QObjectList accObjs;
 		Q_FOREACH (IAccount *ia, accs)
-			accObjs << ia->GetObject ();
+			accObjs << ia->GetQObject ();
 		AccountHandlerChooserDialog dia (accObjs,
 				tr ("Select account to import history from %1 into:").arg (accName));
 		if (dia.exec () != QDialog::Accepted)

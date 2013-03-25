@@ -112,8 +112,7 @@ namespace Blogique
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/plugins/blogique/resources/images/blogique.svg");
-		return icon;
+		return Core::Instance ().GetIcon ();
 	}
 
 	TabClasses_t Plugin::GetTabClasses () const
@@ -160,6 +159,40 @@ namespace Blogique
 		}
 
 		return result;
+	}
+
+	void Plugin::RecoverTabs (const QList<TabRecoverInfo>& infos)
+	{
+		Q_FOREACH (const TabRecoverInfo& recInfo, infos)
+		{
+			QDataStream str (recInfo.Data_);
+			qint8 version;
+			str >> version;
+
+			if (version == 1)
+			{
+				auto tab = Core::Instance ().CreateBlogiqueWidget ();
+				Entry e;
+				str >> e.Subject_
+						>> e.Content_
+						>> e.Date_
+						>> e.Tags_
+						>> e.Target_
+						>> e.PostOptions_
+						>> e.CustomData_;
+				QByteArray accId;
+				str >> accId;
+				tab->FillWidget (e, accId);
+				emit addNewTab ("Blogique", tab);
+				emit changeTabIcon (tab, GetIcon ());
+				emit raiseTab (tab);
+				emit changeTabName (tab, e.Subject_);
+			}
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "unknown version"
+						<< version;
+		}
 	}
 
 	void Plugin::CreateTab ()

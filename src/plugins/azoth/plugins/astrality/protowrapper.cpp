@@ -113,7 +113,7 @@ namespace Astrality
 		return s;
 	}
 
-	QObject* ProtoWrapper::GetObject ()
+	QObject* ProtoWrapper::GetQObject ()
 	{
 		return this;
 	}

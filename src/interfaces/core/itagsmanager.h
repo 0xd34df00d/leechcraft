@@ -26,7 +26,7 @@ class QAbstractItemModel;
  *
  * This interface is for communication with the tags manager.
  *
- * Object returned by the GetObject() function emits these signals:
+ * Object returned by the GetQObject() function emits these signals:
  * - tagsUpdated(const QStringList& tags) when the tags are updated.
  */
 class Q_DECL_EXPORT ITagsManager
@@ -112,7 +112,7 @@ public:
 	/** @brief Returns the tags manager as a QObject to get access to
 	 * all the meta-stuff.
 	 */
-	virtual QObject* GetObject () = 0;
+	virtual QObject* GetQObject () = 0;
 };
 
 Q_DECLARE_INTERFACE (ITagsManager, "org.Deviant.LeechCraft.ITagsManager/1.0");

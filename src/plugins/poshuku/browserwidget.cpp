@@ -1059,7 +1059,7 @@ namespace Poshuku
 		if (text.isEmpty ())
 			return;
 
-		findText (text, FindDialog_->GetFlags () |
+		findText (text, FindDialog_->GetPageFlags () |
 				QWebPage::FindWrapsAroundDocument);
 	}
 
@@ -1069,7 +1069,7 @@ namespace Poshuku
 		if (text.isEmpty ())
 			return;
 
-		findText (text, FindDialog_->GetFlags () |
+		findText (text, FindDialog_->GetPageFlags () |
 				QWebPage::FindBackward |
 				QWebPage::FindWrapsAroundDocument);
 	}

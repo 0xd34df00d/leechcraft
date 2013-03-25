@@ -69,6 +69,7 @@ namespace Azoth
 		void ChangePerm (QAction*, const QString&) const;
 	private slots:
 		void handleActionOpenChatTriggered ();
+		void handleActionCopyEntryIDTriggered ();
 		void handleActionDrawAttention ();
 		void handleActionSendFile ();
 		void handleActionRenameTriggered ();

@@ -32,6 +32,7 @@ namespace LeechCraft
 {
 	class MainWindow;
 	class RootWindowsManager;
+	class DockToolbarManager;
 
 	class DockManager : public QObject
 	{
@@ -46,6 +47,8 @@ namespace LeechCraft
 		QSet<QDockWidget*> ForcefullyClosed_;
 
 		QHash<QDockWidget*, MainWindow*> Dock2Window_;
+
+		QHash<MainWindow*, DockToolbarManager*> Window2DockToolbarMgr_;
 	public:
 		DockManager (RootWindowsManager*, QObject* = 0);
 
@@ -55,17 +58,15 @@ namespace LeechCraft
 		void ToggleViewActionVisiblity (QDockWidget*, bool);
 	protected:
 		bool eventFilter (QObject*, QEvent*);
-	private:
-		void TabifyDW (QDockWidget*, Qt::DockWidgetArea);
 	public slots:
 		void handleTabMove (int, int, int);
 	private slots:
 		void handleDockDestroyed ();
-		void handleDockLocationChanged (Qt::DockWidgetArea);
 		void handleDockToggled (bool);
 		void handleTabChanged (QWidget*);
 
 		void handleWindow (int);
+		void handleWindowDestroyed ();
 	signals:
 		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr, QMainWindow*, QDockWidget*, bool);
 	};

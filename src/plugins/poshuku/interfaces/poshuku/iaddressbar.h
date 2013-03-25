@@ -31,7 +31,7 @@ namespace Poshuku
 	public:
 		virtual ~IAddressBar () {}
 
-		virtual QObject* GetObject () = 0;
+		virtual QObject* GetQObject () = 0;
 
 		virtual int ButtonsCount () const = 0;
 

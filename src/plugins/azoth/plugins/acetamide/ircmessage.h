@@ -61,7 +61,7 @@ namespace Acetamide
 		IrcMessage (const Message& msg,
 				const QString& id,
 				ClientConnection *conn);
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		void Send ();
 		void Store ();
 		Direction GetDirection () const;

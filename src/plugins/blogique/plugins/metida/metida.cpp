@@ -56,7 +56,7 @@ namespace Metida
 
 	QByteArray Plugin::GetUniqueID () const
 	{
-		return "org.LeechCraft.Blogique.Metida";
+		return Core::Instance ().GetUniqueID ();
 	}
 
 	void Plugin::Release ()
@@ -91,7 +91,7 @@ namespace Metida
 		return classes;
 	}
 
-	QObject* Plugin::GetObject ()
+	QObject* Plugin::GetQObject ()
 	{
 		return this;
 	}

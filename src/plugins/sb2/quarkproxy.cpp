@@ -49,29 +49,7 @@ namespace SB2
 
 	QRect QuarkProxy::GetFreeCoords () const
 	{
-		auto window = Manager_->GetManagedWindow ();
-		auto bar = Manager_->GetToolbar ();
-
-		QRect result = window->rect ();
-		result.moveTopLeft (window->mapToGlobal ({ 0, 0 }));
-		switch (window->toolBarArea (bar))
-		{
-		case Qt::LeftToolBarArea:
-			result.setLeft (result.left () + bar->width ());
-			break;
-		case Qt::RightToolBarArea:
-			result.setRight (result.right () - bar->width ());
-			break;
-		case Qt::TopToolBarArea:
-			result.setTop (result.top () + bar->height ());
-			break;
-		case Qt::BottomToolBarArea:
-			result.setBottom (result.bottom () - bar->height ());
-			break;
-		default:
-			break;
-		}
-		return result;
+		return Manager_->GetFreeCoords ();
 	}
 
 	QPoint QuarkProxy::mapToGlobal (double x, double y)

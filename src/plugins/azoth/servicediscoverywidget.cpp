@@ -71,7 +71,7 @@ namespace Azoth
 
 		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
 		{
-			auto ihsd = qobject_cast<IHaveServiceDiscovery*> (acc->GetObject ());
+			auto ihsd = qobject_cast<IHaveServiceDiscovery*> (acc->GetQObject ());
 			if (!ihsd)
 				continue;
 
@@ -86,7 +86,7 @@ namespace Azoth
 
 			const QString& protoName = proto->GetProtocolName ();
 			AccountBox_->addItem (acc->GetAccountName () + "(" + protoName + ")",
-					QVariant::fromValue<QObject*> (acc->GetObject ()));
+					QVariant::fromValue<QObject*> (acc->GetQObject ()));
 		}
 	}
 

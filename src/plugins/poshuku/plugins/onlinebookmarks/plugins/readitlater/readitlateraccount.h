@@ -52,7 +52,7 @@ class ReadItLaterAccount : public QObject
 	public:
 		ReadItLaterAccount (const QString&, QObject* = 0);
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QObject* GetParentService () const;
 		QByteArray GetAccountID () const;
 		QString GetLogin () const;

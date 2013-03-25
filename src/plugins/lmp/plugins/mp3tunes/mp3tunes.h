@@ -79,7 +79,7 @@ namespace MP3Tunes
 
 		void SetLMPProxy (ILMPProxy_ptr);
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QString GetCloudName () const;
 		QIcon GetCloudIcon () const;
 		QStringList GetSupportedFileFormats () const;

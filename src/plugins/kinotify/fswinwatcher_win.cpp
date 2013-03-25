@@ -19,10 +19,11 @@
 
 #include "fswinwatcher.h"
 #include <QMainWindow>
+#include <interfaces/core/irootwindowsmanager.h>
+
 #include <windows.h>
-#if (NTDDI_VERSION >= NTDDI_VISTA)
+#include <basetyps.h>
 #include <shellapi.h>
-#endif
 
 namespace LeechCraft
 {
@@ -36,7 +37,9 @@ namespace Kinotify
 
 	bool FSWinWatcher::IsCurrentFS ()
 	{
-#if (NTDDI_VERSION >= NTDDI_VISTA)
+#if !__GNUC__ 
+// Not defined in my MinGW headers even on Vista 
+// Maybe it will work later with MinGW
 		QUERY_USER_NOTIFICATION_STATE state;
 		if (SHQueryUserNotificationState (&state) != S_OK)
 			return false;
@@ -59,7 +62,7 @@ namespace Kinotify
 		RECT windowRect;
 		GetWindowRect (hWnd, &windowRect);
 		return EqualRect (&windowRect, &monitorRect) &&
-				Proxy_->GetMainWindow ()->effectiveWinId () != hWnd;
+				Proxy_->GetRootWindowsManager ()->GetPreferredWindow ()->effectiveWinId () != hWnd;
 #endif
 	}
 }

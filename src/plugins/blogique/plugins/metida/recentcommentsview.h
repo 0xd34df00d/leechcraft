@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2010-2013  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,21 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "notification.h"
-#include <stdexcept>
-#include <QVBoxLayout>
+#pragma once
+
+#include <QDeclarativeView>
+
+class QGraphicsObject;
 
 namespace LeechCraft
 {
-namespace Poshuku
+namespace Blogique
 {
-	Notification::Notification (QWidget *parent)
-	: QWidget (parent)
+namespace Metida
+{
+	class RecentCommentsView : public QDeclarativeView
 	{
-		QVBoxLayout *lay = qobject_cast<QVBoxLayout*> (parent->layout ());
-		if (!lay)
-			throw std::runtime_error ("Passed parent object has no QVBoxLayout");
-		lay->addWidget (this);
-	}
+		Q_OBJECT
+
+	public:
+		explicit RecentCommentsView (QWidget *parent = 0);
+
+	public slots:
+		void setItemCursor (QGraphicsObject *object, const QString& shape);
+	};
 }
 }
+}
+

@@ -54,6 +54,7 @@ namespace Metida
 		QStandardItemModel *CommunitiesModel_;
 		QHash<QStandardItem*, LJFriendGroup> Item2FriendGroup_;
 		QHash<QStandardItem*, LJFriendEntry_ptr> Item2Friend_;
+
 	public:
 		ProfileWidget (LJProfile *profile, QWidget *parent = 0);
 	private:

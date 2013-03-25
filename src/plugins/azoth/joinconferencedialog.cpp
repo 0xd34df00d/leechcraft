@@ -40,7 +40,7 @@ namespace Azoth
 			if (!acc->IsShownInRoster ())
 				continue;
 
-			ISupportBookmarks *supBms = qobject_cast<ISupportBookmarks*> (acc->GetObject ());
+			ISupportBookmarks *supBms = qobject_cast<ISupportBookmarks*> (acc->GetQObject ());
 			if (!supBms)
 				continue;
 
@@ -79,7 +79,7 @@ namespace Azoth
 						.arg (acc->GetAccountName ())
 						.arg (acc->GetOurNick ())
 						.arg (proto->GetProtocolName ()),
-					QVariant::fromValue<QObject*> (acc->GetObject ()));
+					QVariant::fromValue<QObject*> (acc->GetQObject ()));
 
 			const QString& key = "JoinHistory/" + acc->GetAccountID ();
 			QVariantList list = XmlSettingsManager::Instance ()

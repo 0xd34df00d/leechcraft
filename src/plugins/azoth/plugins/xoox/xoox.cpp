@@ -92,7 +92,7 @@ namespace Xoox
 		return XSD_;
 	}
 
-	QObject* Plugin::GetObject ()
+	QObject* Plugin::GetQObject ()
 	{
 		return this;
 	}

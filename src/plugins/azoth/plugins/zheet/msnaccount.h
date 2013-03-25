@@ -98,7 +98,7 @@ namespace Zheet
 		void RemoveFromBL (const QString&);
 
 		// IAccount
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QObject* GetParentProtocol () const;
 		AccountFeatures GetAccountFeatures () const;
 		QList<QObject*> GetCLEntries ();

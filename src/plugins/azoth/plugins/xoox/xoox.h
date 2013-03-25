@@ -56,7 +56,7 @@ namespace Xoox
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QList<QObject*> GetProtocols () const;
 	public slots:
 		void initPlugin (QObject*);

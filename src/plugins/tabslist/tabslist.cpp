@@ -25,6 +25,7 @@
 #include <QApplication>
 #include <QMainWindow>
 #include <QKeyEvent>
+#include <QTimer>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -102,18 +103,20 @@ namespace TabsList
 		ShowList_->setShortcuts (seqs);
 	}
 
-
 	namespace
 	{
 		class ListEventFilter : public QObject
 		{
 			QList<QToolButton*> AllButtons_;
 			QString SearchText_;
+			
+			QTimer NumSelectTimer_;
 		public:
 			ListEventFilter (const QList<QToolButton*>& buttons, QObject *parent = 0)
 			: QObject (parent)
 			, AllButtons_ (buttons)
 			{
+				NumSelectTimer_.setSingleShot (true);
 			}
 		protected:
 			bool eventFilter (QObject *obj, QEvent *event)
@@ -133,7 +136,7 @@ namespace TabsList
 					return true;
 				case Qt::Key_Enter:
 				case Qt::Key_Return:
-					Q_FOREACH (auto button, AllButtons_)
+					for (auto button : AllButtons_)
 						if (button->hasFocus ())
 							button->animateClick ();
 					return true;
@@ -159,8 +162,39 @@ namespace TabsList
 		private:
 			void FocusSearch ()
 			{
-				Q_FOREACH (QToolButton *butt,
-						parent ()->findChildren<QToolButton*> ())
+				bool isNum = false;
+				const auto srcNum = SearchText_.toInt (&isNum);
+				const auto num = srcNum - 1;
+				if (isNum && srcNum >= 0 && srcNum <= AllButtons_.size ())
+				{
+					if (!srcNum && !AllButtons_.isEmpty ())
+						AllButtons_.last ()->animateClick ();
+					else if (srcNum * 10 - 1 >= AllButtons_.size ())
+						AllButtons_ [num]->animateClick ();
+					else
+					{
+						if (NumSelectTimer_.isActive ())
+						{
+							NumSelectTimer_.stop ();
+							disconnect (&NumSelectTimer_,
+									0,
+									0,
+									0);
+						}
+						
+						NumSelectTimer_.start (QApplication::keyboardInputInterval ());
+						connect (&NumSelectTimer_,
+								SIGNAL (timeout ()),
+								AllButtons_ [num],
+								SLOT (animateClick ()));
+						
+						AllButtons_ [num]->setFocus ();
+					}
+					
+					return;
+				}
+				
+				for (auto butt : AllButtons_)
 					if (butt->property ("OrigText").toString ()
 							.startsWith (SearchText_, Qt::CaseInsensitive))
 					{

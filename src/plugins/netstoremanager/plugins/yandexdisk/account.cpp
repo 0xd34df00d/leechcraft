@@ -128,7 +128,7 @@ namespace YandexDisk
 		return Plugin_;
 	}
 
-	QObject* Account::GetObject ()
+	QObject* Account::GetQObject ()
 	{
 		return this;
 	}

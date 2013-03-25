@@ -91,7 +91,7 @@ namespace LMP
 			return;
 
 		auto pending = Providers_.at (index)->RequestRecommended (10);
-		connect (pending->GetObject (),
+		connect (pending->GetQObject (),
 				SIGNAL (ready ()),
 				this,
 				SLOT (handleGotRecs ()));

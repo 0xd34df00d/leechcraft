@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <functional>
 #include <QGraphicsPixmapItem>
 #include "interfaces/monocle/idocument.h"
 
@@ -25,8 +26,11 @@ namespace LeechCraft
 {
 namespace Monocle
 {
-	class PageGraphicsItem : public QGraphicsPixmapItem
+	class PageGraphicsItem : public QObject
+						   , public QGraphicsPixmapItem
 	{
+		Q_OBJECT
+
 		IDocument_ptr Doc_;
 		const int PageNum_;
 
@@ -39,12 +43,24 @@ namespace Monocle
 		double YScale_;
 
 		bool Invalid_;
+
+		std::function<void (int, QPointF)> ReleaseHandler_;
+
+		QMap<QGraphicsRectItem*, QRectF> Item2DocRect_;
 	public:
 		PageGraphicsItem (IDocument_ptr, int, QGraphicsItem* = 0);
 		~PageGraphicsItem ();
 
+		void SetReleaseHandler (std::function<void (int, QPointF)>);
+
 		void SetScale (double, double);
 		int GetPageNum () const;
+
+		QRectF MapFromDoc (const QRectF&) const;
+		QRectF MapToDoc (const QRectF&) const;
+
+		void RegisterChildRect (QGraphicsRectItem*, const QRectF&);
+		void UnregisterChildRect (QGraphicsRectItem*);
 
 		void ClearPixmap ();
 		void UpdatePixmap ();
@@ -57,6 +73,8 @@ namespace Monocle
 	private:
 		void LayoutLinks ();
 		ILink_ptr FindLink (const QPointF&);
+	private slots:
+		void handlePixmapRendered ();
 	};
 }
 }

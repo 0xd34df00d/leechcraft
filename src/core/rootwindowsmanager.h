@@ -53,10 +53,11 @@ namespace LeechCraft
 
 		bool WindowCloseRequested (MainWindow*);
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 
 		int GetWindowsCount () const;
 		int GetPreferredWindowIndex () const;
+		int GetPreferredWindowIndex (ITabWidget*) const;
 		int GetWindowForTab (ITabWidget*) const;
 		int GetWindowIndex (QMainWindow*) const;
 

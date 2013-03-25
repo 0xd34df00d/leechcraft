@@ -37,7 +37,7 @@ namespace LMP
 	public:
 		virtual ~ISyncPlugin () {}
 
-		virtual QObject* GetObject () = 0;
+		virtual QObject* GetQObject () = 0;
 
 		virtual QString GetSyncSystemName () const = 0;
 

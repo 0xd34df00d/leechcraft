@@ -189,7 +189,7 @@ namespace Azoth
 	{
 		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
 			if (acc->GetAccountID () == accID)
-				return acc->GetObject ();
+				return acc->GetQObject ();
 
 		return 0;
 	}
@@ -198,7 +198,7 @@ namespace Azoth
 	{
 		QList<QObject*> result;
 		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
-			result << acc->GetObject ();
+			result << acc->GetQObject ();
 		return result;
 	}
 
@@ -338,6 +338,28 @@ namespace Azoth
 
 			pos += str.length ();
 		}
+	}
+
+	QStringList ProxyObject::FindLinks (const QString& body)
+	{
+		QStringList result;
+
+		int pos = 0;
+		while ((pos = LinkRegexp_.indexIn (body, pos)) != -1)
+		{
+			const auto& link = LinkRegexp_.cap (1);
+			if (pos > 0 &&
+					(body.at (pos - 1) == '"' || body.at (pos - 1) == '='))
+			{
+				pos += link.size ();
+				continue;
+			}
+
+			result << link.trimmed ();
+			pos += link.size ();
+		}
+
+		return result;
 	}
 }
 }

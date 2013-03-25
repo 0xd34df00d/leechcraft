@@ -45,10 +45,12 @@ namespace Hestia
 
 		QAction *LoadAllEvents_;
 
+		const int DefaultPostsNumber_;
+
 	public:
 		LocalBlogAccount (const QString& name, QObject *parent = 0);
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QObject* GetParentBloggingPlatform () const;
 		QString GetAccountName () const;
 		QString GetOurLogin () const;
@@ -62,6 +64,8 @@ namespace Hestia
 		void RemoveEntry (const Entry& entry);
 		void UpdateEntry (const Entry& entry);
 		QList<QAction*> GetUpdateActions () const;
+
+		void RequestLastEntries (int count);
 		void RequestStatistics ();
 		void GetEntriesByDate (const QDate& date);
 
@@ -84,6 +88,8 @@ namespace Hestia
 		void accountRenamed (const QString& newName);
 		void accountSettingsChanged ();
 		void accountValidated (bool validated);
+
+		void requestEntriesBegin ();
 
 		void entryPosted (const QList<Entry>& entries);
 		void entryRemoved (int itemId);

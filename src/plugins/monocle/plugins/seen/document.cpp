@@ -31,17 +31,18 @@ namespace Seen
 		static unsigned int FormatMask [4] = { 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 };
 	}
 
-	Document::Document (const QString& file, ddjvu_context_t *ctx, DocManager *mgr)
+	Document::Document (const QString& file, ddjvu_context_t *ctx, QObject *plugin, DocManager *mgr)
 	: Context_ (ctx)
 	, Doc_ (ddjvu_document_create_by_filename_utf8 (Context_, file.toUtf8 ().constData (), 1))
 	, RenderFormat_ (ddjvu_format_create (DDJVU_FORMAT_RGBMASK32, 4, FormatMask))
 	, DocMgr_ (mgr)
 	, DocURL_ (QUrl::fromLocalFile (file))
+	, Plugin_ (plugin)
 	{
 		ddjvu_format_set_row_order (RenderFormat_, 1);
 		ddjvu_format_set_y_direction (RenderFormat_, 1);
 
-		if (ddjvu_document_get_type (Doc_) != DDJVU_DOCTYPE_UNKNOWN)
+		if (Doc_ && ddjvu_document_get_type (Doc_) != DDJVU_DOCTYPE_UNKNOWN)
 			UpdateDocInfo ();
 	}
 
@@ -52,7 +53,12 @@ namespace Seen
 		ddjvu_document_release (Doc_);
 	}
 
-	QObject* Document::GetObject ()
+	QObject* Document::GetBackendPlugin () const
+	{
+		return Plugin_;
+	}
+
+	QObject* Document::GetQObject ()
 	{
 		return this;
 	}

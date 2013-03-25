@@ -30,7 +30,7 @@ namespace Blogique
 		EntriesFilterProxyModel (QObject *parent = 0);
 	protected:
 		bool filterAcceptsRow (int sourceRow,
-				const QModelIndex& sourceParent);
+				const QModelIndex& sourceParent) const;
 	};
 }
 }

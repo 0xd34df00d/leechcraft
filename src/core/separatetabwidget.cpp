@@ -115,7 +115,7 @@ namespace LeechCraft
 		MainTabBar_->SetWindow (window);
 	}
 
-	QObject* SeparateTabWidget::GetObject ()
+	QObject* SeparateTabWidget::GetQObject ()
 	{
 		return this;
 	}

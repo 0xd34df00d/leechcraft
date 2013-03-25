@@ -49,7 +49,7 @@ namespace Metacontacts
 		Account_ = 0;
 	}
 
-	QObject* MetaProtocol::GetObject ()
+	QObject* MetaProtocol::GetQObject ()
 	{
 		return this;
 	}

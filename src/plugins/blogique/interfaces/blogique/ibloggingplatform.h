@@ -74,6 +74,10 @@ namespace Blogique
 			 * backup in localstorage.
 			 */
 			BPFSupportsBackup = 0x8,
+
+			/** This blogging platform only for local blog
+			 */
+			BPFLocalBlog = 0x10
 		};
 		Q_DECLARE_FLAGS (BloggingPlatfromFeatures, BloggingPlatfromFeature)
 
@@ -98,7 +102,7 @@ namespace Blogique
 		 *
 		 * @return Blogging platform object as QObject.
 		 */
-		virtual QObject* GetObject () = 0;
+		virtual QObject* GetQObject () = 0;
 
 		/** Returns the list of features supported by this blogging platform.
 		 */

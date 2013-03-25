@@ -23,9 +23,11 @@
 #include <QToolButton>
 #include <QInputDialog>
 #include <QToolBar>
+#include <QShortcut>
 #include <QTimer>
 #include <util/util.h>
 #include <util/gui/clearlineeditaddon.h>
+#include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/core/icoreproxy.h>
 #include "interfaces/azoth/iclentry.h"
 #include "core.h"
@@ -41,6 +43,8 @@
 #include "accountactionsmanager.h"
 #include "bookmarksmanagerdialog.h"
 #include "keyboardrosterfixer.h"
+#include "statuschangemenumanager.h"
+#include "userslistwidget.h"
 
 namespace LeechCraft
 {
@@ -56,6 +60,7 @@ namespace Azoth
 	, ActionShowOffline_ (0)
 	, BottomBar_ (new QToolBar (tr ("Azoth bar"), this))
 	, AccountActsMgr_ (new AccountActionsManager (this, this))
+	, StatusMenuMgr_ (new StatusChangeMenuManager (this))
 	{
 		connect (AccountActsMgr_,
 				SIGNAL (gotConsoleWidget (ConsoleWidget*)),
@@ -149,18 +154,14 @@ namespace Azoth
 		MenuButton_->setIcon (MainMenu_->icon ());
 		MenuButton_->setPopupMode (QToolButton::InstantPopup);
 
-		MenuChangeStatus_ = CreateStatusChangeMenu (SLOT (handleChangeStatusRequested ()), true);
-		TrayChangeStatus_ = CreateStatusChangeMenu (SLOT (handleChangeStatusRequested ()), true);
+		MenuChangeStatus_ = StatusMenuMgr_->CreateMenu (this, SLOT (handleChangeStatusRequested ()), this);
+		TrayChangeStatus_ = StatusMenuMgr_->CreateMenu (this, SLOT (handleChangeStatusRequested ()), this);
 
 		MenuChangeStatus_->menuAction ()->setProperty ("ActionIcon", "im-status-message-edit");
 
-		FastStatusButton_->setMenu (CreateStatusChangeMenu (SLOT (fastStateChangeRequested ()), true));
-		FastStatusButton_->setDefaultAction (new QAction (tr ("Set status"), this));
+		FastStatusButton_->setMenu (StatusMenuMgr_->CreateMenu (this, SLOT (fastStateChangeRequested ()), this));
+		FastStatusButton_->setPopupMode (QToolButton::InstantPopup);
 		updateFastStatusButton (SOffline);
-		connect (FastStatusButton_->defaultAction (),
-				SIGNAL (triggered ()),
-				this,
-				SLOT (applyFastStatus ()));
 
 		XmlSettingsManager::Instance ().RegisterObject ("ShowMenuBar",
 				this, "menuBarVisibilityToggled");
@@ -176,11 +177,21 @@ namespace Azoth
 				SLOT (updateFastStatusButton (LeechCraft::Azoth::State)));
 
 		qobject_cast<QVBoxLayout*> (layout ())->insertWidget (0, BottomBar_);
+
+		auto sm = Core::Instance ().GetShortcutManager ();
+		auto listShortcut = new QShortcut (QString ("Alt+C"), this, SLOT (showAllUsersList ()));
+		sm->RegisterShortcut ("org.LeechCraft.Azoth.AllUsersList",
+				{
+					tr ("Show all users list"),
+					{ "Alt+C" },
+					Core::Instance ().GetProxy ()->GetIcon ("system-users")
+				},
+				listShortcut);
 	}
 
-	QList<QAction*> MainWidget::GetMenuActions()
+	QList<QAction*> MainWidget::GetMenuActions ()
 	{
-		return QList<QAction*> () << MainMenu_->actions ();
+		return MainMenu_->actions ();
 	}
 
 	QMenu* MainWidget::GetChangeStatusMenu () const
@@ -225,6 +236,8 @@ namespace Azoth
 
 		ActionCLMode_->setCheckable (true);
 		ActionCLMode_->setProperty ("ActionIcon", "meeting-attending");
+		ActionCLMode_->setShortcut (QString ("Ctrl+Shift+R"));
+		Core::Instance ().GetShortcutManager ()->RegisterAction ("org.LeechCraft.Azoth.CLMode", ActionCLMode_);
 		connect (ActionCLMode_,
 				SIGNAL (toggled (bool)),
 				this,
@@ -243,44 +256,6 @@ namespace Azoth
 		addBottomAct (ActionCLMode_);
 	}
 
-	QMenu* MainWidget::CreateStatusChangeMenu (const char *slot, bool withCustom)
-	{
-		QMenu *result = new QMenu (tr ("Change status"), this);
-		result->addAction (Core::Instance ().GetIconForState (SOnline),
-				tr ("Online"), this, slot)->
-					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<State> (SOnline));
-		result ->addAction (Core::Instance ().GetIconForState (SChat),
-				tr ("Free to chat"), this, slot)->
-					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<State> (SChat));
-		result ->addAction (Core::Instance ().GetIconForState (SAway),
-				tr ("Away"), this, slot)->
-					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<State> (SAway));
-		result ->addAction (Core::Instance ().GetIconForState (SDND),
-				tr ("DND"), this, slot)->
-					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<State> (SDND));
-		result ->addAction (Core::Instance ().GetIconForState (SXA),
-				tr ("Not available"), this, slot)->
-					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<State> (SXA));
-		result ->addAction (Core::Instance ().GetIconForState (SOffline),
-				tr ("Offline"), this, slot)->
-					setProperty ("Azoth/TargetState",
-							QVariant::fromValue<State> (SOffline));
-
-		if (withCustom)
-		{
-			result->addSeparator ();
-			result->addAction (tr ("Custom..."),
-					this,
-					SLOT (handleChangeStatusRequested ()));
-		}
-		return result;
-	}
-
 	void MainWidget::handleAccountVisibilityChanged ()
 	{
 		ProxyModel_->invalidate ();
@@ -288,9 +263,7 @@ namespace Azoth
 
 	void MainWidget::updateFastStatusButton (State state)
 	{
-		FastStatusButton_->defaultAction ()->setIcon (Core::Instance ().GetIconForState (state));
-		FastStatusButton_->setProperty ("Azoth/TargetState",
-				QVariant::fromValue<State> (state));
+		FastStatusButton_->setIcon (Core::Instance ().GetIconForState (state));
 	}
 
 	void MainWidget::treeActivated (const QModelIndex& index)
@@ -315,6 +288,41 @@ namespace Azoth
 			}
 
 		Core::Instance ().OpenChat (ProxyModel_->mapToSource (index));
+	}
+
+	void MainWidget::showAllUsersList ()
+	{
+		QList<QObject*> entries;
+		int accCount = 0;
+		for (auto acc : Core::Instance ().GetAccounts ())
+		{
+			if (!acc->IsShownInRoster ())
+				continue;
+
+			++accCount;
+			const auto& accEntries = acc->GetCLEntries ();
+			std::copy_if (accEntries.begin (), accEntries.end (), std::back_inserter (entries),
+					[] (QObject *entryObj) -> bool
+					{
+						auto entry = qobject_cast<ICLEntry*> (entryObj);
+						return entry->GetEntryType () != ICLEntry::ETPrivateChat;
+					});
+		}
+
+		UsersListWidget w (entries,
+				[accCount] (ICLEntry *entry) -> QString
+				{
+					if (accCount <= 1)
+						return entry->GetEntryName ();
+					auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
+					return entry->GetEntryName () + " (" + acc->GetAccountName () + ")";
+				},
+				this);
+		if (w.exec () != QDialog::Accepted)
+			return;
+
+		if (auto entry = w.GetActivatedParticipant ())
+			Core::Instance ().GetChatTabsManager ()->OpenChat (qobject_cast<ICLEntry*> (entry));
 	}
 
 	void MainWidget::on_CLTree__customContextMenuRequested (const QPoint& pos)
@@ -403,6 +411,20 @@ namespace Azoth
 		menu->deleteLater ();
 	}
 
+	namespace
+	{
+		QString GetStatusText (QObject *object, State state)
+		{
+			const auto& textVar = object->property ("Azoth/TargetText");
+			if (!textVar.isNull ())
+				return textVar.toString ();
+
+			const auto& propName = "DefaultStatus" + QString::number (state);
+			return XmlSettingsManager::Instance ()
+					.property (propName.toLatin1 ()).toString ();
+		}
+	}
+
 	void MainWidget::handleChangeStatusRequested ()
 	{
 		QAction *action = qobject_cast<QAction*> (sender ());
@@ -429,11 +451,8 @@ namespace Azoth
 		EntryStatus status;
 		if (!stateVar.isNull ())
 		{
-			State state = stateVar.value<State> ();
-			const QString& propName = "DefaultStatus" + QString::number (state);
-			const QString& text = XmlSettingsManager::Instance ()
-					.property (propName.toLatin1 ()).toString ();
-			status = EntryStatus (state, text);
+			const auto state = stateVar.value<State> ();
+			status = EntryStatus (state, GetStatusText (action, state));
 		}
 		else
 		{
@@ -448,26 +467,27 @@ namespace Azoth
 			acc->ChangeState (status);
 		else
 		{
-			Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
-				acc->ChangeState (status);
+			for (IAccount *acc : Core::Instance ().GetAccounts ())
+				if (acc->IsShownInRoster ())
+					acc->ChangeState (status);
 			updateFastStatusButton (status.State_);
 		}
 	}
 
 	void MainWidget::fastStateChangeRequested ()
 	{
-		updateFastStatusButton (sender ()->
-					property ("Azoth/TargetState").value<State> ());
-		applyFastStatus ();
-	}
+		const auto& stateVar = sender ()->property ("Azoth/TargetState");
+		if (stateVar.isNull ())
+		{
+			handleChangeStatusRequested ();
+			return;
+		}
 
-	void MainWidget::applyFastStatus ()
-	{
-		State state = FastStatusButton_->
-				property ("Azoth/TargetState").value<State> ();
+		const auto state = stateVar.value<State> ();
+		updateFastStatusButton (state);
 
-		EntryStatus status (state, QString ());
-		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
+		const EntryStatus status (state, GetStatusText (sender (), state));
+		for (IAccount *acc : Core::Instance ().GetAccounts ())
 			if (acc->IsShownInRoster ())
 				acc->ChangeState (status);
 	}

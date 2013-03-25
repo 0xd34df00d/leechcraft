@@ -29,30 +29,20 @@ else (QCA2_INCLUDE_DIR AND QCA2_LIBRARIES)
 		set(QCA2_DEFINITIONS ${PC_QCA2_CFLAGS_OTHER})
 	endif (NOT WIN32)
 
-	if (NOT MINGW)
-		find_library_with_debug(QCA2_LIBRARIES
-						WIN32_DEBUG_POSTFIX d
-						NAMES qca
-						HINTS ${PC_QCA2_LIBDIR} ${PC_QCA2_LIBRARY_DIRS}
-						)
+	find_library_with_debug(QCA2_LIBRARIES
+					WIN32_DEBUG_POSTFIX d
+					NAMES qca 
+					HINTS ${PC_QCA2_LIBDIR} ${PC_QCA2_LIBRARY_DIRS}
+					)
 
-		find_path(QCA2_INCLUDE_DIR QtCrypto
-					HINTS ${PC_QCA2_INCLUDEDIR} ${PC_QCA2_INCLUDE_DIRS}
-					PATH_SUFFIXES QtCrypto)
+	find_path(QCA2_INCLUDE_DIR QtCrypto
+				HINTS ${PC_QCA2_INCLUDEDIR} ${PC_QCA2_INCLUDE_DIRS}
+				PATH_SUFFIXES QtCrypto)
 
-		include(FindPackageHandleStandardArgs)
-		find_package_handle_standard_args(QCA2  DEFAULT_MSG  QCA2_LIBRARIES QCA2_INCLUDE_DIR)
+	
+	include(FindPackageHandleStandardArgs)
+	find_package_handle_standard_args(QCA2  DEFAULT_MSG  QCA2_LIBRARIES QCA2_INCLUDE_DIR)
+	MESSAGE(STATUS "Found the QCA libraries at ${QCA2_LIBRARIES} Includes at ${QCA2_INCLUDE_DIR}")
 
-		mark_as_advanced(QCA2_INCLUDE_DIR QCA2_LIBRARIES)
-	ELSE (NOT MINGW)
-		find_library (QCA2_LIBRARIES
-						NAMES libqca2.a
-						PATHS ${QCA2_DIR}/lib)
-
-		find_path(QCA2_INCLUDE_DIR QtCrypto/QtCrypto
-			PATHS ${QCA2_DIR}/include)
-		IF(QCA2_LIBRARIES AND QCA2_INCLUDE_DIR)
-			set (QCA2_FOUND 1)
-		ENDIF (QCA2_LIBRARIES AND QCA2_INCLUDE_DIR)
-	ENDIF (NOT MINGW)
+	mark_as_advanced(QCA2_INCLUDE_DIR QCA2_LIBRARIES)
 endif (QCA2_INCLUDE_DIR AND QCA2_LIBRARIES)

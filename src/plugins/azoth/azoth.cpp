@@ -264,7 +264,7 @@ namespace Azoth
 						continue;
 
 					widget->SetIdentifyingData (data);
-					widget->Join (acc->GetObject ());
+					widget->Join (acc->GetQObject ());
 					widgetObj->deleteLater ();
 				}
 			}
@@ -318,6 +318,10 @@ namespace Azoth
 				ActionInfo (tr ("Show MUC users list"),
 						QString ("Ctrl+M"),
 						proxy->GetIcon ("irc-close-channel")));
+		sm->RegisterActionInfo ("org.LeechCraft.Azoth.OpenLastLink",
+				ActionInfo (tr ("Open last link in chat"),
+						QString ("Ctrl+O"),
+						proxy->GetIcon ("document-open-remote")));
 	}
 
 	void Plugin::InitSettings ()
@@ -473,24 +477,26 @@ namespace Azoth
 	{
 		TabClassInfo chatTab =
 		{
-			"ChatTab",
+			"LeechCraft.Azoth.ChatTab",
 			tr ("Chat"),
 			tr ("A tab with a chat session"),
 			QIcon (":/plugins/azoth/resources/images/chattabclass.svg"),
 			0,
 			TFEmpty
 		};
-		ChatTab::SetTabClassInfo (chatTab);
+		ChatTab::SetChatTabClassInfo (chatTab);
 
 		TabClassInfo mucTab =
 		{
-			"MUCTab",
+			"LeechCraft.Azoth.MUCTab",
 			tr ("MUC"),
 			tr ("A multiuser conference"),
-			QIcon (),
-			50,
-			TFOpenableByRequest
+			QIcon (":/plugins/azoth/resources/images/muctabclass.svg"),
+			0,
+			TFEmpty
 		};
+		ChatTab::SetMUCTabClassInfo (mucTab);
+
 		TabClassInfo searchTab =
 		{
 			"Search",

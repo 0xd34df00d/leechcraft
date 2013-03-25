@@ -34,6 +34,11 @@ namespace Monocle
 		virtual bool CanLoadDocument (const QString& filename) = 0;
 
 		virtual IDocument_ptr LoadDocument (const QString& filename) = 0;
+
+		virtual bool IsThreaded () const
+		{
+			return false;
+		}
 	};
 }
 }

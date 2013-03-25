@@ -76,7 +76,7 @@ namespace Blogique
 		 *
 		 * @return Account object as QObject.
 		 */
-		virtual QObject* GetObject () = 0;
+		virtual QObject* GetQObject () = 0;
 
 		/** @brief Returns the pointer to the parent blogging platform that this
 		 * account belongs to.
@@ -156,11 +156,15 @@ namespace Blogique
 
 		virtual QList<QAction*> GetUpdateActions () const = 0;
 
-		/** @brief Requests the number of entries per day;
+		/** @brief Requests the number of entries per day.
 		 *
 		 */
 		virtual void RequestStatistics () = 0;
 
+		/** @brief Requests last entries.
+		 *
+		 */
+		virtual void RequestLastEntries (int count = 0) = 0;
 
 		/** @brief Submit post to blog.
 		 *
@@ -204,6 +208,7 @@ namespace Blogique
 		//TODO
 		virtual void gotBlogStatistics (const QMap<QDate, int>& statistics) = 0;
 
+		virtual void requestEntriesBegin () = 0;
 		//TODO
 		virtual void gotEntries (const QList<Entry>& entries) = 0;
 

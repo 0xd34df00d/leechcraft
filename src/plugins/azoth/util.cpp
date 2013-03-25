@@ -74,7 +74,7 @@ namespace Azoth
 			return;
 		}
 		const QString& id = entry->GetHumanReadableID ();
-		account->Authorize (entry->GetObject ());
+		account->Authorize (entry->GetQObject ());
 		account->RequestAuth (id);
 
 		const auto& e = Util::MakeANCancel ("org.LeechCraft.Azoth",
@@ -93,7 +93,7 @@ namespace Azoth
 					<< entry->GetParentAccount ();
 			return;
 		}
-		account->DenyAuth (entry->GetObject ());
+		account->DenyAuth (entry->GetQObject ());
 
 		const auto& e = Util::MakeANCancel ("org.LeechCraft.Azoth",
 				"org.LC.Plugins.Azoth.AuthRequestFrom/" + entry->GetEntryID ());

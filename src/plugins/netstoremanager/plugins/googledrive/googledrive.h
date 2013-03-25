@@ -61,7 +61,7 @@ namespace GoogleDrive
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QObjectList GetAccounts () const;
 		QIcon GetStorageIcon () const;
 		QString GetStorageName () const;

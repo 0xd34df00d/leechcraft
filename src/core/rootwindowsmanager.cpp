@@ -19,12 +19,18 @@
 #include "rootwindowsmanager.h"
 #include <iterator>
 #include <algorithm>
+#include <interfaces/ihavetabs.h>
 #include "core.h"
 #include "mainwindow.h"
 #include "mwproxy.h"
 #include "tabmanager.h"
 #include "dockmanager.h"
-#include <interfaces/ihavetabs.h>
+#include "xmlsettingsmanager.h"
+
+#ifdef Q_OS_UNIX
+#include <X11/Xutil.h>
+#include <QX11Info>
+#endif
 
 namespace LeechCraft
 {
@@ -73,7 +79,7 @@ namespace LeechCraft
 		return true;
 	}
 
-	QObject* RootWindowsManager::GetObject ()
+	QObject* RootWindowsManager::GetQObject ()
 	{
 		return this;
 	}
@@ -94,6 +100,39 @@ namespace LeechCraft
 				return i;
 
 		return 0;
+	}
+
+	int RootWindowsManager::GetPreferredWindowIndex (ITabWidget *itw) const
+	{
+		const auto& winMode = XmlSettingsManager::Instance ()->
+				property ("WindowSelectionMode").toString ();
+		if (winMode == "current")
+			return GetPreferredWindowIndex ();
+
+		const auto& thisTC = itw->GetTabClassInfo ().TabClass_;
+
+		QPair<int, int> currentMax { -1, 0 };
+		for (int i = 0; i < GetWindowsCount (); ++i)
+		{
+			const auto tm = Windows_ [i].TM_;
+
+			int count = 0;
+			const auto widgetCount = tm->GetWidgetCount ();
+			if (!widgetCount)
+				return i;
+
+			for (int j = 0; j < widgetCount; ++j)
+			{
+				auto other = qobject_cast<ITabWidget*> (tm->GetWidget (j));
+				if (other->GetTabClassInfo ().TabClass_ == thisTC)
+					++count;
+			}
+
+			if (count > currentMax.second)
+				currentMax = { i, count };
+		}
+
+		return currentMax.first;
 	}
 
 	int RootWindowsManager::GetWindowForTab (ITabWidget *tab) const
@@ -193,11 +232,33 @@ namespace LeechCraft
 				sender ()->property ("ToWindowIndex").toInt ());
 	}
 
+	namespace
+	{
+#ifdef Q_OS_UNIX
+		void SetWMClass (QWidget *w, QByteArray name)
+		{
+			XClassHint hint;
+			hint.res_class = name.data ();
+			hint.res_name = strdup ("leechcraft");
+			XSetClassHint (QX11Info::display (), w->winId (), &hint);
+			free (hint.res_name);
+		}
+#else
+		void SetWMClass (QWidget*, QByteArray)
+		{
+		}
+#endif
+	}
+
 	void RootWindowsManager::add (const QString& name, QWidget *w)
 	{
-		const int winIdx = GetPreferredWindowIndex ();
-
 		auto itw = qobject_cast<ITabWidget*> (w);
+
+		if (GetWindowForTab (itw) != -1)
+			return;
+
+		int winIdx = GetPreferredWindowIndex (itw);
+
 		const int oldWinIdx = GetWindowForTab (itw);
 		if (oldWinIdx >= 0 && oldWinIdx != winIdx)
 		{
@@ -206,6 +267,15 @@ namespace LeechCraft
 			oldData.TM_->remove (w);
 		}
 
+		if (winIdx == -1)
+		{
+			CreateWindow ();
+			winIdx = Windows_.size () - 1;
+		}
+
+		const auto& tc = itw->GetTabClassInfo ().TabClass_;
+		Windows_ [winIdx].Window_->setWindowRole (tc);
+		SetWMClass (Windows_ [winIdx].Window_, tc);
 		Windows_ [winIdx].TM_->add (name, w);
 		emit tabAdded (winIdx, Windows_ [winIdx].Window_->GetTabWidget ()->IndexOf (w));
 	}

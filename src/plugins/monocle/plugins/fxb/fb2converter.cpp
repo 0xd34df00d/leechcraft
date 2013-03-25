@@ -44,6 +44,7 @@ namespace FXB
 	, SectionLevel_ (0)
 	{
 		Result_->setPageSize (QSize (600, 800));
+		Result_->setUndoRedoEnabled (false);
 
 		const auto& docElem = FB2_.documentElement ();
 		if (docElem.tagName () != "FictionBook")
@@ -202,12 +203,39 @@ namespace FXB
 		CurrentTOCStack_.top ()->ChildLevel_.append (TOCEntry ());
 		CurrentTOCStack_.push (&CurrentTOCStack_.top ()->ChildLevel_.last ());
 
+		QStringList chunks;
+		auto flushChunks = [this, &chunks] () -> void
+		{
+			if (!chunks.isEmpty ())
+			{
+				QTextBlockFormat fmt;
+				fmt.setTextIndent (20);
+				Cursor_->insertBlock (fmt);
+
+				Cursor_->insertText (chunks.join ("\n"));
+				chunks.clear ();
+			}
+		};
+
 		auto child = tagElem.firstChildElement ();
 		while (!child.isNull ())
 		{
+			if (child.tagName () == "p")
+			{
+				if (child.childNodes ().size () == 1 && child.firstChild ().isText ())
+					chunks << child.firstChild ().toText ().data ();
+
+				child = child.nextSiblingElement ();
+				continue;
+			}
+
+			flushChunks ();
+
 			Handle (child);
 			child = child.nextSiblingElement ();
 		}
+
+		flushChunks ();
 
 		CurrentTOCStack_.pop ();
 
@@ -276,13 +304,11 @@ namespace FXB
 
 	void FB2Converter::HandlePara (const QDomElement& tagElem)
 	{
-		auto fmt = Cursor_->blockFormat ();
+		QTextBlockFormat fmt;
 		fmt.setTextIndent (20);
-		Cursor_->setBlockFormat (fmt);
+		Cursor_->insertBlock (fmt);
 
 		HandleParaWONL (tagElem);
-
-		Cursor_->insertBlock ();
 	}
 
 	void FB2Converter::HandleParaWONL (const QDomElement& tagElem)
@@ -295,15 +321,7 @@ namespace FXB
 
 			if (child.isText ())
 			{
-				auto fmt = Cursor_->charFormat ();
-				auto newFmt = fmt;
-				newFmt.setForeground (Qt::black);
-				Cursor_->setCharFormat (newFmt);
-
 				Cursor_->insertText (child.toText ().data ());
-
-				Cursor_->setCharFormat (fmt);
-
 				continue;
 			}
 

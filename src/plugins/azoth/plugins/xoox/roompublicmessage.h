@@ -64,7 +64,7 @@ namespace Xoox
 		RoomPublicMessage (const QXmppMessage&, RoomCLEntry*,
 				RoomParticipantEntry_ptr = RoomParticipantEntry_ptr ());
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		void Send ();
 		void Store ();
 		Direction GetDirection () const;

@@ -132,7 +132,7 @@ namespace Xoox
 		AccountSettingsHolder* GetSettings () const;
 
 		// IAccount
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		QObject* GetParentProtocol () const;
 		AccountFeatures GetAccountFeatures () const;
 		QList<QObject*> GetCLEntries ();

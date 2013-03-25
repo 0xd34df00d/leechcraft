@@ -26,6 +26,7 @@ namespace LeechCraft
 namespace Monocle
 {
 	enum class LayoutMode;
+	enum class ScaleMode;
 
 	class DocStateManager : public QObject
 	{
@@ -36,6 +37,7 @@ namespace Monocle
 			int CurrentPage_;
 			LayoutMode Lay_;
 			double CurrentScale_;
+			ScaleMode ScaleMode_;
 		};
 
 		DocStateManager (QObject* = 0);

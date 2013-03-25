@@ -51,7 +51,7 @@ namespace VelvetBird
 		return Account_;
 	}
 
-	QObject* Account::GetObject ()
+	QObject* Account::GetQObject ()
 	{
 		return this;
 	}

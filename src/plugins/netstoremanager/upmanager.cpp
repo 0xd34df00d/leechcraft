@@ -79,7 +79,7 @@ namespace NetStoreManager
 	{
 		if (!Uploads_.contains (acc))
 		{
-			QObject *accObj = acc->GetObject ();
+			QObject *accObj = acc->GetQObject ();
 			connect (accObj,
 					SIGNAL (upError (QString, QString)),
 					this,

@@ -37,7 +37,7 @@ namespace Lastfmscrobble
 	public:
 		PendingArtistBio (const QString&, QNetworkAccessManager*, QObject* = 0);
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		Media::ArtistBio GetArtistBio () const;
 	private slots:
 		void handleFinished ();

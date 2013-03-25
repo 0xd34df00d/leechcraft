@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_POSHUKU_PLUGINS_POSHUKU_PASSWORDREMEMBER_H
 #define PLUGINS_POSHUKU_PLUGINS_POSHUKU_PASSWORDREMEMBER_H
-#include "notification.h"
+#include <util/gui/pagenotification.h>
 #include "pageformsdata.h"
 #include "ui_passwordremember.h"
 
@@ -28,7 +28,7 @@ struct Entity;
 
 namespace Poshuku
 {
-	class PasswordRemember : public Notification
+	class PasswordRemember : public Util::PageNotification
 	{
 		Q_OBJECT
 

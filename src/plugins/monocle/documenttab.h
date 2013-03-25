@@ -24,6 +24,7 @@
 #include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/idndtab.h>
 #include "interfaces/monocle/idocument.h"
+#include "docstatemanager.h"
 #include "ui_documenttab.h"
 
 class QDockWidget;
@@ -34,9 +35,13 @@ namespace Monocle
 {
 	enum class LayoutMode;
 
+	class PagesLayoutManager;
 	class PageGraphicsItem;
+	class TextSearchHandler;
 	class TOCWidget;
 	class BookmarksWidget;
+	class ThumbsWidget;
+	class FindDialog;
 
 	class DocumentTab : public QWidget
 					  , public ITabWidget
@@ -60,16 +65,20 @@ namespace Monocle
 		QAction *LayOnePage_;
 		QAction *LayTwoPages_;
 
+		FindDialog *FindDialog_;
+
+		PagesLayoutManager *LayoutManager_;
+		TextSearchHandler *SearchHandler_;
+
 		QDockWidget *DockWidget_;
 		TOCWidget *TOCWidget_;
 		BookmarksWidget *BMWidget_;
+		ThumbsWidget *ThumbsWidget_;
 
 		IDocument_ptr CurrentDoc_;
 		QString CurrentDocPath_;
 		QList<PageGraphicsItem*> Pages_;
 		QGraphicsScene Scene_;
-
-		LayoutMode LayMode_;
 
 		enum class MouseMode
 		{
@@ -77,8 +86,9 @@ namespace Monocle
 			Select
 		} MouseMode_;
 
-		bool RelayoutScheduled_;
 		bool SaveStateScheduled_;
+
+		int PrevCurrentPage_;
 
 		struct OnloadData
 		{
@@ -105,29 +115,30 @@ namespace Monocle
 		void RecoverState (const QByteArray&);
 
 		void ReloadDoc (const QString&);
-
 		bool SetDoc (const QString&);
+
+		void CreateViewCtxMenuActions (QMenu*);
+
+		int GetCurrentPage () const;
+		void SetCurrentPage (int, bool immediate = false);
+
+		QPoint GetCurrentCenter () const;
+		void CenterOn (const QPoint&);
 	private:
 		void SetupToolbar ();
 
-		double GetCurrentScale () const;
-
 		QPoint GetViewportCenter () const;
-		int GetCurrentPage () const;
-		void SetCurrentPage (int, bool immediate = false);
-		void Relayout (double);
-
-		void ClearViewActions ();
+		void Relayout ();
 
 		QImage GetSelectionImg ();
+		QString GetSelectionText () const;
+
+		void RegenPageVisibility ();
 	private slots:
 		void handleNavigateRequested (QString, int, double, double);
+		void handleThumbnailClicked (int);
 
-		void handlePageSizeChanged (int);
 		void handlePageContentsChanged (int);
-
-		void scheduleRelayout ();
-		void handleRelayout ();
 
 		void scheduleSaveState ();
 		void saveState ();
@@ -142,6 +153,7 @@ namespace Monocle
 		void handleGoNext ();
 		void navigateNumLabel ();
 		void updateNumLabel ();
+		void checkCurrentPageChange (bool force = false);
 
 		void zoomOut ();
 		void zoomIn ();
@@ -149,6 +161,8 @@ namespace Monocle
 		void showOnePage ();
 		void showTwoPages ();
 		void syncUIToLayMode ();
+
+		void recoverDocState (DocStateManager::State);
 
 		void setMoveMode (bool);
 		void setSelectionMode (bool);
@@ -162,6 +176,8 @@ namespace Monocle
 		void delayedCenterOn (const QPoint&);
 
 		void handleScaleChosen (int);
+
+		void handleDockLocation (Qt::DockWidgetArea);
 	signals:
 		void changeTabName (QWidget*, const QString&);
 		void removeTab (QWidget*);
@@ -169,6 +185,9 @@ namespace Monocle
 		void tabRecoverDataChanged ();
 
 		void fileLoaded (const QString&);
+
+		void currentPageChanged (int);
+		void pagesVisibilityChanged (const QMap<int, QRect>&);
 	};
 }
 }

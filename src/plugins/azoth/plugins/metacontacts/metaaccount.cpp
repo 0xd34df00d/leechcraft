@@ -35,7 +35,7 @@ namespace Metacontacts
 		Core::Instance ().SetMetaAccount (this);
 	}
 
-	QObject* MetaAccount::GetObject ()
+	QObject* MetaAccount::GetQObject ()
 	{
 		return this;
 	}

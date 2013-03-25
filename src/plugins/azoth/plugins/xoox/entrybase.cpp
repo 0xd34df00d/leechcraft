@@ -92,7 +92,7 @@ namespace Xoox
 		delete VCardDialog_;
 	}
 
-	QObject* EntryBase::GetObject ()
+	QObject* EntryBase::GetQObject ()
 	{
 		return this;
 	}

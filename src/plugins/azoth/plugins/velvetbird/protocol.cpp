@@ -47,7 +47,7 @@ namespace VelvetBird
 		}
 	}
 
-	QObject* Protocol::GetObject()
+	QObject* Protocol::GetQObject()
 	{
 		return this;
 	}

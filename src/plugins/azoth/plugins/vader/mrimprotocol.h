@@ -42,7 +42,7 @@ namespace Vader
 		void Init ();
 		void Release ();
 
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		ProtocolFeatures GetFeatures () const;
 		QList<QObject*> GetRegisteredAccounts ();
 		QObject* GetParentProtocolPlugin () const;

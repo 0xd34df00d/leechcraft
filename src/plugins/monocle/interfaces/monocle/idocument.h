@@ -48,7 +48,9 @@ namespace Monocle
 	public:
 		virtual ~IDocument () {}
 
-		virtual QObject* GetObject () = 0;
+		virtual QObject* GetBackendPlugin () const = 0;
+
+		virtual QObject* GetQObject () = 0;
 
 		virtual bool IsValid () const = 0;
 

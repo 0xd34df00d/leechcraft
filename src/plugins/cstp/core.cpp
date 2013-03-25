@@ -44,8 +44,8 @@
 extern "C"
 {
 	#ifdef Q_OS_WIN32
-		#include <stdlib.h>
-		static const int LC_FILENAME_MAX = _MAX_FNAME;
+		#include <stdio.h>
+		static const int LC_FILENAME_MAX = FILENAME_MAX;
 	#else
 		#include <limits.h>
 		static const int LC_FILENAME_MAX = NAME_MAX;

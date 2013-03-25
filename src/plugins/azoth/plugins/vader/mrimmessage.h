@@ -56,7 +56,7 @@ namespace Vader
 		void SetDelivered ();
 
 		// ICLEntry
-		QObject* GetObject ();
+		QObject* GetQObject ();
 		void Send ();
 		void Store ();
 		Direction GetDirection () const;

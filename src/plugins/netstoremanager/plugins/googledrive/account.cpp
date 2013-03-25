@@ -59,7 +59,7 @@ namespace GoogleDrive
 				SLOT (handleGotChanges (QList<DriveChanges>, qlonglong)));
 	}
 
-	QObject* Account::GetObject ()
+	QObject* Account::GetQObject ()
 	{
 		return this;
 	}

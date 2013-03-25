@@ -55,7 +55,7 @@ namespace Azoth
 				Ui_.Invitee_->currentText ();
 	}
 
-	QString MUCInviteDialog::GetMessage () const
+	QString MUCInviteDialog::GetInviteMessage () const
 	{
 		return Ui_.Message_->text ();
 	}

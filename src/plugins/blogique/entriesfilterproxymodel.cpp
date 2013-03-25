@@ -29,7 +29,7 @@ namespace Blogique
 	}
 
 	bool EntriesFilterProxyModel::filterAcceptsRow (int sourceRow,
-			const QModelIndex& sourceParent)
+			const QModelIndex& sourceParent) const
 	{
 		const QModelIndex& index = sourceModel ()->index (sourceRow, 0, sourceParent);
 		return sourceModel ()->data (index).toString ().contains (filterRegExp ());

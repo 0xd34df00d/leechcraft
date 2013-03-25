@@ -716,7 +716,7 @@ namespace Xoox
 
 	void ClientConnection::SendMessage (GlooxMessage *msgObj)
 	{
-		QXmppMessage msg = msgObj->GetMessage ();
+		QXmppMessage msg = msgObj->GetNativeMessage ();
 		if (msg.isReceiptRequested ())
 			UndeliveredMessages_ [msg.id ()] = msgObj;
 

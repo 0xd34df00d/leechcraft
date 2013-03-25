@@ -34,7 +34,7 @@ namespace HotStreams
 				SLOT (emitPlaylist ()));
 	}
 
-	QObject* StringListRadioStation::GetObject ()
+	QObject* StringListRadioStation::GetQObject ()
 	{
 		return this;
 	}

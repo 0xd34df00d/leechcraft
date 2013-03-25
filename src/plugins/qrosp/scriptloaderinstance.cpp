@@ -36,7 +36,7 @@ namespace Qrosp
 			RelativePath_ += '/';
 	}
 
-	QObject* ScriptLoaderInstance::GetObject ()
+	QObject* ScriptLoaderInstance::GetQObject ()
 	{
 		return this;
 	}

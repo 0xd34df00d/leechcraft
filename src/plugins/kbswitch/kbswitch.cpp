@@ -42,11 +42,11 @@ namespace KBSwitch
 		for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
 			handleWindow (i);
 
-		connect (rootWM->GetObject (),
+		connect (rootWM->GetQObject (),
 				SIGNAL (windowAdded (int)),
 				this,
 				SLOT (handleWindow (int)));
-		connect (rootWM->GetObject (),
+		connect (rootWM->GetQObject (),
 				SIGNAL (currentWindowChanged (int, int)),
 				this,
 				SLOT(handleCurrentWindowChanged (int, int)));
@@ -111,7 +111,7 @@ namespace KBSwitch
 	void Plugin::handleWindow (int index)
 	{
 		auto tabWidget = Proxy_->GetRootWindowsManager ()->GetTabWidget (index);
-		connect (tabWidget->GetObject (),
+		connect (tabWidget->GetQObject (),
 				SIGNAL (currentChanged (int)),
 				this,
 				SLOT (handleCurrentChanged (int)));

@@ -34,7 +34,7 @@ namespace Media
 	public:
 		virtual ~IPendingArtistBio () {}
 
-		virtual QObject* GetObject () = 0;
+		virtual QObject* GetQObject () = 0;
 
 		virtual ArtistBio GetArtistBio () const = 0;
 	protected:

@@ -81,7 +81,7 @@ namespace Astrality
 		LoadSettings ();
 	}
 
-	QObject* AccountWrapper::GetObject ()
+	QObject* AccountWrapper::GetQObject ()
 	{
 		return this;
 	}

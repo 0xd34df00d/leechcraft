@@ -37,17 +37,17 @@ namespace Graffiti
 
 		struct SplitQueueItem
 		{
-			const QString SourceFile_;
-			const QString TargetFile_;
-			const int Index_;
-			const QTime From_;
-			const QTime To_;
+			QString SourceFile_;
+			QString TargetFile_;
+			int Index_;
+			QTime From_;
+			QTime To_;
 
-			const QString Artist_;
-			const QString Album_;
-			const QString Title_;
-			const int Date_;
-			const QString Genre_;
+			QString Artist_;
+			QString Album_;
+			QString Title_;
+			int Date_;
+			QString Genre_;
 		};
 		QList<SplitQueueItem> SplitQueue_;
 

@@ -68,7 +68,7 @@ namespace LMP
 		{
 			CurrentJob_ = job;
 
-			connect (job.GetObject (),
+			connect (job.GetQObject (),
 					SIGNAL (uploadFinished (QString, QFile::FileError, QString)),
 					this,
 					SLOT (handleUploadFinished (QString, QFile::FileError, QString)),

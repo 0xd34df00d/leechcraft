@@ -116,7 +116,7 @@ namespace Autoidler
 		if (!mins &&
 				!OldStatuses_.isEmpty ())
 		{
-			Q_FOREACH (QObject *accObj, AzothProxy_->GetAllAccounts ())
+			for (QObject *accObj : AzothProxy_->GetAllAccounts ())
 			{
 				if (!OldStatuses_.contains (accObj))
 					continue;
@@ -130,9 +130,8 @@ namespace Autoidler
 
 		if (!mins)
 			return;
-
+		
 		EntryStatus status;
-
 		if (mins == XmlSettingsManager::Instance ().property ("AwayTimeout").toInt ())
 			status = EntryStatus (SAway,
 					XmlSettingsManager::Instance ().property ("AwayText").toString ());
@@ -141,19 +140,13 @@ namespace Autoidler
 					XmlSettingsManager::Instance ().property ("NAText").toString ());
 		else
 			return;
-
-		Q_FOREACH (QObject *accObj, AzothProxy_->GetAllAccounts ())
+		
+		for (QObject *accObj : AzothProxy_->GetAllAccounts ())
 		{
 			IAccount *acc = qobject_cast<IAccount*> (accObj);
 
-			const EntryStatus& oldStatus = acc->GetState ();
-			if (oldStatus.State_ != SOnline &&
-					oldStatus.State_ != SChat)
-				continue;
-
 			if (!OldStatuses_.contains (accObj))
-				OldStatuses_ [accObj] = oldStatus;
-
+				OldStatuses_ [accObj] = acc->GetState ();;
 			acc->ChangeState (status);
 		}
 	}

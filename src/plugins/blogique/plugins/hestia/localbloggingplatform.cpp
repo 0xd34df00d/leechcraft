@@ -43,14 +43,14 @@ namespace Hestia
 	{
 	}
 
-	QObject* LocalBloggingPlatform::GetObject ()
+	QObject* LocalBloggingPlatform::GetQObject ()
 	{
 		return this;
 	}
 
 	IBloggingPlatform::BloggingPlatfromFeatures LocalBloggingPlatform::GetFeatures () const
 	{
-		return BPFSupportsRegistration;
+		return BPFSupportsRegistration | BPFLocalBlog;
 	}
 
 	QObjectList LocalBloggingPlatform::GetRegisteredAccounts ()
@@ -205,7 +205,7 @@ namespace Hestia
 			return;
 		}
 
-		emit accountValidated (acc->GetObject (), valid);
+		emit accountValidated (acc->GetQObject (), valid);
 	}
 
 }

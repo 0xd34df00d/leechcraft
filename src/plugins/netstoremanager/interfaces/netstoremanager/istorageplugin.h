@@ -33,7 +33,7 @@ namespace NetStoreManager
 	public:
 		virtual ~IStoragePlugin () {}
 
-		virtual QObject* GetObject () = 0;
+		virtual QObject* GetQObject () = 0;
 
 		virtual QString GetStorageName () const = 0;
 		virtual QIcon GetStorageIcon () const = 0;

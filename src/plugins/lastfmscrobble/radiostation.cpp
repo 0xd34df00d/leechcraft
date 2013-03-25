@@ -100,7 +100,7 @@ namespace Lastfmscrobble
 				SLOT (handleNextTrack ()));
 	}
 
-	QObject* RadioStation::GetObject ()
+	QObject* RadioStation::GetQObject ()
 	{
 		return this;
 	}

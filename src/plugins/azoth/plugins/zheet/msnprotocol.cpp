@@ -39,7 +39,7 @@ namespace Zheet
 		RestoreAccounts ();
 	}
 
-	QObject* MSNProtocol::GetObject ()
+	QObject* MSNProtocol::GetQObject ()
 	{
 		return this;
 	}

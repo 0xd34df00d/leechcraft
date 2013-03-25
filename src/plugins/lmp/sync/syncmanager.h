@@ -35,9 +35,9 @@ namespace LMP
 
 		struct CopyJob
 		{
-			QObject* GetObject () const
+			QObject* GetQObject () const
 			{
-				return Syncer_->GetObject ();
+				return Syncer_->GetQObject ();
 			}
 
 			void Upload () const

@@ -72,7 +72,7 @@ namespace YandexDisk
 		return classes;
 	}
 
-	QObject* Plugin::GetObject ()
+	QObject* Plugin::GetQObject ()
 	{
 		return this;
 	}

@@ -18,6 +18,8 @@
 
 #include "pagegraphicsitem.h"
 #include <QtDebug>
+#include <QtConcurrentRun>
+#include <QFutureWatcher>
 #include <QGraphicsSceneMouseEvent>
 #include <QCursor>
 #include <QApplication>
@@ -49,6 +51,11 @@ namespace Monocle
 		Core::Instance ().GetPixmapCacheManager ()->PixmapDeleted (this);
 	}
 
+	void PageGraphicsItem::SetReleaseHandler (std::function<void (int, QPointF)> handler)
+	{
+		ReleaseHandler_ = handler;
+	}
+
 	void PageGraphicsItem::SetScale (double xs, double ys)
 	{
 		XScale_ = xs;
@@ -62,11 +69,47 @@ namespace Monocle
 		Invalid_ = true;
 
 		update ();
+
+		for (auto i = Item2DocRect_.begin (); i != Item2DocRect_.end (); ++i)
+			i.key ()->setRect (MapFromDoc (*i));
 	}
 
 	int PageGraphicsItem::GetPageNum () const
 	{
 		return PageNum_;
+	}
+
+	QRectF PageGraphicsItem::MapFromDoc (const QRectF& rect) const
+	{
+		return
+		{
+			rect.x () * XScale_,
+			rect.y () * YScale_,
+			rect.width () * XScale_,
+			rect.height () * YScale_
+		};
+	}
+
+	QRectF PageGraphicsItem::MapToDoc (const QRectF& rect) const
+	{
+		return
+		{
+			rect.x () / XScale_,
+			rect.y () / YScale_,
+			rect.width () / XScale_,
+			rect.height () / YScale_
+		};
+	}
+
+	void PageGraphicsItem::RegisterChildRect (QGraphicsRectItem *item, const QRectF& docRect)
+	{
+		Item2DocRect_ [item] = docRect;
+		item->setRect (MapFromDoc (docRect));
+	}
+
+	void PageGraphicsItem::UnregisterChildRect (QGraphicsRectItem *item)
+	{
+		Item2DocRect_.remove (item);
 	}
 
 	void PageGraphicsItem::ClearPixmap ()
@@ -91,8 +134,33 @@ namespace Monocle
 	{
 		if (Invalid_)
 		{
-			const auto& img = Doc_->RenderPage (PageNum_, XScale_, YScale_);
-			setPixmap (QPixmap::fromImage (img));
+			auto backendObj = Doc_->GetBackendPlugin ();
+			if (qobject_cast<IBackendPlugin*> (backendObj)->IsThreaded ())
+			{
+				auto watcher = new QFutureWatcher<QImage> ();
+				connect (watcher,
+						SIGNAL (finished ()),
+						this,
+						SLOT (handlePixmapRendered ()));
+
+				std::function<QImage ()> worker ([this] ()
+						{
+							return Doc_->RenderPage (PageNum_, XScale_, YScale_);
+						});
+				watcher->setFuture (QtConcurrent::run (worker));
+
+				auto size = Doc_->GetPageSize (PageNum_);
+				size.rwidth () *= XScale_;
+				size.rheight () *= YScale_;
+				QPixmap px (size);
+				px.fill ();
+				setPixmap (px);
+			}
+			else
+			{
+				const auto& img = Doc_->RenderPage (PageNum_, XScale_, YScale_);
+				setPixmap (QPixmap::fromImage (img));
+			}
 			LayoutLinks ();
 			Invalid_ = false;
 
@@ -130,7 +198,7 @@ namespace Monocle
 	void PageGraphicsItem::mousePressEvent (QGraphicsSceneMouseEvent *event)
 	{
 		PressedLink_ = FindLink (event->pos ());
-		if (PressedLink_)
+		if (PressedLink_ || ReleaseHandler_)
 			return;
 
 		QGraphicsItem::mousePressEvent (event);
@@ -144,6 +212,8 @@ namespace Monocle
 		if (!handle)
 		{
 			QGraphicsItem::mouseReleaseEvent (event);
+			if (ReleaseHandler_)
+				ReleaseHandler_ (PageNum_, event->pos ());
 			return;
 		}
 
@@ -157,7 +227,7 @@ namespace Monocle
 		const auto& rect = boundingRect ();
 		const auto width = rect.width ();
 		const auto height = rect.height ();
-		Q_FOREACH (ILink_ptr link, Links_)
+		for (auto link : Links_)
 		{
 			const auto& area = link->GetArea ();
 			const QRect linkRect (width * area.left (), height * area.top (),
@@ -168,10 +238,19 @@ namespace Monocle
 
 	ILink_ptr PageGraphicsItem::FindLink (const QPointF& point)
 	{
-		Q_FOREACH (const auto& pair, Rect2Link_)
+		for (const auto& pair : Rect2Link_)
 			if (pair.first.contains (point.toPoint ()))
 				return pair.second;
 		return ILink_ptr ();
+	}
+
+	void PageGraphicsItem::handlePixmapRendered ()
+	{
+		auto watcher = dynamic_cast<QFutureWatcher<QImage>*> (sender ());
+		watcher->deleteLater ();
+
+		const auto& img = watcher->result ();
+		setPixmap (QPixmap::fromImage (img));
 	}
 }
 }

@@ -50,7 +50,7 @@ namespace ReadItLater
 		return FCanRegisterAccount;
 	}
 
-	QObject* ReadItLaterService::GetObject ()
+	QObject* ReadItLaterService::GetQObject ()
 	{
 		return this;
 	}
@@ -217,7 +217,7 @@ namespace ReadItLater
 				continue;
 			}
 			Accounts_ << acc;
-			list << acc->GetObject ();
+			list << acc->GetQObject ();
 		}
 
 		emit accountAdded (list);
@@ -280,7 +280,7 @@ namespace ReadItLater
 				account->SetPassword (Reply2Request_ [reply].Password_);
 				Accounts_ << account;
 				saveAccounts ();
-				emit accountAdded (QObjectList () << account->GetObject ());
+				emit accountAdded (QObjectList () << account->GetQObject ());
 				switch (Reply2Request_ [reply].Type_)
 				{
 				case OTAuth:
