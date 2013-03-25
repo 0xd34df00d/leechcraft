@@ -19,6 +19,7 @@
 #include "textsearchhandler.h"
 #include <QGraphicsView>
 #include <QGraphicsRectItem>
+#include <QtDebug>
 #include "interfaces/monocle/isearchabledocument.h"
 #include "pagegraphicsitem.h"
 
@@ -79,9 +80,8 @@ namespace Monocle
 				{
 					auto item = new QGraphicsRectItem (page);
 					item->setBrush (brush);
-					item->setPen ({ Qt::black });
 					item->setZValue (1);
-					item->setOpacity (0.3);
+					item->setOpacity (0.2);
 					CurrentHighlights_ << item;
 
 					page->RegisterChildRect (item, rect);
@@ -125,7 +125,16 @@ namespace Monocle
 
 	void TextSearchHandler::SelectItem (int index)
 	{
-		CurrentHighlights_.at (index)->setOpacity (0.5);
+		if (CurrentRectIndex_ >= 0 && CurrentRectIndex_ < CurrentHighlights_.size ())
+		{
+			auto oldHili = CurrentHighlights_.at (CurrentRectIndex_);
+			oldHili->setOpacity (0.2);
+			oldHili->setPen (QPen ());
+		}
+
+		auto item = CurrentHighlights_.at (index);
+		item->setOpacity (0.6);
+		item->setPen ({ Qt::black });
 		CurrentRectIndex_ = index;
 	}
 }
