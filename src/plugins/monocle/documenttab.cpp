@@ -349,10 +349,8 @@ namespace Monocle
 		checkCurrentPageChange (true);
 
 		TOCEntryLevel_t topLevel;
-		if (auto toc = qobject_cast<IHaveTOC*> (CurrentDoc_->GetQObject ()))
-			topLevel = toc->GetTOC ();
-		TOCWidget_->SetTOC (topLevel);
-		TOCWidget_->setEnabled (!topLevel.isEmpty ());
+		auto toc = qobject_cast<IHaveTOC*> (CurrentDoc_->GetQObject ());
+		TOCWidget_->SetTOC (toc ? toc->GetTOC () : TOCEntryLevel_t ());
 
 		connect (CurrentDoc_->GetQObject (),
 				SIGNAL (navigateRequested (QString, int, double, double)),
