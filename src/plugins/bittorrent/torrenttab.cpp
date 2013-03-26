@@ -458,22 +458,17 @@ namespace BitTorrent
 
 		Core::Instance ()->MoveUp (List2Vector (selections));
 
-		QItemSelectionModel *sel = qobject_cast<QItemSelectionModel*> (sender ()->
-				property ("ItemSelectionModel").value<QObject*> ());
-
-		if (sel)
-			sel->clearSelection ();
+		auto sel = Ui_.TorrentsView_->selectionModel ();
+		sel->clearSelection ();
 
 		QItemSelection selection;
-		Q_FOREACH (QModelIndex si, sis)
+		for (const auto& si : sis)
 		{
-			QModelIndex sibling = si.sibling (si.row () - 1, si.column ());
+			auto sibling = si.sibling (std::max (si.row () - 1, 0), si.column ());
 			selection.select (sibling, sibling);
 		}
 
-		if (sel)
-			sel->select (selection, QItemSelectionModel::Rows |
-					QItemSelectionModel::SelectCurrent);
+		sel->select (selection, QItemSelectionModel::Rows | QItemSelectionModel::Select);
 	}
 
 	void TorrentTab::on_MoveDown__triggered ()
@@ -483,22 +478,18 @@ namespace BitTorrent
 
 		Core::Instance ()->MoveDown (List2Vector (selections));
 
-		QItemSelectionModel *sel = qobject_cast<QItemSelectionModel*> (sender ()->
-				property ("ItemSelectionModel").value<QObject*> ());
-
-		if (sel)
-			sel->clearSelection ();
+		auto sel = Ui_.TorrentsView_->selectionModel ();
+		sel->clearSelection ();
 
 		QItemSelection selection;
-		Q_FOREACH (QModelIndex si, sis)
+		const auto& rowCount = Core::Instance ()->rowCount ();
+		for (const auto& si : sis)
 		{
-			QModelIndex sibling = si.sibling (si.row () + 1, 0);
+			auto sibling = si.sibling (std::min (si.row () + 1, rowCount - 1), 0);
 			selection.select (sibling, sibling);
 		}
 
-		if (sel)
-			sel->select (selection, QItemSelectionModel::Rows |
-					QItemSelectionModel::SelectCurrent);
+		sel->select (selection, QItemSelectionModel::Rows | QItemSelectionModel::Select);
 	}
 
 	void TorrentTab::on_MoveToTop__triggered ()
