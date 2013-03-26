@@ -108,6 +108,7 @@ namespace Util
 
 	void FindNotification::reject ()
 	{
+		Ui_->Pattern_->clear ();
 		hide ();
 	}
 }
