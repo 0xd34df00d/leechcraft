@@ -244,6 +244,8 @@ namespace LeechCraft
 				AddTorrentDialog_->SetFilename (suggestedFname);
 				if (!e.Location_.isEmpty ())
 					AddTorrentDialog_->SetSavePath (e.Location_);
+				else if (e.Parameters_ & IsDownloaded && !suggestedFname.isEmpty ())
+					AddTorrentDialog_->SetSavePath (QFileInfo (suggestedFname).absolutePath ());
 
 				QString path;
 				QStringList tags = e.Additional_ [" Tags"].toStringList ();
