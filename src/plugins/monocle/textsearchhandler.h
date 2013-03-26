@@ -18,23 +18,44 @@
 
 #pragma once
 
-#include <QRectF>
-#include <QMap>
-#include <QtPlugin>
+#include <QObject>
+#include "interfaces/monocle/idocument.h"
+#include <util/gui/findnotification.h>
+
+class QGraphicsRectItem;
+class QGraphicsView;
+class QGraphicsScene;
 
 namespace LeechCraft
 {
 namespace Monocle
 {
-	class ISearchableDocument
-	{
-	public:
-		virtual ~ISearchableDocument () {}
+	class PageGraphicsItem;
+	class PagesLayoutManager;
 
-		virtual QMap<int, QList<QRectF>> GetTextPositions (const QString&, Qt::CaseSensitivity) = 0;
+	class TextSearchHandler : public QObject
+	{
+		Q_OBJECT
+
+		QGraphicsView * const View_;
+		QGraphicsScene * const Scene_;
+		PagesLayoutManager * const LayoutMgr_;
+
+		IDocument_ptr Doc_;
+		QList<PageGraphicsItem*> Pages_;
+
+		QString CurrentSearchString_;
+
+		QList<QGraphicsRectItem*> CurrentHighlights_;
+		int CurrentRectIndex_;
+	public:
+		TextSearchHandler (QGraphicsView*, PagesLayoutManager*, QObject* = 0);
+
+		void HandleDoc (IDocument_ptr, const QList<PageGraphicsItem*>&);
+
+		void Search (const QString&, Util::FindNotification::FindFlags);
+	private:
+		void SelectItem (int);
 	};
 }
 }
-
-Q_DECLARE_INTERFACE (LeechCraft::Monocle::ISearchableDocument,
-		"org.LeechCraft.Monocle.ISearchableDocument/1.0");

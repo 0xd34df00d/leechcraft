@@ -37,9 +37,11 @@ namespace Monocle
 
 	class PagesLayoutManager;
 	class PageGraphicsItem;
+	class TextSearchHandler;
 	class TOCWidget;
 	class BookmarksWidget;
 	class ThumbsWidget;
+	class FindDialog;
 
 	class DocumentTab : public QWidget
 					  , public ITabWidget
@@ -63,7 +65,10 @@ namespace Monocle
 		QAction *LayOnePage_;
 		QAction *LayTwoPages_;
 
+		FindDialog *FindDialog_;
+
 		PagesLayoutManager *LayoutManager_;
+		TextSearchHandler *SearchHandler_;
 
 		QDockWidget *DockWidget_;
 		TOCWidget *TOCWidget_;

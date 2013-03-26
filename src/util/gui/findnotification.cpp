@@ -28,6 +28,8 @@ namespace Util
 	, Ui_ (new Ui::FindNotification)
 	{
 		Ui_->setupUi (this);
+
+		setFocusProxy (Ui_->Pattern_);
 	}
 
 	FindNotification::~FindNotification ()

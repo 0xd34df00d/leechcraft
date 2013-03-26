@@ -70,7 +70,7 @@
   <connection>
    <sender>CloseButton_</sender>
    <signal>released()</signal>
-   <receiver>FindDialog</receiver>
+   <receiver>FindNotification</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

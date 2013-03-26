@@ -39,6 +39,7 @@
 #include <QUrl>
 #include <util/util.h>
 #include <util/xpc/stddatafiltermenucreator.h>
+#include <util/gui/findnotification.h>
 #include <interfaces/imwproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include "interfaces/monocle/ihavetoc.h"
@@ -58,11 +59,28 @@
 #include "bookmarkswidget.h"
 #include "pageslayoutmanager.h"
 #include "thumbswidget.h"
+#include "textsearchhandler.h"
 
 namespace LeechCraft
 {
 namespace Monocle
 {
+	class FindDialog : public Util::FindNotification
+	{
+		TextSearchHandler *SearchHandler_;
+	public:
+		FindDialog (TextSearchHandler *searchHandler, QWidget *parent)
+		: Util::FindNotification (parent)
+		, SearchHandler_ (searchHandler)
+		{
+		}
+	protected:
+		void handleNext (const QString& text, FindFlags flags)
+		{
+			SearchHandler_->Search (text, flags);
+		}
+	};
+
 	DocumentTab::DocumentTab (const TabClassInfo& tc, QObject *parent)
 	: TC_ (tc)
 	, ParentPlugin_ (parent)
@@ -72,6 +90,7 @@ namespace Monocle
 	, LayOnePage_ (0)
 	, LayTwoPages_ (0)
 	, LayoutManager_ (0)
+	, SearchHandler_ (0)
 	, DockWidget_ (new QDockWidget (tr ("Monocle dock")))
 	, TOCWidget_ (new TOCWidget ())
 	, BMWidget_ (new BookmarksWidget (this))
@@ -86,6 +105,10 @@ namespace Monocle
 		Ui_.PagesView_->SetDocumentTab (this);
 
 		LayoutManager_ = new PagesLayoutManager (Ui_.PagesView_, this);
+		SearchHandler_ = new TextSearchHandler (Ui_.PagesView_, LayoutManager_, this);
+
+		FindDialog_ = new FindDialog (SearchHandler_, this);
+		FindDialog_->hide ();
 
 		SetupToolbar ();
 
@@ -341,6 +364,7 @@ namespace Monocle
 		}
 
 		LayoutManager_->HandleDoc (CurrentDoc_, Pages_);
+		SearchHandler_->HandleDoc (CurrentDoc_, Pages_);
 
 		recoverDocState (state);
 		Relayout ();
@@ -577,6 +601,21 @@ namespace Monocle
 				this,
 				SLOT (setSelectionMode (bool)));
 		Toolbar_->addAction (selectModeAction);
+
+		Toolbar_->addSeparator ();
+
+		auto findAction = new QAction (tr ("Find..."), this);
+		findAction->setShortcut (QString ("Ctrl+F"));
+		findAction->setProperty ("ActionIcon", "edit-find");
+		connect (findAction,
+				SIGNAL (triggered ()),
+				FindDialog_,
+				SLOT (show ()));
+		connect (findAction,
+				SIGNAL (triggered ()),
+				FindDialog_,
+				SLOT (setFocus ()));
+		Toolbar_->addAction (findAction);
 
 		Toolbar_->addSeparator ();
 
