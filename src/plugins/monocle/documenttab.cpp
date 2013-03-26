@@ -77,7 +77,7 @@ namespace Monocle
 	protected:
 		void handleNext (const QString& text, FindFlags flags)
 		{
-			SearchHandler_->Search (text, flags);
+			SetSuccessful (SearchHandler_->Search (text, flags));
 		}
 	};
 

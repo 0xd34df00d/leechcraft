@@ -53,7 +53,7 @@ namespace Monocle
 
 		void HandleDoc (IDocument_ptr, const QList<PageGraphicsItem*>&);
 
-		void Search (const QString&, Util::FindNotification::FindFlags);
+		bool Search (const QString&, Util::FindNotification::FindFlags);
 	private:
 		void SelectItem (int);
 	};

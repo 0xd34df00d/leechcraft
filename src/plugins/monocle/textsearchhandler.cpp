@@ -47,10 +47,10 @@ namespace Monocle
 		CurrentSearchString_.clear ();
 	}
 
-	void TextSearchHandler::Search (const QString& text, Util::FindNotification::FindFlags flags)
+	bool TextSearchHandler::Search (const QString& text, Util::FindNotification::FindFlags flags)
 	{
 		if (!Doc_)
-			return;
+			return false;
 
 		if (text != CurrentSearchString_)
 		{
@@ -67,7 +67,7 @@ namespace Monocle
 
 			auto searchable = qobject_cast<ISearchableDocument*> (Doc_->GetQObject ());
 			if (!searchable)
-				return;
+				return false;
 
 			const QBrush brush (Qt::yellow);
 
@@ -93,11 +93,11 @@ namespace Monocle
 			if (!CurrentHighlights_.isEmpty ())
 				SelectItem (0);
 
-			return;
+			return !CurrentHighlights_.isEmpty ();
 		}
 
 		if (CurrentHighlights_.isEmpty ())
-			return;
+			return false;
 
 		if (flags & Util::FindNotification::FindBackwards)
 		{
@@ -107,7 +107,7 @@ namespace Monocle
 				if (flags & Util::FindNotification::FindWrapsAround)
 					nextIdx = CurrentHighlights_.size () - 1;
 				else
-					return;
+					return false;
 			}
 			SelectItem (nextIdx);
 		}
@@ -119,10 +119,12 @@ namespace Monocle
 				if (flags & Util::FindNotification::FindWrapsAround)
 					nextIdx = 0;
 				else
-					return;
+					return false;
 			}
 			SelectItem (nextIdx);
 		}
+
+		return true;
 	}
 
 	void TextSearchHandler::SelectItem (int index)
