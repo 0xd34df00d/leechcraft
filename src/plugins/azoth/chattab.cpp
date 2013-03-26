@@ -144,6 +144,7 @@ namespace Azoth
 	, MsgFormatter_ (0)
 	, TypeTimer_ (new QTimer (this))
 	, PreviousState_ (CPSNone)
+	, IsCurrent_ (false)
 	{
 		Ui_.setupUi (this);
 		Ui_.View_->installEventFilter (new ZoomEventFilter (Ui_.View_));
@@ -308,6 +309,8 @@ namespace Azoth
 		if (proxy->IsCancelled ())
 			return;
 
+		IsCurrent_ = true;
+
 		emit entryMadeCurrent (GetEntry<QObject> ());
 
 		NumUnreadMsgs_ = 0;
@@ -323,6 +326,8 @@ namespace Azoth
 		SetChatPartState (CPSInactive);
 
 		emit entryLostCurrent (GetEntry<QObject> ());
+
+		IsCurrent_ = false;
 	}
 
 	QByteArray ChatTab::GetTabRecoverData () const
