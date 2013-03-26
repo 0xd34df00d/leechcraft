@@ -1491,7 +1491,7 @@ namespace Azoth
 
 		XmlSettingsManager::Instance ().RegisterObject ("SeparateMUCEventLogWindow",
 				this, "handleSeparateMUCLog");
-		handleSeparateMUCLog ();
+		handleSeparateMUCLog (true);
 	}
 
 	void ChatTab::InitExtraActions ()
@@ -2096,14 +2096,15 @@ namespace Azoth
 					MUCEventLog_->size ()));
 	}
 
-	void ChatTab::handleSeparateMUCLog ()
+	void ChatTab::handleSeparateMUCLog (bool initial)
 	{
 		MUCEventLog_->clear ();
 		const bool isSep = XmlSettingsManager::Instance ()
 				.property ("SeparateMUCEventLogWindow").toBool ();
 
 		Ui_.MUCEventsButton_->setVisible (isSep);
-		PrepareTheme ();
+		if (!initial)
+			PrepareTheme ();
 	}
 
 	void ChatTab::clearAvailableNick ()

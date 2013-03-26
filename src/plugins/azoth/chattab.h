@@ -149,7 +149,7 @@ namespace Azoth
 		void handleFilesDropped (const QList<QUrl>&);
 	private slots:
 		void on_MUCEventsButton__toggled (bool);
-		void handleSeparateMUCLog ();
+		void handleSeparateMUCLog (bool initial = false);
 
 		void clearAvailableNick ();
 		void handleEditScroll (int);
