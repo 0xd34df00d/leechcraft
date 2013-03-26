@@ -30,7 +30,7 @@ namespace Astrality
 	{
 		Ui_.setupUi (this);
 
-		auto visRow = [&info] (QString parm, QWidget *w1, QWidget *w2 = 0)
+		auto visRow = [&info] (QString parm, QWidget *w1, QWidget *w2)
 		{
 			if (!info.hasParameter (parm))
 			{
@@ -42,7 +42,7 @@ namespace Astrality
 		visRow ("account", Ui_.AccIDLabel_, Ui_.AccID_);
 		visRow ("server", Ui_.ServerLabel_, Ui_.Server_);
 		visRow ("port", Ui_.PortLabel_, Ui_.Port_);
-		visRow ("require-encryption", Ui_.RequireEncryption_);
+		visRow ("require-encryption", Ui_.RequireEncryption_, 0);
 
 		if (!regNew)
 		{
