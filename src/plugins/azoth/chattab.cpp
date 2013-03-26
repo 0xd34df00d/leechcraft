@@ -295,7 +295,8 @@ namespace Azoth
 
 	void ChatTab::Remove ()
 	{
-		emit entryLostCurrent (GetEntry<QObject> ());
+		if (IsCurrent_)
+			emit entryLostCurrent (GetEntry<QObject> ());
 		emit needToClose (this);
 	}
 
