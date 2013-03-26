@@ -56,6 +56,9 @@ namespace Util
 		FindFlags GetFlags () const;
 	protected:
 		virtual void handleNext (const QString&, FindFlags) = 0;
+	public slots:
+		void findNext ();
+		void findPrevious ();
 	private slots:
 		void on_Pattern__textChanged (const QString&);
 		void on_FindButton__released ();

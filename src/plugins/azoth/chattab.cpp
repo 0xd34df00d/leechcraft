@@ -232,6 +232,8 @@ namespace Azoth
 
 	ChatTab::~ChatTab ()
 	{
+		Ui_.View_->setFocusProxy (nullptr);
+
 		SetChatPartState (CPSGone);
 
 		qDeleteAll (HistoryMessages_);

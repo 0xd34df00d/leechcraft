@@ -36,6 +36,7 @@
 #include <QImageWriter>
 #include <QTimer>
 #include <QScrollBar>
+#include <QShortcut>
 #include <QUrl>
 #include <util/util.h>
 #include <util/xpc/stddatafiltermenucreator.h>
@@ -77,7 +78,7 @@ namespace Monocle
 	protected:
 		void handleNext (const QString& text, FindFlags flags)
 		{
-			SearchHandler_->Search (text, flags);
+			SetSuccessful (SearchHandler_->Search (text, flags));
 		}
 	};
 
@@ -616,6 +617,9 @@ namespace Monocle
 				FindDialog_,
 				SLOT (setFocus ()));
 		Toolbar_->addAction (findAction);
+
+		auto findNext = new QShortcut (QString ("F3"), FindDialog_, SLOT (findNext ()));
+		auto findPrev = new QShortcut (QString ("Shift+F3"), FindDialog_, SLOT (findPrevious ()));
 
 		Toolbar_->addSeparator ();
 
