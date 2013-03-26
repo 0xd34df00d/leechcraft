@@ -103,7 +103,7 @@ namespace LeechCraft
 					<< "/usr/share/leechcraft/";
 #endif
 			bool hasBeenAdded = false;
-			Q_FOREACH (const QString& prefix, prefixes)
+			for (const QString& prefix : prefixes)
 			{
 				GlobalPrefixesChain_ << prefix;
 				ScanPath (prefix + RelativePath_);
@@ -154,14 +154,13 @@ namespace LeechCraft
 		{
 			QSet<QString> alreadyListed;
 			QFileInfoList result;
-			Q_FOREACH (const QString& prefix,
-					LocalPrefixesChain_ + GlobalPrefixesChain_)
+			for (const auto& prefix : LocalPrefixesChain_ + GlobalPrefixesChain_)
 			{
 				const QString& path = prefix + RelativePath_ + option;
 				QDir dir (path);
 				const QFileInfoList& list =
 						dir.entryInfoList (nameFilters, filters);
-				Q_FOREACH (const QFileInfo& info, list)
+				for (const auto& info : list)
 				{
 					const QString& fname = info.fileName ();
 					if (alreadyListed.contains (fname))
@@ -177,9 +176,8 @@ namespace LeechCraft
 
 		QString ResourceLoader::GetPath (const QStringList& pathVariants) const
 		{
-			Q_FOREACH (const QString& prefix,
-					LocalPrefixesChain_ + GlobalPrefixesChain_)
-				Q_FOREACH (const QString& path, pathVariants)
+			for (const auto& prefix : LocalPrefixesChain_ + GlobalPrefixesChain_)
+				for (const auto& path : pathVariants)
 				{
 					const QString& can = QFileInfo (prefix + RelativePath_ + path).absoluteFilePath ();
 					if (QFile::exists (can))
@@ -284,8 +282,7 @@ namespace LeechCraft
 
 		void ResourceLoader::ScanPath (const QString& path)
 		{
-			Q_FOREACH (const QString& entry,
-					QDir (path).entryList (NameFilters_, AttrFilters_))
+			for (const auto& entry : QDir (path).entryList (NameFilters_, AttrFilters_))
 			{
 				Entry2Paths_ [entry] << path;
 				if (SubElemModel_->findItems (entry).size ())
@@ -313,12 +310,12 @@ namespace LeechCraft
 				if (i->isEmpty ())
 					toRemove << i.key ();
 
-			Q_FOREACH (const auto& entry, toRemove)
+			for (const auto& entry : toRemove)
 			{
 				Entry2Paths_.remove (entry);
 
 				auto items = SubElemModel_->findItems (entry);
-				Q_FOREACH (auto item, SubElemModel_->findItems (entry))
+				for (auto item : SubElemModel_->findItems (entry))
 					SubElemModel_->removeRow (item->row ());
 			}
 		}

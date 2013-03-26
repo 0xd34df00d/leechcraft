@@ -876,7 +876,7 @@ namespace Azoth
 					c.unicode ();
 			hash += nick.length ();
 		}
-		QColor nc = colors.at (std::abs (hash) % colors.size ());
+		const auto& nc = colors.at (std::abs (hash) % colors.size ());
 		return nc.name ();
 	}
 

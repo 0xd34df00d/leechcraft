@@ -46,7 +46,8 @@ namespace AdiumStyles
 	, StylesLoader_ (new Util::ResourceLoader ("azoth/styles/adium/", this))
 	, Proxy_ (proxy)
 	, PackProxyModel_ (new PackProxyModel (StylesLoader_, this))
-	, AvatarsCache_ (10 * 1024)
+	, AvatarsCache_ (10 * 1024 * 1024)
+	, OurAvatarsCache_ (1024 * 1024)
 	{
 		StylesLoader_->AddGlobalPrefix ();
 		StylesLoader_->AddLocalPrefix ();
@@ -755,9 +756,6 @@ namespace AdiumStyles
 
 		Frame2LastContact_.remove (static_cast<QWebFrame*> (sender ()));
 		Frame2Pack_.remove (static_cast<QWebFrame*> (sender ()));
-
-		AvatarsCache_.clear ();
-		OurAvatarsCache_.clear ();
 	}
 }
 }
