@@ -756,9 +756,6 @@ namespace AdiumStyles
 
 		Frame2LastContact_.remove (static_cast<QWebFrame*> (sender ()));
 		Frame2Pack_.remove (static_cast<QWebFrame*> (sender ()));
-
-		AvatarsCache_.clear ();
-		OurAvatarsCache_.clear ();
 	}
 }
 }
