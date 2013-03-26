@@ -199,31 +199,22 @@ namespace LeechCraft
 			int TorrentPlugin::AddJob (Entity e)
 			{
 				QString suggestedFname;
+				auto tm = Core::Instance ()->GetProxy ()->GetTagsManager ();
 
 				if (e.Entity_.canConvert<QUrl> ())
 				{
 					QUrl resource = e.Entity_.toUrl ();
 					if (resource.scheme () == "magnet")
 					{
-						QString at = XmlSettingsManager::Instance ()->
-							property ("AutomaticTags").toString ();
-						QStringList tags = e.Additional_ [" Tags"].toStringList ();
-						Q_FOREACH (QString tag, Core::Instance ()->GetProxy ()->
-								GetTagsManager ()->Split (at))
-							tags << Core::Instance ()->GetProxy ()->
-								GetTagsManager ()->GetID (tag);
+						auto at = XmlSettingsManager::Instance ()->property ("AutomaticTags").toString ();
+						auto tags = e.Additional_ [" Tags"].toStringList ();
+						for (const auto& tag : tm->Split (at))
+							tags << tm->GetID (tag);
 
-						QList<QPair<QString, QString>> queryItems = resource.queryItems ();
-						for (QList<QPair<QString, QString>>::const_iterator i = queryItems.begin (),
-								end = queryItems.end (); i != end; ++i)
-							if (i->first == "kt")
-							{
-								QStringList humanReadable = i->second
-									.split ('+', QString::SkipEmptyParts);
-								Q_FOREACH (QString hr, humanReadable)
-									tags += Core::Instance ()->GetProxy ()->
-										GetTagsManager ()->GetID (hr);
-							}
+						for (const auto& p : resource.queryItems ())
+							if (p.first == "kt")
+								for (const auto& hr : p.second.split ('+', QString::SkipEmptyParts))
+									tags += tm->GetID (hr);
 
 						return Core::Instance ()->AddMagnet (resource.toString (),
 								e.Location_,
@@ -253,6 +244,8 @@ namespace LeechCraft
 				AddTorrentDialog_->SetFilename (suggestedFname);
 				if (!e.Location_.isEmpty ())
 					AddTorrentDialog_->SetSavePath (e.Location_);
+				else if (e.Parameters_ & IsDownloaded && !suggestedFname.isEmpty ())
+					AddTorrentDialog_->SetSavePath (QFileInfo (suggestedFname).absolutePath ());
 
 				QString path;
 				QStringList tags = e.Additional_ [" Tags"].toStringList ();

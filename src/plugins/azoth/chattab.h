@@ -93,6 +93,8 @@ namespace Azoth
 
 		ChatPartState PreviousState_;
 		QString LastLink_;
+
+		bool IsCurrent_;
 	public:
 		static void SetParentMultiTabs (QObject*);
 		static void SetChatTabClassInfo (const TabClassInfo&);
