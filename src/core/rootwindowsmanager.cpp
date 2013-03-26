@@ -234,7 +234,7 @@ namespace LeechCraft
 
 	namespace
 	{
-#ifdef Q_OS_UNIX
+#if defined (Q_OS_UNIX) && !defined (Q_OS_MAC)
 		void SetWMClass (QWidget *w, QByteArray name)
 		{
 			XClassHint hint;
