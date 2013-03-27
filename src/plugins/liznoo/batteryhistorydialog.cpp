@@ -21,6 +21,9 @@
 #include <qwt_plot_curve.h>
 #include <qwt_curve_fitter.h>
 #include <qwt_legend.h>
+#include <qwt_dyngrid_layout.h>
+#include "batteryinfo.h"
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -61,6 +64,16 @@ namespace Liznoo
 		QwtLegend *legend = new QwtLegend;
 		legend->setItemMode (QwtLegend::ClickableItem);
 		Ui_.PercentPlot_->insertLegend (legend, QwtPlot::BottomLegend);
+
+		auto layout = qobject_cast<QwtDynGridLayout*> (legend->contentsWidget ()->layout ());
+		if (layout)
+			layout->setMaxCols (1);
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "legend contents layout is not a QwtDynGridLayout:"
+					<< legend->contentsWidget ()->layout ();
+
+		Ui_.InfoFrame_->layout ()->addWidget (legend);
 	}
 
 	void BatteryHistoryDialog::UpdateHistory (const QLinkedList<BatteryHistory>& hist, const BatteryInfo& info)
@@ -82,6 +95,43 @@ namespace Liznoo
 		Energy_->setSamples (xdata, energy);
 
 		Ui_.PercentPlot_->replot ();
+
+		QString chargeStateStr;
+		if (info.TimeToEmpty_)
+		{
+			Ui_.RemainingTimeLabel_->setVisible (true);
+			Ui_.RemainingTime_->setVisible (true);
+			Ui_.RemainingTime_->setText (Util::MakeTimeFromLong (info.TimeToEmpty_));
+
+			chargeStateStr = tr ("(discharging)");
+		}
+		else if (info.TimeToFull_)
+		{
+			Ui_.RemainingTimeLabel_->setVisible (true);
+			Ui_.RemainingTime_->setVisible (true);
+			Ui_.RemainingTime_->setText (Util::MakeTimeFromLong (info.TimeToFull_));
+
+			chargeStateStr = tr ("(charging)");
+		}
+		else
+		{
+			Ui_.RemainingTimeLabel_->setVisible (false);
+			Ui_.RemainingTime_->setVisible (false);
+		}
+
+		if (info.Temperature_ > 100)
+		{
+			Ui_.TempLabel_->setVisible (true);
+			Ui_.Temp_->setVisible (true);
+			Ui_.Temp_->setText (QString::fromUtf8 ("%1 °C").arg (info.Temperature_ - 273.15));
+		}
+		else
+		{
+			Ui_.TempLabel_->setVisible (false);
+			Ui_.Temp_->setVisible (false);
+		}
+
+		Ui_.PercentageLabel_->setText (QString::number (info.Percentage_) + "% " + chargeStateStr);
 	}
 }
 }
