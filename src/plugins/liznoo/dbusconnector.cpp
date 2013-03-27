@@ -159,6 +159,7 @@ namespace Liznoo
 		info.EnergyFull_ = face.property ("EnergyFull").toDouble ();
 		info.EnergyRate_ = face.property ("EnergyRate").toDouble ();
 		info.Technology_ = TechIdToString (face.property ("Technology").toInt ());
+		info.Temperature_ = 0;
 
 		emit batteryInfoUpdated (info);
 	}
