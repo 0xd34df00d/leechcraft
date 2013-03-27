@@ -114,13 +114,13 @@ namespace Liznoo
 				SB_);
 
 		auto res = face.call ("EnumerateDevices");
-		Q_FOREACH (QVariant argument, res.arguments ())
+		for (const auto& argument : res.arguments ())
 		{
 			auto arg = argument.value<QDBusArgument> ();
-			QStringList paths;
+			QList<QDBusObjectPath> paths;
 			arg >> paths;
-			Q_FOREACH (const QString& path, paths)
-				requeryDevice (path);
+			for (const auto& path : paths)
+				requeryDevice (path.path ());
 		}
 	}
 
