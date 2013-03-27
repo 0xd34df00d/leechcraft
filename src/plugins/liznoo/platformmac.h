@@ -33,12 +33,16 @@ namespace Liznoo
 		IONotificationPortRef NotifyPortRef_;
 		io_object_t NotifierObject_;
 		io_connect_t Port_;
+
+		CFRunLoopSourceRef PSEventsSource_;
 	public:
 		PlatformMac (QObject* = 0);
 		~PlatformMac ();
 
 		void Stop ();
 		void IOCallback (io_service_t, natural_t, void*);
+	public slots:
+		void powerSourcesChanged ();
 	};
 }
 }

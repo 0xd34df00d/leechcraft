@@ -187,7 +187,8 @@ namespace SB2
 			const auto& idStr = QString::number (NextActionId_);
 
 			auto item = new QStandardItem;
-			item->setData (act->text (), TrayModel::Roles::ActionText);
+			item->setData (act->toolTip ().isEmpty () ? act->text () : act->toolTip (),
+					TrayModel::Roles::ActionText);
 			item->setData (prefix + idStr + "/0", TrayModel::Roles::ActionIcon);
 			item->setData (QVariant::fromValue<QObject*> (act), TrayModel::Roles::ActionObject);
 			Model_->insertRow (insRow++, item);

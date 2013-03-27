@@ -16,38 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_POSHUKU_PASSWORDREMEMBER_H
-#define PLUGINS_POSHUKU_PLUGINS_POSHUKU_PASSWORDREMEMBER_H
-#include <util/gui/pagenotification.h>
-#include "pageformsdata.h"
-#include "ui_passwordremember.h"
+#pragma once
+
+#include <QWidget>
+#include <util/utilconfig.h>
 
 namespace LeechCraft
 {
-struct Entity;
-
-namespace Poshuku
+namespace Util
 {
-	class PasswordRemember : public Util::PageNotification
+	class UTIL_API PageNotification : public QWidget
 	{
-		Q_OBJECT
-
-		Ui::PasswordRemember Ui_;
-		PageFormsData_t TempData_;
 	public:
-		PasswordRemember (QWidget* = 0);
-	public slots:
-		void add (const PageFormsData_t&);
-	private:
-		bool Changed (const ElementsData_t&, const QString&);
-	private slots:
-		void on_Remember__released ();
-		void on_NotNow__released ();
-		void on_Never__released ();
-	signals:
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
+		PageNotification (QWidget*);
 	};
 }
 }
-
-#endif

@@ -31,6 +31,7 @@ SET (SRCS
 	bookmark.cpp
 	thumbswidget.cpp
 	pageslayoutmanager.cpp
+	textsearchhandler.cpp
 	)
 SET (FORMS
 	documenttab.ui

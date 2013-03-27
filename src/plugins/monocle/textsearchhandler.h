@@ -16,21 +16,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_NOTIFICATION_H
-#define PLUGINS_POSHUKU_NOTIFICATION_H
-#include <QWidget>
+#pragma once
+
+#include <QObject>
+#include "interfaces/monocle/idocument.h"
+#include <util/gui/findnotification.h>
+
+class QGraphicsRectItem;
+class QGraphicsView;
+class QGraphicsScene;
 
 namespace LeechCraft
 {
-namespace Poshuku
+namespace Monocle
 {
-	class Notification : public QWidget
+	class PageGraphicsItem;
+	class PagesLayoutManager;
+
+	class TextSearchHandler : public QObject
 	{
 		Q_OBJECT
+
+		QGraphicsView * const View_;
+		QGraphicsScene * const Scene_;
+		PagesLayoutManager * const LayoutMgr_;
+
+		IDocument_ptr Doc_;
+		QList<PageGraphicsItem*> Pages_;
+
+		QString CurrentSearchString_;
+
+		QList<QGraphicsRectItem*> CurrentHighlights_;
+		int CurrentRectIndex_;
 	public:
-		Notification (QWidget* = 0);
+		TextSearchHandler (QGraphicsView*, PagesLayoutManager*, QObject* = 0);
+
+		void HandleDoc (IDocument_ptr, const QList<PageGraphicsItem*>&);
+
+		bool Search (const QString&, Util::FindNotification::FindFlags);
+	private:
+		void SelectItem (int);
 	};
 }
 }
-
-#endif

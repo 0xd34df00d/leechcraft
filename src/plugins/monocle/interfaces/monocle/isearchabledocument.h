@@ -31,10 +31,10 @@ namespace Monocle
 	public:
 		virtual ~ISearchableDocument () {}
 
-		virtual QMap<int, QList<QRectF>> GetTextPositions (const QString&) = 0;
+		virtual QMap<int, QList<QRectF>> GetTextPositions (const QString&, Qt::CaseSensitivity) = 0;
 	};
 }
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::ISearchableDocument,
-		"org.LeechCraft.Monocle.IDynamicDocument/1.0");
+		"org.LeechCraft.Monocle.ISearchableDocument/1.0");

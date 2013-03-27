@@ -317,7 +317,8 @@ namespace Liznoo
 				Battery2Dialog_.contains (id))
 		{
 			auto dia = static_cast<BatteryHistoryDialog*> (Battery2Dialog_.value (id));
-			dia->close ();
+			if (dia)
+				dia->close ();
 			return;
 		}
 

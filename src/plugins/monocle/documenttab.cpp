@@ -36,9 +36,11 @@
 #include <QImageWriter>
 #include <QTimer>
 #include <QScrollBar>
+#include <QShortcut>
 #include <QUrl>
 #include <util/util.h>
 #include <util/xpc/stddatafiltermenucreator.h>
+#include <util/gui/findnotification.h>
 #include <interfaces/imwproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include "interfaces/monocle/ihavetoc.h"
@@ -58,11 +60,28 @@
 #include "bookmarkswidget.h"
 #include "pageslayoutmanager.h"
 #include "thumbswidget.h"
+#include "textsearchhandler.h"
 
 namespace LeechCraft
 {
 namespace Monocle
 {
+	class FindDialog : public Util::FindNotification
+	{
+		TextSearchHandler *SearchHandler_;
+	public:
+		FindDialog (TextSearchHandler *searchHandler, QWidget *parent)
+		: Util::FindNotification (parent)
+		, SearchHandler_ (searchHandler)
+		{
+		}
+	protected:
+		void handleNext (const QString& text, FindFlags flags)
+		{
+			SetSuccessful (SearchHandler_->Search (text, flags));
+		}
+	};
+
 	DocumentTab::DocumentTab (const TabClassInfo& tc, QObject *parent)
 	: TC_ (tc)
 	, ParentPlugin_ (parent)
@@ -72,6 +91,7 @@ namespace Monocle
 	, LayOnePage_ (0)
 	, LayTwoPages_ (0)
 	, LayoutManager_ (0)
+	, SearchHandler_ (0)
 	, DockWidget_ (new QDockWidget (tr ("Monocle dock")))
 	, TOCWidget_ (new TOCWidget ())
 	, BMWidget_ (new BookmarksWidget (this))
@@ -86,6 +106,10 @@ namespace Monocle
 		Ui_.PagesView_->SetDocumentTab (this);
 
 		LayoutManager_ = new PagesLayoutManager (Ui_.PagesView_, this);
+		SearchHandler_ = new TextSearchHandler (Ui_.PagesView_, LayoutManager_, this);
+
+		FindDialog_ = new FindDialog (SearchHandler_, this);
+		FindDialog_->hide ();
 
 		SetupToolbar ();
 
@@ -333,55 +357,25 @@ namespace Monocle
 		const auto& title = QFileInfo (path).fileName ();
 		emit changeTabName (this, title);
 
-		auto isa = qobject_cast<ISupportAnnotations*> (CurrentDoc_->GetQObject ());
-
 		for (int i = 0, size = CurrentDoc_->GetNumPages (); i < size; ++i)
 		{
 			auto item = new PageGraphicsItem (CurrentDoc_, i);
 			Scene_.addItem (item);
 			Pages_ << item;
-
-			if (isa)
-				isa->GetAnnotations (i);
 		}
 
 		LayoutManager_->HandleDoc (CurrentDoc_, Pages_);
+		SearchHandler_->HandleDoc (CurrentDoc_, Pages_);
 
-		if (state.CurrentScale_ > 0)
-		{
-			LayoutManager_->SetLayoutMode (state.Lay_);
-			LayoutManager_->SetScaleMode (state.ScaleMode_);
-			LayoutManager_->SetFixedScale (state.CurrentScale_);
-
-			switch (state.ScaleMode_)
-			{
-			case ScaleMode::FitWidth:
-				ScalesBox_->setCurrentIndex (0);
-				break;
-			case ScaleMode::FitPage:
-				ScalesBox_->setCurrentIndex (1);
-				break;
-			case ScaleMode::Fixed:
-			{
-				const auto scaleIdx = ScalesBox_->findData (state.CurrentScale_);
-				if (scaleIdx >= 0)
-					ScalesBox_->setCurrentIndex (scaleIdx);
-				break;
-			}
-			}
-
-			syncUIToLayMode ();
-		}
+		recoverDocState (state);
 		Relayout ();
 		SetCurrentPage (state.CurrentPage_, false);
 
 		checkCurrentPageChange (true);
 
 		TOCEntryLevel_t topLevel;
-		if (auto toc = qobject_cast<IHaveTOC*> (CurrentDoc_->GetQObject ()))
-			topLevel = toc->GetTOC ();
-		TOCWidget_->SetTOC (topLevel);
-		TOCWidget_->setEnabled (!topLevel.isEmpty ());
+		auto toc = qobject_cast<IHaveTOC*> (CurrentDoc_->GetQObject ());
+		TOCWidget_->SetTOC (toc ? toc->GetTOC () : TOCEntryLevel_t ());
 
 		connect (CurrentDoc_->GetQObject (),
 				SIGNAL (navigateRequested (QString, int, double, double)),
@@ -409,9 +403,11 @@ namespace Monocle
 	{
 		auto copyAsImage = menu->addAction (tr ("Copy selection as image"),
 				this, SLOT (handleCopyAsImage ()));
+		copyAsImage->setProperty ("ActionIcon", "image-x-generic");
 
 		auto saveAsImage = menu->addAction (tr ("Save selection as image..."),
 				this, SLOT (handleSaveAsImage ()));
+		saveAsImage->setProperty ("ActionIcon", "document-save");
 
 		if (qobject_cast<IHaveTextContent*> (CurrentDoc_->GetQObject ()))
 		{
@@ -422,6 +418,7 @@ namespace Monocle
 			auto copyAsText = menu->addAction (tr ("Copy selection as text"),
 					this, SLOT (handleCopyAsText ()));
 			copyAsText->setProperty ("Monocle/Text", selText);
+			copyAsText->setProperty ("ActionIcon", "edit-copy");
 
 			new Util::StdDataFilterMenuCreator (selText,
 					Core::Instance ().GetProxy ()->GetEntityManager (),
@@ -605,6 +602,24 @@ namespace Monocle
 				this,
 				SLOT (setSelectionMode (bool)));
 		Toolbar_->addAction (selectModeAction);
+
+		Toolbar_->addSeparator ();
+
+		auto findAction = new QAction (tr ("Find..."), this);
+		findAction->setShortcut (QString ("Ctrl+F"));
+		findAction->setProperty ("ActionIcon", "edit-find");
+		connect (findAction,
+				SIGNAL (triggered ()),
+				FindDialog_,
+				SLOT (show ()));
+		connect (findAction,
+				SIGNAL (triggered ()),
+				FindDialog_,
+				SLOT (setFocus ()));
+		Toolbar_->addAction (findAction);
+
+		auto findNext = new QShortcut (QString ("F3"), FindDialog_, SLOT (findNext ()));
+		auto findPrev = new QShortcut (QString ("Shift+F3"), FindDialog_, SLOT (findPrevious ()));
 
 		Toolbar_->addSeparator ();
 
@@ -1015,6 +1030,35 @@ namespace Monocle
 				LayOnePage_ :
 				LayTwoPages_;
 		action->setChecked (true);
+	}
+
+	void DocumentTab::recoverDocState (DocStateManager::State state)
+	{
+		if (state.CurrentScale_ <= 0)
+			return;
+
+		LayoutManager_->SetLayoutMode (state.Lay_);
+		LayoutManager_->SetScaleMode (state.ScaleMode_);
+		LayoutManager_->SetFixedScale (state.CurrentScale_);
+
+		switch (state.ScaleMode_)
+		{
+		case ScaleMode::FitWidth:
+			ScalesBox_->setCurrentIndex (0);
+			break;
+		case ScaleMode::FitPage:
+			ScalesBox_->setCurrentIndex (1);
+			break;
+		case ScaleMode::Fixed:
+		{
+			const auto scaleIdx = ScalesBox_->findData (state.CurrentScale_);
+			if (scaleIdx >= 0)
+				ScalesBox_->setCurrentIndex (scaleIdx);
+			break;
+		}
+		}
+
+		syncUIToLayMode ();
 	}
 
 	void DocumentTab::setMoveMode (bool enable)
