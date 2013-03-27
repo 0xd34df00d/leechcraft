@@ -41,6 +41,8 @@ namespace Liznoo
 
 		QString Technology_;
 
+		double Temperature_;
+
 		void Dump ();
 	};
 }
