@@ -63,7 +63,7 @@ namespace Liznoo
 
 		QwtLegend *legend = new QwtLegend;
 		legend->setItemMode (QwtLegend::ClickableItem);
-		Ui_.PercentPlot_->insertLegend (legend, QwtPlot::BottomLegend);
+		Ui_.PercentPlot_->insertLegend (legend, QwtPlot::ExternalLegend);
 
 		auto layout = qobject_cast<QwtDynGridLayout*> (legend->contentsWidget ()->layout ());
 		if (layout)
