@@ -26,6 +26,7 @@
 #include <mach/mach_interface.h>
 #include <mach/mach_init.h>
 #include <IOKit/pwr_mgt/IOPMLib.h>
+#include <IOKit/pwr_mgt/IOPM.h>
 #include <IOKit/IOMessage.h>
 #include <IOKit/ps/IOPowerSources.h>
 #include <IOKit/ps/IOPSKeys.h>
@@ -149,6 +150,21 @@ namespace Liznoo
 			CFNumberGetValue (numRef, Numeric2ID<T>::Value, &result);
 			return result;
 		}
+
+		QString GetString (CFDictionaryRef dict, NSString *key, const QString& def)
+		{
+			auto strRef = static_cast<CFStringRef> (CFDictionaryGetValue (dict, key));
+			if (!strRef)
+				return def;
+
+			return QString::fromLatin1 (CFStringGetCStringPtr (strRef, 0));
+		}
+
+		bool GetBool (CFDictionaryRef dict, NSString *key, bool def)
+		{
+			auto boolRef = static_cast<CFBooleanRef> (CFDictionaryGetValue (dict, key));
+			return boolRef ? boolRef == kCFBooleanTrue : def;
+		}
 	}
 
 	void PlatformMac::powerSourcesChanged ()
@@ -164,32 +180,51 @@ namespace Liznoo
 			return;
 		}
 
+		auto matching = IOServiceMatching ("IOPMPowerSource");
+		auto entry = IOServiceGetMatchingService (kIOMasterPortDefault, matching);
+		CFMutableDictionaryRef properties = nullptr;
+		IORegistryEntryCreateCFProperties (entry, &properties, nullptr, 0);
+
+		/*
+		const void **keys = new const void* [CFDictionaryGetCount (properties)];
+		CFDictionaryGetKeysAndValues (properties, keys, nullptr);
+		for (int i = 0; i < CFDictionaryGetCount (properties); ++i)
+			qDebug () << CFStringGetCStringPtr (static_cast<CFStringRef> (keys [i]), 0);
+		*/
+
+		const auto defVoltage = GetNum<int> (properties, @kIOPMPSAmperageKey, 0) / 1000.;
+		const auto defAmperage = GetNum<int> (properties, @kIOPMPSVoltageKey, 0) / 1000.	;
+		const auto wattage = defVoltage * defAmperage;
+		const auto temperature = GetNum<int> (properties, @kIOPMPSBatteryTemperatureKey, 0) / 10.;
+
 		for (CFIndex i = 0; i < CFArrayGetCount (sourcesList); ++i)
 		{
 			auto dict = IOPSGetPowerSourceDescription (info, CFArrayGetValueAtIndex (sourcesList, i));
 
-			auto getInt = [&dict] (NSString *key, int def)
-				{ return GetNum<int> (dict, key, def); };
-			auto getDouble = [&dict] (NSString *key, int def)
-				{ return GetNum<double> (dict, key, def); };
-			auto getString = [&dict] (NSString *key, const QString& def) -> QString
-			{
-				auto strRef = static_cast<CFStringRef> (CFDictionaryGetValue (dict, key));
-				if (!strRef)
-					return def;
-				return QString::fromLatin1 (CFStringGetCStringPtr (strRef, 0));
-			};
+			const auto currentCapacity = GetNum<int> (dict, @kIOPSCurrentCapacityKey, 0);
+			const auto maxCapacity = GetNum<int> (dict, @kIOPSMaxCapacityKey, 0);
 
-			const auto currentCapacity = getInt (@kIOPSCurrentCapacityKey, 0);
-			const auto maxCapacity = getInt (@kIOPSMaxCapacityKey, 0);
+			const auto thisVoltage = GetNum<int> (dict, @kIOPSVoltageKey, 0);
+
+			const auto thisWattage = GetBool (dict, @kIOPSIsChargedKey, false) ? 0 : wattage;
 
 			const BatteryInfo bi =
 			{
-				getString (@kIOPSHardwareSerialNumberKey, QString ()),
+				GetString (dict, @kIOPSHardwareSerialNumberKey, QString ()),
+
 				static_cast<char> (maxCapacity ? 100 * currentCapacity / maxCapacity : 0),
-				getInt (@kIOPSTimeToFullChargeKey, 0) * 60,
-				getInt (@kIOPSTimeToEmptyKey, 0) * 60,
-				getDouble (@kIOPSVoltageKey, 0)
+
+				GetNum<int> (dict, @kIOPSTimeToFullChargeKey, 0) * 60,
+				GetNum<int> (dict, @kIOPSTimeToEmptyKey, 0) * 60,
+				(thisVoltage ? thisVoltage : defVoltage) / 1000.,
+
+				static_cast<double> (currentCapacity),
+				static_cast<double> (maxCapacity),
+				thisWattage >= 0 ? thisWattage : -thisWattage,
+
+				QString (),
+
+				temperature
 			};
 
 			emit batteryInfoUpdated (bi);
