@@ -1060,13 +1060,16 @@ namespace LMP
 		Core::Instance ().GetPlaylistManager ()->
 				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
 
-		const auto& song = XmlSettingsManager::Instance ().property ("LastSong").toString ();
-		if (!song.isEmpty ())
+		if (Source_->state () == Phonon::StoppedState)
 		{
-			const auto pos = std::find_if (CurrentQueue_.begin (), CurrentQueue_.end (),
-					[&song] (decltype (CurrentQueue_.front ()) item) { return song == item.fileName (); });
-			if (pos != CurrentQueue_.end ())
-				Source_->setCurrentSource (*pos);
+			const auto& song = XmlSettingsManager::Instance ().property ("LastSong").toString ();
+			if (!song.isEmpty ())
+			{
+				const auto pos = std::find_if (CurrentQueue_.begin (), CurrentQueue_.end (),
+						[&song] (decltype (CurrentQueue_.front ()) item) { return song == item.fileName (); });
+				if (pos != CurrentQueue_.end ())
+					Source_->setCurrentSource (*pos);
+			}
 		}
 
 		const auto& currentSource = Source_->currentSource ();
