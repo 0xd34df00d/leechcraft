@@ -31,12 +31,16 @@ namespace Liznoo
 
 		char Percentage_;
 
+		/** Time until battery is fully charged in seconds, or 0 if
+		 * battery isn't charging.
+		 */
 		qlonglong TimeToFull_;
 		qlonglong TimeToEmpty_;
 		double Voltage_;
 
 		double Energy_;
 		double EnergyFull_;
+		double DesignEnergyFull_;
 		double EnergyRate_;
 
 		QString Technology_;
