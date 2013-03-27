@@ -131,6 +131,48 @@ namespace Liznoo
 			Ui_.Temp_->setVisible (false);
 		}
 
+		if (info.Voltage_)
+		{
+			Ui_.VoltageLabel_->setVisible (true);
+			Ui_.Voltage_->setVisible (true);
+			Ui_.Voltage_->setText (tr ("%1 V").arg (info.Voltage_, 0, 'f', 3));
+		}
+		else
+		{
+			Ui_.VoltageLabel_->setVisible (false);
+			Ui_.Voltage_->setVisible (false);
+		}
+
+		const bool energyAvailable = info.DesignEnergyFull_ > 1 && info.Energy_ > 1 && info.EnergyFull_ > 1;
+		if (energyAvailable)
+		{
+			Ui_.DesignCapacity_->setText (tr ("%1 mAh").arg (info.DesignEnergyFull_, 0, 'f', 2));
+			Ui_.LastFullCapacity_->setText (tr ("%1 mAh").arg (info.EnergyFull_, 0, 'f', 2));
+			Ui_.Capacity_->setText (tr ("%1 mAh").arg (info.Energy_, 0, 'f', 2));
+
+			const auto ratio = info.EnergyFull_ / info.DesignEnergyFull_;
+			QString ratioText;
+			if (ratio > 0.9)
+				ratioText = tr ("awesome");
+			else if (ratio > 0.7)
+				ratioText = tr ("good");
+			else if (ratio > 0.4)
+				ratioText = tr ("degraded");
+			else
+				ratioText = tr ("bad");
+			Ui_.Health_->setText (tr ("%1% (%2)")
+					.arg (ratio * 100, 0, 'f', 1)
+					.arg (ratioText));
+		}
+		Ui_.DesignCapacityLabel_->setVisible (energyAvailable);
+		Ui_.DesignCapacity_->setVisible (energyAvailable);
+		Ui_.LastFullCapacityLabel_->setVisible (energyAvailable);
+		Ui_.LastFullCapacity_->setVisible (energyAvailable);
+		Ui_.CapacityLabel_->setVisible (energyAvailable);
+		Ui_.Capacity_->setVisible (energyAvailable);
+		Ui_.HealthLabel_->setVisible (energyAvailable);
+		Ui_.Health_->setVisible (energyAvailable);
+
 		Ui_.PercentageLabel_->setText (QString::number (info.Percentage_) + "% " + chargeStateStr);
 	}
 }
