@@ -194,6 +194,9 @@ namespace Liznoo
 
 		const auto defVoltage = GetNum<int> (properties, @kIOPMPSVoltageKey, 0) / 1000.;
 		const auto defAmperage = GetNum<int> (properties, @kIOPMPSAmperageKey, 0) / 1000.;
+		const auto defDesignCapacity = GetNum<int> (properties, @kIOPMPSDesignCapacityKey, 0) / 100.;
+		const auto defMaxCapacity = GetNum<int> (properties, @kIOPMPSMaxCapacityKey, 0) / 100.;
+		const auto defCapacity = GetNum<int> (properties, @kIOPMPSCurrentCapacityKey, 0) / 100.;
 		const auto wattage = defVoltage * defAmperage;
 		const auto temperature = GetNum<int> (properties, @kIOPMPSBatteryTemperatureKey, 0) / 10.;
 
@@ -211,14 +214,15 @@ namespace Liznoo
 			{
 				GetString (dict, @kIOPSHardwareSerialNumberKey, QString ()),
 
-				static_cast<char> (maxCapacity ? 100 * currentCapacity / maxCapacity : 0),
+				static_cast<char> (maxCapacity ? 100 * currentCapacity / maxCapacity : currentCapacity),
 
 				GetNum<int> (dict, @kIOPSTimeToFullChargeKey, 0) * 60,
 				GetNum<int> (dict, @kIOPSTimeToEmptyKey, 0) * 60,
 				thisVoltage ? thisVoltage : defVoltage,
 
-				static_cast<double> (currentCapacity),
-				static_cast<double> (maxCapacity),
+				static_cast<double> (defCapacity),
+				static_cast<double> (defMaxCapacity),
+				static_cast<double> (defDesignCapacity),
 				thisWattage >= 0 ? thisWattage : -thisWattage,
 
 				QString (),
