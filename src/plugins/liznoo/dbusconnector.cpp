@@ -157,6 +157,7 @@ namespace Liznoo
 		info.Voltage_ = face.property ("Voltage").toDouble ();
 		info.Energy_ = face.property ("Energy").toDouble ();
 		info.EnergyFull_ = face.property ("EnergyFull").toDouble ();
+		info.DesignEnergyFull_ = face.property ("EnergyFullDesign").toDouble ();
 		info.EnergyRate_ = face.property ("EnergyRate").toDouble ();
 		info.Technology_ = TechIdToString (face.property ("Technology").toInt ());
 		info.Temperature_ = 0;
