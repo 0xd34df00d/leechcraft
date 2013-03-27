@@ -97,7 +97,7 @@ namespace Liznoo
 		Ui_.PercentPlot_->replot ();
 
 		QString chargeStateStr;
-		if (info.TimeToEmpty_)
+		if (info.TimeToEmpty_ && info.TimeToEmpty_ < 3600 * 24)
 		{
 			Ui_.RemainingTimeLabel_->setVisible (true);
 			Ui_.RemainingTime_->setVisible (true);
@@ -105,7 +105,7 @@ namespace Liznoo
 
 			chargeStateStr = tr ("(discharging)");
 		}
-		else if (info.TimeToFull_)
+		else if (info.TimeToFull_ && info.TimeToFull_ < 3600 * 24)
 		{
 			Ui_.RemainingTimeLabel_->setVisible (true);
 			Ui_.RemainingTime_->setVisible (true);
