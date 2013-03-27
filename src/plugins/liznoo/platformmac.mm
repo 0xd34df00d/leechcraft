@@ -204,8 +204,7 @@ namespace Liznoo
 			const auto currentCapacity = GetNum<int> (dict, @kIOPSCurrentCapacityKey, 0);
 			const auto maxCapacity = GetNum<int> (dict, @kIOPSMaxCapacityKey, 0);
 
-			const auto thisVoltage = GetNum<int> (dict, @kIOPSVoltageKey, 0);
-
+			const auto thisVoltage = GetNum<int> (dict, @kIOPSVoltageKey, 0) / 1000.;
 			const auto thisWattage = GetBool (dict, @kIOPSIsChargedKey, false) ? 0 : wattage;
 
 			const BatteryInfo bi =
@@ -216,7 +215,7 @@ namespace Liznoo
 
 				GetNum<int> (dict, @kIOPSTimeToFullChargeKey, 0) * 60,
 				GetNum<int> (dict, @kIOPSTimeToEmptyKey, 0) * 60,
-				(thisVoltage ? thisVoltage : defVoltage) / 1000.,
+				thisVoltage ? thisVoltage : defVoltage,
 
 				static_cast<double> (currentCapacity),
 				static_cast<double> (maxCapacity),
