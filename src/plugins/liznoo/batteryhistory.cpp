@@ -28,6 +28,7 @@ namespace Liznoo
 	, Voltage_ (info.Voltage_)
 	, Energy_ (info.Energy_)
 	, EnergyRate_ (info.EnergyRate_)
+	, Temperature_ (info.Temperature_)
 	{
 	}
 }

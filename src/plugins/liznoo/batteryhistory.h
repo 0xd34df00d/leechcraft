@@ -33,6 +33,7 @@ namespace Liznoo
 		float Voltage_;
 		float Energy_;
 		float EnergyRate_;
+		float Temperature_;
 
 		explicit BatteryHistory (const BatteryInfo&);
 	};
