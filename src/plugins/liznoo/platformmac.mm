@@ -27,6 +27,9 @@
 #include <mach/mach_init.h>
 #include <IOKit/pwr_mgt/IOPMLib.h>
 #include <IOKit/IOMessage.h>
+#include <IOKit/ps/IOPowerSources.h>
+#include <IOKit/ps/IOPSKeys.h>
+#include <CoreFoundation/CFNumber.h>
 
 namespace LeechCraft
 {
@@ -39,11 +42,17 @@ namespace Liznoo
 			auto platform = static_cast<PlatformMac*> (refCon);
 			platform->IOCallback (service, messageType, messageArgument);
 		}
+
+		void PSCallbackProxy (void *refCon)
+		{
+			static_cast<PlatformMac*> (refCon)->powerSourcesChanged ();
+		}
 	}
 
 	PlatformMac::PlatformMac (QObject *parent)
 	: PlatformLayer (parent)
 	, Port_ (IORegisterForSystemPower (this, &NotifyPortRef_, IOCallbackProxy, &NotifierObject_))
+	, PSEventsSource_ (IOPSNotificationCreateRunLoopSource (PSCallbackProxy, this))
 	{
 		if (!Port_)
 		{
@@ -55,9 +64,16 @@ namespace Liznoo
 		CFRunLoopAddSource (CFRunLoopGetCurrent (),
 				IONotificationPortGetRunLoopSource (NotifyPortRef_),
 				kCFRunLoopCommonModes);
+		CFRunLoopAddSource (CFRunLoopGetCurrent (),
+				PSEventsSource_,
+				kCFRunLoopCommonModes);
 		QTimer::singleShot (100,
 				this,
 				SIGNAL (started ()));
+
+		QTimer::singleShot (100,
+				this,
+				SLOT (powerSourcesChanged ()));
 	}
 
 	PlatformMac::~PlatformMac ()
@@ -69,6 +85,11 @@ namespace Liznoo
 	{
 		if (!Port_)
 			return;
+
+		CFRunLoopRemoveSource (CFRunLoopGetCurrent (),
+				PSEventsSource_,
+				kCFRunLoopCommonModes);
+		CFRelease (PSEventsSource_);
 
 		CFRunLoopRemoveSource (CFRunLoopGetCurrent (),
 				IONotificationPortGetRunLoopSource (NotifyPortRef_),
@@ -95,6 +116,93 @@ namespace Liznoo
 		default:
 			break;
 		}
+	}
+
+	namespace
+	{
+		template<typename T>
+		struct Numeric2ID
+		{
+		};
+
+		template<>
+		struct Numeric2ID<int>
+		{
+			enum { Value = kCFNumberIntType };
+		};
+
+		template<>
+		struct Numeric2ID<double>
+		{
+			enum { Value = kCFNumberDoubleType };
+		};
+
+		template<typename T>
+		T GetNum (CFDictionaryRef dict, const char *key, T def)
+		{
+			auto keyStr = CFStringCreateWithCString (nullptr, key, 0);
+			auto numRef = static_cast<CFNumberRef> (CFDictionaryGetValue (dict, keyStr));
+			CFRelease (keyStr);
+
+			if (!numRef)
+				return def;
+
+			int result = 0;
+			CFNumberGetValue (numRef, Numeric2ID<T>::Value, &result);
+			return result;
+		}
+	}
+
+	void PlatformMac::powerSourcesChanged ()
+	{
+		auto info = IOPSCopyPowerSourcesInfo ();
+		if (!info)
+			return;
+
+		auto sourcesList = IOPSCopyPowerSourcesList (info);
+		if (!sourcesList)
+		{
+			CFRelease (info);
+			return;
+		}
+
+		for (CFIndex i = 0; i < CFArrayGetCount (sourcesList); ++i)
+		{
+			auto dict = IOPSGetPowerSourceDescription (info, CFArrayGetValueAtIndex (sourcesList, i));
+
+			auto getInt = [&dict] (const char *key, int def)
+				{ return GetNum<int> (dict, key, def); };
+			auto getDouble = [&dict] (const char *key, int def)
+				{ return GetNum<double> (dict, key, def); };
+			auto getString = [&dict] (const char *key, const QString& def) -> QString
+			{
+				auto keyStr = CFStringCreateWithCString (nullptr, key, 0);
+				auto strRef = static_cast<CFStringRef> (CFDictionaryGetValue (dict, keyStr));
+				CFRelease (keyStr);
+
+				if (!strRef)
+					return def;
+
+				return QString::fromLatin1 (CFStringGetCStringPtr (strRef, 0));
+			};
+
+			const auto currentCapacity = getInt (kIOPSCurrentCapacityKey, 0);
+			const auto maxCapacity = getInt (kIOPSMaxCapacityKey, 0);
+
+			const BatteryInfo bi =
+			{
+				getString (kIOPSHardwareSerialNumberKey, QString ()),
+				static_cast<char> (maxCapacity ? 100 * currentCapacity / maxCapacity : 0),
+				0,
+				0,
+				getDouble (kIOPSVoltageKey, 0)
+			};
+
+			emit batteryInfoUpdated (bi);
+		}
+
+		CFRelease (sourcesList);
+		CFRelease (info);
 	}
 }
 }
