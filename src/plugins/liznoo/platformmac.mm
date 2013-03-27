@@ -192,8 +192,8 @@ namespace Liznoo
 			qDebug () << CFStringGetCStringPtr (static_cast<CFStringRef> (keys [i]), 0);
 		*/
 
-		const auto defVoltage = GetNum<int> (properties, @kIOPMPSAmperageKey, 0) / 1000.;
-		const auto defAmperage = GetNum<int> (properties, @kIOPMPSVoltageKey, 0) / 1000.	;
+		const auto defVoltage = GetNum<int> (properties, @kIOPMPSVoltageKey, 0) / 1000.;
+		const auto defAmperage = GetNum<int> (properties, @kIOPMPSAmperageKey, 0) / 1000.;
 		const auto wattage = defVoltage * defAmperage;
 		const auto temperature = GetNum<int> (properties, @kIOPMPSBatteryTemperatureKey, 0) / 10.;
 
