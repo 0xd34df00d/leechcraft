@@ -138,11 +138,9 @@ namespace Liznoo
 		};
 
 		template<typename T>
-		T GetNum (CFDictionaryRef dict, const char *key, T def)
+		T GetNum (CFDictionaryRef dict, NSString *keyStr, T def)
 		{
-			auto keyStr = CFStringCreateWithCString (nullptr, key, 0);
 			auto numRef = static_cast<CFNumberRef> (CFDictionaryGetValue (dict, keyStr));
-			CFRelease (keyStr);
 
 			if (!numRef)
 				return def;
@@ -170,32 +168,28 @@ namespace Liznoo
 		{
 			auto dict = IOPSGetPowerSourceDescription (info, CFArrayGetValueAtIndex (sourcesList, i));
 
-			auto getInt = [&dict] (const char *key, int def)
+			auto getInt = [&dict] (NSString *key, int def)
 				{ return GetNum<int> (dict, key, def); };
-			auto getDouble = [&dict] (const char *key, int def)
+			auto getDouble = [&dict] (NSString *key, int def)
 				{ return GetNum<double> (dict, key, def); };
-			auto getString = [&dict] (const char *key, const QString& def) -> QString
+			auto getString = [&dict] (NSString *key, const QString& def) -> QString
 			{
-				auto keyStr = CFStringCreateWithCString (nullptr, key, 0);
-				auto strRef = static_cast<CFStringRef> (CFDictionaryGetValue (dict, keyStr));
-				CFRelease (keyStr);
-
+				auto strRef = static_cast<CFStringRef> (CFDictionaryGetValue (dict, key));
 				if (!strRef)
 					return def;
-
 				return QString::fromLatin1 (CFStringGetCStringPtr (strRef, 0));
 			};
 
-			const auto currentCapacity = getInt (kIOPSCurrentCapacityKey, 0);
-			const auto maxCapacity = getInt (kIOPSMaxCapacityKey, 0);
+			const auto currentCapacity = getInt (@kIOPSCurrentCapacityKey, 0);
+			const auto maxCapacity = getInt (@kIOPSMaxCapacityKey, 0);
 
 			const BatteryInfo bi =
 			{
-				getString (kIOPSHardwareSerialNumberKey, QString ()),
+				getString (@kIOPSHardwareSerialNumberKey, QString ()),
 				static_cast<char> (maxCapacity ? 100 * currentCapacity / maxCapacity : 0),
-				0,
-				0,
-				getDouble (kIOPSVoltageKey, 0)
+				getInt (@kIOPSTimeToFullChargeKey, 0) * 60,
+				getInt (@kIOPSTimeToEmptyKey, 0) * 60,
+				getDouble (@kIOPSVoltageKey, 0)
 			};
 
 			emit batteryInfoUpdated (bi);
