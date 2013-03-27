@@ -63,7 +63,7 @@ namespace Liznoo
 		Ui_.PercentPlot_->insertLegend (legend, QwtPlot::BottomLegend);
 	}
 
-	void BatteryHistoryDialog::UpdateHistory (const QLinkedList<BatteryHistory>& hist)
+	void BatteryHistoryDialog::UpdateHistory (const QLinkedList<BatteryHistory>& hist, const BatteryInfo& info)
 	{
 		QVector<double> xdata (hist.size ());
 		QVector<double> percents (hist.size ());

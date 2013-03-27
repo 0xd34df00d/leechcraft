@@ -34,13 +34,13 @@ namespace Liznoo
 		Q_OBJECT
 
 		Ui::BatteryHistoryDialog Ui_;
-		
+
 		QwtPlotCurve *Percent_;
 		QwtPlotCurve *Energy_;
 	public:
 		BatteryHistoryDialog (int, QWidget* = 0);
 
-		void UpdateHistory (const QLinkedList<BatteryHistory>&);
+		void UpdateHistory (const QLinkedList<BatteryHistory>&, const BatteryInfo&);
 	};
 }
 }

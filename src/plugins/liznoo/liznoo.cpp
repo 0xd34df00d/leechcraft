@@ -297,7 +297,7 @@ namespace Liznoo
 
 	void Plugin::handleUpdateHistory ()
 	{
-		Q_FOREACH (const QString& id, Battery2LastInfo_.keys ())
+		for (const QString& id : Battery2LastInfo_.keys ())
 		{
 			auto& hist = Battery2History_ [id];
 			hist << BatteryHistory (Battery2LastInfo_ [id]);
@@ -305,8 +305,8 @@ namespace Liznoo
 				hist.removeFirst ();
 		}
 
-		Q_FOREACH (const QString& id, Battery2Dialog_.keys ())
-			Battery2Dialog_ [id]->UpdateHistory (Battery2History_ [id]);
+		for (const QString& id : Battery2Dialog_.keys ())
+			Battery2Dialog_ [id]->UpdateHistory (Battery2History_ [id], Battery2LastInfo_ [id]);
 	}
 
 	void Plugin::handleHistoryTriggered ()
@@ -322,7 +322,7 @@ namespace Liznoo
 		}
 
 		auto dialog = new BatteryHistoryDialog (HistSize);
-		dialog->UpdateHistory (Battery2History_ [id]);
+		dialog->UpdateHistory (Battery2History_ [id], Battery2LastInfo_ [id]);
 		dialog->setAttribute (Qt::WA_DeleteOnClose);
 		Battery2Dialog_ [id] = dialog;
 		connect (dialog,
