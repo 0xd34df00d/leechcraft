@@ -33,6 +33,7 @@ namespace Liznoo
 	: QDialog (parent)
 	, Percent_ (new QwtPlotCurve (tr ("Percentage")))
 	, Energy_ (new QwtPlotCurve (tr ("Energy rate")))
+	, Temperature_ (new QwtPlotCurve (tr ("Temperature")))
 	{
 		Ui_.setupUi (this);
 
@@ -61,6 +62,13 @@ namespace Liznoo
 		Energy_->setYAxis (QwtPlot::yRight);
 		Energy_->attach (Ui_.PercentPlot_);
 
+		QColor tempColor (Qt::green);
+		Temperature_->setPen (QPen (tempColor));
+		tempColor.setAlpha (20);
+		Temperature_->setBrush (tempColor);
+
+		Temperature_->setRenderHint (QwtPlotItem::RenderAntialiased);
+
 		QwtLegend *legend = new QwtLegend;
 		legend->setItemMode (QwtLegend::ClickableItem);
 		Ui_.PercentPlot_->insertLegend (legend, QwtPlot::ExternalLegend);
@@ -81,18 +89,29 @@ namespace Liznoo
 		QVector<double> xdata (hist.size ());
 		QVector<double> percents (hist.size ());
 		QVector<double> energy (hist.size ());
+		QVector<double> temperature (hist.size ());
 
+		bool setTemperature = false;
 		int i = 0;
 		std::for_each (hist.begin (), hist.end (),
-				[&xdata, &percents, &energy, &i] (const BatteryHistory& bh)
+				[&] (const BatteryHistory& bh) -> void
 				{
 					percents [i] = bh.Percentage_;
 					energy [i] = bh.EnergyRate_;
+
+					temperature [i] = bh.Temperature_ - 273.15;
+					setTemperature = bh.Temperature_ || setTemperature;
+
 					xdata [i] = i;
 					++i;
 				});
 		Percent_->setSamples (xdata, percents);
 		Energy_->setSamples (xdata, energy);
+		if (setTemperature)
+		{
+			Temperature_->attach (Ui_.PercentPlot_);
+			Temperature_->setSamples (xdata, temperature);
+		}
 
 		Ui_.PercentPlot_->replot ();
 
