@@ -56,6 +56,13 @@ namespace Acetamide
 		QString ChannelPassword_;
 	};
 
+	struct ChannelsDiscoverInfo
+	{
+		QString ChannelName_;
+		int UsersCount_;
+		QString Topic_;
+	};
+
 	enum ConnectionState
 	{
 		Connected,

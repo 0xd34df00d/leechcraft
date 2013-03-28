@@ -37,6 +37,12 @@ namespace Acetamide
 	, ISH_ (handler)
 	, Account_ (account)
 	{
+		QAction *showChannels = new QAction (tr ("Channels list"), this);
+		connect (showChannels,
+				SIGNAL(triggered ()),
+				ISH_,
+				SLOT (showChannels ()));
+		Actions_ << showChannels;
 	}
 
 	IrcServerHandler* IrcServerCLEntry::GetIrcServerHandler () const

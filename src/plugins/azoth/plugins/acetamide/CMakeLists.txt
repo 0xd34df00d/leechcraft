@@ -20,6 +20,8 @@ SET (ACETAMIDE_SRCS
 	channelhandler.cpp
 	channelparticipantentry.cpp
 	channelpublicmessage.cpp
+	channelslistdialog.cpp
+	channelslistfilterproxymodel.cpp
 	channelsmanager.cpp
 	clientconnection.cpp
 	core.cpp
@@ -60,6 +62,8 @@ SET (ACETAMIDE_HEADERS
 	channelhandler.h
 	channelparticipantentry.h
 	channelpublicmessage.h
+	channelslistdialog.h
+	channelslistfilterproxymodel.cpp
 	channelsmanager.h
 	clientconnection.h
 	core.h
@@ -95,6 +99,7 @@ SET (ACETAMIDE_HEADERS
 SET (ACETAMIDE_FORMS
 	bookmarkeditwidget.ui
 	channelconfigwidget.ui
+	channelslistdialog.ui
 	ircaccountconfigurationdialog.ui
 	ircaccountconfigurationwidget.ui
 	ircjoingroupchat.ui

@@ -395,6 +395,12 @@ namespace Acetamide
 		ISH_->SendCommand (modeCmd);
 	}
 
+	void IrcParser::ChannelsListCommand (const QStringList&)
+	{
+		QString chListCmd ("LIST \r\n");
+		ISH_->SendCommand (chListCmd);
+	}
+
 	bool IrcParser::ParseMessage (const QByteArray& message)
 	{
 		QString msg;
