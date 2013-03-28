@@ -25,6 +25,7 @@
 #include <interfaces/ihavetabs.h>
 #include "ui_managertab.h"
 
+class QComboBox;
 class QStandardItem;
 class QAction;
 
@@ -35,7 +36,9 @@ namespace NetStoreManager
 	class IStorageAccount;
 	class ISupportFileListings;
 	class AccountsManager;
-	class FilesModel;
+
+	class FilesTreeModel;
+	class FilesListModel;
 
 	enum Columns
 	{
@@ -54,8 +57,26 @@ namespace NetStoreManager
 		TabClassInfo Info_;
 		ICoreProxy_ptr Proxy_;
 
+		QToolBar *ToolBar_;
+
 		AccountsManager *AM_;
-		FilesModel *Model_;
+		FilesTreeModel *TreeModel_;
+		FilesListModel *ListModel_;
+
+		enum ViewMode
+		{
+			VMTree = 0,
+			VMList
+		};
+		ViewMode ViewMode_;
+		QAction *ViewModeAction_;
+
+		QComboBox *AccountsBox_;
+
+		QAction *Refresh_;
+		QAction *Upload_;
+
+
 
 		QAction *CopyURL_;
 		QAction *DeleteFile_;
@@ -67,6 +88,8 @@ namespace NetStoreManager
 		QAction *Download_;
 		QHash<IStorageAccount*, QHash<QString, bool>> Account2ItemExpandState_;
 	public:
+
+
 		ManagerTab (const TabClassInfo&, AccountsManager*, ICoreProxy_ptr, QObject*);
 
 		TabClassInfo GetTabClassInfo () const;
@@ -74,6 +97,9 @@ namespace NetStoreManager
 		void Remove ();
 		QToolBar* GetToolBar () const;
 	private:
+		void FillToolbar ();
+		void ShowAccountActions (bool show);
+
 		IStorageAccount* GetCurrentAccount () const;
 		void CallOnSelection (std::function<void (ISupportFileListings*, const QList<QStringList>&)>);
 		void ClearFilesModel ();
@@ -84,6 +110,14 @@ namespace NetStoreManager
 		QStandardItem* GetItemFromId (const QStringList& id) const;
 
 	private slots:
+		void changeViewMode (bool set);
+		void handleRefresh ();
+		void handleUpload ();
+
+		void handleAccountAdded (QObject *accObj);
+		void handleAccountRemoved (QObject *accObj);
+
+
 		void handleGotListing (const QList<QList<QStandardItem*>>&);
 		void handleGotFileUrl (const QUrl& url, const QStringList& id);
 		void handleGotNewItem (const QList<QStandardItem*>& item,
