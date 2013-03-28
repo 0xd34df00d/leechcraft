@@ -26,7 +26,7 @@ namespace LeechCraft
 namespace Poshuku
 {
 	PasswordRemember::PasswordRemember (QWidget *parent)
-	: Notification (parent)
+	: Util::PageNotification (parent)
 	{
 		Ui_.setupUi (this);
 

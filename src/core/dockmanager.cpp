@@ -197,9 +197,17 @@ namespace LeechCraft
 	void DockManager::handleWindow (int index)
 	{
 		auto win = static_cast<MainWindow*> (RootWM_->GetMainWindow (index));
-		win->GetDockListWidget (Qt::LeftDockWidgetArea)->hide ();
-		win->GetDockListWidget (Qt::RightDockWidgetArea)->hide ();
-
 		Window2DockToolbarMgr_ [win] = new DockToolbarManager (win);
+
+		connect (win,
+				SIGNAL (destroyed (QObject*)),
+				this,
+				SLOT (handleWindowDestroyed ()));
+	}
+
+	void DockManager::handleWindowDestroyed ()
+	{
+		auto win = static_cast<MainWindow*> (sender ());
+		Window2DockToolbarMgr_.remove (win);
 	}
 }

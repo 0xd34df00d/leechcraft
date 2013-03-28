@@ -89,7 +89,7 @@ namespace Monocle
 
 		if (ShowOnNextRelease_)
 		{
-			auto menu = new QMenu;
+			auto menu = new QMenu (this);
 			DocTab_->CreateViewCtxMenuActions (menu);
 			menu->popup (event->globalPos ());
 			menu->setAttribute (Qt::WA_DeleteOnClose);

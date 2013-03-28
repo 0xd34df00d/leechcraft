@@ -23,6 +23,7 @@
 #include <QToolButton>
 #include <QInputDialog>
 #include <QToolBar>
+#include <QShortcut>
 #include <QTimer>
 #include <util/util.h>
 #include <util/gui/clearlineeditaddon.h>
@@ -43,6 +44,7 @@
 #include "bookmarksmanagerdialog.h"
 #include "keyboardrosterfixer.h"
 #include "statuschangemenumanager.h"
+#include "userslistwidget.h"
 
 namespace LeechCraft
 {
@@ -175,11 +177,21 @@ namespace Azoth
 				SLOT (updateFastStatusButton (LeechCraft::Azoth::State)));
 
 		qobject_cast<QVBoxLayout*> (layout ())->insertWidget (0, BottomBar_);
+
+		auto sm = Core::Instance ().GetShortcutManager ();
+		auto listShortcut = new QShortcut (QString ("Alt+C"), this, SLOT (showAllUsersList ()));
+		sm->RegisterShortcut ("org.LeechCraft.Azoth.AllUsersList",
+				{
+					tr ("Show all users list"),
+					{ "Alt+C" },
+					Core::Instance ().GetProxy ()->GetIcon ("system-users")
+				},
+				listShortcut);
 	}
 
-	QList<QAction*> MainWidget::GetMenuActions()
+	QList<QAction*> MainWidget::GetMenuActions ()
 	{
-		return QList<QAction*> () << MainMenu_->actions ();
+		return MainMenu_->actions ();
 	}
 
 	QMenu* MainWidget::GetChangeStatusMenu () const
@@ -225,7 +237,7 @@ namespace Azoth
 		ActionCLMode_->setCheckable (true);
 		ActionCLMode_->setProperty ("ActionIcon", "meeting-attending");
 		ActionCLMode_->setShortcut (QString ("Ctrl+Shift+R"));
-		Core::Instance ().GetShortcutManager ()->RegisterAction ("org.LeechCraft.Azoth.CLMode", ActionCLMode_, true);
+		Core::Instance ().GetShortcutManager ()->RegisterAction ("org.LeechCraft.Azoth.CLMode", ActionCLMode_);
 		connect (ActionCLMode_,
 				SIGNAL (toggled (bool)),
 				this,
@@ -276,6 +288,41 @@ namespace Azoth
 			}
 
 		Core::Instance ().OpenChat (ProxyModel_->mapToSource (index));
+	}
+
+	void MainWidget::showAllUsersList ()
+	{
+		QList<QObject*> entries;
+		int accCount = 0;
+		for (auto acc : Core::Instance ().GetAccounts ())
+		{
+			if (!acc->IsShownInRoster ())
+				continue;
+
+			++accCount;
+			const auto& accEntries = acc->GetCLEntries ();
+			std::copy_if (accEntries.begin (), accEntries.end (), std::back_inserter (entries),
+					[] (QObject *entryObj) -> bool
+					{
+						auto entry = qobject_cast<ICLEntry*> (entryObj);
+						return entry->GetEntryType () != ICLEntry::ETPrivateChat;
+					});
+		}
+
+		UsersListWidget w (entries,
+				[accCount] (ICLEntry *entry) -> QString
+				{
+					if (accCount <= 1)
+						return entry->GetEntryName ();
+					auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
+					return entry->GetEntryName () + " (" + acc->GetAccountName () + ")";
+				},
+				this);
+		if (w.exec () != QDialog::Accepted)
+			return;
+
+		if (auto entry = w.GetActivatedParticipant ())
+			Core::Instance ().GetChatTabsManager ()->OpenChat (qobject_cast<ICLEntry*> (entry));
 	}
 
 	void MainWidget::on_CLTree__customContextMenuRequested (const QPoint& pos)

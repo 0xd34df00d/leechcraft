@@ -61,7 +61,6 @@ SET (SRCS
 	proxyobject.cpp
 	jsproxy.cpp
 	externalproxy.cpp
-	notification.cpp
 	passwordremember.cpp
 	pageformsdata.cpp
 	linkhistory.cpp
@@ -109,7 +108,6 @@ SET (HEADERS
 	proxyobject.h
 	jsproxy.h
 	externalproxy.h
-	notification.h
 	passwordremember.h
 	pageformsdata.h
 	linkhistory.h
@@ -131,7 +129,6 @@ SET (HEADERS
 	)
 SET (FORMS
 	browserwidget.ui
-	finddialog.ui
 	screenshotsavedialog.ui
 	cookieseditdialog.ui
 	sourceviewer.ui

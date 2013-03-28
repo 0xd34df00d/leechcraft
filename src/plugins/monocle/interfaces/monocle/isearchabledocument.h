@@ -18,39 +18,23 @@
 
 #pragma once
 
-#include <QString>
-#include <QMetaType>
+#include <QRectF>
+#include <QMap>
+#include <QtPlugin>
 
 namespace LeechCraft
 {
-namespace Liznoo
+namespace Monocle
 {
-	struct BatteryInfo
+	class ISearchableDocument
 	{
-		QString ID_;
+	public:
+		virtual ~ISearchableDocument () {}
 
-		char Percentage_;
-
-		/** Time until battery is fully charged in seconds, or 0 if
-		 * battery isn't charging.
-		 */
-		qlonglong TimeToFull_;
-		qlonglong TimeToEmpty_;
-		double Voltage_;
-
-		double Energy_;
-		double EnergyFull_;
-		double DesignEnergyFull_;
-		double EnergyRate_;
-
-		QString Technology_;
-
-		double Temperature_;
-
-		void Dump ();
+		virtual QMap<int, QList<QRectF>> GetTextPositions (const QString&, Qt::CaseSensitivity) = 0;
 	};
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Liznoo::BatteryInfo);
-
+Q_DECLARE_INTERFACE (LeechCraft::Monocle::ISearchableDocument,
+		"org.LeechCraft.Monocle.ISearchableDocument/1.0");

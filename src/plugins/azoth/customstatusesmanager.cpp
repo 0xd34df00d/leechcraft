@@ -116,7 +116,7 @@ namespace Azoth
 		settings.endGroup ();
 	}
 
-	void CustomStatusesManager::Add (const CustomState& state)
+	void CustomStatusesManager::Add (const CustomState& state, int after)
 	{
 		ProxyObject proxy;
 
@@ -125,8 +125,12 @@ namespace Azoth
 		row << new QStandardItem (Core::Instance ().GetIconForState (state.State_),
 				proxy.StateToString (state.State_));
 		row << new QStandardItem (state.Text_);
-		Model_->appendRow (row);
 		row.at (1)->setData (static_cast<int> (state.State_));
+
+		if (after == -1)
+			Model_->appendRow (row);
+		else
+			Model_->insertRow (after, row);
 	}
 
 	CustomStatusesManager::CustomState CustomStatusesManager::GetCustom (int i) const
@@ -139,6 +143,19 @@ namespace Azoth
 		};
 	}
 
+	namespace
+	{
+		CustomStatusesManager::CustomState GetState (const QVariantList& vars)
+		{
+			return
+			{
+				vars.at (0).toString (),
+				vars.at (1).value<State> (),
+				vars.at (2).toString ()
+			};
+		}
+	}
+
 	void CustomStatusesManager::addRequested (const QString&, const QVariantList& vars)
 	{
 		if (vars.size () != Model_->columnCount ())
@@ -148,11 +165,21 @@ namespace Azoth
 			return;
 		}
 
-		const auto& name = vars.at (0).toString ();
-		const auto state = vars.at (1).value<State> ();
-		const auto& text = vars.at (2).toString ();
-		Add ({ name, state, text });
+		Add (GetState (vars));
+		Save ();
+	}
 
+	void CustomStatusesManager::modifyRequested (const QString&, int row, const QVariantList& vars)
+	{
+		if (vars.size () != Model_->columnCount ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid vars";
+			return;
+		}
+
+		Model_->removeRow (row);
+		Add (GetState (vars), row);
 		Save ();
 	}
 

@@ -18,39 +18,17 @@
 
 #pragma once
 
-#include <QString>
-#include <QMetaType>
+#include <QWidget>
+#include <util/utilconfig.h>
 
 namespace LeechCraft
 {
-namespace Liznoo
+namespace Util
 {
-	struct BatteryInfo
+	class UTIL_API PageNotification : public QWidget
 	{
-		QString ID_;
-
-		char Percentage_;
-
-		/** Time until battery is fully charged in seconds, or 0 if
-		 * battery isn't charging.
-		 */
-		qlonglong TimeToFull_;
-		qlonglong TimeToEmpty_;
-		double Voltage_;
-
-		double Energy_;
-		double EnergyFull_;
-		double DesignEnergyFull_;
-		double EnergyRate_;
-
-		QString Technology_;
-
-		double Temperature_;
-
-		void Dump ();
+	public:
+		PageNotification (QWidget*);
 	};
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::Liznoo::BatteryInfo);
-

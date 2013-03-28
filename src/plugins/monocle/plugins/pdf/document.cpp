@@ -17,8 +17,11 @@
  **********************************************************************/
 
 #include "document.h"
+#include <thread>
+#include <QThread>
 #include <QtDebug>
 #include <poppler-qt4.h>
+#include <poppler-version.h>
 #include "links.h"
 
 namespace LeechCraft
@@ -131,6 +134,46 @@ namespace PDF
 			return QList<IAnnotation_ptr> ();
 
 		return QList<IAnnotation_ptr> ();
+	}
+
+	QMap<int, QList<QRectF>> Document::GetTextPositions (const QString& text, Qt::CaseSensitivity cs)
+	{
+		typedef QMap<int, QList<QRectF>> Result_t;
+		Result_t result;
+#if POPPLER_VERSION_MAJOR > 0 || POPPLER_VERSION_MINOR >= 22
+		const auto popplerCS = cs == Qt::CaseSensitive ?
+						Poppler::Page::CaseSensitive :
+						Poppler::Page::CaseInsensitive;
+
+		const auto numPages = PDocument_->numPages ();
+
+		QVector<QList<QRectF>> resVec;
+		resVec.resize (numPages);
+
+		std::vector<std::thread> threads;
+
+		auto worker = [&resVec, &popplerCS, &text, this] (int start, int count)
+		{
+			std::unique_ptr<Poppler::Document> doc (Poppler::Document::load (DocURL_.toLocalFile ()));
+			for (auto i = start, end = start + count; i < end; ++i)
+			{
+				std::unique_ptr<Poppler::Page> p (doc->page (i));
+				resVec [i] = p->search (text, popplerCS);
+			}
+		};
+		const auto threadCount = QThread::idealThreadCount ();
+		const auto packSize = numPages / threadCount;
+		for (int i = 0; i < threadCount; ++i)
+			threads.emplace_back (worker, i * packSize, (i == threadCount - 1) ? (numPages % threadCount) : packSize);
+
+		for (auto& thread : threads)
+			thread.join ();
+
+		for (int i = 0; i < numPages; ++i)
+			if (!resVec.at (i).isEmpty ())
+				result [i] = resVec.at (i);
+#endif
+		return result;
 	}
 
 	void Document::RequestNavigation (const QString& filename,

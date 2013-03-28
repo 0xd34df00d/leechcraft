@@ -31,6 +31,7 @@ SET (SRCS
 	bookmark.cpp
 	thumbswidget.cpp
 	pageslayoutmanager.cpp
+	textsearchhandler.cpp
 	)
 SET (FORMS
 	documenttab.ui
@@ -42,6 +43,7 @@ SET (FORMS
 	)
 SET (RESOURCES monocleresources.qrc)
 CreateTrs ("monocle" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("monocle" "en;ru_RU" "${SRCS}" "${FORMS}" "monoclesettings.xml")
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 

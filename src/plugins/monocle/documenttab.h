@@ -24,6 +24,7 @@
 #include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/idndtab.h>
 #include "interfaces/monocle/idocument.h"
+#include "docstatemanager.h"
 #include "ui_documenttab.h"
 
 class QDockWidget;
@@ -36,9 +37,11 @@ namespace Monocle
 
 	class PagesLayoutManager;
 	class PageGraphicsItem;
+	class TextSearchHandler;
 	class TOCWidget;
 	class BookmarksWidget;
 	class ThumbsWidget;
+	class FindDialog;
 
 	class DocumentTab : public QWidget
 					  , public ITabWidget
@@ -62,7 +65,10 @@ namespace Monocle
 		QAction *LayOnePage_;
 		QAction *LayTwoPages_;
 
+		FindDialog *FindDialog_;
+
 		PagesLayoutManager *LayoutManager_;
+		TextSearchHandler *SearchHandler_;
 
 		QDockWidget *DockWidget_;
 		TOCWidget *TOCWidget_;
@@ -155,6 +161,8 @@ namespace Monocle
 		void showOnePage ();
 		void showTwoPages ();
 		void syncUIToLayMode ();
+
+		void recoverDocState (DocStateManager::State);
 
 		void setMoveMode (bool);
 		void setSelectionMode (bool);

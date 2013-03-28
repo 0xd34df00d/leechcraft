@@ -16,42 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_FINDDIALOG_H
-#define PLUGINS_POSHUKU_FINDDIALOG_H
+#pragma once
+
 #include <qwebpage.h>
-#include "notification.h"
-#include "ui_finddialog.h"
+#include <util/gui/findnotification.h>
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	class FindDialog : public Notification
+	class FindDialog : public Util::FindNotification
 	{
 		Q_OBJECT
-
-		Ui::FindDialog Ui_;
 	public:
-		FindDialog (QWidget* = 0);
-		virtual ~FindDialog ();
+		FindDialog (QWidget*);
 
-		void SetText (const QString&);
-		QString GetText () const;
-
-		void SetSuccessful (bool);
-		void Focus ();
-
-		/* This one doesn't take direction in account.
-		 */
-		QWebPage::FindFlags GetFlags () const;
-	private slots:
-		void on_Pattern__textChanged (const QString&);
-		void on_FindButton__released ();
-		void reject ();
+		QWebPage::FindFlags GetPageFlags () const;
+	protected:
+		void handleNext (const QString&, FindFlags);
 	signals:
 		void next (const QString&, QWebPage::FindFlags);
 	};
 }
 }
-
-#endif

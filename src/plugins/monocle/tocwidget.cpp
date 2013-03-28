@@ -34,6 +34,8 @@ namespace Monocle
 
 	void TOCWidget::SetTOC (const TOCEntryLevel_t& topLevel)
 	{
+		setEnabled (!topLevel.isEmpty ());
+
 		Item2Link_.clear ();
 		Model_->clear ();
 

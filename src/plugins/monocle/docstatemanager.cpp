@@ -63,13 +63,28 @@ namespace Monocle
 		pt.put ("scale", state.CurrentScale_);
 		pt.put ("layout", state.Lay_ == LayoutMode::OnePage ? "one" : "two");
 
+		std::string scaleModeStr;
+		switch (state.ScaleMode_)
+		{
+		case ScaleMode::FitWidth:
+			scaleModeStr = "fitWidth";
+			break;
+		case ScaleMode::FitPage:
+			scaleModeStr = "fitPage";
+			break;
+		case ScaleMode::Fixed:
+			scaleModeStr = "fixed";
+			break;
+		}
+		pt.put ("scaleMode", scaleModeStr);
+
 		bp::write_json (filename.toUtf8 ().constData (), pt);
 #endif
 	}
 
 	auto DocStateManager::GetState (const QString& id) const -> State
 	{
-		State result = { 0, LayoutMode::OnePage, -1 };
+		State result = { 0, LayoutMode::OnePage, -1, ScaleMode::FitWidth };
 #ifdef SANE_JSON
 		const auto& filename = DocDir_.absoluteFilePath (GetFileName (id));
 		if (!QFile::exists (filename))
@@ -95,6 +110,15 @@ namespace Monocle
 			result.CurrentScale_ = *scale;
 		if (auto layout = pt.get_optional<std::string> ("layout"))
 			result.Lay_ = *layout == "one" ? LayoutMode::OnePage : LayoutMode::TwoPages;
+		if (auto scaleMode = pt.get_optional<std::string> ("scaleMode"))
+		{
+			if (*scaleMode == "fitWidth")
+				result.ScaleMode_ = ScaleMode::FitWidth;
+			else if (*scaleMode == "fitPage")
+				result.ScaleMode_ = ScaleMode::FitPage;
+			else
+				result.ScaleMode_ = ScaleMode::Fixed;
+		}
 #endif
 		return result;
 	}

@@ -42,7 +42,7 @@ namespace Seen
 		ddjvu_format_set_row_order (RenderFormat_, 1);
 		ddjvu_format_set_y_direction (RenderFormat_, 1);
 
-		if (ddjvu_document_get_type (Doc_) != DDJVU_DOCTYPE_UNKNOWN)
+		if (Doc_ && ddjvu_document_get_type (Doc_) != DDJVU_DOCTYPE_UNKNOWN)
 			UpdateDocInfo ();
 	}
 

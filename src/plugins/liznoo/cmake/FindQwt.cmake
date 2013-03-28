@@ -12,11 +12,15 @@ find_path (QWT_INCLUDE_DIRS
 	/usr/include/qwt-qt4
 	/usr/include/qwt6
 	/usr/include/qwt
+	/usr/local/lib/qwt.framework/Headers
 )
 
 find_library (QWT_LIBRARIES
 	NAMES qwt-qt4 qwt6 qwt
-	PATHS /usr/local/lib /usr/lib
+	PATHS
+	/usr/local/lib
+	/usr/lib
+	/usr/local/lib/qwt.framework
 )
 
 # handle the QUIETLY and REQUIRED arguments and set QWT_FOUND to TRUE if 

@@ -369,7 +369,11 @@ namespace LackMan
 		Ui_.Browser_->SetHtml (text);
 
 		if (index.isValid ())
-			Ui_.PackageInfoBox_->setTitle (tr ("Package information: %1").arg (index.data ().toString ()));
+		{
+			const auto& nameIndex = index.sibling (index.row (), PackagesModel::Columns::Name);
+			const auto& name = nameIndex.data ().toString ();
+			Ui_.PackageInfoBox_->setTitle (tr ("Package information: %1").arg (name));
+		}
 		else
 			Ui_.PackageInfoBox_->setTitle (tr ("Package information"));
 

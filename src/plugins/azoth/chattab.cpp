@@ -144,6 +144,7 @@ namespace Azoth
 	, MsgFormatter_ (0)
 	, TypeTimer_ (new QTimer (this))
 	, PreviousState_ (CPSNone)
+	, IsCurrent_ (false)
 	{
 		Ui_.setupUi (this);
 		Ui_.View_->installEventFilter (new ZoomEventFilter (Ui_.View_));
@@ -232,6 +233,8 @@ namespace Azoth
 
 	ChatTab::~ChatTab ()
 	{
+		Ui_.View_->setFocusProxy (nullptr);
+
 		SetChatPartState (CPSGone);
 
 		qDeleteAll (HistoryMessages_);
@@ -292,7 +295,8 @@ namespace Azoth
 
 	void ChatTab::Remove ()
 	{
-		emit entryLostCurrent (GetEntry<QObject> ());
+		if (IsCurrent_)
+			emit entryLostCurrent (GetEntry<QObject> ());
 		emit needToClose (this);
 	}
 
@@ -305,6 +309,8 @@ namespace Azoth
 		emit hookMadeCurrent (proxy, this);
 		if (proxy->IsCancelled ())
 			return;
+
+		IsCurrent_ = true;
 
 		emit entryMadeCurrent (GetEntry<QObject> ());
 
@@ -321,6 +327,8 @@ namespace Azoth
 		SetChatPartState (CPSInactive);
 
 		emit entryLostCurrent (GetEntry<QObject> ());
+
+		IsCurrent_ = false;
 	}
 
 	QByteArray ChatTab::GetTabRecoverData () const
@@ -411,7 +419,7 @@ namespace Azoth
 			return;
 
 		const auto& parts = muc->GetParticipants ();
-		UsersListWidget w (parts, this);
+		UsersListWidget w (parts, [] (ICLEntry *entry) { return entry->GetEntryName (); }, this);
 		if (w.exec () != QDialog::Accepted)
 			return;
 
@@ -1483,7 +1491,7 @@ namespace Azoth
 
 		XmlSettingsManager::Instance ().RegisterObject ("SeparateMUCEventLogWindow",
 				this, "handleSeparateMUCLog");
-		handleSeparateMUCLog ();
+		handleSeparateMUCLog (true);
 	}
 
 	void ChatTab::InitExtraActions ()
@@ -2088,14 +2096,15 @@ namespace Azoth
 					MUCEventLog_->size ()));
 	}
 
-	void ChatTab::handleSeparateMUCLog ()
+	void ChatTab::handleSeparateMUCLog (bool initial)
 	{
 		MUCEventLog_->clear ();
 		const bool isSep = XmlSettingsManager::Instance ()
 				.property ("SeparateMUCEventLogWindow").toBool ();
 
 		Ui_.MUCEventsButton_->setVisible (isSep);
-		PrepareTheme ();
+		if (!initial)
+			PrepareTheme ();
 	}
 
 	void ChatTab::clearAvailableNick ()

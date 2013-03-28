@@ -18,39 +18,51 @@
 
 #pragma once
 
-#include <QString>
-#include <QMetaType>
+#include <util/utilconfig.h>
+#include "pagenotification.h"
+
+namespace Ui
+{
+	class FindNotification;
+}
 
 namespace LeechCraft
 {
-namespace Liznoo
+namespace Util
 {
-	struct BatteryInfo
+	class UTIL_API FindNotification : public PageNotification
 	{
-		QString ID_;
+		Q_OBJECT
 
-		char Percentage_;
+		Ui::FindNotification *Ui_;
+	public:
+		enum FindFlag
+		{
+			FindCaseSensitively,
+			FindBackwards,
+			FindWrapsAround
+		};
+		Q_DECLARE_FLAGS (FindFlags, FindFlag)
 
-		/** Time until battery is fully charged in seconds, or 0 if
-		 * battery isn't charging.
-		 */
-		qlonglong TimeToFull_;
-		qlonglong TimeToEmpty_;
-		double Voltage_;
+		FindNotification (QWidget*);
+		~FindNotification ();
 
-		double Energy_;
-		double EnergyFull_;
-		double DesignEnergyFull_;
-		double EnergyRate_;
+		void SetText (const QString&);
+		QString GetText () const;
 
-		QString Technology_;
+		void SetSuccessful (bool);
+		void Focus ();
 
-		double Temperature_;
-
-		void Dump ();
+		FindFlags GetFlags () const;
+	protected:
+		virtual void handleNext (const QString&, FindFlags) = 0;
+	public slots:
+		void findNext ();
+		void findPrevious ();
+	private slots:
+		void on_Pattern__textChanged (const QString&);
+		void on_FindButton__released ();
+		virtual void reject ();
 	};
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::Liznoo::BatteryInfo);
-

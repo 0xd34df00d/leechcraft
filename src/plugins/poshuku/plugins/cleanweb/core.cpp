@@ -289,7 +289,7 @@ namespace CleanWeb
 		{
 			auto parent = elem.parent ();
 			elem.removeFromDocument ();
-			if (!parent.findAll ("*").count ())
+			if (!parent.isNull () && !parent.findAll ("*").count ())
 				RemoveElem (parent);
 		}
 	}

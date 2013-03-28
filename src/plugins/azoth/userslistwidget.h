@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <functional>
 #include <QDialog>
 #include "ui_userslistwidget.h"
 
@@ -28,6 +29,8 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	class ICLEntry;
+
 	class UsersListWidget : public QDialog
 	{
 		Q_OBJECT
@@ -37,7 +40,7 @@ namespace Azoth
 		QSortFilterProxyModel *Filter_;
 		QStandardItemModel *PartsModel_;
 	public:
-		UsersListWidget (const QList<QObject*>&, QWidget* = 0);
+		UsersListWidget (const QList<QObject*>&, std::function<QString (ICLEntry*)>, QWidget* = 0);
 
 		QObject* GetActivatedParticipant () const;
 	};
