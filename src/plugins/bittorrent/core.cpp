@@ -1435,43 +1435,6 @@ namespace BitTorrent
 		ScheduleSave ();
 	}
 
-	void Core::FileFinished (const libtorrent::torrent_handle& th, int fi)
-	{
-		const auto sit = std::find_if (Handles_.begin (), Handles_.end (), HandleFinder (th));
-		if (sit == Handles_.end ())
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "wtf? not found the handle";
-			return;
-		}
-
-		TorrentStruct torrent = *sit;
-		const auto& info = torrent.Handle_.get_torrent_info ();
-
-		auto fit = info.begin_files ();
-		std::advance (fit, fi);
-
-		auto codec = QTextCodec::codecForLocale ();
-		const auto& torrentPath = torrent.Handle_.save_path ();
-#if LIBTORRENT_VERSION_NUM >= 1600
-		const auto& pathStr = torrentPath + '/' + info.files ().at (fit).path;
-#else
-		const auto& pathStr = (torrentPath / fit->path).string ();
-#endif
-		QString name = codec->toUnicode (pathStr.c_str ());
-
-		const auto& string = tr ("File finished: %1").arg (name);
-		emit gotEntity (Util::MakeNotification ("BitTorrent", string, PInfo_));
-
-		Entity e;
-		e.Entity_ = QUrl::fromLocalFile (name);
-		e.Parameters_ = LeechCraft::IsDownloaded |
-			LeechCraft::ShouldQuerySource;
-		e.Location_ = torrent.TorrentFileName_;
-		e.Additional_ [" Tags"] = torrent.Tags_;
-		emit gotEntity (e);
-	}
-
 	void Core::PieceRead (const libtorrent::read_piece_alert& a)
 	{
 		LiveStreamManager_->PieceRead (a);

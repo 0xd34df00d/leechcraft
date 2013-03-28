@@ -308,7 +308,6 @@ namespace BitTorrent
 
 		void SaveResumeData (const libtorrent::save_resume_data_alert&) const;
 		void HandleMetadata (const libtorrent::metadata_received_alert&);
-		void FileFinished (const libtorrent::torrent_handle&, int);
 		void PieceRead (const libtorrent::read_piece_alert&);
 
 		void MoveUp (const std::vector<int>&);
