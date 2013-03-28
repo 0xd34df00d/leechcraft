@@ -48,11 +48,11 @@ namespace Acetamide
 		QVariant rightData = sourceModel ()->data (right);
 
 		QString leftString = leftData.toString ();
-		if(left.column () == 0)
+		if (left.column () == 0)
 			leftString = leftString.mid (1);
 
 		QString rightString = rightData.toString ();
-		if(right.column() == 0)
+		if (right.column () == 0)
 			rightString = rightString.mid (1);
 
 		return QString::localeAwareCompare (leftString, rightString) > 0;

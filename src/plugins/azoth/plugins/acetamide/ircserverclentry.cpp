@@ -39,7 +39,7 @@ namespace Acetamide
 	{
 		QAction *showChannels = new QAction (tr ("Channels list"), this);
 		connect (showChannels,
-				SIGNAL(triggered ()),
+				SIGNAL (triggered ()),
 				ISH_,
 				SLOT (showChannels ()));
 		Actions_ << showChannels;
