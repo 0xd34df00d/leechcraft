@@ -36,7 +36,7 @@ namespace Util
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = type;
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = fullText.isNull () ? text : fullText;
 		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = extendedText.isNull () ? text : extendedText;
-		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
+		e.Additional_ ["org.LC.AdvNotifications.Count"] = count;
 		return e;
 	}
 }
