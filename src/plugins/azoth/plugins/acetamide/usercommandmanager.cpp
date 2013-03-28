@@ -188,6 +188,8 @@ namespace Acetamide
 				Parser_, _1);
 		Command2Action_ ["say"] = boost::bind (&IrcServerHandler::SayCommand,
 				ISH_, _1);
+		Command2Action_ ["list"] = boost::bind (&IrcServerHandler::showChannels,
+				ISH_, _1);
 	}
 }
 }
