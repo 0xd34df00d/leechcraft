@@ -57,7 +57,6 @@ namespace NetStoreManager
 			return;
 
 		Manager_->RemoveAccount (cur);
-		Manager_->GetModel ()->removeRow (cur.row ());
 	}
 }
 }

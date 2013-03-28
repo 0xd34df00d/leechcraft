@@ -113,18 +113,21 @@ namespace NetStoreManager
 		Model_->appendRow (row);
 
 		row.first ()->setData (QVariant::fromValue<QObject*> (obj), Roles::AccountObj);
+		emit accountAdded (obj);
 	}
 
 	void AccountsManager::handleAccountRemoved (QObject *obj)
 	{
 		for (int i = 0; i < Model_->rowCount (); ++i)
 		{
-			if (Model_->item (i)->data (AccountObj).value<QObject*> () == obj)
+			if (Model_->item (i)->data (AccountObj).value<QObject*> () != obj)
 				continue;
 
 			Model_->removeRow (i);
 			break;
 		}
+
+		emit accountRemoved (obj);
 	}
 }
 }
