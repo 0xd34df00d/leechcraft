@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "filesmodel.h"
+#include "filestreemodel.h"
 #include <QMimeData>
 #include <QtDebug>
 #include <QTreeView>
@@ -27,22 +27,22 @@ namespace LeechCraft
 {
 namespace NetStoreManager
 {
-	FilesModel::FilesModel (QObject *parent)
+	FilesTreeModel::FilesTreeModel (QObject *parent)
 	: QStandardItemModel (parent)
 	{
 	}
 
-	Qt::DropActions FilesModel::supportedDropActions () const
+	Qt::DropActions FilesTreeModel::supportedDropActions () const
 	{
 		return Qt::MoveAction | Qt::CopyAction;
 	}
 
-	QStringList FilesModel::mimeTypes () const
+	QStringList FilesTreeModel::mimeTypes () const
 	{
 		return { "x-leechcraft/nsm-item" };
 	}
 
-	QMimeData* FilesModel::mimeData (const QModelIndexList& indexes) const
+	QMimeData* FilesTreeModel::mimeData (const QModelIndexList& indexes) const
 	{
 		QMimeData *mimeData = new QMimeData ();
 		QByteArray encodedData;

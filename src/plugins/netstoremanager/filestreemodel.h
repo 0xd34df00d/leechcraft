@@ -27,12 +27,12 @@ namespace LeechCraft
 {
 namespace NetStoreManager
 {
-	class FilesModel : public QStandardItemModel
+	class FilesTreeModel : public QStandardItemModel
 	{
 		Q_OBJECT
 
 	public:
-		FilesModel (QObject *parent = 0);
+		FilesTreeModel (QObject *parent = 0);
 
 		Qt::DropActions supportedDropActions () const;
 		QStringList mimeTypes () const;
