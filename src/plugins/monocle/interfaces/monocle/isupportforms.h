@@ -35,7 +35,7 @@ namespace Monocle
 	public:
 		virtual ~ISupportForms () {}
 
-		virtual IFormFields_t GetFormFields (int page) const = 0;
+		virtual IFormFields_t GetFormFields (int page) = 0;
 	};
 }
 }

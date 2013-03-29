@@ -138,7 +138,7 @@ namespace PDF
 		return QList<IAnnotation_ptr> ();
 	}
 
-	IFormFields_t Document::GetFormFields (int pageNum) const
+	IFormFields_t Document::GetFormFields (int pageNum)
 	{
 		std::unique_ptr<Poppler::Page> page (PDocument_->page (pageNum));
 		if (!page)

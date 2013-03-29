@@ -81,7 +81,7 @@ namespace PDF
 
 		QList<IAnnotation_ptr> GetAnnotations (int) const;
 
-		IFormFields_t GetFormFields (int) const;
+		IFormFields_t GetFormFields (int);
 
 		QMap<int, QList<QRectF>> GetTextPositions (const QString&, Qt::CaseSensitivity);
 
