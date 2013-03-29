@@ -104,6 +104,22 @@ namespace Monocle
 	{
 	public:
 		virtual ~IFormFieldButton () {}
+
+		enum class Type
+		{
+			Pushbutton,
+			Checkbox,
+			Radiobutton
+		};
+
+		virtual Type GetButtonType () const = 0;
+
+		virtual QString GetCaption () const = 0;
+
+		virtual bool IsChecked () const = 0;
+		virtual void SetChecked (bool) = 0;
+
+		virtual QList<int> GetButtonGroup () const = 0;
 	};
 }
 }
