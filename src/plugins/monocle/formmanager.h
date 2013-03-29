@@ -19,11 +19,11 @@
 #pragma once
 
 #include <QObject>
+#include <QGraphicsProxyWidget>
 #include "interfaces/monocle/idocument.h"
 
 class QGraphicsView;
 class QGraphicsScene;
-class QGraphicsProxyWidget;
 
 namespace LeechCraft
 {
@@ -43,7 +43,8 @@ namespace Monocle
 
 		void HandleDoc (IDocument_ptr, const QList<PageGraphicsItem*>&);
 	private:
-		QGraphicsProxyWidget* AddTextField (std::shared_ptr<IFormField>, PageGraphicsItem*);
+		QGraphicsProxyWidget* AddTextField (std::shared_ptr<IFormField>);
+		QGraphicsProxyWidget* AddChoiceField (std::shared_ptr<IFormField>);
 	};
 }
 }

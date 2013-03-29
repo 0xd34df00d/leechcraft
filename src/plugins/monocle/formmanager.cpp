@@ -21,6 +21,8 @@
 #include <QGraphicsProxyWidget>
 #include <QLineEdit>
 #include <QTextEdit>
+#include <QComboBox>
+#include <QAbstractItemView>
 #include <QtDebug>
 #include "interfaces/monocle/isupportforms.h"
 #include "interfaces/monocle/iformfield.h"
@@ -50,7 +52,10 @@ namespace Monocle
 				switch (field->GetType ())
 				{
 				case FormType::Text:
-					proxy = AddTextField (field, page);
+					proxy = AddTextField (field);
+					break;
+				case FormType::Choice:
+					proxy = AddChoiceField (field);
 					break;
 				}
 
@@ -71,7 +76,7 @@ namespace Monocle
 			}
 	}
 
-	QGraphicsProxyWidget* FormManager::AddTextField (std::shared_ptr<IFormField> baseField, PageGraphicsItem *page)
+	QGraphicsProxyWidget* FormManager::AddTextField (std::shared_ptr<IFormField> baseField)
 	{
 		const auto field = std::dynamic_pointer_cast<IFormFieldText> (baseField);
 		switch (field->GetTextType ())
@@ -95,11 +100,72 @@ namespace Monocle
 			edit->setAlignment (baseField->GetAlignment ());
 			return Scene_->addWidget (edit);
 		}
-		default:
-			qWarning () << Q_FUNC_INFO
-					<< "unsupported type";
-			break;
 		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unsupported type";
+
+		return 0;
+	}
+
+	namespace
+	{
+		class PopupZOrderFixer : public QObject
+		{
+			QGraphicsProxyWidget *Item_;
+			double PrevOrder_;
+		public:
+			PopupZOrderFixer (QGraphicsProxyWidget *item)
+			: QObject (item)
+			, Item_ (item)
+			, PrevOrder_ (item->zValue ())
+			{
+			}
+
+			bool eventFilter (QObject*, QEvent *event)
+			{
+				switch (event->type ())
+				{
+				case QEvent::Show:
+					Item_->setZValue (PrevOrder_ + 1);
+					break;
+				case QEvent::Hide:
+					Item_->setZValue (PrevOrder_);
+					break;
+				default:
+					break;
+				}
+
+				return false;
+			}
+		};
+	}
+
+	QGraphicsProxyWidget* FormManager::AddChoiceField (std::shared_ptr<IFormField> baseField)
+	{
+		const auto field = std::dynamic_pointer_cast<IFormFieldChoice> (baseField);
+		switch (field->GetChoiceType ())
+		{
+		case IFormFieldChoice::Type::Combobox:
+		{
+			auto edit = new QComboBox ();
+			edit->setSizeAdjustPolicy (QComboBox::AdjustToContentsOnFirstShow);
+			edit->addItems (field->GetAllChoices ());
+			edit->setEditable (field->IsEditable ());
+
+			if (field->IsEditable () && !field->GetEditChoice ().isEmpty ())
+				edit->setEditText (field->GetEditChoice ());
+			else if (!field->GetCurrentChoices ().isEmpty ())
+				edit->setCurrentIndex (field->GetCurrentChoices ().first ());
+
+			auto proxy = Scene_->addWidget (edit);
+			edit->view ()->installEventFilter (new PopupZOrderFixer (proxy));
+			return proxy;
+		}
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unsupported type";
 
 		return 0;
 	}
