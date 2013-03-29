@@ -45,18 +45,35 @@ namespace Monocle
 
 		for (auto page : pages)
 			for (auto field : formsDoc->GetFormFields (page->GetPageNum ()))
+			{
+				QGraphicsProxyWidget *proxy = 0;
 				switch (field->GetType ())
 				{
 				case FormType::Text:
-					AddTextField (field, page);
+					proxy = AddTextField (field, page);
 					break;
 				}
+
+				if (!proxy)
+					continue;
+
+				const auto& docRect = page->MapToDoc (page->boundingRect ());
+				const auto& formRect = field->GetRect ();
+
+				QRectF targetRect (formRect.x () * docRect.width (),
+						formRect.y () * docRect.height (),
+						formRect.width () * docRect.width (),
+						formRect.height () * docRect.height ());
+
+				proxy->setParentItem (page);
+				page->RegisterChildRect (proxy, targetRect,
+						[proxy] (const QRectF& rect) { proxy->setGeometry (rect); });
+			}
 	}
 
-	void FormManager::AddTextField (std::shared_ptr<IFormField> baseField, PageGraphicsItem *page)
+	QGraphicsProxyWidget* FormManager::AddTextField (std::shared_ptr<IFormField> baseField, PageGraphicsItem *page)
 	{
 		const auto field = std::dynamic_pointer_cast<IFormFieldText> (baseField);
-		QGraphicsProxyWidget *proxy = 0;
 		switch (field->GetTextType ())
 		{
 		case IFormFieldText::Type::SingleLine:
@@ -67,16 +84,16 @@ namespace Monocle
 				edit->setEchoMode (QLineEdit::Password);
 			if (field->GetMaximumLength () > 0)
 				edit->setMaxLength (field->GetMaximumLength ());
-			proxy = Scene_->addWidget (edit);
-			break;
+			edit->setAlignment (baseField->GetAlignment ());
+			return Scene_->addWidget (edit);
 		}
 		case IFormFieldText::Type::Multiline:
 		{
 			auto edit = new QTextEdit ();
 			edit->setText (field->GetText ());
 			edit->setAcceptRichText (field->IsRichText ());
-			proxy = Scene_->addWidget (edit);
-			break;
+			edit->setAlignment (baseField->GetAlignment ());
+			return Scene_->addWidget (edit);
 		}
 		default:
 			qWarning () << Q_FUNC_INFO
@@ -84,21 +101,7 @@ namespace Monocle
 			break;
 		}
 
-		if (!proxy)
-			return;
-
-		const auto& docRect = page->MapToDoc (page->boundingRect ());
-
-		const auto& formRect = baseField->GetRect ();
-
-		QRectF targetRect (formRect.x () * docRect.width (),
-				formRect.y () * docRect.height (),
-				formRect.width () * docRect.width (),
-				formRect.height () * docRect.height ());
-
-		proxy->setParentItem (page);
-		page->RegisterChildRect (proxy, targetRect,
-				[proxy] (const QRectF& rect) { proxy->setGeometry (rect); });
+		return 0;
 	}
 }
 }

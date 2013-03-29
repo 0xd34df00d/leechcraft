@@ -23,6 +23,7 @@
 
 class QGraphicsView;
 class QGraphicsScene;
+class QGraphicsProxyWidget;
 
 namespace LeechCraft
 {
@@ -42,7 +43,7 @@ namespace Monocle
 
 		void HandleDoc (IDocument_ptr, const QList<PageGraphicsItem*>&);
 	private:
-		void AddTextField (std::shared_ptr<IFormField>, PageGraphicsItem*);
+		QGraphicsProxyWidget* AddTextField (std::shared_ptr<IFormField>, PageGraphicsItem*);
 	};
 }
 }
