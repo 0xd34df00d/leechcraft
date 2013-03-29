@@ -99,7 +99,12 @@ namespace Monocle
 
 				proxy->setParentItem (page);
 				page->RegisterChildRect (proxy, targetRect,
-						[proxy] (const QRectF& rect) { proxy->setGeometry (rect); });
+						[proxy] (const QRectF& rect) -> void
+						{
+							proxy->setGeometry (rect);
+							proxy->setMinimumSize (rect.size ());
+							proxy->setMaximumSize (rect.size ());
+						});
 			}
 	}
 
