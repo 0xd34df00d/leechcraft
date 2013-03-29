@@ -48,6 +48,7 @@
 #include "interfaces/monocle/isupportannotations.h"
 #include "interfaces/monocle/idynamicdocument.h"
 #include "interfaces/monocle/isaveabledocument.h"
+#include "interfaces/monocle/isearchabledocument.h"
 #include "core.h"
 #include "pagegraphicsitem.h"
 #include "filewatcher.h"
@@ -406,6 +407,11 @@ namespace Monocle
 		BMWidget_->HandleDoc (CurrentDoc_);
 		ThumbsWidget_->HandleDoc (CurrentDoc_);
 
+		FindAction_->setEnabled (qobject_cast<ISearchableDocument*> (CurrentDoc_->GetQObject ()));
+
+		auto saveable = qobject_cast<ISaveableDocument*> (CurrentDoc_->GetQObject ());
+		SaveAction_->setEnabled (saveable && saveable->CanSave ().CanSave_);
+
 		return true;
 	}
 
@@ -489,6 +495,7 @@ namespace Monocle
 		SaveAction_ = new QAction (tr ("Save"), this);
 		SaveAction_->setShortcut (QString ("Ctrl+S"));
 		SaveAction_->setProperty ("ActionIcon", "document-save");
+		SaveAction_->setEnabled (false);
 		connect (SaveAction_,
 				SIGNAL (triggered ()),
 				this,
@@ -498,6 +505,7 @@ namespace Monocle
 		FindAction_ = new QAction (tr ("Find..."), this);
 		FindAction_->setShortcut (QString ("Ctrl+F"));
 		FindAction_->setProperty ("ActionIcon", "edit-find");
+		FindAction_->setEnabled (false);
 		connect (FindAction_,
 				SIGNAL (triggered ()),
 				FindDialog_,
