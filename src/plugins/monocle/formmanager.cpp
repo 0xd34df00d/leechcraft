@@ -20,6 +20,7 @@
 #include <QGraphicsView>
 #include <QGraphicsProxyWidget>
 #include <QLineEdit>
+#include <QTextEdit>
 #include <QtDebug>
 #include "interfaces/monocle/isupportforms.h"
 #include "interfaces/monocle/iformfield.h"
@@ -61,6 +62,13 @@ namespace Monocle
 		case IFormFieldText::Type::SingleLine:
 		{
 			auto edit = new QLineEdit ();
+			edit->setText (field->GetText ());
+			proxy = Scene_->addWidget (edit);
+			break;
+		}
+		case IFormFieldText::Type::Multiline:
+		{
+			auto edit = new QTextEdit ();
 			edit->setText (field->GetText ());
 			proxy = Scene_->addWidget (edit);
 			break;
