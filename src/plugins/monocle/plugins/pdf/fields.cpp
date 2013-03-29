@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "fields.h"
+#include "links.h"
 
 #include <algorithm>
 #include <QtDebug>
@@ -169,9 +170,10 @@ namespace PDF
 		return Field_->isEditable ();
 	}
 
-	FormFieldButton::FormFieldButton (std::shared_ptr<Poppler::FormField> field)
+	FormFieldButton::FormFieldButton (std::shared_ptr<Poppler::FormField> field, Document *doc)
 	: FormField (field)
 	, Field_ (std::dynamic_pointer_cast<Poppler::FormFieldButton> (field))
+	, Doc_ (doc)
 	, ButtonGroup_ (Field_->siblings ())
 	{
 		if (!ButtonGroup_.isEmpty ())
@@ -235,6 +237,12 @@ namespace PDF
 
 	void FormFieldButton::HandleActivated ()
 	{
+		auto actLink = Field_->activationAction ();
+		if (!actLink)
+			return;
+
+		ILink_ptr link (new Link (Doc_, actLink));
+		link->Execute ();
 	}
 }
 }

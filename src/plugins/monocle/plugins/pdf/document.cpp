@@ -163,7 +163,7 @@ namespace PDF
 				fields << IFormField_ptr (new FormFieldChoice (field));
 				break;
 			case Poppler::FormField::FormButton:
-				fields << IFormField_ptr (new FormFieldButton (field));
+				fields << IFormField_ptr (new FormFieldButton (field, this));
 				break;
 			default:
 				break;
