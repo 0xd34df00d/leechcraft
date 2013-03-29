@@ -26,6 +26,7 @@ namespace Poppler
 	class FormField;
 	class FormFieldText;
 	class FormFieldChoice;
+	class FormFieldButton;
 }
 
 namespace LeechCraft
@@ -97,6 +98,33 @@ namespace PDF
 		void SetEditChoice (const QString&);
 
 		bool IsEditable () const;
+	};
+
+	class FormFieldButton : public FormField
+						  , public IFormFieldButton
+	{
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Monocle::IFormField
+				LeechCraft::Monocle::IFormFieldButton)
+
+		std::shared_ptr<Poppler::FormFieldButton> Field_;
+		QList<int> ButtonGroup_;
+	public:
+		FormFieldButton (std::shared_ptr<Poppler::FormField>);
+
+		FormType GetType () const;
+		Qt::Alignment GetAlignment () const;
+
+		Type GetButtonType () const;
+
+		QString GetCaption () const;
+
+		bool IsChecked () const;
+		void SetChecked (bool);
+
+		QList<int> GetButtonGroup () const;
+
+		void HandleActivated ();
 	};
 }
 }

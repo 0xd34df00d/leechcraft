@@ -18,6 +18,7 @@
 
 #include "fields.h"
 
+#include <algorithm>
 #include <QtDebug>
 #include <poppler-form.h>
 
@@ -166,6 +167,74 @@ namespace PDF
 	bool FormFieldChoice::IsEditable () const
 	{
 		return Field_->isEditable ();
+	}
+
+	FormFieldButton::FormFieldButton (std::shared_ptr<Poppler::FormField> field)
+	: FormField (field)
+	, Field_ (std::dynamic_pointer_cast<Poppler::FormFieldButton> (field))
+	, ButtonGroup_ (Field_->siblings ())
+	{
+		if (!ButtonGroup_.isEmpty ())
+		{
+			ButtonGroup_ << GetID ();
+			std::sort (ButtonGroup_.begin (), ButtonGroup_.end ());
+		}
+	}
+
+	FormType FormFieldButton::GetType () const
+	{
+		return FormType::Button;
+	}
+
+	Qt::Alignment FormFieldButton::GetAlignment () const
+	{
+		return Qt::AlignLeft;
+	}
+
+	auto FormFieldButton::GetButtonType () const -> Type
+	{
+		switch (Field_->buttonType ())
+		{
+		case Poppler::FormFieldButton::Push:
+			return Type::Pushbutton;
+		case Poppler::FormFieldButton::CheckBox:
+			return Type::Checkbox;
+		case Poppler::FormFieldButton::Radio:
+			return Type::Radiobutton;
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown button type"
+				<< Field_->buttonType ();
+		return Type::Pushbutton;
+	}
+
+	QString FormFieldButton::GetCaption () const
+	{
+		if (!Field_->caption ().isEmpty ())
+			return Field_->caption ();
+		if (!Field_->uiName ().isEmpty ())
+			return Field_->uiName ();
+		return Field_->name ();
+	}
+
+	bool FormFieldButton::IsChecked () const
+	{
+		return Field_->state ();
+	}
+
+	void FormFieldButton::SetChecked (bool checked)
+	{
+		Field_->setState (checked);
+	}
+
+	QList<int> FormFieldButton::GetButtonGroup () const
+	{
+		return ButtonGroup_;
+	}
+
+	void FormFieldButton::HandleActivated ()
+	{
 	}
 }
 }
