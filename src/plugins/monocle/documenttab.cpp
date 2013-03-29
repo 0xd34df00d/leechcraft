@@ -47,6 +47,7 @@
 #include "interfaces/monocle/ihavetextcontent.h"
 #include "interfaces/monocle/isupportannotations.h"
 #include "interfaces/monocle/idynamicdocument.h"
+#include "interfaces/monocle/isaveabledocument.h"
 #include "core.h"
 #include "pagegraphicsitem.h"
 #include "filewatcher.h"
@@ -485,6 +486,33 @@ namespace Monocle
 				SLOT (handlePrint ()));
 		Toolbar_->addAction (print);
 
+		SaveAction_ = new QAction (tr ("Save"), this);
+		SaveAction_->setShortcut (QString ("Ctrl+S"));
+		SaveAction_->setProperty ("ActionIcon", "document-save");
+		connect (SaveAction_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleSave ()));
+		Toolbar_->addAction (SaveAction_);
+
+		FindAction_ = new QAction (tr ("Find..."), this);
+		FindAction_->setShortcut (QString ("Ctrl+F"));
+		FindAction_->setProperty ("ActionIcon", "edit-find");
+		connect (FindAction_,
+				SIGNAL (triggered ()),
+				FindDialog_,
+				SLOT (show ()));
+		connect (FindAction_,
+				SIGNAL (triggered ()),
+				FindDialog_,
+				SLOT (setFocus ()));
+		Toolbar_->addAction (FindAction_);
+
+		new QShortcut (QString ("F3"), FindDialog_, SLOT (findNext ()));
+		new QShortcut (QString ("Shift+F3"), FindDialog_, SLOT (findPrevious ()));
+
+		Toolbar_->addSeparator ();
+
 		auto presentation = new QAction (tr ("Presentation..."), this);
 		presentation->setProperty ("ActionIcon", "view-presentation");
 		connect (presentation,
@@ -611,24 +639,6 @@ namespace Monocle
 				this,
 				SLOT (setSelectionMode (bool)));
 		Toolbar_->addAction (selectModeAction);
-
-		Toolbar_->addSeparator ();
-
-		auto findAction = new QAction (tr ("Find..."), this);
-		findAction->setShortcut (QString ("Ctrl+F"));
-		findAction->setProperty ("ActionIcon", "edit-find");
-		connect (findAction,
-				SIGNAL (triggered ()),
-				FindDialog_,
-				SLOT (show ()));
-		connect (findAction,
-				SIGNAL (triggered ()),
-				FindDialog_,
-				SLOT (setFocus ()));
-		Toolbar_->addAction (findAction);
-
-		auto findNext = new QShortcut (QString ("F3"), FindDialog_, SLOT (findNext ()));
-		auto findPrev = new QShortcut (QString ("Shift+F3"), FindDialog_, SLOT (findPrevious ()));
 
 		Toolbar_->addSeparator ();
 
@@ -841,6 +851,28 @@ namespace Monocle
 				.setProperty ("LastOpenFileName", QFileInfo (path).absolutePath ());
 
 		SetDoc (path);
+	}
+
+	void DocumentTab::handleSave ()
+	{
+		if (!CurrentDoc_)
+			return;
+
+		auto saveable = qobject_cast<ISaveableDocument*> (CurrentDoc_->GetQObject ());
+		if (!saveable)
+			return;
+
+		const auto& saveResult = saveable->CanSave ();
+		if (!saveResult.CanSave_)
+		{
+			QMessageBox::warning (this,
+					"Monocle",
+					tr ("Can't save document: %1.")
+						.arg (saveResult.Reason_));
+			return;
+		}
+
+		saveable->Save (CurrentDocPath_);
 	}
 
 	void DocumentTab::handlePrint ()

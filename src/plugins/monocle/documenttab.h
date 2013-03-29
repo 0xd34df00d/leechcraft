@@ -66,6 +66,8 @@ namespace Monocle
 		QAction *LayOnePage_;
 		QAction *LayTwoPages_;
 
+		QAction *SaveAction_;
+		QAction *FindAction_;
 		FindDialog *FindDialog_;
 
 		PagesLayoutManager *LayoutManager_;
@@ -150,6 +152,8 @@ namespace Monocle
 		void handleRecentOpenAction (QAction*);
 
 		void selectFile ();
+		void handleSave ();
+
 		void handlePrint ();
 		void handlePresentation ();
 
