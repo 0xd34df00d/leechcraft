@@ -25,6 +25,7 @@
 #include <interfaces/monocle/ihavetoc.h>
 #include <interfaces/monocle/ihavetextcontent.h>
 #include <interfaces/monocle/isupportannotations.h>
+#include <interfaces/monocle/isupportforms.h>
 #include <interfaces/monocle/isearchabledocument.h>
 
 namespace Poppler
@@ -45,6 +46,7 @@ namespace PDF
 				   , public IHaveTOC
 				   , public IHaveTextContent
 				   , public ISupportAnnotations
+				   , public ISupportForms
 				   , public ISearchableDocument
 	{
 		Q_OBJECT
@@ -52,6 +54,7 @@ namespace PDF
 				LeechCraft::Monocle::IHaveTOC
 				LeechCraft::Monocle::IHaveTextContent
 				LeechCraft::Monocle::ISupportAnnotations
+				LeechCraft::Monocle::ISupportForms
 				LeechCraft::Monocle::ISearchableDocument)
 
 		PDocument_ptr PDocument_;
@@ -77,6 +80,8 @@ namespace PDF
 		QString GetTextContent (int, const QRect&);
 
 		QList<IAnnotation_ptr> GetAnnotations (int) const;
+
+		IFormFields_t GetFormFields (int) const;
 
 		QMap<int, QList<QRectF>> GetTextPositions (const QString&, Qt::CaseSensitivity);
 

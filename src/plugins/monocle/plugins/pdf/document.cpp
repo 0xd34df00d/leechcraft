@@ -21,8 +21,10 @@
 #include <QThread>
 #include <QtDebug>
 #include <poppler-qt4.h>
+#include <poppler-form.h>
 #include <poppler-version.h>
 #include "links.h"
+#include "fields.h"
 
 namespace LeechCraft
 {
@@ -134,6 +136,34 @@ namespace PDF
 			return QList<IAnnotation_ptr> ();
 
 		return QList<IAnnotation_ptr> ();
+	}
+
+	IFormFields_t Document::GetFormFields (int pageNum) const
+	{
+		std::unique_ptr<Poppler::Page> page (PDocument_->page (pageNum));
+		if (!page)
+			return IFormFields_t ();
+
+		QList<std::shared_ptr<Poppler::FormField>> popplerFields;
+		for (auto field : page->formFields ())
+			popplerFields << std::shared_ptr<Poppler::FormField> (field);
+
+		IFormFields_t fields;
+		for (auto field : popplerFields)
+		{
+			if (!field->isVisible ())
+				continue;
+
+			switch (field->type ())
+			{
+			case Poppler::FormField::FormText:
+				fields << IFormField_ptr (new FormFieldText (field));
+				break;
+			default:
+				break;
+			}
+		}
+		return fields;
 	}
 
 	QMap<int, QList<QRectF>> Document::GetTextPositions (const QString& text, Qt::CaseSensitivity cs)
