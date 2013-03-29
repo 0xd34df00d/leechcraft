@@ -21,6 +21,7 @@
 #include <QStringList>
 #include <QtPlugin>
 #include <QUrl>
+#include <QDateTime>
 
 class QStandardItem;
 
@@ -57,6 +58,28 @@ namespace NetStoreManager
 		bool ParentIsRoot_;
 	};
 
+	struct StorageItem
+	{
+		QByteArray ID_;
+		QByteArray ParentID_;
+
+		QString Name_;
+		QDateTime ModifyDate_;
+		QByteArray MD5_;
+
+		bool IsDirectory_;
+
+		bool IsTrashed_;
+
+		QString MimeType_;
+
+		StorageItem ()
+		: IsDirectory_ (false)
+		, IsTrashed_ (false)
+		{
+		}
+	};
+
 	class ISupportFileListings
 	{
 	public:
@@ -79,7 +102,8 @@ namespace NetStoreManager
 		virtual void RequestChanges () = 0;
 
 	protected:
-		virtual void gotListing (const QList<QList<QStandardItem*>>&) = 0;
+		virtual void gotListing (const QList<StorageItem*>& items) = 0;
+
 		virtual void gotFileUrl (const QUrl& url, const QStringList& id) = 0;
 		virtual void gotChanges (const QList<Change>& changes) = 0;
 		virtual void gotNewItem (const QList<QStandardItem*>& item, const QStringList& parentId) = 0;
