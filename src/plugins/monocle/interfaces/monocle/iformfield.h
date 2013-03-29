@@ -46,6 +46,8 @@ namespace Monocle
 		virtual QString GetName () const = 0;
 
 		virtual QRectF GetRect () const = 0;
+
+		virtual Qt::Alignment GetAlignment () const = 0;
 	};
 
 	typedef std::shared_ptr<IFormField> IFormField_ptr;
@@ -66,6 +68,12 @@ namespace Monocle
 		virtual void SetText (const QString&) = 0;
 
 		virtual Type GetTextType () const = 0;
+
+		virtual int GetMaximumLength () const = 0;
+
+		virtual bool IsPassword () const = 0;
+
+		virtual bool IsRichText () const = 0;
 	};
 
 	class IFormFieldChoice

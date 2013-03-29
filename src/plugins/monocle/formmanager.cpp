@@ -63,6 +63,10 @@ namespace Monocle
 		{
 			auto edit = new QLineEdit ();
 			edit->setText (field->GetText ());
+			if (field->IsPassword ())
+				edit->setEchoMode (QLineEdit::Password);
+			if (field->GetMaximumLength () > 0)
+				edit->setMaxLength (field->GetMaximumLength ());
 			proxy = Scene_->addWidget (edit);
 			break;
 		}
@@ -70,6 +74,7 @@ namespace Monocle
 		{
 			auto edit = new QTextEdit ();
 			edit->setText (field->GetText ());
+			edit->setAcceptRichText (field->IsRichText ());
 			proxy = Scene_->addWidget (edit);
 			break;
 		}

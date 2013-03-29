@@ -58,6 +58,11 @@ namespace PDF
 		return FormType::Text;
 	}
 
+	Qt::Alignment FormFieldText::GetAlignment () const
+	{
+		return Field_->textAlignment ();
+	}
+
 	QString FormFieldText::GetText () const
 	{
 		return Field_->text ();
@@ -84,6 +89,21 @@ namespace PDF
 				<< "unknown native text type"
 				<< Field_->textType ();
 		return Type::SingleLine;
+	}
+
+	int FormFieldText::GetMaximumLength () const
+	{
+		return Field_->maximumLength ();
+	}
+
+	bool FormFieldText::IsPassword () const
+	{
+		return Field_->isPassword ();
+	}
+
+	bool FormFieldText::IsRichText () const
+	{
+		return Field_->isRichText ();
 	}
 }
 }

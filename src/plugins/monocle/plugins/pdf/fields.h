@@ -61,9 +61,15 @@ namespace PDF
 
 		FormType GetType () const;
 
+		Qt::Alignment GetAlignment () const;
+
 		QString GetText () const;
 		void SetText (const QString&);
 		Type GetTextType () const;
+
+		int GetMaximumLength () const;
+		bool IsPassword () const;
+		bool IsRichText () const;
 	};
 }
 }
