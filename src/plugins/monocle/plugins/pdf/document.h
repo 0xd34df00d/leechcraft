@@ -86,10 +86,12 @@ namespace PDF
 		QMap<int, QList<QRectF>> GetTextPositions (const QString&, Qt::CaseSensitivity);
 
 		void RequestNavigation (const QString&, int, double, double);
+		void RequestPrinting ();
 	private:
 		void BuildTOC ();
 	signals:
 		void navigateRequested (const QString&, int, double, double);
+		void printRequested (const QList<int>&);
 	};
 }
 }

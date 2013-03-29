@@ -218,6 +218,11 @@ namespace PDF
 		emit navigateRequested (filename, page, x, y);
 	}
 
+	void Document::RequestPrinting ()
+	{
+		emit printRequested (QList<int> ());
+	}
+
 	namespace
 	{
 		template<typename T>

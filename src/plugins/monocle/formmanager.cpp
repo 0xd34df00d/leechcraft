@@ -60,6 +60,7 @@ namespace Monocle
 		List2Field_.clear ();
 		Check2Field_.clear ();
 		Radio2Field_.clear ();
+		Button2Field_.clear ();
 
 		qDeleteAll (RadioGroups_.values ());
 		RadioGroups_.clear ();

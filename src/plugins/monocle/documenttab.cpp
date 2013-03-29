@@ -386,6 +386,11 @@ namespace Monocle
 				this,
 				SLOT (handleNavigateRequested (QString, int, double, double)),
 				Qt::QueuedConnection);
+		connect (CurrentDoc_->GetQObject (),
+				SIGNAL (printRequested (QList<int>)),
+				this,
+				SLOT (handlePrintRequested ()),
+				Qt::QueuedConnection);
 
 		emit fileLoaded (path);
 
@@ -757,6 +762,11 @@ namespace Monocle
 			const auto& mapped = page->mapToScene (size.width () * x, size.height () * y);
 			Ui_.PagesView_->SmoothCenterOn (mapped.x (), mapped.y ());
 		}
+	}
+
+	void DocumentTab::handlePrintRequested ()
+	{
+		handlePrint ();
 	}
 
 	void DocumentTab::handleThumbnailClicked (int num)

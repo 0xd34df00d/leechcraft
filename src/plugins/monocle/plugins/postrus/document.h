@@ -53,6 +53,7 @@ namespace Postrus
 		QUrl GetDocURL () const;
 	signals:
 		void navigateRequested (const QString&, int, double, double);
+		void printRequested (const QList<int>&);
 	};
 }
 }

@@ -138,6 +138,8 @@ namespace Monocle
 		void RegenPageVisibility ();
 	private slots:
 		void handleNavigateRequested (QString, int, double, double);
+		void handlePrintRequested ();
+
 		void handleThumbnailClicked (int);
 
 		void handlePageContentsChanged (int);
