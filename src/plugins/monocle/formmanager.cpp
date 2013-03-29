@@ -23,6 +23,7 @@
 #include <QTextEdit>
 #include <QComboBox>
 #include <QAbstractItemView>
+#include <QTreeWidget>
 #include <QtDebug>
 #include "interfaces/monocle/isupportforms.h"
 #include "interfaces/monocle/iformfield.h"
@@ -190,6 +191,22 @@ namespace Monocle
 			edit->view ()->installEventFilter (new PopupZOrderFixer (proxy));
 			return proxy;
 		}
+		case IFormFieldChoice::Type::ListBox:
+			auto edit = new QTreeWidget ();
+			for (const auto& choice : field->GetAllChoices ())
+				edit->addTopLevelItem (new QTreeWidgetItem ({ choice }));
+
+			const auto& current = field->GetCurrentChoices ();
+			for (int i = 0; i < edit->topLevelItemCount (); ++i)
+				edit->topLevelItem (i)->setCheckState (0, current.contains (i) ? Qt::Checked : Qt::Unchecked);
+
+			List2Field_ [edit] = field;
+			connect (edit,
+					SIGNAL (itemChanged (QTreeWidgetItem*, int)),
+					this,
+					SLOT (handleListChanged ()));
+
+			return Scene_->addWidget (edit);
 		}
 
 		qWarning () << Q_FUNC_INFO
@@ -219,6 +236,18 @@ namespace Monocle
 
 		if (box->currentIndex () >= 0)
 			field->SetCurrentChoices ({ box->currentIndex () });
+	}
+
+	void FormManager::handleListChanged ()
+	{
+		auto edit = qobject_cast<QTreeWidget*> (sender ());
+
+		QList<int> choices;
+		for (int i = 0; i < edit->topLevelItemCount (); ++i)
+			if (edit->topLevelItem (i)->checkState (0) == Qt::Checked)
+				choices << i;
+
+		List2Field_ [edit]->SetCurrentChoices (choices);
 	}
 }
 }

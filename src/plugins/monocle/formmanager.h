@@ -27,6 +27,7 @@ class QGraphicsScene;
 class QLineEdit;
 class QTextEdit;
 class QComboBox;
+class QTreeWidget;
 
 namespace LeechCraft
 {
@@ -47,6 +48,7 @@ namespace Monocle
 		QHash<QLineEdit*, std::shared_ptr<IFormFieldText>> Line2Field_;
 		QHash<QTextEdit*, std::shared_ptr<IFormFieldText>> Multiline2Field_;
 		QHash<QComboBox*, std::shared_ptr<IFormFieldChoice>> Combo2Field_;
+		QHash<QTreeWidget*, std::shared_ptr<IFormFieldChoice>> List2Field_;
 	public:
 		FormManager (QGraphicsView*, QObject* = 0);
 
@@ -57,7 +59,9 @@ namespace Monocle
 	private slots:
 		void handleLineEditChanged (const QString&);
 		void handleTextEditChanged ();
+
 		void handleComboChanged ();
+		void handleListChanged ();
 	};
 }
 }
