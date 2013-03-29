@@ -42,6 +42,7 @@ namespace Monocle
 	class BookmarksWidget;
 	class ThumbsWidget;
 	class FindDialog;
+	class FormManager;
 
 	class DocumentTab : public QWidget
 					  , public ITabWidget
@@ -69,6 +70,7 @@ namespace Monocle
 
 		PagesLayoutManager *LayoutManager_;
 		TextSearchHandler *SearchHandler_;
+		FormManager *FormManager_;
 
 		QDockWidget *DockWidget_;
 		TOCWidget *TOCWidget_;

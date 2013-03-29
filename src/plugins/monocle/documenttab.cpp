@@ -61,6 +61,7 @@
 #include "pageslayoutmanager.h"
 #include "thumbswidget.h"
 #include "textsearchhandler.h"
+#include "formmanager.h"
 
 namespace LeechCraft
 {
@@ -92,6 +93,7 @@ namespace Monocle
 	, LayTwoPages_ (0)
 	, LayoutManager_ (0)
 	, SearchHandler_ (0)
+	, FormManager_ (0)
 	, DockWidget_ (new QDockWidget (tr ("Monocle dock")))
 	, TOCWidget_ (new TOCWidget ())
 	, BMWidget_ (new BookmarksWidget (this))
@@ -107,6 +109,7 @@ namespace Monocle
 
 		LayoutManager_ = new PagesLayoutManager (Ui_.PagesView_, this);
 		SearchHandler_ = new TextSearchHandler (Ui_.PagesView_, LayoutManager_, this);
+		FormManager_ = new FormManager (Ui_.PagesView_, this);
 
 		FindDialog_ = new FindDialog (SearchHandler_, this);
 		FindDialog_->hide ();
@@ -366,6 +369,7 @@ namespace Monocle
 
 		LayoutManager_->HandleDoc (CurrentDoc_, Pages_);
 		SearchHandler_->HandleDoc (CurrentDoc_, Pages_);
+		FormManager_->HandleDoc (CurrentDoc_, Pages_);
 
 		recoverDocState (state);
 		Relayout ();
