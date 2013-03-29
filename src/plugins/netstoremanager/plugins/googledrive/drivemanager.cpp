@@ -528,6 +528,55 @@ namespace GoogleDrive
 
 	namespace
 	{
+		QString GetLocalMimeTypeFromGoogleMimeType (const QString& mime, const QString& fileExt)
+		{
+			static QMap<QPair<QString, QString>, QString> mimeMap;
+			mimeMap.insert ({ "application/vnd.google-apps.audio", "" }, "audio-x-generic");
+			mimeMap.insert ({ "application/vnd.google-apps.document", "" }, "application-vnd.oasis.opendocument.spreadsheet");
+			mimeMap.insert ({ "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "" }, "application-msword");
+			mimeMap.insert ({ "application/vnd.google-apps.document", "doc" }, "application-msword");
+			mimeMap.insert ({ "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "docx" }, "application-msword");
+			mimeMap.insert ({ "application/vnd.google-apps.document", "docx" }, "application-msword");
+			mimeMap.insert ({ "application/vnd.google-apps.document", "odt" }, "application-vnd.oasis.opendocument.text");
+			mimeMap.insert ({ "application/vnd.google-apps.drawing", "" }, "application-vnd.oasis.opendocument.image");
+			mimeMap.insert ({ "application/vnd.google-apps.file", "" }, "unknown");
+			mimeMap.insert ({ "application/vnd.google-apps.form", "" }, "unknown");
+			mimeMap.insert ({ "application/vnd.google-apps.fusiontable", "" }, "unknown");
+			mimeMap.insert ({ "application/vnd.google-apps.photo", "" }, "image-x-generic");
+			mimeMap.insert ({ "application/vnd.google-apps.presentation", "" }, "application-vnd.oasis.opendocument.presentation");
+			mimeMap.insert ({ "application/vnd.google-apps.presentation", "ppt" }, "application-vnd.ms-powerpoint");
+			mimeMap.insert ({ "application/vnd.google-apps.presentation", "pptx" }, "application-vnd.ms-powerpoint");
+			mimeMap.insert ({ "application/vnd.google-apps.presentation", "odp" }, "application-vnd.oasis.opendocument.presentation");
+			mimeMap.insert ({ "application/vnd.google-apps.script", "" }, "text-x-script");
+			mimeMap.insert ({ "application/vnd.google-apps.sites", "" }, "text-html");
+			mimeMap.insert ({ "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "" }, "application-vnd.oasis.opendocument.spreadsheet");
+			mimeMap.insert ({ "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "xlsx" }, "application-vnd.oasis.opendocument.spreadsheet");
+			mimeMap.insert ({ "application/vnd.google-apps.spreadsheet", "" }, "application-vnd.oasis.opendocument.spreadsheet");
+			mimeMap.insert ({ "application/vnd.google-apps.spreadsheet", "xls" }, "x-office-spreadsheet.png");
+			mimeMap.insert ({ "application/vnd.google-apps.spreadsheet", "xlsx" }, "x-office-spreadsheet.png");
+			mimeMap.insert ({ "application/vnd.google-apps.spreadsheet", "ods" }, "application-vnd.oasis.opendocument.spreadsheet");
+			mimeMap.insert ({ "application/vnd.google-apps.unknown", "" }, "unknown");
+			mimeMap.insert ({ "application/vnd.google-apps.video", "" }, "video-x-generic");
+			mimeMap.insert ({ "application/x-msdos-program", "" }, "application-x-ms-dos-executable");
+			mimeMap.insert ({ "application/x-msdos-program", "exe" }, "application-x-ms-dos-executable");
+			mimeMap.insert ({ "application/x-dosexec", "" }, "application-x-desktop");
+			mimeMap.insert ({ "application/x-dosexec", "desktop" }, "application-x-desktop");
+			mimeMap.insert ({ "application/x-cab", "" }, "application-x-archive");
+			mimeMap.insert ({ "application/x-cab", "cab" }, "application-x-archive");
+			mimeMap.insert ({ "application/rar", "" }, "application-x-archive");
+			mimeMap.insert ({ "application/rar", "rar" }, "application-x-archive");
+
+			QString res;
+			if (mimeMap.contains ({ mime, fileExt }))
+				res = mimeMap.value ({ mime, fileExt });
+			else
+			{
+				res = mime;
+				res.replace ('/', '-');
+			}
+			return res;
+		}
+
 		DriveItem CreateDriveItem (const QVariant& itemData)
 		{
 			const QVariantMap& map = itemData.toMap ();
@@ -560,7 +609,11 @@ namespace GoogleDrive
 			driveItem.Name_ = map ["title"].toString ();
 			driveItem.IsFolder_ = map ["mimeType"].toString () ==
 					"application/vnd.google-apps.folder";
-			driveItem.Mime_ = map ["mimeType"].toString ();
+			driveItem.FileExtension_ = map ["fileExtension"].toString ();
+			QString mime = map ["mimeType"].toString ();
+			if (!driveItem.IsFolder_)
+				mime = GetLocalMimeTypeFromGoogleMimeType (mime, driveItem.FileExtension_);
+			driveItem.Mime_ = mime;
 
 			driveItem.DownloadUrl_ = QUrl (map ["downloadUrl"].toString ());
 

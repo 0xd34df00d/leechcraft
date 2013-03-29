@@ -358,65 +358,80 @@ namespace GoogleDrive
 
 	void Account::handleFileList (const QList<DriveItem>& items)
 	{
-		QList<QList<QStandardItem*>> treeItems;
+		QList<StorageItem*> result;
 
-		QHash<QString, DriveItem> trashedItems;
-		QHash<QString, DriveItem> id2DriveItem;
-		QHash<QString, QList<QStandardItem*>> id2Item;
-		QHash<QString, QList<QStandardItem*>> trashedId2Item;
-
-		for (const auto& item : items)
+		for (auto item : items)
 		{
-			if (item.Labels_ & DriveItem::ILRemoved)
-			{
-				trashedItems [item.Id_] = item;
-				continue;
-			}
+			StorageItem *storageItem = new StorageItem;
+			storageItem->ID_ = item.Id_.toUtf8 ();
+			storageItem->ParentID_ = item.ParentId_.toUtf8 ();
+			storageItem->Name_ = item.Name_;
+			storageItem->ModifyDate_ = item.ModifiedDate_;
+			storageItem->MD5_ = item.Md5_.toUtf8 ();
+			storageItem->IsDirectory_ = item.IsFolder_;
+			storageItem->IsTrashed_ = item.Labels_ & DriveItem::ILRemoved;
+			storageItem->MimeType_ = item.Mime_;
 
-			id2DriveItem [item.Id_] = item;
-			if (item.ParentIsRoot_ ||
-					item.ParentId_.isEmpty ())
-				treeItems << CreateItem (id2Item, item);
+			result << storageItem;
 		}
 
-		const QStringList& keys = id2DriveItem.keys ();
-		const auto& values = id2DriveItem.values ();
-		for (const auto& item : values)
-		{
-			if (keys.contains (item.ParentId_))
-				CreateChildItem (id2Item, id2DriveItem [item.ParentId_], item);
-			else
-				CreateItem (id2Item, item);
-		}
-
-		const QStringList& trashedKeys = trashedItems.keys ();
-		const auto& trashedValues = trashedItems.values ();
-		for (const auto& item : trashedValues)
-			if (!trashedKeys.contains (item.ParentId_))
-				treeItems << CreateItem (trashedId2Item, item);
-
-		for (const auto& item : trashedValues)
-			if (trashedKeys.contains (item.ParentId_))
-				CreateChildItem (trashedId2Item, trashedItems [item.ParentId_], item);
-
-		treeItems.removeAll (QList<QStandardItem*> ());
-
-		std::sort (treeItems.begin (), treeItems.end (),
-				[] (const QList<QStandardItem*>& leftItem, const QList<QStandardItem*>& rightItem) -> bool
-				{
-					if (leftItem [0]->data (ListingRole::Directory).toBool () &&
-							!rightItem [0]->data (ListingRole::Directory).toBool ())
-						return true;
-					else if (!leftItem [0]->data (ListingRole::Directory).toBool () &&
-							rightItem [0]->data (ListingRole::Directory).toBool ())
-						return false;
-					else
-						return QString::localeAwareCompare (leftItem [0]->text (),
-								rightItem [0]->text ()) < 0;
-				});
-
-		emit gotListing (QList<QList<QStandardItem*>> ());
-		emit gotListing (treeItems);
+// 		QHash<QString, DriveItem> trashedItems;
+// 		QHash<QString, DriveItem> id2DriveItem;
+// 		QHash<QString, QList<QStandardItem*>> id2Item;
+// 		QHash<QString, QList<QStandardItem*>> trashedId2Item;
+//
+// 		for (const auto& item : items)
+// 		{
+// 			if (item.Labels_ & DriveItem::ILRemoved)
+// 			{
+// 				trashedItems [item.Id_] = item;
+// 				continue;
+// 			}
+//
+// 			id2DriveItem [item.Id_] = item;
+// 			if (item.ParentIsRoot_ ||
+// 					item.ParentId_.isEmpty ())
+// 				treeItems << CreateItem (id2Item, item);
+// 		}
+//
+// 		const QStringList& keys = id2DriveItem.keys ();
+// 		const auto& values = id2DriveItem.values ();
+// 		for (const auto& item : values)
+// 		{
+// 			if (keys.contains (item.ParentId_))
+// 				CreateChildItem (id2Item, id2DriveItem [item.ParentId_], item);
+// 			else
+// 				CreateItem (id2Item, item);
+// 		}
+//
+// 		const QStringList& trashedKeys = trashedItems.keys ();
+// 		const auto& trashedValues = trashedItems.values ();
+// 		for (const auto& item : trashedValues)
+// 			if (!trashedKeys.contains (item.ParentId_))
+// 				treeItems << CreateItem (trashedId2Item, item);
+//
+// 		for (const auto& item : trashedValues)
+// 			if (trashedKeys.contains (item.ParentId_))
+// 				CreateChildItem (trashedId2Item, trashedItems [item.ParentId_], item);
+//
+// 		treeItems.removeAll (QList<QStandardItem*> ());
+//
+// 		std::sort (treeItems.begin (), treeItems.end (),
+// 				[] (const QList<QStandardItem*>& leftItem, const QList<QStandardItem*>& rightItem) -> bool
+// 				{
+// 					if (leftItem [0]->data (ListingRole::Directory).toBool () &&
+// 							!rightItem [0]->data (ListingRole::Directory).toBool ())
+// 						return true;
+// 					else if (!leftItem [0]->data (ListingRole::Directory).toBool () &&
+// 							rightItem [0]->data (ListingRole::Directory).toBool ())
+// 						return false;
+// 					else
+// 						return QString::localeAwareCompare (leftItem [0]->text (),
+// 								rightItem [0]->text ()) < 0;
+// 				});
+//
+// 		emit gotListing (QList<QList<QStandardItem*>> ());
+		emit gotListing (result);
 	}
 
 	void Account::handleSharedFileId (const QString& id)

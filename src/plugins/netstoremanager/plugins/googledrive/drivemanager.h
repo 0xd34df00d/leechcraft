@@ -85,6 +85,7 @@ namespace GoogleDrive
 		QString OriginalFileName_;
 		QString Md5_;
 		QString Mime_;
+		QString FileExtension_;
 
 		qint64 FileSize_;
 

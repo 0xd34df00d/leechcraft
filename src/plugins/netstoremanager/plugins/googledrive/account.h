@@ -107,7 +107,8 @@ namespace GoogleDrive
 		void upProgress (quint64 done, quint64 total, const QString& filepath);
 		void upStatusChanged (const QString& status, const QString& filepath);
 
-		void gotListing (const QList<QList<QStandardItem*>>& items);
+		void gotListing (const QList<StorageItem*>& items);
+
 		void gotFileUrl (const QUrl& url, const QStringList& id);
 
 		void gotChanges (const QList<Change>& changes);
