@@ -105,6 +105,68 @@ namespace PDF
 	{
 		return Field_->isRichText ();
 	}
+
+	FormFieldChoice::FormFieldChoice (std::shared_ptr<Poppler::FormField> field)
+	: FormField (field)
+	, Field_ (std::dynamic_pointer_cast<Poppler::FormFieldChoice> (field))
+	{
+	}
+
+	FormType FormFieldChoice::GetType () const
+	{
+		return FormType::Choice;
+	}
+
+	Qt::Alignment FormFieldChoice::GetAlignment () const
+	{
+		return Field_->textAlignment ();
+	}
+
+	auto FormFieldChoice::GetChoiceType () const -> Type
+	{
+		switch (Field_->choiceType ())
+		{
+		case Poppler::FormFieldChoice::ComboBox:
+			return Type::Combobox;
+		case Poppler::FormFieldChoice::ListBox:
+			return Type::ListBox;
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown choice type"
+				<< Field_->choiceType ();
+		return Type::Combobox;
+	}
+
+	QStringList FormFieldChoice::GetAllChoices () const
+	{
+		return Field_->choices ();
+	}
+
+	QList<int> FormFieldChoice::GetCurrentChoices () const
+	{
+		return Field_->currentChoices ();
+	}
+
+	void FormFieldChoice::SetCurrentChoices (const QList<int>& choices)
+	{
+		Field_->setCurrentChoices (choices);
+	}
+
+	QString FormFieldChoice::GetEditChoice () const
+	{
+		return Field_->editChoice ();
+	}
+
+	void FormFieldChoice::SetEditChoice (const QString& choice)
+	{
+		Field_->setEditChoice (choice);
+	}
+
+	bool FormFieldChoice::IsEditable () const
+	{
+		return Field_->isEditable ();
+	}
 }
 }
 }

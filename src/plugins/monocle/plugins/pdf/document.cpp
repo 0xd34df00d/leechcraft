@@ -159,6 +159,9 @@ namespace PDF
 			case Poppler::FormField::FormText:
 				fields << IFormField_ptr (new FormFieldText (field));
 				break;
+			case Poppler::FormField::FormChoice:
+				fields << IFormField_ptr (new FormFieldChoice (field));
+				break;
 			default:
 				break;
 			}

@@ -25,6 +25,7 @@ namespace Poppler
 {
 	class FormField;
 	class FormFieldText;
+	class FormFieldChoice;
 }
 
 namespace LeechCraft
@@ -60,7 +61,6 @@ namespace PDF
 		FormFieldText (std::shared_ptr<Poppler::FormField>);
 
 		FormType GetType () const;
-
 		Qt::Alignment GetAlignment () const;
 
 		QString GetText () const;
@@ -70,6 +70,33 @@ namespace PDF
 		int GetMaximumLength () const;
 		bool IsPassword () const;
 		bool IsRichText () const;
+	};
+
+	class FormFieldChoice : public FormField
+						  , public IFormFieldChoice
+	{
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Monocle::IFormField
+				LeechCraft::Monocle::IFormFieldChoice)
+
+		std::shared_ptr<Poppler::FormFieldChoice> Field_;
+	public:
+		FormFieldChoice (std::shared_ptr<Poppler::FormField>);
+
+		FormType GetType () const;
+		Qt::Alignment GetAlignment () const;
+
+		Type GetChoiceType () const;
+
+		QStringList GetAllChoices () const;
+
+		QList<int> GetCurrentChoices () const;
+		void SetCurrentChoices (const QList<int>&);
+
+		QString GetEditChoice () const;
+		void SetEditChoice (const QString&);
+
+		bool IsEditable () const;
 	};
 }
 }
