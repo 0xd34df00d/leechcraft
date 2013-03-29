@@ -30,6 +30,7 @@ class QComboBox;
 class QTreeWidget;
 class QCheckBox;
 class QRadioButton;
+class QPushButton;
 class QButtonGroup;
 
 namespace LeechCraft
@@ -55,6 +56,7 @@ namespace Monocle
 		QHash<QTreeWidget*, std::shared_ptr<IFormFieldChoice>> List2Field_;
 		QHash<QCheckBox*, std::shared_ptr<IFormFieldButton>> Check2Field_;
 		QHash<QRadioButton*, std::shared_ptr<IFormFieldButton>> Radio2Field_;
+		QHash<QPushButton*, std::shared_ptr<IFormFieldButton>> Button2Field_;
 
 		QHash<QList<int>, QButtonGroup*> RadioGroups_;
 	public:
@@ -74,6 +76,7 @@ namespace Monocle
 
 		void handleCheckboxChanged ();
 		void handleRadioChanged ();
+		void handleButtonReleased ();
 	};
 }
 }

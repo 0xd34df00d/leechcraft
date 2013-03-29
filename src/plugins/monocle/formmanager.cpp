@@ -245,6 +245,13 @@ namespace Monocle
 		{
 			auto button = new QPushButton ();
 			button->setText (field->GetCaption ());
+
+			Button2Field_ [button] = field;
+			connect (button,
+					SIGNAL (released ()),
+					this,
+					SLOT (handleButtonReleased ()));
+
 			return Scene_->addWidget (button);
 		}
 		case IFormFieldButton::Type::Checkbox:
@@ -336,6 +343,12 @@ namespace Monocle
 	{
 		auto radio = qobject_cast<QRadioButton*> (sender ());
 		Radio2Field_ [radio]->SetChecked (radio->isChecked ());
+	}
+
+	void FormManager::handleButtonReleased ()
+	{
+		auto button = qobject_cast<QPushButton*> (sender ());
+		Button2Field_ [button]->HandleActivated ();
 	}
 }
 }

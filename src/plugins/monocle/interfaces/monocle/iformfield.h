@@ -120,6 +120,8 @@ namespace Monocle
 		virtual void SetChecked (bool) = 0;
 
 		virtual QList<int> GetButtonGroup () const = 0;
+
+		virtual void HandleActivated () = 0;
 	};
 }
 }
