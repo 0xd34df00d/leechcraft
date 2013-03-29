@@ -28,6 +28,9 @@ class QLineEdit;
 class QTextEdit;
 class QComboBox;
 class QTreeWidget;
+class QCheckBox;
+class QRadioButton;
+class QButtonGroup;
 
 namespace LeechCraft
 {
@@ -37,6 +40,7 @@ namespace Monocle
 	class IFormField;
 	class IFormFieldText;
 	class IFormFieldChoice;
+	class IFormFieldButton;
 
 	class FormManager : public QObject
 	{
@@ -49,6 +53,10 @@ namespace Monocle
 		QHash<QTextEdit*, std::shared_ptr<IFormFieldText>> Multiline2Field_;
 		QHash<QComboBox*, std::shared_ptr<IFormFieldChoice>> Combo2Field_;
 		QHash<QTreeWidget*, std::shared_ptr<IFormFieldChoice>> List2Field_;
+		QHash<QCheckBox*, std::shared_ptr<IFormFieldButton>> Check2Field_;
+		QHash<QRadioButton*, std::shared_ptr<IFormFieldButton>> Radio2Field_;
+
+		QHash<QList<int>, QButtonGroup*> RadioGroups_;
 	public:
 		FormManager (QGraphicsView*, QObject* = 0);
 
@@ -56,12 +64,16 @@ namespace Monocle
 	private:
 		QGraphicsProxyWidget* AddTextField (std::shared_ptr<IFormField>);
 		QGraphicsProxyWidget* AddChoiceField (std::shared_ptr<IFormField>);
+		QGraphicsProxyWidget* AddButtonField (std::shared_ptr<IFormField>);
 	private slots:
 		void handleLineEditChanged (const QString&);
 		void handleTextEditChanged ();
 
 		void handleComboChanged ();
 		void handleListChanged ();
+
+		void handleCheckboxChanged ();
+		void handleRadioChanged ();
 	};
 }
 }

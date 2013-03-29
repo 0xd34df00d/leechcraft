@@ -24,10 +24,22 @@
 #include <QComboBox>
 #include <QAbstractItemView>
 #include <QTreeWidget>
+#include <QCheckBox>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QButtonGroup>
 #include <QtDebug>
 #include "interfaces/monocle/isupportforms.h"
 #include "interfaces/monocle/iformfield.h"
 #include "pagegraphicsitem.h"
+
+uint qHash (const QList<int>& list)
+{
+	QByteArray arr;
+	for (auto n : list)
+		arr += QByteArray::number (n) + " ";
+	return qHash (arr);
+}
 
 namespace LeechCraft
 {
@@ -45,6 +57,12 @@ namespace Monocle
 		Line2Field_.clear ();
 		Multiline2Field_.clear ();
 		Combo2Field_.clear ();
+		List2Field_.clear ();
+		Check2Field_.clear ();
+		Radio2Field_.clear ();
+
+		qDeleteAll (RadioGroups_.values ());
+		RadioGroups_.clear ();
 
 		auto formsDoc = dynamic_cast<ISupportForms*> (doc.get ());
 		if (!formsDoc)
@@ -61,6 +79,9 @@ namespace Monocle
 					break;
 				case FormType::Choice:
 					proxy = AddChoiceField (field);
+					break;
+				case FormType::Button:
+					proxy = AddButtonField (field);
 					break;
 				}
 
@@ -215,6 +236,61 @@ namespace Monocle
 		return 0;
 	}
 
+	QGraphicsProxyWidget* FormManager::AddButtonField (std::shared_ptr<IFormField> baseField)
+	{
+		const auto field = std::dynamic_pointer_cast<IFormFieldButton> (baseField);
+		switch (field->GetButtonType ())
+		{
+		case IFormFieldButton::Type::Pushbutton:
+		{
+			auto button = new QPushButton ();
+			button->setText (field->GetCaption ());
+			return Scene_->addWidget (button);
+		}
+		case IFormFieldButton::Type::Checkbox:
+		{
+			auto box = new QCheckBox ();
+			box->setText (field->GetCaption ());
+			box->setCheckState (field->IsChecked () ? Qt::Checked : Qt::Unchecked);
+
+			Check2Field_ [box] = field;
+			connect (box,
+					SIGNAL (stateChanged (int)),
+					this,
+					SLOT (handleCheckboxChanged ()));
+
+			return Scene_->addWidget (box);
+		}
+		case IFormFieldButton::Type::Radiobutton:
+		{
+			auto radio = new QRadioButton ();
+			radio->setText (field->GetCaption ());
+			radio->setChecked (field->IsChecked ());
+
+			const auto& groupID = field->GetButtonGroup ();
+			if (!groupID.isEmpty ())
+			{
+				if (!RadioGroups_.contains (groupID))
+					RadioGroups_ [groupID] = new QButtonGroup;
+				RadioGroups_ [groupID]->addButton (radio);
+			}
+
+			Radio2Field_ [radio] = field;
+			connect (radio,
+					SIGNAL (toggled (bool)),
+					this,
+					SLOT (handleRadioChanged ()));
+
+			return Scene_->addWidget (radio);
+		}
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unsupported type";
+
+		return 0;
+	}
+
 	void FormManager::handleLineEditChanged (const QString& text)
 	{
 		Line2Field_ [static_cast<QLineEdit*> (sender ())]->SetText (text);
@@ -248,6 +324,18 @@ namespace Monocle
 				choices << i;
 
 		List2Field_ [edit]->SetCurrentChoices (choices);
+	}
+
+	void FormManager::handleCheckboxChanged ()
+	{
+		auto box = qobject_cast<QCheckBox*> (sender ());
+		Check2Field_ [box]->SetChecked (box->checkState () == Qt::Checked);
+	}
+
+	void FormManager::handleRadioChanged ()
+	{
+		auto radio = qobject_cast<QRadioButton*> (sender ());
+		Radio2Field_ [radio]->SetChecked (radio->isChecked ());
 	}
 }
 }
