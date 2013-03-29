@@ -24,6 +24,9 @@
 
 class QGraphicsView;
 class QGraphicsScene;
+class QLineEdit;
+class QTextEdit;
+class QComboBox;
 
 namespace LeechCraft
 {
@@ -31,6 +34,8 @@ namespace Monocle
 {
 	class PageGraphicsItem;
 	class IFormField;
+	class IFormFieldText;
+	class IFormFieldChoice;
 
 	class FormManager : public QObject
 	{
@@ -38,6 +43,10 @@ namespace Monocle
 
 		QGraphicsView * const View_;
 		QGraphicsScene * const Scene_;
+
+		QHash<QLineEdit*, std::shared_ptr<IFormFieldText>> Line2Field_;
+		QHash<QTextEdit*, std::shared_ptr<IFormFieldText>> Multiline2Field_;
+		QHash<QComboBox*, std::shared_ptr<IFormFieldChoice>> Combo2Field_;
 	public:
 		FormManager (QGraphicsView*, QObject* = 0);
 
@@ -45,6 +54,10 @@ namespace Monocle
 	private:
 		QGraphicsProxyWidget* AddTextField (std::shared_ptr<IFormField>);
 		QGraphicsProxyWidget* AddChoiceField (std::shared_ptr<IFormField>);
+	private slots:
+		void handleLineEditChanged (const QString&);
+		void handleTextEditChanged ();
+		void handleComboChanged ();
 	};
 }
 }

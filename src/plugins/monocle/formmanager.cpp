@@ -41,6 +41,10 @@ namespace Monocle
 
 	void FormManager::HandleDoc (IDocument_ptr doc, const QList<PageGraphicsItem*>& pages)
 	{
+		Line2Field_.clear ();
+		Multiline2Field_.clear ();
+		Combo2Field_.clear ();
+
 		auto formsDoc = dynamic_cast<ISupportForms*> (doc.get ());
 		if (!formsDoc)
 			return;
@@ -90,6 +94,13 @@ namespace Monocle
 			if (field->GetMaximumLength () > 0)
 				edit->setMaxLength (field->GetMaximumLength ());
 			edit->setAlignment (baseField->GetAlignment ());
+
+			Line2Field_ [edit] = field;
+			connect (edit,
+					SIGNAL (textChanged (QString)),
+					this,
+					SLOT (handleLineEditChanged (QString)));
+
 			return Scene_->addWidget (edit);
 		}
 		case IFormFieldText::Type::Multiline:
@@ -98,6 +109,13 @@ namespace Monocle
 			edit->setText (field->GetText ());
 			edit->setAcceptRichText (field->IsRichText ());
 			edit->setAlignment (baseField->GetAlignment ());
+
+			Multiline2Field_ [edit] = field;
+			connect (edit,
+					SIGNAL (textChanged ()),
+					this,
+					SLOT (handleTextEditChanged ()));
+
 			return Scene_->addWidget (edit);
 		}
 		}
@@ -158,6 +176,16 @@ namespace Monocle
 			else if (!field->GetCurrentChoices ().isEmpty ())
 				edit->setCurrentIndex (field->GetCurrentChoices ().first ());
 
+			Combo2Field_ [edit] = field;
+			connect (edit,
+					SIGNAL (currentIndexChanged (int)),
+					this,
+					SLOT (handleComboChanged ()));
+			connect (edit,
+					SIGNAL (editTextChanged (QString)),
+					this,
+					SLOT (handleComboChanged ()));
+
 			auto proxy = Scene_->addWidget (edit);
 			edit->view ()->installEventFilter (new PopupZOrderFixer (proxy));
 			return proxy;
@@ -168,6 +196,29 @@ namespace Monocle
 				<< "unsupported type";
 
 		return 0;
+	}
+
+	void FormManager::handleLineEditChanged (const QString& text)
+	{
+		Line2Field_ [static_cast<QLineEdit*> (sender ())]->SetText (text);
+	}
+
+	void FormManager::handleTextEditChanged ()
+	{
+		auto edit = qobject_cast<QTextEdit*> (sender ());
+		Multiline2Field_ [edit]->SetText (edit->toPlainText ());
+	}
+
+	void FormManager::handleComboChanged ()
+	{
+		auto box = qobject_cast<QComboBox*> (sender ());
+		auto field = Combo2Field_ [box];
+
+		const auto& text = box->currentText ();
+		field->SetEditChoice (text);
+
+		if (box->currentIndex () >= 0)
+			field->SetCurrentChoices ({ box->currentIndex () });
 	}
 }
 }
