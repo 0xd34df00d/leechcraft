@@ -25,6 +25,7 @@
 #include <QInputDialog>
 #include <QComboBox>
 #include <QtDebug>
+#include <interfaces/core/ientitymanager.h>
 #include <util/util.h>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/istorageplugin.h"
@@ -33,6 +34,7 @@
 #include "filestreemodel.h"
 #include "fileslistmodel.h"
 #include "xmlsettingsmanager.h"
+#include "filesproxymodel.h"
 
 namespace LeechCraft
 {
@@ -45,6 +47,7 @@ namespace NetStoreManager
 	, Proxy_ (proxy)
 	, ToolBar_ (new QToolBar (this))
 	, AM_ (am)
+	, ProxyModel_ (new FilesProxyModel (this))
 	, TreeModel_ (new FilesTreeModel (this))
 	, ListModel_ (new FilesListModel (this))
 	, ViewMode_ (static_cast<ViewMode> (XmlSettingsManager::Instance ()
@@ -107,16 +110,30 @@ namespace NetStoreManager
 				this,
 				SLOT (handleAccountRemoved (QObject*)));
 
-		Ui_.FilesTree_->setModel (TreeModel_);
+		Ui_.FilesView_->setModel (ProxyModel_);
+		Ui_.FilesView_->setModel (ProxyModel_);
+		if (ViewMode_ == VMTree)
+		{
+			ProxyModel_->setSourceModel (TreeModel_);
+			TreeModel_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Modify") });
+		}
+		else
+		{
+			ProxyModel_->setSourceModel (ListModel_);
+			ListModel_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Modify") });
+		}
+		Ui_.FilesView_->header ()->setResizeMode (Columns::Name, QHeaderView::Interactive);
+		connect (Ui_.FilesView_->header (),
+				SIGNAL (sectionResized (int, int, int)),
+				this,
+				SLOT (handleFilesViewSectionResized (int, int, int)));
+		Ui_.FilesView_->setContextMenuPolicy (Qt::CustomContextMenu);
 
-// 		if (Ui_.AccountsBox_->count ())
-// 			on_AccountsBox__activated (0);
+		connect (Ui_.FilesView_,
+				SIGNAL (customContextMenuRequested (const QPoint&)),
+				this,
+				SLOT (handleContextMenuRequested (const QPoint&)));
 
-// 		Ui_.FilesTree_->setContextMenuPolicy (Qt::CustomContextMenu);
-// 		connect (Ui_.FilesTree_,
-// 				SIGNAL (customContextMenuRequested (const QPoint&)),
-// 				this,
-// 				SLOT (handleContextMenuRequested (const QPoint&)));
 // 		connect (Ui_.FilesTree_,
 // 				SIGNAL (copiedItem (QStringList, QStringList)),
 // 				this,
@@ -177,12 +194,12 @@ namespace NetStoreManager
 					acc->GetAccountName (),
 					QVariant::fromValue<IStorageAccount*> (acc));
 
-// 			if (acc->GetAccountFeatures () & AccountFeature::FileListings)
-// 			{
-// 				connect (acc->GetQObject (),
-// 						SIGNAL (gotListing (const QList<QList<QStandardItem*>>&)),
-// 						this,
-// 						SLOT (handleGotListing (const QList<QList<QStandardItem*>>&)));
+			if (acc->GetAccountFeatures () & AccountFeature::FileListings)
+			{
+				connect (acc->GetQObject (),
+						SIGNAL (gotListing (const QList<StorageItem*>&)),
+						this,
+						SLOT (handleGotListing (const QList<StorageItem*>&)));
 //
 // 				connect (acc->GetQObject (),
 // 						SIGNAL (gotFileUrl (const QUrl&, const QStringList&)),
@@ -193,8 +210,9 @@ namespace NetStoreManager
 // 						SIGNAL (gotNewItem (QList<QStandardItem*>, QStringList)),
 // 						this,
 // 						SLOT (handleGotNewItem (QList<QStandardItem*>, QStringList)));
-// 			}
+			}
 		}
+
 		ToolBar_->addWidget (AccountsBox_);
 
 		Refresh_ = new QAction (Proxy_->GetIcon ("view-refresh"), tr ("Refresh"), this);
@@ -225,11 +243,156 @@ namespace NetStoreManager
 
 	IStorageAccount* ManagerTab::GetCurrentAccount () const
 	{
-// 		const int idx = Ui_.AccountsBox_->currentIndex ();
-// 		if (idx < 0)
-// 			return 0;
-// 		return Ui_.AccountsBox_->itemData (idx).value<IStorageAccount*> ();
-		return 0;
+		const int idx = AccountsBox_->currentIndex ();
+		if (idx < 0)
+			return 0;
+		return AccountsBox_->itemData (idx).value<IStorageAccount*> ();
+	}
+
+	void ManagerTab::ClearModel ()
+	{
+		switch (ViewMode_)
+		{
+			case VMTree:
+				TreeModel_->removeRows (0, TreeModel_->rowCount ());
+				break;
+			case VMList:
+				ListModel_->removeRows (0, ListModel_->rowCount ());
+				break;
+			default:
+				break;
+		}
+	}
+
+	void ManagerTab::FillModel (IStorageAccount *acc)
+	{
+		switch (ViewMode_)
+		{
+			case VMTree:
+				FillTreeModel (acc);
+				break;
+			case VMList:
+				FillListModel (acc);
+				break;
+			default:
+				break;
+		}
+	}
+
+	namespace
+	{
+		QList<QStandardItem*> CreateItems (StorageItem *storageItem, ICoreProxy_ptr proxy)
+		{
+			QList<QStandardItem*> result;
+
+			QStandardItem *name = new QStandardItem (storageItem->Name_);
+
+			name->setEditable (false);
+			name->setData (storageItem->ID_, ListingRole::ID);
+			name->setData (storageItem->MD5_, ListingRole::Hash);
+			name->setData (storageItem->IsDirectory_, ListingRole::Directory);
+			name->setData (storageItem->IsTrashed_, ListingRole::InTrash);
+			name->setIcon (proxy->GetIcon (storageItem->IsDirectory_ ?
+					"inode-directory" :
+					storageItem->MimeType_));
+			if (name->icon ().isNull ())
+				qDebug () << "[NetStoreManager]"
+						<< "Unknown mime type:"
+						<< storageItem->MimeType_
+						<< "for file"
+						<< storageItem->Name_
+						<< storageItem->ID_;
+
+			QStandardItem *modify = new QStandardItem (storageItem->ModifyDate_
+					.toString ("dd.MM.yy hh:mm"));
+			modify->setEditable (false);
+
+			result.append (name);
+			result.append (modify);
+			return result;
+		}
+	}
+
+	void ManagerTab::FillTreeModel (IStorageAccount *acc)
+	{
+		if (acc != GetCurrentAccount ())
+			return;
+
+		QHash<QByteArray, QList<QStandardItem*>> resultItems;
+		resultItems ["rootItem"] = { new QStandardItem };
+		QList<QByteArray> addedChildDirs;
+		QList<StorageItem*> items = Id2Item_.values ();
+		for (int i = items.count () - 1; i >= 0; --i)
+		{
+			auto item = items [i];
+			QList<QStandardItem*> resItems;
+			if (resultItems.contains (item->ParentID_))
+			{
+				resItems = CreateItems (item, Proxy_);
+				resultItems [item->ParentID_].at (0)->appendRow (resItems);
+				if (item->IsDirectory_)
+				{
+					resultItems [item->ID_] = resItems;
+					addedChildDirs << item->ID_;
+				}
+				items.removeAt (i);
+			}
+
+			if (item->IsDirectory_ &&
+					!addedChildDirs.contains (item->ID_))
+			{
+				resultItems [item->ID_] = resItems.isEmpty () ?
+					CreateItems (item, Proxy_) :
+					resItems;
+				items.removeAt (i);
+			}
+		}
+
+		for (int i = 0; i < items.count (); ++i)
+		{
+			auto item = items [i];
+			auto resItems = CreateItems (item, Proxy_);
+			if (resultItems.contains (item->ParentID_))
+				resultItems [item->ParentID_].at (0)->appendRow (resItems);
+			else
+				resultItems ["rootItem"].at (0)->appendRow (resItems);
+		}
+
+		for (auto id : addedChildDirs)
+			resultItems.remove (id);
+
+		auto res = resultItems.take ("rootItem");
+		for (int i = 0; i < res.at (0)->rowCount (); ++i)
+			TreeModel_->appendRow (res.at (0)->takeRow (i));
+
+		for (auto item : resultItems.values ())
+			TreeModel_->appendRow (item);
+
+		Ui_.FilesView_->header ()->resizeSection (Columns::Name,
+				XmlSettingsManager::Instance ().Property ("ViewSectionSize",
+						Ui_.FilesView_->header ()->sectionSize (Columns::Name)).toInt ());
+	}
+	void ManagerTab::FillListModel (IStorageAccount *acc)
+	{
+		//TODO
+	}
+
+	void ManagerTab::requestFileListings (IStorageAccount *acc)
+	{
+		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
+		if (!sfl)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< acc
+					<< "doesn't support FileListings";
+			return;
+		}
+		sfl->RefreshListing ();
+	}
+
+	void ManagerTab::requestFileChanges (IStorageAccount*)
+	{
+
 	}
 
 	void ManagerTab::CallOnSelection (std::function<void (ISupportFileListings*, const QList<QStringList>&)> func)
@@ -376,6 +539,25 @@ namespace NetStoreManager
 
 	void ManagerTab::handleRefresh ()
 	{
+		auto acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		switch (ViewMode_)
+		{
+			case VMTree:
+				if (!TreeModel_->rowCount ())
+					requestFileListings (acc);
+				else
+					requestFileChanges (acc);
+				break;
+			case VMList:
+				//TODO
+				break;
+			default:
+				break;
+		}
+// 		SaveModelState ();
 	}
 
 	void ManagerTab::handleUpload ()
@@ -419,19 +601,25 @@ namespace NetStoreManager
 			ShowAccountActions (false);
 	}
 
-	void ManagerTab::handleGotListing (const QList<QList<QStandardItem*>>& items)
+	void ManagerTab::handleGotListing (const QList<StorageItem*>& items)
 	{
-// 		IStorageAccount *acc = GetCurrentAccount ();
-// 		if (!acc || sender () != acc->GetQObject ())
-// 			return;
-//
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc ||
+				sender () != acc->GetQObject ())
+			return;
+
+		for (auto item : items)
+			Id2Item_ [item->ID_] = item;
+
+		FillModel (acc);
 // 		if (items.isEmpty ())
 // 		{
 // 			SaveModelState ();
 // 			ClearFilesModel ();
 // 			return;
 // 		}
-// 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
+
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 // 		const bool trashSupporting = sfl &&
 // 				sfl->GetListingOps () & ListingOp::TrashSupporting;
 //
@@ -448,6 +636,15 @@ namespace NetStoreManager
 // 		if (trashSupporting)
 // 			Model_->appendRow (trashItem);
 // 		RestoreModelState ();
+
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("NetStoreManager",
+				tr ("File list updated"), PInfo_));
+	}
+
+	void ManagerTab::handleFilesViewSectionResized (int index, int oldSize, int newSize)
+	{
+		if (index == Columns::Name)
+			XmlSettingsManager::Instance ().setProperty ("ViewSectionSize", newSize);
 	}
 
 	void ManagerTab::handleGotFileUrl (const QUrl& url, const QStringList&)
@@ -597,11 +794,19 @@ namespace NetStoreManager
 // 		acc->Download (idx.data (ListingRole::ID).toStringList (), "");
 	}
 
-	void ManagerTab::on_AccountsBox__activated (int)
+	void ManagerTab::on_AccountsBox__currentIndexChanged (int)
 	{
-// 		IStorageAccount *acc = GetCurrentAccount ();
-// 		if (!acc)
-// 			return;
+		ClearModel ();
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< acc
+					<< "is not an IStorageAccount object";
+			return;
+		}
+		qDeleteAll (Id2Item_);
+		requestFileListings (acc);
 //
 // 		const bool hasListings = acc->GetAccountFeatures () & AccountFeature::FileListings;
 // 		Ui_.Update_->setEnabled (hasListings);

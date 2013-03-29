@@ -18,7 +18,7 @@
     <number>1</number>
    </property>
    <item>
-    <widget class="LeechCraft::NetStoreManager::FilesView" name="FilesTree_">
+    <widget class="LeechCraft::NetStoreManager::FilesView" name="FilesView_">
      <property name="contextMenuPolicy">
       <enum>Qt::ActionsContextMenu</enum>
      </property>
@@ -33,6 +33,9 @@
      </property>
      <property name="rootIsDecorated">
       <bool>false</bool>
+     </property>
+     <property name="sortingEnabled">
+      <bool>true</bool>
      </property>
     </widget>
    </item>

@@ -35,14 +35,16 @@ namespace NetStoreManager
 {
 	class IStorageAccount;
 	class ISupportFileListings;
+	struct StorageItem;
 	class AccountsManager;
-
+	class FilesProxyModel;
 	class FilesTreeModel;
 	class FilesListModel;
 
 	enum Columns
 	{
-		FirstColumnNumber
+		Name,
+		Modify
 	};
 
 	class ManagerTab : public QWidget
@@ -60,6 +62,7 @@ namespace NetStoreManager
 		QToolBar *ToolBar_;
 
 		AccountsManager *AM_;
+		FilesProxyModel *ProxyModel_;
 		FilesTreeModel *TreeModel_;
 		FilesListModel *ListModel_;
 
@@ -76,7 +79,7 @@ namespace NetStoreManager
 		QAction *Refresh_;
 		QAction *Upload_;
 
-
+		QHash<QByteArray, StorageItem*> Id2Item_;
 
 		QAction *CopyURL_;
 		QAction *DeleteFile_;
@@ -88,8 +91,6 @@ namespace NetStoreManager
 		QAction *Download_;
 		QHash<IStorageAccount*, QHash<QString, bool>> Account2ItemExpandState_;
 	public:
-
-
 		ManagerTab (const TabClassInfo&, AccountsManager*, ICoreProxy_ptr, QObject*);
 
 		TabClassInfo GetTabClassInfo () const;
@@ -99,8 +100,17 @@ namespace NetStoreManager
 	private:
 		void FillToolbar ();
 		void ShowAccountActions (bool show);
-
 		IStorageAccount* GetCurrentAccount () const;
+
+		void ClearModel ();
+		void FillModel (IStorageAccount *acc);
+		void FillTreeModel (IStorageAccount *acc);
+		void FillListModel (IStorageAccount *acc);
+
+		void requestFileListings (IStorageAccount *acc);
+		void requestFileChanges (IStorageAccount *acc);
+
+
 		void CallOnSelection (std::function<void (ISupportFileListings*, const QList<QStringList>&)>);
 		void ClearFilesModel ();
 		void SaveModelState (const QModelIndex& parent = QModelIndex ());
@@ -117,8 +127,12 @@ namespace NetStoreManager
 		void handleAccountAdded (QObject *accObj);
 		void handleAccountRemoved (QObject *accObj);
 
+		void handleGotListing (const QList<StorageItem*>& items);
 
-		void handleGotListing (const QList<QList<QStandardItem*>>&);
+		void handleFilesViewSectionResized (int index, int oldSize, int newSize);
+
+
+		
 		void handleGotFileUrl (const QUrl& url, const QStringList& id);
 		void handleGotNewItem (const QList<QStandardItem*>& item,
 				const QStringList& parentId);
@@ -130,7 +144,7 @@ namespace NetStoreManager
 		void flCreateDir ();
 		void flUploadInCurrentDir ();
 		void flDownload ();
-		void on_AccountsBox__activated (int);
+		void on_AccountsBox__currentIndexChanged (int);
 		void on_Update__released ();
 		void on_Upload__released ();
 		void handleContextMenuRequested (const QPoint& point);
