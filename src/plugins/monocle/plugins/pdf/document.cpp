@@ -20,6 +20,8 @@
 #include <thread>
 #include <QThread>
 #include <QtDebug>
+#include <QBuffer>
+#include <QFile>
 #include <poppler-qt4.h>
 #include <poppler-form.h>
 #include <poppler-version.h>
@@ -210,6 +212,41 @@ namespace PDF
 				result [i] = resVec.at (i);
 #endif
 		return result;
+	}
+
+	auto Document::CanSave () const -> SaveQueryResult
+	{
+		if (PDocument_->isEncrypted ())
+			return { false, tr ("saving encrypted documents is not supported") };
+
+		return { true, {} };
+	}
+
+	bool Document::Save (const QString& path)
+	{
+		std::unique_ptr<Poppler::PDFConverter> conv (PDocument_->pdfConverter ());
+		conv->setPDFOptions (Poppler::PDFConverter::WithChanges);
+
+		if (path == DocURL_.toLocalFile ())
+		{
+			QBuffer buffer;
+			buffer.open (QIODevice::WriteOnly);
+			conv->setOutputDevice (&buffer);
+			if (!conv->convert ())
+				return false;
+
+			QFile file (path);
+			if (!file.open (QIODevice::WriteOnly))
+				return false;
+
+			file.write (buffer.buffer ());
+			return true;
+		}
+		else
+		{
+			conv->setOutputFileName (path);
+			return conv->convert ();
+		}
 	}
 
 	void Document::RequestNavigation (const QString& filename,
