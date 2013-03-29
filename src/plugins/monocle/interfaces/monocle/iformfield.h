@@ -79,7 +79,25 @@ namespace Monocle
 	class IFormFieldChoice
 	{
 	public:
+		enum class Type
+		{
+			Combobox,
+			ListBox
+		};
+
 		virtual ~IFormFieldChoice () {}
+
+		virtual Type GetChoiceType () const = 0;
+
+		virtual QStringList GetAllChoices () const = 0;
+
+		virtual QList<int> GetCurrentChoices () const = 0;
+		virtual void SetCurrentChoices (const QList<int>&) = 0;
+
+		virtual QString GetEditChoice () const = 0;
+		virtual void SetEditChoice (const QString&) = 0;
+
+		virtual bool IsEditable () const = 0;
 	};
 
 	class IFormFieldButton
