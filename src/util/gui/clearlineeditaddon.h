@@ -29,6 +29,23 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief Provides a "clear text" action for line edits.
+	 *
+	 * Using this class is as simple as this:
+	 * \code
+	 * QLineEdit *edit = ...; // or some QLineEdit-derived class
+	 * new ClearLineEditAddon (proxy, edit); // proxy is the one passed to IInfo::Init()
+	 * \endcode
+	 *
+	 * The constructor takes a pointer to the proxy object that is passed
+	 * to IInfo::Init() method of the plugin instance object and the
+	 * pointer to the line edit where the addon should be installed.
+	 *
+	 * The line edit takes the ownership of the addon, so there is no
+	 * need to keep track of it or explicitly delete it.
+	 *
+	 * @sa IInfo::Init()
+	 */
 	class UTIL_API ClearLineEditAddon : public QObject
 	{
 		Q_OBJECT
@@ -36,7 +53,14 @@ namespace Util
 		QToolButton *Button_;
 		QLineEdit *Edit_;
 	public:
-		ClearLineEditAddon (ICoreProxy_ptr, QLineEdit*);
+		/** @brief Creates the addon and installs it on the given edit.
+		 *
+		 * @param[in] proxy The proxy passed to IInfo::Init() of the
+		 * plugin.
+		 * @param[in] edit The line edit to install this addon into. The
+		 * edit takes ownership of the addon.
+		 */
+		ClearLineEditAddon (ICoreProxy_ptr proxy, QLineEdit *edit);
 	protected:
 		bool eventFilter (QObject*, QEvent*);
 	private:

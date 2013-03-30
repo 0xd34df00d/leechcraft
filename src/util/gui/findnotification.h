@@ -30,6 +30,13 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief A horizontal bar with typical widgets for text search.
+	 *
+	 * This widget provides typical features for text searching: a text
+	 * input field, checkboxes for selecting find mode and buttons for
+	 * searching and closing the notification, as well as convenience
+	 * slots findNext() and findPrevious().
+	 */
 	class UTIL_API FindNotification : public PageNotification
 	{
 		Q_OBJECT

@@ -4,6 +4,270 @@ the rest.
 Links to the corresponding development digests are also given for the
 relevant blocks of changes, so one could easily lookup 
 
+!!! 0.5.95
+* Overall: Use Qt's Q_DECL_IMPORT\EXPORT defines.
+* Core: multiwindow support (though experimental for now).
+* Core: handle Drag'n'Drop for tabs.
+* Core: completely reworked dock management.
+* Core: added Clang build quirks for Qt.
+* Core: support setting alternative key sequences for shortcuts.
+* Core: don't add tab that was already added.
+* Core: fixed installation of util/ and interfaces/ headers.
+* Core: guard NetworkDiskCache::prepare() by a mutex as well.
+* Core: manipulate current tab toolbar visibility via max height.
+* Core: set library load hints in plugin load mode as well.
+* Core: set window role according to tabclass.
+* Core: set WM_CLASS.
+* Core: try demangling library load error name.
+* Core: updated ask selection algorithm.
+* Util: fixed FItRectScreen and friends.
+* Util: support fitting into arbitrary geometries.
+* Util: use absoluteFilePath() instead of canonicalFilePath() (xstat is slow on Linux).
+* XSD: handle row modifications in data views.
+* XSD: support color/bgcolor attributes for ItemHandlerCombobox.
+* Aggregator: two-fold Core::GetCategories() speedup,
+* Aggregator: optimized channel changes (don't request items twice).
+* Aggregator: don't select all categories in items view.
+* Aggregator: erase tags & normalize entities in items list.
+* Aggregator: strip <img> tags in item tooltips.
+* AN: added rules management quark.
+* AN: added support for the Downloads category.
+* AN: moved constants.h to Interfaces.
+* AN: moved constants to AN namespace.
+* AN: properly update types list on cat change.
+* AN: hopefully fixed alert() behavior on X11.
+* AN: support Download notifications category.
+* AN: added error/success sounds.
+* AN: fixed custom rules not saving.
+* Azoth: support perm role changes with reason from GUI.
+* Azoth: properly support custom saved statuses.
+* Azoth: Alt+C shows all users from all accounts now.
+* Azoth: MUC users list action.
+* Azoth: save custom formatting state for tabs.
+* Azoth: different tab classes for chats and MUCs.
+* Azoth: added full entry ID copy action.
+* Azoth: clear focus proxy on chat tab destruction.
+* Azoth: optimized delayed tooltip rebuild.
+* Azoth: delete messages on full-purge (avoids a memory leak).
+* Azoth: don't double-call PrepareTheme().
+* Azoth: find links method in ProxyObject.
+* Azoth: get rid of GetMessage() functions (helps Windows build).
+* Azoth: handle MUC event log window closes.
+* Azoth: keep track of the "current" state in tabs.
+* Azoth: lose current on remove iff the tab was current.
+* Azoth: RosterMode widget action.
+* Azoth: notify if a user isn't present in the MUC.
+* Azoth: Open last link shortcut & feature.
+* Azoth: option to hide self-contacts.
+* Azoth: option to hide tabs for autojoined MUCs.
+* Azoth: option to show foreign resource in private chats.
+* Azoth: bigger timeout for vcard request queue.
+* Azoth: slightly optimized AnimatedIconManager.
+* Azoth: fixed logic for checking whether active variant should be changed.
+* Azoth: fit MUC events into current screen.
+* Azoth: fixed console XML packets handling/display.
+* Azoth: fixed "open new tab on message" behavior.
+* Azoth: fixed tooltip for MUC participants.
+* Azoth: fix segfault on PGP key selection.
+* Azoth Acetamide: add channel list widget.
+* Azoth AS: bigger avatar cache.
+* Azoth AS: don't clean caches on frame destroy.
+* Azoth Autoidler: always set custom statuses.
+* Azoth CH: added acc2users table, considerably speeding up loading history.
+* Azoth CH: don't store old MUC messages (avoid doubling recent messages).
+* Azoth CH: enforce FOREIGN KEY constraint.
+* Azoth CH: fixed keeping azoth_acc2users in sync.
+* Azoth CH: fixed user removal from history.
+* Azoth CH: use splitter in CH widget.
+* Azoth Modnok: don't antialias background.
+* Azoth Modnok: invalidate cache on formula color change.
+* Azoth Modnok: text color property in settings.
+* Azoth p100q: added translation update targets.
+* Azoth p100q: updated translations.
+* Azoth SS: added Lemon Night.
+* Azoth SS: correclty set base URL for themes.
+* Azoth SS: updated Lemon Night theme.
+* Azoth Vader: fixed showing contacts after turning back online.
+* Azoth VB: new plugin, experimental libpurple support layer.
+* Azoth Xoox: display avatars on avatar click in VCards.
+* Azoth Xoox: forward rich body as well in Ad-Hoc commands.
+* Azoth Xoox: multiple performance optimizations.
+* Azoth Xoox: added IsAutojoined() conf method.
+* Azoth Xoox: Block Contacts action for CL entries.
+* Azoth Xoox: clear fetch queues when going offline.
+* Azoth Xoox: delete unread messages as well.
+* Azoth Xoox: don't escape forwarded messages.
+* Azoth Xoox: don't notify every resource when going offline.
+* Azoth Xoox: don't request versions on bare JIDs.
+* Azoth Xoox: expose TLS settings.
+* Azoth Xoox: fetch conference name from bookmarks.
+* Azoth Xoox: fixed account password updating.
+* Azoth Xoox: fixed self contact status handling.
+* Azoth Xoox: GetMessage() -> GetNativeMessage().
+* Azoth Xoox: hopefully fixed removing rosterless items.
+* Azoth Xoox: option to disable VCard requests in MUCs.
+* Azoth Xoox: option to not request versions in MUCs.
+* Azoth Xoox: proper parenting for EntryBase commands.
+* Azoth Xoox: register OS version handler.
+* Azoth Xoox: special handling for 'this instance' in self contact.
+* Azoth Xoox: suggest registering on leechcraft.org server.
+* BitTorrent: emit AN-enabled download notifications.
+* BitTorrent: fixed selection model handling.
+* BitTorrent: rely on Util::SysPath::Share for country flags.
+* BitTorrent: support multi selections.
+* BitTorrent: update actions state on selection change.
+* BitTorrent: use save path from the torrent file if it's downloaded.
+* Blogique: add autosave feature.
+* Blogique: add BPFLocalBlog feature.
+* Blogique: add empty storagemanager.
+* Blogique: add LocalBlog feature.
+* Blogique: add missing include.
+* Blogique: add progress of actions with remove blog and fix #989.
+* Blogique: associate dock widget with the preferred tab.
+* Blogique: open in new tab by default.
+* Blogique: open remote/local entries in current and new tabs.
+* Blogique: save calendar visibility in drafts widget.
+* Blogique: set window/action icon for dock widget.
+* Blogique: show entries.
+* Blogique: added TSM support for session management and tabs unclose.
+* Blogique: notification actions in notify about entry posted.
+* Blogique: use pluginId-based connection name for db.
+* Blogique Hestia: new plugin for local blogging.
+* Blogique Metida: support recent comments.
+* Blogique Metida: better handle network errors.
+* Blogique Metida: get inbox messages.
+* CSTP: actions for correctly finished tasks.
+* CSTP: emit AN-rich download entity.
+* CSTP: Use FILENAME_MAX instead of _MAX_FNAME. Fixes MinGW build.
+* Dolozhee: use projects API for issue categories.
+* Dumbeep: fixed licensing.
+* EiskaltDC++: migrated to leechcraft-defunct-eiskaltdcpp repo.
+* Fix .desktop files: added Main Category. See: http://standards.freedesktop.org/menu-spec/1.0/apa.html
+* GActs: Add BUILD_QXT_GUI define for proper bundled Qxt compile on Win32.
+* GActs: option to use bundled Qxt with fixed media keys.
+* Glance: actually set the shortcut as well.
+* Glance: changed window type to Utility.
+* Glance: configurable shortcut now.
+* GMN: migrated to being a quark.
+* GMN: slightly refactored notifications; removed tray icon.
+* Kinotify: added CreateTrsUpTarget.
+* Kinotify: clarified settings.
+* Kinotify: install the translator.
+* Kinotify: mouse following is now optional.
+* Kinotify: updated translations.
+* Kinotify: use new LC window manager stuff on Win32 and fix MinGW compile.
+* LackMan: always show package name in package descr box.
+* LastFMScrobble: emit even empty recommended events data.
+* Launchy: support favorites.
+* Launchy: added Launchy quark displaying apps from favorites.
+* Launchy: support keyboard navigation in full screen launcher.
+* Launchy: (configurable) shortcut for FS launcher.
+* Launchy: no animation on items removal (workaround Qt bug).
+* LCFTP: removed this plugin as defunct.
+* Lemon: display a quark with active interfaces.
+* LHTR: support inserting tables.
+* LHTR: added AppendSeparator() method to API.
+* LHTR: emit textChanged() signal when contents are changed.
+* LHTR: have settings.
+* LHTR: settings for background color/overriding.
+* LHTR: support wrapping in a link arbitrary content.
+* LHTR: <Tab> to indent paragraphs.
+* LHTR: white background.
+* Liznoo: add design capacity property to batteries.
+* Liznoo: avoid segfault on opening empty history.
+* Liznoo: buttons for event debugging.
+* Liznoo: fixed FindQwt cmake script.
+* Liznoo: fixed FindQwt.cmake to work with Homebrew.
+* Liznoo: fixed initial enumeration on Linux.
+* Liznoo: More strict GUID compare on Win32 Liznoo implementation.
+* Liznoo: query battery info on Mac.
+* Liznoo: show capacity/voltage stuff in history dialog.
+* Liznoo: show temperature in BatteryHistoryDialog.
+* LMP: added artist browser launchable from a bunch of different places.
+* LMP: added album art manager.
+* LMP: support previewing whole albums.
+* LMP: fixed MPRIS support.
+* LMP: added ShuffleAlbums and ShuffleArtists play mode.
+* LMP: better random in shuffle (I hope).
+* LMP: fixed HypesView button overlap.
+* LMP: fixed restoring last song on load.
+* LMP: notify if no bio fetchers are available.
+* LMP: playlist shuffle action.
+* LMP: preview full albums from biography.
+* LMP: preview mode for album art manager.
+* LMP: replace ? and / with _ in SyncManager.
+* LMP: sameness source checking.
+* LMP: stick to constant object name when registering MPRIS.
+* LMP: substitution elements getters/setters.
+* LMP: support dropping directories on the playlist.
+* LMP: use PreviewAudioButton in {Hypes,Similar}View.
+* LMP Graffity: new plugin for tagging, CUE splitting and tags requesting.
+* Monocle: support thumbnails.
+* Monocle: support bookmarks.
+* Monocle: support filling forms.
+* Monocle: support text searching.
+* Monocle: keep document state between document loads.
+* Monocle: fixed zoom in / zoom out behavior on fit modes.
+* Monocle: invoke DocInfoDialog.
+* Monocle: ISaveableDocument.
+* Monocle: next/prev find shortcuts.
+* Monocle: remember last opened path.
+* Monocle: save dock position.
+* Monocle: save scale mode in the doc state as well.
+* Monocle: support DND; DocumentTab now implements IDNDTab.
+* Monocle: support saving selection as image.
+* Monocle: support searching with data filters for selected text.
+* Monocle FXB: a huge optimization of typical docs.
+* Monocle FXB: optimized paragraph handling.
+* Monocle PDF: support filling forms.
+* Monocle PDF: support text searching.
+* Monocle Seen: fixed a possible segfault on DjVu docs.
+* MZ: fixed Chroma calculation.
+* MZ: threaded Chroma calculation.
+* MZ: support fetching tabs.
+* MZ: proper mutex locking in Chroma calculator.
+* NSM: add extended selection to model.
+* NSM GoogleDrive: add delete and trashing for some files
+* Pogooglue: don't replace ' ' with '+'.
+* Pogooglue: escape user input.
+* Pogooglue: fixed googling for URLs.
+* Poshuku: support DND for tabs.
+* Poshuku: fixed ghost URL label (finally!).
+* Poshuku Autosearch: added Google Suggest client plugin.
+* Poshuku CleanWeb: fixed possible infinite recursion.
+* SB2: support moving, reordering and removing quarks.
+* SB2: support tooltips for quarks.
+* SB2: support placing SB2 toolbar near all for sides of the window.
+* SB2: handle actions' shortcuts on SB2.
+* SB2: handle hovering QCs in QuarkOrderView.
+* SB2: implement IHaveShortcuts.
+* SB2: shortcut for hiding panel.
+* SeekThru: remove null categories from filter variants.
+* SeekThru: suggest searchplugins.net.
+* ShellOpen: don't build by default.
+* Sidebar: removed this plugin in favour of SB2.
+* Summary: only single tab and IFinder-less Summary now.
+* Tab++: removed this plugin as defunct.
+* TabsList: configurable shortcut.
+* TabsList: number-based navigation.
+* TouchStreams: set IsRequesting to true on auth request.
+* TPI: fixed code style.
+* TPI: fixed horizontal orientation for blocks.
+* TPI: handle changes in total status.
+* TPI: properly fit tooltip for TPI.
+* TransparentArch: removed the stub.
+* TSM: adapted to new multiwindow features.
+* TSM: always remove widget from tabs list on removal.
+* TSM: restore tab on its previous position.
+* TSM: save full tab list, filter recoverables later.
+* VFScore: removed this one, it's a no-go for Qt 5.
+* Vrooby: added UDisks2-backend.
+* Win32: Add Windows version definitons and remove useless includes with  WIN32_LEAN_AND_MEAN define.
+* Win32: MinGW build scripts update.
+* Win32: nasty bug in Qt's qmoc. Fixed in Qt 5, but we need a workaround for now. see https://bugreports.qt-project.org/browse/QTBUG-22829 (cherry picked from commit 2861d90d3e47ecefc8966a03d693014358396e87)
+* Win32: Revert -DBOOST_ALL_NO_LIB as it worked before (cherry picked from commit 1198440bd3ccd3f08c7a0d1a7c8e4afd6dcea8c3)
+* XProxy: fill request port for known protocols.
+
 !!! 0.5.90
 * AN: don't show notification icons on Mac.
 * AN: emit notification count info.

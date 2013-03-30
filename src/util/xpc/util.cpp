@@ -26,7 +26,8 @@ namespace Util
 	Entity MakeAN (const QString& header, const QString& text, Priority priority,
 			const QString& senderID, const QString& cat, const QString& type,
 			const QString& id, const QStringList& visualPath,
-			int count, const QString& fullText, const QString& extendedText)
+			int delta, int count,
+			const QString& fullText, const QString& extendedText)
 	{
 		auto e = MakeNotification (header, text, priority);
 		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = senderID;
@@ -36,7 +37,10 @@ namespace Util
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = type;
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = fullText.isNull () ? text : fullText;
 		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = extendedText.isNull () ? text : extendedText;
-		e.Additional_ ["org.LC.AdvNotifications.Count"] = count;
+		if (delta)
+			e.Additional_ ["org.LC.AdvNotifications.Delta"] = delta;
+		else
+			e.Additional_ ["org.LC.AdvNotifications.Count"] = count;
 		return e;
 	}
 }
