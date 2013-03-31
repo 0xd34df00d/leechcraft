@@ -88,9 +88,25 @@ namespace LeechCraft
 			 * @param[in] string String with completion.
 			 */
 			UTIL_API void insertTag (const QString& string);
-			UTIL_API void handleTagsUpdated (const QStringList&);
 
-			UTIL_API void setTags (const QStringList&);
+			/** @brief Sets thew new list of the available tags.
+			 *
+			 * The list of tags will be passed to the selector if it was
+			 * added via AddSelector().
+			 *
+			 * @param[in] allTags The list of new available tags.
+			 */
+			UTIL_API void handleTagsUpdated (const QStringList& allTags);
+
+			/** @brief Sets the currently selected tags.
+			 *
+			 * Sets the line edit text to tags joined by separator. If
+			 * tags selector is installed via AddSelector(), the selector
+			 * is updated as well.
+			 *
+			 * @param[in] tags The list of selected tags.
+			 */
+			UTIL_API void setTags (const QStringList& tags);
 		private slots:
 			void handleSelectionChanged (const QStringList&);
 		protected:
