@@ -46,7 +46,15 @@ namespace Monocle
 
 		std::function<void (int, QPointF)> ReleaseHandler_;
 
-		QMap<QGraphicsRectItem*, QRectF> Item2DocRect_;
+	public:
+		typedef std::function<void (QRectF)> RectSetter_f;
+	private:
+		struct RectInfo
+		{
+			QRectF DocRect_;
+			RectSetter_f Setter_;
+		};
+		QMap<QGraphicsItem*, RectInfo> Item2RectInfo_;
 	public:
 		PageGraphicsItem (IDocument_ptr, int, QGraphicsItem* = 0);
 		~PageGraphicsItem ();
@@ -59,8 +67,8 @@ namespace Monocle
 		QRectF MapFromDoc (const QRectF&) const;
 		QRectF MapToDoc (const QRectF&) const;
 
-		void RegisterChildRect (QGraphicsRectItem*, const QRectF&);
-		void UnregisterChildRect (QGraphicsRectItem*);
+		void RegisterChildRect (QGraphicsItem*, const QRectF&, RectSetter_f);
+		void UnregisterChildRect (QGraphicsItem*);
 
 		void ClearPixmap ();
 		void UpdatePixmap ();

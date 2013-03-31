@@ -25,24 +25,80 @@ namespace LeechCraft
 	struct Entity;
 }
 
+/** @brief Proxy to core entity manager.
+ *
+ * Core entity manager is that very thing that routes entities between
+ * different plugins and chooses which plugins will handle what entity.
+ *
+ * This class can be used instead more or less deprecated gotEntity()
+ * and delegateEntity() signals of IInfo.
+ *
+ * @sa Entity, IInfo
+ */
 class Q_DECL_EXPORT IEntityManager
 {
 public:
+	/** The result of delegating this entity to another plugin.
+	 */
 	struct DelegationResult
 	{
+		/** The plugin instance object that handles this entity.
+		 *
+		 * If there is no such object, it's a nullptr.
+		 */
 		QObject *Handler_;
+
+		/** The internal ID of the handling event in "namespace" of
+		 * the Handler_ plugin.
+		 */
 		int ID_;
 	};
 
 	virtual ~IEntityManager () {}
 
-	virtual DelegationResult DelegateEntity (LeechCraft::Entity, QObject *desired = 0) = 0;
+	/** @brief Delegates the given entity and returns the delegation result.
+	 *
+	 * Queries all plugins if they can handle the given entity, and
+	 * chooses one of them. If the desired object is set, this method
+	 * first tries to handle the entity with it. Returns a structure
+	 * describing the delegation result.
+	 *
+	 * @param[in] entity The entity to handle.
+	 * @param[in] desired The object to try first.
+	 *
+	 * @sa DelegationResult
+	 */
+	virtual DelegationResult DelegateEntity (LeechCraft::Entity entity, QObject *desired = 0) = 0;
 
-	virtual bool HandleEntity (LeechCraft::Entity, QObject *desired = 0) = 0;
+	/** @brief Handles the given entity.
+	 *
+	 * Queries all plugins if they can handle the given entity, and
+	 * chooses one of them (or all of them, according to entity flags and
+	 * plugins' behavior). If the desired object is set, this method
+	 * first tries to handle the entity with it.
+	 *
+	 * @param[in] entity The entity to handle.
+	 * @param[in] desired The object to try first.
+	 *
+	 * @return If the entity has been handled successfully.
+	 */
+	virtual bool HandleEntity (LeechCraft::Entity entity, QObject *desired = 0) = 0;
 
-	virtual bool CouldHandle (const LeechCraft::Entity&) = 0;
+	/** @brief Queries whether the given entity can be handled at all.
+	 *
+	 * @param[in] entity The entity to test.
+	 *
+	 * @return Whether there is at least one plugin to handle this entity.
+	 */
+	virtual bool CouldHandle (const LeechCraft::Entity& entity) = 0;
 
-	virtual QList<QObject*> GetPossibleHandlers (const LeechCraft::Entity&) = 0;
+	/** @brief Queries what plugins can handle the given entity.
+	 *
+	 * @param[in] entity The entity to test.
+	 *
+	 * @return The list of plugin instances that can handle the given entity.
+	 */
+	virtual QList<QObject*> GetPossibleHandlers (const LeechCraft::Entity& entity) = 0;
 };
 
 Q_DECLARE_INTERFACE (IEntityManager, "org.Deviant.LeechCraft.IEntityManager/1.0");

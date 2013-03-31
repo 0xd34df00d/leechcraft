@@ -40,6 +40,7 @@
 #include "serverresponsemanager.h"
 #include "rplisupportparser.h"
 #include "channelsmanager.h"
+#include "channelslistdialog.h"
 
 namespace LeechCraft
 {
@@ -1169,6 +1170,25 @@ namespace Acetamide
 		ServerOptions_.IrcServerVersion_ = version;
 	}
 
+	void IrcServerHandler::GotChannelsListBegin (const IrcMessageOptions&)
+	{
+		emit gotChannelsBegin ();
+	}
+
+	void IrcServerHandler::GotChannelsList (const IrcMessageOptions& opts)
+	{
+		ChannelsDiscoverInfo info;
+		info.Topic_ = opts.Message_;
+		info.ChannelName_ = QString::fromUtf8 (opts.Parameters_.value (1).c_str ());
+		info.UsersCount_ = QString::fromUtf8 (opts.Parameters_.value (2).c_str ()).toInt ();
+		emit gotChannels (info);
+	}
+
+	void IrcServerHandler::GotChannelsListEnd (const IrcMessageOptions&)
+	{
+		emit gotChannelsEnd ();
+	}
+
 	void IrcServerHandler::connectionEstablished ()
 	{
 		ServerConnectionState_ = Connected;
@@ -1227,6 +1247,29 @@ namespace Acetamide
 				<< socket->errorString ();
 
 		emit gotSocketError (error, socket->errorString ());
+	}
+
+	void IrcServerHandler::showChannels (const QStringList&)
+	{
+		IrcParser_->ChannelsListCommand (QStringList ());
+
+		ChannelsListDialog dlg (this);
+		connect (this,
+				SIGNAL (gotChannelsBegin ()),
+				&dlg,
+				SLOT (handleGotChannelsBegin ()),
+				Qt::UniqueConnection);
+		connect (this,
+				SIGNAL (gotChannels (ChannelsDiscoverInfo)),
+				&dlg,
+				SLOT (handleGotChannels (ChannelsDiscoverInfo)),
+				Qt::UniqueConnection);
+		connect (this,
+				SIGNAL (gotChannelsEnd ()),
+				&dlg,
+				SLOT (handleGotChannelsEnd ()),
+				Qt::UniqueConnection);
+		dlg.exec ();
 	}
 
 	void IrcServerHandler::handleSetAutoWho ()

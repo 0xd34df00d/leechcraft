@@ -32,6 +32,7 @@ SET (SRCS
 	thumbswidget.cpp
 	pageslayoutmanager.cpp
 	textsearchhandler.cpp
+	formmanager.cpp
 	)
 SET (FORMS
 	documenttab.ui

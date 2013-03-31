@@ -26,6 +26,11 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief A simple flow layout implementation.
+	 *
+	 * Flow layout arranges child items in a dynamic wrappable row, much
+	 * like QML's GridView.
+	 */
 	class UTIL_API FlowLayout : public QLayout
 	{
 		QList<QLayoutItem*> ItemList_;
@@ -35,7 +40,7 @@ namespace Util
 		FlowLayout (QWidget*, int = -1, int = -1, int = -1);
 		FlowLayout (int = -1, int = -1, int = -1);
 		virtual ~FlowLayout ();
-		
+
 		void addItem (QLayoutItem*);
 		int horizontalSpacing () const;
 		int verticalSpacing () const;

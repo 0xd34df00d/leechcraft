@@ -130,7 +130,7 @@ namespace Autoidler
 
 		if (!mins)
 			return;
-		
+
 		EntryStatus status;
 		if (mins == XmlSettingsManager::Instance ().property ("AwayTimeout").toInt ())
 			status = EntryStatus (SAway,
@@ -140,13 +140,17 @@ namespace Autoidler
 					XmlSettingsManager::Instance ().property ("NAText").toString ());
 		else
 			return;
-		
+
 		for (QObject *accObj : AzothProxy_->GetAllAccounts ())
 		{
-			IAccount *acc = qobject_cast<IAccount*> (accObj);
+			auto acc = qobject_cast<IAccount*> (accObj);
+
+			const auto& accState = acc->GetState ();
+			if (accState.State_ == State::SOffline)
+				continue;
 
 			if (!OldStatuses_.contains (accObj))
-				OldStatuses_ [accObj] = acc->GetState ();;
+				OldStatuses_ [accObj] = accState;
 			acc->ChangeState (status);
 		}
 	}

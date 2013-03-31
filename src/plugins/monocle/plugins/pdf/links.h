@@ -48,6 +48,7 @@ namespace PDF
 		void Execute ();
 	private:
 		void ExecutePageLink ();
+		void ExecuteCommandLink ();
 	};
 
 	class TOCLink : public QObject

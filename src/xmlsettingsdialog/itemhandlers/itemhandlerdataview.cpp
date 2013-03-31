@@ -156,6 +156,8 @@ namespace LeechCraft
 			case DataSources::DataFieldType::Enum:
 				// unsupported yet
 				break;
+			case DataSources::DataFieldType::None:
+				break;
 			}
 		}
 

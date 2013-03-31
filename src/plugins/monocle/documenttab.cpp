@@ -36,6 +36,7 @@
 #include <QImageWriter>
 #include <QTimer>
 #include <QScrollBar>
+#include <QShortcut>
 #include <QUrl>
 #include <util/util.h>
 #include <util/xpc/stddatafiltermenucreator.h>
@@ -46,6 +47,8 @@
 #include "interfaces/monocle/ihavetextcontent.h"
 #include "interfaces/monocle/isupportannotations.h"
 #include "interfaces/monocle/idynamicdocument.h"
+#include "interfaces/monocle/isaveabledocument.h"
+#include "interfaces/monocle/isearchabledocument.h"
 #include "core.h"
 #include "pagegraphicsitem.h"
 #include "filewatcher.h"
@@ -60,6 +63,7 @@
 #include "pageslayoutmanager.h"
 #include "thumbswidget.h"
 #include "textsearchhandler.h"
+#include "formmanager.h"
 
 namespace LeechCraft
 {
@@ -77,7 +81,7 @@ namespace Monocle
 	protected:
 		void handleNext (const QString& text, FindFlags flags)
 		{
-			SearchHandler_->Search (text, flags);
+			SetSuccessful (SearchHandler_->Search (text, flags));
 		}
 	};
 
@@ -91,6 +95,7 @@ namespace Monocle
 	, LayTwoPages_ (0)
 	, LayoutManager_ (0)
 	, SearchHandler_ (0)
+	, FormManager_ (0)
 	, DockWidget_ (new QDockWidget (tr ("Monocle dock")))
 	, TOCWidget_ (new TOCWidget ())
 	, BMWidget_ (new BookmarksWidget (this))
@@ -106,6 +111,7 @@ namespace Monocle
 
 		LayoutManager_ = new PagesLayoutManager (Ui_.PagesView_, this);
 		SearchHandler_ = new TextSearchHandler (Ui_.PagesView_, LayoutManager_, this);
+		FormManager_ = new FormManager (Ui_.PagesView_, this);
 
 		FindDialog_ = new FindDialog (SearchHandler_, this);
 		FindDialog_->hide ();
@@ -365,6 +371,7 @@ namespace Monocle
 
 		LayoutManager_->HandleDoc (CurrentDoc_, Pages_);
 		SearchHandler_->HandleDoc (CurrentDoc_, Pages_);
+		FormManager_->HandleDoc (CurrentDoc_, Pages_);
 
 		recoverDocState (state);
 		Relayout ();
@@ -381,6 +388,11 @@ namespace Monocle
 				this,
 				SLOT (handleNavigateRequested (QString, int, double, double)),
 				Qt::QueuedConnection);
+		connect (CurrentDoc_->GetQObject (),
+				SIGNAL (printRequested (QList<int>)),
+				this,
+				SLOT (handlePrintRequested ()),
+				Qt::QueuedConnection);
 
 		emit fileLoaded (path);
 
@@ -394,6 +406,11 @@ namespace Monocle
 
 		BMWidget_->HandleDoc (CurrentDoc_);
 		ThumbsWidget_->HandleDoc (CurrentDoc_);
+
+		FindAction_->setEnabled (qobject_cast<ISearchableDocument*> (CurrentDoc_->GetQObject ()));
+
+		auto saveable = qobject_cast<ISaveableDocument*> (CurrentDoc_->GetQObject ());
+		SaveAction_->setEnabled (saveable && saveable->CanSave ().CanSave_);
 
 		return true;
 	}
@@ -474,6 +491,35 @@ namespace Monocle
 				this,
 				SLOT (handlePrint ()));
 		Toolbar_->addAction (print);
+
+		SaveAction_ = new QAction (tr ("Save"), this);
+		SaveAction_->setShortcut (QString ("Ctrl+S"));
+		SaveAction_->setProperty ("ActionIcon", "document-save");
+		SaveAction_->setEnabled (false);
+		connect (SaveAction_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleSave ()));
+		Toolbar_->addAction (SaveAction_);
+
+		FindAction_ = new QAction (tr ("Find..."), this);
+		FindAction_->setShortcut (QString ("Ctrl+F"));
+		FindAction_->setProperty ("ActionIcon", "edit-find");
+		FindAction_->setEnabled (false);
+		connect (FindAction_,
+				SIGNAL (triggered ()),
+				FindDialog_,
+				SLOT (show ()));
+		connect (FindAction_,
+				SIGNAL (triggered ()),
+				FindDialog_,
+				SLOT (setFocus ()));
+		Toolbar_->addAction (FindAction_);
+
+		new QShortcut (QString ("F3"), FindDialog_, SLOT (findNext ()));
+		new QShortcut (QString ("Shift+F3"), FindDialog_, SLOT (findPrevious ()));
+
+		Toolbar_->addSeparator ();
 
 		auto presentation = new QAction (tr ("Presentation..."), this);
 		presentation->setProperty ("ActionIcon", "view-presentation");
@@ -601,21 +647,6 @@ namespace Monocle
 				this,
 				SLOT (setSelectionMode (bool)));
 		Toolbar_->addAction (selectModeAction);
-
-		Toolbar_->addSeparator ();
-
-		auto findAction = new QAction (tr ("Find..."), this);
-		findAction->setShortcut (QString ("Ctrl+F"));
-		findAction->setProperty ("ActionIcon", "edit-find");
-		connect (findAction,
-				SIGNAL (triggered ()),
-				FindDialog_,
-				SLOT (show ()));
-		connect (findAction,
-				SIGNAL (triggered ()),
-				FindDialog_,
-				SLOT (setFocus ()));
-		Toolbar_->addAction (findAction);
 
 		Toolbar_->addSeparator ();
 
@@ -751,6 +782,11 @@ namespace Monocle
 		}
 	}
 
+	void DocumentTab::handlePrintRequested ()
+	{
+		handlePrint ();
+	}
+
 	void DocumentTab::handleThumbnailClicked (int num)
 	{
 		SetCurrentPage (num);
@@ -823,6 +859,28 @@ namespace Monocle
 				.setProperty ("LastOpenFileName", QFileInfo (path).absolutePath ());
 
 		SetDoc (path);
+	}
+
+	void DocumentTab::handleSave ()
+	{
+		if (!CurrentDoc_)
+			return;
+
+		auto saveable = qobject_cast<ISaveableDocument*> (CurrentDoc_->GetQObject ());
+		if (!saveable)
+			return;
+
+		const auto& saveResult = saveable->CanSave ();
+		if (!saveResult.CanSave_)
+		{
+			QMessageBox::warning (this,
+					"Monocle",
+					tr ("Can't save document: %1.")
+						.arg (saveResult.Reason_));
+			return;
+		}
+
+		saveable->Save (CurrentDocPath_);
 	}
 
 	void DocumentTab::handlePrint ()

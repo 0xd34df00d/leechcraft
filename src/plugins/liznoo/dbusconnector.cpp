@@ -114,13 +114,13 @@ namespace Liznoo
 				SB_);
 
 		auto res = face.call ("EnumerateDevices");
-		Q_FOREACH (QVariant argument, res.arguments ())
+		for (const auto& argument : res.arguments ())
 		{
 			auto arg = argument.value<QDBusArgument> ();
-			QStringList paths;
+			QList<QDBusObjectPath> paths;
 			arg >> paths;
-			Q_FOREACH (const QString& path, paths)
-				requeryDevice (path);
+			for (const auto& path : paths)
+				requeryDevice (path.path ());
 		}
 	}
 
@@ -157,8 +157,10 @@ namespace Liznoo
 		info.Voltage_ = face.property ("Voltage").toDouble ();
 		info.Energy_ = face.property ("Energy").toDouble ();
 		info.EnergyFull_ = face.property ("EnergyFull").toDouble ();
+		info.DesignEnergyFull_ = face.property ("EnergyFullDesign").toDouble ();
 		info.EnergyRate_ = face.property ("EnergyRate").toDouble ();
 		info.Technology_ = TechIdToString (face.property ("Technology").toInt ());
+		info.Temperature_ = 0;
 
 		emit batteryInfoUpdated (info);
 	}

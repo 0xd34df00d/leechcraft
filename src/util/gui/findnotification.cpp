@@ -74,6 +74,24 @@ namespace Util
 		return flags;
 	}
 
+	void FindNotification::findNext ()
+	{
+		const auto& text = GetText ();
+		if (text.isEmpty ())
+			return;
+
+		handleNext (text, GetFlags ());
+	}
+
+	void FindNotification::findPrevious ()
+	{
+		const auto& text = GetText ();
+		if (text.isEmpty ())
+			return;
+
+		handleNext (text, GetFlags () | FindBackwards);
+	}
+
 	void FindNotification::on_Pattern__textChanged (const QString& newText)
 	{
 		Ui_->FindButton_->setEnabled (!newText.isEmpty ());
@@ -90,6 +108,7 @@ namespace Util
 
 	void FindNotification::reject ()
 	{
+		Ui_->Pattern_->clear ();
 		hide ();
 	}
 }

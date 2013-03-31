@@ -44,6 +44,7 @@
 #include <QTextCodec>
 #include <QDataStream>
 #include <QMainWindow>
+#include <QDesktopServices>
 #include <libtorrent/bencode.hpp>
 #include <libtorrent/entry.hpp>
 #include <libtorrent/create_torrent.hpp>
@@ -63,9 +64,12 @@
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/ijobholder.h>
+#include <interfaces/an/constants.h>
 #include <util/tags/tagscompletionmodel.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/util.h>
+#include <util/xpc/util.h>
+#include <util/notificationactionhandler.h>
 #include "xmlsettingsmanager.h"
 #include "piecesmodel.h"
 #include "peersmodel.h"
@@ -1431,46 +1435,6 @@ namespace BitTorrent
 		ScheduleSave ();
 	}
 
-	void Core::FileFinished (const libtorrent::torrent_handle& th, int fi)
-	{
-		QList<TorrentStruct>::const_iterator sit =
-			std::find_if (Handles_.begin (), Handles_.end (),
-					HandleFinder (th));
-		if (sit == Handles_.end ())
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "wtf? not found the handle";
-			return;
-		}
-
-		TorrentStruct torrent = *sit;
-		libtorrent::torrent_info info = torrent.Handle_
-			.get_torrent_info ();
-
-		libtorrent::torrent_info::file_iterator fit = info.begin_files ();
-		std::advance (fit, fi);
-
-		auto codec = QTextCodec::codecForLocale ();
-		const auto& torrentPath = torrent.Handle_.save_path ();
-#if LIBTORRENT_VERSION_NUM >= 1600
-		const auto& pathStr = torrentPath + '/' + info.files ().at (fit).path;
-#else
-		const auto& pathStr = (torrentPath / fit->path).string ();
-#endif
-		QString name = codec->toUnicode (pathStr.c_str ());
-
-		const auto& string = tr ("File finished: %1").arg (name);
-		emit gotEntity (Util::MakeNotification ("BitTorrent", string, PInfo_));
-
-		Entity e;
-		e.Entity_ = QUrl::fromLocalFile (name);
-		e.Parameters_ = LeechCraft::IsDownloaded |
-			LeechCraft::ShouldQuerySource;
-		e.Location_ = torrent.TorrentFileName_;
-		e.Additional_ [" Tags"] = torrent.Tags_;
-		emit gotEntity (e);
-	}
-
 	void Core::PieceRead (const libtorrent::read_piece_alert& a)
 	{
 		LiveStreamManager_->PieceRead (a);
@@ -1904,15 +1868,40 @@ namespace BitTorrent
 
 		QString name = QString::fromUtf8 (info.name ().c_str ());
 
-		emit gotEntity (Util::MakeNotification ("BitTorrent",
-				tr ("Torrent finished: %1").arg (name), PInfo_));
+		auto notifyE = Util::MakeAN ("BitTorrent",
+				tr ("Torrent finished: %1").arg (name),
+				PInfo_,
+				"org.LeechCraft.CSTP",
+				AN::CatDownloads,
+				AN::TypeDownloadFinished,
+				"org.LC.Plugins.BitTorrent.DLFinished/" + name,
+				QStringList (name));
 
 		const auto& savePath = torrent.Handle_.save_path ();
+		const auto& savePathStr = QString::fromUtf8 (savePath.c_str ());
+
+#if LIBTORRENT_VERSION_NUM >= 1600
+		auto nah = new Util::NotificationActionHandler (notifyE);
+		if (info.files ().num_files () == 1)
+		{
+			const auto& path = QByteArray ((savePath + '/' + info.files ().at (0).path).c_str ());
+			nah->AddFunction (tr ("Open..."), [this, path] ()
+					{
+						auto e = Util::MakeEntity (QUrl::fromLocalFile (path),
+								QString (),
+								LeechCraft::FromUserInitiated);
+						emit gotEntity (e);
+					});
+		}
+		nah->AddFunction (tr ("Show folder"),
+				[savePathStr] ()
+					{ QDesktopServices::openUrl (QFileInfo (savePathStr).absolutePath ()); });
+#endif
+		emit gotEntity (notifyE);
 
 		auto localeCodec = QTextCodec::codecForLocale ();
 		Entity e;
-		e.Parameters_ = LeechCraft::IsDownloaded |
-			LeechCraft::ShouldQuerySource;
+		e.Parameters_ = IsDownloaded;
 		e.Location_ = torrent.TorrentFileName_;
 		e.Additional_ [" Tags"] = torrent.Tags_;
 		e.Additional_ ["IgnorePlugins"] = QStringList ("org.LeechCraft.BitTorrent");
@@ -2374,11 +2363,6 @@ namespace BitTorrent
 					Q_ARG (LeechCraft::Entity, n));
 		}
 
-		void operator() (const libtorrent::file_completed_alert&) const
-		{
-//					Core::Instance ()->FileFinished (a.handle, a.index);
-		}
-
 		void operator() (const libtorrent::read_piece_alert& a) const
 		{
 			Core::Instance ()->PieceRead (a);
@@ -2413,7 +2397,6 @@ namespace BitTorrent
 					, libtorrent::metadata_received_alert
 					, libtorrent::file_error_alert
 					, libtorrent::file_rename_failed_alert
-					, libtorrent::file_completed_alert
 					, libtorrent::read_piece_alert
 					> alertHandler (a, sd);
 				Q_UNUSED (alertHandler);

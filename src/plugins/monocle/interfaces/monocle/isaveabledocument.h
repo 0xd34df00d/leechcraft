@@ -18,39 +18,29 @@
 
 #pragma once
 
-#include <QString>
-#include <QMetaType>
+#include <QtPlugin>
 
 namespace LeechCraft
 {
-namespace Liznoo
+namespace Monocle
 {
-	struct BatteryInfo
+	class ISaveableDocument
 	{
-		QString ID_;
+	public:
+		virtual ~ISaveableDocument () {}
 
-		char Percentage_;
+		struct SaveQueryResult
+		{
+			bool CanSave_;
+			QString Reason_;
+		};
 
-		/** Time until battery is fully charged in seconds, or 0 if
-		 * battery isn't charging.
-		 */
-		qlonglong TimeToFull_;
-		qlonglong TimeToEmpty_;
-		double Voltage_;
+		virtual SaveQueryResult CanSave () const = 0;
 
-		double Energy_;
-		double EnergyFull_;
-		double DesignEnergyFull_;
-		double EnergyRate_;
-
-		QString Technology_;
-
-		double Temperature_;
-
-		void Dump ();
+		virtual bool Save (const QString& path) = 0;
 	};
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Liznoo::BatteryInfo);
-
+Q_DECLARE_INTERFACE (LeechCraft::Monocle::ISaveableDocument,
+		"org.LeechCraft.Monocle.ISaveableDocument/1.0");

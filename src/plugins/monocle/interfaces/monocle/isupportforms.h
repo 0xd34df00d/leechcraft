@@ -18,39 +18,27 @@
 
 #pragma once
 
-#include <QString>
-#include <QMetaType>
+#include <memory>
+#include <QtPlugin>
 
 namespace LeechCraft
 {
-namespace Liznoo
+namespace Monocle
 {
-	struct BatteryInfo
+	class IFormField;
+
+	typedef std::shared_ptr<IFormField> IFormField_ptr;
+	typedef QList<IFormField_ptr> IFormFields_t;
+
+	class ISupportForms
 	{
-		QString ID_;
+	public:
+		virtual ~ISupportForms () {}
 
-		char Percentage_;
-
-		/** Time until battery is fully charged in seconds, or 0 if
-		 * battery isn't charging.
-		 */
-		qlonglong TimeToFull_;
-		qlonglong TimeToEmpty_;
-		double Voltage_;
-
-		double Energy_;
-		double EnergyFull_;
-		double DesignEnergyFull_;
-		double EnergyRate_;
-
-		QString Technology_;
-
-		double Temperature_;
-
-		void Dump ();
+		virtual IFormFields_t GetFormFields (int page) = 0;
 	};
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Liznoo::BatteryInfo);
-
+Q_DECLARE_INTERFACE (LeechCraft::Monocle::ISupportForms,
+		"org.LeechCraft.Monocle.ISupportForms/1.0");

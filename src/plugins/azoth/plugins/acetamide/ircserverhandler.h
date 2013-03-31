@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERHANDLER_H
 
 #include <boost/function.hpp>
+#include <boost/graph/graph_concepts.hpp>
 #include <QObject>
 #include <QTcpSocket>
 #include <interfaces/azoth/imessage.h>
@@ -223,6 +224,11 @@ namespace Acetamide
 				const QString& who, quint64 time);
 
 		void SetIrcServerInfo (IrcServer server, const QString& version);
+
+		void GotChannelsListBegin (const IrcMessageOptions& opts);
+		void GotChannelsList (const IrcMessageOptions& opts);
+		void GotChannelsListEnd (const IrcMessageOptions& opts);
+
 	private:
 		void SendToConsole (IMessage::Direction, const QString&);
 		void NickCmdError ();
@@ -230,6 +236,7 @@ namespace Acetamide
 	public slots:
 		void autoWhoRequest ();
 		void handleSocketError (QAbstractSocket::SocketError error);
+		void showChannels (const QStringList& = QStringList ());
 	private slots:
 		void connectionEstablished ();
 		void connectionClosed ();
@@ -243,6 +250,10 @@ namespace Acetamide
 		void nicknameConflict (const QString&);
 		void gotSocketError (QAbstractSocket::SocketError error,
 				const QString& erorString);
+
+		void gotChannelsBegin ();
+		void gotChannels (const ChannelsDiscoverInfo& info);
+		void gotChannelsEnd ();
 	};
 };
 };

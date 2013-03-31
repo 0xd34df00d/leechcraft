@@ -93,6 +93,8 @@ namespace Azoth
 
 		ChatPartState PreviousState_;
 		QString LastLink_;
+
+		bool IsCurrent_;
 	public:
 		static void SetParentMultiTabs (QObject*);
 		static void SetChatTabClassInfo (const TabClassInfo&);
@@ -147,7 +149,7 @@ namespace Azoth
 		void handleFilesDropped (const QList<QUrl>&);
 	private slots:
 		void on_MUCEventsButton__toggled (bool);
-		void handleSeparateMUCLog ();
+		void handleSeparateMUCLog (bool initial = false);
 
 		void clearAvailableNick ();
 		void handleEditScroll (int);

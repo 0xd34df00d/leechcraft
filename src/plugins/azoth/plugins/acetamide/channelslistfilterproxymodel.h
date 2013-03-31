@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2010-2013  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,39 +18,22 @@
 
 #pragma once
 
-#include <QString>
-#include <QMetaType>
+#include <QSortFilterProxyModel>
 
 namespace LeechCraft
 {
-namespace Liznoo
+namespace Azoth
 {
-	struct BatteryInfo
+namespace Acetamide
+{
+	class ChannelsListFilterProxyModel : public QSortFilterProxyModel
 	{
-		QString ID_;
-
-		char Percentage_;
-
-		/** Time until battery is fully charged in seconds, or 0 if
-		 * battery isn't charging.
-		 */
-		qlonglong TimeToFull_;
-		qlonglong TimeToEmpty_;
-		double Voltage_;
-
-		double Energy_;
-		double EnergyFull_;
-		double DesignEnergyFull_;
-		double EnergyRate_;
-
-		QString Technology_;
-
-		double Temperature_;
-
-		void Dump ();
+	public:
+		ChannelsListFilterProxyModel (QObject *parent = 0);
+	protected:
+		bool filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent);
+		bool lessThan (const QModelIndex& left, const QModelIndex& right) const;
 	};
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::Liznoo::BatteryInfo);
-
+}

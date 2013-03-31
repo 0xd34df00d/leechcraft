@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2010-2013  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,30 +18,47 @@
 
 #pragma once
 
-#include <QObject>
-#include <QLinkedList>
-#include "ui_batteryhistorydialog.h"
-#include "batteryhistory.h"
+#include <QDialog>
+#include "localtypes.h"
+#include "ui_channelslistdialog.h"
 
-class QwtPlotCurve;
+class QStandardItem;
+class QStandardItemModel;
+class QTimer;
 
 namespace LeechCraft
 {
-namespace Liznoo
+namespace Azoth
 {
-	class BatteryHistoryDialog : public QDialog
+namespace Acetamide
+{
+	class ChannelsListFilterProxyModel;
+	class IrcServerHandler;
+
+	class ChannelsListDialog : public QDialog
 	{
 		Q_OBJECT
 
-		Ui::BatteryHistoryDialog Ui_;
+		Ui::ChannelsListDialog Ui_;
+		IrcServerHandler *ISH_;
+		QList<QList<QStandardItem*>> Buffer_;
+		QTimer *BufferTimer_;
+		ChannelsListFilterProxyModel *FilterProxyModel_;
+		QStandardItemModel *Model_;
 
-		QwtPlotCurve *Percent_;
-		QwtPlotCurve *Energy_;
 	public:
-		BatteryHistoryDialog (int, QWidget* = 0);
+		explicit ChannelsListDialog (IrcServerHandler *ish, QWidget *parent = 0);
 
-		void UpdateHistory (const QLinkedList<BatteryHistory>&, const BatteryInfo&);
+	public slots:
+		void handleGotChannelsBegin ();
+		void handleGotChannels (const ChannelsDiscoverInfo& info);
+		void handleGotChannelsEnd ();
+	private slots:
+		void appendRows ();
+		void on_Filter__textChanged (const QString& text);
+		void on_ChannelsList__doubleClicked (const QModelIndex& index);
 	};
+}
 }
 }
 

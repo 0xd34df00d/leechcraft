@@ -43,6 +43,7 @@ namespace LeechCraft
 
 	QIODevice* NetworkDiskCache::prepare (const QNetworkCacheMetaData& metadata)
 	{
+		QMutexLocker lock (&InsertRemoveMutex_);
 		return QNetworkDiskCache::prepare (metadata);
 	}
 
