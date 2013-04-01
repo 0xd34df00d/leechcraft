@@ -28,35 +28,37 @@ namespace Media
 	 */
 	struct AudioInfo
 	{
-		/** The artist performing this track.
+		/** @brief The artist performing this track.
 		 */
 		QString Artist_;
 
-		/** The album this track is on.
+		/** @brief The album this track is on.
 		 */
 		QString Album_;
 
-		/** The title of this track.
+		/** @brief The title of this track.
 		 */
 		QString Title_;
 
-		/** The genres of this track.
+		/** @brief The genres of this track.
 		 */
 		QStringList Genres_;
 
-		/** The length of this track in seconds.
+		/** @brief The length of this track in seconds.
 		 */
 		qint32 Length_;
 
-		/** The year of the Album_ this track is on.
+		/** @brief The year of the Album_ this track is on.
 		 */
 		qint32 Year_;
 
-		/** The number of this track on the Album_.
+		/** @brief The number of this track on the Album_.
 		 */
 		qint32 TrackNumber_;
 
-		/** Other fields known to be used:
+		/** @brief Other fields of this audio info.
+		 *
+		 * Other fields known to be used:
 		 * - URL with a QUrl pointing to either local file (if the scheme
 		 *   is "file:") or a remote file or radio stream otherwise.
 		 */
@@ -67,7 +69,7 @@ namespace Media
 	 */
 	struct TagInfo
 	{
-		/** Name of the tag.
+		/** @brief Name of the tag.
 		 */
 		QString Name_;
 	};
@@ -80,23 +82,23 @@ namespace Media
 	 */
 	struct ArtistInfo
 	{
-		/** The artist name.
+		/** @brief The artist name.
 		 */
 		QString Name_;
 
-		/** Short artist description.
+		/** @brief Short artist description.
 		 */
 		QString ShortDesc_;
 
-		/** Full artist description, not including the short description.
+		/** @brief Full artist description, not including the short description.
 		 */
 		QString FullDesc_;
 
-		/** An URL of a thumbnail artist image.
+		/** @brief An URL of a thumbnail artist image.
 		 */
 		QUrl Image_;
 
-		/** A bigger artist image.
+		/** @brief A bigger artist image.
 		 */
 		QUrl LargeImage_;
 
@@ -110,7 +112,7 @@ namespace Media
 		 */
 		QUrl Page_;
 
-		/** Genres this artist plays in.
+		/** @brief Genres this artist plays in.
 		 */
 		TagInfos_t Tags_;
 	};
@@ -130,7 +132,7 @@ namespace Media
 	 */
 	struct SimilarityInfo
 	{
-		/** Information about artist this similary info is about.
+		/** @brief Information about artist this similary info is about.
 		 */
 		ArtistInfo Artist_;
 
@@ -140,10 +142,13 @@ namespace Media
 		 */
 		int Similarity_;
 
-		/** Names of the artists similar to this one.
+		/** @brief Names of the artists similar to this one.
 		 */
 		QStringList SimilarTo_;
 	};
+
+	/** @brief A list of SimilarityInfo structures.
+	 */
 	typedef QList<SimilarityInfo> SimilarityInfos_t;
 }
 

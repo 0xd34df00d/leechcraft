@@ -55,11 +55,11 @@ namespace Media
 		 */
 		struct Result
 		{
-			/** The information about the found audio track.
+			/** @brief The information about the found audio track.
 			 */
 			AudioInfo Info_;
 
-			/** The URL of this audio track.
+			/** @brief The URL of this audio track.
 			 */
 			QUrl Source_;
 		};
@@ -103,19 +103,19 @@ namespace Media
 	 */
 	struct AudioSearchRequest
 	{
-		/** The title of a track.
+		/** @brief The title of a track.
 		 *
 		 * At least this or Artist_ field should not be empty.
 		 */
 		QString Title_;
 
-		/** The artist performing the track.
+		/** @brief The artist performing the track.
 		 *
 		 * At least this or Title_ field should not be empty.
 		 */
 		QString Artist_;
 
-		/** The album containing this track.
+		/** @brief The album containing this track.
 		 */
 		QString Album_;
 
@@ -132,6 +132,8 @@ namespace Media
 		 */
 		QString FreeForm_;
 
+		/** @brief Creates an empty audio search request.
+		 */
 		AudioSearchRequest ()
 		: TrackLength_ (0)
 		{

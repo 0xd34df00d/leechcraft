@@ -34,7 +34,7 @@ namespace Media
 	 */
 	struct ArtistBio
 	{
-		/** Basic information about this artist.
+		/** @brief Basic information about this artist.
 		 */
 		ArtistInfo BasicInfo_;
 	};

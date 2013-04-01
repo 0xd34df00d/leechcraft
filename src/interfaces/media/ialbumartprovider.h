@@ -30,21 +30,25 @@ namespace Media
 	 */
 	struct AlbumInfo
 	{
-		/** The artist name of this album.
+		/** @brief The artist name of this album.
 		 */
 		QString Artist_;
 
-		/** The album name.
+		/** @brief The album name.
 		 */
 		QString Album_;
 	};
 
+	/** @brief Compares to AlbumInfo structures.
+	 */
 	inline bool operator== (const AlbumInfo& a1, const AlbumInfo& a2)
 	{
 		return a1.Artist_ == a2.Artist_ &&
 			a1.Album_ == a2.Album_;
 	}
 
+	/** @brief A hash function for AlbumInfo to use it in QHash.
+	 */
 	inline uint qHash (const AlbumInfo& info)
 	{
 		return qHash (info.Album_.toUtf8 () + '\0' + info.Artist_.toUtf8 ());
