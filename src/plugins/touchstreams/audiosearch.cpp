@@ -130,6 +130,7 @@ namespace TouchStreams
 
 		qWarning () << Q_FUNC_INFO
 				<< reply->errorString ();
+		emit error ();
 		deleteLater ();
 	}
 }

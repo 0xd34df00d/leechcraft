@@ -41,6 +41,7 @@ namespace Media
 		virtual QList<Result> GetResults () const = 0;
 	protected:
 		virtual void ready () = 0;
+		virtual void error () = 0;
 	};
 
 	struct AudioSearchRequest
