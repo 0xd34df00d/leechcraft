@@ -100,6 +100,13 @@ public:
 	virtual ~IShortcutProxy () { }
 };
 
+/** @brief Interface for plugins that support configuring shortcuts.
+ *
+ * LeechCraft::Util::ShortcutManager class can help in forming the
+ * GetActionInfo() map and in keeping track of created actions.
+ *
+ * @sa LeechCraft::Util::ShortcutManager
+ */
 class Q_DECL_EXPORT IHaveShortcuts
 {
 public:
