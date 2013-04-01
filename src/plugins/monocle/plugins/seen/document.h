@@ -78,6 +78,7 @@ namespace Seen
 		void TryGetPageInfo (int);
 	signals:
 		void navigateRequested (const QString&, int pageNum, double x, double y);
+		void printRequested (const QList<int>&);
 
 		void pageSizeChanged (int);
 		void pageContentsChanged (int);

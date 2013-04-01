@@ -25,7 +25,9 @@
 #include <interfaces/monocle/ihavetoc.h>
 #include <interfaces/monocle/ihavetextcontent.h>
 #include <interfaces/monocle/isupportannotations.h>
+#include <interfaces/monocle/isupportforms.h>
 #include <interfaces/monocle/isearchabledocument.h>
+#include <interfaces/monocle/isaveabledocument.h>
 
 namespace Poppler
 {
@@ -45,14 +47,18 @@ namespace PDF
 				   , public IHaveTOC
 				   , public IHaveTextContent
 				   , public ISupportAnnotations
+				   , public ISupportForms
 				   , public ISearchableDocument
+				   , public ISaveableDocument
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Monocle::IDocument
 				LeechCraft::Monocle::IHaveTOC
 				LeechCraft::Monocle::IHaveTextContent
 				LeechCraft::Monocle::ISupportAnnotations
-				LeechCraft::Monocle::ISearchableDocument)
+				LeechCraft::Monocle::ISupportForms
+				LeechCraft::Monocle::ISearchableDocument
+				LeechCraft::Monocle::ISaveableDocument)
 
 		PDocument_ptr PDocument_;
 		TOCEntryLevel_t TOC_;
@@ -78,13 +84,20 @@ namespace PDF
 
 		QList<IAnnotation_ptr> GetAnnotations (int) const;
 
+		IFormFields_t GetFormFields (int);
+
 		QMap<int, QList<QRectF>> GetTextPositions (const QString&, Qt::CaseSensitivity);
 
+		SaveQueryResult CanSave () const;
+		bool Save (const QString& path);
+
 		void RequestNavigation (const QString&, int, double, double);
+		void RequestPrinting ();
 	private:
 		void BuildTOC ();
 	signals:
 		void navigateRequested (const QString&, int, double, double);
+		void printRequested (const QList<int>&);
 	};
 }
 }

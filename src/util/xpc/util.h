@@ -25,9 +25,42 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief Creates an Advanced Notifications-enabled notify entity.
+	 *
+	 * Returns an entity with the given header, text and a bunch of other
+	 * parameters that can be handled by Advanced Notifications.
+	 *
+	 * The returned entity will also be handled by a visual notifications
+	 * plugin if AN is not present.
+	 *
+	 * @param[in] header The header of the notification. This field will
+	 * also be used if AN is not present.
+	 * @param[in] text The text of the notification. This field will also
+	 * be used if AN is not present.
+	 * @param[in] priority The priority of this notification.
+	 * @param[in] senderID The ID of the plugin sending this notification.
+	 * @param[in] cat The category of this notification (one of Cat
+	 * constants in interfaces/an/constants.h).
+	 * @param[in] type The type of this notification (one of Type
+	 * constants in interfaces/an/constants.h).
+	 * @param[in] id The ID of this notification, used to group
+	 * consecutive notifications about similar events like incoming
+	 * message from the same IM contact.
+	 * @param[in] visualPath The list of names for a menu-like structure
+	 * wishing to show this notification.
+	 * @param[in] delta The change of count of events with this id, or 0
+	 * to use count.
+	 * @param[in] count The total count of events with this id, used if
+	 * delta is 0.
+	 * @param[in] fullText The full text of this notification. If null,
+	 * the text parameter is used.
+	 * @param[in] extendedText The extended text of this notification. If
+	 * null, the text parameter is used.
+	 */
 	UTIL_API Entity MakeAN (const QString& header, const QString& text, Priority priority,
 			const QString& senderID, const QString& cat, const QString& type,
 			const QString& id, const QStringList& visualPath,
-			int count = 1, const QString& fullText = QString (), const QString& extendedText = QString ());
+			int delta = 1, int count = 0,
+			const QString& fullText = QString (), const QString& extendedText = QString ());
 }
 }

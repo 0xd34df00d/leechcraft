@@ -70,8 +70,11 @@ namespace Monocle
 
 		update ();
 
-		for (auto i = Item2DocRect_.begin (); i != Item2DocRect_.end (); ++i)
-			i.key ()->setRect (MapFromDoc (*i));
+		for (auto i = Item2RectInfo_.begin (); i != Item2RectInfo_.end (); ++i)
+		{
+			const auto& info = *i;
+			info.Setter_ (MapFromDoc (info.DocRect_));
+		}
 	}
 
 	int PageGraphicsItem::GetPageNum () const
@@ -101,15 +104,16 @@ namespace Monocle
 		};
 	}
 
-	void PageGraphicsItem::RegisterChildRect (QGraphicsRectItem *item, const QRectF& docRect)
+	void PageGraphicsItem::RegisterChildRect (QGraphicsItem *item,
+			const QRectF& docRect, RectSetter_f setter)
 	{
-		Item2DocRect_ [item] = docRect;
-		item->setRect (MapFromDoc (docRect));
+		Item2RectInfo_ [item] = { docRect, setter };
+		setter (MapFromDoc (docRect));
 	}
 
-	void PageGraphicsItem::UnregisterChildRect (QGraphicsRectItem *item)
+	void PageGraphicsItem::UnregisterChildRect (QGraphicsItem *item)
 	{
-		Item2DocRect_.remove (item);
+		Item2RectInfo_.remove (item);
 	}
 
 	void PageGraphicsItem::ClearPixmap ()

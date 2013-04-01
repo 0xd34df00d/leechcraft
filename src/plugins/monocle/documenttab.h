@@ -42,6 +42,7 @@ namespace Monocle
 	class BookmarksWidget;
 	class ThumbsWidget;
 	class FindDialog;
+	class FormManager;
 
 	class DocumentTab : public QWidget
 					  , public ITabWidget
@@ -65,10 +66,13 @@ namespace Monocle
 		QAction *LayOnePage_;
 		QAction *LayTwoPages_;
 
+		QAction *SaveAction_;
+		QAction *FindAction_;
 		FindDialog *FindDialog_;
 
 		PagesLayoutManager *LayoutManager_;
 		TextSearchHandler *SearchHandler_;
+		FormManager *FormManager_;
 
 		QDockWidget *DockWidget_;
 		TOCWidget *TOCWidget_;
@@ -136,6 +140,8 @@ namespace Monocle
 		void RegenPageVisibility ();
 	private slots:
 		void handleNavigateRequested (QString, int, double, double);
+		void handlePrintRequested ();
+
 		void handleThumbnailClicked (int);
 
 		void handlePageContentsChanged (int);
@@ -146,6 +152,8 @@ namespace Monocle
 		void handleRecentOpenAction (QAction*);
 
 		void selectFile ();
+		void handleSave ();
+
 		void handlePrint ();
 		void handlePresentation ();
 

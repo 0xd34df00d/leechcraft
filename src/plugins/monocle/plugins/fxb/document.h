@@ -54,6 +54,7 @@ namespace FXB
 		void RequestNavigation (int);
 	signals:
 		void navigateRequested (const QString&, int pageNum, double x, double y);
+		void printRequested (const QList<int>&);
 	};
 }
 }

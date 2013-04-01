@@ -119,12 +119,18 @@ namespace TPI
 		for (int i = from; i <= to; ++i)
 		{
 			const auto& idx = model->index (i, JobHolderColumn::JobProgress);
-			auto item = PIdx2Item_.value (idx);
-			if (!item)
-				continue;
 
 			auto done = idx.data (ProcessState::Done).toLongLong ();
 			auto total = idx.data (ProcessState::Total).toLongLong ();
+
+			auto item = PIdx2Item_.value (idx);
+			if (!item)
+			{
+				if (done != total)
+					HandleRows (model, i, i);
+				continue;
+			}
+
 			if (done == total)
 			{
 				PIdx2Item_.remove (idx);

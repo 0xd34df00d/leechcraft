@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2010-2013  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,46 +18,47 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/media/iaudiopile.h>
+#include <QDialog>
+#include "localtypes.h"
+#include "ui_channelslistdialog.h"
+
+class QStandardItem;
+class QStandardItemModel;
+class QTimer;
 
 namespace LeechCraft
 {
-namespace Util
+namespace Azoth
 {
-	class QueueManager;
-}
-
-namespace TouchStreams
+namespace Acetamide
 {
-	class AuthManager;
+	class ChannelsListFilterProxyModel;
+	class IrcServerHandler;
 
-	class AudioSearch : public QObject
-					  , public Media::IPendingAudioSearch
+	class ChannelsListDialog : public QDialog
 	{
 		Q_OBJECT
-		Q_INTERFACES (Media::IPendingAudioSearch)
 
-		ICoreProxy_ptr Proxy_;
-		Util::QueueManager *Queue_;
+		Ui::ChannelsListDialog Ui_;
+		IrcServerHandler *ISH_;
+		QList<QList<QStandardItem*>> Buffer_;
+		QTimer *BufferTimer_;
+		ChannelsListFilterProxyModel *FilterProxyModel_;
+		QStandardItemModel *Model_;
 
-		AuthManager *AuthMgr_;
-		const Media::AudioSearchRequest Query_;
-
-		QList<Media::IPendingAudioSearch::Result> Result_;
 	public:
-		AudioSearch (ICoreProxy_ptr, const Media::AudioSearchRequest&, AuthManager*, Util::QueueManager*, QObject* = 0);
+		explicit ChannelsListDialog (IrcServerHandler *ish, QWidget *parent = 0);
 
-		QObject* GetQObject ();
-		QList<Result> GetResults () const;
+	public slots:
+		void handleGotChannelsBegin ();
+		void handleGotChannels (const ChannelsDiscoverInfo& info);
+		void handleGotChannelsEnd ();
 	private slots:
-		void handleGotAuthKey (const QString&);
-		void handleGotReply ();
-		void handleError ();
-	signals:
-		void ready ();
-		void error ();
+		void appendRows ();
+		void on_Filter__textChanged (const QString& text);
+		void on_ChannelsList__doubleClicked (const QModelIndex& index);
 	};
 }
 }
+}
+

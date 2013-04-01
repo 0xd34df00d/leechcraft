@@ -67,6 +67,8 @@ namespace Monocle
 		virtual QUrl GetDocURL () const = 0;
 	protected:
 		virtual void navigateRequested (const QString&, int pageNum, double x, double y) = 0;
+
+		virtual void printRequested (const QList<int>&) = 0;
 	};
 
 	typedef std::shared_ptr<IDocument> IDocument_ptr;

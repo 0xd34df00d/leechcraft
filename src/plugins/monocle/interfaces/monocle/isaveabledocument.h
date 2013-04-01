@@ -16,24 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef INTERFACES_VFS_ICONTAINERENGINE_H
-#define INTERFACES_VFS_ICONTAINERENGINE_H
+#pragma once
+
 #include <QtPlugin>
-#include "ienginebase.h"
 
 namespace LeechCraft
 {
-namespace VFS
+namespace Monocle
 {
-	class IContainerEngine : public IEngineBase
+	class ISaveableDocument
 	{
 	public:
-		virtual ~IContainerEngine () {}
+		virtual ~ISaveableDocument () {}
+
+		struct SaveQueryResult
+		{
+			bool CanSave_;
+			QString Reason_;
+		};
+
+		virtual SaveQueryResult CanSave () const = 0;
+
+		virtual bool Save (const QString& path) = 0;
 	};
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::VFS::IContainerEngine,
-		"org.Deviant.LeechCraft.VFS.IContainerEngine/1.0");
-
-#endif
+Q_DECLARE_INTERFACE (LeechCraft::Monocle::ISaveableDocument,
+		"org.LeechCraft.Monocle.ISaveableDocument/1.0");

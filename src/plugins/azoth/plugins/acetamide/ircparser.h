@@ -88,6 +88,7 @@ namespace Acetamide
 		void IsonCommand (const QStringList&);
 		void QuitCommand (const QStringList&);
 		void ChanModeCommand (const QStringList&);
+		void ChannelsListCommand (const QStringList&);
 
 		bool ParseMessage (const QByteArray&);
 		IrcMessageOptions GetIrcMessageOptions () const;

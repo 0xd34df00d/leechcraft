@@ -16,23 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef INTERFACES_VFS_IPROTOCOLENGINE_H
-#define INTERFACES_VFS_IPROTOCOLENGINE_H
+#pragma once
+
+#include <memory>
 #include <QtPlugin>
 
 namespace LeechCraft
 {
-namespace VFS
+namespace Monocle
 {
-	class Q_DECL_EXPORT IProtocolEngine
+	class IFormField;
+
+	typedef std::shared_ptr<IFormField> IFormField_ptr;
+	typedef QList<IFormField_ptr> IFormFields_t;
+
+	class ISupportForms
 	{
 	public:
-		virtual ~IProtocolEngine () {}
+		virtual ~ISupportForms () {}
+
+		virtual IFormFields_t GetFormFields (int page) = 0;
 	};
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::VFS::IProtocolEngine,
-		"org.Deviant.LeechCraft.VFS.IProtocolEngine/1.0");
-
-#endif
+Q_DECLARE_INTERFACE (LeechCraft::Monocle::ISupportForms,
+		"org.LeechCraft.Monocle.ISupportForms/1.0");

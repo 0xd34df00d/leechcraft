@@ -223,6 +223,12 @@ namespace Acetamide
 				 this, _1);
 		Command2Action_ ["324"] = boost::bind (&ServerResponseManager::GotChannelModes,
 				 this, _1);
+		Command2Action_ ["321"] = [this] (const IrcMessageOptions& opts)
+				{ ISH_->GotChannelsListBegin (opts); };
+		Command2Action_ ["322"] = [this] (const IrcMessageOptions& opts)
+				{ ISH_->GotChannelsList (opts); };
+		Command2Action_ ["323"] = [this] (const IrcMessageOptions& opts)
+				{ ISH_->GotChannelsListEnd (opts); };
 
 		//not from rfc
 		Command2Action_ ["330"] = boost::bind (&ServerResponseManager::GotWhoIsAccount,
@@ -243,6 +249,7 @@ namespace Acetamide
 			{ ISH_->ShowAnswer ("320", opts.Message_); };
 		Command2Action_ ["378"] = [this] (const IrcMessageOptions& opts)
 			{ ISH_->ShowAnswer ("278", opts.Message_); };
+
 
 		MatchString2Server_ ["unreal"] = IrcServer::UnrealIRCD;
 	}

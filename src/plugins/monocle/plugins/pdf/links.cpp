@@ -59,6 +59,9 @@ namespace PDF
 		case LinkType::PageLink:
 			ExecutePageLink ();
 			return;
+		case LinkType::Command:
+			ExecuteCommandLink ();
+			return;
 		default:
 			return;
 		}
@@ -72,6 +75,19 @@ namespace PDF
 				QString ();
 		const auto& dest = link->destination ();
 		Doc_->RequestNavigation (filename, dest.pageNumber () - 1, dest.left (), dest.top ());
+	}
+
+	void Link::ExecuteCommandLink ()
+	{
+		auto link = std::dynamic_pointer_cast<Poppler::LinkAction> (Link_);
+		switch (link->actionType ())
+		{
+		case Poppler::LinkAction::Print:
+			Doc_->RequestPrinting ();
+			break;
+		default:
+			break;
+		}
 	}
 
 	TOCLink::TOCLink (Document *doc, Poppler::LinkDestination *dest)

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2010-2013  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,31 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef INTERFACES_VFS_IENGINEPROVIDER_H
-#define INTERFACES_VFS_IENGINEPROVIDER_H
-#include <QtPlugin>
-#include <QList>
+#pragma once
+
+#include <QSortFilterProxyModel>
 
 namespace LeechCraft
 {
-namespace VFS
+namespace Azoth
 {
-	class IContainerEngine;
-	class IProtocolEngine;
-
-	class Q_DECL_EXPORT IEngineProvider
+namespace Acetamide
+{
+	class ChannelsListFilterProxyModel : public QSortFilterProxyModel
 	{
 	public:
-		virtual ~IEngineProvider () {}
-		
-		virtual QList<IContainerEngine*> GetContainerEngines () const = 0;
-		
-		virtual QList<IProtocolEngine*> GetProtocolEngines () const = 0;
+		ChannelsListFilterProxyModel (QObject *parent = 0);
+	protected:
+		bool filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent);
+		bool lessThan (const QModelIndex& left, const QModelIndex& right) const;
 	};
 }
 }
-
-Q_DECLARE_INTERFACE (LeechCraft::VFS::IEngineProvider,
-		"org.Deviant.LeechCraft.VFS.IEngineProvider/1.0");
-
-#endif
+}

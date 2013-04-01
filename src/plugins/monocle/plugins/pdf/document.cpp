@@ -20,9 +20,13 @@
 #include <thread>
 #include <QThread>
 #include <QtDebug>
+#include <QBuffer>
+#include <QFile>
 #include <poppler-qt4.h>
+#include <poppler-form.h>
 #include <poppler-version.h>
 #include "links.h"
+#include "fields.h"
 
 namespace LeechCraft
 {
@@ -136,6 +140,40 @@ namespace PDF
 		return QList<IAnnotation_ptr> ();
 	}
 
+	IFormFields_t Document::GetFormFields (int pageNum)
+	{
+		std::unique_ptr<Poppler::Page> page (PDocument_->page (pageNum));
+		if (!page)
+			return IFormFields_t ();
+
+		QList<std::shared_ptr<Poppler::FormField>> popplerFields;
+		for (auto field : page->formFields ())
+			popplerFields << std::shared_ptr<Poppler::FormField> (field);
+
+		IFormFields_t fields;
+		for (auto field : popplerFields)
+		{
+			if (!field->isVisible ())
+				continue;
+
+			switch (field->type ())
+			{
+			case Poppler::FormField::FormText:
+				fields << IFormField_ptr (new FormFieldText (field));
+				break;
+			case Poppler::FormField::FormChoice:
+				fields << IFormField_ptr (new FormFieldChoice (field));
+				break;
+			case Poppler::FormField::FormButton:
+				fields << IFormField_ptr (new FormFieldButton (field, this));
+				break;
+			default:
+				break;
+			}
+		}
+		return fields;
+	}
+
 	QMap<int, QList<QRectF>> Document::GetTextPositions (const QString& text, Qt::CaseSensitivity cs)
 	{
 		typedef QMap<int, QList<QRectF>> Result_t;
@@ -176,10 +214,50 @@ namespace PDF
 		return result;
 	}
 
+	auto Document::CanSave () const -> SaveQueryResult
+	{
+		if (PDocument_->isEncrypted ())
+			return { false, tr ("saving encrypted documents is not supported") };
+
+		return { true, {} };
+	}
+
+	bool Document::Save (const QString& path)
+	{
+		std::unique_ptr<Poppler::PDFConverter> conv (PDocument_->pdfConverter ());
+		conv->setPDFOptions (Poppler::PDFConverter::WithChanges);
+
+		if (path == DocURL_.toLocalFile ())
+		{
+			QBuffer buffer;
+			buffer.open (QIODevice::WriteOnly);
+			conv->setOutputDevice (&buffer);
+			if (!conv->convert ())
+				return false;
+
+			QFile file (path);
+			if (!file.open (QIODevice::WriteOnly))
+				return false;
+
+			file.write (buffer.buffer ());
+			return true;
+		}
+		else
+		{
+			conv->setOutputFileName (path);
+			return conv->convert ();
+		}
+	}
+
 	void Document::RequestNavigation (const QString& filename,
 			int page, double x, double y)
 	{
 		emit navigateRequested (filename, page, x, y);
+	}
+
+	void Document::RequestPrinting ()
+	{
+		emit printRequested (QList<int> ());
 	}
 
 	namespace
