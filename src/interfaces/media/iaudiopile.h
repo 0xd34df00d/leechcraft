@@ -49,6 +49,13 @@ namespace Media
 	public:
 		virtual ~IPendingAudioSearch () {}
 
+		/** @brief Returns this object as a QObject.
+		 *
+		 * This function can be used to connect to the signals of this
+		 * class.
+		 *
+		 * @return This object as a QObject.
+		 */
 		virtual QObject* GetQObject () = 0;
 
 		/** @brief A structure describing a single entry in search result.
