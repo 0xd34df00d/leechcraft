@@ -19,8 +19,6 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERHANDLER_H
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERHANDLER_H
 
-#include <boost/function.hpp>
-#include <boost/graph/graph_concepts.hpp>
 #include <QObject>
 #include <QTcpSocket>
 #include <interfaces/azoth/imessage.h>

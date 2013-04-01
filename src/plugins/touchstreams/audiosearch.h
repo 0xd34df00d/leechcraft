@@ -57,6 +57,7 @@ namespace TouchStreams
 		void handleError ();
 	signals:
 		void ready ();
+		void error ();
 	};
 }
 }

@@ -25,12 +25,37 @@ namespace Media
 {
 	class IPendingSimilarArtists;
 
+	/** @brief Interface for plugins supporting similar artists.
+	 *
+	 * If a plugin supports fetching artists similar to another one it
+	 * should implement this interface.
+	 *
+	 * @sa IRecommendedArtists
+	 */
 	class Q_DECL_EXPORT ISimilarArtists
 	{
 	public:
 		virtual ~ISimilarArtists () {}
 
-		virtual IPendingSimilarArtists* GetSimilarArtists (const QString& artistName, int num) = 0;
+		/** @brief Requests the recommended artists.
+		 *
+		 * This function initiates request for the list of artists
+		 * similar to a given one and returns a handle through which the
+		 * results of this search could be obtained. The handle owns
+		 * itself and deletes itself after results are available — see
+		 * its documentation for more details.
+		 *
+		 * The results of the returned handle will typically have only
+		 * SimilarityInfo::Similarity_ field set, while
+		 * SimilarityInfo::SimilarTo_ field is unset. The Similarity
+		 * field should be interpreted as some kind of "match percentage"
+		 * displaying how much two artists resemble each other.
+		 *
+		 * @param[in] artistName The name of the artist for which to
+		 * fetch similar artists.
+		 * @param[in] count The number of recommended artists to fetch.
+		 */
+		virtual IPendingSimilarArtists* GetSimilarArtists (const QString& artistName, int count) = 0;
 	};
 }
 

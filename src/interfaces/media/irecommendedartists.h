@@ -24,12 +24,41 @@ namespace Media
 {
 	class IPendingSimilarArtists;
 
+	/** @brief Interface for plugins supporting recommended artists.
+	 *
+	 * If a plugin supports fetching information about recommended
+	 * artists, for example, based on user's musical taste, it should
+	 * implement this interface.
+	 *
+	 * @sa ISimilarArtists
+	 */
 	class Q_DECL_EXPORT IRecommendedArtists
 	{
 	public:
 		virtual ~IRecommendedArtists () {}
 
-		virtual IPendingSimilarArtists* RequestRecommended (int) = 0;
+		/** @brief Requests the recommended artists.
+		 *
+		 * This function initiates request for the list of recommended
+		 * artists for our user and returns a handle through which the
+		 * results of this search could be obtained. The handle owns
+		 * itself and deletes itself after results are available — see
+		 * its documentation for more details.
+		 *
+		 * The results of the returned handle will typically have only
+		 * SimilarityInfo::SimilarTo_ field set, while
+		 * SimilarityInfo::Similarity_ field may be unset. Though if the
+		 * latter is set it should be interpreted as some kind of "match
+		 * percentage" displaying how interesting an artist can be to our
+		 * user.
+		 *
+		 * Also, IPendingSimilarArtists::GetSourceArtistName() can return
+		 * an empty string in this case since it there is no source
+		 * artist for which recommendations are fetched.
+		 *
+		 * @param[in] count The number of recommended artists to fetch.
+		 */
+		virtual IPendingSimilarArtists* RequestRecommended (int count) = 0;
 	};
 }
 
