@@ -32,8 +32,11 @@ Q_DECLARE_METATYPE (QKeySequences_t);
 
 namespace LeechCraft
 {
-	/** Contains information about the action that could be handled by
-	 * the shortcut manager.
+	/** @brief Describes an action exposed in shortcut manager.
+	 *
+	 * This structure contains information about the action that could be
+	 * handled by the shortcut manager, like action icon, default key
+	 * sequences and human-readable description text.
 	 */
 	struct ActionInfo
 	{
