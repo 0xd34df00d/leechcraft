@@ -26,8 +26,10 @@ namespace LeechCraft
 {
 	namespace Util
 	{
-		/** Customized cookie jar. Allows one to filter tracking cookies, 
-		 * filter duplicate cookies and has unlimited storage period.
+		/** @brief A customized cookie jar with additional features.
+		 *
+		 * Allows one to filter tracking cookies, filter duplicate
+		 * cookies and has unlimited storage period.
 		 */
 		class UTIL_API CustomCookieJar : public QNetworkCookieJar
 		{
@@ -43,7 +45,7 @@ namespace LeechCraft
 			 * @param[in] parent The parent object.
 			 */
 			CustomCookieJar (QObject *parent = 0);
-			
+
 			/** Destructs the cookie jar.
 			 */
 			virtual ~CustomCookieJar ();

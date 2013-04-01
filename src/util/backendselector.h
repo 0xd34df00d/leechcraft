@@ -32,7 +32,7 @@ namespace LeechCraft
 	{
 		class BaseSettingsManager;
 
-		/** A common dialog to select storage backend.
+		/** @brief A common dialog to select storage backend.
 		 *
 		 * Currently following backends are supported:
 		 * - SQLite
