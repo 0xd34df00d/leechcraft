@@ -26,9 +26,16 @@
 
 namespace Media
 {
+	/** @brief Information about an album used in IAlbumArtProvider.
+	 */
 	struct AlbumInfo
 	{
+		/** The artist name of this album.
+		 */
 		QString Artist_;
+
+		/** The album name.
+		 */
 		QString Album_;
 	};
 
@@ -43,14 +50,42 @@ namespace Media
 		return qHash (info.Album_.toUtf8 () + '\0' + info.Artist_.toUtf8 ());
 	}
 
+	/** @brief Interface for plugins that can search for album art.
+	 *
+	 * Plugins that can search for album art (like on Amazon or Last.FM)
+	 * should implement this interface.
+	 *
+	 * Album art lookup is asynchronous in nature: one first initiates a
+	 * search via RequestAlbumArt() method and then listens for the
+	 * gotAlbumArt() signal.
+	 */
 	class Q_DECL_EXPORT IAlbumArtProvider
 	{
 	public:
 		virtual ~IAlbumArtProvider () {}
 
+		/** @brief Returns the human-readable name of this provider.
+		 *
+		 * @return The human-readable name of the provider, like Last.FM.
+		 */
 		virtual QString GetAlbumArtProviderName () const = 0;
+
+		/** @brief Initiates search for album art of the given album.
+		 *
+		 * @param[in] album The information about the album.
+		 */
 		virtual void RequestAlbumArt (const AlbumInfo& album) const = 0;
 	protected:
+		/** @brief Emitted when album art for the given album is
+		 * available.
+		 *
+		 * This signal should be emitted by the implementation even if
+		 * no album art is found for the given album.
+		 *
+		 * @param[in] album The album for which the album art is found.
+		 * @param[in] arts The list of album covers that were found. The
+		 * list may be empty.
+		 */
 		virtual void gotAlbumArt (const AlbumInfo& album, const QList<QImage>& arts) = 0;
 	};
 }
