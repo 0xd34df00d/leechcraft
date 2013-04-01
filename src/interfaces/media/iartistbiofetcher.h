@@ -41,7 +41,8 @@ namespace Media
 
 	/** @brief Pending biography request handle.
 	 *
-	 * A descendant of this class is returned from the
+	 * Interface to a pending biography search in an IArtistBioFetcher. A
+	 * descendant of this class is returned from the
 	 * IArtistBioFetcher::RequestArtistBio() method and is used to track
 	 * the status of biography requests.
 	 *
@@ -55,6 +56,8 @@ namespace Media
 	 * delete it explicitly, neither it should use this object after
 	 * ready() or error() signals or connect to this signals via
 	 * <code>Qt::QueuedConnection</code>.
+	 *
+	 * @sa IArtistBioFetcher
 	 */
 	class Q_DECL_EXPORT IPendingArtistBio
 	{
@@ -119,8 +122,7 @@ namespace Media
 		 * This function initiates a search for artist biography and
 		 * returns a handle through which the results of the search could
 		 * be obtained. The handle owns itself and deletes itself after
-		 * results are available — see its documentation for more
-		 * information.
+		 * results are available — see its documentation for details.
 		 *
 		 * @param[in] artist The artist name.
 		 * @return The pending biography search handle.
