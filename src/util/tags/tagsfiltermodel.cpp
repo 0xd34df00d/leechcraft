@@ -27,7 +27,16 @@ namespace Util
 	TagsFilterModel::TagsFilterModel (QObject *parent)
 	: QSortFilterProxyModel (parent)
 	, NormalMode_ (true)
+	, Separator_ (";")
 	{
+	}
+
+	void TagsFilterModel::SetSeparator (const QString& separator)
+	{
+		Separator_ = separator;
+
+		if (dynamicSortFilter ())
+			invalidateFilter ();
 	}
 
 	void TagsFilterModel::setTagsMode (bool tags)
@@ -57,7 +66,8 @@ namespace Util
 		else
 		{
 			QStringList filterTags;
-			for (const auto& s : filterRegExp ().pattern ().split (";", QString::SkipEmptyParts))
+			const auto& pattern = filterRegExp ().pattern ();
+			for (const auto& s : pattern.split (Separator_, QString::SkipEmptyParts))
 				filterTags << s.trimmed ();
 
 			if (!filterTags.size ())

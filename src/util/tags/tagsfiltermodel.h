@@ -30,8 +30,11 @@ namespace Util
 		Q_OBJECT
 
 		bool NormalMode_;
+		QString Separator_;
 	public:
 		TagsFilterModel (QObject *parent = 0);
+
+		void SetSeparator (const QString& separator);
 	public slots:
 		void setTagsMode (bool);
 		void enableTagsMode ();
