@@ -32,9 +32,18 @@ namespace Util
 		bool NormalMode_;
 		QString Separator_;
 	public:
+		enum class TagsInclusionMode
+		{
+			Any,
+			All
+		};
+	private:
+		TagsInclusionMode TagsMode_;
+	public:
 		TagsFilterModel (QObject *parent = 0);
 
 		void SetSeparator (const QString& separator);
+		void SetTagsInclusionMode (TagsInclusionMode);
 	public slots:
 		void setTagsMode (bool);
 		void enableTagsMode ();

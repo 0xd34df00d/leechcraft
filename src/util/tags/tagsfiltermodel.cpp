@@ -28,6 +28,7 @@ namespace Util
 	: QSortFilterProxyModel (parent)
 	, NormalMode_ (true)
 	, Separator_ (";")
+	, TagsMode_ (TagsInclusionMode::All)
 	{
 	}
 
@@ -37,6 +38,11 @@ namespace Util
 
 		if (dynamicSortFilter ())
 			invalidateFilter ();
+	}
+
+	void TagsFilterModel::SetTagsInclusionMode (TagsFilterModel::TagsInclusionMode mode)
+	{
+		TagsMode_ = mode;
 	}
 
 	void TagsFilterModel::setTagsMode (bool tags)
@@ -85,6 +91,8 @@ namespace Util
 					}
 				if (!found)
 					return false;
+				else if (TagsMode_ == TagsInclusionMode::Any)
+					return true;
 			}
 			return true;
 		}
