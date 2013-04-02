@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef UTIL_DEFAULTHOOKPROXY_H
-#define UTIL_DEFAULTHOOKPROXY_H
+#pragma once
+
 #include <QMap>
 #include "interfaces/iinfo.h"
 #include "interfaces/core/ihookproxy.h"
@@ -25,42 +25,40 @@
 
 namespace LeechCraft
 {
-	namespace Util
+namespace Util
+{
+	class UTIL_API DefaultHookProxy : public IHookProxy
 	{
-		class UTIL_API DefaultHookProxy : public IHookProxy
+		bool Cancelled_;
+		QVariant ReturnValue_;
+
+		QMap<QByteArray, QVariant> Name2NewVal_;
+	public:
+		DefaultHookProxy ();
+
+		void CancelDefault ();
+		bool IsCancelled () const;
+		const QVariant& GetReturnValue () const;
+		void SetReturnValue (const QVariant&);
+
+		template<typename T>
+		void FillValue (const QByteArray& name, T& val)
 		{
-			bool Cancelled_;
-			QVariant ReturnValue_;
+			if (!Name2NewVal_.contains (name))
+				return;
 
-			QMap<QByteArray, QVariant> Name2NewVal_;
-		public:
-			DefaultHookProxy ();
+			const QVariant& newVal = Name2NewVal_ [name];
+			if (!newVal.isValid ())
+				return;
 
-			void CancelDefault ();
-			bool IsCancelled () const;
-			const QVariant& GetReturnValue () const;
-			void SetReturnValue (const QVariant&);
+			val = newVal.value<T> ();
+		}
 
-			template<typename T>
-			void FillValue (const QByteArray& name, T& val)
-			{
-				if (!Name2NewVal_.contains (name))
-					return;
+		QVariant GetValue (const QByteArray&) const;
 
-				const QVariant& newVal = Name2NewVal_ [name];
-				if (!newVal.isValid ())
-					return;
-
-				val = newVal.value<T> ();
-			}
-
-			QVariant GetValue (const QByteArray&) const;
-
-			void SetValue (const QByteArray&, const QVariant&);
-		};
-
-		typedef std::shared_ptr<DefaultHookProxy> DefaultHookProxy_ptr;
+		void SetValue (const QByteArray&, const QVariant&);
 	};
-};
 
-#endif
+	typedef std::shared_ptr<DefaultHookProxy> DefaultHookProxy_ptr;
+}
+}
