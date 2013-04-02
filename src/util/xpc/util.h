@@ -27,11 +27,15 @@ namespace Util
 {
 	/** @brief Creates an Advanced Notifications-enabled notify entity.
 	 *
-	 * Returns an entity with the given header, text and a bunch of other
-	 * parameters that can be handled by Advanced Notifications.
+	 * Returns an entity with the given \em header, \em text and a bunch
+	 * of other parameters that can be handled by Advanced Notifications.
 	 *
 	 * The returned entity will also be handled by a visual notifications
-	 * plugin if AN is not present.
+	 * plugin if AN is not present. To avoid this set the MIME type of
+	 * the result to <em>x-leechcraft/notification+advanced</em>.
+	 *
+	 * Refer to the <a href="http://leechcraft.org/development-advanced-notifications">hand-written documentation</a>
+	 * for more information about using Advanced Notifications.
 	 *
 	 * @param[in] header The header of the notification. This field will
 	 * also be used if AN is not present.
@@ -56,6 +60,8 @@ namespace Util
 	 * the text parameter is used.
 	 * @param[in] extendedText The extended text of this notification. If
 	 * null, the text parameter is used.
+	 *
+	 * @sa MakeANCancel()
 	 */
 	UTIL_API Entity MakeAN (const QString& header, const QString& text, Priority priority,
 			const QString& senderID, const QString& cat, const QString& type,
