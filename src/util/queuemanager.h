@@ -36,11 +36,12 @@ namespace Util
 		const int Timeout_;
 		QDateTime LastRequest_;
 
-		QList<QPair<std::function<void ()>, QPointer<QObject>>> Queue_;
+		typedef boost::optional<QPointer<QObject>> OptionalTracker_t;
+		QList<QPair<std::function<void ()>, boost::optional<QPointer<QObject>>>> Queue_;
 	public:
 		UTIL_API QueueManager (int timeout, QObject* = 0);
 
-		UTIL_API void Schedule (std::function<void ()>, QObject*);
+		UTIL_API void Schedule (std::function<void ()> functor, QObject *dependent = 0);
 	private slots:
 		void exec ();
 	};
