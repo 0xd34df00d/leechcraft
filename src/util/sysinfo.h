@@ -29,7 +29,16 @@ namespace Util
 {
 namespace SysInfo
 {
+	/** @brief Returns a string of OS name and version joined together.
+	 *
+	 * @return The name and version of OS running LeechCraft.
+	 */
 	UTIL_API QString GetOSName ();
+
+	/** @brief Returns a pair of OS name and version.
+	 *
+	 * @return A pair consisting of operating system name and version.
+	 */
 	UTIL_API QPair<QString, QString> GetOSNameSplit ();
 }
 }

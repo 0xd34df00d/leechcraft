@@ -27,7 +27,15 @@ namespace LeechCraft
 {
 namespace Util
 {
-	UTIL_API QString GetSocketErrorString (QAbstractSocket::SocketError);
+	/** @brief Returns an error string for the given socket error.
+	 *
+	 * This function returns a human-readable localized string describing
+	 * the given socket \em error.
+	 *
+	 * @param[in] error The socket error to describe.
+	 * @return The human-readable localized error string.
+	 */
+	UTIL_API QString GetSocketErrorString (QAbstractSocket::SocketError error);
 }
 }
 
