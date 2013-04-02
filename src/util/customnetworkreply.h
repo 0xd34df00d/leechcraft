@@ -16,38 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef UTIL_CUSTOMNETWORKREPLY_H
-#define UTIL_CUSTOMNETWORKREPLY_H
+#pragma once
+
 #include <QNetworkReply>
 #include "utilconfig.h"
 
 namespace LeechCraft
 {
-	namespace Util
+namespace Util
+{
+	class UTIL_API CustomNetworkReply : public QNetworkReply
 	{
-		class UTIL_API CustomNetworkReply : public QNetworkReply
-		{
-			Q_OBJECT
+		Q_OBJECT
 
-			QByteArray Content_;
-			qint64 Offset_;
-		public:
-			CustomNetworkReply (const QUrl& url, QObject* = 0);
-			virtual ~CustomNetworkReply ();
+		QByteArray Content_;
+		qint64 Offset_;
+	public:
+		CustomNetworkReply (const QUrl& url, QObject* = 0);
+		virtual ~CustomNetworkReply ();
 
-			void SetError (NetworkError, const QString& = QString ());
-			void SetHeader (QNetworkRequest::KnownHeaders, const QVariant&);
-			void SetContentType (const QByteArray&);
-			void SetContent (const QString&);
-			void SetContent (const QByteArray&);
+		void SetError (NetworkError, const QString& = QString ());
+		void SetHeader (QNetworkRequest::KnownHeaders, const QVariant&);
+		void SetContentType (const QByteArray&);
+		void SetContent (const QString&);
+		void SetContent (const QByteArray&);
 
-			void abort ();
-			qint64 bytesAvailable () const;
-			bool isSequential () const;
-		protected:
-			qint64 readData (char*, qint64);
-		};
-	}
+		void abort ();
+		qint64 bytesAvailable () const;
+		bool isSequential () const;
+	protected:
+		qint64 readData (char*, qint64);
+	};
 }
-
-#endif
+}
