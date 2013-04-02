@@ -20,62 +20,64 @@
 #include <QtDebug>
 #include "tagsfiltermodel.h"
 
-using namespace LeechCraft::Util;
-
-TagsFilterModel::TagsFilterModel (QObject *parent)
-: QSortFilterProxyModel (parent)
-, NormalMode_ (true)
+namespace LeechCraft
 {
-}
-
-void TagsFilterModel::setTagsMode (bool tags)
+namespace Util
 {
-	NormalMode_ = !tags;
-
-	if (dynamicSortFilter ())
-		invalidateFilter ();
-}
-
-void TagsFilterModel::enableTagsMode ()
-{
-	setTagsMode (true);
-}
-
-void TagsFilterModel::disableTagsMode ()
-{
-	setTagsMode (false);
-}
-
-bool TagsFilterModel::filterAcceptsRow (int source_row, const QModelIndex& index) const
-{
-	if (NormalMode_)
-		return (index.isValid () && index.model ()->rowCount (index)) ?
-			true :
-			QSortFilterProxyModel::filterAcceptsRow (source_row, index);
-	else
+	TagsFilterModel::TagsFilterModel (QObject *parent)
+	: QSortFilterProxyModel (parent)
+	, NormalMode_ (true)
 	{
-		QStringList itemTags = GetTagsForIndex (source_row);
-		QStringList filterTags;
-		QStringList splitted = filterRegExp ().pattern ().split (";", QString::SkipEmptyParts);
-		Q_FOREACH (QString s, splitted)
-			filterTags << s.trimmed ();
+	}
 
-		if (!filterTags.size ())
-			return true;
+	void TagsFilterModel::setTagsMode (bool tags)
+	{
+		NormalMode_ = !tags;
 
-		for (int i = 0; i < filterTags.size (); ++i)
+		if (dynamicSortFilter ())
+			invalidateFilter ();
+	}
+
+	void TagsFilterModel::enableTagsMode ()
+	{
+		setTagsMode (true);
+	}
+
+	void TagsFilterModel::disableTagsMode ()
+	{
+		setTagsMode (false);
+	}
+
+	bool TagsFilterModel::filterAcceptsRow (int source_row, const QModelIndex& index) const
+	{
+		if (NormalMode_)
+			return (index.isValid () && index.model ()->rowCount (index)) ?
+				true :
+				QSortFilterProxyModel::filterAcceptsRow (source_row, index);
+		else
 		{
-			bool found = false;
-			for (int j = 0; j < itemTags.size (); ++j)
-				if (itemTags.at (j).contains (filterTags.at (i)))
-				{
-					found = true;
-					break;
-				}
-			if (!found)
-				return false;
+			QStringList filterTags;
+			for (const auto& s : filterRegExp ().pattern ().split (";", QString::SkipEmptyParts))
+				filterTags << s.trimmed ();
+
+			if (!filterTags.size ())
+				return true;
+
+			const auto& itemTags = GetTagsForIndex (source_row);
+			for (int i = 0; i < filterTags.size (); ++i)
+			{
+				bool found = false;
+				for (int j = 0; j < itemTags.size (); ++j)
+					if (itemTags.at (j).contains (filterTags.at (i)))
+					{
+						found = true;
+						break;
+					}
+				if (!found)
+					return false;
+			}
+			return true;
 		}
-		return true;
 	}
 }
-
+}

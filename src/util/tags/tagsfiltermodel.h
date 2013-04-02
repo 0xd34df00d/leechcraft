@@ -16,32 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef UTIL_TAGSFILTERMODEL_H
-#define UTIL_TAGSFILTERMODEL_H
+#pragma once
+
 #include <QSortFilterProxyModel>
 #include <util/utilconfig.h>
 
 namespace LeechCraft
 {
-	namespace Util
+namespace Util
+{
+	class UTIL_API TagsFilterModel : public QSortFilterProxyModel
 	{
-		class UTIL_API TagsFilterModel : public QSortFilterProxyModel
-		{
-			Q_OBJECT
+		Q_OBJECT
 
-			bool NormalMode_;
-		public:
-			TagsFilterModel (QObject *parent = 0);
-		public slots:
-			void setTagsMode (bool);
-			void enableTagsMode ();
-			void disableTagsMode ();
-		protected:
-			virtual bool filterAcceptsRow (int, const QModelIndex&) const;
-			virtual QStringList GetTagsForIndex (int) const = 0;
-		};
+		bool NormalMode_;
+	public:
+		TagsFilterModel (QObject *parent = 0);
+	public slots:
+		void setTagsMode (bool);
+		void enableTagsMode ();
+		void disableTagsMode ();
+	protected:
+		virtual bool filterAcceptsRow (int, const QModelIndex&) const;
+		virtual QStringList GetTagsForIndex (int) const = 0;
 	};
 };
-
-#endif
-
+}
