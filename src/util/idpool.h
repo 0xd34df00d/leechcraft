@@ -16,79 +16,76 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef UTIL_IDPOOL_H
-#define UTIL_IDPOOL_H
+#pragma once
+
 #include "utilconfig.h"
 #include <QByteArray>
 #include <QSet>
 #include <QDataStream>
 #include <QtDebug>
-#include "util/guarded.h"
 
 namespace LeechCraft
 {
-	namespace Util
+namespace Util
+{
+	template<typename T>
+	class IDPool
 	{
-		template<typename T>
-		class IDPool
+		T CurrentID_;
+	public:
+		IDPool (const T& id = T ())
+		: CurrentID_ (id)
 		{
-			T CurrentID_;
-		public:
-			IDPool (const T& id = T ())
-			: CurrentID_ (id)
-			{
-			}
+		}
 
-			virtual ~IDPool ()
-			{
-			}
+		virtual ~IDPool ()
+		{
+		}
 
-			T GetID ()
-			{
-				return CurrentID_++;
-			}
+		T GetID ()
+		{
+			return CurrentID_++;
+		}
 
-			void SetID (T id)
-			{
-				CurrentID_ = id;
-			}
+		void SetID (T id)
+		{
+			CurrentID_ = id;
+		}
 
-			void FreeID (T id)
-			{
-				if (id == CurrentID_)
-					--CurrentID_;
-			}
+		void FreeID (T id)
+		{
+			if (id == CurrentID_)
+				--CurrentID_;
+		}
 
-			QByteArray SaveState () const
+		QByteArray SaveState () const
+		{
+			QByteArray result;
 			{
-				QByteArray result;
-				{
-					QDataStream ostr (&result, QIODevice::WriteOnly);
-					quint8 ver = 1;
-					ostr << ver;
-					ostr << CurrentID_;
-				}
-				return result;
+				QDataStream ostr (&result, QIODevice::WriteOnly);
+				quint8 ver = 1;
+				ostr << ver;
+				ostr << CurrentID_;
 			}
+			return result;
+		}
 
-			void LoadState (const QByteArray& state)
-			{
-				if (state.isEmpty ())
-					return;
+		void LoadState (const QByteArray& state)
+		{
+			if (state.isEmpty ())
+				return;
 
-				QDataStream istr (state);
-				quint8 ver;
-				istr >> ver;
-				if (ver == 1)
-					istr >> CurrentID_;
-				else
-					qWarning () << Q_FUNC_INFO
-							<< "unknown version"
-							<< ver
-							<< ", not restoring state.";
-			}
-		};
+			QDataStream istr (state);
+			quint8 ver;
+			istr >> ver;
+			if (ver == 1)
+				istr >> CurrentID_;
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "unknown version"
+						<< ver
+						<< ", not restoring state.";
+		}
 	};
-};
-
-#endif
+}
+}
