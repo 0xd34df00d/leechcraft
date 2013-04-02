@@ -43,6 +43,9 @@ namespace Util
 	void TagsFilterModel::SetTagsInclusionMode (TagsFilterModel::TagsInclusionMode mode)
 	{
 		TagsMode_ = mode;
+
+		if (dynamicSortFilter ())
+			invalidateFilter ();
 	}
 
 	void TagsFilterModel::setTagsMode (bool tags)

@@ -20,21 +20,24 @@
 #include <QtDebug>
 #include "tagscompletionmodel.h"
 
-using namespace LeechCraft::Util;
-
-TagsCompletionModel::TagsCompletionModel (QObject *parent)
-: QStringListModel (parent)
+namespace LeechCraft
 {
-}
-
-void TagsCompletionModel::UpdateTags (const QStringList& newTags)
+namespace Util
 {
-	QStringList oldTags = stringList ();
-	for (int i = 0; i < newTags.size (); ++i)
-		if (!oldTags.contains (newTags.at (i)))
-			oldTags.append (newTags.at (i));
+	TagsCompletionModel::TagsCompletionModel (QObject *parent)
+	: QStringListModel (parent)
+	{
+	}
 
-	setStringList (oldTags);
-	emit tagsUpdated (oldTags);
+	void TagsCompletionModel::UpdateTags (const QStringList& newTags)
+	{
+		auto oldTags = stringList ();
+		for (int i = 0; i < newTags.size (); ++i)
+			if (!oldTags.contains (newTags.at (i)))
+				oldTags.append (newTags.at (i));
+
+		setStringList (oldTags);
+		emit tagsUpdated (oldTags);
+	}
 }
-
+}
