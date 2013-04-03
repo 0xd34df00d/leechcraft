@@ -24,6 +24,7 @@
 #include <QStringList>
 #include <QUrl>
 #include <QSet>
+#include <interfaces/core/icoreproxy.h>
 
 class QStandardItemModel;
 class QStandardItem;
@@ -47,10 +48,12 @@ namespace NetStoreManager
 		QHash<IStorageAccount*, QHash<QString, QList<QStandardItem*>>> ReprItems_;
 		QSet<QString> Autoshare_;
 
-		typedef std::function<void (QUrl, QStringList)> URLHandler_f;
-		QHash<QStringList, QList<URLHandler_f>> URLHandlers_;
+		typedef std::function<void (QUrl, QByteArray)> URLHandler_f;
+		QHash<QByteArray, QList<URLHandler_f>> URLHandlers_;
+
+		ICoreProxy_ptr Proxy_;
 	public:
-		UpManager (QObject* = 0);
+		UpManager (ICoreProxy_ptr proxy, QObject* = 0);
 
 		QAbstractItemModel* GetRepresentationModel () const;
 		void ScheduleAutoshare (const QString&);
@@ -59,15 +62,14 @@ namespace NetStoreManager
 		IStoragePlugin* GetSenderPlugin ();
 	public slots:
 		void handleUploadRequest (IStorageAccount *isa, const QString& file,
-				const QStringList& id = QStringList ());
+				const QByteArray& id = QByteArray ());
 	private slots:
-		void handleGotURL (const QUrl&, const QStringList&);
-		void handleError (const QString&, const QString&);
-		void handleUpStatusChanged (const QString&, const QString&);
-		void handleUpFinished (const QStringList&, const QString&);
-		void handleUpProgress (quint64, quint64, const QString&);
+		void handleGotURL (const QUrl& url, const QByteArray& id);
+		void handleError (const QString& str, const QString& path);
+		void handleUpStatusChanged (const QString& status, const QString& filePath);
+		void handleUpFinished (const QByteArray& id, const QString& filePath);
+		void handleUpProgress (quint64 done, quint64 total, const QString& filepath);
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
 		void fileUploaded (const QString&, const QUrl&);
 	};
 }
