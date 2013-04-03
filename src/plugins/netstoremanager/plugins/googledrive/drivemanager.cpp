@@ -58,7 +58,7 @@ namespace GoogleDrive
 		RequestAccessToken ();
 	}
 
-	void DriveManager::RemoveEntry (const QString& id)
+	void DriveManager::RemoveEntry (const QByteArray& id)
 	{
 		if (id.isEmpty ())
 			return;
@@ -66,7 +66,7 @@ namespace GoogleDrive
 		RequestAccessToken ();
 	}
 
-	void DriveManager::MoveEntryToTrash (const QString& id)
+	void DriveManager::MoveEntryToTrash (const QByteArray& id)
 	{
 		if (id.isEmpty ())
 			return;
@@ -74,11 +74,27 @@ namespace GoogleDrive
 		RequestAccessToken ();
 	}
 
-	void DriveManager::RestoreEntryFromTrash (const QString& id)
+	void DriveManager::RestoreEntryFromTrash (const QByteArray& id)
 	{
 		if (id.isEmpty ())
 			return;
 		ApiCallQueue_ << [this, id] (const QString& key) { RequestRestoreEntryFromTrash (id, key); };
+		RequestAccessToken ();
+	}
+
+	void DriveManager::Copy (const QByteArray& id, const QString& parentId)
+	{
+		if (id.isEmpty ())
+			return;
+		ApiCallQueue_ << [this, id, parentId] (const QString& key) { RequestCopyItem (id, parentId, key); };
+		RequestAccessToken ();
+	}
+
+	void DriveManager::Move (const QByteArray& id, const QString& parentId)
+	{
+		if (id.isEmpty ())
+			return;
+		ApiCallQueue_ << [this, id, parentId] (const QString& key) { RequestMoveItem (id, parentId, key); };
 		RequestAccessToken ();
 	}
 
@@ -112,22 +128,6 @@ namespace GoogleDrive
 	{
 		ApiCallQueue_ << [this, name, parentId] (const QString& key)
 			{ RequestCreateDirectory (name, parentId, key); };
-		RequestAccessToken ();
-	}
-
-	void DriveManager::Copy (const QString& id, const QString& parentId)
-	{
-		if (id.isEmpty ())
-			return;
-		ApiCallQueue_ << [this, id, parentId] (const QString& key) { RequestCopyItem (id, parentId, key); };
-		RequestAccessToken ();
-	}
-
-	void DriveManager::Move (const QString& id, const QString& parentId)
-	{
-		if (id.isEmpty ())
-			return;
-		ApiCallQueue_ << [this, id, parentId] (const QString& key) { RequestMoveItem (id, parentId, key); };
 		RequestAccessToken ();
 	}
 
@@ -546,6 +546,7 @@ namespace GoogleDrive
 			mimeMap.insert ({ "application/vnd.google-apps.presentation", "" }, "application-vnd.oasis.opendocument.presentation");
 			mimeMap.insert ({ "application/vnd.google-apps.presentation", "ppt" }, "application-vnd.ms-powerpoint");
 			mimeMap.insert ({ "application/vnd.google-apps.presentation", "pptx" }, "application-vnd.ms-powerpoint");
+			mimeMap.insert ({ "application/vnd.openxmlformats-officedocument.presentationml.presentation", "pptx" }, "application-vnd.ms-powerpoint");
 			mimeMap.insert ({ "application/vnd.google-apps.presentation", "odp" }, "application-vnd.oasis.opendocument.presentation");
 			mimeMap.insert ({ "application/vnd.google-apps.script", "" }, "text-x-script");
 			mimeMap.insert ({ "application/vnd.google-apps.sites", "" }, "text-html");
@@ -555,6 +556,7 @@ namespace GoogleDrive
 			mimeMap.insert ({ "application/vnd.google-apps.spreadsheet", "xls" }, "x-office-spreadsheet.png");
 			mimeMap.insert ({ "application/vnd.google-apps.spreadsheet", "xlsx" }, "x-office-spreadsheet.png");
 			mimeMap.insert ({ "application/vnd.google-apps.spreadsheet", "ods" }, "application-vnd.oasis.opendocument.spreadsheet");
+			mimeMap.insert ({ "application/x-vnd.oasis.opendocument.spreadsheet", "ods" }, "application-vnd.oasis.opendocument.spreadsheet");
 			mimeMap.insert ({ "application/vnd.google-apps.unknown", "" }, "unknown");
 			mimeMap.insert ({ "application/vnd.google-apps.video", "" }, "video-x-generic");
 			mimeMap.insert ({ "application/x-msdos-program", "" }, "application-x-ms-dos-executable");
@@ -629,6 +631,14 @@ namespace GoogleDrive
 				driveItem.Labels_ |= DriveItem::ILShared;
 			if (labels ["viewed"].toBool ())
 				driveItem.Labels_ |= DriveItem::ILViewed;
+
+			const QVariantMap& exports = map ["exportLinks"].toMap ();
+			for (const auto& key : exports.keys ())
+			{
+				QUrl url = exports.value (key).toUrl ();
+				driveItem.ExportLinks_ [url] = GetLocalMimeTypeFromGoogleMimeType (key, url.queryItems ().last ().second);
+			}
+
 			driveItem.CreateDate_ = QDateTime::fromString (map ["createdDate"].toString (),
 					Qt::ISODate);
 			driveItem.ModifiedDate_ = QDateTime::fromString (map ["modifiedDate"].toString (),

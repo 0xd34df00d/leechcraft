@@ -64,24 +64,25 @@ namespace GoogleDrive
 		AccountFeatures GetAccountFeatures () const;
 		QString GetAccountName () const;
 		void Upload (const QString& filepath,
-				const QStringList& parentId = QStringList (),
+				const QByteArray& parentId = QByteArray (),
 				UploadType ut = UploadType::Upload,
-				const QStringList& id = QStringList ());
-		void Download (const QStringList& id, const QString& filepath,
+				const QByteArray& id = QByteArray ());
+		void Download (const QByteArray& id, const QString& filepath,
 				bool silent = false);
 
-		void Delete (const QList<QStringList>& id, bool ask = true);
-		QStringList GetListingHeaders () const;
 		ListingOps GetListingOps () const;
-		void MoveToTrash (const QList<QStringList>& ids);
-		void RestoreFromTrash (const QList<QStringList>& ids);
-		void EmptyTrash (const QList<QStringList>& ids);
+
 		void RefreshListing ();
-		void RequestUrl (const QList<QStringList>& id);
-		void CreateDirectory (const QString& name, const QStringList& parentId);
-		void Copy (const QStringList& id, const QStringList& newParentId);
-		void Move (const QStringList& id, const QStringList& newParentId);
-		void Rename (const QStringList& id, const QString& newName);
+
+		void Delete (const QList<QByteArray>& ids, bool ask = true);
+		void MoveToTrash (const QList<QByteArray>& ids);
+		void RestoreFromTrash (const QList<QByteArray>& ids);
+		void Copy (const QList<QByteArray>& ids, const QByteArray& newParentId);
+		void Move (const QList<QByteArray>& ids, const QByteArray& newParentId);
+
+		void RequestUrl (const QByteArray& id);
+		void CreateDirectory (const QString& name, const QByteArray& parentId);
+		void Rename (const QByteArray& id, const QString& newName);
 		void RequestChanges ();
 
 		QByteArray Serialize ();
@@ -109,11 +110,11 @@ namespace GoogleDrive
 
 		void gotListing (const QList<StorageItem*>& items);
 
-		void gotFileUrl (const QUrl& url, const QStringList& id);
+		void gotFileUrl (const QUrl& url, const QByteArray& id);
 
 		void gotChanges (const QList<Change>& changes);
 
-		void gotNewItem (const QList<QStandardItem*>& item, const QStringList& parentId);
+		void gotNewItem (const QList<QStandardItem*>& item, const QByteArray& parentId);
 	};
 }
 }

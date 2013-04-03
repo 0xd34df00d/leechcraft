@@ -30,8 +30,8 @@ namespace NetStoreManager
 namespace GoogleDrive
 {
 	UploadManager::UploadManager (const QString& path,
-			UploadType ut, const QStringList& parentid, Account *account,
-			const QStringList& id)
+			UploadType ut, const QByteArray& parentid, Account *account,
+			const QByteArray& id)
 	: QObject (account)
 	, Account_ (account)
 	, FilePath_ (path)
@@ -51,10 +51,11 @@ namespace GoogleDrive
 				SIGNAL (uploadError (QString, QString)),
 				this,
 				SLOT (handleError  (QString, QString)));
+		//TODO
 		connect (Account_->GetDriveManager (),
 				SIGNAL (finished (QString, QString)),
 				this,
-				SLOT (handleFinished (QString, QString)));
+				SLOT (handleFinished (QByteArray, QString)));
 
 		if (ut == UploadType::Upload)
 			InitiateUploadSession ();
@@ -69,7 +70,8 @@ namespace GoogleDrive
 
 	void UploadManager::InitiateUpdateSession ()
 	{
-		Account_->GetDriveManager ()->RemoveEntry (Id_.value (0));
+		//TODO
+		Account_->GetDriveManager ()->RemoveEntry (Id_.value (0).toUtf8 ());
 		Account_->GetDriveManager ()->Upload (FilePath_, ParentId_);
 	}
 
@@ -100,13 +102,13 @@ namespace GoogleDrive
 		emit uploadStatusChanged (status, FilePath_);
 	}
 
-	void UploadManager::handleFinished (const QString& id, const QString& filePath)
+	void UploadManager::handleFinished (const QByteArray& id, const QString& filePath)
 	{
 		if (filePath != FilePath_)
 			return;
 
 		emit uploadStatusChanged (tr ("Finished"), FilePath_);
-		emit finished (QStringList (id), FilePath_);
+		emit finished (id, FilePath_);
 		deleteLater ();
 	}
 }
