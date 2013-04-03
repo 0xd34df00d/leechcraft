@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2010-2013  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,41 +56,86 @@ namespace NetStoreManager
 		QString name;
 		QByteArray id, parentId;
 		bool isInTrash = false, isDir = false;
-		stream >> name
-				>> id
-				>> isInTrash
-				>> isDir
-				>> parentId;
+		struct itemObject
+		{
+			QString name;
+			QByteArray id;
+			bool isInTrash;
+			QByteArray parentId;
+		};
+
+		QList<itemObject> items;
+		while (!stream.atEnd ())
+		{
+			stream >> name
+					>> id
+					>> isInTrash
+					>> isDir
+					>> parentId;
+			itemObject item;
+			item.name = name;
+			item.id = id;
+			item.isInTrash = isInTrash;
+			item.parentId = parentId;
+
+			items << item;
+		}
 
 		const auto& targetIndex = indexAt (event->pos ());
 
-		if (isInTrash &&
-				targetIndex.data (ListingRole::ID).toByteArray () != "netstoremanager.item_trash" &&
+		if (targetIndex.data (ListingRole::ID).toByteArray () != "netstoremanager.item_trash" &&
 				!targetIndex.data (ListingRole::InTrash).toBool ())
 		{
-			emit itemAboutToBeRestoredFromTrash (id);
-			return;
+			QList<QByteArray> ids;
+			for (int i = items.count () - 1; i >= 0; --i)
+			{
+				if (items [i].isInTrash)
+				{
+					ids << items [i].id;
+					items.removeAt (i);
+				}
+			}
+
+			if (!ids.isEmpty ())
+				emit itemsAboutToBeRestoredFromTrash (ids);
 		}
 
-		if (!isInTrash &&
-				(targetIndex.data (ListingRole::ID).toString () == "netstoremanager.item_trash" ||
-					targetIndex.data (ListingRole::InTrash).toBool ()))
+		if (targetIndex.data (ListingRole::ID).toString () == "netstoremanager.item_trash" ||
+				targetIndex.data (ListingRole::InTrash).toBool ())
 		{
-			emit itemAboutToBeTrashed (id);
-			return;
+			QList<QByteArray> ids;
+			for (int i = items.count () - 1; i >= 0; --i)
+			{
+				if (!items [i].isInTrash)
+				{
+					ids << items [i].id;
+					items.removeAt (i);
+				}
+			}
+
+			if (!ids.isEmpty ())
+				emit itemsAboutToBeTrashed (ids);
 		}
 
-		if (!targetIndex.data (ListingRole::Directory).toBool () &&
-				targetIndex.parent ().data (ListingRole::ID).toByteArray () == parentId)
+		if (!targetIndex.data (ListingRole::Directory).toBool ())
 		{
-			event->ignore ();
-			return;
+			QList<QByteArray> ids;
+			for (int i = items.count () - 1; i >= 0; --i)
+				if (items [i].parentId == targetIndex.parent ().data (ListingRole::ID).toByteArray ())
+					items.removeAt (i);
+
+			if (items.isEmpty ())
+			{
+				event->ignore ();
+				return;
+			}
 		}
 
 		if (targetIndex.isValid ())
 		{
 			CurrentEvent_ = event;
-			DraggedItemId_ = id;
+			for (const auto& item : items)
+				DraggedItemsIds_ << item.id;
 			TargetItemId_ = targetIndex.data (ListingRole::Directory).toBool () ?
 				targetIndex.data (ListingRole::ID).toByteArray () :
 				targetIndex.parent ().data (ListingRole::ID).toByteArray ();
@@ -108,28 +153,28 @@ namespace NetStoreManager
 			event->ignore ();
 
 		CurrentEvent_ = 0;
-		DraggedItemId_.clear ();
+		DraggedItemsIds_.clear ();
 		TargetItemId_.clear ();
 	}
 
 	void FilesView::handleCopyItem ()
 	{
 		if (!CurrentEvent_ ||
-				DraggedItemId_.isEmpty ())
+				DraggedItemsIds_.isEmpty ())
 			return;
 
 		CurrentEvent_->setDropAction (Qt::CopyAction);
-		emit itemAboutToBeCopied (DraggedItemId_, TargetItemId_);
+		emit itemsAboutToBeCopied (DraggedItemsIds_, TargetItemId_);
 		CurrentEvent_->accept ();
 	}
 
 	void FilesView::handleMoveItem ()
 	{
 		if (!CurrentEvent_ ||
-				DraggedItemId_.isEmpty ())
+				DraggedItemsIds_.isEmpty ())
 			return;
 		CurrentEvent_->setDropAction (Qt::MoveAction);
-		emit itemAboutToBeMoved (DraggedItemId_, TargetItemId_);
+		emit itemsAboutToBeMoved (DraggedItemsIds_, TargetItemId_);
 		CurrentEvent_->accept ();
 	}
 
