@@ -21,7 +21,9 @@
 #include <QStringList>
 #include <QtPlugin>
 #include <QUrl>
+#include <QMap>
 #include <QDateTime>
+#include <boost/graph/graph_concepts.hpp>
 
 class QStandardItem;
 
@@ -66,13 +68,17 @@ namespace NetStoreManager
 		QString Name_;
 		QDateTime ModifyDate_;
 		QByteArray MD5_;
+
 		QUrl Url_;
+		QMap<QUrl, QPair<QString, QString>> ExportLinks;
 
 		bool IsDirectory_;
 
 		bool IsTrashed_;
 
 		QString MimeType_;
+
+
 
 		StorageItem ()
 		: IsDirectory_ (false)
