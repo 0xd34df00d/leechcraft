@@ -39,6 +39,11 @@ namespace NetStoreManager
 		if (left.column () == 0 &&
 				right.column () == 0)
 		{
+			if (sourceModel ()->data (left, ListingRole::ID).toByteArray () == "trashItem")
+				return true;
+			if (sourceModel ()->data (right, ListingRole::ID).toByteArray () == "trashItem")
+				return false;
+
 			if (leftIsFolder &&
 					!rightIsFolder)
 				return false;

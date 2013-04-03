@@ -319,32 +319,64 @@ namespace NetStoreManager
 			return;
 
 		QHash<QByteArray, QList<QStandardItem*>> resultItems;
+		QHash<QByteArray, QList<QStandardItem*>> trashedItems;
 		resultItems ["rootItem"] = { new QStandardItem };
+		
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
+		const bool trashSupport = sfl->GetListingOps () & ListingOp::TrashSupporting;
+		QStandardItem *trashItem = 0;
+		if (trashSupport)
+		{
+			trashItem = new QStandardItem (Proxy_->GetIcon ("user-trash"), tr ("Trash"));
+			trashItem->setData ("trashItem", ListingRole::ID);
+			trashItem->setEditable (false);
+		}
+		
 		QList<QByteArray> addedChildDirs;
 		QList<StorageItem*> items = Id2Item_.values ();
 		for (int i = items.count () - 1; i >= 0; --i)
 		{
 			auto item = items [i];
 			QList<QStandardItem*> resItems;
-			if (resultItems.contains (item->ParentID_))
+			
+			if (item->IsDirectory_)
 			{
 				resItems = CreateItems (item, Proxy_);
-				resultItems [item->ParentID_].at (0)->appendRow (resItems);
-				if (item->IsDirectory_)
-				{
+				if (item->IsTrashed_)
+					trashedItems [item->ID_] = resItems;
+				else
 					resultItems [item->ID_] = resItems;
-					addedChildDirs << item->ID_;
-				}
 				items.removeAt (i);
 			}
+		}
 
-			if (item->IsDirectory_ &&
-					!addedChildDirs.contains (item->ID_))
+		for (const auto& key : resultItems.keys ())
+		{
+			auto item = Id2Item_.value (key);
+			if (item &&
+					resultItems.contains (item->ParentID_))
 			{
-				resultItems [item->ID_] = resItems.isEmpty () ?
-					CreateItems (item, Proxy_) :
-					resItems;
-				items.removeAt (i);
+				resultItems [item->ParentID_].at (0)->appendRow (resultItems [key]);
+				addedChildDirs << key;
+			}
+		}
+
+		for (const auto& key : trashedItems.keys ())
+		{
+			auto item = Id2Item_.value (key);
+			if (item &&
+					trashedItems.contains (item->ParentID_))
+			{
+				if (!item->IsTrashed_)
+					continue;
+				
+				if (Id2Item_ [item->ParentID_]->IsTrashed_)
+					trashedItems [item->ParentID_].at (0)->appendRow (trashedItems [key]);
+				else
+					trashItem->appendRow (trashedItems [key]);
+
+				if (item->IsDirectory_)
+					addedChildDirs << key;
 			}
 		}
 
@@ -352,21 +384,45 @@ namespace NetStoreManager
 		{
 			auto item = items [i];
 			auto resItems = CreateItems (item, Proxy_);
-			if (resultItems.contains (item->ParentID_))
-				resultItems [item->ParentID_].at (0)->appendRow (resItems);
-			else
-				resultItems ["rootItem"].at (0)->appendRow (resItems);
+			if (!item->IsTrashed_)
+			{
+				if (resultItems.contains (item->ParentID_))
+					resultItems [item->ParentID_].at (0)->appendRow (resItems);
+				else
+					resultItems ["rootItem"].at (0)->appendRow (resItems);
+			}
+			else 
+			{
+				if (trashedItems.contains (item->ParentID_))
+					trashedItems [item->ParentID_].at (0)->appendRow (resItems);
+				else
+					trashItem->appendRow (resItems);
+			}
 		}
 
-		for (auto id : addedChildDirs)
+		for (const auto& id : addedChildDirs)
+		{
 			resultItems.remove (id);
+			trashedItems.remove (id);
+		}
+		
+		for (auto itemKey : resultItems.keys ())
+		{
+			if (itemKey == "rootItem")
+			{
+				auto res = resultItems ["rootItem"];
+				for (int i = 0; i < res.at (0)->rowCount (); ++i)
+					TreeModel_->appendRow (res.at (0)->takeRow (i));
+			}
+			else
+				TreeModel_->appendRow (resultItems [itemKey]);
+		}
 
-		auto res = resultItems.take ("rootItem");
-		for (int i = 0; i < res.at (0)->rowCount (); ++i)
-			TreeModel_->appendRow (res.at (0)->takeRow (i));
+		for (auto item : trashedItems.values ())
+			trashItem->appendRow (item);
 
-		for (auto item : resultItems.values ())
-			TreeModel_->appendRow (item);
+		if (trashSupport)
+			TreeModel_->appendRow (trashItem);
 
 		Ui_.FilesView_->header ()->resizeSection (Columns::Name,
 				XmlSettingsManager::Instance ().Property ("ViewSectionSize",
