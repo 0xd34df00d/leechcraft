@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2010-2013  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NETSTOREMANAGER_INTERFACES_NETSTOREMANAGER_ISUPPORTFILELISTINGS_H
-#define PLUGINS_NETSTOREMANAGER_INTERFACES_NETSTOREMANAGER_ISUPPORTFILELISTINGS_H
+#pragma once
+
 #include <QStringList>
 #include <QtPlugin>
 #include <QUrl>
@@ -88,17 +88,18 @@ namespace NetStoreManager
 		virtual ListingOps GetListingOps () const = 0;
 
 		virtual void RefreshListing () = 0;
-		virtual QStringList GetListingHeaders () const = 0;
 
-		virtual void Delete (const QList<QStringList>& id, bool ask = true) = 0;
-		virtual void MoveToTrash (const QList<QStringList>& id) = 0;
-		virtual void RestoreFromTrash (const QList<QStringList>& id) = 0;
-		virtual void EmptyTrash (const QList<QStringList>& id) = 0;
-		virtual void RequestUrl (const QList<QStringList>& id) = 0;
-		virtual void CreateDirectory (const QString& name, const QStringList& parentId) = 0;
-		virtual void Copy (const QStringList& id, const QStringList& newParentId) = 0;
-		virtual void Move (const QStringList& id, const QStringList& newParentId) = 0;
-		virtual void Rename (const QStringList& id, const QString& newName) = 0;
+		virtual void Delete (const QList<QByteArray>& ids, bool ask = true) = 0;
+		virtual void MoveToTrash (const QList<QByteArray>& ids) = 0;
+		virtual void RestoreFromTrash (const QList<QByteArray>& ids) = 0;
+		virtual void Copy (const QList<QByteArray>& ids,
+				const QByteArray& newParentId) = 0;
+		virtual void Move (const QList<QByteArray>& ids,
+				const QByteArray& newParentId) = 0;
+
+		virtual void RequestUrl (const QByteArray& id) = 0;
+		virtual void CreateDirectory (const QString& name, const QByteArray& parentId) = 0;
+		virtual void Rename (const QByteArray& id, const QString& newName) = 0;
 		virtual void RequestChanges () = 0;
 
 	protected:
@@ -106,7 +107,7 @@ namespace NetStoreManager
 
 		virtual void gotFileUrl (const QUrl& url, const QStringList& id) = 0;
 		virtual void gotChanges (const QList<Change>& changes) = 0;
-		virtual void gotNewItem (const QList<QStandardItem*>& item, const QStringList& parentId) = 0;
+		virtual void gotNewItem (const QList<QStandardItem*>& item, const QByteArray& parentId) = 0;
 	};
 }
 }
@@ -115,4 +116,3 @@ Q_DECLARE_INTERFACE (LeechCraft::NetStoreManager::ISupportFileListings,
 		"org.Deviant.LeechCraft.NetStoreManager.ISupportFileListings/1.0");
 Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::NetStoreManager::ListingOps);
 
-#endif
