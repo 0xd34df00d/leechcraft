@@ -66,6 +66,7 @@ namespace NetStoreManager
 		QString Name_;
 		QDateTime ModifyDate_;
 		QByteArray MD5_;
+		QUrl Url_;
 
 		bool IsDirectory_;
 
@@ -99,13 +100,14 @@ namespace NetStoreManager
 
 		virtual void RequestUrl (const QByteArray& id) = 0;
 		virtual void CreateDirectory (const QString& name, const QByteArray& parentId) = 0;
+
 		virtual void Rename (const QByteArray& id, const QString& newName) = 0;
 		virtual void RequestChanges () = 0;
 
 	protected:
 		virtual void gotListing (const QList<StorageItem*>& items) = 0;
+		virtual void gotFileUrl (const QUrl& url, const QByteArray& id) = 0;
 
-		virtual void gotFileUrl (const QUrl& url, const QStringList& id) = 0;
 		virtual void gotChanges (const QList<Change>& changes) = 0;
 		virtual void gotNewItem (const QList<QStandardItem*>& item, const QByteArray& parentId) = 0;
 	};
