@@ -89,7 +89,7 @@ namespace NetStoreManager
 		QAction *CreateDir_;
 		QAction *UploadInCurrentDir_;
 		QAction *Download_;
-		QHash<IStorageAccount*, QHash<QString, bool>> Account2ItemExpandState_;
+		QHash<IStorageAccount*, QHash<QByteArray, bool>> Account2ItemExpandState_;
 	public:
 		ManagerTab (const TabClassInfo&, AccountsManager*, ICoreProxy_ptr, QObject*);
 
@@ -113,6 +113,10 @@ namespace NetStoreManager
 		QList<QByteArray> GetTrashedFiles () const;
 
 		void CallOnSelection (std::function<void (ISupportFileListings *sfl, const QList<QByteArray>& ids)>);
+
+		void SaveExpandState (const QModelIndex& parent = QModelIndex ());
+		void RestoreExpandState ();
+		void ExpandModelItems (const QModelIndex& parent = QModelIndex ());
 
 	private slots:
 		void changeViewMode (bool set);
@@ -151,7 +155,9 @@ namespace NetStoreManager
 
 	signals:
 		void removeTab (QWidget*);
-		void gotEntity (LeechCraft::Entity entity);
+
+		void uploadRequested (IStorageAccount *acc, const QString& fileName,
+				const QByteArray& parentId = QByteArray ());
 	};
 }
 }

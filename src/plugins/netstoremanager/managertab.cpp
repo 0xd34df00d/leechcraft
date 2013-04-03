@@ -280,6 +280,7 @@ namespace NetStoreManager
 		switch (ViewMode_)
 		{
 			case VMTree:
+				ClearModel ();
 				FillTreeModel (acc);
 				break;
 			case VMList:
@@ -510,6 +511,61 @@ namespace NetStoreManager
 		func (sfl, ids);
 	}
 
+	void ManagerTab::SaveExpandState (const QModelIndex& parent)
+	{
+		if (!TreeModel_->rowCount ())
+			return;
+
+		auto currentAcc = GetCurrentAccount ();
+
+		auto parentItem = parent.isValid () ?
+			TreeModel_->itemFromIndex (parent) :
+			TreeModel_->invisibleRootItem ();
+
+		for (int i = 0; i < parentItem->rowCount (); ++i)
+		{
+			auto item = parentItem->child (i);
+			if (!item)
+				continue;
+
+			const auto& index = TreeModel_->indexFromItem (item);
+
+			const auto& id = item->data (ListingRole::ID).toByteArray ();
+			Account2ItemExpandState_ [currentAcc] [id] = Ui_.FilesView_->isExpanded (index);
+
+			if (item->hasChildren ())
+				SaveExpandState (index);
+		}
+	}
+
+	void ManagerTab::RestoreExpandState ()
+	{
+		if (Account2ItemExpandState_ [GetCurrentAccount ()].isEmpty ())
+			return;
+
+		ExpandModelItems ();
+		Account2ItemExpandState_.clear ();
+	}
+
+	void ManagerTab::ExpandModelItems (const QModelIndex& parent)
+	{
+		for (int i = 0; i < TreeModel_->rowCount (parent); ++i)
+		{
+			QStandardItem *item = !parent.isValid () ?
+			TreeModel_->item (i) :
+			TreeModel_->itemFromIndex (parent)->child (i);
+			const auto& id = item->data (ListingRole::ID).toByteArray ();
+
+			if (item->hasChildren () &&
+					Account2ItemExpandState_ [GetCurrentAccount ()].value (id))
+			{
+				const auto& index = TreeModel_->indexFromItem (item);
+				Ui_.FilesView_->expand (index);
+				ExpandModelItems (index);
+			}
+		}
+	}
+
 	void ManagerTab::changeViewMode (bool set)
 	{
 		if (set)
@@ -537,10 +593,7 @@ namespace NetStoreManager
 		switch (ViewMode_)
 		{
 			case VMTree:
-				if (!TreeModel_->rowCount ())
-					requestFileListings (acc);
-				else
-					requestFileChanges (acc);
+				requestFileListings (acc);
 				break;
 			case VMList:
 				//TODO
@@ -552,6 +605,21 @@ namespace NetStoreManager
 
 	void ManagerTab::handleUpload ()
 	{
+		auto acc = GetCurrentAccount ();
+		if (!acc)
+		{
+			QMessageBox::critical (this,
+					tr ("Error"),
+					tr ("You first need to add an account."));
+			return;
+		}
+
+		const QString& filename = QFileDialog::getOpenFileName (this,
+				tr ("Select file for upload"),
+				QDir::homePath ());
+		if (filename.isEmpty ())
+			return;
+		emit uploadRequested (acc, filename);
 	}
 
 	void ManagerTab::handleAccountAdded (QObject *accObj)
@@ -598,13 +666,11 @@ namespace NetStoreManager
 				sender () != acc->GetQObject ())
 			return;
 
-		qDebug () << Q_FUNC_INFO << items.count ();
 		qDeleteAll (Id2Item_);
 		Id2Item_.clear ();
 		for (auto item : items)
 			Id2Item_ [item->ID_] = item;
 
-		ClearModel ();
 		FillModel (acc);
 
 		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("NetStoreManager",
@@ -739,7 +805,8 @@ namespace NetStoreManager
 		QModelIndex idx = Ui_.FilesView_->currentIndex ();
 		idx = idx.sibling (idx.row (), Columns::Name);
 
-		//TODO upload
+		emit uploadRequested (acc,
+				filename, idx.data (ListingRole::ID).toByteArray ());
 	}
 
 	void ManagerTab::flDownload ()
