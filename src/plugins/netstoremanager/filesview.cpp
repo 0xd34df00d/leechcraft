@@ -54,7 +54,7 @@ namespace NetStoreManager
 		auto mimeData = event->mimeData ();
 		QDataStream stream (mimeData->data ("x-leechcraft/nsm-item"));
 		QString name;
-		QStringList id, parentId;
+		QByteArray id, parentId;
 		bool isInTrash = false, isDir = false;
 		stream >> name
 				>> id
@@ -65,23 +65,23 @@ namespace NetStoreManager
 		const auto& targetIndex = indexAt (event->pos ());
 
 		if (isInTrash &&
-				targetIndex.data (ListingRole::ID).toString () != "netstoremanager.item_trash" &&
+				targetIndex.data (ListingRole::ID).toByteArray () != "netstoremanager.item_trash" &&
 				!targetIndex.data (ListingRole::InTrash).toBool ())
 		{
-			emit restoredFromTrash (id);
+			emit itemAboutToBeRestoredFromTrash (id);
 			return;
 		}
 
 		if (!isInTrash &&
 				(targetIndex.data (ListingRole::ID).toString () == "netstoremanager.item_trash" ||
-						targetIndex.data (ListingRole::InTrash).toBool ()))
+					targetIndex.data (ListingRole::InTrash).toBool ()))
 		{
-			emit trashedItem (id);
+			emit itemAboutToBeTrashed (id);
 			return;
 		}
 
 		if (!targetIndex.data (ListingRole::Directory).toBool () &&
-			targetIndex.parent ().data (ListingRole::ID).toStringList () == parentId)
+				targetIndex.parent ().data (ListingRole::ID).toByteArray () == parentId)
 		{
 			event->ignore ();
 			return;
@@ -92,13 +92,13 @@ namespace NetStoreManager
 			CurrentEvent_ = event;
 			DraggedItemId_ = id;
 			TargetItemId_ = targetIndex.data (ListingRole::Directory).toBool () ?
-				targetIndex.data (ListingRole::ID).toStringList () :
-				targetIndex.parent ().data (ListingRole::ID).toStringList ();
+				targetIndex.data (ListingRole::ID).toByteArray () :
+				targetIndex.parent ().data (ListingRole::ID).toByteArray ();
 
 			QMenu *menu = new QMenu;
 
 			if (!targetIndex.data (ListingRole::InTrash).toBool () &&
-					targetIndex.data (ListingRole::ID).toStringList ().value (0) != "netstoremanager.item_trash")
+					targetIndex.data (ListingRole::ID).toByteArray () != "netstoremanager.item_trash")
 				menu->addActions ({ CopyItem_, MoveItem_, menu->addSeparator (), Cancel_ });
 
 			menu->exec (viewport ()->mapToGlobal (event->pos ()));
@@ -119,7 +119,7 @@ namespace NetStoreManager
 			return;
 
 		CurrentEvent_->setDropAction (Qt::CopyAction);
-		emit copiedItem (DraggedItemId_, TargetItemId_);
+		emit itemAboutToBeCopied (DraggedItemId_, TargetItemId_);
 		CurrentEvent_->accept ();
 	}
 
@@ -129,7 +129,7 @@ namespace NetStoreManager
 				DraggedItemId_.isEmpty ())
 			return;
 		CurrentEvent_->setDropAction (Qt::MoveAction);
-		emit movedItem (DraggedItemId_, TargetItemId_);
+		emit itemAboutToBeMoved (DraggedItemId_, TargetItemId_);
 		CurrentEvent_->accept ();
 	}
 
