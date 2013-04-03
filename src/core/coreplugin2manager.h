@@ -39,6 +39,12 @@ namespace LeechCraft
 				QMainWindow *window,
 				QDockWidget *dock,
 				bool toggleActionVisible);
+
+		void hookAddingDockAction (LeechCraft::IHookProxy_ptr, QMainWindow*, QAction*, Qt::DockWidgetArea);
+		void hookRemovingDockAction (LeechCraft::IHookProxy_ptr, QMainWindow*, QAction*, Qt::DockWidgetArea);
+
+		void hookDockBarWillBeShown (LeechCraft::IHookProxy_ptr, QMainWindow*, QToolBar*, Qt::DockWidgetArea);
+
 		void hookGonnaFillMenu (LeechCraft::IHookProxy_ptr);
 		void hookGonnaFillQuickLaunch (LeechCraft::IHookProxy_ptr proxy);
 		void hookNAMCreateRequest (LeechCraft::IHookProxy_ptr proxy,
