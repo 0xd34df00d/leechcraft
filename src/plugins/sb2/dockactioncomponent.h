@@ -20,23 +20,14 @@
 
 #include "baseactioncomponent.h"
 
-class QDockWidget;
-
 namespace LeechCraft
 {
 namespace SB2
 {
-	class TrayComponent : public BaseActionComponent
+	class DockActionComponent : public BaseActionComponent
 	{
-		Q_OBJECT
 	public:
-		TrayComponent (ICoreProxy_ptr, SBView*, QObject* parent = 0);
-
-		void HandleDockAction (QDockWidget*, bool);
-	public slots:
-		void handlePluginsAvailable ();
-	private slots:
-		void handleGotActions (const QList<QAction*>&, LeechCraft::ActionsEmbedPlace);
+		DockActionComponent (ICoreProxy_ptr, SBView*, QObject* = 0);
 	};
 }
 }

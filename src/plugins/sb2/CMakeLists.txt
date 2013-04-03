@@ -28,6 +28,7 @@ SET (SRCS
 	lcmenucomponent.cpp
 	traycomponent.cpp
 	baseactioncomponent.cpp
+	dockactioncomponent.cpp
 	unhidelistmodel.cpp
 	quarkunhidelistview.cpp
 	unhidelistviewbase.cpp

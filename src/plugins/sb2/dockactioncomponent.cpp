@@ -16,27 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include "baseactioncomponent.h"
-
-class QDockWidget;
+#include "dockactioncomponent.h"
 
 namespace LeechCraft
 {
 namespace SB2
 {
-	class TrayComponent : public BaseActionComponent
+	DockActionComponent::DockActionComponent (ICoreProxy_ptr proxy, SBView *view, QObject *parent)
+	: BaseActionComponent ({ "SB2_DockActionImage", "DockComponent.qml", "SB2_dockModel" }, proxy, view, parent)
 	{
-		Q_OBJECT
-	public:
-		TrayComponent (ICoreProxy_ptr, SBView*, QObject* parent = 0);
-
-		void HandleDockAction (QDockWidget*, bool);
-	public slots:
-		void handlePluginsAvailable ();
-	private slots:
-		void handleGotActions (const QList<QAction*>&, LeechCraft::ActionsEmbedPlace);
-	};
+	}
 }
 }
