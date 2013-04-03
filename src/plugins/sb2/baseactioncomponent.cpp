@@ -114,8 +114,16 @@ namespace SB2
 		return Component_;
 	}
 
-	void BaseActionComponent::AddActions (const QList<QAction*>& acts, ActionPos pos)
+	void BaseActionComponent::AddActions (QList<QAction*> acts, ActionPos pos)
 	{
+		for (auto act : QList<QAction*> (acts))
+			if (FindItem (act))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "duplicate action inserted"
+						<< act;
+				acts.removeAll (act);
+			}
 		if (acts.isEmpty ())
 			return;
 

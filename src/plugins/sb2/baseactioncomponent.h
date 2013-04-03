@@ -65,7 +65,7 @@ namespace SB2
 
 		QuarkComponent GetComponent () const;
 
-		virtual void AddActions (const QList<QAction*>&, ActionPos);
+		virtual void AddActions (QList<QAction*>, ActionPos);
 		virtual void RemoveAction (QAction*);
 	protected:
 		QStandardItem* FindItem (QAction*) const;
