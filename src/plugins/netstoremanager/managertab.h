@@ -143,7 +143,9 @@ namespace NetStoreManager
 		void flCopyUrl ();
 
 		void handleContextMenuRequested (const QPoint& point);
-		void on_AccountsBox__currentIndexChanged (int);
+		void handleExportMenuTriggered (QAction *action);
+
+		void handleCurrentIndexChanged (int index);
 
 		void handleGotFileUrl (const QUrl& url, const QByteArray& id = QByteArray ());
 

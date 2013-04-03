@@ -62,7 +62,7 @@ namespace NetStoreManager
 		connect (CopyURL_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (flCopyURL ()));
+				SLOT (flCopyUrl ()));
 		DeleteFile_ = new QAction (Proxy_->GetIcon ("edit-delete"),
 				tr ("Delete selected"), this);
 		connect (DeleteFile_,
@@ -236,6 +236,11 @@ namespace NetStoreManager
 
 		if (!AccountsBox_->count ())
 			ShowAccountActions (false);
+
+		connect (AccountsBox_,
+				SIGNAL (currentIndexChanged (int)),
+				this,
+				SLOT (handleCurrentIndexChanged (int)));
 	}
 
 	void ManagerTab::ShowAccountActions (bool show)
@@ -386,9 +391,10 @@ namespace NetStoreManager
 			}
 		}
 
-		for (int i = 0; i < items.count (); ++i)
+		for (int i = items.count () - 1; i >= 0 ; --i)
 		{
 			auto item = items [i];
+
 			auto resItems = CreateItems (item, Proxy_);
 			if (!item->IsTrashed_)
 			{
@@ -404,6 +410,8 @@ namespace NetStoreManager
 				else
 					trashItem->appendRow (resItems);
 			}
+
+			items.removeAt (i);
 		}
 
 		for (const auto& id : addedChildDirs)
@@ -417,7 +425,7 @@ namespace NetStoreManager
 			if (itemKey == "rootItem")
 			{
 				auto res = resultItems ["rootItem"];
-				for (int i = 0; i < res.at (0)->rowCount (); ++i)
+				for (int i = res.at (0)->rowCount () - 1; i >= 0 ; --i)
 					TreeModel_->appendRow (res.at (0)->takeRow (i));
 			}
 			else
@@ -540,7 +548,6 @@ namespace NetStoreManager
 			default:
 				break;
 		}
-// 		SaveModelState ();
 	}
 
 	void ManagerTab::handleUpload ()
@@ -591,6 +598,7 @@ namespace NetStoreManager
 				sender () != acc->GetQObject ())
 			return;
 
+		qDebug () << Q_FUNC_INFO << items.count ();
 		qDeleteAll (Id2Item_);
 		Id2Item_.clear ();
 		for (auto item : items)
@@ -863,7 +871,29 @@ namespace NetStoreManager
 					!idxs.at (0).data (ListingRole::Directory).toBool () &&
 					!idxs.at (0).data (ListingRole::InTrash).toBool () &&
 					idxs.at (0).data (ListingRole::ID).toByteArray () != "netstoremanager.item_trash")
+			{
 				menu->addAction (CopyURL_);
+				auto item = Id2Item_ [idxs.at (0).data (ListingRole::ID).toByteArray ()];
+				if (!item->ExportLinks.isEmpty ())
+				{
+					QMenu *exportMenu = new QMenu (tr ("Export to..."));
+					auto exportAct = menu->addMenu (exportMenu);
+					exportAct->setIcon (Proxy_->GetIcon ("document-export"));
+					for (const auto& key : item->ExportLinks.keys ())
+					{
+						const auto& pair = item->ExportLinks [key];
+						QAction *action = new QAction (Proxy_->GetIcon (pair.first),
+								pair.second, exportMenu);
+						action->setProperty ("url", key);
+						exportMenu->addAction (action);
+						connect (exportMenu,
+								SIGNAL (triggered (QAction*)),
+								this,
+								SLOT (handleExportMenuTriggered (QAction*)),
+								Qt::UniqueConnection);
+					}
+				}
+			}
 
 			menu->addActions (actionsList);
 		}
@@ -875,7 +905,18 @@ namespace NetStoreManager
 		menu->deleteLater ();
 	}
 
-	void ManagerTab::on_AccountsBox__currentIndexChanged (int)
+	void ManagerTab::handleExportMenuTriggered (QAction *action)
+	{
+		if (!action ||
+				action->property ("url").isNull ())
+			return;
+
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeEntity (action->property ("url").toUrl (),
+				QString (),
+				OnlyHandle | FromUserInitiated));
+	}
+
+	void ManagerTab::handleCurrentIndexChanged (int index)
 	{
 		ClearModel ();
 		IStorageAccount *acc = GetCurrentAccount ();
