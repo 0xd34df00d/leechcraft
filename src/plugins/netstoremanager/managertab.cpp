@@ -134,22 +134,22 @@ namespace NetStoreManager
 				this,
 				SLOT (handleContextMenuRequested (const QPoint&)));
 
-// 		connect (Ui_.FilesTree_,
-// 				SIGNAL (copiedItem (QStringList, QStringList)),
-// 				this,
-// 				SLOT (handleCopiedItem (QStringList, QStringList)));
-// 		connect (Ui_.FilesTree_,
-// 				SIGNAL (movedItem (QStringList, QStringList)),
-// 				this,
-// 				SLOT (handleMovedItem (QStringList, QStringList)));
-// 		connect (Ui_.FilesTree_,
-// 				SIGNAL (restoredFromTrash (QStringList)),
-// 				this,
-// 				SLOT (handleRestoredFromTrash (QStringList)));
-// 		connect (Ui_.FilesTree_,
-// 				SIGNAL (trashedItem (QStringList)),
-// 				this,
-// 				SLOT (handleTrashedItem (QStringList)));
+		connect (Ui_.FilesView_,
+				SIGNAL (itemsAboutToBeCopied (QList<QByteArray>, QByteArray)),
+				this,
+				SLOT (handleItemsAboutToBeCopied (QList<QByteArray>,QByteArray)));
+		connect (Ui_.FilesView_,
+				SIGNAL (itemsAboutToBeMoved (QList<QByteArray>, QByteArray)),
+				this,
+				SLOT (handleItemsAboutToBeMoved (QList<QByteArray>, QByteArray)));
+		connect (Ui_.FilesView_,
+				SIGNAL (itemsAboutToBeRestoredFromTrash (QList<QByteArray>)),
+				this,
+				SLOT (handleItemsAboutToBeRestoredFromTrash (QList<QByteArray>)));
+		connect (Ui_.FilesView_,
+				SIGNAL (itemsAboutToBeTrashed (QList<QByteArray>)),
+				this,
+				SLOT (handleItemsAboutToBeTrashed (QList<QByteArray>)));
 	}
 
 	TabClassInfo ManagerTab::GetTabClassInfo () const
@@ -321,24 +321,24 @@ namespace NetStoreManager
 		QHash<QByteArray, QList<QStandardItem*>> resultItems;
 		QHash<QByteArray, QList<QStandardItem*>> trashedItems;
 		resultItems ["rootItem"] = { new QStandardItem };
-		
+
 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 		const bool trashSupport = sfl->GetListingOps () & ListingOp::TrashSupporting;
 		QStandardItem *trashItem = 0;
 		if (trashSupport)
 		{
 			trashItem = new QStandardItem (Proxy_->GetIcon ("user-trash"), tr ("Trash"));
-			trashItem->setData ("trashItem", ListingRole::ID);
+			trashItem->setData ("netstoremanager.item_trash", ListingRole::ID);
 			trashItem->setEditable (false);
 		}
-		
+
 		QList<QByteArray> addedChildDirs;
 		QList<StorageItem*> items = Id2Item_.values ();
 		for (int i = items.count () - 1; i >= 0; --i)
 		{
 			auto item = items [i];
 			QList<QStandardItem*> resItems;
-			
+
 			if (item->IsDirectory_)
 			{
 				resItems = CreateItems (item, Proxy_);
@@ -369,7 +369,7 @@ namespace NetStoreManager
 			{
 				if (!item->IsTrashed_)
 					continue;
-				
+
 				if (Id2Item_ [item->ParentID_]->IsTrashed_)
 					trashedItems [item->ParentID_].at (0)->appendRow (trashedItems [key]);
 				else
@@ -391,7 +391,7 @@ namespace NetStoreManager
 				else
 					resultItems ["rootItem"].at (0)->appendRow (resItems);
 			}
-			else 
+			else
 			{
 				if (trashedItems.contains (item->ParentID_))
 					trashedItems [item->ParentID_].at (0)->appendRow (resItems);
@@ -405,7 +405,7 @@ namespace NetStoreManager
 			resultItems.remove (id);
 			trashedItems.remove (id);
 		}
-		
+
 		for (auto itemKey : resultItems.keys ())
 		{
 			if (itemKey == "rootItem")
@@ -428,6 +428,7 @@ namespace NetStoreManager
 				XmlSettingsManager::Instance ().Property ("ViewSectionSize",
 						Ui_.FilesView_->header ()->sectionSize (Columns::Name)).toInt ());
 	}
+
 	void ManagerTab::FillListModel (IStorageAccount *acc)
 	{
 		//TODO
@@ -697,10 +698,53 @@ namespace NetStoreManager
 				tr ("File list updated"), PInfo_));
 	}
 
-	void ManagerTab::handleFilesViewSectionResized (int index, int oldSize, int newSize)
+	void ManagerTab::handleFilesViewSectionResized (int index,
+			int oldSize, int newSize)
 	{
 		if (index == Columns::Name)
 			XmlSettingsManager::Instance ().setProperty ("ViewSectionSize", newSize);
+	}
+
+	void ManagerTab::handleItemsAboutToBeCopied (const QList<QByteArray>& ids,
+			const QByteArray& newParentId)
+	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
+		sfl->Copy (ids, newParentId);
+	}
+
+	void ManagerTab::handleItemsAboutToBeMoved (const QList<QByteArray>& ids,
+			const QByteArray& newParentId)
+	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
+		sfl->Move (ids, newParentId);
+	}
+
+	void ManagerTab::handleItemsAboutToBeRestoredFromTrash (const QList<QByteArray>& ids)
+	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
+		sfl->RestoreFromTrash (ids);
+	}
+
+	void ManagerTab::handleItemsAboutToBeTrashed (const QList<QByteArray>& ids)
+	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
+		sfl->MoveToTrash (ids);
 	}
 
 	void ManagerTab::handleGotFileUrl (const QUrl& url, const QStringList&)
@@ -944,48 +988,6 @@ namespace NetStoreManager
 // 		menu->exec (Ui_.FilesTree_->viewport ()->
 // 				mapToGlobal (QPoint (point.x (), point.y ())));
 // 		menu->deleteLater ();
-	}
-
-	void ManagerTab::handleCopiedItem (const QStringList& itemId,
-			const QStringList& newParentId)
-	{
-// 		IStorageAccount *acc = GetCurrentAccount ();
-// 		if (!acc)
-// 			return;
-//
-// 		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
-// 		sfl->Copy (itemId, newParentId);
-	}
-
-	void ManagerTab::handleMovedItem (const QStringList& itemId,
-			const QStringList& newParentId)
-	{
-// 		IStorageAccount *acc = GetCurrentAccount ();
-// 		if (!acc)
-// 			return;
-//
-// 		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
-// 		sfl->Move (itemId, newParentId);
-	}
-
-	void ManagerTab::handleRestoredFromTrash (const QStringList& id)
-	{
-// 		IStorageAccount *acc = GetCurrentAccount ();
-// 		if (!acc)
-// 			return;
-//
-// 		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
-// 		sfl->RestoreFromTrash (QList<QStringList> () << id);
-	}
-
-	void ManagerTab::handleTrashedItem (const QStringList& id)
-	{
-// 		IStorageAccount *acc = GetCurrentAccount ();
-// 		if (!acc)
-// 			return;
-//
-// 		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
-// 		sfl->MoveToTrash (QList<QStringList> () << id);
 	}
 
 }

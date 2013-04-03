@@ -131,8 +131,14 @@ namespace NetStoreManager
 
 		void handleFilesViewSectionResized (int index, int oldSize, int newSize);
 
+		void handleItemsAboutToBeCopied (const QList<QByteArray>& ids,
+				const QByteArray& parentId);
+		void handleItemsAboutToBeMoved (const QList<QByteArray>& ids,
+				const QByteArray& parentId);
+		void handleItemsAboutToBeRestoredFromTrash (const QList<QByteArray>& ids);
+		void handleItemsAboutToBeTrashed (const QList<QByteArray>& ids);
 
-		
+
 		void handleGotFileUrl (const QUrl& url, const QStringList& id);
 		void handleGotNewItem (const QList<QStandardItem*>& item,
 				const QStringList& parentId);
@@ -148,12 +154,6 @@ namespace NetStoreManager
 		void on_Update__released ();
 		void on_Upload__released ();
 		void handleContextMenuRequested (const QPoint& point);
-		void handleCopiedItem (const QStringList& itemId,
-				const QStringList& newParentId);
-		void handleMovedItem (const QStringList& itemId,
-				const QStringList& newParentId);
-		void handleRestoredFromTrash (const QStringList& id);
-		void handleTrashedItem (const QStringList& id);
 
 	signals:
 		void removeTab (QWidget*);
