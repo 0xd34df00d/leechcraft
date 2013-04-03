@@ -88,8 +88,6 @@ namespace NetStoreManager
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
 
-		void gotEntity (const LeechCraft::Entity&);
-
 		void fileUploaded (const QString&, const QUrl&);
 	};
 }
