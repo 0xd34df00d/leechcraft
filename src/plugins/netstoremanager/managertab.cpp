@@ -449,24 +449,51 @@ namespace NetStoreManager
 
 	void ManagerTab::requestFileChanges (IStorageAccount*)
 	{
-
+		//TODO
 	}
 
-	void ManagerTab::CallOnSelection (std::function<void (ISupportFileListings*, const QList<QStringList>&)> func)
+	QList<QByteArray> ManagerTab::GetTrashedFiles () const
 	{
-// 		IStorageAccount *acc = GetCurrentAccount ();
-// 		if (!acc)
-// 			return;
-//
-// 		QList<QStringList> ids;
-// 		Q_FOREACH (const auto& idx, Ui_.FilesTree_->selectionModel ()->selectedRows ())
-// 			ids << idx.data (ListingRole::ID).toStringList ();
-//
-// 		if (ids.isEmpty ())
-// 			return;
-//
-// 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
-// 		func (sfl, ids);
+		QList<QByteArray> result;
+
+		switch (ViewMode_)
+		{
+		case VMTree:
+			for (int i = TreeModel_->rowCount () - 1; i >= 0; --i)
+			{
+				QStandardItem *item = TreeModel_->item (i);
+				if (item->data (ListingRole::ID).toString () == "netstoremanager.item_trash")
+				{
+					for (int j = 0, cnt = item->rowCount (); j < cnt; ++j)
+						result << item->child (j)->data (ListingRole::ID).toByteArray ();
+					break;
+				}
+			}
+			break;
+		case VMList:
+			break;
+		default:
+			break;
+		}
+
+		return result;
+	}
+
+	void ManagerTab::CallOnSelection (std::function<void (ISupportFileListings*, const QList<QByteArray>&)> func)
+	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		QList<QByteArray> ids;
+		Q_FOREACH (const auto& idx, Ui_.FilesView_->selectionModel ()->selectedRows ())
+			ids << idx.data (ListingRole::ID).toByteArray ();
+
+		if (ids.isEmpty ())
+			return;
+
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
+		func (sfl, ids);
 	}
 
 	void ManagerTab::ClearFilesModel ()
@@ -486,8 +513,8 @@ namespace NetStoreManager
 // 		auto currentAcc = GetCurrentAccount ();
 //
 // 		auto parentItem = parent.isValid () ?
-// 				Model_->itemFromIndex (parent) :
-// 				Model_->invisibleRootItem ();
+// 				TreeModel_->itemFromIndex (parent) :
+// 				TreeModel_->invisibleRootItem ();
 //
 // 		for (int i = 0; i < parentItem->rowCount (); ++i)
 // 		{
@@ -531,23 +558,6 @@ namespace NetStoreManager
 // 				ExpandModelItems (index);
 // 			}
 // 		}
-	}
-
-	QList<QStringList> ManagerTab::GetTrashedFiles () const
-	{
-		QList<QStringList> result;
-// 		for (int i = 0, count = Model_->rowCount (); i < count; ++i)
-// 		{
-// 			QStandardItem *item = Model_->item (i);
-// 			if (item->data (ListingRole::ID).toString () == "netstoremanager.item_trash")
-// 			{
-// 				for (int j = 0, cnt = item->rowCount (); j < cnt; ++j)
-// 					result << QStringList (item->child (j)->data (ListingRole::ID).toString ());
-// 				break;
-// 			}
-// 		}
-
-		return result;
 	}
 
 	QStandardItem* ManagerTab::GetItemFromId (const QStringList& id) const

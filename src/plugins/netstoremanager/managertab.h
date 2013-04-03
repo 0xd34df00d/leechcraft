@@ -110,13 +110,14 @@ namespace NetStoreManager
 		void requestFileListings (IStorageAccount *acc);
 		void requestFileChanges (IStorageAccount *acc);
 
+		QList<QByteArray> GetTrashedFiles () const;
 
-		void CallOnSelection (std::function<void (ISupportFileListings*, const QList<QStringList>&)>);
+		void CallOnSelection (std::function<void (ISupportFileListings *sfl, const QList<QByteArray>& ids)>);
+
 		void ClearFilesModel ();
 		void SaveModelState (const QModelIndex& parent = QModelIndex ());
 		void RestoreModelState ();
 		void ExpandModelItems (const QModelIndex& parent = QModelIndex ());
-		QList<QStringList> GetTrashedFiles () const;
 		QStandardItem* GetItemFromId (const QStringList& id) const;
 
 	private slots:
