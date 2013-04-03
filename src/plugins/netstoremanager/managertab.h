@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2010-2013  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -114,12 +114,6 @@ namespace NetStoreManager
 
 		void CallOnSelection (std::function<void (ISupportFileListings *sfl, const QList<QByteArray>& ids)>);
 
-		void ClearFilesModel ();
-		void SaveModelState (const QModelIndex& parent = QModelIndex ());
-		void RestoreModelState ();
-		void ExpandModelItems (const QModelIndex& parent = QModelIndex ());
-		QStandardItem* GetItemFromId (const QStringList& id) const;
-
 	private slots:
 		void changeViewMode (bool set);
 		void handleRefresh ();
@@ -139,11 +133,6 @@ namespace NetStoreManager
 		void handleItemsAboutToBeRestoredFromTrash (const QList<QByteArray>& ids);
 		void handleItemsAboutToBeTrashed (const QList<QByteArray>& ids);
 
-
-		void handleGotFileUrl (const QUrl& url, const QStringList& id);
-		void handleGotNewItem (const QList<QStandardItem*>& item,
-				const QStringList& parentId);
-		void flCopyURL ();
 		void flDelete ();
 		void flMoveToTrash ();
 		void flRestoreFromTrash ();
@@ -151,17 +140,13 @@ namespace NetStoreManager
 		void flCreateDir ();
 		void flUploadInCurrentDir ();
 		void flDownload ();
-		void on_AccountsBox__currentIndexChanged (int);
-		void on_Update__released ();
-		void on_Upload__released ();
+
 		void handleContextMenuRequested (const QPoint& point);
+
+		void on_AccountsBox__currentIndexChanged (int);
 
 	signals:
 		void removeTab (QWidget*);
-
-		void uploadRequested (IStorageAccount *isa, const QString& file,
-				const QStringList& parentId = QStringList ());
-
 		void gotEntity (LeechCraft::Entity entity);
 	};
 }
