@@ -131,7 +131,8 @@ namespace NetStoreManager
 			}
 		}
 
-		if (targetIndex.isValid ())
+		if (targetIndex.isValid () &&
+				!items.isEmpty ())
 		{
 			CurrentEvent_ = event;
 			for (const auto& item : items)
