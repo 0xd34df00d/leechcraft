@@ -57,11 +57,12 @@ namespace NetStoreManager
 	{
 		FillToolbar ();
 
-// 		CopyURL_ = new QAction (tr ("Copy URL..."), this);
-// 		connect (CopyURL_,
-// 				SIGNAL (triggered ()),
-// 				this,
-// 				SLOT (flCopyURL ()));
+		CopyURL_ = new QAction (Proxy_->GetIcon ("edit-copy"),
+				tr ("Copy URL..."), this);
+		connect (CopyURL_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (flCopyURL ()));
 		DeleteFile_ = new QAction (Proxy_->GetIcon ("edit-delete"),
 				tr ("Delete selected"), this);
 		connect (DeleteFile_,
@@ -206,11 +207,10 @@ namespace NetStoreManager
 						SIGNAL (gotListing (const QList<StorageItem*>&)),
 						this,
 						SLOT (handleGotListing (const QList<StorageItem*>&)));
-//
-// 				connect (acc->GetQObject (),
-// 						SIGNAL (gotFileUrl (const QUrl&, const QStringList&)),
-// 						this,
-// 						SLOT (handleGotFileUrl (const QUrl&, const QStringList&)));
+				connect (acc->GetQObject (),
+						SIGNAL (gotFileUrl (QUrl, QByteArray)),
+						this,
+						SLOT (handleGotFileUrl (QUrl, QByteArray)));
 //
 // 				connect (acc->GetQObject (),
 // 						SIGNAL (gotNewItem (QList<QStandardItem*>, QStringList)),
@@ -591,9 +591,12 @@ namespace NetStoreManager
 				sender () != acc->GetQObject ())
 			return;
 
+		qDeleteAll (Id2Item_);
+		Id2Item_.clear ();
 		for (auto item : items)
 			Id2Item_ [item->ID_] = item;
 
+		ClearModel ();
 		FillModel (acc);
 
 		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("NetStoreManager",
@@ -743,6 +746,22 @@ namespace NetStoreManager
 		acc->Download (idx.data (ListingRole::ID).toByteArray (), "");
 	}
 
+	void ManagerTab::flCopyUrl ()
+	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		const QModelIndex& idx = Ui_.FilesView_->currentIndex ();
+		QModelIndex index = idx.sibling (idx.row (), Columns::Name);
+		const QByteArray id = index.data (ListingRole::ID).toByteArray ();
+		if (!Id2Item_ [id]->Url_.isEmpty () &&
+				Id2Item_ [id]->Url_.isValid ())
+			handleGotFileUrl (Id2Item_ [id]->Url_);
+		else
+			qobject_cast<ISupportFileListings*> (acc->GetQObject ())->RequestUrl (id);
+	}
+
 	void ManagerTab::handleContextMenuRequested (const QPoint& point)
 	{
 		QList<QModelIndex> idxs = Ui_.FilesView_->selectionModel ()->selectedRows ();
@@ -754,6 +773,7 @@ namespace NetStoreManager
 		const bool dirSupport = sfl->GetListingOps () & ListingOp::DirectorySupport;
 		const bool trashSupport = sfl->GetListingOps () & ListingOp::TrashSupporting;
 		QMenu *menu = new QMenu;
+
 		if (!idxs.isEmpty ())
 		{
 			QList<QModelIndex> trashedIndexes;
@@ -839,6 +859,12 @@ namespace NetStoreManager
 			MoveToTrash_->setEnabled (onlyUntrashed);
 			Download_->setEnabled (onlyUntrashed);
 
+			if (idxs.count () == 1 &&
+					!idxs.at (0).data (ListingRole::Directory).toBool () &&
+					!idxs.at (0).data (ListingRole::InTrash).toBool () &&
+					idxs.at (0).data (ListingRole::ID).toByteArray () != "netstoremanager.item_trash")
+				menu->addAction (CopyURL_);
+
 			menu->addActions (actionsList);
 		}
 		else
@@ -861,11 +887,28 @@ namespace NetStoreManager
 			return;
 		}
 		qDeleteAll (Id2Item_);
+		Id2Item_.clear ();
 		requestFileListings (acc);
 
 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 		DeleteFile_->setVisible (sfl->GetListingOps () & ListingOp::Delete);
 		MoveToTrash_->setVisible (sfl->GetListingOps () & ListingOp::TrashSupporting);
 	}
+
+	void ManagerTab::handleGotFileUrl (const QUrl& url, const QByteArray&)
+	{
+		if (url.isEmpty () ||
+				!url.isValid ())
+			return;
+
+		const QString& str = url.toString ();
+		qApp->clipboard ()->setText (str, QClipboard::Clipboard);
+		qApp->clipboard ()->setText (str, QClipboard::Selection);
+
+		QString text = tr ("File URL has been copied to the clipboard.");
+		Proxy_->GetEntityManager ()->
+				HandleEntity (Util::MakeNotification ("NetStoreManager", text, PInfo_));
+	}
+
 }
 }

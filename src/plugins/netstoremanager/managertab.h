@@ -140,10 +140,12 @@ namespace NetStoreManager
 		void flCreateDir ();
 		void flUploadInCurrentDir ();
 		void flDownload ();
+		void flCopyUrl ();
 
 		void handleContextMenuRequested (const QPoint& point);
-
 		void on_AccountsBox__currentIndexChanged (int);
+
+		void handleGotFileUrl (const QUrl& url, const QByteArray& id = QByteArray ());
 
 	signals:
 		void removeTab (QWidget*);
