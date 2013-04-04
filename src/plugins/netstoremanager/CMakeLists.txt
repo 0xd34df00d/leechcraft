@@ -27,7 +27,6 @@ SET (SRCS
 	accountslistwidget.cpp
 	addaccountdialog.cpp
 	upmanager.cpp
-	fileslistmodel.cpp
 	filesproxymodel.cpp
 	filestreemodel.cpp
 	filesview.cpp
