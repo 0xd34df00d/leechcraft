@@ -16,79 +16,112 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef UTIL_IDPOOL_H
-#define UTIL_IDPOOL_H
+#pragma once
+
 #include "utilconfig.h"
 #include <QByteArray>
 #include <QSet>
 #include <QDataStream>
 #include <QtDebug>
-#include "util/guarded.h"
 
 namespace LeechCraft
 {
-	namespace Util
+namespace Util
+{
+	/** @brief A simple pool of identificators of the given type.
+	 *
+	 * This class holds a pool of identificators of the given type \em T.
+	 * It is very simple and produces consecutive IDs, this \em T should
+	 * support <code>operator++()</code>.
+	 */
+	template<typename T>
+	class IDPool
 	{
-		template<typename T>
-		class IDPool
+		T CurrentID_;
+	public:
+		/** @brief Creates a pool with the given initial value.
+		 *
+		 * @param[in] id The initial value of the pool.
+		 */
+		IDPool (const T& id = T ())
+		: CurrentID_ (id)
 		{
-			T CurrentID_;
-		public:
-			IDPool (const T& id = T ())
-			: CurrentID_ (id)
-			{
-			}
+		}
 
-			virtual ~IDPool ()
-			{
-			}
+		/** @brief Destroys the pool.
+		 */
+		virtual ~IDPool ()
+		{
+		}
 
-			T GetID ()
-			{
-				return CurrentID_++;
-			}
+		/** @brief Returns next ID.
+		 *
+		 * @return Next ID in the pool.
+		 */
+		T GetID ()
+		{
+			return ++CurrentID_;
+		}
 
-			void SetID (T id)
-			{
-				CurrentID_ = id;
-			}
+		/** @brief Forcefully sets the current ID.
+		 *
+		 * @param[in] id The new current ID.
+		 */
+		void SetID (T id)
+		{
+			CurrentID_ = id;
+		}
 
-			void FreeID (T id)
-			{
-				if (id == CurrentID_)
-					--CurrentID_;
-			}
+		/** @brief Frees the id.
+		 *
+		 * If \em id is the last ID issues by the pool, it is reclaimed
+		 * and the next id will be \em id again. Otherwise this function does nothing.
+		 *
+		 * @param[in] id The ID to free.
+		 */
+		void FreeID (T id)
+		{
+			if (id == CurrentID_)
+				--CurrentID_;
+		}
 
-			QByteArray SaveState () const
+		/** @brief Saves the state of this pool.
+		 *
+		 * @return The serialized state of this pool.
+		 */
+		QByteArray SaveState () const
+		{
+			QByteArray result;
 			{
-				QByteArray result;
-				{
-					QDataStream ostr (&result, QIODevice::WriteOnly);
-					quint8 ver = 1;
-					ostr << ver;
-					ostr << CurrentID_;
-				}
-				return result;
+				QDataStream ostr (&result, QIODevice::WriteOnly);
+				quint8 ver = 1;
+				ostr << ver;
+				ostr << CurrentID_;
 			}
+			return result;
+		}
 
-			void LoadState (const QByteArray& state)
-			{
-				if (state.isEmpty ())
-					return;
+		/** @brief Recovers the state of this pool.
+		 *
+		 * @param[in] state The state of this pool obtained from
+		 * SaveState().
+		 */
+		void LoadState (const QByteArray& state)
+		{
+			if (state.isEmpty ())
+				return;
 
-				QDataStream istr (state);
-				quint8 ver;
-				istr >> ver;
-				if (ver == 1)
-					istr >> CurrentID_;
-				else
-					qWarning () << Q_FUNC_INFO
-							<< "unknown version"
-							<< ver
-							<< ", not restoring state.";
-			}
-		};
+			QDataStream istr (state);
+			quint8 ver;
+			istr >> ver;
+			if (ver == 1)
+				istr >> CurrentID_;
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "unknown version"
+						<< ver
+						<< ", not restoring state.";
+		}
 	};
-};
-
-#endif
+}
+}

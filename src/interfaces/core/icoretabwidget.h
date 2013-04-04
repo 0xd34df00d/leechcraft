@@ -129,7 +129,7 @@ public:
 	 * @param[in] position position of widget.
 	 * @return widget in tab.
 	 */
-	virtual QWidget* TabButton (int index, QTabBar::ButtonPosition positioin) const = 0;
+	virtual QWidget* TabButton (int index, QTabBar::ButtonPosition position) const = 0;
 
 	/** @brief Returns the position of close button
 	 *

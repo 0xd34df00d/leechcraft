@@ -33,6 +33,7 @@
 #include "traycomponent.h"
 #include "lcmenucomponent.h"
 #include "desaturateeffect.h"
+#include "dockactioncomponent.h"
 
 namespace LeechCraft
 {
@@ -118,10 +119,30 @@ namespace SB2
 	void Plugin::hookDockWidgetActionVisToggled (IHookProxy_ptr proxy,
 			QMainWindow *win, QDockWidget *dw, bool visible)
 	{
+		proxy->CancelDefault ();
+	}
+
+	void Plugin::hookAddingDockAction (IHookProxy_ptr,
+			QMainWindow *win, QAction *act, Qt::DockWidgetArea area)
+	{
 		auto rootWM = Proxy_->GetRootWindowsManager ();
 		const int idx = rootWM->GetWindowIndex (win);
 
-		Managers_ [idx].Tray_->HandleDockAction (dw, visible);
+		Managers_ [idx].Dock_->AddActions ({ act }, TrayComponent::ActionPos::Beginning);
+	}
+
+	void Plugin::hookRemovingDockAction (IHookProxy_ptr,
+			QMainWindow *win, QAction *act, Qt::DockWidgetArea area)
+	{
+		auto rootWM = Proxy_->GetRootWindowsManager ();
+		const int idx = rootWM->GetWindowIndex (win);
+
+		Managers_ [idx].Dock_->RemoveAction (act);
+	}
+
+	void Plugin::hookDockBarWillBeShown (IHookProxy_ptr proxy,
+			QMainWindow*, QToolBar*, Qt::DockWidgetArea)
+	{
 		proxy->CancelDefault ();
 	}
 
@@ -158,12 +179,15 @@ namespace SB2
 					tray,
 					SLOT (handlePluginsAvailable ()));
 		else
-		{
 			tray->handlePluginsAvailable ();
-			mgr->SecondInit ();
-		}
 
-		Managers_.push_back ({ mgr, tray });
+		auto dock = new DockActionComponent (Proxy_, view);
+		mgr->RegisterInternalComponent (dock->GetComponent ());
+
+		if (!init)
+			mgr->SecondInit ();
+
+		Managers_.push_back ({ mgr, tray, dock });
 	}
 
 	void Plugin::handleWindowRemoved (int index)
@@ -171,6 +195,7 @@ namespace SB2
 		const auto& info = Managers_.takeAt (index);
 		delete info.Mgr_;
 		delete info.Tray_;
+		delete info.Dock_;
 	}
 }
 }

@@ -58,7 +58,7 @@ namespace LeechCraft
 			Add (ii, ieh);
 	}
 
-	bool HandlerChoiceDialog::Add (const IInfo *ii, IDownload *id)
+	bool HandlerChoiceDialog::AddCommon (const IInfo *ii, const QString& addedAs)
 	{
 		QString name;
 		QString tooltip;
@@ -84,6 +84,7 @@ namespace LeechCraft
 				<< ii;
 			return false;
 		}
+
 		QRadioButton *but = new QRadioButton (name, this);
 		but->setToolTip (tooltip);
 		but->setIconSize (QSize (32, 32));
@@ -96,7 +97,7 @@ namespace LeechCraft
 
 		Buttons_->addButton (but);
 		Ui_.DownloadersLayout_->addWidget (but);
-		Downloaders_ [name] = id;
+
 		Infos_ [name] = ii;
 
 		Ui_.DownloadersLabel_->show ();
@@ -107,52 +108,21 @@ namespace LeechCraft
 		return true;
 	}
 
+	bool HandlerChoiceDialog::Add (const IInfo *ii, IDownload *id)
+	{
+		if (!AddCommon (ii, "IDownload"))
+			return false;
+
+		Downloaders_ [ii->GetName ()] = id;
+		return true;
+	}
+
 	bool HandlerChoiceDialog::Add (const IInfo *ii, IEntityHandler *ih)
 	{
-		QString name;
-		QString tooltip;
-		QIcon icon;
-		try
-		{
-			name = ii->GetName ();
-			tooltip = ii->GetInfo ();
-			icon = ii->GetIcon ();
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "could not query"
-				<< e.what ()
-				<< ii;
+		if (!AddCommon (ii, "IEntityHandler"))
 			return false;
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "could not query"
-				<< ii;
-			return false;
-		}
-		QRadioButton *but = new QRadioButton (name, this);
-		but->setToolTip (tooltip);
-		but->setIconSize (QSize (32, 32));
-		but->setIcon (icon);
-		but->setProperty ("AddedAs", "IEntityHandler");
-		but->setProperty ("PluginID", ii->GetUniqueID ());
 
-		if (Buttons_->buttons ().isEmpty ())
-			but->setChecked (true);
-
-		Buttons_->addButton (but);
-		Handlers_ [name] = ih;
-		Infos_ [name] = ii;
-		Ui_.HandlersLayout_->addWidget (but);
-
-		Ui_.HandlersLabel_->show ();
-
-		if (Downloaders_.size () + Handlers_.size () == 1)
-			populateLocationsBox ();
-
+		Handlers_ [ii->GetName ()] = ih;
 		return true;
 	}
 

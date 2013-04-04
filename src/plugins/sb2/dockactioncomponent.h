@@ -16,37 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "widthiconprovider.h"
-#include <QIcon>
+#pragma once
+
+#include "baseactioncomponent.h"
 
 namespace LeechCraft
 {
-namespace Util
+namespace SB2
 {
-	WidthIconProvider::WidthIconProvider ()
-	: QDeclarativeImageProvider (Pixmap)
+	class DockActionComponent : public BaseActionComponent
 	{
-	}
-
-	QPixmap WidthIconProvider::requestPixmap (const QString& idStr, QSize *size, const QSize& requestedSize)
-	{
-		const auto& list = idStr.split ('/', QString::SkipEmptyParts);
-		if (list.isEmpty ())
-			return QPixmap ();
-
-		auto realSize = requestedSize;
-		if (realSize.width () <= 0)
-		{
-			const int width = list.last ().toDouble ();
-			realSize = width > 0 ? QSize (width, width) : QSize (32, 32);
-		}
-
-		const auto& icon = GetIcon (list);
-
-		if (size)
-			*size = icon.actualSize (realSize);
-
-		return icon.pixmap (realSize);
-	}
+	public:
+		DockActionComponent (ICoreProxy_ptr, SBView*, QObject* = 0);
+	};
 }
 }

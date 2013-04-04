@@ -159,7 +159,13 @@ namespace LeechCraft
 		}
 
 		if (isVisible)
-			ForcefullyClosed_.remove (dock);
+		{
+			if (ForcefullyClosed_.remove (dock))
+			{
+				auto win = Dock2Window_ [dock];
+				Window2DockToolbarMgr_ [win]->AddDock (dock, win->dockWidgetArea (dock));
+			}
+		}
 		else
 			ForcefullyClosed_ << dock;
 	}

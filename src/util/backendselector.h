@@ -75,8 +75,10 @@ namespace LeechCraft
 			Ui::BackendSelector *Ui_;
 			BaseSettingsManager *Manager_;
 		public:
-			/** Constructs the BackendSelector from the given manager
-			 * and parent widget.
+			/** @brief Constructs the BackendSelector.
+			 *
+			 * Constructs the BackendSelector from the given settings
+			 * manager and parent widget.
 			 *
 			 * @param[in,out] manager The settings manager to use to
 			 * communicate with the outer world.
@@ -84,18 +86,19 @@ namespace LeechCraft
 			 */
 			BackendSelector (BaseSettingsManager *manager, QWidget *parent = 0);
 		private:
-			/** Fills the user interface according to the settings in
-			 * the manager.
-			 */
 			void FillUI ();
 		public slots:
-			/** Fills the settings manager with the settings from the
-			 * user interface.
+			/** @brief Updates the settings manager.
+			 *
+			 * This function fills the settings manager with the settings
+			 * entered by the user in UI.
 			 */
 			void accept ();
 
-			/** Restores the settings in the user interface according to
-			 * the manager.
+			/** @brief Restores the settings in UI.
+			 *
+			 * This function restores the settings in UI from the
+			 * settings in the settings manager.
 			 */
 			void reject ();
 		};

@@ -37,6 +37,7 @@ namespace SB2
 {
 	class ViewManager;
 	class TrayComponent;
+	class DockActionComponent;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -52,6 +53,7 @@ namespace SB2
 		{
 			ViewManager *Mgr_;
 			TrayComponent *Tray_;
+			DockActionComponent *Dock_;
 		};
 		QList<WindowInfo> Managers_;
 
@@ -72,6 +74,12 @@ namespace SB2
 	public slots:
 		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr,
 				QMainWindow*, QDockWidget*, bool);
+		void hookAddingDockAction (LeechCraft::IHookProxy_ptr,
+				QMainWindow*, QAction*, Qt::DockWidgetArea);
+		void hookRemovingDockAction (LeechCraft::IHookProxy_ptr,
+				QMainWindow*, QAction*, Qt::DockWidgetArea);
+		void hookDockBarWillBeShown (LeechCraft::IHookProxy_ptr,
+				QMainWindow*, QToolBar*, Qt::DockWidgetArea);
 	private slots:
 		void handleWindow (int, bool init = false);
 		void handleWindowRemoved (int);

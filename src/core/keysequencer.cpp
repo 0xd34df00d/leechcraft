@@ -32,15 +32,26 @@ QKeySequence KeySequencer::GetResult () const
 	return Result_;
 }
 
+namespace
+{
+	void FixCodes (int& code, QKeyEvent *event)
+	{
+		auto fixSingle = [&code, event] (Qt::KeyboardModifier keyM, Qt::Modifier codeM)
+		{
+			if (event->modifiers () & keyM)
+				code += codeM;
+		};
+
+		fixSingle (Qt::ControlModifier, Qt::CTRL);
+		fixSingle (Qt::AltModifier, Qt::ALT);
+		fixSingle (Qt::ShiftModifier, Qt::SHIFT);
+	}
+}
+
 void KeySequencer::keyPressEvent (QKeyEvent *event)
 {
 	int code = 0;
-	if (event->modifiers () & Qt::ControlModifier)
-		code += Qt::CTRL;
-	if (event->modifiers () & Qt::AltModifier)
-		code += Qt::ALT;
-	if (event->modifiers () & Qt::ShiftModifier)
-		code += Qt::SHIFT;
+	FixCodes (code, event);
 
 	const int key = event->key ();
 	if (key != Qt::Key_Control &&
@@ -48,7 +59,7 @@ void KeySequencer::keyPressEvent (QKeyEvent *event)
 			key != Qt::Key_Shift)
 		code += key;
 
-	const QKeySequence& ts (code);
+	const QKeySequence ts (code);
 
 	Ui_.Shortcut_->setText (ts.toString ());
 	QDialog::keyPressEvent (event);
@@ -66,12 +77,7 @@ void KeySequencer::keyReleaseEvent (QKeyEvent *event)
 	}
 
 	int code = 0;
-	if (event->modifiers () & Qt::ControlModifier)
-		code += Qt::CTRL;
-	if (event->modifiers () & Qt::AltModifier)
-		code += Qt::ALT;
-	if (event->modifiers () & Qt::ShiftModifier)
-		code += Qt::SHIFT;
+	FixCodes (code, event);
 
 	if (key != Qt::Key_Control &&
 			key != Qt::Key_Alt &&

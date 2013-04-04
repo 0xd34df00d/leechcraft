@@ -20,41 +20,41 @@
 
 namespace LeechCraft
 {
-	namespace Util
+namespace Util
+{
+	DefaultHookProxy::DefaultHookProxy ()
+	: Cancelled_ (false)
 	{
-		DefaultHookProxy::DefaultHookProxy ()
-		: Cancelled_ (false)
-		{
-		}
+	}
 
-		void DefaultHookProxy::CancelDefault ()
-		{
-			Cancelled_ = true;
-		}
+	void DefaultHookProxy::CancelDefault ()
+	{
+		Cancelled_ = true;
+	}
 
-		bool DefaultHookProxy::IsCancelled () const
-		{
-			return Cancelled_;
-		}
+	bool DefaultHookProxy::IsCancelled () const
+	{
+		return Cancelled_;
+	}
 
-		const QVariant& DefaultHookProxy::GetReturnValue () const
-		{
-			return ReturnValue_;
-		}
+	const QVariant& DefaultHookProxy::GetReturnValue () const
+	{
+		return ReturnValue_;
+	}
 
-		void DefaultHookProxy::SetReturnValue (const QVariant& val)
-		{
-			ReturnValue_ = val;
-		}
-		
-		QVariant DefaultHookProxy::GetValue (const QByteArray& name) const
-		{
-			return Name2NewVal_.value (name);
-		}
+	void DefaultHookProxy::SetReturnValue (const QVariant& val)
+	{
+		ReturnValue_ = val;
+	}
 
-		void DefaultHookProxy::SetValue (const QByteArray& name, const QVariant& val)
-		{
-			Name2NewVal_ [name] = val;
-		}
-	};
-};
+	QVariant DefaultHookProxy::GetValue (const QByteArray& name) const
+	{
+		return Name2NewVal_.value (name);
+	}
+
+	void DefaultHookProxy::SetValue (const QByteArray& name, const QVariant& val)
+	{
+		Name2NewVal_ [name] = val;
+	}
+}
+}
