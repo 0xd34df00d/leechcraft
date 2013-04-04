@@ -60,6 +60,13 @@ namespace LeechCraft
 			return;
 
 		auto toggleAct = dw->toggleViewAction ();
+		if (bar->actions ().contains (toggleAct))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "double-adding"
+					<< dw;
+			return;
+		}
 
 		emit hookAddingDockAction (IHookProxy_ptr (new Util::DefaultHookProxy),
 				Win_, toggleAct, area);
