@@ -216,7 +216,7 @@ namespace Media
 		 * This signal is emitted when the list of hyped tracks is
 		 * updated for the given hype type.
 		 *
-		 * @param[out] artists The list of the tracks for the given
+		 * @param[out] tracks The list of the tracks for the given
 		 * hype type.
 		 * @param[out] type The type of the hype.
 		 */

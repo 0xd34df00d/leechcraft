@@ -47,7 +47,6 @@ namespace Util
 	 *    properties of this object.
 	 *
 	 * The first two steps are as easy as following:
-	 * <code>
 	 * \code{.cpp}
 	 * ICoreProxy_ptr proxy; // core proxy object passed to IInfo::Init()
 	 * View_->rootContext ()->setContextProperty ("colorProxy",
@@ -104,7 +103,7 @@ namespace Util
 	 *
 	 * Good examples of color proxy usage are in LMP and SB2 plugins,
 	 * for example.
-	 *
+
 	 * @sa ICoreProxy, IInfo
 	 */
 	class UTIL_API ColorThemeProxy : public QObject
