@@ -64,7 +64,6 @@ namespace NetStoreManager
 		AccountsManager *AM_;
 		FilesProxyModel *ProxyModel_;
 		FilesTreeModel *TreeModel_;
-		FilesListModel *ListModel_;
 
 		enum ViewMode
 		{
@@ -118,10 +117,14 @@ namespace NetStoreManager
 		void RestoreExpandState ();
 		void ExpandModelItems (const QModelIndex& parent = QModelIndex ());
 
+		void ShowListItemsWithParent (const QByteArray& parentId = QByteArray ());
+
 	private slots:
 		void changeViewMode (bool set);
 		void handleRefresh ();
 		void handleUpload ();
+
+		void handleDoubleClicked (const QModelIndex& idx);
 
 		void handleAccountAdded (QObject *accObj);
 		void handleAccountRemoved (QObject *accObj);

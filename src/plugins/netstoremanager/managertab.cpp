@@ -32,7 +32,6 @@
 #include "interfaces/netstoremanager/isupportfilelistings.h"
 #include "accountsmanager.h"
 #include "filestreemodel.h"
-#include "fileslistmodel.h"
 #include "xmlsettingsmanager.h"
 #include "filesproxymodel.h"
 
@@ -49,12 +48,24 @@ namespace NetStoreManager
 	, AM_ (am)
 	, ProxyModel_ (new FilesProxyModel (this))
 	, TreeModel_ (new FilesTreeModel (this))
-	, ListModel_ (new FilesListModel (this))
 	, ViewMode_ (static_cast<ViewMode> (XmlSettingsManager::Instance ()
 			.Property ("ViewMode", VMTree).toInt ()))
 	, ViewModeAction_ (0)
 	, AccountsBox_ (0)
 	{
+		Ui_.setupUi (this);
+
+		Ui_.FilesView_->setModel (ProxyModel_);
+		ProxyModel_->setSourceModel (TreeModel_);
+		TreeModel_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Modify") });
+		Ui_.FilesView_->header ()->setResizeMode (Columns::Name, QHeaderView::Interactive);
+
+		connect (Ui_.FilesView_->header (),
+				 SIGNAL (sectionResized (int, int, int)),
+				 this,
+		   SLOT (handleFilesViewSectionResized (int, int, int)));
+		Ui_.FilesView_->setContextMenuPolicy (Qt::CustomContextMenu);
+
 		FillToolbar ();
 
 		CopyURL_ = new QAction (Proxy_->GetIcon ("edit-copy"),
@@ -106,8 +117,6 @@ namespace NetStoreManager
 				this,
 				SLOT (flDownload ()));
 
-		Ui_.setupUi (this);
-
 		connect (AM_,
 				SIGNAL(accountAdded (QObject*)),
 				this,
@@ -117,29 +126,14 @@ namespace NetStoreManager
 				this,
 				SLOT (handleAccountRemoved (QObject*)));
 
-		Ui_.FilesView_->setModel (ProxyModel_);
-		Ui_.FilesView_->setModel (ProxyModel_);
-		if (ViewMode_ == VMTree)
-		{
-			ProxyModel_->setSourceModel (TreeModel_);
-			TreeModel_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Modify") });
-		}
-		else
-		{
-			ProxyModel_->setSourceModel (ListModel_);
-			ListModel_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Modify") });
-		}
-		Ui_.FilesView_->header ()->setResizeMode (Columns::Name, QHeaderView::Interactive);
-		connect (Ui_.FilesView_->header (),
-				SIGNAL (sectionResized (int, int, int)),
-				this,
-				SLOT (handleFilesViewSectionResized (int, int, int)));
-		Ui_.FilesView_->setContextMenuPolicy (Qt::CustomContextMenu);
-
 		connect (Ui_.FilesView_,
 				SIGNAL (customContextMenuRequested (const QPoint&)),
 				this,
 				SLOT (handleContextMenuRequested (const QPoint&)));
+		connect (Ui_.FilesView_,
+				SIGNAL (doubleClicked (QModelIndex)),
+				this,
+				SLOT (handleDoubleClicked (QModelIndex)));
 
 		connect (Ui_.FilesView_,
 				SIGNAL (itemsAboutToBeCopied (QList<QByteArray>, QByteArray)),
@@ -188,8 +182,6 @@ namespace NetStoreManager
 				this,
 				SLOT (changeViewMode (bool)));
 
-		changeViewMode (ViewMode_ == VMList);
-
 		ToolBar_->addAction (ViewModeAction_);
 		ToolBar_->addSeparator ();
 
@@ -211,11 +203,6 @@ namespace NetStoreManager
 						SIGNAL (gotFileUrl (QUrl, QByteArray)),
 						this,
 						SLOT (handleGotFileUrl (QUrl, QByteArray)));
-//
-// 				connect (acc->GetQObject (),
-// 						SIGNAL (gotNewItem (QList<QStandardItem*>, QStringList)),
-// 						this,
-// 						SLOT (handleGotNewItem (QList<QStandardItem*>, QStringList)));
 			}
 		}
 
@@ -241,6 +228,8 @@ namespace NetStoreManager
 				SIGNAL (currentIndexChanged (int)),
 				this,
 				SLOT (handleCurrentIndexChanged (int)));
+
+		changeViewMode (ViewMode_ == VMList);
 	}
 
 	void ManagerTab::ShowAccountActions (bool show)
@@ -262,17 +251,7 @@ namespace NetStoreManager
 
 	void ManagerTab::ClearModel ()
 	{
-		switch (ViewMode_)
-		{
-			case VMTree:
-				TreeModel_->removeRows (0, TreeModel_->rowCount ());
-				break;
-			case VMList:
-				ListModel_->removeRows (0, ListModel_->rowCount ());
-				break;
-			default:
-				break;
-		}
+		TreeModel_->removeRows (0, TreeModel_->rowCount ());
 	}
 
 	void ManagerTab::FillModel (IStorageAccount *acc)
@@ -284,6 +263,7 @@ namespace NetStoreManager
 				FillTreeModel (acc);
 				break;
 			case VMList:
+				ClearModel ();
 				FillListModel (acc);
 				break;
 			default:
@@ -446,7 +426,14 @@ namespace NetStoreManager
 
 	void ManagerTab::FillListModel (IStorageAccount *acc)
 	{
-		//TODO
+		if (acc != GetCurrentAccount ())
+			return;
+
+		ShowListItemsWithParent ();
+
+		Ui_.FilesView_->header ()->resizeSection (Columns::Name,
+				XmlSettingsManager::Instance ().Property ("ViewSectionSize",
+						Ui_.FilesView_->header ()->sectionSize (Columns::Name)).toInt ());
 	}
 
 	void ManagerTab::requestFileListings (IStorageAccount *acc)
@@ -566,6 +553,31 @@ namespace NetStoreManager
 		}
 	}
 
+	void ManagerTab::ShowListItemsWithParent (const QByteArray& parentId)
+	{
+		ClearModel ();
+		if (Id2Item_.contains (parentId))
+		{
+			QStandardItem *upLevel = new QStandardItem (Proxy_->GetIcon ("go-up"), "[...]");
+			upLevel->setEditable (false);
+			upLevel->setData ("netstoremanager.item_uplevel", ListingRole::ID);
+			upLevel->setData (parentId);
+			TreeModel_->appendRow (upLevel);
+		}
+
+		const auto& items = Id2Item_.values ();
+		for (const auto& item : items)
+			if (!item->IsTrashed_)
+			{
+				if (parentId.isNull () &&
+						!Id2Item_.contains (item->ParentID_))
+					TreeModel_->appendRow (CreateItems (item, Proxy_));
+				else if (!parentId.isNull () &&
+						item->ParentID_ == parentId)
+					TreeModel_->appendRow (CreateItems (item, Proxy_));
+			}
+	}
+
 	void ManagerTab::changeViewMode (bool set)
 	{
 		if (set)
@@ -582,6 +594,8 @@ namespace NetStoreManager
 		}
 		ViewModeAction_->setChecked (set);
 		XmlSettingsManager::Instance ().setProperty ("ViewMode", ViewMode_);
+
+		FillModel (GetCurrentAccount ());
 	}
 
 	void ManagerTab::handleRefresh ()
@@ -596,7 +610,7 @@ namespace NetStoreManager
 				requestFileListings (acc);
 				break;
 			case VMList:
-				//TODO
+				requestFileListings (acc);
 				break;
 			default:
 				break;
@@ -620,6 +634,23 @@ namespace NetStoreManager
 		if (filename.isEmpty ())
 			return;
 		emit uploadRequested (acc, filename);
+	}
+
+	void ManagerTab::handleDoubleClicked (const QModelIndex& idx)
+	{
+		if (ViewMode_ == VMTree)
+			return;
+
+		if (idx.data (ListingRole::ID).toByteArray () == "netstoremanager.item_uplevel")
+		{
+			ShowListItemsWithParent (Id2Item_ [idx.data (Qt::UserRole + 1).toByteArray ()]->ParentID_);
+			return;
+		}
+
+		if (!idx.data (ListingRole::Directory).toBool ())
+			return;
+
+		ShowListItemsWithParent (idx.data (ListingRole::ID).toByteArray ());
 	}
 
 	void ManagerTab::handleAccountAdded (QObject *accObj)
