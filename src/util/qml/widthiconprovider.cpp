@@ -38,7 +38,7 @@ namespace Util
 		if (realSize.width () <= 0)
 		{
 			const int width = list.last ().toDouble ();
-			realSize = QSize (width, width);
+			realSize = width > 0 ? QSize (width, width) : QSize (32, 32);
 		}
 
 		const auto& icon = GetIcon (list);
