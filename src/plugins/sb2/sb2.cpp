@@ -119,10 +119,6 @@ namespace SB2
 	void Plugin::hookDockWidgetActionVisToggled (IHookProxy_ptr proxy,
 			QMainWindow *win, QDockWidget *dw, bool visible)
 	{
-		auto rootWM = Proxy_->GetRootWindowsManager ();
-		const int idx = rootWM->GetWindowIndex (win);
-
-		Managers_ [idx].Tray_->HandleDockAction (dw, visible);
 		proxy->CancelDefault ();
 	}
 
