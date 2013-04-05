@@ -31,6 +31,7 @@ namespace FXB
 {
 	class DocumentAdapter : public IDocument
 	{
+	protected:
 		std::shared_ptr<QTextDocument> Doc_;
 	public:
 		DocumentAdapter (QTextDocument* = 0);
