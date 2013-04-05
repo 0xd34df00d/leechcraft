@@ -219,7 +219,7 @@ namespace PDF
 		if (PDocument_->isEncrypted ())
 			return { false, tr ("saving encrypted documents is not supported") };
 
-		return { true, {} };
+		return { true, QString () };
 	}
 
 	bool Document::Save (const QString& path)
