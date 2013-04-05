@@ -37,6 +37,7 @@ namespace Liznoo
 
 		QwtPlotCurve *Percent_;
 		QwtPlotCurve *Energy_;
+		QwtPlotCurve *Temperature_;
 	public:
 		BatteryHistoryDialog (int, QWidget* = 0);
 
