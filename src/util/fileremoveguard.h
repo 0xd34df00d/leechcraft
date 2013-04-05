@@ -25,7 +25,9 @@ namespace LeechCraft
 {
 	namespace Util
 	{
-		/** Makes sure that the file represented by this object is
+		/** @brief QFile removing itself from file system on destruction.
+		 *
+		 * Makes sure that the file represented by this object is
 		 * removed when the corresponding instance of this class is
 		 * destructed. Useful to automatically remove temporary files,
 		 * for example.
@@ -33,9 +35,15 @@ namespace LeechCraft
 		class UTIL_API FileRemoveGuard : public QFile
 		{
 		public:
-			FileRemoveGuard (const QString&);
+			/** @brief Constructs this file with the given path.
+			 *
+			 * @param[in] path The file path to construct with.
+			 */
+			FileRemoveGuard (const QString& path);
 
-			/** Tries to close and remove the file represented by this
+			/** @brief Removes the file.
+			 *
+			 * Tries to close and remove the file represented by this
 			 * object.
 			 */
 			virtual ~FileRemoveGuard ();

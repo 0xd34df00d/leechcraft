@@ -224,7 +224,7 @@ protected:
 	 * @param[out] tabIdx The index of the tab being moved in the window
 	 * it is moved to.
 	 */
-	virtual void tabMoved (int fromWin, int toWin, int tabId) = 0;
+	virtual void tabMoved (int fromWin, int toWin, int tabIdx) = 0;
 };
 
 Q_DECLARE_INTERFACE (IRootWindowsManager, "org.LeechCraft.IRootWindowsManager/1.0");

@@ -131,6 +131,7 @@ namespace MusicZombie
 					<< "no results for"
 					<< Filename_;
 			emit ready (Filename_, Media::AudioInfo ());
+			deleteLater ();
 			return;
 		}
 
@@ -181,6 +182,7 @@ namespace MusicZombie
 		info.Artist_ = artists.join (" feat ");
 
 		emit ready (Filename_, info);
+		deleteLater ();
 	}
 }
 }

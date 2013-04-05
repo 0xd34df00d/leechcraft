@@ -16,28 +16,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef UTIL_TAGSCOMPLETIONMODEL_H
-#define UTIL_TAGSCOMPLETIONMODEL_H
+#pragma once
+
 #include <QStringListModel>
 #include <QStringList>
 #include <util/utilconfig.h>
 
 namespace LeechCraft
 {
-	namespace Util
+namespace Util
+{
+	/** @brief A QStringListModel providing additional methods for tags.
+	 *
+	 * This model is basically a QStringListModel with additional methods
+	 * for easy working with tags.
+	 */
+	class UTIL_API TagsCompletionModel : public QStringListModel
 	{
-		class UTIL_API TagsCompletionModel : public QStringListModel
-		{
-			Q_OBJECT
-		public:
-			TagsCompletionModel (QObject *parent = 0);
+		Q_OBJECT
+	public:
+		/** @brief Creates the model with the given parent.
+		 *
+		 * @param[in] parent The parent object of this model.
+		 */
+		TagsCompletionModel (QObject *parent = 0);
 
-			void UpdateTags (const QStringList&);
-		signals:
-			void tagsUpdated (const QStringList&);
-		};
+		/** @brief Adds new tags to the list of tags.
+		 *
+		 * This method adds the \em newTags to the already existing list
+		 * of tags avoiding duplicates and emits the tagsUpdated()
+		 * signal.
+		 *
+		 * @param[in] newTags The new tags to append to this model.
+		 */
+		void UpdateTags (const QStringList& newTags);
+	signals:
+		/** @brief Emitted when tags are updated via UpdateTags().
+		 *
+		 * @param[in] allTags All tags in this model.
+		 */
+		void tagsUpdated (const QStringList& allTags);
 	};
-};
-
-#endif
-
+}
+}

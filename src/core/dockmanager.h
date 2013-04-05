@@ -48,7 +48,7 @@ namespace LeechCraft
 
 		QHash<QDockWidget*, MainWindow*> Dock2Window_;
 
-		QHash<MainWindow*, DockToolbarManager*> Window2DockToolbarMgr_;
+		QHash<QMainWindow*, DockToolbarManager*> Window2DockToolbarMgr_;
 	public:
 		DockManager (RootWindowsManager*, QObject* = 0);
 

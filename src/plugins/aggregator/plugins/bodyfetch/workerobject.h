@@ -25,7 +25,6 @@
 #include <QUrl>
 #include <QDir>
 #include <interfaces/iscriptloader.h>
-#include <util/guarded.h>
 
 namespace LeechCraft
 {

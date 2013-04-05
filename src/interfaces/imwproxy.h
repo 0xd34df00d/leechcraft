@@ -91,8 +91,7 @@ public:
 	 *
 	 * @param[in] widget The widget for which the visibility action
 	 * shortcut.
-	 * @param[in] sequence The widget's visibility action shortcut
-	 * sequence.
+	 * @param[in] seq The widget's visibility action shortcut sequence.
 	 */
 	virtual void SetViewActionShortcut (QDockWidget *widget, const QKeySequence& seq) = 0;
 

@@ -95,8 +95,9 @@ public:
 
 	/** @brief Adds a global load prefix.
 	 *
-	 * This is /usr/[local/]share/leechcraft/scripts on Unix-like OSes
-	 * and %APP_PATH%\share\scripts on Windows.
+	 * This is <code>/usr/[local/]share/leechcraft/scripts</code> on
+	 * Unix-like OSes and <code>%APP_PATH%\share\scripts</code> on
+	 * Windows.
 	 */
 	virtual void AddGlobalPrefix () = 0;
 

@@ -1871,7 +1871,7 @@ namespace BitTorrent
 		auto notifyE = Util::MakeAN ("BitTorrent",
 				tr ("Torrent finished: %1").arg (name),
 				PInfo_,
-				"org.LeechCraft.CSTP",
+				"org.LeechCraft.BitTorrent",
 				AN::CatDownloads,
 				AN::TypeDownloadFinished,
 				"org.LC.Plugins.BitTorrent.DLFinished/" + name,

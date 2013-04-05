@@ -21,7 +21,11 @@
 #include <QDockWidget>
 #include <QActionGroup>
 #include <QTimer>
+#include <util/defaulthookproxy.h>
 #include "mainwindow.h"
+#include "core.h"
+#include "coreinstanceobject.h"
+#include "coreplugin2manager.h"
 
 namespace LeechCraft
 {
@@ -29,6 +33,9 @@ namespace LeechCraft
 	: QObject (win)
 	, Win_ (win)
 	{
+		auto instanceObj = Core::Instance ().GetCoreInstanceObject ();
+		instanceObj->GetCorePluginManager ()->RegisterHookable (this);
+
 		auto init = [this, win] (Qt::DockWidgetArea area) -> void
 		{
 			auto bar = win->GetDockListWidget (area);
@@ -53,10 +60,24 @@ namespace LeechCraft
 			return;
 
 		auto toggleAct = dw->toggleViewAction ();
+		if (bar->actions ().contains (toggleAct))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "double-adding"
+					<< dw;
+			return;
+		}
 
+		emit hookAddingDockAction (IHookProxy_ptr (new Util::DefaultHookProxy),
+				Win_, toggleAct, area);
 		bar->addAction (toggleAct);
 		if (bar->actions ().size () >= 2)
-			bar->show ();
+		{
+			Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+			emit hookDockBarWillBeShown (proxy, Win_, bar, area);
+			if (!proxy->IsCancelled ())
+				bar->show ();
+		}
 
 		Action2Widget_ [toggleAct] = dw;
 
@@ -87,7 +108,7 @@ namespace LeechCraft
 				SIGNAL (toggled (bool)),
 				this,
 				SLOT (handleActionToggled (bool)));
-		
+
 		HandleDockDestroyed (dw, toggleAct);
 	}
 
@@ -95,15 +116,19 @@ namespace LeechCraft
 	 */
 	void DockToolbarManager::HandleDockDestroyed (QDockWidget *dw, QAction *act)
 	{
+		IHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		for (auto& info : Area2Info_)
 		{
 			if (info.Bar_->actions ().contains (act))
+			{
+				emit hookRemovingDockAction (proxy, Win_, act, info.Area_);
 				info.Bar_->removeAction (act);
+			}
 
 			const auto& remaining = info.Bar_->actions ();
 			if (remaining.size () < 2)
 				info.Bar_->hide ();
-			
+
 			if (!remaining.isEmpty ())
 				QTimer::singleShot (0,
 						Action2Widget_ [remaining.last ()],

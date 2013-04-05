@@ -32,7 +32,7 @@ namespace Util
 	void QueueManager::Schedule (std::function<void ()> f, QObject *dep)
 	{
 		const auto& now = QDateTime::currentDateTime ();
-		Queue_.push_back ({ f, dep });
+		Queue_.push_back ({ f, dep ? OptionalTracker_t { dep } : OptionalTracker_t () });
 
 		const auto diff = LastRequest_.msecsTo (now);
 		if (diff >= Timeout_)
@@ -49,7 +49,7 @@ namespace Util
 			return;
 
 		const auto& pair = Queue_.takeFirst ();
-		if (!pair.second)
+		if (pair.second && !*pair.second)
 		{
 			exec ();
 			return;
