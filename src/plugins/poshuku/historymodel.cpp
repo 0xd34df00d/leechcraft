@@ -261,14 +261,21 @@ namespace Poshuku
 		TreeItem *folder = RootItem_->Child (section);
 
 		TreeItem *thisItem = new TreeItem (data, RootItem_->Child (section));
-		folder->PrependChild (thisItem);
 		
-		for (int i = folder->ChildCount () - 1; i >= 1; --i)
+		for (int i = folder->ChildCount () - 1; i >= 0; --i)
 		{
 			auto child = folder->Child (i);
 			if (child->Data (ColumnURL) == item.URL_)
+			{
+				beginRemoveRows (index (section, 0), i, i);
 				folder->RemoveChild (i);
+				endRemoveRows ();
+			}
 		}
+		
+		beginInsertRows (index (section, 0), 0, 0);
+		folder->PrependChild (thisItem);
+		endInsertRows ();
 
 		QIcon icon = Core::Instance ().GetIcon (QUrl (item.URL_));
 		thisItem->ModifyData (0,
@@ -300,10 +307,7 @@ namespace Poshuku
 	void HistoryModel::handleItemAdded (const HistoryItem& item)
 	{
 		Items_.push_back (item);
-		beginInsertRows (index (SectionNumber (item.DateTime_), 0),
-				0, 0);
 		Add (item);
-		endInsertRows ();
 	}
 }
 }
