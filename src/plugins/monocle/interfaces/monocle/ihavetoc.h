@@ -27,21 +27,49 @@ namespace Monocle
 {
 	struct TOCEntry;
 
+	/** @brief A list of table of contents entries.
+	 */
 	typedef QList<TOCEntry> TOCEntryLevel_t;
 
+	/** @brief A single table of contents entry.
+	 */
 	struct TOCEntry
 	{
+		/** @brief The link action corresponding to this entry.
+		 *
+		 * This link should be executed when the entry is activated.
+		 *
+		 * @sa ILink
+		 */
 		ILink_ptr Link_;
 
+		/** @brief The human-readable name of the entry.
+		 */
 		QString Name_;
+		/** @brief Child items of this entry.
+		 */
 		TOCEntryLevel_t ChildLevel_;
 	};
 
+	/** @brief Interface for documents supporting table of contents.
+	 *
+	 * This interface should be implemented by the documents of formats
+	 * supporting having table of contents.
+	 */
 	class IHaveTOC
 	{
 	public:
+		/** @brief Virtual destructor.
+		 */
 		virtual ~IHaveTOC () {}
 
+		/** @brief Returns the root level of the TOC.
+		 *
+		 * If the root level is empty, there is no table of contents for
+		 * this document.
+		 *
+		 * @return Returns the root level of the TOC.
+		 */
 		virtual TOCEntryLevel_t GetTOC () = 0;
 	};
 }

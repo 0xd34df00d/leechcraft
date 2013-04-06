@@ -27,11 +27,29 @@ namespace LeechCraft
 {
 namespace Monocle
 {
+	/** @brief Interface for documents supporting querying text contents.
+	 *
+	 * This interface should be implemented by the documents of formats
+	 * supporting obtaining the text contained in a selection rectangle.
+	 */
 	class IHaveTextContent
 	{
 	public:
+		/** @brief Virtual destructor.
+		 */
 		virtual ~IHaveTextContent () {}
 
+		/** @brief Returns the text in the given rectangle.
+		 *
+		 * This function should return the text contained in the given
+		 * \em rect at the given \em page, or an empty string if there is
+		 * no text in this \em rect or the document doesn't contain any
+		 * text information.
+		 *
+		 * @param[in] page The index of the page to query.
+		 * @param[in] rect The rectangle on the \em page to query.
+		 * @return The text in \em rect at \em page.
+		 */
 		virtual QString GetTextContent (int page, const QRect& rect) = 0;
 	};
 }
