@@ -99,7 +99,21 @@ namespace UDisks
 		const QRegExp filterRx ("^org.freedesktop.UDisks$");
 		auto services = iface->registeredServiceNames ().value ().filter (filterRx);
 		if (services.isEmpty ())
-			return;
+		{
+			auto reply = iface->startService ("org.freedesktop.UDisks");
+			if (reply.error ().isValid () && reply.error ().type () == QDBusError::ServiceUnknown)
+			{
+				const auto& e = Util::MakeNotification ("Vrooby",
+						tr ("Unable to stat UDisks service. Please make sure you have UDisks installed or switch to UDisks2."),
+						PCritical_);
+				emit gotEntity (e);
+				return;
+			}
+
+			services = iface->registeredServiceNames ().value ().filter (filterRx);
+			if (services.isEmpty ())
+				return;
+		}
 
 		UDisksObj_ = new QDBusInterface ("org.freedesktop.UDisks", "/org/freedesktop/UDisks", "org.freedesktop.UDisks", sb);
 		auto async = UDisksObj_->asyncCall ("EnumerateDevices");
