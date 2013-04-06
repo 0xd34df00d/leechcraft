@@ -42,7 +42,9 @@ namespace UDisks
 	, DevicesModel_ (new QStandardItemModel (this))
 	, UDisksObj_ (0)
 	{
-		InitialEnumerate ();
+		QTimer::singleShot (1000,
+				this,
+				SLOT (startInitialEnumerate ()));
 
 		auto timer = new QTimer (this);
 		connect (timer,
@@ -93,10 +95,25 @@ namespace UDisks
 	{
 		auto sb = QDBusConnection::systemBus ();
 		auto iface = sb.interface ();
-		const auto& services = iface->registeredServiceNames ()
-				.value ().filter ("org.freedesktop.UDisks");
+
+		const QRegExp filterRx ("^org.freedesktop.UDisks$");
+		auto services = iface->registeredServiceNames ().value ().filter (filterRx);
 		if (services.isEmpty ())
-			return;
+		{
+			auto reply = iface->startService ("org.freedesktop.UDisks");
+			if (reply.error ().isValid () && reply.error ().type () == QDBusError::ServiceUnknown)
+			{
+				const auto& e = Util::MakeNotification ("Vrooby",
+						tr ("Unable to stat UDisks service. Please make sure you have UDisks installed or switch to UDisks2."),
+						PCritical_);
+				emit gotEntity (e);
+				return;
+			}
+
+			services = iface->registeredServiceNames ().value ().filter (filterRx);
+			if (services.isEmpty ())
+				return;
+		}
 
 		UDisksObj_ = new QDBusInterface ("org.freedesktop.UDisks", "/org/freedesktop/UDisks", "org.freedesktop.UDisks", sb);
 		auto async = UDisksObj_->asyncCall ("EnumerateDevices");
@@ -264,6 +281,11 @@ namespace UDisks
 					this,
 					SLOT (mountCallFinished (QDBusPendingCallWatcher*)));
 		}
+	}
+
+	void Backend::startInitialEnumerate ()
+	{
+		InitialEnumerate ();
 	}
 
 	namespace

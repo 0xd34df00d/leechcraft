@@ -51,9 +51,9 @@ namespace Vrooby
 
 		if (Backend_)
 			connect (Backend_,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
+					SIGNAL (gotEntity (LeechCraft::Entity)),
+					this,
+					SIGNAL (gotEntity (LeechCraft::Entity)));
 		else
 			return;
 
