@@ -163,6 +163,8 @@ namespace LeechCraft
 		 * @return The previous save paths for this plugin.
 		 */
 		QStringList GetPluginSavePaths (const QString& name) const;
+
+		bool AddCommon (const IInfo*, const QString&);
 	private slots:
 		/** Fills the combobox with save locations with items in
 		 * right order:

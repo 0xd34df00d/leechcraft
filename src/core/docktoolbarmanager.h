@@ -20,10 +20,12 @@
 
 #include <QObject>
 #include <QMap>
+#include <interfaces/core/ihookproxy.h>
 
 class QToolBar;
 class QDockWidget;
 class QAction;
+class QMainWindow;
 
 namespace LeechCraft
 {
@@ -37,6 +39,7 @@ namespace LeechCraft
 
 		struct AreaInfo
 		{
+			Qt::DockWidgetArea Area_;
 			QToolBar *Bar_;
 		};
 		QMap<Qt::DockWidgetArea, AreaInfo> Area2Info_;
@@ -52,5 +55,10 @@ namespace LeechCraft
 	private slots:
 		void updateDockLocation (Qt::DockWidgetArea);
 		void handleActionToggled (bool);
+	signals:
+		void hookAddingDockAction (LeechCraft::IHookProxy_ptr, QMainWindow*, QAction*, Qt::DockWidgetArea);
+		void hookRemovingDockAction (LeechCraft::IHookProxy_ptr, QMainWindow*, QAction*, Qt::DockWidgetArea);
+
+		void hookDockBarWillBeShown (LeechCraft::IHookProxy_ptr, QMainWindow*, QToolBar*, Qt::DockWidgetArea);
 	};
 }

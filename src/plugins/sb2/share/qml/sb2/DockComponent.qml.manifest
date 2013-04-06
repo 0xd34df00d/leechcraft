@@ -1,0 +1,6 @@
+{
+    "quarkID": "org.LeechCraft.SB2.Dock",
+    "quarkName": "Dock actions quark",
+    "icon": "dialog-information",
+    "areas": [ "panel" ]
+}

@@ -63,8 +63,8 @@ namespace LeechCraft
 
 		/** @brief Returns the given image in a Base64-encoded form.
 		 *
-		 * The return result is suitable for inserting into <img>'s src
-		 * attribute as is.
+		 * The return result is suitable for inserting into
+		 * <code><img></code>'s <code>src</code> attribute as is.
 		 *
 		 * @param[in] image The image to represent as Base64-encoded
 		 * form.
@@ -115,6 +115,8 @@ namespace LeechCraft
 		 * Unix.
 		 *
 		 * @param[in] base Base name of the translation file.
+		 * @param[in] prefix The optional prefix of the translation
+		 * (useful if it's not LC's one).
 		 * @param[in] appname Base name of the application.
 		 * @return The translator object if loading is successful, NULL
 		 * otherwise.
@@ -309,7 +311,7 @@ namespace LeechCraft
 		 * @param[in] node The parent-most node to which all other nodes
 		 * are appended.
 		 * @param[in] document The document containing all these nodes.
-		 * @param[in] elementname The name of the XML element that
+		 * @param[in] elementName The name of the XML element that
 		 * carries info about the tags.
 		 * @param[in] tagSetter Setter function for the tags for the
 		 * given element.

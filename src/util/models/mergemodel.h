@@ -142,11 +142,10 @@ namespace LeechCraft
 			 * begin rows which belong to the model corresponding to the
 			 * given const_iterator.
 			 *
-			 * @param[in] iterator The iterator corresponding to the
-			 * model.
+			 * @param[in] it The iterator corresponding to the model.
 			 * @return The starting row.
 			 */
-			int GetStartingRow (const_iterator iterator) const;
+			int GetStartingRow (const_iterator it) const;
 
 			/** Returns the model that corresponds to the given row. If
 			 * there is no such model, throws std::runtime_error. If

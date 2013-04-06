@@ -52,7 +52,7 @@ namespace LeechCraft
 
 			/** Enables or disables filtering tracking cookies.
 			 *
-			 * @param[in] track Whether to filter tracking cookies.
+			 * @param[in] filter Whether to filter tracking cookies.
 			 */
 			void SetFilterTrackingCookies (bool filter);
 
