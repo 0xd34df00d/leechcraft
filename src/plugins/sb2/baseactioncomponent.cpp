@@ -205,7 +205,8 @@ namespace SB2
 
 	void BaseActionComponent::handleActionChanged ()
 	{
-		auto item = FindItem (static_cast<QAction*> (sender ()));
+		auto act = static_cast<QAction*> (sender ());
+		auto item = FindItem (act);
 		if (!item)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -219,6 +220,9 @@ namespace SB2
 		const auto& uncacheStr = str.mid (lastSlash + 1);
 		str.replace (lastSlash + 1, uncacheStr.size (), QString::number (uncacheStr.toInt () + 1));
 		item->setData (str, TrayModel::Roles::ActionIcon);
+
+		item->setData (act->toolTip ().isEmpty () ? act->text () : act->toolTip (),
+				TrayModel::Roles::ActionText);
 	}
 }
 }
