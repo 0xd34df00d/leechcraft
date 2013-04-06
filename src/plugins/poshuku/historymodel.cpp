@@ -98,8 +98,8 @@ namespace Poshuku
 	{
 		QList<QVariant> headers;
 		headers << tr ("Title")
-			<< tr ("Date")
-			<< tr ("URL");
+			<< tr ("URL")
+			<< tr ("Date");
 		QTimer::singleShot (0,
 				this,
 				SLOT (loadData ()));
@@ -262,6 +262,13 @@ namespace Poshuku
 
 		TreeItem *thisItem = new TreeItem (data, RootItem_->Child (section));
 		folder->PrependChild (thisItem);
+		
+		for (int i = folder->ChildCount () - 1; i >= 1; --i)
+		{
+			auto child = folder->Child (i);
+			if (child->Data (ColumnURL) == item.URL_)
+				folder->RemoveChild (i);
+		}
 
 		QIcon icon = Core::Instance ().GetIcon (QUrl (item.URL_));
 		thisItem->ModifyData (0,
@@ -281,12 +288,11 @@ namespace Poshuku
 		Items_.clear ();
 		Core::Instance ().GetStorageBackend ()->LoadHistory (Items_);
 
-		if (!Items_.size ())
+		if (Items_.empty ())
 			return;
 
-		for (std::vector<HistoryItem>::const_reverse_iterator i = Items_.rbegin (),
-				end = Items_.rend (); i != end; ++i)
-			Add (*i);
+		for (const auto& item : Items_)
+			Add (item);
 
 		reset ();
 	}
