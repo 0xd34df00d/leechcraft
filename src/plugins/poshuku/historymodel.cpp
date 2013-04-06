@@ -262,6 +262,13 @@ namespace Poshuku
 
 		TreeItem *thisItem = new TreeItem (data, RootItem_->Child (section));
 		folder->PrependChild (thisItem);
+		
+		for (int i = folder->ChildCount () - 1; i >= 1; --i)
+		{
+			auto child = folder->Child (i);
+			if (child->Data (ColumnURL) == item.URL_)
+				folder->RemoveChild (i);
+		}
 
 		QIcon icon = Core::Instance ().GetIcon (QUrl (item.URL_));
 		thisItem->ModifyData (0,
