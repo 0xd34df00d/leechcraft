@@ -95,8 +95,9 @@ namespace UDisks
 	{
 		auto sb = QDBusConnection::systemBus ();
 		auto iface = sb.interface ();
-		const auto& services = iface->registeredServiceNames ()
-				.value ().filter ("org.freedesktop.UDisks");
+
+		const QRegExp filterRx ("^org.freedesktop.UDisks$");
+		auto services = iface->registeredServiceNames ().value ().filter (filterRx);
 		if (services.isEmpty ())
 			return;
 
