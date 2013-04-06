@@ -24,6 +24,24 @@ INCLUDE_DIRECTORIES (
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 
+OPTION (WITH_DOCS "Enable building documentation (requires Doxygen)" OFF)
+OPTION (WITH_DOCS_INSTALL "Install generated documentation (if WITH_DOCS is set)" OFF)
+IF (WITH_DOCS)
+	FIND_PACKAGE (Doxygen REQUIRED)
+
+	SET (DOXYDIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../doc/doxygen/azoth/")
+	SET (DOXYFILE "${DOXYDIR}/Doxyfile")
+
+	ADD_CUSTOM_TARGET (doc_azoth ALL
+		"sed" "-i" "s/^PROJECT_NUMBER.*/PROJECT_NUMBER = '${LEECHCRAFT_VERSION}'/" "${DOXYFILE}"
+		COMMAND "sed" "-i" "s@^INPUT .*@INPUT = ${CMAKE_CURRENT_SOURCE_DIR}/interfaces@" "${DOXYFILE}"
+		COMMAND "${DOXYGEN_EXECUTABLE}" "${DOXYFILE}"
+	)
+	IF (WITH_DOCS_INSTALL)
+		INSTALL (DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/out/html" DESTINATION "share/doc/leechcraft-azoth-${LEECHCRAFT_VERSION}")
+	ENDIF (WITH_DOCS_INSTALL)
+ENDIF (WITH_DOCS)
+
 OPTION (ENABLE_QTMULTIMEDIA_KLUDGE "Enable kludges for finding QtMultimedia" OFF)
 
 IF (ENABLE_MEDIACALLS)
