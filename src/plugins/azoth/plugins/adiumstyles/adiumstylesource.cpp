@@ -540,7 +540,7 @@ namespace AdiumStyles
 			QString base64;
 			if (in && AvatarsCache_.contains (other->GetEntryID ()))
 				base64 = *AvatarsCache_ [other->GetEntryID ()];
-			else if (OurAvatarsCache_.contains (acc))
+			else if (!in && OurAvatarsCache_.contains (acc))
 				base64 = *OurAvatarsCache_ [acc];
 			else
 			{
