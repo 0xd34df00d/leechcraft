@@ -288,12 +288,11 @@ namespace Poshuku
 		Items_.clear ();
 		Core::Instance ().GetStorageBackend ()->LoadHistory (Items_);
 
-		if (!Items_.size ())
+		if (Items_.empty ())
 			return;
 
-		for (std::vector<HistoryItem>::const_reverse_iterator i = Items_.rbegin (),
-				end = Items_.rend (); i != end; ++i)
-			Add (*i);
+		for (const auto& item : Items_)
+			Add (item);
 
 		reset ();
 	}
