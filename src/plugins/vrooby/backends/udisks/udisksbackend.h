@@ -62,6 +62,7 @@ namespace UDisks
 	public slots:
 		void toggleMount (const QString&);
 	private slots:
+		void startInitialEnumerate ();
 		void mountCallFinished (QDBusPendingCallWatcher*);
 		void umountCallFinished (QDBusPendingCallWatcher*);
 		void handleEnumerationFinished (QDBusPendingCallWatcher*);

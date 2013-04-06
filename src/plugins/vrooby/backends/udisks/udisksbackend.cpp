@@ -42,7 +42,9 @@ namespace UDisks
 	, DevicesModel_ (new QStandardItemModel (this))
 	, UDisksObj_ (0)
 	{
-		InitialEnumerate ();
+		QTimer::singleShot (1000,
+				this,
+				SLOT (startInitialEnumerate ()));
 
 		auto timer = new QTimer (this);
 		connect (timer,
@@ -264,6 +266,11 @@ namespace UDisks
 					this,
 					SLOT (mountCallFinished (QDBusPendingCallWatcher*)));
 		}
+	}
+
+	void Backend::startInitialEnumerate ()
+	{
+		InitialEnumerate ();
 	}
 
 	namespace
