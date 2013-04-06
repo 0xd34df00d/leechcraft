@@ -98,8 +98,8 @@ namespace Poshuku
 	{
 		QList<QVariant> headers;
 		headers << tr ("Title")
-			<< tr ("Date")
-			<< tr ("URL");
+			<< tr ("URL")
+			<< tr ("Date");
 		QTimer::singleShot (0,
 				this,
 				SLOT (loadData ()));
