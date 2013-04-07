@@ -332,8 +332,12 @@ namespace Azoth
 				continue;
 			}
 
+			auto trimmed = link.trimmed ();
+			if (trimmed.startsWith ("www."))
+				trimmed.prepend ("http://");
+
 			const auto& str = QString ("<a href=\"%1\">%1</a>")
-					.arg (link.trimmed ());
+					.arg (trimmed);
 			body.replace (pos, link.length (), str);
 
 			pos += str.length ();
