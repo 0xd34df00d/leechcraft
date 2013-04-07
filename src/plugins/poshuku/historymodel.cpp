@@ -236,7 +236,7 @@ namespace Poshuku
 		return result;
 	}
 
-	void HistoryModel::Add (const HistoryItem& item)
+	void HistoryModel::Add (const HistoryItem& item, bool announce)
 	{
 		int section = SectionNumber (item.DateTime_);
 
@@ -261,21 +261,25 @@ namespace Poshuku
 		TreeItem *folder = RootItem_->Child (section);
 
 		TreeItem *thisItem = new TreeItem (data, RootItem_->Child (section));
-		
+
 		for (int i = folder->ChildCount () - 1; i >= 0; --i)
 		{
 			auto child = folder->Child (i);
 			if (child->Data (ColumnURL) == item.URL_)
 			{
-				beginRemoveRows (index (section, 0), i, i);
+				if (announce)
+					beginRemoveRows (index (section, 0), i, i);
 				folder->RemoveChild (i);
-				endRemoveRows ();
+				if (announce)
+					endRemoveRows ();
 			}
 		}
-		
-		beginInsertRows (index (section, 0), 0, 0);
+
+		if (announce)
+			beginInsertRows (index (section, 0), 0, 0);
 		folder->PrependChild (thisItem);
-		endInsertRows ();
+		if (announce)
+			endInsertRows ();
 
 		QIcon icon = Core::Instance ().GetIcon (QUrl (item.URL_));
 		thisItem->ModifyData (0,
@@ -284,6 +288,8 @@ namespace Poshuku
 
 	void HistoryModel::loadData ()
 	{
+		beginResetModel ();
+
 		while (RootItem_->ChildCount ())
 			RootItem_->RemoveChild (0);
 		int age = XmlSettingsManager::Instance ()->
@@ -299,15 +305,15 @@ namespace Poshuku
 			return;
 
 		for (const auto& item : Items_)
-			Add (item);
+			Add (item, false);
 
-		reset ();
+		endResetModel ();
 	}
 
 	void HistoryModel::handleItemAdded (const HistoryItem& item)
 	{
 		Items_.push_back (item);
-		Add (item);
+		Add (item, true);
 	}
 }
 }
