@@ -538,9 +538,9 @@ namespace AdiumStyles
 		if (templ.contains ("%userIconPath%"))
 		{
 			QString base64;
-			if (in && AvatarsCache_.contains (other))
-				base64 = *AvatarsCache_ [other];
-			else if (OurAvatarsCache_.contains (acc))
+			if (in && AvatarsCache_.contains (other->GetEntryID ()))
+				base64 = *AvatarsCache_ [other->GetEntryID ()];
+			else if (!in && OurAvatarsCache_.contains (acc))
 				base64 = *OurAvatarsCache_ [acc];
 			else
 			{
@@ -565,7 +565,7 @@ namespace AdiumStyles
 
 				base64 = Util::GetAsBase64Src (image);
 				if (in)
-					AvatarsCache_.insert (other, new QString (base64), base64.size ());
+					AvatarsCache_.insert (other->GetEntryID (), new QString (base64), base64.size ());
 				else if (acc && !image.isNull ())
 					OurAvatarsCache_.insert (acc, new QString (base64), base64.size ());
 			}

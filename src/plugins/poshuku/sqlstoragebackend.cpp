@@ -124,7 +124,7 @@ namespace Poshuku
 				"date, "
 				"url "
 				"FROM history "
-				"ORDER BY date DESC");
+				"ORDER BY date");
 
 		HistoryRatedLoader_ = QSqlQuery (DB_);
 		switch (Type_)

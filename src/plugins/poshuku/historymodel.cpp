@@ -98,8 +98,8 @@ namespace Poshuku
 	{
 		QList<QVariant> headers;
 		headers << tr ("Title")
-			<< tr ("Date")
-			<< tr ("URL");
+			<< tr ("URL")
+			<< tr ("Date");
 		QTimer::singleShot (0,
 				this,
 				SLOT (loadData ()));
@@ -236,7 +236,7 @@ namespace Poshuku
 		return result;
 	}
 
-	void HistoryModel::Add (const HistoryItem& item)
+	void HistoryModel::Add (const HistoryItem& item, bool announce)
 	{
 		int section = SectionNumber (item.DateTime_);
 
@@ -261,7 +261,25 @@ namespace Poshuku
 		TreeItem *folder = RootItem_->Child (section);
 
 		TreeItem *thisItem = new TreeItem (data, RootItem_->Child (section));
+
+		for (int i = folder->ChildCount () - 1; i >= 0; --i)
+		{
+			auto child = folder->Child (i);
+			if (child->Data (ColumnURL) == item.URL_)
+			{
+				if (announce)
+					beginRemoveRows (index (section, 0), i, i);
+				folder->RemoveChild (i);
+				if (announce)
+					endRemoveRows ();
+			}
+		}
+
+		if (announce)
+			beginInsertRows (index (section, 0), 0, 0);
 		folder->PrependChild (thisItem);
+		if (announce)
+			endInsertRows ();
 
 		QIcon icon = Core::Instance ().GetIcon (QUrl (item.URL_));
 		thisItem->ModifyData (0,
@@ -270,6 +288,8 @@ namespace Poshuku
 
 	void HistoryModel::loadData ()
 	{
+		beginResetModel ();
+
 		while (RootItem_->ChildCount ())
 			RootItem_->RemoveChild (0);
 		int age = XmlSettingsManager::Instance ()->
@@ -281,23 +301,19 @@ namespace Poshuku
 		Items_.clear ();
 		Core::Instance ().GetStorageBackend ()->LoadHistory (Items_);
 
-		if (!Items_.size ())
+		if (Items_.empty ())
 			return;
 
-		for (std::vector<HistoryItem>::const_reverse_iterator i = Items_.rbegin (),
-				end = Items_.rend (); i != end; ++i)
-			Add (*i);
+		for (const auto& item : Items_)
+			Add (item, false);
 
-		reset ();
+		endResetModel ();
 	}
 
 	void HistoryModel::handleItemAdded (const HistoryItem& item)
 	{
 		Items_.push_back (item);
-		beginInsertRows (index (SectionNumber (item.DateTime_), 0),
-				0, 0);
-		Add (item);
-		endInsertRows ();
+		Add (item, true);
 	}
 }
 }

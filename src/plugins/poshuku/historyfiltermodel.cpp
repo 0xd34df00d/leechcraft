@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "historyfiltermodel.h"
+#include "historymodel.h"
 
 namespace LeechCraft
 {
@@ -31,8 +32,18 @@ namespace Poshuku
 	{
 		if (sourceModel ()->rowCount (sourceModel ()->index (row, 0, parent)))
 			return true;
-		else
-			return QSortFilterProxyModel::filterAcceptsRow (row, parent);
+		
+		const auto& filter = filterRegExp ().pattern ();
+		if (filter.isEmpty ())
+			return true;
+		
+		auto source = sourceModel ();
+		auto contains = [&filter, source, row, parent] (HistoryModel::Columns col)
+		{
+			return source->index (row, col, parent).data ()
+					.toString ().contains (filter, Qt::CaseInsensitive);
+		};
+		return contains (HistoryModel::ColumnTitle) || contains (HistoryModel::ColumnURL);
 	}
 }
 }
