@@ -65,7 +65,7 @@ namespace AdiumStyles
 
 		mutable QHash<QWebFrame*, QObject*> Frame2LastContact_;
 
-		mutable QCache<ICLEntry*, QString> AvatarsCache_;
+		mutable QCache<QString, QString> AvatarsCache_;
 		mutable QCache<IAccount*, QString> OurAvatarsCache_;
 	public:
 		AdiumStyleSource (IProxyObject*, QObject* = 0);
