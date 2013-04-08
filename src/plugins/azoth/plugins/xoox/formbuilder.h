@@ -33,7 +33,7 @@ namespace Xoox
 {
 	class FieldHandler;
 	typedef std::shared_ptr<FieldHandler> FieldHandler_ptr;
-	
+
 	class XMPPBobManager;
 
 	class FormBuilder
