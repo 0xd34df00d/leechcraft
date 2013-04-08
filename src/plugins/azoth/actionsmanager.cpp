@@ -836,17 +836,21 @@ namespace Azoth
 					ihds->CanSendDirectedStatusNow (var))
 				variants << var;
 
-		QString variant = QInputDialog::getItem (0,
-				tr ("Select variant"),
-				tr ("Select variant to send directed status to:"),
-				variants,
-				0,
-				false);
-		if (variant.isEmpty ())
-			return;
+		QString variant;
+		if (variants.size () <= 2)
+		{
+			variant = QInputDialog::getItem (0,
+					tr ("Select variant"),
+					tr ("Select variant to send directed status to:"),
+					variants,
+					0,
+					false);
+			if (variant.isEmpty ())
+				return;
 
-		if (variant == variants.front ())
-			variant.clear ();
+			if (variant == variants.front ())
+				variant.clear ();
+		}
 
 		SetStatusDialog dia ((QString ()));
 		if (dia.exec () != QDialog::Accepted)
