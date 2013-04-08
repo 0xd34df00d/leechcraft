@@ -1022,7 +1022,10 @@ namespace Azoth
 				Core::Instance ().HandleURL (url, GetEntry<ICLEntry> ());
 				return;
 			}
-
+			
+			if (url.scheme () == "file")
+				return;
+			
 			if (url.scheme ().isEmpty () &&
 					url.host ().isEmpty () &&
 					url.path ().startsWith ("www."))
@@ -1030,7 +1033,7 @@ namespace Azoth
 
 			Entity e = Util::MakeEntity (url,
 					QString (),
-					static_cast<TaskParameter> (FromUserInitiated | OnlyHandle | ShouldQuerySource));
+					static_cast<TaskParameter> (FromUserInitiated | OnlyHandle));
 			if (!raise)
 				e.Additional_ ["BackgroundHandle"] = true;
 			Core::Instance ().SendEntity (e);

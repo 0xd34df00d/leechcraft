@@ -76,7 +76,7 @@ namespace Poshuku
 				QDateTime datetime, QObject *browserwidget = 0);
 		QList<QMap<QString, QVariant>> getItemsMap () const;
 	private:
-		void Add (const HistoryItem&);
+		void Add (const HistoryItem&, bool announce);
 	private slots:
 		void loadData ();
 		void handleItemAdded (const HistoryItem&);
