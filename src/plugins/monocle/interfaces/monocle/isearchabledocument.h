@@ -26,12 +26,39 @@ namespace LeechCraft
 {
 namespace Monocle
 {
+	/** @brief Interface for documents supporting searching for text.
+	 * 
+	 * If document represents a format that supports searching for text,
+	 * the document should implement this interface.
+	 * 
+	 * @sa IDocument
+	 */
 	class ISearchableDocument
 	{
 	public:
+		/** @brief Virtual destructor.
+		 */
 		virtual ~ISearchableDocument () {}
 
-		virtual QMap<int, QList<QRectF>> GetTextPositions (const QString&, Qt::CaseSensitivity) = 0;
+		/** @brief Returns the search results for the \em text.
+		 * 
+		 * This function should return the map where keys are indexes of
+		 * pages containing the given \em text and with each value
+		 * corresponding to a key being a list of rectangles containing
+		 * the \em text on the page.
+		 * 
+		 * Rectangles should be in page coordinates, that is, with width
+		 * from 0 to page's width and height from 0 to page's height.
+		 * 
+		 * If a page doesn't contain any occurrences of \em text it
+		 * should better be omitted from the map for performance reasons.
+		 * 
+		 * @param[in] text The text to search for.
+		 * @param[in] cs The case sensitivity of the search.
+		 * @return The map from page indexes to list of rectangles
+		 * containing \em text for those indexes.
+		 */
+		virtual QMap<int, QList<QRectF>> GetTextPositions (const QString& text, Qt::CaseSensitivity cs) = 0;
 	};
 }
 }
