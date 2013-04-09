@@ -74,8 +74,32 @@ namespace NetStoreManager
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flCopyUrl ()));
+		Copy_ = new QAction (Proxy_->GetIcon ("edit-copy"),
+				tr ("Copy..."), this);
+		connect (Copy_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (flCopy ()));
+		Move_ = new QAction (Proxy_->GetIcon ("transform-move"),
+				tr ("Move..."), this);
+		connect (Move_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (flMove ()));
+		Rename_ = new QAction (Proxy_->GetIcon ("edit-rename"),
+				tr ("Rename..."), this);
+		connect (Rename_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (flRename ()));
+		Paste_ = new QAction (Proxy_->GetIcon ("edit-paste"),
+				tr ("Paste"), this);
+		connect (Paste_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (flPaste ()));
 		DeleteFile_ = new QAction (Proxy_->GetIcon ("edit-delete"),
-				tr ("Delete selected"), this);
+				tr ("Delete..."), this);
 		connect (DeleteFile_,
 				SIGNAL (triggered ()),
 				this,
@@ -116,6 +140,12 @@ namespace NetStoreManager
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flDownload ()));
+		Trash_ = new QAction (Proxy_->GetIcon ("user-trash"),
+				tr ("Trash"), this);
+		connect (Trash_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (showTrashContent ()));
 
 		connect (AM_,
 				SIGNAL(accountAdded (QObject*)),
@@ -220,9 +250,9 @@ namespace NetStoreManager
 				SLOT (handleUpload ()));
 
 		ToolBar_->addActions ({ Refresh_, Upload_ });
+		ToolBar_->addSeparator ();
 
-		if (!AccountsBox_->count ())
-			ShowAccountActions (false);
+		ShowAccountActions (AccountsBox_->count ());
 
 		connect (AccountsBox_,
 				SIGNAL (currentIndexChanged (int)),
@@ -317,11 +347,15 @@ namespace NetStoreManager
 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 		const bool trashSupport = sfl->GetListingOps () & ListingOp::TrashSupporting;
 		QStandardItem *trashItem = 0;
+		QStandardItem *trashModifyItem = 0;
 		if (trashSupport)
 		{
 			trashItem = new QStandardItem (Proxy_->GetIcon ("user-trash"), tr ("Trash"));
 			trashItem->setData ("netstoremanager.item_trash", ListingRole::ID);
-			trashItem->setEditable (false);
+			trashItem->setFlags (Qt::ItemIsEnabled);
+
+			trashModifyItem = new QStandardItem;
+			trashModifyItem->setFlags (Qt::ItemIsEnabled);
 		}
 
 		QList<QByteArray> addedChildDirs;
@@ -417,7 +451,7 @@ namespace NetStoreManager
 			trashItem->appendRow (item);
 
 		if (trashSupport)
-			TreeModel_->appendRow (trashItem);
+			TreeModel_->appendRow ({ trashItem, trashModifyItem });
 
 		Ui_.FilesView_->header ()->resizeSection (Columns::Name,
 				XmlSettingsManager::Instance ().Property ("ViewSectionSize",
@@ -564,11 +598,13 @@ namespace NetStoreManager
 		ClearModel ();
 		if (Id2Item_.contains (parentId))
 		{
-			QStandardItem *upLevel = new QStandardItem (Proxy_->GetIcon ("go-up"), "[...]");
-			upLevel->setEditable (false);
+			QStandardItem *upLevel = new QStandardItem (Proxy_->GetIcon ("go-up"), "..");
 			upLevel->setData ("netstoremanager.item_uplevel", ListingRole::ID);
 			upLevel->setData (parentId);
-			TreeModel_->appendRow (upLevel);
+			upLevel->setFlags (Qt::ItemIsEnabled);
+			QStandardItem *upLevelModify = new QStandardItem;
+			upLevelModify->setFlags (Qt::ItemIsEnabled);
+			TreeModel_->appendRow ({ upLevel, upLevelModify });
 		}
 
 		const auto& items = Id2Item_.values ();
@@ -590,12 +626,14 @@ namespace NetStoreManager
 		{
 			ViewModeAction_->setText (tr ("List view mode"));
 			ViewModeAction_->setIcon (Proxy_->GetIcon ("view-list-details"));
+			ToolBar_->addAction (Trash_);
 			ViewMode_ = VMList;
 		}
 		else
 		{
 			ViewModeAction_->setText (tr ("Tree view mode"));
 			ViewModeAction_->setIcon (Proxy_->GetIcon ("view-list-tree"));
+			ToolBar_->removeAction (Trash_);
 			ViewMode_ = VMTree;
 		}
 		ViewModeAction_->setChecked (set);
@@ -640,7 +678,13 @@ namespace NetStoreManager
 				QDir::homePath ());
 		if (filename.isEmpty ())
 			return;
-		emit uploadRequested (acc, filename);
+
+		QByteArray parentId;
+		if (ViewMode_ == VMList)
+			parentId = ProxyModel_->index (0, Columns::Name)
+					.data (Qt::UserRole + 1).toByteArray ();
+
+		emit uploadRequested (acc, filename, parentId);
 	}
 
 	void ManagerTab::handleDoubleClicked (const QModelIndex& idx)
@@ -766,6 +810,43 @@ namespace NetStoreManager
 		sfl->MoveToTrash (ids);
 	}
 
+	void ManagerTab::flCopy ()
+	{
+
+	}
+
+	void ManagerTab::flMove ()
+	{
+
+	}
+
+	void ManagerTab::flRename ()
+	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
+		const QString& oldName = Ui_.FilesView_->currentIndex ().data ().toString ();
+		const auto& id = Ui_.FilesView_->currentIndex ()
+				.data (ListingRole::ID).toByteArray ();
+		QString name = QInputDialog::getText (this,
+				"Rename",
+				tr ("New name:"),
+				QLineEdit::Normal,
+				oldName);
+		if (name.isEmpty () ||
+				name == oldName)
+			return;
+
+		sfl->Rename (id, name);
+	}
+
+	void ManagerTab::flPaste ()
+	{
+
+	}
+
 	void ManagerTab::flDelete ()
 	{
 		CallOnSelection ([] (ISupportFileListings *sfl, const QList<QByteArray>& ids)
@@ -815,14 +896,28 @@ namespace NetStoreManager
 		if (name.isEmpty ())
 			return;
 
-		const QModelIndex& idx = Ui_.FilesView_->currentIndex ();
-		QModelIndex index = idx.sibling (idx.row (), Columns::Name);
-		index = index.data (ListingRole::Directory).toBool () ?
-			index :
-			index.parent ();
-		QByteArray id = index.isValid () ?
-			index.data (ListingRole::ID).toByteArray () :
-			QByteArray ();
+		QByteArray id;
+
+		switch (ViewMode_)
+		{
+		case VMTree:
+		{
+			const QModelIndex& idx = Ui_.FilesView_->currentIndex ();
+			QModelIndex index = idx.sibling (idx.row (), Columns::Name);
+			index = index.data (ListingRole::Directory).toBool () ?
+				index :
+				index.parent ();
+			id = index.isValid () ?
+				index.data (ListingRole::ID).toByteArray () :
+				QByteArray ();
+		}
+		break;
+		case VMList:
+			id = ProxyModel_->index (0, Columns::Name)
+					.data (Qt::UserRole + 1).toByteArray ();
+		break;
+		};
+
 		sfl->CreateDirectory (name, id);
 	}
 
@@ -842,11 +937,25 @@ namespace NetStoreManager
 		if (filename.isEmpty ())
 			return;
 
-		QModelIndex idx = Ui_.FilesView_->currentIndex ();
-		idx = idx.sibling (idx.row (), Columns::Name);
+		QByteArray parentId;
+		switch (ViewMode_)
+		{
+		case VMTree:
+		{
+			QModelIndex idx = Ui_.FilesView_->currentIndex ();
+			idx = idx.sibling (idx.row (), Columns::Name);
+			parentId = idx.data (ListingRole::ID).toByteArray ();
+		}
+		break;
+		case VMList:
+			parentId = ProxyModel_->index (0, Columns::Name)
+					.data (Qt::UserRole + 1).toByteArray ();
+		break;
+		default:
+		break;
+		}
 
-		emit uploadRequested (acc,
-				filename, idx.data (ListingRole::ID).toByteArray ());
+		emit uploadRequested (acc, filename, parentId);
 	}
 
 	void ManagerTab::flDownload ()
@@ -877,6 +986,17 @@ namespace NetStoreManager
 			qobject_cast<ISupportFileListings*> (acc->GetQObject ())->RequestUrl (id);
 	}
 
+	void ManagerTab::showTrashContent ()
+	{
+		ClearModel ();
+		QStandardItem *upLevel = new QStandardItem (Proxy_->GetIcon ("go-up"), "..");
+		upLevel->setData ("netstoremanager.item_uplevel", ListingRole::ID);
+		upLevel->setFlags (Qt::ItemIsEnabled);
+		QStandardItem *upLevelModify = new QStandardItem;
+		upLevelModify->setFlags (Qt::ItemIsEnabled);
+		TreeModel_->appendRow ({ upLevel, upLevelModify });
+	}
+
 	void ManagerTab::handleContextMenuRequested (const QPoint& point)
 	{
 		QList<QModelIndex> idxs = Ui_.FilesView_->selectionModel ()->selectedRows ();
@@ -887,20 +1007,62 @@ namespace NetStoreManager
 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 		const bool dirSupport = sfl->GetListingOps () & ListingOp::DirectorySupport;
 		const bool trashSupport = sfl->GetListingOps () & ListingOp::TrashSupporting;
+
 		QMenu *menu = new QMenu;
+		switch (ViewMode_)
+		{
+		case VMTree:
+			UploadInCurrentDir_->setText (tr ("Upload in this directory"));
+			break;
+		case VMList:
+			UploadInCurrentDir_->setText (tr ("Upload..."));
+			break;
+		default:
+			break;
+		}
 
 		if (!idxs.isEmpty ())
 		{
+			QList<QAction*> editActions = { Copy_, Move_, Rename_, MoveToTrash_, DeleteFile_ };
+
+			menu->addAction (CopyURL_);
+			menu->addSeparator ();
+
+			switch (ViewMode_)
+			{
+			case VMTree:
+			break;
+			case VMList:
+			{
+				menu->addActions ({ UploadInCurrentDir_, Download_ });
+				menu->addSeparator ();
+				menu->addActions (editActions);
+			}
+			break;
+			}
+		}
+		else
+			menu->addAction (UploadInCurrentDir_);
+
+		menu->addSeparator ();
+		menu->addAction (CreateDir_);
+
+/*
 			QList<QModelIndex> trashedIndexes;
 			QList<QModelIndex> untrashedIndexes;
 			bool trashItem = false;
-			for (const auto index : idxs)
+			for (int i = idxs.count () - 1; i >= 0; --i)
+			{
+				const auto& index = idxs.at (i);
 				if (index.data (ListingRole::InTrash).toBool ())
 					trashedIndexes << index;
 				else if (index.data (ListingRole::ID).toByteArray () == "netstoremanager.item_trash")
 					trashItem = true;
+				else if (index.data (ListingRole::ID).toByteArray () == "netstoremanager.item_uplevel")
+					idxs.removeAt (i);
 				else
 					untrashedIndexes << index;
+			}
 
 			const bool onlyUntrashed = (untrashedIndexes.count () == idxs.count ());
 			const bool onlyTrashed = (trashedIndexes.count () == idxs.count ());
@@ -1003,12 +1165,11 @@ namespace NetStoreManager
 			}
 
 			menu->addActions (actionsList);
-		}
-		else
-			menu->addAction (CreateDir_);
+		}*/
 
-		menu->exec (Ui_.FilesView_->viewport ()->
-				mapToGlobal (QPoint (point.x (), point.y ())));
+		if (!menu->isEmpty ())
+			menu->exec (Ui_.FilesView_->viewport ()->
+					mapToGlobal (QPoint (point.x (), point.y ())));
 		menu->deleteLater ();
 	}
 

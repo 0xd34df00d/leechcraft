@@ -81,6 +81,10 @@ namespace NetStoreManager
 		QHash<QByteArray, StorageItem*> Id2Item_;
 
 		QAction *CopyURL_;
+		QAction *Copy_;
+		QAction *Move_;
+		QAction *Rename_;
+		QAction *Paste_;
 		QAction *DeleteFile_;
 		QAction *MoveToTrash_;
 		QAction *UntrashFile_;
@@ -88,6 +92,7 @@ namespace NetStoreManager
 		QAction *CreateDir_;
 		QAction *UploadInCurrentDir_;
 		QAction *Download_;
+		QAction *Trash_;
 		QHash<IStorageAccount*, QHash<QByteArray, bool>> Account2ItemExpandState_;
 	public:
 		ManagerTab (const TabClassInfo&, AccountsManager*, ICoreProxy_ptr, QObject*);
@@ -140,6 +145,10 @@ namespace NetStoreManager
 		void handleItemsAboutToBeRestoredFromTrash (const QList<QByteArray>& ids);
 		void handleItemsAboutToBeTrashed (const QList<QByteArray>& ids);
 
+		void flCopy ();
+		void flMove ();
+		void flRename ();
+		void flPaste ();
 		void flDelete ();
 		void flMoveToTrash ();
 		void flRestoreFromTrash ();
@@ -148,6 +157,8 @@ namespace NetStoreManager
 		void flUploadInCurrentDir ();
 		void flDownload ();
 		void flCopyUrl ();
+
+		void showTrashContent ();
 
 		void handleContextMenuRequested (const QPoint& point);
 		void handleExportMenuTriggered (QAction *action);
