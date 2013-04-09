@@ -67,6 +67,7 @@ if [ -d $(get_full_plugin_path) ]; then
 					edit_cmake
 					generate_qrc
 					insert_icon
+					git_add_files
 				else
 					echo 'Error: no icon file given. Use $2 to specify icon file path.'
 				fi
@@ -77,8 +78,8 @@ if [ -d $(get_full_plugin_path) ]; then
 			echo "Error: plugin directory does not contain CMakeLists.txt."
 		fi
 	else
-		echo "Error: this plugin already have an icon"
+		echo "Error: this plugin already has an icon"
 	fi
 else
-	echo 'Error: no such plugin or directory. Use $1 to provide plugin path. Syntax: <plugin>:<subplugin>:<subplugin>'
+	echo 'Error: no such plugin or directory. Use $1 to provide plugin path. Syntax: plugin[:subplugin[:subplugin[:...]]]'
 fi
