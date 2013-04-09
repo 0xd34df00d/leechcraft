@@ -21,6 +21,7 @@
 #include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/iquarkcomponentprovider.h>
 
 namespace LeechCraft
 {
@@ -32,13 +33,16 @@ namespace HotSensors
 
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IQuarkComponentProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IQuarkComponentProvider)
 
 		std::shared_ptr<SensorsManager> SensorsMgr_;
 		std::unique_ptr<HistoryManager> HistoryMgr_;
 		std::unique_ptr<PlotManager> PlotMgr_;
+
+		QuarkComponent Component_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -47,6 +51,8 @@ namespace HotSensors
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		QuarkComponents_t GetComponents () const;
 	};
 }
 }

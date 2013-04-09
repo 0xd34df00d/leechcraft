@@ -18,6 +18,8 @@
 
 #include "hotsensors.h"
 #include <QIcon>
+#include <QAbstractItemModel>
+#include <util/sys/paths.h>
 #include "sensorsmanager.h"
 #include "historymanager.h"
 #include "plotmanager.h"
@@ -40,6 +42,11 @@ namespace HotSensors
 				SIGNAL (historyChanged (ReadingsHistory_t)),
 				PlotMgr_.get (),
 				SLOT (handleHistoryUpdated (ReadingsHistory_t)));
+
+		const auto& path = Util::GetSysPath (Util::SysPath::QML, "hotsensors", "HSQuark.qml");
+		Component_.Url_ = QUrl::fromLocalFile (path);
+		Component_.DynamicProps_.append ({ "HS_sensorsModel", PlotMgr_->GetModel () });
+		Component_.ImageProviders_.append ({ "HS_sensorsGraph", PlotMgr_->GetImageProvider () });
 	}
 
 	void Plugin::SecondInit ()
@@ -70,8 +77,12 @@ namespace HotSensors
 	{
 		return QIcon ();
 	}
+
+	QuarkComponents_t Plugin::GetComponents () const
+	{
+		return { Component_ };
+	}
 }
 }
 
 LC_EXPORT_PLUGIN (leechcraft_hotsensors, LeechCraft::HotSensors::Plugin);
-
