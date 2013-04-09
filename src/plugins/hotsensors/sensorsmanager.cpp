@@ -55,7 +55,6 @@ namespace HotSensors
 				SIGNAL (timeout ()),
 				this,
 				SLOT (readTemperatures ()));
-		readTemperatures ();
 	}
 
 	SensorsManager::~SensorsManager ()
@@ -107,14 +106,17 @@ namespace HotSensors
 
 	void SensorsManager::readTemperatures ()
 	{
+		Readings_t readings;
 		for (auto feature : Features_)
 		{
 			const auto chipName = feature.SF_.Chip_.ToSensorsChip ();
 
 			double value = 0;
 			sensors_get_value (&chipName, feature.SF_.SF_, &value);
-			qDebug () << feature.Name_ << value;
+
+			readings.append ({ feature.Name_, value });
 		}
+		emit gotReadings (readings);
 	}
 }
 }
