@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/lhtr" >
+    <file>resources/images/lhtr.svg</file>
+  </qresource>
+</RCC>
