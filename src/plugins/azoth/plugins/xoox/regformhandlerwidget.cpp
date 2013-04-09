@@ -82,8 +82,8 @@ namespace Xoox
 		case State::AwaitingUserInput:
 			if (!Widget_)
 				return false;
-			Q_FOREACH (QLineEdit *edit, Widget_->findChildren<QLineEdit*> ())
-				if (edit->text ().isEmpty ())
+			for (QLineEdit *edit : Widget_->findChildren<QLineEdit*> ())
+				if (edit->text ().isEmpty () && edit->property ("Azoth/Xoox/IsRequired").toBool ())
 					return false;
 			return true;
 		}

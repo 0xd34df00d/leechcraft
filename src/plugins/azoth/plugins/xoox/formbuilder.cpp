@@ -59,6 +59,8 @@ namespace Xoox
 			w->setToolTip (field.description ());
 			w->setObjectName (field.key ());
 
+			w->setProperty ("Azoth/Xoox/IsRequired", field.isRequired ());
+
 			Widget2Field_ [w] = &field;
 		}
 

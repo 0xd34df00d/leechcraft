@@ -332,8 +332,19 @@ namespace Azoth
 				continue;
 			}
 
-			const auto& str = QString ("<a href=\"%1\">%1</a>")
-					.arg (link.trimmed ());
+			auto trimmed = link.trimmed ();
+			if (trimmed.startsWith ("www."))
+				trimmed.prepend ("http://");
+
+			auto shortened = trimmed;
+			const auto length = XmlSettingsManager::Instance ()
+					.property ("ShortenURLLength").toInt ();
+			if (shortened.size () > length)
+				shortened = trimmed.left (length / 2) + "..." + trimmed.right (length / 2);
+
+			const auto& str = QString ("<a href=\"%1\" title=\"%1\">%2</a>")
+					.arg (trimmed)
+					.arg (shortened);
 			body.replace (pos, link.length (), str);
 
 			pos += str.length ();
