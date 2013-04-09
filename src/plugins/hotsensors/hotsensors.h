@@ -28,6 +28,7 @@ namespace HotSensors
 {
 	class SensorsManager;
 	class HistoryManager;
+	class PlotManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -35,8 +36,9 @@ namespace HotSensors
 		Q_OBJECT
 		Q_INTERFACES (IInfo)
 
-		std::unique_ptr<SensorsManager> SensorsMgr_;
+		std::shared_ptr<SensorsManager> SensorsMgr_;
 		std::unique_ptr<HistoryManager> HistoryMgr_;
+		std::unique_ptr<PlotManager> PlotMgr_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

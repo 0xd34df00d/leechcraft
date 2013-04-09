@@ -46,6 +46,8 @@ namespace HotSensors
 			if (vec.size () >= 100)
 				vec.pop_front ();
 		}
+
+		emit historyChanged (History_);
 	}
 }
 }

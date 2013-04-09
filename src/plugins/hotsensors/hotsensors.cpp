@@ -20,6 +20,7 @@
 #include <QIcon>
 #include "sensorsmanager.h"
 #include "historymanager.h"
+#include "plotmanager.h"
 
 namespace LeechCraft
 {
@@ -33,6 +34,12 @@ namespace HotSensors
 				SIGNAL (gotReadings (Readings_t)),
 				HistoryMgr_.get (),
 				SLOT (handleReadings (Readings_t)));
+
+		PlotMgr_.reset (new PlotManager (SensorsMgr_, this));
+		connect (HistoryMgr_.get (),
+				SIGNAL (historyChanged (ReadingsHistory_t)),
+				PlotMgr_.get (),
+				SLOT (handleHistoryUpdated (ReadingsHistory_t)));
 	}
 
 	void Plugin::SecondInit ()
