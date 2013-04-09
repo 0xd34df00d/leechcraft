@@ -63,7 +63,8 @@ namespace LHTR
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		static QIcon icon (":/lhtr/resources/images/lhtr.svg");
+		return icon;
 	}
 
 	bool Plugin::SupportsEditor (ContentType type) const
