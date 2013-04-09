@@ -19,6 +19,7 @@
 #include "hotsensors.h"
 #include <QIcon>
 #include "sensorsmanager.h"
+#include "historymanager.h"
 
 namespace LeechCraft
 {
@@ -27,6 +28,11 @@ namespace HotSensors
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		SensorsMgr_.reset (new SensorsManager (this));
+		HistoryMgr_.reset (new HistoryManager (this));
+		connect (SensorsMgr_.get (),
+				SIGNAL (gotReadings (Readings_t)),
+				HistoryMgr_.get (),
+				SLOT (handleReadings (Readings_t)));
 	}
 
 	void Plugin::SecondInit ()

@@ -11,6 +11,7 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	hotsensors.cpp
 	sensorsmanager.cpp
+	historymanager.cpp
 	)
 #CreateTrs("hotsensors" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("hotsensors" "en;ru_RU" "${SRCS}" "${FORMS}" "")

@@ -16,35 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <memory>
-#include <QObject>
-#include <interfaces/iinfo.h>
+#include "historymanager.h"
 
 namespace LeechCraft
 {
 namespace HotSensors
 {
-	class SensorsManager;
-	class HistoryManager;
-
-	class Plugin : public QObject
-				 , public IInfo
+	HistoryManager::HistoryManager (QObject *parent)
+	: QObject (parent)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo)
+	}
 
-		std::unique_ptr<SensorsManager> SensorsMgr_;
-		std::unique_ptr<HistoryManager> HistoryMgr_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-	};
+	void HistoryManager::handleReadings (const Readings_t& readings)
+	{
+		for (auto i = History_.begin (); i != History_.end (); )
+		{
+			const auto pos = std::find_if (readings.begin (), readings.end (),
+					[i] (const Reading& r) { return r.Name_ == i.key (); });
+			if (pos == readings.end ())
+				i = History_.erase (i);
+			else
+				++i;
+		}
+
+		for (const auto& r : readings)
+		{
+			auto& vec = History_ [r.Name_];
+			vec << r.Value_;
+			if (vec.size () >= 100)
+				vec.pop_front ();
+		}
+	}
 }
 }

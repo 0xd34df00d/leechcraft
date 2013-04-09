@@ -18,33 +18,23 @@
 
 #pragma once
 
-#include <memory>
 #include <QObject>
-#include <interfaces/iinfo.h>
+#include <QHash>
+#include "structures.h"
 
 namespace LeechCraft
 {
 namespace HotSensors
 {
-	class SensorsManager;
-	class HistoryManager;
-
-	class Plugin : public QObject
-				 , public IInfo
+	class HistoryManager : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
 
-		std::unique_ptr<SensorsManager> SensorsMgr_;
-		std::unique_ptr<HistoryManager> HistoryMgr_;
+		QHash<QString, QList<double>> History_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		HistoryManager (QObject* = 0);
+	public slots:
+		void handleReadings (const Readings_t&);
 	};
 }
 }
