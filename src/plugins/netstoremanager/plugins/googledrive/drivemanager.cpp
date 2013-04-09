@@ -533,9 +533,7 @@ namespace GoogleDrive
 			static QMap<QPair<QString, QString>, QString> mimeMap;
 			mimeMap.insert ({ "application/vnd.google-apps.audio", "" }, "audio-x-generic");
 			mimeMap.insert ({ "application/vnd.google-apps.document", "" }, "application-vnd.oasis.opendocument.spreadsheet");
-			mimeMap.insert ({ "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "" }, "application-msword");
 			mimeMap.insert ({ "application/vnd.google-apps.document", "doc" }, "application-msword");
-			mimeMap.insert ({ "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "docx" }, "application-msword");
 			mimeMap.insert ({ "application/vnd.google-apps.document", "docx" }, "application-msword");
 			mimeMap.insert ({ "application/vnd.google-apps.document", "odt" }, "application-vnd.oasis.opendocument.text");
 			mimeMap.insert ({ "application/vnd.google-apps.drawing", "" }, "application-vnd.oasis.opendocument.image");
@@ -568,6 +566,7 @@ namespace GoogleDrive
 			mimeMap.insert ({ "application/rar", "" }, "application-x-archive");
 			mimeMap.insert ({ "application/rar", "rar" }, "application-x-archive");
 			mimeMap.insert ({ "image/png", "png" }, "image-x-generic");
+			mimeMap.insert ({ "image/jpeg", "jpeg" }, "image-x-generic");
 
 			QString res;
 			if (mimeMap.contains ({ mime, fileExt }))
@@ -618,7 +617,7 @@ namespace GoogleDrive
 				mime = GetLocalMimeTypeFromGoogleMimeType (mime, driveItem.FileExtension_);
 			driveItem.Mime_ = mime;
 
-			driveItem.DownloadUrl_ = QUrl (map ["downloadUrl"].toString ());
+			driveItem.DownloadUrl_ = QUrl (map ["webContentLink"].toString ());
 
 			const QVariantMap& labels = map ["labels"].toMap ();
 			driveItem.Labels_ = DriveItem::ILNone;

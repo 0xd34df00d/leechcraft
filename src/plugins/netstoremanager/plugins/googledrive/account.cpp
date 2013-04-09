@@ -374,7 +374,7 @@ namespace GoogleDrive
 
 	void Account::handleSharedFileId (const QString& id)
 	{
-		emit gotFileUrl (QUrl (QString ("https://drive.google.com/uc?export=&confirm=no_antivirus&id=%1")
+		emit gotFileUrl (QUrl (QString ("https://docs.google.com/uc?id=%1&export=download")
 				.arg (id)), id.toUtf8 ());
 	}
 
