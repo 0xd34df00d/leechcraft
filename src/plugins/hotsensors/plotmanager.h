@@ -18,22 +18,25 @@
 
 #pragma once
 
-#include <QString>
-#include <QList>
-#include <QHash>
+#include <memory>
+#include <QObject>
+#include "structures.h"
 
 namespace LeechCraft
 {
 namespace HotSensors
 {
-	struct Reading
+	class SensorsManager;
+
+	class PlotManager : public QObject
 	{
-		QString Name_;
-		double Value_;
+		Q_OBJECT
+
+		std::weak_ptr<SensorsManager> SensorsMgr_;
+	public:
+		PlotManager (std::weak_ptr<SensorsManager>, QObject* = 0);
+	public slots:
+		void handleHistoryUpdated (const ReadingsHistory_t&);
 	};
-
-	typedef QList<Reading> Readings_t;
-
-	typedef QHash<QString, QList<double>> ReadingsHistory_t;
 }
 }
