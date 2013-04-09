@@ -22,19 +22,31 @@
 #include <QObject>
 #include "structures.h"
 
+class QDeclarativeImageProvider;
+class QAbstractItemModel;
+class QStandardItemModel;
+
 namespace LeechCraft
 {
 namespace HotSensors
 {
 	class SensorsManager;
+	class SensorsGraphProvider;
 
 	class PlotManager : public QObject
 	{
 		Q_OBJECT
 
 		std::weak_ptr<SensorsManager> SensorsMgr_;
+		QStandardItemModel *Model_;
+		SensorsGraphProvider *GraphProvider_;
+
+		int UpdateCounter_;
 	public:
 		PlotManager (std::weak_ptr<SensorsManager>, QObject* = 0);
+
+		QAbstractItemModel* GetModel () const;
+		QDeclarativeImageProvider* GetImageProvider () const;
 	public slots:
 		void handleHistoryUpdated (const ReadingsHistory_t&);
 	};
