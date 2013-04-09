@@ -26,6 +26,7 @@ namespace HotSensors
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		SensorsMgr_.reset (new SensorsManager (this));
 	}
 
 	void Plugin::SecondInit ()
@@ -39,6 +40,7 @@ namespace HotSensors
 
 	void Plugin::Release ()
 	{
+		SensorsMgr_.reset ();
 	}
 
 	QString Plugin::GetName () const

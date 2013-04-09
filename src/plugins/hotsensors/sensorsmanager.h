@@ -19,16 +19,51 @@
 #pragma once
 
 #include <QObject>
+#include <sensors/sensors.h>
 
 namespace LeechCraft
 {
 namespace HotSensors
 {
+	struct StoredChipName
+	{
+		QByteArray Prefix_;
+		sensors_bus_id Bus_;
+		int Addr_;
+		QByteArray Path_;
+
+		StoredChipName ();
+		StoredChipName (const sensors_chip_name*);
+
+		sensors_chip_name ToSensorsChip ();
+	};
+
+	struct StoredSubfeature
+	{
+		StoredChipName Chip_;
+		int SF_;
+	};
+
+	struct StoredTemp
+	{
+		double Max_;
+		double Crit_;
+		StoredSubfeature SF_;
+		QString Name_;
+	};
+
 	class SensorsManager : public QObject
 	{
 		Q_OBJECT
+
+		QList<StoredTemp> Features_;
 	public:
 		SensorsManager (QObject* = 0);
+		~SensorsManager ();
+	private:
+		void EnumerateSensors ();
+	private slots:
+		void readTemperatures ();
 	};
 }
 }

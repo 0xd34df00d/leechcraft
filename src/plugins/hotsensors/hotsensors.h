@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
 
@@ -32,6 +33,8 @@ namespace HotSensors
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo)
+
+		std::unique_ptr<SensorsManager> SensorsMgr_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
