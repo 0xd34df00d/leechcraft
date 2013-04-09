@@ -180,6 +180,7 @@ OPTION (ENABLE_QROSP "Build Qrosp, the scripting support plugin" OFF)
 # New
 OPTION (ENABLE_BLACKDASH "Build BlackDash, the dashboard plugin for LeechCraft" OFF)
 OPTION (ENABLE_CHOROID "Build Choroid, image viewer" OFF)
+OPTION (ENABLE_HOTSENSORS "Build HotSensors, temperature sensors quark" ${WITH_PLUGINS})
 OPTION (ENABLE_HOTSTREAMS "Build HotStreams, radio streams provider module" ${WITH_PLUGINS})
 OPTION (ENABLE_LACKMAN "Build LackMan, the package manager for LeechCraft" ${WITH_PLUGINS})
 OPTION (ENABLE_LIZNOO "Build Liznoo, our nice power manager" ${WITH_PLUGINS})
@@ -361,6 +362,10 @@ ENDIF (ENABLE_QROSP)
 IF (ENABLE_POPISHU)
 	ADD_SUBDIRECTORY (plugins/popishu)
 ENDIF (ENABLE_POPISHU)
+
+IF (ENABLE_HOTSENSORS)
+	ADD_SUBDIRECTORY (plugins/hotsensors)
+ENDIF (ENABLE_HOTSENSORS)
 
 IF (ENABLE_HOTSTREAMS)
 	ADD_SUBDIRECTORY (plugins/hotstreams)
