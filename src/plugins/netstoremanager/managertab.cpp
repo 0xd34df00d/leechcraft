@@ -515,12 +515,18 @@ namespace NetStoreManager
 			if (!item)
 				continue;
 
-			const auto& index = TreeModel_->indexFromItem (item);
-
+			const bool isDir = item->data (ListingRole::Directory).toBool ();
 			const auto& id = item->data (ListingRole::ID).toByteArray ();
-			Account2ItemExpandState_ [currentAcc] [id] = Ui_.FilesView_->isExpanded (index);
+			if (!isDir &&
+					id != "netstoremanager.item_trash")
+				continue;
 
-			if (item->hasChildren ())
+			const auto& index = TreeModel_->indexFromItem (item);
+			const bool exp = Ui_.FilesView_->isExpanded (ProxyModel_->mapFromSource (index));
+			Account2ItemExpandState_ [currentAcc] [id] = exp;
+
+			if (exp &&
+					item->hasChildren ())
 				SaveExpandState (index);
 		}
 	}
@@ -539,15 +545,15 @@ namespace NetStoreManager
 		for (int i = 0; i < TreeModel_->rowCount (parent); ++i)
 		{
 			QStandardItem *item = !parent.isValid () ?
-			TreeModel_->item (i) :
-			TreeModel_->itemFromIndex (parent)->child (i);
+				TreeModel_->item (i) :
+				TreeModel_->itemFromIndex (parent)->child (i);
 			const auto& id = item->data (ListingRole::ID).toByteArray ();
 
 			if (item->hasChildren () &&
 					Account2ItemExpandState_ [GetCurrentAccount ()].value (id))
 			{
 				const auto& index = TreeModel_->indexFromItem (item);
-				Ui_.FilesView_->expand (index);
+				Ui_.FilesView_->expand (ProxyModel_->mapFromSource (index));
 				ExpandModelItems (index);
 			}
 		}
@@ -607,6 +613,7 @@ namespace NetStoreManager
 		switch (ViewMode_)
 		{
 			case VMTree:
+				SaveExpandState ();
 				requestFileListings (acc);
 				break;
 			case VMList:
@@ -706,6 +713,8 @@ namespace NetStoreManager
 
 		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("NetStoreManager",
 				tr ("File list updated"), PInfo_));
+
+		RestoreExpandState ();
 	}
 
 	void ManagerTab::handleFilesViewSectionResized (int index,
