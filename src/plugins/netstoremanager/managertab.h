@@ -70,6 +70,7 @@ namespace NetStoreManager
 			VMTree = 0,
 			VMList
 		};
+
 		ViewMode ViewMode_;
 		QAction *ViewModeAction_;
 
@@ -79,6 +80,13 @@ namespace NetStoreManager
 		QAction *Upload_;
 
 		QHash<QByteArray, StorageItem*> Id2Item_;
+
+		enum class TransferOperation
+		{
+			Copy,
+			Move
+		};
+		QPair<TransferOperation, QList<QByteArray>> TransferedIDs_;
 
 		QAction *CopyURL_;
 		QAction *Copy_;
@@ -106,6 +114,7 @@ namespace NetStoreManager
 		void ShowAccountActions (bool show);
 		IStorageAccount* GetCurrentAccount () const;
 
+
 		void ClearModel ();
 		void FillModel (IStorageAccount *acc);
 		void FillTreeModel (IStorageAccount *acc);
@@ -115,6 +124,10 @@ namespace NetStoreManager
 		void requestFileChanges (IStorageAccount *acc);
 
 		QList<QByteArray> GetTrashedFiles () const;
+		QList<QByteArray> GetSelectedIDs () const;
+		QByteArray GetParentIDInListViewMode () const;
+		QByteArray GetParentIDInTreeViewMode () const;
+		QByteArray GetCurrentID () const;
 
 		void CallOnSelection (std::function<void (ISupportFileListings *sfl, const QList<QByteArray>& ids)>);
 

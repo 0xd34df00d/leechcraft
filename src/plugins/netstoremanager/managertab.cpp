@@ -66,8 +66,6 @@ namespace NetStoreManager
 		   SLOT (handleFilesViewSectionResized (int, int, int)));
 		Ui_.FilesView_->setContextMenuPolicy (Qt::CustomContextMenu);
 
-		FillToolbar ();
-
 		CopyURL_ = new QAction (Proxy_->GetIcon ("edit-copy"),
 				tr ("Copy URL..."), this);
 		connect (CopyURL_,
@@ -146,6 +144,8 @@ namespace NetStoreManager
 				SIGNAL (triggered ()),
 				this,
 				SLOT (showTrashContent ()));
+
+		FillToolbar ();
 
 		connect (AM_,
 				SIGNAL(accountAdded (QObject*)),
@@ -515,21 +515,48 @@ namespace NetStoreManager
 		return result;
 	}
 
+	QList<QByteArray> ManagerTab::GetSelectedIDs () const
+	{
+		QList<QByteArray> ids;
+		Q_FOREACH (const auto& idx, Ui_.FilesView_->selectionModel ()->selectedRows ())
+			ids << idx.data (ListingRole::ID).toByteArray ();
+
+		return ids;
+	}
+
+	QByteArray ManagerTab::GetParentIDInListViewMode () const
+	{
+		return ProxyModel_->index (0, Columns::Name).data (Qt::UserRole + 1)
+				.toByteArray ();
+	}
+
+	QByteArray ManagerTab::GetParentIDInTreeViewMode () const
+	{
+		const QModelIndex& idx = Ui_.FilesView_->currentIndex ();
+		QModelIndex index = idx.sibling (idx.row (), Columns::Name);
+		index = index.data (ListingRole::Directory).toBool () ?
+			index :
+			index.parent ();
+		return index.isValid () ?
+			index.data (ListingRole::ID).toByteArray () :
+			QByteArray ();
+	}
+
+	QByteArray ManagerTab::GetCurrentID () const
+	{
+		QModelIndex idx = Ui_.FilesView_->currentIndex ();
+		idx = idx.sibling (idx.row (), Columns::Name);
+		return idx.data (ListingRole::ID).toByteArray ();
+	}
+
 	void ManagerTab::CallOnSelection (std::function<void (ISupportFileListings*, const QList<QByteArray>&)> func)
 	{
 		IStorageAccount *acc = GetCurrentAccount ();
 		if (!acc)
 			return;
 
-		QList<QByteArray> ids;
-		Q_FOREACH (const auto& idx, Ui_.FilesView_->selectionModel ()->selectedRows ())
-			ids << idx.data (ListingRole::ID).toByteArray ();
-
-		if (ids.isEmpty ())
-			return;
-
 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
-		func (sfl, ids);
+		func (sfl, GetSelectedIDs ());
 	}
 
 	void ManagerTab::SaveExpandState (const QModelIndex& parent)
@@ -681,8 +708,7 @@ namespace NetStoreManager
 
 		QByteArray parentId;
 		if (ViewMode_ == VMList)
-			parentId = ProxyModel_->index (0, Columns::Name)
-					.data (Qt::UserRole + 1).toByteArray ();
+			parentId = GetParentIDInListViewMode ();
 
 		emit uploadRequested (acc, filename, parentId);
 	}
@@ -812,12 +838,12 @@ namespace NetStoreManager
 
 	void ManagerTab::flCopy ()
 	{
-
+		TransferedIDs_ = { TransferOperation::Copy, GetSelectedIDs () };
 	}
 
 	void ManagerTab::flMove ()
 	{
-
+		TransferedIDs_ = { TransferOperation::Move, GetSelectedIDs () };
 	}
 
 	void ManagerTab::flRename ()
@@ -828,8 +854,7 @@ namespace NetStoreManager
 
 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 		const QString& oldName = Ui_.FilesView_->currentIndex ().data ().toString ();
-		const auto& id = Ui_.FilesView_->currentIndex ()
-				.data (ListingRole::ID).toByteArray ();
+		const auto& id = GetCurrentID ();
 		QString name = QInputDialog::getText (this,
 				"Rename",
 				tr ("New name:"),
@@ -844,7 +869,29 @@ namespace NetStoreManager
 
 	void ManagerTab::flPaste ()
 	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
 
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
+
+		switch (ViewMode_)
+		{
+		case VMTree:
+		break;
+		case VMList:
+			switch (TransferedIDs_.first)
+			{
+			case TransferOperation::Copy:
+				sfl->Copy (TransferedIDs_.second, GetParentIDInListViewMode ());
+			break;
+			case TransferOperation::Move:
+				sfl->Move (TransferedIDs_.second, GetParentIDInListViewMode ());
+			break;
+			}
+			TransferedIDs_.second.clear ();
+		break;
+		}
 	}
 
 	void ManagerTab::flDelete ()
@@ -901,20 +948,10 @@ namespace NetStoreManager
 		switch (ViewMode_)
 		{
 		case VMTree:
-		{
-			const QModelIndex& idx = Ui_.FilesView_->currentIndex ();
-			QModelIndex index = idx.sibling (idx.row (), Columns::Name);
-			index = index.data (ListingRole::Directory).toBool () ?
-				index :
-				index.parent ();
-			id = index.isValid () ?
-				index.data (ListingRole::ID).toByteArray () :
-				QByteArray ();
-		}
+			id = GetParentIDInTreeViewMode ();
 		break;
 		case VMList:
-			id = ProxyModel_->index (0, Columns::Name)
-					.data (Qt::UserRole + 1).toByteArray ();
+			id = GetParentIDInListViewMode ();
 		break;
 		};
 
@@ -941,15 +978,10 @@ namespace NetStoreManager
 		switch (ViewMode_)
 		{
 		case VMTree:
-		{
-			QModelIndex idx = Ui_.FilesView_->currentIndex ();
-			idx = idx.sibling (idx.row (), Columns::Name);
-			parentId = idx.data (ListingRole::ID).toByteArray ();
-		}
+			parentId = GetParentIDInTreeViewMode ();
 		break;
 		case VMList:
-			parentId = ProxyModel_->index (0, Columns::Name)
-					.data (Qt::UserRole + 1).toByteArray ();
+			parentId = GetParentIDInListViewMode ();
 		break;
 		default:
 		break;
@@ -964,10 +996,7 @@ namespace NetStoreManager
 		if (!acc)
 			return;
 
-		QModelIndex idx = Ui_.FilesView_->currentIndex ();
-		idx = idx.sibling (idx.row (), Columns::Name);
-
-		acc->Download (idx.data (ListingRole::ID).toByteArray (), "");
+		acc->Download (GetCurrentID (), "");
 	}
 
 	void ManagerTab::flCopyUrl ()
@@ -976,9 +1005,7 @@ namespace NetStoreManager
 		if (!acc)
 			return;
 
-		const QModelIndex& idx = Ui_.FilesView_->currentIndex ();
-		QModelIndex index = idx.sibling (idx.row (), Columns::Name);
-		const QByteArray id = index.data (ListingRole::ID).toByteArray ();
+		const QByteArray id = GetCurrentID ();
 		if (!Id2Item_ [id]->Url_.isEmpty () &&
 				Id2Item_ [id]->Url_.isValid ())
 			handleGotFileUrl (Id2Item_ [id]->Url_);
@@ -1043,6 +1070,12 @@ namespace NetStoreManager
 		}
 		else
 			menu->addAction (UploadInCurrentDir_);
+
+		if (!TransferedIDs_.second.isEmpty ())
+		{
+			auto sep = menu->insertSeparator (menu->actions ().at (0));
+			menu->insertAction (sep, Paste_);
+		}
 
 		menu->addSeparator ();
 		menu->addAction (CreateDir_);
