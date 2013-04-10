@@ -165,10 +165,6 @@ namespace HotSensors
 			items << item;
 
 			svg [name] = svgContents.data ();
-
-			QFile file (QDir::homePath () + "/shitfuck");
-			file.open (QIODevice::WriteOnly);
-			file.write (svgContents.data ());
 		}
 
 		++UpdateCounter_;
