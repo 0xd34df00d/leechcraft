@@ -43,7 +43,9 @@ namespace HotSensors
 			enum Role
 			{
 				IconURL = Qt::UserRole + 1,
-				LastTemp
+				LastTemp,
+				SensorName,
+				SVG
 			};
 
 			SensorsGraphModel (QObject *parent)
@@ -52,6 +54,8 @@ namespace HotSensors
 				QHash<int, QByteArray> roleNames;
 				roleNames [IconURL] = "iconURL";
 				roleNames [LastTemp] = "lastTemp";
+				roleNames [SensorName] = "sensorName";
+				roleNames [SVG] = "rawSvg";
 				setRoleNames (roleNames);
 			}
 		};
@@ -107,10 +111,24 @@ namespace HotSensors
 
 	void PlotManager::handleHistoryUpdated (const ReadingsHistory_t& history)
 	{
-		Model_->clear ();
+		QHash<QString, QStandardItem*> existing;
+		for (int i = 0; i < Model_->rowCount (); ++i)
+		{
+			auto item = Model_->item (i);
+			existing [item->data (SensorsGraphModel::SensorName).toString ()] = item;
+		}
 
 		QList<QStandardItem*> items;
 		QHash<QString, QByteArray> svg;
+
+		struct PendingSetInfo
+		{
+			QStandardItem *Item_;
+			const QString Temp_;
+			const QUrl URL_;
+			const QString Name_;
+			const QByteArray SVG_;
+		};
 		for (auto i = history.begin (); i != history.end (); ++i)
 		{
 			const auto& name = i.key ();
@@ -120,9 +138,11 @@ namespace HotSensors
 			plot.setAxisAutoScale (QwtPlot::yLeft, false);
 			plot.enableAxis (QwtPlot::yLeft, false);
 			plot.enableAxis (QwtPlot::xBottom, false);
-			plot.resize (128, 128);
+			plot.resize (512, 512);
 			plot.setAxisScale (QwtPlot::xBottom, 0, i->size ());
 			plot.setAxisScale (QwtPlot::yLeft, 0, 100);
+			plot.setAutoFillBackground (false);
+			plot.setCanvasBackground (Qt::transparent);
 
 			QwtPlotCurve curve;
 
@@ -156,21 +176,30 @@ namespace HotSensors
 
 			renderer.renderTo (&plot, gen);
 
-			auto item = new QStandardItem;
+			const bool isKnownSensor = existing.contains (name);
+			auto item = isKnownSensor ? existing.take (name) : new QStandardItem;
 			const QUrl url ("image://HS_sensorsGraph/" + name + "/" + QString::number (UpdateCounter_));
 
 			const auto lastTemp = i->isEmpty () ? 0 : static_cast<int> (i->last ());
 			item->setData (QString::fromUtf8 ("%1°C").arg (lastTemp), SensorsGraphModel::LastTemp);
 			item->setData (url, SensorsGraphModel::IconURL);
-			items << item;
+			item->setData (name, SensorsGraphModel::SensorName);
+			item->setData (svgContents.data (), SensorsGraphModel::SVG);
+			if (!isKnownSensor)
+				items << item;
 
 			svg [name] = svgContents.data ();
 		}
 
+		for (auto item : existing)
+			Model_->removeRow (item->row ());
+
 		++UpdateCounter_;
 
 		GraphProvider_->SetHistory (svg);
-		Model_->invisibleRootItem ()->appendRows (items);
+
+		if (!items.isEmpty ())
+			Model_->invisibleRootItem ()->appendRows (items);
 	}
 }
 }

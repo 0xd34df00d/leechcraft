@@ -13,6 +13,10 @@ Rectangle {
 
     color: "transparent"
 
+    property variant tooltip
+
+    Common { id: commonJS }
+
     ListView {
         id: sensorsView
         anchors.fill: parent
@@ -22,21 +26,52 @@ Rectangle {
 
         orientation: viewOrient == "vertical" ? ListView.Vertical : ListView.Horizontal
 
-        delegate: Image {
+        delegate: Item {
+            id: delegateItem
+
             height: rootRect.itemSize
             width: rootRect.itemSize
 
-            sourceSize.width: width
-            sourceSize.height: height
+            Image {
+                id: sensorImage
 
-            source: iconURL
-            asynchronous: true
+                height: rootRect.itemSize
+                width: rootRect.itemSize
+
+                sourceSize.width: width
+                sourceSize.height: height
+
+                source: "data:," + rawSvg
+            }
 
             Text {
                 anchors.centerIn: parent
                 text: lastTemp
                 font.pixelSize: parent.height / 3
             }
+
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+                z: 2
+
+                onEntered: {
+                    var global = commonJS.getTooltipPos(delegateItem);
+                    var params = {
+                        "x": global.x,
+                        "y": global.y,
+                        "existing": "ignore",
+                        "svg": rawSvg,
+                        "colorProxy": colorProxy,
+                        "sensorName": sensorName
+                    };
+                    tooltip = quarkProxy.openWindow(sourceURL, "Tooltip.qml", params);
+                    tooltip.svg = (function() { return rawSvg; });
+                }
+                onExited: if (tooltip != null) { tooltip.closeRequested(); tooltip = null; }
+            }
+
+            ListView.onRemove: if (tooltip != null) { tooltip.closeRequested(); tooltip = null; }
         }
     }
 }
