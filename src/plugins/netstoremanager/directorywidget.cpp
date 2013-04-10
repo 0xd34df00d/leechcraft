@@ -29,11 +29,6 @@ namespace NetStoreManager
 	: QWidget (parent)
 	{
 		Ui_.setupUi (this);
-
-		connect (Ui_.DirPath_,
-				SIGNAL (editingFinished ()),
-				this,
-				SLOT (handleEditingFinished ()));
 	}
 
 	void DirectoryWidget::SetPath (const QString& path, bool byHand)
@@ -63,35 +58,5 @@ namespace NetStoreManager
 
 		SetPath (path, true);
 	}
-
-	void DirectoryWidget::handleEditingFinished ()
-	{
-		const QString& path = Ui_.DirPath_->text ();
-		if (!QDir (path).exists ())
-		{
-			const int res = QMessageBox::question (this,
-					"LeechCraft",
-					tr ("This directory doesn't exist. Do you want to create it?"),
-					QMessageBox::Ok | QMessageBox::Cancel);
-			if (res == QMessageBox::Cancel)
-			{
-				SetPath ("");
-				return;
-			}
-			else
-			{
-				if (!QDir ().mkpath (path))
-				{
-					QMessageBox::warning (this,
-							"LeechCraft",
-							tr ("Unable to create directory"));
-					SetPath ("");
-					return;
-				}
-			}
-		}
-		SetPath (path, true);
-	}
-
 }
 }
