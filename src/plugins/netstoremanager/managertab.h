@@ -25,6 +25,7 @@
 #include <interfaces/ihavetabs.h>
 #include "ui_managertab.h"
 
+class QToolButton;
 class QComboBox;
 class QStandardItem;
 class QAction;
@@ -100,7 +101,10 @@ namespace NetStoreManager
 		QAction *CreateDir_;
 		QAction *UploadInCurrentDir_;
 		QAction *Download_;
-		QAction *Trash_;
+		QAction *OpenTrash_;
+		QToolButton *Trash_;
+		QAction *TrashAction_;
+
 		QHash<IStorageAccount*, QHash<QByteArray, bool>> Account2ItemExpandState_;
 	public:
 		ManagerTab (const TabClassInfo&, AccountsManager*, ICoreProxy_ptr, QObject*);

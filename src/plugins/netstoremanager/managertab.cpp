@@ -24,6 +24,7 @@
 #include <QMenu>
 #include <QInputDialog>
 #include <QComboBox>
+#include <QToolButton>
 #include <QtDebug>
 #include <interfaces/core/ientitymanager.h>
 #include <util/util.h>
@@ -52,6 +53,7 @@ namespace NetStoreManager
 			.Property ("ViewMode", VMTree).toInt ()))
 	, ViewModeAction_ (0)
 	, AccountsBox_ (0)
+	, TrashAction_ (0)
 	{
 		Ui_.setupUi (this);
 
@@ -138,13 +140,20 @@ namespace NetStoreManager
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flDownload ()));
-		Trash_ = new QAction (Proxy_->GetIcon ("user-trash"),
-				tr ("Trash"), this);
-		Trash_->setCheckable (true);
-		connect (Trash_,
+
+		OpenTrash_ = new QAction (Proxy_->GetIcon ("user-trash"),
+				tr ("Open trash"), this);
+		OpenTrash_->setCheckable (true);
+		connect (OpenTrash_,
 				SIGNAL (triggered (bool)),
 				this,
 				SLOT (showTrashContent (bool)));
+
+		Trash_ = new QToolButton (this);
+		Trash_->setIcon (Proxy_->GetIcon ("user-trash"));
+		Trash_->setText (tr ("Trash"));
+		Trash_->setPopupMode (QToolButton::InstantPopup);
+		Trash_->addActions ({ OpenTrash_, EmptyTrash_ });
 
 		FillToolbar ();
 
@@ -670,14 +679,14 @@ namespace NetStoreManager
 		{
 			ViewModeAction_->setText (tr ("List view mode"));
 			ViewModeAction_->setIcon (Proxy_->GetIcon ("view-list-details"));
-			ToolBar_->addAction (Trash_);
+			TrashAction_ = ToolBar_->addWidget (Trash_);
 			ViewMode_ = VMList;
 		}
 		else
 		{
 			ViewModeAction_->setText (tr ("Tree view mode"));
 			ViewModeAction_->setIcon (Proxy_->GetIcon ("view-list-tree"));
-			ToolBar_->removeAction (Trash_);
+			ToolBar_->removeAction (TrashAction_);
 			ViewMode_ = VMTree;
 		}
 		ViewModeAction_->setChecked (set);
@@ -1074,7 +1083,7 @@ namespace NetStoreManager
 
 		if (!idxs.isEmpty ())
 		{
-			QList<QAction*> editActions = { Copy_, Move_, Rename_, MoveToTrash_, DeleteFile_ };
+			QList<QAction*> editActions = { Copy_, Move_, Rename_, DeleteFile_ };
 
 			menu->addAction (CopyURL_);
 			menu->addSeparator ();
@@ -1085,9 +1094,18 @@ namespace NetStoreManager
 			break;
 			case VMList:
 			{
-				menu->addActions ({ UploadInCurrentDir_, Download_, });
+				menu->addAction (Download_);
 				menu->addSeparator ();
-				menu->addActions (editActions);
+				QList<QAction*> actions;
+				if (idxs.at (0).data (ListingRole::InTrash).toBool ())
+					actions << UntrashFile_;
+				else
+				{
+					menu->insertAction (Download_, UploadInCurrentDir_);
+					actions << editActions << MoveToTrash_;
+				}
+				actions << DeleteFile_;
+				menu->addActions (actions);
 			}
 			break;
 			}
