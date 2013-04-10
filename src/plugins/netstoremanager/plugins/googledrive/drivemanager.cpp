@@ -459,7 +459,7 @@ namespace GoogleDrive
 			Core::Instance ().SendEntity (e);
 	}
 
-	void DriveManager::FindSyncableItems (const QStringList& paths,
+	void DriveManager::FindSyncableItems (const QStringList&,
 			const QString& baseDir, const QList<DriveItem>& items)
 	{
 		const QString& baseName = QFileInfo (baseDir).fileName ();
