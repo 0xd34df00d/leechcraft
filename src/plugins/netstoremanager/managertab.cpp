@@ -889,9 +889,9 @@ namespace NetStoreManager
 				sfl->Move (TransferedIDs_.second, GetParentIDInListViewMode ());
 			break;
 			}
-			TransferedIDs_.second.clear ();
 		break;
 		}
+		TransferedIDs_.second.clear ();
 	}
 
 	void ManagerTab::flDelete ()
@@ -1061,11 +1061,34 @@ namespace NetStoreManager
 			break;
 			case VMList:
 			{
-				menu->addActions ({ UploadInCurrentDir_, Download_ });
+				menu->addActions ({ UploadInCurrentDir_, Download_, });
 				menu->addSeparator ();
 				menu->addActions (editActions);
 			}
 			break;
+			}
+
+			const auto& id = GetCurrentID ();
+			auto item = Id2Item_.contains (id) ? Id2Item_ [id] : 0;
+			if (item &&
+					!item->ExportLinks.isEmpty ())
+			{
+				QMenu *exportMenu = new QMenu (tr ("Export to..."));
+				auto exportAct = menu->insertMenu (Download_, exportMenu);
+				exportAct->setIcon (Proxy_->GetIcon ("document-export"));
+				for (const auto& key : item->ExportLinks.keys ())
+				{
+					const auto& pair = item->ExportLinks [key];
+					QAction *action = new QAction (Proxy_->GetIcon (pair.first),
+							pair.second, exportMenu);
+					action->setProperty ("url", key);
+					exportMenu->addAction (action);
+					connect (exportMenu,
+							SIGNAL (triggered (QAction*)),
+							this,
+							SLOT (handleExportMenuTriggered (QAction*)),
+							Qt::UniqueConnection);
+				}
 			}
 		}
 		else
