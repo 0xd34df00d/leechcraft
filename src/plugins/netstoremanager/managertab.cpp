@@ -762,7 +762,6 @@ namespace NetStoreManager
 			return;
 
 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
-		const bool dirSupport = sfl->GetListingOps () & ListingOp::DirectorySupport;
 		const bool trashSupport = sfl->GetListingOps () & ListingOp::TrashSupporting;
 
 		QMenu *menu = new QMenu;
@@ -778,12 +777,15 @@ namespace NetStoreManager
 			menu->addAction (Download_);
 			menu->addSeparator ();
 			QList<QAction*> actions;
-			if (idxs.at (0).data (ListingRole::InTrash).toBool ())
+			if (trashSupport &&
+					idxs.at (0).data (ListingRole::InTrash).toBool ())
 				actions << UntrashFile_;
 			else
 			{
 				menu->insertAction (Download_, UploadInCurrentDir_);
-				actions << editActions << MoveToTrash_;
+				actions << editActions;
+				if (trashSupport)
+					actions << MoveToTrash_;
 			}
 			actions << DeleteFile_;
 			menu->addActions (actions);
