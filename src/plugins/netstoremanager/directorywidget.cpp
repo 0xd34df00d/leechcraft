@@ -18,6 +18,8 @@
 
 #include "directorywidget.h"
 #include <QFileDialog>
+#include <QMessageBox>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -36,9 +38,12 @@ namespace NetStoreManager
 
 	void DirectoryWidget::SetPath (const QString& path, bool byHand)
 	{
+		if (Path_ == path)
+			return;
+
 		Path_ = path;
 		Ui_.DirPath_->setText (Path_);
-		if (!byHand)
+		if (byHand)
 			emit finished (this);
 	}
 
@@ -56,13 +61,36 @@ namespace NetStoreManager
 		if (path.isEmpty ())
 			return;
 
-		SetPath (path);
+		SetPath (path, true);
 	}
 
 	void DirectoryWidget::handleEditingFinished ()
 	{
-		if (QDir (Ui_.DirPath_->text ()).exists ())
-			SetPath (Ui_.DirPath_->text (), true);
+		const QString& path = Ui_.DirPath_->text ();
+		if (!QDir (path).exists ())
+		{
+			const int res = QMessageBox::question (this,
+					"LeechCraft",
+					tr ("This directory doesn't exist. Do you want to create it?"),
+					QMessageBox::Ok | QMessageBox::Cancel);
+			if (res == QMessageBox::Cancel)
+			{
+				SetPath ("");
+				return;
+			}
+			else
+			{
+				if (!QDir ().mkpath (path))
+				{
+					QMessageBox::warning (this,
+							"LeechCraft",
+							tr ("Unable to create directory"));
+					SetPath ("");
+					return;
+				}
+			}
+		}
+		SetPath (path, true);
 	}
 
 }
