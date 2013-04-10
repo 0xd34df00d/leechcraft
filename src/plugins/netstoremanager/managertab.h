@@ -66,15 +66,6 @@ namespace NetStoreManager
 		FilesProxyModel *ProxyModel_;
 		FilesTreeModel *TreeModel_;
 
-		enum ViewMode
-		{
-			VMTree = 0,
-			VMList
-		};
-
-		ViewMode ViewMode_;
-		QAction *ViewModeAction_;
-
 		QComboBox *AccountsBox_;
 
 		QAction *Refresh_;
@@ -121,7 +112,6 @@ namespace NetStoreManager
 
 		void ClearModel ();
 		void FillModel (IStorageAccount *acc);
-		void FillTreeModel (IStorageAccount *acc);
 		void FillListModel (IStorageAccount *acc);
 
 		void requestFileListings (IStorageAccount *acc);
@@ -130,20 +120,14 @@ namespace NetStoreManager
 		QList<QByteArray> GetTrashedFiles () const;
 		QList<QByteArray> GetSelectedIDs () const;
 		QByteArray GetParentIDInListViewMode () const;
-		QByteArray GetParentIDInTreeViewMode () const;
 		QByteArray GetCurrentID () const;
 
 		void CallOnSelection (std::function<void (ISupportFileListings *sfl, const QList<QByteArray>& ids)>);
-
-		void SaveExpandState (const QModelIndex& parent = QModelIndex ());
-		void RestoreExpandState ();
-		void ExpandModelItems (const QModelIndex& parent = QModelIndex ());
 
 		void ShowListItemsWithParent (const QByteArray& parentId = QByteArray (),
 				bool inTrash = false);
 
 	private slots:
-		void changeViewMode (bool set);
 		void handleRefresh ();
 		void handleUpload ();
 
