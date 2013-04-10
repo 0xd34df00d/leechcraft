@@ -135,7 +135,8 @@ namespace NetStoreManager
 		void RestoreExpandState ();
 		void ExpandModelItems (const QModelIndex& parent = QModelIndex ());
 
-		void ShowListItemsWithParent (const QByteArray& parentId = QByteArray ());
+		void ShowListItemsWithParent (const QByteArray& parentId = QByteArray (),
+				bool inTrash = false);
 
 	private slots:
 		void changeViewMode (bool set);
@@ -171,7 +172,7 @@ namespace NetStoreManager
 		void flDownload ();
 		void flCopyUrl ();
 
-		void showTrashContent ();
+		void showTrashContent (bool show);
 
 		void handleContextMenuRequested (const QPoint& point);
 		void handleExportMenuTriggered (QAction *action);

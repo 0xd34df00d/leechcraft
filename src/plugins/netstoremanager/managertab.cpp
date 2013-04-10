@@ -140,10 +140,11 @@ namespace NetStoreManager
 				SLOT (flDownload ()));
 		Trash_ = new QAction (Proxy_->GetIcon ("user-trash"),
 				tr ("Trash"), this);
+		Trash_->setCheckable (true);
 		connect (Trash_,
-				SIGNAL (triggered ()),
+				SIGNAL (triggered (bool)),
 				this,
-				SLOT (showTrashContent ()));
+				SLOT (showTrashContent (bool)));
 
 		FillToolbar ();
 
@@ -620,7 +621,7 @@ namespace NetStoreManager
 		}
 	}
 
-	void ManagerTab::ShowListItemsWithParent (const QByteArray& parentId)
+	void ManagerTab::ShowListItemsWithParent (const QByteArray& parentId, bool inTrash)
 	{
 		ClearModel ();
 		if (Id2Item_.contains (parentId))
@@ -636,7 +637,8 @@ namespace NetStoreManager
 
 		const auto& items = Id2Item_.values ();
 		for (const auto& item : items)
-			if (!item->IsTrashed_)
+			if (!inTrash &&
+					!item->IsTrashed_)
 			{
 				if (parentId.isNull () &&
 						!Id2Item_.contains (item->ParentID_))
@@ -644,6 +646,21 @@ namespace NetStoreManager
 				else if (!parentId.isNull () &&
 						item->ParentID_ == parentId)
 					TreeModel_->appendRow (CreateItems (item, Proxy_));
+			}
+			else if (inTrash &&
+					item->IsTrashed_)
+			{
+				if (parentId.isNull () &&
+						(!Id2Item_.contains (item->ParentID_) ||
+						!Id2Item_ [item->ParentID_]->IsTrashed_))
+					TreeModel_->appendRow (CreateItems (item, Proxy_));
+				else if (!parentId.isNull () &&
+						item->ParentID_ == parentId &&
+						Id2Item_ [parentId]->IsTrashed_)
+					TreeModel_->appendRow (CreateItems (item, Proxy_));
+				else if (!parentId.isNull () &&
+						!Id2Item_ [parentId]->IsTrashed_)
+					ShowListItemsWithParent (QByteArray (), true);
 			}
 	}
 
@@ -720,14 +737,16 @@ namespace NetStoreManager
 
 		if (idx.data (ListingRole::ID).toByteArray () == "netstoremanager.item_uplevel")
 		{
-			ShowListItemsWithParent (Id2Item_ [idx.data (Qt::UserRole + 1).toByteArray ()]->ParentID_);
+			ShowListItemsWithParent (Id2Item_ [idx.data (Qt::UserRole + 1).toByteArray ()]->ParentID_,
+					Trash_->isChecked ());
 			return;
 		}
 
 		if (!idx.data (ListingRole::Directory).toBool ())
 			return;
 
-		ShowListItemsWithParent (idx.data (ListingRole::ID).toByteArray ());
+		ShowListItemsWithParent (idx.data (ListingRole::ID).toByteArray (),
+				Trash_->isChecked ());
 	}
 
 	void ManagerTab::handleAccountAdded (QObject *accObj)
@@ -785,10 +804,21 @@ namespace NetStoreManager
 				tr ("File list updated"), PInfo_));
 
 		RestoreExpandState ();
+
+		switch (ViewMode_)
+		{
+		case VMTree:
+		break;
+		case VMList:
+			Trash_->setIcon (Proxy_->GetIcon (GetTrashedFiles ().isEmpty () ?
+				"user-trash-full" :
+				"user-trash"));
+		break;
+		}
 	}
 
 	void ManagerTab::handleFilesViewSectionResized (int index,
-			int oldSize, int newSize)
+			int, int newSize)
 	{
 		if (index == Columns::Name)
 			XmlSettingsManager::Instance ().setProperty ("ViewSectionSize", newSize);
@@ -1013,15 +1043,9 @@ namespace NetStoreManager
 			qobject_cast<ISupportFileListings*> (acc->GetQObject ())->RequestUrl (id);
 	}
 
-	void ManagerTab::showTrashContent ()
+	void ManagerTab::showTrashContent (bool show)
 	{
-		ClearModel ();
-		QStandardItem *upLevel = new QStandardItem (Proxy_->GetIcon ("go-up"), "..");
-		upLevel->setData ("netstoremanager.item_uplevel", ListingRole::ID);
-		upLevel->setFlags (Qt::ItemIsEnabled);
-		QStandardItem *upLevelModify = new QStandardItem;
-		upLevelModify->setFlags (Qt::ItemIsEnabled);
-		TreeModel_->appendRow ({ upLevel, upLevelModify });
+		ShowListItemsWithParent (QByteArray (), show);
 	}
 
 	void ManagerTab::handleContextMenuRequested (const QPoint& point)
@@ -1240,7 +1264,7 @@ namespace NetStoreManager
 				OnlyHandle | FromUserInitiated));
 	}
 
-	void ManagerTab::handleCurrentIndexChanged (int index)
+	void ManagerTab::handleCurrentIndexChanged (int)
 	{
 		ClearModel ();
 		IStorageAccount *acc = GetCurrentAccount ();
