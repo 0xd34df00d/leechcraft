@@ -19,6 +19,7 @@
 #include "syncitemdelegate.h"
 #include <QComboBox>
 #include <QMessageBox>
+#include <QStandardItemModel>
 #include <QtDebug>
 #include <QDir>
 #include "accountsmanager.h"
@@ -30,9 +31,11 @@ namespace LeechCraft
 {
 namespace NetStoreManager
 {
-	SyncItemDelegate::SyncItemDelegate (AccountsManager *am, QObject *parent)
+	SyncItemDelegate::SyncItemDelegate (AccountsManager *am,
+			QStandardItemModel *model, QObject *parent)
 	: QItemDelegate (parent)
 	, AM_ (am)
+	, Model_ (model)
 	{
 	}
 
@@ -120,10 +123,18 @@ namespace NetStoreManager
 	void SyncItemDelegate::FillAccounts (QComboBox *box) const
 	{
 		const auto& accounts = AM_->GetAccounts ();
+		QList<QByteArray> usedAccs;
+		for (int i = 0; i < Model_->rowCount (); ++i)
+			usedAccs << Model_->item (i)->data (SyncItemDelegateRoles::AccountId)
+					.toByteArray ();
+
 		for (auto acc : accounts)
 		{
 			auto isp = qobject_cast<IStoragePlugin*> (acc->GetParentPlugin ());
 			if (!isp)
+				continue;
+
+			if (usedAccs.contains (acc->GetUniqueID ()))
 				continue;
 
 			box->addItem (isp->GetStorageIcon (),

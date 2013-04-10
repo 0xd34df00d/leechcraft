@@ -38,7 +38,7 @@ namespace NetStoreManager
 
 		Model_->setHorizontalHeaderLabels ({ tr ("Account"), tr ("Directory") });
 		Ui_.SyncView_->horizontalHeader ()->setStretchLastSection (true);
-		Ui_.SyncView_->setItemDelegate (new SyncItemDelegate (AM_, this));
+		Ui_.SyncView_->setItemDelegate (new SyncItemDelegate (AM_, Model_, this));
 		Ui_.SyncView_->setModel (Model_);
 	}
 
