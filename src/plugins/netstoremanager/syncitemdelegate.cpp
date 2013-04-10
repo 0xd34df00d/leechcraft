@@ -174,15 +174,14 @@ namespace NetStoreManager
 				dw->SetPath ("");
 				return;
 			}
+
+			for (const auto& info : dir.entryInfoList (QDir::NoDotAndDotDot |
+					QDir::System | QDir::Hidden  | QDir::AllDirs |
+					QDir::Files, QDir::DirsFirst))
+				info.isDir () ?
+					RemoveDir (info.absoluteFilePath ()) :
+					QFile::remove (info.absoluteFilePath ());
 		}
-
-		for (const auto& info : dir.entryInfoList (QDir::NoDotAndDotDot |
-				QDir::System | QDir::Hidden  | QDir::AllDirs |
-				QDir::Files, QDir::DirsFirst))
-			info.isDir () ?
-				RemoveDir (info.absoluteFilePath ()) :
-				QFile::remove (info.absoluteFilePath ());
-
 		emit commitData (w);
 		emit closeEditor (w);
 	}
