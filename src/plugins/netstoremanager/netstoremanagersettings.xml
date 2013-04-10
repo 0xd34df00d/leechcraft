@@ -5,6 +5,12 @@
 		<item type="customwidget" name="AccountsWidget" label="own" />
 	</page>
 	<page>
+		<label value="Behavior" />
+		<item type="checkbox" property="CopyUrlOnUpload" default="false">
+			<label value="Copy URL to clipboard after uploading item" />
+		</item>
+	</page>
+	<page>
 		<label value="Synchronization" />
 		<tab>
 			<label value="Directories" />

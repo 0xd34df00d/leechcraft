@@ -62,7 +62,7 @@ namespace NetStoreManager
 		IStoragePlugin* GetSenderPlugin ();
 	public slots:
 		void handleUploadRequest (IStorageAccount *isa, const QString& file,
-				const QByteArray& id = QByteArray ());
+				const QByteArray& id = QByteArray (), bool byHand = true);
 	private slots:
 		void handleGotURL (const QUrl& url, const QByteArray& id);
 		void handleError (const QString& str, const QString& path);

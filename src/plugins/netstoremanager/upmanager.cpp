@@ -26,6 +26,7 @@
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/istorageplugin.h"
 #include "interfaces/netstoremanager/isupportfilelistings.h"
+#include "xmlsettingsmanager.h"
 #include <interfaces/core/ientitymanager.h>
 
 inline uint qHash (const QStringList& id)
@@ -77,7 +78,7 @@ namespace NetStoreManager
 	}
 
 	void UpManager::handleUploadRequest (IStorageAccount *acc, const QString& path,
-			const QByteArray& id)
+			const QByteArray& id, bool byHand)
 	{
 		if (!Uploads_.contains (acc))
 		{
@@ -131,6 +132,10 @@ namespace NetStoreManager
 		ReprModel_->appendRow (row);
 
 		ReprItems_ [acc] [path] = row;
+
+		if (byHand &&
+				XmlSettingsManager::Instance ().Property ("CopyUrlOnUpload", false).toBool ())
+			ScheduleAutoshare (path);
 	}
 
 	void UpManager::handleGotURL (const QUrl& url, const QByteArray& id)

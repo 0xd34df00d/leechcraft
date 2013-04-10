@@ -127,9 +127,9 @@ namespace NetStoreManager
 					this,
 					SIGNAL (removeTab (QWidget*)));
 			connect (tab,
-					SIGNAL (uploadRequested (IStorageAccount*, QString, QByteArray)),
+					SIGNAL (uploadRequested (IStorageAccount*, QString, QByteArray, bool)),
 					UpManager_,
-					SLOT (handleUploadRequest (IStorageAccount*, QString, QByteArray)));
+					SLOT (handleUploadRequest (IStorageAccount*, QString, QByteArray, bool)));
 		}
 		else
 			qWarning () << Q_FUNC_INFO

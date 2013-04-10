@@ -115,7 +115,7 @@ namespace NetStoreManager
 		virtual void gotFileUrl (const QUrl& url, const QByteArray& id) = 0;
 
 		virtual void gotChanges (const QList<Change>& changes) = 0;
-		virtual void gotNewItem (const QList<QStandardItem*>& item, const QByteArray& parentId) = 0;
+		virtual void gotNewItem (StorageItem *item, const QByteArray& parentId) = 0;
 	};
 }
 }
