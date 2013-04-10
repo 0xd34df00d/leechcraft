@@ -104,7 +104,7 @@ namespace GoogleDrive
 
 	signals:
 		void upError (const QString& error, const QString& filepath);
-		void upFinished (const QStringList& id, const QString& filepath);
+		void upFinished (const QByteArray& id, const QString& filepath);
 		void upProgress (quint64 done, quint64 total, const QString& filepath);
 		void upStatusChanged (const QString& status, const QString& filepath);
 
@@ -114,7 +114,7 @@ namespace GoogleDrive
 
 		void gotChanges (const QList<Change>& changes);
 
-		void gotNewItem (const QList<QStandardItem*>& item, const QByteArray& parentId);
+		void gotNewItem (StorageItem *item, const QByteArray& parentId);
 	};
 }
 }

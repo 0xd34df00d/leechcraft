@@ -55,7 +55,7 @@ namespace GoogleDrive
 		connect (Account_->GetDriveManager (),
 				SIGNAL (finished (QString, QString)),
 				this,
-				SLOT (handleFinished (QByteArray, QString)));
+				SLOT (handleFinished (QString, QString)));
 
 		if (ut == UploadType::Upload)
 			InitiateUploadSession ();
@@ -102,13 +102,13 @@ namespace GoogleDrive
 		emit uploadStatusChanged (status, FilePath_);
 	}
 
-	void UploadManager::handleFinished (const QByteArray& id, const QString& filePath)
+	void UploadManager::handleFinished (const QString& id, const QString& filePath)
 	{
 		if (filePath != FilePath_)
 			return;
 
 		emit uploadStatusChanged (tr ("Finished"), FilePath_);
-		emit finished (id, FilePath_);
+		emit finished (id.toUtf8 (), FilePath_);
 		deleteLater ();
 	}
 }

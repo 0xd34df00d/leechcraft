@@ -99,9 +99,9 @@ namespace GoogleDrive
 				this,
 				SIGNAL (upError (QString, QString)));
 		connect (uploadManager,
-				SIGNAL (finished (QStringList, QString)),
+				SIGNAL (finished (QByteArray, QString)),
 				this,
-				SIGNAL (upFinished (QStringList, QString)));
+				SIGNAL (upFinished (QByteArray, QString)));
 		connect (uploadManager,
 				SIGNAL (uploadStatusChanged (QString, QString)),
 				this,
@@ -298,58 +298,7 @@ namespace GoogleDrive
 
 	namespace
 	{
-		QList<QStandardItem*> CreateItem (QHash<QString, QList<QStandardItem*>>& id2Item,
-				const DriveItem& item)
-		{
-			QList<QStandardItem*> row;
-			if (!id2Item.contains (item.Id_))
-			{
-				row << new QStandardItem (item.Name_);
-				row [0]->setData (item.Id_, ListingRole::ID);
-				row [0]->setData (static_cast<bool> (item.Labels_ & DriveItem::ILRemoved),
-						ListingRole::InTrash);
-				row [0]->setData (item.ModifiedDate_, ListingRole::ModifiedDate);
-				row [0]->setData (item.Md5_, ListingRole::Hash);
-
-				if (!item.IsFolder_)
-				{
-					row << new QStandardItem (item.OwnerNames_.join (", "));
-					row << new QStandardItem (QObject::tr ("%1 (by %2)")
-							.arg (item.ModifiedDate_.toString ("dd.MM.yy hh:mm"),
-									item.LastModifiedBy_));
-				}
-				else
-				{
-					row [0]->setIcon (Core::Instance ().GetProxy ()->GetIcon ("folder"));
-					id2Item [item.Id_] = row;
-				}
-				row [0]->setData (item.IsFolder_, ListingRole::Directory);
-			}
-
-			for (const auto& rowItem : row)
-				rowItem->setEditable (false);
-
-			return row;
-		}
-
-		void CreateChildItem (QHash<QString, QList<QStandardItem*>>& id2Item,
-				const DriveItem& parentItem, const DriveItem& childItem)
-		{
-			const auto& parentRow = !id2Item.contains (parentItem.Id_) ?
-				CreateItem (id2Item, parentItem) :
-				id2Item [parentItem.Id_];
-			const auto& childRow = !id2Item.contains (childItem.Id_) ?
-				CreateItem (id2Item, childItem) :
-				id2Item [childItem.Id_];
-			parentRow [0]->appendRow (childRow);
-		}
-	}
-
-	void Account::handleFileList (const QList<DriveItem>& items)
-	{
-		QList<StorageItem*> result;
-
-		for (auto item : items)
+		StorageItem* CreateItem (const DriveItem& item)
 		{
 			StorageItem *storageItem = new StorageItem;
 			storageItem->ID_ = item.Id_.toUtf8 ();
@@ -366,8 +315,16 @@ namespace GoogleDrive
 				storageItem->ExportLinks [key] = qMakePair (mime, key.queryItems ().last ().second);
 			}
 
-			result << storageItem;
+			return storageItem;
 		}
+	}
+
+	void Account::handleFileList (const QList<DriveItem>& items)
+	{
+		QList<StorageItem*> result;
+
+		for (auto item : items)
+			result << CreateItem (item);
 
 		emit gotListing (result);
 	}
@@ -380,9 +337,7 @@ namespace GoogleDrive
 
 	void Account::handleGotNewItem (const DriveItem& item)
 	{
-// 		QHash<QString, QList<QStandardItem*>> map;
-// 		auto row = CreateItem (map, item);
-// 		emit gotNewItem (row, QStringList (item.ParentId_));
+		emit gotNewItem (CreateItem (item), item.ParentId_.toUtf8 ());
 	}
 
 	void Account::handleGotChanges (const QList<DriveChanges>& driveChanges, qlonglong lastId)
@@ -396,15 +351,9 @@ namespace GoogleDrive
 			if (driveChange.FileResource_.PermissionRole_ != DriveItem::Roles::Owner)
 				continue;
 
-			QHash<QString, QList<QStandardItem*>> map;
-			QList<QStandardItem*> row = CreateItem (map, driveChange.FileResource_);
-			if (row.value (0)->text ().isEmpty ())
-				continue;
-
 			Change change;
 			change.Deleted_ = driveChange.Deleted_;
 			change.Id_ << driveChange.FileId_;
-			change.Row_ = row;
 			change.ParentId_ << driveChange.FileResource_.ParentId_;
 			change.ParentIsRoot_ = driveChange.FileResource_.ParentIsRoot_;
 
