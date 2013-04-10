@@ -41,10 +41,10 @@ namespace NetStoreManager
 		{
 			if (sourceModel ()->data (left, ListingRole::ID).toByteArray () == "netstoremanager.item_trash" ||
 					sourceModel ()->data (right, ListingRole::ID).toByteArray () == "netstoremanager.item_uplevel")
-				return true;
+				return sortOrder () == Qt::DescendingOrder ? true : false;
 			if (sourceModel ()->data (right, ListingRole::ID).toByteArray () == "netstoremanager.item_trash" ||
 					sourceModel ()->data (left, ListingRole::ID).toByteArray () == "netstoremanager.item_uplevel")
-				return false;
+				return sortOrder () == Qt::DescendingOrder ? false : true;
 
 			if (leftIsFolder &&
 					!rightIsFolder)
