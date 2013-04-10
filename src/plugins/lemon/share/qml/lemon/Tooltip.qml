@@ -10,6 +10,9 @@ Rectangle {
 
     signal closeRequested()
 
+    property string downSpeed
+    property string upSpeed
+
     gradient: Gradient {
         GradientStop {
             position: 0

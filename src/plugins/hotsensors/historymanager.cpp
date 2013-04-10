@@ -16,28 +16,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QDeclarativeView>
-#include <QVariantMap>
-#include <interfaces/core/icoreproxy.h>
+#include "historymanager.h"
 
 namespace LeechCraft
 {
-namespace SB2
+namespace HotSensors
 {
-	class QuarkProxy;
-
-	class DeclarativeWindow : public QDeclarativeView
+	HistoryManager::HistoryManager (QObject *parent)
+	: QObject (parent)
 	{
-		Q_OBJECT
+	}
 
-		const QuarkProxy * const Proxy_;
-		const QPoint OrigPoint_;
-	public:
-		DeclarativeWindow (const QUrl&, QVariantMap, const QPoint&, QuarkProxy*, ICoreProxy_ptr, QWidget* = 0);
+	void HistoryManager::handleReadings (const Readings_t& readings)
+	{
+		for (auto i = History_.begin (); i != History_.end (); )
+		{
+			const auto pos = std::find_if (readings.begin (), readings.end (),
+					[i] (const Reading& r) { return r.Name_ == i.key (); });
+			if (pos == readings.end ())
+				i = History_.erase (i);
+			else
+				++i;
+		}
 
-		void resizeEvent (QResizeEvent*);
-	};
+		for (const auto& r : readings)
+		{
+			auto& vec = History_ [r.Name_];
+			vec << r.Value_;
+			if (vec.size () >= 100)
+				vec.pop_front ();
+		}
+
+		emit historyChanged (History_);
+	}
 }
 }

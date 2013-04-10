@@ -18,26 +18,22 @@
 
 #pragma once
 
-#include <QDeclarativeView>
-#include <QVariantMap>
-#include <interfaces/core/icoreproxy.h>
+#include <QString>
+#include <QList>
+#include <QMap>
 
 namespace LeechCraft
 {
-namespace SB2
+namespace HotSensors
 {
-	class QuarkProxy;
-
-	class DeclarativeWindow : public QDeclarativeView
+	struct Reading
 	{
-		Q_OBJECT
-
-		const QuarkProxy * const Proxy_;
-		const QPoint OrigPoint_;
-	public:
-		DeclarativeWindow (const QUrl&, QVariantMap, const QPoint&, QuarkProxy*, ICoreProxy_ptr, QWidget* = 0);
-
-		void resizeEvent (QResizeEvent*);
+		QString Name_;
+		double Value_;
 	};
+
+	typedef QList<Reading> Readings_t;
+
+	typedef QMap<QString, QList<double>> ReadingsHistory_t;
 }
 }

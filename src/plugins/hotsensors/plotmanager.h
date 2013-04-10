@@ -18,26 +18,37 @@
 
 #pragma once
 
-#include <QDeclarativeView>
-#include <QVariantMap>
-#include <interfaces/core/icoreproxy.h>
+#include <memory>
+#include <QObject>
+#include "structures.h"
+
+class QDeclarativeImageProvider;
+class QAbstractItemModel;
+class QStandardItemModel;
 
 namespace LeechCraft
 {
-namespace SB2
+namespace HotSensors
 {
-	class QuarkProxy;
+	class SensorsManager;
+	class SensorsGraphProvider;
 
-	class DeclarativeWindow : public QDeclarativeView
+	class PlotManager : public QObject
 	{
 		Q_OBJECT
 
-		const QuarkProxy * const Proxy_;
-		const QPoint OrigPoint_;
-	public:
-		DeclarativeWindow (const QUrl&, QVariantMap, const QPoint&, QuarkProxy*, ICoreProxy_ptr, QWidget* = 0);
+		std::weak_ptr<SensorsManager> SensorsMgr_;
+		QStandardItemModel *Model_;
+		SensorsGraphProvider *GraphProvider_;
 
-		void resizeEvent (QResizeEvent*);
+		int UpdateCounter_;
+	public:
+		PlotManager (std::weak_ptr<SensorsManager>, QObject* = 0);
+
+		QAbstractItemModel* GetModel () const;
+		QDeclarativeImageProvider* GetImageProvider () const;
+	public slots:
+		void handleHistoryUpdated (const ReadingsHistory_t&);
 	};
 }
 }

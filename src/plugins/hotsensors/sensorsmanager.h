@@ -18,26 +18,55 @@
 
 #pragma once
 
-#include <QDeclarativeView>
-#include <QVariantMap>
-#include <interfaces/core/icoreproxy.h>
+#include <QObject>
+#include <sensors/sensors.h>
+#include "structures.h"
 
 namespace LeechCraft
 {
-namespace SB2
+namespace HotSensors
 {
-	class QuarkProxy;
+	struct StoredChipName
+	{
+		QByteArray Prefix_;
+		sensors_bus_id Bus_;
+		int Addr_;
+		QByteArray Path_;
 
-	class DeclarativeWindow : public QDeclarativeView
+		StoredChipName ();
+		StoredChipName (const sensors_chip_name*);
+
+		sensors_chip_name ToSensorsChip ();
+	};
+
+	struct StoredSubfeature
+	{
+		StoredChipName Chip_;
+		int SF_;
+	};
+
+	struct StoredTemp
+	{
+		double Max_;
+		double Crit_;
+		StoredSubfeature SF_;
+		QString Name_;
+	};
+
+	class SensorsManager : public QObject
 	{
 		Q_OBJECT
 
-		const QuarkProxy * const Proxy_;
-		const QPoint OrigPoint_;
+		QList<StoredTemp> Features_;
 	public:
-		DeclarativeWindow (const QUrl&, QVariantMap, const QPoint&, QuarkProxy*, ICoreProxy_ptr, QWidget* = 0);
-
-		void resizeEvent (QResizeEvent*);
+		SensorsManager (QObject* = 0);
+		~SensorsManager ();
+	private:
+		void EnumerateSensors ();
+	private slots:
+		void readTemperatures ();
+	signals:
+		void gotReadings (const Readings_t&);
 	};
 }
 }
