@@ -46,6 +46,9 @@ Rectangle {
                         "colorProxy": colorProxy
                     };
                     tooltip = quarkProxy.openWindow(sourceURL, "Tooltip.qml", params);
+
+                    tooltip.upSpeed = (function() { return upSpeedPretty; })
+                    tooltip.downSpeed = (function() { return downSpeedPretty; })
                 }
                 onHoverLeft: if (tooltip != null) tooltip.closeRequested()
 
