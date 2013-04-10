@@ -96,6 +96,8 @@ namespace NetStoreManager
 		QToolButton *Trash_;
 		QAction *TrashAction_;
 
+		QByteArray LastParentID_;
+
 		QHash<IStorageAccount*, QHash<QByteArray, bool>> Account2ItemExpandState_;
 	public:
 		ManagerTab (const TabClassInfo&, AccountsManager*, ICoreProxy_ptr, QObject*);
@@ -137,6 +139,7 @@ namespace NetStoreManager
 		void handleAccountRemoved (QObject *accObj);
 
 		void handleGotListing (const QList<StorageItem*>& items);
+		void handleGotNewItem (StorageItem *item, const QByteArray& parentId);
 
 		void handleFilesViewSectionResized (int index, int oldSize, int newSize);
 
@@ -173,7 +176,7 @@ namespace NetStoreManager
 		void removeTab (QWidget*);
 
 		void uploadRequested (IStorageAccount *acc, const QString& fileName,
-				const QByteArray& parentId = QByteArray ());
+				const QByteArray& parentId = QByteArray (), bool byHand = true);
 	};
 }
 }

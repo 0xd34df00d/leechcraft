@@ -213,6 +213,10 @@ namespace NetStoreManager
 						this,
 						SLOT (handleGotListing (const QList<StorageItem*>&)));
 				connect (acc->GetQObject (),
+						SIGNAL (gotNewItem (StorageItem*, QByteArray)),
+						this,
+						SLOT (handleGotNewItem (StorageItem*, QByteArray)));
+				connect (acc->GetQObject (),
 						SIGNAL (gotFileUrl (QUrl, QByteArray)),
 						this,
 						SLOT (handleGotFileUrl (QUrl, QByteArray)));
@@ -326,7 +330,7 @@ namespace NetStoreManager
 		if (acc != GetCurrentAccount ())
 			return;
 
-		ShowListItemsWithParent ();
+		ShowListItemsWithParent (LastParentID_);
 
 		Ui_.FilesView_->header ()->resizeSection (Columns::Name,
 				XmlSettingsManager::Instance ().Property ("ViewSectionSize",
@@ -472,7 +476,7 @@ namespace NetStoreManager
 		if (idx.data (ListingRole::ID).toByteArray () == "netstoremanager.item_uplevel")
 		{
 			ShowListItemsWithParent (Id2Item_ [idx.data (Qt::UserRole + 1).toByteArray ()]->ParentID_,
-					Trash_->isChecked ());
+					OpenTrash_->isChecked ());
 			return;
 		}
 
@@ -480,7 +484,7 @@ namespace NetStoreManager
 			return;
 
 		ShowListItemsWithParent (idx.data (ListingRole::ID).toByteArray (),
-				Trash_->isChecked ());
+				OpenTrash_->isChecked ());
 	}
 
 	void ManagerTab::handleAccountAdded (QObject *accObj)
@@ -527,6 +531,8 @@ namespace NetStoreManager
 				sender () != acc->GetQObject ())
 			return;
 
+		LastParentID_ = GetParentIDInListViewMode ();
+
 		qDeleteAll (Id2Item_);
 		Id2Item_.clear ();
 		for (auto item : items)
@@ -540,6 +546,13 @@ namespace NetStoreManager
 		Trash_->setIcon (Proxy_->GetIcon (GetTrashedFiles ().isEmpty () ?
 			"user-trash-full" :
 			"user-trash"));
+	}
+
+	void ManagerTab::handleGotNewItem (StorageItem *item, const QByteArray&)
+	{
+		Id2Item_ [item->ID_] = item;
+		LastParentID_ = GetParentIDInListViewMode ();
+		FillModel (GetCurrentAccount ());
 	}
 
 	void ManagerTab::handleFilesViewSectionResized (int index,
@@ -801,7 +814,8 @@ namespace NetStoreManager
 		else
 			menu->addAction (UploadInCurrentDir_);
 
-		if (!TransferedIDs_.second.isEmpty ())
+		if (!TransferedIDs_.second.isEmpty () &&
+				!OpenTrash_->isChecked ())
 		{
 			auto sep = menu->insertSeparator (menu->actions ().at (0));
 			menu->insertAction (sep, Paste_);
