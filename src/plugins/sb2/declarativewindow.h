@@ -26,11 +26,18 @@ namespace LeechCraft
 {
 namespace SB2
 {
+	class QuarkProxy;
+
 	class DeclarativeWindow : public QDeclarativeView
 	{
 		Q_OBJECT
+
+		const QuarkProxy * const Proxy_;
+		const QPoint OrigPoint_;
 	public:
-		DeclarativeWindow (const QUrl&, QVariantMap, ICoreProxy_ptr, QWidget* = 0);
+		DeclarativeWindow (const QUrl&, QVariantMap, const QPoint&, QuarkProxy*, ICoreProxy_ptr, QWidget* = 0);
+
+		void resizeEvent (QResizeEvent*);
 	};
 }
 }

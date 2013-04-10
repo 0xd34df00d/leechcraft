@@ -90,10 +90,7 @@ namespace SB2
 		int x = varMap.take ("x").toInt ();
 		int y = varMap.take ("y").toInt ();
 
-		auto window = new DeclarativeWindow (newUrl, varMap, Proxy_);
-		qApp->processEvents ();
-		window->move (Util::FitRect ({ x, y }, window->size (), GetFreeCoords (),
-				Util::FitFlag::NoOverlap));
+		auto window = new DeclarativeWindow (newUrl, varMap, { x, y }, this, Proxy_);
 		window->show ();
 
 		URL2LastOpened_ [newUrl] = window;

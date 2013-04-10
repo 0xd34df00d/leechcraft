@@ -51,7 +51,6 @@ namespace SB2
 		QuarkProxy (ViewManager*, ICoreProxy_ptr, QObject* = 0);
 
 		const QString& GetExtHoveredQuarkClass () const;
-	private:
 		QRect GetFreeCoords () const;
 	public slots:
 		QPoint mapToGlobal (double, double);

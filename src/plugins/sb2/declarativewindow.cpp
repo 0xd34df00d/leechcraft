@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "declarativewindow.h"
+#include <QResizeEvent>
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
 #include <QGraphicsObject>
@@ -26,14 +27,18 @@
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/gui/unhoverdeletemixin.h>
+#include <util/gui/util.h>
+#include "quarkproxy.h"
 
 namespace LeechCraft
 {
 namespace SB2
 {
-	DeclarativeWindow::DeclarativeWindow (const QUrl& url,
-			QVariantMap params, ICoreProxy_ptr proxy, QWidget *parent)
+	DeclarativeWindow::DeclarativeWindow (const QUrl& url, QVariantMap params,
+			const QPoint& orig, QuarkProxy *quarkProxy, ICoreProxy_ptr proxy, QWidget *parent)
 	: QDeclarativeView (parent)
+	, Proxy_ (quarkProxy)
+	, OrigPoint_ (orig)
 	{
 		if (!params.take ("keepOnFocusLeave").toBool ())
 			new Util::UnhoverDeleteMixin (this);
@@ -56,6 +61,16 @@ namespace SB2
 				SIGNAL (closeRequested ()),
 				this,
 				SLOT (deleteLater ()));
+	}
+
+	void DeclarativeWindow::resizeEvent (QResizeEvent *event)
+	{
+		QDeclarativeView::resizeEvent (event);
+
+		const auto& size = event->size ();
+		const auto& pos = Util::FitRect (OrigPoint_,
+				size, Proxy_->GetFreeCoords (), Util::FitFlag::NoOverlap);
+		move (pos);
 	}
 }
 }
