@@ -69,6 +69,7 @@ namespace SB2
 	: QObject (manager)
 	, ViewMgr_ (manager)
 	, Proxy_ (proxy)
+	, Component_ (comp)
 	, URL_ (comp->Url_)
 	, SettingsManager_ (0)
 	, ID_ (QFileInfo (URL_.path ()).fileName ())

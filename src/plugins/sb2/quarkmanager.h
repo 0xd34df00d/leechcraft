@@ -37,6 +37,7 @@ namespace SB2
 		ViewManager * const ViewMgr_;
 		ICoreProxy_ptr Proxy_;
 
+		const QuarkComponent_ptr Component_;
 		const QUrl URL_;
 
 		Util::XmlSettingsDialog_ptr XSD_;
