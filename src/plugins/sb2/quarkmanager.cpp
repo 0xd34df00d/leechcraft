@@ -87,6 +87,8 @@ namespace SB2
 			ctx->setContextProperty (pair.first, pair.second);
 		for (const auto& pair : comp->DynamicProps_)
 			ctx->setContextProperty (pair.first, pair.second);
+		for (const auto& pair : comp->ContextProps_)
+			ctx->setContextProperty (pair.first, pair.second);
 
 		auto engine = manager->GetView ()->engine ();
 		for (const auto& pair : comp->ImageProviders_)
