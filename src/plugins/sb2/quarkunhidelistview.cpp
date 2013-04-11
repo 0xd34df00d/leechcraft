@@ -40,7 +40,7 @@ namespace SB2
 			QuarkManager_ptr manager;
 			try
 			{
-				manager.reset (new QuarkManager (comp, nullptr, proxy));
+				manager.reset (new QuarkManager (comp, ViewManager_, proxy));
 			}
 			catch (const std::exception& e)
 			{
