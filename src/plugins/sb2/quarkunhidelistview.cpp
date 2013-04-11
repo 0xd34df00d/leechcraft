@@ -34,7 +34,7 @@ namespace SB2
 	: UnhideListViewBase (proxy, parent)
 	, ViewManager_ (viewMgr)
 	{
-		BeginModelFill ();
+		QList<QStandardItem*> items;
 		for (const auto& comp : components)
 		{
 			QuarkManager_ptr manager;
@@ -56,11 +56,12 @@ namespace SB2
 			item->setData (manager->GetDescription (), UnhideListModel::Roles::ItemDescription);
 			item->setData (Util::GetAsBase64Src (manager->GetIcon ().pixmap (32, 32).toImage ()),
 					UnhideListModel::Roles::ItemIcon);
-			Model_->appendRow (item);
+			items << item;
 
 			ID2Component_ [manager->GetID ()] = { comp, manager };
 		}
-		EndModelFill ();
+
+		Model_->invisibleRootItem ()->appendRows (items);
 
 		connect (rootObject (),
 				SIGNAL (itemUnhideRequested (QString)),
