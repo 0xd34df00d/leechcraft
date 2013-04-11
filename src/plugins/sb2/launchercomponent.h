@@ -47,7 +47,7 @@ namespace SB2
 		ICoreTabWidget *ICTW_;
 		QStandardItemModel *Model_;
 		QuarkComponent Component_;
-		
+
 		ViewManager *View_;
 
 		TabClassImageProvider *ImageProv_;
