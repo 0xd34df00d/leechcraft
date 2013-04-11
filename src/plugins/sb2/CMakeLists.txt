@@ -34,6 +34,7 @@ SET (SRCS
 	unhidelistviewbase.cpp
 	quarkorderview.cpp
 	declarativewindow.cpp
+	autoresizemixin.cpp
 	)
 
 SET (SB2_RESOURCES sb2resources.qrc)
