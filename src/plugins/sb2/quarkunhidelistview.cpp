@@ -30,8 +30,8 @@ namespace LeechCraft
 namespace SB2
 {
 	QuarkUnhideListView::QuarkUnhideListView (const QList<QuarkComponent>& components,
-			ViewManager *viewMgr, ICoreProxy_ptr proxy, QWidget *parent)
-	: UnhideListViewBase (proxy, parent)
+			ViewManager *viewMgr, const QPoint& orig, ICoreProxy_ptr proxy, QWidget *parent)
+	: UnhideListViewBase (orig, viewMgr, proxy, parent)
 	, ViewManager_ (viewMgr)
 	{
 		QList<QStandardItem*> items;

@@ -27,13 +27,15 @@ namespace LeechCraft
 {
 namespace SB2
 {
+	class ViewManager;
+
 	class UnhideListViewBase : public QDeclarativeView
 	{
 		Q_OBJECT
 	protected:
 		QStandardItemModel *Model_;
 	public:
-		UnhideListViewBase (ICoreProxy_ptr, QWidget* = 0);
+		UnhideListViewBase (const QPoint&, ViewManager*, ICoreProxy_ptr, QWidget* = 0);
 	protected:
 		void BeginModelFill ();
 		void EndModelFill ();

@@ -90,7 +90,7 @@ namespace SB2
 		int x = varMap.take ("x").toInt ();
 		int y = varMap.take ("y").toInt ();
 
-		auto window = new DeclarativeWindow (newUrl, varMap, { x, y }, this, Proxy_);
+		auto window = new DeclarativeWindow (newUrl, varMap, { x, y }, Manager_, Proxy_);
 		window->show ();
 
 		URL2LastOpened_ [newUrl] = window;
@@ -119,9 +119,7 @@ namespace SB2
 		if (toAdd.isEmpty ())
 			return;
 
-		auto unhide = new QuarkUnhideListView (toAdd, Manager_, Proxy_, Manager_->GetView ());
-		unhide->move (Util::FitRect ({ x, y }, unhide->size (), GetFreeCoords (),
-				Util::FitFlag::NoOverlap));
+		auto unhide = new QuarkUnhideListView (toAdd, Manager_, { x, y }, Proxy_, Manager_->GetView ());
 		unhide->show ();
 	}
 

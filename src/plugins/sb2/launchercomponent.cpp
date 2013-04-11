@@ -301,8 +301,7 @@ namespace SB2
 				tcs << pair.first;
 		}
 
-		auto list = new TabUnhideListView (tcs, Proxy_);
-		list->move (Util::FitRect ({ x, y }, list->size (), View_->GetFreeCoords ()));
+		auto list = new TabUnhideListView (tcs, { x, y }, View_, Proxy_);
 		list->show ();
 		list->setFocus ();
 		connect (list,

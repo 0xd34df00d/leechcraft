@@ -26,8 +26,9 @@ namespace LeechCraft
 {
 namespace SB2
 {
-	TabUnhideListView::TabUnhideListView (const QList<TabClassInfo>& tcs, ICoreProxy_ptr proxy, QWidget *parent)
-	: UnhideListViewBase (proxy, parent)
+	TabUnhideListView::TabUnhideListView (const QList<TabClassInfo>& tcs,
+			const QPoint& orig, ViewManager *mgr, ICoreProxy_ptr proxy, QWidget *parent)
+	: UnhideListViewBase (orig, mgr, proxy, parent)
 	{
 		BeginModelFill ();
 		for (const auto& tc : tcs)
