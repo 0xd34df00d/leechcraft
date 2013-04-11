@@ -19,7 +19,6 @@
 #include "plotmanager.h"
 #include <QStandardItemModel>
 #include <QPainter>
-#include <QDeclarativeImageProvider>
 #include <QSvgGenerator>
 #include <QSvgRenderer>
 #include <QBuffer>
@@ -30,71 +29,17 @@
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_renderer.h>
+#include "contextwrapper.h"
+#include "sensorsgraphmodel.h"
 
 namespace LeechCraft
 {
 namespace HotSensors
 {
-	namespace
-	{
-		class SensorsGraphModel : public QStandardItemModel
-		{
-		public:
-			enum Role
-			{
-				IconURL = Qt::UserRole + 1,
-				LastTemp,
-				SensorName,
-				SVG
-			};
-
-			SensorsGraphModel (QObject *parent)
-			: QStandardItemModel (parent)
-			{
-				QHash<int, QByteArray> roleNames;
-				roleNames [IconURL] = "iconURL";
-				roleNames [LastTemp] = "lastTemp";
-				roleNames [SensorName] = "sensorName";
-				roleNames [SVG] = "rawSvg";
-				setRoleNames (roleNames);
-			}
-		};
-	}
-
-	class SensorsGraphProvider : public QDeclarativeImageProvider
-	{
-		QHash<QString, QByteArray> Sensor2SVG_;
-	public:
-		SensorsGraphProvider ()
-		: QDeclarativeImageProvider (QDeclarativeImageProvider::Image)
-		{
-		}
-
-		void SetHistory (const QHash<QString, QByteArray>& svg)
-		{
-			Sensor2SVG_ = svg;
-		}
-
-		QImage requestImage (const QString& id, QSize* size, const QSize& requestedSize)
-		{
-			const auto lastSlash = id.lastIndexOf ('/');
-			const auto& sensorName = id.left (lastSlash);
-
-			QImage result (requestedSize, QImage::Format_ARGB32);
-			QPainter p (&result);
-			QSvgRenderer renderer (Sensor2SVG_ [sensorName]);
-			renderer.render (&p);
-			p.end ();
-
-			return result;
-		}
-	};
-
 	PlotManager::PlotManager (std::weak_ptr<SensorsManager> mgr, QObject *parent)
 	: QObject (parent)
 	, SensorsMgr_ (mgr)
 	, Model_ (new SensorsGraphModel (this))
-	, GraphProvider_ (new SensorsGraphProvider)
 	, UpdateCounter_ (0)
 	{
 	}
@@ -104,9 +49,9 @@ namespace HotSensors
 		return Model_;
 	}
 
-	QDeclarativeImageProvider* PlotManager::GetImageProvider () const
+	QObject* PlotManager::CreateContextWrapper ()
 	{
-		return GraphProvider_;
+		return new ContextWrapper (this);
 	}
 
 	void PlotManager::handleHistoryUpdated (const ReadingsHistory_t& history)
@@ -119,7 +64,6 @@ namespace HotSensors
 		}
 
 		QList<QStandardItem*> items;
-		QHash<QString, QByteArray> svg;
 
 		struct PendingSetInfo
 		{
@@ -187,16 +131,12 @@ namespace HotSensors
 			item->setData (svgContents.data (), SensorsGraphModel::SVG);
 			if (!isKnownSensor)
 				items << item;
-
-			svg [name] = svgContents.data ();
 		}
 
 		for (auto item : existing)
 			Model_->removeRow (item->row ());
 
 		++UpdateCounter_;
-
-		GraphProvider_->SetHistory (svg);
 
 		if (!items.isEmpty ())
 			Model_->invisibleRootItem ()->appendRows (items);

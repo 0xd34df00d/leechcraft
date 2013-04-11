@@ -16,38 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <memory>
-#include <QObject>
-#include "structures.h"
-
-class QDeclarativeImageProvider;
-class QAbstractItemModel;
-class QStandardItemModel;
+#include "sensorsgraphmodel.h"
 
 namespace LeechCraft
 {
 namespace HotSensors
 {
-	class SensorsManager;
-
-	class PlotManager : public QObject
+	SensorsGraphModel::SensorsGraphModel (QObject *parent)
+	: QStandardItemModel (parent)
 	{
-		Q_OBJECT
-
-		std::weak_ptr<SensorsManager> SensorsMgr_;
-		QStandardItemModel *Model_;
-
-		int UpdateCounter_;
-	public:
-		PlotManager (std::weak_ptr<SensorsManager>, QObject* = 0);
-
-		QAbstractItemModel* GetModel () const;
-
-		QObject* CreateContextWrapper ();
-	public slots:
-		void handleHistoryUpdated (const ReadingsHistory_t&);
-	};
+		QHash<int, QByteArray> roleNames;
+		roleNames [IconURL] = "iconURL";
+		roleNames [LastTemp] = "lastTemp";
+		roleNames [SensorName] = "sensorName";
+		roleNames [SVG] = "rawSvg";
+		setRoleNames (roleNames);
+	}
 }
 }

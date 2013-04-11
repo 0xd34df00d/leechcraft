@@ -18,36 +18,24 @@
 
 #pragma once
 
-#include <memory>
-#include <QObject>
-#include "structures.h"
-
-class QDeclarativeImageProvider;
-class QAbstractItemModel;
-class QStandardItemModel;
+#include <QStandardItemModel>
 
 namespace LeechCraft
 {
 namespace HotSensors
 {
-	class SensorsManager;
-
-	class PlotManager : public QObject
+	class SensorsGraphModel : public QStandardItemModel
 	{
-		Q_OBJECT
-
-		std::weak_ptr<SensorsManager> SensorsMgr_;
-		QStandardItemModel *Model_;
-
-		int UpdateCounter_;
 	public:
-		PlotManager (std::weak_ptr<SensorsManager>, QObject* = 0);
+		enum Role
+		{
+			IconURL = Qt::UserRole + 1,
+			LastTemp,
+			SensorName,
+			SVG
+		};
 
-		QAbstractItemModel* GetModel () const;
-
-		QObject* CreateContextWrapper ();
-	public slots:
-		void handleHistoryUpdated (const ReadingsHistory_t&);
+		SensorsGraphModel (QObject*);
 	};
 }
 }
