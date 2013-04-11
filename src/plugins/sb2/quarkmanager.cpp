@@ -64,12 +64,12 @@ namespace SB2
 		};
 	}
 
-	QuarkManager::QuarkManager (const QuarkComponent& comp,
+	QuarkManager::QuarkManager (QuarkComponent_ptr comp,
 			ViewManager *manager, ICoreProxy_ptr proxy)
 	: QObject (manager)
 	, ViewMgr_ (manager)
 	, Proxy_ (proxy)
-	, URL_ (comp.Url_)
+	, URL_ (comp->Url_)
 	, SettingsManager_ (0)
 	, ID_ (QFileInfo (URL_.path ()).fileName ())
 	, Name_ (ID_)
@@ -80,15 +80,15 @@ namespace SB2
 		if (!ViewMgr_)
 			return;
 
-		qDebug () << Q_FUNC_INFO << "adding" << comp.Url_;
+		qDebug () << Q_FUNC_INFO << "adding" << comp->Url_;
 		auto ctx = manager->GetView ()->rootContext ();
-		for (const auto& pair : comp.StaticProps_)
+		for (const auto& pair : comp->StaticProps_)
 			ctx->setContextProperty (pair.first, pair.second);
-		for (const auto& pair : comp.DynamicProps_)
+		for (const auto& pair : comp->DynamicProps_)
 			ctx->setContextProperty (pair.first, pair.second);
 
 		auto engine = manager->GetView ()->engine ();
-		for (const auto& pair : comp.ImageProviders_)
+		for (const auto& pair : comp->ImageProviders_)
 			if (!engine->imageProvider (pair.first))
 				engine->addImageProvider (pair.first, new ImageProvProxy (pair.second));
 

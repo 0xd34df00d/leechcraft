@@ -99,17 +99,17 @@ namespace SB2
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, Model_ (new TrayModel (this))
+	, Component_ (new QuarkComponent ("sb2", info.Filename_))
 	, ImageProv_ (new ActionImageProvider (proxy))
 	, NextActionId_ (0)
 	, View_ (view)
 	, ComponentInfo_ (info)
 	{
-		Component_.Url_ = QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, "sb2", info.Filename_));
-		Component_.DynamicProps_ << QPair<QString, QObject*> (info.ModelName_, Model_);
-		Component_.ImageProviders_ << QPair<QString, QDeclarativeImageProvider*> (info.ImageProvID_, ImageProv_);
+		Component_->DynamicProps_ << QPair<QString, QObject*> (info.ModelName_, Model_);
+		Component_->ImageProviders_ << QPair<QString, QDeclarativeImageProvider*> (info.ImageProvID_, ImageProv_);
 	}
 
-	QuarkComponent BaseActionComponent::GetComponent () const
+	QuarkComponent_ptr BaseActionComponent::GetComponent () const
 	{
 		return Component_;
 	}

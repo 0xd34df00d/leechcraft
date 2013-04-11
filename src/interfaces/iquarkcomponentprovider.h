@@ -18,23 +18,44 @@
 
 #pragma once
 
+#include <memory>
 #include <QString>
 #include <QUrl>
 #include <QVariant>
+#include <util/sys/paths.h>
 
 class QDeclarativeImageProvider;
 
 namespace LeechCraft
 {
-	struct QuarkComponent
+	class QuarkComponent
 	{
+	public:
 		QUrl Url_;
 		QList<QPair<QString, QObject*>> DynamicProps_;
+		QList<QPair<QString, QObject*>> ContextProps_;
 		QList<QPair<QString, QVariant>> StaticProps_;
 		QList<QPair<QString, QDeclarativeImageProvider*>> ImageProviders_;
+
+		QuarkComponent ()
+		{
+		}
+
+		QuarkComponent (const QString& subdir, const QString& filename)
+		: Url_ (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, subdir, filename)))
+		{
+		}
+
+		~QuarkComponent ()
+		{
+			for (auto pair : ContextProps_)
+				delete pair.second;
+		}
 	};
 
-	typedef QList<QuarkComponent> QuarkComponents_t;
+	typedef std::shared_ptr<QuarkComponent> QuarkComponent_ptr;
+
+	typedef QList<QuarkComponent_ptr> QuarkComponents_t;
 }
 
 class Q_DECL_EXPORT IQuarkComponentProvider

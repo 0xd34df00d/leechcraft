@@ -53,7 +53,6 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
                 hoverEnabled: true
-                z: 2
 
                 onEntered: {
                     var global = commonJS.getTooltipPos(delegateItem);
@@ -72,6 +71,40 @@ Rectangle {
             }
 
             ListView.onRemove: if (tooltip != null) { tooltip.closeRequested(); tooltip = null; }
+
+            ActionButton {
+                id: removeButton
+
+                visible: quarkDisplayRoot.settingsMode
+                opacity: 0
+
+                width: parent.width / 2
+                height: parent.height / 2
+                anchors.top: parent.top
+                anchors.right: parent.right
+
+                actionIconURL: "image://ThemeIcons/list-remove"
+                transparentStyle: true
+
+                onTriggered: HS_plotManager.sensorHideRequested(sensorName, quarkContext)
+
+                states: [
+                    State {
+                        name: "active"
+                        when: quarkDisplayRoot.settingsMode
+                        PropertyChanges { target: removeButton; opacity: 1 }
+                    }
+                ]
+
+                transitions: [
+                    Transition {
+                        from: ""
+                        to: "active"
+                        reversible: true
+                        PropertyAnimation { properties: "opacity"; duration: 200 }
+                    }
+                ]
+            }
         }
     }
 }

@@ -181,7 +181,7 @@ namespace SB2
 			AddComponent (component);
 	}
 
-	void ViewManager::RegisterInternalComponent (const QuarkComponent& c)
+	void ViewManager::RegisterInternalComponent (QuarkComponent_ptr c)
 	{
 		InternalComponents_ << c;
 	}
@@ -227,7 +227,7 @@ namespace SB2
 		AddToRemoved (mgr->GetID ());
 	}
 
-	void ViewManager::UnhideQuark (const QuarkComponent& component, QuarkManager_ptr manager)
+	void ViewManager::UnhideQuark (QuarkComponent_ptr component, QuarkManager_ptr manager)
 	{
 		if (!manager)
 			return;
@@ -246,7 +246,7 @@ namespace SB2
 		SaveQuarkOrder ();
 	}
 
-	QList<QuarkComponent> ViewManager::FindAllQuarks () const
+	QuarkComponents_t ViewManager::FindAllQuarks () const
 	{
 		auto result = InternalComponents_;
 
@@ -284,7 +284,7 @@ namespace SB2
 		return Quark2Manager_ [url];
 	}
 
-	void ViewManager::AddComponent (const QuarkComponent& comp)
+	void ViewManager::AddComponent (QuarkComponent_ptr comp)
 	{
 		QuarkManager_ptr mgr;
 		try
@@ -301,7 +301,7 @@ namespace SB2
 		AddComponent (comp, mgr);
 	}
 
-	void ViewManager::AddComponent (const QuarkComponent& comp, QuarkManager_ptr mgr)
+	void ViewManager::AddComponent (QuarkComponent_ptr comp, QuarkManager_ptr mgr)
 	{
 		if (!mgr->IsValidArea ())
 			return;
@@ -309,10 +309,10 @@ namespace SB2
 		if (RemovedIDs_.contains (mgr->GetID ()))
 			return;
 
-		Quark2Manager_ [comp.Url_] = mgr;
+		Quark2Manager_ [comp->Url_] = mgr;
 
 		auto item = new QStandardItem;
-		item->setData (comp.Url_, ViewItemsModel::Role::SourceURL);
+		item->setData (comp->Url_, ViewItemsModel::Role::SourceURL);
 		item->setData (mgr->HasSettings (), ViewItemsModel::Role::QuarkHasSettings);
 		item->setData (mgr->GetID (), ViewItemsModel::Role::QuarkClass);
 
@@ -343,9 +343,9 @@ namespace SB2
 		}
 	}
 
-	QList<QuarkComponent> ViewManager::ScanRootDir (const QDir& dir) const
+	QuarkComponents_t ViewManager::ScanRootDir (const QDir& dir) const
 	{
-		QList<QuarkComponent> result;
+		QuarkComponents_t result;
 		for (const auto& entry : dir.entryList (QDir::Dirs | QDir::NoDotAndDotDot | QDir::Readable))
 		{
 			QDir quarkDir (dir);
@@ -353,8 +353,8 @@ namespace SB2
 			if (!quarkDir.exists (entry + ".qml"))
 				continue;
 
-			QuarkComponent c;
-			c.Url_ = QUrl::fromLocalFile (quarkDir.absoluteFilePath (entry + ".qml"));
+			QuarkComponent_ptr c (new QuarkComponent);
+			c->Url_ = QUrl::fromLocalFile (quarkDir.absoluteFilePath (entry + ".qml"));
 			result << c;
 		}
 		return result;

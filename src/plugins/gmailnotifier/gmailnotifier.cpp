@@ -77,10 +77,8 @@ namespace GmailNotifier
 				SLOT (notifyAbout (ConvInfos_t)));
 
 		auto manager = new QuarkManager (proxy, this);
-		const auto& quarkPath = Util::GetSysPath (Util::SysPath::QML,
-				"gmailnotifier", "GMQuark.qml");
-		Quark_.Url_ = QUrl::fromLocalFile (quarkPath);
-		Quark_.DynamicProps_ << QPair<QString, QObject*> ("GMN_proxy", manager);
+		Quark_.reset (new QuarkComponent ("gmailnotifier", "GMQuark.qml"));
+		Quark_->DynamicProps_ << QPair<QString, QObject*> ("GMN_proxy", manager);
 
 		connect (GmailChecker_,
 				SIGNAL (gotConversations (ConvInfos_t)),

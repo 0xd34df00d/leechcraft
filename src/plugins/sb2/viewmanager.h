@@ -24,6 +24,7 @@
 #include <QHash>
 #include <QSet>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/iquarkcomponentprovider.h>
 
 class QMainWindow;
 class QDir;
@@ -61,7 +62,7 @@ namespace SB2
 		QSet<QString> RemovedIDs_;
 		QStringList PreviousQuarkOrder_;
 
-		QList<QuarkComponent> InternalComponents_;
+		QuarkComponents_t InternalComponents_;
 	public:
 		ViewManager (ICoreProxy_ptr, Util::ShortcutManager*, QMainWindow*, QObject* = 0);
 
@@ -71,22 +72,22 @@ namespace SB2
 		QRect GetFreeCoords () const;
 
 		void SecondInit ();
-		void RegisterInternalComponent (const QuarkComponent&);
+		void RegisterInternalComponent (QuarkComponent_ptr);
 
 		void ShowSettings (const QUrl&);
 
 		void RemoveQuark (const QUrl& loadedUrl);
 		void RemoveQuark (const QString& id);
-		void UnhideQuark (const QuarkComponent&, QuarkManager_ptr);
+		void UnhideQuark (QuarkComponent_ptr, QuarkManager_ptr);
 		void MoveQuark (int from, int to);
 
-		QList<QuarkComponent> FindAllQuarks () const;
+		QuarkComponents_t FindAllQuarks () const;
 		QList<QUrl> GetAddedQuarks () const;
 		QuarkManager_ptr GetAddedQuarkManager (const QUrl&) const;
 	private:
-		void AddComponent (const QuarkComponent&);
-		void AddComponent (const QuarkComponent&, QuarkManager_ptr);
-		QList<QuarkComponent> ScanRootDir (const QDir&) const;
+		void AddComponent (QuarkComponent_ptr);
+		void AddComponent (QuarkComponent_ptr, QuarkManager_ptr);
+		QuarkComponents_t ScanRootDir (const QDir&) const;
 
 		void AddToRemoved (const QString&);
 		void RemoveFromRemoved (const QString&);

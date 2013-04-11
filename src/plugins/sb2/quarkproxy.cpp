@@ -109,7 +109,7 @@ namespace SB2
 		for (const auto& existing : Manager_->GetAddedQuarks ())
 		{
 			const auto pos = std::find_if (toAdd.begin (), toAdd.end (),
-					[&existing] (decltype (toAdd.at (0)) item) { return item.Url_ == existing; });
+					[&existing] (decltype (toAdd.at (0)) item) { return item->Url_ == existing; });
 			if (pos == toAdd.end ())
 				continue;
 

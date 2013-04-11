@@ -46,7 +46,7 @@ namespace SB2
 		ICoreProxy_ptr Proxy_;
 		ICoreTabWidget *ICTW_;
 		QStandardItemModel *Model_;
-		QuarkComponent Component_;
+		QuarkComponent_ptr Component_;
 
 		ViewManager *View_;
 
@@ -63,7 +63,7 @@ namespace SB2
 	public:
 		LauncherComponent (ICoreTabWidget*, ICoreProxy_ptr, ViewManager*, QObject* = 0);
 
-		QuarkComponent GetComponent () const;
+		QuarkComponent_ptr GetComponent () const;
 	private:
 		void SaveHiddenTCs () const;
 		void LoadHiddenTCs ();

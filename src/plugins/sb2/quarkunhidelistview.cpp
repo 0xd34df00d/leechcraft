@@ -29,7 +29,7 @@ namespace LeechCraft
 {
 namespace SB2
 {
-	QuarkUnhideListView::QuarkUnhideListView (const QList<QuarkComponent>& components,
+	QuarkUnhideListView::QuarkUnhideListView (const QuarkComponents_t& components,
 			ViewManager *viewMgr, const QPoint& orig, ICoreProxy_ptr proxy, QWidget *parent)
 	: UnhideListViewBase (orig, viewMgr, proxy, parent)
 	, ViewManager_ (viewMgr)
@@ -46,7 +46,7 @@ namespace SB2
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "error creating manager for quark"
-						<< comp.Url_;
+						<< comp->Url_;
 				continue;
 			}
 

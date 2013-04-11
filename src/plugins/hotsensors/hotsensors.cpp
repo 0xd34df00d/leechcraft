@@ -44,9 +44,11 @@ namespace HotSensors
 				SLOT (handleHistoryUpdated (ReadingsHistory_t)));
 
 		const auto& path = Util::GetSysPath (Util::SysPath::QML, "hotsensors", "HSQuark.qml");
-		Component_.Url_ = QUrl::fromLocalFile (path);
-		Component_.DynamicProps_.append ({ "HS_sensorsModel", PlotMgr_->GetModel () });
-		Component_.ImageProviders_.append ({ "HS_sensorsGraph", PlotMgr_->GetImageProvider () });
+
+		Component_.reset (new QuarkComponent);
+		Component_->Url_ = QUrl::fromLocalFile (path);
+		Component_->DynamicProps_.append ({ "HS_sensorsModel", PlotMgr_->GetModel () });
+		Component_->DynamicProps_.append ({ "HS_plotManager", PlotMgr_.get () });
 	}
 
 	void Plugin::SecondInit ()
