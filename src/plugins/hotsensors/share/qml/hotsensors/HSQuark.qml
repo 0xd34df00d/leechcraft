@@ -17,12 +17,14 @@ Rectangle {
 
     Common { id: commonJS }
 
+    Component.onCompleted: HS_plotManager.setContext(quarkContext)
+
     ListView {
         id: sensorsView
         anchors.fill: parent
         boundsBehavior: Flickable.StopAtBounds
 
-        model: HS_sensorsModel
+        model: HS_plotManager.getModel()
 
         orientation: viewOrient == "vertical" ? ListView.Vertical : ListView.Horizontal
 
@@ -86,7 +88,7 @@ Rectangle {
                 actionIconURL: "image://ThemeIcons/list-remove"
                 transparentStyle: true
 
-                onTriggered: HS_plotManager.sensorHideRequested(sensorName, quarkContext)
+                onTriggered: HS_plotManager.hideSensor(sensorName)
 
                 states: [
                     State {
