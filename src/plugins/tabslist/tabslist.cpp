@@ -78,7 +78,8 @@ namespace TabsList
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		static QIcon icon (":/tabslist/resources/images/tabslist.svg");
+		return icon;
 	}
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace aep) const
