@@ -111,7 +111,8 @@ namespace HotStreams
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		static QIcon icon (":/hotstreams/resources/images/hotstreams.svg");
+		return icon;
 	}
 
 	QList<QStandardItem*> Plugin::GetRadioListItems () const
