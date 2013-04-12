@@ -41,7 +41,6 @@ namespace UDisks
 	{
 		Q_OBJECT
 
-		bool Valid_;
 		QStandardItemModel *DevicesModel_;
 
 		QDBusInterface *UDisksObj_;
@@ -50,7 +49,9 @@ namespace UDisks
 	public:
 		Backend (QObject* = 0);
 
-		bool IsValid () const;
+		QString GetBackendName () const;
+		bool IsAvailable ();
+		void Start ();
 
 		QAbstractItemModel* GetDevicesModel () const;
 		void MountDevice (const QString&);

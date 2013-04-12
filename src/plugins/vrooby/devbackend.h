@@ -36,7 +36,9 @@ namespace Vrooby
 	public:
 		DevBackend (QObject* = 0);
 
-		virtual bool IsValid () const = 0;
+		virtual QString GetBackendName () const = 0;
+		virtual bool IsAvailable () = 0;
+		virtual void Start () = 0;
 	public slots:
 		virtual void toggleMount (const QString&) = 0;
 	signals:

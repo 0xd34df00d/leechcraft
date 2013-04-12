@@ -27,6 +27,5 @@ namespace Vrooby
 	: QObject (parent)
 	{
 	}
-
 }
 }
