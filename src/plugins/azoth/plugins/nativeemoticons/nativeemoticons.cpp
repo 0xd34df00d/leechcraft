@@ -60,7 +60,7 @@ namespace NativeEmoticons
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/azoth/nativeemoticons/resources/images/nativeemoicons.svg");
+		static QIcon icon (":/azoth/nativeemoticons/resources/images/nativeemoticons.svg");
 		return icon;
 	}
 
