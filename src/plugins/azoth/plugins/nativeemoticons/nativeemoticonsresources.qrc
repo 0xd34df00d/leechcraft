@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/azoth/nativeemoticons" >
+    <file>resources/images/nativeemoticons.svg</file>
+  </qresource>
+</RCC>
