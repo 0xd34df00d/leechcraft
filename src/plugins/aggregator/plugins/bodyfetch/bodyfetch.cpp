@@ -121,7 +121,8 @@ namespace BodyFetch
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		static QIcon icon (":/aggregator/bodyfetch/resources/images/bodyfetch.svg");
+		return icon;
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
