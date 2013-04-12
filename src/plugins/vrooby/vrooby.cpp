@@ -24,12 +24,12 @@
 
 #ifdef ENABLE_UDISKS
 #include "backends/udisks/udisksbackend.h"
-#elif defined (ENABLE_UDISKS2)
+#endif
+#ifdef ENABLE_UDISKS2
 #include "backends/udisks2/udisks2backend.h"
-#else
-#include "devbackend.h"
 #endif
 
+#include "devbackend.h"
 #include "trayview.h"
 
 namespace LeechCraft
@@ -40,34 +40,59 @@ namespace Vrooby
 	{
 		Util::InstallTranslator ("vrooby");
 
-		Backend_ = 0;
 		TrayView_ = new TrayView (proxy);
 
+		QList<std::shared_ptr<DevBackend>> candidates;
+
+#ifdef ENABLE_UDISKS2
+		candidates << std::make_shared<UDisks2::Backend> (this);
+#endif
 #ifdef ENABLE_UDISKS
-		Backend_ = new UDisks::Backend (this);
-#elif defined (ENABLE_UDISKS2)
-		Backend_ = new UDisks2::Backend (this);
+		candidates << std::make_shared<UDisks::Backend> (this);
 #endif
 
-		if (Backend_)
-			connect (Backend_,
-					SIGNAL (gotEntity (LeechCraft::Entity)),
-					this,
-					SIGNAL (gotEntity (LeechCraft::Entity)));
-		else
-			return;
+		QStringList allBackends;
+		for (const auto& cand : candidates)
+		{
+			allBackends << cand->GetBackendName ();
+			if (cand->IsAvailable ())
+			{
+				qDebug () << Q_FUNC_INFO
+						<< "selecting"
+						<< cand->GetBackendName ();
+				Backend_ = cand;
+				break;
+			}
+		}
 
-		TrayView_->SetBackend (Backend_);
+		if (!Backend_)
+		{
+			const auto& e = Util::MakeNotification ("Vrooby",
+					tr ("No backends are available, tried the following: %1.")
+						.arg (allBackends.join ("; ")),
+					PCritical_);
+			QMetaObject::invokeMethod (this,
+					"gotEntity",
+					Qt::QueuedConnection,
+					Q_ARG (LeechCraft::Entity, e));
+		}
+	}
+
+	void Plugin::SecondInit ()
+	{
+		Backend_->Start ();
+		connect (Backend_.get (),
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)));
+
+		TrayView_->SetBackend (Backend_.get ());
 		connect (TrayView_,
 				SIGNAL (hasItemsChanged ()),
 				this,
 				SLOT (checkAction ()));
 
 		checkAction ();
-	}
-
-	void Plugin::SecondInit ()
-	{
 	}
 
 	QByteArray Plugin::GetUniqueID () const
