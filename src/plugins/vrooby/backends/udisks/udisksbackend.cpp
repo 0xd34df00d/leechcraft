@@ -148,8 +148,9 @@ namespace UDisks
 
 		const auto& slaveTo = iface->property ("PartitionSlave").value<QDBusObjectPath> ();
 		const bool isSlave = slaveTo.path () != "/";
-		const bool isRemovable = iface->property ("DeviceIsRemovable").toBool ();
-		qDebug () << str << slaveTo.path () << isSlave;
+		const bool isRemovable = iface->property ("DeviceIsRemovable").toBool () ||
+				iface->property ("DriveCanDetach").toBool ();
+		qDebug () << str << slaveTo.path () << isSlave << isRemovable;
 		if ((!isSlave && !isRemovable) || Unremovables_.contains (slaveTo.path ()))
 		{
 			Unremovables_ << str;
@@ -204,7 +205,8 @@ namespace UDisks
 		if (!item)
 			return;
 
-		const bool isRemovable = iface->property ("DeviceIsRemovable").toBool ();
+		const bool isRemovable = iface->property ("DeviceIsRemovable").toBool () ||
+				iface->property ("DriveCanDetach").toBool ();
 		const bool isPartition = iface->property ("DeviceIsPartition").toBool ();
 
 		const auto& vendor = iface->property ("DriveVendor").toString () +
