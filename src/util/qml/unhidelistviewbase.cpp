@@ -63,6 +63,15 @@ namespace Util
 				SIGNAL (closeRequested ()),
 				this,
 				SLOT (deleteLater ()));
+		connect (rootObject (),
+				SIGNAL (itemUnhideRequested (QString)),
+				this,
+				SIGNAL (itemUnhideRequested (QString)));
+	}
+
+	void UnhideListViewBase::SetItems (const QList<QStandardItem*>& items)
+	{
+		Model_->invisibleRootItem ()->appendRows (items);
 	}
 }
 }

@@ -19,9 +19,11 @@
 #pragma once
 
 #include <QDeclarativeView>
+#include <QList>
 #include <util/utilconfig.h>
 #include <interfaces/core/icoreproxy.h>
 
+class QStandardItem;
 class QStandardItemModel;
 
 namespace LeechCraft
@@ -35,6 +37,10 @@ namespace Util
 		QStandardItemModel *Model_;
 	public:
 		UnhideListViewBase (ICoreProxy_ptr, QWidget* = 0);
+
+		void SetItems (const QList<QStandardItem*>&);
+	signals:
+		void itemUnhideRequested (const QString&);
 	};
 }
 }
