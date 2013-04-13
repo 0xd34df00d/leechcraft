@@ -24,6 +24,7 @@
 #include <QtDebug>
 #include <util/qml/unhidelistviewbase.h>
 #include <util/qml/unhidelistmodel.h>
+#include <util/gui/autoresizemixin.h>
 #include "plotmanager.h"
 #include "sensorsgraphmodel.h"
 
@@ -99,7 +100,7 @@ namespace HotSensors
 		return Filter_;
 	}
 
-	void ContextWrapper::sensorUnhideListRequested (int x, int y)
+	void ContextWrapper::sensorUnhideListRequested (int x, int y, const QRect& rect)
 	{
 		QList<QStandardItem*> items;
 		for (const auto& name : LoadHiddenNames ())
@@ -107,7 +108,7 @@ namespace HotSensors
 			auto item = new QStandardItem;
 			item->setData (name, Util::UnhideListModel::ItemClass);
 			item->setData (name, Util::UnhideListModel::ItemName);
-			item->setData (QIcon (), Util::UnhideListModel::ItemIcon);
+			item->setData (QUrl (), Util::UnhideListModel::ItemIcon);
 			item->setData (QString (), Util::UnhideListModel::ItemDescription);
 			items << item;
 		}
@@ -120,6 +121,7 @@ namespace HotSensors
 				SIGNAL (itemUnhideRequested (QString)),
 				this,
 				SLOT (unhideSensor (QString)));
+		new Util::AutoResizeMixin ({ x, y }, [rect] () { return rect; }, list);
 		list->show ();
 	}
 

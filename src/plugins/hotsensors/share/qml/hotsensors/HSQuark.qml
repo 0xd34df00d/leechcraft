@@ -31,7 +31,7 @@ Rectangle {
 
         actionIconURL: "image://ThemeIcons/list-add"
 
-        onTriggered: commonJS.showTooltip(addSensorButton, function(x, y) { HS_plotManager.sensorUnhideListRequested(x, y) })
+        onTriggered: commonJS.showTooltip(addSensorButton, function(x, y) { HS_plotManager.sensorUnhideListRequested(x, y, quarkProxy.getWinRect()) })
     }
 
     ListView {

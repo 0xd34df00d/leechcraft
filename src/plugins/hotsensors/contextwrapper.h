@@ -47,7 +47,7 @@ namespace HotSensors
 		void setContext (const QString&);
 		QObject* getModel () const;
 
-		void sensorUnhideListRequested (int x, int y);
+		void sensorUnhideListRequested (int x, int y, const QRect&);
 		void unhideSensor (const QString&);
 		void hideSensor (const QString&);
 	};
