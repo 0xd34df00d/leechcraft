@@ -18,25 +18,27 @@
 
 #pragma once
 
+#include <functional>
 #include <QObject>
 #include <QPoint>
+#include <QRect>
 
 class QDeclarativeView;
-class QSize;
 
 namespace LeechCraft
 {
 namespace SB2
 {
-	class ViewManager;
-
 	class AutoResizeMixin : public QObject
 	{
 		const QPoint OrigPoint_;
-		ViewManager * const ViewMgr_;
 		QDeclarativeView * const View_;
 	public:
-		AutoResizeMixin (const QPoint&, ViewManager*, QDeclarativeView*);
+		typedef std::function<QRect ()> RectGetter_f;
+	private:
+		const RectGetter_f Rect_;
+	public:
+		AutoResizeMixin (const QPoint&, RectGetter_f, QDeclarativeView*);
 
 		bool eventFilter (QObject*, QEvent*);
 	private:

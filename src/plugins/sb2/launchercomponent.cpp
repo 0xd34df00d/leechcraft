@@ -303,7 +303,7 @@ namespace SB2
 		}
 
 		auto list = new TabUnhideListView (tcs, Proxy_);
-		new AutoResizeMixin ({ x, y }, View_, list);
+		new AutoResizeMixin ({ x, y }, [this] () { return View_->GetFreeCoords (); }, list);
 		list->show ();
 		list->setFocus ();
 		connect (list,

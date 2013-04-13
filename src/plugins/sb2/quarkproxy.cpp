@@ -121,7 +121,7 @@ namespace SB2
 			return;
 
 		auto unhide = new QuarkUnhideListView (toAdd, Manager_, Proxy_, Manager_->GetView ());
-		new AutoResizeMixin ({ x, y }, Manager_, unhide);
+		new AutoResizeMixin ({ x, y }, [this] () { return Manager_->GetFreeCoords (); }, unhide);
 		unhide->show ();
 	}
 

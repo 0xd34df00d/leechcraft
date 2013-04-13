@@ -20,17 +20,16 @@
 #include <QDeclarativeView>
 #include <QResizeEvent>
 #include <util/gui/util.h>
-#include "viewmanager.h"
 
 namespace LeechCraft
 {
 namespace SB2
 {
-	AutoResizeMixin::AutoResizeMixin (const QPoint& point, ViewManager *viewMgr, QDeclarativeView *view)
+	AutoResizeMixin::AutoResizeMixin (const QPoint& point, RectGetter_f size, QDeclarativeView *view)
 	: QObject (view)
 	, OrigPoint_ (point)
-	, ViewMgr_ (viewMgr)
 	, View_ (view)
+	, Rect_ (size)
 	{
 		View_->installEventFilter (this);
 
@@ -50,7 +49,7 @@ namespace SB2
 	void AutoResizeMixin::Refit (const QSize& size)
 	{
 		const auto& pos = Util::FitRect (OrigPoint_,
-				size, ViewMgr_->GetFreeCoords (), Util::FitFlag::NoOverlap);
+				size, Rect_ (), Util::FitFlag::NoOverlap);
 		View_->move (pos);
 	}
 }
