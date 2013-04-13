@@ -22,6 +22,8 @@
 #include <QStringList>
 #include <QCoreApplication>
 #include <QtDebug>
+#include <util/qml/unhidelistviewbase.h>
+#include <util/qml/unhidelistmodel.h>
 #include "plotmanager.h"
 #include "sensorsgraphmodel.h"
 
@@ -58,8 +60,9 @@ namespace HotSensors
 		}
 	};
 
-	ContextWrapper::ContextWrapper (PlotManager *manager)
+	ContextWrapper::ContextWrapper (PlotManager *manager, ICoreProxy_ptr proxy)
 	: QObject (manager)
+	, Proxy_ (proxy)
 	, Filter_ (new SensorsFilterModel (this))
 	{
 		Filter_->setDynamicSortFilter (true);
@@ -94,6 +97,40 @@ namespace HotSensors
 	QObject* ContextWrapper::getModel () const
 	{
 		return Filter_;
+	}
+
+	void ContextWrapper::sensorUnhideListRequested (int x, int y)
+	{
+		QList<QStandardItem*> items;
+		for (const auto& name : LoadHiddenNames ())
+		{
+			auto item = new QStandardItem;
+			item->setData (name, Util::UnhideListModel::ItemClass);
+			item->setData (name, Util::UnhideListModel::ItemName);
+			item->setData (QIcon (), Util::UnhideListModel::ItemIcon);
+			item->setData (QString (), Util::UnhideListModel::ItemDescription);
+			items << item;
+		}
+		if (items.isEmpty ())
+			return;
+
+		auto list = new Util::UnhideListViewBase (Proxy_);
+		list->SetItems (items);
+		connect (list,
+				SIGNAL (itemUnhideRequested (QString)),
+				this,
+				SLOT (unhideSensor (QString)));
+		list->show ();
+	}
+
+	void ContextWrapper::unhideSensor (const QString& name)
+	{
+		auto list = LoadHiddenNames ();
+		if (!list.removeAll (name))
+			return;
+
+		SaveHiddenNames (list);
+		Filter_->SetHidden (list);
 	}
 
 	void ContextWrapper::hideSensor (const QString& name)

@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QObject>
+#include <interfaces/core/icoreproxy.h>
 
 class QAbstractItemModel;
 
@@ -33,16 +34,21 @@ namespace HotSensors
 	{
 		Q_OBJECT
 
+		const ICoreProxy_ptr Proxy_;
+
 		QString Context_;
 		SensorsFilterModel *Filter_;
 	public:
-		ContextWrapper (PlotManager*);
+		ContextWrapper (PlotManager*, ICoreProxy_ptr);
 	private:
 		QStringList LoadHiddenNames () const;
 		void SaveHiddenNames (const QStringList&) const;
 	public slots:
 		void setContext (const QString&);
 		QObject* getModel () const;
+
+		void sensorUnhideListRequested (int x, int y);
+		void unhideSensor (const QString&);
 		void hideSensor (const QString&);
 	};
 }
