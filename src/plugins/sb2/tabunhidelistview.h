@@ -30,7 +30,7 @@ namespace SB2
 	{
 		Q_OBJECT
 	public:
-		TabUnhideListView (const QList<TabClassInfo>&, ICoreProxy_ptr, QWidget* = 0);
+		TabUnhideListView (const QList<TabClassInfo>&, const QPoint&, ViewManager*, ICoreProxy_ptr, QWidget* = 0);
 	private slots:
 		void unhide (const QString&);
 	signals:

@@ -60,10 +60,10 @@ namespace AdvancedNotifications
 				this,
 				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)));
 
-		Component_.Url_ = QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, "advancednotifications", "ANQuark.qml"));
-		Component_.StaticProps_.push_back ({ "AN_quarkTooltip", tr ("Toggle Advanced Notifications rules...") });
-		Component_.DynamicProps_.push_back ({ "AN_rulesManager", Core::Instance ().GetRulesManager () });
-		Component_.DynamicProps_.push_back ({ "AN_proxy", new QuarkProxy });
+		Component_.reset (new QuarkComponent ("advancednotifications", "ANQuark.qml"));
+		Component_->StaticProps_.push_back ({ "AN_quarkTooltip", tr ("Toggle Advanced Notifications rules...") });
+		Component_->DynamicProps_.push_back ({ "AN_rulesManager", Core::Instance ().GetRulesManager () });
+		Component_->DynamicProps_.push_back ({ "AN_proxy", new QuarkProxy });
 	}
 
 	void Plugin::SecondInit ()

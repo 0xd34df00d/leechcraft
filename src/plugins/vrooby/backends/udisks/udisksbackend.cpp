@@ -38,9 +38,35 @@ namespace UDisks
 {
 	Backend::Backend (QObject *parent)
 	: DevBackend (parent)
-	, Valid_ (false)
 	, DevicesModel_ (new QStandardItemModel (this))
 	, UDisksObj_ (0)
+	{
+	}
+
+	QString Backend::GetBackendName () const
+	{
+		return "UDisks";
+	}
+
+	bool Backend::IsAvailable ()
+	{
+		auto sb = QDBusConnection::systemBus ();
+		auto iface = sb.interface ();
+
+		const QRegExp filterRx ("^org.freedesktop.UDisks$");
+		auto services = iface->registeredServiceNames ().value ().filter (filterRx);
+		if (services.isEmpty ())
+		{
+			iface->startService ("org.freedesktop.UDisks");
+			services = iface->registeredServiceNames ().value ().filter (filterRx);
+			if (services.isEmpty ())
+				return false;
+		}
+
+		return true;
+	}
+
+	void Backend::Start ()
 	{
 		QTimer::singleShot (1000,
 				this,
@@ -52,11 +78,6 @@ namespace UDisks
 				this,
 				SLOT (updateDeviceSpaces ()));
 		timer->start (10000);
-	}
-
-	bool Backend::IsValid () const
-	{
-		return Valid_;
 	}
 
 	QAbstractItemModel* Backend::GetDevicesModel () const
@@ -94,26 +115,6 @@ namespace UDisks
 	void Backend::InitialEnumerate ()
 	{
 		auto sb = QDBusConnection::systemBus ();
-		auto iface = sb.interface ();
-
-		const QRegExp filterRx ("^org.freedesktop.UDisks$");
-		auto services = iface->registeredServiceNames ().value ().filter (filterRx);
-		if (services.isEmpty ())
-		{
-			auto reply = iface->startService ("org.freedesktop.UDisks");
-			if (reply.error ().isValid () && reply.error ().type () == QDBusError::ServiceUnknown)
-			{
-				const auto& e = Util::MakeNotification ("Vrooby",
-						tr ("Unable to stat UDisks service. Please make sure you have UDisks installed or switch to UDisks2."),
-						PCritical_);
-				emit gotEntity (e);
-				return;
-			}
-
-			services = iface->registeredServiceNames ().value ().filter (filterRx);
-			if (services.isEmpty ())
-				return;
-		}
 
 		UDisksObj_ = new QDBusInterface ("org.freedesktop.UDisks", "/org/freedesktop/UDisks", "org.freedesktop.UDisks", sb);
 		auto async = UDisksObj_->asyncCall ("EnumerateDevices");
@@ -147,8 +148,9 @@ namespace UDisks
 
 		const auto& slaveTo = iface->property ("PartitionSlave").value<QDBusObjectPath> ();
 		const bool isSlave = slaveTo.path () != "/";
-		const bool isRemovable = iface->property ("DeviceIsRemovable").toBool ();
-		qDebug () << str << slaveTo.path () << isSlave;
+		const bool isRemovable = iface->property ("DeviceIsRemovable").toBool () ||
+				iface->property ("DriveCanDetach").toBool ();
+		qDebug () << str << slaveTo.path () << isSlave << isRemovable;
 		if ((!isSlave && !isRemovable) || Unremovables_.contains (slaveTo.path ()))
 		{
 			Unremovables_ << str;
@@ -203,7 +205,8 @@ namespace UDisks
 		if (!item)
 			return;
 
-		const bool isRemovable = iface->property ("DeviceIsRemovable").toBool ();
+		const bool isRemovable = iface->property ("DeviceIsRemovable").toBool () ||
+				iface->property ("DriveCanDetach").toBool ();
 		const bool isPartition = iface->property ("DeviceIsPartition").toBool ();
 
 		const auto& vendor = iface->property ("DriveVendor").toString () +
@@ -361,7 +364,6 @@ namespace UDisks
 		QDBusPendingReply<QList<QDBusObjectPath>> reply = *watcher;
 		if (reply.isError ())
 		{
-			Valid_ = false;
 			qWarning () << reply.error ().message ();
 			return;
 		}

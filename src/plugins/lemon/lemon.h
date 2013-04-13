@@ -38,7 +38,7 @@ namespace Lemon
 		Q_INTERFACES (IInfo IQuarkComponentProvider)
 
 		TrafficManager *TrafficMgr_;
-		QuarkComponent PanelComponent_;
+		QuarkComponent_ptr PanelComponent_;
 
 		QMap<QString, QPointer<TrafficDialog>> Iface2Dialog_;
 	public:

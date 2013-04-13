@@ -23,11 +23,10 @@
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/iquarkcomponentprovider.h>
 
 namespace LeechCraft
 {
-struct QuarkComponent;
-
 namespace SB2
 {
 	class ViewManager;
@@ -38,6 +37,7 @@ namespace SB2
 		ViewManager * const ViewMgr_;
 		ICoreProxy_ptr Proxy_;
 
+		const QuarkComponent_ptr Component_;
 		const QUrl URL_;
 
 		Util::XmlSettingsDialog_ptr XSD_;
@@ -49,7 +49,7 @@ namespace SB2
 		QString Description_;
 		QStringList Areas_;
 	public:
-		QuarkManager (const QuarkComponent&, ViewManager*, ICoreProxy_ptr);
+		QuarkManager (QuarkComponent_ptr, ViewManager*, ICoreProxy_ptr);
 
 		QString GetID () const;
 		QString GetName () const;

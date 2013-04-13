@@ -31,7 +31,6 @@ namespace LeechCraft
 namespace HotSensors
 {
 	class SensorsManager;
-	class SensorsGraphProvider;
 
 	class PlotManager : public QObject
 	{
@@ -39,14 +38,14 @@ namespace HotSensors
 
 		std::weak_ptr<SensorsManager> SensorsMgr_;
 		QStandardItemModel *Model_;
-		SensorsGraphProvider *GraphProvider_;
 
 		int UpdateCounter_;
 	public:
 		PlotManager (std::weak_ptr<SensorsManager>, QObject* = 0);
 
 		QAbstractItemModel* GetModel () const;
-		QDeclarativeImageProvider* GetImageProvider () const;
+
+		QObject* CreateContextWrapper ();
 	public slots:
 		void handleHistoryUpdated (const ReadingsHistory_t&);
 	};

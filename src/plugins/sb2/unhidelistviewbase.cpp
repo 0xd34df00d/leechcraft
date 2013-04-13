@@ -26,16 +26,19 @@
 #include <util/gui/unhoverdeletemixin.h>
 #include <util/sys/paths.h>
 #include "unhidelistmodel.h"
+#include "autoresizemixin.h"
 
 namespace LeechCraft
 {
 namespace SB2
 {
-	UnhideListViewBase::UnhideListViewBase (ICoreProxy_ptr proxy, QWidget *parent)
+	UnhideListViewBase::UnhideListViewBase (const QPoint& orig,
+			ViewManager *viewMgr, ICoreProxy_ptr proxy, QWidget *parent)
 	: QDeclarativeView (parent)
 	, Model_ (new UnhideListModel (this))
 	{
 		new Util::UnhoverDeleteMixin (this);
+		new AutoResizeMixin (orig, viewMgr, this);
 
 		const auto& file = Util::GetSysPath (Util::SysPath::QML, "sb2", "UnhideListView.qml");
 		if (file.isEmpty ())

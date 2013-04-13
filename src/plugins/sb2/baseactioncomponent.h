@@ -40,7 +40,7 @@ namespace SB2
 	protected:
 		ICoreProxy_ptr Proxy_;
 		QStandardItemModel *Model_;
-		QuarkComponent Component_;
+		QuarkComponent_ptr Component_;
 
 		ActionImageProvider *ImageProv_;
 
@@ -63,7 +63,7 @@ namespace SB2
 	public:
 		BaseActionComponent (const ComponentInfo& info, ICoreProxy_ptr, SBView*, QObject* parent = 0);
 
-		QuarkComponent GetComponent () const;
+		QuarkComponent_ptr GetComponent () const;
 
 		virtual void AddActions (QList<QAction*>, ActionPos);
 		virtual void RemoveAction (QAction*);

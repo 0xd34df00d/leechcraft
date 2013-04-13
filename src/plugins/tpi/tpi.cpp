@@ -34,10 +34,9 @@ namespace TPI
 
 		ModelMgr_ = new InfoModelManager (proxy);
 
-		QuarkComponent comp;
-		comp.Url_ = QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, "tpi", "TPIQuark.qml"));
-		comp.DynamicProps_ << QPair<QString, QObject*> ("TPI_infoModel", ModelMgr_->GetModel ());
-		comp.DynamicProps_ << QPair<QString, QObject*> ("TPI_proxy", this);
+		QuarkComponent_ptr comp (new QuarkComponent ("tpi", "TPIQuark.qml"));
+		comp->DynamicProps_ << QPair<QString, QObject*> ("TPI_infoModel", ModelMgr_->GetModel ());
+		comp->DynamicProps_ << QPair<QString, QObject*> ("TPI_proxy", this);
 		Components_ << comp;
 	}
 

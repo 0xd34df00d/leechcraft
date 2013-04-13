@@ -49,7 +49,7 @@ namespace GmailNotifier
 
 		Notifier *Notifier_;
 
-		QuarkComponent Quark_;
+		QuarkComponent_ptr Quark_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();

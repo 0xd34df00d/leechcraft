@@ -42,7 +42,7 @@ namespace HotSensors
 		std::unique_ptr<HistoryManager> HistoryMgr_;
 		std::unique_ptr<PlotManager> PlotMgr_;
 
-		QuarkComponent Component_;
+		QuarkComponent ComponentTemplate_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

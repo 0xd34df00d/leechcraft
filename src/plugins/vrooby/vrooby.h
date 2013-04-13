@@ -39,7 +39,7 @@ namespace Vrooby
 		Q_OBJECT
 		Q_INTERFACES (IInfo IRemovableDevManager IActionsExporter)
 
-		DevBackend *Backend_;
+		std::shared_ptr<DevBackend> Backend_;
 		std::shared_ptr<QAction> ActionDevices_;
 		TrayView *TrayView_;
 	public:

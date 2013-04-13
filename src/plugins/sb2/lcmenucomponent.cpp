@@ -49,10 +49,9 @@ namespace SB2
 	LCMenuComponent::LCMenuComponent (IMWProxy *proxy, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
+	, Component_ (QuarkComponent ("sb2", "LCMenuComponent.qml"))
 	{
-		Component_.Url_ = QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, "sb2", "LCMenuComponent.qml"));
 		Component_.DynamicProps_.append ({ "SB2_menuComponentProxy", this });
-
 		Component_.StaticProps_.append ({ "SB2_menuComponentLCIcon", "image://" + ImageProviderID + "/icon" });
 		Component_.StaticProps_.append ({ "SB2_menuTooltipString", tr ("LeechCraft menu") });
 		Component_.ImageProviders_.append ({ ImageProviderID, new LCMenuImageProvider });
@@ -60,9 +59,9 @@ namespace SB2
 		Proxy_->HideMainMenu ();
 	}
 
-	QuarkComponent LCMenuComponent::GetComponent () const
+	QuarkComponent_ptr LCMenuComponent::GetComponent () const
 	{
-		return Component_;
+		return QuarkComponent_ptr (new QuarkComponent (Component_));
 	}
 
 	void LCMenuComponent::execMenu ()

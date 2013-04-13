@@ -43,7 +43,6 @@ namespace UDisks2
 	{
 		Q_OBJECT
 
-		bool Valid_;
 		QStandardItemModel *DevicesModel_;
 
 		org::freedesktop::DBus::ObjectManager *UDisksObj_;
@@ -52,7 +51,9 @@ namespace UDisks2
 	public:
 		Backend (QObject* = 0);
 
-		bool IsValid () const;
+		QString GetBackendName () const;
+		bool IsAvailable ();
+		void Start ();
 
 		QAbstractItemModel* GetDevicesModel () const;
 		void MountDevice (const QString&);

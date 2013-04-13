@@ -43,10 +43,7 @@ namespace HotSensors
 				PlotMgr_.get (),
 				SLOT (handleHistoryUpdated (ReadingsHistory_t)));
 
-		const auto& path = Util::GetSysPath (Util::SysPath::QML, "hotsensors", "HSQuark.qml");
-		Component_.Url_ = QUrl::fromLocalFile (path);
-		Component_.DynamicProps_.append ({ "HS_sensorsModel", PlotMgr_->GetModel () });
-		Component_.ImageProviders_.append ({ "HS_sensorsGraph", PlotMgr_->GetImageProvider () });
+		ComponentTemplate_ = QuarkComponent ("hotsensors", "HSQuark.qml");
 	}
 
 	void Plugin::SecondInit ()
@@ -80,7 +77,9 @@ namespace HotSensors
 
 	QuarkComponents_t Plugin::GetComponents () const
 	{
-		return { Component_ };
+		QuarkComponent_ptr component (new QuarkComponent (ComponentTemplate_));
+		component->ContextProps_.append ({ "HS_plotManager", PlotMgr_->CreateContextWrapper () });
+		return { component };
 	}
 }
 }

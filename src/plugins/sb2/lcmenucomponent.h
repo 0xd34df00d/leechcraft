@@ -35,7 +35,7 @@ namespace SB2
 	public:
 		LCMenuComponent (IMWProxy*, QObject* = 0);
 
-		QuarkComponent GetComponent () const;
+		QuarkComponent_ptr GetComponent () const;
 	public slots:
 		void execMenu ();
 	};

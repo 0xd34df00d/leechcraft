@@ -41,9 +41,36 @@ namespace UDisks2
 {
 	Backend::Backend (QObject *parent)
 	: DevBackend (parent)
-	, Valid_ (false)
 	, DevicesModel_ (new QStandardItemModel (this))
 	, UDisksObj_ (0)
+	{
+	}
+
+	QString Backend::GetBackendName () const
+	{
+		return "UDisks2";
+	}
+
+	bool Backend::IsAvailable ()
+	{
+		auto sb = QDBusConnection::systemBus ();
+		auto iface = sb.interface ();
+
+		auto services = iface->registeredServiceNames ()
+				.value ().filter ("org.freedesktop.UDisks2");
+		if (services.isEmpty ())
+		{
+			iface->startService ("org.freedesktop.UDisks2");
+			services = iface->registeredServiceNames ()
+					.value ().filter ("org.freedesktop.UDisks2");
+			if (services.isEmpty ())
+				return false;
+		}
+
+		return true;
+	}
+
+	void Backend::Start ()
 	{
 		qDBusRegisterMetaType<VariantMapMap_t> ();
 		qDBusRegisterMetaType<EnumerationResult_t> ();
@@ -57,11 +84,6 @@ namespace UDisks2
 				this,
 				SLOT (updateDeviceSpaces ()));
 		timer->start (10000);
-	}
-
-	bool Backend::IsValid () const
-	{
-		return Valid_;
 	}
 
 	QAbstractItemModel* Backend::GetDevicesModel () const
@@ -130,19 +152,10 @@ namespace UDisks2
 
 	void Backend::InitialEnumerate ()
 	{
-		auto sb = QDBusConnection::systemBus ();
-		auto iface = sb.interface ();
+		if (!IsAvailable ())
+			return;
 
-		auto services = iface->registeredServiceNames ()
-				.value ().filter ("org.freedesktop.UDisks2");
-		if (services.isEmpty ())
-		{
-			iface->startService ("org.freedesktop.UDisks2");
-			services = iface->registeredServiceNames ()
-					.value ().filter ("org.freedesktop.UDisks2");
-			if (services.isEmpty ())
-				return;
-		}
+		auto sb = QDBusConnection::systemBus ();
 
 		UDisksObj_ = new org::freedesktop::DBus::ObjectManager ("org.freedesktop.UDisks2", "/org/freedesktop/UDisks2", sb);
 		auto reply = UDisksObj_->GetManagedObjects ();
@@ -421,7 +434,6 @@ namespace UDisks2
 		QDBusPendingReply<EnumerationResult_t> reply = *watcher;
 		if (reply.isError ())
 		{
-			Valid_ = false;
 			qWarning () << reply.error ().message ();
 			return;
 		}

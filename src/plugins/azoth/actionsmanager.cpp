@@ -837,7 +837,7 @@ namespace Azoth
 				variants << var;
 
 		QString variant;
-		if (variants.size () <= 2)
+		if (variants.size () > 2)
 		{
 			variant = QInputDialog::getItem (0,
 					tr ("Select variant"),

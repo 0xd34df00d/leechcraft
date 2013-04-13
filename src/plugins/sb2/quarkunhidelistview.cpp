@@ -29,24 +29,24 @@ namespace LeechCraft
 {
 namespace SB2
 {
-	QuarkUnhideListView::QuarkUnhideListView (const QList<QuarkComponent>& components,
-			ViewManager *viewMgr, ICoreProxy_ptr proxy, QWidget *parent)
-	: UnhideListViewBase (proxy, parent)
+	QuarkUnhideListView::QuarkUnhideListView (const QuarkComponents_t& components,
+			ViewManager *viewMgr, const QPoint& orig, ICoreProxy_ptr proxy, QWidget *parent)
+	: UnhideListViewBase (orig, viewMgr, proxy, parent)
 	, ViewManager_ (viewMgr)
 	{
-		BeginModelFill ();
+		QList<QStandardItem*> items;
 		for (const auto& comp : components)
 		{
 			QuarkManager_ptr manager;
 			try
 			{
-				manager.reset (new QuarkManager (comp, nullptr, proxy));
+				manager.reset (new QuarkManager (comp, ViewManager_, proxy));
 			}
 			catch (const std::exception& e)
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "error creating manager for quark"
-						<< comp.Url_;
+						<< comp->Url_;
 				continue;
 			}
 
@@ -56,11 +56,12 @@ namespace SB2
 			item->setData (manager->GetDescription (), UnhideListModel::Roles::ItemDescription);
 			item->setData (Util::GetAsBase64Src (manager->GetIcon ().pixmap (32, 32).toImage ()),
 					UnhideListModel::Roles::ItemIcon);
-			Model_->appendRow (item);
+			items << item;
 
 			ID2Component_ [manager->GetID ()] = { comp, manager };
 		}
-		EndModelFill ();
+
+		Model_->invisibleRootItem ()->appendRows (items);
 
 		connect (rootObject (),
 				SIGNAL (itemUnhideRequested (QString)),

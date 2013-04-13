@@ -46,7 +46,7 @@ namespace AdvancedNotifications
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		std::shared_ptr<GeneralHandler> GeneralHandler_;
 
-		QuarkComponent Component_;
+		QuarkComponent_ptr Component_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

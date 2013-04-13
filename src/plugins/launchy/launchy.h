@@ -52,7 +52,7 @@ namespace Launchy
 		Util::ShortcutManager *ShortcutMgr_;
 		QAction *FSLauncher_;
 
-		QuarkComponent LaunchQuark_;
+		QuarkComponent_ptr LaunchQuark_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

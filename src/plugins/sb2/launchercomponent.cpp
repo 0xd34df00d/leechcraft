@@ -101,6 +101,7 @@ namespace SB2
 	, Proxy_ (proxy)
 	, ICTW_ (ictw)
 	, Model_ (new LauncherModel (this))
+	, Component_ (new QuarkComponent ("sb2", "LauncherComponent.qml"))
 	, View_ (view)
 	, ImageProv_ (new TabClassImageProvider (proxy))
 	{
@@ -109,10 +110,9 @@ namespace SB2
 		qRegisterMetaType<QSet<QByteArray>> ("QSet<QByteArray>");
 		qRegisterMetaTypeStreamOperators<QSet<QByteArray>> ();
 
-		Component_.Url_ = QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, "sb2", "LauncherComponent.qml"));
-		Component_.DynamicProps_ << QPair<QString, QObject*> ("SB2_launcherModel", Model_);
-		Component_.DynamicProps_ << QPair<QString, QObject*> ("SB2_launcherProxy", this);
-		Component_.ImageProviders_ << QPair<QString, QDeclarativeImageProvider*> (ImageProviderID, ImageProv_);
+		Component_->DynamicProps_ << QPair<QString, QObject*> ("SB2_launcherModel", Model_);
+		Component_->DynamicProps_ << QPair<QString, QObject*> ("SB2_launcherProxy", this);
+		Component_->ImageProviders_ << QPair<QString, QDeclarativeImageProvider*> (ImageProviderID, ImageProv_);
 
 		connect (ICTW_->GetQObject (),
 				SIGNAL (currentChanged (int)),
@@ -122,7 +122,7 @@ namespace SB2
 		LoadHiddenTCs ();
 	}
 
-	QuarkComponent LauncherComponent::GetComponent () const
+	QuarkComponent_ptr LauncherComponent::GetComponent () const
 	{
 		return Component_;
 	}
@@ -301,8 +301,7 @@ namespace SB2
 				tcs << pair.first;
 		}
 
-		auto list = new TabUnhideListView (tcs, Proxy_);
-		list->move (Util::FitRect ({ x, y }, list->size (), View_->GetFreeCoords ()));
+		auto list = new TabUnhideListView (tcs, { x, y }, View_, Proxy_);
 		list->show ();
 		list->setFocus ();
 		connect (list,

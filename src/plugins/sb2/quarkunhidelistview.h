@@ -39,12 +39,12 @@ namespace SB2
 
 		struct ComponentInfo
 		{
-			QuarkComponent Comp_;
+			QuarkComponent_ptr Comp_;
 			QuarkManager_ptr Manager_;
 		};
 		QHash<QString, ComponentInfo> ID2Component_;
 	public:
-		QuarkUnhideListView (const QList<QuarkComponent>&, ViewManager*, ICoreProxy_ptr, QWidget*  = 0);
+		QuarkUnhideListView (const QuarkComponents_t&, ViewManager*, const QPoint&, ICoreProxy_ptr, QWidget*  = 0);
 	private slots:
 		void unhide (const QString&);
 	};

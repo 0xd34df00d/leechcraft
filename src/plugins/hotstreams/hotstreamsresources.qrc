@@ -5,5 +5,6 @@
 	<file>resources/images/rockradio.png</file>
 	<file>resources/images/skyfm.png</file>
 	<file>resources/images/somafm.png</file>
+	<file>resources/images/hotstreams.svg</file>
   </qresource>
 </RCC>
