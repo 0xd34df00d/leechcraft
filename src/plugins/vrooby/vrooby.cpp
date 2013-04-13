@@ -80,6 +80,9 @@ namespace Vrooby
 
 	void Plugin::SecondInit ()
 	{
+		if (!Backend_)
+			return;
+
 		Backend_->Start ();
 		connect (Backend_.get (),
 				SIGNAL (gotEntity (LeechCraft::Entity)),
