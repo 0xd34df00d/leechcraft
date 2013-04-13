@@ -16,33 +16,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <functional>
-#include <QObject>
-#include <QPoint>
-#include <QRect>
-
-class QDeclarativeView;
+#include "autoresizemixin.h"
+#include <QDeclarativeView>
+#include <QResizeEvent>
+#include <util/gui/util.h>
 
 namespace LeechCraft
 {
-namespace SB2
+namespace Util
 {
-	class AutoResizeMixin : public QObject
+	AutoResizeMixin::AutoResizeMixin (const QPoint& point, RectGetter_f size, QWidget *view)
+	: QObject (view)
+	, OrigPoint_ (point)
+	, View_ (view)
+	, Rect_ (size)
 	{
-		const QPoint OrigPoint_;
-		QDeclarativeView * const View_;
-	public:
-		typedef std::function<QRect ()> RectGetter_f;
-	private:
-		const RectGetter_f Rect_;
-	public:
-		AutoResizeMixin (const QPoint&, RectGetter_f, QDeclarativeView*);
+		View_->installEventFilter (this);
 
-		bool eventFilter (QObject*, QEvent*);
-	private:
-		void Refit (const QSize&);
-	};
+		Refit (View_->size ());
+	}
+
+	bool AutoResizeMixin::eventFilter (QObject*, QEvent *event)
+	{
+		if (event->type () != QEvent::Resize)
+			return false;
+
+		auto re = static_cast<QResizeEvent*> (event);
+		Refit (re->size ());
+		return false;
+	}
+
+	void AutoResizeMixin::Refit (const QSize& size)
+	{
+		const auto& pos = FitRect (OrigPoint_, size, Rect_ (), Util::FitFlag::NoOverlap);
+		View_->move (pos);
+	}
 }
 }

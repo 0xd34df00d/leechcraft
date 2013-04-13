@@ -32,7 +32,6 @@ SET (SRCS
 	quarkunhidelistview.cpp
 	quarkorderview.cpp
 	declarativewindow.cpp
-	autoresizemixin.cpp
 	)
 
 SET (SB2_RESOURCES sb2resources.qrc)

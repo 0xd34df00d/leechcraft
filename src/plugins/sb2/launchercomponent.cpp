@@ -21,6 +21,7 @@
 #include <QtDebug>
 #include <QtDeclarative>
 #include <util/gui/util.h>
+#include <util/gui/autoresizemixin.h>
 #include <util/sys/paths.h>
 #include <util/qml/widthiconprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -31,7 +32,6 @@
 #include "tabunhidelistview.h"
 #include "viewmanager.h"
 #include "sbview.h"
-#include "autoresizemixin.h"
 
 Q_DECLARE_METATYPE (QSet<QByteArray>);
 
@@ -303,7 +303,7 @@ namespace SB2
 		}
 
 		auto list = new TabUnhideListView (tcs, Proxy_);
-		new AutoResizeMixin ({ x, y }, [this] () { return View_->GetFreeCoords (); }, list);
+		new Util::AutoResizeMixin ({ x, y }, [this] () { return View_->GetFreeCoords (); }, list);
 		list->show ();
 		list->setFocus ();
 		connect (list,

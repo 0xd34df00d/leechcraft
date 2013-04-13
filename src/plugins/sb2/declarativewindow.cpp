@@ -27,8 +27,8 @@
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/gui/unhoverdeletemixin.h>
+#include <util/gui/autoresizemixin.h>
 #include <util/gui/util.h>
-#include "autoresizemixin.h"
 #include "viewmanager.h"
 
 namespace LeechCraft
@@ -39,7 +39,7 @@ namespace SB2
 			const QPoint& orig, ViewManager *viewMgr, ICoreProxy_ptr proxy, QWidget *parent)
 	: QDeclarativeView (parent)
 	{
-		new AutoResizeMixin (orig, [viewMgr] () { return viewMgr->GetFreeCoords (); }, this);
+		new Util::AutoResizeMixin (orig, [viewMgr] () { return viewMgr->GetFreeCoords (); }, this);
 
 		if (!params.take ("keepOnFocusLeave").toBool ())
 			new Util::UnhoverDeleteMixin (this);
