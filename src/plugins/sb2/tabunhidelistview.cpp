@@ -30,7 +30,7 @@ namespace SB2
 			const QPoint& orig, ViewManager *mgr, ICoreProxy_ptr proxy, QWidget *parent)
 	: UnhideListViewBase (orig, mgr, proxy, parent)
 	{
-		BeginModelFill ();
+		QList<QStandardItem*> items;
 		for (const auto& tc : tcs)
 		{
 			auto item = new QStandardItem;
@@ -39,9 +39,9 @@ namespace SB2
 			item->setData (tc.Description_, UnhideListModel::Roles::ItemDescription);
 			item->setData (Util::GetAsBase64Src (tc.Icon_.pixmap (32, 32).toImage ()),
 					UnhideListModel::Roles::ItemIcon);
-			Model_->appendRow (item);
+			items << item;
 		}
-		EndModelFill ();
+		Model_->invisibleRootItem ()->appendRows (items);
 
 		connect (rootObject (),
 				SIGNAL (itemUnhideRequested (QString)),

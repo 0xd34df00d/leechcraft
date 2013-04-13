@@ -36,9 +36,6 @@ namespace SB2
 		QStandardItemModel *Model_;
 	public:
 		UnhideListViewBase (const QPoint&, ViewManager*, ICoreProxy_ptr, QWidget* = 0);
-	protected:
-		void BeginModelFill ();
-		void EndModelFill ();
 	};
 }
 }
