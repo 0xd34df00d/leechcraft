@@ -30,6 +30,7 @@
 #include "quarkunhidelistview.h"
 #include "quarkorderview.h"
 #include "declarativewindow.h"
+#include "autoresizemixin.h"
 
 namespace LeechCraft
 {
@@ -119,7 +120,8 @@ namespace SB2
 		if (toAdd.isEmpty ())
 			return;
 
-		auto unhide = new QuarkUnhideListView (toAdd, Manager_, { x, y }, Proxy_, Manager_->GetView ());
+		auto unhide = new QuarkUnhideListView (toAdd, Manager_, Proxy_, Manager_->GetView ());
+		new AutoResizeMixin ({ x, y }, Manager_, unhide);
 		unhide->show ();
 	}
 

@@ -16,21 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "unhidelistmodel.h"
+#pragma once
+
+#include <QStandardItemModel>
+#include <util/utilconfig.h>
 
 namespace LeechCraft
 {
-namespace SB2
+namespace Util
 {
-	UnhideListModel::UnhideListModel (QObject *parent)
-	: QStandardItemModel (parent)
+	class UTIL_API UnhideListModel : public QStandardItemModel
 	{
-		QHash<int, QByteArray> roleNames;
-		roleNames [Roles::ItemClass] = "itemClass";
-		roleNames [Roles::ItemName] = "itemName";
-		roleNames [Roles::ItemDescription] = "itemDescr";
-		roleNames [Roles::ItemIcon] = "itemIcon";
-		setRoleNames (roleNames);
-	}
+	public:
+		enum Roles
+		{
+			ItemClass = Qt::UserRole + 1,
+			ItemName,
+			ItemDescription,
+			ItemIcon
+		};
+
+		UnhideListModel (QObject*);
+	};
 }
 }

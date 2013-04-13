@@ -31,6 +31,7 @@
 #include "tabunhidelistview.h"
 #include "viewmanager.h"
 #include "sbview.h"
+#include "autoresizemixin.h"
 
 Q_DECLARE_METATYPE (QSet<QByteArray>);
 
@@ -301,7 +302,8 @@ namespace SB2
 				tcs << pair.first;
 		}
 
-		auto list = new TabUnhideListView (tcs, { x, y }, View_, Proxy_);
+		auto list = new TabUnhideListView (tcs, Proxy_);
+		new AutoResizeMixin ({ x, y }, View_, list);
 		list->show ();
 		list->setFocus ();
 		connect (list,

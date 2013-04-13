@@ -20,17 +20,17 @@
 
 #include <interfaces/ihavetabs.h>
 #include <interfaces/core/icoreproxy.h>
-#include "unhidelistviewbase.h"
+#include <util/qml/unhidelistviewbase.h>
 
 namespace LeechCraft
 {
 namespace SB2
 {
-	class TabUnhideListView : public UnhideListViewBase
+	class TabUnhideListView : public Util::UnhideListViewBase
 	{
 		Q_OBJECT
 	public:
-		TabUnhideListView (const QList<TabClassInfo>&, const QPoint&, ViewManager*, ICoreProxy_ptr, QWidget* = 0);
+		TabUnhideListView (const QList<TabClassInfo>&, ICoreProxy_ptr, QWidget* = 0);
 	private slots:
 		void unhide (const QString&);
 	signals:

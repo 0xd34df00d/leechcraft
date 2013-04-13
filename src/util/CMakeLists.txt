@@ -26,6 +26,8 @@ SET (SRCS
 	qml/colorthemeproxy.cpp
 	qml/widthiconprovider.cpp
 	qml/themeimageprovider.cpp
+	qml/unhidelistmodel.cpp
+	qml/unhidelistviewbase.cpp
 	sync/syncdeltamanager.cpp
 	sync/syncops.cpp
 	sys/paths.cpp

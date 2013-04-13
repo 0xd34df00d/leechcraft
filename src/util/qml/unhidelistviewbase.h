@@ -19,23 +19,22 @@
 #pragma once
 
 #include <QDeclarativeView>
+#include <util/utilconfig.h>
 #include <interfaces/core/icoreproxy.h>
 
 class QStandardItemModel;
 
 namespace LeechCraft
 {
-namespace SB2
+namespace Util
 {
-	class ViewManager;
-
-	class UnhideListViewBase : public QDeclarativeView
+	class UTIL_API UnhideListViewBase : public QDeclarativeView
 	{
 		Q_OBJECT
 	protected:
 		QStandardItemModel *Model_;
 	public:
-		UnhideListViewBase (const QPoint&, ViewManager*, ICoreProxy_ptr, QWidget* = 0);
+		UnhideListViewBase (ICoreProxy_ptr, QWidget* = 0);
 	};
 }
 }

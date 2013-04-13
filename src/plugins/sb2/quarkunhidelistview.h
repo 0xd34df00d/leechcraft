@@ -20,7 +20,7 @@
 
 #include <memory>
 #include <interfaces/iquarkcomponentprovider.h>
-#include "unhidelistviewbase.h"
+#include <util/qml/unhidelistviewbase.h>
 
 namespace LeechCraft
 {
@@ -31,7 +31,7 @@ namespace SB2
 
 	typedef std::shared_ptr<QuarkManager> QuarkManager_ptr;
 
-	class QuarkUnhideListView : public UnhideListViewBase
+	class QuarkUnhideListView : public Util::UnhideListViewBase
 	{
 		Q_OBJECT
 
@@ -44,7 +44,7 @@ namespace SB2
 		};
 		QHash<QString, ComponentInfo> ID2Component_;
 	public:
-		QuarkUnhideListView (const QuarkComponents_t&, ViewManager*, const QPoint&, ICoreProxy_ptr, QWidget*  = 0);
+		QuarkUnhideListView (const QuarkComponents_t&, ViewManager*, ICoreProxy_ptr, QWidget*  = 0);
 	private slots:
 		void unhide (const QString&);
 	};

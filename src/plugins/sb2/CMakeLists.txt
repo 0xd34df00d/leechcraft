@@ -29,9 +29,7 @@ SET (SRCS
 	traycomponent.cpp
 	baseactioncomponent.cpp
 	dockactioncomponent.cpp
-	unhidelistmodel.cpp
 	quarkunhidelistview.cpp
-	unhidelistviewbase.cpp
 	quarkorderview.cpp
 	declarativewindow.cpp
 	autoresizemixin.cpp
