@@ -102,6 +102,12 @@ namespace HotSensors
 
 	void ContextWrapper::sensorUnhideListRequested (int x, int y, const QRect& rect)
 	{
+		if (CurrentList_)
+		{
+			CurrentList_->deleteLater ();
+			return;
+		}
+
 		QList<QStandardItem*> items;
 		for (const auto& name : LoadHiddenNames ())
 		{
@@ -123,6 +129,7 @@ namespace HotSensors
 				SLOT (unhideSensor (QString)));
 		new Util::AutoResizeMixin ({ x, y }, [rect] () { return rect; }, list);
 		list->show ();
+		CurrentList_ = list;
 	}
 
 	void ContextWrapper::unhideSensor (const QString& name)
