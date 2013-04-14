@@ -64,7 +64,8 @@ namespace LeechCraft
 
 					QIcon Plugin::GetIcon () const
 					{
-						return QIcon ();
+						static QIcon icon (":/secman/simplestorage/resources/images/simplestorage.svg");
+		return icon;
 					}
 
 					QStringList Plugin::Provides () const
