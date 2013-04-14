@@ -25,6 +25,7 @@
 #include <QtDebug>
 #include <interfaces/iquarkcomponentprovider.h>
 #include <util/gui/util.h>
+#include <util/gui/autoresizemixin.h>
 #include "viewmanager.h"
 #include "sbview.h"
 #include "quarkunhidelistview.h"
@@ -119,7 +120,8 @@ namespace SB2
 		if (toAdd.isEmpty ())
 			return;
 
-		auto unhide = new QuarkUnhideListView (toAdd, Manager_, { x, y }, Proxy_, Manager_->GetView ());
+		auto unhide = new QuarkUnhideListView (toAdd, Manager_, Proxy_, Manager_->GetView ());
+		new Util::AutoResizeMixin ({ x, y }, [this] () { return Manager_->GetFreeCoords (); }, unhide);
 		unhide->show ();
 	}
 

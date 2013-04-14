@@ -16,21 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "unhidelistmodel.h"
+#pragma once
+
+#include <QDeclarativeView>
+#include <QList>
+#include <util/utilconfig.h>
+#include <interfaces/core/icoreproxy.h>
+
+class QStandardItem;
+class QStandardItemModel;
 
 namespace LeechCraft
 {
-namespace SB2
+namespace Util
 {
-	UnhideListModel::UnhideListModel (QObject *parent)
-	: QStandardItemModel (parent)
+	class UTIL_API UnhideListViewBase : public QDeclarativeView
 	{
-		QHash<int, QByteArray> roleNames;
-		roleNames [Roles::ItemClass] = "itemClass";
-		roleNames [Roles::ItemName] = "itemName";
-		roleNames [Roles::ItemDescription] = "itemDescr";
-		roleNames [Roles::ItemIcon] = "itemIcon";
-		setRoleNames (roleNames);
-	}
+		Q_OBJECT
+	protected:
+		QStandardItemModel *Model_;
+	public:
+		UnhideListViewBase (ICoreProxy_ptr, QWidget* = 0);
+
+		void SetItems (const QList<QStandardItem*>&);
+	signals:
+		void itemUnhideRequested (const QString&);
+	};
 }
 }

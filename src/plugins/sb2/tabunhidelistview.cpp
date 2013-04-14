@@ -20,28 +20,28 @@
 #include <QGraphicsObject>
 #include <QtDebug>
 #include <util/util.h>
-#include "unhidelistmodel.h"
+#include <util/qml/unhidelistmodel.h>
 
 namespace LeechCraft
 {
 namespace SB2
 {
 	TabUnhideListView::TabUnhideListView (const QList<TabClassInfo>& tcs,
-			const QPoint& orig, ViewManager *mgr, ICoreProxy_ptr proxy, QWidget *parent)
-	: UnhideListViewBase (orig, mgr, proxy, parent)
+			ICoreProxy_ptr proxy, QWidget *parent)
+	: UnhideListViewBase (proxy, parent)
 	{
-		BeginModelFill ();
+		QList<QStandardItem*> items;
 		for (const auto& tc : tcs)
 		{
 			auto item = new QStandardItem;
-			item->setData (tc.TabClass_, UnhideListModel::Roles::ItemClass);
-			item->setData (tc.VisibleName_, UnhideListModel::Roles::ItemName);
-			item->setData (tc.Description_, UnhideListModel::Roles::ItemDescription);
+			item->setData (tc.TabClass_, Util::UnhideListModel::Roles::ItemClass);
+			item->setData (tc.VisibleName_, Util::UnhideListModel::Roles::ItemName);
+			item->setData (tc.Description_, Util::UnhideListModel::Roles::ItemDescription);
 			item->setData (Util::GetAsBase64Src (tc.Icon_.pixmap (32, 32).toImage ()),
-					UnhideListModel::Roles::ItemIcon);
-			Model_->appendRow (item);
+					Util::UnhideListModel::Roles::ItemIcon);
+			items << item;
 		}
-		EndModelFill ();
+		Model_->invisibleRootItem ()->appendRows (items);
 
 		connect (rootObject (),
 				SIGNAL (itemUnhideRequested (QString)),
@@ -56,7 +56,7 @@ namespace SB2
 		emit unhideRequested (id);
 
 		for (int i = 0; i < Model_->rowCount (); ++i)
-			if (Model_->item (i)->data (UnhideListModel::Roles::ItemClass).toByteArray () == id)
+			if (Model_->item (i)->data (Util::UnhideListModel::Roles::ItemClass).toByteArray () == id)
 			{
 				Model_->removeRow (i);
 				break;

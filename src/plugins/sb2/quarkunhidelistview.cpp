@@ -21,7 +21,7 @@
 #include <QGraphicsObject>
 #include <QtDebug>
 #include <util/util.h>
-#include "unhidelistmodel.h"
+#include <util/qml/unhidelistmodel.h>
 #include "quarkmanager.h"
 #include "viewmanager.h"
 
@@ -30,8 +30,8 @@ namespace LeechCraft
 namespace SB2
 {
 	QuarkUnhideListView::QuarkUnhideListView (const QuarkComponents_t& components,
-			ViewManager *viewMgr, const QPoint& orig, ICoreProxy_ptr proxy, QWidget *parent)
-	: UnhideListViewBase (orig, viewMgr, proxy, parent)
+			ViewManager *viewMgr, ICoreProxy_ptr proxy, QWidget *parent)
+	: Util::UnhideListViewBase (proxy, parent)
 	, ViewManager_ (viewMgr)
 	{
 		QList<QStandardItem*> items;
@@ -51,11 +51,11 @@ namespace SB2
 			}
 
 			auto item = new QStandardItem;
-			item->setData (manager->GetID (), UnhideListModel::Roles::ItemClass);
-			item->setData (manager->GetName (), UnhideListModel::Roles::ItemName);
-			item->setData (manager->GetDescription (), UnhideListModel::Roles::ItemDescription);
+			item->setData (manager->GetID (), Util::UnhideListModel::Roles::ItemClass);
+			item->setData (manager->GetName (), Util::UnhideListModel::Roles::ItemName);
+			item->setData (manager->GetDescription (), Util::UnhideListModel::Roles::ItemDescription);
 			item->setData (Util::GetAsBase64Src (manager->GetIcon ().pixmap (32, 32).toImage ()),
-					UnhideListModel::Roles::ItemIcon);
+					Util::UnhideListModel::Roles::ItemIcon);
 			items << item;
 
 			ID2Component_ [manager->GetID ()] = { comp, manager };
@@ -76,7 +76,7 @@ namespace SB2
 		ViewManager_->UnhideQuark (info.Comp_, info.Manager_);
 
 		for (int i = 0; i < Model_->rowCount (); ++i)
-			if (Model_->item (i)->data (UnhideListModel::Roles::ItemClass) == itemClass)
+			if (Model_->item (i)->data (Util::UnhideListModel::Roles::ItemClass) == itemClass)
 			{
 				Model_->removeRow (i);
 				break;

@@ -18,29 +18,25 @@
 
 #pragma once
 
-#include <QObject>
-#include <QPoint>
-
-class QDeclarativeView;
-class QSize;
+#include <QStandardItemModel>
+#include <util/utilconfig.h>
 
 namespace LeechCraft
 {
-namespace SB2
+namespace Util
 {
-	class ViewManager;
-
-	class AutoResizeMixin : public QObject
+	class UTIL_API UnhideListModel : public QStandardItemModel
 	{
-		const QPoint OrigPoint_;
-		ViewManager * const ViewMgr_;
-		QDeclarativeView * const View_;
 	public:
-		AutoResizeMixin (const QPoint&, ViewManager*, QDeclarativeView*);
+		enum Roles
+		{
+			ItemClass = Qt::UserRole + 1,
+			ItemName,
+			ItemDescription,
+			ItemIcon
+		};
 
-		bool eventFilter (QObject*, QEvent*);
-	private:
-		void Refit (const QSize&);
+		UnhideListModel (QObject*);
 	};
 }
 }

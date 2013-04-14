@@ -18,27 +18,32 @@
 
 #pragma once
 
-#include <QDeclarativeView>
-#include <interfaces/core/icoreproxy.h>
+#include <functional>
+#include <QObject>
+#include <QPoint>
+#include <QRect>
+#include <util/utilconfig.h>
 
-class QStandardItemModel;
+class QWidget;
 
 namespace LeechCraft
 {
-namespace SB2
+namespace Util
 {
-	class ViewManager;
-
-	class UnhideListViewBase : public QDeclarativeView
+	class AutoResizeMixin : public QObject
 	{
-		Q_OBJECT
-	protected:
-		QStandardItemModel *Model_;
+		const QPoint OrigPoint_;
+		QWidget * const View_;
 	public:
-		UnhideListViewBase (const QPoint&, ViewManager*, ICoreProxy_ptr, QWidget* = 0);
-	protected:
-		void BeginModelFill ();
-		void EndModelFill ();
+		typedef std::function<QRect ()> RectGetter_f;
+	private:
+		const RectGetter_f Rect_;
+	public:
+		UTIL_API AutoResizeMixin (const QPoint&, RectGetter_f, QWidget*);
+
+		bool eventFilter (QObject*, QEvent*);
+	private:
+		void Refit (const QSize&);
 	};
 }
 }

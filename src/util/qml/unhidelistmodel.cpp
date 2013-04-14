@@ -16,42 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "autoresizemixin.h"
-#include <QDeclarativeView>
-#include <QResizeEvent>
-#include <util/gui/util.h>
-#include "viewmanager.h"
+#include "unhidelistmodel.h"
 
 namespace LeechCraft
 {
-namespace SB2
+namespace Util
 {
-	AutoResizeMixin::AutoResizeMixin (const QPoint& point, ViewManager *viewMgr, QDeclarativeView *view)
-	: QObject (view)
-	, OrigPoint_ (point)
-	, ViewMgr_ (viewMgr)
-	, View_ (view)
+	UnhideListModel::UnhideListModel (QObject *parent)
+	: QStandardItemModel (parent)
 	{
-		View_->installEventFilter (this);
-
-		Refit (View_->size ());
-	}
-
-	bool AutoResizeMixin::eventFilter (QObject*, QEvent *event)
-	{
-		if (event->type () != QEvent::Resize)
-			return false;
-
-		auto re = static_cast<QResizeEvent*> (event);
-		Refit (re->size ());
-		return false;
-	}
-
-	void AutoResizeMixin::Refit (const QSize& size)
-	{
-		const auto& pos = Util::FitRect (OrigPoint_,
-				size, ViewMgr_->GetFreeCoords (), Util::FitFlag::NoOverlap);
-		View_->move (pos);
+		QHash<int, QByteArray> roleNames;
+		roleNames [Roles::ItemClass] = "itemClass";
+		roleNames [Roles::ItemName] = "itemName";
+		roleNames [Roles::ItemDescription] = "itemDescr";
+		roleNames [Roles::ItemIcon] = "itemIcon";
+		setRoleNames (roleNames);
 	}
 }
 }

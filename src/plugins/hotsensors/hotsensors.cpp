@@ -37,7 +37,7 @@ namespace HotSensors
 				HistoryMgr_.get (),
 				SLOT (handleReadings (Readings_t)));
 
-		PlotMgr_.reset (new PlotManager (SensorsMgr_, this));
+		PlotMgr_.reset (new PlotManager (SensorsMgr_, proxy, this));
 		connect (HistoryMgr_.get (),
 				SIGNAL (historyChanged (ReadingsHistory_t)),
 				PlotMgr_.get (),

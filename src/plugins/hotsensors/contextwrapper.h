@@ -19,11 +19,18 @@
 #pragma once
 
 #include <QObject>
+#include <QPointer>
+#include <interfaces/core/icoreproxy.h>
 
 class QAbstractItemModel;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class UnhideListViewBase;
+}
+
 namespace HotSensors
 {
 	class PlotManager;
@@ -33,16 +40,22 @@ namespace HotSensors
 	{
 		Q_OBJECT
 
+		const ICoreProxy_ptr Proxy_;
+
 		QString Context_;
 		SensorsFilterModel *Filter_;
+		QPointer<Util::UnhideListViewBase> CurrentList_;
 	public:
-		ContextWrapper (PlotManager*);
+		ContextWrapper (PlotManager*, ICoreProxy_ptr);
 	private:
 		QStringList LoadHiddenNames () const;
 		void SaveHiddenNames (const QStringList&) const;
 	public slots:
 		void setContext (const QString&);
 		QObject* getModel () const;
+
+		void sensorUnhideListRequested (int x, int y, const QRect&);
+		void unhideSensor (const QString&);
 		void hideSensor (const QString&);
 	};
 }

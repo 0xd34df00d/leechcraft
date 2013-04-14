@@ -21,6 +21,7 @@
 #include <QtDebug>
 #include <QtDeclarative>
 #include <util/gui/util.h>
+#include <util/gui/autoresizemixin.h>
 #include <util/sys/paths.h>
 #include <util/qml/widthiconprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -301,7 +302,8 @@ namespace SB2
 				tcs << pair.first;
 		}
 
-		auto list = new TabUnhideListView (tcs, { x, y }, View_, Proxy_);
+		auto list = new TabUnhideListView (tcs, Proxy_);
+		new Util::AutoResizeMixin ({ x, y }, [this] () { return View_->GetFreeCoords (); }, list);
 		list->show ();
 		list->setFocus ();
 		connect (list,

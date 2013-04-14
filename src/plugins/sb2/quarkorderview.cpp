@@ -25,9 +25,9 @@
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
+#include <util/qml/unhidelistmodel.h>
 #include <util/util.h>
 #include "viewmanager.h"
-#include "unhidelistmodel.h"
 #include "quarkmanager.h"
 
 namespace LeechCraft
@@ -38,7 +38,7 @@ namespace SB2
 	: QDeclarativeView (parent)
 	, Manager_ (manager)
 	, Proxy_ (proxy)
-	, Model_ (new UnhideListModel (this))
+	, Model_ (new Util::UnhideListModel (this))
 	{
 		new Util::UnhoverDeleteMixin (this);
 
@@ -62,11 +62,11 @@ namespace SB2
 		{
 			auto quarkMgr = manager->GetAddedQuarkManager (quark);
 			auto item = new QStandardItem;
-			item->setData (quarkMgr->GetName (), UnhideListModel::Roles::ItemName);
-			item->setData (quarkMgr->GetDescription (), UnhideListModel::Roles::ItemDescription);
-			item->setData (quarkMgr->GetID (), UnhideListModel::Roles::ItemClass);
+			item->setData (quarkMgr->GetName (), Util::UnhideListModel::Roles::ItemName);
+			item->setData (quarkMgr->GetDescription (), Util::UnhideListModel::Roles::ItemDescription);
+			item->setData (quarkMgr->GetID (), Util::UnhideListModel::Roles::ItemClass);
 			item->setData (Util::GetAsBase64Src (quarkMgr->GetIcon ().pixmap (32, 32).toImage ()),
-					UnhideListModel::Roles::ItemIcon);
+					Util::UnhideListModel::Roles::ItemIcon);
 			Model_->appendRow (item);
 		}
 
@@ -109,7 +109,7 @@ namespace SB2
 		for (int i = 0, rc = Model_->rowCount (); i < rc; ++i)
 		{
 			auto item = Model_->item (i);
-			if (item->data (UnhideListModel::Roles::ItemClass) == qClass)
+			if (item->data (Util::UnhideListModel::Roles::ItemClass) == qClass)
 			{
 				Model_->removeRow (i);
 				break;
@@ -124,7 +124,7 @@ namespace SB2
 			for (int i = 0, rc = model->rowCount (); i < rc; ++i)
 			{
 				auto item = model->item (i);
-				if (item->data (UnhideListModel::Roles::ItemClass).toString () == itemClass)
+				if (item->data (Util::UnhideListModel::Roles::ItemClass).toString () == itemClass)
 					return i;
 			}
 			return -1;

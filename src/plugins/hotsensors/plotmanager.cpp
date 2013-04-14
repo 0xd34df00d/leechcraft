@@ -36,8 +36,9 @@ namespace LeechCraft
 {
 namespace HotSensors
 {
-	PlotManager::PlotManager (std::weak_ptr<SensorsManager> mgr, QObject *parent)
+	PlotManager::PlotManager (std::weak_ptr<SensorsManager> mgr, ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
+	, Proxy_ (proxy)
 	, SensorsMgr_ (mgr)
 	, Model_ (new SensorsGraphModel (this))
 	, UpdateCounter_ (0)
@@ -51,7 +52,7 @@ namespace HotSensors
 
 	QObject* PlotManager::CreateContextWrapper ()
 	{
-		return new ContextWrapper (this);
+		return new ContextWrapper (this, Proxy_);
 	}
 
 	void PlotManager::handleHistoryUpdated (const ReadingsHistory_t& history)

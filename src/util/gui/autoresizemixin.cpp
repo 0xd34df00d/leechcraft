@@ -16,26 +16,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QStandardItemModel>
+#include "autoresizemixin.h"
+#include <QDeclarativeView>
+#include <QResizeEvent>
+#include <util/gui/util.h>
 
 namespace LeechCraft
 {
-namespace SB2
+namespace Util
 {
-	class UnhideListModel : public QStandardItemModel
+	AutoResizeMixin::AutoResizeMixin (const QPoint& point, RectGetter_f size, QWidget *view)
+	: QObject (view)
+	, OrigPoint_ (point)
+	, View_ (view)
+	, Rect_ (size)
 	{
-	public:
-		enum Roles
-		{
-			ItemClass = Qt::UserRole + 1,
-			ItemName,
-			ItemDescription,
-			ItemIcon
-		};
+		View_->installEventFilter (this);
 
-		UnhideListModel (QObject*);
-	};
+		Refit (View_->size ());
+	}
+
+	bool AutoResizeMixin::eventFilter (QObject*, QEvent *event)
+	{
+		if (event->type () != QEvent::Resize)
+			return false;
+
+		auto re = static_cast<QResizeEvent*> (event);
+		Refit (re->size ());
+		return false;
+	}
+
+	void AutoResizeMixin::Refit (const QSize& size)
+	{
+		const auto& pos = FitRect (OrigPoint_, size, Rect_ (), Util::FitFlag::NoOverlap);
+		View_->move (pos);
+	}
 }
 }
