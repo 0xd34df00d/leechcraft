@@ -32,7 +32,8 @@ function generate_qrc()
 function edit_cpp()
 {
 	cpp_path=$(get_full_plugin_path)"/"$(get_plugin_name)".cpp"
-	sed -i "s/return QIcon ()\;/static QIcon icon (\":\/"$(echo $plugin_path | sed 's/:/\//')"\/resources\/images\/"$(get_plugin_name)".svg\")\;\n\t\treturn icon\;/" $cpp_path
+	icon_prefix=$(echo $plugin_path | sed 's/:/\\//')
+	sed -i "s/return QIcon ()\;/static QIcon icon (\":\/"$icon_prefix"\/resources\/images\/"$(get_plugin_name)".svg\")\;\n\t\treturn icon\;/" $cpp_path
 	echo -e $cpp_path" edited."
 }
 
