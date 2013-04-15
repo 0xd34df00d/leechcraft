@@ -7,7 +7,7 @@ icon_path=$2
 
 function get_full_plugin_path()
 {
-	full_plugin_path=$project_dir"/src/plugins/"$(echo $plugin_path | sed 's/:/\/plugins\//')
+	full_plugin_path=$project_dir"/src/plugins/"$(echo $plugin_path | sed 's/:/\/plugins\//g')
 	echo $full_plugin_path
 }
 
