@@ -252,9 +252,9 @@ namespace Azoth
 		}
 
 		connect (ChatTabsManager_,
-				SIGNAL (clearUnreadMsgCount (QObject*)),
+				SIGNAL (clearUnreadMsgCount (QString)),
 				this,
-				SLOT (handleClearUnreadMsgCount (QObject*)));
+				SLOT (handleClearUnreadMsgCount (QString)));
 		connect (this,
 				SIGNAL (hookAddingCLEntryEnd (LeechCraft::IHookProxy_ptr, QObject*)),
 				ChatTabsManager_,
@@ -2593,8 +2593,7 @@ namespace Azoth
 		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = tr ("%n message(s)", 0, count);
 		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = msg->GetBody ();
 
-		Util::NotificationActionHandler *nh =
-				new Util::NotificationActionHandler (e, this);
+		auto nh = new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Open chat"),
 				[parentCL, this] () { ChatTabsManager_->OpenChat (parentCL); });
 		nh->AddDependentObject (parentCL->GetQObject ());
@@ -2986,34 +2985,29 @@ namespace Azoth
 			item->setText (entry->GetEntryName ());
 	}
 
-	void Core::handleClearUnreadMsgCount (QObject *object)
+	void Core::handleClearUnreadMsgCount (const QString& entryID)
 	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (object);
-		if (!entry)
+		if (ID2Entry_.contains (entryID))
 		{
-			qWarning () << Q_FUNC_INFO
-					<< object
-					<< "doesn't implement ICLEntry";
-			return;
-		}
-
-		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
-		{
-			item->setData (0, CLRUnreadMsgCount);
-			RecalculateUnreadForParents (item);
+			auto entry = qobject_cast<ICLEntry*> (GetEntry (entryID));
+			for (QStandardItem *item : Entry2Items_ [entry])
+			{
+				item->setData (0, CLRUnreadMsgCount);
+				RecalculateUnreadForParents (item);
+			}
 		}
 
 		Entity e = Util::MakeNotification ("Azoth", QString (), PInfo_);
 		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Azoth";
 		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
-				"org.LC.Plugins.Azoth.IncomingMessageFrom/" + entry->GetEntryID ();
+				"org.LC.Plugins.Azoth.IncomingMessageFrom/" + entryID;
 		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] =
 				"org.LC.AdvNotifications.Cancel";
 
 		emit gotEntity (e);
 
 		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
-				"org.LC.Plugins.Azoth.AttentionDrawnBy/" + entry->GetEntryID ();
+				"org.LC.Plugins.Azoth.AttentionDrawnBy/" + entryID;
 
 		emit gotEntity (e);
 	}

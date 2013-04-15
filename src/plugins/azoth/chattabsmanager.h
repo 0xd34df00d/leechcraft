@@ -91,7 +91,7 @@ namespace Azoth
 		void removeTab (QWidget*);
 		void raiseTab (QWidget*);
 
-		void clearUnreadMsgCount (QObject*);
+		void clearUnreadMsgCount (const QString&);
 		void entryMadeCurrent (QObject*);
 		void entryLostCurrent (QObject*);
 	};

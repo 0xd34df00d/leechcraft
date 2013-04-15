@@ -550,10 +550,9 @@ namespace Azoth
 		void showVCard ();
 
 		/** Handles the number of unread messages for the given contact
-		 * list entry identified by object. Object should implement
-		 * ICLEntry, obviously.
+		 * list entry identified by the entryID.
 		 */
-		void handleClearUnreadMsgCount (QObject *object);
+		void handleClearUnreadMsgCount (const QString& entryID);
 
 		void handleGotSDSession (QObject*);
 

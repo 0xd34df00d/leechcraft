@@ -312,7 +312,9 @@ namespace Azoth
 
 		IsCurrent_ = true;
 
-		emit entryMadeCurrent (GetEntry<QObject> ());
+		if (auto entry = GetEntry<QObject> ())
+			emit entryMadeCurrent (entry);
+		emit entryMadeCurrent (EntryID_);
 
 		NumUnreadMsgs_ = 0;
 		HadHighlight_ = false;
@@ -1022,10 +1024,10 @@ namespace Azoth
 				Core::Instance ().HandleURL (url, GetEntry<ICLEntry> ());
 				return;
 			}
-			
+
 			if (url.scheme () == "file")
 				return;
-			
+
 			if (url.scheme ().isEmpty () &&
 					url.host ().isEmpty () &&
 					url.path ().startsWith ("www."))
@@ -1336,6 +1338,14 @@ namespace Azoth
 	T* ChatTab::GetEntry () const
 	{
 		QObject *obj = Core::Instance ().GetEntry (EntryID_);
+		if (!obj)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no entry for"
+					<< EntryID_;
+			return 0;
+		}
+
 		T *entry = qobject_cast<T*> (obj);
 		if (!entry)
 			qWarning () << Q_FUNC_INFO

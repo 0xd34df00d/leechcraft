@@ -92,9 +92,9 @@ namespace Azoth
 				this,
 				SLOT (handleNeedToClose (ChatTab*)));
 		connect (tab,
-				SIGNAL (entryMadeCurrent (QObject*)),
+				SIGNAL (entryMadeCurrent (QString)),
 				this,
-				SIGNAL (clearUnreadMsgCount (QObject*)));
+				SIGNAL (clearUnreadMsgCount (QString)));
 		connect (tab,
 				SIGNAL (entryMadeCurrent (QObject*)),
 				this,
