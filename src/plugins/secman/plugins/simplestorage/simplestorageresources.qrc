@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/secman/simplestorage" >
+    <file>resources/images/simplestorage.svg</file>
+  </qresource>
+</RCC>

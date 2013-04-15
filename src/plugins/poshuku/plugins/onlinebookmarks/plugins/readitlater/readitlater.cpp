@@ -68,7 +68,8 @@ namespace ReadItLater
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		static QIcon icon (":/poshuku/onlinebookmarks:readitlater/resources/images/readitlater.svg");
+		return icon;
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

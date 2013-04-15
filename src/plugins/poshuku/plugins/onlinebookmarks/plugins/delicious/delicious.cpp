@@ -68,7 +68,8 @@ namespace Delicious
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		static QIcon icon (":/poshuku/onlinebookmarks:delicious/resources/images/delicious.svg");
+		return icon;
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
