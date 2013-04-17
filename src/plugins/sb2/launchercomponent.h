@@ -42,7 +42,7 @@ class IHaveTabs;
 namespace LeechCraft
 {
 struct TabClassInfo;
-struct QuarkComponent;
+class QuarkComponent;
 
 namespace SB2
 {
