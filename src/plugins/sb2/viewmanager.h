@@ -44,7 +44,7 @@ class QToolBar;
 
 namespace LeechCraft
 {
-struct QuarkComponent;
+class QuarkComponent;
 
 namespace Util
 {
