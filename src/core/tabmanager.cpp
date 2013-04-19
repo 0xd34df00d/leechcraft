@@ -340,8 +340,7 @@ void TabManager::handleCurrentChanged (int index)
 
 void TabManager::handleMoveHappened (int from, int to)
 {
-	std::swap (OriginalTabNames_ [from],
-			OriginalTabNames_ [to]);
+	OriginalTabNames_.move (from, to);
 	InvalidateName ();
 }
 
