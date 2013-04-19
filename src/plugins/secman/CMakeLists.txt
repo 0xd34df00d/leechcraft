@@ -20,10 +20,10 @@ OPTION (ENABLE_SECMAN_SECURESTORAGE "Enable SecMan SecureStorage, the advanced e
 OPTION (ENABLE_SECMAN_SIMPLESTORAGE "Enable SecMan SimpleStorage, the basic unencrypted private data storage" ON)
 
 IF (ENABLE_SECMAN_SECURESTORAGE)
-	ADD_SUBDIRECTORY (storageplugins/securestorage)
+	ADD_SUBDIRECTORY (plugins/securestorage)
 ENDIF (ENABLE_SECMAN_SECURESTORAGE)
 IF (ENABLE_SECMAN_SIMPLESTORAGE)
-	ADD_SUBDIRECTORY (storageplugins/simplestorage)
+	ADD_SUBDIRECTORY (plugins/simplestorage)
 ENDIF (ENABLE_SECMAN_SIMPLESTORAGE)
 
 SET (SRCS

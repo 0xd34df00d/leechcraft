@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/tabslist" >
+    <file>resources/images/tabslist.svg</file>
+  </qresource>
+</RCC>

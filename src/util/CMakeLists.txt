@@ -11,6 +11,7 @@ INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIRS}
 	..)
 
 SET (SRCS
+	gui/autoresizemixin.cpp
 	gui/clearlineeditaddon.cpp
 	gui/findnotification.cpp
 	gui/flowlayout.cpp
@@ -26,6 +27,8 @@ SET (SRCS
 	qml/colorthemeproxy.cpp
 	qml/widthiconprovider.cpp
 	qml/themeimageprovider.cpp
+	qml/unhidelistmodel.cpp
+	qml/unhidelistviewbase.cpp
 	sync/syncdeltamanager.cpp
 	sync/syncops.cpp
 	sys/paths.cpp
