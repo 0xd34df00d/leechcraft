@@ -525,10 +525,7 @@ namespace Poshuku
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
 		emit hookUserAgentForUrlRequested (proxy, url, page);
 		if (proxy->IsCancelled ())
-		{
-			qDebug () << proxy->GetReturnValue ().toString ();
 			return proxy->GetReturnValue ().toString ();
-		}
 
 		return QString ();
 	}
