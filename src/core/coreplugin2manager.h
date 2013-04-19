@@ -63,11 +63,11 @@ namespace LeechCraft
 				QNetworkAccessManager::Operation *op,
 				QIODevice **dev);
 		void hookTabContextMenuFill (LeechCraft::IHookProxy_ptr proxy,
-				QMenu *menu, int index);
+				QMenu *menu, int index, int windowId);
 		void hookTabFinishedMoving (LeechCraft::IHookProxy_ptr proxy,
-				int index);
+				int index, int windowId);
 		void hookTabSetText (LeechCraft::IHookProxy_ptr proxy,
-				int index);
+				int index, int windowId);
 		void hookTrayIconCreated (LeechCraft::IHookProxy_ptr,
 				QSystemTrayIcon*);
 		void hookTrayIconVisibilityChanged (LeechCraft::IHookProxy_ptr,

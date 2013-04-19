@@ -47,11 +47,15 @@ namespace PinTab
 	{
 		Util::InstallTranslator ("pintab");
 
-		MainTabWidget_ = proxy->GetRootWindowsManager ()->GetTabWidget (0);
-		connect (MainTabWidget_->GetQObject (),
-				SIGNAL (tabInserted (int)),
+		Proxy_ = proxy;
+		connect (proxy->GetRootWindowsManager ()->GetQObject (),
+				SIGNAL (tabAdded (int, int)),
 				this,
-				SLOT (checkPinState (int)));
+				SLOT (checkPinState (int, int)));
+		connect (proxy->GetRootWindowsManager ()->GetQObject (),
+				SIGNAL (windowRemoved (int)),
+				this,
+				SLOT (handleWindowRemoved (int)));
 
 		PinTab_ = new QAction (tr ("Pin tab"), this);
 		connect (PinTab_,
@@ -65,9 +69,8 @@ namespace PinTab
 				this,
 				SLOT (unPinTab ()));
 
-		CloseSide_ = MainTabWidget_->GetCloseButtonPosition ();
-
-		Id_ = 0;
+		CloseSide_ = proxy->GetRootWindowsManager ()->GetTabWidget (0)->
+				GetCloseButtonPosition ();
 	}
 
 	void Plugin::SecondInit ()
@@ -107,15 +110,24 @@ namespace PinTab
 	}
 
 	void Plugin::hookTabContextMenuFill (LeechCraft::IHookProxy_ptr,
-			QMenu *menu, int index)
+			QMenu *menu, int index, int windowId)
 	{
-		QList<QAction*> actions = MainTabWidget_->GetPermanentActions ();
+		auto window = Proxy_->GetRootWindowsManager ()->GetMainWindow (windowId);
+		if (!window)
+			return;
+		auto tw = Proxy_->GetRootWindowsManager ()->GetTabWidget (windowId);
+		if (!tw)
+			return;
+
+		auto actions = tw->GetPermanentActions ();
 		QAction *firstAction = 0;
 		if (!actions.isEmpty ())
 			firstAction = actions.at (0);
 
-		int realIndex = MainTabWidget_->TabData (index).toInt ();
-		if (PinTabsIndex2TabData_.contains (realIndex))
+		int realIndex = tw->TabData (index).toInt ();
+
+		if (Window2PinTabsIndex2TabData_.contains (window) &&
+				Window2PinTabsIndex2TabData_ [window].contains (realIndex))
 		{
 			menu->insertAction (firstAction, UnPinTab_);
 			UnPinTab_->setProperty ("Leechcraft/PinTab/CurrentIndex", index);
@@ -127,40 +139,65 @@ namespace PinTab
 		}
 	}
 
-	void Plugin::hookTabFinishedMoving (LeechCraft::IHookProxy_ptr, int index)
+	void Plugin::hookTabFinishedMoving (LeechCraft::IHookProxy_ptr, int index, int windowId)
 	{
-		int realIndex = MainTabWidget_->TabData (index).toInt ();
-		int realNextIndex = MainTabWidget_->TabData (index + 1).toInt ();
-		int realPrevIndex = MainTabWidget_->TabData (index - 1).toInt ();
-		if (PinTabsIndex2TabData_.contains (realNextIndex) &&
-				!PinTabsIndex2TabData_.contains (realIndex))
+		auto window = Proxy_->GetRootWindowsManager ()->GetMainWindow (windowId);
+		if (!window)
+			return;
+		auto tw = Proxy_->GetRootWindowsManager ()->GetTabWidget (windowId);
+		if (!tw)
+			return;
+
+		int realIndex = tw->TabData (index).toInt ();
+		int realNextIndex = tw->TabData (index + 1).toInt ();
+		int realPrevIndex = tw->TabData (index - 1).toInt ();
+
+		if (Window2PinTabsIndex2TabData_.contains (window) &&
+				Window2PinTabsIndex2TabData_ [window].contains (realNextIndex) &&
+				!Window2PinTabsIndex2TabData_ [window].contains (realIndex))
 		{
 			pinTab (index);
-			MainTabWidget_->MoveTab (PinTabsIndex2TabData_.count () - 1, index);
+			tw->MoveTab (Window2PinTabsIndex2TabData_[window].count () - 1, index);
 		}
-		else if (PinTabsIndex2TabData_.contains (realIndex) &&
+		else if (Window2PinTabsIndex2TabData_ [window].contains (realIndex) &&
 				index &&
-				!PinTabsIndex2TabData_.contains (realPrevIndex))
+				!Window2PinTabsIndex2TabData_ [window].contains (realPrevIndex))
 		{
 			unPinTab (index);
-			MainTabWidget_->MoveTab (PinTabsIndex2TabData_.count (), index);
+			tw->MoveTab (Window2PinTabsIndex2TabData_ [window].count (), index);
 		}
 	}
 
-	void Plugin::hookTabSetText (IHookProxy_ptr proxy, int index)
+	void Plugin::hookTabSetText (IHookProxy_ptr proxy, int index, int windowId)
 	{
-		int realIndex = MainTabWidget_->TabData (index).toInt ();
-		if (PinTabsIndex2TabData_.contains (realIndex))
+		auto window = Proxy_->GetRootWindowsManager ()->GetMainWindow (windowId);
+		if (!window)
+			return;
+		auto tw = Proxy_->GetRootWindowsManager ()->GetTabWidget (windowId);
+		if (!tw)
+			return;
+
+		int realIndex = tw->TabData (index).toInt ();
+		if (Window2PinTabsIndex2TabData_.contains (window) &&
+				Window2PinTabsIndex2TabData_ [window].contains (realIndex))
 			proxy->CancelDefault ();
 	}
 
 	void Plugin::pinTab (int index)
 	{
+		const int windowId = Proxy_->GetRootWindowsManager ()->GetPreferredWindowIndex ();
+		auto window = Proxy_->GetRootWindowsManager ()->GetMainWindow (windowId);
+		if (!window)
+			return;
+		auto tw = Proxy_->GetRootWindowsManager ()->GetTabWidget (windowId);
+		if (!tw)
+			return;
+
 		if (index == -1)
 			index = sender ()->property ("Leechcraft/PinTab/CurrentIndex").toInt ();
 
 		if (index < 0 ||
-				index >= MainTabWidget_->WidgetCount ())
+				index >= tw->WidgetCount ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "invalid index "
@@ -168,26 +205,34 @@ namespace PinTab
 			return;
 		}
 
-		MainTabWidget_->Widget (index)->
+		tw->Widget (index)->
 				setProperty ("SessionData/org.LeechCraft.PinTab.PinState", true);
-		++Id_;
-		auto pair = qMakePair (MainTabWidget_->TabText (index),
-				MainTabWidget_->TabButton (index, CloseSide_));
-		MainTabWidget_->SetTabData (index, Id_);
-		MainTabWidget_->SetTabText (index, "");
-		MainTabWidget_->SetTabClosable (index, false);
-		PinTabsIndex2TabData_ [Id_] = pair;
+		++Window2Id_ [window];
+		auto pair = qMakePair (tw->TabText (index),
+				tw->TabButton (index, CloseSide_));
+		tw->SetTabData (index, Window2Id_ [window]);
+		tw->SetTabText (index, "");
+		tw->SetTabClosable (index, false);
+		Window2PinTabsIndex2TabData_ [window] [Window2Id_.value (window, 0)] = pair;
 
-		MainTabWidget_->MoveTab (index, PinTabsIndex2TabData_.count () - 1);
+		tw->MoveTab (index, Window2PinTabsIndex2TabData_ [window].count () - 1);
 	}
 
 	void Plugin::unPinTab (int index)
 	{
+		const int windowId = Proxy_->GetRootWindowsManager ()->GetPreferredWindowIndex ();
+		auto window = Proxy_->GetRootWindowsManager ()->GetMainWindow (windowId);
+		if (!window)
+			return;
+		auto tw = Proxy_->GetRootWindowsManager ()->GetTabWidget (windowId);
+		if (!tw)
+			return;
+
 		if (index == -1)
 			index = sender ()->property ("Leechcraft/PinTab/CurrentIndex").toInt ();
 
 		if (index < 0 ||
-				index >= MainTabWidget_->WidgetCount ())
+				index >= tw->WidgetCount ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "invalid index "
@@ -195,27 +240,39 @@ namespace PinTab
 			return;
 		}
 
-		int realIndex = MainTabWidget_->TabData (index).toInt ();
-		MainTabWidget_->Widget (index)->
+		int realIndex = tw->TabData (index).toInt ();
+		tw->Widget (index)->
 				setProperty ("SessionData/org.LeechCraft.PinTab.PinState", false);
-		auto data = PinTabsIndex2TabData_.take (realIndex);
+		auto data = Window2PinTabsIndex2TabData_ [window].take (realIndex);
 
-		MainTabWidget_->SetTabText (index, data.first);
-		MainTabWidget_->SetTabClosable (index, true, data.second);
+		tw->SetTabText (index, data.first);
+		tw->SetTabClosable (index, true, data.second);
 
-		MainTabWidget_->MoveTab (index, PinTabsIndex2TabData_.count ());
+		tw->MoveTab (index, Window2PinTabsIndex2TabData_.value (window).count ());
 	}
 
-	void Plugin::checkPinState (int index)
+	void Plugin::checkPinState (int windowId, int index)
 	{
-		if (MainTabWidget_->WidgetCount () <= index)
+		auto tw = Proxy_->GetRootWindowsManager ()->GetTabWidget (windowId);
+		if (!tw ||
+				tw->WidgetCount () <= index)
 			return;
 
-		bool isPinned = MainTabWidget_->Widget (index)->
+		bool isPinned = tw->Widget (index)->
 				property ("SessionData/org.LeechCraft.PinTab.PinState").toBool ();
 
 		if (isPinned)
 			pinTab (index);
+	}
+
+	void Plugin::handleWindowRemoved (int index)
+	{
+		auto window = Proxy_->GetRootWindowsManager ()->GetMainWindow (index);
+		if (!window)
+			return;
+
+		Window2Id_.remove (window);
+		Window2PinTabsIndex2TabData_.remove (window);
 	}
 }
 }

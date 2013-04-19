@@ -54,9 +54,10 @@ namespace PinTab
 		QAction *PinTab_;
 		QAction *UnPinTab_;
 
-		int Id_;
+		QMap<QMainWindow*, int> Window2Id_;
+		ICoreProxy_ptr Proxy_;
 
-		QHash<int, QPair<QString, QWidget*>> PinTabsIndex2TabData_;
+		QHash<QMainWindow*, QHash<int, QPair<QString, QWidget*>>> Window2PinTabsIndex2TabData_;
 		QTabBar::ButtonPosition CloseSide_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
@@ -70,13 +71,16 @@ namespace PinTab
 		QSet<QByteArray> GetPluginClasses () const;
 	public slots:
 		void hookTabContextMenuFill (LeechCraft::IHookProxy_ptr proxy,
-				QMenu *menu, int index);
-		void hookTabFinishedMoving (LeechCraft::IHookProxy_ptr proxy, int index);
-		void hookTabSetText (LeechCraft::IHookProxy_ptr proxy, int index);
+				QMenu *menu, int index, int windowId);
+		void hookTabFinishedMoving (LeechCraft::IHookProxy_ptr proxy, int index,
+				int windowId);
+		void hookTabSetText (LeechCraft::IHookProxy_ptr proxy, int index,
+				int windowId);
 	private slots:
 		void pinTab (int index = -1);
 		void unPinTab (int index = -1);
-		void checkPinState (int index);
+		void checkPinState (int windowId, int index);
+		void handleWindowRemoved (int index);
 	};
 }
 }
