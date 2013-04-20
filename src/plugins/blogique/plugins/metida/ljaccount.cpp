@@ -72,6 +72,10 @@ namespace Metida
 				LJProfile_.get (),
 				SLOT (handleProfileUpdate (LJProfileData)));
 		connect (LJXmlRpc_,
+				SIGNAL (gotTags (QHash<QString, int>)),
+				LJProfile_.get (),
+				SLOT (handleGotTags (QHash<QString, int>)));
+		connect (LJXmlRpc_,
 				SIGNAL (eventPosted (QList<LJEvent>)),
 				this,
 				SLOT (handleEventPosted (QList<LJEvent>)));
@@ -269,6 +273,7 @@ namespace Metida
 	void LJAccount::RequestStatistics ()
 	{
 		LJXmlRpc_->RequestStatistics ();
+		LJXmlRpc_->RequestTags ();
 	}
 
 	void LJAccount::RequestInbox ()

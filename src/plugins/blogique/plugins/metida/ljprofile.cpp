@@ -103,6 +103,11 @@ namespace Metida
 		return ProfileData_.FriendGroups_;
 	}
 
+	QHash<QString, int> LJProfile::GetTags () const
+	{
+		return ProfileData_.Tags_;
+	}
+
 	int LJProfile::GetFreeGroupId () const
 	{
 		QVector<int> baseVector (30);
@@ -167,6 +172,11 @@ namespace Metida
 			SaveOthersAvatars (ProfileData_.AvatarsID_.value (i),
 					ProfileData_.AvatarsUrls_.value (i));
 		emit profileUpdated ();
+	}
+
+	void LJProfile::handleGotTags (const QHash<QString, int>& tags)
+	{
+		ProfileData_.Tags_ = tags;
 	}
 
 	void LJProfile::handleAvatarDownloadFinished ()
