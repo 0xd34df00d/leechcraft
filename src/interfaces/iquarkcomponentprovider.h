@@ -39,24 +39,82 @@ class QDeclarativeImageProvider;
 
 namespace LeechCraft
 {
+	/** @brief Describes a single quark.
+	 *
+	 * A single quark can be loaded in several different views at the
+	 * same time. Each view defines a quark context. For example,
+	 * the same panel of SB2 will have different contexts for different
+	 * windows.
+	 *
+	 * \section cppcomm Communicating with C++
+	 *
+	 * Quarks may want to communicate with the C++ part of the providing
+	 * plugin. Quark properties serve exactly this purpose.
+	 *
+	 * \section ctxprops Context-dependent and shareable properties
+	 *
+	 * Different views can share some properties and may need to have
+	 * different others according to the quark context. Shareable
+	 * properties should be listed in DynamicProps_ and StaticProps_,
+	 * while unique per-view properties should be listed in
+	 * ContextProps_. Context per-view properties will be destroyed if
+	 * the quark is removed from the view.
+	 *
+	 * In other words, ownership of shareable properties is left for
+	 * the quark component provider, while ownership of the
+	 * context-dependent properties is transferred to the calling view.
+	 *
+	 * @sa IQuarkComponentProvider
+	 */
 	class QuarkComponent
 	{
 	public:
+		/** @brief URL of the main QML of this file.
+		 *
+		 * This file will be loaded to the corresponding declarative view
+		 * via a Loader or similar methods. It can be both a local file
+		 * and a remote resource.
+		 *
+		 * Url_ + ".manifest" is also expected to exist, and it is a
+		 * manifest file that describes the quark.
+		 */
 		QUrl Url_;
+
+		/** @brief Dynamic properties to be exposed to the engine.
+		 */
 		QList<QPair<QString, QObject*>> DynamicProps_;
+
+		/** @brief Context-depended properties to be exposed to the engine.
+		 */
 		QList<QPair<QString, QObject*>> ContextProps_;
 		QList<QPair<QString, QVariant>> StaticProps_;
 		QList<QPair<QString, QDeclarativeImageProvider*>> ImageProviders_;
 
+		/** @brief Initializes a null quark component.
+		 */
 		QuarkComponent ()
 		{
 		}
 
+		/** @brief Initializes a quark component for the given file path.
+		 *
+		 * This utility constructor provides an easy way to create a
+		 * quark component for a QML file located in the
+		 * Util::SysPath::QML location under the given \em subdir and
+		 * \em filename.
+		 *
+		 * @sa Util::GetSysPath()
+		 */
 		QuarkComponent (const QString& subdir, const QString& filename)
 		: Url_ (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, subdir, filename)))
 		{
 		}
 
+		/** @brief Destroys the quark.
+		 *
+		 * Destroys the quark and all context-specific properties listed
+		 * in the ContextProps_ list.
+		 */
 		~QuarkComponent ()
 		{
 			for (auto pair : ContextProps_)
@@ -64,16 +122,39 @@ namespace LeechCraft
 		}
 	};
 
+	/** @brief A shared pointer to a quark.
+	 */
 	typedef std::shared_ptr<QuarkComponent> QuarkComponent_ptr;
 
+	/** @brief A list of quarks pointers.
+	 */
 	typedef QList<QuarkComponent_ptr> QuarkComponents_t;
 }
 
+/** @brief Interface for plugins providing quark components.
+ */
 class Q_DECL_EXPORT IQuarkComponentProvider
 {
 public:
+	/** @brief Virtual destructor.
+	 */
 	virtual ~IQuarkComponentProvider () {}
 
+	/** @brief Returns the list of quarks provided by this plugin.
+	 *
+	 * This function returns the list of smart pointers to quarks provided
+	 * by this plugin. The caller will remove the pointers once he doesn't
+	 * need them anymore. Thus, if the plugin doesn't retain the pointers,
+	 * the corresponding QuarkComponent objects will be destroyed.
+	 *
+	 * Dynamic context-independent context properties
+	 * (QuarkComponent::DynamicProps_) should be the same objects for
+	 * each result of each invocation. Context-dependent properties (those
+	 * in QuarkComponent::ContextProps_) should be created on each
+	 * invocation of this method.
+	 *
+	 * @return The list of quark components provided by this plugin.
+	 */
 	virtual LeechCraft::QuarkComponents_t GetComponents () const = 0;
 };
 
