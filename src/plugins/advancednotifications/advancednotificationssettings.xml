@@ -25,6 +25,12 @@
 				<item type="checkbox" property="EnableCounter.org.LC.AdvNotifications.IM" default="true">
 					<label value="Enable for IM events" />
 				</item>
+				<item type="checkbox" property="EnableCounter.org.LC.AdvNotifications.Organizer" default="true">
+					<label value="Enable for Organizer events" />
+				</item>
+				<item type="checkbox" property="EnableCounter.org.LC.AdvNotifications.Downloads" default="true">
+					<label value="Enable for Downloads events" />
+				</item>
 			</groupbox>
 			<groupbox>
 				<label value="Behavior" />

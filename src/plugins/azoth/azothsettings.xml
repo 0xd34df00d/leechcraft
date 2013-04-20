@@ -131,6 +131,10 @@
 				<item type="spinbox" property="FontSize" default="12">
 					<label value="Font size:" />
 				</item>
+				<item type="spinbox" property="ShortenURLLength" default="100" minimum="10" maximum="1000">
+					<label value="Shorten URLs less than: " />
+					<suffix value=" symbols" />
+				</item>
 			</groupbox>
 			<groupbox>
 				<label value="Chat tab" />

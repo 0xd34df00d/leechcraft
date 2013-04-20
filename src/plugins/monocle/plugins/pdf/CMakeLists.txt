@@ -17,15 +17,8 @@ SET (SRCS
 	pdf.cpp
 	document.cpp
 	links.cpp
+	fields.cpp
 	)
-SET (HEADERS
-	pdf.h
-	document.h
-	links.h
-	)
-IF (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
 
 SET (PDF_RESOURCES pdfresources.qrc)
 QT4_ADD_RESOURCES (PDF_RCCS ${PDF_RESOURCES})

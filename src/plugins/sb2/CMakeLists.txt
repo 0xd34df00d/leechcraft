@@ -27,9 +27,9 @@ SET (SRCS
 	launchercomponent.cpp
 	lcmenucomponent.cpp
 	traycomponent.cpp
-	unhidelistmodel.cpp
+	baseactioncomponent.cpp
+	dockactioncomponent.cpp
 	quarkunhidelistview.cpp
-	unhidelistviewbase.cpp
 	quarkorderview.cpp
 	declarativewindow.cpp
 	)

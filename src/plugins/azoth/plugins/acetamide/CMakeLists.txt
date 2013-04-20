@@ -63,7 +63,7 @@ SET (ACETAMIDE_HEADERS
 	channelparticipantentry.h
 	channelpublicmessage.h
 	channelslistdialog.h
-	channelslistfilterproxymodel.cpp
+	channelslistfilterproxymodel.h
 	channelsmanager.h
 	clientconnection.h
 	core.h

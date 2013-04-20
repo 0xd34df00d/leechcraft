@@ -16,17 +16,12 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	$plug_lower.cpp
 	)
-SET (HEADERS
-	$plug_lower.h
-	)
-IF (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS $${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+#CreateTrs("$plug_lower" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("$plug_lower" "en;ru_RU" "$${SRCS}" "$${FORMS}" "")
 
 ADD_LIBRARY (leechcraft_${plug_lower} SHARED
 	$${COMPILED_TRANSLATIONS}
 	$${SRCS}
-	$${MOC_SRCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_${plug_lower}
 	$${QT_LIBRARIES}
@@ -37,7 +32,7 @@ INSTALL (TARGETS leechcraft_${plug_lower} DESTINATION $${LC_PLUGINS_DEST})
 
 header_str = """/**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2012  $author
+ * Copyright (C) 2013  $author
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,7 +72,7 @@ $interfaces_decls
 
 source_str = """/**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2012  $author
+ * Copyright (C) 2013  $author
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
