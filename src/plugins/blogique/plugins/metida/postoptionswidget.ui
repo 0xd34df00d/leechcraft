@@ -160,7 +160,7 @@
        <number>2</number>
       </property>
       <item row="0" column="0">
-       <widget class="QLineEdit" name="Tags_"/>
+       <widget class="LeechCraft::Blogique::Metida::TagsWidget" name="Tags_"/>
       </item>
       <item row="0" column="1">
        <widget class="QPushButton" name="SelectTags_">
@@ -397,6 +397,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>LeechCraft::Blogique::Metida::TagsWidget</class>
+   <extends>QLineEdit</extends>
+   <header>tagswidget.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

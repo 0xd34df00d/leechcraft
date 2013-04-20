@@ -36,6 +36,7 @@ SET (METIDA_SRCS
 	recentcommentssidewidget.cpp
 	recentcommentsview.cpp
 	selectgroupsdialog.cpp
+	tagswidget.cpp
 	updatetypedialog.cpp
 	utils.cpp
 	xmlsettingsmanager.cpp
@@ -63,6 +64,7 @@ SET (METIDA_HEADERS
 	recentcommentssidewidget.h
 	recentcommentsview.h
 	selectgroupsdialog.h
+	tagswidget.h
 	updatetypedialog.h
 	utils.h
 	xmlsettingsmanager.h
