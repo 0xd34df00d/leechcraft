@@ -311,6 +311,12 @@ namespace Metida
 		QPixmap pxm (path);
 		Ui_.UserPicLabel_->setPixmap (pxm.scaled (pxm.width (), pxm.height ()));
 	}
+
+	void PostOptionsWidget::on_AutoDetectMusic__released ()
+	{
+		//TODO autodetect music
+	}
+
 }
 }
 }
