@@ -95,7 +95,7 @@
     <message>
         <location filename="editorpage.ui" line="195"/>
         <source>Enable folding</source>
-        <translation type="unfinished"/>
+        <translation>Activar plegadura</translation>
     </message>
     <message>
         <location filename="editorpage.ui" line="206"/>
