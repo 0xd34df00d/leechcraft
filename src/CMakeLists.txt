@@ -605,7 +605,7 @@ INSTALL (DIRECTORY share/qml/common DESTINATION ${LC_QML_DEST}/org/LC)
 
 INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor)
 IF (UNIX AND NOT APPLE)
-	INSTALL (FILES data/leechcraft.1.gz DESTINATION share/man/man1)
+	INSTALL (DIRECTORY data/ DESTINATION share/man/man1 FILES_MATCHING PATTERN "*.gz")
 	INSTALL (FILES freedesktop/leechcraft.desktop DESTINATION share/applications)
 	INSTALL (FILES scripts/leechcraft-add-file DESTINATION bin PERMISSIONS
 		OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ

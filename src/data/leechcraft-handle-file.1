@@ -1,0 +1,32 @@
+.TH LEECHCRAFT "1" "Apr 2013"
+.SH NAME
+\fBLeechCraft\fR \- Extensible modular internet-client.
+.SH SYNOPSIS
+.B leechcraft-handle-file \fIfilepath\fR\fB\fR
+.SH DESCRIPTION
+.B leechcraft-handle-file
+is a helper scripts to handle a file by a local path, like a .pdf file.
+.PP
+The script passes its sole argument to LeechCraft with the \fB-T file\fR and
+\fB-H\fR arguments. That is, it is equivalent to calling
+.IP
+.B leechcraft -H -T file \fIfilepath\fR\fB\fR
+.PP
+This script is useful to be invoked from applications that don't support passing
+additional parameters, like the Firefox browser.
+.SH OPTIONS
+The script has no options.
+.SH BUGS
+There are many of them. Please report bugs to \fIhttp://leechcraft.org\fR.
+.SH AUTHOR
+The authors of LeechCraft are listed in its About dialog as well as on this web
+page: \fIhttp://leechcraft.org/our-team\fR.
+.PP
+This manual page was written by Georg Rudoy <\fI0xd34df00d@gmail.com\fR>.
+.PP
+Permission is granted to copy, distribute and/or modify this document under the
+terms of the Boost Software License, Version 1.0.
+Boost Software License - Version 1.0 - August 17th, 2003
+.PP
+On Debian systems, the complete text of the Boost Software License can be
+found in /usr/share/common-licenses/BSL.

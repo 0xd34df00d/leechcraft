@@ -73,7 +73,7 @@ namespace Summary
 			handleWindow (i);
 
 		connect (rootWM->GetQObject (),
-				SIGNAL (windodwAdded (int)),
+				SIGNAL (windowAdded (int)),
 				this,
 				SLOT (handleWindow (int)));
 
