@@ -579,7 +579,7 @@ namespace Poshuku
 
 	void CustomWebView::subscribeToLink ()
 	{
-		QList<QVariant> list = qobject_cast<QAction*> (sender ())->data ().toList ();
+		const auto& list = qobject_cast<QAction*> (sender ())->data ().toList ();
 		Entity e = Util::MakeEntity (list.at (0),
 				QString (),
 				FromUserInitiated | OnlyHandle,
@@ -589,7 +589,7 @@ namespace Poshuku
 
 	void CustomWebView::bookmarkLink ()
 	{
-		QList<QVariant> list = qobject_cast<QAction*> (sender ())->data ().toList ();
+		const auto& list = qobject_cast<QAction*> (sender ())->data ().toList ();
 		emit addToFavorites (list.at (1).toString (),
 				list.at (0).toUrl ().toString ());
 	}
