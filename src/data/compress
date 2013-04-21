@@ -1,4 +1,4 @@
 #!/bin/sh
 
-cat leechcraft.1 | gzip -9 > leechcraft.1.gz
+for i in *.1; do cat $i | gzip -9 > ${i}.gz; done
 
