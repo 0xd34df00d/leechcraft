@@ -105,6 +105,7 @@ namespace AdvancedNotifications
 			{
 				EventData data;
 				data.EventID_ = eventId;
+				data.Count_ = 0;
 				data.Category_ = cat;
 				data.VisualPath_ = e.Additional_ ["org.LC.AdvNotifications.VisualPath"].toStringList ();
 				data.HandlingObject_ = e.Additional_ ["HandlingObject"].value<QObject_ptr> ();
