@@ -119,13 +119,13 @@ namespace GoogleDrive
 		void upProgress (quint64 done, quint64 total, const QString& filepath);
 		void upStatusChanged (const QString& status, const QString& filepath);
 
-		void gotListing (const QList<StorageItem*>& items);
+		void gotListing (const QList<StorageItem>& items);
 
 		void gotFileUrl (const QUrl& url, const QByteArray& id);
 
 		void gotChanges (const QList<Change>& changes);
 
-		void gotNewItem (StorageItem *item, const QByteArray& parentId);
+		void gotNewItem (const StorageItem& item, const QByteArray& parentId);
 	};
 }
 }

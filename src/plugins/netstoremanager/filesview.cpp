@@ -67,7 +67,7 @@ namespace NetStoreManager
 		QString name;
 		QByteArray id, parentId;
 		bool isInTrash = false, isDir = false;
-		struct itemObject
+		struct ItemObject
 		{
 			QString name;
 			QByteArray id;
@@ -75,7 +75,7 @@ namespace NetStoreManager
 			QByteArray parentId;
 		};
 
-		QList<itemObject> items;
+		QList<ItemObject> items;
 		while (!stream.atEnd ())
 		{
 			stream >> name
@@ -83,12 +83,7 @@ namespace NetStoreManager
 					>> isInTrash
 					>> isDir
 					>> parentId;
-			itemObject item;
-			item.name = name;
-			item.id = id;
-			item.isInTrash = isInTrash;
-			item.parentId = parentId;
-
+			ItemObject item { name, id, isInTrash, parentId };
 			items << item;
 		}
 
@@ -128,7 +123,7 @@ namespace NetStoreManager
 				emit itemsAboutToBeTrashed (ids);
 		}
 
-		if (!targetIndex.data (ListingRole::Directory).toBool ())
+		if (!targetIndex.data (ListingRole::IsDirectory).toBool ())
 		{
 			QList<QByteArray> ids;
 			for (int i = items.count () - 1; i >= 0; --i)
@@ -148,7 +143,7 @@ namespace NetStoreManager
 			CurrentEvent_ = event;
 			for (const auto& item : items)
 				DraggedItemsIds_ << item.id;
-			TargetItemId_ = targetIndex.data (ListingRole::Directory).toBool () ?
+			TargetItemId_ = targetIndex.data (ListingRole::IsDirectory).toBool () ?
 				targetIndex.data (ListingRole::ID).toByteArray () :
 				targetIndex.parent ().data (ListingRole::ID).toByteArray ();
 
