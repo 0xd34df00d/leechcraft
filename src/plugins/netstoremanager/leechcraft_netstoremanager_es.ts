@@ -81,7 +81,7 @@
     <message>
         <location filename="netstoremanager.cpp" line="82"/>
         <source>Allows one to manage his network storages like Yandex.Disk.</source>
-        <translation type="unfinished"/>
+        <translation>Permite </translation>
     </message>
     <message>
         <location filename="netstoremanager.cpp" line="100"/>

@@ -95,32 +95,32 @@
     <message>
         <location filename="shooterdialog.ui" line="142"/>
         <source>Mode:</source>
-        <translation type="unfinished"/>
+        <translation>Modo:</translation>
     </message>
     <message>
         <location filename="shooterdialog.ui" line="150"/>
         <source>LeechCraft window and everything on top</source>
-        <translation type="unfinished"/>
+        <translation>Ventana de LeechCraft y todo sobre</translation>
     </message>
     <message>
         <location filename="shooterdialog.ui" line="155"/>
         <source>LeechCraft window</source>
-        <translation type="unfinished"/>
+        <translation>Ventana de LeechCraft</translation>
     </message>
     <message>
         <location filename="shooterdialog.ui" line="160"/>
         <source>Current screen</source>
-        <translation type="unfinished"/>
+        <translation>Pantalla actual</translation>
     </message>
     <message>
         <location filename="shooterdialog.ui" line="165"/>
         <source>Whole desktop</source>
-        <translation type="unfinished"/>
+        <translation>Escritorio completo</translation>
     </message>
     <message>
         <location filename="shooterdialog.ui" line="173"/>
         <source>Hide this dialog</source>
-        <translation type="unfinished"/>
+        <translation>Ocultar este diálogo</translation>
     </message>
     <message>
         <location filename="shooterdialog.ui" line="76"/>
