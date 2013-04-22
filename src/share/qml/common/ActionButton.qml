@@ -18,6 +18,8 @@ Item {
 
     property string textTooltip
 
+    property string overlayText
+
     signal triggered()
     signal hovered()
     signal hoverLeft()
@@ -99,5 +101,42 @@ Item {
             }
             onExited: actionRoot.hoverLeft()
         }
+    }
+
+    Text {
+        id: overlayTextLabel
+
+        z: parent.z + 2
+        anchors.right: parent.right
+        anchors.rightMargin: parent.width / 10
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: parent.height / 10
+
+        text: overlayText
+        visible: overlayText.length > 0
+
+        color: "white"
+        font.pixelSize: parent.height / 3
+        font.italic: true
+        smooth: true
+
+        verticalAlignment: Text.AlignBottom
+        horizontalAlignment: Text.AlignRight
+    }
+
+    Rectangle {
+        z: overlayTextLabel.z - 1
+        anchors.fill: overlayTextLabel
+        anchors.topMargin: -2
+        anchors.leftMargin: -parent.width / 10
+        anchors.bottomMargin: -1
+
+        visible: overlayTextLabel.visible
+
+        color: "#E01919"
+        smooth: true
+        radius: 4
+        border.color: "white"
+        border.width: 1
     }
 }

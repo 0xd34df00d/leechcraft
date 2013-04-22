@@ -179,7 +179,8 @@ namespace LeechCraft
 		}
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookTabSetText (proxy, index);
+		emit hookTabSetText (proxy, index,
+				Core::Instance ().GetRootWindowsManager ()->GetWindowIndex (Window_));
 		if (proxy->IsCancelled ())
 			return;
 
@@ -375,7 +376,8 @@ namespace LeechCraft
 		}
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookTabContextMenuFill (proxy, menu, index);
+		emit hookTabContextMenuFill (proxy, menu, index,
+				Core::Instance ().GetRootWindowsManager ()->GetWindowIndex (Window_));
 
 		return menu;
 	}
@@ -731,7 +733,8 @@ namespace LeechCraft
 	void SeparateTabWidget::releaseMouseAfterMove (int index)
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookTabFinishedMoving (proxy, index);
+		emit hookTabFinishedMoving (proxy, index,
+				Core::Instance ().GetRootWindowsManager ()->GetWindowIndex (Window_));
 	}
 
 	void SeparateTabWidget::handleTabBarPosition ()
