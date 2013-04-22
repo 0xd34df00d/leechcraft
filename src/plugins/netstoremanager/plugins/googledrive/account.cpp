@@ -298,21 +298,22 @@ namespace GoogleDrive
 
 	namespace
 	{
-		StorageItem* CreateItem (const DriveItem& item)
+		StorageItem CreateItem (const DriveItem& item)
 		{
-			StorageItem *storageItem = new StorageItem;
-			storageItem->ID_ = item.Id_.toUtf8 ();
-			storageItem->ParentID_ = item.ParentId_.toUtf8 ();
-			storageItem->Name_ = item.Name_;
-			storageItem->ModifyDate_ = item.ModifiedDate_;
-			storageItem->MD5_ = item.Md5_.toUtf8 ();
-			storageItem->IsDirectory_ = item.IsFolder_;
-			storageItem->IsTrashed_ = item.Labels_ & DriveItem::ILRemoved;
-			storageItem->MimeType_ = item.Mime_;
+			StorageItem storageItem;
+			storageItem.ID_ = item.Id_.toUtf8 ();
+			storageItem.ParentID_ = item.ParentId_.toUtf8 ();
+			storageItem.Name_ = item.Name_;
+			storageItem.ModifyDate_ = item.ModifiedDate_;
+			storageItem.Hash_ = item.Md5_.toUtf8 ();
+			storageItem.HashType_ = StorageItem::HashType::Md5;
+			storageItem.IsDirectory_ = item.IsFolder_;
+			storageItem.IsTrashed_ = item.Labels_ & DriveItem::ILRemoved;
+			storageItem.MimeType_ = item.Mime_;
 			for (const auto& key : item.ExportLinks_.keys ())
 			{
 				const QString mime = item.ExportLinks_.value (key);
-				storageItem->ExportLinks [key] = qMakePair (mime, key.queryItems ().last ().second);
+				storageItem.ExportLinks [key] = qMakePair (mime, key.queryItems ().last ().second);
 			}
 
 			return storageItem;
@@ -321,7 +322,7 @@ namespace GoogleDrive
 
 	void Account::handleFileList (const QList<DriveItem>& items)
 	{
-		QList<StorageItem*> result;
+		QList<StorageItem> result;
 
 		for (auto item : items)
 			result << CreateItem (item);

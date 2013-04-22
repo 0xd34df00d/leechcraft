@@ -50,12 +50,12 @@ namespace NetStoreManager
 		QDataStream stream (&encodedData, QIODevice::WriteOnly);
 
 		Q_FOREACH (const QModelIndex& index, indexes)
-			if (index.isValid () && 
+			if (index.isValid () &&
 					index.column () == 0)
 				stream << data (index).toString ()
 						<< data (index, ListingRole::ID).toByteArray ()
 						<< data (index, ListingRole::InTrash).toBool ()
-						<< data (index, ListingRole::Directory).toBool ()
+						<< data (index, ListingRole::IsDirectory).toBool ()
 						<< index.parent ().data (ListingRole::ID).toByteArray ();
 
 		mimeData->setData ("x-leechcraft/nsm-item", encodedData);

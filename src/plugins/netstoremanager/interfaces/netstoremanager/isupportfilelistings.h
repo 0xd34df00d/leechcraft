@@ -23,7 +23,6 @@
 #include <QUrl>
 #include <QMap>
 #include <QDateTime>
-#include <boost/graph/graph_concepts.hpp>
 
 class QStandardItem;
 
@@ -35,9 +34,10 @@ namespace NetStoreManager
 	{
 		ID = Qt::UserRole + 20,
 		InTrash,
-		Directory,
+		IsDirectory,
 		ModifiedDate,
-		Hash
+		Hash,
+		HashType
 	};
 
 	enum ListingOp
@@ -67,7 +67,15 @@ namespace NetStoreManager
 
 		QString Name_;
 		QDateTime ModifyDate_;
-		QByteArray MD5_;
+
+		QByteArray Hash_;
+		enum class HashType
+		{
+			Md4,
+			Md5,
+			Sha1
+		} HashType_;
+
 
 		QUrl Url_;
 		QMap<QUrl, QPair<QString, QString>> ExportLinks;
@@ -78,12 +86,15 @@ namespace NetStoreManager
 
 		QString MimeType_;
 
-
-
 		StorageItem ()
 		: IsDirectory_ (false)
 		, IsTrashed_ (false)
 		{
+		}
+
+		bool IsValid () const
+		{
+			return !ID_.isEmpty ();
 		}
 	};
 
@@ -111,11 +122,11 @@ namespace NetStoreManager
 		virtual void RequestChanges () = 0;
 
 	protected:
-		virtual void gotListing (const QList<StorageItem*>& items) = 0;
+		virtual void gotListing (const QList<StorageItem>& items) = 0;
 		virtual void gotFileUrl (const QUrl& url, const QByteArray& id) = 0;
 
 		virtual void gotChanges (const QList<Change>& changes) = 0;
-		virtual void gotNewItem (StorageItem *item, const QByteArray& parentId) = 0;
+		virtual void gotNewItem (const StorageItem& item, const QByteArray& parentId) = 0;
 	};
 }
 }

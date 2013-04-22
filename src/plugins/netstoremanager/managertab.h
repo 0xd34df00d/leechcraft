@@ -71,7 +71,7 @@ namespace NetStoreManager
 		QAction *Refresh_;
 		QAction *Upload_;
 
-		QHash<QByteArray, StorageItem*> Id2Item_;
+		QHash<QByteArray, StorageItem> Id2Item_;
 
 		enum class TransferOperation
 		{
@@ -124,7 +124,7 @@ namespace NetStoreManager
 		QByteArray GetParentIDInListViewMode () const;
 		QByteArray GetCurrentID () const;
 
-		void CallOnSelection (std::function<void (ISupportFileListings *sfl, const QList<QByteArray>& ids)>);
+		void CallOnSelection (std::function<void (ISupportFileListings *sfl, QList<QByteArray> ids)>);
 
 		void ShowListItemsWithParent (const QByteArray& parentId = QByteArray (),
 				bool inTrash = false);
@@ -138,8 +138,8 @@ namespace NetStoreManager
 		void handleAccountAdded (QObject *accObj);
 		void handleAccountRemoved (QObject *accObj);
 
-		void handleGotListing (const QList<StorageItem*>& items);
-		void handleGotNewItem (StorageItem *item, const QByteArray& parentId);
+		void handleGotListing (const QList<StorageItem>& items);
+		void handleGotNewItem (const StorageItem& item, const QByteArray& parentId);
 
 		void handleFilesViewSectionResized (int index, int oldSize, int newSize);
 

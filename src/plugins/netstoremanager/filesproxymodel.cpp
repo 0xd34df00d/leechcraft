@@ -33,8 +33,8 @@ namespace NetStoreManager
 
 	bool FilesProxyModel::lessThan (const QModelIndex& left, const QModelIndex& right) const
 	{
-		bool leftIsFolder = sourceModel ()->data (left, ListingRole::Directory).toBool ();
-		bool rightIsFolder = sourceModel ()->data (right, ListingRole::Directory).toBool ();
+		bool leftIsFolder = sourceModel ()->data (left, ListingRole::IsDirectory).toBool ();
+		bool rightIsFolder = sourceModel ()->data (right, ListingRole::IsDirectory).toBool ();
 
 		if (left.column () == 0 &&
 				right.column () == 0)
@@ -46,11 +46,9 @@ namespace NetStoreManager
 					sourceModel ()->data (left, ListingRole::ID).toByteArray () == "netstoremanager.item_uplevel")
 				return sortOrder () == Qt::DescendingOrder ? false : true;
 
-			if (leftIsFolder &&
-					!rightIsFolder)
+			if (leftIsFolder && !rightIsFolder)
 				return false;
-			else if (!leftIsFolder &&
-					rightIsFolder)
+			else if (!leftIsFolder && rightIsFolder)
 				return true;
 			else
 				return QString::localeAwareCompare (sourceModel ()->data (left).toString (),
