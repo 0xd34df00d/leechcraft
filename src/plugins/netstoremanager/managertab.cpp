@@ -161,19 +161,19 @@ namespace NetStoreManager
 		connect (Ui_.FilesView_,
 				SIGNAL (itemsAboutToBeCopied (QList<QByteArray>, QByteArray)),
 				this,
-				SLOT (handleItemsAboutToBeCopied (QList<QByteArray>,QByteArray)));
+				SLOT (performCopy (QList<QByteArray>,QByteArray)));
 		connect (Ui_.FilesView_,
 				SIGNAL (itemsAboutToBeMoved (QList<QByteArray>, QByteArray)),
 				this,
-				SLOT (handleItemsAboutToBeMoved (QList<QByteArray>, QByteArray)));
+				SLOT (performMove (QList<QByteArray>, QByteArray)));
 		connect (Ui_.FilesView_,
 				SIGNAL (itemsAboutToBeRestoredFromTrash (QList<QByteArray>)),
 				this,
-				SLOT (handleItemsAboutToBeRestoredFromTrash (QList<QByteArray>)));
+				SLOT (performRestoreFromTrash (QList<QByteArray>)));
 		connect (Ui_.FilesView_,
 				SIGNAL (itemsAboutToBeTrashed (QList<QByteArray>)),
 				this,
-				SLOT (handleItemsAboutToBeTrashed (QList<QByteArray>)));
+				SLOT (performMoveToTrash (QList<QByteArray>)));
 	}
 
 	TabClassInfo ManagerTab::GetTabClassInfo () const
@@ -334,7 +334,7 @@ namespace NetStoreManager
 						Ui_.FilesView_->header ()->sectionSize (Columns::Name)).toInt ());
 	}
 
-	void ManagerTab::requestFileListings (IStorageAccount *acc)
+	void ManagerTab::RequestFileListings (IStorageAccount *acc)
 	{
 		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 		if (!sfl)
@@ -347,7 +347,7 @@ namespace NetStoreManager
 		sfl->RefreshListing ();
 	}
 
-	void ManagerTab::requestFileChanges (IStorageAccount*)
+	void ManagerTab::RequestFileChanges (IStorageAccount*)
 	{
 		//TODO
 	}
@@ -441,7 +441,7 @@ namespace NetStoreManager
 		if (!acc)
 			return;
 
-		requestFileListings (acc);
+		RequestFileListings (acc);
 	}
 
 	void ManagerTab::handleUpload ()
@@ -559,7 +559,7 @@ namespace NetStoreManager
 			XmlSettingsManager::Instance ().setProperty ("ViewSectionSize", newSize);
 	}
 
-	void ManagerTab::handleItemsAboutToBeCopied (const QList<QByteArray>& ids,
+	void ManagerTab::performCopy (const QList<QByteArray>& ids,
 			const QByteArray& newParentId)
 	{
 		IStorageAccount *acc = GetCurrentAccount ();
@@ -570,7 +570,7 @@ namespace NetStoreManager
 		sfl->Copy (ids, newParentId);
 	}
 
-	void ManagerTab::handleItemsAboutToBeMoved (const QList<QByteArray>& ids,
+	void ManagerTab::performMove (const QList<QByteArray>& ids,
 			const QByteArray& newParentId)
 	{
 		IStorageAccount *acc = GetCurrentAccount ();
@@ -581,7 +581,7 @@ namespace NetStoreManager
 		sfl->Move (ids, newParentId);
 	}
 
-	void ManagerTab::handleItemsAboutToBeRestoredFromTrash (const QList<QByteArray>& ids)
+	void ManagerTab::performRestoreFromTrash (const QList<QByteArray>& ids)
 	{
 		IStorageAccount *acc = GetCurrentAccount ();
 		if (!acc)
@@ -591,7 +591,7 @@ namespace NetStoreManager
 		sfl->RestoreFromTrash (ids);
 	}
 
-	void ManagerTab::handleItemsAboutToBeTrashed (const QList<QByteArray>& ids)
+	void ManagerTab::performMoveToTrash (const QList<QByteArray>& ids)
 	{
 		IStorageAccount *acc = GetCurrentAccount ();
 		if (!acc)
@@ -795,7 +795,7 @@ namespace NetStoreManager
 			if (item.IsValid () &&
 					!item.ExportLinks.isEmpty ())
 			{
-				QMenu *exportMenu = new QMenu (tr ("Export to..."));
+				QMenu *exportMenu = new QMenu (tr ("Export to..."), menu);
 				auto exportAct = menu->insertMenu (Download_, exportMenu);
 				exportAct->setProperty ("ActionIcon", Proxy_->GetIcon ("document-export"));
 				for (const auto& key : item.ExportLinks.keys ())
@@ -856,7 +856,7 @@ namespace NetStoreManager
 		}
 
 		Id2Item_.clear ();
-		requestFileListings (acc);
+		RequestFileListings (acc);
 
 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 		DeleteFile_->setVisible (sfl->GetListingOps () & ListingOp::Delete);

@@ -116,8 +116,8 @@ namespace NetStoreManager
 		void FillModel (IStorageAccount *acc);
 		void FillListModel (IStorageAccount *acc);
 
-		void requestFileListings (IStorageAccount *acc);
-		void requestFileChanges (IStorageAccount *acc);
+		void RequestFileListings (IStorageAccount *acc);
+		void RequestFileChanges (IStorageAccount *acc);
 
 		QList<QByteArray> GetTrashedFiles () const;
 		QList<QByteArray> GetSelectedIDs () const;
@@ -143,12 +143,12 @@ namespace NetStoreManager
 
 		void handleFilesViewSectionResized (int index, int oldSize, int newSize);
 
-		void handleItemsAboutToBeCopied (const QList<QByteArray>& ids,
+		void performCopy (const QList<QByteArray>& ids,
 				const QByteArray& parentId);
-		void handleItemsAboutToBeMoved (const QList<QByteArray>& ids,
+		void performMove (const QList<QByteArray>& ids,
 				const QByteArray& parentId);
-		void handleItemsAboutToBeRestoredFromTrash (const QList<QByteArray>& ids);
-		void handleItemsAboutToBeTrashed (const QList<QByteArray>& ids);
+		void performRestoreFromTrash (const QList<QByteArray>& ids);
+		void performMoveToTrash (const QList<QByteArray>& ids);
 
 		void flCopy ();
 		void flMove ();
