@@ -107,7 +107,7 @@ namespace LeechCraft
 	{
 		setMaximumCacheSize (XmlSettingsManager::Instance ()->
 				property ("CacheSize").toInt () * 1048576);
-		QTimer::singleShot (60000,
+		QTimer::singleShot (60,
 				this,
 				SLOT (collectGarbage ()));
 	}
@@ -119,7 +119,7 @@ namespace LeechCraft
 			if (cacheDirectory.isEmpty ())
 				return 0;
 
-			qDebug () << Q_FUNC_INFO << "running...";
+			qDebug () << Q_FUNC_INFO << "running..." << cacheDirectory;
 
 			QDir::Filters filters = QDir::AllDirs | QDir:: Files | QDir::NoDotAndDotDot;
 			QDirIterator it (cacheDirectory, filters, QDirIterator::Subdirectories);
@@ -128,25 +128,20 @@ namespace LeechCraft
 			qint64 totalSize = 0;
 			while (it.hasNext ())
 			{
-				QString path = it.next ();
-				QFileInfo info = it.fileInfo ();
-				QString fileName = info.fileName ();
-				if (fileName.endsWith(".cache") &&
-						fileName.startsWith("cache_"))
-				{
-					cacheItems.insert(info.created (), path);
-					totalSize += info.size ();
-				}
+				const auto& path = it.next ();
+				const auto& info = it.fileInfo ();
+				cacheItems.insert (info.created (), path);
+				totalSize += info.size ();
 			}
 
-			QMultiMap<QDateTime, QString>::const_iterator i = cacheItems.constBegin();
-			while (i != cacheItems.constEnd())
+			auto i = cacheItems.constBegin ();
+			while (i != cacheItems.constEnd ())
 			{
 				if (totalSize < goal)
 					break;
-				QString name = i.value ();
-				QFile file (name);
-				qint64 size = file.size ();
+
+				QFile file (*i);
+				const auto size = file.size ();
 				file.remove ();
 				totalSize -= size;
 				++i;
