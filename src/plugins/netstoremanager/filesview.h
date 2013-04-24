@@ -44,8 +44,8 @@ namespace NetStoreManager
 		QAction *Cancel_;
 
 		QDropEvent *CurrentEvent_;
-		QStringList DraggedItemId_;
-		QStringList TargetItemId_;
+		QList<QByteArray> DraggedItemsIds_;
+		QByteArray TargetItemId_;
 	public:
 		FilesView (QWidget *parent = 0);
 
@@ -58,10 +58,12 @@ namespace NetStoreManager
 		void handleCancel ();
 
 	signals:
-		void copiedItem (const QStringList& itemId, const QStringList& newParentId);
-		void movedItem (const QStringList& itemId, const QStringList& newParentId);
-		void restoredFromTrash (const QStringList& itemId);
-		void trashedItem (const QStringList& itemId);
+		void itemsAboutToBeCopied (const QList<QByteArray>& ids,
+				const QByteArray& newParentId);
+		void itemsAboutToBeMoved (const QList<QByteArray>& ids,
+				const QByteArray& newParentId);
+		void itemsAboutToBeRestoredFromTrash (const QList<QByteArray>& ids);
+		void itemsAboutToBeTrashed (const QList<QByteArray>& ids);
 	};
 }
 }

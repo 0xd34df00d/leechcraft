@@ -96,6 +96,9 @@ namespace GoogleDrive
 		QString OriginalFileName_;
 		QString Md5_;
 		QString Mime_;
+		QString FileExtension_;
+
+		QMap<QUrl, QString> ExportLinks_;
 
 		qint64 FileSize_;
 
@@ -153,9 +156,12 @@ namespace GoogleDrive
 		~DriveManager ();
 
 		void RefreshListing ();
-		void RemoveEntry (const QString& id);
-		void MoveEntryToTrash (const QString& id);
-		void RestoreEntryFromTrash (const QString& id);
+		void RemoveEntry (const QByteArray& id);
+		void MoveEntryToTrash (const QByteArray& id);
+		void RestoreEntryFromTrash (const QByteArray& id);
+		void Copy (const QByteArray& id, const QString& parentId);
+		void Move (const QByteArray& id, const QString& parentId);
+
 		void ShareEntry (const QString& id);
 		void Upload (const QString& filePath,
 				const QStringList& parentId = QStringList ());
@@ -163,8 +169,6 @@ namespace GoogleDrive
 
 		void CreateDirectory (const QString& name,
 				const QString& parentId = QString ());
-		void Copy (const QString& id, const QString& parentId);
-		void Move (const QString& id, const QString& parentId);
 		void Rename (const QString& id, const QString& newName);
 
 		void RequestFileChanges (qlonglong startId);

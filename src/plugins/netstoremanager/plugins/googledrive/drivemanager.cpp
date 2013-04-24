@@ -69,7 +69,7 @@ namespace GoogleDrive
 		RequestAccessToken ();
 	}
 
-	void DriveManager::RemoveEntry (const QString& id)
+	void DriveManager::RemoveEntry (const QByteArray& id)
 	{
 		if (id.isEmpty ())
 			return;
@@ -77,7 +77,7 @@ namespace GoogleDrive
 		RequestAccessToken ();
 	}
 
-	void DriveManager::MoveEntryToTrash (const QString& id)
+	void DriveManager::MoveEntryToTrash (const QByteArray& id)
 	{
 		if (id.isEmpty ())
 			return;
@@ -85,11 +85,27 @@ namespace GoogleDrive
 		RequestAccessToken ();
 	}
 
-	void DriveManager::RestoreEntryFromTrash (const QString& id)
+	void DriveManager::RestoreEntryFromTrash (const QByteArray& id)
 	{
 		if (id.isEmpty ())
 			return;
 		ApiCallQueue_ << [this, id] (const QString& key) { RequestRestoreEntryFromTrash (id, key); };
+		RequestAccessToken ();
+	}
+
+	void DriveManager::Copy (const QByteArray& id, const QString& parentId)
+	{
+		if (id.isEmpty ())
+			return;
+		ApiCallQueue_ << [this, id, parentId] (const QString& key) { RequestCopyItem (id, parentId, key); };
+		RequestAccessToken ();
+	}
+
+	void DriveManager::Move (const QByteArray& id, const QString& parentId)
+	{
+		if (id.isEmpty ())
+			return;
+		ApiCallQueue_ << [this, id, parentId] (const QString& key) { RequestMoveItem (id, parentId, key); };
 		RequestAccessToken ();
 	}
 
@@ -123,22 +139,6 @@ namespace GoogleDrive
 	{
 		ApiCallQueue_ << [this, name, parentId] (const QString& key)
 			{ RequestCreateDirectory (name, parentId, key); };
-		RequestAccessToken ();
-	}
-
-	void DriveManager::Copy (const QString& id, const QString& parentId)
-	{
-		if (id.isEmpty ())
-			return;
-		ApiCallQueue_ << [this, id, parentId] (const QString& key) { RequestCopyItem (id, parentId, key); };
-		RequestAccessToken ();
-	}
-
-	void DriveManager::Move (const QString& id, const QString& parentId)
-	{
-		if (id.isEmpty ())
-			return;
-		ApiCallQueue_ << [this, id, parentId] (const QString& key) { RequestMoveItem (id, parentId, key); };
 		RequestAccessToken ();
 	}
 
@@ -470,7 +470,7 @@ namespace GoogleDrive
 			Core::Instance ().SendEntity (e);
 	}
 
-	void DriveManager::FindSyncableItems (const QStringList& paths,
+	void DriveManager::FindSyncableItems (const QStringList&,
 			const QString& baseDir, const QList<DriveItem>& items)
 	{
 		const QString& baseName = QFileInfo (baseDir).fileName ();
@@ -539,6 +539,57 @@ namespace GoogleDrive
 
 	namespace
 	{
+		QString GetLocalMimeTypeFromGoogleMimeType (const QString& mime, const QString& fileExt)
+		{
+			static QMap<QPair<QString, QString>, QString> mimeMap;
+			mimeMap.insert ({ "application/vnd.google-apps.audio", "" }, "audio-x-generic");
+			mimeMap.insert ({ "application/vnd.google-apps.document", "" }, "application-vnd.oasis.opendocument.spreadsheet");
+			mimeMap.insert ({ "application/vnd.google-apps.document", "doc" }, "application-msword");
+			mimeMap.insert ({ "application/vnd.google-apps.document", "docx" }, "application-msword");
+			mimeMap.insert ({ "application/vnd.google-apps.document", "odt" }, "application-vnd.oasis.opendocument.text");
+			mimeMap.insert ({ "application/vnd.google-apps.drawing", "" }, "application-vnd.oasis.opendocument.image");
+			mimeMap.insert ({ "application/vnd.google-apps.file", "" }, "unknown");
+			mimeMap.insert ({ "application/vnd.google-apps.form", "" }, "unknown");
+			mimeMap.insert ({ "application/vnd.google-apps.fusiontable", "" }, "unknown");
+			mimeMap.insert ({ "application/vnd.google-apps.photo", "" }, "image-x-generic");
+			mimeMap.insert ({ "application/vnd.google-apps.presentation", "" }, "application-vnd.oasis.opendocument.presentation");
+			mimeMap.insert ({ "application/vnd.google-apps.presentation", "ppt" }, "application-vnd.ms-powerpoint");
+			mimeMap.insert ({ "application/vnd.google-apps.presentation", "pptx" }, "application-vnd.ms-powerpoint");
+			mimeMap.insert ({ "application/vnd.openxmlformats-officedocument.presentationml.presentation", "pptx" }, "application-vnd.ms-powerpoint");
+			mimeMap.insert ({ "application/vnd.google-apps.presentation", "odp" }, "application-vnd.oasis.opendocument.presentation");
+			mimeMap.insert ({ "application/vnd.google-apps.script", "" }, "text-x-script");
+			mimeMap.insert ({ "application/vnd.google-apps.sites", "" }, "text-html");
+			mimeMap.insert ({ "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "" }, "application-vnd.oasis.opendocument.spreadsheet");
+			mimeMap.insert ({ "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "xlsx" }, "application-vnd.oasis.opendocument.spreadsheet");
+			mimeMap.insert ({ "application/vnd.google-apps.spreadsheet", "" }, "application-vnd.oasis.opendocument.spreadsheet");
+			mimeMap.insert ({ "application/vnd.google-apps.spreadsheet", "xls" }, "x-office-spreadsheet.png");
+			mimeMap.insert ({ "application/vnd.google-apps.spreadsheet", "xlsx" }, "x-office-spreadsheet.png");
+			mimeMap.insert ({ "application/vnd.google-apps.spreadsheet", "ods" }, "application-vnd.oasis.opendocument.spreadsheet");
+			mimeMap.insert ({ "application/x-vnd.oasis.opendocument.spreadsheet", "ods" }, "application-vnd.oasis.opendocument.spreadsheet");
+			mimeMap.insert ({ "application/vnd.google-apps.unknown", "" }, "unknown");
+			mimeMap.insert ({ "application/vnd.google-apps.video", "" }, "video-x-generic");
+			mimeMap.insert ({ "application/x-msdos-program", "" }, "application-x-ms-dos-executable");
+			mimeMap.insert ({ "application/x-msdos-program", "exe" }, "application-x-ms-dos-executable");
+			mimeMap.insert ({ "application/x-dosexec", "" }, "application-x-desktop");
+			mimeMap.insert ({ "application/x-dosexec", "desktop" }, "application-x-desktop");
+			mimeMap.insert ({ "application/x-cab", "" }, "application-x-archive");
+			mimeMap.insert ({ "application/x-cab", "cab" }, "application-x-archive");
+			mimeMap.insert ({ "application/rar", "" }, "application-x-archive");
+			mimeMap.insert ({ "application/rar", "rar" }, "application-x-archive");
+			mimeMap.insert ({ "image/png", "png" }, "image-x-generic");
+			mimeMap.insert ({ "image/jpeg", "jpeg" }, "image-x-generic");
+
+			QString res;
+			if (mimeMap.contains ({ mime, fileExt }))
+				res = mimeMap.value ({ mime, fileExt });
+			else
+			{
+				res = mime;
+				res.replace ('/', '-');
+			}
+			return res;
+		}
+
 		DriveItem CreateDriveItem (const QVariant& itemData)
 		{
 			const QVariantMap& map = itemData.toMap ();
@@ -571,9 +622,13 @@ namespace GoogleDrive
 			driveItem.Name_ = map ["title"].toString ();
 			driveItem.IsFolder_ = map ["mimeType"].toString () ==
 					"application/vnd.google-apps.folder";
-			driveItem.Mime_ = map ["mimeType"].toString ();
+			driveItem.FileExtension_ = map ["fileExtension"].toString ();
+			QString mime = map ["mimeType"].toString ();
+			if (!driveItem.IsFolder_)
+				mime = GetLocalMimeTypeFromGoogleMimeType (mime, driveItem.FileExtension_);
+			driveItem.Mime_ = mime;
 
-			driveItem.DownloadUrl_ = QUrl (map ["downloadUrl"].toString ());
+			driveItem.DownloadUrl_ = QUrl (map ["webContentLink"].toString ());
 
 			const QVariantMap& labels = map ["labels"].toMap ();
 			driveItem.Labels_ = DriveItem::ILNone;
@@ -587,6 +642,14 @@ namespace GoogleDrive
 				driveItem.Labels_ |= DriveItem::ILShared;
 			if (labels ["viewed"].toBool ())
 				driveItem.Labels_ |= DriveItem::ILViewed;
+
+			const QVariantMap& exports = map ["exportLinks"].toMap ();
+			for (const auto& key : exports.keys ())
+			{
+				QUrl url = exports.value (key).toUrl ();
+				driveItem.ExportLinks_ [url] = GetLocalMimeTypeFromGoogleMimeType (key, url.queryItems ().last ().second);
+			}
+
 			driveItem.CreateDate_ = QDateTime::fromString (map ["createdDate"].toString (),
 					Qt::ISODate);
 			driveItem.ModifiedDate_ = QDateTime::fromString (map ["modifiedDate"].toString (),

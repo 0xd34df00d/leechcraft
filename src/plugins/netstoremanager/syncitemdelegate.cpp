@@ -29,7 +29,9 @@
 
 #include "syncitemdelegate.h"
 #include <QComboBox>
+#include <QMessageBox>
 #include <QtDebug>
+#include <QDir>
 #include "accountsmanager.h"
 #include "directorywidget.h"
 #include "interfaces/netstoremanager/istorageaccount.h"
@@ -112,7 +114,6 @@ namespace NetStoreManager
 		case Directory:
 		{
 			auto dw = static_cast<DirectoryWidget*> (editor);
-
 			model->setData (index, dw->GetPath (), Qt::EditRole);
 			break;
 		}

@@ -29,6 +29,7 @@
 
 #include "netstoremanager.h"
 #include <QIcon>
+#include <interfaces/core/ientitymanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
 #include "interfaces/netstoremanager/istorageplugin.h"
@@ -65,12 +66,8 @@ namespace NetStoreManager
 		AccountsManager_ = new AccountsManager (this);
 		XSD_->SetCustomWidget ("AccountsWidget", new AccountsListWidget (AccountsManager_));
 
-		UpManager_ = new UpManager (this);
+		UpManager_ = new UpManager (proxy, this);
 
-		connect (UpManager_,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
 		connect (UpManager_,
 				SIGNAL (fileUploaded (QString, QUrl)),
 				this,
@@ -83,17 +80,8 @@ namespace NetStoreManager
 	{
 		SyncManager_ = new SyncManager (AccountsManager_, this);
 		SyncWidget *w = new SyncWidget (AccountsManager_);
-		connect (w,
-				SIGNAL (directoryAdded (QVariantMap)),
-				SyncManager_,
-				SLOT (handleDirectoryAdded (QVariantMap)));
 		w->RestoreData ();
 		XSD_->SetCustomWidget ("SyncWidget", w);
-
-		connect (SyncManager_,
-				SIGNAL (uploadRequested (IStorageAccount*, QString, QStringList)),
-				UpManager_,
-				SLOT (handleUploadRequest (IStorageAccount*, QString, QStringList)));
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -141,13 +129,9 @@ namespace NetStoreManager
 					this,
 					SIGNAL (removeTab (QWidget*)));
 			connect (tab,
-					SIGNAL (uploadRequested (IStorageAccount*, QString, QStringList)),
+					SIGNAL (uploadRequested (IStorageAccount*, QString, QByteArray, bool)),
 					UpManager_,
-					SLOT (handleUploadRequest (IStorageAccount*, QString, QStringList)));
-			connect (tab,
-					SIGNAL (gotEntity (LeechCraft::Entity)),
-					this,
-					SIGNAL (gotEntity (LeechCraft::Entity)));
+					SLOT (handleUploadRequest (IStorageAccount*, QString, QByteArray, bool)));
 		}
 		else
 			qWarning () << Q_FUNC_INFO
@@ -164,7 +148,6 @@ namespace NetStoreManager
 
 	void Plugin::AddPlugin (QObject *pluginObj)
 	{
-		qDebug () << Q_FUNC_INFO << pluginObj;
 		IStoragePlugin *plugin = qobject_cast<IStoragePlugin*> (pluginObj);
 		if (plugin)
 			AccountsManager_->AddPlugin (plugin);
@@ -199,7 +182,7 @@ namespace NetStoreManager
 		auto account = AccountsManager_->GetAccounts ().value (idx);
 		if (!account)
 		{
-			emit gotEntity (Util::MakeNotification ("NetStoreManager",
+			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("NetStoreManager",
 					tr ("No account for service name %1.")
 						.arg ("<em>" + service + "</em>"),
 					PCritical_));

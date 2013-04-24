@@ -33,10 +33,12 @@
 #include <QStandardItemModel>
 #include <interfaces/structures.h>
 #include <interfaces/ijobholder.h>
+#include <interfaces/core/ientitymanager.h>
 #include <util/util.h>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/istorageplugin.h"
 #include "interfaces/netstoremanager/isupportfilelistings.h"
+#include "xmlsettingsmanager.h"
 
 inline uint qHash (const QStringList& id)
 {
@@ -47,9 +49,10 @@ namespace LeechCraft
 {
 namespace NetStoreManager
 {
-	UpManager::UpManager (QObject *parent)
+	UpManager::UpManager (ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
 	, ReprModel_ (new QStandardItemModel (0, 3, this))
+	, Proxy_ (proxy)
 	{
 	}
 
@@ -86,7 +89,7 @@ namespace NetStoreManager
 	}
 
 	void UpManager::handleUploadRequest (IStorageAccount *acc, const QString& path,
-			const QStringList& id)
+			const QByteArray& id, bool byHand)
 	{
 		if (!Uploads_.contains (acc))
 		{
@@ -100,9 +103,9 @@ namespace NetStoreManager
 					this,
 					SLOT (handleUpStatusChanged (QString, QString)));
 			connect (accObj,
-					SIGNAL (upFinished (QStringList, QString)),
+					SIGNAL (upFinished (QByteArray, QString)),
 					this,
-					SLOT (handleUpFinished (QStringList, QString)));
+					SLOT (handleUpFinished (QByteArray, QString)));
 			connect (accObj,
 					SIGNAL (upProgress (quint64, quint64, QString)),
 					this,
@@ -110,9 +113,9 @@ namespace NetStoreManager
 
 			if (qobject_cast<ISupportFileListings*> (accObj))
 				connect (accObj,
-						SIGNAL (gotFileUrl (QUrl, QStringList)),
+						SIGNAL (gotFileUrl (QUrl, QByteArray)),
 						this,
-						SLOT (handleGotURL (QUrl, QStringList)));
+						SLOT (handleGotURL (QUrl, QByteArray)));
 		}
 		else if (Uploads_ [acc].contains (path))
 		{
@@ -121,7 +124,7 @@ namespace NetStoreManager
 						.arg (QFileInfo (path).fileName ())
 						.arg (acc->GetAccountName ()),
 					PWarning_);
-			emit gotEntity (e);
+			Proxy_->GetEntityManager ()->HandleEntity (e);
 			return;
 		}
 
@@ -140,9 +143,13 @@ namespace NetStoreManager
 		ReprModel_->appendRow (row);
 
 		ReprItems_ [acc] [path] = row;
+
+		if (byHand &&
+				XmlSettingsManager::Instance ().Property ("CopyUrlOnUpload", false).toBool ())
+			ScheduleAutoshare (path);
 	}
 
-	void UpManager::handleGotURL (const QUrl& url, const QStringList& id)
+	void UpManager::handleGotURL (const QUrl& url, const QByteArray& id)
 	{
 		const auto& handlers = URLHandlers_.take (id);
 		if (!handlers.isEmpty ())
@@ -161,7 +168,7 @@ namespace NetStoreManager
 		const Entity& e = Util::MakeNotification (plugin->GetStorageName (),
 				tr ("URL is pasted into clipboard."),
 				PInfo_);
-		emit gotEntity (e);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void UpManager::handleError (const QString& str, const QString& path)
@@ -176,7 +183,7 @@ namespace NetStoreManager
 					.arg (path)
 					.arg (str),
 				PWarning_);
-		emit gotEntity (e);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void UpManager::handleUpStatusChanged (const QString& status, const QString& filepath)
@@ -188,13 +195,14 @@ namespace NetStoreManager
 		list [1]->setText (status);
 	}
 
-	void UpManager::handleUpFinished (const QStringList& id, const QString& filePath)
+	void UpManager::handleUpFinished (const QByteArray& id, const QString& filePath)
 	{
 		RemovePending (filePath);
-		emit gotEntity (Util::MakeNotification ("NetStoreManager",
+		const auto& e =Util::MakeNotification ("NetStoreManager",
 				tr ("File %1 was uploaded successfully")
 						.arg ("<em>" + QFileInfo (filePath).fileName () + "</em>"),
-				PWarning_));
+				PWarning_);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 
 		if (Autoshare_.remove (filePath))
 		{
@@ -206,12 +214,12 @@ namespace NetStoreManager
 				return;
 			}
 
-			URLHandlers_ [id] << [this, filePath] (const QUrl& url, const QStringList&)
+			URLHandlers_ [id] << [this, filePath] (const QUrl& url, const QByteArray&)
 			{
 				emit fileUploaded (filePath, url);
 			};
 
-			ifl->RequestUrl (QList<QStringList> () << id);
+			ifl->RequestUrl (id);
 		}
 	}
 

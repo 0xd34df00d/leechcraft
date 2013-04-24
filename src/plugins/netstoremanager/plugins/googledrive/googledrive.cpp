@@ -155,9 +155,9 @@ namespace GoogleDrive
 		if (pos == Accounts_.end ())
 			return;
 
+		emit accountRemoved (accObj);
 		Accounts_.erase (pos);
 		WriteAccounts ();
-		emit accountRemoved (accObj);
 	}
 
 	void Plugin::WriteAccounts ()

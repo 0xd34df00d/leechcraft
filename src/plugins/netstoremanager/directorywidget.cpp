@@ -29,6 +29,8 @@
 
 #include "directorywidget.h"
 #include <QFileDialog>
+#include <QMessageBox>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -38,18 +40,16 @@ namespace NetStoreManager
 	: QWidget (parent)
 	{
 		Ui_.setupUi (this);
-
-		connect (Ui_.DirPath_,
-				SIGNAL (editingFinished ()),
-				this,
-				SLOT (handleEditingFinished ()));
 	}
 
 	void DirectoryWidget::SetPath (const QString& path, bool byHand)
 	{
+		if (Path_ == path)
+			return;
+
 		Path_ = path;
 		Ui_.DirPath_->setText (Path_);
-		if (!byHand)
+		if (byHand)
 			emit finished (this);
 	}
 
@@ -67,14 +67,7 @@ namespace NetStoreManager
 		if (path.isEmpty ())
 			return;
 
-		SetPath (path);
+		SetPath (path, true);
 	}
-
-	void DirectoryWidget::handleEditingFinished ()
-	{
-		if (QDir (Ui_.DirPath_->text ()).exists ())
-			SetPath (Ui_.DirPath_->text (), true);
-	}
-
 }
 }

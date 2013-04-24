@@ -27,49 +27,28 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "filesmodel.h"
-#include <QMimeData>
-#include <QtDebug>
-#include <QTreeView>
-#include <QMenu>
-#include "interfaces/netstoremanager/isupportfilelistings.h"
+#pragma once
+
+#include <QStandardItemModel>
+
+class QAction;
+class QTreeView;
 
 namespace LeechCraft
 {
 namespace NetStoreManager
 {
-	FilesModel::FilesModel (QObject *parent)
-	: QStandardItemModel (parent)
+	class FilesTreeModel : public QStandardItemModel
 	{
-	}
+		Q_OBJECT
 
-	Qt::DropActions FilesModel::supportedDropActions () const
-	{
-		return Qt::MoveAction | Qt::CopyAction;
-	}
+	public:
+		FilesTreeModel (QObject *parent = 0);
 
-	QStringList FilesModel::mimeTypes () const
-	{
-		return { "x-leechcraft/nsm-item" };
-	}
-
-	QMimeData* FilesModel::mimeData (const QModelIndexList& indexes) const
-	{
-		QMimeData *mimeData = new QMimeData ();
-		QByteArray encodedData;
-
-		QDataStream stream (&encodedData, QIODevice::WriteOnly);
-
-		Q_FOREACH (const QModelIndex& index, indexes)
-			if (index.isValid ())
-				stream << data (index).toString ()
-						<< data (index, ListingRole::ID).toStringList ()
-						<< data (index, ListingRole::InTrash).toBool ()
-						<< data (index, ListingRole::Directory).toBool ()
-						<< index.parent ().data (ListingRole::ID).toStringList ();
-
-		mimeData->setData ("x-leechcraft/nsm-item", encodedData);
-		return mimeData;
-	}
+		Qt::DropActions supportedDropActions () const;
+		QStringList mimeTypes () const;
+		QMimeData* mimeData (const QModelIndexList& indexes) const;
+	};
 }
 }
+
