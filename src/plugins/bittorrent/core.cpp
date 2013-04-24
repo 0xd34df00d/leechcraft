@@ -1889,7 +1889,11 @@ namespace BitTorrent
 				QStringList (name));
 
 		const auto& savePath = torrent.Handle_.save_path ();
+#if LIBTORRENT_VERSION_NUM >= 1600
 		const auto& savePathStr = QString::fromUtf8 (savePath.c_str ());
+#else
+		const auto& savePathStr = QString::fromUtf8 (savePath.string ().c_str ());
+#endif
 
 #if LIBTORRENT_VERSION_NUM >= 1600
 		auto nah = new Util::NotificationActionHandler (notifyE);

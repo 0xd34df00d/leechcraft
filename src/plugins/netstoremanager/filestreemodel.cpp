@@ -27,28 +27,50 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QStandardItemModel>
-
-class QAction;
-class QTreeView;
+#include "filestreemodel.h"
+#include <QMimeData>
+#include <QtDebug>
+#include <QTreeView>
+#include <QMenu>
+#include "interfaces/netstoremanager/isupportfilelistings.h"
 
 namespace LeechCraft
 {
 namespace NetStoreManager
 {
-	class FilesModel : public QStandardItemModel
+	FilesTreeModel::FilesTreeModel (QObject *parent)
+	: QStandardItemModel (parent)
 	{
-		Q_OBJECT
+	}
 
-	public:
-		FilesModel (QObject *parent = 0);
+	Qt::DropActions FilesTreeModel::supportedDropActions () const
+	{
+		return Qt::MoveAction | Qt::CopyAction;
+	}
 
-		Qt::DropActions supportedDropActions () const;
-		QStringList mimeTypes () const;
-		QMimeData* mimeData (const QModelIndexList& indexes) const;
-	};
+	QStringList FilesTreeModel::mimeTypes () const
+	{
+		return { "x-leechcraft/nsm-item" };
+	}
+
+	QMimeData* FilesTreeModel::mimeData (const QModelIndexList& indexes) const
+	{
+		QMimeData *mimeData = new QMimeData ();
+		QByteArray encodedData;
+
+		QDataStream stream (&encodedData, QIODevice::WriteOnly);
+
+		Q_FOREACH (const QModelIndex& index, indexes)
+			if (index.isValid () &&
+					index.column () == 0)
+				stream << data (index).toString ()
+						<< data (index, ListingRole::ID).toByteArray ()
+						<< data (index, ListingRole::InTrash).toBool ()
+						<< data (index, ListingRole::IsDirectory).toBool ()
+						<< index.parent ().data (ListingRole::ID).toByteArray ();
+
+		mimeData->setData ("x-leechcraft/nsm-item", encodedData);
+		return mimeData;
+	}
 }
 }
-

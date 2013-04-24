@@ -68,6 +68,10 @@ namespace NetStoreManager
 	private slots:
 		void handleAccountAdded (QObject*);
 		void handleAccountRemoved (QObject*);
+
+	signals:
+		void accountAdded (QObject *acc);
+		void accountRemoved (QObject *acc);
 	};
 }
 }

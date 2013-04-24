@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2010-2013  Oleg Linkin
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -36,6 +36,8 @@
 #include <interfaces/ihavetabs.h>
 #include "ui_managertab.h"
 
+class QToolButton;
+class QComboBox;
 class QStandardItem;
 class QAction;
 
@@ -45,12 +47,16 @@ namespace NetStoreManager
 {
 	class IStorageAccount;
 	class ISupportFileListings;
+	struct StorageItem;
 	class AccountsManager;
-	class FilesModel;
+	class FilesProxyModel;
+	class FilesTreeModel;
+	class FilesListModel;
 
 	enum Columns
 	{
-		FirstColumnNumber
+		Name,
+		Modify
 	};
 
 	class ManagerTab : public QWidget
@@ -65,10 +71,31 @@ namespace NetStoreManager
 		TabClassInfo Info_;
 		ICoreProxy_ptr Proxy_;
 
+		QToolBar *ToolBar_;
+
 		AccountsManager *AM_;
-		FilesModel *Model_;
+		FilesProxyModel *ProxyModel_;
+		FilesTreeModel *TreeModel_;
+
+		QComboBox *AccountsBox_;
+
+		QAction *Refresh_;
+		QAction *Upload_;
+
+		QHash<QByteArray, StorageItem> Id2Item_;
+
+		enum class TransferOperation
+		{
+			Copy,
+			Move
+		};
+		QPair<TransferOperation, QList<QByteArray>> TransferedIDs_;
 
 		QAction *CopyURL_;
+		QAction *Copy_;
+		QAction *Move_;
+		QAction *Rename_;
+		QAction *Paste_;
 		QAction *DeleteFile_;
 		QAction *MoveToTrash_;
 		QAction *UntrashFile_;
@@ -76,7 +103,13 @@ namespace NetStoreManager
 		QAction *CreateDir_;
 		QAction *UploadInCurrentDir_;
 		QAction *Download_;
-		QHash<IStorageAccount*, QHash<QString, bool>> Account2ItemExpandState_;
+		QAction *OpenTrash_;
+		QToolButton *Trash_;
+		QAction *TrashAction_;
+
+		QByteArray LastParentID_;
+
+		QHash<IStorageAccount*, QHash<QByteArray, bool>> Account2ItemExpandState_;
 	public:
 		ManagerTab (const TabClassInfo&, AccountsManager*, ICoreProxy_ptr, QObject*);
 
@@ -85,21 +118,53 @@ namespace NetStoreManager
 		void Remove ();
 		QToolBar* GetToolBar () const;
 	private:
+		void FillToolbar ();
+		void ShowAccountActions (bool show);
 		IStorageAccount* GetCurrentAccount () const;
-		void CallOnSelection (std::function<void (ISupportFileListings*, const QList<QStringList>&)>);
-		void ClearFilesModel ();
-		void SaveModelState (const QModelIndex& parent = QModelIndex ());
-		void RestoreModelState ();
-		void ExpandModelItems (const QModelIndex& parent = QModelIndex ());
-		QList<QStringList> GetTrashedFiles () const;
-		QStandardItem* GetItemFromId (const QStringList& id) const;
+
+
+		void ClearModel ();
+		void FillModel (IStorageAccount *acc);
+		void FillListModel (IStorageAccount *acc);
+
+		void RequestFileListings (IStorageAccount *acc);
+		void RequestFileChanges (IStorageAccount *acc);
+
+		QList<QByteArray> GetTrashedFiles () const;
+		QList<QByteArray> GetSelectedIDs () const;
+		QByteArray GetParentIDInListViewMode () const;
+		QByteArray GetCurrentID () const;
+
+		void CallOnSelection (std::function<void (ISupportFileListings *sfl, QList<QByteArray> ids)>);
+
+		void ShowListItemsWithParent (const QByteArray& parentId = QByteArray (),
+				bool inTrash = false);
 
 	private slots:
-		void handleGotListing (const QList<QList<QStandardItem*>>&);
-		void handleGotFileUrl (const QUrl& url, const QStringList& id);
-		void handleGotNewItem (const QList<QStandardItem*>& item,
-				const QStringList& parentId);
-		void flCopyURL ();
+		void handleRefresh ();
+		void handleUpload ();
+
+		void handleDoubleClicked (const QModelIndex& idx);
+
+		void handleAccountAdded (QObject *accObj);
+		void handleAccountRemoved (QObject *accObj);
+
+		void handleGotListing (const QList<StorageItem>& items);
+		void handleGotNewItem (const StorageItem& item, const QByteArray& parentId);
+
+		void handleFilesViewSectionResized (int index, int oldSize, int newSize);
+
+		void performCopy (const QList<QByteArray>& ids,
+				const QByteArray& parentId);
+		void performMove (const QList<QByteArray>& ids,
+				const QByteArray& parentId);
+		void performRestoreFromTrash (const QList<QByteArray>& ids);
+		void performMoveToTrash (const QList<QByteArray>& ids);
+
+		void flCopy ();
+		void flMove ();
+		void flRename ();
+		void flPaste ();
 		void flDelete ();
 		void flMoveToTrash ();
 		void flRestoreFromTrash ();
@@ -107,24 +172,22 @@ namespace NetStoreManager
 		void flCreateDir ();
 		void flUploadInCurrentDir ();
 		void flDownload ();
-		void on_AccountsBox__activated (int);
-		void on_Update__released ();
-		void on_Upload__released ();
+		void flCopyUrl ();
+
+		void showTrashContent (bool show);
+
 		void handleContextMenuRequested (const QPoint& point);
-		void handleCopiedItem (const QStringList& itemId,
-				const QStringList& newParentId);
-		void handleMovedItem (const QStringList& itemId,
-				const QStringList& newParentId);
-		void handleRestoredFromTrash (const QStringList& id);
-		void handleTrashedItem (const QStringList& id);
+		void handleExportMenuTriggered (QAction *action);
+
+		void handleCurrentIndexChanged (int index);
+
+		void handleGotFileUrl (const QUrl& url, const QByteArray& id = QByteArray ());
 
 	signals:
 		void removeTab (QWidget*);
 
-		void uploadRequested (IStorageAccount *isa, const QString& file,
-				const QStringList& parentId = QStringList ());
-
-		void gotEntity (LeechCraft::Entity entity);
+		void uploadRequested (IStorageAccount *acc, const QString& fileName,
+				const QByteArray& parentId = QByteArray (), bool byHand = true);
 	};
 }
 }
