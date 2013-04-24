@@ -119,6 +119,8 @@ namespace LeechCraft
 			if (cacheDirectory.isEmpty ())
 				return 0;
 
+			qDebug () << Q_FUNC_INFO << "running...";
+
 			QDir::Filters filters = QDir::AllDirs | QDir:: Files | QDir::NoDotAndDotDot;
 			QDirIterator it (cacheDirectory, filters, QDirIterator::Subdirectories);
 
@@ -149,6 +151,8 @@ namespace LeechCraft
 				totalSize -= size;
 				++i;
 			}
+
+			qDebug () << "collector finished" << totalSize;
 
 			return totalSize;
 		}
