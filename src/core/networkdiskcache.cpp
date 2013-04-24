@@ -52,10 +52,16 @@ namespace LeechCraft
 		handleCacheSize ();
 	}
 
-	QIODevice* NetworkDiskCache::prepare (const QNetworkCacheMetaData& metadata)
+	qint64 NetworkDiskCache::cacheSize () const
 	{
 		QMutexLocker lock (&InsertRemoveMutex_);
-		return QNetworkDiskCache::prepare (metadata);
+		return QNetworkDiskCache::cacheSize ();
+	}
+
+	QIODevice* NetworkDiskCache::data (const QUrl& url)
+	{
+		QMutexLocker lock (&InsertRemoveMutex_);
+		return QNetworkDiskCache::data (url);
 	}
 
 	void NetworkDiskCache::insert (QIODevice *device)
@@ -64,10 +70,28 @@ namespace LeechCraft
 		QNetworkDiskCache::insert (device);
 	}
 
+	QNetworkCacheMetaData NetworkDiskCache::metaData (const QUrl& url)
+	{
+		QMutexLocker lock (&InsertRemoveMutex_);
+		return QNetworkDiskCache::metaData (url);
+	}
+
+	QIODevice* NetworkDiskCache::prepare (const QNetworkCacheMetaData& metadata)
+	{
+		QMutexLocker lock (&InsertRemoveMutex_);
+		return QNetworkDiskCache::prepare (metadata);
+	}
+
 	bool NetworkDiskCache::remove (const QUrl &url)
 	{
 		QMutexLocker lock (&InsertRemoveMutex_);
 		return QNetworkDiskCache::remove (url);
+	}
+
+	void NetworkDiskCache::updateMetaData (const QNetworkCacheMetaData& metaData)
+	{
+		QMutexLocker lock (&InsertRemoveMutex_);
+		QNetworkDiskCache::updateMetaData (metaData);
 	}
 
 	qint64 NetworkDiskCache::expire ()
