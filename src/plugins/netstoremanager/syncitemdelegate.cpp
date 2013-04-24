@@ -156,54 +156,8 @@ namespace NetStoreManager
 		}
 	}
 
-	namespace
-	{
-		bool RemoveDir (const QString& dirName)
-		{
-			bool result = false;
-			QDir dir (dirName);
-
-			if (dir.exists(dirName))
-			{
-				for (const auto& info : dir.entryInfoList (QDir::NoDotAndDotDot |
-						QDir::System | QDir::Hidden  | QDir::AllDirs |
-						QDir::Files, QDir::DirsFirst))
-				{
-					result = info.isDir () ?
-						RemoveDir (info.absoluteFilePath ()) :
-						QFile::remove (info.absoluteFilePath ());
-
-					if (!result)
-						return result;
-				}
-				result = dir.rmdir (dirName);
-			}
-			return result;
-		}
-	}
-
 	void SyncItemDelegate::handleCloseDirectoryEditor (QWidget *w)
 	{
-		auto dw = static_cast<DirectoryWidget*> (w);
-		QDir dir (dw->GetPath ());
-		if (dir.count () > 2)
-		{
-			if (QMessageBox::warning (w,
-					"LeechCraft",
-					tr ("Directory is not empty. All files will be deleted. Continue?"),
-					QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel)
-			{
-				dw->SetPath ("");
-				return;
-			}
-
-			for (const auto& info : dir.entryInfoList (QDir::NoDotAndDotDot |
-					QDir::System | QDir::Hidden  | QDir::AllDirs |
-					QDir::Files, QDir::DirsFirst))
-				info.isDir () ?
-					RemoveDir (info.absoluteFilePath ()) :
-					QFile::remove (info.absoluteFilePath ());
-		}
 		emit commitData (w);
 		emit closeEditor (w);
 	}

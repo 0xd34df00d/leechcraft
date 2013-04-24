@@ -147,7 +147,7 @@ namespace GoogleDrive
 		{
 			auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
 			auto res = QMessageBox::warning (rootWM->GetPreferredWindow (),
-					tr ("Remove item"),
+					tr ("LeechCraft"),
 					tr ("Are you sure you want to delete all selected items? This action cannot be undone."
 						"<br><i>Note: if you delete a directory then all files in it will also be deleted.</i>"),
 					QMessageBox::Ok | QMessageBox::Cancel);
@@ -161,18 +161,12 @@ namespace GoogleDrive
 
 	void Account::MoveToTrash (const QList<QByteArray>& ids)
 	{
-		if (ids.isEmpty ())
-			return;
-
 		for (const auto& id : ids)
 			DriveManager_->MoveEntryToTrash (id);
 	}
 
 	void Account::RestoreFromTrash (const QList<QByteArray>& ids)
 	{
-		if (ids.isEmpty ())
-			return;
-
 		for (const auto& id : ids)
 			DriveManager_->RestoreEntryFromTrash (id);
 	}
@@ -180,9 +174,6 @@ namespace GoogleDrive
 	void Account::Copy (const QList<QByteArray>& ids,
 			const QByteArray& newParentId)
 	{
-		if (ids.isEmpty ())
-			return;
-
 		for (const auto& id : ids)
 			DriveManager_->Copy (id, newParentId);
 	}
@@ -190,9 +181,6 @@ namespace GoogleDrive
 	void Account::Move (const QList<QByteArray>& ids,
 			const QByteArray& newParentId)
 	{
-		if (ids.isEmpty ())
-			return;
-
 		for (const auto& id : ids)
 			DriveManager_->Move (id, newParentId);
 	}
@@ -335,7 +323,7 @@ namespace GoogleDrive
 	{
 		QList<StorageItem> result;
 
-		for (auto item : items)
+		for (const auto& item : items)
 			result << CreateItem (item);
 
 		emit gotListing (result);
