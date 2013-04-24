@@ -107,7 +107,7 @@ namespace LeechCraft
 	{
 		setMaximumCacheSize (XmlSettingsManager::Instance ()->
 				property ("CacheSize").toInt () * 1048576);
-		QTimer::singleShot (60,
+		QTimer::singleShot (60000,
 				this,
 				SLOT (collectGarbage ()));
 	}
