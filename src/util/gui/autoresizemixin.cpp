@@ -31,6 +31,7 @@
 #include <QDeclarativeView>
 #include <QResizeEvent>
 #include <util/gui/util.h>
+#include <util/gui/unhoverdeletemixin.h>
 
 namespace LeechCraft
 {
@@ -59,6 +60,9 @@ namespace Util
 
 	void AutoResizeMixin::Refit (const QSize& size)
 	{
+		if (auto child = View_->findChild<UnhoverDeleteMixin*> ())
+			child->IgnoreNext ();
+
 		const auto& pos = FitRect (OrigPoint_, size, Rect_ (), Util::FitFlag::NoOverlap);
 		View_->move (pos);
 	}
