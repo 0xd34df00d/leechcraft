@@ -167,7 +167,8 @@ namespace Azoth
 		if (CurrentEditor_)
 			CurrentEditor_->SetIdentifyingData (data);
 		on_AddButton__released ();
-		CurrentEditor_->SetIdentifyingData (data);
+		if (CurrentEditor_)
+			CurrentEditor_->SetIdentifyingData (data);
 	}
 
 	void BookmarksManagerDialog::on_AccountBox__currentIndexChanged (int index)
