@@ -127,7 +127,7 @@ namespace Keywords
 	void Plugin::hookURLEditReturnPressed (LeechCraft::IHookProxy_ptr proxy,
 			QObject *browserWidget)
 	{
-		QLineEdit *urlEdit;
+		QLineEdit *urlEdit = 0;
 
 		QMetaObject::invokeMethod (browserWidget,
 			"getAddressBar",
