@@ -44,6 +44,7 @@ namespace LeechCraft
 	: QNetworkDiskCache (parent)
 	, IsCollectingGarbage_ (false)
 	, PreviousSize_ (-1)
+	, InsertRemoveMutex_ (QMutex::Recursive)
 	{
 		setCacheDirectory (QDir::homePath () + "/.leechcraft/core/cache");
 
