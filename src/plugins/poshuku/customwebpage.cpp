@@ -948,7 +948,7 @@ namespace Poshuku
 	{
 		PageFormsData_t formsData;
 
-		const auto& pair = HarvestForms (frame);
+		auto pair = HarvestForms (frame);
 
 		if (pair.first.isEmpty ())
 		{
