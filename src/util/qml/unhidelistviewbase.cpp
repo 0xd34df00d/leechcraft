@@ -46,7 +46,8 @@ namespace Util
 	: QDeclarativeView (parent)
 	, Model_ (new UnhideListModel (this))
 	{
-		new UnhoverDeleteMixin (this);
+		auto unhoverDeleter = new UnhoverDeleteMixin (this);
+		unhoverDeleter->Stop ();
 
 		const auto& file = GetSysPath (SysPath::QML, "common", "UnhideListView.qml");
 		if (file.isEmpty ())
