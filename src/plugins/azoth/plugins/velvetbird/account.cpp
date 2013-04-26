@@ -208,7 +208,7 @@ namespace VelvetBird
 			return;
 
 		emit removedCLItems ({ buddy });
-		buddy->deleteLater ();
+		delete buddy;
 	}
 
 	void Account::HandleDisconnect (PurpleConnectionError error, const char *text)
