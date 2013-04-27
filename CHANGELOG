@@ -32,11 +32,8 @@ relevant blocks of changes, so one could easily lookup
 * Aggregator: strip <img> tags in item tooltips.
 * AN: added rules management quark.
 * AN: added support for the Downloads category.
-* AN: moved constants.h to Interfaces.
-* AN: moved constants to AN namespace.
 * AN: properly update types list on cat change.
 * AN: hopefully fixed alert() behavior on X11.
-* AN: support Download notifications category.
 * AN: added error/success sounds.
 * AN: fixed custom rules not saving.
 * AN: fixed counter behavior without initial value.
@@ -127,7 +124,6 @@ relevant blocks of changes, so one could easily lookup
 * Blogique: add BPFLocalBlog feature.
 * Blogique: add empty storagemanager.
 * Blogique: add LocalBlog feature.
-* Blogique: add missing include.
 * Blogique: add progress of actions with remove blog and fix #989.
 * Blogique: associate dock widget with the preferred tab.
 * Blogique: open in new tab by default.
