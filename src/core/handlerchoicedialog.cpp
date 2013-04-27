@@ -110,7 +110,7 @@ namespace LeechCraft
 
 		Infos_ [name] = ii;
 
-		if (Downloaders_.size () + Handlers_.size () == 1)
+		if (!(Downloaders_.size () + Handlers_.size ()))
 			populateLocationsBox ();
 
 		return but;
