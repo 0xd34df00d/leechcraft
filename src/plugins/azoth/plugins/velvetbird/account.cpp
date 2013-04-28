@@ -55,6 +55,8 @@ namespace VelvetBird
 	void Account::Release ()
 	{
 		emit removedCLItems (GetCLEntries ());
+		qDeleteAll (Buddies_);
+		Buddies_.clear ();
 	}
 
 	PurpleAccount* Account::GetPurpleAcc () const
