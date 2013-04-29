@@ -110,11 +110,6 @@ namespace Xtazy
 	{
 	}
 
-	QObject* Plugin::GetQObject ()
-	{
-		return this;
-	}
-
 	Media::AudioInfo Plugin::GetCurrentSong () const
 	{
 		return Previous_;

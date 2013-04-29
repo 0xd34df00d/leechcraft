@@ -66,7 +66,6 @@ namespace Xtazy
 		void LoveCurrentTrack ();
 		void BanCurrentTrack ();
 
-		QObject* GetQObject ();
 		Media::AudioInfo GetCurrentSong () const;
 	private slots:
 		void publish (const Media::AudioInfo&);

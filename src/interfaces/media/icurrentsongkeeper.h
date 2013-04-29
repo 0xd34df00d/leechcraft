@@ -29,8 +29,6 @@
 
 #pragma once
 
-#include <QObject>
-
 namespace Media
 {
 	struct AudioInfo;
@@ -40,7 +38,6 @@ namespace Media
 	public:
 		virtual ~ICurrentSongKeeper () {}
 
-		virtual QObject* GetQObject () = 0;
 		virtual AudioInfo GetCurrentSong () const = 0;
 	protected:
 		virtual void currentSongChanged (const AudioInfo&) = 0;
