@@ -291,10 +291,10 @@ namespace Metida
 
 	namespace
 	{
-		Media::ICurrentSongKeeper* GetFirstICurrentSongKeeperInstance ()
+		QObject* GetFirstICurrentSongKeeperInstance ()
 		{
 			auto plugins = Core::Instance ().GetCoreProxy ()->GetPluginsManager ()->
-					GetAllCastableTo<Media::ICurrentSongKeeper*> ();
+					GetAllCastableRoots<Media::ICurrentSongKeeper*> ();
 			return !plugins.count () ?
 				0 :
 				plugins.at (0);
@@ -303,8 +303,10 @@ namespace Metida
 
 	void PostOptionsWidget::handleAutoApdateCurrentMusic ()
 	{
-		if (XmlSettingsManager::Instance ().Property ("AutoUpdateCurrentMusic", false).toBool ())
-			connect (GetFirstICurrentSongKeeperInstance ()->GetQObject (),
+		auto obj = GetFirstICurrentSongKeeperInstance ();
+		if (XmlSettingsManager::Instance ().Property ("AutoUpdateCurrentMusic", false).toBool () &&
+				obj)
+			connect (obj,
 					SIGNAL (currentSongChanged (AudioInfo)),
 					this,
 					SLOT (handleCurrentSongChanged (AudioInfo)),
@@ -352,11 +354,11 @@ namespace Metida
 
 	void PostOptionsWidget::on_AutoDetect__released ()
 	{
-		auto plugin = GetFirstICurrentSongKeeperInstance ();
-		if (!plugin)
+		auto pluginObj = GetFirstICurrentSongKeeperInstance ();
+		if (!pluginObj)
 			return;
 
-		const auto& song = plugin->GetCurrentSong ();
+		const auto& song = qobject_cast<Media::ICurrentSongKeeper*> (pluginObj)->GetCurrentSong ();
 		Ui_.Music_->setText (QString ("\"%1\" by %2").arg (song.Title_)
 				.arg (song.Artist_));
 	}
