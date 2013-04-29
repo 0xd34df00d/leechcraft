@@ -51,6 +51,9 @@ namespace Acetamide
 		Model_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Users count"), tr ("Topic") });
 		FilterProxyModel_->setSourceModel (Model_);
 		Ui_.ChannelsList_->setModel (FilterProxyModel_);
+		Ui_.ChannelsList_->setColumnWidth (ChannelName, 200);
+		Ui_.ChannelsList_->setColumnWidth (ParticipantsCount, 50);
+		Ui_.ChannelsList_->header ()->setStretchLastSection (true);
 
 		connect (BufferTimer_,
 				SIGNAL (timeout ()),
@@ -61,8 +64,6 @@ namespace Acetamide
 	void ChannelsListDialog::handleGotChannelsBegin ()
 	{
 		Model_->removeRows (0, Model_->rowCount ());
-		Ui_.ChannelsList_->setEnabled (false);
-		Ui_.Filter_->setEnabled (false);
 		BufferTimer_->start (1000);
 	}
 
@@ -79,8 +80,6 @@ namespace Acetamide
 
 	void ChannelsListDialog::handleGotChannelsEnd ()
 	{
-		Ui_.ChannelsList_->setEnabled (true);
-		Ui_.Filter_->setEnabled (true);
 		BufferTimer_->stop ();
 	}
 
