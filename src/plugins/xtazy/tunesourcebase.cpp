@@ -27,28 +27,30 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
 #include "tunesourcebase.h"
-#include <QFileSystemWatcher>
+#include <interfaces/media/audiostructs.h>
 
 namespace LeechCraft
 {
-namespace Azoth
-{
 namespace Xtazy
 {
-	class FileSource : public TuneSourceBase
+	TuneSourceBase::TuneSourceBase (QObject *parent)
+	: QObject (parent)
 	{
-		Q_OBJECT
+	}
 
-		QFileSystemWatcher Watcher_;
-	public:
-		FileSource (QObject* = 0);
-	private slots:
-		void handleFileChanged (const QString&);
-		void handleFilePathChanged ();
-	};
-}
+	Media::AudioInfo TuneSourceBase::FromMPRISMap (const QVariantMap& map)
+	{
+		return
+		{
+			map ["artist"].toString (),
+			map ["source"].toString (),
+			map ["title"].toString (),
+			{},
+			map ["length"].toInt (),
+			0,
+			map ["track"].toInt ()
+		};
+	}
 }
 }

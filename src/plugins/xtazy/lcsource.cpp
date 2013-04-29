@@ -27,30 +27,27 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include "tunesourcebase.h"
-
-namespace Media
-{
-	struct AudioInfo;
-}
+#include "lcsource.h"
+#include <interfaces/media/audiostructs.h>
 
 namespace LeechCraft
 {
-namespace Azoth
-{
 namespace Xtazy
 {
-	class LCSource : public TuneSourceBase
+	LCSource::LCSource (QObject *parent)
+	: TuneSourceBase (parent)
 	{
-		Q_OBJECT
-	public:
-		LCSource (QObject* = 0);
+		setObjectName ("LCSource");
+	}
 
-		void NowPlaying (const Media::AudioInfo& audio);
-		void Stopped ();
-	};
-}
+	void LCSource::NowPlaying (const Media::AudioInfo& audio)
+	{
+		emit tuneInfoChanged (audio);
+	}
+
+	void LCSource::Stopped ()
+	{
+		emit tuneInfoChanged (Media::AudioInfo ());
+	}
 }
 }

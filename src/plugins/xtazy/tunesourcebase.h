@@ -29,46 +29,27 @@
 
 #pragma once
 
-#include "tunesourcebase.h"
-#include <QStringList>
-#include <QDBusConnection>
+#include <QObject>
+#include <QVariantMap>
+
+namespace Media
+{
+	struct AudioInfo;
+}
 
 namespace LeechCraft
 {
-namespace Azoth
-{
 namespace Xtazy
 {
-	struct PlayerStatus
-	{
-		int PlayStatus_;
-		int PlayOrder_;
-		int PlayRepeat_;
-		int StopOnce_;
-	};
-
-	class MPRISSource : public TuneSourceBase
+	class TuneSourceBase : public QObject
 	{
 		Q_OBJECT
-
-		QStringList Players_;
-		QDBusConnection SB_;
-		TuneInfo_t Tune_;
 	public:
-		MPRISSource (QObject* = 0);
-		virtual ~MPRISSource ();
-	private:
-		void ConnectToBus (const QString&);
-		void DisconnectFromBus (const QString&);
-		TuneInfo_t GetTuneMV2 (const QVariantMap&);
-	private slots:
-		void handlePropertyChange (const QDBusMessage&);
-		void handlePlayerStatusChange (PlayerStatus);
-		void handleTrackChange (const QVariantMap&);
-		void checkMPRISService (QString, QString, QString);
+		TuneSourceBase (QObject* = 0);
+	protected:
+		Media::AudioInfo FromMPRISMap (const QVariantMap&);
+	signals:
+		void tuneInfoChanged (const Media::AudioInfo&);
 	};
 }
 }
-}
-
-Q_DECLARE_METATYPE (LeechCraft::Azoth::Xtazy::PlayerStatus);

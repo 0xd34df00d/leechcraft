@@ -29,66 +29,44 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/core/ihookproxy.h>
-
-namespace Media
-{
-	struct AudioInfo;
-	class ICurrentSongKeeper;
-}
+#include "tunesourcebase.h"
+#include <QStringList>
+#include <QDBusConnection>
+#include <interfaces/media/audiostructs.h>
 
 namespace LeechCraft
 {
-namespace Azoth
-{
-class IProxyObject;
-
 namespace Xtazy
 {
-	class TuneSourceBase;
-	class LCSource;
+	struct PlayerStatus
+	{
+		int PlayStatus_;
+		int PlayOrder_;
+		int PlayRepeat_;
+		int StopOnce_;
+	};
 
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
+	class MPRISSource : public TuneSourceBase
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
 
-		IProxyObject *AzothProxy_;
-		ICoreProxy_ptr Proxy_;
-
-		Media::ICurrentSongKeeper *Keeper_;
-
-		typedef QPair<QPointer<QObject>, QString> UploadNotifee_t;
-		QMap<QString, QList<UploadNotifee_t>> PendingUploads_;
+		QStringList Players_;
+		QDBusConnection SB_;
+		Media::AudioInfo Tune_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		QSet<QByteArray> GetPluginClasses () const;
+		MPRISSource (QObject* = 0);
+		virtual ~MPRISSource ();
 	private:
-		void HandleShare (LeechCraft::IHookProxy_ptr proxy,
-				QObject*, const QString&, const QUrl&);
-	public slots:
-		void initPlugin (QObject*);
-		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QObject *entry,
-				int type,
-				QString variant);
+		void ConnectToBus (const QString&);
+		void DisconnectFromBus (const QString&);
+		Media::AudioInfo GetTuneMV2 (const QVariantMap&);
 	private slots:
-		void publish (const Media::AudioInfo&);
-		void handleFileUploaded (const QString&, const QUrl&);
+		void handlePropertyChange (const QDBusMessage&);
+		void handlePlayerStatusChange (PlayerStatus);
+		void handleTrackChange (const QVariantMap&);
+		void checkMPRISService (QString, QString, QString);
 	};
 }
 }
-}
+
+Q_DECLARE_METATYPE (LeechCraft::Xtazy::PlayerStatus);

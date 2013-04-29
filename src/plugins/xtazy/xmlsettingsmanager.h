@@ -27,37 +27,24 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "lcsource.h"
-#include <interfaces/media/audiostructs.h>
+#pragma once
+
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
-namespace Azoth
-{
 namespace Xtazy
 {
-	LCSource::LCSource (QObject *parent)
-	: TuneSourceBase (parent)
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
-		setObjectName ("LCSource");
-	}
+		Q_OBJECT
 
-	void LCSource::NowPlaying (const Media::AudioInfo& audio)
-	{
-		TuneInfo_t tune;
-		tune ["title"] = audio.Title_;
-		tune ["artist"] = audio.Artist_;
-		tune ["source"] = audio.Album_;
-		tune ["track"] = audio.TrackNumber_;
-		tune ["length"] = audio.Length_;
-		tune ["URL"] = audio.Other_ ["URL"];
-		emit tuneInfoChanged (tune);
-	}
-
-	void LCSource::Stopped ()
-	{
-		emit tuneInfoChanged (TuneInfo_t ());
-	}
-}
+		XmlSettingsManager ();
+	public:
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
+	};
 }
 }

@@ -29,66 +29,20 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/core/ihookproxy.h>
-
-namespace Media
-{
-	struct AudioInfo;
-	class ICurrentSongKeeper;
-}
+#include "tunesourcebase.h"
 
 namespace LeechCraft
 {
-namespace Azoth
-{
-class IProxyObject;
-
 namespace Xtazy
 {
-	class TuneSourceBase;
-	class LCSource;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
+	class LCSource : public TuneSourceBase
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
-
-		IProxyObject *AzothProxy_;
-		ICoreProxy_ptr Proxy_;
-
-		Media::ICurrentSongKeeper *Keeper_;
-
-		typedef QPair<QPointer<QObject>, QString> UploadNotifee_t;
-		QMap<QString, QList<UploadNotifee_t>> PendingUploads_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		LCSource (QObject* = 0);
 
-		QSet<QByteArray> GetPluginClasses () const;
-	private:
-		void HandleShare (LeechCraft::IHookProxy_ptr proxy,
-				QObject*, const QString&, const QUrl&);
-	public slots:
-		void initPlugin (QObject*);
-		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QObject *entry,
-				int type,
-				QString variant);
-	private slots:
-		void publish (const Media::AudioInfo&);
-		void handleFileUploaded (const QString&, const QUrl&);
+		void NowPlaying (const Media::AudioInfo& audio);
+		void Stopped ();
 	};
-}
 }
 }

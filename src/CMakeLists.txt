@@ -206,6 +206,7 @@ OPTION (ENABLE_MONOCLE "Build Monocle, modular document viewer for LeechCraft" $
 OPTION (ENABLE_LADS "Build Lads, Ubuntu Unity integration layer" ${WITH_PLUGINS})
 OPTION (ENABLE_SHAITAN "Build Shaitan, Embedded terminal emulator" ${WITH_PLUGINS})
 OPTION (ENABLE_VROOBY "Build Vrooby, removable storage devices manager" ${WITH_PLUGINS})
+OPTION (ENABLE_XTAZY "Build Xtazy, plugin for keeping track of a currently playing song" ${WITH_PLUGINS})
 
 # Dumb alternatives
 OPTION (ENABLE_DUMBEEP "Build Dumbeep, a dumb sound notifier for those fearing true LMP power" OFF)
@@ -518,6 +519,10 @@ ENDIF (ENABLE_NACHEKU)
 IF (ENABLE_VROOBY)
 	ADD_SUBDIRECTORY (plugins/vrooby)
 ENDIF (ENABLE_VROOBY)
+
+IF (ENABLE_XTAZY)
+	ADD_SUBDIRECTORY (plugins/xtazy)
+ENDIF (ENABLE_XTAZY)
 
 IF (ENABLE_DUMBEEP)
 	ADD_SUBDIRECTORY (plugins/dumbeep)
