@@ -34,8 +34,6 @@
 
 namespace LeechCraft
 {
-namespace Azoth
-{
 namespace Xtazy
 {
 	const QString MPRISPrefix = "org.mpris";
@@ -191,9 +189,9 @@ namespace Xtazy
 		}
 	}
 
-	TuneSourceBase::TuneInfo_t MPRISSource::GetTuneMV2 (const QVariantMap& map)
+	Media::AudioInfo MPRISSource::GetTuneMV2 (const QVariantMap& map)
 	{
-		TuneInfo_t result;
+		QVariantMap result;
 		if (map.contains ("xesam:title"))
 			result ["title"] = map ["xesam:title"];
 		if (map.contains ("xesam:artist"))
@@ -204,7 +202,7 @@ namespace Xtazy
 			result ["track"] = map ["xesam:trackNumber"];
 		if (map.contains ("xesam:length"))
 			result ["length"] = map ["xesam:length"].toLongLong () / 1000000;
-		return result;
+		return FromMPRISMap (result);
 	}
 
 	void MPRISSource::handlePropertyChange (const QDBusMessage& msg)
@@ -216,11 +214,11 @@ namespace Xtazy
 		if (v.isValid ())
 		{
 			arg = v.value<QDBusArgument> ();
-			TuneInfo_t tune = GetTuneMV2 (qdbus_cast<QVariantMap> (arg));
+			const auto& tune = GetTuneMV2 (qdbus_cast<QVariantMap> (arg));
 			if (tune != Tune_)
 			{
 				Tune_ = tune;
-				if (!Tune_.isEmpty ())
+				if (!Tune_.Title_.isEmpty ())
 					emit tuneInfoChanged (Tune_);
 			}
 		}
@@ -238,27 +236,29 @@ namespace Xtazy
 	{
 		if (ps.PlayStatus_ != PSPlaying)
 		{
-			emit tuneInfoChanged (TuneInfo_t ());
+			emit tuneInfoChanged (Media::AudioInfo ());
 			if (ps.PlayStatus_ == PSStopped)
-				Tune_ = TuneInfo_t ();
+				Tune_ = Media::AudioInfo ();
 		}
-		else if (!Tune_.isEmpty ())
+		else if (!Tune_.Title_.isEmpty ())
 			emit tuneInfoChanged (Tune_);
 	}
 
 	void MPRISSource::handleTrackChange (const QVariantMap& map)
 	{
-		TuneInfo_t tune = map;
-		if (tune.contains ("album"))
-			tune ["source"] = tune.take ("album");
-		if (tune.contains ("time"))
-			tune ["length"] = tune.take ("time");
+		auto tuneMap = map;
+		if (tuneMap.contains ("album"))
+			tuneMap ["source"] = tuneMap.take ("album");
+		if (tuneMap.contains ("time"))
+			tuneMap ["length"] = tuneMap.take ("time");
+
+		const auto& tune = FromMPRISMap (tuneMap);
 
 		if (tune == Tune_)
 			return;
 
 		Tune_ = tune;
-		if (!Tune_.isEmpty ())
+		if (!Tune_.Title_.isEmpty ())
 			emit tuneInfoChanged (Tune_);
 	}
 
@@ -286,6 +286,5 @@ namespace Xtazy
 			Players_.removeAt (playerIdx);
 		}
 	}
-}
 }
 }

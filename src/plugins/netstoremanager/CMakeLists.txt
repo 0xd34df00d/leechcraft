@@ -18,6 +18,7 @@ INCLUDE_DIRECTORIES (
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
+
 SET (SRCS
 	netstoremanager.cpp
 	managertab.cpp
@@ -26,7 +27,8 @@ SET (SRCS
 	accountslistwidget.cpp
 	addaccountdialog.cpp
 	upmanager.cpp
-	filesmodel.cpp
+	filesproxymodel.cpp
+	filestreemodel.cpp
 	filesview.cpp
 	syncmanager.cpp
 	syncwidget.cpp
@@ -35,24 +37,7 @@ SET (SRCS
 	fileswatcherbase.cpp
 	utils.cpp
 	)
-SET (HEADERS
-	netstoremanager.h
-	managertab.h
-	xmlsettingsmanager.h
-	accountsmanager.h
-	accountslistwidget.h
-	addaccountdialog.h
-	upmanager.h
-	filesmodel.h
-	filesview.h
-	syncmanager.h
-	syncwidget.h
-	syncitemdelegate.h
-	directorywidget.h
-	fileswatcher.h
-	fileswatcherbase.h
-	utils.h
-	)
+
 SET (FORMS
 	managertab.ui
 	accountslistwidget.ui
@@ -71,9 +56,7 @@ ELSE (ENABLE_NETSTOREMANAGER_INOTIFY)
 ENDIF (ENABLE_NETSTOREMANAGER_INOTIFY)
 
 SET (RESOURCES netstoremanagerresources.qrc)
-IF (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 CreateTrs ("netstoremanager" "en;es;ru_RU;uk_UA" COMPILED_TRANSLATIONS)

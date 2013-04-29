@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,27 +27,50 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QMap>
+#include "filestreemodel.h"
+#include <QMimeData>
+#include <QtDebug>
+#include <QTreeView>
+#include <QMenu>
+#include "interfaces/netstoremanager/isupportfilelistings.h"
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace NetStoreManager
 {
-namespace Xtazy
-{
-	class TuneSourceBase : public QObject
+	FilesTreeModel::FilesTreeModel (QObject *parent)
+	: QStandardItemModel (parent)
 	{
-		Q_OBJECT
-	protected:
-		typedef QMap<QString, QVariant> TuneInfo_t;
-	public:
-		TuneSourceBase (QObject* = 0);
-	signals:
-		void tuneInfoChanged (const QMap<QString, QVariant>&);
-	};
-}
+	}
+
+	Qt::DropActions FilesTreeModel::supportedDropActions () const
+	{
+		return Qt::MoveAction | Qt::CopyAction;
+	}
+
+	QStringList FilesTreeModel::mimeTypes () const
+	{
+		return { "x-leechcraft/nsm-item" };
+	}
+
+	QMimeData* FilesTreeModel::mimeData (const QModelIndexList& indexes) const
+	{
+		QMimeData *mimeData = new QMimeData ();
+		QByteArray encodedData;
+
+		QDataStream stream (&encodedData, QIODevice::WriteOnly);
+
+		Q_FOREACH (const QModelIndex& index, indexes)
+			if (index.isValid () &&
+					index.column () == 0)
+				stream << data (index).toString ()
+						<< data (index, ListingRole::ID).toByteArray ()
+						<< data (index, ListingRole::InTrash).toBool ()
+						<< data (index, ListingRole::IsDirectory).toBool ()
+						<< index.parent ().data (ListingRole::ID).toByteArray ();
+
+		mimeData->setData ("x-leechcraft/nsm-item", encodedData);
+		return mimeData;
+	}
 }
 }

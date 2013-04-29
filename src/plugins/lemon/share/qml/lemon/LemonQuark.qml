@@ -10,7 +10,7 @@ Rectangle {
 
     color: "transparent"
 
-    property variant tooltip
+    property variant tooltip: null
 
     ListView {
         id: indicatorsView
@@ -45,6 +45,9 @@ Rectangle {
                         "downSpeed": downSpeedPretty,
                         "colorProxy": colorProxy
                     };
+                    if (tooltip != null)
+                        tooltip.closeRequested();
+
                     tooltip = quarkProxy.openWindow(sourceURL, "Tooltip.qml", params);
 
                     tooltip.upSpeed = (function() { return upSpeedPretty; })

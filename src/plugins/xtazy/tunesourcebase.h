@@ -29,26 +29,27 @@
 
 #pragma once
 
-#include "tunesourcebase.h"
-#include <QFileSystemWatcher>
+#include <QObject>
+#include <QVariantMap>
+
+namespace Media
+{
+	struct AudioInfo;
+}
 
 namespace LeechCraft
 {
-namespace Azoth
-{
 namespace Xtazy
 {
-	class FileSource : public TuneSourceBase
+	class TuneSourceBase : public QObject
 	{
 		Q_OBJECT
-
-		QFileSystemWatcher Watcher_;
 	public:
-		FileSource (QObject* = 0);
-	private slots:
-		void handleFileChanged (const QString&);
-		void handleFilePathChanged ();
+		TuneSourceBase (QObject* = 0);
+	protected:
+		Media::AudioInfo FromMPRISMap (const QVariantMap&);
+	signals:
+		void tuneInfoChanged (const Media::AudioInfo&);
 	};
-}
 }
 }

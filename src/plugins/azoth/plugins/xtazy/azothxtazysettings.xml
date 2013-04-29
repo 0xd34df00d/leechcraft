@@ -2,21 +2,6 @@
 <settings>
 	<page>
 		<label value="Azoth Xtazy" />
-		<groupbox>
-			<label value="Tune fetching" />
-			<item type="checkbox" property="EnableLCSource" default="on">
-				<label value="Fetch from LeechCraft players like LMP" />
-			</item>
-			<item type="checkbox" property="EnableMPRISSource" default="on">
-				<label value="Fetch from MPRIS-compatible players" />
-			</item>
-			<item type="checkbox" property="EnableFileSource" default="off">
-				<label value="Fetch from file" />
-			</item>
-			<item type="path" property="FileSourcePath" pickerType="openFileName">
-				<label value="File source:" />
-			</item>
-		</groupbox>
 		<item type="groupbox" checkable="true" property="NPCmdEnabled" default="true">
 			<label value="/np command" />
 			<item type="lineedit" property="NPCmdSubst" default="/me now playing: $artist — $album — $title">

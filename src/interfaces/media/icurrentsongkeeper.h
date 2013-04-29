@@ -27,18 +27,24 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "tunesourcebase.h"
+#pragma once
 
-namespace LeechCraft
+#include <QObject>
+
+namespace Media
 {
-namespace Azoth
-{
-namespace Xtazy
-{
-	TuneSourceBase::TuneSourceBase (QObject *parent)
-	: QObject (parent)
+	struct AudioInfo;
+
+	class ICurrentSongKeeper
 	{
-	}
+	public:
+		virtual ~ICurrentSongKeeper () {}
+
+		virtual QObject* GetQObject () = 0;
+		virtual AudioInfo GetCurrentSong () const = 0;
+	protected:
+		virtual void currentSongChanged (const AudioInfo&) = 0;
+	};
 }
-}
-}
+
+Q_DECLARE_INTERFACE (Media::ICurrentSongKeeper, "org.LeechCraft.Media.ICurrentSongKeeper/1.0");

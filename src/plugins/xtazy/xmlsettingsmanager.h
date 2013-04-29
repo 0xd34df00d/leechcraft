@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,49 +27,24 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "filesmodel.h"
-#include <QMimeData>
-#include <QtDebug>
-#include <QTreeView>
-#include <QMenu>
-#include "interfaces/netstoremanager/isupportfilelistings.h"
+#pragma once
+
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
-namespace NetStoreManager
+namespace Xtazy
 {
-	FilesModel::FilesModel (QObject *parent)
-	: QStandardItemModel (parent)
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
-	}
+		Q_OBJECT
 
-	Qt::DropActions FilesModel::supportedDropActions () const
-	{
-		return Qt::MoveAction | Qt::CopyAction;
-	}
-
-	QStringList FilesModel::mimeTypes () const
-	{
-		return { "x-leechcraft/nsm-item" };
-	}
-
-	QMimeData* FilesModel::mimeData (const QModelIndexList& indexes) const
-	{
-		QMimeData *mimeData = new QMimeData ();
-		QByteArray encodedData;
-
-		QDataStream stream (&encodedData, QIODevice::WriteOnly);
-
-		Q_FOREACH (const QModelIndex& index, indexes)
-			if (index.isValid ())
-				stream << data (index).toString ()
-						<< data (index, ListingRole::ID).toStringList ()
-						<< data (index, ListingRole::InTrash).toBool ()
-						<< data (index, ListingRole::Directory).toBool ()
-						<< index.parent ().data (ListingRole::ID).toStringList ();
-
-		mimeData->setData ("x-leechcraft/nsm-item", encodedData);
-		return mimeData;
-	}
+		XmlSettingsManager ();
+	public:
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
+	};
 }
 }

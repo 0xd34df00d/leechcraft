@@ -32,8 +32,6 @@
 
 namespace LeechCraft
 {
-namespace Azoth
-{
 namespace Xtazy
 {
 	LCSource::LCSource (QObject *parent)
@@ -44,20 +42,12 @@ namespace Xtazy
 
 	void LCSource::NowPlaying (const Media::AudioInfo& audio)
 	{
-		TuneInfo_t tune;
-		tune ["title"] = audio.Title_;
-		tune ["artist"] = audio.Artist_;
-		tune ["source"] = audio.Album_;
-		tune ["track"] = audio.TrackNumber_;
-		tune ["length"] = audio.Length_;
-		tune ["URL"] = audio.Other_ ["URL"];
-		emit tuneInfoChanged (tune);
+		emit tuneInfoChanged (audio);
 	}
 
 	void LCSource::Stopped ()
 	{
-		emit tuneInfoChanged (TuneInfo_t ());
+		emit tuneInfoChanged (Media::AudioInfo ());
 	}
-}
 }
 }

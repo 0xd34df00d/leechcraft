@@ -55,6 +55,8 @@ namespace VelvetBird
 	void Account::Release ()
 	{
 		emit removedCLItems (GetCLEntries ());
+		qDeleteAll (Buddies_);
+		Buddies_.clear ();
 	}
 
 	PurpleAccount* Account::GetPurpleAcc () const
@@ -208,7 +210,7 @@ namespace VelvetBird
 			return;
 
 		emit removedCLItems ({ buddy });
-		buddy->deleteLater ();
+		delete buddy;
 	}
 
 	void Account::HandleDisconnect (PurpleConnectionError error, const char *text)

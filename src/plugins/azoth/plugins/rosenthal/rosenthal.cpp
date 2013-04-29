@@ -224,7 +224,7 @@ namespace Rosenthal
 	void Plugin::hookChatTabCreated (LeechCraft::IHookProxy_ptr,
 			QObject *chatTab, QObject*, QWebView*)
 	{
-		QTextEdit *edit;
+		QTextEdit *edit = 0;
 		QMetaObject::invokeMethod (chatTab,
 				"getMsgEdit",
 				Q_RETURN_ARG (QTextEdit*, edit));

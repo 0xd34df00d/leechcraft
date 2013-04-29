@@ -34,13 +34,18 @@
 #include <QClipboard>
 #include <QMenu>
 #include <QInputDialog>
+#include <QComboBox>
+#include <QToolButton>
 #include <QtDebug>
+#include <interfaces/core/ientitymanager.h>
 #include <util/util.h>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/istorageplugin.h"
 #include "interfaces/netstoremanager/isupportfilelistings.h"
 #include "accountsmanager.h"
-#include "filesmodel.h"
+#include "filestreemodel.h"
+#include "xmlsettingsmanager.h"
+#include "filesproxymodel.h"
 
 namespace LeechCraft
 {
@@ -51,101 +56,135 @@ namespace NetStoreManager
 	: Parent_ (obj)
 	, Info_ (tc)
 	, Proxy_ (proxy)
+	, ToolBar_ (new QToolBar (this))
 	, AM_ (am)
-	, Model_ (new FilesModel (this))
+	, ProxyModel_ (new FilesProxyModel (this))
+	, TreeModel_ (new FilesTreeModel (this))
+	, AccountsBox_ (0)
+	, TrashAction_ (0)
 	{
+		Ui_.setupUi (this);
+
+		Ui_.FilesView_->setModel (ProxyModel_);
+		ProxyModel_->setSourceModel (TreeModel_);
+		TreeModel_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Modify") });
+		Ui_.FilesView_->header ()->setResizeMode (Columns::Name, QHeaderView::Interactive);
+
+		connect (Ui_.FilesView_->header (),
+				SIGNAL (sectionResized (int, int, int)),
+				this,
+				SLOT (handleFilesViewSectionResized (int, int, int)));
+		Ui_.FilesView_->setContextMenuPolicy (Qt::CustomContextMenu);
+
 		CopyURL_ = new QAction (tr ("Copy URL..."), this);
+		CopyURL_->setProperty ("ActionIcon", Proxy_->GetIcon ("edit-copy"));
 		connect (CopyURL_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (flCopyURL ()));
-		DeleteFile_ = new QAction (tr ("Delete selected"), this);
+				SLOT (flCopyUrl ()));
+		Copy_ = new QAction (tr ("Copy..."), this);
+		Copy_->setProperty ("ActionIcon", Proxy_->GetIcon ("edit-copy"));
+		connect (Copy_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (flCopy ()));
+		Move_ = new QAction (tr ("Move..."), this);
+		Move_->setProperty ("ActionIcon", Proxy_->GetIcon ("transform-move"));
+		connect (Move_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (flMove ()));
+		Rename_ = new QAction (tr ("Rename..."), this);
+		Rename_->setProperty ("ActionIcon", Proxy_->GetIcon ("edit-rename"));
+		connect (Rename_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (flRename ()));
+		Paste_ = new QAction (tr ("Paste"), this);
+		Paste_->setProperty ("ActionIcon", Proxy_->GetIcon ("edit-paste"));
+		connect (Paste_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (flPaste ()));
+		DeleteFile_ = new QAction (tr ("Delete..."), this);
+		DeleteFile_->setProperty ("ActionIcon", Proxy_->GetIcon ("edit-delete"));
 		connect (DeleteFile_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flDelete ()));
 		MoveToTrash_ = new QAction (tr ("Move to trash"), this);
+		MoveToTrash_->setProperty ("ActionIcon", Proxy_->GetIcon ("edit-clear"));
 		connect (MoveToTrash_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flMoveToTrash ()));
 		UntrashFile_ = new QAction (tr ("Restore from trash"), this);
+		UntrashFile_->setProperty ("ActionIcon", Proxy_->GetIcon ("edit-undo"));
 		connect (UntrashFile_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flRestoreFromTrash ()));
 		EmptyTrash_ = new QAction (tr ("Empty trash"), this);
+		EmptyTrash_->setProperty ("ActionIcon", Proxy_->GetIcon ("trash-empty"));
 		connect (EmptyTrash_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flEmptyTrash ()));
 		CreateDir_ = new QAction (tr ("Create directory"), this);
+		CreateDir_->setProperty ("ActionIcon", Proxy_->GetIcon ("folder-new"));
 		connect (CreateDir_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flCreateDir ()));
-		UploadInCurrentDir_ = new QAction (tr ("Upload in this directory"), this);
+		UploadInCurrentDir_ = new QAction (tr ("Upload..."), this);
+		UploadInCurrentDir_->setProperty ("ActionIcon", Proxy_->GetIcon ("svn-commit"));
 		connect (UploadInCurrentDir_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flUploadInCurrentDir ()));
 		Download_ = new QAction (tr ("Download"), this);
+		Download_->setProperty ("ActionIcon", Proxy_->GetIcon ("download"));
 		connect (Download_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flDownload ()));
 
-		Ui_.setupUi (this);
-		Ui_.FilesTree_->setModel (Model_);
-		Q_FOREACH (auto acc, AM_->GetAccounts ())
-		{
-			auto stP = qobject_cast<IStoragePlugin*> (acc->GetParentPlugin ());
-			Ui_.AccountsBox_->addItem (stP->GetStorageIcon (),
-					acc->GetAccountName (),
-					QVariant::fromValue<IStorageAccount*> (acc));
+		FillToolbar ();
 
-			if (acc->GetAccountFeatures () & AccountFeature::FileListings)
-			{
-				connect (acc->GetQObject (),
-						SIGNAL (gotListing (const QList<QList<QStandardItem*>>&)),
-						this,
-						SLOT (handleGotListing (const QList<QList<QStandardItem*>>&)));
+		connect (AM_,
+				SIGNAL (accountAdded (QObject*)),
+				this,
+				SLOT (handleAccountAdded (QObject*)));
+		connect (AM_,
+				SIGNAL (accountRemoved (QObject*)),
+				this,
+				SLOT (handleAccountRemoved (QObject*)));
 
-				connect (acc->GetQObject (),
-						SIGNAL (gotFileUrl (const QUrl&, const QStringList&)),
-						this,
-						SLOT (handleGotFileUrl (const QUrl&, const QStringList&)));
-
-				connect (acc->GetQObject (),
-						SIGNAL (gotNewItem (QList<QStandardItem*>, QStringList)),
-						this,
-						SLOT (handleGotNewItem (QList<QStandardItem*>, QStringList)));
-			}
-		}
-		if (Ui_.AccountsBox_->count ())
-			on_AccountsBox__activated (0);
-
-		Ui_.FilesTree_->setContextMenuPolicy (Qt::CustomContextMenu);
-		connect (Ui_.FilesTree_,
+		connect (Ui_.FilesView_,
 				SIGNAL (customContextMenuRequested (const QPoint&)),
 				this,
 				SLOT (handleContextMenuRequested (const QPoint&)));
-		connect (Ui_.FilesTree_,
-				SIGNAL (copiedItem (QStringList, QStringList)),
+		connect (Ui_.FilesView_,
+				SIGNAL (doubleClicked (QModelIndex)),
 				this,
-				SLOT (handleCopiedItem (QStringList, QStringList)));
-		connect (Ui_.FilesTree_,
-				SIGNAL (movedItem (QStringList, QStringList)),
+				SLOT (handleDoubleClicked (QModelIndex)));
+
+		connect (Ui_.FilesView_,
+				SIGNAL (itemsAboutToBeCopied (QList<QByteArray>, QByteArray)),
 				this,
-				SLOT (handleMovedItem (QStringList, QStringList)));
-		connect (Ui_.FilesTree_,
-				SIGNAL (restoredFromTrash (QStringList)),
+				SLOT (performCopy (QList<QByteArray>,QByteArray)));
+		connect (Ui_.FilesView_,
+				SIGNAL (itemsAboutToBeMoved (QList<QByteArray>, QByteArray)),
 				this,
-				SLOT (handleRestoredFromTrash (QStringList)));
-		connect (Ui_.FilesTree_,
-				SIGNAL (trashedItem (QStringList)),
+				SLOT (performMove (QList<QByteArray>, QByteArray)));
+		connect (Ui_.FilesView_,
+				SIGNAL (itemsAboutToBeRestoredFromTrash (QList<QByteArray>)),
 				this,
-				SLOT (handleTrashedItem (QStringList)));
+				SLOT (performRestoreFromTrash (QList<QByteArray>)));
+		connect (Ui_.FilesView_,
+				SIGNAL (itemsAboutToBeTrashed (QList<QByteArray>)),
+				this,
+				SLOT (performMoveToTrash (QList<QByteArray>)));
 	}
 
 	TabClassInfo ManagerTab::GetTabClassInfo () const
@@ -165,240 +204,481 @@ namespace NetStoreManager
 
 	QToolBar* ManagerTab::GetToolBar () const
 	{
-		return 0;
+		return ToolBar_;
+	}
+
+	void ManagerTab::FillToolbar ()
+	{
+		AccountsBox_ = new QComboBox (this);
+		Q_FOREACH (auto acc, AM_->GetAccounts ())
+		{
+			auto stP = qobject_cast<IStoragePlugin*> (acc->GetParentPlugin ());
+			AccountsBox_->addItem (stP->GetStorageIcon (),
+					acc->GetAccountName (),
+					QVariant::fromValue<IStorageAccount*> (acc));
+
+			if (acc->GetAccountFeatures () & AccountFeature::FileListings)
+			{
+				connect (acc->GetQObject (),
+						SIGNAL (gotListing (const QList<StorageItem>&)),
+						this,
+						SLOT (handleGotListing (const QList<StorageItem>&)));
+				connect (acc->GetQObject (),
+						SIGNAL (gotNewItem (StorageItem, QByteArray)),
+						this,
+						SLOT (handleGotNewItem (StorageItem, QByteArray)));
+				connect (acc->GetQObject (),
+						SIGNAL (gotFileUrl (QUrl, QByteArray)),
+						this,
+						SLOT (handleGotFileUrl (QUrl, QByteArray)));
+			}
+		}
+
+		ToolBar_->addWidget (AccountsBox_);
+
+		Refresh_ = new QAction (Proxy_->GetIcon ("view-refresh"), tr ("Refresh"), this);
+		connect (Refresh_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleRefresh ()));
+		Upload_ = new QAction (Proxy_->GetIcon ("svn-commit"), tr ("Upload"), this);
+		connect (Upload_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleUpload ()));
+
+		ToolBar_->addActions ({ Refresh_, Upload_ });
+		ToolBar_->addSeparator ();
+
+		OpenTrash_ = new QAction (Proxy_->GetIcon ("user-trash"),
+				tr ("Open trash"), this);
+		OpenTrash_->setCheckable (true);
+		connect (OpenTrash_,
+				SIGNAL (triggered (bool)),
+				this,
+				SLOT (showTrashContent (bool)));
+
+		Trash_ = new QToolButton (this);
+		Trash_->setIcon (Proxy_->GetIcon ("user-trash"));
+		Trash_->setText (tr ("Trash"));
+		Trash_->setPopupMode (QToolButton::InstantPopup);
+		Trash_->addActions ({ OpenTrash_, EmptyTrash_ });
+
+		ToolBar_->addWidget (Trash_);
+
+		ShowAccountActions (AccountsBox_->count ());
+
+		connect (AccountsBox_,
+				SIGNAL (currentIndexChanged (int)),
+				this,
+				SLOT (handleCurrentIndexChanged (int)));
+	}
+
+	void ManagerTab::ShowAccountActions (bool show)
+	{
+		if (Upload_)
+			Upload_->setVisible (show);
+
+		if (Refresh_)
+			Refresh_->setVisible (show);
 	}
 
 	IStorageAccount* ManagerTab::GetCurrentAccount () const
 	{
-		const int idx = Ui_.AccountsBox_->currentIndex ();
+		const int idx = AccountsBox_->currentIndex ();
 		if (idx < 0)
 			return 0;
-		return Ui_.AccountsBox_->itemData (idx).value<IStorageAccount*> ();
+		return AccountsBox_->itemData (idx).value<IStorageAccount*> ();
 	}
 
-	void ManagerTab::CallOnSelection (std::function<void (ISupportFileListings*, const QList<QStringList>&)> func)
+	void ManagerTab::ClearModel ()
 	{
-		IStorageAccount *acc = GetCurrentAccount ();
-		if (!acc)
-			return;
-
-		QList<QStringList> ids;
-		Q_FOREACH (const auto& idx, Ui_.FilesTree_->selectionModel ()->selectedRows ())
-			ids << idx.data (ListingRole::ID).toStringList ();
-
-		if (ids.isEmpty ())
-			return;
-
-		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
-		func (sfl, ids);
+		TreeModel_->removeRows (0, TreeModel_->rowCount ());
 	}
 
-	void ManagerTab::ClearFilesModel ()
+	void ManagerTab::FillModel (IStorageAccount *acc)
 	{
-		Model_->clear ();
-
-		IStorageAccount *acc = GetCurrentAccount ();
-		if (!acc)
-			return;
-
-		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
-		Model_->setHorizontalHeaderLabels (sfl->GetListingHeaders ());
+		ClearModel ();
+		FillListModel (acc);
 	}
 
-	void ManagerTab::SaveModelState (const QModelIndex& parent)
+	namespace
 	{
-		auto currentAcc = GetCurrentAccount ();
-
-		auto parentItem = parent.isValid () ?
-				Model_->itemFromIndex (parent) :
-				Model_->invisibleRootItem ();
-
-		for (int i = 0; i < parentItem->rowCount (); ++i)
+		QList<QStandardItem*> CreateItems (const StorageItem& storageItem, ICoreProxy_ptr proxy)
 		{
-			auto item = parentItem->child (i);
-			if (!item)
-				continue;
-			const auto& index = Model_->indexFromItem (item);
+			QStandardItem *name = new QStandardItem (storageItem.Name_);
+			name->setEditable (false);
+			name->setData (storageItem.ID_, ListingRole::ID);
+			name->setData (storageItem.Hash_, ListingRole::Hash);
+			name->setData (static_cast<int> (storageItem.HashType_),
+					ListingRole::HashType);
+			name->setData (storageItem.IsDirectory_, ListingRole::IsDirectory);
+			name->setData (storageItem.IsTrashed_, ListingRole::InTrash);
+			name->setIcon (proxy->GetIcon (storageItem.IsDirectory_ ?
+					"inode-directory" :
+					storageItem.MimeType_));
+			if (name->icon ().isNull ())
+				qDebug () << "[NetStoreManager]"
+						<< "Unknown mime type:"
+						<< storageItem.MimeType_
+						<< "for file"
+						<< storageItem.Name_
+						<< storageItem.ID_;
 
-			const auto& id = item->data (ListingRole::ID).toString ();
-			Account2ItemExpandState_ [currentAcc] [id] = Ui_.FilesTree_->isExpanded (index);
+			QStandardItem *modify = new QStandardItem (storageItem.ModifyDate_
+					.toString ("dd.MM.yy hh:mm"));
+			modify->setEditable (false);
 
-			if (item->hasChildren ())
-				SaveModelState (index);
+			return { name, modify };
 		}
 	}
 
-	void ManagerTab::RestoreModelState ()
+	void ManagerTab::FillListModel (IStorageAccount *acc)
 	{
-		if (Account2ItemExpandState_ [GetCurrentAccount ()].isEmpty ())
+		if (acc != GetCurrentAccount ())
 			return;
 
-		ExpandModelItems ();
-		Account2ItemExpandState_.clear ();
+		ShowListItemsWithParent (LastParentID_);
+
+		Ui_.FilesView_->header ()->resizeSection (Columns::Name,
+				XmlSettingsManager::Instance ().Property ("ViewSectionSize",
+						Ui_.FilesView_->header ()->sectionSize (Columns::Name)).toInt ());
 	}
 
-	void ManagerTab::ExpandModelItems (const QModelIndex& parent)
+	void ManagerTab::RequestFileListings (IStorageAccount *acc)
 	{
-		for (int i = 0; i < Model_->rowCount (parent); ++i)
+		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
+		if (!sfl)
 		{
-			QStandardItem *item = !parent.isValid () ?
-				Model_->item (i) :
-				Model_->itemFromIndex (parent)->child (i);
-			const auto& id = item->data (ListingRole::ID).toString ();
-
-			if (item->hasChildren () &&
-					Account2ItemExpandState_ [GetCurrentAccount ()].value (id))
-			{
-				const auto& index = Model_->indexFromItem (item);
-				Ui_.FilesTree_->expand (index);
-				Ui_.FilesTree_->resizeColumnToContents (index.column ());
-				ExpandModelItems (index);
-			}
+			qWarning () << Q_FUNC_INFO
+					<< acc
+					<< "doesn't support FileListings";
+			return;
 		}
+		sfl->RefreshListing ();
 	}
 
-	QList<QStringList> ManagerTab::GetTrashedFiles () const
+	void ManagerTab::RequestFileChanges (IStorageAccount*)
 	{
-		QList<QStringList> result;
-		for (int i = 0, count = Model_->rowCount (); i < count; ++i)
-		{
-			QStandardItem *item = Model_->item (i);
-			if (item->data (ListingRole::ID).toString () == "netstoremanager.item_trash")
-			{
-				for (int j = 0, cnt = item->rowCount (); j < cnt; ++j)
-					result << QStringList (item->child (j)->data (ListingRole::ID).toString ());
-				break;
-			}
-		}
+		//TODO
+	}
 
+	QList<QByteArray> ManagerTab::GetTrashedFiles () const
+	{
+		QList<QByteArray> result;
+		for (const auto& item : Id2Item_.values ())
+			if (item.IsTrashed_)
+				result << item.ID_;
 		return result;
 	}
 
-	QStandardItem* ManagerTab::GetItemFromId (const QStringList& id) const
+	QList<QByteArray> ManagerTab::GetSelectedIDs () const
 	{
-		QList<QStandardItem*> parents;
-		QList<QStandardItem*> children;
+		QList<QByteArray> ids;
+		Q_FOREACH (const auto& idx, Ui_.FilesView_->selectionModel ()->selectedRows ())
+			ids << idx.data (ListingRole::ID).toByteArray ();
 
-		for (int i = 0; i < Model_->rowCount (); ++i)
-			parents << Model_->item (i);
-
-		while (!parents.isEmpty ())
-		{
-			for (auto parentItem : parents)
-			{
-				if (parentItem->data (ListingRole::ID) == id)
-					return parentItem;
-
-				for (int i = 0; i < parentItem->rowCount (); ++i)
-					children << parentItem->child (i);
-			}
-
-			std::swap (parents, children);
-			children.clear ();
-		}
-
-		return 0;
+		return ids;
 	}
 
-	void ManagerTab::handleGotListing (const QList<QList<QStandardItem*>>& items)
+	QByteArray ManagerTab::GetParentIDInListViewMode () const
 	{
-		IStorageAccount *acc = GetCurrentAccount ();
-		if (!acc || sender () != acc->GetQObject ())
-			return;
-
-		if (items.isEmpty ())
-		{
-			SaveModelState ();
-			ClearFilesModel ();
-			return;
-		}
-		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
-		const bool trashSupporting = sfl &&
-				sfl->GetListingOps () & ListingOp::TrashSupporting;
-
-		QStandardItem *trashItem = new QStandardItem (Proxy_->GetIcon ("user-trash"),
-				tr ("Trash"));
-		trashItem->setEditable (false);
-		trashItem->setData ("netstoremanager.item_trash", ListingRole::ID);
-
-		Q_FOREACH (auto row, items)
-			row [0]->data (ListingRole::InTrash).toBool () ?
-				trashItem->appendRow (row) :
-				Model_->appendRow (row);
-
-		if (trashSupporting)
-			Model_->appendRow (trashItem);
-		RestoreModelState ();
+		return ProxyModel_->index (0, Columns::Name).data (Qt::UserRole + 1)
+				.toByteArray ();
 	}
 
-	void ManagerTab::handleGotFileUrl (const QUrl& url, const QStringList&)
+	QByteArray ManagerTab::GetCurrentID () const
 	{
-		if (url.isEmpty () || !url.isValid ())
-			return;
-
-		const QString& str = url.toString ();
-		qApp->clipboard ()->setText (str, QClipboard::Clipboard);
-		qApp->clipboard ()->setText (str, QClipboard::Selection);
-
-		QString text = tr ("File URL %1 has been copied to the clipboard.")
-				.arg (str);
-		emit gotEntity (Util::MakeNotification ("NetStoreManager", text, PInfo_));
+		QModelIndex idx = Ui_.FilesView_->currentIndex ();
+		idx = idx.sibling (idx.row (), Columns::Name);
+		return idx.data (ListingRole::ID).toByteArray ();
 	}
 
-	void ManagerTab::handleGotNewItem (const QList<QStandardItem*>& item,
-			const QStringList& parentId)
-	{
-		if (item.isEmpty ())
-			return;
-
-		QStandardItem *thisItem = GetItemFromId (item [0]->data (ListingRole::ID).toStringList ());
-		if (thisItem)
-		{
-			const QModelIndex index = Model_->indexFromItem (thisItem);
-			const int columnCount = index.parent ().isValid () ?
-				thisItem->parent ()->columnCount () :
-				Model_->columnCount ();
-
-			for (int i = 0; i < columnCount; ++i)
-				Model_->setData (index.sibling (index.row (), i), item.value (i)->text ());
-		}
-		else
-		{
-			QStandardItem *parentItem = GetItemFromId (parentId);
-			if (!parentItem)
-				Model_->appendRow (item);
-			else
-				parentItem->appendRow (item);
-		}
-	}
-
-	void ManagerTab::flCopyURL ()
+	void ManagerTab::CallOnSelection (std::function<void (ISupportFileListings*, QList<QByteArray>)> func)
 	{
 		IStorageAccount *acc = GetCurrentAccount ();
 		if (!acc)
 			return;
 
-		const auto& id = Ui_.FilesTree_->currentIndex ().data (ListingRole::ID).toStringList ();
-		if (id.isEmpty ())
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
+		func (sfl, GetSelectedIDs ());
+	}
+
+	void ManagerTab::ShowListItemsWithParent (const QByteArray& parentId, bool inTrash)
+	{
+		ClearModel ();
+		if (Id2Item_.contains (parentId))
+		{
+			QStandardItem *upLevel = new QStandardItem (Proxy_->GetIcon ("go-up"), "..");
+			upLevel->setData ("netstoremanager.item_uplevel", ListingRole::ID);
+			upLevel->setData (parentId);
+			upLevel->setFlags (Qt::ItemIsEnabled);
+			QStandardItem *upLevelModify = new QStandardItem;
+			upLevelModify->setFlags (Qt::ItemIsEnabled);
+			TreeModel_->appendRow ({ upLevel, upLevelModify });
+		}
+
+		for (const auto& item : Id2Item_.values ())
+			if (!inTrash &&
+					!item.IsTrashed_)
+			{
+				if (parentId.isNull () &&
+						!Id2Item_.contains (item.ParentID_))
+					TreeModel_->appendRow (CreateItems (item, Proxy_));
+				else if (!parentId.isNull () &&
+						item.ParentID_ == parentId)
+					TreeModel_->appendRow (CreateItems (item, Proxy_));
+			}
+			else if (inTrash &&
+					item.IsTrashed_)
+			{
+				if (parentId.isNull () &&
+						(!Id2Item_.contains (item.ParentID_) ||
+						!Id2Item_ [item.ParentID_].IsTrashed_))
+					TreeModel_->appendRow (CreateItems (item, Proxy_));
+				else if (!parentId.isNull () &&
+						item.ParentID_ == parentId &&
+						Id2Item_ [parentId].IsTrashed_)
+					TreeModel_->appendRow (CreateItems (item, Proxy_));
+				else if (!parentId.isNull () &&
+						!Id2Item_ [parentId].IsTrashed_)
+					ShowListItemsWithParent (QByteArray (), true);
+			}
+	}
+
+	void ManagerTab::handleRefresh ()
+	{
+		auto acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		RequestFileListings (acc);
+	}
+
+	void ManagerTab::handleUpload ()
+	{
+		auto acc = GetCurrentAccount ();
+		if (!acc)
+		{
+			QMessageBox::critical (this,
+					tr ("Error"),
+					tr ("You first need to add an account."));
+			return;
+		}
+
+		const QString& filename = QFileDialog::getOpenFileName (this,
+				tr ("Select file for upload"),
+				XmlSettingsManager::Instance ().Property ("DirUploadFrom", QDir::homePath ()).toString ());
+		if (filename.isEmpty ())
+			return;
+
+		XmlSettingsManager::Instance ().setProperty ("DirUploadFrom",
+				QFileInfo (filename).dir ().absolutePath ());
+		QByteArray parentId;
+		parentId = GetParentIDInListViewMode ();
+
+		emit uploadRequested (acc, filename, parentId);
+	}
+
+	void ManagerTab::handleDoubleClicked (const QModelIndex& idx)
+	{
+		if (idx.data (ListingRole::ID).toByteArray () == "netstoremanager.item_uplevel")
+		{
+			ShowListItemsWithParent (Id2Item_ [idx.data (Qt::UserRole + 1).toByteArray ()].ParentID_,
+					OpenTrash_->isChecked ());
+			return;
+		}
+
+		if (!idx.data (ListingRole::IsDirectory).toBool ())
+			return;
+
+		ShowListItemsWithParent (idx.data (ListingRole::ID).toByteArray (),
+				OpenTrash_->isChecked ());
+	}
+
+	void ManagerTab::handleAccountAdded (QObject *accObj)
+	{
+		auto acc = qobject_cast<IStorageAccount*> (accObj);
+		if (!acc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "added account is not an IStorageAccount";
+			return;
+		}
+
+		auto stP = qobject_cast<IStoragePlugin*> (acc->GetParentPlugin ());
+		AccountsBox_->addItem (stP->GetStorageIcon (),
+				acc->GetAccountName (),
+				QVariant::fromValue<IStorageAccount*> (acc));
+
+		if (AccountsBox_->count () == 1)
+			ShowAccountActions (true);
+	}
+
+	void ManagerTab::handleAccountRemoved (QObject *accObj)
+	{
+		auto acc = qobject_cast<IStorageAccount*> (accObj);
+		if (!acc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "removed account is not an IStorageAccount";
+			return;
+		}
+
+		for (int i = AccountsBox_->count () - 1; i >= 0; --i)
+			if (AccountsBox_->itemData (i).value<IStorageAccount*> () == acc)
+				AccountsBox_->removeItem (i);
+
+		if (!AccountsBox_->count ())
+			ShowAccountActions (false);
+	}
+
+	void ManagerTab::handleGotListing (const QList<StorageItem>& items)
+	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc ||
+				sender () != acc->GetQObject ())
+			return;
+
+		LastParentID_ = GetParentIDInListViewMode ();
+
+		Id2Item_.clear ();
+		for (auto item : items)
+			Id2Item_ [item.ID_] = item;
+
+		FillModel (acc);
+
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("NetStoreManager",
+				tr ("File list updated"), PInfo_));
+
+		Trash_->setIcon (Proxy_->GetIcon (GetTrashedFiles ().isEmpty () ?
+			"user-trash-full" :
+			"user-trash"));
+	}
+
+	void ManagerTab::handleGotNewItem (const StorageItem& item, const QByteArray&)
+	{
+		Id2Item_ [item.ID_] = item;
+		LastParentID_ = GetParentIDInListViewMode ();
+		FillModel (GetCurrentAccount ());
+	}
+
+	void ManagerTab::handleFilesViewSectionResized (int index,
+			int, int newSize)
+	{
+		if (index == Columns::Name)
+			XmlSettingsManager::Instance ().setProperty ("ViewSectionSize", newSize);
+	}
+
+	void ManagerTab::performCopy (const QList<QByteArray>& ids,
+			const QByteArray& newParentId)
+	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
 			return;
 
 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
-		sfl->RequestUrl (QList<QStringList> () << id);
+		sfl->Copy (ids, newParentId);
+	}
+
+	void ManagerTab::performMove (const QList<QByteArray>& ids,
+			const QByteArray& newParentId)
+	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
+		sfl->Move (ids, newParentId);
+	}
+
+	void ManagerTab::performRestoreFromTrash (const QList<QByteArray>& ids)
+	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
+		sfl->RestoreFromTrash (ids);
+	}
+
+	void ManagerTab::performMoveToTrash (const QList<QByteArray>& ids)
+	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
+		sfl->MoveToTrash (ids);
+	}
+
+	void ManagerTab::flCopy ()
+	{
+		TransferedIDs_ = { TransferOperation::Copy, GetSelectedIDs () };
+	}
+
+	void ManagerTab::flMove ()
+	{
+		TransferedIDs_ = { TransferOperation::Move, GetSelectedIDs () };
+	}
+
+	void ManagerTab::flRename ()
+	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
+		const QString& oldName = Ui_.FilesView_->currentIndex ().data ().toString ();
+		const auto& id = GetCurrentID ();
+		QString name = QInputDialog::getText (this,
+				"Rename",
+				tr ("New name:"),
+				QLineEdit::Normal,
+				oldName);
+		if (name.isEmpty () ||
+				name == oldName)
+			return;
+
+		sfl->Rename (id, name);
+	}
+
+	void ManagerTab::flPaste ()
+	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
+
+		switch (TransferedIDs_.first)
+		{
+		case TransferOperation::Copy:
+			sfl->Copy (TransferedIDs_.second, GetParentIDInListViewMode ());
+			break;
+		case TransferOperation::Move:
+			sfl->Move (TransferedIDs_.second, GetParentIDInListViewMode ());
+			break;
+		}
+		TransferedIDs_.second.clear ();
 	}
 
 	void ManagerTab::flDelete ()
 	{
-		CallOnSelection ([] (ISupportFileListings *sfl, const QList<QStringList>& ids) { sfl->Delete (ids); });
+		CallOnSelection ([] (ISupportFileListings *sfl, const QList<QByteArray>& ids)
+			{ sfl->Delete (ids); });
 	}
 
 	void ManagerTab::flMoveToTrash ()
 	{
-		CallOnSelection ([] (ISupportFileListings *sfl, const QList<QStringList>& ids) { sfl->MoveToTrash (ids); });
+		CallOnSelection ([] (ISupportFileListings *sfl, const QList<QByteArray>& ids)
+			{ sfl->MoveToTrash (ids); });
 	}
 
 	void ManagerTab::flRestoreFromTrash ()
 	{
-		CallOnSelection ([] (ISupportFileListings *sfl, const QList<QStringList>& ids) { sfl->RestoreFromTrash (ids); });
+		CallOnSelection ([] (ISupportFileListings *sfl, const QList<QByteArray>& ids)
+			{ sfl->RestoreFromTrash (ids); });
 	}
 
 	void ManagerTab::flEmptyTrash ()
@@ -409,7 +689,7 @@ namespace NetStoreManager
 
 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 		if (sfl)
-			sfl->EmptyTrash (GetTrashedFiles ());
+			sfl->Delete (GetTrashedFiles (), false);
 		else
 			qWarning () << Q_FUNC_INFO
 					<< acc->GetQObject ()
@@ -432,15 +712,7 @@ namespace NetStoreManager
 		if (name.isEmpty ())
 			return;
 
-		const QModelIndex& idx = Ui_.FilesTree_->currentIndex ();
-		QModelIndex index = idx.sibling (idx.row (), Columns::FirstColumnNumber);
-		index = index.data (ListingRole::Directory).toBool () ?
-			index :
-			index.parent ();
-		QStringList id = index.isValid () ?
-			index.data (ListingRole::ID).toStringList () :
-			QStringList ();
-		sfl->CreateDirectory (name, id);
+		sfl->CreateDirectory (name, GetParentIDInListViewMode ());
 	}
 
 	void ManagerTab::flUploadInCurrentDir ()
@@ -459,11 +731,7 @@ namespace NetStoreManager
 		if (filename.isEmpty ())
 			return;
 
-		QModelIndex idx = Ui_.FilesTree_->currentIndex ();
-		idx = idx.sibling (idx.row (), Columns::FirstColumnNumber);
-		QStringList id = idx.data (ListingRole::ID).toStringList ();
-
-		emit uploadRequested (acc, filename, id);
+		emit uploadRequested (acc, filename, GetParentIDInListViewMode ());
 	}
 
 	void ManagerTab::flDownload ()
@@ -472,140 +740,153 @@ namespace NetStoreManager
 		if (!acc)
 			return;
 
-		QModelIndex idx = Ui_.FilesTree_->currentIndex ();
-		idx = idx.sibling (idx.row (), Columns::FirstColumnNumber);
-
-		acc->Download (idx.data (ListingRole::ID).toStringList (), "");
+		acc->Download (GetCurrentID (), QString ());
 	}
 
-	void ManagerTab::on_AccountsBox__activated (int)
+	void ManagerTab::flCopyUrl ()
 	{
 		IStorageAccount *acc = GetCurrentAccount ();
 		if (!acc)
 			return;
 
-		const bool hasListings = acc->GetAccountFeatures () & AccountFeature::FileListings;
-		Ui_.Update_->setEnabled (hasListings);
-		if (!hasListings)
-			return;
-
-		on_Update__released ();
-
-		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
-		DeleteFile_->setEnabled (sfl->GetListingOps () & ListingOp::Delete);
-		MoveToTrash_->setEnabled (sfl->GetListingOps () & ListingOp::TrashSupporting);
+		const QByteArray id = GetCurrentID ();
+		if (!Id2Item_ [id].Url_.isEmpty () &&
+				Id2Item_ [id].Url_.isValid ())
+			handleGotFileUrl (Id2Item_ [id].Url_);
+		else
+			qobject_cast<ISupportFileListings*> (acc->GetQObject ())->RequestUrl (id);
 	}
 
-	void ManagerTab::on_Update__released ()
+	void ManagerTab::showTrashContent (bool show)
 	{
-		IStorageAccount *acc = GetCurrentAccount ();
-		if (!acc)
-			return;
-
-		SaveModelState ();
-
-		Model_->clear ();
-
-		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
-		sfl->RefreshListing ();
-		Model_->setHorizontalHeaderLabels (sfl->GetListingHeaders ());
-	}
-
-	void ManagerTab::on_Upload__released ()
-	{
-		const int accIdx = Ui_.AccountsBox_->currentIndex ();
-		if (accIdx < 0)
-		{
-			QMessageBox::critical (this,
-					tr ("Error"),
-					tr ("You first need to add an account."));
-			return;
-		}
-
-		const QString& filename = QFileDialog::getOpenFileName (this,
-				tr ("Select file for upload"),
-				QDir::homePath ());
-		if (filename.isEmpty ())
-			return;
-
-		IStorageAccount *acc = Ui_.AccountsBox_->
-				itemData (accIdx).value<IStorageAccount*> ();
-		emit uploadRequested (acc, filename);
+		ShowListItemsWithParent (QByteArray (), show);
 	}
 
 	void ManagerTab::handleContextMenuRequested (const QPoint& point)
 	{
-		const auto& index = Ui_.FilesTree_->indexAt (point);
+		QList<QModelIndex> idxs = Ui_.FilesView_->selectionModel ()->selectedRows ();
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
+		const bool trashSupport = sfl->GetListingOps () & ListingOp::TrashSupporting;
 
 		QMenu *menu = new QMenu;
-		if (index.isValid ())
-		{
-			const bool inTrash = index.data (ListingRole::InTrash).toBool ();
-			MoveToTrash_->setEnabled (!inTrash);
-			UntrashFile_->setEnabled (inTrash);
-			const bool isTrashItem = index.data (ListingRole::ID).toString () == "netstoremanager.item_trash";
-			isTrashItem ?
-				menu->addAction (EmptyTrash_) :
-				menu->addActions ({ CopyURL_, MoveToTrash_, UntrashFile_,  DeleteFile_ });
+		UploadInCurrentDir_->setText (tr ("Upload..."));
 
-			if (!inTrash &&
-					!isTrashItem)
+		if (!idxs.isEmpty ())
+		{
+			QList<QAction*> editActions = { Copy_, Move_, Rename_, DeleteFile_ };
+
+			menu->addAction (CopyURL_);
+			menu->addSeparator ();
+
+			menu->addAction (Download_);
+			menu->addSeparator ();
+			QList<QAction*> actions;
+			if (trashSupport &&
+					idxs.at (0).data (ListingRole::InTrash).toBool ())
+				actions << UntrashFile_;
+			else
 			{
-				menu->insertAction (MoveToTrash_, CreateDir_);
-				if (index.data (ListingRole::Directory).toBool ())
-					menu->addActions ({ menu->addSeparator (), UploadInCurrentDir_ });
-				else
-					menu->addActions ({ menu->addSeparator (), Download_ });
+				menu->insertAction (Download_, UploadInCurrentDir_);
+				actions << editActions;
+				if (trashSupport)
+					actions << MoveToTrash_;
+			}
+			actions << DeleteFile_;
+			menu->addActions (actions);
+
+			const auto& id = GetCurrentID ();
+			StorageItem item;
+			if (Id2Item_.contains (id))
+				item = Id2Item_ [id];
+
+			if (item.IsValid () &&
+					!item.ExportLinks.isEmpty ())
+			{
+				QMenu *exportMenu = new QMenu (tr ("Export to..."), menu);
+				auto exportAct = menu->insertMenu (Download_, exportMenu);
+				exportAct->setProperty ("ActionIcon", Proxy_->GetIcon ("document-export"));
+				for (const auto& key : item.ExportLinks.keys ())
+				{
+					const auto& pair = item.ExportLinks [key];
+					QAction *action = new QAction (Proxy_->GetIcon (pair.first),
+							pair.second, exportMenu);
+					action->setProperty ("url", key);
+					exportMenu->addAction (action);
+					connect (exportMenu,
+							SIGNAL (triggered (QAction*)),
+							this,
+							SLOT (handleExportMenuTriggered (QAction*)),
+							Qt::UniqueConnection);
+				}
 			}
 		}
 		else
-			menu->addAction (CreateDir_);
+			menu->addAction (UploadInCurrentDir_);
 
-		menu->exec (Ui_.FilesTree_->viewport ()->
-				mapToGlobal (QPoint (point.x (), point.y ())));
+		if (!TransferedIDs_.second.isEmpty () &&
+				!OpenTrash_->isChecked ())
+		{
+			auto sep = menu->insertSeparator (menu->actions ().at (0));
+			menu->insertAction (sep, Paste_);
+		}
+
+		menu->addSeparator ();
+		menu->addAction (CreateDir_);
+
+		if (!menu->isEmpty ())
+			menu->exec (Ui_.FilesView_->viewport ()->
+					mapToGlobal (QPoint (point.x (), point.y ())));
 		menu->deleteLater ();
 	}
 
-	void ManagerTab::handleCopiedItem (const QStringList& itemId,
-			const QStringList& newParentId)
+	void ManagerTab::handleExportMenuTriggered (QAction *action)
 	{
-		IStorageAccount *acc = GetCurrentAccount ();
-		if (!acc)
+		if (!action ||
+				action->property ("url").isNull ())
 			return;
 
-		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
-		sfl->Copy (itemId, newParentId);
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeEntity (action->property ("url").toUrl (),
+				QString (),
+				OnlyHandle | FromUserInitiated));
 	}
 
-	void ManagerTab::handleMovedItem (const QStringList& itemId,
-			const QStringList& newParentId)
+	void ManagerTab::handleCurrentIndexChanged (int)
 	{
+		ClearModel ();
 		IStorageAccount *acc = GetCurrentAccount ();
 		if (!acc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< acc
+					<< "is not an IStorageAccount object";
 			return;
+		}
 
-		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
-		sfl->Move (itemId, newParentId);
+		Id2Item_.clear ();
+		RequestFileListings (acc);
+
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
+		DeleteFile_->setVisible (sfl->GetListingOps () & ListingOp::Delete);
+		MoveToTrash_->setVisible (sfl->GetListingOps () & ListingOp::TrashSupporting);
 	}
 
-	void ManagerTab::handleRestoredFromTrash (const QStringList& id)
+	void ManagerTab::handleGotFileUrl (const QUrl& url, const QByteArray&)
 	{
-		IStorageAccount *acc = GetCurrentAccount ();
-		if (!acc)
+		if (url.isEmpty () ||
+				!url.isValid ())
 			return;
 
-		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
-		sfl->RestoreFromTrash (QList<QStringList> () << id);
-	}
+		const QString& str = url.toString ();
+		qApp->clipboard ()->setText (str, QClipboard::Clipboard);
+		qApp->clipboard ()->setText (str, QClipboard::Selection);
 
-	void ManagerTab::handleTrashedItem (const QStringList& id)
-	{
-		IStorageAccount *acc = GetCurrentAccount ();
-		if (!acc)
-			return;
-
-		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
-		sfl->MoveToTrash (QList<QStringList> () << id);
+		QString text = tr ("File URL has been copied to the clipboard.");
+		Proxy_->GetEntityManager ()->
+				HandleEntity (Util::MakeNotification ("NetStoreManager", text, PInfo_));
 	}
 
 }

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,46 +29,26 @@
 
 #pragma once
 
-#include "tunesourcebase.h"
-#include <QStringList>
-#include <QDBusConnection>
+#include <QStandardItemModel>
+
+class QAction;
+class QTreeView;
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace NetStoreManager
 {
-namespace Xtazy
-{
-	struct PlayerStatus
-	{
-		int PlayStatus_;
-		int PlayOrder_;
-		int PlayRepeat_;
-		int StopOnce_;
-	};
-
-	class MPRISSource : public TuneSourceBase
+	class FilesTreeModel : public QStandardItemModel
 	{
 		Q_OBJECT
 
-		QStringList Players_;
-		QDBusConnection SB_;
-		TuneInfo_t Tune_;
 	public:
-		MPRISSource (QObject* = 0);
-		virtual ~MPRISSource ();
-	private:
-		void ConnectToBus (const QString&);
-		void DisconnectFromBus (const QString&);
-		TuneInfo_t GetTuneMV2 (const QVariantMap&);
-	private slots:
-		void handlePropertyChange (const QDBusMessage&);
-		void handlePlayerStatusChange (PlayerStatus);
-		void handleTrackChange (const QVariantMap&);
-		void checkMPRISService (QString, QString, QString);
+		FilesTreeModel (QObject *parent = 0);
+
+		Qt::DropActions supportedDropActions () const;
+		QStringList mimeTypes () const;
+		QMimeData* mimeData (const QModelIndexList& indexes) const;
 	};
 }
 }
-}
 
-Q_DECLARE_METATYPE (LeechCraft::Azoth::Xtazy::PlayerStatus);

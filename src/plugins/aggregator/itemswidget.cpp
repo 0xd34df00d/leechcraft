@@ -40,6 +40,7 @@
 #include <util/tags/categoryselector.h>
 #include <util/util.h>
 #include <util/models/mergemodel.h>
+#include <util/gui/clearlineeditaddon.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -147,6 +148,8 @@ namespace Aggregator
 				SIGNAL (currentIndexChanged (int)),
 				this,
 				SLOT (updateItemsFilter ()));
+
+		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Impl_->Ui_.SearchLine_);
 
 		QHeaderView *itemsHeader = Impl_->Ui_.Items_->header ();
 		QFontMetrics fm = fontMetrics ();

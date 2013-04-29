@@ -206,6 +206,7 @@ OPTION (ENABLE_MONOCLE "Build Monocle, modular document viewer for LeechCraft" $
 OPTION (ENABLE_LADS "Build Lads, Ubuntu Unity integration layer" ${WITH_PLUGINS})
 OPTION (ENABLE_SHAITAN "Build Shaitan, Embedded terminal emulator" ${WITH_PLUGINS})
 OPTION (ENABLE_VROOBY "Build Vrooby, removable storage devices manager" ${WITH_PLUGINS})
+OPTION (ENABLE_XTAZY "Build Xtazy, plugin for keeping track of a currently playing song" ${WITH_PLUGINS})
 
 # Dumb alternatives
 OPTION (ENABLE_DUMBEEP "Build Dumbeep, a dumb sound notifier for those fearing true LMP power" OFF)
@@ -519,6 +520,10 @@ IF (ENABLE_VROOBY)
 	ADD_SUBDIRECTORY (plugins/vrooby)
 ENDIF (ENABLE_VROOBY)
 
+IF (ENABLE_XTAZY)
+	ADD_SUBDIRECTORY (plugins/xtazy)
+ENDIF (ENABLE_XTAZY)
+
 IF (ENABLE_DUMBEEP)
 	ADD_SUBDIRECTORY (plugins/dumbeep)
 ENDIF (ENABLE_DUMBEEP)
@@ -605,7 +610,7 @@ INSTALL (DIRECTORY share/qml/common DESTINATION ${LC_QML_DEST}/org/LC)
 
 INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor)
 IF (UNIX AND NOT APPLE)
-	INSTALL (FILES data/leechcraft.1.gz DESTINATION share/man/man1)
+	INSTALL (DIRECTORY data/ DESTINATION share/man/man1 FILES_MATCHING PATTERN "*.gz")
 	INSTALL (FILES freedesktop/leechcraft.desktop DESTINATION share/applications)
 	INSTALL (FILES scripts/leechcraft-add-file DESTINATION bin PERMISSIONS
 		OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ

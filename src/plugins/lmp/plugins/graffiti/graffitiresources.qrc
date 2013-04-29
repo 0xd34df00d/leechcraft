@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/lmp/graffiti" >
+    <file>resources/images/graffiti.svg</file>
+  </qresource>
+</RCC>

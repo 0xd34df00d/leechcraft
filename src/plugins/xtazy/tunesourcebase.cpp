@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,28 +27,30 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QStandardItemModel>
-
-class QAction;
-class QTreeView;
+#include "tunesourcebase.h"
+#include <interfaces/media/audiostructs.h>
 
 namespace LeechCraft
 {
-namespace NetStoreManager
+namespace Xtazy
 {
-	class FilesModel : public QStandardItemModel
+	TuneSourceBase::TuneSourceBase (QObject *parent)
+	: QObject (parent)
 	{
-		Q_OBJECT
+	}
 
-	public:
-		FilesModel (QObject *parent = 0);
-
-		Qt::DropActions supportedDropActions () const;
-		QStringList mimeTypes () const;
-		QMimeData* mimeData (const QModelIndexList& indexes) const;
-	};
+	Media::AudioInfo TuneSourceBase::FromMPRISMap (const QVariantMap& map)
+	{
+		return
+		{
+			map ["artist"].toString (),
+			map ["source"].toString (),
+			map ["title"].toString (),
+			{},
+			map ["length"].toInt (),
+			0,
+			map ["track"].toInt ()
+		};
+	}
 }
 }
-
