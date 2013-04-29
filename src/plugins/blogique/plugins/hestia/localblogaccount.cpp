@@ -117,6 +117,8 @@ namespace Hestia
 		{
 			AccountStorage_->RemoveEntry (entry.EntryId_);
 			emit entryRemoved (entry.EntryId_);
+			emit requestEntriesBegin ();
+			handleLoadAllEvents ();
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -131,6 +133,8 @@ namespace Hestia
 		{
 			AccountStorage_->UpdateEntry (entry, entry.EntryId_);
 			emit entryUpdated ({ entry });
+			emit requestEntriesBegin ();
+			handleLoadAllEvents ();
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -148,6 +152,7 @@ namespace Hestia
 	{
 		try
 		{
+			emit requestEntriesBegin ();
 			emit gotEntries (AccountStorage_->GetLastEntries (AccountStorage::Mode::FullMode,
 					DefaultPostsNumber_));
 		}
@@ -270,6 +275,8 @@ namespace Hestia
 		{
 			AccountStorage_->SaveNewEntry (e);
 			emit entryPosted ({ e });
+			emit requestEntriesBegin ();
+			handleLoadAllEvents ();
 		}
 		catch (const std::runtime_error& e)
 		{
