@@ -102,6 +102,8 @@ namespace LeechCraft
 
 		void AddMenus (const QMap<QString, QList<QAction*>>&);
 		void RemoveMenus (const QMap<QString, QList<QAction*>>&);
+
+		QMenu* createPopupMenu ();
 	public slots:
 		void catchError (QString);
 		void showHideMain ();
