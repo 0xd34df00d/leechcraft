@@ -475,10 +475,16 @@ namespace LeechCraft
 			return;
 		}
 
-		if (MainStackedWidget_->widget (index) == PreviousWidget_)
+		const auto widget = Widget (index);
+
+		if (widget == PreviousWidget_)
 			PreviousWidget_ = 0;
 
-		MainStackedWidget_->removeWidget (Widget (index));
+		if (auto itw = qobject_cast<ITabWidget*> (widget))
+			if (auto bar = itw->GetToolBar ())
+				RemoveWidgetFromSeparateTabWidget (bar);
+
+		MainStackedWidget_->removeWidget (widget);
 		MainTabBar_->removeTab (index);
 
 		TabNames_.removeAt (index);
