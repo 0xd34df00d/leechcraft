@@ -167,6 +167,13 @@ namespace Metida
 		GenerateChallenge ();
 	}
 
+	void LJXmlRPC::RequestTags ()
+	{
+		ApiCallQueue_ << [this] (const QString& challenge)
+				{ GetUserTagsRequest (challenge); };
+		GenerateChallenge ();
+	}
+
 	namespace
 	{
 		QPair<QDomElement, QDomElement> GetStartPart (const QString& name,
@@ -958,6 +965,29 @@ namespace Metida
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleRecentCommentsReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void LJXmlRPC::GetUserTagsRequest (const QString& challenge)
+	{
+		QDomDocument document ("REecentCommentsRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.getusertags", document);
+		document.appendChild (result.first);
+		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
+				Account_->GetPassword (), challenge, document);
+
+		element.appendChild (GetSimpleMemberElement ("usejournal", "string",
+				Account_->GetOurLogin (), document));
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleGetUserTagsReplyFinished ()));
 		connect (reply,
 				SIGNAL (error (QNetworkReply::NetworkError)),
 				this,
@@ -1872,6 +1902,64 @@ namespace Metida
 				GenerateChallenge ();
 			}
 
+			return;
+		}
+
+		ParseForError (content);
+	}
+
+	namespace
+	{
+		QHash<QString, int> ParseTags (const QDomDocument& document)
+		{
+			QHash<QString, int> tags;
+			const auto& firstStructElement = document.elementsByTagName ("struct");
+			if (firstStructElement.at (0).isNull ())
+				return tags;
+
+			const auto& members = firstStructElement.at (0).childNodes ();
+			for (int i = 0, count = members.count (); i < count; ++i)
+			{
+				const QDomNode& member = members.at (i);
+				if (!member.isElement () ||
+					member.toElement ().tagName () != "member")
+					continue;
+
+				auto res = ParseMember (member);
+				if (res.Name () == "tags")
+					for (const auto& tag : res.Value ())
+					{
+						QString name;
+						int uses = 0;
+						for (const auto& tagStruct : tag.toList ())
+						{
+							auto fieldEntry = tagStruct.value<LJParserTypes::LJParseProfileEntry> ();
+							if (fieldEntry.Name () == "name")
+								name = fieldEntry.ValueToString ();
+							else if (fieldEntry.Name () == "uses")
+								uses = fieldEntry.ValueToInt ();
+
+						}
+						tags [name] = uses;
+					}
+			}
+
+			return tags;
+
+		}
+	}
+
+	void LJXmlRPC::handleGetUserTagsReplyFinished ()
+	{
+		QDomDocument document;
+		QByteArray content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
+				document);
+		if (content.isEmpty ())
+			return;
+
+		if (document.elementsByTagName ("fault").isEmpty ())
+		{
+			emit gotTags (ParseTags (document));
 			return;
 		}
 
