@@ -97,11 +97,16 @@ namespace LeechCraft
 
 	qint64 NetworkDiskCache::expire ()
 	{
-		collectGarbage ();
-		if (PreviousSize_ >= 0)
-			return PreviousSize_;
-		else
-			return maximumCacheSize () / 10 * 8;
+		if (PreviousSize_ < 0)
+		{
+			collectGarbage ();
+			return maximumCacheSize () * 8 / 10;
+		}
+
+		if (cacheSize () >= maximumCacheSize ())
+			collectGarbage ();
+
+		return cacheSize ();
 	}
 
 	void NetworkDiskCache::handleCacheSize ()
