@@ -47,6 +47,7 @@ namespace Dolozhee
 	: QWizardPage (parent)
 	{
 		Ui_.setupUi (this);
+		Ui_.UploadProgress_->hide ();
 	}
 
 	void FinalPage::initializePage ()
@@ -63,6 +64,8 @@ namespace Dolozhee
 	{
 		auto wiz = qobject_cast<ReportWizard*> (wizard ());
 
+		Ui_.UploadProgress_->hide ();
+
 		if (!PendingFiles_.isEmpty ())
 		{
 			CurrentUpload_ = PendingFiles_.takeFirst ();
@@ -76,6 +79,15 @@ namespace Dolozhee
 					SIGNAL (finished ()),
 					this,
 					SLOT (handleUploadReplyFinished ()));
+			Ui_.Status_->setText (tr ("Sending %1...")
+					.arg ("<em>" + QFileInfo (CurrentUpload_.Name_).fileName () + "</em>"));
+
+			connect (reply,
+					SIGNAL (uploadProgress (qint64, qint64)),
+					this,
+					SLOT (handleUploadProgress (qint64)));
+			Ui_.UploadProgress_->setMaximum (file.size ());
+			Ui_.UploadProgress_->show ();
 
 			return;
 		}
@@ -102,6 +114,11 @@ namespace Dolozhee
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleReplyFinished ()));
+	}
+
+	void FinalPage::handleUploadProgress (qint64 done)
+	{
+		Ui_.UploadProgress_->setValue (done);
 	}
 
 	void FinalPage::handleUploadReplyFinished ()

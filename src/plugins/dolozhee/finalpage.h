@@ -55,6 +55,7 @@ namespace Dolozhee
 	private:
 		void UploadPending ();
 	private slots:
+		void handleUploadProgress (qint64);
 		void handleUploadReplyFinished ();
 
 		void handleReplyFinished ();
