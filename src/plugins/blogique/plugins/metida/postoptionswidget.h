@@ -78,7 +78,7 @@ namespace Metida
 		void FillItems ();
 
 	public slots:
-		void handleAutoApdateCurrentMusic ();
+		void handleAutoUpdateCurrentMusic ();
 	private slots:
 		void on_CurrentTime__released ();
 		void on_Access__activated (int index);

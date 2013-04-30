@@ -53,7 +53,7 @@ namespace Metida
 		Ui_.setupUi (this);
 		XmlSettingsManager::Instance ().RegisterObject ("AutoUpdateCurrentMusic",
 				this, "handleAutoUpdateCurrentMusic");
-		handleAutoApdateCurrentMusic ();
+		handleAutoUpdateCurrentMusic ();
 		FillItems ();
 	}
 
@@ -299,7 +299,7 @@ namespace Metida
 		}
 	}
 
-	void PostOptionsWidget::handleAutoApdateCurrentMusic ()
+	void PostOptionsWidget::handleAutoUpdateCurrentMusic ()
 	{
 		auto obj = GetFirstICurrentSongKeeperInstance ();
 		if (XmlSettingsManager::Instance ().Property ("AutoUpdateCurrentMusic", false).toBool () &&
