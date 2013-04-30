@@ -85,7 +85,7 @@ namespace Metida
 
 	QDataStream& operator<< (QDataStream& out, const LJProfileData& data)
 	{
-		out << static_cast<qint8> (3)
+		out << static_cast<qint8> (4)
 				<< data.AvatarUrl_
 				<< data.Caps_
 				<< data.Communities_
@@ -102,7 +102,8 @@ namespace Metida
 		}
 
 		out << data.AvatarsID_
-				<< data.AvatarsUrls_;
+				<< data.AvatarsUrls_
+				<< data.Tags_;
 
 		return out;
 	}
@@ -138,6 +139,10 @@ namespace Metida
 			in >> data.AvatarsID_
 					>> data.AvatarsUrls_;
 		}
+
+		if (version >= 4)
+			in >> data.Tags_;
+
 		return in;
 	}
 
