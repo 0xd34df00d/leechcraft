@@ -37,12 +37,14 @@
 #include "core.h"
 #include "coreinstanceobject.h"
 #include "coreplugin2manager.h"
+#include "dockmanager.h"
 
 namespace LeechCraft
 {
-	DockToolbarManager::DockToolbarManager (MainWindow *win)
+	DockToolbarManager::DockToolbarManager (MainWindow *win, DockManager *dock)
 	: QObject (win)
 	, Win_ (win)
+	, DockManager_ (dock)
 	{
 		auto instanceObj = Core::Instance ().GetCoreInstanceObject ();
 		instanceObj->GetCorePluginManager ()->RegisterHookable (this);
