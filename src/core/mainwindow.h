@@ -81,8 +81,6 @@ namespace LeechCraft
 		QMenu *MenuView_;
 		QMenu *MenuTools_;
 
-		bool IsToolBarVisible_;
-		
 		QToolBar *LeftDockToolbar_;
 		QToolBar *RightDockToolbar_;
 		QToolBar *TopDockToolbar_;
@@ -112,7 +110,6 @@ namespace LeechCraft
 	protected:
 		virtual void closeEvent (QCloseEvent*);
 		virtual void keyPressEvent (QKeyEvent*);
-		virtual void keyReleaseEvent (QKeyEvent*);
 
 		virtual void dragEnterEvent (QDragEnterEvent*);
 		virtual void dropEvent (QDropEvent*);
@@ -134,10 +131,8 @@ namespace LeechCraft
 		void on_ActionMenu__triggered ();
 		void on_ActionFullscreenMode__triggered (bool);
 		void on_MainTabWidget__currentChanged (int);
-		void on_ActionShowToolBar__triggered (bool);
 		void handleShortcutFullscreenMode ();
 		void handleToolButtonStyleChanged ();
-		void handleToolBarManipulationChanged ();
 		void handleShowTrayIconChanged ();
 		void handleNewTabMenuRequested ();
 		void handleRestoreActionAdded (QAction*);
