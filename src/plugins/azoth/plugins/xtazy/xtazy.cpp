@@ -55,6 +55,8 @@ namespace Xtazy
 
 		Proxy_ = proxy;
 		AzothProxy_ = 0;
+
+		Keeper_ = 0;
 	}
 
 	void Plugin::SecondInit ()
