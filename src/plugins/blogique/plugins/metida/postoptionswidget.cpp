@@ -52,7 +52,7 @@ namespace Metida
 	{
 		Ui_.setupUi (this);
 		XmlSettingsManager::Instance ().RegisterObject ("AutoUpdateCurrentMusic",
-				this, "handleAutoApdateCurrentMusic");
+				this, "handleAutoUpdateCurrentMusic");
 		handleAutoApdateCurrentMusic ();
 		FillItems ();
 	}
@@ -295,9 +295,7 @@ namespace Metida
 		{
 			auto plugins = Core::Instance ().GetCoreProxy ()->GetPluginsManager ()->
 					GetAllCastableRoots<Media::ICurrentSongKeeper*> ();
-			return !plugins.count () ?
-				0 :
-				plugins.at (0);
+			return plugins.value (0);
 		}
 	}
 
@@ -307,9 +305,9 @@ namespace Metida
 		if (XmlSettingsManager::Instance ().Property ("AutoUpdateCurrentMusic", false).toBool () &&
 				obj)
 			connect (obj,
-					SIGNAL (currentSongChanged (AudioInfo)),
+					SIGNAL (currentSongChanged (Media::AudioInfo)),
 					this,
-					SLOT (handleCurrentSongChanged (AudioInfo)),
+					SLOT (handleCurrentSongChanged (Media::AudioInfo)),
 					Qt::UniqueConnection);
 	}
 

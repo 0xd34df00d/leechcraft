@@ -28,7 +28,7 @@
 		<groupbox>
 			<label value="Media settings" />
 			<item type="checkbox" property="AutoUpdateCurrentMusic" default="false">
-				<label value="Auto update current song" />
+				<label value="Automatically fill information about current song" />
 			</item>
 		</groupbox>
 	</page>
