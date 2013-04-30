@@ -37,6 +37,7 @@
 #include "bugreportpage.h"
 #include "featurerequestpage.h"
 #include "xmlgenerator.h"
+#include "fileattachpage.h"
 
 namespace LeechCraft
 {
@@ -51,6 +52,33 @@ namespace Dolozhee
 	void FinalPage::initializePage ()
 	{
 		auto wiz = qobject_cast<ReportWizard*> (wizard ());
+
+		for (const auto& file : wiz->GetFilePage ()->GetFiles ())
+			PendingFiles_.push_back ({ file, QString (), QString (), QString () });
+
+		UploadPending ();
+	}
+
+	void FinalPage::UploadPending ()
+	{
+		auto wiz = qobject_cast<ReportWizard*> (wizard ());
+
+		if (!PendingFiles_.isEmpty ())
+		{
+			CurrentUpload_ = PendingFiles_.takeFirst ();
+			QFile file (CurrentUpload_.Name_);
+			if (!file.open (QIODevice::ReadOnly))
+				return UploadPending ();
+
+			auto reply = wiz->PostRequest ("/uploads.xml",
+					file.readAll (), "application/octet-stream");
+			connect (reply,
+					SIGNAL (finished ()),
+					this,
+					SLOT (handleUploadReplyFinished ()));
+
+			return;
+		}
 
 		QString title;
 		QString desc;
@@ -68,12 +96,39 @@ namespace Dolozhee
 			break;
 		}
 
-		const auto& data = XMLGenerator ().CreateIssue (title, desc, category, type);
+		const auto& data = XMLGenerator ().CreateIssue (title, desc, category, type, UploadedFiles_);
 		auto reply = wiz->PostRequest ("/issues.xml", data);
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleReplyFinished ()));
+	}
+
+	void FinalPage::handleUploadReplyFinished ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		const auto& replyData = reply->readAll ();
+
+		QDomDocument doc;
+		if (!doc.setContent (replyData))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to parse reply"
+					<< replyData;
+			UploadPending ();
+			return;
+		}
+
+		CurrentUpload_.Token_ = doc
+				.documentElement ()
+				.firstChildElement ("token")
+				.text ();
+		CurrentUpload_.Mime_ = "application/octet-stream";
+		UploadedFiles_ << CurrentUpload_;
+
+		UploadPending ();
 	}
 
 	void FinalPage::handleReplyFinished ()

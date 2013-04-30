@@ -57,7 +57,7 @@ namespace Dolozhee
 
 	int BugReportPage::nextId () const
 	{
-		return ReportWizard::PageID::Final;
+		return ReportWizard::PageID::FilePage;
 	}
 
 	bool BugReportPage::isComplete () const

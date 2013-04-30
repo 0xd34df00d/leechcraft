@@ -38,6 +38,7 @@
 #include "reporttypepage.h"
 #include "bugreportpage.h"
 #include "featurerequestpage.h"
+#include "fileattachpage.h"
 #include "finalpage.h"
 
 namespace LeechCraft
@@ -52,6 +53,7 @@ namespace Dolozhee
 	, ReportType_ (new ReportTypePage)
 	, BugReportPage_ (new BugReportPage (proxy))
 	, FRPage_ (new FeatureRequestPage)
+	, FilePage_ (new FileAttachPage)
 	, FirstAuth_ (true)
 	{
 		setWindowTitle (tr ("Issue reporter"));
@@ -70,6 +72,7 @@ namespace Dolozhee
 		setPage (PageID::ReportType, ReportType_);
 		setPage (PageID::BugDetails, BugReportPage_);
 		setPage (PageID::FeatureDetails, FRPage_);
+		setPage (PageID::FilePage, FilePage_);
 		auto final = new FinalPage;
 		setPage (PageID::Final, final);
 		connect (final,
@@ -114,6 +117,11 @@ namespace Dolozhee
 	FeatureRequestPage* ReportWizard::GetFRPage () const
 	{
 		return FRPage_;
+	}
+
+	FileAttachPage* ReportWizard::GetFilePage () const
+	{
+		return FilePage_;
 	}
 
 	void ReportWizard::handleAuthenticationRequired (QNetworkReply*, QAuthenticator *auth)
