@@ -115,7 +115,7 @@ namespace LeechCraft
 
 	namespace
 	{
-		qint64 Collector (QString& cacheDirectory, qint64 goal)
+		qint64 Collector (QString& cacheDirectory, qint64 goal, QMutex *fileOpMutex)
 		{
 			if (cacheDirectory.isEmpty ())
 				return 0;
@@ -143,9 +143,11 @@ namespace LeechCraft
 
 				QFile file (*i);
 				const auto size = file.size ();
-				file.remove ();
 				totalSize -= size;
 				++i;
+
+				QMutexLocker lock (fileOpMutex);
+				file.remove ();
 			}
 
 			qDebug () << "collector finished" << totalSize;
@@ -164,20 +166,20 @@ namespace LeechCraft
 
 		IsCollectingGarbage_ = true;
 
-		QFutureWatcher<qint64> *watcher = new QFutureWatcher<qint64> (this);
+		auto watcher = new QFutureWatcher<qint64> (this);
 		connect (watcher,
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleCollectorFinished ()));
 
 		QFuture<qint64> future = QtConcurrent::run (Collector,
-				cacheDirectory (), maximumCacheSize () * 9 / 10);
+				cacheDirectory (), maximumCacheSize () * 9 / 10, &InsertRemoveMutex_);
 		watcher->setFuture (future);
 	}
 
 	void NetworkDiskCache::handleCollectorFinished ()
 	{
-		QFutureWatcher<qint64> *watcher = dynamic_cast<QFutureWatcher<qint64>*> (sender ());
+		auto watcher = dynamic_cast<QFutureWatcher<qint64>*> (sender ());
 
 		PreviousSize_ = watcher->result ();
 
