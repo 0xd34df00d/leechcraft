@@ -195,7 +195,7 @@ namespace Blogique
 		FillStatistic ();
 	}
 
-	void DraftEntriesWidget::saveSplitterPosition (int pos, int index)
+	void DraftEntriesWidget::saveSplitterPosition (int, int)
 	{
 		XmlSettingsManager::Instance ()
 				.setProperty ("DraftEntriesCalendarSplitterPosition",
