@@ -159,13 +159,23 @@
       <property name="margin">
        <number>2</number>
       </property>
-      <item row="0" column="0">
-       <widget class="LeechCraft::Blogique::Metida::TagsWidget" name="Tags_"/>
-      </item>
       <item row="0" column="1">
        <widget class="QPushButton" name="SelectTags_">
         <property name="text">
          <string>Select</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" rowspan="2">
+       <widget class="QDeclarativeView" name="TagsView_">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="resizeMode">
+         <enum>QDeclarativeView::SizeRootObjectToView</enum>
         </property>
        </widget>
       </item>
@@ -406,9 +416,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Blogique::Metida::TagsWidget</class>
-   <extends>QLineEdit</extends>
-   <header>tagswidget.h</header>
+   <class>QDeclarativeView</class>
+   <extends>QGraphicsView</extends>
+   <header>QtDeclarative/QDeclarativeView</header>
   </customwidget>
  </customwidgets>
  <resources/>

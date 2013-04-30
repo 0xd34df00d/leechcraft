@@ -37,6 +37,7 @@ SET (METIDA_SRCS
 	recentcommentsview.cpp
 	selectgroupsdialog.cpp
 	tagswidget.cpp
+	tagsproxymodel.cpp
 	updatetypedialog.cpp
 	utils.cpp
 	xmlsettingsmanager.cpp

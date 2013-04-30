@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2010-2013 Oleg Linkin
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,18 +29,7 @@
 
 #pragma once
 
-#include <QWidget>
-#include <interfaces/blogique/iblogiquesidewidget.h>
-#include <interfaces/blogique/ipostoptionswidget.h>
-#include <interfaces/media/audiostructs.h>
-#include "ui_postoptionswidget.h"
-
-class QStandardItemModel;
-
-namespace Media
-{
-	class ICurrentSongKeeper;
-}
+#include <QSortFilterProxyModel>
 
 namespace LeechCraft
 {
@@ -48,60 +37,23 @@ namespace Blogique
 {
 namespace Metida
 {
-	class LJAccount;
-	class TagsProxyModel;
-
-	class PostOptionsWidget : public QWidget
-							, public IBlogiqueSideWidget
-							, public IPostOptionsWidget
+	class TagsProxyModel : public QSortFilterProxyModel
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blogique::IBlogiqueSideWidget
-				LeechCraft::Blogique::IPostOptionsWidget)
 
-		Ui::PostOptions Ui_;
-		LJAccount *Account_;
-		quint32 AllowMask_;
-		TagsProxyModel *TagsProxyModel_;
-		QStandardItemModel *TagsModel_;
-
+		Q_PROPERTY (int count READ GetCount NOTIFY countChanged);
 	public:
-		enum TagRoles
-		{
-			TagFrequency = Qt::UserRole + 1
-		};
+		explicit TagsProxyModel (QObject *parent = 0);
 
-		PostOptionsWidget (QWidget *parent = 0);
+		bool filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const;
+		bool lessThan (const QModelIndex& left, const QModelIndex& right ) const;
+		int GetCount () const;
+		Q_INVOKABLE QString GetTagName (int index);
 
-		QString GetName () const;
-		SideWidgetType GetWidgetType () const;
-		QVariantMap GetPostOptions () const;
-		void SetPostOptions (const QVariantMap& map);
-		QVariantMap GetCustomData () const;
-		void SetCustomData (const QVariantMap& map);
-		void SetAccount (QObject *account);
-
-		QStringList GetTags () const;
-		void SetTags (const QStringList& tags);
-		QDateTime GetPostDate () const;
-		void SetPostDate (const QDateTime& date);
-	private:
-		void FillItems ();
-		void FillTags ();
-
-	public slots:
-		void handleAutoUpdateCurrentMusic ();
-	private slots:
-		void on_SelectTags__released ();
-		void on_CurrentTime__released ();
-		void on_Access__activated (int index);
-		void on_UserPic__currentIndexChanged (int index);
-		void on_AutoDetect__released ();
-		void handleCurrentSongChanged (const Media::AudioInfo& ai);
-		void handleTagTextChanged (const QString& text);
-		void handleTagsUpdated ();
+		void countUpdated ();
+	signals:
+		void countChanged ();
 	};
 }
 }
 }
-

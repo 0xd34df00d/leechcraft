@@ -28,15 +28,22 @@
  **********************************************************************/
 
 #include "postoptionswidget.h"
+#include <QDeclarativeContext>
+#include <QDeclarativeEngine>
+#include <QGraphicsObject>
+#include <QStandardItem>
 #include <QtDebug>
 #include <util/util.h>
+#include <util/sys/paths.h>
+#include <util/qml/themeimageprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/icurrentsongkeeper.h>
+#include "core.h"
 #include "entryoptions.h"
 #include "ljaccount.h"
 #include "ljprofile.h"
 #include "selectgroupsdialog.h"
-#include "core.h"
+#include "tagsproxymodel.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -45,12 +52,30 @@ namespace Blogique
 {
 namespace Metida
 {
+	const QString ImageProviderID = "ThemeIcons";
+
 	PostOptionsWidget::PostOptionsWidget (QWidget *parent)
 	: QWidget (parent)
 	, Account_ (0)
 	, AllowMask_ (0)
+	, TagsProxyModel_ (new TagsProxyModel (this))
+	, TagsModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
+
+		TagsProxyModel_->setSourceModel (TagsModel_);
+		Ui_.TagsView_->rootContext ()->setContextProperty ("tagsModel",
+				TagsProxyModel_);
+		Ui_.TagsView_->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,
+				"blogique/metida", "tagwidget.qml")));
+		Ui_.TagsView_->engine ()->addImageProvider (ImageProviderID,
+				new Util::ThemeImageProvider (Core::Instance ().GetCoreProxy ()));
+
+		connect (Ui_.TagsView_->rootObject (),
+				SIGNAL (tagTextChanged (QString)),
+				this,
+				SLOT (handleTagTextChanged (QString)));
+
 		XmlSettingsManager::Instance ().RegisterObject ("AutoUpdateCurrentMusic",
 				this, "handleAutoUpdateCurrentMusic");
 		handleAutoUpdateCurrentMusic ();
@@ -215,6 +240,11 @@ namespace Metida
 		if (!profile)
 			return;
 
+		connect (profile,
+				SIGNAL (tagsUpdated ()),
+				this,
+				SLOT (handleTagsUpdated ()));
+
 		Ui_.Mood_->clear ();
 		Ui_.Mood_->addItem (QString ());
 		for (const auto& mood : profile->GetProfileData ().Moods_)
@@ -227,19 +257,24 @@ namespace Metida
 		Ui_.UserPicLabel_->setPixmap (pxm.scaled (64, 64));
 
 		Ui_.UserPic_->addItems (profile->GetProfileData ().AvatarsID_);
+
+		FillTags ();
 	}
 
 	QStringList PostOptionsWidget::GetTags () const
 	{
-		QStringList tags;
-		for (auto tag : Ui_.Tags_->text ().split (","))
-			tags << tag.trimmed ();
-		return tags;
+		QVariant returnedTags;
+		QMetaObject::invokeMethod (Ui_.TagsView_->rootObject (),
+				"getTags",
+				Q_RETURN_ARG(QVariant, returnedTags));
+		return returnedTags.toStringList ();
 	}
 
 	void PostOptionsWidget::SetTags (const QStringList& tags)
 	{
-		Ui_.Tags_->setText (tags.join (", "));
+		QMetaObject::invokeMethod (Ui_.TagsView_->rootObject (),
+				"setTags",
+				Q_ARG (QVariant, QVariant::fromValue (tags)));
 	}
 
 	QDateTime PostOptionsWidget::GetPostDate () const
@@ -289,6 +324,21 @@ namespace Metida
 		Ui_.Adult_->addItem (tr ("For adults (>18)"), AdultContent::AdultsFrom18);
 	}
 
+	void PostOptionsWidget::FillTags ()
+	{
+		LJProfile *profile = qobject_cast<LJProfile*> (Account_->GetProfile ());
+		if (!profile)
+			return;
+		const auto& tags = profile->GetTags ();
+		TagsModel_->clear ();
+		for (const auto& tag : tags.keys ())
+		{
+			QStandardItem *item = new QStandardItem (tag);
+			item->setData (tags.value (tag), TagFrequency);
+			TagsModel_->appendRow (item);
+		}
+	}
+
 	namespace
 	{
 		QObject* GetFirstICurrentSongKeeperInstance ()
@@ -309,6 +359,11 @@ namespace Metida
 					this,
 					SLOT (handleCurrentSongChanged (Media::AudioInfo)),
 					Qt::UniqueConnection);
+	}
+
+	void PostOptionsWidget::on_SelectTags__released ()
+	{
+		qDebug () << GetTags ();
 	}
 
 	void PostOptionsWidget::on_CurrentTime__released ()
@@ -366,6 +421,17 @@ namespace Metida
 		if (XmlSettingsManager::Instance ().Property ("AutoUpdateCurrentMusic", false).toBool ())
 			Ui_.Music_->setText (QString ("\"%1\" by %2").arg (ai.Title_)
 					.arg (ai.Artist_));
+	}
+
+	void PostOptionsWidget::handleTagTextChanged (const QString& text)
+	{
+		TagsProxyModel_->setFilterFixedString (text);
+		TagsProxyModel_->countUpdated ();
+	}
+
+	void PostOptionsWidget::handleTagsUpdated ()
+	{
+		FillTags ();
 	}
 
 }
