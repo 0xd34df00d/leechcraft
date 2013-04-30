@@ -82,9 +82,6 @@
 			<item type="checkbox" property="ExitOnClose" default="false">
 				<label lang="en" value="Exit on close" />
 			</item>
-			<item type="checkbox" property="ToolBarVisibilityManipulation" default="false">
-				<label lang="en" value="Manual toolbar visibility control" />
-			</item>
 			<item type="checkbox" property="OpenTabNext" default="false">
 				<label lang="en" value="Open new tab next to current" />
 			</item>
