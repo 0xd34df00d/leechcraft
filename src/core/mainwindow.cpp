@@ -258,6 +258,16 @@ void LeechCraft::MainWindow::RemoveMenus (const QMap<QString, QList<QAction*>>& 
 	}
 }
 
+QMenu* LeechCraft::MainWindow::createPopupMenu ()
+{
+	auto menu = QMainWindow::createPopupMenu ();
+	for (auto action : menu->actions ())
+		if (action->text ().isEmpty ())
+			menu->removeAction (action);
+
+	return menu;
+}
+
 void LeechCraft::MainWindow::catchError (QString message)
 {
 	Entity e = Util::MakeEntity ("LeechCraft",
