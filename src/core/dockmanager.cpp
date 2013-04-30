@@ -97,15 +97,11 @@ namespace LeechCraft
 		emit hookDockWidgetActionVisToggled (proxy, win, widget, visible);
 		if (proxy->IsCancelled ())
 			return;
+	}
 
-		/*
-		// TODO
-		QAction *act = widget->toggleViewAction ();
-		if (!visible)
-			MenuView_->removeAction (act);
-		else
-			MenuView_->insertAction (MenuView_->actions ().first (), act);
-		*/
+	QSet<QDockWidget*> DockManager::GetForcefullyClosed () const
+	{
+		return ForcefullyClosed_;
 	}
 
 	bool DockManager::eventFilter (QObject *obj, QEvent *event)
