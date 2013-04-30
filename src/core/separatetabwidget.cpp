@@ -484,8 +484,8 @@ namespace LeechCraft
 			if (auto bar = itw->GetToolBar ())
 				RemoveWidgetFromSeparateTabWidget (bar);
 
-		MainStackedWidget_->removeWidget (widget);
 		MainTabBar_->removeTab (index);
+		MainStackedWidget_->removeWidget (widget);
 
 		TabNames_.removeAt (index);
 	}
