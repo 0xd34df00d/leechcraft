@@ -96,6 +96,10 @@ namespace Dolozhee
 	{
 		QNetworkRequest req ("http://dev.leechcraft.org" + address);
 		req.setHeader (QNetworkRequest::ContentTypeHeader, contentType);
+
+		const auto& user = ChooseUser_->GetLogin ().toUtf8 ();
+		const auto& pass = ChooseUser_->GetPassword ().toUtf8 ();
+		req.setRawHeader ("Authorization", "Basic " + (user + ':' + pass).toBase64 ());
 		return NAM_->post (req, data);
 	}
 
@@ -127,18 +131,8 @@ namespace Dolozhee
 	void ReportWizard::handleAuthenticationRequired (QNetworkReply*, QAuthenticator *auth)
 	{
 		qDebug () << Q_FUNC_INFO << FirstAuth_;
-		if (FirstAuth_)
-		{
-			auth->setUser (ChooseUser_->GetLogin ());
-			auth->setPassword (ChooseUser_->GetPassword ());
-			FirstAuth_ = false;
-		}
-		else
-		{
-			QMessageBox::warning (this, "Dolozhee", tr ("Invalid credentials"));
-			FirstAuth_ = true;
-			restart ();
-		}
+		QMessageBox::warning (this, "Dolozhee", tr ("Invalid credentials"));
+		restart ();
 	}
 }
 }
