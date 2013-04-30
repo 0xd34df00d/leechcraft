@@ -479,13 +479,15 @@ namespace LeechCraft
 
 		if (widget == PreviousWidget_)
 			PreviousWidget_ = 0;
+		if (widget == CurrentWidget_)
+			CurrentWidget_ = 0;
 
 		if (auto itw = qobject_cast<ITabWidget*> (widget))
 			if (auto bar = itw->GetToolBar ())
 				RemoveWidgetFromSeparateTabWidget (bar);
 
-		MainTabBar_->removeTab (index);
 		MainStackedWidget_->removeWidget (widget);
+		MainTabBar_->removeTab (index);
 
 		TabNames_.removeAt (index);
 	}
@@ -639,9 +641,8 @@ namespace LeechCraft
 
 		if (CurrentWidget_ != Widget (index))
 		{
-			CurrentIndex_ = IndexOf (CurrentWidget_);
+			PreviousWidget_ = CurrentWidget_;
 			CurrentWidget_ = Widget (index);
-			PreviousWidget_ = Widget (CurrentIndex_);
 			CurrentIndex_ = index;
 		}
 
