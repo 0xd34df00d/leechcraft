@@ -498,12 +498,14 @@ namespace LeechCraft
 	void SeparateTabWidget::AddWidget2SeparateTabWidget (QWidget *widget)
 	{
 		widget->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Minimum);
+		SavedWidgetParents_ [widget] = widget->parentWidget ();
 		MainToolBarLayout_->addWidget (widget);
 	}
 
 	void SeparateTabWidget::RemoveWidgetFromSeparateTabWidget (QWidget *widget)
 	{
 		MainToolBarLayout_->removeWidget (widget);
+		widget->setParent (SavedWidgetParents_.take (widget));
 		widget->hide ();
 	}
 
