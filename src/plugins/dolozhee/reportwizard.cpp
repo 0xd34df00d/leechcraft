@@ -89,10 +89,10 @@ namespace Dolozhee
 	}
 
 	QNetworkReply* ReportWizard::PostRequest (const QString& address,
-			const QByteArray& data)
+			const QByteArray& data, const QByteArray& contentType)
 	{
 		QNetworkRequest req ("http://dev.leechcraft.org" + address);
-		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/xml");
+		req.setHeader (QNetworkRequest::ContentTypeHeader, contentType);
 		return NAM_->post (req, data);
 	}
 

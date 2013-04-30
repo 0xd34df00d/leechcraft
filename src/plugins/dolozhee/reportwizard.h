@@ -73,7 +73,7 @@ namespace Dolozhee
 		ReportWizard (ICoreProxy_ptr, QWidget* = 0);
 
 		QNetworkAccessManager* GetNAM () const;
-		QNetworkReply* PostRequest (const QString&, const QByteArray&);
+		QNetworkReply* PostRequest (const QString&, const QByteArray&, const QByteArray& = "application/xml");
 
 		ChooseUserPage* GetChooseUserPage () const;
 		ReportTypePage* GetReportTypePage () const;
