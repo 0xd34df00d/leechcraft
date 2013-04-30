@@ -46,7 +46,7 @@ namespace Blogique
 	}
 
 	QWidget* SelectTargetDelegate::createEditor (QWidget *parent,
-			const QStyleOptionViewItem& option, const QModelIndex& index) const
+			const QStyleOptionViewItem&, const QModelIndex& index) const
 	{
 		QComboBox *box = new QComboBox (parent);
 		IAccount *acc = Dlg_->GetAccountFromIndex (index.sibling (index.row (),
@@ -91,7 +91,7 @@ namespace Blogique
 	}
 
 	void SelectTargetDelegate::updateEditorGeometry (QWidget *editor,
-			const QStyleOptionViewItem& option, const QModelIndex& index) const
+			const QStyleOptionViewItem& option, const QModelIndex&) const
 	{
 		editor->setGeometry (option.rect);
 	}

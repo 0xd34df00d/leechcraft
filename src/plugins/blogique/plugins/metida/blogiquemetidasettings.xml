@@ -25,5 +25,11 @@
 				<label value="Number of recent comments to show:" />
 			</item>
 		</groupbox>
+		<groupbox>
+			<label value="Media settings" />
+			<item type="checkbox" property="AutoUpdateCurrentMusic" default="false">
+				<label value="Automatically fill information about current song" />
+			</item>
+		</groupbox>
 	</page>
 </settings>
