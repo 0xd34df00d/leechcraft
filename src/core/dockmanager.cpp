@@ -214,7 +214,7 @@ namespace LeechCraft
 	void DockManager::handleWindow (int index)
 	{
 		auto win = static_cast<MainWindow*> (RootWM_->GetMainWindow (index));
-		Window2DockToolbarMgr_ [win] = new DockToolbarManager (win);
+		Window2DockToolbarMgr_ [win] = new DockToolbarManager (win, this);
 
 		connect (win,
 				SIGNAL (destroyed (QObject*)),
