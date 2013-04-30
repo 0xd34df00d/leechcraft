@@ -67,6 +67,8 @@ namespace LeechCraft
 
 		Window2DockToolbarMgr_ [win]->AddDock (dw, area);
 
+		dw->installEventFilter (this);
+
 		auto toggleAct = dw->toggleViewAction ();
 		ToggleAct2Dock_ [toggleAct] = dw;
 		connect (toggleAct,
@@ -77,8 +79,6 @@ namespace LeechCraft
 
 	void DockManager::AssociateDockWidget (QDockWidget *dock, QWidget *tab)
 	{
-		dock->installEventFilter (this);
-
 		TabAssociations_ [dock] = tab;
 
 		auto rootWM = Core::Instance ().GetRootWindowsManager ();
