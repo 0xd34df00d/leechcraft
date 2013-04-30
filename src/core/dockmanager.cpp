@@ -66,6 +66,13 @@ namespace LeechCraft
 				SLOT (handleDockDestroyed ()));
 
 		Window2DockToolbarMgr_ [win]->AddDock (dw, area);
+
+		auto toggleAct = dw->toggleViewAction ();
+		ToggleAct2Dock_ [toggleAct] = dw;
+		connect (toggleAct,
+				SIGNAL (triggered (bool)),
+				this,
+				SLOT (handleDockToggled (bool)));
 	}
 
 	void DockManager::AssociateDockWidget (QDockWidget *dock, QWidget *tab)
@@ -80,13 +87,6 @@ namespace LeechCraft
 			handleTabChanged (rootWM->GetTabManager (winIdx)->GetCurrentWidget ());
 		else
 			dock->setVisible (false);
-
-		auto toggleAct = dock->toggleViewAction ();
-		ToggleAct2Dock_ [toggleAct] = dock;
-		connect (toggleAct,
-				SIGNAL (triggered (bool)),
-				this,
-				SLOT (handleDockToggled (bool)));
 	}
 
 	void DockManager::ToggleViewActionVisiblity (QDockWidget *widget, bool visible)
