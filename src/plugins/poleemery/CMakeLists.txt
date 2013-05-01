@@ -10,14 +10,20 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	poleemery.cpp
+	accountstab.cpp
 	operationstab.cpp
 	)
+SET (FORMS
+	accountstab.ui
+	)
+QT4_WRAP_UI (UIS_H ${FORMS})
 #CreateTrs("poleemery" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("poleemery" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
 ADD_LIBRARY (leechcraft_poleemery SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
+	${UIS_H}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_poleemery
 	${QT_LIBRARIES}
