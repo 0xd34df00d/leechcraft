@@ -10,6 +10,7 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	poleemery.cpp
+	operationstab.cpp
 	)
 #CreateTrs("poleemery" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("poleemery" "en;ru_RU" "${SRCS}" "${FORMS}" "")
