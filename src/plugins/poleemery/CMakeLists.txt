@@ -2,6 +2,7 @@ CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 PROJECT (leechcraft_poleemery)
 INCLUDE (InitLCPlugin OPTIONAL)
 
+SET (QT_USE_QTSQL TRUE)
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -10,6 +11,7 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	poleemery.cpp
+	storage.cpp
 	accountstab.cpp
 	operationstab.cpp
 	)
