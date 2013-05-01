@@ -29,6 +29,7 @@
 
 #include "poleemery.h"
 #include <QIcon>
+#include "operationstab.h"
 
 namespace LeechCraft
 {
@@ -36,6 +37,17 @@ namespace Poleemery
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		TabClasses_.append ({
+				{
+					GetUniqueID () + "/Operations",
+					tr ("Operations"),
+					tr ("All operations on personal finances."),
+					QIcon (),
+					1,
+					TFOpenableByRequest
+				},
+				[this] (const TabClassInfo& tc) { MakeTab<OperationsTab> (tc); }
+			});
 	}
 
 	void Plugin::SecondInit ()
@@ -64,6 +76,42 @@ namespace Poleemery
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	TabClasses_t Plugin::GetTabClasses () const
+	{
+		TabClasses_t result;
+		for (const auto& item : TabClasses_)
+			result << item.first;
+		return result;
+	}
+
+	void Plugin::TabOpenRequested (const QByteArray& tc)
+	{
+		const auto pos = std::find_if (TabClasses_.begin (), TabClasses_.end (),
+				[&tc] (decltype (TabClasses_.at (0)) pair)
+					{ return pair.first.TabClass_ == tc; });
+		if (pos == TabClasses_.end ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown tab class"
+					<< tc;
+			return;
+		}
+
+		pos->second (pos->first);
+	}
+
+	template<typename T>
+	void Plugin::MakeTab (const TabClassInfo& tc)
+	{
+		auto tab = new T (tc, this);
+		connect (tab,
+				SIGNAL (removeTab (QWidget*)),
+				this,
+				SIGNAL (removeTab (QWidget*)));
+		emit addNewTab (tc.VisibleName_, tab);
+		emit changeTabIcon (tab, tc.Icon_);
 	}
 }
 }
