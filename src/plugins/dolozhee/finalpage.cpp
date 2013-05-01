@@ -32,6 +32,7 @@
 #include <QtDebug>
 #include <QDomDocument>
 #include <util/util.h>
+#include <util/sys/mimedetector.h>
 #include "reportwizard.h"
 #include "reporttypepage.h"
 #include "bugreportpage.h"
@@ -92,6 +93,10 @@ namespace Dolozhee
 			return;
 		}
 
+		Util::MimeDetector detector;
+		for (auto& item : UploadedFiles_)
+			item.Mime_ = detector (item.Name_);
+
 		QString title;
 		QString desc;
 		const auto type = wiz->GetReportTypePage ()->GetReportType ();
@@ -142,7 +147,6 @@ namespace Dolozhee
 				.documentElement ()
 				.firstChildElement ("token")
 				.text ();
-		CurrentUpload_.Mime_ = "application/octet-stream";
 		UploadedFiles_ << CurrentUpload_;
 
 		UploadPending ();
