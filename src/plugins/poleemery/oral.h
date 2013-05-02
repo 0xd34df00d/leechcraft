@@ -30,6 +30,7 @@
 #pragma once
 
 #include <stdexcept>
+#include <type_traits>
 #include <boost/fusion/include/for_each.hpp>
 #include <boost/fusion/include/fold.hpp>
 #include <boost/fusion/include/filter_if.hpp>
@@ -360,7 +361,12 @@ namespace oral
 		template<typename To, typename OrigSeq, typename OrigIdx, typename RefSeq, int RefIdx>
 		struct FieldAppender<To, OrigSeq, OrigIdx, References<RefSeq, RefIdx>>
 		{
-			typedef typename boost::fusion::result_of::push_back<To, FieldInfo<OrigSeq, OrigIdx, RefSeq, boost::mpl::int_<RefIdx>>>::type value_type;
+			typedef typename boost::fusion::result_of::as_vector<
+					typename boost::fusion::result_of::push_back<
+						To,
+						FieldInfo<OrigSeq, OrigIdx, RefSeq, boost::mpl::int_<RefIdx>>
+					>::type
+				>::type value_type;
 		};
 
 		template<typename Seq, typename MemberIdx>
@@ -423,7 +429,7 @@ namespace oral
 			}
 		};
 
-		template<typename RefSeq>
+		template<typename T, typename RefSeq>
 		struct MakeBinder
 		{
 			typedef typename boost::mpl::transform<RefSeq, ExtrObj<boost::mpl::_1>> transform_view;
@@ -431,30 +437,36 @@ namespace oral
 			typedef typename boost::fusion::result_of::as_vector<objects_view>::type objects_vector;
 
 			QSqlQuery Q_;
+			std::function<QList<T> (QSqlQuery)> Selector_;
 
-			void operator() (const objects_vector& objs)
+			QList<T> operator() (const objects_vector& objs)
 			{
 				boost::fusion::for_each (boost::fusion::zip (objs, RefSeq {}), SingleBind { Q_ });
+				return Selector_ (Q_);
 			}
 		};
 
-		template<typename T>
-		void AdaptSelectRef (const CachedFieldsData& data)
+		template<typename T, typename ObjInfo>
+		typename std::enable_if<CollectRefs<T>::type_list::size::value >= 1>::type AdaptSelectRef (const CachedFieldsData& data, ObjInfo& info)
 		{
-			typedef typename boost::fusion::result_of::as_vector<typename CollectRefs<T>::type_list>::type references_list;
+			typedef typename CollectRefs<T>::type_list references_list;
 			const auto& statements = boost::fusion::fold (references_list {}, QStringList {}, Ref2Select {});
-			if (statements.isEmpty ())
-				return;
 
 			const auto& selectAll = "SELECT " + QStringList { data.Fields_ }.join (", ") +
 					" FROM " + data.Table_ +
-					" WHERE " + statements.join (" AND ") +
+					(statements.isEmpty () ? "" : " WHERE ") + statements.join (" AND ") +
 					";";
 			qDebug () << selectAll;
 			QSqlQuery selectQuery (data.DB_);
 			selectQuery.prepare (selectAll);
 
-			MakeBinder<references_list> { selectQuery } (typename MakeBinder<references_list>::objects_vector ());
+			info.SelectByFKeys_ = selectQuery;
+			info.SelectByFKeysActor_ = MakeBinder<T, references_list> { selectQuery, info.DoSelectAll_ };
+		}
+
+		template<typename T, typename ObjInfo>
+		typename std::enable_if<CollectRefs<T>::type_list::size::value <= 0>::type AdaptSelectRef (const CachedFieldsData&, ObjInfo&)
+		{
 		}
 
 		template<typename T>
@@ -466,16 +478,43 @@ namespace oral
 					[] (const QString& type, const QString& field) -> QString { return field + " " + type; });
 			return "CREATE TABLE " + data.Table_ +  " (" + QStringList { statements }.join (", ") + ");";
 		}
+
+		template<typename T, typename Enable = void>
+		struct ObjectInfoFKeysHelper
+		{
+		};
+
+		template<typename T>
+		struct ObjectInfoFKeysHelper<T, typename std::enable_if<CollectRefs<T>::type_list::size::value >= 1, void>::type>
+		{
+			QSqlQuery SelectByFKeys_;
+			std::function<QList<T> (typename MakeBinder<T, typename CollectRefs<T>::type_list>::objects_vector)> SelectByFKeysActor_;
+		};
 	}
 
 	template<typename T>
-	struct ObjectInfo
+	struct ObjectInfo : detail::ObjectInfoFKeysHelper<T>
 	{
 		QSqlQuery SelectAll_;
 		std::function<QList<T> (QSqlQuery)> DoSelectAll_;
 		QSqlQuery InsertOne_;
 		std::function<void (QSqlQuery&, T)> DoPrepareInsert_;
 		QString CreateTable_;
+
+		ObjectInfo ()
+		{
+		}
+
+		ObjectInfo (decltype (SelectAll_) sel, decltype (DoSelectAll_) doSel,
+				decltype (InsertOne_) insert, decltype (DoPrepareInsert_) doIns,
+				decltype (CreateTable_) createTable)
+		: SelectAll_ (sel)
+		, DoSelectAll_ (doSel)
+		, InsertOne_ (insert)
+		, DoPrepareInsert_ (doIns)
+		, CreateTable_ (createTable)
+		{
+		}
 	};
 
 	template<typename T>
@@ -491,14 +530,16 @@ namespace oral
 		const auto& insertPair = detail::AdaptInsert<T> (cachedData);
 		const auto& createTable = detail::AdaptCreateTable<T> (cachedData);
 
-		detail::AdaptSelectRef<T> (cachedData);
-
-		return
+		ObjectInfo<T> info
 		{
 			selectPair.first, selectPair.second,
 			insertPair.first, insertPair.second,
 			createTable
 		};
+
+		detail::AdaptSelectRef<T> (cachedData, info);
+
+		return info;
 	}
 }
 }
