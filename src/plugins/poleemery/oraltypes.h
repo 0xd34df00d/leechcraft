@@ -30,6 +30,7 @@
 #pragma once
 
 #include <functional>
+#include <type_traits>
 #include <boost/fusion/sequence/intrinsic/at.hpp>
 #include <boost/fusion/include/at.hpp>
 #include <QSqlQuery>
@@ -51,20 +52,43 @@ namespace oral
 	};
 
 	template<typename T>
-	struct PrimaryKey
+	struct PKey
 	{
-		typedef T type;
+		typedef T value_type;
+
+		T Val_;
+
+		PKey& operator= (const value_type& val)
+		{
+			Val_ = val;
+			return *this;
+		}
+
+		operator value_type () const
+		{
+			return Val_;
+		}
 	};
+
+	template<typename T>
+	struct IsPKey : std::false_type {};
+
+	template<typename U>
+	struct IsPKey<PKey<U>> : std::true_type {};
 
 	template<typename Seq, int Idx>
 	struct References
 	{
-		typedef typename std::decay<typename boost::fusion::result_of::at_c<Seq, Idx>::type>::type value_type;
+		typedef typename std::decay<typename boost::fusion::result_of::at_c<Seq, Idx>::type>::type member_type;
+		static_assert (IsPKey<member_type>::value, "References<> element must refer to a PKey<> element");
+
+		typedef typename member_type::value_type value_type;
 		value_type Val_;
 
 		References& operator= (const value_type& val)
 		{
 			Val_ = val;
+			return *this;
 		}
 
 		operator value_type () const

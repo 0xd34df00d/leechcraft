@@ -112,6 +112,12 @@ namespace oral
 		QString operator() () const { return "TEXT"; }
 	};
 
+	template<typename T>
+	struct Type2Name<PKey<T>>
+	{
+		QString operator() () const { return Type2Name<T> () () + " PRIMARY KEY"; }
+	};
+
 	template<typename Seq, int Idx>
 	struct Type2Name<References<Seq, Idx>>
 	{
@@ -143,14 +149,21 @@ namespace oral
 		}
 	};
 
+	template<typename T>
+	struct ToVariant<PKey<T>>
+	{
+		QVariant operator() (const PKey<T>& t) const
+		{
+			return static_cast<typename PKey<T>::value_type> (t);
+		}
+	};
+
 	template<typename Seq, int Idx>
 	struct ToVariant<References<Seq, Idx>>
 	{
-		typedef typename References<Seq, Idx>::value_type value_type;
-
 		QVariant operator() (const References<Seq, Idx>& t) const
 		{
-			return static_cast<value_type> (t);
+			return static_cast<typename References<Seq, Idx>::value_type> (t);
 		}
 	};
 
@@ -170,6 +183,15 @@ namespace oral
 
 	template<typename T>
 	struct FromVariant
+	{
+		T operator() (const QVariant& var) const
+		{
+			return var.value<T> ();
+		}
+	};
+
+	template<typename T>
+	struct FromVariant<PKey<T>>
 	{
 		T operator() (const QVariant& var) const
 		{
@@ -262,7 +284,7 @@ namespace oral
 		const QList<QString> types = boost::fusion::fold (T {}, QStringList {}, Types {});
 
 		auto statements = ZipWith (types, data.Fields_,
-				[] (const QString& type, const QString& field) { return field + " " + type; });
+				[] (const QString& type, const QString& field) -> QString { return field + " " + type; });
 		return "CREATE TABLE " + data.Table_ +  " (" + QStringList { statements }.join (", ") + ");";
 	}
 
@@ -270,7 +292,7 @@ namespace oral
 	ObjectInfo<T> Adapt (const QSqlDatabase& db)
 	{
 		const QList<QString> fields = GetFieldsNames<T> {} ();
-		const QList<QString> boundFields = Map (fields, [] (const QString& str) { return ':' + str; });
+		const QList<QString> boundFields = Map (fields, [] (const QString& str) -> QString { return ':' + str; });
 
 		const auto& table = T::ClassName ();
 
