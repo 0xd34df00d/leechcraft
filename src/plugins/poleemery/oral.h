@@ -32,6 +32,10 @@
 #include <stdexcept>
 #include <boost/fusion/include/for_each.hpp>
 #include <boost/fusion/include/fold.hpp>
+#include <boost/fusion/algorithm/transformation/filter_if.hpp>
+#include <boost/fusion/include/filter_if.hpp>
+#include <boost/fusion/container/vector.hpp>
+#include <boost/fusion/include/vector.hpp>
 #include <QStringList>
 #include <QDateTime>
 #include <QPair>
@@ -63,13 +67,18 @@ namespace oral
 		return result;
 	}
 
+	template<typename Seq, int Idx>
+	struct GetFieldName
+	{
+		static QString value () { return boost::fusion::extension::struct_member_name<Seq, Idx>::call (); }
+	};
+
 	template<typename S, typename N>
 	struct GetFieldsNames_
 	{
 		QStringList operator() () const
 		{
-			const QString thisName { boost::fusion::extension::struct_member_name<S, N::value>::call () };
-			return QStringList { thisName } + GetFieldsNames_<S, typename boost::mpl::next<N>::type> {} ();
+			return QStringList { GetFieldName<S, N::value>::value () } + GetFieldsNames_<S, typename boost::mpl::next<N>::type> {} ();
 		}
 	};
 
@@ -85,16 +94,6 @@ namespace oral
 	template<typename S>
 	struct GetFieldsNames : GetFieldsNames_<S, boost::mpl::int_<0>>
 	{
-	};
-
-	template<typename T>
-	struct MemberDecompose {};
-
-	template<typename M, typename C>
-	struct MemberDecompose<M C::*>
-	{
-		typedef C ClassType_t;
-		typedef M MemberType_t;
 	};
 
 	template<typename T>
@@ -118,14 +117,19 @@ namespace oral
 		QString operator() () const { return Type2Name<T> () () + " PRIMARY KEY"; }
 	};
 
+	template<>
+	struct Type2Name<PKey<int>>
+	{
+		QString operator() () const { return Type2Name<int> () () + " PRIMARY KEY AUTOINCREMENT"; }
+	};
+
 	template<typename Seq, int Idx>
 	struct Type2Name<References<Seq, Idx>>
 	{
 		QString operator() () const
 		{
-			const QString fieldName { boost::fusion::extension::struct_member_name<Seq, Idx>::call () };
 			return Type2Name<typename References<Seq, Idx>::value_type> () () +
-					" REFERENCES " + Seq::ClassName () + " (" + fieldName + ")";
+					" REFERENCES " + Seq::ClassName () + " (" + GetFieldName<Seq, Idx>::value () + ")";
 		}
 	};
 
@@ -278,6 +282,81 @@ namespace oral
 		return { selectQuery, doSelect };
 	}
 
+	template<typename OrigSeq, typename OrigIdx, typename RefSeq, typename MemberIdx>
+	struct FieldInfo
+	{
+	};
+
+	template<typename To, typename OrigSeq, typename OrigIdx, typename T>
+	struct FieldAppender
+	{
+		typedef To value_type;
+	};
+
+	template<typename To, typename OrigSeq, typename OrigIdx, typename RefSeq, int RefIdx>
+	struct FieldAppender<To, OrigSeq, OrigIdx, References<RefSeq, RefIdx>>
+	{
+		typedef typename boost::fusion::result_of::push_back<To, FieldInfo<OrigSeq, OrigIdx, RefSeq, boost::mpl::int_<RefIdx>>>::type value_type;
+	};
+
+	template<typename Seq, typename MemberIdx>
+	struct CollectRefs_
+	{
+		typedef typename FieldAppender<
+				typename CollectRefs_<Seq, typename boost::mpl::next<MemberIdx>::type>::type_list,
+				Seq,
+				MemberIdx,
+				typename std::decay<typename boost::fusion::result_of::at<Seq, MemberIdx>::type>::type
+			>::value_type type_list;
+	};
+
+	template<typename Seq>
+	struct CollectRefs_<Seq, typename boost::fusion::result_of::size<Seq>::type>
+	{
+		typedef boost::fusion::vector<> type_list;
+	};
+
+	template<typename Seq>
+	struct CollectRefs : CollectRefs_<Seq, boost::mpl::int_<0>>
+	{
+	};
+
+	struct Ref2Select
+	{
+		typedef QStringList result_type;
+
+		template<typename OrigSeq, typename OrigIdx, typename RefSeq, typename RefIdx>
+		QStringList operator() (const QStringList& init, const FieldInfo<OrigSeq, OrigIdx, RefSeq, RefIdx>&) const
+		{
+			const auto& thisQualified = OrigSeq::ClassName () + "." + GetFieldName<OrigSeq, OrigIdx::value>::value ();
+			const auto& thatBound = ':' + RefSeq::ClassName () + "_" + GetFieldName<RefSeq, RefIdx::value>::value ();
+			return init + QStringList { thisQualified + " = " + thatBound };
+		}
+	};
+
+	template<typename RefSeq>
+	void MakeBinder ()
+	{
+	}
+
+	template<typename T>
+	void AdaptSelectRef (const CachedFieldsData& data)
+	{
+		typedef typename boost::fusion::result_of::as_vector<typename CollectRefs<T>::type_list>::type references_list;
+		const auto& statements = boost::fusion::fold (references_list {}, QStringList {}, Ref2Select {});
+		if (statements.isEmpty ())
+			return;
+
+		const auto& selectAll = "SELECT " + QStringList { data.Fields_ }.join (", ") +
+				" FROM " + data.Table_ +
+				" WHERE " + statements.join (" AND ") +
+				";";
+		QSqlQuery selectQuery (data.DB_);
+		selectQuery.prepare (selectAll);
+
+
+	}
+
 	template<typename T>
 	QString AdaptCreateTable (const CachedFieldsData& data)
 	{
@@ -300,6 +379,8 @@ namespace oral
 		const auto& selectPair = AdaptSelectAll<T> (cachedData);
 		const auto& insertPair = AdaptInsert<T> (cachedData);
 		const auto& createTable = AdaptCreateTable<T> (cachedData);
+
+		AdaptSelectRef<T> (cachedData);
 
 		return
 		{

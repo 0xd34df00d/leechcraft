@@ -42,16 +42,6 @@ namespace Poleemery
 namespace oral
 {
 	template<typename T>
-	struct ObjectInfo
-	{
-		QSqlQuery SelectAll_;
-		std::function<QList<T> (QSqlQuery)> DoSelectAll_;
-		QSqlQuery InsertOne_;
-		std::function<void (QSqlQuery&, T)> DoPrepareInsert_;
-		QString CreateTable_;
-	};
-
-	template<typename T>
 	struct PKey
 	{
 		typedef T value_type;
@@ -95,6 +85,16 @@ namespace oral
 		{
 			return Val_;
 		}
+	};
+
+	template<typename T>
+	struct ObjectInfo
+	{
+		QSqlQuery SelectAll_;
+		std::function<QList<T> (QSqlQuery)> DoSelectAll_;
+		QSqlQuery InsertOne_;
+		std::function<void (QSqlQuery&, T)> DoPrepareInsert_;
+		QString CreateTable_;
 	};
 }
 }
