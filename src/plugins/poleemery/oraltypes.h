@@ -30,6 +30,8 @@
 #pragma once
 
 #include <functional>
+#include <boost/fusion/sequence/intrinsic/at.hpp>
+#include <boost/fusion/include/at.hpp>
 #include <QSqlQuery>
 
 namespace LeechCraft
@@ -46,6 +48,29 @@ namespace oral
 		QSqlQuery InsertOne_;
 		std::function<void (QSqlQuery&, T)> DoPrepareInsert_;
 		QString CreateTable_;
+	};
+
+	template<typename T>
+	struct PrimaryKey
+	{
+		typedef T type;
+	};
+
+	template<typename Seq, int Idx>
+	struct References
+	{
+		typedef typename std::decay<typename boost::fusion::result_of::at_c<Seq, Idx>::type>::type value_type;
+		value_type Val_;
+
+		References& operator= (const value_type& val)
+		{
+			Val_ = val;
+		}
+
+		operator value_type () const
+		{
+			return Val_;
+		}
 	};
 }
 }

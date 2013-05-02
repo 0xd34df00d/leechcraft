@@ -29,10 +29,12 @@
 
 #pragma once
 
+#include <stdexcept>
 #include <boost/fusion/include/for_each.hpp>
 #include <boost/fusion/include/fold.hpp>
 #include <QStringList>
 #include <QDateTime>
+#include <QPair>
 #include "oraltypes.h"
 
 namespace LeechCraft
@@ -86,19 +88,40 @@ namespace oral
 	};
 
 	template<typename T>
-	QString Type2Name ();
+	struct MemberDecompose {};
+
+	template<typename M, typename C>
+	struct MemberDecompose<M C::*>
+	{
+		typedef C ClassType_t;
+		typedef M MemberType_t;
+	};
+
+	template<typename T>
+	struct Type2Name;
 
 	template<>
-	QString Type2Name<int> ()
+	struct Type2Name<int>
 	{
-		return "INTEGER";
-	}
+		QString operator() () const { return  "INTEGER"; }
+	};
 
 	template<>
-	QString Type2Name<QString> ()
+	struct Type2Name<QString>
 	{
-		return "TEXT";
-	}
+		QString operator() () const { return "TEXT"; }
+	};
+
+	template<typename Seq, int Idx>
+	struct Type2Name<References<Seq, Idx>>
+	{
+		QString operator() () const
+		{
+			const QString fieldName { boost::fusion::extension::struct_member_name<Seq, Idx>::call () };
+			return Type2Name<typename References<Seq, Idx>::value_type> () () +
+					" REFERENCES " + Seq::ClassName () + " (" + fieldName + ")";
+		}
+	};
 
 	struct Types
 	{
@@ -107,15 +130,29 @@ namespace oral
 		template<typename T>
 		QStringList operator() (const QStringList& init, const T&) const
 		{
-			return init + QStringList { Type2Name<T> () };
+			return init + QStringList { Type2Name<T> () () };
 		}
 	};
 
 	template<typename T>
-	QVariant ToVariant (const T& t)
+	struct ToVariant
 	{
-		return t;
-	}
+		QVariant operator() (const T& t) const
+		{
+			return t;
+		}
+	};
+
+	template<typename Seq, int Idx>
+	struct ToVariant<References<Seq, Idx>>
+	{
+		typedef typename References<Seq, Idx>::value_type value_type;
+
+		QVariant operator() (const References<Seq, Idx>& t) const
+		{
+			return static_cast<value_type> (t);
+		}
+	};
 
 	struct Inserter
 	{
@@ -126,16 +163,30 @@ namespace oral
 		template<typename T>
 		QStringList operator() (QStringList bounds, const T& t) const
 		{
-			Q_.bindValue (bounds.takeFirst (), ToVariant<T> (t));
+			Q_.bindValue (bounds.takeFirst (), ToVariant<T> {} (t));
 			return bounds;
 		}
 	};
 
 	template<typename T>
-	T FromVariant (const QVariant& v)
+	struct FromVariant
 	{
-		return v.value<T> ();
-	}
+		T operator() (const QVariant& var) const
+		{
+			return var.value<T> ();
+		}
+	};
+
+	template<typename Seq, int Idx>
+	struct FromVariant<References<Seq, Idx>>
+	{
+		typedef typename References<Seq, Idx>::value_type value_type;
+
+		value_type operator() (const QVariant& var) const
+		{
+			return var.value<value_type> ();
+		}
+	};
 
 	struct Selector
 	{
@@ -146,38 +197,49 @@ namespace oral
 		template<typename T>
 		int operator() (int index, T& t) const
 		{
-			t = FromVariant<T> (Q_.value (index));
+			t = FromVariant<T> {} (Q_.value (index));
 			return index + 1;
 		}
 	};
 
-	template<typename T>
-	ObjectInfo<T> Adapt (const QString& table, const QSqlDatabase& db)
+	struct CachedFieldsData
 	{
-		const QList<QString> fields = GetFieldsNames<T> {} ();
-		const auto boundFields = Map (fields, [] (const QString& str) { return ':' + str; });
+		const QString Table_;
+		const QSqlDatabase& DB_;
 
-		const auto& insert = "INSERT INTO " + table +
-				" (" + QStringList { fields }.join (", ") + ") VALUES (" +
-				QStringList { boundFields }.join (", ") + ");";
-		QSqlQuery insertQuery (db);
+		QList<QString> Fields_;
+		QList<QString> BoundFields_;
+	};
+
+	template<typename T>
+	QPair<QSqlQuery, std::function<void (QSqlQuery&, const T&)>> AdaptInsert (CachedFieldsData data)
+	{
+		const auto& insert = "INSERT INTO " + data.Table_ +
+				" (" + QStringList { data.Fields_ }.join (", ") + ") VALUES (" +
+				QStringList { data.BoundFields_ }.join (", ") + ");";
+		QSqlQuery insertQuery (data.DB_);
 		insertQuery.prepare (insert);
 
-		auto prepareInsert = [boundFields] (QSqlQuery& q, const T& t)
+		auto prepareInsert = [data] (QSqlQuery& q, const T& t)
 		{
-			boost::fusion::fold (t, boundFields, Inserter { q });
+			boost::fusion::fold (t, data.BoundFields_, Inserter { q });
 		};
 
-		const auto& selectAll = "SELECT " + QStringList { fields }.join (", ") + " FROM " + table;
-		QSqlQuery selectQuery (db);
+		return { insertQuery, prepareInsert };
+	}
+
+	template<typename T>
+	QPair<QSqlQuery, std::function<QList<T> (QSqlQuery)>> AdaptSelectAll (const CachedFieldsData& data)
+	{
+		const auto& selectAll = "SELECT " + QStringList { data.Fields_ }.join (", ") + " FROM " + data.Table_ + ";";
+		QSqlQuery selectQuery (data.DB_);
 		selectQuery.prepare (selectAll);
 
 		auto doSelect = [] (QSqlQuery q) -> QList<T>
 		{
 			if (!q.exec ())
 			{
-				Util::DBLock::DumpError (q);
-				throw std::runtime_error ("Fetch query execution failed");
+				throw std::runtime_error ("fetch query execution failed");
 			}
 
 			QList<T> result;
@@ -187,17 +249,42 @@ namespace oral
 				boost::fusion::fold (t, 0, Selector { q });
 				result << t;
 			}
+			q.finish ();
 			return result;
 		};
 
+		return { selectQuery, doSelect };
+	}
+
+	template<typename T>
+	QString AdaptCreateTable (const CachedFieldsData& data)
+	{
 		const QList<QString> types = boost::fusion::fold (T {}, QStringList {}, Types {});
 
-		auto statements = ZipWith (types, fields,
+		auto statements = ZipWith (types, data.Fields_,
 				[] (const QString& type, const QString& field) { return field + " " + type; });
-		statements.push_front ("Id INTEGER PRIMARY KEY");
-		const auto& createTable = "CREATE TABLE " + table +  " (" + QStringList { statements }.join (", ") + ");";
+		return "CREATE TABLE " + data.Table_ +  " (" + QStringList { statements }.join (", ") + ");";
+	}
 
-		return { selectQuery, doSelect, insertQuery, prepareInsert, createTable };
+	template<typename T>
+	ObjectInfo<T> Adapt (const QSqlDatabase& db)
+	{
+		const QList<QString> fields = GetFieldsNames<T> {} ();
+		const QList<QString> boundFields = Map (fields, [] (const QString& str) { return ':' + str; });
+
+		const auto& table = T::ClassName ();
+
+		const CachedFieldsData cachedData { table, db, fields, boundFields };
+		const auto& selectPair = AdaptSelectAll<T> (cachedData);
+		const auto& insertPair = AdaptInsert<T> (cachedData);
+		const auto& createTable = AdaptCreateTable<T> (cachedData);
+
+		return
+		{
+			selectPair.first, selectPair.second,
+			insertPair.first, insertPair.second,
+			createTable
+		};
 	}
 }
 }
