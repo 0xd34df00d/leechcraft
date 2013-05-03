@@ -11,6 +11,7 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	poleemery.cpp
+	structures.cpp
 	storage.cpp
 	accountstab.cpp
 	operationstab.cpp
