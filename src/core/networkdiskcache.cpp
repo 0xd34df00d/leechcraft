@@ -43,7 +43,7 @@ namespace LeechCraft
 	NetworkDiskCache::NetworkDiskCache (QObject *parent)
 	: QNetworkDiskCache (parent)
 	, IsCollectingGarbage_ (false)
-	, PreviousSize_ (-1)
+	, CurrentSize_ (-1)
 	, InsertRemoveMutex_ (QMutex::Recursive)
 	{
 		setCacheDirectory (QDir::homePath () + "/.leechcraft/core/cache");
@@ -55,8 +55,7 @@ namespace LeechCraft
 
 	qint64 NetworkDiskCache::cacheSize () const
 	{
-		QMutexLocker lock (&InsertRemoveMutex_);
-		return QNetworkDiskCache::cacheSize ();
+		return CurrentSize_;
 	}
 
 	QIODevice* NetworkDiskCache::data (const QUrl& url)
@@ -68,6 +67,7 @@ namespace LeechCraft
 	void NetworkDiskCache::insert (QIODevice *device)
 	{
 		QMutexLocker lock (&InsertRemoveMutex_);
+		CurrentSize_ += device->size ();
 		QNetworkDiskCache::insert (device);
 	}
 
@@ -97,25 +97,23 @@ namespace LeechCraft
 
 	qint64 NetworkDiskCache::expire ()
 	{
-		if (PreviousSize_ < 0)
+		if (CurrentSize_ < 0)
 		{
 			collectGarbage ();
 			return maximumCacheSize () * 8 / 10;
 		}
 
-		if (cacheSize () >= maximumCacheSize ())
+		if (CurrentSize_ > maximumCacheSize ())
 			collectGarbage ();
 
-		return cacheSize ();
+		return CurrentSize_;
 	}
 
 	void NetworkDiskCache::handleCacheSize ()
 	{
 		setMaximumCacheSize (XmlSettingsManager::Instance ()->
 				property ("CacheSize").toInt () * 1048576);
-		QTimer::singleShot (60000,
-				this,
-				SLOT (collectGarbage ()));
+		expire ();
 	}
 
 	namespace
@@ -186,7 +184,7 @@ namespace LeechCraft
 	{
 		auto watcher = dynamic_cast<QFutureWatcher<qint64>*> (sender ());
 
-		PreviousSize_ = watcher->result ();
+		CurrentSize_ = watcher->result ();
 
 		IsCollectingGarbage_ = false;
 	}
