@@ -1,9 +1,9 @@
 function ScrollToBottom() {
 	if (window.ShouldScroll)
-		window.scroll(0, document.height - window.innerHeight + 36);
+		window.scroll(0, document.height - window.innerHeight + 100);
 }
 function TestScroll() {
-	window.ShouldScroll = document.height <= (window.innerHeight + window.pageYOffset + 36);
+	window.ShouldScroll = document.height <= (window.innerHeight + window.pageYOffset + window.innerHeight / 3);
 }
 function InstallEventListeners() {
 	window.ShouldScroll = true;
