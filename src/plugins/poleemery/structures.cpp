@@ -28,10 +28,26 @@
  **********************************************************************/
 
 #include "structures.h"
+#include <QtDebug>
 
 namespace LeechCraft
 {
 namespace Poleemery
 {
+	QString ToHumanReadable (AccType type)
+	{
+		switch (type)
+		{
+		case AccType::BankAccount:
+			return QObject::tr ("bank account");
+		case AccType::Cash:
+			return QObject::tr ("cash");
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown account type"
+				<< static_cast<int> (type);
+		return QString ();
+	}
 }
 }

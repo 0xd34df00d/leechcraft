@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 
@@ -36,16 +37,20 @@ namespace LeechCraft
 {
 namespace Poleemery
 {
+	class Storage;
+	typedef std::shared_ptr<Storage> Storage_ptr;
+
 	class OperationsTab : public QWidget
 						, public ITabWidget
 	{
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
 
+		const Storage_ptr Storage_;
 		const TabClassInfo TC_;
 		QObject * const ParentPlugin_;
 	public:
-		OperationsTab (const TabClassInfo&, QObject*);
+		OperationsTab (Storage_ptr, const TabClassInfo&, QObject*);
 
 		TabClassInfo GetTabClassInfo () const override;
 		QObject* ParentMultiTabs () override;

@@ -28,16 +28,35 @@
  **********************************************************************/
 
 #include "accountstab.h"
+#include <QStandardItemModel>
+#include "storage.h"
 
 namespace LeechCraft
 {
 namespace Poleemery
 {
-	AccountsTab::AccountsTab (const TabClassInfo& tc, QObject *plugin)
-	: TC_ (tc)
+	AccountsTab::AccountsTab (Storage_ptr storage, const TabClassInfo& tc, QObject *plugin)
+	: Storage_ (storage)
+	, TC_ (tc)
 	, ParentPlugin_ (plugin)
+	, AccsModel_ (new QStandardItemModel (this))
 	{
+		AccsModel_->setHorizontalHeaderLabels ({ tr ("Account"), tr ("Type") });
+
 		Ui_.setupUi (this);
+		Ui_.AccountsView_->setModel (AccsModel_);
+
+		for (const auto& acc : Storage_->GetAccounts ())
+		{
+			QList<QStandardItem*> row
+			{
+				new QStandardItem (acc.Name_),
+				new QStandardItem (ToHumanReadable (acc.Type_))
+			};
+			for (auto item : row)
+				item->setEditable (false);
+			AccsModel_->appendRow (row);
+		}
 	}
 
 	TabClassInfo AccountsTab::GetTabClassInfo () const
@@ -59,6 +78,18 @@ namespace Poleemery
 	QToolBar* AccountsTab::GetToolBar () const
 	{
 		return 0;
+	}
+
+	void AccountsTab::on_Add__released ()
+	{
+	}
+
+	void AccountsTab::on_Modify__released ()
+	{
+	}
+
+	void AccountsTab::on_Remove__released ()
+	{
 	}
 }
 }

@@ -29,6 +29,7 @@
 
 #include "storage.h"
 #include <stdexcept>
+#include <boost/fusion/container/generation/make_vector.hpp>
 #include <QDir>
 #include <QSqlError>
 #include <QSqlQuery>
@@ -61,17 +62,22 @@ namespace Poleemery
 
 	QList<Account> Storage::GetAccounts () const
 	{
-		return AccountInfo_.DoSelectAll_ (AccountInfo_.SelectAll_);
+		return AccountInfo_.DoSelectAll_ ();
 	}
 
 	void Storage::AddAccount (const Account& acc)
 	{
-		AccountInfo_.DoPrepareInsert_ (AccountInfo_.InsertOne_, acc);
-		if (!AccountInfo_.InsertOne_.exec ())
-		{
-			Util::DBLock::DumpError (AccountInfo_.InsertOne_);
-			throw std::runtime_error ("account insertion failed");
-		}
+		AccountInfo_.DoInsert_ (acc);
+	}
+
+	QList<Entry> Storage::GetEntries (const Account& parent) const
+	{
+		return EntryInfo_.SelectByFKeysActor_ (boost::fusion::make_vector (parent));
+	}
+
+	void Storage::AddEntry (const Entry& entry)
+	{
+		EntryInfo_.DoInsert_ (entry);
 	}
 
 	namespace oral
@@ -114,16 +120,17 @@ namespace Poleemery
 	void Storage::InitializeTables ()
 	{
 		AccountInfo_ = oral::Adapt<Account> (DB_);
-		qDebug () << AccountInfo_.CreateTable_;
-		qDebug () << AccountInfo_.InsertOne_.lastQuery ();
-		qDebug () << AccountInfo_.SelectAll_.lastQuery ();
+		EntryInfo_ = oral::Adapt<Entry> (DB_);
 
 		const auto& tables = DB_.tables ();
-		if (!tables.contains ("Accounts"))
-			QSqlQuery (DB_).exec (AccountInfo_.CreateTable_);
 
-		const auto& info = oral::Adapt<Entry> (DB_);
-		qDebug () << info.CreateTable_;
+		QMap<QString, QString> queryCreates;
+		queryCreates [Account::ClassName ()] = AccountInfo_.CreateTable_;
+		queryCreates [Entry::ClassName ()] = EntryInfo_.CreateTable_;
+
+		for (const auto& key : queryCreates.keys ())
+			if (!tables.contains (key))
+				QSqlQuery (DB_).exec (queryCreates [key]);
 	}
 }
 }

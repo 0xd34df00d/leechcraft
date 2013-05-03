@@ -38,7 +38,8 @@ namespace Poleemery
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Storage st;
+		Storage_.reset (new Storage);
+
 		TabClasses_.append ({
 				{
 					GetUniqueID () + "/Operations",
@@ -107,7 +108,7 @@ namespace Poleemery
 	template<typename T>
 	void Plugin::MakeTab (const TabClassInfo& tc)
 	{
-		auto tab = new T (tc, this);
+		auto tab = new T (Storage_, tc, this);
 		connect (tab,
 				SIGNAL (removeTab (QWidget*)),
 				this,

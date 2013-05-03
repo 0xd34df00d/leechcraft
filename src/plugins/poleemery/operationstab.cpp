@@ -28,13 +28,15 @@
  **********************************************************************/
 
 #include "operationstab.h"
+#include "storage.h"
 
 namespace LeechCraft
 {
 namespace Poleemery
 {
-	OperationsTab::OperationsTab (const TabClassInfo& tc, QObject *plugin)
-	: TC_ (tc)
+	OperationsTab::OperationsTab (Storage_ptr storage, const TabClassInfo& tc, QObject *plugin)
+	: Storage_ (storage)
+	, TC_ (tc)
 	, ParentPlugin_ (plugin)
 	{
 	}

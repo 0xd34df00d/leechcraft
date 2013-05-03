@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <functional>
 #include <QObject>
 #include <QList>
@@ -39,6 +40,8 @@ namespace LeechCraft
 {
 namespace Poleemery
 {
+	class Storage;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IHaveTabs
@@ -46,6 +49,7 @@ namespace Poleemery
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveTabs)
 
+		std::shared_ptr<Storage> Storage_;
 		QList<QPair<TabClassInfo, std::function<void (TabClassInfo)>>> TabClasses_;
 	public:
 		void Init (ICoreProxy_ptr) override;

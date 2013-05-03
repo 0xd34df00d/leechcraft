@@ -35,7 +35,7 @@
 #include <QSqlQuery>
 #include <QMap>
 #include "structures.h"
-#include "oraltypes.h"
+#include "oral.h"
 
 namespace LeechCraft
 {
@@ -46,6 +46,7 @@ namespace Poleemery
 		QSqlDatabase DB_;
 
 		oral::ObjectInfo<Account> AccountInfo_;
+		oral::ObjectInfo<Entry> EntryInfo_;
 	public:
 		Storage (QObject* = 0);
 
@@ -56,6 +57,9 @@ namespace Poleemery
 
 		QList<Account> GetAccounts () const;
 		void AddAccount (const Account&);
+
+		QList<Entry> GetEntries (const Account&) const;
+		void AddEntry (const Entry&);
 	private:
 		void InitializeTables ();
 	};

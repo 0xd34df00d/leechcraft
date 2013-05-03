@@ -32,7 +32,7 @@
 #include <boost/fusion/adapted/struct/adapt_struct.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <QString>
-#include "oraltypes.h"
+#include "oral.h"
 
 namespace LeechCraft
 {
@@ -43,6 +43,8 @@ namespace Poleemery
 		Cash,
 		BankAccount
 	};
+
+	QString ToHumanReadable (AccType);
 
 	struct Account
 	{
@@ -66,7 +68,7 @@ namespace Poleemery
 {
 	struct Entry
 	{
-		int ID_;
+		oral::PKey<int> ID_;
 		oral::References<Account, 0> AccountID_;
 
 		static QString ClassName () { return "Entry"; }
@@ -75,5 +77,5 @@ namespace Poleemery
 }
 
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::Entry,
-		(int, ID_)
+		(decltype (LeechCraft::Poleemery::Entry::ID_), ID_)
 		(decltype (LeechCraft::Poleemery::Entry::AccountID_), AccountID_))

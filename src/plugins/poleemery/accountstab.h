@@ -29,31 +29,44 @@
 
 #pragma once
 
+#include <memory>
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 #include "ui_accountstab.h"
+
+class QStandardItemModel;
 
 namespace LeechCraft
 {
 namespace Poleemery
 {
+	class Storage;
+	typedef std::shared_ptr<Storage> Storage_ptr;
+
 	class AccountsTab : public QWidget
 					  , public ITabWidget
 	{
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
 
+		const Storage_ptr Storage_;
 		const TabClassInfo TC_;
 		QObject * const ParentPlugin_;
 
 		Ui::AccountsTab Ui_;
+
+		QStandardItemModel *AccsModel_;
 	public:
-		AccountsTab (const TabClassInfo&, QObject*);
+		AccountsTab (Storage_ptr, const TabClassInfo&, QObject*);
 
 		TabClassInfo GetTabClassInfo () const override;
 		QObject* ParentMultiTabs () override;
 		void Remove () override;
 		QToolBar* GetToolBar () const override;
+	private slots:
+		void on_Add__released ();
+		void on_Modify__released ();
+		void on_Remove__released ();
 	signals:
 		void removeTab (QWidget*);
 	};
