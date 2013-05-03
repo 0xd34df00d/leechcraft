@@ -397,6 +397,31 @@ namespace oral
 		}
 
 		template<typename T>
+		QPair<QSqlQuery, std::function<void (T)>> AdaptDelete (CachedFieldsData data)
+		{
+			const auto index = FindPKey<T>::result_type::value;
+
+			const auto& boundName = data.BoundFields_.at (index);
+			const auto& del = "DELETE FROM " + data.Table_ +
+					"WHERE " + data.Fields_.at (index) + " = " + boundName + ";";
+
+			QSqlQuery deleteQuery (data.DB_);
+			deleteQuery.prepare (del);
+
+			auto deleter = [deleteQuery, boundName] (const T& t)
+			{
+				constexpr const auto index = FindPKey<T>::result_type::value;
+				auto q = deleteQuery;
+				q.bindValue (boundName,
+						ToVariant<typename std::decay<typename boost::fusion::result_of::at_c<T, index>::type>::type> {} (boost::fusion::at_c<index> (t)));
+				if (!q.exec ())
+					throw QueryException ("delete query execution failed", q);
+			};
+
+			return { deleteQuery, deleter };
+		}
+
+		template<typename T>
 		QList<T> PerformSelect (QSqlQuery q)
 		{
 			if (!q.exec ())
@@ -585,6 +610,7 @@ namespace oral
 		ObjectInfo (decltype (QuerySelectAll_) sel, decltype (DoSelectAll_) doSel,
 				decltype (QueryInsertOne_) insert, decltype (DoInsert_) doIns,
 				decltype (QueryUpdate_) update, decltype (DoUpdate_) doUpdate,
+				decltype (QueryDelete_) del, decltype (DoDelete_) doDelete,
 				decltype (CreateTable_) createTable)
 		: QuerySelectAll_ (sel)
 		, DoSelectAll_ (doSel)
@@ -592,6 +618,8 @@ namespace oral
 		, DoInsert_ (doIns)
 		, QueryUpdate_ (update)
 		, DoUpdate_ (doUpdate)
+		, QueryDelete_ (del)
+		, DoDelete_ (doDelete)
 		, CreateTable_ (createTable)
 		{
 		}
@@ -609,6 +637,7 @@ namespace oral
 		const auto& selectPair = detail::AdaptSelectAll<T> (cachedData);
 		const auto& insertPair = detail::AdaptInsert<T> (cachedData);
 		const auto& updatePair = detail::AdaptUpdate<T> (cachedData);
+		const auto& deletePair = detail::AdaptDelete<T> (cachedData);
 		const auto& createTable = detail::AdaptCreateTable<T> (cachedData);
 
 		ObjectInfo<T> info
@@ -616,6 +645,7 @@ namespace oral
 			selectPair.first, selectPair.second,
 			insertPair.first, insertPair.second,
 			updatePair.first, updatePair.second,
+			deletePair.first, deletePair.second,
 			createTable
 		};
 
