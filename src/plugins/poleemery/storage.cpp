@@ -28,6 +28,14 @@
  **********************************************************************/
 
 #include "storage.h"
+#include <stdexcept>
+#include <QDir>
+#include <QSqlError>
+#include <QSqlQuery>
+#include <util/util.h>
+#include <util/dblock.h>
+#include "structures.h"
+#include "oral.h"
 
 namespace LeechCraft
 {
@@ -35,7 +43,87 @@ namespace Poleemery
 {
 	Storage::Storage (QObject *parent)
 	: QObject (parent)
+	, DB_ (QSqlDatabase::addDatabase ("QSQLITE3", "Poleemery_Connection"))
 	{
+		const auto& dir = Util::CreateIfNotExists ("poleemeery");
+		DB_.setDatabaseName (dir.absoluteFilePath ("database.db"));
+
+		if (!DB_.open ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open database:"
+					<< DB_.lastError ().text ();
+			throw std::runtime_error ("Poleemery database creation failed");
+		}
+
+		InitializeTables ();
+	}
+
+	QList<Account> Storage::GetAccounts () const
+	{
+		return AccountInfo_.DoSelectAll_ (AccountInfo_.SelectAll_);
+	}
+
+	void Storage::AddAccount (const Account& acc)
+	{
+		AccountInfo_.DoPrepareInsert_ (AccountInfo_.InsertOne_, acc);
+		if (!AccountInfo_.InsertOne_.exec ())
+		{
+			Util::DBLock::DumpError (AccountInfo_.InsertOne_);
+			throw std::runtime_error ("account insertion failed");
+		}
+	}
+
+	namespace oral
+	{
+		template<>
+		struct Type2Name<AccType>
+		{
+			QString operator() () const { return "TEXT"; }
+		};
+
+		template<>
+		struct ToVariant<AccType>
+		{
+			QVariant operator() (const AccType& type) const
+			{
+				switch (type)
+				{
+				case AccType::BankAccount:
+					return "BankAccount";
+				case AccType::Cash:
+					return "Cash";
+				}
+			}
+		};
+
+		template<>
+		struct FromVariant<AccType>
+		{
+			AccType operator() (const QVariant& var) const
+			{
+				const auto& str = var.toString ();
+				if (str == "BankAccount")
+					return AccType::BankAccount;
+				else
+					return AccType::Cash;
+			}
+		};
+	}
+
+	void Storage::InitializeTables ()
+	{
+		AccountInfo_ = oral::Adapt<Account> (DB_);
+		qDebug () << AccountInfo_.CreateTable_;
+		qDebug () << AccountInfo_.InsertOne_.lastQuery ();
+		qDebug () << AccountInfo_.SelectAll_.lastQuery ();
+
+		const auto& tables = DB_.tables ();
+		if (!tables.contains ("Accounts"))
+			QSqlQuery (DB_).exec (AccountInfo_.CreateTable_);
+
+		const auto& info = oral::Adapt<Entry> (DB_);
+		qDebug () << info.CreateTable_;
 	}
 }
 }

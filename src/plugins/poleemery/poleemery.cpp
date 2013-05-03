@@ -30,6 +30,7 @@
 #include "poleemery.h"
 #include <QIcon>
 #include "operationstab.h"
+#include "storage.h"
 
 namespace LeechCraft
 {
@@ -37,6 +38,7 @@ namespace Poleemery
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Storage st;
 		TabClasses_.append ({
 				{
 					GetUniqueID () + "/Operations",

@@ -29,8 +29,13 @@
 
 #pragma once
 
+#include <functional>
 #include <QObject>
 #include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QMap>
+#include "structures.h"
+#include "oraltypes.h"
 
 namespace LeechCraft
 {
@@ -39,6 +44,8 @@ namespace Poleemery
 	class Storage : public QObject
 	{
 		QSqlDatabase DB_;
+
+		oral::ObjectInfo<Account> AccountInfo_;
 	public:
 		Storage (QObject* = 0);
 
@@ -46,6 +53,11 @@ namespace Poleemery
 		Storage (Storage&&) = delete;
 		Storage& operator= (const Storage&) = delete;
 		Storage& operator= (Storage&&) = delete;
+
+		QList<Account> GetAccounts () const;
+		void AddAccount (const Account&);
+	private:
+		void InitializeTables ();
 	};
 }
 }
