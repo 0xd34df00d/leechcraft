@@ -291,7 +291,8 @@ namespace oral
 			template<typename T>
 			QStringList operator() (QStringList bounds, const T& t) const
 			{
-				Q_->bindValue (bounds.takeFirst (), ToVariant<T> {} (t));
+				if (!IsPKey<T>::value)
+					Q_->bindValue (bounds.takeFirst (), ToVariant<T> {} (t));
 				return bounds;
 			}
 		};
