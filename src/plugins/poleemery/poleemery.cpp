@@ -29,8 +29,9 @@
 
 #include "poleemery.h"
 #include <QIcon>
-#include "operationstab.h"
 #include "storage.h"
+#include "operationstab.h"
+#include "accountstab.h"
 
 namespace LeechCraft
 {
@@ -50,6 +51,17 @@ namespace Poleemery
 					TFOpenableByRequest
 				},
 				[this] (const TabClassInfo& tc) { MakeTab<OperationsTab> (tc); }
+			});
+		TabClasses_.append ({
+				{
+					GetUniqueID () + "/Accounts",
+					tr ("Accounts"),
+					tr ("Accounts management tab."),
+					QIcon (),
+					2,
+					TFOpenableByRequest
+				},
+				[this] (const TabClassInfo& tc) { MakeTab<AccountsTab> (tc); }
 			});
 	}
 
