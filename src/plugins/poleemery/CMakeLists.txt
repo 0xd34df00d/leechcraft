@@ -14,10 +14,12 @@ SET (SRCS
 	structures.cpp
 	storage.cpp
 	accountstab.cpp
+	accountpropsdialog.cpp
 	operationstab.cpp
 	)
 SET (FORMS
 	accountstab.ui
+	accountpropsdialog.ui
 	)
 QT4_WRAP_UI (UIS_H ${FORMS})
 #CreateTrs("poleemery" "en;ru_RU" COMPILED_TRANSLATIONS)
