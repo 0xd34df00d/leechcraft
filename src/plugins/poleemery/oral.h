@@ -82,6 +82,16 @@ namespace oral
 
 		T Val_;
 
+		PKey ()
+		: Val_ ()
+		{
+		}
+
+		PKey (T val)
+		: Val_ (val)
+		{
+		}
+
 		PKey& operator= (const value_type& val)
 		{
 			Val_ = val;
@@ -111,6 +121,16 @@ namespace oral
 
 		typedef typename member_type::value_type value_type;
 		value_type Val_;
+
+		References ()
+		: Val_ ()
+		{
+		}
+
+		References (value_type t)
+		: Val_ (t)
+		{
+		}
 
 		References& operator= (const value_type& val)
 		{
