@@ -40,6 +40,7 @@ namespace LeechCraft
 {
 namespace Poleemery
 {
+	class Account;
 	class Storage;
 	typedef std::shared_ptr<Storage> Storage_ptr;
 
@@ -63,6 +64,8 @@ namespace Poleemery
 		QObject* ParentMultiTabs () override;
 		void Remove () override;
 		QToolBar* GetToolBar () const override;
+	private:
+		void AddAccount (const Account&);
 	private slots:
 		void on_Add__released ();
 		void on_Modify__released ();

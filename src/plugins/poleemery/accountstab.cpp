@@ -30,6 +30,7 @@
 #include "accountstab.h"
 #include <QStandardItemModel>
 #include "storage.h"
+#include "accountpropsdialog.h"
 
 namespace LeechCraft
 {
@@ -47,16 +48,7 @@ namespace Poleemery
 		Ui_.AccountsView_->setModel (AccsModel_);
 
 		for (const auto& acc : Storage_->GetAccounts ())
-		{
-			QList<QStandardItem*> row
-			{
-				new QStandardItem (acc.Name_),
-				new QStandardItem (ToHumanReadable (acc.Type_))
-			};
-			for (auto item : row)
-				item->setEditable (false);
-			AccsModel_->appendRow (row);
-		}
+			AddAccount (acc);
 	}
 
 	TabClassInfo AccountsTab::GetTabClassInfo () const
@@ -80,8 +72,26 @@ namespace Poleemery
 		return 0;
 	}
 
+	void AccountsTab::AddAccount (const Account& acc)
+	{
+		QList<QStandardItem*> row
+		{
+			new QStandardItem (acc.Name_),
+			new QStandardItem (ToHumanReadable (acc.Type_))
+		};
+		for (auto item : row)
+			item->setEditable (false);
+		AccsModel_->appendRow (row);
+	}
+
 	void AccountsTab::on_Add__released ()
 	{
+		AccountPropsDialog dia (this);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		auto acc = dia.GetAccount ();
+		Storage_->AddAccount (acc);
 	}
 
 	void AccountsTab::on_Modify__released ()
