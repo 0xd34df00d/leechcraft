@@ -31,6 +31,7 @@
 
 #include <stdexcept>
 #include <type_traits>
+#include <memory>
 #include <boost/fusion/include/for_each.hpp>
 #include <boost/fusion/include/fold.hpp>
 #include <boost/fusion/include/filter_if.hpp>
@@ -46,6 +47,8 @@
 #include <QtDebug>
 #include "oraltypes.h"
 
+typedef std::shared_ptr<QSqlQuery> QSqlQuery_ptr;
+
 namespace LeechCraft
 {
 namespace Poleemery
@@ -54,9 +57,9 @@ namespace oral
 {
 	class QueryException : public std::runtime_error
 	{
-		const QSqlQuery Query_;
+		const QSqlQuery_ptr Query_;
 	public:
-		QueryException (const std::string& str, const QSqlQuery& q)
+		QueryException (const std::string& str, const QSqlQuery_ptr& q)
 		: std::runtime_error (str)
 		, Query_ (q)
 		{
@@ -66,7 +69,7 @@ namespace oral
 		{
 		}
 
-		const QSqlQuery& GetQuery () const
+		const QSqlQuery_ptr& GetQuery () const
 		{
 			return Query_;
 		}
@@ -263,12 +266,12 @@ namespace oral
 		{
 			typedef QStringList result_type;
 
-			QSqlQuery& Q_;
+			QSqlQuery_ptr Q_;
 
 			template<typename T>
 			QStringList operator() (QStringList bounds, const T& t) const
 			{
-				Q_.bindValue (bounds.takeFirst (), ToVariant<T> {} (t));
+				Q_->bindValue (bounds.takeFirst (), ToVariant<T> {} (t));
 				return bounds;
 			}
 		};
@@ -309,12 +312,12 @@ namespace oral
 		{
 			typedef int result_type;
 
-			const QSqlQuery& Q_;
+			QSqlQuery_ptr Q_;
 
 			template<typename T>
 			int operator() (int index, T& t) const
 			{
-				t = FromVariant<T> {} (Q_.value (index));
+				t = FromVariant<T> {} (Q_->value (index));
 				return index + 1;
 			}
 		};
@@ -329,26 +332,14 @@ namespace oral
 		};
 
 		template<typename T>
-		std::function<void (T)> MakeInserter (CachedFieldsData data, const QSqlQuery& insertQuery)
+		std::function<void (T)> MakeInserter (CachedFieldsData data, QSqlQuery_ptr insertQuery)
 		{
 			return [data, insertQuery] (const T& t)
 			{
-				auto q = insertQuery;
-				boost::fusion::fold (t, data.BoundFields_, Inserter { q });
-				if (!q.exec ())
-					throw QueryException ("insert query execution failed", q);
+				boost::fusion::fold<T, QStringList, Inserter> (t, data.BoundFields_, Inserter { insertQuery });
+				if (!insertQuery->exec ())
+					throw QueryException ("insert query execution failed", insertQuery);
 			};
-		}
-
-		template<typename T>
-		QPair<QSqlQuery, std::function<void (T)>> AdaptInsert (CachedFieldsData data)
-		{
-			const auto& insert = "INSERT INTO " + data.Table_ +
-					" (" + QStringList { data.Fields_ }.join (", ") + ") VALUES (" +
-					QStringList { data.BoundFields_ }.join (", ") + ");";
-			QSqlQuery insertQuery (data.DB_);
-			insertQuery.prepare (insert);
-			return { insertQuery, MakeInserter<T> (data, insertQuery) };
 		}
 
 		template<typename T>
@@ -372,7 +363,35 @@ namespace oral
 		};
 
 		template<typename T>
-		QPair<QSqlQuery, std::function<void (T)>> AdaptUpdate (CachedFieldsData data)
+		QPair<QSqlQuery_ptr, std::function<void (T&)>> AdaptInsert (CachedFieldsData data)
+		{
+			const auto index = FindPKey<T>::result_type::value;
+
+			data.Fields_.removeAt (index);
+			data.BoundFields_.removeAt (index);
+
+			const auto& insert = "INSERT INTO " + data.Table_ +
+					" (" + QStringList { data.Fields_ }.join (", ") + ") VALUES (" +
+					QStringList { data.BoundFields_ }.join (", ") + ");";
+			QSqlQuery_ptr insertQuery (new QSqlQuery (data.DB_));
+			insertQuery->prepare (insert);
+
+			auto inserter = MakeInserter<T> (data, insertQuery);
+			auto insertUpdater = [inserter, insertQuery] (T& t)
+			{
+				inserter (t);
+				constexpr const auto index = FindPKey<T>::result_type::value;
+				boost::fusion::at_c<index> (t) = FromVariant<typename std::decay<typename boost::fusion::result_of::at_c<T, index>::type>::type> {} (insertQuery->lastInsertId ());
+			};
+			return
+			{
+				insertQuery,
+				insertUpdater
+			};
+		}
+
+		template<typename T>
+		QPair<QSqlQuery_ptr, std::function<void (T)>> AdaptUpdate (CachedFieldsData data)
 		{
 			const auto index = FindPKey<T>::result_type::value;
 
@@ -390,14 +409,14 @@ namespace oral
 					" SET " + QStringList { statements }.join (", ") +
 					" WHERE " + fieldName + " = " + boundName + ";";
 
-			QSqlQuery updateQuery (data.DB_);
-			updateQuery.prepare (update);
+			QSqlQuery_ptr updateQuery (new QSqlQuery (data.DB_));
+			updateQuery->prepare (update);
 
 			return { updateQuery, MakeInserter<T> (data, updateQuery) };
 		}
 
 		template<typename T>
-		QPair<QSqlQuery, std::function<void (T)>> AdaptDelete (CachedFieldsData data)
+		QPair<QSqlQuery_ptr, std::function<void (T)>> AdaptDelete (CachedFieldsData data)
 		{
 			const auto index = FindPKey<T>::result_type::value;
 
@@ -405,45 +424,44 @@ namespace oral
 			const auto& del = "DELETE FROM " + data.Table_ +
 					"WHERE " + data.Fields_.at (index) + " = " + boundName + ";";
 
-			QSqlQuery deleteQuery (data.DB_);
-			deleteQuery.prepare (del);
+			QSqlQuery_ptr deleteQuery (new QSqlQuery (data.DB_));
+			deleteQuery->prepare (del);
 
 			auto deleter = [deleteQuery, boundName] (const T& t)
 			{
 				constexpr const auto index = FindPKey<T>::result_type::value;
-				auto q = deleteQuery;
-				q.bindValue (boundName,
+				deleteQuery->bindValue (boundName,
 						ToVariant<typename std::decay<typename boost::fusion::result_of::at_c<T, index>::type>::type> {} (boost::fusion::at_c<index> (t)));
-				if (!q.exec ())
-					throw QueryException ("delete query execution failed", q);
+				if (!deleteQuery->exec ())
+					throw QueryException ("delete query execution failed", deleteQuery);
 			};
 
 			return { deleteQuery, deleter };
 		}
 
 		template<typename T>
-		QList<T> PerformSelect (QSqlQuery q)
+		QList<T> PerformSelect (QSqlQuery_ptr q)
 		{
-			if (!q.exec ())
+			if (!q->exec ())
 				throw QueryException ("fetch query execution failed", q);
 
 			QList<T> result;
-			while (q.next ())
+			while (q->next ())
 			{
 				T t;
-				boost::fusion::fold (t, 0, Selector { q });
+				boost::fusion::fold<T, int, Selector> (t, 0, Selector { q });
 				result << t;
 			}
-			q.finish ();
+			q->finish ();
 			return result;
 		}
 
 		template<typename T>
-		QPair<QSqlQuery, std::function<QList<T> ()>> AdaptSelectAll (const CachedFieldsData& data)
+		QPair<QSqlQuery_ptr, std::function<QList<T> ()>> AdaptSelectAll (const CachedFieldsData& data)
 		{
 			const auto& selectAll = "SELECT " + QStringList { data.Fields_ }.join (", ") + " FROM " + data.Table_ + ";";
-			QSqlQuery selectQuery (data.DB_);
-			selectQuery.prepare (selectAll);
+			QSqlQuery_ptr selectQuery (new QSqlQuery (data.DB_));
+			selectQuery->prepare (selectAll);
 			auto selector = [selectQuery] () { return PerformSelect<T> (selectQuery); };
 			return { selectQuery, selector };
 		}
@@ -515,12 +533,12 @@ namespace oral
 
 		struct SingleBind
 		{
-			QSqlQuery& Q_;
+			QSqlQuery_ptr Q_;
 
 			template<typename ObjType, typename OrigSeq, typename OrigIdx, typename RefSeq, typename RefIdx>
 			void operator() (const boost::fusion::vector2<ObjType, const FieldInfo<OrigSeq, OrigIdx, RefSeq, RefIdx>&>& pair) const
 			{
-				Q_.bindValue (GetBoundName<RefSeq, RefIdx::value>::value (),
+				Q_->bindValue (GetBoundName<RefSeq, RefIdx::value>::value (),
 						ToVariant<typename std::decay<typename boost::fusion::result_of::at<RefSeq, RefIdx>::type>::type> () (boost::fusion::at<RefIdx> (boost::fusion::at_c<0> (pair))));
 			}
 		};
@@ -532,7 +550,7 @@ namespace oral
 			typedef typename transform_view::type objects_view;
 			typedef typename boost::fusion::result_of::as_vector<objects_view>::type objects_vector;
 
-			QSqlQuery Q_;
+			QSqlQuery_ptr Q_;
 
 			QList<T> operator() (const objects_vector& objs)
 			{
@@ -551,8 +569,8 @@ namespace oral
 					" FROM " + data.Table_ +
 					(statements.isEmpty () ? "" : " WHERE ") + statements.join (" AND ") +
 					";";
-			QSqlQuery selectQuery (data.DB_);
-			selectQuery.prepare (selectAll);
+			QSqlQuery_ptr selectQuery (new QSqlQuery (data.DB_));
+			selectQuery->prepare (selectAll);
 
 			info.SelectByFKeys_ = selectQuery;
 			info.SelectByFKeysActor_ = MakeBinder<T, references_list> { selectQuery };
@@ -581,7 +599,7 @@ namespace oral
 		template<typename T>
 		struct ObjectInfoFKeysHelper<T, typename std::enable_if<CollectRefs<T>::type_list::size::value >= 1, void>::type>
 		{
-			QSqlQuery SelectByFKeys_;
+			QSqlQuery_ptr SelectByFKeys_;
 			std::function<QList<T> (typename MakeBinder<T, typename CollectRefs<T>::type_list>::objects_vector)> SelectByFKeysActor_;
 		};
 	}
@@ -589,16 +607,16 @@ namespace oral
 	template<typename T>
 	struct ObjectInfo : detail::ObjectInfoFKeysHelper<T>
 	{
-		QSqlQuery QuerySelectAll_;
+		QSqlQuery_ptr QuerySelectAll_;
 		std::function<QList<T> ()> DoSelectAll_;
 
-		QSqlQuery QueryInsertOne_;
-		std::function<void (T)> DoInsert_;
+		QSqlQuery_ptr QueryInsertOne_;
+		std::function<void (T&)> DoInsert_;
 
-		QSqlQuery QueryUpdate_;
+		QSqlQuery_ptr QueryUpdate_;
 		std::function<void (T)> DoUpdate_;
 
-		QSqlQuery QueryDelete_;
+		QSqlQuery_ptr QueryDelete_;
 		std::function<void (T)> DoDelete_;
 
 		QString CreateTable_;

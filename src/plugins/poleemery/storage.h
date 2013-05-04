@@ -56,10 +56,10 @@ namespace Poleemery
 		Storage& operator= (Storage&&) = delete;
 
 		QList<Account> GetAccounts () const;
-		void AddAccount (const Account&);
+		void AddAccount (Account&);
 
 		QList<Entry> GetEntries (const Account&) const;
-		void AddEntry (const Entry&);
+		void AddEntry (Entry&);
 	private:
 		void InitializeTables ();
 	};

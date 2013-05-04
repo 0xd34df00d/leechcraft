@@ -65,7 +65,7 @@ namespace Poleemery
 		return AccountInfo_.DoSelectAll_ ();
 	}
 
-	void Storage::AddAccount (const Account& acc)
+	void Storage::AddAccount (Account& acc)
 	{
 		AccountInfo_.DoInsert_ (acc);
 	}
@@ -75,7 +75,7 @@ namespace Poleemery
 		return EntryInfo_.SelectByFKeysActor_ (boost::fusion::make_vector (parent));
 	}
 
-	void Storage::AddEntry (const Entry& entry)
+	void Storage::AddEntry (Entry& entry)
 	{
 		EntryInfo_.DoInsert_ (entry);
 	}
