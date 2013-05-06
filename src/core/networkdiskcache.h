@@ -39,7 +39,7 @@ namespace LeechCraft
 		Q_OBJECT
 
 		bool IsCollectingGarbage_;
-		qint64 PreviousSize_;
+		qint64 CurrentSize_;
 
 		mutable QMutex InsertRemoveMutex_;
 	public:

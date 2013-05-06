@@ -30,15 +30,22 @@
 #include "toolbarguard.h"
 #include <QMainWindow>
 #include <QToolBar>
+#include <QtDebug>
 #include "mainwindow.h"
 
 namespace LeechCraft
 {
 	ToolbarGuard::ToolbarGuard (QMainWindow *window)
 	: QObject (window)
-	, Window_ (window)
+	, Window_ (qobject_cast<MainWindow*> (window))
 	, Toolbar_ (0)
 	{
+	}
+
+	ToolbarGuard::~ToolbarGuard ()
+	{
+		if (Toolbar_)
+			Window_->GetTabWidget ()->RemoveWidgetFromSeparateTabWidget (Toolbar_);
 	}
 
 	void ToolbarGuard::AddToolbar (QToolBar *newToolbar)
@@ -46,15 +53,13 @@ namespace LeechCraft
 		if (Toolbar_ != newToolbar)
 		{
 			if (Toolbar_)
-				qobject_cast<MainWindow*> (Window_)->GetTabWidget ()->
-						RemoveWidgetFromSeparateTabWidget (Toolbar_);
+				Window_->GetTabWidget ()->RemoveWidgetFromSeparateTabWidget (Toolbar_);
 
 			Toolbar_ = newToolbar;
 
 			if (Toolbar_)
 			{
-				qobject_cast<MainWindow*> (Window_)->GetTabWidget ()->
-						AddWidget2SeparateTabWidget (Toolbar_);
+				Window_->GetTabWidget ()->AddWidget2SeparateTabWidget (Toolbar_);
 				Toolbar_->show ();
 			}
 		}

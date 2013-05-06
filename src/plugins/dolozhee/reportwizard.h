@@ -46,6 +46,7 @@ namespace Dolozhee
 	class ReportTypePage;
 	class BugReportPage;
 	class FeatureRequestPage;
+	class FileAttachPage;
 
 	class ReportWizard : public QWizard
 	{
@@ -58,6 +59,7 @@ namespace Dolozhee
 		ReportTypePage *ReportType_;
 		BugReportPage *BugReportPage_;
 		FeatureRequestPage *FRPage_;
+		FileAttachPage *FilePage_;
 		bool FirstAuth_;
 	public:
 		enum PageID
@@ -67,18 +69,20 @@ namespace Dolozhee
 			ReportType,
 			BugDetails,
 			FeatureDetails,
+			FilePage,
 			Final
 		};
 
 		ReportWizard (ICoreProxy_ptr, QWidget* = 0);
 
 		QNetworkAccessManager* GetNAM () const;
-		QNetworkReply* PostRequest (const QString&, const QByteArray&);
+		QNetworkReply* PostRequest (const QString&, const QByteArray&, const QByteArray& = "application/xml");
 
 		ChooseUserPage* GetChooseUserPage () const;
 		ReportTypePage* GetReportTypePage () const;
 		BugReportPage* GetBugReportPage () const;
 		FeatureRequestPage* GetFRPage () const;
+		FileAttachPage* GetFilePage () const;
 	private slots:
 		void handleAuthenticationRequired (QNetworkReply*, QAuthenticator*);
 	signals:

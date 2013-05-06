@@ -67,6 +67,8 @@ namespace LeechCraft
 		void AssociateDockWidget (QDockWidget*, QWidget*);
 
 		void ToggleViewActionVisiblity (QDockWidget*, bool);
+
+		QSet<QDockWidget*> GetForcefullyClosed () const;
 	protected:
 		bool eventFilter (QObject*, QEvent*);
 	public slots:

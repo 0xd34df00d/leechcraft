@@ -43,7 +43,7 @@ namespace LeechCraft
 	NetworkDiskCache::NetworkDiskCache (QObject *parent)
 	: QNetworkDiskCache (parent)
 	, IsCollectingGarbage_ (false)
-	, PreviousSize_ (-1)
+	, CurrentSize_ (-1)
 	, InsertRemoveMutex_ (QMutex::Recursive)
 	{
 		setCacheDirectory (QDir::homePath () + "/.leechcraft/core/cache");
@@ -55,8 +55,7 @@ namespace LeechCraft
 
 	qint64 NetworkDiskCache::cacheSize () const
 	{
-		QMutexLocker lock (&InsertRemoveMutex_);
-		return QNetworkDiskCache::cacheSize ();
+		return CurrentSize_;
 	}
 
 	QIODevice* NetworkDiskCache::data (const QUrl& url)
@@ -68,6 +67,7 @@ namespace LeechCraft
 	void NetworkDiskCache::insert (QIODevice *device)
 	{
 		QMutexLocker lock (&InsertRemoveMutex_);
+		CurrentSize_ += device->size ();
 		QNetworkDiskCache::insert (device);
 	}
 
@@ -97,25 +97,28 @@ namespace LeechCraft
 
 	qint64 NetworkDiskCache::expire ()
 	{
-		collectGarbage ();
-		if (PreviousSize_ >= 0)
-			return PreviousSize_;
-		else
-			return maximumCacheSize () / 10 * 8;
+		if (CurrentSize_ < 0)
+		{
+			collectGarbage ();
+			return maximumCacheSize () * 8 / 10;
+		}
+
+		if (CurrentSize_ > maximumCacheSize ())
+			collectGarbage ();
+
+		return CurrentSize_;
 	}
 
 	void NetworkDiskCache::handleCacheSize ()
 	{
 		setMaximumCacheSize (XmlSettingsManager::Instance ()->
 				property ("CacheSize").toInt () * 1048576);
-		QTimer::singleShot (60000,
-				this,
-				SLOT (collectGarbage ()));
+		expire ();
 	}
 
 	namespace
 	{
-		qint64 Collector (QString& cacheDirectory, qint64 goal)
+		qint64 Collector (QString& cacheDirectory, qint64 goal, QMutex *fileOpMutex)
 		{
 			if (cacheDirectory.isEmpty ())
 				return 0;
@@ -143,9 +146,11 @@ namespace LeechCraft
 
 				QFile file (*i);
 				const auto size = file.size ();
-				file.remove ();
 				totalSize -= size;
 				++i;
+
+				QMutexLocker lock (fileOpMutex);
+				file.remove ();
 			}
 
 			qDebug () << "collector finished" << totalSize;
@@ -164,22 +169,22 @@ namespace LeechCraft
 
 		IsCollectingGarbage_ = true;
 
-		QFutureWatcher<qint64> *watcher = new QFutureWatcher<qint64> (this);
+		auto watcher = new QFutureWatcher<qint64> (this);
 		connect (watcher,
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleCollectorFinished ()));
 
 		QFuture<qint64> future = QtConcurrent::run (Collector,
-				cacheDirectory (), maximumCacheSize () * 9 / 10);
+				cacheDirectory (), maximumCacheSize () * 9 / 10, &InsertRemoveMutex_);
 		watcher->setFuture (future);
 	}
 
 	void NetworkDiskCache::handleCollectorFinished ()
 	{
-		QFutureWatcher<qint64> *watcher = dynamic_cast<QFutureWatcher<qint64>*> (sender ());
+		auto watcher = dynamic_cast<QFutureWatcher<qint64>*> (sender ());
 
-		PreviousSize_ = watcher->result ();
+		CurrentSize_ = watcher->result ();
 
 		IsCollectingGarbage_ = false;
 	}

@@ -41,12 +41,14 @@ class QMainWindow;
 namespace LeechCraft
 {
 	class MainWindow;
+	class DockManager;
 
 	class DockToolbarManager : public QObject
 	{
 		Q_OBJECT
 
-		MainWindow *Win_;
+		MainWindow * const Win_;
+		const DockManager * const DockManager_;
 
 		struct AreaInfo
 		{
@@ -56,7 +58,7 @@ namespace LeechCraft
 		QMap<Qt::DockWidgetArea, AreaInfo> Area2Info_;
 		QMap<QAction*, QDockWidget*> Action2Widget_;
 	public:
-		DockToolbarManager (MainWindow*);
+		DockToolbarManager (MainWindow*, DockManager*);
 
 		void AddDock (QDockWidget*, Qt::DockWidgetArea);
 		void RemoveDock (QDockWidget*);

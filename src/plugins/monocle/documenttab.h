@@ -78,6 +78,7 @@ namespace Monocle
 		QAction *LayTwoPages_;
 
 		QAction *SaveAction_;
+		QAction *ExportPDFAction_;
 		QAction *FindAction_;
 		FindDialog *FindDialog_;
 
@@ -164,6 +165,7 @@ namespace Monocle
 
 		void selectFile ();
 		void handleSave ();
+		void handleExportPDF ();
 
 		void handlePrint ();
 		void handlePresentation ();

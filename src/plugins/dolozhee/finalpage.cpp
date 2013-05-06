@@ -32,11 +32,13 @@
 #include <QtDebug>
 #include <QDomDocument>
 #include <util/util.h>
+#include <util/sys/mimedetector.h>
 #include "reportwizard.h"
 #include "reporttypepage.h"
 #include "bugreportpage.h"
 #include "featurerequestpage.h"
 #include "xmlgenerator.h"
+#include "fileattachpage.h"
 
 namespace LeechCraft
 {
@@ -46,11 +48,54 @@ namespace Dolozhee
 	: QWizardPage (parent)
 	{
 		Ui_.setupUi (this);
+		Ui_.UploadProgress_->hide ();
 	}
 
 	void FinalPage::initializePage ()
 	{
 		auto wiz = qobject_cast<ReportWizard*> (wizard ());
+
+		for (const auto& file : wiz->GetFilePage ()->GetFiles ())
+			PendingFiles_.push_back ({ file, QString (), QString (), QString () });
+
+		UploadPending ();
+	}
+
+	void FinalPage::UploadPending ()
+	{
+		auto wiz = qobject_cast<ReportWizard*> (wizard ());
+
+		Ui_.UploadProgress_->hide ();
+
+		if (!PendingFiles_.isEmpty ())
+		{
+			CurrentUpload_ = PendingFiles_.takeFirst ();
+			QFile file (CurrentUpload_.Name_);
+			if (!file.open (QIODevice::ReadOnly))
+				return UploadPending ();
+
+			auto reply = wiz->PostRequest ("/uploads.xml",
+					file.readAll (), "application/octet-stream");
+			connect (reply,
+					SIGNAL (finished ()),
+					this,
+					SLOT (handleUploadReplyFinished ()));
+			Ui_.Status_->setText (tr ("Sending %1...")
+					.arg ("<em>" + QFileInfo (CurrentUpload_.Name_).fileName () + "</em>"));
+
+			connect (reply,
+					SIGNAL (uploadProgress (qint64, qint64)),
+					this,
+					SLOT (handleUploadProgress (qint64)));
+			Ui_.UploadProgress_->setMaximum (file.size ());
+			Ui_.UploadProgress_->show ();
+
+			return;
+		}
+
+		Util::MimeDetector detector;
+		for (auto& item : UploadedFiles_)
+			item.Mime_ = detector (item.Name_);
 
 		QString title;
 		QString desc;
@@ -68,12 +113,43 @@ namespace Dolozhee
 			break;
 		}
 
-		const auto& data = XMLGenerator ().CreateIssue (title, desc, category, type);
+		const auto& data = XMLGenerator ().CreateIssue (title, desc, category, type, UploadedFiles_);
 		auto reply = wiz->PostRequest ("/issues.xml", data);
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleReplyFinished ()));
+	}
+
+	void FinalPage::handleUploadProgress (qint64 done)
+	{
+		Ui_.UploadProgress_->setValue (done);
+	}
+
+	void FinalPage::handleUploadReplyFinished ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		const auto& replyData = reply->readAll ();
+
+		QDomDocument doc;
+		if (!doc.setContent (replyData))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to parse reply"
+					<< replyData;
+			UploadPending ();
+			return;
+		}
+
+		CurrentUpload_.Token_ = doc
+				.documentElement ()
+				.firstChildElement ("token")
+				.text ();
+		UploadedFiles_ << CurrentUpload_;
+
+		UploadPending ();
 	}
 
 	void FinalPage::handleReplyFinished ()

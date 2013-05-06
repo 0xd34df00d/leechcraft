@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef TOOLBARGUARD_H
-#define TOOLBARGUARD_H
+#pragma once
+
 #include <QObject>
 
 class QMainWindow;
@@ -36,18 +36,18 @@ class QToolBar;
 
 namespace LeechCraft
 {
+	class MainWindow;
+
 	class ToolbarGuard : public QObject
 	{
 		Q_OBJECT
 
-		QMainWindow *Window_;
+		MainWindow *Window_;
 		QToolBar *Toolbar_;
 	public:
 		ToolbarGuard (QMainWindow*);
+		virtual ~ToolbarGuard ();
 
 		void AddToolbar (QToolBar*);
 	};
 };
-
-#endif
-

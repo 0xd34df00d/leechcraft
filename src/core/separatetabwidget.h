@@ -80,6 +80,8 @@ namespace LeechCraft
 		QWidget *PreviousWidget_;
 
 		QStringList TabNames_;
+
+		QHash<QWidget*, QPointer<QWidget>> SavedWidgetParents_;
 	public:
 		explicit SeparateTabWidget (QWidget *parent = 0);
 		void SetWindow (MainWindow*);

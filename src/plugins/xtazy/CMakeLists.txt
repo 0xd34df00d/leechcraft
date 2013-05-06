@@ -28,8 +28,8 @@ IF (QT_QTDBUS_FOUND)
 		)
 ENDIF (QT_QTDBUS_FOUND)
 
-#CreateTrs("xtazy" "en;ru_RU" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("xtazy" "en;ru_RU" "${SRCS}" "${FORMS}" "")
+CreateTrs("xtazy" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("xtazy" "en;ru_RU" "${SRCS}" "${FORMS}" "xtazysettings.xml")
 
 ADD_LIBRARY (leechcraft_xtazy SHARED
 	${COMPILED_TRANSLATIONS}

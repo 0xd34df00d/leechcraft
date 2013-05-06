@@ -93,7 +93,6 @@ namespace AdiumStyles
 		void ParseGlobalTemplate (QString& templ, ICLEntry*) const;
 		QString ParseMsgTemplate (QString templ, const QString& path,
 				QWebFrame*, QObject*, const ChatMsgAppendInfo&);
-		QList<QColor> CreateColors (const QString&);
 		QString GetMessageID (QObject*);
 		QImage GetDefaultAvatar () const;
 		PListParser_ptr GetPListParser (const QString&) const;
