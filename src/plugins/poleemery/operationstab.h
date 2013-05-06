@@ -32,6 +32,7 @@
 #include <memory>
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
+#include "ui_operationstab.h"
 
 namespace LeechCraft
 {
@@ -45,6 +46,8 @@ namespace Poleemery
 	{
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
+
+		Ui::OperationsTab Ui_;
 
 		const Storage_ptr Storage_;
 		const TabClassInfo TC_;

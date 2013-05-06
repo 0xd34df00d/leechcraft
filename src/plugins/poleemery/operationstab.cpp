@@ -39,6 +39,7 @@ namespace Poleemery
 	, TC_ (tc)
 	, ParentPlugin_ (plugin)
 	{
+		Ui_.setupUi (this);
 	}
 
 	TabClassInfo OperationsTab::GetTabClassInfo () const
