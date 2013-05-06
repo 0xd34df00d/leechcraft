@@ -15,6 +15,7 @@ SET (SRCS
 	storage.cpp
 	accountstab.cpp
 	accountpropsdialog.cpp
+	accountsmanager.cpp
 	operationstab.cpp
 	)
 SET (FORMS
