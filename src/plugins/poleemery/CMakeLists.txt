@@ -11,17 +11,21 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	poleemery.cpp
+	core.cpp
 	structures.cpp
 	storage.cpp
 	accountstab.cpp
 	accountpropsdialog.cpp
 	accountsmanager.cpp
 	operationstab.cpp
+	operationsmanager.cpp
+	operationpropsdialog.cpp
 	)
 SET (FORMS
 	accountstab.ui
 	accountpropsdialog.ui
 	operationstab.ui
+	operationpropsdialog.ui
 	)
 QT4_WRAP_UI (UIS_H ${FORMS})
 #CreateTrs("poleemery" "en;ru_RU" COMPILED_TRANSLATIONS)
