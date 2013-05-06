@@ -46,7 +46,13 @@ namespace Poleemery
 		QSqlDatabase DB_;
 
 		oral::ObjectInfo<Account> AccountInfo_;
-		oral::ObjectInfo<Entry> EntryInfo_;
+		oral::ObjectInfo<NakedExpenseEntry> NakedExpenseEntryInfo_;
+		oral::ObjectInfo<ReceiptEntry> ReceiptEntryInfo_;
+		oral::ObjectInfo<Category> CategoryInfo_;
+		oral::ObjectInfo<CategoryLink> CategoryLinkInfo_;
+
+		QHash<QString, Category> CatCache_;
+		QHash<int, Category> CatIDCache_;
 	public:
 		Storage (QObject* = 0);
 
@@ -57,11 +63,16 @@ namespace Poleemery
 
 		QList<Account> GetAccounts () const;
 		void AddAccount (Account&);
+		void UpdateAccount (const Account&);
 
-		QList<Entry> GetEntries (const Account&) const;
-		void AddEntry (Entry&);
+		QList<ExpenseEntry> GetExpenseEntries (const Account&) const;
+		void AddExpenseEntry (ExpenseEntry&);
 	private:
+		Category AddCategory (const QString&);
+		void LinkEntry2Cat (const ExpenseEntry&, const Category&);
+
 		void InitializeTables ();
+		void LoadCategories ();
 	};
 }
 }

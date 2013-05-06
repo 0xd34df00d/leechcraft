@@ -44,7 +44,7 @@ namespace Poleemery
 {
 	Storage::Storage (QObject *parent)
 	: QObject (parent)
-	, DB_ (QSqlDatabase::addDatabase ("QSQLITE3", "Poleemery_Connection"))
+	, DB_ (QSqlDatabase::addDatabase ("QSQLITE", "Poleemery_Connection"))
 	{
 		const auto& dir = Util::CreateIfNotExists ("poleemeery");
 		DB_.setDatabaseName (dir.absoluteFilePath ("database.db"));
@@ -57,27 +57,123 @@ namespace Poleemery
 			throw std::runtime_error ("Poleemery database creation failed");
 		}
 
+		{
+			QSqlQuery query (DB_);
+			query.exec ("PRAGMA foreign_keys = ON;");
+		}
+
 		InitializeTables ();
+		LoadCategories ();
 	}
 
 	QList<Account> Storage::GetAccounts () const
 	{
-		return AccountInfo_.DoSelectAll_ ();
+		try
+		{
+			return AccountInfo_.DoSelectAll_ ();
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
 	}
 
 	void Storage::AddAccount (Account& acc)
 	{
-		AccountInfo_.DoInsert_ (acc);
+		try
+		{
+			AccountInfo_.DoInsert_ (acc);
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
 	}
 
-	QList<Entry> Storage::GetEntries (const Account& parent) const
+	void Storage::UpdateAccount (const Account& acc)
 	{
-		return EntryInfo_.SelectByFKeysActor_ (boost::fusion::make_vector (parent));
+		try
+		{
+			AccountInfo_.DoUpdate_ (acc);
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
 	}
 
-	void Storage::AddEntry (Entry& entry)
+	QList<ExpenseEntry> Storage::GetExpenseEntries (const Account& parent) const
 	{
-		EntryInfo_.DoInsert_ (entry);
+		QList<ExpenseEntry> entries;
+
+		try
+		{
+			for (const auto& naked : NakedExpenseEntryInfo_.SelectByFKeysActor_ (boost::fusion::make_vector (parent)))
+			{
+				ExpenseEntry entry { naked };
+
+				const auto& cats = boost::fusion::at_c<1> (CategoryLinkInfo_.SingleFKeySelectors_) (naked);
+				for (const auto& cat : cats)
+					entry.Categories_ << CatIDCache_ [cat.Category_].Name_;
+
+				entries << entry;
+			}
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
+
+		return entries;
+	}
+
+	void Storage::AddExpenseEntry (ExpenseEntry& entry)
+	{
+		Util::DBLock lock (DB_);
+		lock.Init ();
+
+		try
+		{
+			NakedExpenseEntryInfo_.DoInsert_ (entry);
+
+			for (const auto& cat : entry.Categories_)
+			{
+				if (!CatCache_.contains (cat))
+					AddCategory (cat);
+				LinkEntry2Cat (entry, CatCache_ [cat]);
+			}
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
+
+		lock.Good ();
+	}
+
+	Category Storage::AddCategory (const QString& name)
+	{
+		Category cat { name };
+		CategoryInfo_.DoInsert_ (cat);
+		CatCache_ [name] = cat;
+		CatIDCache_ [cat.ID_] = cat;
+		return cat;
+	}
+
+	void Storage::LinkEntry2Cat (const ExpenseEntry& entry, const Category& category)
+	{
+		CategoryLink link (category, entry);
+		CategoryLinkInfo_.DoInsert_ (link);
 	}
 
 	namespace oral
@@ -120,17 +216,60 @@ namespace Poleemery
 	void Storage::InitializeTables ()
 	{
 		AccountInfo_ = oral::Adapt<Account> (DB_);
-		EntryInfo_ = oral::Adapt<Entry> (DB_);
+		NakedExpenseEntryInfo_ = oral::Adapt<NakedExpenseEntry> (DB_);
+		ReceiptEntryInfo_ = oral::Adapt<ReceiptEntry> (DB_);
+		CategoryInfo_ = oral::Adapt<Category> (DB_);
+		CategoryLinkInfo_ = oral::Adapt<CategoryLink> (DB_);
 
 		const auto& tables = DB_.tables ();
 
 		QMap<QString, QString> queryCreates;
 		queryCreates [Account::ClassName ()] = AccountInfo_.CreateTable_;
-		queryCreates [Entry::ClassName ()] = EntryInfo_.CreateTable_;
+		queryCreates [NakedExpenseEntry::ClassName ()] = NakedExpenseEntryInfo_.CreateTable_;
+		queryCreates [ReceiptEntry::ClassName ()] = ReceiptEntryInfo_.CreateTable_;
+		queryCreates [Category::ClassName ()] = CategoryInfo_.CreateTable_;
+		queryCreates [CategoryLink::ClassName ()] = CategoryLinkInfo_.CreateTable_;
 
+		Util::DBLock lock (DB_);
+		lock.Init ();
+
+		QSqlQuery query (DB_);
+
+		bool tablesCreated = false;
 		for (const auto& key : queryCreates.keys ())
 			if (!tables.contains (key))
-				QSqlQuery (DB_).exec (queryCreates [key]);
+			{
+				tablesCreated = true;
+				if (!query.exec (queryCreates [key]))
+					{
+						Util::DBLock::DumpError (query);
+						throw std::runtime_error ("cannot create tables");
+					}
+			}
+
+		lock.Good ();
+
+		// Otherwise queries created by oral::Adapt() don't work.
+		if (tablesCreated)
+			InitializeTables ();
+	}
+
+	void Storage::LoadCategories ()
+	{
+		try
+		{
+			for (const auto& cat : CategoryInfo_.DoSelectAll_ ())
+			{
+				CatCache_ [cat.Name_] = cat;
+				CatIDCache_ [cat.ID_] = cat;
+			}
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
 	}
 }
 }
