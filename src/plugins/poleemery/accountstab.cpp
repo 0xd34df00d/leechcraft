@@ -117,6 +117,9 @@ namespace Poleemery
 			return;
 
 		AccsManager_->UpdateAccount (acc);
+		AccsModel_->item (current.row (), 0)->setText (acc.Name_);
+		AccsModel_->item (current.row (), 1)->setText (ToHumanReadable (acc.Type_));
+		AccsModel_->item (current.row (), 2)->setText (acc.Currency_);
 	}
 
 	void AccountsTab::on_Remove__released ()
