@@ -124,6 +124,7 @@ namespace Poleemery
 				SIGNAL (removeTab (QWidget*)));
 		emit addNewTab (tc.VisibleName_, tab);
 		emit changeTabIcon (tab, tc.Icon_);
+		emit raiseTab (tab);
 	}
 }
 }
