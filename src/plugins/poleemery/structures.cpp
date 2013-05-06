@@ -52,7 +52,15 @@ namespace Poleemery
 
 	bool operator== (const Account& a1, const Account& a2)
 	{
-		return a1.ID_ == a2.ID_ && a1.Name_ == a2.Name_ && a1.Type_ == a2.Type_;
+		return a1.ID_ == a2.ID_ &&
+				a1.Type_ == a2.Type_ &&
+				a1.Name_ == a2.Name_ &&
+				a1.Currency_ == a2.Currency_;
+	}
+
+	bool operator!= (const Account& a1, const Account& a2)
+	{
+		return !(a1 == a2);
 	}
 
 	EntryBase::EntryBase ()

@@ -58,6 +58,7 @@ namespace Poleemery
 	};
 
 	bool operator== (const Account&, const Account&);
+	bool operator!= (const Account&, const Account&);
 }
 }
 
