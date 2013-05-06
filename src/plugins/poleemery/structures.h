@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <boost/fusion/adapted/struct/adapt_struct.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <QString>
@@ -51,6 +52,7 @@ namespace Poleemery
 		oral::PKey<int> ID_;
 		AccType Type_;
 		QString Name_;
+		QString Currency_;
 
 		static QString ClassName () { return "Account"; }
 	};
@@ -62,7 +64,8 @@ namespace Poleemery
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::Account,
 		(decltype (LeechCraft::Poleemery::Account::ID_), ID_)
 		(LeechCraft::Poleemery::AccType, Type_)
-		(QString, Name_))
+		(QString, Name_)
+		(QString, Currency_))
 
 Q_DECLARE_METATYPE (LeechCraft::Poleemery::Account)
 
@@ -70,7 +73,13 @@ namespace LeechCraft
 {
 namespace Poleemery
 {
-	struct NakedExpenseEntry
+	enum class EntryType
+	{
+		Expense,
+		Receipt
+	};
+
+	struct EntryBase
 	{
 		oral::PKey<int> ID_;
 		oral::References<Account, 0> AccountID_;
@@ -78,16 +87,39 @@ namespace Poleemery
 		double Amount_;
 		QString Name_;
 		QString Description_;
+		QDateTime Date_;
+
+		EntryBase ();
+		EntryBase (int accId, double amount, const QString& name, const QString& descr, const QDateTime& dt);
+
+		virtual EntryType GetType () const = 0;
+	};
+
+	typedef std::shared_ptr<EntryBase> EntryBase_ptr;
+
+	struct NakedExpenseEntry : EntryBase
+	{
+		double Count_;
 		QString Shop_;
 
 		static QString ClassName () { return "NakedExpenseEntry"; }
+
+		EntryType GetType () const override { return EntryType::Expense; }
+
+		NakedExpenseEntry ();
+		NakedExpenseEntry (int accId, double amount, const QString& name, const QString& descr,
+				const QDateTime& dt, double count, const QString& shop);
 	};
 
 	struct ExpenseEntry : NakedExpenseEntry
 	{
 		QStringList Categories_;
 
+		ExpenseEntry ();
 		ExpenseEntry (const NakedExpenseEntry&);
+		ExpenseEntry (int accId, double amount,
+				const QString& name, const QString& descr, const QDateTime& dt,
+				double count, const QString& shop, const QStringList& cats);
 	};
 }
 }
@@ -98,6 +130,8 @@ BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::NakedExpenseEntry,
 		(double, Amount_)
 		(QString, Name_)
 		(QString, Description_)
+		(QDateTime, Date_)
+		(double, Count_)
 		(QString, Shop_))
 
 namespace LeechCraft
@@ -148,16 +182,14 @@ namespace LeechCraft
 {
 namespace Poleemery
 {
-	struct ReceiptEntry
+	struct ReceiptEntry : EntryBase
 	{
-		oral::PKey<int> ID_;
-		oral::References<Account, 0> AccountID_;
-
-		double Amount_;
-		QString Name_;
-		QString Description_;
+		ReceiptEntry ();
+		ReceiptEntry (int accId, double amount, const QString& name, const QString& descr, const QDateTime& dt);
 
 		static QString ClassName () { return "ReceiptEntry"; }
+
+		EntryType GetType () const override { return EntryType::Receipt; }
 	};
 }
 }
