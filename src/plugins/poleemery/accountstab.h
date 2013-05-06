@@ -57,6 +57,11 @@ namespace Poleemery
 		Ui::AccountsTab Ui_;
 
 		QStandardItemModel *AccsModel_;
+
+		enum Roles
+		{
+			Acc = Qt::UserRole + 1
+		};
 	public:
 		AccountsTab (Storage_ptr, const TabClassInfo&, QObject*);
 

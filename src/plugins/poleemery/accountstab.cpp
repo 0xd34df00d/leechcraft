@@ -79,6 +79,8 @@ namespace Poleemery
 			new QStandardItem (acc.Name_),
 			new QStandardItem (ToHumanReadable (acc.Type_))
 		};
+		row.first ()->setData (QVariant::fromValue (acc), Roles::Acc);
+
 		for (auto item : row)
 			item->setEditable (false);
 		AccsModel_->appendRow (row);
@@ -92,14 +94,36 @@ namespace Poleemery
 
 		auto acc = dia.GetAccount ();
 		Storage_->AddAccount (acc);
+		AddAccount (acc);
 	}
 
 	void AccountsTab::on_Modify__released ()
 	{
+		const auto& current = Ui_.AccountsView_->currentIndex ();
+		if (!current.isValid ())
+			return;
+
+		const auto srcAccount = AccsModel_->item (current.row ())->data (Roles::Acc).value<Account> ();
+
+		AccountPropsDialog dia (this);
+		dia.SetAccount (srcAccount);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		auto acc = dia.GetAccount ();
+		if (acc == srcAccount)
+			return;
+
+		Storage_->UpdateAccount (acc);
 	}
 
 	void AccountsTab::on_Remove__released ()
 	{
+		const auto& current = Ui_.AccountsView_->currentIndex ();
+		if (!current.isValid ())
+			return;
+
+		AccsModel_->removeRow (current.row ());
 	}
 }
 }
