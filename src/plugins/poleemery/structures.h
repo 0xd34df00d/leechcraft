@@ -121,6 +121,8 @@ namespace Poleemery
 				const QString& name, const QString& descr, const QDateTime& dt,
 				double count, const QString& shop, const QStringList& cats);
 	};
+
+	typedef std::shared_ptr<ExpenseEntry> ExpenseEntry_ptr;
 }
 }
 
@@ -199,4 +201,5 @@ BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::ReceiptEntry,
 		(decltype (LeechCraft::Poleemery::ReceiptEntry::AccountID_), AccountID_)
 		(double, Amount_)
 		(QString, Name_)
-		(QString, Description_))
+		(QString, Description_)
+		(QDateTime, Date_))
