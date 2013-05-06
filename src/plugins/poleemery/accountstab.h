@@ -62,7 +62,7 @@ namespace Poleemery
 			Acc = Qt::UserRole + 1
 		};
 	public:
-		AccountsTab (AccountsManager*, const TabClassInfo&, QObject*);
+		AccountsTab (const TabClassInfo&, QObject*);
 
 		TabClassInfo GetTabClassInfo () const override;
 		QObject* ParentMultiTabs () override;

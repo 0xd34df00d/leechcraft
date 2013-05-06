@@ -29,10 +29,8 @@
 
 #include "poleemery.h"
 #include <QIcon>
-#include "storage.h"
 #include "operationstab.h"
 #include "accountstab.h"
-#include "accountsmanager.h"
 
 namespace LeechCraft
 {
@@ -40,9 +38,6 @@ namespace Poleemery
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Storage_.reset (new Storage);
-		AccsManager_ = new AccountsManager (Storage_);
-
 		TabClasses_.append ({
 				{
 					GetUniqueID () + "/Operations",
@@ -53,10 +48,7 @@ namespace Poleemery
 					TFOpenableByRequest
 				},
 				[this] (const TabClassInfo& tc)
-				{
-					auto tab = new OperationsTab (Storage_, tc, this);
-					MakeTab (tab, tc);
-				}
+					{ MakeTab (new OperationsTab (tc, this), tc); }
 			});
 		TabClasses_.append ({
 				{
@@ -68,10 +60,7 @@ namespace Poleemery
 					TFOpenableByRequest
 				},
 				[this] (const TabClassInfo& tc)
-				{
-					auto tab = new AccountsTab (AccsManager_, tc, this);
-					MakeTab (tab, tc);
-				}
+					{ MakeTab (new AccountsTab (tc, this), tc); }
 			});
 	}
 

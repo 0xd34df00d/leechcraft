@@ -29,21 +29,21 @@
 
 #include "accountstab.h"
 #include <QStandardItemModel>
-#include "storage.h"
 #include "accountsmanager.h"
 #include "accountpropsdialog.h"
+#include "core.h"
 
 namespace LeechCraft
 {
 namespace Poleemery
 {
-	AccountsTab::AccountsTab (AccountsManager *accManager, const TabClassInfo& tc, QObject *plugin)
-	: AccsManager_ (accManager)
+	AccountsTab::AccountsTab (const TabClassInfo& tc, QObject *plugin)
+	: AccsManager_ (Core::Instance ().GetAccsManager ())
 	, TC_ (tc)
 	, ParentPlugin_ (plugin)
 	, AccsModel_ (new QStandardItemModel (this))
 	{
-		AccsModel_->setHorizontalHeaderLabels ({ tr ("Account"), tr ("Type") });
+		AccsModel_->setHorizontalHeaderLabels ({ tr ("Account"), tr ("Type"), tr ("Currency") });
 
 		Ui_.setupUi (this);
 		Ui_.AccountsView_->setModel (AccsModel_);
@@ -78,7 +78,8 @@ namespace Poleemery
 		QList<QStandardItem*> row
 		{
 			new QStandardItem (acc.Name_),
-			new QStandardItem (ToHumanReadable (acc.Type_))
+			new QStandardItem (ToHumanReadable (acc.Type_)),
+			new QStandardItem (acc.Currency_)
 		};
 		row.first ()->setData (QVariant::fromValue (acc), Roles::Acc);
 

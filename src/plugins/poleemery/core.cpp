@@ -27,46 +27,41 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <functional>
-#include <QObject>
-#include <QList>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavetabs.h>
+#include "core.h"
+#include "storage.h"
+#include "accountsmanager.h"
+#include "operationsmanager.h"
 
 namespace LeechCraft
 {
 namespace Poleemery
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveTabs
+	Core::Core ()
+	: Storage_ (new Storage)
+	, AccsManager_ (new AccountsManager (Storage_))
+	, OpsManager_ (new OperationsManager (Storage_))
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs)
+	}
 
-		QList<QPair<TabClassInfo, std::function<void (TabClassInfo)>>> TabClasses_;
-	public:
-		void Init (ICoreProxy_ptr) override;
-		void SecondInit () override;
-		QByteArray GetUniqueID () const override;
-		void Release () override;
-		QString GetName () const override;
-		QString GetInfo () const override;
-		QIcon GetIcon () const override;
+	Core& Core::Instance ()
+	{
+		static Core c;
+		return c;
+	}
 
-		TabClasses_t GetTabClasses () const override;
-		void TabOpenRequested (const QByteArray&) override;
-	private:
-		void MakeTab (QWidget*, const TabClassInfo&);
-	signals:
-		void addNewTab (const QString&, QWidget*) override;
-		void removeTab (QWidget*) override;
-		void changeTabName (QWidget*, const QString&) override;
-		void changeTabIcon (QWidget*, const QIcon&) override;
-		void statusBarChanged (QWidget*, const QString&) override;
-		void raiseTab (QWidget*) override;
-	};
+	Storage_ptr Core::GetStorage () const
+	{
+		return Storage_;
+	}
+
+	AccountsManager* Core::GetAccsManager () const
+	{
+		return AccsManager_;
+	}
+
+	OperationsManager* Core::GetOpsManager () const
+	{
+		return OpsManager_;
+	}
 }
 }

@@ -28,18 +28,21 @@
  **********************************************************************/
 
 #include "operationstab.h"
-#include "storage.h"
+#include "core.h"
+#include "operationsmanager.h"
+#include "operationpropsdialog.h"
 
 namespace LeechCraft
 {
 namespace Poleemery
 {
-	OperationsTab::OperationsTab (Storage_ptr storage, const TabClassInfo& tc, QObject *plugin)
-	: Storage_ (storage)
+	OperationsTab::OperationsTab (const TabClassInfo& tc, QObject *plugin)
+	: OpsManager_ (Core::Instance ().GetOpsManager ())
 	, TC_ (tc)
 	, ParentPlugin_ (plugin)
 	{
 		Ui_.setupUi (this);
+		Ui_.OpsView_->setModel (OpsManager_->GetModel ());
 	}
 
 	TabClassInfo OperationsTab::GetTabClassInfo () const

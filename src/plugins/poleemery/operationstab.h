@@ -38,8 +38,7 @@ namespace LeechCraft
 {
 namespace Poleemery
 {
-	class Storage;
-	typedef std::shared_ptr<Storage> Storage_ptr;
+	class OperationsManager;
 
 	class OperationsTab : public QWidget
 						, public ITabWidget
@@ -47,13 +46,14 @@ namespace Poleemery
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
 
+		OperationsManager * const OpsManager_;
+
 		Ui::OperationsTab Ui_;
 
-		const Storage_ptr Storage_;
 		const TabClassInfo TC_;
 		QObject * const ParentPlugin_;
 	public:
-		OperationsTab (Storage_ptr, const TabClassInfo&, QObject*);
+		OperationsTab (const TabClassInfo&, QObject*);
 
 		TabClassInfo GetTabClassInfo () const override;
 		QObject* ParentMultiTabs () override;
