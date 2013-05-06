@@ -108,6 +108,20 @@ namespace Poleemery
 		}
 	}
 
+	void Storage::DeleteAccount (const Account& acc)
+	{
+		try
+		{
+			AccountInfo_.DoDelete_ (acc);
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
+	}
+
 	QList<ExpenseEntry> Storage::GetExpenseEntries (const Account& parent) const
 	{
 		QList<ExpenseEntry> entries;
@@ -161,6 +175,29 @@ namespace Poleemery
 		lock.Good ();
 	}
 
+	void Storage::UpdateExpenseEntry (const ExpenseEntry& entry)
+	{
+		Util::DBLock lock (DB_);
+		lock.Init ();
+
+		NakedExpenseEntryInfo_.DoUpdate_ (entry);
+
+		auto nowCats = entry.Categories_.toSet ();
+
+		for (const auto& cat : boost::fusion::at_c<1> (CategoryLinkInfo_.SingleFKeySelectors_) (entry))
+		{
+			if (!nowCats.remove (CatIDCache_.value (cat.Category_).Name_))
+				CategoryLinkInfo_.DoDelete_ (cat);
+		}
+
+		lock.Good ();
+	}
+
+	void Storage::DeleteExpenseEntry (const ExpenseEntry& entry)
+	{
+		NakedExpenseEntryInfo_.DoDelete_ (entry);
+	}
+
 	Category Storage::AddCategory (const QString& name)
 	{
 		Category cat { name };
@@ -174,6 +211,13 @@ namespace Poleemery
 	{
 		CategoryLink link (category, entry);
 		CategoryLinkInfo_.DoInsert_ (link);
+	}
+
+	void Storage::UnlinkEntry2Cat (const ExpenseEntry& entry, const Category& category)
+	{
+		const auto& link = CategoryLinkInfo_.SelectByFKeysActor_ (boost::fusion::make_vector (category, entry));
+		if (!link.isEmpty ())
+			CategoryLinkInfo_.DoDelete_ (link.first ());
 	}
 
 	namespace oral

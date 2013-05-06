@@ -32,6 +32,7 @@
 #include "storage.h"
 #include "operationstab.h"
 #include "accountstab.h"
+#include "accountsmanager.h"
 
 namespace LeechCraft
 {
@@ -40,6 +41,7 @@ namespace Poleemery
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Storage_.reset (new Storage);
+		AccsManager_ = new AccountsManager (Storage_);
 
 		TabClasses_.append ({
 				{
@@ -50,7 +52,11 @@ namespace Poleemery
 					1,
 					TFOpenableByRequest
 				},
-				[this] (const TabClassInfo& tc) { MakeTab<OperationsTab> (tc); }
+				[this] (const TabClassInfo& tc)
+				{
+					auto tab = new OperationsTab (Storage_, tc, this);
+					MakeTab (tab, tc);
+				}
 			});
 		TabClasses_.append ({
 				{
@@ -61,7 +67,11 @@ namespace Poleemery
 					2,
 					TFOpenableByRequest
 				},
-				[this] (const TabClassInfo& tc) { MakeTab<AccountsTab> (tc); }
+				[this] (const TabClassInfo& tc)
+				{
+					auto tab = new AccountsTab (AccsManager_, tc, this);
+					MakeTab (tab, tc);
+				}
 			});
 	}
 
@@ -117,10 +127,8 @@ namespace Poleemery
 		pos->second (pos->first);
 	}
 
-	template<typename T>
-	void Plugin::MakeTab (const TabClassInfo& tc)
+	void Plugin::MakeTab (QWidget *tab, const TabClassInfo& tc)
 	{
-		auto tab = new T (Storage_, tc, this);
 		connect (tab,
 				SIGNAL (removeTab (QWidget*)),
 				this,

@@ -41,6 +41,7 @@ namespace LeechCraft
 namespace Poleemery
 {
 	class Storage;
+	class AccountsManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -50,6 +51,7 @@ namespace Poleemery
 		Q_INTERFACES (IInfo IHaveTabs)
 
 		std::shared_ptr<Storage> Storage_;
+		AccountsManager *AccsManager_;
 		QList<QPair<TabClassInfo, std::function<void (TabClassInfo)>>> TabClasses_;
 	public:
 		void Init (ICoreProxy_ptr) override;
@@ -63,8 +65,7 @@ namespace Poleemery
 		TabClasses_t GetTabClasses () const override;
 		void TabOpenRequested (const QByteArray&) override;
 	private:
-		template<typename T>
-		void MakeTab (const TabClassInfo&);
+		void MakeTab (QWidget*, const TabClassInfo&);
 	signals:
 		void addNewTab (const QString&, QWidget*) override;
 		void removeTab (QWidget*) override;

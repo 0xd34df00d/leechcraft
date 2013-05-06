@@ -30,14 +30,15 @@
 #include "accountstab.h"
 #include <QStandardItemModel>
 #include "storage.h"
+#include "accountsmanager.h"
 #include "accountpropsdialog.h"
 
 namespace LeechCraft
 {
 namespace Poleemery
 {
-	AccountsTab::AccountsTab (Storage_ptr storage, const TabClassInfo& tc, QObject *plugin)
-	: Storage_ (storage)
+	AccountsTab::AccountsTab (AccountsManager *accManager, const TabClassInfo& tc, QObject *plugin)
+	: AccsManager_ (accManager)
 	, TC_ (tc)
 	, ParentPlugin_ (plugin)
 	, AccsModel_ (new QStandardItemModel (this))
@@ -47,7 +48,7 @@ namespace Poleemery
 		Ui_.setupUi (this);
 		Ui_.AccountsView_->setModel (AccsModel_);
 
-		for (const auto& acc : Storage_->GetAccounts ())
+		for (const auto& acc : AccsManager_->GetAccounts ())
 			AddAccount (acc);
 	}
 
@@ -93,7 +94,7 @@ namespace Poleemery
 			return;
 
 		auto acc = dia.GetAccount ();
-		Storage_->AddAccount (acc);
+		AccsManager_->AddAccount (acc);
 		AddAccount (acc);
 	}
 
@@ -114,7 +115,7 @@ namespace Poleemery
 		if (acc == srcAccount)
 			return;
 
-		Storage_->UpdateAccount (acc);
+		AccsManager_->UpdateAccount (acc);
 	}
 
 	void AccountsTab::on_Remove__released ()
@@ -123,6 +124,8 @@ namespace Poleemery
 		if (!current.isValid ())
 			return;
 
+		const auto& sibling = current.sibling (current.row (), 0);
+		AccsManager_->DeleteAccount (sibling.data (Roles::Acc).value<Account> ());
 		AccsModel_->removeRow (current.row ());
 	}
 }
