@@ -29,6 +29,8 @@
 
 #pragma once
 
+#define BOOST_RESULT_OF_USE_DECLTYPE
+
 #include <stdexcept>
 #include <type_traits>
 #include <memory>
@@ -69,9 +71,14 @@ namespace oral
 		{
 		}
 
-		const QSqlQuery_ptr& GetQuery () const
+		const QSqlQuery_ptr& GetQueryPtr () const
 		{
 			return Query_;
+		}
+
+		const QSqlQuery& GetQuery () const
+		{
+			return *Query_;
 		}
 	};
 
@@ -92,7 +99,36 @@ namespace oral
 		{
 		}
 
-		PKey& operator= (const value_type& val)
+		PKey& operator= (T val)
+		{
+			Val_ = val;
+			return *this;
+		}
+
+		operator value_type () const
+		{
+			return Val_;
+		}
+	};
+
+	template<typename T>
+	struct Unique
+	{
+		typedef T value_type;
+
+		T Val_;
+
+		Unique ()
+		: Val_ ()
+		{
+		}
+
+		Unique (T val)
+		: Val_ (val)
+		{
+		}
+
+		Unique& operator= (T val)
 		{
 			Val_ = val;
 			return *this;
@@ -208,13 +244,31 @@ namespace oral
 	template<>
 	struct Type2Name<int>
 	{
-		QString operator() () const { return  "INTEGER"; }
+		QString operator() () const { return "INTEGER"; }
+	};
+
+	template<>
+	struct Type2Name<double>
+	{
+		QString operator() () const { return "REAL"; }
+	};
+
+	template<>
+	struct Type2Name<bool>
+	{
+		QString operator() () const { return "INTEGER"; }
 	};
 
 	template<>
 	struct Type2Name<QString>
 	{
 		QString operator() () const { return "TEXT"; }
+	};
+
+	template<typename T>
+	struct Type2Name<Unique<T>>
+	{
+		QString operator() () const { return Type2Name<T> () () + " UNIQUE"; }
 	};
 
 	template<typename T>
@@ -235,7 +289,7 @@ namespace oral
 		QString operator() () const
 		{
 			return Type2Name<typename References<Seq, Idx>::value_type> () () +
-					" REFERENCES " + Seq::ClassName () + " (" + detail::GetFieldName<Seq, Idx>::value () + ")";
+					" REFERENCES " + Seq::ClassName () + " (" + detail::GetFieldName<Seq, Idx>::value () + ") ON DELETE CASCADE";
 		}
 	};
 
@@ -243,8 +297,6 @@ namespace oral
 	{
 		struct Types
 		{
-			typedef QStringList result_type;
-
 			template<typename T>
 			QStringList operator() (const QStringList& init, const T&) const
 			{
@@ -259,6 +311,15 @@ namespace oral
 		QVariant operator() (const T& t) const
 		{
 			return t;
+		}
+	};
+
+	template<typename T>
+	struct ToVariant<Unique<T>>
+	{
+		QVariant operator() (const Unique<T>& t) const
+		{
+			return static_cast<typename Unique<T>::value_type> (t);
 		}
 	};
 
@@ -284,8 +345,6 @@ namespace oral
 	{
 		struct Inserter
 		{
-			typedef QStringList result_type;
-
 			QSqlQuery_ptr Q_;
 
 			template<typename T>
@@ -300,6 +359,15 @@ namespace oral
 
 	template<typename T>
 	struct FromVariant
+	{
+		T operator() (const QVariant& var) const
+		{
+			return var.value<T> ();
+		}
+	};
+
+	template<typename T>
+	struct FromVariant<Unique<T>>
 	{
 		T operator() (const QVariant& var) const
 		{
@@ -331,8 +399,6 @@ namespace oral
 	{
 		struct Selector
 		{
-			typedef int result_type;
-
 			QSqlQuery_ptr Q_;
 
 			template<typename T>
@@ -502,7 +568,7 @@ namespace oral
 		struct FieldAppender<To, OrigSeq, OrigIdx, References<RefSeq, RefIdx>>
 		{
 			typedef typename boost::fusion::result_of::as_vector<
-					typename boost::fusion::result_of::push_back<
+					typename boost::fusion::result_of::push_front<
 						To,
 						FieldInfo<OrigSeq, OrigIdx, RefSeq, boost::mpl::int_<RefIdx>>
 					>::type
@@ -533,8 +599,6 @@ namespace oral
 
 		struct Ref2Select
 		{
-			typedef QStringList result_type;
-
 			template<typename OrigSeq, typename OrigIdx, typename RefSeq, typename RefIdx>
 			QStringList operator() (const QStringList& init, const FieldInfo<OrigSeq, OrigIdx, RefSeq, RefIdx>&) const
 			{
@@ -581,7 +645,7 @@ namespace oral
 		};
 
 		template<typename T, typename ObjInfo>
-		typename std::enable_if<CollectRefs<T>::type_list::size::value >= 1>::type AdaptSelectRef (const CachedFieldsData& data, ObjInfo& info)
+		typename std::enable_if<CollectRefs<T>::type_list::size::value == 1>::type AdaptSelectRef (const CachedFieldsData& data, ObjInfo& info)
 		{
 			typedef typename CollectRefs<T>::type_list references_list;
 			const auto& statements = boost::fusion::fold (references_list {}, QStringList {}, Ref2Select {});
@@ -595,6 +659,59 @@ namespace oral
 
 			info.SelectByFKeys_ = selectQuery;
 			info.SelectByFKeysActor_ = MakeBinder<T, references_list> { selectQuery };
+		}
+
+		template<typename T, typename Ret>
+		struct WrapAsFunc
+		{
+			typedef std::function<QList<Ret> (T)> type;
+		};
+
+		template<typename T>
+		struct MakeSingleBinder
+		{
+			const CachedFieldsData Data_;
+
+			template<typename Vec, typename OrigObj, typename OrigIdx, typename RefObj, typename RefIdx>
+			auto operator() (Vec vec, const FieldInfo<OrigObj, OrigIdx, RefObj, RefIdx>&) -> decltype (boost::fusion::push_back (vec, typename WrapAsFunc<RefObj, T>::type {}))
+			{
+				const auto& boundName = GetBoundName<OrigObj, OrigIdx::value>::value ();
+				const auto& query = "SELECT " + QStringList { Data_.Fields_ }.join (", ") +
+						" FROM " + Data_.Table_ +
+						" WHERE " + GetFieldName<OrigObj, OrigIdx::value>::value () + " = " + boundName +
+						";";
+				QSqlQuery_ptr selectQuery (new QSqlQuery (Data_.DB_));
+				selectQuery->prepare (query);
+
+				typename WrapAsFunc<RefObj, T>::type inserter = [selectQuery, boundName] (const RefObj& obj)
+				{
+					selectQuery->bindValue (boundName,
+							ToVariant<typename std::decay<typename boost::fusion::result_of::at<RefObj, RefIdx>::type>::type> {} (boost::fusion::at<RefIdx> (obj)));
+					return PerformSelect<T> (selectQuery);
+				};
+
+				return boost::fusion::push_back (vec, inserter);
+			}
+		};
+
+		template<typename T, typename ObjInfo>
+		typename std::enable_if<CollectRefs<T>::type_list::size::value >= 2>::type AdaptSelectRef (const CachedFieldsData& data, ObjInfo& info)
+		{
+			typedef typename CollectRefs<T>::type_list references_list;
+			const auto& statements = boost::fusion::fold (references_list {}, QStringList {}, Ref2Select {});
+
+			const auto& selectAll = "SELECT " + QStringList { data.Fields_ }.join (", ") +
+					" FROM " + data.Table_ +
+					(statements.isEmpty () ? "" : " WHERE ") + statements.join (" AND ") +
+					";";
+			QSqlQuery_ptr selectQuery (new QSqlQuery (data.DB_));
+			selectQuery->prepare (selectAll);
+
+			info.SelectByFKeys_ = selectQuery;
+			info.SelectByFKeysActor_ = MakeBinder<T, references_list> { selectQuery };
+
+			auto singleSelectors = boost::fusion::fold (references_list {}, boost::fusion::vector<> {}, MakeSingleBinder<T> { data });
+			info.SingleFKeySelectors_ = boost::fusion::as_vector (singleSelectors);
 		}
 
 		template<typename T, typename ObjInfo>
@@ -618,10 +735,21 @@ namespace oral
 		};
 
 		template<typename T>
-		struct ObjectInfoFKeysHelper<T, typename std::enable_if<CollectRefs<T>::type_list::size::value >= 1, void>::type>
+		struct ObjectInfoFKeysHelper<T, typename std::enable_if<CollectRefs<T>::type_list::size::value == 1, void>::type>
 		{
 			QSqlQuery_ptr SelectByFKeys_;
 			std::function<QList<T> (typename MakeBinder<T, typename CollectRefs<T>::type_list>::objects_vector)> SelectByFKeysActor_;
+		};
+
+		template<typename T>
+		struct ObjectInfoFKeysHelper<T, typename std::enable_if<CollectRefs<T>::type_list::size::value >= 2, void>::type>
+		{
+			typedef typename MakeBinder<T, typename CollectRefs<T>::type_list>::objects_vector objects_vector;
+			QSqlQuery_ptr SelectByFKeys_;
+			std::function<QList<T> (objects_vector)> SelectByFKeysActor_;
+
+			typedef typename boost::mpl::transform<objects_vector, WrapAsFunc<boost::mpl::_1, T>>::type transform_view;
+			typename boost::fusion::result_of::as_vector<transform_view>::type SingleFKeySelectors_;
 		};
 	}
 
