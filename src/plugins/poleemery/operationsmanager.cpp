@@ -41,6 +41,12 @@ namespace Poleemery
 	, Storage_ (storage)
 	, Model_ (new EntriesModel (this))
 	{
+		QList<EntryBase_ptr> entries;
+		for (const auto& entry : Storage_->GetReceiptEntries ())
+			entries << std::make_shared<ReceiptEntry> (entry);
+		for (const auto& entry : Storage_->GetExpenseEntries ())
+			entries << std::make_shared<ExpenseEntry> (entry);
+		Model_->AddEntries (entries);
 	}
 
 	QAbstractItemModel* OperationsManager::GetModel () const
