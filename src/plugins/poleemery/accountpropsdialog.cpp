@@ -64,6 +64,10 @@ namespace Poleemery
 		CurrentAccID_ = account.ID_;
 		Ui_.AccType_->setCurrentIndex (static_cast<int> (account.Type_));
 		Ui_.AccName_->setText (account.Name_);
+
+		const auto pos = Ui_.Currency_->findText (account.Currency_);
+		if (pos >= 0)
+			Ui_.Currency_->setCurrentIndex (pos);
 	}
 
 	Account AccountPropsDialog::GetAccount () const
