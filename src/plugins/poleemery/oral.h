@@ -357,12 +357,13 @@ namespace oral
 	{
 		struct Inserter
 		{
+			const bool BindPrimaryKey_;
 			QSqlQuery_ptr Q_;
 
 			template<typename T>
 			QStringList operator() (QStringList bounds, const T& t) const
 			{
-				if (!IsPKey<T>::value)
+				if (BindPrimaryKey_ || !IsPKey<T>::value)
 					Q_->bindValue (bounds.takeFirst (), ToVariant<T> {} (t));
 				return bounds;
 			}
@@ -431,11 +432,11 @@ namespace oral
 		};
 
 		template<typename T>
-		std::function<void (T)> MakeInserter (CachedFieldsData data, QSqlQuery_ptr insertQuery)
+		std::function<void (T)> MakeInserter (CachedFieldsData data, QSqlQuery_ptr insertQuery, bool bindPrimaryKey)
 		{
-			return [data, insertQuery] (const T& t)
+			return [data, insertQuery, bindPrimaryKey] (const T& t)
 			{
-				boost::fusion::fold<T, QStringList, Inserter> (t, data.BoundFields_, Inserter { insertQuery });
+				boost::fusion::fold<T, QStringList, Inserter> (t, data.BoundFields_, Inserter { bindPrimaryKey, insertQuery });
 				if (!insertQuery->exec ())
 					throw QueryException ("insert query execution failed", insertQuery);
 			};
@@ -475,7 +476,7 @@ namespace oral
 			QSqlQuery_ptr insertQuery (new QSqlQuery (data.DB_));
 			insertQuery->prepare (insert);
 
-			auto inserter = MakeInserter<T> (data, insertQuery);
+			auto inserter = MakeInserter<T> (data, insertQuery, false);
 			auto insertUpdater = [inserter, insertQuery] (T& t)
 			{
 				inserter (t);
@@ -490,19 +491,19 @@ namespace oral
 		}
 
 		template<typename T>
-		QPair<QSqlQuery_ptr, std::function<void (T)>> AdaptUpdate (CachedFieldsData data)
+		QPair<QSqlQuery_ptr, std::function<void (T)>> AdaptUpdate (const CachedFieldsData& data)
 		{
 			const auto index = FindPKey<T>::result_type::value;
 
-			data.Fields_.removeAt (index);
-			data.BoundFields_.removeAt (index);
+			auto removedFields = data.Fields_;
+			auto removedBoundFields = data.BoundFields_;
 
-			const auto& statements = ZipWith (data.Fields_, data.BoundFields_,
+			const auto& fieldName = removedFields.takeAt (index);
+			const auto& boundName = removedBoundFields.takeAt (index);
+
+			const auto& statements = ZipWith (removedFields, removedBoundFields,
 					[] (const QString& s1, const QString& s2) -> QString
 						{ return s1 + " = " + s2; });
-
-			const auto& fieldName = GetFieldName<T, index>::value ();
-			const auto& boundName = GetBoundName<T, index>::value ();
 
 			const auto& update = "UPDATE " + data.Table_ +
 					" SET " + QStringList { statements }.join (", ") +
@@ -511,7 +512,7 @@ namespace oral
 			QSqlQuery_ptr updateQuery (new QSqlQuery (data.DB_));
 			updateQuery->prepare (update);
 
-			return { updateQuery, MakeInserter<T> (data, updateQuery) };
+			return { updateQuery, MakeInserter<T> (data, updateQuery, true) };
 		}
 
 		template<typename T>
