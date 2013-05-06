@@ -30,6 +30,7 @@
 #include "operationsmanager.h"
 #include <QStandardItemModel>
 #include "storage.h"
+#include "entriesmodel.h"
 
 namespace LeechCraft
 {
@@ -49,7 +50,17 @@ namespace Poleemery
 
 	void OperationsManager::AddEntry (EntryBase_ptr entry)
 	{
-		Entries_ << entry;
+		switch (entry->GetType ())
+		{
+		case EntryType::Expense:
+			Storage_->AddExpenseEntry (*std::dynamic_pointer_cast<ExpenseEntry> (entry));
+			break;
+		case EntryType::Receipt:
+			Storage_->AddReceiptEntry (*std::dynamic_pointer_cast<ReceiptEntry> (entry));
+			break;
+		}
+
+		Model_->AddEntry (entry);
 	}
 }
 }
