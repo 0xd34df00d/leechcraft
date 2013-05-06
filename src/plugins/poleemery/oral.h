@@ -168,6 +168,12 @@ namespace oral
 		{
 		}
 
+		template<typename T>
+		References (const PKey<T>& key)
+		: Val_ (static_cast<T> (key))
+		{
+		}
+
 		References& operator= (const value_type& val)
 		{
 			Val_ = val;
