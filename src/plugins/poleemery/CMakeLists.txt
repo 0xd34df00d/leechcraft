@@ -20,6 +20,7 @@ SET (SRCS
 	operationstab.cpp
 	operationsmanager.cpp
 	operationpropsdialog.cpp
+	entriesmodel.cpp
 	)
 SET (FORMS
 	accountstab.ui
