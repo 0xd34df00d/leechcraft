@@ -47,6 +47,11 @@ namespace Poleemery
 		return Accounts_.values ();
 	}
 
+	Account AccountsManager::GetAccount (int id) const
+	{
+		return Accounts_ [id];
+	}
+
 	void AccountsManager::AddAccount (Account acc)
 	{
 		Storage_->AddAccount (acc);

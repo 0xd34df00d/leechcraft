@@ -50,6 +50,7 @@ namespace Poleemery
 		AccountsManager (Storage_ptr, QObject* = 0);
 
 		QList<Account> GetAccounts () const;
+		Account GetAccount (int) const;
 
 		void AddAccount (Account);
 		void UpdateAccount (const Account&);
