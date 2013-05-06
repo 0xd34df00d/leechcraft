@@ -54,6 +54,8 @@ namespace Poleemery
 
 		static QString ClassName () { return "Account"; }
 	};
+
+	bool operator== (const Account&, const Account&);
 }
 }
 
@@ -62,20 +64,107 @@ BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::Account,
 		(LeechCraft::Poleemery::AccType, Type_)
 		(QString, Name_))
 
+Q_DECLARE_METATYPE (LeechCraft::Poleemery::Account)
+
 namespace LeechCraft
 {
 namespace Poleemery
 {
-	struct Entry
+	struct NakedExpenseEntry
 	{
 		oral::PKey<int> ID_;
 		oral::References<Account, 0> AccountID_;
 
-		static QString ClassName () { return "Entry"; }
+		double Amount_;
+		QString Name_;
+		QString Description_;
+		QString Shop_;
+
+		static QString ClassName () { return "NakedExpenseEntry"; }
+	};
+
+	struct ExpenseEntry : NakedExpenseEntry
+	{
+		QStringList Categories_;
+
+		ExpenseEntry (const NakedExpenseEntry&);
 	};
 }
 }
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::Entry,
-		(decltype (LeechCraft::Poleemery::Entry::ID_), ID_)
-		(decltype (LeechCraft::Poleemery::Entry::AccountID_), AccountID_))
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::NakedExpenseEntry,
+		(decltype (LeechCraft::Poleemery::NakedExpenseEntry::ID_), ID_)
+		(decltype (LeechCraft::Poleemery::NakedExpenseEntry::AccountID_), AccountID_)
+		(double, Amount_)
+		(QString, Name_)
+		(QString, Description_)
+		(QString, Shop_))
+
+namespace LeechCraft
+{
+namespace Poleemery
+{
+	struct Category
+	{
+		oral::PKey<int> ID_;
+		oral::Unique<QString> Name_;
+
+		Category ();
+		explicit Category (const QString&);
+
+		static QString ClassName () { return "Category"; }
+	};
+}
+}
+
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::Category,
+		(decltype (LeechCraft::Poleemery::Category::ID_), ID_)
+		(decltype (LeechCraft::Poleemery::Category::Name_), Name_))
+
+namespace LeechCraft
+{
+namespace Poleemery
+{
+	struct CategoryLink
+	{
+		oral::PKey<int> ID_;
+		oral::References<Category, 0> Category_;
+		oral::References<NakedExpenseEntry, 0> Entry_;
+
+		CategoryLink ();
+		CategoryLink (const Category&, const NakedExpenseEntry&);
+
+		static QString ClassName () { return "CategoryLink"; }
+	};
+}
+}
+
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::CategoryLink,
+		(decltype (LeechCraft::Poleemery::CategoryLink::ID_), ID_)
+		(decltype (LeechCraft::Poleemery::CategoryLink::Category_), Category_)
+		(decltype (LeechCraft::Poleemery::CategoryLink::Entry_), Entry_))
+
+namespace LeechCraft
+{
+namespace Poleemery
+{
+	struct ReceiptEntry
+	{
+		oral::PKey<int> ID_;
+		oral::References<Account, 0> AccountID_;
+
+		double Amount_;
+		QString Name_;
+		QString Description_;
+
+		static QString ClassName () { return "ReceiptEntry"; }
+	};
+}
+}
+
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::ReceiptEntry,
+		(decltype (LeechCraft::Poleemery::ReceiptEntry::ID_), ID_)
+		(decltype (LeechCraft::Poleemery::ReceiptEntry::AccountID_), AccountID_)
+		(double, Amount_)
+		(QString, Name_)
+		(QString, Description_))

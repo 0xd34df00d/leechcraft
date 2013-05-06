@@ -49,5 +49,38 @@ namespace Poleemery
 				<< static_cast<int> (type);
 		return QString ();
 	}
+
+	bool operator== (const Account& a1, const Account& a2)
+	{
+		return a1.ID_ == a2.ID_ && a1.Name_ == a2.Name_ && a1.Type_ == a2.Type_;
+	}
+
+	ExpenseEntry::ExpenseEntry (const NakedExpenseEntry& naked)
+	: NakedExpenseEntry (naked)
+	{
+	}
+
+	Category::Category ()
+	: ID_ (-1)
+	{
+	}
+
+	Category::Category (const QString& name)
+	: ID_ (-1)
+	, Name_ (name)
+	{
+	}
+
+	CategoryLink::CategoryLink ()
+	: ID_ (-1)
+	{
+	}
+
+	CategoryLink::CategoryLink (const Category& category, const NakedExpenseEntry& entry)
+	: ID_ (-1)
+	, Category_ (category.ID_)
+	, Entry_ (entry.ID_)
+	{
+	}
 }
 }
