@@ -66,14 +66,21 @@ namespace Poleemery
 		void UpdateAccount (const Account&);
 		void DeleteAccount (const Account&);
 
-		QList<ExpenseEntry> GetExpenseEntries (const Account&) const;
+		QList<ExpenseEntry> GetExpenseEntries ();
+		QList<ExpenseEntry> GetExpenseEntries (const Account&);
 		void AddExpenseEntry (ExpenseEntry&);
 		void UpdateExpenseEntry (const ExpenseEntry&);
 		void DeleteExpenseEntry (const ExpenseEntry&);
+
+		QList<ReceiptEntry> GetReceiptEntries ();
+		QList<ReceiptEntry> GetReceiptEntries (const Account&);
+		void AddReceiptEntry (ReceiptEntry&);
 	private:
 		Category AddCategory (const QString&);
 		void LinkEntry2Cat (const ExpenseEntry&, const Category&);
 		void UnlinkEntry2Cat (const ExpenseEntry&, const Category&);
+
+		QList<ExpenseEntry> HandleNaked (const QList<NakedExpenseEntry>&);
 
 		void InitializeTables ();
 		void LoadCategories ();

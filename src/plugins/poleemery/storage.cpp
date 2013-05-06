@@ -122,22 +122,11 @@ namespace Poleemery
 		}
 	}
 
-	QList<ExpenseEntry> Storage::GetExpenseEntries (const Account& parent) const
+	QList<ExpenseEntry> Storage::GetExpenseEntries ()
 	{
-		QList<ExpenseEntry> entries;
-
 		try
 		{
-			for (const auto& naked : NakedExpenseEntryInfo_.SelectByFKeysActor_ (boost::fusion::make_vector (parent)))
-			{
-				ExpenseEntry entry { naked };
-
-				const auto& cats = boost::fusion::at_c<1> (CategoryLinkInfo_.SingleFKeySelectors_) (naked);
-				for (const auto& cat : cats)
-					entry.Categories_ << CatIDCache_ [cat.Category_].Name_;
-
-				entries << entry;
-			}
+			return HandleNaked (NakedExpenseEntryInfo_.DoSelectAll_ ());
 		}
 		catch (const oral::QueryException& e)
 		{
@@ -145,8 +134,20 @@ namespace Poleemery
 			Util::DBLock::DumpError (e.GetQuery ());
 			throw;
 		}
+	}
 
-		return entries;
+	QList<ExpenseEntry> Storage::GetExpenseEntries (const Account& parent)
+	{
+		try
+		{
+			return HandleNaked (NakedExpenseEntryInfo_.SelectByFKeysActor_ (boost::fusion::make_vector (parent)));
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
 	}
 
 	void Storage::AddExpenseEntry (ExpenseEntry& entry)
@@ -195,7 +196,58 @@ namespace Poleemery
 
 	void Storage::DeleteExpenseEntry (const ExpenseEntry& entry)
 	{
-		NakedExpenseEntryInfo_.DoDelete_ (entry);
+		try
+		{
+			NakedExpenseEntryInfo_.DoDelete_ (entry);
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
+	}
+
+	QList<ReceiptEntry> Storage::GetReceiptEntries ()
+	{
+		try
+		{
+			return ReceiptEntryInfo_.DoSelectAll_ ();
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
+	}
+
+	QList<ReceiptEntry> Storage::GetReceiptEntries (const Account& account)
+	{
+		try
+		{
+			return ReceiptEntryInfo_.SelectByFKeysActor_ (boost::fusion::make_vector (account));
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
+	}
+
+	void Storage::AddReceiptEntry (ReceiptEntry& entry)
+	{
+		try
+		{
+			ReceiptEntryInfo_.DoInsert_ (entry);
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
 	}
 
 	Category Storage::AddCategory (const QString& name)
@@ -219,6 +271,34 @@ namespace Poleemery
 		if (!link.isEmpty ())
 			CategoryLinkInfo_.DoDelete_ (link.first ());
 	}
+
+	QList<ExpenseEntry> Storage::HandleNaked (const QList<NakedExpenseEntry>& nakedItems)
+	{
+		QList<ExpenseEntry> entries;
+
+		try
+		{
+			for (const auto& naked : nakedItems)
+			{
+				ExpenseEntry entry { naked };
+
+				const auto& cats = boost::fusion::at_c<1> (CategoryLinkInfo_.SingleFKeySelectors_) (naked);
+				for (const auto& cat : cats)
+					entry.Categories_ << CatIDCache_ [cat.Category_].Name_;
+
+				entries << entry;
+			}
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
+
+		return entries;
+	}
+
 
 	namespace oral
 	{
