@@ -271,6 +271,12 @@ namespace oral
 		QString operator() () const { return "TEXT"; }
 	};
 
+	template<>
+	struct Type2Name<QDateTime>
+	{
+		QString operator() () const { return "DATETIME"; }
+	};
+
 	template<typename T>
 	struct Type2Name<Unique<T>>
 	{
