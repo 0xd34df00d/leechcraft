@@ -65,5 +65,14 @@ namespace Poleemery
 	{
 		return 0;
 	}
+
+	void OperationsTab::on_Add__released ()
+	{
+		OperationPropsDialog dia (this);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		OpsManager_->AddEntry (dia.GetEntry ());
+	}
 }
 }

@@ -59,6 +59,8 @@ namespace Poleemery
 		QObject* ParentMultiTabs () override;
 		void Remove () override;
 		QToolBar* GetToolBar () const override;
+	private slots:
+		void on_Add__released ();
 	signals:
 		void removeTab (QWidget*);
 	};
