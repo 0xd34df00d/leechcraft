@@ -111,10 +111,19 @@ namespace Poleemery
 		Ui_.OpsView_->setItemDelegate (new OpsDelegate);
 		Ui_.OpsView_->setModel (OpsManager_->GetModel ());
 
-		Ui_.OpsView_->resizeColumnToContents (0);
-		Ui_.OpsView_->resizeColumnToContents (1);
-		Ui_.OpsView_->resizeColumnToContents (2);
-		Ui_.OpsView_->resizeColumnToContents (3);
+		const auto& fm = fontMetrics ();
+		auto setColWidth = [&fm, this] (EntriesModel::Columns col, const QString& str)
+			{ Ui_.OpsView_->setColumnWidth (col, fm.width (str) * 1.1); };
+
+		setColWidth (EntriesModel::Columns::Date,
+				QDateTime::currentDateTime ().toString ());
+		setColWidth (EntriesModel::Columns::Account, "some account name");
+		setColWidth (EntriesModel::Columns::Name, "some typical very long product name");
+		setColWidth (EntriesModel::Columns::Price, " 9999.00 USD ");
+		setColWidth (EntriesModel::Columns::Count, " 0.999 ");
+		setColWidth (EntriesModel::Columns::Shop, "some typical shop name");
+		setColWidth (EntriesModel::Columns::AccBalance, " 99999.00 USD ");
+		setColWidth (EntriesModel::Columns::SumBalance, " 99999.00 USD ");
 	}
 
 	TabClassInfo OperationsTab::GetTabClassInfo () const
