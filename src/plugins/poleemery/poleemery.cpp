@@ -44,7 +44,7 @@ namespace Poleemery
 					tr ("Operations"),
 					tr ("All operations on personal finances."),
 					QIcon (),
-					1,
+					2,
 					TFOpenableByRequest
 				},
 				[this] (const TabClassInfo& tc)
@@ -56,7 +56,7 @@ namespace Poleemery
 					tr ("Accounts"),
 					tr ("Accounts management tab."),
 					QIcon (),
-					2,
+					1,
 					TFOpenableByRequest
 				},
 				[this] (const TabClassInfo& tc)
