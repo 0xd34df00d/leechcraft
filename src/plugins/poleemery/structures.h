@@ -92,6 +92,7 @@ namespace Poleemery
 
 		EntryBase ();
 		EntryBase (int accId, double amount, const QString& name, const QString& descr, const QDateTime& dt);
+		virtual ~EntryBase ();
 
 		virtual EntryType GetType () const = 0;
 	};
