@@ -47,6 +47,10 @@ namespace Poleemery
 
 		Ui::OperationPropsDialog Ui_;
 		const QList<Account> Accounts_;
+
+		QStringList ExpenseNames_;
+		QStringList ReceiptNames_;
+		QStringList ShopNames_;
 	public:
 		OperationPropsDialog (QWidget* = 0);
 

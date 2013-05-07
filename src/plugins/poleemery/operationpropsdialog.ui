@@ -81,9 +81,6 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="QLineEdit" name="Name_"/>
-     </item>
      <item row="3" column="0">
       <widget class="QLabel" name="label_4">
        <property name="text">
@@ -103,6 +100,22 @@
      </item>
      <item row="4" column="1">
       <widget class="QDateTimeEdit" name="DateEdit_"/>
+     </item>
+     <item row="2" column="1">
+      <widget class="QComboBox" name="Name_">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="editable">
+        <bool>true</bool>
+       </property>
+       <property name="insertPolicy">
+        <enum>QComboBox::InsertAlphabetically</enum>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -134,9 +147,6 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="Shop_"/>
-       </item>
        <item row="2" column="0">
         <widget class="QLabel" name="label_8">
          <property name="text">
@@ -146,6 +156,22 @@
        </item>
        <item row="2" column="1">
         <widget class="QLineEdit" name="Categories_"/>
+       </item>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="Shop_">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="editable">
+          <bool>true</bool>
+         </property>
+         <property name="insertPolicy">
+          <enum>QComboBox::InsertAtBottom</enum>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -164,6 +190,19 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>ExpenseEntry_</tabstop>
+  <tabstop>ReceiptEntry_</tabstop>
+  <tabstop>AccsBox_</tabstop>
+  <tabstop>Amount_</tabstop>
+  <tabstop>Name_</tabstop>
+  <tabstop>Description_</tabstop>
+  <tabstop>DateEdit_</tabstop>
+  <tabstop>CountBox_</tabstop>
+  <tabstop>Shop_</tabstop>
+  <tabstop>Categories_</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -173,8 +212,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>254</x>
+     <y>292</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -189,8 +228,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>322</x>
+     <y>292</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>

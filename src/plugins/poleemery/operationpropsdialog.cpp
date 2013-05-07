@@ -32,6 +32,7 @@
 #include "structures.h"
 #include "core.h"
 #include "accountsmanager.h"
+#include "operationsmanager.h"
 
 namespace LeechCraft
 {
@@ -46,6 +47,30 @@ namespace Poleemery
 
 		for (const auto& acc : Accounts_)
 			Ui_.AccsBox_->addItem (acc.Name_);
+
+		const auto& entries = Core::Instance ().GetOpsManager ()->GetAllEntries ();
+		for (const auto& entry : entries)
+			switch (entry->GetType ())
+			{
+			case EntryType::Receipt:
+				ReceiptNames_ << entry->Name_;
+				break;
+			case EntryType::Expense:
+				ExpenseNames_ << entry->Name_;
+				ShopNames_ << std::dynamic_pointer_cast<ExpenseEntry> (entry)->Shop_;
+				break;
+			}
+
+		ReceiptNames_.removeDuplicates ();
+		std::sort (ReceiptNames_.begin (), ReceiptNames_.end ());
+		ExpenseNames_.removeDuplicates ();
+		std::sort (ExpenseNames_.begin (), ExpenseNames_.end ());
+		ShopNames_.removeDuplicates ();
+		std::sort (ShopNames_.begin (), ShopNames_.end ());
+
+		Ui_.Shop_->addItems (QStringList (QString ()) + ShopNames_);
+
+		on_ExpenseEntry__released ();
 	}
 
 	EntryType OperationPropsDialog::GetEntryType () const
@@ -59,7 +84,7 @@ namespace Poleemery
 	{
 		const auto accId = Accounts_.at (Ui_.AccsBox_->currentIndex ()).ID_;
 		const auto amount = Ui_.Amount_->value ();
-		const auto& name = Ui_.Name_->text ();
+		const auto& name = Ui_.Name_->currentText ();
 		const auto& descr = Ui_.Description_->text ();
 		const auto& dt = Ui_.DateEdit_->dateTime ();
 
@@ -69,7 +94,7 @@ namespace Poleemery
 			return std::make_shared<ReceiptEntry> (accId, amount, name, descr, dt);
 		case EntryType::Expense:
 			return std::make_shared<ExpenseEntry> (accId, amount, name, descr, dt,
-					Ui_.CountBox_->value (), Ui_.Shop_->text (), QStringList {});
+					Ui_.CountBox_->value (), Ui_.Shop_->currentText (), QStringList {});
 		}
 
 		qWarning () << Q_FUNC_INFO
@@ -84,11 +109,15 @@ namespace Poleemery
 
 	void OperationPropsDialog::on_ExpenseEntry__released ()
 	{
+		Ui_.Name_->clear ();
+		Ui_.Name_->addItems (QStringList (QString ()) + ExpenseNames_);
 		Ui_.PagesStack_->setCurrentWidget (Ui_.ExpensePage_);
 	}
 
 	void OperationPropsDialog::on_ReceiptEntry__released ()
 	{
+		Ui_.Name_->clear ();
+		Ui_.Name_->addItems (QStringList (QString ()) + ReceiptNames_);
 		Ui_.PagesStack_->setCurrentWidget (Ui_.ReceiptPage_);
 	}
 }
