@@ -41,7 +41,7 @@ namespace Poleemery
 {
 	EntriesModel::EntriesModel (QObject *parent)
 	: QAbstractItemModel (parent)
-	, HeaderData_ { tr ("Date"), tr ("Account"), tr ("Name"), tr ("Amount"),
+	, HeaderData_ { tr ("Date"), tr ("Account"), tr ("Name"), tr ("Price"),
 			tr ("Count"), tr ("Shop"), tr ("Account balance"), tr ("Sum balance") }
 	{
 	}
@@ -121,7 +121,7 @@ namespace Poleemery
 				return acc.Name_;
 			case Columns::Name:
 				return entry->Name_;
-			case Columns::Amount:
+			case Columns::Price:
 				return QString::number (entry->Amount_) + " " + acc.Currency_;
 			case Columns::Date:
 				return entry->Date_;
@@ -151,7 +151,7 @@ namespace Poleemery
 				return static_cast<int> (acc.ID_);
 			case Columns::Name:
 				return entry->Name_;
-			case Columns::Amount:
+			case Columns::Price:
 				return entry->Amount_;
 			case Columns::Date:
 				return entry->Date_;
@@ -200,7 +200,7 @@ namespace Poleemery
 		case Columns::Name:
 			entry->Name_ = value.toString ();
 			break;
-		case Columns::Amount:
+		case Columns::Price:
 			entry->Amount_ = value.toDouble ();
 			recalcSums = true;
 			break;

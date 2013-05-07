@@ -48,7 +48,7 @@ namespace Poleemery
 			Date,
 			Account,
 			Name,
-			Amount,
+			Price,
 			Count,
 			Shop,
 			AccBalance,

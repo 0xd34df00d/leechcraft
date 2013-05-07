@@ -85,6 +85,8 @@ namespace Poleemery
 		oral::PKey<int> ID_;
 		oral::References<Account, 0> AccountID_;
 
+		/** This actually price.
+		 */
 		double Amount_;
 		QString Name_;
 		QString Description_;
