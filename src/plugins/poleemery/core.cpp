@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "core.h"
+#include <QTimer>
 #include "storage.h"
 #include "accountsmanager.h"
 #include "operationsmanager.h"
@@ -43,12 +44,26 @@ namespace Poleemery
 	, OpsManager_ (new OperationsManager (Storage_))
 	, CurrenciesManager_ (new CurrenciesManager ())
 	{
+		QTimer::singleShot (0,
+				this,
+				SLOT (postInit ()));
 	}
 
 	Core& Core::Instance ()
 	{
 		static Core c;
 		return c;
+	}
+
+	void Core::SetCoreProxy (ICoreProxy_ptr proxy)
+	{
+		Proxy_ = proxy;
+		CurrenciesManager_->Load ();
+	}
+
+	ICoreProxy_ptr Core::GetCoreProxy () const
+	{
+		return Proxy_;
 	}
 
 	Storage_ptr Core::GetStorage () const
@@ -69,6 +84,11 @@ namespace Poleemery
 	CurrenciesManager* Core::GetCurrenciesManager () const
 	{
 		return CurrenciesManager_;
+	}
+
+	void Core::postInit ()
+	{
+		OpsManager_->Load ();
 	}
 }
 }

@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <QObject>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -52,6 +53,8 @@ namespace Poleemery
 		OperationsManager *OpsManager_;
 		CurrenciesManager *CurrenciesManager_;
 
+		ICoreProxy_ptr Proxy_;
+
 		Core ();
 
 		Core (const Core&) = delete;
@@ -62,11 +65,16 @@ namespace Poleemery
 	public:
 		static Core& Instance ();
 
+		void SetCoreProxy (ICoreProxy_ptr);
+		ICoreProxy_ptr GetCoreProxy () const;
+
 		Storage_ptr GetStorage () const;
 
 		AccountsManager* GetAccsManager () const;
 		OperationsManager* GetOpsManager () const;
 		CurrenciesManager* GetCurrenciesManager () const;
+	private slots:
+		void postInit ();
 	};
 }
 }

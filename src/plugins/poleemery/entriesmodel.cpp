@@ -34,6 +34,7 @@
 #include "core.h"
 #include "accountsmanager.h"
 #include "operationsmanager.h"
+#include "currenciesmanager.h"
 
 namespace LeechCraft
 {
@@ -113,7 +114,8 @@ namespace Poleemery
 		{
 		case Qt::DisplayRole:
 		{
-			auto acc = Core::Instance ().GetAccsManager ()->GetAccount (entry->AccountID_);
+			auto accsManager = Core::Instance ().GetAccsManager ();
+			auto acc = accsManager->GetAccount (entry->AccountID_);
 
 			switch (index.column ())
 			{
@@ -132,12 +134,10 @@ namespace Poleemery
 				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
 						[] (ExpenseEntry_ptr exp) { return exp->Shop_; });
 			case Columns::AccBalance:
-				return QString::number (Sums_ [index.row ()] [entry->AccountID_]) + " " + acc.Currency_;
+				return QString::number (Sums_ [index.row ()].Accs_ [entry->AccountID_]) + " " + acc.Currency_;
 			case Columns::SumBalance:
-			{
-				const auto& vals = Sums_ [index.row ()].values ();
-				return QString::number (std::accumulate (vals.begin (), vals.end (), 0));
-			}
+				return QString::number (Sums_ [index.row ()].Total_) + " " +
+						Core::Instance ().GetCurrenciesManager ()->GetUserCurrency ();
 			}
 			break;
 		}
@@ -162,13 +162,9 @@ namespace Poleemery
 				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
 						[] (ExpenseEntry_ptr exp) { return exp->Shop_; });
 			case Columns::AccBalance:
-				return QString::number (Sums_ [index.row ()] [entry->AccountID_]) + " " + acc.Currency_;
+				return QVariant ();
 			case Columns::SumBalance:
-			{
-				const auto& vals = Sums_ [index.row ()].values ();
-				const auto& sum = std::accumulate (vals.begin (), vals.end (), static_cast<double> (0));
-				return QString::number (sum);
-			}
+				return QVariant ();
 			}
 			break;
 		}
@@ -189,20 +185,20 @@ namespace Poleemery
 	bool EntriesModel::setData (const QModelIndex& index, const QVariant& value, int)
 	{
 		auto entry = Entries_.at (index.row ());
-		bool recalcSums = false;
+		bool shouldRecalcSums = false;
 		bool resetModel = false;
 		switch (index.column ())
 		{
 		case Columns::Account:
 			entry->AccountID_ = value.toInt ();
-			recalcSums = true;
+			shouldRecalcSums = true;
 			break;
 		case Columns::Name:
 			entry->Name_ = value.toString ();
 			break;
 		case Columns::Price:
 			entry->Amount_ = value.toDouble ();
-			recalcSums = true;
+			shouldRecalcSums = true;
 			break;
 		case Columns::Date:
 			entry->Date_ = value.toDateTime ();
@@ -227,8 +223,8 @@ namespace Poleemery
 		else
 		{
 			emit dataChanged (createIndex (index.row (), 0), createIndex (index.row (), Columns::MaxCount));
-			if (recalcSums)
-				RecalcSums ();
+			if (shouldRecalcSums)
+				recalcSums ();
 		}
 
 		return true;
@@ -268,6 +264,17 @@ namespace Poleemery
 				break;
 			}
 		}
+
+		double GetTotalSum (const QHash<int, double>& curSum, AccountsManager *accMgr, CurrenciesManager *curMgr)
+		{
+			double totalSum = 0;
+			for (auto id : curSum.keys ())
+			{
+				auto acc = accMgr->GetAccount (id);
+				totalSum += curMgr->ToUserCurrency (acc.Currency_, curSum [id]);
+			}
+			return totalSum;
+		}
 	}
 
 	void EntriesModel::AddEntry (EntryBase_ptr entry)
@@ -280,12 +287,15 @@ namespace Poleemery
 		Entries_.insert (bound, entry);
 		if (bound == Entries_.end ())
 		{
-			auto hash = Sums_.value (Sums_.size () - 1);
+			auto hash = Sums_.value (Sums_.size () - 1).Accs_;
 			AppendEntry (hash, entry);
-			Sums_ << hash;
+			const auto totalSum = GetTotalSum (hash,
+					Core::Instance ().GetAccsManager (),
+					Core::Instance ().GetCurrenciesManager ());
+			Sums_ << SumInfo { totalSum, hash };
 		}
 		else
-			RecalcSums ();
+			recalcSums ();
 
 		endInsertRows ();
 	}
@@ -297,7 +307,7 @@ namespace Poleemery
 		Entries_ += entries;
 		std::sort (Entries_.begin (), Entries_.end (), DateLess);
 
-		RecalcSums ();
+		recalcSums ();
 
 		endResetModel ();
 	}
@@ -308,7 +318,7 @@ namespace Poleemery
 		Entries_.removeAt (index.row ());
 		endRemoveRows ();
 
-		RecalcSums ();
+		recalcSums ();
 	}
 
 	EntryBase_ptr EntriesModel::GetEntry (const QModelIndex& index) const
@@ -321,18 +331,22 @@ namespace Poleemery
 		return Entries_;
 	}
 
-	void EntriesModel::RecalcSums ()
+	void EntriesModel::recalcSums ()
 	{
 		Sums_.clear ();
 
 		if (Entries_.isEmpty ())
 			return;
 
+		auto accMgr = Core::Instance ().GetAccsManager ();
+		auto curMgr = Core::Instance ().GetCurrenciesManager ();
+
 		QHash<int, double> curSum;
 		for (auto entry : Entries_)
 		{
 			AppendEntry (curSum, entry);
-			Sums_ << curSum;
+			const auto totalSum = GetTotalSum (curSum, accMgr, curMgr);
+			Sums_ << SumInfo { totalSum, curSum };
 		}
 
 		emit dataChanged (createIndex (0, Columns::AccBalance),
