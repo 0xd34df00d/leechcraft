@@ -38,6 +38,7 @@
 #include "reporttypepage.h"
 #include "bugreportpage.h"
 #include "featurerequestpage.h"
+#include "fileattachpage.h"
 #include "finalpage.h"
 
 namespace LeechCraft
@@ -52,6 +53,7 @@ namespace Dolozhee
 	, ReportType_ (new ReportTypePage)
 	, BugReportPage_ (new BugReportPage (proxy))
 	, FRPage_ (new FeatureRequestPage)
+	, FilePage_ (new FileAttachPage)
 	, FirstAuth_ (true)
 	{
 		setWindowTitle (tr ("Issue reporter"));
@@ -70,6 +72,7 @@ namespace Dolozhee
 		setPage (PageID::ReportType, ReportType_);
 		setPage (PageID::BugDetails, BugReportPage_);
 		setPage (PageID::FeatureDetails, FRPage_);
+		setPage (PageID::FilePage, FilePage_);
 		auto final = new FinalPage;
 		setPage (PageID::Final, final);
 		connect (final,
@@ -89,10 +92,14 @@ namespace Dolozhee
 	}
 
 	QNetworkReply* ReportWizard::PostRequest (const QString& address,
-			const QByteArray& data)
+			const QByteArray& data, const QByteArray& contentType)
 	{
 		QNetworkRequest req ("http://dev.leechcraft.org" + address);
-		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/xml");
+		req.setHeader (QNetworkRequest::ContentTypeHeader, contentType);
+
+		const auto& user = ChooseUser_->GetLogin ().toUtf8 ();
+		const auto& pass = ChooseUser_->GetPassword ().toUtf8 ();
+		req.setRawHeader ("Authorization", "Basic " + (user + ':' + pass).toBase64 ());
 		return NAM_->post (req, data);
 	}
 
@@ -116,21 +123,16 @@ namespace Dolozhee
 		return FRPage_;
 	}
 
+	FileAttachPage* ReportWizard::GetFilePage () const
+	{
+		return FilePage_;
+	}
+
 	void ReportWizard::handleAuthenticationRequired (QNetworkReply*, QAuthenticator *auth)
 	{
 		qDebug () << Q_FUNC_INFO << FirstAuth_;
-		if (FirstAuth_)
-		{
-			auth->setUser (ChooseUser_->GetLogin ());
-			auth->setPassword (ChooseUser_->GetPassword ());
-			FirstAuth_ = false;
-		}
-		else
-		{
-			QMessageBox::warning (this, "Dolozhee", tr ("Invalid credentials"));
-			FirstAuth_ = true;
-			restart ();
-		}
+		QMessageBox::warning (this, "Dolozhee", tr ("Invalid credentials"));
+		restart ();
 	}
 }
 }

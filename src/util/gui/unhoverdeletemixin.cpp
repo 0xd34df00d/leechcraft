@@ -31,6 +31,7 @@
 #include <QWidget>
 #include <QEvent>
 #include <QTimer>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -40,6 +41,7 @@ namespace Util
 	: QObject (watched)
 	, LeaveTimer_ (new QTimer (this))
 	, ContainsMouse_ (false)
+	, IgnoreNext_ (false)
 	{
 		watched->installEventFilter (this);
 
@@ -66,18 +68,31 @@ namespace Util
 		switch (event->type ())
 		{
 		case QEvent::Enter:
-			ContainsMouse_ = true;
-			LeaveTimer_->stop ();
+			if (!IgnoreNext_)
+			{
+				ContainsMouse_ = true;
+				LeaveTimer_->stop ();
+			}
 			break;
 		case QEvent::Leave:
-			ContainsMouse_ = false;
-			LeaveTimer_->start (800);
+			if (!IgnoreNext_)
+			{
+				ContainsMouse_ = false;
+				LeaveTimer_->start (800);
+			}
+			else
+				IgnoreNext_ = false;
 			break;
 		default:
 			break;
 		}
 
 		return false;
+	}
+
+	void UnhoverDeleteMixin::IgnoreNext ()
+	{
+		IgnoreNext_ = true;
 	}
 }
 }

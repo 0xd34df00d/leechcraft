@@ -49,7 +49,8 @@ namespace FXB
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Monocle::IDocument
 				LeechCraft::Monocle::IHaveTOC
-				LeechCraft::Monocle::ISearchableDocument)
+				LeechCraft::Monocle::ISearchableDocument
+				LeechCraft::Monocle::ISupportPainting)
 
 		DocumentInfo Info_;
 		TOCEntryLevel_t TOC_;

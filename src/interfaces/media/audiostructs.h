@@ -74,6 +74,27 @@ namespace Media
 		 *   is "file:") or a remote file or radio stream otherwise.
 		 */
 		QVariantMap Other_;
+
+		/** @brief Returns whether this audio info is equal to another one.
+		 */
+		inline bool operator== (const AudioInfo& other) const
+		{
+			return Artist_ == other.Artist_ &&
+				Album_ == other.Album_ &&
+				Title_ == other.Title_ &&
+				Genres_ == other.Genres_ &&
+				Length_ == other.Length_ &&
+				Year_ == other.Year_ &&
+				TrackNumber_ == other.TrackNumber_ &&
+				Other_ == other.Other_;
+		}
+
+		/** @brief Returns whether this info isn't equal to another one.
+		 */
+		inline bool operator!= (const AudioInfo& other) const
+		{
+			return !(*this == other);
+		}
 	};
 
 	/** @brief Information about a tag like a genre.

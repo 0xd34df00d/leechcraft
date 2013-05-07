@@ -29,28 +29,30 @@
 
 #pragma once
 
-#include "tunesourcebase.h"
+#include <QWizardPage>
+#include "ui_fileattachpage.h"
 
-namespace Media
-{
-	struct AudioInfo;
-}
+class QStandardItemModel;
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Dolozhee
 {
-namespace Xtazy
-{
-	class LCSource : public TuneSourceBase
+	class FileAttachPage : public QWizardPage
 	{
 		Q_OBJECT
-	public:
-		LCSource (QObject* = 0);
 
-		void NowPlaying (const Media::AudioInfo& audio);
-		void Stopped ();
+		Ui::FileAttachPage Ui_;
+		QStandardItemModel *Model_;
+	public:
+		FileAttachPage (QWidget* = 0);
+
+		int nextId () const override;
+
+		QStringList GetFiles () const;
+	private slots:
+		void on_AddFile__released ();
+		void on_RemoveFile__released ();
 	};
-}
 }
 }

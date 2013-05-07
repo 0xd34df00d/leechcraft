@@ -948,8 +948,7 @@ namespace Poshuku
 	{
 		PageFormsData_t formsData;
 
-		QPair<PageFormsData_t, QMap<ElementData, QWebElement>> pair =
-				HarvestForms (frame ? frame : mainFrame ());
+		auto pair = HarvestForms (frame);
 
 		if (pair.first.isEmpty ())
 		{

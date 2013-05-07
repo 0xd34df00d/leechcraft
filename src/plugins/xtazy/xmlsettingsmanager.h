@@ -29,46 +29,22 @@
 
 #pragma once
 
-#include "tunesourcebase.h"
-#include <QStringList>
-#include <QDBusConnection>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
-namespace Azoth
-{
 namespace Xtazy
 {
-	struct PlayerStatus
-	{
-		int PlayStatus_;
-		int PlayOrder_;
-		int PlayRepeat_;
-		int StopOnce_;
-	};
-
-	class MPRISSource : public TuneSourceBase
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
 		Q_OBJECT
 
-		QStringList Players_;
-		QDBusConnection SB_;
-		TuneInfo_t Tune_;
+		XmlSettingsManager ();
 	public:
-		MPRISSource (QObject* = 0);
-		virtual ~MPRISSource ();
-	private:
-		void ConnectToBus (const QString&);
-		void DisconnectFromBus (const QString&);
-		TuneInfo_t GetTuneMV2 (const QVariantMap&);
-	private slots:
-		void handlePropertyChange (const QDBusMessage&);
-		void handlePlayerStatusChange (PlayerStatus);
-		void handleTrackChange (const QVariantMap&);
-		void checkMPRISService (QString, QString, QString);
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
 	};
 }
 }
-}
-
-Q_DECLARE_METATYPE (LeechCraft::Azoth::Xtazy::PlayerStatus);

@@ -29,25 +29,26 @@
 
 #pragma once
 
-#include <QObject>
-#include <QMap>
+#include <memory>
+#include <util/utilconfig.h>
+
+class QString;
+class QByteArray;
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Util
 {
-namespace Xtazy
-{
-	class TuneSourceBase : public QObject
+	class MimeDetectorImpl;
+
+	class MimeDetector
 	{
-		Q_OBJECT
-	protected:
-		typedef QMap<QString, QVariant> TuneInfo_t;
+		std::shared_ptr<MimeDetectorImpl> Impl_;
 	public:
-		TuneSourceBase (QObject* = 0);
-	signals:
-		void tuneInfoChanged (const QMap<QString, QVariant>&);
+		UTIL_API MimeDetector ();
+
+		UTIL_API QByteArray Detect (const QString&);
+		UTIL_API QByteArray operator() (const QString&);
 	};
-}
 }
 }

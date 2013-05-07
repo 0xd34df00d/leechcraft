@@ -217,12 +217,16 @@ namespace LeechCraft
 	void RootWindowsManager::MoveTab (int tabIdx, int fromWin, int toWin)
 	{
 		auto widget = Windows_ [fromWin].TM_->GetWidget (tabIdx);
-		const auto& name = Windows_ [fromWin].Window_->GetTabWidget ()->TabText (tabIdx);
+
+		const auto sourceTW = Windows_ [fromWin].Window_->GetTabWidget ();
+		const auto& name = sourceTW->TabText (tabIdx);
+		const auto& icon = sourceTW->TabIcon (tabIdx);
 
 		emit tabIsMoving (fromWin, toWin, tabIdx);
 
 		Windows_ [fromWin].TM_->remove (widget);
 		Windows_ [toWin].TM_->add (name, widget);
+		Windows_ [toWin].TM_->changeTabIcon (widget, icon);
 
 		emit tabMoved (fromWin, toWin, Windows_ [toWin].TM_->FindTabForWidget (widget));
 	}

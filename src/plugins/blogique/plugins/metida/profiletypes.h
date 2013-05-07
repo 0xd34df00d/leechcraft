@@ -69,6 +69,7 @@ namespace Metida
 		QList<LJFriendEntry_ptr> Friends_;
 		QStringList AvatarsID_;
 		QList<QUrl> AvatarsUrls_;
+		QHash<QString, int> Tags_;
 	};
 
 	enum class CommentState

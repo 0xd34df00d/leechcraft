@@ -51,7 +51,7 @@ namespace Dolozhee
 
 	int FeatureRequestPage::nextId () const
 	{
-		return ReportWizard::PageID::Final;
+		return ReportWizard::PageID::FilePage;
 	}
 
 	bool FeatureRequestPage::isComplete () const

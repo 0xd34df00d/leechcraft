@@ -27,37 +27,55 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "lcsource.h"
-#include <interfaces/media/audiostructs.h>
+#pragma once
+
+#include <QAbstractItemModel>
+#include "structures.h"
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Poleemery
 {
-namespace Xtazy
-{
-	LCSource::LCSource (QObject *parent)
-	: TuneSourceBase (parent)
+	class EntriesModel : public QAbstractItemModel
 	{
-		setObjectName ("LCSource");
-	}
+		const QStringList HeaderData_;
+		QList<EntryBase_ptr> Entries_;
 
-	void LCSource::NowPlaying (const Media::AudioInfo& audio)
-	{
-		TuneInfo_t tune;
-		tune ["title"] = audio.Title_;
-		tune ["artist"] = audio.Artist_;
-		tune ["source"] = audio.Album_;
-		tune ["track"] = audio.TrackNumber_;
-		tune ["length"] = audio.Length_;
-		tune ["URL"] = audio.Other_ ["URL"];
-		emit tuneInfoChanged (tune);
-	}
+		QList<QHash<int, double>> Sums_;
+	public:
+		enum Columns
+		{
+			Date,
+			Account,
+			Name,
+			Price,
+			Count,
+			Shop,
+			AccBalance,
+			SumBalance,
 
-	void LCSource::Stopped ()
-	{
-		emit tuneInfoChanged (TuneInfo_t ());
-	}
-}
+			MaxCount
+		};
+
+		EntriesModel (QObject* = 0);
+
+		QModelIndex index (int row, int column, const QModelIndex& parent = QModelIndex()) const override;
+		QModelIndex parent (const QModelIndex& child) const override;
+		int rowCount (const QModelIndex& parent = QModelIndex()) const override;
+		int columnCount (const QModelIndex& parent = QModelIndex()) const override;
+		Qt::ItemFlags flags (const QModelIndex& index) const;
+		QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const override;
+		bool setData (const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
+		QVariant headerData (int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+
+		void AddEntry (EntryBase_ptr);
+		void AddEntries (QList<EntryBase_ptr>);
+		void RemoveEntry (const QModelIndex&);
+
+		EntryBase_ptr GetEntry (const QModelIndex&) const;
+		QList<EntryBase_ptr> GetEntries () const;
+	private:
+		void RecalcSums ();
+	};
 }
 }

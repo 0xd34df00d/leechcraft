@@ -27,18 +27,28 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "tunesourcebase.h"
+#pragma once
+
+#include <QDialog>
+#include "ui_accountpropsdialog.h"
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Poleemery
 {
-namespace Xtazy
-{
-	TuneSourceBase::TuneSourceBase (QObject *parent)
-	: QObject (parent)
+	struct Account;
+
+	class AccountPropsDialog : public QDialog
 	{
-	}
-}
+		Q_OBJECT
+
+		Ui::AccountPropsDialog Ui_;
+		int CurrentAccID_;
+	public:
+		AccountPropsDialog (QWidget* = 0);
+
+		void SetAccount (const Account&);
+		Account GetAccount () const;
+	};
 }
 }

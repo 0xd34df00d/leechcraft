@@ -31,6 +31,7 @@
 
 #include <QString>
 #include "reporttypepage.h"
+#include "structures.h"
 
 namespace LeechCraft
 {
@@ -41,7 +42,8 @@ namespace Dolozhee
 	public:
 		QByteArray RegisterUser (const QString&, const QString&,
 				const QString&, const QString&, const QString&) const;
-		QByteArray CreateIssue (const QString&, const QString&, int, ReportTypePage::Type) const;
+		QByteArray CreateIssue (const QString&, const QString&,
+				int, ReportTypePage::Type, const QList<FileInfo>&) const;
 	};
 }
 }

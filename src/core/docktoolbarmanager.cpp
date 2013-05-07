@@ -37,12 +37,14 @@
 #include "core.h"
 #include "coreinstanceobject.h"
 #include "coreplugin2manager.h"
+#include "dockmanager.h"
 
 namespace LeechCraft
 {
-	DockToolbarManager::DockToolbarManager (MainWindow *win)
+	DockToolbarManager::DockToolbarManager (MainWindow *win, DockManager *dock)
 	: QObject (win)
 	, Win_ (win)
+	, DockManager_ (dock)
 	{
 		auto instanceObj = Core::Instance ().GetCoreInstanceObject ();
 		instanceObj->GetCorePluginManager ()->RegisterHookable (this);
@@ -136,9 +138,19 @@ namespace LeechCraft
 				info.Bar_->removeAction (act);
 			}
 
-			const auto& remaining = info.Bar_->actions ();
+			auto remaining = info.Bar_->actions ();
 			if (remaining.size () < 2)
 				info.Bar_->hide ();
+
+			QList<QAction*> forceActions;
+			for (auto dock : DockManager_->GetForcefullyClosed ())
+				forceActions << dock->toggleViewAction ();
+
+			for (auto i = remaining.begin (); i != remaining.end (); )
+				if (forceActions.contains (*i))
+					i = remaining.erase (i);
+				else
+					++i;
 
 			if (!remaining.isEmpty ())
 				QTimer::singleShot (0,

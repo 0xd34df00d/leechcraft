@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <interfaces/monocle/idocument.h>
+#include <interfaces/monocle/isupportpainting.h>
 
 class QTextDocument;
 
@@ -41,6 +42,7 @@ namespace Monocle
 namespace FXB
 {
 	class DocumentAdapter : public IDocument
+						  , public ISupportPainting
 	{
 	protected:
 		std::shared_ptr<QTextDocument> Doc_;
@@ -52,6 +54,8 @@ namespace FXB
 		QSize GetPageSize (int) const;
 		QImage RenderPage (int , double xRes, double yRes);
 		QList<ILink_ptr> GetPageLinks (int);
+
+		void PaintPage (QPainter*, int);
 	protected:
 		void SetDocument (QTextDocument*);
 	};

@@ -5,9 +5,17 @@ IF (NOT USE_QT5)
 	SET (QT_USE_QTXML TRUE)
 	INCLUDE (${QT_USE_FILE})
 ENDIF ()
+
+SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+FIND_PACKAGE (MAGIC)
+IF (MAGIC_FOUND)
+	ADD_DEFINITIONS (-DHAVE_MAGIC)
+ENDIF (MAGIC_FOUND)
+
 INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIRS}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
+	${MAGIC_INCLUDE_DIRS}
 	..)
 
 SET (SRCS
@@ -31,6 +39,7 @@ SET (SRCS
 	qml/unhidelistviewbase.cpp
 	sync/syncdeltamanager.cpp
 	sync/syncops.cpp
+	sys/mimedetector.cpp
 	sys/paths.cpp
 	tags/categoryselector.cpp
 	tags/tagscompleter.cpp
@@ -88,6 +97,7 @@ ADD_LIBRARY (lcutil SHARED
 	)
 TARGET_LINK_LIBRARIES (lcutil
 	${QT_LIBRARIES}
+	${MAGIC_LIBRARIES}
 	xmlsettingsdialog
 	)
 SET_PROPERTY (TARGET lcutil PROPERTY SOVERSION 0.5.0)
