@@ -118,7 +118,14 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QDoubleSpinBox" name="CountBox_"/>
+        <widget class="QDoubleSpinBox" name="CountBox_">
+         <property name="maximum">
+          <double>9999.989999999999782</double>
+         </property>
+         <property name="value">
+          <double>1.000000000000000</double>
+         </property>
+        </widget>
        </item>
        <item row="1" column="0">
         <widget class="QLabel" name="label_7">
