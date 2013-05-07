@@ -292,6 +292,20 @@ namespace Poleemery
 		endResetModel ();
 	}
 
+	void EntriesModel::RemoveEntry (const QModelIndex& index)
+	{
+		beginRemoveRows (QModelIndex (), index.row (), index.row ());
+		Entries_.removeAt (index.row ());
+		endRemoveRows ();
+
+		RecalcSums ();
+	}
+
+	EntryBase_ptr EntriesModel::GetEntry (const QModelIndex& index) const
+	{
+		return Entries_.value (index.row ());
+	}
+
 	void EntriesModel::RecalcSums ()
 	{
 		Sums_.clear ();
