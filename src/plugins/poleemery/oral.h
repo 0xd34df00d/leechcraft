@@ -696,7 +696,7 @@ namespace oral
 				QSqlQuery_ptr selectQuery (new QSqlQuery (Data_.DB_));
 				selectQuery->prepare (query);
 
-				typename WrapAsFunc<RefObj, T>::type inserter = [selectQuery, boundName] (const RefObj& obj)
+				typename WrapAsFunc<RefObj, T>::type inserter = [selectQuery, boundName] (const RefObj& obj) -> QList<T>
 				{
 					selectQuery->bindValue (boundName,
 							ToVariant<typename std::decay<typename boost::fusion::result_of::at<RefObj, RefIdx>::type>::type> {} (boost::fusion::at<RefIdx> (obj)));

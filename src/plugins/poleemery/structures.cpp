@@ -79,6 +79,10 @@ namespace Poleemery
 	{
 	}
 
+	EntryBase::~EntryBase ()
+	{
+	}
+
 	NakedExpenseEntry::NakedExpenseEntry ()
 	{
 	}
