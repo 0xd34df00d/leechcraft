@@ -33,6 +33,7 @@
 #include <QFontMetrics>
 #include "core.h"
 #include "accountsmanager.h"
+#include "operationsmanager.h"
 
 namespace LeechCraft
 {
@@ -69,6 +70,25 @@ namespace Poleemery
 	int EntriesModel::columnCount (const QModelIndex&) const
 	{
 		return HeaderData_.size ();
+	}
+
+	Qt::ItemFlags EntriesModel::flags (const QModelIndex& index) const
+	{
+		auto flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+		switch (index.column ())
+		{
+		case Columns::AccBalance:
+		case Columns::SumBalance:
+			break;
+		case Columns::Count:
+			if (Entries_.at (index.row ())->GetType () == EntryType::Expense)
+				flags |= Qt::ItemIsEditable;
+			break;
+		default:
+			flags |= Qt::ItemIsEditable;
+			break;
+		}
+		return flags;
 	}
 
 	namespace
@@ -117,6 +137,33 @@ namespace Poleemery
 			}
 			break;
 		}
+		case Qt::EditRole:
+		{
+			auto acc = Core::Instance ().GetAccsManager ()->GetAccount (entry->AccountID_);
+
+			switch (index.column ())
+			{
+			case Columns::Account:
+				return static_cast<int> (acc.ID_);
+			case Columns::Name:
+				return entry->Name_;
+			case Columns::Amount:
+				return entry->Amount_;
+			case Columns::Date:
+				return entry->Date_;
+			case Columns::Count:
+				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
+						[] (ExpenseEntry_ptr exp) { return exp->Count_; });
+			case Columns::AccBalance:
+				return QString::number (Sums_ [index.row ()] [entry->AccountID_]) + " " + acc.Currency_;
+			case Columns::SumBalance:
+			{
+				const auto& vals = Sums_ [index.row ()].values ();
+				return QString::number (std::accumulate (vals.begin (), vals.end (), 0));
+			}
+			}
+			break;
+		}
 		case Qt::BackgroundRole:
 			switch (entry->GetType ())
 			{
@@ -129,6 +176,49 @@ namespace Poleemery
 		}
 
 		return QVariant ();
+	}
+
+	bool EntriesModel::setData (const QModelIndex& index, const QVariant& value, int)
+	{
+		auto entry = Entries_.at (index.row ());
+		bool recalcSums = false;
+		bool resetModel = false;
+		switch (index.column ())
+		{
+		case Columns::Account:
+			entry->AccountID_ = value.toInt ();
+			recalcSums = true;
+			break;
+		case Columns::Name:
+			entry->Name_ = value.toString ();
+			break;
+		case Columns::Amount:
+			entry->Amount_ = value.toDouble ();
+			recalcSums = true;
+			break;
+		case Columns::Date:
+			entry->Date_ = value.toDateTime ();
+			resetModel = true;
+			break;
+		case Columns::Count:
+			std::dynamic_pointer_cast<ExpenseEntry> (entry)->Count_ = value.toDouble ();
+			break;
+		}
+
+		Core::Instance ().GetOpsManager ()->UpdateEntry (entry);
+
+		if (resetModel)
+		{
+			auto entries = Entries_;
+			Entries_.clear ();
+			AddEntries (entries);
+		}
+		else
+		{
+			emit dataChanged (createIndex (index.row (), 0), createIndex (index.row (), Columns::MaxCount));
+			if (recalcSums)
+				RecalcSums ();
+		}
 	}
 
 	QVariant EntriesModel::headerData (int section, Qt::Orientation orientation, int role) const
@@ -201,12 +291,18 @@ namespace Poleemery
 	{
 		Sums_.clear ();
 
+		if (Entries_.isEmpty ())
+			return;
+
 		QHash<int, double> curSum;
 		for (auto entry : Entries_)
 		{
 			AppendEntry (curSum, entry);
 			Sums_ << curSum;
 		}
+
+		emit dataChanged (createIndex (0, Columns::AccBalance),
+				createIndex (Entries_.size () - 1, Columns::SumBalance));
 	}
 }
 }
