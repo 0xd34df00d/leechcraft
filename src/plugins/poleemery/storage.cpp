@@ -255,6 +255,11 @@ namespace Poleemery
 		ReceiptEntryInfo_.DoUpdate_ (entry);
 	}
 
+	void Storage::DeleteReceiptEntry (const ReceiptEntry& entry)
+	{
+		ReceiptEntryInfo_.DoDelete_ (entry);
+	}
+
 	Category Storage::AddCategory (const QString& name)
 	{
 		Category cat { name };
