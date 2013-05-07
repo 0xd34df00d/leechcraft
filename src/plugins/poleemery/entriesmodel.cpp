@@ -159,7 +159,8 @@ namespace Poleemery
 			case Columns::SumBalance:
 			{
 				const auto& vals = Sums_ [index.row ()].values ();
-				return QString::number (std::accumulate (vals.begin (), vals.end (), 0));
+				const auto& sum = std::accumulate (vals.begin (), vals.end (), static_cast<double> (0));
+				return QString::number (sum);
 			}
 			}
 			break;
@@ -249,8 +250,10 @@ namespace Poleemery
 			{
 			case EntryType::Expense:
 				val -= entry->Amount_;
+				break;
 			case EntryType::Receipt:
 				val += entry->Amount_;
+				break;
 			}
 		}
 	}
