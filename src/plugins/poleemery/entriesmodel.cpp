@@ -91,24 +91,24 @@ namespace Poleemery
 		switch (role)
 		{
 		case Qt::DisplayRole:
+		{
+			auto acc = Core::Instance ().GetAccsManager ()->GetAccount (entry->AccountID_);
+
 			switch (index.column ())
 			{
 			case Columns::Account:
-			{
-				auto acc = Core::Instance ().GetAccsManager ()->GetAccount (entry->AccountID_);
 				return acc.Name_;
-			}
 			case Columns::Name:
 				return entry->Name_;
 			case Columns::Amount:
-				return QString::number (entry->Amount_);
+				return QString::number (entry->Amount_) + " " + acc.Currency_;
 			case Columns::Date:
 				return entry->Date_;
 			case Columns::Count:
 				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
 						[] (ExpenseEntry_ptr exp) { return exp->Count_; });
 			case Columns::AccBalance:
-				return QString::number (Sums_ [index.row ()] [entry->AccountID_]);
+				return QString::number (Sums_ [index.row ()] [entry->AccountID_]) + " " + acc.Currency_;
 			case Columns::SumBalance:
 			{
 				const auto& vals = Sums_ [index.row ()].values ();
@@ -116,13 +116,14 @@ namespace Poleemery
 			}
 			}
 			break;
+		}
 		case Qt::BackgroundRole:
 			switch (entry->GetType ())
 			{
 			case EntryType::Expense:
-				return QColor (127, 0, 0, 63);
+				return QColor (127, 0, 0, 32);
 			case EntryType::Receipt:
-				return QColor (0, 127, 0, 63);
+				return QColor (0, 127, 0, 32);
 			}
 			break;
 		}
