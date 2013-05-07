@@ -522,7 +522,7 @@ namespace oral
 
 			const auto& boundName = data.BoundFields_.at (index);
 			const auto& del = "DELETE FROM " + data.Table_ +
-					"WHERE " + data.Fields_.at (index) + " = " + boundName + ";";
+					" WHERE " + data.Fields_.at (index) + " = " + boundName + ";";
 
 			QSqlQuery_ptr deleteQuery (new QSqlQuery (data.DB_));
 			deleteQuery->prepare (del);
