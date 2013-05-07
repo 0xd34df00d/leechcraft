@@ -40,7 +40,7 @@ namespace LeechCraft
 namespace Poleemery
 {
 	class AccountsManager;
-	class Account;
+	struct Account;
 
 	class AccountsTab : public QWidget
 					  , public ITabWidget
