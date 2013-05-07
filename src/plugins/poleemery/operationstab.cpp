@@ -29,6 +29,7 @@
 
 #include "operationstab.h"
 #include <QStyledItemDelegate>
+#include <QMessageBox>
 #include "core.h"
 #include "operationsmanager.h"
 #include "operationpropsdialog.h"
@@ -144,6 +145,24 @@ namespace Poleemery
 			return;
 
 		OpsManager_->AddEntry (dia.GetEntry ());
+	}
+
+	void OperationsTab::on_Remove__released ()
+	{
+		const auto& item = Ui_.OpsView_->currentIndex ();
+		if (!item.isValid ())
+			return;
+
+		const auto& name = item.sibling (item.row (), EntriesModel::Columns::Name)
+				.data ().toString ();
+		if (QMessageBox::question (this,
+					"Poleemery",
+					tr ("Are you sure you want to delete entry %1?")
+						.arg ("<em>" + name + "</em>"),
+					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
+
+		OpsManager_->RemoveEntry (item);
 	}
 }
 }

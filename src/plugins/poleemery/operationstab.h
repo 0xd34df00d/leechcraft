@@ -61,6 +61,7 @@ namespace Poleemery
 		QToolBar* GetToolBar () const override;
 	private slots:
 		void on_Add__released ();
+		void on_Remove__released ();
 	signals:
 		void removeTab (QWidget*);
 	};

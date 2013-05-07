@@ -81,5 +81,22 @@ namespace Poleemery
 			break;
 		}
 	}
+
+	void OperationsManager::RemoveEntry (const QModelIndex& index)
+	{
+		auto entry = Model_->GetEntry (index);
+
+		switch (entry->GetType ())
+		{
+		case EntryType::Expense:
+			Storage_->DeleteExpenseEntry (*std::dynamic_pointer_cast<ExpenseEntry> (entry));
+			break;
+		case EntryType::Receipt:
+			Storage_->DeleteReceiptEntry (*std::dynamic_pointer_cast<ReceiptEntry> (entry));
+			break;
+		}
+
+		Model_->RemoveEntry (index);
+	}
 }
 }

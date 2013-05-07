@@ -35,6 +35,7 @@
 
 class QStandardItemModel;
 class QAbstractItemModel;
+class QModelIndex;
 
 namespace LeechCraft
 {
@@ -58,6 +59,7 @@ namespace Poleemery
 
 		void AddEntry (EntryBase_ptr);
 		void UpdateEntry (EntryBase_ptr);
+		void RemoveEntry (const QModelIndex&);
 	};
 }
 }
