@@ -316,6 +316,11 @@ namespace Poleemery
 		return Entries_.value (index.row ());
 	}
 
+	QList<EntryBase_ptr> EntriesModel::GetEntries () const
+	{
+		return Entries_;
+	}
+
 	void EntriesModel::RecalcSums ()
 	{
 		Sums_.clear ();

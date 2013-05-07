@@ -73,6 +73,7 @@ namespace Poleemery
 		void RemoveEntry (const QModelIndex&);
 
 		EntryBase_ptr GetEntry (const QModelIndex&) const;
+		QList<EntryBase_ptr> GetEntries () const;
 	private:
 		void RecalcSums ();
 	};

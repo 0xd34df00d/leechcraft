@@ -54,6 +54,11 @@ namespace Poleemery
 		return Model_;
 	}
 
+	QList<EntryBase_ptr> OperationsManager::GetAllEntries () const
+	{
+		return Model_->GetEntries ();
+	}
+
 	void OperationsManager::AddEntry (EntryBase_ptr entry)
 	{
 		switch (entry->GetType ())

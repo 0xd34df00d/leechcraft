@@ -57,6 +57,8 @@ namespace Poleemery
 
 		QAbstractItemModel* GetModel () const;
 
+		QList<EntryBase_ptr> GetAllEntries () const;
+
 		void AddEntry (EntryBase_ptr);
 		void UpdateEntry (EntryBase_ptr);
 		void RemoveEntry (const QModelIndex&);
