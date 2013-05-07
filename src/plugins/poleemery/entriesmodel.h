@@ -45,11 +45,12 @@ namespace Poleemery
 	public:
 		enum Columns
 		{
+			Date,
 			Account,
 			Name,
 			Amount,
-			Date,
 			Count,
+			Shop,
 			AccBalance,
 			SumBalance,
 
@@ -70,7 +71,7 @@ namespace Poleemery
 		void AddEntry (EntryBase_ptr);
 		void AddEntries (QList<EntryBase_ptr>);
 		void RemoveEntry (const QModelIndex&);
-	
+
 		EntryBase_ptr GetEntry (const QModelIndex&) const;
 	private:
 		void RecalcSums ();

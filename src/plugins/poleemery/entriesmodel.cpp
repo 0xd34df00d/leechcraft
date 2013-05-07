@@ -41,8 +41,8 @@ namespace Poleemery
 {
 	EntriesModel::EntriesModel (QObject *parent)
 	: QAbstractItemModel (parent)
-	, HeaderData_ { tr ("Account"), tr ("Name"), tr ("Amount"), tr ("Date"),
-			tr ("Count"), tr ("Account balance"), tr ("Sum balance") }
+	, HeaderData_ { tr ("Date"), tr ("Account"), tr ("Name"), tr ("Amount"),
+			tr ("Count"), tr ("Shop"), tr ("Account balance"), tr ("Sum balance") }
 	{
 	}
 
@@ -81,6 +81,7 @@ namespace Poleemery
 		case Columns::SumBalance:
 			break;
 		case Columns::Count:
+		case Columns::Shop:
 			if (Entries_.at (index.row ())->GetType () == EntryType::Expense)
 				flags |= Qt::ItemIsEditable;
 			break;
@@ -127,6 +128,9 @@ namespace Poleemery
 			case Columns::Count:
 				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
 						[] (ExpenseEntry_ptr exp) { return exp->Count_; });
+			case Columns::Shop:
+				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
+						[] (ExpenseEntry_ptr exp) { return exp->Shop_; });
 			case Columns::AccBalance:
 				return QString::number (Sums_ [index.row ()] [entry->AccountID_]) + " " + acc.Currency_;
 			case Columns::SumBalance:
@@ -154,6 +158,9 @@ namespace Poleemery
 			case Columns::Count:
 				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
 						[] (ExpenseEntry_ptr exp) { return exp->Count_; });
+			case Columns::Shop:
+				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
+						[] (ExpenseEntry_ptr exp) { return exp->Shop_; });
 			case Columns::AccBalance:
 				return QString::number (Sums_ [index.row ()] [entry->AccountID_]) + " " + acc.Currency_;
 			case Columns::SumBalance:
@@ -203,6 +210,9 @@ namespace Poleemery
 			break;
 		case Columns::Count:
 			std::dynamic_pointer_cast<ExpenseEntry> (entry)->Count_ = value.toDouble ();
+			break;
+		case Columns::Shop:
+			std::dynamic_pointer_cast<ExpenseEntry> (entry)->Shop_ = value.toString ();
 			break;
 		}
 
