@@ -47,7 +47,7 @@ namespace Poleemery
 		Ui_.AccType_->addItem (ToHumanReadable (AccType::BankAccount));
 
 		const auto& currencies = Core::Instance ()
-				.GetCurrenciesManager ()->GetAllCurrencies ();
+				.GetCurrenciesManager ()->GetEnabledCurrencies ();
 		Ui_.Currency_->addItems (currencies);
 	}
 

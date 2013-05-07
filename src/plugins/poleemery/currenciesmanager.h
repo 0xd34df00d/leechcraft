@@ -32,6 +32,10 @@
 #include <QObject>
 #include <QStringList>
 
+class QAbstractItemModel;
+class QStandardItemModel;
+class QStandardItem;
+
 namespace LeechCraft
 {
 namespace Poleemery
@@ -41,10 +45,16 @@ namespace Poleemery
 		Q_OBJECT
 
 		QStringList Currencies_;
+		QStandardItemModel *Model_;
+
+		QStringList Enabled_;
 	public:
 		CurrenciesManager (QObject* = 0);
 
-		const QStringList& GetAllCurrencies () const;
+		const QStringList& GetEnabledCurrencies () const;
+		QAbstractItemModel* GetSettingsModel () const;
+	private slots:
+		void handleItemChanged (QStandardItem*);
 	};
 }
 }

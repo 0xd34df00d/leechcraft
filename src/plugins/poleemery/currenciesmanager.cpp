@@ -29,6 +29,9 @@
 
 #include "currenciesmanager.h"
 #include <QLocale>
+#include <QSet>
+#include <QStandardItemModel>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -36,23 +39,88 @@ namespace Poleemery
 {
 	CurrenciesManager::CurrenciesManager (QObject *parent)
 	: QObject (parent)
+	, Model_ (new QStandardItemModel (this))
 	{
+		Model_->setHorizontalHeaderLabels ({ tr ("Code"), tr ("Name") });
+		connect (Model_,
+				SIGNAL (itemChanged (QStandardItem*)),
+				this,
+				SLOT (handleItemChanged (QStandardItem*)));
+		Enabled_ = XmlSettingsManager::Instance ().property ("EnabledLocales").toStringList ();
+		if (Enabled_.isEmpty ())
+		{
+			Enabled_ << "USD";
+			Enabled_ << QLocale::system ().currencySymbol (QLocale::CurrencyIsoCode);
+		}
+		Enabled_.sort ();
+
+		struct CurInfo
+		{
+			QString Code_;
+			QString Name_;
+		};
+		QSet<QString> knownCodes;
+		QList<CurInfo> currencies;
 		for (auto language = 2; language < 214; ++language)
-			for (auto country = 1; country < 247; ++country)
+			for (auto country = 0; country < 247; ++country)
 			{
-				const QLocale locale (static_cast<QLocale::Language> (language), static_cast<QLocale::Country> (country));
-				Currencies_ << locale.currencySymbol (QLocale::CurrencyIsoCode);
+				const QLocale loc (static_cast<QLocale::Language> (language),
+						static_cast<QLocale::Country> (country));
+
+				const auto& code = loc.currencySymbol (QLocale::CurrencyIsoCode);
+				if (code.isEmpty ())
+					continue;
+
+				if (knownCodes.contains (code))
+					continue;
+
+				knownCodes << code;
+				currencies.push_back ({ code, loc.currencySymbol (QLocale::CurrencyDisplayName) });
 			}
 
-		std::sort (Currencies_.begin (), Currencies_.end ());
-		Currencies_.erase (std::unique (Currencies_.begin (), Currencies_.end ()),
-				Currencies_.end ());
-		Currencies_.removeAll (QString ());
+		std::sort (currencies.begin (), currencies.end (),
+				[] (const CurInfo& l, const CurInfo& r) { return l.Code_ < r.Code_; });
+
+		for (const auto& cur : currencies)
+		{
+			Currencies_ << cur.Code_;
+
+			QList<QStandardItem*> row { new QStandardItem (cur.Code_), new QStandardItem (cur.Name_) };
+			for (auto item : row)
+				item->setEditable (false);
+
+			if (cur.Code_ != "USD")
+				row.first ()->setCheckState (Enabled_.contains (cur.Code_) ? Qt::Checked : Qt::Unchecked);
+
+			Model_->appendRow (row);
+		}
 	}
 
-	const QStringList& CurrenciesManager::GetAllCurrencies () const
+	const QStringList& CurrenciesManager::GetEnabledCurrencies () const
 	{
-		return Currencies_;
+		return Enabled_;
+	}
+
+	QAbstractItemModel* CurrenciesManager::GetSettingsModel () const
+	{
+		return Model_;
+	}
+
+	void CurrenciesManager::handleItemChanged (QStandardItem *item)
+	{
+		if (item->column ())
+			return;
+
+		const auto& code = item->text ();
+		if (item->checkState () == Qt::Unchecked)
+			Enabled_.removeAll (code);
+		else if (!Enabled_.contains (code))
+		{
+			Enabled_ << code;
+			Enabled_.sort ();
+		}
+
+		XmlSettingsManager::Instance ().setProperty ("EnabledLocales", Enabled_);
 	}
 }
 }
