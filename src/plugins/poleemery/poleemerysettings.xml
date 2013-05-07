@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Currencies" />
+		<groupbox>
+			<label value="Enabled currencies" />
+			<item type="dataview" property="CurrenciesView" />
+		</groupbox>
+	</page>
+</settings>

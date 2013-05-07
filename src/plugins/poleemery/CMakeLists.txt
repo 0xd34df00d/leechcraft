@@ -22,6 +22,7 @@ SET (SRCS
 	operationpropsdialog.cpp
 	entriesmodel.cpp
 	currenciesmanager.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (FORMS
 	accountstab.ui
@@ -31,7 +32,7 @@ SET (FORMS
 	)
 QT4_WRAP_UI (UIS_H ${FORMS})
 #CreateTrs("poleemery" "en;ru_RU" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("poleemery" "en;ru_RU" "${SRCS}" "${FORMS}" "")
+CreateTrsUpTarget("poleemery" "en;ru_RU" "${SRCS}" "${FORMS}" "poleemerysettings.xml")
 
 ADD_LIBRARY (leechcraft_poleemery SHARED
 	${COMPILED_TRANSLATIONS}
@@ -43,3 +44,4 @@ TARGET_LINK_LIBRARIES (leechcraft_poleemery
 	${LEECHCRAFT_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_poleemery DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES poleemerysettings.xml DESTINATION ${LC_SETTINGS_DEST})
