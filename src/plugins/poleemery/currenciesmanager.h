@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QStringList>
+#include <QHash>
 
 class QAbstractItemModel;
 class QStandardItemModel;
@@ -48,13 +49,27 @@ namespace Poleemery
 		QStandardItemModel *Model_;
 
 		QStringList Enabled_;
+
+		QHash<QString, double> RatesFromUSD_;
+
+		QString UserCurrency_;
 	public:
 		CurrenciesManager (QObject* = 0);
 
+		void Load ();
+
 		const QStringList& GetEnabledCurrencies () const;
 		QAbstractItemModel* GetSettingsModel () const;
+
+		QString GetUserCurrency () const;
+		double ToUserCurrency (const QString&, double) const;
+	private:
+		void FetchRates (QStringList);
 	private slots:
+		void gotRateReply ();
 		void handleItemChanged (QStandardItem*);
+	signals:
+		void currenciesUpdated ();
 	};
 }
 }

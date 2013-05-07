@@ -28,10 +28,18 @@
  **********************************************************************/
 
 #include "currenciesmanager.h"
+#include <cmath>
+#include <limits>
 #include <QLocale>
 #include <QSet>
+#include <QUrl>
 #include <QStandardItemModel>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QtDebug>
+#include <QDomDocument>
 #include "xmlsettingsmanager.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -40,6 +48,7 @@ namespace Poleemery
 	CurrenciesManager::CurrenciesManager (QObject *parent)
 	: QObject (parent)
 	, Model_ (new QStandardItemModel (this))
+	, UserCurrency_ (QLocale::system ().currencySymbol (QLocale::CurrencyIsoCode))
 	{
 		Model_->setHorizontalHeaderLabels ({ tr ("Code"), tr ("Name") });
 		connect (Model_,
@@ -48,10 +57,7 @@ namespace Poleemery
 				SLOT (handleItemChanged (QStandardItem*)));
 		Enabled_ = XmlSettingsManager::Instance ().property ("EnabledLocales").toStringList ();
 		if (Enabled_.isEmpty ())
-		{
-			Enabled_ << "USD";
-			Enabled_ << QLocale::system ().currencySymbol (QLocale::CurrencyIsoCode);
-		}
+			Enabled_ << "USD" << UserCurrency_;
 		Enabled_.sort ();
 
 		struct CurInfo
@@ -96,6 +102,11 @@ namespace Poleemery
 		}
 	}
 
+	void CurrenciesManager::Load ()
+	{
+		FetchRates (Enabled_);
+	}
+
 	const QStringList& CurrenciesManager::GetEnabledCurrencies () const
 	{
 		return Enabled_;
@@ -104,6 +115,82 @@ namespace Poleemery
 	QAbstractItemModel* CurrenciesManager::GetSettingsModel () const
 	{
 		return Model_;
+	}
+
+	QString CurrenciesManager::GetUserCurrency () const
+	{
+		return UserCurrency_;
+	}
+
+	double CurrenciesManager::ToUserCurrency (const QString& code, double value) const
+	{
+		if (code == UserCurrency_)
+			return value;
+
+		return value * RatesFromUSD_.value (UserCurrency_, 1) / RatesFromUSD_.value (code, 1);
+	}
+
+	void CurrenciesManager::FetchRates (QStringList values)
+	{
+		values.removeAll ("USD");
+		QStringList subqueries;
+		for (const auto& value : values)
+			subqueries << "pair in (\"USD" + value + "\")";
+
+		QString urlStr = QString ("http://query.yahooapis.com/v1/public/yql?q="
+				"select * from yahoo.finance.xchange where %1&env=http://datatables.org/alltables.env").arg (subqueries.join (" or "));
+		QUrl url (urlStr);
+
+		auto nam = Core::Instance ().GetCoreProxy ()->GetNetworkAccessManager ();
+		auto reply = nam->get (QNetworkRequest (url));
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (gotRateReply ()));
+	}
+
+	void CurrenciesManager::gotRateReply ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		const auto& data = reply->readAll ();
+
+		QDomDocument doc;
+		if (!doc.setContent (data))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to parse"
+					<< data;
+			return;
+		}
+
+		bool changed = false;
+		auto rateElem = doc.documentElement ()
+				.firstChildElement ("results")
+				.firstChildElement ("rate");
+		while (!rateElem.isNull ())
+		{
+			auto toValue = rateElem.attribute ("id").mid (3);
+			if (toValue.size () != 3)
+			{
+				qWarning () << "incorrect `to` value"
+						<< toValue;
+				continue;
+			}
+
+			const auto newRate = rateElem.firstChildElement ("Rate").text ().toDouble ();
+			if (std::fabs (newRate - RatesFromUSD_ [toValue]) > std::numeric_limits<double>::epsilon ())
+			{
+				RatesFromUSD_ [toValue] = newRate;
+				changed = true;
+			}
+
+			rateElem = rateElem.nextSiblingElement ("rate");
+		}
+
+		if (changed)
+			emit currenciesUpdated ();
 	}
 
 	void CurrenciesManager::handleItemChanged (QStandardItem *item)
