@@ -29,6 +29,8 @@
 
 #include "entriesmodel.h"
 #include <QColor>
+#include <QApplication>
+#include <QFontMetrics>
 #include "core.h"
 #include "accountsmanager.h"
 
@@ -38,7 +40,8 @@ namespace Poleemery
 {
 	EntriesModel::EntriesModel (QObject *parent)
 	: QAbstractItemModel (parent)
-	, HeaderData_ { tr ("Account"), tr ("Name"), tr ("Amount"), tr ("Date"), tr ("Count") }
+	, HeaderData_ { tr ("Account"), tr ("Name"), tr ("Amount"), tr ("Date"),
+			tr ("Count"), tr ("Account balance"), tr ("Sum balance") }
 	{
 	}
 
@@ -104,6 +107,13 @@ namespace Poleemery
 			case Columns::Count:
 				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
 						[] (ExpenseEntry_ptr exp) { return exp->Count_; });
+			case Columns::AccBalance:
+				return QString::number (Sums_ [index.row ()] [entry->AccountID_]);
+			case Columns::SumBalance:
+			{
+				const auto& vals = Sums_ [index.row ()].values ();
+				return QString::number (std::accumulate (vals.begin (), vals.end (), 0));
+			}
 			}
 			break;
 		case Qt::BackgroundRole:
@@ -140,6 +150,18 @@ namespace Poleemery
 		{
 			return e1->Date_ < e2->Date_;
 		}
+
+		void AppendEntry (QHash<int, double>& hash, EntryBase_ptr entry)
+		{
+			auto& val = hash [entry->AccountID_];
+			switch (entry->GetType ())
+			{
+			case EntryType::Expense:
+				val -= entry->Amount_;
+			case EntryType::Receipt:
+				val += entry->Amount_;
+			}
+		}
 	}
 
 	void EntriesModel::AddEntry (EntryBase_ptr entry)
@@ -148,7 +170,17 @@ namespace Poleemery
 
 		auto pos = std::distance (Entries_.begin (), bound);
 		beginInsertRows (QModelIndex (), pos, pos);
-		Entries_.insert (pos, entry);
+
+		Entries_.insert (bound, entry);
+		if (bound == Entries_.end ())
+		{
+			auto hash = Sums_.value (Sums_.size () - 1);
+			AppendEntry (hash, entry);
+			Sums_ << hash;
+		}
+		else
+			RecalcSums ();
+
 		endInsertRows ();
 	}
 
@@ -159,7 +191,21 @@ namespace Poleemery
 		Entries_ += entries;
 		std::sort (Entries_.begin (), Entries_.end (), DateLess);
 
+		RecalcSums ();
+
 		endResetModel ();
+	}
+
+	void EntriesModel::RecalcSums ()
+	{
+		Sums_.clear ();
+
+		QHash<int, double> curSum;
+		for (auto entry : Entries_)
+		{
+			AppendEntry (curSum, entry);
+			Sums_ << curSum;
+		}
 	}
 }
 }

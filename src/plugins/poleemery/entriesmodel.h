@@ -47,8 +47,12 @@ namespace Poleemery
 			Name,
 			Amount,
 			Date,
-			Count
+			Count,
+			AccBalance,
+			SumBalance
 		};
+
+		QList<QHash<int, double>> Sums_;
 	public:
 		EntriesModel (QObject* = 0);
 
@@ -61,6 +65,8 @@ namespace Poleemery
 
 		void AddEntry (EntryBase_ptr);
 		void AddEntries (QList<EntryBase_ptr>);
+	private:
+		void RecalcSums ();
 	};
 }
 }
