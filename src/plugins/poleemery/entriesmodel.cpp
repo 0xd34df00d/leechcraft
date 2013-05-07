@@ -220,6 +220,8 @@ namespace Poleemery
 			if (recalcSums)
 				RecalcSums ();
 		}
+
+		return true;
 	}
 
 	QVariant EntriesModel::headerData (int section, Qt::Orientation orientation, int role) const
