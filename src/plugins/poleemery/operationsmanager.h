@@ -57,6 +57,7 @@ namespace Poleemery
 		QAbstractItemModel* GetModel () const;
 
 		void AddEntry (EntryBase_ptr);
+		void UpdateEntry (EntryBase_ptr);
 	};
 }
 }

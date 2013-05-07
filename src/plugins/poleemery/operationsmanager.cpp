@@ -68,5 +68,18 @@ namespace Poleemery
 
 		Model_->AddEntry (entry);
 	}
+
+	void OperationsManager::UpdateEntry (EntryBase_ptr entry)
+	{
+		switch (entry->GetType ())
+		{
+		case EntryType::Expense:
+			Storage_->UpdateExpenseEntry (*std::dynamic_pointer_cast<ExpenseEntry> (entry));
+			break;
+		case EntryType::Receipt:
+			Storage_->UpdateReceiptEntry (*std::dynamic_pointer_cast<ReceiptEntry> (entry));
+			break;
+		}
+	}
 }
 }
