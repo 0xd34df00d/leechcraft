@@ -75,6 +75,7 @@ namespace Poleemery
 		QList<ReceiptEntry> GetReceiptEntries ();
 		QList<ReceiptEntry> GetReceiptEntries (const Account&);
 		void AddReceiptEntry (ReceiptEntry&);
+		void UpdateReceiptEntry (const ReceiptEntry&);
 	private:
 		Category AddCategory (const QString&);
 		void LinkEntry2Cat (const ExpenseEntry&, const Category&);
