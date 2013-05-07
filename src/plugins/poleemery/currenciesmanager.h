@@ -27,50 +27,24 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "accountpropsdialog.h"
-#include <QtDebug>
-#include "structures.h"
-#include "core.h"
-#include "currenciesmanager.h"
+#pragma once
+
+#include <QObject>
+#include <QStringList>
 
 namespace LeechCraft
 {
 namespace Poleemery
 {
-	AccountPropsDialog::AccountPropsDialog (QWidget *parent)
-	: QDialog (parent)
-	, CurrentAccID_ (-1)
+	class CurrenciesManager : public QObject
 	{
-		Ui_.setupUi (this);
+		Q_OBJECT
 
-		Ui_.AccType_->addItem (ToHumanReadable (AccType::Cash));
-		Ui_.AccType_->addItem (ToHumanReadable (AccType::BankAccount));
+		QStringList Currencies_;
+	public:
+		CurrenciesManager (QObject* = 0);
 
-		const auto& currencies = Core::Instance ()
-				.GetCurrenciesManager ()->GetAllCurrencies ();
-		Ui_.Currency_->addItems (currencies);
-	}
-
-	void AccountPropsDialog::SetAccount (const Account& account)
-	{
-		CurrentAccID_ = account.ID_;
-		Ui_.AccType_->setCurrentIndex (static_cast<int> (account.Type_));
-		Ui_.AccName_->setText (account.Name_);
-
-		const auto pos = Ui_.Currency_->findText (account.Currency_);
-		if (pos >= 0)
-			Ui_.Currency_->setCurrentIndex (pos);
-	}
-
-	Account AccountPropsDialog::GetAccount () const
-	{
-		return
-		{
-			CurrentAccID_,
-			static_cast<AccType> (Ui_.AccType_->currentIndex ()),
-			Ui_.AccName_->text (),
-			Ui_.Currency_->currentText ()
-		};
-	}
+		const QStringList& GetAllCurrencies () const;
+	};
 }
 }

@@ -21,6 +21,7 @@ SET (SRCS
 	operationsmanager.cpp
 	operationpropsdialog.cpp
 	entriesmodel.cpp
+	currenciesmanager.cpp
 	)
 SET (FORMS
 	accountstab.ui

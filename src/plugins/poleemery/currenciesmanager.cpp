@@ -27,50 +27,32 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "accountpropsdialog.h"
-#include <QtDebug>
-#include "structures.h"
-#include "core.h"
 #include "currenciesmanager.h"
+#include <QLocale>
 
 namespace LeechCraft
 {
 namespace Poleemery
 {
-	AccountPropsDialog::AccountPropsDialog (QWidget *parent)
-	: QDialog (parent)
-	, CurrentAccID_ (-1)
+	CurrenciesManager::CurrenciesManager (QObject *parent)
+	: QObject (parent)
 	{
-		Ui_.setupUi (this);
+		for (auto language = 2; language < 214; ++language)
+			for (auto country = 1; country < 247; ++country)
+			{
+				const QLocale locale (static_cast<QLocale::Language> (language), static_cast<QLocale::Country> (country));
+				Currencies_ << locale.currencySymbol (QLocale::CurrencyIsoCode);
+			}
 
-		Ui_.AccType_->addItem (ToHumanReadable (AccType::Cash));
-		Ui_.AccType_->addItem (ToHumanReadable (AccType::BankAccount));
-
-		const auto& currencies = Core::Instance ()
-				.GetCurrenciesManager ()->GetAllCurrencies ();
-		Ui_.Currency_->addItems (currencies);
+		std::sort (Currencies_.begin (), Currencies_.end ());
+		Currencies_.erase (std::unique (Currencies_.begin (), Currencies_.end ()),
+				Currencies_.end ());
+		Currencies_.removeAll (QString ());
 	}
 
-	void AccountPropsDialog::SetAccount (const Account& account)
+	const QStringList& CurrenciesManager::GetAllCurrencies () const
 	{
-		CurrentAccID_ = account.ID_;
-		Ui_.AccType_->setCurrentIndex (static_cast<int> (account.Type_));
-		Ui_.AccName_->setText (account.Name_);
-
-		const auto pos = Ui_.Currency_->findText (account.Currency_);
-		if (pos >= 0)
-			Ui_.Currency_->setCurrentIndex (pos);
-	}
-
-	Account AccountPropsDialog::GetAccount () const
-	{
-		return
-		{
-			CurrentAccID_,
-			static_cast<AccType> (Ui_.AccType_->currentIndex ()),
-			Ui_.AccName_->text (),
-			Ui_.Currency_->currentText ()
-		};
+		return Currencies_;
 	}
 }
 }

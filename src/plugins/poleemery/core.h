@@ -41,6 +41,7 @@ namespace Poleemery
 
 	class AccountsManager;
 	class OperationsManager;
+	class CurrenciesManager;
 
 	class Core : public QObject
 	{
@@ -49,6 +50,7 @@ namespace Poleemery
 		Storage_ptr Storage_;
 		AccountsManager *AccsManager_;
 		OperationsManager *OpsManager_;
+		CurrenciesManager *CurrenciesManager_;
 
 		Core ();
 
@@ -61,8 +63,10 @@ namespace Poleemery
 		static Core& Instance ();
 
 		Storage_ptr GetStorage () const;
+
 		AccountsManager* GetAccsManager () const;
 		OperationsManager* GetOpsManager () const;
+		CurrenciesManager* GetCurrenciesManager () const;
 	};
 }
 }
