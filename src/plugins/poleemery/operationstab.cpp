@@ -43,6 +43,11 @@ namespace Poleemery
 	{
 		Ui_.setupUi (this);
 		Ui_.OpsView_->setModel (OpsManager_->GetModel ());
+
+		Ui_.OpsView_->resizeColumnToContents (0);
+		Ui_.OpsView_->resizeColumnToContents (1);
+		Ui_.OpsView_->resizeColumnToContents (2);
+		Ui_.OpsView_->resizeColumnToContents (3);
 	}
 
 	TabClassInfo OperationsTab::GetTabClassInfo () const
