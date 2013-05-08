@@ -31,6 +31,7 @@
 #include <QColor>
 #include <QApplication>
 #include <QFontMetrics>
+#include <interfaces/core/itagsmanager.h>
 #include "core.h"
 #include "accountsmanager.h"
 #include "operationsmanager.h"
@@ -137,7 +138,11 @@ namespace Poleemery
 						[] (ExpenseEntry_ptr exp) { return exp->Shop_; });
 			case Columns::Categories:
 				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
-						[] (ExpenseEntry_ptr exp) { return exp->Categories_.join ("; "); });
+						[] (ExpenseEntry_ptr exp) -> QVariant
+						{
+							auto itm = Core::Instance ().GetCoreProxy ()->GetTagsManager ();
+							return itm->Join (exp->Categories_);
+						});
 			case Columns::AccBalance:
 				return QString::number (Sums_ [index.row ()].Accs_ [entry->AccountID_]) + " " + acc.Currency_;
 			case Columns::SumBalance:
