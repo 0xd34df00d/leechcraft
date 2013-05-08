@@ -295,7 +295,7 @@ namespace Poleemery
 
 	void EntriesModel::AddEntry (EntryBase_ptr entry)
 	{
-		auto bound = std::lower_bound (Entries_.begin (), Entries_.end (), entry, DateLess);
+		auto bound = std::upper_bound (Entries_.begin (), Entries_.end (), entry, DateLess);
 
 		auto pos = std::distance (Entries_.begin (), bound);
 		beginInsertRows (QModelIndex (), pos, pos);
