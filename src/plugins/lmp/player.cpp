@@ -941,6 +941,7 @@ namespace LMP
 	void Player::stop ()
 	{
 		Source_->stop ();
+		Source_->setCurrentSource ({});
 		emit songChanged (MediaInfo ());
 
 		if (CurrentStation_)
@@ -962,6 +963,9 @@ namespace LMP
 
 		Core::Instance ().GetPlaylistManager ()->
 				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
+
+		if (Source_->state () != Phonon::PlayingState)
+			Source_->setCurrentSource ({});
 	}
 
 	void Player::shufflePlaylist ()
@@ -1179,7 +1183,10 @@ namespace LMP
 			Source_->setQueue (queue);
 		}
 		else
+		{
 			emit songChanged (MediaInfo ());
+			Source_->setCurrentSource ({});
+		}
 	}
 
 	void Player::handleStateChanged (Phonon::State state)
