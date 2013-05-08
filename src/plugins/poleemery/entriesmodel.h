@@ -53,11 +53,12 @@ namespace Poleemery
 		enum Columns
 		{
 			Date,
-			Account,
 			Name,
 			Price,
 			Count,
 			Shop,
+			Categories,
+			Account,
 			AccBalance,
 			SumBalance,
 

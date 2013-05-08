@@ -42,8 +42,9 @@ namespace Poleemery
 {
 	EntriesModel::EntriesModel (QObject *parent)
 	: QAbstractItemModel (parent)
-	, HeaderData_ { tr ("Date"), tr ("Account"), tr ("Name"), tr ("Price"),
-			tr ("Count"), tr ("Shop"), tr ("Account balance"), tr ("Sum balance") }
+	, HeaderData_ { tr ("Date"), tr ("Name"), tr ("Price"), tr ("Count"),
+			tr ("Shop"), tr ("Categories"),
+			tr ("Account"), tr ("Account balance"), tr ("Sum balance") }
 	{
 	}
 
@@ -80,6 +81,7 @@ namespace Poleemery
 		{
 		case Columns::AccBalance:
 		case Columns::SumBalance:
+		case Columns::Categories:
 			break;
 		case Columns::Count:
 		case Columns::Shop:
@@ -133,6 +135,9 @@ namespace Poleemery
 			case Columns::Shop:
 				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
 						[] (ExpenseEntry_ptr exp) { return exp->Shop_; });
+			case Columns::Categories:
+				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
+						[] (ExpenseEntry_ptr exp) { return exp->Categories_.join ("; "); });
 			case Columns::AccBalance:
 				return QString::number (Sums_ [index.row ()].Accs_ [entry->AccountID_]) + " " + acc.Currency_;
 			case Columns::SumBalance:
@@ -161,6 +166,9 @@ namespace Poleemery
 			case Columns::Shop:
 				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
 						[] (ExpenseEntry_ptr exp) { return exp->Shop_; });
+			case Columns::Categories:
+				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
+						[] (ExpenseEntry_ptr exp) { return exp->Categories_; });
 			case Columns::AccBalance:
 				return QVariant ();
 			case Columns::SumBalance:
