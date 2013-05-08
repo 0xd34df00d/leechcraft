@@ -82,10 +82,10 @@ namespace Poleemery
 		{
 		case Columns::AccBalance:
 		case Columns::SumBalance:
-		case Columns::Categories:
 			break;
 		case Columns::Count:
 		case Columns::Shop:
+		case Columns::Categories:
 			if (Entries_.at (index.row ())->GetType () == EntryType::Expense)
 				flags |= Qt::ItemIsEditable;
 			break;
@@ -222,6 +222,9 @@ namespace Poleemery
 			break;
 		case Columns::Shop:
 			std::dynamic_pointer_cast<ExpenseEntry> (entry)->Shop_ = value.toString ();
+			break;
+		case Columns::Categories:
+			std::dynamic_pointer_cast<ExpenseEntry> (entry)->Categories_ = value.toStringList ();
 			break;
 		}
 
