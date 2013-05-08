@@ -1,9 +1,29 @@
 #!/usr/bin/env bash
 
+replacing="0"
 project_dir=$(cd ../../ && pwd)
-plugin_path=$1
-icon_path=$2
 
+while getopts ":p::i::r" opt; do
+	case $opt in
+		p)
+			plugin_path=$OPTARG
+			;;
+		i)
+			icon_path=$OPTARG
+			;;
+		r)
+			replacing="1"
+			;;
+		\?)
+			echo "Invalid option: "$OPTARG
+			exit 1
+			;;
+		:)
+			echo "Option $OPTARG requires an argument."
+			exit 1
+			;;
+	esac
+done
 
 function get_full_plugin_path()
 {
@@ -50,7 +70,11 @@ function insert_icon()
 {
 	mkdir -p $(get_full_plugin_path)"/resources/images"
 	cp $icon_path $(get_full_plugin_path)"/resources/images/"$(get_plugin_name)".svg"
-	echo "Icon placed."
+	if [ $replacing == "1" ]; then
+		echo "Icon replaced."
+	else
+		echo "Icon placed."
+	fi
 }
 
 function git_add_files()
@@ -70,17 +94,23 @@ if [ -d $(get_full_plugin_path) ]; then
 					insert_icon
 					git_add_files
 				else
-					echo 'Error: no icon file given. Use $2 to specify icon file path.'
+					echo 'Error: no icon file given. Use -i <arg> to specify icon file path.'
+					exit 1
 				fi
 			else
 				echo "Error: plugin directory does not contain main c++ file."
+				exit 1
 			fi
 		else
 			echo "Error: plugin directory does not contain CMakeLists.txt."
+			exit 1
 		fi
+	elif [ $replacing == "1" ]; then
+		insert_icon
 	else
-		echo "Error: this plugin already has an icon"
+		echo "Error: this plugin already has an icon. If you want to replace an existing icon, use -r."
+		exit 1
 	fi
 else
-	echo 'Error: no such plugin or directory. Use $1 to provide plugin path. Syntax: plugin[:subplugin[:subplugin[:...]]]'
+	echo 'Error: no such plugin or directory. Use -p <arg> to provide plugin path. Syntax: plugin[:subplugin[:subplugin[:...]]]'
 fi
