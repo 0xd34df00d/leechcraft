@@ -788,6 +788,9 @@ namespace LMP
 
 	Phonon::MediaSource Player::GetNextSource (const Phonon::MediaSource& current) const
 	{
+		if (CurrentQueue_.isEmpty ())
+			return {};
+
 		auto pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
 
 		switch (PlayMode_)
@@ -796,7 +799,7 @@ namespace LMP
 			if (pos != CurrentQueue_.end () && ++pos != CurrentQueue_.end ())
 				return *pos;
 			else
-				return Phonon::MediaSource ();
+				return {};
 		case PlayMode::Shuffle:
 			return GetRandomBy<int> (pos,
 					[this] (const Phonon::MediaSource& source)
@@ -835,7 +838,7 @@ namespace LMP
 			return *pos;
 		}
 
-		return Phonon::MediaSource ();
+		return {};
 	}
 
 	void Player::play (const QModelIndex& index)
