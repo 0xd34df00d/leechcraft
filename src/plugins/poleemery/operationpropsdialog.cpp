@@ -28,12 +28,15 @@
  **********************************************************************/
 
 #include "operationpropsdialog.h"
+#include <QStringListModel>
 #include <QtDebug>
+#include <interfaces/core/itagsmanager.h>
+#include <util/tags/tagscompleter.h>
+#include <interfaces/core/itagsmanager.h>
 #include "structures.h"
 #include "core.h"
 #include "accountsmanager.h"
 #include "operationsmanager.h"
-#include <interfaces/core/itagsmanager.h>
 
 namespace LeechCraft
 {
@@ -48,6 +51,11 @@ namespace Poleemery
 
 		for (const auto& acc : Accounts_)
 			Ui_.AccsBox_->addItem (acc.Name_);
+
+		auto completer = new Util::TagsCompleter (Ui_.Categories_, Ui_.Categories_);
+		const auto& cats = Core::Instance ().GetOpsManager ()->GetKnownCategories ().toList ();
+		completer->OverrideModel (new QStringListModel (cats, completer));
+		Ui_.Categories_->AddSelector ();
 
 		const auto& entries = Core::Instance ().GetOpsManager ()->GetAllEntries ();
 		for (const auto& entry : entries)
