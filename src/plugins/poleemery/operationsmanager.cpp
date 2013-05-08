@@ -51,7 +51,11 @@ namespace Poleemery
 		for (const auto& entry : Storage_->GetReceiptEntries ())
 			entries << std::make_shared<ReceiptEntry> (entry);
 		for (const auto& entry : Storage_->GetExpenseEntries ())
+		{
 			entries << std::make_shared<ExpenseEntry> (entry);
+			for (const auto& cat : entry.Categories_)
+				KnownCategories_ << cat;
+		}
 		Model_->AddEntries (entries);
 
 		connect (Core::Instance ().GetCurrenciesManager (),
@@ -70,13 +74,23 @@ namespace Poleemery
 		return Model_->GetEntries ();
 	}
 
+	QSet<QString> OperationsManager::GetKnownCategories () const
+	{
+		return KnownCategories_;
+	}
+
 	void OperationsManager::AddEntry (EntryBase_ptr entry)
 	{
 		switch (entry->GetType ())
 		{
 		case EntryType::Expense:
-			Storage_->AddExpenseEntry (*std::dynamic_pointer_cast<ExpenseEntry> (entry));
+		{
+			auto expense = std::dynamic_pointer_cast<ExpenseEntry> (entry);
+			Storage_->AddExpenseEntry (*expense);
+			for (const auto& cat : expense->Categories_)
+				KnownCategories_ << cat;
 			break;
+		}
 		case EntryType::Receipt:
 			Storage_->AddReceiptEntry (*std::dynamic_pointer_cast<ReceiptEntry> (entry));
 			break;
@@ -90,8 +104,13 @@ namespace Poleemery
 		switch (entry->GetType ())
 		{
 		case EntryType::Expense:
-			Storage_->UpdateExpenseEntry (*std::dynamic_pointer_cast<ExpenseEntry> (entry));
+		{
+			auto expense = std::dynamic_pointer_cast<ExpenseEntry> (entry);
+			Storage_->UpdateExpenseEntry (*expense);
+			for (const auto& cat : expense->Categories_)
+				KnownCategories_ << cat;
 			break;
+		}
 		case EntryType::Receipt:
 			Storage_->UpdateReceiptEntry (*std::dynamic_pointer_cast<ReceiptEntry> (entry));
 			break;
