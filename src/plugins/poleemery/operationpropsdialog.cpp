@@ -33,6 +33,7 @@
 #include "core.h"
 #include "accountsmanager.h"
 #include "operationsmanager.h"
+#include <interfaces/core/itagsmanager.h>
 
 namespace LeechCraft
 {
@@ -94,7 +95,10 @@ namespace Poleemery
 			return std::make_shared<ReceiptEntry> (accId, amount, name, descr, dt);
 		case EntryType::Expense:
 			return std::make_shared<ExpenseEntry> (accId, amount, name, descr, dt,
-					Ui_.CountBox_->value (), Ui_.Shop_->currentText (), QStringList {});
+					Ui_.CountBox_->value (),
+					Ui_.Shop_->currentText (),
+					Core::Instance ().GetCoreProxy ()->
+							GetTagsManager ()->Split (Ui_.Categories_->text ()));
 		}
 
 		qWarning () << Q_FUNC_INFO
