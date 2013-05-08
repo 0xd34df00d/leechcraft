@@ -344,7 +344,6 @@ void TwitterPage::updateTweetList()
 			tmpitem->setData(Qt::DecorationRole, twit->author()->avatar);
 		ui->TwitList_->insertItem (0, tmpitem);
 		ui->TwitList_->updateGeometry();
-		
 	}
 //	QTimer::singleShot(1000, ui->TwitList_, SLOT(update()));
 	

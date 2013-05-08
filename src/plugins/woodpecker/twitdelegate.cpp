@@ -9,6 +9,8 @@
 #include <QMouseEvent>
 #include <interfaces/structures.h>
 #include <util/util.h>
+#include <QTextDocument>
+#include <QRectF>
 
 namespace LeechCraft
 {
@@ -47,7 +49,7 @@ void TwitDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & opti
     painter->setBrush(gradientSelected);
     painter->drawRect(r);
     
-    //BORDER
+    // Border
     painter->setPen(lineMarkedPen);
     painter->drawLine(r.topLeft(),r.topRight());
     painter->drawLine(r.topRight(),r.bottomRight());
@@ -57,12 +59,12 @@ void TwitDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & opti
     painter->setPen(fontMarkedPen);
     
   } else {
-    //BACKGROUND
-    //ALTERNATING COLORS
+    // Background
+    // Alternating colors
     painter->setBrush( (index.row() % 2) ? Qt::white : QColor(252,252,252) );
     painter->drawRect(r);
     
-    //BORDER
+    // border
     painter->setPen(linePen);
     painter->drawLine(r.topLeft(),r.topRight());
     painter->drawLine(r.topRight(),r.bottomRight());
@@ -72,24 +74,36 @@ void TwitDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & opti
     painter->setPen(fontPen);
   }
   
-  //GET TITLE, DESCRIPTION AND ICON
+  // Get title, description and icon
   QIcon ic = QIcon(qvariant_cast<QPixmap>(index.data(Qt::DecorationRole)));
   QString text = index.data(Qt::DisplayRole).toString();
+  qulonglong id = index.data(Qt::UserRole).toULongLong();
   QString author = index.data(Qt::UserRole + 1).toString();
   QString time = index.data(Qt::UserRole + 2).toString();
   
-  int imageSpace = 60;
+  int imageSpace = 50;
   if (!ic.isNull()) {
-    //ICON
+    // Icon
     r = option.rect.adjusted(5, 10, -10, -10);
-    ic.paint(painter, r, Qt::AlignVCenter|Qt::AlignLeft);
+    ic.paint(painter, r, Qt::AlignVCenter | Qt::AlignLeft);
     imageSpace = 60;
+	if ( tweet_links.find(id) == tweet_links.end() )
+	{
+		QRect r(10, 10, 20, 50);
+		tweet_links.insert(std::make_pair (id, std::make_pair(r, QUrl("http://ya.ru"))));
+	};
   }
   
-  // TEXT
-  r = option.rect.adjusted(imageSpace, 0, -10, -30);
+  // Text
+  r = option.rect.adjusted(imageSpace, 4, -10, -22);
   painter->setFont( mainFont );
-  painter->drawText(r.left(), r.top(), r.width(), r.height(), Qt::AlignBottom|Qt::AlignLeft, text, &r);
+  QTextDocument doc;
+  doc.setHtml( text );
+  doc.setTextWidth( r.width() );
+  painter->save();
+  painter->translate( r.left(), r.top() );
+  doc.drawContents( painter, r.translated( -r.topLeft()) );
+  painter->restore();
   
   // Author
   r = option.rect.adjusted(imageSpace, 30, -10, 0);
@@ -104,6 +118,20 @@ void TwitDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & opti
   painter->setFont( mainFont );
   painter->drawText(r.right() - painter->fontMetrics().width(time), r.bottom() - painter->fontMetrics().height() - 8, r.width(), r.height(), Qt::AlignLeft, time, &r);
   painter->setPen(linePen);
+  
+  // Links
+  QRegExp rx("\\s((http|https)://[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(([0-9]{1,5})?/?.*))(\\s|,|$)");
+  rx.setMinimal(true);
+  
+  qDebug() << "Parsing links for tweet " << id;
+  
+  if (rx.indexIn(text) != -1) {
+	  for (auto link : rx.capturedTexts())
+	  {
+		  qDebug() << link;
+	  }
+	  qDebug() << "The link: " << rx.capturedTexts()[1];
+  }
 }
 
 QSize TwitDelegate::sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const{
@@ -114,5 +142,25 @@ TwitDelegate::~TwitDelegate()
 {
 }
 
+bool TwitDelegate::editorEvent(QEvent* event, QAbstractItemModel* model, const QStyleOptionViewItem& option, const QModelIndex& index)
+{
+	if (event->type() == QEvent::MouseButtonRelease) {
+		qulonglong id = index.data(Qt::UserRole).toULongLong();
+		qDebug() << "Mouse button released in Twit " << id << "!";
+		QMouseEvent *me = (QMouseEvent*)event;
+             if (me) {
+				auto position = (me->pos() - option.rect.topLeft());
+				qDebug() << "Coordinates: " << position.x() << ", " << position.y();
+				if ( tweet_links.find(id) != tweet_links.end() )
+					qDebug() << "And it contains link at "<< tweet_links[id].first.topLeft() << " - " << tweet_links[id].first.bottomRight();
+			 }
+		
+	}
+    return QAbstractItemDelegate::editorEvent(event, model, option, index);
+}
+
+
 }
 }
+
+// kate: indent-mode cstyle; indent-width 4; replace-tabs off; tab-width 4;

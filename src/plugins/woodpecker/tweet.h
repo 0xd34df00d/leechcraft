@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QDateTime>
+#include <QTextLayout>
 #include "twitteruser.h"
 
 namespace LeechCraft
@@ -47,7 +48,7 @@ public:
 	void setDateTime (QDateTime datetime) {
 		m_created = datetime;
 	}
-
+	
 	Tweet& operator= (const Tweet&);
 	bool operator== (const Tweet&);
 	bool operator!= (const Tweet&);
