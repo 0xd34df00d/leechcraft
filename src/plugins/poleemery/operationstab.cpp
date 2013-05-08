@@ -30,6 +30,10 @@
 #include "operationstab.h"
 #include <QStyledItemDelegate>
 #include <QMessageBox>
+#include <QStringListModel>
+#include <util/tags/tagslineedit.h>
+#include <util/tags/tagscompleter.h>
+#include <interfaces/core/itagsmanager.h>
 #include "core.h"
 #include "operationsmanager.h"
 #include "operationpropsdialog.h"
@@ -56,6 +60,19 @@ namespace Poleemery
 			{
 				case EntriesModel::Columns::Account:
 					return new QComboBox (parent);
+				case EntriesModel::Columns::Categories:
+				{
+					auto result = new Util::TagsLineEdit (parent);
+					auto completer = new Util::TagsCompleter (result, result);
+
+					const auto& cats = Core::Instance ().GetOpsManager ()->
+							GetKnownCategories ().toList ();
+					completer->OverrideModel (new QStringListModel (cats, completer));
+
+					result->AddSelector ();
+
+					return result;
+				}
 				default:
 					return QStyledItemDelegate::createEditor (parent, option, index);
 			}
@@ -79,6 +96,12 @@ namespace Poleemery
 					box->setCurrentIndex (toFocus);
 					break;
 				}
+				case EntriesModel::Columns::Categories:
+				{
+					auto edit = qobject_cast<Util::TagsLineEdit*> (editor);
+					edit->setTags (index.data (Qt::EditRole).toStringList ());
+					break;
+				}
 				default:
 					QStyledItemDelegate::setEditorData (editor, index);
 					break;
@@ -93,6 +116,13 @@ namespace Poleemery
 				{
 					auto box = qobject_cast<QComboBox*> (editor);
 					model->setData (index, box->itemData (box->currentIndex ()));
+					break;
+				}
+				case EntriesModel::Columns::Categories:
+				{
+					auto box = qobject_cast<Util::TagsLineEdit*> (editor);
+					auto itm = Core::Instance ().GetCoreProxy ()->GetTagsManager ();
+					model->setData (index, itm->Split (box->text ()));
 					break;
 				}
 				default:
