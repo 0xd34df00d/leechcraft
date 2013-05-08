@@ -958,6 +958,8 @@ namespace LMP
 		Url2Info_.clear ();
 		Source_->clearQueue ();
 
+		XmlSettingsManager::Instance ().setProperty ("LastSong", QString ());
+
 		Core::Instance ().GetPlaylistManager ()->
 				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
 	}
