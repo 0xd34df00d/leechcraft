@@ -158,13 +158,7 @@ namespace Poleemery
 		try
 		{
 			NakedExpenseEntryInfo_.DoInsert_ (entry);
-
-			for (const auto& cat : entry.Categories_)
-			{
-				if (!CatCache_.contains (cat))
-					AddCategory (cat);
-				LinkEntry2Cat (entry, CatCache_ [cat]);
-			}
+			AddNewCategories (entry, entry.Categories_);
 		}
 		catch (const oral::QueryException& e)
 		{
@@ -183,13 +177,16 @@ namespace Poleemery
 
 		NakedExpenseEntryInfo_.DoUpdate_ (entry);
 
-		auto nowCats = entry.Categories_.toSet ();
+		auto nowCats = entry.Categories_;
 
 		for (const auto& cat : boost::fusion::at_c<1> (CategoryLinkInfo_.SingleFKeySelectors_) (entry))
 		{
-			if (!nowCats.remove (CatIDCache_.value (cat.Category_).Name_))
+			if (!nowCats.removeAll (CatIDCache_.value (cat.Category_).Name_))
 				CategoryLinkInfo_.DoDelete_ (cat);
 		}
+
+		if (!nowCats.isEmpty ())
+			AddNewCategories (entry, nowCats);
 
 		lock.Good ();
 	}
@@ -267,6 +264,16 @@ namespace Poleemery
 		CatCache_ [name] = cat;
 		CatIDCache_ [cat.ID_] = cat;
 		return cat;
+	}
+
+	void Storage::AddNewCategories (const ExpenseEntry& entry, const QStringList& cats)
+	{
+		for (const auto& cat : cats)
+		{
+			if (!CatCache_.contains (cat))
+				AddCategory (cat);
+			LinkEntry2Cat (entry, CatCache_ [cat]);
+		}
 	}
 
 	void Storage::LinkEntry2Cat (const ExpenseEntry& entry, const Category& category)

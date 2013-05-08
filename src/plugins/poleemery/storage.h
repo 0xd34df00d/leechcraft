@@ -79,6 +79,7 @@ namespace Poleemery
 		void DeleteReceiptEntry (const ReceiptEntry&);
 	private:
 		Category AddCategory (const QString&);
+		void AddNewCategories (const ExpenseEntry&, const QStringList&);
 		void LinkEntry2Cat (const ExpenseEntry&, const Category&);
 		void UnlinkEntry2Cat (const ExpenseEntry&, const Category&);
 
