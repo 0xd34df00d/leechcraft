@@ -128,17 +128,7 @@ namespace VelvetBird
 
 	void Account::ChangeState (const EntryStatus& status)
 	{
-		if (status.State_ == SOffline)
-		{
-			if (!purple_account_is_disconnected (Account_))
-				purple_account_disconnect (Account_);
-			purple_account_set_enabled (Account_, "leechcraft.azoth", false);
-			CurrentStatus_ = status;
-			emit statusChanged (CurrentStatus_);
-			return;
-		}
-
-		if (!purple_account_get_password (Account_))
+		if (status.State_ != SOffline && !purple_account_get_password (Account_))
 		{
 			const auto& str = Util::GetPassword ("Azoth." + GetAccountID (),
 					tr ("Enter password for account %1:").arg (GetAccountName ()), Proto_, true);
