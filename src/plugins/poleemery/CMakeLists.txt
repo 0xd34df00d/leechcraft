@@ -33,7 +33,7 @@ SET (FORMS
 	operationpropsdialog.ui
 	)
 QT4_WRAP_UI (UIS_H ${FORMS})
-#CreateTrs("poleemery" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrs ("poleemery" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("poleemery" "en;ru_RU" "${SRCS}" "${FORMS}" "poleemerysettings.xml")
 
 ADD_LIBRARY (leechcraft_poleemery SHARED
