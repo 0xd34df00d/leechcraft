@@ -29,49 +29,47 @@
 
 #pragma once
 
-#include <functional>
 #include <QObject>
-#include <QList>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavetabs.h>
-#include <interfaces/ihavesettings.h>
+#include <QStringList>
+#include <QHash>
+
+class QAbstractItemModel;
+class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
 namespace Poleemery
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveTabs
-				 , public IHaveSettings
+	class CurrenciesManager : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IHaveSettings)
 
-		QList<QPair<TabClassInfo, std::function<void (TabClassInfo)>>> TabClasses_;
-		Util::XmlSettingsDialog_ptr XSD_;
+		QStringList Currencies_;
+		QStandardItemModel *Model_;
+
+		QStringList Enabled_;
+
+		QHash<QString, double> RatesFromUSD_;
+
+		QString UserCurrency_;
 	public:
-		void Init (ICoreProxy_ptr) override;
-		void SecondInit () override;
-		QByteArray GetUniqueID () const override;
-		void Release () override;
-		QString GetName () const override;
-		QString GetInfo () const override;
-		QIcon GetIcon () const override;
+		CurrenciesManager (QObject* = 0);
 
-		TabClasses_t GetTabClasses () const override;
-		void TabOpenRequested (const QByteArray&) override;
+		void Load ();
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
+		const QStringList& GetEnabledCurrencies () const;
+		QAbstractItemModel* GetSettingsModel () const;
+
+		QString GetUserCurrency () const;
+		double ToUserCurrency (const QString&, double) const;
 	private:
-		void MakeTab (QWidget*, const TabClassInfo&);
+		void FetchRates (QStringList);
+	private slots:
+		void gotRateReply ();
+		void handleItemChanged (QStandardItem*);
 	signals:
-		void addNewTab (const QString&, QWidget*) override;
-		void removeTab (QWidget*) override;
-		void changeTabName (QWidget*, const QString&) override;
-		void changeTabIcon (QWidget*, const QIcon&) override;
-		void statusBarChanged (QWidget*, const QString&) override;
-		void raiseTab (QWidget*) override;
+		void currenciesUpdated ();
 	};
 }
 }

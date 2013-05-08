@@ -27,51 +27,33 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <functional>
-#include <QObject>
-#include <QList>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavetabs.h>
-#include <interfaces/ihavesettings.h>
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
 namespace Poleemery
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveTabs
-				 , public IHaveSettings
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IHaveSettings)
+		Util::BaseSettingsManager::Init ();
+	}
 
-		QList<QPair<TabClassInfo, std::function<void (TabClassInfo)>>> TabClasses_;
-		Util::XmlSettingsDialog_ptr XSD_;
-	public:
-		void Init (ICoreProxy_ptr) override;
-		void SecondInit () override;
-		QByteArray GetUniqueID () const override;
-		void Release () override;
-		QString GetName () const override;
-		QString GetInfo () const override;
-		QIcon GetIcon () const override;
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager manager;
+		return manager;
+	}
 
-		TabClasses_t GetTabClasses () const override;
-		void TabOpenRequested (const QByteArray&) override;
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Poleemery");
+		return settings;
+	}
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
-	private:
-		void MakeTab (QWidget*, const TabClassInfo&);
-	signals:
-		void addNewTab (const QString&, QWidget*) override;
-		void removeTab (QWidget*) override;
-		void changeTabName (QWidget*, const QString&) override;
-		void changeTabIcon (QWidget*, const QIcon&) override;
-		void statusBarChanged (QWidget*, const QString&) override;
-		void raiseTab (QWidget*) override;
-	};
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
 }
 }

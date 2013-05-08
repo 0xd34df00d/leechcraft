@@ -29,8 +29,12 @@
 
 #include "poleemery.h"
 #include <QIcon>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "operationstab.h"
 #include "accountstab.h"
+#include "xmlsettingsmanager.h"
+#include "core.h"
+#include "currenciesmanager.h"
 
 namespace LeechCraft
 {
@@ -38,6 +42,14 @@ namespace Poleemery
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "poleemerysettings.xml");
+
+		XSD_->SetDataSource ("CurrenciesView",
+				Core::Instance ().GetCurrenciesManager ()->GetSettingsModel ());
+
+		Core::Instance ().SetCoreProxy (proxy);
+
 		TabClasses_.append ({
 				{
 					GetUniqueID () + "/Operations",
@@ -114,6 +126,11 @@ namespace Poleemery
 		}
 
 		pos->second (pos->first);
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 
 	void Plugin::MakeTab (QWidget *tab, const TabClassInfo& tc)

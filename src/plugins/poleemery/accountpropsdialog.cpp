@@ -30,6 +30,8 @@
 #include "accountpropsdialog.h"
 #include <QtDebug>
 #include "structures.h"
+#include "core.h"
+#include "currenciesmanager.h"
 
 namespace LeechCraft
 {
@@ -44,18 +46,8 @@ namespace Poleemery
 		Ui_.AccType_->addItem (ToHumanReadable (AccType::Cash));
 		Ui_.AccType_->addItem (ToHumanReadable (AccType::BankAccount));
 
-		QStringList currencies;
-		for (auto language = 2; language < 214; ++language)
-			for (auto country = 1; country < 247; ++country)
-			{
-				const QLocale locale (static_cast<QLocale::Language> (language), static_cast<QLocale::Country> (country));
-				currencies << locale.currencySymbol (QLocale::CurrencyIsoCode);
-			}
-
-		std::sort (currencies.begin (), currencies.end ());
-		currencies.erase (std::unique (currencies.begin (), currencies.end ()), currencies.end ());
-		currencies.removeAll (QString ());
-
+		const auto& currencies = Core::Instance ()
+				.GetCurrenciesManager ()->GetEnabledCurrencies ();
 		Ui_.Currency_->addItems (currencies);
 	}
 

@@ -31,6 +31,8 @@
 #include <QStandardItemModel>
 #include "storage.h"
 #include "entriesmodel.h"
+#include "core.h"
+#include "currenciesmanager.h"
 
 namespace LeechCraft
 {
@@ -41,12 +43,21 @@ namespace Poleemery
 	, Storage_ (storage)
 	, Model_ (new EntriesModel (this))
 	{
+	}
+
+	void OperationsManager::Load ()
+	{
 		QList<EntryBase_ptr> entries;
 		for (const auto& entry : Storage_->GetReceiptEntries ())
 			entries << std::make_shared<ReceiptEntry> (entry);
 		for (const auto& entry : Storage_->GetExpenseEntries ())
 			entries << std::make_shared<ExpenseEntry> (entry);
 		Model_->AddEntries (entries);
+
+		connect (Core::Instance ().GetCurrenciesManager (),
+				SIGNAL (currenciesUpdated ()),
+				Model_,
+				SLOT (recalcSums ()));
 	}
 
 	QAbstractItemModel* OperationsManager::GetModel () const

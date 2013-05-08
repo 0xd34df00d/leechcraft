@@ -38,10 +38,17 @@ namespace Poleemery
 {
 	class EntriesModel : public QAbstractItemModel
 	{
+		Q_OBJECT
+
 		const QStringList HeaderData_;
 		QList<EntryBase_ptr> Entries_;
 
-		QList<QHash<int, double>> Sums_;
+		struct SumInfo
+		{
+			double Total_;
+			QHash<int, double> Accs_;
+		};
+		QList<SumInfo> Sums_;
 	public:
 		enum Columns
 		{
@@ -74,8 +81,8 @@ namespace Poleemery
 
 		EntryBase_ptr GetEntry (const QModelIndex&) const;
 		QList<EntryBase_ptr> GetEntries () const;
-	private:
-		void RecalcSums ();
+	public slots:
+		void recalcSums ();
 	};
 }
 }

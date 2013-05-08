@@ -29,49 +29,22 @@
 
 #pragma once
 
-#include <functional>
-#include <QObject>
-#include <QList>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavetabs.h>
-#include <interfaces/ihavesettings.h>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
 namespace Poleemery
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveTabs
-				 , public IHaveSettings
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IHaveSettings)
 
-		QList<QPair<TabClassInfo, std::function<void (TabClassInfo)>>> TabClasses_;
-		Util::XmlSettingsDialog_ptr XSD_;
+		XmlSettingsManager ();
 	public:
-		void Init (ICoreProxy_ptr) override;
-		void SecondInit () override;
-		QByteArray GetUniqueID () const override;
-		void Release () override;
-		QString GetName () const override;
-		QString GetInfo () const override;
-		QIcon GetIcon () const override;
-
-		TabClasses_t GetTabClasses () const override;
-		void TabOpenRequested (const QByteArray&) override;
-
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
-	private:
-		void MakeTab (QWidget*, const TabClassInfo&);
-	signals:
-		void addNewTab (const QString&, QWidget*) override;
-		void removeTab (QWidget*) override;
-		void changeTabName (QWidget*, const QString&) override;
-		void changeTabIcon (QWidget*, const QIcon&) override;
-		void statusBarChanged (QWidget*, const QString&) override;
-		void raiseTab (QWidget*) override;
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
 	};
 }
 }

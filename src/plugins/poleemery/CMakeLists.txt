@@ -2,7 +2,9 @@ CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 PROJECT (leechcraft_poleemery)
 INCLUDE (InitLCPlugin OPTIONAL)
 
+SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTSQL TRUE)
+SET (QT_USE_QTXML TRUE)
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -21,6 +23,8 @@ SET (SRCS
 	operationsmanager.cpp
 	operationpropsdialog.cpp
 	entriesmodel.cpp
+	currenciesmanager.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (FORMS
 	accountstab.ui
@@ -30,7 +34,7 @@ SET (FORMS
 	)
 QT4_WRAP_UI (UIS_H ${FORMS})
 #CreateTrs("poleemery" "en;ru_RU" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("poleemery" "en;ru_RU" "${SRCS}" "${FORMS}" "")
+CreateTrsUpTarget("poleemery" "en;ru_RU" "${SRCS}" "${FORMS}" "poleemerysettings.xml")
 
 ADD_LIBRARY (leechcraft_poleemery SHARED
 	${COMPILED_TRANSLATIONS}
@@ -42,3 +46,4 @@ TARGET_LINK_LIBRARIES (leechcraft_poleemery
 	${LEECHCRAFT_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_poleemery DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES poleemerysettings.xml DESTINATION ${LC_SETTINGS_DEST})

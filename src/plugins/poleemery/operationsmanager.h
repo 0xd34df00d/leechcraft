@@ -55,6 +55,8 @@ namespace Poleemery
 	public:
 		OperationsManager (Storage_ptr, QObject* = 0);
 
+		void Load ();
+
 		QAbstractItemModel* GetModel () const;
 
 		QList<EntryBase_ptr> GetAllEntries () const;
