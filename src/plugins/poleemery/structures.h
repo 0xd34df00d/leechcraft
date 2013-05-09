@@ -224,7 +224,7 @@ namespace Poleemery
 	struct EntryWithBalance
 	{
 		EntryBase_ptr Entry_;
-		BalanceInfo Sum_;
+		BalanceInfo Balance_;
 	};
 }
 }
