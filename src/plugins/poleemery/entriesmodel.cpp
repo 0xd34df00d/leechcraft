@@ -308,7 +308,7 @@ namespace Poleemery
 			const auto totalSum = GetTotalSum (hash,
 					Core::Instance ().GetAccsManager (),
 					Core::Instance ().GetCurrenciesManager ());
-			Sums_ << SumInfo { totalSum, hash };
+			Sums_ << BalanceInfo { totalSum, hash };
 		}
 		else
 			recalcSums ();
@@ -347,6 +347,11 @@ namespace Poleemery
 		return Entries_;
 	}
 
+	QList<BalanceInfo> EntriesModel::GetSumInfos () const
+	{
+		return Sums_;
+	}
+
 	void EntriesModel::recalcSums ()
 	{
 		Sums_.clear ();
@@ -362,7 +367,7 @@ namespace Poleemery
 		{
 			AppendEntry (curSum, entry);
 			const auto totalSum = GetTotalSum (curSum, accMgr, curMgr);
-			Sums_ << SumInfo { totalSum, curSum };
+			Sums_ << BalanceInfo { totalSum, curSum };
 		}
 
 		emit dataChanged (createIndex (0, Columns::AccBalance),

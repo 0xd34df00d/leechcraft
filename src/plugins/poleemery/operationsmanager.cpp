@@ -33,6 +33,7 @@
 #include "entriesmodel.h"
 #include "core.h"
 #include "currenciesmanager.h"
+#include "prelude.h"
 
 namespace LeechCraft
 {
@@ -72,6 +73,12 @@ namespace Poleemery
 	QList<EntryBase_ptr> OperationsManager::GetAllEntries () const
 	{
 		return Model_->GetEntries ();
+	}
+
+	QList<EntryWithBalance> OperationsManager::GetEntriesWBalance () const
+	{
+		return ZipWith (Model_->GetEntries (), Model_->GetSumInfos (),
+					[] (EntryBase_ptr e, BalanceInfo i) { return EntryWithBalance { e, i }; });
 	}
 
 	QSet<QString> OperationsManager::GetKnownCategories () const

@@ -29,47 +29,30 @@
 
 #pragma once
 
-#include <memory>
-#include <QObject>
-#include <QSet>
-#include "structures.h"
-
-class QStandardItemModel;
-class QAbstractItemModel;
-class QModelIndex;
+#include <iterator>
 
 namespace LeechCraft
 {
 namespace Poleemery
 {
-	class Storage;
-	typedef std::shared_ptr<Storage> Storage_ptr;
-
-	class EntriesModel;
-
-	class OperationsManager : public QObject
+	template<typename T1, typename T2, template<typename U> class Container, typename F>
+	auto ZipWith (const Container<T1>& c1, const Container<T2>& c2, F f) -> Container<decltype (f (T1 (), T2 ()))>
 	{
-		Q_OBJECT
+		Container<decltype (f (T1 (), T2 ()))> result;
+		for (auto i1 = std::begin (c1), e1 = std::end (c1),
+					i2 = std::begin (c2), e2 = std::end (c2);
+				i1 != e1 && i2 != e2; ++i1, ++i2)
+			result.push_back (f (*i1, *i2));
+		return result;
+	}
 
-		const Storage_ptr Storage_;
-		EntriesModel *Model_;
-
-		QSet<QString> KnownCategories_;
-	public:
-		OperationsManager (Storage_ptr, QObject* = 0);
-
-		void Load ();
-
-		QAbstractItemModel* GetModel () const;
-
-		QList<EntryBase_ptr> GetAllEntries () const;
-		QList<EntryWithBalance> GetEntriesWBalance () const;
-
-		QSet<QString> GetKnownCategories () const;
-
-		void AddEntry (EntryBase_ptr);
-		void UpdateEntry (EntryBase_ptr);
-		void RemoveEntry (const QModelIndex&);
-	};
+	template<typename T, template<typename U> class Container, typename F>
+	auto Map (const Container<T>& c, F f) -> Container<decltype (f (T ()))>
+	{
+		Container<decltype (f (T ()))> result;
+		for (auto t : c)
+			result.push_back (f (t));
+		return result;
+	}
 }
 }

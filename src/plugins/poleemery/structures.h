@@ -35,6 +35,7 @@
 #include <QStringList>
 #include <QDateTime>
 #include <QMetaType>
+#include <QHash>
 #include "oraltypes.h"
 
 namespace LeechCraft
@@ -209,3 +210,21 @@ BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::ReceiptEntry,
 		(QString, Name_)
 		(QString, Description_)
 		(QDateTime, Date_))
+
+namespace LeechCraft
+{
+namespace Poleemery
+{
+	struct BalanceInfo
+	{
+		double Total_;
+		QHash<int, double> Accs_;
+	};
+
+	struct EntryWithBalance
+	{
+		EntryBase_ptr Entry_;
+		BalanceInfo Sum_;
+	};
+}
+}

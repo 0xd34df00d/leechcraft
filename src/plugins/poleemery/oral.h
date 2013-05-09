@@ -46,6 +46,7 @@
 #include <QVariant>
 #include <QtDebug>
 #include "oraltypes.h"
+#include "prelude.h"
 
 typedef std::shared_ptr<QSqlQuery> QSqlQuery_ptr;
 
@@ -82,26 +83,6 @@ namespace oral
 
 	namespace detail
 	{
-		template<typename T1, typename T2, template<typename U> class Container, typename F>
-		auto ZipWith (const Container<T1>& c1, const Container<T2>& c2, F f) -> Container<decltype (f (T1 (), T2 ()))>
-		{
-			Container<decltype (f (T1 (), T2 ()))> result;
-			for (auto i1 = std::begin (c1), e1 = std::end (c1),
-						i2 = std::begin (c2), e2 = std::end (c2);
-					i1 != e1 && i2 != e2; ++i1, ++i2)
-				result.push_back (f (*i1, *i2));
-			return result;
-		}
-
-		template<typename T, template<typename U> class Container, typename F>
-		auto Map (const Container<T>& c, F f) -> Container<decltype (f (T ()))>
-		{
-			Container<decltype (f (T ()))> result;
-			for (auto t : c)
-				result.push_back (f (t));
-			return result;
-		}
-
 		template<typename Seq, int Idx>
 		struct GetFieldName
 		{
@@ -703,7 +684,7 @@ namespace oral
 	ObjectInfo<T> Adapt (const QSqlDatabase& db)
 	{
 		const QList<QString> fields = detail::GetFieldsNames<T> {} ();
-		const QList<QString> boundFields = detail::Map (fields, [] (const QString& str) -> QString { return ':' + str; });
+		const QList<QString> boundFields = Map (fields, [] (const QString& str) -> QString { return ':' + str; });
 
 		const auto& table = T::ClassName ();
 
