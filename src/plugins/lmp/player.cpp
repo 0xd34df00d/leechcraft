@@ -796,7 +796,9 @@ namespace LMP
 		switch (PlayMode_)
 		{
 		case PlayMode::Sequential:
-			if (pos != CurrentQueue_.end () && ++pos != CurrentQueue_.end ())
+			if (pos == CurrentQueue_.end ())
+				return CurrentQueue_.value (0);
+			else if (++pos != CurrentQueue_.end ())
 				return *pos;
 			else
 				return {};
@@ -817,7 +819,7 @@ namespace LMP
 		case PlayMode::RepeatAlbum:
 		{
 			if (pos == CurrentQueue_.end ())
-				return Phonon::MediaSource ();
+				return CurrentQueue_.value (0);
 
 			const auto& curAlbum = GetMediaInfo (*pos).Album_;
 			++pos;
@@ -885,12 +887,12 @@ namespace LMP
 		}
 		else
 		{
-			QList<Phonon::MediaSource>::const_iterator pos;
-			pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
-			if (pos == CurrentQueue_.end () || pos == CurrentQueue_.begin ())
+			const auto pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
+			if (pos == CurrentQueue_.begin ())
 				return;
 
-			next = *(--pos);
+			if (pos == CurrentQueue_.end ())
+				next = CurrentQueue_.value (0);
 		}
 
 		Source_->stop ();
