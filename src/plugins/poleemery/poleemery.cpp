@@ -32,6 +32,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "operationstab.h"
 #include "accountstab.h"
+#include "graphstab.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
 #include "currenciesmanager.h"
@@ -53,7 +54,7 @@ namespace Poleemery
 		TabClasses_.append ({
 				{
 					GetUniqueID () + "/Operations",
-					tr ("Operations"),
+					tr ("Finances operations"),
 					tr ("All operations on personal finances."),
 					QIcon (),
 					2,
@@ -65,14 +66,26 @@ namespace Poleemery
 		TabClasses_.append ({
 				{
 					GetUniqueID () + "/Accounts",
-					tr ("Accounts"),
-					tr ("Accounts management tab."),
+					tr ("Finances accounts"),
+					tr ("Finances accounts management tab."),
 					QIcon (),
 					1,
 					TFOpenableByRequest
 				},
 				[this] (const TabClassInfo& tc)
 					{ MakeTab (new AccountsTab (tc, this), tc); }
+			});
+		TabClasses_.append ({
+				{
+					GetUniqueID () + "/Graphs",
+					tr ("Spending graphs"),
+					tr ("Tab with various graphs helping to analyze spendings."),
+					QIcon (),
+					1,
+					TFOpenableByRequest
+				},
+				[this] (const TabClassInfo& tc)
+					{ MakeTab (new GraphsTab (tc, this), tc); }
 			});
 	}
 
