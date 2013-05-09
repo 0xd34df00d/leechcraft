@@ -33,6 +33,7 @@
 #include <qwt_plot_curve.h>
 #include <qwt_plot_histogram.h>
 #include <qwt_plot.h>
+#include <qwt_plot_grid.h>
 #include "core.h"
 #include "operationsmanager.h"
 #include "prelude.h"
@@ -171,6 +172,12 @@ namespace Poleemery
 				result << item;
 			}
 
+			auto grid = new QwtPlotGrid;
+			grid->enableYMin (true);
+			grid->enableXMin (true);
+			grid->setMinPen (QPen (Qt::gray, 1, Qt::DashLine));
+			result << grid;
+
 			return result;
 		}
 
@@ -228,6 +235,13 @@ namespace Poleemery
 
 				result << item;
 			}
+
+			auto grid = new QwtPlotGrid;
+			grid->enableYMin (true);
+			grid->enableX (false);
+			grid->setMinPen (QPen (Qt::gray, 1, Qt::DashLine));
+			result << grid;
+
 			return result;
 		}
 	}
