@@ -75,15 +75,12 @@ namespace Poleemery
 		Ui_.Plot_->detachItems ();
 
 		GraphsFactory f;
-
 		for (const auto& item : f.CreateItems (index))
 		{
 			item->setRenderHint (QwtPlotItem::RenderAntialiased);
 			item->attach (Ui_.Plot_);
 		}
-
-		Ui_.Plot_->setAxisTitle (QwtPlot::Axis::xBottom, f.GetXAxisLabel (index));
-		Ui_.Plot_->setAxisTitle (QwtPlot::Axis::yLeft, f.GetYAxisLabel (index));
+		f.PreparePlot (index, Ui_.Plot_);
 
 		Ui_.Plot_->replot ();
 	}

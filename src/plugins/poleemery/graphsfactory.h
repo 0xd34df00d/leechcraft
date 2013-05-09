@@ -32,21 +32,20 @@
 #include <functional>
 #include <QObject>
 
+class QwtPlot;
 class QwtPlotItem;
 
 namespace LeechCraft
 {
 namespace Poleemery
 {
-	class GraphsFactory : public QObject
+	class GraphsFactory
 	{
 		struct GraphInfo
 		{
 			QString Name_;
 			std::function<QList<QwtPlotItem*> ()> Creator_;
-
-			QString XAxisLabel_;
-			QString YAxisLabel_;
+			std::function<void (QwtPlot*)> Preparer_;
 		};
 		QList<GraphInfo> Infos_;
 	public:
@@ -55,10 +54,7 @@ namespace Poleemery
 		QStringList GetNames () const;
 
 		QList<QwtPlotItem*> CreateItems (int);
-		QString GetXAxisLabel (int) const;
-		QString GetYAxisLabel (int) const;
-	private:
-		QList<QwtPlotItem*> CreateBalanceItems (int, bool);
+		void PreparePlot (int, QwtPlot*);
 	};
 }
 }
