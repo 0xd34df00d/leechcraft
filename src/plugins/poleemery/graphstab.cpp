@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "graphstab.h"
+#include <qwt_legend.h>
+#include "graphsfactory.h"
 
 namespace LeechCraft
 {
@@ -39,8 +41,12 @@ namespace Poleemery
 	{
 		Ui_.setupUi (this);
 
-		Ui_.GraphType_->addItem (tr ("Month account dynamics"));
+		Ui_.GraphType_->addItems (GraphsFactory ().GetNames ());
 		Ui_.GraphType_->setCurrentIndex (-1);
+
+		auto legend = new QwtLegend;
+		legend->setItemMode (QwtLegend::ClickableItem);
+		Ui_.Plot_->insertLegend (legend, QwtPlot::BottomLegend);
 	}
 
 	TabClassInfo GraphsTab::GetTabClassInfo () const
@@ -66,6 +72,20 @@ namespace Poleemery
 
 	void GraphsTab::on_GraphType__currentIndexChanged (int index)
 	{
+		Ui_.Plot_->detachItems ();
+
+		GraphsFactory f;
+
+		for (const auto& item : f.CreateItems (index))
+		{
+			item->setRenderHint (QwtPlotItem::RenderAntialiased);
+			item->attach (Ui_.Plot_);
+		}
+
+		Ui_.Plot_->setAxisTitle (QwtPlot::Axis::xBottom, f.GetXAxisLabel (index));
+		Ui_.Plot_->setAxisTitle (QwtPlot::Axis::yLeft, f.GetYAxisLabel (index));
+
+		Ui_.Plot_->replot ();
 	}
 }
 }
