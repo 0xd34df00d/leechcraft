@@ -44,9 +44,16 @@ namespace Poleemery
 	GraphsFactory::GraphsFactory ()
 	{
 		auto curMgr = Core::Instance ().GetCurrenciesManager ();
+
 		Infos_.append ({
 				tr ("Cumulative accounts balance (month)"),
 				[this] { return CreateBalanceItems (30, true); },
+				tr ("Days"),
+				curMgr->GetUserCurrency ()
+			});
+		Infos_.append ({
+				tr ("Comparative accounts balance (month)"),
+				[this] { return CreateBalanceItems (30, false); },
 				tr ("Days"),
 				curMgr->GetUserCurrency ()
 			});
@@ -175,11 +182,15 @@ namespace Poleemery
 		{
 			const auto& acc = accsMgr->GetAccount (accId);
 
-			const auto curColor = colors.at (currentColor++ % colors.size ());
+			auto curColor = colors.at (currentColor++ % colors.size ());
 
 			auto item = new QwtPlotCurve (acc.Name_);
 			item->setPen (curColor);
+
+			if (!cumulative)
+				curColor.setAlphaF (0.2);
 			item->setBrush (curColor);
+
 			item->setZ (z--);
 			item->setSamples (xData, accBalances [accId]);
 			result << item;
