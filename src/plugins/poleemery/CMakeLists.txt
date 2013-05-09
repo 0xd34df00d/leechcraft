@@ -30,6 +30,7 @@ SET (SRCS
 	currenciesmanager.cpp
 	xmlsettingsmanager.cpp
 	graphstab.cpp
+	graphsfactory.cpp
 	)
 SET (FORMS
 	accountstab.ui
