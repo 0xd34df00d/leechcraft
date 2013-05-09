@@ -32,8 +32,10 @@
 #include <memory>
 #include <boost/fusion/adapted/struct/adapt_struct.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
-#include <QString>
-#include "oral.h"
+#include <QStringList>
+#include <QDateTime>
+#include <QMetaType>
+#include "oraltypes.h"
 
 namespace LeechCraft
 {

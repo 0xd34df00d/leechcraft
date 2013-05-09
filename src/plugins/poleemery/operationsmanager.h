@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <QObject>
+#include <QSet>
 #include "structures.h"
 
 class QStandardItemModel;

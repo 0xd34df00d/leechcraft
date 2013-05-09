@@ -35,30 +35,44 @@
 #include <QSqlQuery>
 #include <util/util.h>
 #include <util/dblock.h>
-#include "structures.h"
 #include "oral.h"
 
 namespace LeechCraft
 {
 namespace Poleemery
 {
+	struct StorageImpl
+	{
+		QSqlDatabase DB_;
+
+		oral::ObjectInfo<Account> AccountInfo_;
+		oral::ObjectInfo<NakedExpenseEntry> NakedExpenseEntryInfo_;
+		oral::ObjectInfo<ReceiptEntry> ReceiptEntryInfo_;
+		oral::ObjectInfo<Category> CategoryInfo_;
+		oral::ObjectInfo<CategoryLink> CategoryLinkInfo_;
+
+		QHash<QString, Category> CatCache_;
+		QHash<int, Category> CatIDCache_;
+	};
+
 	Storage::Storage (QObject *parent)
 	: QObject (parent)
-	, DB_ (QSqlDatabase::addDatabase ("QSQLITE", "Poleemery_Connection"))
+	, Impl_ (new StorageImpl)
 	{
+		Impl_->DB_ = QSqlDatabase::addDatabase ("QSQLITE", "Poleemery_Connection");
 		const auto& dir = Util::CreateIfNotExists ("poleemeery");
-		DB_.setDatabaseName (dir.absoluteFilePath ("database.db"));
+		Impl_->DB_.setDatabaseName (dir.absoluteFilePath ("database.db"));
 
-		if (!DB_.open ())
+		if (!Impl_->DB_.open ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to open database:"
-					<< DB_.lastError ().text ();
+					<< Impl_->DB_.lastError ().text ();
 			throw std::runtime_error ("Poleemery database creation failed");
 		}
 
 		{
-			QSqlQuery query (DB_);
+			QSqlQuery query (Impl_->DB_);
 			query.exec ("PRAGMA foreign_keys = ON;");
 		}
 
@@ -70,7 +84,7 @@ namespace Poleemery
 	{
 		try
 		{
-			return AccountInfo_.DoSelectAll_ ();
+			return Impl_->AccountInfo_.DoSelectAll_ ();
 		}
 		catch (const oral::QueryException& e)
 		{
@@ -84,7 +98,7 @@ namespace Poleemery
 	{
 		try
 		{
-			AccountInfo_.DoInsert_ (acc);
+			Impl_->AccountInfo_.DoInsert_ (acc);
 		}
 		catch (const oral::QueryException& e)
 		{
@@ -98,7 +112,7 @@ namespace Poleemery
 	{
 		try
 		{
-			AccountInfo_.DoUpdate_ (acc);
+			Impl_->AccountInfo_.DoUpdate_ (acc);
 		}
 		catch (const oral::QueryException& e)
 		{
@@ -112,7 +126,7 @@ namespace Poleemery
 	{
 		try
 		{
-			AccountInfo_.DoDelete_ (acc);
+			Impl_->AccountInfo_.DoDelete_ (acc);
 		}
 		catch (const oral::QueryException& e)
 		{
@@ -126,7 +140,7 @@ namespace Poleemery
 	{
 		try
 		{
-			return HandleNaked (NakedExpenseEntryInfo_.DoSelectAll_ ());
+			return HandleNaked (Impl_->NakedExpenseEntryInfo_.DoSelectAll_ ());
 		}
 		catch (const oral::QueryException& e)
 		{
@@ -140,7 +154,7 @@ namespace Poleemery
 	{
 		try
 		{
-			return HandleNaked (NakedExpenseEntryInfo_.SelectByFKeysActor_ (boost::fusion::make_vector (parent)));
+			return HandleNaked (Impl_->NakedExpenseEntryInfo_.SelectByFKeysActor_ (boost::fusion::make_vector (parent)));
 		}
 		catch (const oral::QueryException& e)
 		{
@@ -152,12 +166,12 @@ namespace Poleemery
 
 	void Storage::AddExpenseEntry (ExpenseEntry& entry)
 	{
-		Util::DBLock lock (DB_);
+		Util::DBLock lock (Impl_->DB_);
 		lock.Init ();
 
 		try
 		{
-			NakedExpenseEntryInfo_.DoInsert_ (entry);
+			Impl_->NakedExpenseEntryInfo_.DoInsert_ (entry);
 			AddNewCategories (entry, entry.Categories_);
 		}
 		catch (const oral::QueryException& e)
@@ -172,17 +186,17 @@ namespace Poleemery
 
 	void Storage::UpdateExpenseEntry (const ExpenseEntry& entry)
 	{
-		Util::DBLock lock (DB_);
+		Util::DBLock lock (Impl_->DB_);
 		lock.Init ();
 
-		NakedExpenseEntryInfo_.DoUpdate_ (entry);
+		Impl_->NakedExpenseEntryInfo_.DoUpdate_ (entry);
 
 		auto nowCats = entry.Categories_;
 
-		for (const auto& cat : boost::fusion::at_c<1> (CategoryLinkInfo_.SingleFKeySelectors_) (entry))
+		for (const auto& cat : boost::fusion::at_c<1> (Impl_->CategoryLinkInfo_.SingleFKeySelectors_) (entry))
 		{
-			if (!nowCats.removeAll (CatIDCache_.value (cat.Category_).Name_))
-				CategoryLinkInfo_.DoDelete_ (cat);
+			if (!nowCats.removeAll (Impl_->CatIDCache_.value (cat.Category_).Name_))
+				Impl_->CategoryLinkInfo_.DoDelete_ (cat);
 		}
 
 		if (!nowCats.isEmpty ())
@@ -195,7 +209,7 @@ namespace Poleemery
 	{
 		try
 		{
-			NakedExpenseEntryInfo_.DoDelete_ (entry);
+			Impl_->NakedExpenseEntryInfo_.DoDelete_ (entry);
 		}
 		catch (const oral::QueryException& e)
 		{
@@ -209,7 +223,7 @@ namespace Poleemery
 	{
 		try
 		{
-			return ReceiptEntryInfo_.DoSelectAll_ ();
+			return Impl_->ReceiptEntryInfo_.DoSelectAll_ ();
 		}
 		catch (const oral::QueryException& e)
 		{
@@ -223,7 +237,7 @@ namespace Poleemery
 	{
 		try
 		{
-			return ReceiptEntryInfo_.SelectByFKeysActor_ (boost::fusion::make_vector (account));
+			return Impl_->ReceiptEntryInfo_.SelectByFKeysActor_ (boost::fusion::make_vector (account));
 		}
 		catch (const oral::QueryException& e)
 		{
@@ -237,7 +251,7 @@ namespace Poleemery
 	{
 		try
 		{
-			ReceiptEntryInfo_.DoInsert_ (entry);
+			Impl_->ReceiptEntryInfo_.DoInsert_ (entry);
 		}
 		catch (const oral::QueryException& e)
 		{
@@ -249,20 +263,20 @@ namespace Poleemery
 
 	void Storage::UpdateReceiptEntry (const ReceiptEntry& entry)
 	{
-		ReceiptEntryInfo_.DoUpdate_ (entry);
+		Impl_->ReceiptEntryInfo_.DoUpdate_ (entry);
 	}
 
 	void Storage::DeleteReceiptEntry (const ReceiptEntry& entry)
 	{
-		ReceiptEntryInfo_.DoDelete_ (entry);
+		Impl_->ReceiptEntryInfo_.DoDelete_ (entry);
 	}
 
 	Category Storage::AddCategory (const QString& name)
 	{
 		Category cat { name };
-		CategoryInfo_.DoInsert_ (cat);
-		CatCache_ [name] = cat;
-		CatIDCache_ [cat.ID_] = cat;
+		Impl_->CategoryInfo_.DoInsert_ (cat);
+		Impl_->CatCache_ [name] = cat;
+		Impl_->CatIDCache_ [cat.ID_] = cat;
 		return cat;
 	}
 
@@ -270,23 +284,23 @@ namespace Poleemery
 	{
 		for (const auto& cat : cats)
 		{
-			if (!CatCache_.contains (cat))
+			if (!Impl_->CatCache_.contains (cat))
 				AddCategory (cat);
-			LinkEntry2Cat (entry, CatCache_ [cat]);
+			LinkEntry2Cat (entry, Impl_->CatCache_ [cat]);
 		}
 	}
 
 	void Storage::LinkEntry2Cat (const ExpenseEntry& entry, const Category& category)
 	{
 		CategoryLink link (category, entry);
-		CategoryLinkInfo_.DoInsert_ (link);
+		Impl_->CategoryLinkInfo_.DoInsert_ (link);
 	}
 
 	void Storage::UnlinkEntry2Cat (const ExpenseEntry& entry, const Category& category)
 	{
-		const auto& link = CategoryLinkInfo_.SelectByFKeysActor_ (boost::fusion::make_vector (category, entry));
+		const auto& link = Impl_->CategoryLinkInfo_.SelectByFKeysActor_ (boost::fusion::make_vector (category, entry));
 		if (!link.isEmpty ())
-			CategoryLinkInfo_.DoDelete_ (link.first ());
+			Impl_->CategoryLinkInfo_.DoDelete_ (link.first ());
 	}
 
 	QList<ExpenseEntry> Storage::HandleNaked (const QList<NakedExpenseEntry>& nakedItems)
@@ -299,9 +313,9 @@ namespace Poleemery
 			{
 				ExpenseEntry entry { naked };
 
-				const auto& cats = boost::fusion::at_c<1> (CategoryLinkInfo_.SingleFKeySelectors_) (naked);
+				const auto& cats = boost::fusion::at_c<1> (Impl_->CategoryLinkInfo_.SingleFKeySelectors_) (naked);
 				for (const auto& cat : cats)
-					entry.Categories_ << CatIDCache_ [cat.Category_].Name_;
+					entry.Categories_ << Impl_->CatIDCache_ [cat.Category_].Name_;
 
 				entries << entry;
 			}
@@ -356,25 +370,25 @@ namespace Poleemery
 
 	void Storage::InitializeTables ()
 	{
-		AccountInfo_ = oral::Adapt<Account> (DB_);
-		NakedExpenseEntryInfo_ = oral::Adapt<NakedExpenseEntry> (DB_);
-		ReceiptEntryInfo_ = oral::Adapt<ReceiptEntry> (DB_);
-		CategoryInfo_ = oral::Adapt<Category> (DB_);
-		CategoryLinkInfo_ = oral::Adapt<CategoryLink> (DB_);
+		Impl_->AccountInfo_ = oral::Adapt<Account> (Impl_->DB_);
+		Impl_->NakedExpenseEntryInfo_ = oral::Adapt<NakedExpenseEntry> (Impl_->DB_);
+		Impl_->ReceiptEntryInfo_ = oral::Adapt<ReceiptEntry> (Impl_->DB_);
+		Impl_->CategoryInfo_ = oral::Adapt<Category> (Impl_->DB_);
+		Impl_->CategoryLinkInfo_ = oral::Adapt<CategoryLink> (Impl_->DB_);
 
-		const auto& tables = DB_.tables ();
+		const auto& tables = Impl_->DB_.tables ();
 
 		QMap<QString, QString> queryCreates;
-		queryCreates [Account::ClassName ()] = AccountInfo_.CreateTable_;
-		queryCreates [NakedExpenseEntry::ClassName ()] = NakedExpenseEntryInfo_.CreateTable_;
-		queryCreates [ReceiptEntry::ClassName ()] = ReceiptEntryInfo_.CreateTable_;
-		queryCreates [Category::ClassName ()] = CategoryInfo_.CreateTable_;
-		queryCreates [CategoryLink::ClassName ()] = CategoryLinkInfo_.CreateTable_;
+		queryCreates [Account::ClassName ()] = Impl_->AccountInfo_.CreateTable_;
+		queryCreates [NakedExpenseEntry::ClassName ()] = Impl_->NakedExpenseEntryInfo_.CreateTable_;
+		queryCreates [ReceiptEntry::ClassName ()] = Impl_->ReceiptEntryInfo_.CreateTable_;
+		queryCreates [Category::ClassName ()] = Impl_->CategoryInfo_.CreateTable_;
+		queryCreates [CategoryLink::ClassName ()] = Impl_->CategoryLinkInfo_.CreateTable_;
 
-		Util::DBLock lock (DB_);
+		Util::DBLock lock (Impl_->DB_);
 		lock.Init ();
 
-		QSqlQuery query (DB_);
+		QSqlQuery query (Impl_->DB_);
 
 		bool tablesCreated = false;
 		for (const auto& key : queryCreates.keys ())
@@ -399,10 +413,10 @@ namespace Poleemery
 	{
 		try
 		{
-			for (const auto& cat : CategoryInfo_.DoSelectAll_ ())
+			for (const auto& cat : Impl_->CategoryInfo_.DoSelectAll_ ())
 			{
-				CatCache_ [cat.Name_] = cat;
-				CatIDCache_ [cat.ID_] = cat;
+				Impl_->CatCache_ [cat.Name_] = cat;
+				Impl_->CatIDCache_ [cat.ID_] = cat;
 			}
 		}
 		catch (const oral::QueryException& e)

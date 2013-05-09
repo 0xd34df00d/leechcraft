@@ -38,6 +38,9 @@ namespace Poleemery
 	, ParentPlugin_ (plugin)
 	{
 		Ui_.setupUi (this);
+
+		Ui_.GraphType_->addItem (tr ("Month account dynamics"));
+		Ui_.GraphType_->setCurrentIndex (-1);
 	}
 
 	TabClassInfo GraphsTab::GetTabClassInfo () const
@@ -59,6 +62,10 @@ namespace Poleemery
 	QToolBar* GraphsTab::GetToolBar () const
 	{
 		return 0;
+	}
+
+	void GraphsTab::on_GraphType__currentIndexChanged (int index)
+	{
 	}
 }
 }

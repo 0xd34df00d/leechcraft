@@ -54,6 +54,8 @@ namespace Poleemery
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+	private slots:
+		void on_GraphType__currentIndexChanged (int);
 	signals:
 		void removeTab (QWidget*);
 	};
