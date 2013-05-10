@@ -34,7 +34,6 @@
 #include <QDBusConnection>
 #include <QStringList>
 #include <interfaces/core/icoreproxy.h>
-#include "notificationmanager.h"
 #include "general.h"
 #include "tasks.h"
 
@@ -49,7 +48,6 @@ namespace DBusManager
 		Q_OBJECT
 
 		std::unique_ptr<QDBusConnection> Connection_;
-		std::unique_ptr<NotificationManager> NotificationManager_;
 		std::unique_ptr<General> General_;
 		std::unique_ptr<Tasks> Tasks_;
 
@@ -62,8 +60,6 @@ namespace DBusManager
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
 		QString Greeter (const QString&);
-		bool CouldHandle (const LeechCraft::Entity&) const;
-		void Handle (const LeechCraft::Entity&);
 	private:
 		void DumpError ();
 	private slots:

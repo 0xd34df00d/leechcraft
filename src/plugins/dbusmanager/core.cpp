@@ -52,8 +52,6 @@ namespace DBusManager
 {
 	Core::Core ()
 	{
-		NotificationManager_.reset (new NotificationManager);
-
 		QTimer::singleShot (1500,
 				this,
 				SLOT (doDelayedInit ()));
@@ -87,16 +85,6 @@ namespace DBusManager
 	QString Core::Greeter (const QString&)
 	{
 		return tr ("LeechCraft D-Bus general interface");
-	}
-
-	bool Core::CouldHandle (const LeechCraft::Entity& e) const
-	{
-		return NotificationManager_->CouldNotify (e);
-	}
-
-	void Core::Handle (const LeechCraft::Entity& e)
-	{
-		NotificationManager_->HandleNotification (e);
 	}
 
 	void Core::DumpError ()

@@ -103,18 +103,6 @@ namespace DBusManager
 	{
 		return SettingsDialog_;
 	}
-
-	EntityTestHandleResult DBusManager::CouldHandle (const Entity& e) const
-	{
-		return Core::Instance ().CouldHandle (e) ?
-				EntityTestHandleResult (EntityTestHandleResult::PHigh) :
-				EntityTestHandleResult ();
-	}
-
-	void DBusManager::Handle (Entity e)
-	{
-		Core::Instance ().Handle (e);
-	}
 }
 }
 

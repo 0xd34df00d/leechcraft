@@ -29,6 +29,8 @@
 
 #include "sysnotify.h"
 #include <QIcon>
+#include <interfaces/entitytesthandleresult.h>
+#include "notificationmanager.h"
 
 namespace LeechCraft
 {
@@ -36,6 +38,7 @@ namespace Sysnotify
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Manager_.reset (new NotificationManager (this));
 	}
 
 	void Plugin::SecondInit ()
@@ -49,6 +52,7 @@ namespace Sysnotify
 
 	void Plugin::Release ()
 	{
+		Manager_.reset ();
 	}
 
 	QString Plugin::GetName () const
@@ -65,8 +69,19 @@ namespace Sysnotify
 	{
 		return QIcon ();
 	}
+
+	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
+	{
+		return EntityTestHandleResult { Manager_->CouldNotify (e) ?
+					EntityTestHandleResult::PHigh :
+					EntityTestHandleResult::PNone };
+	}
+
+	void Plugin::Handle (Entity e)
+	{
+		Manager_->HandleNotification (e);
+	}
 }
 }
 
 LC_EXPORT_PLUGIN (leechcraft_sysnotify, LeechCraft::Sysnotify::Plugin);
-

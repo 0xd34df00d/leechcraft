@@ -31,16 +31,22 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/ientityhandler.h>
 
 namespace LeechCraft
 {
 namespace Sysnotify
 {
+	class NotificationManager;
+
 	class Plugin : public QObject
-					, public IInfo
+				 , public IInfo
+				 , public IEntityHandler
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IEntityHandler)
+
+		std::shared_ptr<NotificationManager> Manager_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -49,7 +55,9 @@ namespace Sysnotify
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		EntityTestHandleResult CouldHandle (const Entity&) const;
+		void Handle (Entity);
 	};
 }
 }
-

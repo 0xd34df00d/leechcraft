@@ -2,6 +2,7 @@ CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 PROJECT (leechcraft_sysnotify)
 INCLUDE (InitLCPlugin OPTIONAL)
 
+SET (QT_USE_QTDBUS TRUE)
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -10,6 +11,7 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	sysnotify.cpp
+	notificationmanager.cpp
 	)
 #CreateTrs("sysnotify" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("sysnotify" "en;ru_RU" "${SRCS}" "${FORMS}" "")

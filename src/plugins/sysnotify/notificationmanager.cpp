@@ -35,12 +35,10 @@
 #include <QtDebug>
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
-#include "core.h"
-#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
-namespace DBusManager
+namespace Sysnotify
 {
 	NotificationManager::NotificationManager (QObject *parent)
 	: QObject (parent)
@@ -56,10 +54,8 @@ namespace DBusManager
 		Connection_.reset (new QDBusInterface ("org.freedesktop.Notifications",
 					"/org/freedesktop/Notifications"));
 		if (!Connection_->isValid ())
-		{
 			qWarning () << Q_FUNC_INFO
 				<< Connection_->lastError ();
-		}
 
 		connect (Connection_.get (),
 				SIGNAL (ActionInvoked (uint, QString)),
@@ -73,9 +69,7 @@ namespace DBusManager
 
 	bool NotificationManager::CouldNotify (const Entity& e) const
 	{
-		return XmlSettingsManager::Instance ()->
-				property ("UseNotifications").toBool () &&
-			Connection_.get () &&
+		return Connection_.get () &&
 			Connection_->isValid () &&
 			e.Mime_ == "x-leechcraft/notification" &&
 			e.Additional_ ["Priority"].toInt () != PLog_ &&
@@ -84,31 +78,23 @@ namespace DBusManager
 
 	void NotificationManager::HandleNotification (const Entity& e)
 	{
-		if (!Connection_.get () ||
-				!XmlSettingsManager::Instance ()->
-					property ("UseNotifications").toBool ())
+		if (!Connection_.get ())
 			return;
 
 		QStringList actions = e.Additional_ ["NotificationActions"].toStringList ();
 		if (actions.isEmpty ())
-			DoNotify (e, false);
-		else
 		{
-			CapCheckData cd =
-			{
-				e
-			};
-
-			QDBusPendingCall pending = Connection_->
-					asyncCall ("GetCapabilities");
-			QDBusPendingCallWatcher *watcher =
-				new QDBusPendingCallWatcher (pending, this);
-			Watcher2CapCheck_ [watcher] = cd;
-			connect (watcher,
-					SIGNAL (finished (QDBusPendingCallWatcher*)),
-					this,
-					SLOT (handleCapCheckCallFinished (QDBusPendingCallWatcher*)));
+			DoNotify (e, false);
+			return;
 		}
+
+		auto pending = Connection_->asyncCall ("GetCapabilities");
+		auto watcher = new QDBusPendingCallWatcher (pending, this);
+		Watcher2CapCheck_ [watcher] = { e };
+		connect (watcher,
+				SIGNAL (finished (QDBusPendingCallWatcher*)),
+				this,
+				SLOT (handleCapCheckCallFinished (QDBusPendingCallWatcher*)));
 	}
 
 	void NotificationManager::DoNotify (const Entity& e, bool hasActions)
@@ -132,10 +118,8 @@ namespace DBusManager
 			return;
 
 		int timeout = 0;
-		if (!uus &&
-				Core::Instance ().GetProxy ())
-			timeout = Core::Instance ().GetProxy ()->GetSettingsManager ()->
-					property ("FinishedDownloadMessageTimeout").toInt () * 1000;
+		if (!uus)
+			timeout = 5000;
 
 		QList<QVariant> arguments;
 		arguments << header
