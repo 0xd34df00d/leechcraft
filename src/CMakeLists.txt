@@ -198,6 +198,7 @@ OPTION (ENABLE_OTLOZHU "Build Otlozhu, a GTD-inspired ToDo manager" ${WITH_PLUGI
 OPTION (ENABLE_POLEEMERY "Build Poleemery, the personal finances manager" ${WITH_PLUGINS})
 OPTION (ENABLE_SB2 "Build SB2, next-gen fluid sidebar" ${WITH_PLUGINS})
 OPTION (ENABLE_SHAITAN "Build Shaitan, Embedded terminal emulator" ${WITH_PLUGINS})
+OPTION (ENABLE_SYSNOTIFY "Build Sysnotify for using D-Bus notification API" ${WITH_PLUGINS})
 OPTION (ENABLE_TOUCHSTREAMS "Build TouchStreams, VK.com music streaming plugin" ${WITH_PLUGINS})
 OPTION (ENABLE_TPI "Build Task Progress Indicator quark plugin" ${WITH_PLUGINS})
 OPTION (ENABLE_VROOBY "Build Vrooby, removable storage devices manager" ${WITH_PLUGINS})
@@ -437,6 +438,10 @@ ENDIF (ENABLE_SB2)
 IF (ENABLE_SNAILS)
 	ADD_SUBDIRECTORY (plugins/snails)
 ENDIF (ENABLE_SNAILS)
+
+IF (ENABLE_SYSNOTIFY)
+	ADD_SUBDIRECTORY (plugins/sysnotify)
+ENDIF (ENABLE_SYSNOTIFY)
 
 IF (ENABLE_TOUCHSTREAMS)
 	ADD_SUBDIRECTORY (plugins/touchstreams)
