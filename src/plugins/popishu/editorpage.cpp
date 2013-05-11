@@ -113,6 +113,7 @@ namespace LeechCraft
 
 				Ui_.TextEditor_->setAutoIndent (true);
 				Ui_.TextEditor_->setUtf8 (true);
+				Ui_.TextEditor_->setCaretLineBackgroundColor (palette ().color (QPalette::AlternateBase));
 
 				DoctypeMenu_ = new QMenu (tr ("Document type"));
 				DoctypeMenu_->addAction ("Bash")->setCheckable (true);
