@@ -891,8 +891,7 @@ namespace LMP
 			if (pos == CurrentQueue_.begin ())
 				return;
 
-			if (pos == CurrentQueue_.end ())
-				next = CurrentQueue_.value (0);
+			next = pos == CurrentQueue_.end () ? CurrentQueue_.value (0) : *(pos - 1);
 		}
 
 		Source_->stop ();
