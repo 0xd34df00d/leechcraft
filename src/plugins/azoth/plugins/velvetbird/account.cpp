@@ -43,9 +43,8 @@ namespace Azoth
 {
 namespace VelvetBird
 {
-	Account::Account (const QString& name, PurpleAccount *acc, Protocol *proto)
+	Account::Account (PurpleAccount *acc, Protocol *proto)
 	: QObject (proto)
-	, Name_ (name)
 	, Account_ (acc)
 	, Proto_ (proto)
 	{
@@ -89,7 +88,7 @@ namespace VelvetBird
 
 	QString Account::GetAccountName () const
 	{
-		return Name_;
+		return QString::fromUtf8 (purple_account_get_string (Account_, "AccountName", ""));
 	}
 
 	QString Account::GetOurNick () const
@@ -99,7 +98,7 @@ namespace VelvetBird
 
 	void Account::RenameAccount (const QString& name)
 	{
-		Name_ = name;
+		purple_account_set_string (Account_, "AccountName", name.toUtf8 ().constData ());
 		emit accountRenamed (name);
 	}
 
