@@ -344,13 +344,13 @@ namespace LMP
 
 		const std::vector<std::pair<Player::PlayMode, QString>> modes =
 		{
-			{ Player::PlayMode::Sequential, tr ("Sequential")},
-			{ Player::PlayMode::Shuffle, tr ("Shuffle")},
-			{ Player::PlayMode::ShuffleAlbums, tr ("Shuffle albums")},
-			{ Player::PlayMode::ShuffleArtists, tr ("Shuffle artists")},
-			{ Player::PlayMode::RepeatTrack, tr ("Repeat track")},
-			{ Player::PlayMode::RepeatAlbum, tr ("Repeat album")},
-			{ Player::PlayMode::RepeatWhole, tr ("Repeat whole")}
+			{ Player::PlayMode::Sequential, tr ("Sequential") },
+			{ Player::PlayMode::Shuffle, tr ("Shuffle") },
+			{ Player::PlayMode::ShuffleAlbums, tr ("Shuffle albums") },
+			{ Player::PlayMode::ShuffleArtists, tr ("Shuffle artists") },
+			{ Player::PlayMode::RepeatTrack, tr ("Repeat track") },
+			{ Player::PlayMode::RepeatAlbum, tr ("Repeat album") },
+			{ Player::PlayMode::RepeatWhole, tr ("Repeat whole") }
 		};
 		PlayModesGroup_ = new QActionGroup (this);
 		bool hadChecked = false;
