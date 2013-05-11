@@ -36,6 +36,7 @@
 #include "protocol.h"
 #include "util.h"
 #include "buddy.h"
+#include "accountconfigdialog.h"
 
 namespace LeechCraft
 {
@@ -118,6 +119,22 @@ namespace VelvetBird
 
 	void Account::OpenConfigurationDialog ()
 	{
+		AccountConfigDialog dia;
+
+		const auto& curAlias = QString::fromUtf8 (purple_account_get_alias (Account_));
+		dia.SetNick (curAlias);
+
+		const auto& curUser = QString::fromUtf8 (purple_account_get_username (Account_));
+		dia.SetUser (curUser);
+
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		if (curAlias != dia.GetNick ())
+			purple_account_set_alias (Account_, dia.GetNick ().toUtf8 ().constData ());
+
+		if (curUser != dia.GetUser ())
+			purple_account_set_username (Account_, dia.GetUser ().toUtf8 ().constData ());
 	}
 
 	EntryStatus Account::GetState () const
