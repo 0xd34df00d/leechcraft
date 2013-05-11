@@ -16,6 +16,9 @@
 			<item type="spinbox" property="LineCount" default="4">
 				<label value="Number of lines to be detected as paste:" />
 			</item>
+			<item type="spinbox" property="SymbolCount" default="240" minimum="10" maximum="10000" step="20">
+				<label value="Number of symbols to be detected as a paste:" />
+			</item>
 		</groupbox>
 	</page>
 </settings>
