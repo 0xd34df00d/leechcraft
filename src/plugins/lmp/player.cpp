@@ -942,7 +942,6 @@ namespace LMP
 	void Player::stop ()
 	{
 		Source_->stop ();
-		Source_->setCurrentSource ({});
 		emit songChanged (MediaInfo ());
 
 		if (CurrentStation_)
