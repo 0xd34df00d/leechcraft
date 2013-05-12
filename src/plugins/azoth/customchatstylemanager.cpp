@@ -41,6 +41,14 @@ namespace Azoth
 	{
 	}
 
+	QPair<QString, QString> CustomChatStyleManager::GetForEntry (ICLEntry *entry) const
+	{
+		auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
+		return entry->GetEntryType () == ICLEntry::ETMUC ?
+				GetMUCStyleForAccount (acc) :
+				GetStyleForAccount (acc);
+	}
+
 	QPair<QString, QString> CustomChatStyleManager::GetStyleForAccount (IAccount *acc) const
 	{
 		return GetProps ("Chat", acc);
@@ -49,6 +57,38 @@ namespace Azoth
 	QPair<QString, QString> CustomChatStyleManager::GetMUCStyleForAccount (IAccount *acc) const
 	{
 		return GetProps ("MUC", acc);
+	}
+
+	void CustomChatStyleManager::Set (IAccount *acc, Settable settable, const QString& value)
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+					QCoreApplication::applicationName () + "_Azoth");
+		settings.beginGroup ("CustomStyles");
+		settings.beginGroup (acc->GetAccountID ());
+
+		QString name;
+		switch (settable)
+		{
+		case Settable::ChatStyle:
+			name = "ChatStyle";
+			break;
+		case Settable::ChatVariant:
+			name = "ChatVariant";
+			break;
+		case Settable::MUCStyle:
+			name = "MUCStyle";
+			break;
+		case Settable::MUCVariant:
+			name = "MUCVariant";
+			break;
+		}
+
+		settings.setValue (name, value);
+
+		settings.endGroup ();
+		settings.endGroup ();
+
+		emit accountStyleChanged (acc);
 	}
 
 	QPair<QString, QString> CustomChatStyleManager::GetProps (const QString& prefix, IAccount *acc) const

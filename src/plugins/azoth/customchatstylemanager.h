@@ -37,16 +37,31 @@ namespace LeechCraft
 namespace Azoth
 {
 	class IAccount;
+	class ICLEntry;
 
 	class CustomChatStyleManager : public QObject
 	{
+		Q_OBJECT
 	public:
 		CustomChatStyleManager (QObject* = 0);
 
+		QPair<QString, QString> GetForEntry (ICLEntry*) const;
+
 		QPair<QString, QString> GetStyleForAccount (IAccount*) const;
 		QPair<QString, QString> GetMUCStyleForAccount (IAccount*) const;
+
+		enum class Settable
+		{
+			ChatStyle,
+			ChatVariant,
+			MUCStyle,
+			MUCVariant
+		};
+		void Set (IAccount*, Settable, const QString&);
 	private:
 		QPair<QString, QString> GetProps (const QString&, IAccount*) const;
+	signals:
+		void accountStyleChanged (IAccount*);
 	};
 }
 }
