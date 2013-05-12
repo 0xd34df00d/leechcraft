@@ -31,7 +31,10 @@
 #include <QMenu>
 #include <QWizard>
 #include <QMessageBox>
+#include <QComboBox>
+#include <QSettings>
 #include <QStandardItemModel>
+#include <QStyledItemDelegate>
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iprotocol.h"
 #ifdef ENABLE_CRYPT
@@ -40,20 +43,125 @@
 #endif
 #include "core.h"
 #include "util.h"
+#include "customchatstylemanager.h"
+#include "chatstyleoptionmanager.h"
+
+Q_DECLARE_METATYPE (LeechCraft::Azoth::ChatStyleOptionManager*)
 
 namespace LeechCraft
 {
 namespace Azoth
 {
+	namespace
+	{
+		class AccountListDelegate : public QStyledItemDelegate
+		{
+		public:
+			QWidget* createEditor (QWidget*, const QStyleOptionViewItem&, const QModelIndex&) const override;
+			void setEditorData (QWidget*, const QModelIndex&) const override;
+			void setModelData (QWidget*, QAbstractItemModel*, const QModelIndex&) const override;
+		};
+
+		QWidget* AccountListDelegate::createEditor (QWidget *parent, const QStyleOptionViewItem& option, const QModelIndex& index) const
+		{
+			auto getStyler = [&index] (AccountsListWidget::Role role)
+				{ return index.data (role).value<ChatStyleOptionManager*> (); };
+
+			switch (index.column ())
+			{
+			case AccountsListWidget::Column::ChatStyle:
+			{
+				auto chatStyler = getStyler (AccountsListWidget::Role::ChatStyleManager);
+
+				auto box = new QComboBox (parent);
+				box->setModel (chatStyler->GetStyleModel ());
+				connect (box,
+						SIGNAL (currentIndexChanged (QString)),
+						chatStyler,
+						SLOT (handleChatStyleSelected (QString)));
+				return box;
+			}
+			case AccountsListWidget::Column::ChatVariant:
+			{
+				auto chatStyler = getStyler (AccountsListWidget::Role::ChatStyleManager);
+
+				auto box = new QComboBox (parent);
+				box->setModel (chatStyler->GetVariantModel ());
+				return box;
+			}
+			case AccountsListWidget::Column::MUCStyle:
+			{
+				auto chatStyler = getStyler (AccountsListWidget::Role::MUCStyleManager);
+
+				auto box = new QComboBox (parent);
+				box->setModel (chatStyler->GetStyleModel ());
+				connect (box,
+						SIGNAL (currentIndexChanged (QString)),
+						chatStyler,
+						SLOT (handleChatStyleSelected (QString)));
+				return box;
+			}
+			case AccountsListWidget::Column::MUCVariant:
+			{
+				auto chatStyler = getStyler (AccountsListWidget::Role::MUCStyleManager);
+
+				auto box = new QComboBox (parent);
+				box->setModel (chatStyler->GetVariantModel ());
+				return box;
+			}
+			default:
+				return QStyledItemDelegate::createEditor (parent, option, index);
+			}
+		}
+
+		void AccountListDelegate::setEditorData (QWidget *editor, const QModelIndex& index) const
+		{
+			auto box = qobject_cast<QComboBox*> (editor);
+			const auto& text = index.data ().toString ();
+
+			switch (index.column ())
+			{
+			case AccountsListWidget::Column::ChatStyle:
+			case AccountsListWidget::Column::ChatVariant:
+			case AccountsListWidget::Column::MUCStyle:
+			case AccountsListWidget::Column::MUCVariant:
+				box->setCurrentIndex (box->findText (text));
+				break;
+			default:
+				QStyledItemDelegate::setEditorData (editor, index);
+				return;
+			}
+		}
+
+		void AccountListDelegate::setModelData (QWidget *editor, QAbstractItemModel *model, const QModelIndex& index) const
+		{
+			auto box = qobject_cast<QComboBox*> (editor);
+
+			switch (index.column ())
+			{
+			case AccountsListWidget::Column::ChatStyle:
+			case AccountsListWidget::Column::ChatVariant:
+			case AccountsListWidget::Column::MUCStyle:
+			case AccountsListWidget::Column::MUCVariant:
+				model->setData (index, box->currentText ());
+				break;
+			default:
+				QStyledItemDelegate::setModelData (editor, model, index);
+				return;
+			}
+		}
+	}
+
 	AccountsListWidget::AccountsListWidget (QWidget* parent)
 	: QWidget (parent)
 	, AccModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
 
-		QStringList labels;
-		labels << tr ("Show") << tr ("Name");
-		AccModel_->setHorizontalHeaderLabels (labels);
+		Ui_.Accounts_->setItemDelegate (new AccountListDelegate);
+
+		AccModel_->setHorizontalHeaderLabels ({ tr ("Show"), tr ("Name"),
+				tr ("Chat style"), tr ("Variant"), tr ("MUC style"), tr ("MUC variant") });
 		connect (AccModel_,
 				SIGNAL (itemChanged (QStandardItem*)),
 				this,
@@ -62,6 +170,8 @@ namespace Azoth
 #ifdef ENABLE_CRYPT
 		Ui_.PGP_->setEnabled (true);
 #endif
+
+		const auto& fm = fontMetrics ();
 
 		connect (&Core::Instance (),
 				SIGNAL (accountAdded (IAccount*)),
@@ -72,31 +182,60 @@ namespace Azoth
 				this,
 				SLOT (handleAccountRemoved (IAccount*)));
 
-		Q_FOREACH (IAccount *acc,
-				Core::Instance ().GetAccounts ())
+		for (IAccount *acc : Core::Instance ().GetAccounts ())
 			addAccount (acc);
 
 		Ui_.Accounts_->setModel (AccModel_);
+
+		Ui_.Accounts_->setColumnWidth (0, 32);
+		Ui_.Accounts_->setColumnWidth (1, fm.width ("Some typical very long account name"));
+		Ui_.Accounts_->setColumnWidth (2, fm.width ("Some typical style"));
+		Ui_.Accounts_->setColumnWidth (3, fm.width ("Some typical style variant (alternate)"));
+		Ui_.Accounts_->setColumnWidth (4, fm.width ("Some typical style"));
+		Ui_.Accounts_->setColumnWidth (5, fm.width ("Some typical style variant (alternate)"));
 	}
 
 	void AccountsListWidget::addAccount (IAccount *acc)
 	{
-		IProtocol *proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
+		auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 
-		QStandardItem *show = new QStandardItem ();
+		auto show = new QStandardItem ();
 		show->setCheckable (true);
 		show->setCheckState (acc->IsShownInRoster () ? Qt::Checked : Qt::Unchecked);
 		show->setEditable (false);
-		show->setData (QVariant::fromValue<IAccount*> (acc), RAccObj);
-		show->setData (ItemTypes::ShowInRoster, Roles::RItemType);
 
-		QStandardItem *name = new QStandardItem (acc->GetAccountName ());
+		auto name = new QStandardItem (acc->GetAccountName ());
 		name->setIcon (proto ? proto->GetProtocolIcon () : QIcon ());
 		name->setEditable (false);
-		name->setData (QVariant::fromValue<IAccount*> (acc), RAccObj);
-		name->setData (ItemTypes::Name, Roles::RItemType);
 
-		AccModel_->appendRow (QList<QStandardItem*> () << show << name);
+		const auto& stylePair = Core::Instance ()
+				.GetCustomChatStyleManager ()->GetStyleForAccount (acc);
+		auto style = new QStandardItem ();
+		style->setText (stylePair.first);
+		auto variant = new QStandardItem ();
+		variant->setText (stylePair.second);
+
+		const auto& mucPair = Core::Instance ()
+				.GetCustomChatStyleManager ()->GetMUCStyleForAccount (acc);
+		auto mucStyle = new QStandardItem ();
+		mucStyle->setText (mucPair.first);
+		auto mucVariant = new QStandardItem ();
+		mucVariant->setText (mucPair.second);
+
+		auto chatStyler = new ChatStyleOptionManager (QByteArray (), acc->GetQObject ());
+		auto mucStyler = new ChatStyleOptionManager (QByteArray (), acc->GetQObject ());
+
+		const QList<QStandardItem*> row { show, name, style, variant, mucStyle, mucVariant };
+		for (auto item : row)
+		{
+			item->setData (QVariant::fromValue<IAccount*> (acc), Role::AccObj);
+			item->setData (QVariant::fromValue<ChatStyleOptionManager*> (chatStyler), Role::ChatStyleManager);
+			item->setData (QVariant::fromValue<ChatStyleOptionManager*> (mucStyler), Role::MUCStyleManager);
+		}
+		AccModel_->appendRow (row);
+
+		for (auto item : { style, variant, mucStyle, mucVariant })
+			Ui_.Accounts_->openPersistentEditor (item->index ());
 
 		Account2Item_ [acc] = name;
 	}
@@ -108,25 +247,22 @@ namespace Azoth
 
 	void AccountsListWidget::on_Modify__released ()
 	{
-		QModelIndex index = Ui_.Accounts_->selectionModel ()->currentIndex ();
+		const auto& index = Ui_.Accounts_->selectionModel ()->currentIndex ();
 		if (!index.isValid ())
 			return;
 
-		IAccount *acc = index.data (RAccObj).value<IAccount*> ();
-		acc->OpenConfigurationDialog ();
+		index.data (Role::AccObj).value<IAccount*> ()->OpenConfigurationDialog ();
 	}
 
 	void AccountsListWidget::on_PGP__released ()
 	{
 #ifdef ENABLE_CRYPT
-		QModelIndex index = Ui_.Accounts_->
-				selectionModel ()->currentIndex ();
+		const auto& index = Ui_.Accounts_->selectionModel ()->currentIndex ();
 		if (!index.isValid ())
 			return;
 
-		IAccount *acc = index
-				.data (RAccObj).value<IAccount*> ();
-		ISupportPGP *pgpAcc = qobject_cast<ISupportPGP*> (acc->GetQObject ());
+		auto acc = index.data (Role::AccObj).value<IAccount*> ();
+		auto pgpAcc = qobject_cast<ISupportPGP*> (acc->GetQObject ());
 		if (!pgpAcc)
 		{
 			QMessageBox::warning (this,
@@ -150,13 +286,11 @@ namespace Azoth
 
 	void AccountsListWidget::on_Delete__released()
 	{
-		QModelIndex index = Ui_.Accounts_->
-		selectionModel ()->currentIndex ();
+		const auto& index = Ui_.Accounts_->selectionModel ()->currentIndex ();
 		if (!index.isValid ())
 			return;
 
-		IAccount *acc = index
-				.data (RAccObj).value<IAccount*> ();
+		auto acc = index.data (Role::AccObj).value<IAccount*> ();
 
 		if (QMessageBox::question (this,
 					"LeechCraft",
@@ -165,8 +299,8 @@ namespace Azoth
 					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
-		QObject *protoObj = acc->GetParentProtocol ();
-		IProtocol *proto = qobject_cast<IProtocol*> (protoObj);
+		auto protoObj = acc->GetParentProtocol ();
+		auto proto = qobject_cast<IProtocol*> (protoObj);
 		if (!proto)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -178,17 +312,50 @@ namespace Azoth
 		proto->RemoveAccount (acc->GetQObject ());
 	}
 
-	void AccountsListWidget::handleItemChanged (QStandardItem *item)
+	void AccountsListWidget::on_ResetStyles__released ()
 	{
-		const auto type = item->data (Roles::RItemType).toInt ();
-		if (type != ItemTypes::ShowInRoster)
+		const auto& index = Ui_.Accounts_->selectionModel ()->currentIndex ();
+		if (!index.isValid ())
 			return;
 
-		IAccount *acc = item->data (Roles::RAccObj).value<IAccount*> ();
-		acc->SetShownInRoster (item->checkState () == Qt::Checked);
-		if (!acc->IsShownInRoster () && acc->GetState ().State_ != SOffline)
-			acc->ChangeState (EntryStatus (SOffline, QString ()));
-		emit accountVisibilityChanged (acc);
+		const auto row = index.row ();
+		for (auto col : { Column::ChatStyle, Column::ChatVariant, Column::MUCStyle, Column::MUCVariant })
+			AccModel_->item (row, col)->setText ({});
+	}
+
+	void AccountsListWidget::handleItemChanged (QStandardItem *item)
+	{
+		auto acc = item->data (Role::AccObj).value<IAccount*> ();
+
+		const auto& styleMgr = Core::Instance ().GetCustomChatStyleManager ();
+		const auto& text = item->text ();
+
+		switch (item->column ())
+		{
+		case Column::ShowInRoster:
+			acc->SetShownInRoster (item->checkState () == Qt::Checked);
+
+			if (!acc->IsShownInRoster () && acc->GetState ().State_ != SOffline)
+				acc->ChangeState (EntryStatus (SOffline, QString ()));
+
+			emit accountVisibilityChanged (acc);
+
+			break;
+		case Column::ChatStyle:
+			styleMgr->Set (acc, CustomChatStyleManager::Settable::ChatStyle, text);
+			break;
+		case Column::ChatVariant:
+			styleMgr->Set (acc, CustomChatStyleManager::Settable::ChatVariant, text);
+			break;
+		case Column::MUCStyle:
+			styleMgr->Set (acc, CustomChatStyleManager::Settable::MUCStyle, text);
+			break;
+		case Column::MUCVariant:
+			styleMgr->Set (acc, CustomChatStyleManager::Settable::MUCVariant, text);
+			break;
+		default:
+			break;
+		}
 	}
 
 	void AccountsListWidget::handleAccountRemoved (IAccount *acc)
