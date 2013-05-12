@@ -81,6 +81,7 @@
 #include "userslistwidget.h"
 #include "util.h"
 #include "proxyobject.h"
+#include "customchatstylemanager.h"
 
 namespace LeechCraft
 {
@@ -240,6 +241,11 @@ namespace Azoth
 		Ui_.View_->setFocusProxy (Ui_.MsgEdit_);
 
 		HandleMUCParticipantsChanged ();
+
+		connect (Core::Instance ().GetCustomChatStyleManager (),
+				SIGNAL (accountStyleChanged (IAccount*)),
+				this,
+				SLOT (handleAccountStyleChanged (IAccount*)));
 	}
 
 	ChatTab::~ChatTab ()
@@ -1343,6 +1349,19 @@ namespace Azoth
 		const int size = XmlSettingsManager::Instance ()
 				.property ("FontSize").toInt ();
 		Ui_.View_->settings ()->setFontSize (QWebSettings::DefaultFontSize, size);
+	}
+
+	void ChatTab::handleAccountStyleChanged (IAccount *acc)
+	{
+		auto entry = GetEntry<ICLEntry> ();
+		if (!entry)
+			return;
+
+		auto accObj = entry->GetParentAccount ();
+		if (qobject_cast<IAccount*> (accObj) != acc)
+			return;
+
+		PrepareTheme ();
 	}
 
 	template<typename T>
