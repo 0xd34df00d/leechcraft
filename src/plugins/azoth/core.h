@@ -82,8 +82,9 @@ namespace Azoth
 	class CLModel;
 	class ServiceDiscoveryWidget;
 	class UnreadQueueManager;
-	class ChatStyleOptionManager;
 	class CustomStatusesManager;
+	class ChatStyleOptionManager;
+	class CustomChatStyleManager;
 
 	class Core : public QObject
 	{
@@ -158,6 +159,7 @@ namespace Azoth
 		QMap<QByteArray, std::shared_ptr<ChatStyleOptionManager>> StyleOptionManagers_;
 		std::shared_ptr<Util::ShortcutManager> ShortcutManager_;
 		std::shared_ptr<CustomStatusesManager> CustomStatusesManager_;
+		std::shared_ptr<CustomChatStyleManager> CustomChatStyleManager_;
 
 		Core ();
 	public:
@@ -201,6 +203,7 @@ namespace Azoth
 		ChatStyleOptionManager* GetChatStylesOptionsManager (const QByteArray&) const;
 		Util::ShortcutManager* GetShortcutManager () const;
 		CustomStatusesManager* GetCustomStatusesManager () const;
+		CustomChatStyleManager* GetCustomChatStyleManager () const;
 
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
@@ -249,13 +252,14 @@ namespace Azoth
 
 		CallManager* GetCallManager () const;
 
+		SourceTrackingModel<IChatStyleResourceSource>* GetChatStyleSourceModel () const;
+
 		/** Whether the given from the given entry should be counted as
 		 * unread message. For example, messages in currently visible
 		 * chat session or status messages shouldn't be counted as
 		 * unread.
 		 */
-		bool ShouldCountUnread (const ICLEntry *entry,
-				IMessage *message);
+		bool ShouldCountUnread (const ICLEntry *entry, IMessage *message);
 
 		/** Whether this message should be considered as a the one that
 		 * highlights the participant.
