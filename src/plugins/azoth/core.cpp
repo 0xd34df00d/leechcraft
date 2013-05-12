@@ -787,6 +787,10 @@ namespace Azoth
 		if (!src)
 			return QString ();
 
+		const auto& pair = CustomChatStyleManager_->GetForEntry (qobject_cast<ICLEntry*> (entry));
+		if (!pair.first.isEmpty ())
+			return src->GetHTMLTemplate (pair.first, pair.second, entry, frame);
+
 		const QByteArray& optName = GetStyleOptName (entry);
 		const QString& opt = XmlSettingsManager::Instance ()
 				.property (optName).toString ();
@@ -800,6 +804,10 @@ namespace Azoth
 		IChatStyleResourceSource *src = GetCurrentChatStyle (entry);
 		if (!src)
 			return QUrl ();
+
+		const auto& pair = CustomChatStyleManager_->GetForEntry (qobject_cast<ICLEntry*> (entry));
+		if (!pair.first.isEmpty ())
+			return pair.first;
 
 		const QString& opt = XmlSettingsManager::Instance ()
 				.property (GetStyleOptName (entry)).toString ();
@@ -1788,9 +1796,14 @@ namespace Azoth
 
 	IChatStyleResourceSource* Core::GetCurrentChatStyle (QObject *entry) const
 	{
+		const auto& pair = CustomChatStyleManager_->GetForEntry (qobject_cast<ICLEntry*> (entry));
+		if (!pair.first.isEmpty ())
+			if (auto src = ChatStylesOptionsModel_->GetSourceForOption (pair.first))
+				return src;
+
 		const QString& opt = XmlSettingsManager::Instance ()
 				.property (GetStyleOptName (entry)).toString ();
-		IChatStyleResourceSource *src = ChatStylesOptionsModel_->GetSourceForOption (opt);
+		auto src = ChatStylesOptionsModel_->GetSourceForOption (opt);
 		if (!src)
 			qWarning () << Q_FUNC_INFO
 					<< "empty result for"
