@@ -72,7 +72,7 @@ namespace LHTR
 		void AppendSeparator ();
 		void RemoveAction (QAction*);
 		QAction* GetEditorAction (EditorAction);
-		void SetBackgroundColor (const QColor&);
+		void SetBackgroundColor (const QColor&, ContentType);
 
 		void InsertHTML (const QString&);
 		void SetTagsMappings (const Replacements_t&, const Replacements_t&);
@@ -80,7 +80,7 @@ namespace LHTR
 
 		bool eventFilter (QObject*, QEvent*);
 	private:
-		void InternalSetBgColor (const QColor&);
+		void InternalSetBgColor (const QColor&, ContentType);
 
 		void SetupTableMenu ();
 

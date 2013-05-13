@@ -147,7 +147,8 @@ namespace LHTR
 				SIGNAL (textChanged ()));
 
 		handleBgColorSettings ();
-		XmlSettingsManager::Instance ().RegisterObject ("BgColor", this, "handleBgColorSettings");
+		XmlSettingsManager::Instance ().RegisterObject ({ "BgColor", "HTMLBgColor" },
+				this, "handleBgColorSettings");
 
 		Ui_.View_->installEventFilter (this);
 
@@ -377,10 +378,10 @@ namespace LHTR
 		return 0;
 	}
 
-	void RichEditorWidget::SetBackgroundColor (const QColor& color)
+	void RichEditorWidget::SetBackgroundColor (const QColor& color, ContentType type)
 	{
 		if (!XmlSettingsManager::Instance ().property ("OverrideBgColor").toBool ())
-			InternalSetBgColor (color);
+			InternalSetBgColor (color, type);
 	}
 
 	void RichEditorWidget::InsertHTML (const QString& html)
@@ -425,11 +426,22 @@ namespace LHTR
 		return true;
 	}
 
-	void RichEditorWidget::InternalSetBgColor (const QColor& color)
+	void RichEditorWidget::InternalSetBgColor (const QColor& color, ContentType type)
 	{
-		auto palette = Ui_.View_->palette ();
+		QWidget *widget = 0;
+		switch (type)
+		{
+		case ContentType::PlainText:
+			widget = Ui_.HTML_;
+			break;
+		case ContentType::HTML:
+			widget = Ui_.View_;
+			break;
+		}
+
+		auto palette = widget->palette ();
 		palette.setColor (QPalette::Base, color);
-		Ui_.View_->setPalette (palette);
+		widget->setPalette (palette);
 	}
 
 	void RichEditorWidget::SetupTableMenu ()
@@ -518,7 +530,11 @@ namespace LHTR
 	{
 		const auto& color = XmlSettingsManager::Instance ()
 				.property ("BgColor").value<QColor> ();
-		InternalSetBgColor (color);
+		InternalSetBgColor (color, ContentType::HTML);
+
+		const auto& plainColor = XmlSettingsManager::Instance ()
+				.property ("HTMLBgColor").value<QColor> ();
+		InternalSetBgColor (plainColor, ContentType::PlainText);
 	}
 
 	void RichEditorWidget::handleLinkClicked (const QUrl& url)
