@@ -31,11 +31,20 @@ Tweet::~Tweet()
 	m_author->deleteLater();
 }
 
+Tweet::Tweet(const Tweet& original): QObject()
+{
+    this->m_author = original.author();
+    this->m_created = original.dateTime();
+    this->m_text = original.text();
+    this->m_id = original.id();
+}
+
 Tweet& Tweet::operator = (const Tweet &rhs)
 {
 	if (this == &rhs)				// Same object?
 		return *this;				// Yes, so skip assignment, and just return *this.
 
+	this->m_id = rhs.id();
 	this->m_author = rhs.author();
 	this->m_created = rhs.dateTime();
 	this->m_text = rhs.text();
@@ -65,4 +74,4 @@ bool Tweet::operator > (const Tweet &other)
 
 }
 }
-// kate: indent-mode cstyle; indent-width 4; replace-tabs off; tab-width 4;
+// kate: indent-mode cstyle; indent-width 1; replace-tabs on; 

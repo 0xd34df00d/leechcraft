@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QDateTime>
 #include <QTextLayout>
+#include <memory>
 #include "twitteruser.h"
 
 namespace LeechCraft
@@ -18,6 +19,7 @@ class Tweet : public QObject
 public:
 	Tweet (QObject *parent = 0);
 	Tweet (QString text, TwitterUser *author = 0, QObject *parent = 0);
+    Tweet (const Tweet& original);
 	~Tweet ();
 
 
@@ -69,5 +71,8 @@ public slots:
 }
 }
 
+Q_DECLARE_METATYPE ( LeechCraft::Woodpecker::Tweet );
+Q_DECLARE_METATYPE ( std::shared_ptr<LeechCraft::Woodpecker::Tweet> );
+
 #endif // TWEET_H
-// kate: indent-mode cstyle; indent-width 4; replace-tabs off; tab-width 4;
+// kate: indent-mode cstyle; indent-width 1; replace-tabs on; 
