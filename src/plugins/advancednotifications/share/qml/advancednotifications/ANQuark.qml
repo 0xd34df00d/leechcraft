@@ -1,5 +1,6 @@
 import QtQuick 1.1
 import org.LC.common 1.0
+import "lcqml:org/LC/common/Common.js" as Common
 
 Rectangle {
     id: rootRect
@@ -9,8 +10,6 @@ Rectangle {
 
     color: "transparent"
 
-    Common { id: commonJS }
-
     ActionButton {
         id: anButton
 
@@ -19,7 +18,7 @@ Rectangle {
         textTooltip: AN_quarkTooltip
 
         onTriggered: {
-            var global = commonJS.getTooltipPos(anButton);
+            var global = Common.getTooltipPos(anButton);
             var params = {
                 x: global.x,
                 y: global.y,

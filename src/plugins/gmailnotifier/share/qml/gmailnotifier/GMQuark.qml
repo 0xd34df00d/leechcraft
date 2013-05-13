@@ -1,5 +1,6 @@
 import QtQuick 1.1
 import org.LC.common 1.0
+import "lcqml:org/LC/common/Common.js" as Common
 
 Rectangle {
     id: rootRect
@@ -11,8 +12,6 @@ Rectangle {
 
     color: "transparent"
 
-    Common { id: commonJS }
-
     ActionButton {
         id: gmailButton
 
@@ -22,6 +21,6 @@ Rectangle {
 
         overlayText: GMN_proxy.msgCount <= 99 ? GMN_proxy.msgCount : "+"
 
-        onTriggered: commonJS.showTooltip(rootRect, function(x, y) { GMN_proxy.showMailList(x, y, quarkProxy.getWinRect()) })
+        onTriggered: Common.showTooltip(rootRect, function(x, y) { GMN_proxy.showMailList(x, y, quarkProxy.getWinRect()) })
     }
 }

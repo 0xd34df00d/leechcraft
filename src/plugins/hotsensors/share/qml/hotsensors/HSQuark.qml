@@ -1,5 +1,6 @@
 import QtQuick 1.1
 import org.LC.common 1.0
+import "lcqml:org/LC/common/Common.js" as Common
 
 Rectangle {
     id: rootRect
@@ -15,8 +16,6 @@ Rectangle {
 
     property variant tooltip
 
-    Common { id: commonJS }
-
     Component.onCompleted: HS_plotManager.setContext(quarkContext)
 
     ActionButton {
@@ -31,7 +30,7 @@ Rectangle {
 
         actionIconURL: "image://ThemeIcons/list-add"
 
-        onTriggered: commonJS.showTooltip(addSensorButton, function(x, y) { HS_plotManager.sensorUnhideListRequested(x, y, quarkProxy.getWinRect()) })
+        onTriggered: Common.showTooltip(addSensorButton, function(x, y) { HS_plotManager.sensorUnhideListRequested(x, y, quarkProxy.getWinRect()) })
     }
 
     ListView {
@@ -75,7 +74,7 @@ Rectangle {
                 hoverEnabled: true
 
                 onEntered: {
-                    var global = commonJS.getTooltipPos(delegateItem);
+                    var global = Common.getTooltipPos(delegateItem);
                     var params = {
                         "x": global.x,
                         "y": global.y,
