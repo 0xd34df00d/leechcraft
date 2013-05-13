@@ -1,6 +1,5 @@
 import QtQuick 1.1
 import org.LC.common 1.0
-import "lcqml:org/LC/common/Common.js" as Common
 
 Rectangle {
     id: quarkDisplayRoot
@@ -8,6 +7,8 @@ Rectangle {
 
     property alias settingsMode: enableSettingsModeButton.settingsMode
     property bool isVert: viewOrient == "vertical"
+
+    Common { id: commonJS }
 
     gradient: Gradient {
         GradientStop {
@@ -45,7 +46,7 @@ Rectangle {
         actionIconURL: "image://ThemeIcons/format-list-unordered"
         textTooltip: SB2_quarkOrderTooltip
 
-        onTriggered: Common.showTooltip(setQuarkOrderButton, function(x, y) { quarkProxy.quarkOrderRequested(x, y) })
+        onTriggered: commonJS.showTooltip(setQuarkOrderButton, function(x, y) { quarkProxy.quarkOrderRequested(x, y) })
     }
 
     ActionButton {
@@ -60,7 +61,7 @@ Rectangle {
         actionIconURL: "image://ThemeIcons/list-add"
         textTooltip: SB2_addQuarkTooltip
 
-        onTriggered: Common.showTooltip(addQuarkButton, function(x, y) { quarkProxy.quarkAddRequested(x, y) })
+        onTriggered: commonJS.showTooltip(addQuarkButton, function(x, y) { quarkProxy.quarkAddRequested(x, y) })
     }
 
     ListView {

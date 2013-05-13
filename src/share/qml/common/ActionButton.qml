@@ -1,5 +1,4 @@
 import QtQuick 1.1
-import "lcqml:org/LC/common/Common.js" as Common
 
 Item {
     id: actionRoot
@@ -85,6 +84,8 @@ Item {
             cache: false
         }
 
+        Common { id: buttCommon }
+
         MouseArea {
             id: actionMouseArea
 
@@ -96,7 +97,7 @@ Item {
             onEntered: {
                 actionRoot.hovered();
                 if (textTooltip.length > 0)
-                    Common.showTextTooltip(actionMouseArea, textTooltip);
+                    buttCommon.showTextTooltip(actionMouseArea, textTooltip);
             }
             onExited: actionRoot.hoverLeft()
         }

@@ -44,7 +44,6 @@ namespace SB2
 		Q_OBJECT
 	public:
 		DeclarativeWindow (const QUrl&, QVariantMap, const QPoint&, ViewManager*, ICoreProxy_ptr, QWidget* = 0);
-		~DeclarativeWindow ();
 	};
 }
 }

@@ -74,10 +74,5 @@ namespace SB2
 				this,
 				SLOT (deleteLater ()));
 	}
-
-	DeclarativeWindow::~DeclarativeWindow ()
-	{
-		setSource ({});
-	}
 }
 }

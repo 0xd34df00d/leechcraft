@@ -52,7 +52,6 @@
 #include <interfaces/ihaveshortcuts.h>
 #include <util/util.h>
 #include <util/structuresops.h>
-#include <util/sys/paths.h>
 #include "debugmessagehandler.h"
 #include "tagsmanager.h"
 #include "mainwindow.h"
@@ -181,9 +180,6 @@ namespace LeechCraft
 		// Say hello to logs
 		qDebug () << "======APPLICATION STARTUP======";
 		qWarning () << "======APPLICATION STARTUP======";
-
-		QDir::setSearchPaths ("lcqml", Util::GetPathCandidates (Util::SysPath::QML, ""));
-		qDebug () << QDir::searchPaths ("lcqml");
 
 #ifdef Q_OS_WIN32
 		new WinWarnDialog;
