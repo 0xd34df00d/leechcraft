@@ -43,6 +43,9 @@ namespace Azoth
 
 	QPair<QString, QString> CustomChatStyleManager::GetForEntry (ICLEntry *entry) const
 	{
+		if (!entry)
+			return {};
+
 		auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
 		return entry->GetEntryType () == ICLEntry::ETMUC ?
 				GetMUCStyleForAccount (acc) :
