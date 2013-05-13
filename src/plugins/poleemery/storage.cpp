@@ -351,6 +351,11 @@ namespace Poleemery
 				case AccType::Cash:
 					return "Cash";
 				}
+
+				qWarning () << Q_FUNC_INFO
+						<< "unknown type"
+						<< static_cast<int> (type);
+				return {};
 			}
 		};
 
