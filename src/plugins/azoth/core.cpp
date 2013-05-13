@@ -210,7 +210,6 @@ namespace Azoth
 						{ it->setIcon (ic); }))
 	, SmilesOptionsModel_ (new SourceTrackingModel<IEmoticonResourceSource> (QStringList (tr ("Smile pack"))))
 	, ChatStylesOptionsModel_ (new SourceTrackingModel<IChatStyleResourceSource> (QStringList (tr ("Chat style"))))
-	, CustomChatStyleManager_ (new CustomChatStyleManager)
 	, PluginManager_ (new PluginManager)
 	, PluginProxyObject_ (new ProxyObject)
 	, XferJobManager_ (new TransferJobManager)
@@ -218,6 +217,7 @@ namespace Azoth
 	, EventsNotifier_ (new EventsNotifier)
 	, ImportManager_ (new ImportManager)
 	, UnreadQueueManager_ (new UnreadQueueManager)
+	, CustomChatStyleManager_ (new CustomChatStyleManager)
 	{
 		FillANFields ();
 
