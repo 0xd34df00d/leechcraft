@@ -74,10 +74,12 @@ namespace Monocle
 			return;
 		case Qt::Key_Backspace:
 		case Qt::Key_PageUp:
+		case Qt::Key_Left:
 			NavigateTo (CurrentPage_ - 1);
 			break;
-		case Qt::Key_PageDown:
 		case Qt::Key_Space:
+		case Qt::Key_PageDown:
+		case Qt::Key_Right:
 			NavigateTo (CurrentPage_ + 1);
 			break;
 		case Qt::Key_Home:
