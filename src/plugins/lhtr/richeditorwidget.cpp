@@ -199,12 +199,16 @@ namespace LHTR
 
 		Addable barAdd (ViewBar_);
 
-		fwdCmd (tr ("Bold"), "format-text-bold",
-				QWebPage::ToggleBold, barAdd)->setCheckable (true);
-		fwdCmd (tr ("Italic"), "format-text-italic",
-				QWebPage::ToggleItalic, barAdd)->setCheckable (true);
-		fwdCmd (tr ("Underline"), "format-text-underline",
-				QWebPage::ToggleUnderline, barAdd)->setCheckable (true);
+		Bold_ = fwdCmd (tr ("Bold"), "format-text-bold",
+				QWebPage::ToggleBold, barAdd);
+		Bold_->setCheckable (true);
+		Italic_ = fwdCmd (tr ("Italic"), "format-text-italic",
+				QWebPage::ToggleItalic, barAdd);
+		Italic_->setCheckable (true);
+		Underline_ = fwdCmd (tr ("Underline"), "format-text-underline",
+				QWebPage::ToggleUnderline, barAdd);
+		Underline_->setCheckable (true);
+
 		addCmd (tr ("Strikethrough"), "format-text-strikethrough",
 				"strikeThrough", barAdd, QString ())->setCheckable (true);
 		fwdCmd (tr ("Subscript"), "format-text-subscript",
@@ -288,15 +292,15 @@ namespace LHTR
 
 		ViewBar_->addSeparator ();
 
-		auto link = ViewBar_->addAction (tr ("Insert link..."),
+		InsertLink_ = ViewBar_->addAction (tr ("Insert link..."),
 					this,
 					SLOT (handleInsertLink ()));
-		link->setProperty ("ActionIcon", "insert-link");
+		InsertLink_->setProperty ("ActionIcon", "insert-link");
 
-		auto img = ViewBar_->addAction (tr ("Insert image..."),
+		InsertImage_ = ViewBar_->addAction (tr ("Insert image..."),
 					this,
 					SLOT (handleInsertImage ()));
-		img->setProperty ("ActionIcon", "insert-image");
+		InsertImage_->setProperty ("ActionIcon", "insert-image");
 
 		SetupTableMenu ();
 
@@ -369,10 +373,20 @@ namespace LHTR
 	{
 		switch (action)
 		{
-		case LeechCraft::EditorAction::Find:
+		case EditorAction::Find:
 			return FindAction_;
-		case LeechCraft::EditorAction::Replace:
+		case EditorAction::Replace:
 			return ReplaceAction_;
+		case EditorAction::Bold:
+			return Bold_;
+		case EditorAction::Italic:
+			return Italic_;
+		case EditorAction::Underline:
+			return Underline_;
+		case EditorAction::InsertLink:
+			return InsertLink_;
+		case EditorAction::InsertImage:
+			return InsertImage_;
 		}
 
 		return 0;

@@ -59,7 +59,12 @@ namespace LeechCraft
 	enum class EditorAction
 	{
 		Find,
-		Replace
+		Replace,
+		Bold,
+		Italic,
+		Underline,
+		InsertLink,
+		InsertImage
 	};
 }
 

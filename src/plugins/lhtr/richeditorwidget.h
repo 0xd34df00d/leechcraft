@@ -63,6 +63,13 @@ namespace LHTR
 
 		QAction *FindAction_;
 		QAction *ReplaceAction_;
+
+		QAction *Bold_;
+		QAction *Italic_;
+		QAction *Underline_;
+
+		QAction *InsertLink_;
+		QAction *InsertImage_;
 	public:
 		RichEditorWidget (ICoreProxy_ptr, QWidget* = 0);
 
