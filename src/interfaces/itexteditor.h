@@ -64,7 +64,8 @@ namespace LeechCraft
 		Italic,
 		Underline,
 		InsertLink,
-		InsertImage
+		InsertImage,
+		ToggleView
 	};
 }
 

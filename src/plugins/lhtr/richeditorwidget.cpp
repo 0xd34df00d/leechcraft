@@ -309,6 +309,12 @@ namespace LHTR
 				SIGNAL (javaScriptWindowObjectCleared ()),
 				this,
 				SLOT (setupJS ()));
+
+		ToggleView_ = new QAction (tr ("Toggle view"), this);
+		connect (ToggleView_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (toggleView ()));
 	}
 
 	QString RichEditorWidget::GetContents (ContentType type) const
@@ -387,6 +393,8 @@ namespace LHTR
 			return InsertLink_;
 		case EditorAction::InsertImage:
 			return InsertImage_;
+		case EditorAction::ToggleView:
+			return ToggleView_;
 		}
 
 		return 0;
@@ -651,6 +659,14 @@ namespace LHTR
 		upWebAct (QWebPage::AlignCenter);
 		upWebAct (QWebPage::AlignRight);
 		upWebAct (QWebPage::AlignJustified);
+	}
+
+	void RichEditorWidget::toggleView ()
+	{
+		if (Ui_.TabWidget_->currentIndex () == 1)
+			Ui_.TabWidget_->setCurrentIndex (0);
+		else
+			Ui_.TabWidget_->setCurrentIndex (1);
 	}
 
 	void RichEditorWidget::handleCmd ()

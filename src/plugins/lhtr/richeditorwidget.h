@@ -70,6 +70,8 @@ namespace LHTR
 
 		QAction *InsertLink_;
 		QAction *InsertImage_;
+
+		QAction *ToggleView_;
 	public:
 		RichEditorWidget (ICoreProxy_ptr, QWidget* = 0);
 
@@ -105,6 +107,8 @@ namespace LHTR
 
 		void on_HTML__textChanged ();
 		void updateActions ();
+
+		void toggleView ();
 
 		void handleCmd ();
 		void handleInlineCmd ();
