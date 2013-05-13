@@ -58,6 +58,24 @@ namespace Monocle
 				SLOT (delayedShowInit ()));
 	}
 
+	void PresenterWidget::NavigateTo (int page)
+	{
+		if (page < 0 || page >= Doc_->GetNumPages ())
+			return;
+
+		CurrentPage_ = page;
+
+		const auto& pageSize = Doc_->GetPageSize (page);
+
+		auto scale = std::min (static_cast<double> (width ()) / pageSize.width (),
+				static_cast<double> (height ()) / pageSize.height ());
+
+		const auto& img = Doc_->RenderPage (page, scale, scale);
+
+		PixmapLabel_->setFixedSize (img.size ());
+		PixmapLabel_->setPixmap (QPixmap::fromImage (img));
+	}
+
 	void PresenterWidget::closeEvent (QCloseEvent *event)
 	{
 		deleteLater ();
@@ -91,24 +109,6 @@ namespace Monocle
 		}
 
 		QWidget::keyPressEvent (event);
-	}
-
-	void PresenterWidget::NavigateTo (int page)
-	{
-		if (page < 0 || page >= Doc_->GetNumPages ())
-			return;
-
-		CurrentPage_ = page;
-
-		const auto& pageSize = Doc_->GetPageSize (page);
-
-		auto scale = std::min (static_cast<double> (width ()) / pageSize.width (),
-				static_cast<double> (height ()) / pageSize.height ());
-
-		const auto& img = Doc_->RenderPage (page, scale, scale);
-
-		PixmapLabel_->setFixedSize (img.size ());
-		PixmapLabel_->setPixmap (QPixmap::fromImage (img));
 	}
 
 	void PresenterWidget::delayedShowInit ()
