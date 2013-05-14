@@ -60,7 +60,6 @@ namespace LeechCraft
 {
 	PluginManager::PluginManager (const QStringList& pluginPaths, QObject *parent)
 	: QAbstractItemModel (parent)
-	, DefaultPluginIcon_ (QIcon ("lcicons:/resources/images/defaultpluginicon.svg"))
 	, IconsDir_ (Util::CreateIfNotExists ("core/pluginicons"))
 	, PluginTreeBuilder_ (new PluginTreeBuilder)
 	, CacheValid_ (false)
@@ -389,6 +388,7 @@ namespace LeechCraft
 
 	void PluginManager::Init (bool safeMode)
 	{
+		DefaultPluginIcon_ = QIcon ("lcicons:/resources/images/defaultpluginicon.svg");
 		CheckPlugins ();
 		FillInstances ();
 
