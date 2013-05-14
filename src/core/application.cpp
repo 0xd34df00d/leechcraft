@@ -176,10 +176,6 @@ namespace LeechCraft
 		}
 #endif
 
-		InitPluginsIconset ();
-
-		setWindowIcon (QIcon ("lcicons:/resources/images/leechcraft.svg"));
-
 		// Say hello to logs
 		qDebug () << "======APPLICATION STARTUP======";
 		qWarning () << "======APPLICATION STARTUP======";
@@ -192,6 +188,10 @@ namespace LeechCraft
 
 		Core::Instance ();
 		InitSettings ();
+
+		InitPluginsIconset ();
+
+		setWindowIcon (QIcon ("lcicons:/resources/images/leechcraft.svg"));
 
 		setQuitOnLastWindowClosed (false);
 
@@ -435,11 +435,15 @@ namespace LeechCraft
 		Rotate (lcDir, "warning.log");
 	}
 
-	void Application::InitPluginsIconset()
+	void Application::InitPluginsIconset ()
 	{
 		QDir::addSearchPath ("lcicons", ":/");
+
 		const auto& pluginsIconset = XmlSettingsManager::Instance ()->
 				property ("PluginsIconset").toString ();
+		if (pluginsIconset == "Default")
+			return;
+
 		const auto& pluginsPath = "global_icons/plugins/" + pluginsIconset;
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::Share, pluginsPath))
 			QDir::addSearchPath ("lcicons", cand);
