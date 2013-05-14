@@ -145,12 +145,14 @@ bool TwitDelegate::editorEvent(QEvent* event, QAbstractItemModel* model, const Q
 			auto position = (me->pos() - option.rect.adjusted(imageSpace + 14, 4, 0, -22).topLeft());
 			
 			qDebug() << "Coordinates: " << position.x() << ", " << position.y();
+		
 			QTextDocument* textDocument = current_tweet->getDocument();
 			int textCursorPosition =
 			textDocument->documentLayout()->hitTest( position, Qt::FuzzyHit );
 			QChar character( textDocument->characterAt( textCursorPosition ) );
 			QString string;
 			string.append(character);
+			
 			qDebug() << __FILE__ << __LINE__ << "Mouse pressed on letter " << string;
 			
 			auto anchor = textDocument->documentLayout()->anchorAt(position);

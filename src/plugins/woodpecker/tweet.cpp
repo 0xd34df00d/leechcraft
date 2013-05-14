@@ -14,7 +14,7 @@ Tweet::Tweet (QString text, TwitterUser *author, QObject *parent) :
 	QObject (parent)
 {
 	this->m_id = 0;
-	this->m_text = text;
+	this->setText(text);
 
 	if (author)
 		this->m_author = new TwitterUser (parent);
@@ -35,7 +35,7 @@ Tweet::Tweet(const Tweet& original): QObject()
 {
     this->m_author = original.author();
     this->m_created = original.dateTime();
-    this->m_text = original.text();
+    this->setText(original.text());
     this->m_id = original.id();
 }
 
@@ -72,13 +72,12 @@ bool Tweet::operator > (const Tweet &other)
 	return (this->m_id > other.id());
 }
 
-void Tweet::setText (QString text) {
- 
- /*
+void Tweet::setText (QString text) 
+{
  QRegExp rx("\\s((http|https)://[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(([0-9]{1,5})?/?.*))(\\s|,|$)");
  rx.setMinimal(true);
  
- qDebug() << "Parsing links for tweet " << id;
+ qDebug() << "Parsing links for tweet " << m_id;
  
  if (rx.indexIn(text) != -1) {
   for (auto link : rx.capturedTexts())
@@ -86,10 +85,14 @@ void Tweet::setText (QString text) {
    qDebug() << link;
   }
   qDebug() << "The link: " << rx.capturedTexts()[1];
- } */
- 
- m_document.setHtml(text);
+ }
  m_text = text;
+ 
+ QString html = text;
+ html.replace(rx, QString(" <a href=\"%1\">%1</a> ").arg(rx.capturedTexts()[1]));
+ qDebug() << "HTML: " << html;
+ 
+ m_document.setHtml(html);
 }
 
     
