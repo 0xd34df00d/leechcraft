@@ -1,5 +1,6 @@
 #include "twitdelegate.h"
 #include "core.h"
+#include "tweet.h"
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <QDebug>
@@ -76,10 +77,15 @@ void TwitDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & opti
   
   // Get title, description and icon
   QIcon ic = QIcon(qvariant_cast<QPixmap>(index.data(Qt::DecorationRole)));
-  QString text = index.data(Qt::DisplayRole).toString();
-  qulonglong id = index.data(Qt::UserRole).toULongLong();
-  QString author = index.data(Qt::UserRole + 1).toString();
-  QString time = index.data(Qt::UserRole + 2).toString();
+  auto current_tweet = index.data(Qt::UserRole).value<std::shared_ptr<Tweet>>();
+  if (!current_tweet) {
+	  qDebug() << "Can't recieve twit";
+	  return;
+  }
+  QString text = current_tweet->text();
+  QString author = current_tweet->author()->username();
+  qulonglong id = current_tweet->id();
+  QString time = current_tweet->dateTime().toString();
   
   int imageSpace = 50;
   if (!ic.isNull()) {

@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QDateTime>
 #include <QTextLayout>
+#include <QListWidget>
 #include <memory>
 #include "twitteruser.h"
 
@@ -75,4 +76,4 @@ Q_DECLARE_METATYPE ( LeechCraft::Woodpecker::Tweet );
 Q_DECLARE_METATYPE ( std::shared_ptr<LeechCraft::Woodpecker::Tweet> );
 
 #endif // TWEET_H
-// kate: indent-mode cstyle; indent-width 1; replace-tabs on; 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs off; tab-width 4;

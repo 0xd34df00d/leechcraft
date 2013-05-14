@@ -176,16 +176,15 @@ void TwitterPage::updateTweetList (QList< std::shared_ptr< Tweet > > twits)
 	}
 	ui->TwitList_->clear();
 
-	Q_FOREACH (twit, screenTwits)
+	for (auto twit : screenTwits)
 	{
 		QListWidgetItem *tmpitem = new QListWidgetItem();
+		QVariant data;
+		data.setValue(twit);
 		
 		tmpitem->setData(Qt::DisplayRole, "Title");
-		tmpitem->setData(Qt::UserRole, twit->id());
-		tmpitem->setData(Qt::UserRole + 1, twit->author()->username());
-		tmpitem->setData(Qt::UserRole + 2, twit->dateTime().toLocalTime().toString());
+		tmpitem->setData(Qt::UserRole, data);
 		
-		tmpitem->setText (twit->text().replace(QChar('\n'),QChar(' ')));
 		if (twit->author()->avatar.isNull())
 			tmpitem->setData(Qt::DecorationRole, QIcon (":/resources/images/woodpecker.svg"));
 		else
@@ -194,7 +193,7 @@ void TwitterPage::updateTweetList (QList< std::shared_ptr< Tweet > > twits)
 		ui->TwitList_->updateGeometry();
 		
 	}
-//	QTimer::singleShot(1000, ui->TwitList_, SLOT(update()));
+	//QTimer::singleShot(1000, ui->TwitList_, SLOT(update()));
 	
 	ui->TwitList_->update();
 	ui->TwitList_->setEnabled(true);
@@ -331,13 +330,12 @@ void TwitterPage::updateTweetList()
 	Q_FOREACH (auto twit, screenTwits)
 	{
 		QListWidgetItem *tmpitem = new QListWidgetItem();
+		QVariant data;
+		data.setValue(twit);
 		
 		tmpitem->setData(Qt::DisplayRole, "Title");
-		tmpitem->setData(Qt::UserRole, twit->id());
-		tmpitem->setData(Qt::UserRole + 1, twit->author()->username());
-		tmpitem->setData(Qt::UserRole + 2, twit->dateTime().toLocalTime().toString());
+		tmpitem->setData(Qt::UserRole, data);
 		
-		tmpitem->setText (twit->text().replace(QChar('\n'),QChar(' ')));
 		if (twit->author()->avatar.isNull())
 			tmpitem->setData(Qt::DecorationRole, QIcon (":/resources/images/woodpecker.svg"));
 		else
@@ -347,7 +345,7 @@ void TwitterPage::updateTweetList()
 	}
 //	QTimer::singleShot(1000, ui->TwitList_, SLOT(update()));
 	
-	ui->TwitList_->update();
+	//ui->TwitList_->update();
 	ui->TwitList_->setEnabled(true);
 }
 
