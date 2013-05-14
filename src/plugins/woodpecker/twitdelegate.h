@@ -11,7 +11,7 @@ namespace Woodpecker
 class TwitDelegate : public QAbstractItemDelegate
 {
 private:
-  mutable std::map<qulonglong, std::pair<QRect, QUrl>> tweet_links;
+  QObject* m_parent;
   
 public:
   TwitDelegate(QObject *parent = 0);
@@ -20,6 +20,7 @@ public:
   QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
   bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index);
   virtual ~TwitDelegate();
+  QObject* parent();
   
 signals:
   void gotEntity (const LeechCraft::Entity&);

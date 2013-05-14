@@ -23,15 +23,12 @@ public:
 	Tweet (QString text, TwitterUser *author = 0, QObject *parent = 0);
     Tweet (const Tweet& original);
 	~Tweet ();
-
+	void setText (QString text);
 
 	QString text () const {
 		return m_text;
 	}
-	void setText (QString text) {
-		m_text = text;
-	}
-
+	
 	qulonglong id () const {
 		return m_id;
 	}

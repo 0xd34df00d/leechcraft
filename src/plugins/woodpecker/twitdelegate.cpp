@@ -20,7 +20,12 @@ namespace Woodpecker
 {
 TwitDelegate::TwitDelegate(QObject *parent)
 {
-  
+	m_parent = parent;
+}
+
+QObject* TwitDelegate::parent()
+{
+	return m_parent;
 }
 
 void TwitDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const {
@@ -83,30 +88,21 @@ void TwitDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & opti
 	  qDebug() << "Can't recieve twit";
 	  return;
   }
-  QString text = current_tweet->text();
   QString author = current_tweet->author()->username();
   qulonglong id = current_tweet->id();
   QString time = current_tweet->dateTime().toString();
+  QTextDocument* doc = current_tweet->getDocument();
   
   int imageSpace = 50;
   if (!ic.isNull()) {
     // Icon
     r = option.rect.adjusted(5, 10, -10, -10);
     ic.paint(painter, r, Qt::AlignVCenter | Qt::AlignLeft);
-    imageSpace = 60;
-	if ( tweet_links.find(id) == tweet_links.end() )
-	{
-		QRect r(10, 10, 20, 50);
-		tweet_links.insert(std::make_pair (id, std::make_pair(r, QUrl("http://ya.ru"))));
-	};
   }
   
   // Text
   r = option.rect.adjusted(imageSpace, 4, -10, -22);
   painter->setFont( mainFont );
-  QTextDocument* doc = current_tweet->getDocument();
-  
-  doc->setHtml( text );
   doc->setTextWidth( r.width() );
   painter->save();
   painter->translate( r.left(), r.top() );
@@ -126,20 +122,6 @@ void TwitDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & opti
   painter->setFont( mainFont );
   painter->drawText(r.right() - painter->fontMetrics().width(time), r.bottom() - painter->fontMetrics().height() - 8, r.width(), r.height(), Qt::AlignLeft, time, &r);
   painter->setPen(linePen);
-  
-  // Links
-  QRegExp rx("\\s((http|https)://[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(([0-9]{1,5})?/?.*))(\\s|,|$)");
-  rx.setMinimal(true);
-  
-  qDebug() << "Parsing links for tweet " << id;
-  
-  if (rx.indexIn(text) != -1) {
-	  for (auto link : rx.capturedTexts())
-	  {
-		  qDebug() << link;
-	  }
-	  qDebug() << "The link: " << rx.capturedTexts()[1];
-  }
 }
 
 QSize TwitDelegate::sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const{
@@ -152,22 +134,54 @@ TwitDelegate::~TwitDelegate()
 
 bool TwitDelegate::editorEvent(QEvent* event, QAbstractItemModel* model, const QStyleOptionViewItem& option, const QModelIndex& index)
 {
+	QListWidget*  parent_widget = qobject_cast<QListWidget*>(m_parent);
+	qDebug() << __FILE__ << __LINE__ << " Event: " << event->type();
+	
+	const int imageSpace = 50;
 	if (event->type() == QEvent::MouseButtonRelease) {
 		QMouseEvent *me = (QMouseEvent*)event;
-             if (me) {
-				 int imageSpace = 50;
-				 auto current_tweet = index.data(Qt::UserRole).value<std::shared_ptr<Tweet>>();
-				 auto position = (me->pos() - option.rect.adjusted(imageSpace + 14, 4, 0, -22).topLeft());
-				 
-				 qDebug() << "Coordinates: " << position.x() << ", " << position.y();
-				 QTextDocument* textDocument = current_tweet->getDocument();
-				 int textCursorPosition =
-				 textDocument->documentLayout()->hitTest( position, Qt::FuzzyHit );
-				 QChar character( textDocument->characterAt( textCursorPosition ) );
-				 QString string;
-				 string.append(character);
-				 qDebug() << __FILE__ << __LINE__ << "Mouse pressed on letter " << string;
-			 }
+		if (me) {
+			auto current_tweet = index.data(Qt::UserRole).value<std::shared_ptr<Tweet>>();
+			auto position = (me->pos() - option.rect.adjusted(imageSpace + 14, 4, 0, -22).topLeft());
+			
+			qDebug() << "Coordinates: " << position.x() << ", " << position.y();
+			QTextDocument* textDocument = current_tweet->getDocument();
+			int textCursorPosition =
+			textDocument->documentLayout()->hitTest( position, Qt::FuzzyHit );
+			QChar character( textDocument->characterAt( textCursorPosition ) );
+			QString string;
+			string.append(character);
+			qDebug() << __FILE__ << __LINE__ << "Mouse pressed on letter " << string;
+			
+			auto anchor = textDocument->documentLayout()->anchorAt(position);
+		
+			if (parent_widget)
+				if (!anchor.isEmpty())
+				{
+					Entity url = Util::MakeEntity(QUrl(anchor), QString(), OnlyHandle | FromUserInitiated, QString());
+					Core::Instance().GetProxy()->GetEntityManager()->HandleEntity(url);
+				}
+				
+		}
+	}
+	else if (event->type() == QEvent::MouseMove) {
+		qDebug() << "Mouse moved";
+		QMouseEvent *me = (QMouseEvent*)event;
+		if (me) {
+			auto current_tweet = index.data(Qt::UserRole).value<std::shared_ptr<Tweet>>();
+			auto position = (me->pos() - option.rect.adjusted(imageSpace + 14, 4, 0, -22).topLeft());
+			
+			qDebug() << "Move coordinates: " << position.x() << ", " << position.y();
+			QTextDocument* textDocument = current_tweet->getDocument();
+			auto anchor = textDocument->documentLayout()->anchorAt(position);
+		
+			if (parent_widget) {
+				if (!anchor.isEmpty())
+					parent_widget->setCursor(Qt::PointingHandCursor);
+				else
+					parent_widget->unsetCursor();
+			}
+		}
 	}
 	return QAbstractItemDelegate::editorEvent(event, model, option, index);
 }

@@ -47,7 +47,7 @@ Tweet& Tweet::operator = (const Tweet &rhs)
 	this->m_id = rhs.id();
 	this->m_author = rhs.author();
 	this->m_created = rhs.dateTime();
-	this->m_text = rhs.text();
+	this->setText(rhs.text());
 
 	return *this;
 }
@@ -72,6 +72,27 @@ bool Tweet::operator > (const Tweet &other)
 	return (this->m_id > other.id());
 }
 
+void Tweet::setText (QString text) {
+ 
+ /*
+ QRegExp rx("\\s((http|https)://[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(([0-9]{1,5})?/?.*))(\\s|,|$)");
+ rx.setMinimal(true);
+ 
+ qDebug() << "Parsing links for tweet " << id;
+ 
+ if (rx.indexIn(text) != -1) {
+  for (auto link : rx.capturedTexts())
+  {
+   qDebug() << link;
+  }
+  qDebug() << "The link: " << rx.capturedTexts()[1];
+ } */
+ 
+ m_document.setHtml(text);
+ m_text = text;
+}
+
+    
 }
 }
 // kate: indent-mode cstyle; indent-width 1; replace-tabs on; 

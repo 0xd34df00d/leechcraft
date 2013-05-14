@@ -22,7 +22,8 @@ TwitterPage::TwitterPage (QWidget *parent) : QWidget (parent),
 	Toolbar_ (new QToolBar)
 {
 	ui->setupUi (this);
-	ui->TwitList_->setItemDelegate(new TwitDelegate(ui->TwitList_));
+	QAbstractItemDelegate * delegate = new TwitDelegate(ui->TwitList_);
+	ui->TwitList_->setItemDelegate(delegate);
 	
 //	Toolbar_->addAction(ui->actionRefresh);
 	interface = new twitterInterface (this);
