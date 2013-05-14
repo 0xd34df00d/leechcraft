@@ -11,6 +11,7 @@
 #include <interfaces/structures.h>
 #include <util/util.h>
 #include <QTextDocument>
+#include <QAbstractTextDocumentLayout>
 #include <QRectF>
 
 namespace LeechCraft
@@ -152,18 +153,23 @@ TwitDelegate::~TwitDelegate()
 bool TwitDelegate::editorEvent(QEvent* event, QAbstractItemModel* model, const QStyleOptionViewItem& option, const QModelIndex& index)
 {
 	if (event->type() == QEvent::MouseButtonRelease) {
-		qulonglong id = index.data(Qt::UserRole).toULongLong();
-		qDebug() << "Mouse button released in Twit " << id << "!";
 		QMouseEvent *me = (QMouseEvent*)event;
              if (me) {
-				auto position = (me->pos() - option.rect.topLeft());
-				qDebug() << "Coordinates: " << position.x() << ", " << position.y();
-				if ( tweet_links.find(id) != tweet_links.end() )
-					qDebug() << "And it contains link at "<< tweet_links[id].first.topLeft() << " - " << tweet_links[id].first.bottomRight();
+				 int imageSpace = 50;
+				 auto current_tweet = index.data(Qt::UserRole).value<std::shared_ptr<Tweet>>();
+				 auto position = (me->pos() - option.rect.adjusted(imageSpace + 14, 4, 0, -22).topLeft());
+				 
+				 qDebug() << "Coordinates: " << position.x() << ", " << position.y();
+				 QTextDocument* textDocument = current_tweet->getDocument();
+				 int textCursorPosition =
+				 textDocument->documentLayout()->hitTest( position, Qt::FuzzyHit );
+				 QChar character( textDocument->characterAt( textCursorPosition ) );
+				 QString string;
+				 string.append(character);
+				 qDebug() << __FILE__ << __LINE__ << "Mouse pressed on letter " << string;
 			 }
-		
 	}
-    return QAbstractItemDelegate::editorEvent(event, model, option, index);
+	return QAbstractItemDelegate::editorEvent(event, model, option, index);
 }
 
 
