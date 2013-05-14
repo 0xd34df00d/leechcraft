@@ -952,6 +952,8 @@ namespace LeechCraft
 		QObject *failed = 0;
 		while ((failed = TryFirstInit (ordered)))
 		{
+			CacheValid_ = false;
+
 			failedList << failed;
 			Q_FOREACH (QObject *obj, ordered)
 			{
