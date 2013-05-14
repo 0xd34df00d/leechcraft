@@ -68,6 +68,7 @@ namespace Azoth
 
 		Filter_->setSourceModel (PartsModel_);
 		Filter_->setSortCaseSensitivity (Qt::CaseInsensitive);
+		Filter_->setFilterCaseSensitivity (Qt::CaseInsensitive);
 		Filter_->setSortRole (Qt::DisplayRole);
 		connect (Ui_.FilterLine_,
 				SIGNAL (textChanged (QString)),
