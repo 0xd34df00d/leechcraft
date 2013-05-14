@@ -94,7 +94,7 @@ namespace VelvetBird
 
 		QIcon result = QIcon::fromTheme (QString::fromUtf8 ("im-" + id));
 		if (result.isNull ())
-			result = QIcon (":/azoth/velvetbird/resources/images/velvetbird.svg");
+			result = QIcon ("lcicons:/azoth/velvetbird/resources/images/velvetbird.svg");
 		return result;
 	}
 

@@ -96,7 +96,7 @@ namespace PinTab
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/pintab/resources/images/pintab.svg");
+		static QIcon icon ("lcicons:/pintab/resources/images/pintab.svg");
 		return icon;
 	}
 

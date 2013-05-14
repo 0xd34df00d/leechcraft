@@ -125,7 +125,7 @@ namespace Fua
 
 	QIcon FUA::GetIcon () const
 	{
-		static QIcon icon (":/resources/images/poshuku_fua.svg");
+		static QIcon icon ("lcicons:/resources/images/poshuku_fua.svg");
 		return icon;
 	}
 

@@ -101,7 +101,7 @@ namespace vGrabber
 
 	QIcon vGrabber::GetIcon () const
 	{
-		static QIcon icon (":/resources/images/vgrabber.svg");
+		static QIcon icon ("lcicons:/resources/images/vgrabber.svg");
 		return icon;
 	}
 

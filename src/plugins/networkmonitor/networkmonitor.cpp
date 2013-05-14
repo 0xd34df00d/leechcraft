@@ -123,7 +123,7 @@ namespace LeechCraft
 
 			QIcon Plugin::GetIcon () const
 			{
-				static QIcon icon (":/resources/images/networkmonitor.svg");
+				static QIcon icon ("lcicons:/resources/images/networkmonitor.svg");
 				return icon;
 			}
 

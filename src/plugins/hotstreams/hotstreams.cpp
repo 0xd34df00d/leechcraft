@@ -122,7 +122,7 @@ namespace HotStreams
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/hotstreams/resources/images/hotstreams.svg");
+		static QIcon icon ("lcicons:/hotstreams/resources/images/hotstreams.svg");
 		return icon;
 	}
 

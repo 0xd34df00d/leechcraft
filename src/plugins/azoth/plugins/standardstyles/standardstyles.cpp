@@ -68,7 +68,7 @@ namespace StandardStyles
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/azoth/standardstyles/resources/images/standardstyles.svg");
+		static QIcon icon ("lcicons:/azoth/standardstyles/resources/images/standardstyles.svg");
 		return icon;
 	}
 

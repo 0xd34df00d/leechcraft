@@ -680,7 +680,7 @@ void LeechCraft::MainWindow::FillTray ()
 
 	iconMenu->addAction (Ui_.ActionQuit_);
 
-	TrayIcon_ = new QSystemTrayIcon (QIcon (":/resources/images/leechcraft.svg"), this);
+	TrayIcon_ = new QSystemTrayIcon (QIcon ("lcicons:/resources/images/leechcraft.svg"), this);
 	handleShowTrayIconChanged ();
 	TrayIcon_->setContextMenu (iconMenu);
 	connect (TrayIcon_,

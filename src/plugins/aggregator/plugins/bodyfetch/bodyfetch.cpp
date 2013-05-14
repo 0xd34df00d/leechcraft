@@ -132,7 +132,7 @@ namespace BodyFetch
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/aggregator/bodyfetch/resources/images/bodyfetch.svg");
+		static QIcon icon ("lcicons:/aggregator/bodyfetch/resources/images/bodyfetch.svg");
 		return icon;
 	}
 

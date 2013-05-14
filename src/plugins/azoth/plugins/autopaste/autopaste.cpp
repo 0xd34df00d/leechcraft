@@ -80,7 +80,7 @@ namespace Autopaste
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/plugins/azoth/plugins/autopaste/resources/images/autopaste.svg");
+		static QIcon icon ("lcicons:/plugins/azoth/plugins/autopaste/resources/images/autopaste.svg");
 		return icon;
 	}
 

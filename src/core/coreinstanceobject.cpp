@@ -216,7 +216,7 @@ namespace LeechCraft
 
 	QIcon CoreInstanceObject::GetIcon () const
 	{
-		return QIcon (":/resources/images/leechcraft.svg");
+		return QIcon ("lcicons:/resources/images/leechcraft.svg");
 	}
 
 	Util::XmlSettingsDialog_ptr CoreInstanceObject::GetSettingsDialog () const

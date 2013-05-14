@@ -181,7 +181,7 @@ namespace OTRoid
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/plugins/azoth/plugins/otroid/resources/images/otroid.svg");
+		static QIcon icon ("lcicons:/plugins/azoth/plugins/otroid/resources/images/otroid.svg");
 		return icon;
 	}
 

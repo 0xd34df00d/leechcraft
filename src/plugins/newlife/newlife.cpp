@@ -79,7 +79,7 @@ namespace NewLife
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/resources/images/newlife.svg");
+		static QIcon icon ("lcicons:/resources/images/newlife.svg");
 		return icon;
 	}
 

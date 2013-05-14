@@ -94,7 +94,7 @@ namespace Kinotify
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/plugins/kinotify/resources/images/kinotify.svg");
+		static QIcon icon ("lcicons:/plugins/kinotify/resources/images/kinotify.svg");
 		return icon;
 	}
 

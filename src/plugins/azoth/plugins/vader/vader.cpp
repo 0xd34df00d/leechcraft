@@ -88,7 +88,7 @@ namespace Vader
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/plugins/azoth/plugins/vader/resources/images/vader.svg");
+		static QIcon icon ("lcicons:/plugins/azoth/plugins/vader/resources/images/vader.svg");
 		return icon;
 	}
 

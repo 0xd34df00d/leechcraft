@@ -87,7 +87,7 @@ namespace Metida
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/blogique/metida/resources/images/metida.svg");
+		static QIcon icon ("lcicons:/blogique/metida/resources/images/metida.svg");
 		return icon;
 	}
 

@@ -79,7 +79,7 @@ namespace Delicious
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/poshuku/onlinebookmarks:delicious/resources/images/delicious.svg");
+		static QIcon icon ("lcicons:/poshuku/onlinebookmarks:delicious/resources/images/delicious.svg");
 		return icon;
 	}
 

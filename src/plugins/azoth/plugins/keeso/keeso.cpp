@@ -65,7 +65,7 @@ namespace Keeso
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/azoth/keeso/resources/images/keeso.svg");
+		static QIcon icon ("lcicons:/azoth/keeso/resources/images/keeso.svg");
 		return icon;
 	}
 

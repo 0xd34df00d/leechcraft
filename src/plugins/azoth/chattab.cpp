@@ -1522,7 +1522,7 @@ namespace Azoth
 
 	void ChatTab::HandleMUC ()
 	{
-		TabIcon_ = QIcon (":/plugins/azoth/resources/images/azoth.svg");
+		TabIcon_ = QIcon ("lcicons:/plugins/azoth/resources/images/azoth.svg");
 		Ui_.AvatarLabel_->hide ();
 
 		const int height = qApp->desktop ()->availableGeometry (QCursor::pos ()).height ();

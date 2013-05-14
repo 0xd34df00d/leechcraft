@@ -252,7 +252,7 @@ namespace Summary
 		Current_->RestoreState (info.Data_);
 
 		emit addNewTab (tr ("Summary"), Current_);
-		emit changeTabIcon (Current_, QIcon (":/plugins/summary/resources/images/summary.svg"));
+		emit changeTabIcon (Current_, QIcon ("lcicons:/plugins/summary/resources/images/summary.svg"));
 	}
 
 	void Core::handleNewTabRequested ()
@@ -266,7 +266,7 @@ namespace Summary
 		Current_ = CreateSummaryWidget ();
 
 		emit addNewTab (tr ("Summary"), Current_);
-		emit changeTabIcon (Current_, QIcon (":/plugins/summary/resources/images/summary.svg"));
+		emit changeTabIcon (Current_, QIcon ("lcicons:/plugins/summary/resources/images/summary.svg"));
 		emit raiseTab (Current_);
 	}
 

@@ -122,7 +122,7 @@ namespace GmailNotifier
 
 	QIcon GmailNotifier::GetIcon () const
 	{
-		static QIcon icon (":/gmailnotifier/gmailnotifier.svg");
+		static QIcon icon ("lcicons:/gmailnotifier/gmailnotifier.svg");
 		return icon;
 	}
 

@@ -103,7 +103,7 @@ namespace Snails
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/resources/images/snails.svg");
+		static QIcon icon ("lcicons:/resources/images/snails.svg");
 		return icon;
 	}
 

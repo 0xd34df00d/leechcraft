@@ -115,7 +115,7 @@ namespace Summary
 
 	QIcon Summary::GetIcon () const
 	{
-		static QIcon icon (":/plugins/summary/resources/images/summary.svg");
+		static QIcon icon ("lcicons:/plugins/summary/resources/images/summary.svg");
 		return icon;
 	}
 

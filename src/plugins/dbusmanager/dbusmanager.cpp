@@ -95,7 +95,7 @@ namespace DBusManager
 
 	QIcon DBusManager::GetIcon () const
 	{
-		static QIcon icon (":/resources/images/dbusmanager.svg");
+		static QIcon icon ("lcicons:/resources/images/dbusmanager.svg");
 		return icon;
 	}
 
