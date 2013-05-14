@@ -6,7 +6,6 @@
 #include <qjson/parser.h>
 #include <QListWidgetItem>
 #include "xmlsettingsmanager.h"
-#include "twitdelegate.h"
 
 Q_DECLARE_METATYPE (QObject**);
 
@@ -22,8 +21,8 @@ TwitterPage::TwitterPage (QWidget *parent) : QWidget (parent),
 	Toolbar_ (new QToolBar)
 {
 	ui->setupUi (this);
-	QAbstractItemDelegate * delegate = new TwitDelegate(ui->TwitList_);
-	ui->TwitList_->setItemDelegate(delegate);
+	m_delegate = new TwitDelegate(ui->TwitList_);
+	ui->TwitList_->setItemDelegate(m_delegate);
 	
 //	Toolbar_->addAction(ui->actionRefresh);
 	interface = new twitterInterface (this);
@@ -32,6 +31,7 @@ TwitterPage::TwitterPage (QWidget *parent) : QWidget (parent),
 	timer = new QTimer (this);
 	timer->setInterval (XmlSettingsManager::Instance()->property("timer").toInt() * 1000); // Update twits every 1.5 minutes by default
 	connect (timer, SIGNAL (timeout()), interface, SLOT (getHomeFeed()));
+	qDebug() << "Timer " << timer->timerId() << "started";
 	tryToLogin();
 	int newSliderPos;
 
@@ -39,7 +39,7 @@ TwitterPage::TwitterPage (QWidget *parent) : QWidget (parent),
 	
 	connect((ui->TwitList_->verticalScrollBar()), SIGNAL (valueChanged(int)),
 			this, SLOT (scrolledDown(int)));
-//    connect(ui->login_Test_, SIGNAL (clicked ()), SLOT(tryToLogin()));
+	
 	connect (ui->TwitButton_, SIGNAL (clicked()), SLOT (twit()));
 	settings = new QSettings (QCoreApplication::organizationName (),
 							  QCoreApplication::applicationName () + "_Woodpecker");
@@ -63,7 +63,8 @@ TwitterPage::TwitterPage (QWidget *parent) : QWidget (parent),
 	actionOpenWeb_->setProperty ("ActionIcon", "webarchiver");
 	connect (actionOpenWeb_, SIGNAL (triggered ()), this, SLOT (webOpen()));
 	
-	connect(ui->TwitList_, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(reply()));
+	connect(ui->TwitList_, SIGNAL(itemDoubleClicked(QListWidgetItem*)), 
+			this, SLOT(reply()));
 	
 	ui->TwitList_->addAction(actionRetwit_);
 	ui->TwitList_->addAction(actionReply_);
@@ -75,7 +76,6 @@ TwitterPage::TwitterPage (QWidget *parent) : QWidget (parent),
 		interface->getHomeFeed();
 		timer->start();
 	}
-
 }
 
 TwitterPage::~TwitterPage()
@@ -135,7 +135,7 @@ void TwitterPage::requestUserTimeline (QString username)
 
 void TwitterPage::updateTweetList (QList< std::shared_ptr< Tweet > > twits)
 {
-	std::shared_ptr<Tweet> twit;
+	qDebug() << __FILE__ << __LINE__ << "Updating with params";
 	std::shared_ptr<Tweet> firstNewTwit;
 	int i;
 
@@ -172,7 +172,6 @@ void TwitterPage::updateTweetList (QList< std::shared_ptr< Tweet > > twits)
 				Core::Instance().GetProxy()->GetEntityManager()->HandleEntity(notification);
 			}
 		}
-		
 		screenTwits.append (twits);
 	}
 	ui->TwitList_->clear();
@@ -197,6 +196,36 @@ void TwitterPage::updateTweetList (QList< std::shared_ptr< Tweet > > twits)
 	//QTimer::singleShot(1000, ui->TwitList_, SLOT(update()));
 	
 	ui->TwitList_->update();
+	ui->TwitList_->installEventFilter(this);
+	ui->TwitList_->setEnabled(true);
+}
+
+void TwitterPage::updateTweetList()
+{
+	qDebug() << __FILE__ << __LINE__ << "Updating without params";
+	ui->TwitList_->setEnabled(false);
+	ui->TwitList_->clear();
+
+	for (auto twit : screenTwits)
+	{
+		QListWidgetItem *tmpitem = new QListWidgetItem();
+		QVariant data;
+		data.setValue(twit);
+		
+		tmpitem->setData(Qt::DisplayRole, "Title");
+		tmpitem->setData(Qt::UserRole, data);
+		
+		if (twit->author()->avatar.isNull())
+			tmpitem->setData(Qt::DecorationRole, QIcon (":/resources/images/woodpecker.svg"));
+		else
+			tmpitem->setData(Qt::DecorationRole, twit->author()->avatar);
+		ui->TwitList_->insertItem (0, tmpitem);
+		ui->TwitList_->updateGeometry();
+	}
+//	QTimer::singleShot(1000, ui->TwitList_, SLOT(update()));
+	
+	ui->TwitList_->update();
+	ui->TwitList_->installEventFilter(this);
 	ui->TwitList_->setEnabled(true);
 }
 
@@ -331,33 +360,6 @@ void TwitterPage::webOpen()
 	Entity url = Util::MakeEntity(QUrl(QString("https://twitter.com/%1/status/%2").arg((*currentTwit)->author()->username()).arg(twitid)), 
 									   QString(), OnlyHandle | FromUserInitiated, QString());
 	Core::Instance().GetProxy()->GetEntityManager()->HandleEntity(url);
-}
-
-void TwitterPage::updateTweetList()
-{
-	ui->TwitList_->setEnabled(false);
-	ui->TwitList_->clear();
-
-	Q_FOREACH (auto twit, screenTwits)
-	{
-		QListWidgetItem *tmpitem = new QListWidgetItem();
-		QVariant data;
-		data.setValue(twit);
-		
-		tmpitem->setData(Qt::DisplayRole, "Title");
-		tmpitem->setData(Qt::UserRole, data);
-		
-		if (twit->author()->avatar.isNull())
-			tmpitem->setData(Qt::DecorationRole, QIcon (":/resources/images/woodpecker.svg"));
-		else
-			tmpitem->setData(Qt::DecorationRole, twit->author()->avatar);
-		ui->TwitList_->insertItem (0, tmpitem);
-		ui->TwitList_->updateGeometry();
-	}
-//	QTimer::singleShot(1000, ui->TwitList_, SLOT(update()));
-	
-	//ui->TwitList_->update();
-	ui->TwitList_->setEnabled(true);
 }
 
 }

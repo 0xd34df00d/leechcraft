@@ -12,6 +12,7 @@
 
 #include "twitterinterface.h"
 #include "core.h"
+#include "twitdelegate.h"
 
 #include "ui_twitterpage.h"
 
@@ -22,7 +23,7 @@ class TwitterPage;
 namespace LeechCraft
 {
 namespace Woodpecker
-{
+{	
 class TwitterPage : public QWidget
     , public ITabWidget
 {
@@ -81,12 +82,13 @@ public slots:
 
 
 private:
+	TwitDelegate *m_delegate;
     Ui::TwitterPage *ui;
     twitterInterface *interface;
     QTimer *timer;
     QSettings *settings;
     QList<std::shared_ptr<Tweet>> screenTwits;
-
+	
 signals:
     void removeTab (QWidget*);
     void changeTabName (QWidget*, const QString&);

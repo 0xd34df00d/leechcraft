@@ -1,3 +1,6 @@
+#ifndef TWEETDELEGATE_H
+#define TWEETDELEGATE_H
+
 #include <QPainter>
 #include <QAbstractItemDelegate>
 #include <QRect>
@@ -28,3 +31,5 @@ signals:
 };
 }
 }
+
+#endif // TWEETDELEGATE_H
