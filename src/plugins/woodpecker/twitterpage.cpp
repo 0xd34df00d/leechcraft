@@ -216,15 +216,15 @@ void TwitterPage::twit()
 void TwitterPage::retwit()
 {
 	const auto& idx = ui->TwitList_->currentItem();
-	auto twitid = idx->data(Qt::UserRole);
-	interface->retweet(twitid.toULongLong());
+	const auto twitid = (idx->data(Qt::UserRole).value<std::shared_ptr<Tweet>>())->id();
+	interface->retweet(twitid);
 }
 
 void TwitterPage::sendReply()
 {
 	const auto& idx = ui->TwitList_->currentItem();
-	auto twitid = idx->data(Qt::UserRole);
-	interface->reply(twitid.toULongLong(), ui->TwitEdit_->text());
+	const auto twitid = (idx->data(Qt::UserRole).value<std::shared_ptr<Tweet>>())->id();
+	interface->reply(twitid, ui->TwitEdit_->text());
 	ui->TwitEdit_->clear();
 	disconnect (ui->TwitButton_, SIGNAL(clicked()), 0, 0);
 	connect (ui->TwitButton_, SIGNAL (clicked()), SLOT (twit()));
@@ -233,11 +233,16 @@ void TwitterPage::sendReply()
 void TwitterPage::reply()
 {
 	const auto& idx = ui->TwitList_->currentItem();
-	const auto twitid = idx->data(Qt::UserRole).toULongLong();
+	const auto twitid = (idx->data(Qt::UserRole).value<std::shared_ptr<Tweet>>())->id();
 	auto replyto = std::find_if (screenTwits.begin (), screenTwits.end (), 
 			  [twitid] 
 			  (decltype (screenTwits.front ()) tweet) 
 			  { return tweet->id() == twitid; });
+	if (replyto == screenTwits.end()) {
+		qDebug() << __FILE__ << __LINE__ << "Failed to find twit";
+		return;
+	}
+	std::shared_ptr<Tweet> found_twit = *replyto;
 	ui->TwitEdit_->setText(QString("@").append((*replyto)->author()->username()).append(" "));
 	disconnect (ui->TwitButton_, SIGNAL(clicked()), 0, 0);
 	connect (ui->TwitButton_, SIGNAL (clicked()), SLOT (sendReply()));
@@ -246,11 +251,16 @@ void TwitterPage::reply()
 
 void TwitterPage::reply(QListWidgetItem* idx)
 {
-	const auto twitid = idx->data(Qt::UserRole).toULongLong();
+	const auto twitid = (idx->data(Qt::UserRole).value<std::shared_ptr<Tweet>>())->id();
 	auto replyto = std::find_if (screenTwits.begin (), screenTwits.end (), 
 			  [twitid] 
 			  (decltype (screenTwits.front ()) tweet) 
 			  { return tweet->id() == twitid; });
+	if (replyto == screenTwits.end()) {
+		qDebug() << __FILE__ << __LINE__ << "Failed to find twit";
+		return;
+	}
+	std::shared_ptr<Tweet> found_twit = *replyto;
 	ui->TwitEdit_->setText(QString("@").append((*replyto)->author()->username()).append(" "));
 	disconnect (ui->TwitButton_, SIGNAL(clicked()), 0, 0);
 	connect (ui->TwitButton_, SIGNAL (clicked()), SLOT (sendReply()));
@@ -299,7 +309,7 @@ void TwitterPage::on_TwitList__customContextMenuRequested(const QPoint& pos)
 void TwitterPage::reportSpam()
 {
 	const auto& idx = ui->TwitList_->currentItem();
-	const auto twitid = idx->data(Qt::UserRole).toULongLong();
+	const auto twitid = (idx->data(Qt::UserRole).value<std::shared_ptr<Tweet>>())->id();
 	
 	auto spamTwit = std::find_if (screenTwits.begin (), screenTwits.end (), 
 			  [twitid] 
@@ -311,7 +321,7 @@ void TwitterPage::reportSpam()
 void TwitterPage::webOpen()
 {
 	const auto& idx = ui->TwitList_->currentItem();
-	const auto twitid = idx->data(Qt::UserRole).toULongLong();
+	const auto twitid = (idx->data(Qt::UserRole).value<std::shared_ptr<Tweet>>())->id();
 	auto currentTwit = std::find_if (screenTwits.begin (), screenTwits.end (), 
 					[twitid] 
 					(decltype (screenTwits.front ()) tweet) 

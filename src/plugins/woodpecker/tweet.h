@@ -5,6 +5,7 @@
 #include <QDateTime>
 #include <QTextLayout>
 #include <QListWidget>
+#include <QTextDocument>
 #include <memory>
 #include "twitteruser.h"
 
@@ -48,8 +49,13 @@ public:
 	QDateTime dateTime () const {
 		return m_created;
 	}
+	
 	void setDateTime (QDateTime datetime) {
 		m_created = datetime;
+	}
+	
+	QTextDocument* getDocument() {
+		return &m_document;
 	}
 	
 	Tweet& operator= (const Tweet&);
@@ -63,6 +69,7 @@ private:
 	QString		m_text;
 	TwitterUser	*m_author;
 	QDateTime	m_created;
+	QTextDocument m_document;
 
 signals:
 

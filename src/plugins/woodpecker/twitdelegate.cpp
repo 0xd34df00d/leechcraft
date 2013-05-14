@@ -103,12 +103,13 @@ void TwitDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & opti
   // Text
   r = option.rect.adjusted(imageSpace, 4, -10, -22);
   painter->setFont( mainFont );
-  QTextDocument doc;
-  doc.setHtml( text );
-  doc.setTextWidth( r.width() );
+  QTextDocument* doc = current_tweet->getDocument();
+  
+  doc->setHtml( text );
+  doc->setTextWidth( r.width() );
   painter->save();
   painter->translate( r.left(), r.top() );
-  doc.drawContents( painter, r.translated( -r.topLeft()) );
+  doc->drawContents( painter, r.translated( -r.topLeft()) );
   painter->restore();
   
   // Author
