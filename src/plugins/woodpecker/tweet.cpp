@@ -89,7 +89,26 @@ void Tweet::setText (QString text)
  m_text = text;
  
  QString html = text;
- html.replace(rx, QString(" <a href=\"%1\">%1</a> ").arg(rx.capturedTexts()[1]));
+ 
+ int pos = 0;
+ 
+ while ( (pos = rx.indexIn(html, pos)) != -1 ) {
+  if ( rx.cap(1).startsWith("http") ) {
+   qDebug() << "Found one link";
+   QString before = rx.cap( 1 );
+   if (before.endsWith("."))
+    before.chop(1);
+   qDebug() << "Before=" << before;
+   QString after = " <a href=\"" + before + "\">" + before + "</a>";
+   qDebug() << "After=" << after;
+   html.replace( pos, before.length() + 1, after );
+   pos += after.length();
+  } else {
+   pos += rx.matchedLength();
+  }
+ }
+ 
+ //html.replace(rx, QString(" <a href=\"%1\">%1</a> ").arg(rx.capturedTexts()[1]));
  qDebug() << "HTML: " << html;
  
  m_document.setHtml(html);
