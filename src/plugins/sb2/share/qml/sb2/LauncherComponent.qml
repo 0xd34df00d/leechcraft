@@ -64,12 +64,14 @@ Rectangle {
                     opacity: openedTabsCount ? 1 : 0
                     Behavior on opacity { PropertyAnimation {} }
 
-                    width: 4
-                    height: 4
-                    radius: 2
+                    width: viewOrient == "vertical" ? 2 : 12
+                    height: viewOrient == "vertical" ? 12 : 2
+                    radius: 1
 
-                    anchors.bottom: tcButton.bottom
-                    anchors.horizontalCenter: tcButton.horizontalCenter
+                    anchors.bottom: viewOrient == "vertical" ? undefined : tcButton.bottom
+                    anchors.horizontalCenter: viewOrient == "vertical" ? undefined : tcButton.horizontalCenter
+                    anchors.left: viewOrient == "vertical" ? tcButton.left : undefined
+                    anchors.verticalCenter: viewOrient == "vertical" ? tcButton.verticalCenter : undefined
 
                     color: colorProxy.color_ToolButton_SelectedBorderColor
                 }
@@ -80,12 +82,14 @@ Rectangle {
                     opacity: isCurrentTab ? 1 : 0
                     Behavior on opacity { PropertyAnimation {} }
 
-                    width: 4
-                    height: 4
-                    radius: 2
+                    width: viewOrient == "vertical" ? 2 : 12
+                    height: viewOrient == "vertical" ? 12 : 2
+                    radius: 1
 
-                    anchors.top: tcButton.top
-                    anchors.horizontalCenter: tcButton.horizontalCenter
+                    anchors.top: viewOrient == "vertical" ? undefined : tcButton.top
+                    anchors.horizontalCenter: viewOrient == "vertical" ? undefined : tcButton.horizontalCenter
+                    anchors.right: viewOrient == "vertical" ? tcButton.right : undefined
+                    anchors.verticalCenter: viewOrient == "vertical" ? tcButton.verticalCenter : undefined
 
                     color: colorProxy.color_ToolButton_SelectedBorderColor
                 }
