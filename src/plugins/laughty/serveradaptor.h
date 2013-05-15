@@ -49,8 +49,15 @@ namespace Laughty
 		ServerAdaptor (ServerObject*, ICoreProxy_ptr);
 	public slots:
 		QStringList GetCapabilities () const;
+		uint Notify (const QString& app_name, uint replaces_id, const QString& app_icon,
+				const QString& summary, const QString& body, const QStringList& actions,
+				const QVariantMap& hints, int expire_timeout);
+		void CloseNotification (uint id);
 		void GetServerInformation (QString& name, QString& vendor,
 				QString& version, QString& spec_version) const;
+	signals:
+		void NotificationClosed (uint id, uint reason);
+		void ActionInvoked (uint id, const QString& action_key);
 	};
 }
 }

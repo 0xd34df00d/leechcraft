@@ -28,6 +28,10 @@
  **********************************************************************/
 
 #include "serverobject.h"
+#include <util/xpc/util.h>
+#include <util/util.h>
+#include <interfaces/an/constants.h>
+#include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
 {
@@ -35,6 +39,7 @@ namespace Laughty
 {
 	ServerObject::ServerObject (ICoreProxy_ptr proxy)
 	: Proxy_ (proxy)
+	, LastID_ (0)
 	{
 	}
 
@@ -46,8 +51,60 @@ namespace Laughty
 			"body",
 			"body-hyperlinks",
 			"body-images",
-			"body-markup"
+			"body-markup",
+			"persistence"	// TODO detect lack of this
 		};
+	}
+
+	namespace
+	{
+		Priority GetPriority (const QVariantMap& hints)
+		{
+			switch (hints.value ("urgency", 1).toInt ())
+			{
+			case 0:
+				return PInfo_;
+			case 1:
+				return PInfo_;
+			default:
+				return PWarning_;
+			}
+		}
+
+		QPair<QString, QString> GetCatTypePair (const QVariantMap& hints)
+		{
+			return { AN::CatGeneric, AN::TypeGeneric };	// TODO
+		}
+	}
+
+	uint ServerObject::Notify (const QString& app_name, uint replaces_id,
+			const QString& app_icon, const QString& summary, const QString& body,
+			const QStringList& actions, const QVariantMap& hints, uint expire_timeout)
+	{
+		const auto id = ++LastID_;
+
+		const auto prio = GetPriority (hints);
+
+		Entity e;
+		if (hints.value ("transient", false).toBool () == true)
+			e = Util::MakeNotification (app_name, summary, prio);
+		else
+		{
+			const auto& catTypePair = GetCatTypePair (hints);
+			e = Util::MakeAN (app_name,
+					summary,
+					prio,
+					"org.LeechCraft.Laughty",
+					catTypePair.first, catTypePair.second,
+					"org.LeechCraft.Laughty" + QString::number (id),
+					QStringList (),
+					0,
+					1,
+					summary,
+					body);
+		}
+
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 }
 }

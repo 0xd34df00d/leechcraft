@@ -46,6 +46,18 @@ namespace Laughty
 		return Server_->GetCapabilities ();
 	}
 
+	uint ServerAdaptor::Notify (const QString& app_name, uint replaces_id,
+			const QString& app_icon, const QString& summary, const QString& body,
+			const QStringList& actions, const QVariantMap& hints, int expire_timeout)
+	{
+		Server_->Notify (app_name, replaces_id, app_icon,
+				summary, body, actions, hints, expire_timeout);
+	}
+
+	void ServerAdaptor::CloseNotification (uint id)
+	{
+	}
+
 	void ServerAdaptor::GetServerInformation (QString& name,
 			QString& vendor, QString& version, QString& spec_version) const
 	{

@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QVariantMap>
 #include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
@@ -41,10 +42,15 @@ namespace Laughty
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
+		uint32_t LastID_;
 	public:
 		ServerObject (ICoreProxy_ptr);
 
 		QStringList GetCapabilities () const;
+
+		uint Notify (const QString& app_name, uint replaces_id, const QString& app_icon,
+				const QString& summary, const QString& body, const QStringList& actions,
+				const QVariantMap& hints, uint expire_timeout);
 	};
 }
 }
