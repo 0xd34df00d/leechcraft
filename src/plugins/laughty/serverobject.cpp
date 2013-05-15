@@ -81,7 +81,8 @@ namespace Laughty
 			const QString& app_icon, const QString& summary, const QString& body,
 			const QStringList& actions, const QVariantMap& hints, uint expire_timeout)
 	{
-		const auto id = ++LastID_;
+		const auto replaces = hints.value ("replaces_id", 0).toInt ();
+		const auto id = replaces > 0 ? replaces : ++LastID_;
 
 		const auto prio = GetPriority (hints);
 
@@ -105,6 +106,8 @@ namespace Laughty
 		}
 
 		Proxy_->GetEntityManager ()->HandleEntity (e);
+
+		return id;
 	}
 }
 }
