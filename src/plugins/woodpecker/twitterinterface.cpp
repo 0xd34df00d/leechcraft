@@ -29,7 +29,6 @@
 
 #include "twitterinterface.h"
 
-#include <boost/shared_ptr.hpp>
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkReply>
 #include <QDateTime>
