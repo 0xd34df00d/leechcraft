@@ -110,6 +110,13 @@ namespace Blogique
 		void SetDefaultSideWidgets ();
 		void RemovePostingTargetsWidget ();
 
+		void SetPostDate (const QDateTime& dt);
+		QDateTime GetPostDate () const;
+
+		void SetPostTags (const QStringList& tags);
+		QStringList GetPostTags () const;
+
+
 		void ClearEntry ();
 
 		Entry GetCurrentEntry (bool interactive = false) const;
@@ -138,6 +145,7 @@ namespace Blogique
 		void submitTo (const Entry& e = Entry ());
 		void on_SideWidget__dockLocationChanged (Qt::DockWidgetArea area);
 		void on_UpdateProfile__triggered ();
+		void on_CurrentTime__released ();
 
 	signals:
 		void removeTab (QWidget *tab);

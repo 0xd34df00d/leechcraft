@@ -39,7 +39,6 @@
 #include "accountconfigurationwidget.h"
 #include "core.h"
 #include "localblogaccount.h"
-#include "postoptionswidget.h"
 
 namespace LeechCraft
 {
@@ -140,7 +139,7 @@ namespace Hestia
 
 	QList<QWidget*> LocalBloggingPlatform::GetBlogiqueSideWidgets () const
 	{
-		return { new PostOptionsWidget };
+		return { };
 	}
 
 	void LocalBloggingPlatform::SetPluginProxy (QObject *proxy)

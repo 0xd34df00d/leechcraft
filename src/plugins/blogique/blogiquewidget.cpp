@@ -44,7 +44,6 @@
 #include "interfaces/blogique/ibloggingplatform.h"
 #include "interfaces/blogique/iblogiquesidewidget.h"
 #include "interfaces/blogique/iprofile.h"
-#include "interfaces/blogique/ipostoptionswidget.h"
 #include "blogique.h"
 #include "core.h"
 #include "draftentrieswidget.h"
@@ -211,12 +210,9 @@ namespace Blogique
 			case SideWidgetType::PostOptionsSideWidget:
 			{
 				ibsw->SetPostOptions (e.PostOptions_);
-				auto ipow = qobject_cast<IPostOptionsWidget*> (w);
-				if (!ipow)
-					break;
 
-				ipow->SetTags (e.Tags_);
-				ipow->SetPostDate (e.Date_);
+				SetPostTags (e.Tags_);
+				SetPostDate (e.Date_);
 				break;
 			}
 			case SideWidgetType::CustomSideWidget:
@@ -407,6 +403,38 @@ namespace Blogique
 		}
 	}
 
+	void BlogiqueWidget::SetPostDate(const QDateTime& dt)
+	{
+		Ui_.TimestampBox_->setChecked (true);
+		Ui_.Year_->setValue (dt.date ().year ());
+		Ui_.Month_->setCurrentIndex (dt.date ().month () - 1);
+		Ui_.Date_->setValue (dt.date ().day ());
+		Ui_.Time_->setTime (dt.time ());
+	}
+
+	QDateTime BlogiqueWidget::GetPostDate () const
+	{
+		return !Ui_.TimestampBox_->isChecked () ?
+				QDateTime::currentDateTime () :
+				QDateTime (QDate (Ui_.Year_->value (),
+							Ui_.Month_->currentIndex () + 1,
+							Ui_.Date_->value ()),
+						Ui_.Time_->time ());
+	}
+
+	void BlogiqueWidget::SetPostTags (const QStringList& tags)
+	{
+		Ui_.Tags_->setText (tags.join (", "));
+	}
+
+	QStringList BlogiqueWidget::GetPostTags () const
+	{
+		QStringList tags;
+		for (auto tag : Ui_.Tags_->text ().split (","))
+			tags << tag.trimmed ();
+		return tags;
+	}
+
 	void BlogiqueWidget::ClearEntry ()
 	{
 		Ui_.Subject_->clear ();
@@ -422,12 +450,8 @@ namespace Blogique
 			case SideWidgetType::PostOptionsSideWidget:
 			{
 				ibsw->SetPostOptions (QVariantMap ());
-				auto ipow = qobject_cast<IPostOptionsWidget*> (w);
-				if (!ipow)
-					continue;
-
-				ipow->SetPostDate (QDateTime::currentDateTime ());
-				ipow->SetTags (QStringList ());
+				SetPostDate (QDateTime::currentDateTime ());
+				SetPostTags (QStringList ());
 				break;
 			}
 			case SideWidgetType::CustomSideWidget:
@@ -464,12 +488,8 @@ namespace Blogique
 			case SideWidgetType::PostOptionsSideWidget:
 			{
 				e.PostOptions_.unite (ibsw->GetPostOptions ());
-				auto ipow = qobject_cast<IPostOptionsWidget*> (w);
-				if (!ipow)
-					continue;
-
-				e.Date_ = ipow->GetPostDate ();
-				e.Tags_ = ipow->GetTags ();
+				e.Date_ = GetPostDate ();
+				e.Tags_ = GetPostTags ();
 				break;
 			}
 			case SideWidgetType::CustomSideWidget:
@@ -525,8 +545,16 @@ namespace Blogique
 
 			for (auto w : SidePluginsWidgets_)
 			{
-				int index = Ui_.Tools_->indexOf (w);
-				Ui_.Tools_->removeItem (index);
+				auto ibsw = qobject_cast<IBlogiqueSideWidget*> (w);
+				if (ibsw &&
+						ibsw->GetWidgetType () == SideWidgetType::PostOptionsSideWidget)
+					Ui_.PluginOptionsWidget_->layout ()->removeWidget (w);
+				else
+				{
+					int index = Ui_.Tools_->indexOf (w);
+					Ui_.Tools_->removeItem (index);
+				}
+
 				if (w)
 					w->deleteLater ();
 			}
@@ -558,7 +586,6 @@ namespace Blogique
 				for (const auto& target : profile->GetPostingTargets ())
 					PostTargetBox_->addItem (target.first, target.second);
 		}
-
 
 		if (ibp->GetFeatures () & IBloggingPlatform::BPFLocalBlog)
 			ToolBar_->insertAction (AccountsBoxAction_, Ui_.SubmitTo_);
@@ -599,7 +626,10 @@ namespace Blogique
 
 			SidePluginsWidgets_ << w;
 			ibsw->SetAccount (account->GetQObject ());
-			Ui_.Tools_->addItem (w, ibsw->GetName ());
+			if (ibsw->GetWidgetType () == SideWidgetType::PostOptionsSideWidget)
+				Ui_.PluginOptionsWidget_->layout ()->addWidget (w);
+			else
+				Ui_.Tools_->addItem (w, ibsw->GetName ());
 		}
 
 		PrevAccountId_ = id;
@@ -836,6 +866,16 @@ namespace Blogique
 
 		acc->updateProfile ();
 	}
+
+	void BlogiqueWidget::on_CurrentTime__released ()
+	{
+		QDateTime current = QDateTime::currentDateTime ();
+		Ui_.Year_->setValue (current.date ().year ());
+		Ui_.Month_->setCurrentIndex (current.date ().month () - 1);
+		Ui_.Date_->setValue (current.date ().day ());
+		Ui_.Time_->setTime (current.time ());
+	}
+
 }
 }
 

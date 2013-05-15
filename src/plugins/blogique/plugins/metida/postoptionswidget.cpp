@@ -31,7 +31,6 @@
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
 #include <QGraphicsObject>
-#include <QStandardItem>
 #include <QtDebug>
 #include <util/util.h>
 #include <util/sys/paths.h>
@@ -43,7 +42,6 @@
 #include "ljaccount.h"
 #include "ljprofile.h"
 #include "selectgroupsdialog.h"
-#include "tagsproxymodel.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -52,29 +50,12 @@ namespace Blogique
 {
 namespace Metida
 {
-	const QString ImageProviderID = "ThemeIcons";
-
 	PostOptionsWidget::PostOptionsWidget (QWidget *parent)
 	: QWidget (parent)
 	, Account_ (0)
 	, AllowMask_ (0)
-	, TagsProxyModel_ (new TagsProxyModel (this))
-	, TagsModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
-
-		TagsProxyModel_->setSourceModel (TagsModel_);
-		Ui_.TagsView_->rootContext ()->setContextProperty ("tagsModel",
-				TagsProxyModel_);
-		Ui_.TagsView_->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,
-				"blogique/metida", "tagwidget.qml")));
-		Ui_.TagsView_->engine ()->addImageProvider (ImageProviderID,
-				new Util::ThemeImageProvider (Core::Instance ().GetCoreProxy ()));
-
-		connect (Ui_.TagsView_->rootObject (),
-				SIGNAL (tagTextChanged (QString)),
-				this,
-				SLOT (handleTagTextChanged (QString)));
 
 		XmlSettingsManager::Instance ().RegisterObject ("AutoUpdateCurrentMusic",
 				this, "handleAutoUpdateCurrentMusic");
@@ -261,41 +242,6 @@ namespace Metida
 		FillTags ();
 	}
 
-	QStringList PostOptionsWidget::GetTags () const
-	{
-		QVariant returnedTags;
-		QMetaObject::invokeMethod (Ui_.TagsView_->rootObject (),
-				"getTags",
-				Q_RETURN_ARG(QVariant, returnedTags));
-		return returnedTags.toStringList ();
-	}
-
-	void PostOptionsWidget::SetTags (const QStringList& tags)
-	{
-		QMetaObject::invokeMethod (Ui_.TagsView_->rootObject (),
-				"setTags",
-				Q_ARG (QVariant, QVariant::fromValue (tags)));
-	}
-
-	QDateTime PostOptionsWidget::GetPostDate () const
-	{
-		return !Ui_.TimestampBox_->isChecked () ?
-				QDateTime::currentDateTime () :
-				QDateTime (QDate (Ui_.Year_->value (),
-							Ui_.Month_->currentIndex () + 1,
-							Ui_.Date_->value ()),
-						Ui_.Time_->time ());
-	}
-
-	void PostOptionsWidget::SetPostDate (const QDateTime& date)
-	{
-		Ui_.TimestampBox_->setChecked (true);
-		Ui_.Year_->setValue (date.date ().year ());
-		Ui_.Month_->setCurrentIndex (date.date ().month () - 1);
-		Ui_.Date_->setValue (date.date ().day ());
-		Ui_.Time_->setTime (date.time ());
-	}
-
 	void PostOptionsWidget::FillItems ()
 	{
 		Ui_.Access_->addItem (tr ("Public"), Access::Public);
@@ -330,13 +276,6 @@ namespace Metida
 		if (!profile)
 			return;
 		const auto& tags = profile->GetTags ();
-		TagsModel_->clear ();
-		for (const auto& tag : tags.keys ())
-		{
-			QStandardItem *item = new QStandardItem (tag);
-			item->setData (tags.value (tag), TagFrequency);
-			TagsModel_->appendRow (item);
-		}
 	}
 
 	namespace
@@ -359,20 +298,6 @@ namespace Metida
 					this,
 					SLOT (handleCurrentSongChanged (Media::AudioInfo)),
 					Qt::UniqueConnection);
-	}
-
-	void PostOptionsWidget::on_SelectTags__released ()
-	{
-		qDebug () << GetTags ();
-	}
-
-	void PostOptionsWidget::on_CurrentTime__released ()
-	{
-		QDateTime current = QDateTime::currentDateTime ();
-		Ui_.Year_->setValue (current.date ().year ());
-		Ui_.Month_->setCurrentIndex (current.date ().month () - 1);
-		Ui_.Date_->setValue (current.date ().day ());
-		Ui_.Time_->setTime (current.time ());
 	}
 
 	void PostOptionsWidget::on_Access__activated (int index)
@@ -421,12 +346,6 @@ namespace Metida
 		if (XmlSettingsManager::Instance ().Property ("AutoUpdateCurrentMusic", false).toBool ())
 			Ui_.Music_->setText (QString ("\"%1\" by %2").arg (ai.Title_)
 					.arg (ai.Artist_));
-	}
-
-	void PostOptionsWidget::handleTagTextChanged (const QString& text)
-	{
-		TagsProxyModel_->setFilterFixedString (text);
-		TagsProxyModel_->countUpdated ();
 	}
 
 	void PostOptionsWidget::handleTagsUpdated ()
