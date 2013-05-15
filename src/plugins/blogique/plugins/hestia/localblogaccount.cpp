@@ -189,6 +189,11 @@ namespace Hestia
 		}
 	}
 
+	QHash<QString, int> LocalBlogAccount::GetTags () const
+	{
+		//TODO
+	}
+
 	void LocalBlogAccount::FillSettings (AccountConfigurationWidget *widget)
 	{
 		DatabasePath_ = widget->GetAccountBasePath ();

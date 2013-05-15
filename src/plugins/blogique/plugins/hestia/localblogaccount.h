@@ -80,6 +80,8 @@ namespace Hestia
 		void RequestStatistics ();
 		void GetEntriesByDate (const QDate& date);
 
+		QHash<QString, int> GetTags () const;
+
 		void FillSettings (AccountConfigurationWidget *widget);
 		void Init ();
 
@@ -110,6 +112,7 @@ namespace Hestia
 		void gotEntries2Backup (const QList<Entry>& entries);
 		void gettingEntries2BackupFinished ();
 		void gotBlogStatistics (const QMap<QDate, int>& statistics);
+		void tagsUpdated ();
 
 	};
 }
