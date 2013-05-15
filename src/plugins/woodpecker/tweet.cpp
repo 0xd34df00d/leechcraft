@@ -36,7 +36,7 @@ namespace Woodpecker
 
 	Tweet::Tweet (QObject *parent)
 		: QObject (parent)
-                , m_author(new TwitterUser (parent))
+		  , Author_ (new TwitterUser (parent))
 	{
 	}
 
@@ -46,23 +46,23 @@ namespace Woodpecker
 	{
 		setText(text);
 
-		if (author)
-			m_author = new TwitterUser (parent);
+		if (!author)
+			Author_ = new TwitterUser (parent);
 		else
 		{
-			m_author = author;
+			Author_ = author;
 			author->setParent (this);
 		}
 	}
 
 	Tweet::~Tweet()
 	{
-		m_author->deleteLater();
+		Author_->deleteLater();
 	}
 
 	Tweet::Tweet(const Tweet& original): QObject()
 	{
-		m_author = original.author();
+		Author_ = original.author();
 		m_created = original.dateTime();
 		setText(original.text());
 		m_id = original.id();
@@ -74,7 +74,7 @@ namespace Woodpecker
 			return *this;				// Yes, so skip assignment, and just return *this.
 
 		m_id = rhs.id ();
-		m_author = rhs.author ();
+		Author_ = rhs.author ();
 		m_created = rhs.dateTime ();
 		setText(rhs.text ());
 
