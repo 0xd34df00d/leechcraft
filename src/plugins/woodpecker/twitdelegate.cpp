@@ -164,7 +164,6 @@ TwitDelegate::~TwitDelegate()
 bool TwitDelegate::editorEvent(QEvent* event, QAbstractItemModel* model, const QStyleOptionViewItem& option, const QModelIndex& index)
 {
 	QListWidget*  parent_widget = qobject_cast<QListWidget*>(m_parent);
-	qDebug() << __FILE__ << __LINE__ << " Event: " << event->type();
 	
 	const int imageSpace = 50;
 	if (event->type() == QEvent::MouseButtonRelease) {

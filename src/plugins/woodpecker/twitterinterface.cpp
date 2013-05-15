@@ -98,7 +98,7 @@ QList< std::shared_ptr<Tweet> > twitterInterface::parseReply (QByteArray json)
 	QVariantList answers = parser.parse (json, &ok).toList();
 
 	if (!ok) {
-		qDebug() << "Parsing error at parseReply " << QString::fromUtf8(json);
+		qWarning() << "Parsing error at parseReply " << QString::fromUtf8(json);
 	}
 
 	QVariantMap tweetMap;
@@ -117,8 +117,6 @@ QList< std::shared_ptr<Tweet> > twitterInterface::parseReply (QByteArray json)
 		connect(tempTweet->author(), SIGNAL(userReady()), this->parent(), SLOT(setUpdateReady()));
 		tempTweet->setDateTime (QLocale().toDateTime (tweetMap["created_at"].toString(), QLatin1String ("ddd MMM dd HH:mm:ss +0000 yyyy")));
 		tempTweet->setId (tweetMap["id"].toULongLong());
-
-		qDebug() << tempTweet->dateTime().toString() << " : " << tempTweet->id();
 
 		result.push_back (tempTweet);
 	}
@@ -150,10 +148,9 @@ void twitterInterface::signedRequest (twitterRequest req, KQOAuthRequest::Reques
 
 	QUrl reqUrl;
 
-	if (this->token.isEmpty() ||
-			this->tokenSecret.isEmpty()) {
-		qDebug() << "No access tokens. Aborting.";
-
+	if (this->token.isEmpty() || this->tokenSecret.isEmpty())
+	{
+		qWarning() << "No access tokens. Aborting.";
 		return;
 	}
 

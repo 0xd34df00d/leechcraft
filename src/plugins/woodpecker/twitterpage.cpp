@@ -73,7 +73,7 @@ TwitterPage::TwitterPage (QWidget *parent) : QWidget (parent),
 	connect (ui->TwitButton_, SIGNAL (clicked()), SLOT (twit()));
 	settings = new QSettings (QCoreApplication::organizationName (),
 							  QCoreApplication::applicationName () + "_Woodpecker");
-	connect(ui->TwitList_, SIGNAL(clicked()), SLOT(getHomeFeed()));
+	//connect(ui->TwitList_, SIGNAL(clicked()), SLOT(getHomeFeed()));
 
 	actionRetwit_ = new QAction (tr ("Retwit"), ui->TwitList_);
 	actionRetwit_->setShortcut(Qt::Key_R + Qt::ALT);
@@ -276,43 +276,34 @@ void TwitterPage::sendReply()
 	connect (ui->TwitButton_, SIGNAL (clicked()), SLOT (twit()));
 }
 
+
+void TwitterPage::reply(QListWidgetItem* index = nullptr)
+{
+	QListWidgetItem* idx;
+	if (!index)
+		idx = ui->TwitList_->currentItem();
+	
+	const auto twitid = (idx->data(Qt::UserRole).value<std::shared_ptr<Tweet>>())->id();
+	auto replyto = std::find_if (screenTwits.begin (), screenTwits.end (), 
+			  [twitid] 
+			  (decltype (screenTwits.front ()) tweet) 
+			  { return tweet->id() == twitid; });
+	if (replyto == screenTwits.end()) {
+		qWarning() << __FILE__ << __LINE__ << __FUNCTION__ << "Failed to find twit";
+		return;
+	}
+	
+	std::shared_ptr<Tweet> found_twit = *replyto;
+	ui->TwitEdit_->setText(QString("@").append((*replyto)->author()->username()).append(" "));
+	disconnect (ui->TwitButton_, SIGNAL(clicked()), 0, 0);
+	connect (ui->TwitButton_, SIGNAL (clicked()), SLOT (sendReply()));
+	ui->TwitEdit_->setFocus();
+}
+
 void TwitterPage::reply()
 {
-	const auto& idx = ui->TwitList_->currentItem();
-	const auto twitid = (idx->data(Qt::UserRole).value<std::shared_ptr<Tweet>>())->id();
-	auto replyto = std::find_if (screenTwits.begin (), screenTwits.end (), 
-			  [twitid] 
-			  (decltype (screenTwits.front ()) tweet) 
-			  { return tweet->id() == twitid; });
-	if (replyto == screenTwits.end()) {
-		qDebug() << __FILE__ << __LINE__ << "Failed to find twit";
-		return;
-	}
-	std::shared_ptr<Tweet> found_twit = *replyto;
-	ui->TwitEdit_->setText(QString("@").append((*replyto)->author()->username()).append(" "));
-	disconnect (ui->TwitButton_, SIGNAL(clicked()), 0, 0);
-	connect (ui->TwitButton_, SIGNAL (clicked()), SLOT (sendReply()));
-	ui->TwitEdit_->setFocus();
+	reply(nullptr);
 }
-
-void TwitterPage::reply(QListWidgetItem* idx)
-{
-	const auto twitid = (idx->data(Qt::UserRole).value<std::shared_ptr<Tweet>>())->id();
-	auto replyto = std::find_if (screenTwits.begin (), screenTwits.end (), 
-			  [twitid] 
-			  (decltype (screenTwits.front ()) tweet) 
-			  { return tweet->id() == twitid; });
-	if (replyto == screenTwits.end()) {
-		qDebug() << __FILE__ << __LINE__ << "Failed to find twit";
-		return;
-	}
-	std::shared_ptr<Tweet> found_twit = *replyto;
-	ui->TwitEdit_->setText(QString("@").append((*replyto)->author()->username()).append(" "));
-	disconnect (ui->TwitButton_, SIGNAL(clicked()), 0, 0);
-	connect (ui->TwitButton_, SIGNAL (clicked()), SLOT (sendReply()));
-	ui->TwitEdit_->setFocus();
-}
-
 
 void TwitterPage::scrolledDown (int sliderPos)
 {
