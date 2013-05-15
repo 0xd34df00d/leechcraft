@@ -40,7 +40,7 @@ Core::Core ()
     TabClass_.VisibleName_ = tr ("Twitter client");
     TabClass_.Description_ = tr ("The Woodpecker twitter client");
     TabClass_.Icon_ = QIcon (":/resources/images/woodpecker.svg");
-    TabClass_.Priority_ = 70;
+    TabClass_.Priority_ = 40;
     TabClass_.Features_ = TFOpenableByRequest;
 }
 
@@ -78,13 +78,10 @@ TwitterPage* Core::NewTabRequested ()
 void Core::Handle (const Entity& e)
 {
     TwitterPage *page = NewTabRequested ();
-//              page->SetText (e.Entity_.toString ());
 
     QString language = e.Additional_ ["Language"].toString ();
-//              bool isTempDocumnet = e.Additional_ ["IsTemporaryDocument"].toBool ();
-//              if (!language.isEmpty ())
-//                  page->SetLanguage (language);
-//              page->SetTemporaryDocument (isTempDocumnet);
+	if (!language.isEmpty ())
+		page->setLocale (QLocale(language));
 }
 
 TwitterPage* Core::MakeTwitterPage ()
