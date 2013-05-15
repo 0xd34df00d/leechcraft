@@ -11,6 +11,8 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	laughty.cpp
+	serverobject.cpp
+	serveradaptor.cpp
 	)
 #CreateTrs("laughty" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("laughty" "en;ru_RU" "${SRCS}" "${FORMS}" "")

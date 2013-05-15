@@ -27,59 +27,24 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "laughty.h"
-#include "serverobject.h"
-#include "serveradaptor.h"
-#include <QIcon>
-#include <QDBusConnection>
+#pragma once
+
+#include <QObject>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
 namespace Laughty
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	class ServerObject : public QObject
 	{
-		if (!QDBusConnection::sessionBus ().registerService ("org.freedesktop.Notifications"))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to register Notifications service."
-					<< "Is another notification daemon active?";
-			return;
-		}
+		Q_OBJECT
 
-		auto server = new ServerObject (proxy);
-		new ServerAdaptor (server);
-		QDBusConnection::sessionBus ().registerObject ("/org/freedesktop/Notifications", server);
-	}
+		ICoreProxy_ptr Proxy_;
+	public:
+		ServerObject (ICoreProxy_ptr);
 
-	void Plugin::SecondInit ()
-	{
-	}
-
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.Laughty";
-	}
-
-	void Plugin::Release ()
-	{
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Laughty";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Desktop Notifications server.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
+		QStringList GetCapabilities () const;
+	};
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_laughty, LeechCraft::Laughty::Plugin);
