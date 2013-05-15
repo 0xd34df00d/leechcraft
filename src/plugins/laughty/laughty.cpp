@@ -48,7 +48,7 @@ namespace Laughty
 		}
 
 		auto server = new ServerObject (proxy);
-		new ServerAdaptor (server);
+		new ServerAdaptor (server, proxy);
 		QDBusConnection::sessionBus ().registerObject ("/org/freedesktop/Notifications", server);
 	}
 

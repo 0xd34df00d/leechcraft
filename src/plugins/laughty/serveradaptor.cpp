@@ -34,15 +34,25 @@ namespace LeechCraft
 {
 namespace Laughty
 {
-	ServerAdaptor::ServerAdaptor (ServerObject *obj)
+	ServerAdaptor::ServerAdaptor (ServerObject *obj, ICoreProxy_ptr proxy)
 	: QDBusAbstractAdaptor (obj)
 	, Server_ (obj)
+	, Proxy_ (proxy)
 	{
 	}
 
 	QStringList ServerAdaptor::GetCapabilities () const
 	{
 		return Server_->GetCapabilities ();
+	}
+
+	void ServerAdaptor::GetServerInformation (QString& name,
+			QString& vendor, QString& version, QString& spec_version) const
+	{
+		name = "Laughty";
+		vendor = "LeechCraft";
+		version = Proxy_->GetVersion ();
+		spec_version = "1.2";
 	}
 }
 }

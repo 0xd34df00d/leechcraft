@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QDBusAbstractAdaptor>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -42,11 +43,14 @@ namespace Laughty
 		Q_OBJECT
 		Q_CLASSINFO ("D-Bus Interface", "org.freedesktop.Notifications")
 
-		ServerObject *Server_;
+		ServerObject * const Server_;
+		const ICoreProxy_ptr Proxy_;
 	public:
-		ServerAdaptor (ServerObject*);
+		ServerAdaptor (ServerObject*, ICoreProxy_ptr);
 	public slots:
 		QStringList GetCapabilities () const;
+		void GetServerInformation (QString& name, QString& vendor,
+				QString& version, QString& spec_version) const;
 	};
 }
 }

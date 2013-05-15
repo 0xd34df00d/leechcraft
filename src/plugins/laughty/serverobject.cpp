@@ -40,7 +40,14 @@ namespace Laughty
 
 	QStringList ServerObject::GetCapabilities () const
 	{
-		return {};
+		return
+		{
+			"actions",
+			"body",
+			"body-hyperlinks",
+			"body-images",
+			"body-markup"
+		};
 	}
 }
 }
