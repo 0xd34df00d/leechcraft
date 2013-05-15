@@ -57,6 +57,7 @@ namespace Laughty
 		void CloseNotification (uint id);
 	private:
 		void HandleActions (Entity&, int, const QStringList&, const QVariantMap&);
+		void HandleSounds (const QVariantMap&);
 	signals:
 		void NotificationClosed (uint id, uint reason);
 		void ActionInvoked (uint id, const QString& action_key);

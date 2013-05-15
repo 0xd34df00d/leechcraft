@@ -33,6 +33,7 @@
 #include <util/notificationactionhandler.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/core/ientitymanager.h>
+#include <QUrl>
 
 namespace LeechCraft
 {
@@ -112,6 +113,7 @@ namespace Laughty
 		}
 
 		HandleActions (e, id, actions, hints);
+		HandleSounds (hints);
 
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 
@@ -150,6 +152,22 @@ namespace Laughty
 		if (resident)
 			nah->AddFunction (tr ("Dismiss"),
 					[this, id] { emit NotificationClosed (id, 2); });
+	}
+
+	void ServerObject::HandleSounds (const QVariantMap& hints)
+	{
+		if (hints.contains ("sound-name"))
+			qWarning () << Q_FUNC_INFO
+					<< "sounds aren't supported yet :(";
+
+		if (!hints.contains ("sound-file"))
+			return;
+
+		const auto& filename = hints.value ("sound-file").toString ();
+		const auto& e = Util::MakeEntity (QUrl::fromLocalFile (filename),
+				QString (),
+				TaskParameter::Internal);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 }
 }
