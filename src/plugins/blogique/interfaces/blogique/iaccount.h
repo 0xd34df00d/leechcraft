@@ -190,6 +190,7 @@ namespace Blogique
 
 		virtual void backup () = 0;
 
+		virtual QHash<QString, int> GetTags () const = 0;
 
 	protected:
 		/** @brief This signal should be emitted when account is renamed.
@@ -218,6 +219,9 @@ namespace Blogique
 
 		//TODO
 		virtual void gotBlogStatistics (const QMap<QDate, int>& statistics) = 0;
+
+		//TODO
+		virtual void tagsUpdated () = 0;
 
 		virtual void requestEntriesBegin () = 0;
 		//TODO
