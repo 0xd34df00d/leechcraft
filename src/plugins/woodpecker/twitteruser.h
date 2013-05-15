@@ -51,14 +51,12 @@ public:
 	explicit TwitterUser (QString username, QObject *parent = 0);
 	~TwitterUser ();
 
+	void setUsername (QString username) { m_username = username; }
+	QString username () { return m_username; }
 
-	void setUsername (QString username) {
-		m_username = username;
-	}
-	QString username () {
-		return m_username;
-	}
-
+	/** @brief Grabs avatar from Twitter
+	 * 	@param path http url of image
+	 */
 	void downloadAvatar (QString path);
 
 private:

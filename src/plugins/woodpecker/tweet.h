@@ -52,50 +52,42 @@ public:
 	Tweet (QString text, TwitterUser *author = 0, QObject *parent = 0);
     Tweet (const Tweet& original);
 	~Tweet ();
+	
+	/** @brief Set both plain text contents and generates a html representation */
 	void setText (QString text);
-
-	QString text () const {
-		return m_text;
-	}
+	QString text () const { return m_text; }
 	
-	qulonglong id () const {
-		return m_id;
-	}
-	void setId (qulonglong id) {
-		m_id = id;
-	}
+	qulonglong id () const { return m_id; }
+	void setId (qulonglong id) { m_id = id; }
 
-	TwitterUser* author () const {
-		return m_author;
-	}
-	void setAuthor (TwitterUser *newAuthor) {
-		m_author = newAuthor;
-	}
+	TwitterUser* author () const { return m_author; }
+	void setAuthor (TwitterUser *newAuthor) { m_author = newAuthor; }
 
-	QDateTime dateTime () const {
-		return m_created;
-	}
+	QDateTime dateTime () const { return m_created; }
+	void setDateTime (QDateTime datetime) { m_created = datetime; }
 	
-	void setDateTime (QDateTime datetime) {
-		m_created = datetime;
-	}
-	
-	QTextDocument* getDocument() {
-		return &m_document;
-	}
+	QTextDocument* getDocument() { return &m_document; }
 	
 	Tweet& operator= (const Tweet&);
+	
+	/** @brief Comparison is performed by comparing twit id's */
 	bool operator== (const Tweet&);
+
+	/** @brief Comparison is performed by comparing twit id's */
 	bool operator!= (const Tweet&);
+
+	/** @brief Comparison is performed by comparing twit id's */
 	bool operator> (const Tweet&);
+
+	/** @brief Comparison is performed by comparing twit id's */
 	bool operator< (const Tweet&);
 
 private:
-	qulonglong	m_id;
-	QString		m_text;
-	TwitterUser	*m_author;
-	QDateTime	m_created;
-	QTextDocument m_document;
+	qulonglong	m_id;					/**< Twit id in Twitter */
+	QString		m_text;					/**< Text of twit in plaintext */
+	TwitterUser	*m_author;				/**< Pointer to twitter author */
+	QDateTime	m_created;				/**< Twit date */
+	QTextDocument m_document;			/**< QTextDocument which is used for drawing twit */
 
 signals:
 

@@ -204,35 +204,12 @@ void TwitterPage::updateTweetList (QList< std::shared_ptr< Tweet > > twits)
 		}
 		screenTwits.append (twits);
 	}
-	ui->TwitList_->clear();
-
-	for (auto twit : screenTwits)
-	{
-		QListWidgetItem *tmpitem = new QListWidgetItem();
-		QVariant data;
-		data.setValue(twit);
-		
-		tmpitem->setData(Qt::DisplayRole, "Title");
-		tmpitem->setData(Qt::UserRole, data);
-		
-		if (twit->author()->avatar.isNull())
-			tmpitem->setData(Qt::DecorationRole, QIcon (":/resources/images/woodpecker.svg"));
-		else
-			tmpitem->setData(Qt::DecorationRole, twit->author()->avatar);
-		ui->TwitList_->insertItem (0, tmpitem);
-		ui->TwitList_->updateGeometry();
-		
-	}
-	//QTimer::singleShot(1000, ui->TwitList_, SLOT(update()));
 	
-	ui->TwitList_->update();
-	ui->TwitList_->installEventFilter(this);
-	ui->TwitList_->setEnabled(true);
+	updateTweetList();
 }
 
 void TwitterPage::updateTweetList()
 {
-	qDebug() << __FILE__ << __LINE__ << "Updating without params";
 	ui->TwitList_->setEnabled(false);
 	ui->TwitList_->clear();
 
@@ -252,7 +229,6 @@ void TwitterPage::updateTweetList()
 		ui->TwitList_->insertItem (0, tmpitem);
 		ui->TwitList_->updateGeometry();
 	}
-//	QTimer::singleShot(1000, ui->TwitList_, SLOT(update()));
 	
 	ui->TwitList_->update();
 	ui->TwitList_->installEventFilter(this);
