@@ -233,7 +233,7 @@ namespace Woodpecker
 			tmpitem->setData(Qt::UserRole, data);
 
 			if (twit->author()->avatar.isNull())
-				tmpitem->setData(Qt::DecorationRole, QIcon (":/resources/images/woodpecker.svg"));
+				tmpitem->setData(Qt::DecorationRole, QIcon ("lcicons:/resources/images/woodpecker.svg"));
 			else
 				tmpitem->setData(Qt::DecorationRole, twit->author()->avatar);
 			ui->TwitList_->insertItem (0, tmpitem);
