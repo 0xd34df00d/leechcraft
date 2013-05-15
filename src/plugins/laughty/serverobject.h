@@ -51,6 +51,11 @@ namespace Laughty
 		uint Notify (const QString& app_name, uint replaces_id, const QString& app_icon,
 				const QString& summary, const QString& body, const QStringList& actions,
 				const QVariantMap& hints, uint expire_timeout);
+
+		void CloseNotification (uint id);
+	signals:
+		void NotificationClosed (uint id, uint reason);
+		void ActionInvoked (uint id, const QString& action_key);
 	};
 }
 }

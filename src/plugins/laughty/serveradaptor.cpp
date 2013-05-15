@@ -56,6 +56,7 @@ namespace Laughty
 
 	void ServerAdaptor::CloseNotification (uint id)
 	{
+		Server_->CloseNotification (id);
 	}
 
 	void ServerAdaptor::GetServerInformation (QString& name,

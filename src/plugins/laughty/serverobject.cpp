@@ -37,6 +37,11 @@ namespace LeechCraft
 {
 namespace Laughty
 {
+	namespace
+	{
+		const QString LaughtyID = "org.LeechCraft.Laughty";
+	}
+
 	ServerObject::ServerObject (ICoreProxy_ptr proxy)
 	: Proxy_ (proxy)
 	, LastID_ (0)
@@ -95,9 +100,9 @@ namespace Laughty
 			e = Util::MakeAN (app_name,
 					summary,
 					prio,
-					"org.LeechCraft.Laughty",
+					LaughtyID,
 					catTypePair.first, catTypePair.second,
-					"org.LeechCraft.Laughty" + QString::number (id),
+					LaughtyID + '/' + QString::number (id),
 					QStringList (),
 					0,
 					1,
@@ -108,6 +113,14 @@ namespace Laughty
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 
 		return id;
+	}
+
+	void ServerObject::CloseNotification (uint id)
+	{
+		const auto& e = Util::MakeANCancel (LaughtyID, LaughtyID + '/' + id);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
+
+		emit NotificationClosed (id, 3);
 	}
 }
 }
