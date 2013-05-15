@@ -195,6 +195,10 @@ namespace Blogique
 				SIGNAL (entryRemoved ()),
 				newTab,
 				SLOT (handleEntryRemoved ()));
+		connect (&Core::Instance (),
+				SIGNAL (tagsUpdated (QHash<QString,int>)),
+				newTab,
+				SLOT (handleTagsUpdated (QHash<QString,int>)));
 
 		return newTab;
 	}
@@ -275,6 +279,10 @@ namespace Blogique
 				SIGNAL (gettingEntries2BackupFinished ()),
 				this,
 				SLOT (handleGettingEntries2BackupFinished ()));
+		connect (accObj,
+				SIGNAL (tagsUpdated ()),
+				this,
+				SLOT (handleTagsUpdated ()));
 
 		emit accountAdded (accObj);
 	}
@@ -388,6 +396,16 @@ namespace Blogique
 		AutoSaveTimer_->start (XmlSettingsManager::Instance ()
 				.property ("AutoSave").toInt () * 1000);
 	}
+
+	void Core::handleTagsUpdated ()
+	{
+		auto acc = qobject_cast<IAccount*> (sender ());
+		if (!acc)
+			return;
+
+		emit tagsUpdated (acc->GetTags ());
+	}
+
 }
 }
 

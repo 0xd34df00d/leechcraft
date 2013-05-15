@@ -30,13 +30,18 @@
 #include "blogiquewidget.h"
 #include <stdexcept>
 #include <QComboBox>
+#include <QDeclarativeContext>
+#include <QDeclarativeEngine>
 #include <QInputDialog>
+#include <QGraphicsObject>
 #include <QMessageBox>
 #include <QProgressBar>
 #include <QPushButton>
 #include <QStandardItemModel>
 #include <QWidgetAction>
 #include <util/util.h>
+#include <util/sys/paths.h>
+#include <util/qml/themeimageprovider.h>
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -52,12 +57,14 @@
 #include "xmlsettingsmanager.h"
 #include "storagemanager.h"
 #include "submittodialog.h"
+#include "tagsproxymodel.h"
 
 namespace LeechCraft
 {
 namespace Blogique
 {
 	QObject *BlogiqueWidget::S_ParentMultiTabs_ = 0;
+	const QString ImageProviderID = "ThemeIcons";
 
 	BlogiqueWidget::BlogiqueWidget (QWidget *parent)
 	: QWidget (parent)
@@ -75,6 +82,8 @@ namespace Blogique
 	, EntryType_ (EntryType::None)
 	, EntryId_ (-1)
 	, EntryChanged_ (false)
+	, TagsProxyModel_ (new TagsProxyModel (this))
+	, TagsModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
 
@@ -149,6 +158,18 @@ namespace Blogique
 		ShowProgress ();
 
 		DraftEntriesWidget_->loadDraftEntries ();
+
+		TagsProxyModel_->setSourceModel (TagsModel_);
+		Ui_.Tags_->rootContext ()->setContextProperty ("tagsModel",
+				TagsProxyModel_);
+		Ui_.Tags_->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,
+				"blogique", "tagwidget.qml")));
+		Ui_.Tags_->engine ()->addImageProvider (ImageProviderID,
+				new Util::ThemeImageProvider (Core::Instance ().GetCoreProxy ()));
+		connect (Ui_.Tags_->rootObject (),
+				SIGNAL (tagTextChanged (QString)),
+				this,
+				SLOT (handleTagTextChanged (QString)));
 	}
 
 	QObject* BlogiqueWidget::ParentMultiTabs ()
@@ -424,15 +445,18 @@ namespace Blogique
 
 	void BlogiqueWidget::SetPostTags (const QStringList& tags)
 	{
-		Ui_.Tags_->setText (tags.join (", "));
+		QMetaObject::invokeMethod (Ui_.Tags_->rootObject (),
+				"setTags",
+				Q_ARG (QVariant, QVariant::fromValue (tags)));
 	}
 
 	QStringList BlogiqueWidget::GetPostTags () const
 	{
-		QStringList tags;
-		for (auto tag : Ui_.Tags_->text ().split (","))
-			tags << tag.trimmed ();
-		return tags;
+		QVariant tags;
+		QMetaObject::invokeMethod (Ui_.Tags_->rootObject (),
+				"getTags",
+				Q_RETURN_ARG (QVariant, tags));
+		return tags.toStringList ();
 	}
 
 	void BlogiqueWidget::ClearEntry ()
@@ -701,6 +725,17 @@ namespace Blogique
 		ShowProgress ();
 	}
 
+	void BlogiqueWidget::handleTagsUpdated (const QHash<QString, int>& tags)
+	{
+		TagsModel_->clear ();
+		for (const auto& tag : tags.keys ())
+		{
+			QStandardItem *item = new QStandardItem (tag);
+			item->setData (tags.value (tag), TagFrequency);
+			TagsModel_->appendRow (item);
+		}
+	}
+
 	void BlogiqueWidget::newEntry ()
 	{
 		if (EntryChanged_)
@@ -874,6 +909,12 @@ namespace Blogique
 		Ui_.Month_->setCurrentIndex (current.date ().month () - 1);
 		Ui_.Date_->setValue (current.date ().day ());
 		Ui_.Time_->setTime (current.time ());
+	}
+
+	void BlogiqueWidget::handleTagTextChanged (const QString& text)
+	{
+		TagsProxyModel_->setFilterFixedString (text);
+		TagsProxyModel_->countUpdated ();
 	}
 
 }

@@ -104,6 +104,8 @@ namespace Blogique
 
 		void handleAutoSaveIntervalChanged ();
 
+		void handleTagsUpdated ();
+
 	signals:
 		void accountAdded (QObject *account);
 		void accountRemoved (QObject *account);
@@ -122,6 +124,8 @@ namespace Blogique
 
 		void entryPosted ();
 		void entryRemoved ();
+
+		void tagsUpdated (const QHash<QString, int>& tags);
 	};
 }
 }

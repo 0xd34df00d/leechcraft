@@ -50,6 +50,7 @@ namespace Blogique
 	class IAccount;
 	class DraftEntriesWidget;
 	class BlogEntriesWidget;
+	class TagsProxyModel;
 
 	class BlogiqueWidget : public QWidget
 						, public ITabWidget
@@ -90,7 +91,15 @@ namespace Blogique
 
 		bool EntryChanged_;
 
+		TagsProxyModel *TagsProxyModel_;
+		QStandardItemModel *TagsModel_;
+
 	public:
+		enum TagRoles
+		{
+			TagFrequency = Qt::UserRole + 1
+		};
+
 		BlogiqueWidget (QWidget *parent = 0);
 
 		QObject* ParentMultiTabs ();
@@ -129,6 +138,7 @@ namespace Blogique
 		void handleEntryRemoved ();
 		void handleRequestEntriesBegin ();
 		void handleRequestEntriesEnd ();
+		void handleTagsUpdated (const QHash<QString, int>& tags);
 
 	private slots:
 		void handleCurrentAccountChanged (int id);
@@ -147,6 +157,7 @@ namespace Blogique
 		void on_UpdateProfile__triggered ();
 		void on_CurrentTime__released ();
 
+		void handleTagTextChanged (const QString& text);
 	signals:
 		void removeTab (QWidget *tab);
 		void addNewTab (const QString& name, QWidget *tab);
