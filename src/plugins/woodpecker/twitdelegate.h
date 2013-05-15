@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef TWEETDELEGATE_H
-#define TWEETDELEGATE_H
+#pragma once
 
 #include <memory>
 #include <QPainter>
@@ -61,5 +60,3 @@ namespace Woodpecker
 	};
 }
 }
-
-#endif // TWEETDELEGATE_H

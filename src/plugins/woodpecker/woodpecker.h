@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_WOODPECKER_H
-#define PLUGINS_WOODPECKER_H
+#pragma once
 
 #include <QObject>
 #include <interfaces/iinfo.h>
@@ -85,7 +84,5 @@ namespace Woodpecker
 	};
 };
 };
-
-#endif
 
 // kate: indent-mode cstyle; indent-width 4; replace-tabs off; tab-width 4;

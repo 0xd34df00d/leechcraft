@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef TWITTERPAGE_H
-#define TWITTERPAGE_H
+#pragma once
 
 #include <QWidget>
 #include <QScrollBar>
@@ -133,5 +132,4 @@ namespace Woodpecker
 }
 }
 
-#endif // TWITTERPAGE_H
 // kate: indent-mode cstyle; indent-width 4; replace-tabs off; tab-width 4;

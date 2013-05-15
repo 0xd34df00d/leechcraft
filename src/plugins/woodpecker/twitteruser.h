@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef TWITTERUSER_H
-#define TWITTERUSER_H
+#pragma once
 
 #include <QObject>
 #include <QPixmap>
@@ -74,5 +73,4 @@ namespace Woodpecker
 }
 }
 
-#endif // TWITTERUSER_H
 // kate: indent-mode cstyle; indent-width 4; replace-tabs off; tab-width 4;

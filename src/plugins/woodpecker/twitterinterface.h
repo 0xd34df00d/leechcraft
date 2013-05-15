@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef TWITTERINTERFACE_H
-#define TWITTERINTERFACE_H
+#pragma once
 
 #include <boost/shared_ptr.hpp>
 
@@ -121,7 +120,5 @@ namespace Woodpecker
 	};
 }
 }
-
-#endif // TWITTERINTERFACE_H
 
 // kate: indent-mode cstyle; indent-width 4; replace-tabs off; tab-width 4;

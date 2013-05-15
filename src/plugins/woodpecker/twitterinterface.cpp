@@ -49,7 +49,7 @@ namespace Woodpecker
 		oauthRequest = new KQOAuthRequest;
 		oauthManager = new KQOAuthManager (this);
 
-		oauthRequest->setEnableDebugOutput (false); // TODO: Remove debug
+		oauthRequest->setEnableDebugOutput (false); // DONE: Remove debug
 		consumerKey = QString ("nbwLYUDIlgsMgDFCu6jfuA");
 		consumerKeySecret = QString ("7TWYPzLUqZlihIRA2VWfZhCRfss2JNKvkSWMQx4");
 

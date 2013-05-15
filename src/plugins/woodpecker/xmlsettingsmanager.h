@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_WOODPECKER_XMLSETTINGSMANAGER_H
-#define PLUGINS_WOODPECKER_XMLSETTINGSMANAGER_H
+#pragma once
 
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
@@ -52,7 +51,5 @@ namespace Woodpecker
 	};
 };
 };
-
-#endif
 
 // kate: indent-mode cstyle; indent-width 4; replace-tabs off; tab-width 4;

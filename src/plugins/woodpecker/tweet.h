@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef TWEET_H
-#define TWEET_H
+#pragma once
 
 #include <memory>
 #include <QObject>
@@ -100,5 +99,4 @@ namespace Woodpecker
 Q_DECLARE_METATYPE ( LeechCraft::Woodpecker::Tweet );
 Q_DECLARE_METATYPE ( std::shared_ptr<LeechCraft::Woodpecker::Tweet> );
 
-#endif // TWEET_H
 // kate: indent-mode cstyle; indent-width 4; replace-tabs off; tab-width 4;
