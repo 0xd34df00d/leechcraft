@@ -113,18 +113,25 @@ namespace Laughty
 
 		if (!actions.isEmpty () && actions.size () % 2)
 		{
+			const auto resident = hints.value ("resident", false).toBool ();
+
 			auto nah = new Util::NotificationActionHandler (e);
 
 			for (int i = 0; i < actions.size (); i += 2)
 			{
 				auto key = actions.at (i);
 				nah->AddFunction (actions.at (i + 1),
-						[this, key, id] () -> void
+						[this, key, id, resident] () -> void
 						{
 							emit ActionInvoked (id, key);
-							emit NotificationClosed (id, 2);
+							if (!resident)
+								emit NotificationClosed (id, 2);
 						});
 			}
+
+			if (resident)
+				nah->AddFunction (tr ("Dismiss"),
+						[this, id] { emit NotificationClosed (id, 2); });
 		}
 
 		Proxy_->GetEntityManager ()->HandleEntity (e);
