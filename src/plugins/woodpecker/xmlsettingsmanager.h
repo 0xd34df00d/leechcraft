@@ -36,17 +36,20 @@ namespace LeechCraft
 {
 namespace Woodpecker
 {
-class XmlSettingsManager : public Util::BaseSettingsManager
-{
-	Q_OBJECT
 
-	XmlSettingsManager ();
-public:
-	static XmlSettingsManager* Instance ();
-protected:
-	virtual QSettings* BeginSettings () const;
-	virtual void EndSettings (QSettings*) const;
-};
+	class XmlSettingsManager : public Util::BaseSettingsManager
+	{
+		Q_OBJECT
+
+			XmlSettingsManager ();
+
+		public:
+			static XmlSettingsManager* Instance ();
+
+		protected:
+			virtual QSettings* BeginSettings () const;
+			virtual void EndSettings (QSettings*) const;
+	};
 };
 };
 

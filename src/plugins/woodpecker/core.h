@@ -41,41 +41,43 @@ namespace LeechCraft
 {
 namespace Woodpecker
 {
-class TwitterPage;
+	class TwitterPage;
 
-class Core : public QObject
-{
-	Q_OBJECT
+	class Core : public QObject
+	{
+		Q_OBJECT
 
-	ICoreProxy_ptr Proxy_;
-	TabClassInfo TabClass_;
+		ICoreProxy_ptr Proxy_;
+		TabClassInfo TabClass_;
 
-	Core ();
-public:
-	static Core& Instance ();
-	TabClassInfo GetTabClass () const;
+		Core ();
+	public:
+		static Core& Instance ();
+		TabClassInfo GetTabClass () const;
 
-	void SetProxy (ICoreProxy_ptr);
-	ICoreProxy_ptr GetProxy () const;
+		void SetProxy (ICoreProxy_ptr);
+		ICoreProxy_ptr GetProxy () const;
 
-	TwitterPage* NewTabRequested ();
-	void Handle (const Entity&);
-private:
-	TwitterPage* MakeTwitterPage ();
-signals:
-	void addNewTab (const QString&, QWidget*);
-	void removeTab (QWidget*);
-	void changeTabName (QWidget*, const QString&);
-	void changeTabIcon (QWidget*, const QIcon&);
-	void changeTooltip (QWidget*, QWidget*);
-	void statusBarChanged (QWidget*, const QString&);
-	void raiseTab (QWidget*);
-	void delegateEntity (const LeechCraft::Entity&,
-						 int*, QObject**);
-	void gotEntity (const LeechCraft::Entity&);
+		TwitterPage* NewTabRequested ();
+		void Handle (const Entity&);
 
-	void couldHandle (const LeechCraft::Entity&, bool*);
-};
+	private:
+		TwitterPage* MakeTwitterPage ();
+	
+	signals:
+		void addNewTab (const QString&, QWidget*);
+		void removeTab (QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void changeTooltip (QWidget*, QWidget*);
+		void statusBarChanged (QWidget*, const QString&);
+		void raiseTab (QWidget*);
+		void delegateEntity (const LeechCraft::Entity&,
+							int*, QObject**);
+		void gotEntity (const LeechCraft::Entity&);
+
+		void couldHandle (const LeechCraft::Entity&, bool*);
+	};
 };
 };
 

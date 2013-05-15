@@ -43,62 +43,57 @@ namespace LeechCraft
 namespace Woodpecker
 {
 
-class Tweet : public QObject
-{
-	Q_OBJECT
+	class Tweet : public QObject
+	{
+		Q_OBJECT
 
-public:
-	Tweet (QObject *parent = 0);
-	Tweet (QString text, TwitterUser *author = 0, QObject *parent = 0);
-    Tweet (const Tweet& original);
-	~Tweet ();
-	
-	/** @brief Set both plain text contents and generates a html representation */
-	void setText (QString text);
-	QString text () const { return m_text; }
-	
-	qulonglong id () const { return m_id; }
-	void setId (qulonglong id) { m_id = id; }
+		public:
+			Tweet (QObject *parent = 0);
+			Tweet (const QString& text, TwitterUser *author = 0, QObject *parent = 0);
+			Tweet (const Tweet& original);
+			~Tweet ();
 
-	TwitterUser* author () const { return m_author; }
-	void setAuthor (TwitterUser *newAuthor) { m_author = newAuthor; }
+			/** @brief Set both plain text contents and generates a html representation */
+			void setText (QString text);
+			QString text () const { return m_text; }
 
-	QDateTime dateTime () const { return m_created; }
-	void setDateTime (QDateTime datetime) { m_created = datetime; }
-	
-	/** @brief Direct access to QTextDocument representation
-	 * @returns internal document object. You can fix it the way you like for better visuals
-	 * 
-	 * Used in TwitDelegate class for drawing Tweet object contents in UI
-	 */
-	QTextDocument* getDocument() { return &m_document; }
-	
-	Tweet& operator= (const Tweet&);
-	
-	/** @brief Comparison is performed by comparing twit id's */
-	bool operator== (const Tweet&);
+			qulonglong id () const { return m_id; }
+			void setId (qulonglong id) { m_id = id; }
 
-	/** @brief Comparison is performed by comparing twit id's */
-	bool operator!= (const Tweet&);
+			TwitterUser* author () const { return m_author; }
+			void setAuthor (TwitterUser *newAuthor) { m_author = newAuthor; }
 
-	/** @brief Comparison is performed by comparing twit id's */
-	bool operator> (const Tweet&);
+			QDateTime dateTime () const { return m_created; }
+			void setDateTime (QDateTime datetime) { m_created = datetime; }
 
-	/** @brief Comparison is performed by comparing twit id's */
-	bool operator< (const Tweet&);
+			/** @brief Direct access to QTextDocument representation
+			 * @returns internal document object. You can fix it the way you like for better visuals
+			 * 
+			 * Used in TwitDelegate class for drawing Tweet object contents in UI
+			 */
+			QTextDocument* getDocument() { return &m_document; }
 
-private:
-	qulonglong	m_id;					/**< Twit id in Twitter */
-	QString		m_text;					/**< Text of twit in plaintext */
-	TwitterUser	*m_author;				/**< Pointer to twitter author */
-	QDateTime	m_created;				/**< Twit date */
-	QTextDocument m_document;			/**< QTextDocument which is used for drawing twit */
+			Tweet& operator= (const Tweet&);
 
-signals:
+			/** @brief Comparison is performed by comparing twit id's */
+			bool operator== (const Tweet&);
 
-public slots:
+			/** @brief Comparison is performed by comparing twit id's */
+			bool operator!= (const Tweet&);
 
-};
+			/** @brief Comparison is performed by comparing twit id's */
+			bool operator> (const Tweet&);
+
+			/** @brief Comparison is performed by comparing twit id's */
+			bool operator< (const Tweet&);
+
+		private:
+			qulonglong	m_id;					/**< Twit id in Twitter */
+			QString		m_text;					/**< Text of twit in plaintext */
+			TwitterUser	*m_author;				/**< Pointer to twitter author */
+			QDateTime	m_created;				/**< Twit date */
+			QTextDocument m_document;			/**< QTextDocument which is used for drawing twit */
+	};
 }
 }
 

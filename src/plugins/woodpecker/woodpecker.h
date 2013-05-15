@@ -43,43 +43,46 @@ namespace LeechCraft
 {
 namespace Woodpecker
 {
-class Plugin : public QObject
-	, public IInfo
-	, public IHaveTabs
-	, public IHaveSettings
-{
-	Q_OBJECT
-	Q_INTERFACES (IInfo IHaveTabs IHaveSettings)
 
-	std::shared_ptr<QTranslator> Translator_;
-	std::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
-public:
-	void Init (ICoreProxy_ptr);
-	void SecondInit ();
-	void Release ();
-	QByteArray GetUniqueID () const;
-	QString GetName () const;
-	QString GetInfo () const;
-	QIcon GetIcon () const;
+	class Plugin 
+		: public QObject
+		  , public IInfo
+		  , public IHaveTabs
+		  , public IHaveSettings
+	{
+			Q_OBJECT
+			Q_INTERFACES (IInfo IHaveTabs IHaveSettings)
 
-	TabClasses_t GetTabClasses () const;
-	void TabOpenRequested (const QByteArray&);
+			std::shared_ptr<QTranslator> Translator_;
+			std::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
+		public:
+			void Init (ICoreProxy_ptr);
+			void SecondInit ();
+			void Release ();
+			QByteArray GetUniqueID () const;
+			QString GetName () const;
+			QString GetInfo () const;
+			QIcon GetIcon () const;
 
-	std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
-signals:
-	void addNewTab (const QString&, QWidget*);
-	void removeTab (QWidget*);
-	void changeTabName (QWidget*, const QString&);
-	void changeTabIcon (QWidget*, const QIcon&);
-	void changeTooltip (QWidget*, QWidget*);
-	void statusBarChanged (QWidget*, const QString&);
-	void raiseTab (QWidget*);
-	void delegateEntity (const LeechCraft::Entity&,
-						 int*, QObject**);
-	void gotEntity (const LeechCraft::Entity&);
+			TabClasses_t GetTabClasses () const;
+			void TabOpenRequested (const QByteArray&);
 
-	void couldHandle (const LeechCraft::Entity&, bool*);
-};
+			std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
+
+		signals:
+			void addNewTab (const QString&, QWidget*);
+			void removeTab (QWidget*);
+			void changeTabName (QWidget*, const QString&);
+			void changeTabIcon (QWidget*, const QIcon&);
+			void changeTooltip (QWidget*, QWidget*);
+			void statusBarChanged (QWidget*, const QString&);
+			void raiseTab (QWidget*);
+			void delegateEntity (const LeechCraft::Entity&,
+					int*, QObject**);
+			void gotEntity (const LeechCraft::Entity&);
+
+			void couldHandle (const LeechCraft::Entity&, bool*);
+	};
 };
 };
 

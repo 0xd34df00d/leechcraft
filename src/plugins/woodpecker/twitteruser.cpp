@@ -35,44 +35,44 @@ namespace LeechCraft
 namespace Woodpecker
 {
 
-TwitterUser::TwitterUser (QObject *parent) :
-	QObject (parent)
-{
-	http = new QNetworkAccessManager (this);
+	TwitterUser::TwitterUser (QObject *parent) :
+		QObject (parent)
+	{
+		http = new QNetworkAccessManager (this);
 
-}
+	}
 
-TwitterUser::TwitterUser (QString username, QObject *parent) :
-	QObject (parent)
-{
-	this->m_username = username;
-}
+	TwitterUser::TwitterUser (QString username, QObject *parent) :
+		QObject (parent)
+	{
+		this->m_username = username;
+	}
 
-void TwitterUser::avatarDownloaded (QNetworkReply *reply)
-{
-	QByteArray data;
+	void TwitterUser::avatarDownloaded (QNetworkReply *reply)
+	{
+		QByteArray data;
 
-	data = reply->readAll();
-	avatar.loadFromData (data);
-	reply->deleteLater();
-	emit userReady();
-}
+		data = reply->readAll();
+		avatar.loadFromData (data);
+		reply->deleteLater();
+		emit userReady();
+	}
 
-void TwitterUser::downloadAvatar (QString path)
-{
-	req = new QNetworkRequest (QUrl (path));
-	connect (http, SIGNAL (finished (QNetworkReply*)),
-			 this, SLOT (avatarDownloaded (QNetworkReply*)));
+	void TwitterUser::downloadAvatar (QString path)
+	{
+		req = new QNetworkRequest (QUrl (path));
+		connect (http, SIGNAL (finished (QNetworkReply*)),
+				this, SLOT (avatarDownloaded (QNetworkReply*)));
 
-	http->get (*req);
-}
+		http->get (*req);
+	}
 
-TwitterUser::~TwitterUser()
-{
-	if (req) delete req;
+	TwitterUser::~TwitterUser()
+	{
+		if (req) delete req;
 
-	http->deleteLater();
-}
+		http->deleteLater();
+	}
 
 }
 }

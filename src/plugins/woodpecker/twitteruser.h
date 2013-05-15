@@ -41,36 +41,36 @@ namespace LeechCraft
 namespace Woodpecker
 {
 
-class TwitterUser : public QObject
-{
-	Q_OBJECT
-public:
-	QPixmap  avatar;
+	class TwitterUser : public QObject
+	{
+		Q_OBJECT
+		public:
+			QPixmap  avatar;
 
-	explicit TwitterUser (QObject *parent = 0);
-	explicit TwitterUser (QString username, QObject *parent = 0);
-	~TwitterUser ();
+			explicit TwitterUser (QObject *parent = 0);
+			explicit TwitterUser (QString username, QObject *parent = 0);
+			~TwitterUser ();
 
-	void setUsername (QString username) { m_username = username; }
-	QString username () { return m_username; }
+			void setUsername (QString username) { m_username = username; }
+			QString username () { return m_username; }
 
-	/** @brief Grabs avatar from Twitter
-	 * 	@param path http url of image
-	 */
-	void downloadAvatar (QString path);
+			/** @brief Grabs avatar from Twitter
+			 * 	@param path http url of image
+			 */
+			void downloadAvatar (QString path);
 
-private:
-	QString m_username;
-	QNetworkRequest *req;
-	QNetworkAccessManager *http;
+		private:
+			QString m_username;
+			QNetworkRequest *req;
+			QNetworkAccessManager *http;
 
-signals:
-	void userReady();
+		signals:
+			void userReady();
 
-public slots:
-	void avatarDownloaded (QNetworkReply *reply);
+		public slots:
+			void avatarDownloaded (QNetworkReply *reply);
 
-};
+	};
 }
 }
 

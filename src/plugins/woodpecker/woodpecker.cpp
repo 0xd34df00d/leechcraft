@@ -42,104 +42,105 @@ namespace LeechCraft
 {
 namespace Woodpecker
 {
-void Plugin::Init (ICoreProxy_ptr proxy)
-{
-	TwitterPage::SetParentMultiTabs (this);
 
-	Translator_.reset (Util::InstallTranslator ("woodpecker"));
+	void Plugin::Init (ICoreProxy_ptr proxy)
+	{
+		TwitterPage::SetParentMultiTabs (this);
 
-	XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
-	XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-										"woodpeckersettings.xml");
+		Translator_.reset (Util::InstallTranslator ("woodpecker"));
 
-	Core::Instance ().SetProxy (proxy);
+		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
+		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+				"woodpeckersettings.xml");
 
-	connect (&Core::Instance (),
-			 SIGNAL (addNewTab (const QString&, QWidget*)),
-			 this,
-			 SIGNAL (addNewTab (const QString&, QWidget*)));
-	connect (&Core::Instance (),
-			 SIGNAL (removeTab (QWidget*)),
-			 this,
-			 SIGNAL (removeTab (QWidget*)));
-	connect (&Core::Instance (),
-			 SIGNAL (raiseTab (QWidget*)),
-			 this,
-			 SIGNAL (raiseTab (QWidget*)));
-	connect (&Core::Instance (),
-			 SIGNAL (changeTabName (QWidget*, const QString&)),
-			 this,
-			 SIGNAL (changeTabName (QWidget*, const QString&)));
-	connect (&Core::Instance (),
-			 SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
-			 this,
-			 SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
-	connect (&Core::Instance (),
-			 SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
-			 this,
-			 SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
-	connect (&Core::Instance (),
-			 SIGNAL (delegateEntity (const LeechCraft::Entity&,
-									 int*, QObject**)),
-			 this,
-			 SIGNAL (delegateEntity (const LeechCraft::Entity&,
-									 int*, QObject**)));
-	connect (&Core::Instance (),
-			 SIGNAL (gotEntity (const LeechCraft::Entity&)),
-			 this,
-			 SIGNAL (gotEntity (const LeechCraft::Entity&)));
-}
+		Core::Instance ().SetProxy (proxy);
 
-void Plugin::SecondInit ()
-{
-}
+		connect (&Core::Instance (),
+				SIGNAL (addNewTab (const QString&, QWidget*)),
+				this,
+				SIGNAL (addNewTab (const QString&, QWidget*)));
+		connect (&Core::Instance (),
+				SIGNAL (removeTab (QWidget*)),
+				this,
+				SIGNAL (removeTab (QWidget*)));
+		connect (&Core::Instance (),
+				SIGNAL (raiseTab (QWidget*)),
+				this,
+				SIGNAL (raiseTab (QWidget*)));
+		connect (&Core::Instance (),
+				SIGNAL (changeTabName (QWidget*, const QString&)),
+				this,
+				SIGNAL (changeTabName (QWidget*, const QString&)));
+		connect (&Core::Instance (),
+				SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
+				this,
+				SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
+		connect (&Core::Instance (),
+				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
+				this,
+				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
+		connect (&Core::Instance (),
+				SIGNAL (delegateEntity (const LeechCraft::Entity&,
+						int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (const LeechCraft::Entity&,
+						int*, QObject**)));
+		connect (&Core::Instance (),
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				this,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+	}
 
-void Plugin::Release ()
-{
-}
+	void Plugin::SecondInit ()
+	{
+	}
 
-QByteArray Plugin::GetUniqueID () const
-{
-	return "org.LeechCraft.Woodpecker";
-}
+	void Plugin::Release ()
+	{
+	}
 
-QString Plugin::GetName () const
-{
-	return "Woodpecker";
-}
+	QByteArray Plugin::GetUniqueID () const
+	{
+		return "org.LeechCraft.Woodpecker";
+	}
 
-QString Plugin::GetInfo () const
-{
-	return tr ("Simple twitter client");
-}
+	QString Plugin::GetName () const
+	{
+		return "Woodpecker";
+	}
 
-QIcon Plugin::GetIcon () const
-{
-	return QIcon (":/resources/images/woodpecker.svg");
-}
+	QString Plugin::GetInfo () const
+	{
+		return tr ("Simple twitter client");
+	}
 
-TabClasses_t Plugin::GetTabClasses () const
-{
-	TabClasses_t result;
-	result << Core::Instance ().GetTabClass ();
-	return result;
-}
+	QIcon Plugin::GetIcon () const
+	{
+		return QIcon (":/resources/images/woodpecker.svg");
+	}
 
-void Plugin::TabOpenRequested (const QByteArray& tabClass)
-{
-	if (tabClass == "Woodpecker")
-		Core::Instance ().NewTabRequested ();
-	else
-		qWarning () << Q_FUNC_INFO
-					<< "unknown tab class"
-					<< tabClass;
-}
+	TabClasses_t Plugin::GetTabClasses () const
+	{
+		TabClasses_t result;
+		result << Core::Instance ().GetTabClass ();
+		return result;
+	}
+
+	void Plugin::TabOpenRequested (const QByteArray& tabClass)
+	{
+		if (tabClass == "Woodpecker")
+			Core::Instance ().NewTabRequested ();
+		else
+			qWarning () << Q_FUNC_INFO
+				<< "unknown tab class"
+				<< tabClass;
+	}
 
 
-std::shared_ptr<Util::XmlSettingsDialog> Plugin::GetSettingsDialog () const
-{
-	return XmlSettingsDialog_;
-}
+	std::shared_ptr<Util::XmlSettingsDialog> Plugin::GetSettingsDialog () const
+	{
+		return XmlSettingsDialog_;
+	}
 }
 }
 

@@ -34,102 +34,101 @@ namespace LeechCraft
 namespace Woodpecker
 {
 
-Tweet::Tweet (QObject *parent) :
-	QObject (parent)
-{
-	this->m_author = new TwitterUser (parent);
-}
-
-Tweet::Tweet (QString text, TwitterUser *author, QObject *parent) :
-	QObject (parent)
-{
-	this->m_id = 0;
-	this->setText(text);
-
-	if (author)
-		this->m_author = new TwitterUser (parent);
-
-	else
+	Tweet::Tweet (QObject *parent)
+		: QObject (parent)
 	{
-		this->m_author = author;
-		author->setParent (this);
+		this->m_author = new TwitterUser (parent);
 	}
-}
 
-Tweet::~Tweet()
-{
-	m_author->deleteLater();
-}
+	Tweet::Tweet (const QString& text, TwitterUser *author, QObject *parent)
+		: QObject (parent), m_id(0)
+	{
+		this->setText(text);
 
-Tweet::Tweet(const Tweet& original): QObject()
-{
-    this->m_author = original.author();
-    this->m_created = original.dateTime();
-    this->setText(original.text());
-    this->m_id = original.id();
-}
+		if (author)
+			this->m_author = new TwitterUser (parent);
 
-Tweet& Tweet::operator = (const Tweet &rhs)
-{
-	if (this == &rhs)				// Same object?
-		return *this;				// Yes, so skip assignment, and just return *this.
+		else
+		{
+			this->m_author = author;
+			author->setParent (this);
+		}
+	}
 
-	this->m_id = rhs.id();
-	this->m_author = rhs.author();
-	this->m_created = rhs.dateTime();
-	this->setText(rhs.text());
+	Tweet::~Tweet()
+	{
+		m_author->deleteLater();
+	}
 
-	return *this;
-}
+	Tweet::Tweet(const Tweet& original): QObject()
+	{
+		m_author = original.author();
+		m_created = original.dateTime();
+		setText(original.text());
+		m_id = original.id();
+	}
 
-bool Tweet::operator == (const Tweet &other)
-{
-	return (this->m_id == other.id());
-}
+	Tweet& Tweet::operator= (const Tweet& rhs)
+	{
+		if (this == &rhs)				// Same object?
+			return *this;				// Yes, so skip assignment, and just return *this.
 
-bool Tweet::operator != (const Tweet &other)
-{
-	return ! (*this == other);
-}
+		m_id = rhs.id ();
+		m_author = rhs.author ();
+		m_created = rhs.dateTime ();
+		setText(rhs.text ());
 
-bool Tweet::operator < (const Tweet &other)
-{
-	return (this->m_id < other.id());
-}
+		return *this;
+	}
 
-bool Tweet::operator > (const Tweet &other)
-{
-	return (this->m_id > other.id());
-}
+	bool Tweet::operator== (const Tweet& other)
+	{
+		return m_id == other.id ();
+	}
 
-void Tweet::setText (QString text) 
-{
- QRegExp rx("\\s((http|https)://[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(([0-9]{1,5})?/?.*))(\\s|,|$)");
- rx.setMinimal(true);
- 
- m_text = text;
- 
- /* Some regexp multiple match support magic for links highlighting.
-  * Borrowed from Qt support forum */
- QString html = text;
- int pos = 0;
- while ( (pos = rx.indexIn(html, pos)) != -1 ) {
-  if ( rx.cap(1).startsWith("http") ) {
-   QString before = rx.cap( 1 );
-   if (before.endsWith("."))
-    before.chop(1);
-   QString after = " <a href=\"" + before + "\">" + before + "</a>";
-   html.replace( pos, before.length() + 1, after );
-   pos += after.length();
-  } else {
-   pos += rx.matchedLength();
-  }
- }
- 
- m_document.setHtml(html);
-}
+	bool Tweet::operator!= (const Tweet& other)
+	{
+		return !(*this == other);
+	}
 
-    
+	bool Tweet::operator< (const Tweet& other)
+	{
+		return m_id < other.id ();
+	}
+
+	bool Tweet::operator> (const Tweet& other)
+	{
+		return m_id > other.id ();
+	}
+
+	void Tweet::setText (QString text) 
+	{
+		QRegExp rx("\\s((http|https)://[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(([0-9]{1,5})?/?.*))(\\s|,|$)");
+		rx.setMinimal(true);
+
+		m_text = text;
+
+		/* Some regexp multiple match support magic for links highlighting.
+		 * Borrowed from Qt support forum */
+		QString html = text;
+		int pos = 0;
+		while ( (pos = rx.indexIn(html, pos)) != -1 ) {
+			if ( rx.cap(1).startsWith("http") ) {
+				QString before = rx.cap( 1 );
+				if (before.endsWith("."))
+					before.chop(1);
+				QString after = " <a href=\"" + before + "\">" + before + "</a>";
+				html.replace( pos, before.length() + 1, after );
+				pos += after.length();
+			} else {
+				pos += rx.matchedLength();
+			}
+		}
+
+		m_document.setHtml(html);
+	}
+
+
 }
 }
 // kate: indent-mode cstyle; indent-width 1; replace-tabs on; 

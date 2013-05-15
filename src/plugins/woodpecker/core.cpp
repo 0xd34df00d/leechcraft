@@ -34,83 +34,84 @@ namespace LeechCraft
 {
 namespace Woodpecker
 {
-Core::Core ()
-{
-    TabClass_.TabClass_ = "Woodpecker";
-    TabClass_.VisibleName_ = tr ("Twitter client");
-    TabClass_.Description_ = tr ("The Woodpecker twitter client");
-    TabClass_.Icon_ = QIcon (":/resources/images/woodpecker.svg");
-    TabClass_.Priority_ = 40;
-    TabClass_.Features_ = TFOpenableByRequest;
-}
 
-Core& Core::Instance ()
-{
-    static Core c;
-    return c;
-}
+	Core::Core ()
+	{
+		TabClass_.TabClass_ = "Woodpecker";
+		TabClass_.VisibleName_ = tr ("Twitter client");
+		TabClass_.Description_ = tr ("The Woodpecker twitter client");
+		TabClass_.Icon_ = QIcon (":/resources/images/woodpecker.svg");
+		TabClass_.Priority_ = 40;
+		TabClass_.Features_ = TFOpenableByRequest;
+	}
 
-TabClassInfo Core::GetTabClass () const
-{
-    return TabClass_;
-}
+	Core& Core::Instance ()
+	{
+		static Core c;
+		return c;
+	}
 
-void Core::SetProxy (ICoreProxy_ptr proxy)
-{
-    Proxy_ = proxy;
-}
+	TabClassInfo Core::GetTabClass () const
+	{
+		return TabClass_;
+	}
 
-ICoreProxy_ptr Core::GetProxy () const
-{
-    return Proxy_;
-}
+	void Core::SetProxy (ICoreProxy_ptr proxy)
+	{
+		Proxy_ = proxy;
+	}
 
-TwitterPage* Core::NewTabRequested ()
-{
-    TwitterPage *page = MakeTwitterPage ();
-    emit addNewTab ("Woodpecker", page);
-    emit raiseTab (page);
-    emit changeTabIcon (page, QIcon (":/resources/images/woodpecker.svg"));
+	ICoreProxy_ptr Core::GetProxy () const
+	{
+		return Proxy_;
+	}
 
-    return page;
-}
+	TwitterPage* Core::NewTabRequested ()
+	{
+		TwitterPage *page = MakeTwitterPage ();
+		emit addNewTab ("Woodpecker", page);
+		emit raiseTab (page);
+		emit changeTabIcon (page, QIcon (":/resources/images/woodpecker.svg"));
 
-void Core::Handle (const Entity& e)
-{
-    TwitterPage *page = NewTabRequested ();
+		return page;
+	}
 
-    QString language = e.Additional_ ["Language"].toString ();
-	if (!language.isEmpty ())
-		page->setLocale (QLocale(language));
-}
+	void Core::Handle (const Entity& e)
+	{
+		TwitterPage *page = NewTabRequested ();
 
-TwitterPage* Core::MakeTwitterPage ()
-{
-    TwitterPage *result = new TwitterPage ();
-    connect (result,
-             SIGNAL (removeTab (QWidget*)),
-             this,
-             SIGNAL (removeTab (QWidget*)));
-    connect (result,
-             SIGNAL (changeTabName (QWidget*, const QString&)),
-             this,
-             SIGNAL (changeTabName (QWidget*, const QString&)));
-    connect (result,
-             SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
-             this,
-             SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
-    connect (result,
-             SIGNAL (delegateEntity (const LeechCraft::Entity&,
-                                     int*, QObject**)),
-             this,
-             SIGNAL (delegateEntity (const LeechCraft::Entity&,
-                                     int*, QObject**)));
-    connect (result,
-             SIGNAL (gotEntity (const LeechCraft::Entity&)),
-             this,
-             SIGNAL (gotEntity (const LeechCraft::Entity&)));
-    return result;
-}
+		QString language = e.Additional_ ["Language"].toString ();
+		if (!language.isEmpty ())
+			page->setLocale (QLocale(language));
+	}
+
+	TwitterPage* Core::MakeTwitterPage ()
+	{
+		TwitterPage *result = new TwitterPage ();
+		connect (result,
+				SIGNAL (removeTab (QWidget*)),
+				this,
+				SIGNAL (removeTab (QWidget*)));
+		connect (result,
+				SIGNAL (changeTabName (QWidget*, const QString&)),
+				this,
+				SIGNAL (changeTabName (QWidget*, const QString&)));
+		connect (result,
+				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
+				this,
+				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
+		connect (result,
+				SIGNAL (delegateEntity (const LeechCraft::Entity&,
+						int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (const LeechCraft::Entity&,
+						int*, QObject**)));
+		connect (result,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				this,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+		return result;
+	}
 };
 };
 // kate: indent-mode cstyle; indent-width 4; replace-tabs off; tab-width 4;

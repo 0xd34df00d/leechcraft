@@ -45,93 +45,91 @@
 #include "ui_twitterpage.h"
 
 namespace Ui {
-class TwitterPage;
+	class TwitterPage;
 }
 
 namespace LeechCraft
 {
 namespace Woodpecker
 {	
-class TwitterPage : public QWidget
-    , public ITabWidget
-{
-    Q_OBJECT
-    Q_INTERFACES (ITabWidget)
+	class TwitterPage 
+		: public QWidget, public ITabWidget
+	{
+			Q_OBJECT
+			Q_INTERFACES (ITabWidget)
 
-//  Ui::TwitterPage Ui_;
+		private:
+			volatile bool m_update_ready;	/**< The flag is checked by timer for UI update */
+			QTimer *m_ui_update_timer;		/**< Timer checks m_update_ready and updates the UI */
+			TwitDelegate *m_delegate;
+			Ui::TwitterPage *ui;
+			twitterInterface *interface;
+			QTimer *m_twitter_timer;		/**< This timer sends network requests to get new twits */
+			QSettings *settings;
+			QList<std::shared_ptr<Tweet>> screenTwits;
+			
+			static QObject* S_MultiTabsParent_;
+			QToolBar *Toolbar_;
+			QMenu *DoctypeMenu_;
+			QMenu *RecentFilesMenu_;
+			QString Filename_;
+			bool Modified_;
+			QMap<QString, QList<QAction*> > WindowMenus_;
+			QHash<QString, QString> Extension2Lang_;
 
-    static QObject* S_MultiTabsParent_;
-    QToolBar *Toolbar_;
-    QMenu *DoctypeMenu_;
-    QMenu *RecentFilesMenu_;
-    QString Filename_;
-    bool Modified_;
-    QMap<QString, QList<QAction*> > WindowMenus_;
-    QHash<QString, QString> Extension2Lang_;
+			QtMsgHandler DefaultMsgHandler_;
+			QObject *WrappedObject_;
+			bool TemporaryDocument_;
 
-    QtMsgHandler DefaultMsgHandler_;
-    QObject *WrappedObject_;
-    bool TemporaryDocument_;
-	
-	QAction *actionRetwit_;
-	QAction *actionReply_;
-	QAction *actionSPAM_;
-	QAction *actionOpenWeb_;
-public:
-    explicit TwitterPage (QWidget *parent = 0);
-    ~TwitterPage();
-    static void SetParentMultiTabs (QObject*);
+			QAction *actionRetwit_;
+			QAction *actionReply_;
+			QAction *actionSPAM_;
+			QAction *actionOpenWeb_;
 
-
-    void Remove ();
-    QToolBar* GetToolBar () const;
-    QObject* ParentMultiTabs ();
-    QList<QAction*> GetTabBarContextMenuActions () const;
-    QMap<QString, QList<QAction*> > GetWindowMenus () const;
-    TabClassInfo GetTabClassInfo () const;
-
-private slots:
-	void on_TwitList__customContextMenuRequested (const QPoint&);
-    void updateTweetList_ ();
-	
-public slots:
-    void tryToLogin();
-    void requestUserTimeline (QString username);
-    void updateScreenTwits (QList<std::shared_ptr<Tweet>> twits);
-    void recvdAuth (QString token, QString tokenSecret);
-    void twit();
-    void retwit();
-    void reply();
-    void reply(QListWidgetItem*);
-	void reportSpam();
-    void sendReply();
-	void webOpen();
-	void scrolledDown(int sliderPos);
-	void setUpdateReady();
+		public:
+			explicit TwitterPage (QWidget *parent = 0);
+			~TwitterPage();
+			static void SetParentMultiTabs (QObject*);
 
 
-private:
-	volatile bool m_update_ready;	/**< The flag is checked by timer for UI update */
-	QTimer *m_ui_update_timer;		/**< Timer checks @see[m_update_ready] and updates the UI */
-	TwitDelegate *m_delegate;
-    Ui::TwitterPage *ui;
-    twitterInterface *interface;
-    QTimer *m_twitter_timer;		/**< This timer sends network requests to get new twits */
-    QSettings *settings;
-    QList<std::shared_ptr<Tweet>> screenTwits;
-	
-signals:
-    void removeTab (QWidget*);
-    void changeTabName (QWidget*, const QString&);
-    void changeTabIcon (QWidget*, const QIcon&);
-    void changeTooltip (QWidget*, QWidget*);
-    void statusBarChanged (QWidget*, const QString&);
-    void couldHandle (const LeechCraft::Entity&, bool*);
-    void delegateEntity (const LeechCraft::Entity&,
-                         int*, QObject**);
-    void gotEntity (const LeechCraft::Entity&);
+			void Remove ();
+			QToolBar* GetToolBar () const;
+			QObject* ParentMultiTabs ();
+			QList<QAction*> GetTabBarContextMenuActions () const;
+			QMap<QString, QList<QAction*> > GetWindowMenus () const;
+			TabClassInfo GetTabClassInfo () const;
 
-};
+		private slots:
+			void on_TwitList__customContextMenuRequested (const QPoint&);
+			void updateTweetList_ ();
+
+		public slots:
+			void tryToLogin();
+			void requestUserTimeline (QString username);
+			void updateScreenTwits (QList<std::shared_ptr<Tweet>> twits);
+			void recvdAuth (QString token, QString tokenSecret);
+			void twit();
+			void retwit();
+			void reply();
+			void reply(QListWidgetItem*);
+			void reportSpam();
+			void sendReply();
+			void webOpen();
+			void scrolledDown(int sliderPos);
+			void setUpdateReady();
+
+		signals:
+			void removeTab (QWidget*);
+			void changeTabName (QWidget*, const QString&);
+			void changeTabIcon (QWidget*, const QIcon&);
+			void changeTooltip (QWidget*, QWidget*);
+			void statusBarChanged (QWidget*, const QString&);
+			void couldHandle (const LeechCraft::Entity&, bool*);
+			void delegateEntity (const LeechCraft::Entity&,
+					int*, QObject**);
+			void gotEntity (const LeechCraft::Entity&);
+
+	};
 }
 }
 
