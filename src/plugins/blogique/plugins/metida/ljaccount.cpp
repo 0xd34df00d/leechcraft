@@ -87,9 +87,9 @@ namespace Metida
 				LJProfile_.get (),
 				SLOT (handleGotTags (QHash<QString, int>)));
 		connect (LJProfile_.get (),
-				SIGNAL (tagsUpdated ()),
+				SIGNAL (tagsUpdated (QHash<QString, int>)),
 				this,
-				SIGNAL (tagsUpdated ()));
+				SIGNAL (tagsUpdated (QHash<QString, int>)));
 		connect (LJXmlRpc_,
 				SIGNAL (eventPosted (QList<LJEvent>)),
 				this,
@@ -288,6 +288,10 @@ namespace Metida
 	void LJAccount::RequestStatistics ()
 	{
 		LJXmlRpc_->RequestStatistics ();
+	}
+
+	void LJAccount::RequestTags ()
+	{
 		LJXmlRpc_->RequestTags ();
 	}
 
@@ -408,11 +412,6 @@ namespace Metida
 	void LJAccount::DeleteGroup (int id)
 	{
 		LJXmlRpc_->DeleteGroup (id);
-	}
-
-	QHash<QString, int> LJAccount::GetTags () const
-	{
-		return LJProfile_->GetTags ();
 	}
 
 	void LJAccount::CallLastUpdateMethod ()

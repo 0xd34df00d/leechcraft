@@ -70,17 +70,14 @@ namespace Metida
 
 	private:
 		void FillItems ();
-		void FillTags ();
 
 	public slots:
 		void handleAutoUpdateCurrentMusic ();
 	private slots:
-		void on_SelectTags__released ();
 		void on_Access__activated (int index);
 		void on_UserPic__currentIndexChanged (int index);
 		void on_AutoDetect__released ();
 		void handleCurrentSongChanged (const Media::AudioInfo& ai);
-		void handleTagsUpdated ();
 	};
 }
 }

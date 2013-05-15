@@ -221,11 +221,6 @@ namespace Metida
 		if (!profile)
 			return;
 
-		connect (profile,
-				SIGNAL (tagsUpdated ()),
-				this,
-				SLOT (handleTagsUpdated ()));
-
 		Ui_.Mood_->clear ();
 		Ui_.Mood_->addItem (QString ());
 		for (const auto& mood : profile->GetProfileData ().Moods_)
@@ -238,8 +233,6 @@ namespace Metida
 		Ui_.UserPicLabel_->setPixmap (pxm.scaled (64, 64));
 
 		Ui_.UserPic_->addItems (profile->GetProfileData ().AvatarsID_);
-
-		FillTags ();
 	}
 
 	void PostOptionsWidget::FillItems ()
@@ -268,14 +261,6 @@ namespace Metida
 				AdultContent::WithoutAdultContent);
 		Ui_.Adult_->addItem (tr ("For adults (>14)"), AdultContent::AdultsFrom14);
 		Ui_.Adult_->addItem (tr ("For adults (>18)"), AdultContent::AdultsFrom18);
-	}
-
-	void PostOptionsWidget::FillTags ()
-	{
-		LJProfile *profile = qobject_cast<LJProfile*> (Account_->GetProfile ());
-		if (!profile)
-			return;
-		const auto& tags = profile->GetTags ();
 	}
 
 	namespace
@@ -347,12 +332,6 @@ namespace Metida
 			Ui_.Music_->setText (QString ("\"%1\" by %2").arg (ai.Title_)
 					.arg (ai.Artist_));
 	}
-
-	void PostOptionsWidget::handleTagsUpdated ()
-	{
-		FillTags ();
-	}
-
 }
 }
 }
