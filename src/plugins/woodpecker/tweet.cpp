@@ -36,12 +36,13 @@ namespace Woodpecker
 
 	Tweet::Tweet (QObject *parent)
 		: QObject (parent)
+                , m_author(new TwitterUser (parent))
 	{
-		m_author = new TwitterUser (parent);
 	}
 
 	Tweet::Tweet (const QString& text, TwitterUser *author, QObject *parent)
-		: QObject (parent), m_id(0)
+		: QObject (parent)
+                , m_id (0)
 	{
 		setText(text);
 
