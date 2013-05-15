@@ -207,7 +207,7 @@ namespace LackMan
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/resources/images/lackman.svg");
+		static QIcon icon ("lcicons:/resources/images/lackman.svg");
 		return icon;
 	}
 

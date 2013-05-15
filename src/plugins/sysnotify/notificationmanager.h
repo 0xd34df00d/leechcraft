@@ -39,13 +39,13 @@ class QDBusPendingCallWatcher;
 
 namespace LeechCraft
 {
-namespace DBusManager
+namespace Sysnotify
 {
 	class NotificationManager : public QObject
 	{
 		Q_OBJECT
 
-		std::auto_ptr<QDBusInterface> Connection_;
+		std::unique_ptr<QDBusInterface> Connection_;
 
 		struct CapCheckData
 		{
@@ -64,7 +64,6 @@ namespace DBusManager
 	public:
 		NotificationManager (QObject* = 0);
 
-		void Init ();
 		bool CouldNotify (const Entity&) const;
 		void HandleNotification (const Entity&);
 	private:

@@ -47,7 +47,7 @@ namespace LeechCraft
 		 *
 		 * @sa TagsCompleter
 		 */
-		class TagsLineEdit : public QLineEdit
+		class UTIL_API TagsLineEdit : public QLineEdit
 		{
 			Q_OBJECT
 
@@ -64,7 +64,7 @@ namespace LeechCraft
 			 *
 			 * @param[in] parent Parent widget.
 			 */
-			UTIL_API TagsLineEdit (QWidget *parent);
+			TagsLineEdit (QWidget *parent);
 
 			/** @brief Adds the selector widget to the line edit.
 			 *
@@ -73,7 +73,7 @@ namespace LeechCraft
 			 *
 			 * @sa TagsCompleter
 			 */
-			UTIL_API void AddSelector ();
+			void AddSelector ();
 
 			/** @brief Returns the separator for the tags.
 			 *
@@ -81,7 +81,7 @@ namespace LeechCraft
 			 *
 			 * @sa SetSeparator()
 			 */
-			UTIL_API QString GetSeparator () const;
+			QString GetSeparator () const;
 
 			/** @brief Sets the separator for the tags.
 			 *
@@ -89,7 +89,7 @@ namespace LeechCraft
 			 *
 			 * @sa GetSeparator()
 			 */
-			UTIL_API void SetSeparator (const QString&);
+			void SetSeparator (const QString&);
 		public slots:
 			/** @brief Completes the string.
 			 *
@@ -98,7 +98,7 @@ namespace LeechCraft
 			 *
 			 * @param[in] string String with completion.
 			 */
-			UTIL_API void insertTag (const QString& string);
+			void insertTag (const QString& string);
 
 			/** @brief Sets thew new list of the available tags.
 			 *
@@ -107,7 +107,7 @@ namespace LeechCraft
 			 *
 			 * @param[in] allTags The list of new available tags.
 			 */
-			UTIL_API void handleTagsUpdated (const QStringList& allTags);
+			void handleTagsUpdated (const QStringList& allTags);
 
 			/** @brief Sets the currently selected tags.
 			 *
@@ -117,7 +117,7 @@ namespace LeechCraft
 			 *
 			 * @param[in] tags The list of selected tags.
 			 */
-			UTIL_API void setTags (const QStringList& tags);
+			void setTags (const QStringList& tags);
 		private slots:
 			void handleSelectionChanged (const QStringList&);
 		protected:
@@ -128,7 +128,7 @@ namespace LeechCraft
 		private:
 			QString textUnderCursor () const;
 		signals:
-			UTIL_API void tagsChosen ();
+			void tagsChosen ();
 		};
 	};
 };

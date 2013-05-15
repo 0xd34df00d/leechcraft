@@ -75,7 +75,7 @@ namespace LeechCraft
 
 					QIcon Plugin::GetIcon () const
 					{
-						static QIcon icon (":/secman/simplestorage/resources/images/simplestorage.svg");
+						static QIcon icon ("lcicons:/secman/simplestorage/resources/images/simplestorage.svg");
 						return icon;
 					}
 

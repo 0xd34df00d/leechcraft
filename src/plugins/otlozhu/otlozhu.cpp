@@ -88,7 +88,7 @@ namespace Otlozhu
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/otlozhu/resources/images/otlozhu.svg");
+		static QIcon icon ("lcicons:/otlozhu/resources/images/otlozhu.svg");
 		return icon;
 	}
 

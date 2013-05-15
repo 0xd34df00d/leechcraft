@@ -58,39 +58,6 @@ namespace Monocle
 				SLOT (delayedShowInit ()));
 	}
 
-	void PresenterWidget::closeEvent (QCloseEvent *event)
-	{
-		deleteLater ();
-		QWidget::closeEvent (event);
-	}
-
-	void PresenterWidget::keyPressEvent (QKeyEvent *event)
-	{
-		switch (event->key ())
-		{
-		case Qt::Key_Escape:
-		case Qt::Key_Enter:
-			deleteLater ();
-			return;
-		case Qt::Key_Backspace:
-		case Qt::Key_PageUp:
-			NavigateTo (CurrentPage_ - 1);
-			break;
-		case Qt::Key_PageDown:
-		case Qt::Key_Space:
-			NavigateTo (CurrentPage_ + 1);
-			break;
-		case Qt::Key_Home:
-			NavigateTo (0);
-			break;
-		case Qt::Key_End:
-			NavigateTo (Doc_->GetNumPages () - 1);
-			break;
-		}
-
-		QWidget::keyPressEvent (event);
-	}
-
 	void PresenterWidget::NavigateTo (int page)
 	{
 		if (page < 0 || page >= Doc_->GetNumPages ())
@@ -107,6 +74,41 @@ namespace Monocle
 
 		PixmapLabel_->setFixedSize (img.size ());
 		PixmapLabel_->setPixmap (QPixmap::fromImage (img));
+	}
+
+	void PresenterWidget::closeEvent (QCloseEvent *event)
+	{
+		deleteLater ();
+		QWidget::closeEvent (event);
+	}
+
+	void PresenterWidget::keyPressEvent (QKeyEvent *event)
+	{
+		switch (event->key ())
+		{
+		case Qt::Key_Escape:
+		case Qt::Key_Enter:
+			deleteLater ();
+			return;
+		case Qt::Key_Backspace:
+		case Qt::Key_PageUp:
+		case Qt::Key_Left:
+			NavigateTo (CurrentPage_ - 1);
+			break;
+		case Qt::Key_Space:
+		case Qt::Key_PageDown:
+		case Qt::Key_Right:
+			NavigateTo (CurrentPage_ + 1);
+			break;
+		case Qt::Key_Home:
+			NavigateTo (0);
+			break;
+		case Qt::Key_End:
+			NavigateTo (Doc_->GetNumPages () - 1);
+			break;
+		}
+
+		QWidget::keyPressEvent (event);
 	}
 
 	void PresenterWidget::delayedShowInit ()

@@ -74,7 +74,7 @@ namespace LHTR
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/lhtr/resources/images/lhtr.svg");
+		static QIcon icon ("lcicons:/lhtr/resources/images/lhtr.svg");
 		return icon;
 	}
 

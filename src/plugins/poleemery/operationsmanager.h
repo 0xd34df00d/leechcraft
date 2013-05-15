@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <QObject>
+#include <QSet>
 #include "structures.h"
 
 class QStandardItemModel;
@@ -52,6 +53,8 @@ namespace Poleemery
 
 		const Storage_ptr Storage_;
 		EntriesModel *Model_;
+
+		QSet<QString> KnownCategories_;
 	public:
 		OperationsManager (Storage_ptr, QObject* = 0);
 
@@ -60,6 +63,9 @@ namespace Poleemery
 		QAbstractItemModel* GetModel () const;
 
 		QList<EntryBase_ptr> GetAllEntries () const;
+		QList<EntryWithBalance> GetEntriesWBalance () const;
+
+		QSet<QString> GetKnownCategories () const;
 
 		void AddEntry (EntryBase_ptr);
 		void UpdateEntry (EntryBase_ptr);

@@ -59,7 +59,13 @@ namespace LeechCraft
 	enum class EditorAction
 	{
 		Find,
-		Replace
+		Replace,
+		Bold,
+		Italic,
+		Underline,
+		InsertLink,
+		InsertImage,
+		ToggleView
 	};
 }
 
@@ -158,11 +164,18 @@ public:
 	 */
 	virtual void RemoveAction (QAction *action) = 0;
 
-	/** @brief Sets the background color of the editor to color.
+	/** @brief Sets the background color of the \em editor to color.
+	 *
+	 * This function sets the background color of the \em editor of the
+	 * given content-type to the given \em color.
+	 *
+	 * If the widget doesn't support the given content-type, this
+	 * function does nothing.
 	 *
 	 * @param[in] color The new background color.
+	 * @param[in] editor The editor to change color of.
 	 */
-	virtual void SetBackgroundColor (const QColor& color) = 0;
+	virtual void SetBackgroundColor (const QColor& color, LeechCraft::ContentType editor) = 0;
 protected:
 	/** @brief Notifies about contents changes.
 	 *

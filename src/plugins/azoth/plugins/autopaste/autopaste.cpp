@@ -80,7 +80,7 @@ namespace Autopaste
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/plugins/azoth/plugins/autopaste/resources/images/autopaste.svg");
+		static QIcon icon ("lcicons:/plugins/azoth/plugins/autopaste/resources/images/autopaste.svg");
 		return icon;
 	}
 
@@ -113,7 +113,10 @@ namespace Autopaste
 
 		const int maxLines = XmlSettingsManager::Instance ()
 				.property ("LineCount").toInt ();
-		if (text.split ('\n').size () < maxLines)
+		const int maxSymbols = XmlSettingsManager::Instance ()
+				.property ("SymbolCount").toInt ();
+		if (text.size () < maxSymbols &&
+				text.split ('\n').size () < maxLines)
 			return;
 
 		QByteArray propName;

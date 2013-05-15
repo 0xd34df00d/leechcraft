@@ -106,7 +106,7 @@ namespace SB2
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/resources/images/sb2.svg");
+		static QIcon icon ("lcicons:/resources/images/sb2.svg");
 		return icon;
 	}
 

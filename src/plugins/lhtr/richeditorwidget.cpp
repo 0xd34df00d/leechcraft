@@ -147,7 +147,8 @@ namespace LHTR
 				SIGNAL (textChanged ()));
 
 		handleBgColorSettings ();
-		XmlSettingsManager::Instance ().RegisterObject ("BgColor", this, "handleBgColorSettings");
+		XmlSettingsManager::Instance ().RegisterObject ({ "BgColor", "HTMLBgColor" },
+				this, "handleBgColorSettings");
 
 		Ui_.View_->installEventFilter (this);
 
@@ -198,12 +199,16 @@ namespace LHTR
 
 		Addable barAdd (ViewBar_);
 
-		fwdCmd (tr ("Bold"), "format-text-bold",
-				QWebPage::ToggleBold, barAdd)->setCheckable (true);
-		fwdCmd (tr ("Italic"), "format-text-italic",
-				QWebPage::ToggleItalic, barAdd)->setCheckable (true);
-		fwdCmd (tr ("Underline"), "format-text-underline",
-				QWebPage::ToggleUnderline, barAdd)->setCheckable (true);
+		Bold_ = fwdCmd (tr ("Bold"), "format-text-bold",
+				QWebPage::ToggleBold, barAdd);
+		Bold_->setCheckable (true);
+		Italic_ = fwdCmd (tr ("Italic"), "format-text-italic",
+				QWebPage::ToggleItalic, barAdd);
+		Italic_->setCheckable (true);
+		Underline_ = fwdCmd (tr ("Underline"), "format-text-underline",
+				QWebPage::ToggleUnderline, barAdd);
+		Underline_->setCheckable (true);
+
 		addCmd (tr ("Strikethrough"), "format-text-strikethrough",
 				"strikeThrough", barAdd, QString ())->setCheckable (true);
 		fwdCmd (tr ("Subscript"), "format-text-subscript",
@@ -287,15 +292,15 @@ namespace LHTR
 
 		ViewBar_->addSeparator ();
 
-		auto link = ViewBar_->addAction (tr ("Insert link..."),
+		InsertLink_ = ViewBar_->addAction (tr ("Insert link..."),
 					this,
 					SLOT (handleInsertLink ()));
-		link->setProperty ("ActionIcon", "insert-link");
+		InsertLink_->setProperty ("ActionIcon", "insert-link");
 
-		auto img = ViewBar_->addAction (tr ("Insert image..."),
+		InsertImage_ = ViewBar_->addAction (tr ("Insert image..."),
 					this,
 					SLOT (handleInsertImage ()));
-		img->setProperty ("ActionIcon", "insert-image");
+		InsertImage_->setProperty ("ActionIcon", "insert-image");
 
 		SetupTableMenu ();
 
@@ -304,6 +309,12 @@ namespace LHTR
 				SIGNAL (javaScriptWindowObjectCleared ()),
 				this,
 				SLOT (setupJS ()));
+
+		ToggleView_ = new QAction (tr ("Toggle view"), this);
+		connect (ToggleView_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (toggleView ()));
 	}
 
 	QString RichEditorWidget::GetContents (ContentType type) const
@@ -368,19 +379,31 @@ namespace LHTR
 	{
 		switch (action)
 		{
-		case LeechCraft::EditorAction::Find:
+		case EditorAction::Find:
 			return FindAction_;
-		case LeechCraft::EditorAction::Replace:
+		case EditorAction::Replace:
 			return ReplaceAction_;
+		case EditorAction::Bold:
+			return Bold_;
+		case EditorAction::Italic:
+			return Italic_;
+		case EditorAction::Underline:
+			return Underline_;
+		case EditorAction::InsertLink:
+			return InsertLink_;
+		case EditorAction::InsertImage:
+			return InsertImage_;
+		case EditorAction::ToggleView:
+			return ToggleView_;
 		}
 
 		return 0;
 	}
 
-	void RichEditorWidget::SetBackgroundColor (const QColor& color)
+	void RichEditorWidget::SetBackgroundColor (const QColor& color, ContentType type)
 	{
 		if (!XmlSettingsManager::Instance ().property ("OverrideBgColor").toBool ())
-			InternalSetBgColor (color);
+			InternalSetBgColor (color, type);
 	}
 
 	void RichEditorWidget::InsertHTML (const QString& html)
@@ -425,11 +448,22 @@ namespace LHTR
 		return true;
 	}
 
-	void RichEditorWidget::InternalSetBgColor (const QColor& color)
+	void RichEditorWidget::InternalSetBgColor (const QColor& color, ContentType type)
 	{
-		auto palette = Ui_.View_->palette ();
+		QWidget *widget = 0;
+		switch (type)
+		{
+		case ContentType::PlainText:
+			widget = Ui_.HTML_;
+			break;
+		case ContentType::HTML:
+			widget = Ui_.View_;
+			break;
+		}
+
+		auto palette = widget->palette ();
 		palette.setColor (QPalette::Base, color);
-		Ui_.View_->setPalette (palette);
+		widget->setPalette (palette);
 	}
 
 	void RichEditorWidget::SetupTableMenu ()
@@ -518,7 +552,11 @@ namespace LHTR
 	{
 		const auto& color = XmlSettingsManager::Instance ()
 				.property ("BgColor").value<QColor> ();
-		InternalSetBgColor (color);
+		InternalSetBgColor (color, ContentType::HTML);
+
+		const auto& plainColor = XmlSettingsManager::Instance ()
+				.property ("HTMLBgColor").value<QColor> ();
+		InternalSetBgColor (plainColor, ContentType::PlainText);
 	}
 
 	void RichEditorWidget::handleLinkClicked (const QUrl& url)
@@ -621,6 +659,14 @@ namespace LHTR
 		upWebAct (QWebPage::AlignCenter);
 		upWebAct (QWebPage::AlignRight);
 		upWebAct (QWebPage::AlignJustified);
+	}
+
+	void RichEditorWidget::toggleView ()
+	{
+		if (Ui_.TabWidget_->currentIndex () == 1)
+			Ui_.TabWidget_->setCurrentIndex (0);
+		else
+			Ui_.TabWidget_->setCurrentIndex (1);
 	}
 
 	void RichEditorWidget::handleCmd ()

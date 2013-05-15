@@ -76,7 +76,7 @@ namespace DeadLyrics
 
 	QIcon DeadLyRicS::GetIcon () const
 	{
-		static QIcon icon (":/deadlyrics/resources/images/deadlyrics.svg");
+		static QIcon icon ("lcicons:/deadlyrics/resources/images/deadlyrics.svg");
 		return icon;
 	}
 

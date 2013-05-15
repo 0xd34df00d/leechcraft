@@ -88,7 +88,7 @@ namespace Azoth
 
 		qRegisterMetaType<QPersistentModelIndex> ("QPersistentModelIndex");
 
-		MainMenu_->setIcon (QIcon (":/plugins/azoth/resources/images/azoth.svg"));
+		MainMenu_->setIcon (QIcon ("lcicons:/plugins/azoth/resources/images/azoth.svg"));
 
 		BottomBar_->addWidget (MenuButton_);
 		BottomBar_->addWidget (FastStatusButton_);
@@ -190,7 +190,9 @@ namespace Azoth
 		qobject_cast<QVBoxLayout*> (layout ())->insertWidget (0, BottomBar_);
 
 		auto sm = Core::Instance ().GetShortcutManager ();
-		auto listShortcut = new QShortcut (QString ("Alt+C"), this, SLOT (showAllUsersList ()));
+		auto listShortcut = new QShortcut (QString ("Alt+C"),
+				this, SLOT (showAllUsersList ()));
+		listShortcut->setContext (Qt::ApplicationShortcut);
 		sm->RegisterShortcut ("org.LeechCraft.Azoth.AllUsersList",
 				{
 					tr ("Show all users list"),

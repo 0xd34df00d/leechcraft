@@ -113,7 +113,7 @@ namespace Xoox
 
 	QIcon GlooxProtocol::GetProtocolIcon () const
 	{
-		static QIcon icon (":/plugins/azoth/plugins/xoox/resources/images/jabbericon.svg");
+		static QIcon icon ("lcicons:/plugins/azoth/plugins/xoox/resources/images/jabbericon.svg");
 		return icon;
 	}
 

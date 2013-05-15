@@ -31,6 +31,7 @@
 
 #include <QAbstractItemModel>
 #include "structures.h"
+#include "operationsmanager.h"
 
 namespace LeechCraft
 {
@@ -41,23 +42,19 @@ namespace Poleemery
 		Q_OBJECT
 
 		const QStringList HeaderData_;
-		QList<EntryBase_ptr> Entries_;
 
-		struct SumInfo
-		{
-			double Total_;
-			QHash<int, double> Accs_;
-		};
-		QList<SumInfo> Sums_;
+		QList<EntryBase_ptr> Entries_;
+		QList<BalanceInfo> Sums_;
 	public:
 		enum Columns
 		{
 			Date,
-			Account,
 			Name,
 			Price,
 			Count,
 			Shop,
+			Categories,
+			Account,
 			AccBalance,
 			SumBalance,
 
@@ -81,6 +78,7 @@ namespace Poleemery
 
 		EntryBase_ptr GetEntry (const QModelIndex&) const;
 		QList<EntryBase_ptr> GetEntries () const;
+		QList<BalanceInfo> GetSumInfos () const;
 	public slots:
 		void recalcSums ();
 	};

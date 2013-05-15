@@ -89,7 +89,7 @@ namespace TabsList
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/tabslist/resources/images/tabslist.svg");
+		static QIcon icon ("lcicons:/tabslist/resources/images/tabslist.svg");
 		return icon;
 	}
 

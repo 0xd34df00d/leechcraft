@@ -134,7 +134,7 @@ namespace Azoth
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/plugins/azoth/resources/images/azoth.svg");
+		static QIcon icon ("lcicons:/plugins/azoth/resources/images/azoth.svg");
 		return icon;
 	}
 
@@ -491,7 +491,7 @@ namespace Azoth
 			"LeechCraft.Azoth.ChatTab",
 			tr ("Chat"),
 			tr ("A tab with a chat session"),
-			QIcon (":/plugins/azoth/resources/images/chattabclass.svg"),
+			QIcon ("lcicons:/plugins/azoth/resources/images/chattabclass.svg"),
 			0,
 			TFEmpty
 		};
@@ -502,7 +502,7 @@ namespace Azoth
 			"LeechCraft.Azoth.MUCTab",
 			tr ("MUC"),
 			tr ("A multiuser conference"),
-			QIcon (":/plugins/azoth/resources/images/muctabclass.svg"),
+			QIcon ("lcicons:/plugins/azoth/resources/images/muctabclass.svg"),
 			0,
 			TFEmpty
 		};
@@ -513,7 +513,7 @@ namespace Azoth
 			"Search",
 			tr ("Search"),
 			tr ("A search tab allows one to search within IM services"),
-			QIcon (":/plugins/azoth/resources/images/searchtab.svg"),
+			QIcon ("lcicons:/plugins/azoth/resources/images/searchtab.svg"),
 			55,
 			TFOpenableByRequest
 		};
@@ -523,7 +523,7 @@ namespace Azoth
 			tr ("Service discovery"),
 			tr ("A service discovery tab that allows one to discover "
 				"capabilities of remote entries"),
-			QIcon (":/plugins/azoth/resources/images/sdtab.svg"),
+			QIcon ("lcicons:/plugins/azoth/resources/images/sdtab.svg"),
 			55,
 			TFOpenableByRequest
 		};
@@ -533,7 +533,7 @@ namespace Azoth
 			tr ("IM console"),
 			tr ("Protocol console, for example, XML console for a XMPP "
 				"client protocol"),
-			QIcon (":/plugins/azoth/resources/images/console.svg"),
+			QIcon ("lcicons:/plugins/azoth/resources/images/console.svg"),
 			0,
 			TFEmpty
 		};

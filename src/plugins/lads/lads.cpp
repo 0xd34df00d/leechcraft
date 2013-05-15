@@ -94,7 +94,7 @@ namespace Lads
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/resources/images/lads.svg");
+		static QIcon icon ("lcicons:/resources/images/lads.svg");
 		return icon;
 	}
 

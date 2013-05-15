@@ -29,30 +29,20 @@
 
 #pragma once
 
-#include <functional>
+#include <memory>
 #include <QObject>
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QMap>
+#include <QList>
 #include "structures.h"
-#include "oral.h"
 
 namespace LeechCraft
 {
 namespace Poleemery
 {
+	struct StorageImpl;
+
 	class Storage : public QObject
 	{
-		QSqlDatabase DB_;
-
-		oral::ObjectInfo<Account> AccountInfo_;
-		oral::ObjectInfo<NakedExpenseEntry> NakedExpenseEntryInfo_;
-		oral::ObjectInfo<ReceiptEntry> ReceiptEntryInfo_;
-		oral::ObjectInfo<Category> CategoryInfo_;
-		oral::ObjectInfo<CategoryLink> CategoryLinkInfo_;
-
-		QHash<QString, Category> CatCache_;
-		QHash<int, Category> CatIDCache_;
+		std::shared_ptr<StorageImpl> Impl_;
 	public:
 		Storage (QObject* = 0);
 
@@ -79,6 +69,7 @@ namespace Poleemery
 		void DeleteReceiptEntry (const ReceiptEntry&);
 	private:
 		Category AddCategory (const QString&);
+		void AddNewCategories (const ExpenseEntry&, const QStringList&);
 		void LinkEntry2Cat (const ExpenseEntry&, const Category&);
 		void UnlinkEntry2Cat (const ExpenseEntry&, const Category&);
 

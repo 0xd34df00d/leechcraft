@@ -33,6 +33,7 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QMutexLocker>
+#include <QVariant>
 #include <QtDebug>
 
 QSet<QString> LeechCraft::Util::DBLock::LockedBases_;

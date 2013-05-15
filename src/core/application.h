@@ -126,6 +126,8 @@ namespace LeechCraft
 		 */
 		void ParseCommandLine ();
 
+		void InitPluginsIconset ();
+
 		/** Enter the restart mode. This is called in case leechcraft is
 		 * started with the '-restart' option.
 		 */

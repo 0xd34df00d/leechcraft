@@ -89,6 +89,7 @@
 #include "chatstyleoptionmanager.h"
 #include "riexhandler.h"
 #include "customstatusesmanager.h"
+#include "customchatstylemanager.h"
 
 Q_DECLARE_METATYPE (QList<QColor>);
 Q_DECLARE_METATYPE (QPointer<QObject>);
@@ -216,15 +217,9 @@ namespace Azoth
 	, EventsNotifier_ (new EventsNotifier)
 	, ImportManager_ (new ImportManager)
 	, UnreadQueueManager_ (new UnreadQueueManager)
+	, CustomChatStyleManager_ (new CustomChatStyleManager)
 	{
 		FillANFields ();
-
-		auto addSOM = [this] (const QByteArray& option)
-		{
-			StyleOptionManagers_ [option].reset (new ChatStyleOptionManager (option, this));
-		};
-		addSOM ("ChatWindowStyle");
-		addSOM ("MUCWindowStyle");
 
 #ifdef ENABLE_CRYPT
 		connect (QCAEventHandler_.get (),
@@ -254,7 +249,7 @@ namespace Azoth
 		ResourceLoaders_ [RLTActivityIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/activities/", this));
 		ResourceLoaders_ [RLTMoodIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/moods/", this));
 
-		Q_FOREACH (std::shared_ptr<Util::ResourceLoader> rl, ResourceLoaders_.values ())
+		for (auto rl : ResourceLoaders_.values ())
 		{
 			rl->AddLocalPrefix ();
 			rl->AddGlobalPrefix ();
@@ -328,6 +323,13 @@ namespace Azoth
 		Proxy_ = proxy;
 		ShortcutManager_.reset (new Util::ShortcutManager (proxy));
 		CustomStatusesManager_.reset (new CustomStatusesManager);
+
+		auto addSOM = [this] (const QByteArray& option)
+		{
+			StyleOptionManagers_ [option].reset (new ChatStyleOptionManager (option, this));
+		};
+		addSOM ("ChatWindowStyle");
+		addSOM ("MUCWindowStyle");
 	}
 
 	ICoreProxy_ptr Core::GetProxy () const
@@ -370,6 +372,11 @@ namespace Azoth
 	CustomStatusesManager* Core::GetCustomStatusesManager() const
 	{
 		return CustomStatusesManager_.get ();
+	}
+
+	CustomChatStyleManager* Core::GetCustomChatStyleManager () const
+	{
+		return CustomChatStyleManager_.get ();
 	}
 
 	QSet<QByteArray> Core::GetExpectedPluginClasses () const
@@ -681,8 +688,12 @@ namespace Azoth
 		return CallManager_.get ();
 	}
 
-	bool Core::ShouldCountUnread (const ICLEntry *entry,
-			IMessage *msg)
+	SourceTrackingModel<IChatStyleResourceSource>* Core::GetChatStyleSourceModel () const
+	{
+		return ChatStylesOptionsModel_.get ();
+	}
+
+	bool Core::ShouldCountUnread (const ICLEntry *entry, IMessage *msg)
 	{
 		if (msg->GetQObject ()->property ("Azoth/HiddenMessage").toBool ())
 			return false;
@@ -766,7 +777,7 @@ namespace Azoth
 	{
 		ChatStylesOptionsModel_->AddSource (src);
 
-		Q_FOREACH (auto manager, StyleOptionManagers_.values ())
+		for (auto manager : StyleOptionManagers_.values ())
 			manager->AddChatStyleResourceSource (src);
 	}
 
@@ -775,6 +786,10 @@ namespace Azoth
 		IChatStyleResourceSource *src = GetCurrentChatStyle (entry);
 		if (!src)
 			return QString ();
+
+		const auto& pair = CustomChatStyleManager_->GetForEntry (qobject_cast<ICLEntry*> (entry));
+		if (!pair.first.isEmpty ())
+			return src->GetHTMLTemplate (pair.first, pair.second, entry, frame);
 
 		const QByteArray& optName = GetStyleOptName (entry);
 		const QString& opt = XmlSettingsManager::Instance ()
@@ -789,6 +804,10 @@ namespace Azoth
 		IChatStyleResourceSource *src = GetCurrentChatStyle (entry);
 		if (!src)
 			return QUrl ();
+
+		const auto& pair = CustomChatStyleManager_->GetForEntry (qobject_cast<ICLEntry*> (entry));
+		if (!pair.first.isEmpty ())
+			return pair.first;
 
 		const QString& opt = XmlSettingsManager::Instance ()
 				.property (GetStyleOptName (entry)).toString ();
@@ -1777,9 +1796,14 @@ namespace Azoth
 
 	IChatStyleResourceSource* Core::GetCurrentChatStyle (QObject *entry) const
 	{
+		const auto& pair = CustomChatStyleManager_->GetForEntry (qobject_cast<ICLEntry*> (entry));
+		if (!pair.first.isEmpty ())
+			if (auto src = ChatStylesOptionsModel_->GetSourceForOption (pair.first))
+				return src;
+
 		const QString& opt = XmlSettingsManager::Instance ()
 				.property (GetStyleOptName (entry)).toString ();
-		IChatStyleResourceSource *src = ChatStylesOptionsModel_->GetSourceForOption (opt);
+		auto src = ChatStylesOptionsModel_->GetSourceForOption (opt);
 		if (!src)
 			qWarning () << Q_FUNC_INFO
 					<< "empty result for"

@@ -56,6 +56,11 @@ namespace Azoth
 			AddModel (model);
 		}
 
+		QList<SrcType*> GetAllSources () const
+		{
+			return Model2Source_.values ();
+		}
+
 		SrcType* GetSourceForOption (const QString& opt) const
 		{
 			return Option2Source_.value (opt);

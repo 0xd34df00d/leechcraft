@@ -54,6 +54,8 @@ namespace Azoth
 		QAbstractItemModel* GetVariantModel () const;
 
 		void AddChatStyleResourceSource (IChatStyleResourceSource*);
+	public slots:
+		void handleChatStyleSelected (const QString&);
 	private slots:
 		void handleChatStyleSelected (const QVariant&);
 	};

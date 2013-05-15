@@ -176,17 +176,17 @@ namespace VelvetBird
 	{
 		Store (msg);
 
-		if (!PurpleConv_)
+		auto name = purple_buddy_get_name (Buddy_);
+		auto conv = purple_find_conversation_with_account (PURPLE_CONV_TYPE_IM,
+				name, Account_->GetPurpleAcc ());
+		if (!conv)
 		{
-			PurpleConv_.reset (purple_conversation_new (PURPLE_CONV_TYPE_IM,
-						Account_->GetPurpleAcc (),
-						purple_buddy_get_name (Buddy_)),
-					purple_conversation_destroy);
-			PurpleConv_->ui_data = this;
-			purple_conversation_set_logging (PurpleConv_.get (), false);
+			conv = purple_conversation_new (PURPLE_CONV_TYPE_IM, Account_->GetPurpleAcc (), name);
+			conv->ui_data = this;
+			purple_conversation_set_logging (conv, false);
 		}
 
-		purple_conv_im_send (PurpleConv_->u.im, msg->GetBody ().toUtf8 ().constData ());
+		purple_conv_im_send (PURPLE_CONV_IM (conv), msg->GetBody ().toUtf8 ().constData ());
 	}
 
 	void Buddy::Store (ConvIMMessage *msg)
@@ -197,8 +197,7 @@ namespace VelvetBird
 
 	void Buddy::SetConv (PurpleConversation *conv)
 	{
-		PurpleConv_.reset (conv, purple_conversation_destroy);
-		PurpleConv_->ui_data = this;
+		conv->ui_data = this;
 	}
 
 	void Buddy::HandleMessage (const char *who, const char *body, PurpleMessageFlags flags, time_t time)

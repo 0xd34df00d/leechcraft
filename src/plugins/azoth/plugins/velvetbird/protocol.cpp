@@ -94,7 +94,7 @@ namespace VelvetBird
 
 		QIcon result = QIcon::fromTheme (QString::fromUtf8 ("im-" + id));
 		if (result.isNull ())
-			result = QIcon (":/azoth/velvetbird/resources/images/velvetbird.svg");
+			result = QIcon ("lcicons:/azoth/velvetbird/resources/images/velvetbird.svg");
 		return result;
 	}
 
@@ -122,7 +122,8 @@ namespace VelvetBird
 
 		auto pacc = purple_account_new (nameWidget->GetName ().toUtf8 ().constData (),
 				GetPurpleID ().constData ());
-		purple_account_set_alias (pacc, name.toUtf8 ().constData ());
+		purple_account_set_alias (pacc, nameWidget->GetNick ().toUtf8 ().constData ());
+		purple_account_set_string (pacc, "AccountName", name.toUtf8 ().constData ());
 		purple_accounts_add (pacc);
 
 		PushAccount (pacc);
@@ -150,7 +151,7 @@ namespace VelvetBird
 	void Protocol::PushAccount (PurpleAccount *pacc)
 	{
 		const auto& name = QString::fromUtf8 (purple_account_get_alias (pacc));
-		auto account = new Account (name, pacc, this);
+		auto account = new Account (pacc, this);
 		Accounts_ << account;
 		emit accountAdded (account);
 

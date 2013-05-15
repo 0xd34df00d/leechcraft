@@ -28,7 +28,11 @@
  **********************************************************************/
 
 #include "operationpropsdialog.h"
+#include <QStringListModel>
 #include <QtDebug>
+#include <interfaces/core/itagsmanager.h>
+#include <util/tags/tagscompleter.h>
+#include <interfaces/core/itagsmanager.h>
 #include "structures.h"
 #include "core.h"
 #include "accountsmanager.h"
@@ -47,6 +51,11 @@ namespace Poleemery
 
 		for (const auto& acc : Accounts_)
 			Ui_.AccsBox_->addItem (acc.Name_);
+
+		auto completer = new Util::TagsCompleter (Ui_.Categories_, Ui_.Categories_);
+		const auto& cats = Core::Instance ().GetOpsManager ()->GetKnownCategories ().toList ();
+		completer->OverrideModel (new QStringListModel (cats, completer));
+		Ui_.Categories_->AddSelector ();
 
 		const auto& entries = Core::Instance ().GetOpsManager ()->GetAllEntries ();
 		for (const auto& entry : entries)
@@ -94,7 +103,10 @@ namespace Poleemery
 			return std::make_shared<ReceiptEntry> (accId, amount, name, descr, dt);
 		case EntryType::Expense:
 			return std::make_shared<ExpenseEntry> (accId, amount, name, descr, dt,
-					Ui_.CountBox_->value (), Ui_.Shop_->currentText (), QStringList {});
+					Ui_.CountBox_->value (),
+					Ui_.Shop_->currentText (),
+					Core::Instance ().GetCoreProxy ()->
+							GetTagsManager ()->Split (Ui_.Categories_->text ()));
 		}
 
 		qWarning () << Q_FUNC_INFO

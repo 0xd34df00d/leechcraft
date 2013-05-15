@@ -63,6 +63,7 @@ namespace Poleemery
 
 		QString GetUserCurrency () const;
 		double ToUserCurrency (const QString&, double) const;
+		double GetUserCurrencyRate (const QString& from) const;
 	private:
 		void FetchRates (QStringList);
 	private slots:

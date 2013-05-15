@@ -124,10 +124,15 @@ namespace Poleemery
 
 	double CurrenciesManager::ToUserCurrency (const QString& code, double value) const
 	{
-		if (code == UserCurrency_)
-			return value;
+		return value * GetUserCurrencyRate (code);
+	}
 
-		return value * RatesFromUSD_.value (UserCurrency_, 1) / RatesFromUSD_.value (code, 1);
+	double CurrenciesManager::GetUserCurrencyRate (const QString& code) const
+	{
+		if (code == UserCurrency_)
+			return 1;
+
+		return RatesFromUSD_.value (UserCurrency_, 1) / RatesFromUSD_.value (code, 1);
 	}
 
 	void CurrenciesManager::FetchRates (QStringList values)

@@ -94,7 +94,7 @@ namespace VelvetBird
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/azoth/velvetbird/resources/images/velvetbird.svg");
+		static QIcon icon ("lcicons:/azoth/velvetbird/resources/images/velvetbird.svg");
 		return icon;
 	}
 

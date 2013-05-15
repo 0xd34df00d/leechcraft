@@ -58,6 +58,8 @@ namespace LMP
 	: QFileSystemModel (parent)
 	{
 		setIconProvider (new FSIconProvider);
+
+		setSupportedDragActions (Qt::CopyAction);
 	}
 }
 }

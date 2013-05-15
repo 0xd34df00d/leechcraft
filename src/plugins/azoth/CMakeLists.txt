@@ -139,6 +139,7 @@ SET (SRCS
 	userslistwidget.cpp
 	keyboardrosterfixer.cpp
 	statuschangemenumanager.cpp
+	customchatstylemanager.cpp
 	)
 SET (FORMS
 	mainwidget.ui

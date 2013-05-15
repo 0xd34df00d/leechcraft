@@ -71,7 +71,7 @@ namespace Autosearch
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/plugins/poshuku/plugins/filescheme/resources/images/poshuku_filescheme.svg");
+		static QIcon icon ("lcicons:/plugins/poshuku/plugins/filescheme/resources/images/poshuku_filescheme.svg");
 		return icon;
 	}
 

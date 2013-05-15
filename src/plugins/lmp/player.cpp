@@ -788,15 +788,20 @@ namespace LMP
 
 	Phonon::MediaSource Player::GetNextSource (const Phonon::MediaSource& current) const
 	{
+		if (CurrentQueue_.isEmpty ())
+			return {};
+
 		auto pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
 
 		switch (PlayMode_)
 		{
 		case PlayMode::Sequential:
-			if (pos != CurrentQueue_.end () && ++pos != CurrentQueue_.end ())
+			if (pos == CurrentQueue_.end ())
+				return CurrentQueue_.value (0);
+			else if (++pos != CurrentQueue_.end ())
 				return *pos;
 			else
-				return Phonon::MediaSource ();
+				return {};
 		case PlayMode::Shuffle:
 			return GetRandomBy<int> (pos,
 					[this] (const Phonon::MediaSource& source)
@@ -814,7 +819,7 @@ namespace LMP
 		case PlayMode::RepeatAlbum:
 		{
 			if (pos == CurrentQueue_.end ())
-				return Phonon::MediaSource ();
+				return CurrentQueue_.value (0);
 
 			const auto& curAlbum = GetMediaInfo (*pos).Album_;
 			++pos;
@@ -835,7 +840,7 @@ namespace LMP
 			return *pos;
 		}
 
-		return Phonon::MediaSource ();
+		return {};
 	}
 
 	void Player::play (const QModelIndex& index)
@@ -882,12 +887,11 @@ namespace LMP
 		}
 		else
 		{
-			QList<Phonon::MediaSource>::const_iterator pos;
-			pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
-			if (pos == CurrentQueue_.end () || pos == CurrentQueue_.begin ())
+			const auto pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
+			if (pos == CurrentQueue_.begin ())
 				return;
 
-			next = *(--pos);
+			next = pos == CurrentQueue_.end () ? CurrentQueue_.value (0) : *(pos - 1);
 		}
 
 		Source_->stop ();
@@ -955,8 +959,13 @@ namespace LMP
 		Url2Info_.clear ();
 		Source_->clearQueue ();
 
+		XmlSettingsManager::Instance ().setProperty ("LastSong", QString ());
+
 		Core::Instance ().GetPlaylistManager ()->
 				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
+
+		if (Source_->state () != Phonon::PlayingState)
+			Source_->setCurrentSource ({});
 	}
 
 	void Player::shufflePlaylist ()
@@ -1174,7 +1183,10 @@ namespace LMP
 			Source_->setQueue (queue);
 		}
 		else
+		{
 			emit songChanged (MediaInfo ());
+			Source_->setCurrentSource ({});
+		}
 	}
 
 	void Player::handleStateChanged (Phonon::State state)

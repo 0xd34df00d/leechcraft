@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <QObject>
+#include <QHash>
 #include "structures.h"
 
 namespace LeechCraft

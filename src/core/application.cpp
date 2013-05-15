@@ -52,6 +52,7 @@
 #include <interfaces/ihaveshortcuts.h>
 #include <util/util.h>
 #include <util/structuresops.h>
+#include <util/sys/paths.h>
 #include "debugmessagehandler.h"
 #include "tagsmanager.h"
 #include "mainwindow.h"
@@ -175,8 +176,6 @@ namespace LeechCraft
 		}
 #endif
 
-		setWindowIcon (QIcon (":/resources/images/leechcraft.svg"));
-
 		// Say hello to logs
 		qDebug () << "======APPLICATION STARTUP======";
 		qWarning () << "======APPLICATION STARTUP======";
@@ -189,6 +188,10 @@ namespace LeechCraft
 
 		Core::Instance ();
 		InitSettings ();
+
+		InitPluginsIconset ();
+
+		setWindowIcon (QIcon ("lcicons:/resources/images/leechcraft.svg"));
 
 		setQuitOnLastWindowClosed (false);
 
@@ -430,6 +433,20 @@ namespace LeechCraft
 
 		Rotate (lcDir, "debug.log");
 		Rotate (lcDir, "warning.log");
+	}
+
+	void Application::InitPluginsIconset ()
+	{
+		QDir::addSearchPath ("lcicons", ":/");
+
+		const auto& pluginsIconset = XmlSettingsManager::Instance ()->
+				property ("PluginsIconset").toString ();
+		if (pluginsIconset == "Default")
+			return;
+
+		const auto& pluginsPath = "global_icons/plugins/" + pluginsIconset;
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::Share, pluginsPath))
+			QDir::addSearchPath ("lcicons", cand);
 	}
 
 	void Application::EnterRestartMode ()

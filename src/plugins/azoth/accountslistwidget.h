@@ -50,18 +50,24 @@ namespace Azoth
 		QStandardItemModel *AccModel_;
 		QHash<IAccount*, QStandardItem*> Account2Item_;
 
-		enum Roles
+	public:
+		enum Role
 		{
-			RAccObj = Qt::UserRole + 1,
-			RItemType
+			AccObj = Qt::UserRole + 1,
+			ChatStyleManager,
+			MUCStyleManager
 		};
 
-		enum ItemTypes
+		enum Column
 		{
 			ShowInRoster,
-			Name
+			Name,
+			ChatStyle,
+			ChatVariant,
+			MUCStyle,
+			MUCVariant
 		};
-	public:
+
 		AccountsListWidget (QWidget* = 0);
 	private slots:
 		void addAccount (IAccount*);
@@ -69,6 +75,7 @@ namespace Azoth
 		void on_Modify__released ();
 		void on_PGP__released ();
 		void on_Delete__released ();
+		void on_ResetStyles__released ();
 
 		void handleItemChanged (QStandardItem*);
 

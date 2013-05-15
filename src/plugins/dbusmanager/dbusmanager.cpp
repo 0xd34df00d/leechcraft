@@ -95,25 +95,13 @@ namespace DBusManager
 
 	QIcon DBusManager::GetIcon () const
 	{
-		static QIcon icon (":/resources/images/dbusmanager.svg");
+		static QIcon icon ("lcicons:/resources/images/dbusmanager.svg");
 		return icon;
 	}
 
 	std::shared_ptr<Util::XmlSettingsDialog> DBusManager::GetSettingsDialog () const
 	{
 		return SettingsDialog_;
-	}
-
-	EntityTestHandleResult DBusManager::CouldHandle (const Entity& e) const
-	{
-		return Core::Instance ().CouldHandle (e) ?
-				EntityTestHandleResult (EntityTestHandleResult::PHigh) :
-				EntityTestHandleResult ();
-	}
-
-	void DBusManager::Handle (Entity e)
-	{
-		Core::Instance ().Handle (e);
 	}
 }
 }

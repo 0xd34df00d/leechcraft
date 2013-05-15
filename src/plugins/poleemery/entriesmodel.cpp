@@ -31,6 +31,7 @@
 #include <QColor>
 #include <QApplication>
 #include <QFontMetrics>
+#include <interfaces/core/itagsmanager.h>
 #include "core.h"
 #include "accountsmanager.h"
 #include "operationsmanager.h"
@@ -42,8 +43,9 @@ namespace Poleemery
 {
 	EntriesModel::EntriesModel (QObject *parent)
 	: QAbstractItemModel (parent)
-	, HeaderData_ { tr ("Date"), tr ("Account"), tr ("Name"), tr ("Price"),
-			tr ("Count"), tr ("Shop"), tr ("Account balance"), tr ("Sum balance") }
+	, HeaderData_ { tr ("Date"), tr ("Name"), tr ("Price"), tr ("Count"),
+			tr ("Shop"), tr ("Categories"),
+			tr ("Account"), tr ("Account balance"), tr ("Sum balance") }
 	{
 	}
 
@@ -83,6 +85,7 @@ namespace Poleemery
 			break;
 		case Columns::Count:
 		case Columns::Shop:
+		case Columns::Categories:
 			if (Entries_.at (index.row ())->GetType () == EntryType::Expense)
 				flags |= Qt::ItemIsEditable;
 			break;
@@ -133,6 +136,13 @@ namespace Poleemery
 			case Columns::Shop:
 				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
 						[] (ExpenseEntry_ptr exp) { return exp->Shop_; });
+			case Columns::Categories:
+				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
+						[] (ExpenseEntry_ptr exp) -> QVariant
+						{
+							auto itm = Core::Instance ().GetCoreProxy ()->GetTagsManager ();
+							return itm->Join (exp->Categories_);
+						});
 			case Columns::AccBalance:
 				return QString::number (Sums_ [index.row ()].Accs_ [entry->AccountID_]) + " " + acc.Currency_;
 			case Columns::SumBalance:
@@ -161,6 +171,9 @@ namespace Poleemery
 			case Columns::Shop:
 				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
 						[] (ExpenseEntry_ptr exp) { return exp->Shop_; });
+			case Columns::Categories:
+				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
+						[] (ExpenseEntry_ptr exp) { return exp->Categories_; });
 			case Columns::AccBalance:
 				return QVariant ();
 			case Columns::SumBalance:
@@ -209,6 +222,9 @@ namespace Poleemery
 			break;
 		case Columns::Shop:
 			std::dynamic_pointer_cast<ExpenseEntry> (entry)->Shop_ = value.toString ();
+			break;
+		case Columns::Categories:
+			std::dynamic_pointer_cast<ExpenseEntry> (entry)->Categories_ = value.toStringList ();
 			break;
 		}
 
@@ -279,7 +295,7 @@ namespace Poleemery
 
 	void EntriesModel::AddEntry (EntryBase_ptr entry)
 	{
-		auto bound = std::lower_bound (Entries_.begin (), Entries_.end (), entry, DateLess);
+		auto bound = std::upper_bound (Entries_.begin (), Entries_.end (), entry, DateLess);
 
 		auto pos = std::distance (Entries_.begin (), bound);
 		beginInsertRows (QModelIndex (), pos, pos);
@@ -292,7 +308,7 @@ namespace Poleemery
 			const auto totalSum = GetTotalSum (hash,
 					Core::Instance ().GetAccsManager (),
 					Core::Instance ().GetCurrenciesManager ());
-			Sums_ << SumInfo { totalSum, hash };
+			Sums_ << BalanceInfo { totalSum, hash };
 		}
 		else
 			recalcSums ();
@@ -331,6 +347,11 @@ namespace Poleemery
 		return Entries_;
 	}
 
+	QList<BalanceInfo> EntriesModel::GetSumInfos () const
+	{
+		return Sums_;
+	}
+
 	void EntriesModel::recalcSums ()
 	{
 		Sums_.clear ();
@@ -346,7 +367,7 @@ namespace Poleemery
 		{
 			AppendEntry (curSum, entry);
 			const auto totalSum = GetTotalSum (curSum, accMgr, curMgr);
-			Sums_ << SumInfo { totalSum, curSum };
+			Sums_ << BalanceInfo { totalSum, curSum };
 		}
 
 		emit dataChanged (createIndex (0, Columns::AccBalance),

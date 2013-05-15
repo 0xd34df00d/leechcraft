@@ -120,7 +120,7 @@ namespace Metida
 
 	QIcon LJBloggingPlatform::GetBloggingPlatformIcon () const
 	{
-		return QIcon (":/plugins/blogique/plugins/metida/resources/images/livejournalicon.svg");
+		return QIcon ("lcicons:/plugins/blogique/plugins/metida/resources/images/livejournalicon.svg");
 	}
 
 	QByteArray LJBloggingPlatform::GetBloggingPlatformID () const

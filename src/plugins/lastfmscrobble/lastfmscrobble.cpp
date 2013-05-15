@@ -133,7 +133,7 @@ namespace Lastfmscrobble
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/resources/images/lastfmscrobble.svg");
+		static QIcon icon ("lcicons:/resources/images/lastfmscrobble.svg");
 		return icon;
 	}
 

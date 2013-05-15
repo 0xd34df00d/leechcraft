@@ -80,7 +80,7 @@ namespace Graffiti
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/lmp/graffiti/resources/images/graffiti.svg");
+		static QIcon icon ("lcicons:/lmp/graffiti/resources/images/graffiti.svg");
 		return icon;
 	}
 

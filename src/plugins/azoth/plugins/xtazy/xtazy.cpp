@@ -93,7 +93,7 @@ namespace Xtazy
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/plugins/azoth/plugins/xtazy/resources/images/xtazy.svg");
+		static QIcon icon ("lcicons:/plugins/azoth/plugins/xtazy/resources/images/xtazy.svg");
 		return icon;
 	}
 

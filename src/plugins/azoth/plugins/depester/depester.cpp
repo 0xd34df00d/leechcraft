@@ -79,7 +79,7 @@ namespace Depester
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/azoth/depester/resources/images/depester.svg");
+		static QIcon icon ("lcicons:/azoth/depester/resources/images/depester.svg");
 		return icon;
 	}
 

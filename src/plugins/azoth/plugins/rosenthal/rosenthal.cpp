@@ -87,7 +87,7 @@ namespace Rosenthal
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/plugins/azoth/plugins/rosenthal/resources/images/rosenthal.svg");
+		static QIcon icon ("lcicons:/plugins/azoth/plugins/rosenthal/resources/images/rosenthal.svg");
 		return icon;
 	}
 

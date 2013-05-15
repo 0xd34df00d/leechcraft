@@ -45,6 +45,11 @@ namespace VelvetBird
 	{
 		return Ui_.Name_->text ();
 	}
+
+	QString AccRegFirstPage::GetNick () const
+	{
+		return Ui_.Nick_->text ();
+	}
 }
 }
 }
