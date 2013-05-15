@@ -174,6 +174,8 @@ namespace Metida
 
 		void AddGroup (const QString& name, bool isPublic, int id);
 		void DeleteGroup (int id);
+
+		QHash<QString, int> GetTags () const;
 	private:
 		void CallLastUpdateMethod ();
 
@@ -217,6 +219,7 @@ namespace Metida
 		void gotRecentComments (const QList<LJCommentEntry>& comments);
 
 		void gotBlogStatistics (const QMap<QDate, int>& statistics);
+		void tagsUpdated ();
 
 	};
 }

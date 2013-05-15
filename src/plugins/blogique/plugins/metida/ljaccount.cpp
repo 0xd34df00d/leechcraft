@@ -86,6 +86,10 @@ namespace Metida
 				SIGNAL (gotTags (QHash<QString, int>)),
 				LJProfile_.get (),
 				SLOT (handleGotTags (QHash<QString, int>)));
+		connect (LJProfile_.get (),
+				SIGNAL (tagsUpdated ()),
+				this,
+				SIGNAL (tagsUpdated ()));
 		connect (LJXmlRpc_,
 				SIGNAL (eventPosted (QList<LJEvent>)),
 				this,
@@ -404,6 +408,11 @@ namespace Metida
 	void LJAccount::DeleteGroup (int id)
 	{
 		LJXmlRpc_->DeleteGroup (id);
+	}
+
+	QHash<QString, int> LJAccount::GetTags () const
+	{
+		return LJProfile_->GetTags ();
 	}
 
 	void LJAccount::CallLastUpdateMethod ()

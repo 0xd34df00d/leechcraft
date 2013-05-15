@@ -58,11 +58,6 @@ namespace Metida
 		quint32 AllowMask_;
 
 	public:
-		enum TagRoles
-		{
-			TagFrequency = Qt::UserRole + 1
-		};
-
 		PostOptionsWidget (QWidget *parent = 0);
 
 		QString GetName () const;
