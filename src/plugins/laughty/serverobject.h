@@ -35,6 +35,8 @@
 
 namespace LeechCraft
 {
+
+class Entity;
 namespace Laughty
 {
 	class ServerObject : public QObject
@@ -53,6 +55,8 @@ namespace Laughty
 				const QVariantMap& hints, uint expire_timeout);
 
 		void CloseNotification (uint id);
+	private:
+		void HandleActions (Entity&, int, const QStringList&, const QVariantMap&);
 	signals:
 		void NotificationClosed (uint id, uint reason);
 		void ActionInvoked (uint id, const QString& action_key);

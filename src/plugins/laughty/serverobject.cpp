@@ -111,28 +111,7 @@ namespace Laughty
 					body);
 		}
 
-		if (!actions.isEmpty () && actions.size () % 2)
-		{
-			const auto resident = hints.value ("resident", false).toBool ();
-
-			auto nah = new Util::NotificationActionHandler (e);
-
-			for (int i = 0; i < actions.size (); i += 2)
-			{
-				auto key = actions.at (i);
-				nah->AddFunction (actions.at (i + 1),
-						[this, key, id, resident] () -> void
-						{
-							emit ActionInvoked (id, key);
-							if (!resident)
-								emit NotificationClosed (id, 2);
-						});
-			}
-
-			if (resident)
-				nah->AddFunction (tr ("Dismiss"),
-						[this, id] { emit NotificationClosed (id, 2); });
-		}
+		HandleActions (e, id, actions, hints);
 
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 
@@ -145,6 +124,32 @@ namespace Laughty
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 
 		emit NotificationClosed (id, 3);
+	}
+
+	void ServerObject::HandleActions (Entity& e, int id, const QStringList& actions, const QVariantMap& hints)
+	{
+		if (actions.isEmpty () || actions.size () % 2)
+			return;
+
+		const auto resident = hints.value ("resident", false).toBool ();
+
+		auto nah = new Util::NotificationActionHandler (e);
+
+		for (int i = 0; i < actions.size (); i += 2)
+		{
+			auto key = actions.at (i);
+			nah->AddFunction (actions.at (i + 1),
+					[this, key, id, resident] () -> void
+					{
+						emit ActionInvoked (id, key);
+						if (!resident)
+							emit NotificationClosed (id, 2);
+					});
+		}
+
+		if (resident)
+			nah->AddFunction (tr ("Dismiss"),
+					[this, id] { emit NotificationClosed (id, 2); });
 	}
 }
 }
