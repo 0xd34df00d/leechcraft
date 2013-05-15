@@ -280,9 +280,9 @@ namespace Blogique
 				this,
 				SLOT (handleGettingEntries2BackupFinished ()));
 		connect (accObj,
-				SIGNAL (tagsUpdated ()),
+				SIGNAL (tagsUpdated (QHash<QString, int>)),
 				this,
-				SLOT (handleTagsUpdated ()));
+				SIGNAL (tagsUpdated (QHash<QString, int>)));
 
 		emit accountAdded (accObj);
 	}
@@ -345,6 +345,7 @@ namespace Blogique
 				});
 		emit gotEntity (e);
 		acc->RequestStatistics ();
+		acc->RequestTags ();
 		emit entryPosted ();
 	}
 
@@ -358,6 +359,7 @@ namespace Blogique
 				tr ("Entry was removed successfully."),
 				Priority::PInfo_));
 		acc->RequestStatistics ();
+		acc->RequestTags ();
 		emit entryRemoved ();
 	}
 
@@ -374,6 +376,7 @@ namespace Blogique
 				tr ("Entry was updated successfully."),
 				Priority::PInfo_));
 		acc->RequestStatistics ();
+		acc->RequestTags ();
 	}
 
 	void Core::handleGotEntries2Backup (const QList<Entry>&)
@@ -396,16 +399,6 @@ namespace Blogique
 		AutoSaveTimer_->start (XmlSettingsManager::Instance ()
 				.property ("AutoSave").toInt () * 1000);
 	}
-
-	void Core::handleTagsUpdated ()
-	{
-		auto acc = qobject_cast<IAccount*> (sender ());
-		if (!acc)
-			return;
-
-		emit tagsUpdated (acc->GetTags ());
-	}
-
 }
 }
 

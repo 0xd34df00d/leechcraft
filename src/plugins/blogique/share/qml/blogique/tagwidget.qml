@@ -1,15 +1,26 @@
 import QtQuick 1.1
+import Effects 1.0
 import "tagballoonlist.js" as TagBalloonList
 
 Rectangle
 {
 	id: rootRectangle
 
-	width: 300
-	height: 300
-	radius: 4
-
 	anchors.fill: parent
+
+	gradient: Gradient
+	{
+		GradientStop
+		{
+			position: 0
+			color: colorProxy.color_TextView_TopColor
+		}
+		GradientStop
+		{
+			position: 1
+			color: colorProxy.color_TextView_BottomColor
+		}
+	}
 
 	property bool inputFieldExsists: false;
 	property Item currentInputField;
@@ -49,6 +60,7 @@ Rectangle
 		var lastBalloon = TagBalloonList.getLastBalloon ();
 		var tag = lastBalloon.tag;
 		TagBalloonList.removeBalloon (lastBalloon);
+		tagRemoved (tag);
 
 		createInputFieldObject ()
 		currentInputField.text = tag
@@ -86,6 +98,9 @@ Rectangle
 			width: 50
 			cursorVisible: true
 			focus: true
+
+			color: colorProxy.color_TextBox_TextColor
+
 			property int lastCursorPosition;
 
 			Keys.onReleased:
@@ -151,11 +166,28 @@ Rectangle
 			id: rect
 
 			property string tag;
+			property bool removeBegin;
 
 			color: "#C9C9C9"
 			width: tagName.width + closeImage.width + 13
 			height: 25
 			radius: 4
+
+			NumberAnimation
+			{
+				id:removeAnimation
+				target:rect
+				properties:"scale"
+				to:0
+				duration:500
+				running: rect.removeBegin;
+				onRunningChanged:
+					if (running == false)
+					{
+						TagBalloonList.removeBalloon (rect)
+						tagRemoved (tag)
+					}
+			}
 
 			Row
 			{
@@ -188,7 +220,8 @@ Rectangle
 						id: closeButtonMouseArea
 						anchors.fill: parent
 						hoverEnabled: true
-						onReleased: TagBalloonList.removeBalloon (TagBalloonList.getCurrentBalloon ())
+						onEntered: TagBalloonList.setBalloonAsCurrent (rect);
+						onReleased: rect.removeBegin = true;
 					}
 				}
 			}
@@ -269,7 +302,7 @@ Rectangle
 			else
 			{
 				var balloon = TagBalloonList.getBalloonByName (tag);
-				TagBalloonList.removeBalloon (balloon);
+				balloon.removeBegin = true;
 			}
 		}
 	}

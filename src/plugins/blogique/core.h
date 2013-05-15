@@ -104,8 +104,6 @@ namespace Blogique
 
 		void handleAutoSaveIntervalChanged ();
 
-		void handleTagsUpdated ();
-
 	signals:
 		void accountAdded (QObject *account);
 		void accountRemoved (QObject *account);

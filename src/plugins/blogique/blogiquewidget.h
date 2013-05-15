@@ -117,6 +117,7 @@ namespace Blogique
 		void SetTextEditor ();
 		void SetToolBarActions ();
 		void SetDefaultSideWidgets ();
+		void PrepareQmlWidgets ();
 		void RemovePostingTargetsWidget ();
 
 		void SetPostDate (const QDateTime& dt);
@@ -124,7 +125,6 @@ namespace Blogique
 
 		void SetPostTags (const QStringList& tags);
 		QStringList GetPostTags () const;
-
 
 		void ClearEntry ();
 
@@ -156,14 +156,18 @@ namespace Blogique
 		void on_SideWidget__dockLocationChanged (Qt::DockWidgetArea area);
 		void on_UpdateProfile__triggered ();
 		void on_CurrentTime__released ();
-
+		void on_SelectTags__toggled (bool checked);
 		void handleTagTextChanged (const QString& text);
+		void handleTagRemoved (const QString& tag);
+
 	signals:
 		void removeTab (QWidget *tab);
 		void addNewTab (const QString& name, QWidget *tab);
 		void changeTabName (QWidget *content, const QString& name);
 
 		void tabRecoverDataChanged ();
+
+		void tagSelected (const QString& tag);
 	};
 }
 }

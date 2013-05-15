@@ -42,6 +42,7 @@
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include <util/qml/themeimageprovider.h>
+#include <util/qml/colorthemeproxy.h>
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -159,17 +160,7 @@ namespace Blogique
 
 		DraftEntriesWidget_->loadDraftEntries ();
 
-		TagsProxyModel_->setSourceModel (TagsModel_);
-		Ui_.Tags_->rootContext ()->setContextProperty ("tagsModel",
-				TagsProxyModel_);
-		Ui_.Tags_->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,
-				"blogique", "tagwidget.qml")));
-		Ui_.Tags_->engine ()->addImageProvider (ImageProviderID,
-				new Util::ThemeImageProvider (Core::Instance ().GetCoreProxy ()));
-		connect (Ui_.Tags_->rootObject (),
-				SIGNAL (tagTextChanged (QString)),
-				this,
-				SLOT (handleTagTextChanged (QString)));
+		PrepareQmlWidgets ();
 	}
 
 	QObject* BlogiqueWidget::ParentMultiTabs ()
@@ -414,6 +405,41 @@ namespace Blogique
 		Ui_.Tools_->addItem (DraftEntriesWidget_, DraftEntriesWidget_->GetName ());
 	}
 
+	void BlogiqueWidget::PrepareQmlWidgets ()
+	{
+		TagsProxyModel_->setSourceModel (TagsModel_);
+		Ui_.Tags_->rootContext ()->setContextProperty ("mainWidget",
+				this);
+		Ui_.Tags_->rootContext ()->setContextProperty ("tagsModel",
+				TagsProxyModel_);
+		Ui_.Tags_->rootContext ()->setContextProperty ("colorProxy",
+				new Util::ColorThemeProxy (Core::Instance ()
+						.GetCoreProxy ()->GetColorThemeManager ()));
+		Ui_.Tags_->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,
+				"blogique", "tagwidget.qml")));
+		Ui_.Tags_->engine ()->addImageProvider (ImageProviderID,
+				new Util::ThemeImageProvider (Core::Instance ().GetCoreProxy ()));
+		connect (Ui_.Tags_->rootObject (),
+				SIGNAL (tagTextChanged (QString)),
+				this,
+				SLOT (handleTagTextChanged (QString)));
+
+		Ui_.TagsCloud_->setVisible (Ui_.SelectTags_->isChecked ());
+		Ui_.TagsCloud_->rootContext ()->setContextProperty ("colorProxy",
+				new Util::ColorThemeProxy (Core::Instance ()
+						.GetCoreProxy ()->GetColorThemeManager ()));
+		Ui_.TagsCloud_->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,
+					"blogique", "tagscloud.qml")));
+		connect (Ui_.TagsCloud_->rootObject (),
+				SIGNAL (tagSelected (QString)),
+				this,
+				SIGNAL (tagSelected (QString)));
+		connect (Ui_.Tags_->rootObject (),
+				SIGNAL (tagRemoved (QString)),
+				this,
+				SLOT (handleTagRemoved (QString)));
+	}
+
 	void BlogiqueWidget::RemovePostingTargetsWidget ()
 	{
 		if (PostTargetAction_ &&
@@ -446,6 +472,9 @@ namespace Blogique
 	void BlogiqueWidget::SetPostTags (const QStringList& tags)
 	{
 		QMetaObject::invokeMethod (Ui_.Tags_->rootObject (),
+				"setTags",
+				Q_ARG (QVariant, QVariant::fromValue (tags)));
+		QMetaObject::invokeMethod (Ui_.TagsCloud_->rootObject (),
 				"setTags",
 				Q_ARG (QVariant, QVariant::fromValue (tags)));
 	}
@@ -567,6 +596,8 @@ namespace Blogique
 			for (auto action : ibp->GetEditorActions ())
 				PostEdit_->RemoveAction (action);
 
+			on_SelectTags__toggled (false);
+			Ui_.SelectTags_->setCheckable (false);
 			for (auto w : SidePluginsWidgets_)
 			{
 				auto ibsw = qobject_cast<IBlogiqueSideWidget*> (w);
@@ -589,6 +620,7 @@ namespace Blogique
 			ToolBar_->removeAction (Ui_.OpenInBrowser_);
 			ToolBar_->removeAction (Ui_.UpdateProfile_);
 			ToolBar_->removeAction (Ui_.SubmitTo_);
+
 		}
 
 		auto account = Id2Account_ [id];
@@ -728,12 +760,25 @@ namespace Blogique
 	void BlogiqueWidget::handleTagsUpdated (const QHash<QString, int>& tags)
 	{
 		TagsModel_->clear ();
+		QMetaObject::invokeMethod (Ui_.TagsCloud_->rootObject (),
+				"clearTags");
+
+		int max = 0;
 		for (const auto& tag : tags.keys ())
 		{
 			QStandardItem *item = new QStandardItem (tag);
 			item->setData (tags.value (tag), TagFrequency);
 			TagsModel_->appendRow (item);
+			if (tags.value (tag) > max)
+				max = tags.value (tag);
 		}
+
+		for (const auto& tag : tags.keys ())
+			QMetaObject::invokeMethod (Ui_.TagsCloud_->rootObject (),
+					"addTag",
+					Q_ARG (QVariant, tag),
+					Q_ARG (QVariant, tags.value (tag)),
+					Q_ARG (QVariant, max));
 	}
 
 	void BlogiqueWidget::newEntry ()
@@ -911,10 +956,30 @@ namespace Blogique
 		Ui_.Time_->setTime (current.time ());
 	}
 
+	void BlogiqueWidget::on_SelectTags__toggled (bool checked)
+	{
+		const auto& layout = Ui_.PluginOptionsWidget_->layout ();
+		for (int i = 0; i < layout->count (); ++i)
+		{
+			auto w = layout->itemAt (i)->widget ();
+			if (w)
+				w->setVisible (!checked);
+		}
+		Ui_.TagsCloud_->setVisible (checked);
+	}
+
 	void BlogiqueWidget::handleTagTextChanged (const QString& text)
 	{
 		TagsProxyModel_->setFilterFixedString (text);
 		TagsProxyModel_->countUpdated ();
+	}
+
+	void BlogiqueWidget::handleTagRemoved (const QString& tag)
+	{
+		QMetaObject::invokeMethod (Ui_.TagsCloud_->rootObject (),
+				"selectTag",
+				Q_ARG (QVariant, tag),
+				Q_ARG (QVariant, false));
 	}
 
 }
