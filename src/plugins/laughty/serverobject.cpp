@@ -30,6 +30,7 @@
 #include "serverobject.h"
 #include <util/xpc/util.h>
 #include <util/util.h>
+#include <util/notificationactionhandler.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/core/ientitymanager.h>
 
@@ -108,6 +109,22 @@ namespace Laughty
 					1,
 					summary,
 					body);
+		}
+
+		if (!actions.isEmpty () && actions.size () % 2)
+		{
+			auto nah = new Util::NotificationActionHandler (e);
+
+			for (int i = 0; i < actions.size (); i += 2)
+			{
+				auto key = actions.at (i);
+				nah->AddFunction (actions.at (i + 1),
+						[this, key, id] () -> void
+						{
+							emit ActionInvoked (id, key);
+							emit NotificationClosed (id, 2);
+						});
+			}
 		}
 
 		Proxy_->GetEntityManager ()->HandleEntity (e);
