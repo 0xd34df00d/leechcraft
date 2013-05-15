@@ -58,6 +58,38 @@ Rectangle {
                 height: rootRect.itemSize
                 width: rootRect.itemSize
 
+                Rectangle {
+                    id: highlightOpenedRect
+
+                    opacity: openedTabsCount ? 1 : 0
+                    Behavior on opacity { PropertyAnimation {} }
+
+                    width: 4
+                    height: 4
+                    radius: 2
+
+                    anchors.bottom: tcButton.bottom
+                    anchors.horizontalCenter: tcButton.horizontalCenter
+
+                    color: colorProxy.color_ToolButton_SelectedBorderColor
+                }
+
+                Rectangle {
+                    id: highlightCurrentRect
+
+                    opacity: isCurrentTab ? 1 : 0
+                    Behavior on opacity { PropertyAnimation {} }
+
+                    width: 4
+                    height: 4
+                    radius: 2
+
+                    anchors.top: tcButton.top
+                    anchors.horizontalCenter: tcButton.horizontalCenter
+
+                    color: colorProxy.color_ToolButton_SelectedBorderColor
+                }
+
                 ActionButton {
                     id: tcButton
 
@@ -66,8 +98,8 @@ Rectangle {
 
                     actionIconURL: tabClassIcon
                     textTooltip: tabClassName
-                    isHighlight: openedTabsCount
-                    isStrongHighlight: openedTabsCount
+                    isHighlight: false
+                    transparentStyle: true
                     isCurrent: isCurrentTab
 
                     Timer {
