@@ -116,7 +116,6 @@ signals:
 	void authorized (QString, QString);
 
 public slots:
-	void getCommonFeed (unsigned int number);        // Downloads number of tweets from the main twitter feed
 	void getHomeFeed ();
 	void searchTwitter (QString text);
 	void getUserTimeline (QString username);

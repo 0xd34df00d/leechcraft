@@ -66,6 +66,11 @@ public:
 	QDateTime dateTime () const { return m_created; }
 	void setDateTime (QDateTime datetime) { m_created = datetime; }
 	
+	/** @brief Direct access to QTextDocument representation
+	 * @returns internal document object. You can fix it the way you like for better visuals
+	 * 
+	 * Used in TwitDelegate class for drawing Tweet object contents in UI
+	 */
 	QTextDocument* getDocument() { return &m_document; }
 	
 	Tweet& operator= (const Tweet&);

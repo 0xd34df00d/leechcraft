@@ -57,11 +57,11 @@ TwitterPage::TwitterPage (QWidget *parent) : QWidget (parent),
 //	Toolbar_->addAction(ui->actionRefresh);
 	interface = new twitterInterface (this);
 	connect (interface, SIGNAL (tweetsReady (QList<std::shared_ptr<Tweet> >)),
-			 this, SLOT (updateTweetList (QList<std::shared_ptr<Tweet> >)));
-	timer = new QTimer (this);
-	timer->setInterval (XmlSettingsManager::Instance()->property("timer").toInt() * 1000); // Update twits every 1.5 minutes by default
-	connect (timer, SIGNAL (timeout()), interface, SLOT (getHomeFeed()));
-	qDebug() << "Timer " << timer->timerId() << "started";
+			 this, SLOT (updateScreenTwits (QList<std::shared_ptr<Tweet> >)));
+	m_twitter_timer = new QTimer (this);
+	m_twitter_timer->setInterval (XmlSettingsManager::Instance()->property("timer").toInt() * 1000); // Update twits every 1.5 minutes by default
+	connect (m_twitter_timer, SIGNAL (timeout()), interface, SLOT (getHomeFeed()));
+	qDebug() << "Timer " << m_twitter_timer->timerId() << "started";
 	tryToLogin();
 	int newSliderPos;
 
@@ -104,15 +104,22 @@ TwitterPage::TwitterPage (QWidget *parent) : QWidget (parent),
 		qDebug() << "Have an authorized" << settings->value ("token") << ":" << settings->value ("tokenSecret");
 		interface->login (settings->value ("token").toString(), settings->value ("tokenSecret").toString());
 		interface->getHomeFeed();
-		timer->start();
+		m_twitter_timer->start();
 	}
+	
+	m_update_ready = false;
+	m_ui_update_timer = new QTimer(this);
+	m_ui_update_timer->setSingleShot(false);
+	m_ui_update_timer->setInterval(1000);		// Should not update more frequently than once a second
+	connect(m_ui_update_timer, SIGNAL(timeout()), this, SLOT(updateTweetList_()));
+	m_ui_update_timer->start();
 }
 
 TwitterPage::~TwitterPage()
 {
 	settings->deleteLater();
-	timer->stop();
-	timer->deleteLater();
+	m_twitter_timer->stop();
+	m_twitter_timer->deleteLater();
 	interface->deleteLater();
 }
 
@@ -163,9 +170,8 @@ void TwitterPage::requestUserTimeline (QString username)
 	interface->getUserTimeline (username);
 }
 
-void TwitterPage::updateTweetList (QList< std::shared_ptr< Tweet > > twits)
+void TwitterPage::updateScreenTwits (QList< std::shared_ptr< Tweet > > twits)
 {
-	qDebug() << __FILE__ << __LINE__ << "Updating with params";
 	std::shared_ptr<Tweet> firstNewTwit;
 	int i;
 
@@ -205,11 +211,14 @@ void TwitterPage::updateTweetList (QList< std::shared_ptr< Tweet > > twits)
 		screenTwits.append (twits);
 	}
 	
-	updateTweetList();
+	m_update_ready = true;
 }
 
-void TwitterPage::updateTweetList()
+void TwitterPage::updateTweetList_()
 {
+	if (! m_update_ready)
+		return;
+	
 	ui->TwitList_->setEnabled(false);
 	ui->TwitList_->clear();
 
@@ -233,6 +242,7 @@ void TwitterPage::updateTweetList()
 	ui->TwitList_->update();
 	ui->TwitList_->installEventFilter(this);
 	ui->TwitList_->setEnabled(true);
+	m_update_ready = false;
 }
 
 void TwitterPage::recvdAuth (QString token, QString tokenSecret)
@@ -240,7 +250,7 @@ void TwitterPage::recvdAuth (QString token, QString tokenSecret)
 	settings->setValue ("token", token);
 	settings->setValue ("tokenSecret", tokenSecret);
 	interface->getHomeFeed();
-	timer->start();
+	m_twitter_timer->start();
 }
 
 void TwitterPage::twit()
@@ -366,6 +376,11 @@ void TwitterPage::webOpen()
 	Entity url = Util::MakeEntity(QUrl(QString("https://twitter.com/%1/status/%2").arg((*currentTwit)->author()->username()).arg(twitid)), 
 									   QString(), OnlyHandle | FromUserInitiated, QString());
 	Core::Instance().GetProxy()->GetEntityManager()->HandleEntity(url);
+}
+
+void TwitterPage::setUpdateReady()
+{
+	m_update_ready = true;
 }
 
 }

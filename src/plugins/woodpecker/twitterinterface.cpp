@@ -49,7 +49,7 @@ twitterInterface::twitterInterface (QObject *parent) :
 	oauthRequest = new KQOAuthRequest;
 	oauthManager = new KQOAuthManager (this);
 
-	oauthRequest->setEnableDebugOutput (true); // TODO: Remove debug
+	oauthRequest->setEnableDebugOutput (false); // TODO: Remove debug
 	consumerKey = QString ("nbwLYUDIlgsMgDFCu6jfuA");
 	consumerKeySecret = QString ("7TWYPzLUqZlihIRA2VWfZhCRfss2JNKvkSWMQx4");
 
@@ -69,15 +69,6 @@ twitterInterface::~twitterInterface()
 	delete oauthRequest;
 	delete oauthManager;
 }
-
-void twitterInterface::getCommonFeed (unsigned int number)
-{
-	QString link ("http://api.twitter.com/1/statuses/public_timeline.json?count=2&include_entities=true");
-
-	requestTwitter (link);
-}
-
-
 
 void twitterInterface::requestTwitter (QUrl requestAddress)
 {
@@ -123,7 +114,7 @@ QList< std::shared_ptr<Tweet> > twitterInterface::parseReply (QByteArray json)
 		tempTweet->setText (tweetMap["text"].toString());
 		tempTweet->author()->setUsername (userMap["screen_name"].toString());
 		tempTweet->author()->downloadAvatar (userMap["profile_image_url"].toString());
-		connect(tempTweet->author(), SIGNAL(userReady()), this->parent(), SLOT(updateTweetList()));
+		connect(tempTweet->author(), SIGNAL(userReady()), this->parent(), SLOT(setUpdateReady()));
 		tempTweet->setDateTime (QLocale().toDateTime (tweetMap["created_at"].toString(), QLatin1String ("ddd MMM dd HH:mm:ss +0000 yyyy")));
 		tempTweet->setId (tweetMap["id"].toULongLong());
 

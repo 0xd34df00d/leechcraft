@@ -107,38 +107,24 @@ void Tweet::setText (QString text)
  QRegExp rx("\\s((http|https)://[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(([0-9]{1,5})?/?.*))(\\s|,|$)");
  rx.setMinimal(true);
  
- qDebug() << "Parsing links for tweet " << m_id;
- 
- if (rx.indexIn(text) != -1) {
-  for (auto link : rx.capturedTexts())
-  {
-   qDebug() << link;
-  }
-  qDebug() << "The link: " << rx.capturedTexts()[1];
- }
  m_text = text;
  
+ /* Some regexp multiple match support magic for links highlighting.
+  * Borrowed from Qt support forum */
  QString html = text;
- 
  int pos = 0;
- 
  while ( (pos = rx.indexIn(html, pos)) != -1 ) {
   if ( rx.cap(1).startsWith("http") ) {
-   qDebug() << "Found one link";
    QString before = rx.cap( 1 );
    if (before.endsWith("."))
     before.chop(1);
-   qDebug() << "Before=" << before;
    QString after = " <a href=\"" + before + "\">" + before + "</a>";
-   qDebug() << "After=" << after;
    html.replace( pos, before.length() + 1, after );
    pos += after.length();
   } else {
    pos += rx.matchedLength();
   }
  }
- 
- qDebug() << "HTML: " << html;
  
  m_document.setHtml(html);
 }

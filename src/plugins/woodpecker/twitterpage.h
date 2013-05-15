@@ -40,7 +40,6 @@
 #include <interfaces/structures.h>
 
 #include "twitterinterface.h"
-#include "core.h"
 #include "twitdelegate.h"
 
 #include "ui_twitterpage.h"
@@ -93,12 +92,12 @@ public:
 
 private slots:
 	void on_TwitList__customContextMenuRequested (const QPoint&);
+    void updateTweetList_ ();
 	
 public slots:
     void tryToLogin();
     void requestUserTimeline (QString username);
-    void updateTweetList (QList<std::shared_ptr<Tweet>> twits);
-    void updateTweetList ();
+    void updateScreenTwits (QList<std::shared_ptr<Tweet>> twits);
     void recvdAuth (QString token, QString tokenSecret);
     void twit();
     void retwit();
@@ -108,13 +107,16 @@ public slots:
     void sendReply();
 	void webOpen();
 	void scrolledDown(int sliderPos);
+	void setUpdateReady();
 
 
 private:
+	volatile bool m_update_ready;	/**< The flag is checked by timer for UI update */
+	QTimer *m_ui_update_timer;		/**< Timer checks @see[m_update_ready] and updates the UI */
 	TwitDelegate *m_delegate;
     Ui::TwitterPage *ui;
     twitterInterface *interface;
-    QTimer *timer;
+    QTimer *m_twitter_timer;		/**< This timer sends network requests to get new twits */
     QSettings *settings;
     QList<std::shared_ptr<Tweet>> screenTwits;
 	
