@@ -58,6 +58,42 @@ Rectangle {
                 height: rootRect.itemSize
                 width: rootRect.itemSize
 
+                Rectangle {
+                    id: highlightOpenedRect
+
+                    opacity: openedTabsCount ? 1 : 0
+                    Behavior on opacity { PropertyAnimation {} }
+
+                    width: viewOrient == "vertical" ? 2 : 12
+                    height: viewOrient == "vertical" ? 12 : 2
+                    radius: 1
+
+                    anchors.bottom: viewOrient == "vertical" ? undefined : tcButton.bottom
+                    anchors.horizontalCenter: viewOrient == "vertical" ? undefined : tcButton.horizontalCenter
+                    anchors.left: viewOrient == "vertical" ? tcButton.left : undefined
+                    anchors.verticalCenter: viewOrient == "vertical" ? tcButton.verticalCenter : undefined
+
+                    color: colorProxy.color_ToolButton_SelectedBorderColor
+                }
+
+                Rectangle {
+                    id: highlightCurrentRect
+
+                    opacity: isCurrentTab ? 1 : 0
+                    Behavior on opacity { PropertyAnimation {} }
+
+                    width: viewOrient == "vertical" ? 2 : 12
+                    height: viewOrient == "vertical" ? 12 : 2
+                    radius: 1
+
+                    anchors.top: viewOrient == "vertical" ? undefined : tcButton.top
+                    anchors.horizontalCenter: viewOrient == "vertical" ? undefined : tcButton.horizontalCenter
+                    anchors.right: viewOrient == "vertical" ? tcButton.right : undefined
+                    anchors.verticalCenter: viewOrient == "vertical" ? tcButton.verticalCenter : undefined
+
+                    color: colorProxy.color_ToolButton_SelectedBorderColor
+                }
+
                 ActionButton {
                     id: tcButton
 
@@ -66,8 +102,8 @@ Rectangle {
 
                     actionIconURL: tabClassIcon
                     textTooltip: tabClassName
-                    isHighlight: openedTabsCount
-                    isStrongHighlight: openedTabsCount
+                    isHighlight: false
+                    transparentStyle: true
                     isCurrent: isCurrentTab
 
                     Timer {
