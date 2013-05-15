@@ -135,7 +135,7 @@ namespace Metida
 	{
 		Core::Instance ().SendEntity (Util::MakeEntity (link,
 				QString (),
-				OnlyHandle | FromUserInitiated));
+				static_cast<TaskParameters> (OnlyHandle | FromUserInitiated)));
 	}
 
 }

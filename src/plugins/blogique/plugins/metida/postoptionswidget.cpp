@@ -103,6 +103,25 @@ namespace Metida
 		if (Ui_.UserPic_->currentIndex ())
 			map ["avatar"] = Ui_.UserPic_->currentText ();
 
+		QStringList likes;
+
+		if (Ui_.VkontakteLike_->isChecked ())
+			likes << "vk";
+		if (Ui_.FacebookLike_->isChecked ())
+			likes << "fb";
+		if (Ui_.GoogleLike_->isChecked ())
+			likes << "go";
+		if (Ui_.TwitterLike_->isChecked ())
+			likes << "tw";
+		if (Ui_.LiveJournalLike_->isChecked ())
+			likes << "lj";
+
+		map ["likes"] = likes;
+
+
+		if (XmlSettingsManager::Instance ().Property ("SaveSelectedButtons", true).toBool ())
+			XmlSettingsManager::Instance ().setProperty ("SavedLikeButtons", likes);
+
 		return map;
 	}
 
@@ -261,6 +280,25 @@ namespace Metida
 				AdultContent::WithoutAdultContent);
 		Ui_.Adult_->addItem (tr ("For adults (>14)"), AdultContent::AdultsFrom14);
 		Ui_.Adult_->addItem (tr ("For adults (>18)"), AdultContent::AdultsFrom18);
+
+		if (XmlSettingsManager::Instance ().Property ("SaveSelectedButtons", true).toBool ())
+		{
+			const auto& buttons = XmlSettingsManager::Instance ()
+					.Property ("SavedLikeButtons", QStringList ()).toStringList ();
+			for (const auto& button : buttons)
+			{
+				if (button == "vk")
+					Ui_.VkontakteLike_->setChecked (true);
+				if (button == "fb")
+					Ui_.FacebookLike_->setChecked (true);
+				if (button == "go")
+					Ui_.GoogleLike_->setChecked (true);
+				if (button == "tw")
+					Ui_.TwitterLike_->setChecked (true);
+				if (button == "lj")
+					Ui_.LiveJournalLike_->setChecked (true);
+			}
+		}
 	}
 
 	namespace

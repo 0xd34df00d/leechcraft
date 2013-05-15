@@ -64,6 +64,7 @@ namespace Metida
 		bool EntryVisibility_;
 		bool UsedRTE_;
 		bool NotifyByEmail_;
+		QStringList LikeButtons_;
 
 		LJEventProperties ()
 		: CurrentMoodId_ (-1)
