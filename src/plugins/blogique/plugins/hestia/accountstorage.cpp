@@ -363,6 +363,23 @@ namespace Hestia
 		return e;
 	}
 
+	QHash<QString, int> AccountStorage::GetAllTags ()
+	{
+		if (!GetTags_.exec ())
+		{
+			Util::DBLock::DumpError (GetTags_);
+			throw std::runtime_error ("unable to get tags");
+		}
+
+		QHash<QString, int> tags;
+		while (GetTags_.next ())
+			tags [GetTags_.value (0).toString ()] = GetTags_.value (1).toInt ();
+
+		GetTags_.finish ();
+
+		return tags;
+	}
+
 	void AccountStorage::CreateTables ()
 	{
 		QMap<QString, QString> table2query;
@@ -433,6 +450,9 @@ namespace Hestia
 		GetEntryTags_ = QSqlQuery (AccountDB_);
 		GetEntryTags_.prepare ("SELECT Id, Tag FROM tags WHERE EntryID = ("
 				" SELECT Id FROM entries WHERE EntryId = :entry_id);");
+
+		GetTags_ = QSqlQuery (AccountDB_);
+		GetTags_.prepare ("SELECT Tag, COUNT (Tag) FROM tags GROUP BY Tag;");
 	}
 
 }

@@ -176,6 +176,11 @@ namespace Hestia
 		}
 	}
 
+	void LocalBlogAccount::RequestTags ()
+	{
+		emit tagsUpdated (GetTags ());
+	}
+
 	void LocalBlogAccount::GetEntriesByDate (const QDate& date)
 	{
 		try
@@ -191,7 +196,16 @@ namespace Hestia
 
 	QHash<QString, int> LocalBlogAccount::GetTags () const
 	{
-		//TODO
+		try
+		{
+			return AccountStorage_->GetAllTags ();
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+			return QHash<QString, int> ();
+		}
 	}
 
 	void LocalBlogAccount::FillSettings (AccountConfigurationWidget *widget)
