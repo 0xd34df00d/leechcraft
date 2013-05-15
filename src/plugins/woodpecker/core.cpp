@@ -38,8 +38,8 @@ namespace Woodpecker
 	Core::Core ()
 	{
 		TabClass_.TabClass_ = "Woodpecker";
-		TabClass_.VisibleName_ = tr ("Twitter client");
-		TabClass_.Description_ = tr ("The Woodpecker twitter client");
+		TabClass_.VisibleName_ = tr ("Woodpecker");
+		TabClass_.Description_ = tr ("Tweets tab");
 		TabClass_.Icon_ = QIcon ("lcicons:/resources/images/woodpecker.svg");
 		TabClass_.Priority_ = 40;
 		TabClass_.Features_ = TFOpenableByRequest;
@@ -71,7 +71,7 @@ namespace Woodpecker
 		TwitterPage *page = MakeTwitterPage ();
 		emit addNewTab ("Woodpecker", page);
 		emit raiseTab (page);
-		emit changeTabIcon (page, QIcon (":/resources/images/woodpecker.svg"));
+		emit changeTabIcon (page, QIcon ("lcicons:/resources/images/woodpecker.svg"));
 
 		return page;
 	}
