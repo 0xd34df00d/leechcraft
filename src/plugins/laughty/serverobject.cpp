@@ -34,6 +34,7 @@
 #include <interfaces/an/constants.h>
 #include <interfaces/core/ientitymanager.h>
 #include <QUrl>
+#include <QDBusArgument>
 
 namespace LeechCraft
 {
@@ -171,12 +172,50 @@ namespace Laughty
 
 	void ServerObject::HandleImages (Entity& e, const QVariantMap& hints)
 	{
-		const auto& path = GetImgPath (hints);
-		if (!path.isEmpty ())
-		{
+		HandleImageData (e, hints) || HandleImagePath (e, hints);
+
+	}
+
+	bool ServerObject::HandleImageData (Entity& e, const QVariantMap& hints)
+	{
+		const auto& dataVar = hints.value ("image-data", hints.value ("image_data"));
+		if (dataVar.isNull ())
+			return false;
+
+		const auto& arg = dataVar.value<QDBusArgument> ();
+
+		int width = 0, height = 0, rowstride = 0;
+		bool hasAlpha = false;
+		int bps = 0, channels = 0;
+		QByteArray data;
+
+		arg.beginStructure ();
+		arg >> width >> height >> rowstride >> hasAlpha >> bps >> channels >> data;
+		arg.endStructure ();
+
+		const QImage img (reinterpret_cast<const uchar*> (data.constBegin ()),
+				width, height, QImage::Format_ARGB32);
+		if (img.isNull ())
+			return false;
+
+		e.Additional_ ["NotificationPixmap"] = QPixmap::fromImage (img.rgbSwapped ());
+		return true;
+	}
+
+	bool ServerObject::HandleImagePath (Entity& e, const QVariantMap& hints)
+	{
+		auto path = GetImgPath (hints);
+		if (path.isEmpty ())
+			return false;
+
+		if (QFile::exists (path))
 			e.Additional_ ["NotificationPixmap"] = QPixmap (path);
-			return;
-		}
+		else if (path.startsWith ("file:"))
+			e.Additional_ ["NotificationPixmap"] = QPixmap (QUrl (path).toLocalFile ());
+		else
+			return false;
+
+		return true;
 	}
 
 	void ServerObject::HandleSounds (const QVariantMap& hints)
