@@ -57,28 +57,14 @@ namespace Woodpecker
 		
 		Core& operator= (const Core&) = delete;
 		Core& operator= (Core&&) = delete;
+		
 	public:
 		static Core& Instance ();
 		TabClassInfo GetTabClass () const;
 
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
-
-	private:
-		TwitterPage* MakeTwitterPage ();
 	
-	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void changeTooltip (QWidget*, QWidget*);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
-		void delegateEntity (const LeechCraft::Entity&,
-							int*, QObject**);
-		void gotEntity (const LeechCraft::Entity&);
-
 	};
 };
 };

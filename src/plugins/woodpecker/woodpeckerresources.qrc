@@ -1,5 +1,5 @@
 <RCC>
-  <qresource prefix="/" >
+  <qresource prefix="/plugins/woodpecker" >
 	<file>resources/images/woodpecker.svg</file>
   </qresource>
 </RCC>

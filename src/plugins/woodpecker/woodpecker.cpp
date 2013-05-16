@@ -58,7 +58,7 @@ namespace Woodpecker
 					GetUniqueID () + "/Home",
 					tr ("Twitter home"),
 					tr ("Twitter user's main timeline."),
-					QIcon (),
+					GetIcon (),
 					2,
 					TFOpenableByRequest
 				},
@@ -93,7 +93,7 @@ namespace Woodpecker
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ("lcicons:/resources/images/woodpecker.svg");
+		return QIcon ("lcicons:/plugins/woodpecker/resources/images/woodpecker.svg");
 	}
 
 	TabClasses_t Plugin::GetTabClasses () const

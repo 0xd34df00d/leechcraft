@@ -40,7 +40,7 @@ namespace Woodpecker
 		TabClass_.TabClass_ = "Woodpecker";
 		TabClass_.VisibleName_ = tr ("Woodpecker");
 		TabClass_.Description_ = tr ("Tweets tab");
-		TabClass_.Icon_ = QIcon ("lcicons:/resources/images/woodpecker.svg");
+		TabClass_.Icon_ = QIcon ("lcicons:/plugins/woodpecker/resources/images/woodpecker.svg");
 		TabClass_.Priority_ = 40;
 		TabClass_.Features_ = TFOpenableByRequest;
 	}
