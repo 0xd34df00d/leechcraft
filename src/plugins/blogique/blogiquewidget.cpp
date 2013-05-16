@@ -657,6 +657,10 @@ namespace Blogique
 		for (auto action : ibp->GetEditorActions ())
 			PostEdit_->AppendAction (action);
 
+		auto iahe = qobject_cast<IAdvancedHTMLEditor*> (PostEditWidget_);
+		if (iahe)
+			iahe->SetTagsMappings (ibp->GetRich2HtmlPairs (), ibp->GetHtml2RichPairs ());
+
 		bool exists = false;
 
 		for (int i = 0; i < Ui_.Tools_->count (); ++i)
