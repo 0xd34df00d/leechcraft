@@ -69,6 +69,7 @@ namespace Sysnotify
 	private:
 		void DoNotify (const Entity&, bool);
 	private slots:
+		void handleGotServerInfo (QDBusPendingCallWatcher*);
 		void handleNotificationCallFinished (QDBusPendingCallWatcher*);
 		void handleCapCheckCallFinished (QDBusPendingCallWatcher*);
 		void handleActionInvoked (uint, QString);

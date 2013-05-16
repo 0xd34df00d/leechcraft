@@ -55,7 +55,13 @@ namespace Sysnotify
 					"/org/freedesktop/Notifications"));
 		if (!Connection_->isValid ())
 			qWarning () << Q_FUNC_INFO
-				<< Connection_->lastError ();
+					<< Connection_->lastError ();
+
+		auto pendingSI = Connection_->asyncCall ("GetServerInformation");
+		connect (new QDBusPendingCallWatcher (pendingSI, this),
+				SIGNAL (finished (QDBusPendingCallWatcher*)),
+				this,
+				SLOT (handleGotServerInfo (QDBusPendingCallWatcher*)));
 
 		connect (Connection_.get (),
 				SIGNAL (ActionInvoked (uint, QString)),
@@ -70,10 +76,10 @@ namespace Sysnotify
 	bool NotificationManager::CouldNotify (const Entity& e) const
 	{
 		return Connection_.get () &&
-			Connection_->isValid () &&
-			e.Mime_ == "x-leechcraft/notification" &&
-			e.Additional_ ["Priority"].toInt () != PLog_ &&
-			!e.Additional_ ["Text"].toString ().isEmpty ();
+				Connection_->isValid () &&
+				e.Mime_ == "x-leechcraft/notification" &&
+				e.Additional_ ["Priority"].toInt () != PLog_ &&
+				!e.Additional_ ["Text"].toString ().isEmpty ();
 	}
 
 	void NotificationManager::HandleNotification (const Entity& e)
@@ -147,14 +153,40 @@ namespace Sysnotify
 				SLOT (handleNotificationCallFinished (QDBusPendingCallWatcher*)));
 	}
 
+	void NotificationManager::handleGotServerInfo (QDBusPendingCallWatcher *w)
+	{
+		w->deleteLater ();
+
+		QDBusPendingReply<QString, QString, QString, QString> reply = *w;
+		if (reply.isError ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< reply.error ().name ()
+					<< reply.error ().message ();
+			Connection_.reset ();
+			return;
+		}
+
+		const auto& vendor = reply.argumentAt<1> ();
+		qDebug () << Q_FUNC_INFO
+				<< "using"
+				<< reply.argumentAt<0> ()
+				<< vendor
+				<< reply.argumentAt<2> ()
+				<< reply.argumentAt<3> ();
+
+		if (vendor == "LeechCraft")
+			Connection_.reset ();
+	}
+
 	void NotificationManager::handleNotificationCallFinished (QDBusPendingCallWatcher *w)
 	{
 		QDBusPendingReply<uint> reply = *w;
 		if (reply.isError ())
 		{
 			qWarning () << Q_FUNC_INFO
-				<< reply.error ().name ()
-				<< reply.error ().message ();
+					<< reply.error ().name ()
+					<< reply.error ().message ();
 			return;
 		}
 		int id = reply.argumentAt<0> ();
