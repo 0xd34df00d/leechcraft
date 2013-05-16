@@ -213,6 +213,23 @@ namespace Metida
 		Ui_.NotifyAboutComments_->setChecked (map.contains ("notify") ?
 			map ["notify"].toBool () :
 			true);
+
+		if (map.contains ("content"))
+		{
+			QRegExp rxp ("<lj-like\\s?(buttons=\"((\\w+,?)+)\"\\s?)?\\/?>", Qt::CaseInsensitive);
+			QStringList likes;
+			if (rxp.indexIn (map ["content"].toString ()) != -1)
+				likes = rxp.cap (2).split (',');
+
+			if (rxp.capturedTexts ().count () == 1)
+				likes = { "vk", "fb", "go", "lj", "tw" };
+
+			Ui_.VkontakteLike_->setChecked (likes.contains ("vk"));
+			Ui_.FacebookLike_->setChecked (likes.contains ("fb"));
+			Ui_.GoogleLike_->setChecked (likes.contains ("go"));
+			Ui_.LiveJournalLike_->setChecked (likes.contains ("lj"));
+			Ui_.TwitterLike_->setChecked (likes.contains ("tw"));
+		}
 	}
 
 	QVariantMap PostOptionsWidget::GetCustomData () const
