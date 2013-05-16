@@ -114,6 +114,7 @@ namespace Laughty
 
 		HandleActions (e, id, actions, hints);
 		HandleSounds (hints);
+		HandleImages (e, hints);
 
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 
@@ -152,6 +153,30 @@ namespace Laughty
 		if (resident)
 			nah->AddFunction (tr ("Dismiss"),
 					[this, id] { emit NotificationClosed (id, 2); });
+	}
+
+	namespace
+	{
+		QString GetImgPath (const QVariantMap& hints)
+		{
+			if (hints.contains ("image-path"))
+				return hints.value ("image-path").toString ();
+
+			if (hints.contains ("image_path"))
+				return hints.value ("image_path").toString ();
+
+			return {};
+		}
+	}
+
+	void ServerObject::HandleImages (Entity& e, const QVariantMap& hints)
+	{
+		const auto& path = GetImgPath (hints);
+		if (!path.isEmpty ())
+		{
+			e.Additional_ ["NotificationPixmap"] = QPixmap (path);
+			return;
+		}
 	}
 
 	void ServerObject::HandleSounds (const QVariantMap& hints)
