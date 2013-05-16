@@ -231,7 +231,7 @@ namespace Laughty
 		if (!icon.isNull ())
 		{
 			const auto& sizes = icon.availableSizes ();
-			result = sizes.value (sizes.size () - 1, QSize (48, 48));
+			result = icon.pixmap (sizes.value (sizes.size () - 1, QSize (48, 48)));
 		}
 
 		if (result.isNull ())
