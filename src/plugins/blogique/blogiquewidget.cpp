@@ -221,7 +221,9 @@ namespace Blogique
 			{
 			case SideWidgetType::PostOptionsSideWidget:
 			{
-				ibsw->SetPostOptions (e.PostOptions_);
+				QVariantMap params = e.PostOptions_;
+				params ["content"] = e.Content_;
+				ibsw->SetPostOptions (params);
 
 				SetPostTags (e.Tags_);
 				SetPostDate (e.Date_);
