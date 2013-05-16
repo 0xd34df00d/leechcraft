@@ -28,13 +28,14 @@
  **********************************************************************/
 
 #include "serverobject.h"
+#include <QUrl>
+#include <QDBusArgument>
 #include <util/xpc/util.h>
 #include <util/util.h>
 #include <util/notificationactionhandler.h>
+#include <util/sys/xdg.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/core/ientitymanager.h>
-#include <QUrl>
-#include <QDBusArgument>
 
 namespace LeechCraft
 {
@@ -115,7 +116,7 @@ namespace Laughty
 
 		HandleActions (e, id, actions, hints);
 		HandleSounds (hints);
-		HandleImages (e, hints);
+		HandleImages (e, app_icon, hints);
 
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 
@@ -170,10 +171,11 @@ namespace Laughty
 		}
 	}
 
-	void ServerObject::HandleImages (Entity& e, const QVariantMap& hints)
+	void ServerObject::HandleImages (Entity& e, const QString& appIcon, const QVariantMap& hints)
 	{
-		HandleImageData (e, hints) || HandleImagePath (e, hints);
-
+		HandleImageData (e, hints) ||
+			HandleImagePath (e, hints) ||
+			HandleImageAppIcon (e, appIcon);
 	}
 
 	bool ServerObject::HandleImageData (Entity& e, const QVariantMap& hints)
@@ -215,6 +217,30 @@ namespace Laughty
 		else
 			return false;
 
+		return true;
+	}
+
+	bool ServerObject::HandleImageAppIcon (Entity& e, const QString& appIcon)
+	{
+		if (appIcon.isEmpty ())
+			return false;
+
+		QPixmap result;
+
+		auto icon = Proxy_->GetIcon (appIcon);
+		if (!icon.isNull ())
+		{
+			const auto& sizes = icon.availableSizes ();
+			result = sizes.value (sizes.size () - 1, QSize (48, 48));
+		}
+
+		if (result.isNull ())
+			result = Util::XDG::GetAppPixmap (appIcon);
+
+		if (result.isNull ())
+			return false;
+
+		e.Additional_ ["NotificationPixmap"] = result;
 		return true;
 	}
 

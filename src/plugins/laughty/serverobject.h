@@ -57,9 +57,12 @@ namespace Laughty
 		void CloseNotification (uint id);
 	private:
 		void HandleActions (Entity&, int, const QStringList&, const QVariantMap&);
-		void HandleImages (Entity&, const QVariantMap&);
+
+		void HandleImages (Entity&, const QString&, const QVariantMap&);
 		bool HandleImageData (Entity&, const QVariantMap&);
 		bool HandleImagePath (Entity&, const QVariantMap&);
+		bool HandleImageAppIcon (Entity&, const QString&);
+
 		void HandleSounds (const QVariantMap&);
 	signals:
 		void NotificationClosed (uint id, uint reason);
