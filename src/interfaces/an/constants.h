@@ -102,5 +102,13 @@ namespace AN
 	/** @brief A download has been failed.
 	 */
 	const QString TypeDownloadError = "org.LC.AdvNotifications.Downloads.DownloadError";
+
+	/** @brief Generic notifications that don't fit into any other category.
+	 */
+	const QString CatGeneric = "org.LC.AdvNotifications.Generic";
+
+	/** @brief Generic category for generic notifications.
+	 */
+	const QString TypeGeneric = "org.LC.AdvNotifications.Generic.Generic";
 }
 }

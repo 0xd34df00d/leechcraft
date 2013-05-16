@@ -27,59 +27,37 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "laughty.h"
-#include "serverobject.h"
-#include "serveradaptor.h"
-#include <QIcon>
-#include <QDBusConnection>
+#pragma once
+
+#include <QDBusAbstractAdaptor>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
 namespace Laughty
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
-	{
-		if (!QDBusConnection::sessionBus ().registerService ("org.freedesktop.Notifications"))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to register Notifications service."
-					<< "Is another notification daemon active?";
-			return;
-		}
+	class ServerObject;
 
-		auto server = new ServerObject (proxy);
-		new ServerAdaptor (server, proxy);
-		QDBusConnection::sessionBus ().registerObject ("/org/freedesktop/Notifications", server);
-	}
-
-	void Plugin::SecondInit ()
+	class ServerAdaptor : public QDBusAbstractAdaptor
 	{
-	}
+		Q_OBJECT
+		Q_CLASSINFO ("D-Bus Interface", "org.freedesktop.Notifications")
 
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.Laughty";
-	}
-
-	void Plugin::Release ()
-	{
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Laughty";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Desktop Notifications server.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
+		ServerObject * const Server_;
+		const ICoreProxy_ptr Proxy_;
+	public:
+		ServerAdaptor (ServerObject*, ICoreProxy_ptr);
+	public slots:
+		QStringList GetCapabilities () const;
+		uint Notify (const QString& app_name, uint replaces_id, const QString& app_icon,
+				const QString& summary, const QString& body, const QStringList& actions,
+				const QVariantMap& hints, int expire_timeout);
+		void CloseNotification (uint id);
+		void GetServerInformation (QString& name, QString& vendor,
+				QString& version, QString& spec_version) const;
+	signals:
+		void NotificationClosed (uint id, uint reason);
+		void ActionInvoked (uint id, const QString& action_key);
+	};
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_laughty, LeechCraft::Laughty::Plugin);

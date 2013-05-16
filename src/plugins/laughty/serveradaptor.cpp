@@ -27,59 +27,45 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "laughty.h"
-#include "serverobject.h"
 #include "serveradaptor.h"
-#include <QIcon>
-#include <QDBusConnection>
+#include "serverobject.h"
 
 namespace LeechCraft
 {
 namespace Laughty
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
-	{
-		if (!QDBusConnection::sessionBus ().registerService ("org.freedesktop.Notifications"))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to register Notifications service."
-					<< "Is another notification daemon active?";
-			return;
-		}
-
-		auto server = new ServerObject (proxy);
-		new ServerAdaptor (server, proxy);
-		QDBusConnection::sessionBus ().registerObject ("/org/freedesktop/Notifications", server);
-	}
-
-	void Plugin::SecondInit ()
+	ServerAdaptor::ServerAdaptor (ServerObject *obj, ICoreProxy_ptr proxy)
+	: QDBusAbstractAdaptor (obj)
+	, Server_ (obj)
+	, Proxy_ (proxy)
 	{
 	}
 
-	QByteArray Plugin::GetUniqueID () const
+	QStringList ServerAdaptor::GetCapabilities () const
 	{
-		return "org.LeechCraft.Laughty";
+		return Server_->GetCapabilities ();
 	}
 
-	void Plugin::Release ()
+	uint ServerAdaptor::Notify (const QString& app_name, uint replaces_id,
+			const QString& app_icon, const QString& summary, const QString& body,
+			const QStringList& actions, const QVariantMap& hints, int expire_timeout)
 	{
+		Server_->Notify (app_name, replaces_id, app_icon,
+				summary, body, actions, hints, expire_timeout);
 	}
 
-	QString Plugin::GetName () const
+	void ServerAdaptor::CloseNotification (uint id)
 	{
-		return "Laughty";
+		Server_->CloseNotification (id);
 	}
 
-	QString Plugin::GetInfo () const
+	void ServerAdaptor::GetServerInformation (QString& name,
+			QString& vendor, QString& version, QString& spec_version) const
 	{
-		return tr ("Desktop Notifications server.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
+		name = "Laughty";
+		vendor = "LeechCraft";
+		version = Proxy_->GetVersion ();
+		spec_version = "1.2";
 	}
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_laughty, LeechCraft::Laughty::Plugin);

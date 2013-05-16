@@ -102,6 +102,9 @@ namespace AdvancedNotifications
 		Type2HR_ [AN::TypeDownloadError] = tr ("Download error");
 		Type2HR_ [AN::TypeDownloadFinished] = tr ("Download finished");
 
+		Cat2HR_ [AN::CatGeneric] = tr ("Generic");
+		Type2HR_ [AN::TypeGeneric] = tr ("Generic");
+
 		LoadSettings ();
 
 		connect (RulesModel_,
@@ -223,6 +226,14 @@ namespace AdvancedNotifications
 			downloadError.SetAudioParams (AudioParams ("error"));
 			Rules_ << downloadError;
 		}
+
+		if (version == -1 || version == 3)
+		{
+			NotificationRule generic (tr ("Generic"), AN::CatGeneric,
+					QStringList (AN::TypeGeneric));
+			generic.SetMethods (NMVisual | NMTray);
+			Rules_ << generic;
+		}
 	}
 
 	void RulesManager::LoadSettings ()
@@ -233,7 +244,7 @@ namespace AdvancedNotifications
 		Rules_ = settings.value ("RulesList").value<QList<NotificationRule>> ();
 		int rulesVersion = settings.value ("DefaultRulesVersion", 1).toInt ();
 
-		const int currentDefVersion = 3;
+		const int currentDefVersion = 4;
 		if (Rules_.isEmpty ())
 			LoadDefaultRules (0);
 

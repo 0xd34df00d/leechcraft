@@ -27,59 +27,40 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "laughty.h"
-#include "serverobject.h"
-#include "serveradaptor.h"
-#include <QIcon>
-#include <QDBusConnection>
+#pragma once
+
+#include <QObject>
+#include <QVariantMap>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
+
+class Entity;
 namespace Laughty
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	class ServerObject : public QObject
 	{
-		if (!QDBusConnection::sessionBus ().registerService ("org.freedesktop.Notifications"))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to register Notifications service."
-					<< "Is another notification daemon active?";
-			return;
-		}
+		Q_OBJECT
 
-		auto server = new ServerObject (proxy);
-		new ServerAdaptor (server, proxy);
-		QDBusConnection::sessionBus ().registerObject ("/org/freedesktop/Notifications", server);
-	}
+		ICoreProxy_ptr Proxy_;
+		uint32_t LastID_;
+	public:
+		ServerObject (ICoreProxy_ptr);
 
-	void Plugin::SecondInit ()
-	{
-	}
+		QStringList GetCapabilities () const;
 
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.Laughty";
-	}
+		uint Notify (const QString& app_name, uint replaces_id, const QString& app_icon,
+				const QString& summary, const QString& body, const QStringList& actions,
+				const QVariantMap& hints, uint expire_timeout);
 
-	void Plugin::Release ()
-	{
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Laughty";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Desktop Notifications server.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
+		void CloseNotification (uint id);
+	private:
+		void HandleActions (Entity&, int, const QStringList&, const QVariantMap&);
+		void HandleSounds (const QVariantMap&);
+	signals:
+		void NotificationClosed (uint id, uint reason);
+		void ActionInvoked (uint id, const QString& action_key);
+	};
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_laughty, LeechCraft::Laughty::Plugin);
