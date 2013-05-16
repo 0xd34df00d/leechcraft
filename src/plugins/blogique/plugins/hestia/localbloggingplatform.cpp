@@ -157,6 +157,16 @@ namespace Hestia
 		saveAccounts ();
 	}
 
+	QList<QPair<QRegExp, QString>> LocalBloggingPlatform::GetRich2HtmlPairs () const
+	{
+		return {};
+	}
+
+	QList<QPair<QRegExp, QString>> LocalBloggingPlatform::GetHtml2RichPairs () const
+	{
+		return {};
+	}
+
 	void LocalBloggingPlatform::RestoreAccounts ()
 	{
 		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
