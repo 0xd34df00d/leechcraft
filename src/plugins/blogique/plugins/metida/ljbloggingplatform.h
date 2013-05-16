@@ -83,6 +83,9 @@ namespace Metida
 		void Prepare ();
 		void Release ();
 
+		QList<QPair<QRegExp, QString>> GetHtml2RichPairs () const;
+		QList<QPair<QRegExp, QString>> GetRich2HtmlPairs () const;
+
 	private:
 		void RestoreAccounts ();
 
