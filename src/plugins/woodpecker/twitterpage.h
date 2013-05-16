@@ -56,7 +56,11 @@ namespace Woodpecker
 	{
 			Q_OBJECT
 			Q_INTERFACES (ITabWidget)
+			
 
+			const TabClassInfo TC_;
+			QObject * const ParentPlugin_;
+			
 		private:
 			volatile bool m_update_ready;	/**< The flag is checked by timer for UI update */
 			QTimer *m_ui_update_timer;		/**< Timer checks m_update_ready and updates the UI */
@@ -67,7 +71,6 @@ namespace Woodpecker
 			QSettings *settings;
 			QList<std::shared_ptr<Tweet>> screenTwits;
 			
-			static QObject* S_MultiTabsParent_;
 			QToolBar *Toolbar_;
 			QMenu *DoctypeMenu_;
 			QMenu *RecentFilesMenu_;
@@ -86,10 +89,8 @@ namespace Woodpecker
 			QAction *actionOpenWeb_;
 
 		public:
-			explicit TwitterPage (QWidget *parent = 0);
+			explicit TwitterPage (const TabClassInfo&, QObject*);
 			~TwitterPage();
-			static void SetParentMultiTabs (QObject*);
-
 
 			void Remove ();
 			QToolBar* GetToolBar () const;

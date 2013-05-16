@@ -41,6 +41,10 @@ SET (RESOURCES
 SET (FORMS
 	twitterpage.ui
 	)
+# CreateTrs ("woodpecker" "en;ru_RU" COMPILED_TRANSLATIONS)
+# CreateTrsUpTarget("woodpecker" "en;ru_RU" "${SRCS}" "${FORMS}" "woodpeckersettings.xml")
+QT4_WRAP_UI (UIS_H ${FORMS})
+QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 ADD_LIBRARY (leechcraft_woodpecker SHARED
 	${COMPILED_TRANSLATIONS}
@@ -56,6 +60,7 @@ TARGET_LINK_LIBRARIES (leechcraft_woodpecker
 	qjson
 	kqoauth
 	)
+	
 INSTALL (TARGETS leechcraft_woodpecker DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 INSTALL (FILES woodpeckersettings.xml DESTINATION ${LC_SETTINGS_DEST})

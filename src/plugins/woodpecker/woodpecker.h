@@ -52,6 +52,7 @@ namespace Woodpecker
 			Q_OBJECT
 			Q_INTERFACES (IInfo IHaveTabs IHaveSettings)
 
+			QList<QPair<TabClassInfo, std::function<void (TabClassInfo)>>> TabClasses_;
 			std::shared_ptr<QTranslator> Translator_;
 			std::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
 		public:
@@ -67,6 +68,9 @@ namespace Woodpecker
 			void TabOpenRequested (const QByteArray&);
 
 			std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
+			
+		private:
+			void MakeTab (QWidget*, const TabClassInfo&);
 
 		signals:
 			void addNewTab (const QString&, QWidget*);

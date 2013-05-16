@@ -50,15 +50,19 @@ namespace Woodpecker
 		TabClassInfo TabClass_;
 
 		Core ();
+		
+		Core (const Core&) = delete;
+		Core (Core&&) = delete;
+		
+		
+		Core& operator= (const Core&) = delete;
+		Core& operator= (Core&&) = delete;
 	public:
 		static Core& Instance ();
 		TabClassInfo GetTabClass () const;
 
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
-
-		TwitterPage* NewTabRequested ();
-		void Handle (const Entity&);
 
 	private:
 		TwitterPage* MakeTwitterPage ();
@@ -75,7 +79,6 @@ namespace Woodpecker
 							int*, QObject**);
 		void gotEntity (const LeechCraft::Entity&);
 
-		void couldHandle (const LeechCraft::Entity&, bool*);
 	};
 };
 };

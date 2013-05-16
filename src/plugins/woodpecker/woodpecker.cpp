@@ -45,8 +45,6 @@ namespace Woodpecker
 
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		TwitterPage::SetParentMultiTabs (this);
-
 		Translator_.reset (Util::InstallTranslator ("woodpecker"));
 
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
@@ -54,41 +52,20 @@ namespace Woodpecker
 				"woodpeckersettings.xml");
 
 		Core::Instance ().SetProxy (proxy);
+		
+		TabClasses_.append ({
+				{
+					GetUniqueID () + "/Home",
+					tr ("Twitter home"),
+					tr ("Twitter user's main timeline."),
+					QIcon (),
+					2,
+					TFOpenableByRequest
+				},
+				[this] (const TabClassInfo& tc)
+					{ MakeTab (new TwitterPage (tc, this), tc); }
+			});
 
-		connect (&Core::Instance (),
-				SIGNAL (addNewTab (const QString&, QWidget*)),
-				this,
-				SIGNAL (addNewTab (const QString&, QWidget*)));
-		connect (&Core::Instance (),
-				SIGNAL (removeTab (QWidget*)),
-				this,
-				SIGNAL (removeTab (QWidget*)));
-		connect (&Core::Instance (),
-				SIGNAL (raiseTab (QWidget*)),
-				this,
-				SIGNAL (raiseTab (QWidget*)));
-		connect (&Core::Instance (),
-				SIGNAL (changeTabName (QWidget*, const QString&)),
-				this,
-				SIGNAL (changeTabName (QWidget*, const QString&)));
-		connect (&Core::Instance (),
-				SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
-				this,
-				SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
-		connect (&Core::Instance (),
-				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
-				this,
-				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
-		connect (&Core::Instance (),
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**)));
-		connect (&Core::Instance (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 	}
 
 	void Plugin::SecondInit ()
@@ -116,24 +93,31 @@ namespace Woodpecker
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon (":/resources/images/woodpecker.svg");
+		return QIcon ("lcicons:/resources/images/woodpecker.svg");
 	}
 
 	TabClasses_t Plugin::GetTabClasses () const
 	{
 		TabClasses_t result;
-		result << Core::Instance ().GetTabClass ();
+		for (const auto& item : TabClasses_)
+			result << item.first;
 		return result;
 	}
 
-	void Plugin::TabOpenRequested (const QByteArray& tabClass)
+	void Plugin::TabOpenRequested (const QByteArray& tc)
 	{
-		if (tabClass == "Woodpecker")
-			Core::Instance ().NewTabRequested ();
-		else
+		const auto pos = std::find_if (TabClasses_.begin (), TabClasses_.end (),
+				[&tc] (decltype (TabClasses_.at (0)) pair)
+					{ return pair.first.TabClass_ == tc; });
+		if (pos == TabClasses_.end ())
+		{
 			qWarning () << Q_FUNC_INFO
-				<< "unknown tab class"
-				<< tabClass;
+					<< "unknown tab class"
+					<< tc;
+			return;
+		}
+
+		pos->second (pos->first);
 	}
 
 
@@ -141,6 +125,18 @@ namespace Woodpecker
 	{
 		return XmlSettingsDialog_;
 	}
+	
+	void Plugin::MakeTab(QWidget *tab, const TabClassInfo& tc)
+	{
+		connect (tab,
+				SIGNAL (removeTab (QWidget*)),
+				this,
+				SIGNAL (removeTab (QWidget*)));
+		emit addNewTab (tc.VisibleName_, tab);
+		emit changeTabIcon (tab, tc.Icon_);
+		emit raiseTab (tab);
+	}
+
 }
 }
 

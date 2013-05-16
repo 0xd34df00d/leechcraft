@@ -66,52 +66,6 @@ namespace Woodpecker
 		return Proxy_;
 	}
 
-	TwitterPage* Core::NewTabRequested ()
-	{
-		TwitterPage *page = MakeTwitterPage ();
-		emit addNewTab ("Woodpecker", page);
-		emit raiseTab (page);
-		emit changeTabIcon (page, QIcon ("lcicons:/resources/images/woodpecker.svg"));
-
-		return page;
-	}
-
-	void Core::Handle (const Entity& e)
-	{
-		TwitterPage *page = NewTabRequested ();
-
-		QString language = e.Additional_ ["Language"].toString ();
-		if (!language.isEmpty ())
-			page->setLocale (QLocale(language));
-	}
-
-	TwitterPage* Core::MakeTwitterPage ()
-	{
-		TwitterPage *result = new TwitterPage ();
-		connect (result,
-				SIGNAL (removeTab (QWidget*)),
-				this,
-				SIGNAL (removeTab (QWidget*)));
-		connect (result,
-				SIGNAL (changeTabName (QWidget*, const QString&)),
-				this,
-				SIGNAL (changeTabName (QWidget*, const QString&)));
-		connect (result,
-				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
-				this,
-				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
-		connect (result,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**)));
-		connect (result,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
-		return result;
-	}
 };
 };
 // kate: indent-mode cstyle; indent-width 4; replace-tabs off; tab-width 4;

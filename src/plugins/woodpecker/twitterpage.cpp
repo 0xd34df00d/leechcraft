@@ -44,12 +44,11 @@ namespace LeechCraft
 namespace Woodpecker
 {
 
-	QObject *TwitterPage::S_MultiTabsParent_ = 0;
-
-	TwitterPage::TwitterPage (QWidget *parent) 
-		: QWidget (parent)
-		  , ui (new Ui::TwitterPage)
-		  , Toolbar_ (new QToolBar)
+	TwitterPage::TwitterPage (const TabClassInfo& tc, QObject *plugin) 
+		: TC_ (tc)
+		, ParentPlugin_(plugin)
+		, ui (new Ui::TwitterPage)
+		, Toolbar_ (new QToolBar)
 	{
 		ui->setupUi (this);
 		m_delegate = new TwitDelegate(ui->TwitList_);
@@ -126,7 +125,7 @@ namespace Woodpecker
 
 	TabClassInfo TwitterPage::GetTabClassInfo () const
 	{
-		return Core::Instance ().GetTabClass ();
+		return TC_;
 	}
 
 	QToolBar* TwitterPage::GetToolBar () const
@@ -136,7 +135,7 @@ namespace Woodpecker
 
 	QObject* TwitterPage::ParentMultiTabs ()
 	{
-		return S_MultiTabsParent_;
+		return ParentPlugin_;
 	}
 
 	QList<QAction*> TwitterPage::GetTabBarContextMenuActions () const
@@ -147,11 +146,6 @@ namespace Woodpecker
 	QMap<QString, QList<QAction*> > TwitterPage::GetWindowMenus () const
 	{
 		return WindowMenus_;
-	}
-
-	void TwitterPage::SetParentMultiTabs (QObject *parent)
-	{
-		S_MultiTabsParent_ = parent;
 	}
 
 	void TwitterPage::Remove()
