@@ -389,7 +389,7 @@ namespace Blogique
 		int index = AccountsBox_->findText (XmlSettingsManager::Instance ()
 				.property ("LastActiveAccountName").toString (),
 					Qt::MatchFixedString);
-		handleCurrentAccountChanged (index == -1 ? 0 : index);
+		AccountsBox_->setCurrentIndex (index == -1 ? 0 : index);
 
 	}
 
@@ -691,6 +691,9 @@ namespace Blogique
 		}
 
 		PrevAccountId_ = id;
+
+		XmlSettingsManager::Instance ().setProperty ("LastActiveAccountName",
+				Id2Account_ [id]->GetAccountName ());
 	}
 
 	void BlogiqueWidget::fillCurrentTabWithEntry (const Entry& entry)
