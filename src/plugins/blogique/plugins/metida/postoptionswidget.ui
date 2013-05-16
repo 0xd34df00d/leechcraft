@@ -203,16 +203,6 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="0">
-          <widget class="QCheckBox" name="FacebookLike_">
-           <property name="text">
-            <string>Facebook</string>
-           </property>
-           <property name="tristate">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
          <item row="1" column="0">
           <widget class="QCheckBox" name="VkontakteLike_">
            <property name="text">
@@ -231,6 +221,23 @@
           <widget class="QCheckBox" name="TwitterLike_">
            <property name="text">
             <string>Twitter</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QCheckBox" name="FacebookLike_">
+           <property name="text">
+            <string>Facebook</string>
+           </property>
+           <property name="tristate">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QCheckBox" name="AllLike_">
+           <property name="text">
+            <string>All</string>
            </property>
           </widget>
          </item>
@@ -300,5 +307,86 @@
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>AllLike_</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>VkontakteLike_</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>50</x>
+     <y>403</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>61</x>
+     <y>422</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>AllLike_</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>GoogleLike_</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>107</x>
+     <y>409</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>100</x>
+     <y>451</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>AllLike_</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>LiveJournalLike_</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>175</x>
+     <y>403</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>200</x>
+     <y>403</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>AllLike_</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>TwitterLike_</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>167</x>
+     <y>400</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>239</x>
+     <y>422</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>AllLike_</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>FacebookLike_</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>78</x>
+     <y>402</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>223</x>
+     <y>443</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
