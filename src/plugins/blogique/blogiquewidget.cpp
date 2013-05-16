@@ -371,11 +371,6 @@ namespace Blogique
 			PostEdit_->AppendSeparator ();
 		}
 
-		connect (AccountsBox_,
-				SIGNAL (currentIndexChanged (int)),
-				this,
-				SLOT (handleCurrentAccountChanged (int)));
-
 		for (IAccount *acc : Core::Instance ().GetAccounts ())
 		{
 			AccountsBox_->addItem (acc->GetAccountName ());
@@ -389,8 +384,14 @@ namespace Blogique
 		int index = AccountsBox_->findText (XmlSettingsManager::Instance ()
 				.property ("LastActiveAccountName").toString (),
 					Qt::MatchFixedString);
-		AccountsBox_->setCurrentIndex (index == -1 ? 0 : index);
 
+		AccountsBox_->setCurrentIndex (index == -1 ? 0 : index);
+		connect (AccountsBox_,
+				SIGNAL (currentIndexChanged (int)),
+				this,
+				SLOT (handleCurrentAccountChanged (int)));
+
+		handleCurrentAccountChanged (AccountsBox_->currentIndex ());
 	}
 
 	void BlogiqueWidget::SetDefaultSideWidgets ()
