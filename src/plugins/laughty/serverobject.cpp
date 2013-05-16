@@ -59,7 +59,7 @@ namespace Laughty
 			"body-hyperlinks",
 			"body-images",
 			"body-markup",
-			"persistence"	// TODO detect lack of this
+			"persistence"
 		};
 	}
 
@@ -80,7 +80,7 @@ namespace Laughty
 
 		QPair<QString, QString> GetCatTypePair (const QVariantMap& hints)
 		{
-			return { AN::CatGeneric, AN::TypeGeneric };	// TODO
+			return { AN::CatGeneric, AN::TypeGeneric };
 		}
 	}
 
