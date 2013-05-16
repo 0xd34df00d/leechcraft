@@ -41,6 +41,7 @@ SET (SRCS
 	sync/syncops.cpp
 	sys/mimedetector.cpp
 	sys/paths.cpp
+	sys/xdg.cpp
 	tags/categoryselector.cpp
 	tags/tagscompleter.cpp
 	tags/tagscompletionmodel.cpp
