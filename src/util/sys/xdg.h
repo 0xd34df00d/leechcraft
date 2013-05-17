@@ -29,44 +29,20 @@
 
 #pragma once
 
-#include <QObject>
-#include <QVariantMap>
-#include <interfaces/core/icoreproxy.h>
+#include <util/utilconfig.h>
+
+class QString;
+class QIcon;
+class QPixmap;
 
 namespace LeechCraft
 {
-
-class Entity;
-namespace Laughty
+namespace Util
 {
-	class ServerObject : public QObject
-	{
-		Q_OBJECT
-
-		ICoreProxy_ptr Proxy_;
-		uint32_t LastID_;
-	public:
-		ServerObject (ICoreProxy_ptr);
-
-		QStringList GetCapabilities () const;
-
-		uint Notify (const QString& app_name, uint replaces_id, const QString& app_icon,
-				const QString& summary, const QString& body, const QStringList& actions,
-				const QVariantMap& hints, uint expire_timeout);
-
-		void CloseNotification (uint id);
-	private:
-		void HandleActions (Entity&, int, const QStringList&, const QVariantMap&);
-
-		void HandleImages (Entity&, const QString&, const QVariantMap&);
-		bool HandleImageData (Entity&, const QVariantMap&);
-		bool HandleImagePath (Entity&, const QVariantMap&);
-		bool HandleImageAppIcon (Entity&, const QString&);
-
-		void HandleSounds (const QVariantMap&);
-	signals:
-		void NotificationClosed (uint id, uint reason);
-		void ActionInvoked (uint id, const QString& action_key);
-	};
+namespace XDG
+{
+	UTIL_API QIcon GetAppIcon (const QString& iconName);
+	UTIL_API QPixmap GetAppPixmap (const QString& iconName);
+}
 }
 }

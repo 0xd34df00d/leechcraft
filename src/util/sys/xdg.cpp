@@ -27,46 +27,33 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QVariantMap>
-#include <interfaces/core/icoreproxy.h>
+#include "xdg.h"
+#include <QIcon>
+#include <QFile>
 
 namespace LeechCraft
 {
-
-class Entity;
-namespace Laughty
+namespace Util
 {
-	class ServerObject : public QObject
+namespace XDG
+{
+	QIcon GetAppIcon (const QString& name)
 	{
-		Q_OBJECT
+		return GetAppPixmap (name);
+	}
 
-		ICoreProxy_ptr Proxy_;
-		uint32_t LastID_;
-	public:
-		ServerObject (ICoreProxy_ptr);
+	QPixmap GetAppPixmap (const QString& name)
+	{
+		for (auto ext : { ".png", ".svg", ".xpm", ".jpg", "" })
+		{
+			if (QFile::exists ("/usr/share/pixmaps/" + name + ext))
+				return { "/usr/share/pixmaps/" + name + ext };
+			if (QFile::exists ("/usr/local/share/pixmaps/" + name + ext))
+				return { "/usr/local/share/pixmaps/" + name + ext };
+		}
 
-		QStringList GetCapabilities () const;
-
-		uint Notify (const QString& app_name, uint replaces_id, const QString& app_icon,
-				const QString& summary, const QString& body, const QStringList& actions,
-				const QVariantMap& hints, uint expire_timeout);
-
-		void CloseNotification (uint id);
-	private:
-		void HandleActions (Entity&, int, const QStringList&, const QVariantMap&);
-
-		void HandleImages (Entity&, const QString&, const QVariantMap&);
-		bool HandleImageData (Entity&, const QVariantMap&);
-		bool HandleImagePath (Entity&, const QVariantMap&);
-		bool HandleImageAppIcon (Entity&, const QString&);
-
-		void HandleSounds (const QVariantMap&);
-	signals:
-		void NotificationClosed (uint id, uint reason);
-		void ActionInvoked (uint id, const QString& action_key);
-	};
+		return {};
+	}
+}
 }
 }

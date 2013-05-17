@@ -79,6 +79,9 @@ namespace Kinotify
 
 		void SetEntity (const Entity&);
 
+		QString GetTitle () const;
+		QString GetBody () const;
+
 		void SetContent (const QString&, const QString&,
 				const QString&, const QSize& size = QSize (350, 70));
 		void OverrideImage (const QPixmap&);

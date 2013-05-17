@@ -28,12 +28,14 @@
  **********************************************************************/
 
 #include "serverobject.h"
+#include <QUrl>
+#include <QDBusArgument>
 #include <util/xpc/util.h>
 #include <util/util.h>
 #include <util/notificationactionhandler.h>
+#include <util/sys/xdg.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/core/ientitymanager.h>
-#include <QUrl>
 
 namespace LeechCraft
 {
@@ -59,7 +61,7 @@ namespace Laughty
 			"body-hyperlinks",
 			"body-images",
 			"body-markup",
-			"persistence"	// TODO detect lack of this
+			"persistence"
 		};
 	}
 
@@ -80,7 +82,7 @@ namespace Laughty
 
 		QPair<QString, QString> GetCatTypePair (const QVariantMap& hints)
 		{
-			return { AN::CatGeneric, AN::TypeGeneric };	// TODO
+			return { AN::CatGeneric, AN::TypeGeneric };
 		}
 	}
 
@@ -114,6 +116,7 @@ namespace Laughty
 
 		HandleActions (e, id, actions, hints);
 		HandleSounds (hints);
+		HandleImages (e, app_icon, hints);
 
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 
@@ -152,6 +155,93 @@ namespace Laughty
 		if (resident)
 			nah->AddFunction (tr ("Dismiss"),
 					[this, id] { emit NotificationClosed (id, 2); });
+	}
+
+	namespace
+	{
+		QString GetImgPath (const QVariantMap& hints)
+		{
+			if (hints.contains ("image-path"))
+				return hints.value ("image-path").toString ();
+
+			if (hints.contains ("image_path"))
+				return hints.value ("image_path").toString ();
+
+			return {};
+		}
+	}
+
+	void ServerObject::HandleImages (Entity& e, const QString& appIcon, const QVariantMap& hints)
+	{
+		HandleImageData (e, hints) ||
+			HandleImagePath (e, hints) ||
+			HandleImageAppIcon (e, appIcon);
+	}
+
+	bool ServerObject::HandleImageData (Entity& e, const QVariantMap& hints)
+	{
+		const auto& dataVar = hints.value ("image-data", hints.value ("image_data"));
+		if (dataVar.isNull ())
+			return false;
+
+		const auto& arg = dataVar.value<QDBusArgument> ();
+
+		int width = 0, height = 0, rowstride = 0;
+		bool hasAlpha = false;
+		int bps = 0, channels = 0;
+		QByteArray data;
+
+		arg.beginStructure ();
+		arg >> width >> height >> rowstride >> hasAlpha >> bps >> channels >> data;
+		arg.endStructure ();
+
+		const QImage img (reinterpret_cast<const uchar*> (data.constBegin ()),
+				width, height, QImage::Format_ARGB32);
+		if (img.isNull ())
+			return false;
+
+		e.Additional_ ["NotificationPixmap"] = QPixmap::fromImage (img.rgbSwapped ());
+		return true;
+	}
+
+	bool ServerObject::HandleImagePath (Entity& e, const QVariantMap& hints)
+	{
+		auto path = GetImgPath (hints);
+		if (path.isEmpty ())
+			return false;
+
+		if (QFile::exists (path))
+			e.Additional_ ["NotificationPixmap"] = QPixmap (path);
+		else if (path.startsWith ("file:"))
+			e.Additional_ ["NotificationPixmap"] = QPixmap (QUrl (path).toLocalFile ());
+		else
+			return false;
+
+		return true;
+	}
+
+	bool ServerObject::HandleImageAppIcon (Entity& e, const QString& appIcon)
+	{
+		if (appIcon.isEmpty ())
+			return false;
+
+		QPixmap result;
+
+		auto icon = Proxy_->GetIcon (appIcon);
+		if (!icon.isNull ())
+		{
+			const auto& sizes = icon.availableSizes ();
+			result = icon.pixmap (sizes.value (sizes.size () - 1, QSize (48, 48)));
+		}
+
+		if (result.isNull ())
+			result = Util::XDG::GetAppPixmap (appIcon);
+
+		if (result.isNull ())
+			return false;
+
+		e.Additional_ ["NotificationPixmap"] = result;
+		return true;
 	}
 
 	void ServerObject::HandleSounds (const QVariantMap& hints)
