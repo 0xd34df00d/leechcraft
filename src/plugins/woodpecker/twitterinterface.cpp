@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "twitterinterface.h"
+#include "xmlsettingsmanager.h"
 
 #include <QtNetwork/QNetworkRequest>
 #include <QtNetwork/QNetworkReply>
@@ -49,8 +50,8 @@ namespace Woodpecker
 		oauthManager = new KQOAuthManager (this);
 
 		oauthRequest->setEnableDebugOutput (false); // DONE: Remove debug
-		consumerKey = QString ("nbwLYUDIlgsMgDFCu6jfuA");
-		consumerKeySecret = QString ("7TWYPzLUqZlihIRA2VWfZhCRfss2JNKvkSWMQx4");
+		consumerKey = XmlSettingsManager::Instance()->property("consumer_key").toString();
+		consumerKeySecret = XmlSettingsManager::Instance()->property("consumer_key_secret").toString();
 
 		connect (oauthManager, SIGNAL (requestReady (QByteArray)),
 				this, SLOT (onRequestReady (QByteArray)));
