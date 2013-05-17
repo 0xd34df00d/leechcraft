@@ -26,22 +26,49 @@
       <property name="leftMargin">
        <number>6</number>
       </property>
-      <item row="0" column="1" colspan="3">
-       <widget class="QComboBox" name="Access_"/>
-      </item>
-      <item row="3" column="3">
-       <widget class="QPushButton" name="AutoDetectMusic_">
-        <property name="text">
-         <string>Auto-detect</string>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="1" colspan="3">
        <widget class="QComboBox" name="Mood_">
         <property name="editable">
          <bool>true</bool>
         </property>
        </widget>
+      </item>
+      <item row="5" column="1" colspan="3">
+       <widget class="QComboBox" name="ScreenComments_">
+        <property name="currentIndex">
+         <number>-1</number>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1" colspan="3">
+       <widget class="QComboBox" name="Adult_">
+        <property name="currentIndex">
+         <number>-1</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="moodLabel">
+        <property name="text">
+         <string>Mood:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="3">
+       <widget class="QComboBox" name="Access_"/>
       </item>
       <item row="10" column="0">
        <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -90,22 +117,110 @@
         </item>
        </layout>
       </item>
+      <item row="11" column="0" colspan="4">
+       <widget class="QGroupBox" name="LikeButtonsBox_">
+        <property name="title">
+         <string>Like buttons</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_3">
+         <item row="0" column="0">
+          <widget class="QCheckBox" name="AllLike_">
+           <property name="text">
+            <string>All</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QCheckBox" name="VkontakteLike_">
+           <property name="text">
+            <string>Vkontakte</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QCheckBox" name="FacebookLike_">
+           <property name="text">
+            <string>Facebook</string>
+           </property>
+           <property name="tristate">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QCheckBox" name="LiveJournalReward_">
+           <property name="text">
+            <string>Reward this (LiveJournal)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QCheckBox" name="LiveJournalRepost_">
+           <property name="text">
+            <string>LiveJournal</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QCheckBox" name="GoogleLike_">
+           <property name="text">
+            <string>Google+</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QCheckBox" name="TumblrLike_">
+           <property name="text">
+            <string>Tumblr</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QCheckBox" name="TwitterLike_">
+           <property name="text">
+            <string>Twitter</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
       <item row="3" column="3">
-       <widget class="QPushButton" name="AutoDetect_">
+       <widget class="QPushButton" name="AutoDetectMusic_">
         <property name="text">
-         <string>Auto</string>
+         <string>Auto-detect</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="musicLabel">
+      <item row="10" column="2">
+       <widget class="QLabel" name="UserPicLabel_">
         <property name="text">
-         <string>Music:</string>
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="whereIsYouLabel">
+        <property name="text">
+         <string>Location:</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="accessLabel">
+        <property name="text">
+         <string>Access:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="3">
+       <widget class="QLineEdit" name="Place_"/>
       </item>
       <item row="4" column="1" colspan="3">
        <widget class="QComboBox" name="Comments_">
@@ -128,6 +243,23 @@
        <widget class="QLabel" name="hideCommentsLabel">
         <property name="text">
          <string>Screening:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="3">
+       <widget class="QPushButton" name="AutoDetect_">
+        <property name="text">
+         <string>Auto</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="musicLabel">
+        <property name="text">
+         <string>Music:</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -167,124 +299,6 @@
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="moodLabel">
-        <property name="text">
-         <string>Mood:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="11" column="0" colspan="4">
-       <widget class="QGroupBox" name="LikeButtonsBox_">
-        <property name="title">
-         <string>Like buttons</string>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_3">
-         <item row="2" column="0">
-          <widget class="QCheckBox" name="GoogleLike_">
-           <property name="text">
-            <string>Google+</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QCheckBox" name="VkontakteLike_">
-           <property name="text">
-            <string>Vkontakte</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QCheckBox" name="LiveJournalLike_">
-           <property name="text">
-            <string>LiveJournal</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QCheckBox" name="TwitterLike_">
-           <property name="text">
-            <string>Twitter</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QCheckBox" name="FacebookLike_">
-           <property name="text">
-            <string>Facebook</string>
-           </property>
-           <property name="tristate">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QCheckBox" name="AllLike_">
-           <property name="text">
-            <string>All</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item row="10" column="2">
-       <widget class="QLabel" name="UserPicLabel_">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="whereIsYouLabel">
-        <property name="text">
-         <string>Location:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="accessLabel">
-        <property name="text">
-         <string>Access:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1" colspan="3">
-       <widget class="QLineEdit" name="Place_"/>
-      </item>
-      <item row="5" column="1" colspan="3">
-       <widget class="QComboBox" name="ScreenComments_">
-        <property name="currentIndex">
-         <number>-1</number>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="1" colspan="3">
-       <widget class="QComboBox" name="Adult_">
-        <property name="currentIndex">
-         <number>-1</number>
         </property>
        </widget>
       </item>
@@ -343,7 +357,7 @@
   <connection>
    <sender>AllLike_</sender>
    <signal>toggled(bool)</signal>
-   <receiver>LiveJournalLike_</receiver>
+   <receiver>LiveJournalReward_</receiver>
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -352,7 +366,7 @@
     </hint>
     <hint type="destinationlabel">
      <x>200</x>
-     <y>403</y>
+     <y>478</y>
     </hint>
    </hints>
   </connection>
@@ -368,7 +382,7 @@
     </hint>
     <hint type="destinationlabel">
      <x>239</x>
-     <y>422</y>
+     <y>397</y>
     </hint>
    </hints>
   </connection>
@@ -384,7 +398,39 @@
     </hint>
     <hint type="destinationlabel">
      <x>223</x>
-     <y>443</y>
+     <y>418</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>AllLike_</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>TumblrLike_</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>42</x>
+     <y>402</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>46</x>
+     <y>471</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>AllLike_</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>LiveJournalRepost_</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>31</x>
+     <y>403</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>220</x>
+     <y>450</y>
     </hint>
    </hints>
   </connection>

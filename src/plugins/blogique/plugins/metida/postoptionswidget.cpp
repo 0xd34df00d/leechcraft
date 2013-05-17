@@ -106,15 +106,19 @@ namespace Metida
 		QStringList likes;
 
 		if (Ui_.VkontakteLike_->isChecked ())
-			likes << "vk";
+			likes << "vkontakte";
 		if (Ui_.FacebookLike_->isChecked ())
-			likes << "fb";
+			likes << "facebook";
 		if (Ui_.GoogleLike_->isChecked ())
-			likes << "go";
+			likes << "google";
 		if (Ui_.TwitterLike_->isChecked ())
-			likes << "tw";
-		if (Ui_.LiveJournalLike_->isChecked ())
-			likes << "lj";
+			likes << "twitter";
+		if (Ui_.LiveJournalReward_->isChecked ())
+			likes << "livejournal";
+		if (Ui_.LiveJournalRepost_->isChecked ())
+			likes << "repost";
+		if (Ui_.TumblrLike_->isChecked ())
+			likes << "tumblr";
 
 		map ["likes"] = likes;
 
@@ -222,13 +226,15 @@ namespace Metida
 				likes = rxp.cap (2).split (',');
 
 			if (rxp.capturedTexts ().count () == 1)
-				likes = { "vk", "fb", "go", "lj", "tw" };
+				likes = { "repost", "vkontakte", "facebook", "google", "livejournal", "twitter", "tumblr" };
 
-			Ui_.VkontakteLike_->setChecked (likes.contains ("vk"));
-			Ui_.FacebookLike_->setChecked (likes.contains ("fb"));
-			Ui_.GoogleLike_->setChecked (likes.contains ("go"));
-			Ui_.LiveJournalLike_->setChecked (likes.contains ("lj"));
-			Ui_.TwitterLike_->setChecked (likes.contains ("tw"));
+			Ui_.VkontakteLike_->setChecked (likes.contains ("vkontakte"));
+			Ui_.FacebookLike_->setChecked (likes.contains ("facebook"));
+			Ui_.GoogleLike_->setChecked (likes.contains ("google"));
+			Ui_.LiveJournalReward_->setChecked (likes.contains ("livejournal"));
+			Ui_.LiveJournalRepost_->setChecked (likes.contains ("repost"));
+			Ui_.TwitterLike_->setChecked (likes.contains ("twitter"));
+			Ui_.TumblrLike_->setChecked (likes.contains ("tumblr"));
 		}
 	}
 
@@ -313,7 +319,11 @@ namespace Metida
 				if (button == "tw")
 					Ui_.TwitterLike_->setChecked (true);
 				if (button == "lj")
-					Ui_.LiveJournalLike_->setChecked (true);
+					Ui_.LiveJournalReward_->setChecked (true);
+				if (button == "tb")
+					Ui_.TumblrLike_->setChecked (true);
+				if (button == "rp")
+					Ui_.LiveJournalRepost_->setChecked (true);
 			}
 		}
 	}
