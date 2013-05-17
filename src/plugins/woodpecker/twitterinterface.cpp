@@ -113,7 +113,7 @@ namespace Woodpecker
 			tempTweet->setText (tweetMap["text"].toString());
 			tempTweet->author()->setUsername (userMap["screen_name"].toString());
 			tempTweet->author()->downloadAvatar (userMap["profile_image_url"].toString());
-			connect(tempTweet->author(), SIGNAL(userReady()), this->parent(), SLOT(setUpdateReady()));
+			connect(tempTweet->author().get(), SIGNAL(userReady()), this->parent(), SLOT(setUpdateReady()));
 			tempTweet->setDateTime (QLocale().toDateTime (tweetMap["created_at"].toString(), QLatin1String ("ddd MMM dd HH:mm:ss +0000 yyyy")));
 			tempTweet->setId (tweetMap["id"].toULongLong());
 

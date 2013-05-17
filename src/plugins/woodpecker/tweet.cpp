@@ -35,19 +35,19 @@ namespace Woodpecker
 {
 
 	Tweet::Tweet (QObject *parent)
-		: QObject (parent)
-		  , Author_ (new TwitterUser (parent))
+	: QObject (parent)
+	, Author_ (new TwitterUser (parent))
 	{
 	}
 
-	Tweet::Tweet (const QString& text, TwitterUser *author, QObject *parent)
+	Tweet::Tweet (const QString& text, std::shared_ptr<TwitterUser> author, QObject *parent)
 		: QObject (parent)
                 , m_id (0)
 	{
-		setText(text);
+		setText (text);
 
 		if (!author)
-			Author_ = new TwitterUser (parent);
+			Author_ = std::make_shared<TwitterUser> (parent);
 		else
 		{
 			Author_ = author;
@@ -55,23 +55,24 @@ namespace Woodpecker
 		}
 	}
 
-	Tweet::~Tweet()
+	Tweet::~Tweet ()
 	{
-		Author_->deleteLater();
+		Author_->deleteLater ();
 	}
 
-	Tweet::Tweet(const Tweet& original): QObject()
+	Tweet::Tweet(const Tweet& original)
+	: QObject()
 	{
-		Author_ = original.author();
-		m_created = original.dateTime();
-		setText(original.text());
-		m_id = original.id();
+		Author_ = original.author ();
+		m_created = original.dateTime ();
+		setText(original.text ());
+		m_id = original.id ();
 	}
 
 	Tweet& Tweet::operator= (const Tweet& rhs)
 	{
-		if (this == &rhs)				// Same object?
-			return *this;				// Yes, so skip assignment, and just return *this.
+		if (this == &rhs)
+			return *this;
 
 		m_id = rhs.id ();
 		Author_ = rhs.author ();
@@ -101,10 +102,10 @@ namespace Woodpecker
 		return m_id > other.id ();
 	}
 
-	void Tweet::setText (QString text) 
+	void Tweet::setText (const QString& text) 
 	{
-		QRegExp rx("\\s((http|https)://[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(([0-9]{1,5})?/?.*))(\\s|,|$)");
-		rx.setMinimal(true);
+		QRegExp rx ("\\s((http|https)://[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(([0-9]{1,5})?/?.*))(\\s|,|$)");
+		rx.setMinimal (true);
 
 		m_text = text;
 
@@ -112,23 +113,49 @@ namespace Woodpecker
 		 * Borrowed from Qt support forum */
 		QString html = text;
 		int pos = 0;
-		while ( (pos = rx.indexIn(html, pos)) != -1 ) {
-			if ( rx.cap(1).startsWith("http") ) {
-				QString before = rx.cap( 1 );
-				if (before.endsWith("."))
-					before.chop(1);
+		while ((pos = rx.indexIn(html, pos)) != -1)
+		{
+			if (rx.cap (1).startsWith ("http")) 
+			{
+				QString before = rx.cap (1);
+				if (before.endsWith ("."))
+					before.chop (1);
 				QString after = " <a href=\"" + before + "\">" + before + "</a>";
-				html.replace( pos, before.length() + 1, after );
-				pos += after.length();
-			} else {
-				pos += rx.matchedLength();
+				html.replace (pos, before.length () + 1, after);
+				pos += after.length ();
 			}
+			else
+				pos += rx.matchedLength ();
 		}
 
 		m_document.setHtml(html);
 	}
 
-
+	std::shared_ptr< TwitterUser > Tweet::author() const
+	{
+		return Author_;
+	}
+	
+	void Tweet::setAuthor (std::shared_ptr< TwitterUser > newAuthor)
+	{
+		Author_ = newAuthor;
+	}
+	
+	QDateTime Tweet::dateTime() const
+	{
+		return m_created;
+	}
+	
+	void Tweet::setDateTime (const QDateTime& datetime)
+	{
+		m_created = datetime;
+	}
+	
+	QTextDocument* Tweet::getDocument()
+	{
+		return &m_document;
+	}
+	
+	
 }
 }
-// kate: indent-mode cstyle; indent-width 1; replace-tabs on; 

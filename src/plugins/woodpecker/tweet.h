@@ -48,29 +48,29 @@ namespace Woodpecker
 
 		public:
 			Tweet (QObject *parent = 0);
-			Tweet (const QString& text, TwitterUser *author = 0, QObject *parent = 0);
+			Tweet (const QString& text, std::shared_ptr<TwitterUser> author = nullptr, QObject *parent = 0);
 			Tweet (const Tweet& original);
 			~Tweet ();
 
 			/** @brief Set both plain text contents and generates a html representation */
-			void setText (QString text);
+			void setText (const QString& text);
 			QString text () const { return m_text; }
 
 			qulonglong id () const { return m_id; }
 			void setId (qulonglong id) { m_id = id; }
 
-			TwitterUser* author () const { return Author_; }
-			void setAuthor (TwitterUser *newAuthor) { Author_ = newAuthor; }
+			std::shared_ptr<TwitterUser> author () const;
+			void setAuthor (std::shared_ptr<TwitterUser> newAuthor);
 
-			QDateTime dateTime () const { return m_created; }
-			void setDateTime (QDateTime datetime) { m_created = datetime; }
+			QDateTime dateTime () const;
+			void setDateTime (const QDateTime& datetime);
 
 			/** @brief Direct access to QTextDocument representation
 			 * @returns internal document object. You can fix it the way you like for better visuals
 			 * 
 			 * Used in TwitDelegate class for drawing Tweet object contents in UI
 			 */
-			QTextDocument* getDocument() { return &m_document; }
+			QTextDocument* getDocument();
 
 			Tweet& operator= (const Tweet&);
 
@@ -87,11 +87,11 @@ namespace Woodpecker
 			bool operator< (const Tweet&);
 
 		private:
-			qulonglong	m_id;					/**< Twit id in Twitter */
-			QString		m_text;					/**< Text of twit in plaintext */
-			TwitterUser	*Author_;				/**< Pointer to twitter author */
-			QDateTime	m_created;				/**< Twit date */
-			QTextDocument m_document;			/**< QTextDocument which is used for drawing twit */
+			qulonglong	m_id;						/**< Twit id in Twitter */
+			QString		m_text;						/**< Text of twit in plaintext */
+			std::shared_ptr<TwitterUser>	Author_;/**< Pointer to twitter author */
+			QDateTime	m_created;					/**< Twit date */
+			QTextDocument m_document;				/**< QTextDocument which is used for drawing twit */
 	};
 }
 }
