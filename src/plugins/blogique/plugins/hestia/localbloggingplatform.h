@@ -89,6 +89,7 @@ namespace Hestia
 		void accountAdded (QObject *account);
 		void accountRemoved (QObject *account);
 		void accountValidated (QObject *account, bool validated);
+		void insertTag (const QString& tag);
 	};
 }
 }
