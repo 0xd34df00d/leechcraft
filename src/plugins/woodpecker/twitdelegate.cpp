@@ -146,7 +146,7 @@ namespace Woodpecker
 		painter->restore ();
 
 		// Author
-		r = option.rect.adjusted (imageSpace, 30, -10, 0);
+		r = option.rect.adjusted (imageSpace + 4, 30, -10, 0);
 		auto author_rect = std::unique_ptr<QRect> (new QRect (r.left (), r.bottom () - painter->fontMetrics ().height () - 8, painter->fontMetrics ().width (author), r.height ()));
 		painter->setPen (linkFontPen);
 		painter->setFont (mainFont);
