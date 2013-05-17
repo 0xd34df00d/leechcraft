@@ -1155,6 +1155,7 @@ namespace Metida
 		LJEvent CreateLJEvent (const QString& login, const QVariant& data)
 		{
 			LJEvent ljEvent;
+			bool repost = false;
 			for (const auto& field : data.toList ())
 			{
 				auto fieldEntry = field.value<LJParserTypes::LJParseProfileEntry> ();
@@ -1168,19 +1169,24 @@ namespace Metida
 					ljEvent.DItemID_ = fieldEntry.ValueToLongLong ();
 				else if (fieldEntry.Name () == "eventtime")
 					ljEvent.DateTime_ = QDateTime::fromString (fieldEntry.ValueToString (),
-															   "yyyy-MM-dd hh:mm:ss");
-					else if (fieldEntry.Name () == "props")
-					{
-						QStringList tags;
-						ljEvent.Props_ = CreateLJEventPropetries (tags, fieldEntry.Value ());
-						ljEvent.Tags_ = tags;
-					}
-					else if (fieldEntry.Name () == "url")
-						ljEvent.Url_ = QUrl (fieldEntry.ValueToString ());
-					else if (fieldEntry.Name () == "anum")
-						ljEvent.ANum_ = fieldEntry.ValueToInt ();
-					else if (fieldEntry.Name () == "security")
-						ljEvent.Security_ = MetidaUtils::GetAccessForString (fieldEntry.ValueToString ());
+							"yyyy-MM-dd hh:mm:ss");
+				else if (fieldEntry.Name () == "props")
+				{
+					QStringList tags;
+					ljEvent.Props_ = CreateLJEventPropetries (tags, fieldEntry.Value ());
+					ljEvent.Tags_ = tags;
+				}
+				else if (fieldEntry.Name () == "url")
+					ljEvent.Url_ = QUrl (fieldEntry.ValueToUrl ());
+				else if (fieldEntry.Name () == "anum")
+					ljEvent.ANum_ = fieldEntry.ValueToInt ();
+				else if (fieldEntry.Name () == "security")
+					ljEvent.Security_ = MetidaUtils::GetAccessForString (fieldEntry.ValueToString ());
+				else if (fieldEntry.Name () == "postername" &&
+						fieldEntry.ValueToString () != login)
+					repost = true;
+				else if (fieldEntry.Name () == "original_entry_url")
+					ljEvent.Url_ = QUrl (fieldEntry.ValueToUrl ());
 			}
 
 			return ljEvent;

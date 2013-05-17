@@ -539,10 +539,12 @@ namespace Metida
 		ljEvent.Event_.append ("<em style=\"font-size: 0.8em;\">Posted via <a href=\"http://leechcraft.org/plugins-blogique\">LeechCraft Blogique</a>.</em>");
 
 		if (!ljEvent.Props_.LikeButtons_.isEmpty ())
+		{
 			if (XmlSettingsManager::Instance ().Property ("LikeButtonPosition", "bottom").toString () == "top")
 				ljEvent.Event_.prepend (QString ("<lj-like buttons=\"%1\" />").arg (props.LikeButtons_.join (", ")));
 			else
 				ljEvent.Event_.append (QString ("<lj-like buttons=\"%1\" />").arg (props.LikeButtons_.join (",")));
+		}
 
 		LJXmlRpc_->Submit (ljEvent);
 	}
