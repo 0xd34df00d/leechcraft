@@ -42,7 +42,6 @@ namespace LeechCraft
 {
 namespace Woodpecker
 {
-
 	class Plugin 
 		: public QObject
 		  , public IInfo
