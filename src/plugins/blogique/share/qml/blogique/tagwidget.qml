@@ -7,20 +7,6 @@ Rectangle
 
 	anchors.fill: parent
 
-	gradient: Gradient
-	{
-		GradientStop
-		{
-			position: 0
-			color: colorProxy.color_TextView_TopColor
-		}
-		GradientStop
-		{
-			position: 1
-			color: colorProxy.color_TextView_BottomColor
-		}
-	}
-
 	property bool inputFieldExsists: false;
 	property Item currentInputField;
 
@@ -97,8 +83,6 @@ Rectangle
 			width: 50
 			cursorVisible: true
 			focus: true
-
-			color: colorProxy.color_TextBox_TextColor
 
 			property int lastCursorPosition;
 
