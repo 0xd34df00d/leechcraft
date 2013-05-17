@@ -55,7 +55,6 @@ namespace Woodpecker
 		
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
-		
 	};
 }
 }
