@@ -51,6 +51,7 @@ namespace Metida
 		QList<LJAccount*> LJAccounts_;
 
 		QAction *LJUser_;
+		QAction *LJPoll_;
 		QAction *FirstSeparator_;
 
 		QTimer *MessageCheckingTimer_;
@@ -91,6 +92,7 @@ namespace Metida
 	private slots:
 		void saveAccounts ();
 		void handleAddLJUser ();
+		void handleAddLJPoll ();
 	public slots:
 		void handleAccountValidated (bool validated);
 		void handleMessageChecking ();

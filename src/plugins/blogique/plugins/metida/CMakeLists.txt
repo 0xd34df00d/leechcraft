@@ -29,6 +29,7 @@ SET (METIDA_SRCS
 	ljxmlrpc.cpp
 	localstorage.cpp
 	metida.cpp
+	polldialog.cpp
 	postoptionswidget.cpp
 	profiletypes.cpp
 	profilewidget.cpp
@@ -72,6 +73,7 @@ SET (METIDA_FORMS
 	addeditentrydialog.ui
 	ljaccountconfigurationdialog.ui
 	ljaccountconfigurationwidget.ui
+	polldialog.ui 
 	profilewidget.ui
 	postoptionswidget.ui
 	recentcommentssidewidget.ui

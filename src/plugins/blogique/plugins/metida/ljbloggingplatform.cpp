@@ -43,6 +43,7 @@
 #include "localstorage.h"
 #include "recentcommentssidewidget.h"
 #include "xmlsettingsmanager.h"
+#include "polldialog.h"
 
 namespace LeechCraft
 {
@@ -56,6 +57,8 @@ namespace Metida
 	, PluginProxy_ (0)
 	, LJUser_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("user-properties"),
 			tr ("Add LJ user"), this))
+	, LJPoll_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("office-chart-pie"),
+			tr ("Create poll"), this))
 	, FirstSeparator_ (new QAction (this))
 	, MessageCheckingTimer_ (new QTimer (this))
 	, CommentsCheckingTimer_ (new QTimer (this))
@@ -66,10 +69,10 @@ namespace Metida
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleAddLJUser ()));
-		connect (LJUser_,
+		connect (LJPoll_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (handleAddLJCut ()));
+				SLOT (handleAddLJPoll ()));
 
 		connect (MessageCheckingTimer_,
 				SIGNAL (timeout ()),
@@ -175,7 +178,7 @@ namespace Metida
 
 	QList<QAction*> LJBloggingPlatform::GetEditorActions () const
 	{
-		return { FirstSeparator_, LJUser_ };
+		return { FirstSeparator_, LJUser_, LJPoll_ };
 	}
 
 	QList<QWidget*> LJBloggingPlatform::GetBlogiqueSideWidgets () const
@@ -271,6 +274,51 @@ namespace Metida
 			return;
 
 		emit insertTag (QString ("<lj user=\"%1\">").arg (name));
+	}
+
+	void LJBloggingPlatform::handleAddLJPoll ()
+	{
+		PollDialog pollDlg;
+		if (pollDlg.exec () == QDialog::Rejected)
+			return;
+
+		QStringList pqParts;
+		QString pqPart = QString ("<lj-pq type=\"%1\" %2>%3%4</lj-pq>");
+		bool isPqParam = false;
+		for (const auto& pollType : pollDlg.GetPollTypes ())
+		{
+			const auto& map = pollDlg.GetPollFields (pollType);
+			QStringList pqParams;
+			if (pollType == "check" ||
+					pollType == "radio" ||
+					pollType == "drop")
+			{
+				isPqParam = false;
+				for (const auto& value : map.values ())
+					pqParams << QString ("<lj-pi>%1</lj-pi>")
+							.arg (value.toString ());
+			}
+			else
+			{
+				isPqParam = true;
+				for (const auto& key : map.keys ())
+					pqParams << QString ("%1=\"%2\"")
+							.arg (key)
+							.arg (map [key].toString ());
+			}
+			pqParts << pqPart
+					.arg (pollType)
+					.arg (isPqParam ? pqParams.join (" ") : QString ())
+					.arg (pollDlg.GetPollQuestion (pollType))
+					.arg (!isPqParam ? pqParams.join (" ") : QString ());
+		}
+
+		QString pollPart = QString ("<lj-poll name=\"%1\" whovote=\"%2\" whoview=\"%3\">%4</lj-poll>")
+				.arg (pollDlg.GetPollName ())
+				.arg (pollDlg.GetWhoCanVote ())
+				.arg (pollDlg.GetWhoCanView ())
+				.arg (pqParts.join (""));
+		emit insertTag (pollPart);
 	}
 
 	void LJBloggingPlatform::handleAccountValidated (bool validated)
