@@ -56,8 +56,6 @@ namespace Metida
 	, PluginProxy_ (0)
 	, LJUser_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("user-properties"),
 			tr ("Add LJ user"), this))
-	, LJCut_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("view-split-top-bottom"),
-			"Cut", this))
 	, FirstSeparator_ (new QAction (this))
 	, MessageCheckingTimer_ (new QTimer (this))
 	, CommentsCheckingTimer_ (new QTimer (this))
@@ -177,7 +175,7 @@ namespace Metida
 
 	QList<QAction*> LJBloggingPlatform::GetEditorActions () const
 	{
-		return { FirstSeparator_, LJUser_, LJCut_ };
+		return { FirstSeparator_, LJUser_ };
 	}
 
 	QList<QWidget*> LJBloggingPlatform::GetBlogiqueSideWidgets () const
@@ -273,11 +271,6 @@ namespace Metida
 			return;
 
 		emit insertTag (QString ("<lj user=\"%1\">").arg (name));
-	}
-
-	void LJBloggingPlatform::handleAddLJCut ()
-	{
-
 	}
 
 	void LJBloggingPlatform::handleAccountValidated (bool validated)
