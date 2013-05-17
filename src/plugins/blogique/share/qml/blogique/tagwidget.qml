@@ -1,5 +1,4 @@
 import QtQuick 1.1
-import Effects 1.0
 import "tagballoonlist.js" as TagBalloonList
 
 Rectangle
