@@ -208,6 +208,7 @@ namespace Blogique
 
 		EntryType_ = e.EntryType_;
 		EntryId_ = e.EntryId_;
+		EntryUrl_ = e.EntryUrl_;
 		Ui_.Subject_->setText (e.Subject_);
 		PostEdit_->SetContents (e.Content_, ContentType::HTML);
 
@@ -495,6 +496,9 @@ namespace Blogique
 	{
 		Ui_.Subject_->clear ();
 		PostEdit_->SetContents (QString (), ContentType::PlainText);
+		EntryUrl_.clear ();
+		EntryId_ = 0;
+
 		for (auto w : SidePluginsWidgets_)
 		{
 			auto ibsw = qobject_cast<IBlogiqueSideWidget*> (w);
@@ -999,6 +1003,16 @@ namespace Blogique
 				"selectTag",
 				Q_ARG (QVariant, tag),
 				Q_ARG (QVariant, false));
+	}
+
+	void BlogiqueWidget::on_OpenInBrowser__triggered ()
+	{
+		if (EntryUrl_.isEmpty ())
+			return;
+
+		Core::Instance ().SendEntity (Util::MakeEntity (EntryUrl_,
+				QString (),
+				static_cast<TaskParameters> (FromUserInitiated | OnlyHandle)));
 	}
 
 }

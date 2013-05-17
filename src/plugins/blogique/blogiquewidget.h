@@ -88,6 +88,7 @@ namespace Blogique
 
 		EntryType EntryType_;
 		qint64 EntryId_;
+		QUrl EntryUrl_;
 
 		bool EntryChanged_;
 
@@ -160,6 +161,7 @@ namespace Blogique
 		void on_SelectTags__toggled (bool checked);
 		void handleTagTextChanged (const QString& text);
 		void handleTagRemoved (const QString& tag);
+		void on_OpenInBrowser__triggered ();
 
 	signals:
 		void removeTab (QWidget *tab);
