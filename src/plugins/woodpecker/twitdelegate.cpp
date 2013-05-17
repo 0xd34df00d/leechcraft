@@ -79,7 +79,7 @@ namespace Woodpecker
 
 		QFont mainFont ("Dejavu Sans", 10, QFont::Normal);
 
-		if(option.state & QStyle::State_Selected)
+		if (option.state & QStyle::State_Selected)
 		{
 			QLinearGradient gradientSelected (r.left (),r.top (),r.left (),r.height ()+r.top ());
 			gradientSelected.setColorAt (0.0, QColor::fromRgb (119,213,247));
@@ -116,7 +116,7 @@ namespace Woodpecker
 		}
 
 		// Get title, description and icon
-		QIcon ic = QIcon (qvariant_cast<QPixmap>(index.data(Qt::DecorationRole)));
+		QIcon ic = QIcon (qvariant_cast<QPixmap> (index.data (Qt::DecorationRole)));
 		auto current_tweet = index.data (Qt::UserRole).value<std::shared_ptr<Tweet>> ();
 		if (!current_tweet) 
 		{
@@ -129,7 +129,7 @@ namespace Woodpecker
 		QTextDocument* doc = current_tweet->getDocument ();
 
 		int imageSpace = 50;
-		if (!ic.isNull()) 
+		if (!ic.isNull ()) 
 		{
 			// Icon
 			r = option.rect.adjusted (5, 10, -10, -10);
@@ -147,10 +147,10 @@ namespace Woodpecker
 
 		// Author
 		r = option.rect.adjusted (imageSpace, 30, -10, 0);
-		auto author_rect = std::unique_ptr<QRect> (new QRect(r.left (), r.bottom () - painter->fontMetrics ().height () - 8, painter->fontMetrics ().width (author), r.height ()));
+		auto author_rect = std::unique_ptr<QRect> (new QRect (r.left (), r.bottom () - painter->fontMetrics ().height () - 8, painter->fontMetrics ().width (author), r.height ()));
 		painter->setPen (linkFontPen);
 		painter->setFont (mainFont);
-		painter->drawText (*(author_rect), Qt::AlignLeft, author, &r);
+		painter->drawText (* (author_rect), Qt::AlignLeft, author, &r);
 		painter->setPen (fontPen);
 
 		// Time
@@ -162,14 +162,14 @@ namespace Woodpecker
 
 	QSize TwitDelegate::sizeHint (const QStyleOptionViewItem & option, const QModelIndex & index) const
 	{
-		return QSize(200, 60); // very dumb value
+		return QSize (200, 60); // very dumb value
 	}
 
 	TwitDelegate::~TwitDelegate ()
 	{
 	}
 
-	bool TwitDelegate::editorEvent(QEvent* event, QAbstractItemModel* model, const QStyleOptionViewItem& option, const QModelIndex& index)
+	bool TwitDelegate::editorEvent (QEvent* event, QAbstractItemModel* model, const QStyleOptionViewItem& option, const QModelIndex& index)
 	{
 		QListWidget*  parent_widget = qobject_cast<QListWidget*> (m_parent);
 
@@ -182,18 +182,18 @@ namespace Woodpecker
 				auto current_tweet = index.data (Qt::UserRole).value<std::shared_ptr<Tweet>> ();
 				auto position = (me->pos () - option.rect.adjusted (imageSpace + 14, 4, 0, -22).topLeft ());
 
-				qDebug() << "Coordinates: " << position.x() << ", " << position.y();
+				qDebug () << "Coordinates: " << position.x () << ", " << position.y ();
 
 				QTextDocument* textDocument = current_tweet->getDocument ();
 				int textCursorPosition =
 					textDocument->documentLayout ()->hitTest (position, Qt::FuzzyHit);
-				QChar character (textDocument->characterAt(textCursorPosition));
+				QChar character (textDocument->characterAt (textCursorPosition));
 				QString string;
 				string.append (character);
 
-				qDebug() << __FILE__ << __LINE__ << "Mouse pressed on letter " << string;
+				qDebug () << __FILE__ << __LINE__ << "Mouse pressed on letter " << string;
 
-				auto anchor = textDocument->documentLayout ()->anchorAt(position);
+				auto anchor = textDocument->documentLayout ()->anchorAt (position);
 
 				if (parent_widget)
 					if (!anchor.isEmpty ())
@@ -206,14 +206,14 @@ namespace Woodpecker
 		}
 		else if (event->type () == QEvent::MouseMove)
 		{
-			qDebug() << "Mouse moved";
+			qDebug () << "Mouse moved";
 			QMouseEvent *me = (QMouseEvent*)event;
 			if (me)
 			{
 				auto current_tweet = index.data (Qt::UserRole).value<std::shared_ptr<Tweet>> ();
 				auto position = (me->pos () - option.rect.adjusted (imageSpace + 14, 4, 0, -22).topLeft ());
 
-				qDebug() << "Move coordinates: " << position.x () << ", " << position.y ();
+				qDebug () << "Move coordinates: " << position.x () << ", " << position.y ();
 				QTextDocument* textDocument = current_tweet->getDocument ();
 				auto anchor = textDocument->documentLayout ()->anchorAt (position);
 

@@ -50,8 +50,8 @@ namespace Woodpecker
 		explicit TwitterUser (QString username, QObject *parent = 0);
 		~TwitterUser ();
 		
-		void setUsername (QString username) { m_username = username; }
-		QString username () { return m_username; }
+		void setUsername (const QString& username);
+		QString username ();
 		
 		/** @brief Grabs avatar from Twitter
 		 * 	@param path http url of image
@@ -64,7 +64,7 @@ namespace Woodpecker
 		QNetworkAccessManager *http;
 		
 	signals:
-		void userReady();
+		void userReady ();
 		
 	public slots:
 		void avatarDownloaded (QNetworkReply *reply);

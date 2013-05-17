@@ -104,19 +104,19 @@ namespace Woodpecker
 		void updateTweetList_ ();
 		
 	public slots:
-		void tryToLogin();
+		void tryToLogin ();
 		void requestUserTimeline (QString username);
 		void updateScreenTwits (QList<std::shared_ptr<Tweet>> twits);
 		void recvdAuth (QString token, QString tokenSecret);
-		void twit();
-		void retwit();
-		void reply();
-		void reply(QListWidgetItem*);
-		void reportSpam();
-		void sendReply();
-		void webOpen();
-		void scrolledDown(int sliderPos);
-		void setUpdateReady();
+		void twit ();
+		void retwit ();
+		void reply ();
+		void reply (QListWidgetItem*);
+		void reportSpam ();
+		void sendReply ();
+		void webOpen ();
+		void scrolledDown (int sliderPos);
+		void setUpdateReady ();
 		
 	signals:
 		void removeTab (QWidget*);

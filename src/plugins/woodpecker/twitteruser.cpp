@@ -51,10 +51,10 @@ namespace Woodpecker
 	{
 		QByteArray data;
 
-		data = reply->readAll();
+		data = reply->readAll ();
 		avatar.loadFromData (data);
-		reply->deleteLater();
-		emit userReady();
+		reply->deleteLater ();
+		emit userReady ();
 	}
 
 	void TwitterUser::downloadAvatar (QString path)
@@ -66,11 +66,21 @@ namespace Woodpecker
 		http->get (*req);
 	}
 
-	TwitterUser::~TwitterUser()
+	TwitterUser::~TwitterUser ()
 	{
 		if (req) delete req;
 
-		http->deleteLater();
+		http->deleteLater ();
+	}
+	
+	void TwitterUser::setUsername (const QString& username)
+	{
+		m_username = username;
+	}
+	
+	QString TwitterUser::username ()
+	{
+		return m_username;
 	}
 }
 }

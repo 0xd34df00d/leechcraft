@@ -50,14 +50,14 @@ namespace Woodpecker
 		oauthManager = new KQOAuthManager (this);
 
 		oauthRequest->setEnableDebugOutput (false); // DONE: Remove debug
-		consumerKey = XmlSettingsManager::Instance ()->property ("consumer_key").toString();
-		consumerKeySecret = XmlSettingsManager::Instance ()->property ("consumer_key_secret").toString();
+		consumerKey = XmlSettingsManager::Instance ()->property ("consumer_key").toString ();
+		consumerKeySecret = XmlSettingsManager::Instance ()->property ("consumer_key_secret").toString ();
 
 		connect (oauthManager, SIGNAL (requestReady (QByteArray)),
 				this, SLOT (onRequestReady (QByteArray)));
 
-		connect (oauthManager, SIGNAL (authorizedRequestDone()),
-				this, SLOT (onAuthorizedRequestDone()));
+		connect (oauthManager, SIGNAL (authorizedRequestDone ()),
+				this, SLOT (onAuthorizedRequestDone ()));
 
 		connect (HttpClient, SIGNAL (finished (QNetworkReply*)),
 				this, SLOT (replyFinished (QNetworkReply*)));
@@ -73,8 +73,8 @@ namespace Woodpecker
 	void twitterInterface::requestTwitter (QUrl requestAddress)
 	{
 		HttpClient->get (QNetworkRequest (requestAddress));
-		//           getAccess();
-		//           xauth();
+		//           getAccess ();
+		//           xauth ();
 	}
 
 	void twitterInterface::replyFinished (QNetworkReply *reply)
@@ -98,7 +98,7 @@ namespace Woodpecker
 		QVariantList answers = parser.parse (json, &ok).toList ();
 
 		if (!ok) 
-			qWarning() << "Parsing error at parseReply " << QString::fromUtf8(json);
+			qWarning () << "Parsing error at parseReply " << QString::fromUtf8 (json);
 
 		QVariantMap tweetMap;
 		QVariantMap userMap;
@@ -113,7 +113,7 @@ namespace Woodpecker
 			tempTweet->setText (tweetMap["text"].toString ());
 			tempTweet->author ()->setUsername (userMap["screen_name"].toString ());
 			tempTweet->author ()->downloadAvatar (userMap["profile_image_url"].toString ());
-			connect(tempTweet->author ().get (), SIGNAL (userReady ()), parent (), SLOT (setUpdateReady ()));
+			connect (tempTweet->author ().get (), SIGNAL (userReady ()), parent (), SLOT (setUpdateReady ()));
 			tempTweet->setDateTime (QLocale ().toDateTime (tweetMap["created_at"].toString (), QLatin1String ("ddd MMM dd HH:mm:ss +0000 yyyy")));
 			tempTweet->setId (tweetMap["id"].toULongLong ());
 
@@ -150,7 +150,7 @@ namespace Woodpecker
 
 		if (this->token.isEmpty () || this->tokenSecret.isEmpty ())
 		{
-			qWarning() << "No access tokens. Aborting.";
+			qWarning () << "No access tokens. Aborting.";
 			return;
 		}
 
@@ -211,14 +211,14 @@ namespace Woodpecker
 		signedRequest (TRUpdate, KQOAuthRequest::POST, param);
 	}
 
-	void twitterInterface::retweet(long unsigned int id)
+	void twitterInterface::retweet (long unsigned int id)
 	{
 		KQOAuthParameters param;
 		param.insert ("rt_id", QString::number (id));
 		signedRequest (TRRetweet, KQOAuthRequest::POST, param);
 	}
 
-	void twitterInterface::reply(long unsigned int replyid, QString tweet)
+	void twitterInterface::reply (long unsigned int replyid, QString tweet)
 	{
 		KQOAuthParameters param;
 		param.insert ("status", tweet);
@@ -227,20 +227,20 @@ namespace Woodpecker
 	}
 
 
-	void twitterInterface::onAuthorizedRequestDone()
+	void twitterInterface::onAuthorizedRequestDone ()
 	{
-		qDebug() << "Request sent to Twitter!";
+		qDebug () << "Request sent to Twitter!";
 	}
 
 	void twitterInterface::onRequestReady (QByteArray response)
 	{
-		qDebug() << "Response from the service: recvd";// << response;
+		qDebug () << "Response from the service: recvd";// << response;
 		emit tweetsReady (parseReply (response));
 	}
 
 	void twitterInterface::onAuthorizationReceived (QString token, QString verifier)
 	{
-		qDebug() << "User authorization received: " << token << verifier;
+		qDebug () << "User authorization received: " << token << verifier;
 
 		oauthManager->getUserAccessTokens (QUrl ("https://api.twitter.com/oauth/access_token"));
 
@@ -252,12 +252,12 @@ namespace Woodpecker
 
 	void twitterInterface::onAccessTokenReceived (QString token, QString tokenSecret) 
 	{
-		qDebug() << "Access token received: " << token << tokenSecret;
+		qDebug () << "Access token received: " << token << tokenSecret;
 
 		this->token = token;
 		this->tokenSecret = tokenSecret;
 
-		qDebug() << "Access tokens now stored. You are ready to send Tweets from user's account!";
+		qDebug () << "Access tokens now stored. You are ready to send Tweets from user's account!";
 
 		emit authorized (token, tokenSecret);
 
@@ -265,19 +265,19 @@ namespace Woodpecker
 
 	void twitterInterface::onTemporaryTokenReceived (QString token, QString tokenSecret)
 	{
-		qDebug() << "Temporary token received: " << token << tokenSecret;
+		qDebug () << "Temporary token received: " << token << tokenSecret;
 
 		QUrl userAuthURL ("https://api.twitter.com/oauth/authorize");
 
-		if (oauthManager->lastError() == KQOAuthManager::NoError) {
-			qDebug() << "Asking for user's permission to access protected resources. Opening URL: " << userAuthURL;
+		if (oauthManager->lastError () == KQOAuthManager::NoError) {
+			qDebug () << "Asking for user's permission to access protected resources. Opening URL: " << userAuthURL;
 			oauthManager->getUserAuthorization (userAuthURL);
 		}
 
 	}
 
 
-	void twitterInterface::xauth() 
+	void twitterInterface::xauth () 
 	{
 		connect (oauthManager, SIGNAL (accessTokenReceived (QString, QString)),
 				this, SLOT (onAccessTokenReceived (QString, QString)));
@@ -287,7 +287,7 @@ namespace Woodpecker
 		oauthRequest->setConsumerKey ("nbwLYUDIlgsMgDFCu6jfuA");
 		oauthRequest->setConsumerSecretKey ("7TWYPzLUqZlihIRA2VWfZhCRfss2JNKvkSWMQx4");
 
-		// oauthRequest->setXAuthLogin("login","password");
+		// oauthRequest->setXAuthLogin ("login","password");
 
 		oauthManager->executeRequest (oauthRequest);
 	}
@@ -295,25 +295,25 @@ namespace Woodpecker
 	void twitterInterface::searchTwitter (QString text)
 	{
 		QString link ("http://search.twitter.com/search.json?q=" + text);
-		setLastRequestMode(FMSearchResult);
+		setLastRequestMode (FMSearchResult);
 		requestTwitter (link);
 	}
 
-	void twitterInterface::getHomeFeed()
+	void twitterInterface::getHomeFeed ()
 	{
-		qDebug() << "Getting home feed";
-		setLastRequestMode(FMHomeTimeline);
+		qDebug () << "Getting home feed";
+		setLastRequestMode (FMHomeTimeline);
 		signedRequest (TRHomeTimeline, KQOAuthRequest::GET);
 	}
 
-	void twitterInterface::getMoreTweets(QString last)
+	void twitterInterface::getMoreTweets (QString last)
 	{
 		KQOAuthParameters param;
 
-		qDebug() << "Getting more tweets from " << last;
+		qDebug () << "Getting more tweets from " << last;
 		param.insert ("max_id",last);
-		param.insert ("count",QString("%1").arg(30));
-		setLastRequestMode(FMHomeTimeline);
+		param.insert ("count",QString ("%1").arg (30));
+		setLastRequestMode (FMHomeTimeline);
 		signedRequest (TRHomeTimeline, KQOAuthRequest::GET,param);
 	}
 
@@ -322,7 +322,7 @@ namespace Woodpecker
 	{
 		KQOAuthParameters param;
 		param.insert ("screen_name", username);
-		setLastRequestMode(FMUserTimeline);
+		setLastRequestMode (FMUserTimeline);
 		signedRequest (TRUserTimeline, KQOAuthRequest::GET, param);
 	}
 
@@ -330,10 +330,10 @@ namespace Woodpecker
 	{
 		token = savedToken;
 		tokenSecret = savedTokenSecret;
-		qDebug() << "Successfully logged in";
+		qDebug () << "Successfully logged in";
 	}
 
-	void twitterInterface::reportSPAM(QString username, long unsigned int userid)
+	void twitterInterface::reportSPAM (QString username, long unsigned int userid)
 	{
 		KQOAuthParameters param;
 

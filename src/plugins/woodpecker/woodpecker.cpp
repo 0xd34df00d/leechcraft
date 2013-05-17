@@ -125,7 +125,7 @@ namespace Woodpecker
 		return XmlSettingsDialog_;
 	}
 	
-	void Plugin::MakeTab(QWidget *tab, const TabClassInfo& tc)
+	void Plugin::MakeTab (QWidget *tab, const TabClassInfo& tc)
 	{
 		connect (tab,
 				SIGNAL (removeTab (QWidget*)),

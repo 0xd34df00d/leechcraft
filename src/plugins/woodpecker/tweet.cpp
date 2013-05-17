@@ -54,12 +54,12 @@ namespace Woodpecker
 	{
 	}
 
-	Tweet::Tweet(const Tweet& original)
+	Tweet::Tweet (const Tweet& original)
 	: QObject ()
 	{
 		Author_ = original.author ();
 		m_created = original.dateTime ();
-		setText(original.text ());
+		setText (original.text ());
 		m_id = original.id ();
 	}
 
@@ -83,7 +83,7 @@ namespace Woodpecker
 
 	bool Tweet::operator!= (const Tweet& other) const
 	{
-		return !(*this == other);
+		return ! (*this == other);
 	}
 
 	bool Tweet::operator< (const Tweet& other) const
@@ -98,7 +98,7 @@ namespace Woodpecker
 
 	void Tweet::setText (const QString& text) 
 	{
-		QRegExp rx ("\\s((http|https)://[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(([0-9]{1,5})?/?.*))(\\s|,|$)");
+		QRegExp rx ("\\s ((http|https)://[a-z0-9]+ ([-.]{1}[a-z0-9]+)*.[a-z]{2,5} (([0-9]{1,5})?/?.*)) (\\s|,|$)");
 		rx.setMinimal (true);
 
 		m_text = text;
@@ -125,7 +125,7 @@ namespace Woodpecker
 		m_document.setHtml (html);
 	}
 
-	TwitterUser_ptr Tweet::author() const
+	TwitterUser_ptr Tweet::author () const
 	{
 		return Author_;
 	}
@@ -150,12 +150,12 @@ namespace Woodpecker
 		return &m_document;
 	}
 	
-	QString Tweet::text() const
+	QString Tweet::text () const
 	{
 		return m_text;
 	}
 	
-	qulonglong Tweet::id() const
+	qulonglong Tweet::id () const
 	{
 		return m_id;
 	}
