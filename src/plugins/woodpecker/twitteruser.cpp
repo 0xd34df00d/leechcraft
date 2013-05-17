@@ -34,7 +34,6 @@ namespace LeechCraft
 {
 namespace Woodpecker
 {
-
 	TwitterUser::TwitterUser (QObject *parent) :
 		QObject (parent)
 	{
@@ -73,7 +72,6 @@ namespace Woodpecker
 
 		http->deleteLater();
 	}
-
 }
 }
 

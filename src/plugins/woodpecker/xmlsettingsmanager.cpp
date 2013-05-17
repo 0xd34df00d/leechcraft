@@ -34,7 +34,6 @@ namespace LeechCraft
 {
 namespace Woodpecker
 {
-
 	XmlSettingsManager::XmlSettingsManager ()
 	{
 		Util::BaseSettingsManager::Init ();

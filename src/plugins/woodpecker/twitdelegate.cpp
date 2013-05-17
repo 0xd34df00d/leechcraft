@@ -47,7 +47,6 @@ namespace LeechCraft
 {
 namespace Woodpecker
 {
-
 	TwitDelegate::TwitDelegate(QObject *parent)
 	{
 		m_parent = parent;
@@ -216,7 +215,5 @@ namespace Woodpecker
 		}
 		return QAbstractItemDelegate::editorEvent(event, model, option, index);
 	}
-
-
 }
 }
