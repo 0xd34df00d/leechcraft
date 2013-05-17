@@ -242,7 +242,7 @@ namespace Blogique
 		virtual QList<QWidget*> GetBlogiqueSideWidgets () const = 0;
 
 		virtual QList<QPair<QRegExp, QString>> GetRich2HtmlPairs () const = 0;
-		
+
 		virtual QList<QPair<QRegExp, QString>> GetHtml2RichPairs () const = 0;
 
 	protected:
@@ -282,6 +282,8 @@ namespace Blogique
 		 */
 
 		virtual void accountValidated (QObject *account, bool validated) = 0;
+
+		virtual void insertTag (const QString& tag) = 0;
 	};
 
 	Q_DECLARE_OPERATORS_FOR_FLAGS (IBloggingPlatform::BloggingPlatfromFeatures);
