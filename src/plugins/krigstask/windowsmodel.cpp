@@ -29,6 +29,7 @@
 
 #include "windowsmodel.h"
 #include <QtDebug>
+#include <QIcon>
 #include "xwrapper.h"
 
 namespace LeechCraft
@@ -39,32 +40,47 @@ namespace Krigstask
 	: QAbstractItemModel (parent)
 	{
 		XWrapper w;
-		const auto& windows = w.GetWindows ();
-		qDebug () << windows.size ();
+		auto windows = w.GetWindows ();
+
+		for (auto wid : windows)
+			Windows_.append ({ wid, w.GetWindowTitle (wid), w.GetWindowIcon (wid) });
 	}
 
-	int WindowsModel::columnCount (const QModelIndex& parent) const
+	int WindowsModel::columnCount (const QModelIndex&) const
 	{
-		return 0;
+		return 1;
 	}
 
 	int WindowsModel::rowCount (const QModelIndex& parent) const
 	{
-		return 0;
+		return parent.isValid () ? 0 : Windows_.size ();
 	}
 
 	QModelIndex WindowsModel::index (int row, int column, const QModelIndex& parent) const
 	{
-		return {};
+		return hasIndex (row, column, parent) ?
+				createIndex (row, column) :
+				QModelIndex {};
 	}
 
-	QModelIndex WindowsModel::parent (const QModelIndex& child) const
+	QModelIndex WindowsModel::parent (const QModelIndex&) const
 	{
 		return {};
 	}
 
 	QVariant WindowsModel::data (const QModelIndex& index, int role) const
 	{
+		const auto row = index.row ();
+		const auto& item = Windows_.at (row);
+
+		switch (role)
+		{
+		case Qt::DisplayRole:
+			return item.Title_;
+		case Qt::DecorationRole:
+			return item.Icon_;
+		}
+
 		return {};
 	}
 }

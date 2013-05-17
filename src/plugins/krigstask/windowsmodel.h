@@ -30,6 +30,8 @@
 #pragma once
 
 #include <QAbstractItemModel>
+#include <QIcon>
+#include <X11/X.h>
 
 namespace LeechCraft
 {
@@ -38,6 +40,15 @@ namespace Krigstask
 	class WindowsModel : public QAbstractItemModel
 	{
 		Q_OBJECT
+
+		struct WinInfo
+		{
+			Window WID_;
+
+			QString Title_;
+			QIcon Icon_;
+		};
+		QList<WinInfo> Windows_;
 	public:
 		WindowsModel (QObject* = 0);
 
