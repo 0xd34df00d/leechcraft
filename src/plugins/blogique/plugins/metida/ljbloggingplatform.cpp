@@ -206,16 +206,16 @@ namespace Metida
 				"<img\\ssrc=\".+userinfo.gif.+\".+><\\/a>"
 				"<a\\shref=\"http:\\/\\/(.+).livejournal.com\"\\starget=\"_blank\">(.+)<\\/a>"),
 				QString ("<lj user=\"\\1\">") };
-		return { /*ljUser*/ };
+		return { ljUser };
 	}
 
 	QList<QPair<QRegExp, QString>> LJBloggingPlatform::GetRich2HtmlPairs () const
 	{
-		QPair<QRegExp, QString> ljUser = { QRegExp ("<lj\\suser=\"(.+)\">"),
+		QPair<QRegExp, QString> ljUser = { QRegExp ("<lj\\suser=\"(.+)\">(.+)(<\\/lj>)?"),
 			QString ("<a href=\"http://\\1.livejournal.com/profile\" target=\"_blank\">"
-					"<img src=\"http://l-stat.livejournal.com/img/userinfo.gif?v=17080\" lt=\"\" /></a>"
-					"<a href=\"http://\\1.livejournal.com\" target=\"_blank\">\\1</a>") };
-		return { /*ljUser*/ };
+					"<img src=\"http://l-stat.livejournal.com/img/userinfo.gif?v=17080\"></a>"
+					"<a href=\"http://\\1.livejournal.com\" target=\"_blank\">\\1</a>\\2") };
+		return { ljUser };
 	}
 
 	void LJBloggingPlatform::RestoreAccounts ()
@@ -272,7 +272,7 @@ namespace Metida
 		if (name.isEmpty ())
 			return;
 
-
+		emit insertTag (QString ("<lj user=\"%1\">").arg (name));
 	}
 
 	void LJBloggingPlatform::handleAddLJCut ()
