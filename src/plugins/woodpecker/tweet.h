@@ -91,10 +91,12 @@ namespace Woodpecker
 		/** @brief Comparison is performed by comparing twit id's */
 		bool operator< (const Tweet&) const;
 	};
+	
+	typedef std::shared_ptr<Tweet> Tweet_ptr;
 }
 }
 
 Q_DECLARE_METATYPE (LeechCraft::Woodpecker::Tweet);
-Q_DECLARE_METATYPE (std::shared_ptr<LeechCraft::Woodpecker::Tweet>);
+Q_DECLARE_METATYPE (LeechCraft::Woodpecker::Tweet_ptr);
 
 // kate: indent-mode cstyle; indent-width 4; replace-tabs off; tab-width 4;
