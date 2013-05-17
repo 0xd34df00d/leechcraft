@@ -98,7 +98,7 @@ namespace Woodpecker
 
 	void Tweet::setText (const QString& text) 
 	{
-		QRegExp rx ("\\s ((http|https)://[a-z0-9]+ ([-.]{1}[a-z0-9]+)*.[a-z]{2,5} (([0-9]{1,5})?/?.*)) (\\s|,|$)");
+		QRegExp rx ("\\s((http|https)://[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(([0-9]{1,5})?/?.*))(\\s|,|$)");
 		rx.setMinimal (true);
 
 		m_text = text;

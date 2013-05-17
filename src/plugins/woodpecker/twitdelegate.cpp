@@ -48,7 +48,7 @@ namespace LeechCraft
 namespace Woodpecker
 {
 	TwitDelegate::TwitDelegate (QObject *parent)
-	: QObject (parent)
+	: QAbstractItemDelegate (parent)
 	{
 		m_parent = parent;
 	}
