@@ -60,7 +60,7 @@ namespace NetStoreManager
 		void on_Remove__released ();
 
 	signals:
-		void directoryAdded (const QVariantMap& dirs);
+		void directoriesToSyncUpdated (const QVariantMap& dirs);
 	};
 }
 }

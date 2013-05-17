@@ -28,6 +28,10 @@
  **********************************************************************/
 
 #include "syncmanager.h"
+#include <QtDebug>
+#include "accountsmanager.h"
+#include "fileswatcher.h"
+#include "syncer.h"
 
 namespace LeechCraft
 {
@@ -36,12 +40,46 @@ namespace NetStoreManager
 	SyncManager::SyncManager (AccountsManager *am, QObject *parent)
 	: QObject (parent)
 	, AM_ (am)
+	, FilesWatcher_ (new FilesWatcher (this))
 	{
 	}
 
 	void SyncManager::Release ()
 	{
 	}
+
+	void SyncManager::handleDirectoriesToSyncUpdated (const QVariantMap& map)
+	{
+		QStringList pathes;
+		for (const auto& key : map.keys ())
+		{
+			const QString& path = map [key].toString ();
+			pathes << path;
+			if (AccountID2Syncer_.contains (key))
+			{
+				if (AccountID2Syncer_ [key]->GetBasePath () == path)
+					continue;
+				else
+				{
+					AccountID2Syncer_ [key]->stop ();
+					AccountID2Syncer_.take (key)->deleteLater ();
+				}
+			}
+
+			AccountID2Syncer_ [key] = CreateSyncer (AM_->GetAccountFromUniqueID (key),
+					path);
+		}
+
+		FilesWatcher_->updatePathes (pathes);
+	}
+
+	Syncer* SyncManager::CreateSyncer (IStorageAccount *isa, const QString& baseDir)
+	{
+		Syncer *syncer = new Syncer (baseDir, isa, this);
+		syncer->start ();
+		return syncer;
+	}
+
 }
 }
 

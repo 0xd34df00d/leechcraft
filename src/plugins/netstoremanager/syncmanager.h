@@ -30,23 +30,34 @@
 #pragma once
 
 #include <QObject>
+#include <QVariant>
+#include "interfaces/netstoremanager/istorageaccount.h"
 
 namespace LeechCraft
 {
 namespace NetStoreManager
 {
 	class AccountsManager;
+	class FilesWatcher;
+	class Syncer;
 
 	class SyncManager : public QObject
 	{
 		Q_OBJECT
 
 		AccountsManager *AM_;
+		FilesWatcher *FilesWatcher_;
+		QHash<QString, Syncer*> AccountID2Syncer_;
+
 	public:
 		SyncManager (AccountsManager *am, QObject *parent = 0);
 
 		void Release ();
+	private:
+		Syncer* CreateSyncer (IStorageAccount *isa, const QString& baseDir);
 
+	public slots:
+		void handleDirectoriesToSyncUpdated (const QVariantMap& map);
 	};
 }
 }

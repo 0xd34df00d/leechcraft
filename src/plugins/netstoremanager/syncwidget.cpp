@@ -82,7 +82,7 @@ namespace NetStoreManager
 			Ui_.SyncView_->resizeColumnToContents (SyncItemDelegate::Account);
 		}
 
-		emit directoryAdded (map);
+		emit directoriesToSyncUpdated (map);
 	}
 
 	void SyncWidget::accept ()
@@ -99,7 +99,7 @@ namespace NetStoreManager
 			map [accItem->data (SyncItemDelegate::AccountId).toString ()] = dirItem->text ();
 		}
 
-		emit directoryAdded (map);
+		emit directoriesToSyncUpdated (map);
 		XmlSettingsManager::Instance ().setProperty ("Synchronization", map);
 	}
 
