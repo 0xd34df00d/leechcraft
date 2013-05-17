@@ -47,7 +47,6 @@ namespace Woodpecker
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
-		TabClassInfo TabClass_;
 
 		Core ();
 		
@@ -60,7 +59,6 @@ namespace Woodpecker
 		
 	public:
 		static Core& Instance ();
-		TabClassInfo GetTabClass () const;
 
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;

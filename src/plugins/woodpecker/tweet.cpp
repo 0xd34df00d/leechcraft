@@ -77,7 +77,7 @@ namespace Woodpecker
 		m_id = rhs.id ();
 		Author_ = rhs.author ();
 		m_created = rhs.dateTime ();
-		setText(rhs.text ());
+		setText (rhs.text ());
 
 		return *this;
 	}

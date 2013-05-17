@@ -37,23 +37,12 @@ namespace Woodpecker
 
 	Core::Core ()
 	{
-		TabClass_.TabClass_ = "Woodpecker";
-		TabClass_.VisibleName_ = tr ("Woodpecker");
-		TabClass_.Description_ = tr ("Tweets tab");
-		TabClass_.Icon_ = QIcon ("lcicons:/plugins/woodpecker/resources/images/woodpecker.svg");
-		TabClass_.Priority_ = 40;
-		TabClass_.Features_ = TFOpenableByRequest;
 	}
 
 	Core& Core::Instance ()
 	{
 		static Core c;
 		return c;
-	}
-
-	TabClassInfo Core::GetTabClass () const
-	{
-		return TabClass_;
 	}
 
 	void Core::SetProxy (ICoreProxy_ptr proxy)
