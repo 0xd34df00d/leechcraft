@@ -35,6 +35,8 @@
 #include <QHash>
 #include <X11/X.h>
 
+class QIcon;
+
 namespace LeechCraft
 {
 namespace Krigstask
@@ -49,6 +51,8 @@ namespace Krigstask
 		XWrapper ();
 
 		QList<Window> GetWindows ();
+		QString GetWindowTitle (Window);
+		QIcon GetWindowIcon (Window);
 	private:
 		Atom GetAtom (const QString&);
 		bool GetWinProp (Window, Atom, ulong*, uchar**, Atom = static_cast<Atom> (AnyPropertyType)) const;

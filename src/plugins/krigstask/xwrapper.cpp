@@ -28,8 +28,14 @@
  **********************************************************************/
 
 #include "xwrapper.h"
+#include <limits>
+#include <type_traits>
 #include <QString>
+#include <QPixmap>
+#include <QIcon>
 #include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/Xatom.h>
 
 namespace LeechCraft
 {
@@ -41,16 +47,149 @@ namespace Krigstask
 	{
 	}
 
+	namespace
+	{
+		template<typename T>
+		struct IsDoublePtr : std::false_type {};
+
+		template<typename T>
+		struct IsDoublePtr<T**> : std::true_type {};
+
+		template<typename T>
+		class Guarded
+		{
+			T *Data_;
+		public:
+			Guarded ()
+			: Data_ { nullptr }
+			{
+			}
+
+			~Guarded ()
+			{
+				if (Data_)
+					XFree (Data_);
+			}
+
+			T** Get (bool clear = true)
+			{
+				if (clear && Data_)
+					XFree (Data_);
+				return &Data_;
+			}
+
+			template<typename U>
+			U GetAs (bool clear = true)
+			{
+				if (clear && Data_)
+					XFree (Data_);
+				return IsDoublePtr<U>::value ?
+						reinterpret_cast<U> (&Data_) :
+						reinterpret_cast<U> (Data_);
+			}
+
+			T operator[] (size_t idx) const
+			{
+				return Data_ [idx];
+			}
+
+			T& operator[] (size_t idx)
+			{
+				return Data_ [idx];
+			}
+
+			operator bool () const
+			{
+				return Data_ != nullptr;
+			}
+
+			bool operator! () const
+			{
+				return !Data_;
+			}
+		};
+	}
+
 	QList<Window> XWrapper::GetWindows ()
 	{
 		ulong length = 0;
-		Window *data = 0;
+		Guarded<Window> data;
 
 		QList<Window> result;
-		if (GetRootWinProp (GetAtom ("_NET_CLIENT_LIST"), &length, reinterpret_cast<uchar**> (&data)))
+		if (GetRootWinProp (GetAtom ("_NET_CLIENT_LIST"), &length, data.GetAs<uchar**> ()))
 			for (ulong i = 0; i < length; ++i)
 				result << data [i];
 		return result;
+	}
+
+	QString XWrapper::GetWindowTitle (Window wid)
+	{
+		QString name;
+
+		ulong length = 0;
+		Guarded<uchar> data;
+
+		auto utf8Str = GetAtom ("UTF8_STRING");
+
+		if (GetWinProp (wid, GetAtom ("_NET_WM_VISIBLE_NAME"), &length, data.Get (), utf8Str))
+			name = QString::fromUtf8 (data.GetAs<char*> (false));
+
+		if (name.isEmpty ())
+			if (GetWinProp (wid, GetAtom ("_NET_WM_NAME"), &length, data.Get (), utf8Str))
+				name = QString::fromUtf8 (data.GetAs<char*> (false));
+
+		if (name.isEmpty ())
+			if (GetWinProp (wid, GetAtom ("XA_WM_NAME"), &length, data.Get (), XA_STRING))
+				name = QString::fromUtf8 (data.GetAs<char*> (false));
+
+		if (name.isEmpty ())
+		{
+			XFetchName (Display_, wid, data.GetAs<char**> ());
+			name = QString (data.GetAs<char*> (false));
+		}
+
+		if (name.isEmpty ())
+		{
+			XTextProperty prop;
+			if (XGetWMName (Display_, wid, &prop))
+			{
+				name = QString::fromUtf8 (reinterpret_cast<char*> (prop.value));
+				XFree (prop.value);
+			}
+		}
+
+		return name;
+	}
+
+	QIcon XWrapper::GetWindowIcon (Window wid)
+	{
+		int fmt = 0;
+		ulong type, count, extra;
+		Guarded<ulong> data;
+
+		XGetWindowProperty (Display_, wid, GetAtom ("_NET_WM_ICON"),
+				0, std::numeric_limits<long>::max (), False, AnyPropertyType,
+				&type, &fmt, &count, &extra,
+				data.GetAs<uchar**> ());
+
+		if (!data)
+			return {};
+
+		QIcon icon;
+
+		auto cur = *data.Get (false);
+		auto end = cur + count;
+		while (cur < end)
+		{
+			QImage img (cur [0], cur [1], QImage::Format_ARGB32);
+			cur += 2;
+			for (int i = 0; i < img.byteCount () / 4; ++i, ++cur)
+				reinterpret_cast<uint*> (img.bits ()) [i] = *cur;
+
+			icon.addPixmap (QPixmap::fromImage (img));
+		}
+
+		return icon;
 	}
 
 	Atom XWrapper::GetAtom (const QString& name)
