@@ -46,26 +46,26 @@ namespace Woodpecker
 		Q_OBJECT
 		
 	private:
-		qulonglong	m_id;						/**< Twit id in Twitter */
-		QString		m_text;						/**< Text of twit in plaintext */
-		std::shared_ptr<TwitterUser>	Author_;/**< Pointer to twitter author */
-		QDateTime	m_created;					/**< Twit date */
-		QTextDocument m_document;				/**< QTextDocument which is used for drawing twit */
+		qulonglong	m_id;			/**< Twit id in Twitter */
+		QString		m_text;			/**< Text of twit in plaintext */
+		TwitterUser_ptr	Author_;	/**< Pointer to twitter author */
+		QDateTime	m_created;		/**< Twit date */
+		QTextDocument m_document;	/**< QTextDocument which is used for drawing twit */
 	public:
 		Tweet (QObject *parent = 0);
-		Tweet (const QString& text, std::shared_ptr<TwitterUser> author = nullptr, QObject *parent = 0);
+		Tweet (const QString& text, TwitterUser_ptr author = nullptr, QObject *parent = 0);
 		Tweet (const Tweet& original);
 		~Tweet ();
 		
 		/** @brief Set both plain text contents and generates a html representation */
 		void setText (const QString& text);
-		QString text () const { return m_text; }
+		QString text () const;
 		
-		qulonglong id () const { return m_id; }
-		void setId (qulonglong id) { m_id = id; }
+		qulonglong id () const;
+		void setId (qulonglong id);
 		
-		std::shared_ptr<TwitterUser> author () const;
-		void setAuthor (std::shared_ptr<TwitterUser> newAuthor);
+		TwitterUser_ptr author () const;
+		void setAuthor (TwitterUser_ptr newAuthor);
 		
 		QDateTime dateTime () const;
 		void setDateTime (const QDateTime& datetime);
@@ -94,7 +94,7 @@ namespace Woodpecker
 }
 }
 
-Q_DECLARE_METATYPE ( LeechCraft::Woodpecker::Tweet );
-Q_DECLARE_METATYPE ( std::shared_ptr<LeechCraft::Woodpecker::Tweet> );
+Q_DECLARE_METATYPE (LeechCraft::Woodpecker::Tweet);
+Q_DECLARE_METATYPE (std::shared_ptr<LeechCraft::Woodpecker::Tweet>);
 
 // kate: indent-mode cstyle; indent-width 4; replace-tabs off; tab-width 4;

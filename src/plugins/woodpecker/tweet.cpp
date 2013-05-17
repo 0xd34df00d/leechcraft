@@ -39,7 +39,7 @@ namespace Woodpecker
 	{
 	}
 
-	Tweet::Tweet (const QString& text, std::shared_ptr<TwitterUser> author, QObject *parent)
+	Tweet::Tweet (const QString& text, TwitterUser_ptr author, QObject *parent)
 	: QObject (parent)
 	, m_id (0)
 	{
@@ -125,12 +125,12 @@ namespace Woodpecker
 		m_document.setHtml (html);
 	}
 
-	std::shared_ptr<TwitterUser> Tweet::author() const
+	TwitterUser_ptr Tweet::author() const
 	{
 		return Author_;
 	}
 	
-	void Tweet::setAuthor (std::shared_ptr<TwitterUser> newAuthor)
+	void Tweet::setAuthor (TwitterUser_ptr newAuthor)
 	{
 		Author_ = newAuthor;
 	}
@@ -148,6 +148,21 @@ namespace Woodpecker
 	QTextDocument* Tweet::getDocument ()
 	{
 		return &m_document;
+	}
+	
+	QString Tweet::text() const
+	{
+		return m_text;
+	}
+	
+	qulonglong Tweet::id() const
+	{
+		return m_id;
+	}
+	
+	void Tweet::setId (qulonglong id)
+	{
+		m_id = id;
 	}
 }
 }

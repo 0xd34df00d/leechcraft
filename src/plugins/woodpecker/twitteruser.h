@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <QPixmap>
 #include <QtNetwork/QNetworkReply>
@@ -69,6 +70,8 @@ namespace Woodpecker
 		void avatarDownloaded (QNetworkReply *reply);
 		
 	};
+	
+	typedef std::shared_ptr<TwitterUser> TwitterUser_ptr;
 }
 }
 
