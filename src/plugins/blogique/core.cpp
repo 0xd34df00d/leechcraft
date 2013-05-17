@@ -199,6 +199,10 @@ namespace Blogique
 				SIGNAL (tagsUpdated (QHash<QString,int>)),
 				newTab,
 				SLOT (handleTagsUpdated (QHash<QString,int>)));
+		connect (&Core::Instance (),
+				SIGNAL (insertTag (QString)),
+				newTab,
+				SLOT (handleInsertTag (QString)));
 
 		return newTab;
 	}
@@ -240,6 +244,10 @@ namespace Blogique
 					SIGNAL (accountValidated (QObject*, bool)),
 					this,
 					SLOT (handleAccountValidated (QObject*, bool)));
+			connect (platform->GetQObject (),
+					SIGNAL (insertTag (QString)),
+					this,
+					SIGNAL (insertTag (QString)));
 		}
 	}
 

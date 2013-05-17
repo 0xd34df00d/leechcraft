@@ -791,6 +791,15 @@ namespace Blogique
 					Q_ARG (QVariant, max));
 	}
 
+	void BlogiqueWidget::handleInsertTag (const QString& tag)
+	{
+		auto iahe = qobject_cast<IAdvancedHTMLEditor*> (PostEditWidget_);
+		if (!iahe)
+			return;
+
+		iahe->InsertHTML (tag);
+	}
+
 	void BlogiqueWidget::newEntry ()
 	{
 		if (EntryChanged_)

@@ -139,6 +139,7 @@ namespace Blogique
 		void handleRequestEntriesBegin ();
 		void handleRequestEntriesEnd ();
 		void handleTagsUpdated (const QHash<QString, int>& tags);
+		void handleInsertTag (const QString& tag);
 
 	private slots:
 		void handleCurrentAccountChanged (int id);
