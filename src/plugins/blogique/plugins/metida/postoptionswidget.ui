@@ -182,6 +182,13 @@
            </property>
           </widget>
          </item>
+         <item row="4" column="1">
+          <widget class="QCheckBox" name="SurfingbirdLike_">
+           <property name="text">
+            <string>Surfingbird</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
       </item>
@@ -361,8 +368,8 @@
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>175</x>
-     <y>403</y>
+     <x>163</x>
+     <y>411</y>
     </hint>
     <hint type="destinationlabel">
      <x>200</x>
@@ -377,12 +384,12 @@
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>167</x>
-     <y>400</y>
+     <x>163</x>
+     <y>411</y>
     </hint>
     <hint type="destinationlabel">
-     <x>239</x>
-     <y>397</y>
+     <x>163</x>
+     <y>511</y>
     </hint>
    </hints>
   </connection>
@@ -431,6 +438,22 @@
     <hint type="destinationlabel">
      <x>220</x>
      <y>450</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>AllLike_</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>SurfingbirdLike_</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>19</x>
+     <y>401</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>213</x>
+     <y>502</y>
     </hint>
    </hints>
   </connection>

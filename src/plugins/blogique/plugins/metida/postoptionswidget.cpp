@@ -119,6 +119,8 @@ namespace Metida
 			likes << "repost";
 		if (Ui_.TumblrLike_->isChecked ())
 			likes << "tumblr";
+		if (Ui_.SurfingbirdLike_->isChecked ())
+			likes << "surfingbird";
 
 		map ["likes"] = likes;
 
@@ -226,7 +228,8 @@ namespace Metida
 				likes = rxp.cap (2).split (',');
 
 			if (rxp.capturedTexts ().count () == 1)
-				likes = { "repost", "vkontakte", "facebook", "google", "livejournal", "twitter", "tumblr" };
+				likes = { "repost", "vkontakte", "facebook",
+						"google", "livejournal", "twitter", "tumblr" "surfingbird" };
 
 			Ui_.VkontakteLike_->setChecked (likes.contains ("vkontakte"));
 			Ui_.FacebookLike_->setChecked (likes.contains ("facebook"));
@@ -235,6 +238,7 @@ namespace Metida
 			Ui_.LiveJournalRepost_->setChecked (likes.contains ("repost"));
 			Ui_.TwitterLike_->setChecked (likes.contains ("twitter"));
 			Ui_.TumblrLike_->setChecked (likes.contains ("tumblr"));
+			Ui_.SurfingbirdLike_->setChecked (likes.contains ("surfingbird"));
 		}
 	}
 
@@ -306,25 +310,16 @@ namespace Metida
 
 		if (XmlSettingsManager::Instance ().Property ("SaveSelectedButtons", true).toBool ())
 		{
-			const auto& buttons = XmlSettingsManager::Instance ()
+			const auto& likes = XmlSettingsManager::Instance ()
 					.Property ("SavedLikeButtons", QStringList ()).toStringList ();
-			for (const auto& button : buttons)
-			{
-				if (button == "vk")
-					Ui_.VkontakteLike_->setChecked (true);
-				if (button == "fb")
-					Ui_.FacebookLike_->setChecked (true);
-				if (button == "go")
-					Ui_.GoogleLike_->setChecked (true);
-				if (button == "tw")
-					Ui_.TwitterLike_->setChecked (true);
-				if (button == "lj")
-					Ui_.LiveJournalReward_->setChecked (true);
-				if (button == "tb")
-					Ui_.TumblrLike_->setChecked (true);
-				if (button == "rp")
-					Ui_.LiveJournalRepost_->setChecked (true);
-			}
+			Ui_.VkontakteLike_->setChecked (likes.contains ("vkontakte"));
+			Ui_.FacebookLike_->setChecked (likes.contains ("facebook"));
+			Ui_.GoogleLike_->setChecked (likes.contains ("google"));
+			Ui_.LiveJournalReward_->setChecked (likes.contains ("livejournal"));
+			Ui_.LiveJournalRepost_->setChecked (likes.contains ("repost"));
+			Ui_.TwitterLike_->setChecked (likes.contains ("twitter"));
+			Ui_.TumblrLike_->setChecked (likes.contains ("tumblr"));
+			Ui_.SurfingbirdLike_->setChecked (likes.contains ("surfingbird"));
 		}
 	}
 
