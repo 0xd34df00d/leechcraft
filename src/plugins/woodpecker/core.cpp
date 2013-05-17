@@ -34,7 +34,6 @@ namespace LeechCraft
 {
 namespace Woodpecker
 {
-
 	Core::Core ()
 	{
 	}
@@ -54,7 +53,6 @@ namespace Woodpecker
 	{
 		return Proxy_;
 	}
-
 };
 };
 // kate: indent-mode cstyle; indent-width 4; replace-tabs off; tab-width 4;

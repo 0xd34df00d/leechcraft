@@ -53,7 +53,6 @@ namespace Woodpecker
 		Core (const Core&) = delete;
 		Core (Core&&) = delete;
 		
-		
 		Core& operator= (const Core&) = delete;
 		Core& operator= (Core&&) = delete;
 		
@@ -62,7 +61,6 @@ namespace Woodpecker
 
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
-	
 	};
 };
 };

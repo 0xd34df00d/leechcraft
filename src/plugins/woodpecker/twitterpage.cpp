@@ -43,7 +43,6 @@ namespace LeechCraft
 {
 namespace Woodpecker
 {
-
 	TwitterPage::TwitterPage (const TabClassInfo& tc, QObject *plugin) 
 		: TC_ (tc)
 		, ParentPlugin_(plugin)
@@ -368,7 +367,6 @@ namespace Woodpecker
 	{
 		m_update_ready = true;
 	}
-
 }
 }
 // kate: indent-mode cstyle; indent-width 4; replace-tabs off; tab-width 4;

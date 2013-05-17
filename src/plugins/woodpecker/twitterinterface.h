@@ -45,7 +45,6 @@ namespace LeechCraft
 {
 namespace Woodpecker
 {
-
 	enum twitterRequest
 	{
 		TRHomeTimeline,
@@ -70,53 +69,53 @@ namespace Woodpecker
 	class twitterInterface : public QObject
 	{
 		Q_OBJECT
-
-		public:
-			explicit twitterInterface (QObject *parent = 0);
-			~twitterInterface ();
-			void sendTweet (QString tweet);
-			void retweet (long unsigned int id);
-			void reply (long unsigned int replyid, QString tweet);
-			void reportSPAM (QString username, long unsigned int userid=0);
-			void getAccess ();
-			void login (QString savedToken, QString savedTokenSecret);
-			feedMode getLastRequestMode() { return  lastRequestMode;};
-			void setLastRequestMode(feedMode newLastRequestMode) { lastRequestMode = newLastRequestMode;};
-
-		private:
-			QNetworkAccessManager *HttpClient;
-			KQOAuthManager *oauthManager;
-			KQOAuthRequest *oauthRequest;
-			QString token;
-			QString tokenSecret;
-			QString consumerKey;
-			QString consumerKeySecret;
-			QSettings *settings;
-			feedMode lastRequestMode;
-
-			void signedRequest (twitterRequest req, KQOAuthRequest::RequestHttpMethod method = KQOAuthRequest::GET, KQOAuthParameters params = KQOAuthParameters());
-			void requestTwitter (QUrl requestAddress);
-			QList < std::shared_ptr<Tweet> > parseReply (QByteArray json);
-			void xauth();
-
-		private slots:
-			void replyFinished (QNetworkReply* reply);
-
-			void onTemporaryTokenReceived (QString temporaryToken, QString temporaryTokenSecret);
-			void onAuthorizationReceived (QString token, QString verifier);
-			void onRequestReady (QByteArray);
-			void onAuthorizedRequestDone ();
-			void onAccessTokenReceived (QString token, QString tokenSecret);
-
-		signals:
-			void tweetsReady (QList< std::shared_ptr<Tweet> >);
-			void authorized (QString, QString);
-
-		public slots:
-			void getHomeFeed ();
-			void searchTwitter (QString text);
-			void getUserTimeline (QString username);
-			void getMoreTweets (QString last);
+		
+	public:
+		explicit twitterInterface (QObject *parent = 0);
+		~twitterInterface ();
+		void sendTweet (QString tweet);
+		void retweet (long unsigned int id);
+		void reply (long unsigned int replyid, QString tweet);
+		void reportSPAM (QString username, long unsigned int userid=0);
+		void getAccess ();
+		void login (QString savedToken, QString savedTokenSecret);
+		feedMode getLastRequestMode() { return  lastRequestMode;};
+		void setLastRequestMode(feedMode newLastRequestMode) { lastRequestMode = newLastRequestMode;};
+		
+	private:
+		QNetworkAccessManager *HttpClient;
+		KQOAuthManager *oauthManager;
+		KQOAuthRequest *oauthRequest;
+		QString token;
+		QString tokenSecret;
+		QString consumerKey;
+		QString consumerKeySecret;
+		QSettings *settings;
+		feedMode lastRequestMode;
+		
+		void signedRequest (twitterRequest req, KQOAuthRequest::RequestHttpMethod method = KQOAuthRequest::GET, KQOAuthParameters params = KQOAuthParameters());
+		void requestTwitter (QUrl requestAddress);
+		QList < std::shared_ptr<Tweet> > parseReply (QByteArray json);
+		void xauth();
+		
+	private slots:
+		void replyFinished (QNetworkReply* reply);
+		
+		void onTemporaryTokenReceived (QString temporaryToken, QString temporaryTokenSecret);
+		void onAuthorizationReceived (QString token, QString verifier);
+		void onRequestReady (QByteArray);
+		void onAuthorizedRequestDone ();
+		void onAccessTokenReceived (QString token, QString tokenSecret);
+		
+	signals:
+		void tweetsReady (QList< std::shared_ptr<Tweet> >);
+		void authorized (QString, QString);
+		
+	public slots:
+		void getHomeFeed ();
+		void searchTwitter (QString text);
+		void getUserTimeline (QString username);
+		void getMoreTweets (QString last);
 	};
 }
 }

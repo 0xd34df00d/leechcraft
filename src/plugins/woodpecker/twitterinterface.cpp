@@ -41,7 +41,6 @@ namespace LeechCraft
 {
 namespace Woodpecker
 {
-
 	twitterInterface::twitterInterface (QObject *parent) :
 		QObject (parent)
 	{
@@ -50,8 +49,8 @@ namespace Woodpecker
 		oauthManager = new KQOAuthManager (this);
 
 		oauthRequest->setEnableDebugOutput (false); // DONE: Remove debug
-		consumerKey = XmlSettingsManager::Instance()->property("consumer_key").toString();
-		consumerKeySecret = XmlSettingsManager::Instance()->property("consumer_key_secret").toString();
+		consumerKey = XmlSettingsManager::Instance ()->property ("consumer_key").toString();
+		consumerKeySecret = XmlSettingsManager::Instance ()->property ("consumer_key_secret").toString();
 
 		connect (oauthManager, SIGNAL (requestReady (QByteArray)),
 				this, SLOT (onRequestReady (QByteArray)));
@@ -336,7 +335,6 @@ namespace Woodpecker
 			param.insert ("user_id", QString::number(userid));
 		signedRequest (TRSPAMReport, KQOAuthRequest::POST, param);
 	}
-
 }
 }
 // kate: indent-mode cstyle; indent-width 4; replace-tabs off; tab-width 4;

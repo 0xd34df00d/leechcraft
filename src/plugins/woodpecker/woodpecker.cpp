@@ -42,7 +42,6 @@ namespace LeechCraft
 {
 namespace Woodpecker
 {
-
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Translator_.reset (Util::InstallTranslator ("woodpecker"));
@@ -136,7 +135,6 @@ namespace Woodpecker
 		emit changeTabIcon (tab, tc.Icon_);
 		emit raiseTab (tab);
 	}
-
 }
 }
 

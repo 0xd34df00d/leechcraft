@@ -33,7 +33,6 @@ namespace LeechCraft
 {
 namespace Woodpecker
 {
-
 	Tweet::Tweet (QObject *parent)
 	: QObject (parent)
 	, Author_ (new TwitterUser (parent))
@@ -41,27 +40,22 @@ namespace Woodpecker
 	}
 
 	Tweet::Tweet (const QString& text, std::shared_ptr<TwitterUser> author, QObject *parent)
-		: QObject (parent)
-                , m_id (0)
+	: QObject (parent)
+	, m_id (0)
 	{
 		setText (text);
-
 		if (!author)
 			Author_ = std::make_shared<TwitterUser> (parent);
 		else
-		{
 			Author_ = author;
-			author->setParent (this);
-		}
 	}
 
 	Tweet::~Tweet ()
 	{
-		Author_->deleteLater ();
 	}
 
 	Tweet::Tweet(const Tweet& original)
-	: QObject()
+	: QObject ()
 	{
 		Author_ = original.author ();
 		m_created = original.dateTime ();
@@ -82,22 +76,22 @@ namespace Woodpecker
 		return *this;
 	}
 
-	bool Tweet::operator== (const Tweet& other)
+	bool Tweet::operator== (const Tweet& other) const
 	{
 		return m_id == other.id ();
 	}
 
-	bool Tweet::operator!= (const Tweet& other)
+	bool Tweet::operator!= (const Tweet& other) const
 	{
 		return !(*this == other);
 	}
 
-	bool Tweet::operator< (const Tweet& other)
+	bool Tweet::operator< (const Tweet& other) const
 	{
 		return m_id < other.id ();
 	}
 
-	bool Tweet::operator> (const Tweet& other)
+	bool Tweet::operator> (const Tweet& other) const
 	{
 		return m_id > other.id ();
 	}
@@ -113,7 +107,7 @@ namespace Woodpecker
 		 * Borrowed from Qt support forum */
 		QString html = text;
 		int pos = 0;
-		while ((pos = rx.indexIn(html, pos)) != -1)
+		while ((pos = rx.indexIn (html, pos)) != -1)
 		{
 			if (rx.cap (1).startsWith ("http")) 
 			{
@@ -128,20 +122,20 @@ namespace Woodpecker
 				pos += rx.matchedLength ();
 		}
 
-		m_document.setHtml(html);
+		m_document.setHtml (html);
 	}
 
-	std::shared_ptr< TwitterUser > Tweet::author() const
+	std::shared_ptr<TwitterUser> Tweet::author() const
 	{
 		return Author_;
 	}
 	
-	void Tweet::setAuthor (std::shared_ptr< TwitterUser > newAuthor)
+	void Tweet::setAuthor (std::shared_ptr<TwitterUser> newAuthor)
 	{
 		Author_ = newAuthor;
 	}
 	
-	QDateTime Tweet::dateTime() const
+	QDateTime Tweet::dateTime () const
 	{
 		return m_created;
 	}
@@ -151,11 +145,9 @@ namespace Woodpecker
 		m_created = datetime;
 	}
 	
-	QTextDocument* Tweet::getDocument()
+	QTextDocument* Tweet::getDocument ()
 	{
 		return &m_document;
 	}
-	
-	
 }
 }

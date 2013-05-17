@@ -41,57 +41,55 @@ namespace LeechCraft
 {
 namespace Woodpecker
 {
-
 	class Tweet : public QObject
 	{
 		Q_OBJECT
-
-		public:
-			Tweet (QObject *parent = 0);
-			Tweet (const QString& text, std::shared_ptr<TwitterUser> author = nullptr, QObject *parent = 0);
-			Tweet (const Tweet& original);
-			~Tweet ();
-
-			/** @brief Set both plain text contents and generates a html representation */
-			void setText (const QString& text);
-			QString text () const { return m_text; }
-
-			qulonglong id () const { return m_id; }
-			void setId (qulonglong id) { m_id = id; }
-
-			std::shared_ptr<TwitterUser> author () const;
-			void setAuthor (std::shared_ptr<TwitterUser> newAuthor);
-
-			QDateTime dateTime () const;
-			void setDateTime (const QDateTime& datetime);
-
-			/** @brief Direct access to QTextDocument representation
-			 * @returns internal document object. You can fix it the way you like for better visuals
-			 * 
-			 * Used in TwitDelegate class for drawing Tweet object contents in UI
-			 */
-			QTextDocument* getDocument();
-
-			Tweet& operator= (const Tweet&);
-
-			/** @brief Comparison is performed by comparing twit id's */
-			bool operator== (const Tweet&);
-
-			/** @brief Comparison is performed by comparing twit id's */
-			bool operator!= (const Tweet&);
-
-			/** @brief Comparison is performed by comparing twit id's */
-			bool operator> (const Tweet&);
-
-			/** @brief Comparison is performed by comparing twit id's */
-			bool operator< (const Tweet&);
-
-		private:
-			qulonglong	m_id;						/**< Twit id in Twitter */
-			QString		m_text;						/**< Text of twit in plaintext */
-			std::shared_ptr<TwitterUser>	Author_;/**< Pointer to twitter author */
-			QDateTime	m_created;					/**< Twit date */
-			QTextDocument m_document;				/**< QTextDocument which is used for drawing twit */
+		
+	private:
+		qulonglong	m_id;						/**< Twit id in Twitter */
+		QString		m_text;						/**< Text of twit in plaintext */
+		std::shared_ptr<TwitterUser>	Author_;/**< Pointer to twitter author */
+		QDateTime	m_created;					/**< Twit date */
+		QTextDocument m_document;				/**< QTextDocument which is used for drawing twit */
+	public:
+		Tweet (QObject *parent = 0);
+		Tweet (const QString& text, std::shared_ptr<TwitterUser> author = nullptr, QObject *parent = 0);
+		Tweet (const Tweet& original);
+		~Tweet ();
+		
+		/** @brief Set both plain text contents and generates a html representation */
+		void setText (const QString& text);
+		QString text () const { return m_text; }
+		
+		qulonglong id () const { return m_id; }
+		void setId (qulonglong id) { m_id = id; }
+		
+		std::shared_ptr<TwitterUser> author () const;
+		void setAuthor (std::shared_ptr<TwitterUser> newAuthor);
+		
+		QDateTime dateTime () const;
+		void setDateTime (const QDateTime& datetime);
+		
+		/** @brief Direct access to QTextDocument representation
+		 * @returns internal document object. You can fix it the way you like for better visuals
+		 * 
+		 * Used in TwitDelegate class for drawing Tweet object contents in UI
+		 */
+		QTextDocument* getDocument();
+		
+		Tweet& operator= (const Tweet&);
+		
+		/** @brief Comparison is performed by comparing twit id's */
+		bool operator== (const Tweet&) const;
+		
+		/** @brief Comparison is performed by comparing twit id's */
+		bool operator!= (const Tweet&) const;
+		
+		/** @brief Comparison is performed by comparing twit id's */
+		bool operator> (const Tweet&) const;
+		
+		/** @brief Comparison is performed by comparing twit id's */
+		bool operator< (const Tweet&) const;
 	};
 }
 }
