@@ -287,7 +287,7 @@ namespace Woodpecker
 		oauthRequest->setConsumerKey ("nbwLYUDIlgsMgDFCu6jfuA");
 		oauthRequest->setConsumerSecretKey ("7TWYPzLUqZlihIRA2VWfZhCRfss2JNKvkSWMQx4");
 
-		// oauthRequest->setXAuthLogin ("login","password");
+		// oauthRequest->setXAuthLogin ("login", "password");
 
 		oauthManager->executeRequest (oauthRequest);
 	}
@@ -311,10 +311,10 @@ namespace Woodpecker
 		KQOAuthParameters param;
 
 		qDebug () << "Getting more tweets from " << last;
-		param.insert ("max_id",last);
-		param.insert ("count",QString ("%1").arg (30));
+		param.insert ("max_id", last);
+		param.insert ("count", QString ("%1").arg (30));
 		setLastRequestMode (FMHomeTimeline);
-		signedRequest (TRHomeTimeline, KQOAuthRequest::GET,param);
+		signedRequest (TRHomeTimeline, KQOAuthRequest::GET, param);
 	}
 
 
@@ -354,4 +354,4 @@ namespace Woodpecker
 	}
 }
 }
-// kate: indent-mode cstyle; indent-width 4; replace-tabs off; tab-width 4;
+

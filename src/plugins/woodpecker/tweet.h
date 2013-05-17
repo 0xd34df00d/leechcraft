@@ -99,4 +99,3 @@ namespace Woodpecker
 Q_DECLARE_METATYPE (LeechCraft::Woodpecker::Tweet);
 Q_DECLARE_METATYPE (LeechCraft::Woodpecker::Tweet_ptr);
 
-// kate: indent-mode cstyle; indent-width 4; replace-tabs off; tab-width 4;

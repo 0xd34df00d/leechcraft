@@ -140,4 +140,3 @@ namespace Woodpecker
 
 LC_EXPORT_PLUGIN (leechcraft_woodpecker, LeechCraft::Woodpecker::Plugin);
 
-// kate: indent-mode cstyle; indent-width 4; replace-tabs off; tab-width 4;

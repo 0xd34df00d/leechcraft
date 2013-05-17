@@ -63,16 +63,16 @@ namespace Woodpecker
 		QRect r = option.rect;
 
 		//Color: #C4C4C4
-		QPen linePen (QColor::fromRgb (211,211,211), 1, Qt::SolidLine);
+		QPen linePen (QColor::fromRgb (211, 211, 211), 1, Qt::SolidLine);
 
 		//Color: #005A83
-		QPen lineMarkedPen (QColor::fromRgb (0,90,131), 1, Qt::SolidLine);
+		QPen lineMarkedPen (QColor::fromRgb (0, 90, 131), 1, Qt::SolidLine);
 
 		//Color: #333
-		QPen fontPen (QColor::fromRgb (51,51,51), 1, Qt::SolidLine);
+		QPen fontPen (QColor::fromRgb (51, 51, 51), 1, Qt::SolidLine);
 
 		//Color: #Link
-		QPen linkFontPen (QColor::fromRgb (51,51,255), 1, Qt::SolidLine);
+		QPen linkFontPen (QColor::fromRgb (51, 51, 255), 1, Qt::SolidLine);
 
 		//Color: #fff
 		QPen fontMarkedPen (Qt::white, 1, Qt::SolidLine);
@@ -81,19 +81,19 @@ namespace Woodpecker
 
 		if (option.state & QStyle::State_Selected)
 		{
-			QLinearGradient gradientSelected (r.left (),r.top (),r.left (),r.height ()+r.top ());
-			gradientSelected.setColorAt (0.0, QColor::fromRgb (119,213,247));
-			gradientSelected.setColorAt (0.9, QColor::fromRgb (27,134,183));
-			gradientSelected.setColorAt (1.0, QColor::fromRgb (0,120,174));
+			QLinearGradient gradientSelected (r.left (), r.top (), r.left (), r.height ()+r.top ());
+			gradientSelected.setColorAt (0.0, QColor::fromRgb (119, 213, 247));
+			gradientSelected.setColorAt (0.9, QColor::fromRgb (27, 134, 183));
+			gradientSelected.setColorAt (1.0, QColor::fromRgb (0, 120, 174));
 			painter->setBrush (gradientSelected);
 			painter->drawRect (r);
 
 			// Border
 			painter->setPen (lineMarkedPen);
-			painter->drawLine (r.topLeft (),r.topRight ());
-			painter->drawLine (r.topRight (),r.bottomRight ());
-			painter->drawLine (r.bottomLeft (),r.bottomRight ());
-			painter->drawLine (r.topLeft (),r.bottomLeft ());
+			painter->drawLine (r.topLeft (), r.topRight ());
+			painter->drawLine (r.topRight (), r.bottomRight ());
+			painter->drawLine (r.bottomLeft (), r.bottomRight ());
+			painter->drawLine (r.topLeft (), r.bottomLeft ());
 
 			painter->setPen (fontMarkedPen);
 
@@ -102,15 +102,15 @@ namespace Woodpecker
 		{
 			// Background
 			// Alternating colors
-			painter->setBrush ((index.row () % 2) ? Qt::white : QColor (252,252,252));
+			painter->setBrush ((index.row () % 2) ? Qt::white : QColor (252, 252, 252));
 			painter->drawRect (r);
 
 			// border
 			painter->setPen (linePen);
-			painter->drawLine (r.topLeft (),r.topRight ());
-			painter->drawLine (r.topRight (),r.bottomRight ());
-			painter->drawLine (r.bottomLeft (),r.bottomRight ());
-			painter->drawLine (r.topLeft (),r.bottomLeft ());
+			painter->drawLine (r.topLeft (), r.topRight ());
+			painter->drawLine (r.topRight (), r.bottomRight ());
+			painter->drawLine (r.bottomLeft (), r.bottomRight ());
+			painter->drawLine (r.topLeft (), r.bottomLeft ());
 
 			painter->setPen (fontPen);
 		}
