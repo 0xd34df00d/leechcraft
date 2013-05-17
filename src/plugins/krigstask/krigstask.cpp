@@ -29,6 +29,7 @@
 
 #include "krigstask.h"
 #include <QIcon>
+#include "windowsmodel.h"
 
 namespace LeechCraft
 {
@@ -36,6 +37,12 @@ namespace Krigstask
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		auto model = new WindowsModel;
+
+		Panel_.reset (new QuarkComponent);
+		Panel_->Url_ = Util::GetSysPath (Util::SysPath::QML, "krigstask", "TaskbarQuark.qml");
+		Panel_->DynamicProps_.append ({ "KT_appsModel", model });
+		Panel_->ImageProviders_.append ({ "TaskbarIcons", model->GetImageProvider ()});
 	}
 
 	void Plugin::SecondInit ()
@@ -64,6 +71,11 @@ namespace Krigstask
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	QuarkComponents_t Plugin::GetComponents () const
+	{
+		return { Panel_ };
 	}
 }
 }
