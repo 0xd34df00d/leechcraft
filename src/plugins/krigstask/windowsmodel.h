@@ -32,10 +32,15 @@
 #include <QAbstractItemModel>
 #include <QIcon>
 
+class QDeclarativeImageProvider;
+
 namespace LeechCraft
 {
 namespace Krigstask
 {
+	class TaskbarImageProvider;
+	class XWrapper;
+
 	class WindowsModel : public QAbstractItemModel
 	{
 		Q_OBJECT
@@ -46,16 +51,30 @@ namespace Krigstask
 
 			QString Title_;
 			QIcon Icon_;
+			int IconGenID_;
 		};
 		QList<WinInfo> Windows_;
+
+		enum Role
+		{
+			WindowName = Qt::UserRole + 1,
+			WindowID,
+			IconGenID
+		};
+
+		TaskbarImageProvider *ImageProvider_;
 	public:
 		WindowsModel (QObject* = 0);
+
+		QDeclarativeImageProvider* GetImageProvider () const;
 
 		int columnCount (const QModelIndex& parent = QModelIndex()) const;
 		int rowCount (const QModelIndex& parent = QModelIndex()) const;
 		QModelIndex index (int row, int column, const QModelIndex& parent = QModelIndex()) const;
 		QModelIndex parent (const QModelIndex& child) const;
 		QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
+	private:
+		void AddWindow (ulong, XWrapper&);
 	private slots:
 		void updateWinList ();
 	};

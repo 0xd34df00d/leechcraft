@@ -31,24 +31,58 @@
 #include <QtDebug>
 #include <QIcon>
 #include <QFrame>
+#include <util/qml/widthiconprovider.h>
 #include "xwrapper.h"
 
 namespace LeechCraft
 {
 namespace Krigstask
 {
+	class TaskbarImageProvider : public Util::WidthIconProvider
+	{
+		QHash<QString, QIcon> Icons_;
+	public:
+		void SetIcon (const QString& wid, const QIcon& icon)
+		{
+			Icons_ [wid] = icon;
+		}
+
+		void RemoveIcon (const QString& wid)
+		{
+			Icons_.remove (wid);
+		}
+
+		QIcon GetIcon (const QStringList& path)
+		{
+			const auto& wid = path.value (0);
+			return Icons_.value (wid);
+		}
+	};
+
 	WindowsModel::WindowsModel (QObject *parent)
 	: QAbstractItemModel (parent)
+	, ImageProvider_ (new TaskbarImageProvider)
 	{
 		auto& w = XWrapper::Instance ();
 		auto windows = w.GetWindows ();
 		for (auto wid : windows)
-			Windows_.append ({ wid, w.GetWindowTitle (wid), w.GetWindowIcon (wid) });
+			AddWindow (wid, w);
 
 		connect (&XWrapper::Instance (),
 				SIGNAL (windowListChanged ()),
 				this,
 				SLOT (updateWinList ()));
+
+		QHash<int, QByteArray> roleNames;
+		roleNames [Role::WindowName] = "windowName";
+		roleNames [Role::WindowID] = "windowID";
+		roleNames [Role::IconGenID] = "iconGenID";
+		setRoleNames (roleNames);
+	}
+
+	QDeclarativeImageProvider* WindowsModel::GetImageProvider () const
+	{
+		return ImageProvider_;
 	}
 
 	int WindowsModel::columnCount (const QModelIndex&) const
@@ -81,12 +115,24 @@ namespace Krigstask
 		switch (role)
 		{
 		case Qt::DisplayRole:
+		case Role::WindowName:
 			return item.Title_;
 		case Qt::DecorationRole:
 			return item.Icon_;
+		case Role::WindowID:
+			return QString::number (item.WID_);
+		case Role::IconGenID:
+			return QString::number (item.IconGenID_);
 		}
 
 		return {};
+	}
+
+	void WindowsModel::AddWindow (ulong wid, XWrapper& w)
+	{
+		const auto& icon = w.GetWindowIcon (wid);
+		Windows_.append ({ wid, w.GetWindowTitle (wid), icon, 0 });
+		ImageProvider_->SetIcon (QString::number (wid), icon);
 	}
 
 	void WindowsModel::updateWinList ()
@@ -116,13 +162,15 @@ namespace Krigstask
 			beginRemoveRows ({}, dist, dist);
 			Windows_.erase (pos);
 			endRemoveRows ();
+
+			ImageProvider_->RemoveIcon (QString::number (wid));
 		}
 
 		if (!current.isEmpty ())
 		{
 			beginInsertRows ({}, Windows_.size (), Windows_.size () + current.size () - 1);
 			for (auto wid : current)
-				Windows_.append ({ wid, w.GetWindowTitle (wid), w.GetWindowIcon (wid) });
+				AddWindow (wid, w);
 			endInsertRows ();
 		}
 	}
