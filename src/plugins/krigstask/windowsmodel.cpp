@@ -30,6 +30,7 @@
 #include "windowsmodel.h"
 #include <QtDebug>
 #include <QIcon>
+#include <QFrame>
 #include "xwrapper.h"
 
 namespace LeechCraft
@@ -39,11 +40,15 @@ namespace Krigstask
 	WindowsModel::WindowsModel (QObject *parent)
 	: QAbstractItemModel (parent)
 	{
-		XWrapper w;
+		auto& w = XWrapper::Instance ();
 		auto windows = w.GetWindows ();
-
 		for (auto wid : windows)
 			Windows_.append ({ wid, w.GetWindowTitle (wid), w.GetWindowIcon (wid) });
+
+		connect (&XWrapper::Instance (),
+				SIGNAL (windowListChanged ()),
+				this,
+				SLOT (updateWinList ()));
 	}
 
 	int WindowsModel::columnCount (const QModelIndex&) const
@@ -82,6 +87,44 @@ namespace Krigstask
 		}
 
 		return {};
+	}
+
+	void WindowsModel::updateWinList ()
+	{
+		auto& w = XWrapper::Instance ();
+
+		QSet<Window> known;
+		for (const auto& info : Windows_)
+			known << info.WID_;
+
+		auto current = w.GetWindows ();
+
+		for (auto i = current.begin (); i != current.end (); )
+		{
+			if (known.remove (*i))
+				i = current.erase (i);
+			else
+				++i;
+		}
+
+		for (auto wid : known)
+		{
+			const auto pos = std::find_if (Windows_.begin (), Windows_.end (),
+					[&wid] (const WinInfo& info) { return info.WID_ == wid; });
+			const auto dist = std::distance (Windows_.begin (), pos);
+
+			beginRemoveRows ({}, dist, dist);
+			Windows_.erase (pos);
+			endRemoveRows ();
+		}
+
+		if (!current.isEmpty ())
+		{
+			beginInsertRows ({}, Windows_.size (), Windows_.size () + current.size () - 1);
+			for (auto wid : current)
+				Windows_.append ({ wid, w.GetWindowTitle (wid), w.GetWindowIcon (wid) });
+			endInsertRows ();
+		}
 	}
 }
 }

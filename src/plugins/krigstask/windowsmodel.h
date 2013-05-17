@@ -31,7 +31,6 @@
 
 #include <QAbstractItemModel>
 #include <QIcon>
-#include <X11/X.h>
 
 namespace LeechCraft
 {
@@ -43,7 +42,7 @@ namespace Krigstask
 
 		struct WinInfo
 		{
-			Window WID_;
+			ulong WID_;
 
 			QString Title_;
 			QIcon Icon_;
@@ -57,6 +56,8 @@ namespace Krigstask
 		QModelIndex index (int row, int column, const QModelIndex& parent = QModelIndex()) const;
 		QModelIndex parent (const QModelIndex& child) const;
 		QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
+	private slots:
+		void updateWinList ();
 	};
 }
 }
