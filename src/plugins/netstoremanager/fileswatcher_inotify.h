@@ -71,7 +71,5 @@ namespace NetStoreManager
 		void release ();
 		void updateExceptions (QStringList masks);
 	};
-
-	typedef FilesWatcherInotify FilesWatcher;
 }
 }
