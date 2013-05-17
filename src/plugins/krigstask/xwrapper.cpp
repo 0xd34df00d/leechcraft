@@ -33,6 +33,8 @@
 #include <QString>
 #include <QPixmap>
 #include <QIcon>
+#include <QAbstractEventDispatcher>
+#include <QtDebug>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
@@ -41,10 +43,35 @@ namespace LeechCraft
 {
 namespace Krigstask
 {
+	namespace
+	{
+		bool EventFilter (void *msg)
+		{
+			return XWrapper::Instance ().Filter (msg);
+		}
+	}
+
 	XWrapper::XWrapper ()
 	: Display_ (QX11Info::display ())
 	, AppWin_ (QX11Info::appRootWindow ())
 	{
+		QAbstractEventDispatcher::instance ()->setEventFilter (&EventFilter);
+	}
+
+	XWrapper& XWrapper::Instance ()
+	{
+		static XWrapper w;
+		return w;
+	}
+
+	bool XWrapper::Filter (void *msg)
+	{
+		auto ev = static_cast<XEvent*> (msg);
+
+		if (ev->type == PropertyNotify && ev->xproperty.window == AppWin_)
+			HandlePropNotify (&ev->xproperty);
+
+		return false;
 	}
 
 	namespace
@@ -190,6 +217,17 @@ namespace Krigstask
 		}
 
 		return icon;
+	}
+
+	template<typename T>
+	void XWrapper::HandlePropNotify (T ev)
+	{
+		if (ev->atom == GetAtom ("_NET_CLIENT_LIST"))
+			emit windowListChanged ();
+		else if (ev->atom == GetAtom ("_NET_ACTIVE_WINDOW"))
+			emit activeWindowChanged ();
+		else if (ev->atom == GetAtom ("_NET_CURRENT_DESKTOP"))
+			emit desktopChanged ();
 	}
 
 	Atom XWrapper::GetAtom (const QString& name)

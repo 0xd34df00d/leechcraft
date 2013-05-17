@@ -41,22 +41,35 @@ namespace LeechCraft
 {
 namespace Krigstask
 {
-	class XWrapper
+	class XWrapper : public QObject
 	{
+		Q_OBJECT
+
 		Display *Display_;
 		Window AppWin_;
 
 		QHash<QString, Atom> Atoms_;
-	public:
+
 		XWrapper ();
+	public:
+		static XWrapper& Instance ();
+
+		bool Filter (void*);
 
 		QList<Window> GetWindows ();
 		QString GetWindowTitle (Window);
 		QIcon GetWindowIcon (Window);
 	private:
+		template<typename T>
+		void HandlePropNotify (T);
+
 		Atom GetAtom (const QString&);
 		bool GetWinProp (Window, Atom, ulong*, uchar**, Atom = static_cast<Atom> (AnyPropertyType)) const;
 		bool GetRootWinProp (Atom, ulong*, uchar**, Atom = static_cast<Atom> (AnyPropertyType)) const;
+	signals:
+		void windowListChanged ();
+		void activeWindowChanged ();
+		void desktopChanged ();
 	};
 }
 }
