@@ -51,7 +51,7 @@ namespace Laughty
 		QStringList GetCapabilities () const;
 
 		uint Notify (const QString& app_name, uint replaces_id, const QString& app_icon,
-				const QString& summary, const QString& body, const QStringList& actions,
+				QString summary, QString body, const QStringList& actions,
 				const QVariantMap& hints, uint expire_timeout);
 
 		void CloseNotification (uint id);
