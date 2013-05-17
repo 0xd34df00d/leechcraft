@@ -47,17 +47,18 @@ namespace LeechCraft
 {
 namespace Woodpecker
 {
-	TwitDelegate::TwitDelegate(QObject *parent)
+	TwitDelegate::TwitDelegate (QObject *parent)
+	: QObject (parent)
 	{
 		m_parent = parent;
 	}
 
-	QObject* TwitDelegate::parent()
+	QObject* TwitDelegate::parent ()
 	{
 		return m_parent;
 	}
 
-	void TwitDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const
+	void TwitDelegate::paint (QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
 	{
 		QRect r = option.rect;
 

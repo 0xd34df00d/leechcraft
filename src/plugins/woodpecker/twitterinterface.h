@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 #include <QList>
 #include <QObject>
@@ -79,8 +79,8 @@ namespace Woodpecker
 		void reportSPAM (QString username, long unsigned int userid=0);
 		void getAccess ();
 		void login (QString savedToken, QString savedTokenSecret);
-		feedMode getLastRequestMode() { return  lastRequestMode;};
-		void setLastRequestMode(feedMode newLastRequestMode) { lastRequestMode = newLastRequestMode;};
+		feedMode getLastRequestMode ();
+		void setLastRequestMode (feedMode newLastRequestMode);
 		
 	private:
 		QNetworkAccessManager *HttpClient;
@@ -93,10 +93,10 @@ namespace Woodpecker
 		QSettings *settings;
 		feedMode lastRequestMode;
 		
-		void signedRequest (twitterRequest req, KQOAuthRequest::RequestHttpMethod method = KQOAuthRequest::GET, KQOAuthParameters params = KQOAuthParameters());
+		void signedRequest (twitterRequest req, KQOAuthRequest::RequestHttpMethod method = KQOAuthRequest::GET, KQOAuthParameters params = KQOAuthParameters ());
 		void requestTwitter (QUrl requestAddress);
-		QList < std::shared_ptr<Tweet> > parseReply (QByteArray json);
-		void xauth();
+		QList <std::shared_ptr<Tweet>> parseReply (QByteArray json);
+		void xauth ();
 		
 	private slots:
 		void replyFinished (QNetworkReply* reply);
@@ -108,7 +108,7 @@ namespace Woodpecker
 		void onAccessTokenReceived (QString token, QString tokenSecret);
 		
 	signals:
-		void tweetsReady (QList< std::shared_ptr<Tweet> >);
+		void tweetsReady (QList<std::shared_ptr<Tweet>>);
 		void authorized (QString, QString);
 		
 	public slots:
