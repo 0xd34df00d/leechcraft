@@ -63,7 +63,7 @@ namespace Woodpecker
 		return m_parent;
 	}
 
-	void TwitDelegate::paint (QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
+	void TwitDelegate::paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
 		QRect r = option.rect;
 
