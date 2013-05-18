@@ -44,10 +44,10 @@ Rectangle {
 
                     actionIconURL: "image://TaskbarIcons/" + windowID + '/' + iconGenID
                     textTooltip: windowName
-                    isHighlight: false
                     transparentStyle: true
 
-                    isCurrent: isActiveWindow
+                    isHighlight: !isMinimizedWindow
+                    isStrongHighlight: isActiveWindow
                 }
             }
         }
