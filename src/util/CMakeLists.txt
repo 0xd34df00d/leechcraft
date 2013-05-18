@@ -105,5 +105,5 @@ SET_PROPERTY (TARGET lcutil PROPERTY SOVERSION 0.5.0)
 INSTALL (TARGETS lcutil DESTINATION ${LIBDIR})
 
 IF (USE_QT5)
-	QT5_USE_MODULES (lcutil Declarative Network Xml Sql Widgets)
+	QT5_USE_MODULES (lcutil Quick Network Xml Sql Widgets)
 ENDIF ()
