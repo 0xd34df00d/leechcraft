@@ -49,5 +49,30 @@ namespace NetStoreManager
 	{
 	}
 
+	void Syncer::dirWasCreated (const QString& path)
+	{
+		qDebug () << Q_FUNC_INFO << path;
+	}
+
+	void Syncer::dirWasRemoved (const QString& path)
+	{
+		qDebug () << Q_FUNC_INFO << path;
+	}
+
+	void Syncer::fileWasCreated (const QString& path)
+	{
+		qDebug () << Q_FUNC_INFO << path;
+	}
+
+	void Syncer::fileWasRemoved (const QString& path)
+	{
+		qDebug () << Q_FUNC_INFO << path;
+	}
+
+	void Syncer::fileWasUpdated (const QString& path)
+	{
+		qDebug () << Q_FUNC_INFO << path;
+	}
+
 }
 }

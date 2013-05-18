@@ -38,7 +38,7 @@ namespace LeechCraft
 namespace NetStoreManager
 {
 	class AccountsManager;
-	class FilesWatcher;
+	class FilesWatcherBase;
 	class Syncer;
 
 	class SyncManager : public QObject
@@ -46,7 +46,7 @@ namespace NetStoreManager
 		Q_OBJECT
 
 		AccountsManager *AM_;
-		FilesWatcher *FilesWatcher_;
+		FilesWatcherBase *FilesWatcher_;
 		QHash<QString, Syncer*> AccountID2Syncer_;
 
 	public:
@@ -58,6 +58,15 @@ namespace NetStoreManager
 
 	public slots:
 		void handleDirectoriesToSyncUpdated (const QVariantMap& map);
+
+	private slots:
+		void handleDirWasCreated (const QString& path);
+		void handleDirWasRemoved (const QString& path);
+		void handleFileWasCreated (const QString& path);
+		void handleFileWasRemoved (const QString& path);
+		void handleFileWasUpdated (const QString& path);
+		void handleEntryWasMoved (const QString& oldPath, const QString& newPath);
+		void handleEntryWasRenamed (const QString& oldName, const QString& newName);
 	};
 }
 }

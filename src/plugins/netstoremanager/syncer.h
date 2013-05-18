@@ -42,6 +42,12 @@ namespace NetStoreManager
 	public slots:
 		void start ();
 		void stop ();
+
+		void dirWasCreated (const QString& path);
+		void dirWasRemoved (const QString& path);
+		void fileWasCreated (const QString& path);
+		void fileWasRemoved (const QString& path);
+		void fileWasUpdated (const QString& path);
 	};
 }
 }

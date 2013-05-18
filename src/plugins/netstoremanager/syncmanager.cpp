@@ -30,8 +30,12 @@
 #include "syncmanager.h"
 #include <QtDebug>
 #include "accountsmanager.h"
-#include "fileswatcher.h"
 #include "syncer.h"
+#if defined (Q_OS_LINUX)
+	#include "fileswatcher_inotify.h"
+#elif defined(Q_OS_WIN32)
+	#include "fileswatcher_dummy.h"
+#endif
 
 namespace LeechCraft
 {
@@ -40,8 +44,41 @@ namespace NetStoreManager
 	SyncManager::SyncManager (AccountsManager *am, QObject *parent)
 	: QObject (parent)
 	, AM_ (am)
-	, FilesWatcher_ (new FilesWatcher (this))
 	{
+#if defined (Q_OS_LINUX)
+		FilesWatcher_ = new FilesWatcherInotify (this);
+#else
+		FilesWatcher_ = new FilesWatcherDummy (this);
+#endif
+
+		connect (FilesWatcher_,
+				SIGNAL (dirWasCreated (QString)),
+				this,
+				SLOT (handleDirWasCreated (QString)));
+		connect (FilesWatcher_,
+				SIGNAL (dirWasRemoved (QString)),
+				this,
+				SLOT (handleDirWasRemoved (QString)));
+		connect (FilesWatcher_,
+				SIGNAL (fileWasCreated (QString)),
+				this,
+				SLOT (handleFileWasCreated (QString)));
+		connect (FilesWatcher_,
+				SIGNAL (fileWasRemoved (QString)),
+				this,
+				SLOT (handleFileWasRemoved (QString)));
+		connect (FilesWatcher_,
+				SIGNAL (fileWasUpdated (QString)),
+				this,
+				SLOT (handleFileWasUpdated (QString)));
+		connect (FilesWatcher_,
+				SIGNAL (entryWasMoved (QString, QString)),
+				this,
+				SLOT (handleEntryWasMoved (QString, QString)));
+		connect (FilesWatcher_,
+				SIGNAL (entryWasRenamed (QString, QString)),
+				this,
+				SLOT (handleEntryWasRenamed (QString, QString)));
 	}
 
 	void SyncManager::Release ()
@@ -50,11 +87,11 @@ namespace NetStoreManager
 
 	void SyncManager::handleDirectoriesToSyncUpdated (const QVariantMap& map)
 	{
-		QStringList pathes;
+		QStringList paths;
 		for (const auto& key : map.keys ())
 		{
 			const QString& path = map [key].toString ();
-			pathes << path;
+			paths << path;
 			if (AccountID2Syncer_.contains (key))
 			{
 				if (AccountID2Syncer_ [key]->GetBasePath () == path)
@@ -70,7 +107,7 @@ namespace NetStoreManager
 					path);
 		}
 
-		FilesWatcher_->updatePathes (pathes);
+		FilesWatcher_->updatePaths (paths);
 	}
 
 	Syncer* SyncManager::CreateSyncer (IStorageAccount *isa, const QString& baseDir)
@@ -78,6 +115,53 @@ namespace NetStoreManager
 		Syncer *syncer = new Syncer (baseDir, isa, this);
 		syncer->start ();
 		return syncer;
+	}
+
+	void SyncManager::handleDirWasCreated (const QString& path)
+	{
+		for (auto syncer : AccountID2Syncer_.values ())
+			if (path.startsWith (syncer->GetBasePath ()))
+				syncer->dirWasCreated (path);
+	}
+
+	void SyncManager::handleDirWasRemoved (const QString& path)
+	{
+		for (auto syncer : AccountID2Syncer_.values ())
+			if (path.startsWith (syncer->GetBasePath ()))
+				syncer->dirWasRemoved (path);
+	}
+
+	void SyncManager::handleFileWasCreated (const QString& path)
+	{
+		for (auto syncer : AccountID2Syncer_.values ())
+			if (path.startsWith (syncer->GetBasePath ()))
+				syncer->fileWasCreated (path);
+	}
+
+	void SyncManager::handleFileWasRemoved (const QString& path)
+	{
+		for (auto syncer : AccountID2Syncer_.values ())
+			if (path.startsWith (syncer->GetBasePath ()))
+				syncer->fileWasRemoved (path);
+	}
+
+	void SyncManager::handleFileWasUpdated (const QString& path)
+	{
+		for (auto syncer : AccountID2Syncer_.values ())
+			if (path.startsWith (syncer->GetBasePath ()))
+				syncer->fileWasUpdated (path);
+	}
+
+	void SyncManager::handleEntryWasMoved (const QString& oldPath,
+			const QString& newPath)
+	{
+		qDebug () << Q_FUNC_INFO << oldPath << newPath;
+	}
+
+	void SyncManager::handleEntryWasRenamed (const QString& oldName,
+			const QString& newName)
+	{
+		qDebug () << Q_FUNC_INFO << oldName << newName;
 	}
 
 }
