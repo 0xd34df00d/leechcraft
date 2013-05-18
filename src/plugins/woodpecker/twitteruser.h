@@ -43,25 +43,25 @@ namespace Woodpecker
 	class TwitterUser : public QObject
 	{
 		Q_OBJECT
+		
+		QString Username_;
+		QNetworkRequest *Req;
+		QNetworkAccessManager *Http;
+		
 	public:
-		QPixmap  avatar;
+		QPixmap  Avatar;
 		
 		explicit TwitterUser (QObject *parent = 0);
-		explicit TwitterUser (QString username, QObject *parent = 0);
+		explicit TwitterUser (const QString& username, QObject *parent = 0);
 		~TwitterUser ();
 		
-		void setUsername (const QString& username);
-		QString username ();
+		void SetUsername (const QString& username);
+		QString Username ();
 		
 		/** @brief Grabs avatar from Twitter
 		 * 	@param path http url of image
 		 */
-		void downloadAvatar (QString path);
-		
-	private:
-		QString m_username;
-		QNetworkRequest *req;
-		QNetworkAccessManager *http;
+		void DownloadAvatar (const QString& path);
 		
 	signals:
 		void userReady ();

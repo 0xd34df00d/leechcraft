@@ -34,17 +34,17 @@ namespace LeechCraft
 {
 namespace Woodpecker
 {
-	TwitterUser::TwitterUser (QObject *parent) :
-		QObject (parent)
+	TwitterUser::TwitterUser (QObject *parent)
+	: QObject (parent)
 	{
-		http = new QNetworkAccessManager (this);
+		Http = new QNetworkAccessManager (this);
 
 	}
 
-	TwitterUser::TwitterUser (QString username, QObject *parent) :
-		QObject (parent)
+	TwitterUser::TwitterUser (const QString& username, QObject *parent)
+	: QObject (parent)
 	{
-		this->m_username = username;
+		this->Username_ = username;
 	}
 
 	void TwitterUser::avatarDownloaded (QNetworkReply *reply)
@@ -52,35 +52,35 @@ namespace Woodpecker
 		QByteArray data;
 
 		data = reply->readAll ();
-		avatar.loadFromData (data);
+		Avatar.loadFromData (data);
 		reply->deleteLater ();
 		emit userReady ();
 	}
 
-	void TwitterUser::downloadAvatar (QString path)
+	void TwitterUser::DownloadAvatar (const QString& path)
 	{
-		req = new QNetworkRequest (QUrl (path));
-		connect (http, SIGNAL (finished (QNetworkReply*)),
+		Req = new QNetworkRequest (QUrl (path));
+		connect (Http, SIGNAL (finished (QNetworkReply*)),
 				this, SLOT (avatarDownloaded (QNetworkReply*)));
 
-		http->get (*req);
+		Http->get (*Req);
 	}
 
 	TwitterUser::~TwitterUser ()
 	{
-		if (req) delete req;
+		if (Req) delete Req;
 
-		http->deleteLater ();
+		Http->deleteLater ();
 	}
 	
-	void TwitterUser::setUsername (const QString& username)
+	void TwitterUser::SetUsername (const QString& username)
 	{
-		m_username = username;
+		Username_ = username;
 	}
 	
-	QString TwitterUser::username ()
+	QString TwitterUser::Username ()
 	{
-		return m_username;
+		return Username_;
 	}
 }
 }

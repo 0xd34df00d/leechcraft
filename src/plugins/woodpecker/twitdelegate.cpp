@@ -129,7 +129,7 @@ namespace Woodpecker
 			return;
 		}
 		const qulonglong id = currentTweet->Id ();
-		const auto& author = currentTweet->Author ()->username ();
+		const auto& author = currentTweet->Author ()->Username ();
 		const auto& time = currentTweet->DateTime ().toString ();
 		QTextDocument* doc = currentTweet->GetDocument ();
 

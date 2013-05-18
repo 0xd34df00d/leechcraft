@@ -42,11 +42,10 @@ namespace LeechCraft
 {
 namespace Woodpecker
 {
-	class Plugin 
-		: public QObject
-		  , public IInfo
-		  , public IHaveTabs
-		  , public IHaveSettings
+	class Plugin	: public QObject
+					, public IInfo
+					, public IHaveTabs
+					, public IHaveSettings
 	{
 			Q_OBJECT
 			Q_INTERFACES (IInfo IHaveTabs IHaveSettings)
@@ -54,6 +53,9 @@ namespace Woodpecker
 			QList<QPair<TabClassInfo, std::function<void (TabClassInfo)>>> TabClasses_;
 			std::shared_ptr<QTranslator> Translator_;
 			std::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
+	
+			void MakeTab (QWidget*, const TabClassInfo&);
+			
 		public:
 			void Init (ICoreProxy_ptr);
 			void SecondInit ();
@@ -68,8 +70,6 @@ namespace Woodpecker
 
 			std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 			
-		private:
-			void MakeTab (QWidget*, const TabClassInfo&);
 
 		signals:
 			void addNewTab (const QString&, QWidget*);

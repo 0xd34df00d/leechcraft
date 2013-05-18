@@ -51,13 +51,11 @@ namespace LeechCraft
 {
 namespace Woodpecker
 {
-	class TwitterPage 
-	: public QWidget, public ITabWidget
+	class TwitterPage 	: public QWidget
+						, public ITabWidget
 	{
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
-
-	private:
 
 		const TabClassInfo TC_;
 		QObject * const ParentPlugin_;
@@ -74,19 +72,23 @@ namespace Woodpecker
 		QObject *WrappedObject_;
 		bool TemporaryDocument_;
 		
-		volatile bool m_update_ready;	/**< The flag is checked by timer for UI update */
-		QTimer *m_ui_update_timer;		/**< Timer checks m_update_ready and updates the UI */
-		TwitDelegate *m_delegate;
-		Ui::TwitterPage *ui;
-		TwitterInterface *interface;
-		QTimer *m_twitter_timer;		/**< This timer sends network requests to get new twits */
-		QSettings *settings;
-		QList<std::shared_ptr<Tweet>> screenTwits;
+		volatile bool UpdateReady_;	/**< The flag is checked by timer for UI update */
+		QTimer *UiUpdateTimer_;		/**< Timer checks m_update_ready and updates the UI */
+		TwitDelegate *Delegate_;
+		Ui::TwitterPage *Ui_;
+		TwitterInterface *Interface_;
+		QTimer *TwitterTimer_;		/**< This timer sends network requests to get new twits */
+		QSettings *Settings_;
+		QList<std::shared_ptr<Tweet>> ScreenTwits_;
 
-		QAction *actionRetwit_;
-		QAction *actionReply_;
-		QAction *actionSPAM_;
-		QAction *actionOpenWeb_;
+		QAction *ActionRetwit_;
+		QAction *ActionReply_;
+		QAction *ActionSPAM_;
+		QAction *ActionOpenWeb_;
+		
+	private slots:
+		void on_TwitList__customContextMenuRequested (const QPoint&);
+		void updateTweetList_ ();
 		
 	public:
 		explicit TwitterPage (const TabClassInfo&, QObject*);
@@ -98,10 +100,6 @@ namespace Woodpecker
 		QList<QAction*> GetTabBarContextMenuActions () const;
 		QMap<QString, QList<QAction*> > GetWindowMenus () const;
 		TabClassInfo GetTabClassInfo () const;
-		
-	private slots:
-		void on_TwitList__customContextMenuRequested (const QPoint&);
-		void updateTweetList_ ();
 		
 	public slots:
 		void tryToLogin ();
