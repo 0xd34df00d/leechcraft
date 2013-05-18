@@ -30,7 +30,6 @@ SET (SRCS
 	filesproxymodel.cpp
 	filestreemodel.cpp
 	filesview.cpp
-	fileswatcher.cpp
 	syncer.cpp
 	syncmanager.cpp
 	syncwidget.cpp
