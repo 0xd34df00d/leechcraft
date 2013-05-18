@@ -86,7 +86,11 @@ void LeechCraft::SslErrorsDialog::PopulateTree (const QSslError& error)
 	}
 
 	new QTreeWidgetItem (item, QStringList (tr ("Valid:")) <<
+#ifndef USE_QT5
 				(cer.isValid () ? tr ("yes") : tr ("no")));
+#else
+				(!cer.isBlacklisted () ? tr ("yes") : tr ("no")));
+#endif
 	new QTreeWidgetItem (item, QStringList (tr ("Effective date:")) <<
 				cer.effectiveDate ().toString ());
 	new QTreeWidgetItem (item, QStringList (tr ("Expiry date:")) <<

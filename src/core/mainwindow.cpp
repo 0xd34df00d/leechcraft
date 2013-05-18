@@ -35,6 +35,7 @@
 #include <QCursor>
 #include <QShortcut>
 #include <QMenu>
+#include <QMimeData>
 #include <QSplashScreen>
 #include <QTime>
 #include <QDockWidget>
@@ -63,7 +64,7 @@
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
 
-LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
+LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WindowFlags flags)
 : QMainWindow (parent, flags)
 , TrayIcon_ (0)
 , IsShown_ (true)

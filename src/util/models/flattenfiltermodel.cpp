@@ -87,7 +87,10 @@ namespace Util
 
 		SourceIndexes_.clear ();
 		Source_ = model;
-		reset ();
+
+		beginResetModel ();
+		endResetModel ();
+
 		connect (Source_,
 				SIGNAL (rowsInserted (QModelIndex, int, int)),
 				this,

@@ -103,6 +103,7 @@ namespace
 	}
 };
 
+#ifndef USE_QT5
 void DebugHandler::simple (QtMsgType type, const char *message)
 {
 	Write (type, message, false);
@@ -112,3 +113,14 @@ void DebugHandler::backtraced (QtMsgType type, const char *message)
 {
 	Write (type, message, true);
 }
+#else
+void DebugHandler::simple (QtMsgType type, const QMessageLogContext& context, const QString& msg)
+{
+	Write (type, msg.toUtf8 (), false);
+}
+
+void DebugHandler::backtraced (QtMsgType type, const QMessageLogContext& context, const QString& msg)
+{
+	Write (type, msg.toUtf8 (), true);
+}
+#endif

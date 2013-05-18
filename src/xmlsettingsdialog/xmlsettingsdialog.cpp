@@ -508,7 +508,12 @@ namespace Util
 		QDomElement label = item.firstChildElement ("tooltip");
 		if (!label.isNull ())
 			return QCoreApplication::translate (qPrintable (Basename_),
-					Qt::escape (label.text ()).toUtf8 ().constData ());
+#ifndef USE_QT5
+					Qt::escape (label.text ())
+#else
+					(label.text ()).toHtmlEscaped ()
+#endif
+							.toUtf8 ().constData ());
 		return QString ();
 	}
 

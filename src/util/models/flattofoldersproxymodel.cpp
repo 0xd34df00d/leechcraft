@@ -86,7 +86,8 @@ namespace LeechCraft
 		void FlatToFoldersProxyModel::SetTagsManager (ITagsManager *tm)
 		{
 			TM_ = tm;
-			reset ();
+			beginResetModel ();
+			endResetModel ();
 		}
 
 		int FlatToFoldersProxyModel::columnCount (const QModelIndex&) const
@@ -500,7 +501,8 @@ namespace LeechCraft
 				for (int i = 0, size = SourceModel_->rowCount ();
 						i < size; ++i)
 					HandleRowInserted (i);
-				reset ();
+				beginResetModel ();
+				endResetModel ();
 			}
 		}
 

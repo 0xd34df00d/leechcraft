@@ -32,7 +32,11 @@
 #include <QLabel>
 #include <QGridLayout>
 #include <QtDebug>
-#include <QDesktopServices>
+#ifndef USE_QT5
+	#include <QDesktopServices>
+#else
+	#include <QStandardPaths>
+#endif
 #include "../filepicker.h"
 
 namespace LeechCraft
@@ -97,6 +101,7 @@ namespace LeechCraft
 			else if (item.hasAttribute ("default"))
 			{
 				QString text = item.attribute ("default");
+#ifndef USE_QT5
 				QMap<QString, QDesktopServices::StandardLocation> str2loc;
 				str2loc ["DOCUMENTS"] = QDesktopServices::DocumentsLocation;
 				str2loc ["DESKTOP"] = QDesktopServices::DocumentsLocation;
@@ -108,7 +113,19 @@ namespace LeechCraft
 						text.replace (0, key.length () + 2, QDesktopServices::storageLocation (str2loc [key]));
 						break;
 					}
-
+#else
+				QMap<QString, QStandardPaths::StandardLocation> str2loc;
+				str2loc ["DOCUMENTS"] = QStandardPaths::DocumentsLocation;
+				str2loc ["DESKTOP"] = QStandardPaths::DocumentsLocation;
+				str2loc ["MUSIC"] = QStandardPaths::DocumentsLocation;
+				str2loc ["MOVIES"] = QStandardPaths::DocumentsLocation;
+				Q_FOREACH (const QString& key, str2loc.keys ())
+					if (text.startsWith ("{" + key + "}"))
+					{
+						text.replace (0, key.length () + 2, QStandardPaths::writableLocation (str2loc [key]));
+						break;
+					}
+#endif
 				value = text;
 			}
 		}

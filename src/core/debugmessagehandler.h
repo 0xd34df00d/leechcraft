@@ -47,8 +47,11 @@ namespace DebugHandler
 	 *
 	 * @sa backtraced
 	 */
+#ifndef USE_QT5
 	void simple (QtMsgType type, const char *message);
-
+#else
+	void simple (QtMsgType type, const QMessageLogContext& context, const QString& msg);
+#endif
 	/** Debug message handler which prints backtraces for all messages
 	 * except QtDebugMsg ones. This is the only difference from the
 	 * simple() debug message handler. Refer to simple() documentation
@@ -59,7 +62,11 @@ namespace DebugHandler
 	 *
 	 * @sa simple
 	 */
+#ifndef USE_QT5
 	void backtraced (QtMsgType type, const char *message);
+#else
+	void backtraced (QtMsgType type, const QMessageLogContext& context, const QString& msg);
+#endif
 };
 
 #endif
