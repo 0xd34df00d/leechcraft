@@ -41,9 +41,9 @@ namespace Woodpecker
 
 	Tweet::Tweet (const QString& text, TwitterUser_ptr author, QObject *parent)
 	: QObject (parent)
-	, m_id (0)
+	, Id_ (0)
 	{
-		setText (text);
+		SetText (text);
 		if (!author)
 			Author_ = std::make_shared<TwitterUser> (parent);
 		else
@@ -57,10 +57,10 @@ namespace Woodpecker
 	Tweet::Tweet (const Tweet& original)
 	: QObject ()
 	{
-		Author_ = original.author ();
-		m_created = original.dateTime ();
-		setText (original.text ());
-		m_id = original.id ();
+		Author_ = original.Author ();
+		Created_ = original.DateTime ();
+		SetText (original.Text ());
+		Id_ = original.Id ();
 	}
 
 	Tweet& Tweet::operator= (const Tweet& rhs)
@@ -68,17 +68,17 @@ namespace Woodpecker
 		if (this == &rhs)
 			return *this;
 
-		m_id = rhs.id ();
-		Author_ = rhs.author ();
-		m_created = rhs.dateTime ();
-		setText (rhs.text ());
+		Id_ = rhs.Id ();
+		Author_ = rhs.Author ();
+		Created_ = rhs.DateTime ();
+		SetText (rhs.Text ());
 
 		return *this;
 	}
 
 	bool Tweet::operator== (const Tweet& other) const
 	{
-		return m_id == other.id ();
+		return Id_ == other.Id ();
 	}
 
 	bool Tweet::operator!= (const Tweet& other) const
@@ -88,20 +88,20 @@ namespace Woodpecker
 
 	bool Tweet::operator< (const Tweet& other) const
 	{
-		return m_id < other.id ();
+		return Id_ < other.Id ();
 	}
 
 	bool Tweet::operator> (const Tweet& other) const
 	{
-		return m_id > other.id ();
+		return Id_ > other.Id ();
 	}
 
-	void Tweet::setText (const QString& text) 
+	void Tweet::SetText (const QString& text) 
 	{
 		QRegExp rx ("\\s((http|https)://[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(([0-9]{1,5})?/?.*))(\\s|,|$)");
 		rx.setMinimal (true);
 
-		m_text = text;
+		Text_ = text;
 
 		/* Some regexp multiple match support magic for links highlighting.
 		 * Borrowed from Qt support forum */
@@ -122,10 +122,10 @@ namespace Woodpecker
 				pos += rx.matchedLength ();
 		}
 
-		m_document.setHtml (html);
+		Document_.setHtml (html);
 	}
 
-	TwitterUser_ptr Tweet::author () const
+	TwitterUser_ptr Tweet::Author () const
 	{
 		return Author_;
 	}
@@ -135,34 +135,34 @@ namespace Woodpecker
 		Author_ = newAuthor;
 	}
 	
-	QDateTime Tweet::dateTime () const
+	QDateTime Tweet::DateTime () const
 	{
-		return m_created;
+		return Created_;
 	}
 	
-	void Tweet::setDateTime (const QDateTime& datetime)
+	void Tweet::SetDateTime (const QDateTime& datetime)
 	{
-		m_created = datetime;
+		Created_ = datetime;
 	}
 	
-	QTextDocument* Tweet::getDocument ()
+	QTextDocument* Tweet::GetDocument ()
 	{
-		return &m_document;
+		return &Document_;
 	}
 	
-	QString Tweet::text () const
+	QString Tweet::Text () const
 	{
-		return m_text;
+		return Text_;
 	}
 	
-	qulonglong Tweet::id () const
+	qulonglong Tweet::Id () const
 	{
-		return m_id;
+		return Id_;
 	}
 	
-	void Tweet::setId (qulonglong id)
+	void Tweet::SetId (qulonglong id)
 	{
-		m_id = id;
+		Id_ = id;
 	}
 }
 }

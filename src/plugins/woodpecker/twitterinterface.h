@@ -34,9 +34,8 @@
 #include <QList>
 #include <QObject>
 #include <QUrl>
-#include <QtNetwork/QNetworkReply>
+#include <QNetworkReply>
 #include <QSettings>
-
 #include <QtKOAuth/QtKOAuth>
 
 #include "tweet.h"
@@ -45,7 +44,7 @@ namespace LeechCraft
 {
 namespace Woodpecker
 {
-	enum twitterRequest
+	enum class TwitterRequest
 	{
 		TRHomeTimeline,
 		TRMentions,
@@ -57,7 +56,7 @@ namespace Woodpecker
 		TRSPAMReport,
 	};
 
-	enum feedMode
+	enum class FeedMode
 	{
 		FMHomeTimeline,
 		FMMentions,
@@ -66,37 +65,36 @@ namespace Woodpecker
 		FMDirect,
 	};
 
-	class twitterInterface : public QObject
+	class TwitterInterface : public QObject
 	{
 		Q_OBJECT
+	
+		QNetworkAccessManager *HttpClient_;
+		KQOAuthManager *OAuthManager_;
+		KQOAuthRequest *OAuthRequest_;
+		QString Token_;
+		QString TokenSecret_;
+		QString ConsumerKey_;
+		QString ConsumerKeySecret_;
+		QSettings *Settings_;
+		FeedMode LastRequestMode_;
+		
+		void SignedRequest (TwitterRequest req, KQOAuthRequest::RequestHttpMethod method = KQOAuthRequest::GET, KQOAuthParameters params = KQOAuthParameters ());
+		void RequestTwitter (QUrl requestAddress);
+		QList <std::shared_ptr<Tweet>> ParseReply (const QByteArray& json);
+		void Xauth ();
 		
 	public:
-		explicit twitterInterface (QObject *parent = 0);
-		~twitterInterface ();
-		void sendTweet (QString tweet);
-		void retweet (long unsigned int id);
-		void reply (long unsigned int replyid, QString tweet);
-		void reportSPAM (QString username, long unsigned int userid=0);
-		void getAccess ();
-		void login (QString savedToken, QString savedTokenSecret);
-		feedMode getLastRequestMode ();
-		void setLastRequestMode (feedMode newLastRequestMode);
-		
-	private:
-		QNetworkAccessManager *HttpClient;
-		KQOAuthManager *oauthManager;
-		KQOAuthRequest *oauthRequest;
-		QString token;
-		QString tokenSecret;
-		QString consumerKey;
-		QString consumerKeySecret;
-		QSettings *settings;
-		feedMode lastRequestMode;
-		
-		void signedRequest (twitterRequest req, KQOAuthRequest::RequestHttpMethod method = KQOAuthRequest::GET, KQOAuthParameters params = KQOAuthParameters ());
-		void requestTwitter (QUrl requestAddress);
-		QList <std::shared_ptr<Tweet>> parseReply (QByteArray json);
-		void xauth ();
+		explicit TwitterInterface (QObject *parent = 0);
+		~TwitterInterface ();
+		void SendTweet (const QString& tweet);
+		void Retweet (qulonglong id);
+		void Reply (long unsigned int replyid, QString tweet);
+		void ReportSPAM (QString username, long unsigned int userid=0);
+		void GetAccess ();
+		void Login (QString savedToken, QString savedTokenSecret);
+		FeedMode GetLastRequestMode ();
+		void SetLastRequestMode (FeedMode newLastRequestMode);
 		
 	private slots:
 		void replyFinished (QNetworkReply* reply);

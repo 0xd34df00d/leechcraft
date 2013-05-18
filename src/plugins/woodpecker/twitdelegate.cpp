@@ -52,6 +52,11 @@ namespace Woodpecker
 	{
 		m_parent = parent;
 	}
+	
+	TwitDelegate::~TwitDelegate()
+	{
+		
+	}
 
 	QObject* TwitDelegate::parent ()
 	{
@@ -116,17 +121,17 @@ namespace Woodpecker
 		}
 
 		// Get title, description and icon
-		QIcon ic = QIcon (qvariant_cast<QPixmap> (index.data (Qt::DecorationRole)));
-		auto current_tweet = index.data (Qt::UserRole).value<std::shared_ptr<Tweet>> ();
-		if (!current_tweet) 
+		QIcon ic = QIcon (index.data (Qt::DecorationRole).value<QPixmap>());
+		auto currentTweet = index.data (Qt::UserRole).value<std::shared_ptr<Tweet>> ();
+		if (!currentTweet) 
 		{
 			qDebug () << "Can't recieve twit";
 			return;
 		}
-		QString author = current_tweet->author ()->username ();
-		qulonglong id = current_tweet->id ();
-		QString time = current_tweet->dateTime ().toString ();
-		QTextDocument* doc = current_tweet->getDocument ();
+		const qulonglong id = currentTweet->Id ();
+		const auto& author = currentTweet->Author ()->username ();
+		const auto& time = currentTweet->DateTime ().toString ();
+		QTextDocument* doc = currentTweet->GetDocument ();
 
 		int imageSpace = 50;
 		if (!ic.isNull ()) 
@@ -160,69 +165,56 @@ namespace Woodpecker
 		painter->setPen (linePen);
 	}
 
-	QSize TwitDelegate::sizeHint (const QStyleOptionViewItem & option, const QModelIndex & index) const
+	QSize TwitDelegate::sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
 		return QSize (200, 60); // very dumb value
 	}
 
-	TwitDelegate::~TwitDelegate ()
+	bool TwitDelegate::editorEvent (QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem& option, const QModelIndex& index)
 	{
-	}
-
-	bool TwitDelegate::editorEvent (QEvent* event, QAbstractItemModel* model, const QStyleOptionViewItem& option, const QModelIndex& index)
-	{
-		QListWidget*  parent_widget = qobject_cast<QListWidget*> (m_parent);
+		QListWidget *parentWidget = qobject_cast<QListWidget*> (m_parent);
 
 		const int imageSpace = 50;
 		if (event->type () == QEvent::MouseButtonRelease) 
 		{
-			QMouseEvent *me = (QMouseEvent*)event;
+			const QMouseEvent *me = static_cast<QMouseEvent*> (event);
 			if (me)
 			{
-				auto current_tweet = index.data (Qt::UserRole).value<std::shared_ptr<Tweet>> ();
-				auto position = (me->pos () - option.rect.adjusted (imageSpace + 14, 4, 0, -22).topLeft ());
+				const auto currentTweet = index.data (Qt::UserRole).value<std::shared_ptr<Tweet>> ();
+				const auto position = (me->pos () - option.rect.adjusted (imageSpace + 14, 4, 0, -22).topLeft ());
 
-				qDebug () << "Coordinates: " << position.x () << ", " << position.y ();
-
-				QTextDocument* textDocument = current_tweet->getDocument ();
-				int textCursorPosition =
+				const QTextDocument *textDocument = currentTweet->GetDocument ();
+				const int textCursorPosition =
 					textDocument->documentLayout ()->hitTest (position, Qt::FuzzyHit);
-				QChar character (textDocument->characterAt (textCursorPosition));
-				QString string;
-				string.append (character);
+				const QChar character (textDocument->characterAt (textCursorPosition));
+				const QString string (character);
 
-				qDebug () << __FILE__ << __LINE__ << "Mouse pressed on letter " << string;
+				const auto anchor = textDocument->documentLayout ()->anchorAt (position);
 
-				auto anchor = textDocument->documentLayout ()->anchorAt (position);
-
-				if (parent_widget)
-					if (!anchor.isEmpty ())
-					{
-						Entity url = Util::MakeEntity (QUrl (anchor), QString (), OnlyHandle | FromUserInitiated, QString ());
-						Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (url);
-					}
-
+				if (parentWidget && !anchor.isEmpty ())
+				{
+					Entity url = Util::MakeEntity (QUrl (anchor), QString (), OnlyHandle | FromUserInitiated, QString ());
+					Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (url);
+				}
 			}
 		}
 		else if (event->type () == QEvent::MouseMove)
 		{
-			qDebug () << "Mouse moved";
-			QMouseEvent *me = (QMouseEvent*)event;
+			const QMouseEvent *me = static_cast<QMouseEvent*> (event);
 			if (me)
 			{
-				auto current_tweet = index.data (Qt::UserRole).value<std::shared_ptr<Tweet>> ();
-				auto position = (me->pos () - option.rect.adjusted (imageSpace + 14, 4, 0, -22).topLeft ());
+				const auto currentTweet = index.data (Qt::UserRole).value<std::shared_ptr<Tweet>> ();
+				const auto position = (me->pos () - option.rect.adjusted (imageSpace + 14, 4, 0, -22).topLeft ());
 
-				qDebug () << "Move coordinates: " << position.x () << ", " << position.y ();
-				QTextDocument* textDocument = current_tweet->getDocument ();
-				auto anchor = textDocument->documentLayout ()->anchorAt (position);
+				const QTextDocument *textDocument = currentTweet->GetDocument ();
+				const auto anchor = textDocument->documentLayout ()->anchorAt (position);
 
-				if (parent_widget) 
+				if (parentWidget) 
 				{
 					if (!anchor.isEmpty ())
-						parent_widget->setCursor (Qt::PointingHandCursor);
+						parentWidget->setCursor (Qt::PointingHandCursor);
 					else
-						parent_widget->unsetCursor ();
+						parentWidget->unsetCursor ();
 				}
 			}
 		}

@@ -45,12 +45,12 @@ namespace Woodpecker
 	{
 		Q_OBJECT
 		
-	private:
-		qulonglong	m_id;			/**< Twit id in Twitter */
-		QString		m_text;			/**< Text of twit in plaintext */
+		qulonglong	Id_;			/**< Twit id in Twitter */
+		QString		Text_;			/**< Text of twit in plaintext */
 		TwitterUser_ptr	Author_;	/**< Pointer to twitter author */
-		QDateTime	m_created;		/**< Twit date */
-		QTextDocument m_document;	/**< QTextDocument which is used for drawing twit */
+		QDateTime	Created_;		/**< Twit date */
+		QTextDocument Document_;	/**< QTextDocument which is used for drawing twit */
+		
 	public:
 		Tweet (QObject *parent = 0);
 		Tweet (const QString& text, TwitterUser_ptr author = nullptr, QObject *parent = 0);
@@ -58,24 +58,24 @@ namespace Woodpecker
 		~Tweet ();
 		
 		/** @brief Set both plain text contents and generates a html representation */
-		void setText (const QString& text);
-		QString text () const;
+		void SetText (const QString& text);
+		QString Text () const;
 		
-		qulonglong id () const;
-		void setId (qulonglong id);
+		qulonglong Id () const;
+		void SetId (qulonglong id);
 		
-		TwitterUser_ptr author () const;
+		TwitterUser_ptr Author () const;
 		void setAuthor (TwitterUser_ptr newAuthor);
 		
-		QDateTime dateTime () const;
-		void setDateTime (const QDateTime& datetime);
+		QDateTime DateTime () const;
+		void SetDateTime (const QDateTime& datetime);
 		
 		/** @brief Direct access to QTextDocument representation
 		 * @returns internal document object. You can fix it the way you like for better visuals
 		 * 
 		 * Used in TwitDelegate class for drawing Tweet object contents in UI
 		 */
-		QTextDocument* getDocument();
+		QTextDocument* GetDocument();
 		
 		Tweet& operator= (const Tweet&);
 		

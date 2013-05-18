@@ -78,7 +78,7 @@ namespace Woodpecker
 		QTimer *m_ui_update_timer;		/**< Timer checks m_update_ready and updates the UI */
 		TwitDelegate *m_delegate;
 		Ui::TwitterPage *ui;
-		twitterInterface *interface;
+		TwitterInterface *interface;
 		QTimer *m_twitter_timer;		/**< This timer sends network requests to get new twits */
 		QSettings *settings;
 		QList<std::shared_ptr<Tweet>> screenTwits;
