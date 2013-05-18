@@ -257,6 +257,19 @@ namespace Krigstask
 		return result;
 	}
 
+	Window XWrapper::GetActiveApp ()
+	{
+		auto win = GetActiveWindow ();
+		if (!win)
+			return 0;
+
+		Window transient = None;
+		if (!ShouldShow (win) && XGetTransientForHint (Display_, win, &transient))
+			return transient;
+
+		return win;
+	}
+
 	bool XWrapper::ShouldShow (Window wid)
 	{
 		const QList<Atom> ignoreAtoms
@@ -301,6 +314,20 @@ namespace Krigstask
 			emit activeWindowChanged ();
 		else if (ev->atom == GetAtom ("_NET_CURRENT_DESKTOP"))
 			emit desktopChanged ();
+	}
+
+	Window XWrapper::GetActiveWindow ()
+	{
+		ulong length = 0;
+		Guarded<ulong> data;
+
+		if (!GetRootWinProp (GetAtom ("_NET_ACTIVE_WINDOW"), &length, data.GetAs<uchar**> (), XA_WINDOW))
+			return 0;
+
+		if (!length)
+			return 0;
+
+		return data [0];
 	}
 
 	Atom XWrapper::GetAtom (const QString& name)

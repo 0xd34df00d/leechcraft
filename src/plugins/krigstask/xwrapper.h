@@ -80,10 +80,14 @@ namespace Krigstask
 
 		WinStateFlags GetWindowState (Window);
 
+		Window GetActiveApp ();
+
 		bool ShouldShow (Window);
 	private:
 		template<typename T>
 		void HandlePropNotify (T);
+
+		Window GetActiveWindow ();
 
 		Atom GetAtom (const QString&);
 		bool GetWinProp (Window, Atom, ulong*, uchar**, Atom = static_cast<Atom> (AnyPropertyType)) const;
