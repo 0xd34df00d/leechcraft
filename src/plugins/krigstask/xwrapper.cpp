@@ -257,6 +257,45 @@ namespace Krigstask
 		return result;
 	}
 
+	AllowedActionFlags XWrapper::GetWindowActions (Window wid)
+	{
+		AllowedActionFlags result;
+
+		ulong length = 0;
+		ulong *data = 0;
+		if (!GetWinProp (wid, GetAtom ("_NET_WM_ALLOWED_ACTIONS"),
+				&length, reinterpret_cast<uchar**> (&data), XA_ATOM))
+			return result;
+
+		for (auto i = 0; i < length; ++i)
+		{
+			const auto curAtom = data [i];
+
+			auto set = [this, &curAtom, &result] (const QString& atom, AllowedActionFlag flag)
+			{
+				if (curAtom == GetAtom ("_NET_WM_ACTION_" + atom))
+					result |= flag;
+			};
+
+			set ("MOVE", AllowedActionFlag::Move);
+			set ("RESIZE", AllowedActionFlag::Resize);
+			set ("MINIMIZE", AllowedActionFlag::Minimize);
+			set ("SHADE", AllowedActionFlag::Shade);
+			set ("STICK", AllowedActionFlag::Stick);
+			set ("MAXIMIZE_HORZ", AllowedActionFlag::MaximizeHorz);
+			set ("MAXIMIZE_VERT", AllowedActionFlag::MaximizeVert);
+			set ("FULLSCREEN", AllowedActionFlag::ShowFullscreen);
+			set ("CHANGE_DESKTOP", AllowedActionFlag::ChangeDesktop);
+			set ("CLOSE", AllowedActionFlag::Close);
+			set ("ABOVE", AllowedActionFlag::MoveToTop);
+			set ("BELOW", AllowedActionFlag::MoveToBottom);
+		}
+
+		XFree (data);
+
+		return result;
+	}
+
 	Window XWrapper::GetActiveApp ()
 	{
 		auto win = GetActiveWindow ();
@@ -338,6 +377,8 @@ namespace Krigstask
 				emit windowDesktopChanged (wid);
 			else if (ev->atom == GetAtom ("_NET_WM_STATE"))
 				emit windowStateChanged (wid);
+			else if (ev->atom == GetAtom ("_NET_WM_ALLOWED_ACTIONS"))
+				emit windowActionsChanged (wid);
 		}
 	}
 

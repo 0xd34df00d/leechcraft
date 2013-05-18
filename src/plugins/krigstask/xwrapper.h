@@ -60,8 +60,8 @@ namespace Krigstask
 		QList<Window> GetWindows ();
 		QString GetWindowTitle (Window);
 		QIcon GetWindowIcon (Window);
-
 		WinStateFlags GetWindowState (Window);
+		AllowedActionFlags GetWindowActions (Window);
 
 		Window GetActiveApp ();
 
@@ -87,6 +87,7 @@ namespace Krigstask
 		void windowIconChanged (ulong);
 		void windowDesktopChanged (ulong);
 		void windowStateChanged (ulong);
+		void windowActionsChanged (ulong);
 	};
 }
 }
