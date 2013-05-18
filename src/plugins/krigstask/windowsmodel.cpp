@@ -130,6 +130,9 @@ namespace Krigstask
 
 	void WindowsModel::AddWindow (ulong wid, XWrapper& w)
 	{
+		if (!w.ShouldShow (wid))
+			return;
+
 		const auto& icon = w.GetWindowIcon (wid);
 		Windows_.append ({ wid, w.GetWindowTitle (wid), icon, 0 });
 		ImageProvider_->SetIcon (QString::number (wid), icon);
@@ -144,6 +147,8 @@ namespace Krigstask
 			known << info.WID_;
 
 		auto current = w.GetWindows ();
+		current.erase (std::remove_if (current.begin (), current.end (),
+					[this, &w] (Window wid) { return !w.ShouldShow (wid); }), current.end ());
 
 		for (auto i = current.begin (); i != current.end (); )
 		{

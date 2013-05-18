@@ -219,6 +219,71 @@ namespace Krigstask
 		return icon;
 	}
 
+	XWrapper::WinStateFlags XWrapper::GetWindowState (Window wid)
+	{
+		WinStateFlags result;
+
+		ulong length = 0;
+		ulong *data = 0;
+		if (!GetWinProp (wid, GetAtom ("_NET_WM_STATE"),
+				&length, reinterpret_cast<uchar**> (&data), XA_ATOM))
+			return result;
+
+		for (auto i = 0; i < length; ++i)
+		{
+			const auto curAtom = data [i];
+
+			auto set = [this, &curAtom, &result] (const QString& atom, WinStateFlag flag)
+			{
+				if (curAtom == GetAtom ("_NET_WM_STATE_" + atom))
+					result |= flag;
+			};
+
+			set ("MODAL", WinStateFlag::Modal);
+			set ("STICKY", WinStateFlag::Sticky);
+			set ("MAXIMIZED_VERT", WinStateFlag::MaximizedVert);
+			set ("MAXIMIZED_HORZ", WinStateFlag::MaximizedHorz);
+			set ("SHADED", WinStateFlag::Shaded);
+			set ("SKIP_TASKBAR", WinStateFlag::SkipTaskbar);
+			set ("SKIP_PAGER", WinStateFlag::SkipPager);
+			set ("FULLSCREEN", WinStateFlag::Fullscreen);
+			set ("ABOVE", WinStateFlag::OnTop);
+			set ("BELOW", WinStateFlag::OnBottom);
+			set ("DEMANDS_ATTENTION", WinStateFlag::Attention);
+		}
+
+		return result;
+	}
+
+	bool XWrapper::ShouldShow (Window wid)
+	{
+		const QList<Atom> ignoreAtoms
+		{
+			GetAtom ("_NET_WM_WINDOW_TYPE_DESKTOP"),
+			GetAtom ("_NET_WM_WINDOW_TYPE_DOCK"),
+			GetAtom ("_NET_WM_WINDOW_TYPE_TOOLBAR"),
+			GetAtom ("_NET_WM_WINDOW_TYPE_MENU"),
+			GetAtom ("_NET_WM_WINDOW_TYPE_SPLASH"),
+			GetAtom ("_NET_WM_WINDOW_TYPE_POPUP_MENU")
+		};
+
+		for (const auto& type : GetWindowType (wid))
+			if (ignoreAtoms.contains (type))
+				return false;
+
+		if (GetWindowState (wid) & WinStateFlag::SkipTaskbar)
+			return false;
+
+		Window transient = None;
+		if (!XGetTransientForHint (Display_, wid, &transient))
+			return true;
+
+		if (transient == 0 || transient == wid || transient == AppWin_)
+			return true;
+
+		return !GetWindowType (transient).contains (GetAtom ("_NET_WM_WINDOW_TYPE_NORMAL"));
+	}
+
 	template<typename T>
 	void XWrapper::HandlePropNotify (T ev)
 	{
@@ -240,7 +305,8 @@ namespace Krigstask
 		return atom;
 	}
 
-	bool XWrapper::GetWinProp (Window win, Atom property, ulong *length, unsigned char **result, Atom req) const
+	bool XWrapper::GetWinProp (Window win, Atom property,
+			ulong *length, unsigned char **result, Atom req) const
 	{
 		int fmt = 0;
 		ulong type = 0, rest = 0;
@@ -249,9 +315,28 @@ namespace Krigstask
 				&fmt, length, &rest, result) == Success;
 	}
 
-	bool XWrapper::GetRootWinProp (Atom property, ulong *length, uchar **result, Atom req) const
+	bool XWrapper::GetRootWinProp (Atom property,
+			ulong *length, uchar **result, Atom req) const
 	{
 		return GetWinProp (AppWin_, property, length, result, req);
+	}
+
+	QList<Atom> XWrapper::GetWindowType (Window wid)
+	{
+		QList<Atom> result;
+
+		ulong length = 0;
+		ulong *data = nullptr;
+
+		if (!GetWinProp (wid, GetAtom ("_NET_WM_WINDOW_TYPE"),
+				&length, reinterpret_cast<uchar**> (&data)))
+			return result;
+
+		for (auto i = 0; i < length; ++i)
+			result << data [i];
+
+		XFree (data);
+		return result;
 	}
 }
 }
