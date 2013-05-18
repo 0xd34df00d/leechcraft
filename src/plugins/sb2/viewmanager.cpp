@@ -122,8 +122,9 @@ namespace SB2
 		LoadRemovedList ();
 		LoadQuarkOrder ();
 
+		const auto deskMode = qApp->arguments ().contains ("--desktop");
+
 		Toolbar_->addWidget (View_);
-		Toolbar_->setFloatable (false);
 		View_->setVisible (true);
 		connect (Toolbar_,
 				SIGNAL (orientationChanged (Qt::Orientation)),
@@ -139,12 +140,26 @@ namespace SB2
 		toggleAct->setShortcut (QString ("Ctrl+J,S"));
 		shortcutMgr->RegisterAction ("TogglePanel", toggleAct, true);
 
-		window->addAction (toggleAct);
-		window->addToolBar (static_cast<Qt::ToolBarArea> (pos), Toolbar_);
+		if (!deskMode)
+		{
+			Toolbar_->setFloatable (false);
+			window->addAction (toggleAct);
+			window->addToolBar (static_cast<Qt::ToolBarArea> (pos), Toolbar_);
 #ifdef Q_OS_MAC
-		// dunno WTF
-		window->show ();
+			// dunno WTF
+			window->show ();
 #endif
+		}
+		else
+		{
+			Toolbar_->setFloatable (true);
+			Toolbar_->setAllowedAreas (Qt::NoToolBarArea);
+
+			Toolbar_->setAttribute (Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+			Toolbar_->setAttribute (Qt::WA_X11NetWmWindowTypeDock);
+			Toolbar_->setAttribute (Qt::WA_AlwaysShowToolTips);
+			Toolbar_->show ();
+		}
 	}
 
 	SBView* ViewManager::GetView () const
