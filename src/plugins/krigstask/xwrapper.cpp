@@ -246,6 +246,7 @@ namespace Krigstask
 			set ("SHADED", WinStateFlag::Shaded);
 			set ("SKIP_TASKBAR", WinStateFlag::SkipTaskbar);
 			set ("SKIP_PAGER", WinStateFlag::SkipPager);
+			set ("HIDDEN", WinStateFlag::Hidden);
 			set ("FULLSCREEN", WinStateFlag::Fullscreen);
 			set ("ABOVE", WinStateFlag::OnTop);
 			set ("BELOW", WinStateFlag::OnBottom);
