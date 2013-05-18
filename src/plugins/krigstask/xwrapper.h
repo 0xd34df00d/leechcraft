@@ -80,6 +80,11 @@ namespace Krigstask
 		void windowListChanged ();
 		void activeWindowChanged ();
 		void desktopChanged ();
+
+		void windowNameChanged (Window);
+		void windowIconChanged (Window);
+		void windowDesktopChanged (Window);
+		void windowStateChanged (Window);
 	};
 }
 }

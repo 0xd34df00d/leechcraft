@@ -68,7 +68,7 @@ namespace Krigstask
 	{
 		auto ev = static_cast<XEvent*> (msg);
 
-		if (ev->type == PropertyNotify && ev->xproperty.window == AppWin_)
+		if (ev->type == PropertyNotify)
 			HandlePropNotify (&ev->xproperty);
 
 		return false;
@@ -308,12 +308,29 @@ namespace Krigstask
 	template<typename T>
 	void XWrapper::HandlePropNotify (T ev)
 	{
-		if (ev->atom == GetAtom ("_NET_CLIENT_LIST"))
-			emit windowListChanged ();
-		else if (ev->atom == GetAtom ("_NET_ACTIVE_WINDOW"))
-			emit activeWindowChanged ();
-		else if (ev->atom == GetAtom ("_NET_CURRENT_DESKTOP"))
-			emit desktopChanged ();
+		const auto wid = ev->window;
+
+		if (wid == AppWin_)
+		{
+			if (ev->atom == GetAtom ("_NET_CLIENT_LIST"))
+				emit windowListChanged ();
+			else if (ev->atom == GetAtom ("_NET_ACTIVE_WINDOW"))
+				emit activeWindowChanged ();
+			else if (ev->atom == GetAtom ("_NET_CURRENT_DESKTOP"))
+				emit desktopChanged ();
+		}
+		else if (ShouldShow (wid))
+		{
+			if (ev->atom == GetAtom ("_NET_WM_VISIBLE_NAME") ||
+					ev->atom == GetAtom ("WM_NAME"))
+				emit windowNameChanged (wid);
+			else if (ev->atom == GetAtom ("_NET_WM_ICON"))
+				emit windowIconChanged (wid);
+			else if (ev->atom == GetAtom ("_NET_WM_DESKTOP"))
+				emit windowDesktopChanged (wid);
+			else if (ev->atom == GetAtom ("_NET_WM_STATE"))
+				emit windowStateChanged (wid);
+		}
 	}
 
 	Window XWrapper::GetActiveWindow ()
