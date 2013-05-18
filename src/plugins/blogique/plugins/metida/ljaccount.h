@@ -65,6 +65,8 @@ namespace Metida
 		bool UsedRTE_;
 		bool NotifyByEmail_;
 		QStringList LikeButtons_;
+		QUrl RepostUrl_;
+		bool IsRepost_;
 
 		LJEventProperties ()
 		: CurrentMoodId_ (-1)
@@ -76,11 +78,12 @@ namespace Metida
 		, EntryVisibility_ (true)
 		, UsedRTE_ (true)
 		, NotifyByEmail_ (true)
+		, IsRepost_ (false)
 		{
 		}
 	};
 
-	struct LJEvent
+	struct 	LJEvent
 	{
 		//for posting
 		QString Event_;
