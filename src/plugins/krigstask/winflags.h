@@ -37,22 +37,43 @@ namespace Krigstask
 {
 	enum WinStateFlag
 	{
-		NoFlag = 0x0,
-		Modal = 0x001,
-		Sticky = 0x002,
-		MaximizedVert = 0x004,
-		MaximizedHorz = 0x008,
-		Shaded = 0x010,
-		SkipTaskbar = 0x020,
-		SkipPager = 0x040,
-		Hidden = 0x080,
-		Fullscreen = 0x100,
-		OnTop = 0x200,
-		OnBottom = 0x400,
-		Attention = 0x800
+		NoState			= 0,
+		Modal			= 1 << 0,
+		Sticky			= 1 << 1,
+		MaximizedVert	= 1 << 2,
+		MaximizedHorz	= 1 << 3,
+		Shaded			= 1 << 4,
+		SkipTaskbar		= 1 << 5,
+		SkipPager		= 1 << 6,
+		Hidden			= 1 << 7,
+		Fullscreen		= 1 << 8,
+		OnTop			= 1 << 9,
+		OnBottom		= 1 << 10,
+		Attention		= 1 << 11
 	};
+
 	Q_DECLARE_FLAGS (WinStateFlags, WinStateFlag)
+
+	enum AllowedActionFlag
+	{
+		NoAction		= 0,
+		Move			= 1 << 0,
+		Resize			= 1 << 1,
+		Minimize		= 1 << 2,
+		Shade			= 1 << 3,
+		Stick			= 1 << 4,
+		MaximizeHorz	= 1 << 5,
+		MaximizeVert	= 1 << 6,
+		ShowFullscreen	= 1 << 7,
+		ChangeDesktop	= 1 << 8,
+		Close			= 1 << 9,
+		MoveToTop		= 1 << 10,
+		MoveToBottom	= 1 << 11
+	};
+
+	Q_DECLARE_FLAGS (AllowedActionFlags, AllowedActionFlag)
 }
 }
 
 Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Krigstask::WinStateFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Krigstask::AllowedActionFlags)
