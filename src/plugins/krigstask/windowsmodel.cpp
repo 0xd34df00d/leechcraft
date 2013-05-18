@@ -149,7 +149,7 @@ namespace Krigstask
 		case Role::IsActiveWindow:
 			return item.IsActive_;
 		case Role::IsMinimizedWindow:
-			return !item.Actions_.testFlag (Minimize);
+			return item.State_.testFlag (WinStateFlag::Hidden);
 		}
 
 		return {};
