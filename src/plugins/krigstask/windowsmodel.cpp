@@ -72,11 +72,16 @@ namespace Krigstask
 				SIGNAL (windowListChanged ()),
 				this,
 				SLOT (updateWinList ()));
+		connect (&XWrapper::Instance (),
+				SIGNAL (activeWindowChanged ()),
+				this,
+				SLOT (updateActiveWindow ()));
 
 		QHash<int, QByteArray> roleNames;
 		roleNames [Role::WindowName] = "windowName";
 		roleNames [Role::WindowID] = "windowID";
 		roleNames [Role::IconGenID] = "iconGenID";
+		roleNames [Role::IsActiveWindow] = "isActiveWindow";
 		setRoleNames (roleNames);
 	}
 
@@ -123,6 +128,8 @@ namespace Krigstask
 			return QString::number (item.WID_);
 		case Role::IconGenID:
 			return QString::number (item.IconGenID_);
+		case Role::IsActiveWindow:
+			return item.IsActive_;
 		}
 
 		return {};
@@ -134,7 +141,7 @@ namespace Krigstask
 			return;
 
 		const auto& icon = w.GetWindowIcon (wid);
-		Windows_.append ({ wid, w.GetWindowTitle (wid), icon, 0 });
+		Windows_.append ({ wid, w.GetWindowTitle (wid), icon, 0, w.GetActiveApp () == wid });
 		ImageProvider_->SetIcon (QString::number (wid), icon);
 	}
 
@@ -177,6 +184,21 @@ namespace Krigstask
 			for (auto wid : current)
 				AddWindow (wid, w);
 			endInsertRows ();
+		}
+	}
+
+	void WindowsModel::updateActiveWindow ()
+	{
+		const auto active = XWrapper::Instance ().GetActiveApp ();
+
+		for (auto i = 0; i < Windows_.size (); ++i)
+		{
+			auto& info = Windows_ [i];
+			if ((info.WID_ == active) == info.IsActive_)
+				continue;
+
+			info.IsActive_ = info.WID_ == active;
+			emit dataChanged (createIndex (i, 0), createIndex (i, 0));
 		}
 	}
 }

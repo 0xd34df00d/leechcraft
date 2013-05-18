@@ -52,6 +52,7 @@ namespace Krigstask
 			QString Title_;
 			QIcon Icon_;
 			int IconGenID_;
+			bool IsActive_;
 		};
 		QList<WinInfo> Windows_;
 
@@ -59,7 +60,8 @@ namespace Krigstask
 		{
 			WindowName = Qt::UserRole + 1,
 			WindowID,
-			IconGenID
+			IconGenID,
+			IsActiveWindow
 		};
 
 		TaskbarImageProvider *ImageProvider_;
@@ -77,6 +79,7 @@ namespace Krigstask
 		void AddWindow (ulong, XWrapper&);
 	private slots:
 		void updateWinList ();
+		void updateActiveWindow ();
 	};
 }
 }

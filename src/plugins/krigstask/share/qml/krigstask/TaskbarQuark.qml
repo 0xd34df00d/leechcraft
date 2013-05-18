@@ -46,6 +46,8 @@ Rectangle {
                     textTooltip: windowName
                     isHighlight: false
                     transparentStyle: true
+
+                    isCurrent: isActiveWindow
                 }
             }
         }
