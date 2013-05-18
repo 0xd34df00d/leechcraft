@@ -77,11 +77,25 @@ namespace Krigstask
 				this,
 				SLOT (updateActiveWindow ()));
 
+		connect (&XWrapper::Instance (),
+				SIGNAL (windowNameChanged (ulong)),
+				this,
+				SLOT (updateWindowName (ulong)));
+		connect (&XWrapper::Instance (),
+				SIGNAL (windowIconChanged (ulong)),
+				this,
+				SLOT (updateWindowIcon (ulong)));
+		connect (&XWrapper::Instance (),
+				SIGNAL (windowStateChanged (ulong)),
+				this,
+				SLOT (updateWindowState (ulong)));
+
 		QHash<int, QByteArray> roleNames;
 		roleNames [Role::WindowName] = "windowName";
 		roleNames [Role::WindowID] = "windowID";
 		roleNames [Role::IconGenID] = "iconGenID";
 		roleNames [Role::IsActiveWindow] = "isActiveWindow";
+		roleNames [Role::IsMinimizedWindow] = "isMinimizedWindow";
 		setRoleNames (roleNames);
 	}
 
@@ -130,6 +144,8 @@ namespace Krigstask
 			return QString::number (item.IconGenID_);
 		case Role::IsActiveWindow:
 			return item.IsActive_;
+		case Role::IsMinimizedWindow:
+			return item.State_ == WinStateFlag::NoFlag;
 		}
 
 		return {};
@@ -141,8 +157,40 @@ namespace Krigstask
 			return;
 
 		const auto& icon = w.GetWindowIcon (wid);
-		Windows_.append ({ wid, w.GetWindowTitle (wid), icon, 0, w.GetActiveApp () == wid });
+		Windows_.append ({
+					wid,
+					w.GetWindowTitle (wid),
+					icon,
+					0,
+					w.GetActiveApp () == wid,
+					w.GetWindowState (wid)
+				});
 		ImageProvider_->SetIcon (QString::number (wid), icon);
+
+		w.Subscribe (wid);
+	}
+
+	QList<WindowsModel::WinInfo>::iterator WindowsModel::FindWinInfo (Window wid)
+	{
+		return std::find_if (Windows_.begin (), Windows_.end (),
+				[&wid] (const WinInfo& info) { return info.WID_ == wid; });
+	}
+
+	void WindowsModel::UpdateWinInfo (Window w, std::function<void (WinInfo&)> updater)
+	{
+		auto pos = FindWinInfo (w);
+		if (pos == Windows_.end ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown window"
+					<< w;
+			return;
+		}
+
+		updater (*pos);
+
+		const auto& idx = createIndex (std::distance (Windows_.begin (), pos), 0);
+		emit dataChanged (idx, idx);
 	}
 
 	void WindowsModel::updateWinList ()
@@ -170,7 +218,6 @@ namespace Krigstask
 			const auto pos = std::find_if (Windows_.begin (), Windows_.end (),
 					[&wid] (const WinInfo& info) { return info.WID_ == wid; });
 			const auto dist = std::distance (Windows_.begin (), pos);
-
 			beginRemoveRows ({}, dist, dist);
 			Windows_.erase (pos);
 			endRemoveRows ();
@@ -200,6 +247,28 @@ namespace Krigstask
 			info.IsActive_ = info.WID_ == active;
 			emit dataChanged (createIndex (i, 0), createIndex (i, 0));
 		}
+	}
+
+	void WindowsModel::updateWindowName (ulong w)
+	{
+		UpdateWinInfo (w,
+				[&w] (WinInfo& info) { info.Title_ = XWrapper::Instance ().GetWindowTitle (w); });
+	}
+
+	void WindowsModel::updateWindowIcon (ulong w)
+	{
+		UpdateWinInfo (w,
+				[&w] (WinInfo& info) -> void
+				{
+					info.Icon_ = XWrapper::Instance ().GetWindowIcon (w);
+					++info.IconGenID_;
+				});
+	}
+
+	void WindowsModel::updateWindowState (ulong w)
+	{
+		UpdateWinInfo (w,
+				[&w] (WinInfo& info) { info.State_ = XWrapper::Instance ().GetWindowState (w); });
 	}
 }
 }
