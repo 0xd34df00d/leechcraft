@@ -66,6 +66,8 @@ namespace Krigstask
 		Window GetActiveApp ();
 
 		bool ShouldShow (Window);
+
+		void Subscribe (Window);
 	private:
 		template<typename T>
 		void HandlePropNotify (T);
@@ -81,10 +83,10 @@ namespace Krigstask
 		void activeWindowChanged ();
 		void desktopChanged ();
 
-		void windowNameChanged (Window);
-		void windowIconChanged (Window);
-		void windowDesktopChanged (Window);
-		void windowStateChanged (Window);
+		void windowNameChanged (ulong);
+		void windowIconChanged (ulong);
+		void windowDesktopChanged (ulong);
+		void windowStateChanged (ulong);
 	};
 }
 }

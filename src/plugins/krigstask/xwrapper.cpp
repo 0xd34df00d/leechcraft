@@ -305,6 +305,11 @@ namespace Krigstask
 		return !GetWindowType (transient).contains (GetAtom ("_NET_WM_WINDOW_TYPE_NORMAL"));
 	}
 
+	void XWrapper::Subscribe (Window wid)
+	{
+		XSelectInput (Display_, wid, PropertyChangeMask);
+	}
+
 	template<typename T>
 	void XWrapper::HandlePropNotify (T ev)
 	{
