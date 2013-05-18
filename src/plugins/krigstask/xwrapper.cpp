@@ -252,6 +252,8 @@ namespace Krigstask
 			set ("DEMANDS_ATTENTION", WinStateFlag::Attention);
 		}
 
+		XFree (data);
+
 		return result;
 	}
 
