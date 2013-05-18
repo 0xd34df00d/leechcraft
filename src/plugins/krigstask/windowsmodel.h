@@ -56,6 +56,7 @@ namespace Krigstask
 			int IconGenID_;
 			bool IsActive_;
 			WinStateFlags State_;
+			AllowedActionFlags Actions_;
 		};
 		QList<WinInfo> Windows_;
 
@@ -91,6 +92,7 @@ namespace Krigstask
 		void updateWindowName (ulong);
 		void updateWindowIcon (ulong);
 		void updateWindowState (ulong);
+		void updateWindowActions (ulong);
 	};
 }
 }

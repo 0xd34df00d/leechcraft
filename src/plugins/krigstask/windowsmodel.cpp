@@ -89,6 +89,10 @@ namespace Krigstask
 				SIGNAL (windowStateChanged (ulong)),
 				this,
 				SLOT (updateWindowState (ulong)));
+		connect (&XWrapper::Instance (),
+				SIGNAL (windowActionsChanged (ulong)),
+				this,
+				SLOT (updateWindowActions (ulong)));
 
 		QHash<int, QByteArray> roleNames;
 		roleNames [Role::WindowName] = "windowName";
@@ -145,7 +149,7 @@ namespace Krigstask
 		case Role::IsActiveWindow:
 			return item.IsActive_;
 		case Role::IsMinimizedWindow:
-			return item.State_ == WinStateFlag::NoFlag;
+			return !item.Actions_.testFlag (Minimize);
 		}
 
 		return {};
@@ -163,7 +167,8 @@ namespace Krigstask
 					icon,
 					0,
 					w.GetActiveApp () == wid,
-					w.GetWindowState (wid)
+					w.GetWindowState (wid),
+					w.GetWindowActions (wid)
 				});
 		ImageProvider_->SetIcon (QString::number (wid), icon);
 
@@ -269,6 +274,12 @@ namespace Krigstask
 	{
 		UpdateWinInfo (w,
 				[&w] (WinInfo& info) { info.State_ = XWrapper::Instance ().GetWindowState (w); });
+	}
+
+	void WindowsModel::updateWindowActions (ulong w)
+	{
+		UpdateWinInfo (w,
+				[&w] (WinInfo& info) { info.Actions_ = XWrapper::Instance ().GetWindowActions (w); });
 	}
 }
 }
