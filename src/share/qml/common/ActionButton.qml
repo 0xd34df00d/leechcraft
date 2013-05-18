@@ -147,8 +147,8 @@ Item {
         opacity: isHighlight ? 1 : 0
         Behavior on opacity { PropertyAnimation {} }
 
-        width: orientation == "vertical" ? 2 : 12
-        height: orientation == "vertical" ? 12 : 2
+        width: parent.width / (orientation == "vertical" ? 12 : 2)
+        height: parent.width / (orientation == "vertical" ? 2 : 12)
         radius: 1
 
         anchors.bottom: orientation == "vertical" ? undefined : parent.bottom
@@ -165,8 +165,8 @@ Item {
         opacity: isStrongHighlight ? 1 : 0
         Behavior on opacity { PropertyAnimation {} }
 
-        width: orientation == "vertical" ? 2 : 12
-        height: orientation == "vertical" ? 12 : 2
+        width: parent.width / (orientation == "vertical" ? 12 : 2)
+        height: parent.width / (orientation == "vertical" ? 2 : 12)
         radius: 1
 
         anchors.top: orientation == "vertical" ? undefined : parent.top
