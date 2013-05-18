@@ -219,7 +219,7 @@ namespace Krigstask
 		return icon;
 	}
 
-	XWrapper::WinStateFlags XWrapper::GetWindowState (Window wid)
+	WinStateFlags XWrapper::GetWindowState (Window wid)
 	{
 		WinStateFlags result;
 
