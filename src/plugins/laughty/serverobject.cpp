@@ -87,13 +87,22 @@ namespace Laughty
 	}
 
 	uint ServerObject::Notify (const QString& app_name, uint replaces_id,
-			const QString& app_icon, const QString& summary, const QString& body,
+			const QString& app_icon, QString summary, QString body,
 			const QStringList& actions, const QVariantMap& hints, uint expire_timeout)
 	{
 		const auto replaces = hints.value ("replaces_id", 0).toInt ();
 		const auto id = replaces > 0 ? replaces : ++LastID_;
 
 		const auto prio = GetPriority (hints);
+
+		body.remove ("<html>");
+		body.remove ("</html>");
+
+		if (summary == app_name && !body.isEmpty ())
+		{
+			summary = body;
+			body.clear ();
+		}
 
 		Entity e;
 		if (hints.value ("transient", false).toBool () == true)
@@ -113,6 +122,7 @@ namespace Laughty
 					summary,
 					body);
 		}
+
 
 		HandleActions (e, id, actions, hints);
 		HandleSounds (hints);

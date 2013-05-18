@@ -27,46 +27,57 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QVariantMap>
-#include <interfaces/core/icoreproxy.h>
+#include "krigstask.h"
+#include <QIcon>
+#include "windowsmodel.h"
 
 namespace LeechCraft
 {
-
-class Entity;
-namespace Laughty
+namespace Krigstask
 {
-	class ServerObject : public QObject
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Q_OBJECT
+		auto model = new WindowsModel;
 
-		ICoreProxy_ptr Proxy_;
-		uint32_t LastID_;
-	public:
-		ServerObject (ICoreProxy_ptr);
+		Panel_.reset (new QuarkComponent);
+		Panel_->Url_ = Util::GetSysPath (Util::SysPath::QML, "krigstask", "TaskbarQuark.qml");
+		Panel_->DynamicProps_.append ({ "KT_appsModel", model });
+		Panel_->ImageProviders_.append ({ "TaskbarIcons", model->GetImageProvider ()});
+	}
 
-		QStringList GetCapabilities () const;
+	void Plugin::SecondInit ()
+	{
+	}
 
-		uint Notify (const QString& app_name, uint replaces_id, const QString& app_icon,
-				QString summary, QString body, const QStringList& actions,
-				const QVariantMap& hints, uint expire_timeout);
+	QByteArray Plugin::GetUniqueID () const
+	{
+		return "org.LeechCraft.Krigstask";
+	}
 
-		void CloseNotification (uint id);
-	private:
-		void HandleActions (Entity&, int, const QStringList&, const QVariantMap&);
+	void Plugin::Release ()
+	{
+	}
 
-		void HandleImages (Entity&, const QString&, const QVariantMap&);
-		bool HandleImageData (Entity&, const QVariantMap&);
-		bool HandleImagePath (Entity&, const QVariantMap&);
-		bool HandleImageAppIcon (Entity&, const QString&);
+	QString Plugin::GetName () const
+	{
+		return "Krigstask";
+	}
 
-		void HandleSounds (const QVariantMap&);
-	signals:
-		void NotificationClosed (uint id, uint reason);
-		void ActionInvoked (uint id, const QString& action_key);
-	};
+	QString Plugin::GetInfo () const
+	{
+		return tr ("Application switcher.");
+	}
+
+	QIcon Plugin::GetIcon () const
+	{
+		return QIcon ();
+	}
+
+	QuarkComponents_t Plugin::GetComponents () const
+	{
+		return { Panel_ };
+	}
 }
 }
+
+LC_EXPORT_PLUGIN (leechcraft_krigstask, LeechCraft::Krigstask::Plugin);

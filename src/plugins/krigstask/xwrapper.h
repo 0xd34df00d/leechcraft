@@ -29,44 +29,47 @@
 
 #pragma once
 
-#include <QObject>
-#include <QVariantMap>
-#include <interfaces/core/icoreproxy.h>
+#include <QX11Info>
+#include <QList>
+#include <QString>
+#include <QHash>
+#include <X11/X.h>
+
+class QIcon;
 
 namespace LeechCraft
 {
-
-class Entity;
-namespace Laughty
+namespace Krigstask
 {
-	class ServerObject : public QObject
+	class XWrapper : public QObject
 	{
 		Q_OBJECT
 
-		ICoreProxy_ptr Proxy_;
-		uint32_t LastID_;
+		Display *Display_;
+		Window AppWin_;
+
+		QHash<QString, Atom> Atoms_;
+
+		XWrapper ();
 	public:
-		ServerObject (ICoreProxy_ptr);
+		static XWrapper& Instance ();
 
-		QStringList GetCapabilities () const;
+		bool Filter (void*);
 
-		uint Notify (const QString& app_name, uint replaces_id, const QString& app_icon,
-				QString summary, QString body, const QStringList& actions,
-				const QVariantMap& hints, uint expire_timeout);
-
-		void CloseNotification (uint id);
+		QList<Window> GetWindows ();
+		QString GetWindowTitle (Window);
+		QIcon GetWindowIcon (Window);
 	private:
-		void HandleActions (Entity&, int, const QStringList&, const QVariantMap&);
+		template<typename T>
+		void HandlePropNotify (T);
 
-		void HandleImages (Entity&, const QString&, const QVariantMap&);
-		bool HandleImageData (Entity&, const QVariantMap&);
-		bool HandleImagePath (Entity&, const QVariantMap&);
-		bool HandleImageAppIcon (Entity&, const QString&);
-
-		void HandleSounds (const QVariantMap&);
+		Atom GetAtom (const QString&);
+		bool GetWinProp (Window, Atom, ulong*, uchar**, Atom = static_cast<Atom> (AnyPropertyType)) const;
+		bool GetRootWinProp (Atom, ulong*, uchar**, Atom = static_cast<Atom> (AnyPropertyType)) const;
 	signals:
-		void NotificationClosed (uint id, uint reason);
-		void ActionInvoked (uint id, const QString& action_key);
+		void windowListChanged ();
+		void activeWindowChanged ();
+		void desktopChanged ();
 	};
 }
 }

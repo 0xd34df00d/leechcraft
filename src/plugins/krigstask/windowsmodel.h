@@ -29,44 +29,54 @@
 
 #pragma once
 
-#include <QObject>
-#include <QVariantMap>
-#include <interfaces/core/icoreproxy.h>
+#include <QAbstractItemModel>
+#include <QIcon>
+
+class QDeclarativeImageProvider;
 
 namespace LeechCraft
 {
-
-class Entity;
-namespace Laughty
+namespace Krigstask
 {
-	class ServerObject : public QObject
+	class TaskbarImageProvider;
+	class XWrapper;
+
+	class WindowsModel : public QAbstractItemModel
 	{
 		Q_OBJECT
 
-		ICoreProxy_ptr Proxy_;
-		uint32_t LastID_;
+		struct WinInfo
+		{
+			ulong WID_;
+
+			QString Title_;
+			QIcon Icon_;
+			int IconGenID_;
+		};
+		QList<WinInfo> Windows_;
+
+		enum Role
+		{
+			WindowName = Qt::UserRole + 1,
+			WindowID,
+			IconGenID
+		};
+
+		TaskbarImageProvider *ImageProvider_;
 	public:
-		ServerObject (ICoreProxy_ptr);
+		WindowsModel (QObject* = 0);
 
-		QStringList GetCapabilities () const;
+		QDeclarativeImageProvider* GetImageProvider () const;
 
-		uint Notify (const QString& app_name, uint replaces_id, const QString& app_icon,
-				QString summary, QString body, const QStringList& actions,
-				const QVariantMap& hints, uint expire_timeout);
-
-		void CloseNotification (uint id);
+		int columnCount (const QModelIndex& parent = QModelIndex()) const;
+		int rowCount (const QModelIndex& parent = QModelIndex()) const;
+		QModelIndex index (int row, int column, const QModelIndex& parent = QModelIndex()) const;
+		QModelIndex parent (const QModelIndex& child) const;
+		QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
 	private:
-		void HandleActions (Entity&, int, const QStringList&, const QVariantMap&);
-
-		void HandleImages (Entity&, const QString&, const QVariantMap&);
-		bool HandleImageData (Entity&, const QVariantMap&);
-		bool HandleImagePath (Entity&, const QVariantMap&);
-		bool HandleImageAppIcon (Entity&, const QString&);
-
-		void HandleSounds (const QVariantMap&);
-	signals:
-		void NotificationClosed (uint id, uint reason);
-		void ActionInvoked (uint id, const QString& action_key);
+		void AddWindow (ulong, XWrapper&);
+	private slots:
+		void updateWinList ();
 	};
 }
 }

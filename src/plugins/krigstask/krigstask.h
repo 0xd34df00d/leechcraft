@@ -30,43 +30,31 @@
 #pragma once
 
 #include <QObject>
-#include <QVariantMap>
-#include <interfaces/core/icoreproxy.h>
+#include <interfaces/iinfo.h>
+#include <interfaces/iquarkcomponentprovider.h>
 
 namespace LeechCraft
 {
-
-class Entity;
-namespace Laughty
+namespace Krigstask
 {
-	class ServerObject : public QObject
+	class Plugin : public QObject
+				 , public IInfo
+				 , public IQuarkComponentProvider
 	{
 		Q_OBJECT
+		Q_INTERFACES (IInfo IQuarkComponentProvider)
 
-		ICoreProxy_ptr Proxy_;
-		uint32_t LastID_;
+		QuarkComponent_ptr Panel_;
 	public:
-		ServerObject (ICoreProxy_ptr);
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		QByteArray GetUniqueID () const override;
+		void Release () override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		QStringList GetCapabilities () const;
-
-		uint Notify (const QString& app_name, uint replaces_id, const QString& app_icon,
-				QString summary, QString body, const QStringList& actions,
-				const QVariantMap& hints, uint expire_timeout);
-
-		void CloseNotification (uint id);
-	private:
-		void HandleActions (Entity&, int, const QStringList&, const QVariantMap&);
-
-		void HandleImages (Entity&, const QString&, const QVariantMap&);
-		bool HandleImageData (Entity&, const QVariantMap&);
-		bool HandleImagePath (Entity&, const QVariantMap&);
-		bool HandleImageAppIcon (Entity&, const QString&);
-
-		void HandleSounds (const QVariantMap&);
-	signals:
-		void NotificationClosed (uint id, uint reason);
-		void ActionInvoked (uint id, const QString& action_key);
+		QuarkComponents_t GetComponents () const override;
 	};
 }
 }
