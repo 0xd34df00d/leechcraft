@@ -276,6 +276,12 @@ namespace Krigstask
 		if (GetWindowState (wid) & WinStateFlag::SkipTaskbar)
 			return false;
 
+		ulong length = 0;
+		Guarded<uchar> data;
+		if (GetWinProp (wid, GetAtom ("WM_CLASS"), &length, data.Get ()) &&
+				QString (data.GetAs<char*> (false)) == "leechcraft")
+			return false;
+
 		Window transient = None;
 		if (!XGetTransientForHint (Display_, wid, &transient))
 			return true;
