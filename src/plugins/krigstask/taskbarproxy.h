@@ -27,59 +27,22 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "krigstask.h"
-#include <QIcon>
-#include "windowsmodel.h"
-#include "taskbarproxy.h"
+#pragma once
+
+#include <QObject>
 
 namespace LeechCraft
 {
 namespace Krigstask
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	class TaskbarProxy : public QObject
 	{
-		auto model = new WindowsModel;
-
-		Panel_.reset (new QuarkComponent);
-		Panel_->Url_ = Util::GetSysPath (Util::SysPath::QML, "krigstask", "TaskbarQuark.qml");
-		Panel_->DynamicProps_.append ({ "KT_appsModel", model });
-		Panel_->DynamicProps_.append ({ "KT_taskbarProxy", new TaskbarProxy });
-		Panel_->ImageProviders_.append ({ "TaskbarIcons", model->GetImageProvider ()});
-	}
-
-	void Plugin::SecondInit ()
-	{
-	}
-
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.Krigstask";
-	}
-
-	void Plugin::Release ()
-	{
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Krigstask";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Application switcher.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	QuarkComponents_t Plugin::GetComponents () const
-	{
-		return { Panel_ };
-	}
+		Q_OBJECT
+	public:
+		TaskbarProxy (QObject* = 0);
+	public slots:
+		void raiseWindow (const QString&);
+		void minimizeWindow (const QString&);
+	};
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_krigstask, LeechCraft::Krigstask::Plugin);
