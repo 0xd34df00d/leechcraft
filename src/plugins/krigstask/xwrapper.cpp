@@ -43,6 +43,9 @@ namespace LeechCraft
 {
 namespace Krigstask
 {
+	const int SourceNormal = 1;
+	const int SourcePager = 2;
+
 	namespace
 	{
 		bool EventFilter (void *msg)
@@ -350,6 +353,16 @@ namespace Krigstask
 		XSelectInput (Display_, wid, PropertyChangeMask);
 	}
 
+	void XWrapper::RaiseWindow (Window wid)
+	{
+		SendMessage (wid, GetAtom ("_NET_ACTIVE_WINDOW"), SourcePager);
+	}
+
+	void XWrapper::MinimizeWindow (Window wid)
+	{
+		SendMessage (wid, GetAtom ("WM_CHANGE_STATE"), IconicState);
+	}
+
 	template<typename T>
 	void XWrapper::HandlePropNotify (T ev)
 	{
@@ -439,6 +452,25 @@ namespace Krigstask
 
 		XFree (data);
 		return result;
+	}
+
+	bool XWrapper::SendMessage (Window wid, Atom atom, ulong d0, ulong d1, ulong d2, ulong d3, ulong d4)
+	{
+		XClientMessageEvent msg;
+		msg.window = wid;
+		msg.type = ClientMessage;
+		msg.message_type = atom;
+		msg.send_event = true;
+		msg.display = Display_;
+		msg.format = 32;
+		msg.data.l [0] = d0;
+		msg.data.l [1] = d1;
+		msg.data.l [2] = d2;
+		msg.data.l [3] = d3;
+		msg.data.l [4] = d4;
+
+		return XSendEvent (Display_, AppWin_, FALSE, SubstructureRedirectMask | SubstructureNotifyMask,
+				reinterpret_cast<XEvent*> (&msg)) == Success;
 	}
 }
 }

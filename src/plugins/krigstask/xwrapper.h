@@ -68,6 +68,9 @@ namespace Krigstask
 		bool ShouldShow (Window);
 
 		void Subscribe (Window);
+
+		void RaiseWindow (Window);
+		void MinimizeWindow (Window);
 	private:
 		template<typename T>
 		void HandlePropNotify (T);
@@ -78,6 +81,8 @@ namespace Krigstask
 		bool GetWinProp (Window, Atom, ulong*, uchar**, Atom = static_cast<Atom> (AnyPropertyType)) const;
 		bool GetRootWinProp (Atom, ulong*, uchar**, Atom = static_cast<Atom> (AnyPropertyType)) const;
 		QList<Atom> GetWindowType (Window);
+
+		bool SendMessage (Window, Atom, ulong, ulong = 0, ulong = 0, ulong = 0, ulong = 0);
 	signals:
 		void windowListChanged ();
 		void activeWindowChanged ();
