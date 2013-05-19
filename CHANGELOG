@@ -4,6 +4,31 @@ the rest.
 Links to the corresponding development digests are also given for the
 relevant blocks of changes, so one could easily lookup
 
+
+!!! 0.5.96
+* Core: keep tab icon along tab moves between windows.
+* Core: fixed toolbar handling on tab moves between windows.
+* Core: fixed file locking threading issues.
+* Core: fixed network disk cache expiration handling.
+* Core: proper handling of forcefully closed unassociated dock widgets.
+* Core: don't show actions with empty text in popup menus.
+* Azoth: fixed autoscrolling.
+* Azoth: application-wide users list shortcut.
+* Azoth: case-insensitive users list filtering.
+* Azoth: use proper icon for voice calls.
+* Azoth Acetamide: made the channels list dialog non-modal.
+* Azoth Acetamide: allow joining to channels while the list is fetched.
+* Blogique: fixed progress indicator.
+* Blogique Hestia: fixed autoupdating entries in local blog.
+* Monocle Postrus: fixed FindLibSpectre.cmake for upcoming CMake.
+* LMP: fix rare segfaults on queue clearing.
+* LMP: clear last song data on player clearing.
+* LMP: support drags from filesystem browser.
+* LMP: replace queue on playlist activation.
+* LMP: properly restore play mode check state.
+* Popishu: fixed caret line background color.
+* VB: don't own conversation by the buddy, fixes multiple segfaults.
+
 !!! 0.5.95
 * Overall: Use Qt's Q_DECL_IMPORT\EXPORT defines.
 * Core: multiwindow support (though experimental for now).
