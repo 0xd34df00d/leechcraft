@@ -155,7 +155,7 @@ namespace SB2
 			Toolbar_->setFloatable (true);
 			Toolbar_->setAllowedAreas (Qt::NoToolBarArea);
 
-			Toolbar_->setAttribute (Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+			Toolbar_->setWindowFlags (Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 			Toolbar_->setAttribute (Qt::WA_X11NetWmWindowTypeDock);
 			Toolbar_->setAttribute (Qt::WA_AlwaysShowToolTips);
 			Toolbar_->show ();
