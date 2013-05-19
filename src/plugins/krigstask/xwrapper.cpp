@@ -43,6 +43,9 @@ namespace LeechCraft
 {
 namespace Krigstask
 {
+	const int SourceNormal = 1;
+	const int SourcePager = 2;
+
 	namespace
 	{
 		bool EventFilter (void *msg)
@@ -68,7 +71,7 @@ namespace Krigstask
 	{
 		auto ev = static_cast<XEvent*> (msg);
 
-		if (ev->type == PropertyNotify && ev->xproperty.window == AppWin_)
+		if (ev->type == PropertyNotify)
 			HandlePropNotify (&ev->xproperty);
 
 		return false;
@@ -219,7 +222,7 @@ namespace Krigstask
 		return icon;
 	}
 
-	XWrapper::WinStateFlags XWrapper::GetWindowState (Window wid)
+	WinStateFlags XWrapper::GetWindowState (Window wid)
 	{
 		WinStateFlags result;
 
@@ -246,17 +249,78 @@ namespace Krigstask
 			set ("SHADED", WinStateFlag::Shaded);
 			set ("SKIP_TASKBAR", WinStateFlag::SkipTaskbar);
 			set ("SKIP_PAGER", WinStateFlag::SkipPager);
+			set ("HIDDEN", WinStateFlag::Hidden);
 			set ("FULLSCREEN", WinStateFlag::Fullscreen);
 			set ("ABOVE", WinStateFlag::OnTop);
 			set ("BELOW", WinStateFlag::OnBottom);
 			set ("DEMANDS_ATTENTION", WinStateFlag::Attention);
 		}
 
+		XFree (data);
+
 		return result;
+	}
+
+	AllowedActionFlags XWrapper::GetWindowActions (Window wid)
+	{
+		AllowedActionFlags result;
+
+		ulong length = 0;
+		ulong *data = 0;
+		if (!GetWinProp (wid, GetAtom ("_NET_WM_ALLOWED_ACTIONS"),
+				&length, reinterpret_cast<uchar**> (&data), XA_ATOM))
+			return result;
+
+		for (auto i = 0; i < length; ++i)
+		{
+			const auto curAtom = data [i];
+
+			auto set = [this, &curAtom, &result] (const QString& atom, AllowedActionFlag flag)
+			{
+				if (curAtom == GetAtom ("_NET_WM_ACTION_" + atom))
+					result |= flag;
+			};
+
+			set ("MOVE", AllowedActionFlag::Move);
+			set ("RESIZE", AllowedActionFlag::Resize);
+			set ("MINIMIZE", AllowedActionFlag::Minimize);
+			set ("SHADE", AllowedActionFlag::Shade);
+			set ("STICK", AllowedActionFlag::Stick);
+			set ("MAXIMIZE_HORZ", AllowedActionFlag::MaximizeHorz);
+			set ("MAXIMIZE_VERT", AllowedActionFlag::MaximizeVert);
+			set ("FULLSCREEN", AllowedActionFlag::ShowFullscreen);
+			set ("CHANGE_DESKTOP", AllowedActionFlag::ChangeDesktop);
+			set ("CLOSE", AllowedActionFlag::Close);
+			set ("ABOVE", AllowedActionFlag::MoveToTop);
+			set ("BELOW", AllowedActionFlag::MoveToBottom);
+		}
+
+		XFree (data);
+
+		return result;
+	}
+
+	Window XWrapper::GetActiveApp ()
+	{
+		auto win = GetActiveWindow ();
+		if (!win)
+			return 0;
+
+		Window transient = None;
+		if (!ShouldShow (win) && XGetTransientForHint (Display_, win, &transient))
+			return transient;
+
+		return win;
 	}
 
 	bool XWrapper::ShouldShow (Window wid)
 	{
+		ulong length = 0;
+		Guarded<uchar> data;
+		if (GetWinProp (wid, GetAtom ("WM_CLASS"), &length, data.Get ()) &&
+				QString (data.GetAs<char*> (false)) == "leechcraft")
+			return false;
+
 		const QList<Atom> ignoreAtoms
 		{
 			GetAtom ("_NET_WM_WINDOW_TYPE_DESKTOP"),
@@ -284,15 +348,66 @@ namespace Krigstask
 		return !GetWindowType (transient).contains (GetAtom ("_NET_WM_WINDOW_TYPE_NORMAL"));
 	}
 
+	void XWrapper::Subscribe (Window wid)
+	{
+		XSelectInput (Display_, wid, PropertyChangeMask);
+	}
+
+	void XWrapper::RaiseWindow (Window wid)
+	{
+		SendMessage (wid, GetAtom ("_NET_ACTIVE_WINDOW"), SourcePager);
+	}
+
+	void XWrapper::MinimizeWindow (Window wid)
+	{
+		SendMessage (wid, GetAtom ("WM_CHANGE_STATE"), IconicState);
+	}
+
 	template<typename T>
 	void XWrapper::HandlePropNotify (T ev)
 	{
-		if (ev->atom == GetAtom ("_NET_CLIENT_LIST"))
-			emit windowListChanged ();
-		else if (ev->atom == GetAtom ("_NET_ACTIVE_WINDOW"))
-			emit activeWindowChanged ();
-		else if (ev->atom == GetAtom ("_NET_CURRENT_DESKTOP"))
-			emit desktopChanged ();
+		if (ev->state == PropertyDelete)
+			return;
+
+		const auto wid = ev->window;
+
+		if (wid == AppWin_)
+		{
+			if (ev->atom == GetAtom ("_NET_CLIENT_LIST"))
+				emit windowListChanged ();
+			else if (ev->atom == GetAtom ("_NET_ACTIVE_WINDOW"))
+				emit activeWindowChanged ();
+			else if (ev->atom == GetAtom ("_NET_CURRENT_DESKTOP"))
+				emit desktopChanged ();
+		}
+		else if (ShouldShow (wid))
+		{
+			if (ev->atom == GetAtom ("_NET_WM_VISIBLE_NAME") ||
+					ev->atom == GetAtom ("WM_NAME"))
+				emit windowNameChanged (wid);
+			else if (ev->atom == GetAtom ("_NET_WM_ICON"))
+				emit windowIconChanged (wid);
+			else if (ev->atom == GetAtom ("_NET_WM_DESKTOP"))
+				emit windowDesktopChanged (wid);
+			else if (ev->atom == GetAtom ("_NET_WM_STATE"))
+				emit windowStateChanged (wid);
+			else if (ev->atom == GetAtom ("_NET_WM_ALLOWED_ACTIONS"))
+				emit windowActionsChanged (wid);
+		}
+	}
+
+	Window XWrapper::GetActiveWindow ()
+	{
+		ulong length = 0;
+		Guarded<ulong> data;
+
+		if (!GetRootWinProp (GetAtom ("_NET_ACTIVE_WINDOW"), &length, data.GetAs<uchar**> (), XA_WINDOW))
+			return 0;
+
+		if (!length)
+			return 0;
+
+		return data [0];
 	}
 
 	Atom XWrapper::GetAtom (const QString& name)
@@ -337,6 +452,25 @@ namespace Krigstask
 
 		XFree (data);
 		return result;
+	}
+
+	bool XWrapper::SendMessage (Window wid, Atom atom, ulong d0, ulong d1, ulong d2, ulong d3, ulong d4)
+	{
+		XClientMessageEvent msg;
+		msg.window = wid;
+		msg.type = ClientMessage;
+		msg.message_type = atom;
+		msg.send_event = true;
+		msg.display = Display_;
+		msg.format = 32;
+		msg.data.l [0] = d0;
+		msg.data.l [1] = d1;
+		msg.data.l [2] = d2;
+		msg.data.l [3] = d3;
+		msg.data.l [4] = d4;
+
+		return XSendEvent (Display_, AppWin_, FALSE, SubstructureRedirectMask | SubstructureNotifyMask,
+				reinterpret_cast<XEvent*> (&msg)) == Success;
 	}
 }
 }

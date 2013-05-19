@@ -44,8 +44,14 @@ Rectangle {
 
                     actionIconURL: "image://TaskbarIcons/" + windowID + '/' + iconGenID
                     textTooltip: windowName
-                    isHighlight: false
                     transparentStyle: true
+
+                    isHighlight: !isMinimizedWindow
+                    isStrongHighlight: isActiveWindow
+
+                    onTriggered: isActiveWindow ?
+                            KT_taskbarProxy.minimizeWindow(windowID) :
+                            KT_taskbarProxy.raiseWindow(windowID);
                 }
             }
         }

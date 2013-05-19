@@ -29,8 +29,10 @@
 
 #pragma once
 
+#include <functional>
 #include <QAbstractItemModel>
 #include <QIcon>
+#include "winflags.h"
 
 class QDeclarativeImageProvider;
 
@@ -52,6 +54,9 @@ namespace Krigstask
 			QString Title_;
 			QIcon Icon_;
 			int IconGenID_;
+			bool IsActive_;
+			WinStateFlags State_;
+			AllowedActionFlags Actions_;
 		};
 		QList<WinInfo> Windows_;
 
@@ -59,7 +64,9 @@ namespace Krigstask
 		{
 			WindowName = Qt::UserRole + 1,
 			WindowID,
-			IconGenID
+			IconGenID,
+			IsActiveWindow,
+			IsMinimizedWindow
 		};
 
 		TaskbarImageProvider *ImageProvider_;
@@ -75,8 +82,17 @@ namespace Krigstask
 		QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
 	private:
 		void AddWindow (ulong, XWrapper&);
+
+		QList<WinInfo>::iterator FindWinInfo (ulong);
+		void UpdateWinInfo (ulong, std::function<void (WinInfo&)>);
 	private slots:
 		void updateWinList ();
+		void updateActiveWindow ();
+
+		void updateWindowName (ulong);
+		void updateWindowIcon (ulong);
+		void updateWindowState (ulong);
+		void updateWindowActions (ulong);
 	};
 }
 }

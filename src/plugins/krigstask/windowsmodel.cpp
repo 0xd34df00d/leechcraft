@@ -72,11 +72,34 @@ namespace Krigstask
 				SIGNAL (windowListChanged ()),
 				this,
 				SLOT (updateWinList ()));
+		connect (&XWrapper::Instance (),
+				SIGNAL (activeWindowChanged ()),
+				this,
+				SLOT (updateActiveWindow ()));
+
+		connect (&XWrapper::Instance (),
+				SIGNAL (windowNameChanged (ulong)),
+				this,
+				SLOT (updateWindowName (ulong)));
+		connect (&XWrapper::Instance (),
+				SIGNAL (windowIconChanged (ulong)),
+				this,
+				SLOT (updateWindowIcon (ulong)));
+		connect (&XWrapper::Instance (),
+				SIGNAL (windowStateChanged (ulong)),
+				this,
+				SLOT (updateWindowState (ulong)));
+		connect (&XWrapper::Instance (),
+				SIGNAL (windowActionsChanged (ulong)),
+				this,
+				SLOT (updateWindowActions (ulong)));
 
 		QHash<int, QByteArray> roleNames;
 		roleNames [Role::WindowName] = "windowName";
 		roleNames [Role::WindowID] = "windowID";
 		roleNames [Role::IconGenID] = "iconGenID";
+		roleNames [Role::IsActiveWindow] = "isActiveWindow";
+		roleNames [Role::IsMinimizedWindow] = "isMinimizedWindow";
 		setRoleNames (roleNames);
 	}
 
@@ -123,6 +146,10 @@ namespace Krigstask
 			return QString::number (item.WID_);
 		case Role::IconGenID:
 			return QString::number (item.IconGenID_);
+		case Role::IsActiveWindow:
+			return item.IsActive_;
+		case Role::IsMinimizedWindow:
+			return item.State_.testFlag (WinStateFlag::Hidden);
 		}
 
 		return {};
@@ -134,8 +161,41 @@ namespace Krigstask
 			return;
 
 		const auto& icon = w.GetWindowIcon (wid);
-		Windows_.append ({ wid, w.GetWindowTitle (wid), icon, 0 });
+		Windows_.append ({
+					wid,
+					w.GetWindowTitle (wid),
+					icon,
+					0,
+					w.GetActiveApp () == wid,
+					w.GetWindowState (wid),
+					w.GetWindowActions (wid)
+				});
 		ImageProvider_->SetIcon (QString::number (wid), icon);
+
+		w.Subscribe (wid);
+	}
+
+	QList<WindowsModel::WinInfo>::iterator WindowsModel::FindWinInfo (Window wid)
+	{
+		return std::find_if (Windows_.begin (), Windows_.end (),
+				[&wid] (const WinInfo& info) { return info.WID_ == wid; });
+	}
+
+	void WindowsModel::UpdateWinInfo (Window w, std::function<void (WinInfo&)> updater)
+	{
+		auto pos = FindWinInfo (w);
+		if (pos == Windows_.end ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown window"
+					<< w;
+			return;
+		}
+
+		updater (*pos);
+
+		const auto& idx = createIndex (std::distance (Windows_.begin (), pos), 0);
+		emit dataChanged (idx, idx);
 	}
 
 	void WindowsModel::updateWinList ()
@@ -163,7 +223,6 @@ namespace Krigstask
 			const auto pos = std::find_if (Windows_.begin (), Windows_.end (),
 					[&wid] (const WinInfo& info) { return info.WID_ == wid; });
 			const auto dist = std::distance (Windows_.begin (), pos);
-
 			beginRemoveRows ({}, dist, dist);
 			Windows_.erase (pos);
 			endRemoveRows ();
@@ -178,6 +237,56 @@ namespace Krigstask
 				AddWindow (wid, w);
 			endInsertRows ();
 		}
+	}
+
+	void WindowsModel::updateActiveWindow ()
+	{
+		const auto active = XWrapper::Instance ().GetActiveApp ();
+		if (!active || !XWrapper::Instance ().ShouldShow (active))
+			return;
+
+		for (auto i = 0; i < Windows_.size (); ++i)
+		{
+			auto& info = Windows_ [i];
+			if ((info.WID_ == active) == info.IsActive_)
+				continue;
+
+			info.IsActive_ = info.WID_ == active;
+			emit dataChanged (createIndex (i, 0), createIndex (i, 0));
+		}
+	}
+
+	void WindowsModel::updateWindowName (ulong w)
+	{
+		UpdateWinInfo (w,
+				[&w] (WinInfo& info) { info.Title_ = XWrapper::Instance ().GetWindowTitle (w); });
+	}
+
+	void WindowsModel::updateWindowIcon (ulong w)
+	{
+		UpdateWinInfo (w,
+				[&w] (WinInfo& info) -> void
+				{
+					info.Icon_ = XWrapper::Instance ().GetWindowIcon (w);
+					++info.IconGenID_;
+				});
+	}
+
+	void WindowsModel::updateWindowState (ulong w)
+	{
+		UpdateWinInfo (w,
+				[&w] (WinInfo& info) -> void
+				{
+					info.State_ = XWrapper::Instance ().GetWindowState (w);
+					if (info.State_.testFlag (WinStateFlag::Hidden))
+						info.IsActive_ = false;
+				});
+	}
+
+	void WindowsModel::updateWindowActions (ulong w)
+	{
+		UpdateWinInfo (w,
+				[&w] (WinInfo& info) { info.Actions_ = XWrapper::Instance ().GetWindowActions (w); });
 	}
 }
 }
