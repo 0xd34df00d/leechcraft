@@ -76,7 +76,7 @@ namespace Hestia
 		void UpdateEntry (const Entry& entry);
 		QList<QAction*> GetUpdateActions () const;
 
-		void RequestLastEntries (int count);
+		void RequestLastEntries (int count = 0);
 		void RequestStatistics ();
 		void RequestTags ();
 		void GetEntriesByDate (const QDate& date);

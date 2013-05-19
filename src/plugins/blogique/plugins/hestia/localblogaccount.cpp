@@ -154,7 +154,7 @@ namespace Hestia
 		{
 			emit requestEntriesBegin ();
 			emit gotEntries (AccountStorage_->GetLastEntries (AccountStorage::Mode::FullMode,
-					DefaultPostsNumber_));
+					count ? count : DefaultPostsNumber_));
 		}
 		catch (const std::runtime_error& e)
 		{
