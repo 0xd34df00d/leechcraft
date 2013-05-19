@@ -54,7 +54,7 @@ namespace Woodpecker
 					SIGNAL(finished ()),
 					0,
 					0);
-		delete Reply_;
+		Reply_->deleteLater ();
 		Reply_ = nullptr;
 		
 		Avatar.loadFromData (data);

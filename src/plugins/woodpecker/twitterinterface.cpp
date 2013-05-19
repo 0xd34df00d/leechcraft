@@ -61,11 +61,6 @@ namespace Woodpecker
 				SIGNAL (authorizedRequestDone ()),
 				this,
 				SLOT (onAuthorizedRequestDone ()));
-
-		connect (HttpClient_,
-				SIGNAL (finished (QNetworkReply*)),
-				this,
-				SLOT (replyFinished (QNetworkReply*)));
 	}
 
 	TwitterInterface::~TwitterInterface ()
@@ -88,18 +83,15 @@ namespace Woodpecker
 
 	void TwitterInterface::replyFinished ()
 	{
-		QList<std::shared_ptr<Tweet>> tweets;
 		QByteArray jsonText (Reply_->readAll ());
 		disconnect(Reply_,
 					SIGNAL(finished ()),
 					0,
 					0);
-		delete Reply_;
+		Reply_->deleteLater ();
 		Reply_ = nullptr;
 
-		tweets.clear ();
-		tweets = ParseReply (jsonText);
-		emit tweetsReady (tweets);
+		emit tweetsReady (ParseReply (jsonText));
 	}
 
 	QList<std::shared_ptr<Tweet>> TwitterInterface::ParseReply (const QByteArray& json)
@@ -263,8 +255,8 @@ namespace Woodpecker
 
 		if (OAuthManager_->lastError () != KQOAuthManager::NoError) 
 		{
+			qWarning() << "Authorization error";
 		}
-
 	}
 
 	void TwitterInterface::onAccessTokenReceived (const QString& token, const QString& tokenSecret) 
@@ -277,7 +269,6 @@ namespace Woodpecker
 		qDebug () << "Access tokens now stored. You are ready to send Tweets from user's account!";
 
 		emit authorized (token, tokenSecret);
-
 	}
 
 	void TwitterInterface::onTemporaryTokenReceived (const QString& token, const QString& tokenSecret)
@@ -286,11 +277,11 @@ namespace Woodpecker
 
 		QUrl userAuthURL ("https://api.twitter.com/oauth/authorize");
 
-		if (OAuthManager_->lastError () == KQOAuthManager::NoError) {
+		if (OAuthManager_->lastError () == KQOAuthManager::NoError)
+		{
 			qDebug () << "Asking for user's permission to access protected resources. Opening URL: " << userAuthURL;
 			OAuthManager_->getUserAuthorization (userAuthURL);
 		}
-
 	}
 
 

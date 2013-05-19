@@ -223,12 +223,10 @@ namespace Woodpecker
 				if (twits.length () == 1)			// We can notify the only twit
 				{
 					Entity notification = Util::MakeNotification (twits.first ()->Author ()->Username () , twits.first ()->Text () , PInfo_);
-					emit gotEntity (notification);
 					Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (notification);
 				}
 				else if (!twits.isEmpty ()) {
 					Entity notification = Util::MakeNotification (tr ("Woodpecker") , tr ( "%1 new twit (s)" ).arg (twits.length ()) , PInfo_);
-					emit gotEntity (notification);
 					Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (notification);
 				}
 			}
