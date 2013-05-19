@@ -34,18 +34,11 @@
 #include <QTimer>
 #include <QMenu>
 #include <QAction>
-
 #include <interfaces/ihavetabs.h>
 #include <interfaces/structures.h>
-
 #include "twitterinterface.h"
 #include "twitdelegate.h"
-
 #include "ui_twitterpage.h"
-
-namespace Ui {
-	class TwitterPage;
-}
 
 namespace LeechCraft
 {
@@ -88,7 +81,7 @@ namespace Woodpecker
 		
 	private slots:
 		void on_TwitList__customContextMenuRequested (const QPoint&);
-		void updateTweetList_ ();
+		void updateTweetList ();
 		
 	public:
 		explicit TwitterPage (const TabClassInfo&, QObject*);
@@ -108,8 +101,7 @@ namespace Woodpecker
 		void recvdAuth (QString token, QString tokenSecret);
 		void twit ();
 		void retwit ();
-		void reply ();
-		void reply (QListWidgetItem*);
+		void reply (QListWidgetItem *index = nullptr);
 		void reportSpam ();
 		void sendReply ();
 		void webOpen ();

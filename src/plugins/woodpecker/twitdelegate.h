@@ -41,15 +41,15 @@ namespace Woodpecker
 {
 	class TwitDelegate : public QAbstractItemDelegate
 	{
-		QObject *m_parent;
+		QObject *Parent_;
 		
 	public:
 		TwitDelegate (QObject *parent = 0);
-		
-		void paint (QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const;
-		QSize sizeHint (const QStyleOptionViewItem & option, const QModelIndex & index) const;
-		bool editorEvent (QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index);
 		virtual ~TwitDelegate ();
+		
+		void paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
+		QSize sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const;
+		bool editorEvent (QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem& option, const QModelIndex& index);
 		QObject *parent ();
 		
 	signals:

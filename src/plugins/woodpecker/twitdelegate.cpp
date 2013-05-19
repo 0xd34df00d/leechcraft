@@ -50,7 +50,7 @@ namespace Woodpecker
 	TwitDelegate::TwitDelegate (QObject *parent)
 	: QAbstractItemDelegate (parent)
 	{
-		m_parent = parent;
+		Parent_ = parent;
 	}
 	
 	TwitDelegate::~TwitDelegate()
@@ -60,7 +60,7 @@ namespace Woodpecker
 
 	QObject* TwitDelegate::parent ()
 	{
-		return m_parent;
+		return Parent_;
 	}
 
 	void TwitDelegate::paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
@@ -172,7 +172,7 @@ namespace Woodpecker
 
 	bool TwitDelegate::editorEvent (QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem& option, const QModelIndex& index)
 	{
-		QListWidget *parentWidget = qobject_cast<QListWidget*> (m_parent);
+		QListWidget *parentWidget = qobject_cast<QListWidget*> (Parent_);
 
 		const int imageSpace = 50;
 		if (event->type () == QEvent::MouseButtonRelease) 

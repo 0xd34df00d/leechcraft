@@ -30,14 +30,12 @@
 #pragma once
 
 #include <memory>
-
 #include <QList>
 #include <QObject>
 #include <QUrl>
 #include <QNetworkReply>
 #include <QSettings>
 #include <QtKOAuth/QtKOAuth>
-
 #include "tweet.h"
 
 namespace LeechCraft
@@ -46,23 +44,23 @@ namespace Woodpecker
 {
 	enum class TwitterRequest
 	{
-		TRHomeTimeline,
-		TRMentions,
-		TRUserTimeline,
-		TRUpdate,
-		TRDirect,
-		TRRetweet,
-		TRReply,
-		TRSPAMReport,
+		HomeTimeline,
+		Mentions,
+		UserTimeline,
+		Update,
+		Direct,
+		Retweet,
+		Reply,
+		SpamReport,
 	};
 
 	enum class FeedMode
 	{
-		FMHomeTimeline,
-		FMMentions,
-		FMUserTimeline,
-		FMSearchResult,
-		FMDirect,
+		HomeTimeline,
+		Mentions,
+		UserTimeline,
+		SearchResult,
+		Direct,
 	};
 
 	class TwitterInterface : public QObject
@@ -88,32 +86,32 @@ namespace Woodpecker
 		explicit TwitterInterface (QObject *parent = 0);
 		~TwitterInterface ();
 		void SendTweet (const QString& tweet);
-		void Retweet (qulonglong id);
-		void Reply (long unsigned int replyid, QString tweet);
-		void ReportSPAM (QString username, long unsigned int userid=0);
+		void Retweet (const qulonglong id);
+		void Reply (const qulonglong replyid, const QString& tweet);
+		void ReportSPAM (const QString& username, const qulonglong userid=0);
 		void GetAccess ();
-		void Login (QString savedToken, QString savedTokenSecret);
+		void Login (const QString& savedToken, const QString& savedTokenSecret);
 		FeedMode GetLastRequestMode ();
-		void SetLastRequestMode (FeedMode newLastRequestMode);
+		void SetLastRequestMode (const FeedMode& newLastRequestMode);
 		
 	private slots:
 		void replyFinished (QNetworkReply* reply);
 		
-		void onTemporaryTokenReceived (QString temporaryToken, QString temporaryTokenSecret);
-		void onAuthorizationReceived (QString token, QString verifier);
-		void onRequestReady (QByteArray);
+		void onTemporaryTokenReceived (const QString& temporaryToken, const QString& temporaryTokenSecret);
+		void onAuthorizationReceived (const QString& token, const QString& verifier);
+		void onRequestReady (const QByteArray&);
 		void onAuthorizedRequestDone ();
-		void onAccessTokenReceived (QString token, QString tokenSecret);
+		void onAccessTokenReceived (const QString& token, const QString& tokenSecret);
 		
 	signals:
-		void tweetsReady (QList<std::shared_ptr<Tweet>>);
-		void authorized (QString, QString);
+		void tweetsReady (const QList<std::shared_ptr<Tweet>>&);
+		void authorized (const QString&, const QString&);
 		
 	public slots:
-		void getHomeFeed ();
-		void searchTwitter (QString text);
-		void getUserTimeline (QString username);
-		void getMoreTweets (QString last);
+		void requestHomeFeed ();
+		void searchTwitter (const QString& text);
+		void requestUserTimeline (const QString& username);
+		void requestMoreTweets (const QString& last);
 	};
 }
 }
