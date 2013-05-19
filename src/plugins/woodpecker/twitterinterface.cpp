@@ -69,9 +69,8 @@ namespace Woodpecker
 		delete OAuthManager_;
 	}
 
-	void TwitterInterface::RequestTwitter (QUrl requestAddress)
+	void TwitterInterface::RequestTwitter (const QUrl& requestAddress)
 	{
-		//HttpClient_->get (QNetworkRequest (requestAddress));
 		Reply_ = HttpClient_->get(QNetworkRequest (requestAddress));
 		connect (Reply_,
 				SIGNAL(finished ()),

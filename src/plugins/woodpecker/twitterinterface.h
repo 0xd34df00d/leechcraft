@@ -80,7 +80,7 @@ namespace Woodpecker
 		FeedMode LastRequestMode_;
 		
 		void SignedRequest (TwitterRequest req, KQOAuthRequest::RequestHttpMethod method = KQOAuthRequest::GET, KQOAuthParameters params = KQOAuthParameters ());
-		void RequestTwitter (QUrl requestAddress);
+		void RequestTwitter (const QUrl& requestAddress);
 		QList <std::shared_ptr<Tweet>> ParseReply (const QByteArray& json);
 		void Xauth ();
 		
