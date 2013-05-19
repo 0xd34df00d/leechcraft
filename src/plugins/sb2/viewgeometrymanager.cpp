@@ -100,12 +100,15 @@ namespace SB2
 				screenGeometry (ViewMgr_->GetManagedWindow ());
 
 		const auto& minSize = toolbar->minimumSizeHint ();
-		QRect rect (0, 0, screenGeometry.width (), minSize.height ());;
+		QRect rect { 0, 0, screenGeometry.width (), minSize.height () };
 		rect.moveLeft (screenGeometry.left ());
 		rect.moveBottom (screenGeometry.bottom ());
 
 		toolbar->setGeometry (rect);
 		toolbar->setFixedSize (rect.size ());
+
+		ViewMgr_->GetManagedWindow ()->setGeometry (QApplication::desktop ()->
+					availableGeometry (ViewMgr_->GetManagedWindow ()));
 	}
 
 	void ViewGeometryManager::setOrientation (Qt::Orientation orientation)
