@@ -84,6 +84,9 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	addToolBar (Qt::RightToolBarArea, RightDockToolbar_);
 	addToolBar (Qt::TopToolBarArea, TopDockToolbar_);
 	addToolBar (Qt::BottomToolBarArea, BottomDockToolbar_);
+
+	if (Application::instance ()->arguments ().contains ("--desktop"))
+		setAttribute (Qt::WA_X11NetWmWindowTypeDesktop);
 }
 
 void LeechCraft::MainWindow::Init ()
