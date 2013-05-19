@@ -34,6 +34,7 @@
 #include <QDebug>
 #include <qjson/parser.h>
 #include <QtKOAuth/QtKOAuth>
+#include "core.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -43,7 +44,7 @@ namespace Woodpecker
 	TwitterInterface::TwitterInterface (QObject *parent)
 	: QObject (parent)
 	{
-		HttpClient_ = new QNetworkAccessManager (this);
+		HttpClient_ = Core::Instance ().GetCoreProxy ()->GetNetworkAccessManager ();
 		OAuthRequest_ = new KQOAuthRequest;
 		OAuthManager_ = new KQOAuthManager (this);
 

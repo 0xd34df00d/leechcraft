@@ -34,6 +34,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/core/icoreproxy.h>
 #include "twitterpage.h"
 
 namespace LeechCraft
@@ -60,7 +61,7 @@ namespace Woodpecker
 		static Core& Instance ();
 
 		void SetProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetProxy () const;
+		ICoreProxy_ptr GetCoreProxy () const;
 	};
 };
 };

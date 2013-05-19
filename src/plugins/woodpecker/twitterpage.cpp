@@ -224,12 +224,12 @@ namespace Woodpecker
 				{
 					Entity notification = Util::MakeNotification (twits.first ()->Author ()->Username () , twits.first ()->Text () , PInfo_);
 					emit gotEntity (notification);
-					Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (notification);
+					Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (notification);
 				}
 				else if (!twits.isEmpty ()) {
 					Entity notification = Util::MakeNotification (tr ("Woodpecker") , tr ( "%1 new twit (s)" ).arg (twits.length ()) , PInfo_);
 					emit gotEntity (notification);
-					Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (notification);
+					Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (notification);
 				}
 			}
 			ScreenTwits_.append (twits);
@@ -384,7 +384,7 @@ namespace Woodpecker
 
 		Entity url = Util::MakeEntity (QUrl (QString ("https://twitter.com/%1/status/%2").arg ((*currentTwit)->Author ()->Username ()).arg (twitid)), 
 				QString (), OnlyHandle | FromUserInitiated, QString ());
-		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (url);
+		Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (url);
 	}
 
 	void TwitterPage::setUpdateReady ()

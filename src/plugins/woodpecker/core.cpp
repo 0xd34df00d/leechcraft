@@ -49,7 +49,7 @@ namespace Woodpecker
 		Proxy_ = proxy;
 	}
 
-	ICoreProxy_ptr Core::GetProxy () const
+	ICoreProxy_ptr Core::GetCoreProxy () const
 	{
 		return Proxy_;
 	}

@@ -45,8 +45,8 @@ namespace Woodpecker
 		Q_OBJECT
 		
 		QString Username_;
-		QNetworkRequest *Req;
-		QNetworkAccessManager *Http;
+		QNetworkRequest *Req_;
+		QNetworkAccessManager *Http_;
 		
 	public:
 		QPixmap  Avatar;

@@ -29,6 +29,7 @@
 
 
 #include "twitteruser.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -37,8 +38,7 @@ namespace Woodpecker
 	TwitterUser::TwitterUser (QObject *parent)
 	: QObject (parent)
 	{
-		Http = new QNetworkAccessManager (this);
-
+		Http_ = Core::Instance ().GetCoreProxy ()->GetNetworkAccessManager ();
 	}
 
 	TwitterUser::TwitterUser (const QString& username, QObject *parent)
@@ -57,20 +57,20 @@ namespace Woodpecker
 
 	void TwitterUser::DownloadAvatar (const QString& path)
 	{
-		Req = new QNetworkRequest (QUrl (path));
-		connect (Http,
+		Req_ = new QNetworkRequest (QUrl (path));
+		connect (Http_,
 				SIGNAL (finished (QNetworkReply*)),
 				this,
 				SLOT (avatarDownloaded (QNetworkReply*)));
 
-		Http->get (*Req);
+		Http_->get (*Req_);
 	}
 
 	TwitterUser::~TwitterUser ()
 	{
-		if (Req) delete Req;
+		if (Req_) delete Req_;
 
-		Http->deleteLater ();
+		Http_->deleteLater ();
 	}
 	
 	void TwitterUser::SetUsername (const QString& username)
