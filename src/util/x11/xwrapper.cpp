@@ -33,8 +33,10 @@
 #include <QString>
 #include <QPixmap>
 #include <QIcon>
+#include <QApplication>
 #include <QAbstractEventDispatcher>
 #include <QtDebug>
+#include <QTimer>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
@@ -58,7 +60,7 @@ namespace Util
 	: Display_ (QX11Info::display ())
 	, AppWin_ (QX11Info::appRootWindow ())
 	{
-		QAbstractEventDispatcher::instance ()->setEventFilter (&EventFilter);
+		QTimer::singleShot (5000, this, SLOT (initialize ()));
 	}
 
 	XWrapper& XWrapper::Instance ()
@@ -471,6 +473,14 @@ namespace Util
 
 		return XSendEvent (Display_, AppWin_, FALSE, SubstructureRedirectMask | SubstructureNotifyMask,
 				reinterpret_cast<XEvent*> (&msg)) == Success;
+	}
+
+	void XWrapper::initialize ()
+	{
+		QAbstractEventDispatcher::instance ()->setEventFilter (&EventFilter);
+		XSelectInput (Display_,
+				AppWin_,
+				PropertyChangeMask | StructureNotifyMask | SubstructureNotifyMask);
 	}
 }
 }

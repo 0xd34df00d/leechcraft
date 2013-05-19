@@ -33,11 +33,14 @@
 #include <QList>
 #include <QString>
 #include <QHash>
-#include <X11/X.h>
+#include <X11/Xdefs.h>
 #include <util/utilconfig.h>
 #include "winflags.h"
 
 class QIcon;
+
+typedef unsigned long Window;
+#define _XTYPEDEF_XID
 
 namespace LeechCraft
 {
@@ -79,11 +82,13 @@ namespace Util
 		Window GetActiveWindow ();
 
 		Atom GetAtom (const QString&);
-		bool GetWinProp (Window, Atom, ulong*, uchar**, Atom = static_cast<Atom> (AnyPropertyType)) const;
-		bool GetRootWinProp (Atom, ulong*, uchar**, Atom = static_cast<Atom> (AnyPropertyType)) const;
+		bool GetWinProp (Window, Atom, ulong*, uchar**, Atom = static_cast<Atom> (0)) const;
+		bool GetRootWinProp (Atom, ulong*, uchar**, Atom = static_cast<Atom> (0)) const;
 		QList<Atom> GetWindowType (Window);
 
 		bool SendMessage (Window, Atom, ulong, ulong = 0, ulong = 0, ulong = 0, ulong = 0);
+	private slots:
+		void initialize ();
 	signals:
 		void windowListChanged ();
 		void activeWindowChanged ();
