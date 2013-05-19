@@ -30,9 +30,11 @@
 #include "viewgeometrymanager.h"
 #include <QSettings>
 #include <QToolBar>
-#include <QCoreApplication>
+#include <QApplication>
 #include <QDeclarativeContext>
 #include <QMainWindow>
+#include <QDesktopWidget>
+#include <QtDebug>
 #include "viewmanager.h"
 #include "sbview.h"
 
@@ -81,8 +83,28 @@ namespace SB2
 			toolbar->setWindowFlags (Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 			toolbar->setAttribute (Qt::WA_X11NetWmWindowTypeDock);
 			toolbar->setAttribute (Qt::WA_AlwaysShowToolTips);
+
 			toolbar->show ();
+
+			updatePos ();
 		}
+	}
+
+	void ViewGeometryManager::updatePos ()
+	{
+		auto view = ViewMgr_->GetView ();
+
+		const auto screenGeometry = QApplication::desktop ()->
+				screenGeometry (ViewMgr_->GetManagedWindow ());
+
+		const auto& minSize = view->minimumSizeHint ();
+		QRect rect (0, 0, screenGeometry.width (), minSize.height ());;
+		rect.moveLeft (screenGeometry.left ());
+		rect.moveBottom (screenGeometry.bottom ());
+		qDebug () << rect;
+
+		view->setGeometry (rect);
+		view->setFixedSize (rect.size ());
 	}
 
 	void ViewGeometryManager::setOrientation (Qt::Orientation orientation)

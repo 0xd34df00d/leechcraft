@@ -47,6 +47,7 @@ namespace SB2
 
 		void Manage ();
 	private slots:
+		void updatePos ();
 		void setOrientation (Qt::Orientation);
 	};
 }
