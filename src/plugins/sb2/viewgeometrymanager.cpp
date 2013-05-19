@@ -77,11 +77,13 @@ namespace SB2
 		}
 		else
 		{
+			toolbar->setParent (nullptr, Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+
 			toolbar->setFloatable (true);
 			toolbar->setAllowedAreas (Qt::NoToolBarArea);
 
-			toolbar->setWindowFlags (Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 			toolbar->setAttribute (Qt::WA_X11NetWmWindowTypeDock);
+			toolbar->setAttribute (Qt::WA_X11NetWmWindowTypeToolBar, false);
 			toolbar->setAttribute (Qt::WA_AlwaysShowToolTips);
 
 			toolbar->show ();
@@ -92,19 +94,18 @@ namespace SB2
 
 	void ViewGeometryManager::updatePos ()
 	{
-		auto view = ViewMgr_->GetView ();
+		auto toolbar = ViewMgr_->GetToolbar ();
 
 		const auto screenGeometry = QApplication::desktop ()->
 				screenGeometry (ViewMgr_->GetManagedWindow ());
 
-		const auto& minSize = view->minimumSizeHint ();
+		const auto& minSize = toolbar->minimumSizeHint ();
 		QRect rect (0, 0, screenGeometry.width (), minSize.height ());;
 		rect.moveLeft (screenGeometry.left ());
 		rect.moveBottom (screenGeometry.bottom ());
-		qDebug () << rect;
 
-		view->setGeometry (rect);
-		view->setFixedSize (rect.size ());
+		toolbar->setGeometry (rect);
+		toolbar->setFixedSize (rect.size ());
 	}
 
 	void ViewGeometryManager::setOrientation (Qt::Orientation orientation)
