@@ -77,9 +77,8 @@ namespace Hestia
 		return QString ();
 	}
 
-	void LocalBlogAccount::RenameAccount (const QString& name)
+	void LocalBlogAccount::RenameAccount (const QString&)
 	{
-
 	}
 
 	QByteArray LocalBlogAccount::GetAccountID () const
