@@ -442,6 +442,9 @@ namespace Blogique
 
 	Entry BlogiqueWidget::GetCurrentEntry (bool interactive) const
 	{
+		if (!PostEdit_)
+			return Entry ();
+
 		const QString& content = PostEdit_->GetContents (ContentType::HTML);
 		if (interactive &&
 				content.isEmpty ())
