@@ -48,6 +48,7 @@
 #include "sbview.h"
 #include "quarkproxy.h"
 #include "quarkmanager.h"
+#include "viewgeometrymanager.h"
 
 namespace LeechCraft
 {
@@ -86,6 +87,8 @@ namespace SB2
 	, View_ (new SBView)
 	, Toolbar_ (new QToolBar (tr ("SB2 panel")))
 	, Window_ (window)
+	, GeomManager_ (new ViewGeometryManager (this))
+	, IsDesktopMode_ (qApp->arguments ().contains ("--desktop"))
 	{
 		const auto& file = Util::GetSysPath (Util::SysPath::QML, "sb2", "SideView.qml");
 		if (file.isEmpty ())
@@ -108,28 +111,16 @@ namespace SB2
 		View_->rootContext ()->setContextProperty ("quarkContext", "panel_" + QString::number (GetWindowIndex ()));
 		View_->engine ()->addImageProvider (ImageProviderID, new Util::ThemeImageProvider (proxy));
 
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_SB2");
-		settings.beginGroup ("Toolbars");
-		const auto& posSettingName = "Pos_" + QString::number (GetWindowIndex ());
-		auto pos = settings.value (posSettingName, static_cast<int> (Qt::LeftToolBarArea)).toInt ();
-		settings.endGroup ();
+		Toolbar_->addWidget (View_);
+		View_->setVisible (true);
 
-		setOrientation ((pos == Qt::LeftToolBarArea || pos == Qt::RightToolBarArea) ? Qt::Vertical : Qt::Horizontal);
+		GeomManager_->Manage ();
 
 		View_->setSource (QUrl::fromLocalFile (file));
 
 		LoadRemovedList ();
 		LoadQuarkOrder ();
 
-		const auto deskMode = qApp->arguments ().contains ("--desktop");
-
-		Toolbar_->addWidget (View_);
-		View_->setVisible (true);
-		connect (Toolbar_,
-				SIGNAL (orientationChanged (Qt::Orientation)),
-				this,
-				SLOT (setOrientation (Qt::Orientation)));
 		connect (Toolbar_,
 				SIGNAL (topLevelChanged (bool)),
 				this,
@@ -140,26 +131,7 @@ namespace SB2
 		toggleAct->setShortcut (QString ("Ctrl+J,S"));
 		shortcutMgr->RegisterAction ("TogglePanel", toggleAct, true);
 
-		if (!deskMode)
-		{
-			Toolbar_->setFloatable (false);
-			window->addAction (toggleAct);
-			window->addToolBar (static_cast<Qt::ToolBarArea> (pos), Toolbar_);
-#ifdef Q_OS_MAC
-			// dunno WTF
-			window->show ();
-#endif
-		}
-		else
-		{
-			Toolbar_->setFloatable (true);
-			Toolbar_->setAllowedAreas (Qt::NoToolBarArea);
-
-			Toolbar_->setWindowFlags (Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
-			Toolbar_->setAttribute (Qt::WA_X11NetWmWindowTypeDock);
-			Toolbar_->setAttribute (Qt::WA_AlwaysShowToolTips);
-			Toolbar_->show ();
-		}
+		window->addAction (toggleAct);
 	}
 
 	SBView* ViewManager::GetView () const
@@ -181,24 +153,32 @@ namespace SB2
 	{
 		QRect result = Window_->rect ();
 		result.moveTopLeft (Window_->mapToGlobal ({ 0, 0 }));
-		switch (Window_->toolBarArea (Toolbar_))
-		{
-		case Qt::LeftToolBarArea:
-			result.setLeft (result.left () + Toolbar_->width ());
-			break;
-		case Qt::RightToolBarArea:
-			result.setRight (result.right () - Toolbar_->width ());
-			break;
-		case Qt::TopToolBarArea:
-			result.setTop (result.top () + Toolbar_->height ());
-			break;
-		case Qt::BottomToolBarArea:
-			result.setBottom (result.bottom () - Toolbar_->height ());
-			break;
-		default:
-			break;
-		}
+
+		if (!IsDesktopMode_)
+			switch (Window_->toolBarArea (Toolbar_))
+			{
+			case Qt::LeftToolBarArea:
+				result.setLeft (result.left () + Toolbar_->width ());
+				break;
+			case Qt::RightToolBarArea:
+				result.setRight (result.right () - Toolbar_->width ());
+				break;
+			case Qt::TopToolBarArea:
+				result.setTop (result.top () + Toolbar_->height ());
+				break;
+			case Qt::BottomToolBarArea:
+				result.setBottom (result.bottom () - Toolbar_->height ());
+				break;
+			default:
+				break;
+			}
+
 		return result;
+	}
+
+	bool ViewManager::IsDesktopMode () const
+	{
+		return IsDesktopMode_;
 	}
 
 	void ViewManager::SecondInit ()
@@ -445,23 +425,6 @@ namespace SB2
 	{
 		auto rootWM = Proxy_->GetRootWindowsManager ();
 		return rootWM->GetWindowIndex (Window_);
-	}
-
-	void ViewManager::setOrientation (Qt::Orientation orientation)
-	{
-		switch (orientation)
-		{
-		case Qt::Vertical:
-			View_->resize (View_->minimumSize ());
-			View_->setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Expanding);
-			View_->rootContext ()->setContextProperty ("viewOrient", "vertical");
-			break;
-		case Qt::Horizontal:
-			View_->resize (View_->minimumSize ());
-			View_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Preferred);
-			View_->rootContext ()->setContextProperty ("viewOrient", "horizontal");
-			break;
-		}
 	}
 
 	void ViewManager::handleToolbarTopLevel (bool topLevel)
