@@ -41,7 +41,7 @@
 
 namespace LeechCraft
 {
-namespace Krigstask
+namespace Util
 {
 	const int SourceNormal = 1;
 	const int SourcePager = 2;

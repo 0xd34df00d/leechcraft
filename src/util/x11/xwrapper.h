@@ -34,15 +34,16 @@
 #include <QString>
 #include <QHash>
 #include <X11/X.h>
+#include <util/utilconfig.h>
 #include "winflags.h"
 
 class QIcon;
 
 namespace LeechCraft
 {
-namespace Krigstask
+namespace Util
 {
-	class XWrapper : public QObject
+	class UTIL_API XWrapper : public QObject
 	{
 		Q_OBJECT
 

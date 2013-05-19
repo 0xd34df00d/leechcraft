@@ -32,16 +32,20 @@
 #include <functional>
 #include <QAbstractItemModel>
 #include <QIcon>
-#include "winflags.h"
+#include <util/x11/winflags.h>
 
 class QDeclarativeImageProvider;
 
 namespace LeechCraft
 {
+namespace Util
+{
+class XWrapper;
+}
+
 namespace Krigstask
 {
 	class TaskbarImageProvider;
-	class XWrapper;
 
 	class WindowsModel : public QAbstractItemModel
 	{
@@ -55,8 +59,8 @@ namespace Krigstask
 			QIcon Icon_;
 			int IconGenID_;
 			bool IsActive_;
-			WinStateFlags State_;
-			AllowedActionFlags Actions_;
+			Util::WinStateFlags State_;
+			Util::AllowedActionFlags Actions_;
 		};
 		QList<WinInfo> Windows_;
 
@@ -81,7 +85,7 @@ namespace Krigstask
 		QModelIndex parent (const QModelIndex& child) const;
 		QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
 	private:
-		void AddWindow (ulong, XWrapper&);
+		void AddWindow (ulong, Util::XWrapper&);
 
 		QList<WinInfo>::iterator FindWinInfo (ulong);
 		void UpdateWinInfo (ulong, std::function<void (WinInfo&)>);

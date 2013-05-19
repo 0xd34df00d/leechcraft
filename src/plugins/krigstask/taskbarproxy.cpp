@@ -29,7 +29,7 @@
 
 #include "taskbarproxy.h"
 #include <QtDebug>
-#include "xwrapper.h"
+#include <util/x11/xwrapper.h>
 
 namespace LeechCraft
 {
@@ -42,12 +42,12 @@ namespace Krigstask
 
 	void TaskbarProxy::raiseWindow (const QString& widStr)
 	{
-		XWrapper::Instance ().RaiseWindow (widStr.toULong ());
+		Util::XWrapper::Instance ().RaiseWindow (widStr.toULong ());
 	}
 
 	void TaskbarProxy::minimizeWindow (const QString& widStr)
 	{
-		XWrapper::Instance ().MinimizeWindow (widStr.toULong ());
+		Util::XWrapper::Instance ().MinimizeWindow (widStr.toULong ());
 	}
 }
 }
