@@ -42,6 +42,8 @@ class QIcon;
 typedef unsigned long Window;
 #define _XTYPEDEF_XID
 
+typedef union _XEvent XEvent;
+
 namespace LeechCraft
 {
 namespace Util
@@ -59,7 +61,7 @@ namespace Util
 	public:
 		static XWrapper& Instance ();
 
-		bool Filter (void*);
+		bool Filter (XEvent*);
 
 		QList<Window> GetWindows ();
 		QString GetWindowTitle (Window);
