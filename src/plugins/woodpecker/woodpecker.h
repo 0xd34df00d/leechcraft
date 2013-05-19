@@ -77,10 +77,6 @@ namespace Woodpecker
 			void changeTooltip (QWidget*, QWidget*);
 			void statusBarChanged (QWidget*, const QString&);
 			void raiseTab (QWidget*);
-			void delegateEntity (const LeechCraft::Entity&,
-					int*, QObject**);
-			void gotEntity (const LeechCraft::Entity&);
-			void couldHandle (const LeechCraft::Entity&, bool*);
 	};
 };
 };
