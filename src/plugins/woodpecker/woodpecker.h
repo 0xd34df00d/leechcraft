@@ -35,6 +35,7 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/structures.h>
+#include "xmlsettingsmanager.h"
 
 class QTranslator;
 
@@ -52,7 +53,7 @@ namespace Woodpecker
 
 			QList<QPair<TabClassInfo, std::function<void (TabClassInfo)>>> TabClasses_;
 			std::shared_ptr<QTranslator> Translator_;
-			std::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
+			Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 	
 			void MakeTab (QWidget*, const TabClassInfo&);
 			
@@ -67,10 +68,7 @@ namespace Woodpecker
 
 			TabClasses_t GetTabClasses () const;
 			void TabOpenRequested (const QByteArray&);
-
-			std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
-			
-
+			Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 		signals:
 			void addNewTab (const QString&, QWidget*);
 			void removeTab (QWidget*);
@@ -82,7 +80,6 @@ namespace Woodpecker
 			void delegateEntity (const LeechCraft::Entity&,
 					int*, QObject**);
 			void gotEntity (const LeechCraft::Entity&);
-
 			void couldHandle (const LeechCraft::Entity&, bool*);
 	};
 };
