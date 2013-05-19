@@ -76,16 +76,26 @@ namespace Woodpecker
 
 	void TwitterInterface::RequestTwitter (QUrl requestAddress)
 	{
-		HttpClient_->get (QNetworkRequest (requestAddress));
+		//HttpClient_->get (QNetworkRequest (requestAddress));
+		Reply_ = HttpClient_->get(QNetworkRequest (requestAddress));
+		connect (Reply_,
+				SIGNAL(finished ()),
+				this,
+				SLOT(replyFinished ()));
 		//           getAccess ();
 		//           xauth ();
 	}
 
-	void TwitterInterface::replyFinished (QNetworkReply *reply)
+	void TwitterInterface::replyFinished ()
 	{
 		QList<std::shared_ptr<Tweet>> tweets;
-		QByteArray jsonText (reply->readAll ());
-		reply->deleteLater ();
+		QByteArray jsonText (Reply_->readAll ());
+		disconnect(Reply_,
+					SIGNAL(finished ()),
+					0,
+					0);
+		delete Reply_;
+		Reply_ = nullptr;
 
 		tweets.clear ();
 		tweets = ParseReply (jsonText);

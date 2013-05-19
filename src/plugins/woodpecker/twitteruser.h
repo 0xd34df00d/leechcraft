@@ -45,14 +45,14 @@ namespace Woodpecker
 		Q_OBJECT
 		
 		QString Username_;
-		QNetworkRequest *Req_;
 		QNetworkAccessManager *Http_;
+		QNetworkReply *Reply_;
 		
 	public:
 		QPixmap  Avatar;
 		
-		explicit TwitterUser (QObject *parent = 0);
-		explicit TwitterUser (const QString& username, QObject *parent = 0);
+		explicit TwitterUser (QObject *parent = nullptr);
+		explicit TwitterUser (const QString& username, QObject *parent = nullptr);
 		~TwitterUser ();
 		
 		void SetUsername (const QString& username);
@@ -67,7 +67,7 @@ namespace Woodpecker
 		void userReady ();
 		
 	public slots:
-		void avatarDownloaded (QNetworkReply *reply);
+		void avatarDownloaded ();
 		
 	};
 	

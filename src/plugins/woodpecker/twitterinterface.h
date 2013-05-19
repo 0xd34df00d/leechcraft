@@ -34,6 +34,7 @@
 #include <QObject>
 #include <QUrl>
 #include <QNetworkReply>
+#include <QNetworkAccessManager>
 #include <QSettings>
 #include <QtKOAuth/QtKOAuth>
 #include "tweet.h"
@@ -68,6 +69,7 @@ namespace Woodpecker
 		Q_OBJECT
 	
 		QNetworkAccessManager *HttpClient_;
+		QNetworkReply *Reply_;
 		KQOAuthManager *OAuthManager_;
 		KQOAuthRequest *OAuthRequest_;
 		QString Token_;
@@ -95,7 +97,7 @@ namespace Woodpecker
 		void SetLastRequestMode (const FeedMode& newLastRequestMode);
 		
 	private slots:
-		void replyFinished (QNetworkReply* reply);
+		void replyFinished ();
 		
 		void onTemporaryTokenReceived (const QString& temporaryToken, const QString& temporaryTokenSecret);
 		void onAuthorizationReceived (const QString& token, const QString& verifier);
