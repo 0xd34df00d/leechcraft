@@ -27,27 +27,80 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "taskbarproxy.h"
-#include <QtDebug>
-#include <util/x11/xwrapper.h>
+#pragma once
+
+#include <QX11Info>
+#include <QList>
+#include <QString>
+#include <QHash>
+#include <X11/Xdefs.h>
+#include <util/utilconfig.h>
+#include "winflags.h"
+
+class QIcon;
+
+typedef unsigned long Window;
+#define _XTYPEDEF_XID
+
+typedef union _XEvent XEvent;
 
 namespace LeechCraft
 {
-namespace Krigstask
+namespace Util
 {
-	TaskbarProxy::TaskbarProxy (QObject *parent)
-	: QObject (parent)
+	class UTIL_API XWrapper : public QObject
 	{
-	}
+		Q_OBJECT
 
-	void TaskbarProxy::raiseWindow (const QString& widStr)
-	{
-		Util::XWrapper::Instance ().RaiseWindow (widStr.toULong ());
-	}
+		Display *Display_;
+		Window AppWin_;
 
-	void TaskbarProxy::minimizeWindow (const QString& widStr)
-	{
-		Util::XWrapper::Instance ().MinimizeWindow (widStr.toULong ());
-	}
+		QHash<QString, Atom> Atoms_;
+
+		XWrapper ();
+	public:
+		static XWrapper& Instance ();
+
+		bool Filter (XEvent*);
+
+		QList<Window> GetWindows ();
+		QString GetWindowTitle (Window);
+		QIcon GetWindowIcon (Window);
+		WinStateFlags GetWindowState (Window);
+		AllowedActionFlags GetWindowActions (Window);
+
+		Window GetActiveApp ();
+
+		bool ShouldShow (Window);
+
+		void Subscribe (Window);
+
+		void RaiseWindow (Window);
+		void MinimizeWindow (Window);
+	private:
+		template<typename T>
+		void HandlePropNotify (T);
+
+		Window GetActiveWindow ();
+
+		Atom GetAtom (const QString&);
+		bool GetWinProp (Window, Atom, ulong*, uchar**, Atom = static_cast<Atom> (0)) const;
+		bool GetRootWinProp (Atom, ulong*, uchar**, Atom = static_cast<Atom> (0)) const;
+		QList<Atom> GetWindowType (Window);
+
+		bool SendMessage (Window, Atom, ulong, ulong = 0, ulong = 0, ulong = 0, ulong = 0);
+	private slots:
+		void initialize ();
+	signals:
+		void windowListChanged ();
+		void activeWindowChanged ();
+		void desktopChanged ();
+
+		void windowNameChanged (ulong);
+		void windowIconChanged (ulong);
+		void windowDesktopChanged (ulong);
+		void windowStateChanged (ulong);
+		void windowActionsChanged (ulong);
+	};
 }
 }

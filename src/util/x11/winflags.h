@@ -33,7 +33,7 @@
 
 namespace LeechCraft
 {
-namespace Krigstask
+namespace Util
 {
 	enum WinStateFlag
 	{
@@ -75,5 +75,5 @@ namespace Krigstask
 }
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Krigstask::WinStateFlags)
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Krigstask::AllowedActionFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Util::WinStateFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Util::AllowedActionFlags)

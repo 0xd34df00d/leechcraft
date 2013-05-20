@@ -33,22 +33,28 @@
 #include <QString>
 #include <QPixmap>
 #include <QIcon>
+#include <QApplication>
 #include <QAbstractEventDispatcher>
 #include <QtDebug>
+#include <QTimer>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
 
+typedef bool (*QX11FilterFunction) (XEvent *event);
+
+extern void qt_installX11EventFilter (QX11FilterFunction func);
+
 namespace LeechCraft
 {
-namespace Krigstask
+namespace Util
 {
 	const int SourceNormal = 1;
 	const int SourcePager = 2;
 
 	namespace
 	{
-		bool EventFilter (void *msg)
+		bool EventFilter (XEvent *msg)
 		{
 			return XWrapper::Instance ().Filter (msg);
 		}
@@ -58,7 +64,10 @@ namespace Krigstask
 	: Display_ (QX11Info::display ())
 	, AppWin_ (QX11Info::appRootWindow ())
 	{
-		QAbstractEventDispatcher::instance ()->setEventFilter (&EventFilter);
+		qt_installX11EventFilter (&EventFilter);
+		XSelectInput (Display_,
+				AppWin_,
+				PropertyChangeMask | StructureNotifyMask | SubstructureNotifyMask);
 	}
 
 	XWrapper& XWrapper::Instance ()
@@ -67,10 +76,8 @@ namespace Krigstask
 		return w;
 	}
 
-	bool XWrapper::Filter (void *msg)
+	bool XWrapper::Filter (XEvent *ev)
 	{
-		auto ev = static_cast<XEvent*> (msg);
-
 		if (ev->type == PropertyNotify)
 			HandlePropNotify (&ev->xproperty);
 
@@ -471,6 +478,10 @@ namespace Krigstask
 
 		return XSendEvent (Display_, AppWin_, FALSE, SubstructureRedirectMask | SubstructureNotifyMask,
 				reinterpret_cast<XEvent*> (&msg)) == Success;
+	}
+
+	void XWrapper::initialize ()
+	{
 	}
 }
 }

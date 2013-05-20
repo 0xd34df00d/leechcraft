@@ -29,70 +29,26 @@
 
 #pragma once
 
-#include <QX11Info>
-#include <QList>
-#include <QString>
-#include <QHash>
-#include <X11/X.h>
-#include "winflags.h"
-
-class QIcon;
+#include <QObject>
 
 namespace LeechCraft
 {
-namespace Krigstask
+namespace SB2
 {
-	class XWrapper : public QObject
+	class ViewManager;
+
+	class ViewGeometryManager : public QObject
 	{
 		Q_OBJECT
 
-		Display *Display_;
-		Window AppWin_;
-
-		QHash<QString, Atom> Atoms_;
-
-		XWrapper ();
+		ViewManager *ViewMgr_;
 	public:
-		static XWrapper& Instance ();
+		ViewGeometryManager (ViewManager*);
 
-		bool Filter (void*);
-
-		QList<Window> GetWindows ();
-		QString GetWindowTitle (Window);
-		QIcon GetWindowIcon (Window);
-		WinStateFlags GetWindowState (Window);
-		AllowedActionFlags GetWindowActions (Window);
-
-		Window GetActiveApp ();
-
-		bool ShouldShow (Window);
-
-		void Subscribe (Window);
-
-		void RaiseWindow (Window);
-		void MinimizeWindow (Window);
-	private:
-		template<typename T>
-		void HandlePropNotify (T);
-
-		Window GetActiveWindow ();
-
-		Atom GetAtom (const QString&);
-		bool GetWinProp (Window, Atom, ulong*, uchar**, Atom = static_cast<Atom> (AnyPropertyType)) const;
-		bool GetRootWinProp (Atom, ulong*, uchar**, Atom = static_cast<Atom> (AnyPropertyType)) const;
-		QList<Atom> GetWindowType (Window);
-
-		bool SendMessage (Window, Atom, ulong, ulong = 0, ulong = 0, ulong = 0, ulong = 0);
-	signals:
-		void windowListChanged ();
-		void activeWindowChanged ();
-		void desktopChanged ();
-
-		void windowNameChanged (ulong);
-		void windowIconChanged (ulong);
-		void windowDesktopChanged (ulong);
-		void windowStateChanged (ulong);
-		void windowActionsChanged (ulong);
+		void Manage ();
+	private slots:
+		void updatePos ();
+		void setOrientation (Qt::Orientation);
 	};
 }
 }

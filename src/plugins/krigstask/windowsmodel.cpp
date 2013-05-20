@@ -32,7 +32,7 @@
 #include <QIcon>
 #include <QFrame>
 #include <util/qml/widthiconprovider.h>
-#include "xwrapper.h"
+#include <util/x11/xwrapper.h>
 
 namespace LeechCraft
 {
@@ -63,33 +63,33 @@ namespace Krigstask
 	: QAbstractItemModel (parent)
 	, ImageProvider_ (new TaskbarImageProvider)
 	{
-		auto& w = XWrapper::Instance ();
+		auto& w = Util::XWrapper::Instance ();
 		auto windows = w.GetWindows ();
 		for (auto wid : windows)
 			AddWindow (wid, w);
 
-		connect (&XWrapper::Instance (),
+		connect (&Util::XWrapper::Instance (),
 				SIGNAL (windowListChanged ()),
 				this,
 				SLOT (updateWinList ()));
-		connect (&XWrapper::Instance (),
+		connect (&Util::XWrapper::Instance (),
 				SIGNAL (activeWindowChanged ()),
 				this,
 				SLOT (updateActiveWindow ()));
 
-		connect (&XWrapper::Instance (),
+		connect (&Util::XWrapper::Instance (),
 				SIGNAL (windowNameChanged (ulong)),
 				this,
 				SLOT (updateWindowName (ulong)));
-		connect (&XWrapper::Instance (),
+		connect (&Util::XWrapper::Instance (),
 				SIGNAL (windowIconChanged (ulong)),
 				this,
 				SLOT (updateWindowIcon (ulong)));
-		connect (&XWrapper::Instance (),
+		connect (&Util::XWrapper::Instance (),
 				SIGNAL (windowStateChanged (ulong)),
 				this,
 				SLOT (updateWindowState (ulong)));
-		connect (&XWrapper::Instance (),
+		connect (&Util::XWrapper::Instance (),
 				SIGNAL (windowActionsChanged (ulong)),
 				this,
 				SLOT (updateWindowActions (ulong)));
@@ -149,13 +149,13 @@ namespace Krigstask
 		case Role::IsActiveWindow:
 			return item.IsActive_;
 		case Role::IsMinimizedWindow:
-			return item.State_.testFlag (WinStateFlag::Hidden);
+			return item.State_.testFlag (Util::WinStateFlag::Hidden);
 		}
 
 		return {};
 	}
 
-	void WindowsModel::AddWindow (ulong wid, XWrapper& w)
+	void WindowsModel::AddWindow (ulong wid, Util::XWrapper& w)
 	{
 		if (!w.ShouldShow (wid))
 			return;
@@ -200,7 +200,7 @@ namespace Krigstask
 
 	void WindowsModel::updateWinList ()
 	{
-		auto& w = XWrapper::Instance ();
+		auto& w = Util::XWrapper::Instance ();
 
 		QSet<Window> known;
 		for (const auto& info : Windows_)
@@ -241,8 +241,8 @@ namespace Krigstask
 
 	void WindowsModel::updateActiveWindow ()
 	{
-		const auto active = XWrapper::Instance ().GetActiveApp ();
-		if (!active || !XWrapper::Instance ().ShouldShow (active))
+		const auto active = Util::XWrapper::Instance ().GetActiveApp ();
+		if (!active || !Util::XWrapper::Instance ().ShouldShow (active))
 			return;
 
 		for (auto i = 0; i < Windows_.size (); ++i)
@@ -259,7 +259,7 @@ namespace Krigstask
 	void WindowsModel::updateWindowName (ulong w)
 	{
 		UpdateWinInfo (w,
-				[&w] (WinInfo& info) { info.Title_ = XWrapper::Instance ().GetWindowTitle (w); });
+				[&w] (WinInfo& info) { info.Title_ = Util::XWrapper::Instance ().GetWindowTitle (w); });
 	}
 
 	void WindowsModel::updateWindowIcon (ulong w)
@@ -267,7 +267,7 @@ namespace Krigstask
 		UpdateWinInfo (w,
 				[&w] (WinInfo& info) -> void
 				{
-					info.Icon_ = XWrapper::Instance ().GetWindowIcon (w);
+					info.Icon_ = Util::XWrapper::Instance ().GetWindowIcon (w);
 					++info.IconGenID_;
 				});
 	}
@@ -277,8 +277,8 @@ namespace Krigstask
 		UpdateWinInfo (w,
 				[&w] (WinInfo& info) -> void
 				{
-					info.State_ = XWrapper::Instance ().GetWindowState (w);
-					if (info.State_.testFlag (WinStateFlag::Hidden))
+					info.State_ = Util::XWrapper::Instance ().GetWindowState (w);
+					if (info.State_.testFlag (Util::WinStateFlag::Hidden))
 						info.IsActive_ = false;
 				});
 	}
@@ -286,7 +286,7 @@ namespace Krigstask
 	void WindowsModel::updateWindowActions (ulong w)
 	{
 		UpdateWinInfo (w,
-				[&w] (WinInfo& info) { info.Actions_ = XWrapper::Instance ().GetWindowActions (w); });
+				[&w] (WinInfo& info) { info.Actions_ = Util::XWrapper::Instance ().GetWindowActions (w); });
 	}
 }
 }
