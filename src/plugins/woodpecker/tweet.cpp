@@ -50,10 +50,6 @@ namespace Woodpecker
 			Author_ = author;
 	}
 
-	Tweet::~Tweet ()
-	{
-	}
-
 	Tweet::Tweet (const Tweet& original)
 	: QObject ()
 	{

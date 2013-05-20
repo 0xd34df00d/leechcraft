@@ -55,7 +55,6 @@ namespace Woodpecker
 		Tweet (QObject *parent = 0);
 		Tweet (const QString& text, TwitterUser_ptr author = nullptr, QObject *parent = 0);
 		Tweet (const Tweet& original);
-		~Tweet ();
 		
 		/** @brief Set both plain text contents and generates a html representation */
 		void SetText (const QString& text);
