@@ -139,6 +139,7 @@ namespace LeechCraft
 		void handleNewTabMenuRequested ();
 		void handleRestoreActionAdded (QAction*);
 		void handleTrayIconActivated (QSystemTrayIcon::ActivationReason);
+		void handleWorkAreaResized (int);
 		void doDelayedInit ();
 	private:
 		void FillQuickLaunch ();
