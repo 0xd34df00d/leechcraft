@@ -228,7 +228,6 @@ namespace Woodpecker
 		SignedRequest (TwitterRequest::Reply, KQOAuthRequest::POST, param);
 	}
 
-
 	void TwitterInterface::onAuthorizedRequestDone ()
 	{
 		qDebug () << "Request sent to Twitter!";
