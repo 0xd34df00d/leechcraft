@@ -281,7 +281,6 @@ namespace Woodpecker
 		oauthRequest->initRequest (KQOAuthRequest::AccessToken, QUrl ("https://api.twitter.com/oauth/access_token"));
 		oauthRequest->setConsumerKey ( XmlSettingsManager::Instance ()->property ("consumer_key").toString ());
 		oauthRequest->setConsumerSecretKey (XmlSettingsManager::Instance ()->property ("consumer_key_secret").toString ());
-		// oauthRequest->setXAuthLogin ("login", "password"); // Old login
 		OAuthManager_->executeRequest (oauthRequest);
 	}
 
