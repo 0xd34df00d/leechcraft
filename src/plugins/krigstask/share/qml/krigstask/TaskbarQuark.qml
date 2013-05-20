@@ -48,6 +48,10 @@ Rectangle {
 
                     isHighlight: !isMinimizedWindow
                     isStrongHighlight: isActiveWindow
+
+                    onTriggered: isActiveWindow ?
+                            KT_taskbarProxy.minimizeWindow(windowID) :
+                            KT_taskbarProxy.raiseWindow(windowID);
                 }
             }
         }

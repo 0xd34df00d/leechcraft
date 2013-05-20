@@ -29,74 +29,26 @@
 
 #pragma once
 
-#include <functional>
-#include <QAbstractItemModel>
-#include <QIcon>
-#include <util/x11/winflags.h>
-
-class QDeclarativeImageProvider;
+#include <QObject>
 
 namespace LeechCraft
 {
-namespace Util
+namespace SB2
 {
-class XWrapper;
-}
+	class ViewManager;
 
-namespace Krigstask
-{
-	class TaskbarImageProvider;
-
-	class WindowsModel : public QAbstractItemModel
+	class ViewGeometryManager : public QObject
 	{
 		Q_OBJECT
 
-		struct WinInfo
-		{
-			ulong WID_;
-
-			QString Title_;
-			QIcon Icon_;
-			int IconGenID_;
-			bool IsActive_;
-			Util::WinStateFlags State_;
-			Util::AllowedActionFlags Actions_;
-		};
-		QList<WinInfo> Windows_;
-
-		enum Role
-		{
-			WindowName = Qt::UserRole + 1,
-			WindowID,
-			IconGenID,
-			IsActiveWindow,
-			IsMinimizedWindow
-		};
-
-		TaskbarImageProvider *ImageProvider_;
+		ViewManager *ViewMgr_;
 	public:
-		WindowsModel (QObject* = 0);
+		ViewGeometryManager (ViewManager*);
 
-		QDeclarativeImageProvider* GetImageProvider () const;
-
-		int columnCount (const QModelIndex& parent = QModelIndex()) const;
-		int rowCount (const QModelIndex& parent = QModelIndex()) const;
-		QModelIndex index (int row, int column, const QModelIndex& parent = QModelIndex()) const;
-		QModelIndex parent (const QModelIndex& child) const;
-		QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
-	private:
-		void AddWindow (ulong, Util::XWrapper&);
-
-		QList<WinInfo>::iterator FindWinInfo (ulong);
-		void UpdateWinInfo (ulong, std::function<void (WinInfo&)>);
+		void Manage ();
 	private slots:
-		void updateWinList ();
-		void updateActiveWindow ();
-
-		void updateWindowName (ulong);
-		void updateWindowIcon (ulong);
-		void updateWindowState (ulong);
-		void updateWindowActions (ulong);
+		void updatePos ();
+		void setOrientation (Qt::Orientation);
 	};
 }
 }

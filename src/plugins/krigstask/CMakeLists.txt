@@ -14,7 +14,7 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	krigstask.cpp
 	windowsmodel.cpp
-	xwrapper.cpp
+	taskbarproxy.cpp
 	)
 #CreateTrs("krigstask" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("krigstask" "en;ru_RU" "${SRCS}" "${FORMS}" "")

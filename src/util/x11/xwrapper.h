@@ -29,74 +29,78 @@
 
 #pragma once
 
-#include <functional>
-#include <QAbstractItemModel>
-#include <QIcon>
-#include <util/x11/winflags.h>
+#include <QX11Info>
+#include <QList>
+#include <QString>
+#include <QHash>
+#include <X11/Xdefs.h>
+#include <util/utilconfig.h>
+#include "winflags.h"
 
-class QDeclarativeImageProvider;
+class QIcon;
+
+typedef unsigned long Window;
+#define _XTYPEDEF_XID
+
+typedef union _XEvent XEvent;
 
 namespace LeechCraft
 {
 namespace Util
 {
-class XWrapper;
-}
-
-namespace Krigstask
-{
-	class TaskbarImageProvider;
-
-	class WindowsModel : public QAbstractItemModel
+	class UTIL_API XWrapper : public QObject
 	{
 		Q_OBJECT
 
-		struct WinInfo
-		{
-			ulong WID_;
+		Display *Display_;
+		Window AppWin_;
 
-			QString Title_;
-			QIcon Icon_;
-			int IconGenID_;
-			bool IsActive_;
-			Util::WinStateFlags State_;
-			Util::AllowedActionFlags Actions_;
-		};
-		QList<WinInfo> Windows_;
+		QHash<QString, Atom> Atoms_;
 
-		enum Role
-		{
-			WindowName = Qt::UserRole + 1,
-			WindowID,
-			IconGenID,
-			IsActiveWindow,
-			IsMinimizedWindow
-		};
-
-		TaskbarImageProvider *ImageProvider_;
+		XWrapper ();
 	public:
-		WindowsModel (QObject* = 0);
+		static XWrapper& Instance ();
 
-		QDeclarativeImageProvider* GetImageProvider () const;
+		bool Filter (XEvent*);
 
-		int columnCount (const QModelIndex& parent = QModelIndex()) const;
-		int rowCount (const QModelIndex& parent = QModelIndex()) const;
-		QModelIndex index (int row, int column, const QModelIndex& parent = QModelIndex()) const;
-		QModelIndex parent (const QModelIndex& child) const;
-		QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
+		QList<Window> GetWindows ();
+		QString GetWindowTitle (Window);
+		QIcon GetWindowIcon (Window);
+		WinStateFlags GetWindowState (Window);
+		AllowedActionFlags GetWindowActions (Window);
+
+		Window GetActiveApp ();
+
+		bool ShouldShow (Window);
+
+		void Subscribe (Window);
+
+		void RaiseWindow (Window);
+		void MinimizeWindow (Window);
 	private:
-		void AddWindow (ulong, Util::XWrapper&);
+		template<typename T>
+		void HandlePropNotify (T);
 
-		QList<WinInfo>::iterator FindWinInfo (ulong);
-		void UpdateWinInfo (ulong, std::function<void (WinInfo&)>);
+		Window GetActiveWindow ();
+
+		Atom GetAtom (const QString&);
+		bool GetWinProp (Window, Atom, ulong*, uchar**, Atom = static_cast<Atom> (0)) const;
+		bool GetRootWinProp (Atom, ulong*, uchar**, Atom = static_cast<Atom> (0)) const;
+		QList<Atom> GetWindowType (Window);
+
+		bool SendMessage (Window, Atom, ulong, ulong = 0, ulong = 0, ulong = 0, ulong = 0);
 	private slots:
-		void updateWinList ();
-		void updateActiveWindow ();
+		void initialize ();
+	signals:
+		void windowListChanged ();
+		void activeWindowChanged ();
+		void desktopChanged ();
 
-		void updateWindowName (ulong);
-		void updateWindowIcon (ulong);
-		void updateWindowState (ulong);
-		void updateWindowActions (ulong);
+		void windowNameChanged (ulong);
+		void windowIconChanged (ulong);
+		void windowDesktopChanged (ulong);
+		void windowStateChanged (ulong);
+		void windowActionsChanged (ulong);
 	};
 }
 }
