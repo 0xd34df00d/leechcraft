@@ -109,20 +109,20 @@ namespace Woodpecker
 
 		for (int i = answers.count () - 1; i >= 0 ; --i)
 		{
-			tweetMap = answers[i].toMap ();
-			userMap = tweetMap["user"].toMap ();
+			tweetMap = answers [i].toMap ();
+			userMap = tweetMap ["user"].toMap ();
 			QLocale::setDefault (QLocale::English);
 			Tweet_ptr tempTweet (new Tweet ());
 
-			tempTweet->SetText (tweetMap["text"].toString ());
-			tempTweet->Author ()->SetUsername (userMap["screen_name"].toString ());
-			tempTweet->Author ()->DownloadAvatar (userMap["profile_image_url"].toString ());
-			connect (tempTweet->Author ().get (),
+			tempTweet->SetText (tweetMap ["text"].toString ());
+			tempTweet->GetAuthor ()->SetUsername (userMap ["screen_name"].toString ());
+			tempTweet->GetAuthor ()->DownloadAvatar (userMap ["profile_image_url"].toString ());
+			connect (tempTweet->GetAuthor ().get (),
 					SIGNAL (userReady ()), 
 					parent (),
 					SLOT (setUpdateReady ()));
-			tempTweet->SetDateTime (QLocale ().toDateTime (tweetMap["created_at"].toString (), QLatin1String ("ddd MMM dd HH:mm:ss +0000 yyyy")));
-			tempTweet->SetId (tweetMap["id"].toULongLong ());
+			tempTweet->SetDateTime (QLocale ().toDateTime (tweetMap ["created_at"].toString (), QLatin1String ("ddd MMM dd HH:mm:ss +0000 yyyy")));
+			tempTweet->SetId (tweetMap ["id"].toULongLong ());
 
 			result.push_back (tempTweet);
 		}
@@ -293,11 +293,9 @@ namespace Woodpecker
 
 		KQOAuthRequest_XAuth *oauthRequest = new KQOAuthRequest_XAuth (this);
 		oauthRequest->initRequest (KQOAuthRequest::AccessToken, QUrl ("https://api.twitter.com/oauth/access_token"));
-		oauthRequest->setConsumerKey ("nbwLYUDIlgsMgDFCu6jfuA");
-		oauthRequest->setConsumerSecretKey ("7TWYPzLUqZlihIRA2VWfZhCRfss2JNKvkSWMQx4");
-
-		// oauthRequest->setXAuthLogin ("login", "password");
-
+		oauthRequest->setConsumerKey ( XmlSettingsManager::Instance ()->property ("consumer_key").toString ());
+		oauthRequest->setConsumerSecretKey (XmlSettingsManager::Instance ()->property ("consumer_key_secret").toString ());
+		// oauthRequest->setXAuthLogin ("login", "password"); // Old login
 		OAuthManager_->executeRequest (oauthRequest);
 	}
 
@@ -325,7 +323,6 @@ namespace Woodpecker
 		SetLastRequestMode (FeedMode::HomeTimeline);
 		SignedRequest (TwitterRequest::HomeTimeline, KQOAuthRequest::GET, param);
 	}
-
 
 	void TwitterInterface::requestUserTimeline (const QString& username)
 	{

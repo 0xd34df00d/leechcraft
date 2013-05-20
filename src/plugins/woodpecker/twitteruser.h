@@ -56,7 +56,7 @@ namespace Woodpecker
 		~TwitterUser ();
 		
 		void SetUsername (const QString& username);
-		const QString& Username ();
+		QString GetUsername () const ;
 		
 		/** @brief Grabs avatar from Twitter
 		 * 	@param path http url of image

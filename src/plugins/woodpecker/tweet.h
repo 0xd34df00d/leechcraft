@@ -59,15 +59,15 @@ namespace Woodpecker
 		
 		/** @brief Set both plain text contents and generates a html representation */
 		void SetText (const QString& text);
-		QString Text () const;
+		QString GetText () const;
 		
-		qulonglong Id () const;
+		qulonglong GetId () const;
 		void SetId (qulonglong id);
 		
-		TwitterUser_ptr Author () const;
+		TwitterUser_ptr GetAuthor () const;
 		void setAuthor (TwitterUser_ptr newAuthor);
 		
-		QDateTime DateTime () const;
+		QDateTime GetDateTime () const;
 		void SetDateTime (const QDateTime& datetime);
 		
 		/** @brief Direct access to QTextDocument representation
@@ -75,7 +75,7 @@ namespace Woodpecker
 		 * 
 		 * Used in TwitDelegate class for drawing Tweet object contents in UI
 		 */
-		QTextDocument* GetDocument();
+		QTextDocument* GetDocument ();
 		
 		Tweet& operator= (const Tweet&);
 		

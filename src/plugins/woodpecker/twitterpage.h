@@ -51,7 +51,7 @@ namespace Woodpecker
 		Q_INTERFACES (ITabWidget)
 
 		const TabClassInfo TC_;
-		QObject * const ParentPlugin_;
+		QObject *const ParentPlugin_;
 
 		QToolBar *Toolbar_;
 		QMenu *DoctypeMenu_;
@@ -65,8 +65,8 @@ namespace Woodpecker
 		QObject *WrappedObject_;
 		bool TemporaryDocument_;
 		
-		volatile bool UpdateReady_;	/**< The flag is checked by timer for UI update */
-		QTimer *UiUpdateTimer_;		/**< Timer checks m_update_ready and updates the UI */
+		bool UpdateReady_;			/**< The flag is checked by timer for UI update */
+		QTimer *UiUpdateTimer_;		/**< Timer checks UpdateReady_ and updates the UI */
 		TwitDelegate *Delegate_;
 		Ui::TwitterPage *Ui_;
 		TwitterInterface *Interface_;
@@ -88,17 +88,17 @@ namespace Woodpecker
 		~TwitterPage();
 		
 		void Remove ();
-		QToolBar* GetToolBar () const;
-		QObject* ParentMultiTabs ();
+		QToolBar *GetToolBar () const;
+		QObject *ParentMultiTabs ();
 		QList<QAction*> GetTabBarContextMenuActions () const;
-		QMap<QString, QList<QAction*> > GetWindowMenus () const;
+		QMap<QString, QList<QAction*>> GetWindowMenus () const;
 		TabClassInfo GetTabClassInfo () const;
 		
 	public slots:
 		void tryToLogin ();
-		void requestUserTimeline (QString username);
+		void requestUserTimeline (const QString& username);
 		void updateScreenTwits (QList<std::shared_ptr<Tweet>> twits);
-		void recvdAuth (QString token, QString tokenSecret);
+		void recvdAuth (const QString& token, const QString& tokenSecret);
 		void twit ();
 		void retwit ();
 		void reply (QListWidgetItem *index = nullptr);

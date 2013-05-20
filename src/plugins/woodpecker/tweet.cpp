@@ -57,10 +57,10 @@ namespace Woodpecker
 	Tweet::Tweet (const Tweet& original)
 	: QObject ()
 	{
-		Author_ = original.Author ();
-		Created_ = original.DateTime ();
-		SetText (original.Text ());
-		Id_ = original.Id ();
+		Author_ = original.GetAuthor ();
+		Created_ = original.GetDateTime ();
+		SetText (original.GetText ());
+		Id_ = original.GetId ();
 	}
 
 	Tweet& Tweet::operator= (const Tweet& rhs)
@@ -68,17 +68,17 @@ namespace Woodpecker
 		if (this == &rhs)
 			return *this;
 
-		Id_ = rhs.Id ();
-		Author_ = rhs.Author ();
-		Created_ = rhs.DateTime ();
-		SetText (rhs.Text ());
+		Id_ = rhs.GetId ();
+		Author_ = rhs.GetAuthor ();
+		Created_ = rhs.GetDateTime ();
+		SetText (rhs.GetText ());
 
 		return *this;
 	}
 
 	bool Tweet::operator== (const Tweet& other) const
 	{
-		return Id_ == other.Id ();
+		return Id_ == other.GetId ();
 	}
 
 	bool Tweet::operator!= (const Tweet& other) const
@@ -88,12 +88,12 @@ namespace Woodpecker
 
 	bool Tweet::operator< (const Tweet& other) const
 	{
-		return Id_ < other.Id ();
+		return Id_ < other.GetId ();
 	}
 
 	bool Tweet::operator> (const Tweet& other) const
 	{
-		return Id_ > other.Id ();
+		return Id_ > other.GetId ();
 	}
 
 	void Tweet::SetText (const QString& text) 
@@ -125,7 +125,7 @@ namespace Woodpecker
 		Document_.setHtml (html);
 	}
 
-	TwitterUser_ptr Tweet::Author () const
+	TwitterUser_ptr Tweet::GetAuthor () const
 	{
 		return Author_;
 	}
@@ -135,7 +135,7 @@ namespace Woodpecker
 		Author_ = newAuthor;
 	}
 	
-	QDateTime Tweet::DateTime () const
+	QDateTime Tweet::GetDateTime () const
 	{
 		return Created_;
 	}
@@ -150,12 +150,12 @@ namespace Woodpecker
 		return &Document_;
 	}
 	
-	QString Tweet::Text () const
+	QString Tweet::GetText () const
 	{
 		return Text_;
 	}
 	
-	qulonglong Tweet::Id () const
+	qulonglong Tweet::GetId () const
 	{
 		return Id_;
 	}

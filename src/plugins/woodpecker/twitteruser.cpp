@@ -79,7 +79,7 @@ namespace Woodpecker
 		Username_ = username;
 	}
 	
-	const QString& TwitterUser::Username ()
+	QString TwitterUser::GetUsername () const
 	{
 		return Username_;
 	}

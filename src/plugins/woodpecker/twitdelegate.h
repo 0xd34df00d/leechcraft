@@ -42,6 +42,8 @@ namespace Woodpecker
 	class TwitDelegate : public QAbstractItemDelegate
 	{
 		QObject *Parent_;
+
+		const int ImageSpace_ = 50;
 		
 	public:
 		TwitDelegate (QObject *parent = 0);
@@ -51,9 +53,6 @@ namespace Woodpecker
 		QSize sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const;
 		bool editorEvent (QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem& option, const QModelIndex& index);
 		QObject *parent ();
-		
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

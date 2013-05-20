@@ -90,7 +90,7 @@ namespace Woodpecker
 		void SendTweet (const QString& tweet);
 		void Retweet (const qulonglong id);
 		void Reply (const qulonglong replyid, const QString& tweet);
-		void ReportSPAM (const QString& username, const qulonglong userid=0);
+		void ReportSPAM (const QString& username, const qulonglong userid = 0);
 		void GetAccess ();
 		void Login (const QString& savedToken, const QString& savedTokenSecret);
 		FeedMode GetLastRequestMode ();

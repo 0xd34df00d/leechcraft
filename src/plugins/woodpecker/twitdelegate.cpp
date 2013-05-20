@@ -55,7 +55,6 @@ namespace Woodpecker
 	
 	TwitDelegate::~TwitDelegate()
 	{
-		
 	}
 
 	QObject* TwitDelegate::parent ()
@@ -121,19 +120,18 @@ namespace Woodpecker
 		}
 
 		// Get title, description and icon
-		QIcon ic = QIcon (index.data (Qt::DecorationRole).value<QPixmap>());
 		auto currentTweet = index.data (Qt::UserRole).value<std::shared_ptr<Tweet>> ();
 		if (!currentTweet) 
 		{
 			qDebug () << "Can't recieve twit";
 			return;
 		}
-		const qulonglong id = currentTweet->Id ();
-		const auto& author = currentTweet->Author ()->Username ();
-		const auto& time = currentTweet->DateTime ().toString ();
+		const qulonglong id = currentTweet->GetId ();
+		const auto& author = currentTweet->GetAuthor ()->GetUsername ();
+		const auto& time = currentTweet->GetDateTime ().toString ();
 		QTextDocument* doc = currentTweet->GetDocument ();
 
-		int imageSpace = 50;
+		QIcon ic = QIcon (index.data (Qt::DecorationRole).value<QPixmap>());
 		if (!ic.isNull ()) 
 		{
 			// Icon
@@ -142,7 +140,7 @@ namespace Woodpecker
 		}
 
 		// Text
-		r = option.rect.adjusted (imageSpace, 4, -10, -22);
+		r = option.rect.adjusted (ImageSpace_, 4, -10, -22);
 		painter->setFont (mainFont);
 		doc->setTextWidth (r.width ());
 		painter->save ();
@@ -151,15 +149,15 @@ namespace Woodpecker
 		painter->restore ();
 
 		// Author
-		r = option.rect.adjusted (imageSpace + 4, 30, -10, 0);
+		r = option.rect.adjusted (ImageSpace_ + 4, 30, -10, 0);
 		auto author_rect = std::unique_ptr<QRect> (new QRect (r.left (), r.bottom () - painter->fontMetrics ().height () - 8, painter->fontMetrics ().width (author), r.height ()));
 		painter->setPen (linkFontPen);
 		painter->setFont (mainFont);
-		painter->drawText (* (author_rect), Qt::AlignLeft, author, &r);
+		painter->drawText (*(author_rect), Qt::AlignLeft, author, &r);
 		painter->setPen (fontPen);
 
 		// Time
-		r = option.rect.adjusted (imageSpace, 30, -10, 0);
+		r = option.rect.adjusted (ImageSpace_, 30, -10, 0);
 		painter->setFont (mainFont);
 		painter->drawText (r.right () - painter->fontMetrics ().width (time), r.bottom () - painter->fontMetrics ().height () - 8, r.width (), r.height (), Qt::AlignLeft, time, &r);
 		painter->setPen (linePen);
@@ -174,14 +172,13 @@ namespace Woodpecker
 	{
 		QListWidget *parentWidget = qobject_cast<QListWidget*> (Parent_);
 
-		const int imageSpace = 50;
 		if (event->type () == QEvent::MouseButtonRelease) 
 		{
 			const QMouseEvent *me = static_cast<QMouseEvent*> (event);
 			if (me)
 			{
 				const auto currentTweet = index.data (Qt::UserRole).value<std::shared_ptr<Tweet>> ();
-				const auto position = (me->pos () - option.rect.adjusted (imageSpace + 14, 4, 0, -22).topLeft ());
+				const auto position = (me->pos () - option.rect.adjusted (ImageSpace_ + 14, 4, 0, -22).topLeft ());
 
 				const QTextDocument *textDocument = currentTweet->GetDocument ();
 				const int textCursorPosition =
@@ -204,10 +201,9 @@ namespace Woodpecker
 			if (me)
 			{
 				const auto currentTweet = index.data (Qt::UserRole).value<std::shared_ptr<Tweet>> ();
-				const auto position = (me->pos () - option.rect.adjusted (imageSpace + 14, 4, 0, -22).topLeft ());
+				const auto position = (me->pos () - option.rect.adjusted (ImageSpace_ + 14, 4, 0, -22).topLeft ());
 
-				const QTextDocument *textDocument = currentTweet->GetDocument ();
-				const auto anchor = textDocument->documentLayout ()->anchorAt (position);
+				const auto anchor = currentTweet->GetDocument ()->documentLayout ()->anchorAt (position);
 
 				if (parentWidget) 
 				{
