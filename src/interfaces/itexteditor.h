@@ -32,6 +32,7 @@
 #include <QPair>
 #include <QList>
 #include <QRegExp>
+#include <QVariantMap>
 
 class QWidget;
 class QString;
@@ -232,6 +233,25 @@ public:
 	 * @param[in] html2rich Mappings for source view -> view conversion.
 	 */
 	virtual void SetTagsMappings (const Replacements_t& rich2html, const Replacements_t& html2rich) = 0;
+
+	/** @brief Adds a custom action to wrap selected text into given tag.
+	 *
+	 * For example, to insert an action to wrap selected text into
+	 * <code><span style="font-weight: bold" id="sometext">...</span></code>
+	 * one should call this function like this:
+	 * \code
+	 * QVariantMap params;
+	 * params ["style"] = "font-weight: bold";
+	 * params ["id"] = "sometext";
+	 * auto action = editor->AddInlineTagInserter ("span", params);
+	 * action->setText ("Name of your action");
+	 * // further customize the action
+	 * \endcode
+	 *
+	 * @param[in] tagName The name of the tag to be inserted.
+	 * @param[in] params The parameters of the tag.
+	 */
+	virtual QAction* AddInlineTagInserter (const QString& tagName, const QVariantMap& params) = 0;
 
 	/** @brief Executes the given js in the context of the content.
 	 *

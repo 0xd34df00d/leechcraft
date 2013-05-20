@@ -427,6 +427,14 @@ namespace LHTR
 		HTML2Rich_ = html2rich;
 	}
 
+	QAction* RichEditorWidget::AddInlineTagInserter (const QString& tagName, const QVariantMap& params)
+	{
+		auto act = ViewBar_->addAction (QString (), this, SLOT (handleInlineCmd ()));
+		act->setProperty ("Editor/Command", tagName);
+		act->setProperty ("Editor/Attrs", params);
+		return act;
+	}
+
 	void RichEditorWidget::ExecJS (const QString& js)
 	{
 		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
