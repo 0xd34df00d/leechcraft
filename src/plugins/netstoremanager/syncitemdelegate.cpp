@@ -133,19 +133,10 @@ namespace NetStoreManager
 
 	void SyncItemDelegate::FillAccounts (QComboBox *box) const
 	{
-		const auto& accounts = AM_->GetAccounts ();
-		QList<QByteArray> usedAccs;
-		for (int i = 0; i < Model_->rowCount (); ++i)
-			usedAccs << Model_->item (i)->data (SyncItemDelegateRoles::AccountId)
-					.toByteArray ();
-
-		for (auto acc : accounts)
+		for (auto acc : AM_->GetAccounts ())
 		{
 			auto isp = qobject_cast<IStoragePlugin*> (acc->GetParentPlugin ());
 			if (!isp)
-				continue;
-
-			if (usedAccs.contains (acc->GetUniqueID ()))
 				continue;
 
 			box->addItem (isp->GetStorageIcon (),
