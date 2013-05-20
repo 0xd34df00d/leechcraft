@@ -49,6 +49,7 @@ namespace Woodpecker
 	: TC_ (tc)
 	, ParentPlugin_ (plugin)
 	, Toolbar_ (new QToolBar (this))
+	, EntityManager_(Core::Instance ().GetCoreProxy ()->GetEntityManager ())
 	{
 		Ui_.setupUi (this);
 		Delegate_ = new TwitDelegate (Ui_.TwitList_);
@@ -121,7 +122,7 @@ namespace Woodpecker
 				this,
 				SLOT (reply ()));
 
-		Ui_.TwitList_->addActions ( {ActionRetwit_, ActionReply_} );
+		Ui_.TwitList_->addActions ({ActionRetwit_, ActionReply_});
 
 		if ((!Settings_->value ("token").isNull ()) && (!Settings_->value ("tokenSecret").isNull ()))
 		{
@@ -222,11 +223,11 @@ namespace Woodpecker
 				if (twits.length () == 1)			// We can notify the only twit
 				{
 					Entity notification = Util::MakeNotification (twits.first ()->GetAuthor ()->GetUsername () , twits.first ()->GetText () , PInfo_);
-					Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (notification);
+					EntityManager_->HandleEntity (notification);
 				}
 				else if (!twits.isEmpty ()) {
 					Entity notification = Util::MakeNotification (tr ("Woodpecker") , tr ( "%1 new twit (s)" ).arg (twits.length ()) , PInfo_);
-					Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (notification);
+					EntityManager_->HandleEntity (notification);
 				}
 			}
 			ScreenTwits_.append (twits);
@@ -313,7 +314,7 @@ namespace Woodpecker
 				[twitid] 
 				 (decltype (ScreenTwits_.front ()) tweet) { return tweet->GetId () == twitid; });
 		if (replyto == ScreenTwits_.end ()) {
-			qWarning () << __FILE__ << __LINE__ << __FUNCTION__ << "Failed to find twit";
+			qWarning () << Q_FUNC_INFO << "Failed to find twit";
 			return;
 		}
 
@@ -349,8 +350,8 @@ namespace Woodpecker
 			return;
 
 		auto menu = new QMenu (Ui_.TwitList_);
-		menu->addActions ( {ActionRetwit_, ActionReply_, menu->addSeparator (), 
-			ActionSPAM_, menu->addSeparator (), ActionOpenWeb_} );
+		menu->addActions ({ActionRetwit_, ActionReply_, menu->addSeparator (), 
+			ActionSPAM_, menu->addSeparator (), ActionOpenWeb_});
 		menu->setAttribute (Qt::WA_DeleteOnClose);
 
 		menu->exec (Ui_.TwitList_->viewport ()->mapToGlobal (pos));
@@ -362,8 +363,7 @@ namespace Woodpecker
 		const auto twitid = (idx->data (Qt::UserRole).value<std::shared_ptr<Tweet>> ())->GetId ();
 
 		auto spamTwit = std::find_if (ScreenTwits_.begin (), ScreenTwits_.end (), 
-				[twitid] 
-				 (decltype (ScreenTwits_.front ()) tweet) 
+				[twitid] (decltype (ScreenTwits_.front ()) tweet) 
 				{ return tweet->GetId () == twitid; });
 		Interface_->ReportSPAM ((*spamTwit)->GetAuthor ()->GetUsername ());
 	}
@@ -373,13 +373,12 @@ namespace Woodpecker
 		const auto& idx = Ui_.TwitList_->currentItem ();
 		const auto twitid = (idx->data (Qt::UserRole).value<std::shared_ptr<Tweet>> ())->GetId ();
 		auto currentTwit = std::find_if (ScreenTwits_.begin (), ScreenTwits_.end (), 
-				[twitid] 
-				 (decltype (ScreenTwits_.front ()) tweet) 
+				[twitid] (decltype (ScreenTwits_.front ()) tweet) 
 				{ return tweet->GetId () == twitid; });
 
-		Entity url = Util::MakeEntity (QUrl (QString ("https://twitter.com/%1/status/%2").arg ((*currentTwit)->GetAuthor ()->GetUsername ()).arg (twitid)), 
+		const auto& url = Util::MakeEntity (QUrl (QString ("https://twitter.com/%1/status/%2").arg ((*currentTwit)->GetAuthor ()->GetUsername ()).arg (twitid)), 
 				QString (), OnlyHandle | FromUserInitiated, QString ());
-		Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (url);
+		EntityManager_->HandleEntity (url);
 	}
 
 	void TwitterPage::setUpdateReady ()

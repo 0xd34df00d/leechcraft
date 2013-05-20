@@ -34,6 +34,7 @@
 #include <QTimer>
 #include <QMenu>
 #include <QAction>
+#include <leechcraft/interfaces/core/ientitymanager.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/structures.h>
 #include "twitterinterface.h"
@@ -44,7 +45,7 @@ namespace LeechCraft
 {
 namespace Woodpecker
 {
-	class TwitterPage 	: public QWidget
+	class TwitterPage : public QWidget
 						, public ITabWidget
 	{
 		Q_OBJECT
@@ -56,6 +57,7 @@ namespace Woodpecker
 		QToolBar *Toolbar_;
 		QMenu *DoctypeMenu_;
 		QMenu *RecentFilesMenu_;
+		IEntityManager *EntityManager_;
 		QString Filename_;
 		bool Modified_;
 		QMap<QString, QList<QAction*>> WindowMenus_;
