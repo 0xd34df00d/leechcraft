@@ -42,7 +42,6 @@ namespace Blogique
 {
 	struct Entry;
 	class BlogiqueWidget;
-	class BackupManager;
 	class StorageManager;
 	class IAccount;
 	class IBloggingPlatform;
@@ -57,7 +56,6 @@ namespace Blogique
 		QObjectList BlogPlatformPlugins_;
 		std::shared_ptr<PluginProxy> PluginProxy_;
 		StorageManager *StorageManager_;
-		BackupManager *BackupManager_;
 
 		QTimer *AutoSaveTimer_;
 
@@ -83,7 +81,6 @@ namespace Blogique
 		void DelayedProfilesUpdate ();
 
 		StorageManager* GetStorageManager () const;
-		BackupManager* GetBackupManager () const;
 
 		BlogiqueWidget* CreateBlogiqueWidget ();
 	private:

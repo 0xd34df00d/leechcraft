@@ -41,7 +41,6 @@
 #include "interfaces/blogique/ibloggingplatform.h"
 #include "pluginproxy.h"
 #include "storagemanager.h"
-#include "backupmanager.h"
 #include "blogiquewidget.h"
 #include "xmlsettingsmanager.h"
 
@@ -53,7 +52,6 @@ namespace Blogique
 	: UniqueID_ ("org.LeechCraft.Blogique")
 	, PluginProxy_ (std::make_shared<PluginProxy> ())
 	, StorageManager_ (new StorageManager (UniqueID_, this))
-	, BackupManager_ (new BackupManager (this))
 	, AutoSaveTimer_ (new QTimer (this))
 	{
 		connect (AutoSaveTimer_,
@@ -169,11 +167,6 @@ namespace Blogique
 	StorageManager* Core::GetStorageManager () const
 	{
 		return StorageManager_;
-	}
-
-	BackupManager* Core::GetBackupManager () const
-	{
-		return BackupManager_;
 	}
 
 	BlogiqueWidget* Core::CreateBlogiqueWidget ()
