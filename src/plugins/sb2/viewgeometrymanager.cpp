@@ -94,6 +94,8 @@ namespace SB2
 
 	void ViewGeometryManager::updatePos ()
 	{
+		setOrientation (Qt::Horizontal);
+
 		auto toolbar = ViewMgr_->GetToolbar ();
 
 		const auto screenGeometry = QApplication::desktop ()->
