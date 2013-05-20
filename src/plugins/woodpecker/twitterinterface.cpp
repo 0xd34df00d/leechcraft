@@ -45,7 +45,7 @@ namespace Woodpecker
 	: QObject (parent)
 	{
 		HttpClient_ = Core::Instance ().GetCoreProxy ()->GetNetworkAccessManager ();
-		OAuthRequest_ = new KQOAuthRequest;
+		OAuthRequest_ = new KQOAuthRequest (this);
 		OAuthManager_ = new KQOAuthManager (this);
 
 		OAuthRequest_->setEnableDebugOutput (false); // DONE: Remove debug
@@ -63,19 +63,13 @@ namespace Woodpecker
 				SLOT (onAuthorizedRequestDone ()));
 	}
 
-	TwitterInterface::~TwitterInterface ()
-	{
-		delete OAuthRequest_;
-		delete OAuthManager_;
-	}
-
 	void TwitterInterface::RequestTwitter (const QUrl& requestAddress)
 	{
-		Reply_ = HttpClient_->get(QNetworkRequest (requestAddress));
+		Reply_ = HttpClient_->get (QNetworkRequest (requestAddress));
 		connect (Reply_,
-				SIGNAL(finished ()),
+				SIGNAL (finished ()),
 				this,
-				SLOT(replyFinished ()));
+				SLOT (replyFinished ()));
 		//           getAccess ();
 		//           xauth ();
 	}
@@ -84,7 +78,7 @@ namespace Woodpecker
 	{
 		QByteArray jsonText (Reply_->readAll ());
 		disconnect(Reply_,
-					SIGNAL(finished ()),
+					SIGNAL (finished ()),
 					0,
 					0);
 		Reply_->deleteLater ();

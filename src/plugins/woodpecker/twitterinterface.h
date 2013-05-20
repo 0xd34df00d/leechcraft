@@ -86,7 +86,6 @@ namespace Woodpecker
 		
 	public:
 		explicit TwitterInterface (QObject *parent = 0);
-		~TwitterInterface ();
 		void SendTweet (const QString& tweet);
 		void Retweet (const qulonglong id);
 		void Reply (const qulonglong replyid, const QString& tweet);
