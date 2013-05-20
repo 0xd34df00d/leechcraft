@@ -38,6 +38,7 @@
 #include "winflags.h"
 
 class QIcon;
+class QWidget;
 
 typedef unsigned long Window;
 #define _XTYPEDEF_XID
@@ -74,6 +75,14 @@ namespace Util
 		bool ShouldShow (Window);
 
 		void Subscribe (Window);
+
+		void SetStrut (QWidget*, Qt::ToolBarArea);
+		void SetStrut (Window wid,
+				int left, int right, int top, int bottom,
+				int leftStartY, int leftEndY,
+				int rightStartY, int rightEndY,
+				int topStartX, int topEndX,
+				int bottomStartX, int bottomEndX);
 
 		void RaiseWindow (Window);
 		void MinimizeWindow (Window);
