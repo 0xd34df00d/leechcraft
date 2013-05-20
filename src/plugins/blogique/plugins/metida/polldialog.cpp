@@ -346,7 +346,7 @@ namespace Metida
 		ItemIsChanged_ = false;
 	}
 
-	void PollDialog::handleItemChanged (QStandardItem *item)
+	void PollDialog::handleItemChanged (QStandardItem*)
 	{
 		ItemIsChanged_ = true;
 	}
