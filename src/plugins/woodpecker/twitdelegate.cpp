@@ -77,7 +77,9 @@ namespace Woodpecker
 		//Color: #fff
 		QPen fontMarkedPen (Qt::white, 1, Qt::SolidLine);
 
-		QFont mainFont ("Dejavu Sans", 10, QFont::Normal);
+		QFont mainFont;
+		mainFont.setFamily (mainFont.defaultFamily ());
+		mainFont.setPixelSize(10);
 
 		if (option.state & QStyle::State_Selected)
 		{
