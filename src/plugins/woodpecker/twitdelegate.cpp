@@ -81,7 +81,7 @@ namespace Woodpecker
 
 		if (option.state & QStyle::State_Selected)
 		{
-			QLinearGradient gradientSelected (r.left (), r.top (), r.left (), r.height ()+r.top ());
+			QLinearGradient gradientSelected (r.left (), r.top (), r.left (), r.height () + r.top ());
 			gradientSelected.setColorAt (0.0, QColor::fromRgb (119, 213, 247));
 			gradientSelected.setColorAt (0.9, QColor::fromRgb (27, 134, 183));
 			gradientSelected.setColorAt (1.0, QColor::fromRgb (0, 120, 174));
