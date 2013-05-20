@@ -53,10 +53,6 @@ namespace Woodpecker
 		Parent_ = parent;
 	}
 	
-	TwitDelegate::~TwitDelegate()
-	{
-	}
-
 	QObject* TwitDelegate::parent ()
 	{
 		return Parent_;
