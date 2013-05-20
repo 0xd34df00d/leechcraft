@@ -406,9 +406,19 @@ namespace LHTR
 			InternalSetBgColor (color, type);
 	}
 
+	namespace
+	{
+		QString ProcessWith (QString html, const IAdvancedHTMLEditor::Replacements_t& rxs)
+		{
+			for (const auto& rx : rxs)
+				html.replace (rx.first, rx.second);
+			return html;
+		}
+	}
+
 	void RichEditorWidget::InsertHTML (const QString& html)
 	{
-		ExecCommand ("insertHTML", html);
+		ExecCommand ("insertHTML", ProcessWith (html, HTML2Rich_));
 	}
 
 	void RichEditorWidget::SetTagsMappings (const Replacements_t& rich2html, const Replacements_t& html2rich)
@@ -563,16 +573,6 @@ namespace LHTR
 	{
 		const auto& e = Util::MakeEntity (url, QString (), FromUserInitiated | OnlyHandle);
 		Proxy_->GetEntityManager ()->HandleEntity (e);
-	}
-
-	namespace
-	{
-		QString ProcessWith (QString html, const IAdvancedHTMLEditor::Replacements_t& rxs)
-		{
-			for (const auto& rx : rxs)
-				html.replace (rx.first, rx.second);
-			return html;
-		}
 	}
 
 	void RichEditorWidget::on_TabWidget__currentChanged (int idx)
