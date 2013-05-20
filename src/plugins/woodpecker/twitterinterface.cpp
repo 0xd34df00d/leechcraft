@@ -248,8 +248,6 @@ namespace Woodpecker
 
 	void TwitterInterface::onAuthorizationReceived (const QString& token, const QString& verifier)
 	{
-		qDebug () << "User authorization received: " << token << verifier;
-
 		OAuthManager_->getUserAccessTokens (QUrl ("https://api.twitter.com/oauth/access_token"));
 
 		if (OAuthManager_->lastError () != KQOAuthManager::NoError) 
@@ -260,8 +258,6 @@ namespace Woodpecker
 
 	void TwitterInterface::onAccessTokenReceived (const QString& token, const QString& tokenSecret) 
 	{
-		qDebug () << "Access token received: " << token << tokenSecret;
-
 		this->Token_ = token;
 		this->TokenSecret_ = tokenSecret;
 
@@ -272,8 +268,6 @@ namespace Woodpecker
 
 	void TwitterInterface::onTemporaryTokenReceived (const QString& token, const QString& tokenSecret)
 	{
-		qDebug () << "Temporary token received: " << token << tokenSecret;
-
 		QUrl userAuthURL ("https://api.twitter.com/oauth/authorize");
 
 		if (OAuthManager_->lastError () == KQOAuthManager::NoError)
