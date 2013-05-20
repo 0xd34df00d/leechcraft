@@ -80,13 +80,12 @@ namespace NetStoreManager
 	{
 		SyncManager_ = new SyncManager (AccountsManager_, this);
 		SyncWidget *w = new SyncWidget (AccountsManager_);
-		w->RestoreData ();
-		XSD_->SetCustomWidget ("SyncWidget", w);
-
 		connect (w,
 				SIGNAL(directoriesToSyncUpdated (QVariantMap)),
 				SyncManager_,
 				SLOT (handleDirectoriesToSyncUpdated (QVariantMap)));
+		XSD_->SetCustomWidget ("SyncWidget", w);
+		w->RestoreData ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const

@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QVariant>
 #include "interfaces/netstoremanager/istorageaccount.h"
+#include "interfaces/netstoremanager/isupportfilelistings.h"
 
 namespace LeechCraft
 {
@@ -67,6 +68,8 @@ namespace NetStoreManager
 		void handleFileWasUpdated (const QString& path);
 		void handleEntryWasMoved (const QString& oldPath, const QString& newPath);
 		void handleEntryWasRenamed (const QString& oldName, const QString& newName);
+
+		void handleGotListing (const QList<StorageItem>& items);
 	};
 }
 }

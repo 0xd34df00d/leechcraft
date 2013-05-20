@@ -83,6 +83,7 @@ namespace NetStoreManager
 		}
 
 		emit directoriesToSyncUpdated (map);
+		XmlSettingsManager::Instance ().setProperty ("Synchronization", map);
 	}
 
 	void SyncWidget::accept ()

@@ -79,6 +79,17 @@ namespace NetStoreManager
 				SIGNAL (entryWasRenamed (QString, QString)),
 				this,
 				SLOT (handleEntryWasRenamed (QString, QString)));
+
+		for (auto account : AM_->GetAccounts ())
+		{
+			auto isfl = qobject_cast<ISupportFileListings*> (account->GetQObject ());
+			if (!isfl)
+				continue;
+			connect (account->GetQObject (),
+					SIGNAL (gotListing (QList<StorageItem>)),
+					this,
+					SLOT (handleGotListing (QList<StorageItem>)));
+		}
 	}
 
 	void SyncManager::Release ()
@@ -103,8 +114,12 @@ namespace NetStoreManager
 				}
 			}
 
-			AccountID2Syncer_ [key] = CreateSyncer (AM_->GetAccountFromUniqueID (key),
-					path);
+			auto acc = AM_->GetAccountFromUniqueID (key);
+			AccountID2Syncer_ [key] = CreateSyncer (acc, path);
+			auto isfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
+			if (!isfl)
+				continue;
+			isfl->RefreshListing ();
 		}
 
 		FilesWatcher_->updatePaths (paths);
@@ -113,7 +128,6 @@ namespace NetStoreManager
 	Syncer* SyncManager::CreateSyncer (IStorageAccount *isa, const QString& baseDir)
 	{
 		Syncer *syncer = new Syncer (baseDir, isa, this);
-		syncer->start ();
 		return syncer;
 	}
 
@@ -162,6 +176,17 @@ namespace NetStoreManager
 			const QString& newName)
 	{
 		qDebug () << Q_FUNC_INFO << oldName << newName;
+	}
+
+	void SyncManager::handleGotListing (const QList<StorageItem>& items)
+	{
+		auto isa = qobject_cast<IStorageAccount*> (sender ());
+		if (!isa)
+			return;
+
+		for (auto accountId : AccountID2Syncer_.keys ())
+			if (isa->GetUniqueID () == accountId)
+				AccountID2Syncer_ [accountId]->SetItems (items);
 	}
 
 }

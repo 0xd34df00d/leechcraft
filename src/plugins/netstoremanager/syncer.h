@@ -18,7 +18,9 @@
 
 #pragma once
 
+#include <boost/bimap.hpp>
 #include <QObject>
+#include "interfaces/netstoremanager/isupportfilelistings.h"
 
 namespace LeechCraft
 {
@@ -32,12 +34,16 @@ namespace NetStoreManager
 
 		QString BasePath_;
 		IStorageAccount *Account_;
+		QHash<QString, StorageItem> Id2Item_;
+		boost::bimaps::bimap<QByteArray, QString> Id2Path_;
 
 	public:
 		explicit Syncer (const QString& dirPath, IStorageAccount *isa, QObject *parent = 0);
 
 		QByteArray GetAccountID () const;
 		QString GetBasePath () const;
+
+		void SetItems (const QList<StorageItem>& items);
 
 	public slots:
 		void start ();

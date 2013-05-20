@@ -41,6 +41,42 @@ namespace NetStoreManager
 		return BasePath_;
 	}
 
+	void Syncer::SetItems (const QList<StorageItem>& items)
+	{
+		Id2Item_.clear ();
+		for (const auto& item : items)
+			Id2Item_ [item.ID_] = item;
+
+		auto itemsList = items;
+		int i = 0;
+		while (!itemsList.isEmpty ())
+		{
+			const auto& item = itemsList.at (i);
+			if (item.IsTrashed_)
+			{
+				itemsList.removeAt (i);
+				if (++i >= itemsList.count ())
+					i = 0;
+				continue;
+			}
+
+			if (!Id2Item_.contains (item.ParentID_))
+			{
+				Id2Path_.insert ({ item.ID_, item.Name_ });
+				itemsList.removeAt (i);
+			}
+			else if (Id2Path_.left.count (item.ParentID_))
+			{
+				Id2Path_.insert ({ item.ID_, Id2Path_.left.at (item.ParentID_) +
+						"/" + item.Name_ });
+				itemsList.removeAt (i);
+			}
+
+			if (++i >= itemsList.count ())
+				i = 0;
+		}
+	}
+
 	void Syncer::start ()
 	{
 	}
