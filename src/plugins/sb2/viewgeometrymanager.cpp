@@ -105,6 +105,7 @@ namespace SB2
 		rect.moveBottom (screenGeometry.bottom ());
 
 		toolbar->setGeometry (rect);
+		ViewMgr_->GetView ()->setFixedSize (rect.size ());
 		toolbar->setFixedSize (rect.size ());
 
 		ViewMgr_->GetManagedWindow ()->setGeometry (QApplication::desktop ()->
