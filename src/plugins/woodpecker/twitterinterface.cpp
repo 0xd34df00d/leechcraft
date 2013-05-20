@@ -270,7 +270,6 @@ namespace Woodpecker
 		}
 	}
 
-
 	void TwitterInterface::Xauth () 
 	{
 		connect (OAuthManager_, 
