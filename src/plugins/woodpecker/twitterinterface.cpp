@@ -337,7 +337,7 @@ namespace Woodpecker
 	
 	FeedMode TwitterInterface::GetLastRequestMode ()
 	{
-		return  LastRequestMode_;
+		return LastRequestMode_;
 	}
 	
 	void TwitterInterface::SetLastRequestMode (const FeedMode& newLastRequestMode)
