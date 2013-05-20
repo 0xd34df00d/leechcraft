@@ -105,7 +105,7 @@ namespace Woodpecker
 		{
 			tweetMap = answers [i].toMap ();
 			userMap = tweetMap ["user"].toMap ();
-			QLocale::setDefault (QLocale::English);
+			QLocale locale (QLocale::English);
 			Tweet_ptr tempTweet (new Tweet ());
 
 			tempTweet->SetText (tweetMap ["text"].toString ());
@@ -115,7 +115,7 @@ namespace Woodpecker
 					SIGNAL (userReady ()), 
 					parent (),
 					SLOT (setUpdateReady ()));
-			tempTweet->SetDateTime (QLocale ().toDateTime (tweetMap ["created_at"].toString (), QLatin1String ("ddd MMM dd HH:mm:ss +0000 yyyy")));
+			tempTweet->SetDateTime (locale.toDateTime (tweetMap ["created_at"].toString (), QLatin1String ("ddd MMM dd HH:mm:ss +0000 yyyy")));
 			tempTweet->SetId (tweetMap ["id"].toULongLong ());
 
 			result.push_back (tempTweet);
