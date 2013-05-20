@@ -311,8 +311,8 @@ namespace Woodpecker
 
 		const auto twitid = (idx->data (Qt::UserRole).value<std::shared_ptr<Tweet>> ())->GetId ();
 		auto replyto = std::find_if (ScreenTwits_.begin (), ScreenTwits_.end (),
-				[twitid] 
-				 (decltype (ScreenTwits_.front ()) tweet) { return tweet->GetId () == twitid; });
+				[twitid] (decltype (ScreenTwits_.front ()) tweet)
+				{ return tweet->GetId () == twitid; });
 		if (replyto == ScreenTwits_.end ()) {
 			qWarning () << Q_FUNC_INFO << "Failed to find twit";
 			return;
