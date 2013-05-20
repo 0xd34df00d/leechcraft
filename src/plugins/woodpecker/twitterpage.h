@@ -68,7 +68,7 @@ namespace Woodpecker
 		bool UpdateReady_;			/**< The flag is checked by timer for UI update */
 		QTimer *UiUpdateTimer_;		/**< Timer checks UpdateReady_ and updates the UI */
 		TwitDelegate *Delegate_;
-		Ui::TwitterPage *Ui_;
+		Ui::TwitterPage Ui_;
 		TwitterInterface *Interface_;
 		QTimer *TwitterTimer_;		/**< This timer sends network requests to get new twits */
 		QSettings *Settings_;

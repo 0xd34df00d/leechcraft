@@ -48,12 +48,11 @@ namespace Woodpecker
 	TwitterPage::TwitterPage (const TabClassInfo& tc, QObject *plugin) 
 	: TC_ (tc)
 	, ParentPlugin_ (plugin)
-	, Ui_ (new Ui::TwitterPage)
 	, Toolbar_ (new QToolBar (this))
 	{
-		Ui_->setupUi (this);
-		Delegate_ = new TwitDelegate (Ui_->TwitList_);
-		Ui_->TwitList_->setItemDelegate (Delegate_);
+		Ui_.setupUi (this);
+		Delegate_ = new TwitDelegate (Ui_.TwitList_);
+		Ui_.TwitList_->setItemDelegate (Delegate_);
 
 		//	Toolbar_->addAction (ui->actionRefresh);
 		Interface_ = new TwitterInterface (this);
@@ -70,24 +69,24 @@ namespace Woodpecker
 		qDebug () << "Timer " << TwitterTimer_->timerId () << "started";
 		tryToLogin ();
 
-		connect (Ui_->TwitEdit_,
+		connect (Ui_.TwitEdit_,
 				SIGNAL (returnPressed ()),
-				Ui_->TwitButton_,
+				Ui_.TwitButton_,
 				SLOT (click ( )));
 
-		connect (Ui_->TwitList_->verticalScrollBar (),
+		connect (Ui_.TwitList_->verticalScrollBar (),
 				SIGNAL (valueChanged (int)),
 				this,
 				SLOT (scrolledDown (int)));
 
-		connect (Ui_->TwitButton_,
+		connect (Ui_.TwitButton_,
 				SIGNAL (clicked ()),
 				this,
 				SLOT (twit ()));
 		Settings_ = new QSettings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Woodpecker");
 
-		ActionRetwit_ = new QAction (tr ("Retwit"), Ui_->TwitList_);
+		ActionRetwit_ = new QAction (tr ("Retwit"), Ui_.TwitList_);
 		ActionRetwit_->setShortcut (Qt::Key_R + Qt::ALT);
 		ActionRetwit_->setProperty ("ActionIcon", "edit-redo");
 		connect (ActionRetwit_,
@@ -95,7 +94,7 @@ namespace Woodpecker
 				this,
 				SLOT (retwit ()));
 
-		ActionReply_ = new QAction (tr ("Reply"), Ui_->TwitList_);
+		ActionReply_ = new QAction (tr ("Reply"), Ui_.TwitList_);
 		ActionReply_->setShortcut (Qt::Key_A + Qt::ALT);
 		ActionReply_->setProperty ("ActionIcon", "mail-reply-sender");
 		connect (ActionReply_,
@@ -103,26 +102,26 @@ namespace Woodpecker
 				this,
 				SLOT (reply ()));
 
-		ActionSPAM_ = new QAction (tr ("Report SPAM"), Ui_->TwitList_);
+		ActionSPAM_ = new QAction (tr ("Report SPAM"), Ui_.TwitList_);
 		ActionSPAM_->setProperty ("ActionIcon", "dialog-close");
 		connect (ActionSPAM_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (reportSpam ()));
 
-		ActionOpenWeb_ = new QAction (tr ("Open twit in web interface"), Ui_->TwitList_);
+		ActionOpenWeb_ = new QAction (tr ("Open twit in web interface"), Ui_.TwitList_);
 		ActionOpenWeb_->setProperty ("ActionIcon", "webarchiver");
 		connect (ActionOpenWeb_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (webOpen ()));
 
-		connect (Ui_->TwitList_,
+		connect (Ui_.TwitList_,
 				SIGNAL (itemDoubleClicked (QListWidgetItem*)), 
 				this,
 				SLOT (reply ()));
 
-		Ui_->TwitList_->addActions ( {ActionRetwit_, ActionReply_} );
+		Ui_.TwitList_->addActions ( {ActionRetwit_, ActionReply_} );
 
 		if ((!Settings_->value ("token").isNull ()) && (!Settings_->value ("tokenSecret").isNull ()))
 		{
@@ -241,8 +240,8 @@ namespace Woodpecker
 		if (!UpdateReady_)
 			return;
 
-		Ui_->TwitList_->setEnabled (false);
-		Ui_->TwitList_->clear ();
+		Ui_.TwitList_->setEnabled (false);
+		Ui_.TwitList_->clear ();
 
 		for (const auto& twit : ScreenTwits_)
 		{
@@ -255,13 +254,13 @@ namespace Woodpecker
 				tmpitem->setData (Qt::DecorationRole, QIcon ("lcicons:/plugins/woodpecker/resources/images/woodpecker.svg"));
 			else
 				tmpitem->setData (Qt::DecorationRole, twit->GetAuthor ()->Avatar);
-			Ui_->TwitList_->insertItem (0, tmpitem);
-			Ui_->TwitList_->updateGeometry ();
+			Ui_.TwitList_->insertItem (0, tmpitem);
+			Ui_.TwitList_->updateGeometry ();
 		}
 
-		Ui_->TwitList_->update ();
-		Ui_->TwitList_->installEventFilter (this);
-		Ui_->TwitList_->setEnabled (true);
+		Ui_.TwitList_->update ();
+		Ui_.TwitList_->installEventFilter (this);
+		Ui_.TwitList_->setEnabled (true);
 		UpdateReady_ = false;
 	}
 
@@ -275,28 +274,28 @@ namespace Woodpecker
 
 	void TwitterPage::twit ()
 	{
-		Interface_->SendTweet (Ui_->TwitEdit_->text ());
-		Ui_->TwitEdit_->clear ();
+		Interface_->SendTweet (Ui_.TwitEdit_->text ());
+		Ui_.TwitEdit_->clear ();
 	}
 
 	void TwitterPage::retwit ()
 	{
-		const auto& idx = Ui_->TwitList_->currentItem ();
+		const auto& idx = Ui_.TwitList_->currentItem ();
 		const auto twitid = (idx->data (Qt::UserRole).value<std::shared_ptr<Tweet>> ())->GetId ();
 		Interface_->Retweet (twitid);
 	}
 
 	void TwitterPage::sendReply ()
 	{
-		const auto& idx = Ui_->TwitList_->currentItem ();
+		const auto& idx = Ui_.TwitList_->currentItem ();
 		const auto twitid = (idx->data (Qt::UserRole).value<std::shared_ptr<Tweet>> ())->GetId ();
-		Interface_->Reply (twitid, Ui_->TwitEdit_->text ());
-		Ui_->TwitEdit_->clear ();
-		disconnect (Ui_->TwitButton_,
+		Interface_->Reply (twitid, Ui_.TwitEdit_->text ());
+		Ui_.TwitEdit_->clear ();
+		disconnect (Ui_.TwitButton_,
 					SIGNAL (clicked ()),
 					0,
 					0);
-		connect (Ui_->TwitButton_,
+		connect (Ui_.TwitButton_,
 				SIGNAL (clicked ()),
 				this,
 				SLOT (twit ()));
@@ -307,7 +306,7 @@ namespace Woodpecker
 	{
 		QListWidgetItem *idx = index;
 		if (!index)
-			idx = Ui_->TwitList_->currentItem ();
+			idx = Ui_.TwitList_->currentItem ();
 
 		const auto twitid = (idx->data (Qt::UserRole).value<std::shared_ptr<Tweet>> ())->GetId ();
 		auto replyto = std::find_if (ScreenTwits_.begin (), ScreenTwits_.end (),
@@ -319,24 +318,24 @@ namespace Woodpecker
 		}
 
 		std::shared_ptr<Tweet> found_twit = *replyto;
-		Ui_->TwitEdit_->setText (QString ("@").append ((*replyto)->GetAuthor ()->GetUsername ()).append (" "));
-		disconnect (Ui_->TwitButton_,
+		Ui_.TwitEdit_->setText (QString ("@").append ((*replyto)->GetAuthor ()->GetUsername ()).append (" "));
+		disconnect (Ui_.TwitButton_,
 					SIGNAL (clicked ()),
 					0,
 					0);
-		connect (Ui_->TwitButton_,
+		connect (Ui_.TwitButton_,
 				SIGNAL (clicked ()),
 				this,
 				SLOT (sendReply ()));
-		Ui_->TwitEdit_->setFocus ();
+		Ui_.TwitEdit_->setFocus ();
 	}
 
 	void TwitterPage::scrolledDown (int sliderPos)
 	{
-		if (sliderPos == Ui_->TwitList_->verticalScrollBar ()->maximum ())
+		if (sliderPos == Ui_.TwitList_->verticalScrollBar ()->maximum ())
 		{
-			Ui_->TwitList_->verticalScrollBar ()->setSliderPosition (Ui_->TwitList_->verticalScrollBar ()->maximum () - 1);
-			Ui_->TwitList_->setEnabled (false);
+			Ui_.TwitList_->verticalScrollBar ()->setSliderPosition (Ui_.TwitList_->verticalScrollBar ()->maximum () - 1);
+			Ui_.TwitList_->setEnabled (false);
 			if (!ScreenTwits_.empty ())
 				Interface_->requestMoreTweets (QString ("%1").arg ((*(ScreenTwits_.begin ()))->GetId ()));
 		}
@@ -345,21 +344,21 @@ namespace Woodpecker
 	void TwitterPage::on_TwitList__customContextMenuRequested (const QPoint& pos)
 	{
 		qDebug () << "MENUSLOT";
-		const auto& idx = Ui_->TwitList_->indexAt (pos);
+		const auto& idx = Ui_.TwitList_->indexAt (pos);
 		if (!idx.isValid ())
 			return;
 
-		auto menu = new QMenu (Ui_->TwitList_);
+		auto menu = new QMenu (Ui_.TwitList_);
 		menu->addActions ( {ActionRetwit_, ActionReply_, menu->addSeparator (), 
 			ActionSPAM_, menu->addSeparator (), ActionOpenWeb_} );
 		menu->setAttribute (Qt::WA_DeleteOnClose);
 
-		menu->exec (Ui_->TwitList_->viewport ()->mapToGlobal (pos));
+		menu->exec (Ui_.TwitList_->viewport ()->mapToGlobal (pos));
 	}
 
 	void TwitterPage::reportSpam ()
 	{
-		const auto& idx = Ui_->TwitList_->currentItem ();
+		const auto& idx = Ui_.TwitList_->currentItem ();
 		const auto twitid = (idx->data (Qt::UserRole).value<std::shared_ptr<Tweet>> ())->GetId ();
 
 		auto spamTwit = std::find_if (ScreenTwits_.begin (), ScreenTwits_.end (), 
@@ -371,7 +370,7 @@ namespace Woodpecker
 
 	void TwitterPage::webOpen ()
 	{
-		const auto& idx = Ui_->TwitList_->currentItem ();
+		const auto& idx = Ui_.TwitList_->currentItem ();
 		const auto twitid = (idx->data (Qt::UserRole).value<std::shared_ptr<Tweet>> ())->GetId ();
 		auto currentTwit = std::find_if (ScreenTwits_.begin (), ScreenTwits_.end (), 
 				[twitid] 
