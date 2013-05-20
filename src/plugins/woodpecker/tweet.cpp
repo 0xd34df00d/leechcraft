@@ -51,12 +51,11 @@ namespace Woodpecker
 	}
 
 	Tweet::Tweet (const Tweet& original)
-	: QObject ()
+	: Author_(original.GetAuthor ())
+	, Created_(original.GetDateTime ())
+	, Id_(original.GetId ())
 	{
-		Author_ = original.GetAuthor ();
-		Created_ = original.GetDateTime ();
 		SetText (original.GetText ());
-		Id_ = original.GetId ();
 	}
 
 	Tweet& Tweet::operator= (const Tweet& rhs)
@@ -79,7 +78,7 @@ namespace Woodpecker
 
 	bool Tweet::operator!= (const Tweet& other) const
 	{
-		return ! (*this == other);
+		return !(*this == other);
 	}
 
 	bool Tweet::operator< (const Tweet& other) const

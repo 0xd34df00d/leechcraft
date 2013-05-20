@@ -45,10 +45,10 @@ namespace Woodpecker
 	{
 		Q_OBJECT
 		
-		qulonglong	Id_;			/**< Twit id in Twitter */
-		QString		Text_;			/**< Text of twit in plaintext */
-		TwitterUser_ptr	Author_;	/**< Pointer to twitter author */
-		QDateTime	Created_;		/**< Twit date */
+		qulonglong Id_;			/**< Twit id in Twitter */
+		QString Text_;			/**< Text of twit in plaintext */
+		TwitterUser_ptr Author_ = TwitterUser_ptr ();	/**< Pointer to twitter author */
+		QDateTime Created_;		/**< Twit date */
 		QTextDocument Document_;	/**< QTextDocument which is used for drawing twit */
 		
 	public:
