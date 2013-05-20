@@ -17,7 +17,6 @@ SET (SRCS
 	accountslistwidget.cpp
 	accountsselectdialog.cpp
 	addaccountwizardfirstpage.cpp
-	backupmanager.cpp
 	blogique.cpp
 	blogentrieswidget.cpp
 	blogiquewidget.cpp
