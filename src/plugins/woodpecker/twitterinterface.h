@@ -92,7 +92,7 @@ namespace Woodpecker
 		void ReportSPAM (const QString& username, const qulonglong userid = 0);
 		void GetAccess ();
 		void Login (const QString& savedToken, const QString& savedTokenSecret);
-		FeedMode GetLastRequestMode ();
+		FeedMode GetLastRequestMode () const;
 		void SetLastRequestMode (const FeedMode& newLastRequestMode);
 		
 	private slots:

@@ -335,7 +335,7 @@ namespace Woodpecker
 		SignedRequest (TwitterRequest::SpamReport, KQOAuthRequest::POST, param);
 	}
 	
-	FeedMode TwitterInterface::GetLastRequestMode ()
+	FeedMode TwitterInterface::GetLastRequestMode () const
 	{
 		return LastRequestMode_;
 	}
