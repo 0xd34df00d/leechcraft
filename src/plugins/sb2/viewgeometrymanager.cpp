@@ -108,8 +108,12 @@ namespace SB2
 		ViewMgr_->GetView ()->setFixedSize (rect.size ());
 		toolbar->setFixedSize (rect.size ());
 
-		ViewMgr_->GetManagedWindow ()->setGeometry (QApplication::desktop ()->
-					availableGeometry (ViewMgr_->GetManagedWindow ()));
+		const auto& available = QApplication::desktop ()->
+				availableGeometry (ViewMgr_->GetManagedWindow ());
+
+		auto window = ViewMgr_->GetManagedWindow ();
+		window->setGeometry (available);
+		window->setFixedSize (available.size ());
 	}
 
 	void ViewGeometryManager::setOrientation (Qt::Orientation orientation)
