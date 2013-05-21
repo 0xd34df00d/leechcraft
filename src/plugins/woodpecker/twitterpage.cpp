@@ -196,8 +196,6 @@ namespace Woodpecker
 
 	void TwitterPage::updateScreenTwits (QList<std::shared_ptr<Tweet>> twits)
 	{
-		int i;
-
 		if (twits.isEmpty ())	// if we have no tweets to parse
 			return; 
 
@@ -208,9 +206,10 @@ namespace Woodpecker
 				ScreenTwits_.insert (0, *i);
 		else
 		{
+			int i;
 			// Now we'd find firstNewTwit in twitList
 			for (i = 0; i < ScreenTwits_.length (); i++)
-				if ( (ScreenTwits_.at (i)->GetId ()) == firstNewTwit->GetId ())
+				if ((ScreenTwits_.at (i)->GetId ()) == firstNewTwit->GetId ())
 					break;
 
 			int insertionShift = ScreenTwits_.length () - i;    // We've already got insertionShift twits to our list
@@ -222,11 +221,15 @@ namespace Woodpecker
 			{
 				if (twits.length () == 1)			// We can notify the only twit
 				{
-					Entity notification = Util::MakeNotification (twits.first ()->GetAuthor ()->GetUsername () , twits.first ()->GetText () , PInfo_);
+					const auto& notification = Util::MakeNotification (twits.first ()->GetAuthor ()->GetUsername (), 
+																		twits.first ()->GetText (),
+																		PInfo_);
 					EntityManager_->HandleEntity (notification);
 				}
 				else if (!twits.isEmpty ()) {
-					Entity notification = Util::MakeNotification (tr ("Woodpecker") , tr ( "%1 new twit (s)" ).arg (twits.length ()) , PInfo_);
+					const auto& notification = Util::MakeNotification (tr ("Woodpecker"), 
+																		tr ( "%1 new twit (s)" ).arg (twits.length ()), 
+																		PInfo_);
 					EntityManager_->HandleEntity (notification);
 				}
 			}
