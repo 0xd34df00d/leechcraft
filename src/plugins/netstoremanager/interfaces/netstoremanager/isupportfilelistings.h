@@ -79,6 +79,8 @@ namespace NetStoreManager
 		QString Name_;
 		QDateTime ModifyDate_;
 
+		quint64 Size_;
+
 		QByteArray Hash_;
 		enum class HashType
 		{
@@ -98,7 +100,8 @@ namespace NetStoreManager
 		QString MimeType_;
 
 		StorageItem ()
-		: IsDirectory_ (false)
+		: Size_ (0)
+		, IsDirectory_ (false)
 		, IsTrashed_ (false)
 		{
 		}
