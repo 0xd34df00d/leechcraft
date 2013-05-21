@@ -6,8 +6,9 @@ Rectangle {
 
     property real itemSize: parent.quarkBaseSize
     property real length: trayView.count * itemSize
-    width: viewOrient == "vertical" ? itemSize : length
-    height: viewOrient == "vertical" ? length : itemSize
+
+    implicitWidth: viewOrient == "vertical" ? itemSize : length
+    implicitHeight: viewOrient == "vertical" ? length : itemSize
 
     radius: 2
 

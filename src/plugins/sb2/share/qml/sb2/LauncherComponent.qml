@@ -9,8 +9,8 @@ Rectangle {
     property real itemSize: parent.quarkBaseSize
     property real longDim: Math.max(launcherColumn.rows, launcherColumn.columns) * itemSize + 2 + (addTCButton.visible ? addTCButton.height : 0)
 
-    width: viewOrient == "vertical" ? itemSize : longDim
-    height: viewOrient == "vertical" ? longDim : itemSize
+    implicitWidth: viewOrient == "vertical" ? itemSize : longDim
+    implicitHeight: viewOrient == "vertical" ? longDim : itemSize
 
     radius: 2
 
