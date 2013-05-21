@@ -272,6 +272,20 @@ namespace NetStoreManager
 				SIGNAL (currentIndexChanged (int)),
 				this,
 				SLOT (handleCurrentIndexChanged (int)));
+
+		const auto& id = XmlSettingsManager::Instance ()
+				.property ("LastActiveAccount").toByteArray ();
+
+		int j = 0;
+		for (int i = 0; i < AccountsBox_->count (); ++i)
+			if (AccountsBox_->itemData (i)
+					.value<IStorageAccount*> ()->GetUniqueID () == id)
+			{
+				j = i;
+				break;
+			}
+
+		handleCurrentIndexChanged (j);
 	}
 
 	void ManagerTab::ShowAccountActions (bool show)
@@ -869,6 +883,9 @@ namespace NetStoreManager
 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 		DeleteFile_->setVisible (sfl->GetListingOps () & ListingOp::Delete);
 		MoveToTrash_->setVisible (sfl->GetListingOps () & ListingOp::TrashSupporting);
+
+		XmlSettingsManager::Instance ().setProperty ("LastActiveAccount",
+				acc->GetUniqueID ());
 	}
 
 	void ManagerTab::handleGotFileUrl (const QUrl& url, const QByteArray&)
