@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label lang="en" value="General settings" />
+		<groupbox>
+			<label value="Client" />
+			<item type="lineedit" property="timer" default="90">
+				<label lang="en" value="Update time, seconds" />
+			</item>
+		</groupbox>
+		<groupbox>
+			<label value="API" />
+			<item type="lineedit" property="consumer_key" default="nbwLYUDIlgsMgDFCu6jfuA">
+				<label lang="en" value="Consumer key:" />
+			</item>
+			<item type="lineedit" property="consumer_key_secret" default="7TWYPzLUqZlihIRA2VWfZhCRfss2JNKvkSWMQx4">
+				<label lang="en" value="Consumer key secret:" />
+			</item>
+		</groupbox>
+	</page>
+	<page>
+		<label lang="en" value="Notification settings" />
+		<item type="checkbox" property="notify" default="true">
+			<label lang="en" value="Show notifications" />
+		</item>
+	</page>
+</settings>

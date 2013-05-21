@@ -212,6 +212,7 @@ OPTION (ENABLE_CHOROID "Build Choroid, image viewer" OFF)
 OPTION (ENABLE_SNAILS "Build Snails, LeechCraft mail client" OFF)
 OPTION (ENABLE_TWIFEE "Build Twifee, the Twitter client" OFF)
 OPTION (ENABLE_CEMENTO "Build Cemento, LeechCraft common persistent storage" OFF)
+OPTION (ENABLE_WOODPECKER "Build Woodpecker, twitter client" ${WITH_PLUGINS})
 
 # Dumb alternatives
 OPTION (ENABLE_DUMBEEP "Build Dumbeep, a dumb sound notifier for those fearing true LMP power" OFF)
@@ -540,6 +541,10 @@ ENDIF (ENABLE_NACHEKU)
 IF (ENABLE_VROOBY)
 	ADD_SUBDIRECTORY (plugins/vrooby)
 ENDIF (ENABLE_VROOBY)
+
+IF (ENABLE_WOODPECKER)
+	ADD_SUBDIRECTORY (plugins/woodpecker)
+ENDIF (ENABLE_WOODPECKER)
 
 IF (ENABLE_XTAZY)
 	ADD_SUBDIRECTORY (plugins/xtazy)
