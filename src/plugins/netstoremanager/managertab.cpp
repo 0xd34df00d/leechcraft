@@ -548,9 +548,6 @@ namespace NetStoreManager
 
 		FillModel (acc);
 
-		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("NetStoreManager",
-				tr ("File list updated"), PInfo_));
-
 		Trash_->setIcon (Proxy_->GetIcon (GetTrashedFiles ().isEmpty () ?
 			"user-trash-full" :
 			"user-trash"));
