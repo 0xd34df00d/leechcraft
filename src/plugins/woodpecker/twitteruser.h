@@ -30,10 +30,9 @@
 #pragma once
 
 #include <memory>
+#include <QNetworkAccessManager>
 #include <QObject>
 #include <QPixmap>
-#include <QNetworkReply>
-#include <QNetworkRequest>
 #include <QDebug>
 
 namespace LeechCraft
@@ -46,7 +45,6 @@ namespace Woodpecker
 		
 		QString Username_;
 		QNetworkAccessManager *Http_;
-		QNetworkReply *Reply_;
 		
 	public:
 		QPixmap  Avatar;

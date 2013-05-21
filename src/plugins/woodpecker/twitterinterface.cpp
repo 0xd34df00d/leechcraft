@@ -65,8 +65,8 @@ namespace Woodpecker
 
 	void TwitterInterface::RequestTwitter (const QUrl& requestAddress)
 	{
-		Reply_ = HttpClient_->get (QNetworkRequest (requestAddress));
-		connect (Reply_,
+		auto reply = HttpClient_->get (QNetworkRequest (requestAddress));
+		connect (reply,
 				SIGNAL (finished ()),
 				this,
 				SLOT (replyFinished ()));
@@ -76,13 +76,12 @@ namespace Woodpecker
 
 	void TwitterInterface::replyFinished ()
 	{
-		QByteArray jsonText (Reply_->readAll ());
-		disconnect(Reply_,
+		QByteArray jsonText (qobject_cast<QNetworkReply*> (sender ())->readAll ());
+		disconnect (sender (),
 					SIGNAL (finished ()),
 					0,
 					0);
-		Reply_->deleteLater ();
-		Reply_ = nullptr;
+		sender ()->deleteLater ();
 
 		emit tweetsReady (ParseReply (jsonText));
 	}

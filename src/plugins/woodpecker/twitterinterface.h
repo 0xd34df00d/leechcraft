@@ -33,7 +33,6 @@
 #include <QList>
 #include <QObject>
 #include <QUrl>
-#include <QNetworkReply>
 #include <QNetworkAccessManager>
 #include <QSettings>
 #include <QtKOAuth/QtKOAuth>
@@ -69,7 +68,6 @@ namespace Woodpecker
 		Q_OBJECT
 	
 		QNetworkAccessManager *HttpClient_;
-		QNetworkReply *Reply_;
 		KQOAuthManager *OAuthManager_;
 		KQOAuthRequest *OAuthRequest_;
 		QString Token_;

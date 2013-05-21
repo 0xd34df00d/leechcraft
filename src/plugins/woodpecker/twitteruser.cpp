@@ -49,13 +49,12 @@ namespace Woodpecker
 
 	void TwitterUser::avatarDownloaded ()
 	{
-		QByteArray data = Reply_->readAll ();
-		disconnect (Reply_,
+		QByteArray data = qobject_cast<QNetworkReply*> (sender ())->readAll ();
+		disconnect (sender (),
 					SIGNAL (finished ()),
 					0,
 					0);
-		Reply_->deleteLater ();
-		Reply_ = nullptr;
+		sender ()->deleteLater ();
 		
 		Avatar.loadFromData (data);
 		emit userReady ();
@@ -63,8 +62,8 @@ namespace Woodpecker
 
 	void TwitterUser::DownloadAvatar (const QString& path)
 	{
-		Reply_ = Http_->get (QNetworkRequest (QUrl (path)));
-		connect (Reply_,
+		auto reply = Http_->get (QNetworkRequest (QUrl (path)));
+		connect (reply,
 				SIGNAL (finished ()),
 				this,
 				SLOT (avatarDownloaded ()));
