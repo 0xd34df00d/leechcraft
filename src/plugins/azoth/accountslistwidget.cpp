@@ -57,9 +57,9 @@ namespace Azoth
 		class AccountListDelegate : public QStyledItemDelegate
 		{
 		public:
-			QWidget* createEditor (QWidget*, const QStyleOptionViewItem&, const QModelIndex&) const override;
-			void setEditorData (QWidget*, const QModelIndex&) const override;
-			void setModelData (QWidget*, QAbstractItemModel*, const QModelIndex&) const override;
+			QWidget* createEditor (QWidget*, const QStyleOptionViewItem&, const QModelIndex&) const;
+			void setEditorData (QWidget*, const QModelIndex&) const;
+			void setModelData (QWidget*, QAbstractItemModel*, const QModelIndex&) const;
 		};
 
 		QWidget* AccountListDelegate::createEditor (QWidget *parent, const QStyleOptionViewItem& option, const QModelIndex& index) const

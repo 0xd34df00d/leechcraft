@@ -6,8 +6,8 @@ Rectangle {
     id: rootRect
 
     property real length: tasksView.count * 10
-    width: viewOrient == "vertical" ? parent.quarkBaseSize : length
-    height: viewOrient == "vertical" ? length : parent.quarkBaseSize
+    implicitWidth: viewOrient == "vertical" ? parent.quarkBaseSize : length
+    implicitHeight: viewOrient == "vertical" ? length : parent.quarkBaseSize
 
     ListView {
         id: tasksView

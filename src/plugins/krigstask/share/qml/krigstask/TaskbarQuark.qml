@@ -8,8 +8,10 @@ Rectangle {
     property real itemSize: parent.quarkBaseSize
     property real longDim: Math.max(taskbarColumn.rows, taskbarColumn.columns) * itemSize + 2
 
-    width: viewOrient == "vertical" ? itemSize : longDim
-    height: viewOrient == "vertical" ? longDim : itemSize
+    property bool isExpandable: true
+
+    implicitWidth: viewOrient == "vertical" ? itemSize : longDim
+    implicitHeight: viewOrient == "vertical" ? longDim : itemSize
 
     radius: 2
 

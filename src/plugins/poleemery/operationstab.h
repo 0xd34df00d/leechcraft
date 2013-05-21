@@ -55,10 +55,10 @@ namespace Poleemery
 	public:
 		OperationsTab (const TabClassInfo&, QObject*);
 
-		TabClassInfo GetTabClassInfo () const override;
-		QObject* ParentMultiTabs () override;
-		void Remove () override;
-		QToolBar* GetToolBar () const override;
+		TabClassInfo GetTabClassInfo () const;
+		QObject* ParentMultiTabs ();
+		void Remove ();
+		QToolBar* GetToolBar () const;
 	private slots:
 		void on_Add__released ();
 		void on_Remove__released ();

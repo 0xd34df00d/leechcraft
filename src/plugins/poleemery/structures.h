@@ -111,7 +111,7 @@ namespace Poleemery
 
 		static QString ClassName () { return "NakedExpenseEntry"; }
 
-		EntryType GetType () const override { return EntryType::Expense; }
+		EntryType GetType () const { return EntryType::Expense; }
 
 		NakedExpenseEntry ();
 		NakedExpenseEntry (int accId, double amount, const QString& name, const QString& descr,
@@ -198,7 +198,7 @@ namespace Poleemery
 
 		static QString ClassName () { return "ReceiptEntry"; }
 
-		EntryType GetType () const override { return EntryType::Receipt; }
+		EntryType GetType () const { return EntryType::Receipt; }
 	};
 }
 }

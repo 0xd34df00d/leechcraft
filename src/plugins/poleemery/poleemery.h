@@ -51,27 +51,27 @@ namespace Poleemery
 		QList<QPair<TabClassInfo, std::function<void (TabClassInfo)>>> TabClasses_;
 		Util::XmlSettingsDialog_ptr XSD_;
 	public:
-		void Init (ICoreProxy_ptr) override;
-		void SecondInit () override;
-		QByteArray GetUniqueID () const override;
-		void Release () override;
-		QString GetName () const override;
-		QString GetInfo () const override;
-		QIcon GetIcon () const override;
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-		TabClasses_t GetTabClasses () const override;
-		void TabOpenRequested (const QByteArray&) override;
+		TabClasses_t GetTabClasses () const;
+		void TabOpenRequested (const QByteArray&);
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	private:
 		void MakeTab (QWidget*, const TabClassInfo&);
 	signals:
-		void addNewTab (const QString&, QWidget*) override;
-		void removeTab (QWidget*) override;
-		void changeTabName (QWidget*, const QString&) override;
-		void changeTabIcon (QWidget*, const QIcon&) override;
-		void statusBarChanged (QWidget*, const QString&) override;
-		void raiseTab (QWidget*) override;
+		void addNewTab (const QString&, QWidget*);
+		void removeTab (QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void statusBarChanged (QWidget*, const QString&);
+		void raiseTab (QWidget*);
 	};
 }
 }

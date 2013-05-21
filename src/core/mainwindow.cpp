@@ -38,6 +38,7 @@
 #include <QSplashScreen>
 #include <QTime>
 #include <QDockWidget>
+#include <QDesktopWidget>
 #include <util/util.h>
 #include <util/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
@@ -86,7 +87,13 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	addToolBar (Qt::BottomToolBarArea, BottomDockToolbar_);
 
 	if (Application::instance ()->arguments ().contains ("--desktop"))
-		setAttribute (Qt::WA_X11NetWmWindowTypeDesktop);
+	{
+		setWindowFlags (Qt::FramelessWindowHint);
+		connect (qApp->desktop (),
+				SIGNAL (workAreaResized (int)),
+				this,
+				SLOT (handleWorkAreaResized (int)));
+	}
 }
 
 void LeechCraft::MainWindow::Init ()
@@ -614,6 +621,18 @@ void LeechCraft::MainWindow::handleTrayIconActivated (QSystemTrayIcon::Activatio
 			showHideMain ();
 			return;
 	}
+}
+
+void MainWindow::handleWorkAreaResized (int screen)
+{
+	auto desktop = QApplication::desktop ();
+	if (screen != desktop->screenNumber (this))
+		return;
+
+	const auto& available = desktop->availableGeometry (this);
+
+	setGeometry (available);
+	setFixedSize (available.size ());
 }
 
 void LeechCraft::MainWindow::doDelayedInit ()

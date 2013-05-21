@@ -35,6 +35,7 @@
 #include <QMainWindow>
 #include <QDesktopWidget>
 #include <QtDebug>
+#include <util/x11/xwrapper.h>
 #include "viewmanager.h"
 #include "sbview.h"
 
@@ -77,7 +78,8 @@ namespace SB2
 		}
 		else
 		{
-			toolbar->setParent (nullptr, Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+			toolbar->setParent (nullptr);
+			toolbar->setWindowFlags (Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 
 			toolbar->setFloatable (true);
 			toolbar->setAllowedAreas (Qt::NoToolBarArea);
@@ -110,12 +112,7 @@ namespace SB2
 		ViewMgr_->GetView ()->setFixedSize (rect.size ());
 		toolbar->setFixedSize (rect.size ());
 
-		const auto& available = QApplication::desktop ()->
-				availableGeometry (ViewMgr_->GetManagedWindow ());
-
-		auto window = ViewMgr_->GetManagedWindow ();
-		window->setGeometry (available);
-		window->setFixedSize (available.size ());
+		Util::XWrapper::Instance ().SetStrut (toolbar, Qt::BottomToolBarArea);
 	}
 
 	void ViewGeometryManager::setOrientation (Qt::Orientation orientation)
