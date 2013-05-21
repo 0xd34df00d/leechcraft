@@ -100,7 +100,7 @@ namespace GoogleDrive
 
 		QMap<QUrl, QString> ExportLinks_;
 
-		qint64 FileSize_;
+		quint64 FileSize_;
 
 		QStringList OwnerNames_;
 		QString LastModifiedBy_;
