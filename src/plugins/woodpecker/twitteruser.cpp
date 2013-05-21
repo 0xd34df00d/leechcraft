@@ -65,10 +65,6 @@ namespace Woodpecker
 				SLOT (avatarDownloaded ()));
 	}
 
-	TwitterUser::~TwitterUser ()
-	{
-	}
-	
 	void TwitterUser::SetUsername (const QString& username)
 	{
 		Username_ = username;

@@ -51,7 +51,6 @@ namespace Woodpecker
 		
 		explicit TwitterUser (QObject *parent = nullptr);
 		explicit TwitterUser (const QString& username, QObject *parent = nullptr);
-		~TwitterUser ();
 		
 		void SetUsername (const QString& username);
 		QString GetUsername () const ;
