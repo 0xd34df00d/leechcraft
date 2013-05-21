@@ -52,7 +52,6 @@ namespace Woodpecker
 			Q_INTERFACES (IInfo IHaveTabs IHaveSettings)
 
 			QList<QPair<TabClassInfo, std::function<void (TabClassInfo)>>> TabClasses_;
-			std::shared_ptr<QTranslator> Translator_;
 			Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 	
 			void MakeTab (QWidget*, const TabClassInfo&);

@@ -68,7 +68,7 @@ namespace Woodpecker
 		bool TemporaryDocument_;
 		
 		bool UpdateReady_;			/**< The flag is checked by timer for UI update */
-		QTimer *UiUpdateTimer_;		/**< Timer checks UpdateReady_ and updates the UI */
+		QTimer *UiUpdateTimer_;	/**< Timer checks UpdateReady_ and updates the UI */
 		TwitDelegate *Delegate_;
 		Ui::TwitterPage Ui_;
 		TwitterInterface *Interface_;

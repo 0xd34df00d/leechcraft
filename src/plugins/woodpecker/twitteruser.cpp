@@ -50,8 +50,8 @@ namespace Woodpecker
 	void TwitterUser::avatarDownloaded ()
 	{
 		QByteArray data = Reply_->readAll ();
-		disconnect(Reply_,
-					SIGNAL(finished ()),
+		disconnect (Reply_,
+					SIGNAL (finished ()),
 					0,
 					0);
 		Reply_->deleteLater ();

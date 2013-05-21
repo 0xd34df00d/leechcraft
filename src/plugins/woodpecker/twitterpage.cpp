@@ -122,7 +122,7 @@ namespace Woodpecker
 				this,
 				SLOT (reply ()));
 
-		Ui_.TwitList_->addActions ({ActionRetwit_, ActionReply_});
+		Ui_.TwitList_->addActions ({ ActionRetwit_, ActionReply_ });
 
 		if ((!Settings_->value ("token").isNull ()) && (!Settings_->value ("tokenSecret").isNull ()))
 		{
@@ -312,14 +312,17 @@ namespace Woodpecker
 		const auto twitid = (idx->data (Qt::UserRole).value<std::shared_ptr<Tweet>> ())->GetId ();
 		auto replyto = std::find_if (ScreenTwits_.begin (), ScreenTwits_.end (),
 				[twitid] (decltype (ScreenTwits_.front ()) tweet)
-				{ return tweet->GetId () == twitid; });
-		if (replyto == ScreenTwits_.end ()) {
+					{ return tweet->GetId () == twitid; });
+		if (replyto == ScreenTwits_.end ())
+		{
 			qWarning () << Q_FUNC_INFO << "Failed to find twit";
 			return;
 		}
 
 		std::shared_ptr<Tweet> found_twit = *replyto;
-		Ui_.TwitEdit_->setText (QString ("@").append ((*replyto)->GetAuthor ()->GetUsername ()).append (" "));
+		Ui_.TwitEdit_->setText (QString ("@") +
+								((*replyto)->GetAuthor ()->GetUsername ()) +
+								" ");
 		disconnect (Ui_.TwitButton_,
 					SIGNAL (clicked ()),
 					0,
@@ -350,8 +353,8 @@ namespace Woodpecker
 			return;
 
 		auto menu = new QMenu (Ui_.TwitList_);
-		menu->addActions ({ActionRetwit_, ActionReply_, menu->addSeparator (), 
-			ActionSPAM_, menu->addSeparator (), ActionOpenWeb_});
+		menu->addActions ({ ActionRetwit_, ActionReply_, menu->addSeparator (), 
+			ActionSPAM_, menu->addSeparator (), ActionOpenWeb_ });
 		menu->setAttribute (Qt::WA_DeleteOnClose);
 
 		menu->exec (Ui_.TwitList_->viewport ()->mapToGlobal (pos));
@@ -364,7 +367,7 @@ namespace Woodpecker
 
 		auto spamTwit = std::find_if (ScreenTwits_.begin (), ScreenTwits_.end (), 
 				[twitid] (decltype (ScreenTwits_.front ()) tweet) 
-				{ return tweet->GetId () == twitid; });
+					{ return tweet->GetId () == twitid; });
 		Interface_->ReportSPAM ((*spamTwit)->GetAuthor ()->GetUsername ());
 	}
 
@@ -374,7 +377,7 @@ namespace Woodpecker
 		const auto twitid = (idx->data (Qt::UserRole).value<std::shared_ptr<Tweet>> ())->GetId ();
 		auto currentTwit = std::find_if (ScreenTwits_.begin (), ScreenTwits_.end (), 
 				[twitid] (decltype (ScreenTwits_.front ()) tweet) 
-				{ return tweet->GetId () == twitid; });
+					{ return tweet->GetId () == twitid; });
 
 		const auto& url = Util::MakeEntity (QUrl (QString ("https://twitter.com/%1/status/%2").arg ((*currentTwit)->GetAuthor ()->GetUsername ()).arg (twitid)), 
 				QString (), OnlyHandle | FromUserInitiated, QString ());

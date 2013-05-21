@@ -32,8 +32,8 @@
 #include <memory>
 #include <QObject>
 #include <QPixmap>
-#include <QtNetwork/QNetworkReply>
-#include <QtNetwork/QNetworkRequest>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QDebug>
 
 namespace LeechCraft
