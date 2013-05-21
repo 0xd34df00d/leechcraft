@@ -50,10 +50,6 @@ namespace Woodpecker
 	void TwitterUser::avatarDownloaded ()
 	{
 		QByteArray data = qobject_cast<QNetworkReply*> (sender ())->readAll ();
-		disconnect (sender (),
-					SIGNAL (finished ()),
-					0,
-					0);
 		sender ()->deleteLater ();
 		
 		Avatar.loadFromData (data);
