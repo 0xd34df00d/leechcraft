@@ -50,7 +50,7 @@ namespace Laughty
 			const QString& app_icon, const QString& summary, const QString& body,
 			const QStringList& actions, const QVariantMap& hints, int expire_timeout)
 	{
-		Server_->Notify (app_name, replaces_id, app_icon,
+		return Server_->Notify (app_name, replaces_id, app_icon,
 				summary, body, actions, hints, expire_timeout);
 	}
 

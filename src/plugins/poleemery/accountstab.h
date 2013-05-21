@@ -64,10 +64,10 @@ namespace Poleemery
 	public:
 		AccountsTab (const TabClassInfo&, QObject*);
 
-		TabClassInfo GetTabClassInfo () const override;
-		QObject* ParentMultiTabs () override;
-		void Remove () override;
-		QToolBar* GetToolBar () const override;
+		TabClassInfo GetTabClassInfo () const;
+		QObject* ParentMultiTabs ();
+		void Remove ();
+		QToolBar* GetToolBar () const;
 	private:
 		void AddAccount (const Account&);
 	private slots:

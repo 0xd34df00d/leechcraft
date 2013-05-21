@@ -5,8 +5,8 @@ Rectangle {
     id: rootRect
 
     property real itemSize: parent.quarkBaseSize
-    width: viewOrient == "vertical" ? itemSize : (indicatorsView.count * itemSize)
-    height: viewOrient == "vertical" ? (indicatorsView.count * itemSize) : itemSize
+    implicitWidth: viewOrient == "vertical" ? itemSize : (indicatorsView.count * itemSize)
+    implicitHeight: viewOrient == "vertical" ? (indicatorsView.count * itemSize) : itemSize
 
     color: "transparent"
 

@@ -64,7 +64,7 @@ Rectangle {
         onTriggered: commonJS.showTooltip(addQuarkButton, function(x, y) { quarkProxy.quarkAddRequested(x, y) })
     }
 
-    ListView {
+    Grid {
         id: itemsView
 
         anchors.top: parent.top
@@ -72,111 +72,140 @@ Rectangle {
         anchors.right: isVert ? parent.right : setQuarkOrderButton.left
         anchors.bottom: isVert ? setQuarkOrderButton.top : parent.bottom
 
-        model: itemsModel
+        anchors.rightMargin: isVert ? 0 : 5
+        anchors.bottomMargin: isVert ? 5 : 0
+
         spacing: 2
 
-        orientation: isVert ? ListView.Vertical : ListView.Horizontal
+        columns: isVert ? 1 : itemsRepeater.count
+        rows: isVert ? itemsRepeater.count : 1
 
-        delegate: Rectangle {
-            id: itemsDelegate
+        Repeater {
+            id: itemsRepeater
+            model: itemsModel
 
-            height: isVert ? itemLoader.height : itemsView.height
-            width: isVert ? itemsView.width : itemLoader.width
+            Item {
+                id: itemsDelegate
 
-            color: "transparent"
+                height: isVert ? itemLoader.height : itemsView.height
+                width: isVert ? itemsView.width : itemLoader.width
 
-            Loader {
-                id: itemLoader
+                property bool isExpandable: itemLoader.item.isExpandable == undefined ? false : itemLoader.item.isExpandable
+                implicitWidth: itemLoader.item.implicitWidth
+                implicitHeight: itemLoader.item.implicitHeight
 
-                property real quarkBaseSize: isVert ? width : height
+                Loader {
+                    id: itemLoader
 
-                source: sourceURL
-                height: isVert ? item.height : itemsDelegate.height
-                width: isVert ? itemsDelegate.width : item.width
+                    property real quarkBaseSize: isVert ? width : height
 
-                clip: true
-            }
+                    source: sourceURL
 
-            Rectangle {
-                visible: enableSettingsModeButton.settingsMode
-                anchors.fill: itemLoader
+                    function calcDim(getDim, getImpDim) {
+                        var w = getImpDim(item);
+                        if (item.isExpandable == undefined || !item.isExpandable)
+                            return w;
 
-                smooth: true
-                gradient: Gradient {
-                    GradientStop {
-                        id: topHighlightGradient
-                        position: 0
-                        color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedTopColor, 0.1)
+                        var expandablesCount = 0;
+                        var sumImplicitSize = 0;
+                        for (var i = 0; i < itemsRepeater.count; ++i)
+                        {
+                            var child = itemsRepeater.itemAt(i);
+                            if (child.isExpandable != undefined && child.isExpandable)
+                                ++expandablesCount;
+                            sumImplicitSize += getImpDim(child);
+                        }
+
+                        return w + (getDim(itemsView) - sumImplicitSize) / expandablesCount;
                     }
-                    GradientStop {
-                        id: bottomHighlightGradient
-                        position: 1
-                        color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedBottomColor, 0.1)
-                    }
+
+                    height: isVert ? calcDim(function (item) { return item.height; }, function (item) { return item.implicitHeight; }) : itemsDelegate.height
+                    width: isVert ? itemsDelegate.width : calcDim(function (item) { return item.width; }, function (item) { return item.implicitWidth; })
+
+                    clip: true
                 }
-                border.color: colorProxy.color_ToolButton_SelectedBorderColor
-                border.width: 1
-                radius: width / 10
 
-                states: [
-                    State {
-                        name: "highlight"
-                        when: quarkProxy.extHoveredQuarkClass == quarkClass
-                        PropertyChanges {
-                            target: topHighlightGradient
-                            color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedTopColor, 0.3)
+                Rectangle {
+                    visible: enableSettingsModeButton.settingsMode
+                    anchors.fill: itemLoader
+
+                    smooth: true
+                    gradient: Gradient {
+                        GradientStop {
+                            id: topHighlightGradient
+                            position: 0
+                            color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedTopColor, 0.1)
                         }
-                        PropertyChanges {
-                            target: bottomHighlightGradient
-                            color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedBottomColor, 0.3)
+                        GradientStop {
+                            id: bottomHighlightGradient
+                            position: 1
+                            color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedBottomColor, 0.1)
                         }
                     }
-                ]
+                    border.color: colorProxy.color_ToolButton_SelectedBorderColor
+                    border.width: 1
+                    radius: width / 10
 
-                transitions: [
-                    Transition {
-                        from: ""
-                        to: "highlight"
-                        reversible: true
-                        PropertyAnimation { properties: "color"; duration: 200 }
-                    }
-                ]
-            }
+                    states: [
+                        State {
+                            name: "highlight"
+                            when: quarkProxy.extHoveredQuarkClass == quarkClass
+                            PropertyChanges {
+                                target: topHighlightGradient
+                                color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedTopColor, 0.3)
+                            }
+                            PropertyChanges {
+                                target: bottomHighlightGradient
+                                color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedBottomColor, 0.3)
+                            }
+                        }
+                    ]
 
-            ActionButton {
-                id: settingsButton
+                    transitions: [
+                        Transition {
+                            from: ""
+                            to: "highlight"
+                            reversible: true
+                            PropertyAnimation { properties: "color"; duration: 200 }
+                        }
+                    ]
+                }
 
-                visible: quarkHasSettings
-                opacity: 0
-                z: 10
+                ActionButton {
+                    id: settingsButton
 
-                actionIconURL: "image://ThemeIcons/preferences-desktop"
-                transparentStyle: true
+                    visible: quarkHasSettings
+                    opacity: 0
+                    z: 10
 
-                property real dimension: Math.min(itemLoader.width / 2, itemLoader.height / 2)
-                width: dimension
-                height: dimension
-                anchors.bottom: itemLoader.bottom
-                anchors.right: itemLoader.right
+                    actionIconURL: "image://ThemeIcons/preferences-desktop"
+                    transparentStyle: true
 
-                states: [
-                    State {
-                        name: "inSettingsMode"
-                        when: enableSettingsModeButton.settingsMode
-                        PropertyChanges { target: settingsButton; opacity: 1 }
-                    }
-                ]
+                    property real dimension: Math.min(itemLoader.width / 2, itemLoader.height / 2)
+                    width: dimension
+                    height: dimension
+                    anchors.bottom: itemLoader.bottom
+                    anchors.right: itemLoader.right
 
-                transitions: [
-                    Transition {
-                        from: ""
-                        to: "inSettingsMode"
-                        reversible: true
-                        PropertyAnimation { properties: "opacity"; duration: 200 }
-                    }
-                ]
+                    states: [
+                        State {
+                            name: "inSettingsMode"
+                            when: enableSettingsModeButton.settingsMode
+                            PropertyChanges { target: settingsButton; opacity: 1 }
+                        }
+                    ]
 
-                onTriggered: quarkProxy.showSettings(sourceURL)
+                    transitions: [
+                        Transition {
+                            from: ""
+                            to: "inSettingsMode"
+                            reversible: true
+                            PropertyAnimation { properties: "opacity"; duration: 200 }
+                        }
+                    ]
+
+                    onTriggered: quarkProxy.showSettings(sourceURL)
+                }
             }
         }
     }
