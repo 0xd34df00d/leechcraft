@@ -106,7 +106,7 @@ namespace NetStoreManager
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/netstoremanager/resources/images/netstoremanager.svg");
+		static QIcon icon ("lcicons:/netstoremanager/resources/images/netstoremanager.svg");
 		return icon;
 	}
 

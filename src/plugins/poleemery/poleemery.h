@@ -29,28 +29,27 @@
 
 #pragma once
 
-#include <memory>
 #include <functional>
 #include <QObject>
 #include <QList>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/ihavesettings.h>
 
 namespace LeechCraft
 {
 namespace Poleemery
 {
-	class Storage;
-
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IHaveTabs
+				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs)
+		Q_INTERFACES (IInfo IHaveTabs IHaveSettings)
 
-		std::shared_ptr<Storage> Storage_;
 		QList<QPair<TabClassInfo, std::function<void (TabClassInfo)>>> TabClasses_;
+		Util::XmlSettingsDialog_ptr XSD_;
 	public:
 		void Init (ICoreProxy_ptr) override;
 		void SecondInit () override;
@@ -62,9 +61,10 @@ namespace Poleemery
 
 		TabClasses_t GetTabClasses () const override;
 		void TabOpenRequested (const QByteArray&) override;
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 	private:
-		template<typename T>
-		void MakeTab (const TabClassInfo&);
+		void MakeTab (QWidget*, const TabClassInfo&);
 	signals:
 		void addNewTab (const QString&, QWidget*) override;
 		void removeTab (QWidget*) override;

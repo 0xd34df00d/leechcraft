@@ -131,7 +131,7 @@ namespace Liznoo
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/liznoo/resources/images/liznoo.svg");
+		static QIcon icon ("lcicons:/liznoo/resources/images/liznoo.svg");
 		return icon;
 	}
 

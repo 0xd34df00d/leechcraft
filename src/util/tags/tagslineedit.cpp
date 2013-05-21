@@ -54,10 +54,11 @@ void TagsLineEdit::AddSelector ()
 
 	QAbstractItemModel *model = Completer_->model ();
 
-	connect (model,
-			SIGNAL (tagsUpdated (const QStringList&)),
-			this,
-			SLOT (handleTagsUpdated (const QStringList&)));
+	if (model->metaObject ()->indexOfSignal (QMetaObject::normalizedSignature ("tagsUpdated (QStringList)")) >= 0)
+		connect (model,
+				SIGNAL (tagsUpdated (QStringList)),
+				this,
+				SLOT (handleTagsUpdated (QStringList)));
 
 	QStringList initialTags;
 	for (int i = 0; i < model->rowCount (); ++i)

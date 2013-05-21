@@ -56,7 +56,9 @@ namespace Kinotify
 		Q_INTERFACES (IInfo IEntityHandler IHaveSettings)
 
 		ICoreProxy_ptr Proxy_;
+
 		QList<KinotifyWidget*> ActiveNotifications_;
+
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		std::shared_ptr<Util::ResourceLoader> ThemeLoader_;
 		std::shared_ptr<FSWinWatcher> FSWinWatcher_;

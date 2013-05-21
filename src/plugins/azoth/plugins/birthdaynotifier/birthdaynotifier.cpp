@@ -91,7 +91,7 @@ namespace BirthdayNotifier
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/azoth/birthdaynotifier/resources/images/birthdaynotifier.svg");
+		static QIcon icon ("lcicons:/azoth/birthdaynotifier/resources/images/birthdaynotifier.svg");
 		return icon;
 	}
 

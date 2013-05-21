@@ -1012,7 +1012,8 @@ namespace Monocle
 		if (!CurrentDoc_)
 			return;
 
-		new PresenterWidget (CurrentDoc_);
+		auto presenter = new PresenterWidget (CurrentDoc_);
+		presenter->NavigateTo (GetCurrentPage ());
 	}
 
 	void DocumentTab::handleGoPrev ()

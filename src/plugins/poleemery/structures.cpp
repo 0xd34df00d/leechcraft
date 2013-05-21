@@ -49,5 +49,98 @@ namespace Poleemery
 				<< static_cast<int> (type);
 		return QString ();
 	}
+
+	bool operator== (const Account& a1, const Account& a2)
+	{
+		return a1.ID_ == a2.ID_ &&
+				a1.Type_ == a2.Type_ &&
+				a1.Name_ == a2.Name_ &&
+				a1.Currency_ == a2.Currency_;
+	}
+
+	bool operator!= (const Account& a1, const Account& a2)
+	{
+		return !(a1 == a2);
+	}
+
+	EntryBase::EntryBase ()
+	: ID_ { -1 }
+	, AccountID_ { -1 }
+	{
+	}
+
+	EntryBase::EntryBase (int accId, double amount, const QString& name, const QString& descr, const QDateTime& dt)
+	: ID_ { -1 }
+	, AccountID_ { accId }
+	, Amount_ { amount }
+	, Name_ { name }
+	, Description_ { descr }
+	, Date_ { dt }
+	{
+	}
+
+	EntryBase::~EntryBase ()
+	{
+	}
+
+	NakedExpenseEntry::NakedExpenseEntry ()
+	{
+	}
+
+	NakedExpenseEntry::NakedExpenseEntry (int accId, double amount,
+			const QString& name, const QString& descr, const QDateTime& dt,
+			double count, const QString& shop)
+	: EntryBase { accId, amount, name, descr, dt }
+	, Count_ { count }
+	, Shop_ { shop }
+	{
+	}
+
+	ExpenseEntry::ExpenseEntry ()
+	{
+	}
+
+	ExpenseEntry::ExpenseEntry (const NakedExpenseEntry& naked)
+	: NakedExpenseEntry (naked)
+	{
+	}
+
+	ExpenseEntry::ExpenseEntry (int accId, double amount, const QString& name, const QString& descr, const QDateTime& dt, double count, const QString& shop, const QStringList& cats)
+	: NakedExpenseEntry { accId, amount, name, descr, dt, count, shop }
+	, Categories_ { cats }
+	{
+	}
+
+	Category::Category ()
+	: ID_ { -1 }
+	{
+	}
+
+	Category::Category (const QString& name)
+	: ID_ { -1 }
+	, Name_ { name }
+	{
+	}
+
+	CategoryLink::CategoryLink ()
+	: ID_ { -1 }
+	{
+	}
+
+	CategoryLink::CategoryLink (const Category& category, const NakedExpenseEntry& entry)
+	: ID_ { -1 }
+	, Category_ { category.ID_ }
+	, Entry_ { entry.ID_ }
+	{
+	}
+
+	ReceiptEntry::ReceiptEntry ()
+	{
+	}
+
+	ReceiptEntry::ReceiptEntry (int accId, double amount, const QString& name, const QString& descr, const QDateTime& dt)
+	: EntryBase { accId, amount, name, descr, dt }
+	{
+	}
 }
 }

@@ -28,7 +28,10 @@
  **********************************************************************/
 
 #include "accountpropsdialog.h"
+#include <QtDebug>
 #include "structures.h"
+#include "core.h"
+#include "currenciesmanager.h"
 
 namespace LeechCraft
 {
@@ -42,6 +45,10 @@ namespace Poleemery
 
 		Ui_.AccType_->addItem (ToHumanReadable (AccType::Cash));
 		Ui_.AccType_->addItem (ToHumanReadable (AccType::BankAccount));
+
+		const auto& currencies = Core::Instance ()
+				.GetCurrenciesManager ()->GetEnabledCurrencies ();
+		Ui_.Currency_->addItems (currencies);
 	}
 
 	void AccountPropsDialog::SetAccount (const Account& account)
@@ -49,6 +56,10 @@ namespace Poleemery
 		CurrentAccID_ = account.ID_;
 		Ui_.AccType_->setCurrentIndex (static_cast<int> (account.Type_));
 		Ui_.AccName_->setText (account.Name_);
+
+		const auto pos = Ui_.Currency_->findText (account.Currency_);
+		if (pos >= 0)
+			Ui_.Currency_->setCurrentIndex (pos);
 	}
 
 	Account AccountPropsDialog::GetAccount () const
@@ -57,7 +68,8 @@ namespace Poleemery
 		{
 			CurrentAccID_,
 			static_cast<AccType> (Ui_.AccType_->currentIndex ()),
-			Ui_.AccName_->text ()
+			Ui_.AccName_->text (),
+			Ui_.Currency_->currentText ()
 		};
 	}
 }

@@ -50,7 +50,7 @@ namespace SB2
 
 			QImage requestImage (const QString&, QSize*, const QSize&)
 			{
-				return QImage (":/resources/images/leechcraft.svg");
+				return QImage ("lcicons:/resources/images/leechcraft.svg");
 			}
 		};
 

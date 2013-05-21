@@ -29,25 +29,26 @@
 
 #include "accountstab.h"
 #include <QStandardItemModel>
-#include "storage.h"
+#include "accountsmanager.h"
 #include "accountpropsdialog.h"
+#include "core.h"
 
 namespace LeechCraft
 {
 namespace Poleemery
 {
-	AccountsTab::AccountsTab (Storage_ptr storage, const TabClassInfo& tc, QObject *plugin)
-	: Storage_ (storage)
+	AccountsTab::AccountsTab (const TabClassInfo& tc, QObject *plugin)
+	: AccsManager_ (Core::Instance ().GetAccsManager ())
 	, TC_ (tc)
 	, ParentPlugin_ (plugin)
 	, AccsModel_ (new QStandardItemModel (this))
 	{
-		AccsModel_->setHorizontalHeaderLabels ({ tr ("Account"), tr ("Type") });
+		AccsModel_->setHorizontalHeaderLabels ({ tr ("Account"), tr ("Type"), tr ("Currency") });
 
 		Ui_.setupUi (this);
 		Ui_.AccountsView_->setModel (AccsModel_);
 
-		for (const auto& acc : Storage_->GetAccounts ())
+		for (const auto& acc : AccsManager_->GetAccounts ())
 			AddAccount (acc);
 	}
 
@@ -77,8 +78,11 @@ namespace Poleemery
 		QList<QStandardItem*> row
 		{
 			new QStandardItem (acc.Name_),
-			new QStandardItem (ToHumanReadable (acc.Type_))
+			new QStandardItem (ToHumanReadable (acc.Type_)),
+			new QStandardItem (acc.Currency_)
 		};
+		row.first ()->setData (QVariant::fromValue (acc), Roles::Acc);
+
 		for (auto item : row)
 			item->setEditable (false);
 		AccsModel_->appendRow (row);
@@ -91,15 +95,42 @@ namespace Poleemery
 			return;
 
 		auto acc = dia.GetAccount ();
-		Storage_->AddAccount (acc);
+		AccsManager_->AddAccount (acc);
+		AddAccount (acc);
 	}
 
 	void AccountsTab::on_Modify__released ()
 	{
+		const auto& current = Ui_.AccountsView_->currentIndex ();
+		if (!current.isValid ())
+			return;
+
+		const auto srcAccount = AccsModel_->item (current.row ())->data (Roles::Acc).value<Account> ();
+
+		AccountPropsDialog dia (this);
+		dia.SetAccount (srcAccount);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		auto acc = dia.GetAccount ();
+		if (acc == srcAccount)
+			return;
+
+		AccsManager_->UpdateAccount (acc);
+		AccsModel_->item (current.row (), 0)->setText (acc.Name_);
+		AccsModel_->item (current.row (), 1)->setText (ToHumanReadable (acc.Type_));
+		AccsModel_->item (current.row (), 2)->setText (acc.Currency_);
 	}
 
 	void AccountsTab::on_Remove__released ()
 	{
+		const auto& current = Ui_.AccountsView_->currentIndex ();
+		if (!current.isValid ())
+			return;
+
+		const auto& sibling = current.sibling (current.row (), 0);
+		AccsManager_->DeleteAccount (sibling.data (Roles::Acc).value<Account> ());
+		AccsModel_->removeRow (current.row ());
 	}
 }
 }

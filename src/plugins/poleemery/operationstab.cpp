@@ -28,17 +28,132 @@
  **********************************************************************/
 
 #include "operationstab.h"
-#include "storage.h"
+#include <QStyledItemDelegate>
+#include <QMessageBox>
+#include <QStringListModel>
+#include <util/tags/tagslineedit.h>
+#include <util/tags/tagscompleter.h>
+#include <interfaces/core/itagsmanager.h>
+#include "core.h"
+#include "operationsmanager.h"
+#include "operationpropsdialog.h"
+#include "entriesmodel.h"
+#include "accountsmanager.h"
 
 namespace LeechCraft
 {
 namespace Poleemery
 {
-	OperationsTab::OperationsTab (Storage_ptr storage, const TabClassInfo& tc, QObject *plugin)
-	: Storage_ (storage)
+	namespace
+	{
+		class OpsDelegate : public QStyledItemDelegate
+		{
+		public:
+			QWidget* createEditor (QWidget*, const QStyleOptionViewItem&, const QModelIndex&) const;
+			void setEditorData (QWidget*, const QModelIndex&) const;
+			void setModelData (QWidget*, QAbstractItemModel*, const QModelIndex&) const;
+		};
+
+		QWidget* OpsDelegate::createEditor (QWidget *parent, const QStyleOptionViewItem& option, const QModelIndex& index) const
+		{
+			switch (index.column ())
+			{
+				case EntriesModel::Columns::Account:
+					return new QComboBox (parent);
+				case EntriesModel::Columns::Categories:
+				{
+					auto result = new Util::TagsLineEdit (parent);
+					auto completer = new Util::TagsCompleter (result, result);
+
+					const auto& cats = Core::Instance ().GetOpsManager ()->
+							GetKnownCategories ().toList ();
+					completer->OverrideModel (new QStringListModel (cats, completer));
+
+					result->AddSelector ();
+
+					return result;
+				}
+				default:
+					return QStyledItemDelegate::createEditor (parent, option, index);
+			}
+		}
+
+		void OpsDelegate::setEditorData (QWidget *editor, const QModelIndex& index) const
+		{
+			switch (index.column ())
+			{
+				case EntriesModel::Columns::Account:
+				{
+					auto box = qobject_cast<QComboBox*> (editor);
+					const auto currentAccId = index.data (Qt::EditRole).toInt ();
+					int toFocus = -1;
+					for (const auto& acc : Core::Instance ().GetAccsManager ()->GetAccounts ())
+					{
+						if (acc.ID_ == currentAccId)
+							toFocus = box->count ();
+						box->addItem (acc.Name_, static_cast<int> (acc.ID_));
+					}
+					box->setCurrentIndex (toFocus);
+					break;
+				}
+				case EntriesModel::Columns::Categories:
+				{
+					auto edit = qobject_cast<Util::TagsLineEdit*> (editor);
+					edit->setTags (index.data (Qt::EditRole).toStringList ());
+					break;
+				}
+				default:
+					QStyledItemDelegate::setEditorData (editor, index);
+					break;
+			}
+		}
+
+		void OpsDelegate::setModelData (QWidget *editor, QAbstractItemModel *model, const QModelIndex& index) const
+		{
+			switch (index.column ())
+			{
+				case EntriesModel::Columns::Account:
+				{
+					auto box = qobject_cast<QComboBox*> (editor);
+					model->setData (index, box->itemData (box->currentIndex ()));
+					break;
+				}
+				case EntriesModel::Columns::Categories:
+				{
+					auto box = qobject_cast<Util::TagsLineEdit*> (editor);
+					auto itm = Core::Instance ().GetCoreProxy ()->GetTagsManager ();
+					model->setData (index, itm->Split (box->text ()));
+					break;
+				}
+				default:
+					QStyledItemDelegate::setModelData (editor, model, index);
+					break;
+			}
+		}
+	}
+
+	OperationsTab::OperationsTab (const TabClassInfo& tc, QObject *plugin)
+	: OpsManager_ (Core::Instance ().GetOpsManager ())
 	, TC_ (tc)
 	, ParentPlugin_ (plugin)
 	{
+		Ui_.setupUi (this);
+		Ui_.OpsView_->setItemDelegate (new OpsDelegate);
+		Ui_.OpsView_->setModel (OpsManager_->GetModel ());
+
+		const auto& fm = fontMetrics ();
+		auto setColWidth = [&fm, this] (EntriesModel::Columns col, const QString& str)
+			{ Ui_.OpsView_->setColumnWidth (col, fm.width (str) * 1.1); };
+
+		setColWidth (EntriesModel::Columns::Date,
+				QDateTime::currentDateTime ().toString ());
+		setColWidth (EntriesModel::Columns::Account, "some account name");
+		setColWidth (EntriesModel::Columns::Name, "some typical very long product name");
+		setColWidth (EntriesModel::Columns::Price, " 9999.00 USD ");
+		setColWidth (EntriesModel::Columns::Count, " 0.999 ");
+		setColWidth (EntriesModel::Columns::Shop, "some typical shop name");
+		setColWidth (EntriesModel::Columns::AccBalance, " 99999.00 USD ");
+		setColWidth (EntriesModel::Columns::SumBalance, " 99999.00 USD ");
 	}
 
 	TabClassInfo OperationsTab::GetTabClassInfo () const
@@ -60,6 +175,33 @@ namespace Poleemery
 	QToolBar* OperationsTab::GetToolBar () const
 	{
 		return 0;
+	}
+
+	void OperationsTab::on_Add__released ()
+	{
+		OperationPropsDialog dia (this);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		OpsManager_->AddEntry (dia.GetEntry ());
+	}
+
+	void OperationsTab::on_Remove__released ()
+	{
+		const auto& item = Ui_.OpsView_->currentIndex ();
+		if (!item.isValid ())
+			return;
+
+		const auto& name = item.sibling (item.row (), EntriesModel::Columns::Name)
+				.data ().toString ();
+		if (QMessageBox::question (this,
+					"Poleemery",
+					tr ("Are you sure you want to delete entry %1?")
+						.arg ("<em>" + name + "</em>"),
+					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
+
+		OpsManager_->RemoveEntry (item);
 	}
 }
 }

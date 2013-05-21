@@ -32,6 +32,7 @@
 #include <QPair>
 #include <QList>
 #include <QRegExp>
+#include <QVariantMap>
 
 class QWidget;
 class QString;
@@ -59,7 +60,13 @@ namespace LeechCraft
 	enum class EditorAction
 	{
 		Find,
-		Replace
+		Replace,
+		Bold,
+		Italic,
+		Underline,
+		InsertLink,
+		InsertImage,
+		ToggleView
 	};
 }
 
@@ -158,11 +165,18 @@ public:
 	 */
 	virtual void RemoveAction (QAction *action) = 0;
 
-	/** @brief Sets the background color of the editor to color.
+	/** @brief Sets the background color of the \em editor to color.
+	 *
+	 * This function sets the background color of the \em editor of the
+	 * given content-type to the given \em color.
+	 *
+	 * If the widget doesn't support the given content-type, this
+	 * function does nothing.
 	 *
 	 * @param[in] color The new background color.
+	 * @param[in] editor The editor to change color of.
 	 */
-	virtual void SetBackgroundColor (const QColor& color) = 0;
+	virtual void SetBackgroundColor (const QColor& color, LeechCraft::ContentType editor) = 0;
 protected:
 	/** @brief Notifies about contents changes.
 	 *
@@ -219,6 +233,25 @@ public:
 	 * @param[in] html2rich Mappings for source view -> view conversion.
 	 */
 	virtual void SetTagsMappings (const Replacements_t& rich2html, const Replacements_t& html2rich) = 0;
+
+	/** @brief Adds a custom action to wrap selected text into given tag.
+	 *
+	 * For example, to insert an action to wrap selected text into
+	 * <code><span style="font-weight: bold" id="sometext">...</span></code>
+	 * one should call this function like this:
+	 * \code
+	 * QVariantMap params;
+	 * params ["style"] = "font-weight: bold";
+	 * params ["id"] = "sometext";
+	 * auto action = editor->AddInlineTagInserter ("span", params);
+	 * action->setText ("Name of your action");
+	 * // further customize the action
+	 * \endcode
+	 *
+	 * @param[in] tagName The name of the tag to be inserted.
+	 * @param[in] params The parameters of the tag.
+	 */
+	virtual QAction* AddInlineTagInserter (const QString& tagName, const QVariantMap& params) = 0;
 
 	/** @brief Executes the given js in the context of the content.
 	 *

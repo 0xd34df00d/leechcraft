@@ -45,6 +45,7 @@ namespace VelvetBird
 		AccRegFirstPage (QWidget* = 0);
 
 		QString GetName () const;
+		QString GetNick () const;
 	};
 }
 }

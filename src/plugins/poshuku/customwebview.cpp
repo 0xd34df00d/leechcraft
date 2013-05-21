@@ -514,7 +514,7 @@ namespace Poshuku
 
 		QBuffer iconBuffer;
 		iconBuffer.open (QIODevice::ReadWrite);
-		QPixmap pixmap (":/resources/images/poshuku.svg");
+		QPixmap pixmap ("lcicons:/resources/images/poshuku.svg");
 		pixmap.save (&iconBuffer, "PNG");
 
 		data.replace ("{img}",

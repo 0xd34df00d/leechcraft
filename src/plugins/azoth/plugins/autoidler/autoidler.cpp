@@ -88,7 +88,7 @@ namespace Autoidler
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/plugins/azoth/plugins/autoidler/resources/images/autoidler.svg");
+		static QIcon icon ("lcicons:/plugins/azoth/plugins/autoidler/resources/images/autoidler.svg");
 		return icon;
 	}
 

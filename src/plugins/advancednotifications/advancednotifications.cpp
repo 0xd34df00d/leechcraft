@@ -104,7 +104,7 @@ namespace AdvancedNotifications
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/plugins/advancednotifications/resources/images/advancednotifications.svg");
+		static QIcon icon ("lcicons:/plugins/advancednotifications/resources/images/advancednotifications.svg");
 		return icon;
 	}
 

@@ -366,7 +366,7 @@ namespace Azoth
 			return;
 
 		StyleParams_ = params;
-		Q_FOREACH (ChatTab_ptr tab, Entry2Tab_.values ())
+		for (auto tab : Entry2Tab_.values ())
 			tab->PrepareTheme ();
 	}
 }

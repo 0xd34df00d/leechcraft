@@ -41,7 +41,7 @@ namespace LeechCraft
 				TabClass_.TabClass_ = "Popishu";
 				TabClass_.VisibleName_ = tr ("Text editor");
 				TabClass_.Description_ = tr ("The Popishu text editor");
-				TabClass_.Icon_ = QIcon (":/resources/images/popishu.svg");
+				TabClass_.Icon_ = QIcon ("lcicons:/resources/images/popishu.svg");
 				TabClass_.Priority_ = 70;
 				TabClass_.Features_ = TFOpenableByRequest | TFSuggestOpening;
 			}
@@ -72,7 +72,7 @@ namespace LeechCraft
 				EditorPage *page = MakeEditorPage ();
 				emit addNewTab ("Popishu", page);
 				emit raiseTab (page);
-				emit changeTabIcon (page, QIcon (":/resources/images/popishu.svg"));
+				emit changeTabIcon (page, QIcon ("lcicons:/resources/images/popishu.svg"));
 
 				return page;
 			}
@@ -111,9 +111,9 @@ namespace LeechCraft
 						SIGNAL (delegateEntity (const LeechCraft::Entity&,
 								int*, QObject**)));
 				connect (result,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						this,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 				return result;
 			}
 		};

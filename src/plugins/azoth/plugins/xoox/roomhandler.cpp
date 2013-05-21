@@ -484,7 +484,7 @@ namespace Xoox
 				CLEntry_->HandleMessage (message);
 
 			if (!existed)
-				Nick2Entry_.remove (nick);
+				RemoveEntry (entry.get ());
 		}
 	}
 

@@ -90,7 +90,7 @@ namespace Glance
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/glance/resources/images/glance.svg");
+		static QIcon icon ("lcicons:/glance/resources/images/glance.svg");
 		return icon;
 	}
 

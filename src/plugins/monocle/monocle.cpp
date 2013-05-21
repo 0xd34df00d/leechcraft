@@ -90,7 +90,7 @@ namespace Monocle
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/monocle/resources/images/monocle.svg");
+		static QIcon icon ("lcicons:/monocle/resources/images/monocle.svg");
 		return icon;
 	}
 

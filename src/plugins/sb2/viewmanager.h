@@ -55,6 +55,7 @@ namespace SB2
 {
 	class SBView;
 	class QuarkManager;
+	class ViewGeometryManager;
 
 	typedef std::shared_ptr<QuarkManager> QuarkManager_ptr;
 
@@ -74,6 +75,9 @@ namespace SB2
 		QStringList PreviousQuarkOrder_;
 
 		QuarkComponents_t InternalComponents_;
+
+		ViewGeometryManager *GeomManager_;
+		const bool IsDesktopMode_;
 	public:
 		ViewManager (ICoreProxy_ptr, Util::ShortcutManager*, QMainWindow*, QObject* = 0);
 
@@ -81,6 +85,8 @@ namespace SB2
 		QToolBar* GetToolbar () const;
 		QMainWindow* GetManagedWindow () const;
 		QRect GetFreeCoords () const;
+
+		bool IsDesktopMode () const;
 
 		void SecondInit ();
 		void RegisterInternalComponent (QuarkComponent_ptr);
@@ -95,6 +101,8 @@ namespace SB2
 		QuarkComponents_t FindAllQuarks () const;
 		QList<QUrl> GetAddedQuarks () const;
 		QuarkManager_ptr GetAddedQuarkManager (const QUrl&) const;
+
+		int GetWindowIndex () const;
 	private:
 		void AddComponent (QuarkComponent_ptr);
 		void AddComponent (QuarkComponent_ptr, QuarkManager_ptr);
@@ -108,10 +116,7 @@ namespace SB2
 
 		void SaveQuarkOrder ();
 		void LoadQuarkOrder ();
-
-		int GetWindowIndex () const;
 	public slots:
-		void setOrientation (Qt::Orientation);
 		void handleToolbarTopLevel (bool);
 	};
 }

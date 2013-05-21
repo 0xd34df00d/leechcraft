@@ -35,12 +35,10 @@
 #include <QtDebug>
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
-#include "core.h"
-#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
-namespace DBusManager
+namespace Sysnotify
 {
 	NotificationManager::NotificationManager (QObject *parent)
 	: QObject (parent)
@@ -56,10 +54,14 @@ namespace DBusManager
 		Connection_.reset (new QDBusInterface ("org.freedesktop.Notifications",
 					"/org/freedesktop/Notifications"));
 		if (!Connection_->isValid ())
-		{
 			qWarning () << Q_FUNC_INFO
-				<< Connection_->lastError ();
-		}
+					<< Connection_->lastError ();
+
+		auto pendingSI = Connection_->asyncCall ("GetServerInformation");
+		connect (new QDBusPendingCallWatcher (pendingSI, this),
+				SIGNAL (finished (QDBusPendingCallWatcher*)),
+				this,
+				SLOT (handleGotServerInfo (QDBusPendingCallWatcher*)));
 
 		connect (Connection_.get (),
 				SIGNAL (ActionInvoked (uint, QString)),
@@ -73,42 +75,32 @@ namespace DBusManager
 
 	bool NotificationManager::CouldNotify (const Entity& e) const
 	{
-		return XmlSettingsManager::Instance ()->
-				property ("UseNotifications").toBool () &&
-			Connection_.get () &&
-			Connection_->isValid () &&
-			e.Mime_ == "x-leechcraft/notification" &&
-			e.Additional_ ["Priority"].toInt () != PLog_ &&
-			!e.Additional_ ["Text"].toString ().isEmpty ();
+		return Connection_.get () &&
+				Connection_->isValid () &&
+				e.Mime_ == "x-leechcraft/notification" &&
+				e.Additional_ ["Priority"].toInt () != PLog_ &&
+				!e.Additional_ ["Text"].toString ().isEmpty ();
 	}
 
 	void NotificationManager::HandleNotification (const Entity& e)
 	{
-		if (!Connection_.get () ||
-				!XmlSettingsManager::Instance ()->
-					property ("UseNotifications").toBool ())
+		if (!Connection_.get ())
 			return;
 
 		QStringList actions = e.Additional_ ["NotificationActions"].toStringList ();
 		if (actions.isEmpty ())
-			DoNotify (e, false);
-		else
 		{
-			CapCheckData cd =
-			{
-				e
-			};
-
-			QDBusPendingCall pending = Connection_->
-					asyncCall ("GetCapabilities");
-			QDBusPendingCallWatcher *watcher =
-				new QDBusPendingCallWatcher (pending, this);
-			Watcher2CapCheck_ [watcher] = cd;
-			connect (watcher,
-					SIGNAL (finished (QDBusPendingCallWatcher*)),
-					this,
-					SLOT (handleCapCheckCallFinished (QDBusPendingCallWatcher*)));
+			DoNotify (e, false);
+			return;
 		}
+
+		auto pending = Connection_->asyncCall ("GetCapabilities");
+		auto watcher = new QDBusPendingCallWatcher (pending, this);
+		Watcher2CapCheck_ [watcher] = { e };
+		connect (watcher,
+				SIGNAL (finished (QDBusPendingCallWatcher*)),
+				this,
+				SLOT (handleCapCheckCallFinished (QDBusPendingCallWatcher*)));
 	}
 
 	void NotificationManager::DoNotify (const Entity& e, bool hasActions)
@@ -132,10 +124,8 @@ namespace DBusManager
 			return;
 
 		int timeout = 0;
-		if (!uus &&
-				Core::Instance ().GetProxy ())
-			timeout = Core::Instance ().GetProxy ()->GetSettingsManager ()->
-					property ("FinishedDownloadMessageTimeout").toInt () * 1000;
+		if (!uus)
+			timeout = 5000;
 
 		QList<QVariant> arguments;
 		arguments << header
@@ -163,14 +153,40 @@ namespace DBusManager
 				SLOT (handleNotificationCallFinished (QDBusPendingCallWatcher*)));
 	}
 
+	void NotificationManager::handleGotServerInfo (QDBusPendingCallWatcher *w)
+	{
+		w->deleteLater ();
+
+		QDBusPendingReply<QString, QString, QString, QString> reply = *w;
+		if (reply.isError ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< reply.error ().name ()
+					<< reply.error ().message ();
+			Connection_.reset ();
+			return;
+		}
+
+		const auto& vendor = reply.argumentAt<1> ();
+		qDebug () << Q_FUNC_INFO
+				<< "using"
+				<< reply.argumentAt<0> ()
+				<< vendor
+				<< reply.argumentAt<2> ()
+				<< reply.argumentAt<3> ();
+
+		if (vendor == "LeechCraft")
+			Connection_.reset ();
+	}
+
 	void NotificationManager::handleNotificationCallFinished (QDBusPendingCallWatcher *w)
 	{
 		QDBusPendingReply<uint> reply = *w;
 		if (reply.isError ())
 		{
 			qWarning () << Q_FUNC_INFO
-				<< reply.error ().name ()
-				<< reply.error ().message ();
+					<< reply.error ().name ()
+					<< reply.error ().message ();
 			return;
 		}
 		int id = reply.argumentAt<0> ();

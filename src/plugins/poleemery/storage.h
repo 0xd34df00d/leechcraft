@@ -29,24 +29,20 @@
 
 #pragma once
 
-#include <functional>
+#include <memory>
 #include <QObject>
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QMap>
+#include <QList>
 #include "structures.h"
-#include "oral.h"
 
 namespace LeechCraft
 {
 namespace Poleemery
 {
+	struct StorageImpl;
+
 	class Storage : public QObject
 	{
-		QSqlDatabase DB_;
-
-		oral::ObjectInfo<Account> AccountInfo_;
-		oral::ObjectInfo<Entry> EntryInfo_;
+		std::shared_ptr<StorageImpl> Impl_;
 	public:
 		Storage (QObject* = 0);
 
@@ -57,11 +53,30 @@ namespace Poleemery
 
 		QList<Account> GetAccounts () const;
 		void AddAccount (Account&);
+		void UpdateAccount (const Account&);
+		void DeleteAccount (const Account&);
 
-		QList<Entry> GetEntries (const Account&) const;
-		void AddEntry (Entry&);
+		QList<ExpenseEntry> GetExpenseEntries ();
+		QList<ExpenseEntry> GetExpenseEntries (const Account&);
+		void AddExpenseEntry (ExpenseEntry&);
+		void UpdateExpenseEntry (const ExpenseEntry&);
+		void DeleteExpenseEntry (const ExpenseEntry&);
+
+		QList<ReceiptEntry> GetReceiptEntries ();
+		QList<ReceiptEntry> GetReceiptEntries (const Account&);
+		void AddReceiptEntry (ReceiptEntry&);
+		void UpdateReceiptEntry (const ReceiptEntry&);
+		void DeleteReceiptEntry (const ReceiptEntry&);
 	private:
+		Category AddCategory (const QString&);
+		void AddNewCategories (const ExpenseEntry&, const QStringList&);
+		void LinkEntry2Cat (const ExpenseEntry&, const Category&);
+		void UnlinkEntry2Cat (const ExpenseEntry&, const Category&);
+
+		QList<ExpenseEntry> HandleNaked (const QList<NakedExpenseEntry>&);
+
 		void InitializeTables ();
+		void LoadCategories ();
 	};
 }
 }

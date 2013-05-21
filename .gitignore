@@ -13,3 +13,4 @@ src/data/*.gz
 dummyfile.cpp
 *.kdev4
 *.user
+tools/win32/build32/

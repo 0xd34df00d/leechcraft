@@ -116,7 +116,7 @@ namespace Juick
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/plugins/azoth/plugins/juick/resources/images/juick.svg");
+		static QIcon icon ("lcicons:/plugins/azoth/plugins/juick/resources/images/juick.svg");
 		return icon;
 	}
 

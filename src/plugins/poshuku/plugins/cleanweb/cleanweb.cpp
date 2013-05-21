@@ -103,7 +103,7 @@ namespace CleanWeb
 
 	QIcon CleanWeb::GetIcon () const
 	{
-		static QIcon icon (":/plugins/poshuku/plugins/cleanweb/resources/images/poshuku_cleanweb.svg");
+		static QIcon icon ("lcicons:/plugins/poshuku/plugins/cleanweb/resources/images/poshuku_cleanweb.svg");
 		return icon;
 	}
 

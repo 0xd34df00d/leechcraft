@@ -33,6 +33,7 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QMutexLocker>
+#include <QVariant>
 #include <QtDebug>
 
 QSet<QString> LeechCraft::Util::DBLock::LockedBases_;
@@ -91,7 +92,8 @@ void LeechCraft::Util::DBLock::DumpError (const QSqlError& lastError)
 
 void LeechCraft::Util::DBLock::DumpError (const QSqlQuery& lastQuery)
 {
-	qWarning () << lastQuery.lastQuery ();
+	qWarning () << "query:" << lastQuery.lastQuery ();
 	DumpError (lastQuery.lastError ());
+	qWarning () << "bound values:" << lastQuery.boundValues ();
 }
 

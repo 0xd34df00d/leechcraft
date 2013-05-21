@@ -94,7 +94,7 @@ namespace Acetamide
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/plugins/azoth/plugins/acetamide/resources/images/acetamide.svg");
+		static QIcon icon ("lcicons:/plugins/azoth/plugins/acetamide/resources/images/acetamide.svg");
 		return icon;
 	}
 

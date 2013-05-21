@@ -578,6 +578,7 @@ namespace GoogleDrive
 			mimeMap.insert ({ "application/rar", "rar" }, "application-x-archive");
 			mimeMap.insert ({ "image/png", "png" }, "image-x-generic");
 			mimeMap.insert ({ "image/jpeg", "jpeg" }, "image-x-generic");
+			mimeMap.insert ({ "application/x-iso9660-image", "iso" }, "application-x-cd-image");
 
 			QString res;
 			if (mimeMap.contains ({ mime, fileExt }))

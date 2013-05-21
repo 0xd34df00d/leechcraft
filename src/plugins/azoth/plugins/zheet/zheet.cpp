@@ -75,7 +75,7 @@ namespace Zheet
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/plugins/azoth/plugins/zheet/resources/images/zheet.svg");
+		static QIcon icon ("lcicons:/plugins/azoth/plugins/zheet/resources/images/zheet.svg");
 		return icon;
 	}
 

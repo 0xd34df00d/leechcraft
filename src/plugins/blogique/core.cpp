@@ -76,7 +76,7 @@ namespace Blogique
 
 	QIcon Core::GetIcon () const
 	{
-		static QIcon icon (":/plugins/blogique/resources/images/blogique.svg");
+		static QIcon icon ("lcicons:/plugins/blogique/resources/images/blogique.svg");
 		return icon;
 	}
 

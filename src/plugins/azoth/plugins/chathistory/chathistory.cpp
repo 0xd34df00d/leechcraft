@@ -103,7 +103,7 @@ namespace ChatHistory
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/azoth/chathistory/resources/images/chathistory.svg");
+		static QIcon icon ("lcicons:/azoth/chathistory/resources/images/chathistory.svg");
 		return icon;
 	}
 

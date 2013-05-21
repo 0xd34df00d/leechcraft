@@ -60,7 +60,7 @@ namespace ChatHistory
 		TabClass_.Description_ = tr ("Chat history viewer for the Azoth IM");
 		TabClass_.Priority_ = 40;
 		TabClass_.Features_ = TFOpenableByRequest;
-		TabClass_.Icon_ = QIcon (":/azoth/chathistory/resources/images/chathistory.svg");
+		TabClass_.Icon_ = QIcon ("lcicons:/azoth/chathistory/resources/images/chathistory.svg");
 
 		LoadDisabled ();
 	}

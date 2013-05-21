@@ -38,6 +38,7 @@
 #include <QSplashScreen>
 #include <QTime>
 #include <QDockWidget>
+#include <QDesktopWidget>
 #include <util/util.h>
 #include <util/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
@@ -84,6 +85,15 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	addToolBar (Qt::RightToolBarArea, RightDockToolbar_);
 	addToolBar (Qt::TopToolBarArea, TopDockToolbar_);
 	addToolBar (Qt::BottomToolBarArea, BottomDockToolbar_);
+
+	if (Application::instance ()->arguments ().contains ("--desktop"))
+	{
+		setWindowFlags (Qt::FramelessWindowHint);
+		connect (qApp->desktop (),
+				SIGNAL (workAreaResized (int)),
+				this,
+				SLOT (handleWorkAreaResized (int)));
+	}
 }
 
 void LeechCraft::MainWindow::Init ()
@@ -613,6 +623,18 @@ void LeechCraft::MainWindow::handleTrayIconActivated (QSystemTrayIcon::Activatio
 	}
 }
 
+void MainWindow::handleWorkAreaResized (int screen)
+{
+	auto desktop = QApplication::desktop ();
+	if (screen != desktop->screenNumber (this))
+		return;
+
+	const auto& available = desktop->availableGeometry (this);
+
+	setGeometry (available);
+	setFixedSize (available.size ());
+}
+
 void LeechCraft::MainWindow::doDelayedInit ()
 {
 	FillQuickLaunch ();
@@ -680,7 +702,7 @@ void LeechCraft::MainWindow::FillTray ()
 
 	iconMenu->addAction (Ui_.ActionQuit_);
 
-	TrayIcon_ = new QSystemTrayIcon (QIcon (":/resources/images/leechcraft.svg"), this);
+	TrayIcon_ = new QSystemTrayIcon (QIcon ("lcicons:/resources/images/leechcraft.svg"), this);
 	handleShowTrayIconChanged ();
 	TrayIcon_->setContextMenu (iconMenu);
 	connect (TrayIcon_,

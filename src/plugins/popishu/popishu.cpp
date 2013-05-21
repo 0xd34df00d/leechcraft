@@ -116,7 +116,7 @@ namespace LeechCraft
 
 			QIcon Plugin::GetIcon () const
 			{
-				static QIcon icon (":/resources/images/popishu.svg");
+				static QIcon icon ("lcicons:/resources/images/popishu.svg");
 				return icon;
 			}
 

@@ -32,13 +32,13 @@
 #include <memory>
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
+#include "ui_operationstab.h"
 
 namespace LeechCraft
 {
 namespace Poleemery
 {
-	class Storage;
-	typedef std::shared_ptr<Storage> Storage_ptr;
+	class OperationsManager;
 
 	class OperationsTab : public QWidget
 						, public ITabWidget
@@ -46,16 +46,22 @@ namespace Poleemery
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
 
-		const Storage_ptr Storage_;
+		OperationsManager * const OpsManager_;
+
+		Ui::OperationsTab Ui_;
+
 		const TabClassInfo TC_;
 		QObject * const ParentPlugin_;
 	public:
-		OperationsTab (Storage_ptr, const TabClassInfo&, QObject*);
+		OperationsTab (const TabClassInfo&, QObject*);
 
 		TabClassInfo GetTabClassInfo () const override;
 		QObject* ParentMultiTabs () override;
 		void Remove () override;
 		QToolBar* GetToolBar () const override;
+	private slots:
+		void on_Add__released ();
+		void on_Remove__released ();
 	signals:
 		void removeTab (QWidget*);
 	};

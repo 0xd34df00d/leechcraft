@@ -46,6 +46,7 @@
 #include <QVariant>
 #include <QtDebug>
 #include "oraltypes.h"
+#include "prelude.h"
 
 typedef std::shared_ptr<QSqlQuery> QSqlQuery_ptr;
 
@@ -69,103 +70,19 @@ namespace oral
 		{
 		}
 
-		const QSqlQuery_ptr& GetQuery () const
+		const QSqlQuery_ptr& GetQueryPtr () const
 		{
 			return Query_;
 		}
-	};
 
-	template<typename T>
-	struct PKey
-	{
-		typedef T value_type;
-
-		T Val_;
-
-		PKey ()
-		: Val_ ()
+		const QSqlQuery& GetQuery () const
 		{
-		}
-
-		PKey (T val)
-		: Val_ (val)
-		{
-		}
-
-		PKey& operator= (const value_type& val)
-		{
-			Val_ = val;
-			return *this;
-		}
-
-		operator value_type () const
-		{
-			return Val_;
+			return *Query_;
 		}
 	};
 
 	namespace detail
 	{
-		template<typename T>
-		struct IsPKey : std::false_type {};
-
-		template<typename U>
-		struct IsPKey<PKey<U>> : std::true_type {};
-	}
-
-	template<typename Seq, int Idx>
-	struct References
-	{
-		typedef typename std::decay<typename boost::fusion::result_of::at_c<Seq, Idx>::type>::type member_type;
-		static_assert (detail::IsPKey<member_type>::value, "References<> element must refer to a PKey<> element");
-
-		typedef typename member_type::value_type value_type;
-		value_type Val_;
-
-		References ()
-		: Val_ ()
-		{
-		}
-
-		References (value_type t)
-		: Val_ (t)
-		{
-		}
-
-		References& operator= (const value_type& val)
-		{
-			Val_ = val;
-			return *this;
-		}
-
-		operator value_type () const
-		{
-			return Val_;
-		}
-	};
-
-	namespace detail
-	{
-		template<typename T1, typename T2, template<typename U> class Container, typename F>
-		auto ZipWith (const Container<T1>& c1, const Container<T2>& c2, F f) -> Container<decltype (f (T1 (), T2 ()))>
-		{
-			Container<decltype (f (T1 (), T2 ()))> result;
-			for (auto i1 = std::begin (c1), e1 = std::end (c1),
-						i2 = std::begin (c2), e2 = std::end (c2);
-					i1 != e1 && i2 != e2; ++i1, ++i2)
-				result.push_back (f (*i1, *i2));
-			return result;
-		}
-
-		template<typename T, template<typename U> class Container, typename F>
-		auto Map (const Container<T>& c, F f) -> Container<decltype (f (T ()))>
-		{
-			Container<decltype (f (T ()))> result;
-			for (auto t : c)
-				result.push_back (f (t));
-			return result;
-		}
-
 		template<typename Seq, int Idx>
 		struct GetFieldName
 		{
@@ -208,13 +125,37 @@ namespace oral
 	template<>
 	struct Type2Name<int>
 	{
-		QString operator() () const { return  "INTEGER"; }
+		QString operator() () const { return "INTEGER"; }
+	};
+
+	template<>
+	struct Type2Name<double>
+	{
+		QString operator() () const { return "REAL"; }
+	};
+
+	template<>
+	struct Type2Name<bool>
+	{
+		QString operator() () const { return "INTEGER"; }
 	};
 
 	template<>
 	struct Type2Name<QString>
 	{
 		QString operator() () const { return "TEXT"; }
+	};
+
+	template<>
+	struct Type2Name<QDateTime>
+	{
+		QString operator() () const { return "DATETIME"; }
+	};
+
+	template<typename T>
+	struct Type2Name<Unique<T>>
+	{
+		QString operator() () const { return Type2Name<T> () () + " UNIQUE"; }
 	};
 
 	template<typename T>
@@ -235,7 +176,7 @@ namespace oral
 		QString operator() () const
 		{
 			return Type2Name<typename References<Seq, Idx>::value_type> () () +
-					" REFERENCES " + Seq::ClassName () + " (" + detail::GetFieldName<Seq, Idx>::value () + ")";
+					" REFERENCES " + Seq::ClassName () + " (" + detail::GetFieldName<Seq, Idx>::value () + ") ON DELETE CASCADE";
 		}
 	};
 
@@ -243,8 +184,6 @@ namespace oral
 	{
 		struct Types
 		{
-			typedef QStringList result_type;
-
 			template<typename T>
 			QStringList operator() (const QStringList& init, const T&) const
 			{
@@ -259,6 +198,15 @@ namespace oral
 		QVariant operator() (const T& t) const
 		{
 			return t;
+		}
+	};
+
+	template<typename T>
+	struct ToVariant<Unique<T>>
+	{
+		QVariant operator() (const Unique<T>& t) const
+		{
+			return static_cast<typename Unique<T>::value_type> (t);
 		}
 	};
 
@@ -284,14 +232,13 @@ namespace oral
 	{
 		struct Inserter
 		{
-			typedef QStringList result_type;
-
+			const bool BindPrimaryKey_;
 			QSqlQuery_ptr Q_;
 
 			template<typename T>
 			QStringList operator() (QStringList bounds, const T& t) const
 			{
-				if (!IsPKey<T>::value)
+				if (BindPrimaryKey_ || !IsPKey<T>::value)
 					Q_->bindValue (bounds.takeFirst (), ToVariant<T> {} (t));
 				return bounds;
 			}
@@ -300,6 +247,15 @@ namespace oral
 
 	template<typename T>
 	struct FromVariant
+	{
+		T operator() (const QVariant& var) const
+		{
+			return var.value<T> ();
+		}
+	};
+
+	template<typename T>
+	struct FromVariant<Unique<T>>
 	{
 		T operator() (const QVariant& var) const
 		{
@@ -331,8 +287,6 @@ namespace oral
 	{
 		struct Selector
 		{
-			typedef int result_type;
-
 			QSqlQuery_ptr Q_;
 
 			template<typename T>
@@ -353,11 +307,11 @@ namespace oral
 		};
 
 		template<typename T>
-		std::function<void (T)> MakeInserter (CachedFieldsData data, QSqlQuery_ptr insertQuery)
+		std::function<void (T)> MakeInserter (CachedFieldsData data, QSqlQuery_ptr insertQuery, bool bindPrimaryKey)
 		{
-			return [data, insertQuery] (const T& t)
+			return [data, insertQuery, bindPrimaryKey] (const T& t)
 			{
-				boost::fusion::fold<T, QStringList, Inserter> (t, data.BoundFields_, Inserter { insertQuery });
+				boost::fusion::fold<T, QStringList, Inserter> (t, data.BoundFields_, Inserter { bindPrimaryKey, insertQuery });
 				if (!insertQuery->exec ())
 					throw QueryException ("insert query execution failed", insertQuery);
 			};
@@ -397,11 +351,11 @@ namespace oral
 			QSqlQuery_ptr insertQuery (new QSqlQuery (data.DB_));
 			insertQuery->prepare (insert);
 
-			auto inserter = MakeInserter<T> (data, insertQuery);
+			auto inserter = MakeInserter<T> (data, insertQuery, false);
 			auto insertUpdater = [inserter, insertQuery] (T& t)
 			{
 				inserter (t);
-				constexpr const auto index = FindPKey<T>::result_type::value;
+				constexpr auto index = FindPKey<T>::result_type::value;
 				boost::fusion::at_c<index> (t) = FromVariant<typename std::decay<typename boost::fusion::result_of::at_c<T, index>::type>::type> {} (insertQuery->lastInsertId ());
 			};
 			return
@@ -412,19 +366,19 @@ namespace oral
 		}
 
 		template<typename T>
-		QPair<QSqlQuery_ptr, std::function<void (T)>> AdaptUpdate (CachedFieldsData data)
+		QPair<QSqlQuery_ptr, std::function<void (T)>> AdaptUpdate (const CachedFieldsData& data)
 		{
 			const auto index = FindPKey<T>::result_type::value;
 
-			data.Fields_.removeAt (index);
-			data.BoundFields_.removeAt (index);
+			auto removedFields = data.Fields_;
+			auto removedBoundFields = data.BoundFields_;
 
-			const auto& statements = ZipWith (data.Fields_, data.BoundFields_,
+			const auto& fieldName = removedFields.takeAt (index);
+			const auto& boundName = removedBoundFields.takeAt (index);
+
+			const auto& statements = ZipWith (removedFields, removedBoundFields,
 					[] (const QString& s1, const QString& s2) -> QString
 						{ return s1 + " = " + s2; });
-
-			const auto& fieldName = GetFieldName<T, index>::value ();
-			const auto& boundName = GetBoundName<T, index>::value ();
 
 			const auto& update = "UPDATE " + data.Table_ +
 					" SET " + QStringList { statements }.join (", ") +
@@ -433,7 +387,7 @@ namespace oral
 			QSqlQuery_ptr updateQuery (new QSqlQuery (data.DB_));
 			updateQuery->prepare (update);
 
-			return { updateQuery, MakeInserter<T> (data, updateQuery) };
+			return { updateQuery, MakeInserter<T> (data, updateQuery, true) };
 		}
 
 		template<typename T>
@@ -443,14 +397,14 @@ namespace oral
 
 			const auto& boundName = data.BoundFields_.at (index);
 			const auto& del = "DELETE FROM " + data.Table_ +
-					"WHERE " + data.Fields_.at (index) + " = " + boundName + ";";
+					" WHERE " + data.Fields_.at (index) + " = " + boundName + ";";
 
 			QSqlQuery_ptr deleteQuery (new QSqlQuery (data.DB_));
 			deleteQuery->prepare (del);
 
 			auto deleter = [deleteQuery, boundName] (const T& t)
 			{
-				constexpr const auto index = FindPKey<T>::result_type::value;
+				constexpr auto index = FindPKey<T>::result_type::value;
 				deleteQuery->bindValue (boundName,
 						ToVariant<typename std::decay<typename boost::fusion::result_of::at_c<T, index>::type>::type> {} (boost::fusion::at_c<index> (t)));
 				if (!deleteQuery->exec ())
@@ -502,7 +456,7 @@ namespace oral
 		struct FieldAppender<To, OrigSeq, OrigIdx, References<RefSeq, RefIdx>>
 		{
 			typedef typename boost::fusion::result_of::as_vector<
-					typename boost::fusion::result_of::push_back<
+					typename boost::fusion::result_of::push_front<
 						To,
 						FieldInfo<OrigSeq, OrigIdx, RefSeq, boost::mpl::int_<RefIdx>>
 					>::type
@@ -533,8 +487,6 @@ namespace oral
 
 		struct Ref2Select
 		{
-			typedef QStringList result_type;
-
 			template<typename OrigSeq, typename OrigIdx, typename RefSeq, typename RefIdx>
 			QStringList operator() (const QStringList& init, const FieldInfo<OrigSeq, OrigIdx, RefSeq, RefIdx>&) const
 			{
@@ -581,7 +533,7 @@ namespace oral
 		};
 
 		template<typename T, typename ObjInfo>
-		typename std::enable_if<CollectRefs<T>::type_list::size::value >= 1>::type AdaptSelectRef (const CachedFieldsData& data, ObjInfo& info)
+		typename std::enable_if<CollectRefs<T>::type_list::size::value == 1>::type AdaptSelectRef (const CachedFieldsData& data, ObjInfo& info)
 		{
 			typedef typename CollectRefs<T>::type_list references_list;
 			const auto& statements = boost::fusion::fold (references_list {}, QStringList {}, Ref2Select {});
@@ -595,6 +547,59 @@ namespace oral
 
 			info.SelectByFKeys_ = selectQuery;
 			info.SelectByFKeysActor_ = MakeBinder<T, references_list> { selectQuery };
+		}
+
+		template<typename T, typename Ret>
+		struct WrapAsFunc
+		{
+			typedef std::function<QList<Ret> (T)> type;
+		};
+
+		template<typename T>
+		struct MakeSingleBinder
+		{
+			const CachedFieldsData Data_;
+
+			template<typename Vec, typename OrigObj, typename OrigIdx, typename RefObj, typename RefIdx>
+			auto operator() (Vec vec, const FieldInfo<OrigObj, OrigIdx, RefObj, RefIdx>&) -> decltype (boost::fusion::push_back (vec, typename WrapAsFunc<RefObj, T>::type {}))
+			{
+				const auto& boundName = GetBoundName<OrigObj, OrigIdx::value>::value ();
+				const auto& query = "SELECT " + QStringList { Data_.Fields_ }.join (", ") +
+						" FROM " + Data_.Table_ +
+						" WHERE " + GetFieldName<OrigObj, OrigIdx::value>::value () + " = " + boundName +
+						";";
+				QSqlQuery_ptr selectQuery (new QSqlQuery (Data_.DB_));
+				selectQuery->prepare (query);
+
+				typename WrapAsFunc<RefObj, T>::type inserter = [selectQuery, boundName] (const RefObj& obj) -> QList<T>
+				{
+					selectQuery->bindValue (boundName,
+							ToVariant<typename std::decay<typename boost::fusion::result_of::at<RefObj, RefIdx>::type>::type> {} (boost::fusion::at<RefIdx> (obj)));
+					return PerformSelect<T> (selectQuery);
+				};
+
+				return boost::fusion::push_back (vec, inserter);
+			}
+		};
+
+		template<typename T, typename ObjInfo>
+		typename std::enable_if<CollectRefs<T>::type_list::size::value >= 2>::type AdaptSelectRef (const CachedFieldsData& data, ObjInfo& info)
+		{
+			typedef typename CollectRefs<T>::type_list references_list;
+			const auto& statements = boost::fusion::fold (references_list {}, QStringList {}, Ref2Select {});
+
+			const auto& selectAll = "SELECT " + QStringList { data.Fields_ }.join (", ") +
+					" FROM " + data.Table_ +
+					(statements.isEmpty () ? "" : " WHERE ") + statements.join (" AND ") +
+					";";
+			QSqlQuery_ptr selectQuery (new QSqlQuery (data.DB_));
+			selectQuery->prepare (selectAll);
+
+			info.SelectByFKeys_ = selectQuery;
+			info.SelectByFKeysActor_ = MakeBinder<T, references_list> { selectQuery };
+
+			auto singleSelectors = boost::fusion::fold (references_list {}, boost::fusion::vector<> {}, MakeSingleBinder<T> { data });
+			info.SingleFKeySelectors_ = boost::fusion::as_vector (singleSelectors);
 		}
 
 		template<typename T, typename ObjInfo>
@@ -618,10 +623,21 @@ namespace oral
 		};
 
 		template<typename T>
-		struct ObjectInfoFKeysHelper<T, typename std::enable_if<CollectRefs<T>::type_list::size::value >= 1, void>::type>
+		struct ObjectInfoFKeysHelper<T, typename std::enable_if<CollectRefs<T>::type_list::size::value == 1, void>::type>
 		{
 			QSqlQuery_ptr SelectByFKeys_;
 			std::function<QList<T> (typename MakeBinder<T, typename CollectRefs<T>::type_list>::objects_vector)> SelectByFKeysActor_;
+		};
+
+		template<typename T>
+		struct ObjectInfoFKeysHelper<T, typename std::enable_if<CollectRefs<T>::type_list::size::value >= 2, void>::type>
+		{
+			typedef typename MakeBinder<T, typename CollectRefs<T>::type_list>::objects_vector objects_vector;
+			QSqlQuery_ptr SelectByFKeys_;
+			std::function<QList<T> (objects_vector)> SelectByFKeysActor_;
+
+			typedef typename boost::mpl::transform<objects_vector, WrapAsFunc<boost::mpl::_1, T>>::type transform_view;
+			typename boost::fusion::result_of::as_vector<transform_view>::type SingleFKeySelectors_;
 		};
 	}
 
@@ -668,7 +684,7 @@ namespace oral
 	ObjectInfo<T> Adapt (const QSqlDatabase& db)
 	{
 		const QList<QString> fields = detail::GetFieldsNames<T> {} ();
-		const QList<QString> boundFields = detail::Map (fields, [] (const QString& str) -> QString { return ':' + str; });
+		const QList<QString> boundFields = Map (fields, [] (const QString& str) -> QString { return ':' + str; });
 
 		const auto& table = T::ClassName ();
 

@@ -98,7 +98,7 @@ namespace Keywords
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/plugins/poshuku/plugins/keywords/resources/images/keywords.svg");
+		static QIcon icon ("lcicons:/plugins/poshuku/plugins/keywords/resources/images/keywords.svg");
 		return icon;
 	}
 

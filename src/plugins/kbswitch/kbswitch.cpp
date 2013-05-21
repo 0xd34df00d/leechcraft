@@ -88,7 +88,7 @@ namespace KBSwitch
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/kbswitch/resources/images/kbswitch.svg");
+		static QIcon icon ("lcicons:/kbswitch/resources/images/kbswitch.svg");
 		return icon;
 	}
 

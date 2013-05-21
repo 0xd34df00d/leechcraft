@@ -67,7 +67,8 @@ Rectangle {
                     actionIconURL: tabClassIcon
                     textTooltip: tabClassName
                     isHighlight: openedTabsCount
-                    isStrongHighlight: openedTabsCount
+                    isStrongHighlight: isCurrentTab
+                    transparentStyle: true
                     isCurrent: isCurrentTab
 
                     Timer {

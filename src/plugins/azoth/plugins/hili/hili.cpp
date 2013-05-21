@@ -83,7 +83,7 @@ namespace HiLi
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/plugins/azoth/plugins/hili/resources/images/hili.svg");
+		static QIcon icon ("lcicons:/plugins/azoth/plugins/hili/resources/images/hili.svg");
 		return icon;
 	}
 

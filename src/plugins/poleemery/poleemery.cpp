@@ -29,9 +29,13 @@
 
 #include "poleemery.h"
 #include <QIcon>
-#include "storage.h"
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "operationstab.h"
 #include "accountstab.h"
+#include "graphstab.h"
+#include "xmlsettingsmanager.h"
+#include "core.h"
+#include "currenciesmanager.h"
 
 namespace LeechCraft
 {
@@ -39,29 +43,49 @@ namespace Poleemery
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Storage_.reset (new Storage);
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "poleemerysettings.xml");
+
+		XSD_->SetDataSource ("CurrenciesView",
+				Core::Instance ().GetCurrenciesManager ()->GetSettingsModel ());
+
+		Core::Instance ().SetCoreProxy (proxy);
 
 		TabClasses_.append ({
 				{
 					GetUniqueID () + "/Operations",
-					tr ("Operations"),
+					tr ("Finances operations"),
 					tr ("All operations on personal finances."),
-					QIcon (),
-					1,
-					TFOpenableByRequest
-				},
-				[this] (const TabClassInfo& tc) { MakeTab<OperationsTab> (tc); }
-			});
-		TabClasses_.append ({
-				{
-					GetUniqueID () + "/Accounts",
-					tr ("Accounts"),
-					tr ("Accounts management tab."),
 					QIcon (),
 					2,
 					TFOpenableByRequest
 				},
-				[this] (const TabClassInfo& tc) { MakeTab<AccountsTab> (tc); }
+				[this] (const TabClassInfo& tc)
+					{ MakeTab (new OperationsTab (tc, this), tc); }
+			});
+		TabClasses_.append ({
+				{
+					GetUniqueID () + "/Accounts",
+					tr ("Finances accounts"),
+					tr ("Finances accounts management tab."),
+					QIcon (),
+					1,
+					TFOpenableByRequest
+				},
+				[this] (const TabClassInfo& tc)
+					{ MakeTab (new AccountsTab (tc, this), tc); }
+			});
+		TabClasses_.append ({
+				{
+					GetUniqueID () + "/Graphs",
+					tr ("Spending graphs"),
+					tr ("Tab with various graphs helping to analyze spendings."),
+					QIcon (),
+					1,
+					TFOpenableByRequest
+				},
+				[this] (const TabClassInfo& tc)
+					{ MakeTab (new GraphsTab (tc, this), tc); }
 			});
 	}
 
@@ -117,16 +141,20 @@ namespace Poleemery
 		pos->second (pos->first);
 	}
 
-	template<typename T>
-	void Plugin::MakeTab (const TabClassInfo& tc)
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
-		auto tab = new T (Storage_, tc, this);
+		return XSD_;
+	}
+
+	void Plugin::MakeTab (QWidget *tab, const TabClassInfo& tc)
+	{
 		connect (tab,
 				SIGNAL (removeTab (QWidget*)),
 				this,
 				SIGNAL (removeTab (QWidget*)));
 		emit addNewTab (tc.VisibleName_, tab);
 		emit changeTabIcon (tab, tc.Icon_);
+		emit raiseTab (tab);
 	}
 }
 }

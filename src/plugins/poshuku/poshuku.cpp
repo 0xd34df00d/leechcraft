@@ -246,7 +246,7 @@ namespace Poshuku
 
 	QIcon Poshuku::GetIcon () const
 	{
-		static QIcon icon (":/resources/images/poshuku.svg");
+		static QIcon icon ("lcicons:/resources/images/poshuku.svg");
 		return icon;
 	}
 

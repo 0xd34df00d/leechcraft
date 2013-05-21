@@ -97,7 +97,7 @@ namespace LMP
 						"<td align='center' valign='middle'><img src='%1' width='%2' height='%3'></td>"
 						"<td align='center' valign='middle'><b>%4</b><br>%5</td>"
 						"</tr></table>")
-						.arg (":/lmp/resources/images/lmp.svg")
+						.arg ("lcicons:/lmp/resources/images/lmp.svg")
 						.arg (48)
 						.arg (48)
 						.arg ("LMP")

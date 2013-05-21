@@ -62,6 +62,7 @@ namespace AdvancedNotifications
 		Cat2IconName_ [AN::CatDownloads] = "folder-downloads";
 		Cat2IconName_ [AN::CatIM] = "mail-unread-new";
 		Cat2IconName_ [AN::CatOrganizer] = "view-calendar";
+		Cat2IconName_ [AN::CatGeneric] = "preferences-desktop-notification-bell";
 	}
 
 	void GeneralHandler::Handle (const Entity& e)

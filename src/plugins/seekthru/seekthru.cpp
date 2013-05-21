@@ -119,7 +119,7 @@ namespace LeechCraft
 
 			QIcon SeekThru::GetIcon () const
 			{
-				static QIcon icon (":/resources/images/seekthru.svg");
+				static QIcon icon ("lcicons:/resources/images/seekthru.svg");
 				return icon;
 			}
 

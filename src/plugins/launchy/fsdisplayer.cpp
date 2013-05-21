@@ -193,7 +193,7 @@ namespace Launchy
 		};
 
 		addCustomCat ("LeechCraft", "X-LeechCraft", "leechcraft",
-				QIcon (":/resources/images/leechcraft.svg"));
+				QIcon ("lcicons:/resources/images/leechcraft.svg"));
 		addCustomCat ("Favorites", "X-Favorites", "favorites",
 				Proxy_->GetIcon ("favorites"));
 	}

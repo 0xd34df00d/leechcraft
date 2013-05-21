@@ -27,53 +27,27 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <memory>
-#include <QObject>
-#include <QDBusInterface>
-#include <QPointer>
-#include <interfaces/structures.h>
-
-class QDBusPendingCallWatcher;
+#include "taskbarproxy.h"
+#include <QtDebug>
+#include <util/x11/xwrapper.h>
 
 namespace LeechCraft
 {
-namespace DBusManager
+namespace Krigstask
 {
-	class NotificationManager : public QObject
+	TaskbarProxy::TaskbarProxy (QObject *parent)
+	: QObject (parent)
 	{
-		Q_OBJECT
+	}
 
-		std::auto_ptr<QDBusInterface> Connection_;
+	void TaskbarProxy::raiseWindow (const QString& widStr)
+	{
+		Util::XWrapper::Instance ().RaiseWindow (widStr.toULong ());
+	}
 
-		struct CapCheckData
-		{
-			Entity Entity_;
-		};
-		QMap<QDBusPendingCallWatcher*, CapCheckData> Watcher2CapCheck_;
-
-		struct ActionData
-		{
-			Entity E_;
-			QObject_ptr Handler_;
-			QStringList Actions_;
-		};
-		QMap<QDBusPendingCallWatcher*, ActionData> Watcher2AD_;
-		QMap<uint, ActionData> CallID2AD_;
-	public:
-		NotificationManager (QObject* = 0);
-
-		void Init ();
-		bool CouldNotify (const Entity&) const;
-		void HandleNotification (const Entity&);
-	private:
-		void DoNotify (const Entity&, bool);
-	private slots:
-		void handleNotificationCallFinished (QDBusPendingCallWatcher*);
-		void handleCapCheckCallFinished (QDBusPendingCallWatcher*);
-		void handleActionInvoked (uint, QString);
-		void handleNotificationClosed (uint);
-	};
+	void TaskbarProxy::minimizeWindow (const QString& widStr)
+	{
+		Util::XWrapper::Instance ().MinimizeWindow (widStr.toULong ());
+	}
 }
 }

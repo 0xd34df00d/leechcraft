@@ -29,7 +29,6 @@
 
 #pragma once
 
-#include <memory>
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 #include "ui_accountstab.h"
@@ -40,9 +39,8 @@ namespace LeechCraft
 {
 namespace Poleemery
 {
-	class Account;
-	class Storage;
-	typedef std::shared_ptr<Storage> Storage_ptr;
+	class AccountsManager;
+	struct Account;
 
 	class AccountsTab : public QWidget
 					  , public ITabWidget
@@ -50,15 +48,21 @@ namespace Poleemery
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
 
-		const Storage_ptr Storage_;
+		AccountsManager *AccsManager_;
+
 		const TabClassInfo TC_;
 		QObject * const ParentPlugin_;
 
 		Ui::AccountsTab Ui_;
 
 		QStandardItemModel *AccsModel_;
+
+		enum Roles
+		{
+			Acc = Qt::UserRole + 1
+		};
 	public:
-		AccountsTab (Storage_ptr, const TabClassInfo&, QObject*);
+		AccountsTab (const TabClassInfo&, QObject*);
 
 		TabClassInfo GetTabClassInfo () const override;
 		QObject* ParentMultiTabs () override;

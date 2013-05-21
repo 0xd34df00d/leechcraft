@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/lhtr" >
     <file>resources/images/lhtr.svg</file>
+    <file>resources/scripts/jquery.js</file>
   </qresource>
 </RCC>

@@ -35,50 +35,301 @@
 #include <QSqlQuery>
 #include <util/util.h>
 #include <util/dblock.h>
-#include "structures.h"
 #include "oral.h"
 
 namespace LeechCraft
 {
 namespace Poleemery
 {
+	struct StorageImpl
+	{
+		QSqlDatabase DB_;
+
+		oral::ObjectInfo<Account> AccountInfo_;
+		oral::ObjectInfo<NakedExpenseEntry> NakedExpenseEntryInfo_;
+		oral::ObjectInfo<ReceiptEntry> ReceiptEntryInfo_;
+		oral::ObjectInfo<Category> CategoryInfo_;
+		oral::ObjectInfo<CategoryLink> CategoryLinkInfo_;
+
+		QHash<QString, Category> CatCache_;
+		QHash<int, Category> CatIDCache_;
+	};
+
 	Storage::Storage (QObject *parent)
 	: QObject (parent)
-	, DB_ (QSqlDatabase::addDatabase ("QSQLITE3", "Poleemery_Connection"))
+	, Impl_ (new StorageImpl)
 	{
+		Impl_->DB_ = QSqlDatabase::addDatabase ("QSQLITE", "Poleemery_Connection");
 		const auto& dir = Util::CreateIfNotExists ("poleemeery");
-		DB_.setDatabaseName (dir.absoluteFilePath ("database.db"));
+		Impl_->DB_.setDatabaseName (dir.absoluteFilePath ("database.db"));
 
-		if (!DB_.open ())
+		if (!Impl_->DB_.open ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to open database:"
-					<< DB_.lastError ().text ();
+					<< Impl_->DB_.lastError ().text ();
 			throw std::runtime_error ("Poleemery database creation failed");
 		}
 
+		{
+			QSqlQuery query (Impl_->DB_);
+			query.exec ("PRAGMA foreign_keys = ON;");
+		}
+
 		InitializeTables ();
+		LoadCategories ();
 	}
 
 	QList<Account> Storage::GetAccounts () const
 	{
-		return AccountInfo_.DoSelectAll_ ();
+		try
+		{
+			return Impl_->AccountInfo_.DoSelectAll_ ();
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
 	}
 
 	void Storage::AddAccount (Account& acc)
 	{
-		AccountInfo_.DoInsert_ (acc);
+		try
+		{
+			Impl_->AccountInfo_.DoInsert_ (acc);
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
 	}
 
-	QList<Entry> Storage::GetEntries (const Account& parent) const
+	void Storage::UpdateAccount (const Account& acc)
 	{
-		return EntryInfo_.SelectByFKeysActor_ (boost::fusion::make_vector (parent));
+		try
+		{
+			Impl_->AccountInfo_.DoUpdate_ (acc);
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
 	}
 
-	void Storage::AddEntry (Entry& entry)
+	void Storage::DeleteAccount (const Account& acc)
 	{
-		EntryInfo_.DoInsert_ (entry);
+		try
+		{
+			Impl_->AccountInfo_.DoDelete_ (acc);
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
 	}
+
+	QList<ExpenseEntry> Storage::GetExpenseEntries ()
+	{
+		try
+		{
+			return HandleNaked (Impl_->NakedExpenseEntryInfo_.DoSelectAll_ ());
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
+	}
+
+	QList<ExpenseEntry> Storage::GetExpenseEntries (const Account& parent)
+	{
+		try
+		{
+			return HandleNaked (Impl_->NakedExpenseEntryInfo_.SelectByFKeysActor_ (boost::fusion::make_vector (parent)));
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
+	}
+
+	void Storage::AddExpenseEntry (ExpenseEntry& entry)
+	{
+		Util::DBLock lock (Impl_->DB_);
+		lock.Init ();
+
+		try
+		{
+			Impl_->NakedExpenseEntryInfo_.DoInsert_ (entry);
+			AddNewCategories (entry, entry.Categories_);
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
+
+		lock.Good ();
+	}
+
+	void Storage::UpdateExpenseEntry (const ExpenseEntry& entry)
+	{
+		Util::DBLock lock (Impl_->DB_);
+		lock.Init ();
+
+		Impl_->NakedExpenseEntryInfo_.DoUpdate_ (entry);
+
+		auto nowCats = entry.Categories_;
+
+		for (const auto& cat : boost::fusion::at_c<1> (Impl_->CategoryLinkInfo_.SingleFKeySelectors_) (entry))
+		{
+			if (!nowCats.removeAll (Impl_->CatIDCache_.value (cat.Category_).Name_))
+				Impl_->CategoryLinkInfo_.DoDelete_ (cat);
+		}
+
+		if (!nowCats.isEmpty ())
+			AddNewCategories (entry, nowCats);
+
+		lock.Good ();
+	}
+
+	void Storage::DeleteExpenseEntry (const ExpenseEntry& entry)
+	{
+		try
+		{
+			Impl_->NakedExpenseEntryInfo_.DoDelete_ (entry);
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
+	}
+
+	QList<ReceiptEntry> Storage::GetReceiptEntries ()
+	{
+		try
+		{
+			return Impl_->ReceiptEntryInfo_.DoSelectAll_ ();
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
+	}
+
+	QList<ReceiptEntry> Storage::GetReceiptEntries (const Account& account)
+	{
+		try
+		{
+			return Impl_->ReceiptEntryInfo_.SelectByFKeysActor_ (boost::fusion::make_vector (account));
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
+	}
+
+	void Storage::AddReceiptEntry (ReceiptEntry& entry)
+	{
+		try
+		{
+			Impl_->ReceiptEntryInfo_.DoInsert_ (entry);
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
+	}
+
+	void Storage::UpdateReceiptEntry (const ReceiptEntry& entry)
+	{
+		Impl_->ReceiptEntryInfo_.DoUpdate_ (entry);
+	}
+
+	void Storage::DeleteReceiptEntry (const ReceiptEntry& entry)
+	{
+		Impl_->ReceiptEntryInfo_.DoDelete_ (entry);
+	}
+
+	Category Storage::AddCategory (const QString& name)
+	{
+		Category cat { name };
+		Impl_->CategoryInfo_.DoInsert_ (cat);
+		Impl_->CatCache_ [name] = cat;
+		Impl_->CatIDCache_ [cat.ID_] = cat;
+		return cat;
+	}
+
+	void Storage::AddNewCategories (const ExpenseEntry& entry, const QStringList& cats)
+	{
+		for (const auto& cat : cats)
+		{
+			if (!Impl_->CatCache_.contains (cat))
+				AddCategory (cat);
+			LinkEntry2Cat (entry, Impl_->CatCache_ [cat]);
+		}
+	}
+
+	void Storage::LinkEntry2Cat (const ExpenseEntry& entry, const Category& category)
+	{
+		CategoryLink link (category, entry);
+		Impl_->CategoryLinkInfo_.DoInsert_ (link);
+	}
+
+	void Storage::UnlinkEntry2Cat (const ExpenseEntry& entry, const Category& category)
+	{
+		const auto& link = Impl_->CategoryLinkInfo_.SelectByFKeysActor_ (boost::fusion::make_vector (category, entry));
+		if (!link.isEmpty ())
+			Impl_->CategoryLinkInfo_.DoDelete_ (link.first ());
+	}
+
+	QList<ExpenseEntry> Storage::HandleNaked (const QList<NakedExpenseEntry>& nakedItems)
+	{
+		QList<ExpenseEntry> entries;
+
+		try
+		{
+			for (const auto& naked : nakedItems)
+			{
+				ExpenseEntry entry { naked };
+
+				const auto& cats = boost::fusion::at_c<1> (Impl_->CategoryLinkInfo_.SingleFKeySelectors_) (naked);
+				for (const auto& cat : cats)
+					entry.Categories_ << Impl_->CatIDCache_ [cat.Category_].Name_;
+
+				entries << entry;
+			}
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
+
+		return entries;
+	}
+
 
 	namespace oral
 	{
@@ -100,6 +351,11 @@ namespace Poleemery
 				case AccType::Cash:
 					return "Cash";
 				}
+
+				qWarning () << Q_FUNC_INFO
+						<< "unknown type"
+						<< static_cast<int> (type);
+				return {};
 			}
 		};
 
@@ -119,18 +375,61 @@ namespace Poleemery
 
 	void Storage::InitializeTables ()
 	{
-		AccountInfo_ = oral::Adapt<Account> (DB_);
-		EntryInfo_ = oral::Adapt<Entry> (DB_);
+		Impl_->AccountInfo_ = oral::Adapt<Account> (Impl_->DB_);
+		Impl_->NakedExpenseEntryInfo_ = oral::Adapt<NakedExpenseEntry> (Impl_->DB_);
+		Impl_->ReceiptEntryInfo_ = oral::Adapt<ReceiptEntry> (Impl_->DB_);
+		Impl_->CategoryInfo_ = oral::Adapt<Category> (Impl_->DB_);
+		Impl_->CategoryLinkInfo_ = oral::Adapt<CategoryLink> (Impl_->DB_);
 
-		const auto& tables = DB_.tables ();
+		const auto& tables = Impl_->DB_.tables ();
 
 		QMap<QString, QString> queryCreates;
-		queryCreates [Account::ClassName ()] = AccountInfo_.CreateTable_;
-		queryCreates [Entry::ClassName ()] = EntryInfo_.CreateTable_;
+		queryCreates [Account::ClassName ()] = Impl_->AccountInfo_.CreateTable_;
+		queryCreates [NakedExpenseEntry::ClassName ()] = Impl_->NakedExpenseEntryInfo_.CreateTable_;
+		queryCreates [ReceiptEntry::ClassName ()] = Impl_->ReceiptEntryInfo_.CreateTable_;
+		queryCreates [Category::ClassName ()] = Impl_->CategoryInfo_.CreateTable_;
+		queryCreates [CategoryLink::ClassName ()] = Impl_->CategoryLinkInfo_.CreateTable_;
 
+		Util::DBLock lock (Impl_->DB_);
+		lock.Init ();
+
+		QSqlQuery query (Impl_->DB_);
+
+		bool tablesCreated = false;
 		for (const auto& key : queryCreates.keys ())
 			if (!tables.contains (key))
-				QSqlQuery (DB_).exec (queryCreates [key]);
+			{
+				tablesCreated = true;
+				if (!query.exec (queryCreates [key]))
+					{
+						Util::DBLock::DumpError (query);
+						throw std::runtime_error ("cannot create tables");
+					}
+			}
+
+		lock.Good ();
+
+		// Otherwise queries created by oral::Adapt() don't work.
+		if (tablesCreated)
+			InitializeTables ();
+	}
+
+	void Storage::LoadCategories ()
+	{
+		try
+		{
+			for (const auto& cat : Impl_->CategoryInfo_.DoSelectAll_ ())
+			{
+				Impl_->CatCache_ [cat.Name_] = cat;
+				Impl_->CatIDCache_ [cat.ID_] = cat;
+			}
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
 	}
 }
 }

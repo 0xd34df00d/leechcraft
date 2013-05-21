@@ -36,6 +36,7 @@
 #include "protocol.h"
 #include "util.h"
 #include "buddy.h"
+#include "accountconfigdialog.h"
 
 namespace LeechCraft
 {
@@ -43,9 +44,8 @@ namespace Azoth
 {
 namespace VelvetBird
 {
-	Account::Account (const QString& name, PurpleAccount *acc, Protocol *proto)
+	Account::Account (PurpleAccount *acc, Protocol *proto)
 	: QObject (proto)
-	, Name_ (name)
 	, Account_ (acc)
 	, Proto_ (proto)
 	{
@@ -89,7 +89,7 @@ namespace VelvetBird
 
 	QString Account::GetAccountName () const
 	{
-		return Name_;
+		return QString::fromUtf8 (purple_account_get_string (Account_, "AccountName", ""));
 	}
 
 	QString Account::GetOurNick () const
@@ -99,7 +99,7 @@ namespace VelvetBird
 
 	void Account::RenameAccount (const QString& name)
 	{
-		Name_ = name;
+		purple_account_set_string (Account_, "AccountName", name.toUtf8 ().constData ());
 		emit accountRenamed (name);
 	}
 
@@ -119,6 +119,22 @@ namespace VelvetBird
 
 	void Account::OpenConfigurationDialog ()
 	{
+		AccountConfigDialog dia;
+
+		const auto& curAlias = QString::fromUtf8 (purple_account_get_alias (Account_));
+		dia.SetNick (curAlias);
+
+		const auto& curUser = QString::fromUtf8 (purple_account_get_username (Account_));
+		dia.SetUser (curUser);
+
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		if (curAlias != dia.GetNick ())
+			purple_account_set_alias (Account_, dia.GetNick ().toUtf8 ().constData ());
+
+		if (curUser != dia.GetUser ())
+			purple_account_set_username (Account_, dia.GetUser ().toUtf8 ().constData ());
 	}
 
 	EntryStatus Account::GetState () const
@@ -128,17 +144,7 @@ namespace VelvetBird
 
 	void Account::ChangeState (const EntryStatus& status)
 	{
-		if (status.State_ == SOffline)
-		{
-			if (!purple_account_is_disconnected (Account_))
-				purple_account_disconnect (Account_);
-			purple_account_set_enabled (Account_, "leechcraft.azoth", false);
-			CurrentStatus_ = status;
-			emit statusChanged (CurrentStatus_);
-			return;
-		}
-
-		if (!purple_account_get_password (Account_))
+		if (status.State_ != SOffline && !purple_account_get_password (Account_))
 		{
 			const auto& str = Util::GetPassword ("Azoth." + GetAccountID (),
 					tr ("Enter password for account %1:").arg (GetAccountName ()), Proto_, true);

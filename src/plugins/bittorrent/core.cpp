@@ -155,7 +155,7 @@ namespace BitTorrent
 	, TabWidget_ (0)
 	, Menu_ (0)
 	, ShortcutMgr_ (0)
-	, TorrentIcon_ (":/resources/images/bittorrent.svg")
+	, TorrentIcon_ ("lcicons:/resources/images/bittorrent.svg")
 	{
 		setObjectName ("BitTorrent Core");
 		ExternalAddress_ = tr ("Unknown");

@@ -32,6 +32,7 @@
 #include <QTimer>
 #include <QtDebug>
 #include "item.h"
+#include <util/sys/xdg.h>
 
 namespace LeechCraft
 {
@@ -94,16 +95,11 @@ namespace Launchy
 			if (!result.isNull ())
 				return result;
 
-			for (auto ext : { ".png", ".svg", ".xpm", ".jpg" })
-			{
-				if (QFile::exists ("/usr/share/pixmaps/" + name + ext))
-					return QIcon ("/usr/share/pixmaps/" + name + ext);
-				if (QFile::exists ("/usr/local/share/pixmaps/" + name + ext))
-					return QIcon ("/usr/local/share/pixmaps/" + name + ext);
-			}
+			result = Util::XDG::GetAppIcon (name);
+			if (!result.isNull ())
+				return result;
 
-			if (result.isNull ())
-				qDebug () << Q_FUNC_INFO << name << "not found";
+			qDebug () << Q_FUNC_INFO << name << "not found";
 
 			return result;
 		}

@@ -33,7 +33,6 @@
 #include <QTranslator>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
-#include <interfaces/ientityhandler.h>
 
 namespace LeechCraft
 {
@@ -42,10 +41,9 @@ namespace DBusManager
 	class DBusManager : public QObject
 						, public IInfo
 						, public IHaveSettings
-						, public IEntityHandler
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings IEntityHandler);
+		Q_INTERFACES (IInfo IHaveSettings)
 
 		std::auto_ptr<QTranslator> Translator_;
 		std::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
@@ -63,9 +61,6 @@ namespace DBusManager
 		QIcon GetIcon () const;
 
 		std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
-
-		EntityTestHandleResult CouldHandle (const Entity&) const;
-		void Handle (Entity);
 	};
 }
 }

@@ -28,6 +28,12 @@
 					<label lang="en" value="Oxygen" />
 				</option>
 			</item>
+			<item type="combobox" property="PluginsIconset" mayHaveDataSource="true">
+				<label value="Plugins icon set:" />
+				<option name="Default" default="true">
+					<label value="Default" />
+				</option>
+			</item>
 			<item type="combobox" property="ColorTheme" mayHaveDataSource="true">
 				<label value="Color theme:" />
 				<option name="default" default="true">
