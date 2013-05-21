@@ -42,13 +42,18 @@
 #include <util/util.h>
 #include "core.h"
 #include "tweet.h"
+#include <qt4/QtGui/QStyleOption>
 
 namespace LeechCraft
 {
 namespace Woodpecker
 {
+	const int ImageSpace_ = 50;
+	const int IconSize = 48;
+	const int Padding = 5;
+	
 	TwitDelegate::TwitDelegate (QObject *parent)
-	: QAbstractItemDelegate (parent)
+	: QStyledItemDelegate (parent)
 	{
 		Parent_ = parent;
 	}
@@ -60,34 +65,29 @@ namespace Woodpecker
 
 	void TwitDelegate::paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
-		QRect r = option.rect;
+		const QStyleOptionViewItemV4 o = option;
+		QStyle *style = o.widget ?
+				o.widget->style () :
+				QApplication::style ();
 
-		//Color: #C4C4C4
-		QPen linePen (QColor::fromRgb (211, 211, 211), 1, Qt::SolidLine);
+		auto r = o.rect;
+		const int maxIconHeight = r.height () - Padding * 2;
 
-		//Color: #005A83
-		QPen lineMarkedPen (QColor::fromRgb (0, 90, 131), 1, Qt::SolidLine);
-
-		//Color: #333
-		QPen fontPen (QColor::fromRgb (51, 51, 51), 1, Qt::SolidLine);
-
-		//Color: #Link
-		QPen linkFontPen (QColor::fromRgb (51, 51, 255), 1, Qt::SolidLine);
-
-		//Color: #fff
-		QPen fontMarkedPen (Qt::white, 1, Qt::SolidLine);
+		const QPen linePen (o.palette.color (QPalette::AlternateBase), 1, Qt::SolidLine);
+		QPen lineMarkedPen (o.palette.color (QPalette::Mid) , 1, Qt::SolidLine);
+		QPen fontPen (o.palette.color (QPalette::Text), 1, Qt::SolidLine);
+		QPen fontMarkedPen (o.palette.color (QPalette::HighlightedText), 1, Qt::SolidLine);
 
 		QFont mainFont;
 		mainFont.setFamily (mainFont.defaultFamily ());
 		mainFont.setPixelSize(10);
 
+		const auto& bgBrush = QBrush (o.palette.color(QPalette::Base));
+		const auto& selBgBrush = QBrush (o.palette.color(QPalette::Highlight));
+		
 		if (option.state & QStyle::State_Selected)
 		{
-			QLinearGradient gradientSelected (r.left (), r.top (), r.left (), r.height () + r.top ());
-			gradientSelected.setColorAt (0.0, QColor::fromRgb (119, 213, 247));
-			gradientSelected.setColorAt (0.9, QColor::fromRgb (27, 134, 183));
-			gradientSelected.setColorAt (1.0, QColor::fromRgb (0, 120, 174));
-			painter->setBrush (gradientSelected);
+			painter->setBrush (selBgBrush);
 			painter->drawRect (r);
 
 			// Border
@@ -98,13 +98,13 @@ namespace Woodpecker
 			painter->drawLine (r.topLeft (), r.bottomLeft ());
 
 			painter->setPen (fontMarkedPen);
-
 		} 
 		else 
 		{
 			// Background
 			// Alternating colors
-			painter->setBrush ((index.row () % 2) ? Qt::white : QColor (252, 252, 252));
+			
+			painter->setBrush (bgBrush);
 			painter->drawRect (r);
 
 			// border
@@ -113,10 +113,10 @@ namespace Woodpecker
 			painter->drawLine (r.topRight (), r.bottomRight ());
 			painter->drawLine (r.bottomLeft (), r.bottomRight ());
 			painter->drawLine (r.topLeft (), r.bottomLeft ());
-
+			
 			painter->setPen (fontPen);
 		}
-
+		
 		// Get title, description and icon
 		auto currentTweet = index.data (Qt::UserRole).value<std::shared_ptr<Tweet>> ();
 		if (!currentTweet) 
@@ -129,30 +129,32 @@ namespace Woodpecker
 		const auto& time = currentTweet->GetDateTime ().toString ();
 		QTextDocument* doc = currentTweet->GetDocument ();
 
+		painter->setRenderHints (QPainter::HighQualityAntialiasing | QPainter::Antialiasing);
+		// Icon
 		QIcon ic = QIcon (index.data (Qt::DecorationRole).value<QPixmap>());
 		if (!ic.isNull ()) 
 		{
-			// Icon
-			r = option.rect.adjusted (5, 10, -10, -10);
+			r = option.rect.adjusted (Padding, Padding * 2, -Padding * 2, -Padding * 2);
 			ic.paint (painter, r, Qt::AlignVCenter | Qt::AlignLeft);
 		}
 
 		// Text
-		r = option.rect.adjusted (ImageSpace_, 4, -10, -22);
+		r = option.rect.adjusted (ImageSpace_, Padding, -Padding, -Padding);
 		painter->setFont (mainFont);
 		doc->setTextWidth (r.width ());
+		doc->documentLayout ()->setPaintDevice (painter->device ());
+		doc->setDefaultStyleSheet (QString("body {color: \"red\";};"));
+		qDebug () << "Stylesheet: " << "color:" + fontMarkedPen.color ().name () + ";";
 		painter->save ();
 		painter->translate (r.left (), r.top ());
 		doc->drawContents (painter, r.translated (-r.topLeft ()));
 		painter->restore ();
 
 		// Author
-		r = option.rect.adjusted (ImageSpace_ + 4, 30, -10, 0);
+		r = option.rect.adjusted (ImageSpace_ + Padding, r.height() - mainFont.pixelSize() - Padding * 2, -Padding * 2, 0);
 		auto author_rect = std::unique_ptr<QRect> (new QRect (r.left (), r.bottom () - painter->fontMetrics ().height () - 8, painter->fontMetrics ().width (author), r.height ()));
-		painter->setPen (linkFontPen);
 		painter->setFont (mainFont);
 		painter->drawText (*(author_rect), Qt::AlignLeft, author, &r);
-		painter->setPen (fontPen);
 
 		// Time
 		r = option.rect.adjusted (ImageSpace_, 30, -10, 0);
@@ -163,7 +165,9 @@ namespace Woodpecker
 
 	QSize TwitDelegate::sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
-		return QSize (200, 60); // very dumb value
+		QSize result = QStyledItemDelegate::sizeHint (option, index);
+		result.setHeight (std::max (result.height (), IconSize));
+		return result;
 	}
 
 	bool TwitDelegate::editorEvent (QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem& option, const QModelIndex& index)
