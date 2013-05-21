@@ -201,7 +201,7 @@ namespace NetStoreManager
 		const auto& e =Util::MakeNotification ("NetStoreManager",
 				tr ("File %1 was uploaded successfully")
 						.arg ("<em>" + QFileInfo (filePath).fileName () + "</em>"),
-				PWarning_);
+				PInfo_);
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 
 		if (Autoshare_.remove (filePath))
