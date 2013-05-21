@@ -137,6 +137,11 @@ namespace Hestia
 		return QList<QAction*> ();
 	}
 
+	QList<InlineTagInserter> LocalBloggingPlatform::GetInlineTagInserters () const
+	{
+		return QList<InlineTagInserter> ();
+	}
+
 	QList<QWidget*> LocalBloggingPlatform::GetBlogiqueSideWidgets () const
 	{
 		return { };

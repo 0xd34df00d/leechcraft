@@ -606,6 +606,9 @@ namespace Blogique
 			for (auto action : ibp->GetEditorActions ())
 				PostEdit_->RemoveAction (action);
 
+			for (auto action : InlineTagInserters_)
+				PostEdit_->RemoveAction (action);
+
 			on_SelectTags__toggled (false);
 			Ui_.SelectTags_->setCheckable (false);
 			for (auto w : SidePluginsWidgets_)
@@ -664,6 +667,17 @@ namespace Blogique
 
 		for (auto action : ibp->GetEditorActions ())
 			PostEdit_->AppendAction (action);
+
+		for (const auto& inserter : ibp->GetInlineTagInserters ())
+		{
+			auto iate = qobject_cast<IAdvancedHTMLEditor*> (PostEditWidget_);
+			if (!iate)
+				continue;
+
+			auto act = iate->AddInlineTagInserter (inserter.TagName_, inserter.Parameters_);
+			inserter.ActionCustomizer_ (act);
+			InlineTagInserters_ << act;
+		}
 
 		auto iahe = qobject_cast<IAdvancedHTMLEditor*> (PostEditWidget_);
 		if (iahe)

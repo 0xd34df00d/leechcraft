@@ -59,6 +59,8 @@ namespace Metida
 			tr ("Add LJ user"), this))
 	, LJPoll_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("office-chart-pie"),
 			tr ("Create poll"), this))
+	, LJCut_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("user-properties"),
+			tr ("Insert LJ cut"), this))
 	, FirstSeparator_ (new QAction (this))
 	, MessageCheckingTimer_ (new QTimer (this))
 	, CommentsCheckingTimer_ (new QTimer (this))
@@ -181,6 +183,16 @@ namespace Metida
 		return { FirstSeparator_, LJUser_, LJPoll_ };
 	}
 
+	QList<InlineTagInserter> LJBloggingPlatform::GetInlineTagInserters () const
+	{
+		return { InlineTagInserter { "lj-cut", QVariantMap (), [] (QAction *action)
+				{
+					action->setText ("Insert cut");
+					action->setIcon (Core::Instance ().GetCoreProxy ()->
+							GetIcon ("distribute-vertical-equal"));
+				} } };
+	}
+
 	QList<QWidget*> LJBloggingPlatform::GetBlogiqueSideWidgets () const
 	{
 		return { new PostOptionsWidget, new RecentCommentsSideWidget };
@@ -203,11 +215,11 @@ namespace Metida
 
 	QList<QPair<QRegExp, QString>> LJBloggingPlatform::GetHtml2RichPairs () const
 	{
- 		QPair<QRegExp, QString> ljUser = { QRegExp ("<a\\shref=\"http:\\/\\/(.+).livejournal.com\\/profile\"\\starget=\"_blank\">"
-				"<img\\ssrc=\".+userinfo.gif.+\".+><\\/a>"
-				"<a\\shref=\"http:\\/\\/(.+).livejournal.com\"\\starget=\"_blank\">(.+)<\\/a>"),
-				QString ("<lj user=\"\\1\">") };
-		return { ljUser };
+//  		QPair<QRegExp, QString> ljUser = { QRegExp ("<a\\shref=\"http:\\/\\/(.+).livejournal.com\\/profile\"\\starget=\"_blank\">"
+// 				"<img\\ssrc=\".+userinfo.gif.+\".+><\\/a>"
+// 				"<a\\shref=\"http:\\/\\/(.+).livejournal.com\"\\starget=\"_blank\">(.+)<\\/a>"),
+// 				QString ("<lj user=\"\\1\">") };
+		return { };
 	}
 
 	QList<QPair<QRegExp, QString>> LJBloggingPlatform::GetRich2HtmlPairs () const

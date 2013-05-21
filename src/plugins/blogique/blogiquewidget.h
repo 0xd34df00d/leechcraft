@@ -79,6 +79,7 @@ namespace Blogique
 		QAction *ProgressBarLabelAction_;
 		QLabel *ProgressBarLabel_;
 		QAction *ProgressBarAction_;
+		QList<QAction*> InlineTagInserters_;
 
 		DraftEntriesWidget *DraftEntriesWidget_;
 		BlogEntriesWidget *BlogEntriesWidget_;

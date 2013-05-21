@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <functional>
 #include <QMetaType>
 #include <QAction>
 
@@ -52,6 +53,14 @@ namespace Blogique
 	 * widgets.
 	 *
 	 */
+
+	struct InlineTagInserter
+	{
+		QString TagName_;
+		QVariantMap Parameters_;
+		std::function<void (QAction*)> ActionCustomizer_;
+	};
+
 	class IBloggingPlatform
 	{
 	public:
@@ -225,6 +234,9 @@ namespace Blogique
 		 * @return The List of actions witch should be added to editor widget.
 		 */
 		virtual QList<QAction*> GetEditorActions () const = 0;
+
+		virtual QList<InlineTagInserter> GetInlineTagInserters () const = 0;
+
 
 		/** @brief Returns the widgets used for extended posting features.
 		 *
