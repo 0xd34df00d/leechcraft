@@ -67,7 +67,7 @@ namespace NetStoreManager
 
 		Ui_.FilesView_->setModel (ProxyModel_);
 		ProxyModel_->setSourceModel (TreeModel_);
-		TreeModel_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Modify") });
+		TreeModel_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Used space"), tr ("Modify") });
 		Ui_.FilesView_->header ()->setResizeMode (Columns::Name, QHeaderView::Interactive);
 
 		connect (Ui_.FilesView_->header (),
@@ -318,7 +318,7 @@ namespace NetStoreManager
 
 	namespace
 	{
-		QList<QStandardItem*> CreateItems (const StorageItem& storageItem, ICoreProxy_ptr proxy)
+		QList<QStandardItem*> CreateItems (const StorageItem& storageItem, quint64 folderSize, ICoreProxy_ptr proxy)
 		{
 			QStandardItem *name = new QStandardItem (storageItem.Name_);
 			name->setEditable (false);
@@ -338,12 +338,15 @@ namespace NetStoreManager
 						<< "for file"
 						<< storageItem.Name_
 						<< storageItem.ID_;
+			QStandardItem *size = new QStandardItem (Util::MakePrettySize (storageItem
+					.IsDirectory_ ? folderSize : storageItem.Size_));
+			size->setEditable (false);
 
 			QStandardItem *modify = new QStandardItem (storageItem.ModifyDate_
 					.toString ("dd.MM.yy hh:mm"));
 			modify->setEditable (false);
 
-			return { name, modify };
+			return { name, size, modify };
 		}
 	}
 
@@ -418,6 +421,26 @@ namespace NetStoreManager
 		func (sfl, GetSelectedIDs ());
 	}
 
+	quint64 ManagerTab::GetFolderSize (const QByteArray& id) const
+	{
+		quint64 size = 0;
+		QList<StorageItem> childItems;
+		for (const auto& item : Id2Item_.values ())
+			if (item.ParentID_ == id)
+				if (item.IsDirectory_ &&
+						((item.IsTrashed_ && Id2Item_ [id].IsTrashed_) ||
+						(!item.IsTrashed_ && !Id2Item_ [id].IsTrashed_)))
+					childItems << item;
+				else if (((item.IsTrashed_ && Id2Item_ [id].IsTrashed_) ||
+						(!item.IsTrashed_ && !Id2Item_ [id].IsTrashed_)))
+					size += item.Size_;
+
+		for (const auto& item : childItems)
+			size += GetFolderSize (item.ID_);
+
+		return size;
+	}
+
 	void ManagerTab::ShowListItemsWithParent (const QByteArray& parentId, bool inTrash)
 	{
 		ClearModel ();
@@ -433,15 +456,19 @@ namespace NetStoreManager
 		}
 
 		for (const auto& item : Id2Item_.values ())
+		{
+			quint64 folderSize = 0;
+				if (item.IsDirectory_)
+					folderSize = GetFolderSize (item.ID_);
 			if (!inTrash &&
 					!item.IsTrashed_)
 			{
 				if (parentId.isNull () &&
 						!Id2Item_.contains (item.ParentID_))
-					TreeModel_->appendRow (CreateItems (item, Proxy_));
+					TreeModel_->appendRow (CreateItems (item, folderSize, Proxy_));
 				else if (!parentId.isNull () &&
 						item.ParentID_ == parentId)
-					TreeModel_->appendRow (CreateItems (item, Proxy_));
+					TreeModel_->appendRow (CreateItems (item, folderSize, Proxy_));
 			}
 			else if (inTrash &&
 					item.IsTrashed_)
@@ -449,15 +476,16 @@ namespace NetStoreManager
 				if (parentId.isNull () &&
 						(!Id2Item_.contains (item.ParentID_) ||
 						!Id2Item_ [item.ParentID_].IsTrashed_))
-					TreeModel_->appendRow (CreateItems (item, Proxy_));
+					TreeModel_->appendRow (CreateItems (item, folderSize, Proxy_));
 				else if (!parentId.isNull () &&
 						item.ParentID_ == parentId &&
 						Id2Item_ [parentId].IsTrashed_)
-					TreeModel_->appendRow (CreateItems (item, Proxy_));
+					TreeModel_->appendRow (CreateItems (item, folderSize, Proxy_));
 				else if (!parentId.isNull () &&
 						!Id2Item_ [parentId].IsTrashed_)
 					ShowListItemsWithParent (QByteArray (), true);
 			}
+		}
 	}
 
 	void ManagerTab::handleRefresh ()

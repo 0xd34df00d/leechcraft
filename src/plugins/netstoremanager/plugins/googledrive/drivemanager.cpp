@@ -660,7 +660,7 @@ namespace GoogleDrive
 
 			driveItem.OriginalFileName_ = map ["originalFilename"].toString ();
 			driveItem.Md5_ = map ["md5Checksum"].toString ();
-			driveItem.FileSize_ = map ["fileSize"].toLongLong ();
+			driveItem.FileSize_ = map ["quotaBytesUsed"].toLongLong ();
 
 			for (const auto& ownerName : map ["ownerNames"].toList ())
 				driveItem.OwnerNames_ << ownerName.toString ();

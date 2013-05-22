@@ -56,6 +56,7 @@ namespace NetStoreManager
 	enum Columns
 	{
 		Name,
+		Size,
 		Modify
 	};
 
@@ -136,7 +137,7 @@ namespace NetStoreManager
 		QByteArray GetCurrentID () const;
 
 		void CallOnSelection (std::function<void (ISupportFileListings *sfl, QList<QByteArray> ids)>);
-
+		quint64 GetFolderSize (const QByteArray& id) const;
 		void ShowListItemsWithParent (const QByteArray& parentId = QByteArray (),
 				bool inTrash = false);
 

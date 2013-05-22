@@ -303,6 +303,7 @@ namespace GoogleDrive
 			storageItem.ID_ = item.Id_.toUtf8 ();
 			storageItem.ParentID_ = item.ParentId_.toUtf8 ();
 			storageItem.Name_ = item.Name_;
+			storageItem.Size_ = item.FileSize_;
 			storageItem.ModifyDate_ = item.ModifiedDate_;
 			storageItem.Hash_ = item.Md5_.toUtf8 ();
 			storageItem.HashType_ = StorageItem::HashType::Md5;

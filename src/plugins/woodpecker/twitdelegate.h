@@ -31,7 +31,7 @@
 
 #include <memory>
 #include <QPainter>
-#include <QAbstractItemDelegate>
+#include <QStyledItemDelegate>
 #include <QRect>
 #include <interfaces/structures.h>
 
@@ -39,19 +39,14 @@ namespace LeechCraft
 {
 namespace Woodpecker
 {
-	class TwitDelegate : public QAbstractItemDelegate
+	class TwitDelegate : public QStyledItemDelegate
 	{
-		QObject *Parent_;
-
-		const int ImageSpace_ = 50;
-		
 	public:
 		TwitDelegate (QObject *parent = 0);
 		
 		void paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
 		QSize sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const;
 		bool editorEvent (QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem& option, const QModelIndex& index);
-		QObject *parent ();
 	};
 }
 }
