@@ -16,6 +16,7 @@ Item {
 
     property alias isHovered: actionMouseArea.containsMouse
 
+    property string actionText
     property string textTooltip
     property string overlayText
 
@@ -78,11 +79,32 @@ Item {
         Image {
             id: actionImageElem
 
-            anchors.fill: parent
+            anchors.top: parent.top
+            anchors.left: parent.left
+            width: Math.min(parent.width, parent.height)
+            height: width
 
             source: actionIconScales ? (actionIconURL + '/' + width) : actionIconURL
             smooth: true
             cache: false
+
+            fillMode: Image.PreserveAspectFit
+        }
+
+        Text {
+            id: actionTextElem
+
+            anchors.verticalCenter: actionImageElem.verticalCenter
+            anchors.left: actionImageElem.right
+            anchors.leftMargin: 2
+            anchors.right: parent.right
+
+            visible: orientation != "vertical" && actionText.length > 0
+
+            text: actionText
+            elide: Text.ElideRight
+
+            font.pointSize: 7
         }
 
         Common { id: buttCommon }
@@ -147,8 +169,8 @@ Item {
         opacity: isHighlight ? 1 : 0
         Behavior on opacity { PropertyAnimation {} }
 
-        width: parent.width / (orientation == "vertical" ? 12 : 2)
-        height: parent.width / (orientation == "vertical" ? 2 : 12)
+        width: orientation == "vertical" ? parent.height / 12 : parent.width / 2
+        height: orientation == "vertical" ? parent.width / 2 : parent.height / 12
         radius: 1
 
         anchors.bottom: orientation == "vertical" ? undefined : parent.bottom
@@ -165,8 +187,8 @@ Item {
         opacity: isStrongHighlight ? 1 : 0
         Behavior on opacity { PropertyAnimation {} }
 
-        width: parent.width / (orientation == "vertical" ? 12 : 2)
-        height: parent.width / (orientation == "vertical" ? 2 : 12)
+        width: orientation == "vertical" ? parent.height / 12 : parent.width / 2
+        height: orientation == "vertical" ? parent.width / 2 : parent.height / 12
         radius: 1
 
         anchors.top: orientation == "vertical" ? undefined : parent.top
