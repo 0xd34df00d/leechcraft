@@ -61,7 +61,7 @@ namespace Util
 	 * \code{.cpp}
 	 * ICoreProxy_ptr proxy; // core proxy object passed to IInfo::Init()
 	 * View_->rootContext ()->setContextProperty ("colorProxy",
-	 *		 new Util::ColorThemeProxy (proxy->GetColorThemeManager ()));
+	 *		 new Util::ColorThemeProxy (proxy->GetColorThemeManager (), parent));
 	 * \endcode
 	 *
 	 * Here the color theme proxy object is added by the "colorProxy"
@@ -123,7 +123,7 @@ namespace Util
 
 		IColorThemeManager *Manager_;
 	public:
-		ColorThemeProxy (IColorThemeManager*, QObject* = 0);
+		ColorThemeProxy (IColorThemeManager*, QObject*);
 
 #ifdef GEN_RUN
 #define DECL_PROP(group,col) \

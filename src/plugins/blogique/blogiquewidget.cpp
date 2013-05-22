@@ -418,7 +418,7 @@ namespace Blogique
 				TagsProxyModel_);
 		Ui_.Tags_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (Core::Instance ()
-						.GetCoreProxy ()->GetColorThemeManager ()));
+						.GetCoreProxy ()->GetColorThemeManager (), this));
 		Ui_.Tags_->engine ()->addImageProvider (ImageProviderID,
 				new Util::ThemeImageProvider (Core::Instance ().GetCoreProxy ()));
 		Ui_.Tags_->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,

@@ -142,7 +142,7 @@ namespace Launchy
 		View_->rootContext ()->setContextProperty ("itemsModelFilter", ItemsProxyModel_);
 		View_->rootContext ()->setContextProperty ("catsModel", CatsModel_);
 		View_->rootContext ()->setContextProperty ("colorProxy",
-				new Util::ColorThemeProxy (proxy->GetColorThemeManager ()));
+				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), parent));
 
 		connect (View_,
 				SIGNAL (statusChanged (QDeclarativeView::Status)),
