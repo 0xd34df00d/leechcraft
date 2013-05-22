@@ -172,6 +172,10 @@ namespace VelvetBird
 	{
 	}
 
+	void Buddy::ChatTabClosed ()
+	{
+	}
+
 	void Buddy::Send (ConvIMMessage *msg)
 	{
 		Store (msg);

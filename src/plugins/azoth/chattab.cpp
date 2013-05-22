@@ -252,6 +252,9 @@ namespace Azoth
 	{
 		Ui_.View_->setFocusProxy (nullptr);
 
+		if (auto entry = GetEntry<ICLEntry> ())
+			entry->ChatTabClosed ();
+
 		SetChatPartState (CPSGone);
 
 		qDeleteAll (HistoryMessages_);

@@ -122,6 +122,7 @@ namespace Xoox
 		void ShowInfo ();
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
 		void MarkMsgsRead ();
+		void ChatTabClosed ();
 
 		// IAdvancedCLEntry
 		AdvancedFeatures GetAdvancedFeatures () const;
@@ -182,6 +183,8 @@ namespace Xoox
 		void permsChanged ();
 		void entryGenerallyChanged ();
 		void messagesAreRead ();
+
+		void chatTabClosed ();
 
 		void attentionDrawn (const QString&, const QString&);
 		void moodChanged (const QString&);

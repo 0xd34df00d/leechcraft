@@ -103,6 +103,7 @@ namespace Xoox
 		void ShowInfo ();
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
 		void MarkMsgsRead ();
+		void ChatTabClosed ();
 
 		// IMUCEntry
 		MUCFeatures GetMUCFeatures () const;

@@ -501,6 +501,10 @@ namespace Azoth
 		 */
 		virtual void MarkMsgsRead () = 0;
 
+		/** @brief Called by Azoth when the chat with the entry is closed.
+		 */
+		virtual void ChatTabClosed () = 0;
+
 		/** @brief This signal should be emitted whenever a new message
 		 * is received.
 		 *
