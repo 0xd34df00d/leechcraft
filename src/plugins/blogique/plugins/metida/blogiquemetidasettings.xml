@@ -31,5 +31,20 @@
 				<label value="Automatically fill information about current song" />
 			</item>
 		</groupbox>
+		<groupbox>
+			<label value="Like buttons" />
+			<item type="checkbox" property="SaveSelectedButtons" default="true">
+				<label value="Save selected like-buttons" />
+			</item>
+			<item type="combobox" property="LikeButtonPosition">
+				<label lang="en" value="Like buttons position:" />
+				<option name="top">
+					<label value="At the top of the post" />
+				</option>
+				<option name="bottom" default="true">
+					<label value="At the bottom of the post" />
+				</option>
+			</item>
+		</groupbox>
 	</page>
 </settings>

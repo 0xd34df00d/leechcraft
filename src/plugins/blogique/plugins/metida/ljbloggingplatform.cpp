@@ -43,6 +43,7 @@
 #include "localstorage.h"
 #include "recentcommentssidewidget.h"
 #include "xmlsettingsmanager.h"
+#include "polldialog.h"
 
 namespace LeechCraft
 {
@@ -56,8 +57,10 @@ namespace Metida
 	, PluginProxy_ (0)
 	, LJUser_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("user-properties"),
 			tr ("Add LJ user"), this))
-	, LJCut_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("view-split-top-bottom"),
-			"Cut", this))
+	, LJPoll_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("office-chart-pie"),
+			tr ("Create poll"), this))
+	, LJCut_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("user-properties"),
+			tr ("Insert LJ cut"), this))
 	, FirstSeparator_ (new QAction (this))
 	, MessageCheckingTimer_ (new QTimer (this))
 	, CommentsCheckingTimer_ (new QTimer (this))
@@ -68,10 +71,10 @@ namespace Metida
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleAddLJUser ()));
-		connect (LJUser_,
+		connect (LJPoll_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (handleAddLJCut ()));
+				SLOT (handleAddLJPoll ()));
 
 		connect (MessageCheckingTimer_,
 				SIGNAL (timeout ()),
@@ -177,7 +180,17 @@ namespace Metida
 
 	QList<QAction*> LJBloggingPlatform::GetEditorActions () const
 	{
-		return { FirstSeparator_, LJUser_, LJCut_ };
+		return { FirstSeparator_, LJUser_, LJPoll_ };
+	}
+
+	QList<InlineTagInserter> LJBloggingPlatform::GetInlineTagInserters () const
+	{
+		return { InlineTagInserter { "lj-cut", QVariantMap (), [] (QAction *action)
+				{
+					action->setText ("Insert cut");
+					action->setIcon (Core::Instance ().GetCoreProxy ()->
+							GetIcon ("distribute-vertical-equal"));
+				} } };
 	}
 
 	QList<QWidget*> LJBloggingPlatform::GetBlogiqueSideWidgets () const
@@ -198,6 +211,24 @@ namespace Metida
 	void LJBloggingPlatform::Release ()
 	{
 		saveAccounts ();
+	}
+
+	QList<QPair<QRegExp, QString>> LJBloggingPlatform::GetHtml2RichPairs () const
+	{
+//  		QPair<QRegExp, QString> ljUser = { QRegExp ("<a\\shref=\"http:\\/\\/(.+).livejournal.com\\/profile\"\\starget=\"_blank\">"
+// 				"<img\\ssrc=\".+userinfo.gif.+\".+><\\/a>"
+// 				"<a\\shref=\"http:\\/\\/(.+).livejournal.com\"\\starget=\"_blank\">(.+)<\\/a>"),
+// 				QString ("<lj user=\"\\1\">") };
+		return { };
+	}
+
+	QList<QPair<QRegExp, QString>> LJBloggingPlatform::GetRich2HtmlPairs () const
+	{
+		QPair<QRegExp, QString> ljUser = { QRegExp ("<lj\\suser=\"(.+)\">(.+)(<\\/lj>)?"),
+			QString ("<a href=\"http://\\1.livejournal.com/profile\" target=\"_blank\">"
+					"<img src=\"http://l-stat.livejournal.com/img/userinfo.gif?v=17080\"></a>"
+					"<a href=\"http://\\1.livejournal.com\" target=\"_blank\">\\1</a>\\2") };
+		return { ljUser };
 	}
 
 	void LJBloggingPlatform::RestoreAccounts ()
@@ -253,11 +284,53 @@ namespace Metida
 				tr ("Enter LJ user name"));
 		if (name.isEmpty ())
 			return;
+
+		emit insertTag (QString ("<lj user=\"%1\">").arg (name));
 	}
 
-	void LJBloggingPlatform::handleAddLJCut ()
+	void LJBloggingPlatform::handleAddLJPoll ()
 	{
+		PollDialog pollDlg;
+		if (pollDlg.exec () == QDialog::Rejected)
+			return;
 
+		QStringList pqParts;
+		QString pqPart = QString ("<lj-pq type=\"%1\" %2>%3%4</lj-pq>");
+		bool isPqParam = false;
+		for (const auto& pollType : pollDlg.GetPollTypes ())
+		{
+			const auto& map = pollDlg.GetPollFields (pollType);
+			QStringList pqParams;
+			if (pollType == "check" ||
+					pollType == "radio" ||
+					pollType == "drop")
+			{
+				isPqParam = false;
+				for (const auto& value : map.values ())
+					pqParams << QString ("<lj-pi>%1</lj-pi>")
+							.arg (value.toString ());
+			}
+			else
+			{
+				isPqParam = true;
+				for (const auto& key : map.keys ())
+					pqParams << QString ("%1=\"%2\"")
+							.arg (key)
+							.arg (map [key].toString ());
+			}
+			pqParts << pqPart
+					.arg (pollType)
+					.arg (isPqParam ? pqParams.join (" ") : QString ())
+					.arg (pollDlg.GetPollQuestion (pollType))
+					.arg (!isPqParam ? pqParams.join (" ") : QString ());
+		}
+
+		QString pollPart = QString ("<lj-poll name=\"%1\" whovote=\"%2\" whoview=\"%3\">%4</lj-poll>")
+				.arg (pollDlg.GetPollName ())
+				.arg (pollDlg.GetWhoCanVote ())
+				.arg (pollDlg.GetWhoCanView ())
+				.arg (pqParts.join (""));
+		emit insertTag (pollPart);
 	}
 
 	void LJBloggingPlatform::handleAccountValidated (bool validated)

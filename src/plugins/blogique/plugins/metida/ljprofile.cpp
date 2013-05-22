@@ -188,6 +188,7 @@ namespace Metida
 	void LJProfile::handleGotTags (const QHash<QString, int>& tags)
 	{
 		ProfileData_.Tags_ = tags;
+		emit tagsUpdated (tags);
 	}
 
 	void LJProfile::handleAvatarDownloadFinished ()

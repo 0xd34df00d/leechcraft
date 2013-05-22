@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2010-2013  Oleg Linkin
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,52 +27,52 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QWidget>
-#include <interfaces/blogique/iblogiquesidewidget.h>
-#include <interfaces/blogique/ipostoptionswidget.h>
-#include "ui_postoptionswidget.h"
+#include "tagsproxymodel.h"
+#include "blogiquewidget.h"
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-namespace Hestia
-{
-	class LocalBlogAccount;
-
-	class PostOptionsWidget : public QWidget
-							, public IBlogiqueSideWidget
-							, public IPostOptionsWidget
+	TagsProxyModel::TagsProxyModel (QObject *parent)
+	: QSortFilterProxyModel (parent)
 	{
-		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blogique::IBlogiqueSideWidget
-				LeechCraft::Blogique::IPostOptionsWidget)
+		setDynamicSortFilter (true);
+		setFilterCaseSensitivity (Qt::CaseInsensitive);
+	}
 
-		Ui::PostOptions Ui_;
-		LocalBlogAccount *Account_;
+	bool TagsProxyModel::filterAcceptsRow (int sourceRow,
+			const QModelIndex& sourceParent) const
+	{
+		QModelIndex index = sourceModel ()->index (sourceRow, 0, sourceParent);
 
-	public:
-		PostOptionsWidget (QWidget *parent = 0);
+		return sourceModel ()->data (index).toString ()
+				.startsWith (filterRegExp ().pattern ());
+	}
 
-		QString GetName () const;
-		SideWidgetType GetWidgetType () const;
-		QVariantMap GetPostOptions () const;
-		void SetPostOptions (const QVariantMap& map);
-		QVariantMap GetCustomData () const;
-		void SetCustomData (const QVariantMap& map);
-		void SetAccount (QObject *account);
+	bool TagsProxyModel::lessThan (const QModelIndex& left, const QModelIndex& right) const
+	{
+		const int leftData = sourceModel ()->data (left, BlogiqueWidget::TagFrequency)
+				.toInt ();
+		const int rightData = sourceModel ()->data (right, BlogiqueWidget::TagFrequency)
+				.toInt ();
 
-		QStringList GetTags () const;
-		void SetTags (const QStringList& tags);
-		QDateTime GetPostDate () const;
-		void SetPostDate (const QDateTime& date);
+		return leftData > rightData;
+	}
 
-	private slots:
-		void on_CurrentTime__released ();
-	};
+	int TagsProxyModel::GetCount () const
+	{
+		return rowCount ();
+	}
+
+	QString TagsProxyModel::GetTagName (int idx)
+	{
+		return mapToSource (index (idx, 0)).data ().toString ();
+	}
+
+	void TagsProxyModel::countUpdated ()
+	{
+		emit countChanged ();
+	}
 }
 }
-}
-

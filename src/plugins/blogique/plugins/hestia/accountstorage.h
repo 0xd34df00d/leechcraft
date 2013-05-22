@@ -65,6 +65,7 @@ namespace Hestia
 		QSqlQuery AddEntryTag_;
 		QSqlQuery RemoveEntryTags_;
 		QSqlQuery GetEntryTags_;
+		QSqlQuery GetTags_;
 
 	public:
 		enum class Mode
@@ -87,6 +88,7 @@ namespace Hestia
 		QList<Entry> GetEntriesByDate (const QDate& date);
 		QMap<QDate, int> GetEntriesCountByDate ();
 		Entry GetFullEntry (qint64 entryId);
+		QHash<QString, int> GetAllTags ();
 	private:
 		void CreateTables ();
 		void PrepareQueries ();

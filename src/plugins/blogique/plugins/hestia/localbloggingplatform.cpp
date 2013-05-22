@@ -39,7 +39,6 @@
 #include "accountconfigurationwidget.h"
 #include "core.h"
 #include "localblogaccount.h"
-#include "postoptionswidget.h"
 
 namespace LeechCraft
 {
@@ -138,9 +137,14 @@ namespace Hestia
 		return QList<QAction*> ();
 	}
 
+	QList<InlineTagInserter> LocalBloggingPlatform::GetInlineTagInserters () const
+	{
+		return QList<InlineTagInserter> ();
+	}
+
 	QList<QWidget*> LocalBloggingPlatform::GetBlogiqueSideWidgets () const
 	{
-		return { new PostOptionsWidget };
+		return { };
 	}
 
 	void LocalBloggingPlatform::SetPluginProxy (QObject *proxy)
@@ -156,6 +160,16 @@ namespace Hestia
 	void LocalBloggingPlatform::Release ()
 	{
 		saveAccounts ();
+	}
+
+	QList<QPair<QRegExp, QString>> LocalBloggingPlatform::GetRich2HtmlPairs () const
+	{
+		return {};
+	}
+
+	QList<QPair<QRegExp, QString>> LocalBloggingPlatform::GetHtml2RichPairs () const
+	{
+		return {};
 	}
 
 	void LocalBloggingPlatform::RestoreAccounts ()

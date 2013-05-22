@@ -64,6 +64,9 @@ namespace Metida
 		bool EntryVisibility_;
 		bool UsedRTE_;
 		bool NotifyByEmail_;
+		QStringList LikeButtons_;
+		QUrl RepostUrl_;
+		bool IsRepost_;
 
 		LJEventProperties ()
 		: CurrentMoodId_ (-1)
@@ -75,6 +78,7 @@ namespace Metida
 		, EntryVisibility_ (true)
 		, UsedRTE_ (true)
 		, NotifyByEmail_ (true)
+		, IsRepost_ (false)
 		{
 		}
 	};
@@ -154,6 +158,7 @@ namespace Metida
 
 		void RequestLastEntries (int count);
 		void RequestStatistics ();
+		void RequestTags ();
 		void RequestInbox ();
 		void RequestRecentComments ();
 
@@ -217,6 +222,7 @@ namespace Metida
 		void gotRecentComments (const QList<LJCommentEntry>& comments);
 
 		void gotBlogStatistics (const QMap<QDate, int>& statistics);
+		void tagsUpdated (const QHash<QString, int>& tags);
 
 	};
 }

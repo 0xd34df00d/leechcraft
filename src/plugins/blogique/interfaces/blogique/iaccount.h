@@ -172,6 +172,11 @@ namespace Blogique
 		 */
 		virtual void RequestStatistics () = 0;
 
+		/** @brief Requests tags.
+		 *
+		 */
+		virtual void RequestTags () = 0;
+
 		/** @brief Requests last entries.
 		 *
 		 */
@@ -189,7 +194,6 @@ namespace Blogique
 		virtual void updateProfile () = 0;
 
 		virtual void backup () = 0;
-
 
 	protected:
 		/** @brief This signal should be emitted when account is renamed.
@@ -219,7 +223,12 @@ namespace Blogique
 		//TODO
 		virtual void gotBlogStatistics (const QMap<QDate, int>& statistics) = 0;
 
+		//TODO
+		virtual void tagsUpdated (const QHash<QString, int>& tags) = 0;
+
+		//TODO
 		virtual void requestEntriesBegin () = 0;
+
 		//TODO
 		virtual void gotEntries (const QList<Entry>& entries) = 0;
 

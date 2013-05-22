@@ -77,9 +77,8 @@ namespace Hestia
 		return QString ();
 	}
 
-	void LocalBlogAccount::RenameAccount (const QString& name)
+	void LocalBlogAccount::RenameAccount (const QString&)
 	{
-
 	}
 
 	QByteArray LocalBlogAccount::GetAccountID () const
@@ -154,7 +153,7 @@ namespace Hestia
 		{
 			emit requestEntriesBegin ();
 			emit gotEntries (AccountStorage_->GetLastEntries (AccountStorage::Mode::FullMode,
-					DefaultPostsNumber_));
+					count ? count : DefaultPostsNumber_));
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -176,6 +175,11 @@ namespace Hestia
 		}
 	}
 
+	void LocalBlogAccount::RequestTags ()
+	{
+		emit tagsUpdated (GetTags ());
+	}
+
 	void LocalBlogAccount::GetEntriesByDate (const QDate& date)
 	{
 		try
@@ -186,6 +190,20 @@ namespace Hestia
 		{
 			qWarning () << Q_FUNC_INFO
 					<< e.what ();
+		}
+	}
+
+	QHash<QString, int> LocalBlogAccount::GetTags () const
+	{
+		try
+		{
+			return AccountStorage_->GetAllTags ();
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+			return QHash<QString, int> ();
 		}
 	}
 

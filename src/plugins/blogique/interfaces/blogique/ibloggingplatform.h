@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <functional>
 #include <QMetaType>
 #include <QAction>
 
@@ -52,6 +53,14 @@ namespace Blogique
 	 * widgets.
 	 *
 	 */
+
+	struct InlineTagInserter
+	{
+		QString TagName_;
+		QVariantMap Parameters_;
+		std::function<void (QAction*)> ActionCustomizer_;
+	};
+
 	class IBloggingPlatform
 	{
 	public:
@@ -226,6 +235,9 @@ namespace Blogique
 		 */
 		virtual QList<QAction*> GetEditorActions () const = 0;
 
+		virtual QList<InlineTagInserter> GetInlineTagInserters () const = 0;
+
+
 		/** @brief Returns the widgets used for extended posting features.
 		 *
 		 * The widgets from the returned list are shown in the side dockwidget
@@ -240,6 +252,10 @@ namespace Blogique
 		 * @sa IBlogiqueSideWidget
 		 */
 		virtual QList<QWidget*> GetBlogiqueSideWidgets () const = 0;
+
+		virtual QList<QPair<QRegExp, QString>> GetRich2HtmlPairs () const = 0;
+
+		virtual QList<QPair<QRegExp, QString>> GetHtml2RichPairs () const = 0;
 
 	protected:
 		/** @brief Notifies about new account.
@@ -278,6 +294,8 @@ namespace Blogique
 		 */
 
 		virtual void accountValidated (QObject *account, bool validated) = 0;
+
+		virtual void insertTag (const QString& tag) = 0;
 	};
 
 	Q_DECLARE_OPERATORS_FOR_FLAGS (IBloggingPlatform::BloggingPlatfromFeatures);

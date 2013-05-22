@@ -29,45 +29,81 @@
 
 #pragma once
 
-#include <QMetaType>
-#include <QVariant>
+#include <QDialog>
+#include "ui_polldialog.h"
+
+class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-	/** @brief Interface representing a side widget with main post options'.
-	*
-	**/
-	class IPostOptionsWidget
+namespace Metida
+{
+	class PollDialog : public QDialog
 	{
+		Q_OBJECT
+
+		Ui::PollDialog Ui_;
+
+		QStandardItemModel *CheckModel_;
+		QStandardItemModel *RadioModel_;
+		QStandardItemModel *DropModel_;
+		QStandardItemModel *PollTypeModel_;
+		bool ItemIsChanged_;
+		QHash<QString, QString> Type2Question_;
+
+		enum PollCanView
+		{
+			ViewAll,
+			ViewOnlyFriends,
+			ViewOnlyMe
+		};
+
+		enum PollCanVote
+		{
+			VoteAll,
+			VoteOnlyFriends
+		};
+
 	public:
-		virtual ~IPostOptionsWidget () {};
+		enum PollType
+		{
+			CheckBoxes,
+			RadioButtons,
+			DropdownBox,
+			TextEntry,
+			Scale
+		};
 
-		/** @brief Returns list of tags for entry.
-		*
-		* @return List of tags
-		**/
-		virtual QStringList GetTags () const = 0;
+		explicit PollDialog (QWidget *parent = 0);
 
-		/** @brief Set tags.
-		 * 
-		 **/
-		virtual void SetTags (const QStringList& tags) = 0;
+		QString GetPollName () const;
+		QString GetWhoCanView () const;
+		QString GetWhoCanVote () const;
+		QStringList GetPollTypes () const;
+		QString GetPollQuestion (const QString& type) const;
+		QVariantMap  GetPollFields (const QString& pollType) const;
+		int GetScaleFrom () const;
+		int GetScaleTo () const;
+		int GetScaleBy () const;
+		int GetTextSize () const;
+		int GetTextMaxLength () const;
 
-		/** @brief Returns date when post was written.
-		 * 
-		 * @return Post date
-		 **/
-		virtual QDateTime GetPostDate () const = 0;
+		void accept ();
+	private:
+		QVariantMap GetFields (QStandardItemModel *model) const;
+		bool IsScaleValuesAreValid () const;
 
-		/** @brief Set post timestamp.
-		 * 
-		 **/
-		virtual void SetPostDate (const QDateTime& dt) = 0;
+	private slots:
+		void on_AddField__released ();
+		void on_RemoveField__released ();
+		void on_PollType__currentIndexChanged (int index);
+		void handleItemActivated (const QModelIndex& index);
+		void handleItemChanged (QStandardItem *item);
+		void on_PollQuestion__textChanged (const QString& text);
 	};
 }
 }
-
-Q_DECLARE_INTERFACE (LeechCraft::Blogique::IPostOptionsWidget,
-		"org.Deviant.LeechCraft.Blogique.IPostOptionsWidget/1.0");
+}

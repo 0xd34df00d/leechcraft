@@ -87,6 +87,7 @@ namespace Metida
 
 	signals:
 		void profileUpdated ();
+		void tagsUpdated (const QHash<QString, int>& tags);
 	};
 }
 }

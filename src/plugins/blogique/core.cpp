@@ -41,7 +41,6 @@
 #include "interfaces/blogique/ibloggingplatform.h"
 #include "pluginproxy.h"
 #include "storagemanager.h"
-#include "backupmanager.h"
 #include "blogiquewidget.h"
 #include "xmlsettingsmanager.h"
 
@@ -53,7 +52,6 @@ namespace Blogique
 	: UniqueID_ ("org.LeechCraft.Blogique")
 	, PluginProxy_ (std::make_shared<PluginProxy> ())
 	, StorageManager_ (new StorageManager (UniqueID_, this))
-	, BackupManager_ (new BackupManager (this))
 	, AutoSaveTimer_ (new QTimer (this))
 	{
 		connect (AutoSaveTimer_,
@@ -171,11 +169,6 @@ namespace Blogique
 		return StorageManager_;
 	}
 
-	BackupManager* Core::GetBackupManager () const
-	{
-		return BackupManager_;
-	}
-
 	BlogiqueWidget* Core::CreateBlogiqueWidget ()
 	{
 		auto newTab = new BlogiqueWidget;
@@ -195,6 +188,14 @@ namespace Blogique
 				SIGNAL (entryRemoved ()),
 				newTab,
 				SLOT (handleEntryRemoved ()));
+		connect (&Core::Instance (),
+				SIGNAL (tagsUpdated (QHash<QString, int>)),
+				newTab,
+				SLOT (handleTagsUpdated (QHash<QString, int>)));
+		connect (&Core::Instance (),
+				SIGNAL (insertTag (QString)),
+				newTab,
+				SLOT (handleInsertTag (QString)));
 
 		return newTab;
 	}
@@ -236,6 +237,10 @@ namespace Blogique
 					SIGNAL (accountValidated (QObject*, bool)),
 					this,
 					SLOT (handleAccountValidated (QObject*, bool)));
+			connect (platform->GetQObject (),
+					SIGNAL (insertTag (QString)),
+					this,
+					SIGNAL (insertTag (QString)));
 		}
 	}
 
@@ -275,6 +280,10 @@ namespace Blogique
 				SIGNAL (gettingEntries2BackupFinished ()),
 				this,
 				SLOT (handleGettingEntries2BackupFinished ()));
+		connect (accObj,
+				SIGNAL (tagsUpdated (QHash<QString, int>)),
+				this,
+				SIGNAL (tagsUpdated (QHash<QString, int>)));
 
 		emit accountAdded (accObj);
 	}
@@ -337,6 +346,7 @@ namespace Blogique
 				});
 		emit gotEntity (e);
 		acc->RequestStatistics ();
+		acc->RequestTags ();
 		emit entryPosted ();
 	}
 
@@ -350,6 +360,7 @@ namespace Blogique
 				tr ("Entry was removed successfully."),
 				Priority::PInfo_));
 		acc->RequestStatistics ();
+		acc->RequestTags ();
 		emit entryRemoved ();
 	}
 
@@ -366,6 +377,7 @@ namespace Blogique
 				tr ("Entry was updated successfully."),
 				Priority::PInfo_));
 		acc->RequestStatistics ();
+		acc->RequestTags ();
 	}
 
 	void Core::handleGotEntries2Backup (const QList<Entry>&)

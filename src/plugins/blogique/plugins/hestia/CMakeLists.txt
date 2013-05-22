@@ -20,7 +20,6 @@ SET (HESTIA_SRCS
 	hestia.cpp
 	localblogaccount.cpp
 	localbloggingplatform.cpp
-	postoptionswidget.cpp
 	xmlsettingsmanager.cpp
 	)
 
@@ -32,14 +31,12 @@ SET (HESTIA_HEADERS
 	accountconfigurationwidget.h
 	localblogaccount.h
 	localbloggingplatform.h
-	postoptionswidget.h
 	xmlsettingsmanager.h
 	)
 
 SET (HESTIA_FORMS
 	accountconfigurationdialog.ui
 	accountconfigurationwidget.ui
-	postoptionswidget.ui
  	)
 
 # SET (HESTIA_RESOURCES blogiquehestiaresources.qrc)
