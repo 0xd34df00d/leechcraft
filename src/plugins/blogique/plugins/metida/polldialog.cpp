@@ -39,9 +39,9 @@ namespace Blogique
 {
 namespace Metida
 {
-	const int PollDialog::ScaleFromDefaultValue_ = 1;
-	const int PollDialog::ScaleToDefaultValue_ = 10;
-	const int PollDialog::ScaleByDefaultValue_ = 1;
+	static const int ScaleFromDefaultValue = 1;
+	static const int ScaleToDefaultValue = 10;
+	static const int ScaleByDefaultValue = 1;
 
 	PollDialog::PollDialog (QWidget *parent)
 	: QDialog (parent)
@@ -105,7 +105,6 @@ namespace Metida
 			return "friends";
 		case ViewOnlyMe:
 			return "none";
-		case ViewAll:
 		default:
 			return "all";
 		}
@@ -117,7 +116,6 @@ namespace Metida
 		{
 			case VoteOnlyFriends:
 				return "friends";
-			case VoteAll:
 			default:
 				return "all";
 		}
@@ -227,18 +225,11 @@ namespace Metida
 						"LeechCraft",
 						tr ("Scaled values are invalid. Default values will be used."),
 						QMessageBox::Ok | QMessageBox::Cancel);
-				switch (res)
+				if (res == QMessageBox::Ok)
 				{
-					case QMessageBox::Ok:
-					{
-						Ui_.ScaleFrom_->setValue (ScaleFromDefaultValue_);
-						Ui_.ScaleTo_->setValue (ScaleToDefaultValue_);
-						Ui_.ScaleBy_->setValue (ScaleByDefaultValue_);
-						break;
-					}
-					case QMessageBox::Cancel:
-					default:
-						return;
+					Ui_.ScaleFrom_->setValue (ScaleFromDefaultValue);
+					Ui_.ScaleTo_->setValue (ScaleToDefaultValue);
+					Ui_.ScaleBy_->setValue (ScaleByDefaultValue);
 				}
 			}
 		}

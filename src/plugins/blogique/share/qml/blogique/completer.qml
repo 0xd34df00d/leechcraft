@@ -6,7 +6,7 @@ Rectangle {
 
 	property variant tagModel;
 
-	height: tagsModel.count > 4 ? 30 * 4 : 30 * tagsModel.count
+	height: 30 * Math.min(4, tagsModel.count)
 
 	signal currentItemSelected(string tag);
 	signal returnFocus();
@@ -75,16 +75,13 @@ Rectangle {
 				++currentIndex;
 		}
 
-		Keys.onReturnPressed:
-			currentItemSelected(tagsModel.GetTagName(currentIndex));
+		Keys.onReturnPressed: currentItemSelected(tagsModel.GetTagName(currentIndex));
 
-		Keys.onEscapePressed:
-			closeInput();
+		Keys.onEscapePressed: closeInput();
 	}
 
 	Connections {
 		target: tagsModel
-		onCountChanged:
-			parent.height =  30 * (tagsModel.count > 4 ? 4 : tagsModel.count);
+		onCountChanged: parent.height =  30 * Math.min(4, tagsModel.count);
 	}
 }

@@ -83,7 +83,7 @@ namespace Metida
 		}
 	};
 
-	struct 	LJEvent
+	struct LJEvent
 	{
 		//for posting
 		QString Event_;

@@ -47,10 +47,6 @@ namespace Metida
 
 		Ui::PollDialog Ui_;
 
-		static const int ScaleFromDefaultValue_;
-		static const int ScaleToDefaultValue_;
-		static const int ScaleByDefaultValue_;
-
 		QStandardItemModel *CheckModel_;
 		QStandardItemModel *RadioModel_;
 		QStandardItemModel *DropModel_;

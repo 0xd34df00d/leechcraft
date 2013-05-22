@@ -189,9 +189,9 @@ namespace Blogique
 				newTab,
 				SLOT (handleEntryRemoved ()));
 		connect (&Core::Instance (),
-				SIGNAL (tagsUpdated (QHash<QString,int>)),
+				SIGNAL (tagsUpdated (QHash<QString, int>)),
 				newTab,
-				SLOT (handleTagsUpdated (QHash<QString,int>)));
+				SLOT (handleTagsUpdated (QHash<QString, int>)));
 		connect (&Core::Instance (),
 				SIGNAL (insertTag (QString)),
 				newTab,

@@ -419,10 +419,10 @@ namespace Blogique
 		Ui_.Tags_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (Core::Instance ()
 						.GetCoreProxy ()->GetColorThemeManager ()));
-		Ui_.Tags_->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,
-				"blogique", "tagwidget.qml")));
 		Ui_.Tags_->engine ()->addImageProvider (ImageProviderID,
 				new Util::ThemeImageProvider (Core::Instance ().GetCoreProxy ()));
+		Ui_.Tags_->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,
+				"blogique", "tagwidget.qml")));
 		connect (Ui_.Tags_->rootObject (),
 				SIGNAL (tagTextChanged (QString)),
 				this,
@@ -431,7 +431,7 @@ namespace Blogique
 		Ui_.TagsCloud_->setVisible (Ui_.SelectTags_->isChecked ());
 		Ui_.TagsCloud_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (Core::Instance ()
-						.GetCoreProxy ()->GetColorThemeManager ()));
+						.GetCoreProxy ()->GetColorThemeManager (), this));
 		Ui_.TagsCloud_->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,
 					"blogique", "tagscloud.qml")));
 		connect (Ui_.TagsCloud_->rootObject (),
@@ -670,13 +670,12 @@ namespace Blogique
 
 		for (const auto& inserter : ibp->GetInlineTagInserters ())
 		{
-			auto iate = qobject_cast<IAdvancedHTMLEditor*> (PostEditWidget_);
-			if (!iate)
-				continue;
-
-			auto act = iate->AddInlineTagInserter (inserter.TagName_, inserter.Parameters_);
-			inserter.ActionCustomizer_ (act);
-			InlineTagInserters_ << act;
+			if (auto iahe = qobject_cast<IAdvancedHTMLEditor*> (PostEditWidget_))
+			{
+				auto act = iahe->AddInlineTagInserter (inserter.TagName_, inserter.Parameters_);
+				inserter.ActionCustomizer_ (act);
+				InlineTagInserters_ << act;
+			}
 		}
 
 		auto iahe = qobject_cast<IAdvancedHTMLEditor*> (PostEditWidget_);
