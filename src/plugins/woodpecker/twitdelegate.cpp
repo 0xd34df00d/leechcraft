@@ -36,18 +36,18 @@
 #include <QTextDocument>
 #include <QAbstractTextDocumentLayout>
 #include <QRectF>
+#include <QStyleOption>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/structures.h>
 #include <util/util.h>
 #include "core.h"
 #include "tweet.h"
-#include <QStyleOption>
 
 namespace LeechCraft
 {
 namespace Woodpecker
 {
-	const int ImageSpace_ = 50;
+	const int ImageSpace = 50;
 	const int IconSize = 48;
 	const int Padding = 5;
 	
@@ -133,7 +133,7 @@ namespace Woodpecker
 		}
 
 		// Text
-		r = option.rect.adjusted (ImageSpace_ + Padding, Padding, -Padding, -Padding);
+		r = option.rect.adjusted (ImageSpace + Padding, Padding, -Padding, -Padding);
 		painter->setFont (mainFont);
 		doc->setTextWidth (r.width ());
 		painter->save ();
@@ -144,13 +144,13 @@ namespace Woodpecker
 		painter->restore ();
 
 		// Author
-		r = option.rect.adjusted (ImageSpace_ + Padding, r.height() - mainFont.pixelSize() - Padding * 2, -Padding * 2, 0);
-		auto author_rect = std::unique_ptr<QRect> (new QRect (r.left () + Padding, r.bottom () - painter->fontMetrics ().height () - 8, painter->fontMetrics ().width (author), r.height ()));
+		r = option.rect.adjusted (ImageSpace + Padding, r.height() - mainFont.pixelSize() - Padding * 2, -Padding * 2, 0);
+		QRect author_rect (r.left () + Padding, r.bottom () - painter->fontMetrics ().height () - 8, painter->fontMetrics ().width (author), r.height ());
 		painter->setFont (mainFont);
-		painter->drawText (*(author_rect), Qt::AlignLeft, author, &r);
+		painter->drawText (author_rect, Qt::AlignLeft, author, &r);
 
 		// Time
-		r = option.rect.adjusted (ImageSpace_ + Padding, Padding, -Padding * 2, -Padding);
+		r = option.rect.adjusted (ImageSpace + Padding, Padding, -Padding * 2, -Padding);
 		painter->setFont (mainFont);
 		painter->drawText (r.right () - painter->fontMetrics ().width (time), 
 						   r.bottom () - painter->fontMetrics ().height (),
@@ -163,10 +163,10 @@ namespace Woodpecker
 	QSize TwitDelegate::sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
 		QSize result = QStyledItemDelegate::sizeHint (option, index);
-		QFontMetrics fm(option.font);
+		QFontMetrics fm (option.font);
 		const auto currentTweet = index.data (Qt::UserRole).value<Tweet_ptr> ();
 		result.setHeight (std::max (
-			qRound (currentTweet->GetDocument ()->documentLayout()->documentSize ().height () +
+			qRound (currentTweet->GetDocument ()->documentLayout ()->documentSize ().height () +
 					fm.height () + Padding * 3), 
 					IconSize + Padding * 2));
 		return result;
@@ -182,7 +182,7 @@ namespace Woodpecker
 			if (me)
 			{
 				const auto currentTweet = index.data (Qt::UserRole).value<Tweet_ptr> ();
-				const auto position = (me->pos () - option.rect.adjusted (ImageSpace_ + 14, 4, 0, -22).topLeft ());
+				const auto position = (me->pos () - option.rect.adjusted (ImageSpace + 14, 4, 0, -22).topLeft ());
 
 				const QTextDocument *textDocument = currentTweet->GetDocument ();
 				const int textCursorPosition =
@@ -205,7 +205,7 @@ namespace Woodpecker
 			if (me)
 			{
 				const auto currentTweet = index.data (Qt::UserRole).value<std::shared_ptr<Tweet>> ();
-				const auto position = (me->pos () - option.rect.adjusted (ImageSpace_ + 14, 4, 0, -22).topLeft ());
+				const auto position = (me->pos () - option.rect.adjusted (ImageSpace + 14, 4, 0, -22).topLeft ());
 
 				const auto anchor = currentTweet->GetDocument ()->documentLayout ()->anchorAt (position);
 
