@@ -41,7 +41,7 @@
 #include <util/util.h>
 #include "core.h"
 #include "tweet.h"
-#include <qt4/QtGui/QStyleOption>
+#include <QStyleOption>
 
 namespace LeechCraft
 {
@@ -67,13 +67,12 @@ namespace Woodpecker
 		const int maxIconHeight = r.height () - Padding * 2;
 
 		const QPen linePen (o.palette.color (QPalette::AlternateBase), 1, Qt::SolidLine);
-		QPen lineMarkedPen (o.palette.color (QPalette::Mid) , 1, Qt::SolidLine);
+		QPen lineMarkedPen (o.palette.color (QPalette::Mid), 1, Qt::SolidLine);
 		QPen fontPen (o.palette.color (QPalette::Text), 1, Qt::SolidLine);
 		QPen fontMarkedPen (o.palette.color (QPalette::HighlightedText), 1, Qt::SolidLine);
 
 		QFont mainFont;
 		mainFont.setFamily (mainFont.defaultFamily ());
-		//mainFont.setPixelSize(10);
 
 		const auto& bgBrush = QBrush (o.palette.color(QPalette::Base));
 		const auto& selBgBrush = QBrush (o.palette.color(QPalette::Highlight));
