@@ -37,16 +37,16 @@ Item {
         anchors.fill: parent
         anchors.margins: hoverScalesIcons ? 2 : 0
         border.width: isStrongHighlight ? 2 : 1
-        border.color: colorProxy.setAlpha(colorProxy.color_ToolButton_BorderColor, decoOpacity)
+        border.color: colorProxy.setAlpha(colorProxy.color_ToolButton_BorderColor, 1 - decoOpacity)
 
         gradient: Gradient {
             GradientStop {
                 position: 0
-                color: colorProxy.setAlpha(colorProxy.color_ToolButton_TopColor, decoOpacity)
+                color: colorProxy.setAlpha(colorProxy.color_ToolButton_TopColor, 1 - decoOpacity)
             }
             GradientStop {
                 position: 1
-                color: colorProxy.setAlpha(colorProxy.color_ToolButton_BottomColor, decoOpacity)
+                color: colorProxy.setAlpha(colorProxy.color_ToolButton_BottomColor, 1 - decoOpacity)
             }
         }
 
