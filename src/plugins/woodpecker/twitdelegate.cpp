@@ -73,7 +73,7 @@ namespace Woodpecker
 
 		QFont mainFont;
 		mainFont.setFamily (mainFont.defaultFamily ());
-		mainFont.setPixelSize(10);
+		//mainFont.setPixelSize(10);
 
 		const auto& bgBrush = QBrush (o.palette.color(QPalette::Base));
 		const auto& selBgBrush = QBrush (o.palette.color(QPalette::Highlight));
@@ -132,7 +132,7 @@ namespace Woodpecker
 		}
 
 		// Text
-		r = option.rect.adjusted (ImageSpace_, Padding, -Padding, -Padding);
+		r = option.rect.adjusted (ImageSpace_ + Padding, Padding, -Padding, -Padding);
 		painter->setFont (mainFont);
 		doc->setTextWidth (r.width ());
 		painter->save ();
@@ -144,21 +144,30 @@ namespace Woodpecker
 
 		// Author
 		r = option.rect.adjusted (ImageSpace_ + Padding, r.height() - mainFont.pixelSize() - Padding * 2, -Padding * 2, 0);
-		auto author_rect = std::unique_ptr<QRect> (new QRect (r.left (), r.bottom () - painter->fontMetrics ().height () - 8, painter->fontMetrics ().width (author), r.height ()));
+		auto author_rect = std::unique_ptr<QRect> (new QRect (r.left () + Padding, r.bottom () - painter->fontMetrics ().height () - 8, painter->fontMetrics ().width (author), r.height ()));
 		painter->setFont (mainFont);
 		painter->drawText (*(author_rect), Qt::AlignLeft, author, &r);
 
 		// Time
-		r = option.rect.adjusted (ImageSpace_, 30, -10, 0);
+		r = option.rect.adjusted (ImageSpace_ + Padding, Padding, -Padding * 2, -Padding);
 		painter->setFont (mainFont);
-		painter->drawText (r.right () - painter->fontMetrics ().width (time), r.bottom () - painter->fontMetrics ().height () - 8, r.width (), r.height (), Qt::AlignLeft, time, &r);
+		painter->drawText (r.right () - painter->fontMetrics ().width (time), 
+						   r.bottom () - painter->fontMetrics ().height (),
+						   r.width (), 
+						   r.height (), 
+						   Qt::AlignLeft, time, &r);
 		painter->setPen (linePen);
 	}
 
 	QSize TwitDelegate::sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
 		QSize result = QStyledItemDelegate::sizeHint (option, index);
-		result.setHeight (std::max (result.height (), IconSize));
+		QFontMetrics fm(option.font);
+		const auto currentTweet = index.data (Qt::UserRole).value<Tweet_ptr> ();
+		result.setHeight (std::max (
+			qRound (currentTweet->GetDocument ()->documentLayout()->documentSize ().height () +
+					fm.height () + Padding * 3), 
+					IconSize + Padding * 2));
 		return result;
 	}
 
@@ -171,7 +180,7 @@ namespace Woodpecker
 			const QMouseEvent *me = static_cast<QMouseEvent*> (event);
 			if (me)
 			{
-				const auto currentTweet = index.data (Qt::UserRole).value<std::shared_ptr<Tweet>> ();
+				const auto currentTweet = index.data (Qt::UserRole).value<Tweet_ptr> ();
 				const auto position = (me->pos () - option.rect.adjusted (ImageSpace_ + 14, 4, 0, -22).topLeft ());
 
 				const QTextDocument *textDocument = currentTweet->GetDocument ();
