@@ -158,6 +158,7 @@ namespace Util
 		DECL_PROP(ToolButton, SelectedBorderColor)
 		DECL_PROP(ToolButton, HoveredBorderColor)
 		DECL_PROP(ToolButton, PressedBorderColor)
+		DECL_PROP(ToolButton, TextColor)
 
 		DECL_PROP(Panel, TopColor)
 		DECL_PROP(Panel, BottomColor)
@@ -191,6 +192,7 @@ namespace Util
 	Q_PROPERTY(QColor color_ToolButton_SelectedBorderColor READ GetToolButtonSelectedBorderColor NOTIFY colorsChanged) QColor GetToolButtonSelectedBorderColor () const { return GetColor ("ToolButton", "SelectedBorderColor"); }
 	Q_PROPERTY(QColor color_ToolButton_HoveredBorderColor READ GetToolButtonHoveredBorderColor NOTIFY colorsChanged) QColor GetToolButtonHoveredBorderColor () const { return GetColor ("ToolButton", "HoveredBorderColor"); }
 	Q_PROPERTY(QColor color_ToolButton_PressedBorderColor READ GetToolButtonPressedBorderColor NOTIFY colorsChanged) QColor GetToolButtonPressedBorderColor () const { return GetColor ("ToolButton", "PressedBorderColor"); }
+	Q_PROPERTY(QColor color_ToolButton_TextColor READ GetToolButtonTextColor NOTIFY colorsChanged) QColor GetToolButtonTextColor () const { return GetColor ("ToolButton", "TextColor"); }
 
 	Q_PROPERTY(QColor color_Panel_TopColor READ GetPanelTopColor NOTIFY colorsChanged) QColor GetPanelTopColor () const { return GetColor ("Panel", "TopColor"); }
 	Q_PROPERTY(QColor color_Panel_BottomColor READ GetPanelBottomColor NOTIFY colorsChanged) QColor GetPanelBottomColor () const { return GetColor ("Panel", "BottomColor"); }
