@@ -13,12 +13,15 @@ Item {
 
     property bool hoverScalesIcons: true
     property bool transparentStyle: false
+    property real decoOpacity: transparentStyle ? 0 : 1
 
     property alias isHovered: actionMouseArea.containsMouse
 
     property string textTooltip
 
     property string overlayText
+    property string orientation: "horizontal"
+    property bool isVert: orientation == "vertical"
 
     signal triggered()
     signal hovered()
@@ -28,22 +31,22 @@ Item {
     Rectangle {
         id: actionRect
 
-        radius: width / 10
+        radius: Math.min(width, height) / 10
         smooth: true
 
         anchors.fill: parent
         anchors.margins: hoverScalesIcons ? 2 : 0
-        border.width: transparentStyle ? 0 : (isStrongHighlight ? 2 : 1)
-        border.color: actionRoot.isHighlight ? colorProxy.color_ToolButton_SelectedBorderColor : colorProxy.color_ToolButton_BorderColor
+        border.width: isStrongHighlight ? 2 : 1
+        border.color: colorProxy.setAlpha(colorProxy.color_ToolButton_BorderColor, decoOpacity)
 
         gradient: Gradient {
             GradientStop {
                 position: 0
-                color: transparentStyle ? "#00000000" : (actionRoot.isHighlight ? colorProxy.color_ToolButton_SelectedTopColor : colorProxy.color_ToolButton_TopColor)
+                color: colorProxy.setAlpha(colorProxy.color_ToolButton_TopColor, decoOpacity)
             }
             GradientStop {
                 position: 1
-                color: transparentStyle ? "#00000000" : (actionRoot.isHighlight ? colorProxy.color_ToolButton_SelectedBottomColor : colorProxy.color_ToolButton_BottomColor)
+                color: colorProxy.setAlpha(colorProxy.color_ToolButton_BottomColor, decoOpacity)
             }
         }
 
@@ -138,5 +141,71 @@ Item {
         radius: 4
         border.color: "white"
         border.width: 1
+    }
+
+    Rectangle {
+        id: highlightOpenedRect
+
+        opacity: isHighlight ? 1 : 0
+        Behavior on opacity { PropertyAnimation {} }
+
+        width: parent.height / 18
+        height: parent.width / 2
+        radius: 1
+
+        rotation: isVert ? 0 : 90
+
+        anchors.horizontalCenter: isVert ? undefined : parent.horizontalCenter
+        anchors.left: isVert ? parent.left : undefined
+        anchors.verticalCenter: isVert ? parent.verticalCenter : parent.bottom
+        anchors.verticalCenterOffset: isVert ? 0 : (-width / 2)
+
+        gradient: Gradient {
+            GradientStop {
+                position: 0
+                color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedBorderColor, 0)
+            }
+            GradientStop {
+                position: 0.5
+                color: colorProxy.color_ToolButton_SelectedBorderColor
+            }
+            GradientStop {
+                position: 1
+                color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedBorderColor, 0)
+            }
+        }
+    }
+
+    Rectangle {
+        id: highlightCurrentRect
+
+        opacity: isStrongHighlight ? 1 : 0
+        Behavior on opacity { PropertyAnimation {} }
+
+        width: parent.height / 18
+        height: parent.width / 2
+        radius: 1
+
+        rotation: isVert ? 0 : 90
+
+        anchors.horizontalCenter: isVert ? undefined : parent.horizontalCenter
+        anchors.right: isVert ? parent.right : undefined
+        anchors.verticalCenter: isVert ? parent.verticalCenter : parent.top
+        anchors.verticalCenterOffset: isVert ? 0 : (width / 2)
+
+        gradient: Gradient {
+            GradientStop {
+                position: 0
+                color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedBorderColor, 0)
+            }
+            GradientStop {
+                position: 0.5
+                color: colorProxy.color_ToolButton_SelectedBorderColor
+            }
+            GradientStop {
+                position: 1
+                color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedBorderColor, 0)
+            }
+        }
     }
 }
