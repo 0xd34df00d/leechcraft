@@ -12,8 +12,7 @@ Item {
     property bool actionIconScales: true
 
     property bool hoverScalesIcons: true
-    property bool transparentStyle: false
-    property real decoOpacity: transparentStyle ? 0 : 1
+    property real decoOpacity: 0
 
     property alias isHovered: actionMouseArea.containsMouse
 
@@ -37,16 +36,16 @@ Item {
         anchors.fill: parent
         anchors.margins: hoverScalesIcons ? 2 : 0
         border.width: isStrongHighlight ? 2 : 1
-        border.color: colorProxy.setAlpha(colorProxy.color_ToolButton_BorderColor, 1 - decoOpacity)
+        border.color: colorProxy.setAlpha(colorProxy.color_ToolButton_BorderColor, decoOpacity)
 
         gradient: Gradient {
             GradientStop {
                 position: 0
-                color: colorProxy.setAlpha(colorProxy.color_ToolButton_TopColor, 1 - decoOpacity)
+                color: colorProxy.setAlpha(colorProxy.color_ToolButton_TopColor, decoOpacity)
             }
             GradientStop {
                 position: 1
-                color: colorProxy.setAlpha(colorProxy.color_ToolButton_BottomColor, 1 - decoOpacity)
+                color: colorProxy.setAlpha(colorProxy.color_ToolButton_BottomColor, decoOpacity)
             }
         }
 
