@@ -36,13 +36,14 @@ Rectangle {
                 id: taskbarItem
 
                 height: rootRect.itemSize
-                width: rootRect.itemSize
+                width: viewOrient == "vertical" ?
+                        rootRect.itemSize :
+                        Math.min(150, rootRect.width / launcherItemRepeater.count)
 
                 ActionButton {
                     id: tcButton
 
-                    height: rootRect.itemSize
-                    width: rootRect.itemSize
+                    anchors.fill: parent
 
                     actionIconURL: "image://TaskbarIcons/" + windowID + '/' + iconGenID
                     textTooltip: windowName
@@ -54,6 +55,8 @@ Rectangle {
                     onTriggered: isActiveWindow ?
                             KT_taskbarProxy.minimizeWindow(windowID) :
                             KT_taskbarProxy.raiseWindow(windowID);
+
+                    actionText: windowName
                 }
             }
         }
