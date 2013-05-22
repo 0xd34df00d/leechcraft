@@ -54,14 +54,8 @@ namespace Woodpecker
 	TwitDelegate::TwitDelegate (QObject *parent)
 	: QStyledItemDelegate (parent)
 	{
-		Parent_ = parent;
 	}
 	
-	QObject* TwitDelegate::parent ()
-	{
-		return Parent_;
-	}
-
 	void TwitDelegate::paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
 		const QStyleOptionViewItemV4 o = option;
@@ -170,7 +164,7 @@ namespace Woodpecker
 
 	bool TwitDelegate::editorEvent (QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem& option, const QModelIndex& index)
 	{
-		QListWidget *parentWidget = qobject_cast<QListWidget*> (Parent_);
+		QListWidget *parentWidget = qobject_cast<QListWidget*> (parent ());
 
 		if (event->type () == QEvent::MouseButtonRelease) 
 		{
