@@ -262,7 +262,6 @@ namespace Woodpecker
 		}
 
 		Ui_.TwitList_->update ();
-		Ui_.TwitList_->repaint ();
 		Ui_.TwitList_->installEventFilter (this);
 		Ui_.TwitList_->setEnabled (true);
 		UpdateReady_ = false;
