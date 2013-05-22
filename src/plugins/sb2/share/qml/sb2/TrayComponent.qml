@@ -30,7 +30,6 @@ Rectangle {
             isHighlight: actionObject.checked
             actionIconURL: actionIcon
             textTooltip: actionText
-            transparentStyle: true
 
             onTriggered: actionObject.trigger()
         }

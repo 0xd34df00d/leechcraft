@@ -218,7 +218,6 @@ Rectangle {
                 height: 24
 
                 actionIconURL: "image://theme/favorites"
-                transparentStyle: true
 
                 onTriggered: rootRect.itemBookmarkRequested(itemID)
                 visible: !isItemFavorite

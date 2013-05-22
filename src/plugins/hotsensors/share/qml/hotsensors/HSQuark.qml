@@ -104,7 +104,6 @@ Rectangle {
                 anchors.right: parent.right
 
                 actionIconURL: "image://ThemeIcons/list-remove"
-                transparentStyle: true
 
                 onTriggered: HS_plotManager.hideSensor(sensorName)
 

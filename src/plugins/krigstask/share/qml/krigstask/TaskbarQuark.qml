@@ -47,7 +47,7 @@ Rectangle {
 
                     actionIconURL: "image://TaskbarIcons/" + windowID + '/' + iconGenID
                     textTooltip: windowName
-                    decoOpacity: isActiveWindow ? 0.3 : 0.5
+                    decoOpacity: isMinimizedWindow ? 0.3 : (isActiveWindow ? 0.8 : 0.5)
 
                     isHighlight: !isMinimizedWindow
                     isStrongHighlight: isActiveWindow

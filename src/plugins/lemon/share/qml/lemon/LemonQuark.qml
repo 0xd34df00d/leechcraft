@@ -32,7 +32,6 @@ Rectangle {
 
                 anchors.fill: parent
                 actionIconURL: "image://ThemeIcons/" + iconName + '/' + width
-                transparentStyle: true
 
                 onTriggered: Lemon_proxy.showGraph(ifaceName)
                 onHovered: {
