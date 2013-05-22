@@ -1,6 +1,7 @@
 CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 PROJECT (leechcraft_azoth)
 INCLUDE (InitLCPlugin OPTIONAL)
+SET (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 OPTION (ENABLE_MEDIACALLS "Enable support for media calls" ON)
 
@@ -61,7 +62,6 @@ ENDIF (ENABLE_MEDIACALLS)
 OPTION (ENABLE_CRYPT "Enable QCA2-based support for PGP" ON)
 
 IF (ENABLE_CRYPT)
-	SET (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 	FIND_PACKAGE (QCA2)
 
 	IF (NOT QCA2_FOUND)
@@ -139,6 +139,7 @@ SET (SRCS
 	userslistwidget.cpp
 	keyboardrosterfixer.cpp
 	statuschangemenumanager.cpp
+	customchatstylemanager.cpp
 	)
 SET (FORMS
 	mainwidget.ui

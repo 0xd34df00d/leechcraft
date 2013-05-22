@@ -165,17 +165,19 @@ namespace Summary
 
 		while (true)
 		{
-			if (!index.model ()->property ("__LeechCraft_own_core_model").toBool ())
+			const auto model = index.model ();
+			if (!model ||
+					!model->property ("__LeechCraft_own_core_model").toBool ())
 				break;
 
-			auto pModel = qobject_cast<const QAbstractProxyModel*> (index.model ());
+			auto pModel = qobject_cast<const QAbstractProxyModel*> (model);
 			if (pModel)
 			{
 				index = pModel->mapToSource (index);
 				continue;
 			}
 
-			auto mModel = qobject_cast<const Util::MergeModel*> (index.model ());
+			auto mModel = qobject_cast<const Util::MergeModel*> (model);
 			if (mModel)
 			{
 				index = mModel->mapToSource (index);
@@ -184,7 +186,7 @@ namespace Summary
 
 			qWarning () << Q_FUNC_INFO
 					<< "unhandled parent own core model"
-					<< index.model ();
+					<< model;
 			break;
 		}
 
@@ -250,7 +252,7 @@ namespace Summary
 		Current_->RestoreState (info.Data_);
 
 		emit addNewTab (tr ("Summary"), Current_);
-		emit changeTabIcon (Current_, QIcon (":/plugins/summary/resources/images/summary.svg"));
+		emit changeTabIcon (Current_, QIcon ("lcicons:/plugins/summary/resources/images/summary.svg"));
 	}
 
 	void Core::handleNewTabRequested ()
@@ -264,7 +266,7 @@ namespace Summary
 		Current_ = CreateSummaryWidget ();
 
 		emit addNewTab (tr ("Summary"), Current_);
-		emit changeTabIcon (Current_, QIcon (":/plugins/summary/resources/images/summary.svg"));
+		emit changeTabIcon (Current_, QIcon ("lcicons:/plugins/summary/resources/images/summary.svg"));
 		emit raiseTab (Current_);
 	}
 

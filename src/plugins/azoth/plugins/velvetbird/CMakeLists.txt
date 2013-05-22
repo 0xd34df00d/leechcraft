@@ -29,9 +29,11 @@ SET (VELVETBIRD_SRCS
 	util.cpp
 	buddy.cpp
 	convimmessage.cpp
+	accountconfigdialog.cpp
 	)
 SET (VELVETBIRD_FORMS
 	accregfirstpage.ui
+	accountconfigdialog.ui
 	)
 SET (VELVETBIRD_RESOURCES azothvelvetbirdresources.qrc)
 #CreateTrs ("azoth_velvetbird" "en;ru_RU;uk_UA" VELVETBIRD_COMPILED_TRANSLATIONS)

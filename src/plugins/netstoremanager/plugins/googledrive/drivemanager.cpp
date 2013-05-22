@@ -578,6 +578,7 @@ namespace GoogleDrive
 			mimeMap.insert ({ "application/rar", "rar" }, "application-x-archive");
 			mimeMap.insert ({ "image/png", "png" }, "image-x-generic");
 			mimeMap.insert ({ "image/jpeg", "jpeg" }, "image-x-generic");
+			mimeMap.insert ({ "application/x-iso9660-image", "iso" }, "application-x-cd-image");
 
 			QString res;
 			if (mimeMap.contains ({ mime, fileExt }))
@@ -659,7 +660,7 @@ namespace GoogleDrive
 
 			driveItem.OriginalFileName_ = map ["originalFilename"].toString ();
 			driveItem.Md5_ = map ["md5Checksum"].toString ();
-			driveItem.FileSize_ = map ["fileSize"].toLongLong ();
+			driveItem.FileSize_ = map ["quotaBytesUsed"].toLongLong ();
 
 			for (const auto& ownerName : map ["ownerNames"].toList ())
 				driveItem.OwnerNames_ << ownerName.toString ();

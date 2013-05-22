@@ -283,8 +283,8 @@ namespace Hestia
 			e.Date_ = GetLastEntries_.value (2).toDateTime ();
 			e.Subject_ = GetLastEntries_.value (3).toString ();
 
-			GetLastEntries_.bindValue (":entry_id", e.EntryId_);
-			e.Tags_ = GetTags (GetLastEntries_);
+			GetEntryTags_.bindValue (":entry_id", e.EntryId_);
+			e.Tags_ = GetTags (GetEntryTags_);
 
 			list << e;
 		}
@@ -340,11 +340,11 @@ namespace Hestia
 
 	Entry AccountStorage::GetFullEntry (qint64 entryId)
 	{
-		GetFullEntry_.bindValue (":draft_id", entryId);
+		GetFullEntry_.bindValue (":entry_id", entryId);
 		if (!GetFullEntry_.exec ())
 		{
 			Util::DBLock::DumpError (GetFullEntry_);
-			throw std::runtime_error ("unable to get full draft by id");
+			throw std::runtime_error ("unable to get full entry by id");
 		}
 
 		Entry e;
@@ -408,6 +408,9 @@ namespace Hestia
 		RemoveEntry_ = QSqlQuery (AccountDB_);
 		RemoveEntry_.prepare ("DELETE FROM entries WHERE Id = :entry_id;");
 
+		GetFullEntry_ = QSqlQuery (AccountDB_);
+		GetFullEntry_.prepare ("SELECT Id, Entry, Date, Subject FROM entries "
+				"WHERE Id = :entry_id");
 		GetEntries_ = QSqlQuery (AccountDB_);
 		GetEntries_.prepare ("SELECT Id, Entry, Date, Subject FROM entries "
 				"ORDER BY Date DESC;");

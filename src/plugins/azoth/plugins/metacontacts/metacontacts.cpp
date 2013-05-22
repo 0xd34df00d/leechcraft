@@ -80,7 +80,7 @@ namespace Metacontacts
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/plugins/azoth/plugins/metacontacts/resources/images/metacontacts.svg");
+		static QIcon icon ("lcicons:/plugins/azoth/plugins/metacontacts/resources/images/metacontacts.svg");
 		return icon;
 	}
 

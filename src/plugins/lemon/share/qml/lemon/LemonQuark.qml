@@ -5,12 +5,12 @@ Rectangle {
     id: rootRect
 
     property real itemSize: parent.quarkBaseSize
-    width: viewOrient == "vertical" ? itemSize : (indicatorsView.count * itemSize)
-    height: viewOrient == "vertical" ? (indicatorsView.count * itemSize) : itemSize
+    implicitWidth: viewOrient == "vertical" ? itemSize : (indicatorsView.count * itemSize)
+    implicitHeight: viewOrient == "vertical" ? (indicatorsView.count * itemSize) : itemSize
 
     color: "transparent"
 
-    property variant tooltip
+    property variant tooltip: null
 
     ListView {
         id: indicatorsView
@@ -45,6 +45,9 @@ Rectangle {
                         "downSpeed": downSpeedPretty,
                         "colorProxy": colorProxy
                     };
+                    if (tooltip != null)
+                        tooltip.closeRequested();
+
                     tooltip = quarkProxy.openWindow(sourceURL, "Tooltip.qml", params);
 
                     tooltip.upSpeed = (function() { return upSpeedPretty; })

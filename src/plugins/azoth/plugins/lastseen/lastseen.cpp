@@ -81,7 +81,7 @@ namespace LastSeen
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/azoth/lastseen/resources/images/lastseen.svg");
+		static QIcon icon ("lcicons:/azoth/lastseen/resources/images/lastseen.svg");
 		return icon;
 	}
 

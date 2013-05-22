@@ -158,7 +158,7 @@ namespace LMP
 				SLOT (hide ()));
 		Ui_.ScanProgress_->hide ();
 
-		TrayIcon_ = new LMPSystemTrayIcon (QIcon (":/lmp/resources/images/lmp.svg"), this);
+		TrayIcon_ = new LMPSystemTrayIcon (QIcon ("lcicons:/lmp/resources/images/lmp.svg"), this);
 		connect (Player_,
 				SIGNAL (songChanged (const MediaInfo&)),
 				TrayIcon_,
@@ -238,7 +238,7 @@ namespace LMP
 
 	QIcon PlayerTab::GetTabRecoverIcon () const
 	{
-		return QIcon (":/lmp/resources/images/lmp.svg");
+		return QIcon ("lcicons:/lmp/resources/images/lmp.svg");
 	}
 
 	QString PlayerTab::GetTabRecoverName () const
@@ -597,7 +597,7 @@ namespace LMP
 		{
 			QIcon icon = GetIconFromState (state);
 			QIcon baseIcon = icon.isNull() ?
-				QIcon (":/lmp/resources/images/lmp.svg") :
+				QIcon ("lcicons:/lmp/resources/images/lmp.svg") :
 				iconable->icon ();
 
 			const QSize& iconSize = iconSizeGetter (iconable);

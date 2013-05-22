@@ -143,7 +143,7 @@ namespace CSTP
 
 	QIcon CSTP::GetIcon () const
 	{
-		static QIcon icon (":/plugins/cstp/resources/images/cstp.svg");
+		static QIcon icon ("lcicons:/plugins/cstp/resources/images/cstp.svg");
 		return icon;
 	}
 

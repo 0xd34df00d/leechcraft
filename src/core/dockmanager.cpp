@@ -66,12 +66,19 @@ namespace LeechCraft
 				SLOT (handleDockDestroyed ()));
 
 		Window2DockToolbarMgr_ [win]->AddDock (dw, area);
+
+		dw->installEventFilter (this);
+
+		auto toggleAct = dw->toggleViewAction ();
+		ToggleAct2Dock_ [toggleAct] = dw;
+		connect (toggleAct,
+				SIGNAL (triggered (bool)),
+				this,
+				SLOT (handleDockToggled (bool)));
 	}
 
 	void DockManager::AssociateDockWidget (QDockWidget *dock, QWidget *tab)
 	{
-		dock->installEventFilter (this);
-
 		TabAssociations_ [dock] = tab;
 
 		auto rootWM = Core::Instance ().GetRootWindowsManager ();
@@ -80,13 +87,6 @@ namespace LeechCraft
 			handleTabChanged (rootWM->GetTabManager (winIdx)->GetCurrentWidget ());
 		else
 			dock->setVisible (false);
-
-		auto toggleAct = dock->toggleViewAction ();
-		ToggleAct2Dock_ [toggleAct] = dock;
-		connect (toggleAct,
-				SIGNAL (triggered (bool)),
-				this,
-				SLOT (handleDockToggled (bool)));
 	}
 
 	void DockManager::ToggleViewActionVisiblity (QDockWidget *widget, bool visible)
@@ -97,15 +97,11 @@ namespace LeechCraft
 		emit hookDockWidgetActionVisToggled (proxy, win, widget, visible);
 		if (proxy->IsCancelled ())
 			return;
+	}
 
-		/*
-		// TODO
-		QAction *act = widget->toggleViewAction ();
-		if (!visible)
-			MenuView_->removeAction (act);
-		else
-			MenuView_->insertAction (MenuView_->actions ().first (), act);
-		*/
+	QSet<QDockWidget*> DockManager::GetForcefullyClosed () const
+	{
+		return ForcefullyClosed_;
 	}
 
 	bool DockManager::eventFilter (QObject *obj, QEvent *event)
@@ -214,7 +210,7 @@ namespace LeechCraft
 	void DockManager::handleWindow (int index)
 	{
 		auto win = static_cast<MainWindow*> (RootWM_->GetMainWindow (index));
-		Window2DockToolbarMgr_ [win] = new DockToolbarManager (win);
+		Window2DockToolbarMgr_ [win] = new DockToolbarManager (win, this);
 
 		connect (win,
 				SIGNAL (destroyed (QObject*)),

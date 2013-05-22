@@ -173,7 +173,7 @@ namespace LeechCraft
 
 			QIcon TorrentPlugin::GetIcon () const
 			{
-				static QIcon icon (":/resources/images/bittorrent.svg");
+				static QIcon icon ("lcicons:/resources/images/bittorrent.svg");
 				return icon;
 			}
 

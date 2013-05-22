@@ -59,92 +59,82 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Liznoo::PlatformWinAPI</name>
+    <name>LeechCraft::Liznoo::PlatformFreeBSD</name>
     <message>
-        <location filename="platformwinapi.cpp" line="95"/>
-        <source>New power scheme detected</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="platformwinapi.cpp" line="100"/>
-        <source>New power source detected</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location filename="platformwinapi.cpp" line="107"/>
-        <source>New battery state detected</source>
+        <location filename="platformfreebsd.cpp" line="62"/>
+        <source>Looks like you don&apos;t have permission to write to /dev/acpi. If you&apos;re in &apos;wheel&apos; group, add &apos;perm acpi 0664&apos; to /etc/devfs.conf and run &apos;/etc/rc.d/devfs restart&apos; to apply needed permissions to /dev/acpi.</source>
         <translation type="unfinished"/>
     </message>
 </context>
 <context>
     <name>LeechCraft::Liznoo::Plugin</name>
     <message>
-        <location filename="liznoo.cpp" line="67"/>
+        <location filename="liznoo.cpp" line="72"/>
         <source>Suspend</source>
         <translation>Modo suspendido</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="74"/>
+        <location filename="liznoo.cpp" line="79"/>
         <source>Hibernate</source>
         <translation>Hibernado</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="104"/>
+        <location filename="liznoo.cpp" line="109"/>
         <source>UPower/WinAPI-based power manager.</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="169"/>
+        <location filename="liznoo.cpp" line="177"/>
         <source>(charging)</source>
         <translation>(cargando)</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="171"/>
+        <location filename="liznoo.cpp" line="179"/>
         <source>(discharging)</source>
         <translation>(descargando)</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="175"/>
+        <location filename="liznoo.cpp" line="183"/>
         <source>Battery</source>
         <translation>Batería</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="186"/>
+        <location filename="liznoo.cpp" line="194"/>
         <source>Battery technology: %1</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="191"/>
+        <location filename="liznoo.cpp" line="200"/>
         <source>Energy rate: %1 W</source>
         <translation>Nivel de potencia: %1 W</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="197"/>
+        <location filename="liznoo.cpp" line="206"/>
         <source>Remaining energy: %1 Wh</source>
         <translation>Energía restante: %1 Wh</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="203"/>
+        <location filename="liznoo.cpp" line="212"/>
         <source>Full energy capacity: %1 Wh</source>
         <translation>Capacidad de carga completa: %1 Wh</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="232"/>
+        <location filename="liznoo.cpp" line="241"/>
         <source>Battery charge level is below %1.</source>
         <translation>Nivel de carga de la batería es menor que %1.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="245"/>
+        <location filename="liznoo.cpp" line="254"/>
         <source>The device started charging.</source>
         <translation>El dispositivo comenzó a cargarse.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="249"/>
+        <location filename="liznoo.cpp" line="258"/>
         <source>The device started discharging.</source>
         <translation>El dispositivo comenzó a descargarse.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="258"/>
+        <location filename="liznoo.cpp" line="267"/>
         <source>Battery status</source>
         <translation>Estado de la batería</translation>
     </message>

@@ -155,7 +155,7 @@ namespace BitTorrent
 	, TabWidget_ (0)
 	, Menu_ (0)
 	, ShortcutMgr_ (0)
-	, TorrentIcon_ (":/resources/images/bittorrent.svg")
+	, TorrentIcon_ ("lcicons:/resources/images/bittorrent.svg")
 	{
 		setObjectName ("BitTorrent Core");
 		ExternalAddress_ = tr ("Unknown");
@@ -1889,7 +1889,11 @@ namespace BitTorrent
 				QStringList (name));
 
 		const auto& savePath = torrent.Handle_.save_path ();
+#if LIBTORRENT_VERSION_NUM >= 1600
 		const auto& savePathStr = QString::fromUtf8 (savePath.c_str ());
+#else
+		const auto& savePathStr = QString::fromUtf8 (savePath.string ().c_str ());
+#endif
 
 #if LIBTORRENT_VERSION_NUM >= 1600
 		auto nah = new Util::NotificationActionHandler (notifyE);

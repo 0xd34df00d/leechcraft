@@ -106,7 +106,7 @@ namespace Blogique
 		ProgressBarLabelAction_ = ProgressToolBar_->addWidget (ProgressBarLabel_);
 		ProgressBarAction_ = ProgressToolBar_->addWidget (submitProgressBar);
 		submitProgressBar->setOrientation (Qt::Horizontal);
-		
+
 		SetToolBarActions ();
 
 		connect (this,
@@ -127,7 +127,7 @@ namespace Blogique
 				this,
 				SLOT (fillNewTabWithEntry (Entry, QByteArray)));
 		connect (BlogEntriesWidget_,
-				SIGNAL (removingEntryBegin ()),
+				SIGNAL (entryAboutToBeRemoved ()),
 				this,
 				SLOT (handleRemovingEntryBegin ()));
 		connect (BlogEntriesWidget_,
@@ -442,6 +442,9 @@ namespace Blogique
 
 	Entry BlogiqueWidget::GetCurrentEntry (bool interactive) const
 	{
+		if (!PostEdit_)
+			return Entry ();
+
 		const QString& content = PostEdit_->GetContents (ContentType::HTML);
 		if (interactive &&
 				content.isEmpty ())
@@ -540,13 +543,11 @@ namespace Blogique
 		}
 
 		auto account = Id2Account_ [id];
+		BlogEntriesWidget_->clear ();
 		BlogEntriesWidget_->SetAccount (account);
 
 		auto ibp = qobject_cast<IBloggingPlatform*> (account->
 				GetParentBloggingPlatform ());
-
-		BlogEntriesWidget_->clear ();
-
 
 		if (ibp->GetFeatures () & IBloggingPlatform::BPFSelectablePostDestination)
 		{
@@ -788,14 +789,22 @@ namespace Blogique
 				if (mbox.exec () == QMessageBox::Cancel)
 					return;
 				else if (mbox.clickedButton () == &newPostButton)
+				{
+					ShowProgress (tr ("Posting entry..."));
 					acc->submit (e);
+				}
 				else
+				{
+					ShowProgress (tr ("Posting entry..."));
 					acc->UpdateEntry (e);
+				}
 			}
 			else
+			{
+				ShowProgress (tr ("Posting entry..."));
 				acc->submit (e);
+			}
 
-			ShowProgress (tr ("Posting entry..."));
 		}
 	}
 

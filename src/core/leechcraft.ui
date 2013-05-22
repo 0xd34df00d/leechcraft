@@ -129,14 +129,6 @@
     <string>Ctrl+T</string>
    </property>
   </action>
-  <action name="ActionShowToolBar_">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Show toolbar</string>
-   </property>
-  </action>
   <action name="ActionRestart_">
    <property name="text">
     <string>Restart LeechCraft...</string>

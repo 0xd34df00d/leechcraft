@@ -97,6 +97,8 @@ namespace Metida
 
 		void RequestLastInbox ();
 		void RequestRecentCommments ();
+
+		void RequestTags ();
 	private:
 		void GenerateChallenge () const;
 		void ValidateAccountData (const QString& login,
@@ -132,6 +134,8 @@ namespace Metida
 		void InboxRequest (const QString& challenge);
 		void RecentCommentsRequest (const QString& challenge);
 
+		void GetUserTagsRequest (const QString& challenge);
+
 		void ParseForError (const QByteArray& content);
 		void ParseFriends (const QDomDocument& doc);
 
@@ -155,6 +159,7 @@ namespace Metida
 		void handleBlogStatisticsReplyFinished ();
 		void handleInboxReplyFinished ();
 		void handleRecentCommentsReplyFinished ();
+		void handleGetUserTagsReplyFinished ();
 
 		void handleNetworkError (QNetworkReply::NetworkError error);
 
@@ -177,6 +182,7 @@ namespace Metida
 
 		void unreadMessagesExist (bool exists);
 		void gotRecentComments (const QList<LJCommentEntry>& comments);
+		void gotTags (const QHash<QString, int>& tags);
 	};
 }
 }

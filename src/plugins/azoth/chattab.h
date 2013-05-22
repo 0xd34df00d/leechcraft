@@ -49,6 +49,7 @@ namespace Azoth
 	struct EntryStatus;
 	class ICLEntry;
 	class IMUCEntry;
+	class IAccount;
 	class IMessage;
 	class ITransferManager;
 
@@ -203,6 +204,8 @@ namespace Azoth
 		void handleRichFormatterPosition ();
 		void handleFontSettingsChanged ();
 		void handleFontSizeChanged ();
+
+		void handleAccountStyleChanged (IAccount*);
 	private:
 		template<typename T>
 		T* GetEntry () const;

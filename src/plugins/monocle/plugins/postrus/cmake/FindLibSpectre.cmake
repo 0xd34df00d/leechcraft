@@ -57,9 +57,6 @@ if (LIBSPECTRE_FOUND)
 
 endif (LIBSPECTRE_FOUND)
 
-include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(LibSpectre DEFAULT_MSG LIBSPECTRE_LIBRARY LIBSPECTRE_FOUND)
-
 # ensure that they are cached
 set(LIBSPECTRE_INCLUDE_DIR ${LIBSPECTRE_INCLUDE_DIR} CACHE INTERNAL "The libspectre include path")
 set(LIBSPECTRE_LIBRARY ${LIBSPECTRE_LIBRARY} CACHE INTERNAL "The libspectre library")

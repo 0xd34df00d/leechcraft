@@ -89,6 +89,15 @@ namespace FXB
 		return QList<ILink_ptr> ();
 	}
 
+	void DocumentAdapter::PaintPage (QPainter *painter, int page)
+	{
+		const auto& size = Doc_->pageSize ();
+
+		QRectF rect (QPointF (0, 0), size);
+		rect.moveTop (rect.height () * page);
+		Doc_->drawContents (painter, rect);
+	}
+
 	void DocumentAdapter::SetDocument (QTextDocument *doc)
 	{
 		Doc_.reset (doc);

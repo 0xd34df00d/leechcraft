@@ -270,7 +270,7 @@ namespace SB2
 			return false;
 
 		Icon_ = QIcon ();
-		Icon_.addFile (":/resources/images/leechcraft.svg");
+		Icon_.addFile ("lcicons:/resources/images/leechcraft.svg");
 		return true;
 	}
 

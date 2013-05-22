@@ -28,6 +28,12 @@
 					<label lang="en" value="Oxygen" />
 				</option>
 			</item>
+			<item type="combobox" property="PluginsIconset" mayHaveDataSource="true">
+				<label value="Plugins icon set:" />
+				<option name="Default" default="true">
+					<label value="Default" />
+				</option>
+			</item>
 			<item type="combobox" property="ColorTheme" mayHaveDataSource="true">
 				<label value="Color theme:" />
 				<option name="default" default="true">
@@ -81,9 +87,6 @@
 			</item>
 			<item type="checkbox" property="ExitOnClose" default="false">
 				<label lang="en" value="Exit on close" />
-			</item>
-			<item type="checkbox" property="ToolBarVisibilityManipulation" default="false">
-				<label lang="en" value="Manual toolbar visibility control" />
 			</item>
 			<item type="checkbox" property="OpenTabNext" default="false">
 				<label lang="en" value="Open new tab next to current" />

@@ -35,6 +35,7 @@
 #include <QButtonGroup>
 #include "ui_handlerchoicedialog.h"
 
+class QRadioButton;
 class IInfo;
 class IDownload;
 class IEntityHandler;
@@ -175,7 +176,7 @@ namespace LeechCraft
 		 */
 		QStringList GetPluginSavePaths (const QString& name) const;
 
-		bool AddCommon (const IInfo*, const QString&);
+		QRadioButton* AddCommon (const IInfo*, const QString&);
 	private slots:
 		/** Fills the combobox with save locations with items in
 		 * right order:

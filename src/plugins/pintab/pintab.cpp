@@ -37,8 +37,6 @@
 #include <interfaces/core/icoretabwidget.h>
 #include <interfaces/core/irootwindowsmanager.h>
 
-#warning "Don't forget to add support for multiple windows here."
-
 namespace LeechCraft
 {
 namespace PinTab
@@ -98,7 +96,7 @@ namespace PinTab
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/pintab/resources/images/pintab.svg");
+		static QIcon icon ("lcicons:/pintab/resources/images/pintab.svg");
 		return icon;
 	}
 

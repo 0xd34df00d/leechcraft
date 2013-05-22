@@ -7,9 +7,10 @@ release/
 build/
 src/debian/
 changelog
-src/data/leechcraft.1.gz
+src/data/*.gz
 *.tar.gz
 *~
 dummyfile.cpp
 *.kdev4
 *.user
+tools/win32/build32/

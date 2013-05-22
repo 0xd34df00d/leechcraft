@@ -60,6 +60,7 @@
 #include "interfaces/monocle/idynamicdocument.h"
 #include "interfaces/monocle/isaveabledocument.h"
 #include "interfaces/monocle/isearchabledocument.h"
+#include "interfaces/monocle/isupportpainting.h"
 #include "core.h"
 #include "pagegraphicsitem.h"
 #include "filewatcher.h"
@@ -390,16 +391,18 @@ namespace Monocle
 
 		checkCurrentPageChange (true);
 
+		auto docObj = CurrentDoc_->GetQObject ();
+
 		TOCEntryLevel_t topLevel;
-		auto toc = qobject_cast<IHaveTOC*> (CurrentDoc_->GetQObject ());
+		auto toc = qobject_cast<IHaveTOC*> (docObj);
 		TOCWidget_->SetTOC (toc ? toc->GetTOC () : TOCEntryLevel_t ());
 
-		connect (CurrentDoc_->GetQObject (),
+		connect (docObj,
 				SIGNAL (navigateRequested (QString, int, double, double)),
 				this,
 				SLOT (handleNavigateRequested (QString, int, double, double)),
 				Qt::QueuedConnection);
-		connect (CurrentDoc_->GetQObject (),
+		connect (docObj,
 				SIGNAL (printRequested (QList<int>)),
 				this,
 				SLOT (handlePrintRequested ()),
@@ -409,8 +412,8 @@ namespace Monocle
 
 		emit tabRecoverDataChanged ();
 
-		if (qobject_cast<IDynamicDocument*> (CurrentDoc_->GetQObject ()))
-			connect (CurrentDoc_->GetQObject (),
+		if (qobject_cast<IDynamicDocument*> (docObj))
+			connect (docObj,
 					SIGNAL (pageContentsChanged (int)),
 					this,
 					SLOT (handlePageContentsChanged (int)));
@@ -418,10 +421,12 @@ namespace Monocle
 		BMWidget_->HandleDoc (CurrentDoc_);
 		ThumbsWidget_->HandleDoc (CurrentDoc_);
 
-		FindAction_->setEnabled (qobject_cast<ISearchableDocument*> (CurrentDoc_->GetQObject ()));
+		FindAction_->setEnabled (qobject_cast<ISearchableDocument*> (docObj));
 
-		auto saveable = qobject_cast<ISaveableDocument*> (CurrentDoc_->GetQObject ());
+		auto saveable = qobject_cast<ISaveableDocument*> (docObj);
 		SaveAction_->setEnabled (saveable && saveable->CanSave ().CanSave_);
+
+		ExportPDFAction_->setEnabled (qobject_cast<ISupportPainting*> (docObj));
 
 		return true;
 	}
@@ -512,6 +517,17 @@ namespace Monocle
 				this,
 				SLOT (handleSave ()));
 		Toolbar_->addAction (SaveAction_);
+
+		ExportPDFAction_ = new QAction (tr ("Export as PDF..."), this);
+		ExportPDFAction_->setProperty ("ActionIcon", "application-pdf");
+		ExportPDFAction_->setEnabled (false);
+		connect (ExportPDFAction_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleExportPDF ()));
+		Toolbar_->addAction (ExportPDFAction_);
+
+		Toolbar_->addSeparator ();
 
 		FindAction_ = new QAction (tr ("Find..."), this);
 		FindAction_->setShortcut (QString ("Ctrl+F"));
@@ -894,6 +910,44 @@ namespace Monocle
 		saveable->Save (CurrentDocPath_);
 	}
 
+	void DocumentTab::handleExportPDF ()
+	{
+		if (!CurrentDoc_ || !CurrentDoc_->GetNumPages ())
+			return;
+
+		auto paintable = qobject_cast<ISupportPainting*> (CurrentDoc_->GetQObject ());
+		if (!paintable)
+			return;
+
+		const auto& path = QFileDialog::getSaveFileName (this,
+				tr ("Export to PDF"),
+				QDir::homePath ());
+		if (path.isEmpty ())
+			return;
+
+		QPrinter printer;
+		printer.setOutputFormat (QPrinter::PdfFormat);
+		printer.setOutputFileName (path);
+		printer.setPageMargins (0, 0, 0, 0, QPrinter::DevicePixel);
+		printer.setPaperSize (CurrentDoc_->GetPageSize (0), QPrinter::DevicePixel);
+
+		QPainter painter (&printer);
+		painter.setRenderHint (QPainter::Antialiasing);
+		painter.setRenderHint (QPainter::HighQualityAntialiasing);
+		painter.setRenderHint (QPainter::SmoothPixmapTransform);
+
+		for (int i = 0, numPages = CurrentDoc_->GetNumPages (); i < numPages; ++i)
+		{
+			paintable->PaintPage (&painter, i);
+			if (i != numPages - 1)
+			{
+				printer.newPage ();
+				painter.translate (0, -CurrentDoc_->GetPageSize (i).height ());
+			}
+		}
+		painter.end ();
+	}
+
 	void DocumentTab::handlePrint ()
 	{
 		if (!CurrentDoc_)
@@ -958,7 +1012,8 @@ namespace Monocle
 		if (!CurrentDoc_)
 			return;
 
-		new PresenterWidget (CurrentDoc_);
+		auto presenter = new PresenterWidget (CurrentDoc_);
+		presenter->NavigateTo (GetCurrentPage ());
 	}
 
 	void DocumentTab::handleGoPrev ()

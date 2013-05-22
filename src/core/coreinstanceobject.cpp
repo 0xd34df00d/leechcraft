@@ -35,6 +35,7 @@
 #include <QStyleFactory>
 #include <util/util.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/sys/paths.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "pluginmanagerdialog.h"
@@ -169,6 +170,15 @@ namespace LeechCraft
 		XmlSettingsManager::Instance ()->RegisterObject ("IconSet", this, "updateIconSet");
 		updateIconSet ();
 
+		QStringList pluginsIconsets;
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::Share, "global_icons/plugins/"))
+			pluginsIconsets << QDir (cand).entryList (QDir::Dirs | QDir::NoDotAndDotDot);
+		pluginsIconsets.sort ();
+		pluginsIconsets.prepend ("Default");
+		pluginsIconsets.removeDuplicates ();
+		XmlSettingsDialog_->SetDataSource ("PluginsIconset",
+				new QStringListModel (pluginsIconsets));
+
 		XmlSettingsDialog_->SetDataSource ("ColorTheme",
 				ColorThemeEngine::Instance ().GetThemesModel ());
 		XmlSettingsManager::Instance ()->RegisterObject ("ColorTheme", this, "updateColorTheme");
@@ -216,7 +226,7 @@ namespace LeechCraft
 
 	QIcon CoreInstanceObject::GetIcon () const
 	{
-		return QIcon (":/resources/images/leechcraft.svg");
+		return QIcon ("lcicons:/resources/images/leechcraft.svg");
 	}
 
 	Util::XmlSettingsDialog_ptr CoreInstanceObject::GetSettingsDialog () const

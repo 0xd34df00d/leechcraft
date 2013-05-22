@@ -28,8 +28,7 @@ SET (FORMS
 	)
 QT4_WRAP_UI (UIS_H ${FORMS})
 CreateTrs ("lhtr" "en;es;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget ("lhtr" "en;ru_RU" "${SRCS}
-" "${FORMS}" "lhtrsettings.xml")
+CreateTrsUpTarget ("lhtr" "en;ru_RU" "${SRCS}" "${FORMS}" "lhtrsettings.xml")
 
 SET (LHTR_RESOURCES lhtrresources.qrc)
 QT4_ADD_RESOURCES (LHTR_RCCS ${LHTR_RESOURCES})

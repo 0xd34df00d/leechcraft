@@ -77,7 +77,7 @@ namespace SecMan
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/resources/images/secman.svg");
+		static QIcon icon ("lcicons:/resources/images/secman.svg");
 		return icon;
 	}
 

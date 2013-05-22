@@ -670,14 +670,6 @@ namespace AdiumStyles
 		return templ;
 	}
 
-	QList<QColor> AdiumStyleSource::CreateColors (const QString& scheme)
-	{
-		if (!Coloring2Colors_.contains (scheme))
-			Coloring2Colors_ [scheme] = Proxy_->GenerateColors (scheme);
-
-		return Coloring2Colors_ [scheme];
-	}
-
 	QString AdiumStyleSource::GetMessageID (QObject *msgObj)
 	{
 		return QString::number (reinterpret_cast<long int> (msgObj));

@@ -29,7 +29,6 @@
 
 #pragma once
 
-#include <memory>
 #include <QObject>
 #include <blist.h>
 #include <conversation.h>
@@ -59,8 +58,6 @@ namespace VelvetBird
 		QString Group_;
 
 		QList<ConvIMMessage*> Messages_;
-
-		std::shared_ptr<PurpleConversation> PurpleConv_;
 	public:
 		Buddy (PurpleBuddy*, Account*);
 

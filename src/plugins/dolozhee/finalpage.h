@@ -31,6 +31,7 @@
 
 #include <QWizardPage>
 #include "ui_finalpage.h"
+#include "structures.h"
 
 namespace LeechCraft
 {
@@ -43,12 +44,22 @@ namespace Dolozhee
 		Q_OBJECT
 
 		Ui::FinalPage Ui_;
+
+		QList<FileInfo> PendingFiles_;
+		FileInfo CurrentUpload_;
+		QList<FileInfo> UploadedFiles_;
 	public:
 		FinalPage (QWidget* = 0);
 
 		void initializePage ();
+	private:
+		void UploadPending ();
 	private slots:
+		void handleUploadProgress (qint64);
+		void handleUploadReplyFinished ();
+
 		void handleReplyFinished ();
+
 		void on_Status__linkActivated (const QString&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);

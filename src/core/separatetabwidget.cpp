@@ -475,10 +475,18 @@ namespace LeechCraft
 			return;
 		}
 
-		if (MainStackedWidget_->widget (index) == PreviousWidget_)
-			PreviousWidget_ = 0;
+		const auto widget = Widget (index);
 
-		MainStackedWidget_->removeWidget (Widget (index));
+		if (widget == PreviousWidget_)
+			PreviousWidget_ = 0;
+		if (widget == CurrentWidget_)
+			CurrentWidget_ = 0;
+
+		if (auto itw = qobject_cast<ITabWidget*> (widget))
+			if (auto bar = itw->GetToolBar ())
+				RemoveWidgetFromSeparateTabWidget (bar);
+
+		MainStackedWidget_->removeWidget (widget);
 		MainTabBar_->removeTab (index);
 
 		TabNames_.removeAt (index);
@@ -492,12 +500,14 @@ namespace LeechCraft
 	void SeparateTabWidget::AddWidget2SeparateTabWidget (QWidget *widget)
 	{
 		widget->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Minimum);
+		SavedWidgetParents_ [widget] = widget->parentWidget ();
 		MainToolBarLayout_->addWidget (widget);
 	}
 
 	void SeparateTabWidget::RemoveWidgetFromSeparateTabWidget (QWidget *widget)
 	{
 		MainToolBarLayout_->removeWidget (widget);
+		widget->setParent (SavedWidgetParents_.take (widget));
 		widget->hide ();
 	}
 
@@ -631,9 +641,8 @@ namespace LeechCraft
 
 		if (CurrentWidget_ != Widget (index))
 		{
-			CurrentIndex_ = IndexOf (CurrentWidget_);
+			PreviousWidget_ = CurrentWidget_;
 			CurrentWidget_ = Widget (index);
-			PreviousWidget_ = Widget (CurrentIndex_);
 			CurrentIndex_ = index;
 		}
 

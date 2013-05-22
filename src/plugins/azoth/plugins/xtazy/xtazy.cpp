@@ -30,24 +30,18 @@
 #include "xtazy.h"
 #include <QIcon>
 #include <QMessageBox>
-#include <QTranslator>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <QUrl>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/iwebfilestorage.h>
+#include <interfaces/media/audiostructs.h>
+#include <interfaces/media/icurrentsongkeeper.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/isupporttune.h>
 #include <interfaces/azoth/iproxyobject.h>
-#include "tunesourcebase.h"
-#include "xmlsettingsmanager.h"
-#include "filesource.h"
-#include "lcsource.h"
 #include "tracksharedialog.h"
-
-#ifdef HAVE_DBUS
-#include "mprissource.h"
-#endif
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -57,31 +51,25 @@ namespace Xtazy
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Translator_.reset (Util::InstallTranslator ("azoth_xtazy"));
+		Util::InstallTranslator ("azoth_xtazy");
 
-		AzothProxy_ = 0;
 		Proxy_ = proxy;
+		AzothProxy_ = 0;
 
-		SettingsDialog_.reset (new Util::XmlSettingsDialog);
-		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
-				"azothxtazysettings.xml");
-
-		LCSource_ = new LCSource (this);
-
-#ifdef HAVE_DBUS
-		TuneSources_ << new MPRISSource (this);
-#endif
-		TuneSources_ << new FileSource (this);
-		TuneSources_ << LCSource_;
+		Keeper_ = 0;
 	}
 
 	void Plugin::SecondInit ()
 	{
-		Q_FOREACH (TuneSourceBase *base, TuneSources_)
-			connect (base,
-					SIGNAL (tuneInfoChanged (const QMap<QString, QVariant>&)),
-					this,
-					SLOT (publish (const QMap<QString, QVariant>&)));
+		auto keeperObjs = Proxy_->GetPluginsManager ()->GetAllCastableRoots<decltype (Keeper_)> ();
+		if (keeperObjs.isEmpty ())
+			return;
+
+		Keeper_ = qobject_cast<decltype (Keeper_)> (keeperObjs.at (0));
+		connect (keeperObjs.at (0),
+				SIGNAL (currentSongChanged (Media::AudioInfo)),
+				this,
+				SLOT (publish (Media::AudioInfo)));
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -91,7 +79,6 @@ namespace Xtazy
 
 	void Plugin::Release ()
 	{
-		qDeleteAll (TuneSources_);
 	}
 
 	QString Plugin::GetName () const
@@ -106,7 +93,7 @@ namespace Xtazy
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/plugins/azoth/plugins/xtazy/resources/images/xtazy.svg");
+		static QIcon icon ("lcicons:/plugins/azoth/plugins/xtazy/resources/images/xtazy.svg");
 		return icon;
 	}
 
@@ -115,34 +102,6 @@ namespace Xtazy
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		return result;
-	}
-
-	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
-	{
-		return SettingsDialog_;
-	}
-
-	QString Plugin::GetServiceName () const
-	{
-		return GetName ();
-	}
-
-	void Plugin::NowPlaying (const Media::AudioInfo& audio)
-	{
-		LCSource_->NowPlaying (audio);
-	}
-
-	void Plugin::PlaybackStopped ()
-	{
-		LCSource_->Stopped ();
-	}
-
-	void Plugin::LoveCurrentTrack ()
-	{
-	}
-
-	void Plugin::BanCurrentTrack ()
-	{
 	}
 
 	void Plugin::HandleShare (LeechCraft::IHookProxy_ptr proxy, QObject *entryObj, const QString& variant, const QUrl& url)
@@ -206,41 +165,42 @@ namespace Xtazy
 			int,
 			QString variant)
 	{
+		if (!Keeper_)
+			return;
+
 		if (!XmlSettingsManager::Instance ().property ("NPCmdEnabled").toBool ())
 			return;
+
+		const auto& song = Keeper_->GetCurrentSong ();
 
 		auto text = proxy->GetValue ("text").toString ();
 		if (text == "/np")
 		{
-			if (!Previous_.isEmpty ())
+			if (!song.Title_.isEmpty ())
 			{
 				text = XmlSettingsManager::Instance ().property ("NPCmdSubst").toString ();
-				text.replace ("$artist", Previous_ ["artist"].toString ());
-				text.replace ("$album", Previous_ ["source"].toString ());
-				text.replace ("$title", Previous_ ["title"].toString ());
+				text.replace ("$artist", song.Artist_);
+				text.replace ("$album", song.Album_);
+				text.replace ("$title", song.Title_);
 			}
 			else
 				text = XmlSettingsManager::Instance ().property ("NPCmdNoPlaying").toString ();
 			proxy->SetValue ("text", text);
 		}
-		else if (text == "/sharesong" && Previous_.contains ("URL"))
-			HandleShare (proxy, entryObj, variant, Previous_ ["URL"].toUrl ());
+		else if (text == "/sharesong" && song.Other_.contains ("URL"))
+			HandleShare (proxy, entryObj, variant, song.Other_ ["URL"].toUrl ());
 	}
 
-	void Plugin::publish (const QMap<QString, QVariant>& info)
+	void Plugin::publish (const Media::AudioInfo& info)
 	{
-		if (info == Previous_)
-			return;
+		QVariantMap map;
+		map ["artist"] = info.Artist_;
+		map ["source"] = info.Album_;
+		map ["title"] = info.Title_;
+		map ["length"] = info.Length_;
+		map ["track"] = info.TrackNumber_;
 
-		const QByteArray& objName = sender ()->objectName ().toLatin1 ();
-
-		if (!XmlSettingsManager::Instance ()
-				.property ("Enable" + objName).toBool ())
-			return;
-
-		Previous_ = info;
-
-		Q_FOREACH (QObject *accObj, AzothProxy_->GetAllAccounts ())
+		for (auto accObj : AzothProxy_->GetAllAccounts ())
 		{
 			IAccount *acc = qobject_cast<IAccount*> (accObj);
 			if (!acc)
@@ -248,9 +208,8 @@ namespace Xtazy
 			if (acc->GetState ().State_ == SOffline)
 				continue;
 
-			ISupportTune *tune = qobject_cast<ISupportTune*> (accObj);
-			if (tune)
-				tune->PublishTune (info);
+			if (auto tune = qobject_cast<ISupportTune*> (accObj))
+				tune->PublishTune (map);
 		}
 	}
 

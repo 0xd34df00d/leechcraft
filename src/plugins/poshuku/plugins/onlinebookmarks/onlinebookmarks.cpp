@@ -97,7 +97,7 @@ namespace OnlineBookmarks
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/plugins/poshuku/plugins/onlinebookmarks/resources/images/onlinebookmarks.svg");
+		static QIcon icon ("lcicons:/plugins/poshuku/plugins/onlinebookmarks/resources/images/onlinebookmarks.svg");
 		return icon;
 	}
 

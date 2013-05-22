@@ -14,19 +14,8 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	)
 SET (XTAZY_SRCS
 	xtazy.cpp
-	tunesourcebase.cpp
-	filesource.cpp
 	xmlsettingsmanager.cpp
-	lcsource.cpp
 	tracksharedialog.cpp
-	)
-SET (XTAZY_HEADERS
-	xtazy.h
-	tunesourcebase.h
-	filesource.h
-	xmlsettingsmanager.h
-	lcsource.h
-	tracksharedialog.h
 	)
 SET (XTAZY_FORMS
 	tracksharedialog.ui
@@ -36,27 +25,10 @@ CreateTrs ("azoth_xtazy" "en;es;ru_RU;uk_UA" XTAZY_COMPILED_TRANSLATIONS)
 QT4_ADD_RESOURCES (XTAZY_RCCS ${XTAZY_RESOURCES})
 QT4_WRAP_UI (XTAZY_UIS_H ${XTAZY_FORMS})
 
-IF (QT_QTDBUS_FOUND)
-	ADD_DEFINITIONS (-DHAVE_DBUS)
-
-	SET (XTAZY_SRCS
-		${XTAZY_SRCS}
-		mprissource.cpp
-		)
-	SET (XTAZY_HEADERS
-		${XTAZY_HEADERS}
-		mprissource.h
-		)
-ENDIF (QT_QTDBUS_FOUND)
-
-IF (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (XTAZY_MOC_SRCS ${XTAZY_HEADERS})
-ENDIF (NOT LC_NO_MOC)
 
 ADD_LIBRARY (leechcraft_azoth_xtazy SHARED
 	${XTAZY_COMPILED_TRANSLATIONS}
 	${XTAZY_SRCS}
-	${XTAZY_MOC_SRCS}
 	${XTAZY_RCCS}
 	${XTAZY_UIS_H}
 	)

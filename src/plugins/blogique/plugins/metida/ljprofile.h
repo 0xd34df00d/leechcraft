@@ -70,6 +70,8 @@ namespace Metida
 
 		QList<LJFriendGroup> GetFriendGroups () const;
 
+		QHash<QString, int> GetTags () const;
+
 		int GetFreeGroupId () const;
 
 	private:
@@ -78,6 +80,7 @@ namespace Metida
 
 	public slots:
 		void handleProfileUpdate (const LJProfileData& profile);
+		void handleGotTags (const QHash<QString, int>& tags);
 	private slots:
 		void handleAvatarDownloadFinished ();
 		void handleOtherAvatarDownloadFinished ();

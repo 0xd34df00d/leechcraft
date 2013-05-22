@@ -50,6 +50,13 @@ namespace Acetamide
 	{
 		Q_OBJECT
 
+		enum Columns
+		{
+			ChannelName,
+			ParticipantsCount,
+			Subject
+		};
+
 		Ui::ChannelsListDialog Ui_;
 		IrcServerHandler *ISH_;
 		QList<QList<QStandardItem*>> Buffer_;

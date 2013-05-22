@@ -29,6 +29,7 @@
 
 #include "xmlgenerator.h"
 #include <QXmlStreamWriter>
+#include <QFileInfo>
 
 namespace LeechCraft
 {
@@ -53,7 +54,8 @@ namespace Dolozhee
 	}
 
 	QByteArray XMLGenerator::CreateIssue (const QString& title,
-			const QString& desc, int category, ReportTypePage::Type type) const
+			const QString& desc, int category,
+			ReportTypePage::Type type, const QList<FileInfo>& files) const
 	{
 		QByteArray result;
 
@@ -75,6 +77,23 @@ namespace Dolozhee
 			w.writeTextElement ("tracker_id", "2");
 			break;
 		}
+
+		if (!files.isEmpty ())
+		{
+			w.writeStartElement ("uploads");
+			w.writeAttribute ("type", "array");
+			for (const auto& file : files)
+			{
+				w.writeStartElement ("upload");
+				w.writeTextElement ("token", file.Token_);
+				w.writeTextElement ("filename", QFileInfo (file.Name_).fileName ());
+				w.writeTextElement ("description", file.Description_);
+				w.writeTextElement ("content_type", file.Mime_);
+				w.writeEndElement ();
+			}
+			w.writeEndElement ();
+		}
+
 		w.writeEndDocument ();
 
 		return result;

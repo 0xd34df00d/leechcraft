@@ -460,9 +460,6 @@ namespace Summary
 	{
 		QItemSelectionModel *selm = Ui_.PluginsTasksTree_->selectionModel ();
 		const QModelIndex& now = selm->currentIndex ();
-#ifdef QT_DEBUG
-		qDebug () << Q_FUNC_INFO << this << current << now;
-#endif
 		if (current != now ||
 				(now.isValid () &&
 					!selm->rowIntersectsSelection (now.row (), QModelIndex ())))

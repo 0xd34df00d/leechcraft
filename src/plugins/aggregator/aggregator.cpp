@@ -138,7 +138,7 @@ namespace Aggregator
 		Impl_->ToolMenu_->addAction (Impl_->AppWideActions_.ActionExportBinary_);
 		Impl_->ToolMenu_->addAction (Impl_->AppWideActions_.ActionExportFB2_);
 
-		Impl_->TrayIcon_.reset (new QSystemTrayIcon (QIcon (":/resources/images/aggregator.svg"), this));
+		Impl_->TrayIcon_.reset (new QSystemTrayIcon (QIcon ("lcicons:/resources/images/aggregator.svg"), this));
 		Impl_->TrayIcon_->hide ();
 		connect (Impl_->TrayIcon_.get (),
 				SIGNAL (activated (QSystemTrayIcon::ActivationReason)),
@@ -357,7 +357,7 @@ namespace Aggregator
 
 	QIcon Aggregator::GetIcon () const
 	{
-		static QIcon icon (":/resources/images/aggregator.svg");
+		static QIcon icon ("lcicons:/resources/images/aggregator.svg");
 		return icon;
 	}
 

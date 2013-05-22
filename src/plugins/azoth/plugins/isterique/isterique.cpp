@@ -74,7 +74,7 @@ namespace Isterique
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/plugins/azoth/plugins/isterique/resources/images/isterique.svg");
+		static QIcon icon ("lcicons:/plugins/azoth/plugins/isterique/resources/images/isterique.svg");
 		return icon;
 	}
 

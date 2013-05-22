@@ -47,11 +47,11 @@ namespace Monocle
 		int CurrentPage_;
 	public:
 		PresenterWidget (IDocument_ptr);
+
+		void NavigateTo (int);
 	protected:
 		void closeEvent (QCloseEvent*);
 		void keyPressEvent (QKeyEvent*);
-	private:
-		void NavigateTo (int);
 	private slots:
 		void delayedShowInit ();
 	};

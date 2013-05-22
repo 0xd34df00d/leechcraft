@@ -29,8 +29,8 @@
 
 #ifndef PLUGINS_BITTORRENT_TORRENTFILESMODEL_H
 #define PLUGINS_BITTORRENT_TORRENTFILESMODEL_H
+#include <unordered_map>
 #include <QAbstractItemModel>
-#include <boost/unordered_map.hpp>
 #include <libtorrent/torrent_info.hpp>
 #include <interfaces/structures.h>
 #include "fileinfo.h"
@@ -48,7 +48,7 @@ namespace LeechCraft
 		{
 			struct Hash : public std::unary_function<boost::filesystem::path, size_t>
 			{
-				boost::hash<std::string> H_;
+				std::hash<std::string> H_;
 
 				size_t operator() (const boost::filesystem::path& p) const
 				{
@@ -67,12 +67,12 @@ namespace LeechCraft
 				}
 			};
 
-			typedef boost::unordered_map<boost::filesystem::path,
+			typedef std::unordered_map<boost::filesystem::path,
 					LeechCraft::Util::TreeItem*,
 					Hash,
 					MyEqual> Path2TreeItem_t;
 
-			typedef boost::unordered_map<boost::filesystem::path,
+			typedef std::unordered_map<boost::filesystem::path,
 					int,
 					Hash,
 					MyEqual> Path2Position_t;

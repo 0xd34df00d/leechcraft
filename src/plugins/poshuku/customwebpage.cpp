@@ -42,6 +42,7 @@
 #include <util/util.h>
 #include <util/defaulthookproxy.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
 #include "customwebview.h"
 #include "core.h"
@@ -208,10 +209,8 @@ namespace Poshuku
 		{
 			case ErrorPageExtension:
 			{
-				const ErrorPageExtensionOption *error =
-						static_cast<const ErrorPageExtensionOption*> (eo);
-				ErrorPageExtensionReturn *ret =
-						static_cast<ErrorPageExtensionReturn*> (er);
+				auto error = static_cast<const ErrorPageExtensionOption*> (eo);
+				auto ret = static_cast<ErrorPageExtensionReturn*> (er);
 
 				qDebug () << Q_FUNC_INFO
 						<< "error extension:"
@@ -226,14 +225,14 @@ namespace Poshuku
 					return false;
 				case 301:			// Unknown protocol (should delegate)
 				{
-					Entity e = Util::MakeEntity (error->url,
+					auto e = Util::MakeEntity (error->url,
 							QString (),
 							LeechCraft::FromUserInitiated);
-					bool ch = false;
-					emit couldHandle (e, &ch);
-					if (ch)
+					e.Additional_ ["IgnorePlugins"] = "org.LeechCraft.Poshuku";
+					auto em = Core::Instance ().GetProxy ()->GetEntityManager ();
+					if (em->CouldHandle (e))
 					{
-						emit gotEntity (e);
+						em->HandleEntity (e);
 						if (XmlSettingsManager::Instance ()->
 								property ("CloseEmptyDelegatedPages").toBool () &&
 								history ()->currentItem ().url ().isEmpty ())
@@ -304,6 +303,7 @@ namespace Poshuku
 				QString (),
 				FromUserInitiated);
 		e.Additional_ ["AllowedSemantics"] = QStringList ("fetch") << "save";
+		e.Additional_ ["IgnorePlugins"] = "org.LeechCraft.Poshuku";
 		emit gotEntity (e);
 	}
 
@@ -397,9 +397,10 @@ namespace Poshuku
 				else
 				{
 					reply->abort ();
-					Entity e =  Util::MakeEntity (reply->url (),
+					Entity e = Util::MakeEntity (reply->url (),
 							QString (),
 							LeechCraft::FromUserInitiated);
+					e.Additional_ ["IgnorePlugins"] = "org.LeechCraft.Poshuku";
 					emit gotEntity (e);
 					if (XmlSettingsManager::Instance ()->
 							property ("CloseEmptyDelegatedPages").toBool () &&
@@ -418,13 +419,12 @@ namespace Poshuku
 								property ("ParanoidDownloadsDetection").toBool () ||
 								!mime.isEmpty ())
 						{
-							Entity e =
-								Util::MakeEntity (QVariant::fromValue<QNetworkReply*> (reply),
+							auto e = Util::MakeEntity (QVariant::fromValue<QNetworkReply*> (reply),
 										QString (),
 										LeechCraft::FromUserInitiated,
 										mime);
-
 							e.Additional_ ["SourceURL"] = reply->url ();
+							e.Additional_ ["IgnorePlugins"] = "org.LeechCraft.Poshuku";
 
 							emit gotEntity (e);
 							if (XmlSettingsManager::Instance ()->
@@ -624,14 +624,12 @@ namespace Poshuku
 		if (scheme == "mailto" ||
 				scheme == "ftp")
 		{
-			LeechCraft::Entity e =
-				LeechCraft::Util::MakeEntity (request.url (),
+			const auto& e = Util::MakeEntity (request.url (),
 					QString (),
-					LeechCraft::FromUserInitiated);
-			bool ch = false;
-			emit couldHandle (e, &ch);
-			if (ch)
-				emit gotEntity (e);
+					FromUserInitiated);
+			auto em = Core::Instance ().GetProxy ()->GetEntityManager ();
+			if (em->CouldHandle (e))
+				em->HandleEntity (e);
 			else
 				QDesktopServices::openUrl (request.url ());
 			return false;
@@ -950,8 +948,7 @@ namespace Poshuku
 	{
 		PageFormsData_t formsData;
 
-		QPair<PageFormsData_t, QMap<ElementData, QWebElement>> pair =
-				HarvestForms (frame ? frame : mainFrame ());
+		auto pair = HarvestForms (frame);
 
 		if (pair.first.isEmpty ())
 		{

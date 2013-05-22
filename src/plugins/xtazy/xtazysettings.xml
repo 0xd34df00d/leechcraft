@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Xtazy" />
+		<groupbox>
+			<label value="Tune fetching" />
+			<item type="checkbox" property="EnableLCSource" default="on">
+				<label value="Fetch from LeechCraft players like LMP" />
+			</item>
+			<item type="checkbox" property="EnableMPRISSource" default="on">
+				<label value="Fetch from MPRIS-compatible players" />
+			</item>
+			<item type="checkbox" property="EnableFileSource" default="off">
+				<label value="Fetch from file" />
+			</item>
+			<item type="path" property="FileSourcePath" pickerType="openFileName">
+				<label value="File source:" />
+			</item>
+		</groupbox>
+	</page>
+</settings>

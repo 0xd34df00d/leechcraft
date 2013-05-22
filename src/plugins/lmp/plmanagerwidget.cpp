@@ -103,7 +103,7 @@ namespace LMP
 		if (sources.isEmpty ())
 			return;
 
-		Player_->Enqueue (sources, false);
+		Player_->ReplaceQueue (sources, false);
 	}
 }
 }

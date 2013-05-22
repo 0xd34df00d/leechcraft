@@ -44,7 +44,7 @@ QDataStream& operator<< (QDataStream& out, const LeechCraft::Entity& e)
 
 QDataStream& operator>> (QDataStream& in, LeechCraft::Entity& e)
 {
-	quint16 version;
+	quint16 version = 0;
 	in >> version;
 	if (version == 2)
 	{

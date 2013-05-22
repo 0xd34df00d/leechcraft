@@ -147,7 +147,8 @@ namespace LHTR
 				SIGNAL (textChanged ()));
 
 		handleBgColorSettings ();
-		XmlSettingsManager::Instance ().RegisterObject ("BgColor", this, "handleBgColorSettings");
+		XmlSettingsManager::Instance ().RegisterObject ({ "BgColor", "HTMLBgColor" },
+				this, "handleBgColorSettings");
 
 		Ui_.View_->installEventFilter (this);
 
@@ -198,12 +199,16 @@ namespace LHTR
 
 		Addable barAdd (ViewBar_);
 
-		fwdCmd (tr ("Bold"), "format-text-bold",
-				QWebPage::ToggleBold, barAdd)->setCheckable (true);
-		fwdCmd (tr ("Italic"), "format-text-italic",
-				QWebPage::ToggleItalic, barAdd)->setCheckable (true);
-		fwdCmd (tr ("Underline"), "format-text-underline",
-				QWebPage::ToggleUnderline, barAdd)->setCheckable (true);
+		Bold_ = fwdCmd (tr ("Bold"), "format-text-bold",
+				QWebPage::ToggleBold, barAdd);
+		Bold_->setCheckable (true);
+		Italic_ = fwdCmd (tr ("Italic"), "format-text-italic",
+				QWebPage::ToggleItalic, barAdd);
+		Italic_->setCheckable (true);
+		Underline_ = fwdCmd (tr ("Underline"), "format-text-underline",
+				QWebPage::ToggleUnderline, barAdd);
+		Underline_->setCheckable (true);
+
 		addCmd (tr ("Strikethrough"), "format-text-strikethrough",
 				"strikeThrough", barAdd, QString ())->setCheckable (true);
 		fwdCmd (tr ("Subscript"), "format-text-subscript",
@@ -287,15 +292,15 @@ namespace LHTR
 
 		ViewBar_->addSeparator ();
 
-		auto link = ViewBar_->addAction (tr ("Insert link..."),
+		InsertLink_ = ViewBar_->addAction (tr ("Insert link..."),
 					this,
 					SLOT (handleInsertLink ()));
-		link->setProperty ("ActionIcon", "insert-link");
+		InsertLink_->setProperty ("ActionIcon", "insert-link");
 
-		auto img = ViewBar_->addAction (tr ("Insert image..."),
+		InsertImage_ = ViewBar_->addAction (tr ("Insert image..."),
 					this,
 					SLOT (handleInsertImage ()));
-		img->setProperty ("ActionIcon", "insert-image");
+		InsertImage_->setProperty ("ActionIcon", "insert-image");
 
 		SetupTableMenu ();
 
@@ -304,6 +309,12 @@ namespace LHTR
 				SIGNAL (javaScriptWindowObjectCleared ()),
 				this,
 				SLOT (setupJS ()));
+
+		ToggleView_ = new QAction (tr ("Toggle view"), this);
+		connect (ToggleView_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (toggleView ()));
 	}
 
 	QString RichEditorWidget::GetContents (ContentType type) const
@@ -368,30 +379,60 @@ namespace LHTR
 	{
 		switch (action)
 		{
-		case LeechCraft::EditorAction::Find:
+		case EditorAction::Find:
 			return FindAction_;
-		case LeechCraft::EditorAction::Replace:
+		case EditorAction::Replace:
 			return ReplaceAction_;
+		case EditorAction::Bold:
+			return Bold_;
+		case EditorAction::Italic:
+			return Italic_;
+		case EditorAction::Underline:
+			return Underline_;
+		case EditorAction::InsertLink:
+			return InsertLink_;
+		case EditorAction::InsertImage:
+			return InsertImage_;
+		case EditorAction::ToggleView:
+			return ToggleView_;
 		}
 
 		return 0;
 	}
 
-	void RichEditorWidget::SetBackgroundColor (const QColor& color)
+	void RichEditorWidget::SetBackgroundColor (const QColor& color, ContentType type)
 	{
 		if (!XmlSettingsManager::Instance ().property ("OverrideBgColor").toBool ())
-			InternalSetBgColor (color);
+			InternalSetBgColor (color, type);
+	}
+
+	namespace
+	{
+		QString ProcessWith (QString html, const IAdvancedHTMLEditor::Replacements_t& rxs)
+		{
+			for (const auto& rx : rxs)
+				html.replace (rx.first, rx.second);
+			return html;
+		}
 	}
 
 	void RichEditorWidget::InsertHTML (const QString& html)
 	{
-		ExecCommand ("insertHTML", html);
+		ExecCommand ("insertHTML", ProcessWith (html, HTML2Rich_));
 	}
 
 	void RichEditorWidget::SetTagsMappings (const Replacements_t& rich2html, const Replacements_t& html2rich)
 	{
 		Rich2HTML_ = rich2html;
 		HTML2Rich_ = html2rich;
+	}
+
+	QAction* RichEditorWidget::AddInlineTagInserter (const QString& tagName, const QVariantMap& params)
+	{
+		auto act = ViewBar_->addAction (QString (), this, SLOT (handleInlineCmd ()));
+		act->setProperty ("Editor/Command", tagName);
+		act->setProperty ("Editor/Attrs", params);
+		return act;
 	}
 
 	void RichEditorWidget::ExecJS (const QString& js)
@@ -425,11 +466,22 @@ namespace LHTR
 		return true;
 	}
 
-	void RichEditorWidget::InternalSetBgColor (const QColor& color)
+	void RichEditorWidget::InternalSetBgColor (const QColor& color, ContentType type)
 	{
-		auto palette = Ui_.View_->palette ();
+		QWidget *widget = 0;
+		switch (type)
+		{
+		case ContentType::PlainText:
+			widget = Ui_.HTML_;
+			break;
+		case ContentType::HTML:
+			widget = Ui_.View_;
+			break;
+		}
+
+		auto palette = widget->palette ();
 		palette.setColor (QPalette::Base, color);
-		Ui_.View_->setPalette (palette);
+		widget->setPalette (palette);
 	}
 
 	void RichEditorWidget::SetupTableMenu ()
@@ -518,23 +570,17 @@ namespace LHTR
 	{
 		const auto& color = XmlSettingsManager::Instance ()
 				.property ("BgColor").value<QColor> ();
-		InternalSetBgColor (color);
+		InternalSetBgColor (color, ContentType::HTML);
+
+		const auto& plainColor = XmlSettingsManager::Instance ()
+				.property ("HTMLBgColor").value<QColor> ();
+		InternalSetBgColor (plainColor, ContentType::PlainText);
 	}
 
 	void RichEditorWidget::handleLinkClicked (const QUrl& url)
 	{
 		const auto& e = Util::MakeEntity (url, QString (), FromUserInitiated | OnlyHandle);
 		Proxy_->GetEntityManager ()->HandleEntity (e);
-	}
-
-	namespace
-	{
-		QString ProcessWith (QString html, const IAdvancedHTMLEditor::Replacements_t& rxs)
-		{
-			for (const auto& rx : rxs)
-				html.replace (rx.first, rx.second);
-			return html;
-		}
 	}
 
 	void RichEditorWidget::on_TabWidget__currentChanged (int idx)
@@ -577,7 +623,7 @@ namespace LHTR
 		auto frame = Ui_.View_->page ()->mainFrame ();
 		frame->evaluateJavaScript ("function findParent(item, name)"
 				"{"
-				"	while (item.tagName == null || item.tagName.toLowerCase() != name)"
+				"	while (item != null && (item.tagName == null || item.tagName.toLowerCase() != name))"
 				"		item = item.parentNode; return item;"
 				"}");
 
@@ -588,6 +634,16 @@ namespace LHTR
 				"window.addEventListener('DOMAttrModified', f);"
 				"window.addEventListener('DOMNodeInserted', f);"
 				"window.addEventListener('DOMNodeRemoved', f);");
+
+		QFile jqueryFile (":/lhtr/resources/scripts/jquery.js");
+		if (!jqueryFile.open (QIODevice::ReadOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open jquery script file"
+					<< jqueryFile.errorString ();
+			return;
+		}
+		frame->evaluateJavaScript (jqueryFile.readAll ());
 	}
 
 	void RichEditorWidget::on_HTML__textChanged ()
@@ -623,6 +679,14 @@ namespace LHTR
 		upWebAct (QWebPage::AlignJustified);
 	}
 
+	void RichEditorWidget::toggleView ()
+	{
+		if (Ui_.TabWidget_->currentIndex () == 1)
+			Ui_.TabWidget_->setCurrentIndex (0);
+		else
+			Ui_.TabWidget_->setCurrentIndex (1);
+	}
+
 	void RichEditorWidget::handleCmd ()
 	{
 		ExecCommand (sender ()->property ("Editor/Command").toString (),
@@ -636,14 +700,19 @@ namespace LHTR
 
 		QString jstr;
 		jstr += "var selection = window.getSelection().getRangeAt(0);"
-				"var selectedText = selection.extractContents();"
-				"var span = document.createElement('" + tag + "');";
+				"var parentItem = findParent(selection.commonAncestorContainer.parentNode, '" + tag + "');"
+				"if (parentItem == null) {"
+				"	var selectedText = selection.extractContents();"
+				"	var span = document.createElement('" + tag + "');";
 		for (auto i = attrs.begin (), end = attrs.end (); i != end; ++i)
-			jstr += QString ("span.setAttribute ('%1', '%2');")
+			jstr += QString ("	span.setAttribute ('%1', '%2');")
 					.arg (i.key ())
 					.arg (i->toString ());
-		jstr += "span.appendChild(selectedText);"
-				"selection.insertNode(span);";
+		jstr += "	span.appendChild(selectedText);"
+				"	selection.insertNode(span);"
+				"} else {"
+				"	parentItem.outerHTML = parentItem.innerHTML;"
+			"}";
 
 		auto frame = Ui_.View_->page ()->mainFrame ();
 		frame->evaluateJavaScript (jstr);

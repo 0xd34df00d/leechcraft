@@ -96,7 +96,12 @@ namespace Mu
 		if (!page)
 			return QSize ();
 
+#if MUPDF_VERSION < 0x0102
 		const auto& rect = pdf_bound_page (MuDoc_, page.get ());
+#else
+		fz_rect rect;
+		pdf_bound_page (MuDoc_, page.get (), &rect);
+#endif
 		return QSize (rect.x1 - rect.x0,
 				rect.y1 - rect.y0);
 	}
@@ -107,12 +112,22 @@ namespace Mu
 		if (!page)
 			return QImage ();
 
+#if MUPDF_VERSION < 0x0102
 		const auto& rect = pdf_bound_page (MuDoc_, page.get ());
+#else
+		fz_rect rect;
+		pdf_bound_page (MuDoc_, page.get (), &rect);
+#endif
 
 		auto px = fz_new_pixmap (MuCtx_, fz_device_bgr, xRes * (rect.x1 - rect.x0), yRes * (rect.y1 - rect.y0));
 		fz_clear_pixmap (MuCtx_, px);
 		auto dev = fz_new_draw_device (MuCtx_, px);
+#if MUPDF_VERSION < 0x0102
 		pdf_run_page (MuDoc_, page.get (), dev, fz_scale (xRes, yRes), NULL);
+#else
+		fz_matrix matrix;
+		pdf_run_page (MuDoc_, page.get (), dev, fz_scale (&matrix, xRes, yRes), NULL);
+#endif
 		fz_free_device (dev);
 
 		const int pxWidth = fz_pixmap_width (MuCtx_, px);

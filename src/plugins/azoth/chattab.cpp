@@ -81,6 +81,7 @@
 #include "userslistwidget.h"
 #include "util.h"
 #include "proxyobject.h"
+#include "customchatstylemanager.h"
 
 namespace LeechCraft
 {
@@ -240,6 +241,11 @@ namespace Azoth
 		Ui_.View_->setFocusProxy (Ui_.MsgEdit_);
 
 		HandleMUCParticipantsChanged ();
+
+		connect (Core::Instance ().GetCustomChatStyleManager (),
+				SIGNAL (accountStyleChanged (IAccount*)),
+				this,
+				SLOT (handleAccountStyleChanged (IAccount*)));
 	}
 
 	ChatTab::~ChatTab ()
@@ -1345,6 +1351,19 @@ namespace Azoth
 		Ui_.View_->settings ()->setFontSize (QWebSettings::DefaultFontSize, size);
 	}
 
+	void ChatTab::handleAccountStyleChanged (IAccount *acc)
+	{
+		auto entry = GetEntry<ICLEntry> ();
+		if (!entry)
+			return;
+
+		auto accObj = entry->GetParentAccount ();
+		if (qobject_cast<IAccount*> (accObj) != acc)
+			return;
+
+		PrepareTheme ();
+	}
+
 	template<typename T>
 	T* ChatTab::GetEntry () const
 	{
@@ -1503,7 +1522,7 @@ namespace Azoth
 
 	void ChatTab::HandleMUC ()
 	{
-		TabIcon_ = QIcon (":/plugins/azoth/resources/images/azoth.svg");
+		TabIcon_ = QIcon ("lcicons:/plugins/azoth/resources/images/azoth.svg");
 		Ui_.AvatarLabel_->hide ();
 
 		const int height = qApp->desktop ()->availableGeometry (QCursor::pos ()).height ();
@@ -1541,7 +1560,7 @@ namespace Azoth
 				e->GetEntryType () == ICLEntry::ETChat)
 		{
 			Call_ = new QAction (tr ("Call..."), this);
-			Call_->setProperty ("ActionIcon", "voicecall");
+			Call_->setProperty ("ActionIcon", "call-start");
 			connect (Call_,
 					SIGNAL (triggered ()),
 					this,

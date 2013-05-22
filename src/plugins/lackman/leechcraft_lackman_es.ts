@@ -84,12 +84,12 @@
     <message>
         <location filename="core.cpp" line="420"/>
         <source>While trying to update the repository: %1.</source>
-        <translation type="unfinished"/>
+        <translation>Tratando de actualizar el repositorio: %1.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="446"/>
         <source>Unable to remove the component `%1` which disappeared from the list of components for repo %2.</source>
-        <translation type="unfinished"/>
+        <translation>Imposible remover componente `%1` que ha desaparecido de la lista de componentos para repositorio %2.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="492"/>
@@ -111,17 +111,17 @@
     <message>
         <location filename="core.cpp" line="683"/>
         <source>Unable to load package ID for package `%1`-%2</source>
-        <translation type="unfinished"/>
+        <translation>Imposible descargar ID del paquete para el paquete `%1`-%2</translation>
     </message>
     <message>
         <location filename="core.cpp" line="710"/>
         <source>Unable to save package location for package `%1`-%2 and component %3</source>
-        <translation type="unfinished"/>
+        <translation>Imposible guardar destino para el paquete `%1`-%2 y el componente %3</translation>
     </message>
     <message>
         <location filename="core.cpp" line="735"/>
         <source>Repositories updated</source>
-        <translation type="unfinished"/>
+        <translation>Repositorios se han actualizado</translation>
     </message>
     <message numerus="yes">
         <location filename="core.cpp" line="736"/>
@@ -349,7 +349,7 @@
     <message>
         <location filename="pendingmanager.cpp" line="176"/>
         <source>To be removed</source>
-        <translation type="unfinished"/>
+        <translation>Remover</translation>
     </message>
     <message>
         <location filename="pendingmanager.cpp" line="179"/>
@@ -552,12 +552,12 @@
     <message>
         <location filename="xmlparsers.cpp" line="42"/>
         <source>Could not get repo name.</source>
-        <translation type="unfinished"/>
+        <translation>No pudo obtener el nombre de repositorio.</translation>
     </message>
     <message>
         <location filename="xmlparsers.cpp" line="47"/>
         <source>Could not get repo description.</source>
-        <translation type="unfinished"/>
+        <translation>No pudo obtener la descripcion del repositorio.</translation>
     </message>
     <message>
         <location filename="xmlparsers.cpp" line="52"/>
@@ -567,17 +567,17 @@
     <message>
         <location filename="xmlparsers.cpp" line="58"/>
         <source>Could not get maintainer name.</source>
-        <translation type="unfinished"/>
+        <translation>No pudo obtener nombre del mantenedor.</translation>
     </message>
     <message>
         <location filename="xmlparsers.cpp" line="63"/>
         <source>Could not get maintainer email.</source>
-        <translation type="unfinished"/>
+        <translation>No pudo obtener e-mail del mantenedor.</translation>
     </message>
     <message>
         <location filename="xmlparsers.cpp" line="75"/>
         <source>Could not get components.</source>
-        <translation type="unfinished"/>
+        <translation>No pudo obtener componentes.</translation>
     </message>
 </context>
 <context>

@@ -89,7 +89,7 @@ namespace Astrality
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/azoth/astrality/resources/images/astrality.svg");
+		static QIcon icon ("lcicons:/azoth/astrality/resources/images/astrality.svg");
 		return icon;
 	}
 

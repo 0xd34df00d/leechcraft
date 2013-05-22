@@ -80,7 +80,7 @@ namespace Zheet
 
 	QIcon MSNProtocol::GetProtocolIcon () const
 	{
-		static QIcon icon (":/plugins/azoth/plugins/zheet/resources/images/wlm.svg");
+		static QIcon icon ("lcicons:/plugins/azoth/plugins/zheet/resources/images/wlm.svg");
 		return icon;
 	}
 

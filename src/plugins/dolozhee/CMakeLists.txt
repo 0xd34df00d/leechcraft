@@ -19,17 +19,8 @@ SET (SRCS
 	reporttypepage.cpp
 	bugreportpage.cpp
 	featurerequestpage.cpp
+	fileattachpage.cpp
 	finalpage.cpp
-	)
-SET (HEADERS
-	dolozhee.h
-	xmlgenerator.h
-	reportwizard.h
-	chooseuserpage.h
-	userstatuspage.h
-	reporttypepage.h
-	featurerequestpage.h
-	finalpage.h
 	)
 SET (FORMS
 	chooseuserpage.ui
@@ -37,18 +28,15 @@ SET (FORMS
 	reporttypepage.ui
 	bugreportpage.ui
 	featurerequestpage.ui
+	fileattachpage.ui
 	finalpage.ui
 	)
 CreateTrs ("dolozhee" "en;ru_RU" COMPILED_TRANSLATIONS)
-IF (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
 QT4_WRAP_UI (UIS_H ${FORMS})
 
 ADD_LIBRARY (leechcraft_dolozhee SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${UIS_H}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_dolozhee

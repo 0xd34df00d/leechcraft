@@ -59,7 +59,7 @@ namespace Laure
 			"Laure",
 			"Laure",
 			GetInfo (),
-			QIcon (":/plugins/laure/resources/img/laure.svg"),
+			QIcon ("lcicons:/plugins/laure/resources/img/laure.svg"),
 			50,
 			TabFeatures (TFOpenableByRequest)
 		};
@@ -91,7 +91,7 @@ namespace Laure
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/plugins/laure/resources/img/laure.svg");
+		static QIcon icon ("lcicons:/plugins/laure/resources/img/laure.svg");
 		return icon;
 	}
 
@@ -146,7 +146,7 @@ namespace Laure
 
 		Others_ << w;
 		emit addNewTab (tr ("Laure"), w);
-		emit changeTabIcon (w, QIcon (":/plugins/laure/resources/img/laure.svg"));
+		emit changeTabIcon (w, QIcon ("lcicons:/plugins/laure/resources/img/laure.svg"));
 		emit raiseTab (w);
 		return w;
 	}

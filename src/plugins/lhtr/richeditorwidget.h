@@ -63,6 +63,15 @@ namespace LHTR
 
 		QAction *FindAction_;
 		QAction *ReplaceAction_;
+
+		QAction *Bold_;
+		QAction *Italic_;
+		QAction *Underline_;
+
+		QAction *InsertLink_;
+		QAction *InsertImage_;
+
+		QAction *ToggleView_;
 	public:
 		RichEditorWidget (ICoreProxy_ptr, QWidget* = 0);
 
@@ -72,15 +81,16 @@ namespace LHTR
 		void AppendSeparator ();
 		void RemoveAction (QAction*);
 		QAction* GetEditorAction (EditorAction);
-		void SetBackgroundColor (const QColor&);
+		void SetBackgroundColor (const QColor&, ContentType);
 
 		void InsertHTML (const QString&);
 		void SetTagsMappings (const Replacements_t&, const Replacements_t&);
+		QAction* AddInlineTagInserter (const QString& tagName, const QVariantMap& params);
 		void ExecJS (const QString&);
 
 		bool eventFilter (QObject*, QEvent*);
 	private:
-		void InternalSetBgColor (const QColor&);
+		void InternalSetBgColor (const QColor&, ContentType);
 
 		void SetupTableMenu ();
 
@@ -98,6 +108,8 @@ namespace LHTR
 
 		void on_HTML__textChanged ();
 		void updateActions ();
+
+		void toggleView ();
 
 		void handleCmd ();
 		void handleInlineCmd ();

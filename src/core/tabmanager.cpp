@@ -212,6 +212,7 @@ void TabManager::remove (QWidget *contents)
 	const int tabNumber = FindTabForWidget (contents);
 	if (tabNumber == -1)
 		return;
+
 	TabWidget_->RemoveTab (tabNumber);
 	OriginalTabNames_.removeAt (tabNumber);
 	InvalidateName ();

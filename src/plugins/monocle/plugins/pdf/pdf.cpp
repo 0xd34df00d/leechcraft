@@ -66,7 +66,7 @@ namespace PDF
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/monocle/pdf/resources/images/pdf.svg");
+		static QIcon icon ("lcicons:/monocle/pdf/resources/images/pdf.svg");
 		return icon;
 	}
 

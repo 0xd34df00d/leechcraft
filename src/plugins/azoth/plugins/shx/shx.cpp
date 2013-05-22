@@ -82,7 +82,7 @@ namespace SHX
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/azoth/shx/resources/images/shx.svg");
+		static QIcon icon ("lcicons:/azoth/shx/resources/images/shx.svg");
 		return icon;
 	}
 

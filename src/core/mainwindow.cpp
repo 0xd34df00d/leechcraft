@@ -38,6 +38,7 @@
 #include <QSplashScreen>
 #include <QTime>
 #include <QDockWidget>
+#include <QDesktopWidget>
 #include <util/util.h>
 #include <util/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
@@ -70,7 +71,6 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 , WasMaximized_ (false)
 , Guard_ (new ToolbarGuard (this))
 , IsQuitting_ (false)
-, IsToolBarVisible_ (true)
 , LeftDockToolbar_ (new QToolBar ())
 , RightDockToolbar_ (new QToolBar ())
 , TopDockToolbar_ (new QToolBar ())
@@ -85,6 +85,15 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	addToolBar (Qt::RightToolBarArea, RightDockToolbar_);
 	addToolBar (Qt::TopToolBarArea, TopDockToolbar_);
 	addToolBar (Qt::BottomToolBarArea, BottomDockToolbar_);
+
+	if (Application::instance ()->arguments ().contains ("--desktop"))
+	{
+		setWindowFlags (Qt::FramelessWindowHint);
+		connect (qApp->desktop (),
+				SIGNAL (workAreaResized (int)),
+				this,
+				SLOT (handleWorkAreaResized (int)));
+	}
 }
 
 void LeechCraft::MainWindow::Init ()
@@ -134,8 +143,6 @@ void LeechCraft::MainWindow::Init ()
 			this,
 			SLOT (handleCloseCurrentTab ()),
 			0);
-
-	Ui_.ActionShowToolBar_->setChecked (IsToolBarVisible_);
 }
 
 void LeechCraft::MainWindow::handleShortcutFullscreenMode ()
@@ -261,6 +268,16 @@ void LeechCraft::MainWindow::RemoveMenus (const QMap<QString, QList<QAction*>>& 
 	}
 }
 
+QMenu* LeechCraft::MainWindow::createPopupMenu ()
+{
+	auto menu = QMainWindow::createPopupMenu ();
+	for (auto action : menu->actions ())
+		if (action->text ().isEmpty ())
+			menu->removeAction (action);
+
+	return menu;
+}
+
 void LeechCraft::MainWindow::catchError (QString message)
 {
 	Entity e = Util::MakeEntity ("LeechCraft",
@@ -331,9 +348,6 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	XmlSettingsManager::Instance ()->RegisterObject ("ToolButtonStyle",
 			this, "handleToolButtonStyleChanged");
 	handleToolButtonStyleChanged ();
-	XmlSettingsManager::Instance ()->RegisterObject ("ToolBarVisibilityManipulation",
-			this, "handleToolBarManipulationChanged");
-	handleToolBarManipulationChanged ();
 
 	QMenu *menu = new QMenu (this);
 	menu->addAction (Ui_.ActionNewWindow_);
@@ -532,20 +546,6 @@ void LeechCraft::MainWindow::on_MainTabWidget__currentChanged (int index)
 	auto bar = rootWM->GetTabManager (this)->GetToolBar (index);
 
 	GetGuard ()->AddToolbar (bar);
-	if (Ui_.MainTabWidget_->WidgetCount () > 0 &&
-			bar)
-		bar->setVisible (IsToolBarVisible_);
-}
-
-void MainWindow::on_ActionShowToolBar__triggered (bool visible)
-{
-	IsToolBarVisible_ = visible;
-
-	auto rootWM = Core::Instance ().GetRootWindowsManager ();
-	auto bar = rootWM->GetTabManager (this)->GetToolBar (Ui_.MainTabWidget_->CurrentIndex ());
-
-	if (bar)
-		bar->setMaximumHeight (IsToolBarVisible_ ? 1000 : 0);
 }
 
 namespace
@@ -568,14 +568,6 @@ namespace
 void LeechCraft::MainWindow::handleToolButtonStyleChanged ()
 {
 	setToolButtonStyle (GetToolButtonStyle ());
-}
-
-void MainWindow::handleToolBarManipulationChanged ()
-{
-	if (XmlSettingsManager::Instance ()->property ("ToolBarVisibilityManipulation").toBool())
-		MenuView_->insertAction (0, Ui_.ActionShowToolBar_);
-	else
-		MenuView_->removeAction (Ui_.ActionShowToolBar_);
 }
 
 void MainWindow::handleShowTrayIconChanged ()
@@ -629,6 +621,18 @@ void LeechCraft::MainWindow::handleTrayIconActivated (QSystemTrayIcon::Activatio
 			showHideMain ();
 			return;
 	}
+}
+
+void MainWindow::handleWorkAreaResized (int screen)
+{
+	auto desktop = QApplication::desktop ();
+	if (screen != desktop->screenNumber (this))
+		return;
+
+	const auto& available = desktop->availableGeometry (this);
+
+	setGeometry (available);
+	setFixedSize (available.size ());
 }
 
 void LeechCraft::MainWindow::doDelayedInit ()
@@ -698,7 +702,7 @@ void LeechCraft::MainWindow::FillTray ()
 
 	iconMenu->addAction (Ui_.ActionQuit_);
 
-	TrayIcon_ = new QSystemTrayIcon (QIcon (":/resources/images/leechcraft.svg"), this);
+	TrayIcon_ = new QSystemTrayIcon (QIcon ("lcicons:/resources/images/leechcraft.svg"), this);
 	handleShowTrayIconChanged ();
 	TrayIcon_->setContextMenu (iconMenu);
 	connect (TrayIcon_,
@@ -815,16 +819,6 @@ void LeechCraft::MainWindow::keyPressEvent (QKeyEvent *e)
 	--index;
 	if (index >= 0 && index < std::min (10, Ui_.MainTabWidget_->WidgetCount ()))
 		Ui_.MainTabWidget_->setCurrentTab (index);
-}
-
-void LeechCraft::MainWindow::keyReleaseEvent (QKeyEvent *e)
-{
-	if (e->key () == Qt::Key_Alt &&
-			XmlSettingsManager::Instance ()->property ("ToolBarVisibilityManipulation").toBool ())
-	{
-		on_ActionShowToolBar__triggered (!IsToolBarVisible_);
-		Ui_.ActionShowToolBar_->setChecked (IsToolBarVisible_);
-	}
 }
 
 void MainWindow::dragEnterEvent (QDragEnterEvent *event)

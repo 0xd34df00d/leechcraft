@@ -39,16 +39,19 @@ namespace LeechCraft
 		Q_OBJECT
 
 		bool IsCollectingGarbage_;
-		qint64 PreviousSize_;
+		qint64 CurrentSize_;
 
-		QMutex InsertRemoveMutex_;
+		mutable QMutex InsertRemoveMutex_;
 	public:
 		NetworkDiskCache (QObject* = 0);
 
-		virtual QIODevice* prepare (const QNetworkCacheMetaData&);
-
+		virtual qint64 cacheSize () const;
+		virtual QIODevice* data (const QUrl& url);
 		virtual void insert (QIODevice *device);
-		virtual bool remove (const QUrl &url);
+		virtual QNetworkCacheMetaData metaData (const QUrl& url);
+		virtual QIODevice* prepare (const QNetworkCacheMetaData&);
+		virtual bool remove (const QUrl& url);
+		virtual void updateMetaData (const QNetworkCacheMetaData& metaData);
 	protected:
 		virtual qint64 expire ();
 	public slots:

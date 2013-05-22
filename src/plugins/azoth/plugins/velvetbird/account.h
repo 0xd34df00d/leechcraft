@@ -48,7 +48,6 @@ namespace VelvetBird
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IAccount)
 
-		QString Name_;
 		PurpleAccount *Account_;
 		Protocol *Proto_;
 
@@ -56,7 +55,7 @@ namespace VelvetBird
 
 		QHash<PurpleBuddy*, Buddy*> Buddies_;
 	public:
-		Account (const QString&, PurpleAccount*, Protocol*);
+		Account (PurpleAccount*, Protocol*);
 
 		void Release ();
 

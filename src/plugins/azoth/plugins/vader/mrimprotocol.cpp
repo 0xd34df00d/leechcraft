@@ -86,7 +86,7 @@ namespace Vader
 
 	QIcon MRIMProtocol::GetProtocolIcon () const
 	{
-		static QIcon icon (":/plugins/azoth/plugins/vader/resources/images/mrim.svg");
+		static QIcon icon ("lcicons:/plugins/azoth/plugins/vader/resources/images/mrim.svg");
 		return icon;
 	}
 

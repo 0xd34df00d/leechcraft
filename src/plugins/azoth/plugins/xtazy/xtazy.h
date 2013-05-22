@@ -32,11 +32,13 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
-#include <interfaces/ihavesettings.h>
 #include <interfaces/core/ihookproxy.h>
-#include <interfaces/media/iaudioscrobbler.h>
 
-class QTranslator;
+namespace Media
+{
+	struct AudioInfo;
+	class ICurrentSongKeeper;
+}
 
 namespace LeechCraft
 {
@@ -52,21 +54,14 @@ namespace Xtazy
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
-				 , public IHaveSettings
-				 , public Media::IAudioScrobbler
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings Media::IAudioScrobbler)
+		Q_INTERFACES (IInfo IPlugin2)
 
-		std::shared_ptr<QTranslator> Translator_;
-		ICoreProxy_ptr Proxy_;
 		IProxyObject *AzothProxy_;
-		Util::XmlSettingsDialog_ptr SettingsDialog_;
-		QList<TuneSourceBase*> TuneSources_;
+		ICoreProxy_ptr Proxy_;
 
-		LCSource *LCSource_;
-
-		QMap<QString, QVariant> Previous_;
+		Media::ICurrentSongKeeper *Keeper_;
 
 		typedef QPair<QPointer<QObject>, QString> UploadNotifee_t;
 		QMap<QString, QList<UploadNotifee_t>> PendingUploads_;
@@ -80,14 +75,6 @@ namespace Xtazy
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
-
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-
-		QString GetServiceName () const;
-		void NowPlaying (const Media::AudioInfo& audio);
-		void PlaybackStopped ();
-		void LoveCurrentTrack ();
-		void BanCurrentTrack ();
 	private:
 		void HandleShare (LeechCraft::IHookProxy_ptr proxy,
 				QObject*, const QString&, const QUrl&);
@@ -99,7 +86,7 @@ namespace Xtazy
 				int type,
 				QString variant);
 	private slots:
-		void publish (const QMap<QString, QVariant>&);
+		void publish (const Media::AudioInfo&);
 		void handleFileUploaded (const QString&, const QUrl&);
 	};
 }

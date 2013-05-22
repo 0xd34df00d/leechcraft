@@ -3,7 +3,10 @@
 	<page>
 		<label value="Appearance" />
 		<item type="color" property="BgColor" default="#FFFFFF">
-			<label value="Background color:" />
+			<label value="Visual editor background color:" />
+		</item>
+		<item type="color" property="HTMLBgColor" default="#FFFFFF">
+			<label value="HTML code editor background color:" />
 		</item>
 		<item type="checkbox" property="OverrideBgColor" default="false">
 			<label value="Override background color settings from other plugins" />

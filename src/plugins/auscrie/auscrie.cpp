@@ -92,7 +92,7 @@ namespace Auscrie
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/resources/images/auscrie.svg");
+		static QIcon icon ("lcicons:/resources/images/auscrie.svg");
 		return icon;
 	}
 

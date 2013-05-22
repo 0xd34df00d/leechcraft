@@ -32,7 +32,13 @@
 #include <QWidget>
 #include <interfaces/blogique/iblogiquesidewidget.h>
 #include <interfaces/blogique/ipostoptionswidget.h>
+#include <interfaces/media/audiostructs.h>
 #include "ui_postoptionswidget.h"
+
+namespace Media
+{
+	class ICurrentSongKeeper;
+}
 
 namespace LeechCraft
 {
@@ -71,10 +77,14 @@ namespace Metida
 	private:
 		void FillItems ();
 
+	public slots:
+		void handleAutoUpdateCurrentMusic ();
 	private slots:
 		void on_CurrentTime__released ();
 		void on_Access__activated (int index);
 		void on_UserPic__currentIndexChanged (int index);
+		void on_AutoDetect__released ();
+		void handleCurrentSongChanged (const Media::AudioInfo& ai);
 	};
 }
 }

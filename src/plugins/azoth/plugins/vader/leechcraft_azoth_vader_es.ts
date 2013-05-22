@@ -4,7 +4,7 @@
     <message>
         <location filename="mrimaccount.cpp" line="115"/>
         <source>Open mailbox...</source>
-        <translation type="unfinished"/>
+        <translation>Abrir buzón de correo</translation>
     </message>
     <message>
         <location filename="mrimaccount.cpp" line="342"/>
@@ -14,12 +14,12 @@
     <message>
         <location filename="mrimaccount.cpp" line="471"/>
         <source>database error</source>
-        <translation type="unfinished"/>
+        <translation>error de la base de datos</translation>
     </message>
     <message>
         <location filename="mrimaccount.cpp" line="474"/>
         <source>no such user</source>
-        <translation type="unfinished"/>
+        <translation>usuario no existe</translation>
     </message>
     <message>
         <location filename="mrimaccount.cpp" line="477"/>
@@ -39,7 +39,7 @@
     <message>
         <location filename="mrimaccount.cpp" line="620"/>
         <source>New mail from %1: %2.</source>
-        <translation type="unfinished"/>
+        <translation>Nuevo correo de %1: %2.</translation>
     </message>
 </context>
 <context>
@@ -47,12 +47,12 @@
     <message>
         <location filename="mrimbuddy.cpp" line="47"/>
         <source>Send SMS...</source>
-        <translation type="unfinished"/>
+        <translation>Enviar SMS...</translation>
     </message>
     <message>
         <location filename="mrimbuddy.cpp" line="105"/>
         <source>Unauthorized</source>
-        <translation type="unfinished"/>
+        <translation>No autorizado</translation>
     </message>
     <message>
         <location filename="mrimbuddy.cpp" line="333"/>
@@ -80,7 +80,7 @@
     <message>
         <location filename="vader.cpp" line="74"/>
         <source>Support for the Mail.ru Agent protocol.</source>
-        <translation type="unfinished"/>
+        <translation>Soporte para el protocolo Mail.ru Agente</translation>
     </message>
 </context>
 <context>
@@ -154,12 +154,12 @@
     <message>
         <location filename="vaderutil.cpp" line="44"/>
         <source>MyWorld@Mail.ru</source>
-        <translation type="unfinished"/>
+        <translation>MyWorld@Mail.ru</translation>
     </message>
     <message>
         <location filename="vaderutil.cpp" line="51"/>
         <source>Photo@Mail.ru</source>
-        <translation type="unfinished"/>
+        <translation>Photo@Mail.ru</translation>
     </message>
     <message>
         <location filename="vaderutil.cpp" line="58"/>

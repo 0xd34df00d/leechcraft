@@ -151,6 +151,16 @@ namespace Kinotify
 		E_ = e;
 	}
 
+	QString KinotifyWidget::GetTitle () const
+	{
+		return Title_;
+	}
+
+	QString KinotifyWidget::GetBody () const
+	{
+		return Body_;
+	}
+
 	void KinotifyWidget::SetContent (const QString& title, const QString& body,
 			const QString& imgPath, const QSize& size)
 	{

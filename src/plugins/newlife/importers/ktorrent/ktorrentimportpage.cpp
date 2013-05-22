@@ -119,7 +119,7 @@ namespace Importers
 			return false;
 
 		QFileInfoList files = torrentDir
-			.entryInfoList (QDir::Files & QDir::Readable, QDir::Unsorted);
+			.entryInfoList (QDir::Files | QDir::Readable, QDir::Unsorted);
 
 		for (int i = 0; i < files.size (); ++i)
 		{
@@ -167,7 +167,7 @@ namespace Importers
 							tempDir.isReadable ())
 					{
 						QFileInfoList torrentsDir = tempDir.entryInfoList (QStringList ("tor"),
-								QDir::Dirs & QDir::Readable,
+								QDir::Dirs | QDir::Readable,
 								QDir::Unsorted);
 						QList<QVariant> list;
 						for (int i = 0; i < torrentsDir.size (); ++i)

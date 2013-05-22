@@ -79,7 +79,7 @@ namespace ReadItLater
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/poshuku/onlinebookmarks:readitlater/resources/images/readitlater.svg");
+		static QIcon icon ("lcicons:/poshuku/onlinebookmarks:readitlater/resources/images/readitlater.svg");
 		return icon;
 	}
 

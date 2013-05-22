@@ -91,7 +91,7 @@ namespace Herbicide
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/plugins/azoth/plugins/herbicide/resources/images/herbicide.svg");
+		static QIcon icon ("lcicons:/plugins/azoth/plugins/herbicide/resources/images/herbicide.svg");
 		return icon;
 	}
 

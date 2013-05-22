@@ -94,7 +94,7 @@ namespace Poshuku
 		TabClass_.TabClass_ = "Poshuku";
 		TabClass_.VisibleName_ = tr ("Poshuku");
 		TabClass_.Description_ = tr ("The Poshuku web browser");
-		TabClass_.Icon_ = QIcon (":/resources/images/poshuku.svg");
+		TabClass_.Icon_ = QIcon ("lcicons:/resources/images/poshuku.svg");
 		TabClass_.Priority_ = 80;
 		TabClass_.Features_ = TFOpenableByRequest | TFSuggestOpening;
 

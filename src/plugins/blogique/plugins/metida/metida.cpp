@@ -87,7 +87,8 @@ namespace Metida
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		static QIcon icon ("lcicons:/blogique/metida/resources/images/metida.svg");
+		return icon;
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const

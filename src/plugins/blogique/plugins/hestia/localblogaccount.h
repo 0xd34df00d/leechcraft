@@ -105,6 +105,7 @@ namespace Hestia
 		void entryPosted (const QList<Entry>& entries);
 		void entryRemoved (int itemId);
 		void entryUpdated (const QList<Entry>& entries);
+
 		void gotEntries (const QList<Entry>& entries);
 		void gotEntries2Backup (const QList<Entry>& entries);
 		void gettingEntries2BackupFinished ();

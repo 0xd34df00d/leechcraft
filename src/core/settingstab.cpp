@@ -173,7 +173,7 @@ namespace LeechCraft
 		{
 			IInfo *ii = qobject_cast<IInfo*> (obj);
 			const QIcon& icon = ii->GetIcon ().isNull () ?
-					QIcon (":/resources/images/defaultpluginicon.svg") :
+					QIcon ("lcicons:/resources/images/defaultpluginicon.svg") :
 					ii->GetIcon ();
 			Q_FOREACH (auto pair, obj2groups [obj])
 			{
@@ -285,7 +285,7 @@ namespace LeechCraft
 
 			auto icon = ii->GetIcon ();
 			if (icon.isNull ())
-				icon = QIcon (":/resources/images/defaultpluginicon.svg");
+				icon = QIcon ("lcicons:/resources/images/defaultpluginicon.svg");
 
 			auto item = new QTreeWidgetItem (QStringList (itemName));
 			item->setIcon (0, icon);

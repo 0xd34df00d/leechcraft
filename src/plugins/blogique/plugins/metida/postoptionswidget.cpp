@@ -30,10 +30,14 @@
 #include "postoptionswidget.h"
 #include <QtDebug>
 #include <util/util.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/media/icurrentsongkeeper.h>
 #include "entryoptions.h"
 #include "ljaccount.h"
 #include "ljprofile.h"
 #include "selectgroupsdialog.h"
+#include "core.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -47,7 +51,9 @@ namespace Metida
 	, AllowMask_ (0)
 	{
 		Ui_.setupUi (this);
-
+		XmlSettingsManager::Instance ().RegisterObject ("AutoUpdateCurrentMusic",
+				this, "handleAutoUpdateCurrentMusic");
+		handleAutoUpdateCurrentMusic ();
 		FillItems ();
 	}
 
@@ -283,6 +289,27 @@ namespace Metida
 		Ui_.Adult_->addItem (tr ("For adults (>18)"), AdultContent::AdultsFrom18);
 	}
 
+	namespace
+	{
+		QObject* GetFirstICurrentSongKeeperInstance ()
+		{
+			auto plugins = Core::Instance ().GetCoreProxy ()->GetPluginsManager ()->
+					GetAllCastableRoots<Media::ICurrentSongKeeper*> ();
+			return plugins.value (0);
+		}
+	}
+
+	void PostOptionsWidget::handleAutoUpdateCurrentMusic ()
+	{
+		auto obj = GetFirstICurrentSongKeeperInstance ();
+		if (XmlSettingsManager::Instance ().Property ("AutoUpdateCurrentMusic", false).toBool () &&
+				obj)
+			connect (obj,
+					SIGNAL (currentSongChanged (Media::AudioInfo)),
+					this,
+					SLOT (handleCurrentSongChanged (Media::AudioInfo)),
+					Qt::UniqueConnection);
+	}
 
 	void PostOptionsWidget::on_CurrentTime__released ()
 	{
@@ -322,6 +349,25 @@ namespace Metida
 		QPixmap pxm (path);
 		Ui_.UserPicLabel_->setPixmap (pxm.scaled (pxm.width (), pxm.height ()));
 	}
+
+	void PostOptionsWidget::on_AutoDetect__released ()
+	{
+		auto pluginObj = GetFirstICurrentSongKeeperInstance ();
+		if (!pluginObj)
+			return;
+
+		const auto& song = qobject_cast<Media::ICurrentSongKeeper*> (pluginObj)->GetCurrentSong ();
+		Ui_.Music_->setText (QString ("\"%1\" by %2").arg (song.Title_)
+				.arg (song.Artist_));
+	}
+
+	void PostOptionsWidget::handleCurrentSongChanged (const Media::AudioInfo& ai)
+	{
+		if (XmlSettingsManager::Instance ().Property ("AutoUpdateCurrentMusic", false).toBool ())
+			Ui_.Music_->setText (QString ("\"%1\" by %2").arg (ai.Title_)
+					.arg (ai.Artist_));
+	}
+
 }
 }
 }

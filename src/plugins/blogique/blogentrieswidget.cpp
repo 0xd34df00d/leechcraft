@@ -182,7 +182,7 @@ namespace Blogique
 		Ui_.BlogEntriesCalendar_->SetStatistic (statistics);
 	}
 
-	void BlogEntriesWidget::saveSplitterPosition (int pos, int index)
+	void BlogEntriesWidget::saveSplitterPosition (int, int)
 	{
 		XmlSettingsManager::Instance ()
 				.setProperty ("BlogEntriesCalendarSplitterPosition",

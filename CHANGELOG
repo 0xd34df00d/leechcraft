@@ -2,7 +2,7 @@ This file lists only more or less major changes, refer to `git log` for
 the rest.
 
 Links to the corresponding development digests are also given for the
-relevant blocks of changes, so one could easily lookup 
+relevant blocks of changes, so one could easily lookup
 
 !!! 0.5.95
 * Overall: Use Qt's Q_DECL_IMPORT\EXPORT defines.
@@ -32,13 +32,11 @@ relevant blocks of changes, so one could easily lookup
 * Aggregator: strip <img> tags in item tooltips.
 * AN: added rules management quark.
 * AN: added support for the Downloads category.
-* AN: moved constants.h to Interfaces.
-* AN: moved constants to AN namespace.
 * AN: properly update types list on cat change.
 * AN: hopefully fixed alert() behavior on X11.
-* AN: support Download notifications category.
 * AN: added error/success sounds.
 * AN: fixed custom rules not saving.
+* AN: fixed counter behavior without initial value.
 * Azoth: support perm role changes with reason from GUI.
 * Azoth: properly support custom saved statuses.
 * Azoth: Alt+C shows all users from all accounts now.
@@ -58,6 +56,7 @@ relevant blocks of changes, so one could easily lookup
 * Azoth: RosterMode widget action.
 * Azoth: notify if a user isn't present in the MUC.
 * Azoth: Open last link shortcut & feature.
+* Azoth: support URL shortening.
 * Azoth: option to hide self-contacts.
 * Azoth: option to hide tabs for autojoined MUCs.
 * Azoth: option to show foreign resource in private chats.
@@ -69,6 +68,10 @@ relevant blocks of changes, so one could easily lookup
 * Azoth: fixed "open new tab on message" behavior.
 * Azoth: fixed tooltip for MUC participants.
 * Azoth: fix segfault on PGP key selection.
+* Azoth: fixed a security issue with file:// links.
+* Azoth: fixed www-links.
+* Azoth: fixed requiring non-required fields in FormBuilder.
+* Azoth: fixed a rare segfault with MUC participants with unread messages but having already left.
 * Azoth Acetamide: add channel list widget.
 * Azoth AS: bigger avatar cache.
 * Azoth AS: don't clean caches on frame destroy.
@@ -121,7 +124,6 @@ relevant blocks of changes, so one could easily lookup
 * Blogique: add BPFLocalBlog feature.
 * Blogique: add empty storagemanager.
 * Blogique: add LocalBlog feature.
-* Blogique: add missing include.
 * Blogique: add progress of actions with remove blog and fix #989.
 * Blogique: associate dock widget with the preferred tab.
 * Blogique: open in new tab by default.
@@ -150,6 +152,7 @@ relevant blocks of changes, so one could easily lookup
 * Glance: configurable shortcut now.
 * GMN: migrated to being a quark.
 * GMN: slightly refactored notifications; removed tray icon.
+* HotSensors: new plugin for monitoring temperatures.
 * Kinotify: added CreateTrsUpTarget.
 * Kinotify: clarified settings.
 * Kinotify: install the translator.
@@ -219,6 +222,7 @@ relevant blocks of changes, so one could easily lookup
 * Monocle: support searching with data filters for selected text.
 * Monocle FXB: a huge optimization of typical docs.
 * Monocle FXB: optimized paragraph handling.
+* Monocle FXB: support text searching.
 * Monocle PDF: support filling forms.
 * Monocle PDF: support text searching.
 * Monocle Seen: fixed a possible segfault on DjVu docs.
@@ -226,13 +230,14 @@ relevant blocks of changes, so one could easily lookup
 * MZ: threaded Chroma calculation.
 * MZ: support fetching tabs.
 * MZ: proper mutex locking in Chroma calculator.
-* NSM: add extended selection to model.
-* NSM GoogleDrive: add delete and trashing for some files
+* NSM: reworked UI and logic a lot.
 * Pogooglue: don't replace ' ' with '+'.
 * Pogooglue: escape user input.
 * Pogooglue: fixed googling for URLs.
 * Poshuku: support DND for tabs.
 * Poshuku: fixed ghost URL label (finally!).
+* Poshuku: avoid duplicates in history model in same section.
+* Poshuku: support filtering history by URLs.
 * Poshuku Autosearch: added Google Suggest client plugin.
 * Poshuku CleanWeb: fixed possible infinite recursion.
 * SB2: support moving, reordering and removing quarks.
@@ -262,6 +267,8 @@ relevant blocks of changes, so one could easily lookup
 * TSM: save full tab list, filter recoverables later.
 * VFScore: removed this one, it's a no-go for Qt 5.
 * Vrooby: added UDisks2-backend.
+* Vrooby: support compiling with several backends at once.
+* Vrooby: try automatically starting backends if they aren't running.
 * Win32: Add Windows version definitons and remove useless includes with  WIN32_LEAN_AND_MEAN define.
 * Win32: MinGW build scripts update.
 * Win32: nasty bug in Qt's qmoc. Fixed in Qt 5, but we need a workaround for now. see https://bugreports.qt-project.org/browse/QTBUG-22829 (cherry picked from commit 2861d90d3e47ecefc8966a03d693014358396e87)
@@ -613,7 +620,7 @@ relevant blocks of changes, so one could easily lookup
 * Liznoo: the dialog is hidden after second click on its action.
 * LMP: added support for MPRIS.
 * LMP: directory iteration now optionally supports symlinks.
-* LMP: track properties for Now Playing, FS, Collection and playlist. 
+* LMP: track properties for Now Playing, FS, Collection and playlist.
 * LMP: EnableScrobbling setting is now respected.
 * LMP: some scanning fixes, a couple of segfaults has been fixed too.
 * LMP: fixed compatibility with TagLib < 1.7.
@@ -1004,7 +1011,7 @@ relevant blocks of changes, so one could easily lookup
 * Azoth Xoox: resepect lack for XEP-0085 in other clients.
 * Poshuku OB: almost reworked from scratch.
 
-! Devel digest #13 ( http://leechcraft.org/devel-digest-13 ): 
+! Devel digest #13 ( http://leechcraft.org/devel-digest-13 ):
 * Aggregator: stubs for sync support.
 * Azoth: support for protocols that support searching.
 * Azoth: show buddy avatar in chat tabs.
@@ -1019,7 +1026,7 @@ relevant blocks of changes, so one could easily lookup
 * BitTorrent: fixed torrents not being added correctly sometimes.
 
 !!! 0.4.90
-! Devel digest #12 ( http://leechcraft.org/devel-digest-12 ): 
+! Devel digest #12 ( http://leechcraft.org/devel-digest-12 ):
 * Azoth: allow one to create new accounts from the Azoth menu.
 * Azoth: allow one to set different styles for chats and MUCs.
 * Azoth: support for protocols allowing exchanging the contacts.
@@ -1030,7 +1037,7 @@ relevant blocks of changes, so one could easily lookup
 * Azoth Xoox: introduced XEP-0144 (Roster Item Exchange).
 * BitTorrent: fixed Win32 build issues.
 
-! Devel digest #11 ( http://leechcraft.org/devel-digest-11 ): 
+! Devel digest #11 ( http://leechcraft.org/devel-digest-11 ):
 * AdvancedNotifications: allow one to reload default set of rules.
 * AdvancedNotifications: support running external command.
 * Aggregator: support "Important".
@@ -1064,7 +1071,7 @@ relevant blocks of changes, so one could easily lookup
 * Poshuku CleanWeb: match plain strings as plain strings (speeds up).
 * Poshuku CleanWeb: support "third-party" attribute.
 
-! Devel digest #10 ( http://leechcraft.org/devel-digest-10 ): 
+! Devel digest #10 ( http://leechcraft.org/devel-digest-10 ):
 * Azoth: suggest rejoining a MUC after being kicked.
 * Azoth: support disabling by-status grouping in the CL.
 * Azoth: support for PGP-enabled protocols/conversations.
@@ -1082,7 +1089,7 @@ relevant blocks of changes, so one could easily lookup
 !!! 0.4.85
 ! Devel digest #9 ( http://leechcraft.org/devel-digest-9 ):
 * Aggregator: more compatibility in fb2 generator.
-* Azoth: load last few messages on new chat sessiongit 
+* Azoth: load last few messages on new chat sessiongit
 * Azoth: actions for history & vcard on chat tab toolbar.
 * Azoth: emoticons chooser in message formatter toolbar.
 * Azoth: show number of MUC participants in chat tab header.

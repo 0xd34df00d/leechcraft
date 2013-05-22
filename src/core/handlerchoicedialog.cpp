@@ -69,7 +69,7 @@ namespace LeechCraft
 			Add (ii, ieh);
 	}
 
-	bool HandlerChoiceDialog::AddCommon (const IInfo *ii, const QString& addedAs)
+	QRadioButton* HandlerChoiceDialog::AddCommon (const IInfo *ii, const QString& addedAs)
 	{
 		QString name;
 		QString tooltip;
@@ -86,53 +86,56 @@ namespace LeechCraft
 				<< "could not query"
 				<< e.what ()
 				<< ii;
-			return false;
+			return 0;
 		}
 		catch (...)
 		{
 			qWarning () << Q_FUNC_INFO
 				<< "could not query"
 				<< ii;
-			return false;
+			return 0;
 		}
 
-		QRadioButton *but = new QRadioButton (name, this);
+		auto but = new QRadioButton (name, this);
 		but->setToolTip (tooltip);
 		but->setIconSize (QSize (32, 32));
 		but->setIcon (icon);
-		but->setProperty ("AddedAs", "IDownload");
+		but->setProperty ("AddedAs", addedAs);
 		but->setProperty ("PluginID", ii->GetUniqueID ());
 
 		if (Buttons_->buttons ().isEmpty ())
 			but->setChecked (true);
 
 		Buttons_->addButton (but);
-		Ui_.DownloadersLayout_->addWidget (but);
 
 		Infos_ [name] = ii;
 
-		Ui_.DownloadersLabel_->show ();
-
-		if (Downloaders_.size () + Handlers_.size () == 1)
+		if (!(Downloaders_.size () + Handlers_.size ()))
 			populateLocationsBox ();
 
-		return true;
+		return but;
 	}
 
 	bool HandlerChoiceDialog::Add (const IInfo *ii, IDownload *id)
 	{
-		if (!AddCommon (ii, "IDownload"))
+		auto button = AddCommon (ii, "IDownload");
+		if (!button)
 			return false;
 
+		Ui_.DownloadersLayout_->addWidget (button);
+		Ui_.DownloadersLabel_->show ();
 		Downloaders_ [ii->GetName ()] = id;
 		return true;
 	}
 
 	bool HandlerChoiceDialog::Add (const IInfo *ii, IEntityHandler *ih)
 	{
-		if (!AddCommon (ii, "IEntityHandler"))
+		auto button = AddCommon (ii, "IEntityHandler");
+		if (!button)
 			return false;
 
+		Ui_.HandlersLayout_->addWidget (button);
+		Ui_.HandlersLabel_->show ();
 		Handlers_ [ii->GetName ()] = ih;
 		return true;
 	}

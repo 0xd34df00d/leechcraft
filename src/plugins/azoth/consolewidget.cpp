@@ -59,7 +59,7 @@ namespace Azoth
 			tr ("IM console"),
 			tr ("Protocol console, for example, XML console for a XMPP "
 				"client protocol"),
-			QIcon (":/plugins/azoth/resources/images/sdtab.svg"),
+			QIcon ("lcicons:/plugins/azoth/resources/images/sdtab.svg"),
 			0,
 			TFEmpty
 		};

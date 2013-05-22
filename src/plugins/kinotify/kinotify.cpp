@@ -47,7 +47,7 @@ namespace Kinotify
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Util::InstallTranslator ("kinotify");
-		
+
 		Proxy_ = proxy;
 
 		ThemeLoader_.reset (new Util::ResourceLoader ("kinotify/themes/notification"));
@@ -94,7 +94,7 @@ namespace Kinotify
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/plugins/kinotify/resources/images/kinotify.svg");
+		static QIcon icon ("lcicons:/plugins/kinotify/resources/images/kinotify.svg");
 		return icon;
 	}
 
@@ -119,13 +119,20 @@ namespace Kinotify
 		if (prio == PLog_)
 			return;
 
-		QString header = e.Entity_.toString ();
-		QString text = e.Additional_ ["Text"].toString ();
+		const auto& header = e.Entity_.toString ();
+		const auto& text = e.Additional_ ["Text"].toString ();
+
+		const auto sameDataPos =
+				std::find_if (ActiveNotifications_.begin (), ActiveNotifications_.end (),
+						[&header, &text] (KinotifyWidget *w)
+							{ return w->GetTitle () == header && w->GetBody () == text; });
+		if (sameDataPos != ActiveNotifications_.end ())
+				return;
 
 		int timeout = Proxy_->GetSettingsManager ()->
 				property ("FinishedDownloadMessageTimeout").toInt () * 1000;
 
-		KinotifyWidget *notificationWidget = new KinotifyWidget (Proxy_, timeout);
+		auto notificationWidget = new KinotifyWidget (Proxy_, timeout);
 		notificationWidget->SetThemeLoader (ThemeLoader_);
 		notificationWidget->SetEntity (e);
 

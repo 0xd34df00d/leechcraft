@@ -5,9 +5,19 @@ IF (NOT USE_QT5)
 	SET (QT_USE_QTXML TRUE)
 	INCLUDE (${QT_USE_FILE})
 ENDIF ()
+
+SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+FIND_PACKAGE (MAGIC)
+IF (MAGIC_FOUND)
+	ADD_DEFINITIONS (-DHAVE_MAGIC)
+ENDIF (MAGIC_FOUND)
+
+OPTION (WITH_X11 "Enable X11 support on Linux" ON)
+
 INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIRS}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
+	${MAGIC_INCLUDE_DIRS}
 	..)
 
 SET (SRCS
@@ -31,7 +41,9 @@ SET (SRCS
 	qml/unhidelistviewbase.cpp
 	sync/syncdeltamanager.cpp
 	sync/syncops.cpp
+	sys/mimedetector.cpp
 	sys/paths.cpp
+	sys/xdg.cpp
 	tags/categoryselector.cpp
 	tags/tagscompleter.cpp
 	tags/tagscompletionmodel.cpp
@@ -67,6 +79,17 @@ ELSE ()
 	QT4_WRAP_UI (UIS_H ${FORMS})
 ENDIF ()
 
+IF (WITH_X11 AND NOT APPLE)
+	FIND_PACKAGE (X11)
+
+	IF (X11_FOUND)
+		ADD_DEFINITIONS (-DHAVE_X11)
+		SET (ADDITIONAL_LIBS ${X11_X11_LIB})
+
+		SET (SRCS ${SRCS} x11/xwrapper.cpp)
+	ENDIF (X11_FOUND)
+ENDIF (WITH_X11 AND NOT APPLE)
+
 FOREACH (SRC ${SRCS})
 	SET (UTIL_SRCS "${UTIL_SRCS};util/${SRC}")
 ENDFOREACH (SRC)
@@ -88,6 +111,8 @@ ADD_LIBRARY (lcutil SHARED
 	)
 TARGET_LINK_LIBRARIES (lcutil
 	${QT_LIBRARIES}
+	${MAGIC_LIBRARIES}
+	${ADDITIONAL_LIBS}
 	xmlsettingsdialog
 	)
 SET_PROPERTY (TARGET lcutil PROPERTY SOVERSION 0.5.0)

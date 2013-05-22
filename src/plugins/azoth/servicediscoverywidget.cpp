@@ -109,7 +109,7 @@ namespace Azoth
 			tr ("Service discovery"),
 			tr ("A service discovery tab that allows one to discover "
 				"capabilities of remote entries"),
-			QIcon (":/plugins/azoth/resources/images/sdtab.svg"),
+			QIcon ("lcicons:/plugins/azoth/resources/images/sdtab.svg"),
 			55,
 			TFOpenableByRequest
 		};

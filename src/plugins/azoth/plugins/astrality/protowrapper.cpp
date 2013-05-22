@@ -159,7 +159,7 @@ namespace Astrality
 	{
 		QIcon result = QIcon::fromTheme (ProtoInfo_.iconName ());
 		if (result.isNull ())
-			result = QIcon (":/azoth/astrality/resources/images/astrality.svg");
+			result = QIcon ("lcicons:/azoth/astrality/resources/images/astrality.svg");
 		return result;
 	}
 

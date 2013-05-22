@@ -85,7 +85,7 @@ namespace LMP
 			GetUniqueID () + "_artistBrowser",
 			tr ("Artist browser"),
 			tr ("Allows one to browse information about different artists."),
-			QIcon (":/lmp/resources/images/lmp_artist_browser.svg"),
+			QIcon ("lcicons:/lmp/resources/images/lmp_artist_browser.svg"),
 			35,
 			TFSuggestOpening | TFOpenableByRequest
 		};
@@ -224,7 +224,7 @@ namespace LMP
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon (":/lmp/resources/images/lmp.svg");
+		static QIcon icon ("lcicons:/lmp/resources/images/lmp.svg");
 		return icon;
 	}
 

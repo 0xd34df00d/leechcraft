@@ -17,7 +17,6 @@ SET (SRCS
 	dbusmanager.cpp
 	core.cpp
 	iinfoadaptor.cpp
-	notificationmanager.cpp
 	xmlsettingsmanager.cpp
 	general.cpp
 	generaladaptor.cpp
@@ -29,7 +28,6 @@ SET (HEADERS
 	dbusmanager.h
 	core.h
 	iinfoadaptor.h
-	notificationmanager.h
 	xmlsettingsmanager.h
 	general.h
 	generaladaptor.h

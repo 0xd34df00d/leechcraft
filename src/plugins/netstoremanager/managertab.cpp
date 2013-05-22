@@ -67,7 +67,7 @@ namespace NetStoreManager
 
 		Ui_.FilesView_->setModel (ProxyModel_);
 		ProxyModel_->setSourceModel (TreeModel_);
-		TreeModel_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Modify") });
+		TreeModel_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Used space"), tr ("Modify") });
 		Ui_.FilesView_->header ()->setResizeMode (Columns::Name, QHeaderView::Interactive);
 
 		connect (Ui_.FilesView_->header (),
@@ -76,74 +76,74 @@ namespace NetStoreManager
 				SLOT (handleFilesViewSectionResized (int, int, int)));
 		Ui_.FilesView_->setContextMenuPolicy (Qt::CustomContextMenu);
 
-		CopyURL_ = new QAction (tr ("Copy URL..."), this);
-		CopyURL_->setProperty ("ActionIcon", Proxy_->GetIcon ("edit-copy"));
+		CopyURL_ = new QAction (Proxy_->GetIcon ("edit-copy"),
+				tr ("Copy URL..."), this);
 		connect (CopyURL_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flCopyUrl ()));
-		Copy_ = new QAction (tr ("Copy..."), this);
-		Copy_->setProperty ("ActionIcon", Proxy_->GetIcon ("edit-copy"));
+		Copy_ = new QAction (Proxy_->GetIcon ("edit-copy"),
+				tr ("Copy..."), this);
 		connect (Copy_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flCopy ()));
-		Move_ = new QAction (tr ("Move..."), this);
-		Move_->setProperty ("ActionIcon", Proxy_->GetIcon ("transform-move"));
+		Move_ = new QAction (Proxy_->GetIcon ("transform-move"),
+				tr ("Move..."), this);
 		connect (Move_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flMove ()));
-		Rename_ = new QAction (tr ("Rename..."), this);
-		Rename_->setProperty ("ActionIcon", Proxy_->GetIcon ("edit-rename"));
+		Rename_ = new QAction (Proxy_->GetIcon ("edit-rename"),
+				tr ("Rename..."), this);
 		connect (Rename_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flRename ()));
-		Paste_ = new QAction (tr ("Paste"), this);
-		Paste_->setProperty ("ActionIcon", Proxy_->GetIcon ("edit-paste"));
+		Paste_ = new QAction (Proxy_->GetIcon ("edit-paste"),
+				tr ("Paste"), this);
 		connect (Paste_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flPaste ()));
-		DeleteFile_ = new QAction (tr ("Delete..."), this);
-		DeleteFile_->setProperty ("ActionIcon", Proxy_->GetIcon ("edit-delete"));
+		DeleteFile_ = new QAction (Proxy_->GetIcon ("edit-delete"),
+				tr ("Delete..."), this);
 		connect (DeleteFile_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flDelete ()));
-		MoveToTrash_ = new QAction (tr ("Move to trash"), this);
-		MoveToTrash_->setProperty ("ActionIcon", Proxy_->GetIcon ("edit-clear"));
+		MoveToTrash_ = new QAction (Proxy_->GetIcon ("edit-clear"),
+				tr ("Move to trash"), this);
 		connect (MoveToTrash_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flMoveToTrash ()));
-		UntrashFile_ = new QAction (tr ("Restore from trash"), this);
-		UntrashFile_->setProperty ("ActionIcon", Proxy_->GetIcon ("edit-undo"));
+		UntrashFile_ = new QAction (Proxy_->GetIcon ("edit-undo"),
+				tr ("Restore from trash"), this);
 		connect (UntrashFile_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flRestoreFromTrash ()));
-		EmptyTrash_ = new QAction (tr ("Empty trash"), this);
-		EmptyTrash_->setProperty ("ActionIcon", Proxy_->GetIcon ("trash-empty"));
+		EmptyTrash_ = new QAction (Proxy_->GetIcon ("trash-empty"),
+				tr ("Empty trash"), this);
 		connect (EmptyTrash_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flEmptyTrash ()));
-		CreateDir_ = new QAction (tr ("Create directory"), this);
-		CreateDir_->setProperty ("ActionIcon", Proxy_->GetIcon ("folder-new"));
+		CreateDir_ = new QAction (Proxy_->GetIcon ("folder-new"),
+				tr ("Create directory"), this);
 		connect (CreateDir_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flCreateDir ()));
-		UploadInCurrentDir_ = new QAction (tr ("Upload..."), this);
-		UploadInCurrentDir_->setProperty ("ActionIcon", Proxy_->GetIcon ("svn-commit"));
+		UploadInCurrentDir_ = new QAction (Proxy_->GetIcon ("svn-commit"),
+				tr ("Upload..."), this);
 		connect (UploadInCurrentDir_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (flUploadInCurrentDir ()));
-		Download_ = new QAction (tr ("Download"), this);
-		Download_->setProperty ("ActionIcon", Proxy_->GetIcon ("download"));
+		Download_ = new QAction (Proxy_->GetIcon ("download"),
+				tr ("Download"), this);
 		connect (Download_,
 				SIGNAL (triggered ()),
 				this,
@@ -272,6 +272,20 @@ namespace NetStoreManager
 				SIGNAL (currentIndexChanged (int)),
 				this,
 				SLOT (handleCurrentIndexChanged (int)));
+
+		const auto& id = XmlSettingsManager::Instance ()
+				.property ("LastActiveAccount").toByteArray ();
+
+		int j = 0;
+		for (int i = 0; i < AccountsBox_->count (); ++i)
+			if (AccountsBox_->itemData (i)
+					.value<IStorageAccount*> ()->GetUniqueID () == id)
+			{
+				j = i;
+				break;
+			}
+
+		handleCurrentIndexChanged (j);
 	}
 
 	void ManagerTab::ShowAccountActions (bool show)
@@ -304,7 +318,7 @@ namespace NetStoreManager
 
 	namespace
 	{
-		QList<QStandardItem*> CreateItems (const StorageItem& storageItem, ICoreProxy_ptr proxy)
+		QList<QStandardItem*> CreateItems (const StorageItem& storageItem, quint64 folderSize, ICoreProxy_ptr proxy)
 		{
 			QStandardItem *name = new QStandardItem (storageItem.Name_);
 			name->setEditable (false);
@@ -324,12 +338,15 @@ namespace NetStoreManager
 						<< "for file"
 						<< storageItem.Name_
 						<< storageItem.ID_;
+			QStandardItem *size = new QStandardItem (Util::MakePrettySize (storageItem
+					.IsDirectory_ ? folderSize : storageItem.Size_));
+			size->setEditable (false);
 
 			QStandardItem *modify = new QStandardItem (storageItem.ModifyDate_
 					.toString ("dd.MM.yy hh:mm"));
 			modify->setEditable (false);
 
-			return { name, modify };
+			return { name, size, modify };
 		}
 	}
 
@@ -404,6 +421,26 @@ namespace NetStoreManager
 		func (sfl, GetSelectedIDs ());
 	}
 
+	quint64 ManagerTab::GetFolderSize (const QByteArray& id) const
+	{
+		quint64 size = 0;
+		QList<StorageItem> childItems;
+		for (const auto& item : Id2Item_.values ())
+			if (item.ParentID_ == id)
+				if (item.IsDirectory_ &&
+						((item.IsTrashed_ && Id2Item_ [id].IsTrashed_) ||
+						(!item.IsTrashed_ && !Id2Item_ [id].IsTrashed_)))
+					childItems << item;
+				else if (((item.IsTrashed_ && Id2Item_ [id].IsTrashed_) ||
+						(!item.IsTrashed_ && !Id2Item_ [id].IsTrashed_)))
+					size += item.Size_;
+
+		for (const auto& item : childItems)
+			size += GetFolderSize (item.ID_);
+
+		return size;
+	}
+
 	void ManagerTab::ShowListItemsWithParent (const QByteArray& parentId, bool inTrash)
 	{
 		ClearModel ();
@@ -419,15 +456,19 @@ namespace NetStoreManager
 		}
 
 		for (const auto& item : Id2Item_.values ())
+		{
+			quint64 folderSize = 0;
+				if (item.IsDirectory_)
+					folderSize = GetFolderSize (item.ID_);
 			if (!inTrash &&
 					!item.IsTrashed_)
 			{
 				if (parentId.isNull () &&
 						!Id2Item_.contains (item.ParentID_))
-					TreeModel_->appendRow (CreateItems (item, Proxy_));
+					TreeModel_->appendRow (CreateItems (item, folderSize, Proxy_));
 				else if (!parentId.isNull () &&
 						item.ParentID_ == parentId)
-					TreeModel_->appendRow (CreateItems (item, Proxy_));
+					TreeModel_->appendRow (CreateItems (item, folderSize, Proxy_));
 			}
 			else if (inTrash &&
 					item.IsTrashed_)
@@ -435,15 +476,16 @@ namespace NetStoreManager
 				if (parentId.isNull () &&
 						(!Id2Item_.contains (item.ParentID_) ||
 						!Id2Item_ [item.ParentID_].IsTrashed_))
-					TreeModel_->appendRow (CreateItems (item, Proxy_));
+					TreeModel_->appendRow (CreateItems (item, folderSize, Proxy_));
 				else if (!parentId.isNull () &&
 						item.ParentID_ == parentId &&
 						Id2Item_ [parentId].IsTrashed_)
-					TreeModel_->appendRow (CreateItems (item, Proxy_));
+					TreeModel_->appendRow (CreateItems (item, folderSize, Proxy_));
 				else if (!parentId.isNull () &&
 						!Id2Item_ [parentId].IsTrashed_)
 					ShowListItemsWithParent (QByteArray (), true);
 			}
+		}
 	}
 
 	void ManagerTab::handleRefresh ()
@@ -547,9 +589,6 @@ namespace NetStoreManager
 			Id2Item_ [item.ID_] = item;
 
 		FillModel (acc);
-
-		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("NetStoreManager",
-				tr ("File list updated"), PInfo_));
 
 		Trash_->setIcon (Proxy_->GetIcon (GetTrashedFiles ().isEmpty () ?
 			"user-trash-full" :
@@ -808,7 +847,7 @@ namespace NetStoreManager
 			{
 				QMenu *exportMenu = new QMenu (tr ("Export to..."), menu);
 				auto exportAct = menu->insertMenu (Download_, exportMenu);
-				exportAct->setProperty ("ActionIcon", Proxy_->GetIcon ("document-export"));
+				exportAct->setIcon (Proxy_->GetIcon ("document-export"));
 				for (const auto& key : item.ExportLinks.keys ())
 				{
 					const auto& pair = item.ExportLinks [key];
@@ -872,6 +911,9 @@ namespace NetStoreManager
 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 		DeleteFile_->setVisible (sfl->GetListingOps () & ListingOp::Delete);
 		MoveToTrash_->setVisible (sfl->GetListingOps () & ListingOp::TrashSupporting);
+
+		XmlSettingsManager::Instance ().setProperty ("LastActiveAccount",
+				acc->GetUniqueID ());
 	}
 
 	void ManagerTab::handleGotFileUrl (const QUrl& url, const QByteArray&)

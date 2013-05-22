@@ -70,7 +70,7 @@ QString Plugin::GetInfo () const
 
 QIcon Plugin::GetIcon () const
 {
-	static QIcon icon (":/resources/images/historyholder.svg");
+	static QIcon icon ("lcicons:/resources/images/historyholder.svg");
 	return icon;
 }
 
