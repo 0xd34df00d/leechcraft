@@ -128,6 +128,8 @@ namespace Woodpecker
 		if (!ic.isNull ()) 
 		{
 			r = option.rect.adjusted (Padding, Padding * 2, -Padding * 2, -Padding * 2);
+			if (r.width () > IconSize || r.height () > IconSize)
+				r.adjust(0, 0, -(r.width () - IconSize), -(r.height () - IconSize));
 			ic.paint (painter, r, Qt::AlignVCenter | Qt::AlignLeft);
 		}
 
