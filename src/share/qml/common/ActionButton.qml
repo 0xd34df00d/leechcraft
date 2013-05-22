@@ -20,7 +20,7 @@ Item {
 
     property string overlayText
     property string orientation: "horizontal"
-    property bool isVert: orientation == "vertical"
+    property bool isButtonVertical: orientation == "vertical"
 
     signal triggered()
     signal hovered()
@@ -152,12 +152,12 @@ Item {
         height: parent.width / 2
         radius: 1
 
-        rotation: isVert ? 0 : 90
+        rotation: isButtonVertical ? 0 : 90
 
-        anchors.horizontalCenter: isVert ? undefined : parent.horizontalCenter
-        anchors.left: isVert ? parent.left : undefined
-        anchors.verticalCenter: isVert ? parent.verticalCenter : parent.bottom
-        anchors.verticalCenterOffset: isVert ? 0 : (-width / 2)
+        anchors.horizontalCenter: isButtonVertical ? undefined : parent.horizontalCenter
+        anchors.left: isButtonVertical ? parent.left : undefined
+        anchors.verticalCenter: isButtonVertical ? parent.verticalCenter : parent.bottom
+        anchors.verticalCenterOffset: isButtonVertical ? 0 : (-width / 2)
 
         gradient: Gradient {
             GradientStop {
@@ -185,12 +185,12 @@ Item {
         height: parent.width / 2
         radius: 1
 
-        rotation: isVert ? 0 : 90
+        rotation: isButtonVertical ? 0 : 90
 
-        anchors.horizontalCenter: isVert ? undefined : parent.horizontalCenter
-        anchors.right: isVert ? parent.right : undefined
-        anchors.verticalCenter: isVert ? parent.verticalCenter : parent.top
-        anchors.verticalCenterOffset: isVert ? 0 : (width / 2)
+        anchors.horizontalCenter: isButtonVertical ? undefined : parent.horizontalCenter
+        anchors.right: isButtonVertical ? parent.right : undefined
+        anchors.verticalCenter: isButtonVertical ? parent.verticalCenter : parent.top
+        anchors.verticalCenterOffset: isButtonVertical ? 0 : (width / 2)
 
         gradient: Gradient {
             GradientStop {
