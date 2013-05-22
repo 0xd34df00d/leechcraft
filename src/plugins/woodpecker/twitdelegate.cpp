@@ -74,8 +74,8 @@ namespace Woodpecker
 		QFont mainFont;
 		mainFont.setFamily (mainFont.defaultFamily ());
 
-		const auto& bgBrush = QBrush (o.palette.color(QPalette::Base));
-		const auto& selBgBrush = QBrush (o.palette.color(QPalette::Highlight));
+		const auto& bgBrush = QBrush (o.palette.color (QPalette::Base));
+		const auto& selBgBrush = QBrush (o.palette.color (QPalette::Highlight));
 		
 		if (option.state & QStyle::State_Selected)
 		{
