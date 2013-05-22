@@ -31,7 +31,6 @@
 
 #include <QWidget>
 #include <interfaces/blogique/iblogiquesidewidget.h>
-#include <interfaces/blogique/ipostoptionswidget.h>
 #include <interfaces/media/audiostructs.h>
 #include "ui_postoptionswidget.h"
 
@@ -50,15 +49,14 @@ namespace Metida
 
 	class PostOptionsWidget : public QWidget
 							, public IBlogiqueSideWidget
-							, public IPostOptionsWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blogique::IBlogiqueSideWidget
-				LeechCraft::Blogique::IPostOptionsWidget)
+		Q_INTERFACES (LeechCraft::Blogique::IBlogiqueSideWidget)
 
 		Ui::PostOptions Ui_;
 		LJAccount *Account_;
 		quint32 AllowMask_;
+
 	public:
 		PostOptionsWidget (QWidget *parent = 0);
 
@@ -70,17 +68,12 @@ namespace Metida
 		void SetCustomData (const QVariantMap& map);
 		void SetAccount (QObject *account);
 
-		QStringList GetTags () const;
-		void SetTags (const QStringList& tags);
-		QDateTime GetPostDate () const;
-		void SetPostDate (const QDateTime& date);
 	private:
 		void FillItems ();
 
 	public slots:
 		void handleAutoUpdateCurrentMusic ();
 	private slots:
-		void on_CurrentTime__released ();
 		void on_Access__activated (int index);
 		void on_UserPic__currentIndexChanged (int index);
 		void on_AutoDetect__released ();

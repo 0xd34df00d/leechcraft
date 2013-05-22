@@ -76,9 +76,12 @@ namespace Hestia
 		void UpdateEntry (const Entry& entry);
 		QList<QAction*> GetUpdateActions () const;
 
-		void RequestLastEntries (int count);
+		void RequestLastEntries (int count = 0);
 		void RequestStatistics ();
+		void RequestTags ();
 		void GetEntriesByDate (const QDate& date);
+
+		QHash<QString, int> GetTags () const;
 
 		void FillSettings (AccountConfigurationWidget *widget);
 		void Init ();
@@ -110,6 +113,7 @@ namespace Hestia
 		void gotEntries2Backup (const QList<Entry>& entries);
 		void gettingEntries2BackupFinished ();
 		void gotBlogStatistics (const QMap<QDate, int>& statistics);
+		void tagsUpdated (const QHash<QString, int>& tags);
 
 	};
 }

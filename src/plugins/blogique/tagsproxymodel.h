@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2013  Oleg Linkin
+ * Copyright (C) 2010-2013 Oleg Linkin
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,24 +29,28 @@
 
 #pragma once
 
-#include <QLineEdit>
+#include <QSortFilterProxyModel>
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-namespace Metida
-{
-	class TagsWidget : public QLineEdit
+	class TagsProxyModel : public QSortFilterProxyModel
 	{
 		Q_OBJECT
-		QHash<QString, int> Tags_;
 
+		Q_PROPERTY (int count READ GetCount NOTIFY countChanged);
 	public:
-		explicit TagsWidget (QWidget *parent = 0);
+		explicit TagsProxyModel (QObject *parent = 0);
 
-		void SetTags (const QHash<QString, int>& tags);
+		bool filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const;
+		bool lessThan (const QModelIndex& left, const QModelIndex& right) const;
+		int GetCount () const;
+		Q_INVOKABLE QString GetTagName (int index);
+
+		void countUpdated ();
+	signals:
+		void countChanged ();
 	};
-}
 }
 }

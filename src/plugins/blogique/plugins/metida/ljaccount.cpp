@@ -86,6 +86,10 @@ namespace Metida
 				SIGNAL (gotTags (QHash<QString, int>)),
 				LJProfile_.get (),
 				SLOT (handleGotTags (QHash<QString, int>)));
+		connect (LJProfile_.get (),
+				SIGNAL (tagsUpdated (QHash<QString, int>)),
+				this,
+				SIGNAL (tagsUpdated (QHash<QString, int>)));
 		connect (LJXmlRpc_,
 				SIGNAL (eventPosted (QList<LJEvent>)),
 				this,
@@ -213,7 +217,7 @@ namespace Metida
 			props.ScreeningComments_ = static_cast<CommentsManagement> (map ["hidecomment"].toInt ());
 			props.PostAvatar_ = map ["avatar"].toString ();
 			props.ShowInFriendsPage_ = map ["showInFriendsPage"].toBool ();
-
+			props.LikeButtons_ = map ["likes"].toStringList ();
 			return props;
 		}
 
@@ -259,7 +263,9 @@ namespace Metida
 			entry.Subject_ = ljEvent.Subject_;
 			entry.Tags_ = ljEvent.Tags_;
 			entry.Target_ = login;
-			entry.EntryUrl_ = ljEvent.Url_;
+			entry.EntryUrl_ = ljEvent.Props_.IsRepost_ ?
+				ljEvent.Props_.RepostUrl_ :
+				ljEvent.Url_;
 			entry.PostOptions_ = GetPostOptionsMapFromLJEvent (ljEvent);
 			return entry;
 		}
@@ -284,6 +290,10 @@ namespace Metida
 	void LJAccount::RequestStatistics ()
 	{
 		LJXmlRpc_->RequestStatistics ();
+	}
+
+	void LJAccount::RequestTags ()
+	{
 		LJXmlRpc_->RequestTags ();
 	}
 
@@ -525,9 +535,18 @@ namespace Metida
 		props.ShowInFriendsPage_ = postOptions.value ("showInFriendsPage").toBool ();
 
 		props.PostAvatar_ = postOptions.value ("avatar").toString ();
+		props.LikeButtons_ = postOptions.value ("likes").toStringList ();
 
 		ljEvent.Props_ = props;
 		ljEvent.Event_.append ("<em style=\"font-size: 0.8em;\">Posted via <a href=\"http://leechcraft.org/plugins-blogique\">LeechCraft Blogique</a>.</em>");
+
+		if (!ljEvent.Props_.LikeButtons_.isEmpty ())
+		{
+			if (XmlSettingsManager::Instance ().Property ("LikeButtonPosition", "bottom").toString () == "top")
+				ljEvent.Event_.prepend (QString ("<lj-like buttons=\"%1\" />").arg (props.LikeButtons_.join (", ")));
+			else
+				ljEvent.Event_.append (QString ("<lj-like buttons=\"%1\" />").arg (props.LikeButtons_.join (",")));
+		}
 
 		LJXmlRpc_->Submit (ljEvent);
 	}
