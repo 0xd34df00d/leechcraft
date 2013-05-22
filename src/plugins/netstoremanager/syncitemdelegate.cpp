@@ -61,9 +61,24 @@ namespace NetStoreManager
 			FillAccounts (box);
 			return box;
 		}
-		case Directory:
+		case LocalDirectory:
 		{
-			DirectoryWidget *dw = new DirectoryWidget (parent);
+			DirectoryWidget *dw = new DirectoryWidget (DirectoryWidget::Type::Local,
+					QByteArray (), 0, parent);
+			dw->setAttribute (Qt::WA_DeleteOnClose);
+			connect (dw,
+					SIGNAL (finished (QWidget*)),
+					this,
+					SLOT (handleCloseDirectoryEditor (QWidget*)));
+			return dw;
+		}
+		case RemoteDirecory:
+		{
+			DirectoryWidget *dw = new DirectoryWidget (DirectoryWidget::Type::Remote,
+					index.sibling (index.row (), Account)
+						.data (SyncItemDelegateRoles::AccountId).toByteArray (),
+					AM_, parent);
+			dw->setAttribute (Qt::WA_DeleteOnClose);
 			connect (dw,
 					SIGNAL (finished (QWidget*)),
 					this,
@@ -87,7 +102,8 @@ namespace NetStoreManager
 			box->setCurrentIndex (box->findText (accText, Qt::MatchExactly));
 			break;
 		}
-		case Directory:
+		case LocalDirectory:
+		case RemoteDirecory:
 		{
 			auto dw = static_cast<DirectoryWidget*> (editor);
 			dw->SetPath (index.data (Qt::EditRole).toString ());
@@ -114,8 +130,10 @@ namespace NetStoreManager
 					SyncItemDelegateRoles::AccountId);
 			break;
 		}
-		case Directory:
+		case LocalDirectory:
+		case RemoteDirecory:
 		{
+			qDebug () << Q_FUNC_INFO;
 			auto dw = static_cast<DirectoryWidget*> (editor);
 			model->setData (index, dw->GetPath (), Qt::EditRole);
 			break;
@@ -149,6 +167,7 @@ namespace NetStoreManager
 
 	void SyncItemDelegate::handleCloseDirectoryEditor (QWidget *w)
 	{
+		qDebug () << Q_FUNC_INFO;
 		emit commitData (w);
 		emit closeEditor (w);
 	}

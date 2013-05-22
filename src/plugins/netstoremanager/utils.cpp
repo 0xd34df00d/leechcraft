@@ -48,6 +48,42 @@ namespace Utils
 		}
 		return paths;
 	}
+
+	boost::bimaps::bimap<QByteArray, QString> GetItemsPaths (const QHash<QByteArray, StorageItem> id2Item)
+	{
+		auto itemsList = id2Item.values ();
+		boost::bimaps::bimap<QByteArray, QString> id2Path;
+		int i = 0;
+		while (!itemsList.isEmpty ())
+		{
+			const auto& item = itemsList.at (i);
+			if (item.IsTrashed_)
+			{
+				itemsList.removeAt (i);
+				if (++i >= itemsList.count ())
+					i = 0;
+				continue;
+			}
+
+			if (!id2Item.contains (item.ParentID_))
+			{
+				id2Path.insert ({ item.ID_, item.Name_ });
+				itemsList.removeAt (i);
+			}
+			else if (id2Path.left.count (item.ParentID_))
+			{
+				id2Path.insert ({ item.ID_, id2Path.left.at (item.ParentID_) +
+					"/" + item.Name_ });
+				itemsList.removeAt (i);
+			}
+
+			if (++i >= itemsList.count ())
+				i = 0;
+		}
+
+		return id2Path;
+	}
+
 }
 }
 }

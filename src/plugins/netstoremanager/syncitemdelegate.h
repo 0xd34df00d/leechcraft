@@ -51,7 +51,8 @@ namespace NetStoreManager
 		enum Columns
 		{
 			Account,
-			Directory
+			LocalDirectory,
+			RemoteDirecory
 		};
 
 		enum SyncItemDelegateRoles

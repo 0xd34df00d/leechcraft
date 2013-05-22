@@ -63,7 +63,7 @@ namespace NetStoreManager
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "netstoremanagersettings.xml");
 
-		AccountsManager_ = new AccountsManager (this);
+		AccountsManager_ = new AccountsManager (proxy, this);
 		XSD_->SetCustomWidget ("AccountsWidget", new AccountsListWidget (AccountsManager_));
 
 		UpManager_ = new UpManager (proxy, this);

@@ -47,7 +47,8 @@ namespace NetStoreManager
 	{
 		Ui_.setupUi (this);
 
-		Model_->setHorizontalHeaderLabels ({ tr ("Account"), tr ("Directory") });
+		Model_->setHorizontalHeaderLabels ({ tr ("Account"),
+				tr ("Local directory"), tr ("Remote directory") });
 		Ui_.SyncView_->horizontalHeader ()->setStretchLastSection (true);
 		Ui_.SyncView_->setItemDelegate (new SyncItemDelegate (AM_, Model_, this));
 		Ui_.SyncView_->setModel (Model_);
@@ -92,7 +93,7 @@ namespace NetStoreManager
 		for (int i = 0; i < Model_->rowCount (); ++i)
 		{
 			QStandardItem *accItem = Model_->item (i, SyncItemDelegate::Account);
-			QStandardItem *dirItem = Model_->item (i, SyncItemDelegate::Directory);
+			QStandardItem *dirItem = Model_->item (i, SyncItemDelegate::LocalDirectory);
 			if (dirItem->text ().isEmpty () ||
 					accItem->text ().isEmpty ())
 				continue;

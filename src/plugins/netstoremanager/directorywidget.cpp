@@ -31,13 +31,19 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QtDebug>
+#include "accountsmanager.h"
+#include "remotedirectoryselectdialog.h"
 
 namespace LeechCraft
 {
 namespace NetStoreManager
 {
-	DirectoryWidget::DirectoryWidget (QWidget *parent)
+	DirectoryWidget::DirectoryWidget (Type t, const QByteArray& accId,
+			AccountsManager *am, QWidget *parent)
 	: QWidget (parent)
+	, Type_ (t)
+	, AccountID_ (accId)
+	, AM_ (am)
 	{
 		Ui_.setupUi (this);
 	}
@@ -60,9 +66,29 @@ namespace NetStoreManager
 
 	void DirectoryWidget::on_OpenDir__released ()
 	{
-		const QString& path = QFileDialog::getExistingDirectory (this,
-				tr ("Select directory"),
-				Path_.isEmpty () ? QDir::homePath () : Path_);
+		QString path;
+		switch (Type_)
+		{
+			case Type::Local:
+				path = QFileDialog::getExistingDirectory (this,
+						tr ("Select directory"),
+						Path_.isEmpty () ? QDir::homePath () : Path_);
+				break;
+			case Type::Remote:
+			{
+				if (AccountID_.isEmpty ())
+				{
+					QMessageBox::warning (this,
+						"LeechCraft",
+						tr ("Account did not select.\n You should select an account in first column!"));
+					break;
+				}
+				RemoteDirectorySelectDialog dlg (AccountID_, AM_);
+				if (dlg.exec () != QDialog::Rejected)
+					path = dlg.GetDirectoryPath ();
+				break;
+			}
+		};
 
 		if (path.isEmpty ())
 			return;

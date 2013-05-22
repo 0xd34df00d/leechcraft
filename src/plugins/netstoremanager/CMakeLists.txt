@@ -30,6 +30,7 @@ SET (SRCS
 	filesproxymodel.cpp
 	filestreemodel.cpp
 	filesview.cpp
+	remotedirectoryselectdialog.cpp
 	syncer.cpp
 	syncmanager.cpp
 	syncwidget.cpp
@@ -40,11 +41,12 @@ SET (SRCS
 	)
 
 SET (FORMS
-	managertab.ui
 	accountslistwidget.ui
 	addaccountdialog.ui
-	syncwidget.ui
 	directorywidget.ui
+	managertab.ui
+	remotedirectoryselectdialog.ui
+	syncwidget.ui
 	)
 
 IF (ENABLE_NETSTOREMANAGER_INOTIFY)

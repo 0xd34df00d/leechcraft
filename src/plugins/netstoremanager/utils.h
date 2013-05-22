@@ -29,8 +29,10 @@
 
 #pragma once
 
+#include <boost/bimap.hpp>
 #include <QString>
 #include <QDir>
+#include "interfaces/netstoremanager/isupportfilelistings.h"
 
 namespace LeechCraft
 {
@@ -39,6 +41,8 @@ namespace NetStoreManager
 namespace Utils
 {
 	QStringList ScanDir (QDir::Filters filter, const QString& path, bool recursive = false);
+
+	boost::bimaps::bimap<QByteArray, QString> GetItemsPaths (const QHash<QByteArray, StorageItem> id2Item);
 }
 }
 }
