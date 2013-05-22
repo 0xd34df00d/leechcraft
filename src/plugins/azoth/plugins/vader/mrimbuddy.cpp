@@ -348,6 +348,10 @@ namespace Vader
 	{
 	}
 
+	void MRIMBuddy::ChatTabClosed ()
+	{
+	}
+
 	IAdvancedCLEntry::AdvancedFeatures MRIMBuddy::GetAdvancedFeatures () const
 	{
 		return AFSupportsAttention;

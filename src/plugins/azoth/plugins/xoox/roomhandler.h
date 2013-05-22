@@ -116,7 +116,7 @@ namespace Xoox
 
 		void requestVoice ();
 
-		void handleMessagesAreRead ();
+		void handleChatTabClosed ();
 	private:
 		/** Creates a new entry for the given nick.
 		 */

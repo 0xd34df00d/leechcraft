@@ -125,6 +125,10 @@ namespace Acetamide
 	{
 	}
 
+	void EntryBase::ChatTabClosed ()
+	{
+	}
+
 	void EntryBase::HandleMessage (IrcMessage *msg)
 	{
 		msg->SetOtherPart (this);

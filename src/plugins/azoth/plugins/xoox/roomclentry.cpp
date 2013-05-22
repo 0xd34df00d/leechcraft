@@ -239,6 +239,10 @@ namespace Xoox
 	{
 	}
 
+	void RoomCLEntry::ChatTabClosed ()
+	{
+	}
+
 	IMUCEntry::MUCFeatures RoomCLEntry::GetMUCFeatures () const
 	{
 		return MUCFCanBeConfigured | MUCFCanInvite;

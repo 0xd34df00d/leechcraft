@@ -73,6 +73,7 @@ namespace Acetamide
 		void ShowInfo ();
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
 		void MarkMsgsRead ();
+		void ChatTabClosed ();
 
 		virtual QString GetEntryID () const = 0;
 

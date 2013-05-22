@@ -253,6 +253,10 @@ namespace Metacontacts
 	{
 	}
 
+	void MetaEntry::ChatTabClosed ()
+	{
+	}
+
 	IAdvancedCLEntry::AdvancedFeatures MetaEntry::GetAdvancedFeatures () const
 	{
 		return AFSupportsAttention;

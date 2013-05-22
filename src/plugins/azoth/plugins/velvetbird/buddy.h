@@ -83,6 +83,7 @@ namespace VelvetBird
 		QList<QAction*> GetActions () const;
 		QMap<QString, QVariant> GetClientInfo (const QString& variant) const;
 		void MarkMsgsRead ();
+		void ChatTabClosed ();
 
 		void Send (ConvIMMessage*);
 		void Store (ConvIMMessage*);

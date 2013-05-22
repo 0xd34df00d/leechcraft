@@ -100,6 +100,7 @@ namespace Zheet
 		QList<QAction*> GetActions () const;
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
 		void MarkMsgsRead ();
+		void ChatTabClosed ();
 
 		// IAdvancedCLEntry
 		AdvancedFeatures GetAdvancedFeatures () const;
