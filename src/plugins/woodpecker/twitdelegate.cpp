@@ -37,7 +37,6 @@
 #include <QAbstractTextDocumentLayout>
 #include <QRectF>
 #include <interfaces/core/icoreproxy.h>
-#include <interfaces/core/ientitymanager.h>
 #include <interfaces/structures.h>
 #include <util/util.h>
 #include "core.h"
@@ -142,12 +141,11 @@ namespace Woodpecker
 		r = option.rect.adjusted (ImageSpace_, Padding, -Padding, -Padding);
 		painter->setFont (mainFont);
 		doc->setTextWidth (r.width ());
-		doc->documentLayout ()->setPaintDevice (painter->device ());
-		doc->setDefaultStyleSheet (QString("body {color: \"red\";};"));
-		qDebug () << "Stylesheet: " << "color:" + fontMarkedPen.color ().name () + ";";
 		painter->save ();
+		QAbstractTextDocumentLayout::PaintContext ctx;
+		ctx.palette.setColor (QPalette::Text, painter->pen ().color ());
 		painter->translate (r.left (), r.top ());
-		doc->drawContents (painter, r.translated (-r.topLeft ()));
+		doc->documentLayout ()->draw (painter, ctx);
 		painter->restore ();
 
 		// Author

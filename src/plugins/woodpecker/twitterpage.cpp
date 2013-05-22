@@ -33,7 +33,6 @@
 #include <QListWidgetItem>
 #include <QCoreApplication>
 #include <qjson/parser.h>
-#include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/icoreproxy.h>
 #include "core.h"
 #include "util/util.h"
