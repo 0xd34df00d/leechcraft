@@ -604,7 +604,8 @@ namespace Xoox
 		connect (entry.get (),
 				SIGNAL (chatTabClosed ()),
 				this,
-				SLOT (handleChatTabClosed ()));
+				SLOT (handleChatTabClosed ()),
+				Qt::QueuedConnection);
 		Nick2Entry_ [nick] = entry;
 		if (announce)
 			Account_->handleGotRosterItems (QList<QObject*> () << entry.get ());
