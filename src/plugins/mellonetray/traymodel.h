@@ -81,6 +81,8 @@ namespace Mellonetray
 		void Update (ulong);
 
 		QList<TrayItem>::iterator FindItem (ulong);
+	signals:
+		void updateRequired (ulong);
 	};
 }
 }

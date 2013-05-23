@@ -192,6 +192,7 @@ namespace Mellonetray
 
 		switch (role)
 		{
+		case Qt::DisplayRole:
 		case Role::ItemID:
 			return static_cast<qulonglong> (item.WID_);
 		}
@@ -223,7 +224,11 @@ namespace Mellonetray
 	{
 		const auto pos = FindItem (wid);
 		if (pos == Items_.end ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to find" << wid;
 			return;
+		}
 
 		const auto dist = std::distance (Items_.begin (), pos);
 		beginRemoveRows ({}, dist, dist);
@@ -233,9 +238,7 @@ namespace Mellonetray
 
 	void TrayModel::Update (ulong wid)
 	{
-		const auto pos = FindItem (wid);
-		if (pos == Items_.end ())
-			return;
+		emit updateRequired (wid);
 	}
 
 	void TrayModel::Filter (XEvent *ev)
@@ -254,6 +257,7 @@ namespace Mellonetray
 				auto dmg = reinterpret_cast<XDamageNotifyEvent*> (ev);
 				Update (dmg->drawable);
 			}
+			break;
 		}
 	}
 

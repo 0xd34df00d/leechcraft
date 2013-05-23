@@ -42,6 +42,10 @@ namespace Mellonetray
 		qmlRegisterType<IconHandler> ("Mellonetray", 1, 0, "IconHandler");
 
 		TrayModel::Instance ();
+
+		Panel_.reset (new QuarkComponent);
+		Panel_->Url_ = Util::GetSysPath (Util::SysPath::QML, "mellonetray", "TrayQuark.qml");
+		Panel_->DynamicProps_.append ({ "MT_trayModel", &TrayModel::Instance () });
 	}
 
 	void Plugin::SecondInit ()
@@ -70,6 +74,11 @@ namespace Mellonetray
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	QuarkComponents_t Plugin::GetComponents () const
+	{
+		return { Panel_ };
 	}
 }
 }
