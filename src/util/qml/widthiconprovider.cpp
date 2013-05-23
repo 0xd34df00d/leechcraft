@@ -41,14 +41,14 @@ namespace Util
 
 	QPixmap WidthIconProvider::requestPixmap (const QString& idStr, QSize *size, const QSize& requestedSize)
 	{
-		const auto& list = idStr.split ('/', QString::SkipEmptyParts);
+		auto list = idStr.split ('/', QString::SkipEmptyParts);
 		if (list.isEmpty ())
 			return QPixmap ();
 
 		auto realSize = requestedSize;
 		if (realSize.width () <= 0)
 		{
-			const int width = list.last ().toDouble ();
+			const int width = list.takeLast ().toDouble ();
 			realSize = width > 0 ? QSize (width, width) : QSize (32, 32);
 		}
 
