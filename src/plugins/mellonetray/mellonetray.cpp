@@ -29,6 +29,7 @@
 
 #include "mellonetray.h"
 #include <QIcon>
+#include "traymodel.h"
 
 namespace LeechCraft
 {
@@ -36,6 +37,7 @@ namespace Mellonetray
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		TrayModel::Instance ();
 	}
 
 	void Plugin::SecondInit ()

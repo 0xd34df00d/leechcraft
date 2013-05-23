@@ -28,17 +28,139 @@
  **********************************************************************/
 
 #include "traymodel.h"
+#include <QtDebug>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/Xatom.h>
+#include <X11/extensions/Xrender.h>
+#include <X11/extensions/Xdamage.h>
+#include <util/x11/xwrapper.h>
+
+typedef bool (*QX11FilterFunction) (XEvent *event);
+
+extern void qt_installX11EventFilter (QX11FilterFunction func);
 
 namespace LeechCraft
 {
 namespace Mellonetray
 {
-	TrayModel::TrayModel (QObject *parent)
-	: QAbstractItemModel (parent)
+	namespace
 	{
+		VisualID GetVisual ()
+		{
+			VisualID result = 0;
+			auto disp = Util::XWrapper::Instance ().GetDisplay ();
+
+			XVisualInfo init;
+			init.screen = QX11Info::appScreen ();
+			init.depth = 32;
+			init.c_class = TrueColor;
+
+			int nvi = 0;
+			auto xvi = XGetVisualInfo (disp, VisualScreenMask | VisualDepthMask | VisualClassMask, &init, &nvi);
+			if (!xvi)
+				return result;
+
+			for (int i = 0; i < nvi; ++i)
+			{
+				auto fmt = XRenderFindVisualFormat (disp, xvi [i].visual);
+				if (fmt && fmt->type == PictTypeDirect && fmt->direct.alphaMask)
+				{
+					result = xvi [i].visualid;
+					break;
+				}
+			}
+
+			XFree (xvi);
+
+			return result;
+		}
+
+		bool EventFilter (XEvent *event)
+		{
+			TrayModel::Instance ().Filter (event);
+			return false;
+		}
+	}
+
+	TrayModel::TrayModel ()
+	: TrayWinID_ (0)
+	, DamageEvent_ (0)
+	{
+		qt_installX11EventFilter (&EventFilter);
+
 		QHash<int, QByteArray> roleNames;
 		roleNames [Role::ItemTooltip] = "tooltip";
 		setRoleNames (roleNames);
+
+		auto& w = Util::XWrapper::Instance ();
+		const auto disp = w.GetDisplay ();
+		const auto rootWin = w.GetRootWindow ();
+
+		const auto atom = w.GetAtom (QString ("_NET_SYSTEM_TRAY_S%1").arg (DefaultScreen (disp)));
+
+		if (XGetSelectionOwner (disp, atom) != None)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "another system tray is active";
+			return;
+		}
+
+		TrayWinID_ = XCreateSimpleWindow (disp, rootWin, -1, -1, 1, 1, 0, 0, 0);
+		XSetSelectionOwner (disp, atom, TrayWinID_, CurrentTime);
+		if (!XGetSelectionOwner (disp, atom) != TrayWinID_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "call to XSetSelectionOwner failed";
+			return;
+		}
+
+		int orientation = 0;
+		XChangeProperty (disp,
+				TrayWinID_,
+				w.GetAtom ("_NET_SYSTEM_TRAY_ORIENTATION"),
+				XA_CARDINAL,
+				32,
+				PropModeReplace,
+				reinterpret_cast<uchar*> (&orientation),
+				1);
+
+		if (auto visual = GetVisual ())
+			XChangeProperty (disp,
+					TrayWinID_,
+					w.GetAtom ("_NET_SYSTEM_TRAY_VISUAL"),
+					XA_VISUALID,
+					32,
+					PropModeReplace,
+					reinterpret_cast<uchar*> (&visual),
+					1);
+
+		XClientMessageEvent ev;
+		ev.type = ClientMessage;
+		ev.window = rootWin;
+		ev.message_type = w.GetAtom ("MANAGER");
+		ev.format = 32;
+		ev.data.l [0] = CurrentTime;
+		ev.data.l [1] = atom;
+		ev.data.l [2] = TrayWinID_;
+		ev.data.l [3] = 0;
+		ev.data.l [4] = 0;
+		XSendEvent (disp, rootWin, False, StructureNotifyMask, reinterpret_cast<XEvent*> (&ev));
+
+		int damageErr = 0;
+		XDamageQueryExtension (disp, &DamageEvent_, &damageErr);
+	}
+
+	TrayModel& TrayModel::Instance ()
+	{
+		static TrayModel m;
+		return m;
+	}
+
+	void TrayModel::Release ()
+	{
+		if (TrayWinID_)
+			XDestroyWindow (Util::XWrapper::Instance ().GetDisplay (), TrayWinID_);
 	}
 
 	int TrayModel::columnCount (const QModelIndex&) const
@@ -78,6 +200,67 @@ namespace Mellonetray
 		}
 
 		return {};
+	}
+
+	template<>
+	void TrayModel::HandleClientMsg<XClientMessageEvent*> (XClientMessageEvent *ev)
+	{
+		switch (ev->data.l [1])
+		{
+		case 0:
+			if (auto id = ev->data.l [2])
+				Add (id);
+		default:
+			break;
+		}
+	}
+
+	void TrayModel::Add (ulong wid)
+	{
+	}
+
+	void TrayModel::Remove (ulong wid)
+	{
+		const auto pos = FindItem (wid);
+		if (pos == Items_.end ())
+			return;
+
+		const auto dist = std::distance (Items_.begin (), pos);
+		beginRemoveRows ({}, dist, dist);
+		Items_.erase (pos);
+		endRemoveRows ();
+	}
+
+	void TrayModel::Update (ulong wid)
+	{
+		const auto pos = FindItem (wid);
+		if (pos == Items_.end ())
+			return;
+	}
+
+	void TrayModel::Filter (XEvent *ev)
+	{
+		switch (ev->type)
+		{
+		case ClientMessage:
+			HandleClientMsg (&(ev->xclient));
+			break;
+		case DestroyNotify:
+			Remove (ev->xany.window);
+			break;
+		default:
+			if (ev->type == XDamageNotify + DamageEvent_)
+			{
+				auto dmg = reinterpret_cast<XDamageNotifyEvent*> (ev);
+				Update (dmg->drawable);
+			}
+		}
+	}
+
+	auto TrayModel::FindItem (ulong wid) -> QList<TrayItem>::iterator
+	{
+		return std::find_if (Items_.begin (), Items_.end (),
+				[&wid] (const TrayItem& item) { return item.WID_ == wid; });
 	}
 }
 }

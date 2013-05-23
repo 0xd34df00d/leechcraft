@@ -40,8 +40,12 @@ namespace Mellonetray
 	{
 		Q_OBJECT
 
+		ulong TrayWinID_;
+		int DamageEvent_;
+
 		struct TrayItem
 		{
+			ulong WID_;
 			QString Tooltip_;
 			QIcon Icon_;
 		};
@@ -51,14 +55,34 @@ namespace Mellonetray
 		{
 			ItemTooltip = Qt::UserRole + 1
 		};
+
+		TrayModel ();
+
+		TrayModel (const TrayModel&) = delete;
+		TrayModel (TrayModel&&) = delete;
+
+		TrayModel& operator= (const TrayModel&) = delete;
+		TrayModel& operator= (TrayModel&&) = delete;
 	public:
-		TrayModel (QObject* = 0);
+		static TrayModel& Instance ();
+		void Release ();
 
 		int columnCount (const QModelIndex& parent = QModelIndex()) const;
 		int rowCount (const QModelIndex& parent = QModelIndex()) const;
 		QModelIndex index (int row, int column, const QModelIndex& parent = QModelIndex()) const;
 		QModelIndex parent (const QModelIndex& child) const;
 		QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
+
+		void Filter (XEvent*);
+	private:
+		template<typename T>
+		void HandleClientMsg (T);
+
+		void Add (ulong);
+		void Remove (ulong);
+		void Update (ulong);
+
+		QList<TrayItem>::iterator FindItem (ulong);
 	};
 }
 }
