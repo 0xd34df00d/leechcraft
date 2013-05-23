@@ -61,6 +61,7 @@ namespace NetStoreManager
 
 	private slots:
 		void handleGotListing (const QList<StorageItem>& items);
+		void createNewDir ();
 	};
 }
 }

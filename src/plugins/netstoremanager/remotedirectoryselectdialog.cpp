@@ -31,6 +31,9 @@
 #include "remotedirectoryselectdialog.h"
 #include <QMessageBox>
 #include <QStandardItemModel>
+#include <QPushButton>
+#include <QFileDialog>
+#include <QInputDialog>
 #include <QtDebug>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "accountsmanager.h"
@@ -50,6 +53,14 @@ namespace NetStoreManager
 	, AM_ (am)
 	{
 		Ui_.setupUi (this);
+
+		QPushButton *createDir = new QPushButton (AM_->GetProxy ()->GetIcon ("folder-new"),
+				tr ("New Folder..."));
+		Ui_.ButtonBox_->addButton (createDir, QDialogButtonBox::ActionRole);
+		connect (createDir,
+				SIGNAL (clicked ()),
+				this,
+				SLOT (createNewDir ()));
 
 		Model_->setHorizontalHeaderLabels ({ tr ("Directory") });
 		ProxyModel_->setSourceModel (Model_);
@@ -113,6 +124,25 @@ namespace NetStoreManager
 			else
 				id2StandardItem [id2Item [key].ParentID_]->appendRow (id2StandardItem [key]);
 		}
+	}
+
+	void RemoteDirectorySelectDialog::createNewDir ()
+	{
+		const QString& path = QInputDialog::getText (this,
+				"LeechCraft",
+				tr ("Enter new folder name"));
+
+		if (path.isEmpty ())
+			return;
+
+		const auto& index = Ui_.DirectoriesView_->currentIndex ();
+		QStandardItem *item = new QStandardItem (AM_->GetProxy ()->
+				GetIcon ("inode-directory"), path);
+		item->setEditable (false);
+		if (index.isValid ())
+			Model_->itemFromIndex (ProxyModel_->mapToSource (index))->appendRow (item);
+		else
+			Model_->appendRow (item);
 	}
 
 }
