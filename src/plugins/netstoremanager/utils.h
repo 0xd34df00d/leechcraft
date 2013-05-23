@@ -41,8 +41,6 @@ namespace NetStoreManager
 namespace Utils
 {
 	QStringList ScanDir (QDir::Filters filter, const QString& path, bool recursive = false);
-
-	boost::bimaps::bimap<QByteArray, QString> GetItemsPaths (const QHash<QByteArray, StorageItem> id2Item);
 }
 }
 }
