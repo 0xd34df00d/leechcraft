@@ -28,8 +28,9 @@
  **********************************************************************/
 
 #include "syncer.h"
-#include <QtDebug>
 #include <QFileInfo>
+#include <QStandardItem>
+#include <QtDebug>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "utils.h"
 
@@ -58,13 +59,50 @@ namespace NetStoreManager
 	void Syncer::SetItems (const QList<StorageItem>& items)
 	{
 		Id2Item_.clear ();
+		boost::bimaps::bimap<QByteArray, QStandardItem*> id2StandardItem;
 		for (const auto& item : items)
 		{
 			if (item.IsTrashed_)
 				continue;
+
 			Id2Item_ [item.ID_] = item;
+			id2StandardItem.insert ({ item.ID_, new QStandardItem (item.Name_) });
 		}
-		auto paths = Utils::GetItemsPaths (Id2Item_);
+
+		QStandardItem *core = new QStandardItem;
+		for (const auto& pair : id2StandardItem.left)
+		{
+			if (!Id2Item_.contains (Id2Item_ [pair.first].ParentID_))
+				core->appendRow (pair.second);
+			else
+				id2StandardItem.left.at (Id2Item_ [pair.first].ParentID_)->appendRow (pair.second);
+		}
+
+		QList<QStandardItem*> parentItems = { core };
+		QList<QStandardItem*> childItems;
+		while (!parentItems.isEmpty ())
+		{
+			for (auto item : parentItems)
+			{
+				for (int i = 0; i < item->rowCount (); ++i)
+					childItems << item->child (i);
+			}
+
+			for (auto item : childItems)
+			{
+				const auto& id = id2StandardItem.right.at (item);
+				Id2Path_.insert ({ id,
+					(Id2Item_.contains (Id2Item_ [id].ParentID_) ?
+						(Id2Path_.left.at (Id2Item_ [id].ParentID_) + "/" ) :
+						QString ())
+								+ item->text () });
+			}
+			auto tempItems = parentItems;
+			parentItems = childItems;
+			childItems = tempItems;
+
+			childItems.clear();
+		}
 	}
 
 	void Syncer::start ()
