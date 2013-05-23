@@ -29,7 +29,9 @@
 
 #include "mellonetray.h"
 #include <QIcon>
+#include <QtDeclarative>
 #include "traymodel.h"
+#include "iconhandler.h"
 
 namespace LeechCraft
 {
@@ -37,6 +39,8 @@ namespace Mellonetray
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		qmlRegisterType<IconHandler> ("Mellonetray", 1, 0, "IconHandler");
+
 		TrayModel::Instance ();
 	}
 

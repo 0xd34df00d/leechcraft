@@ -90,7 +90,7 @@ namespace Mellonetray
 		qt_installX11EventFilter (&EventFilter);
 
 		QHash<int, QByteArray> roleNames;
-		roleNames [Role::ItemTooltip] = "tooltip";
+		roleNames [Role::ItemID] = "itemID";
 		setRoleNames (roleNames);
 
 		auto& w = Util::XWrapper::Instance ();
@@ -192,11 +192,8 @@ namespace Mellonetray
 
 		switch (role)
 		{
-		case Qt::DisplayRole:
-		case Role::ItemTooltip:
-			return item.Tooltip_;
-		case Qt::DecorationRole:
-			return item.Icon_;
+		case Role::ItemID:
+			return static_cast<qulonglong> (item.WID_);
 		}
 
 		return {};
@@ -217,6 +214,9 @@ namespace Mellonetray
 
 	void TrayModel::Add (ulong wid)
 	{
+		beginInsertRows ({}, Items_.size (), Items_.size ());
+		Items_.append ({ wid });
+		endInsertRows ();
 	}
 
 	void TrayModel::Remove (ulong wid)

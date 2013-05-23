@@ -46,14 +46,12 @@ namespace Mellonetray
 		struct TrayItem
 		{
 			ulong WID_;
-			QString Tooltip_;
-			QIcon Icon_;
 		};
 		QList<TrayItem> Items_;
 
 		enum Role
 		{
-			ItemTooltip = Qt::UserRole + 1
+			ItemID = Qt::UserRole + 1
 		};
 
 		TrayModel ();
