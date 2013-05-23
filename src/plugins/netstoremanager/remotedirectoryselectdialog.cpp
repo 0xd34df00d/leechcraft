@@ -32,8 +32,9 @@
 #include <QMessageBox>
 #include <QStandardItemModel>
 #include <QtDebug>
-#include "accountsmanager.h"
 #include "interfaces/netstoremanager/istorageaccount.h"
+#include "accountsmanager.h"
+#include "filesproxymodel.h"
 #include "utils.h"
 
 namespace LeechCraft
@@ -45,12 +46,14 @@ namespace NetStoreManager
 	: QDialog (parent)
 	, AccountId_ (accId)
 	, Model_ (new QStandardItemModel (this))
+	, ProxyModel_ (new FilesProxyModel (this))
 	, AM_ (am)
 	{
 		Ui_.setupUi (this);
 
 		Model_->setHorizontalHeaderLabels ({ tr ("Directory") });
-		Ui_.DirectoriesView_->setModel (Model_);
+		ProxyModel_->setSourceModel (Model_);
+		Ui_.DirectoriesView_->setModel (ProxyModel_);
 		auto account = am->GetAccountFromUniqueID (accId);
 		if (account)
 			if (auto isfl = qobject_cast<ISupportFileListings*> (account->GetQObject ()))
@@ -75,27 +78,27 @@ namespace NetStoreManager
 				0,
 				0);
 
-		QHash<QByteArray, QByteArray> id2ParentId;
-		QHash<QByteArray, QList<QStandardItem*>> id2StandardItem;
+		QHash<QByteArray, StorageItem> id2Item;
+		QHash<QByteArray, QStandardItem*> id2StandardItem;
 		for (const auto& item : items)
 		{
 			if (!item.IsDirectory_ ||
 					item.IsTrashed_)
 				continue;
 
-			id2ParentId [item.ParentID_] = item.ID_;
+			id2Item [item.ID_] = item;
 			QStandardItem *dir = new QStandardItem (AM_->GetProxy ()->
 					GetIcon ("inode-directory"), item.Name_);
 			dir->setEditable (false);
-			id2StandardItem [item.ID_] << dir;
+			id2StandardItem [item.ID_] = dir;
 		}
 
 		for (const auto& key : id2StandardItem.keys ())
 		{
-			if (!id2ParentId.contains (key))
+			if (!id2Item.contains (id2Item [key].ParentID_))
 				Model_->appendRow (id2StandardItem [key]);
 			else
-				id2StandardItem [key]->appendRow ();
+				id2StandardItem [id2Item [key].ParentID_]->appendRow (id2StandardItem [key]);
 		}
 	}
 

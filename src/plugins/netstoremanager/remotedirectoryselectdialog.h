@@ -41,6 +41,7 @@ namespace LeechCraft
 namespace NetStoreManager
 {
 	class AccountsManager;
+	class FilesProxyModel;
 
 	class RemoteDirectorySelectDialog : public QDialog
 	{
@@ -49,6 +50,7 @@ namespace NetStoreManager
 		Ui::RemoteDirectorySelectDialog Ui_;
 		QByteArray AccountId_;
 		QStandardItemModel *Model_;
+		FilesProxyModel *ProxyModel_;
 		AccountsManager *AM_;
 
 	public:

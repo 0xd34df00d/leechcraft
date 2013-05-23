@@ -41,9 +41,9 @@ namespace NetStoreManager
 	DirectoryWidget::DirectoryWidget (Type t, const QByteArray& accId,
 			AccountsManager *am, QWidget *parent)
 	: QWidget (parent)
-	, Type_ (t)
 	, AccountID_ (accId)
 	, AM_ (am)
+	, Type_ (t)
 	{
 		Ui_.setupUi (this);
 	}

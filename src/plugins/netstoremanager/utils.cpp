@@ -58,14 +58,8 @@ namespace Utils
 		{
 			const auto& item = itemsList.at (i);
 			if (item.IsTrashed_)
-			{
 				itemsList.removeAt (i);
-				if (++i >= itemsList.count ())
-					i = 0;
-				continue;
-			}
-
-			if (!id2Item.contains (item.ParentID_))
+			else if (!id2Item.contains (item.ParentID_))
 			{
 				id2Path.insert ({ item.ID_, item.Name_ });
 				itemsList.removeAt (i);
@@ -73,11 +67,13 @@ namespace Utils
 			else if (id2Path.left.count (item.ParentID_))
 			{
 				id2Path.insert ({ item.ID_, id2Path.left.at (item.ParentID_) +
-					"/" + item.Name_ });
+						"/" + item.Name_ });
 				itemsList.removeAt (i);
 			}
+			else
+				++i;
 
-			if (++i >= itemsList.count ())
+			if (i >= itemsList.count ())
 				i = 0;
 		}
 

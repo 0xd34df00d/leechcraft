@@ -59,7 +59,11 @@ namespace NetStoreManager
 	{
 		Id2Item_.clear ();
 		for (const auto& item : items)
+		{
+			if (item.IsTrashed_)
+				continue;
 			Id2Item_ [item.ID_] = item;
+		}
 		auto paths = Utils::GetItemsPaths (Id2Item_);
 	}
 
