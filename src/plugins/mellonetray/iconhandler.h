@@ -31,7 +31,7 @@
 
 #include <QGraphicsProxyWidget>
 
-class QX11EmbedContainer;
+class QLabel;
 
 namespace LeechCraft
 {
@@ -42,16 +42,23 @@ namespace Mellonetray
 		Q_OBJECT
 		Q_PROPERTY (unsigned long wid READ GetWID WRITE SetWID NOTIFY widChanged)
 
+		QLabel *Proxy_;
 		unsigned long WID_;
-		QX11EmbedContainer *Container_;
+		unsigned long ThisWID_;
 	public:
 		IconHandler (QGraphicsItem* = 0);
 		~IconHandler ();
 
 		ulong GetWID () const;
-		void SetWID (ulong);
+		void SetWID (const ulong&);
+
+		void setGeometry (const QRectF&) override;
+		void paint (QPainter*, const QStyleOptionGraphicsItem*, QWidget*) override;
 	private:
 		void Free ();
+	private slots:
+		void checkUpdate (ulong);
+		void updateIcon ();
 	signals:
 		void widChanged ();
 	};
