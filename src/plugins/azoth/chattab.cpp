@@ -945,6 +945,9 @@ namespace Azoth
 		}
 
 		Ui_.VariantBox_->setVisible (variants.size () > 1);
+
+		if (variants.isEmpty ())
+			handleStatusChanged (EntryStatus (), QString ());
 	}
 
 	void ChatTab::handleAvatarChanged (const QImage& avatar)
