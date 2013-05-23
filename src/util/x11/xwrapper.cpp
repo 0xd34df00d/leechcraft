@@ -431,6 +431,11 @@ namespace Util
 		SendMessage (wid, GetAtom ("WM_CHANGE_STATE"), IconicState);
 	}
 
+	void XWrapper::ResizeWindow (Window wid, int width, int height)
+	{
+		XResizeWindow (Display_, wid, width, height);
+	}
+
 	template<typename T>
 	void XWrapper::HandlePropNotify (T ev)
 	{

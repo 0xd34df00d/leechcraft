@@ -89,6 +89,7 @@ namespace Util
 
 		void RaiseWindow (Window);
 		void MinimizeWindow (Window);
+		void ResizeWindow (Window, int, int);
 
 		Atom GetAtom (const QString&);
 	private:
