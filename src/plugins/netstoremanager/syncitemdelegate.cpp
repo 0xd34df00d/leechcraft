@@ -133,7 +133,6 @@ namespace NetStoreManager
 		case LocalDirectory:
 		case RemoteDirecory:
 		{
-			qDebug () << Q_FUNC_INFO;
 			auto dw = static_cast<DirectoryWidget*> (editor);
 			model->setData (index, dw->GetPath (), Qt::EditRole);
 			break;
@@ -167,7 +166,6 @@ namespace NetStoreManager
 
 	void SyncItemDelegate::handleCloseDirectoryEditor (QWidget *w)
 	{
-		qDebug () << Q_FUNC_INFO;
 		emit commitData (w);
 		emit closeEditor (w);
 	}
