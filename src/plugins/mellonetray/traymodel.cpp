@@ -203,6 +203,9 @@ namespace Mellonetray
 	template<>
 	void TrayModel::HandleClientMsg<XClientMessageEvent*> (XClientMessageEvent *ev)
 	{
+		if (ev->message_type != Util::XWrapper::Instance ().GetAtom ("_NET_SYSTEM_TRAY_OPCODE"))
+			return;
+
 		switch (ev->data.l [1])
 		{
 		case 0:
@@ -215,6 +218,9 @@ namespace Mellonetray
 
 	void TrayModel::Add (ulong wid)
 	{
+		if (FindItem (wid) != Items_.end ())
+			return;
+
 		beginInsertRows ({}, Items_.size (), Items_.size ());
 		Items_.append ({ wid });
 		endInsertRows ();
@@ -246,7 +252,7 @@ namespace Mellonetray
 		switch (ev->type)
 		{
 		case ClientMessage:
-			HandleClientMsg (&(ev->xclient));
+			HandleClientMsg (&ev->xclient);
 			break;
 		case DestroyNotify:
 			Remove (ev->xany.window);
