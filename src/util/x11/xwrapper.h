@@ -62,6 +62,9 @@ namespace Util
 	public:
 		static XWrapper& Instance ();
 
+		Display* GetDisplay () const;
+		Window GetRootWindow () const;
+
 		bool Filter (XEvent*);
 
 		QList<Window> GetWindows ();
@@ -86,13 +89,14 @@ namespace Util
 
 		void RaiseWindow (Window);
 		void MinimizeWindow (Window);
+
+		Atom GetAtom (const QString&);
 	private:
 		template<typename T>
 		void HandlePropNotify (T);
 
 		Window GetActiveWindow ();
 
-		Atom GetAtom (const QString&);
 		bool GetWinProp (Window, Atom, ulong*, uchar**, Atom = static_cast<Atom> (0)) const;
 		bool GetRootWinProp (Atom, ulong*, uchar**, Atom = static_cast<Atom> (0)) const;
 		QList<Atom> GetWindowType (Window);

@@ -78,6 +78,16 @@ namespace Util
 		return w;
 	}
 
+	Display* XWrapper::GetDisplay () const
+	{
+		return Display_;
+	}
+
+	Window XWrapper::GetRootWindow () const
+	{
+		return AppWin_;
+	}
+
 	bool XWrapper::Filter (XEvent *ev)
 	{
 		if (ev->type == PropertyNotify)
