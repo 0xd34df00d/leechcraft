@@ -62,11 +62,11 @@ namespace Woodpecker
 		bool Modified_;
 		QMap<QString, QList<QAction*>> WindowMenus_;
 		QHash<QString, QString> Extension2Lang_;
-		
+
 		QtMsgHandler DefaultMsgHandler_;
 		QObject *WrappedObject_;
 		bool TemporaryDocument_;
-		
+
 		bool UpdateReady_;			/**< The flag is checked by timer for UI update */
 		QTimer *UiUpdateTimer_;	/**< Timer checks UpdateReady_ and updates the UI */
 		TwitDelegate *Delegate_;
@@ -80,22 +80,17 @@ namespace Woodpecker
 		QAction *ActionReply_;
 		QAction *ActionSPAM_;
 		QAction *ActionOpenWeb_;
-		
-	private slots:
-		void on_TwitList__customContextMenuRequested (const QPoint&);
-		void updateTweetList ();
-		
+
 	public:
 		explicit TwitterPage (const TabClassInfo&, QObject*);
 		~TwitterPage();
-		
+
 		void Remove ();
 		QToolBar *GetToolBar () const;
 		QObject *ParentMultiTabs ();
 		QList<QAction*> GetTabBarContextMenuActions () const;
 		QMap<QString, QList<QAction*>> GetWindowMenus () const;
 		TabClassInfo GetTabClassInfo () const;
-		
 	public slots:
 		void tryToLogin ();
 		void requestUserTimeline (const QString& username);
@@ -109,7 +104,9 @@ namespace Woodpecker
 		void webOpen ();
 		void scrolledDown (int sliderPos);
 		void setUpdateReady ();
-		
+	private slots:
+		void on_TwitList__customContextMenuRequested (const QPoint&);
+		void updateTweetList ();
 	signals:
 		void removeTab (QWidget*);
 		void changeTabName (QWidget*, const QString&);
