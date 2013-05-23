@@ -60,6 +60,9 @@ namespace NetStoreManager
 			TFOpenableByRequest
 		};
 
+		qRegisterMetaType<SyncDirs_t> ("SyncDirs_t");
+		qRegisterMetaTypeStreamOperators<SyncDirs_t> ("SyncDirs_t");
+
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "netstoremanagersettings.xml");
 

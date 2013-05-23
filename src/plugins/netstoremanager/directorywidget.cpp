@@ -50,9 +50,6 @@ namespace NetStoreManager
 
 	void DirectoryWidget::SetPath (const QString& path, bool byHand)
 	{
-		if (Path_ == path)
-			return;
-
 		Path_ = path;
 		Ui_.DirPath_->setText (Path_);
 		if (byHand)
@@ -95,5 +92,11 @@ namespace NetStoreManager
 
 		SetPath (path, true);
 	}
+
+	void DirectoryWidget::on_DirPath__editingFinished ()
+	{
+		SetPath (Ui_.DirPath_->text (), true);
+	}
+
 }
 }

@@ -68,7 +68,19 @@ namespace NetStoreManager
 
 	QString RemoteDirectorySelectDialog::GetDirectoryPath () const
 	{
-		return QString ();
+		auto index = Ui_.DirectoriesView_->currentIndex ();
+		if (!index.isValid ())
+			return QString ();
+
+		QString path;
+		do
+		{
+			path.prepend ("/" + index.data ().toString ());
+			index = index.parent ();
+		}
+		while (index.isValid ());
+
+		return  path;
 	}
 
 	void RemoteDirectorySelectDialog::handleGotListing (const QList<StorageItem>& items)
@@ -89,6 +101,7 @@ namespace NetStoreManager
 			id2Item [item.ID_] = item;
 			QStandardItem *dir = new QStandardItem (AM_->GetProxy ()->
 					GetIcon ("inode-directory"), item.Name_);
+			dir->setData (item.ID_, ListingRole::ID);
 			dir->setEditable (false);
 			id2StandardItem [item.ID_] = dir;
 		}

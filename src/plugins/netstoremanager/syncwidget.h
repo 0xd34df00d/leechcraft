@@ -32,6 +32,9 @@
 #include <QWidget>
 #include "ui_syncwidget.h"
 
+typedef QPair<QString, QString> SyncDirs_t;
+Q_DECLARE_METATYPE (SyncDirs_t)
+
 class QStandardItemModel;
 
 namespace LeechCraft

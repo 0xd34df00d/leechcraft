@@ -29,7 +29,9 @@
 
 #include "syncwidget.h"
 #include <QStandardItemModel>
+#include <QMessageBox>
 #include <QtDebug>
+#include <QDir>
 #include "accountsmanager.h"
 #include "syncitemdelegate.h"
 #include "xmlsettingsmanager.h"
@@ -75,16 +77,24 @@ namespace NetStoreManager
 			accItem->setData (isp->GetStorageName () + ": " + isa->GetAccountName (),
 					Qt::EditRole);
 			accItem->setData (key, SyncItemDelegate::AccountId);
-			QStandardItem *dirItem = new QStandardItem;
-			dirItem->setData (map [key].toString (), Qt::EditRole);
-			Model_->appendRow ({ accItem, dirItem });
+			QStandardItem *localDirItem = new QStandardItem;
+			SyncDirs_t dirs = map [key].value<SyncDirs_t> ();
+			const QString& localPath = dirs.first.isEmpty () ?
+				QDir::homePath () :
+				dirs.first;
+			localDirItem->setData (localPath, Qt::EditRole);
+			QStandardItem *remoteDirItem = new QStandardItem;
+			const QString& remotePath = dirs.second.isEmpty () ?
+				("LeechCraft_" + isa->GetAccountName ()) :
+				dirs.second;
+			remoteDirItem->setData (remotePath, Qt::EditRole);
+			Model_->appendRow ({ accItem, localDirItem, remoteDirItem });
 
 			Ui_.SyncView_->openPersistentEditor (Model_->indexFromItem (accItem));
 			Ui_.SyncView_->resizeColumnToContents (SyncItemDelegate::Account);
 		}
 
 		emit directoriesToSyncUpdated (map);
-		XmlSettingsManager::Instance ().setProperty ("Synchronization", map);
 	}
 
 	void SyncWidget::accept ()
@@ -93,12 +103,21 @@ namespace NetStoreManager
 		for (int i = 0; i < Model_->rowCount (); ++i)
 		{
 			QStandardItem *accItem = Model_->item (i, SyncItemDelegate::Account);
-			QStandardItem *dirItem = Model_->item (i, SyncItemDelegate::LocalDirectory);
-			if (dirItem->text ().isEmpty () ||
-					accItem->text ().isEmpty ())
+			QStandardItem *localDirItem = Model_->item (i, SyncItemDelegate::LocalDirectory);
+			QStandardItem *remoteDirItem = Model_->item (i, SyncItemDelegate::RemoteDirecory);
+			if (!accItem ||
+					!localDirItem ||
+					!remoteDirItem ||
+					accItem->data (SyncItemDelegate::AccountId).isNull () ||
+					localDirItem->text ().isEmpty () ||
+					remoteDirItem->text ().isEmpty ())
+			{
 				continue;
+			}
 
-			map [accItem->data (SyncItemDelegate::AccountId).toString ()] = dirItem->text ();
+			map [accItem->data (SyncItemDelegate::AccountId).toString ()] =
+					QVariant::fromValue<SyncDirs_t> (qMakePair (localDirItem->text (),
+							remoteDirItem->text ()));
 		}
 
 		emit directoriesToSyncUpdated (map);
@@ -119,7 +138,6 @@ namespace NetStoreManager
 		for (auto idx : idxList)
 			Model_->removeRow (idx.row ());
 	}
-
 }
 }
 

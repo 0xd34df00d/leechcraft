@@ -64,6 +64,7 @@ namespace NetStoreManager
 
 	private slots:
 		void on_OpenDir__released ();
+		void on_DirPath__editingFinished ();
 
 	signals:
 		void finished (QWidget *widget);
