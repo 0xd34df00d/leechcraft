@@ -14,6 +14,7 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	mellonetray.cpp
 	traymodel.cpp
+	iconhandler.cpp
 	)
 #CreateTrs("mellonetray" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("mellonetray" "en;ru_RU" "${SRCS}" "${FORMS}" "")
