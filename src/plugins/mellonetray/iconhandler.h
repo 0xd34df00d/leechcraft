@@ -51,7 +51,7 @@ namespace Mellonetray
 		ulong GetWID () const;
 		void SetWID (const ulong&);
 
-		void setGeometry (const QRectF&) override;
+		void setGeometry (const QRectF&);
 	protected:
 		QVariant itemChange (GraphicsItemChange change, const QVariant& value);
 	private:
