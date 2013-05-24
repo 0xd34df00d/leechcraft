@@ -27,8 +27,6 @@ TARGET_LINK_LIBRARIES (leechcraft_mellonetray
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${X11_X11_LIB}
-	${X11_Xcomposite_LIB}
-	${X11_Xdamage_LIB}
 	)
 INSTALL (TARGETS leechcraft_mellonetray DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (DIRECTORY share/qml/mellonetray DESTINATION ${LC_QML_DEST})
