@@ -38,12 +38,17 @@ namespace LeechCraft
 {
 namespace NetStoreManager
 {
-	Syncer::Syncer (const QString& dirPath, IStorageAccount *isa, QObject *parent)
+	Syncer::Syncer (const QString& dirPath, const QString& remotePath,
+			IStorageAccount *isa, QObject *parent)
 	: QObject (parent)
-	, BasePath_ (dirPath)
+	, LocalPath_ (dirPath)
+	, RemotePath_ (remotePath)
+	, Started_ (false)
 	, Account_ (isa)
 	, SFLAccount_ (qobject_cast<ISupportFileListings*> (isa->GetQObject ()))
 	{
+		if (RemotePath_.startsWith ('/'))
+			RemotePath_ = RemotePath_.mid (1);
 	}
 
 	QByteArray Syncer::GetAccountID () const
@@ -51,9 +56,19 @@ namespace NetStoreManager
 		return Account_->GetUniqueID ();
 	}
 
-	QString Syncer::GetBasePath () const
+	QString Syncer::GetLocalPath () const
 	{
-		return BasePath_;
+		return LocalPath_;
+	}
+
+	QString Syncer::GetRemotePath () const
+	{
+		return RemotePath_;
+	}
+
+	bool Syncer::IsStarted () const
+	{
+		return Started_;
 	}
 
 	void Syncer::SetItems (const QList<StorageItem>& items)
@@ -107,10 +122,19 @@ namespace NetStoreManager
 
 	void Syncer::start ()
 	{
+		QString remotePath = RemotePath_;
+		QStringList folders;
+		while (!Id2Path_.right.count (remotePath))
+		{
+			remotePath = QFileInfo (remotePath).dir ().absolutePath ();
+			qDebug () << remotePath;
+		}
+		Started_ = true;
 	}
 
 	void Syncer::stop ()
 	{
+		Started_ = false;
 	}
 
 	void Syncer::dirWasCreated (const QString& path)
@@ -119,7 +143,7 @@ namespace NetStoreManager
 			return;
 
 		QString dirPath = path;
-		dirPath.replace (BasePath_, "");
+		dirPath.replace (LocalPath_, "");
 		if (Id2Path_.right.count (dirPath))
 			return;
 
@@ -133,7 +157,7 @@ namespace NetStoreManager
 			return;
 
 		QString dirPath = path;
-		dirPath.replace (BasePath_, "");
+		dirPath.replace (LocalPath_, "");
 		if (Id2Path_.right.count (dirPath))
 			return;
 

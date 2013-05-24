@@ -55,7 +55,8 @@ namespace NetStoreManager
 
 		void Release ();
 	private:
-		Syncer* CreateSyncer (IStorageAccount *isa, const QString& baseDir);
+		Syncer* CreateSyncer (IStorageAccount *isa, const QString& baseDir,
+				const QString& remoteDir);
 
 	public slots:
 		void handleDirectoriesToSyncUpdated (const QVariantMap& map);

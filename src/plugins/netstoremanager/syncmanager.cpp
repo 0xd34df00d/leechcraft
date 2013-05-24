@@ -33,6 +33,7 @@
 #include "syncer.h"
 #if defined (Q_OS_LINUX)
 	#include "fileswatcher_inotify.h"
+#include "syncwidget.h"
 #elif defined(Q_OS_WIN32)
 	#include "fileswatcher_dummy.h"
 #endif
@@ -101,11 +102,12 @@ namespace NetStoreManager
 		QStringList paths;
 		for (const auto& key : map.keys ())
 		{
-			const QString& path = map [key].toString ();
-			paths << path;
+			const auto& pair = map [key].value<SyncDirs_t> ();
+			paths << pair.first;
 			if (AccountID2Syncer_.contains (key))
 			{
-				if (AccountID2Syncer_ [key]->GetBasePath () == path)
+				if (AccountID2Syncer_ [key]->GetLocalPath () == pair.first &&
+						AccountID2Syncer_ [key]->GetRemotePath () == pair.second)
 					continue;
 				else
 				{
@@ -115,7 +117,7 @@ namespace NetStoreManager
 			}
 
 			auto acc = AM_->GetAccountFromUniqueID (key);
-			AccountID2Syncer_ [key] = CreateSyncer (acc, path);
+			AccountID2Syncer_ [key] = CreateSyncer (acc, pair.first, pair.second);
 			auto isfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 			if (!isfl)
 				continue;
@@ -125,44 +127,45 @@ namespace NetStoreManager
 		FilesWatcher_->updatePaths (paths);
 	}
 
-	Syncer* SyncManager::CreateSyncer (IStorageAccount *isa, const QString& baseDir)
+	Syncer* SyncManager::CreateSyncer (IStorageAccount *isa,
+			const QString& baseDir, const QString& remoteDir)
 	{
-		Syncer *syncer = new Syncer (baseDir, isa, this);
+		Syncer *syncer = new Syncer (baseDir, remoteDir, isa, this);
 		return syncer;
 	}
 
 	void SyncManager::handleDirWasCreated (const QString& path)
 	{
 		for (auto syncer : AccountID2Syncer_.values ())
-			if (path.startsWith (syncer->GetBasePath ()))
+			if (path.startsWith (syncer->GetLocalPath ()))
 				syncer->dirWasCreated (path);
 	}
 
 	void SyncManager::handleDirWasRemoved (const QString& path)
 	{
 		for (auto syncer : AccountID2Syncer_.values ())
-			if (path.startsWith (syncer->GetBasePath ()))
+			if (path.startsWith (syncer->GetLocalPath ()))
 				syncer->dirWasRemoved (path);
 	}
 
 	void SyncManager::handleFileWasCreated (const QString& path)
 	{
 		for (auto syncer : AccountID2Syncer_.values ())
-			if (path.startsWith (syncer->GetBasePath ()))
+			if (path.startsWith (syncer->GetLocalPath ()))
 				syncer->fileWasCreated (path);
 	}
 
 	void SyncManager::handleFileWasRemoved (const QString& path)
 	{
 		for (auto syncer : AccountID2Syncer_.values ())
-			if (path.startsWith (syncer->GetBasePath ()))
+			if (path.startsWith (syncer->GetLocalPath ()))
 				syncer->fileWasRemoved (path);
 	}
 
 	void SyncManager::handleFileWasUpdated (const QString& path)
 	{
 		for (auto syncer : AccountID2Syncer_.values ())
-			if (path.startsWith (syncer->GetBasePath ()))
+			if (path.startsWith (syncer->GetLocalPath ()))
 				syncer->fileWasUpdated (path);
 	}
 
@@ -186,7 +189,11 @@ namespace NetStoreManager
 
 		for (auto accountId : AccountID2Syncer_.keys ())
 			if (isa->GetUniqueID () == accountId)
+			{
 				AccountID2Syncer_ [accountId]->SetItems (items);
+				if (!AccountID2Syncer_ [accountId]->IsStarted ())
+					AccountID2Syncer_ [accountId]->start ();
+			}
 	}
 
 }

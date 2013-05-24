@@ -43,17 +43,23 @@ namespace NetStoreManager
 	{
 		Q_OBJECT
 
-		QString BasePath_;
+		QString LocalPath_;
+		QString RemotePath_;
+		bool Started_;
 		IStorageAccount *Account_;
 		ISupportFileListings *SFLAccount_;
 		QHash<QByteArray, StorageItem> Id2Item_;
 		boost::bimaps::bimap<QByteArray, QString> Id2Path_;
 
 	public:
-		explicit Syncer (const QString& dirPath, IStorageAccount *isa, QObject *parent = 0);
+		explicit Syncer (const QString& dirPath, const QString& remotePath,
+				IStorageAccount *isa, QObject *parent = 0);
 
 		QByteArray GetAccountID () const;
-		QString GetBasePath () const;
+		QString GetLocalPath () const;
+		QString GetRemotePath () const;
+
+		bool IsStarted () const;
 
 		void SetItems (const QList<StorageItem>& items);
 
