@@ -37,7 +37,7 @@ namespace LeechCraft
 {
 namespace Mellonetray
 {
-	class IconHandler : public QGraphicsProxyWidget
+	class IconHandler : public QGraphicsWidget
 	{
 		Q_OBJECT
 		Q_PROPERTY (unsigned long wid READ GetWID WRITE SetWID NOTIFY widChanged)
@@ -52,6 +52,8 @@ namespace Mellonetray
 		void SetWID (const ulong&);
 
 		void setGeometry (const QRectF&) override;
+	protected:
+		QVariant itemChange (GraphicsItemChange change, const QVariant& value);
 	private:
 		void Free ();
 	signals:

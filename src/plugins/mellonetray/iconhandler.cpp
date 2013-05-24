@@ -33,8 +33,9 @@
 #include <QPainter>
 #include <QStyleOption>
 #include <QX11EmbedContainer>
+#include <QGraphicsScene>
+#include <QGraphicsView>
 #include <QtDebug>
-#include <QTimer>
 #include <X11/Xlib.h>
 #include <X11/extensions/Xcomposite.h>
 #include <X11/extensions/Xdamage.h>
@@ -48,12 +49,11 @@ namespace Mellonetray
 	const int Dim = 32;
 
 	IconHandler::IconHandler (QGraphicsItem *item)
-	: QGraphicsProxyWidget (item)
-	, Proxy_ (new QX11EmbedContainer)
+	: QGraphicsWidget (item)
+	, Proxy_ (0)
 	, WID_ (0)
 	{
-		Proxy_->show ();
-		//setWidget (Proxy_);
+		setFlag (QGraphicsItem::ItemSendsScenePositionChanges);
 	}
 
 	IconHandler::~IconHandler ()
@@ -74,8 +74,6 @@ namespace Mellonetray
 
 		Free ();
 
-		Proxy_->embedClient (wid);
-
 		WID_ = wid;
 		emit widChanged ();
 
@@ -86,14 +84,41 @@ namespace Mellonetray
 	{
 		QGraphicsWidget::setGeometry (rect);
 
-		if (WID_ && rect.width () * rect.height () > 0)
+		if (!scene ())
+			return;
+
+		auto view = scene ()->views ().value (0);
+
+		if (!Proxy_ && WID_)
+		{
+			Proxy_ = new QX11EmbedContainer (view);
+			Proxy_->move (-1024, -1024);
+			Proxy_->show ();
+			Proxy_->embedClient (WID_);
+		}
+
+		if (Proxy_ && rect.width () * rect.height () > 0)
+		{
 			Proxy_->resize (rect.width (), rect.height ());
+			Proxy_->move (scenePos ().toPoint ());
+		}
+	}
+
+	QVariant IconHandler::itemChange (GraphicsItemChange change, const QVariant& value)
+	{
+		if (change == QGraphicsItem::ItemSceneHasChanged || change == QGraphicsItem::ItemScenePositionHasChanged)
+			setGeometry (rect ());
+
+		return QGraphicsWidget::itemChange (change, value);
 	}
 
 	void IconHandler::Free ()
 	{
-		if (Proxy_->clientWinId ())
+		if (Proxy_ && Proxy_->clientWinId ())
+		{
 			Proxy_->discardClient ();
+			delete Proxy_;
+		}
 	}
 }
 }
