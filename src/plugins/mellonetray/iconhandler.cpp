@@ -36,10 +36,6 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QtDebug>
-#include <X11/Xlib.h>
-#include <X11/extensions/Xcomposite.h>
-#include <X11/extensions/Xdamage.h>
-#include <util/x11/xwrapper.h>
 #include "traymodel.h"
 
 namespace LeechCraft
