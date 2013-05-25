@@ -106,7 +106,7 @@ namespace Mellonetray
 
 		TrayWinID_ = XCreateSimpleWindow (disp, rootWin, -1, -1, 1, 1, 0, 0, 0);
 		XSetSelectionOwner (disp, atom, TrayWinID_, CurrentTime);
-		if (!XGetSelectionOwner (disp, atom) != TrayWinID_)
+		if (XGetSelectionOwner (disp, atom) != TrayWinID_)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "call to XSetSelectionOwner failed";
