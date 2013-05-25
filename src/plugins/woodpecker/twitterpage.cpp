@@ -34,8 +34,8 @@
 #include <QCoreApplication>
 #include <qjson/parser.h>
 #include <interfaces/core/icoreproxy.h>
+#include <util/util.h>
 #include "core.h"
-#include "util/util.h"
 #include "xmlsettingsmanager.h"
 
 Q_DECLARE_METATYPE (QObject**);
@@ -221,14 +221,14 @@ namespace Woodpecker
 				if (twits.length () == 1)			// We can notify the only twit
 				{
 					const auto& notification = Util::MakeNotification (twits.first ()->GetAuthor ()->GetUsername (),
-																		twits.first ()->GetText (),
-																		PInfo_);
+							twits.first ()->GetText (),
+							PInfo_);
 					EntityManager_->HandleEntity (notification);
 				}
 				else if (!twits.isEmpty ()) {
 					const auto& notification = Util::MakeNotification (tr ("Woodpecker"),
-																		tr ( "%1 new twit (s)" ).arg (twits.length ()),
-																		PInfo_);
+							tr ( "%1 new twit (s)" ).arg (twits.length ()),
+							PInfo_);
 					EntityManager_->HandleEntity (notification);
 				}
 			}

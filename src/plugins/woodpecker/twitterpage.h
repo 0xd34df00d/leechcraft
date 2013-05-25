@@ -34,7 +34,7 @@
 #include <QTimer>
 #include <QMenu>
 #include <QAction>
-#include <leechcraft/interfaces/core/ientitymanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/structures.h>
 #include "twitterinterface.h"
