@@ -15,6 +15,7 @@ Item {
     property real decoOpacity: 0
 
     property alias isHovered: actionMouseArea.containsMouse
+    property alias acceptedButtons: actionMouseArea.acceptedButtons
 
     property string actionText
     property string textTooltip
@@ -24,6 +25,7 @@ Item {
     property bool isButtonVertical: orientation == "vertical"
 
     signal triggered()
+    signal clicked(variant event)
     signal hovered()
     signal hoverLeft()
     signal held()
@@ -116,7 +118,7 @@ Item {
             anchors.fill: parent
             hoverEnabled: true
 
-            onClicked: actionRoot.triggered()
+            onClicked: mouse.button == Qt.LeftButton ? actionRoot.triggered() : actionRoot.clicked(mouse)
             onPressAndHold: actionRoot.held()
             onEntered: {
                 actionRoot.hovered();
