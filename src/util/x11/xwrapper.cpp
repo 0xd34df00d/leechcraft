@@ -54,6 +54,10 @@ namespace Util
 	const int SourceNormal = 1;
 	const int SourcePager = 2;
 
+	const int StateRemove = 0;
+	const int StateAdd = 1;
+	const int StateToggle = 1;
+
 	namespace
 	{
 		bool EventFilter (XEvent *msg)
@@ -442,6 +446,23 @@ namespace Util
 	void XWrapper::ResizeWindow (Window wid, int width, int height)
 	{
 		XResizeWindow (Display_, wid, width, height);
+	}
+
+	void XWrapper::ShadeWindow (Window wid)
+	{
+		SendMessage (wid, GetAtom ("_NET_WM_STATE"),
+				StateAdd, GetAtom ("_NET_WM_STATE_SHADED"), 0, SourcePager);
+	}
+
+	void XWrapper::UnshadeWindow (Window wid)
+	{
+		SendMessage (wid, GetAtom ("_NET_WM_STATE"),
+				StateRemove, GetAtom ("_NET_WM_STATE_SHADED"), 0, SourcePager);
+	}
+
+	void XWrapper::CloseWindow (Window wid)
+	{
+		SendMessage (wid, GetAtom ("_NET_CLOSE_WINDOW"), 0, SourcePager);
 	}
 
 	template<typename T>
