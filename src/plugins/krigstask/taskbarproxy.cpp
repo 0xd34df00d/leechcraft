@@ -28,8 +28,14 @@
  **********************************************************************/
 
 #include "taskbarproxy.h"
+#include <functional>
+#include <QMenu>
 #include <QtDebug>
 #include <util/x11/xwrapper.h>
+
+typedef std::function<void (QString)> Actor_f;
+
+Q_DECLARE_METATYPE (Actor_f);
 
 namespace LeechCraft
 {
@@ -48,6 +54,63 @@ namespace Krigstask
 	void TaskbarProxy::minimizeWindow (const QString& widStr)
 	{
 		Util::XWrapper::Instance ().MinimizeWindow (widStr.toULong ());
+	}
+
+	void TaskbarProxy::toggleShadeWindow (const QString& widStr)
+	{
+		auto& w = Util::XWrapper::Instance ();
+
+		const auto& wid = widStr.toULong ();
+		if (w.GetWindowState (wid) & Util::WinStateFlag::Shaded)
+			w.UnshadeWindow (wid);
+		else
+			w.ShadeWindow (wid);
+	}
+
+	void TaskbarProxy::closeWindow (const QString& widStr)
+	{
+		Util::XWrapper::Instance ().CloseWindow (widStr.toULong ());
+	}
+
+	void TaskbarProxy::showMenu (const QString& widStr, int x, int y)
+	{
+		auto& w = Util::XWrapper::Instance ();
+
+		const auto& wid = widStr.toULong ();
+
+		const auto state = w.GetWindowState (wid);
+		const auto actions = w.GetWindowActions (wid);
+
+		auto menu = new QMenu;
+		menu->setAttribute (Qt::WA_DeleteOnClose);
+
+		auto shadeAct = menu->addAction (tr ("Shade"));
+		shadeAct->setEnabled (actions & Util::AllowedActionFlag::Shade);
+		shadeAct->setChecked (state & Util::WinStateFlag::Shaded);
+		shadeAct->setProperty ("Actor",
+				QVariant::fromValue<Actor_f> ([this] (const QString& wid) { toggleShadeWindow (wid); }));
+
+		auto closeAct = menu->addAction (tr ("Close"));
+		closeAct->setEnabled (actions & Util::AllowedActionFlag::Close);
+		closeAct->setProperty ("Actor",
+				QVariant::fromValue<Actor_f> ([this] (const QString& wid) { closeWindow (wid); }));
+
+		for (auto act : menu->actions ())
+		{
+			act->setProperty ("WID", widStr);
+			connect (act,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleAction ()));
+		}
+
+		menu->popup ({ x, y });
+	}
+
+	void TaskbarProxy::handleAction ()
+	{
+		const auto& widStr = sender ()->property ("WID").toString ();
+		sender ()->property ("Actor").value<Actor_f> () (widStr);
 	}
 }
 }

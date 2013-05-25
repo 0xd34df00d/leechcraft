@@ -49,6 +49,7 @@ Rectangle {
                     textTooltip: windowName
                     decoOpacity: isMinimizedWindow ? 0.3 : (isActiveWindow ? 0.8 : 0.5)
                     orientation: viewOrient
+                    acceptedButtons: Qt.LeftButton | Qt.RightButton
 
                     isHighlight: !isMinimizedWindow
                     isStrongHighlight: isActiveWindow
@@ -56,6 +57,8 @@ Rectangle {
                     onTriggered: isActiveWindow ?
                             KT_taskbarProxy.minimizeWindow(windowID) :
                             KT_taskbarProxy.raiseWindow(windowID);
+                    onClicked: commonJS.showTooltip(tcButton,
+                            function(x, y) { KT_taskbarProxy.showMenu(windowID, x, y) })
 
                     actionText: windowName
                 }

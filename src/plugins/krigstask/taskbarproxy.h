@@ -43,6 +43,13 @@ namespace Krigstask
 	public slots:
 		void raiseWindow (const QString&);
 		void minimizeWindow (const QString&);
+
+		void toggleShadeWindow (const QString&);
+		void closeWindow (const QString&);
+
+		void showMenu (const QString&, int, int);
+	private slots:
+		void handleAction ();
 	};
 }
 }
