@@ -332,12 +332,20 @@ namespace Util
 		return win;
 	}
 
-	bool XWrapper::ShouldShow (Window wid)
+	bool XWrapper::IsLCWindow (Window wid)
 	{
 		ulong length = 0;
 		Guarded<uchar> data;
 		if (GetWinProp (wid, GetAtom ("WM_CLASS"), &length, data.Get ()) &&
 				QString (data.GetAs<char*> (false)) == "leechcraft")
+			return true;
+
+		return false;
+	}
+
+	bool XWrapper::ShouldShow (Window wid)
+	{
+		if (IsLCWindow (wid))
 			return false;
 
 		const QList<Atom> ignoreAtoms

@@ -75,6 +75,7 @@ namespace Util
 
 		Window GetActiveApp ();
 
+		bool IsLCWindow (Window);
 		bool ShouldShow (Window);
 
 		void Subscribe (Window);
