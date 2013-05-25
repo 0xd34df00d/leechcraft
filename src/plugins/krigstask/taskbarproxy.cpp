@@ -41,8 +41,9 @@ namespace LeechCraft
 {
 namespace Krigstask
 {
-	TaskbarProxy::TaskbarProxy (QObject *parent)
+	TaskbarProxy::TaskbarProxy (ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
+	, Proxy_ (proxy)
 	{
 	}
 
@@ -112,6 +113,7 @@ namespace Krigstask
 		closeAct->setEnabled (actions & Util::AllowedActionFlag::Close);
 		closeAct->setProperty ("Actor",
 				QVariant::fromValue<Actor_f> ([this] (const QString& wid) { closeWindow (wid); }));
+		closeAct->setIcon (Proxy_->GetIcon ("window-close"));
 
 		for (auto act : menu->actions ())
 		{

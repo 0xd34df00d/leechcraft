@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -38,8 +39,10 @@ namespace Krigstask
 	class TaskbarProxy : public QObject
 	{
 		Q_OBJECT
+
+		ICoreProxy_ptr Proxy_;
 	public:
-		TaskbarProxy (QObject* = 0);
+		TaskbarProxy (ICoreProxy_ptr, QObject* = 0);
 	public slots:
 		void raiseWindow (const QString&);
 		void minimizeWindow (const QString&);

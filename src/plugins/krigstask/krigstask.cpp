@@ -43,7 +43,7 @@ namespace Krigstask
 		Panel_.reset (new QuarkComponent);
 		Panel_->Url_ = Util::GetSysPath (Util::SysPath::QML, "krigstask", "TaskbarQuark.qml");
 		Panel_->DynamicProps_.append ({ "KT_appsModel", model });
-		Panel_->DynamicProps_.append ({ "KT_taskbarProxy", new TaskbarProxy });
+		Panel_->DynamicProps_.append ({ "KT_taskbarProxy", new TaskbarProxy (proxy) });
 		Panel_->ImageProviders_.append ({ "TaskbarIcons", model->GetImageProvider ()});
 	}
 
