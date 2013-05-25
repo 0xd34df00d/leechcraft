@@ -84,8 +84,6 @@ namespace Mellonetray
 	}
 
 	TrayModel::TrayModel ()
-	: TrayWinID_ (0)
-	, DamageEvent_ (0)
 	{
 		qt_installX11EventFilter (&EventFilter);
 
@@ -149,6 +147,8 @@ namespace Mellonetray
 
 		int damageErr = 0;
 		XDamageQueryExtension (disp, &DamageEvent_, &damageErr);
+
+		IsValid_ = true;
 	}
 
 	TrayModel& TrayModel::Instance ()
@@ -161,6 +161,11 @@ namespace Mellonetray
 	{
 		if (TrayWinID_)
 			XDestroyWindow (Util::XWrapper::Instance ().GetDisplay (), TrayWinID_);
+	}
+
+	bool TrayModel::IsValid () const
+	{
+		return IsValid_;
 	}
 
 	int TrayModel::columnCount (const QModelIndex&) const
@@ -249,6 +254,9 @@ namespace Mellonetray
 
 	void TrayModel::Filter (XEvent *ev)
 	{
+		if (!IsValid_)
+			return;
+
 		switch (ev->type)
 		{
 		case ClientMessage:

@@ -40,8 +40,10 @@ namespace Mellonetray
 	{
 		Q_OBJECT
 
-		ulong TrayWinID_;
-		int DamageEvent_;
+		bool IsValid_ = false;
+
+		ulong TrayWinID_ = 0;
+		int DamageEvent_ = 0;
 
 		struct TrayItem
 		{
@@ -64,6 +66,8 @@ namespace Mellonetray
 	public:
 		static TrayModel& Instance ();
 		void Release ();
+
+		bool IsValid () const;
 
 		int columnCount (const QModelIndex& parent = QModelIndex()) const;
 		int rowCount (const QModelIndex& parent = QModelIndex()) const;
