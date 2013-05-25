@@ -226,6 +226,9 @@ namespace Mellonetray
 		if (FindItem (wid) != Items_.end ())
 			return;
 
+		if (Util::XWrapper::Instance ().IsLCWindow (wid))
+			return;
+
 		beginInsertRows ({}, Items_.size (), Items_.size ());
 		Items_.append ({ wid });
 		endInsertRows ();
