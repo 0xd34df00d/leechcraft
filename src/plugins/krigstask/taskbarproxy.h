@@ -46,6 +46,8 @@ namespace Krigstask
 	public slots:
 		void raiseWindow (const QString&);
 		void minimizeWindow (const QString&);
+		void maximizeWindow (const QString&);
+		void unmaximizeWindow (const QString&);
 
 		void toggleShadeWindow (const QString&);
 		void closeWindow (const QString&);

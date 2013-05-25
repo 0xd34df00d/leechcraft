@@ -57,6 +57,22 @@ namespace Krigstask
 		Util::XWrapper::Instance ().MinimizeWindow (widStr.toULong ());
 	}
 
+	void TaskbarProxy::maximizeWindow (const QString& widStr)
+	{
+		const auto wid = widStr.toULong ();
+		auto& w = Util::XWrapper::Instance ();
+		w.MaximizeWindow (wid);
+		w.RaiseWindow (wid);
+	}
+
+	void TaskbarProxy::unmaximizeWindow (const QString& widStr)
+	{
+		const auto wid = widStr.toULong ();
+		auto& w = Util::XWrapper::Instance ();
+		w.UnmaximizeWindow (wid);
+		w.RaiseWindow (wid);
+	}
+
 	void TaskbarProxy::toggleShadeWindow (const QString& widStr)
 	{
 		auto& w = Util::XWrapper::Instance ();
@@ -85,35 +101,59 @@ namespace Krigstask
 		auto menu = new QMenu;
 		menu->setAttribute (Qt::WA_DeleteOnClose);
 
-		auto minimizeAct = menu->addAction (tr ("Minimize"));
-		minimizeAct->setCheckable (true);
-		if (state & Util::WinStateFlag::Hidden)
 		{
-			minimizeAct->setEnabled (true);
-			minimizeAct->setChecked (true);
+			auto minimizeAct = menu->addAction (tr ("Minimize"));
+			minimizeAct->setCheckable (true);
+			if (state & Util::WinStateFlag::Hidden)
+				minimizeAct->setChecked (true);
+			else
+				minimizeAct->setEnabled (actions & Util::AllowedActionFlag::Minimize);
+			minimizeAct->setProperty ("Actor",
+					QVariant::fromValue<Actor_f> ([this, state] (const QString& wid)
+							{
+								state & Util::WinStateFlag::Hidden ?
+										raiseWindow (wid) :
+										minimizeWindow (wid);
+							}));
 		}
-		else
-			minimizeAct->setEnabled (actions & Util::AllowedActionFlag::Minimize);
-		minimizeAct->setProperty ("Actor",
-				QVariant::fromValue<Actor_f> ([this, state] (const QString& wid)
-				{
-					state & Util::WinStateFlag::Hidden ?
-							raiseWindow (wid) :
-							minimizeWindow (wid);
-				}));
 
-		auto shadeAct = menu->addAction (tr ("Shade"));
-		shadeAct->setEnabled (actions & Util::AllowedActionFlag::Shade);
-		shadeAct->setCheckable (true);
-		shadeAct->setChecked (state & Util::WinStateFlag::Shaded);
-		shadeAct->setProperty ("Actor",
-				QVariant::fromValue<Actor_f> ([this] (const QString& wid) { toggleShadeWindow (wid); }));
+		{
+			auto maximizeAct = menu->addAction (tr ("Maximize"));
+			maximizeAct->setCheckable (true);
+			const bool isMaximized = state & Util::WinStateFlag::MaximizedHorz ||
+					state & Util::WinStateFlag::MaximizedVert;
+			if (isMaximized)
+				maximizeAct->setChecked (true);
+			else
+				maximizeAct->setEnabled (actions & Util::AllowedActionFlag::MaximizeHorz ||
+						actions & Util::AllowedActionFlag::MaximizeVert);
+			maximizeAct->setProperty ("Actor",
+					QVariant::fromValue<Actor_f> ([this, isMaximized] (const QString& wid)
+							{
+								isMaximized ? unmaximizeWindow (wid) : maximizeWindow (wid);
+							}));
+		}
 
-		auto closeAct = menu->addAction (tr ("Close"));
-		closeAct->setEnabled (actions & Util::AllowedActionFlag::Close);
-		closeAct->setProperty ("Actor",
-				QVariant::fromValue<Actor_f> ([this] (const QString& wid) { closeWindow (wid); }));
-		closeAct->setIcon (Proxy_->GetIcon ("window-close"));
+		{
+			auto shadeAct = menu->addAction (tr ("Shade"));
+			shadeAct->setEnabled (actions & Util::AllowedActionFlag::Shade);
+			shadeAct->setCheckable (true);
+			shadeAct->setChecked (state & Util::WinStateFlag::Shaded);
+			shadeAct->setProperty ("Actor",
+					QVariant::fromValue<Actor_f> ([this] (const QString& wid)
+							{ toggleShadeWindow (wid); }));
+		}
+
+		menu->addSeparator ();
+
+		{
+			auto closeAct = menu->addAction (tr ("Close"));
+			closeAct->setEnabled (actions & Util::AllowedActionFlag::Close);
+			closeAct->setProperty ("Actor",
+					QVariant::fromValue<Actor_f> ([this] (const QString& wid)
+							{ closeWindow (wid); }));
+			closeAct->setIcon (Proxy_->GetIcon ("window-close"));
+		}
 
 		for (auto act : menu->actions ())
 		{
