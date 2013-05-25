@@ -84,8 +84,26 @@ namespace Krigstask
 		auto menu = new QMenu;
 		menu->setAttribute (Qt::WA_DeleteOnClose);
 
+		auto minimizeAct = menu->addAction (tr ("Minimize"));
+		minimizeAct->setCheckable (true);
+		if (state & Util::WinStateFlag::Hidden)
+		{
+			minimizeAct->setEnabled (true);
+			minimizeAct->setChecked (true);
+		}
+		else
+			minimizeAct->setEnabled (actions & Util::AllowedActionFlag::Minimize);
+		minimizeAct->setProperty ("Actor",
+				QVariant::fromValue<Actor_f> ([this, state] (const QString& wid)
+				{
+					state & Util::WinStateFlag::Hidden ?
+							raiseWindow (wid) :
+							minimizeWindow (wid);
+				}));
+
 		auto shadeAct = menu->addAction (tr ("Shade"));
 		shadeAct->setEnabled (actions & Util::AllowedActionFlag::Shade);
+		shadeAct->setCheckable (true);
 		shadeAct->setChecked (state & Util::WinStateFlag::Shaded);
 		shadeAct->setProperty ("Actor",
 				QVariant::fromValue<Actor_f> ([this] (const QString& wid) { toggleShadeWindow (wid); }));
