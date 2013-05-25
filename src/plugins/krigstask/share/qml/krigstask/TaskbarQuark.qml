@@ -61,6 +61,20 @@ Rectangle {
                             function(x, y) { KT_taskbarProxy.showMenu(windowID, x, y) })
 
                     actionText: windowName
+
+                    ActionButton {
+                        opacity: viewOrient == "horizontal" && (parent.isHovered || isHovered) ? 1 : 0
+                        Behavior on opacity { PropertyAnimation {} }
+
+                        anchors.right: parent.right
+                        anchors.rightMargin: parent.height / 4
+                        anchors.verticalCenter: parent.verticalCenter
+                        width: parent.height / 2
+                        height: parent.height / 2
+
+                        actionIconURL: "image://ThemeIcons/window-close"
+                        onTriggered: KT_taskbarProxy.closeWindow(windowID)
+                    }
                 }
             }
         }
