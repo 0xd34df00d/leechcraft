@@ -60,6 +60,7 @@ namespace Mellonetray
 
 	void Plugin::Release ()
 	{
+		TrayModel::Instance ().Release ();
 	}
 
 	QString Plugin::GetName () const
