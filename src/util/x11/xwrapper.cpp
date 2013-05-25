@@ -443,6 +443,22 @@ namespace Util
 		SendMessage (wid, GetAtom ("WM_CHANGE_STATE"), IconicState);
 	}
 
+	void XWrapper::MaximizeWindow (Window wid)
+	{
+		SendMessage (wid, GetAtom ("_NET_WM_STATE"), StateAdd,
+				GetAtom ("_NET_WM_STATE_MAXIMIZED_VERT"),
+				GetAtom ("_NET_WM_STATE_MAXIMIZED_HORZ"),
+				SourcePager);
+	}
+
+	void XWrapper::UnmaximizeWindow (Window wid)
+	{
+		SendMessage (wid, GetAtom ("_NET_WM_STATE"), StateRemove,
+				GetAtom ("_NET_WM_STATE_MAXIMIZED_VERT"),
+				GetAtom ("_NET_WM_STATE_MAXIMIZED_HORZ"),
+				SourcePager);
+	}
+
 	void XWrapper::ResizeWindow (Window wid, int width, int height)
 	{
 		XResizeWindow (Display_, wid, width, height);

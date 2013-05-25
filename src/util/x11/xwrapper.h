@@ -90,6 +90,8 @@ namespace Util
 
 		void RaiseWindow (Window);
 		void MinimizeWindow (Window);
+		void MaximizeWindow (Window);
+		void UnmaximizeWindow (Window);
 		void ResizeWindow (Window, int, int);
 		void ShadeWindow (Window);
 		void UnshadeWindow (Window);
