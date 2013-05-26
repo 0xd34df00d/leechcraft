@@ -60,6 +60,13 @@ namespace Util
 
 		XWrapper ();
 	public:
+		enum class Layer
+		{
+			Top,
+			Bottom,
+			Normal
+		};
+
 		static XWrapper& Instance ();
 
 		Display* GetDisplay () const;
@@ -92,10 +99,12 @@ namespace Util
 		void MinimizeWindow (Window);
 		void MaximizeWindow (Window);
 		void UnmaximizeWindow (Window);
-		void ResizeWindow (Window, int, int);
 		void ShadeWindow (Window);
 		void UnshadeWindow (Window);
+		void MoveWindowTo (Window, Layer);
 		void CloseWindow (Window);
+
+		void ResizeWindow (Window, int, int);
 
 		Atom GetAtom (const QString&);
 	private:

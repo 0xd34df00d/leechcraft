@@ -476,6 +476,18 @@ namespace Util
 				StateRemove, GetAtom ("_NET_WM_STATE_SHADED"), 0, SourcePager);
 	}
 
+	void XWrapper::MoveWindowTo (Window wid, Layer layer)
+	{
+		const auto top = layer == Layer::Top ? StateAdd : StateRemove;
+		const auto bottom = layer == Layer::Bottom ? StateAdd : StateRemove;
+
+		SendMessage (wid, GetAtom ("_NET_WM_STATE"), top,
+				GetAtom ("_NET_WM_STATE_ABOVE"), 0, SourcePager);
+
+		SendMessage (wid, GetAtom ("_NET_WM_STATE"), bottom,
+				GetAtom ("_NET_WM_STATE_BELOW"), 0, SourcePager);
+	}
+
 	void XWrapper::CloseWindow (Window wid)
 	{
 		SendMessage (wid, GetAtom ("_NET_CLOSE_WINDOW"), 0, SourcePager);
