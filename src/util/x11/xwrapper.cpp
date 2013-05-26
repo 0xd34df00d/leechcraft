@@ -540,6 +540,51 @@ namespace Util
 		return data [0];
 	}
 
+	int XWrapper::GetDesktopCount ()
+	{
+		ulong length = 0;
+		Guarded<ulong> data;
+
+		if (GetRootWinProp (GetAtom ("_NET_NUMBER_OF_DESKTOPS"), &length, data.GetAs<uchar**> (), XA_CARDINAL))
+			return data [0];
+
+		return -1;
+	}
+
+	int XWrapper::GetCurrentDesktop ()
+	{
+		ulong length = 0;
+		Guarded<ulong> data;
+
+		if (GetRootWinProp (GetAtom ("_NET_CURRENT_DESKTOP"), &length, data.GetAs<uchar**> (), XA_CARDINAL))
+			return data [0];
+
+		return -1;
+	}
+
+	void XWrapper::SetCurrentDesktop (int desktop)
+	{
+		SendMessage (AppWin_, GetAtom ("_NET_CURRENT_DESKTOP"), desktop);
+	}
+
+	int XWrapper::GetWindowDesktop (Window wid)
+	{
+		ulong length = 0;
+		Guarded<ulong> data;
+		if (GetWinProp (wid, GetAtom ("_NET_WM_DESKTOP"), &length, data.GetAs<uchar**> (), XA_CARDINAL))
+			return data [0];
+
+		if (GetWinProp (wid, GetAtom ("_WIN_WORKSPACE"), &length, data.GetAs<uchar**> (), XA_CARDINAL))
+			return data [0];
+
+		return -1;
+	}
+
+	void XWrapper::MoveWindowToDesktop (Window wid, int num)
+	{
+		SendMessage (wid, GetAtom ("_NET_WM_DESKTOP"), num);
+	}
+
 	Atom XWrapper::GetAtom (const QString& name)
 	{
 		if (Atoms_.contains (name))

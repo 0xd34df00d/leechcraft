@@ -106,6 +106,12 @@ namespace Util
 
 		void ResizeWindow (Window, int, int);
 
+		int GetDesktopCount ();
+		int GetCurrentDesktop ();
+		void SetCurrentDesktop (int);
+		int GetWindowDesktop (Window);
+		void MoveWindowToDesktop (Window, int);
+
 		Atom GetAtom (const QString&);
 	private:
 		template<typename T>
