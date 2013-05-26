@@ -73,6 +73,19 @@ namespace Krigstask
 		w.RaiseWindow (wid);
 	}
 
+	void TaskbarProxy::moveWindowTo (const QString& widStr, const QString& layer)
+	{
+		const auto wid = widStr.toULong ();
+		auto& w = Util::XWrapper::Instance ();
+
+		if (layer == "top")
+			w.MoveWindowTo (wid, Util::XWrapper::Layer::Top);
+		else if (layer == "bottom")
+			w.MoveWindowTo (wid, Util::XWrapper::Layer::Bottom);
+		else
+			w.MoveWindowTo (wid, Util::XWrapper::Layer::Normal);
+	}
+
 	void TaskbarProxy::toggleShadeWindow (const QString& widStr)
 	{
 		auto& w = Util::XWrapper::Instance ();
@@ -134,8 +147,34 @@ namespace Krigstask
 							}));
 		}
 
+		auto moreMenu = menu->addMenu (tr ("More"));
+
 		{
-			auto shadeAct = menu->addAction (tr ("Shade"));
+			auto keepAbove = moreMenu->addAction (tr ("Keep above others"));
+			keepAbove->setEnabled (actions & Util::AllowedActionFlag::MoveToTop);
+			keepAbove->setCheckable (true);
+			const bool isTop = state & Util::WinStateFlag::OnTop;
+			keepAbove->setChecked (isTop);
+			keepAbove->setProperty ("Actor",
+					QVariant::fromValue<Actor_f> ([this, isTop] (const QString& wid)
+							{ moveWindowTo (wid, isTop ? "normal" : "top"); }));
+			keepAbove->setIcon (Proxy_->GetIcon ("go-top"));
+		}
+
+		{
+			auto keepBelow = moreMenu->addAction (tr ("Keep below others"));
+			keepBelow->setEnabled (actions & Util::AllowedActionFlag::MoveToBottom);
+			keepBelow->setCheckable (true);
+			const bool isBottom = state & Util::WinStateFlag::OnBottom;
+			keepBelow->setChecked (isBottom);
+			keepBelow->setProperty ("Actor",
+					QVariant::fromValue<Actor_f> ([this, isBottom] (const QString& wid)
+							{ moveWindowTo (wid, isBottom ? "normal" : "bottom"); }));
+			keepBelow->setIcon (Proxy_->GetIcon ("go-bottom"));
+		}
+
+		{
+			auto shadeAct = moreMenu->addAction (tr ("Shade"));
 			shadeAct->setEnabled (actions & Util::AllowedActionFlag::Shade);
 			shadeAct->setCheckable (true);
 			shadeAct->setChecked (state & Util::WinStateFlag::Shaded);
@@ -155,7 +194,7 @@ namespace Krigstask
 			closeAct->setIcon (Proxy_->GetIcon ("window-close"));
 		}
 
-		for (auto act : menu->actions ())
+		for (auto act : menu->actions () + moreMenu->actions ())
 		{
 			act->setProperty ("WID", widStr);
 			connect (act,

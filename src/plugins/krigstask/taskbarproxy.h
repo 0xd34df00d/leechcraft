@@ -49,7 +49,9 @@ namespace Krigstask
 		void maximizeWindow (const QString&);
 		void unmaximizeWindow (const QString&);
 
+		void moveWindowTo (const QString&, const QString&);
 		void toggleShadeWindow (const QString&);
+
 		void closeWindow (const QString&);
 
 		void showMenu (const QString&, int, int);
