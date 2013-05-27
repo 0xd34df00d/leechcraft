@@ -37,6 +37,7 @@
 #include <X11/Xutil.h>
 #include <X11/extensions/Xrender.h>
 #include <X11/extensions/Xfixes.h>
+#include <X11/extensions/Xcomposite.h>
 #include <util/sys/paths.h>
 #include <util/gui/autoresizemixin.h>
 #include <util/gui/unhoverdeletemixin.h>
@@ -194,8 +195,10 @@ namespace Krigstask
 			XRenderPictureAttributes pa;
 			pa.subwindow_mode = IncludeInferiors;
 
+			XCompositeRedirectWindow (disp, wid, CompositeRedirectAutomatic);
+			auto backing = XCompositeNameWindowPixmap (disp, wid);
 			auto picture = XRenderCreatePicture (disp,
-					wid,
+					backing,
 					format,
 					CPSubwindowMode,
 					&pa);
@@ -209,9 +212,10 @@ namespace Krigstask
 					Util::XWrapper::Instance ().GetRootWindow (),
 					attrs.width, attrs.height, attrs.depth);
 			auto pixmap = QPixmap::fromX11Pixmap (xpixmap);
+			pixmap.fill ();
 
 			XRenderComposite (disp,
-					hasAlpha ? PictOpOver : PictOpSrc,
+					PictOpOver,
 					picture,
 					None,
 					pixmap.x11PictureHandle (),
@@ -222,9 +226,9 @@ namespace Krigstask
 
 			XFreePixmap (disp, xpixmap);
 
-			image.save (QString::number (wid) + ".jpg", "jpg");
-
 			XRenderFreePicture (disp, picture);
+			XFreePixmap (disp, backing);
+			XCompositeUnredirectWindow (disp, wid, CompositeRedirectAutomatic);
 
 			return image;
 		}

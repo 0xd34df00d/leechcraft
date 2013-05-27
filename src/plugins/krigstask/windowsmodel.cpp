@@ -103,8 +103,15 @@ namespace Krigstask
 		roleNames [Role::IsMinimizedWindow] = "isMinimizedWindow";
 		setRoleNames (roleNames);
 
-		XCompositeRedirectSubwindows (w.GetDisplay (), w.GetRootWindow (),
-				CompositeRedirectAutomatic);
+		int eventBase, errorBase;
+		if (XCompositeQueryExtension (w.GetDisplay (), &eventBase, &errorBase))
+		{
+			int major = 0, minor = 2;
+			XCompositeQueryVersion (w.GetDisplay (), &major, &minor);
+
+			if (major > 0 || minor >= 2)
+				qDebug () << "all good, has NamePixmap";
+		}
 	}
 
 	QDeclarativeImageProvider* WindowsModel::GetImageProvider () const
