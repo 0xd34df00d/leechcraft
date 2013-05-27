@@ -50,8 +50,14 @@ Rectangle {
                     anchors.horizontalCenter: parent.horizontalCenter
 
                     color: colorProxy.color_TextBox_TitleTextColor
-                    font.underline: true
+                    font.underline: isCurrent
+                    font.bold: isCurrent
                     font.pointSize: 16
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: pagerProxy.showDesktop(desktopID)
+                    }
                 }
 
                 Flickable {
@@ -62,6 +68,7 @@ Rectangle {
                     height: parent.height - desktopNameLabel.height
                     contentHeight: subModelColumn.height
                     contentWidth: subModelColumn.width
+                    clip: true
                     Column {
                         id: subModelColumn
 
@@ -83,22 +90,25 @@ Rectangle {
                             model: subModel
 
                             Rectangle {
+                                id: appRectangle
+
                                 width: rootRect.singleListWidth
                                 height: winIconImage.height + winSnapImage.height + winSnapImage.anchors.topMargin + winSnapImage.anchors.bottomMargin
 
                                 border.width: 1
-                                border.color: colorProxy.color_TextBox_BorderColor
+                                border.color: isActive ? colorProxy.color_TextBox_HighlightBorderColor : colorProxy.color_TextBox_BorderColor
 
                                 radius: 5
+                                smooth: true
 
                                 gradient: Gradient {
                                     GradientStop {
                                         position: 0
-                                        color: colorProxy.color_TextBox_TopColor
+                                        color: isActive ? colorProxy.color_TextBox_HighlightTopColor : colorProxy.color_TextBox_TopColor
                                     }
                                     GradientStop {
                                         position: 1
-                                        color: colorProxy.color_TextBox_BottomColor
+                                        color: isActive ? colorProxy.color_TextBox_HighlightBottomColor : colorProxy.color_TextBox_BottomColor
                                     }
                                 }
 
@@ -108,7 +118,9 @@ Rectangle {
                                     width: 64
                                     height: 64
                                     anchors.top: parent.top
+                                    anchors.topMargin: 2
                                     anchors.left: parent.left
+                                    anchors.leftMargin: 2
                                 }
 
                                 Text {
@@ -124,16 +136,17 @@ Rectangle {
                                     elide: Text.ElideRight
 
                                     color: colorProxy.color_TextBox_TitleTextColor
-                                    font.pointSize: 14
                                 }
 
                                 Image {
                                     id: winSnapImage
+
                                     source: "image://WinSnaps/" + wid
                                     anchors.top: winIconImage.bottom
                                     anchors.left: parent.left
                                     anchors.right: parent.right
                                     anchors.margins: 5
+
                                     smooth: true
                                     fillMode: Image.PreserveAspectFit
                                     cache: false

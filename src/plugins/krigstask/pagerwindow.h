@@ -57,7 +57,10 @@ namespace Krigstask
 		PagerWindow (ICoreProxy_ptr, QWidget* = 0);
 	private:
 		void FillModel ();
-		void FillSubmodel (SingleDesktopModel*, const QList<ulong>&);
+		void FillSubmodel (SingleDesktopModel*, const QList<ulong>&, ulong);
+	public slots:
+		void showDesktop (int);
+		void showWindow (qulonglong);
 	};
 }
 }

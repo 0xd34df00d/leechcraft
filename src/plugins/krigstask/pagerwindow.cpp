@@ -55,7 +55,9 @@ namespace Krigstask
 		enum Role
 		{
 			SubModel = Qt::UserRole + 1,
-			DesktopName
+			DesktopName,
+			DesktopID,
+			IsCurrent
 		};
 
 		DesktopsModel (QObject *parent)
@@ -64,6 +66,8 @@ namespace Krigstask
 			QHash<int, QByteArray> roleNames;
 			roleNames [Role::SubModel] = "subModel";
 			roleNames [Role::DesktopName] = "desktopName";
+			roleNames [Role::DesktopID] = "desktopID";
+			roleNames [Role::IsCurrent] = "isCurrent";
 			setRoleNames (roleNames);
 		}
 	};
@@ -74,7 +78,8 @@ namespace Krigstask
 		enum Role
 		{
 			WinName = Qt::UserRole + 1,
-			WID
+			WID,
+			IsActive
 		};
 
 		SingleDesktopModel (QObject *parent)
@@ -83,6 +88,7 @@ namespace Krigstask
 			QHash<int, QByteArray> roleNames;
 			roleNames [Role::WinName] = "winName";
 			roleNames [Role::WID] = "wid";
+			roleNames [Role::IsActive] = "isActive";
 			setRoleNames (roleNames);
 		}
 	};
@@ -137,6 +143,7 @@ namespace Krigstask
 
 		FillModel ();
 		rootContext ()->setContextProperty ("desktopsModel", DesktopsModel_);
+		rootContext ()->setContextProperty ("pagerProxy", this);
 
 		setResizeMode (SizeViewToRootObject);
 
@@ -163,14 +170,19 @@ namespace Krigstask
 			if (w.ShouldShow (wid))
 				desk2wins [w.GetWindowDesktop (wid)] << wid;
 
+		const auto curDesk = w.GetCurrentDesktop ();
+		const auto activeApp = w.GetActiveApp ();
+
 		for (int i = 0; i < numDesktops; ++i)
 		{
 			auto subModel = new SingleDesktopModel (this);
-			FillSubmodel (subModel, desk2wins [i]);
+			FillSubmodel (subModel, desk2wins [i], activeApp);
 
 			auto item = new QStandardItem;
 			item->setData (QVariant::fromValue<QObject*> (subModel), DesktopsModel::Role::SubModel);
 			item->setData ("Desktop " + QString::number (i + 1), DesktopsModel::Role::DesktopName);
+			item->setData (curDesk == i, DesktopsModel::Role::IsCurrent);
+			item->setData (i, DesktopsModel::Role::DesktopID);
 			DesktopsModel_->appendRow (item);
 		}
 	}
@@ -234,7 +246,8 @@ namespace Krigstask
 		}
 	}
 
-	void PagerWindow::FillSubmodel (SingleDesktopModel *model, const QList<ulong>& windows)
+	void PagerWindow::FillSubmodel (SingleDesktopModel *model,
+			const QList<ulong>& windows, ulong active)
 	{
 		auto& w = Util::XWrapper::Instance ();
 
@@ -247,8 +260,21 @@ namespace Krigstask
 			auto item = new QStandardItem;
 			item->setData (w.GetWindowTitle (wid), SingleDesktopModel::Role::WinName);
 			item->setData (static_cast<qulonglong> (wid), SingleDesktopModel::Role::WID);
+			item->setData (wid == active, SingleDesktopModel::Role::IsActive);
 			model->appendRow (item);
 		}
+	}
+
+	void PagerWindow::showDesktop (int id)
+	{
+		Util::XWrapper::Instance ().SetCurrentDesktop (id);
+		for (auto i = 0; i < DesktopsModel_->rowCount (); ++i)
+			DesktopsModel_->item (i)->setData (i == id, DesktopsModel::Role::IsCurrent);
+	}
+
+	void PagerWindow::showWindow (qulonglong wid)
+	{
+		Util::XWrapper::Instance ().RaiseWindow (wid);
 	}
 }
 }
