@@ -51,14 +51,25 @@ Rectangle {
                     }
                 }
 
+                Image {
+                    id: winIconImage
+                    source: "image://WinIcons/" + wid + '/' + width
+                    width: 64
+                    height: 64
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                }
+
                 Text {
                     id: appNameLabel
 
-                    anchors.top: parent.top
-                    anchors.left: parent.left
+                    anchors.left: winIconImage.right
+                    anchors.leftMargin: 2
                     anchors.right: parent.right
+                    anchors.rightMargin: 2
+                    anchors.verticalCenter: winIconImage.verticalCenter
 
-                    text: appName
+                    text: winName
                     elide: Text.ElideRight
 
                     color: colorProxy.color_TextBox_TitleTextColor

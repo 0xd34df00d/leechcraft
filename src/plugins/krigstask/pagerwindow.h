@@ -34,6 +34,11 @@
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class SettableIconProvider;
+}
+
 namespace Krigstask
 {
 	class DesktopsModel;
@@ -44,6 +49,9 @@ namespace Krigstask
 		Q_OBJECT
 
 		DesktopsModel *DesktopsModel_;
+
+		Util::SettableIconProvider *WinIconProv_;
+		Util::SettableIconProvider *WinSnapshotProv_;
 	public:
 		PagerWindow (ICoreProxy_ptr, QWidget* = 0);
 	private:

@@ -37,6 +37,7 @@
 #include <util/gui/autoresizemixin.h>
 #include <util/gui/unhoverdeletemixin.h>
 #include <util/qml/colorthemeproxy.h>
+#include <util/qml/settableiconprovider.h>
 #include <util/x11/xwrapper.h>
 
 namespace LeechCraft
@@ -67,14 +68,16 @@ namespace Krigstask
 	public:
 		enum Role
 		{
-			AppName = Qt::UserRole + 1
+			WinName = Qt::UserRole + 1,
+			WID
 		};
 
 		SingleDesktopModel (QObject *parent)
 		: QStandardItemModel (parent)
 		{
 			QHash<int, QByteArray> roleNames;
-			roleNames [Role::AppName] = "appName";
+			roleNames [Role::WinName] = "winName";
+			roleNames [Role::WID] = "wid";
 			setRoleNames (roleNames);
 		}
 	};
@@ -82,6 +85,8 @@ namespace Krigstask
 	PagerWindow::PagerWindow (ICoreProxy_ptr proxy, QWidget *parent)
 	: QDeclarativeView (parent)
 	, DesktopsModel_ (new DesktopsModel (this))
+	, WinIconProv_ (new Util::SettableIconProvider)
+	, WinSnapshotProv_ (new Util::SettableIconProvider)
 	{
 		new Util::UnhoverDeleteMixin (this);
 
@@ -94,6 +99,9 @@ namespace Krigstask
 
 		rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
+
+		engine ()->addImageProvider ("WinIcons", WinIconProv_);
+		engine ()->addImageProvider ("WinSnaps", WinSnapshotProv_);
 
 		FillModel ();
 		rootContext ()->setContextProperty ("desktopsModel", DesktopsModel_);
@@ -141,8 +149,11 @@ namespace Krigstask
 
 		for (auto wid : windows)
 		{
+			WinIconProv_->SetIcon ({ QString::number (wid) }, w.GetWindowIcon (wid));
+
 			auto item = new QStandardItem;
-			item->setData (w.GetWindowTitle (wid), SingleDesktopModel::Role::AppName);
+			item->setData (w.GetWindowTitle (wid), SingleDesktopModel::Role::WinName);
+			item->setData (static_cast<qulonglong> (wid), SingleDesktopModel::Role::WID);
 			model->appendRow (item);
 		}
 	}
