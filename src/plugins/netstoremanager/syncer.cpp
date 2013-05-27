@@ -47,8 +47,6 @@ namespace NetStoreManager
 	, Account_ (isa)
 	, SFLAccount_ (qobject_cast<ISupportFileListings*> (isa->GetQObject ()))
 	{
-		if (RemotePath_.startsWith ('/'))
-			RemotePath_ = RemotePath_.mid (1);
 	}
 
 	QByteArray Syncer::GetAccountID () const
@@ -120,20 +118,65 @@ namespace NetStoreManager
 		}
 	}
 
+	void Syncer::AddNewItem (const StorageItem& item, const QByteArray& parentId)
+	{
+		Id2Item_ [item.ID_] = item;
+		Id2Path_.insert ({ item.ID_, (Id2Item_.contains (parentId) ?
+				(Id2Path_.left.at (parentId) + "/") :
+				QString ())
+						+ item.Name_ });
+
+		if (!CallsQueue_.isEmpty ())
+			CallsQueue_.dequeue () (QStringList ());
+	}
+
+	void Syncer::CreatePath (const QStringList& path)
+	{
+		if (Id2Path_.right.count (path.join ("/")))
+			return;
+
+		QStringList nonExistingPath;
+		QStringList existingPath;
+		for (int i = path.length () - 1; i >= 0; --i)
+		{
+			QStringList temp = path.mid (0, i + 1);
+			if (Id2Path_.right.count (temp.join ("/")))
+			{
+				existingPath = temp;
+				break;
+			}
+			else if (nonExistingPath.isEmpty ())
+				nonExistingPath = temp;
+		}
+
+		if (nonExistingPath.isEmpty ())
+			return;
+
+		int lastPos = 0;
+		for ( ; lastPos < std::min (existingPath .size (), nonExistingPath.size ()); ++lastPos)
+			if (existingPath.at (lastPos) != nonExistingPath.at (lastPos))
+				break;
+
+		SFLAccount_->CreateDirectory (nonExistingPath.at (lastPos),
+				existingPath.isEmpty () ?
+					QByteArray () :
+					Id2Path_.right.at (existingPath.join ("/")));
+		if (lastPos != nonExistingPath.length () - 1)
+			CallsQueue_.append ([this, nonExistingPath] (const QStringList&)
+				{ CreatePath (nonExistingPath); });
+	}
+
 	void Syncer::start ()
 	{
-		QString remotePath = RemotePath_;
-		QStringList folders;
-		while (!Id2Path_.right.count (remotePath))
-		{
-			remotePath = QFileInfo (remotePath).dir ().absolutePath ();
-			qDebug () << remotePath;
-		}
 		Started_ = true;
+		QStringList path = RemotePath_.split ('/');
+		CallsQueue_.append ([this, path] (const QStringList&) { CreatePath (path); });
+		CallsQueue_.dequeue () (QStringList ());
 	}
 
 	void Syncer::stop ()
 	{
+		CallsQueue_.clear ();
 		Started_ = false;
 	}
 

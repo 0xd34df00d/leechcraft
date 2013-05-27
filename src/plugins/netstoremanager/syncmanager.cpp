@@ -90,6 +90,10 @@ namespace NetStoreManager
 					SIGNAL (gotListing (QList<StorageItem>)),
 					this,
 					SLOT (handleGotListing (QList<StorageItem>)));
+			connect (account->GetQObject (),
+					SIGNAL (gotNewItem (StorageItem, QByteArray)),
+					this,
+					SLOT (handleGotNewItem (StorageItem, QByteArray)));
 		}
 	}
 
@@ -104,6 +108,7 @@ namespace NetStoreManager
 		{
 			const auto& pair = map [key].value<SyncDirs_t> ();
 			paths << pair.first;
+			qDebug () << key << pair;
 			if (AccountID2Syncer_.contains (key))
 			{
 				if (AccountID2Syncer_ [key]->GetLocalPath () == pair.first &&
@@ -115,13 +120,10 @@ namespace NetStoreManager
 					AccountID2Syncer_.take (key)->deleteLater ();
 				}
 			}
-
 			auto acc = AM_->GetAccountFromUniqueID (key);
 			AccountID2Syncer_ [key] = CreateSyncer (acc, pair.first, pair.second);
-			auto isfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
-			if (!isfl)
-				continue;
-			isfl->RefreshListing ();
+			if (auto isfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ()))
+				isfl->RefreshListing ();
 		}
 
 		FilesWatcher_->updatePaths (paths);
@@ -183,17 +185,31 @@ namespace NetStoreManager
 
 	void SyncManager::handleGotListing (const QList<StorageItem>& items)
 	{
+		qDebug () << Q_FUNC_INFO;
 		auto isa = qobject_cast<IStorageAccount*> (sender ());
 		if (!isa)
 			return;
-
 		for (auto accountId : AccountID2Syncer_.keys ())
+		{
 			if (isa->GetUniqueID () == accountId)
 			{
 				AccountID2Syncer_ [accountId]->SetItems (items);
 				if (!AccountID2Syncer_ [accountId]->IsStarted ())
 					AccountID2Syncer_ [accountId]->start ();
 			}
+		}
+	}
+
+	void SyncManager::handleGotNewItem (const StorageItem& item,
+			const QByteArray& parentId)
+	{
+		auto isa = qobject_cast<IStorageAccount*> (sender ());
+		if (!isa)
+			return;
+
+		for (auto accountId : AccountID2Syncer_.keys ())
+			if (isa->GetUniqueID () == accountId)
+				AccountID2Syncer_ [accountId]->AddNewItem (item, parentId);
 	}
 
 }
