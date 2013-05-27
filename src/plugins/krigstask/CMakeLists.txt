@@ -28,6 +28,7 @@ TARGET_LINK_LIBRARIES (leechcraft_krigstask
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${X11_X11_LIB}
+	${X11_Xcomposite_LIB}
 	)
 INSTALL (TARGETS leechcraft_krigstask DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (DIRECTORY share/qml/krigstask DESTINATION ${LC_QML_DEST})
