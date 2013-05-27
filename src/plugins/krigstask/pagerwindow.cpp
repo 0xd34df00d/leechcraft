@@ -33,6 +33,10 @@
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
 #include <QtDebug>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/extensions/Xrender.h>
+#include <X11/extensions/Xfixes.h>
 #include <util/sys/paths.h>
 #include <util/gui/autoresizemixin.h>
 #include <util/gui/unhoverdeletemixin.h>
@@ -82,11 +86,38 @@ namespace Krigstask
 		}
 	};
 
+	class ImageProvider : public QDeclarativeImageProvider
+	{
+		QHash<QString, QImage> Images_;
+	public:
+		ImageProvider ()
+		: QDeclarativeImageProvider (QDeclarativeImageProvider::Image)
+		{
+		}
+
+		void SetImage (const QString& id, const QImage& px)
+		{
+			Images_ [id] = px;
+		}
+
+		QImage requestImage (const QString& id, QSize *size, const QSize&)
+		{
+			const auto& img = Images_.value (id);
+			if (img.isNull ())
+				return {};
+
+			if (size)
+				*size = img.size ();
+
+			return img;
+		}
+	};
+
 	PagerWindow::PagerWindow (ICoreProxy_ptr proxy, QWidget *parent)
 	: QDeclarativeView (parent)
 	, DesktopsModel_ (new DesktopsModel (this))
 	, WinIconProv_ (new Util::SettableIconProvider)
-	, WinSnapshotProv_ (new Util::SettableIconProvider)
+	, WinSnapshotProv_ (new ImageProvider)
 	{
 		new Util::UnhoverDeleteMixin (this);
 
@@ -143,13 +174,71 @@ namespace Krigstask
 		}
 	}
 
+	namespace
+	{
+		QImage GrabWindow (ulong wid)
+		{
+			auto disp = Util::XWrapper::Instance ().GetDisplay ();
+
+			XWindowAttributes attrs;
+			if (!XGetWindowAttributes (disp, wid, &attrs))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "failed to get attributes";
+				return {};
+			}
+
+			auto format = XRenderFindVisualFormat (disp, attrs.visual);
+			const bool hasAlpha = format->type == PictTypeDirect && format->direct.alphaMask;
+
+			XRenderPictureAttributes pa;
+			pa.subwindow_mode = IncludeInferiors;
+
+			auto picture = XRenderCreatePicture (disp,
+					wid,
+					format,
+					CPSubwindowMode,
+					&pa);
+
+			auto region = XFixesCreateRegionFromWindow (disp, wid, WindowRegionBounding);
+			XFixesTranslateRegion (disp, region, attrs.x, attrs.y);
+			XFixesSetPictureClipRegion (disp, picture, 0, 0, region);
+			XFixesDestroyRegion (disp, region);
+
+			auto xpixmap = XCreatePixmap (disp,
+					Util::XWrapper::Instance ().GetRootWindow (),
+					attrs.width, attrs.height, attrs.depth);
+			auto pixmap = QPixmap::fromX11Pixmap (xpixmap);
+
+			XRenderComposite (disp,
+					hasAlpha ? PictOpOver : PictOpSrc,
+					picture,
+					None,
+					pixmap.x11PictureHandle (),
+					0, 0, 0, 0,
+					0, 0, attrs.width, attrs.height);
+
+			const auto image = pixmap.toImage ();
+
+			XFreePixmap (disp, xpixmap);
+
+			image.save (QString::number (wid) + ".jpg", "jpg");
+
+			XRenderFreePicture (disp, picture);
+
+			return image;
+		}
+	}
+
 	void PagerWindow::FillSubmodel (SingleDesktopModel *model, const QList<ulong>& windows)
 	{
 		auto& w = Util::XWrapper::Instance ();
 
 		for (auto wid : windows)
 		{
-			WinIconProv_->SetIcon ({ QString::number (wid) }, w.GetWindowIcon (wid));
+			const auto& widStr = QString::number (wid);
+			WinIconProv_->SetIcon ({ widStr }, w.GetWindowIcon (wid));
+			WinSnapshotProv_->SetImage (widStr, GrabWindow (wid));
 
 			auto item = new QStandardItem;
 			item->setData (w.GetWindowTitle (wid), SingleDesktopModel::Role::WinName);

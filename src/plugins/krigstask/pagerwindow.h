@@ -43,6 +43,7 @@ namespace Krigstask
 {
 	class DesktopsModel;
 	class SingleDesktopModel;
+	class ImageProvider;
 
 	class PagerWindow : public QDeclarativeView
 	{
@@ -51,7 +52,7 @@ namespace Krigstask
 		DesktopsModel *DesktopsModel_;
 
 		Util::SettableIconProvider *WinIconProv_;
-		Util::SettableIconProvider *WinSnapshotProv_;
+		ImageProvider *WinSnapshotProv_;
 	public:
 		PagerWindow (ICoreProxy_ptr, QWidget* = 0);
 	private:
