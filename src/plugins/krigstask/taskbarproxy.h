@@ -30,17 +30,21 @@
 #pragma once
 
 #include <QObject>
+#include <QPointer>
 #include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
 namespace Krigstask
 {
+	class PagerWindow;
+
 	class TaskbarProxy : public QObject
 	{
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
+		QPointer<PagerWindow> Pager_;
 	public:
 		TaskbarProxy (ICoreProxy_ptr, QObject* = 0);
 	public slots:

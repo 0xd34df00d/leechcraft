@@ -212,11 +212,17 @@ namespace Krigstask
 
 	void TaskbarProxy::showPager (int x, int y)
 	{
-		auto win = new PagerWindow (Proxy_);
+		if (Pager_)
+		{
+			Pager_->deleteLater ();
+			return;
+		}
+
+		Pager_ = new PagerWindow (Proxy_);
 		new Util::AutoResizeMixin ({ x, y },
 				[] () { return QApplication::desktop ()->availableGeometry (); },
-				win);
-		win->show ();
+				Pager_);
+		Pager_->show ();
 	}
 
 	void TaskbarProxy::handleAction ()
