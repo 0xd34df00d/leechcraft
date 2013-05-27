@@ -238,11 +238,7 @@ namespace Mellonetray
 	{
 		const auto pos = FindItem (wid);
 		if (pos == Items_.end ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to find" << wid;
 			return;
-		}
 
 		const auto dist = std::distance (Items_.begin (), pos);
 		beginRemoveRows ({}, dist, dist);
