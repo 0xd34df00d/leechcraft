@@ -31,6 +31,7 @@
 #include <QtDebug>
 #include <QIcon>
 #include <QFrame>
+#include <X11/extensions/Xcomposite.h>
 #include <util/qml/widthiconprovider.h>
 #include <util/x11/xwrapper.h>
 
@@ -101,6 +102,9 @@ namespace Krigstask
 		roleNames [Role::IsActiveWindow] = "isActiveWindow";
 		roleNames [Role::IsMinimizedWindow] = "isMinimizedWindow";
 		setRoleNames (roleNames);
+
+		XCompositeRedirectSubwindows (w.GetDisplay (), w.GetRootWindow (),
+				CompositeRedirectAutomatic);
 	}
 
 	QDeclarativeImageProvider* WindowsModel::GetImageProvider () const
