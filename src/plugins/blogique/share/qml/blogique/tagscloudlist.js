@@ -7,7 +7,10 @@ function addTextTag (tag)
 
 function clearTextTagsArray ()
 {
-	tagsInCloudArray = [];
+	var length = tagsInCloudArray.length;
+	for (var i = 0; i < length; ++i)
+		tagsInCloudArray [i].destroy ();
+	tagsInCloudArray.length = 0;
 }
 
 function getTextTag (tag)
