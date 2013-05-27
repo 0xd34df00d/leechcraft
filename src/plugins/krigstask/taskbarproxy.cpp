@@ -30,8 +30,12 @@
 #include "taskbarproxy.h"
 #include <functional>
 #include <QMenu>
+#include <QDesktopWidget>
+#include <QApplication>
 #include <QtDebug>
 #include <util/x11/xwrapper.h>
+#include <util/gui/autoresizemixin.h>
+#include "pagerwindow.h"
 
 typedef std::function<void (QString)> Actor_f;
 
@@ -204,6 +208,15 @@ namespace Krigstask
 		}
 
 		menu->popup ({ x, y });
+	}
+
+	void TaskbarProxy::showPager (int x, int y)
+	{
+		auto win = new PagerWindow (Proxy_);
+		new Util::AutoResizeMixin ({ x, y },
+				[] () { return QApplication::desktop ()->availableGeometry (); },
+				win);
+		win->show ();
 	}
 
 	void TaskbarProxy::handleAction ()

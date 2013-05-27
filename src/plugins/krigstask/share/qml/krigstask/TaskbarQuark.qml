@@ -1,5 +1,4 @@
 import QtQuick 1.1
-
 import org.LC.common 1.0
 
 Rectangle {
@@ -26,8 +25,8 @@ Rectangle {
         anchors.top: parent.top
         anchors.left: parent.left
 
-        columns: viewOrient == "vertical" ? 1 : launcherItemRepeater.count
-        rows: viewOrient == "vertical" ? launcherItemRepeater.count : 1
+        columns: viewOrient == "vertical" ? 1 : (launcherItemRepeater.count + 1)
+        rows: viewOrient == "vertical" ? (launcherItemRepeater.count + 1) : 1
 
         Repeater {
             id: launcherItemRepeater
@@ -77,6 +76,16 @@ Rectangle {
                     }
                 }
             }
+        }
+
+        ActionButton {
+            id: showPagerButton
+
+            width: rootRect.itemSize
+            height: rootRect.itemSize
+
+            actionIconURL: "image://ThemeIcons/user-desktop"
+            onTriggered: commonJS.showTooltip(showPagerButton, KT_taskbarProxy.showPager)
         }
     }
 }
