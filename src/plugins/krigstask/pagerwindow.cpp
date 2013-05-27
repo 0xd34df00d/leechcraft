@@ -274,7 +274,24 @@ namespace Krigstask
 
 	void PagerWindow::showWindow (qulonglong wid)
 	{
-		Util::XWrapper::Instance ().RaiseWindow (wid);
+		auto& w = Util::XWrapper::Instance ();
+		const auto desk = w.GetWindowDesktop (wid);
+		showDesktop (desk);
+		w.RaiseWindow (wid);
+
+		for (int i = 0, count = w.GetDesktopCount (); i < count; ++i)
+		{
+			auto deskItem = DesktopsModel_->item (i);
+			const auto& modelVar = deskItem->data (DesktopsModel::Role::SubModel);
+
+			auto model = dynamic_cast<SingleDesktopModel*> (modelVar.value<QObject*> ());
+			for (int j = 0; j < model->rowCount (); ++j)
+			{
+				auto winItem = model->item (j);
+				const auto thatID = winItem->data (SingleDesktopModel::Role::WID).toULongLong ();
+				winItem->setData (thatID == wid, SingleDesktopModel::Role::IsActive);
+			}
+		}
 	}
 }
 }

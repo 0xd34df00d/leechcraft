@@ -151,6 +151,11 @@ Rectangle {
                                     fillMode: Image.PreserveAspectFit
                                     cache: false
                                 }
+
+                                MouseArea {
+                                    anchors.fill: parent
+                                    onClicked: pagerProxy.showWindow(wid)
+                                }
                             }
                         }
                     }
