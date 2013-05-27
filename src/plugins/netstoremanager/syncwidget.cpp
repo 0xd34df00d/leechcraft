@@ -120,6 +120,10 @@ namespace NetStoreManager
 							remoteDirItem->text ()));
 		}
 
+		const auto& oldMap = XmlSettingsManager::Instance ().property ("Synchronization").toMap ();
+		if (oldMap == map)
+			return;
+
 		emit directoriesToSyncUpdated (map);
 		XmlSettingsManager::Instance ().setProperty ("Synchronization", map);
 	}
