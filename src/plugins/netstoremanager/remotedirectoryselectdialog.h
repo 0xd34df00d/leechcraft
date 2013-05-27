@@ -57,7 +57,7 @@ namespace NetStoreManager
 		explicit RemoteDirectorySelectDialog (const QByteArray& accountId,
 				AccountsManager *am, QWidget *parent = 0);
 
-		QString GetDirectoryPath () const;
+		QStringList GetDirectoryPath () const;
 
 	private slots:
 		void handleGotListing (const QList<StorageItem>& items);

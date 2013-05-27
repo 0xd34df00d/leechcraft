@@ -63,13 +63,13 @@ namespace NetStoreManager
 
 	void DirectoryWidget::on_OpenDir__released ()
 	{
-		QString path;
+		QStringList path;
 		switch (Type_)
 		{
 			case Type::Local:
-				path = QFileDialog::getExistingDirectory (this,
+				path.append (QFileDialog::getExistingDirectory (this,
 						tr ("Select directory"),
-						Path_.isEmpty () ? QDir::homePath () : Path_);
+						Path_.isEmpty () ? QDir::homePath () : Path_));
 				break;
 			case Type::Remote:
 			{
@@ -90,12 +90,19 @@ namespace NetStoreManager
 		if (path.isEmpty ())
 			return;
 
-		SetPath (path, true);
+		SetPath (path.join ("/"), true);
 	}
 
 	void DirectoryWidget::on_DirPath__editingFinished ()
 	{
-		SetPath (Ui_.DirPath_->text (), true);
+		const QString& path = Ui_.DirPath_->text ();
+		QStringList pathList;
+		if (!path.contains ('/'))
+			pathList.append (path);
+		else
+			pathList = path.split ('/');
+
+		SetPath (pathList.join ("/"), true);
 	}
 
 }

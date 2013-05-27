@@ -77,16 +77,16 @@ namespace NetStoreManager
 			}
 	}
 
-	QString RemoteDirectorySelectDialog::GetDirectoryPath () const
+	QStringList RemoteDirectorySelectDialog::GetDirectoryPath () const
 	{
 		auto index = Ui_.DirectoriesView_->currentIndex ();
 		if (!index.isValid ())
-			return QString ();
+			return QStringList ();
 
-		QString path;
+		QStringList path;
 		do
 		{
-			path.prepend ("/" + index.data ().toString ());
+		 	path.prepend (index.data ().toString ());
 			index = index.parent ();
 		}
 		while (index.isValid ());
@@ -97,8 +97,8 @@ namespace NetStoreManager
 	void RemoteDirectorySelectDialog::handleGotListing (const QList<StorageItem>& items)
 	{
 		disconnect (sender (),
-				SIGNAL (gotListing (QList<StorageItem>)),
 				0,
+				this,
 				0);
 
 		QHash<QByteArray, StorageItem> id2Item;
