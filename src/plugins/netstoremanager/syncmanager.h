@@ -71,6 +71,7 @@ namespace NetStoreManager
 		void handleEntryWasRenamed (const QString& oldName, const QString& newName);
 
 		void handleGotListing (const QList<StorageItem>& items);
+		void handleGotNewItem (const StorageItem& item, const QByteArray& parentId);
 	};
 }
 }

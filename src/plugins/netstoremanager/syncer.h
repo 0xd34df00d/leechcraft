@@ -29,8 +29,10 @@
 
 #pragma once
 
+#include <functional>
 #include <boost/bimap.hpp>
 #include <QObject>
+#include <QQueue>
 #include "interfaces/netstoremanager/isupportfilelistings.h"
 
 namespace LeechCraft
@@ -50,6 +52,7 @@ namespace NetStoreManager
 		ISupportFileListings *SFLAccount_;
 		QHash<QByteArray, StorageItem> Id2Item_;
 		boost::bimaps::bimap<QByteArray, QString> Id2Path_;
+		QQueue<std::function<void (QStringList)>> CallsQueue_;
 
 	public:
 		explicit Syncer (const QString& dirPath, const QString& remotePath,
@@ -62,6 +65,9 @@ namespace NetStoreManager
 		bool IsStarted () const;
 
 		void SetItems (const QList<StorageItem>& items);
+		void AddNewItem (const StorageItem& item, const QByteArray& parentId);
+	private:
+		void CreatePath (const QStringList& path);
 
 	public slots:
 		void start ();
