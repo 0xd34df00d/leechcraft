@@ -108,7 +108,6 @@ namespace NetStoreManager
 		{
 			const auto& pair = map [key].value<SyncDirs_t> ();
 			paths << pair.first;
-			qDebug () << key << pair;
 			if (AccountID2Syncer_.contains (key))
 			{
 				if (AccountID2Syncer_ [key]->GetLocalPath () == pair.first &&
@@ -185,7 +184,6 @@ namespace NetStoreManager
 
 	void SyncManager::handleGotListing (const QList<StorageItem>& items)
 	{
-		qDebug () << Q_FUNC_INFO;
 		auto isa = qobject_cast<IStorageAccount*> (sender ());
 		if (!isa)
 			return;
