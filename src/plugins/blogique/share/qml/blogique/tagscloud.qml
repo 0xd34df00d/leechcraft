@@ -31,7 +31,7 @@ Rectangle
 		anchors.leftMargin: 10
 		anchors.rightMargin: 10
 		contentWidth: flickable.width;
-		contentHeight: flickable.height * 4;
+		contentHeight: TagsCloudList.calculateContentHeight (flowElement.width, flowElement.spacing);
 
 		Flow
 		{
