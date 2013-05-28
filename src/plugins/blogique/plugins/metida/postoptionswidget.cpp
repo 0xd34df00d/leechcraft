@@ -276,7 +276,7 @@ namespace Metida
 		const QString& path = Util::CreateIfNotExists ("blogique/metida/avatars")
 				.absoluteFilePath (Account_->GetAccountID ().toBase64 ().replace ('/', '_'));
 		QPixmap pxm (path);
-		Ui_.UserPicLabel_->setPixmap (pxm.scaled (64, 64));
+		Ui_.UserPicLabel_->setPixmap (pxm.scaled (pxm.width (), pxm.height ()));
 
 		Ui_.UserPic_->addItems (profile->GetProfileData ().AvatarsID_);
 	}
