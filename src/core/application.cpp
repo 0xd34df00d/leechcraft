@@ -48,6 +48,7 @@
 #include <QProcess>
 #include <QTimer>
 #include <QCryptographicHash>
+#include <QTextCodec>
 #include <interfaces/isyncable.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <util/util.h>
@@ -108,6 +109,8 @@ namespace LeechCraft
 #endif
 			std::exit (EVersionRequested);
 		}
+		
+		QTextCodec::setCodecForCStrings (QTextCodec::codecForName ("UTF-8"));
 
 		if (VarMap_.count ("no-app-catch"))
 			CatchExceptions_ = false;
