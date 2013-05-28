@@ -56,6 +56,7 @@ namespace
 		fixSingle (Qt::ControlModifier, Qt::CTRL);
 		fixSingle (Qt::AltModifier, Qt::ALT);
 		fixSingle (Qt::ShiftModifier, Qt::SHIFT);
+		fixSingle (Qt::MetaModifier, Qt::META);
 	}
 }
 
@@ -67,6 +68,7 @@ void KeySequencer::keyPressEvent (QKeyEvent *event)
 	const int key = event->key ();
 	if (key != Qt::Key_Control &&
 			key != Qt::Key_Alt &&
+			key != Qt::Key_Meta &&
 			key != Qt::Key_Shift)
 		code += key;
 
@@ -81,6 +83,7 @@ void KeySequencer::keyReleaseEvent (QKeyEvent *event)
 	const int key = event->key ();
 	if (key == Qt::Key_Control ||
 			key == Qt::Key_Alt ||
+			key == Qt::Key_Meta ||
 			key == Qt::Key_Shift)
 	{
 		reject ();
@@ -92,6 +95,7 @@ void KeySequencer::keyReleaseEvent (QKeyEvent *event)
 
 	if (key != Qt::Key_Control &&
 			key != Qt::Key_Alt &&
+			key != Qt::Key_Meta &&
 			key != Qt::Key_Shift)
 		code += key;
 
