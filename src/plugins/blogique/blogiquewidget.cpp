@@ -610,7 +610,7 @@ namespace Blogique
 				PostEdit_->RemoveAction (action);
 
 			on_SelectTags__toggled (false);
-			Ui_.SelectTags_->setCheckable (false);
+			Ui_.SelectTags_->setChecked (false);
 			for (auto w : SidePluginsWidgets_)
 			{
 				auto ibsw = qobject_cast<IBlogiqueSideWidget*> (w);
