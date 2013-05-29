@@ -354,9 +354,9 @@ namespace GoogleDrive
 
 			Change change;
 			change.Deleted_ = driveChange.Deleted_;
-			change.Id_ << driveChange.FileId_;
-			change.ParentId_ << driveChange.FileResource_.ParentId_;
-			change.ParentIsRoot_ = driveChange.FileResource_.ParentIsRoot_;
+			change.ID_ = driveChange.Id_.toUtf8 ();
+			change.StorageItemID_ = driveChange.FileResource_.Id_.toUtf8 ();
+			change.Item_ = CreateItem (driveChange.FileResource_);
 
 			changes << change;
 		}
