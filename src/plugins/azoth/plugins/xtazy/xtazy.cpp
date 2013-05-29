@@ -176,7 +176,9 @@ namespace Xtazy
 		auto text = proxy->GetValue ("text").toString ();
 		if (text == "/np")
 		{
-			if (!song.Title_.isEmpty ())
+			if (!song.Title_.isEmpty () ||
+					!song.Artist_.isEmpty () ||
+					!song.Album_.isEmpty ())
 			{
 				text = XmlSettingsManager::Instance ().property ("NPCmdSubst").toString ();
 				text.replace ("$artist", song.Artist_);
