@@ -61,16 +61,6 @@ namespace NetStoreManager
 
 	Q_DECLARE_FLAGS (ListingOps, ListingOp);
 
-	struct Change
-	{
-		QStringList Id_;
-		bool Deleted_;
-		QList<QStandardItem*> Row_;
-
-		QStringList ParentId_;
-		bool ParentIsRoot_;
-	};
-
 	struct StorageItem
 	{
 		QByteArray ID_;
@@ -110,6 +100,14 @@ namespace NetStoreManager
 		{
 			return !ID_.isEmpty ();
 		}
+	};
+
+	struct Change
+	{
+		QByteArray ID_;
+		bool Deleted_;
+		QByteArray StorageItemID_;
+		StorageItem Item_;
 	};
 
 	class ISupportFileListings
