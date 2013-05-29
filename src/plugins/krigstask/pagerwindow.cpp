@@ -164,7 +164,6 @@ namespace Krigstask
 			return;
 		}
 
-		const auto& allWindows = w.GetWindows ();
 		QMap<int, QList<ulong>> desk2wins;
 		for (auto wid : w.GetWindows ())
 			if (w.ShouldShow (wid))
@@ -202,7 +201,6 @@ namespace Krigstask
 			}
 
 			auto format = XRenderFindVisualFormat (disp, attrs.visual);
-			const bool hasAlpha = format->type == PictTypeDirect && format->direct.alphaMask;
 
 			XRenderPictureAttributes pa;
 			pa.subwindow_mode = IncludeInferiors;
