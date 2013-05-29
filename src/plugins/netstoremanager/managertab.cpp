@@ -427,6 +427,7 @@ namespace NetStoreManager
 		QList<StorageItem> childItems;
 		for (const auto& item : Id2Item_.values ())
 			if (item.ParentID_ == id)
+			{
 				if (item.IsDirectory_ &&
 						((item.IsTrashed_ && Id2Item_ [id].IsTrashed_) ||
 						(!item.IsTrashed_ && !Id2Item_ [id].IsTrashed_)))
@@ -434,6 +435,7 @@ namespace NetStoreManager
 				else if (((item.IsTrashed_ && Id2Item_ [id].IsTrashed_) ||
 						(!item.IsTrashed_ && !Id2Item_ [id].IsTrashed_)))
 					size += item.Size_;
+			}
 
 		for (const auto& item : childItems)
 			size += GetFolderSize (item.ID_);
