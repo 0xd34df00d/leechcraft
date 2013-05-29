@@ -191,12 +191,13 @@ namespace NetStoreManager
 			return;
 
 		QString dirPath = path;
-		dirPath.replace (LocalPath_, "");
-		if (Id2Path_.right.count (dirPath))
-			return;
+		dirPath.replace (LocalPath_, RemotePath_);
 
-		SFLAccount_->CreateDirectory (QFileInfo (dirPath).fileName (),
-				Id2Item_ [Id2Path_.right.at (dirPath)].ParentID_);
+		if (CallsQueue_.isEmpty ())
+			CreatePath (dirPath.split ("/"));
+		else
+			CallsQueue_ << [this, dirPath] (const QStringList&)
+				{ CreatePath (dirPath.split ("/")); };
 	}
 
 	void Syncer::dirWasRemoved (const QString& path)
@@ -205,11 +206,12 @@ namespace NetStoreManager
 			return;
 
 		QString dirPath = path;
-		dirPath.replace (LocalPath_, "");
+		dirPath.replace (LocalPath_ + "/", "");
 		if (Id2Path_.right.count (dirPath))
 			return;
 
-		SFLAccount_->Delete ({ Id2Path_.right.at (dirPath) }, false);
+// 		GetParentID (dirPath);
+// 		SFLAccount_->Delete ({ Id2Path_.right.at (dirPath) }, false);
 	}
 
 	void Syncer::fileWasCreated (const QString& path)
