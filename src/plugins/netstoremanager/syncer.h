@@ -52,7 +52,7 @@ namespace NetStoreManager
 		ISupportFileListings *SFLAccount_;
 		QHash<QByteArray, StorageItem> Id2Item_;
 		boost::bimaps::bimap<QByteArray, QString> Id2Path_;
-		QQueue<std::function<void (QStringList)>> CallsQueue_;
+		QQueue<std::function<void (void)>> CallsQueue_;
 
 	public:
 		explicit Syncer (const QString& dirPath, const QString& remotePath,
@@ -65,6 +65,7 @@ namespace NetStoreManager
 		bool IsStarted () const;
 	private:
 		void CreatePath (const QStringList& path);
+		void DeletePath (const QStringList& path);
 
 	public slots:
 		void start ();

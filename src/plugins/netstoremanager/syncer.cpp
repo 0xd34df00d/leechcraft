@@ -101,16 +101,21 @@ namespace NetStoreManager
 					QByteArray () :
 					Id2Path_.right.at (existingPath.join ("/")));
 		if (lastPos != nonExistingPath.length () - 1)
-			CallsQueue_.append ([this, nonExistingPath] (const QStringList&)
+			CallsQueue_.append ([this, nonExistingPath] ()
 				{ CreatePath (nonExistingPath); });
+	}
+
+	void Syncer::DeletePath (const QStringList& path)
+	{
+ 		SFLAccount_->MoveToTrash ({ Id2Path_.right.at (path.join ("/")) });
 	}
 
 	void Syncer::start ()
 	{
 		Started_ = true;
 		QStringList path = RemotePath_.split ('/');
-		CallsQueue_.append ([this, path] (const QStringList&) { CreatePath (path); });
-		CallsQueue_.dequeue () (QStringList ());
+		CallsQueue_.append ([this, path] () { CreatePath (path); });
+		CallsQueue_.dequeue () ();
 	}
 
 	void Syncer::stop ()
@@ -122,6 +127,7 @@ namespace NetStoreManager
 	void Syncer::handleGotItems (const QList<StorageItem>& items)
 	{
 		Id2Item_.clear ();
+		Id2Path_.erase (Id2Path_.begin (), Id2Path_.end ());
 		boost::bimaps::bimap<QByteArray, QStandardItem*> id2StandardItem;
 		for (const auto& item : items)
 		{
@@ -177,7 +183,7 @@ namespace NetStoreManager
 			+ item.Name_ });
 
 		if (!CallsQueue_.isEmpty ())
-			CallsQueue_.dequeue () (QStringList ());
+			CallsQueue_.dequeue () ();
 	}
 
 	void Syncer::handleGotChanges (const QList<Change>& changes)
@@ -193,11 +199,9 @@ namespace NetStoreManager
 		QString dirPath = path;
 		dirPath.replace (LocalPath_, RemotePath_);
 
-		if (CallsQueue_.isEmpty ())
-			CreatePath (dirPath.split ("/"));
-		else
-			CallsQueue_ << [this, dirPath] (const QStringList&)
-				{ CreatePath (dirPath.split ("/")); };
+		CallsQueue_ << [this, dirPath] ()
+			{ CreatePath (dirPath.split ("/")); };
+		CallsQueue_.dequeue () ();
 	}
 
 	void Syncer::dirWasRemoved (const QString& path)
@@ -206,12 +210,11 @@ namespace NetStoreManager
 			return;
 
 		QString dirPath = path;
-		dirPath.replace (LocalPath_ + "/", "");
-		if (Id2Path_.right.count (dirPath))
+		dirPath.replace (LocalPath_, RemotePath_);
+		if (!Id2Path_.right.count (dirPath))
 			return;
-
-// 		GetParentID (dirPath);
-// 		SFLAccount_->Delete ({ Id2Path_.right.at (dirPath) }, false);
+		CallsQueue_ << [this, dirPath] () { DeletePath (dirPath.split ('/')); };
+		CallsQueue_.dequeue () ();
 	}
 
 	void Syncer::fileWasCreated (const QString& path)
