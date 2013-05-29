@@ -94,6 +94,10 @@ namespace NetStoreManager
 					SIGNAL (gotNewItem (StorageItem, QByteArray)),
 					this,
 					SLOT (handleGotNewItem (StorageItem, QByteArray)));
+			connect (account->GetQObject (),
+					SIGNAL (gotChanges (QList<Change>)),
+					this,
+					SLOT (handleGotChanges (QList<Change>)));
 		}
 	}
 
@@ -191,7 +195,7 @@ namespace NetStoreManager
 		{
 			if (isa->GetUniqueID () == accountId)
 			{
-				AccountID2Syncer_ [accountId]->SetItems (items);
+				AccountID2Syncer_ [accountId]->handleGotItems (items);
 				if (!AccountID2Syncer_ [accountId]->IsStarted ())
 					AccountID2Syncer_ [accountId]->start ();
 			}
@@ -207,7 +211,18 @@ namespace NetStoreManager
 
 		for (auto accountId : AccountID2Syncer_.keys ())
 			if (isa->GetUniqueID () == accountId)
-				AccountID2Syncer_ [accountId]->AddNewItem (item, parentId);
+				AccountID2Syncer_ [accountId]->handleGotNewItem (item, parentId);
+	}
+
+	void SyncManager::handleGotChanges (const QList<Change>& changes)
+	{
+		auto isa = qobject_cast<IStorageAccount*> (sender ());
+		if (!isa)
+			return;
+
+		for (auto accountId : AccountID2Syncer_.keys ())
+			if (isa->GetUniqueID () == accountId)
+				AccountID2Syncer_ [accountId]->handleGotChanges (changes);
 	}
 
 }

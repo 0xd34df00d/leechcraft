@@ -63,15 +63,16 @@ namespace NetStoreManager
 		QString GetRemotePath () const;
 
 		bool IsStarted () const;
-
-		void SetItems (const QList<StorageItem>& items);
-		void AddNewItem (const StorageItem& item, const QByteArray& parentId);
 	private:
 		void CreatePath (const QStringList& path);
 
 	public slots:
 		void start ();
 		void stop ();
+
+		void handleGotItems (const QList<StorageItem>& items);
+		void handleGotNewItem (const StorageItem& item, const QByteArray& parentId);
+		void handleGotChanges (const QList<Change>& changes);
 
 		void dirWasCreated (const QString& path);
 		void dirWasRemoved (const QString& path);

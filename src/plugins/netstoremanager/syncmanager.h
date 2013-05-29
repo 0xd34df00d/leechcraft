@@ -72,6 +72,7 @@ namespace NetStoreManager
 
 		void handleGotListing (const QList<StorageItem>& items);
 		void handleGotNewItem (const StorageItem& item, const QByteArray& parentId);
+		void handleGotChanges (const QList<Change>& changes);
 	};
 }
 }

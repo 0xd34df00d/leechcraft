@@ -69,67 +69,6 @@ namespace NetStoreManager
 		return Started_;
 	}
 
-	void Syncer::SetItems (const QList<StorageItem>& items)
-	{
-		Id2Item_.clear ();
-		boost::bimaps::bimap<QByteArray, QStandardItem*> id2StandardItem;
-		for (const auto& item : items)
-		{
-			if (item.IsTrashed_)
-				continue;
-
-			Id2Item_ [item.ID_] = item;
-			id2StandardItem.insert ({ item.ID_, new QStandardItem (item.Name_) });
-		}
-
-		QStandardItem *core = new QStandardItem;
-		for (const auto& pair : id2StandardItem.left)
-		{
-			if (!Id2Item_.contains (Id2Item_ [pair.first].ParentID_))
-				core->appendRow (pair.second);
-			else
-				id2StandardItem.left.at (Id2Item_ [pair.first].ParentID_)->appendRow (pair.second);
-		}
-
-		QList<QStandardItem*> parentItems = { core };
-		QList<QStandardItem*> childItems;
-		while (!parentItems.isEmpty ())
-		{
-			for (auto item : parentItems)
-			{
-				for (int i = 0; i < item->rowCount (); ++i)
-					childItems << item->child (i);
-			}
-
-			for (auto item : childItems)
-			{
-				const auto& id = id2StandardItem.right.at (item);
-				Id2Path_.insert ({ id,
-					(Id2Item_.contains (Id2Item_ [id].ParentID_) ?
-						(Id2Path_.left.at (Id2Item_ [id].ParentID_) + "/" ) :
-						QString ())
-								+ item->text () });
-			}
-			auto tempItems = parentItems;
-			parentItems = childItems;
-			childItems = tempItems;
-
-			childItems.clear();
-		}
-	}
-
-	void Syncer::AddNewItem (const StorageItem& item, const QByteArray& parentId)
-	{
-		Id2Item_ [item.ID_] = item;
-		Id2Path_.insert ({ item.ID_, (Id2Item_.contains (parentId) ?
-				(Id2Path_.left.at (parentId) + "/") :
-				QString ())
-						+ item.Name_ });
-
-		if (!CallsQueue_.isEmpty ())
-			CallsQueue_.dequeue () (QStringList ());
-	}
-
 	void Syncer::CreatePath (const QStringList& path)
 	{
 		if (Id2Path_.right.count (path.join ("/")))
@@ -178,6 +117,72 @@ namespace NetStoreManager
 	{
 		CallsQueue_.clear ();
 		Started_ = false;
+	}
+
+	void Syncer::handleGotItems (const QList<StorageItem>& items)
+	{
+		Id2Item_.clear ();
+		boost::bimaps::bimap<QByteArray, QStandardItem*> id2StandardItem;
+		for (const auto& item : items)
+		{
+			if (item.IsTrashed_)
+				continue;
+
+			Id2Item_ [item.ID_] = item;
+			id2StandardItem.insert ({ item.ID_, new QStandardItem (item.Name_) });
+		}
+
+		QStandardItem *core = new QStandardItem;
+		for (const auto& pair : id2StandardItem.left)
+		{
+			if (!Id2Item_.contains (Id2Item_ [pair.first].ParentID_))
+				core->appendRow (pair.second);
+			else
+				id2StandardItem.left.at (Id2Item_ [pair.first].ParentID_)->appendRow (pair.second);
+		}
+
+		QList<QStandardItem*> parentItems = { core };
+		QList<QStandardItem*> childItems;
+		while (!parentItems.isEmpty ())
+		{
+			for (auto item : parentItems)
+			{
+				for (int i = 0; i < item->rowCount (); ++i)
+					childItems << item->child (i);
+			}
+
+			for (auto item : childItems)
+			{
+				const auto& id = id2StandardItem.right.at (item);
+				Id2Path_.insert ({ id,
+					(Id2Item_.contains (Id2Item_ [id].ParentID_) ?
+					(Id2Path_.left.at (Id2Item_ [id].ParentID_) + "/" ) :
+					QString ())
+					+ item->text () });
+			}
+			auto tempItems = parentItems;
+			parentItems = childItems;
+			childItems = tempItems;
+
+			childItems.clear();
+		}
+	}
+
+	void Syncer::handleGotNewItem(const StorageItem& item, const QByteArray& parentId)
+	{
+		Id2Item_ [item.ID_] = item;
+		Id2Path_.insert ({ item.ID_, (Id2Item_.contains (parentId) ?
+			(Id2Path_.left.at (parentId) + "/") :
+			QString ())
+			+ item.Name_ });
+
+		if (!CallsQueue_.isEmpty ())
+			CallsQueue_.dequeue () (QStringList ());
+	}
+
+	void Syncer::handleGotChanges (const QList<Change>& changes)
+	{
+		//TODO gotChanges
 	}
 
 	void Syncer::dirWasCreated (const QString& path)
