@@ -97,10 +97,12 @@ namespace Dolozhee
 		for (auto& item : UploadedFiles_)
 			item.Mime_ = detector (item.Name_);
 
+		const auto typePage = wiz->GetReportTypePage ();
+		const auto type = typePage->GetReportType ();
+		const auto category = typePage->GetCategoryID ();
+
 		QString title;
 		QString desc;
-		const auto type = wiz->GetReportTypePage ()->GetReportType ();
-		const auto category = wiz->GetReportTypePage ()->GetCategoryID ();
 		switch (type)
 		{
 		case ReportTypePage::Type::Bug:
@@ -113,7 +115,8 @@ namespace Dolozhee
 			break;
 		}
 
-		const auto& data = XMLGenerator ().CreateIssue (title, desc, category, type, UploadedFiles_);
+		const auto& data = XMLGenerator ().CreateIssue (title, desc,
+				category, type, typePage->GetPriority (), UploadedFiles_);
 		auto reply = wiz->PostRequest ("/issues.xml", data);
 		connect (reply,
 				SIGNAL (finished ()),
