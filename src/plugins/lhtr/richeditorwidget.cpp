@@ -325,10 +325,7 @@ namespace LHTR
 		switch (type)
 		{
 		case ContentType::HTML:
-		{
-			auto body = Ui_.View_->page ()->mainFrame ()->findFirstElement ("body");
-			return body.toInnerXml ();
-		}
+			return RevertCustomTags ();
 		case ContentType::PlainText:
 			return Ui_.View_->page ()->mainFrame ()->toPlainText ();
 		}
@@ -578,6 +575,19 @@ namespace LHTR
 		return doc.toString ();
 	}
 
+	QString RichEditorWidget::RevertCustomTags () const
+	{
+		auto frame = Ui_.View_->page ()->mainFrame ();
+		auto root = frame->documentElement ().clone ();
+		for (const auto& tag : CustomTags_)
+		{
+			const auto& elems = root.findAll ("*[__tagname__='" + tag.TagName_ + "']");
+			for (auto elem : elems)
+				elem.setOuterXml (elem.attribute ("__original__"));
+		}
+		return root.toOuterXml ();
+	}
+
 	void RichEditorWidget::handleBgColorSettings ()
 	{
 		const auto& color = XmlSettingsManager::Instance ()
@@ -609,23 +619,13 @@ namespace LHTR
 		switch (idx)
 		{
 		case 1:
-		{
-			auto frame = Ui_.View_->page ()->mainFrame ();
-			for (const auto& tag : CustomTags_)
-			{
-				const auto& elems = frame->findAllElements ("*[__tagname__='" + tag.TagName_ + "']");
-				for (auto elem : elems)
-					elem.setOuterXml (elem.attribute ("__original__"));
-			}
-			Ui_.HTML_->setPlainText (frame->toHtml ());
+			Ui_.HTML_->setPlainText (RevertCustomTags ());
 			break;
-		}
 		case 0:
 			if (!HTMLDirty_)
 				return;
 
 			HTMLDirty_ = false;
-
 			Ui_.View_->setHtml (ExpandCustomTags (Ui_.HTML_->toPlainText ()));
 			break;
 		}
