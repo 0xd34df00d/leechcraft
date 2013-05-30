@@ -85,9 +85,7 @@ namespace Metida
 		void Prepare ();
 		void Release ();
 
-		QList<QPair<QRegExp, QString>> GetHtml2RichPairs () const;
-		QList<QPair<QRegExp, QString>> GetRich2HtmlPairs () const;
-
+		IAdvancedHTMLEditor::CustomTags_t GetCustomTags () const;
 	private:
 		void RestoreAccounts ();
 

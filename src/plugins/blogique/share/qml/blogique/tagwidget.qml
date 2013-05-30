@@ -1,4 +1,5 @@
 import QtQuick 1.1
+import org.LC.common 1.0
 import "tagballoonlist.js" as TagBalloonList
 
 Rectangle
@@ -6,6 +7,20 @@ Rectangle
 	id: rootRectangle
 
 	anchors.fill: parent
+
+	gradient: Gradient
+	{
+		GradientStop
+		{
+			position: 0
+			color: colorProxy.color_TextView_TopColor
+		}
+		GradientStop
+		{
+			position: 1
+			color: colorProxy.color_TextView_BottomColor
+		}
+	}
 
 	property bool inputFieldExsists: false;
 	property Item currentInputField;
@@ -83,6 +98,7 @@ Rectangle
 			width: 50
 			cursorVisible: true
 			focus: true
+			color: colorProxy.color_TextView_TitleTextColor
 
 			property int lastCursorPosition;
 
@@ -151,10 +167,11 @@ Rectangle
 			property string tag;
 			property bool removeBegin;
 
-			color: "#C9C9C9"
-			width: tagName.width + closeImage.width + 13
+			color: colorProxy.color_TextBox_TopColor
+			width: tagName.width + 13 + closeImage.width
 			height: 25
 			radius: 4
+			smooth: true
 
 			NumberAnimation
 			{
@@ -187,25 +204,17 @@ Rectangle
 				{
 					id: tagName
 					text: tag
-					color: "blue"
+					color: colorProxy.color_TextBox_TitleTextColor
 				}
 
-				Image
+				ActionButton
 				{
 					id: closeImage
 					smooth: true
-					height: tagName.height
-					width: tagName.height
-					source: "image://ThemeIcons/dialog-close/" + width
-
-					MouseArea
-					{
-						id: closeButtonMouseArea
-						anchors.fill: parent
-						hoverEnabled: true
-						onEntered: TagBalloonList.setBalloonAsCurrent (rect);
-						onReleased: rect.removeBegin = true;
-					}
+					height: rect.height * 2 / 3
+					width: rect.height * 2 / 3
+					actionIconURL: "image://ThemeIcons/dialog-close"
+					onTriggered: rect.removeBegin = true;
 				}
 			}
 		}

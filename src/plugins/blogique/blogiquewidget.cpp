@@ -421,6 +421,10 @@ namespace Blogique
 						.GetCoreProxy ()->GetColorThemeManager (), this));
 		Ui_.Tags_->engine ()->addImageProvider (ImageProviderID,
 				new Util::ThemeImageProvider (Core::Instance ().GetCoreProxy ()));
+
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
+			Ui_.Tags_->engine ()->addImportPath (cand);
+
 		Ui_.Tags_->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,
 				"blogique", "tagwidget.qml")));
 		connect (Ui_.Tags_->rootObject (),
@@ -678,9 +682,8 @@ namespace Blogique
 			}
 		}
 
-		auto iahe = qobject_cast<IAdvancedHTMLEditor*> (PostEditWidget_);
-		if (iahe)
-			iahe->SetTagsMappings (ibp->GetRich2HtmlPairs (), ibp->GetHtml2RichPairs ());
+		if (auto iahe = qobject_cast<IAdvancedHTMLEditor*> (PostEditWidget_))
+			iahe->SetCustomTags (ibp->GetCustomTags ());
 
 		bool exists = false;
 

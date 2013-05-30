@@ -77,8 +77,7 @@ namespace Hestia
 		void Prepare ();
 		void Release ();
 
-		QList<QPair<QRegExp, QString>> GetRich2HtmlPairs () const;
-		QList<QPair<QRegExp, QString>> GetHtml2RichPairs () const;
+		IAdvancedHTMLEditor::CustomTags_t GetCustomTags () const;
 	private:
 		void RestoreAccounts ();
 
