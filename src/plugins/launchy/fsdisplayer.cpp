@@ -258,9 +258,12 @@ namespace Launchy
 				Infos_ ["Utilities"] = { FSDisplayer::tr ("Utilities"), "applications-utilities" };
 
 				Infos_ ["Application"] = Infos_ ["Utilities"];
+				Infos_ ["AudioVideo"] = Infos_ ["Multimedia"];
 				Infos_ ["InstantMessaging"] = Infos_ ["Internet"];
 				Infos_ ["Music"] = Infos_ ["Multimedia"];
 				Infos_ ["Network"] = Infos_ ["Internet"];
+				Infos_ ["Player"] = Infos_ ["Multimedia"];
+				Infos_ ["Recorder"] = Infos_ ["Multimedia"];
 				Infos_ ["Utility"] = Infos_ ["Utilities"];
 			}
 		};
