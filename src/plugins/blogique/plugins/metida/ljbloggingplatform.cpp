@@ -296,7 +296,7 @@ namespace Metida
 		if (name.isEmpty ())
 			return;
 
-		emit insertTag (QString ("<lj user=\"%1\">").arg (name));
+		emit insertTag (QString ("<lj user=\"%1\" />").arg (name));
 	}
 
 	void LJBloggingPlatform::handleAddLJPoll ()
