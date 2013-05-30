@@ -94,7 +94,7 @@ namespace LHTR
 
 		void SetupTableMenu ();
 
-		void ExecCommand (const QString&, const QString& = QString ());
+		void ExecCommand (const QString&, QString = QString ());
 		bool QueryCommandState (const QString& cmd);
 
 		void OpenFindReplace (bool findOnly);

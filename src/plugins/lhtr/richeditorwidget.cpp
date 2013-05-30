@@ -519,12 +519,12 @@ namespace LHTR
 		removeColumn->setProperty ("ActionIcon", "edit-table-delete-column");
 	}
 
-	void RichEditorWidget::ExecCommand (const QString& cmd, const QString& arg)
+	void RichEditorWidget::ExecCommand (const QString& cmd, QString arg)
 	{
 		auto frame = Ui_.View_->page ()->mainFrame ();
 		const QString& js = arg.isEmpty () ?
 				QString ("document.execCommand('%1', false, null)").arg (cmd) :
-				QString ("document.execCommand('%1', false, '%2')").arg (cmd, arg);
+				QString ("document.execCommand('%1', false, '%2')").arg (cmd, arg.replace ('\n', "\\n"));
 		frame->evaluateJavaScript (js);
 	}
 
