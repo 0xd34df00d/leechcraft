@@ -100,6 +100,7 @@ namespace LHTR
 		void OpenFindReplace (bool findOnly);
 
 		QString ExpandCustomTags (const QString&) const;
+		QString RevertCustomTags () const;
 	private slots:
 		void handleBgColorSettings ();
 

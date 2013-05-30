@@ -153,7 +153,6 @@ namespace LHTR
 		Ui_.View_->installEventFilter (this);
 
 		Ui_.View_->setPage (new EditorPage (Ui_.View_));
-		Ui_.View_->page ()->setContentEditable (true);
 		Ui_.View_->settings ()->setAttribute (QWebSettings::DeveloperExtrasEnabled, true);
 		Ui_.View_->page ()->setLinkDelegationPolicy (QWebPage::DelegateAllLinks);
 		connect (Ui_.View_->page (),
@@ -319,14 +318,6 @@ namespace LHTR
 				SIGNAL (triggered ()),
 				this,
 				SLOT (toggleView ()));
-
-		SetCustomTags ({ { "lj", [] (QDomElement& elem) -> void
-				{
-					const auto& user = elem.attribute ("user");
-					elem.setTagName ("strong");
-					elem.removeAttribute ("user");
-					elem.appendChild (elem.ownerDocument ().createTextNode (user));
-				} } });
 	}
 
 	QString RichEditorWidget::GetContents (ContentType type) const
@@ -334,10 +325,7 @@ namespace LHTR
 		switch (type)
 		{
 		case ContentType::HTML:
-		{
-			auto body = Ui_.View_->page ()->mainFrame ()->findFirstElement ("body");
-			return body.toInnerXml ();
-		}
+			return RevertCustomTags ();
 		case ContentType::PlainText:
 			return Ui_.View_->page ()->mainFrame ()->toPlainText ();
 		}
@@ -352,10 +340,10 @@ namespace LHTR
 		switch (type)
 		{
 		case ContentType::HTML:
-			Ui_.View_->setHtml (contents);
+			Ui_.View_->setHtml (ExpandCustomTags (contents));
 			break;
 		case ContentType::PlainText:
-			Ui_.View_->setHtml ("<html><head><meta http-equiv='content-type' content='text/html; charset=utf-8' /><title></title></head><body><pre>" + contents + "</pre></body></html>");
+			Ui_.View_->setHtml ("<html><head><meta http-equiv='content-type' content='text/html; charset=utf-8' /><title></title></head><body contenteditable='true'><pre>" + contents + "</pre></body></html>");
 			break;
 		}
 	}
@@ -580,11 +568,24 @@ namespace LHTR
 
 				elem.setAttribute ("__tagname__", tag.TagName_);
 				elem.setAttribute ("__original__", origContents.trimmed ());
-				elem.setAttribute ("contentsEditable", "false");
+				elem.setAttribute ("contenteditable", "false");
 			}
 		}
 
 		return doc.toString ();
+	}
+
+	QString RichEditorWidget::RevertCustomTags () const
+	{
+		auto frame = Ui_.View_->page ()->mainFrame ();
+		auto root = frame->documentElement ().clone ();
+		for (const auto& tag : CustomTags_)
+		{
+			const auto& elems = root.findAll ("*[__tagname__='" + tag.TagName_ + "']");
+			for (auto elem : elems)
+				elem.setOuterXml (elem.attribute ("__original__"));
+		}
+		return root.toOuterXml ();
 	}
 
 	void RichEditorWidget::handleBgColorSettings ()
@@ -618,23 +619,13 @@ namespace LHTR
 		switch (idx)
 		{
 		case 1:
-		{
-			auto frame = Ui_.View_->page ()->mainFrame ();
-			for (const auto& tag : CustomTags_)
-			{
-				const auto& elems = frame->findAllElements ("*[__tagname__='" + tag.TagName_ + "']");
-				for (auto elem : elems)
-					elem.setOuterXml (elem.attribute ("__original__"));
-			}
-			Ui_.HTML_->setPlainText (frame->toHtml ());
+			Ui_.HTML_->setPlainText (RevertCustomTags ());
 			break;
-		}
 		case 0:
 			if (!HTMLDirty_)
 				return;
 
 			HTMLDirty_ = false;
-
 			Ui_.View_->setHtml (ExpandCustomTags (Ui_.HTML_->toPlainText ()));
 			break;
 		}
@@ -675,6 +666,8 @@ namespace LHTR
 			return;
 		}
 		frame->evaluateJavaScript (jqueryFile.readAll ());
+
+		frame->findFirstElement ("body").setAttribute ("contenteditable", "true");
 	}
 
 	void RichEditorWidget::on_HTML__textChanged ()
