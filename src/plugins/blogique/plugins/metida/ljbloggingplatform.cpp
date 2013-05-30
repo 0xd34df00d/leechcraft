@@ -34,6 +34,7 @@
 #include <QtDebug>
 #include <QTimer>
 #include <QMainWindow>
+#include <QDomElement>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/passutils.h>
 #include "core.h"
@@ -213,22 +214,32 @@ namespace Metida
 		saveAccounts ();
 	}
 
-	QList<QPair<QRegExp, QString>> LJBloggingPlatform::GetHtml2RichPairs () const
+	IAdvancedHTMLEditor::CustomTags_t LJBloggingPlatform::GetCustomTags () const
 	{
-//  		QPair<QRegExp, QString> ljUser = { QRegExp ("<a\\shref=\"http:\\/\\/(.+).livejournal.com\\/profile\"\\starget=\"_blank\">"
-// 				"<img\\ssrc=\".+userinfo.gif.+\".+><\\/a>"
-// 				"<a\\shref=\"http:\\/\\/(.+).livejournal.com\"\\starget=\"_blank\">(.+)<\\/a>"),
-// 				QString ("<lj user=\"\\1\">") };
-		return { };
-	}
+		IAdvancedHTMLEditor::CustomTags_t tags;
 
-	QList<QPair<QRegExp, QString>> LJBloggingPlatform::GetRich2HtmlPairs () const
-	{
-		QPair<QRegExp, QString> ljUser = { QRegExp ("<lj\\suser=\"(.+)\">(.+)(<\\/lj>)?"),
-			QString ("<a href=\"http://\\1.livejournal.com/profile\" target=\"_blank\">"
-					"<img src=\"http://l-stat.livejournal.com/img/userinfo.gif?v=17080\"></a>"
-					"<a href=\"http://\\1.livejournal.com\" target=\"_blank\">\\1</a>\\2") };
-		return { ljUser };
+		IAdvancedHTMLEditor::CustomTag ljUserTag;
+		ljUserTag.TagName_ = "lj";
+		ljUserTag.ToKnown_ = [] (QDomElement& elem) -> void
+		{
+			const auto& user = elem.attribute ("user");
+			elem.setTagName ("span");
+			QDomElement linkElem = elem.ownerDocument ().createElement ("a");
+			linkElem.setTagName ("a");
+			linkElem.setAttribute ("target", "_blank");
+			QDomElement imgElem = elem.ownerDocument ().createElement ("img");
+			imgElem.setAttribute ("src", "http://l-stat.livejournal.com/img/userinfo.gif?v=17080");
+			linkElem.appendChild (imgElem);
+			QDomElement nameElem = elem.ownerDocument ().createElement ("a");
+			nameElem.setAttribute ("href", QString ("http://%1.livejournal.com/profile").arg (user));
+			nameElem.setAttribute ("target", "_blank");
+			nameElem.appendChild (elem.ownerDocument ().createTextNode (user));
+			elem.appendChild (linkElem);
+			elem.appendChild (nameElem);
+			elem.removeAttribute ("user");
+		};
+		tags << ljUserTag;
+		return tags;
 	}
 
 	void LJBloggingPlatform::RestoreAccounts ()
