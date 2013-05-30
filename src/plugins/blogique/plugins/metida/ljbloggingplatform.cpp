@@ -224,18 +224,23 @@ namespace Metida
 		{
 			const auto& user = elem.attribute ("user");
 			elem.setTagName ("span");
+
 			QDomElement linkElem = elem.ownerDocument ().createElement ("a");
-			linkElem.setTagName ("a");
+			linkElem.setAttribute ("href", QString ("http://%1.livejournal.com/profile").arg (user));
 			linkElem.setAttribute ("target", "_blank");
+
 			QDomElement imgElem = elem.ownerDocument ().createElement ("img");
 			imgElem.setAttribute ("src", "http://l-stat.livejournal.com/img/userinfo.gif?v=17080");
 			linkElem.appendChild (imgElem);
+
 			QDomElement nameElem = elem.ownerDocument ().createElement ("a");
 			nameElem.setAttribute ("href", QString ("http://%1.livejournal.com/profile").arg (user));
 			nameElem.setAttribute ("target", "_blank");
 			nameElem.appendChild (elem.ownerDocument ().createTextNode (user));
+
 			elem.appendChild (linkElem);
 			elem.appendChild (nameElem);
+
 			elem.removeAttribute ("user");
 		};
 		tags << ljUserTag;
