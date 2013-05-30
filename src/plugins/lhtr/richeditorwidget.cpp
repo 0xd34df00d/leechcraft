@@ -346,7 +346,7 @@ namespace LHTR
 			Ui_.View_->setHtml (ExpandCustomTags (contents));
 			break;
 		case ContentType::PlainText:
-			Ui_.View_->setHtml ("<html><head><meta http-equiv='content-type' content='text/html; charset=utf-8' /><title></title></head><body><pre>" + contents + "</pre></body></html>");
+			Ui_.View_->setHtml ("<html><head><meta http-equiv='content-type' content='text/html; charset=utf-8' /><title></title></head><body contenteditable='true'><pre>" + contents + "</pre></body></html>");
 			break;
 		}
 	}
