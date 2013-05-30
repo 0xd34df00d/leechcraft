@@ -56,8 +56,7 @@ namespace LHTR
 		QHash<QWebPage::WebAction, QAction*> WebAction2Action_;
 		QHash<QString, QHash<QString, QAction*>> Cmd2Action_;
 
-		Replacements_t Rich2HTML_;
-		Replacements_t HTML2Rich_;
+		CustomTags_t CustomTags_;
 
 		bool HTMLDirty_;
 
@@ -85,6 +84,7 @@ namespace LHTR
 
 		void InsertHTML (const QString&);
 		void SetTagsMappings (const Replacements_t&, const Replacements_t&);
+		void SetCustomTags (const QList<CustomTag>&);
 		QAction* AddInlineTagInserter (const QString& tagName, const QVariantMap& params);
 		void ExecJS (const QString&);
 
@@ -98,6 +98,8 @@ namespace LHTR
 		bool QueryCommandState (const QString& cmd);
 
 		void OpenFindReplace (bool findOnly);
+
+		QString ExpandCustomTags (const QString&) const;
 	private slots:
 		void handleBgColorSettings ();
 
