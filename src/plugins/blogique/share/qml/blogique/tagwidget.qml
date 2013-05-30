@@ -194,9 +194,9 @@ Rectangle
 				{
 					id: closeImage
 					smooth: true
-					source: "image://ThemeIcons/dialog-close"
 					height: tagName.height
 					width: tagName.height
+					source: "image://ThemeIcons/dialog-close/" + width
 
 					MouseArea
 					{

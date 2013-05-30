@@ -35,6 +35,7 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/structures.h>
+#include <interfaces/ihaverecoverabletabs.h>
 #include "xmlsettingsmanager.h"
 
 class QTranslator;
@@ -47,9 +48,10 @@ namespace Woodpecker
 					, public IInfo
 					, public IHaveTabs
 					, public IHaveSettings
+					, public IHaveRecoverableTabs
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IHaveSettings)
+		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IHaveRecoverableTabs)
 
 		QList<QPair<TabClassInfo, std::function<void (TabClassInfo)>>> TabClasses_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
@@ -68,6 +70,8 @@ namespace Woodpecker
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		void RecoverTabs (const QList<TabRecoverInfo>& infos);
+		
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);
