@@ -133,6 +133,24 @@ namespace Woodpecker
 		emit changeTabIcon (tab, tc.Icon_);
 		emit raiseTab (tab);
 	}
+	
+	void Plugin::RecoverTabs (const QList<TabRecoverInfo>& infos)
+	{
+		for (const auto& recInfo : infos)
+		{
+			if (recInfo.Data_ == "twitterpage/Home")
+			{
+				for (const auto& pair : recInfo.DynProperties_)
+					setProperty (pair.first, pair.second);
+
+				TabOpenRequested (GetUniqueID () + "/Home");
+			}
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "unknown context"
+						<< recInfo.Data_;
+		}	
+	}
 }
 }
 
