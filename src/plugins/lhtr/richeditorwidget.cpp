@@ -318,14 +318,6 @@ namespace LHTR
 				SIGNAL (triggered ()),
 				this,
 				SLOT (toggleView ()));
-
-		SetCustomTags ({ { "lj", [] (QDomElement& elem) -> void
-				{
-					const auto& user = elem.attribute ("user");
-					elem.setTagName ("strong");
-					elem.removeAttribute ("user");
-					elem.appendChild (elem.ownerDocument ().createTextNode (user));
-				} } });
 	}
 
 	QString RichEditorWidget::GetContents (ContentType type) const
