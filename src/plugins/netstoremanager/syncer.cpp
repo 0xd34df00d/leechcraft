@@ -114,8 +114,7 @@ namespace NetStoreManager
 	{
 		Started_ = true;
 		QStringList path = RemotePath_.split ('/');
-		CallsQueue_.append ([this, path] () { CreatePath (path); });
-		CallsQueue_.dequeue () ();
+		CreatePath (path);
 	}
 
 	void Syncer::stop ()
@@ -172,6 +171,9 @@ namespace NetStoreManager
 
 			childItems.clear();
 		}
+
+		if (!CallsQueue_.isEmpty ())
+			CallsQueue_.dequeue () ();
 	}
 
 	void Syncer::handleGotNewItem(const StorageItem& item, const QByteArray& parentId)
@@ -189,6 +191,8 @@ namespace NetStoreManager
 	void Syncer::handleGotChanges (const QList<Change>& changes)
 	{
 		//TODO gotChanges
+		if (!CallsQueue_.isEmpty ())
+			CallsQueue_.dequeue () ();
 	}
 
 	void Syncer::dirWasCreated (const QString& path)
@@ -197,11 +201,15 @@ namespace NetStoreManager
 			return;
 
 		QString dirPath = path;
+		QString parentPath = QFileInfo (dirPath).dir ().absolutePath ();
 		dirPath.replace (LocalPath_, RemotePath_);
+		parentPath.replace (LocalPath_, RemotePath_);
 
-		CallsQueue_ << [this, dirPath] ()
-			{ CreatePath (dirPath.split ("/")); };
-		CallsQueue_.dequeue () ();
+		if (Id2Path_.right.count (parentPath))
+			CreatePath (dirPath.split ("/"));
+		else
+			CallsQueue_ << [this, dirPath] ()
+				{ CreatePath (dirPath.split ("/")); };
 	}
 
 	void Syncer::dirWasRemoved (const QString& path)
@@ -213,18 +221,30 @@ namespace NetStoreManager
 		dirPath.replace (LocalPath_, RemotePath_);
 		if (!Id2Path_.right.count (dirPath))
 			return;
-		CallsQueue_ << [this, dirPath] () { DeletePath (dirPath.split ('/')); };
-		CallsQueue_.dequeue () ();
+		DeletePath (dirPath.split ('/'));
 	}
 
 	void Syncer::fileWasCreated (const QString& path)
 	{
-		qDebug () << Q_FUNC_INFO << path;
+		QString filePath = path;
+		QString dirPath = QFileInfo (filePath).dir ().absolutePath ();
+		filePath.replace (LocalPath_, RemotePath_);
+		dirPath.replace (LocalPath_, RemotePath_);
+		const QByteArray& id = Id2Path_.right.at (dirPath);
+		if (Id2Path_.right.count (dirPath))
+			Account_->Upload (path, id);
+		else
+			CallsQueue_ << [this, path, id] () { Account_->Upload (path, id); };
 	}
 
 	void Syncer::fileWasRemoved (const QString& path)
 	{
-		qDebug () << Q_FUNC_INFO << path;
+		if (!SFLAccount_)
+			return;
+
+		QString filePath = path;
+		filePath.replace (LocalPath_, RemotePath_);
+		DeletePath (filePath.split ('/'));
 	}
 
 	void Syncer::fileWasUpdated (const QString& path)
