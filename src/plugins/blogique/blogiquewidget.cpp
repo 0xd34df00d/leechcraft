@@ -682,9 +682,8 @@ namespace Blogique
 			}
 		}
 
-		auto iahe = qobject_cast<IAdvancedHTMLEditor*> (PostEditWidget_);
-		if (iahe)
-			iahe->SetTagsMappings (ibp->GetRich2HtmlPairs (), ibp->GetHtml2RichPairs ());
+		if (auto iahe = qobject_cast<IAdvancedHTMLEditor*> (PostEditWidget_))
+			iahe->SetCustomTags (ibp->GetCustomTags ());
 
 		bool exists = false;
 
