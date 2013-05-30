@@ -391,17 +391,17 @@ namespace Woodpecker
 		UpdateReady_ = true;
 	}
 	
-	QByteArray TwitterPage::GetTabRecoverData() const
+	QByteArray TwitterPage::GetTabRecoverData () const
 	{
 		return "twitterpage/Home";
 	}
 	
-	QIcon TwitterPage::GetTabRecoverIcon() const
+	QIcon TwitterPage::GetTabRecoverIcon () const
 	{
 		return GetTabClassInfo ().Icon_;
 	}
 	
-	QString TwitterPage::GetTabRecoverName() const
+	QString TwitterPage::GetTabRecoverName () const
 	{
 		return GetTabClassInfo ().VisibleName_;
 	}

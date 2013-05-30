@@ -134,18 +134,16 @@ namespace Woodpecker
 		emit raiseTab (tab);
 	}
 	
-	void Plugin::RecoverTabs (const QList< TabRecoverInfo >& infos)
+	void Plugin::RecoverTabs (const QList<TabRecoverInfo>& infos)
 	{
-		for (const auto& recInfo: infos)
+		for (const auto& recInfo : infos)
 		{
-			qDebug () << Q_FUNC_INFO << recInfo.Data_;
-
 			if (recInfo.Data_ == "twitterpage/Home")
 			{
-				Q_FOREACH (const auto& pair, recInfo.DynProperties_)
+				for (const auto& pair : recInfo.DynProperties_)
 					setProperty (pair.first, pair.second);
 
-				TabOpenRequested (GetUniqueID() + "/Home");
+				TabOpenRequested (GetUniqueID () + "/Home");
 			}
 			else
 				qWarning () << Q_FUNC_INFO
