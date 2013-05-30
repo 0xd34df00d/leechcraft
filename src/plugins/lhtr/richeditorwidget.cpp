@@ -153,7 +153,6 @@ namespace LHTR
 		Ui_.View_->installEventFilter (this);
 
 		Ui_.View_->setPage (new EditorPage (Ui_.View_));
-		Ui_.View_->page ()->setContentEditable (true);
 		Ui_.View_->settings ()->setAttribute (QWebSettings::DeveloperExtrasEnabled, true);
 		Ui_.View_->page ()->setLinkDelegationPolicy (QWebPage::DelegateAllLinks);
 		connect (Ui_.View_->page (),
@@ -675,6 +674,8 @@ namespace LHTR
 			return;
 		}
 		frame->evaluateJavaScript (jqueryFile.readAll ());
+
+		frame->findFirstElement ("body").setAttribute ("contenteditable", "true");
 	}
 
 	void RichEditorWidget::on_HTML__textChanged ()
