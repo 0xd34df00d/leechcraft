@@ -281,6 +281,10 @@ namespace LHTR
 					SLOT (handleFont ()));
 		font->setProperty ("ActionIcon", "list-add-font");
 		ViewBar_->addSeparator ();
+		
+		addCmd (tr ("Mark as quote"), "mail-reply-sender", "formatBlock", barAdd, "blockquote");
+		
+		ViewBar_->addSeparator ();
 
 		addCmd (tr ("Indent more"), "format-indent-more", "indent", barAdd, QString ());
 		addCmd (tr ("Indent less"), "format-indent-less", "outdent", barAdd, QString ());
