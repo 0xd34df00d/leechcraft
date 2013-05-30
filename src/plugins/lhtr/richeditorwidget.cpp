@@ -282,6 +282,10 @@ namespace LHTR
 		font->setProperty ("ActionIcon", "list-add-font");
 		ViewBar_->addSeparator ();
 
+		addCmd (tr ("Mark as quote"), "mail-reply-sender", "formatBlock", barAdd, "blockquote");
+
+		ViewBar_->addSeparator ();
+
 		addCmd (tr ("Indent more"), "format-indent-more", "indent", barAdd, QString ());
 		addCmd (tr ("Indent less"), "format-indent-less", "outdent", barAdd, QString ());
 
@@ -315,6 +319,14 @@ namespace LHTR
 				SIGNAL (triggered ()),
 				this,
 				SLOT (toggleView ()));
+
+		SetCustomTags ({ { "lj", [] (QDomElement& elem) -> void
+				{
+					const auto& user = elem.attribute ("user");
+					elem.setTagName ("strong");
+					elem.removeAttribute ("user");
+					elem.appendChild (elem.ownerDocument ().createTextNode (user));
+				} } });
 	}
 
 	QString RichEditorWidget::GetContents (ContentType type) const
@@ -324,19 +336,7 @@ namespace LHTR
 		case ContentType::HTML:
 		{
 			auto body = Ui_.View_->page ()->mainFrame ()->findFirstElement ("body");
-			QString xml = body.toOuterXml ();
-
-			const int lb = 10;
-			QString init = xml.left (lb);
-			init.replace ("body", "div");
-			xml.replace (0, lb, init);
-
-			QString tail = xml.right (lb);
-			tail.replace ("body", "div");
-			xml.chop (lb);
-			xml.append (tail);
-
-			return xml;
+			return body.toInnerXml ();
 		}
 		case ContentType::PlainText:
 			return Ui_.View_->page ()->mainFrame ()->toPlainText ();
@@ -406,25 +406,18 @@ namespace LHTR
 			InternalSetBgColor (color, type);
 	}
 
-	namespace
-	{
-		QString ProcessWith (QString html, const IAdvancedHTMLEditor::Replacements_t& rxs)
-		{
-			for (const auto& rx : rxs)
-				html.replace (rx.first, rx.second);
-			return html;
-		}
-	}
-
 	void RichEditorWidget::InsertHTML (const QString& html)
 	{
-		ExecCommand ("insertHTML", ProcessWith (html, HTML2Rich_));
+		ExecCommand ("insertHTML", ExpandCustomTags (html));
 	}
 
 	void RichEditorWidget::SetTagsMappings (const Replacements_t& rich2html, const Replacements_t& html2rich)
 	{
-		Rich2HTML_ = rich2html;
-		HTML2Rich_ = html2rich;
+	}
+
+	void RichEditorWidget::SetCustomTags (const CustomTags_t& tags)
+	{
+		CustomTags_ = tags;
 	}
 
 	QAction* RichEditorWidget::AddInlineTagInserter (const QString& tagName, const QVariantMap& params)
@@ -566,6 +559,34 @@ namespace LHTR
 		dia->show ();
 	}
 
+	QString RichEditorWidget::ExpandCustomTags (const QString& html) const
+	{
+		QDomDocument doc;
+		if (!doc.setContent (html))
+			return html;
+
+		for (const auto& tag : CustomTags_)
+		{
+			const auto& elems = doc.elementsByTagName (tag.TagName_);
+			for (int i = 0; i < elems.size (); ++i)
+			{
+				auto elem = elems.at (i).toElement ();
+
+				QString origContents;
+				QTextStream str (&origContents);
+				elem.save (str, 1);
+
+				tag.ToKnown_ (elem);
+
+				elem.setAttribute ("__tagname__", tag.TagName_);
+				elem.setAttribute ("__original__", origContents.trimmed ());
+				elem.setAttribute ("contentsEditable", "false");
+			}
+		}
+
+		return doc.toString ();
+	}
+
 	void RichEditorWidget::handleBgColorSettings ()
 	{
 		const auto& color = XmlSettingsManager::Instance ()
@@ -597,14 +618,24 @@ namespace LHTR
 		switch (idx)
 		{
 		case 1:
-			Ui_.HTML_->setPlainText (ProcessWith (Ui_.View_->page ()->mainFrame ()->toHtml (), Rich2HTML_));
-			break;
-		case 0:
-			if (HTMLDirty_)
+		{
+			auto frame = Ui_.View_->page ()->mainFrame ();
+			for (const auto& tag : CustomTags_)
 			{
-				Ui_.View_->setHtml (ProcessWith (Ui_.HTML_->toPlainText (), HTML2Rich_));
-				HTMLDirty_ = false;
+				const auto& elems = frame->findAllElements ("*[__tagname__='" + tag.TagName_ + "']");
+				for (auto elem : elems)
+					elem.setOuterXml (elem.attribute ("__original__"));
 			}
+			Ui_.HTML_->setPlainText (frame->toHtml ());
+			break;
+		}
+		case 0:
+			if (!HTMLDirty_)
+				return;
+
+			HTMLDirty_ = false;
+
+			Ui_.View_->setHtml (ExpandCustomTags (Ui_.HTML_->toPlainText ()));
 			break;
 		}
 
@@ -689,8 +720,26 @@ namespace LHTR
 
 	void RichEditorWidget::handleCmd ()
 	{
-		ExecCommand (sender ()->property ("Editor/Command").toString (),
-				sender ()->property ("Editor/Args").toString ());
+		const auto& command = sender ()->property ("Editor/Command").toString ();
+		const auto& args = sender ()->property ("Editor/Args").toString ();
+
+		if (command.toLower () != "formatblock")
+		{
+			ExecCommand (command, args);
+			return;
+		}
+
+		QString jstr;
+		jstr += "var selection = window.getSelection().getRangeAt(0);"
+				"var parentItem = findParent(selection.commonAncestorContainer.parentNode, '" + args + "');"
+				"if (parentItem == null) {"
+				"	document.execCommand('formatBlock', false, '" + args + "');"
+				"} else {"
+				"	parentItem.outerHTML = parentItem.innerHTML;"
+				"}";
+
+		auto frame = Ui_.View_->page ()->mainFrame ();
+		frame->evaluateJavaScript (jstr);
 	}
 
 	void RichEditorWidget::handleInlineCmd ()

@@ -255,7 +255,7 @@ namespace Util
 				&length, reinterpret_cast<uchar**> (&data), XA_ATOM))
 			return result;
 
-		for (auto i = 0; i < length; ++i)
+		for (ulong i = 0; i < length; ++i)
 		{
 			const auto curAtom = data [i];
 
@@ -294,7 +294,7 @@ namespace Util
 				&length, reinterpret_cast<uchar**> (&data), XA_ATOM))
 			return result;
 
-		for (auto i = 0; i < length; ++i)
+		for (ulong i = 0; i < length; ++i)
 		{
 			const auto curAtom = data [i];
 
@@ -622,7 +622,7 @@ namespace Util
 				&length, reinterpret_cast<uchar**> (&data)))
 			return result;
 
-		for (auto i = 0; i < length; ++i)
+		for (ulong i = 0; i < length; ++i)
 			result << data [i];
 
 		XFree (data);

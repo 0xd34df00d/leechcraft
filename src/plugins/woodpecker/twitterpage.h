@@ -37,6 +37,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/structures.h>
+#include <interfaces/ihaverecoverabletabs.h>
 #include "twitterinterface.h"
 #include "twitdelegate.h"
 #include "ui_twitterpage.h"
@@ -47,9 +48,10 @@ namespace Woodpecker
 {
 	class TwitterPage : public QWidget
 						, public ITabWidget
+						, public IRecoverableTab
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
+		Q_INTERFACES (ITabWidget IRecoverableTab)
 
 		const TabClassInfo TC_;
 		QObject *const ParentPlugin_;
@@ -91,6 +93,11 @@ namespace Woodpecker
 		QList<QAction*> GetTabBarContextMenuActions () const;
 		QMap<QString, QList<QAction*>> GetWindowMenus () const;
 		TabClassInfo GetTabClassInfo () const;
+
+		QByteArray GetTabRecoverData () const;
+		QString GetTabRecoverName () const;
+		QIcon GetTabRecoverIcon () const;
+		
 	public slots:
 		void tryToLogin ();
 		void requestUserTimeline (const QString& username);
@@ -104,9 +111,11 @@ namespace Woodpecker
 		void webOpen ();
 		void scrolledDown (int sliderPos);
 		void setUpdateReady ();
+		
 	private slots:
 		void on_TwitList__customContextMenuRequested (const QPoint&);
 		void updateTweetList ();
+		
 	signals:
 		void removeTab (QWidget*);
 		void changeTabName (QWidget*, const QString&);
@@ -117,6 +126,7 @@ namespace Woodpecker
 		void delegateEntity (const LeechCraft::Entity&,
 							 int*, QObject**);
 		void gotEntity (const LeechCraft::Entity&);
+		void tabRecoverDataChanged ();
 	};
 }
 }

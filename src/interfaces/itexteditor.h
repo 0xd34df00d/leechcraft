@@ -186,24 +186,25 @@ protected:
 	virtual void textChanged () = 0;
 };
 
+class QDomElement;
+
 /** @brief Interface for HTML/WYSIWYG editors with some advanced functionality.
  *
- * @section TagMappings Tag mappings
+ * @section CustomTags Custom tags
  *
  * It is sometimes desirable to add support for custom tags not defined
- * in HTML standards, like LJ's user tags. It is possible to define such
- * custom tags by the means of tag mappings, each tag mapping being
- * a pair of QRegExp and QString, which are fed to QString::replace().
- * The QString can refer to the expressions captured by the QRegExp
- * effectively adding support for custom tag parameters (refer to
- * QString::replace() documentation for more information).
+ * in HTML standards, like LJ's user tags. This is done via the
+ * SetCustomTags() method, which operates on a list of CustomTag
+ * structures.
  *
- * There are two lists comprising tag mappings, first being a translation
- * from the view to source (that would translate an LJ user tag into
- * appropriate spans, imgs and other tags) and the other being the
- * the reverse translation (that would turn that stuff back into an LJ
- * user tag). These lists are passed to the SetTagsMappings() function,
- * the first list called html2rich and the second called rich2html.
+ * Each custom tag consists of a tag name that is used to identify the
+ * tag, and the function that makes HTML out of the given tag with the
+ * given attributes and contents. The converter function is invoked each
+ * time the web view is should be re-rendered after HTML edit has been
+ * modified. See the documentation of CustomTag for more information.
+ *
+ * All of the above is implemented using XML parsing, so the document
+ * should be a valid XML document as well.
  */
 class Q_DECL_EXPORT IAdvancedHTMLEditor
 {
@@ -212,6 +213,38 @@ public:
 
 	typedef QPair<QRegExp, QString> Replacement_t;
 	typedef QList<Replacement_t> Replacements_t;
+
+	/** @brief Describes a single custom tag.
+	 */
+	struct CustomTag
+	{
+		/** @brief The name of the custom tag, like \em lj.
+		 */
+		QString TagName_;
+
+		/** @brief The converter of an instance of the tag to HTML.
+		 *
+		 * This function is invoked to convert an instance of the tag
+		 * (passed as a QDomElement) to HTML. The conversion should be
+		 * done in-place: the resulting HTML should be contained in the
+		 * passed QDomElement.
+		 *
+		 * An example function that boldifies
+		 * <code><lj user="$username"/></code>:
+		 *
+		 * \code
+		 * [] (QDomElement& elem) -> void
+		 * {
+		 * 	const auto& user = elem.attribute ("user");
+		 * 	elem.setTagName ("strong");
+		 * 	elem.removeAttribute ("user");
+		 * 	elem.appendChild (elem.ownerDocument ().createTextNode (user));
+		 * }
+		 * \endcode
+		 */
+		std::function<void (QDomElement&)> ToKnown_;
+	};
+	typedef QList<CustomTag> CustomTags_t;
 
 	/** @brief Inserts the given HTML at the current cursor position.
 	 *
@@ -233,6 +266,17 @@ public:
 	 * @param[in] html2rich Mappings for source view -> view conversion.
 	 */
 	virtual void SetTagsMappings (const Replacements_t& rich2html, const Replacements_t& html2rich) = 0;
+
+	/** @brief Adds support for custom tags not present in HTML standard.
+	 *
+	 * This function should be called before ITextEditor::SetContents().
+	 *
+	 * See the IAdvancedHTMLEditor class reference for more information
+	 * about tags mappings.
+	 *
+	 * @param[in] tags The tags mapping.
+	 */
+	virtual void SetCustomTags (const CustomTags_t& tags) = 0;
 
 	/** @brief Adds a custom action to wrap selected text into given tag.
 	 *
