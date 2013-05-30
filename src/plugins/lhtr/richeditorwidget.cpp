@@ -281,9 +281,9 @@ namespace LHTR
 					SLOT (handleFont ()));
 		font->setProperty ("ActionIcon", "list-add-font");
 		ViewBar_->addSeparator ();
-		
+
 		addCmd (tr ("Mark as quote"), "mail-reply-sender", "formatBlock", barAdd, "blockquote");
-		
+
 		ViewBar_->addSeparator ();
 
 		addCmd (tr ("Indent more"), "format-indent-more", "indent", barAdd, QString ());
@@ -693,8 +693,26 @@ namespace LHTR
 
 	void RichEditorWidget::handleCmd ()
 	{
-		ExecCommand (sender ()->property ("Editor/Command").toString (),
-				sender ()->property ("Editor/Args").toString ());
+		const auto& command = sender ()->property ("Editor/Command").toString ();
+		const auto& args = sender ()->property ("Editor/Args").toString ();
+
+		if (command.toLower () != "formatblock")
+		{
+			ExecCommand (command, args);
+			return;
+		}
+
+		QString jstr;
+		jstr += "var selection = window.getSelection().getRangeAt(0);"
+				"var parentItem = findParent(selection.commonAncestorContainer.parentNode, '" + args + "');"
+				"if (parentItem == null) {"
+				"	document.execCommand('formatBlock', false, '" + args + "');"
+				"} else {"
+				"	parentItem.outerHTML = parentItem.innerHTML;"
+				"}";
+
+		auto frame = Ui_.View_->page ()->mainFrame ();
+		frame->evaluateJavaScript (jstr);
 	}
 
 	void RichEditorWidget::handleInlineCmd ()
