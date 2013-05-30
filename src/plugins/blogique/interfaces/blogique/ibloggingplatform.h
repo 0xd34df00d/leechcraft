@@ -32,6 +32,7 @@
 #include <functional>
 #include <QMetaType>
 #include <QAction>
+#include <interfaces/itexteditor.h>
 
 class QObject;
 class QIcon;
@@ -253,9 +254,7 @@ namespace Blogique
 		 */
 		virtual QList<QWidget*> GetBlogiqueSideWidgets () const = 0;
 
-		virtual QList<QPair<QRegExp, QString>> GetRich2HtmlPairs () const = 0;
-
-		virtual QList<QPair<QRegExp, QString>> GetHtml2RichPairs () const = 0;
+		virtual IAdvancedHTMLEditor::CustomTags_t GetCustomTags () const = 0;
 
 	protected:
 		/** @brief Notifies about new account.
