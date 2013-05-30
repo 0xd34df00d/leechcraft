@@ -551,7 +551,12 @@ namespace LHTR
 	{
 		QDomDocument doc;
 		if (!doc.setContent (html))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to set content from"
+					<< html;
 			return html;
+		}
 
 		for (const auto& tag : CustomTags_)
 		{
