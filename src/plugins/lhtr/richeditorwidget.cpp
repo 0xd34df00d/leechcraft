@@ -579,7 +579,7 @@ namespace LHTR
 
 				elem.setAttribute ("__tagname__", tag.TagName_);
 				elem.setAttribute ("__original__", origContents.trimmed ());
-				elem.setAttribute ("contentsEditable", "false");
+				elem.setAttribute ("contenteditable", "false");
 			}
 		}
 
