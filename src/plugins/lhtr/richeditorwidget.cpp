@@ -561,7 +561,7 @@ namespace LHTR
 		for (const auto& tag : CustomTags_)
 		{
 			const auto& elems = doc.elementsByTagName (tag.TagName_);
-			for (int i = 0; i < elems.size (); ++i)
+			for (int i = elems.size () - 1; i >= 0; --i)
 			{
 				auto elem = elems.at (i).toElement ();
 
