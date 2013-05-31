@@ -799,6 +799,7 @@ namespace NetStoreManager
 
 	void ManagerTab::showTrashContent (bool show)
 	{
+		OpenTrash_->setText (show ? tr ("Close trash") : tr ("Open trash"));
 		ShowListItemsWithParent (QByteArray (), show);
 	}
 
