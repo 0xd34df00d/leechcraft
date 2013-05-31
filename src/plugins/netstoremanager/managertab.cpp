@@ -354,7 +354,7 @@ namespace NetStoreManager
 		if (acc != GetCurrentAccount ())
 			return;
 
-		ShowListItemsWithParent (LastParentID_);
+		ShowListItemsWithParent (LastParentID_, OpenTrash_->isChecked ());
 
 		Ui_.FilesView_->header ()->resizeSection (Columns::Name,
 				XmlSettingsManager::Instance ().Property ("ViewSectionSize",
