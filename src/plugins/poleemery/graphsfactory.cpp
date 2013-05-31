@@ -81,6 +81,27 @@ namespace Poleemery
 				days2infos [(days - daysBack) + then.time ().hour () / 24.] = pos->Balance_;
 			}
 
+			if (days2infos.isEmpty ())
+				return days2infos;
+
+			auto minNum = days2infos.begin ().key ();
+			auto prevBalance = days2infos.begin ().value ();
+			for (int d = 0; d < days; ++d)
+				for (int h = 0; h < 24; ++h)
+				{
+					const auto val = d + h / 24.;
+					if (val <= minNum)
+						continue;
+
+					if (days2infos.contains (val))
+					{
+						prevBalance = days2infos.value (val);
+						continue;
+					}
+
+					days2infos [val] = prevBalance;
+				}
+
 			return days2infos;
 		}
 
