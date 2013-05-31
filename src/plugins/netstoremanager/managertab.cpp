@@ -41,7 +41,6 @@
 #include <util/util.h>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/istorageplugin.h"
-#include "interfaces/netstoremanager/isupportfilelistings.h"
 #include "accountsmanager.h"
 #include "filestreemodel.h"
 #include "xmlsettingsmanager.h"
@@ -230,6 +229,10 @@ namespace NetStoreManager
 						SIGNAL (gotFileUrl (QUrl, QByteArray)),
 						this,
 						SLOT (handleGotFileUrl (QUrl, QByteArray)));
+				connect (acc->GetQObject (),
+						SIGNAL (gotChanges (QList<Change>)),
+						this,
+						SLOT (handleGotChanges (QList<Change>)));
 			}
 		}
 
@@ -931,6 +934,21 @@ namespace NetStoreManager
 		QString text = tr ("File URL has been copied to the clipboard.");
 		Proxy_->GetEntityManager ()->
 				HandleEntity (Util::MakeNotification ("NetStoreManager", text, PInfo_));
+	}
+
+
+	void ManagerTab::handleGotChanges(const QList<Change>& changes)
+	{
+		for (const auto& change : changes)
+		{
+			if (change.Deleted_)
+				Id2Item_.remove (change.ItemID_);
+			else
+				Id2Item_ [change.ItemID_] = change.Item_;
+		}
+
+		LastParentID_ = GetParentIDInListViewMode ();
+		FillModel (GetCurrentAccount ());
 	}
 
 }
