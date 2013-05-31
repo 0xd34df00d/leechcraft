@@ -111,7 +111,7 @@ namespace GoogleDrive
 		void handleFileList (const QList<DriveItem>& items);
 		void handleSharedFileId (const QString& id);
 		void handleGotNewItem (const DriveItem& item);
-		void handleGotChanges (const QList<DriveChanges>& changes, qlonglong lastId);
+		void handleGotChanges (const QList<DriveChanges>& changes);
 
 	signals:
 		void upError (const QString& error, const QString& filepath);
