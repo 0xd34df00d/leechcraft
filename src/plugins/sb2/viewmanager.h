@@ -37,6 +37,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/iquarkcomponentprovider.h>
 
+class QSettings;
 class QMainWindow;
 class QDir;
 class QStandardItemModel;
@@ -78,6 +79,7 @@ namespace SB2
 
 		ViewGeometryManager *GeomManager_;
 		const bool IsDesktopMode_;
+		const int OnloadWindowIndex_;
 	public:
 		ViewManager (ICoreProxy_ptr, Util::ShortcutManager*, QMainWindow*, QObject* = 0);
 
@@ -103,6 +105,8 @@ namespace SB2
 		QuarkManager_ptr GetAddedQuarkManager (const QUrl&) const;
 
 		int GetWindowIndex () const;
+		
+		std::shared_ptr<QSettings> GetSettings () const;
 	private:
 		void AddComponent (QuarkComponent_ptr);
 		void AddComponent (QuarkComponent_ptr, QuarkManager_ptr);

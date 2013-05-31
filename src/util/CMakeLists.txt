@@ -36,6 +36,7 @@ SET (SRCS
 	models/treeitem.cpp
 	qml/colorthemeproxy.cpp
 	qml/widthiconprovider.cpp
+	qml/settableiconprovider.cpp
 	qml/themeimageprovider.cpp
 	qml/unhidelistmodel.cpp
 	qml/unhidelistviewbase.cpp

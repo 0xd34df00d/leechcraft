@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,50 +29,32 @@
 
 #pragma once
 
-#include <QWidget>
-#include <interfaces/blogique/iblogiquesidewidget.h>
-#include <interfaces/blogique/ipostoptionswidget.h>
-#include "ui_postoptionswidget.h"
+#include <QObject>
+#include <interfaces/iinfo.h>
+#include <interfaces/iquarkcomponentprovider.h>
 
 namespace LeechCraft
 {
-namespace Blogique
+namespace Mellonetray
 {
-namespace Hestia
-{
-	class LocalBlogAccount;
-
-	class PostOptionsWidget : public QWidget
-							, public IBlogiqueSideWidget
-							, public IPostOptionsWidget
+	class Plugin : public QObject
+				 , public IInfo
+				 , public IQuarkComponentProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blogique::IBlogiqueSideWidget
-				LeechCraft::Blogique::IPostOptionsWidget)
+		Q_INTERFACES (IInfo IQuarkComponentProvider)
 
-		Ui::PostOptions Ui_;
-		LocalBlogAccount *Account_;
-
+		QuarkComponent_ptr Panel_;
 	public:
-		PostOptionsWidget (QWidget *parent = 0);
-
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
 		QString GetName () const;
-		SideWidgetType GetWidgetType () const;
-		QVariantMap GetPostOptions () const;
-		void SetPostOptions (const QVariantMap& map);
-		QVariantMap GetCustomData () const;
-		void SetCustomData (const QVariantMap& map);
-		void SetAccount (QObject *account);
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-		QStringList GetTags () const;
-		void SetTags (const QStringList& tags);
-		QDateTime GetPostDate () const;
-		void SetPostDate (const QDateTime& date);
-
-	private slots:
-		void on_CurrentTime__released ();
+		QuarkComponents_t GetComponents () const;
 	};
 }
 }
-}
-

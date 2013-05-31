@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,45 +29,64 @@
 
 #pragma once
 
-#include <QMetaType>
-#include <QVariant>
+#include <QAbstractItemModel>
+#include <QIcon>
 
 namespace LeechCraft
 {
-namespace Blogique
+namespace Mellonetray
 {
-	/** @brief Interface representing a side widget with main post options'.
-	*
-	**/
-	class IPostOptionsWidget
+	class TrayModel : public QAbstractItemModel
 	{
+		Q_OBJECT
+
+		bool IsValid_ = false;
+
+		ulong TrayWinID_ = 0;
+		int DamageEvent_ = 0;
+
+		struct TrayItem
+		{
+			ulong WID_;
+		};
+		QList<TrayItem> Items_;
+
+		enum Role
+		{
+			ItemID = Qt::UserRole + 1
+		};
+
+		TrayModel ();
+
+		TrayModel (const TrayModel&) = delete;
+		TrayModel (TrayModel&&) = delete;
+
+		TrayModel& operator= (const TrayModel&) = delete;
+		TrayModel& operator= (TrayModel&&) = delete;
 	public:
-		virtual ~IPostOptionsWidget () {};
+		static TrayModel& Instance ();
+		void Release ();
 
-		/** @brief Returns list of tags for entry.
-		*
-		* @return List of tags
-		**/
-		virtual QStringList GetTags () const = 0;
+		bool IsValid () const;
 
-		/** @brief Set tags.
-		 * 
-		 **/
-		virtual void SetTags (const QStringList& tags) = 0;
+		int columnCount (const QModelIndex& parent = QModelIndex()) const;
+		int rowCount (const QModelIndex& parent = QModelIndex()) const;
+		QModelIndex index (int row, int column, const QModelIndex& parent = QModelIndex()) const;
+		QModelIndex parent (const QModelIndex& child) const;
+		QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
 
-		/** @brief Returns date when post was written.
-		 * 
-		 * @return Post date
-		 **/
-		virtual QDateTime GetPostDate () const = 0;
+		void Filter (XEvent*);
+	private:
+		template<typename T>
+		void HandleClientMsg (T);
 
-		/** @brief Set post timestamp.
-		 * 
-		 **/
-		virtual void SetPostDate (const QDateTime& dt) = 0;
+		void Add (ulong);
+		void Remove (ulong);
+		void Update (ulong);
+
+		QList<TrayItem>::iterator FindItem (ulong);
+	signals:
+		void updateRequired (ulong);
 	};
 }
 }
-
-Q_DECLARE_INTERFACE (LeechCraft::Blogique::IPostOptionsWidget,
-		"org.Deviant.LeechCraft.Blogique.IPostOptionsWidget/1.0");

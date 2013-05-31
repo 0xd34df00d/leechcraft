@@ -89,6 +89,7 @@ namespace SB2
 	, Window_ (window)
 	, GeomManager_ (new ViewGeometryManager (this))
 	, IsDesktopMode_ (qApp->arguments ().contains ("--desktop"))
+	, OnloadWindowIndex_ (GetWindowIndex ())
 	{
 		const auto& file = Util::GetSysPath (Util::SysPath::QML, "sb2", "SideView.qml");
 		if (file.isEmpty ())
@@ -290,6 +291,27 @@ namespace SB2
 		return Quark2Manager_ [url];
 	}
 
+	std::shared_ptr<QSettings> ViewManager::GetSettings () const
+	{
+		const auto subSet = GetWindowIndex () || IsDesktopMode_;
+
+		const auto& org = QCoreApplication::organizationName ();
+		const auto& app = QCoreApplication::applicationName () + "_SB2";
+		std::shared_ptr<QSettings> result (new QSettings (org, app),
+				[subSet] (QSettings *settings)
+				{
+					if (subSet)
+						settings->endGroup ();
+				});
+
+		if (subSet)
+			result->beginGroup (QString ("%1_%2")
+					.arg (OnloadWindowIndex_)
+					.arg (IsDesktopMode_));
+
+		return result;
+	}
+
 	void ViewManager::AddComponent (QuarkComponent_ptr comp)
 	{
 		QuarkManager_ptr mgr;
@@ -380,20 +402,18 @@ namespace SB2
 
 	void ViewManager::SaveRemovedList () const
 	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_SB2");
-		settings.beginGroup ("RemovedList");
-		settings.setValue ("IDs", QStringList (RemovedIDs_.toList ()));
-		settings.endGroup ();
+		auto settings = GetSettings ();
+		settings->beginGroup ("RemovedList");
+		settings->setValue ("IDs", QStringList (RemovedIDs_.toList ()));
+		settings->endGroup ();
 	}
 
 	void ViewManager::LoadRemovedList ()
 	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_SB2");
-		settings.beginGroup ("RemovedList");
-		RemovedIDs_ = QSet<QString>::fromList (settings.value ("IDs").toStringList ());
-		settings.endGroup ();
+		auto settings = GetSettings ();
+		settings->beginGroup ("RemovedList");
+		RemovedIDs_ = QSet<QString>::fromList (settings->value ("IDs").toStringList ());
+		settings->endGroup ();
 	}
 
 	void ViewManager::SaveQuarkOrder ()
@@ -405,20 +425,18 @@ namespace SB2
 			PreviousQuarkOrder_ << item->data (ViewItemsModel::Role::QuarkClass).toString ();
 		}
 
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_SB2");
-		settings.beginGroup ("QuarkOrder");
-		settings.setValue ("IDs", PreviousQuarkOrder_);
-		settings.endGroup ();
+		auto settings = GetSettings ();
+		settings->beginGroup ("QuarkOrder");
+		settings->setValue ("IDs", PreviousQuarkOrder_);
+		settings->endGroup ();
 	}
 
 	void ViewManager::LoadQuarkOrder ()
 	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_SB2");
-		settings.beginGroup ("QuarkOrder");
-		PreviousQuarkOrder_ = settings.value ("IDs").toStringList ();
-		settings.endGroup ();
+		auto settings = GetSettings ();
+		settings->beginGroup ("QuarkOrder");
+		PreviousQuarkOrder_ = settings->value ("IDs").toStringList ();
+		settings->endGroup ();
 	}
 
 	int ViewManager::GetWindowIndex () const
@@ -434,11 +452,10 @@ namespace SB2
 
 		const auto pos = Window_->toolBarArea (Toolbar_);
 
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_SB2");
-		settings.beginGroup ("Toolbars");
-		settings.setValue ("Pos_" + QString::number (GetWindowIndex ()), static_cast<int> (pos));
-		settings.endGroup ();
+		auto settings = GetSettings ();
+		settings->beginGroup ("Toolbars");
+		settings->setValue ("Pos_" + QString::number (GetWindowIndex ()), static_cast<int> (pos));
+		settings->endGroup ();
 	}
 }
 }

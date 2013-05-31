@@ -7,6 +7,7 @@ SelectedBottomColor=90,50,56
 SelectedBorderColor=90,98,109
 HoveredBorderColor=88,88,88
 PressedBorderColor=90,98,109
+TextColor=211,211,211
 
 [Panel]
 TopColor=90,98,109

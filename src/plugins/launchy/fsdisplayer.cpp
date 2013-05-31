@@ -142,7 +142,7 @@ namespace Launchy
 		View_->rootContext ()->setContextProperty ("itemsModelFilter", ItemsProxyModel_);
 		View_->rootContext ()->setContextProperty ("catsModel", CatsModel_);
 		View_->rootContext ()->setContextProperty ("colorProxy",
-				new Util::ColorThemeProxy (proxy->GetColorThemeManager ()));
+				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), parent));
 
 		connect (View_,
 				SIGNAL (statusChanged (QDeclarativeView::Status)),
@@ -258,9 +258,12 @@ namespace Launchy
 				Infos_ ["Utilities"] = { FSDisplayer::tr ("Utilities"), "applications-utilities" };
 
 				Infos_ ["Application"] = Infos_ ["Utilities"];
+				Infos_ ["AudioVideo"] = Infos_ ["Multimedia"];
 				Infos_ ["InstantMessaging"] = Infos_ ["Internet"];
 				Infos_ ["Music"] = Infos_ ["Multimedia"];
 				Infos_ ["Network"] = Infos_ ["Internet"];
+				Infos_ ["Player"] = Infos_ ["Multimedia"];
+				Infos_ ["Recorder"] = Infos_ ["Multimedia"];
 				Infos_ ["Utility"] = Infos_ ["Utilities"];
 			}
 		};

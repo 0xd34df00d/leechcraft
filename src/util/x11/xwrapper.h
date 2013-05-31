@@ -60,7 +60,17 @@ namespace Util
 
 		XWrapper ();
 	public:
+		enum class Layer
+		{
+			Top,
+			Bottom,
+			Normal
+		};
+
 		static XWrapper& Instance ();
+
+		Display* GetDisplay () const;
+		Window GetRootWindow () const;
 
 		bool Filter (XEvent*);
 
@@ -72,6 +82,7 @@ namespace Util
 
 		Window GetActiveApp ();
 
+		bool IsLCWindow (Window);
 		bool ShouldShow (Window);
 
 		void Subscribe (Window);
@@ -86,13 +97,28 @@ namespace Util
 
 		void RaiseWindow (Window);
 		void MinimizeWindow (Window);
+		void MaximizeWindow (Window);
+		void UnmaximizeWindow (Window);
+		void ShadeWindow (Window);
+		void UnshadeWindow (Window);
+		void MoveWindowTo (Window, Layer);
+		void CloseWindow (Window);
+
+		void ResizeWindow (Window, int, int);
+
+		int GetDesktopCount ();
+		int GetCurrentDesktop ();
+		void SetCurrentDesktop (int);
+		int GetWindowDesktop (Window);
+		void MoveWindowToDesktop (Window, int);
+
+		Atom GetAtom (const QString&);
 	private:
 		template<typename T>
 		void HandlePropNotify (T);
 
 		Window GetActiveWindow ();
 
-		Atom GetAtom (const QString&);
 		bool GetWinProp (Window, Atom, ulong*, uchar**, Atom = static_cast<Atom> (0)) const;
 		bool GetRootWinProp (Atom, ulong*, uchar**, Atom = static_cast<Atom> (0)) const;
 		QList<Atom> GetWindowType (Window);

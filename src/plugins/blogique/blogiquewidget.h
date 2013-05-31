@@ -50,6 +50,7 @@ namespace Blogique
 	class IAccount;
 	class DraftEntriesWidget;
 	class BlogEntriesWidget;
+	class TagsProxyModel;
 
 	class BlogiqueWidget : public QWidget
 						, public ITabWidget
@@ -78,6 +79,7 @@ namespace Blogique
 		QAction *ProgressBarLabelAction_;
 		QLabel *ProgressBarLabel_;
 		QAction *ProgressBarAction_;
+		QList<QAction*> InlineTagInserters_;
 
 		DraftEntriesWidget *DraftEntriesWidget_;
 		BlogEntriesWidget *BlogEntriesWidget_;
@@ -87,10 +89,19 @@ namespace Blogique
 
 		EntryType EntryType_;
 		qint64 EntryId_;
+		QUrl EntryUrl_;
 
 		bool EntryChanged_;
 
+		TagsProxyModel *TagsProxyModel_;
+		QStandardItemModel *TagsModel_;
+
 	public:
+		enum TagRoles
+		{
+			TagFrequency = Qt::UserRole + 1
+		};
+
 		BlogiqueWidget (QWidget *parent = 0);
 
 		QObject* ParentMultiTabs ();
@@ -108,7 +119,14 @@ namespace Blogique
 		void SetTextEditor ();
 		void SetToolBarActions ();
 		void SetDefaultSideWidgets ();
+		void PrepareQmlWidgets ();
 		void RemovePostingTargetsWidget ();
+
+		void SetPostDate (const QDateTime& dt);
+		QDateTime GetPostDate () const;
+
+		void SetPostTags (const QStringList& tags);
+		QStringList GetPostTags () const;
 
 		void ClearEntry ();
 
@@ -122,6 +140,8 @@ namespace Blogique
 		void handleEntryRemoved ();
 		void handleRequestEntriesBegin ();
 		void handleRequestEntriesEnd ();
+		void handleTagsUpdated (const QHash<QString, int>& tags);
+		void handleInsertTag (const QString& tag);
 
 	private slots:
 		void handleCurrentAccountChanged (int id);
@@ -138,6 +158,11 @@ namespace Blogique
 		void submitTo (const Entry& e = Entry ());
 		void on_SideWidget__dockLocationChanged (Qt::DockWidgetArea area);
 		void on_UpdateProfile__triggered ();
+		void on_CurrentTime__released ();
+		void on_SelectTags__toggled (bool checked);
+		void handleTagTextChanged (const QString& text);
+		void handleTagRemoved (const QString& tag);
+		void on_OpenInBrowser__triggered ();
 
 	signals:
 		void removeTab (QWidget *tab);
@@ -145,6 +170,8 @@ namespace Blogique
 		void changeTabName (QWidget *content, const QString& name);
 
 		void tabRecoverDataChanged ();
+
+		void tagSelected (const QString& tag);
 	};
 }
 }

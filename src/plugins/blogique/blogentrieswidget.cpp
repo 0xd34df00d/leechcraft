@@ -119,6 +119,7 @@ namespace Blogique
 		Ui_.LoadBlogEntries_->addActions (LoadActions_);
 
 		Account_->RequestStatistics ();
+		Account_->RequestTags ();
 		Account_->RequestLastEntries ();
 	}
 

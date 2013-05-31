@@ -7,6 +7,7 @@ SelectedBottomColor=90,50,56
 SelectedBorderColor=255,101,0
 HoveredBorderColor=255,255,255
 PressedBorderColor=0,0,0
+TextColor=211,211,211
 
 [Panel]
 TopColor=Palette.Window

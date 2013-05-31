@@ -28,15 +28,20 @@
  **********************************************************************/
 
 #include "postoptionswidget.h"
+#include <QDeclarativeContext>
+#include <QDeclarativeEngine>
+#include <QGraphicsObject>
 #include <QtDebug>
 #include <util/util.h>
+#include <util/sys/paths.h>
+#include <util/qml/themeimageprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/icurrentsongkeeper.h>
+#include "core.h"
 #include "entryoptions.h"
 #include "ljaccount.h"
 #include "ljprofile.h"
 #include "selectgroupsdialog.h"
-#include "core.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -51,6 +56,7 @@ namespace Metida
 	, AllowMask_ (0)
 	{
 		Ui_.setupUi (this);
+
 		XmlSettingsManager::Instance ().RegisterObject ("AutoUpdateCurrentMusic",
 				this, "handleAutoUpdateCurrentMusic");
 		handleAutoUpdateCurrentMusic ();
@@ -96,6 +102,31 @@ namespace Metida
 		map ["showInFriendsPage"] = Ui_.ShowInFriendsPage_->isChecked ();
 		if (Ui_.UserPic_->currentIndex ())
 			map ["avatar"] = Ui_.UserPic_->currentText ();
+
+		QStringList likes;
+
+		if (Ui_.VkontakteLike_->isChecked ())
+			likes << "vkontakte";
+		if (Ui_.FacebookLike_->isChecked ())
+			likes << "facebook";
+		if (Ui_.GoogleLike_->isChecked ())
+			likes << "google";
+		if (Ui_.TwitterLike_->isChecked ())
+			likes << "twitter";
+		if (Ui_.LiveJournalReward_->isChecked ())
+			likes << "livejournal";
+		if (Ui_.LiveJournalRepost_->isChecked ())
+			likes << "repost";
+		if (Ui_.TumblrLike_->isChecked ())
+			likes << "tumblr";
+		if (Ui_.SurfingbirdLike_->isChecked ())
+			likes << "surfingbird";
+
+		map ["likes"] = likes;
+
+
+		if (XmlSettingsManager::Instance ().Property ("SaveSelectedButtons", true).toBool ())
+			XmlSettingsManager::Instance ().setProperty ("SavedLikeButtons", likes);
 
 		return map;
 	}
@@ -188,6 +219,27 @@ namespace Metida
 		Ui_.NotifyAboutComments_->setChecked (map.contains ("notify") ?
 			map ["notify"].toBool () :
 			true);
+
+		if (map.contains ("content"))
+		{
+			QRegExp rxp ("<lj-like\\s?(buttons=\"((\\w+,?)+)\"\\s?)?\\/?>", Qt::CaseInsensitive);
+			QStringList likes;
+			if (rxp.indexIn (map ["content"].toString ()) != -1)
+				likes = rxp.cap (2).split (',');
+
+			if (rxp.capturedTexts ().count () == 1)
+				likes = { "repost", "vkontakte", "facebook",
+						"google", "livejournal", "twitter", "tumblr" "surfingbird" };
+
+			Ui_.VkontakteLike_->setChecked (likes.contains ("vkontakte"));
+			Ui_.FacebookLike_->setChecked (likes.contains ("facebook"));
+			Ui_.GoogleLike_->setChecked (likes.contains ("google"));
+			Ui_.LiveJournalReward_->setChecked (likes.contains ("livejournal"));
+			Ui_.LiveJournalRepost_->setChecked (likes.contains ("repost"));
+			Ui_.TwitterLike_->setChecked (likes.contains ("twitter"));
+			Ui_.TumblrLike_->setChecked (likes.contains ("tumblr"));
+			Ui_.SurfingbirdLike_->setChecked (likes.contains ("surfingbird"));
+		}
 	}
 
 	QVariantMap PostOptionsWidget::GetCustomData () const
@@ -224,41 +276,9 @@ namespace Metida
 		const QString& path = Util::CreateIfNotExists ("blogique/metida/avatars")
 				.absoluteFilePath (Account_->GetAccountID ().toBase64 ().replace ('/', '_'));
 		QPixmap pxm (path);
-		Ui_.UserPicLabel_->setPixmap (pxm.scaled (64, 64));
+		Ui_.UserPicLabel_->setPixmap (pxm.scaled (pxm.width (), pxm.height ()));
 
 		Ui_.UserPic_->addItems (profile->GetProfileData ().AvatarsID_);
-	}
-
-	QStringList PostOptionsWidget::GetTags () const
-	{
-		QStringList tags;
-		for (auto tag : Ui_.Tags_->text ().split (","))
-			tags << tag.trimmed ();
-		return tags;
-	}
-
-	void PostOptionsWidget::SetTags (const QStringList& tags)
-	{
-		Ui_.Tags_->setText (tags.join (", "));
-	}
-
-	QDateTime PostOptionsWidget::GetPostDate () const
-	{
-		return !Ui_.TimestampBox_->isChecked () ?
-				QDateTime::currentDateTime () :
-				QDateTime (QDate (Ui_.Year_->value (),
-							Ui_.Month_->currentIndex () + 1,
-							Ui_.Date_->value ()),
-						Ui_.Time_->time ());
-	}
-
-	void PostOptionsWidget::SetPostDate (const QDateTime& date)
-	{
-		Ui_.TimestampBox_->setChecked (true);
-		Ui_.Year_->setValue (date.date ().year ());
-		Ui_.Month_->setCurrentIndex (date.date ().month () - 1);
-		Ui_.Date_->setValue (date.date ().day ());
-		Ui_.Time_->setTime (date.time ());
 	}
 
 	void PostOptionsWidget::FillItems ()
@@ -287,6 +307,20 @@ namespace Metida
 				AdultContent::WithoutAdultContent);
 		Ui_.Adult_->addItem (tr ("For adults (>14)"), AdultContent::AdultsFrom14);
 		Ui_.Adult_->addItem (tr ("For adults (>18)"), AdultContent::AdultsFrom18);
+
+		if (XmlSettingsManager::Instance ().Property ("SaveSelectedButtons", true).toBool ())
+		{
+			const auto& likes = XmlSettingsManager::Instance ()
+					.Property ("SavedLikeButtons", QStringList ()).toStringList ();
+			Ui_.VkontakteLike_->setChecked (likes.contains ("vkontakte"));
+			Ui_.FacebookLike_->setChecked (likes.contains ("facebook"));
+			Ui_.GoogleLike_->setChecked (likes.contains ("google"));
+			Ui_.LiveJournalReward_->setChecked (likes.contains ("livejournal"));
+			Ui_.LiveJournalRepost_->setChecked (likes.contains ("repost"));
+			Ui_.TwitterLike_->setChecked (likes.contains ("twitter"));
+			Ui_.TumblrLike_->setChecked (likes.contains ("tumblr"));
+			Ui_.SurfingbirdLike_->setChecked (likes.contains ("surfingbird"));
+		}
 	}
 
 	namespace
@@ -309,15 +343,6 @@ namespace Metida
 					this,
 					SLOT (handleCurrentSongChanged (Media::AudioInfo)),
 					Qt::UniqueConnection);
-	}
-
-	void PostOptionsWidget::on_CurrentTime__released ()
-	{
-		QDateTime current = QDateTime::currentDateTime ();
-		Ui_.Year_->setValue (current.date ().year ());
-		Ui_.Month_->setCurrentIndex (current.date ().month () - 1);
-		Ui_.Date_->setValue (current.date ().day ());
-		Ui_.Time_->setTime (current.time ());
 	}
 
 	void PostOptionsWidget::on_Access__activated (int index)
@@ -367,7 +392,6 @@ namespace Metida
 			Ui_.Music_->setText (QString ("\"%1\" by %2").arg (ai.Title_)
 					.arg (ai.Artist_));
 	}
-
 }
 }
 }

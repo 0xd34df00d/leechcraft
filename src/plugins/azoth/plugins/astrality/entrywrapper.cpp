@@ -216,6 +216,10 @@ namespace Astrality
 	{
 	}
 
+	void EntryWrapper::ChatTabClosed ()
+	{
+	}
+
 	AuthStatus EntryWrapper::GetAuthStatus () const
 	{
 		if (C_->publishState () == Tp::Contact::PresenceStateAsk)

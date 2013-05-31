@@ -150,7 +150,6 @@ namespace VelvetBird
 
 	void Protocol::PushAccount (PurpleAccount *pacc)
 	{
-		const auto& name = QString::fromUtf8 (purple_account_get_alias (pacc));
 		auto account = new Account (pacc, this);
 		Accounts_ << account;
 		emit accountAdded (account);

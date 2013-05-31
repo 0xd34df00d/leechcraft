@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>744</width>
-    <height>542</height>
+    <height>857</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -88,20 +88,229 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="BlogPosts_">
           <property name="geometry">
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>369</width>
-            <height>490</height>
+            <width>96</width>
+            <height>26</height>
            </rect>
           </property>
           <attribute name="label">
            <string>Blog posts</string>
           </attribute>
+         </widget>
+         <widget class="QWidget" name="PostOptions_">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>369</width>
+            <height>776</height>
+           </rect>
+          </property>
+          <attribute name="label">
+           <string>Post options</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_5">
+           <item row="2" column="0">
+            <widget class="QWidget" name="PluginOptionsWidget_" native="true">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_3">
+              <property name="margin">
+               <number>2</number>
+              </property>
+              <item row="0" column="0">
+               <layout class="QGridLayout" name="gridLayout_2">
+                <item row="0" column="0">
+                 <widget class="QDeclarativeView" name="TagsCloud_">
+                  <property name="resizeMode">
+                   <enum>QDeclarativeView::SizeRootObjectToView</enum>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QGroupBox" name="TimestampBox_">
+             <property name="title">
+              <string>Modify timestamp</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_4">
+              <property name="horizontalSpacing">
+               <number>0</number>
+              </property>
+              <property name="verticalSpacing">
+               <number>-1</number>
+              </property>
+              <property name="margin">
+               <number>2</number>
+              </property>
+              <item row="1" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_4">
+                <item>
+                 <widget class="QTimeEdit" name="Time_">
+                  <property name="calendarPopup">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="CurrentTime_">
+                  <property name="text">
+                   <string>Now</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item row="0" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_3">
+                <item>
+                 <widget class="QSpinBox" name="Date_">
+                  <property name="minimum">
+                   <number>1</number>
+                  </property>
+                  <property name="maximum">
+                   <number>31</number>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="Month_">
+                  <item>
+                   <property name="text">
+                    <string>January</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>February</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>March</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>April</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>May</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>June</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Jule</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>August</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>September</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>October</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>November</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>December</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSpinBox" name="Year_">
+                  <property name="minimum">
+                   <number>2000</number>
+                  </property>
+                  <property name="maximum">
+                   <number>9999</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QGroupBox" name="TagsBox_">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="title">
+              <string>Tags</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout">
+              <item row="2" column="1">
+               <widget class="QPushButton" name="SelectTags_">
+                <property name="text">
+                 <string>Tags</string>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0" rowspan="3">
+               <widget class="QDeclarativeView" name="Tags_">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="resizeMode">
+                 <enum>QDeclarativeView::SizeRootObjectToView</enum>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </widget>
        </item>
@@ -149,6 +358,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QDeclarativeView</class>
+   <extends>QGraphicsView</extends>
+   <header>QtDeclarative/QDeclarativeView</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

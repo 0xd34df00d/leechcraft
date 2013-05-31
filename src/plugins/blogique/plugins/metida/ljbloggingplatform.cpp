@@ -34,6 +34,7 @@
 #include <QtDebug>
 #include <QTimer>
 #include <QMainWindow>
+#include <QDomElement>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/passutils.h>
 #include "core.h"
@@ -43,6 +44,7 @@
 #include "localstorage.h"
 #include "recentcommentssidewidget.h"
 #include "xmlsettingsmanager.h"
+#include "polldialog.h"
 
 namespace LeechCraft
 {
@@ -56,8 +58,10 @@ namespace Metida
 	, PluginProxy_ (0)
 	, LJUser_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("user-properties"),
 			tr ("Add LJ user"), this))
-	, LJCut_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("view-split-top-bottom"),
-			"Cut", this))
+	, LJPoll_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("office-chart-pie"),
+			tr ("Create poll"), this))
+	, LJCut_ (new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("user-properties"),
+			tr ("Insert LJ cut"), this))
 	, FirstSeparator_ (new QAction (this))
 	, MessageCheckingTimer_ (new QTimer (this))
 	, CommentsCheckingTimer_ (new QTimer (this))
@@ -68,10 +72,10 @@ namespace Metida
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleAddLJUser ()));
-		connect (LJUser_,
+		connect (LJPoll_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (handleAddLJCut ()));
+				SLOT (handleAddLJPoll ()));
 
 		connect (MessageCheckingTimer_,
 				SIGNAL (timeout ()),
@@ -177,7 +181,17 @@ namespace Metida
 
 	QList<QAction*> LJBloggingPlatform::GetEditorActions () const
 	{
-		return { FirstSeparator_, LJUser_, LJCut_ };
+		return { FirstSeparator_, LJUser_, LJPoll_ };
+	}
+
+	QList<InlineTagInserter> LJBloggingPlatform::GetInlineTagInserters () const
+	{
+		return { InlineTagInserter { "lj-cut", QVariantMap (), [] (QAction *action)
+				{
+					action->setText ("Insert cut");
+					action->setIcon (Core::Instance ().GetCoreProxy ()->
+							GetIcon ("distribute-vertical-equal"));
+				} } };
 	}
 
 	QList<QWidget*> LJBloggingPlatform::GetBlogiqueSideWidgets () const
@@ -198,6 +212,39 @@ namespace Metida
 	void LJBloggingPlatform::Release ()
 	{
 		saveAccounts ();
+	}
+
+	IAdvancedHTMLEditor::CustomTags_t LJBloggingPlatform::GetCustomTags () const
+	{
+		IAdvancedHTMLEditor::CustomTags_t tags;
+
+		IAdvancedHTMLEditor::CustomTag ljUserTag;
+		ljUserTag.TagName_ = "lj";
+		ljUserTag.ToKnown_ = [] (QDomElement& elem) -> void
+		{
+			const auto& user = elem.attribute ("user");
+			elem.setTagName ("span");
+
+			QDomElement linkElem = elem.ownerDocument ().createElement ("a");
+			linkElem.setAttribute ("href", QString ("http://%1.livejournal.com/profile").arg (user));
+			linkElem.setAttribute ("target", "_blank");
+
+			QDomElement imgElem = elem.ownerDocument ().createElement ("img");
+			imgElem.setAttribute ("src", "http://l-stat.livejournal.com/img/userinfo.gif?v=17080");
+			linkElem.appendChild (imgElem);
+
+			QDomElement nameElem = elem.ownerDocument ().createElement ("a");
+			nameElem.setAttribute ("href", QString ("http://%1.livejournal.com/profile").arg (user));
+			nameElem.setAttribute ("target", "_blank");
+			nameElem.appendChild (elem.ownerDocument ().createTextNode (user));
+
+			elem.appendChild (linkElem);
+			elem.appendChild (nameElem);
+
+			elem.removeAttribute ("user");
+		};
+		tags << ljUserTag;
+		return tags;
 	}
 
 	void LJBloggingPlatform::RestoreAccounts ()
@@ -253,11 +300,53 @@ namespace Metida
 				tr ("Enter LJ user name"));
 		if (name.isEmpty ())
 			return;
+
+		emit insertTag (QString ("<lj user=\"%1\" />").arg (name));
 	}
 
-	void LJBloggingPlatform::handleAddLJCut ()
+	void LJBloggingPlatform::handleAddLJPoll ()
 	{
+		PollDialog pollDlg;
+		if (pollDlg.exec () == QDialog::Rejected)
+			return;
 
+		QStringList pqParts;
+		QString pqPart = QString ("<lj-pq type=\"%1\" %2>%3%4</lj-pq>");
+		bool isPqParam = false;
+		for (const auto& pollType : pollDlg.GetPollTypes ())
+		{
+			const auto& map = pollDlg.GetPollFields (pollType);
+			QStringList pqParams;
+			if (pollType == "check" ||
+					pollType == "radio" ||
+					pollType == "drop")
+			{
+				isPqParam = false;
+				for (const auto& value : map.values ())
+					pqParams << QString ("<lj-pi>%1</lj-pi>")
+							.arg (value.toString ());
+			}
+			else
+			{
+				isPqParam = true;
+				for (const auto& key : map.keys ())
+					pqParams << QString ("%1=\"%2\"")
+							.arg (key)
+							.arg (map [key].toString ());
+			}
+			pqParts << pqPart
+					.arg (pollType)
+					.arg (isPqParam ? pqParams.join (" ") : QString ())
+					.arg (pollDlg.GetPollQuestion (pollType))
+					.arg (!isPqParam ? pqParams.join (" ") : QString ());
+		}
+
+		QString pollPart = QString ("<lj-poll name=\"%1\" whovote=\"%2\" whoview=\"%3\">%4</lj-poll>")
+				.arg (pollDlg.GetPollName ())
+				.arg (pollDlg.GetWhoCanVote ())
+				.arg (pollDlg.GetWhoCanView ())
+				.arg (pqParts.join (""));
+		emit insertTag (pollPart);
 	}
 
 	void LJBloggingPlatform::handleAccountValidated (bool validated)

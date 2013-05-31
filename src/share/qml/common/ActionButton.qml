@@ -12,16 +12,20 @@ Item {
     property bool actionIconScales: true
 
     property bool hoverScalesIcons: true
-    property bool transparentStyle: false
+    property real decoOpacity: 0
 
     property alias isHovered: actionMouseArea.containsMouse
+    property alias acceptedButtons: actionMouseArea.acceptedButtons
 
+    property string actionText
     property string textTooltip
     property string overlayText
 
     property string orientation: "horizontal"
+    property bool isButtonVertical: orientation == "vertical"
 
     signal triggered()
+    signal clicked(variant event)
     signal hovered()
     signal hoverLeft()
     signal held()
@@ -29,22 +33,22 @@ Item {
     Rectangle {
         id: actionRect
 
-        radius: width / 10
+        radius: Math.min(width, height) / 10
         smooth: true
 
         anchors.fill: parent
         anchors.margins: hoverScalesIcons ? 2 : 0
-        border.width: transparentStyle ? 0 : (isStrongHighlight ? 2 : 1)
-        border.color: colorProxy.color_ToolButton_BorderColor
+        border.width: isStrongHighlight ? 2 : 1
+        border.color: colorProxy.setAlpha(colorProxy.color_ToolButton_BorderColor, decoOpacity)
 
         gradient: Gradient {
             GradientStop {
                 position: 0
-                color: transparentStyle ? "#00000000" : colorProxy.color_ToolButton_TopColor
+                color: colorProxy.setAlpha(colorProxy.color_ToolButton_TopColor, decoOpacity)
             }
             GradientStop {
                 position: 1
-                color: transparentStyle ? "#00000000" : colorProxy.color_ToolButton_BottomColor
+                color: colorProxy.setAlpha(colorProxy.color_ToolButton_BottomColor, decoOpacity)
             }
         }
 
@@ -78,11 +82,32 @@ Item {
         Image {
             id: actionImageElem
 
-            anchors.fill: parent
+            anchors.top: parent.top
+            anchors.left: parent.left
+            width: Math.min(parent.width, parent.height)
+            height: width
 
             source: actionIconScales ? (actionIconURL + '/' + width) : actionIconURL
             smooth: true
             cache: false
+
+            fillMode: Image.PreserveAspectFit
+        }
+
+        Text {
+            id: actionTextElem
+
+            anchors.verticalCenter: actionImageElem.verticalCenter
+            anchors.left: actionImageElem.right
+            anchors.leftMargin: 2
+            anchors.right: parent.right
+
+            visible: !isButtonVertical && actionText.length > 0
+
+            text: actionText
+            elide: Text.ElideRight
+            font.pointSize: 7
+            color: colorProxy.color_ToolButton_TextColor
         }
 
         Common { id: buttCommon }
@@ -93,7 +118,7 @@ Item {
             anchors.fill: parent
             hoverEnabled: true
 
-            onClicked: actionRoot.triggered()
+            onClicked: mouse.button == Qt.LeftButton ? actionRoot.triggered() : actionRoot.clicked(mouse)
             onPressAndHold: actionRoot.held()
             onEntered: {
                 actionRoot.hovered();
@@ -147,16 +172,31 @@ Item {
         opacity: isHighlight ? 1 : 0
         Behavior on opacity { PropertyAnimation {} }
 
-        width: parent.width / (orientation == "vertical" ? 12 : 2)
-        height: parent.width / (orientation == "vertical" ? 2 : 12)
+        width: parent.height / 18
+        height: parent.width / 2
         radius: 1
 
-        anchors.bottom: orientation == "vertical" ? undefined : parent.bottom
-        anchors.horizontalCenter: orientation == "vertical" ? undefined : parent.horizontalCenter
-        anchors.left: orientation == "vertical" ? parent.left : undefined
-        anchors.verticalCenter: orientation == "vertical" ? parent.verticalCenter : undefined
+        rotation: isButtonVertical ? 0 : 90
 
-        color: colorProxy.color_ToolButton_SelectedBorderColor
+        anchors.horizontalCenter: isButtonVertical ? undefined : parent.horizontalCenter
+        anchors.left: isButtonVertical ? parent.left : undefined
+        anchors.verticalCenter: isButtonVertical ? parent.verticalCenter : parent.bottom
+        anchors.verticalCenterOffset: isButtonVertical ? 0 : (-width / 2)
+
+        gradient: Gradient {
+            GradientStop {
+                position: 0
+                color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedBorderColor, 0)
+            }
+            GradientStop {
+                position: 0.5
+                color: colorProxy.color_ToolButton_SelectedBorderColor
+            }
+            GradientStop {
+                position: 1
+                color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedBorderColor, 0)
+            }
+        }
     }
 
     Rectangle {
@@ -165,15 +205,30 @@ Item {
         opacity: isStrongHighlight ? 1 : 0
         Behavior on opacity { PropertyAnimation {} }
 
-        width: parent.width / (orientation == "vertical" ? 12 : 2)
-        height: parent.width / (orientation == "vertical" ? 2 : 12)
+        width: parent.height / 18
+        height: parent.width / 2
         radius: 1
 
-        anchors.top: orientation == "vertical" ? undefined : parent.top
-        anchors.horizontalCenter: orientation == "vertical" ? undefined : parent.horizontalCenter
-        anchors.right: orientation == "vertical" ? parent.right : undefined
-        anchors.verticalCenter: orientation == "vertical" ? parent.verticalCenter : undefined
+        rotation: isButtonVertical ? 0 : 90
 
-        color: colorProxy.color_ToolButton_SelectedBorderColor
+        anchors.horizontalCenter: isButtonVertical ? undefined : parent.horizontalCenter
+        anchors.right: isButtonVertical ? parent.right : undefined
+        anchors.verticalCenter: isButtonVertical ? parent.verticalCenter : parent.top
+        anchors.verticalCenterOffset: isButtonVertical ? 0 : (width / 2)
+
+        gradient: Gradient {
+            GradientStop {
+                position: 0
+                color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedBorderColor, 0)
+            }
+            GradientStop {
+                position: 0.5
+                color: colorProxy.color_ToolButton_SelectedBorderColor
+            }
+            GradientStop {
+                position: 1
+                color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedBorderColor, 0)
+            }
+        }
     }
 }

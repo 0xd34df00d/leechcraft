@@ -35,6 +35,7 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/structures.h>
+#include <interfaces/ihaverecoverabletabs.h>
 #include "xmlsettingsmanager.h"
 
 class QTranslator;
@@ -47,35 +48,38 @@ namespace Woodpecker
 					, public IInfo
 					, public IHaveTabs
 					, public IHaveSettings
+					, public IHaveRecoverableTabs
 	{
-			Q_OBJECT
-			Q_INTERFACES (IInfo IHaveTabs IHaveSettings)
+		Q_OBJECT
+		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IHaveRecoverableTabs)
 
-			QList<QPair<TabClassInfo, std::function<void (TabClassInfo)>>> TabClasses_;
-			Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
-	
-			void MakeTab (QWidget*, const TabClassInfo&);
-			
-		public:
-			void Init (ICoreProxy_ptr);
-			void SecondInit ();
-			void Release ();
-			QByteArray GetUniqueID () const;
-			QString GetName () const;
-			QString GetInfo () const;
-			QIcon GetIcon () const;
+		QList<QPair<TabClassInfo, std::function<void (TabClassInfo)>>> TabClasses_;
+		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 
-			TabClasses_t GetTabClasses () const;
-			void TabOpenRequested (const QByteArray&);
-			Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-		signals:
-			void addNewTab (const QString&, QWidget*);
-			void removeTab (QWidget*);
-			void changeTabName (QWidget*, const QString&);
-			void changeTabIcon (QWidget*, const QIcon&);
-			void changeTooltip (QWidget*, QWidget*);
-			void statusBarChanged (QWidget*, const QString&);
-			void raiseTab (QWidget*);
+		void MakeTab (QWidget*, const TabClassInfo&);
+
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+
+		TabClasses_t GetTabClasses () const;
+		void TabOpenRequested (const QByteArray&);
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		void RecoverTabs (const QList<TabRecoverInfo>& infos);
+		
+	signals:
+		void addNewTab (const QString&, QWidget*);
+		void removeTab (QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void changeTooltip (QWidget*, QWidget*);
+		void statusBarChanged (QWidget*, const QString&);
+		void raiseTab (QWidget*);
 	};
 };
 };

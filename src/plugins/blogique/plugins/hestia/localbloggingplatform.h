@@ -70,12 +70,14 @@ namespace Hestia
 		void RegisterAccount (const QString& name, const QList<QWidget*>& widgets);
 		void RemoveAccount (QObject *account);
 		QList<QAction*> GetEditorActions () const;
+		QList<InlineTagInserter> GetInlineTagInserters () const;
 		QList<QWidget*> GetBlogiqueSideWidgets () const;
 
 		void SetPluginProxy (QObject *proxy);
 		void Prepare ();
 		void Release ();
 
+		IAdvancedHTMLEditor::CustomTags_t GetCustomTags () const;
 	private:
 		void RestoreAccounts ();
 
@@ -87,6 +89,7 @@ namespace Hestia
 		void accountAdded (QObject *account);
 		void accountRemoved (QObject *account);
 		void accountValidated (QObject *account, bool validated);
+		void insertTag (const QString& tag);
 	};
 }
 }

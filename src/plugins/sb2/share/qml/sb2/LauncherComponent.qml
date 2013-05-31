@@ -68,7 +68,6 @@ Rectangle {
                     textTooltip: tabClassName
                     isHighlight: openedTabsCount
                     isStrongHighlight: isCurrentTab
-                    transparentStyle: true
                     isCurrent: isCurrentTab
 
                     Timer {
@@ -103,7 +102,6 @@ Rectangle {
                         anchors.right: parent.right
 
                         actionIconURL: "image://ThemeIcons/list-remove"
-                        transparentStyle: true
                         onTriggered: SB2_launcherProxy.tabClassHideRequested(tabClassID)
 
                         states: [

@@ -602,9 +602,10 @@ namespace Xoox
 		RoomParticipantEntry_ptr entry (new RoomParticipantEntry (nick,
 					this, Account_));
 		connect (entry.get (),
-				SIGNAL (messagesAreRead ()),
+				SIGNAL (chatTabClosed ()),
 				this,
-				SLOT (handleMessagesAreRead ()));
+				SLOT (handleChatTabClosed ()),
+				Qt::QueuedConnection);
 		Nick2Entry_ [nick] = entry;
 		if (announce)
 			Account_->handleGotRosterItems (QList<QObject*> () << entry.get ());
@@ -741,9 +742,9 @@ namespace Xoox
 		Account_->GetClientConnection ()->GetClient ()->sendPacket (msg);
 	}
 
-	void RoomHandler::handleMessagesAreRead ()
+	void RoomHandler::handleChatTabClosed ()
 	{
-		RoomParticipantEntry *entry = qobject_cast<RoomParticipantEntry*> (sender ());
+		auto entry = qobject_cast<RoomParticipantEntry*> (sender ());
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO

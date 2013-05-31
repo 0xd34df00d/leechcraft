@@ -30,13 +30,19 @@
 #include "blogiquewidget.h"
 #include <stdexcept>
 #include <QComboBox>
+#include <QDeclarativeContext>
+#include <QDeclarativeEngine>
 #include <QInputDialog>
+#include <QGraphicsObject>
 #include <QMessageBox>
 #include <QProgressBar>
 #include <QPushButton>
 #include <QStandardItemModel>
 #include <QWidgetAction>
 #include <util/util.h>
+#include <util/sys/paths.h>
+#include <util/qml/themeimageprovider.h>
+#include <util/qml/colorthemeproxy.h>
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -44,7 +50,6 @@
 #include "interfaces/blogique/ibloggingplatform.h"
 #include "interfaces/blogique/iblogiquesidewidget.h"
 #include "interfaces/blogique/iprofile.h"
-#include "interfaces/blogique/ipostoptionswidget.h"
 #include "blogique.h"
 #include "core.h"
 #include "draftentrieswidget.h"
@@ -53,12 +58,14 @@
 #include "xmlsettingsmanager.h"
 #include "storagemanager.h"
 #include "submittodialog.h"
+#include "tagsproxymodel.h"
 
 namespace LeechCraft
 {
 namespace Blogique
 {
 	QObject *BlogiqueWidget::S_ParentMultiTabs_ = 0;
+	const QString ImageProviderID = "ThemeIcons";
 
 	BlogiqueWidget::BlogiqueWidget (QWidget *parent)
 	: QWidget (parent)
@@ -76,6 +83,8 @@ namespace Blogique
 	, EntryType_ (EntryType::None)
 	, EntryId_ (-1)
 	, EntryChanged_ (false)
+	, TagsProxyModel_ (new TagsProxyModel (this))
+	, TagsModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
 
@@ -150,6 +159,8 @@ namespace Blogique
 		ShowProgress ();
 
 		DraftEntriesWidget_->loadDraftEntries ();
+
+		PrepareQmlWidgets ();
 	}
 
 	QObject* BlogiqueWidget::ParentMultiTabs ()
@@ -197,6 +208,7 @@ namespace Blogique
 
 		EntryType_ = e.EntryType_;
 		EntryId_ = e.EntryId_;
+		EntryUrl_ = e.EntryUrl_;
 		Ui_.Subject_->setText (e.Subject_);
 		PostEdit_->SetContents (e.Content_, ContentType::HTML);
 
@@ -210,13 +222,12 @@ namespace Blogique
 			{
 			case SideWidgetType::PostOptionsSideWidget:
 			{
-				ibsw->SetPostOptions (e.PostOptions_);
-				auto ipow = qobject_cast<IPostOptionsWidget*> (w);
-				if (!ipow)
-					break;
+				QVariantMap params = e.PostOptions_;
+				params ["content"] = e.Content_;
+				ibsw->SetPostOptions (params);
 
-				ipow->SetTags (e.Tags_);
-				ipow->SetPostDate (e.Date_);
+				SetPostTags (e.Tags_);
+				SetPostDate (e.Date_);
 				break;
 			}
 			case SideWidgetType::CustomSideWidget:
@@ -361,11 +372,6 @@ namespace Blogique
 			PostEdit_->AppendSeparator ();
 		}
 
-		connect (AccountsBox_,
-				SIGNAL (currentIndexChanged (int)),
-				this,
-				SLOT (handleCurrentAccountChanged (int)));
-
 		for (IAccount *acc : Core::Instance ().GetAccounts ())
 		{
 			AccountsBox_->addItem (acc->GetAccountName ());
@@ -379,8 +385,14 @@ namespace Blogique
 		int index = AccountsBox_->findText (XmlSettingsManager::Instance ()
 				.property ("LastActiveAccountName").toString (),
 					Qt::MatchFixedString);
-		handleCurrentAccountChanged (index == -1 ? 0 : index);
 
+		AccountsBox_->setCurrentIndex (index == -1 ? 0 : index);
+		connect (AccountsBox_,
+				SIGNAL (currentIndexChanged (int)),
+				this,
+				SLOT (handleCurrentAccountChanged (int)));
+
+		handleCurrentAccountChanged (AccountsBox_->currentIndex ());
 	}
 
 	void BlogiqueWidget::SetDefaultSideWidgets ()
@@ -397,6 +409,45 @@ namespace Blogique
 		Ui_.Tools_->addItem (DraftEntriesWidget_, DraftEntriesWidget_->GetName ());
 	}
 
+	void BlogiqueWidget::PrepareQmlWidgets ()
+	{
+		TagsProxyModel_->setSourceModel (TagsModel_);
+		Ui_.Tags_->rootContext ()->setContextProperty ("mainWidget",
+				this);
+		Ui_.Tags_->rootContext ()->setContextProperty ("tagsModel",
+				TagsProxyModel_);
+		Ui_.Tags_->rootContext ()->setContextProperty ("colorProxy",
+				new Util::ColorThemeProxy (Core::Instance ()
+						.GetCoreProxy ()->GetColorThemeManager (), this));
+		Ui_.Tags_->engine ()->addImageProvider (ImageProviderID,
+				new Util::ThemeImageProvider (Core::Instance ().GetCoreProxy ()));
+
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
+			Ui_.Tags_->engine ()->addImportPath (cand);
+
+		Ui_.Tags_->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,
+				"blogique", "tagwidget.qml")));
+		connect (Ui_.Tags_->rootObject (),
+				SIGNAL (tagTextChanged (QString)),
+				this,
+				SLOT (handleTagTextChanged (QString)));
+
+		Ui_.TagsCloud_->setVisible (Ui_.SelectTags_->isChecked ());
+		Ui_.TagsCloud_->rootContext ()->setContextProperty ("colorProxy",
+				new Util::ColorThemeProxy (Core::Instance ()
+						.GetCoreProxy ()->GetColorThemeManager (), this));
+		Ui_.TagsCloud_->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,
+					"blogique", "tagscloud.qml")));
+		connect (Ui_.TagsCloud_->rootObject (),
+				SIGNAL (tagSelected (QString)),
+				this,
+				SIGNAL (tagSelected (QString)));
+		connect (Ui_.Tags_->rootObject (),
+				SIGNAL (tagRemoved (QString)),
+				this,
+				SLOT (handleTagRemoved (QString)));
+	}
+
 	void BlogiqueWidget::RemovePostingTargetsWidget ()
 	{
 		if (PostTargetAction_ &&
@@ -407,10 +458,51 @@ namespace Blogique
 		}
 	}
 
+	void BlogiqueWidget::SetPostDate(const QDateTime& dt)
+	{
+		Ui_.TimestampBox_->setChecked (true);
+		Ui_.Year_->setValue (dt.date ().year ());
+		Ui_.Month_->setCurrentIndex (dt.date ().month () - 1);
+		Ui_.Date_->setValue (dt.date ().day ());
+		Ui_.Time_->setTime (dt.time ());
+	}
+
+	QDateTime BlogiqueWidget::GetPostDate () const
+	{
+		return !Ui_.TimestampBox_->isChecked () ?
+				QDateTime::currentDateTime () :
+				QDateTime (QDate (Ui_.Year_->value (),
+							Ui_.Month_->currentIndex () + 1,
+							Ui_.Date_->value ()),
+						Ui_.Time_->time ());
+	}
+
+	void BlogiqueWidget::SetPostTags (const QStringList& tags)
+	{
+		QMetaObject::invokeMethod (Ui_.Tags_->rootObject (),
+				"setTags",
+				Q_ARG (QVariant, QVariant::fromValue (tags)));
+		QMetaObject::invokeMethod (Ui_.TagsCloud_->rootObject (),
+				"setTags",
+				Q_ARG (QVariant, QVariant::fromValue (tags)));
+	}
+
+	QStringList BlogiqueWidget::GetPostTags () const
+	{
+		QVariant tags;
+		QMetaObject::invokeMethod (Ui_.Tags_->rootObject (),
+				"getTags",
+				Q_RETURN_ARG (QVariant, tags));
+		return tags.toStringList ();
+	}
+
 	void BlogiqueWidget::ClearEntry ()
 	{
 		Ui_.Subject_->clear ();
 		PostEdit_->SetContents (QString (), ContentType::PlainText);
+		EntryUrl_.clear ();
+		EntryId_ = 0;
+
 		for (auto w : SidePluginsWidgets_)
 		{
 			auto ibsw = qobject_cast<IBlogiqueSideWidget*> (w);
@@ -422,12 +514,8 @@ namespace Blogique
 			case SideWidgetType::PostOptionsSideWidget:
 			{
 				ibsw->SetPostOptions (QVariantMap ());
-				auto ipow = qobject_cast<IPostOptionsWidget*> (w);
-				if (!ipow)
-					continue;
-
-				ipow->SetPostDate (QDateTime::currentDateTime ());
-				ipow->SetTags (QStringList ());
+				SetPostDate (QDateTime::currentDateTime ());
+				SetPostTags (QStringList ());
 				break;
 			}
 			case SideWidgetType::CustomSideWidget:
@@ -467,12 +555,8 @@ namespace Blogique
 			case SideWidgetType::PostOptionsSideWidget:
 			{
 				e.PostOptions_.unite (ibsw->GetPostOptions ());
-				auto ipow = qobject_cast<IPostOptionsWidget*> (w);
-				if (!ipow)
-					continue;
-
-				e.Date_ = ipow->GetPostDate ();
-				e.Tags_ = ipow->GetTags ();
+				e.Date_ = GetPostDate ();
+				e.Tags_ = GetPostTags ();
 				break;
 			}
 			case SideWidgetType::CustomSideWidget:
@@ -526,10 +610,23 @@ namespace Blogique
 			for (auto action : ibp->GetEditorActions ())
 				PostEdit_->RemoveAction (action);
 
+			for (auto action : InlineTagInserters_)
+				PostEdit_->RemoveAction (action);
+
+			on_SelectTags__toggled (false);
+			Ui_.SelectTags_->setChecked (false);
 			for (auto w : SidePluginsWidgets_)
 			{
-				int index = Ui_.Tools_->indexOf (w);
-				Ui_.Tools_->removeItem (index);
+				auto ibsw = qobject_cast<IBlogiqueSideWidget*> (w);
+				if (ibsw &&
+						ibsw->GetWidgetType () == SideWidgetType::PostOptionsSideWidget)
+					Ui_.PluginOptionsWidget_->layout ()->removeWidget (w);
+				else
+				{
+					int index = Ui_.Tools_->indexOf (w);
+					Ui_.Tools_->removeItem (index);
+				}
+
 				if (w)
 					w->deleteLater ();
 			}
@@ -540,6 +637,7 @@ namespace Blogique
 			ToolBar_->removeAction (Ui_.OpenInBrowser_);
 			ToolBar_->removeAction (Ui_.UpdateProfile_);
 			ToolBar_->removeAction (Ui_.SubmitTo_);
+
 		}
 
 		auto account = Id2Account_ [id];
@@ -562,7 +660,6 @@ namespace Blogique
 					PostTargetBox_->addItem (target.first, target.second);
 		}
 
-
 		if (ibp->GetFeatures () & IBloggingPlatform::BPFLocalBlog)
 			ToolBar_->insertAction (AccountsBoxAction_, Ui_.SubmitTo_);
 		else
@@ -574,6 +671,19 @@ namespace Blogique
 
 		for (auto action : ibp->GetEditorActions ())
 			PostEdit_->AppendAction (action);
+
+		for (const auto& inserter : ibp->GetInlineTagInserters ())
+		{
+			if (auto iahe = qobject_cast<IAdvancedHTMLEditor*> (PostEditWidget_))
+			{
+				auto act = iahe->AddInlineTagInserter (inserter.TagName_, inserter.Parameters_);
+				inserter.ActionCustomizer_ (act);
+				InlineTagInserters_ << act;
+			}
+		}
+
+		if (auto iahe = qobject_cast<IAdvancedHTMLEditor*> (PostEditWidget_))
+			iahe->SetCustomTags (ibp->GetCustomTags ());
 
 		bool exists = false;
 
@@ -602,10 +712,16 @@ namespace Blogique
 
 			SidePluginsWidgets_ << w;
 			ibsw->SetAccount (account->GetQObject ());
-			Ui_.Tools_->addItem (w, ibsw->GetName ());
+			if (ibsw->GetWidgetType () == SideWidgetType::PostOptionsSideWidget)
+				Ui_.PluginOptionsWidget_->layout ()->addWidget (w);
+			else
+				Ui_.Tools_->addItem (w, ibsw->GetName ());
 		}
 
 		PrevAccountId_ = id;
+
+		XmlSettingsManager::Instance ().setProperty ("LastActiveAccountName",
+				Id2Account_ [id]->GetAccountName ());
 	}
 
 	void BlogiqueWidget::fillCurrentTabWithEntry (const Entry& entry)
@@ -672,6 +788,39 @@ namespace Blogique
 	void BlogiqueWidget::handleRequestEntriesEnd ()
 	{
 		ShowProgress ();
+	}
+
+	void BlogiqueWidget::handleTagsUpdated (const QHash<QString, int>& tags)
+	{
+		TagsModel_->clear ();
+		QMetaObject::invokeMethod (Ui_.TagsCloud_->rootObject (),
+				"clearTags");
+
+		int max = 0;
+		for (const auto& tag : tags.keys ())
+		{
+			QStandardItem *item = new QStandardItem (tag);
+			item->setData (tags.value (tag), TagFrequency);
+			TagsModel_->appendRow (item);
+			if (tags.value (tag) > max)
+				max = tags.value (tag);
+		}
+
+		for (const auto& tag : tags.keys ())
+			QMetaObject::invokeMethod (Ui_.TagsCloud_->rootObject (),
+					"addTag",
+					Q_ARG (QVariant, tag),
+					Q_ARG (QVariant, tags.value (tag)),
+					Q_ARG (QVariant, max));
+	}
+
+	void BlogiqueWidget::handleInsertTag (const QString& tag)
+	{
+		auto iahe = qobject_cast<IAdvancedHTMLEditor*> (PostEditWidget_);
+		if (!iahe)
+			return;
+
+		iahe->InsertHTML (tag);
 	}
 
 	void BlogiqueWidget::newEntry ()
@@ -839,6 +988,52 @@ namespace Blogique
 
 		acc->updateProfile ();
 	}
+
+	void BlogiqueWidget::on_CurrentTime__released ()
+	{
+		QDateTime current = QDateTime::currentDateTime ();
+		Ui_.Year_->setValue (current.date ().year ());
+		Ui_.Month_->setCurrentIndex (current.date ().month () - 1);
+		Ui_.Date_->setValue (current.date ().day ());
+		Ui_.Time_->setTime (current.time ());
+	}
+
+	void BlogiqueWidget::on_SelectTags__toggled (bool checked)
+	{
+		const auto& layout = Ui_.PluginOptionsWidget_->layout ();
+		for (int i = 0; i < layout->count (); ++i)
+		{
+			auto w = layout->itemAt (i)->widget ();
+			if (w)
+				w->setVisible (!checked);
+		}
+		Ui_.TagsCloud_->setVisible (checked);
+	}
+
+	void BlogiqueWidget::handleTagTextChanged (const QString& text)
+	{
+		TagsProxyModel_->setFilterFixedString (text);
+		TagsProxyModel_->countUpdated ();
+	}
+
+	void BlogiqueWidget::handleTagRemoved (const QString& tag)
+	{
+		QMetaObject::invokeMethod (Ui_.TagsCloud_->rootObject (),
+				"selectTag",
+				Q_ARG (QVariant, tag),
+				Q_ARG (QVariant, false));
+	}
+
+	void BlogiqueWidget::on_OpenInBrowser__triggered ()
+	{
+		if (EntryUrl_.isEmpty ())
+			return;
+
+		Core::Instance ().SendEntity (Util::MakeEntity (EntryUrl_,
+				QString (),
+				static_cast<TaskParameters> (FromUserInitiated | OnlyHandle)));
+	}
+
 }
 }
 

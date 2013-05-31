@@ -81,7 +81,6 @@ Rectangle {
                 anchors.rightMargin: 5
                 width: 24
                 height: 24
-                transparentStyle: true
             }
 
             ListView {

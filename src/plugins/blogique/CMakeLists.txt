@@ -3,6 +3,7 @@ PROJECT (leechcraft_blogique)
 INCLUDE (InitLCPlugin OPTIONAL)
 
 SET (QT_USE_QTSQL TRUE)
+SET (QT_USE_QTDECLARATIVE TRUE)
 INCLUDE (${QT_USE_FILE})
 
 INCLUDE_DIRECTORIES (
@@ -16,7 +17,6 @@ SET (SRCS
 	accountslistwidget.cpp
 	accountsselectdialog.cpp
 	addaccountwizardfirstpage.cpp
-	backupmanager.cpp
 	blogique.cpp
 	blogentrieswidget.cpp
 	blogiquewidget.cpp
@@ -29,6 +29,7 @@ SET (SRCS
 	selecttargetdelegate.cpp
 	storagemanager.cpp
 	submittodialog.cpp
+	tagsproxymodel.cpp
 	updateentriesdialog.cpp
 	utils.cpp
 	xmlsettingsmanager.cpp
@@ -69,6 +70,7 @@ TARGET_LINK_LIBRARIES (leechcraft_blogique
 
 INSTALL (TARGETS leechcraft_blogique DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES blogiquesettings.xml DESTINATION ${LC_SETTINGS_DEST})
+INSTALL (DIRECTORY share/qml/blogique DESTINATION ${LC_QML_DEST})
 
 SET (BLOGIQUE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 

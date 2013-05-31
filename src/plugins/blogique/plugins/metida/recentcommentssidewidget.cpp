@@ -59,7 +59,7 @@ namespace Metida
 		view->setResizeMode (QDeclarativeView::SizeRootObjectToView);
 		view->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (Core::Instance ()
-						.GetCoreProxy ()->GetColorThemeManager ()));
+						.GetCoreProxy ()->GetColorThemeManager (), this));
 		view->rootContext ()->setContextProperty ("recentCommentsModel",
 				RecentCommentsModel_);
 		view->rootContext ()->setContextProperty ("recentCommentsView",
@@ -135,7 +135,7 @@ namespace Metida
 	{
 		Core::Instance ().SendEntity (Util::MakeEntity (link,
 				QString (),
-				OnlyHandle | FromUserInitiated));
+				static_cast<TaskParameters> (OnlyHandle | FromUserInitiated)));
 	}
 
 }

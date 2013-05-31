@@ -212,6 +212,10 @@ namespace Acetamide
 	{
 	}
 
+	void ChannelCLEntry::ChatTabClosed ()
+	{
+	}
+
 	QString ChannelCLEntry::GetRealID (QObject*) const
 	{
 		return QString ();

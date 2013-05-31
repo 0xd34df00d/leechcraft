@@ -209,6 +209,17 @@ namespace Monocle
 	{
 		const auto scale = GetCurrentScale ();
 		const auto pageWas = GetCurrentPage ();
+		const auto pageObj = Pages_.value (pageWas);
+
+		QPointF oldPageCenter;
+		if (pageWas >= 0)
+		{
+			const auto& pagePos = pageObj->mapFromScene (View_->mapToScene (GetViewportCenter ()));
+			const auto& bounding = pageObj->boundingRect ();
+			if (bounding.width () && bounding.height ())
+				oldPageCenter = QPointF { pagePos.x () / bounding.width (),
+						pagePos.y () / bounding.height () };
+		}
 
 		for (auto item : Pages_)
 			item->SetScale (scale, scale);
@@ -223,7 +234,8 @@ namespace Monocle
 				page->setPos (0, Margin + (size.height () + Margin) * i);
 				break;
 			case LayoutMode::TwoPages:
-				page->setPos ((i % 2) * (Margin / 3 + size.width ()), Margin + (size.height () + Margin) * (i / 2));
+				page->setPos ((i % 2) * (Margin / 3 + size.width ()),
+						Margin + (size.height () + Margin) * (i / 2));
 				break;
 			}
 		}
@@ -232,6 +244,13 @@ namespace Monocle
 					.adjusted (-HorMargin_, -VertMargin_, 0, 0));
 
 		SetCurrentPage (std::max (pageWas, 0), true);
+		if (pageWas >= 0)
+		{
+			const auto& bounding = pageObj->boundingRect ();
+			const QPointF newCenter { bounding.width () * oldPageCenter.x (),
+					bounding.height () * oldPageCenter.y () };
+			View_->centerOn (pageObj->mapToScene (newCenter));
+		}
 
 		if (RelayoutScheduled_)
 		{

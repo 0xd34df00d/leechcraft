@@ -31,6 +31,7 @@
 #include <QtDebug>
 #include <QIcon>
 #include <QFrame>
+#include <X11/extensions/Xcomposite.h>
 #include <util/qml/widthiconprovider.h>
 #include <util/x11/xwrapper.h>
 
@@ -101,6 +102,16 @@ namespace Krigstask
 		roleNames [Role::IsActiveWindow] = "isActiveWindow";
 		roleNames [Role::IsMinimizedWindow] = "isMinimizedWindow";
 		setRoleNames (roleNames);
+
+		int eventBase, errorBase;
+		if (XCompositeQueryExtension (w.GetDisplay (), &eventBase, &errorBase))
+		{
+			int major = 0, minor = 2;
+			XCompositeQueryVersion (w.GetDisplay (), &major, &minor);
+
+			if (major > 0 || minor >= 2)
+				qDebug () << "all good, has NamePixmap";
+		}
 	}
 
 	QDeclarativeImageProvider* WindowsModel::GetImageProvider () const

@@ -226,6 +226,11 @@ namespace Xoox
 		emit messagesAreRead ();
 	}
 
+	void EntryBase::ChatTabClosed ()
+	{
+		emit chatTabClosed ();
+	}
+
 	IAdvancedCLEntry::AdvancedFeatures EntryBase::GetAdvancedFeatures () const
 	{
 		return AFSupportsAttention;

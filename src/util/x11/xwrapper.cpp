@@ -54,6 +54,10 @@ namespace Util
 	const int SourceNormal = 1;
 	const int SourcePager = 2;
 
+	const int StateRemove = 0;
+	const int StateAdd = 1;
+	const int StateToggle = 1;
+
 	namespace
 	{
 		bool EventFilter (XEvent *msg)
@@ -76,6 +80,16 @@ namespace Util
 	{
 		static XWrapper w;
 		return w;
+	}
+
+	Display* XWrapper::GetDisplay () const
+	{
+		return Display_;
+	}
+
+	Window XWrapper::GetRootWindow () const
+	{
+		return AppWin_;
 	}
 
 	bool XWrapper::Filter (XEvent *ev)
@@ -241,7 +255,7 @@ namespace Util
 				&length, reinterpret_cast<uchar**> (&data), XA_ATOM))
 			return result;
 
-		for (auto i = 0; i < length; ++i)
+		for (ulong i = 0; i < length; ++i)
 		{
 			const auto curAtom = data [i];
 
@@ -280,7 +294,7 @@ namespace Util
 				&length, reinterpret_cast<uchar**> (&data), XA_ATOM))
 			return result;
 
-		for (auto i = 0; i < length; ++i)
+		for (ulong i = 0; i < length; ++i)
 		{
 			const auto curAtom = data [i];
 
@@ -322,12 +336,20 @@ namespace Util
 		return win;
 	}
 
-	bool XWrapper::ShouldShow (Window wid)
+	bool XWrapper::IsLCWindow (Window wid)
 	{
 		ulong length = 0;
 		Guarded<uchar> data;
 		if (GetWinProp (wid, GetAtom ("WM_CLASS"), &length, data.Get ()) &&
 				QString (data.GetAs<char*> (false)) == "leechcraft")
+			return true;
+
+		return false;
+	}
+
+	bool XWrapper::ShouldShow (Window wid)
+	{
+		if (IsLCWindow (wid))
 			return false;
 
 		const QList<Atom> ignoreAtoms
@@ -421,6 +443,56 @@ namespace Util
 		SendMessage (wid, GetAtom ("WM_CHANGE_STATE"), IconicState);
 	}
 
+	void XWrapper::MaximizeWindow (Window wid)
+	{
+		SendMessage (wid, GetAtom ("_NET_WM_STATE"), StateAdd,
+				GetAtom ("_NET_WM_STATE_MAXIMIZED_VERT"),
+				GetAtom ("_NET_WM_STATE_MAXIMIZED_HORZ"),
+				SourcePager);
+	}
+
+	void XWrapper::UnmaximizeWindow (Window wid)
+	{
+		SendMessage (wid, GetAtom ("_NET_WM_STATE"), StateRemove,
+				GetAtom ("_NET_WM_STATE_MAXIMIZED_VERT"),
+				GetAtom ("_NET_WM_STATE_MAXIMIZED_HORZ"),
+				SourcePager);
+	}
+
+	void XWrapper::ResizeWindow (Window wid, int width, int height)
+	{
+		XResizeWindow (Display_, wid, width, height);
+	}
+
+	void XWrapper::ShadeWindow (Window wid)
+	{
+		SendMessage (wid, GetAtom ("_NET_WM_STATE"),
+				StateAdd, GetAtom ("_NET_WM_STATE_SHADED"), 0, SourcePager);
+	}
+
+	void XWrapper::UnshadeWindow (Window wid)
+	{
+		SendMessage (wid, GetAtom ("_NET_WM_STATE"),
+				StateRemove, GetAtom ("_NET_WM_STATE_SHADED"), 0, SourcePager);
+	}
+
+	void XWrapper::MoveWindowTo (Window wid, Layer layer)
+	{
+		const auto top = layer == Layer::Top ? StateAdd : StateRemove;
+		const auto bottom = layer == Layer::Bottom ? StateAdd : StateRemove;
+
+		SendMessage (wid, GetAtom ("_NET_WM_STATE"), top,
+				GetAtom ("_NET_WM_STATE_ABOVE"), 0, SourcePager);
+
+		SendMessage (wid, GetAtom ("_NET_WM_STATE"), bottom,
+				GetAtom ("_NET_WM_STATE_BELOW"), 0, SourcePager);
+	}
+
+	void XWrapper::CloseWindow (Window wid)
+	{
+		SendMessage (wid, GetAtom ("_NET_CLOSE_WINDOW"), 0, SourcePager);
+	}
+
 	template<typename T>
 	void XWrapper::HandlePropNotify (T ev)
 	{
@@ -468,6 +540,51 @@ namespace Util
 		return data [0];
 	}
 
+	int XWrapper::GetDesktopCount ()
+	{
+		ulong length = 0;
+		Guarded<ulong> data;
+
+		if (GetRootWinProp (GetAtom ("_NET_NUMBER_OF_DESKTOPS"), &length, data.GetAs<uchar**> (), XA_CARDINAL))
+			return data [0];
+
+		return -1;
+	}
+
+	int XWrapper::GetCurrentDesktop ()
+	{
+		ulong length = 0;
+		Guarded<ulong> data;
+
+		if (GetRootWinProp (GetAtom ("_NET_CURRENT_DESKTOP"), &length, data.GetAs<uchar**> (), XA_CARDINAL))
+			return data [0];
+
+		return -1;
+	}
+
+	void XWrapper::SetCurrentDesktop (int desktop)
+	{
+		SendMessage (AppWin_, GetAtom ("_NET_CURRENT_DESKTOP"), desktop);
+	}
+
+	int XWrapper::GetWindowDesktop (Window wid)
+	{
+		ulong length = 0;
+		Guarded<ulong> data;
+		if (GetWinProp (wid, GetAtom ("_NET_WM_DESKTOP"), &length, data.GetAs<uchar**> (), XA_CARDINAL))
+			return data [0];
+
+		if (GetWinProp (wid, GetAtom ("_WIN_WORKSPACE"), &length, data.GetAs<uchar**> (), XA_CARDINAL))
+			return data [0];
+
+		return -1;
+	}
+
+	void XWrapper::MoveWindowToDesktop (Window wid, int num)
+	{
+		SendMessage (wid, GetAtom ("_NET_WM_DESKTOP"), num);
+	}
+
 	Atom XWrapper::GetAtom (const QString& name)
 	{
 		if (Atoms_.contains (name))
@@ -505,7 +622,7 @@ namespace Util
 				&length, reinterpret_cast<uchar**> (&data)))
 			return result;
 
-		for (auto i = 0; i < length; ++i)
+		for (ulong i = 0; i < length; ++i)
 			result << data [i];
 
 		XFree (data);

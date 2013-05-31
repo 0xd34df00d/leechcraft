@@ -231,6 +231,10 @@ namespace Zheet
 	{
 	}
 
+	void MSNBuddyEntry::ChatTabClosed ()
+	{
+	}
+
 	IAdvancedCLEntry::AdvancedFeatures MSNBuddyEntry::GetAdvancedFeatures () const
 	{
 		return AFSupportsAttention;

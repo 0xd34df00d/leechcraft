@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2013  Oleg Linkin
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,24 +27,94 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "tagswidget.h"
+#include "iconhandler.h"
+#include <QWidget>
+#include <QLabel>
+#include <QPainter>
+#include <QStyleOption>
+#include <QX11EmbedContainer>
+#include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QtDebug>
+#include "traymodel.h"
 
 namespace LeechCraft
 {
-namespace Blogique
+namespace Mellonetray
 {
-namespace Metida
-{
-	TagsWidget::TagsWidget (QWidget *parent)
-	: QLineEdit (parent)
+	const int Dim = 32;
+
+	IconHandler::IconHandler (QGraphicsItem *item)
+	: QGraphicsWidget (item)
+	, Proxy_ (0)
+	, WID_ (0)
 	{
+		setFlag (QGraphicsItem::ItemSendsScenePositionChanges);
 	}
 
-	void TagsWidget::SetTags (const QHash<QString, int>& tags)
+	IconHandler::~IconHandler ()
 	{
-		Tags_ = tags;
+		Free ();
+		delete Proxy_;
 	}
 
-}
+	ulong IconHandler::GetWID () const
+	{
+		return WID_;
+	}
+
+	void IconHandler::SetWID (const ulong& wid)
+	{
+		if (wid == WID_)
+			return;
+
+		Free ();
+
+		WID_ = wid;
+		emit widChanged ();
+
+		setGeometry (rect ());
+	}
+
+	void IconHandler::setGeometry (const QRectF& rect)
+	{
+		QGraphicsWidget::setGeometry (rect);
+
+		if (!scene ())
+			return;
+
+		auto view = scene ()->views ().value (0);
+
+		if (!Proxy_ && WID_)
+		{
+			Proxy_ = new QX11EmbedContainer (view);
+			Proxy_->move (-1024, -1024);
+			Proxy_->show ();
+			Proxy_->embedClient (WID_);
+		}
+
+		if (Proxy_ && rect.width () * rect.height () > 0)
+		{
+			Proxy_->resize (rect.width (), rect.height ());
+			Proxy_->move (scenePos ().toPoint ());
+		}
+	}
+
+	QVariant IconHandler::itemChange (GraphicsItemChange change, const QVariant& value)
+	{
+		if (change == QGraphicsItem::ItemSceneHasChanged || change == QGraphicsItem::ItemScenePositionHasChanged)
+			setGeometry (rect ());
+
+		return QGraphicsWidget::itemChange (change, value);
+	}
+
+	void IconHandler::Free ()
+	{
+		if (Proxy_ && Proxy_->clientWinId ())
+		{
+			Proxy_->discardClient ();
+			delete Proxy_;
+		}
+	}
 }
 }

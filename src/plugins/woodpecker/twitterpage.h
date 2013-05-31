@@ -34,9 +34,10 @@
 #include <QTimer>
 #include <QMenu>
 #include <QAction>
-#include <leechcraft/interfaces/core/ientitymanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/structures.h>
+#include <interfaces/ihaverecoverabletabs.h>
 #include "twitterinterface.h"
 #include "twitdelegate.h"
 #include "ui_twitterpage.h"
@@ -47,9 +48,10 @@ namespace Woodpecker
 {
 	class TwitterPage : public QWidget
 						, public ITabWidget
+						, public IRecoverableTab
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
+		Q_INTERFACES (ITabWidget IRecoverableTab)
 
 		const TabClassInfo TC_;
 		QObject *const ParentPlugin_;
@@ -62,11 +64,11 @@ namespace Woodpecker
 		bool Modified_;
 		QMap<QString, QList<QAction*>> WindowMenus_;
 		QHash<QString, QString> Extension2Lang_;
-		
+
 		QtMsgHandler DefaultMsgHandler_;
 		QObject *WrappedObject_;
 		bool TemporaryDocument_;
-		
+
 		bool UpdateReady_;			/**< The flag is checked by timer for UI update */
 		QTimer *UiUpdateTimer_;	/**< Timer checks UpdateReady_ and updates the UI */
 		TwitDelegate *Delegate_;
@@ -80,21 +82,21 @@ namespace Woodpecker
 		QAction *ActionReply_;
 		QAction *ActionSPAM_;
 		QAction *ActionOpenWeb_;
-		
-	private slots:
-		void on_TwitList__customContextMenuRequested (const QPoint&);
-		void updateTweetList ();
-		
+
 	public:
 		explicit TwitterPage (const TabClassInfo&, QObject*);
 		~TwitterPage();
-		
+
 		void Remove ();
 		QToolBar *GetToolBar () const;
 		QObject *ParentMultiTabs ();
 		QList<QAction*> GetTabBarContextMenuActions () const;
 		QMap<QString, QList<QAction*>> GetWindowMenus () const;
 		TabClassInfo GetTabClassInfo () const;
+
+		QByteArray GetTabRecoverData () const;
+		QString GetTabRecoverName () const;
+		QIcon GetTabRecoverIcon () const;
 		
 	public slots:
 		void tryToLogin ();
@@ -110,6 +112,10 @@ namespace Woodpecker
 		void scrolledDown (int sliderPos);
 		void setUpdateReady ();
 		
+	private slots:
+		void on_TwitList__customContextMenuRequested (const QPoint&);
+		void updateTweetList ();
+		
 	signals:
 		void removeTab (QWidget*);
 		void changeTabName (QWidget*, const QString&);
@@ -120,6 +126,7 @@ namespace Woodpecker
 		void delegateEntity (const LeechCraft::Entity&,
 							 int*, QObject**);
 		void gotEntity (const LeechCraft::Entity&);
+		void tabRecoverDataChanged ();
 	};
 }
 }

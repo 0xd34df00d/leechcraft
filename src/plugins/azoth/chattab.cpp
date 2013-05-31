@@ -252,6 +252,9 @@ namespace Azoth
 	{
 		Ui_.View_->setFocusProxy (nullptr);
 
+		if (auto entry = GetEntry<ICLEntry> ())
+			entry->ChatTabClosed ();
+
 		SetChatPartState (CPSGone);
 
 		qDeleteAll (HistoryMessages_);
@@ -942,6 +945,9 @@ namespace Azoth
 		}
 
 		Ui_.VariantBox_->setVisible (variants.size () > 1);
+
+		if (variants.isEmpty ())
+			handleStatusChanged (EntryStatus (), QString ());
 	}
 
 	void ChatTab::handleAvatarChanged (const QImage& avatar)

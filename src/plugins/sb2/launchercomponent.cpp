@@ -94,7 +94,7 @@ namespace SB2
 
 		QIcon GetIcon (const QStringList& list)
 		{
-			return TabClasses_.value (list.first ().toLatin1 ());
+			return TabClasses_.value (list.join ("/").toLatin1 ());
 		}
 
 		void AddTabClass (const TabClassInfo& tc)

@@ -179,7 +179,6 @@ Rectangle {
                     z: 10
 
                     actionIconURL: "image://ThemeIcons/preferences-desktop"
-                    transparentStyle: true
 
                     property real dimension: Math.min(itemLoader.width / 2, itemLoader.height / 2)
                     width: dimension

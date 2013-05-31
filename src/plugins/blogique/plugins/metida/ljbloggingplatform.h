@@ -51,6 +51,7 @@ namespace Metida
 		QList<LJAccount*> LJAccounts_;
 
 		QAction *LJUser_;
+		QAction *LJPoll_;
 		QAction *LJCut_;
 		QAction *FirstSeparator_;
 
@@ -77,19 +78,21 @@ namespace Metida
 		void RegisterAccount (const QString& name, const QList<QWidget*>& widgets);
 		void RemoveAccount (QObject *account);
 		QList<QAction*> GetEditorActions () const;
+		QList<InlineTagInserter> GetInlineTagInserters () const;
 		QList<QWidget*> GetBlogiqueSideWidgets () const;
 
 		void SetPluginProxy (QObject *proxy);
 		void Prepare ();
 		void Release ();
 
+		IAdvancedHTMLEditor::CustomTags_t GetCustomTags () const;
 	private:
 		void RestoreAccounts ();
 
 	private slots:
 		void saveAccounts ();
 		void handleAddLJUser ();
-		void handleAddLJCut ();
+		void handleAddLJPoll ();
 	public slots:
 		void handleAccountValidated (bool validated);
 		void handleMessageChecking ();
@@ -101,6 +104,7 @@ namespace Metida
 		void accountAdded (QObject *account);
 		void accountRemoved (QObject *account);
 		void accountValidated (QObject *account, bool validated);
+		void insertTag (const QString& tag);
 	};
 }
 }

@@ -91,6 +91,11 @@ namespace Dolozhee
 				-1;
 	}
 
+	ReportTypePage::Priority ReportTypePage::GetPriority () const
+	{
+		return static_cast<Priority> (Ui_.PriorityBox_->currentIndex ());
+	}
+
 	void ReportTypePage::handleCategoriesFinished ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2013  Oleg Linkin
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,7 +29,11 @@
 
 #pragma once
 
-#include <QLineEdit>
+#include <QDialog>
+#include "ui_polldialog.h"
+
+class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
@@ -37,15 +41,68 @@ namespace Blogique
 {
 namespace Metida
 {
-	class TagsWidget : public QLineEdit
+	class PollDialog : public QDialog
 	{
 		Q_OBJECT
-		QHash<QString, int> Tags_;
+
+		Ui::PollDialog Ui_;
+
+		QStandardItemModel *CheckModel_;
+		QStandardItemModel *RadioModel_;
+		QStandardItemModel *DropModel_;
+		QStandardItemModel *PollTypeModel_;
+		bool ItemIsChanged_;
+		QHash<QString, QString> Type2Question_;
+
+		enum PollCanView
+		{
+			ViewAll,
+			ViewOnlyFriends,
+			ViewOnlyMe
+		};
+
+		enum PollCanVote
+		{
+			VoteAll,
+			VoteOnlyFriends
+		};
 
 	public:
-		explicit TagsWidget (QWidget *parent = 0);
+		enum PollType
+		{
+			CheckBoxes,
+			RadioButtons,
+			DropdownBox,
+			TextEntry,
+			Scale
+		};
 
-		void SetTags (const QHash<QString, int>& tags);
+		explicit PollDialog (QWidget *parent = 0);
+
+		QString GetPollName () const;
+		QString GetWhoCanView () const;
+		QString GetWhoCanVote () const;
+		QStringList GetPollTypes () const;
+		QString GetPollQuestion (const QString& type) const;
+		QVariantMap  GetPollFields (const QString& pollType) const;
+		int GetScaleFrom () const;
+		int GetScaleTo () const;
+		int GetScaleBy () const;
+		int GetTextSize () const;
+		int GetTextMaxLength () const;
+
+		void accept ();
+	private:
+		QVariantMap GetFields (QStandardItemModel *model) const;
+		bool IsScaleValuesAreValid () const;
+
+	private slots:
+		void on_AddField__released ();
+		void on_RemoveField__released ();
+		void on_PollType__currentIndexChanged (int index);
+		void handleItemActivated (const QModelIndex& index);
+		void handleItemChanged (QStandardItem *item);
+		void on_PollQuestion__textChanged (const QString& text);
 	};
 }
 }

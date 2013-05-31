@@ -79,7 +79,6 @@ namespace NetStoreManager
 			Sha1
 		} HashType_;
 
-
 		QUrl Url_;
 		QMap<QUrl, QPair<QString, QString>> ExportLinks;
 
@@ -106,7 +105,8 @@ namespace NetStoreManager
 	{
 		QByteArray ID_;
 		bool Deleted_;
-		QByteArray StorageItemID_;
+
+		QByteArray ItemID_;
 		StorageItem Item_;
 	};
 

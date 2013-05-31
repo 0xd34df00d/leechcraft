@@ -288,7 +288,6 @@ namespace Poleemery
 				[this] { return CreateSpendingBreakdownItems (30, false); },
 				[] (QwtPlot *plot) -> void
 				{
-					auto curMgr = Core::Instance ().GetCurrenciesManager ();
 					plot->enableAxis (QwtPlot::Axis::xBottom, false);
 					plot->enableAxis (QwtPlot::Axis::yLeft, true);
 					plot->setAxisTitle (QwtPlot::Axis::yLeft, "%");

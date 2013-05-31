@@ -29,7 +29,6 @@
 
 #include "woodpecker.h"
 
-#include <QTranslator>
 #include <QIcon>
 #include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
@@ -51,7 +50,7 @@ namespace Woodpecker
 				"woodpeckersettings.xml");
 
 		Core::Instance ().SetProxy (proxy);
-		
+
 		TabClasses_.append ({
 				{
 					GetUniqueID () + "/Home",
@@ -64,7 +63,6 @@ namespace Woodpecker
 				[this] (const TabClassInfo& tc)
 					{ MakeTab (new TwitterPage (tc, this), tc); }
 			});
-
 	}
 
 	void Plugin::SecondInit ()
@@ -92,7 +90,8 @@ namespace Woodpecker
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ("lcicons:/plugins/woodpecker/resources/images/woodpecker.svg");
+		static QIcon icon ("lcicons:/plugins/woodpecker/resources/images/woodpecker.svg");
+		return icon;
 	}
 
 	TabClasses_t Plugin::GetTabClasses () const
@@ -119,12 +118,11 @@ namespace Woodpecker
 		pos->second (pos->first);
 	}
 
-
 	std::shared_ptr<Util::XmlSettingsDialog> Plugin::GetSettingsDialog () const
 	{
 		return XmlSettingsDialog_;
 	}
-	
+
 	void Plugin::MakeTab (QWidget *tab, const TabClassInfo& tc)
 	{
 		connect (tab,
@@ -135,8 +133,25 @@ namespace Woodpecker
 		emit changeTabIcon (tab, tc.Icon_);
 		emit raiseTab (tab);
 	}
+	
+	void Plugin::RecoverTabs (const QList<TabRecoverInfo>& infos)
+	{
+		for (const auto& recInfo : infos)
+		{
+			if (recInfo.Data_ == "twitterpage/Home")
+			{
+				for (const auto& pair : recInfo.DynProperties_)
+					setProperty (pair.first, pair.second);
+
+				TabOpenRequested (GetUniqueID () + "/Home");
+			}
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "unknown context"
+						<< recInfo.Data_;
+		}	
+	}
 }
 }
 
 LC_EXPORT_PLUGIN (leechcraft_woodpecker, LeechCraft::Woodpecker::Plugin);
-

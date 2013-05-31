@@ -91,6 +91,8 @@ namespace SB2
 			toolbar->show ();
 
 			updatePos ();
+
+			Util::XWrapper::Instance ().MoveWindowToDesktop (toolbar->winId (), 0xffffffff);
 		}
 	}
 
