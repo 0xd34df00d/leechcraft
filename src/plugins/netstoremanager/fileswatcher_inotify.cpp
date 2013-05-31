@@ -117,8 +117,14 @@ namespace NetStoreManager
 						if ((*it)->cookie == event->cookie &&
 								(*it)->wd == event->wd)
 						{
-							emit entryWasRenamed (path + "/" + QString ((*it)->name),
-									fullPath);
+							QString oldPath = path + "/" + QString ((*it)->name);
+							if ((*it)->mask & IN_ISDIR)
+							{
+								qDebug () << oldPath << fullPath;
+								RemoveWatchingPath ((*it)->wd);
+								addPath (fullPath);
+							}
+							emit entryWasRenamed (oldPath, fullPath);
 							it = eventsBuffer.erase (it);
 							break;
 						}
@@ -215,9 +221,6 @@ namespace NetStoreManager
 				++it;
 		}
 	}
-
-
-
 
 	void FilesWatcherInotify::checkNotifications ()
 	{

@@ -190,7 +190,6 @@ namespace NetStoreManager
 
 	void Syncer::handleGotChanges (const QList<Change>& changes)
 	{
-		//TODO gotChanges
 		if (!CallsQueue_.isEmpty ())
 			CallsQueue_.dequeue () ();
 	}
@@ -208,8 +207,7 @@ namespace NetStoreManager
 		if (Id2Path_.right.count (parentPath))
 			CreatePath (dirPath.split ("/"));
 		else
-			CallsQueue_ << [this, dirPath] ()
-				{ CreatePath (dirPath.split ("/")); };
+			CallsQueue_ << [this, path] () { dirWasCreated (path); };
 	}
 
 	void Syncer::dirWasRemoved (const QString& path)
@@ -234,7 +232,7 @@ namespace NetStoreManager
 		if (Id2Path_.right.count (dirPath))
 			Account_->Upload (path, id);
 		else
-			CallsQueue_ << [this, path, id] () { Account_->Upload (path, id); };
+			CallsQueue_ << [this, path, id] () { fileWasCreated (path); };
 	}
 
 	void Syncer::fileWasRemoved (const QString& path)
@@ -250,6 +248,18 @@ namespace NetStoreManager
 	void Syncer::fileWasUpdated (const QString& path)
 	{
 		qDebug () << Q_FUNC_INFO << path;
+	}
+
+	void Syncer::fileWasRenamed (const QString& oldName, const QString& newName)
+	{
+		QString filePath = oldName;
+		filePath.replace (LocalPath_, RemotePath_);
+		if (Id2Path_.right.count (filePath))
+			SFLAccount_->Rename (Id2Path_.right.at (filePath),
+					QFileInfo (newName).fileName ());
+		else
+			CallsQueue_ << [this, oldName, newName] ()
+					{ fileWasRenamed (oldName, newName); };
 	}
 
 }

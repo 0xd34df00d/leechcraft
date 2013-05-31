@@ -80,6 +80,7 @@ namespace NetStoreManager
 		void fileWasCreated (const QString& path);
 		void fileWasRemoved (const QString& path);
 		void fileWasUpdated (const QString& path);
+		void fileWasRenamed (const QString& oldName, const QString& newName);
 	};
 }
 }

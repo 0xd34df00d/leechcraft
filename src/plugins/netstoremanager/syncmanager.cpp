@@ -183,7 +183,9 @@ namespace NetStoreManager
 	void SyncManager::handleEntryWasRenamed (const QString& oldName,
 			const QString& newName)
 	{
-		qDebug () << Q_FUNC_INFO << oldName << newName;
+		for (auto syncer : AccountID2Syncer_.values ())
+			if (oldName.startsWith (syncer->GetLocalPath ()))
+				syncer->fileWasRenamed (oldName, newName);
 	}
 
 	void SyncManager::handleGotListing (const QList<StorageItem>& items)
