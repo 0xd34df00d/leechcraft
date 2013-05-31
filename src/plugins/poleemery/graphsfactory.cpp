@@ -30,6 +30,7 @@
 #include "graphsfactory.h"
 #include <QStringList>
 #include <QMap>
+#include <QApplication>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_histogram.h>
 #include <qwt_plot.h>
@@ -110,9 +111,16 @@ namespace Poleemery
 				curSum = vec = ZipWith (vec, curSum, std::plus<double> ());
 		}
 
-		QList<QColor> GenerateColors ()
+		QList<QColor> GenerateColors (int numColors)
 		{
-			return { Qt::green, Qt::blue, Qt::red, Qt::magenta, Qt::darkRed };
+			QList<QColor> result;
+			for (int i = 0; i < numColors; ++i)
+			{
+				QColor color;
+				color.setHsvF (i / static_cast<double> (numColors), 0.8, 0.8);
+				result << color;
+			}
+			return result;
 		}
 
 		QList<QwtPlotItem*> CreateBalanceItems (int days, bool cumulative)
@@ -148,7 +156,7 @@ namespace Poleemery
 			if (cumulative)
 				AddUp (accBalances);
 
-			const auto& colors = GenerateColors ();
+			const auto& colors = GenerateColors (periodAccounts.size ());
 			int currentColor = 0;
 
 			QList<QwtPlotItem*> result;
@@ -226,7 +234,7 @@ namespace Poleemery
 					val = val * 100 / sum;
 			}
 
-			const auto& colors = GenerateColors ();
+			const auto& colors = GenerateColors (cat2amount.size ());
 			int currentIndex = 0;
 
 			QList<QwtPlotItem*> result;
