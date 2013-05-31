@@ -41,7 +41,6 @@
 #include <util/util.h>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/istorageplugin.h"
-#include "interfaces/netstoremanager/isupportfilelistings.h"
 #include "accountsmanager.h"
 #include "filestreemodel.h"
 #include "xmlsettingsmanager.h"
@@ -61,7 +60,6 @@ namespace NetStoreManager
 	, ProxyModel_ (new FilesProxyModel (this))
 	, TreeModel_ (new FilesTreeModel (this))
 	, AccountsBox_ (0)
-	, TrashAction_ (0)
 	{
 		Ui_.setupUi (this);
 
@@ -231,6 +229,10 @@ namespace NetStoreManager
 						SIGNAL (gotFileUrl (QUrl, QByteArray)),
 						this,
 						SLOT (handleGotFileUrl (QUrl, QByteArray)));
+				connect (acc->GetQObject (),
+						SIGNAL (gotChanges (QList<Change>)),
+						this,
+						SLOT (handleGotChanges (QList<Change>)));
 			}
 		}
 
@@ -355,7 +357,7 @@ namespace NetStoreManager
 		if (acc != GetCurrentAccount ())
 			return;
 
-		ShowListItemsWithParent (LastParentID_);
+		ShowListItemsWithParent (LastParentID_, OpenTrash_->isChecked ());
 
 		Ui_.FilesView_->header ()->resizeSection (Columns::Name,
 				XmlSettingsManager::Instance ().Property ("ViewSectionSize",
@@ -800,6 +802,7 @@ namespace NetStoreManager
 
 	void ManagerTab::showTrashContent (bool show)
 	{
+		OpenTrash_->setText (show ? tr ("Close trash") : tr ("Open trash"));
 		ShowListItemsWithParent (QByteArray (), show);
 	}
 
@@ -931,6 +934,21 @@ namespace NetStoreManager
 		QString text = tr ("File URL has been copied to the clipboard.");
 		Proxy_->GetEntityManager ()->
 				HandleEntity (Util::MakeNotification ("NetStoreManager", text, PInfo_));
+	}
+
+
+	void ManagerTab::handleGotChanges(const QList<Change>& changes)
+	{
+		for (const auto& change : changes)
+		{
+			if (change.Deleted_)
+				Id2Item_.remove (change.ItemID_);
+			else
+				Id2Item_ [change.ItemID_] = change.Item_;
+		}
+
+		LastParentID_ = GetParentIDInListViewMode ();
+		FillModel (GetCurrentAccount ());
 	}
 
 }

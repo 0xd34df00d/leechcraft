@@ -204,6 +204,11 @@ namespace NetStoreManager
 				PInfo_);
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 
+		URLHandlers_ [id] << [this, filePath] (const QUrl& url, const QByteArray&)
+		{
+			emit fileUploaded (filePath, url);
+		};
+
 		if (Autoshare_.remove (filePath))
 		{
 			auto ifl = qobject_cast<ISupportFileListings*> (sender ());
@@ -213,11 +218,6 @@ namespace NetStoreManager
 						<< "account doesn't support file listings, cannot autoshare";
 				return;
 			}
-
-			URLHandlers_ [id] << [this, filePath] (const QUrl& url, const QByteArray&)
-			{
-				emit fileUploaded (filePath, url);
-			};
 
 			ifl->RequestUrl (id);
 		}

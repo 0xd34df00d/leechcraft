@@ -65,9 +65,9 @@ namespace GoogleDrive
 				this,
 				SLOT (handleGotNewItem (DriveItem)));
 		connect (DriveManager_,
-				SIGNAL (gotChanges (QList<DriveChanges>, qlonglong)),
+				SIGNAL (gotChanges (QList<DriveChanges>)),
 				this,
-				SLOT (handleGotChanges (QList<DriveChanges>, qlonglong)));
+				SLOT (handleGotChanges (QList<DriveChanges>)));
 	}
 
 	QObject* Account::GetQObject ()
@@ -341,10 +341,8 @@ namespace GoogleDrive
 		emit gotNewItem (CreateItem (item), item.ParentId_.toUtf8 ());
 	}
 
-	void Account::handleGotChanges (const QList<DriveChanges>& driveChanges, qlonglong lastId)
+	void Account::handleGotChanges (const QList<DriveChanges>& driveChanges)
 	{
-		XmlSettingsManager::Instance ().setProperty ("LastChangesId", lastId);
-
 		QList<Change> changes;
 		for (const auto& driveChange : driveChanges)
 		{
@@ -354,9 +352,10 @@ namespace GoogleDrive
 
 			Change change;
 			change.Deleted_ = driveChange.Deleted_;
-			change.Id_ << driveChange.FileId_;
-			change.ParentId_ << driveChange.FileResource_.ParentId_;
-			change.ParentIsRoot_ = driveChange.FileResource_.ParentIsRoot_;
+			change.ID_ = driveChange.Id_.toUtf8 ();
+			change.ItemID_ = driveChange.FileId_.toUtf8 ();
+			if (!change.Deleted_)
+				change.Item_ = CreateItem (driveChange.FileResource_);
 
 			changes << change;
 		}
