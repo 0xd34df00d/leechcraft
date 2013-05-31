@@ -84,6 +84,8 @@ Rectangle {
             width: rootRect.itemSize
             height: rootRect.itemSize
 
+            visible: showPager
+
             actionIconURL: "image://ThemeIcons/user-desktop"
             onTriggered: commonJS.showTooltip(showPagerButton, KT_taskbarProxy.showPager)
         }
