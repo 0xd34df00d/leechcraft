@@ -56,6 +56,8 @@ namespace LeechCraft
 {
 namespace LHTR
 {
+	const QString MIMEType = "application/xhtml+xml";
+
 	namespace
 	{
 		class Addable
@@ -318,6 +320,8 @@ namespace LHTR
 				SIGNAL (triggered ()),
 				this,
 				SLOT (toggleView ()));
+
+		SetContents ("", ContentType::HTML);
 	}
 
 	QString RichEditorWidget::GetContents (ContentType type) const
@@ -337,15 +341,22 @@ namespace LHTR
 
 	void RichEditorWidget::SetContents (const QString& contents, ContentType type)
 	{
+		QString content;
+		content += "<!DOCTYPE html PUBLIC";
+		content += "	\"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
+		content += "	<html lang=\"ar\" dir=\"ltr\" xmlns=\"http://www.w3.org/1999/xhtml\">";
+		content += "<head><title></title></head><body contenteditable='true'>";
 		switch (type)
 		{
 		case ContentType::HTML:
-			Ui_.View_->setHtml (ExpandCustomTags (contents));
+			content += ExpandCustomTags (contents);
 			break;
 		case ContentType::PlainText:
-			Ui_.View_->setHtml ("<html><head><meta http-equiv='content-type' content='text/html; charset=utf-8' /><title></title></head><body contenteditable='true'><pre>" + contents + "</pre></body></html>");
+			content += "<pre>" + contents + "</pre>";
 			break;
 		}
+		content += "</body></html>";
+		Ui_.View_->setContent (content.toUtf8 (), MIMEType);
 	}
 
 	void RichEditorWidget::AppendAction (QAction *act)
@@ -631,7 +642,7 @@ namespace LHTR
 				return;
 
 			HTMLDirty_ = false;
-			Ui_.View_->setHtml (ExpandCustomTags (Ui_.HTML_->toPlainText ()));
+			Ui_.View_->setContent (ExpandCustomTags (Ui_.HTML_->toPlainText ()).toUtf8 (), MIMEType);
 			break;
 		}
 
@@ -661,16 +672,6 @@ namespace LHTR
 				"window.addEventListener('DOMAttrModified', f);"
 				"window.addEventListener('DOMNodeInserted', f);"
 				"window.addEventListener('DOMNodeRemoved', f);");
-
-		QFile jqueryFile (":/lhtr/resources/scripts/jquery.js");
-		if (!jqueryFile.open (QIODevice::ReadOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to open jquery script file"
-					<< jqueryFile.errorString ();
-			return;
-		}
-		frame->evaluateJavaScript (jqueryFile.readAll ());
 
 		frame->findFirstElement ("body").setAttribute ("contenteditable", "true");
 	}

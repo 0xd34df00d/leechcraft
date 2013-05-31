@@ -1178,7 +1178,7 @@ namespace LackMan
 
 		QueryAddPackageArchiver_ = QSqlQuery (DB_);
 		QueryAddPackageArchiver_.prepare ("INSERT INTO packagearchivers (package_id, archiver) "
-				"VALUES (:package_id, :size);");
+				"VALUES (:package_id, :archiver);");
 
 		QueryGetPackageArchiver_ = QSqlQuery (DB_);
 		QueryGetPackageArchiver_.prepare ("SELECT archiver FROM packagearchivers WHERE package_id = :package_id;");
