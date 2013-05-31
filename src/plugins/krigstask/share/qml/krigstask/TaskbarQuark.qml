@@ -25,8 +25,10 @@ Rectangle {
         anchors.top: parent.top
         anchors.left: parent.left
 
-        columns: viewOrient == "vertical" ? 1 : (launcherItemRepeater.count + 1)
-        rows: viewOrient == "vertical" ? (launcherItemRepeater.count + 1) : 1
+        property int itemCount: launcherItemRepeater.count + (showPager ? 1 : 0)
+
+        columns: viewOrient == "vertical" ? 1 : itemCount
+        rows: viewOrient == "vertical" ? itemCount : 1
 
         Repeater {
             id: launcherItemRepeater
@@ -39,7 +41,7 @@ Rectangle {
                 height: rootRect.itemSize
                 width: viewOrient == "vertical" ?
                         rootRect.itemSize :
-                        Math.min(150, rootRect.width / launcherItemRepeater.count)
+                        Math.min(150, rootRect.width / taskbarColumn.itemCount)
 
                 ActionButton {
                     id: tcButton
