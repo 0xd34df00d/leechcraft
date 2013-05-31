@@ -399,7 +399,7 @@ namespace GoogleDrive
 	void DriveManager::GetFileChanges (qlonglong startId,
 			const QString& pageToken, const QString& key)
 	{
-		QString urlSuffix = QString ("includeDeleted=true&access_token=") + key;
+		QString urlSuffix = "includeDeleted=true&access_token=" + key;
 
 		if (startId)
 		{
