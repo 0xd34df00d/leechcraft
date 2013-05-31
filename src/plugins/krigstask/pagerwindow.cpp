@@ -143,6 +143,9 @@ namespace Krigstask
 		engine ()->addImageProvider ("WinIcons", WinIconProv_);
 		engine ()->addImageProvider ("WinSnaps", WinSnapshotProv_);
 
+		rootContext ()->setContextProperty ("geometry",
+				qApp->desktop ()->availableGeometry (screen));
+
 		FillModel ();
 		rootContext ()->setContextProperty ("desktopsModel", DesktopsModel_);
 		rootContext ()->setContextProperty ("pagerProxy", this);

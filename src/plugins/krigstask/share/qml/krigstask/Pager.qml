@@ -3,8 +3,8 @@ import QtQuick 1.1
 Rectangle {
     id: rootRect
 
-    property int singleListWidth: 200
-    property int maxHeight: 500
+    property int singleListWidth: (geometry.width * 2 / 3) / desktopsRepeater.count
+    property int maxHeight: geometry.height * 2 / 3
     property int maxChildrenHeight: maxHeight
 
     Component.onCompleted: {
