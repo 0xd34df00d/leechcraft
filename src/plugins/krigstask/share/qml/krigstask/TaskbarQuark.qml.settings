@@ -4,6 +4,9 @@
                 <label value="Taskbar settings" />
                 <groupbox>
                         <label value="Taskbar settings" />
+                        <item type="checkbox" property="showFromAllDesks" default="true">
+                            <label value="Show windows from all desktops" />
+                        </item>
                         <item type="checkbox" property="showPager" default="true">
                             <label value="Show pager" />
                         </item>

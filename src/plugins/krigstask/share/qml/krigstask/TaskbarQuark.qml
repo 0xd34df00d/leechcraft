@@ -34,6 +34,8 @@ Rectangle {
             Item {
                 id: taskbarItem
 
+                visible: showFromAllDesks || isCurrentDesktop
+
                 height: rootRect.itemSize
                 width: viewOrient == "vertical" ?
                         rootRect.itemSize :
