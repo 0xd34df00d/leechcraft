@@ -61,7 +61,7 @@ namespace Poleemery
 			return entries;
 		}
 
-		QMap<int, BalanceInfo> GetDays2Infos (int days)
+		QMap<double, BalanceInfo> GetDays2Infos (int days)
 		{
 			auto opsMgr = Core::Instance ().GetOpsManager ();
 			const auto& entries = opsMgr->GetEntriesWBalance ();
@@ -72,17 +72,19 @@ namespace Poleemery
 					[] (const QDateTime& dt, const EntryWithBalance& entry)
 						{ return dt < entry.Entry_->Date_; });
 
-			QMap<int, BalanceInfo> days2infos;
+			QMap<double, BalanceInfo> days2infos;
 			for (; pos != entries.end (); ++pos)
 			{
-				const auto daysBack = pos->Entry_->Date_.daysTo (now);
-				days2infos [days - daysBack] = pos->Balance_;
+				const auto& then = pos->Entry_->Date_;
+
+				const auto daysBack = then.daysTo (now);
+				days2infos [(days - daysBack) + then.time ().hour () / 24.] = pos->Balance_;
 			}
 
 			return days2infos;
 		}
 
-		QMap<int, double> GetLastBalances (const QMap<int, BalanceInfo>& days2infos)
+		QMap<int, double> GetLastBalances (const QMap<double, BalanceInfo>& days2infos)
 		{
 			auto accsMgr = Core::Instance ().GetAccsManager ();
 			const auto& accs = accsMgr->GetAccounts ();
@@ -126,7 +128,7 @@ namespace Poleemery
 		QList<QwtPlotItem*> CreateBalanceItems (int days, bool cumulative)
 		{
 			const auto& days2infos = GetDays2Infos (days);
-			const auto& xData = Map (days2infos.keys (), [] (int d) -> double { return d; }).toVector ();
+			const auto& xData = days2infos.keys ().toVector ();
 			auto lastBalances = GetLastBalances (days2infos);
 
 			const auto& periodAccounts = lastBalances.keys ();
