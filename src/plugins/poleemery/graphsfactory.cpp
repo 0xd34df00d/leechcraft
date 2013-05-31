@@ -209,13 +209,22 @@ namespace Poleemery
 				}
 			}
 
-			if (absolute)
-				cat2amount [QObject::tr ("income")] = income;
-			cat2amount [QObject::tr ("savings")] = savings;
+			if (income > 0)
+			{
+				if (absolute)
+					cat2amount [QObject::tr ("income")] = income;
+				cat2amount [QObject::tr ("savings")] = savings;
+			}
+
+			if (cat2amount.isEmpty ())
+				return {};
 
 			if (!absolute)
+			{
+				const auto sum = std::accumulate (cat2amount.begin (), cat2amount.end (), 0.0);
 				for (auto& val : cat2amount)
-					val = val * 100 / income;
+					val = val * 100 / sum;
+			}
 
 			const auto& colors = GenerateColors ();
 			int currentIndex = 0;
