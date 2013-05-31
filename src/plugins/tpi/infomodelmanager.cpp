@@ -157,6 +157,8 @@ namespace TPI
 
 			item->setData (static_cast<double> (done), InfoModel::Roles::Done);
 			item->setData (static_cast<double> (total), InfoModel::Roles::Total);
+			item->setData (model->index (i, JobHolderColumn::JobName).data ().toString (),
+					InfoModel::Roles::Name);
 		}
 	}
 
