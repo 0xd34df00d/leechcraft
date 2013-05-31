@@ -218,7 +218,7 @@ namespace Krigstask
 			return;
 		}
 
-		Pager_ = new PagerWindow (Proxy_);
+		Pager_ = new PagerWindow (qApp->desktop ()->screenNumber ({ x, y }), Proxy_);
 		new Util::AutoResizeMixin ({ x, y },
 				[] () { return QApplication::desktop ()->availableGeometry (); },
 				Pager_);

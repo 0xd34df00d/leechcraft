@@ -30,6 +30,8 @@
 #include "pagerwindow.h"
 #include <QUrl>
 #include <QStandardItemModel>
+#include <QDesktopWidget>
+#include <QApplication>
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
 #include <QtDebug>
@@ -120,7 +122,7 @@ namespace Krigstask
 		}
 	};
 
-	PagerWindow::PagerWindow (ICoreProxy_ptr proxy, QWidget *parent)
+	PagerWindow::PagerWindow (int screen, ICoreProxy_ptr proxy, QWidget *parent)
 	: QDeclarativeView (parent)
 	, DesktopsModel_ (new DesktopsModel (this))
 	, WinIconProv_ (new Util::SettableIconProvider)
