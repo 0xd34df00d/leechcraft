@@ -62,6 +62,7 @@ namespace Krigstask
 
 	WindowsModel::WindowsModel (QObject *parent)
 	: QAbstractItemModel (parent)
+	, CurrentDesktop_ (Util::XWrapper::Instance ().GetCurrentDesktop ())
 	, ImageProvider_ (new TaskbarImageProvider)
 	{
 		auto& w = Util::XWrapper::Instance ();
@@ -69,36 +70,45 @@ namespace Krigstask
 		for (auto wid : windows)
 			AddWindow (wid, w);
 
-		connect (&Util::XWrapper::Instance (),
+		connect (&w,
 				SIGNAL (windowListChanged ()),
 				this,
 				SLOT (updateWinList ()));
-		connect (&Util::XWrapper::Instance (),
+		connect (&w,
 				SIGNAL (activeWindowChanged ()),
 				this,
 				SLOT (updateActiveWindow ()));
 
-		connect (&Util::XWrapper::Instance (),
+		connect (&w,
 				SIGNAL (windowNameChanged (ulong)),
 				this,
 				SLOT (updateWindowName (ulong)));
-		connect (&Util::XWrapper::Instance (),
+		connect (&w,
 				SIGNAL (windowIconChanged (ulong)),
 				this,
 				SLOT (updateWindowIcon (ulong)));
-		connect (&Util::XWrapper::Instance (),
+		connect (&w,
 				SIGNAL (windowStateChanged (ulong)),
 				this,
 				SLOT (updateWindowState (ulong)));
-		connect (&Util::XWrapper::Instance (),
+		connect (&w,
 				SIGNAL (windowActionsChanged (ulong)),
 				this,
 				SLOT (updateWindowActions (ulong)));
+		connect (&w,
+				SIGNAL (windowDesktopChanged (ulong)),
+				this,
+				SLOT (updateWindowDesktop (ulong)));
+		connect (&w,
+				SIGNAL (desktopChanged ()),
+				this,
+				SLOT (updateCurrentDesktop ()));
 
 		QHash<int, QByteArray> roleNames;
 		roleNames [Role::WindowName] = "windowName";
 		roleNames [Role::WindowID] = "windowID";
 		roleNames [Role::IconGenID] = "iconGenID";
+		roleNames [Role::IsCurrentDesktop] = "isCurrentDesktop";
 		roleNames [Role::IsActiveWindow] = "isActiveWindow";
 		roleNames [Role::IsMinimizedWindow] = "isMinimizedWindow";
 		setRoleNames (roleNames);
@@ -155,6 +165,8 @@ namespace Krigstask
 			return item.Icon_;
 		case Role::WindowID:
 			return QString::number (item.WID_);
+		case Role::IsCurrentDesktop:
+			return item.DesktopNum_ == CurrentDesktop_;
 		case Role::IconGenID:
 			return QString::number (item.IconGenID_);
 		case Role::IsActiveWindow:
@@ -178,6 +190,7 @@ namespace Krigstask
 					icon,
 					0,
 					w.GetActiveApp () == wid,
+					w.GetWindowDesktop (wid),
 					w.GetWindowState (wid),
 					w.GetWindowActions (wid)
 				});
@@ -270,7 +283,8 @@ namespace Krigstask
 	void WindowsModel::updateWindowName (ulong w)
 	{
 		UpdateWinInfo (w,
-				[&w] (WinInfo& info) { info.Title_ = Util::XWrapper::Instance ().GetWindowTitle (w); });
+				[&w] (WinInfo& info)
+					{ info.Title_ = Util::XWrapper::Instance ().GetWindowTitle (w); });
 	}
 
 	void WindowsModel::updateWindowIcon (ulong w)
@@ -297,7 +311,22 @@ namespace Krigstask
 	void WindowsModel::updateWindowActions (ulong w)
 	{
 		UpdateWinInfo (w,
-				[&w] (WinInfo& info) { info.Actions_ = Util::XWrapper::Instance ().GetWindowActions (w); });
+				[&w] (WinInfo& info)
+					{ info.Actions_ = Util::XWrapper::Instance ().GetWindowActions (w); });
+	}
+
+	void WindowsModel::updateWindowDesktop (ulong w)
+	{
+		UpdateWinInfo (w,
+				[&w] (WinInfo& info)
+					{ info.DesktopNum_ = Util::XWrapper::Instance ().GetWindowDesktop (w); });
+	}
+
+	void WindowsModel::updateCurrentDesktop ()
+	{
+		CurrentDesktop_ = Util::XWrapper::Instance ().GetCurrentDesktop ();
+		if (!Windows_.isEmpty ())
+			emit dataChanged (createIndex (0, 0), createIndex (Windows_.size () - 1, 0));
 	}
 }
 }
