@@ -171,7 +171,7 @@ namespace GoogleDrive
 				const QString& parentId = QString ());
 		void Rename (const QString& id, const QString& newName);
 
-		void RequestFileChanges (qlonglong startId);
+		void RequestFileChanges (qlonglong startId, const QString& pageToken = QString ());
 	private:
 		void RequestFiles (const QString& key);
 		void RequestSharingEntry (const QString& id, const QString& key);
@@ -186,7 +186,7 @@ namespace GoogleDrive
 				const QString& parentId, const QString& key);
 		void RequestMoveItem (const QString& id,
 				const QString& parentId, const QString& key);
-		void GetFileChanges (qlonglong startId, const QString& key);
+		void GetFileChanges (qlonglong startId, const QString& pageToken, const QString& key);
 		void RequestFileInfo (const QString& id, const QString& key);
 		void RequestRenameItem (const QString& id,
 				const QString& name,  const QString& key);
@@ -228,7 +228,7 @@ namespace GoogleDrive
 
 		void gotNewItem (const DriveItem& item);
 
-		void gotChanges (const QList<DriveChanges>& changes, qlonglong lastChangeId);
+		void gotChanges (const QList<DriveChanges>& changes);
 	};
 }
 }
