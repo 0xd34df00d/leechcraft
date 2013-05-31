@@ -31,6 +31,7 @@
 #include <QStyledItemDelegate>
 #include <QMessageBox>
 #include <QStringListModel>
+#include <QToolBar>
 #include <util/tags/tagslineedit.h>
 #include <util/tags/tagscompleter.h>
 #include <interfaces/core/itagsmanager.h>
@@ -136,6 +137,7 @@ namespace Poleemery
 	: OpsManager_ (Core::Instance ().GetOpsManager ())
 	, TC_ (tc)
 	, ParentPlugin_ (plugin)
+	, Toolbar_ (new QToolBar (tr ("Poleemery")))
 	{
 		Ui_.setupUi (this);
 		Ui_.OpsView_->setItemDelegate (new OpsDelegate);
@@ -154,6 +156,16 @@ namespace Poleemery
 		setColWidth (EntriesModel::Columns::Shop, "some typical shop name");
 		setColWidth (EntriesModel::Columns::AccBalance, " 99999.00 USD ");
 		setColWidth (EntriesModel::Columns::SumBalance, " 99999.00 USD ");
+
+		auto addAction = Toolbar_->addAction (tr ("Add..."),
+				this, SLOT (add ()));
+		addAction->setShortcut (Qt::Key_Insert);
+		addAction->setProperty ("ActionIcon", "list-add");
+
+		auto removeAction = Toolbar_->addAction (tr ("Remove"),
+				this, SLOT (remove ()));
+		removeAction->setShortcut (Qt::Key_Delete);
+		removeAction->setProperty ("ActionIcon", "list-remove");
 	}
 
 	TabClassInfo OperationsTab::GetTabClassInfo () const
@@ -174,10 +186,10 @@ namespace Poleemery
 
 	QToolBar* OperationsTab::GetToolBar () const
 	{
-		return 0;
+		return Toolbar_;
 	}
 
-	void OperationsTab::on_Add__released ()
+	void OperationsTab::add ()
 	{
 		OperationPropsDialog dia (this);
 		if (dia.exec () != QDialog::Accepted)
@@ -186,7 +198,7 @@ namespace Poleemery
 		OpsManager_->AddEntry (dia.GetEntry ());
 	}
 
-	void OperationsTab::on_Remove__released ()
+	void OperationsTab::remove ()
 	{
 		const auto& item = Ui_.OpsView_->currentIndex ();
 		if (!item.isValid ())

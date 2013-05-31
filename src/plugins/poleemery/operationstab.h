@@ -52,6 +52,8 @@ namespace Poleemery
 
 		const TabClassInfo TC_;
 		QObject * const ParentPlugin_;
+
+		QToolBar *Toolbar_;
 	public:
 		OperationsTab (const TabClassInfo&, QObject*);
 
@@ -60,8 +62,8 @@ namespace Poleemery
 		void Remove ();
 		QToolBar* GetToolBar () const;
 	private slots:
-		void on_Add__released ();
-		void on_Remove__released ();
+		void add ();
+		void remove ();
 	signals:
 		void removeTab (QWidget*);
 	};
