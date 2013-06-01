@@ -87,9 +87,9 @@ namespace Poleemery
 			auto minNum = days2infos.begin ().key ();
 			auto prevBalance = days2infos.begin ().value ();
 			for (int d = 0; d < days; ++d)
-				for (int h = 0; h < 24; ++h)
+				for (int h = 0; h < 48; ++h)
 				{
-					const auto val = d + h / 24.;
+					const auto val = d + h / 48.;
 					if (val <= minNum)
 						continue;
 
