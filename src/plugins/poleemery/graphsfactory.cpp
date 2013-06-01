@@ -244,7 +244,8 @@ namespace Poleemery
 			{
 				if (absolute)
 					cat2amount [QObject::tr ("income")] = income;
-				cat2amount [QObject::tr ("savings")] = savings;
+				if (savings > 0)
+					cat2amount [QObject::tr ("savings")] = savings;
 			}
 
 			if (cat2amount.isEmpty ())
