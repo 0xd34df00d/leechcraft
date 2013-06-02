@@ -344,7 +344,7 @@ namespace LHTR
 		QString content;
 		content += "<!DOCTYPE html PUBLIC";
 		content += "	\"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
-		content += "	<html lang=\"ar\" dir=\"ltr\" xmlns=\"http://www.w3.org/1999/xhtml\">";
+		content += "	<html dir=\"ltr\" xmlns=\"http://www.w3.org/1999/xhtml\">";
 		content += "<head><title></title></head><body contenteditable='true'>";
 		switch (type)
 		{
