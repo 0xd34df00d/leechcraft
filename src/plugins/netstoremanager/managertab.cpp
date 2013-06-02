@@ -943,7 +943,7 @@ namespace NetStoreManager
 		{
 			if (change.Deleted_)
 				Id2Item_.remove (change.ItemID_);
-			else
+			else if (change.Item_.IsValid ())
 				Id2Item_ [change.ItemID_] = change.Item_;
 		}
 
