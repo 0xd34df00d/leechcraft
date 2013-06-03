@@ -109,6 +109,8 @@ namespace Util
 		int GetDesktopCount ();
 		int GetCurrentDesktop ();
 		void SetCurrentDesktop (int);
+		QStringList GetDesktopNames ();
+		QString GetDesktopName (int, const QString& = QString ());
 		int GetWindowDesktop (Window);
 		void MoveWindowToDesktop (Window, int);
 
