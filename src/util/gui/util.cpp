@@ -64,12 +64,10 @@ namespace Util
 					diff = dim > diff ? dim : diff;
 			};
 
-			const QRect newRect (pos - QPoint (xDiff, yDiff), size);
-			if (newRect.contains (pos))
-			{
-				overlapFixer (xDiff, size.width ());
+			if (QRect (pos - QPoint (xDiff, yDiff), size).contains (pos) && yDiff < size.height ())
 				overlapFixer (yDiff, size.height ());
-			}
+			if (QRect (pos - QPoint (xDiff, yDiff), size).contains (pos) && xDiff < size.width ())
+				overlapFixer (xDiff, size.width ());
 		}
 
 		if (xDiff)
