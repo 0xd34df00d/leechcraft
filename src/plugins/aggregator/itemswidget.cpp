@@ -1059,6 +1059,7 @@ namespace Aggregator
 		return result;
 	}
 
+	// TODO move this connection to the ItemsListModel
 	void ItemsWidget::handleItemDataUpdated (Item_ptr item, Channel_ptr channel)
 	{
 		if (Impl_->CurrentItemsModel_->GetCurrentChannel () == channel->ChannelID_)

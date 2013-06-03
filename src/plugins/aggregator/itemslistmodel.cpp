@@ -46,10 +46,15 @@ namespace Aggregator
 	, CurrentChannel_ (-1)
 	{
 		ItemHeaders_ << tr ("Name") << tr ("Date");
+
 		connect (&Core::Instance (),
 				SIGNAL (channelRemoved (IDType_t)),
 				this,
 				SLOT (handleChannelRemoved (IDType_t)));
+		connect (&Core::Instance (),
+				SIGNAL (itemsRemoved (QSet<IDType_t>)),
+				this,
+				SLOT (handleItemsRemoved (QSet<IDType_t>)));
 	}
 
 	int ItemsListModel::GetSelectedRow () const
@@ -378,6 +383,11 @@ namespace Aggregator
 		if (id != CurrentChannel_)
 			return;
 		Reset (-1);
+	}
+
+	void ItemsListModel::handleItemsRemoved (const QSet<IDType_t>& items)
+	{
+		RemoveItems (items);
 	}
 }
 }
