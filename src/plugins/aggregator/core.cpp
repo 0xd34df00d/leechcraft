@@ -329,9 +329,9 @@ namespace Aggregator
 		ParserFactory::Instance ().Register (&RSS10Parser::Instance ());
 
 		connect (ChannelsModel_,
-				SIGNAL (channelDataUpdated ()),
+				SIGNAL (channelDataUpdated (IDType_t, IDType_t)),
 				this,
-				SIGNAL (channelDataUpdated ()));
+				SIGNAL (channelDataUpdated (IDType_t, IDType_t)));
 
 		ReprWidget_ = new ItemsWidget ();
 		ReprWidget_->SetChannelsFilter (JobHolderRepresentation_);
@@ -1438,6 +1438,7 @@ namespace Aggregator
 
 	void Core::handleDBUpChannelDataUpdated (IDType_t id, IDType_t feedId)
 	{
+		emit channelDataUpdated (id, feedId);
 		try
 		{
 			auto ch = StorageBackend_->GetChannel (id, feedId);

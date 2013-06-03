@@ -83,7 +83,7 @@ namespace Aggregator
 
 		void SetMenu (QMenu*);
 	signals:
-		void channelDataUpdated ();
+		void channelDataUpdated (IDType_t id, IDType_t feedId);
 	};
 }
 }
