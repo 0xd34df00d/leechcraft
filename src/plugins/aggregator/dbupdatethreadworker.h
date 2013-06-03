@@ -61,6 +61,7 @@ namespace Aggregator
 		void gotNewChannel (const ChannelShort&);
 		void gotEntity (const LeechCraft::Entity&);
 		void itemDataUpdated (Item_ptr, Channel_ptr);
+		void itemsRemoved (const QSet<IDType_t>&);
 
 		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
 				QVariantList items);

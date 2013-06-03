@@ -263,6 +263,7 @@ namespace Aggregator
 		void gotEntity (const LeechCraft::Entity&);
 		void channelRemoved (IDType_t);
 		void itemDataUpdated (Item_ptr, Channel_ptr);
+		void itemsRemoved (const QSet<IDType_t>&);
 
 		void storageChanged ();
 

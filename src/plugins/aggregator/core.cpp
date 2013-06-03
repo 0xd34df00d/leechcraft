@@ -85,6 +85,8 @@ namespace Aggregator
 	, DBUpThread_ (new DBUpdateThread (this))
 	{
 		qRegisterMetaType<IDType_t> ("IDType_t");
+		qRegisterMetaType<QList<IDType_t>> ("QList<IDType_t>");
+		qRegisterMetaType<QSet<IDType_t>> ("QSet<IDType_t>");
 		qRegisterMetaType<QItemSelection> ("QItemSelection");
 		qRegisterMetaType<Item_ptr> ("Item_ptr");
 		qRegisterMetaType<ChannelShort> ("ChannelShort");
@@ -461,6 +463,11 @@ namespace Aggregator
 			pool.SetID (StorageBackend_->GetHighestID (static_cast<PoolType> (type)) + 1);
 			Pools_ [static_cast<PoolType> (type)] = pool;
 		}
+
+		connect (StorageBackend_.get (),
+				SIGNAL (itemsRemoved (QSet<IDType_t>)),
+				this,
+				SIGNAL (itemsRemoved (QSet<IDType_t>)));
 
 		return true;
 	}
@@ -1414,6 +1421,11 @@ namespace Aggregator
 				SIGNAL (channelDataUpdated (IDType_t, IDType_t)),
 				this,
 				SLOT (handleDBUpChannelDataUpdated (IDType_t, IDType_t)),
+				Qt::QueuedConnection);
+		connect (DBUpThread_->GetWorker (),
+				SIGNAL (itemsRemoved (QSet<IDType_t>)),
+				this,
+				SIGNAL (itemsRemoved (QSet<IDType_t>)),
 				Qt::QueuedConnection);
 		connect (DBUpThread_->GetWorker (),
 				SIGNAL (gotNewChannel (ChannelShort)),

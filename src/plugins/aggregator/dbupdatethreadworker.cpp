@@ -75,6 +75,10 @@ namespace Aggregator
 				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
 				this,
 				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)));
+		connect (SB_.get (),
+				SIGNAL (itemsRemoved (QSet<IDType_t>)),
+				this,
+				SIGNAL (itemsRemoved (QSet<IDType_t>)));
 	}
 
 	void DBUpdateThreadWorker::toggleChannelUnread (IDType_t channel, bool state)
