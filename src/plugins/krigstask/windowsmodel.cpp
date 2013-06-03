@@ -166,7 +166,8 @@ namespace Krigstask
 		case Role::WindowID:
 			return QString::number (item.WID_);
 		case Role::IsCurrentDesktop:
-			return item.DesktopNum_ == CurrentDesktop_;
+			return item.DesktopNum_ == CurrentDesktop_ ||
+					item.DesktopNum_ == static_cast<int> (0xFFFFFFFF);
 		case Role::IconGenID:
 			return QString::number (item.IconGenID_);
 		case Role::IsActiveWindow:
