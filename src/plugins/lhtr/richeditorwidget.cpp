@@ -409,7 +409,27 @@ namespace LHTR
 
 	void RichEditorWidget::InsertHTML (const QString& html)
 	{
-		ExecCommand ("insertHTML", ExpandCustomTags (html));
+		auto expanded = ExpandCustomTags (html);
+		
+		expanded.replace ('\n', "\\n");
+		expanded.replace ('\'', "\\'");
+		
+		auto frame = Ui_.View_->page ()->mainFrame ();
+		frame->evaluateJavaScript (R"delim(
+			var s = window.getSelection();
+			
+			var elem = document.createElement();
+			s.getRangeAt(0).insertNode(elem);
+			elem.outerHTML = ')delim" + expanded + R"delim(';
+			
+			var node = s.getRangeAt(0).endContainer.nextSibling;
+			
+			s.removeAllRanges();
+			var r = document.createRange();
+			r.setEndAfter(node);
+			r.setStartAfter(node);
+			s.addRange(r);
+			)delim");
 	}
 
 	void RichEditorWidget::SetTagsMappings (const Replacements_t& rich2html, const Replacements_t& html2rich)
@@ -534,6 +554,12 @@ namespace LHTR
 
 	void RichEditorWidget::ExecCommand (const QString& cmd, QString arg)
 	{
+		if (cmd == "insertHTML")
+		{
+			InsertHTML (arg);
+			return;
+		}
+		
 		auto frame = Ui_.View_->page ()->mainFrame ();
 		const QString& js = arg.isEmpty () ?
 				QString ("document.execCommand('%1', false, null)").arg (cmd) :
