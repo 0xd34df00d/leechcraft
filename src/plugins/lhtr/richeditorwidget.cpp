@@ -357,6 +357,8 @@ namespace LHTR
 		}
 		content += "</body></html>";
 		Ui_.View_->setContent (content.toUtf8 (), MIMEType);
+
+		setupJS ();
 	}
 
 	void RichEditorWidget::AppendAction (QAction *act)
