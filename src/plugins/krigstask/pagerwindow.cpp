@@ -176,7 +176,7 @@ namespace Krigstask
 
 		const auto curDesk = w.GetCurrentDesktop ();
 		const auto activeApp = w.GetActiveApp ();
-		
+
 		const auto& deskNames = w.GetDesktopNames ();
 
 		for (int i = 0; i < numDesktops; ++i)
@@ -186,10 +186,10 @@ namespace Krigstask
 
 			auto item = new QStandardItem;
 			item->setData (QVariant::fromValue<QObject*> (subModel), DesktopsModel::Role::SubModel);
-			
+
 			const auto& deskName = deskNames.value (i, "Desktop " + QString::number (i + 1));
 			item->setData (deskName, DesktopsModel::Role::DesktopName);
-			
+
 			item->setData (curDesk == i, DesktopsModel::Role::IsCurrent);
 			item->setData (i, DesktopsModel::Role::DesktopID);
 			DesktopsModel_->appendRow (item);

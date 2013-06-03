@@ -218,9 +218,11 @@ namespace Krigstask
 			return;
 		}
 
-		Pager_ = new PagerWindow (qApp->desktop ()->screenNumber ({ x, y }), Proxy_);
+		auto desktop = QApplication::desktop ();
+		const auto screen = desktop->screenNumber ({ x, y });
+		Pager_ = new PagerWindow (screen, Proxy_);
 		new Util::AutoResizeMixin ({ x, y },
-				[] () { return QApplication::desktop ()->availableGeometry (); },
+				[screen, desktop] () { return desktop->availableGeometry (screen); },
 				Pager_);
 		Pager_->show ();
 	}
