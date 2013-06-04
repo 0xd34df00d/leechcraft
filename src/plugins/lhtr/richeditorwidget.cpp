@@ -410,20 +410,20 @@ namespace LHTR
 	void RichEditorWidget::InsertHTML (const QString& html)
 	{
 		auto expanded = ExpandCustomTags (html);
-		
+
 		expanded.replace ('\n', "\\n");
 		expanded.replace ('\'', "\\'");
-		
+
 		auto frame = Ui_.View_->page ()->mainFrame ();
 		frame->evaluateJavaScript (R"delim(
 			var s = window.getSelection();
-			
+
 			var elem = document.createElement();
 			s.getRangeAt(0).insertNode(elem);
 			elem.outerHTML = ')delim" + expanded + R"delim(';
-			
+
 			var node = s.getRangeAt(0).endContainer.nextSibling;
-			
+
 			s.removeAllRanges();
 			var r = document.createRange();
 			r.setEndAfter(node);
@@ -559,7 +559,7 @@ namespace LHTR
 			InsertHTML (arg);
 			return;
 		}
-		
+
 		auto frame = Ui_.View_->page ()->mainFrame ();
 		const QString& js = arg.isEmpty () ?
 				QString ("document.execCommand('%1', false, null)").arg (cmd) :
@@ -611,8 +611,10 @@ namespace LHTR
 				tag.ToKnown_ (elem);
 
 				elem.setAttribute ("__tagname__", tag.TagName_);
+
 				elem.setAttribute ("__original__", origContents.trimmed ());
-				elem.setAttribute ("contenteditable", "false");
+				if (!tag.FromKnown_)
+					elem.setAttribute ("contenteditable", "false");
 			}
 		}
 
@@ -627,7 +629,31 @@ namespace LHTR
 		{
 			const auto& elems = root.findAll ("*[__tagname__='" + tag.TagName_ + "']");
 			for (auto elem : elems)
-				elem.setOuterXml (elem.attribute ("__original__"));
+			{
+				QDomDocument doc;
+				if (!tag.FromKnown_)
+					elem.setOuterXml (elem.attribute ("__original__"));
+				else if (!doc.setContent (elem.toOuterXml ()))
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to parse"
+							<< elem.toOuterXml ();
+					elem.setOuterXml (elem.attribute ("__original__"));
+				}
+				else
+				{
+					auto docElem = doc.documentElement ();
+					docElem.removeAttribute ("__original__");
+
+					tag.FromKnown_ (docElem);
+
+					QString contents;
+					QTextStream str (&contents);
+					docElem.save (str, 1);
+
+					elem.setOuterXml (contents);
+				}
+			}
 		}
 		return root.toOuterXml ();
 	}
