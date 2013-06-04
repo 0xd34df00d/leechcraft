@@ -269,8 +269,11 @@ public:
 		 *
 		 * One can leave this function unset, in this case the tag will
 		 * marked as non-modifyable.
+		 *
+		 * This function should return \em true if the convertation
+		 * succeeded, otherwise it should return \em false.
 		 */
-		std::function<void (QDomElement&)> FromKnown_;
+		std::function<bool (QDomElement&)> FromKnown_;
 	};
 	typedef QList<CustomTag> CustomTags_t;
 
