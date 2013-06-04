@@ -27,4 +27,4 @@ find_library (QWT_LIBRARIES
 # all listed variables are TRUE
 include ( FindPackageHandleStandardArgs )
 find_package_handle_standard_args( Qwt DEFAULT_MSG QWT_LIBRARIES QWT_INCLUDE_DIRS )
-MARK_AS_ADVANCED(QWT_LIBRARIES QWT_INCLUDE_DIRS)
+mark_as_advanced(QWT_LIBRARIES QWT_INCLUDE_DIRS)

@@ -1,53 +1,53 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_choroid)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_choroid)
+include (InitLCPlugin OPTIONAL)
 
-SET (QT_USE_QTDECLARATIVE TRUE)
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+set (QT_USE_QTDECLARATIVE TRUE)
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
-SET (SRCS
+set (SRCS
 	choroid.cpp
 	choroidtab.cpp
 	)
-SET (HEADERS
+set (HEADERS
 	choroid.h
 	choroidtab.h
 	)
-SET (FORMS
+set (FORMS
 	choroidtab.ui
 	)
-#SET (TRANSLATIONS
+#set (TRANSLATIONS
 #	leechcraft_choroid_ru_RU.ts
 #	leechcraft_choroid_en.ts
 #	)
-#SET (COMPILED_TRANSLATIONS
+#set (COMPILED_TRANSLATIONS
 #	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_choroid_ru_RU.qm
 #	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_choroid_en.qm
 #	)
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif (NOT LC_NO_MOC)
 QT4_WRAP_UI (UIS_H ${FORMS})
 
-#ADD_CUSTOM_COMMAND (OUTPUT
+#add_custom_command (OUTPUT
 #	${COMPILED_TRANSLATIONS}
 #	COMMAND "${QT_LRELEASE_EXECUTABLE}" ${TRANSLATIONS}
 #	DEPENDS ${TRANSLATIONS}
 #	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 #	)
-ADD_LIBRARY (leechcraft_choroid SHARED
+add_library (leechcraft_choroid SHARED
 #	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	${UIS_H}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_choroid
+target_link_libraries (leechcraft_choroid
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_choroid DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
-INSTALL (DIRECTORY share/qml/choroid DESTINATION ${LC_QML_DEST})
+install (TARGETS leechcraft_choroid DESTINATION ${LC_PLUGINS_DEST})
+install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (DIRECTORY share/qml/choroid DESTINATION ${LC_QML_DEST})

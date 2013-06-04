@@ -1,61 +1,61 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_azoth_autoidler)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_azoth_autoidler)
+include (InitLCPlugin OPTIONAL)
 
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
+include (${QT_USE_FILE})
+include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/azoth
 	)
-SET (AUTOIDLER_SRCS
+set (AUTOIDLER_SRCS
 	autoidler.cpp
 	xmlsettingsmanager.cpp
 	3dparty/idle.cpp
 	)
-SET (AUTOIDLER_HEADERS
+set (AUTOIDLER_HEADERS
 	autoidler.h
 	xmlsettingsmanager.h
 	3dparty/idle.h
 	)
-SET (AUTOIDLER_RESOURCES azothautoidlerresources.qrc)
+set (AUTOIDLER_RESOURCES azothautoidlerresources.qrc)
 QT4_ADD_RESOURCES (AUTOIDLER_RCCS ${AUTOIDLER_RESOURCES})
 
-IF (APPLE)
-	SET (AUTOIDLER_SRCS ${AUTOIDLER_SRCS} 3dparty/idle_mac.cpp)
-	SET (ADDITIONAL_AUTOIDLER_LIBS "-framework CoreFoundation;-framework Carbon")
-ELSEIF (UNIX)
-	SET (AUTOIDLER_SRCS ${AUTOIDLER_SRCS} 3dparty/idle_x11.cpp)
+if (APPLE)
+	set (AUTOIDLER_SRCS ${AUTOIDLER_SRCS} 3dparty/idle_mac.cpp)
+	set (ADDITIONAL_AUTOIDLER_LIBS "-framework CoreFoundation;-framework Carbon")
+elseif (UNIX)
+	set (AUTOIDLER_SRCS ${AUTOIDLER_SRCS} 3dparty/idle_x11.cpp)
 
-	FIND_PACKAGE (X11)
+	find_package (X11)
 
-	IF (X11_Xscreensaver_FOUND)
-		ADD_DEFINITIONS (-DHAVE_XSS)
-		INCLUDE_DIRECTORIES ("${X11_Xscreensaver_INCLUDE_PATH}")
-		SET (ADDITIONAL_AUTOIDLER_LIBS ${X11_Xscreensaver_LIB})
-	ENDIF (X11_Xscreensaver_FOUND)
-ELSEIF (WIN32)
-	SET (AUTOIDLER_SRCS ${AUTOIDLER_SRCS} 3dparty/idle_win.cpp)
-ENDIF (APPLE)
+	if (X11_Xscreensaver_FOUND)
+		add_definitions (-DHAVE_XSS)
+		include_directories ("${X11_Xscreensaver_INCLUDE_PATH}")
+		set (ADDITIONAL_AUTOIDLER_LIBS ${X11_Xscreensaver_LIB})
+	endif (X11_Xscreensaver_FOUND)
+elseif (WIN32)
+	set (AUTOIDLER_SRCS ${AUTOIDLER_SRCS} 3dparty/idle_win.cpp)
+endif (APPLE)
 
-ADD_DEFINITIONS (-DUNICODE)
+add_definitions (-DUNICODE)
 
 CreateTrs ("azoth_autoidler" "en;es;ru_RU;uk_UA" AUTOIDLER_COMPILED_TRANSLATIONS)
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (AUTOIDLER_MOC_SRCS ${AUTOIDLER_HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif (NOT LC_NO_MOC)
 
-ADD_LIBRARY (leechcraft_azoth_autoidler SHARED
+add_library (leechcraft_azoth_autoidler SHARED
 	${AUTOIDLER_COMPILED_TRANSLATIONS}
 	${AUTOIDLER_SRCS}
 	${AUTOIDLER_MOC_SRCS}
 	${AUTOIDLER_RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_azoth_autoidler
+target_link_libraries (leechcraft_azoth_autoidler
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${ADDITIONAL_AUTOIDLER_LIBS}
 	)
-INSTALL (TARGETS leechcraft_azoth_autoidler DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES azothautoidlersettings.xml DESTINATION ${LC_SETTINGS_DEST})
-INSTALL (FILES ${AUTOIDLER_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (TARGETS leechcraft_azoth_autoidler DESTINATION ${LC_PLUGINS_DEST})
+install (FILES azothautoidlersettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (FILES ${AUTOIDLER_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

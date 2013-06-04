@@ -1,8 +1,8 @@
-INCLUDE_DIRECTORIES (
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	)
 
-SET (SRCS
+set (SRCS
 	securestorage.cpp
 	cryptosystem.cpp
 	ciphertextformat.cpp
@@ -10,7 +10,7 @@ SET (SRCS
 	xmlsettingsmanager.cpp
 	newpassworddialog.cpp
 	)
-SET (HEADERS
+set (HEADERS
 	securestorage.h
 	cryptosystem.h
 	ciphertextformat.h
@@ -18,42 +18,42 @@ SET (HEADERS
 	xmlsettingsmanager.h
 	newpassworddialog.h
 	)
-SET (FORMS
+set (FORMS
 	settingswidget.ui
 	newpassworddialog.ui
 	)
 QT4_WRAP_UI (UIS_H ${FORMS})
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif (NOT LC_NO_MOC)
 
-IF (TESTS_SECMAN)
-	INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR}/tests)
+if (TESTS_SECMAN)
+	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests)
 	QT4_WRAP_CPP (SECMAN_SECURESTORAGE_MOC "tests/cryptosystemtest.h")
-	ADD_EXECUTABLE (lc_secman_securestorage_test WIN32
+	add_executable (lc_secman_securestorage_test WIN32
 		tests/cryptosystemtest.cpp
 		cryptosystem.cpp
 		ciphertextformat.cpp
 		${SECMAN_SECURESTORAGE_MOC}
 	)
-	TARGET_LINK_LIBRARIES (lc_secman_securestorage_test
+	target_link_libraries (lc_secman_securestorage_test
 		${QT_LIBRARIES}
 		${LEECHCRAFT_LIBRARIES}
 		crypto
 	)
-	ADD_TEST (CryptoSystemTest lc_secman_securestorage_test)
-ENDIF (TESTS_SECMAN)
+	add_test (CryptoSystemTest lc_secman_securestorage_test)
+endif (TESTS_SECMAN)
 
-ADD_LIBRARY (leechcraft_secman_securestorage SHARED
+add_library (leechcraft_secman_securestorage SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	${UIS_H}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_secman_securestorage
+target_link_libraries (leechcraft_secman_securestorage
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	crypto
 	)
-INSTALL (TARGETS leechcraft_secman_securestorage DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES securestoragesettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (TARGETS leechcraft_secman_securestorage DESTINATION ${LC_PLUGINS_DEST})
+install (FILES securestoragesettings.xml DESTINATION ${LC_SETTINGS_DEST})

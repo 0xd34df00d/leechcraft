@@ -1,14 +1,14 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_netstoremanager_yandexdisk)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_netstoremanager_yandexdisk)
+include (InitLCPlugin OPTIONAL)
 
-INCLUDE_DIRECTORIES (${NETSTOREMANAGER_INCLUDE_DIR}
+include_directories (${NETSTOREMANAGER_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 
-SET (YANDEXDISK_SRCS
+set (YANDEXDISK_SRCS
 	yandexdisk.cpp
 	account.cpp
 	uploadmanager.cpp
@@ -20,7 +20,7 @@ SET (YANDEXDISK_SRCS
 	simpleactor.cpp
 	actorbase.cpp
 	)
-SET (YANDEXDISK_HEADERS
+set (YANDEXDISK_HEADERS
 	yandexdisk.h
 	account.h
 	uploadmanager.h
@@ -32,29 +32,29 @@ SET (YANDEXDISK_HEADERS
 	simpleactor.h
 	actorbase.h
 	)
-SET (YANDEXDISK_FORMS
+set (YANDEXDISK_FORMS
 	)
-SET (YANDEXDISK_RESOURCES netstoremanageryandexdiskresources.qrc)
+set (YANDEXDISK_RESOURCES netstoremanageryandexdiskresources.qrc)
 CreateTrs ("netstoremanager_yandexdisk" "en;es;ru_RU;uk_UA" YANDEXDISK_COMPILED_TRANSLATIONS)
 
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (YANDEXDISK_MOC_SRCS ${YANDEXDISK_HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif (NOT LC_NO_MOC)
 #QT4_WRAP_UI (YANDEXDISK_UIS_H ${YANDEXDISK_FORMS})
 QT4_ADD_RESOURCES (YANDEXDISK_RCCS ${YANDEXDISK_RESOURCES})
 
-ADD_LIBRARY (leechcraft_netstoremanager_yandexdisk SHARED
+add_library (leechcraft_netstoremanager_yandexdisk SHARED
 	${YANDEXDISK_COMPILED_TRANSLATIONS}
 	${YANDEXDISK_SRCS}
 	${YANDEXDISK_MOC_SRCS}
 	${YANDEXDISK_UIS_H}
 	${YANDEXDISK_RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_netstoremanager_yandexdisk
+target_link_libraries (leechcraft_netstoremanager_yandexdisk
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 
-INSTALL (TARGETS leechcraft_netstoremanager_yandexdisk DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${YANDEXDISK_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
-#INSTALL (FILES netstoremanageryandexdisksettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (TARGETS leechcraft_netstoremanager_yandexdisk DESTINATION ${LC_PLUGINS_DEST})
+install (FILES ${YANDEXDISK_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+#install (FILES netstoremanageryandexdisksettings.xml DESTINATION ${LC_SETTINGS_DEST})

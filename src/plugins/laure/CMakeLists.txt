@@ -1,35 +1,35 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_laure)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_laure)
+include (InitLCPlugin OPTIONAL)
 
-IF (NOT MSVC)
-	SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-ENDIF (NOT MSVC)
+if (NOT MSVC)
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+endif (NOT MSVC)
 
-SET (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-OPTION (TESTS_LAURE "Enable Laure tests" OFF)
+option (TESTS_LAURE "Enable Laure tests" OFF)
 
-SET (QT_USE_QTGUI TRUE)
-SET (QT_USE_QTNETWORK TRUE)
-SET (QT_USE_QTXML TRUE)
+set (QT_USE_QTGUI TRUE)
+set (QT_USE_QTNETWORK TRUE)
+set (QT_USE_QTXML TRUE)
 
-IF (TESTS_LAURE)
-	ENABLE_TESTING ()
-	SET (QT_USE_QTTEST TRUE)
-ENDIF (TESTS_LAURE)
+if (TESTS_LAURE)
+	enable_testing ()
+	set (QT_USE_QTTEST TRUE)
+endif (TESTS_LAURE)
 
-FIND_PACKAGE (VLC REQUIRED)
+find_package (VLC REQUIRED)
 
-IF (NOT MSVC)
-	FIND_PACKAGE (MAGIC REQUIRED)
-	IF (MAGIC_FOUND)
-		ADD_DEFINITIONS (-DHAVE_MAGIC)
-	ENDIF (MAGIC_FOUND)
-ENDIF (NOT MSVC)
+if (NOT MSVC)
+	find_package (MAGIC REQUIRED)
+	if (MAGIC_FOUND)
+		add_definitions (-DHAVE_MAGIC)
+	endif (MAGIC_FOUND)
+endif (NOT MSVC)
 
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -38,7 +38,7 @@ INCLUDE_DIRECTORIES (
 	${MAGIC_INCLUDE_DIR}
 	)
 
-SET (SRCS
+set (SRCS
 	positionslider.cpp
 	core.cpp
 	playliststatusdelegate.cpp
@@ -57,7 +57,7 @@ SET (SRCS
 	laurewidget.cpp
 	laure.cpp
 	)
-SET (HEADERS
+set (HEADERS
 	positionslider.h
 	core.h
 	playliststatusdelegate.h
@@ -76,21 +76,21 @@ SET (HEADERS
 	laurewidget.h
 	laure.h
 	)
-SET (FORMS
+set (FORMS
 	laurewidget.ui
 	chooseurldialog.ui
 )
 
-SET (RESOURCES laureresources.qrc)
+set (RESOURCES laureresources.qrc)
 
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif (NOT LC_NO_MOC)
 QT4_WRAP_UI (FORMS_HEADERS ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 CreateTrs ("laure" "en;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 
-ADD_LIBRARY (leechcraft_laure SHARED
+add_library (leechcraft_laure SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${HEADERS}
@@ -98,19 +98,19 @@ ADD_LIBRARY (leechcraft_laure SHARED
 	${FORMS_HEADERS}
 	${RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_laure
+target_link_libraries (leechcraft_laure
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${VLC_LIBRARIES}
 	${MAGIC_LIBRARIES}
 	)
 
-INSTALL (TARGETS leechcraft_laure DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES lauresettings.xml DESTINATION ${LC_SETTINGS_DEST})
-INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (TARGETS leechcraft_laure DESTINATION ${LC_PLUGINS_DEST})
+install (FILES lauresettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 
-SET (LAURE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set (LAURE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
-IF (TESTS_LAURE)
-	ADD_SUBDIRECTORY (tests)
-ENDIF (TESTS_LAURE)
+if (TESTS_LAURE)
+	add_subdirectory (tests)
+endif (TESTS_LAURE)

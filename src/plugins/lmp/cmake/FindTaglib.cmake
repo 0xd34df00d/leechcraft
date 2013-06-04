@@ -67,7 +67,7 @@ if (NOT MINGW)
     ${KDE4_LIB_DIR}
     ${LIB_INSTALL_DIR}
   )
-ELSE (NOT MINGW)
+else (NOT MINGW)
   find_library(TAGLIB_LIBRARIES
     NAMES libtag.dll.a
     PATHS
@@ -75,7 +75,7 @@ ELSE (NOT MINGW)
     ${LIB_INSTALL_DIR}
     ${TAGLIB_DIR}/build/taglib
   )
-ENDIF (NOT MINGW)
+endif (NOT MINGW)
 
   find_package_handle_standard_args(Taglib DEFAULT_MSG
                                     TAGLIB_INCLUDES TAGLIB_LIBRARIES)

@@ -5,32 +5,32 @@
 # Redistribution and use is allowed according to the terms of the BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
-INCLUDE(MacroEnsureVersion)
-INCLUDE(FindPackageHandleStandardArgs)
+include(MacroEnsureVersion)
+include(FindPackageHandleStandardArgs)
 
-IF (LIBOTR_INCLUDE_DIR AND LIBOTR_LIBRARY)
+if (LIBOTR_INCLUDE_DIR AND LIBOTR_LIBRARY)
     # Already in cache, be silent
-    SET(LIBOTR_FIND_QUIETLY TRUE)
-ENDIF (LIBOTR_INCLUDE_DIR AND LIBOTR_LIBRARY)
+    set(LIBOTR_FIND_QUIETLY TRUE)
+endif (LIBOTR_INCLUDE_DIR AND LIBOTR_LIBRARY)
 
-FIND_PATH(LIBOTR_INCLUDE_DIR libotr/version.h)
+find_path(LIBOTR_INCLUDE_DIR libotr/version.h)
 
-FIND_LIBRARY(LIBOTR_LIBRARY NAMES otr libotr)
+find_library(LIBOTR_LIBRARY NAMES otr libotr)
 
 # Determine version information from libotr/version.h
-IF( LIBOTR_INCLUDE_DIR AND LIBOTR_LIBRARY )
-  EXECUTE_PROCESS(COMMAND grep "OTRL_VERSION" "${LIBOTR_INCLUDE_DIR}/libotr/version.h" OUTPUT_VARIABLE output)
-  STRING(REGEX MATCH "OTRL_VERSION \"[0-9]+\\.[0-9]+\\.[0-9]+" LIBOTR_VERSION "${output}")
-  STRING(REGEX REPLACE "^OTRL_VERSION \"" "" LIBOTR_VERSION "${LIBOTR_VERSION}")
+if( LIBOTR_INCLUDE_DIR AND LIBOTR_LIBRARY )
+  execute_process(COMMAND grep "OTRL_VERSION" "${LIBOTR_INCLUDE_DIR}/libotr/version.h" OUTPUT_VARIABLE output)
+  string(REGEX MATCH "OTRL_VERSION \"[0-9]+\\.[0-9]+\\.[0-9]+" LIBOTR_VERSION "${output}")
+  string(REGEX REPLACE "^OTRL_VERSION \"" "" LIBOTR_VERSION "${LIBOTR_VERSION}")
   # Check if version is at least 3.2.0
   MACRO_ENSURE_VERSION("3.2.0" ${LIBOTR_VERSION} LIBOTR_FOUND)
 
-  IF( LIBOTR_FOUND )
-    IF( NOT LIBOTR_FIND_QUIETLY )
-      MESSAGE( STATUS "Found libotr: ${LIBOTR_LIBRARY}")
-    ENDIF( NOT LIBOTR_FIND_QUIETLY )
-  ELSE( LIBOTR_FOUND )
-    MESSAGE(STATUS "libotr version 3.2.0 or greater required but found ${LIBOTR_VERSION}.")
-  ENDIF( LIBOTR_FOUND )
+  if( LIBOTR_FOUND )
+    if( NOT LIBOTR_FIND_QUIETLY )
+      message( STATUS "Found libotr: ${LIBOTR_LIBRARY}")
+    endif( NOT LIBOTR_FIND_QUIETLY )
+  else( LIBOTR_FOUND )
+    message(STATUS "libotr version 3.2.0 or greater required but found ${LIBOTR_VERSION}.")
+  endif( LIBOTR_FOUND )
 
-ENDIF( LIBOTR_INCLUDE_DIR AND LIBOTR_LIBRARY )
+endif( LIBOTR_INCLUDE_DIR AND LIBOTR_LIBRARY )

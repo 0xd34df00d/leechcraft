@@ -1,50 +1,50 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_musiczombie)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_musiczombie)
+include (InitLCPlugin OPTIONAL)
 
-OPTION (WITH_MUSICZOMBIE_CHROMAPRINT "Build support for Chromaprints in MusicZombie" ON)
+option (WITH_MUSICZOMBIE_CHROMAPRINT "Build support for Chromaprints in MusicZombie" ON)
 
-IF (WITH_MUSICZOMBIE_CHROMAPRINT)
-	SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-	FIND_PACKAGE (FFmpeg REQUIRED)
+if (WITH_MUSICZOMBIE_CHROMAPRINT)
+	set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+	find_package (FFmpeg REQUIRED)
 
-	SET (EXTRA_LIBRARIES
+	set (EXTRA_LIBRARIES
 		${AVFORMAT_LIBRARIES}
 		${AVCODEC_LIBRARIES}
 		${AVUTIL_LIBRARIES}
 		chromaprint)
 
-	ADD_DEFINITIONS (-DWITH_CHROMAPRINT)
-ENDIF (WITH_MUSICZOMBIE_CHROMAPRINT)
+	add_definitions (-DWITH_CHROMAPRINT)
+endif (WITH_MUSICZOMBIE_CHROMAPRINT)
 
-SET (QT_USE_QTNETWORK TRUE)
-SET (QT_USE_QTXML TRUE)
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+set (QT_USE_QTNETWORK TRUE)
+set (QT_USE_QTXML TRUE)
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
-SET (SRCS
+set (SRCS
 	musiczombie.cpp
 	artistlookup.cpp
 	pendingdisco.cpp
 	)
-IF (WITH_MUSICZOMBIE_CHROMAPRINT)
-	SET (SRCS
+if (WITH_MUSICZOMBIE_CHROMAPRINT)
+	set (SRCS
 		${SRCS}
 		chroma.cpp
 		pendingtagsfetch.cpp)
-ENDIF (WITH_MUSICZOMBIE_CHROMAPRINT)
+endif (WITH_MUSICZOMBIE_CHROMAPRINT)
 
-ADD_LIBRARY (leechcraft_musiczombie SHARED
+add_library (leechcraft_musiczombie SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_musiczombie
+target_link_libraries (leechcraft_musiczombie
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${EXTRA_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_musiczombie DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_musiczombie DESTINATION ${LC_PLUGINS_DEST})

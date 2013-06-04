@@ -10,17 +10,17 @@
 ## emulate what FindQt4.cmake and a few others do.
 ##
 ##  To enable a specific component, set your QXT_USE_${modname}:
-##  SET(QXT_USE_QXTCORE TRUE)
-##  SET(QXT_USE_QXTGUI FALSE)
+##  set(QXT_USE_QXTCORE TRUE)
+##  set(QXT_USE_QXTGUI FALSE)
 ##  Currently available components:
 ##  QxtCore, QxtGui, QxtNetwork, QxtWeb, QxtSql
-##  Auto-including directories are enabled with INCLUDE_DIRECTORIES(), but
+##  Auto-including directories are enabled with include_directories(), but
 ##  can be accessed if necessary via ${QXT_INCLUDE_DIRS}
 ##
-## To add the libraries to your build, TARGET_LINK_LIBRARIES(), such as...
-##  TARGET_LINK_LIBRARIES(YourTargetNameHere ${QXT_LIBRARIES})
+## To add the libraries to your build, target_link_libraries(), such as...
+##  target_link_libraries(YourTargetNameHere ${QXT_LIBRARIES})
 ## ...or..
-##  TARGET_LINK_LIBRARIES(YourTargetNameHere ${QT_LIBRARIES} ${QXT_LIBRARIES})
+##  target_link_libraries(YourTargetNameHere ${QT_LIBRARIES} ${QXT_LIBRARIES})
 ################### TODO:
 ##      The purpose of this cmake file is to find what components
 ##  exist, regardless of how libQxt was build or configured, thus
@@ -39,25 +39,25 @@
 ##############
 
 ###### setup
-SET(QXT_MODULES QxtGui QxtWeb QxtZeroConf QxtNetwork QxtSql QxtBerkeley QxtCore)
-SET(QXT_FOUND_MODULES)
-FOREACH(mod ${QXT_MODULES})
-    STRING(TOUPPER ${mod} U_MOD)
-    SET(QXT_${U_MOD}_INCLUDE_DIR NOTFOUND)
-    SET(QXT_${U_MOD}_LIB_DEBUG NOTFOUND)
-    SET(QXT_${U_MOD}_LIB_RELEASE NOTFOUND)
-    SET(QXT_FOUND_${U_MOD} FALSE)
-ENDFOREACH(mod)
-SET(QXT_QXTGUI_DEPENDSON QxtCore)
-SET(QXT_QXTWEB_DEPENDSON QxtCore QxtNetwork)
-SET(QXT_QXTZEROCONF_DEPENDSON QxtCore QxtNetwork)
-SET(QXT_QXTNETWORK_DEPENDSON QxtCore)
-SET(QXT_QXTQSQL_DEPENDSON QxtCore)
-SET(QXT_QXTBERKELEY_DEPENDSON QxtCore)
+set(QXT_MODULES QxtGui QxtWeb QxtZeroConf QxtNetwork QxtSql QxtBerkeley QxtCore)
+set(QXT_FOUND_MODULES)
+foreach(mod ${QXT_MODULES})
+    string(TOUPPER ${mod} U_MOD)
+    set(QXT_${U_MOD}_INCLUDE_DIR NOTFOUND)
+    set(QXT_${U_MOD}_LIB_DEBUG NOTFOUND)
+    set(QXT_${U_MOD}_LIB_RELEASE NOTFOUND)
+    set(QXT_FOUND_${U_MOD} FALSE)
+endforeach(mod)
+set(QXT_QXTGUI_DEPENDSON QxtCore)
+set(QXT_QXTWEB_DEPENDSON QxtCore QxtNetwork)
+set(QXT_QXTZEROCONF_DEPENDSON QxtCore QxtNetwork)
+set(QXT_QXTNETWORK_DEPENDSON QxtCore)
+set(QXT_QXTQSQL_DEPENDSON QxtCore)
+set(QXT_QXTBERKELEY_DEPENDSON QxtCore)
 
-FOREACH(mod ${QXT_MODULES})
-    STRING(TOUPPER ${mod} U_MOD)
-    FIND_PATH(QXT_${U_MOD}_INCLUDE_DIR ${mod}
+foreach(mod ${QXT_MODULES})
+    string(TOUPPER ${mod} U_MOD)
+    find_path(QXT_${U_MOD}_INCLUDE_DIR ${mod}
         PATH_SUFFIXES ${mod} include/${mod}
             qxt/include/${mod} include/qxt/${mod}
             Qxt/include/${mod} include/Qxt/${mod}
@@ -75,7 +75,7 @@ FOREACH(mod ${QXT_MODULES})
         "C:\\Program Files(x86)\\"
         NO_DEFAULT_PATH
     )
-    FIND_LIBRARY(QXT_${U_MOD}_LIB_RELEASE NAME ${mod}
+    find_library(QXT_${U_MOD}_LIB_RELEASE NAME ${mod}
         PATH_SUFFIXES Qxt/lib64 Qxt/lib lib64 lib lib/${CMAKE_LIBRARY_ARCHITECTURE}
         PATHS
         /sw
@@ -89,7 +89,7 @@ FOREACH(mod ${QXT_MODULES})
         "C:\\Program Files(x86)"
         NO_DEFAULT_PATH
     )
-    FIND_LIBRARY(QXT_${U_MOD}_LIB_DEBUG NAME ${mod}d
+    find_library(QXT_${U_MOD}_LIB_DEBUG NAME ${mod}d
         PATH_SUFFIXES Qxt/lib64 Qxt/lib lib64 lib lib/${CMAKE_LIBRARY_ARCHITECTURE}
         PATHS
         /sw
@@ -103,54 +103,54 @@ FOREACH(mod ${QXT_MODULES})
         "C:\\Program Files(x86)"
         NO_DEFAULT_PATH
     )
-    IF (QXT_${U_MOD}_LIB_RELEASE)
-        SET(QXT_FOUND_MODULES "${QXT_FOUND_MODULES} ${mod}")
-    ENDIF (QXT_${U_MOD}_LIB_RELEASE)
+    if (QXT_${U_MOD}_LIB_RELEASE)
+        set(QXT_FOUND_MODULES "${QXT_FOUND_MODULES} ${mod}")
+    endif (QXT_${U_MOD}_LIB_RELEASE)
 
-    IF (QXT_${U_MOD}_LIB_DEBUG)
-        SET(QXT_FOUND_MODULES "${QXT_FOUND_MODULES} ${mod}")
-    ENDIF (QXT_${U_MOD}_LIB_DEBUG)
-ENDFOREACH(mod)
+    if (QXT_${U_MOD}_LIB_DEBUG)
+        set(QXT_FOUND_MODULES "${QXT_FOUND_MODULES} ${mod}")
+    endif (QXT_${U_MOD}_LIB_DEBUG)
+endforeach(mod)
 
-FOREACH(mod ${QXT_MODULES})
-    STRING(TOUPPER ${mod} U_MOD)
-    IF(QXT_${U_MOD}_INCLUDE_DIR AND QXT_${U_MOD}_LIB_RELEASE)
-        SET(QXT_FOUND_${U_MOD} TRUE)
-    ENDIF(QXT_${U_MOD}_INCLUDE_DIR AND QXT_${U_MOD}_LIB_RELEASE)
-ENDFOREACH(mod)
+foreach(mod ${QXT_MODULES})
+    string(TOUPPER ${mod} U_MOD)
+    if(QXT_${U_MOD}_INCLUDE_DIR AND QXT_${U_MOD}_LIB_RELEASE)
+        set(QXT_FOUND_${U_MOD} TRUE)
+    endif(QXT_${U_MOD}_INCLUDE_DIR AND QXT_${U_MOD}_LIB_RELEASE)
+endforeach(mod)
 
 
 ##### find and include
 # To use a Qxt Library....
-#   SET(QXT_FIND_COMPONENTS QxtCore, QxtGui)
+#   set(QXT_FIND_COMPONENTS QxtCore, QxtGui)
 # ...and this will do the rest
-IF( QXT_FIND_COMPONENTS )
-    FOREACH( component ${QXT_FIND_COMPONENTS} )
-        STRING( TOUPPER ${component} _COMPONENT )
-        SET(QXT_USE_${_COMPONENT}_COMPONENT TRUE)
-    ENDFOREACH( component )
-ENDIF( QXT_FIND_COMPONENTS )
+if( QXT_FIND_COMPONENTS )
+    foreach( component ${QXT_FIND_COMPONENTS} )
+        string( TOUPPER ${component} _COMPONENT )
+        set(QXT_USE_${_COMPONENT}_COMPONENT TRUE)
+    endforeach( component )
+endif( QXT_FIND_COMPONENTS )
 
-SET(QXT_LIBRARIES "")
-SET(QXT_INCLUDE_DIRS "")
+set(QXT_LIBRARIES "")
+set(QXT_INCLUDE_DIRS "")
 
 # like FindQt4.cmake, in order of dependence
-FOREACH( module ${QXT_MODULES} )
-    STRING(TOUPPER ${module} U_MOD)
-    IF(QXT_USE_${U_MOD} OR QXT_DEPENDS_${U_MOD})
-        IF(QXT_FOUND_${U_MOD})
-            STRING(REPLACE "QXT" "" qxt_module_def "${U_MOD}")
-            ADD_DEFINITIONS(-DQXT_${qxt_module_def}_LIB)
-            SET(QXT_INCLUDE_DIRS ${QXT_INCLUDE_DIRS} ${QXT_${U_MOD}_INCLUDE_DIR})
-            INCLUDE_DIRECTORIES(${QXT_${U_MOD}_INCLUDE_DIR})
-            SET(QXT_LIBRARIES ${QXT_LIBRARIES} ${QXT_${U_MOD}_LIB_RELEASE})
-        ELSE(QXT_FOUND_${U_MOD})
-            MESSAGE("Could not find Qxt Module ${module}")
-            RETURN()
-        ENDIF(QXT_FOUND_${U_MOD})
-        FOREACH(dep QXT_${U_MOD}_DEPENDSON)
-            SET(QXT_DEPENDS_${dep} TRUE)
-        ENDFOREACH(dep)
-    ENDIF(QXT_USE_${U_MOD} OR QXT_DEPENDS_${U_MOD})
-ENDFOREACH(module)
-MESSAGE(STATUS "Found Qxt Libraries:${QXT_FOUND_MODULES}")
+foreach( module ${QXT_MODULES} )
+    string(TOUPPER ${module} U_MOD)
+    if(QXT_USE_${U_MOD} OR QXT_DEPENDS_${U_MOD})
+        if(QXT_FOUND_${U_MOD})
+            string(REPLACE "QXT" "" qxt_module_def "${U_MOD}")
+            add_definitions(-DQXT_${qxt_module_def}_LIB)
+            set(QXT_INCLUDE_DIRS ${QXT_INCLUDE_DIRS} ${QXT_${U_MOD}_INCLUDE_DIR})
+            include_directories(${QXT_${U_MOD}_INCLUDE_DIR})
+            set(QXT_LIBRARIES ${QXT_LIBRARIES} ${QXT_${U_MOD}_LIB_RELEASE})
+        else(QXT_FOUND_${U_MOD})
+            message("Could not find Qxt Module ${module}")
+            return()
+        endif(QXT_FOUND_${U_MOD})
+        foreach(dep QXT_${U_MOD}_DEPENDSON)
+            set(QXT_DEPENDS_${dep} TRUE)
+        endforeach(dep)
+    endif(QXT_USE_${U_MOD} OR QXT_DEPENDS_${U_MOD})
+endforeach(module)
+message(STATUS "Found Qxt Libraries:${QXT_FOUND_MODULES}")

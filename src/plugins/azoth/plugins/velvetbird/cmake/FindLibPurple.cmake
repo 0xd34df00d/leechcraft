@@ -19,7 +19,7 @@ if (LIBPURPLE_LIBRARIES AND LIBPURPLE_INCLUDE_DIRS)
   set(LIBPURPLE_FOUND TRUE)
 else (LIBPURPLE_LIBRARIES AND LIBPURPLE_INCLUDE_DIRS)
   # use pkg-config to get the directories and then use these values
-  # in the FIND_PATH() and FIND_LIBRARY() calls
+  # in the find_path() and find_library() calls
     include(UsePkgConfig)
 
     pkgconfig(libpurple _LIBPURPLEIncDir _LIBPURPLELinkDir _LIBPURPLELinkFlags _LIBPURPLECflags)

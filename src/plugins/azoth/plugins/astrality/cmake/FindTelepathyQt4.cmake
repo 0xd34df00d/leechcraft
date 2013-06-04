@@ -36,5 +36,5 @@ find_library(TELEPATHY_QT4_LIBRARIES
              ${PC_TELEPATHY_QT4_LIBRARY_DIRS}
 )
 
-MESSAGE(STATUS "Found Telepathy-Qt4 libraries at ${TELEPATHY_QT4_INCLUDE_DIR}")
-MESSAGE(STATUS "Found Telepathy-Qt4 headers at ${TELEPATHY_QT4_LIBRARIES}")
+message(STATUS "Found Telepathy-Qt4 libraries at ${TELEPATHY_QT4_INCLUDE_DIR}")
+message(STATUS "Found Telepathy-Qt4 headers at ${TELEPATHY_QT4_LIBRARIES}")

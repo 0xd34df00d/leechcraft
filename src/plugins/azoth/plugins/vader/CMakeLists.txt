@@ -1,26 +1,26 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_azoth_vader)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_azoth_vader)
+include (InitLCPlugin OPTIONAL)
 
-OPTION (ENABLE_AZOTH_VADER_VERBOSE_LOG "Debug protocol messages & similar stuff with increased verbosity" OFF)
+option (ENABLE_AZOTH_VADER_VERBOSE_LOG "Debug protocol messages & similar stuff with increased verbosity" OFF)
 
-IF (ENABLE_AZOTH_VADER_VERBOSE_LOG)
-	ADD_DEFINITIONS (-DPROTOCOL_LOGGING)
-ENDIF (ENABLE_AZOTH_VADER_VERBOSE_LOG)
+if (ENABLE_AZOTH_VADER_VERBOSE_LOG)
+	add_definitions (-DPROTOCOL_LOGGING)
+endif (ENABLE_AZOTH_VADER_VERBOSE_LOG)
 
-SET (QT_USE_QTNETWORK TRUE)
-INCLUDE (${QT_USE_FILE})
+set (QT_USE_QTNETWORK TRUE)
+include (${QT_USE_FILE})
 
-SET (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
+include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/azoth
 	)
 
-SET (VADER_SRCS
+set (VADER_SRCS
 	vader.cpp
 	core.cpp
 	mrimprotocol.cpp
@@ -45,7 +45,7 @@ SET (VADER_SRCS
 	proto/balancer.cpp
 	proto/typingmanager.cpp
 	)
-SET (VADER_HEADERS
+set (VADER_HEADERS
 	vader.h
 	core.h
 	mrimprotocol.h
@@ -70,32 +70,32 @@ SET (VADER_HEADERS
 	proto/balancer.h
 	proto/typingmanager.h
 	)
-SET (VADER_FORMS
+set (VADER_FORMS
 	mrimaccountconfigwidget.ui
 	smsdialog.ui
 	vcarddialog.ui
 	)
-SET (VADER_RESOURCES azothvaderresources.qrc)
+set (VADER_RESOURCES azothvaderresources.qrc)
 CreateTrs ("azoth_vader" "en;es;ru_RU;uk_UA" VADER_COMPILED_TRANSLATIONS)
 
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (VADER_MOC_SRCS ${VADER_HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif (NOT LC_NO_MOC)
 QT4_WRAP_UI (VADER_UIS_H ${VADER_FORMS})
 QT4_ADD_RESOURCES (VADER_RCCS ${VADER_RESOURCES})
 
-ADD_LIBRARY (leechcraft_azoth_vader SHARED
+add_library (leechcraft_azoth_vader SHARED
 	${VADER_COMPILED_TRANSLATIONS}
 	${VADER_SRCS}
 	${VADER_MOC_SRCS}
 	${VADER_UIS_H}
 	${VADER_RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_azoth_vader
+target_link_libraries (leechcraft_azoth_vader
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 
-INSTALL (TARGETS leechcraft_azoth_vader DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${VADER_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
-INSTALL (FILES azothvadersettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (TARGETS leechcraft_azoth_vader DESTINATION ${LC_PLUGINS_DEST})
+install (FILES ${VADER_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (FILES azothvadersettings.xml DESTINATION ${LC_SETTINGS_DEST})

@@ -1,41 +1,41 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_azoth_xtazy)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_azoth_xtazy)
+include (InitLCPlugin OPTIONAL)
 
-IF (NOT WIN32)
-	SET (QT_USE_QTDBUS TRUE)
-ENDIF (NOT WIN32)
-INCLUDE (${QT_USE_FILE})
+if (NOT WIN32)
+	set (QT_USE_QTDBUS TRUE)
+endif (NOT WIN32)
+include (${QT_USE_FILE})
 
-INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
+include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/azoth
 	)
-SET (XTAZY_SRCS
+set (XTAZY_SRCS
 	xtazy.cpp
 	xmlsettingsmanager.cpp
 	tracksharedialog.cpp
 	)
-SET (XTAZY_FORMS
+set (XTAZY_FORMS
 	tracksharedialog.ui
 	)
-SET (XTAZY_RESOURCES azothxtazyresources.qrc)
+set (XTAZY_RESOURCES azothxtazyresources.qrc)
 CreateTrs ("azoth_xtazy" "en;es;ru_RU;uk_UA" XTAZY_COMPILED_TRANSLATIONS)
 QT4_ADD_RESOURCES (XTAZY_RCCS ${XTAZY_RESOURCES})
 QT4_WRAP_UI (XTAZY_UIS_H ${XTAZY_FORMS})
 
 
-ADD_LIBRARY (leechcraft_azoth_xtazy SHARED
+add_library (leechcraft_azoth_xtazy SHARED
 	${XTAZY_COMPILED_TRANSLATIONS}
 	${XTAZY_SRCS}
 	${XTAZY_RCCS}
 	${XTAZY_UIS_H}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_azoth_xtazy
+target_link_libraries (leechcraft_azoth_xtazy
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_azoth_xtazy DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES azothxtazysettings.xml DESTINATION ${LC_SETTINGS_DEST})
-INSTALL (FILES ${XTAZY_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (TARGETS leechcraft_azoth_xtazy DESTINATION ${LC_PLUGINS_DEST})
+install (FILES azothxtazysettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (FILES ${XTAZY_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

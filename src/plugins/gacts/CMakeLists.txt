@@ -1,63 +1,63 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_gacts)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_gacts)
+include (InitLCPlugin OPTIONAL)
 
-OPTION (WITH_GACTS_BUNDLED_QXT "Build with bundled Qxt with fixed media keys handling" ON)
+option (WITH_GACTS_BUNDLED_QXT "Build with bundled Qxt with fixed media keys handling" ON)
 
-IF (NOT WITH_GACTS_BUNDLED_QXT)
-	SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+if (NOT WITH_GACTS_BUNDLED_QXT)
+	set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-	SET(QXT_USE_QXTCORE TRUE)
-	SET(QXT_USE_QXTGUI TRUE)
-	FIND_PACKAGE (Qxt REQUIRED)
-ELSE (NOT WITH_GACTS_BUNDLED_QXT)
-	ADD_DEFINITIONS (-DBUILD_QXT_GUI)
+	set(QXT_USE_QXTCORE TRUE)
+	set(QXT_USE_QXTGUI TRUE)
+	find_package (Qxt REQUIRED)
+else (NOT WITH_GACTS_BUNDLED_QXT)
+	add_definitions (-DBUILD_QXT_GUI)
 
-	IF (WIN32)
-		SET (ADDITIONAL_SOURCES
+	if (WIN32)
+		set (ADDITIONAL_SOURCES
 			3rdparty/qxt/qxtglobalshortcut_win.cpp
 			)
-	ELSEIF (APPLE)
-		SET (ADDITIONAL_SOURCES
+	elseif (APPLE)
+		set (ADDITIONAL_SOURCES
 			3rdparty/qxt/qxtglobalshortcut_mac.cpp
 			)
-	ELSE (WIN32)
-		FIND_PACKAGE (X11)
-		INCLUDE_DIRECTORIES (${X11_INCLUDE_DIR})
+	else (WIN32)
+		find_package (X11)
+		include_directories (${X11_INCLUDE_DIR})
 		
-		SET (ADDITIONAL_SOURCES
+		set (ADDITIONAL_SOURCES
 			3rdparty/qxt/qxtglobalshortcut_x11.cpp
 			)
-	ENDIF (WIN32)
+	endif (WIN32)
 	
-	SET (ADDITIONAL_SOURCES
+	set (ADDITIONAL_SOURCES
 		${ADDITIONAL_SOURCES}
 		3rdparty/qxt/qxtglobal.cpp
 		3rdparty/qxt/qxtglobalshortcut.cpp
 		)
 	
-	INCLUDE_DIRECTORIES (${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/qxt)
-ENDIF (NOT WITH_GACTS_BUNDLED_QXT)
+	include_directories (${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/qxt)
+endif (NOT WITH_GACTS_BUNDLED_QXT)
 
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${QXT_INCLUDE_DIRS}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
-SET (SRCS
+set (SRCS
 	gacts.cpp
 	)
 
-ADD_LIBRARY (leechcraft_gacts SHARED
+add_library (leechcraft_gacts SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${ADDITIONAL_SOURCES}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_gacts
+target_link_libraries (leechcraft_gacts
 	${QT_LIBRARIES}
 	${QXT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_gacts DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_gacts DESTINATION ${LC_PLUGINS_DEST})

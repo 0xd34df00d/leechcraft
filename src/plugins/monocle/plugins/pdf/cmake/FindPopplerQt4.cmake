@@ -8,22 +8,22 @@
 #
 
 # use pkg-config to get the directories and then use these values
-# in the FIND_PATH() and FIND_LIBRARY() calls
+# in the find_path() and find_library() calls
 
 # Copyright (c) 2006, Wilfried Huss, <wilfried.huss@gmx.at>
 #
 # Redistribution and use is allowed according to the terms of the BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
-IF (UNIX)
+if (UNIX)
 	find_package(PkgConfig)
 	pkg_check_modules(PC_POPPLERQT4 QUIET poppler-qt4)
 	
 	set(POPPLER_QT4_DEFINITIONS ${PC_POPPLERQT4_CFLAGS_OTHER})
-ENDIF (UNIX)
+endif (UNIX)
 
 
-FIND_PATH (POPPLER_QT4_INCLUDE_DIR
+find_path (POPPLER_QT4_INCLUDE_DIR
 	NAMES poppler-qt4.h
 	PATHS ${PC_POPPLERQT4_INCLUDEDIR}
 		${POPPLER_DIR}

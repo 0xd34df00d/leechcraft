@@ -10,23 +10,23 @@
 if (MTP_INCLUDE_DIR AND MTP_LIBRARIES AND MTP_VERSION_OKAY)
 
   # in cache already
-  SET(MTP_FOUND TRUE)
+  set(MTP_FOUND TRUE)
 
 else (MTP_INCLUDE_DIR AND MTP_LIBRARIES AND MTP_VERSION_OKAY)
   if(NOT WIN32)
     # use pkg-config to get the directories and then use these values
-    # in the FIND_PATH() and FIND_LIBRARY() calls
-    INCLUDE(UsePkgConfig)
+    # in the find_path() and find_library() calls
+    include(UsePkgConfig)
 
     PKGCONFIG(libmtp _MTPIncDir _MTPLinkDir _MTPLinkFlags _MTPCflags)
 
     set(MTP_DEFINITIONS ${_MTPCflags})
   endif(NOT WIN32)
-  FIND_PATH(MTP_INCLUDE_DIR libmtp.h
+  find_path(MTP_INCLUDE_DIR libmtp.h
     ${_MTPIncDir}
   )
 
-  FIND_LIBRARY(MTP_LIBRARIES NAMES mtp
+  find_library(MTP_LIBRARIES NAMES mtp
     PATHS
     ${_MTPLinkDir}
   )
@@ -50,6 +50,6 @@ else (MTP_INCLUDE_DIR AND MTP_LIBRARIES AND MTP_VERSION_OKAY)
     endif (Mtp_FIND_REQUIRED)
   endif (MTP_FOUND)
 
-  MARK_AS_ADVANCED(MTP_INCLUDE_DIR MTP_LIBRARIES MTP_VERSION_OKAY)
+  mark_as_advanced(MTP_INCLUDE_DIR MTP_LIBRARIES MTP_VERSION_OKAY)
 
 endif (MTP_INCLUDE_DIR AND MTP_LIBRARIES AND MTP_VERSION_OKAY)

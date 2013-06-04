@@ -1,15 +1,15 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_azoth_zheet)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_azoth_zheet)
+include (InitLCPlugin OPTIONAL)
 
-SET (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-FIND_PACKAGE (Libmsn REQUIRED)
-FIND_PACKAGE (OpenSSL REQUIRED)
+set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+find_package (Libmsn REQUIRED)
+find_package (OpenSSL REQUIRED)
 
-SET (QT_USE_QTNETWORK TRUE)
-SET (QT_USE_QTXML TRUE)
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
+set (QT_USE_QTNETWORK TRUE)
+set (QT_USE_QTXML TRUE)
+include (${QT_USE_FILE})
+include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${LIBMSN_INCLUDE_DIR}
@@ -18,7 +18,7 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/azoth
 	)
 
-SET (ZHEET_SRCS
+set (ZHEET_SRCS
 	zheet.cpp
 	core.cpp
 	msnprotocol.cpp
@@ -34,7 +34,7 @@ SET (ZHEET_SRCS
 	transfermanager.cpp
 	transferjob.cpp
 	)
-SET (ZHEET_HEADERS
+set (ZHEET_HEADERS
 	zheet.h
 	core.h
 	msnprotocol.h
@@ -50,33 +50,33 @@ SET (ZHEET_HEADERS
 	transfermanager.h
 	transferjob.h
 	)
-SET (ZHEET_FORMS
+set (ZHEET_FORMS
 	msnaccountconfigwidget.ui
 	manageblacklistdialog.ui
 	)
-SET (ZHEET_RESOURCES azothzheetresources.qrc)
+set (ZHEET_RESOURCES azothzheetresources.qrc)
 CreateTrs ("azoth_zheet" "en;es;ru_RU;uk_UA" ZHEET_COMPILED_TRANSLATIONS)
 
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (ZHEET_MOC_SRCS ${ZHEET_HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif (NOT LC_NO_MOC)
 QT4_WRAP_UI (ZHEET_UIS_H ${ZHEET_FORMS})
 QT4_ADD_RESOURCES (ZHEET_RCCS ${ZHEET_RESOURCES})
 
-ADD_LIBRARY (leechcraft_azoth_zheet SHARED
+add_library (leechcraft_azoth_zheet SHARED
 	${ZHEET_COMPILED_TRANSLATIONS}
 	${ZHEET_SRCS}
 	${ZHEET_MOC_SRCS}
 	${ZHEET_UIS_H}
 	${ZHEET_RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_azoth_zheet
+target_link_libraries (leechcraft_azoth_zheet
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${LIBMSN_LIBRARIES}
 	${OPENSSL_LIBRARIES}
 	)
 
-INSTALL (TARGETS leechcraft_azoth_zheet DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${ZHEET_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
-#INSTALL (FILES azothzheetsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (TARGETS leechcraft_azoth_zheet DESTINATION ${LC_PLUGINS_DEST})
+install (FILES ${ZHEET_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+#install (FILES azothzheetsettings.xml DESTINATION ${LC_SETTINGS_DEST})

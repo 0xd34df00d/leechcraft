@@ -10,41 +10,41 @@
 # Win32 additions by Eugene Mamin <TheDZhon@gmail.com>
 # Win32 fixes by Dimtriy Ryazantcev <DJm00n@mail.ru>
 
-FIND_PATH(QXMPP_INCLUDE_DIR
+find_path(QXMPP_INCLUDE_DIR
 	NAMES
 	qxmpp/QXmppClient.h
 	PATH
 	ENV
 )
-FIND_LIBRARY(QXMPP_LIBRARIES
+find_library(QXMPP_LIBRARIES
 	NAMES
 	qxmpp0
 	qxmpp
 )
 
-IF(QXMPP_LOCAL)
-	FIND_PATH(QXMPP_INCLUDE_DIR client/QXmppClient.h "${QXMPP_LOCAL}/src")
-	IF(QXMPP_INCLUDE_DIR)
-		SET(QXMPP_LIBRARIES ${QXMPP_LOCAL}/build/src/libqxmpp0.a)
-	ENDIF(QXMPP_INCLUDE_DIR)
-ENDIF(QXMPP_LOCAL)
+if(QXMPP_LOCAL)
+	find_path(QXMPP_INCLUDE_DIR client/QXmppClient.h "${QXMPP_LOCAL}/src")
+	if(QXMPP_INCLUDE_DIR)
+		set(QXMPP_LIBRARIES ${QXMPP_LOCAL}/build/src/libqxmpp0.a)
+	endif(QXMPP_INCLUDE_DIR)
+endif(QXMPP_LOCAL)
 
-IF(QXMPP_LIBRARIES AND QXMPP_INCLUDE_DIR)
-	IF(NOT QXMPP_LOCAL)
-		SET(QXMPP_INCLUDE_DIR
+if(QXMPP_LIBRARIES AND QXMPP_INCLUDE_DIR)
+	if(NOT QXMPP_LOCAL)
+		set(QXMPP_INCLUDE_DIR
 			${QXMPP_INCLUDE_DIR}/qxmpp
 		)
-	ENDIF(NOT QXMPP_LOCAL)
-	SET(QXMPP_FOUND 1)
-ENDIF(QXMPP_LIBRARIES AND QXMPP_INCLUDE_DIR)
+	endif(NOT QXMPP_LOCAL)
+	set(QXMPP_FOUND 1)
+endif(QXMPP_LIBRARIES AND QXMPP_INCLUDE_DIR)
 
-IF(QXMPP_FOUND)
-	MESSAGE(STATUS "Found QXmpp libraries at ${QXMPP_LIBRARIES}")
-	MESSAGE(STATUS "Found QXmpp headers at ${QXMPP_INCLUDE_DIR}")
-ELSE(QXMPP_FOUND)
-	IF(QXMPP_FIND_REQUIRED)
-		MESSAGE(FATAL_ERROR "Could NOT find required QXmpp library, aborting")
-	ELSE()
-		MESSAGE(STATUS "Could NOT find QXmpp")
-	ENDIF()
-ENDIF()
+if(QXMPP_FOUND)
+	message(STATUS "Found QXmpp libraries at ${QXMPP_LIBRARIES}")
+	message(STATUS "Found QXmpp headers at ${QXMPP_INCLUDE_DIR}")
+else(QXMPP_FOUND)
+	if(QXMPP_FIND_REQUIRED)
+		message(FATAL_ERROR "Could NOT find required QXmpp library, aborting")
+	else()
+		message(STATUS "Could NOT find QXmpp")
+	endif()
+endif()

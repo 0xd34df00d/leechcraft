@@ -25,23 +25,23 @@
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 macro (win32_tune_libs_names name)
-	IF (${name}_LIBRARY_RELEASE AND ${name}_LIBRARY_DEBUG)
-		IF (CMAKE_CONFIGURATION_TYPES OR CMAKE_BUILD_TYPES)
-			SET (${name}_LIBRARIES optimized ${${name}_LIBRARY_RELEASE} debug ${${name}_LIBRARY_DEBUG})
-		ELSE (CMAKE_CONFIGURATION_TYPES OR CMAKE_BUILD_TYPES)
-			SET (${name}_LIBRARIES  ${${name}_LIBRARY_RELEASE})
-			SET (_WIN32_ADDITIONAL_MESS 
+	if (${name}_LIBRARY_RELEASE AND ${name}_LIBRARY_DEBUG)
+		if (CMAKE_CONFIGURATION_TYPES OR CMAKE_BUILD_TYPES)
+			set (${name}_LIBRARIES optimized ${${name}_LIBRARY_RELEASE} debug ${${name}_LIBRARY_DEBUG})
+		else (CMAKE_CONFIGURATION_TYPES OR CMAKE_BUILD_TYPES)
+			set (${name}_LIBRARIES  ${${name}_LIBRARY_RELEASE})
+			set (_WIN32_ADDITIONAL_MESS 
 				 "Warning: your generator doesn't support separate debug and release libs")
-		ENDIF (CMAKE_CONFIGURATION_TYPES OR CMAKE_BUILD_TYPES)
-	ENDIF (${name}_LIBRARY_RELEASE AND ${name}_LIBRARY_DEBUG)
-	IF (${name}_LIBRARY_RELEASE AND NOT ${name}_LIBRARY_DEBUG)
-		SET (${name}_LIBRARIES ${${name}_LIBRARY_RELEASE})
-		SET (_WIN32_ADDITIONAL_MESS 
+		endif (CMAKE_CONFIGURATION_TYPES OR CMAKE_BUILD_TYPES)
+	endif (${name}_LIBRARY_RELEASE AND ${name}_LIBRARY_DEBUG)
+	if (${name}_LIBRARY_RELEASE AND NOT ${name}_LIBRARY_DEBUG)
+		set (${name}_LIBRARIES ${${name}_LIBRARY_RELEASE})
+		set (_WIN32_ADDITIONAL_MESS 
 			 "Warning: debug version of "${name}" not found")
-	ENDIF (${name}_LIBRARY_RELEASE AND NOT ${name}_LIBRARY_DEBUG)
-	IF (NOT ${name}_LIBRARY_RELEASE AND ${name}_LIBRARY_DEBUG)
-		SET (${name}_LIBRARIES ${${name}_LIBRARY_DEBUG})
-		SET (_WIN32_ADDITIONAL_MESS 
+	endif (${name}_LIBRARY_RELEASE AND NOT ${name}_LIBRARY_DEBUG)
+	if (NOT ${name}_LIBRARY_RELEASE AND ${name}_LIBRARY_DEBUG)
+		set (${name}_LIBRARIES ${${name}_LIBRARY_DEBUG})
+		set (_WIN32_ADDITIONAL_MESS 
 			 "Warning: release version of "${name}" not found")	
-	ENDIF (NOT ${name}_LIBRARY_RELEASE AND ${name}_LIBRARY_DEBUG)
+	endif (NOT ${name}_LIBRARY_RELEASE AND ${name}_LIBRARY_DEBUG)
 endmacro(win32_tune_libs_names)

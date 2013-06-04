@@ -1,46 +1,46 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_glance)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_glance)
+include (InitLCPlugin OPTIONAL)
 
-SET (QT_USE_QTNETWORK TRUE)
-SET (QT_USE_QTXML TRUE)
+set (QT_USE_QTNETWORK TRUE)
+set (QT_USE_QTXML TRUE)
 
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
-SET (HEADERS
+set (HEADERS
 	core.h
 	glance.h
 	glanceitem.h
 	glanceshower.h
 	)
-SET (SRCS
+set (SRCS
 	core.cpp
 	glance.cpp
 	glanceitem.cpp
 	glanceshower.cpp
 	)
 CreateTrs ("glance" "en;es;ru_RU;tt;uk_UA" COMPILED_TRANSLATIONS)
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif (NOT LC_NO_MOC)
 
-SET (GLANCE_RESOURCES glanceresources.qrc)
+set (GLANCE_RESOURCES glanceresources.qrc)
 QT4_ADD_RESOURCES (GLANCE_RCCS ${GLANCE_RESOURCES})
 
-ADD_LIBRARY (leechcraft_glance SHARED
+add_library (leechcraft_glance SHARED
 	${GLANCE_RCCS}
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_glance
+target_link_libraries (leechcraft_glance
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_glance DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (TARGETS leechcraft_glance DESTINATION ${LC_PLUGINS_DEST})
+install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

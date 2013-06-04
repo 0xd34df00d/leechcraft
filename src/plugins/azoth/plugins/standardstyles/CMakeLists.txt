@@ -1,38 +1,38 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_azoth_standardstyles)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_azoth_standardstyles)
+include (InitLCPlugin OPTIONAL)
 
-SET (QT_USE_QTWEBKIT TRUE)
-INCLUDE (${QT_USE_FILE})
+set (QT_USE_QTWEBKIT TRUE)
+include (${QT_USE_FILE})
 
-INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
+include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/azoth
 	)
-SET (STANDARDSTYLES_SRCS
+set (STANDARDSTYLES_SRCS
 	standardstyles.cpp
 	standardstylesource.cpp
 	)
-SET (STANDARDSTYLES_HEADERS
+set (STANDARDSTYLES_HEADERS
 	standardstyles.h
 	standardstylesource.h
 	)
-SET (STANDARDSTYLES_RESOURCES azothstandardstylesresources.qrc)
-IF (NOT LC_NO_MOC)
+set (STANDARDSTYLES_RESOURCES azothstandardstylesresources.qrc)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (STANDARDSTYLES_MOC_SRCS ${STANDARDSTYLES_HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif (NOT LC_NO_MOC)
 
 QT4_ADD_RESOURCES (STANDARDSTYLES_RCCS ${STANDARDSTYLES_RESOURCES})
 
-ADD_LIBRARY (leechcraft_azoth_standardstyles SHARED
+add_library (leechcraft_azoth_standardstyles SHARED
 	${STANDARDSTYLES_SRCS}
 	${STANDARDSTYLES_MOC_SRCS}
 	${STANDARDSTYLES_RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_azoth_standardstyles
+target_link_libraries (leechcraft_azoth_standardstyles
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_azoth_standardstyles DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (DIRECTORY share/azoth DESTINATION ${LC_SHARE_DEST})
+install (TARGETS leechcraft_azoth_standardstyles DESTINATION ${LC_PLUGINS_DEST})
+install (DIRECTORY share/azoth DESTINATION ${LC_SHARE_DEST})

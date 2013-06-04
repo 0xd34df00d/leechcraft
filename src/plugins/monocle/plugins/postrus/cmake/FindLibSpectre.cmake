@@ -21,17 +21,17 @@ else(LIBSPECTRE_INCLUDE_DIR AND LIBSPECTRE_LIBRARY)
 
 if(NOT WIN32)
    # use pkg-config to get the directories and then use these values
-   # in the FIND_PATH() and FIND_LIBRARY() calls
-   INCLUDE(UsePkgConfig)
+   # in the find_path() and find_library() calls
+   include(UsePkgConfig)
 
    PKGCONFIG(libspectre _SpectreIncDir _SpectreLinkDir _SpectreLinkFlags _SpectreCflags)
 
    if(_SpectreLinkFlags)
      # find again pkg-config, to query it about libspectre version
-     FIND_PROGRAM(PKGCONFIG_EXECUTABLE NAMES pkg-config PATHS /usr/bin/ /usr/local/bin )
+     find_program(PKGCONFIG_EXECUTABLE NAMES pkg-config PATHS /usr/bin/ /usr/local/bin )
 
      # query pkg-config asking for a libspectre >= LIBSPECTRE_MINIMUM_VERSION
-     EXEC_PROGRAM(${PKGCONFIG_EXECUTABLE} ARGS --atleast-version=${LIBSPECTRE_MINIMUM_VERSION} libspectre RETURN_VALUE _return_VALUE OUTPUT_VARIABLE _pkgconfigDevNull )
+     exec_program(${PKGCONFIG_EXECUTABLE} ARGS --atleast-version=${LIBSPECTRE_MINIMUM_VERSION} libspectre RETURN_VALUE _return_VALUE OUTPUT_VARIABLE _pkgconfigDevNull )
      if(_return_VALUE STREQUAL "0")
         set(LIBSPECTRE_FOUND TRUE)
      endif(_return_VALUE STREQUAL "0")

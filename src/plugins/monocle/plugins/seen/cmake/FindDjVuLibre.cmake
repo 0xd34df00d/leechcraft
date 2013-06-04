@@ -11,7 +11,7 @@ if (DJVULIBRE_INCLUDE_DIR AND DJVULIBRE_LIBRARY)
   set(DJVULIBRE_FOUND TRUE)
 
 else (DJVULIBRE_INCLUDE_DIR AND DJVULIBRE_LIBRARY)
-  IF (NOT WIN32)
+  if (NOT WIN32)
         find_package(PkgConfig)
 
         pkg_check_modules(PC_DJVULIBRE ddjvuapi)

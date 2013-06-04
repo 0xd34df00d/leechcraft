@@ -29,7 +29,7 @@ else (VLC_LIBRARIES AND VLC_INCLUDE_DIRS)
 		${VLC_DIR}/sdk/include
 	)
 
-	IF (NOT MSVC)
+	if (NOT MSVC)
 		find_library (VLC_LIBRARY
 			NAMES
 			vlc
@@ -39,14 +39,14 @@ else (VLC_LIBRARIES AND VLC_INCLUDE_DIRS)
 			/opt/local/lib
 			/sw/lib
 		)
-	ELSE (NOT MSVC)
-		FIND_LIBRARY (VLC_LIBRARY
+	else (NOT MSVC)
+		find_library (VLC_LIBRARY
 			NAMES
 			libvlc.lib
 			PATHS
 			${VLC_DIR}
 		)
-	ENDIF (NOT MSVC)
+	endif (NOT MSVC)
 
 	set (VLC_INCLUDE_DIRS
 		${VLC_INCLUDE_DIR}

@@ -1,35 +1,35 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_azoth_embedmedia)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_azoth_embedmedia)
+include (InitLCPlugin OPTIONAL)
 
-SET (QT_USE_QTWEBKIT TRUE)
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
+set (QT_USE_QTWEBKIT TRUE)
+include (${QT_USE_FILE})
+include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/azoth
 	)
-SET (EMBEDMEDIA_SRCS
+set (EMBEDMEDIA_SRCS
 	embedmedia.cpp
 	)
-SET (EMBEDMEDIA_HEADERS
+set (EMBEDMEDIA_HEADERS
 	embedmedia.h
 	)
-SET (EMBEDMEDIA_RESOURCES
+set (EMBEDMEDIA_RESOURCES
 	embedmedia.qrc
 	)
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (EMBEDMEDIA_MOC_SRCS ${EMBEDMEDIA_HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif (NOT LC_NO_MOC)
 QT4_ADD_RESOURCES (EMBEDMEDIA_RCCS ${EMBEDMEDIA_RESOURCES})
 
-ADD_LIBRARY (leechcraft_azoth_embedmedia SHARED
+add_library (leechcraft_azoth_embedmedia SHARED
     ${EMBEDMEDIA_SRCS}
     ${EMBEDMEDIA_MOC_SRCS}
     ${EMBEDMEDIA_RCCS}
     )
-TARGET_LINK_LIBRARIES (leechcraft_azoth_embedmedia
+target_link_libraries (leechcraft_azoth_embedmedia
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_azoth_embedmedia DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_azoth_embedmedia DESTINATION ${LC_PLUGINS_DEST})

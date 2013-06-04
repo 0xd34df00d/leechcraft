@@ -1,49 +1,49 @@
-IF (NOT QT_USE_FILE)
-	CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
-	IF (COMMAND cmake_policy)
+if (NOT QT_USE_FILE)
+	cmake_minimum_required (VERSION 2.6)
+	if (COMMAND cmake_policy)
 		cmake_policy (SET CMP0003 NEW)
-	ENDIF (COMMAND cmake_policy)
+	endif (COMMAND cmake_policy)
 
-	PROJECT (leechcraft_tabslist)
+	project (leechcraft_tabslist)
 
-	IF (NOT CMAKE_MODULE_PATH)
-		SET (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
-	ENDIF (NOT CMAKE_MODULE_PATH)
+	if (NOT CMAKE_MODULE_PATH)
+		set (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
+	endif (NOT CMAKE_MODULE_PATH)
 
-	FIND_PACKAGE (Boost REQUIRED)
-	FIND_PACKAGE (Qt4 REQUIRED)
-	FIND_PACKAGE (LeechCraft REQUIRED)
-ENDIF (NOT QT_USE_FILE)
+	find_package (Boost REQUIRED)
+	find_package (Qt4 REQUIRED)
+	find_package (LeechCraft REQUIRED)
+endif (NOT QT_USE_FILE)
 
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
-SET (SRCS
+set (SRCS
 	tabslist.cpp
 	)
-SET (HEADERS
+set (HEADERS
 	tabslist.h
 	)
 CreateTrs ("tabslist" "en;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif (NOT LC_NO_MOC)
 
-SET (TABSLIST_RESOURCES tabslistresources.qrc)
+set (TABSLIST_RESOURCES tabslistresources.qrc)
 QT4_ADD_RESOURCES (TABSLIST_RCCS ${TABSLIST_RESOURCES})
 
-ADD_LIBRARY (leechcraft_tabslist SHARED
+add_library (leechcraft_tabslist SHARED
 	${TABSLIST_RCCS}
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_tabslist
+target_link_libraries (leechcraft_tabslist
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_tabslist DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (TARGETS leechcraft_tabslist DESTINATION ${LC_PLUGINS_DEST})
+install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

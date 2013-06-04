@@ -1,21 +1,21 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_liznoo)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_liznoo)
+include (InitLCPlugin OPTIONAL)
 
-SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-FIND_PACKAGE (Qwt)
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+find_package (Qwt)
 
-IF (NOT WIN32 AND NOT APPLE)
-	SET (QT_USE_QTDBUS TRUE)
-ENDIF (NOT WIN32 AND NOT APPLE)
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+if (NOT WIN32 AND NOT APPLE)
+	set (QT_USE_QTDBUS TRUE)
+endif (NOT WIN32 AND NOT APPLE)
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${QWT_INCLUDE_DIRS}
 	)
-SET (SRCS
+set (SRCS
 	liznoo.cpp
 	batteryinfo.cpp
 	batteryhistory.cpp
@@ -23,7 +23,7 @@ SET (SRCS
 	platformlayer.cpp
 	xmlsettingsmanager.cpp
 	)
-SET (HEADERS
+set (HEADERS
 	liznoo.h
 	batteryinfo.h
 	batteryhistory.h
@@ -32,94 +32,94 @@ SET (HEADERS
 	xmlsettingsmanager.h
 	)
 
-SET (FBSD_SRCS platformfreebsd.cpp)
-SET (FBSD_HEADERS platformfreebsd.h)
-SET (UPOWER_SRCS
+set (FBSD_SRCS platformfreebsd.cpp)
+set (FBSD_HEADERS platformfreebsd.h)
+set (UPOWER_SRCS
 	platformupower.cpp
 	dbusthread.cpp
 	dbusconnector.cpp
 	)
-SET (UPOWER_HEADERS
+set (UPOWER_HEADERS
 	platformupower.h
 	dbusthread.h
 	dbusconnector.h
 	)
-SET (MAC_SRCS
+set (MAC_SRCS
 	platformmac.mm
 	)
-SET (MAC_HEADERS
+set (MAC_HEADERS
 	platformmac.h
 	)
-SET (WIN32_SRCS
+set (WIN32_SRCS
 	platformwinapi.cpp
 	fakeqwidgetwinapi.cpp
 	)
-SET (WIN32_HEADERS
+set (WIN32_HEADERS
 	platformwinapi.h
 	fakeqwidgetwinapi.h
 	)
 # Default implementation using UPower
-IF (APPLE)
-	SET (SRCS ${SRCS} ${MAC_SRCS})
-	SET (HEADERS ${HEADERS} ${MAC_HEADERS})
-	SET (AdditionalLibraries "-framework IOKit;-framework CoreFoundation")
-ELSEIF (NOT WIN32)
-	IF (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
-		SET (SRCS
+if (APPLE)
+	set (SRCS ${SRCS} ${MAC_SRCS})
+	set (HEADERS ${HEADERS} ${MAC_HEADERS})
+	set (AdditionalLibraries "-framework IOKit;-framework CoreFoundation")
+elseif (NOT WIN32)
+	if (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+		set (SRCS
 			${SRCS}
 			${FBSD_SRCS}
 			)
-		SET (HEADERS
+		set (HEADERS
 			${HEADERS}
 			${FBSD_HEADERS}
 			)
-	ELSE (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
-		SET (SRCS
+	else (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+		set (SRCS
 			${SRCS}
 			${UPOWER_SRCS}
 			)
-		SET (HEADERS
+		set (HEADERS
 			${HEADERS}
 			${UPOWER_HEADERS}
 			)
-	ENDIF (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+	endif (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
 # Windows implementation using WinAPI
-ELSE (APPLE)
-	SET (SRCS
+else (APPLE)
+	set (SRCS
 		${SRCS}
 		${WIN32_SRCS}
 		)
-	SET (HEADERS
+	set (HEADERS
 		${HEADERS}
 		${WIN32_HEADERS}
 		)
-ENDIF (APPLE)
+endif (APPLE)
 
-SET (FORMS
+set (FORMS
 	batteryhistorydialog.ui
 	)
-SET (RESOURCES liznooresources.qrc)
+set (RESOURCES liznooresources.qrc)
 CreateTrs ("liznoo" "en;es;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("liznoo" "en;ru_RU" "${SRCS};${FBSD_SRCS};${UPOWER_SRCS};${WIN32_SRCS}" "${FORMS}" "liznoosettings.xml")
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif (NOT LC_NO_MOC)
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
-ADD_LIBRARY (leechcraft_liznoo SHARED
+add_library (leechcraft_liznoo SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	${UIS_H}
 	${RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_liznoo
+target_link_libraries (leechcraft_liznoo
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${QWT_LIBRARIES}
 	${AdditionalLibraries}
 	)
-INSTALL (TARGETS leechcraft_liznoo DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
-INSTALL (FILES liznoosettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (TARGETS leechcraft_liznoo DESTINATION ${LC_PLUGINS_DEST})
+install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (FILES liznoosettings.xml DESTINATION ${LC_SETTINGS_DEST})

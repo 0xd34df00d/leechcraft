@@ -1,40 +1,40 @@
-INCLUDE_DIRECTORIES (${POSHUKU_INCLUDE_DIR}
+include_directories (${POSHUKU_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR})
-SET (FUA_SRCS
+set (FUA_SRCS
 	fua.cpp
 	settings.cpp
 	changer.cpp
 	xmlsettingsmanager.cpp
 	)
-SET (FUA_HEADERS
+set (FUA_HEADERS
 	fua.h
 	settings.h
 	changer.h
 	xmlsettingsmanager.h
 	)
-SET (FUA_FORMS
+set (FUA_FORMS
 	settings.ui
 	changer.ui
 	)
-SET (FUA_RESOURCES poshukufuaresources.qrc)
+set (FUA_RESOURCES poshukufuaresources.qrc)
 CreateTrs ("poshuku_fua" "ar;de;en;eo;es;fr;it;pl;ru_RU;uk_UA" FUA_COMPILED_TRANSLATIONS)
 
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (FUA_MOC_SRCS ${FUA_HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif (NOT LC_NO_MOC)
 QT4_WRAP_UI (FUA_UIS_H ${FUA_FORMS})
 QT4_ADD_RESOURCES (FUA_RCCS ${FUA_RESOURCES})
-ADD_LIBRARY (leechcraft_poshuku_fua SHARED
+add_library (leechcraft_poshuku_fua SHARED
 	${FUA_COMPILED_TRANSLATIONS}
 	${FUA_SRCS}
 	${FUA_MOC_SRCS}
 	${FUA_UIS_H}
 	${FUA_RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_poshuku_fua
+target_link_libraries (leechcraft_poshuku_fua
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_poshuku_fua DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${FUA_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
-INSTALL (FILES poshukufuasettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (TARGETS leechcraft_poshuku_fua DESTINATION ${LC_PLUGINS_DEST})
+install (FILES ${FUA_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (FILES poshukufuasettings.xml DESTINATION ${LC_SETTINGS_DEST})

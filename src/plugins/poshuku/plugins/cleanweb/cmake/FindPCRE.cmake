@@ -19,7 +19,7 @@ endif (PCRE_INCLUDE_DIR AND PCRE_PCREPOSIX_LIBRARY AND PCRE_PCRE_LIBRARY)
 
 if (NOT WIN32)
   # use pkg-config to get the directories and then use these values
-  # in the FIND_PATH() and FIND_LIBRARY() calls
+  # in the find_path() and find_library() calls
   find_package(PkgConfig)
 
   pkg_check_modules(PC_PCRE QUIET libpcre)

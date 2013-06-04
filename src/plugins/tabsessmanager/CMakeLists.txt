@@ -1,56 +1,56 @@
-IF (NOT QT_USE_FILE)
-	CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
-	IF (COMMAND cmake_policy)
+if (NOT QT_USE_FILE)
+	cmake_minimum_required (VERSION 2.6)
+	if (COMMAND cmake_policy)
 		cmake_policy (SET CMP0003 NEW)
-	ENDIF (COMMAND cmake_policy)
+	endif (COMMAND cmake_policy)
 
-	PROJECT (leechcraft_tabsessmanager)
+	project (leechcraft_tabsessmanager)
 
-	IF (NOT CMAKE_MODULE_PATH)
-		SET (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
-	ENDIF (NOT CMAKE_MODULE_PATH)
+	if (NOT CMAKE_MODULE_PATH)
+		set (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
+	endif (NOT CMAKE_MODULE_PATH)
 
-	FIND_PACKAGE (Boost REQUIRED)
-	FIND_PACKAGE (Qt4 REQUIRED)
-	FIND_PACKAGE (LeechCraft REQUIRED)
-ENDIF (NOT QT_USE_FILE)
+	find_package (Boost REQUIRED)
+	find_package (Qt4 REQUIRED)
+	find_package (LeechCraft REQUIRED)
+endif (NOT QT_USE_FILE)
 
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
-SET (SRCS
+set (SRCS
 	tabsessmanager.cpp
 	restoresessiondialog.cpp
 	recinfo.cpp
 	)
-SET (HEADERS
+set (HEADERS
 	tabsessmanager.h
 	restoresessiondialog.h
 	recinfo.h
 	)
-SET (FORMS
+set (FORMS
 	restoresessiondialog.ui
 	)
 CreateTrs ("tabsessmanager" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("tabsessmanager" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif (NOT LC_NO_MOC)
 QT4_WRAP_UI (UIS_H ${FORMS})
 
-ADD_LIBRARY (leechcraft_tabsessmanager SHARED
+add_library (leechcraft_tabsessmanager SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	${UIS_H}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_tabsessmanager
+target_link_libraries (leechcraft_tabsessmanager
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_tabsessmanager DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (TARGETS leechcraft_tabsessmanager DESTINATION ${LC_PLUGINS_DEST})
+install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

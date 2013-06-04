@@ -1,43 +1,43 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_azoth_adiumstyles)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_azoth_adiumstyles)
+include (InitLCPlugin OPTIONAL)
 
-SET (QT_USE_QTXML TRUE)
-SET (QT_USE_QTWEBKIT TRUE)
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
+set (QT_USE_QTXML TRUE)
+set (QT_USE_QTWEBKIT TRUE)
+include (${QT_USE_FILE})
+include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/azoth
 	)
-SET (ADIUMSTYLES_SRCS
+set (ADIUMSTYLES_SRCS
 	adiumstyles.cpp
 	adiumstylesource.cpp
 	packproxymodel.cpp
 	plistparser.cpp
 	)
-SET (ADIUMSTYLES_HEADERS
+set (ADIUMSTYLES_HEADERS
 	adiumstyles.h
 	adiumstylesource.h
 	packproxymodel.h
 	plistparser.h
 	)
-SET (ADIUMSTYLES_RESOURCES
+set (ADIUMSTYLES_RESOURCES
 	adiumstyles.qrc
 	)
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (ADIUMSTYLES_MOC_SRCS ${ADIUMSTYLES_HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif (NOT LC_NO_MOC)
 QT4_ADD_RESOURCES (ADIUMSTYLES_RCCS ${ADIUMSTYLES_RESOURCES})
 
-ADD_LIBRARY (leechcraft_azoth_adiumstyles SHARED
+add_library (leechcraft_azoth_adiumstyles SHARED
 	${ADIUMSTYLES_SRCS}
 	${ADIUMSTYLES_MOC_SRCS}
 	${ADIUMSTYLES_RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_azoth_adiumstyles
+target_link_libraries (leechcraft_azoth_adiumstyles
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_azoth_adiumstyles DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (DIRECTORY share/azoth DESTINATION ${LC_SHARE_DEST})
+install (TARGETS leechcraft_azoth_adiumstyles DESTINATION ${LC_PLUGINS_DEST})
+install (DIRECTORY share/azoth DESTINATION ${LC_SHARE_DEST})

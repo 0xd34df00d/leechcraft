@@ -1,30 +1,30 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_bittorrent)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_bittorrent)
+include (InitLCPlugin OPTIONAL)
 
-FIND_PACKAGE (Boost REQUIRED COMPONENTS date_time filesystem system thread)
+find_package (Boost REQUIRED COMPONENTS date_time filesystem system thread)
 
-SET (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-FIND_PACKAGE (RBTorrent)
-IF (NOT RBTorrent_FOUND)
-	MESSAGE (ERROR "Rasterbar libtorrent not found, not building BitTorrent")
-ENDIF (NOT RBTorrent_FOUND)
+find_package (RBTorrent)
+if (NOT RBTorrent_FOUND)
+	message (ERROR "Rasterbar libtorrent not found, not building BitTorrent")
+endif (NOT RBTorrent_FOUND)
 
-SET (QT_USE_QTXML TRUE)
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR}
+set (QT_USE_QTXML TRUE)
+include (${QT_USE_FILE})
+include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${Boost_INCLUDE_DIR}
 	${RBTorrent_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 
-IF (WIN32)
-	INCLUDE_DIRECTORIES (${RBTorrent_INCLUDE_DIR}/../zlib)
-ENDIF (WIN32)
+if (WIN32)
+	include_directories (${RBTorrent_INCLUDE_DIR}/../zlib)
+endif (WIN32)
 
-SET (SRCS
+set (SRCS
 	torrentplugin.cpp
 	tabwidget.cpp
 	core.cpp
@@ -62,7 +62,7 @@ SET (SRCS
 	tabviewproxymodel.cpp
 	notifymanager.cpp
 	)
-SET (HEADERS
+set (HEADERS
 	torrentplugin.h
 	tabwidget.h
 	core.h
@@ -104,7 +104,7 @@ SET (HEADERS
 	fileinfo.h
 	peerinfo.h
 	)
-SET (FORMS
+set (FORMS
     tabwidget.ui
 	addtorrent.ui
 	addmultipletorrents.ui
@@ -123,59 +123,59 @@ SET (FORMS
 	torrenttab.ui
 	torrenttabwidget.ui
 	)
-SET (RESOURCES bittorrentresources.qrc)
+set (RESOURCES bittorrentresources.qrc)
 CreateTrs ("bittorrent" "ar;be;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("bittorrent" "en;ru_RU" "${SRCS}" "${FORMS}" "torrentsettings.xml")
 
-IF (APPLE)
-	ADD_DEFINITIONS (-DWITH_SHIPPED_GEOIP_H)
-ENDIF (APPLE)
+if (APPLE)
+	add_definitions (-DWITH_SHIPPED_GEOIP_H)
+endif (APPLE)
 
-OPTION (ENABLE_BITTORRENT_GEOIP "Enable support for GeoIP in BitTorrent (requires building libtorrent with GeoIP support)" OFF)
+option (ENABLE_BITTORRENT_GEOIP "Enable support for GeoIP in BitTorrent (requires building libtorrent with GeoIP support)" OFF)
 
-IF (ENABLE_BITTORRENT_GEOIP)
-	ADD_DEFINITIONS (-DENABLE_GEOIP)
-ELSEIF (ENABLE_BITTORRENT_GEOIP)
-	IF (WIN32)
-		ADD_DEFINITIONS (-DTORRENT_DISABLE_GEO_IP)
-	ENDIF (WIN32)
-ENDIF (ENABLE_BITTORRENT_GEOIP)
+if (ENABLE_BITTORRENT_GEOIP)
+	add_definitions (-DENABLE_GEOIP)
+elseif (ENABLE_BITTORRENT_GEOIP)
+	if (WIN32)
+		add_definitions (-DTORRENT_DISABLE_GEO_IP)
+	endif (WIN32)
+endif (ENABLE_BITTORRENT_GEOIP)
 
-IF (UNIX)
-	FIND_PROGRAM (LPKGC_CMD pkg-config)
-	EXECUTE_PROCESS (COMMAND "${LPKGC_CMD}" libtorrent-rasterbar --cflags
+if (UNIX)
+	find_program (LPKGC_CMD pkg-config)
+	execute_process (COMMAND "${LPKGC_CMD}" libtorrent-rasterbar --cflags
 		OUTPUT_VARIABLE RB_LT_CFLAGS
 		OUTPUT_STRIP_TRAILING_WHITESPACE
 		)
-	EXECUTE_PROCESS (COMMAND "${LPKGC_CMD}" libtorrent-rasterbar --modversion
+	execute_process (COMMAND "${LPKGC_CMD}" libtorrent-rasterbar --modversion
 		OUTPUT_VARIABLE RB_LT_VERSION
 		OUTPUT_STRIP_TRAILING_WHITESPACE
 		)
-	MESSAGE (STATUS "BitTorrent: fetched flags for version ${RB_LT_VERSION}: ${RB_LT_CFLAGS}")
-	SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${RB_LT_CFLAGS}")
+	message (STATUS "BitTorrent: fetched flags for version ${RB_LT_VERSION}: ${RB_LT_CFLAGS}")
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${RB_LT_CFLAGS}")
 
-	IF (RB_LT_VERSION VERSION_GREATER 0.15.9999)
-		ADD_DEFINITIONS (-DBOOST_ASIO_DYN_LINK)
-	ENDIF (RB_LT_VERSION VERSION_GREATER 0.15.9999)
-ENDIF (UNIX)
+	if (RB_LT_VERSION VERSION_GREATER 0.15.9999)
+		add_definitions (-DBOOST_ASIO_DYN_LINK)
+	endif (RB_LT_VERSION VERSION_GREATER 0.15.9999)
+endif (UNIX)
 
-IF (WIN32)
-	ADD_DEFINITIONS (-DWIN32)
-	ADD_DEFINITIONS (-D_WIN32_WINNT=0x0502)
-	ADD_DEFINITIONS (-DWIN32_LEAN_AND_MEAN)
-	ADD_DEFINITIONS (-DBOOST_ASIO_DYN_LINK)
-	ADD_DEFINITIONS (-DBOOST_ALL_NO_LIB)
-ENDIF (WIN32)
-#ADD_DEFINITIONS(-DBOOST_DYN_LINK)
-ADD_DEFINITIONS(-DTORRENT_LINKING_SHARED)
-#ADD_DEFINITIONS(-D_DLL)
-IF (NOT LC_NO_MOC)
+if (WIN32)
+	add_definitions (-DWIN32)
+	add_definitions (-D_WIN32_WINNT=0x0502)
+	add_definitions (-DWIN32_LEAN_AND_MEAN)
+	add_definitions (-DBOOST_ASIO_DYN_LINK)
+	add_definitions (-DBOOST_ALL_NO_LIB)
+endif (WIN32)
+#add_definitions(-DBOOST_DYN_LINK)
+add_definitions(-DTORRENT_LINKING_SHARED)
+#add_definitions(-D_DLL)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif (NOT LC_NO_MOC)
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
-ADD_LIBRARY (leechcraft_bittorrent SHARED
+add_library (leechcraft_bittorrent SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
@@ -183,10 +183,10 @@ ADD_LIBRARY (leechcraft_bittorrent SHARED
 	${RCCS}
 	)
 
-IF (APPLE)
-	SET (CRYPTOLIB "crypto")
-ENDIF (APPLE)
-TARGET_LINK_LIBRARIES (leechcraft_bittorrent
+if (APPLE)
+	set (CRYPTOLIB "crypto")
+endif (APPLE)
+target_link_libraries (leechcraft_bittorrent
 	${Boost_SYSTEM_LIBRARY}
 	${Boost_THREAD_LIBRARY}
 	${Boost_DATE_TIME_LIBRARY}
@@ -196,9 +196,9 @@ TARGET_LINK_LIBRARIES (leechcraft_bittorrent
 	${LEECHCRAFT_LIBRARIES}
 	${CRYPTOLIB}
 )
-INSTALL (TARGETS leechcraft_bittorrent DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
-INSTALL (FILES torrentsettings.xml DESTINATION ${LC_SETTINGS_DEST})
-IF (UNIX AND NOT APPLE)
-	INSTALL (FILES freedesktop/leechcraft-bittorrent.desktop DESTINATION share/applications)
-ENDIF (UNIX AND NOT APPLE)
+install (TARGETS leechcraft_bittorrent DESTINATION ${LC_PLUGINS_DEST})
+install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (FILES torrentsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+if (UNIX AND NOT APPLE)
+	install (FILES freedesktop/leechcraft-bittorrent.desktop DESTINATION share/applications)
+endif (UNIX AND NOT APPLE)

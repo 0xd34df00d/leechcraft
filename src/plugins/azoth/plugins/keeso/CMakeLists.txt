@@ -1,34 +1,34 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_azoth_keeso)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_azoth_keeso)
+include (InitLCPlugin OPTIONAL)
 
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
+include (${QT_USE_FILE})
+include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/azoth
 	)
-SET (KEESO_SRCS
+set (KEESO_SRCS
 	keeso.cpp
 	)
-SET (KEESO_HEADERS
+set (KEESO_HEADERS
 	keeso.h
 	)
-SET (KEESO_RESOURCES
+set (KEESO_RESOURCES
 	azothkeesoresources.qrc
 	)
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (KEESO_MOC_SRCS ${KEESO_HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif (NOT LC_NO_MOC)
 QT4_ADD_RESOURCES (KEESO_RCCS ${KEESO_RESOURCES})
 
-ADD_LIBRARY (leechcraft_azoth_keeso SHARED
+add_library (leechcraft_azoth_keeso SHARED
 	${KEESO_SRCS}
 	${KEESO_MOC_SRCS}
 	${KEESO_RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_azoth_keeso
+target_link_libraries (leechcraft_azoth_keeso
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_azoth_keeso DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_azoth_keeso DESTINATION ${LC_PLUGINS_DEST})

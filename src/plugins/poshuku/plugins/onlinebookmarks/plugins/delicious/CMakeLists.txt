@@ -1,11 +1,11 @@
-SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-INCLUDE_DIRECTORIES (${ONLINEBOOKMARKS_INCLUDE_DIR}
+include_directories (${ONLINEBOOKMARKS_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	)
 
-SET (DELICIOUS_SRCS
+set (DELICIOUS_SRCS
 	delicious.cpp
 	deliciousauthwidget.cpp
 	deliciousservice.cpp
@@ -13,7 +13,7 @@ SET (DELICIOUS_SRCS
 	deliciousapi.cpp
 	)
 
-SET (DELICIOUS_HEADERS
+set (DELICIOUS_HEADERS
 	delicious.h
 	deliciousauthwidget.h
 	deliciousservice.h
@@ -21,20 +21,20 @@ SET (DELICIOUS_HEADERS
 	deliciousapi.h
 	)
 
-SET (DELICIOUS_FORMS deliciousauthwidget.ui)
+set (DELICIOUS_FORMS deliciousauthwidget.ui)
 
-SET (DELICIOUS_RESOURCES onlinebookmarksdelicious.qrc)
+set (DELICIOUS_RESOURCES onlinebookmarksdelicious.qrc)
 CreateTrs ("poshuku_onlinebookmarks_delicious" "en;ru_RU;uk_UA" ONLINEBOOKMARKS_DELICIOUS_COMPILED_TRANSLATIONS)
 
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (DELICIOUS_MOC_SRCS ${DELICIOUS_HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif (NOT LC_NO_MOC)
 QT4_WRAP_UI (DELICIOUS_UIS_H ${DELICIOUS_FORMS})
 QT4_ADD_RESOURCES (DELICIOUS_RCCS ${DELICIOUS_RESOURCES})
-SET (DELICIOUS_RESOURCES deliciousresources.qrc)
+set (DELICIOUS_RESOURCES deliciousresources.qrc)
 QT4_ADD_RESOURCES (DELICIOUS_RCCS ${DELICIOUS_RESOURCES})
 
-ADD_LIBRARY (leechcraft_poshuku_onlinebookmarks_delicious SHARED
+add_library (leechcraft_poshuku_onlinebookmarks_delicious SHARED
  	${ONLINEBOOKMARKS_DELICIOUS_COMPILED_TRANSLATIONS}
 	${DELICIOUS_SRCS}
 	${DELICIOUS_MOC_SRCS}
@@ -42,10 +42,10 @@ ADD_LIBRARY (leechcraft_poshuku_onlinebookmarks_delicious SHARED
 	${DELICIOUS_RCCS}
 	)
 
-TARGET_LINK_LIBRARIES (leechcraft_poshuku_onlinebookmarks_delicious
+target_link_libraries (leechcraft_poshuku_onlinebookmarks_delicious
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 
-INSTALL (TARGETS leechcraft_poshuku_onlinebookmarks_delicious DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${ONLINEBOOKMARKS_DELICIOUS_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (TARGETS leechcraft_poshuku_onlinebookmarks_delicious DESTINATION ${LC_PLUGINS_DEST})
+install (FILES ${ONLINEBOOKMARKS_DELICIOUS_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

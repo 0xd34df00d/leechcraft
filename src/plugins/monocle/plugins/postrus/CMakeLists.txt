@@ -1,30 +1,30 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_monocle_postrus)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_monocle_postrus)
+include (InitLCPlugin OPTIONAL)
 
-SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-FIND_PACKAGE (LibSpectre REQUIRED)
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+find_package (LibSpectre REQUIRED)
 
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+include (${QT_USE_FILE})
+include_directories (
 	${LIBSPECTRE_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
-SET (SRCS
+set (SRCS
 	postrus.cpp
 	document.cpp
 	)
-ADD_LIBRARY (leechcraft_monocle_postrus SHARED
+add_library (leechcraft_monocle_postrus SHARED
 	${SRCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_monocle_postrus
+target_link_libraries (leechcraft_monocle_postrus
 	${LIBSPECTRE_LIBRARY}
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_monocle_postrus DESTINATION ${LC_PLUGINS_DEST})
-IF (UNIX AND NOT APPLE)
-	INSTALL (FILES freedesktop/leechcraft-monocle-postrus.desktop DESTINATION share/applications)
-ENDIF (UNIX AND NOT APPLE)
+install (TARGETS leechcraft_monocle_postrus DESTINATION ${LC_PLUGINS_DEST})
+if (UNIX AND NOT APPLE)
+	install (FILES freedesktop/leechcraft-monocle-postrus.desktop DESTINATION share/applications)
+endif (UNIX AND NOT APPLE)

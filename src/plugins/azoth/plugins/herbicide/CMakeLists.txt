@@ -1,45 +1,45 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_azoth_herbicide)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_azoth_herbicide)
+include (InitLCPlugin OPTIONAL)
 
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
+include (${QT_USE_FILE})
+include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/azoth
 	)
-SET (HERBICIDE_SRCS
+set (HERBICIDE_SRCS
 	herbicide.cpp
 	confwidget.cpp
 	xmlsettingsmanager.cpp
 	)
-SET (HERBICIDE_HEADERS
+set (HERBICIDE_HEADERS
 	herbicide.h
 	confwidget.h
 	xmlsettingsmanager.h
 	)
-SET (HERBICIDE_FORMS
+set (HERBICIDE_FORMS
 	confwidget.ui
 	)
-SET (HERBICIDE_RESOURCES azothherbicideresources.qrc)
+set (HERBICIDE_RESOURCES azothherbicideresources.qrc)
 CreateTrs ("azoth_herbicide" "en;es;ru_RU;uk_UA" HERBICIDE_COMPILED_TRANSLATIONS)
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (HERBICIDE_MOC_SRCS ${HERBICIDE_HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif (NOT LC_NO_MOC)
 QT4_WRAP_UI (HERBICIDE_UIS_H ${HERBICIDE_FORMS})
 QT4_ADD_RESOURCES (HERBICIDE_RCCS ${HERBICIDE_RESOURCES})
 
-ADD_LIBRARY (leechcraft_azoth_herbicide SHARED
+add_library (leechcraft_azoth_herbicide SHARED
 	${HERBICIDE_COMPILED_TRANSLATIONS}
 	${HERBICIDE_SRCS}
 	${HERBICIDE_MOC_SRCS}
 	${HERBICIDE_UIS_H}
 	${HERBICIDE_RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_azoth_herbicide
+target_link_libraries (leechcraft_azoth_herbicide
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_azoth_herbicide DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${HERBICIDE_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
-INSTALL (FILES azothherbicidesettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (TARGETS leechcraft_azoth_herbicide DESTINATION ${LC_PLUGINS_DEST})
+install (FILES ${HERBICIDE_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (FILES azothherbicidesettings.xml DESTINATION ${LC_SETTINGS_DEST})

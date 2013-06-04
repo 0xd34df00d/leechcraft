@@ -1,30 +1,30 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_y7)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_y7)
+include (InitLCPlugin OPTIONAL)
 
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
-SET (SRCS
+set (SRCS
 	y7.cpp
 	)
-SET (HEADERS
+set (HEADERS
 	y7.h
 	)
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif (NOT LC_NO_MOC)
 
-ADD_LIBRARY (leechcraft_y7 SHARED
+add_library (leechcraft_y7 SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_y7
+target_link_libraries (leechcraft_y7
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_y7 DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_y7 DESTINATION ${LC_PLUGINS_DEST})

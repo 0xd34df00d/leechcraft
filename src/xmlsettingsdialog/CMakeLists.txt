@@ -1,14 +1,14 @@
-IF (NOT USE_QT5)
-	SET (QT_USE_QTSCRIPT TRUE)
-	SET (QT_USE_QTXML TRUE)
-	INCLUDE (${QT_USE_FILE})
-ENDIF ()
-INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIRS}
+if (NOT USE_QT5)
+	set (QT_USE_QTSCRIPT TRUE)
+	set (QT_USE_QTXML TRUE)
+	include (${QT_USE_FILE})
+endif ()
+include_directories (${Boost_INCLUDE_DIRS}
 	${CMAKE_CURRENT_BINARY_DIR}
 	..
 	)
 
-SET (SRCS
+set (SRCS
     xmlsettingsdialog.cpp
 	rangewidget.cpp
 	filepicker.cpp
@@ -48,7 +48,7 @@ SET (SRCS
 	itemhandlers/itemhandlertreeview.cpp
 	widgets/dataviewwidget.cpp
 	)
-SET (HEADERS
+set (HEADERS
     xmlsettingsdialog.h
 	rangewidget.h
 	filepicker.h
@@ -89,38 +89,38 @@ SET (HEADERS
 	itemhandlers/itemhandlertreeview.h
 	widgets/dataviewwidget.h
 	)
-SET (FORMS
+set (FORMS
 	widgets/dataviewwidget.ui
 	)
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif (NOT LC_NO_MOC)
 
-IF (USE_QT5)
+if (USE_QT5)
 	QT5_WRAP_UI (UIS_H ${FORMS})
-ELSE ()
+else ()
 	QT4_WRAP_UI (UIS_H ${FORMS})
-ENDIF ()
+endif ()
 
-FOREACH (SRC ${SRCS})
-	SET (XSD_SRCS "${XSD_SRCS};xmlsettingsdialog/${SRC}")
-ENDFOREACH (SRC)
-FOREACH (FORM ${FORMS})
-	SET (XSD_FORMS "${XSD_FORMS};xmlsettingsdialog/${FORM}")
-ENDFOREACH (FORM)
-SET (XSD_SRCS ${XSD_SRCS} PARENT_SCOPE)
-SET (XSD_FORMS ${XSD_FORMS} PARENT_SCOPE)
+foreach (SRC ${SRCS})
+	set (XSD_SRCS "${XSD_SRCS};xmlsettingsdialog/${SRC}")
+endforeach (SRC)
+foreach (FORM ${FORMS})
+	set (XSD_FORMS "${XSD_FORMS};xmlsettingsdialog/${FORM}")
+endforeach (FORM)
+set (XSD_SRCS ${XSD_SRCS} PARENT_SCOPE)
+set (XSD_FORMS ${XSD_FORMS} PARENT_SCOPE)
 
-ADD_LIBRARY (xmlsettingsdialog SHARED
+add_library (xmlsettingsdialog SHARED
 	${SRCS}
 	${MOC_SRCS}
 	${UIS_H})
-TARGET_LINK_LIBRARIES (xmlsettingsdialog
+target_link_libraries (xmlsettingsdialog
 	${QT_LIBRARIES}
 	)
-SET_PROPERTY (TARGET xmlsettingsdialog PROPERTY SOVERSION 0.3.0)
-INSTALL (TARGETS xmlsettingsdialog DESTINATION ${LIBDIR})
+set_property (TARGET xmlsettingsdialog PROPERTY SOVERSION 0.3.0)
+install (TARGETS xmlsettingsdialog DESTINATION ${LIBDIR})
 
-IF (USE_QT5)
+if (USE_QT5)
 	QT5_USE_MODULES (xmlsettingsdialog Xml Sql Widgets Script Network)
-ENDIF ()
+endif ()
