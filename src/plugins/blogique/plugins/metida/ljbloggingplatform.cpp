@@ -244,6 +244,17 @@ namespace Metida
 			elem.removeAttribute ("user");
 		};
 		tags << ljUserTag;
+
+		IAdvancedHTMLEditor::CustomTag ljCutTag;
+		ljCutTag.TagName_ = "lj-cut";
+		ljCutTag.ToKnown_ = [] (QDomElement& elem) -> void
+		{
+			const auto& text = elem.attribute ("text");
+			elem.setTagName ("hr");
+			elem.removeAttribute ("text");
+		};
+
+		tags << ljCutTag;
 		return tags;
 	}
 
