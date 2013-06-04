@@ -12,7 +12,7 @@
 
 if(NOT QT4_FOUND)
     include(FindQt4)
-endif(NOT QT4_FOUND)
+endif()
 
 set(QSCINTILLA_FOUND FALSE)
 
@@ -35,23 +35,23 @@ if(QT4_FOUND)
         if (CYGWIN)
             if(BUILD_SHARED_LIBS)
             # No need to define QSCINTILLA_USE_DLL here, because it's default for Cygwin.
-            else(BUILD_SHARED_LIBS)
+            else()
             set (QSCINTILLA_DEFINITIONS -DQSCINTILLA_STATIC)
-            endif(BUILD_SHARED_LIBS)
-        endif (CYGWIN)
+            endif()
+        endif ()
 
-    endif (QSCINTILLA_LIBRARY AND QSCINTILLA_INCLUDE_DIR)
-endif(QT4_FOUND)
+    endif ()
+endif()
 
 if (QSCINTILLA_FOUND)
   if (NOT QScintilla_FIND_QUIETLY)
     message(STATUS "Found QScintilla2: ${QSCINTILLA_LIBRARY}")
-  endif (NOT QScintilla_FIND_QUIETLY)
-else (QSCINTILLA_FOUND)
+  endif ()
+else ()
   if (QScintilla_FIND_REQUIRED)
     message(FATAL_ERROR "Could not find QScintilla library")
-  endif (QScintilla_FIND_REQUIRED)
-endif (QSCINTILLA_FOUND)
+  endif ()
+endif ()
 
 mark_as_advanced(QSCINTILLA_INCLUDE_DIR QSCINTILLA_LIBRARY)
 

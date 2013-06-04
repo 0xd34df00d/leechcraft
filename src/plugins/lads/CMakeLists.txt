@@ -17,14 +17,14 @@ set (HEADERS
 	)
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 
 set (RESOURCES ladsresources.qrc)
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 if (NOT UNIX)
 	message (ERROR "This plugin is intendend to be built only on *NIX systems")
-endif (NOT UNIX)
+endif ()
 
 add_library (leechcraft_lads SHARED
 	${COMPILED_TRANSLATIONS}

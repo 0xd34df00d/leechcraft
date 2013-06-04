@@ -30,4 +30,4 @@ target_link_libraries (leechcraft_monocle_seen
 install (TARGETS leechcraft_monocle_seen DESTINATION ${LC_PLUGINS_DEST})
 if (UNIX AND NOT APPLE)
 	install (FILES freedesktop/leechcraft-monocle-seen.desktop DESTINATION share/applications)
-endif (UNIX AND NOT APPLE)
+endif ()

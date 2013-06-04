@@ -2,18 +2,18 @@ if (NOT QT_USE_FILE)
 	cmake_minimum_required (VERSION 2.6)
 	if (COMMAND cmake_policy)
 		cmake_policy (SET CMP0003 NEW)
-	endif (COMMAND cmake_policy)
+	endif ()
 
 	project (leechcraft_qrosp)
 
 	if (NOT CMAKE_MODULE_PATH)
 		set (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
-	endif (NOT CMAKE_MODULE_PATH)
+	endif ()
 
 	find_package (Boost REQUIRED)
 	find_package (Qt4 REQUIRED)
 	find_package (LeechCraft REQUIRED)
-endif (NOT QT_USE_FILE)
+endif ()
 
 set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 find_package (Qross REQUIRED)
@@ -60,7 +60,7 @@ set (HEADERS
 	)
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 
 if (${QT_VERSION_MINOR} LESS 8)
 	set (SRCS ${SRCS} third-party/qmetaobjectbuilder.cpp)
@@ -68,9 +68,9 @@ if (${QT_VERSION_MINOR} LESS 8)
 elseif (${QT_VERSION_MINOR} EQUAL 8)
 	set (SRCS ${SRCS} third-party/qmetaobjectbuilder_48.cpp)
 	set (HEADERS ${HEADERS} third-party/qmetaobjectbuilder_48.h)
-else (${QT_VERSION_MINOR} LESS 8)
+else ()
 	message (ERROR "Unsupported Qt version ${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}, Qrosp cannot be built")
-endif (${QT_VERSION_MINOR} LESS 8)
+endif ()
 
 add_library (leechcraft_qrosp SHARED
 	${COMPILED_TRANSLATIONS}

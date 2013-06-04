@@ -11,7 +11,7 @@ include(FindPackageHandleStandardArgs)
 if (LIBOTR_INCLUDE_DIR AND LIBOTR_LIBRARY)
     # Already in cache, be silent
     set(LIBOTR_FIND_QUIETLY TRUE)
-endif (LIBOTR_INCLUDE_DIR AND LIBOTR_LIBRARY)
+endif ()
 
 find_path(LIBOTR_INCLUDE_DIR libotr/version.h)
 
@@ -28,9 +28,9 @@ if( LIBOTR_INCLUDE_DIR AND LIBOTR_LIBRARY )
   if( LIBOTR_FOUND )
     if( NOT LIBOTR_FIND_QUIETLY )
       message( STATUS "Found libotr: ${LIBOTR_LIBRARY}")
-    endif( NOT LIBOTR_FIND_QUIETLY )
-  else( LIBOTR_FOUND )
+    endif()
+  else()
     message(STATUS "libotr version 3.2.0 or greater required but found ${LIBOTR_VERSION}.")
-  endif( LIBOTR_FOUND )
+  endif()
 
-endif( LIBOTR_INCLUDE_DIR AND LIBOTR_LIBRARY )
+endif()

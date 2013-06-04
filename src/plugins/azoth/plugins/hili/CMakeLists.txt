@@ -20,7 +20,7 @@ set (HILI_RESOURCES azothhiliresources.qrc)
 CreateTrs ("azoth_hili" "en;es;ru_RU;uk_UA" HILI_COMPILED_TRANSLATIONS)
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (HILI_MOC_SRCS ${HILI_HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 QT4_ADD_RESOURCES (HILI_RCCS ${HILI_RESOURCES})
 
 add_library (leechcraft_azoth_hili SHARED

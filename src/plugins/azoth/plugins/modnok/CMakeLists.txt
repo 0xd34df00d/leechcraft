@@ -20,7 +20,7 @@ set (MODNOK_RESOURCES azothmodnokresources.qrc)
 CreateTrs ("azoth_modnok" "en;es;ru_RU;uk_UA" MODNOK_COMPILED_TRANSLATIONS)
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MODNOK_MOC_SRCS ${MODNOK_HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 QT4_ADD_RESOURCES (MODNOK_RCCS ${MODNOK_RESOURCES})
 
 add_library (leechcraft_azoth_modnok SHARED

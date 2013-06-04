@@ -10,7 +10,7 @@ set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 find_package (MAGIC)
 if (MAGIC_FOUND)
 	add_definitions (-DHAVE_MAGIC)
-endif (MAGIC_FOUND)
+endif ()
 
 option (WITH_X11 "Enable X11 support on Linux" ON)
 
@@ -88,15 +88,15 @@ if (WITH_X11 AND NOT APPLE)
 		set (ADDITIONAL_LIBS ${X11_X11_LIB})
 
 		set (SRCS ${SRCS} x11/xwrapper.cpp)
-	endif (X11_FOUND)
-endif (WITH_X11 AND NOT APPLE)
+	endif ()
+endif ()
 
 foreach (SRC ${SRCS})
 	set (UTIL_SRCS "${UTIL_SRCS};util/${SRC}")
-endforeach (SRC)
+endforeach ()
 foreach (FORM ${FORMS})
 	set (UTIL_FORMS "${UTIL_FORMS};util/${FORM}")
-endforeach (FORM)
+endforeach ()
 set (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
 set (UTIL_FORMS ${UTIL_FORMS} PARENT_SCOPE)
 

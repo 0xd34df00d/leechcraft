@@ -11,7 +11,7 @@ set (QT_USE_QTNETWORK TRUE)
 
 if (ENABLE_AGGREGATOR_BODYFETCH)
 	set (QT_USE_QTWEBKIT TRUE)
-endif (ENABLE_AGGREGATOR_BODYFETCH)
+endif ()
 
 include (${QT_USE_FILE})
 include_directories (${Boost_INCLUDE_DIRS}
@@ -141,7 +141,7 @@ CreateTrs ("aggregator" "ar;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" COMPILED_TRANSL
 add_definitions(-DBOOST_DYN_LINK)
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
@@ -164,8 +164,8 @@ set (AGGREGATOR_INCLUDE_DIR ${CURRENT_SOURCE_DIR})
 
 if (ENABLE_AGGREGATOR_BODYFETCH)
 	add_subdirectory (plugins/bodyfetch)
-endif (ENABLE_AGGREGATOR_BODYFETCH)
+endif ()
 
 if (ENABLE_AGGREGATOR_WEBACCESS)
 	add_subdirectory (plugins/webaccess)
-endif (ENABLE_AGGREGATOR_WEBACCESS)
+endif ()

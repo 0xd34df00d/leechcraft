@@ -4,7 +4,7 @@ include (InitLCPlugin OPTIONAL)
 
 if (NOT MSVC)
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-endif (NOT MSVC)
+endif ()
 
 set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
@@ -17,7 +17,7 @@ set (QT_USE_QTXML TRUE)
 if (TESTS_LAURE)
 	enable_testing ()
 	set (QT_USE_QTTEST TRUE)
-endif (TESTS_LAURE)
+endif ()
 
 find_package (VLC REQUIRED)
 
@@ -25,8 +25,8 @@ if (NOT MSVC)
 	find_package (MAGIC REQUIRED)
 	if (MAGIC_FOUND)
 		add_definitions (-DHAVE_MAGIC)
-	endif (MAGIC_FOUND)
-endif (NOT MSVC)
+	endif ()
+endif ()
 
 include (${QT_USE_FILE})
 include_directories (
@@ -85,7 +85,7 @@ set (RESOURCES laureresources.qrc)
 
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 QT4_WRAP_UI (FORMS_HEADERS ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 CreateTrs ("laure" "en;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
@@ -113,4 +113,4 @@ set (LAURE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 if (TESTS_LAURE)
 	add_subdirectory (tests)
-endif (TESTS_LAURE)
+endif ()

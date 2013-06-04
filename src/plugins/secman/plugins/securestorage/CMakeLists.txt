@@ -25,7 +25,7 @@ set (FORMS
 QT4_WRAP_UI (UIS_H ${FORMS})
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 
 if (TESTS_SECMAN)
 	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests)
@@ -42,7 +42,7 @@ if (TESTS_SECMAN)
 		crypto
 	)
 	add_test (CryptoSystemTest lc_secman_securestorage_test)
-endif (TESTS_SECMAN)
+endif ()
 
 add_library (leechcraft_secman_securestorage SHARED
 	${COMPILED_TRANSLATIONS}

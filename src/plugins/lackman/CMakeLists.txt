@@ -10,7 +10,7 @@ set (QT_USE_QTXMLPATTERNS TRUE)
 set (QT_USE_QTSQL TRUE)
 if (TESTS_LACKMAN)
 	set (QT_USE_QTTEST TRUE)
-endif (TESTS_LACKMAN)
+endif ()
 include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -65,7 +65,7 @@ set (FORMS
 
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
@@ -95,7 +95,7 @@ if (TESTS_LACKMAN)
 	)
 
 	add_test (VersionComparator lc_lackman_versioncomparatortest)
-endif (TESTS_LACKMAN)
+endif ()
 
 install (TARGETS leechcraft_lackman DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

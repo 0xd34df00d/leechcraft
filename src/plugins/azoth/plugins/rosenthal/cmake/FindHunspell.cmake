@@ -10,7 +10,7 @@
 if (HUNSPELL_INCLUDE_DIR AND HUNSPELL_LIBRARIES)
   # Already in cache, be silent
   set(HUNSPELL_FIND_QUIETLY TRUE)
-endif (HUNSPELL_INCLUDE_DIR AND HUNSPELL_LIBRARIES)
+endif ()
 
 include(FindPackageHandleStandardArgs)
 
@@ -19,14 +19,14 @@ if (WIN32)
 		#MSVS 2010
 		if (MSVC_VERSION LESS 1600)
 			message(FATAL_ERROR "We currently support only MSVC 2010 or greater version")
-		endif (MSVC_VERSION LESS 1600)
-	endif (MSVC)
+		endif ()
+	endif ()
 
 	set (HUNSPELL_INCLUDE_WIN32 ${HUNSPELL_DIR}/src/)
 
 	set (PROBE_DIR
 		${HUNSPELL_DIR}/src/win_api/Release_dll/libhunspell)
-endif (WIN32)
+endif ()
 
 find_library (HUNSPELL_LIBRARIES NAMES hunspell-1.3 hunspell-1.2 libhunspell HINTS ${HUNSPELL_DIR} ${PROBE_DIR})
 find_path (HUNSPELL_INCLUDE_DIR hunspell/hunspell.hxx HINTS ${HUNSPELL_DIR} ${HUNSPELL_INCLUDE_WIN32})
@@ -38,11 +38,11 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS (HUNSPELL DEFAULT_MSG HUNSPELL_LIBRARIES HUNSP
 if (HUNSPELL_FOUND)
   if (NOT HUNSPELL_FIND_QUIETLY AND HUNSPELLCONFIG_EXECUTABLE)
     message(STATUS "Hunspell found: ${HUNSPELL_LIBRARIES}")
-  endif(NOT HUNSPELL_FIND_QUIETLY AND HUNSPELLCONFIG_EXECUTABLE)
-else(HUNSPELL_FOUND)
+  endif()
+else()
   if(HUNSPELL_FIND_REQUIRED)
     message(FATAL_ERROR "Could not find Hunspell")
-  endif(HUNSPELL_FIND_REQUIRED)
-endif(HUNSPELL_FOUND)
+  endif()
+endif()
 
 mark_as_advanced(HUNSPELL_INCLUDE_DIR HUNSPELL_LIBRARIES)

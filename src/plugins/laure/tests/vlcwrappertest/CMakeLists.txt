@@ -11,7 +11,7 @@ include_directories (
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (VLCWRAPPERTEST_MOC "vlcwrappertest.h")
 	QT4_WRAP_CPP (VLCWRAPPER_MOC ${LAURE_SOURCE_DIR}/vlcwrapper.h)
-endif (NOT LC_NO_MOC)
+endif ()
 add_executable (lc_laure_vlcwrappertest
 	vlcwrappertest.cpp
 	${LAURE_SOURCE_DIR}/vlcwrapper.cpp

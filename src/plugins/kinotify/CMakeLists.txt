@@ -20,9 +20,9 @@ if (UNIX AND NOT APPLE)
 	set (SRCS fswinwatcher_x11.cpp ${SRCS})
 elseif (WIN32)
 	set (SRCS fswinwatcher_win.cpp ${SRCS})
-else (UNIX AND NOT APPLE)
+else ()
 	set (SRCS fswinwatcher.cpp ${SRCS})
-endif (UNIX AND NOT APPLE)
+endif ()
 
 set (HEADERS
 	fswinwatcher.h
@@ -37,7 +37,7 @@ CreateTrsUpTarget("kinotify" "en;ru_RU" "${SRCS}" "${FORMS}" "kinotifysettings.x
 
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 add_library (leechcraft_kinotify SHARED

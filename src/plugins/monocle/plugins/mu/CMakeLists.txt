@@ -6,10 +6,10 @@ set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 if (MUPDF_VERSION)
 	add_definitions (-DMUPDF_VERSION=${MUPDF_VERSION})
-else (MUPDF_VERSION)
+else ()
 	message (WARNING "MuPDF version is not set, defaulting to 1.1")
 	add_definitions (-DMUPDF_VERSION=0x0101)
-endif (MUPDF_VERSION)
+endif ()
 
 include (${QT_USE_FILE})
 include_directories (

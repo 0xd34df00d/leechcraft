@@ -9,19 +9,19 @@
 
 if(QROSS_LIBRARIES AND QROSS_INCLUDE_DIR)
 	set(QROSS_FOUND 1)
-else(QROSS_LIBRARIES AND QROSS_INCLUDE_DIR)
+else()
 	find_path(QROSS_INCLUDE_DIR qross/core/manager.h PATH ENV)
 	find_library(QROSS_LIBRARIES NAMES qrosscore)
 
 	if(QROSS_LIBRARIES AND QROSS_INCLUDE_DIR)
 		set(QROSS_FOUND 1)
-	endif(QROSS_LIBRARIES AND QROSS_INCLUDE_DIR)
-endif(QROSS_LIBRARIES AND QROSS_INCLUDE_DIR)
+	endif()
+endif()
 
 if(QROSS_FOUND)
 	message(STATUS "Found Qross libraries at ${QROSS_LIBRARIES}")
 	message(STATUS "Found Qross headers at ${QROSS_INCLUDE_DIR}")
-else(QROSS_FOUND)
+else()
 	if(QROSS_FIND_REQUIRED)
 		message(FATAL_ERROR "Could NOT find required Qross library, aborting")
 	else()

@@ -18,7 +18,7 @@ set (HEADERS
 
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 
 set (MPRIS_SUBLIB leechcraft_lmp_mpris PARENT_SCOPE)
 set (MPRIS_SUBLIB leechcraft_lmp_mpris)

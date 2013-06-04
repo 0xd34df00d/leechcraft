@@ -30,7 +30,7 @@ if (QJSON_FOUND)
 		${SRCS}
 		audioaddictstreamfetcher.cpp
 		rockradiolistfetcher.cpp)
-endif (QJSON_FOUND)
+endif ()
 
 set (RESOURCES hotstreamsresources.qrc)
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})

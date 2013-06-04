@@ -19,7 +19,7 @@ set (KEESO_RESOURCES
 	)
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (KEESO_MOC_SRCS ${KEESO_HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 QT4_ADD_RESOURCES (KEESO_RCCS ${KEESO_RESOURCES})
 
 add_library (leechcraft_azoth_keeso SHARED

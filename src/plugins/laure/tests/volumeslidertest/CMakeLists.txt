@@ -5,7 +5,7 @@ include_directories (
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (VOLUMESLIDERTEST_MOC "volumeslidertest.h")
 	QT4_WRAP_CPP (VOLUMESLIDER_MOC ${LAURE_SOURCE_DIR}/volumeslider.h)
-endif (NOT LC_NO_MOC)
+endif ()
 add_executable (lc_laure_volumeslidertest
 	volumeslidertest.cpp
 	${LAURE_SOURCE_DIR}/volumeslider.cpp

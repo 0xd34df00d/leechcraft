@@ -25,12 +25,12 @@ option (ENABLE_VROOBY_UDISKS2 "Enable UDisks2 backend for Vrooby" FALSE)
 if (ENABLE_VROOBY_UDISKS)
 	add_subdirectory (backends/udisks)
 	add_definitions (-DENABLE_UDISKS)
-endif (ENABLE_VROOBY_UDISKS)
+endif ()
 
 if (ENABLE_VROOBY_UDISKS2)
 	add_subdirectory (backends/udisks2)
 	add_definitions (-DENABLE_UDISKS2)
-endif (ENABLE_VROOBY_UDISKS2)
+endif ()
 
 add_library (leechcraft_vrooby SHARED
 	${COMPILED_TRANSLATIONS}

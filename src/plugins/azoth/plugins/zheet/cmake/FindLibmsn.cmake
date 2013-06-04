@@ -10,7 +10,7 @@
 if (LIBMSN_INCLUDE_DIR AND LIBMSN_LIBRARIES)
     # Already in cache, be silent
     set(LIBMSN_FIND_QUIETLY TRUE)
-endif (LIBMSN_INCLUDE_DIR AND LIBMSN_LIBRARIES)
+endif ()
 
 find_path(LIBMSN_INCLUDE_DIR msn/msn.h
     PATHS ${CMAKE_INSTALL_PREFIX}
@@ -22,16 +22,16 @@ find_library(LIBMSN_LIBRARIES NAMES msn libmsn
 
 if (LIBMSN_INCLUDE_DIR AND LIBMSN_LIBRARIES)
   set(LIBMSN_FOUND TRUE)
-endif(LIBMSN_INCLUDE_DIR AND LIBMSN_LIBRARIES)
+endif()
 
 if (LIBMSN_FOUND)
   if (NOT LIBMSN_FIND_QUIETLY)
     message(STATUS "Found LibMSN: ${LIBMSN_LIBRARIES}")
-  endif (NOT LIBMSN_FIND_QUIETLY)
-else (LIBMSN_FOUND)
+  endif ()
+else ()
   if (LIBMSN_FIND_REQUIRED)
     message(FATAL_ERROR "Could NOT find an acceptable version of LibMSN (version 0.4 or later required)")
-  endif (LIBMSN_FIND_REQUIRED)
-endif (LIBMSN_FOUND)
+  endif ()
+endif ()
 
 mark_as_advanced(LIBMSN_INCLUDE_DIR LIBMSN_LIBRARIES)

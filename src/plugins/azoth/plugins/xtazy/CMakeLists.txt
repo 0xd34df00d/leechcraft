@@ -4,7 +4,7 @@ include (InitLCPlugin OPTIONAL)
 
 if (NOT WIN32)
 	set (QT_USE_QTDBUS TRUE)
-endif (NOT WIN32)
+endif ()
 include (${QT_USE_FILE})
 
 include_directories (${AZOTH_INCLUDE_DIR}

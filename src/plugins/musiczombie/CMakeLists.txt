@@ -15,7 +15,7 @@ if (WITH_MUSICZOMBIE_CHROMAPRINT)
 		chromaprint)
 
 	add_definitions (-DWITH_CHROMAPRINT)
-endif (WITH_MUSICZOMBIE_CHROMAPRINT)
+endif ()
 
 set (QT_USE_QTNETWORK TRUE)
 set (QT_USE_QTXML TRUE)
@@ -35,7 +35,7 @@ if (WITH_MUSICZOMBIE_CHROMAPRINT)
 		${SRCS}
 		chroma.cpp
 		pendingtagsfetch.cpp)
-endif (WITH_MUSICZOMBIE_CHROMAPRINT)
+endif ()
 
 add_library (leechcraft_musiczombie SHARED
 	${COMPILED_TRANSLATIONS}

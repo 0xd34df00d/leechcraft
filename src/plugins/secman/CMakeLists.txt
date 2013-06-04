@@ -6,7 +6,7 @@ option (TESTS_SECMAN "Enable SecMan tests")
 
 if (TESTS_SECMAN)
 	set (QT_USE_QTTEST TRUE)
-endif (TESTS_SECMAN)
+endif ()
 
 include (${QT_USE_FILE})
 include_directories (
@@ -21,10 +21,10 @@ option (ENABLE_SECMAN_SIMPLESTORAGE "Enable SecMan SimpleStorage, the basic unen
 
 if (ENABLE_SECMAN_SECURESTORAGE)
 	add_subdirectory (plugins/securestorage)
-endif (ENABLE_SECMAN_SECURESTORAGE)
+endif ()
 if (ENABLE_SECMAN_SIMPLESTORAGE)
 	add_subdirectory (plugins/simplestorage)
-endif (ENABLE_SECMAN_SIMPLESTORAGE)
+endif ()
 
 set (SRCS
 	secman.cpp

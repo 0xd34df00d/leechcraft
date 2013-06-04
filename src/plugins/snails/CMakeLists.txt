@@ -2,25 +2,25 @@ if (NOT QT_USE_FILE)
 	cmake_minimum_required (VERSION 2.6)
 	if (COMMAND cmake_policy)
 		cmake_policy (SET CMP0003 NEW)
-	endif (COMMAND cmake_policy)
+	endif ()
 
 	project (leechcraft_snails)
 
 	if (NOT CMAKE_MODULE_PATH)
 		set (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
-	endif (NOT CMAKE_MODULE_PATH)
+	endif ()
 
 	find_package (Boost REQUIRED)
 	find_package (Qt4 REQUIRED)
 	find_package (LeechCraft REQUIRED)
-endif (NOT QT_USE_FILE)
+endif ()
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 find_package (MAGIC)
 if (MAGIC_FOUND)
 	add_definitions (-DHAVE_MAGIC)
-endif (MAGIC_FOUND)
+endif ()
 
 set (QT_USE_QTWEBKIT TRUE)
 set (QT_USE_QTSQL TRUE)
@@ -89,7 +89,7 @@ set (RESOURCES snailsresources.qrc)
 CreateTrs ("snails" "en;ru_RU" COMPILED_TRANSLATIONS)
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 

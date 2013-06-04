@@ -19,7 +19,7 @@ set (JUICK_RESOURCES
 	)
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (JUICK_MOC_SRCS ${JUICK_HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 QT4_ADD_RESOURCES (JUICK_RCCS ${JUICK_RESOURCES})
 
 add_library (leechcraft_azoth_juick SHARED

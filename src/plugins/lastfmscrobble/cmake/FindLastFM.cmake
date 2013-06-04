@@ -15,7 +15,7 @@
 if (LastFM_LIBRARIES AND LastFM_INCLUDE_DIRS)
 	# in cache already
 	set (LastFM_FOUND TRUE)
-else (LastFM_LIBRARIES AND LastFM_INCLUDE_DIRS)
+else ()
 
 	find_path (LastFM_INCLUDE_DIR
 		NAMES
@@ -48,19 +48,19 @@ else (LastFM_LIBRARIES AND LastFM_INCLUDE_DIRS)
 
 	if (LastFM_INCLUDE_DIRS AND LastFM_LIBRARIES)
 		set (LastFM_FOUND TRUE)
-	endif (LastFM_INCLUDE_DIRS AND LastFM_LIBRARIES)
+	endif ()
 
 	if (LastFM_FOUND)
 		if (NOT LastFM_FIND_QUIETLY)
 			message (STATUS "Found liblastfm: ${LastFM_LIBRARIES}")
-		endif (NOT LastFM_FIND_QUIETLY)
-	else (LastFM_FOUND)
+		endif ()
+	else ()
 		if (LastFM_FIND_REQUIRED)
 			message (FATAL_ERROR "Could not find liblastfm")
-		endif (LastFM_FIND_REQUIRED)
-	endif (LastFM_FOUND)
+		endif ()
+	endif ()
 
 	# show the LastFM_INCLUDE_DIRS and LastFM_LIBRARIES variables only in the advanced view
 	mark_as_advanced (LastFM_INCLUDE_DIRS LastFM_LIBRARIES)
 
-endif (LastFM_LIBRARIES AND LastFM_INCLUDE_DIRS)
+endif ()

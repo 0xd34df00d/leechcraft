@@ -22,7 +22,7 @@ set (HEADERS
 	)
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 
 add_library (leechcraft_nacheku SHARED
 	${COMPILED_TRANSLATIONS}

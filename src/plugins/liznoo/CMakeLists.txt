@@ -7,7 +7,7 @@ find_package (Qwt)
 
 if (NOT WIN32 AND NOT APPLE)
 	set (QT_USE_QTDBUS TRUE)
-endif (NOT WIN32 AND NOT APPLE)
+endif ()
 include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -73,7 +73,7 @@ elseif (NOT WIN32)
 			${HEADERS}
 			${FBSD_HEADERS}
 			)
-	else (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+	else ()
 		set (SRCS
 			${SRCS}
 			${UPOWER_SRCS}
@@ -82,9 +82,9 @@ elseif (NOT WIN32)
 			${HEADERS}
 			${UPOWER_HEADERS}
 			)
-	endif (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+	endif ()
 # Windows implementation using WinAPI
-else (APPLE)
+else ()
 	set (SRCS
 		${SRCS}
 		${WIN32_SRCS}
@@ -93,7 +93,7 @@ else (APPLE)
 		${HEADERS}
 		${WIN32_HEADERS}
 		)
-endif (APPLE)
+endif ()
 
 set (FORMS
 	batteryhistorydialog.ui
@@ -103,7 +103,7 @@ CreateTrs ("liznoo" "en;es;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("liznoo" "en;ru_RU" "${SRCS};${FBSD_SRCS};${UPOWER_SRCS};${WIN32_SRCS}" "${FORMS}" "liznoosettings.xml")
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 

@@ -17,7 +17,7 @@
 if (SPEEX_LIBRARIES AND SPEEX_INCLUDE_DIRS)
 	# in cache already
 	set (SPEEX_FOUND TRUE)
-else (SPEEX_LIBRARIES AND SPEEX_INCLUDE_DIRS)
+else ()
 	# use pkg-config to get the directories and then use these values
 	# in the find_path() and find_library() calls
 	#include(UsePkgConfig)
@@ -32,13 +32,13 @@ else (SPEEX_LIBRARIES AND SPEEX_INCLUDE_DIRS)
 		if (NOT DEFINED SPEEX_DIR)
 			if (SPEEX_FIND_REQUIRED)
 				message (FATAL_ERROR "Please set SPEEX_DIR variable")
-			else (SPEEX_FIND_REQUIRED)
+			else ()
 				message (STATUS "Please set SPEEX_DIR variable for speex support")
-			endif (SPEEX_FIND_REQUIRED)
-		endif (NOT DEFINED SPEEX_DIR)
+			endif ()
+		endif ()
 		set (SPEEX_INCLUDE_WIN32 ${SPEEX_DIR}/include)
 		set (SPEEX_LIB_WIN32 ${SPEEX_DIR}/lib)
-	endif (WIN32)  
+	endif ()  
   
 	find_path (SPEEX_INCLUDE_DIR
 		NAMES
@@ -69,7 +69,7 @@ else (SPEEX_LIBRARIES AND SPEEX_INCLUDE_DIRS)
 
 	if (SPEEX_LIBRARY)
 		set (SPEEX_FOUND TRUE)
-	endif (SPEEX_LIBRARY)
+	endif ()
 
 	set (SPEEX_INCLUDE_DIRS
 		${SPEEX_INCLUDE_DIR}
@@ -80,23 +80,23 @@ else (SPEEX_LIBRARIES AND SPEEX_INCLUDE_DIRS)
 			${SPEEX_LIBRARIES}
 			${SPEEX_LIBRARY}
 		)
-	endif (SPEEX_FOUND)
+	endif ()
 
 	if (SPEEX_INCLUDE_DIRS AND SPEEX_LIBRARIES)
 		set (SPEEX_FOUND TRUE)
-	endif (SPEEX_INCLUDE_DIRS AND SPEEX_LIBRARIES)
+	endif ()
 
 	if (SPEEX_FOUND)
 		if (NOT Speex_FIND_QUIETLY)
 			message (STATUS "Found Speex: ${SPEEX_LIBRARIES}")
-		endif (NOT Speex_FIND_QUIETLY)
-		else (SPEEX_FOUND)
+		endif ()
+		else ()
     if (Speex_FIND_REQUIRED)
 		message (FATAL_ERROR "Could not find Speex")
-    endif (Speex_FIND_REQUIRED)
-	endif (SPEEX_FOUND)
+    endif ()
+	endif ()
 
 	# show the SPEEX_INCLUDE_DIRS and SPEEX_LIBRARIES variables only in the advanced view
 	mark_as_advanced (SPEEX_INCLUDE_DIRS SPEEX_LIBRARIES)
 
-endif (SPEEX_LIBRARIES AND SPEEX_INCLUDE_DIRS)
+endif ()

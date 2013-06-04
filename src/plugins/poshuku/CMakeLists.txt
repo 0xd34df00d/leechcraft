@@ -2,24 +2,24 @@ if (NOT QT_USE_FILE)
 	cmake_minimum_required (VERSION 2.6)
 	if (COMMAND cmake_policy)
 		cmake_policy (SET CMP0003 NEW)
-	endif (COMMAND cmake_policy)
+	endif ()
 
 	project (leechcraft_poshuku)
 
 	if (NOT CMAKE_MODULE_PATH)
 		set (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
-	endif (NOT CMAKE_MODULE_PATH)
+	endif ()
 
 	find_package (Boost REQUIRED)
 	find_package (Qt4 REQUIRED)
 	find_package (LeechCraft REQUIRED)
-endif (NOT QT_USE_FILE)
+endif ()
 
 option (ENABLE_IDN "Enable support for Internationalized Domain Names" OFF)
 
 if (ENABLE_IDN)
 	add_definitions (-DENABLE_IDN)
-endif (ENABLE_IDN)
+endif ()
 
 set (QT_USE_QTSQL TRUE)
 set (QT_USE_QTXML TRUE)
@@ -146,7 +146,7 @@ CreateTrs ("poshuku" "ar;be;de;en;eo;es;fr;it;pl;ru_RU;tt;uk_UA" COMPILED_TRANSL
 
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
@@ -160,7 +160,7 @@ add_library (leechcraft_poshuku SHARED
 
 if (ENABLE_IDN)
 	set (IDN_LIB "idn")
-endif (ENABLE_IDN)
+endif ()
 
 target_link_libraries (leechcraft_poshuku
 	${QT_LIBRARIES}
@@ -185,26 +185,26 @@ option (ENABLE_POSHUKU_ONLINEBOOKMARKS "Build support of online bookmark synchro
 
 if (ENABLE_POSHUKU_POGOOGLUE)
 	message (WARNING "ENABLE_POSHUKU_POGOOGLUE option is removed, so is Poshuku Pogooglue plugin. Use the global Pogooglue plugin instead.")
-endif (ENABLE_POSHUKU_POGOOGLUE)
+endif ()
 
 if (ENABLE_POSHUKU_AUTOSEARCH)
 	add_subdirectory (plugins/autosearch)
-endif (ENABLE_POSHUKU_AUTOSEARCH)
+endif ()
 if (ENABLE_POSHUKU_CLEANWEB)
 	add_subdirectory (plugins/cleanweb)
-endif (ENABLE_POSHUKU_CLEANWEB)
+endif ()
 if (ENABLE_POSHUKU_KEYWORDS)
 	add_subdirectory (plugins/keywords)
-endif (ENABLE_POSHUKU_KEYWORDS)
+endif ()
 if (ENABLE_POSHUKU_FATAPE)
 	add_subdirectory (plugins/fatape)
-endif (ENABLE_POSHUKU_FATAPE)
+endif ()
 if (ENABLE_POSHUKU_FUA)
 	add_subdirectory (plugins/fua)
-endif (ENABLE_POSHUKU_FUA)
+endif ()
 if (ENABLE_POSHUKU_FILESCHEME)
 	add_subdirectory (plugins/filescheme)
-endif (ENABLE_POSHUKU_FILESCHEME)
+endif ()
 if (ENABLE_POSHUKU_ONLINEBOOKMARKS)
 	add_subdirectory (plugins/onlinebookmarks)
-endif (ENABLE_POSHUKU_ONLINEBOOKMARKS)
+endif ()

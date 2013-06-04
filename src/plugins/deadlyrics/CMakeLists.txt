@@ -29,7 +29,7 @@ set (RESOURCES deadlyricsresources.qrc)
 
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 add_library (leechcraft_deadlyrics SHARED

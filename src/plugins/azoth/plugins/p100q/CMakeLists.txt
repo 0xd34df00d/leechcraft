@@ -23,7 +23,7 @@ CreateTrs ("azoth_p100q" "en;es;ru_RU;uk_UA" P100Q_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("azoth_p100q" "en;ru_RU" "${P100Q_SRCS}" "" "azothp100qsettings.xml")
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (P100Q_MOC_SRCS ${P100Q_HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 QT4_ADD_RESOURCES (P100Q_RCCS ${P100Q_RESOURCES})
 
 add_library (leechcraft_azoth_p100q SHARED

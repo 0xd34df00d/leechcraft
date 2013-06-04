@@ -7,7 +7,7 @@ find_package (KDE4 4.2.0)
 if (NOT KDE4_FOUND)
 	message (WARNING "KDE 4.2 or higher was not found, not building AnHero.")
 	return ()
-endif (NOT KDE4_FOUND)
+endif ()
 
 include (${QT_USE_FILE})
 include (KDE4Defaults)
@@ -30,7 +30,7 @@ set (RESOURCES anheroresources.qrc)
 CreateTrs ("anhero" "ar;de;en;es;fr;it;oc;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 add_library (leechcraft_anhero SHARED

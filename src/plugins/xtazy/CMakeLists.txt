@@ -4,7 +4,7 @@ include (InitLCPlugin OPTIONAL)
 
 if (NOT WIN32)
 	set (QT_USE_QTDBUS TRUE)
-endif (NOT WIN32)
+endif ()
 include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -26,7 +26,7 @@ if (QT_QTDBUS_FOUND)
 		${SRCS}
 		mprissource.cpp
 		)
-endif (QT_QTDBUS_FOUND)
+endif ()
 
 CreateTrs("xtazy" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("xtazy" "en;ru_RU" "${SRCS}" "${FORMS}" "xtazysettings.xml")

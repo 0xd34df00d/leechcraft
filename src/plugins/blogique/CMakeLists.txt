@@ -79,8 +79,8 @@ option (ENABLE_BLOGIQUE_HESTIA "Build Hestia, local blogging platform" ON)
 
 if (ENABLE_BLOGIQUE_METIDA)
 	add_subdirectory (plugins/metida)
-endif (ENABLE_BLOGIQUE_METIDA)
+endif ()
 
 if (ENABLE_BLOGIQUE_HESTIA)
 	add_subdirectory (plugins/hestia)
-endif (ENABLE_BLOGIQUE_HESTIA)
+endif ()

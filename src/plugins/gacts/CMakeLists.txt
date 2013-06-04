@@ -10,7 +10,7 @@ if (NOT WITH_GACTS_BUNDLED_QXT)
 	set(QXT_USE_QXTCORE TRUE)
 	set(QXT_USE_QXTGUI TRUE)
 	find_package (Qxt REQUIRED)
-else (NOT WITH_GACTS_BUNDLED_QXT)
+else ()
 	add_definitions (-DBUILD_QXT_GUI)
 
 	if (WIN32)
@@ -21,14 +21,14 @@ else (NOT WITH_GACTS_BUNDLED_QXT)
 		set (ADDITIONAL_SOURCES
 			3rdparty/qxt/qxtglobalshortcut_mac.cpp
 			)
-	else (WIN32)
+	else ()
 		find_package (X11)
 		include_directories (${X11_INCLUDE_DIR})
 		
 		set (ADDITIONAL_SOURCES
 			3rdparty/qxt/qxtglobalshortcut_x11.cpp
 			)
-	endif (WIN32)
+	endif ()
 	
 	set (ADDITIONAL_SOURCES
 		${ADDITIONAL_SOURCES}
@@ -37,7 +37,7 @@ else (NOT WITH_GACTS_BUNDLED_QXT)
 		)
 	
 	include_directories (${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/qxt)
-endif (NOT WITH_GACTS_BUNDLED_QXT)
+endif ()
 
 include (${QT_USE_FILE})
 include_directories (

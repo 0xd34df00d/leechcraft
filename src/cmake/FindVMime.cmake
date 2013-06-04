@@ -19,7 +19,7 @@
 if (LIBVMIME_INCLUDE_DIR AND LIBVMIME_LIBRARIES)
    # in cache already
    set(Libvmime_FIND_QUIETLY TRUE)
-endif (LIBVMIME_INCLUDE_DIR AND LIBVMIME_LIBRARIES)
+endif ()
 
 if (NOT WIN32)
    # use pkg-config to get the directories and then use these values
@@ -27,7 +27,7 @@ if (NOT WIN32)
    find_package(PkgConfig)
    pkg_check_modules(PC_VMIME vmime)
    set(LIBVMIME_DEFINITIONS ${PC_VMIME_CFLAGS_OTHER})
-endif (NOT WIN32)
+endif ()
 
 find_path(LIBVMIME_INCLUDE_DIR vmime/vmime.hpp
     HINTS

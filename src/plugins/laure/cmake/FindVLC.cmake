@@ -16,7 +16,7 @@
 if (VLC_LIBRARIES AND VLC_INCLUDE_DIRS)
 	# in cache already
 	set (VLC_FOUND TRUE)
-else (VLC_LIBRARIES AND VLC_INCLUDE_DIRS)
+else ()
 
 	find_path (VLC_INCLUDE_DIR
 		NAMES
@@ -39,14 +39,14 @@ else (VLC_LIBRARIES AND VLC_INCLUDE_DIRS)
 			/opt/local/lib
 			/sw/lib
 		)
-	else (NOT MSVC)
+	else ()
 		find_library (VLC_LIBRARY
 			NAMES
 			libvlc.lib
 			PATHS
 			${VLC_DIR}
 		)
-	endif (NOT MSVC)
+	endif ()
 
 	set (VLC_INCLUDE_DIRS
 		${VLC_INCLUDE_DIR}
@@ -57,19 +57,19 @@ else (VLC_LIBRARIES AND VLC_INCLUDE_DIRS)
 
 	if (VLC_INCLUDE_DIRS AND VLC_LIBRARIES)
 		set (VLC_FOUND TRUE)
-	endif (VLC_INCLUDE_DIRS AND VLC_LIBRARIES)
+	endif ()
 
 	if (VLC_FOUND)
 		if (NOT VLC_FIND_QUIETLY)
 			message (STATUS "Found libvlc: ${VLC_LIBRARIES}")
-		endif (NOT VLC_FIND_QUIETLY)
-	else (VLC_FOUND)
+		endif ()
+	else ()
 		if (VLC_FIND_REQUIRED)
 			message (FATAL_ERROR "Could not find libvlc")
-		endif (VLC_FIND_REQUIRED)
-	endif (VLC_FOUND)
+		endif ()
+	endif ()
 
 	# show the VLC_INCLUDE_DIRS and VLC_LIBRARIES variables only in the advanced view
 	mark_as_advanced (VLC_INCLUDE_DIRS VLC_LIBRARIES)
 
-endif (VLC_LIBRARIES AND VLC_INCLUDE_DIRS)
+endif ()

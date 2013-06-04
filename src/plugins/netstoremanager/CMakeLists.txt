@@ -4,9 +4,9 @@ include (InitLCPlugin OPTIONAL)
 
 if (CMAKE_HOST_UNIX AND NOT CMAKE_HOST_APPLE)
 	set (INOTIFY_DEFAULT TRUE)
-else (CMAKE_HOST_UNIX AND NOT CMAKE_HOST_APPLE)
+else ()
 	set (INOTIFY_DEFAULT FALSE)
-endif (CMAKE_HOST_UNIX AND NOT CMAKE_HOST_APPLE)
+endif ()
 
 option (ENABLE_NETSTOREMANAGER_INOTIFY "Enable inotify file watcher backend for NetStoreManager" ${INOTIFY_DEFAULT})
 
@@ -50,10 +50,10 @@ if (ENABLE_NETSTOREMANAGER_INOTIFY)
 	add_definitions (-DENABLE_INOTIFY)
 	set (SRCS ${SRCS} fileswatcher_inotify.cpp)
 	set (HEADERS ${HEADERS} fileswatcher_inotify.h)
-else (ENABLE_NETSTOREMANAGER_INOTIFY)
+else ()
 	set (SRCS ${SRCS} fileswatcher_dummy.cpp)
 	set (HEADERS ${HEADERS} fileswatcher_dummy.h)
-endif (ENABLE_NETSTOREMANAGER_INOTIFY)
+endif ()
 
 set (RESOURCES netstoremanagerresources.qrc)
 
@@ -80,4 +80,4 @@ option (ENABLE_NETSTOREMANAGER_GOOGLEDRIVE "Build support for Google Drive" ON)
 
 if (ENABLE_NETSTOREMANAGER_GOOGLEDRIVE)
 	add_subdirectory (plugins/googledrive)
-endif (ENABLE_NETSTOREMANAGER_GOOGLEDRIVE)
+endif ()

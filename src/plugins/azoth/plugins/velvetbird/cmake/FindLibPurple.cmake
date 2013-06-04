@@ -17,7 +17,7 @@
 if (LIBPURPLE_LIBRARIES AND LIBPURPLE_INCLUDE_DIRS)
   # in cache already
   set(LIBPURPLE_FOUND TRUE)
-else (LIBPURPLE_LIBRARIES AND LIBPURPLE_INCLUDE_DIRS)
+else ()
   # use pkg-config to get the directories and then use these values
   # in the find_path() and find_library() calls
     include(UsePkgConfig)
@@ -54,19 +54,19 @@ else (LIBPURPLE_LIBRARIES AND LIBPURPLE_INCLUDE_DIRS)
 
   if (LIBPURPLE_INCLUDE_DIRS AND LIBPURPLE_LIBRARIES)
     set(LIBPURPLE_FOUND TRUE)
-  endif (LIBPURPLE_INCLUDE_DIRS AND LIBPURPLE_LIBRARIES)
+  endif ()
 
   if (LIBPURPLE_FOUND)
     if (NOT LIBPURPLE_FIND_QUIETLY)
       message(STATUS "Found libpurple: ${LIBPURPLE_LIBRARIES}")
-    endif (NOT LIBPURPLE_FIND_QUIETLY)
-  else (LIBPURPLE_FOUND)
+    endif ()
+  else ()
     if (LIBPURPLE_FIND_REQUIRED)
       message(FATAL_ERROR "Could not find libpurple")
-    endif (LIBPURPLE_FIND_REQUIRED)
-  endif (LIBPURPLE_FOUND)
+    endif ()
+  endif ()
 
   # show the LIBPURPLE_INCLUDE_DIRS and LIBPURPLE_LIBRARIES variables only in the advanced view
   mark_as_advanced(LIBPURPLE_INCLUDE_DIRS LIBPURPLE_LIBRARIES)
 
-endif (LIBPURPLE_LIBRARIES AND LIBPURPLE_INCLUDE_DIRS)
+endif ()

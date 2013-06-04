@@ -33,17 +33,17 @@ elseif (UNIX)
 		add_definitions (-DHAVE_XSS)
 		include_directories ("${X11_Xscreensaver_INCLUDE_PATH}")
 		set (ADDITIONAL_AUTOIDLER_LIBS ${X11_Xscreensaver_LIB})
-	endif (X11_Xscreensaver_FOUND)
+	endif ()
 elseif (WIN32)
 	set (AUTOIDLER_SRCS ${AUTOIDLER_SRCS} 3dparty/idle_win.cpp)
-endif (APPLE)
+endif ()
 
 add_definitions (-DUNICODE)
 
 CreateTrs ("azoth_autoidler" "en;es;ru_RU;uk_UA" AUTOIDLER_COMPILED_TRANSLATIONS)
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (AUTOIDLER_MOC_SRCS ${AUTOIDLER_HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 
 add_library (leechcraft_azoth_autoidler SHARED
 	${AUTOIDLER_COMPILED_TRANSLATIONS}

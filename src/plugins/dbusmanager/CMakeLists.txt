@@ -4,7 +4,7 @@ include (InitLCPlugin OPTIONAL)
 
 if (NOT (QT_QTDBUS_FOUND AND UNIX))
 	message (ERROR "DBusManager could not be built")
-endif (NOT (QT_QTDBUS_FOUND AND UNIX))
+endif ()
 
 set (QT_USE_QTDBUS TRUE)
 include (${QT_USE_FILE})
@@ -44,7 +44,7 @@ CreateTrs ("dbusmanager" "ar;de;en;eo;es;fr;it;pl;ru_RU;uk_UA" COMPILED_TRANSLAT
 
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 

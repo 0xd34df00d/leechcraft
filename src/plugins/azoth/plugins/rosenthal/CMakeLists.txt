@@ -11,7 +11,7 @@ include_directories (${HUNSPELL_INCLUDE_DIR})
 
 if (MSVC)
 	add_definitions (-DWIN32 -DHUNSPELL_STATIC)
-endif (MSVC)
+endif ()
 include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
@@ -31,7 +31,7 @@ set (ROSENTHAL_RESOURCES azothrosenthalresources.qrc)
 CreateTrs ("azoth_rosenthal" "en;es;ru_RU;uk_UA" ROSENTHAL_COMPILED_TRANSLATIONS)
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (ROSENTHAL_MOC_SRCS ${ROSENTHAL_HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 QT4_ADD_RESOURCES (ROSENTHAL_RCCS ${ROSENTHAL_RESOURCES})
 
 add_library (leechcraft_azoth_rosenthal SHARED

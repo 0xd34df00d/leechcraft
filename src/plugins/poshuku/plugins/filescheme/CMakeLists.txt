@@ -15,7 +15,7 @@ CreateTrs ("poshuku_filescheme" "ar;de;en;eo;es;fr;it;pl;ru_RU;uk_UA" FILESCHEME
 
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (FILESCHEME_MOC_SRCS ${FILESCHEME_HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 QT4_ADD_RESOURCES (FILESCHEME_RCCS ${FILESCHEME_RESOURCES})
 add_library (leechcraft_poshuku_filescheme SHARED
 	${FILESCHEME_COMPILED_TRANSLATIONS}

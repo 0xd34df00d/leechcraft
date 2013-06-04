@@ -21,7 +21,7 @@ set (WEBACCESS_HEADERS
 	)
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (WEBACCESS_MOC_SRCS ${WEBACCESS_HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 
 add_library (leechcraft_aggregator_webaccess SHARED
 	${WEBACCESS_COMPILED_TRANSLATIONS}

@@ -17,7 +17,7 @@ if(LIBSPECTRE_INCLUDE_DIR AND LIBSPECTRE_LIBRARY)
   # in cache already
   set(LIBSPECTRE_FOUND TRUE)
 
-else(LIBSPECTRE_INCLUDE_DIR AND LIBSPECTRE_LIBRARY)
+else()
 
 if(NOT WIN32)
    # use pkg-config to get the directories and then use these values
@@ -34,16 +34,16 @@ if(NOT WIN32)
      exec_program(${PKGCONFIG_EXECUTABLE} ARGS --atleast-version=${LIBSPECTRE_MINIMUM_VERSION} libspectre RETURN_VALUE _return_VALUE OUTPUT_VARIABLE _pkgconfigDevNull )
      if(_return_VALUE STREQUAL "0")
         set(LIBSPECTRE_FOUND TRUE)
-     endif(_return_VALUE STREQUAL "0")
-   endif(_SpectreLinkFlags)
-else(NOT WIN32)
+     endif()
+   endif()
+else()
     # do not use pkg-config on windows
     find_library(_SpectreLinkFlags NAMES libspectre spectre PATHS ${CMAKE_LIBRARY_PATH})
 
     find_path(LIBSPECTRE_INCLUDE_DIR spectre.h PATH_SUFFIXES libspectre )
 
     set(LIBSPECTRE_FOUND TRUE)
-endif(NOT WIN32)
+endif()
 
 if (LIBSPECTRE_FOUND)
   set(LIBSPECTRE_LIBRARY ${_SpectreLinkFlags})
@@ -53,12 +53,12 @@ if (LIBSPECTRE_FOUND)
   foreach(_includedir ${_SpectreCflags})
     string(REGEX REPLACE "-I(.+)" "\\1" _includedir "${_includedir}")
     set(LIBSPECTRE_INCLUDE_DIR ${LIBSPECTRE_INCLUDE_DIR} ${_includedir})
-  endforeach(_includedir)
+  endforeach()
 
-endif (LIBSPECTRE_FOUND)
+endif ()
 
 # ensure that they are cached
 set(LIBSPECTRE_INCLUDE_DIR ${LIBSPECTRE_INCLUDE_DIR} CACHE INTERNAL "The libspectre include path")
 set(LIBSPECTRE_LIBRARY ${LIBSPECTRE_LIBRARY} CACHE INTERNAL "The libspectre library")
 
-endif(LIBSPECTRE_INCLUDE_DIR AND LIBSPECTRE_LIBRARY)
+endif()

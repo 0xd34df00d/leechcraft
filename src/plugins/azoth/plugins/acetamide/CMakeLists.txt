@@ -116,7 +116,7 @@ CreateTrs ("azoth_acetamide" "de;en;es;fr;it;ru_RU;uk_UA" ACETAMIDE_COMPILED_TRA
 
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (ACETAMIDE_MOC_SRCS ${ACETAMIDE_HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 QT4_WRAP_UI (ACETAMIDE_UIS_H ${ACETAMIDE_FORMS})
 QT4_ADD_RESOURCES (ACETAMIDE_RCCS ${ACETAMIDE_RESOURCES})
 
@@ -140,4 +140,4 @@ install (FILES azothacetamidesettings.xml
 		DESTINATION ${LC_SETTINGS_DEST})
 if (UNIX AND NOT APPLE)
 	install (FILES freedesktop/leechcraft-azoth-acetamide.desktop DESTINATION share/applications)
-endif (UNIX AND NOT APPLE)
+endif ()

@@ -32,8 +32,8 @@ if (WITH_DOCS)
 	)
 	if (WITH_DOCS_INSTALL)
 		install (DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/out/html" DESTINATION "share/doc/leechcraft-core-${LEECHCRAFT_VERSION}")
-	endif (WITH_DOCS_INSTALL)
-endif (WITH_DOCS)
+	endif ()
+endif ()
 
 option (WITH_X11 "Enable X11 support on Linux" ON)
 if (WITH_X11 AND NOT APPLE)
@@ -42,8 +42,8 @@ if (WITH_X11 AND NOT APPLE)
 	if (X11_FOUND)
 		add_definitions (-DHAVE_X11)
 		set (ADDITIONAL_LIBS ${X11_X11_LIB})
-	endif (X11_FOUND)
-endif (WITH_X11 AND NOT APPLE)
+	endif ()
+endif ()
 
 set (SRCS
 	mainwindow.cpp

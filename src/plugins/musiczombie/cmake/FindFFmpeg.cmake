@@ -64,7 +64,7 @@ macro(find_component _component _pkgconfig _library _header)
      if (PKG_CONFIG_FOUND)
        pkg_check_modules(PC_${_component} ${_pkgconfig})
      endif ()
-  endif (NOT WIN32)
+  endif ()
 
   find_path(${_component}_INCLUDE_DIRS ${_header}
     HINTS

@@ -14,7 +14,7 @@
 if(GLIB2_INCLUDE_DIR AND GLIB2_LIBRARIES)
     # Already in cache, be silent
     set(GLIB2_FIND_QUIETLY TRUE)
-endif(GLIB2_INCLUDE_DIR AND GLIB2_LIBRARIES)
+endif()
 
 find_package(PkgConfig)
 pkg_check_modules(PC_LibGLIB2 QUIET glib-2.0)
@@ -44,7 +44,7 @@ set(GLIB2_INCLUDE_DIR "${GLIB2_MAIN_INCLUDE_DIR}")
 # for now it is optional
 if(GLIB2_INTERNAL_INCLUDE_DIR)
   set(GLIB2_INCLUDE_DIR ${GLIB2_INCLUDE_DIR} "${GLIB2_INTERNAL_INCLUDE_DIR}")
-endif(GLIB2_INTERNAL_INCLUDE_DIR)
+endif()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(GLIB2  DEFAULT_MSG  GLIB2_LIBRARIES GLIB2_MAIN_INCLUDE_DIR)

@@ -94,7 +94,7 @@ set (FORMS
 	)
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 
 if (USE_QT5)
 	QT5_WRAP_UI (UIS_H ${FORMS})
@@ -104,10 +104,10 @@ endif ()
 
 foreach (SRC ${SRCS})
 	set (XSD_SRCS "${XSD_SRCS};xmlsettingsdialog/${SRC}")
-endforeach (SRC)
+endforeach ()
 foreach (FORM ${FORMS})
 	set (XSD_FORMS "${XSD_FORMS};xmlsettingsdialog/${FORM}")
-endforeach (FORM)
+endforeach ()
 set (XSD_SRCS ${XSD_SRCS} PARENT_SCOPE)
 set (XSD_FORMS ${XSD_FORMS} PARENT_SCOPE)
 

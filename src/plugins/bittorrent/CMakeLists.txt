@@ -9,7 +9,7 @@ set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 find_package (RBTorrent)
 if (NOT RBTorrent_FOUND)
 	message (ERROR "Rasterbar libtorrent not found, not building BitTorrent")
-endif (NOT RBTorrent_FOUND)
+endif ()
 
 set (QT_USE_QTXML TRUE)
 include (${QT_USE_FILE})
@@ -22,7 +22,7 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR}
 
 if (WIN32)
 	include_directories (${RBTorrent_INCLUDE_DIR}/../zlib)
-endif (WIN32)
+endif ()
 
 set (SRCS
 	torrentplugin.cpp
@@ -129,7 +129,7 @@ CreateTrsUpTarget ("bittorrent" "en;ru_RU" "${SRCS}" "${FORMS}" "torrentsettings
 
 if (APPLE)
 	add_definitions (-DWITH_SHIPPED_GEOIP_H)
-endif (APPLE)
+endif ()
 
 option (ENABLE_BITTORRENT_GEOIP "Enable support for GeoIP in BitTorrent (requires building libtorrent with GeoIP support)" OFF)
 
@@ -138,8 +138,8 @@ if (ENABLE_BITTORRENT_GEOIP)
 elseif (ENABLE_BITTORRENT_GEOIP)
 	if (WIN32)
 		add_definitions (-DTORRENT_DISABLE_GEO_IP)
-	endif (WIN32)
-endif (ENABLE_BITTORRENT_GEOIP)
+	endif ()
+endif ()
 
 if (UNIX)
 	find_program (LPKGC_CMD pkg-config)
@@ -156,8 +156,8 @@ if (UNIX)
 
 	if (RB_LT_VERSION VERSION_GREATER 0.15.9999)
 		add_definitions (-DBOOST_ASIO_DYN_LINK)
-	endif (RB_LT_VERSION VERSION_GREATER 0.15.9999)
-endif (UNIX)
+	endif ()
+endif ()
 
 if (WIN32)
 	add_definitions (-DWIN32)
@@ -165,13 +165,13 @@ if (WIN32)
 	add_definitions (-DWIN32_LEAN_AND_MEAN)
 	add_definitions (-DBOOST_ASIO_DYN_LINK)
 	add_definitions (-DBOOST_ALL_NO_LIB)
-endif (WIN32)
+endif ()
 #add_definitions(-DBOOST_DYN_LINK)
 add_definitions(-DTORRENT_LINKING_SHARED)
 #add_definitions(-D_DLL)
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
@@ -185,7 +185,7 @@ add_library (leechcraft_bittorrent SHARED
 
 if (APPLE)
 	set (CRYPTOLIB "crypto")
-endif (APPLE)
+endif ()
 target_link_libraries (leechcraft_bittorrent
 	${Boost_SYSTEM_LIBRARY}
 	${Boost_THREAD_LIBRARY}
@@ -201,4 +201,4 @@ install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES torrentsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 if (UNIX AND NOT APPLE)
 	install (FILES freedesktop/leechcraft-bittorrent.desktop DESTINATION share/applications)
-endif (UNIX AND NOT APPLE)
+endif ()

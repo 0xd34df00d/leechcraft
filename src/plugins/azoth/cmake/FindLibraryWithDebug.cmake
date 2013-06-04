@@ -21,14 +21,14 @@ macro(FIND_LIBRARY_WITH_DEBUG var_name win32_dbg_postfix_name dgb_postfix libnam
                   ${ARGN}
      )
 
-  else(NOT "${win32_dbg_postfix_name}" STREQUAL "WIN32_DEBUG_POSTFIX")
+  else()
 
     if(NOT WIN32)
       # on non-win32 we don't need to take care about WIN32_DEBUG_POSTFIX
 
       find_library(${var_name} ${libname} ${ARGN})
 
-    else(NOT WIN32)
+    else()
 
       # 1. get all possible libnames
       set(args ${ARGN})
@@ -47,19 +47,19 @@ macro(FIND_LIBRARY_WITH_DEBUG var_name win32_dbg_postfix_name dgb_postfix libnam
 
           if(append_rest)
             list(APPEND newargs ${val})
-          else(append_rest)
+          else()
             if("${val}" STREQUAL "PATHS")
               list(APPEND newargs ${val})
               set(append_rest 1)
-            else("${val}" STREQUAL "PATHS")
+            else()
               list(APPEND libnames_release "${val}")
               list(APPEND libnames_debug   "${val}${dgb_postfix}")
-            endif("${val}" STREQUAL "PATHS")
-          endif(append_rest)
+            endif()
+          endif()
 
-        endforeach(i)
+        endforeach()
 
-      else("${libname}" STREQUAL "NAMES")
+      else()
 
         # just one name
         list(APPEND libnames_release "${libname}")
@@ -67,7 +67,7 @@ macro(FIND_LIBRARY_WITH_DEBUG var_name win32_dbg_postfix_name dgb_postfix libnam
 
         set(newargs ${args})
 
-      endif("${libname}" STREQUAL "NAMES")
+      endif()
 
       # search the release lib
       find_library(${var_name}_RELEASE
@@ -87,27 +87,27 @@ macro(FIND_LIBRARY_WITH_DEBUG var_name win32_dbg_postfix_name dgb_postfix libnam
         set(${var_name} optimized ${${var_name}_RELEASE}
                         debug     ${${var_name}_DEBUG})
 
-      else(${var_name}_RELEASE AND ${var_name}_DEBUG)
+      else()
 
         if(${var_name}_RELEASE)
 
           # only release found
           set(${var_name} ${${var_name}_RELEASE})
 
-        else(${var_name}_RELEASE)
+        else()
 
           # only debug (or nothing) found
           set(${var_name} ${${var_name}_DEBUG})
 
-        endif(${var_name}_RELEASE)
+        endif()
 
-      endif(${var_name}_RELEASE AND ${var_name}_DEBUG)
+      endif()
 
       mark_as_advanced(${var_name}_RELEASE)
       mark_as_advanced(${var_name}_DEBUG)
 
-    endif(NOT WIN32)
+    endif()
 
-  endif(NOT "${win32_dbg_postfix_name}" STREQUAL "WIN32_DEBUG_POSTFIX")
+  endif()
 
-endmacro(FIND_LIBRARY_WITH_DEBUG)
+endmacro()

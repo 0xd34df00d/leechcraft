@@ -9,8 +9,8 @@ if (NOT WIN32)
 	find_package (MAGIC REQUIRED)
 	if (MAGIC_FOUND)
 		add_definitions (-DHAVE_MAGIC)
-	endif (MAGIC_FOUND)
-endif (NOT WIN32)
+	endif ()
+endif ()
 
 include_directories (${NETSTOREMANAGER_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -45,7 +45,7 @@ CreateTrs ("netstoremanager_googledrive" "en;ru_RU" GOOGLEDRIVE_COMPILED_TRANSLA
 
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (GOOGLEDRIVE_MOC_SRCS ${GOOGLEDRIVE_HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 QT4_ADD_RESOURCES (GOOGLEDRIVE_RCCS ${GOOGLEDRIVE_RESOURCES})
 
 add_library (leechcraft_netstoremanager_googledrive SHARED

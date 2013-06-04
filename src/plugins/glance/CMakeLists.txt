@@ -27,7 +27,7 @@ set (SRCS
 CreateTrs ("glance" "en;es;ru_RU;tt;uk_UA" COMPILED_TRANSLATIONS)
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 
 set (GLANCE_RESOURCES glanceresources.qrc)
 QT4_ADD_RESOURCES (GLANCE_RCCS ${GLANCE_RESOURCES})

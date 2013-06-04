@@ -6,7 +6,7 @@ option (ENABLE_AZOTH_VADER_VERBOSE_LOG "Debug protocol messages & similar stuff 
 
 if (ENABLE_AZOTH_VADER_VERBOSE_LOG)
 	add_definitions (-DPROTOCOL_LOGGING)
-endif (ENABLE_AZOTH_VADER_VERBOSE_LOG)
+endif ()
 
 set (QT_USE_QTNETWORK TRUE)
 include (${QT_USE_FILE})
@@ -80,7 +80,7 @@ CreateTrs ("azoth_vader" "en;es;ru_RU;uk_UA" VADER_COMPILED_TRANSLATIONS)
 
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (VADER_MOC_SRCS ${VADER_HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 QT4_WRAP_UI (VADER_UIS_H ${VADER_FORMS})
 QT4_ADD_RESOURCES (VADER_RCCS ${VADER_RESOURCES})
 

@@ -10,7 +10,7 @@
 if (QJSON_INCLUDE_DIR AND QJSON_LIBRARIES)
 	# Already in cache
 	set (QJSON_FOUND TRUE)
-else (QJSON_INCLUDE_DIR AND QJSON_LIBRARIES)
+else ()
 	if (NOT WIN32)
 		find_library (QJSON_LIBRARIES
 			NAMES
@@ -20,14 +20,14 @@ else (QJSON_INCLUDE_DIR AND QJSON_LIBRARIES)
 				${LIB_INSTALL_DIR}
 				${KDE4_LIB_DIR}
 		)
-	else (NOT WIN32)
+	else ()
 		if (NOT DEFINED QJSON_DIR)
 			if (QJSON_FIND_REQUIRED)
 				message(FATAL_ERROR "Please set QJSON_DIR variable")
-			else (QJSON_FIND_REQUIRED)
+			else ()
 				message(STATUS "Please set QJSON_DIR variable for onlinebookmarks support")
-			endif (QJSON_FIND_REQUIRED)
-		endif (NOT DEFINED QJSON_DIR)
+			endif ()
+		endif ()
 
 		set (QJSON_INCLUDE_WIN32 ${QJSON_DIR})		
 
@@ -39,7 +39,7 @@ else (QJSON_INCLUDE_DIR AND QJSON_LIBRARIES)
 		find_library (QJSON_LIBRARY_DEBUG NAMES qjson.lib PATHS ${PROBE_DIR_Debug})
 		find_library (QJSON_LIBRARY_RELEASE NAMES qjson.lib PATHS ${PROBE_DIR_Release})
 		win32_tune_libs_names (QJSON)	
-	endif (NOT WIN32)
+	endif ()
 
 if (NOT WIN32) # regression guard
 	find_path (QJSON_INCLUDE_DIR
@@ -52,7 +52,7 @@ if (NOT WIN32) # regression guard
 		${INCLUDE_INSTALL_DIR}
 		${KDE4_INCLUDE_DIR}
 	)
-else (NOT WIN32) #may be works for linux too
+else () #may be works for linux too
 	find_path (QJSON_INCLUDE_DIR
     NAMES
 		qjson/qjson_export.h
@@ -64,26 +64,26 @@ else (NOT WIN32) #may be works for linux too
 		${KDE4_INCLUDE_DIR}
 		${QJSON_INCLUDE_WIN32}
 	)
-endif (NOT WIN32)
+endif ()
 
 #Win32 Strange beg
 	
 	if (QJSON_INCLUDE_DIR AND QJSON_LIBRARIES)
 		set (QJSON_FOUND 1)
-	endif (QJSON_INCLUDE_DIR AND QJSON_LIBRARIES)
+	endif ()
 
 	if (QJSON_FOUND)
 		message (STATUS "Found the QJSON libraries at ${QJSON_LIBRARIES}")
 		message (STATUS "Found the QJSON headers at ${QJSON_INCLUDE_DIR}")
 		if (WIN32)
 			message (STATUS ${_WIN32_ADDITIONAL_MESS})
-		endif (WIN32)
-	else (QJSON_FOUND)
+		endif ()
+	else ()
 		if (QJSON_FIND_REQUIRED)
 			message (FATAL_ERROR "Could NOT find required QJSON library, aborting")
-		else (QJSON_FIND_REQUIRED)
+		else ()
 			message (STATUS "Could NOT find QJSON")
-		endif (QJSON_FIND_REQUIRED)
-	endif (QJSON_FOUND)
+		endif ()
+	endif ()
 
-endif (QJSON_INCLUDE_DIR AND QJSON_LIBRARIES)
+endif ()

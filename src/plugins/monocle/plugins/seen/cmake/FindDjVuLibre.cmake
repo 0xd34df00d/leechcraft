@@ -10,12 +10,12 @@ if (DJVULIBRE_INCLUDE_DIR AND DJVULIBRE_LIBRARY)
   # in cache already
   set(DJVULIBRE_FOUND TRUE)
 
-else (DJVULIBRE_INCLUDE_DIR AND DJVULIBRE_LIBRARY)
+else ()
   if (NOT WIN32)
         find_package(PkgConfig)
 
         pkg_check_modules(PC_DJVULIBRE ddjvuapi)
-  endif(NOT WIN32)
+  endif()
 
     find_path(DJVULIBRE_INCLUDE_DIR libdjvu/ddjvuapi.h
       PATHS
@@ -36,4 +36,4 @@ else (DJVULIBRE_INCLUDE_DIR AND DJVULIBRE_LIBRARY)
 
   mark_as_advanced(DJVULIBRE_INCLUDE_DIR DJVULIBRE_LIBRARY)
 
-endif (DJVULIBRE_INCLUDE_DIR AND DJVULIBRE_LIBRARY)
+endif ()

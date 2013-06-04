@@ -21,7 +21,7 @@ CreateTrs ("poshuku_fua" "ar;de;en;eo;es;fr;it;pl;ru_RU;uk_UA" FUA_COMPILED_TRAN
 
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (FUA_MOC_SRCS ${FUA_HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 QT4_WRAP_UI (FUA_UIS_H ${FUA_FORMS})
 QT4_ADD_RESOURCES (FUA_RCCS ${FUA_RESOURCES})
 add_library (leechcraft_poshuku_fua SHARED

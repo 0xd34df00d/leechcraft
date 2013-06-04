@@ -61,7 +61,7 @@ set (HEADERS
 set (RESOURCES lastfmscrobbleresources.qrc)
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 CreateTrs ("lastfmscrobble" "en;ru_RU" COMPILED_TRANSLATIONS)
 

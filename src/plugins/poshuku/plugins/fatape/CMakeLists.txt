@@ -29,7 +29,7 @@ CreateTrs ("poshuku_fatape" "en;it;ru_RU;uk_UA" FATAPE_COMPILED_TRANSLATIONS)
 
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (FATAPE_MOC_SRCS ${FATAPE_HEADERS})
-endif (NOT LC_NO_MOC)
+endif ()
 QT4_WRAP_UI (FATAPE_UIS_H ${FATAPE_FORMS})
 QT4_ADD_RESOURCES (FATAPE_RCCS ${FATAPE_RESOURCES})
 add_library (leechcraft_poshuku_fatape SHARED

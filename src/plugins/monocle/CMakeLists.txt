@@ -18,8 +18,8 @@ if (WITH_DOCS)
 	)
 	if (WITH_DOCS_INSTALL)
 		install (DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/out/html" DESTINATION "share/doc/leechcraft-monocle-${LEECHCRAFT_VERSION}")
-	endif (WITH_DOCS_INSTALL)
-endif (WITH_DOCS)
+	endif ()
+endif ()
 
 set (QT_USE_QTXML TRUE)
 include (${QT_USE_FILE})
@@ -89,20 +89,20 @@ option (ENABLE_MONOCLE_SEEN "Enable DjVu backend for Monocle using the DjVu libr
 
 if (ENABLE_MONOCLE_FXB)
 	add_subdirectory (plugins/fxb)
-endif (ENABLE_MONOCLE_FXB)
+endif ()
 
 if (ENABLE_MONOCLE_MU)
 	add_subdirectory (plugins/mu)
-endif (ENABLE_MONOCLE_MU)
+endif ()
 
 if (ENABLE_MONOCLE_PDF)
 	add_subdirectory (plugins/pdf)
-endif (ENABLE_MONOCLE_PDF)
+endif ()
 
 if (ENABLE_MONOCLE_POSTRUS)
 	add_subdirectory (plugins/postrus)
-endif (ENABLE_MONOCLE_POSTRUS)
+endif ()
 
 if (ENABLE_MONOCLE_SEEN)
 	add_subdirectory (plugins/seen)
-endif (ENABLE_MONOCLE_SEEN)
+endif ()
