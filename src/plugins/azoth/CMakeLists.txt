@@ -1,6 +1,7 @@
 CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 PROJECT (leechcraft_azoth)
 INCLUDE (InitLCPlugin OPTIONAL)
+INCLUDE (CMakeDependentOption)
 SET (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 OPTION (ENABLE_MEDIACALLS "Enable support for media calls" ON)
@@ -230,7 +231,7 @@ OPTION (ENABLE_AZOTH_P100Q "Build plugin for the psto.net microblogging service"
 OPTION (ENABLE_AZOTH_ROSENTHAL "Build Rosenthal, spellchecker plugin for Azoth" ON)
 OPTION (ENABLE_AZOTH_SHX "Build ShX, shell command runner" ON)
 OPTION (ENABLE_AZOTH_STANDARDSTYLES "Build support for standard Azoth styles" ON)
-OPTION (ENABLE_AZOTH_VADER "Build support for the MRIM protocol" ON)
+CMAKE_DEPENDENT_OPTION (ENABLE_AZOTH_VADER "Build support for the MRIM protocol" ON "NOT WIN32" OFF)
 OPTION (ENABLE_AZOTH_VELVETBIRD "Build libpurple support plugin" OFF)
 OPTION (ENABLE_AZOTH_XOOX "Build Xoox, the QXmpp-aided XMPP support for Azoth" ON)
 OPTION (ENABLE_AZOTH_XTAZY "Build Xtazy for publishing current user tune" ON)
