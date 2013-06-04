@@ -236,12 +236,36 @@ namespace Metida
 			QDomElement nameElem = elem.ownerDocument ().createElement ("a");
 			nameElem.setAttribute ("href", QString ("http://%1.livejournal.com/profile").arg (user));
 			nameElem.setAttribute ("target", "_blank");
+			nameElem.setAttribute ("id", "nameLink");
 			nameElem.appendChild (elem.ownerDocument ().createTextNode (user));
 
 			elem.appendChild (linkElem);
 			elem.appendChild (nameElem);
 
 			elem.removeAttribute ("user");
+		};
+		ljUserTag.FromKnown_ = [] (QDomElement& elem) -> bool
+		{
+			auto aElem = elem.firstChildElement ("a");
+			while (!aElem.isNull ())
+			{
+				if (aElem.attribute ("id") == "nameLink")
+					break;
+
+				aElem = aElem.nextSiblingElement ("a");
+			}
+			if (aElem.isNull ())
+				return false;
+			const auto& username = aElem.text ();
+
+			const auto& children = elem.childNodes ();
+			while (!children.isEmpty ())
+				elem.removeChild (children.at (0));
+
+			elem.setTagName ("lj");
+			elem.setAttribute ("user", username);
+
+			return true;
 		};
 		tags << ljUserTag;
 
@@ -250,6 +274,11 @@ namespace Metida
 		ljCutTag.ToKnown_ = [] (QDomElement& elem)
 		{
 			elem.setTagName ("blockquote");
+		};
+		ljCutTag.FromKnown_ = [] (QDomElement& elem) -> bool
+		{
+			elem.setTagName ("lj-cut");
+			return true;
 		};
 
 		tags << ljCutTag;
