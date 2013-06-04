@@ -247,11 +247,9 @@ namespace Metida
 
 		IAdvancedHTMLEditor::CustomTag ljCutTag;
 		ljCutTag.TagName_ = "lj-cut";
-		ljCutTag.ToKnown_ = [] (QDomElement& elem) -> void
+		ljCutTag.ToKnown_ = [] (QDomElement& elem)
 		{
-			const auto& text = elem.attribute ("text");
-			elem.setTagName ("hr");
-			elem.removeAttribute ("text");
+			elem.setTagName ("blockquote");
 		};
 
 		tags << ljCutTag;
