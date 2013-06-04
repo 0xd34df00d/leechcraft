@@ -44,7 +44,7 @@ namespace NetStoreManager
 	FilesWatcherInotify::FilesWatcherInotify (QObject *parent)
 	: FilesWatcherBase (parent)
 	, INotifyDescriptor_ (inotify_init ())
-	, WatchMask_ (IN_CREATE | IN_DELETE | IN_DELETE_SELF | IN_MODIFY |IN_MOVED_FROM | IN_MOVED_TO )
+	, WatchMask_ (IN_CREATE | IN_DELETE | IN_DELETE_SELF | IN_MODIFY |IN_MOVED_FROM | IN_MOVED_TO)
 	, WaitMSecs_ (50)
 	, Timer_ (new QTimer (this))
 	{
@@ -58,6 +58,38 @@ namespace NetStoreManager
 				SIGNAL (timeout ()),
 				this,
 				SLOT (checkNotifications ()));
+	}
+
+	void FilesWatcherInotify::AddPath (const QString& path)
+	{
+		const int fd = inotify_add_watch (INotifyDescriptor_, path.toUtf8 (), WatchMask_);
+		WatchedPathes2Descriptors_.insert ({ path, fd });
+
+		if (!Timer_->isActive ())
+			Timer_->start (1000);
+	}
+
+	void FilesWatcherInotify::RenamePath (const QString& oldPath, const QString& newPath)
+	{
+		const auto leftMap = WatchedPathes2Descriptors_.left;
+		QStringList pathsToRemove;
+		QStringList pathsToAdd;
+		for (auto it = leftMap.begin (); it != leftMap.end (); ++it)
+		{
+			QString path = it->first;
+			if (path.startsWith (oldPath))
+			{
+				pathsToRemove << path;
+				path.replace (oldPath, newPath);
+				pathsToAdd << path;
+			}
+		}
+
+		for (const auto& path : pathsToRemove)
+			RemoveWatchingPath (path);
+
+		for (const auto& path : pathsToAdd)
+			AddPath (path);
 	}
 
 	void FilesWatcherInotify::HandleNotification (int descriptor)
@@ -112,18 +144,15 @@ namespace NetStoreManager
 				if (eventsBuffer.isEmpty ())
 					AddPathWithNotify (fullPath);
 				else
-					for (auto it = eventsBuffer.begin (); it < eventsBuffer.end ();)
+					for (auto it = eventsBuffer.begin (); it < eventsBuffer.end (); ++it)
 					{
 						if ((*it)->cookie == event->cookie &&
 								(*it)->wd == event->wd)
 						{
 							QString oldPath = path + "/" + QString ((*it)->name);
-							if ((*it)->mask & IN_ISDIR)
-							{
-								qDebug () << oldPath << fullPath;
-								RemoveWatchingPath ((*it)->wd);
-								addPath (fullPath);
-							}
+							if (QFileInfo (fullPath).isDir ())
+								RenamePath (oldPath, fullPath);
+
 							emit entryWasRenamed (oldPath, fullPath);
 							it = eventsBuffer.erase (it);
 							break;
@@ -164,7 +193,7 @@ namespace NetStoreManager
 		if (!QFileInfo (path).isDir ())
 			return;
 
-		addPath (path);
+		AddPath (path);
 		emit dirWasCreated (path);
 		const auto paths = Utils::ScanDir (QDir::AllEntries | QDir::NoDotAndDotDot,
 				path,
@@ -172,7 +201,7 @@ namespace NetStoreManager
 		for (const auto& p : paths)
 			if (QFileInfo (p).isDir ())
 			{
-				addPath (p);
+				AddPath (p);
 				emit dirWasCreated (p);
 			}
 			else
@@ -206,11 +235,19 @@ namespace NetStoreManager
 		WatchedPathes2Descriptors_.right.erase (descriptor);
 	}
 
+	void FilesWatcherInotify::RemoveWatchingPath (const QString& path)
+	{
+		if (!WatchedPathes2Descriptors_.left.count (path))
+			return;
+
+		RemoveWatchingPath (WatchedPathes2Descriptors_.left.at (path));
+	}
+
 	void FilesWatcherInotify::updatePaths (const QStringList& paths)
 	{
 		for (const auto& path : paths)
 			if (!WatchedPathes2Descriptors_.left.count (path))
-				addPath (path);
+				AddPath (path);
 
 		for (auto it = WatchedPathes2Descriptors_.left.begin ();
 				it != WatchedPathes2Descriptors_.left.end ();)
@@ -234,15 +271,6 @@ namespace NetStoreManager
 		}
 		else
 			HandleNotification (INotifyDescriptor_);
-	}
-
-	void FilesWatcherInotify::addPath (const QString& path)
-	{
-		const int fd = inotify_add_watch (INotifyDescriptor_, path.toUtf8 (), WatchMask_);
-		WatchedPathes2Descriptors_.insert ({ path, fd });
-
-		if (!Timer_->isActive ())
-			Timer_->start (1000);
 	}
 
 	void FilesWatcherInotify::release ()
