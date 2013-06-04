@@ -818,6 +818,9 @@ namespace LHTR
 
 		auto frame = Ui_.View_->page ()->mainFrame ();
 		frame->evaluateJavaScript (jstr);
+
+		const auto& fullHtml = frame->documentElement ().toOuterXml ();
+		Ui_.View_->setContent (ExpandCustomTags (fullHtml).toUtf8 (), MIMEType);
 	}
 
 	void RichEditorWidget::handleBgColor ()
