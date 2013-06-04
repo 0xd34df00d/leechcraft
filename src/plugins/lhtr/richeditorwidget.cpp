@@ -643,15 +643,24 @@ namespace LHTR
 				else
 				{
 					auto docElem = doc.documentElement ();
+					const auto& original = docElem.attribute ("__original__");
 					docElem.removeAttribute ("__original__");
+					docElem.removeAttribute ("__tagname__");
 
-					tag.FromKnown_ (docElem);
+					if (tag.FromKnown_ (docElem))
+					{
+						QString contents;
+						QTextStream str (&contents);
+						docElem.save (str, 1);
 
-					QString contents;
-					QTextStream str (&contents);
-					docElem.save (str, 1);
-
-					elem.setOuterXml (contents);
+						elem.setOuterXml (contents);
+					}
+					else
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "FromKnown_ failed";
+						elem.setOuterXml (original);
+					}
 				}
 			}
 		}
