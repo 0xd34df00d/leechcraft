@@ -127,6 +127,7 @@ namespace NetStoreManager
 	{
 		Id2Item_.clear ();
 		Id2Path_.erase (Id2Path_.begin (), Id2Path_.end ());
+		Id2Path_.clear ();
 		boost::bimaps::bimap<QByteArray, QStandardItem*> id2StandardItem;
 		for (const auto& item : items)
 		{
@@ -163,7 +164,7 @@ namespace NetStoreManager
 					(Id2Item_.contains (Id2Item_ [id].ParentID_) ?
 					(Id2Path_.left.at (Id2Item_ [id].ParentID_) + "/" ) :
 					QString ())
-					+ item->text () });
+						+ item->text () });
 			}
 			auto tempItems = parentItems;
 			parentItems = childItems;
@@ -176,13 +177,13 @@ namespace NetStoreManager
 			CallsQueue_.dequeue () ();
 	}
 
-	void Syncer::handleGotNewItem(const StorageItem& item, const QByteArray& parentId)
+	void Syncer::handleGotNewItem (const StorageItem& item, const QByteArray& parentId)
 	{
 		Id2Item_ [item.ID_] = item;
 		Id2Path_.insert ({ item.ID_, (Id2Item_.contains (parentId) ?
 			(Id2Path_.left.at (parentId) + "/") :
 			QString ())
-			+ item.Name_ });
+				+ item.Name_ });
 
 		if (!CallsQueue_.isEmpty ())
 			CallsQueue_.dequeue () ();
@@ -190,6 +191,55 @@ namespace NetStoreManager
 
 	void Syncer::handleGotChanges (const QList<Change>& changes)
 	{
+		for (const auto& change : changes)
+		{
+			const auto& item = change.Item_;
+			if (item.IsTrashed_)
+				continue;
+
+			const auto& id = change.ItemID_;
+			const auto& parentId = change.Item_.ParentID_;
+
+			if (change.Deleted_)
+			{
+				Id2Item_.remove (id);
+				Id2Path_.left.erase (id);
+			}
+			else if (item.IsValid ())
+			{
+				QString path = (Id2Item_.contains (parentId) ?
+					(Id2Path_.left.at (parentId) + "/") :
+					QString ())
+						+ item.Name_;
+				if (Id2Path_.left.count (id))
+				{
+					if (Id2Item_ [id].Name_ != item.Name_)
+					{
+						QString oldPath = Id2Path_.left.at (id);
+						if (!item.IsDirectory_)
+						{
+							auto it = Id2Path_.left.find (id);
+							Id2Path_.left.replace_data (it, path);
+						}
+						else
+							for (auto it = Id2Path_.left.begin ();
+									it != Id2Path_.left.end (); ++it)
+							{
+								QString itemPath = it->second;
+								if (itemPath.startsWith (oldPath))
+								{
+									itemPath.replace (oldPath, path);
+									Id2Path_.left.replace_data (it, itemPath);
+								}
+							}
+					}
+				}
+				else
+					Id2Path_.insert ({ id, path });
+				Id2Item_ [id] = item;
+			}
+		}
+
 		if (!CallsQueue_.isEmpty ())
 			CallsQueue_.dequeue () ();
 	}
