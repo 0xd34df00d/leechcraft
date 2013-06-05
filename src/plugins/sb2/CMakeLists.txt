@@ -5,6 +5,8 @@ include (InitLCPlugin OPTIONAL)
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 find_package (QJSON REQUIRED)
 
+option (WITH_X11 "Enable X11 support on Linux" ON)
+
 set (QT_USE_QTDECLARATIVE TRUE)
 include (${QT_USE_FILE})
 include_directories (
@@ -34,6 +36,14 @@ set (SRCS
 	declarativewindow.cpp
 	viewgeometrymanager.cpp
 	)
+
+if (WITH_X11 AND NOT APPLE)
+	find_package (X11)
+
+	if (X11_FOUND)
+		add_definitions (-DWITH_X11)
+	endif ()
+endif ()
 
 set (SB2_RESOURCES sb2resources.qrc)
 QT4_ADD_RESOURCES (SB2_RCCS ${SB2_RESOURCES})

@@ -35,7 +35,11 @@
 #include <QMainWindow>
 #include <QDesktopWidget>
 #include <QtDebug>
+
+#ifdef WITH_X11
 #include <util/x11/xwrapper.h>
+#endif
+
 #include "viewmanager.h"
 #include "sbview.h"
 
@@ -67,14 +71,17 @@ namespace SB2
 				this,
 				SLOT (setOrientation (Qt::Orientation)));
 
+#ifdef WITH_X11
 		if (!ViewMgr_->IsDesktopMode ())
 		{
+#endif
 			toolbar->setFloatable (false);
 			ViewMgr_->GetManagedWindow ()->addToolBar (static_cast<Qt::ToolBarArea> (pos), toolbar);
 #ifdef Q_OS_MAC
 			// dunno WTF
 			ViewMgr_->GetManagedWindow ()->show ();
 #endif
+#ifdef WITH_X11
 		}
 		else
 		{
@@ -94,10 +101,12 @@ namespace SB2
 
 			Util::XWrapper::Instance ().MoveWindowToDesktop (toolbar->winId (), 0xffffffff);
 		}
+#endif
 	}
 
 	void ViewGeometryManager::updatePos ()
 	{
+#ifdef WITH_X11
 		setOrientation (Qt::Horizontal);
 
 		auto toolbar = ViewMgr_->GetToolbar ();
@@ -115,6 +124,7 @@ namespace SB2
 		toolbar->setFixedSize (rect.size ());
 
 		Util::XWrapper::Instance ().SetStrut (toolbar, Qt::BottomToolBarArea);
+#endif
 	}
 
 	void ViewGeometryManager::setOrientation (Qt::Orientation orientation)
