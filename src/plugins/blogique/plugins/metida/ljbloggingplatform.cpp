@@ -273,7 +273,8 @@ namespace Metida
 		ljCutTag.TagName_ = "lj-cut";
 		ljCutTag.ToKnown_ = [] (QDomElement& elem)
 		{
-			elem.setTagName ("blockquote");
+			elem.setTagName ("div");
+			elem.setAttribute ("style", "overflow:auto;border-width:3px;border-style:dotted;margin-left:3em;padding:2em 2em;");
 		};
 		ljCutTag.FromKnown_ = [] (QDomElement& elem) -> bool
 		{
@@ -282,6 +283,25 @@ namespace Metida
 		};
 
 		tags << ljCutTag;
+/*
+		IAdvancedHTMLEditor::CustomTag ljPollTag;
+		ljPollTag.TagName_ = "lj-poll";
+		ljPollTag.ToKnown_ = [] (QDomElement& elem)
+		{
+			elem.setTagName ("div");
+			elem.setAttribute ("style", "overflow:auto;border-width:3px;border-style:dashed;margin-left:3em;padding:2em 2em;");
+			auto textElem = elem.ownerDocument ().createTextNode ("");
+			elem.appendChild (textElem);
+		};
+		ljPollTag.FromKnown_ = [] (QDomElement& elem) -> bool
+		{
+			elem.setTagName ("lj-poll");
+			return true;
+		};
+
+		tags << ljPollTag;*/
+
+
 		return tags;
 	}
 
