@@ -141,8 +141,12 @@ namespace Azoth
 		}
 		Object2Status_ [jobObj] = items.at (1);
 		Object2Progress_ [jobObj] = items.at (2);
-		items.at (2)->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
+
+		auto progressItem = items.at (JobHolderColumn::JobProgress);
+		progressItem->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
 				CustomDataRoles::RoleJobHolderRow);
+		progressItem->setData (0, ProcessState::Done);
+		progressItem->setData (job->GetSize (), ProcessState::Total);
 
 		SummaryModel_->appendRow (items);
 
