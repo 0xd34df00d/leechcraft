@@ -403,6 +403,7 @@ namespace Poshuku
 		menu->addSeparator ();
 		menu->addAction (Browser_->ViewSources_);
 		menu->addAction (Browser_->SavePage_);
+		menu->addAction (Browser_->ScreenSave_);
 		menu->addSeparator ();
 		menu->addAction (pageAction (QWebPage::ReloadAndBypassCache));
 		menu->addAction (Browser_->ReloadPeriodically_);
