@@ -599,6 +599,8 @@ namespace BitTorrent
 			return static_cast<qlonglong> (status.total_wanted_done);
 		case ProcessState::Total:
 			return static_cast<qlonglong> (status.total_wanted);
+		case ProcessState::TaskFlags:
+			return QVariant::fromValue (Handles_.at (row).Parameters_);
 		default:
 			return QVariant ();
 		}
