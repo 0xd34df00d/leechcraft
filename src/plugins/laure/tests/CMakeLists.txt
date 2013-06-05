@@ -1,2 +1,2 @@
-ADD_SUBDIRECTORY (volumeslidertest)
-ADD_SUBDIRECTORY (vlcwrappertest)
+add_subdirectory (volumeslidertest)
+add_subdirectory (vlcwrappertest)

@@ -1,14 +1,14 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_azoth_velvetbird)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_azoth_velvetbird)
+include (InitLCPlugin OPTIONAL)
 
-INCLUDE (${QT_USE_FILE})
+include (${QT_USE_FILE})
 
-SET (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-FIND_PACKAGE (GLIB2 REQUIRED)
-FIND_PACKAGE (LibPurple REQUIRED)
+set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+find_package (GLIB2 REQUIRED)
+find_package (LibPurple REQUIRED)
 
-INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
+include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/azoth
@@ -16,11 +16,11 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	${LIBPURPLE_INCLUDE_DIRS}
 	)
 
-MESSAGE (STATUS "Bindir: ${CMAKE_CURRENT_BINARY_DIR}")
+message (STATUS "Bindir: ${CMAKE_CURRENT_BINARY_DIR}")
 
-ADD_DEFINITIONS (${LIBPURPLE_DEFINITIONS})
+add_definitions (${LIBPURPLE_DEFINITIONS})
 
-SET (VELVETBIRD_SRCS
+set (VELVETBIRD_SRCS
 	velvetbird.cpp
 	protomanager.cpp
 	protocol.cpp
@@ -31,29 +31,29 @@ SET (VELVETBIRD_SRCS
 	convimmessage.cpp
 	accountconfigdialog.cpp
 	)
-SET (VELVETBIRD_FORMS
+set (VELVETBIRD_FORMS
 	accregfirstpage.ui
 	accountconfigdialog.ui
 	)
-SET (VELVETBIRD_RESOURCES azothvelvetbirdresources.qrc)
+set (VELVETBIRD_RESOURCES azothvelvetbirdresources.qrc)
 #CreateTrs ("azoth_velvetbird" "en;ru_RU;uk_UA" VELVETBIRD_COMPILED_TRANSLATIONS)
 
 QT4_WRAP_UI (VELVETBIRD_UIS_H ${VELVETBIRD_FORMS})
 QT4_ADD_RESOURCES (VELVETBIRD_RCCS ${VELVETBIRD_RESOURCES})
 
-ADD_LIBRARY (leechcraft_azoth_velvetbird SHARED
+add_library (leechcraft_azoth_velvetbird SHARED
 	${VELVETBIRD_COMPILED_TRANSLATIONS}
 	${VELVETBIRD_SRCS}
 	${VELVETBIRD_UIS_H}
 	${VELVETBIRD_RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_azoth_velvetbird
+target_link_libraries (leechcraft_azoth_velvetbird
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${GLIB2_LIBRARIES}
 	${LIBPURPLE_LIBRARIES}
 	)
 
-INSTALL (TARGETS leechcraft_azoth_velvetbird DESTINATION ${LC_PLUGINS_DEST})
-#INSTALL (FILES ${VELVETBIRD_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
-#INSTALL (FILES azothvelvetbirdsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (TARGETS leechcraft_azoth_velvetbird DESTINATION ${LC_PLUGINS_DEST})
+#install (FILES ${VELVETBIRD_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+#install (FILES azothvelvetbirdsettings.xml DESTINATION ${LC_SETTINGS_DEST})

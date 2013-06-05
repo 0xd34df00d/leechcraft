@@ -1,35 +1,35 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_monocle)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_monocle)
+include (InitLCPlugin OPTIONAL)
 
-OPTION (WITH_DOCS "Enable building documentation (requires Doxygen)" OFF)
-OPTION (WITH_DOCS_INSTALL "Install generated documentation (if WITH_DOCS is set)" OFF)
-IF (WITH_DOCS)
-	FIND_PACKAGE (Doxygen REQUIRED)
+option (WITH_DOCS "Enable building documentation (requires Doxygen)" OFF)
+option (WITH_DOCS_INSTALL "Install generated documentation (if WITH_DOCS is set)" OFF)
+if (WITH_DOCS)
+	find_package (Doxygen REQUIRED)
 
-	SET (DOXYDIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../doc/doxygen/monocle/")
-	SET (DOXYFILE "${DOXYDIR}/Doxyfile")
+	set (DOXYDIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../doc/doxygen/monocle/")
+	set (DOXYFILE "${DOXYDIR}/Doxyfile")
 
-	ADD_CUSTOM_TARGET (doc_monocle ALL
+	add_custom_target (doc_monocle ALL
 		"sed" "-i" "s/^PROJECT_NUMBER.*/PROJECT_NUMBER = '${LEECHCRAFT_VERSION}'/" "${DOXYFILE}"
 		COMMAND "${DOXYGEN_EXECUTABLE}" "${DOXYFILE}"
 		COMMAND "mv" "-f" "${DOXYDIR}/out" "${CMAKE_CURRENT_BINARY_DIR}/out"
 		WORKING_DIRECTORY "${DOXYDIR}"
 	)
-	IF (WITH_DOCS_INSTALL)
-		INSTALL (DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/out/html" DESTINATION "share/doc/leechcraft-monocle-${LEECHCRAFT_VERSION}")
-	ENDIF (WITH_DOCS_INSTALL)
-ENDIF (WITH_DOCS)
+	if (WITH_DOCS_INSTALL)
+		install (DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/out/html" DESTINATION "share/doc/leechcraft-monocle-${LEECHCRAFT_VERSION}")
+	endif ()
+endif ()
 
-SET (QT_USE_QTXML TRUE)
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+set (QT_USE_QTXML TRUE)
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
-SET (SRCS
+set (SRCS
 	monocle.cpp
 	documenttab.cpp
 	core.cpp
@@ -53,7 +53,7 @@ SET (SRCS
 	textsearchhandler.cpp
 	formmanager.cpp
 	)
-SET (FORMS
+set (FORMS
 	documenttab.ui
 	tocwidget.ui
 	choosebackenddialog.ui
@@ -61,48 +61,48 @@ SET (FORMS
 	bookmarkswidget.ui
 	thumbswidget.ui
 	)
-SET (RESOURCES monocleresources.qrc)
+set (RESOURCES monocleresources.qrc)
 CreateTrs ("monocle" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("monocle" "en;ru_RU" "${SRCS}" "${FORMS}" "monoclesettings.xml")
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
-ADD_LIBRARY (leechcraft_monocle SHARED
+add_library (leechcraft_monocle SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${UIS_H}
 	${RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_monocle
+target_link_libraries (leechcraft_monocle
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_monocle DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
-INSTALL (FILES monoclesettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (TARGETS leechcraft_monocle DESTINATION ${LC_PLUGINS_DEST})
+install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (FILES monoclesettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-OPTION (ENABLE_MONOCLE_FXB "Enable FictionBook backend for Monocle" ON)
-OPTION (ENABLE_MONOCLE_MU "Enable PDF backend for Monocle using the mupdf library" OFF)
-OPTION (ENABLE_MONOCLE_PDF "Enable PDF backend for Monocle using the Poppler library" ON)
-OPTION (ENABLE_MONOCLE_POSTRUS "Enable PostScript backend for Monocle using the libspectre library" ON)
-OPTION (ENABLE_MONOCLE_SEEN "Enable DjVu backend for Monocle using the DjVu library" ON)
+option (ENABLE_MONOCLE_FXB "Enable FictionBook backend for Monocle" ON)
+option (ENABLE_MONOCLE_MU "Enable PDF backend for Monocle using the mupdf library" OFF)
+option (ENABLE_MONOCLE_PDF "Enable PDF backend for Monocle using the Poppler library" ON)
+option (ENABLE_MONOCLE_POSTRUS "Enable PostScript backend for Monocle using the libspectre library" ON)
+option (ENABLE_MONOCLE_SEEN "Enable DjVu backend for Monocle using the DjVu library" ON)
 
-IF (ENABLE_MONOCLE_FXB)
-	ADD_SUBDIRECTORY (plugins/fxb)
-ENDIF (ENABLE_MONOCLE_FXB)
+if (ENABLE_MONOCLE_FXB)
+	add_subdirectory (plugins/fxb)
+endif ()
 
-IF (ENABLE_MONOCLE_MU)
-	ADD_SUBDIRECTORY (plugins/mu)
-ENDIF (ENABLE_MONOCLE_MU)
+if (ENABLE_MONOCLE_MU)
+	add_subdirectory (plugins/mu)
+endif ()
 
-IF (ENABLE_MONOCLE_PDF)
-	ADD_SUBDIRECTORY (plugins/pdf)
-ENDIF (ENABLE_MONOCLE_PDF)
+if (ENABLE_MONOCLE_PDF)
+	add_subdirectory (plugins/pdf)
+endif ()
 
-IF (ENABLE_MONOCLE_POSTRUS)
-	ADD_SUBDIRECTORY (plugins/postrus)
-ENDIF (ENABLE_MONOCLE_POSTRUS)
+if (ENABLE_MONOCLE_POSTRUS)
+	add_subdirectory (plugins/postrus)
+endif ()
 
-IF (ENABLE_MONOCLE_SEEN)
-	ADD_SUBDIRECTORY (plugins/seen)
-ENDIF (ENABLE_MONOCLE_SEEN)
+if (ENABLE_MONOCLE_SEEN)
+	add_subdirectory (plugins/seen)
+endif ()

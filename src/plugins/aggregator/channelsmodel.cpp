@@ -224,14 +224,14 @@ namespace Aggregator
 
 	void ChannelsModel::UpdateChannelData (const ChannelShort& cs)
 	{
-		Channels_t::iterator idx =
-			std::find (Channels_.begin (), Channels_.end (), cs);
+		auto idx = std::find (Channels_.begin (), Channels_.end (), cs);
 		if (idx == Channels_.end ())
 			return;
+		
 		*idx = cs;
 		int pos = std::distance (Channels_.begin (), idx);
 		emit dataChanged (index (pos, 0), index (pos, 2));
-		emit channelDataUpdated ();
+		emit channelDataUpdated (cs.ChannelID_, cs.FeedID_);
 	}
 
 	ChannelShort& ChannelsModel::GetChannelForIndex (const QModelIndex& index)

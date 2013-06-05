@@ -1,17 +1,17 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_krigstask)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_krigstask)
+include (InitLCPlugin OPTIONAL)
 
-FIND_PACKAGE (X11 REQUIRED)
+find_package (X11 REQUIRED)
 
-SET (QT_USE_QTDECLARATIVE TRUE)
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+set (QT_USE_QTDECLARATIVE TRUE)
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
-SET (SRCS
+set (SRCS
 	krigstask.cpp
 	windowsmodel.cpp
 	taskbarproxy.cpp
@@ -20,15 +20,15 @@ SET (SRCS
 #CreateTrs("krigstask" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("krigstask" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
-ADD_LIBRARY (leechcraft_krigstask SHARED
+add_library (leechcraft_krigstask SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_krigstask
+target_link_libraries (leechcraft_krigstask
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${X11_X11_LIB}
 	${X11_Xcomposite_LIB}
 	)
-INSTALL (TARGETS leechcraft_krigstask DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (DIRECTORY share/qml/krigstask DESTINATION ${LC_QML_DEST})
+install (TARGETS leechcraft_krigstask DESTINATION ${LC_PLUGINS_DEST})
+install (DIRECTORY share/qml/krigstask DESTINATION ${LC_QML_DEST})

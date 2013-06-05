@@ -1,16 +1,16 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_lastfmscrobble)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_lastfmscrobble)
+include (InitLCPlugin OPTIONAL)
 
-SET (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-FIND_PACKAGE (LastFM REQUIRED)
+find_package (LastFM REQUIRED)
 
-SET (QT_USE_QTNETWORK TRUE)
-SET (QT_USE_QTXML TRUE)
-INCLUDE (${QT_USE_FILE})
+set (QT_USE_QTNETWORK TRUE)
+set (QT_USE_QTXML TRUE)
+include (${QT_USE_FILE})
 
-INCLUDE_DIRECTORIES (
+include_directories (
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -18,7 +18,7 @@ INCLUDE_DIRECTORIES (
 	${LastFM_INCLUDE_DIR}
 	)
 
-SET (SRCS
+set (SRCS
 	lastfmsubmitter.cpp
 	xmlsettingsmanager.cpp
 	lastfmscrobble.cpp
@@ -38,7 +38,7 @@ SET (SRCS
 	hypedartistsfetcher.cpp
 	hypedtracksfetcher.cpp
 	)
-SET (HEADERS
+set (HEADERS
 	lastfmsubmitter.h
 	xmlsettingsmanager.h
 	lastfmscrobble.h
@@ -58,25 +58,25 @@ SET (HEADERS
 	hypedartistsfetcher.h
 	hypedtracksfetcher.h
 	)
-SET (RESOURCES lastfmscrobbleresources.qrc)
-IF (NOT LC_NO_MOC)
+set (RESOURCES lastfmscrobbleresources.qrc)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif ()
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 CreateTrs ("lastfmscrobble" "en;ru_RU" COMPILED_TRANSLATIONS)
 
-ADD_LIBRARY (leechcraft_lastfmscrobble SHARED
+add_library (leechcraft_lastfmscrobble SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	${RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_lastfmscrobble
+target_link_libraries (leechcraft_lastfmscrobble
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${LastFM_LIBRARIES}
 	)
 
-INSTALL (TARGETS leechcraft_lastfmscrobble DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES lastfmscrobblesettings.xml DESTINATION ${LC_SETTINGS_DEST})
-INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (TARGETS leechcraft_lastfmscrobble DESTINATION ${LC_PLUGINS_DEST})
+install (FILES lastfmscrobblesettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

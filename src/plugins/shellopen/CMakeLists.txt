@@ -1,60 +1,60 @@
-IF (NOT QT_USE_FILE)
-	CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
-	IF (COMMAND cmake_policy)
+if (NOT QT_USE_FILE)
+	cmake_minimum_required (VERSION 2.6)
+	if (COMMAND cmake_policy)
 		cmake_policy (SET CMP0003 NEW)
-	ENDIF (COMMAND cmake_policy)
+	endif ()
 
-	PROJECT (leechcraft_shellopen)
+	project (leechcraft_shellopen)
 
-	IF (NOT CMAKE_MODULE_PATH)
-		SET (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
-	ENDIF (NOT CMAKE_MODULE_PATH)
+	if (NOT CMAKE_MODULE_PATH)
+		set (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
+	endif ()
 
-	FIND_PACKAGE (Boost REQUIRED)
-	FIND_PACKAGE (Qt4 REQUIRED)
-	FIND_PACKAGE (LeechCraft REQUIRED)
-ENDIF (NOT QT_USE_FILE)
+	find_package (Boost REQUIRED)
+	find_package (Qt4 REQUIRED)
+	find_package (LeechCraft REQUIRED)
+endif ()
 
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
-SET (SRCS
+set (SRCS
 	shellopen.cpp
 	)
-SET (HEADERS
+set (HEADERS
 	shellopen.h
 	)
-SET (TRANSLATIONS
+set (TRANSLATIONS
 	leechcraft_shellopen_uk_UA.ts
 	leechcraft_shellopen_ru_RU.ts
 	leechcraft_shellopen_en.ts
 	)
-SET (COMPILED_TRANSLATIONS
+set (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_shellopen_uk_UA.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_shellopen_ru_RU.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_shellopen_en.qm
 	)
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif ()
 
-ADD_CUSTOM_COMMAND (OUTPUT
+add_custom_command (OUTPUT
 	${COMPILED_TRANSLATIONS}
 	COMMAND "${QT_LRELEASE_EXECUTABLE}" ${TRANSLATIONS}
 	DEPENDS ${TRANSLATIONS}
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	)
-ADD_LIBRARY (leechcraft_shellopen SHARED
+add_library (leechcraft_shellopen SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_shellopen
+target_link_libraries (leechcraft_shellopen
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_shellopen DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (TARGETS leechcraft_shellopen DESTINATION ${LC_PLUGINS_DEST})
+install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

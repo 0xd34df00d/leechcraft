@@ -1,43 +1,43 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_knowhow)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_knowhow)
+include (InitLCPlugin OPTIONAL)
 
-SET (QT_USE_QTXML TRUE)
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+set (QT_USE_QTXML TRUE)
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
-SET (SRCS
+set (SRCS
 	knowhow.cpp
 	xmlsettingsmanager.cpp
 	tipdialog.cpp
 	)
-SET (HEADERS
+set (HEADERS
 	knowhow.h
 	xmlsettingsmanager.h
 	tipdialog.h
 	)
-SET (FORMS
+set (FORMS
 	tipdialog.ui
 	)
 
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 
-ADD_LIBRARY (leechcraft_knowhow SHARED
+add_library (leechcraft_knowhow SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	${UIS_H}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_knowhow
+target_link_libraries (leechcraft_knowhow
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_knowhow DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES knowhowsettings.xml DESTINATION ${LC_SETTINGS_DEST})
-INSTALL (DIRECTORY share/knowhow DESTINATION ${LC_SHARE_DEST})
+install (TARGETS leechcraft_knowhow DESTINATION ${LC_PLUGINS_DEST})
+install (FILES knowhowsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (DIRECTORY share/knowhow DESTINATION ${LC_SHARE_DEST})

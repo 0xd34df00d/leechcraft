@@ -1,18 +1,18 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_azoth_acetamide)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_azoth_acetamide)
+include (InitLCPlugin OPTIONAL)
 
-SET (QT_USE_QTNETWORK TRUE)
-SET (QT_USE_QTXML TRUE)
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
+set (QT_USE_QTNETWORK TRUE)
+set (QT_USE_QTXML TRUE)
+include (${QT_USE_FILE})
+include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/azoth
 	)
 
-SET (ACETAMIDE_SRCS
+set (ACETAMIDE_SRCS
 	acetamide.cpp
 	bookmarkeditwidget.cpp
 	channelclentry.cpp
@@ -54,7 +54,7 @@ SET (ACETAMIDE_SRCS
 	vcarddialog.cpp
 	)
 
-SET (ACETAMIDE_HEADERS
+set (ACETAMIDE_HEADERS
 	acetamide.h
 	bookmarkeditwidget.h
 	channelclentry.h
@@ -96,7 +96,7 @@ SET (ACETAMIDE_HEADERS
 	vcarddialog.h
 	)
 
-SET (ACETAMIDE_FORMS
+set (ACETAMIDE_FORMS
 	bookmarkeditwidget.ui
 	channelconfigwidget.ui
 	channelslistdialog.ui
@@ -110,34 +110,34 @@ SET (ACETAMIDE_FORMS
 	sslerrorsdialog.ui
 	vcarddialog.ui
 	)
-SET (ACETAMIDE_RESOURCES azothacetamideresources.qrc)
+set (ACETAMIDE_RESOURCES azothacetamideresources.qrc)
 
 CreateTrs ("azoth_acetamide" "de;en;es;fr;it;ru_RU;uk_UA" ACETAMIDE_COMPILED_TRANSLATIONS)
 
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (ACETAMIDE_MOC_SRCS ${ACETAMIDE_HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif ()
 QT4_WRAP_UI (ACETAMIDE_UIS_H ${ACETAMIDE_FORMS})
 QT4_ADD_RESOURCES (ACETAMIDE_RCCS ${ACETAMIDE_RESOURCES})
 
-ADD_LIBRARY (leechcraft_azoth_acetamide SHARED
+add_library (leechcraft_azoth_acetamide SHARED
 	${ACETAMIDE_COMPILED_TRANSLATIONS}
 	${ACETAMIDE_SRCS}
 	${ACETAMIDE_MOC_SRCS}
 	${ACETAMIDE_UIS_H}
 	${ACETAMIDE_RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_azoth_acetamide
+target_link_libraries (leechcraft_azoth_acetamide
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 
-INSTALL (TARGETS leechcraft_azoth_acetamide
+install (TARGETS leechcraft_azoth_acetamide
 		DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${ACETAMIDE_COMPILED_TRANSLATIONS}
+install (FILES ${ACETAMIDE_COMPILED_TRANSLATIONS}
 		DESTINATION ${LC_TRANSLATIONS_DEST})
-INSTALL (FILES azothacetamidesettings.xml
+install (FILES azothacetamidesettings.xml
 		DESTINATION ${LC_SETTINGS_DEST})
-IF (UNIX AND NOT APPLE)
-	INSTALL (FILES freedesktop/leechcraft-azoth-acetamide.desktop DESTINATION share/applications)
-ENDIF (UNIX AND NOT APPLE)
+if (UNIX AND NOT APPLE)
+	install (FILES freedesktop/leechcraft-azoth-acetamide.desktop DESTINATION share/applications)
+endif ()

@@ -100,11 +100,23 @@ namespace TPI
 			HandleRows (model, 0, numRows - 1);
 	}
 
+	namespace
+	{
+		bool IsInternal (const QModelIndex& idx)
+		{
+			const auto flags = idx.data (ProcessState::TaskFlags).value<TaskParameters> ();
+			return flags & TaskParameter::Internal;
+		}
+	}
+
 	void InfoModelManager::HandleRows (QAbstractItemModel *model, int from, int to)
 	{
 		for (int i = from; i <= to; ++i)
 		{
 			const auto& idx = model->index (i, JobHolderColumn::JobProgress);
+			if (IsInternal (idx))
+				continue;
+
 			const auto row = idx.data (CustomDataRoles::RoleJobHolderRow).value<JobHolderRow> ();
 			if (row != JobHolderRow::DownloadProgress &&
 					row != JobHolderRow::ProcessProgress)
@@ -130,6 +142,8 @@ namespace TPI
 		for (int i = from; i <= to; ++i)
 		{
 			const auto& idx = model->index (i, JobHolderColumn::JobProgress);
+			if (IsInternal (idx))
+				continue;
 
 			auto done = idx.data (ProcessState::Done).toLongLong ();
 			auto total = idx.data (ProcessState::Total).toLongLong ();

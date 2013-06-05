@@ -461,6 +461,8 @@ namespace CSTP
 			return TaskAt (index.row ()).Task_->GetDone ();
 		else if (role == ProcessState::Total)
 			return TaskAt (index.row ()).Task_->GetTotal ();
+		else if (role == ProcessState::TaskFlags)
+			return QVariant::fromValue (TaskAt (index.row ()).Parameters_);
 		else
 			return QVariant ();
 	}

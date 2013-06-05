@@ -104,7 +104,12 @@ namespace LeechCraft
 		 * size of the task. For example, how big is the file to be
 		 * downloaded, or how many files an archive contains.
 		 */
-		Total
+		Total,
+
+		/** This role is expected to contain the flags of the task as it
+		 * was originally added to the downloader.
+		 */
+		TaskFlags
 	};
 }
 

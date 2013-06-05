@@ -7,7 +7,7 @@
 #  QCA2_DEFINITIONS - Compiler switches required for using QCA2
 #
 # use pkg-config to get the directories and then use these values
-# in the FIND_PATH() and FIND_LIBRARY() calls
+# in the find_path() and find_library() calls
 
 # Copyright (c) 2006, Michael Larouche, <michael.larouche@kdemail.net>
 #
@@ -21,13 +21,13 @@ if (QCA2_INCLUDE_DIR AND QCA2_LIBRARIES)
   # in cache already
 	set(QCA2_FOUND TRUE)
 
-else (QCA2_INCLUDE_DIR AND QCA2_LIBRARIES)
+else ()
 
 	if (NOT WIN32)
 		find_package(PkgConfig)
 		pkg_check_modules(PC_QCA2 QUIET qca2)
 		set(QCA2_DEFINITIONS ${PC_QCA2_CFLAGS_OTHER})
-	endif (NOT WIN32)
+	endif ()
 
 	find_library_with_debug(QCA2_LIBRARIES
 					WIN32_DEBUG_POSTFIX d
@@ -42,7 +42,7 @@ else (QCA2_INCLUDE_DIR AND QCA2_LIBRARIES)
 	
 	include(FindPackageHandleStandardArgs)
 	find_package_handle_standard_args(QCA2  DEFAULT_MSG  QCA2_LIBRARIES QCA2_INCLUDE_DIR)
-	MESSAGE(STATUS "Found the QCA libraries at ${QCA2_LIBRARIES} Includes at ${QCA2_INCLUDE_DIR}")
+	message(STATUS "Found the QCA libraries at ${QCA2_LIBRARIES} Includes at ${QCA2_INCLUDE_DIR}")
 
 	mark_as_advanced(QCA2_INCLUDE_DIR QCA2_LIBRARIES)
-endif (QCA2_INCLUDE_DIR AND QCA2_LIBRARIES)
+endif ()

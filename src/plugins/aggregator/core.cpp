@@ -85,6 +85,8 @@ namespace Aggregator
 	, DBUpThread_ (new DBUpdateThread (this))
 	{
 		qRegisterMetaType<IDType_t> ("IDType_t");
+		qRegisterMetaType<QList<IDType_t>> ("QList<IDType_t>");
+		qRegisterMetaType<QSet<IDType_t>> ("QSet<IDType_t>");
 		qRegisterMetaType<QItemSelection> ("QItemSelection");
 		qRegisterMetaType<Item_ptr> ("Item_ptr");
 		qRegisterMetaType<ChannelShort> ("ChannelShort");
@@ -329,9 +331,9 @@ namespace Aggregator
 		ParserFactory::Instance ().Register (&RSS10Parser::Instance ());
 
 		connect (ChannelsModel_,
-				SIGNAL (channelDataUpdated ()),
+				SIGNAL (channelDataUpdated (IDType_t, IDType_t)),
 				this,
-				SIGNAL (channelDataUpdated ()));
+				SIGNAL (channelDataUpdated (IDType_t, IDType_t)));
 
 		ReprWidget_ = new ItemsWidget ();
 		ReprWidget_->SetChannelsFilter (JobHolderRepresentation_);
@@ -461,6 +463,11 @@ namespace Aggregator
 			pool.SetID (StorageBackend_->GetHighestID (static_cast<PoolType> (type)) + 1);
 			Pools_ [static_cast<PoolType> (type)] = pool;
 		}
+
+		connect (StorageBackend_.get (),
+				SIGNAL (itemsRemoved (QSet<IDType_t>)),
+				this,
+				SIGNAL (itemsRemoved (QSet<IDType_t>)));
 
 		return true;
 	}
@@ -1416,6 +1423,11 @@ namespace Aggregator
 				SLOT (handleDBUpChannelDataUpdated (IDType_t, IDType_t)),
 				Qt::QueuedConnection);
 		connect (DBUpThread_->GetWorker (),
+				SIGNAL (itemsRemoved (QSet<IDType_t>)),
+				this,
+				SIGNAL (itemsRemoved (QSet<IDType_t>)),
+				Qt::QueuedConnection);
+		connect (DBUpThread_->GetWorker (),
 				SIGNAL (gotNewChannel (ChannelShort)),
 				this,
 				SLOT (handleDBUpGotNewChannel (ChannelShort)),
@@ -1438,6 +1450,7 @@ namespace Aggregator
 
 	void Core::handleDBUpChannelDataUpdated (IDType_t id, IDType_t feedId)
 	{
+		emit channelDataUpdated (id, feedId);
 		try
 		{
 			auto ch = StorageBackend_->GetChannel (id, feedId);

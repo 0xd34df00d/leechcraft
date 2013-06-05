@@ -1,28 +1,28 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_pierre)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_pierre)
+include (InitLCPlugin OPTIONAL)
 
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
-SET (SRCS
+set (SRCS
 	pierre.cpp
 	fullscreen.mm
 	dockutil.mm
 	)
 
-ADD_LIBRARY (leechcraft_pierre SHARED
+add_library (leechcraft_pierre SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_pierre
+target_link_libraries (leechcraft_pierre
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	"-framework AppKit"
 	)
-INSTALL (TARGETS leechcraft_pierre DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (DIRECTORY data/ DESTINATION ${LC_BINDIR}/..)
+install (TARGETS leechcraft_pierre DESTINATION ${LC_PLUGINS_DEST})
+install (DIRECTORY data/ DESTINATION ${LC_BINDIR}/..)

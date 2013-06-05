@@ -1,19 +1,19 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_blogique)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_blogique)
+include (InitLCPlugin OPTIONAL)
 
-SET (QT_USE_QTSQL TRUE)
-SET (QT_USE_QTDECLARATIVE TRUE)
-INCLUDE (${QT_USE_FILE})
+set (QT_USE_QTSQL TRUE)
+set (QT_USE_QTDECLARATIVE TRUE)
+include (${QT_USE_FILE})
 
-INCLUDE_DIRECTORIES (
+include_directories (
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 
-SET (SRCS
+set (SRCS
 	accountslistwidget.cpp
 	accountsselectdialog.cpp
 	addaccountwizardfirstpage.cpp
@@ -35,7 +35,7 @@ SET (SRCS
 	xmlsettingsmanager.cpp
 	)
 
-SET (FORMS
+set (FORMS
 	accountslistwidget.ui
 	accountsselectdialog.ui
 	addaccountwizardfirstpage.ui
@@ -47,7 +47,7 @@ SET (FORMS
 	updateentriesdialog.ui
 	)
 
-SET (RESOURCES blogiqueresources.qrc)
+set (RESOURCES blogiqueresources.qrc)
 
 CreateTrs ("blogique" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("blogique" "en;ru_RU" "${SRCS}" "${FORMS}" "blogiquesettings.xml")
@@ -55,7 +55,7 @@ CreateTrsUpTarget("blogique" "en;ru_RU" "${SRCS}" "${FORMS}" "blogiquesettings.x
 QT4_WRAP_UI (FORMS_HEADERS ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
-ADD_LIBRARY (leechcraft_blogique SHARED
+add_library (leechcraft_blogique SHARED
 	${SRCS}
 	${MOC_SRCS}
 	${FORMS_HEADERS}
@@ -63,24 +63,24 @@ ADD_LIBRARY (leechcraft_blogique SHARED
 	${COMPILED_TRANSLATIONS}
 	)
 
-TARGET_LINK_LIBRARIES (leechcraft_blogique
+target_link_libraries (leechcraft_blogique
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 
-INSTALL (TARGETS leechcraft_blogique DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES blogiquesettings.xml DESTINATION ${LC_SETTINGS_DEST})
-INSTALL (DIRECTORY share/qml/blogique DESTINATION ${LC_QML_DEST})
+install (TARGETS leechcraft_blogique DESTINATION ${LC_PLUGINS_DEST})
+install (FILES blogiquesettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (DIRECTORY share/qml/blogique DESTINATION ${LC_QML_DEST})
 
-SET (BLOGIQUE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set (BLOGIQUE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
-OPTION (ENABLE_BLOGIQUE_METIDA "Build Metida, LiveJournal blogging platform" ON)
-OPTION (ENABLE_BLOGIQUE_HESTIA "Build Hestia, local blogging platform" ON)
+option (ENABLE_BLOGIQUE_METIDA "Build Metida, LiveJournal blogging platform" ON)
+option (ENABLE_BLOGIQUE_HESTIA "Build Hestia, local blogging platform" ON)
 
-IF (ENABLE_BLOGIQUE_METIDA)
-	ADD_SUBDIRECTORY (plugins/metida)
-ENDIF (ENABLE_BLOGIQUE_METIDA)
+if (ENABLE_BLOGIQUE_METIDA)
+	add_subdirectory (plugins/metida)
+endif ()
 
-IF (ENABLE_BLOGIQUE_HESTIA)
-	ADD_SUBDIRECTORY (plugins/hestia)
-ENDIF (ENABLE_BLOGIQUE_HESTIA)
+if (ENABLE_BLOGIQUE_HESTIA)
+	add_subdirectory (plugins/hestia)
+endif ()

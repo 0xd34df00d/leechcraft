@@ -1,39 +1,39 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_azoth_modnok)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_azoth_modnok)
+include (InitLCPlugin OPTIONAL)
 
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
+include (${QT_USE_FILE})
+include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/azoth
 	)
-SET (MODNOK_SRCS
+set (MODNOK_SRCS
 	modnok.cpp
 	xmlsettingsmanager.cpp
 	)
-SET (MODNOK_HEADERS
+set (MODNOK_HEADERS
 	modnok.h
 	xmlsettingsmanager.h
 	)
-SET (MODNOK_RESOURCES azothmodnokresources.qrc)
+set (MODNOK_RESOURCES azothmodnokresources.qrc)
 CreateTrs ("azoth_modnok" "en;es;ru_RU;uk_UA" MODNOK_COMPILED_TRANSLATIONS)
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MODNOK_MOC_SRCS ${MODNOK_HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif ()
 QT4_ADD_RESOURCES (MODNOK_RCCS ${MODNOK_RESOURCES})
 
-ADD_LIBRARY (leechcraft_azoth_modnok SHARED
+add_library (leechcraft_azoth_modnok SHARED
 	${MODNOK_COMPILED_TRANSLATIONS}
 	${MODNOK_SRCS}
 	${MODNOK_MOC_SRCS}
 	${MODNOK_RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_azoth_modnok
+target_link_libraries (leechcraft_azoth_modnok
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_azoth_modnok DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (PROGRAMS lc_azoth_modnok_latexconvert.sh DESTINATION ${LC_SHARE_DEST}/azoth)
-INSTALL (FILES azothmodnoksettings.xml DESTINATION ${LC_SETTINGS_DEST})
-INSTALL (FILES ${MODNOK_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (TARGETS leechcraft_azoth_modnok DESTINATION ${LC_PLUGINS_DEST})
+install (PROGRAMS lc_azoth_modnok_latexconvert.sh DESTINATION ${LC_SHARE_DEST}/azoth)
+install (FILES azothmodnoksettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (FILES ${MODNOK_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

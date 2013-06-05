@@ -1,15 +1,15 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_otlozhu)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_otlozhu)
+include (InitLCPlugin OPTIONAL)
 
-SET (QT_USE_QTXML TRUE)
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+set (QT_USE_QTXML TRUE)
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
-SET (SRCS
+set (SRCS
 	otlozhu.cpp
 	todotab.cpp
 	core.cpp
@@ -26,7 +26,7 @@ SET (SRCS
 	itemsmergedialog.cpp
 	deltagenerator.cpp
 	)
-SET (HEADERS
+set (HEADERS
 	otlozhu.h
 	todotab.h
 	core.h
@@ -43,29 +43,29 @@ SET (HEADERS
 	itemsmergedialog.h
 	deltagenerator.h
 	)
-SET (FORMS
+set (FORMS
 	todotab.ui
 	addtododialog.ui
 	itemsmergedialog.ui
 	)
-SET (RESOURCES otlozhuresources.qrc)
+set (RESOURCES otlozhuresources.qrc)
 CreateTrs ("otlozhu" "en;ru_RU" COMPILED_TRANSLATIONS)
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
-ADD_LIBRARY (leechcraft_otlozhu SHARED
+add_library (leechcraft_otlozhu SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	${UIS_H}
 	${RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_otlozhu
+target_link_libraries (leechcraft_otlozhu
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_otlozhu DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (TARGETS leechcraft_otlozhu DESTINATION ${LC_PLUGINS_DEST})
+install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

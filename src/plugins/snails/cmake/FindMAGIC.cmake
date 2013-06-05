@@ -15,7 +15,7 @@
 if (MAGIC_LIBRARIES AND MAGIC_INCLUDE_DIRS)
 	# in cache already
 	set (MAGIC_FOUND TRUE)
-else (MAGIC_LIBRARIES AND MAGIC_INCLUDE_DIRS)
+else ()
 
 	find_path (MAGIC_INCLUDE_DIR
 		NAMES
@@ -46,19 +46,19 @@ else (MAGIC_LIBRARIES AND MAGIC_INCLUDE_DIRS)
 
 	if (MAGIC_INCLUDE_DIRS AND MAGIC_LIBRARIES)
 		set (MAGIC_FOUND TRUE)
-	endif (MAGIC_INCLUDE_DIRS AND MAGIC_LIBRARIES)
+	endif ()
 
 	if (MAGIC_FOUND)
 		if (NOT MAGIC_FIND_QUIETLY)
 			message (STATUS "Found libmagic: ${MAGIC_LIBRARIES}")
-		endif (NOT MAGIC_FIND_QUIETLY)
-	else (MAGIC_FOUND)
+		endif ()
+	else ()
 		if (MAGIC_FIND_REQUIRED)
 			message (FATAL_ERROR "Could not find libmagic")
-		endif (MAGIC_FIND_REQUIRED)
-	endif (MAGIC_FOUND)
+		endif ()
+	endif ()
 
 	# show the MAGIC_INCLUDE_DIRS and MAGIC_LIBRARIES variables only in the advanced view
 	mark_as_advanced (MAGIC_INCLUDE_DIRS MAGIC_LIBRARIES)
 
-endif (MAGIC_LIBRARIES AND MAGIC_INCLUDE_DIRS)
+endif ()

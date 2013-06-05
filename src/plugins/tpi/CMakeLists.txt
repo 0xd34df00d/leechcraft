@@ -1,27 +1,27 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_tpi)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_tpi)
+include (InitLCPlugin OPTIONAL)
 
-SET (QT_USE_QTDECLARATIVE TRUE)
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+set (QT_USE_QTDECLARATIVE TRUE)
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
-SET (SRCS
+set (SRCS
 	tpi.cpp
 	infomodelmanager.cpp
 	tooltipview.cpp
 	)
 
-ADD_LIBRARY (leechcraft_tpi SHARED
+add_library (leechcraft_tpi SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_tpi
+target_link_libraries (leechcraft_tpi
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_tpi DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (DIRECTORY share/qml/tpi DESTINATION ${LC_QML_DEST})
+install (TARGETS leechcraft_tpi DESTINATION ${LC_PLUGINS_DEST})
+install (DIRECTORY share/qml/tpi DESTINATION ${LC_QML_DEST})

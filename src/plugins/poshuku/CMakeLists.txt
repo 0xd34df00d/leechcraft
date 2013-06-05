@@ -1,37 +1,37 @@
-IF (NOT QT_USE_FILE)
-	CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
-	IF (COMMAND cmake_policy)
+if (NOT QT_USE_FILE)
+	cmake_minimum_required (VERSION 2.6)
+	if (COMMAND cmake_policy)
 		cmake_policy (SET CMP0003 NEW)
-	ENDIF (COMMAND cmake_policy)
+	endif ()
 
-	PROJECT (leechcraft_poshuku)
+	project (leechcraft_poshuku)
 
-	IF (NOT CMAKE_MODULE_PATH)
-		SET (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
-	ENDIF (NOT CMAKE_MODULE_PATH)
+	if (NOT CMAKE_MODULE_PATH)
+		set (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
+	endif ()
 
-	FIND_PACKAGE (Boost REQUIRED)
-	FIND_PACKAGE (Qt4 REQUIRED)
-	FIND_PACKAGE (LeechCraft REQUIRED)
-ENDIF (NOT QT_USE_FILE)
+	find_package (Boost REQUIRED)
+	find_package (Qt4 REQUIRED)
+	find_package (LeechCraft REQUIRED)
+endif ()
 
-OPTION (ENABLE_IDN "Enable support for Internationalized Domain Names" OFF)
+option (ENABLE_IDN "Enable support for Internationalized Domain Names" OFF)
 
-IF (ENABLE_IDN)
-	ADD_DEFINITIONS (-DENABLE_IDN)
-ENDIF (ENABLE_IDN)
+if (ENABLE_IDN)
+	add_definitions (-DENABLE_IDN)
+endif ()
 
-SET (QT_USE_QTSQL TRUE)
-SET (QT_USE_QTXML TRUE)
-SET (QT_USE_QTWEBKIT TRUE)
-SET (QT_USE_QTNETWORK TRUE)
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIRS}
+set (QT_USE_QTSQL TRUE)
+set (QT_USE_QTXML TRUE)
+set (QT_USE_QTWEBKIT TRUE)
+set (QT_USE_QTNETWORK TRUE)
+include (${QT_USE_FILE})
+include_directories (${Boost_INCLUDE_DIRS}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
-SET (SRCS
+set (SRCS
 	poshuku.cpp
 	xmlsettingsmanager.cpp
 	core.cpp
@@ -78,7 +78,7 @@ SET (SRCS
 	importentityhandler.cpp
 	platformplugin.cpp
 	)
-SET (HEADERS
+set (HEADERS
 	poshuku.h
 	xmlsettingsmanager.h
 	core.h
@@ -127,7 +127,7 @@ SET (HEADERS
 	interfaces/iwebplugin.h
 	interfaces/iflashoverrider.h
 	)
-SET (FORMS
+set (FORMS
 	browserwidget.ui
 	screenshotsavedialog.ui
 	cookieseditdialog.ui
@@ -141,16 +141,16 @@ SET (FORMS
 	historywidget.ui
 	urlframe.ui
 	)
-SET (RESOURCES poshukuresources.qrc)
+set (RESOURCES poshukuresources.qrc)
 CreateTrs ("poshuku" "ar;be;de;en;eo;es;fr;it;pl;ru_RU;tt;uk_UA" COMPILED_TRANSLATIONS)
 
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
-ADD_LIBRARY (leechcraft_poshuku SHARED
+add_library (leechcraft_poshuku SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
@@ -158,53 +158,53 @@ ADD_LIBRARY (leechcraft_poshuku SHARED
 	${RCCS}
 	)
 
-IF (ENABLE_IDN)
-	SET (IDN_LIB "idn")
-ENDIF (ENABLE_IDN)
+if (ENABLE_IDN)
+	set (IDN_LIB "idn")
+endif ()
 
-TARGET_LINK_LIBRARIES (leechcraft_poshuku
+target_link_libraries (leechcraft_poshuku
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${IDN_LIB}
 	)
-INSTALL (TARGETS leechcraft_poshuku DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
-INSTALL (FILES poshukusettings.xml DESTINATION ${LC_SETTINGS_DEST})
-INSTALL (DIRECTORY installed/poshuku/ DESTINATION ${LC_INSTALLEDMANIFEST_DEST}/poshuku)
-INSTALL (DIRECTORY interfaces DESTINATION include/leechcraft)
+install (TARGETS leechcraft_poshuku DESTINATION ${LC_PLUGINS_DEST})
+install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (FILES poshukusettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (DIRECTORY installed/poshuku/ DESTINATION ${LC_INSTALLEDMANIFEST_DEST}/poshuku)
+install (DIRECTORY interfaces DESTINATION include/leechcraft)
 
-SET (POSHUKU_INCLUDE_DIR ${CURRENT_SOURCE_DIR})
+set (POSHUKU_INCLUDE_DIR ${CURRENT_SOURCE_DIR})
 
-OPTION (ENABLE_POSHUKU_AUTOSEARCH "Build autosearch plugin for Poshuku browser" ON)
-OPTION (ENABLE_POSHUKU_CLEANWEB "Build content filter plugin for Poshuku browser" ON)
-OPTION (ENABLE_POSHUKU_FATAPE "Build FatApe, support for GreaseMonkey userscripts" ON)
-OPTION (ENABLE_POSHUKU_FILESCHEME "Build support of local file browsing for Poshuku browser" ON)
-OPTION (ENABLE_POSHUKU_FUA "Build user agent customization plugin for Poshuku browser" ON)
-OPTION (ENABLE_POSHUKU_KEYWORDS "Build support of url keywords for Poshuku browser" ON)
-OPTION (ENABLE_POSHUKU_ONLINEBOOKMARKS "Build support of online bookmark synchronization for Poshuku browser" ON)
+option (ENABLE_POSHUKU_AUTOSEARCH "Build autosearch plugin for Poshuku browser" ON)
+option (ENABLE_POSHUKU_CLEANWEB "Build content filter plugin for Poshuku browser" ON)
+option (ENABLE_POSHUKU_FATAPE "Build FatApe, support for GreaseMonkey userscripts" ON)
+option (ENABLE_POSHUKU_FILESCHEME "Build support of local file browsing for Poshuku browser" ON)
+option (ENABLE_POSHUKU_FUA "Build user agent customization plugin for Poshuku browser" ON)
+option (ENABLE_POSHUKU_KEYWORDS "Build support of url keywords for Poshuku browser" ON)
+option (ENABLE_POSHUKU_ONLINEBOOKMARKS "Build support of online bookmark synchronization for Poshuku browser" ON)
 
-IF (ENABLE_POSHUKU_POGOOGLUE)
-	MESSAGE (WARNING "ENABLE_POSHUKU_POGOOGLUE option is removed, so is Poshuku Pogooglue plugin. Use the global Pogooglue plugin instead.")
-ENDIF (ENABLE_POSHUKU_POGOOGLUE)
+if (ENABLE_POSHUKU_POGOOGLUE)
+	message (WARNING "ENABLE_POSHUKU_POGOOGLUE option is removed, so is Poshuku Pogooglue plugin. Use the global Pogooglue plugin instead.")
+endif ()
 
-IF (ENABLE_POSHUKU_AUTOSEARCH)
-	ADD_SUBDIRECTORY (plugins/autosearch)
-ENDIF (ENABLE_POSHUKU_AUTOSEARCH)
-IF (ENABLE_POSHUKU_CLEANWEB)
-	ADD_SUBDIRECTORY (plugins/cleanweb)
-ENDIF (ENABLE_POSHUKU_CLEANWEB)
-IF (ENABLE_POSHUKU_KEYWORDS)
-	ADD_SUBDIRECTORY (plugins/keywords)
-ENDIF (ENABLE_POSHUKU_KEYWORDS)
-IF (ENABLE_POSHUKU_FATAPE)
-	ADD_SUBDIRECTORY (plugins/fatape)
-ENDIF (ENABLE_POSHUKU_FATAPE)
-IF (ENABLE_POSHUKU_FUA)
-	ADD_SUBDIRECTORY (plugins/fua)
-ENDIF (ENABLE_POSHUKU_FUA)
-IF (ENABLE_POSHUKU_FILESCHEME)
-	ADD_SUBDIRECTORY (plugins/filescheme)
-ENDIF (ENABLE_POSHUKU_FILESCHEME)
-IF (ENABLE_POSHUKU_ONLINEBOOKMARKS)
-	ADD_SUBDIRECTORY (plugins/onlinebookmarks)
-ENDIF (ENABLE_POSHUKU_ONLINEBOOKMARKS)
+if (ENABLE_POSHUKU_AUTOSEARCH)
+	add_subdirectory (plugins/autosearch)
+endif ()
+if (ENABLE_POSHUKU_CLEANWEB)
+	add_subdirectory (plugins/cleanweb)
+endif ()
+if (ENABLE_POSHUKU_KEYWORDS)
+	add_subdirectory (plugins/keywords)
+endif ()
+if (ENABLE_POSHUKU_FATAPE)
+	add_subdirectory (plugins/fatape)
+endif ()
+if (ENABLE_POSHUKU_FUA)
+	add_subdirectory (plugins/fua)
+endif ()
+if (ENABLE_POSHUKU_FILESCHEME)
+	add_subdirectory (plugins/filescheme)
+endif ()
+if (ENABLE_POSHUKU_ONLINEBOOKMARKS)
+	add_subdirectory (plugins/onlinebookmarks)
+endif ()

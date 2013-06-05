@@ -1,20 +1,20 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_hotstreams)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_hotstreams)
+include (InitLCPlugin OPTIONAL)
 
-SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-FIND_PACKAGE (QJSON REQUIRED)
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+find_package (QJSON REQUIRED)
 
-SET (QT_USE_QTNETWORK TRUE)
-SET (QT_USE_QTXML TRUE)
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+set (QT_USE_QTNETWORK TRUE)
+set (QT_USE_QTXML TRUE)
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${QJSON_INCLUDE_DIR}
 	)
-SET (SRCS
+set (SRCS
 	hotstreams.cpp
 	icecastfetcher.cpp
 	radiostation.cpp
@@ -24,25 +24,25 @@ SET (SRCS
 	stringlistradiostation.cpp
 	)
 
-IF (QJSON_FOUND)
-	ADD_DEFINITIONS (-DHAVE_QJSON)
-	SET (SRCS
+if (QJSON_FOUND)
+	add_definitions (-DHAVE_QJSON)
+	set (SRCS
 		${SRCS}
 		audioaddictstreamfetcher.cpp
 		rockradiolistfetcher.cpp)
-ENDIF (QJSON_FOUND)
+endif ()
 
-SET (RESOURCES hotstreamsresources.qrc)
+set (RESOURCES hotstreamsresources.qrc)
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
-ADD_LIBRARY (leechcraft_hotstreams SHARED
+add_library (leechcraft_hotstreams SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_hotstreams
+target_link_libraries (leechcraft_hotstreams
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${QJSON_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_hotstreams DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_hotstreams DESTINATION ${LC_PLUGINS_DEST})

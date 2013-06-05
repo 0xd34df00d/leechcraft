@@ -132,14 +132,21 @@ namespace NetStoreManager
 
 		auto plugin = qobject_cast<IStoragePlugin*> (acc->GetParentPlugin ());
 
+		const QFileInfo fi (path);
 		QList<QStandardItem*> row;
 		row << new QStandardItem (tr ("Uploading %1 to %2...")
-					.arg (QFileInfo (path).fileName ())
+					.arg (fi.fileName ())
 					.arg (plugin->GetStorageName ()));
 		row << new QStandardItem ();
 		row << new QStandardItem (tr ("Initializing..."));
-		row.last ()->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
+
+		auto progressItem = row.at (JobHolderColumn::JobProgress);
+		progressItem->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
 				CustomDataRoles::RoleJobHolderRow);
+		progressItem->setData (0, ProcessState::Done);
+		progressItem->setData (fi.size (), ProcessState::Total);
+		progressItem->setData (QVariant::fromValue<TaskParameters> (FromUserInitiated),
+				ProcessState::TaskFlags);
 		ReprModel_->appendRow (row);
 
 		ReprItems_ [acc] [path] = row;

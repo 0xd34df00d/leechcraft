@@ -1,15 +1,15 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_azoth_chathistory)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_azoth_chathistory)
+include (InitLCPlugin OPTIONAL)
 
-SET (QT_USE_QTSQL TRUE)
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
+set (QT_USE_QTSQL TRUE)
+include (${QT_USE_FILE})
+include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/azoth
 	)
-SET (CHATHISTORY_SRCS
+set (CHATHISTORY_SRCS
 	chathistory.cpp
 	core.cpp
 	storage.cpp
@@ -18,7 +18,7 @@ SET (CHATHISTORY_SRCS
 	historymessage.cpp
 	xmlsettingsmanager.cpp
 	)
-SET (CHATHISTORY_HEADERS
+set (CHATHISTORY_HEADERS
 	chathistory.h
 	core.h
 	storage.h
@@ -27,28 +27,28 @@ SET (CHATHISTORY_HEADERS
 	historymessage.h
 	xmlsettingsmanager.h
 	)
-SET (CHATHISTORY_FORMS
+set (CHATHISTORY_FORMS
 	chathistorywidget.ui
 	)
-SET (CHATHISTORY_RESOURCES azothchathistoryresources.qrc)
+set (CHATHISTORY_RESOURCES azothchathistoryresources.qrc)
 CreateTrs ("azoth_chathistory" "en;es;ru_RU;uk_UA" CHATHISTORY_COMPILED_TRANSLATIONS)
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (CHATHISTORY_MOC_SRCS ${CHATHISTORY_HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif ()
 QT4_WRAP_UI (CHATHISTORY_UIS_H ${CHATHISTORY_FORMS})
 QT4_ADD_RESOURCES (CHATHISTORY_RCCS ${CHATHISTORY_RESOURCES})
 
-ADD_LIBRARY (leechcraft_azoth_chathistory SHARED
+add_library (leechcraft_azoth_chathistory SHARED
 	${CHATHISTORY_COMPILED_TRANSLATIONS}
 	${CHATHISTORY_SRCS}
 	${CHATHISTORY_MOC_SRCS}
 	${CHATHISTORY_UIS_H}
 	${CHATHISTORY_RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_azoth_chathistory
+target_link_libraries (leechcraft_azoth_chathistory
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_azoth_chathistory DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${CHATHISTORY_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
-INSTALL (FILES azothchathistorysettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (TARGETS leechcraft_azoth_chathistory DESTINATION ${LC_PLUGINS_DEST})
+install (FILES ${CHATHISTORY_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (FILES azothchathistorysettings.xml DESTINATION ${LC_SETTINGS_DEST})

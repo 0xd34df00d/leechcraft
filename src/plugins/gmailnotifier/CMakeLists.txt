@@ -1,19 +1,19 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_gmailnotifier)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_gmailnotifier)
+include (InitLCPlugin OPTIONAL)
 
-SET(QT_USE_QTDECLARATIVE TRUE)
-SET(QT_USE_QTNETWORK TRUE)
-SET(QT_USE_QTXML TRUE)
+set(QT_USE_QTDECLARATIVE TRUE)
+set(QT_USE_QTNETWORK TRUE)
+set(QT_USE_QTXML TRUE)
 
-INCLUDE(${QT_USE_FILE})
-INCLUDE_DIRECTORIES(
+include(${QT_USE_FILE})
+include_directories(
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 )
-SET(SRCS
+set(SRCS
 	gmailnotifier.cpp
 	xmlsettingsmanager.cpp
 	gmailchecker.cpp
@@ -22,23 +22,23 @@ SET(SRCS
 	quarkmanager.cpp
 	maillistview.cpp
 )
-SET(RESOURCES
+set(RESOURCES
 	res/resources.qrc
 )
 CreateTrs("gmailnotifier" "de;en;es;fr;it;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 QT4_ADD_RESOURCES(RCCS ${RESOURCES})
 
-ADD_LIBRARY(leechcraft_gmailnotifier SHARED
+add_library(leechcraft_gmailnotifier SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${RCCS}
 	${MOC_SRCS}
 )
-TARGET_LINK_LIBRARIES(leechcraft_gmailnotifier
+target_link_libraries(leechcraft_gmailnotifier
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 )
-INSTALL(TARGETS leechcraft_gmailnotifier DESTINATION ${LC_PLUGINS_DEST})
-INSTALL(FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
-INSTALL(FILES gmailnotifiersettings.xml DESTINATION ${LC_SETTINGS_DEST})
-INSTALL(DIRECTORY share/qml/gmailnotifier DESTINATION ${LC_QML_DEST})
+install(TARGETS leechcraft_gmailnotifier DESTINATION ${LC_PLUGINS_DEST})
+install(FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install(FILES gmailnotifiersettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install(DIRECTORY share/qml/gmailnotifier DESTINATION ${LC_QML_DEST})

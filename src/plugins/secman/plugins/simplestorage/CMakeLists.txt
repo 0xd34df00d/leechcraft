@@ -1,27 +1,27 @@
-INCLUDE_DIRECTORIES (
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	)
-SET (SRCS
+set (SRCS
 	simplestorage.cpp
 	)
-SET (HEADERS
+set (HEADERS
 	simplestorage.h
 	)
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif ()
 
-SET (SIMPLESTORAGE_RESOURCES simplestorageresources.qrc)
+set (SIMPLESTORAGE_RESOURCES simplestorageresources.qrc)
 QT4_ADD_RESOURCES (SIMPLESTORAGE_RCCS ${SIMPLESTORAGE_RESOURCES})
 
-ADD_LIBRARY (leechcraft_secman_simplestorage SHARED
+add_library (leechcraft_secman_simplestorage SHARED
 	${SIMPLESTORAGE_RCCS}
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_secman_simplestorage
+target_link_libraries (leechcraft_secman_simplestorage
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_secman_simplestorage DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_secman_simplestorage DESTINATION ${LC_PLUGINS_DEST})

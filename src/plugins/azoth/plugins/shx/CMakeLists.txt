@@ -1,32 +1,32 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_azoth_shx)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_azoth_shx)
+include (InitLCPlugin OPTIONAL)
 
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
+include (${QT_USE_FILE})
+include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/azoth
 	)
-SET (SHX_SRCS
+set (SHX_SRCS
 	shx.cpp
 	xmlsettingsmanager.cpp
 	)
 #CreateTrs ("azoth_shx" "en;ru_RU" AUTOPASTE_COMPILED_TRANSLATIONS)
-SET (SHX_RESOURCES
+set (SHX_RESOURCES
 	shxresources.qrc
 	)
 QT4_ADD_RESOURCES (SHX_RCCS ${SHX_RESOURCES})
 
-ADD_LIBRARY (leechcraft_azoth_shx SHARED
+add_library (leechcraft_azoth_shx SHARED
 	${SHX_COMPILED_TRANSLATIONS}
 	${SHX_SRCS}
 	${SHX_RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_azoth_shx
+target_link_libraries (leechcraft_azoth_shx
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_azoth_shx DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES azothshxsettings.xml DESTINATION ${LC_SETTINGS_DEST})
-#INSTALL (FILES ${SHX_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (TARGETS leechcraft_azoth_shx DESTINATION ${LC_PLUGINS_DEST})
+install (FILES azothshxsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+#install (FILES ${SHX_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

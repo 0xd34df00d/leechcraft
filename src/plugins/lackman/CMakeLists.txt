@@ -1,23 +1,23 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_lackman)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_lackman)
+include (InitLCPlugin OPTIONAL)
 
-OPTION (TESTS_LACKMAN "Enable LackMan tests" OFF)
+option (TESTS_LACKMAN "Enable LackMan tests" OFF)
 
-SET (QT_USE_QTNETWORK TRUE)
-SET (QT_USE_QTXML TRUE)
-SET (QT_USE_QTXMLPATTERNS TRUE)
-SET (QT_USE_QTSQL TRUE)
-IF (TESTS_LACKMAN)
-	SET (QT_USE_QTTEST TRUE)
-ENDIF (TESTS_LACKMAN)
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+set (QT_USE_QTNETWORK TRUE)
+set (QT_USE_QTXML TRUE)
+set (QT_USE_QTXMLPATTERNS TRUE)
+set (QT_USE_QTSQL TRUE)
+if (TESTS_LACKMAN)
+	set (QT_USE_QTTEST TRUE)
+endif ()
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
-SET (SRCS
+set (SRCS
 	lackman.cpp
 	core.cpp
 	repoinfo.cpp
@@ -36,7 +36,7 @@ SET (SRCS
 	delegatebuttongroup.cpp
 	stringfiltermodel.cpp
 	)
-SET (HEADERS
+set (HEADERS
 	lackman.h
 	core.h
 	repoinfo.h
@@ -56,47 +56,47 @@ SET (HEADERS
 	stringfiltermodel.h
 	)
 CreateTrs ("lackman" "de;en;es;fr;it;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
-SET (RESOURCES
+set (RESOURCES
 	lackmanresources.qrc
 	)
-SET (FORMS
+set (FORMS
 	lackman.ui
 	)
 
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
-ADD_LIBRARY (leechcraft_lackman SHARED
+add_library (leechcraft_lackman SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	${UIS_H}
 	${RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_lackman
+target_link_libraries (leechcraft_lackman
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 
-IF (TESTS_LACKMAN)
-	INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR}/tests)
+if (TESTS_LACKMAN)
+	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests)
 	QT4_WRAP_CPP (VERSIONCOMPARATORTEST_MOC "tests/versioncomparatortest.h")
-	ADD_EXECUTABLE (lc_lackman_versioncomparatortest WIN32
+	add_executable (lc_lackman_versioncomparatortest WIN32
 		tests/versioncomparatortest.cpp
 		versioncomparator.cpp
 		${VERSIONCOMPARATORTEST_MOC}
 	)
-	TARGET_LINK_LIBRARIES (lc_lackman_versioncomparatortest
+	target_link_libraries (lc_lackman_versioncomparatortest
 		${QT_LIBRARIES}
 		${LEECHCRAFT_LIBRARIES}
 	)
 
-	ADD_TEST (VersionComparator lc_lackman_versioncomparatortest)
-ENDIF (TESTS_LACKMAN)
+	add_test (VersionComparator lc_lackman_versioncomparatortest)
+endif ()
 
-INSTALL (TARGETS leechcraft_lackman DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
-INSTALL (FILES lackmansettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (TARGETS leechcraft_lackman DESTINATION ${LC_PLUGINS_DEST})
+install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (FILES lackmansettings.xml DESTINATION ${LC_SETTINGS_DEST})

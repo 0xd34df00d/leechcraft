@@ -1,38 +1,38 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_azoth_hili)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_azoth_hili)
+include (InitLCPlugin OPTIONAL)
 
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
+include (${QT_USE_FILE})
+include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/azoth
 	)
-SET (HILI_SRCS
+set (HILI_SRCS
 	hili.cpp
 	xmlsettingsmanager.cpp
 	)
-SET (HILI_HEADERS
+set (HILI_HEADERS
 	hili.h
 	xmlsettingsmanager.h
 	)
-SET (HILI_RESOURCES azothhiliresources.qrc)
+set (HILI_RESOURCES azothhiliresources.qrc)
 CreateTrs ("azoth_hili" "en;es;ru_RU;uk_UA" HILI_COMPILED_TRANSLATIONS)
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (HILI_MOC_SRCS ${HILI_HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif ()
 QT4_ADD_RESOURCES (HILI_RCCS ${HILI_RESOURCES})
 
-ADD_LIBRARY (leechcraft_azoth_hili SHARED
+add_library (leechcraft_azoth_hili SHARED
 	${HILI_COMPILED_TRANSLATIONS}
 	${HILI_SRCS}
 	${HILI_MOC_SRCS}
 	${HILI_RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_azoth_hili
+target_link_libraries (leechcraft_azoth_hili
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_azoth_hili DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES azothhilisettings.xml DESTINATION ${LC_SETTINGS_DEST})
-INSTALL (FILES ${HILI_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (TARGETS leechcraft_azoth_hili DESTINATION ${LC_PLUGINS_DEST})
+install (FILES azothhilisettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (FILES ${HILI_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

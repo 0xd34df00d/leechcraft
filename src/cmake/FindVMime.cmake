@@ -16,36 +16,36 @@
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
 
-IF (LIBVMIME_INCLUDE_DIR AND LIBVMIME_LIBRARIES)
+if (LIBVMIME_INCLUDE_DIR AND LIBVMIME_LIBRARIES)
    # in cache already
-   SET(Libvmime_FIND_QUIETLY TRUE)
-ENDIF (LIBVMIME_INCLUDE_DIR AND LIBVMIME_LIBRARIES)
+   set(Libvmime_FIND_QUIETLY TRUE)
+endif ()
 
-IF (NOT WIN32)
+if (NOT WIN32)
    # use pkg-config to get the directories and then use these values
-   # in the FIND_PATH() and FIND_LIBRARY() calls
+   # in the find_path() and find_library() calls
    find_package(PkgConfig)
    pkg_check_modules(PC_VMIME vmime)
-   SET(LIBVMIME_DEFINITIONS ${PC_VMIME_CFLAGS_OTHER})
-ENDIF (NOT WIN32)
+   set(LIBVMIME_DEFINITIONS ${PC_VMIME_CFLAGS_OTHER})
+endif ()
 
-FIND_PATH(LIBVMIME_INCLUDE_DIR vmime/vmime.hpp
+find_path(LIBVMIME_INCLUDE_DIR vmime/vmime.hpp
     HINTS
     ${PC_VMIME_INCLUDEDIR}
     ${PC_VMIME_INCLUDE_DIRS}
     PATH_SUFFIXES vmime
   )
 
-FIND_LIBRARY(LIBVMIME_LIBRARIES NAMES vmime libvmime
+find_library(LIBVMIME_LIBRARIES NAMES vmime libvmime
     HINTS
     ${PC_VMIME_LIBDIR}
     ${PC_VMIME_LIBRARY_DIRS}
   )
 
-INCLUDE(FindPackageHandleStandardArgs)
+include(FindPackageHandleStandardArgs)
 
 # handle the QUIETLY and REQUIRED arguments and set LIBVMIME_FOUND to TRUE if 
 # all listed variables are TRUE
 FIND_PACKAGE_HANDLE_STANDARD_ARGS(LIBVMIME DEFAULT_MSG LIBVMIME_LIBRARIES LIBVMIME_INCLUDE_DIR)
 
-MARK_AS_ADVANCED(LIBVMIME_INCLUDE_DIR LIBVMIME_LIBRARIES)
+mark_as_advanced(LIBVMIME_INCLUDE_DIR LIBVMIME_LIBRARIES)

@@ -7,12 +7,12 @@
 #
 # Added more introspection for WIN32 (c) 2011 DZhon (TheDZhon@gmail.com)
 
-IF (QJSON_INCLUDE_DIR AND QJSON_LIBRARIES)
+if (QJSON_INCLUDE_DIR AND QJSON_LIBRARIES)
 	# Already in cache
-	SET (QJSON_FOUND TRUE)
-ELSE (QJSON_INCLUDE_DIR AND QJSON_LIBRARIES)
-	IF (NOT WIN32)
-		FIND_LIBRARY (QJSON_LIBRARIES
+	set (QJSON_FOUND TRUE)
+else ()
+	if (NOT WIN32)
+		find_library (QJSON_LIBRARIES
 			NAMES
 				qjson
 			PATHS
@@ -20,29 +20,29 @@ ELSE (QJSON_INCLUDE_DIR AND QJSON_LIBRARIES)
 				${LIB_INSTALL_DIR}
 				${KDE4_LIB_DIR}
 		)
-	ELSE (NOT WIN32)
-		IF (NOT DEFINED QJSON_DIR)
-			IF (QJSON_FIND_REQUIRED)
-				MESSAGE(FATAL_ERROR "Please set QJSON_DIR variable")
-			ELSE (QJSON_FIND_REQUIRED)
-				MESSAGE(STATUS "Please set QJSON_DIR variable for onlinebookmarks support")
-			ENDIF (QJSON_FIND_REQUIRED)
-		ENDIF (NOT DEFINED QJSON_DIR)
+	else ()
+		if (NOT DEFINED QJSON_DIR)
+			if (QJSON_FIND_REQUIRED)
+				message(FATAL_ERROR "Please set QJSON_DIR variable")
+			else ()
+				message(STATUS "Please set QJSON_DIR variable for onlinebookmarks support")
+			endif ()
+		endif ()
 
-		SET (QJSON_INCLUDE_WIN32 ${QJSON_DIR})		
+		set (QJSON_INCLUDE_WIN32 ${QJSON_DIR})		
 
-		SET (PROBE_DIR_Debug
+		set (PROBE_DIR_Debug
 			${QJSON_DIR}/build/lib/Debug)
-		SET (PROBE_DIR_Release
+		set (PROBE_DIR_Release
 			${QJSON_DIR}/build/lib/MinSizeRel ${QJSON_DIR}/build/lib/Release)
 
-		FIND_LIBRARY (QJSON_LIBRARY_DEBUG NAMES qjson.lib PATHS ${PROBE_DIR_Debug})
-		FIND_LIBRARY (QJSON_LIBRARY_RELEASE NAMES qjson.lib PATHS ${PROBE_DIR_Release})
+		find_library (QJSON_LIBRARY_DEBUG NAMES qjson.lib PATHS ${PROBE_DIR_Debug})
+		find_library (QJSON_LIBRARY_RELEASE NAMES qjson.lib PATHS ${PROBE_DIR_Release})
 		win32_tune_libs_names (QJSON)	
-	ENDIF (NOT WIN32)
+	endif ()
 
-IF (NOT WIN32) # regression guard
-	FIND_PATH (QJSON_INCLUDE_DIR
+if (NOT WIN32) # regression guard
+	find_path (QJSON_INCLUDE_DIR
     NAMES
 		qjson_export.h
 	PATH_SUFFIXES
@@ -52,8 +52,8 @@ IF (NOT WIN32) # regression guard
 		${INCLUDE_INSTALL_DIR}
 		${KDE4_INCLUDE_DIR}
 	)
-ELSE (NOT WIN32) #may be works for linux too
-	FIND_PATH (QJSON_INCLUDE_DIR
+else () #may be works for linux too
+	find_path (QJSON_INCLUDE_DIR
     NAMES
 		qjson/qjson_export.h
 	PATH_SUFFIXES
@@ -64,26 +64,26 @@ ELSE (NOT WIN32) #may be works for linux too
 		${KDE4_INCLUDE_DIR}
 		${QJSON_INCLUDE_WIN32}
 	)
-ENDIF (NOT WIN32)
+endif ()
 
 #Win32 Strange beg
 	
-	IF (QJSON_INCLUDE_DIR AND QJSON_LIBRARIES)
-		SET (QJSON_FOUND 1)
-	ENDIF (QJSON_INCLUDE_DIR AND QJSON_LIBRARIES)
+	if (QJSON_INCLUDE_DIR AND QJSON_LIBRARIES)
+		set (QJSON_FOUND 1)
+	endif ()
 
-	IF (QJSON_FOUND)
-		MESSAGE (STATUS "Found the QJSON libraries at ${QJSON_LIBRARIES}")
-		MESSAGE (STATUS "Found the QJSON headers at ${QJSON_INCLUDE_DIR}")
-		IF (WIN32)
-			MESSAGE (STATUS ${_WIN32_ADDITIONAL_MESS})
-		ENDIF (WIN32)
-	ELSE (QJSON_FOUND)
-		IF (QJSON_FIND_REQUIRED)
-			MESSAGE (FATAL_ERROR "Could NOT find required QJSON library, aborting")
-		ELSE (QJSON_FIND_REQUIRED)
-			MESSAGE (STATUS "Could NOT find QJSON")
-		ENDIF (QJSON_FIND_REQUIRED)
-	ENDIF (QJSON_FOUND)
+	if (QJSON_FOUND)
+		message (STATUS "Found the QJSON libraries at ${QJSON_LIBRARIES}")
+		message (STATUS "Found the QJSON headers at ${QJSON_INCLUDE_DIR}")
+		if (WIN32)
+			message (STATUS ${_WIN32_ADDITIONAL_MESS})
+		endif ()
+	else ()
+		if (QJSON_FIND_REQUIRED)
+			message (FATAL_ERROR "Could NOT find required QJSON library, aborting")
+		else ()
+			message (STATUS "Could NOT find QJSON")
+		endif ()
+	endif ()
 
-ENDIF (QJSON_INCLUDE_DIR AND QJSON_LIBRARIES)
+endif ()

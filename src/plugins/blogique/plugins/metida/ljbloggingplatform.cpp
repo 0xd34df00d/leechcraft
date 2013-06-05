@@ -236,6 +236,7 @@ namespace Metida
 			QDomElement nameElem = elem.ownerDocument ().createElement ("a");
 			nameElem.setAttribute ("href", QString ("http://%1.livejournal.com/profile").arg (user));
 			nameElem.setAttribute ("target", "_blank");
+			nameElem.setAttribute ("id", "nameLink");
 			nameElem.appendChild (elem.ownerDocument ().createTextNode (user));
 
 			elem.appendChild (linkElem);
@@ -243,7 +244,64 @@ namespace Metida
 
 			elem.removeAttribute ("user");
 		};
+		ljUserTag.FromKnown_ = [] (QDomElement& elem) -> bool
+		{
+			auto aElem = elem.firstChildElement ("a");
+			while (!aElem.isNull ())
+			{
+				if (aElem.attribute ("id") == "nameLink")
+					break;
+
+				aElem = aElem.nextSiblingElement ("a");
+			}
+			if (aElem.isNull ())
+				return false;
+			const auto& username = aElem.text ();
+
+			const auto& children = elem.childNodes ();
+			while (!children.isEmpty ())
+				elem.removeChild (children.at (0));
+
+			elem.setTagName ("lj");
+			elem.setAttribute ("user", username);
+
+			return true;
+		};
 		tags << ljUserTag;
+
+		IAdvancedHTMLEditor::CustomTag ljCutTag;
+		ljCutTag.TagName_ = "lj-cut";
+		ljCutTag.ToKnown_ = [] (QDomElement& elem)
+		{
+			elem.setTagName ("div");
+			elem.setAttribute ("style", "overflow:auto;border-width:3px;border-style:dotted;margin-left:3em;padding:2em 2em;");
+		};
+		ljCutTag.FromKnown_ = [] (QDomElement& elem) -> bool
+		{
+			elem.setTagName ("lj-cut");
+			return true;
+		};
+
+		tags << ljCutTag;
+/*
+		IAdvancedHTMLEditor::CustomTag ljPollTag;
+		ljPollTag.TagName_ = "lj-poll";
+		ljPollTag.ToKnown_ = [] (QDomElement& elem)
+		{
+			elem.setTagName ("div");
+			elem.setAttribute ("style", "overflow:auto;border-width:3px;border-style:dashed;margin-left:3em;padding:2em 2em;");
+			auto textElem = elem.ownerDocument ().createTextNode ("");
+			elem.appendChild (textElem);
+		};
+		ljPollTag.FromKnown_ = [] (QDomElement& elem) -> bool
+		{
+			elem.setTagName ("lj-poll");
+			return true;
+		};
+
+		tags << ljPollTag;*/
+
+
 		return tags;
 	}
 
