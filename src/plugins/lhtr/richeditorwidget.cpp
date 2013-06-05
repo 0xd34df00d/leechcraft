@@ -417,17 +417,23 @@ namespace LHTR
 		auto frame = Ui_.View_->page ()->mainFrame ();
 		frame->evaluateJavaScript (R"delim(
 			var s = window.getSelection();
+			if (!s.rangeCount || !s.getRangeAt(0).endContainer)
+				document.body.focus();
 
-			var elem = document.createElement();
-			s.getRangeAt(0).insertNode(elem);
-			elem.outerHTML = ')delim" + expanded + R"delim(';
+			var wrapper = document.createElement("div");
+			wrapper.innerHTML = ')delim" + expanded + R"delim(';
+			var node = wrapper.childNodes[0];
 
-			var node = s.getRangeAt(0).endContainer.nextSibling;
+			var textNode = document.createTextNode(' ');
+			s.getRangeAt(0).insertNode(textNode);
+
+			s.getRangeAt(0).insertNode(node);
 
 			s.removeAllRanges();
+
 			var r = document.createRange();
-			r.setEndAfter(node);
-			r.setStartAfter(node);
+			r.setStartAfter(textNode);
+			r.setEndAfter(textNode);
 			s.addRange(r);
 			)delim");
 	}
