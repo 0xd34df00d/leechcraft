@@ -618,7 +618,7 @@ namespace LHTR
 			}
 		}
 
-		return doc.toString ();
+		return doc.toString (-1);
 	}
 
 	QString RichEditorWidget::RevertCustomTags () const
