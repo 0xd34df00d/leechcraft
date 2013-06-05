@@ -224,6 +224,7 @@ namespace Metida
 		{
 			const auto& user = elem.attribute ("user");
 			elem.setTagName ("span");
+			elem.setAttribute ("contenteditable", "false");
 
 			QDomElement linkElem = elem.ownerDocument ().createElement ("a");
 			linkElem.setAttribute ("href", QString ("http://%1.livejournal.com/profile").arg (user));
@@ -237,6 +238,7 @@ namespace Metida
 			nameElem.setAttribute ("href", QString ("http://%1.livejournal.com/profile").arg (user));
 			nameElem.setAttribute ("target", "_blank");
 			nameElem.setAttribute ("id", "nameLink");
+			nameElem.setAttribute ("contenteditable", "true");
 			nameElem.appendChild (elem.ownerDocument ().createTextNode (user));
 
 			elem.appendChild (linkElem);
