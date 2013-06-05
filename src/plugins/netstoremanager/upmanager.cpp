@@ -139,11 +139,14 @@ namespace NetStoreManager
 					.arg (plugin->GetStorageName ()));
 		row << new QStandardItem ();
 		row << new QStandardItem (tr ("Initializing..."));
+
 		auto progressItem = row.at (JobHolderColumn::JobProgress);
 		progressItem->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
 				CustomDataRoles::RoleJobHolderRow);
 		progressItem->setData (0, ProcessState::Done);
 		progressItem->setData (fi.size (), ProcessState::Total);
+		progressItem->setData (QVariant::fromValue<TaskParameters> (FromUserInitiated),
+				ProcessState::TaskFlags);
 		ReprModel_->appendRow (row);
 
 		ReprItems_ [acc] [path] = row;
