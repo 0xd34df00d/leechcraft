@@ -44,6 +44,9 @@ namespace Aggregator
 	: QAbstractItemModel (parent)
 	, CurrentRow_ (-1)
 	, CurrentChannel_ (-1)
+	, StarredIcon_ (Core::Instance ().GetProxy ()->GetIcon ("mail-mark-important"))
+	, UnreadIcon_ (Core::Instance ().GetProxy ()->GetIcon ("mail-mark-unread"))
+	, ReadIcon_ (Core::Instance ().GetProxy ()->GetIcon ("mail-mark-read"))
 	{
 		ItemHeaders_ << tr ("Name") << tr ("Date");
 
@@ -342,6 +345,18 @@ namespace Aggregator
 			grad.setColorAt (0, p.color (QPalette::AlternateBase));
 			grad.setColorAt (1, p.color (QPalette::Base));
 			return QBrush (grad);
+		}
+		else if (role == Qt::DecorationRole)
+		{
+			if (index.column ())
+				return QVariant ();
+
+			const auto& item = CurrentItems_ [index.row ()];
+			if (Core::Instance ().GetStorageBackend ()->
+					GetItemTags (item.ItemID_).contains ("_important"))
+				return StarredIcon_;
+
+			return item.Unread_ ? UnreadIcon_ : ReadIcon_;
 		}
 		else
 			return QVariant ();

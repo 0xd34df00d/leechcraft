@@ -33,6 +33,7 @@
 #include <QStringList>
 #include <QSet>
 #include <QPair>
+#include <QIcon>
 #include "item.h"
 
 namespace LeechCraft
@@ -47,6 +48,10 @@ namespace Aggregator
 		items_shorts_t CurrentItems_;
 		int CurrentRow_;
 		IDType_t CurrentChannel_;
+
+		const QIcon StarredIcon_;
+		const QIcon UnreadIcon_;
+		const QIcon ReadIcon_;
 	public:
 		ItemsListModel (QObject* = 0);
 
