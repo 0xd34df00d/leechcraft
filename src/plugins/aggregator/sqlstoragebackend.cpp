@@ -817,7 +817,7 @@ namespace Aggregator
 
 		ClearItemTags_.finish ();
 
-		Q_FOREACH (const ITagsManager::tag_id& tag, tags)
+		for (const auto& tag : tags)
 		{
 			AddItemTag_.bindValue (":tag", tag);
 			AddItemTag_.bindValue (":item_id", id);
@@ -829,6 +829,19 @@ namespace Aggregator
 		}
 
 		lock.Good ();
+
+		try
+		{
+			auto item = GetItem (id);
+			emit itemDataUpdated (item,
+					GetChannel (item->ChannelID_, FindParentFeedForChannel (item->ChannelID_)));
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error notifying about data changes"
+					<< e.what ();
+		}
 	}
 
 	QList<IDType_t> SQLStorageBackend::GetItemsForTag (const ITagsManager::tag_id& tag)
