@@ -147,6 +147,8 @@ namespace Azoth
 				CustomDataRoles::RoleJobHolderRow);
 		progressItem->setData (0, ProcessState::Done);
 		progressItem->setData (job->GetSize (), ProcessState::Total);
+		progressItem->setData (QVariant::fromValue<TaskParameters> (FromUserInitiated),
+				ProcessState::TaskFlags);
 
 		SummaryModel_->appendRow (items);
 
