@@ -123,6 +123,9 @@ namespace Blogique
 		void tagsUpdated (const QHash<QString, int>& tags);
 
 		void insertTag (const QString& tag);
+
+		void gotError (int errorCode, const QString& errorString,
+				const QString& localizedErrorString);
 	};
 }
 }

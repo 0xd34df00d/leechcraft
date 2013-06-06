@@ -49,6 +49,7 @@ namespace GoogleDrive
 	: QObject (parent)
 	, DirectoryId_ ("application/vnd.google-apps.folder")
 	, Account_ (acc)
+	, SecondRequestIfNoItems_ (true)
 	{
 #ifdef HAVE_MAGIC
 		Magic_ = magic_open (MAGIC_MIME_TYPE);
@@ -712,6 +713,11 @@ namespace GoogleDrive
 		if (!resMap.contains ("items"))
 		{
 			qDebug () << Q_FUNC_INFO << "there are no items";
+			if (SecondRequestIfNoItems_)
+			{
+				SecondRequestIfNoItems_ = false;
+				RefreshListing ();
+			}
 			return;
 		}
 
@@ -721,6 +727,7 @@ namespace GoogleDrive
 			return;
 		}
 
+		SecondRequestIfNoItems_ = true;
 		QList<DriveItem> resList;
 		Q_FOREACH (const auto& item, resMap ["items"].toList ())
 		{

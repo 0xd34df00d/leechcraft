@@ -656,7 +656,7 @@ namespace Metida
 		element.appendChild (propsStruct.first);
 		propsStruct.second.appendChild (GetSimpleMemberElement ("current_location",
 				"string", event.Props_.CurrentLocation_, document));
-		if (!event.Props_.CurrentMood_.isEmpty ())
+		if (event.Props_.CurrentMoodId_ == -1)
 			propsStruct.second.appendChild (GetSimpleMemberElement ("current_mood",
 					"string", event.Props_.CurrentMood_, document));
 		else
@@ -1009,7 +1009,8 @@ namespace Metida
 		query.setQuery ("/methodResponse/fault/value/struct/member[name='faultString']/value/string/text()");
 		if (!query.evaluateTo (&errorString))
 			return;
-		emit error (errorCode.toInt (), errorString);
+		emit error (errorCode.toInt (), errorString,
+				MetidaUtils::GetLocalizedErrorMessage (errorCode.toInt ()));
 	}
 
 	namespace

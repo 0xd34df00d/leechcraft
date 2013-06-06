@@ -285,24 +285,124 @@ namespace Metida
 		};
 
 		tags << ljCutTag;
-/*
+
 		IAdvancedHTMLEditor::CustomTag ljPollTag;
 		ljPollTag.TagName_ = "lj-poll";
-		ljPollTag.ToKnown_ = [] (QDomElement& elem)
+		ljPollTag.ToKnown_ = [this] (QDomElement& elem)
 		{
+			const auto& whoView = elem.attribute ("whoview");
+			const auto& whoVote = elem.attribute ("whovote");
+			const auto& name = elem.attribute ("name");
+
+			auto children = elem.childNodes ();
+			while (!children.isEmpty ())
+				elem.removeChild (children.at (0));
+
 			elem.setTagName ("div");
-			elem.setAttribute ("style", "overflow:auto;border-width:3px;border-style:dashed;margin-left:3em;padding:2em 2em;");
-			auto textElem = elem.ownerDocument ().createTextNode ("");
+			elem.setAttribute ("style", "overflow:auto;border-width:2px;border-style:solid;border-radius:5px;margin-left:3em;padding:2em 2em;");
+			elem.setAttribute ("id", "pollDiv");
+			elem.setAttribute ("ljPollWhoview", whoView);
+			elem.setAttribute ("ljPollWhovote", whoVote);
+			elem.setAttribute ("ljPollName", name);
+			auto textElem = elem.ownerDocument ().createTextNode (tr ("Poll: %1").arg (name));
 			elem.appendChild (textElem);
 		};
 		ljPollTag.FromKnown_ = [] (QDomElement& elem) -> bool
 		{
+			auto aElem = elem.firstChildElement ("div");
+			while (!aElem.isNull ())
+			{
+				if (aElem.attribute ("id") == "pollDiv")
+					break;
+
+				aElem = aElem.nextSiblingElement ("a");
+			}
+			if (aElem.isNull ())
+				return false;
+
+			auto whoView = aElem.attribute ("ljPollWhoview");
+			auto whoVote = aElem.attribute ("ljPollWhovote");
+			auto name = aElem.attribute ("ljPollName");
+
 			elem.setTagName ("lj-poll");
+			elem.setAttribute ("whoview", whoView);
+			elem.setAttribute ("whovote", whoVote);
+			elem.setAttribute ("name", name);
+
 			return true;
 		};
 
-		tags << ljPollTag;*/
+		tags << ljPollTag;
 
+		IAdvancedHTMLEditor::CustomTag ljEmbedTag;
+		ljEmbedTag.TagName_ = "lj-embed";
+		ljEmbedTag.ToKnown_ = [this] (QDomElement& elem)
+		{
+			const auto& id = elem.attribute ("id");
+			elem.removeAttribute ("id");
+
+			elem.setTagName ("div");
+			elem.setAttribute ("style", "overflow:auto;border-width:2px;border-style:solid;border-radius:5px;margin-left:3em;padding:2em 2em;");
+			elem.setAttribute ("id", id);
+			auto textElem = elem.ownerDocument ().createTextNode (tr ("Embeded: %1")
+					.arg (id));
+			elem.appendChild (textElem);
+		};
+		ljEmbedTag.FromKnown_ = [] (QDomElement& elem) -> bool
+		{
+			elem.setTagName ("lj-embed");
+			auto divElem = elem.firstChildElement ("div");
+			while (!divElem.isNull ())
+			{
+				if (divElem.attribute ("id") == "id")
+					break;
+
+				divElem = divElem.nextSiblingElement ();
+			}
+			if (divElem.isNull ())
+				return false;
+
+			elem.setAttribute ("id", divElem.attribute ("id"));
+			return true;
+		};
+
+		tags << ljEmbedTag;
+
+		IAdvancedHTMLEditor::CustomTag ljLikeTag;
+		ljLikeTag.TagName_ = "lj-like";
+		ljLikeTag.ToKnown_ = [this] (QDomElement& elem)
+		{
+			const auto& buttons = elem.attribute ("buttons");
+			elem.removeAttribute ("buttons");
+
+			elem.setTagName ("div");
+			elem.setAttribute ("style", "overflow:auto;border-width:2px;border-style:solid;border-radius:5px;margin-left:3em;padding:2em 2em;");
+			elem.setAttribute ("likes", buttons);
+			auto textElem = elem.ownerDocument ().createTextNode (tr ("Likes: %1")
+					.arg (!buttons.isEmpty () ?
+						buttons :
+						"repost,facebook,twitter,google,vkontakte,surfingbird,tumblr, livejournal"));
+			elem.appendChild (textElem);
+		};
+		ljLikeTag.FromKnown_ = [] (QDomElement& elem) -> bool
+		{
+			elem.setTagName ("lj-like");
+			auto divElem = elem.firstChildElement ("div");
+			while (!divElem.isNull ())
+			{
+				if (divElem.hasAttribute ("likes"))
+					break;
+
+				divElem = divElem.nextSiblingElement ();
+			}
+			if (divElem.isNull ())
+				return false;
+
+			elem.setAttribute ("buttons", divElem.attribute ("likes"));
+			return true;
+		};
+
+		tags << ljLikeTag;
 
 		return tags;
 	}
