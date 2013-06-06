@@ -68,7 +68,7 @@ namespace Vrooby
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 	private slots:
 		void checkAction ();
-		void showTrayView (bool);
+		void showTrayView ();
 	signals:
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 		void gotEntity (const LeechCraft::Entity&);
