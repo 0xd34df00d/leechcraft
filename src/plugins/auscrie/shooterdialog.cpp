@@ -110,7 +110,7 @@ namespace Auscrie
 	void ShooterDialog::SetScreenshot (const QPixmap& px)
 	{
 		CurrentScreenshot_ = px;
-		Ui_.ScreenshotLabel_->setPixmap (px);
+		RescaleLabel ();
 
 		Ui_.ActionBox_->clear ();
 		Filters_.clear ();
@@ -134,6 +134,20 @@ namespace Auscrie
 	QPixmap ShooterDialog::GetScreenshot () const
 	{
 		return CurrentScreenshot_;
+	}
+
+	void ShooterDialog::resizeEvent (QResizeEvent *e)
+	{
+		QDialog::resizeEvent (e);
+
+		RescaleLabel ();
+	}
+
+	void ShooterDialog::RescaleLabel ()
+	{
+		const auto& scaled = CurrentScreenshot_.scaled (Ui_.ScreenshotLabel_->size (),
+				Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		Ui_.ScreenshotLabel_->setPixmap (scaled);
 	}
 
 	void ShooterDialog::on_Format__currentIndexChanged (const QString& str)

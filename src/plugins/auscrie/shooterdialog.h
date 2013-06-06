@@ -82,6 +82,10 @@ namespace Auscrie
 
 		void SetScreenshot (const QPixmap&);
 		QPixmap GetScreenshot () const;
+
+		void resizeEvent (QResizeEvent*);
+	private:
+		void RescaleLabel ();
 	private slots:
 		void on_Format__currentIndexChanged (const QString&);
 	signals:
