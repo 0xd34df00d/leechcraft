@@ -368,6 +368,42 @@ namespace Metida
 
 		tags << ljEmbedTag;
 
+		IAdvancedHTMLEditor::CustomTag ljLikeTag;
+		ljLikeTag.TagName_ = "lj-like";
+		ljLikeTag.ToKnown_ = [this] (QDomElement& elem)
+		{
+			const auto& buttons = elem.attribute ("buttons");
+			elem.removeAttribute ("buttons");
+
+			elem.setTagName ("div");
+			elem.setAttribute ("style", "overflow:auto;border-width:2px;border-style:solid;border-radius:5px;margin-left:3em;padding:2em 2em;");
+			elem.setAttribute ("likes", buttons);
+			auto textElem = elem.ownerDocument ().createTextNode (tr ("Likes: %1")
+					.arg (!buttons.isEmpty () ?
+						buttons :
+						"repost,facebook,twitter,google,vkontakte,surfingbird,tumblr, livejournal"));
+			elem.appendChild (textElem);
+		};
+		ljLikeTag.FromKnown_ = [] (QDomElement& elem) -> bool
+		{
+			elem.setTagName ("lj-like");
+			auto divElem = elem.firstChildElement ("div");
+			while (!divElem.isNull ())
+			{
+				if (divElem.hasAttribute ("likes"))
+					break;
+
+				divElem = divElem.nextSiblingElement ();
+			}
+			if (divElem.isNull ())
+				return false;
+
+			elem.setAttribute ("buttons", divElem.attribute ("likes"));
+			return true;
+		};
+
+		tags << ljLikeTag;
+
 		return tags;
 	}
 
