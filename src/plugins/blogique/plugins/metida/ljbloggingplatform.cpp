@@ -334,6 +334,39 @@ namespace Metida
 
 		tags << ljPollTag;
 
+		IAdvancedHTMLEditor::CustomTag ljEmbedTag;
+		ljEmbedTag.TagName_ = "lj-embed";
+		ljEmbedTag.ToKnown_ = [this] (QDomElement& elem)
+		{
+			const auto& id = elem.attribute ("id");
+			elem.removeAttribute ("id");
+
+			elem.setTagName ("div");
+			elem.setAttribute ("style", "overflow:auto;border-width:2px;border-style:solid;border-radius:5px;margin-left:3em;padding:2em 2em;");
+			elem.setAttribute ("id", id);
+			auto textElem = elem.ownerDocument ().createTextNode (tr ("Embeded: %1")
+					.arg (id));
+			elem.appendChild (textElem);
+		};
+		ljEmbedTag.FromKnown_ = [] (QDomElement& elem) -> bool
+		{
+			elem.setTagName ("lj-embed");
+			auto divElem = elem.firstChildElement ("div");
+			while (!divElem.isNull ())
+			{
+				if (divElem.attribute ("id") == "id")
+					break;
+
+				divElem = divElem.nextSiblingElement ();
+			}
+			if (divElem.isNull ())
+				return false;
+
+			elem.setAttribute ("id", divElem.attribute ("id"));
+			return true;
+		};
+
+		tags << ljEmbedTag;
 
 		return tags;
 	}
