@@ -32,6 +32,7 @@
 #include <QAction>
 #include <util/util.h>
 #include <util/gui/util.h>
+#include <util/gui/unhoverdeletemixin.h>
 
 #ifdef ENABLE_UDISKS
 #include "backends/udisks/udisksbackend.h"
@@ -52,6 +53,7 @@ namespace Vrooby
 		Util::InstallTranslator ("vrooby");
 
 		TrayView_ = new TrayView (proxy);
+		new Util::UnhoverDeleteMixin (TrayView_, SLOT (hide ()));
 
 		QList<std::shared_ptr<DevBackend>> candidates;
 
