@@ -71,13 +71,13 @@ namespace Metida
 				this,
 				SLOT (handleValidatingFinished (bool)));
 		connect (LJXmlRpc_,
-				SIGNAL (error (int, QString)),
+				SIGNAL (error (int, QString, QString)),
 				this,
-				SLOT (handleXmlRpcError (int, QString)));
+				SIGNAL (gotError (int, QString, QString)));
 		connect (LJXmlRpc_,
 				SIGNAL (networkError (int, QString)),
 				this,
-				SLOT (handleNetworkError (int, QString)));
+				SIGNAL (gotError (int, QString)));
 		connect (LJXmlRpc_,
 				SIGNAL (profileUpdated (LJProfileData)),
 				LJProfile_.get (),
@@ -476,36 +476,6 @@ namespace Metida
 
 		emit accountValidated (IsValid_);
 		emit accountSettingsChanged ();
-	}
-
-	void LJAccount::handleXmlRpcError (int errorCode, const QString& msgInEng)
-	{
-		qWarning () << Q_FUNC_INFO
-				<< "error code:"
-				<< errorCode
-				<< "error text:"
-				<< msgInEng;
-
-		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique",
-				tr ("%1 (original message: %2)")
-						.arg (MetidaUtils::GetLocalizedErrorMessage (errorCode),
-						msgInEng),
-				PWarning_));
-	}
-
-	void LJAccount::handleNetworkError (int errorCode, const QString& msgInEng)
-	{
-		qWarning () << Q_FUNC_INFO
-				<< "error code:"
-				<< errorCode
-				<< "error text:"
-				<< msgInEng;
-
-		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique",
-				tr ("%1 (error code: %2)")
-					.arg (msgInEng)
-					.arg (errorCode),
-				PWarning_));
 	}
 
 	void LJAccount::updateProfile ()
