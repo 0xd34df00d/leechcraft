@@ -196,6 +196,10 @@ namespace Blogique
 				SIGNAL (insertTag (QString)),
 				newTab,
 				SLOT (handleInsertTag (QString)));
+		connect (&Core::Instance (),
+				SIGNAL (gotError (int, QString, QString)),
+				newTab,
+				SLOT (handleGotError (int, QString, QString)));
 
 		return newTab;
 	}
@@ -284,6 +288,10 @@ namespace Blogique
 				SIGNAL (tagsUpdated (QHash<QString, int>)),
 				this,
 				SIGNAL (tagsUpdated (QHash<QString, int>)));
+		connect (accObj,
+				SIGNAL (gotError (int, QString, QString)),
+				this,
+				SIGNAL (gotError (int, QString, QString)));
 
 		emit accountAdded (accObj);
 	}

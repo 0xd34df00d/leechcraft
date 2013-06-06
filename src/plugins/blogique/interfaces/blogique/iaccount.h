@@ -244,6 +244,9 @@ namespace Blogique
 		 * @note This function is expected to be a signal.
 		 */
 		virtual void gettingEntries2BackupFinished () = 0;
+
+		virtual void gotError (int errorCode, const QString& errorString,
+				const QString& localizedErrorString = QString ()) = 0;
 	};
 }
 }

@@ -824,6 +824,22 @@ namespace Blogique
 		iahe->InsertHTML (tag);
 	}
 
+	void BlogiqueWidget::handleGotError (int errorCode,
+			const QString& errorString, const QString& localizedErrorString)
+	{
+		ShowProgress ();
+		qWarning () << Q_FUNC_INFO
+				<< "error code:"
+				<< errorCode
+				<< "error text:"
+				<< errorString;
+
+		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique",
+				tr ("%1 (original message: %2)")
+					.arg (localizedErrorString, errorString),
+				PWarning_));
+	}
+
 	void BlogiqueWidget::newEntry ()
 	{
 		if (EntryChanged_)

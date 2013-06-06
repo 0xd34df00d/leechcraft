@@ -1009,7 +1009,8 @@ namespace Metida
 		query.setQuery ("/methodResponse/fault/value/struct/member[name='faultString']/value/string/text()");
 		if (!query.evaluateTo (&errorString))
 			return;
-		emit error (errorCode.toInt (), errorString);
+		emit error (errorCode.toInt (), errorString,
+				MetidaUtils::GetLocalizedErrorMessage (errorCode.toInt ()));
 	}
 
 	namespace
