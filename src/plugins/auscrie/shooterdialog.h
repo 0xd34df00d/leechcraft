@@ -30,8 +30,8 @@
 #ifndef PLUGINS_AUSCRIE_SHOOTERDIALOG_H
 #define PLUGINS_AUSCRIE_SHOOTERDIALOG_H
 #include <QDialog>
+#include <interfaces/core/icoreproxy.h>
 #include "ui_shooterdialog.h"
-#include "poster.h"
 
 namespace LeechCraft
 {
@@ -42,6 +42,16 @@ namespace Auscrie
 		Q_OBJECT
 
 		Ui::ShooterDialog Ui_;
+		const ICoreProxy_ptr Proxy_;
+		QPixmap CurrentScreenshot_;
+	public:
+		struct FilterData
+		{
+			QObject *Object_;
+			QByteArray Variant_;
+		};
+	private:
+		QList<FilterData> Filters_;
 	public:
 		enum class Action
 		{
@@ -57,17 +67,25 @@ namespace Auscrie
 			WholeDesktop
 		};
 
-		ShooterDialog (QWidget* = 0);
+		ShooterDialog (ICoreProxy_ptr, QWidget* = 0);
 
 		Action GetAction () const;
+
 		Mode GetMode () const;
 		bool ShouldHide () const;
-		Poster::HostingService GetHostingService () const;
+
 		int GetTimeout () const;
 		QString GetFormat () const;
 		int GetQuality () const;
+
+		FilterData GetDFInfo () const;
+
+		void SetScreenshot (const QPixmap&);
+		QPixmap GetScreenshot () const;
 	private slots:
 		void on_Format__currentIndexChanged (const QString&);
+	signals:
+		void screenshotRequested ();
 	};
 }
 }

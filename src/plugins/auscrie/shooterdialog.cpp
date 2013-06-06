@@ -28,35 +28,35 @@
  **********************************************************************/
 
 #include "shooterdialog.h"
+#include <QPushButton>
 #include <QtDebug>
+#include <util/xpc/util.h>
+#include <interfaces/idatafilter.h>
 
 namespace LeechCraft
 {
 namespace Auscrie
 {
-	ShooterDialog::ShooterDialog (QWidget *parent)
+	ShooterDialog::ShooterDialog (ICoreProxy_ptr proxy, QWidget *parent)
 	: QDialog (parent)
+	, Proxy_ (proxy)
 	{
 		Ui_.setupUi (this);
 		on_Format__currentIndexChanged (Ui_.Format_->currentText ());
+
+		auto button = new QPushButton (tr ("Make screenshot"));
+		Ui_.ButtonBox_->addButton (button, QDialogButtonBox::ApplyRole);
+		connect (button,
+				SIGNAL (released ()),
+				this,
+				SIGNAL (screenshotRequested ()));
 	}
 
 	ShooterDialog::Action ShooterDialog::GetAction () const
 	{
-		switch (Ui_.ActionBox_->currentIndex ())
-		{
-		case 0:
-		case 1:
-		case 2:
-			return Action::Upload;
-		case 3:
-			return Action::Save;
-		default:
-			qWarning () << Q_FUNC_INFO
-					<< Ui_.ActionBox_->currentIndex ()
-					<< "unhandled";
-			return Action::Save;
-		}
+		return Ui_.ActionBox_->currentIndex () == Ui_.ActionBox_->count () - 1 ?
+				Action::Save :
+				Action::Upload;
 	}
 
 	ShooterDialog::Mode ShooterDialog::GetMode () const
@@ -84,24 +84,6 @@ namespace Auscrie
 		return Ui_.HideThis_->checkState () == Qt::Checked;
 	}
 
-	Poster::HostingService ShooterDialog::GetHostingService () const
-	{
-		switch (Ui_.ActionBox_->currentIndex ())
-		{
-		case 0:
-			return Poster::DumpBitcheeseNet;
-		case 1:
-			return Poster::SavepicRu;
-		case 2:
-			return Poster::ImagebinCa;
-		default:
-			qWarning () << Q_FUNC_INFO
-					<< Ui_.ActionBox_->currentIndex ()
-					<< "unhandled, defaulting to imagebin.ca";
-			return Poster::ImagebinCa;
-		}
-	}
-
 	int ShooterDialog::GetTimeout () const
 	{
 		return Ui_.Timeout_->value ();
@@ -118,6 +100,40 @@ namespace Auscrie
 		return Ui_.Format_->currentText () == "JPG" ?
 				val :
 				100 - val;
+	}
+
+	ShooterDialog::FilterData ShooterDialog::GetDFInfo () const
+	{
+		return Filters_.value (Ui_.ActionBox_->currentIndex ());
+	}
+
+	void ShooterDialog::SetScreenshot (const QPixmap& px)
+	{
+		CurrentScreenshot_ = px;
+		Ui_.ScreenshotLabel_->setPixmap (px);
+
+		Ui_.ActionBox_->clear ();
+		Filters_.clear ();
+
+		const auto& image = px.toImage ();
+		const auto& filters = Util::GetDataFilters (image, Proxy_->GetEntityManager ());
+		for (auto filter : filters)
+		{
+			auto idf = qobject_cast<IDataFilter*> (filter);
+			const auto& verb = idf->GetFilterVerb ();
+
+			for (const auto& var : idf->GetFilterVariants ())
+			{
+				Filters_.append ({ filter, var.ID_ });
+				Ui_.ActionBox_->addItem (QString ("%1: %2").arg (verb).arg (var.Name_));
+			}
+		}
+		Ui_.ActionBox_->addItem (tr ("save"));
+	}
+
+	QPixmap ShooterDialog::GetScreenshot () const
+	{
+		return CurrentScreenshot_;
 	}
 
 	void ShooterDialog::on_Format__currentIndexChanged (const QString& str)

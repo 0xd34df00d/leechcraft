@@ -6,183 +6,185 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>372</width>
-    <height>212</height>
+    <width>518</width>
+    <height>472</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Make a screenshot</string>
   </property>
-  <layout class="QFormLayout" name="formLayout">
-   <property name="fieldGrowthPolicy">
-    <enum>QFormLayout::ExpandingFieldsGrow</enum>
-   </property>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label_2">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="ScreenshotLabel_">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>1</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
-      <string>Action:</string>
+      <string/>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QComboBox" name="ActionBox_">
-     <item>
-      <property name="text">
-       <string>upload to dump.bitcheese.net</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>upload to Savepic.ru</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>upload to Imagebin.ca</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>save</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Timeout:</string>
+   <item>
+    <layout class="QFormLayout" name="formLayout">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::ExpandingFieldsGrow</enum>
      </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="QSpinBox" name="Timeout_">
-     <property name="suffix">
-      <string> s</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Format:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <widget class="QComboBox" name="Format_">
-     <item>
-      <property name="text">
-       <string>PNG</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>JPG</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="SettingLabel_">
-     <property name="text">
-      <string>Quality:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QSlider" name="QualitySlider_">
-       <property name="maximum">
-        <number>100</number>
-       </property>
-       <property name="singleStep">
-        <number>5</number>
-       </property>
-       <property name="value">
-        <number>80</number>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="tickPosition">
-        <enum>QSlider::TicksBelow</enum>
-       </property>
-       <property name="tickInterval">
-        <number>5</number>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Action:</string>
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QSpinBox" name="QualityBox_">
-       <property name="maximum">
-        <number>100</number>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="ActionBox_"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Mode:</string>
        </property>
-       <property name="value">
-        <number>80</number>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QComboBox" name="ModeBox_">
+       <item>
+        <property name="text">
+         <string>LeechCraft window and everything on top</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>LeechCraft window</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Current screen</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Whole desktop</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QCheckBox" name="HideThis_">
+       <property name="text">
+        <string>Hide this dialog</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Timeout:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QSpinBox" name="Timeout_">
+       <property name="suffix">
+        <string> s</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Format:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QComboBox" name="Format_">
+       <item>
+        <property name="text">
+         <string>PNG</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>JPG</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="SettingLabel_">
+       <property name="text">
+        <string>Quality:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QSlider" name="QualitySlider_">
+         <property name="maximum">
+          <number>100</number>
+         </property>
+         <property name="singleStep">
+          <number>5</number>
+         </property>
+         <property name="value">
+          <number>80</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="tickPosition">
+          <enum>QSlider::TicksBelow</enum>
+         </property>
+         <property name="tickInterval">
+          <number>5</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="QualityBox_">
+         <property name="maximum">
+          <number>100</number>
+         </property>
+         <property name="value">
+          <number>80</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="6" column="0" colspan="2">
+      <widget class="QDialogButtonBox" name="ButtonBox_">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
        </property>
       </widget>
      </item>
     </layout>
-   </item>
-   <item row="6" column="0" colspan="2">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string>Mode:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QComboBox" name="ModeBox_">
-     <item>
-      <property name="text">
-       <string>LeechCraft window and everything on top</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>LeechCraft window</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Current screen</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Whole desktop</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QCheckBox" name="HideThis_">
-     <property name="text">
-      <string>Hide this dialog</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>ButtonBox_</sender>
    <signal>accepted()</signal>
    <receiver>ShooterDialog</receiver>
    <slot>accept()</slot>
@@ -198,7 +200,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>ButtonBox_</sender>
    <signal>rejected()</signal>
    <receiver>ShooterDialog</receiver>
    <slot>reject()</slot>

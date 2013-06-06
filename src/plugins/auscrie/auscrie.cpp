@@ -38,6 +38,7 @@
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <interfaces/ientityhandler.h>
 #include "shooterdialog.h"
 #include "poster.h"
 
@@ -51,20 +52,24 @@ namespace Auscrie
 
 		Util::InstallTranslator ("auscrie");
 
-		Dialog_ = new ShooterDialog ();
+		Dialog_ = new ShooterDialog (proxy);
 
 		ShotAction_ = new QAction (GetIcon (),
 				tr ("Make a screenshot"),
 				this);
 		connect (ShotAction_,
 				SIGNAL (triggered ()),
-				Dialog_,
-				SLOT (show ()));
+				this,
+				SLOT (showDialog ()));
 		connect (Dialog_,
-				SIGNAL (accepted ()),
+				SIGNAL (screenshotRequested ()),
 				this,
 				SLOT (makeScreenshot ()),
 				Qt::QueuedConnection);
+		connect (Dialog_,
+				SIGNAL (accepted ()),
+				this,
+				SLOT (performAction ()));
 	}
 
 	void Plugin::SecondInit ()
@@ -87,7 +92,7 @@ namespace Auscrie
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Simple auto screenshoter.");
+		return tr ("Simple auto screenshotter.");
 	}
 
 	QIcon Plugin::GetIcon () const
@@ -106,67 +111,87 @@ namespace Auscrie
 		return result;
 	}
 
+	void Plugin::showDialog ()
+	{
+		shoot ();
+	}
+
 	void Plugin::makeScreenshot ()
 	{
 		Dialog_->setVisible (!Dialog_->ShouldHide ());
 
 		ShotAction_->setEnabled (false);
-		const int add = Dialog_->GetTimeout () ? 0 : 200;
-		QTimer::singleShot (Dialog_->GetTimeout () * 1000 + add,
+		QTimer::singleShot (std::max (Dialog_->GetTimeout () * 1000, 200),
 				this,
 				SLOT (shoot ()));
+	}
+
+	void Plugin::performAction ()
+	{
+		const auto& pm = Dialog_->GetScreenshot ();
+		if (pm.isNull ())
+			return;
+
+		auto mw = Proxy_->GetRootWindowsManager ()->GetPreferredWindow ();
+		const int quality = Dialog_->GetQuality ();
+
+		switch (Dialog_->GetAction ())
+		{
+		case ShooterDialog::Action::Save:
+		{
+			QString path = Proxy_->GetSettingsManager ()->
+				Property ("PluginsStorage/Auscrie/SavePath",
+						QDir::currentPath () + "01." + Dialog_->GetFormat ())
+				.toString ();
+
+			QString filename = QFileDialog::getSaveFileName (mw,
+					tr ("Save as"),
+					path,
+					tr ("%1 files (*.%1);;All files (*.*)")
+						.arg (Dialog_->GetFormat ()));
+
+			if (!filename.isEmpty ())
+			{
+				pm.save (filename,
+						qPrintable (Dialog_->GetFormat ()),
+						quality);
+				Proxy_->GetSettingsManager ()->
+					setProperty ("PluginsStorage/Auscrie/SavePath",
+							filename);
+			}
+			break;
+		}
+		case ShooterDialog::Action::Upload:
+		{
+			const auto& info = Dialog_->GetDFInfo ();
+			if (!info.Object_)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "no object set";
+				break;
+			}
+
+			auto e = Util::MakeEntity (pm.toImage (),
+					{}, {}, "x-leechcraft/data-filter-request");
+			e.Additional_ ["Format"] = Dialog_->GetFormat ();
+			e.Additional_ ["Quality"] = quality;
+			e.Additional_ ["DataFilter"] = info.Variant_;
+
+			auto ieh = qobject_cast<IEntityHandler*> (info.Object_);
+			ieh->Handle (e);
+
+			break;
+		}
+		}
 	}
 
 	void Plugin::shoot ()
 	{
 		ShotAction_->setEnabled (true);
 
-		auto mw = Proxy_->GetRootWindowsManager ()->GetPreferredWindow ();
-
 		const QPixmap& pm = GetPixmap ();
-		int quality = Dialog_->GetQuality ();
-		switch (Dialog_->GetAction ())
-		{
-		case ShooterDialog::Action::Save:
-			{
-				QString path = Proxy_->GetSettingsManager ()->
-					Property ("PluginsStorage/Auscrie/SavePath",
-							QDir::currentPath () + "01." + Dialog_->GetFormat ())
-					.toString ();
-
-				QString filename = QFileDialog::getSaveFileName (mw,
-						tr ("Save as"),
-						path,
-						tr ("%1 files (*.%1);;All files (*.*)")
-							.arg (Dialog_->GetFormat ()));
-
-				if (!filename.isEmpty ())
-				{
-					pm.save (filename,
-							qPrintable (Dialog_->GetFormat ()),
-							quality);
-					Proxy_->GetSettingsManager ()->
-						setProperty ("PluginsStorage/Auscrie/SavePath",
-								filename);
-				}
-			}
-			break;
-		case ShooterDialog::Action::Upload:
-			{
-				QByteArray bytes;
-				QBuffer buf (&bytes);
-				buf.open (QIODevice::ReadWrite);
-				if (!pm.save (&buf,
-							qPrintable (Dialog_->GetFormat ()),
-							quality))
-					qWarning () << Q_FUNC_INFO
-						<< "save failed"
-						<< qPrintable (Dialog_->GetFormat ())
-						<< quality;
-				Post (bytes);
-				break;
-			}
-		}
+		Dialog_->show ();
+		Dialog_->SetScreenshot (pm);
 	}
 
 	QPixmap Plugin::GetPixmap () const
@@ -194,18 +219,6 @@ namespace Auscrie
 		qWarning () << Q_FUNC_INFO
 				<< "unknown mode";
 		return QPixmap ();
-	}
-
-	void Plugin::Post (const QByteArray& data)
-	{
-		Poster *p = new Poster (Dialog_->GetHostingService (),
-				data,
-				Dialog_->GetFormat (),
-				Proxy_->GetNetworkAccessManager ());
-		connect (p,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 	}
 }
 }
