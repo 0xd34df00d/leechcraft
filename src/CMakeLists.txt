@@ -202,12 +202,12 @@ option (ENABLE_NACHEKU "Build Nacheku, clipboard/download dir watcher" ${WITH_PL
 option (ENABLE_NETSTOREMANAGER "Build NetStoreManager for managing network data storages like Yandex.Disk" ${WITH_PLUGINS})
 option (ENABLE_OTLOZHU "Build Otlozhu, a GTD-inspired ToDo manager" ${WITH_PLUGINS})
 option (ENABLE_POLEEMERY "Build Poleemery, the personal finances manager" ${WITH_PLUGINS})
-cmake_dependent_option (ENABLE_SB2 "Build SB2, next-gen fluid sidebar" ${WITH_PLUGINS} "NOT WIN32" OFF)
+option (ENABLE_SB2 "Build SB2, next-gen fluid sidebar" ${WITH_PLUGINS})
 option (ENABLE_SHAITAN "Build Shaitan, Embedded terminal emulator" ${WITH_PLUGINS})
 cmake_dependent_option (ENABLE_SYSNOTIFY "Build Sysnotify for using D-Bus notification API" ${WITH_PLUGINS} "NOT WIN32" OFF)
 option (ENABLE_TOUCHSTREAMS "Build TouchStreams, VK.com music streaming plugin" ${WITH_PLUGINS})
 option (ENABLE_TPI "Build Task Progress Indicator quark plugin" ${WITH_PLUGINS})
-cmake_dependent_option (ENABLE_VROOBY "Build Vrooby, removable storage devices manager" ${WITH_PLUGINS} "NOT WIN32" OFF)
+option (ENABLE_VROOBY "Build Vrooby, removable storage devices manager" ${WITH_PLUGINS})
 option (ENABLE_XPROXY "Build XProxy, the advanced proxy manager" ${WITH_PLUGINS})
 option (ENABLE_XTAZY "Build Xtazy, plugin for keeping track of a currently playing song" ${WITH_PLUGINS})
 
@@ -221,17 +221,11 @@ option (ENABLE_WOODPECKER "Build Woodpecker, twitter client" ${WITH_PLUGINS})
 # Dumb alternatives
 option (ENABLE_DUMBEEP "Build Dumbeep, a dumb sound notifier for those fearing true LMP power" OFF)
 
-if (WIN32)
-	option (ENABLE_Y7 "Build Y7, Windows 7 integration plugin" ${WITH_PLUGINS})
-endif ()
+cmake_dependent_option (ENABLE_Y7 "Build Y7, Windows 7 integration plugin" ${WITH_PLUGINS} "WIN32" OFF)
 
-if (UNIX)
-	option (ENABLE_LAUNCHY "Build Launchy, third-party application launcher module" ${WITH_PLUGINS})
-endif ()
+cmake_dependent_option (ENABLE_LAUNCHY "Build Launchy, third-party application launcher module" ${WITH_PLUGINS} "UNIX" OFF)
 
-if (APPLE)
-	option (ENABLE_PIERRE "Build Pierre, Mac OS X integration layer" ${WITH_PLUGINS})
-endif ()
+cmake_dependent_option (ENABLE_PIERRE "Build Pierre, Mac OS X integration layer" ${WITH_PLUGINS} "APPLE" OFF)
 
 # Old ones
 option (ENABLE_SHELLOPEN "Build ShellOpen, the plugin supporting handling entities via external applications" OFF)
