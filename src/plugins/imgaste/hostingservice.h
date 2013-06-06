@@ -49,6 +49,7 @@ namespace Imgaste
 
 	bool operator< (HostingService, HostingService);
 	QString ToString (HostingService);
+	HostingService FromString (const QString&);
 
 	struct Worker
 	{

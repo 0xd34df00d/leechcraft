@@ -62,6 +62,24 @@ namespace Imgaste
 		return "<unknown>";
 	}
 
+	HostingService FromString (const QString& str)
+	{
+		const auto known =
+		{
+			HostingService::DumpBitcheeseNet,
+			HostingService::ImagebinCa,
+			HostingService::SavepicRu
+		};
+		for (auto s : known)
+			if (ToString (s) == str)
+				return s;
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown hosting service"
+				<< str;
+		return HostingService::DumpBitcheeseNet;
+	}
+
 	namespace
 	{
 		struct ImagebinWorker : Worker
