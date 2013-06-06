@@ -591,6 +591,7 @@ namespace Blogique
 			return;
 
 		saveEntry ();
+		EntryChanged_ = true;
 	}
 
 	void BlogiqueWidget::handleEntryPosted ()
