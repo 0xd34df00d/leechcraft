@@ -656,7 +656,7 @@ namespace Metida
 		element.appendChild (propsStruct.first);
 		propsStruct.second.appendChild (GetSimpleMemberElement ("current_location",
 				"string", event.Props_.CurrentLocation_, document));
-		if (!event.Props_.CurrentMood_.isEmpty ())
+		if (event.Props_.CurrentMoodId_ == -1)
 			propsStruct.second.appendChild (GetSimpleMemberElement ("current_mood",
 					"string", event.Props_.CurrentMood_, document));
 		else
