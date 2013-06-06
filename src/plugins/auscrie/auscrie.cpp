@@ -40,7 +40,6 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/ientityhandler.h>
 #include "shooterdialog.h"
-#include "poster.h"
 
 namespace LeechCraft
 {

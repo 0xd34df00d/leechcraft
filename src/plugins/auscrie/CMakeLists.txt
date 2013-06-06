@@ -12,8 +12,6 @@ include_directories (
 set (SRCS
 	auscrie.cpp
 	shooterdialog.cpp
-	poster.cpp
-	requestbuilder.cpp
 	)
 set (FORMS
 	shooterdialog.ui
