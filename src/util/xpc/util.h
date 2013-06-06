@@ -32,6 +32,8 @@
 #include <util/utilconfig.h>
 #include <interfaces/structures.h>
 
+class IEntityManager;
+
 namespace LeechCraft
 {
 namespace Util
@@ -79,5 +81,22 @@ namespace Util
 			const QString& id, const QStringList& visualPath,
 			int delta = 1, int count = 0,
 			const QString& fullText = QString (), const QString& extendedText = QString ());
+
+	/** @brief Returns the data filter plugins that can handle \em data.
+	 *
+	 * This function queries all available data filters plugins if they
+	 * can handle \em data and returns the list of object instances that
+	 * can handle it. The object instances are guaranteed to implement
+	 * the IDataFilter interface as well as IEntityHandler interface.
+	 *
+	 * The \em manager is used to obtain the list of plugins. It can be
+	 * obtained from the ICoreProxy_ptr object that is passed to your
+	 * plugin's <em>Init()</em> function.
+	 *
+	 * @param[in] data The data to query.
+	 * @param[in] manager The manager used to get the plugins.
+	 * @return The list of data filters that can handle \em data.
+	 */
+	UTIL_API QList<QObject*> GetDataFilters (const QVariant& data, IEntityManager *manager);
 }
 }
