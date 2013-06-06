@@ -32,6 +32,7 @@
 #include <memory>
 #include <QObject>
 #include <QMap>
+#include <interfaces/core/icoreproxy.h>
 #include "hostingservice.h"
 
 class QNetworkReply;
@@ -48,18 +49,16 @@ namespace Imgaste
 		Q_OBJECT
 
 		QNetworkReply *Reply_;
-	private:
 		const HostingService Service_;
 		const Worker_ptr Worker_;
+		const ICoreProxy_ptr Proxy_;
 	public:
 		Poster (HostingService,
 				const QByteArray&, const QString&,
-				QNetworkAccessManager*, QObject* = 0);
+				ICoreProxy_ptr, QObject* = 0);
 	private slots:
 		void handleFinished ();
 		void handleError ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

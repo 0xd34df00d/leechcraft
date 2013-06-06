@@ -33,6 +33,7 @@
 #include <QNetworkReply>
 #include <QtDebug>
 #include <interfaces/structures.h>
+#include <interfaces/core/ientitymanager.h>
 #include <util/util.h>
 
 namespace LeechCraft
@@ -41,13 +42,14 @@ namespace Imgaste
 {
 	Poster::Poster (HostingService service,
 			const QByteArray& data, const QString& format,
-			QNetworkAccessManager *am, QObject *parent)
+			ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
 	, Reply_ (0)
 	, Service_ (service)
 	, Worker_ (MakeWorker (service))
+	, Proxy_ (proxy)
 	{
-		Reply_ = Worker_->Post (data, format, am);
+		Reply_ = Worker_->Post (data, format, proxy->GetNetworkAccessManager ());
 
 		connect (Reply_,
 				SIGNAL (finished ()),
@@ -65,9 +67,10 @@ namespace Imgaste
 
 		QString pasteUrl = Worker_->GetLink (result, Reply_);
 
+		auto em = Proxy_->GetEntityManager ();
 		if (pasteUrl.isEmpty ())
 		{
-			emit gotEntity (Util::MakeNotification ("Auscrie",
+			em->HandleEntity (Util::MakeNotification ("Imgaste",
 					tr ("Page parse failed"), PCritical_));
 			return;
 		}
@@ -77,7 +80,7 @@ namespace Imgaste
 
 		QString text = tr ("Image pasted: %1, the URL was copied to the clipboard")
 			.arg (pasteUrl);
-		emit gotEntity (Util::MakeNotification ("Auscrie", text, PInfo_));
+		em->HandleEntity (Util::MakeNotification ("Imgaste", text, PInfo_));
 
 		deleteLater ();
 	}
@@ -89,7 +92,7 @@ namespace Imgaste
 
 		QString text = tr ("Upload of screenshot failed: %1")
 							.arg (Reply_->errorString ());
-		emit gotEntity (Util::MakeNotification ("Auscrie", text, PCritical_));
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Imgaste", text, PCritical_));
 
 		deleteLater ();
 	}
