@@ -715,8 +715,8 @@ namespace GoogleDrive
 			qDebug () << Q_FUNC_INFO << "there are no items";
 			if (SecondRequestIfNoItems_)
 			{
-				RefreshListing ();
 				SecondRequestIfNoItems_ = false;
+				RefreshListing ();
 			}
 			return;
 		}
