@@ -221,11 +221,21 @@ namespace Metida
 			return props;
 		}
 
+
+		QString ToLJTags (const QString& content)
+		{
+			QRegExp rexpOpen ("<lj-poll name=\"(.+)\">\\s*</lj-poll>");
+			rexpOpen.setMinimal (true);
+			QString entry = content;
+			entry.replace (rexpOpen, "<lj-poll-\\1></lj-poll-\\1>");
+			return entry;
+		}
+
 		LJEvent Entry2LJEvent (const Entry& entry)
 		{
 			LJEvent ljEvent;
 			ljEvent.ItemID_ = entry.EntryId_;
-			ljEvent.Event_ = entry.Content_;
+			ljEvent.Event_ = ToLJTags (entry.Content_);
 			ljEvent.DateTime_ = entry.Date_;
 			ljEvent.Subject_ = entry.Subject_;
 			ljEvent.Tags_ = entry.Tags_;
@@ -254,11 +264,29 @@ namespace Metida
 			return map;
 		}
 
+		QString FromLJTags (const QString& content)
+		{
+			QRegExp rexpOpen ("<lj-poll-(.+)>");
+			QRegExp rexpClose ("</lj-poll-(.+)>");
+			rexpOpen.setMinimal (true);
+			rexpClose.setMinimal (true);
+			QString entry = content;
+			if (rexpClose.indexIn (entry) != -1)
+			{
+				entry.replace (rexpOpen, "<lj-poll name=\"\\1\">");
+				entry.replace (rexpClose, "</lj-poll>");
+			}
+			else
+				entry.replace (rexpOpen, "<lj-poll name=\"\\1\" />");
+
+			return entry;
+		}
+
 		Entry LJEvent2Entry (const LJEvent& ljEvent, const QString& login)
 		{
 			Entry entry;
 			entry.EntryId_ = ljEvent.ItemID_;
-			entry.Content_ = ljEvent.Event_;
+			entry.Content_ = FromLJTags (ljEvent.Event_);
 			entry.Date_ = ljEvent.DateTime_;
 			entry.Subject_ = ljEvent.Subject_;
 			entry.Tags_ = ljEvent.Tags_;
@@ -487,16 +515,10 @@ namespace Metida
 
 	void LJAccount::submit (const Entry& entry)
 	{
-		LJEvent ljEvent;
 		LJEventProperties props;
-
 		const QVariantMap& postOptions = entry.PostOptions_;
 
-		ljEvent.Subject_ = entry.Subject_;
-		ljEvent.Event_ = entry.Content_;
-		ljEvent.UseJournal_ = entry.Target_;
-		ljEvent.DateTime_ = entry.Date_;
-		ljEvent.Tags_ = entry.Tags_;
+		LJEvent ljEvent = Entry2LJEvent (entry);
 
 		Access access = static_cast<Access> (postOptions.value ("access").toInt ());
 		ljEvent.Security_ = access < Access::MAXAccess ?
@@ -538,7 +560,7 @@ namespace Metida
 		props.LikeButtons_ = postOptions.value ("likes").toStringList ();
 
 		ljEvent.Props_ = props;
-		ljEvent.Event_.append ("<em style=\"font-size: 0.8em;\">Posted via <a href=\"http://leechcraft.org/plugins-blogique\">LeechCraft Blogique</a>.</em>");
+		ljEvent.Event_.append ("\n<em style=\"font-size: 0.8em;\">Posted via <a href=\"http://leechcraft.org/plugins-blogique\">LeechCraft Blogique</a>.</em>");
 
 		if (!ljEvent.Props_.LikeButtons_.isEmpty ())
 		{
