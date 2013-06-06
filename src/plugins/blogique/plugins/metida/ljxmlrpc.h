@@ -166,7 +166,8 @@ namespace Metida
 	signals:
 		void validatingFinished (bool success);
 		void profileUpdated (const LJProfileData& profile);
-		void error (int code, const QString& msg);
+		void error (int code, const QString& msg,
+				const QString& localizedMsg);
 		void networkError (int code, const QString& msg);
 
 		void eventPosted (const QList<LJEvent>& events);

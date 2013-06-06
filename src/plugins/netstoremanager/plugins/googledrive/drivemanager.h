@@ -148,6 +148,7 @@ namespace GoogleDrive
 		QHash<QNetworkReply*, QString> Reply2Id_;
 		QHash<QNetworkReply*, QString> Reply2FilePath_;
 		QHash<QNetworkReply*, QString> Reply2DownloadAccessToken_;
+		bool SecondRequestIfNoItems_;
 #ifdef HAVE_MAGIC
 		magic_t Magic_;
 #endif
