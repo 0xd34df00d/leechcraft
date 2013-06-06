@@ -45,6 +45,8 @@ namespace Imgaste
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IEntityHandler IDataFilter)
+
+		ICoreProxy_ptr Proxy_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

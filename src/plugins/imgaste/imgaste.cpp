@@ -29,7 +29,10 @@
 
 #include "imgaste.h"
 #include <QIcon>
+#include <QBuffer>
 #include <interfaces/entitytesthandleresult.h>
+#include "hostingservice.h"
+#include "poster.h"
 
 namespace LeechCraft
 {
@@ -37,6 +40,7 @@ namespace Imgaste
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
 	}
 
 	void Plugin::SecondInit ()
@@ -83,6 +87,26 @@ namespace Imgaste
 
 	void Plugin::Handle (Entity e)
 	{
+		const auto& img = e.Entity_.value<QImage> ();
+
+		const auto& format = e.Additional_.value ("Format", "PNG").toString ();
+
+		QByteArray bytes;
+		QBuffer buf (&bytes);
+		buf.open (QIODevice::ReadWrite);
+		if (!img.save (&buf,
+					qPrintable (format),
+					e.Additional_ ["Quality"].toInt ()))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "save failed";
+			return;
+		}
+
+		new Poster (FromString (e.Additional_ ["DataFilter"].toString ()),
+				buf.data (),
+				format,
+				Proxy_);
 	}
 
 	QString Plugin::GetFilterVerb () const
@@ -90,9 +114,23 @@ namespace Imgaste
 		return tr ("Upload image");
 	}
 
+	namespace
+	{
+		IDataFilter::FilterVariant ToFilterVariant (HostingService s)
+		{
+			const auto& str = ToString (s);
+			return { str.toUtf8 (), str, {} };
+		}
+	}
+
 	QList<IDataFilter::FilterVariant> Plugin::GetFilterVariants () const
 	{
-		return {};
+		return
+		{
+			ToFilterVariant (HostingService::DumpBitcheeseNet),
+			ToFilterVariant (HostingService::ImagebinCa),
+			ToFilterVariant (HostingService::SavepicRu)
+		};
 	}
 }
 }
