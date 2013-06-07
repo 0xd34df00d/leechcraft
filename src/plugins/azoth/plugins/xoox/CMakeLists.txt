@@ -84,6 +84,7 @@ set (XOOX_SRCS
 	vcardlisteditdialog.cpp
 	regformhandlerwidget.cpp
 	gwoptionsdialog.cpp
+	gwitemsremovaldialog.cpp
 	clientconnectionerrormgr.cpp
 	accstatusrestorer.cpp
 	accountsettingsholder.cpp
@@ -193,6 +194,7 @@ set (XOOX_FORMS
 	commandresultpage.ui
 	vcardlisteditdialog.ui
 	gwoptionsdialog.ui
+	gwitemsremovaldialog.ui
 	)
 set (XOOX_RESOURCES azothxooxresources.qrc)
 
