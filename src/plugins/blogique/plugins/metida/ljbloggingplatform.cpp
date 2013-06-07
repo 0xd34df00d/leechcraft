@@ -276,11 +276,26 @@ namespace Metida
 		ljCutTag.ToKnown_ = [] (QDomElement& elem)
 		{
 			elem.setTagName ("div");
+			const auto& text = elem.attribute ("text");
+			elem.removeAttribute ("text");
+			elem.setAttribute ("id", "cutTag");
 			elem.setAttribute ("style", "overflow:auto;border-width:3px;border-style:dotted;margin-left:3em;padding:2em 2em;");
+			elem.setAttribute ("text", text);
 		};
 		ljCutTag.FromKnown_ = [] (QDomElement& elem) -> bool
 		{
+			if (!elem.hasAttribute ("id") ||
+					elem.attribute ("id") != "cutTag")
+				return false;
+
+			elem.removeAttribute ("id");
+			elem.removeAttribute ("style");
+			const auto& text = elem.attribute ("text");
+			elem.removeAttribute ("text");
 			elem.setTagName ("lj-cut");
+			if (!text.isEmpty ())
+				elem.setAttribute ("text", text);
+
 			return true;
 		};
 
@@ -350,7 +365,7 @@ namespace Metida
 		};
 		ljEmbedTag.FromKnown_ = [] (QDomElement& elem) -> bool
 		{
-			if (elem.hasAttribute ("id") ||
+			if (!elem.hasAttribute ("id") ||
 					elem.attribute ("id") != "embedTag")
 				return false;
 
