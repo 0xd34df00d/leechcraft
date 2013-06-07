@@ -718,10 +718,9 @@ namespace Xoox
 		ErrorMgr_->Whitelist (id, true);
 	}
 
-	void ClientConnection::SendPacketWCallback (const QXmppIq& packet,
-			QObject *obj, const QByteArray& method)
+	void ClientConnection::SendPacketWCallback (const QXmppIq& packet, PacketCallback_t cb)
 	{
-		AwaitingPacketCallbacks_ [packet.to ()] [packet.id ()] = PacketCallback_t (obj, method);
+		AwaitingPacketCallbacks_ [packet.to ()] [packet.id ()] = cb;
 		Client_->sendPacket (packet);
 	}
 
@@ -1408,19 +1407,15 @@ namespace Xoox
 		if (!AwaitingPacketCallbacks_.contains (iq.from ()))
 			return;
 
-		PacketID2Callback_t& cbs = AwaitingPacketCallbacks_ [iq.from ()];
+		auto& cbs = AwaitingPacketCallbacks_ [iq.from ()];
 		if (!cbs.contains (iq.id ()))
 			return;
 
-		const PacketCallback_t& cb = cbs.take (iq.id ());
+		const auto& cb = cbs.take (iq.id ());
 		if (cbs.isEmpty ())
 			AwaitingPacketCallbacks_.remove (iq.from ());
-		if (!cb.first)
-			return;
 
-		QMetaObject::invokeMethod (cb.first,
-				cb.second,
-				Q_ARG (QXmppIq, iq));
+		cb (iq);
 	}
 
 	void ClientConnection::setKAParams (const QPair<int, int>& p)
