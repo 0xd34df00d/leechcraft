@@ -138,6 +138,14 @@ namespace Poleemery
 		return RatesFromUSD_.value (UserCurrency_, 1) / RatesFromUSD_.value (code, 1);
 	}
 
+	double CurrenciesManager::Convert (const QString& from, const QString& to, double value) const
+	{
+		if (from == to)
+			return value;
+
+		return value * RatesFromUSD_.value (to, 1) / RatesFromUSD_.value (from, 1);
+	}
+
 	void CurrenciesManager::FetchRates (QStringList values)
 	{
 		values.removeAll ("USD");
