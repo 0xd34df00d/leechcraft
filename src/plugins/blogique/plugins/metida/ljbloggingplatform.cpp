@@ -309,20 +309,19 @@ namespace Metida
 		};
 		ljPollTag.FromKnown_ = [] (QDomElement& elem) -> bool
 		{
-			auto aElem = elem.firstChildElement ("div");
-			while (!aElem.isNull ())
-			{
-				if (aElem.attribute ("id") == "pollDiv")
-					break;
-
-				aElem = aElem.nextSiblingElement ("a");
-			}
-			if (aElem.isNull ())
+			if (!elem.hasAttribute ("id") ||
+					elem.attribute ("id") != "pollDiv")
 				return false;
 
-			auto whoView = aElem.attribute ("ljPollWhoview");
-			auto whoVote = aElem.attribute ("ljPollWhovote");
-			auto name = aElem.attribute ("ljPollName");
+			auto whoView = elem.attribute ("ljPollWhoview");
+			auto whoVote = elem.attribute ("ljPollWhovote");
+			auto name = elem.attribute ("ljPollName");
+
+			elem.removeAttribute ("style");
+			elem.removeAttribute ("ljPollWhoview");
+			elem.removeAttribute ("ljPollWhovot");
+			elem.removeAttribute ("ljPollName");
+			elem.removeAttribute ("id");
 
 			elem.setTagName ("lj-poll");
 			elem.setAttribute ("whoview", whoView);
@@ -343,26 +342,23 @@ namespace Metida
 
 			elem.setTagName ("div");
 			elem.setAttribute ("style", "overflow:auto;border-width:2px;border-style:solid;border-radius:5px;margin-left:3em;padding:2em 2em;");
-			elem.setAttribute ("id", id);
+			elem.setAttribute ("id", "embedTag");
+			elem.setAttribute ("name", id);
 			auto textElem = elem.ownerDocument ().createTextNode (tr ("Embeded: %1")
 					.arg (id));
 			elem.appendChild (textElem);
 		};
 		ljEmbedTag.FromKnown_ = [] (QDomElement& elem) -> bool
 		{
-			elem.setTagName ("lj-embed");
-			auto divElem = elem.firstChildElement ("div");
-			while (!divElem.isNull ())
-			{
-				if (divElem.attribute ("id") == "id")
-					break;
-
-				divElem = divElem.nextSiblingElement ();
-			}
-			if (divElem.isNull ())
+			if (elem.hasAttribute ("id") ||
+					elem.attribute ("id") != "embedTag")
 				return false;
 
-			elem.setAttribute ("id", divElem.attribute ("id"));
+			elem.removeAttribute ("style");
+			const auto& id = elem.attribute ("name");
+			elem.removeAttribute ("id");
+			elem.setTagName ("lj-embed");
+			elem.setAttribute ("id", id);
 			return true;
 		};
 
@@ -386,19 +382,14 @@ namespace Metida
 		};
 		ljLikeTag.FromKnown_ = [] (QDomElement& elem) -> bool
 		{
-			elem.setTagName ("lj-like");
-			auto divElem = elem.firstChildElement ("div");
-			while (!divElem.isNull ())
-			{
-				if (divElem.hasAttribute ("likes"))
-					break;
-
-				divElem = divElem.nextSiblingElement ();
-			}
-			if (divElem.isNull ())
+			const auto& likes = elem.attribute ("likes");
+			if (likes.isEmpty ())
 				return false;
 
-			elem.setAttribute ("buttons", divElem.attribute ("likes"));
+			elem.removeAttribute ("likes");
+			elem.removeAttribute ("style");
+			elem.setTagName ("lj-like");
+			elem.setAttribute ("buttons", likes);
 			return true;
 		};
 
