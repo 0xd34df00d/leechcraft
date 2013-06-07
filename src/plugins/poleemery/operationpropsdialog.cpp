@@ -30,13 +30,13 @@
 #include "operationpropsdialog.h"
 #include <QStringListModel>
 #include <QtDebug>
-#include <interfaces/core/itagsmanager.h>
 #include <util/tags/tagscompleter.h>
 #include <interfaces/core/itagsmanager.h>
 #include "structures.h"
 #include "core.h"
 #include "accountsmanager.h"
 #include "operationsmanager.h"
+#include "currenciesmanager.h"
 
 namespace LeechCraft
 {
@@ -70,6 +70,9 @@ namespace Poleemery
 				break;
 			}
 
+		Ui_.AmountCurrency_->addItems (Core::Instance ()
+				.GetCurrenciesManager ()->GetEnabledCurrencies ());
+
 		ReceiptNames_.removeDuplicates ();
 		std::sort (ReceiptNames_.begin (), ReceiptNames_.end ());
 		ExpenseNames_.removeDuplicates ();
@@ -91,8 +94,14 @@ namespace Poleemery
 
 	EntryBase_ptr OperationPropsDialog::GetEntry () const
 	{
-		const auto accId = Accounts_.at (Ui_.AccsBox_->currentIndex ()).ID_;
-		const auto amount = Ui_.Amount_->value ();
+		const auto& acc = Accounts_.at (Ui_.AccsBox_->currentIndex ());
+		const auto accId = acc.ID_;
+
+		auto curMgr = Core::Instance ().GetCurrenciesManager ();
+
+		const auto currency = Ui_.AmountCurrency_->currentText ();
+		const auto amount = curMgr->Convert (currency, acc.Currency_, Ui_.Amount_->value ());
+
 		const auto& name = Ui_.Name_->currentText ();
 		const auto& descr = Ui_.Description_->text ();
 		const auto& dt = Ui_.DateEdit_->dateTime ();
@@ -116,7 +125,10 @@ namespace Poleemery
 
 	void OperationPropsDialog::on_AccsBox__currentIndexChanged (int index)
 	{
-		Ui_.Amount_->setSuffix (" " + Accounts_.at (index).Currency_);
+		const auto& accCur = Accounts_.at (index).Currency_;
+		const auto pos = Ui_.AmountCurrency_->findText (accCur);
+		if (pos >= 0)
+			Ui_.AmountCurrency_->setCurrentIndex (pos);
 	}
 
 	void OperationPropsDialog::on_ExpenseEntry__released ()
