@@ -362,22 +362,8 @@ namespace Xoox
 	{
 		auto result = EntryBase::GetActions ();
 		QString gvVar;
-		bool gwFound = false;
-		Q_FOREACH (const QString& varCand, Variant2Identities_.keys ())
-		{
-			Q_FOREACH (const auto& id, Variant2Identities_ [varCand])
-				if (id.category () == "gateway")
-				{
-					gwFound = true;
-					gvVar = varCand;
-					break;
-				}
 
-			if (gwFound)
-				break;
-		}
-
-		if (gwFound)
+		if (IsGateway (&gvVar))
 		{
 			if (GWActions_.isEmpty ())
 			{
@@ -416,6 +402,20 @@ namespace Xoox
 		result += BlockContact_;
 
 		return result;
+	}
+
+	bool GlooxCLEntry::IsGateway (QString *variant) const
+	{
+		for (const QString& varCand : Variant2Identities_.keys ())
+			for (const auto& id : Variant2Identities_ [varCand])
+				if (id.category () == "gateway")
+				{
+					if (variant)
+						*variant = varCand;
+					return true;
+				}
+
+		return false;
 	}
 
 	AuthStatus GlooxCLEntry::GetAuthStatus () const
