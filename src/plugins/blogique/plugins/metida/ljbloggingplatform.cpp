@@ -377,7 +377,7 @@ namespace Metida
 			auto textElem = elem.ownerDocument ().createTextNode (tr ("Likes: %1")
 					.arg (!buttons.isEmpty () ?
 						buttons :
-						"repost,facebook,twitter,google,vkontakte,surfingbird,tumblr, livejournal"));
+						"repost,facebook,twitter,google,vkontakte,surfingbird,tumblr,livejournal"));
 			elem.appendChild (textElem);
 		};
 		ljLikeTag.FromKnown_ = [] (QDomElement& elem) -> bool
