@@ -63,6 +63,7 @@
 #include "bookmarkeditwidget.h"
 #include "accountsettingsholder.h"
 #include "crypthandler.h"
+#include "gwitemsremovaldialog.h"
 
 namespace LeechCraft
 {
@@ -321,26 +322,20 @@ namespace Xoox
 			const auto& gwJid = entry->GetJID ();
 
 			QList<GlooxCLEntry*> subs;
-			QStringList names;
 			for (auto obj : allEntries)
 			{
 				auto entry = qobject_cast<GlooxCLEntry*> (obj);
 				if (entry && entry->GetJID ().endsWith (gwJid))
-				{
 					subs << entry;
-					names << QString ("%1 (%2)").arg (entry->GetEntryName ()).arg (entry->GetHumanReadableID ());
-				}
 			}
 
-			if (QMessageBox::question (0, "LeechCraft",
-					tr ("Seems like you are removing a gateway. Would you like to remove the "
-						"following contacts as well?") +
-						"<br/><ul><li>" +
-						names.join ("</li><li>") +
-						"</li></ul>",
-					QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-				for (auto entry : subs)
-					RemoveEntry (entry);
+			if (!subs.isEmpty ())
+			{
+				GWItemsRemovalDialog dia (subs);
+				if (dia.exec () == QDialog::Accepted)
+					for (auto entry : subs)
+						RemoveEntry (entry);
+			}
 		}
 
 		ClientConnection_->Remove (entry);
