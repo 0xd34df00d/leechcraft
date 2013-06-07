@@ -96,7 +96,10 @@ namespace Poleemery
 				item->setEditable (false);
 
 			if (cur.Code_ != "USD")
+			{
+				row.first ()->setCheckable (true);
 				row.first ()->setCheckState (Enabled_.contains (cur.Code_) ? Qt::Checked : Qt::Unchecked);
+			}
 
 			Model_->appendRow (row);
 		}
