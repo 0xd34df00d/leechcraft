@@ -206,14 +206,18 @@ namespace Poleemery
 		if (item->column ())
 			return;
 
+		QStringList news;
+
 		const auto& code = item->text ();
 		if (item->checkState () == Qt::Unchecked)
 			Enabled_.removeAll (code);
 		else if (!Enabled_.contains (code))
 		{
+			news << code;
 			Enabled_ << code;
 			Enabled_.sort ();
 		}
+		FetchRates (news);
 
 		XmlSettingsManager::Instance ().setProperty ("EnabledLocales", Enabled_);
 	}
