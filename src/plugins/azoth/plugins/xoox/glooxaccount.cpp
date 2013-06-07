@@ -616,6 +616,54 @@ namespace Xoox
 		SetBookmarks (set);
 	}
 
+	bool GlooxAccount::SupportsFeature (Feature f) const
+	{
+		switch (f)
+		{
+		case Feature::UpdatePass:
+		case Feature::RemoveAcc:
+			return true;
+		}
+
+		return false;
+	}
+
+	void GlooxAccount::UpdateServerPassword (const QString& newPass)
+	{
+		if (newPass.isEmpty ())
+			return;
+
+		const QString nsRegister = "jabber:iq:register";
+
+		QXmppElement userElem;
+		userElem.setTagName ("username");
+		userElem.setValue (SettingsHolder_->GetJID ());
+
+		QXmppElement passElem;
+		passElem.setTagName ("password");
+		passElem.setValue (newPass);
+
+		QXmppElement queryElem;
+		queryElem.setTagName ("query");
+		queryElem.setAttribute ("xmlns", nsRegister);
+		queryElem.appendChild (userElem);
+		queryElem.appendChild (passElem);
+
+		QXmppIq iq (QXmppIq::Set);
+		iq.setTo (GetDefaultReqHost ());
+		iq.setExtensions ({ queryElem });
+
+		ClientConnection_->SendPacketWCallback (iq,
+				[this, newPass] (const QXmppIq& reply) -> void
+				{
+					if (reply.type () == QXmppIq::Result)
+						emit serverPasswordUpdated (newPass);
+
+					Core::Instance ().GetPluginProxy ()->SetPassword (newPass, this);
+					ClientConnection_->SetPassword (newPass);
+				});
+	}
+
 #ifdef ENABLE_CRYPT
 	void GlooxAccount::SetPrivateKey (const QCA::PGPKey& key)
 	{
