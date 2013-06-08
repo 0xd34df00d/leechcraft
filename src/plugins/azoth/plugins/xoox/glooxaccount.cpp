@@ -635,9 +635,12 @@ namespace Xoox
 
 		const QString nsRegister = "jabber:iq:register";
 
+		const auto& jid = SettingsHolder_->GetJID ();
+		const auto aPos = jid.indexOf ('@');
+
 		QXmppElement userElem;
 		userElem.setTagName ("username");
-		userElem.setValue (SettingsHolder_->GetJID ());
+		userElem.setValue (aPos > 0 ? jid.left (aPos) : jid);
 
 		QXmppElement passElem;
 		passElem.setTagName ("password");
