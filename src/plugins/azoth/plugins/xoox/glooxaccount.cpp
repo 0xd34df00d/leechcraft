@@ -656,9 +656,10 @@ namespace Xoox
 		ClientConnection_->SendPacketWCallback (iq,
 				[this, newPass] (const QXmppIq& reply) -> void
 				{
-					if (reply.type () == QXmppIq::Result)
-						emit serverPasswordUpdated (newPass);
+					if (reply.type () != QXmppIq::Result)
+						return;
 
+					emit serverPasswordUpdated (newPass);
 					Core::Instance ().GetPluginProxy ()->SetPassword (newPass, this);
 					ClientConnection_->SetPassword (newPass);
 				});
