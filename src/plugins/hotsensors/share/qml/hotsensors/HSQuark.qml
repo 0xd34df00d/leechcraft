@@ -62,6 +62,7 @@ Rectangle {
                 sourceSize.height: height
 
                 source: "data:," + rawSvg
+                asynchronous: false
             }
 
             Text {
