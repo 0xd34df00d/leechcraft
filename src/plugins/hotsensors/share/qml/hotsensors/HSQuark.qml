@@ -68,6 +68,7 @@ Rectangle {
                 anchors.centerIn: parent
                 text: lastTemp
                 font.pixelSize: parent.height / 3
+                color: colorProxy.color_Panel_TextColor
             }
 
             MouseArea {
