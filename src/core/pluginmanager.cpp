@@ -30,9 +30,6 @@
 #include <stdexcept>
 #include <algorithm>
 #include <functional>
-#if defined __GNUC__
-#include <cxxabi.h>
-#endif
 #include <QApplication>
 #include <QDir>
 #include <QStringList>
@@ -55,6 +52,7 @@
 #include "config.h"
 #include "coreinstanceobject.h"
 #include "shortcutmanager.h"
+#include "loaders/sopluginloader.h"
 
 namespace LeechCraft
 {
@@ -75,8 +73,7 @@ namespace LeechCraft
 			Q_FOREACH (const QString& path, pluginPaths)
 			{
 				qDebug () << "adding" << path;
-				QPluginLoader_ptr loader (new QPluginLoader (path));
-				loader->setLoadHints (QLibrary::ResolveAllSymbolsHint | QLibrary::ExportExternalSymbolsHint);
+				Loaders::IPluginLoader_ptr loader (new Loaders::SOPluginLoader (path));
 				PluginContainers_.push_back (loader);
 			}
 		}
@@ -96,18 +93,18 @@ namespace LeechCraft
 		if (role == Roles::PluginObject)
 		{
 			auto loader = AvailablePlugins_ [index.row ()];
-			if (!loader || !loader->isLoaded ())
+			if (!loader || !loader->IsLoaded ())
 				return QVariant ();
 
-			return QVariant::fromValue<QObject*> (loader->instance ());
+			return QVariant::fromValue<QObject*> (loader->Instance ());
 		}
 		else if (role == Roles::PluginID)
 		{
 			auto loader = AvailablePlugins_ [index.row ()];
-			if (!loader || !loader->isLoaded ())
+			if (!loader || !loader->IsLoaded ())
 				return QVariant ();
 
-			return qobject_cast<IInfo*> (loader->instance ())->GetUniqueID ();
+			return qobject_cast<IInfo*> (loader->Instance ())->GetUniqueID ();
 		}
 		else if (role == Roles::PluginFilename)
 		{
@@ -115,7 +112,7 @@ namespace LeechCraft
 			if (!loader)
 				return QVariant ();
 
-			return loader->fileName ();
+			return loader->GetFileName ();
 		}
 
 		switch (index.column ())
@@ -128,7 +125,7 @@ namespace LeechCraft
 							QSettings settings (QCoreApplication::organizationName (),
 									QCoreApplication::applicationName () + "-pg");
 							settings.beginGroup ("Plugins");
-							settings.beginGroup (AvailablePlugins_.at (index.row ())->fileName ());
+							settings.beginGroup (AvailablePlugins_.at (index.row ())->GetFileName ());
 							QVariant result = settings.value ("Name");
 							settings.endGroup ();
 							settings.endGroup ();
@@ -136,7 +133,7 @@ namespace LeechCraft
 						}
 					case Qt::DecorationRole:
 						{
-							const auto& path = AvailablePlugins_.at (index.row ())->fileName ();
+							const auto& path = AvailablePlugins_.at (index.row ())->GetFileName ();
 							const auto fName = path.toUtf8 ().toBase64 ().replace ('/', '_');
 							const auto& res = QPixmap (QString (IconsDir_.absoluteFilePath (fName)));
 							return res.isNull () ? DefaultPluginIcon_ : res;
@@ -146,7 +143,7 @@ namespace LeechCraft
 							QSettings settings (QCoreApplication::organizationName (),
 									QCoreApplication::applicationName () + "-pg");
 							settings.beginGroup ("Plugins");
-							settings.beginGroup (AvailablePlugins_.at (index.row ())->fileName ());
+							settings.beginGroup (AvailablePlugins_.at (index.row ())->GetFileName ());
 							bool result = settings.value ("AllowLoad", true).toBool ();
 							settings.endGroup ();
 							settings.endGroup ();
@@ -154,7 +151,7 @@ namespace LeechCraft
 						}
 					case Qt::ForegroundRole:
 						return QApplication::palette ()
-							.brush (AvailablePlugins_.at (index.row ())->isLoaded () ?
+							.brush (AvailablePlugins_.at (index.row ())->IsLoaded () ?
 									QPalette::Normal :
 									QPalette::Disabled,
 								QPalette::WindowText);
@@ -167,7 +164,7 @@ namespace LeechCraft
 					QSettings settings (QCoreApplication::organizationName (),
 							QCoreApplication::applicationName () + "-pg");
 					settings.beginGroup ("Plugins");
-					settings.beginGroup (AvailablePlugins_.at (index.row ())->fileName ());
+					settings.beginGroup (AvailablePlugins_.at (index.row ())->GetFileName ());
 					QVariant result = settings.value ("Info");
 					settings.endGroup ();
 					settings.endGroup ();
@@ -175,7 +172,7 @@ namespace LeechCraft
 				}
 				else if (role == Qt::ForegroundRole)
 					return QApplication::palette ()
-						.brush (AvailablePlugins_.at (index.row ())->isLoaded () ?
+						.brush (AvailablePlugins_.at (index.row ())->IsLoaded () ?
 								QPalette::Normal :
 								QPalette::Disabled,
 							QPalette::WindowText);
@@ -199,8 +196,8 @@ namespace LeechCraft
 		else if (index.column () == 2)
 		{
 			const int row = index.row ();
-			if (AvailablePlugins_ [row]->isLoaded () &&
-					qobject_cast<IHaveSettings*> (AvailablePlugins_ [row]->instance ()))
+			if (AvailablePlugins_ [row]->IsLoaded () &&
+					qobject_cast<IHaveSettings*> (AvailablePlugins_ [row]->Instance ()))
 				result |= Qt::ItemIsEditable;
 		}
 		return result;
@@ -240,7 +237,7 @@ namespace LeechCraft
 				role != Qt::CheckStateRole)
 			return false;
 
-		QPluginLoader_ptr loader = AvailablePlugins_.at (index.row ());
+		auto loader = AvailablePlugins_.at (index.row ());
 
 		if (!data.toBool () &&
 				PluginContainers_.contains (loader))
@@ -251,13 +248,13 @@ namespace LeechCraft
 
 			QSet<QObject*> oldSet = QSet<QObject*>::fromList (builder.GetResult ());
 
-			builder.RemoveObject (loader->instance ());
+			builder.RemoveObject (loader->Instance ());
 			builder.Calculate ();
 
 			const QSet<QObject*>& newSet = QSet<QObject*>::fromList (builder.GetResult ());
 			oldSet.subtract (newSet);
 
-			oldSet.remove (loader->instance ());
+			oldSet.remove (loader->Instance ());
 
 			if (!oldSet.isEmpty ())
 			{
@@ -285,9 +282,9 @@ namespace LeechCraft
 					if (!Obj2Loader_.contains (obj))
 						continue;
 
-					QPluginLoader_ptr dl = Obj2Loader_ [obj];
+					auto dl = Obj2Loader_ [obj];
 
-					settings.beginGroup (dl->fileName ());
+					settings.beginGroup (dl->GetFileName ());
 					settings.setValue ("AllowLoad", false);
 					settings.endGroup ();
 
@@ -303,7 +300,7 @@ namespace LeechCraft
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "-pg");
 		settings.beginGroup ("Plugins");
-		settings.beginGroup (loader->fileName ());
+		settings.beginGroup (loader->GetFileName ());
 		settings.setValue ("AllowLoad", data.toBool ());
 		settings.endGroup ();
 		settings.endGroup ();
@@ -374,11 +371,11 @@ namespace LeechCraft
 
 			qDebug () << "trying to unload"
 					<< object;
-			Obj2Loader_ [object]->unload ();
+			Obj2Loader_ [object]->Unload ();
 			Obj2Loader_.remove (object);
 
-			Q_FOREACH (QPluginLoader_ptr loader, PluginContainers_)
-				if (loader->instance () == object)
+			Q_FOREACH (auto loader, PluginContainers_)
+				if (loader->Instance () == object)
 				{
 					PluginContainers_.removeAll (loader);
 					break;
@@ -491,7 +488,7 @@ namespace LeechCraft
 		return qobject_cast<IInfo*> (Plugins_ [pos])->GetInfo ();
 	}
 
-	QList<QPluginLoader_ptr> PluginManager::GetAllAvailable () const
+	QList<Loaders::IPluginLoader_ptr> PluginManager::GetAllAvailable () const
 	{
 		return AvailablePlugins_;
 	}
@@ -511,9 +508,9 @@ namespace LeechCraft
 
 	QString PluginManager::GetPluginLibraryPath (const QObject *object) const
 	{
-		Q_FOREACH (QPluginLoader_ptr loader, PluginContainers_)
-			if (loader->instance () == object)
-				return loader->fileName ();
+		for (auto loader : PluginContainers_)
+			if (loader->Instance () == object)
+				return loader->GetFileName ();
 		return QString ();
 	}
 
@@ -603,8 +600,8 @@ namespace LeechCraft
 
 		for (int i = 0; i < AvailablePlugins_.size (); ++i)
 		{
-			QPluginLoader_ptr dl = AvailablePlugins_.at (i);
-			settings.beginGroup (dl->fileName ());
+			auto dl = AvailablePlugins_.at (i);
+			settings.beginGroup (dl->GetFileName ());
 			settings.setValue ("AllowLoad", state == Qt::Checked);
 			settings.endGroup ();
 			const QModelIndex& dIdx = createIndex (i, 0);
@@ -623,7 +620,7 @@ namespace LeechCraft
 	{
 		if (!FeatureProviders_.contains (feature))
 			return 0;
-		return (*FeatureProviders_ [feature])->instance ();
+		return (*FeatureProviders_ [feature])->Instance ();
 	}
 
 	const QStringList& PluginManager::GetPluginLoadErrors () const
@@ -669,12 +666,9 @@ namespace LeechCraft
 			QString name = fileinfo.canonicalFilePath ();
 			settings.beginGroup (name);
 
-			QPluginLoader_ptr loader (new QPluginLoader (name));
+			Loaders::IPluginLoader_ptr loader (new Loaders::SOPluginLoader (name));
 			if (settings.value ("AllowLoad", true).toBool ())
 				PluginContainers_.push_back (loader);
-
-			loader->setLoadHints (QLibrary::ResolveAllSymbolsHint | QLibrary::ExportExternalSymbolsHint);
-
 			AvailablePlugins_.push_back (loader);
 
 			settings.endGroup ();
@@ -697,111 +691,52 @@ namespace LeechCraft
 			}
 		};
 
-		void IsFile (QPluginLoader_ptr loader)
+		void IsFile (Loaders::IPluginLoader_ptr loader)
 		{
-			if (!QFileInfo (loader->fileName ()).isFile ())
+			if (!QFileInfo (loader->GetFileName ()).isFile ())
 			{
 				qWarning () << "A plugin isn't really a file, aborting load:"
-						<< loader->fileName ();
+						<< loader->GetFileName ();
 				throw Fail (PluginManager::tr ("Refusing to load plugin from %1 because it's not a file.")
-							.arg (QFileInfo (loader->fileName ()).fileName ()));
+							.arg (QFileInfo (loader->GetFileName ()).fileName ()));
 			}
 		}
 
-		namespace
+		void APILevel (Loaders::IPluginLoader_ptr loader)
 		{
-			QString TryDemangle (const QString& errorStr)
+			const auto apiLevel = loader->GetAPILevel ();
+			if (apiLevel != CURRENT_API_LEVEL)
 			{
-#if defined __GNUC__
-				const QString marker ("undefined symbol: ");
-				const auto pos = errorStr.indexOf (marker);
-				if (pos == -1)
-					return QString ();
-
-				auto mangled = errorStr.mid (pos + marker.size ());
-				const auto endPos = mangled.indexOf (')');
-				if (endPos >= 0)
-					mangled = mangled.left (endPos);
-
-				int status = 0;
-				QString result;
-				if (auto rawStr = abi::__cxa_demangle (mangled.toLatin1 ().constData (), 0, 0, &status))
-				{
-					result = QString::fromLatin1 (rawStr);
-					free (rawStr);
-				}
-				return result;
-#else
-				return QString ();
-#endif
-			}
-		}
-
-		void APILevel (QPluginLoader_ptr loader)
-		{
-			const QString& file = loader->fileName ();
-			if (file.isEmpty ())
-				return;
-
-			QLibrary library (file);
-			if (!library.load ())
-			{
-				auto message = "Could not load library " + library.fileName () + "; " + library.errorString ();
-				const auto& demangle = TryDemangle (library.errorString ());
-				if (!demangle.isEmpty ())
-					message += "; demangled name: " + demangle;
-				qWarning () << message.toUtf8 ().constData ();
-				throw Fail (PluginManager::tr ("Could not load library %1: %2.")
-							.arg (file)
-							.arg (library.errorString ()));
-			}
-
-			bool apiMatches = true;
-			typedef quint64 (*APIVersion_t) ();
-			auto getter = reinterpret_cast<APIVersion_t> (library.resolve ("GetAPILevels"));
-			if (!getter)
-			{
-				apiMatches = false;
-				qWarning () << Q_FUNC_INFO
-						<< "unable to resolve function GetAPILevels() in"
-						<< file;
-			}
-
-			if (apiMatches && getter () != CURRENT_API_LEVEL)
-			{
-				apiMatches = false;
 				qWarning () << Q_FUNC_INFO
 						<< "API level mismatch for"
-						<< file
-						<< getter ();
-			}
+						<< loader->GetFileName ();
 
-			if (!apiMatches)
 				throw Fail (PluginManager::tr ("Could not load plugin from %1: API level mismatch.")
-							.arg (file));
+							.arg (loader->GetFileName ()));
+			}
 		}
 
-		void TryLoad (QPluginLoader_ptr loader)
+		void TryLoad (Loaders::IPluginLoader_ptr loader)
 		{
-			loader->load ();
-			if (!loader->isLoaded ())
+			loader->Load ();
+			if (!loader->IsLoaded ())
 			{
 				qWarning () << "Could not load library:"
-					<< loader->fileName ()
+					<< loader->GetFileName ()
 					<< ";"
-					<< loader->errorString ();
+					<< loader->GetErrorString ();
 				throw Fail (PluginManager::tr ("Could not load plugin from %1: %2.")
-							.arg (loader->fileName ())
-							.arg (loader->errorString ()));
+							.arg (loader->GetFileName ())
+							.arg (loader->GetErrorString ()));
 			}
 		}
 
-		void TryInstance (QPluginLoader_ptr loader)
+		void TryInstance (Loaders::IPluginLoader_ptr loader)
 		{
 			QObject *inst = 0;
 			try
 			{
-				inst = loader->instance ();
+				inst = loader->Instance ();
 			}
 			catch (const std::exception& e)
 			{
@@ -809,10 +744,10 @@ namespace LeechCraft
 					<< "failed to construct the instance with"
 					<< e.what ()
 					<< "for"
-					<< loader->fileName ();
+					<< loader->GetFileName ();
 				throw Fail (PluginManager::tr ("Could not load plugin from %1: "
 								"failed to construct plugin instance with exception %2.")
-							.arg (loader->fileName ())
+							.arg (loader->GetFileName ())
 							.arg (e.what ()),
 						true);
 			}
@@ -820,20 +755,20 @@ namespace LeechCraft
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "failed to construct the instance for"
-						<< loader->fileName ();
+						<< loader->GetFileName ();
 				throw Fail (PluginManager::tr ("Could not load plugin from %1: "
 								"failed to construct plugin instance.")
-							.arg (loader->fileName ()),
+							.arg (loader->GetFileName ()),
 						true);
 			}
 
 			if (!qobject_cast<IInfo*> (inst))
 			{
 				qWarning () << "Casting to IInfo failed:"
-						<< loader->fileName ();
+						<< loader->GetFileName ();
 				throw Fail (PluginManager::tr ("Could not load plugin from %1: "
 								"unable to cast plugin instance to IInfo*.")
-							.arg (loader->fileName ()),
+							.arg (loader->GetFileName ()),
 						true);
 			}
 		}
@@ -847,7 +782,7 @@ namespace LeechCraft
 
 		QHash<QByteArray, QString> id2source;
 
-		QList<std::function<void (QPluginLoader_ptr)>> checks;
+		QList<std::function<void (Loaders::IPluginLoader_ptr)>> checks;
 		checks << Checks::IsFile
 				<< Checks::APILevel
 				<< Checks::TryLoad
@@ -855,10 +790,10 @@ namespace LeechCraft
 
 		for (int i = 0; i < PluginContainers_.size (); ++i)
 		{
-			QPluginLoader_ptr loader = PluginContainers_.at (i);
+			auto loader = PluginContainers_.at (i);
 
 			bool success = true;
-			Q_FOREACH (auto check, checks)
+			for (auto check : checks)
 				try
 				{
 					check (loader);
@@ -876,7 +811,7 @@ namespace LeechCraft
 				continue;
 			}
 
-			IInfo *info = qobject_cast<IInfo*> (loader->instance ());
+			IInfo *info = qobject_cast<IInfo*> (loader->Instance ());
 			try
 			{
 				const QByteArray& id = info->GetUniqueID ();
@@ -887,17 +822,17 @@ namespace LeechCraft
 							"from %3.")
 						.arg (QString::fromUtf8 (id.constData ()))
 						.arg (id2source [id])
-						.arg (loader->fileName ());
+						.arg (loader->GetFileName ());
 					PluginContainers_.removeAt (i--);
 				}
 				else
-					id2source [id] = loader->fileName ();
+					id2source [id] = loader->GetFileName ();
 			}
 			catch (const std::exception& e)
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "failed to obtain plugin ID for plugin from"
-						<< loader->fileName ()
+						<< loader->GetFileName ()
 						<< "with error:"
 						<< e.what ();
 				PluginContainers_.removeAt (i--);
@@ -907,7 +842,7 @@ namespace LeechCraft
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "failed to obtain plugin ID for plugin from"
-						<< loader->fileName ()
+						<< loader->GetFileName ()
 						<< "with unknown error";
 				PluginContainers_.removeAt (i--);
 				continue;
@@ -917,13 +852,13 @@ namespace LeechCraft
 			QString pinfo = info->GetInfo ();
 			QIcon icon = info->GetIcon ();
 
-			settings.beginGroup (loader->fileName ());
+			settings.beginGroup (loader->GetFileName ());
 			settings.setValue ("Name", name);
 			settings.setValue ("Info", pinfo);
 			settings.remove ("Icon");
 			settings.endGroup ();
 
-			const auto path = loader->fileName ().toUtf8 ().toBase64 ().replace ('/', '_');
+			const auto path = loader->GetFileName ().toUtf8 ().toBase64 ().replace ('/', '_');
 			icon.pixmap (48, 48).save (IconsDir_.absoluteFilePath (path), "PNG", 100);
 		}
 
@@ -932,9 +867,9 @@ namespace LeechCraft
 
 	void PluginManager::FillInstances ()
 	{
-		Q_FOREACH (QPluginLoader_ptr loader, PluginContainers_)
+		Q_FOREACH (auto loader, PluginContainers_)
 		{
-			QObject *inst = loader->instance ();
+			auto inst = loader->Instance ();
 			Plugins_ << inst;
 			Obj2Loader_ [inst] = loader;
 			IPluginAdaptor *ipa = qobject_cast<IPluginAdaptor*> (inst);
