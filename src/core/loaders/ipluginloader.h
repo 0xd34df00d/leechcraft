@@ -59,6 +59,8 @@ namespace Loaders
 		virtual QString GetErrorString () const = 0;
 	};
 
+	qint64 GetLibAPILevel (const QString&);
+
 	typedef std::shared_ptr<IPluginLoader> IPluginLoader_ptr;
 }
 }

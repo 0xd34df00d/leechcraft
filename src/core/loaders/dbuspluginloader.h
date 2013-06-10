@@ -27,52 +27,30 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "sopluginloader.h"
-#include <QPluginLoader>
+#pragma once
+
+#include "ipluginloader.h"
+#include <QString>
 
 namespace LeechCraft
 {
 namespace Loaders
 {
-	SOPluginLoader::SOPluginLoader (const QString& filename)
-	: Loader_ { new QPluginLoader (filename) }
+	class DBusPluginLoader : public IPluginLoader
 	{
-		Loader_->setLoadHints (QLibrary::ResolveAllSymbolsHint | QLibrary::ExportExternalSymbolsHint);
-	}
+		const QString Filename_;
+	public:
+		DBusPluginLoader (const QString&);
 
-	quint64 SOPluginLoader::GetAPILevel ()
-	{
-		return GetLibAPILevel (Loader_->fileName ());
-	}
+		quint64 GetAPILevel ();
 
-	bool SOPluginLoader::Load ()
-	{
-		return Loader_->load ();
-	}
+		bool Load ();
+		bool Unload ();
 
-	bool SOPluginLoader::Unload ()
-	{
-		return Loader_->unload ();
-	}
-
-	QObject* SOPluginLoader::Instance ()
-	{
-		return Loader_->instance ();
-	}
-
-	bool SOPluginLoader::IsLoaded () const
-	{
-		return Loader_->isLoaded ();
-	}
-
-	QString SOPluginLoader::GetFileName () const
-	{
-		return Loader_->fileName ();
-	}
-
-	QString SOPluginLoader::GetErrorString () const
-	{
-		return Loader_->errorString ();
-	}
+		QObject* Instance ();
+		bool IsLoaded () const;
+		QString GetFileName () const;
+		QString GetErrorString () const;
+	};
 }
 }

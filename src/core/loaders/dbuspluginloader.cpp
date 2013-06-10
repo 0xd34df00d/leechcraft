@@ -27,52 +27,50 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "sopluginloader.h"
-#include <QPluginLoader>
+#include "dbuspluginloader.h"
 
 namespace LeechCraft
 {
 namespace Loaders
 {
-	SOPluginLoader::SOPluginLoader (const QString& filename)
-	: Loader_ { new QPluginLoader (filename) }
+	DBusPluginLoader::DBusPluginLoader (const QString& filename)
+	: Filename_ (filename)
 	{
-		Loader_->setLoadHints (QLibrary::ResolveAllSymbolsHint | QLibrary::ExportExternalSymbolsHint);
 	}
 
-	quint64 SOPluginLoader::GetAPILevel ()
+	quint64 DBusPluginLoader::GetAPILevel ()
 	{
-		return GetLibAPILevel (Loader_->fileName ());
+		return GetLibAPILevel (Filename_);
 	}
 
-	bool SOPluginLoader::Load ()
+	bool DBusPluginLoader::Load ()
 	{
-		return Loader_->load ();
+		return false;
 	}
 
-	bool SOPluginLoader::Unload ()
+	bool DBusPluginLoader::Unload ()
 	{
-		return Loader_->unload ();
+		return false;
 	}
 
-	QObject* SOPluginLoader::Instance ()
+	QObject* DBusPluginLoader::Instance ()
 	{
-		return Loader_->instance ();
+		return 0;
 	}
 
-	bool SOPluginLoader::IsLoaded () const
+	bool DBusPluginLoader::IsLoaded () const
 	{
-		return Loader_->isLoaded ();
+		return {};
 	}
 
-	QString SOPluginLoader::GetFileName () const
+	QString DBusPluginLoader::GetFileName () const
 	{
-		return Loader_->fileName ();
+		return Filename_;
 	}
 
-	QString SOPluginLoader::GetErrorString () const
+	QString DBusPluginLoader::GetErrorString () const
 	{
-		return Loader_->errorString ();
+		return {};
 	}
 }
 }

@@ -28,10 +28,57 @@
  **********************************************************************/
 
 #include "ipluginloader.h"
+#if defined __GNUC__
+#include <cxxabi.h>
+#endif
+#include <QLibrary>
 
 namespace LeechCraft
 {
 namespace Loaders
 {
+	namespace
+	{
+		QString TryDemangle (const QString& errorStr)
+		{
+#if defined __GNUC__
+			const QString marker ("undefined symbol: ");
+			const auto pos = errorStr.indexOf (marker);
+			if (pos == -1)
+				return QString ();
+
+			auto mangled = errorStr.mid (pos + marker.size ());
+			const auto endPos = mangled.indexOf (')');
+			if (endPos >= 0)
+				mangled = mangled.left (endPos);
+
+			int status = 0;
+			QString result;
+			if (auto rawStr = abi::__cxa_demangle (mangled.toLatin1 ().constData (), 0, 0, &status))
+			{
+				result = QString::fromLatin1 (rawStr);
+				free (rawStr);
+			}
+			return result;
+#else
+			return QString ();
+#endif
+		}
+	}
+
+	qint64 GetLibAPILevel (const QString& file)
+	{
+		if (file.isEmpty ())
+			return static_cast<quint64> (-1);
+
+		QLibrary library (file);
+		if (!library.load ())
+			return static_cast<quint64> (-1);
+
+		bool apiMatches = true;
+		typedef quint64 (*APIVersion_t) ();
+		auto getter = reinterpret_cast<APIVersion_t> (library.resolve ("GetAPILevels"));
+		return getter ? getter () : static_cast<quint64> (-1);
+	}
 }
 }
