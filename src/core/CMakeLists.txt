@@ -90,6 +90,8 @@ set (SRCS
 	colorthemeengine.cpp
 	rootwindowsmanager.cpp
 	docktoolbarmanager.cpp
+	loaders/ipluginloader.cpp
+	loaders/sopluginloader.cpp
 	)
 set (FORMS
 	commonjobadder.ui
