@@ -168,11 +168,11 @@ namespace Xoox
 	public:
 		typedef std::function<void (const QXmppDiscoveryIq&)> DiscoCallback_t;
 		typedef std::function<void (const QXmppVCardIq&)> VCardCallback_t;
+		typedef std::function<void (QXmppIq)> PacketCallback_t;
 	private:
 		QHash<QString, DiscoCallback_t> AwaitingDiscoInfo_;
 		QHash<QString, DiscoCallback_t> AwaitingDiscoItems_;
 
-		typedef QPair<QPointer<QObject>, QByteArray> PacketCallback_t;
 		typedef QHash<QString, PacketCallback_t> PacketID2Callback_t;
 		QHash<QString, PacketID2Callback_t> AwaitingPacketCallbacks_;
 
@@ -242,7 +242,7 @@ namespace Xoox
 
 		void WhitelistError (const QString&);
 
-		void SendPacketWCallback (const QXmppIq&, QObject*, const QByteArray&);
+		void SendPacketWCallback (const QXmppIq&, PacketCallback_t);
 		void SendMessage (GlooxMessage*);
 		QXmppClient* GetClient () const;
 		QObject* GetCLEntry (const QString& fullJid) const;

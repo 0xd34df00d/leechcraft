@@ -115,7 +115,7 @@ namespace Xoox
 		EntryStatus GetStatus (const QString&) const;
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
-		virtual QList<QAction*> GetActions () const;
+		QList<QAction*> GetActions () const;
 
 		// IAuthable
 		AuthStatus GetAuthStatus () const;
@@ -125,6 +125,8 @@ namespace Xoox
 		void RerequestAuth (const QString&);
 
 		QString GetJID () const;
+
+		bool IsGateway (QString* = 0) const;
 
 		void SetAuthRequested (bool);
 	private:

@@ -84,6 +84,7 @@ set (XOOX_SRCS
 	vcardlisteditdialog.cpp
 	regformhandlerwidget.cpp
 	gwoptionsdialog.cpp
+	gwitemsremovaldialog.cpp
 	clientconnectionerrormgr.cpp
 	accstatusrestorer.cpp
 	accountsettingsholder.cpp
@@ -97,85 +98,6 @@ set (XOOX_SRCS
 	xmppcaptchaiq.cpp
 	xmppcaptchamanager.cpp
 	xmlsettingsmanager.cpp
-	)
-set (XOOX_HEADERS
-	xoox.h
-	glooxprotocol.h
-	glooxaccountconfigurationdialog.h
-	glooxaccountconfigurationwidget.h
-	glooxaccount.h
-	clientconnection.h
-	glooxclentry.h
-	glooxmessage.h
-	joingroupchatwidget.h
-	roomhandler.h
-	roomclentry.h
-	roompublicmessage.h
-	roomparticipantentry.h
-	entrybase.h
-	util.h
-	core.h
-	vcarddialog.h
-	transfermanager.h
-	transferjob.h
-	bookmarkeditwidget.h
-	formbuilder.h
-	roomconfigwidget.h
-	capsmanager.h
-	capsdatabase.h
-	sdsession.h
-	sdmodel.h
-	affiliationselectordialog.h
-	annotationsmanager.h
-	fetchqueue.h
-	legacyformbuilder.h
-	inbandaccountregfirstpage.h
-	inbandaccountregsecondpage.h
-	inbandaccountregthirdpage.h
-	legacyentitytimeext.h
-	pubsubmanager.h
-	pepeventbase.h
-	useractivity.h
-	usermood.h
-	usertune.h
-	privacylistsmanager.h
-	imagemediawidget.h
-	privacylistsconfigdialog.h
-	privacylistsitemdialog.h
-	adhoccommandmanager.h
-	executecommanddialog.h
-	userlocation.h
-	selfcontact.h
-	adhoccommandserver.h
-	adhoccommand.h
-	lastactivitymanager.h
-	riexmanager.h
-	jabbersearchsession.h
-	jabbersearchmanager.h
-	useravatarmanager.h
-	useravatardata.h
-	useravatarmetadata.h
-	sdmanager.h
-	msgarchivingmanager.h
-	avatarsstorage.h
-	xep0232handler.h
-	pepmicroblog.h
-	vcardlisteditdialog.h
-	regformhandlerwidget.h
-	gwoptionsdialog.h
-	clientconnectionerrormgr.h
-	accstatusrestorer.h
-	accountsettingsholder.h
-	crypthandler.h
-	serverinfostorage.h
-	inforequestpolicymanager.h
-	xmppannotationsiq.h
-	xmppannotationsmanager.h
-	xmppbobiq.h
-	xmppbobmanager.h
-	xmppcaptchaiq.h
-	xmppcaptchamanager.h
-	xmlsettingsmanager.h
 	)
 set (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
@@ -193,6 +115,7 @@ set (XOOX_FORMS
 	commandresultpage.ui
 	vcardlisteditdialog.ui
 	gwoptionsdialog.ui
+	gwitemsremovaldialog.ui
 	)
 set (XOOX_RESOURCES azothxooxresources.qrc)
 
@@ -200,21 +123,16 @@ if (ENABLE_CRYPT)
 	add_definitions (-DENABLE_CRYPT)
 
 	set (XOOX_SRCS ${XOOX_SRCS} pgpmanager.cpp)
-	set (XOOX_HEADERS ${XOOX_HEADERS} pgpmanager.h)
 endif ()
 
 if (ENABLE_MEDIACALLS)
 	add_definitions (-DENABLE_MEDIACALLS)
 
 	set (XOOX_SRCS ${XOOX_SRCS} mediacall.cpp)
-	set (XOOX_HEADERS ${XOOX_HEADERS} mediacall.h)
 endif ()
 
 CreateTrs ("azoth_xoox" "de;en;es;fr;it;ru_RU;uk_UA" XOOX_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("azoth_xoox" "en;ru_RU" "${XOOX_SRCS}" "${XOOX_FORMS}" "azothxooxsettings.xml")
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (XOOX_MOC_SRCS ${XOOX_HEADERS})
-endif ()
 QT4_WRAP_UI (XOOX_UIS_H ${XOOX_FORMS})
 QT4_ADD_RESOURCES (XOOX_RCCS ${XOOX_RESOURCES})
 

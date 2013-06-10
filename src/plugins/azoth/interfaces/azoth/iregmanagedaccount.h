@@ -29,49 +29,32 @@
 
 #pragma once
 
-#include <QObject>
-#include <QStringList>
-#include <QHash>
-
-class QAbstractItemModel;
-class QStandardItemModel;
-class QStandardItem;
+#include <QFlags>
+#include <QMetaType>
 
 namespace LeechCraft
 {
-namespace Poleemery
+namespace Azoth
 {
-	class CurrenciesManager : public QObject
+	class IRegManagedAccount
 	{
-		Q_OBJECT
-
-		QStringList Currencies_;
-		QStandardItemModel *Model_;
-
-		QStringList Enabled_;
-
-		QHash<QString, double> RatesFromUSD_;
-
-		QString UserCurrency_;
 	public:
-		CurrenciesManager (QObject* = 0);
+		virtual ~IRegManagedAccount () {}
 
-		void Load ();
+		enum class Feature
+		{
+			UpdatePass,
+			RemoveAcc
+		};
 
-		const QStringList& GetEnabledCurrencies () const;
-		QAbstractItemModel* GetSettingsModel () const;
+		virtual bool SupportsFeature (Feature) const = 0;
 
-		QString GetUserCurrency () const;
-		double ToUserCurrency (const QString&, double) const;
-		double GetUserCurrencyRate (const QString& from) const;
-		double Convert (const QString& from, const QString& to, double value) const;
-	private:
-		void FetchRates (QStringList);
-	private slots:
-		void gotRateReply ();
-		void handleItemChanged (QStandardItem*);
-	signals:
-		void currenciesUpdated ();
+		virtual void UpdateServerPassword (const QString& newPass) = 0;
+	protected:
+		virtual void serverPasswordUpdated (const QString&) = 0;
 	};
 }
 }
+
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::IRegManagedAccount,
+		"org.Deviant.LeechCraft.Azoth.IRegManagedAccount/1.0");

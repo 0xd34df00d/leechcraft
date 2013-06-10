@@ -140,6 +140,7 @@ set (SRCS
 	keyboardrosterfixer.cpp
 	statuschangemenumanager.cpp
 	customchatstylemanager.cpp
+	advancedpermchangedialog.cpp
 	)
 set (FORMS
 	mainwidget.ui
@@ -169,6 +170,7 @@ set (FORMS
 	filesenddialog.ui
 	colorlisteditorwidget.ui
 	userslistwidget.ui
+	advancedpermchangedialog.ui
 	)
 set (RESOURCES azothresources.qrc)
 

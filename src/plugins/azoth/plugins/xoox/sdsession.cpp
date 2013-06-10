@@ -399,7 +399,13 @@ namespace Xoox
 		elem.setAttribute ("xmlns", "jabber:iq:register");
 		iq.setExtensions (QXmppElementList () << elem);
 
-		Account_->GetClientConnection ()->SendPacketWCallback (iq, this, "handleRegistrationForm");
+		QPointer<SDSession> safeThis;
+		Account_->GetClientConnection ()->SendPacketWCallback (iq,
+				[safeThis] (const QXmppIq& iq)
+				{
+					if (safeThis)
+						safeThis->handleRegistrationForm (iq);
+				});
 	}
 
 	void SDSession::ExecuteAdHoc (const SDSession::ItemInfo& info)

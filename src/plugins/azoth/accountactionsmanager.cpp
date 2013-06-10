@@ -43,6 +43,7 @@
 #include "interfaces/azoth/ihaveservicediscovery.h"
 #include "interfaces/azoth/ihaveconsole.h"
 #include "interfaces/azoth/ihavemicroblogs.h"
+#include "interfaces/azoth/iregmanagedaccount.h"
 #include "core.h"
 #include "joinconferencedialog.h"
 #include "bookmarksmanagerdialog.h"
@@ -70,6 +71,7 @@ namespace Azoth
 	, AccountSetLocation_ (new QAction (tr ("Set location..."), this))
 	, AccountSD_ (new QAction (tr ("Service discovery..."), this))
 	, AccountConsole_ (new QAction (tr ("Console..."), this))
+	, AccountUpdatePassword_ (new QAction (tr ("Update server password..."), this))
 	, AccountRename_ (new QAction (tr ("Rename..."), this))
 	, AccountModify_ (new QAction (tr ("Modify..."), this))
 	{
@@ -79,7 +81,9 @@ namespace Azoth
 		AccountSetMood_->setProperty ("ActionIcon", "face-smile");
 		AccountSD_->setProperty ("ActionIcon", "services");
 		AccountConsole_->setProperty ("ActionIcon", "utilities-terminal");
+		AccountUpdatePassword_->setToolTip (tr ("Updates the account's password on the server"));
 		AccountRename_->setProperty ("ActionIcon", "edit-rename");
+
 		connect (AccountJoinConference_,
 				SIGNAL (triggered ()),
 				this,
@@ -116,6 +120,10 @@ namespace Azoth
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleAccountConsole ()));
+		connect (AccountUpdatePassword_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleUpdatePassword ()));
 		connect (AccountRename_,
 				SIGNAL (triggered ()),
 				this,
@@ -211,6 +219,10 @@ namespace Azoth
 			actions << AccountConsole_;
 
 		actions << Util::CreateSeparator (menu);
+
+		if (auto managed = qobject_cast<IRegManagedAccount*> (account->GetQObject ()))
+			if (managed->SupportsFeature (IRegManagedAccount::Feature::UpdatePass))
+				actions << AccountUpdatePassword_;
 
 		if (account->GetAccountFeatures () & IAccount::FRenamable)
 			actions << AccountRename_;
@@ -420,6 +432,25 @@ namespace Azoth
 		}
 
 		emit gotConsoleWidget (Account2CW_ [account]);
+	}
+
+	void AccountActionsManager::handleUpdatePassword ()
+	{
+		auto account = GetAccountFromSender (sender (), Q_FUNC_INFO);
+		if (!account)
+			return;
+
+		const auto& name = account->GetAccountName ();
+		const auto& pass = QInputDialog::getText (0,
+				tr ("Change password"),
+				tr ("Enter new password for account %1 (the password will be updated on server):")
+					.arg (name),
+				QLineEdit::Password);
+		if (pass.isEmpty ())
+			return;
+
+		auto managed = qobject_cast<IRegManagedAccount*> (account->GetQObject ());
+		managed->UpdateServerPassword (pass);
 	}
 
 	void AccountActionsManager::handleAccountRename ()

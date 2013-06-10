@@ -217,25 +217,31 @@ namespace Poleemery
 			double income = 0;
 			double savings = 0;
 			QMap<QString, double> cat2amount;
+
+			auto accsMgr = Core::Instance ().GetAccsManager ();
+			auto curMgr = Core::Instance ().GetCurrenciesManager ();
 			for (auto entry : GetLastEntries (days))
 			{
+				auto acc = accsMgr->GetAccount (entry->AccountID_);
+				const auto amount = curMgr->ToUserCurrency (acc.Currency_, entry->Amount_);
+
 				switch (entry->GetType ())
 				{
 				case EntryType::Expense:
 				{
 					auto expense = std::dynamic_pointer_cast<ExpenseEntry> (entry);
 					if (expense->Categories_.isEmpty ())
-						cat2amount [QObject::tr ("uncategorized")] += expense->Amount_;
+						cat2amount [QObject::tr ("uncategorized")] += amount;
 					else
 						for (const auto& cat : expense->Categories_)
-							cat2amount [cat] += expense->Amount_;
+							cat2amount [cat] += amount;
 
-					savings -= entry->Amount_;
+					savings -= amount;
 					break;
 				}
 				case EntryType::Receipt:
-					income += entry->Amount_;
-					savings += entry->Amount_;
+					income += amount;
+					savings += amount;
 					break;
 				}
 			}
