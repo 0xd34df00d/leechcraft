@@ -32,6 +32,8 @@
 #include "ipluginloader.h"
 #include <QString>
 
+class QProcess;
+
 namespace LeechCraft
 {
 namespace Loaders
@@ -39,6 +41,9 @@ namespace Loaders
 	class DBusPluginLoader : public IPluginLoader
 	{
 		const QString Filename_;
+		bool IsLoaded_;
+
+		std::shared_ptr<QProcess> Proc_;
 	public:
 		DBusPluginLoader (const QString&);
 

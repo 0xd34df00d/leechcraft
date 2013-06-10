@@ -27,66 +27,10 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "dbuspluginloader.h"
-#include <QProcess>
-#include <interfaces/iinfo.h>
+#include <QApplication>
 
-namespace LeechCraft
+int main (int argc, char **argv)
 {
-namespace Loaders
-{
-	DBusPluginLoader::DBusPluginLoader (const QString& filename)
-	: Filename_ (filename)
-	, IsLoaded_ (false)
-	{
-	}
-
-	quint64 DBusPluginLoader::GetAPILevel ()
-	{
-		return GetLibAPILevel (Filename_);
-	}
-
-	bool DBusPluginLoader::Load ()
-	{
-		if (IsLoaded ())
-			return true;
-
-		Proc_->start ("lc_plugin_wrapper");
-		if (!Proc_->waitForStarted ())
-			return false;
-
-		return true;
-	}
-
-	bool DBusPluginLoader::Unload ()
-	{
-		if (!IsLoaded ())
-			return true;
-
-		return true;
-	}
-
-	QObject* DBusPluginLoader::Instance ()
-	{
-		if (!IsLoaded () && !Load ())
-			return 0;
-
-		return 0;
-	}
-
-	bool DBusPluginLoader::IsLoaded () const
-	{
-		return IsLoaded_;
-	}
-
-	QString DBusPluginLoader::GetFileName () const
-	{
-		return Filename_;
-	}
-
-	QString DBusPluginLoader::GetErrorString () const
-	{
-		return {};
-	}
-}
+	QApplication app (argc, argv);
+	return app.exec ();
 }

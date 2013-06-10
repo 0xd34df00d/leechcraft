@@ -138,6 +138,7 @@ target_link_libraries (leechcraft
 		${LEECHCRAFT_LIBRARIES}
 		${ADDITIONAL_LIBS}
 		)
+
 install (TARGETS leechcraft DESTINATION ${LC_BINDIR})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES coresettings.xml DESTINATION ${LC_SETTINGS_DEST})
@@ -145,3 +146,5 @@ install (FILES coresettings.xml DESTINATION ${LC_SETTINGS_DEST})
 if (USE_QT5)
 	QT5_USE_MODULES (leechcraft Gui Network Widgets Xml Sql Script Concurrent DBus Svg)
 endif ()
+
+add_subdirectory (loaders/dbus)
