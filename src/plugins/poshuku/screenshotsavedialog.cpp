@@ -32,8 +32,17 @@
 #include <QImageWriter>
 #include <QBuffer>
 #include <QTimer>
+#include <QFileDialog>
+#include <QDesktopServices>
+#include <QMessageBox>
 #include <QtDebug>
 #include <util/util.h>
+#include <util/xpc/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/idatafilter.h>
+#include <interfaces/ientityhandler.h>
+#include "core.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -48,7 +57,7 @@ namespace Poshuku
 	{
 		PixmapHolder_->setAlignment (Qt::AlignTop | Qt::AlignLeft);
 		Ui_.setupUi (this);
-	
+
 		QList<QByteArray> formats = QImageWriter::supportedImageFormats ();
 		formats.removeAll ("ico");
 		if (formats.contains ("jpg"))
@@ -59,32 +68,94 @@ namespace Poshuku
 			Ui_.FormatCombobox_->addItem (i->toUpper ());
 		if (formats.contains ("png"))
 			Ui_.FormatCombobox_->setCurrentIndex (formats.indexOf ("png"));
-	
+
 		Ui_.Scroller_->setWidget (PixmapHolder_);
+
+		auto proxy = Core::Instance ().GetProxy ();
+		const auto& dfs = Util::GetDataFilters (QVariant::fromValue (Source_.toImage ()),
+				proxy->GetEntityManager ());
+		for (auto df : dfs)
+		{
+			auto idf = qobject_cast<IDataFilter*> (df);
+			for (const auto& var : idf->GetFilterVariants ())
+			{
+				Ui_.ActionBox_->addItem (var.Icon_, var.Name_);
+				Filters_.append ({ df, var.ID_ });
+			}
+		}
+
+		Ui_.ActionBox_->addItem (proxy->GetIcon ("document-save"), tr ("Save"));
 	}
-	
-	QByteArray ScreenShotSaveDialog::Save ()
+
+	void ScreenShotSaveDialog::accept ()
 	{
-		QString format = Ui_.FormatCombobox_->currentText ();
-		int quality = Ui_.QualitySlider_->value ();
-	
-		QBuffer renderBuffer;
-		Source_.save (&renderBuffer, qPrintable (format), quality);
-		return renderBuffer.data ();
+		const auto idx = Ui_.ActionBox_->currentIndex ();
+		if (idx >= Filters_.size ())
+			Save ();
+		else
+		{
+			const auto& filter = Filters_.value (idx);
+			auto e = Util::MakeEntity (QVariant::fromValue (Source_.toImage ()),
+					{},
+					{},
+					"x-leechcraft/data-filter-request");
+
+			e.Additional_ ["Format"] = Ui_.FormatCombobox_->currentText ();
+			e.Additional_ ["Quality"] = Ui_.QualitySlider_->value ();
+
+			e.Additional_ ["FilterVariant"] = filter.ID_;
+
+			auto ieh = qobject_cast<IEntityHandler*> (filter.Object_);
+			ieh->Handle (e);
+		}
+
+		QDialog::accept ();
 	}
-	
+
+	void ScreenShotSaveDialog::Save ()
+	{
+		const auto defLoc = QDesktopServices::storageLocation (QDesktopServices::DocumentsLocation);
+		const auto& filename = QFileDialog::getSaveFileName (this,
+				tr ("Save screenshot"),
+				XmlSettingsManager::Instance ()->Property ("ScreenshotsLocation",
+					defLoc).toString ());
+		if (filename.isEmpty ())
+			return;
+
+		XmlSettingsManager::Instance ()->setProperty ("ScreenshotsLocation", filename);
+
+		QFile file (filename);
+		if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
+		{
+			QMessageBox::critical (this,
+					"LeechCraft",
+					tr ("Could not open %1 for write")
+						.arg (filename));
+			return;
+		}
+
+		const auto& format = Ui_.FormatCombobox_->currentText ();
+		int quality = Ui_.QualitySlider_->value ();
+
+		if (!Source_.save (&file, qPrintable (format), quality))
+			QMessageBox::critical (this,
+					"LeechCraft",
+					tr ("Could not write screenshot to %1")
+						.arg (filename));
+	}
+
 	void ScreenShotSaveDialog::ScheduleRender ()
 	{
 		if (RenderScheduled_)
 			return;
-	
+
 		QTimer::singleShot (500,
 				this,
 				SLOT (render ()));
-	
+
 		RenderScheduled_ = true;
 	}
-	
+
 	void ScreenShotSaveDialog::render ()
 	{
 		RenderScheduled_ = false;
@@ -95,10 +166,10 @@ namespace Poshuku
 			PixmapHolder_->resize (1, 1);
 			return;
 		}
-	
+
 		QString format = Ui_.FormatCombobox_->currentText ();
 		int quality = Ui_.QualitySlider_->value ();
-	
+
 		QBuffer renderBuffer;
 		Source_.save (&renderBuffer, qPrintable (format), quality);
 		QByteArray renderData = renderBuffer.data ();
@@ -107,12 +178,12 @@ namespace Poshuku
 		PixmapHolder_->setPixmap (Rendered_);
 		PixmapHolder_->resize (Rendered_.size ());
 	}
-	
+
 	void ScreenShotSaveDialog::on_QualitySlider__valueChanged ()
 	{
 		ScheduleRender ();
 	}
-	
+
 	void ScreenShotSaveDialog::on_FormatCombobox__currentIndexChanged ()
 	{
 		ScheduleRender ();

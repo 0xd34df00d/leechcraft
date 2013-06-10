@@ -27,77 +27,40 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "requestbuilder.h"
-#include <QUuid>
+#pragma once
+
+#include <QObject>
+#include <interfaces/iinfo.h>
+#include <interfaces/ientityhandler.h>
+#include <interfaces/idatafilter.h>
 
 namespace LeechCraft
 {
-namespace Auscrie
+namespace Imgaste
 {
-	RequestBuilder::RequestBuilder ()
+	class Plugin : public QObject
+				 , public IInfo
+				 , public IEntityHandler
+				 , public IDataFilter
 	{
-		QString rnd = QUuid::createUuid ().toString ();
-		rnd = rnd.mid (1, rnd.size () - 2);
-		rnd += rnd;
-		rnd = rnd.left (55);
+		Q_OBJECT
+		Q_INTERFACES (IInfo IEntityHandler IDataFilter)
 
-		Boundary_ = "----------";
-		Boundary_ += rnd;
-	}
+		ICoreProxy_ptr Proxy_;
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-	void RequestBuilder::AddPair (const QString& name, const QString& value)
-	{
-		Result_ += "--";
-		Result_ += Boundary_;
-		Result_ += "\r\n";
-		Result_ += "Content-Disposition: form-data; name=\"";
-		Result_ += name.toAscii();
-		Result_ += "\"";
-		Result_ += "\r\n\r\n";
-		Result_ += value.toUtf8();
-		Result_ += "\r\n";
-	}
+		EntityTestHandleResult CouldHandle (const Entity&) const;
+		void Handle (Entity);
 
-	void RequestBuilder::AddFile (const QString& format,
-			const QString& name, const QByteArray& imageData)
-	{
-		Result_ += "--";
-		Result_ += Boundary_;
-		Result_ += "\r\n";
-		Result_ += "Content-Disposition: form-data; name=\"";
-		Result_ += name.toAscii ();
-		Result_ += "\"; ";
-		Result_ += "filename=\"";
-		Result_ += QString ("screenshot.%1")
-			.arg (format.toLower ())
-			.toAscii ();
-		Result_ += "\"";
-		Result_ += "\r\n";
-		Result_ += "Content-Type: ";
-		if (format.toLower () == "jpg")
-			Result_ += "image/jpeg";
-		else
-			Result_ += "image/png";
-		Result_ += "\r\n\r\n";
-
-		Result_ += imageData;
-		Result_ += "\r\n";
-	}
-
-	QByteArray RequestBuilder::Build ()
-	{
-		QByteArray formed = Result_;
-
-		formed += "--";
-		formed += Boundary_;
-		formed += "--";
-
-		return formed;
-	}
-
-	QString RequestBuilder::GetBoundary () const
-	{
-		return Boundary_;
-	}
+		QString GetFilterVerb () const;
+		QList<FilterVariant> GetFilterVariants () const;
+	};
 }
 }

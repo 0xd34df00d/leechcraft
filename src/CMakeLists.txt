@@ -183,6 +183,7 @@ option (ENABLE_DOLOZHEE "Build Dolozhee, the feature request and bug reporter" $
 option (ENABLE_GACTS "Build Global Actions provider plugin" ${WITH_PLUGINS})
 option (ENABLE_HOTSENSORS "Build HotSensors, temperature sensors quark" ${WITH_PLUGINS})
 option (ENABLE_HOTSTREAMS "Build HotStreams, radio streams provider module" ${WITH_PLUGINS})
+option (ENABLE_IMGASTE "Build Imgaste, simple image paster plugin" ${WITH_PLUGINS})
 option (ENABLE_KBSWITCH "Build KBSwitch, a keyboard plugin" ${WITH_PLUGINS})
 option (ENABLE_KRIGSTASK "Build Krigstask, applications switcher" ${WITH_PLUGINS})
 option (ENABLE_LACKMAN "Build LackMan, the package manager for LeechCraft" ${WITH_PLUGINS})
@@ -525,6 +526,10 @@ endif ()
 
 if (ENABLE_OTLOZHU)
 	add_subdirectory (plugins/otlozhu)
+endif ()
+
+if (ENABLE_IMGASTE)
+	add_subdirectory (plugins/imgaste)
 endif ()
 
 if (ENABLE_KBSWITCH)

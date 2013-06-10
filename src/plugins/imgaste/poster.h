@@ -31,47 +31,34 @@
 
 #include <memory>
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iremovabledevmanager.h>
-#include <interfaces/iactionsexporter.h>
+#include <QMap>
+#include <interfaces/core/icoreproxy.h>
+#include "hostingservice.h"
+
+class QNetworkReply;
+class QNetworkAccessManager;
 
 namespace LeechCraft
 {
-namespace Vrooby
-{
-	class DevBackend;
-	class TrayView;
+struct Entity;
 
-	class Plugin : public QObject
-				, public IInfo
-				, public IRemovableDevManager
-				, public IActionsExporter
+namespace Imgaste
+{
+	class Poster : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IRemovableDevManager IActionsExporter)
 
-		std::shared_ptr<DevBackend> Backend_;
-		std::shared_ptr<QAction> ActionDevices_;
-		TrayView *TrayView_;
+		QNetworkReply *Reply_;
+		const HostingService Service_;
+		const Worker_ptr Worker_;
+		const ICoreProxy_ptr Proxy_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		QAbstractItemModel* GetDevicesModel () const;
-		void MountDevice (const QString&);
-
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+		Poster (HostingService,
+				const QByteArray&, const QString&,
+				ICoreProxy_ptr, QObject* = 0);
 	private slots:
-		void checkAction ();
-		void showTrayView ();
-	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
-		void gotEntity (const LeechCraft::Entity&);
+		void handleFinished ();
+		void handleError ();
 	};
 }
 }

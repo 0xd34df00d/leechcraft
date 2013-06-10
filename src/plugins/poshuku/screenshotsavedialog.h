@@ -42,15 +42,26 @@ namespace Poshuku
 		Q_OBJECT
 
 		Ui::ScreenShotSaveDialog Ui_;
-		QPixmap Source_;
-		mutable QPixmap Rendered_;
-		mutable QLabel *PixmapHolder_;
+
+		const QPixmap Source_;
+		QPixmap Rendered_;
+		QLabel *PixmapHolder_;
 
 		bool RenderScheduled_;
+
+		struct FilterData
+		{
+			QObject *Object_;
+			QByteArray ID_;
+		};
+		QList<FilterData> Filters_;
 	public:
 		ScreenShotSaveDialog (const QPixmap&, QWidget* = 0);
-		QByteArray Save ();
+
+		void accept ();
 	private:
+		void Save ();
+
 		void ScheduleRender ();
 	private slots:
 		void render ();

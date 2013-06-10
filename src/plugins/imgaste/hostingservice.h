@@ -27,28 +27,41 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AUSCRIE_REQUESTBUILDER_H
-#define PLUGINS_AUSCRIE_REQUESTBUILDER_H
-#include <QString>
+#pragma once
+
+#include <memory>
+
+class QString;
+class QByteArray;
+class QNetworkReply;
+class QNetworkAccessManager;
 
 namespace LeechCraft
 {
-namespace Auscrie
+namespace Imgaste
 {
-	class RequestBuilder
+	enum class HostingService
 	{
-		QByteArray Result_;
-		QString Boundary_;
-	public:
-		RequestBuilder ();
-
-		void AddPair (const QString&, const QString&);
-		void AddFile (const QString&, const QString&, const QByteArray&);
-
-		QByteArray Build ();
-		QString GetBoundary () const;
+		DumpBitcheeseNet,
+		SavepicRu,
+		ImagebinCa
 	};
-}
-}
 
-#endif
+	bool operator< (HostingService, HostingService);
+	QString ToString (HostingService);
+	HostingService FromString (const QString&);
+
+	struct Worker
+	{
+		virtual ~Worker () {}
+
+		virtual QNetworkReply* Post (const QByteArray& imageData,
+				const QString& format, QNetworkAccessManager *am) const = 0;
+		virtual QString GetLink (const QString& contents, QNetworkReply *reply) const = 0;
+	};
+
+	typedef std::unique_ptr<Worker> Worker_ptr;
+
+	Worker_ptr MakeWorker (HostingService);
+}
+}

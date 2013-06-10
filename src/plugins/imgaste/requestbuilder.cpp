@@ -27,51 +27,77 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <memory>
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iremovabledevmanager.h>
-#include <interfaces/iactionsexporter.h>
+#include "requestbuilder.h"
+#include <QUuid>
 
 namespace LeechCraft
 {
-namespace Vrooby
+namespace Imgaste
 {
-	class DevBackend;
-	class TrayView;
-
-	class Plugin : public QObject
-				, public IInfo
-				, public IRemovableDevManager
-				, public IActionsExporter
+	RequestBuilder::RequestBuilder ()
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IRemovableDevManager IActionsExporter)
+		QString rnd = QUuid::createUuid ().toString ();
+		rnd = rnd.mid (1, rnd.size () - 2);
+		rnd += rnd;
+		rnd = rnd.left (55);
 
-		std::shared_ptr<DevBackend> Backend_;
-		std::shared_ptr<QAction> ActionDevices_;
-		TrayView *TrayView_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		Boundary_ = "----------";
+		Boundary_ += rnd;
+	}
 
-		QAbstractItemModel* GetDevicesModel () const;
-		void MountDevice (const QString&);
+	void RequestBuilder::AddPair (const QString& name, const QString& value)
+	{
+		Result_ += "--";
+		Result_ += Boundary_;
+		Result_ += "\r\n";
+		Result_ += "Content-Disposition: form-data; name=\"";
+		Result_ += name.toAscii();
+		Result_ += "\"";
+		Result_ += "\r\n\r\n";
+		Result_ += value.toUtf8();
+		Result_ += "\r\n";
+	}
 
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
-	private slots:
-		void checkAction ();
-		void showTrayView ();
-	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
-		void gotEntity (const LeechCraft::Entity&);
-	};
+	void RequestBuilder::AddFile (const QString& format,
+			const QString& name, const QByteArray& imageData)
+	{
+		Result_ += "--";
+		Result_ += Boundary_;
+		Result_ += "\r\n";
+		Result_ += "Content-Disposition: form-data; name=\"";
+		Result_ += name.toAscii ();
+		Result_ += "\"; ";
+		Result_ += "filename=\"";
+		Result_ += QString ("screenshot.%1")
+			.arg (format.toLower ())
+			.toAscii ();
+		Result_ += "\"";
+		Result_ += "\r\n";
+		Result_ += "Content-Type: ";
+		if (format.toLower () == "jpg")
+			Result_ += "image/jpeg";
+		else
+			Result_ += "image/png";
+		Result_ += "\r\n\r\n";
+
+		Result_ += imageData;
+		Result_ += "\r\n";
+	}
+
+	QByteArray RequestBuilder::Build ()
+	{
+		QByteArray formed = Result_;
+
+		formed += "--";
+		formed += Boundary_;
+		formed += "--";
+
+		return formed;
+	}
+
+	QString RequestBuilder::GetBoundary () const
+	{
+		return Boundary_;
+	}
 }
 }

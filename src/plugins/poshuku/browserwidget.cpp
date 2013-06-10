@@ -1134,39 +1134,8 @@ namespace Poshuku
 		WebView_->page ()->mainFrame ()->render (&painter, clip);
 		WebView_->page ()->setViewportSize (oldSize);
 
-		std::auto_ptr<ScreenShotSaveDialog> dia (new ScreenShotSaveDialog (image, this));
-		if (dia->exec () != QDialog::Accepted)
-			return;
-
-		QString filename = QFileDialog::getSaveFileName (this,
-				tr ("Save screenshot"),
-				XmlSettingsManager::Instance ()->
-					Property ("ScreenshotsLocation",
-						QDesktopServices::storageLocation (
-							QDesktopServices::DocumentsLocation)).toString ());
-		if (filename.isEmpty ())
-			return;
-
-		XmlSettingsManager::Instance ()->setProperty ("ScreenshotsLocation", filename);
-
-		QFile file (filename);
-		if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
-		{
-			QMessageBox::critical (this,
-					"LeechCraft",
-					tr ("Could not open %1 for write")
-						.arg (filename));
-			return;
-		}
-
-		if (!file.write (dia->Save ()))
-		{
-			QMessageBox::critical (this,
-					"LeechCraft",
-					tr ("Could not write screenshot to %1")
-						.arg (filename));
-			return;
-		}
+		ScreenShotSaveDialog dia (image, this);
+		dia.exec ();
 	}
 
 	void BrowserWidget::handleViewSources ()

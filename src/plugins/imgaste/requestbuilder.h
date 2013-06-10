@@ -27,58 +27,26 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AUSCRIE_POSTER_H
-#define PLUGINS_AUSCRIE_POSTER_H
-#include <memory>
-#include <QObject>
-#include <QMap>
+#pragma once
 
-class QNetworkReply;
-class QNetworkAccessManager;
+#include <QString>
 
 namespace LeechCraft
 {
-struct Entity;
-
-namespace Auscrie
+namespace Imgaste
 {
-	struct Worker
+	class RequestBuilder
 	{
-		virtual ~Worker () {}
-
-		virtual QNetworkReply* Post (const QByteArray& imageData,
-				const QString& format, QNetworkAccessManager *am) const = 0;
-		virtual QString GetLink (const QString& contents, QNetworkReply *reply) const = 0;
-	};
-
-	typedef std::shared_ptr<Worker> Worker_ptr;
-
-	class Poster : public QObject
-	{
-		Q_OBJECT
-
-		QNetworkReply *Reply_;
+		QByteArray Result_;
+		QString Boundary_;
 	public:
-		enum HostingService
-		{
-			DumpBitcheeseNet,
-			SavepicRu,
-			ImagebinCa
-		};
-	private:
-		const HostingService Service_;
-		QMap<HostingService, Worker_ptr> Workers_;
-	public:
-		Poster (HostingService,
-				const QByteArray&, const QString&,
-				QNetworkAccessManager*, QObject* = 0);
-	private slots:
-		void handleFinished ();
-		void handleError ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		RequestBuilder ();
+
+		void AddPair (const QString&, const QString&);
+		void AddFile (const QString&, const QString&, const QByteArray&);
+
+		QByteArray Build ();
+		QString GetBoundary () const;
 	};
 }
 }
-
-#endif

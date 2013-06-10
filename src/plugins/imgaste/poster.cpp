@@ -27,45 +27,74 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "util.h"
-#include <util/util.h>
-#include <interfaces/idatafilter.h>
+#include "poster.h"
+#include <QClipboard>
+#include <QApplication>
+#include <QNetworkReply>
+#include <QtDebug>
+#include <interfaces/structures.h>
 #include <interfaces/core/ientitymanager.h>
+#include <util/util.h>
 
 namespace LeechCraft
 {
-namespace Util
+namespace Imgaste
 {
-	Entity MakeAN (const QString& header, const QString& text, Priority priority,
-			const QString& senderID, const QString& cat, const QString& type,
-			const QString& id, const QStringList& visualPath,
-			int delta, int count,
-			const QString& fullText, const QString& extendedText)
+	Poster::Poster (HostingService service,
+			const QByteArray& data, const QString& format,
+			ICoreProxy_ptr proxy, QObject *parent)
+	: QObject (parent)
+	, Reply_ (0)
+	, Service_ (service)
+	, Worker_ (MakeWorker (service))
+	, Proxy_ (proxy)
 	{
-		auto e = MakeNotification (header, text, priority);
-		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = senderID;
-		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = cat;
-		e.Additional_ ["org.LC.AdvNotifications.EventID"] = id;
-		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = visualPath;
-		e.Additional_ ["org.LC.AdvNotifications.EventType"] = type;
-		e.Additional_ ["org.LC.AdvNotifications.FullText"] = fullText.isNull () ? text : fullText;
-		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = extendedText.isNull () ? text : extendedText;
-		if (delta)
-			e.Additional_ ["org.LC.AdvNotifications.DeltaCount"] = delta;
-		else
-			e.Additional_ ["org.LC.AdvNotifications.Count"] = count;
-		return e;
+		Reply_ = Worker_->Post (data, format, proxy->GetNetworkAccessManager ());
+
+		connect (Reply_,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleFinished ()));
+		connect (Reply_,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleError ()));
 	}
 
-	QList<QObject*> GetDataFilters (const QVariant& data, IEntityManager* manager)
+	void Poster::handleFinished ()
 	{
-		const auto& e = MakeEntity (data, QString (), {}, "x-leechcraft/data-filter-request");
-		const auto& handlers = manager->GetPossibleHandlers (e);
+		QString result = Reply_->readAll ();
 
-		QList<QObject*> result;
-		std::copy_if (handlers.begin (), handlers.end (), std::back_inserter (result),
-				[] (QObject *obj) { return qobject_cast<IDataFilter*> (obj); });
-		return result;
+		QString pasteUrl = Worker_->GetLink (result, Reply_);
+
+		auto em = Proxy_->GetEntityManager ();
+		if (pasteUrl.isEmpty ())
+		{
+			em->HandleEntity (Util::MakeNotification ("Imgaste",
+					tr ("Page parse failed"), PCritical_));
+			return;
+		}
+
+		QApplication::clipboard ()->setText (pasteUrl, QClipboard::Clipboard);
+		QApplication::clipboard ()->setText (pasteUrl, QClipboard::Selection);
+
+		QString text = tr ("Image pasted: %1, the URL was copied to the clipboard")
+			.arg (pasteUrl);
+		em->HandleEntity (Util::MakeNotification ("Imgaste", text, PInfo_));
+
+		deleteLater ();
+	}
+
+	void Poster::handleError ()
+	{
+		qWarning () << Q_FUNC_INFO
+			<< Reply_->errorString ();
+
+		QString text = tr ("Upload of screenshot failed: %1")
+							.arg (Reply_->errorString ());
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Imgaste", text, PCritical_));
+
+		deleteLater ();
 	}
 }
 }
