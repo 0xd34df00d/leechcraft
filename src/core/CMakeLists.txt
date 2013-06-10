@@ -6,6 +6,7 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	)
 
 if (NOT USE_QT5)
+	set (QT_USE_QTDBUS TRUE)
 	set (QT_USE_QTNETWORK TRUE)
 	set (QT_USE_QTXML TRUE)
 	set (QT_USE_QTSQL TRUE)
@@ -92,6 +93,7 @@ set (SRCS
 	docktoolbarmanager.cpp
 	loaders/ipluginloader.cpp
 	loaders/sopluginloader.cpp
+	loaders/dbuspluginloader.cpp
 	)
 set (FORMS
 	commonjobadder.ui

@@ -52,12 +52,15 @@
 #include "config.h"
 #include "coreinstanceobject.h"
 #include "shortcutmanager.h"
+#include "application.h"
 #include "loaders/sopluginloader.h"
+#include "loaders/dbuspluginloader.h"
 
 namespace LeechCraft
 {
 	PluginManager::PluginManager (const QStringList& pluginPaths, QObject *parent)
 	: QAbstractItemModel (parent)
+	, DBusMode_ (static_cast<Application*> (qApp)->GetVarMap ().count ("multiprocess"))
 	, IconsDir_ (Util::CreateIfNotExists ("core/pluginicons"))
 	, PluginTreeBuilder_ (new PluginTreeBuilder)
 	, CacheValid_ (false)
@@ -73,7 +76,7 @@ namespace LeechCraft
 			Q_FOREACH (const QString& path, pluginPaths)
 			{
 				qDebug () << "adding" << path;
-				Loaders::IPluginLoader_ptr loader (new Loaders::SOPluginLoader (path));
+				const auto loader = MakeLoader (path);
 				PluginContainers_.push_back (loader);
 			}
 		}
@@ -666,7 +669,7 @@ namespace LeechCraft
 			QString name = fileinfo.canonicalFilePath ();
 			settings.beginGroup (name);
 
-			Loaders::IPluginLoader_ptr loader (new Loaders::SOPluginLoader (name));
+			const auto loader = MakeLoader (name);
 			if (settings.value ("AllowLoad", true).toBool ())
 				PluginContainers_.push_back (loader);
 			AvailablePlugins_.push_back (loader);
@@ -909,6 +912,14 @@ namespace LeechCraft
 		}
 
 		return failedList;
+	}
+
+	Loaders::IPluginLoader_ptr PluginManager::MakeLoader (const QString& filename)
+	{
+		if (DBusMode_)
+			return Loaders::IPluginLoader_ptr (new Loaders::DBusPluginLoader (filename));
+		else
+			return Loaders::IPluginLoader_ptr (new Loaders::SOPluginLoader (filename));
 	}
 
 	QList<PluginManager::Plugins_t::iterator>

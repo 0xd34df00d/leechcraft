@@ -51,6 +51,8 @@ namespace LeechCraft
 		Q_OBJECT
 		Q_INTERFACES (IPluginsManager)
 
+		const bool DBusMode_;
+
 		typedef QList<Loaders::IPluginLoader_ptr> PluginsContainer_t;
 
 		// Only currently loaded plugins
@@ -147,6 +149,8 @@ namespace LeechCraft
 		 * unload the corresponding library.
 		 */
 		void TryUnload (QObjectList);
+
+		Loaders::IPluginLoader_ptr MakeLoader (const QString&);
 
 		QList<Plugins_t::iterator> FindProviders (const QString&);
 		QList<Plugins_t::iterator> FindProviders (const QSet<QByteArray>&);
