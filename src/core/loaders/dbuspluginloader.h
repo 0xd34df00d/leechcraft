@@ -33,6 +33,7 @@
 #include <QString>
 
 class QProcess;
+class QDBusInterface;
 
 namespace LeechCraft
 {
@@ -44,6 +45,7 @@ namespace Loaders
 		bool IsLoaded_;
 
 		std::shared_ptr<QProcess> Proc_;
+		std::shared_ptr<QDBusInterface> CtrlIface_;
 	public:
 		DBusPluginLoader (const QString&);
 
