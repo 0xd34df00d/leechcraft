@@ -568,6 +568,8 @@ namespace CSTP
 		int id = taskdscr->ID_;
 		QString filename = taskdscr->File_->fileName ();
 		QString url = taskdscr->Task_->GetURL ();
+		if (url.size () > 50)
+			url = url.left (50) + "...";
 		QString errorStr = taskdscr->Task_->GetErrorString ();
 		QStringList tags = taskdscr->Tags_;
 
