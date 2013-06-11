@@ -32,6 +32,9 @@
 #include <QtDebug>
 #include <QFileInfo>
 #include <QDesktopServices>
+#include <QMessageBox>
+#include <QMainWindow>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <util/util.h>
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
@@ -1134,6 +1137,15 @@ namespace GoogleDrive
 		if (!map.contains ("error"))
 		{
 			DriveItem it = CreateDriveItem (res);
+			if (it.DownloadUrl_.isEmpty ())
+			{
+				QMessageBox::warning (Core::Instance ().GetProxy ()->GetRootWindowsManager ()->GetPreferredWindow (),
+						"LeechCraft",
+						tr ("This file cannot be downloaded. Use export instead of Download or Open File action"));
+				DownloadsQueue_.removeFirst ();
+				return;
+			}
+
 			if (!access_token.isEmpty ())
 				it.DownloadUrl_.addQueryItem ("access_token", access_token);
 

@@ -93,6 +93,7 @@ namespace NetStoreManager
 		};
 		QPair<TransferOperation, QList<QByteArray>> TransferedIDs_;
 
+		QAction *OpenFile_;
 		QAction *CopyURL_;
 		QAction *Copy_;
 		QAction *Move_;
@@ -162,6 +163,7 @@ namespace NetStoreManager
 		void performRestoreFromTrash (const QList<QByteArray>& ids);
 		void performMoveToTrash (const QList<QByteArray>& ids);
 
+		void flOpenFile ();
 		void flCopy ();
 		void flMove ();
 		void flRename ();

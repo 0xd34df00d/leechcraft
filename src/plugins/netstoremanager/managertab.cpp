@@ -74,6 +74,12 @@ namespace NetStoreManager
 				SLOT (handleFilesViewSectionResized (int, int, int)));
 		Ui_.FilesView_->setContextMenuPolicy (Qt::CustomContextMenu);
 
+		OpenFile_ = new QAction (Proxy_->GetIcon ("system-run"),
+				tr ("Open file"), this);
+		connect (OpenFile_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (flOpenFile ()));
 		CopyURL_ = new QAction (Proxy_->GetIcon ("edit-copy"),
 				tr ("Copy URL..."), this);
 		connect (CopyURL_,
@@ -655,6 +661,10 @@ namespace NetStoreManager
 		sfl->MoveToTrash (ids);
 	}
 
+	void ManagerTab::flOpenFile ()
+	{
+	}
+
 	void ManagerTab::flCopy ()
 	{
 		TransferedIDs_ = { TransferOperation::Copy, GetSelectedIDs () };
@@ -846,6 +856,13 @@ namespace NetStoreManager
 			StorageItem item;
 			if (Id2Item_.contains (id))
 				item = Id2Item_ [id];
+
+			if (item.IsValid () &&
+					!item.IsDirectory_)
+			{
+				menu->insertAction (CopyURL_, OpenFile_);
+				menu->insertSeparator (CopyURL_);
+			}
 
 			if (item.IsValid () &&
 					!item.ExportLinks.isEmpty ())
