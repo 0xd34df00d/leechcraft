@@ -169,12 +169,11 @@ namespace CSTP
 		if (rep)
 		{
 			QFileInfo fi (e.Location_);
-			QString dir = fi.dir ().path ();
+			QString dir = fi.isDir () ? e.Location_ : fi.dir ().path ();
 			QUrl source = e.Additional_ ["SourceURL"].toUrl ();
-			QString file = MakeFilename (source);
-
-			if (fi.isDir ())
-				dir = e.Location_;
+			QString file = e.Additional_.contains ("Filename") ?
+					e.Additional_ ["Filename"].toString () :
+					MakeFilename (source);
 
 			return AddTask (rep,
 					dir,

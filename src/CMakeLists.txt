@@ -620,6 +620,11 @@ add_subdirectory (util)
 add_subdirectory (xmlsettingsdialog)
 add_subdirectory (core)
 
+option (BUILD_CODEGEN "Build LeechCraft bindings generator (development only)" OFF)
+if (BUILD_CODEGEN)
+	add_subdirectory (codegen)
+endif ()
+
 if (UNIX)
 	add_custom_target (data_leechcraft_gz ALL
 		"${CMAKE_CURRENT_SOURCE_DIR}/data/compress"

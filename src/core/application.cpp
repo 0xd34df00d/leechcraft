@@ -110,7 +110,7 @@ namespace LeechCraft
 #endif
 			std::exit (EVersionRequested);
 		}
-		
+
 		QTextCodec::setCodecForCStrings (QTextCodec::codecForName ("UTF-8"));
 
 		if (VarMap_.count ("no-app-catch"))
@@ -243,6 +243,7 @@ namespace LeechCraft
 				("automatic", "the entity is a result of some automatic stuff, not user's actions")
 				("bt", "print backtraces for warning messages into warning.log")
 				("plugin,P", bpo::value<std::vector<std::string>> (), "load only given plugin and ignore already running instances of LC")
+				("multiprocess,M", "load plugins in separate processes")
 				("nolog", "disable custom file logger and print everything to stdout/stderr")
 				("clrsckt", "clear stalled socket, use if you believe previous LC instance has terminated but failed to close its local socket properly")
 				("no-app-catch", "disable exceptions catch-all in QApplication::notify(), useful for debugging purposes")
