@@ -793,7 +793,7 @@ namespace NetStoreManager
 		if (!acc)
 			return;
 
-		acc->Download (GetCurrentID (), QString ());
+		acc->Download (GetCurrentID (), Ui_.FilesView_->currentIndex ().data ().toString ());
 	}
 
 	void ManagerTab::flCopyUrl ()
