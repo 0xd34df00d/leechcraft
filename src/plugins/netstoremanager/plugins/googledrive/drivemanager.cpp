@@ -479,7 +479,8 @@ namespace GoogleDrive
 		else
 			tp |= FromUserInitiated;
 
-		const auto& e = Util::MakeEntity (url, savePath, tp);
+		auto e = Util::MakeEntity (url, savePath, tp);
+		e.Additional_ ["Filename"] = QFileInfo (filePath).fileName ();
 		silent ?
 			Core::Instance ().DelegateEntity (e, filePath) :
 			Core::Instance ().SendEntity (e);
