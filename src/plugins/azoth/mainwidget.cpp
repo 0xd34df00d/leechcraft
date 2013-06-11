@@ -110,8 +110,7 @@ namespace Azoth
 		connect (Core::Instance ().GetChatTabsManager (),
 				SIGNAL (entryMadeCurrent (QObject*)),
 				this,
-				SLOT (handleEntryMadeCurrent (QObject*)),
-				Qt::QueuedConnection);
+				SLOT (handleEntryMadeCurrent (QObject*)));
 		connect (Core::Instance ().GetChatTabsManager (),
 				SIGNAL (entryLostCurrent (QObject*)),
 				this,
