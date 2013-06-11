@@ -27,51 +27,52 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QStringList>
-#include <QHash>
-
-class QAbstractItemModel;
-class QStandardItemModel;
-class QStandardItem;
+#include "dbuswrapper.h"
+#include <QDBusInterface>
+#include <QDBusReply>
 
 namespace LeechCraft
 {
-namespace Poleemery
+namespace Loaders
 {
-	class CurrenciesManager : public QObject
+	DBusWrapper::DBusWrapper (const QString& service)
+	: Service_ (service)
+	, IFace_ (new QDBusInterface (service, "/org/LeechCraft/Plugin"))
 	{
-		Q_OBJECT
+	}
 
-		QStringList Currencies_;
-		QStandardItemModel *Model_;
+	void DBusWrapper::Init (ICoreProxy_ptr proxy)
+	{
+	}
 
-		QStringList Enabled_;
+	void DBusWrapper::SecondInit ()
+	{
+		IFace_->call ("SecondInit");
+	}
 
-		QHash<QString, double> RatesFromUSD_;
+	void DBusWrapper::Release ()
+	{
+		IFace_->call ("Release");
+	}
 
-		QString UserCurrency_;
-	public:
-		CurrenciesManager (QObject* = 0);
+	QByteArray DBusWrapper::GetUniqueID () const
+	{
+		return QDBusReply<QByteArray> (IFace_->call ("GetUniqueID")).value ();
+	}
 
-		void Load ();
+	QString DBusWrapper::GetName () const
+	{
+		return QDBusReply<QString> (IFace_->call ("GetName")).value ();
+	}
 
-		const QStringList& GetEnabledCurrencies () const;
-		QAbstractItemModel* GetSettingsModel () const;
+	QString DBusWrapper::GetInfo () const
+	{
+		return QDBusReply<QString> (IFace_->call ("GetInfo")).value ();
+	}
 
-		QString GetUserCurrency () const;
-		double ToUserCurrency (const QString&, double) const;
-		double GetUserCurrencyRate (const QString& from) const;
-		double Convert (const QString& from, const QString& to, double value) const;
-	private:
-		void FetchRates (QStringList);
-	private slots:
-		void gotRateReply ();
-		void handleItemChanged (QStandardItem*);
-	signals:
-		void currenciesUpdated ();
-	};
+	QIcon DBusWrapper::GetIcon () const
+	{
+		return QDBusReply<QIcon> (IFace_->call ("GetIcon")).value ();
+	}
 }
 }

@@ -6,6 +6,7 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	)
 
 if (NOT USE_QT5)
+	set (QT_USE_QTDBUS TRUE)
 	set (QT_USE_QTNETWORK TRUE)
 	set (QT_USE_QTXML TRUE)
 	set (QT_USE_QTSQL TRUE)
@@ -90,6 +91,10 @@ set (SRCS
 	colorthemeengine.cpp
 	rootwindowsmanager.cpp
 	docktoolbarmanager.cpp
+	loaders/ipluginloader.cpp
+	loaders/sopluginloader.cpp
+	loaders/dbuspluginloader.cpp
+	loaders/dbuswrapper.cpp
 	)
 set (FORMS
 	commonjobadder.ui
@@ -134,6 +139,7 @@ target_link_libraries (leechcraft
 		${LEECHCRAFT_LIBRARIES}
 		${ADDITIONAL_LIBS}
 		)
+
 install (TARGETS leechcraft DESTINATION ${LC_BINDIR})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES coresettings.xml DESTINATION ${LC_SETTINGS_DEST})
@@ -141,3 +147,5 @@ install (FILES coresettings.xml DESTINATION ${LC_SETTINGS_DEST})
 if (USE_QT5)
 	QT5_USE_MODULES (leechcraft Gui Network Widgets Xml Sql Script Concurrent DBus Svg)
 endif ()
+
+add_subdirectory (loaders/dbus)

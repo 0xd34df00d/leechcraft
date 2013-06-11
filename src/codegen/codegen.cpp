@@ -27,51 +27,42 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
+#define __STDC_LIMIT_MACROS
+#define __STDC_CONSTANT_MACROS
 
-#include <QObject>
-#include <QStringList>
-#include <QHash>
+#include <clang/AST/ASTConsumer.h>
+#include <clang/AST/ASTContext.h>
+#include <clang/AST/DeclVisitor.h>
+#include <clang/Basic/Builtins.h>
+#include <clang/Basic/Diagnostic.h>
+#include <clang/Basic/FileManager.h>
+#include <clang/Basic/IdentifierTable.h>
+#include <clang/Basic/SourceManager.h>
+#include <clang/Basic/TargetInfo.h>
+#include <clang/Frontend/CompilerInstance.h>
+#include <clang/Frontend/FrontendActions.h>
+#include <clang/Frontend/TextDiagnosticBuffer.h>
+#include <clang/Lex/HeaderSearch.h>
+#include <clang/Lex/Preprocessor.h>
+#include <clang/Parse/ParseAST.h>
+#include <clang/Parse/Parser.h>
+#include <clang/Sema/Sema.h>
+#include <llvm/IR/LLVMContext.h>
+#include <llvm/Support/Casting.h>
 
-class QAbstractItemModel;
-class QStandardItemModel;
-class QStandardItem;
-
-namespace LeechCraft
+int main ()
 {
-namespace Poleemery
-{
-	class CurrenciesManager : public QObject
-	{
-		Q_OBJECT
+	/*
+	clang::DiagnosticOptions opts;
+	llvm::IntrusiveRefCntPtr<clang::DiagnosticIDs> ids (new clang::DiagnosticIDs);
+	clang::DiagnosticsEngine diag (ids, &opts);
 
-		QStringList Currencies_;
-		QStandardItemModel *Model_;
+	clang::LangOptions langOptions;
+	langOptions.CPlusPlus = 1;
 
-		QStringList Enabled_;
+	clang::TargetOptions targetOptions;
+	targetOptions.Triple = "x86_64";
 
-		QHash<QString, double> RatesFromUSD_;
-
-		QString UserCurrency_;
-	public:
-		CurrenciesManager (QObject* = 0);
-
-		void Load ();
-
-		const QStringList& GetEnabledCurrencies () const;
-		QAbstractItemModel* GetSettingsModel () const;
-
-		QString GetUserCurrency () const;
-		double ToUserCurrency (const QString&, double) const;
-		double GetUserCurrencyRate (const QString& from) const;
-		double Convert (const QString& from, const QString& to, double value) const;
-	private:
-		void FetchRates (QStringList);
-	private slots:
-		void gotRateReply ();
-		void handleItemChanged (QStandardItem*);
-	signals:
-		void currenciesUpdated ();
-	};
-}
+	std::auto_ptr<clang::TargetInfo> targetInfo (clang::TargetInfo::CreateTargetInfo(diag, &targetOptions));
+	*/
 }

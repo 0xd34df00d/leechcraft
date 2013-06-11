@@ -27,51 +27,96 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QStringList>
-#include <QHash>
-
-class QAbstractItemModel;
-class QStandardItemModel;
-class QStandardItem;
+#include "dbuspluginloader.h"
+#include <QProcess>
+#include <QDBusInterface>
+#include <QDBusReply>
+#include <QLocalServer>
+#include <interfaces/iinfo.h>
+#include "dbuswrapper.h"
 
 namespace LeechCraft
 {
-namespace Poleemery
+namespace Loaders
 {
-	class CurrenciesManager : public QObject
+	DBusPluginLoader::DBusPluginLoader (const QString& filename)
+	: Filename_ (filename)
+	, IsLoaded_ (false)
+	, Proc_ (new QProcess)
 	{
-		Q_OBJECT
+	}
 
-		QStringList Currencies_;
-		QStandardItemModel *Model_;
+	quint64 DBusPluginLoader::GetAPILevel ()
+	{
+		return GetLibAPILevel (Filename_);
+	}
 
-		QStringList Enabled_;
+	bool DBusPluginLoader::Load ()
+	{
+		if (IsLoaded ())
+			return true;
 
-		QHash<QString, double> RatesFromUSD_;
+		Proc_->start ("lc_plugin_wrapper");
 
-		QString UserCurrency_;
-	public:
-		CurrenciesManager (QObject* = 0);
+		QLocalServer srv;
+		srv.listen (QString ("lc_waiter_%1").arg (Proc_->pid ()));
 
-		void Load ();
+		if (!Proc_->waitForStarted ())
+			return false;
 
-		const QStringList& GetEnabledCurrencies () const;
-		QAbstractItemModel* GetSettingsModel () const;
+		if (!srv.waitForNewConnection (1000))
+			return false;
 
-		QString GetUserCurrency () const;
-		double ToUserCurrency (const QString&, double) const;
-		double GetUserCurrencyRate (const QString& from) const;
-		double Convert (const QString& from, const QString& to, double value) const;
-	private:
-		void FetchRates (QStringList);
-	private slots:
-		void gotRateReply ();
-		void handleItemChanged (QStandardItem*);
-	signals:
-		void currenciesUpdated ();
-	};
+		const auto& serviceName = QString ("org.LeechCraft.Wrapper_%1").arg (Proc_->pid ());
+		CtrlIface_.reset (new QDBusInterface (serviceName,
+					"/org/LeechCraft/Control",
+					"org.LeechCraft.Control"));
+
+		QDBusReply<bool> reply = CtrlIface_->call ("Load", Filename_);
+		IsLoaded_ = reply.value ();
+
+		if (IsLoaded_)
+			Wrapper_.reset (new DBusWrapper (serviceName));
+
+		return IsLoaded_;
+	}
+
+	bool DBusPluginLoader::Unload ()
+	{
+		if (!IsLoaded ())
+			return true;
+
+		QDBusReply<bool> reply = CtrlIface_->call ("Unload", Filename_);
+		if (reply.value ())
+		{
+			CtrlIface_.reset ();
+			IsLoaded_ = false;
+		}
+
+		return !IsLoaded_;
+	}
+
+	QObject* DBusPluginLoader::Instance ()
+	{
+		if (!IsLoaded () && !Load ())
+			return 0;
+
+		return Wrapper_.get ();
+	}
+
+	bool DBusPluginLoader::IsLoaded () const
+	{
+		return IsLoaded_;
+	}
+
+	QString DBusPluginLoader::GetFileName () const
+	{
+		return Filename_;
+	}
+
+	QString DBusPluginLoader::GetErrorString () const
+	{
+		return {};
+	}
 }
 }

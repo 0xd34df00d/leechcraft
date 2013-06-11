@@ -27,51 +27,52 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QStringList>
-#include <QHash>
-
-class QAbstractItemModel;
-class QStandardItemModel;
-class QStandardItem;
+#include "sopluginloader.h"
+#include <QPluginLoader>
 
 namespace LeechCraft
 {
-namespace Poleemery
+namespace Loaders
 {
-	class CurrenciesManager : public QObject
+	SOPluginLoader::SOPluginLoader (const QString& filename)
+	: Loader_ { new QPluginLoader (filename) }
 	{
-		Q_OBJECT
+		Loader_->setLoadHints (QLibrary::ResolveAllSymbolsHint | QLibrary::ExportExternalSymbolsHint);
+	}
 
-		QStringList Currencies_;
-		QStandardItemModel *Model_;
+	quint64 SOPluginLoader::GetAPILevel ()
+	{
+		return GetLibAPILevel (Loader_->fileName ());
+	}
 
-		QStringList Enabled_;
+	bool SOPluginLoader::Load ()
+	{
+		return Loader_->load ();
+	}
 
-		QHash<QString, double> RatesFromUSD_;
+	bool SOPluginLoader::Unload ()
+	{
+		return Loader_->unload ();
+	}
 
-		QString UserCurrency_;
-	public:
-		CurrenciesManager (QObject* = 0);
+	QObject* SOPluginLoader::Instance ()
+	{
+		return Loader_->instance ();
+	}
 
-		void Load ();
+	bool SOPluginLoader::IsLoaded () const
+	{
+		return Loader_->isLoaded ();
+	}
 
-		const QStringList& GetEnabledCurrencies () const;
-		QAbstractItemModel* GetSettingsModel () const;
+	QString SOPluginLoader::GetFileName () const
+	{
+		return Loader_->fileName ();
+	}
 
-		QString GetUserCurrency () const;
-		double ToUserCurrency (const QString&, double) const;
-		double GetUserCurrencyRate (const QString& from) const;
-		double Convert (const QString& from, const QString& to, double value) const;
-	private:
-		void FetchRates (QStringList);
-	private slots:
-		void gotRateReply ();
-		void handleItemChanged (QStandardItem*);
-	signals:
-		void currenciesUpdated ();
-	};
+	QString SOPluginLoader::GetErrorString () const
+	{
+		return Loader_->errorString ();
+	}
 }
 }

@@ -29,49 +29,38 @@
 
 #pragma once
 
-#include <QObject>
-#include <QStringList>
-#include <QHash>
+#include "ipluginloader.h"
+#include <QString>
 
-class QAbstractItemModel;
-class QStandardItemModel;
-class QStandardItem;
+class QProcess;
+class QDBusInterface;
 
 namespace LeechCraft
 {
-namespace Poleemery
+namespace Loaders
 {
-	class CurrenciesManager : public QObject
+	class DBusWrapper;
+
+	class DBusPluginLoader : public IPluginLoader
 	{
-		Q_OBJECT
+		const QString Filename_;
+		bool IsLoaded_;
 
-		QStringList Currencies_;
-		QStandardItemModel *Model_;
-
-		QStringList Enabled_;
-
-		QHash<QString, double> RatesFromUSD_;
-
-		QString UserCurrency_;
+		std::shared_ptr<QProcess> Proc_;
+		std::shared_ptr<QDBusInterface> CtrlIface_;
+		std::shared_ptr<DBusWrapper> Wrapper_;
 	public:
-		CurrenciesManager (QObject* = 0);
+		DBusPluginLoader (const QString&);
 
-		void Load ();
+		quint64 GetAPILevel ();
 
-		const QStringList& GetEnabledCurrencies () const;
-		QAbstractItemModel* GetSettingsModel () const;
+		bool Load ();
+		bool Unload ();
 
-		QString GetUserCurrency () const;
-		double ToUserCurrency (const QString&, double) const;
-		double GetUserCurrencyRate (const QString& from) const;
-		double Convert (const QString& from, const QString& to, double value) const;
-	private:
-		void FetchRates (QStringList);
-	private slots:
-		void gotRateReply ();
-		void handleItemChanged (QStandardItem*);
-	signals:
-		void currenciesUpdated ();
+		QObject* Instance ();
+		bool IsLoaded () const;
+		QString GetFileName () const;
+		QString GetErrorString () const;
 	};
 }
 }

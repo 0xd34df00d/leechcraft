@@ -29,49 +29,29 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
-#include <QStringList>
-#include <QHash>
-
-class QAbstractItemModel;
-class QStandardItemModel;
-class QStandardItem;
 
 namespace LeechCraft
 {
-namespace Poleemery
+namespace Loaders
 {
-	class CurrenciesManager : public QObject
+	class SOPluginLoader;
+}
+
+namespace DBusRunner
+{
+	class Server : public QObject
 	{
 		Q_OBJECT
+		Q_CLASSINFO ("D-Bus Interface", "org.LeechCraft.Control")
 
-		QStringList Currencies_;
-		QStandardItemModel *Model_;
-
-		QStringList Enabled_;
-
-		QHash<QString, double> RatesFromUSD_;
-
-		QString UserCurrency_;
+		std::shared_ptr<Loaders::SOPluginLoader> Loader_;
 	public:
-		CurrenciesManager (QObject* = 0);
+		Server ();
 
-		void Load ();
-
-		const QStringList& GetEnabledCurrencies () const;
-		QAbstractItemModel* GetSettingsModel () const;
-
-		QString GetUserCurrency () const;
-		double ToUserCurrency (const QString&, double) const;
-		double GetUserCurrencyRate (const QString& from) const;
-		double Convert (const QString& from, const QString& to, double value) const;
-	private:
-		void FetchRates (QStringList);
-	private slots:
-		void gotRateReply ();
-		void handleItemChanged (QStandardItem*);
-	signals:
-		void currenciesUpdated ();
+		Q_INVOKABLE bool Load (const QString& path);
+		Q_INVOKABLE bool Unload (const QString& path);
 	};
 }
 }

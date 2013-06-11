@@ -30,48 +30,32 @@
 #pragma once
 
 #include <QObject>
-#include <QStringList>
-#include <QHash>
+#include <interfaces/iinfo.h>
 
-class QAbstractItemModel;
-class QStandardItemModel;
-class QStandardItem;
+class QDBusInterface;
 
 namespace LeechCraft
 {
-namespace Poleemery
+namespace Loaders
 {
-	class CurrenciesManager : public QObject
+	class DBusWrapper : public QObject
+					  , public IInfo
 	{
 		Q_OBJECT
+		Q_INTERFACES (IInfo)
 
-		QStringList Currencies_;
-		QStandardItemModel *Model_;
-
-		QStringList Enabled_;
-
-		QHash<QString, double> RatesFromUSD_;
-
-		QString UserCurrency_;
+		const QString Service_;
+		std::shared_ptr<QDBusInterface> IFace_;
 	public:
-		CurrenciesManager (QObject* = 0);
+		explicit DBusWrapper (const QString& service);
 
-		void Load ();
-
-		const QStringList& GetEnabledCurrencies () const;
-		QAbstractItemModel* GetSettingsModel () const;
-
-		QString GetUserCurrency () const;
-		double ToUserCurrency (const QString&, double) const;
-		double GetUserCurrencyRate (const QString& from) const;
-		double Convert (const QString& from, const QString& to, double value) const;
-	private:
-		void FetchRates (QStringList);
-	private slots:
-		void gotRateReply ();
-		void handleItemChanged (QStandardItem*);
-	signals:
-		void currenciesUpdated ();
+		void Init (ICoreProxy_ptr proxy);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 	};
 }
 }

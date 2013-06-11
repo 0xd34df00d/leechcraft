@@ -61,6 +61,7 @@ namespace Azoth
 		QAction *AccountSetLocation_;
 		QAction *AccountSD_;
 		QAction *AccountConsole_;
+		QAction *AccountUpdatePassword_;
 		QAction *AccountRename_;
 		QAction *AccountModify_;
 	public:
@@ -78,6 +79,7 @@ namespace Azoth
 		void handleAccountSetLocation ();
 		void handleAccountSD ();
 		void handleAccountConsole ();
+		void handleUpdatePassword ();
 		void handleAccountRename ();
 		void handleAccountModify ();
 

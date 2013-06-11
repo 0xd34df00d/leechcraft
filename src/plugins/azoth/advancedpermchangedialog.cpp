@@ -27,51 +27,35 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QStringList>
-#include <QHash>
-
-class QAbstractItemModel;
-class QStandardItemModel;
-class QStandardItem;
+#include "advancedpermchangedialog.h"
+#include "interfaces/azoth/iclentry.h"
+#include "interfaces/azoth/imucperms.h"
 
 namespace LeechCraft
 {
-namespace Poleemery
+namespace Azoth
 {
-	class CurrenciesManager : public QObject
+	AdvancedPermChangeDialog::AdvancedPermChangeDialog (ICLEntry* entry,
+			const QByteArray& permClass, const QByteArray& perm, QWidget *parent)
+	: QDialog (parent)
 	{
-		Q_OBJECT
+		Ui_.setupUi (this);
 
-		QStringList Currencies_;
-		QStandardItemModel *Model_;
+		auto perms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
+		Ui_.NameLabel_->setText (tr ("Set %1 to %2 for %3")
+					.arg (perms->GetUserString (permClass))
+					.arg (perms->GetUserString (perm))
+					.arg ("<em>" + entry->GetEntryName () + "</em>"));
+	}
 
-		QStringList Enabled_;
+	QString AdvancedPermChangeDialog::GetReason () const
+	{
+		return Ui_.Reason_->text ();
+	}
 
-		QHash<QString, double> RatesFromUSD_;
-
-		QString UserCurrency_;
-	public:
-		CurrenciesManager (QObject* = 0);
-
-		void Load ();
-
-		const QStringList& GetEnabledCurrencies () const;
-		QAbstractItemModel* GetSettingsModel () const;
-
-		QString GetUserCurrency () const;
-		double ToUserCurrency (const QString&, double) const;
-		double GetUserCurrencyRate (const QString& from) const;
-		double Convert (const QString& from, const QString& to, double value) const;
-	private:
-		void FetchRates (QStringList);
-	private slots:
-		void gotRateReply ();
-		void handleItemChanged (QStandardItem*);
-	signals:
-		void currenciesUpdated ();
-	};
+	bool AdvancedPermChangeDialog::IsGlobal () const
+	{
+		return Ui_.ChangeGlobally_->checkState () == Qt::Checked;
+	}
 }
 }

@@ -83,6 +83,8 @@ namespace Azoth
 
 			/** This protocol supports in-band registration: accounts
 			 * could be registered right from the client.
+			 *
+			 * @sa IRegManagedAccount
 			 */
 			PFSupportsInBandRegistration = 0x04,
 

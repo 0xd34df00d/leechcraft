@@ -34,9 +34,9 @@
 #include <QMap>
 #include <QMultiMap>
 #include <QStringList>
-#include <QPluginLoader>
 #include <QDir>
 #include <QIcon>
+#include "loaders/ipluginloader.h"
 #include "interfaces/iinfo.h"
 #include "interfaces/core/ipluginsmanager.h"
 
@@ -45,22 +45,22 @@ namespace LeechCraft
 	class MainWindow;
 	class PluginTreeBuilder;
 
-	typedef std::shared_ptr<QPluginLoader> QPluginLoader_ptr;
-
 	class PluginManager : public QAbstractItemModel
 						, public IPluginsManager
 	{
 		Q_OBJECT
 		Q_INTERFACES (IPluginsManager)
 
-		typedef QList<QPluginLoader_ptr> PluginsContainer_t;
+		const bool DBusMode_;
+
+		typedef QList<Loaders::IPluginLoader_ptr> PluginsContainer_t;
 
 		// Only currently loaded plugins
 		mutable PluginsContainer_t PluginContainers_;
 		typedef QList<QObject*> Plugins_t;
 		mutable Plugins_t Plugins_;
 
-		QMap<QObject*, QPluginLoader_ptr> Obj2Loader_;
+		QMap<QObject*, Loaders::IPluginLoader_ptr> Obj2Loader_;
 
 		// All plugins ever seen
 		PluginsContainer_t AvailablePlugins_;
@@ -103,7 +103,7 @@ namespace LeechCraft
 		QString Name (const Size_t& pos) const;
 		QString Info (const Size_t& pos) const;
 
-		QList<QPluginLoader_ptr> GetAllAvailable () const;
+		QList<Loaders::IPluginLoader_ptr> GetAllAvailable () const;
 		QObjectList GetAllPlugins () const;
 		QString GetPluginLibraryPath (const QObject*) const;
 
@@ -149,6 +149,8 @@ namespace LeechCraft
 		 * unload the corresponding library.
 		 */
 		void TryUnload (QObjectList);
+
+		Loaders::IPluginLoader_ptr MakeLoader (const QString&);
 
 		QList<Plugins_t::iterator> FindProviders (const QString&);
 		QList<Plugins_t::iterator> FindProviders (const QSet<QByteArray>&);

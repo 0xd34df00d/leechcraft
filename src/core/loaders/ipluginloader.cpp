@@ -27,51 +27,58 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QStringList>
-#include <QHash>
-
-class QAbstractItemModel;
-class QStandardItemModel;
-class QStandardItem;
+#include "ipluginloader.h"
+#if defined __GNUC__
+#include <cxxabi.h>
+#endif
+#include <QLibrary>
 
 namespace LeechCraft
 {
-namespace Poleemery
+namespace Loaders
 {
-	class CurrenciesManager : public QObject
+	namespace
 	{
-		Q_OBJECT
+		QString TryDemangle (const QString& errorStr)
+		{
+#if defined __GNUC__
+			const QString marker ("undefined symbol: ");
+			const auto pos = errorStr.indexOf (marker);
+			if (pos == -1)
+				return QString ();
 
-		QStringList Currencies_;
-		QStandardItemModel *Model_;
+			auto mangled = errorStr.mid (pos + marker.size ());
+			const auto endPos = mangled.indexOf (')');
+			if (endPos >= 0)
+				mangled = mangled.left (endPos);
 
-		QStringList Enabled_;
+			int status = 0;
+			QString result;
+			if (auto rawStr = abi::__cxa_demangle (mangled.toLatin1 ().constData (), 0, 0, &status))
+			{
+				result = QString::fromLatin1 (rawStr);
+				free (rawStr);
+			}
+			return result;
+#else
+			return QString ();
+#endif
+		}
+	}
 
-		QHash<QString, double> RatesFromUSD_;
+	qint64 GetLibAPILevel (const QString& file)
+	{
+		if (file.isEmpty ())
+			return static_cast<quint64> (-1);
 
-		QString UserCurrency_;
-	public:
-		CurrenciesManager (QObject* = 0);
+		QLibrary library (file);
+		if (!library.load ())
+			return static_cast<quint64> (-1);
 
-		void Load ();
-
-		const QStringList& GetEnabledCurrencies () const;
-		QAbstractItemModel* GetSettingsModel () const;
-
-		QString GetUserCurrency () const;
-		double ToUserCurrency (const QString&, double) const;
-		double GetUserCurrencyRate (const QString& from) const;
-		double Convert (const QString& from, const QString& to, double value) const;
-	private:
-		void FetchRates (QStringList);
-	private slots:
-		void gotRateReply ();
-		void handleItemChanged (QStandardItem*);
-	signals:
-		void currenciesUpdated ();
-	};
+		bool apiMatches = true;
+		typedef quint64 (*APIVersion_t) ();
+		auto getter = reinterpret_cast<APIVersion_t> (library.resolve ("GetAPILevels"));
+		return getter ? getter () : static_cast<quint64> (-1);
+	}
 }
 }

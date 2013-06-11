@@ -598,10 +598,10 @@ namespace Util
 	{
 		ulong length = 0;
 		Guarded<ulong> data;
-		if (GetWinProp (wid, GetAtom ("_NET_WM_DESKTOP"), &length, data.GetAs<uchar**> (), XA_CARDINAL))
+		if (GetWinProp (wid, GetAtom ("_NET_WM_DESKTOP"), &length, data.GetAs<uchar**> (), XA_CARDINAL) && length)
 			return data [0];
 
-		if (GetWinProp (wid, GetAtom ("_WIN_WORKSPACE"), &length, data.GetAs<uchar**> (), XA_CARDINAL))
+		if (GetWinProp (wid, GetAtom ("_WIN_WORKSPACE"), &length, data.GetAs<uchar**> (), XA_CARDINAL) && length)
 			return data [0];
 
 		return -1;

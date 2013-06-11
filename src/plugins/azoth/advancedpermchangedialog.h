@@ -29,49 +29,24 @@
 
 #pragma once
 
-#include <QObject>
-#include <QStringList>
-#include <QHash>
-
-class QAbstractItemModel;
-class QStandardItemModel;
-class QStandardItem;
+#include <QDialog>
+#include "ui_advancedpermchangedialog.h"
 
 namespace LeechCraft
 {
-namespace Poleemery
+namespace Azoth
 {
-	class CurrenciesManager : public QObject
+	class ICLEntry;
+
+	class AdvancedPermChangeDialog : public QDialog
 	{
-		Q_OBJECT
-
-		QStringList Currencies_;
-		QStandardItemModel *Model_;
-
-		QStringList Enabled_;
-
-		QHash<QString, double> RatesFromUSD_;
-
-		QString UserCurrency_;
+		Ui::AdvancedPermChangeDialog Ui_;
 	public:
-		CurrenciesManager (QObject* = 0);
+		AdvancedPermChangeDialog (ICLEntry *entry,
+				const QByteArray& permClass, const QByteArray& perm, QWidget* = 0);
 
-		void Load ();
-
-		const QStringList& GetEnabledCurrencies () const;
-		QAbstractItemModel* GetSettingsModel () const;
-
-		QString GetUserCurrency () const;
-		double ToUserCurrency (const QString&, double) const;
-		double GetUserCurrencyRate (const QString& from) const;
-		double Convert (const QString& from, const QString& to, double value) const;
-	private:
-		void FetchRates (QStringList);
-	private slots:
-		void gotRateReply ();
-		void handleItemChanged (QStandardItem*);
-	signals:
-		void currenciesUpdated ();
+		QString GetReason () const;
+		bool IsGlobal () const;
 	};
 }
 }

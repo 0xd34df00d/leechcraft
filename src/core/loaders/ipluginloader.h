@@ -29,49 +29,38 @@
 
 #pragma once
 
-#include <QObject>
-#include <QStringList>
-#include <QHash>
+#include <memory>
+#include <QtGlobal>
 
-class QAbstractItemModel;
-class QStandardItemModel;
-class QStandardItem;
+class QString;
+class QObject;
 
 namespace LeechCraft
 {
-namespace Poleemery
+namespace Loaders
 {
-	class CurrenciesManager : public QObject
+	class IPluginLoader
 	{
-		Q_OBJECT
-
-		QStringList Currencies_;
-		QStandardItemModel *Model_;
-
-		QStringList Enabled_;
-
-		QHash<QString, double> RatesFromUSD_;
-
-		QString UserCurrency_;
 	public:
-		CurrenciesManager (QObject* = 0);
+		virtual ~IPluginLoader () {}
 
-		void Load ();
+		virtual quint64 GetAPILevel () = 0;
 
-		const QStringList& GetEnabledCurrencies () const;
-		QAbstractItemModel* GetSettingsModel () const;
+		virtual bool Load () = 0;
 
-		QString GetUserCurrency () const;
-		double ToUserCurrency (const QString&, double) const;
-		double GetUserCurrencyRate (const QString& from) const;
-		double Convert (const QString& from, const QString& to, double value) const;
-	private:
-		void FetchRates (QStringList);
-	private slots:
-		void gotRateReply ();
-		void handleItemChanged (QStandardItem*);
-	signals:
-		void currenciesUpdated ();
+		virtual bool Unload () = 0;
+
+		virtual QObject* Instance () = 0;
+
+		virtual bool IsLoaded () const = 0;
+
+		virtual QString GetFileName () const = 0;
+
+		virtual QString GetErrorString () const = 0;
 	};
+
+	qint64 GetLibAPILevel (const QString&);
+
+	typedef std::shared_ptr<IPluginLoader> IPluginLoader_ptr;
 }
 }

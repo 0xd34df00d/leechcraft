@@ -29,49 +29,29 @@
 
 #pragma once
 
-#include <QObject>
-#include <QStringList>
-#include <QHash>
+#include "ipluginloader.h"
 
-class QAbstractItemModel;
-class QStandardItemModel;
-class QStandardItem;
+class QPluginLoader;
 
 namespace LeechCraft
 {
-namespace Poleemery
+namespace Loaders
 {
-	class CurrenciesManager : public QObject
+	class SOPluginLoader : public IPluginLoader
 	{
-		Q_OBJECT
-
-		QStringList Currencies_;
-		QStandardItemModel *Model_;
-
-		QStringList Enabled_;
-
-		QHash<QString, double> RatesFromUSD_;
-
-		QString UserCurrency_;
+		std::shared_ptr<QPluginLoader> Loader_;
 	public:
-		CurrenciesManager (QObject* = 0);
+		SOPluginLoader (const QString&);
 
-		void Load ();
+		quint64 GetAPILevel ();
 
-		const QStringList& GetEnabledCurrencies () const;
-		QAbstractItemModel* GetSettingsModel () const;
+		bool Load ();
+		bool Unload ();
 
-		QString GetUserCurrency () const;
-		double ToUserCurrency (const QString&, double) const;
-		double GetUserCurrencyRate (const QString& from) const;
-		double Convert (const QString& from, const QString& to, double value) const;
-	private:
-		void FetchRates (QStringList);
-	private slots:
-		void gotRateReply ();
-		void handleItemChanged (QStandardItem*);
-	signals:
-		void currenciesUpdated ();
+		QObject* Instance ();
+		bool IsLoaded () const;
+		QString GetFileName () const;
+		QString GetErrorString () const;
 	};
 }
 }

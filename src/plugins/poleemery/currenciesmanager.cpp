@@ -96,7 +96,10 @@ namespace Poleemery
 				item->setEditable (false);
 
 			if (cur.Code_ != "USD")
+			{
+				row.first ()->setCheckable (true);
 				row.first ()->setCheckState (Enabled_.contains (cur.Code_) ? Qt::Checked : Qt::Unchecked);
+			}
 
 			Model_->appendRow (row);
 		}
@@ -133,6 +136,14 @@ namespace Poleemery
 			return 1;
 
 		return RatesFromUSD_.value (UserCurrency_, 1) / RatesFromUSD_.value (code, 1);
+	}
+
+	double CurrenciesManager::Convert (const QString& from, const QString& to, double value) const
+	{
+		if (from == to)
+			return value;
+
+		return value * RatesFromUSD_.value (to, 1) / RatesFromUSD_.value (from, 1);
 	}
 
 	void CurrenciesManager::FetchRates (QStringList values)
@@ -203,14 +214,18 @@ namespace Poleemery
 		if (item->column ())
 			return;
 
+		QStringList news;
+
 		const auto& code = item->text ();
 		if (item->checkState () == Qt::Unchecked)
 			Enabled_.removeAll (code);
 		else if (!Enabled_.contains (code))
 		{
+			news << code;
 			Enabled_ << code;
 			Enabled_.sort ();
 		}
+		FetchRates (news);
 
 		XmlSettingsManager::Instance ().setProperty ("EnabledLocales", Enabled_);
 	}

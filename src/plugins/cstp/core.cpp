@@ -166,16 +166,17 @@ namespace CSTP
 		QUrl entity = e.Entity_.toUrl ();
 		QNetworkReply *rep = e.Entity_.value<QNetworkReply*> ();
 		QStringList tags = e.Additional_ [" Tags"].toStringList ();
+
+		QUrl source = e.Additional_ ["SourceURL"].toUrl ();
+
+		const QFileInfo fi (e.Location_);
+		const auto& dir = fi.isDir () ? e.Location_ : fi.dir ().path ();
+		const auto& file = e.Additional_.contains ("Filename") ?
+				e.Additional_ ["Filename"].toString () :
+				MakeFilename (source);
+
 		if (rep)
 		{
-			QFileInfo fi (e.Location_);
-			QString dir = fi.dir ().path ();
-			QUrl source = e.Additional_ ["SourceURL"].toUrl ();
-			QString file = MakeFilename (source);
-
-			if (fi.isDir ())
-				dir = e.Location_;
-
 			return AddTask (rep,
 					dir,
 					file,
@@ -202,30 +203,12 @@ namespace CSTP
 						e.Parameters_);
 			}
 			else
-			{
-				QFileInfo fi (e.Location_);
-				QString dir = fi.dir ().path (),
-						file = fi.fileName ();
-
-				if (!(e.Parameters_ & LeechCraft::Internal))
-				{
-					if (fi.isDir ())
-					{
-						dir = e.Location_;
-						file = MakeFilename (entity);
-					}
-					else if (fi.isFile ());
-					else
-						return -1;
-				}
-
 				return AddTask (entity,
 						dir,
 						file,
 						QString (),
 						tags,
 						e.Parameters_);
-			}
 		}
 	}
 

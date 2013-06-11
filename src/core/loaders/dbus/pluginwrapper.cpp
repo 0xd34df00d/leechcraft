@@ -27,51 +27,14 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
+#include <QApplication>
+#include "server.h"
 
-#include <QObject>
-#include <QStringList>
-#include <QHash>
-
-class QAbstractItemModel;
-class QStandardItemModel;
-class QStandardItem;
-
-namespace LeechCraft
+int main (int argc, char **argv)
 {
-namespace Poleemery
-{
-	class CurrenciesManager : public QObject
-	{
-		Q_OBJECT
+	QApplication app (argc, argv);
 
-		QStringList Currencies_;
-		QStandardItemModel *Model_;
+	LeechCraft::DBusRunner::Server srv;
 
-		QStringList Enabled_;
-
-		QHash<QString, double> RatesFromUSD_;
-
-		QString UserCurrency_;
-	public:
-		CurrenciesManager (QObject* = 0);
-
-		void Load ();
-
-		const QStringList& GetEnabledCurrencies () const;
-		QAbstractItemModel* GetSettingsModel () const;
-
-		QString GetUserCurrency () const;
-		double ToUserCurrency (const QString&, double) const;
-		double GetUserCurrencyRate (const QString& from) const;
-		double Convert (const QString& from, const QString& to, double value) const;
-	private:
-		void FetchRates (QStringList);
-	private slots:
-		void gotRateReply ();
-		void handleItemChanged (QStandardItem*);
-	signals:
-		void currenciesUpdated ();
-	};
-}
+	return app.exec ();
 }

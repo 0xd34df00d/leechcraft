@@ -27,51 +27,37 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QStringList>
-#include <QHash>
-
-class QAbstractItemModel;
-class QStandardItemModel;
-class QStandardItem;
+#include "gwitemsremovaldialog.h"
+#include "glooxclentry.h"
+#include <QStandardItemModel>
 
 namespace LeechCraft
 {
-namespace Poleemery
+namespace Azoth
 {
-	class CurrenciesManager : public QObject
+namespace Xoox
+{
+	GWItemsRemovalDialog::GWItemsRemovalDialog (const QList<GlooxCLEntry*>& items, QWidget *parent)
+	: QDialog (parent)
 	{
-		Q_OBJECT
+		Ui_.setupUi (this);
 
-		QStringList Currencies_;
-		QStandardItemModel *Model_;
+		auto model = new QStandardItemModel (this);
+		model->setHorizontalHeaderLabels ({ tr ("Name"), tr ("JID") });
+		for (auto item : items)
+		{
+			QList<QStandardItem*> row
+			{
+				new QStandardItem (item->GetEntryName ()),
+				new QStandardItem (item->GetHumanReadableID ())
+			};
+			for (auto r : row)
+				r->setEditable (false);
+			model->appendRow (row);
+		}
 
-		QStringList Enabled_;
-
-		QHash<QString, double> RatesFromUSD_;
-
-		QString UserCurrency_;
-	public:
-		CurrenciesManager (QObject* = 0);
-
-		void Load ();
-
-		const QStringList& GetEnabledCurrencies () const;
-		QAbstractItemModel* GetSettingsModel () const;
-
-		QString GetUserCurrency () const;
-		double ToUserCurrency (const QString&, double) const;
-		double GetUserCurrencyRate (const QString& from) const;
-		double Convert (const QString& from, const QString& to, double value) const;
-	private:
-		void FetchRates (QStringList);
-	private slots:
-		void gotRateReply ();
-		void handleItemChanged (QStandardItem*);
-	signals:
-		void currenciesUpdated ();
-	};
+		Ui_.EntriesView_->setModel (model);
+	}
+}
 }
 }

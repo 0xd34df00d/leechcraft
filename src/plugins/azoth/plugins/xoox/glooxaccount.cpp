@@ -30,6 +30,7 @@
 #include "glooxaccount.h"
 #include <memory>
 #include <QInputDialog>
+#include <QMessageBox>
 #include <QtDebug>
 #include <QXmppCallManager.h>
 #include <util/util.h>
@@ -62,6 +63,7 @@
 #include "bookmarkeditwidget.h"
 #include "accountsettingsholder.h"
 #include "crypthandler.h"
+#include "gwitemsremovaldialog.h"
 
 namespace LeechCraft
 {
@@ -304,13 +306,36 @@ namespace Xoox
 
 	void GlooxAccount::RemoveEntry (QObject *entryObj)
 	{
-		GlooxCLEntry *entry = qobject_cast<GlooxCLEntry*> (entryObj);
+		auto entry = qobject_cast<GlooxCLEntry*> (entryObj);
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< entryObj
 					<< "is not a GlooxCLEntry";
 			return;
+		}
+
+		if (entry->IsGateway ())
+		{
+			const auto& allEntries = ClientConnection_->GetCLEntries ();
+
+			const auto& gwJid = entry->GetJID ();
+
+			QList<GlooxCLEntry*> subs;
+			for (auto obj : allEntries)
+			{
+				auto entry = qobject_cast<GlooxCLEntry*> (obj);
+				if (entry && entry->GetJID ().endsWith (gwJid))
+					subs << entry;
+			}
+
+			if (!subs.isEmpty ())
+			{
+				GWItemsRemovalDialog dia (subs);
+				if (dia.exec () == QDialog::Accepted)
+					for (auto entry : subs)
+						RemoveEntry (entry);
+			}
 		}
 
 		ClientConnection_->Remove (entry);
@@ -589,6 +614,58 @@ namespace Xoox
 		set.setConferences (mucs);
 		set.setUrls (GetBookmarks ().urls ());
 		SetBookmarks (set);
+	}
+
+	bool GlooxAccount::SupportsFeature (Feature f) const
+	{
+		switch (f)
+		{
+		case Feature::UpdatePass:
+		case Feature::RemoveAcc:
+			return true;
+		}
+
+		return false;
+	}
+
+	void GlooxAccount::UpdateServerPassword (const QString& newPass)
+	{
+		if (newPass.isEmpty ())
+			return;
+
+		const QString nsRegister = "jabber:iq:register";
+
+		const auto& jid = SettingsHolder_->GetJID ();
+		const auto aPos = jid.indexOf ('@');
+
+		QXmppElement userElem;
+		userElem.setTagName ("username");
+		userElem.setValue (aPos > 0 ? jid.left (aPos) : jid);
+
+		QXmppElement passElem;
+		passElem.setTagName ("password");
+		passElem.setValue (newPass);
+
+		QXmppElement queryElem;
+		queryElem.setTagName ("query");
+		queryElem.setAttribute ("xmlns", nsRegister);
+		queryElem.appendChild (userElem);
+		queryElem.appendChild (passElem);
+
+		QXmppIq iq (QXmppIq::Set);
+		iq.setTo (GetDefaultReqHost ());
+		iq.setExtensions ({ queryElem });
+
+		ClientConnection_->SendPacketWCallback (iq,
+				[this, newPass] (const QXmppIq& reply) -> void
+				{
+					if (reply.type () != QXmppIq::Result)
+						return;
+
+					emit serverPasswordUpdated (newPass);
+					Core::Instance ().GetPluginProxy ()->SetPassword (newPass, this);
+					ClientConnection_->SetPassword (newPass);
+				});
 	}
 
 #ifdef ENABLE_CRYPT
