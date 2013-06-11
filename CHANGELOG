@@ -4,6 +4,21 @@ the rest.
 Links to the corresponding development digests are also given for the
 relevant blocks of changes, so one could easily lookup
 
+!!! 0.5.97
+* Core: fixed colors for QML buttons (mucn neater now).
+* Core: properly handle META key in shortcuts dialog.
+* Core: properly set default string codec, fixes debug messages encoding.
+* Util: fixed memory leak with QML and ColorThemeProxy.
+* Util: fixed rectangle fitting algorithm.
+* Azoth: fixed chat entry destruction on chat tab close.
+* HotSensors: take text color from the QML theme.
+* LackMan: fixed a typo in SQL query.
+* Launchy: extended known category aliases for Multimedia.
+* Monocle: keep page position on resize.
+* NSM: fixed icons for tab context menu actions.
+* TPI: update job name as well.
+* TPI: don't show internal tasks.
+* Vrooby: close the device popup on hoverout.
 
 !!! 0.5.96
 * Core: keep tab icon along tab moves between windows.
