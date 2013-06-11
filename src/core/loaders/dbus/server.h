@@ -27,96 +27,31 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "dbuspluginloader.h"
-#include <QProcess>
-#include <QDBusInterface>
-#include <QDBusReply>
-#include <QLocalServer>
-#include <interfaces/iinfo.h>
-#include "dbuswrapper.h"
+#pragma once
+
+#include <memory>
+#include <QObject>
 
 namespace LeechCraft
 {
 namespace Loaders
 {
-	DBusPluginLoader::DBusPluginLoader (const QString& filename)
-	: Filename_ (filename)
-	, IsLoaded_ (false)
-	, Proc_ (new QProcess)
+	class SOPluginLoader;
+}
+
+namespace DBusRunner
+{
+	class Server : public QObject
 	{
-	}
+		Q_OBJECT
+		Q_CLASSINFO ("D-Bus Interface", "org.LeechCraft.Control")
 
-	quint64 DBusPluginLoader::GetAPILevel ()
-	{
-		return GetLibAPILevel (Filename_);
-	}
+		std::shared_ptr<Loaders::SOPluginLoader> Loader_;
+	public:
+		Server ();
 
-	bool DBusPluginLoader::Load ()
-	{
-		if (IsLoaded ())
-			return true;
-
-		Proc_->start ("lc_plugin_wrapper");
-
-		QLocalServer srv;
-		srv.listen (QString ("lc_waiter_%1").arg (Proc_->pid ()));
-
-		if (!Proc_->waitForStarted ())
-			return false;
-
-		if (!srv.waitForNewConnection (1000))
-			return false;
-
-		const auto& serviceName = QString ("org.LeechCraft.Wrapper_%1").arg (Proc_->pid ());
-		CtrlIface_.reset (new QDBusInterface (serviceName,
-					"/org/LeechCraft/Control",
-					"org.LeechCraft.Control"));
-
-		QDBusReply<bool> reply = CtrlIface_->call ("Load", Filename_);
-		IsLoaded_ = reply.value ();
-
-		if (IsLoaded_)
-			Wrapper_.reset (new DBusWrapper (serviceName));
-
-		return IsLoaded_;
-	}
-
-	bool DBusPluginLoader::Unload ()
-	{
-		if (!IsLoaded ())
-			return true;
-
-		QDBusReply<bool> reply = CtrlIface_->call ("Unload", Filename_);
-		if (reply.value ())
-		{
-			CtrlIface_.reset ();
-			IsLoaded_ = false;
-		}
-
-		return !IsLoaded_;
-	}
-
-	QObject* DBusPluginLoader::Instance ()
-	{
-		if (!IsLoaded () && !Load ())
-			return 0;
-
-		return Wrapper_.get ();
-	}
-
-	bool DBusPluginLoader::IsLoaded () const
-	{
-		return IsLoaded_;
-	}
-
-	QString DBusPluginLoader::GetFileName () const
-	{
-		return Filename_;
-	}
-
-	QString DBusPluginLoader::GetErrorString () const
-	{
-		return {};
-	}
+		Q_INVOKABLE bool Load (const QString& path);
+		Q_INVOKABLE bool Unload (const QString& path);
+	};
 }
 }

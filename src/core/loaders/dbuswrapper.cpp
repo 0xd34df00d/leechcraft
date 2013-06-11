@@ -27,96 +27,52 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "dbuspluginloader.h"
-#include <QProcess>
+#include "dbuswrapper.h"
 #include <QDBusInterface>
 #include <QDBusReply>
-#include <QLocalServer>
-#include <interfaces/iinfo.h>
-#include "dbuswrapper.h"
 
 namespace LeechCraft
 {
 namespace Loaders
 {
-	DBusPluginLoader::DBusPluginLoader (const QString& filename)
-	: Filename_ (filename)
-	, IsLoaded_ (false)
-	, Proc_ (new QProcess)
+	DBusWrapper::DBusWrapper (const QString& service)
+	: Service_ (service)
+	, IFace_ (new QDBusInterface (service, "/org/LeechCraft/Plugin"))
 	{
 	}
 
-	quint64 DBusPluginLoader::GetAPILevel ()
+	void DBusWrapper::Init (ICoreProxy_ptr proxy)
 	{
-		return GetLibAPILevel (Filename_);
 	}
 
-	bool DBusPluginLoader::Load ()
+	void DBusWrapper::SecondInit ()
 	{
-		if (IsLoaded ())
-			return true;
-
-		Proc_->start ("lc_plugin_wrapper");
-
-		QLocalServer srv;
-		srv.listen (QString ("lc_waiter_%1").arg (Proc_->pid ()));
-
-		if (!Proc_->waitForStarted ())
-			return false;
-
-		if (!srv.waitForNewConnection (1000))
-			return false;
-
-		const auto& serviceName = QString ("org.LeechCraft.Wrapper_%1").arg (Proc_->pid ());
-		CtrlIface_.reset (new QDBusInterface (serviceName,
-					"/org/LeechCraft/Control",
-					"org.LeechCraft.Control"));
-
-		QDBusReply<bool> reply = CtrlIface_->call ("Load", Filename_);
-		IsLoaded_ = reply.value ();
-
-		if (IsLoaded_)
-			Wrapper_.reset (new DBusWrapper (serviceName));
-
-		return IsLoaded_;
+		IFace_->call ("SecondInit");
 	}
 
-	bool DBusPluginLoader::Unload ()
+	void DBusWrapper::Release ()
 	{
-		if (!IsLoaded ())
-			return true;
-
-		QDBusReply<bool> reply = CtrlIface_->call ("Unload", Filename_);
-		if (reply.value ())
-		{
-			CtrlIface_.reset ();
-			IsLoaded_ = false;
-		}
-
-		return !IsLoaded_;
+		IFace_->call ("Release");
 	}
 
-	QObject* DBusPluginLoader::Instance ()
+	QByteArray DBusWrapper::GetUniqueID () const
 	{
-		if (!IsLoaded () && !Load ())
-			return 0;
-
-		return Wrapper_.get ();
+		return QDBusReply<QByteArray> (IFace_->call ("GetUniqueID")).value ();
 	}
 
-	bool DBusPluginLoader::IsLoaded () const
+	QString DBusWrapper::GetName () const
 	{
-		return IsLoaded_;
+		return QDBusReply<QString> (IFace_->call ("GetName")).value ();
 	}
 
-	QString DBusPluginLoader::GetFileName () const
+	QString DBusWrapper::GetInfo () const
 	{
-		return Filename_;
+		return QDBusReply<QString> (IFace_->call ("GetInfo")).value ();
 	}
 
-	QString DBusPluginLoader::GetErrorString () const
+	QIcon DBusWrapper::GetIcon () const
 	{
-		return {};
+		return QDBusReply<QIcon> (IFace_->call ("GetIcon")).value ();
 	}
 }
 }

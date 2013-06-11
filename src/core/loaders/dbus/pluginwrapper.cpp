@@ -28,9 +28,13 @@
  **********************************************************************/
 
 #include <QApplication>
+#include "server.h"
 
 int main (int argc, char **argv)
 {
 	QApplication app (argc, argv);
+
+	LeechCraft::DBusRunner::Server srv;
+
 	return app.exec ();
 }
