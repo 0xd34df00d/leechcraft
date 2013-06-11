@@ -29,16 +29,24 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 
 namespace LeechCraft
 {
+namespace Loaders
+{
+	class SOPluginLoader;
+}
+
 namespace DBusRunner
 {
 	class Server : public QObject
 	{
 		Q_OBJECT
 		Q_CLASSINFO ("D-Bus Interface", "org.LeechCraft.Control")
+
+		std::shared_ptr<Loaders::SOPluginLoader> Loader_;
 	public:
 		Server ();
 

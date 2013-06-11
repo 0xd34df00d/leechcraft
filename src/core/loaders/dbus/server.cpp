@@ -107,12 +107,18 @@ namespace DBusRunner
 
 	bool Server::Load (const QString& path)
 	{
+		Loader_.reset (new Loaders::SOPluginLoader (path));
+		if (!Loader_->Load ())
+			return false;
+
+		QDBusConnection::sessionBus ().registerObject ("/org/LeechCraft/Plugin",
+				Loader_->Instance (), QDBusConnection::ExportAllContents);
 		return true;
 	}
 
 	bool Server::Unload (const QString& path)
 	{
-		return true;
+		return Loader_->Unload ();
 	}
 }
 }
