@@ -27,14 +27,51 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include <QApplication>
-#include "server.h"
+#include "marshalling.h"
+#include <QDBusMetaType>
+#include <QIcon>
 
-int main (int argc, char **argv)
+QDBusArgument& operator<< (QDBusArgument& arg, const ICoreProxy_ptr& proxy)
 {
-	QApplication app (argc, argv);
+	return arg;
+}
 
-	LeechCraft::DBus::Server srv;
+const QDBusArgument& operator>> (const QDBusArgument& arg, ICoreProxy_ptr& proxy)
+{
+	return arg;
+}
 
-	return app.exec ();
+QDBusArgument& operator<< (QDBusArgument& arg, const QIcon& icon)
+{
+	QByteArray ba;
+	{
+		QDataStream ostr (&ba, QIODevice::WriteOnly);
+		ostr << icon;
+	}
+	return arg << ba;
+}
+
+const QDBusArgument& operator>> (const QDBusArgument& arg, QIcon& icon)
+{
+	QByteArray ba;
+	arg >> ba;
+
+	{
+		QDataStream istr (ba);
+		istr >> icon;
+	}
+
+	return arg;
+}
+
+namespace LeechCraft
+{
+namespace DBus
+{
+	void RegisterTypes ()
+	{
+		qDBusRegisterMetaType<ICoreProxy_ptr> ();
+		qDBusRegisterMetaType<QIcon> ();
+	}
+}
 }

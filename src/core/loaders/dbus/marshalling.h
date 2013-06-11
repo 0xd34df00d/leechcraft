@@ -27,14 +27,29 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include <QApplication>
-#include "server.h"
+#pragma once
 
-int main (int argc, char **argv)
+#include <memory>
+#include <QMetaType>
+
+class QDBusArgument;
+
+class ICoreProxy;
+
+typedef std::shared_ptr<ICoreProxy> ICoreProxy_ptr;
+
+Q_DECLARE_METATYPE (ICoreProxy_ptr)
+
+QDBusArgument& operator<< (QDBusArgument&, const ICoreProxy_ptr&);
+const QDBusArgument& operator>> (const QDBusArgument&, ICoreProxy_ptr&);
+
+QDBusArgument& operator<< (QDBusArgument&, const QIcon&);
+const QDBusArgument& operator>> (const QDBusArgument&, QIcon&);
+
+namespace LeechCraft
 {
-	QApplication app (argc, argv);
-
-	LeechCraft::DBus::Server srv;
-
-	return app.exec ();
+namespace DBus
+{
+	void RegisterTypes ();
+}
 }
