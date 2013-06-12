@@ -212,7 +212,7 @@ namespace CSTP
 						tags,
 						e.Parameters_);
 			}
-			else
+			else if (fi.isFile ())
 				return AddTask (entity,
 						dir,
 						file,
