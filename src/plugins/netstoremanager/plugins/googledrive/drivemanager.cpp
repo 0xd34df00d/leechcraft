@@ -32,6 +32,9 @@
 #include <QtDebug>
 #include <QFileInfo>
 #include <QDesktopServices>
+#include <QMessageBox>
+#include <QMainWindow>
+#include <interfaces/core/irootwindowsmanager.h>
 #include <util/util.h>
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
@@ -126,12 +129,13 @@ namespace GoogleDrive
 	}
 
 	void DriveManager::Download (const QString& id, const QString& filepath,
-			bool silent)
+			TaskParameters tp, bool silent, bool open)
 	{
 		if (id.isEmpty ())
 			return;
 		ApiCallQueue_ << [this, id] (const QString& key) { RequestFileInfo (id, key); };
-		DownloadsQueue_ << [this, filepath, silent] (const QUrl& url) { DownloadFile (filepath, url, silent); };
+		DownloadsQueue_ << [this, filepath, tp, silent, open] (const QUrl& url)
+			{ DownloadFile (filepath, url, tp, silent, open); };
 		RequestAccessToken ();
 	}
 
@@ -459,26 +463,21 @@ namespace GoogleDrive
 	}
 
 	void DriveManager::DownloadFile (const QString& filePath, const QUrl& url,
-			bool silent)
+			TaskParameters tp, bool silent, bool open)
 	{
-		TaskParameters tp = OnlyDownload;
 		QString savePath;
 		if (silent)
-		{
 			savePath = QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
-						"/" + QFileInfo (filePath).fileName ();
-			tp |= AutoAccept |
-					Internal |
-					DoNotNotifyUser |
-					DoNotSaveInHistory |
-					DoNotAnnounceEntity;
-		}
-		else
-			tp |= FromUserInitiated;
+					"/" + QFileInfo (filePath).fileName ();
 
-		const auto& e = Util::MakeEntity (url, savePath, tp);
+		auto e = Util::MakeEntity (url, savePath, tp);
+		QFileInfo fi (filePath);
+		e.Additional_ ["Filename"] = QString ("%1_%2.%3")
+				.arg (fi.baseName ())
+				.arg (QDateTime::currentDateTime ().toTime_t ())
+				.arg (fi.completeSuffix ());
 		silent ?
-			Core::Instance ().DelegateEntity (e, filePath) :
+			Core::Instance ().DelegateEntity (e, filePath, open) :
 			Core::Instance ().SendEntity (e);
 	}
 
@@ -641,7 +640,9 @@ namespace GoogleDrive
 				mime = GetLocalMimeTypeFromGoogleMimeType (mime, driveItem.FileExtension_);
 			driveItem.Mime_ = mime;
 
-			driveItem.DownloadUrl_ = QUrl (map ["webContentLink"].toString ());
+			driveItem.DownloadUrl_ = QUrl (map ["downloadUrl"].toString ());
+			driveItem.ShareUrl_ = QUrl (map ["webContentLink"].toString ());
+			driveItem.Shared_ = map ["shared"].toBool ();
 
 			const QVariantMap& labels = map ["labels"].toMap ();
 			driveItem.Labels_ = DriveItem::ILNone;
@@ -1134,6 +1135,15 @@ namespace GoogleDrive
 		if (!map.contains ("error"))
 		{
 			DriveItem it = CreateDriveItem (res);
+			if (it.DownloadUrl_.isEmpty ())
+			{
+				QMessageBox::warning (Core::Instance ().GetProxy ()->GetRootWindowsManager ()->GetPreferredWindow (),
+						"LeechCraft",
+						tr ("This file cannot be downloaded. Use export instead of Download or Open File action"));
+				DownloadsQueue_.removeFirst ();
+				return;
+			}
+
 			if (!access_token.isEmpty ())
 				it.DownloadUrl_.addQueryItem ("access_token", access_token);
 
