@@ -159,9 +159,21 @@ namespace CSTP
 							<< file;
 			return file;
 		}
+
+		QString MakeFilename (const Entity& e)
+		{
+			const QFileInfo fi (e.Location_);
+			if (!fi.isDir ())
+				return fi.fileName ();
+
+			if (e.Additional_.contains ("Filename"))
+				return e.Additional_ ["Filename"].toString ();
+
+			return MakeFilename (e.Additional_ ["SourceURL"].toString ());
+		}
 	}
 
-	int Core::AddTask (LeechCraft::Entity& e)
+	int Core::AddTask (Entity& e)
 	{
 		QUrl entity = e.Entity_.toUrl ();
 		QNetworkReply *rep = e.Entity_.value<QNetworkReply*> ();
@@ -171,9 +183,7 @@ namespace CSTP
 
 		const QFileInfo fi (e.Location_);
 		const auto& dir = fi.isDir () ? e.Location_ : fi.dir ().path ();
-		const auto& file = e.Additional_.contains ("Filename") ?
-				e.Additional_ ["Filename"].toString () :
-				MakeFilename (source);
+		const auto& file = MakeFilename (e);
 
 		if (rep)
 		{
