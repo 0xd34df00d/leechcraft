@@ -651,7 +651,6 @@ namespace LHTR
 			}
 
 			html = QString::fromUtf8 (reinterpret_cast<char*> (output.bp));
-			qDebug () << html;
 #else
 			Q_UNUSED (html);
 #endif
