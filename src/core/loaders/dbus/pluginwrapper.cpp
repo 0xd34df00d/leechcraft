@@ -34,7 +34,7 @@ int main (int argc, char **argv)
 {
 	QApplication app (argc, argv);
 
-	LeechCraft::DBusRunner::Server srv;
+	LeechCraft::DBus::Server srv;
 
 	return app.exec ();
 }

@@ -32,6 +32,7 @@
 #include <map>
 #include <iomanip>
 #include <QDBusConnection>
+#include <QDBusMetaType>
 #include <QCoreApplication>
 #include <QLocalSocket>
 #include <QDir>
@@ -40,10 +41,11 @@
 #include <QDateTime>
 #include <QtDebug>
 #include "../sopluginloader.h"
+#include "marshalling.h"
 
 namespace LeechCraft
 {
-namespace DBusRunner
+namespace DBus
 {
 	namespace
 	{
@@ -91,8 +93,9 @@ namespace DBusRunner
 	: QObject ()
 	{
 		qInstallMsgHandler (Write);
-
 		const auto pid = QCoreApplication::applicationPid ();
+
+		RegisterTypes ();
 
 		auto sb = QDBusConnection::sessionBus ();
 		const auto& serviceName = QString ("org.LeechCraft.Wrapper_%1").arg (pid);

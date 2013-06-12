@@ -273,7 +273,7 @@ namespace Metida
 
 		IAdvancedHTMLEditor::CustomTag ljCutTag;
 		ljCutTag.TagName_ = "lj-cut";
-		ljCutTag.ToKnown_ = [] (QDomElement& elem)
+		ljCutTag.ToKnown_ = [] (QDomElement& elem) -> void
 		{
 			elem.setTagName ("div");
 			const auto& text = elem.attribute ("text");
@@ -303,7 +303,7 @@ namespace Metida
 
 		IAdvancedHTMLEditor::CustomTag ljPollTag;
 		ljPollTag.TagName_ = "lj-poll";
-		ljPollTag.ToKnown_ = [this] (QDomElement& elem)
+		ljPollTag.ToKnown_ = [this] (QDomElement& elem) -> void
 		{
 			const auto& whoView = elem.attribute ("whoview");
 			const auto& whoVote = elem.attribute ("whovote");
@@ -350,7 +350,7 @@ namespace Metida
 
 		IAdvancedHTMLEditor::CustomTag ljEmbedTag;
 		ljEmbedTag.TagName_ = "lj-embed";
-		ljEmbedTag.ToKnown_ = [this] (QDomElement& elem)
+		ljEmbedTag.ToKnown_ = [this] (QDomElement& elem) -> void
 		{
 			const auto& id = elem.attribute ("id");
 			elem.removeAttribute ("id");
@@ -381,7 +381,7 @@ namespace Metida
 
 		IAdvancedHTMLEditor::CustomTag ljLikeTag;
 		ljLikeTag.TagName_ = "lj-like";
-		ljLikeTag.ToKnown_ = [this] (QDomElement& elem)
+		ljLikeTag.ToKnown_ = [this] (QDomElement& elem) -> void
 		{
 			const auto& buttons = elem.attribute ("buttons");
 			elem.removeAttribute ("buttons");

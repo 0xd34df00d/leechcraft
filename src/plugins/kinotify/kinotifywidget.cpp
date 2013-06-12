@@ -80,7 +80,7 @@ namespace Kinotify
 		QState *closeFinishState = new QState;
 		QFinalState *finalState = new QFinalState;
 
-		QPropertyAnimation *opacityAmination = new QPropertyAnimation (this, "opacity");
+		QPropertyAnimation *opacityAmination = new QPropertyAnimation (this, "opacity", this);
 		opacityAmination->setDuration (AnimationTime_);
 
 		showStartState->assignProperty (this, "opacity", 0.0);

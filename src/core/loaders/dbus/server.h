@@ -39,7 +39,7 @@ namespace Loaders
 	class SOPluginLoader;
 }
 
-namespace DBusRunner
+namespace DBus
 {
 	class Server : public QObject
 	{

@@ -38,6 +38,7 @@
 #include <QStringList>
 #include <QVariant>
 #include <QNetworkReply>
+#include <interfaces/structures.h>
 #ifdef HAVE_MAGIC
 	#include <magic.h>
 #endif
@@ -117,10 +118,23 @@ namespace GoogleDrive
 		QDateTime LastViewedByMe_;
 
 		QUrl DownloadUrl_;
+		QUrl ShareUrl_;
+
+		bool Shared_;
 
 		Roles PermissionRole_;
 		AdditionalRoles PermissionAdditionalRole_;
 		PermissionTypes PermissionType_;
+
+		DriveItem ()
+		: ParentIsRoot_ (false)
+		, FileSize_ (0)
+		, Editable_ (false)
+		, WritersCanShare_ (false)
+		, IsFolder_ (false)
+		, Shared_ (false)
+		{
+		}
 
 		bool operator== (const DriveItem& item) const
 		{
@@ -166,7 +180,8 @@ namespace GoogleDrive
 		void ShareEntry (const QString& id);
 		void Upload (const QString& filePath,
 				const QStringList& parentId = QStringList ());
-		void Download (const QString& id, const QString& filePath, bool silent);
+		void Download (const QString& id, const QString& filePath,
+				TaskParameters tp, bool silent, bool open = false);
 
 		void CreateDirectory (const QString& name,
 				const QString& parentId = QString ());
@@ -193,7 +208,7 @@ namespace GoogleDrive
 				const QString& name,  const QString& key);
 
 		void DownloadFile (const QString& filePath, const QUrl& url,
-				bool silent = false);
+				TaskParameters tp, bool silent = false, bool open = false);
 
 		void FindSyncableItems (const QStringList& paths,
 				const QString& baseDir, const QList<DriveItem>& items);

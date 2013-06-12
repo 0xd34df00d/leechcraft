@@ -34,6 +34,7 @@
 #include <QLocalServer>
 #include <interfaces/iinfo.h>
 #include "dbuswrapper.h"
+#include "dbus/marshalling.h"
 
 namespace LeechCraft
 {
@@ -44,6 +45,7 @@ namespace Loaders
 	, IsLoaded_ (false)
 	, Proc_ (new QProcess)
 	{
+		DBus::RegisterTypes ();
 	}
 
 	quint64 DBusPluginLoader::GetAPILevel ()

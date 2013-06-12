@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,51 +29,65 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/structures.h>
-#include <interfaces/idownload.h>
+#include <QMetaType>
+#include <QDBusObjectPath>
+
+class QDBusArgument;
+
+class ICoreProxy;
+
+typedef std::shared_ptr<ICoreProxy> ICoreProxy_ptr;
+
+Q_DECLARE_METATYPE (ICoreProxy_ptr)
+
+QDBusArgument& operator<< (QDBusArgument&, const ICoreProxy_ptr&);
+const QDBusArgument& operator>> (const QDBusArgument&, ICoreProxy_ptr&);
+
+QDBusArgument& operator<< (QDBusArgument&, const QIcon&);
+const QDBusArgument& operator>> (const QDBusArgument&, QIcon&);
 
 namespace LeechCraft
 {
-namespace NetStoreManager
+namespace DBus
 {
-namespace GoogleDrive
-{
-	class Core : public QObject
+	void RegisterTypes ();
+
+	class ObjectManager : public QObject
 	{
 		Q_OBJECT
-		Q_DISABLE_COPY (Core)
 
-		ICoreProxy_ptr Proxy_;
+		quint64 Counter_;
 
-		Core ();
+		ObjectManager ();
 
-		QObjectList Downloaders_;
-		QMap<int, QObject*> Id2Downloader_;
-		QMap<int, QString> Id2SavePath_;
-		QMap<int, bool> Id2OpenAfterDownloadState_;
+		ObjectManager (const ObjectManager&) = delete;
+		ObjectManager (ObjectManager&&) = delete;
 	public:
-		static Core& Instance ();
+		static ObjectManager& Instance ();
 
-		void SetProxy (ICoreProxy_ptr proxy);
-		ICoreProxy_ptr GetProxy () const;
+		struct ObjectDataInfo
+		{
+			QString Service_;
+			QDBusObjectPath Path_;
+		};
 
-		void SendEntity (const LeechCraft::Entity& e);
-		void DelegateEntity (const LeechCraft::Entity& e,
-				const QString& targetPath, bool openAfterDownload = false);
-	private:
-		void HandleProvider (QObject *provider, int id);
+		template<typename T>
+		ObjectDataInfo RegisterObject (std::shared_ptr<T>);
 
-	private slots:
-		void handleJobFinished (int id);
-		void handleJobRemoved (int id);
-		void handleJobError (int id, IDownload::Error err);
+		template<typename T>
+		ObjectDataInfo RegisterObject (T);
 
-	signals:
-		void gotEntity (const LeechCraft::Entity& e);
-		void delegateEntity (const LeechCraft::Entity& e, int *id, QObject **provider);
+		ObjectDataInfo RegisterObject (QObject*);
+
+		template<typename T>
+		void Wrap (std::shared_ptr<T>&, const ObjectDataInfo&);
+
+		template<typename T>
+		void Wrap (T&, const ObjectDataInfo&);
+
+		void Wrap (QObject*&, const ObjectDataInfo&);
 	};
-}
 }
 }
