@@ -677,7 +677,6 @@ namespace NetStoreManager
 
 		TaskParameters tp = OnlyDownload |
 				AutoAccept |
-				Internal |
 				DoNotNotifyUser |
 				DoNotSaveInHistory |
 				FromUserInitiated;
