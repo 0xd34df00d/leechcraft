@@ -286,7 +286,8 @@ namespace Metida
 		{
 			Entry entry;
 			entry.EntryId_ = ljEvent.ItemID_;
-			entry.Content_ = FromLJTags (ljEvent.Event_);
+			entry.Content_ = QString ("<div>%1</div>")
+					.arg (FromLJTags (ljEvent.Event_));
 			entry.Date_ = ljEvent.DateTime_;
 			entry.Subject_ = ljEvent.Subject_;
 			entry.Tags_ = ljEvent.Tags_;
