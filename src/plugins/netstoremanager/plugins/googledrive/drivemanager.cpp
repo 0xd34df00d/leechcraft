@@ -471,7 +471,11 @@ namespace GoogleDrive
 					"/" + QFileInfo (filePath).fileName ();
 
 		auto e = Util::MakeEntity (url, savePath, tp);
-		e.Additional_ ["Filename"] = QFileInfo (filePath).fileName ();
+		QFileInfo fi (filePath);
+		e.Additional_ ["Filename"] = QString ("%1_%2.%3")
+				.arg (fi.baseName ())
+				.arg (QDateTime::currentDateTime ().toTime_t ())
+				.arg (fi.completeSuffix ());
 		silent ?
 			Core::Instance ().DelegateEntity (e, filePath, open) :
 			Core::Instance ().SendEntity (e);

@@ -115,6 +115,7 @@ namespace GoogleDrive
 		{
 			path = QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
 					"/" + QFileInfo (path).fileName ();
+			qDebug () << path;
 			emit gotEntity (Util::MakeEntity (QUrl::fromLocalFile (path),
 					QString (), OnlyHandle | FromUserInitiated));
 			Id2OpenAfterDownloadState_.remove (id);
@@ -129,12 +130,14 @@ namespace GoogleDrive
 	{
 		Id2Downloader_.remove (id);
 		Id2SavePath_.remove (id);
+		Id2OpenAfterDownloadState_.remove (id);
 	}
 
 	void Core::handleJobError (int id, IDownload::Error err)
 	{
 		Id2Downloader_.remove (id);
 		Id2SavePath_.remove (id);
+		Id2OpenAfterDownloadState_.remove (id);
 	}
 
 }
