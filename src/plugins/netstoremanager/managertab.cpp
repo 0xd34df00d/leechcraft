@@ -547,7 +547,10 @@ namespace NetStoreManager
 		}
 
 		if (!idx.data (ListingRole::IsDirectory).toBool ())
+		{
+			flOpenFile ();
 			return;
+		}
 
 		ShowListItemsWithParent (idx.data (ListingRole::ID).toByteArray (),
 				OpenTrash_->isChecked ());
