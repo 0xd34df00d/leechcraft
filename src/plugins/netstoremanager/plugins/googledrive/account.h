@@ -79,7 +79,7 @@ namespace GoogleDrive
 				UploadType ut = UploadType::Upload,
 				const QByteArray& id = QByteArray ());
 		void Download (const QByteArray& id, const QString& filepath,
-				bool silent = false);
+				TaskParameters tp, bool silent = false, bool open = false);
 
 		ListingOps GetListingOps () const;
 

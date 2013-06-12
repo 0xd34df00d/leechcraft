@@ -129,12 +129,13 @@ namespace GoogleDrive
 	}
 
 	void DriveManager::Download (const QString& id, const QString& filepath,
-			bool silent)
+			TaskParameters tp, bool silent, bool open)
 	{
 		if (id.isEmpty ())
 			return;
 		ApiCallQueue_ << [this, id] (const QString& key) { RequestFileInfo (id, key); };
-		DownloadsQueue_ << [this, filepath, silent] (const QUrl& url) { DownloadFile (filepath, url, silent); };
+		DownloadsQueue_ << [this, filepath, tp, silent, open] (const QUrl& url)
+			{ DownloadFile (filepath, url, tp, silent, open); };
 		RequestAccessToken ();
 	}
 
@@ -462,27 +463,17 @@ namespace GoogleDrive
 	}
 
 	void DriveManager::DownloadFile (const QString& filePath, const QUrl& url,
-			bool silent)
+			TaskParameters tp, bool silent, bool open)
 	{
-		TaskParameters tp = OnlyDownload;
 		QString savePath;
 		if (silent)
-		{
 			savePath = QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
-						"/" + QFileInfo (filePath).fileName ();
-			tp |= AutoAccept |
-					Internal |
-					DoNotNotifyUser |
-					DoNotSaveInHistory |
-					DoNotAnnounceEntity;
-		}
-		else
-			tp |= FromUserInitiated;
+					"/" + QFileInfo (filePath).fileName ();
 
 		auto e = Util::MakeEntity (url, savePath, tp);
 		e.Additional_ ["Filename"] = QFileInfo (filePath).fileName ();
 		silent ?
-			Core::Instance ().DelegateEntity (e, filePath) :
+			Core::Instance ().DelegateEntity (e, filePath, open) :
 			Core::Instance ().SendEntity (e);
 	}
 

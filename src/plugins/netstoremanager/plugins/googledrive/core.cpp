@@ -30,6 +30,7 @@
 #include "core.h"
 #include <util/util.h>
 #include <QDesktopServices>
+#include <QUrl>
 
 namespace LeechCraft
 {
@@ -62,7 +63,8 @@ namespace GoogleDrive
 		emit gotEntity (e);
 	}
 
-	void Core::DelegateEntity (const LeechCraft::Entity& e, const QString& targetPath)
+	void Core::DelegateEntity (const LeechCraft::Entity& e,
+			const QString& targetPath, bool openAfterDownload)
 	{
 		int id = -1;
 		QObject *pr;
@@ -78,6 +80,7 @@ namespace GoogleDrive
 			return;
 		}
 		Id2SavePath_ [id] = targetPath;
+		Id2OpenAfterDownloadState_ [id] = openAfterDownload;
 		HandleProvider (pr, id);
 	}
 
@@ -107,9 +110,19 @@ namespace GoogleDrive
 	{
 		QString path = Id2SavePath_.take (id);
 		Id2Downloader_.remove (id);
-		QFile::rename (QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
-				"/" + QFileInfo (path).fileName (),
-				path);
+		if (Id2OpenAfterDownloadState_.contains (id) &&
+				Id2OpenAfterDownloadState_ [id])
+		{
+			path = QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
+					"/" + QFileInfo (path).fileName ();
+			emit gotEntity (Util::MakeEntity (QUrl::fromLocalFile (path),
+					QString (), OnlyHandle | FromUserInitiated));
+			Id2OpenAfterDownloadState_.remove (id);
+		}
+		else
+			QFile::rename (QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
+						"/" + QFileInfo (path).fileName (),
+					path);
 	}
 
 	void Core::handleJobRemoved (int id)

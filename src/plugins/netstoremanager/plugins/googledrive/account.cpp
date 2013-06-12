@@ -120,12 +120,12 @@ namespace GoogleDrive
 	}
 
 	void Account::Download (const QByteArray& id, const QString& filepath,
-			bool silent)
+			TaskParameters tp, bool silent, bool open)
 	{
 		if (id.isEmpty ())
 			return;
 
-		DriveManager_->Download (id, filepath, silent);
+		DriveManager_->Download (id, filepath, tp, silent, open);
 	}
 
 	ListingOps Account::GetListingOps () const
