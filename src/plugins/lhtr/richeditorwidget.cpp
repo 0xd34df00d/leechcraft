@@ -44,6 +44,12 @@
 #include <QXmlStreamWriter>
 #include <QNetworkRequest>
 #include <QtDebug>
+
+#ifdef WITH_HTMLTIDY
+#include <tidy.h>
+#include <buffio.h>
+#endif
+
 #include <util/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include "hyperlinkdialog.h"
@@ -592,9 +598,73 @@ namespace LHTR
 		dia->show ();
 	}
 
-	QString RichEditorWidget::ExpandCustomTags (const QString& html) const
+	namespace
+	{
+		void TryFixHTML (QString& html)
+		{
+#ifdef WITH_HTMLTIDY
+			TidyBuffer output = { 0 };
+			TidyBuffer errbuf = { 0 };
+
+			auto tdoc = tidyCreate ();
+
+			std::shared_ptr<void> guard (nullptr,
+					[&tdoc, &output, &errbuf] (void*) -> void
+					{
+						tidyBufFree (&output);
+						tidyBufFree (&errbuf);
+						tidyRelease (tdoc);
+					});
+
+			if (!tidyOptSetBool (tdoc, TidyXhtmlOut, yes) ||
+					!tidyOptSetBool (tdoc, TidyForceOutput, yes) ||
+					!tidyOptSetValue (tdoc, TidyCharEncoding, "utf8"))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "cannot set xhtml output";
+				return;
+			}
+
+			tidySetErrorBuffer (tdoc, &errbuf);
+
+			if (tidyParseString (tdoc, html.toUtf8 ().constData ()) < 0)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "failed to parse"
+						<< html;
+				return;
+			}
+
+			if (tidyCleanAndRepair (tdoc) < 0)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "failed to clean and repair"
+						<< html;
+				return;
+			}
+
+			if (tidySaveBuffer (tdoc, &output) < 0)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "cannot save buffer";
+				return;
+			}
+
+			html = QString::fromUtf8 (reinterpret_cast<char*> (output.bp));
+			qDebug () << html;
+#else
+			Q_UNUSED (html);
+#endif
+		}
+	}
+
+	QString RichEditorWidget::ExpandCustomTags (QString html) const
 	{
 		QDomDocument doc;
+#ifdef WITH_HTMLTIDY
+		if (!doc.setContent (html))
+			TryFixHTML (html);
+#endif
 		if (!doc.setContent (html))
 		{
 			qWarning () << Q_FUNC_INFO
