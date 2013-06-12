@@ -336,16 +336,21 @@ namespace NetStoreManager
 					ListingRole::HashType);
 			name->setData (storageItem.IsDirectory_, ListingRole::IsDirectory);
 			name->setData (storageItem.IsTrashed_, ListingRole::InTrash);
-			name->setIcon (proxy->GetIcon (storageItem.IsDirectory_ ?
+			QIcon icon = proxy->GetIcon (storageItem.IsDirectory_ ?
 					"inode-directory" :
-					storageItem.MimeType_));
-			if (name->icon ().isNull ())
+					storageItem.MimeType_);
+			if (icon.isNull ())
+			{
 				qDebug () << "[NetStoreManager]"
 						<< "Unknown mime type:"
 						<< storageItem.MimeType_
 						<< "for file"
 						<< storageItem.Name_
 						<< storageItem.ID_;
+				icon = proxy->GetIcon ("unknown");
+			}
+			name->setIcon (icon);
+
 			QStandardItem *size = new QStandardItem (Util::MakePrettySize (storageItem
 					.IsDirectory_ ? folderSize : storageItem.Size_));
 			size->setEditable (false);
@@ -663,6 +668,19 @@ namespace NetStoreManager
 
 	void ManagerTab::flOpenFile ()
 	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		TaskParameters tp = OnlyDownload |
+				AutoAccept |
+				Internal |
+				DoNotNotifyUser |
+				DoNotSaveInHistory |
+				FromUserInitiated;
+		acc->Download (GetCurrentID (),
+				Ui_.FilesView_->currentIndex ().data ().toString (), tp, true,
+				true);
 	}
 
 	void ManagerTab::flCopy ()
@@ -793,7 +811,9 @@ namespace NetStoreManager
 		if (!acc)
 			return;
 
-		acc->Download (GetCurrentID (), Ui_.FilesView_->currentIndex ().data ().toString ());
+		acc->Download (GetCurrentID (),
+				Ui_.FilesView_->currentIndex ().data ().toString (),
+				OnlyDownload | FromUserInitiated);
 	}
 
 	void ManagerTab::flCopyUrl ()
