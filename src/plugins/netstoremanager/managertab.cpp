@@ -406,7 +406,7 @@ namespace NetStoreManager
 	{
 		QList<QByteArray> ids;
 		Q_FOREACH (const auto& idx, Ui_.FilesView_->selectionModel ()->selectedRows ())
-			ids << idx.data (ListingRole::ID).toByteArray ();
+			ids << ProxyModel_->mapToSource (idx).data (ListingRole::ID).toByteArray ();
 
 		return ids;
 	}
@@ -421,7 +421,7 @@ namespace NetStoreManager
 	{
 		QModelIndex idx = Ui_.FilesView_->currentIndex ();
 		idx = idx.sibling (idx.row (), Columns::Name);
-		return idx.data (ListingRole::ID).toByteArray ();
+		return ProxyModel_->mapToSource (idx).data (ListingRole::ID).toByteArray ();
 	}
 
 	void ManagerTab::CallOnSelection (std::function<void (ISupportFileListings*, QList<QByteArray>)> func)
@@ -823,9 +823,8 @@ namespace NetStoreManager
 			return;
 
 		const QByteArray id = GetCurrentID ();
-		if (!Id2Item_ [id].Url_.isEmpty () &&
-				Id2Item_ [id].Url_.isValid ())
-			handleGotFileUrl (Id2Item_ [id].Url_);
+		if (Id2Item_ [id].Shared_)
+			handleGotFileUrl (Id2Item_ [id].ShareUrl_);
 		else
 			qobject_cast<ISupportFileListings*> (acc->GetQObject ())->RequestUrl (id);
 	}

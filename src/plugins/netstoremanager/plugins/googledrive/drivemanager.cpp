@@ -636,7 +636,9 @@ namespace GoogleDrive
 				mime = GetLocalMimeTypeFromGoogleMimeType (mime, driveItem.FileExtension_);
 			driveItem.Mime_ = mime;
 
-			driveItem.DownloadUrl_ = QUrl (map ["webContentLink"].toString ());
+			driveItem.DownloadUrl_ = QUrl (map ["downloadUrl"].toString ());
+			driveItem.ShareUrl_ = QUrl (map ["webContentLink"].toString ());
+			driveItem.Shared_ = map ["shared"].toBool ();
 
 			const QVariantMap& labels = map ["labels"].toMap ();
 			driveItem.Labels_ = DriveItem::ILNone;

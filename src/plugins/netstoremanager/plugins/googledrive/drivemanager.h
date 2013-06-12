@@ -118,10 +118,23 @@ namespace GoogleDrive
 		QDateTime LastViewedByMe_;
 
 		QUrl DownloadUrl_;
+		QUrl ShareUrl_;
+
+		bool Shared_;
 
 		Roles PermissionRole_;
 		AdditionalRoles PermissionAdditionalRole_;
 		PermissionTypes PermissionType_;
+
+		DriveItem ()
+		: ParentIsRoot_ (false)
+		, FileSize_ (0)
+		, Editable_ (false)
+		, WritersCanShare_ (false)
+		, IsFolder_ (false)
+		, Shared_ (false)
+		{
+		}
 
 		bool operator== (const DriveItem& item) const
 		{

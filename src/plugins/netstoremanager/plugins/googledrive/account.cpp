@@ -310,6 +310,9 @@ namespace GoogleDrive
 			storageItem.IsDirectory_ = item.IsFolder_;
 			storageItem.IsTrashed_ = item.Labels_ & DriveItem::ILRemoved;
 			storageItem.MimeType_ = item.Mime_;
+			storageItem.Url_ = item.DownloadUrl_;
+			storageItem.ShareUrl_ = item.ShareUrl_;
+			storageItem.Shared_ = item.Shared_;
 			for (const auto& key : item.ExportLinks_.keys ())
 			{
 				const QString mime = item.ExportLinks_.value (key);
