@@ -52,6 +52,7 @@ namespace GoogleDrive
 		QObjectList Downloaders_;
 		QMap<int, QObject*> Id2Downloader_;
 		QMap<int, QString> Id2SavePath_;
+		QMap<int, bool> Id2OpenAfterDownloadState_;
 	public:
 		static Core& Instance ();
 
@@ -59,7 +60,8 @@ namespace GoogleDrive
 		ICoreProxy_ptr GetProxy () const;
 
 		void SendEntity (const LeechCraft::Entity& e);
-		void DelegateEntity (const LeechCraft::Entity& e, const QString& targetPath);
+		void DelegateEntity (const LeechCraft::Entity& e,
+				const QString& targetPath, bool openAfterDownload = false);
 	private:
 		void HandleProvider (QObject *provider, int id);
 
