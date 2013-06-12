@@ -30,7 +30,9 @@
 #pragma once
 
 #include <memory>
+#include <QObject>
 #include <QMetaType>
+#include <QDBusObjectPath>
 
 class QDBusArgument;
 
@@ -51,5 +53,41 @@ namespace LeechCraft
 namespace DBus
 {
 	void RegisterTypes ();
+
+	class ObjectManager : public QObject
+	{
+		Q_OBJECT
+
+		quint64 Counter_;
+
+		ObjectManager ();
+
+		ObjectManager (const ObjectManager&) = delete;
+		ObjectManager (ObjectManager&&) = delete;
+	public:
+		static ObjectManager& Instance ();
+
+		struct ObjectDataInfo
+		{
+			QString Service_;
+			QDBusObjectPath Path_;
+		};
+
+		template<typename T>
+		ObjectDataInfo RegisterObject (std::shared_ptr<T>);
+
+		template<typename T>
+		ObjectDataInfo RegisterObject (T);
+
+		ObjectDataInfo RegisterObject (QObject*);
+
+		template<typename T>
+		void Wrap (std::shared_ptr<T>&, const ObjectDataInfo&);
+
+		template<typename T>
+		void Wrap (T&, const ObjectDataInfo&);
+
+		void Wrap (QObject*&, const ObjectDataInfo&);
+	};
 }
 }

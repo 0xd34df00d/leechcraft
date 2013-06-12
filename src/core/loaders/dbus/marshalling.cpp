@@ -30,14 +30,37 @@
 #include "marshalling.h"
 #include <QDBusMetaType>
 #include <QIcon>
+#include <QtDebug>
+#include <interfaces/core/icoreproxy.h>
+
+QDBusArgument& operator<< (QDBusArgument& arg,
+		const LeechCraft::DBus::ObjectManager::ObjectDataInfo& info)
+{
+	arg.beginStructure ();
+	arg << info.Path_ << info.Service_;
+	arg.endStructure ();
+	return arg;
+}
+
+const QDBusArgument& operator>> (const QDBusArgument& arg,
+		LeechCraft::DBus::ObjectManager::ObjectDataInfo& info)
+{
+	arg.beginStructure ();
+	arg >> info.Path_ >> info.Service_;
+	arg.endStructure ();
+	return arg;
+}
 
 QDBusArgument& operator<< (QDBusArgument& arg, const ICoreProxy_ptr& proxy)
 {
-	return arg;
+	return arg << LeechCraft::DBus::ObjectManager::Instance ().RegisterObject (proxy);
 }
 
 const QDBusArgument& operator>> (const QDBusArgument& arg, ICoreProxy_ptr& proxy)
 {
+	LeechCraft::DBus::ObjectManager::ObjectDataInfo info;
+	arg >> info;
+	LeechCraft::DBus::ObjectManager::Instance ().Wrap (proxy, info);
 	return arg;
 }
 
@@ -72,6 +95,53 @@ namespace DBus
 	{
 		qDBusRegisterMetaType<ICoreProxy_ptr> ();
 		qDBusRegisterMetaType<QIcon> ();
+	}
+
+	ObjectManager::ObjectManager ()
+	: Counter_ (0)
+	{
+	}
+
+	ObjectManager& ObjectManager::Instance ()
+	{
+		static ObjectManager m;
+		return m;
+	}
+
+	template<typename T>
+	auto ObjectManager::RegisterObject (std::shared_ptr<T> obj) -> ObjectDataInfo
+	{
+		return RegisterObject (obj.get ());
+	}
+
+	template<typename T>
+	auto ObjectManager::RegisterObject (T t) -> ObjectDataInfo
+	{
+		const auto qobj = dynamic_cast<QObject*> (t);
+		if (!qobj)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to cast the type to QObject*";
+			return {};
+		}
+
+		const auto info = RegisterObject (dynamic_cast<QObject*> (t));
+		return info;
+	}
+
+	auto ObjectManager::RegisterObject (QObject *obj) -> ObjectDataInfo
+	{
+		return {};
+	}
+
+	template<typename T>
+	void ObjectManager::Wrap (std::shared_ptr<T>& obj, const ObjectManager::ObjectDataInfo& info)
+	{
+	}
+
+	template<typename T>
+	void ObjectManager::Wrap (T& obj, const ObjectManager::ObjectDataInfo& info)
+	{
 	}
 }
 }
