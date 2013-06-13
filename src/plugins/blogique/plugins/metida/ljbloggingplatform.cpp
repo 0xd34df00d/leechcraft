@@ -371,6 +371,7 @@ namespace Metida
 				return false;
 
 			elem.removeAttribute ("style");
+			elem.removeChild (elem.firstChild ());
 			const auto& id = elem.attribute ("name");
 			elem.removeAttribute ("id");
 			elem.setTagName ("lj-embed");
