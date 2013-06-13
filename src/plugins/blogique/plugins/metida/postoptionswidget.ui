@@ -198,13 +198,6 @@
         </layout>
        </widget>
       </item>
-      <item row="3" column="3">
-       <widget class="QPushButton" name="AutoDetectMusic_">
-        <property name="text">
-         <string>Auto-detect</string>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="0">
        <widget class="QLabel" name="whereIsYouLabel">
         <property name="text">
