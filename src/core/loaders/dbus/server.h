@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,51 +29,29 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/structures.h>
-#include <interfaces/idownload.h>
 
 namespace LeechCraft
 {
-namespace NetStoreManager
+namespace Loaders
 {
-namespace GoogleDrive
+	class SOPluginLoader;
+}
+
+namespace DBus
 {
-	class Core : public QObject
+	class Server : public QObject
 	{
 		Q_OBJECT
-		Q_DISABLE_COPY (Core)
+		Q_CLASSINFO ("D-Bus Interface", "org.LeechCraft.Control")
 
-		ICoreProxy_ptr Proxy_;
-
-		Core ();
-
-		QObjectList Downloaders_;
-		QMap<int, QObject*> Id2Downloader_;
-		QMap<int, QString> Id2SavePath_;
-		QMap<int, bool> Id2OpenAfterDownloadState_;
+		std::shared_ptr<Loaders::SOPluginLoader> Loader_;
 	public:
-		static Core& Instance ();
+		Server ();
 
-		void SetProxy (ICoreProxy_ptr proxy);
-		ICoreProxy_ptr GetProxy () const;
-
-		void SendEntity (const LeechCraft::Entity& e);
-		void DelegateEntity (const LeechCraft::Entity& e,
-				const QString& targetPath, bool openAfterDownload = false);
-	private:
-		void HandleProvider (QObject *provider, int id);
-
-	private slots:
-		void handleJobFinished (int id);
-		void handleJobRemoved (int id);
-		void handleJobError (int id, IDownload::Error err);
-
-	signals:
-		void gotEntity (const LeechCraft::Entity& e);
-		void delegateEntity (const LeechCraft::Entity& e, int *id, QObject **provider);
+		Q_INVOKABLE bool Load (const QString& path);
+		Q_INVOKABLE bool Unload (const QString& path);
 	};
-}
 }
 }

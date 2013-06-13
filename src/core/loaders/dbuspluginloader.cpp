@@ -29,7 +29,12 @@
 
 #include "dbuspluginloader.h"
 #include <QProcess>
+#include <QDBusInterface>
+#include <QDBusReply>
+#include <QLocalServer>
 #include <interfaces/iinfo.h>
+#include "dbuswrapper.h"
+#include "dbus/marshalling.h"
 
 namespace LeechCraft
 {
@@ -38,7 +43,9 @@ namespace Loaders
 	DBusPluginLoader::DBusPluginLoader (const QString& filename)
 	: Filename_ (filename)
 	, IsLoaded_ (false)
+	, Proc_ (new QProcess)
 	{
+		DBus::RegisterTypes ();
 	}
 
 	quint64 DBusPluginLoader::GetAPILevel ()
@@ -52,10 +59,28 @@ namespace Loaders
 			return true;
 
 		Proc_->start ("lc_plugin_wrapper");
+
+		QLocalServer srv;
+		srv.listen (QString ("lc_waiter_%1").arg (Proc_->pid ()));
+
 		if (!Proc_->waitForStarted ())
 			return false;
 
-		return true;
+		if (!srv.waitForNewConnection (1000))
+			return false;
+
+		const auto& serviceName = QString ("org.LeechCraft.Wrapper_%1").arg (Proc_->pid ());
+		CtrlIface_.reset (new QDBusInterface (serviceName,
+					"/org/LeechCraft/Control",
+					"org.LeechCraft.Control"));
+
+		QDBusReply<bool> reply = CtrlIface_->call ("Load", Filename_);
+		IsLoaded_ = reply.value ();
+
+		if (IsLoaded_)
+			Wrapper_.reset (new DBusWrapper (serviceName));
+
+		return IsLoaded_;
 	}
 
 	bool DBusPluginLoader::Unload ()
@@ -63,7 +88,14 @@ namespace Loaders
 		if (!IsLoaded ())
 			return true;
 
-		return true;
+		QDBusReply<bool> reply = CtrlIface_->call ("Unload", Filename_);
+		if (reply.value ())
+		{
+			CtrlIface_.reset ();
+			IsLoaded_ = false;
+		}
+
+		return !IsLoaded_;
 	}
 
 	QObject* DBusPluginLoader::Instance ()
@@ -71,7 +103,7 @@ namespace Loaders
 		if (!IsLoaded () && !Load ())
 			return 0;
 
-		return 0;
+		return Wrapper_.get ();
 	}
 
 	bool DBusPluginLoader::IsLoaded () const

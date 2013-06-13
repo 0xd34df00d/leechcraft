@@ -1,5 +1,9 @@
 set (SRCS
 	pluginwrapper.cpp
+	server.cpp
+	marshalling.cpp
+	../ipluginloader.cpp
+	../sopluginloader.cpp
 	)
 
 add_executable (lc_plugin_wrapper WIN32

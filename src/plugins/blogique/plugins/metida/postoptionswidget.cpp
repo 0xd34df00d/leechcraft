@@ -239,6 +239,15 @@ namespace Metida
 			Ui_.TwitterLike_->setChecked (likes.contains ("twitter"));
 			Ui_.TumblrLike_->setChecked (likes.contains ("tumblr"));
 			Ui_.SurfingbirdLike_->setChecked (likes.contains ("surfingbird"));
+			if (Ui_.VkontakteLike_->isChecked () &&
+					Ui_.FacebookLike_->isChecked () &&
+					Ui_.GoogleLike_->isChecked () &&
+					Ui_.LiveJournalReward_->isChecked () &&
+					Ui_.LiveJournalRepost_->isChecked () &&
+					Ui_.TwitterLike_->isChecked () &&
+					Ui_.TumblrLike_->isChecked () &&
+					Ui_.SurfingbirdLike_->isChecked ())
+				Ui_.AllLike_->setChecked (true);
 		}
 	}
 

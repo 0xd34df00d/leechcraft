@@ -94,6 +94,8 @@ set (SRCS
 	loaders/ipluginloader.cpp
 	loaders/sopluginloader.cpp
 	loaders/dbuspluginloader.cpp
+	loaders/dbuswrapper.cpp
+	loaders/dbus/marshalling.cpp
 	)
 set (FORMS
 	commonjobadder.ui

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,53 +27,52 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/structures.h>
-#include <interfaces/idownload.h>
+#include "dbuswrapper.h"
+#include <QDBusInterface>
+#include <QDBusReply>
 
 namespace LeechCraft
 {
-namespace NetStoreManager
+namespace Loaders
 {
-namespace GoogleDrive
-{
-	class Core : public QObject
+	DBusWrapper::DBusWrapper (const QString& service)
+	: Service_ (service)
+	, IFace_ (new QDBusInterface (service, "/org/LeechCraft/Plugin"))
 	{
-		Q_OBJECT
-		Q_DISABLE_COPY (Core)
+	}
 
-		ICoreProxy_ptr Proxy_;
+	void DBusWrapper::Init (ICoreProxy_ptr proxy)
+	{
+	}
 
-		Core ();
+	void DBusWrapper::SecondInit ()
+	{
+		IFace_->call ("SecondInit");
+	}
 
-		QObjectList Downloaders_;
-		QMap<int, QObject*> Id2Downloader_;
-		QMap<int, QString> Id2SavePath_;
-		QMap<int, bool> Id2OpenAfterDownloadState_;
-	public:
-		static Core& Instance ();
+	void DBusWrapper::Release ()
+	{
+		IFace_->call ("Release");
+	}
 
-		void SetProxy (ICoreProxy_ptr proxy);
-		ICoreProxy_ptr GetProxy () const;
+	QByteArray DBusWrapper::GetUniqueID () const
+	{
+		return QDBusReply<QByteArray> (IFace_->call ("GetUniqueID")).value ();
+	}
 
-		void SendEntity (const LeechCraft::Entity& e);
-		void DelegateEntity (const LeechCraft::Entity& e,
-				const QString& targetPath, bool openAfterDownload = false);
-	private:
-		void HandleProvider (QObject *provider, int id);
+	QString DBusWrapper::GetName () const
+	{
+		return QDBusReply<QString> (IFace_->call ("GetName")).value ();
+	}
 
-	private slots:
-		void handleJobFinished (int id);
-		void handleJobRemoved (int id);
-		void handleJobError (int id, IDownload::Error err);
+	QString DBusWrapper::GetInfo () const
+	{
+		return QDBusReply<QString> (IFace_->call ("GetInfo")).value ();
+	}
 
-	signals:
-		void gotEntity (const LeechCraft::Entity& e);
-		void delegateEntity (const LeechCraft::Entity& e, int *id, QObject **provider);
-	};
-}
+	QIcon DBusWrapper::GetIcon () const
+	{
+		return QDBusReply<QIcon> (IFace_->call ("GetIcon")).value ();
+	}
 }
 }

@@ -2,6 +2,13 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_lhtr)
 include (InitLCPlugin OPTIONAL)
 
+option (WITH_LHTR_HTML "Build extended support for (invalid) HTML" ON)
+
+if (WITH_LHTR_HTML)
+	set (ADDITIONAL_LIBRARES "tidy")
+	add_definitions (-DWITH_HTMLTIDY)
+endif (WITH_LHTR_HTML)
+
 set (QT_USE_QTNETWORK TRUE)
 set (QT_USE_QTWEBKIT TRUE)
 include (${QT_USE_FILE})
@@ -43,6 +50,7 @@ add_library (leechcraft_lhtr SHARED
 target_link_libraries (leechcraft_lhtr
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
+	${ADDITIONAL_LIBRARES}
 	)
 install (TARGETS leechcraft_lhtr DESTINATION ${LC_PLUGINS_DEST})
 install (FILES lhtrsettings.xml DESTINATION ${LC_SETTINGS_DEST})

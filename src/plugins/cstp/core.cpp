@@ -159,22 +159,34 @@ namespace CSTP
 							<< file;
 			return file;
 		}
+
+		QString MakeFilename (const Entity& e)
+		{
+			const QFileInfo fi (e.Location_);
+			if (!fi.isDir ())
+				return fi.fileName ();
+
+			if (e.Additional_.contains ("Filename"))
+				return e.Additional_ ["Filename"].toString ();
+
+			return MakeFilename (e.Additional_ ["SourceURL"].toString ());
+		}
 	}
 
-	int Core::AddTask (LeechCraft::Entity& e)
+	int Core::AddTask (Entity& e)
 	{
 		QUrl entity = e.Entity_.toUrl ();
 		QNetworkReply *rep = e.Entity_.value<QNetworkReply*> ();
 		QStringList tags = e.Additional_ [" Tags"].toStringList ();
+
+		QUrl source = e.Additional_ ["SourceURL"].toUrl ();
+
+		const QFileInfo fi (e.Location_);
+		const auto& dir = fi.isDir () ? e.Location_ : fi.dir ().path ();
+		const auto& file = MakeFilename (e);
+
 		if (rep)
 		{
-			QFileInfo fi (e.Location_);
-			QString dir = fi.isDir () ? e.Location_ : fi.dir ().path ();
-			QUrl source = e.Additional_ ["SourceURL"].toUrl ();
-			QString file = e.Additional_.contains ("Filename") ?
-					e.Additional_ ["Filename"].toString () :
-					MakeFilename (source);
-
 			return AddTask (rep,
 					dir,
 					file,
@@ -200,31 +212,13 @@ namespace CSTP
 						tags,
 						e.Parameters_);
 			}
-			else
-			{
-				QFileInfo fi (e.Location_);
-				QString dir = fi.dir ().path (),
-						file = fi.fileName ();
-
-				if (!(e.Parameters_ & LeechCraft::Internal))
-				{
-					if (fi.isDir ())
-					{
-						dir = e.Location_;
-						file = MakeFilename (entity);
-					}
-					else if (fi.isFile ());
-					else
-						return -1;
-				}
-
+			else if (fi.isFile ())
 				return AddTask (entity,
 						dir,
 						file,
 						QString (),
 						tags,
 						e.Parameters_);
-			}
 		}
 	}
 
@@ -584,6 +578,8 @@ namespace CSTP
 		int id = taskdscr->ID_;
 		QString filename = taskdscr->File_->fileName ();
 		QString url = taskdscr->Task_->GetURL ();
+		if (url.size () > 50)
+			url = url.left (50) + "...";
 		QString errorStr = taskdscr->Task_->GetErrorString ();
 		QStringList tags = taskdscr->Tags_;
 

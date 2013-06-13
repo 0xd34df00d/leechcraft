@@ -568,6 +568,8 @@ namespace Azoth
 			TypeTimer_->stop ();
 			TypeTimer_->start ();
 		}
+		else
+			TypeTimer_->stop ();
 
 		emit tabRecoverDataChanged ();
 	}
