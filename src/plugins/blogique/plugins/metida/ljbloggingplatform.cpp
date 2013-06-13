@@ -337,6 +337,7 @@ namespace Metida
 			elem.removeAttribute ("ljPollWhovot");
 			elem.removeAttribute ("ljPollName");
 			elem.removeAttribute ("id");
+			elem.removeChild (elem.firstChild ());
 
 			elem.setTagName ("lj-poll");
 			elem.setAttribute ("whoview", whoView);
