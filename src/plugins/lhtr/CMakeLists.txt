@@ -7,7 +7,7 @@ option (WITH_LHTR_HTML "Build extended support for (invalid) HTML" ON)
 if (WITH_LHTR_HTML)
 	set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 	find_package (LibTidy REQUIRED)
-	set (ADDITIONAL_LIBRARES "tidy")
+	set (ADDITIONAL_LIBRARES ${LIBTIDY_LIBRARIES})
 	add_definitions (-DWITH_HTMLTIDY)
 endif (WITH_LHTR_HTML)
 
