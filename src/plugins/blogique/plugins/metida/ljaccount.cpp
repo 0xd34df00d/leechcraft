@@ -533,12 +533,17 @@ namespace Metida
 		ljEvent.Props_ = props;
 		ljEvent.Event_.append ("\n<em style=\"font-size: 0.8em;\">Posted via <a href=\"http://leechcraft.org/plugins-blogique\">LeechCraft Blogique</a>.</em>");
 
-		if (!ljEvent.Props_.LikeButtons_.isEmpty ())
+		QRegExp rxp ("(<lj-like.+(buttons=\"((\\w+,?)+)\"\\s?)?\\/?>).+(</lj-like>)?", Qt::CaseInsensitive);
+		QString buttons = QString ("<lj-like buttons=\"%1\" />")
+				.arg (props.LikeButtons_.join (","));
+		if (rxp.indexIn (entry.Content_) != -1)
+			ljEvent.Event_.replace (rxp, buttons);
+		else if (!ljEvent.Props_.LikeButtons_.isEmpty ())
 		{
 			if (XmlSettingsManager::Instance ().Property ("LikeButtonPosition", "bottom").toString () == "top")
-				ljEvent.Event_.prepend (QString ("<lj-like buttons=\"%1\" />").arg (props.LikeButtons_.join (", ")));
+				ljEvent.Event_.prepend (buttons);
 			else
-				ljEvent.Event_.append (QString ("<lj-like buttons=\"%1\" />").arg (props.LikeButtons_.join (",")));
+				ljEvent.Event_.append (buttons);
 		}
 
 		LJXmlRpc_->Submit (ljEvent);
