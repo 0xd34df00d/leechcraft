@@ -324,17 +324,19 @@ namespace Xoox
 			QList<GlooxCLEntry*> subs;
 			for (auto obj : allEntries)
 			{
-				auto entry = qobject_cast<GlooxCLEntry*> (obj);
-				if (entry && entry->GetJID ().endsWith (gwJid))
-					subs << entry;
+				auto otherEntry = qobject_cast<GlooxCLEntry*> (obj);
+				if (otherEntry &&
+						otherEntry != entry &&
+						otherEntry->GetJID ().endsWith (gwJid))
+					subs << otherEntry;
 			}
 
 			if (!subs.isEmpty ())
 			{
 				GWItemsRemovalDialog dia (subs);
 				if (dia.exec () == QDialog::Accepted)
-					for (auto entry : subs)
-						RemoveEntry (entry);
+					for (auto subEntry : subs)
+						RemoveEntry (subEntry);
 			}
 		}
 
