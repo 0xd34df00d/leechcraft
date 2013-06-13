@@ -616,7 +616,7 @@ namespace LHTR
 						tidyRelease (tdoc);
 					});
 
-			if (!tidyOptSetBool (tdoc, TidyXhtmlOut, yes) ||
+			if (!tidyOptSetBool (tdoc, TidyXmlOut, yes) ||
 					!tidyOptSetBool (tdoc, TidyForceOutput, yes) ||
 					!tidyOptSetValue (tdoc, TidyCharEncoding, "utf8"))
 			{
