@@ -337,6 +337,7 @@ namespace Metida
 			elem.removeAttribute ("ljPollWhovot");
 			elem.removeAttribute ("ljPollName");
 			elem.removeAttribute ("id");
+			elem.removeChild (elem.firstChild ());
 
 			elem.setTagName ("lj-poll");
 			elem.setAttribute ("whoview", whoView);
@@ -370,6 +371,7 @@ namespace Metida
 				return false;
 
 			elem.removeAttribute ("style");
+			elem.removeChild (elem.firstChild ());
 			const auto& id = elem.attribute ("name");
 			elem.removeAttribute ("id");
 			elem.setTagName ("lj-embed");
@@ -405,6 +407,7 @@ namespace Metida
 			elem.removeAttribute ("style");
 			elem.setTagName ("lj-like");
 			elem.setAttribute ("buttons", likes);
+			elem.removeChild (elem.firstChild ());
 			return true;
 		};
 
