@@ -160,7 +160,7 @@ namespace Xoox
 		QXmppIq iq (QXmppIq::Set);
 		if (!ReqJID_.isEmpty ())
 			iq.setTo (ReqJID_);
-		iq.setExtensions (QXmppElementList () <<  queryElem);
+		iq.setExtensions (QXmppElementList () << queryElem);
 		Client_->sendPacket (iq);
 		LastStanzaID_ = iq.id ();
 
