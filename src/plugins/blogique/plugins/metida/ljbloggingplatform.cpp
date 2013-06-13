@@ -405,6 +405,7 @@ namespace Metida
 			elem.removeAttribute ("style");
 			elem.setTagName ("lj-like");
 			elem.setAttribute ("buttons", likes);
+			elem.removeChild (elem.firstChild ());
 			return true;
 		};
 
