@@ -1369,7 +1369,6 @@ namespace Aggregator
 						<< "provider is not a downloader:"
 						<< provider
 						<< "; cannot kill the task";
-				return;
 			}
 
 		QString filename = Util::GetTemporaryName ();
