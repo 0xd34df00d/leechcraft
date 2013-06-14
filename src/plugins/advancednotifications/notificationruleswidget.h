@@ -63,7 +63,7 @@ namespace AdvancedNotifications
 		NotificationRule GetRuleFromUI () const;
 		QList<QStandardItem*> MatchToRow (const FieldMatch&) const;
 	private slots:
-		void handleItemSelected (const QModelIndex&);
+		void handleItemSelected (const QModelIndex&, const QModelIndex&);
 
 		void on_AddRule__released ();
 		void on_UpdateRule__released ();
