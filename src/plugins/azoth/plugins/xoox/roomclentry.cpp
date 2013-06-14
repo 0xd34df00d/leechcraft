@@ -488,6 +488,25 @@ namespace Xoox
 		}
 	}
 
+	void RoomCLEntry::TrySetPerm (const QString& userId,
+			const QByteArray& permClass,
+			const QByteArray& targetPerm,
+			const QString& reason)
+	{
+		QXmppMucItem item;
+		if (permClass == "permclass_role")
+			item.setRole (Role2Str_.key (targetPerm));
+		else if (permClass == "permclass_aff")
+			item.setAffiliation (Aff2Str_.key (targetPerm));
+		else
+			return;
+
+		item.setJid (userId);
+		item.setReason (reason);
+
+		Account_->GetClientConnection ()->Update (item, RH_->GetRoomJID ());
+	}
+
 	bool RoomCLEntry::IsLessByPerm (QObject *p1, QObject *p2) const
 	{
 		RoomParticipantEntry *e1 = qobject_cast<RoomParticipantEntry*> (p1);
