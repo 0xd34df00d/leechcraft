@@ -135,6 +135,7 @@ namespace AdvancedNotifications
 	};
 
 	bool operator== (const NotificationRule&, const NotificationRule&);
+	bool operator!= (const NotificationRule&, const NotificationRule&);
 }
 }
 
