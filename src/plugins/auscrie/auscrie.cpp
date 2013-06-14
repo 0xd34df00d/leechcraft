@@ -112,7 +112,7 @@ namespace Auscrie
 
 	void Plugin::showDialog ()
 	{
-		shoot ();
+		makeScreenshot ();
 	}
 
 	void Plugin::makeScreenshot ()
