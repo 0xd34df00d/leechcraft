@@ -79,7 +79,7 @@ namespace AdvancedNotifications
 		connect (Ui_.RulesTree_->selectionModel (),
 				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
 				this,
-				SLOT (handleItemSelected (QModelIndex)));
+				SLOT (handleItemSelected (QModelIndex, QModelIndex)));
 
 		const auto& cat2hr = RM_->GetCategory2HR ();
 		for (const QString& cat : cat2hr.keys ())
@@ -187,13 +187,25 @@ namespace AdvancedNotifications
 		return items;
 	}
 
-	void NotificationRulesWidget::handleItemSelected (const QModelIndex& index)
+	void NotificationRulesWidget::handleItemSelected (const QModelIndex& index, const QModelIndex& prevIndex)
 	{
+		if (prevIndex.isValid ())
+		{
+			const auto& prevRule = RM_->GetRulesList ().value (prevIndex.row ());
+			const auto& uiRule = GetRuleFromUI ();
+			if (uiRule != prevRule &&
+					QMessageBox::question (this,
+							"LeechCraft",
+							tr ("The rule has been changed. Do you want to save it"),
+							QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+				RM_->UpdateRule (prevIndex, uiRule);
+		}
+
 		resetAudioFileBox ();
 		Ui_.CommandArgsTree_->clear ();
 		Ui_.CommandLineEdit_->setText (QString ());
 
-		const NotificationRule& rule = RM_->GetRulesList ().value (index.row ());
+		const auto& rule = RM_->GetRulesList ().value (index.row ());
 
 		const int catIdx = Ui_.EventCat_->findData (rule.GetCategory ());
 		Ui_.EventCat_->setCurrentIndex (std::max (catIdx, 0));
