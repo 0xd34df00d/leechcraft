@@ -1638,6 +1638,8 @@ namespace Aggregator
 
 	void Core::HandleProvider (QObject *provider, int id)
 	{
+		ID2Downloader_ [id] = provider;
+
 		if (Downloaders_.contains (provider))
 			return;
 
@@ -1654,8 +1656,6 @@ namespace Aggregator
 				SIGNAL (jobError (int, IDownload::Error)),
 				this,
 				SLOT (handleJobError (int, IDownload::Error)));
-
-		ID2Downloader_ [id] = provider;
 	}
 
 	void Core::ErrorNotification (const QString& h, const QString& body, bool wait) const
