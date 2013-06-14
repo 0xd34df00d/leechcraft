@@ -1353,8 +1353,7 @@ namespace Aggregator
 					SLOT (rotateUpdatesQueue ()));
 
 		QString url = StorageBackend_->GetFeed (id)->URL_;
-		QList<int> keys = PendingJobs_.keys ();
-		Q_FOREACH (int key, keys)
+		for (int key : PendingJobs_.keys ())
 			if (PendingJobs_ [key].URL_ == url)
 			{
 				QObject *provider = ID2Downloader_ [key];
