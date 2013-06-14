@@ -30,6 +30,7 @@
 #include "mainwidget.h"
 #include <QMenu>
 #include <QMainWindow>
+#include <QMessageBox>
 #include <QVBoxLayout>
 #include <QToolButton>
 #include <QInputDialog>
