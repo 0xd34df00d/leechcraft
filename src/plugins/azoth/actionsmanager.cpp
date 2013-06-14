@@ -1244,10 +1244,13 @@ namespace Azoth
 				if (!perms)
 					continue;
 
+				bool found = false;
 				for (auto part : otherMuc->GetParticipants ())
 				{
 					if (otherMuc->GetRealID (part) != realID)
 						continue;
+
+					found = true;
 
 					if (perms->MayChangePerm (part, permClass, perm))
 					{
@@ -1263,6 +1266,9 @@ namespace Azoth
 					const auto& e = Util::MakeNotification ("Azoth", body, PWarning_);
 					Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 				}
+
+				if (!found)
+					perms->TrySetPerm (realID, permClass, perm, text);
 			}
 		}
 	}
