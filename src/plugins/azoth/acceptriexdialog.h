@@ -44,6 +44,14 @@ namespace Azoth
 		Ui::AcceptRIEXDialog Ui_;
 
 		QStandardItemModel *Model_;
+
+		enum Column
+		{
+			Action,
+			ID,
+			Name,
+			Groups
+		};
 	public:
 		AcceptRIEXDialog (const QList<RIEXItem>&, QObject*, QString, QWidget* = 0);
 
