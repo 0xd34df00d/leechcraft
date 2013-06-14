@@ -858,10 +858,8 @@ namespace Azoth
 			return;
 		}
 
-		ICLEntry *entry = action->
-				property ("Azoth/Entry").value<ICLEntry*> ();
-		IAccount *account =
-				qobject_cast<IAccount*> (entry->GetParentAccount ());
+		auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
+		auto account = qobject_cast<IAccount*> (entry->GetParentAccount ());
 		if (!account)
 		{
 			qWarning () << Q_FUNC_INFO
