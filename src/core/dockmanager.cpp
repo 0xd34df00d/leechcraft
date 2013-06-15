@@ -39,12 +39,16 @@
 #include "mainwindow.h"
 #include "docktoolbarmanager.h"
 
+Q_DECLARE_METATYPE (QDockWidget*)
+
 namespace LeechCraft
 {
 	DockManager::DockInfo::DockInfo ()
 	: Associated_ (0)
 	, Window_ (0)
+	, Width_ (-1)
 	{
+		qRegisterMetaType<QDockWidget*> ("QDockWidget*");
 	}
 
 	DockManager::DockManager (RootWindowsManager *rootWM, QObject *parent)
@@ -122,9 +126,28 @@ namespace LeechCraft
 			ForcefullyClosed_ << dock;
 			break;
 		case QEvent::Hide:
+			Dock2Info_ [dock].Width_ = dock->width ();
 			break;
 		case QEvent::Show:
+		{
+			const auto width = Dock2Info_ [dock].Width_;
+			if (width > 0)
+			{
+				const auto prevMin = dock->minimumWidth ();
+				const auto prevMax = dock->maximumWidth ();
+
+				dock->setMinimumWidth (width);
+				dock->setMaximumWidth (width);
+
+				QMetaObject::invokeMethod (this,
+						"revertDockSizes",
+						Qt::QueuedConnection,
+						Q_ARG (QDockWidget*, dock),
+						Q_ARG (int, prevMin),
+						Q_ARG (int, prevMax));
+			}
 			break;
+		}
 		}
 
 		return false;
@@ -151,6 +174,12 @@ namespace LeechCraft
 				toWin->addDockWidget (area, dw);
 				Window2DockToolbarMgr_ [toWin]->AddDock (dw, area);
 			}
+	}
+
+	void DockManager::revertDockSizes (QDockWidget *dock, int min, int max)
+	{
+		dock->setMinimumWidth (min);
+		dock->setMaximumWidth (max);
 	}
 
 	void DockManager::handleDockDestroyed ()

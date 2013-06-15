@@ -55,6 +55,7 @@ namespace LeechCraft
 		{
 			QWidget *Associated_;
 			MainWindow *Window_;
+			int Width_;
 
 			DockInfo ();
 		};
@@ -77,6 +78,8 @@ namespace LeechCraft
 	public slots:
 		void handleTabMove (int, int, int);
 	private slots:
+		void revertDockSizes (QDockWidget*, int, int);
+
 		void handleDockDestroyed ();
 		void handleDockToggled (bool);
 		void handleTabChanged (QWidget*);
