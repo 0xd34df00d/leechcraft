@@ -51,11 +51,16 @@ namespace LeechCraft
 
 		RootWindowsManager *RootWM_;
 
-		QHash<QDockWidget*, QWidget*> TabAssociations_;
+		struct DockInfo
+		{
+			QWidget *Associated_;
+			MainWindow *Window_;
+
+			DockInfo ();
+		};
+		QHash<QDockWidget*, DockInfo> Dock2Info_;
 		QHash<QAction*, QDockWidget*> ToggleAct2Dock_;
 		QSet<QDockWidget*> ForcefullyClosed_;
-
-		QHash<QDockWidget*, MainWindow*> Dock2Window_;
 
 		QHash<QMainWindow*, DockToolbarManager*> Window2DockToolbarMgr_;
 	public:
