@@ -51,8 +51,6 @@ namespace LeechCraft
 
 		RootWindowsManager *RootWM_;
 
-		QMap<Qt::DockWidgetArea, QList<QDockWidget*>> Area2Widgets_;
-
 		QHash<QDockWidget*, QWidget*> TabAssociations_;
 		QHash<QAction*, QDockWidget*> ToggleAct2Dock_;
 		QSet<QDockWidget*> ForcefullyClosed_;
