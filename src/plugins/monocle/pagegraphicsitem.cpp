@@ -34,6 +34,8 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QCursor>
 #include <QApplication>
+#include <QGraphicsScene>
+#include <QGraphicsView>
 #include "core.h"
 #include "pixmapcachemanager.h"
 
