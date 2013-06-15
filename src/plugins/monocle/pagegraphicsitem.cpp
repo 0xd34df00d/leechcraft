@@ -150,7 +150,7 @@ namespace Monocle
 	void PageGraphicsItem::paint (QPainter *painter,
 			const QStyleOptionGraphicsItem *option, QWidget *w)
 	{
-		if (Invalid_)
+		if (Invalid_ && IsDisplayed ())
 		{
 			auto backendObj = Doc_->GetBackendPlugin ();
 			if (qobject_cast<IBackendPlugin*> (backendObj)->IsThreaded ())
