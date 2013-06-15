@@ -386,7 +386,7 @@ namespace Monocle
 
 		recoverDocState (state);
 		Relayout ();
-		SetCurrentPage (state.CurrentPage_, false);
+		SetCurrentPage (state.CurrentPage_, true);
 
 		checkCurrentPageChange (true);
 
