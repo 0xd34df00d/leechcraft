@@ -324,10 +324,15 @@ namespace Azoth
 		UsersListWidget w (entries,
 				[accCount] (ICLEntry *entry) -> QString
 				{
+					QString text = entry->GetEntryName ();
+					if (text != entry->GetHumanReadableID ())
+						text += " (" + entry->GetHumanReadableID () + ")";
+
 					if (accCount <= 1)
-						return entry->GetEntryName ();
+						return text;
+
 					auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
-					return entry->GetEntryName () + " (" + acc->GetAccountName () + ")";
+					return text + " [" + acc->GetAccountName () + "]";
 				},
 				this);
 		if (w.exec () != QDialog::Accepted)
