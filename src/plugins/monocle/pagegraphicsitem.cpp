@@ -140,7 +140,7 @@ namespace Monocle
 	void PageGraphicsItem::UpdatePixmap ()
 	{
 		Invalid_ = true;
-		if (isVisible ())
+		if (IsDisplayed ())
 			update ();
 	}
 
@@ -257,6 +257,18 @@ namespace Monocle
 			if (pair.first.contains (point.toPoint ()))
 				return pair.second;
 		return ILink_ptr ();
+	}
+
+	bool PageGraphicsItem::IsDisplayed () const
+	{
+		for (auto view : scene ()->views ())
+		{
+			const auto& items = view->items (view->viewport ()->rect ());
+			if (std::find (items.begin (), items.end (), this) != items.end ())
+				return true;
+		}
+
+		return false;
 	}
 
 	void PageGraphicsItem::handlePixmapRendered ()
