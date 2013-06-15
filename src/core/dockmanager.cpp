@@ -183,7 +183,8 @@ namespace LeechCraft
 		auto thisWindow = static_cast<MainWindow*> (RootWM_->GetMainWindow (thisWindowIdx));
 		auto toolbarMgr = Window2DockToolbarMgr_ [thisWindow];
 
-		QList<QDockWidget*> toShow;
+		QList<QDockWidget*> toShowAssoc;
+		QList<QDockWidget*> toShowUnassoc;
 		for (auto dock : TabAssociations_.keys ())
 		{
 			auto otherWidget = TabAssociations_ [dock];
@@ -197,10 +198,15 @@ namespace LeechCraft
 				toolbarMgr->RemoveDock (dock);
 			}
 			else if (!ForcefullyClosed_.contains (dock))
-				toShow << dock;
+			{
+				if (otherWidget)
+					toShowAssoc << dock;
+				else
+					toShowUnassoc << dock;
+			}
 		}
 
-		for (auto dock : toShow)
+		for (auto dock : toShowUnassoc + toShowAssoc)
 		{
 			dock->setVisible (true);
 			toolbarMgr->AddDock (dock, thisWindow->dockWidgetArea (dock));
