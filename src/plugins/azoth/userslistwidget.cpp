@@ -83,6 +83,7 @@ namespace Azoth
 				SIGNAL (activated (QModelIndex)),
 				this,
 				SLOT (accept ()));
+		Ui_.ListView_->setCurrentIndex (Filter_->index (0, 0));
 
 		Ui_.ListView_->setFocusProxy (Ui_.FilterLine_);
 		Ui_.ListView_->setFocus ();
@@ -92,10 +93,13 @@ namespace Azoth
 	QObject* UsersListWidget::GetActivatedParticipant () const
 	{
 		const auto& current = Ui_.ListView_->currentIndex ();
-		if (!current.isValid ())
-			return 0;
+		if (current.isValid ())
+			return current.data (PLRObject).value<QObject*> ();
 
-		return current.data (PLRObject).value<QObject*> ();
+		if (Filter_->rowCount ())
+			return Filter_->index (0, 0).data (PLRObject).value<QObject*> ();
+
+		return 0;
 	}
 }
 }
