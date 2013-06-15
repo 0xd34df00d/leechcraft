@@ -81,7 +81,8 @@ namespace Monocle
 
 		Invalid_ = true;
 
-		update ();
+		if (IsDisplayed ())
+			update ();
 
 		for (auto i = Item2RectInfo_.begin (); i != Item2RectInfo_.end (); ++i)
 		{
