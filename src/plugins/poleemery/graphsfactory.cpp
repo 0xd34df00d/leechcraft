@@ -326,50 +326,69 @@ namespace Poleemery
 
 	GraphsFactory::GraphsFactory ()
 	{
-		Infos_.append ({
-				QObject::tr ("Cumulative accounts balance (month)"),
-				[this] { return CreateBalanceItems (30, true); },
-				[] (QwtPlot *plot) -> void
+		auto prepareCummulative = [] (QwtPlot *plot) -> void
 				{
 					auto curMgr = Core::Instance ().GetCurrenciesManager ();
 					plot->enableAxis (QwtPlot::Axis::xBottom, true);
 					plot->enableAxis (QwtPlot::Axis::yLeft, true);
 					plot->setAxisTitle (QwtPlot::Axis::xBottom, QObject::tr ("Days"));
 					plot->setAxisTitle (QwtPlot::Axis::yLeft, curMgr->GetUserCurrency ());
-				}
+				};
+
+		Infos_.append ({
+				QObject::tr ("Cumulative accounts balance (month)"),
+				[this] { return CreateBalanceItems (30, true); },
+				prepareCummulative
 			});
 		Infos_.append ({
 				QObject::tr ("Comparative accounts balance (month)"),
 				[this] { return CreateBalanceItems (30, false); },
-				[] (QwtPlot *plot) -> void
-				{
-					auto curMgr = Core::Instance ().GetCurrenciesManager ();
-					plot->enableAxis (QwtPlot::Axis::xBottom, true);
-					plot->enableAxis (QwtPlot::Axis::yLeft, true);
-					plot->setAxisTitle (QwtPlot::Axis::xBottom, QObject::tr ("Days"));
-					plot->setAxisTitle (QwtPlot::Axis::yLeft, curMgr->GetUserCurrency ());
-				}
+				prepareCummulative
 			});
+		Infos_.append ({
+				QObject::tr ("Cumulative accounts balance (all-time)"),
+				[this] { return CreateBalanceItems (-1, true); },
+				prepareCummulative
+			});
+		Infos_.append ({
+				QObject::tr ("Comparative accounts balance (all-time)"),
+				[this] { return CreateBalanceItems (-1, false); },
+				prepareCummulative
+			});
+
+		auto prepareRelBreakdown = [] (QwtPlot *plot)
+		{
+			plot->enableAxis (QwtPlot::Axis::xBottom, false);
+			plot->enableAxis (QwtPlot::Axis::yLeft, true);
+			plot->setAxisTitle (QwtPlot::Axis::yLeft, "%");
+		};
+		auto prepareAbsBreakdown = [] (QwtPlot *plot)
+		{
+			plot->enableAxis (QwtPlot::Axis::xBottom, false);
+			plot->enableAxis (QwtPlot::Axis::yLeft, true);
+
+			auto curMgr = Core::Instance ().GetCurrenciesManager ();
+			plot->setAxisTitle (QwtPlot::Axis::yLeft, curMgr->GetUserCurrency ());
+		};
 		Infos_.append ({
 				QObject::tr ("Per-category spendings breakdown (absolute, month)"),
 				[this] { return CreateSpendingBreakdownItems (30, true); },
-				[] (QwtPlot *plot) -> void
-				{
-					auto curMgr = Core::Instance ().GetCurrenciesManager ();
-					plot->enableAxis (QwtPlot::Axis::xBottom, false);
-					plot->enableAxis (QwtPlot::Axis::yLeft, true);
-					plot->setAxisTitle (QwtPlot::Axis::yLeft, curMgr->GetUserCurrency ());
-				}
+				prepareAbsBreakdown
 			});
 		Infos_.append ({
 				QObject::tr ("Per-category spendings breakdown (relative, month)"),
 				[this] { return CreateSpendingBreakdownItems (30, false); },
-				[] (QwtPlot *plot) -> void
-				{
-					plot->enableAxis (QwtPlot::Axis::xBottom, false);
-					plot->enableAxis (QwtPlot::Axis::yLeft, true);
-					plot->setAxisTitle (QwtPlot::Axis::yLeft, "%");
-				}
+				prepareRelBreakdown
+			});
+		Infos_.append ({
+				QObject::tr ("Per-category spendings breakdown (absolute, all-time)"),
+				[this] { return CreateSpendingBreakdownItems (-1, true); },
+				prepareAbsBreakdown
+			});
+		Infos_.append ({
+				QObject::tr ("Per-category spendings breakdown (relative, all-time)"),
+				[this] { return CreateSpendingBreakdownItems (-1, false); },
+				prepareRelBreakdown
 			});
 	}
 
