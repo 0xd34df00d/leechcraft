@@ -28,3 +28,5 @@ target_link_libraries (leechcraft_anhero
 	)
 install (TARGETS leechcraft_anhero DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+
+add_subdirectory(crashprocess)

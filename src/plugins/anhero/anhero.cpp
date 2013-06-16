@@ -33,10 +33,10 @@
 #include <QX11Info>
 #include <signal.h>
 #include <unistd.h>
+#include <sys/resource.h>
 #include <util/util.h>
 
 #include <X11/Xlib.h>
-#include <sys/resource.h>
 
 namespace LeechCraft
 {
@@ -87,7 +87,7 @@ namespace AnHero
 
 			const char *argv [] =
 			{
-				"lc_crashhandler",
+				"lc_anhero_crashprocess",
 				"-display",
 				QX11Info::display () ? XDisplayString (QX11Info::display ()) : getenv ("DISPLAY"),
 				"--signal",
