@@ -72,12 +72,15 @@ namespace Poleemery
 					++i;
 			}
 
-			const auto& now = QDateTime::currentDateTime ();
-			const auto& startDt = now.addDays (-days);
-			auto pos = std::upper_bound (entries.begin (), entries.end (), startDt,
-					[] (const QDateTime& dt, const EntryBase_ptr& entry)
-						{ return dt < entry->Date_; });
-			entries.erase (entries.begin (), pos);
+			if (days > 0)
+			{
+				const auto& now = QDateTime::currentDateTime ();
+				const auto& startDt = now.addDays (-days);
+				auto pos = std::upper_bound (entries.begin (), entries.end (), startDt,
+						[] (const QDateTime& dt, const EntryBase_ptr& entry)
+							{ return dt < entry->Date_; });
+				entries.erase (entries.begin (), pos);
+			}
 			return entries;
 		}
 
@@ -85,12 +88,20 @@ namespace Poleemery
 		{
 			auto opsMgr = Core::Instance ().GetOpsManager ();
 			const auto& entries = opsMgr->GetEntriesWBalance ();
+			if (entries.isEmpty ())
+				return {};
 
+			auto pos = entries.begin ();
 			const auto& now = QDateTime::currentDateTime ();
-			const auto& startDt = now.addDays (-days);
-			auto pos = std::upper_bound (entries.begin (), entries.end (), startDt,
-					[] (const QDateTime& dt, const EntryWithBalance& entry)
-						{ return dt < entry.Entry_->Date_; });
+			if (days > 0)
+			{
+				const auto& startDt = now.addDays (-days);
+				pos = std::upper_bound (entries.begin (), entries.end (), startDt,
+						[] (const QDateTime& dt, const EntryWithBalance& entry)
+							{ return dt < entry.Entry_->Date_; });
+			}
+			else
+				days = pos->Entry_->Date_.daysTo (now);
 
 			QMap<double, BalanceInfo> days2infos;
 			for (; pos != entries.end (); ++pos)
