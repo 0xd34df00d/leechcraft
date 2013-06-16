@@ -107,7 +107,9 @@ namespace Poleemery
 
 		const auto& name = Ui_.Name_->currentText ();
 		const auto& descr = Ui_.Description_->text ();
-		const auto& dt = Ui_.DateEdit_->dateTime ();
+		auto dt = Ui_.DateEdit_->dateTime ();
+		auto time = dt.time ();
+		dt.setTime ({ time.hour (), time.minute () });
 
 		switch (GetEntryType ())
 		{
