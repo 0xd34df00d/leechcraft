@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_ANHERO_ANHERO_H
-#define PLUGINS_ANHERO_ANHERO_H
+#pragma once
+
 #include <QObject>
 #include <QStringList>
 #include <interfaces/iinfo.h>
@@ -50,10 +50,6 @@ namespace AnHero
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
-
-#endif
