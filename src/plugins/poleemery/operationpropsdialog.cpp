@@ -83,6 +83,9 @@ namespace Poleemery
 		Ui_.Shop_->addItems (QStringList (QString ()) + ShopNames_);
 
 		on_ExpenseEntry__released ();
+
+		if (!Accounts_.isEmpty ())
+			on_AccsBox__currentIndexChanged (0);
 	}
 
 	EntryType OperationPropsDialog::GetEntryType () const
