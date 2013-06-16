@@ -9,10 +9,16 @@ include_directories (
 set (SRCS
 	main.cpp
 	gdblauncher.cpp
+	crashdialog.cpp
 	)
+set (FORMS
+	crashdialog.ui
+	)
+QT4_WRAP_UI (UIS_H "${FORMS}")
 
 add_executable (lc_anhero_crashprocess WIN32
 	${SRCS}
+	${UIS_H}
 	)
 target_link_libraries (lc_anhero_crashprocess
 	${QT_LIBRARIES}
