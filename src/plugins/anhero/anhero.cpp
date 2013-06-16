@@ -34,6 +34,7 @@
 #include <signal.h>
 #include <unistd.h>
 #include <sys/resource.h>
+#include <sys/wait.h>
 #include <util/util.h>
 
 #include <X11/Xlib.h>
@@ -67,6 +68,9 @@ namespace AnHero
 				_exit (253);
 				break;
 			default:
+				alarm (0);
+				while (waitpid (-1, nullptr, 0) != pid)
+					;
 				break;
 			}
 		}
