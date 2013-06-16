@@ -17,6 +17,7 @@ include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
+	${LIBTIDY_INCLUDE_DIRS}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 set (SRCS
