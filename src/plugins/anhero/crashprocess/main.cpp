@@ -36,6 +36,7 @@
 
 #include <QApplication>
 #include "gdblauncher.h"
+#include "crashdialog.h"
 
 namespace
 {
@@ -80,6 +81,11 @@ int main (int argc, char **argv)
 	const auto& opts = ParseOptions (argc, argv);
 
 	auto l = new CrashProcess::GDBLauncher (opts.PID_, opts.Path_);
+	auto dia = new CrashProcess::CrashDialog ();
+	QObject::connect (l,
+			SIGNAL (gotOutput (QString)),
+			dia,
+			SLOT (appendTrace (QString)));
 
 	return app.exec ();
 }
