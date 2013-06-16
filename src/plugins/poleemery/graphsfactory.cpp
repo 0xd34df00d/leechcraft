@@ -52,6 +52,26 @@ namespace Poleemery
 			auto opsMgr = Core::Instance ().GetOpsManager ();
 			auto entries = opsMgr->GetAllEntries ();
 
+			std::sort (entries.begin (), entries.end (),
+					[] (EntryBase_ptr l, EntryBase_ptr r)
+					{
+						return l->Date_ == r->Date_ ?
+								l->Amount_ < r->Amount_ :
+								l->Date_ < r->Date_;
+					});
+
+			for (auto i = entries.begin (); i < entries.end () - 1; )
+			{
+				const auto& item = *i;
+				const auto& next = *(i + 1);
+				if (item->Date_ == next->Date_ &&
+						item->Amount_ == next->Amount_ &&
+						item->GetType () != next->GetType ())
+					i = entries.erase (i, i + 2);
+				else
+					++i;
+			}
+
 			const auto& now = QDateTime::currentDateTime ();
 			const auto& startDt = now.addDays (-days);
 			auto pos = std::upper_bound (entries.begin (), entries.end (), startDt,
