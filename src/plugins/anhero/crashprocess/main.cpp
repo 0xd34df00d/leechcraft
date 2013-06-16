@@ -27,6 +27,59 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
+#include <stdexcept>
+#include <thread>
+
+#ifndef Q_MOC_RUN // see https://bugreports.qt-project.org/browse/QTBUG-22829
+#include <boost/program_options.hpp>
+#endif
+
+#include <QApplication>
+#include "gdblauncher.h"
+
+namespace
+{
+	namespace bpo = boost::program_options;
+
+	struct Options
+	{
+		int Signal_;
+		uint64_t PID_;
+		QString Path_;
+	};
+
+	Options ParseOptions (int argc, char **argv)
+	{
+		bpo::options_description desc ("Known options");
+		desc.add_options ()
+				("signal", bpo::value<int> (), "the signal that triggered the crash handler")
+				("pid", bpo::value<uint64_t> (), "the PID of the crashed process");
+				("path", bpo::value<std::string> (), "the application path of the crashed process");
+
+		bpo::command_line_parser parser (argc, argv);
+		bpo::variables_map vm;
+		bpo::store (parser
+				.options (desc)
+				.allow_unregistered ()
+				.run (), vm);
+		bpo::notify (vm);
+
+		if (!vm.count ("pid"))
+			throw std::runtime_error ("PID parameter not set");
+
+		return { vm ["signal"].as<int> (), vm ["pid"].as<uint64_t> () };
+	}
+}
+
+namespace CrashProcess = LeechCraft::AnHero::CrashProcess;
+
 int main (int argc, char **argv)
 {
+	QApplication app (argc, argv);
+
+	const auto& opts = ParseOptions (argc, argv);
+
+	auto l = new CrashProcess::GDBLauncher (opts.PID_, opts.Path_);
+
+	return app.exec ();
 }
