@@ -45,6 +45,8 @@ namespace AnHero
 {
 	namespace
 	{
+		QByteArray AppPath_;
+
 		void CloseFiles ()
 		{
 			rlimit rlp;
@@ -98,6 +100,8 @@ namespace AnHero
 				sigtxt,
 				"--pid",
 				pidtxt,
+				"--path",
+				AppPath_.constData (),
 				nullptr
 			};
 
@@ -142,6 +146,7 @@ namespace AnHero
 		if (QApplication::arguments ().contains ("-noanhero"))
 			return;
 
+		AppPath_ = QCoreApplication::applicationFilePath ().toUtf8 ();
 		SetCrashHandler (DefaultCrashHandler);
 	}
 
