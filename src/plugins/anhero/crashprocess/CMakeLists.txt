@@ -1,6 +1,8 @@
 cmake_minimum_required (VERSION 2.8)
 project (leechcraft_anhero_crashprocess)
 
+find_package (Boost REQUIRED COMPONENTS program_options)
+
 include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
