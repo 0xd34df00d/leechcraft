@@ -60,6 +60,8 @@ namespace Dolozhee
 		int nextId () const;
 		void initializePage ();
 
+		void ForceReportType (Type);
+
 		Type GetReportType () const;
 		int GetCategoryID () const;
 		Priority GetPriority () const;
