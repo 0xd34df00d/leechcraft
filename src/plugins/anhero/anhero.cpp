@@ -36,7 +36,7 @@
 #include <sys/resource.h>
 #include <sys/wait.h>
 #include <util/util.h>
-#include <config.h>
+#include <interfaces/core/icoreproxy.h>
 
 #include <X11/Xlib.h>
 
@@ -47,6 +47,7 @@ namespace AnHero
 	namespace
 	{
 		QByteArray AppPath_;
+		QByteArray AppVersion_;
 
 		void CloseFiles ()
 		{
@@ -104,7 +105,7 @@ namespace AnHero
 				"--path",
 				AppPath_.constData (),
 				"--version",
-				LEECHCRAFT_VERSION,
+				AppVersion_.constData (),
 				nullptr
 			};
 
@@ -142,7 +143,7 @@ namespace AnHero
 		}
 	}
 
-	void Plugin::Init (ICoreProxy_ptr)
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Util::InstallTranslator ("anhero");
 
@@ -150,6 +151,7 @@ namespace AnHero
 			return;
 
 		AppPath_ = QCoreApplication::applicationFilePath ().toUtf8 ();
+		AppVersion_ = proxy->GetVersion ().toUtf8 ();
 		SetCrashHandler (DefaultCrashHandler);
 	}
 
