@@ -49,6 +49,7 @@ namespace Dolozhee
 
 		int nextId () const;
 
+		void AddFile (const QString&);
 		QStringList GetFiles () const;
 	private slots:
 		void on_AddFile__released ();
