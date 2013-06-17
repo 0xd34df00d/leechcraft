@@ -96,6 +96,18 @@ namespace Seen
 
 	QImage Document::RenderPage (int pageNum, double xScale, double yScale)
 	{
+		const auto& size = Sizes_.value (pageNum);
+
+		QImage img (size, QImage::Format_RGB32);
+		auto getScaled = [&img, xScale, yScale]
+		{
+			return img.scaled (img.width () * xScale, img.height () * yScale,
+					Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		};
+
+		if (std::max (xScale, yScale) < 0.01)
+			return getScaled ();
+
 		ddjvu_page_t *page = 0;
 		if (PendingRenders_.contains (pageNum))
 			page = PendingRenders_ [pageNum];
@@ -106,7 +118,6 @@ namespace Seen
 			PendingRendersNums_ [page] = pageNum;
 		}
 
-		const auto& size = Sizes_.value (pageNum);
 		ddjvu_rect_s rect =
 		{
 			0,
@@ -114,8 +125,6 @@ namespace Seen
 			static_cast<unsigned int> (size.width ()),
 			static_cast<unsigned int> (size.height ())
 		};
-
-		QImage img (size, QImage::Format_RGB32);
 
 		auto res = ddjvu_page_render (page,
 				DDJVU_RENDER_COLOR,
@@ -132,7 +141,7 @@ namespace Seen
 			ddjvu_page_release (page);
 		}
 
-		return img.scaled (img.width () * xScale, img.height () * yScale, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		return getScaled ();
 	}
 
 	QList<ILink_ptr> Document::GetPageLinks (int)

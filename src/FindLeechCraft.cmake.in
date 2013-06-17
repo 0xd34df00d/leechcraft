@@ -70,6 +70,7 @@ endfunction ()
 function (CreateTrsUpTarget PlugName Langs Sources Forms Xml)
 endfunction ()
 
+set (LC_BINDIR @LC_BINDIR@)
 set (LC_PLUGINS_DEST @LC_PLUGINS_DEST@)
 set (LC_TRANSLATIONS_DEST @LC_TRANSLATIONS_DEST@)
 set (LC_SETTINGS_DEST @LC_SETTINGS_DEST@)

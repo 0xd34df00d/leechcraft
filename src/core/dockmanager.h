@@ -51,13 +51,17 @@ namespace LeechCraft
 
 		RootWindowsManager *RootWM_;
 
-		QMap<Qt::DockWidgetArea, QList<QDockWidget*>> Area2Widgets_;
+		struct DockInfo
+		{
+			QWidget *Associated_;
+			MainWindow *Window_;
+			int Width_;
 
-		QHash<QDockWidget*, QWidget*> TabAssociations_;
+			DockInfo ();
+		};
+		QHash<QDockWidget*, DockInfo> Dock2Info_;
 		QHash<QAction*, QDockWidget*> ToggleAct2Dock_;
 		QSet<QDockWidget*> ForcefullyClosed_;
-
-		QHash<QDockWidget*, MainWindow*> Dock2Window_;
 
 		QHash<QMainWindow*, DockToolbarManager*> Window2DockToolbarMgr_;
 	public:
@@ -74,6 +78,8 @@ namespace LeechCraft
 	public slots:
 		void handleTabMove (int, int, int);
 	private slots:
+		void revertDockSizes (QDockWidget*, int, int);
+
 		void handleDockDestroyed ();
 		void handleDockToggled (bool);
 		void handleTabChanged (QWidget*);

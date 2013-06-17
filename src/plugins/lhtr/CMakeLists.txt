@@ -5,7 +5,9 @@ include (InitLCPlugin OPTIONAL)
 option (WITH_LHTR_HTML "Build extended support for (invalid) HTML" ON)
 
 if (WITH_LHTR_HTML)
-	set (ADDITIONAL_LIBRARES "tidy")
+	set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+	find_package (LibTidy REQUIRED)
+	set (ADDITIONAL_LIBRARES ${LIBTIDY_LIBRARIES})
 	add_definitions (-DWITH_HTMLTIDY)
 endif (WITH_LHTR_HTML)
 
@@ -15,6 +17,7 @@ include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
+	${LIBTIDY_INCLUDE_DIRS}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 set (SRCS

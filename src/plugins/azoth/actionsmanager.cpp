@@ -858,10 +858,8 @@ namespace Azoth
 			return;
 		}
 
-		ICLEntry *entry = action->
-				property ("Azoth/Entry").value<ICLEntry*> ();
-		IAccount *account =
-				qobject_cast<IAccount*> (entry->GetParentAccount ());
+		auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
+		auto account = qobject_cast<IAccount*> (entry->GetParentAccount ());
 		if (!account)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -1246,10 +1244,13 @@ namespace Azoth
 				if (!perms)
 					continue;
 
+				bool found = false;
 				for (auto part : otherMuc->GetParticipants ())
 				{
 					if (otherMuc->GetRealID (part) != realID)
 						continue;
+
+					found = true;
 
 					if (perms->MayChangePerm (part, permClass, perm))
 					{
@@ -1265,6 +1266,9 @@ namespace Azoth
 					const auto& e = Util::MakeNotification ("Azoth", body, PWarning_);
 					Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 				}
+
+				if (!found)
+					perms->TrySetPerm (realID, permClass, perm, text);
 			}
 		}
 	}

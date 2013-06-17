@@ -630,7 +630,7 @@ namespace Xoox
 		QXmppMucAdminIq iq;
 		iq.setTo (room);
 		iq.setType (QXmppIq::Set);
-		iq.setItems (QList<QXmppMucItem> () << item);
+		iq.setItems ({ item });
 		Client_->sendPacket (iq);
 	}
 

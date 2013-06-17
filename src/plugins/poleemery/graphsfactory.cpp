@@ -52,12 +52,35 @@ namespace Poleemery
 			auto opsMgr = Core::Instance ().GetOpsManager ();
 			auto entries = opsMgr->GetAllEntries ();
 
-			const auto& now = QDateTime::currentDateTime ();
-			const auto& startDt = now.addDays (-days);
-			auto pos = std::upper_bound (entries.begin (), entries.end (), startDt,
-					[] (const QDateTime& dt, const EntryBase_ptr& entry)
-						{ return dt < entry->Date_; });
-			entries.erase (entries.begin (), pos);
+			std::sort (entries.begin (), entries.end (),
+					[] (EntryBase_ptr l, EntryBase_ptr r)
+					{
+						return l->Date_ == r->Date_ ?
+								l->Amount_ < r->Amount_ :
+								l->Date_ < r->Date_;
+					});
+
+			for (auto i = entries.begin (); i < entries.end () - 1; )
+			{
+				const auto& item = *i;
+				const auto& next = *(i + 1);
+				if (item->Date_ == next->Date_ &&
+						item->Amount_ == next->Amount_ &&
+						item->GetType () != next->GetType ())
+					i = entries.erase (i, i + 2);
+				else
+					++i;
+			}
+
+			if (days > 0)
+			{
+				const auto& now = QDateTime::currentDateTime ();
+				const auto& startDt = now.addDays (-days);
+				auto pos = std::upper_bound (entries.begin (), entries.end (), startDt,
+						[] (const QDateTime& dt, const EntryBase_ptr& entry)
+							{ return dt < entry->Date_; });
+				entries.erase (entries.begin (), pos);
+			}
 			return entries;
 		}
 
@@ -65,12 +88,20 @@ namespace Poleemery
 		{
 			auto opsMgr = Core::Instance ().GetOpsManager ();
 			const auto& entries = opsMgr->GetEntriesWBalance ();
+			if (entries.isEmpty ())
+				return {};
 
+			auto pos = entries.begin ();
 			const auto& now = QDateTime::currentDateTime ();
-			const auto& startDt = now.addDays (-days);
-			auto pos = std::upper_bound (entries.begin (), entries.end (), startDt,
-					[] (const QDateTime& dt, const EntryWithBalance& entry)
-						{ return dt < entry.Entry_->Date_; });
+			if (days > 0)
+			{
+				const auto& startDt = now.addDays (-days);
+				pos = std::upper_bound (entries.begin (), entries.end (), startDt,
+						[] (const QDateTime& dt, const EntryWithBalance& entry)
+							{ return dt < entry.Entry_->Date_; });
+			}
+			else
+				days = pos->Entry_->Date_.daysTo (now);
 
 			QMap<double, BalanceInfo> days2infos;
 			for (; pos != entries.end (); ++pos)
@@ -295,50 +326,69 @@ namespace Poleemery
 
 	GraphsFactory::GraphsFactory ()
 	{
-		Infos_.append ({
-				QObject::tr ("Cumulative accounts balance (month)"),
-				[this] { return CreateBalanceItems (30, true); },
-				[] (QwtPlot *plot) -> void
+		auto prepareCummulative = [] (QwtPlot *plot) -> void
 				{
 					auto curMgr = Core::Instance ().GetCurrenciesManager ();
 					plot->enableAxis (QwtPlot::Axis::xBottom, true);
 					plot->enableAxis (QwtPlot::Axis::yLeft, true);
 					plot->setAxisTitle (QwtPlot::Axis::xBottom, QObject::tr ("Days"));
 					plot->setAxisTitle (QwtPlot::Axis::yLeft, curMgr->GetUserCurrency ());
-				}
+				};
+
+		Infos_.append ({
+				QObject::tr ("Cumulative accounts balance (month)"),
+				[this] { return CreateBalanceItems (30, true); },
+				prepareCummulative
 			});
 		Infos_.append ({
 				QObject::tr ("Comparative accounts balance (month)"),
 				[this] { return CreateBalanceItems (30, false); },
-				[] (QwtPlot *plot) -> void
-				{
-					auto curMgr = Core::Instance ().GetCurrenciesManager ();
-					plot->enableAxis (QwtPlot::Axis::xBottom, true);
-					plot->enableAxis (QwtPlot::Axis::yLeft, true);
-					plot->setAxisTitle (QwtPlot::Axis::xBottom, QObject::tr ("Days"));
-					plot->setAxisTitle (QwtPlot::Axis::yLeft, curMgr->GetUserCurrency ());
-				}
+				prepareCummulative
 			});
+		Infos_.append ({
+				QObject::tr ("Cumulative accounts balance (all-time)"),
+				[this] { return CreateBalanceItems (-1, true); },
+				prepareCummulative
+			});
+		Infos_.append ({
+				QObject::tr ("Comparative accounts balance (all-time)"),
+				[this] { return CreateBalanceItems (-1, false); },
+				prepareCummulative
+			});
+
+		auto prepareRelBreakdown = [] (QwtPlot *plot)
+		{
+			plot->enableAxis (QwtPlot::Axis::xBottom, false);
+			plot->enableAxis (QwtPlot::Axis::yLeft, true);
+			plot->setAxisTitle (QwtPlot::Axis::yLeft, "%");
+		};
+		auto prepareAbsBreakdown = [] (QwtPlot *plot)
+		{
+			plot->enableAxis (QwtPlot::Axis::xBottom, false);
+			plot->enableAxis (QwtPlot::Axis::yLeft, true);
+
+			auto curMgr = Core::Instance ().GetCurrenciesManager ();
+			plot->setAxisTitle (QwtPlot::Axis::yLeft, curMgr->GetUserCurrency ());
+		};
 		Infos_.append ({
 				QObject::tr ("Per-category spendings breakdown (absolute, month)"),
 				[this] { return CreateSpendingBreakdownItems (30, true); },
-				[] (QwtPlot *plot) -> void
-				{
-					auto curMgr = Core::Instance ().GetCurrenciesManager ();
-					plot->enableAxis (QwtPlot::Axis::xBottom, false);
-					plot->enableAxis (QwtPlot::Axis::yLeft, true);
-					plot->setAxisTitle (QwtPlot::Axis::yLeft, curMgr->GetUserCurrency ());
-				}
+				prepareAbsBreakdown
 			});
 		Infos_.append ({
 				QObject::tr ("Per-category spendings breakdown (relative, month)"),
 				[this] { return CreateSpendingBreakdownItems (30, false); },
-				[] (QwtPlot *plot) -> void
-				{
-					plot->enableAxis (QwtPlot::Axis::xBottom, false);
-					plot->enableAxis (QwtPlot::Axis::yLeft, true);
-					plot->setAxisTitle (QwtPlot::Axis::yLeft, "%");
-				}
+				prepareRelBreakdown
+			});
+		Infos_.append ({
+				QObject::tr ("Per-category spendings breakdown (absolute, all-time)"),
+				[this] { return CreateSpendingBreakdownItems (-1, true); },
+				prepareAbsBreakdown
+			});
+		Infos_.append ({
+				QObject::tr ("Per-category spendings breakdown (relative, all-time)"),
+				[this] { return CreateSpendingBreakdownItems (-1, false); },
+				prepareRelBreakdown
 			});
 	}
 

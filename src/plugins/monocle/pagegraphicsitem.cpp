@@ -34,6 +34,8 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QCursor>
 #include <QApplication>
+#include <QGraphicsScene>
+#include <QGraphicsView>
 #include "core.h"
 #include "pixmapcachemanager.h"
 
@@ -79,7 +81,8 @@ namespace Monocle
 
 		Invalid_ = true;
 
-		update ();
+		if (IsDisplayed ())
+			update ();
 
 		for (auto i = Item2RectInfo_.begin (); i != Item2RectInfo_.end (); ++i)
 		{
@@ -140,14 +143,14 @@ namespace Monocle
 	void PageGraphicsItem::UpdatePixmap ()
 	{
 		Invalid_ = true;
-		if (isVisible ())
+		if (IsDisplayed ())
 			update ();
 	}
 
 	void PageGraphicsItem::paint (QPainter *painter,
 			const QStyleOptionGraphicsItem *option, QWidget *w)
 	{
-		if (Invalid_)
+		if (Invalid_ && IsDisplayed ())
 		{
 			auto backendObj = Doc_->GetBackendPlugin ();
 			if (qobject_cast<IBackendPlugin*> (backendObj)->IsThreaded ())
@@ -257,6 +260,18 @@ namespace Monocle
 			if (pair.first.contains (point.toPoint ()))
 				return pair.second;
 		return ILink_ptr ();
+	}
+
+	bool PageGraphicsItem::IsDisplayed () const
+	{
+		for (auto view : scene ()->views ())
+		{
+			const auto& items = view->items (view->viewport ()->rect ());
+			if (std::find (items.begin (), items.end (), this) != items.end ())
+				return true;
+		}
+
+		return false;
 	}
 
 	void PageGraphicsItem::handlePixmapRendered ()

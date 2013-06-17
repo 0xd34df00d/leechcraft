@@ -287,5 +287,10 @@ namespace AdvancedNotifications
 			r1.GetTrayParams () == r2.GetTrayParams () &&
 			r1.GetCmdParams () == r2.GetCmdParams ();
 	}
+
+	bool operator!= (const NotificationRule& r1, const NotificationRule& r2)
+	{
+		return !(r1 == r2);
+	}
 }
 }

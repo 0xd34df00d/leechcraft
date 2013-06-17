@@ -27,59 +27,66 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "keyboardrosterfixer.h"
-#include <QKeyEvent>
+#include <stdexcept>
+#include <thread>
+
+#ifndef Q_MOC_RUN // see https://bugreports.qt-project.org/browse/QTBUG-22829
+#include <boost/program_options.hpp>
+#endif
+
 #include <QApplication>
-#include <QTreeView>
+#include "appinfo.h"
+#include "gdblauncher.h"
+#include "crashdialog.h"
 
-namespace LeechCraft
+namespace CrashProcess = LeechCraft::AnHero::CrashProcess;
+
+namespace
 {
-namespace Azoth
-{
-	KeyboardRosterFixer::KeyboardRosterFixer (QTreeView *view, QObject *parent)
-	: QObject (parent)
-	, View_ (view)
-	, IsSearching_ (false)
+	namespace bpo = boost::program_options;
+
+	CrashProcess::AppInfo ParseOptions (int argc, char **argv)
 	{
-	}
+		bpo::options_description desc ("Known options");
+		desc.add_options ()
+				("signal", bpo::value<int> (), "the signal that triggered the crash handler")
+				("pid", bpo::value<uint64_t> ()->required (), "the PID of the crashed process")
+				("path", bpo::value<std::string> ()->required (), "the application path of the crashed process")
+				("version", bpo::value<std::string> ()->required (), "the LeechCraft version at the moment of the crash");
 
-	bool KeyboardRosterFixer::eventFilter (QObject*, QEvent *e)
-	{
-		if (e->type () != QEvent::KeyPress &&
-			e->type () != QEvent::KeyRelease)
-			return false;
+		bpo::command_line_parser parser (argc, argv);
+		bpo::variables_map vm;
+		bpo::store (parser
+				.options (desc)
+				.allow_unregistered ()
+				.run (), vm);
+		bpo::notify (vm);
 
-		QKeyEvent *ke = static_cast<QKeyEvent*> (e);
-		if (!IsSearching_)
+		if (!vm.count ("pid"))
+			throw std::runtime_error ("PID parameter not set");
+
+		return
 		{
-			switch (ke->key ())
-			{
-			case Qt::Key_Space:
-			case Qt::Key_Right:
-			case Qt::Key_Left:
-			case Qt::Key_Delete:
-				qApp->sendEvent (View_, e);
-				return true;
-			default:
-				;
-			}
-		}
-
-		switch (ke->key ())
-		{
-		case Qt::Key_Down:
-		case Qt::Key_Up:
-		case Qt::Key_PageDown:
-		case Qt::Key_PageUp:
-		case Qt::Key_Enter:
-		case Qt::Key_Return:
-			IsSearching_ = false;
-			qApp->sendEvent (View_, e);
-			return true;
-		default:
-			IsSearching_ = true;
-			return false;
-		}
+			vm ["signal"].as<int> (),
+			vm ["pid"].as<uint64_t> (),
+			QString::fromUtf8 (vm ["path"].as<std::string> ().c_str ()),
+			vm ["version"].as<std::string> ().c_str ()
+		};
 	}
 }
+
+int main (int argc, char **argv)
+{
+	QApplication app (argc, argv);
+
+	const auto& info = ParseOptions (argc, argv);
+
+	auto l = new CrashProcess::GDBLauncher (info.PID_, info.Path_);
+	auto dia = new CrashProcess::CrashDialog (info);
+	QObject::connect (l,
+			SIGNAL (gotOutput (QString)),
+			dia,
+			SLOT (appendTrace (QString)));
+
+	return app.exec ();
 }

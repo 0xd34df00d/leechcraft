@@ -91,7 +91,7 @@ namespace RIEX
 			ICLEntry *entry = entries [item.ID_];
 
 			bool allGroups = true;
-			Q_FOREACH (const QString& group, item.Groups_)
+			for (const QString& group : item.Groups_)
 				if (!entry->Groups ().contains (group))
 				{
 					allGroups = false;

@@ -57,6 +57,12 @@ namespace Poleemery
 			for (const auto& cat : entry.Categories_)
 				KnownCategories_ << cat;
 		}
+		for (auto entry : entries)
+		{
+			auto& date = entry->Date_;
+			const auto& time = date.time ();
+			date.setTime ({ time.hour (), time.minute () });
+		}
 		Model_->AddEntries (entries);
 
 		connect (Core::Instance ().GetCurrenciesManager (),

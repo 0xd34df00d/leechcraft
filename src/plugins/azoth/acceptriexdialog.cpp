@@ -29,7 +29,10 @@
 
 #include "acceptriexdialog.h"
 #include <QStandardItemModel>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
 #include "interfaces/azoth/iclentry.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -42,14 +45,9 @@ namespace Azoth
 	{
 		Ui_.setupUi (this);
 
-		QStringList labels;
-		labels << tr ("Action")
-				<< tr ("ID")
-				<< tr ("Name")
-				<< tr ("Groups");
-		Model_->setHorizontalHeaderLabels (labels);
+		Model_->setHorizontalHeaderLabels ({ tr ("Action"), tr ("ID"), tr ("Name"), tr ("Groups") });
 
-		Q_FOREACH (const RIEXItem& item, items)
+		for (const RIEXItem& item : items)
 		{
 			QList<QStandardItem*> row;
 
@@ -102,13 +100,16 @@ namespace Azoth
 	{
 		QList<RIEXItem> result;
 
+		const auto itp = Core::Instance ().GetProxy ()->GetTagsManager ();
 		for (int i = 0, size = Model_->rowCount (); i < size; ++i)
 		{
 			QStandardItem *item = Model_->item (i);
 			if (item->checkState () != Qt::Checked)
 				continue;
 
-			result << item->data ().value<RIEXItem> ();
+			auto riex = item->data ().value<RIEXItem> ();
+			riex.Groups_ = itp->Split (Model_->item (i, Column::Groups)->text ());
+			result << riex;
 		}
 
 		return result;

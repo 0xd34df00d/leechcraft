@@ -27,68 +27,70 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "fileattachpage.h"
-#include "reportwizard.h"
-#include <QStandardItemModel>
-#include <QFileDialog>
-#include <util/util.h>
+#include "gdblauncher.h"
+#include <stdexcept>
+#include <QProcess>
+#include <QTemporaryFile>
+#include <QTextStream>
+#include <QtDebug>
 
 namespace LeechCraft
 {
-namespace Dolozhee
+namespace AnHero
 {
-	FileAttachPage::FileAttachPage (QWidget *page)
-	: QWizardPage (page)
-	, Model_ (new QStandardItemModel (this))
+namespace CrashProcess
+{
+	GDBLauncher::GDBLauncher (quint64 pid, const QString& path, QObject *parent)
+	: QObject (parent)
+	, Proc_ (new QProcess (this))
 	{
-		Ui_.setupUi (this);
+		auto tmpFile = new QTemporaryFile ();
+		if (!tmpFile->open ())
+			throw std::runtime_error ("cannot open GDB temp file");
 
-		Model_->setHorizontalHeaderLabels ({ tr ("Path"), tr ("Size"), tr ("Description") });
-		Ui_.FilesView_->setModel (Model_);
+		QTextStream stream (tmpFile);
+		stream << "thread\n"
+				<< "thread apply all bt";
+
+		Proc_->start ("gdb",
+				{
+					"-nw",
+					"-n",
+					"-batch",
+					"-x",
+					tmpFile->fileName (),
+					"-p",
+					QString::number (pid),
+					path
+				});
+		connect (Proc_,
+				SIGNAL (error (QProcess::ProcessError)),
+				this,
+				SLOT (handleError ()));
+		connect (Proc_,
+				SIGNAL (readyReadStandardOutput ()),
+				this,
+				SLOT (consumeStdout ()));
 	}
 
-	int FileAttachPage::nextId () const
+	void GDBLauncher::handleError ()
 	{
-		return ReportWizard::PageID::Final;
+		qDebug () << Q_FUNC_INFO
+				<< "status:"
+				<< Proc_->exitStatus ()
+				<< "code:"
+				<< Proc_->exitCode ()
+				<< "error:"
+				<< Proc_->error ()
+				<< "str:"
+				<< Proc_->errorString ();
 	}
 
-	void FileAttachPage::AddFile (const QString& path)
+	void GDBLauncher::consumeStdout ()
 	{
-		auto pathItem = new QStandardItem (path);
-		pathItem->setEditable (false);
-
-		auto sizeItem = new QStandardItem (Util::MakePrettySize (QFileInfo (path).size ()));
-		sizeItem->setEditable (false);
-
-		auto descrItem = new QStandardItem ();
-		Model_->appendRow ({ pathItem, sizeItem, descrItem });
+		const auto& str = Proc_->readAllStandardOutput ().trimmed ();
+		emit gotOutput (str);
 	}
-
-	QStringList FileAttachPage::GetFiles () const
-	{
-		QStringList result;
-		for (int i = 0; i < Model_->rowCount (); ++i)
-			result << Model_->item (i)->text ();
-		return result;
-	}
-
-	void FileAttachPage::on_AddFile__released ()
-	{
-		const auto& paths = QFileDialog::getOpenFileNames (this,
-				tr ("Select files to attach"),
-				QDir::homePath ());
-
-		for (auto path : paths)
-			AddFile (path);
-	}
-
-	void FileAttachPage::on_RemoveFile__released ()
-	{
-		const auto& idx = Ui_.FilesView_->currentIndex ();
-		if (!idx.isValid ())
-			return;
-
-		Model_->removeRow (idx.row ());
-	}
+}
 }
 }

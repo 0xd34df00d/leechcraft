@@ -30,8 +30,11 @@
 #include "dolozhee.h"
 #include <QIcon>
 #include <QAction>
+#include <QTimer>
 #include <util/util.h>
 #include "reportwizard.h"
+#include "reporttypepage.h"
+#include "fileattachpage.h"
 
 namespace LeechCraft
 {
@@ -52,6 +55,9 @@ namespace Dolozhee
 
 	void Plugin::SecondInit ()
 	{
+		QTimer::singleShot (10000,
+				this,
+				SLOT (checkSavedReports ()));
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -86,9 +92,40 @@ namespace Dolozhee
 		return result;
 	}
 
-	void Plugin::initiateReporting ()
+	void Plugin::checkSavedReports ()
 	{
-		ReportWizard *wizard = new ReportWizard (Proxy_);
+		const auto& dolozheeDir = Util::CreateIfNotExists ("dolozhee");
+
+		auto news = dolozheeDir;
+		if (!news.cd ("crashreports"))
+			return;
+
+		news.mkdir ("old");
+
+		QStringList names;
+		for (const auto& name : news.entryList (QDir::Files | QDir::NoDotAndDotDot))
+		{
+			const auto& newName = news.absoluteFilePath ("old/" + name);
+			if (!QFile::rename (news.absoluteFilePath (name), newName))
+				continue;
+
+			names << newName;
+		}
+
+		if (names.isEmpty ())
+			return;
+
+		auto wizard = initiateReporting ();
+		wizard->GetReportTypePage ()->ForceReportType (ReportTypePage::Type::Bug);
+
+		auto attachPage = wizard->GetFilePage ();
+		for (const auto& name : names)
+			attachPage->AddFile (name);
+	}
+
+	ReportWizard* Plugin::initiateReporting ()
+	{
+		auto wizard = new ReportWizard (Proxy_);
 		connect (wizard,
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
@@ -98,6 +135,7 @@ namespace Dolozhee
 				this,
 				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
 		wizard->show ();
+		return wizard;
 	}
 }
 }

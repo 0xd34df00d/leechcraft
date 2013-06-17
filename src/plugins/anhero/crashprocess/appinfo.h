@@ -27,68 +27,25 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "fileattachpage.h"
-#include "reportwizard.h"
-#include <QStandardItemModel>
-#include <QFileDialog>
-#include <util/util.h>
+#pragma once
+
+#include <QString>
 
 namespace LeechCraft
 {
-namespace Dolozhee
+namespace AnHero
 {
-	FileAttachPage::FileAttachPage (QWidget *page)
-	: QWizardPage (page)
-	, Model_ (new QStandardItemModel (this))
+namespace CrashProcess
+{
+	struct AppInfo
 	{
-		Ui_.setupUi (this);
+		int Signal_;
+		uint64_t PID_;
 
-		Model_->setHorizontalHeaderLabels ({ tr ("Path"), tr ("Size"), tr ("Description") });
-		Ui_.FilesView_->setModel (Model_);
-	}
+		QString Path_;
+		QString Version_;
+	};
 
-	int FileAttachPage::nextId () const
-	{
-		return ReportWizard::PageID::Final;
-	}
-
-	void FileAttachPage::AddFile (const QString& path)
-	{
-		auto pathItem = new QStandardItem (path);
-		pathItem->setEditable (false);
-
-		auto sizeItem = new QStandardItem (Util::MakePrettySize (QFileInfo (path).size ()));
-		sizeItem->setEditable (false);
-
-		auto descrItem = new QStandardItem ();
-		Model_->appendRow ({ pathItem, sizeItem, descrItem });
-	}
-
-	QStringList FileAttachPage::GetFiles () const
-	{
-		QStringList result;
-		for (int i = 0; i < Model_->rowCount (); ++i)
-			result << Model_->item (i)->text ();
-		return result;
-	}
-
-	void FileAttachPage::on_AddFile__released ()
-	{
-		const auto& paths = QFileDialog::getOpenFileNames (this,
-				tr ("Select files to attach"),
-				QDir::homePath ());
-
-		for (auto path : paths)
-			AddFile (path);
-	}
-
-	void FileAttachPage::on_RemoveFile__released ()
-	{
-		const auto& idx = Ui_.FilesView_->currentIndex ();
-		if (!idx.isValid ())
-			return;
-
-		Model_->removeRow (idx.row ());
-	}
+}
 }
 }

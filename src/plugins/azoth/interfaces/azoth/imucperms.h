@@ -142,7 +142,14 @@ namespace Azoth
 		 * changing the permission, which may be extremely useful, for
 		 * example, when kicking or banning.
 		 *
-		 * @param[in] participant The participant to change the affiliation.
+		 * @param[in] participant The participant to change the
+		 * permission for.
+		 * @param[in] permClass The permission class to update.
+		 * @param[in] targetPerm The target permission in the given
+		 * permission class.
+		 * @param[in] reason The reason of the permission change.
+		 *
+		 * @sa TrySetPerm
 		 */
 		virtual void SetPerm (QObject *participant,
 				const QByteArray& permClass, const QByteArray& targetPerm, const QString& reason) = 0;
@@ -177,6 +184,31 @@ namespace Azoth
 		 * @return The human-readable translated string for this id.
 		 */
 		virtual QString GetUserString (const QByteArray& id) const = 0;
+
+		/** @brief Sets a perm on a user not present in the room.
+		 *
+		 * This function tries to set a given \em targetPerm of the given
+		 * \em permClass on the user identified by the given \em userId.
+		 * The user may or may not be present in the room at the moment.
+		 * The \em userId should be the same as would be returned by
+		 * ICLEntry::GetHumanReadableID() if the user was present in the
+		 * room.
+		 *
+		 * It is OK for the function to do nothing.
+		 *
+		 * @param[in] userId The ID of the user to change the permission
+		 * for.
+		 * @param[in] permClass The permission class to update.
+		 * @param[in] targetPerm The target permission in the given
+		 * permission class.
+		 * @param[in] reason The reason of the permission change.
+		 *
+		 * @sa SetPerm()
+		 */
+		virtual void TrySetPerm (const QString& userId,
+				const QByteArray& permClass, const QByteArray& targetPerm, const QString& reason)
+		{
+		}
 	};
 }
 }

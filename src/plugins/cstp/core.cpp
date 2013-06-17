@@ -212,7 +212,7 @@ namespace CSTP
 						tags,
 						e.Parameters_);
 			}
-			else if (fi.isFile ())
+			else if (!dir.isEmpty ())
 				return AddTask (entity,
 						dir,
 						file,
@@ -220,6 +220,8 @@ namespace CSTP
 						tags,
 						e.Parameters_);
 		}
+
+		return -1;
 	}
 
 	void Core::KillTask (int id)

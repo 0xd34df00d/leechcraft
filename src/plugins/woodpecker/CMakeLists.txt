@@ -52,7 +52,7 @@ target_link_libraries (leechcraft_woodpecker
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${QJSON_LIBRARIES}
-	${QTKOAUTH_LIBRARY}
+	${QTKOAUTH_LIBRARIES}
 	)
 
 install (TARGETS leechcraft_woodpecker DESTINATION ${LC_PLUGINS_DEST})
