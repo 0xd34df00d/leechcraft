@@ -27,66 +27,25 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include <stdexcept>
-#include <thread>
+#pragma once
 
-#ifndef Q_MOC_RUN // see https://bugreports.qt-project.org/browse/QTBUG-22829
-#include <boost/program_options.hpp>
-#endif
+#include <QString>
 
-#include <QApplication>
-#include "appinfo.h"
-#include "gdblauncher.h"
-#include "crashdialog.h"
-
-namespace CrashProcess = LeechCraft::AnHero::CrashProcess;
-
-namespace
+namespace LeechCraft
 {
-	namespace bpo = boost::program_options;
-
-	CrashProcess::AppInfo ParseOptions (int argc, char **argv)
+namespace AnHero
+{
+namespace CrashProcess
+{
+	struct AppInfo
 	{
-		bpo::options_description desc ("Known options");
-		desc.add_options ()
-				("signal", bpo::value<int> (), "the signal that triggered the crash handler")
-				("pid", bpo::value<uint64_t> (), "the PID of the crashed process");
-				("path", bpo::value<std::string> (), "the application path of the crashed process");
-				("version", bpo::value<std::string> (), "the LeechCraft version at the moment of the crash");
+		int Signal_;
+		uint64_t PID_;
 
-		bpo::command_line_parser parser (argc, argv);
-		bpo::variables_map vm;
-		bpo::store (parser
-				.options (desc)
-				.allow_unregistered ()
-				.run (), vm);
-		bpo::notify (vm);
+		QString Path_;
+		QString Version_;
+	};
 
-		if (!vm.count ("pid"))
-			throw std::runtime_error ("PID parameter not set");
-
-		return
-		{
-			vm ["signal"].as<int> (),
-			vm ["pid"].as<uint64_t> (),
-			QString::fromUtf8 (vm ["path"].as<std::string> ().c_str ()),
-			vm ["version"].as<std::string> ().c_str ()
-		};
-	}
 }
-
-int main (int argc, char **argv)
-{
-	QApplication app (argc, argv);
-
-	const auto& info = ParseOptions (argc, argv);
-
-	auto l = new CrashProcess::GDBLauncher (info.PID_, info.Path_);
-	auto dia = new CrashProcess::CrashDialog ();
-	QObject::connect (l,
-			SIGNAL (gotOutput (QString)),
-			dia,
-			SLOT (appendTrace (QString)));
-
-	return app.exec ();
+}
 }
