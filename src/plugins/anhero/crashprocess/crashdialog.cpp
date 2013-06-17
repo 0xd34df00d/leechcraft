@@ -84,6 +84,10 @@ namespace CrashProcess
 
 	void CrashDialog::accept ()
 	{
+		auto reportsDir = Util::CreateIfNotExists ("dolozhee/crashreports");
+		const auto& filename = reportsDir.absoluteFilePath (GetNowFilename ());
+		WriteTrace (filename);
+
 		QDialog::accept ();
 	}
 
