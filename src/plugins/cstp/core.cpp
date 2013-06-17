@@ -220,6 +220,8 @@ namespace CSTP
 						tags,
 						e.Parameters_);
 		}
+
+		return -1;
 	}
 
 	void Core::KillTask (int id)
