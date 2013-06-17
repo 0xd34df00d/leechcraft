@@ -47,6 +47,8 @@ namespace CrashProcess
 		Ui::CrashDialog Ui_;
 	public:
 		CrashDialog (const AppInfo&, QWidget* = 0);
+	private:
+		void WriteTrace (const QString&);
 	public slots:
 		void accept ();
 		void appendTrace (const QString&);

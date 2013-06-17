@@ -82,7 +82,7 @@ int main (int argc, char **argv)
 	const auto& info = ParseOptions (argc, argv);
 
 	auto l = new CrashProcess::GDBLauncher (info.PID_, info.Path_);
-	auto dia = new CrashProcess::CrashDialog ();
+	auto dia = new CrashProcess::CrashDialog (info);
 	QObject::connect (l,
 			SIGNAL (gotOutput (QString)),
 			dia,
