@@ -36,6 +36,7 @@
 #include <sys/resource.h>
 #include <sys/wait.h>
 #include <util/util.h>
+#include <config.h>
 
 #include <X11/Xlib.h>
 
@@ -102,6 +103,8 @@ namespace AnHero
 				pidtxt,
 				"--path",
 				AppPath_.constData (),
+				"--version",
+				LEECHCRAFT_VERSION,
 				nullptr
 			};
 
