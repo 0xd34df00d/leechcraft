@@ -46,7 +46,9 @@ namespace
 	{
 		int Signal_;
 		uint64_t PID_;
+
 		QString Path_;
+		QString Version_;
 	};
 
 	Options ParseOptions (int argc, char **argv)
@@ -56,6 +58,7 @@ namespace
 				("signal", bpo::value<int> (), "the signal that triggered the crash handler")
 				("pid", bpo::value<uint64_t> (), "the PID of the crashed process");
 				("path", bpo::value<std::string> (), "the application path of the crashed process");
+				("version", bpo::value<std::string> (), "the LeechCraft version at the moment of the crash");
 
 		bpo::command_line_parser parser (argc, argv);
 		bpo::variables_map vm;
@@ -68,7 +71,13 @@ namespace
 		if (!vm.count ("pid"))
 			throw std::runtime_error ("PID parameter not set");
 
-		return { vm ["signal"].as<int> (), vm ["pid"].as<uint64_t> () };
+		return
+		{
+			vm ["signal"].as<int> (),
+			vm ["pid"].as<uint64_t> (),
+			QString::fromUtf8 (vm ["path"].as<std::string> ().c_str ()),
+			vm ["version"].as<std::string> ().c_str ()
+		};
 	}
 }
 
