@@ -59,6 +59,29 @@ namespace CrashProcess
 		show ();
 	}
 
+	void CrashDialog::WriteTrace (const QString& filename)
+	{
+		QFile file (filename);
+		if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
+		{
+			QMessageBox::critical (this,
+					"LeechCraft",
+					tr ("Cannot open file: %1")
+						.arg (file.errorString ()));
+			return;
+		}
+		file.write (Ui_.TraceDisplay_->toPlainText ().toUtf8 ());
+	}
+
+	namespace
+	{
+		QString GetNowFilename ()
+		{
+			const auto& nowStr = QDateTime::currentDateTime ().toString ("yy_MM_dd-hh_mm_ss");
+			return "lc_crash_" + nowStr + ".log";
+		}
+	}
+
 	void CrashDialog::accept ()
 	{
 		QDialog::accept ();
@@ -71,24 +94,14 @@ namespace CrashProcess
 
 	void CrashDialog::on_Save__released ()
 	{
-		const auto& nowStr = QDateTime::currentDateTime ().toString ("yy_MM_dd-hh_mm_ss");
 		const auto& filename = QFileDialog::getSaveFileName (this,
 				"Save crash info",
-				QDir::homePath () + "/lc_crash_" + nowStr + ".log");
+				QDir::homePath () + "/" + GetNowFilename ());
 
 		if (filename.isEmpty ())
 			return;
 
-		QFile file (filename);
-		if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
-		{
-			QMessageBox::critical (this,
-					"LeechCraft",
-					tr ("Cannot open file: %1")
-						.arg (file.errorString ()));
-			return;
-		}
-		file.write (Ui_.TraceDisplay_->toPlainText ().toUtf8 ());
+		WriteTrace (filename);
 	}
 }
 }
