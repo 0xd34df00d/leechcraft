@@ -50,9 +50,9 @@ namespace
 		bpo::options_description desc ("Known options");
 		desc.add_options ()
 				("signal", bpo::value<int> (), "the signal that triggered the crash handler")
-				("pid", bpo::value<uint64_t> (), "the PID of the crashed process");
-				("path", bpo::value<std::string> (), "the application path of the crashed process");
-				("version", bpo::value<std::string> (), "the LeechCraft version at the moment of the crash");
+				("pid", bpo::value<uint64_t> ()->required (), "the PID of the crashed process")
+				("path", bpo::value<std::string> ()->required (), "the application path of the crashed process")
+				("version", bpo::value<std::string> ()->required (), "the LeechCraft version at the moment of the crash");
 
 		bpo::command_line_parser parser (argc, argv);
 		bpo::variables_map vm;
