@@ -48,13 +48,17 @@ namespace CrashProcess
 
 		Ui_.InfoLabel_->setText (tr ("Unfortunately LeechCraft has crashed. This is the info we could collect:"));
 		Ui_.TraceDisplay_->append ("=== SYSTEM INFO ===");
+		Ui_.TraceDisplay_->append ("Offending signal: " + QString::number (info.Signal_));
 		Ui_.TraceDisplay_->append ("App path: " + info.Path_);
 		Ui_.TraceDisplay_->append ("App version: " + info.Version_);
-		Ui_.TraceDisplay_->append ("Offending signal: " + QString::number (info.Signal_));
+		Ui_.TraceDisplay_->append ("Qt version (build-time): " + QString (QT_VERSION_STR));
+		Ui_.TraceDisplay_->append ("Qt version (runtime): " + QString (qVersion ()));
 
 		const auto& osInfo = Util::SysInfo::GetOSNameSplit ();
 		Ui_.TraceDisplay_->append ("OS: " + osInfo.first);
 		Ui_.TraceDisplay_->append ("OS version: " + osInfo.second);
+
+		Ui_.TraceDisplay_->append ("\n\n=== BACKTRACE ===");
 
 		show ();
 	}
