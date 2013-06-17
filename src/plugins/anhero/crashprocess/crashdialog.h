@@ -38,14 +38,15 @@ namespace AnHero
 {
 namespace CrashProcess
 {
+	struct AppInfo;
+
 	class CrashDialog : public QDialog
 	{
 		Q_OBJECT
 
 		Ui::CrashDialog Ui_;
 	public:
-		CrashDialog (QWidget* = 0);
-
+		CrashDialog (const AppInfo&, QWidget* = 0);
 	public slots:
 		void accept ();
 		void appendTrace (const QString&);

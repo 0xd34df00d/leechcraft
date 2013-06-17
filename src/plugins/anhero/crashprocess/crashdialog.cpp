@@ -31,6 +31,9 @@
 #include <QFileDialog>
 #include <QDateTime>
 #include <QMessageBox>
+#include <util/util.h>
+#include <util/sysinfo.h>
+#include "appinfo.h"
 
 namespace LeechCraft
 {
@@ -38,11 +41,21 @@ namespace AnHero
 {
 namespace CrashProcess
 {
-	CrashDialog::CrashDialog (QWidget *parent)
+	CrashDialog::CrashDialog (const AppInfo& info, QWidget *parent)
 	: QDialog (parent, Qt::Window)
 	{
 		Ui_.setupUi (this);
+
 		Ui_.InfoLabel_->setText (tr ("Unfortunately LeechCraft has crashed. This is the info we could collect:"));
+		Ui_.TraceDisplay_->append ("=== SYSTEM INFO ===");
+		Ui_.TraceDisplay_->append ("App path: " + info.Path_);
+		Ui_.TraceDisplay_->append ("App version: " + info.Version_);
+		Ui_.TraceDisplay_->append ("Offending signal: " + QString::number (info.Signal_));
+
+		const auto& osInfo = Util::SysInfo::GetOSNameSplit ();
+		Ui_.TraceDisplay_->append ("OS: " + osInfo.first);
+		Ui_.TraceDisplay_->append ("OS version: " + osInfo.second);
+
 		show ();
 	}
 
