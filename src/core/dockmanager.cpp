@@ -183,7 +183,7 @@ namespace LeechCraft
 		auto widget = fromWin->GetTabWidget ()->Widget (tab);
 
 		for (auto i = Dock2Info_.begin (), end = Dock2Info_.end (); i != end; ++i)
-			if (i->Associated_ != widget)
+			if (i->Associated_ == widget)
 				MoveDock (i.key (), fromWin, toWin);
 	}
 
