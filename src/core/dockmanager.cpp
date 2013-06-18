@@ -109,6 +109,15 @@ namespace LeechCraft
 			return;
 	}
 
+	QSet<QDockWidget*> DockManager::GetWindowDocks (MainWindow *window) const
+	{
+		QSet<QDockWidget*> result;
+		for (auto i = Dock2Info_.begin (); i != Dock2Info_.end (); ++i)
+			if (i->Window_ == window)
+				result << i.key ();
+		return result;
+	}
+
 	QSet<QDockWidget*> DockManager::GetForcefullyClosed () const
 	{
 		return ForcefullyClosed_;
