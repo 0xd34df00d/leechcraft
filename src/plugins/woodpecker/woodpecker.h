@@ -37,6 +37,7 @@
 #include <interfaces/structures.h>
 #include <interfaces/ihaverecoverabletabs.h>
 #include "xmlsettingsmanager.h"
+#include "twitterinterface.h"
 
 class QTranslator;
 
@@ -71,6 +72,19 @@ namespace Woodpecker
 		void TabOpenRequested (const QByteArray&);
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 		void RecoverTabs (const QList<TabRecoverInfo>& infos);
+		
+		/** @brief Create new tab with certain parameters
+		 * 
+		 * @param[in] id New tab unique id
+		 * @param[in] name Tab creation menu caption
+		 * @param[in] info Verbose description of tab contents
+		 * @param[in] mode Twitter API connection mode
+		 * @param[in] params Twitter API parameters which should be added to every request
+		 */
+		void AddTab (const QString& id = "Home", const QString& name = tr ("Twitter Home"), 
+					const QString& info = tr ("User's main timeline"),
+					const FeedMode mode = FeedMode::HomeTimeline,
+					const KQOAuthParameters& params = KQOAuthParameters ());
 		
 	signals:
 		void addNewTab (const QString&, QWidget*);
