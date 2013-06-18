@@ -354,6 +354,7 @@ namespace Blogique
 
 		Ui_.OpenInBrowser_->setProperty ("ActionIcon", "applications-internet");
 		Ui_.UpdateProfile_->setProperty ("ActionIcon", "view-refresh");
+		Ui_.PreviewPost_->setProperty ("ActionIcon", "view-preview");
 
 		ToolBar_->addSeparator ();
 
@@ -637,6 +638,7 @@ namespace Blogique
 
 			ToolBar_->removeAction (Ui_.OpenInBrowser_);
 			ToolBar_->removeAction (Ui_.UpdateProfile_);
+			ToolBar_->removeAction (Ui_.PreviewPost_);
 			ToolBar_->removeAction (Ui_.SubmitTo_);
 
 		}
@@ -668,6 +670,9 @@ namespace Blogique
 			ToolBar_->insertAction (AccountsBoxAction_, Ui_.OpenInBrowser_);
 			if (ibp->GetFeatures () & IBloggingPlatform::BPFSupportsProfiles)
 				ToolBar_->insertAction (AccountsBoxAction_, Ui_.UpdateProfile_);
+
+			if (ibp->GetFeatures () & IBloggingPlatform::BPFPostPreviewSupport)
+				ToolBar_->insertAction (AccountsBoxAction_, Ui_.PreviewPost_);
 		}
 
 		for (auto action : ibp->GetEditorActions ())
@@ -1049,6 +1054,18 @@ namespace Blogique
 		Core::Instance ().SendEntity (Util::MakeEntity (EntryUrl_,
 				QString (),
 				static_cast<TaskParameters> (FromUserInitiated | OnlyHandle)));
+	}
+
+	void BlogiqueWidget::on_PreviewPost__triggered ()
+	{
+		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		if (!acc)
+			return;
+
+		const auto& e = GetCurrentEntry (true);
+
+		if (!e.IsEmpty ())
+			acc->preview (e);
 	}
 
 }

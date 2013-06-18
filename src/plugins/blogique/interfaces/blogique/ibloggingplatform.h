@@ -79,26 +79,30 @@ namespace Blogique
 			/** This blogging platform provides API for supporting
 			 * registering new accounts from client.
 			 */
-			BPFSupportsRegistration = 0x1,
+			BPFSupportsRegistration = 1,
 
 			/** This blogging platform supports account profilest with extended
 			 * information.
 			 */
-			BPFSupportsProfiles = 0x2,
+			BPFSupportsProfiles = 2,
 
 			/** This blogging platform supports variouse posting destinations
 			 * such as private blog, communities, etc.
 			 */
-			BPFSelectablePostDestination = 0x4,
+			BPFSelectablePostDestination = 4,
 
 			/** This blogging platform supports downloading of all posts for
 			 * backup in localstorage.
 			 */
-			BPFSupportsBackup = 0x8,
+			BPFSupportsBackup = 8,
 
 			/** This blogging platform only for local blog
 			 */
-			BPFLocalBlog = 0x10
+			BPFLocalBlog = 32,
+
+			/** This blogging platform support post preview in blog style
+			 */
+			BPFPostPreviewSupport = 64
 		};
 		Q_DECLARE_FLAGS (BloggingPlatfromFeatures, BloggingPlatfromFeature)
 

@@ -549,6 +549,11 @@ namespace Metida
 		LJXmlRpc_->Submit (ljEvent);
 	}
 
+	void LJAccount::preview (const Entry& event)
+	{
+		LJXmlRpc_->Preview (Entry2LJEvent (event));
+	}
+
 	void LJAccount::backup ()
 	{
 		LJXmlRpc_->BackupEvents ();

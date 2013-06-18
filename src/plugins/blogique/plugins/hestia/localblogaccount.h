@@ -94,6 +94,7 @@ namespace Hestia
 	public slots:
 		void updateProfile ();
 		void submit (const Entry& event);
+		void preview (const Entry& event);
 		void backup ();
 
 		void handleLoadAllEvents ();

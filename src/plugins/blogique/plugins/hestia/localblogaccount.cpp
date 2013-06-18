@@ -303,6 +303,10 @@ namespace Hestia
 		}
 	}
 
+	void LocalBlogAccount::preview (const Entry&)
+	{
+	}
+
 	void LocalBlogAccount::backup ()
 	{
 	}

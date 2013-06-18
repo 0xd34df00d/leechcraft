@@ -165,6 +165,7 @@ namespace Blogique
 		void handleTagTextChanged (const QString& text);
 		void handleTagRemoved (const QString& tag);
 		void on_OpenInBrowser__triggered ();
+		void on_PreviewPost__triggered ();
 
 	signals:
 		void removeTab (QWidget *tab);
