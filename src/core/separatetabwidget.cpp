@@ -490,6 +490,8 @@ namespace LeechCraft
 		MainTabBar_->removeTab (index);
 
 		TabNames_.removeAt (index);
+
+		widget->setParent (0);
 	}
 
 	bool SeparateTabWidget::IsAddTabActionVisible () const
