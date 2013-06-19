@@ -44,4 +44,3 @@ target_link_libraries (leechcraft_vrooby
 	${UDISKS_BACKEND_LIBS}
 	)
 install (TARGETS leechcraft_vrooby DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
