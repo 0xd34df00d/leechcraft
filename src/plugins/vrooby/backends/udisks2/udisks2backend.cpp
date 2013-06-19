@@ -350,7 +350,7 @@ namespace UDisks2
 		item->setData (ifaces.Drive_->property ("MediaAvailable"), DeviceRoles::IsMediaAvailable);
 		item->setData (ifaces.Block_->path (), DeviceRoles::DevID);
 		item->setData (fullName, DeviceRoles::VisibleName);
-		item->setData (ifaces.Partition_->property ("Size").toLongLong (), DeviceRoles::TotalSize);
+		item->setData (ifaces.Block_->property ("Size").toLongLong (), DeviceRoles::TotalSize);
 		DevicesModel_->blockSignals (false);
 		item->setData (mountPaths, DeviceRoles::MountPoints);
 	}
