@@ -12,6 +12,7 @@ Rectangle {
 
     signal toggleMountRequested(string id)
     signal toggleHideRequested(string id)
+    signal toggleShowHidden()
 
     Text {
         id: topLabel
@@ -25,6 +26,19 @@ Rectangle {
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.topMargin: 5
+    }
+
+    ActionButton {
+        actionIconURL: "image://ThemeIcons/emblem-symbolic-link"
+
+        anchors.right: parent.right
+        anchors.rightMargin: 5
+        anchors.top: topLabel.top
+        anchors.bottom: topLabel.bottom
+
+        width: height
+
+        onTriggered: rootRect.toggleShowHidden()
     }
 
     ListView {

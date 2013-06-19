@@ -58,6 +58,7 @@ namespace Vrooby
 		bool HasItems () const;
 	private slots:
 		void toggleHide (const QString&);
+		void toggleShowHidden ();
 	signals:
 		void hasItemsChanged ();
 	};

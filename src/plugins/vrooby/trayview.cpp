@@ -47,10 +47,12 @@ namespace Vrooby
 {
 	class FilterModel : public QSortFilterProxyModel
 	{
+		bool FilterEnabled_;
 		QSet<QString> Hidden_;
 	public:
 		FilterModel (QObject *parent)
 		: QSortFilterProxyModel (parent)
+		, FilterEnabled_ (true)
 		{
 			setDynamicSortFilter (true);
 		}
@@ -62,9 +64,18 @@ namespace Vrooby
 
 			invalidateFilter ();
 		}
+
+		void ToggleFilter ()
+		{
+			FilterEnabled_ = !FilterEnabled_;
+			invalidateFilter ();
+		}
 	protected:
 		bool filterAcceptsRow (int row, const QModelIndex&) const
 		{
+			if (!FilterEnabled_)
+				return true;
+
 			const auto& idx = sourceModel ()->index (row, 0);
 			const auto& id = idx.data (DeviceRoles::DevPersistentID).toString ();
 			return !Hidden_.contains (id);
@@ -110,6 +121,10 @@ namespace Vrooby
 				SIGNAL (toggleHideRequested (QString)),
 				this,
 				SLOT (toggleHide (QString)));
+		connect (rootObject (),
+				SIGNAL (toggleShowHidden ()),
+				this,
+				SLOT (toggleShowHidden ()));
 	}
 
 	void TrayView::SetBackend (DevBackend *backend)
@@ -137,6 +152,11 @@ namespace Vrooby
 	void TrayView::toggleHide (const QString& persId)
 	{
 		Filtered_->ToggleHidden (persId);
+	}
+
+	void TrayView::toggleShowHidden ()
+	{
+		Filtered_->ToggleFilter ();
 	}
 }
 }
