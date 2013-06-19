@@ -65,6 +65,16 @@
     </layout>
    </item>
    <item>
+    <widget class="QCheckBox" name="RestartBox_">
+     <property name="text">
+      <string>Restart</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
