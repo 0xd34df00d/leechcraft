@@ -34,7 +34,9 @@
 #include <QDeclarativeEngine>
 #include <QDeclarativeImageProvider>
 #include <QGraphicsObject>
+#include <util/sys/paths.h>
 #include <util/qml/themeimageprovider.h>
+#include <util/qml/colorthemeproxy.h>
 #include "flatmountableitems.h"
 #include "devbackend.h"
 
@@ -56,7 +58,11 @@ namespace Vrooby
 		setFixedSize (500, 250);
 
 		engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
+			engine ()->addImportPath (cand);
 
+		rootContext ()->setContextProperty ("colorProxy",
+				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
 		rootContext ()->setContextProperty ("devModel", Flattened_);
 		rootContext ()->setContextProperty ("devicesLabelText", tr ("Removable devices"));
 		setSource (QUrl ("qrc:/vrooby/resources/qml/DevicesTrayView.qml"));
