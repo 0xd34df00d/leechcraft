@@ -47,6 +47,7 @@ namespace Vrooby
 		names [DeviceRoles::IsPartition] = "isPartition";
 		names [DeviceRoles::IsMountable] = "isMountable";
 		names [DeviceRoles::DevID] = "devID";
+		names [DeviceRoles::DevPersistentID] = "devPersistentID";
 		names [DeviceRoles::AvailableSize] = "availableSize";
 		names [DeviceRoles::TotalSize] = "totalSize";
 		names [CustomRoles::FormattedTotalSize] = "formattedTotalSize";
