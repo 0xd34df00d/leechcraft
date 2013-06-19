@@ -278,9 +278,9 @@ namespace UDisks2
 
 	namespace
 	{
-		QString GetPartitionName (QDBusInterface_ptr partition)
+		QString GetPartitionName (QDBusInterface_ptr partition, QDBusInterface_ptr block)
 		{
-			auto result = partition->property ("IdLabel").toString ().trimmed ();
+			auto result = block->property ("IdLabel").toString ().trimmed ();
 			if (!result.isEmpty ())
 				return result;
 
@@ -303,7 +303,7 @@ namespace UDisks2
 		const auto& vendor = ifaces.Drive_->property ("Vendor").toString () +
 				" " +
 				ifaces.Drive_->property ("Model").toString ();
-		const auto& partName = GetPartitionName (ifaces.Partition_);
+		const auto& partName = GetPartitionName (ifaces.Partition_, ifaces.Block_);
 		const auto& name = isPartition ? partName : vendor;
 		const auto& fullName = isPartition ?
 				QString ("%1: %2").arg (vendor, partName) :
