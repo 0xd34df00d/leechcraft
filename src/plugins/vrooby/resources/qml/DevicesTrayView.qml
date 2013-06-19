@@ -38,6 +38,9 @@ Rectangle {
 
         width: height
 
+        opacity: hasHiddenItems ? 1 : 0
+        Behavior on opacity { PropertyAnimation { } }
+
         onTriggered: rootRect.toggleShowHidden()
     }
 
