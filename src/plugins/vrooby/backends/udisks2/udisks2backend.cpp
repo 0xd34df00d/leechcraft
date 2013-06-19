@@ -276,6 +276,22 @@ namespace UDisks2
 			DevicesModel_->removeRow (item->row ());
 	}
 
+	namespace
+	{
+		QString GetPartitionName (QDBusInterface_ptr partition)
+		{
+			auto result = partition->property ("IdLabel").toString ().trimmed ();
+			if (!result.isEmpty ())
+				return result;
+
+			result = partition->property ("Name").toString ().trimmed ();
+			if (!result.isEmpty ())
+				return result;
+
+			return Backend::tr ("Partition %1").arg (partition->property ("Number").toInt ());
+		}
+	}
+
 	void Backend::SetItemData (const ItemInterfaces& ifaces, QStandardItem *item)
 	{
 		if (!item)
@@ -287,11 +303,7 @@ namespace UDisks2
 		const auto& vendor = ifaces.Drive_->property ("Vendor").toString () +
 				" " +
 				ifaces.Drive_->property ("Model").toString ();
-		const auto& partLabel = ifaces.Partition_->property ("Name").toString ().trimmed ();
-		const auto& partName = partLabel.isEmpty () ?
-				tr ("Partition %1")
-						.arg (ifaces.Partition_->property ("Number").toInt ()) :
-				partLabel;
+		const auto& partName = GetPartitionName (ifaces.Partition_);
 		const auto& name = isPartition ? partName : vendor;
 		const auto& fullName = isPartition ?
 				QString ("%1: %2").arg (vendor, partName) :
