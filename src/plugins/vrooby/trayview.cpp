@@ -65,6 +65,11 @@ namespace Vrooby
 			invalidateFilter ();
 		}
 
+		int GetHiddenCount () const
+		{
+			return Hidden_.size ();
+		}
+
 		void ToggleFilter ()
 		{
 			FilterEnabled_ = !FilterEnabled_;
@@ -106,6 +111,7 @@ namespace Vrooby
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
 		rootContext ()->setContextProperty ("devModel", Filtered_);
 		rootContext ()->setContextProperty ("devicesLabelText", tr ("Removable devices"));
+		rootContext ()->setContextProperty ("hasHiddenItems", Filtered_->GetHiddenCount ());
 		setSource (QUrl ("qrc:/vrooby/resources/qml/DevicesTrayView.qml"));
 
 		connect (Flattened_,
@@ -152,6 +158,8 @@ namespace Vrooby
 	void TrayView::toggleHide (const QString& persId)
 	{
 		Filtered_->ToggleHidden (persId);
+
+		rootContext ()->setContextProperty ("hasHiddenItems", Filtered_->GetHiddenCount ());
 	}
 
 	void TrayView::toggleShowHidden ()
