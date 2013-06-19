@@ -63,6 +63,7 @@ namespace LeechCraft
 		IsMounted,
 		IsMediaAvailable,
 		DevID,
+		DevPersistentID,
 		VisibleName,
 		AvailableSize,
 		TotalSize,
