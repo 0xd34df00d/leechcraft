@@ -81,8 +81,8 @@ namespace Woodpecker
 		 * @param[in] mode Twitter API connection mode
 		 * @param[in] params Twitter API parameters which should be added to every request
 		 */
-		void AddTab (const QString& id = "Home", const QString& name = tr ("Twitter Home"), 
-					const QString& info = tr ("User's main timeline"),
+		void AddTab (const QString& id = "Home", const QString& name = QString (),
+					const QString& info = QString (),
 					const FeedMode mode = FeedMode::HomeTimeline,
 					const KQOAuthParameters& params = KQOAuthParameters ());
 		

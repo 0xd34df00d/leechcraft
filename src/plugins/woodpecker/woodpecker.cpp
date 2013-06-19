@@ -60,14 +60,14 @@ namespace Woodpecker
 		TabClasses_.append ({
 			{
 				GetUniqueID () + "/" + id.toUtf8 ().constData (),
-				name,
-				info,
+				name.isEmpty ()? tr ("Twitter Home") : name,
+				info.isEmpty ()? tr ("User's main timeline") : info,
 				GetIcon (),
 				2,
 				TFOpenableByRequest
 			},
 			[this, mode, params] (const TabClassInfo& tc)
-			{ MakeTab (new TwitterPage (tc, this, mode, params), tc); }
+				{ MakeTab (new TwitterPage (tc, this, mode, params), tc); }
 			});	
 		TabOpenRequested (GetUniqueID () + "/" + id.toUtf8 ().constData ());
 	}
