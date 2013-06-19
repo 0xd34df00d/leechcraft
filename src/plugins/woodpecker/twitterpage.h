@@ -40,6 +40,7 @@
 #include <interfaces/ihaverecoverabletabs.h>
 #include "twitterinterface.h"
 #include "twitdelegate.h"
+#include "woodpecker.h"
 #include "ui_twitterpage.h"
 
 namespace LeechCraft
@@ -54,7 +55,7 @@ namespace Woodpecker
 		Q_INTERFACES (ITabWidget IRecoverableTab)
 
 		const TabClassInfo TC_;
-		QObject *const ParentPlugin_;
+		Plugin *const ParentPlugin_;
 
 		QToolBar *Toolbar_;
 		QMenu *DoctypeMenu_;
@@ -83,8 +84,8 @@ namespace Woodpecker
 		QAction *ActionSPAM_;
 		QAction *ActionOpenWeb_;
 		
-		KQOAuthParameters PageDefaultParam_; /**< Default API request parameter set for page */
-		FeedMode PageMode_;			/**< API request mode for the page */
+		const KQOAuthParameters PageDefaultParam_;	/**< Default API request parameter set for page */
+		const FeedMode PageMode_;					/**< API request mode for the page */
 
 	public:
 		explicit TwitterPage (const TabClassInfo&, QObject*,

@@ -37,7 +37,6 @@
 #include <util/util.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
-#include "woodpecker.h"
 
 Q_DECLARE_METATYPE (QObject**);
 
@@ -49,7 +48,7 @@ namespace Woodpecker
 							  const FeedMode mode,
 							  const KQOAuthParameters& params)
 	: TC_ (tc)
-	, ParentPlugin_ (plugin)
+	, ParentPlugin_ (static_cast<Plugin*> (plugin))
 	, Toolbar_ (new QToolBar (this))
 	, EntityManager_ (Core::Instance ().GetCoreProxy ()->GetEntityManager ())
 	, PageMode_ (mode)
@@ -345,8 +344,8 @@ namespace Woodpecker
 			if (!ScreenTwits_.empty ())
 			{
 				KQOAuthParameters param (PageDefaultParam_);
-				param.insert ("max_id", QString ("%1").arg ((*(ScreenTwits_.begin ()))->GetId ()));
-				param.insert ("count", QString ("%1").arg (30));
+				param.insert ("max_id", QString::number ((*(ScreenTwits_.begin ()))->GetId ()));
+				param.insert ("count", QString::number (30));
 				
 				Interface_->request (param, PageMode_);
 			}
@@ -360,10 +359,10 @@ namespace Woodpecker
 		if (!idx.isValid ())
 			return;
 		
-		const auto username = (idx.data (Qt::UserRole).value<std::shared_ptr<Tweet>> ())->GetAuthor ()->GetUsername ();
+		const auto username = idx.data (Qt::UserRole).value<Tweet_ptr> ()->GetAuthor ()->GetUsername ();
 		
 		auto menu = new QMenu (Ui_.TwitList_);
-		auto actionOpenTimeline = new QAction (QString (tr ("Open @%1 timeline")).arg(username), menu);
+		auto actionOpenTimeline = new QAction (tr ("Open @%1 timeline").arg(username), menu);
 		actionOpenTimeline->setProperty ("ActionIcon", "document-open-folder");
 		connect (actionOpenTimeline,
 				SIGNAL (triggered ()),
@@ -380,7 +379,7 @@ namespace Woodpecker
 	void TwitterPage::reportSpam ()
 	{
 		const auto& idx = Ui_.TwitList_->currentItem ();
-		const auto twitid = (idx->data (Qt::UserRole).value<std::shared_ptr<Tweet>> ())->GetId ();
+		const auto& twitid = (idx->data (Qt::UserRole).value<std::shared_ptr<Tweet>> ())->GetId ();
 
 		auto spamTwit = std::find_if (ScreenTwits_.begin (), ScreenTwits_.end (),
 				[twitid] (decltype (ScreenTwits_.front ()) tweet)
@@ -391,7 +390,7 @@ namespace Woodpecker
 	void TwitterPage::webOpen ()
 	{
 		const auto& idx = Ui_.TwitList_->currentItem ();
-		const auto twitid = (idx->data (Qt::UserRole).value<std::shared_ptr<Tweet>> ())->GetId ();
+		const auto& twitid = (idx->data (Qt::UserRole).value<std::shared_ptr<Tweet>> ())->GetId ();
 		auto currentTwit = std::find_if (ScreenTwits_.begin (), ScreenTwits_.end (),
 				[twitid] (decltype (ScreenTwits_.front ()) tweet)
 					{ return tweet->GetId () == twitid; });
@@ -429,13 +428,13 @@ namespace Woodpecker
 	void TwitterPage::openUserTimeline ()
 	{
 		const auto& idx = Ui_.TwitList_->currentItem ();
-		const auto username = (idx->data (Qt::UserRole).value<std::shared_ptr<Tweet>> ())->GetAuthor ()->GetUsername ();
+		const auto& username = idx->data (Qt::UserRole).value<Tweet_ptr> ()->GetAuthor ()->GetUsername ();
 		KQOAuthParameters param;
 		param.insert ("screen_name", username.toUtf8 ().constData ());
-		static_cast <Plugin*> (ParentPlugin_)->AddTab (QString ("User/%1").arg (username),
-													   "User tab", "Own timeline", 
-														FeedMode::UserTimeline,
-														param);
+		ParentPlugin_->AddTab (QString ("User/%1").arg (username),
+								"User tab", "Own timeline", 
+								FeedMode::UserTimeline,
+								param);
 	}
 }
 }
