@@ -11,6 +11,7 @@ Rectangle {
     color: "#ee000000"
 
     signal toggleMountRequested(string id)
+    signal toggleHideRequested(string id)
 
     Text {
         id: topLabel
@@ -141,8 +142,19 @@ Rectangle {
                 onTriggered: rootRect.toggleMountRequested(devID)
             }
 
+            ActionButton {
+                id: hideButton
+                actionIconURL: "image://ThemeIcons/list-remove"
+                visible: devPersistentID.length > 0
 
+                width: height
+                anchors.top: devFileLabel.bottom
+                anchors.topMargin: 5
+                anchors.right: mountButton.left
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 2
 
+                onTriggered: rootRect.toggleHideRequested(devPersistentID)
             }
         }
     }
