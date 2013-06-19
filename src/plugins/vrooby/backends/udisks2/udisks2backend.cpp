@@ -349,6 +349,7 @@ namespace UDisks2
 		item->setData (!mountPaths.isEmpty (), DeviceRoles::IsMounted);
 		item->setData (ifaces.Drive_->property ("MediaAvailable"), DeviceRoles::IsMediaAvailable);
 		item->setData (ifaces.Block_->path (), DeviceRoles::DevID);
+		item->setData (ifaces.Block_->property ("IdUUID"), DeviceRoles::DevPersistentID);
 		item->setData (fullName, DeviceRoles::VisibleName);
 		item->setData (ifaces.Block_->property ("Size").toLongLong (), DeviceRoles::TotalSize);
 		DevicesModel_->blockSignals (false);
