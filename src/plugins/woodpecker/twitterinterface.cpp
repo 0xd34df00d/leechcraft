@@ -82,10 +82,10 @@ namespace Woodpecker
 		emit tweetsReady (ParseReply (jsonText));
 	}
 
-	QList<std::shared_ptr<Tweet>> TwitterInterface::ParseReply (const QByteArray& json)
+	QList<Tweet_ptr> TwitterInterface::ParseReply (const QByteArray& json)
 	{
 		QJson::Parser parser;
-		QList<std::shared_ptr<Tweet>> result;
+		QList<Tweet_ptr> result;
 		bool ok;
 
 		QVariantList answers = parser.parse (json, &ok).toList ();

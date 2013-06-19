@@ -79,7 +79,7 @@ namespace Woodpecker
 		
 		void SignedRequest (TwitterRequest req, KQOAuthRequest::RequestHttpMethod method = KQOAuthRequest::GET, KQOAuthParameters params = KQOAuthParameters ());
 		void RequestTwitter (const QUrl& requestAddress);
-		QList <std::shared_ptr<Tweet>> ParseReply (const QByteArray& json);
+		QList <Tweet_ptr> ParseReply (const QByteArray& json);
 		void Xauth ();
 		
 	public:
@@ -103,7 +103,7 @@ namespace Woodpecker
 		void onAccessTokenReceived (const QString& token, const QString& tokenSecret);
 		
 	signals:
-		void tweetsReady (const QList<std::shared_ptr<Tweet>>&);
+		void tweetsReady (const QList<Tweet_ptr>&);
 		void authorized (const QString&, const QString&);
 		
 	public slots:

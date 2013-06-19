@@ -77,7 +77,7 @@ namespace Woodpecker
 		TwitterInterface *Interface_;
 		QTimer *TwitterTimer_;		/**< This timer sends network requests to get new twits */
 		QSettings *Settings_;
-		QList<std::shared_ptr<Tweet>> ScreenTwits_;
+		QList<Tweet_ptr> ScreenTwits_;
 
 		QAction *ActionRetwit_;
 		QAction *ActionReply_;
@@ -106,7 +106,7 @@ namespace Woodpecker
 		
 	public slots:
 		void tryToLogin ();
-		void updateScreenTwits (QList<std::shared_ptr<Tweet>> twits);
+		void updateScreenTwits (QList<Tweet_ptr> twits);
 		void recvdAuth (const QString& token, const QString& tokenSecret);
 		void twit ();
 		void retwit ();

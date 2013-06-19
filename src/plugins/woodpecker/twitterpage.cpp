@@ -61,9 +61,9 @@ namespace Woodpecker
 		//	Toolbar_->addAction (ui->actionRefresh);
 		Interface_ = new TwitterInterface (this);
 		connect (Interface_,
-				SIGNAL (tweetsReady (QList<std::shared_ptr<Tweet>>)),
+				SIGNAL (tweetsReady (QList<Tweet_ptr>)),
 				this,
-				SLOT (updateScreenTwits (QList<std::shared_ptr<Tweet>>)));
+				SLOT (updateScreenTwits (QList<Tweet_ptr>)));
 		TwitterTimer_ = new QTimer (this);
 		TwitterTimer_->setInterval (XmlSettingsManager::Instance ()->property ("timer").toInt () * 1000); // Update twits every 1.5 minutes by default
 		connect (TwitterTimer_,
@@ -192,7 +192,7 @@ namespace Woodpecker
 				SLOT (recvdAuth (QString, QString)));
 	}
 
-	void TwitterPage::updateScreenTwits (QList<std::shared_ptr<Tweet>> twits)
+	void TwitterPage::updateScreenTwits (QList<Tweet_ptr> twits)
 	{
 		if (twits.isEmpty ())	// if we have no tweets to parse
 			return;
@@ -283,14 +283,14 @@ namespace Woodpecker
 	void TwitterPage::retwit ()
 	{
 		const auto& idx = Ui_.TwitList_->currentItem ();
-		const auto twitid = (idx->data (Qt::UserRole).value<std::shared_ptr<Tweet>> ())->GetId ();
+		const auto twitid = (idx->data (Qt::UserRole).value<Tweet_ptr> ())->GetId ();
 		Interface_->Retweet (twitid);
 	}
 
 	void TwitterPage::sendReply ()
 	{
 		const auto& idx = Ui_.TwitList_->currentItem ();
-		const auto twitid = (idx->data (Qt::UserRole).value<std::shared_ptr<Tweet>> ())->GetId ();
+		const auto twitid = (idx->data (Qt::UserRole).value<Tweet_ptr> ())->GetId ();
 		Interface_->Reply (twitid, Ui_.TwitEdit_->text ());
 		Ui_.TwitEdit_->clear ();
 		disconnect (Ui_.TwitButton_,
@@ -310,7 +310,7 @@ namespace Woodpecker
 		if (!index)
 			idx = Ui_.TwitList_->currentItem ();
 
-		const auto twitid = (idx->data (Qt::UserRole).value<std::shared_ptr<Tweet>> ())->GetId ();
+		const auto twitid = (idx->data (Qt::UserRole).value<Tweet_ptr> ())->GetId ();
 		auto replyto = std::find_if (ScreenTwits_.begin (), ScreenTwits_.end (),
 				[twitid] (decltype (ScreenTwits_.front ()) tweet)
 					{ return tweet->GetId () == twitid; });
@@ -320,7 +320,7 @@ namespace Woodpecker
 			return;
 		}
 
-		std::shared_ptr<Tweet> found_twit = *replyto;
+		Tweet_ptr found_twit = *replyto;
 		Ui_.TwitEdit_->setText (QString ("@") +
 								((*replyto)->GetAuthor ()->GetUsername ()) +
 								" ");
@@ -379,7 +379,7 @@ namespace Woodpecker
 	void TwitterPage::reportSpam ()
 	{
 		const auto& idx = Ui_.TwitList_->currentItem ();
-		const auto& twitid = (idx->data (Qt::UserRole).value<std::shared_ptr<Tweet>> ())->GetId ();
+		const auto& twitid = (idx->data (Qt::UserRole).value<Tweet_ptr> ())->GetId ();
 
 		auto spamTwit = std::find_if (ScreenTwits_.begin (), ScreenTwits_.end (),
 				[twitid] (decltype (ScreenTwits_.front ()) tweet)
@@ -390,7 +390,7 @@ namespace Woodpecker
 	void TwitterPage::webOpen ()
 	{
 		const auto& idx = Ui_.TwitList_->currentItem ();
-		const auto& twitid = (idx->data (Qt::UserRole).value<std::shared_ptr<Tweet>> ())->GetId ();
+		const auto& twitid = (idx->data (Qt::UserRole).value<Tweet_ptr> ())->GetId ();
 		auto currentTwit = std::find_if (ScreenTwits_.begin (), ScreenTwits_.end (),
 				[twitid] (decltype (ScreenTwits_.front ()) tweet)
 					{ return tweet->GetId () == twitid; });
