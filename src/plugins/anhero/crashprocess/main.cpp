@@ -52,7 +52,8 @@ namespace
 				("signal", bpo::value<int> (), "the signal that triggered the crash handler")
 				("pid", bpo::value<uint64_t> ()->required (), "the PID of the crashed process")
 				("path", bpo::value<std::string> ()->required (), "the application path of the crashed process")
-				("version", bpo::value<std::string> ()->required (), "the LeechCraft version at the moment of the crash");
+				("version", bpo::value<std::string> ()->required (), "the LeechCraft version at the moment of the crash")
+				("cmdline", bpo::value<std::string> (), "the command line LeechCraft was started with");
 
 		bpo::command_line_parser parser (argc, argv);
 		bpo::variables_map vm;
@@ -70,7 +71,8 @@ namespace
 			vm ["signal"].as<int> (),
 			vm ["pid"].as<uint64_t> (),
 			QString::fromUtf8 (vm ["path"].as<std::string> ().c_str ()),
-			vm ["version"].as<std::string> ().c_str ()
+			vm ["version"].as<std::string> ().c_str (),
+			vm ["cmdline"].as<std::string> ().c_str ()
 		};
 	}
 }

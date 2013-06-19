@@ -72,6 +72,9 @@ namespace LeechCraft
 
 		void ToggleViewActionVisiblity (QDockWidget*, bool);
 
+		QSet<QDockWidget*> GetWindowDocks (MainWindow*) const;
+		void MoveDock (QDockWidget *dock, MainWindow *from, MainWindow *to);
+
 		QSet<QDockWidget*> GetForcefullyClosed () const;
 	protected:
 		bool eventFilter (QObject*, QEvent*);

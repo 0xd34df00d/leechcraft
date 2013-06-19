@@ -81,6 +81,12 @@ namespace LeechCraft
 		for (int i = data.TM_->GetWidgetCount () - 1; i >= 0; --i)
 			qobject_cast<ITabWidget*> (data.TM_->GetWidget (i))->Remove ();
 
+		auto mainWindow = Windows_ [0].Window_;
+
+		auto dm = Core::Instance ().GetDockManager ();
+		for (const auto& dock : dm->GetWindowDocks (win))
+			dm->MoveDock (dock, win, mainWindow);
+
 		emit windowRemoved (index);
 
 		Windows_.removeAt (index);
