@@ -31,8 +31,9 @@
 #include <QFileDialog>
 #include <QDateTime>
 #include <QMessageBox>
-#include <QtDebug>
+#include <QClipboard>
 #include <QProcess>
+#include <QtDebug>
 #include <util/util.h>
 #include <util/sysinfo.h>
 #include "appinfo.h"
@@ -112,6 +113,12 @@ namespace CrashProcess
 	void CrashDialog::appendTrace (const QString& part)
 	{
 		Ui_.TraceDisplay_->append (part);
+	}
+
+	void CrashDialog::on_Copy__released ()
+	{
+		const auto& text = Ui_.TraceDisplay_->toPlainText ();
+		qApp->clipboard ()->setText (text, QClipboard::Clipboard);
 	}
 
 	void CrashDialog::on_Save__released ()

@@ -56,6 +56,7 @@ namespace CrashProcess
 
 		void appendTrace (const QString&);
 	private slots:
+		void on_Copy__released ();
 		void on_Save__released ();
 	};
 }
