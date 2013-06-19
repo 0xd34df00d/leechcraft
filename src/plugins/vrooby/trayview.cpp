@@ -34,6 +34,7 @@
 #include <QDeclarativeEngine>
 #include <QDeclarativeImageProvider>
 #include <QGraphicsObject>
+#include <QSortFilterProxyModel>
 #include <util/sys/paths.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/colorthemeproxy.h>
@@ -44,12 +45,41 @@ namespace LeechCraft
 {
 namespace Vrooby
 {
+	class FilterModel : public QSortFilterProxyModel
+	{
+		QSet<QString> Hidden_;
+	public:
+		FilterModel (QObject *parent)
+		: QSortFilterProxyModel (parent)
+		{
+			setDynamicSortFilter (true);
+		}
+
+		void ToggleHidden (const QString& id)
+		{
+			if (!Hidden_.remove (id))
+				Hidden_ << id;
+
+			invalidateFilter ();
+		}
+	protected:
+		bool filterAcceptsRow (int row, const QModelIndex&) const
+		{
+			const auto& idx = sourceModel ()->index (row, 0);
+			const auto& id = idx.data (DeviceRoles::DevPersistentID).toString ();
+			return !Hidden_.contains (id);
+		}
+	};
+
 	TrayView::TrayView (ICoreProxy_ptr proxy, QWidget *parent)
 	: QDeclarativeView (0)
 	, CoreProxy_ (proxy)
 	, Flattened_ (new FlatMountableItems (this))
+	, Filtered_ (new FilterModel (this))
 	, Backend_ (0)
 	{
+		Filtered_->setSourceModel (Flattened_);
+
 		setStyleSheet ("background: transparent");
 		setWindowFlags (Qt::ToolTip);
 		setAttribute (Qt::WA_TranslucentBackground);
@@ -63,7 +93,7 @@ namespace Vrooby
 
 		rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
-		rootContext ()->setContextProperty ("devModel", Flattened_);
+		rootContext ()->setContextProperty ("devModel", Filtered_);
 		rootContext ()->setContextProperty ("devicesLabelText", tr ("Removable devices"));
 		setSource (QUrl ("qrc:/vrooby/resources/qml/DevicesTrayView.qml"));
 
@@ -75,19 +105,24 @@ namespace Vrooby
 				SIGNAL (rowsRemoved (QModelIndex, int, int)),
 				this,
 				SIGNAL (hasItemsChanged ()));
+
+		connect (rootObject (),
+				SIGNAL (toggleHideRequested (QString)),
+				this,
+				SLOT (toggleHide (QString)));
 	}
 
 	void TrayView::SetBackend (DevBackend *backend)
 	{
 		if (Backend_)
 			disconnect (rootObject (),
-					SIGNAL (toggleMountRequested (const QString&)),
+					0,
 					Backend_,
-					SLOT (toggleMount (QString)));
+					0);
 
 		Backend_ = backend;
 		connect (rootObject (),
-				SIGNAL (toggleMountRequested (const QString&)),
+				SIGNAL (toggleMountRequested (QString)),
 				Backend_,
 				SLOT (toggleMount (QString)));
 
@@ -97,6 +132,11 @@ namespace Vrooby
 	bool TrayView::HasItems () const
 	{
 		return Flattened_->rowCount ();
+	}
+
+	void TrayView::toggleHide (const QString& persId)
+	{
+		Filtered_->ToggleHidden (persId);
 	}
 }
 }
