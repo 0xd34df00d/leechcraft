@@ -338,6 +338,22 @@ namespace Woodpecker
 	{
 		LastRequestMode_ = newLastRequestMode;
 	}
+	
+	void TwitterInterface::request (const KQOAuthParameters& param, const FeedMode mode)
+	{
+		switch (mode) 
+		{
+			case FeedMode::UserTimeline:
+				SetLastRequestMode (FeedMode::UserTimeline);
+				SignedRequest (TwitterRequest::UserTimeline, KQOAuthRequest::GET, param);
+				break;
+				
+			case FeedMode::HomeTimeline:
+				SetLastRequestMode (FeedMode::HomeTimeline);
+				SignedRequest (TwitterRequest::HomeTimeline, KQOAuthRequest::GET, param);
+				break;
+		}
+	}
 }
 }
 

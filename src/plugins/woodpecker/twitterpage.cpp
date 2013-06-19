@@ -37,6 +37,7 @@
 #include <util/util.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include "woodpecker.h"
 
 Q_DECLARE_METATYPE (QObject**);
 
@@ -44,11 +45,15 @@ namespace LeechCraft
 {
 namespace Woodpecker
 {
-	TwitterPage::TwitterPage (const TabClassInfo& tc, QObject *plugin)
+	TwitterPage::TwitterPage (const TabClassInfo& tc, QObject *plugin, 
+							  const FeedMode mode,
+							  const KQOAuthParameters& params)
 	: TC_ (tc)
 	, ParentPlugin_ (plugin)
 	, Toolbar_ (new QToolBar (this))
-	, EntityManager_(Core::Instance ().GetCoreProxy ()->GetEntityManager ())
+	, EntityManager_ (Core::Instance ().GetCoreProxy ()->GetEntityManager ())
+	, PageMode_ (mode)
+	, PageDefaultParam_ (params)
 	{
 		Ui_.setupUi (this);
 		Delegate_ = new TwitDelegate (Ui_.TwitList_);
@@ -64,8 +69,8 @@ namespace Woodpecker
 		TwitterTimer_->setInterval (XmlSettingsManager::Instance ()->property ("timer").toInt () * 1000); // Update twits every 1.5 minutes by default
 		connect (TwitterTimer_,
 				SIGNAL (timeout ()),
-				Interface_,
-				SLOT (requestHomeFeed ()));
+				this,
+				SLOT (requestUpdate ()));
 		qDebug () << "Timer " << TwitterTimer_->timerId () << "started";
 		tryToLogin ();
 
@@ -127,7 +132,7 @@ namespace Woodpecker
 		{
 			qDebug () << "Have an authorized" << Settings_->value ("token") << ":" << Settings_->value ("tokenSecret");
 			Interface_->Login (Settings_->value ("token").toString (), Settings_->value ("tokenSecret").toString ());
-			Interface_->requestHomeFeed ();
+			requestUpdate ();
 			TwitterTimer_->start ();
 		}
 
@@ -186,11 +191,6 @@ namespace Woodpecker
 				SIGNAL (authorized (QString, QString)),
 				this,
 				SLOT (recvdAuth (QString, QString)));
-	}
-
-	void TwitterPage::requestUserTimeline (const QString& username)
-	{
-		Interface_->requestUserTimeline (username);
 	}
 
 	void TwitterPage::updateScreenTwits (QList<std::shared_ptr<Tweet>> twits)
@@ -271,7 +271,7 @@ namespace Woodpecker
 	{
 		Settings_->setValue ("token", token);
 		Settings_->setValue ("tokenSecret", tokenSecret);
-		Interface_->requestHomeFeed ();
+		requestUpdate ();
 		TwitterTimer_->start ();
 	}
 
@@ -343,7 +343,13 @@ namespace Woodpecker
 			Ui_.TwitList_->verticalScrollBar ()->setSliderPosition (Ui_.TwitList_->verticalScrollBar ()->maximum () - 1);
 			Ui_.TwitList_->setEnabled (false);
 			if (!ScreenTwits_.empty ())
-				Interface_->requestMoreTweets (QString ("%1").arg ((*(ScreenTwits_.begin ()))->GetId ()));
+			{
+				KQOAuthParameters param (PageDefaultParam_);
+				param.insert ("max_id", QString ("%1").arg ((*(ScreenTwits_.begin ()))->GetId ()));
+				param.insert ("count", QString ("%1").arg (30));
+				
+				Interface_->request (param, PageMode_);
+			}
 		}
 	}
 
@@ -353,10 +359,19 @@ namespace Woodpecker
 		const auto& idx = Ui_.TwitList_->indexAt (pos);
 		if (!idx.isValid ())
 			return;
-
+		
+		const auto username = (idx.data (Qt::UserRole).value<std::shared_ptr<Tweet>> ())->GetAuthor ()->GetUsername ();
+		
 		auto menu = new QMenu (Ui_.TwitList_);
+		auto actionOpenTimeline = new QAction (QString (tr ("Open @%1 timeline")).arg(username), menu);
+		actionOpenTimeline->setProperty ("ActionIcon", "document-open-folder");
+		connect (actionOpenTimeline,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (openUserTimeline ()));
+
 		menu->addActions ({ ActionRetwit_, ActionReply_, menu->addSeparator (),
-			ActionSPAM_, menu->addSeparator (), ActionOpenWeb_ });
+			ActionSPAM_, menu->addSeparator (), ActionOpenWeb_, actionOpenTimeline});
 		menu->setAttribute (Qt::WA_DeleteOnClose);
 
 		menu->exec (Ui_.TwitList_->viewport ()->mapToGlobal (pos));
@@ -404,6 +419,23 @@ namespace Woodpecker
 	QString TwitterPage::GetTabRecoverName () const
 	{
 		return GetTabClassInfo ().VisibleName_;
+	}
+	
+	void TwitterPage::requestUpdate ()
+	{
+		Interface_->request (PageDefaultParam_, PageMode_);
+	}
+	
+	void TwitterPage::openUserTimeline ()
+	{
+		const auto& idx = Ui_.TwitList_->currentItem ();
+		const auto username = (idx->data (Qt::UserRole).value<std::shared_ptr<Tweet>> ())->GetAuthor ()->GetUsername ();
+		KQOAuthParameters param;
+		param.insert ("screen_name", username.toUtf8 ().constData ());
+		static_cast <Plugin*> (ParentPlugin_)->AddTab (QString ("User/%1").arg (username),
+													   "User tab", "Own timeline", 
+														FeedMode::UserTimeline,
+														param);
 	}
 }
 }

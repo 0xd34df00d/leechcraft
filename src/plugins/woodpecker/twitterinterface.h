@@ -111,6 +111,7 @@ namespace Woodpecker
 		void searchTwitter (const QString& text);
 		void requestUserTimeline (const QString& username);
 		void requestMoreTweets (const QString& last);
+		void request (const KQOAuthParameters& param, const FeedMode mode);
 	};
 }
 }

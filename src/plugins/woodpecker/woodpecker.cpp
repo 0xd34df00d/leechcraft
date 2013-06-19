@@ -51,18 +51,25 @@ namespace Woodpecker
 
 		Core::Instance ().SetProxy (proxy);
 
+		AddTab ();
+	}
+	
+	void Plugin::AddTab (const QString& id, const QString& name, const QString& info, 
+						 const FeedMode mode, const KQOAuthParameters& params)
+	{
 		TabClasses_.append ({
-				{
-					GetUniqueID () + "/Home",
-					tr ("Twitter home"),
-					tr ("Twitter user's main timeline."),
-					GetIcon (),
-					2,
-					TFOpenableByRequest
-				},
-				[this] (const TabClassInfo& tc)
-					{ MakeTab (new TwitterPage (tc, this), tc); }
-			});
+			{
+				GetUniqueID () + "/" + id.toUtf8 ().constData (),
+				name,
+				info,
+				GetIcon (),
+				2,
+				TFOpenableByRequest
+			},
+			[this, mode, params] (const TabClassInfo& tc)
+			{ MakeTab (new TwitterPage (tc, this, mode, params), tc); }
+			});	
+		TabOpenRequested (GetUniqueID () + "/" + id.toUtf8 ().constData ());
 	}
 
 	void Plugin::SecondInit ()
@@ -114,7 +121,6 @@ namespace Woodpecker
 					<< tc;
 			return;
 		}
-
 		pos->second (pos->first);
 	}
 

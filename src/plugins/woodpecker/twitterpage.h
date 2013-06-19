@@ -70,7 +70,7 @@ namespace Woodpecker
 		bool TemporaryDocument_;
 
 		bool UpdateReady_;			/**< The flag is checked by timer for UI update */
-		QTimer *UiUpdateTimer_;	/**< Timer checks UpdateReady_ and updates the UI */
+		QTimer *UiUpdateTimer_;		/**< Timer checks UpdateReady_ and updates the UI */
 		TwitDelegate *Delegate_;
 		Ui::TwitterPage Ui_;
 		TwitterInterface *Interface_;
@@ -82,9 +82,14 @@ namespace Woodpecker
 		QAction *ActionReply_;
 		QAction *ActionSPAM_;
 		QAction *ActionOpenWeb_;
+		
+		KQOAuthParameters PageDefaultParam_; /**< Default API request parameter set for page */
+		FeedMode PageMode_;			/**< API request mode for the page */
 
 	public:
-		explicit TwitterPage (const TabClassInfo&, QObject*);
+		explicit TwitterPage (const TabClassInfo&, QObject*,
+							  const FeedMode mode = FeedMode::HomeTimeline,
+							  const KQOAuthParameters& params = KQOAuthParameters ());
 		~TwitterPage();
 
 		void Remove ();
@@ -100,7 +105,6 @@ namespace Woodpecker
 		
 	public slots:
 		void tryToLogin ();
-		void requestUserTimeline (const QString& username);
 		void updateScreenTwits (QList<std::shared_ptr<Tweet>> twits);
 		void recvdAuth (const QString& token, const QString& tokenSecret);
 		void twit ();
@@ -109,12 +113,14 @@ namespace Woodpecker
 		void reportSpam ();
 		void sendReply ();
 		void webOpen ();
+		void openUserTimeline ();
 		void scrolledDown (int sliderPos);
 		void setUpdateReady ();
 		
 	private slots:
 		void on_TwitList__customContextMenuRequested (const QPoint&);
 		void updateTweetList ();
+		void requestUpdate ();
 		
 	signals:
 		void removeTab (QWidget*);
