@@ -75,8 +75,8 @@ namespace Vrooby
 		}
 		case CustomRoles::MountButtonIcon:
 			return index.data (DeviceRoles::IsMounted).toBool () ?
-					"image://mountIcons/emblem-unmounted" :
-					"image://mountIcons/emblem-mounted";
+					"image://ThemeIcons/emblem-unmounted" :
+					"image://ThemeIcons/emblem-mounted";
 		case CustomRoles::MountedAt:
 		{
 			const auto& mounts = index.data (DeviceRoles::MountPoints).toStringList ();

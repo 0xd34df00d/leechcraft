@@ -34,6 +34,7 @@
 #include <QDeclarativeEngine>
 #include <QDeclarativeImageProvider>
 #include <QGraphicsObject>
+#include <util/qml/themeimageprovider.h>
 #include "flatmountableitems.h"
 #include "devbackend.h"
 
@@ -41,28 +42,6 @@ namespace LeechCraft
 {
 namespace Vrooby
 {
-	namespace
-	{
-		class MountIconProvider : public QDeclarativeImageProvider
-		{
-			ICoreProxy_ptr Proxy_;
-		public:
-			MountIconProvider (ICoreProxy_ptr proxy)
-			: QDeclarativeImageProvider (Pixmap)
-			, Proxy_ (proxy)
-			{
-			}
-
-			QPixmap requestPixmap (const QString& id, QSize *size, const QSize&)
-			{
-				const auto& icon = Proxy_->GetIcon (id);
-				if (size)
-					*size = icon.actualSize (QSize (32, 32));
-				return icon.pixmap (QSize (32, 32));
-			}
-		};
-	}
-
 	TrayView::TrayView (ICoreProxy_ptr proxy, QWidget *parent)
 	: QDeclarativeView (0)
 	, CoreProxy_ (proxy)
@@ -76,7 +55,7 @@ namespace Vrooby
 		setResizeMode (SizeRootObjectToView);
 		setFixedSize (500, 250);
 
-		engine ()->addImageProvider ("mountIcons", new MountIconProvider (proxy));
+		engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
 
 		rootContext ()->setContextProperty ("devModel", Flattened_);
 		rootContext ()->setContextProperty ("devicesLabelText", tr ("Removable devices"));
