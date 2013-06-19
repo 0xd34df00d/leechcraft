@@ -344,7 +344,7 @@ namespace Woodpecker
 			if (!ScreenTwits_.empty ())
 			{
 				KQOAuthParameters param (PageDefaultParam_);
-				param.insert ("max_id", QString::number ((*(ScreenTwits_.begin ()))->GetId ()));
+				param.insert ("max_id", QString::number ((*ScreenTwits_.begin ())->GetId ()));
 				param.insert ("count", QString::number (30));
 				
 				Interface_->request (param, PageMode_);
@@ -362,7 +362,7 @@ namespace Woodpecker
 		const auto username = idx.data (Qt::UserRole).value<Tweet_ptr> ()->GetAuthor ()->GetUsername ();
 		
 		auto menu = new QMenu (Ui_.TwitList_);
-		auto actionOpenTimeline = new QAction (tr ("Open @%1 timeline").arg(username), menu);
+		auto actionOpenTimeline = new QAction (tr ("Open @%1 timeline").arg (username), menu);
 		actionOpenTimeline->setProperty ("ActionIcon", "document-open-folder");
 		connect (actionOpenTimeline,
 				SIGNAL (triggered ()),
