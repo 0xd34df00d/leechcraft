@@ -1,4 +1,5 @@
 import QtQuick 1.0
+import org.LC.common 1.0
 import "."
 
 Rectangle {
@@ -125,40 +126,23 @@ Rectangle {
                 anchors.leftMargin: 5
             }
 
-            Image {
+            ActionButton {
                 id: mountButton
-                source: mountButtonIcon
-                width: 22
-                height: 22
-                smooth: true
+                actionIconURL: mountButtonIcon
 
+                width: height
                 anchors.top: devFileLabel.bottom
                 anchors.topMargin: 5
                 anchors.right: parent.right
                 anchors.rightMargin: 5
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 2
 
-                MouseArea {
-                    id: mountButtonArea
-                    anchors.fill: parent
-                    anchors.margins: -2
-                    acceptedButtons: Qt.LeftButton
-                    hoverEnabled: true
+                onTriggered: rootRect.toggleMountRequested(devID)
+            }
 
-                    onClicked: rootRect.toggleMountRequested(devID)
-                }
 
-                Rectangle {
-                    id: mountButtonHover
-                    anchors.fill: parent
-                    anchors.margins: -1
-                    radius: 2
 
-                    visible: mountButtonArea.containsMouse
-
-                    color: "#00000000"
-                    border.width: 1
-                    border.color: "#888888"
-                }
             }
         }
     }
