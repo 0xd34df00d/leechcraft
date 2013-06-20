@@ -105,7 +105,7 @@ namespace LMP
 			if (!Queue_.isEmpty ())
 				StartJob (Queue_.takeFirst ());
 
-			if (error == QFile::NoError && remove)
+			if (remove)
 				QFile::remove (localPath);
 
 			if (!errorStr.isEmpty () && error != QFile::NoError)
