@@ -52,6 +52,7 @@ namespace LMP
 	signals:
 		void startedCopying (const QString&);
 		void finishedCopying ();
+		void errorCopying (const QString&, const QString&);
 	};
 
 	template<typename CopyJobT>
@@ -97,8 +98,6 @@ namespace LMP
 	protected:
 		void handleUploadFinished (const QString& localPath, QFile::FileError error, const QString& errorStr)
 		{
-			emit finishedCopying ();
-
 			const bool remove = CurrentJob_.RemoveOnFinish_;
 			CurrentJob_ = CopyJobT ();
 
@@ -109,11 +108,9 @@ namespace LMP
 				QFile::remove (localPath);
 
 			if (!errorStr.isEmpty () && error != QFile::NoError)
-				Core::Instance ().SendEntity (Util::MakeNotification ("LMP",
-							tr ("Error uploading file %1 to cloud: %2.")
-								.arg (QFileInfo (localPath).fileName ())
-								.arg (errorStr),
-							PWarning_));
+				emit errorCopying (localPath, errorStr);
+			else
+				emit finishedCopying ();
 		}
 	};
 }

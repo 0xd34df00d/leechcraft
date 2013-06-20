@@ -67,6 +67,7 @@ namespace LMP
 		void handleFileTCFailed (const QString&);
 		void handleStartedCopying (const QString&);
 		void handleFinishedCopying ();
+		void handleErrorCopying (const QString&, const QString&);
 	signals:
 		void uploadLog (const QString&);
 

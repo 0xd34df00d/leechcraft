@@ -67,6 +67,10 @@ namespace LMP
 				SIGNAL (finishedCopying ()),
 				this,
 				SLOT (handleFinishedCopying ()));
+		connect (mgr,
+				SIGNAL (errorCopying (QString, QString)),
+				this,
+				SLOT (handleErrorCopying (QString, QString)));
 		Mount2Copiers_ [mount] = mgr;
 	}
 
@@ -100,7 +104,6 @@ namespace LMP
 			const auto& ext = QFileInfo (transcoded).suffix ();
 			if (!mask.endsWith (ext))
 				mask += "." + ext;
-
 
 			return true;
 		}
