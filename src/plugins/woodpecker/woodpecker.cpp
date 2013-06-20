@@ -51,18 +51,25 @@ namespace Woodpecker
 
 		Core::Instance ().SetProxy (proxy);
 
+		AddTab ();
+	}
+	
+	void Plugin::AddTab (const QString& id, const QString& name, const QString& info, 
+						 const FeedMode mode, const KQOAuthParameters& params)
+	{
 		TabClasses_.append ({
-				{
-					GetUniqueID () + "/Home",
-					tr ("Twitter home"),
-					tr ("Twitter user's main timeline."),
-					GetIcon (),
-					2,
-					TFOpenableByRequest
-				},
-				[this] (const TabClassInfo& tc)
-					{ MakeTab (new TwitterPage (tc, this), tc); }
-			});
+			{
+				GetUniqueID () + "/" + id.toUtf8 ().constData (),
+				name.isEmpty ()? tr ("Twitter Home") : name,
+				info.isEmpty ()? tr ("User's main timeline") : info,
+				GetIcon (),
+				2,
+				TFOpenableByRequest
+			},
+			[this, mode, params] (const TabClassInfo& tc)
+				{ MakeTab (new TwitterPage (tc, this, mode, params), tc); }
+			});	
+		TabOpenRequested (GetUniqueID () + "/" + id.toUtf8 ().constData ());
 	}
 
 	void Plugin::SecondInit ()
@@ -114,7 +121,6 @@ namespace Woodpecker
 					<< tc;
 			return;
 		}
-
 		pos->second (pos->first);
 	}
 
@@ -138,12 +144,29 @@ namespace Woodpecker
 	{
 		for (const auto& recInfo : infos)
 		{
-			if (recInfo.Data_ == "twitterpage/Home")
+			QDataStream stream (recInfo.Data_);
+			char *buf;
+			stream >> buf;
+			
+			const QString type (buf);
+			
+			if (type.startsWith ("org.LeechCraft.Woodpecker/Home"))
 			{
 				for (const auto& pair : recInfo.DynProperties_)
 					setProperty (pair.first, pair.second);
 
 				TabOpenRequested (GetUniqueID () + "/Home");
+			}
+			if (type.startsWith ("org.LeechCraft.Woodpecker/User"))
+			{
+				for (const auto& pair : recInfo.DynProperties_)
+					setProperty (pair.first, pair.second);
+				
+				KQOAuthParameters param;
+				stream >> param;
+				
+				AddTab (QString ("User/%1").arg (param.take ("username")),
+						"User tab", "Own timeline", FeedMode::UserTimeline, param);
 			}
 			else
 				qWarning () << Q_FUNC_INFO
