@@ -93,7 +93,7 @@ namespace Woodpecker
 
 	void Tweet::SetText (const QString& text) 
 	{
-		QRegExp rx ("\\s((http|https)://[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(([0-9]{1,5})?/?.*))(\\s|,|$)");
+		QRegExp rx ("(\\s|^)((http|https)://[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(([0-9]{1,5})?/?.*))(\\s|,|$)");
 		rx.setMinimal (true);
 
 		Text_ = text;
@@ -104,9 +104,9 @@ namespace Woodpecker
 		int pos = 0;
 		while ((pos = rx.indexIn (html, pos)) != -1)
 		{
-			if (rx.cap (1).startsWith ("http")) 
+			if (rx.cap (2).startsWith ("http")) 
 			{
-				QString before = rx.cap (1);
+				QString before = rx.cap (2);
 				if (before.endsWith ("."))
 					before.chop (1);
 				QString after = " <a href=\"" + before + "\">" + before + "</a>";

@@ -82,10 +82,10 @@ namespace Woodpecker
 		emit tweetsReady (ParseReply (jsonText));
 	}
 
-	QList<std::shared_ptr<Tweet>> TwitterInterface::ParseReply (const QByteArray& json)
+	QList<Tweet_ptr> TwitterInterface::ParseReply (const QByteArray& json)
 	{
 		QJson::Parser parser;
-		QList<std::shared_ptr<Tweet>> result;
+		QList<Tweet_ptr> result;
 		bool ok;
 
 		QVariantList answers = parser.parse (json, &ok).toList ();
@@ -293,17 +293,6 @@ namespace Woodpecker
 		SignedRequest (TwitterRequest::HomeTimeline, KQOAuthRequest::GET);
 	}
 
-	void TwitterInterface::requestMoreTweets (const QString& last)
-	{
-		KQOAuthParameters param;
-
-		qDebug () << "Getting more tweets from " << last;
-		param.insert ("max_id", last);
-		param.insert ("count", QString ("%1").arg (30));
-		SetLastRequestMode (FeedMode::HomeTimeline);
-		SignedRequest (TwitterRequest::HomeTimeline, KQOAuthRequest::GET, param);
-	}
-
 	void TwitterInterface::requestUserTimeline (const QString& username)
 	{
 		KQOAuthParameters param;
@@ -337,6 +326,22 @@ namespace Woodpecker
 	void TwitterInterface::SetLastRequestMode (const FeedMode& newLastRequestMode)
 	{
 		LastRequestMode_ = newLastRequestMode;
+	}
+	
+	void TwitterInterface::request (const KQOAuthParameters& param, const FeedMode mode)
+	{
+		switch (mode) 
+		{
+			case FeedMode::UserTimeline:
+				SetLastRequestMode (FeedMode::UserTimeline);
+				SignedRequest (TwitterRequest::UserTimeline, KQOAuthRequest::GET, param);
+				break;
+				
+			case FeedMode::HomeTimeline:
+				SetLastRequestMode (FeedMode::HomeTimeline);
+				SignedRequest (TwitterRequest::HomeTimeline, KQOAuthRequest::GET, param);
+				break;
+		}
 	}
 }
 }
