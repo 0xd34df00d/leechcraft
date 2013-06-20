@@ -82,7 +82,7 @@ namespace LMP
 
 		QString GetCodecName () const
 		{
-			return "libvorbis";
+			return "vorbis";
 		}
 
 		QList<BitrateType> GetSupportedBitrates() const
@@ -213,7 +213,7 @@ namespace LMP
 
 		QString GetCodecName () const
 		{
-			return "libmp3lame";
+			return "mp3";
 		}
 
 		QList<BitrateType> GetSupportedBitrates () const
