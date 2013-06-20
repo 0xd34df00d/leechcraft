@@ -86,14 +86,21 @@ namespace LMP
 				return false;
 			}
 
+			auto fix = [] (QString& str) -> void
+			{
+				str.replace ('/', '_');
+				str.replace ('?', '_');
+				str.replace ('*', '_');
+			};
+			fix (info.Album_);
+			fix (info.Artist_);
+			fix (info.Title_);
+
 			mask = PerformSubstitutions (mask, info);
 			const auto& ext = QFileInfo (transcoded).suffix ();
 			if (!mask.endsWith (ext))
 				mask += "." + ext;
 
-			mask.replace ('/', '_');
-			mask.replace ('?', '_');
-			mask.replace ('*', '_');
 
 			return true;
 		}
