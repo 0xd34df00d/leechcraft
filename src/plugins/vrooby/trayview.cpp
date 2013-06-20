@@ -35,6 +35,8 @@
 #include <QDeclarativeImageProvider>
 #include <QGraphicsObject>
 #include <QSortFilterProxyModel>
+#include <QSettings>
+#include <QCoreApplication>
 #include <util/sys/paths.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/colorthemeproxy.h>
@@ -55,6 +57,12 @@ namespace Vrooby
 		, FilterEnabled_ (true)
 		{
 			setDynamicSortFilter (true);
+
+			QSettings settings (QCoreApplication::organizationName (),
+					QCoreApplication::applicationName () + "_Vrooby");
+			settings.beginGroup ("HiddenDevices");
+			Hidden_ = settings.value ("List").toStringList ().toSet ();
+			settings.endGroup ();
 		}
 
 		QVariant data (const QModelIndex& index, int role) const
@@ -72,6 +80,12 @@ namespace Vrooby
 		{
 			if (!Hidden_.remove (id))
 				Hidden_ << id;
+
+			QSettings settings (QCoreApplication::organizationName (),
+					QCoreApplication::applicationName () + "_Vrooby");
+			settings.beginGroup ("HiddenDevices");
+			settings.setValue ("List", QStringList (Hidden_.toList ()));
+			settings.endGroup ();
 
 			if (FilterEnabled_)
 				invalidateFilter ();
