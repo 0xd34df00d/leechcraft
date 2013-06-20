@@ -7,6 +7,9 @@
 			<item type="lineedit" property="timer" default="90">
 				<label lang="en" value="Update time, seconds" />
 			</item>
+			<item type="lineedit" property="additional_twits" default="30">
+				<label lang="en" value="Number of twits to get per one request" />
+			</item>
 		</groupbox>
 		<groupbox>
 			<label value="API" />

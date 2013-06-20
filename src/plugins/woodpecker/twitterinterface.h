@@ -110,7 +110,6 @@ namespace Woodpecker
 		void requestHomeFeed ();
 		void searchTwitter (const QString& text);
 		void requestUserTimeline (const QString& username);
-		void requestMoreTweets (const QString& last);
 		void request (const KQOAuthParameters& param, const FeedMode mode);
 	};
 }

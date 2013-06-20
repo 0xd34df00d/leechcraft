@@ -44,11 +44,11 @@ namespace LeechCraft
 {
 namespace Woodpecker
 {
-	TwitterPage::TwitterPage (const TabClassInfo& tc, QObject *plugin, 
+	TwitterPage::TwitterPage (const TabClassInfo& tc, Plugin *plugin, 
 							  const FeedMode mode,
 							  const KQOAuthParameters& params)
 	: TC_ (tc)
-	, ParentPlugin_ (static_cast<Plugin*> (plugin))
+	, ParentPlugin_ (plugin)
 	, Toolbar_ (new QToolBar (this))
 	, EntityManager_ (Core::Instance ().GetCoreProxy ()->GetEntityManager ())
 	, PageMode_ (mode)
@@ -70,7 +70,6 @@ namespace Woodpecker
 				SIGNAL (timeout ()),
 				this,
 				SLOT (requestUpdate ()));
-		qDebug () << "Timer " << TwitterTimer_->timerId () << "started";
 		tryToLogin ();
 
 		connect (Ui_.TwitEdit_,
@@ -345,7 +344,7 @@ namespace Woodpecker
 			{
 				KQOAuthParameters param (PageDefaultParam_);
 				param.insert ("max_id", QString::number ((*ScreenTwits_.begin ())->GetId ()));
-				param.insert ("count", QString::number (30));
+				param.insert ("count", QString::number (XmlSettingsManager::Instance ()->property ("additional_twits").toUInt ()));
 				
 				Interface_->request (param, PageMode_);
 			}

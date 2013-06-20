@@ -88,7 +88,7 @@ namespace Woodpecker
 		const FeedMode PageMode_;					/**< API request mode for the page */
 
 	public:
-		explicit TwitterPage (const TabClassInfo&, QObject*,
+		explicit TwitterPage (const TabClassInfo&, Plugin*,
 							  const FeedMode mode = FeedMode::HomeTimeline,
 							  const KQOAuthParameters& params = KQOAuthParameters ());
 		~TwitterPage();
