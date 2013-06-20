@@ -47,6 +47,7 @@ namespace Vrooby
 		names [DeviceRoles::IsPartition] = "isPartition";
 		names [DeviceRoles::IsMountable] = "isMountable";
 		names [DeviceRoles::DevID] = "devID";
+		names [DeviceRoles::DevPersistentID] = "devPersistentID";
 		names [DeviceRoles::AvailableSize] = "availableSize";
 		names [DeviceRoles::TotalSize] = "totalSize";
 		names [CustomRoles::FormattedTotalSize] = "formattedTotalSize";
@@ -75,8 +76,8 @@ namespace Vrooby
 		}
 		case CustomRoles::MountButtonIcon:
 			return index.data (DeviceRoles::IsMounted).toBool () ?
-					"image://mountIcons/emblem-unmounted" :
-					"image://mountIcons/emblem-mounted";
+					"image://ThemeIcons/emblem-unmounted" :
+					"image://ThemeIcons/emblem-mounted";
 		case CustomRoles::MountedAt:
 		{
 			const auto& mounts = index.data (DeviceRoles::MountPoints).toStringList ();

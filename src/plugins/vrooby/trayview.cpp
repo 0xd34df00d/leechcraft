@@ -34,6 +34,10 @@
 #include <QDeclarativeEngine>
 #include <QDeclarativeImageProvider>
 #include <QGraphicsObject>
+#include <QSortFilterProxyModel>
+#include <util/sys/paths.h>
+#include <util/qml/themeimageprovider.h>
+#include <util/qml/colorthemeproxy.h>
 #include "flatmountableitems.h"
 #include "devbackend.h"
 
@@ -41,34 +45,57 @@ namespace LeechCraft
 {
 namespace Vrooby
 {
-	namespace
+	class FilterModel : public QSortFilterProxyModel
 	{
-		class MountIconProvider : public QDeclarativeImageProvider
+		bool FilterEnabled_;
+		QSet<QString> Hidden_;
+	public:
+		FilterModel (QObject *parent)
+		: QSortFilterProxyModel (parent)
+		, FilterEnabled_ (true)
 		{
-			ICoreProxy_ptr Proxy_;
-		public:
-			MountIconProvider (ICoreProxy_ptr proxy)
-			: QDeclarativeImageProvider (Pixmap)
-			, Proxy_ (proxy)
-			{
-			}
+			setDynamicSortFilter (true);
+		}
 
-			QPixmap requestPixmap (const QString& id, QSize *size, const QSize&)
-			{
-				const auto& icon = Proxy_->GetIcon (id);
-				if (size)
-					*size = icon.actualSize (QSize (32, 32));
-				return icon.pixmap (QSize (32, 32));
-			}
-		};
-	}
+		void ToggleHidden (const QString& id)
+		{
+			if (!Hidden_.remove (id))
+				Hidden_ << id;
+
+			invalidateFilter ();
+		}
+
+		int GetHiddenCount () const
+		{
+			return Hidden_.size ();
+		}
+
+		void ToggleFilter ()
+		{
+			FilterEnabled_ = !FilterEnabled_;
+			invalidateFilter ();
+		}
+	protected:
+		bool filterAcceptsRow (int row, const QModelIndex&) const
+		{
+			if (!FilterEnabled_)
+				return true;
+
+			const auto& idx = sourceModel ()->index (row, 0);
+			const auto& id = idx.data (DeviceRoles::DevPersistentID).toString ();
+			return !Hidden_.contains (id);
+		}
+	};
 
 	TrayView::TrayView (ICoreProxy_ptr proxy, QWidget *parent)
 	: QDeclarativeView (0)
 	, CoreProxy_ (proxy)
 	, Flattened_ (new FlatMountableItems (this))
+	, Filtered_ (new FilterModel (this))
 	, Backend_ (0)
 	{
+		Filtered_->setSourceModel (Flattened_);
+
 		setStyleSheet ("background: transparent");
 		setWindowFlags (Qt::ToolTip);
 		setAttribute (Qt::WA_TranslucentBackground);
@@ -76,10 +103,15 @@ namespace Vrooby
 		setResizeMode (SizeRootObjectToView);
 		setFixedSize (500, 250);
 
-		engine ()->addImageProvider ("mountIcons", new MountIconProvider (proxy));
+		engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
+			engine ()->addImportPath (cand);
 
-		rootContext ()->setContextProperty ("devModel", Flattened_);
+		rootContext ()->setContextProperty ("colorProxy",
+				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
+		rootContext ()->setContextProperty ("devModel", Filtered_);
 		rootContext ()->setContextProperty ("devicesLabelText", tr ("Removable devices"));
+		rootContext ()->setContextProperty ("hasHiddenItems", Filtered_->GetHiddenCount ());
 		setSource (QUrl ("qrc:/vrooby/resources/qml/DevicesTrayView.qml"));
 
 		connect (Flattened_,
@@ -90,19 +122,28 @@ namespace Vrooby
 				SIGNAL (rowsRemoved (QModelIndex, int, int)),
 				this,
 				SIGNAL (hasItemsChanged ()));
+
+		connect (rootObject (),
+				SIGNAL (toggleHideRequested (QString)),
+				this,
+				SLOT (toggleHide (QString)));
+		connect (rootObject (),
+				SIGNAL (toggleShowHidden ()),
+				this,
+				SLOT (toggleShowHidden ()));
 	}
 
 	void TrayView::SetBackend (DevBackend *backend)
 	{
 		if (Backend_)
 			disconnect (rootObject (),
-					SIGNAL (toggleMountRequested (const QString&)),
+					0,
 					Backend_,
-					SLOT (toggleMount (QString)));
+					0);
 
 		Backend_ = backend;
 		connect (rootObject (),
-				SIGNAL (toggleMountRequested (const QString&)),
+				SIGNAL (toggleMountRequested (QString)),
 				Backend_,
 				SLOT (toggleMount (QString)));
 
@@ -112,6 +153,18 @@ namespace Vrooby
 	bool TrayView::HasItems () const
 	{
 		return Flattened_->rowCount ();
+	}
+
+	void TrayView::toggleHide (const QString& persId)
+	{
+		Filtered_->ToggleHidden (persId);
+
+		rootContext ()->setContextProperty ("hasHiddenItems", Filtered_->GetHiddenCount ());
+	}
+
+	void TrayView::toggleShowHidden ()
+	{
+		Filtered_->ToggleFilter ();
 	}
 }
 }

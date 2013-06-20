@@ -32,7 +32,7 @@
 #include <QDeclarativeView>
 #include <interfaces/core/icoreproxy.h>
 
-class QAbstractItemModel;
+class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
@@ -40,6 +40,7 @@ namespace Vrooby
 {
 	class DevBackend;
 	class FlatMountableItems;
+	class FilterModel;
 
 	class TrayView : public QDeclarativeView
 	{
@@ -47,6 +48,7 @@ namespace Vrooby
 
 		ICoreProxy_ptr CoreProxy_;
 		FlatMountableItems *Flattened_;
+		FilterModel *Filtered_;
 
 		DevBackend *Backend_;
 	public:
@@ -54,6 +56,9 @@ namespace Vrooby
 
 		void SetBackend (DevBackend*);
 		bool HasItems () const;
+	private slots:
+		void toggleHide (const QString&);
+		void toggleShowHidden ();
 	signals:
 		void hasItemsChanged ();
 	};
