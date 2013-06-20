@@ -441,6 +441,10 @@ namespace Monocle
 				this, SLOT (handleSaveAsImage ()));
 		saveAsImage->setProperty ("ActionIcon", "document-save");
 
+		new Util::StdDataFilterMenuCreator (GetSelectionImg (),
+					Core::Instance ().GetProxy ()->GetEntityManager (),
+					menu);
+
 		if (qobject_cast<IHaveTextContent*> (CurrentDoc_->GetQObject ()))
 		{
 			menu->addSeparator ();
