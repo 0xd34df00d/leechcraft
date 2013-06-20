@@ -79,7 +79,7 @@ namespace Woodpecker
 		
 		void SignedRequest (TwitterRequest req, KQOAuthRequest::RequestHttpMethod method = KQOAuthRequest::GET, KQOAuthParameters params = KQOAuthParameters ());
 		void RequestTwitter (const QUrl& requestAddress);
-		QList <Tweet_ptr> ParseReply (const QByteArray& json);
+		QList<Tweet_ptr> ParseReply (const QByteArray& json);
 		void Xauth ();
 		
 	public:

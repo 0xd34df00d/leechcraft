@@ -389,7 +389,7 @@ namespace Woodpecker
 	void TwitterPage::webOpen ()
 	{
 		const auto& idx = Ui_.TwitList_->currentItem ();
-		const auto& twitid = (idx->data (Qt::UserRole).value<Tweet_ptr> ())->GetId ();
+		const auto& twitid = idx->data (Qt::UserRole).value<Tweet_ptr> ()->GetId ();
 		auto currentTwit = std::find_if (ScreenTwits_.begin (), ScreenTwits_.end (),
 				[twitid] (decltype (ScreenTwits_.front ()) tweet)
 					{ return tweet->GetId () == twitid; });
@@ -436,7 +436,7 @@ namespace Woodpecker
 		KQOAuthParameters param;
 		param.insert ("screen_name", username.toUtf8 ().constData ());
 		ParentPlugin_->AddTab (QString ("User/%1").arg (username),
-								"User tab", "Own timeline", 
+								tr ("User tab"), tr ("Own timeline"), 
 								FeedMode::UserTimeline,
 								param);
 	}

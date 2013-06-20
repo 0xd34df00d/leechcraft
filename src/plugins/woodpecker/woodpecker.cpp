@@ -157,7 +157,7 @@ namespace Woodpecker
 
 				TabOpenRequested (GetUniqueID () + "/Home");
 			}
-			if (type.startsWith ("org.LeechCraft.Woodpecker/User"))
+			else if (type.startsWith ("org.LeechCraft.Woodpecker/User"))
 			{
 				for (const auto& pair : recInfo.DynProperties_)
 					setProperty (pair.first, pair.second);
