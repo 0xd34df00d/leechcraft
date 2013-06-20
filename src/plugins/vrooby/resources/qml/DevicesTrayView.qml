@@ -161,7 +161,7 @@ Rectangle {
 
             ActionButton {
                 id: hideButton
-                actionIconURL: "image://ThemeIcons/list-remove"
+                actionIconURL: toggleHiddenIcon
                 visible: devPersistentID.length > 0
 
                 width: height

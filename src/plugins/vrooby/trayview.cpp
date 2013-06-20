@@ -57,12 +57,36 @@ namespace Vrooby
 			setDynamicSortFilter (true);
 		}
 
+		QVariant data (const QModelIndex& index, int role) const
+		{
+			if (role != FlatMountableItems::ToggleHiddenIcon)
+				return QSortFilterProxyModel::data (index, role);
+
+			const auto& id = index.data (DeviceRoles::DevPersistentID).toString ();
+			return Hidden_.contains (id) ?
+					"image://ThemeIcons/list-add" :
+					"image://ThemeIcons/list-remove";
+		}
+
 		void ToggleHidden (const QString& id)
 		{
 			if (!Hidden_.remove (id))
 				Hidden_ << id;
 
-			invalidateFilter ();
+			if (FilterEnabled_)
+				invalidateFilter ();
+			else
+			{
+				for (int i = 0; i < rowCount (); ++i)
+				{
+					const auto& idx = sourceModel ()->index (i, 0);
+					if (id != idx.data (DeviceRoles::DevPersistentID).toString ())
+						continue;
+
+					const auto& mapped = mapFromSource (idx);
+					emit dataChanged (mapped, mapped);
+				}
+			}
 		}
 
 		int GetHiddenCount () const

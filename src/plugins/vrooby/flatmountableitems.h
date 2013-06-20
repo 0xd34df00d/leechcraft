@@ -47,15 +47,17 @@ namespace Vrooby
 
 		QAbstractItemModel *Source_;
 		QList<QPersistentModelIndex> SourceIndexes_;
+	public:
 		enum CustomRoles
 		{
 			FormattedTotalSize = DeviceRoles::DeviceRoleMax + 1,
 			FormattedFreeSpace,
 			UsedPercentage,
 			MountButtonIcon,
+			ToggleHiddenIcon,
 			MountedAt
 		};
-	public:
+
 		FlatMountableItems (QObject* = 0);
 
 		QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
