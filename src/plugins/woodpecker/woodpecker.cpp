@@ -144,12 +144,29 @@ namespace Woodpecker
 	{
 		for (const auto& recInfo : infos)
 		{
-			if (recInfo.Data_ == "twitterpage/Home")
+			QDataStream stream (recInfo.Data_);
+			char *buf;
+			stream >> buf;
+			
+			const QString type (buf);
+			
+			if (type.startsWith ("org.LeechCraft.Woodpecker/Home"))
 			{
 				for (const auto& pair : recInfo.DynProperties_)
 					setProperty (pair.first, pair.second);
 
 				TabOpenRequested (GetUniqueID () + "/Home");
+			}
+			if (type.startsWith ("org.LeechCraft.Woodpecker/User"))
+			{
+				for (const auto& pair : recInfo.DynProperties_)
+					setProperty (pair.first, pair.second);
+				
+				KQOAuthParameters param;
+				stream >> param;
+				
+				AddTab (QString ("User/%1").arg (param.take ("username")),
+						"User tab", "Own timeline", FeedMode::UserTimeline, param);
 			}
 			else
 				qWarning () << Q_FUNC_INFO

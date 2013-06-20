@@ -406,7 +406,12 @@ namespace Woodpecker
 	
 	QByteArray TwitterPage::GetTabRecoverData () const
 	{
-		return "twitterpage/Home";
+		QByteArray result;
+		QDataStream stream (&result, QIODevice::WriteOnly);
+
+		stream << TC_.TabClass_ << PageDefaultParam_;
+
+		return result;
 	}
 	
 	QIcon TwitterPage::GetTabRecoverIcon () const
