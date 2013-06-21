@@ -27,37 +27,61 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QString>
-#include <QMetaType>
-#include "formats.h"
+#include "transcodingparams.h"
+#include <QtDebug>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	struct TranscodingParams
+	QDataStream& operator<< (QDataStream& out, const TranscodingParams& params)
 	{
-		QString FilePattern_;
+		out << static_cast<quint8> (1);
+		out << params.FilePattern_
+				<< params.FormatID_;
 
-		/** Possible format IDs are:
-		 *
-		 * - ogg
-		 * - aac-nonfree
-		 * - aac-free
-		 * - mp3
-		 * - wma
-		 */
-		QString FormatID_;
-		Format::BitrateType BitrateType_;
-		int Quality_;
-		int NumThreads_;
-	};
+		auto fmtStr = "unknown";
+		switch (params.BitrateType_)
+		{
+		case Format::BitrateType::CBR:
+			fmtStr = "cbr";
+			break;
+		case Format::BitrateType::VBR:
+			fmtStr = "vbr";
+			break;
+		}
+		out << fmtStr
+				<< params.Quality_
+				<< params.NumThreads_;
 
-	QDataStream& operator<< (QDataStream&, const TranscodingParams&);
-	QDataStream& operator>> (QDataStream&, TranscodingParams&);
+		return out;
+	}
+
+	QDataStream& operator>> (QDataStream& in, TranscodingParams& params)
+	{
+		quint8 version = 0;
+		in >> version;
+		if (version != 1)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown version"
+					<< version;
+			return in;
+		}
+
+		QString fmtStr;
+		in >> params.FilePattern_
+				>> params.FormatID_
+				>> fmtStr
+				>> params.Quality_
+				>> params.NumThreads_;
+
+		if (fmtStr == "cbr")
+			params.BitrateType_ = Format::BitrateType::CBR;
+		else if (fmtStr == "vbr")
+			params.BitrateType_ = Format::BitrateType::VBR;
+
+		return in;
+	}
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::LMP::TranscodingParams)
