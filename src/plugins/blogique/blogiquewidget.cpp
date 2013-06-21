@@ -212,6 +212,7 @@ namespace Blogique
 		Ui_.Subject_->setText (e.Subject_);
 		PostEdit_->SetContents (e.Content_, ContentType::HTML);
 
+		qDebug () << e.Tags_;
 		for (auto w : SidePluginsWidgets_)
 		{
 			auto ibsw = qobject_cast<IBlogiqueSideWidget*> (w);
@@ -642,7 +643,7 @@ namespace Blogique
 
 			ToolBar_->removeAction (Ui_.OpenInBrowser_);
 			ToolBar_->removeAction (Ui_.UpdateProfile_);
-			ToolBar_->removeAction (Ui_.PreviewPost_);
+// 			ToolBar_->removeAction (Ui_.PreviewPost_);
 			ToolBar_->removeAction (Ui_.SubmitTo_);
 
 		}
@@ -675,8 +676,8 @@ namespace Blogique
 			if (ibp->GetFeatures () & IBloggingPlatform::BPFSupportsProfiles)
 				ToolBar_->insertAction (AccountsBoxAction_, Ui_.UpdateProfile_);
 
-			if (ibp->GetFeatures () & IBloggingPlatform::BPFPostPreviewSupport)
-				ToolBar_->insertAction (AccountsBoxAction_, Ui_.PreviewPost_);
+// 			if (ibp->GetFeatures () & IBloggingPlatform::BPFPostPreviewSupport)
+// 				ToolBar_->insertAction (AccountsBoxAction_, Ui_.PreviewPost_);
 		}
 
 		for (auto action : ibp->GetEditorActions ())
