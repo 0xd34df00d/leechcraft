@@ -266,8 +266,12 @@ namespace LMP
 
 		const int partIdx = Ui_.UnmountablePartsBox_->currentIndex ();
 		const auto& storageId = Ui_.UnmountablePartsBox_->itemData (partIdx).toByteArray ();
+		const auto& params = Ui_.TranscodingOpts_->GetParams ();
 		Core::Instance ().GetSyncUnmountableManager ()->AddFiles ({ syncer, info.ID_,
-				storageId, paths, Ui_.TranscodingOpts_->GetParams () });
+				storageId, paths, params });
+
+		Device2Params_ [info.ID_] = params;
+		SaveLastParams ();
 	}
 
 	void DevicesBrowserWidget::HandleMountableSelected (int idx)
@@ -323,6 +327,9 @@ namespace LMP
 					storage.Name_;
 			Ui_.UnmountablePartsBox_->addItem (boxText, storage.ID_);
 		}
+
+		if (Device2Params_.contains (info.ID_))
+			Ui_.TranscodingOpts_->SetParams (Device2Params_.value (info.ID_));
 	}
 
 	void DevicesBrowserWidget::handleDevDataChanged (const QModelIndex& from, const QModelIndex& to)
