@@ -116,7 +116,28 @@ namespace Woodpecker
 			else
 				pos += rx.matchedLength ();
 		}
+		
+		QRegExp usernameRx ("(\\s|^)(@[\\w\\d_]+)(\\s|,|$|:)");
+		usernameRx.setMinimal (true);
 
+		/* Some regexp multiple match support magic for links highlighting.
+		 * Borrowed from Qt support forum */
+		pos = 0;
+		while ((pos = usernameRx.indexIn (html, pos)) != -1)
+		{
+			if (usernameRx.cap (2).startsWith ("@")) 
+			{
+				QString before = usernameRx.cap (2);
+				if (before.endsWith ("."))
+					before.chop (1);
+				QString after = " <a href=\"twitter://user/" + before + "\">" + before + "</a> ";
+				html.replace (pos, before.length () + 1, after);
+				pos += after.length () - 1;			// -1 is needed to match next username starting with space
+			}
+			else
+				pos += usernameRx.matchedLength ();
+		}
+		
 		Document_.setHtml (html);
 	}
 

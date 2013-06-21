@@ -194,8 +194,24 @@ namespace Woodpecker
 
 				if (parentWidget && !anchor.isEmpty ())
 				{
-					Entity url = Util::MakeEntity (QUrl (anchor), QString (), OnlyHandle | FromUserInitiated, QString ());
-					Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (url);
+					if (anchor.startsWith ("twitter://"))
+					{
+						if (anchor.startsWith ("twitter://user/@"))
+						{
+							const auto& username = anchor.mid (16);
+							KQOAuthParameters param;
+							param.insert ("screen_name", username.toUtf8 ().constData ());
+							TwitterPage *const page = static_cast<TwitterPage*> (parent ()->parent ()->parent ());
+							page->ParentPlugin_->AddTab (QString ("User/%1").arg (username),
+									"User tab", "Own timeline", 
+									FeedMode::UserTimeline, param);
+						}
+					}
+					else
+					{
+						Entity url = Util::MakeEntity (QUrl (anchor), QString (), OnlyHandle | FromUserInitiated, QString ());
+						Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (url);
+					}
 				}
 			}
 		}

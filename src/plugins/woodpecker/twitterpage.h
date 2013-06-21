@@ -55,7 +55,6 @@ namespace Woodpecker
 		Q_INTERFACES (ITabWidget IRecoverableTab)
 
 		const TabClassInfo TC_;
-		Plugin *const ParentPlugin_;
 
 		QToolBar *Toolbar_;
 		QMenu *DoctypeMenu_;
@@ -88,6 +87,8 @@ namespace Woodpecker
 		const FeedMode PageMode_;					/**< API request mode for the page */
 
 	public:
+		Plugin *const ParentPlugin_;
+		
 		explicit TwitterPage (const TabClassInfo&, Plugin*,
 							  const FeedMode mode = FeedMode::HomeTimeline,
 							  const KQOAuthParameters& params = KQOAuthParameters ());
