@@ -31,6 +31,7 @@
 #include <algorithm>
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QSettings>
 #include <util/models/flattenfiltermodel.h>
 #include <util/models/mergemodel.h>
 #include <util/util.h>
@@ -45,6 +46,10 @@
 #include "transcodingparams.h"
 #include "unmountabledevmanager.h"
 #include "syncunmountablemanager.h"
+
+#define COMMA ,
+Q_DECLARE_METATYPE (QMap<QString COMMA LeechCraft::LMP::TranscodingParams>)
+#undef COMMA
 
 namespace LeechCraft
 {
@@ -92,6 +97,8 @@ namespace LMP
 	, UnmountableMgr_ (new UnmountableDevManager (this))
 	, CurrentSyncer_ (0)
 	{
+		LoadLastParams ();
+
 		Ui_.setupUi (this);
 		Ui_.UploadButton_->setIcon (Core::Instance ().GetProxy ()->GetIcon ("svn-commit"));
 
@@ -157,6 +164,29 @@ namespace LMP
 			on_DevicesSelector__activated (0);
 	}
 
+	void DevicesBrowserWidget::LoadLastParams ()
+	{
+		qRegisterMetaType<TranscodingParams> ("TranscodingParams");
+		qRegisterMetaTypeStreamOperators<TranscodingParams> ();
+		qRegisterMetaType<QMap<QString, TranscodingParams>> ("QMap<QString, TranscodingParams>");
+		qRegisterMetaTypeStreamOperators<QMap<QString, TranscodingParams>> ();
+
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_LMP_Transcoding");
+		settings.beginGroup ("Transcoding");
+		Device2Params_ = settings.value ("LastParams").value<decltype (Device2Params_)> ();
+		settings.endGroup ();
+	}
+
+	void DevicesBrowserWidget::SaveLastParams () const
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_LMP_Transcoding");
+		settings.beginGroup ("Transcoding");
+		settings.setValue ("LastParams", QVariant::fromValue (Device2Params_));
+		settings.endGroup ();
+	}
+
 	namespace
 	{
 		QList<ISyncPlugin*> FindSuitables (const QString& mountPath)
@@ -175,7 +205,8 @@ namespace LMP
 
 	void DevicesBrowserWidget::UploadMountable (int idx)
 	{
-		const auto& to = Ui_.DevicesSelector_->itemData (idx, DeviceRoles::MountPoints).toStringList ().value (0);
+		const auto& to = Ui_.DevicesSelector_->
+				itemData (idx, DeviceRoles::MountPoints).toStringList ().value (0);
 		if (to.isEmpty ())
 			return;
 
@@ -202,11 +233,19 @@ namespace LMP
 		const auto& selected = DevUploadModel_->GetSelectedIndexes ();
 		QStringList paths;
 		std::transform (selected.begin (), selected.end (), std::back_inserter (paths),
-				[] (const QModelIndex& idx) { return idx.data (LocalCollection::Role::TrackPath).toString (); });
+				[] (const QModelIndex& idx)
+					{ return idx.data (LocalCollection::Role::TrackPath).toString (); });
 		paths.removeAll (QString ());
 
 		Ui_.UploadLog_->clear ();
-		Core::Instance ().GetSyncManager ()->AddFiles (CurrentSyncer_, to, paths, Ui_.TranscodingOpts_->GetParams ());
+
+		const auto& params = Ui_.TranscodingOpts_->GetParams ();
+		Core::Instance ().GetSyncManager ()->AddFiles (CurrentSyncer_, to, paths, params);
+
+		const auto& devId = Ui_.DevicesSelector_->
+				itemData (idx, DeviceRoles::DevPersistentID).toString ();
+		Device2Params_ [devId] = params;
+		SaveLastParams ();
 	}
 
 	void DevicesBrowserWidget::UploadUnmountable (int idx)
@@ -218,7 +257,8 @@ namespace LMP
 		const auto& selected = DevUploadModel_->GetSelectedIndexes ();
 		QStringList paths;
 		std::transform (selected.begin (), selected.end (), std::back_inserter (paths),
-				[] (const QModelIndex& idx) { return idx.data (LocalCollection::Role::TrackPath).toString (); });
+				[] (const QModelIndex& idx)
+					{ return idx.data (LocalCollection::Role::TrackPath).toString (); });
 		paths.removeAll (QString ());
 
 		auto syncer = qobject_cast<IUnmountableSync*> (UnmountableMgr_->GetDeviceManager (idx));
@@ -226,8 +266,12 @@ namespace LMP
 
 		const int partIdx = Ui_.UnmountablePartsBox_->currentIndex ();
 		const auto& storageId = Ui_.UnmountablePartsBox_->itemData (partIdx).toByteArray ();
+		const auto& params = Ui_.TranscodingOpts_->GetParams ();
 		Core::Instance ().GetSyncUnmountableManager ()->AddFiles ({ syncer, info.ID_,
-				storageId, paths, Ui_.TranscodingOpts_->GetParams () });
+				storageId, paths, params });
+
+		Device2Params_ [info.ID_] = params;
+		SaveLastParams ();
 	}
 
 	void DevicesBrowserWidget::HandleMountableSelected (int idx)
@@ -236,13 +280,15 @@ namespace LMP
 		Ui_.TranscodingOpts_->SetMaskVisible (true);
 		Ui_.UnmountablePartsWidget_->hide ();
 
-		auto isMounted = Ui_.DevicesSelector_->itemData (idx, DeviceRoles::IsMounted).toBool ();
+		auto isMounted = Ui_.DevicesSelector_->
+				itemData (idx, DeviceRoles::IsMounted).toBool ();
 		Ui_.MountButton_->setEnabled (!isMounted);
 
 		if (!isMounted)
 			return;
 
-		const auto& mountPath = Ui_.DevicesSelector_->itemData (idx, DeviceRoles::MountPoints).toStringList ().value (0);
+		const auto& mountPath = Ui_.DevicesSelector_->
+				itemData (idx, DeviceRoles::MountPoints).toStringList ().value (0);
 		if (mountPath.isEmpty ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -252,6 +298,11 @@ namespace LMP
 		}
 
 		Ui_.SyncTabs_->setEnabled (!FindSuitables (mountPath).isEmpty ());
+
+		const auto& devId = Ui_.DevicesSelector_->
+				itemData (idx, DeviceRoles::DevPersistentID).toString ();
+		if (Device2Params_.contains (devId))
+			Ui_.TranscodingOpts_->SetParams (Device2Params_.value (devId));
 	}
 
 	void DevicesBrowserWidget::HandleUnmountableSelected (int idx)
@@ -276,6 +327,9 @@ namespace LMP
 					storage.Name_;
 			Ui_.UnmountablePartsBox_->addItem (boxText, storage.ID_);
 		}
+
+		if (Device2Params_.contains (info.ID_))
+			Ui_.TranscodingOpts_->SetParams (Device2Params_.value (info.ID_));
 	}
 
 	void DevicesBrowserWidget::handleDevDataChanged (const QModelIndex& from, const QModelIndex& to)

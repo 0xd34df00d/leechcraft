@@ -145,5 +145,19 @@ namespace LMP
 		emit uploadProgress (++CopiedCount_, TotalCopyCount_);
 		CheckUploadFinished ();
 	}
+
+	void SyncManagerBase::handleErrorCopying (const QString& localPath, const QString& errorStr)
+	{
+		const auto& filename = QFileInfo (localPath).fileName ();
+		const auto& text = tr ("Error copying file %1: %2.").arg (filename).arg (errorStr);
+
+		Core::Instance ().SendEntity (Util::MakeNotification ("LMP",
+					text,
+					PWarning_));
+		emit uploadLog (text);
+
+		emit uploadProgress (++CopiedCount_, TotalCopyCount_);
+		CheckUploadFinished ();
+	}
 }
 }

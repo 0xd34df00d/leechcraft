@@ -31,6 +31,9 @@
 #include <QFileDialog>
 #include <QDateTime>
 #include <QMessageBox>
+#include <QClipboard>
+#include <QProcess>
+#include <QtDebug>
 #include <util/util.h>
 #include <util/sysinfo.h>
 #include "appinfo.h"
@@ -43,6 +46,7 @@ namespace CrashProcess
 {
 	CrashDialog::CrashDialog (const AppInfo& info, QWidget *parent)
 	: QDialog (parent, Qt::Window)
+	, CmdLine_ (info.ExecLine_)
 	{
 		Ui_.setupUi (this);
 
@@ -59,6 +63,8 @@ namespace CrashProcess
 		Ui_.TraceDisplay_->append ("OS version: " + osInfo.second);
 
 		Ui_.TraceDisplay_->append ("\n\n=== BACKTRACE ===");
+
+		Ui_.RestartBox_->setEnabled (!info.ExecLine_.isEmpty ());
 
 		show ();
 	}
@@ -95,9 +101,24 @@ namespace CrashProcess
 		QDialog::accept ();
 	}
 
+	void CrashDialog::done (int res)
+	{
+		if (!CmdLine_.isEmpty () &&
+				Ui_.RestartBox_->checkState () == Qt::Checked)
+			QProcess::startDetached ("/bin/sh", { "-c", "sleep 2; " + CmdLine_ });
+
+		QDialog::done (res);
+	}
+
 	void CrashDialog::appendTrace (const QString& part)
 	{
 		Ui_.TraceDisplay_->append (part);
+	}
+
+	void CrashDialog::on_Copy__released ()
+	{
+		const auto& text = Ui_.TraceDisplay_->toPlainText ();
+		qApp->clipboard ()->setText (text, QClipboard::Clipboard);
 	}
 
 	void CrashDialog::on_Save__released ()

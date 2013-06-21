@@ -48,6 +48,7 @@ namespace AnHero
 	{
 		QByteArray AppPath_;
 		QByteArray AppVersion_;
+		QByteArray AppArgs_;
 
 		void CloseFiles ()
 		{
@@ -106,6 +107,8 @@ namespace AnHero
 				AppPath_.constData (),
 				"--version",
 				AppVersion_.constData (),
+				"--cmdline",
+				AppArgs_.constData (),
 				nullptr
 			};
 
@@ -147,11 +150,13 @@ namespace AnHero
 	{
 		Util::InstallTranslator ("anhero");
 
-		if (QApplication::arguments ().contains ("-noanhero"))
+		const auto& args = QApplication::arguments ();
+		if (args.contains ("-noanhero"))
 			return;
 
 		AppPath_ = QCoreApplication::applicationFilePath ().toUtf8 ();
 		AppVersion_ = proxy->GetVersion ().toUtf8 ();
+		AppArgs_ = args.join (" ").toUtf8 ();
 		SetCrashHandler (DefaultCrashHandler);
 	}
 

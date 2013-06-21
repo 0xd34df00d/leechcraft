@@ -166,6 +166,13 @@ namespace DumbSync
 		if (!target.endsWith ('/') && !relPath.startsWith ('/'))
 			target += '/';
 		target += relPath;
+		qDebug () << Q_FUNC_INFO
+				<< "uploading"
+				<< localPath
+				<< "(from"
+				<< origLocalPath
+				<< ") to "
+				<< target;
 
 		const QString& dirPath = relPath.left (relPath.lastIndexOf ('/'));
 		if (!QDir (to).mkpath (dirPath))

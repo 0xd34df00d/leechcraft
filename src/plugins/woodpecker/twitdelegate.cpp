@@ -110,7 +110,7 @@ namespace Woodpecker
 		}
 		
 		// Get title, description and icon
-		auto currentTweet = index.data (Qt::UserRole).value<std::shared_ptr<Tweet>> ();
+		auto currentTweet = index.data (Qt::UserRole).value<Tweet_ptr> ();
 		if (!currentTweet) 
 		{
 			qDebug () << "Can't recieve twit";
@@ -204,7 +204,7 @@ namespace Woodpecker
 			const QMouseEvent *me = static_cast<QMouseEvent*> (event);
 			if (me)
 			{
-				const auto currentTweet = index.data (Qt::UserRole).value<std::shared_ptr<Tweet>> ();
+				const auto currentTweet = index.data (Qt::UserRole).value<Tweet_ptr> ();
 				const auto position = (me->pos () - option.rect.adjusted (ImageSpace + 14, 4, 0, -22).topLeft ());
 
 				const auto anchor = currentTweet->GetDocument ()->documentLayout ()->anchorAt (position);

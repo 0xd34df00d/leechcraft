@@ -44,6 +44,8 @@ namespace CrashProcess
 
 		QString Path_;
 		QString Version_;
+
+		QString ExecLine_;
 	};
 
 }

@@ -65,7 +65,7 @@ namespace LMP
 		QStringList args;
 		args << "-i" << path;
 		args << format->ToFFmpeg (params);
-		args << "-map_metadata:s:a" << "0";
+		args << "-map_metadata" << "0";
 		args << TranscodedPath_;
 
 		connect (Process_,

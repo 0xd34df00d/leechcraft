@@ -27,52 +27,61 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QMap>
+#include "transcodingparams.h"
+#include <QtDebug>
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class ISyncPlugin;
-	class TranscodeManager;
-	struct TranscodingParams;
-
-	class SyncManagerBase : public QObject
+	QDataStream& operator<< (QDataStream& out, const TranscodingParams& params)
 	{
-		Q_OBJECT
+		out << static_cast<quint8> (1);
+		out << params.FilePattern_
+				<< params.FormatID_;
 
-	protected:
-		TranscodeManager *Transcoder_;
+		auto fmtStr = "unknown";
+		switch (params.BitrateType_)
+		{
+		case Format::BitrateType::CBR:
+			fmtStr = "cbr";
+			break;
+		case Format::BitrateType::VBR:
+			fmtStr = "vbr";
+			break;
+		}
+		out << fmtStr
+				<< params.Quality_
+				<< params.NumThreads_;
 
-		int TranscodedCount_;
-		int TotalTCCount_;
-		bool WereTCErrors_;
+		return out;
+	}
 
-		int CopiedCount_;
-		int TotalCopyCount_;
-	public:
-		SyncManagerBase (QObject* = 0);
-	protected:
-		void AddFiles (const QStringList&, const TranscodingParams&);
-		void HandleFileTranscoded (const QString&, const QString&);
-	private:
-		void CheckTCFinished ();
-		void CheckUploadFinished ();
-	protected slots:
-		void handleStartedTranscoding (const QString&);
-		virtual void handleFileTranscoded (const QString&, const QString&, QString) = 0;
-		void handleFileTCFailed (const QString&);
-		void handleStartedCopying (const QString&);
-		void handleFinishedCopying ();
-		void handleErrorCopying (const QString&, const QString&);
-	signals:
-		void uploadLog (const QString&);
+	QDataStream& operator>> (QDataStream& in, TranscodingParams& params)
+	{
+		quint8 version = 0;
+		in >> version;
+		if (version != 1)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown version"
+					<< version;
+			return in;
+		}
 
-		void transcodingProgress (int, int);
-		void uploadProgress (int, int);
-	};
+		QString fmtStr;
+		in >> params.FilePattern_
+				>> params.FormatID_
+				>> fmtStr
+				>> params.Quality_
+				>> params.NumThreads_;
+
+		if (fmtStr == "cbr")
+			params.BitrateType_ = Format::BitrateType::CBR;
+		else if (fmtStr == "vbr")
+			params.BitrateType_ = Format::BitrateType::VBR;
+
+		return in;
+	}
 }
 }

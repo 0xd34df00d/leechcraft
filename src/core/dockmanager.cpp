@@ -109,6 +109,27 @@ namespace LeechCraft
 			return;
 	}
 
+	QSet<QDockWidget*> DockManager::GetWindowDocks (MainWindow *window) const
+	{
+		QSet<QDockWidget*> result;
+		for (auto i = Dock2Info_.begin (); i != Dock2Info_.end (); ++i)
+			if (i->Window_ == window)
+				result << i.key ();
+		return result;
+	}
+
+	void DockManager::MoveDock (QDockWidget *dw, MainWindow *fromWin, MainWindow *toWin)
+	{
+		Dock2Info_ [dw].Window_ = toWin;
+
+		const auto area = fromWin->dockWidgetArea (dw);
+
+		fromWin->removeDockWidget (dw);
+		Window2DockToolbarMgr_ [fromWin]->RemoveDock (dw);
+		toWin->addDockWidget (area, dw);
+		Window2DockToolbarMgr_ [toWin]->AddDock (dw, area);
+	}
+
 	QSet<QDockWidget*> DockManager::GetForcefullyClosed () const
 	{
 		return ForcefullyClosed_;
@@ -162,18 +183,8 @@ namespace LeechCraft
 		auto widget = fromWin->GetTabWidget ()->Widget (tab);
 
 		for (auto i = Dock2Info_.begin (), end = Dock2Info_.end (); i != end; ++i)
-			if (i->Associated_ != widget)
-			{
-				auto dw = i.key ();
-				Dock2Info_ [dw].Window_ = toWin;
-
-				const auto area = fromWin->dockWidgetArea (dw);
-
-				fromWin->removeDockWidget (dw);
-				Window2DockToolbarMgr_ [fromWin]->RemoveDock (dw);
-				toWin->addDockWidget (area, dw);
-				Window2DockToolbarMgr_ [toWin]->AddDock (dw, area);
-			}
+			if (i->Associated_ == widget)
+				MoveDock (i.key (), fromWin, toWin);
 	}
 
 	void DockManager::revertDockSizes (QDockWidget *dock, int min, int max)

@@ -48,8 +48,11 @@ namespace Util
 		auto realSize = requestedSize;
 		if (realSize.width () <= 0)
 		{
-			const int width = list.takeLast ().toDouble ();
+			bool ok = false;
+			const int width = list.last ().toDouble (&ok);
 			realSize = width > 0 ? QSize (width, width) : QSize (32, 32);
+			if (ok)
+				list.removeLast ();
 		}
 
 		const auto& icon = GetIcon (list);

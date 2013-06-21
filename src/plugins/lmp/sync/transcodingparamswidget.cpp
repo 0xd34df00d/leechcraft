@@ -92,6 +92,14 @@ namespace LMP
 		};
 	}
 
+	void TranscodingParamsWidget::SetParams (const TranscodingParams& params)
+	{
+		Ui_.TranscodingBox_->setChecked (!params.FormatID_.isEmpty ());
+		Ui_.FilenameMask_->setText (params.FilePattern_);
+		Ui_.BitrateTypeBox_->setCurrentIndex (static_cast<int> (params.BitrateType_));
+		Ui_.QualitySlider_->setValue (params.Quality_);
+	}
+
 	Format_ptr TranscodingParamsWidget::GetCurrentFormat () const
 	{
 		return Formats_->GetFormats ().value (Ui_.TranscodingFormat_->currentIndex ());
