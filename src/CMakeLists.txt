@@ -178,6 +178,7 @@ option (ENABLE_POPISHU "Build Popishu, a simple QScintilla-based text editor" OF
 option (ENABLE_QROSP "Build Qrosp, the scripting support plugin" OFF)
 
 # New
+option (ENABLE_BLASQ "Build Blasq, client for cloud image storages like Picasa or Flickr" ${WITH_PLUGINS})
 option (ENABLE_BLOGIQUE "Build Blogique, LeechCraft blogging client" ${WITH_PLUGINS})
 option (ENABLE_DOLOZHEE "Build Dolozhee, the feature request and bug reporter" ${WITH_PLUGINS})
 option (ENABLE_GACTS "Build Global Actions provider plugin" ${WITH_PLUGINS})
@@ -502,6 +503,10 @@ endif ()
 
 if (ENABLE_GACTS)
 	add_subdirectory (plugins/gacts)
+endif ()
+
+if (ENABLE_BLASQ)
+	add_subdirectory (plugins/blasq)
 endif ()
 
 if (ENABLE_BLOGIQUE)
