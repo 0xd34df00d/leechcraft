@@ -65,6 +65,21 @@ namespace Blasq
 	{
 		return QIcon ();
 	}
+
+	ImageServiceInfos_t Plugin::GetServices () const
+	{
+		return {};
+	}
+
+	IPendingImgSourceRequest* Plugin::RequestImages (const QByteArray& serviceId)
+	{
+		return nullptr;
+	}
+
+	IPendingImgSourceRequest* Plugin::StartDefaultChooser ()
+	{
+		return nullptr;
+	}
 }
 }
 
