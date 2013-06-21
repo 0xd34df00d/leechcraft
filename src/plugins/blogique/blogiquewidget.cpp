@@ -447,6 +447,10 @@ namespace Blogique
 				SIGNAL (tagRemoved (QString)),
 				this,
 				SLOT (handleTagRemoved (QString)));
+		connect (Ui_.Tags_->rootObject (),
+				SIGNAL (tagAdded (QString)),
+				this,
+				SLOT (handleTagAdded (QString)));
 	}
 
 	void BlogiqueWidget::RemovePostingTargetsWidget ()
@@ -1044,6 +1048,14 @@ namespace Blogique
 				"selectTag",
 				Q_ARG (QVariant, tag),
 				Q_ARG (QVariant, false));
+	}
+
+	void BlogiqueWidget::handleTagAdded (const QString& tag)
+	{
+		QMetaObject::invokeMethod (Ui_.TagsCloud_->rootObject (),
+				"selectTag",
+				Q_ARG (QVariant, tag),
+				Q_ARG (QVariant, true));
 	}
 
 	void BlogiqueWidget::on_OpenInBrowser__triggered ()
