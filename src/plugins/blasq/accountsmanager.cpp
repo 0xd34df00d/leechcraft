@@ -82,15 +82,34 @@ namespace Blasq
 		for (auto acc : accs)
 			HandleAccount (acc);
 
-		connect (service->GetQObject (),
+		auto serviceObj = service->GetQObject ();
+		connect (serviceObj,
 				SIGNAL (accountAdded (QObject*)),
 				this,
-				SLOT (handleAccount (QObject*)));
+				SLOT (handleAccountAdded (QObject*)));
+		connect (serviceObj,
+				SIGNAL (accountRemoved (QObject*)),
+				this,
+				SLOT (handleAccountRemoved (QObject*)));
 	}
 
-	void AccountsManager::handleAccount (QObject *accObj)
+	void AccountsManager::handleAccountAdded (QObject *accObj)
 	{
 		HandleAccount (qobject_cast<IAccount*> (accObj));
+	}
+
+	void AccountsManager::handleAccountRemoved (QObject *accObj)
+	{
+		auto accVar = QVariant::fromValue (accObj);
+
+		for (int i = 0; i < Model_->rowCount (); ++i)
+		{
+			if (Model_->item (i)->data (Role::AccountObj) != accVar)
+				continue;
+
+			Model_->removeRow (i);
+			break;
+		}
 	}
 }
 }

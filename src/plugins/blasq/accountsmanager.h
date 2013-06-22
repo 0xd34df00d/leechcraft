@@ -61,7 +61,9 @@ namespace Blasq
 		void HandleAccount (IAccount*);
 	private slots:
 		void handleService (IService*);
-		void handleAccount (QObject*);
+
+		void handleAccountAdded (QObject*);
+		void handleAccountRemoved (QObject*);
 	};
 }
 }
