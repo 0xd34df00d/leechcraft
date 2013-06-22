@@ -12,13 +12,20 @@ include_directories (
 set (SRCS
 	blasq.cpp
 	xmlsettingsmanager.cpp
+	accountswidget.cpp
+	)
+set (FORMS
+	accountswidget.ui
 	)
 #CreateTrs("blasq" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("blasq" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
+QT4_WRAP_UI (UIS_H ${FORMS})
+
 add_library (leechcraft_blasq SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
+	${UIS_H}
 	)
 target_link_libraries (leechcraft_blasq
 	${QT_LIBRARIES}
