@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "spegnersi.h"
+#include "flickrservice.h"
 
 namespace LeechCraft
 {
@@ -37,6 +38,7 @@ namespace Spegnersi
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Service_ = new FlickrService ();
 	}
 
 	void Plugin::SecondInit ()
@@ -66,6 +68,20 @@ namespace Spegnersi
 	{
 		return QIcon ();
 	}
+
+	QSet<QByteArray> Plugin::GetPluginClasses () const
+	{
+		QSet<QByteArray> result;
+		result << "org.LeechCraft.Blasq.ServicePlugin";
+		return result;
+	}
+
+	QList<IService*> Plugin::GetServices () const
+	{
+		return { Service_ };
+	}
 }
 }
 }
+
+LC_EXPORT_PLUGIN (leechcraft_blasq_spegnersi, LeechCraft::Blasq::Spegnersi::Plugin);
