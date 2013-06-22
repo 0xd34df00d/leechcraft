@@ -60,6 +60,7 @@ namespace LMP
 
 		ISyncPlugin *CurrentSyncer_;
 
+		QString LastDevice_;
 		QMap<QString, TranscodingParams> Device2Params_;
 	public:
 		DevicesBrowserWidget (QWidget* = 0);

@@ -139,7 +139,7 @@ namespace LMP
 		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
 
 		const auto& mgrs = pm->GetAllCastableTo<IRemovableDevManager*> ();
-		Q_FOREACH (const auto& mgr, mgrs)
+		for (const auto& mgr : mgrs)
 		{
 			auto flattener = new MountableFlattener (this);
 			flattener->SetSource (mgr->GetDevicesModel ());
@@ -160,8 +160,16 @@ namespace LMP
 				this,
 				SLOT (handleRowsInserted (QModelIndex, int, int)));
 
-		if (Ui_.DevicesSelector_->count ())
-			on_DevicesSelector__activated (0);
+		for (int i = 0; i < Ui_.DevicesSelector_->count (); ++i)
+		{
+			const auto& thatId = Ui_.DevicesSelector_->itemData (i, DeviceRoles::DevPersistentID).toString ();
+			if (thatId != LastDevice_)
+				break;
+
+			Ui_.DevicesSelector_->setCurrentIndex (i);
+			on_DevicesSelector__activated (i);
+			break;
+		}
 	}
 
 	void DevicesBrowserWidget::LoadLastParams ()
@@ -175,6 +183,7 @@ namespace LMP
 				QCoreApplication::applicationName () + "_LMP_Transcoding");
 		settings.beginGroup ("Transcoding");
 		Device2Params_ = settings.value ("LastParams").value<decltype (Device2Params_)> ();
+		LastDevice_ = settings.value ("LastDeviceID").toString ();
 		settings.endGroup ();
 	}
 
@@ -184,6 +193,13 @@ namespace LMP
 				QCoreApplication::applicationName () + "_LMP_Transcoding");
 		settings.beginGroup ("Transcoding");
 		settings.setValue ("LastParams", QVariant::fromValue (Device2Params_));
+
+		const auto idx = Ui_.DevicesSelector_->currentIndex ();
+		const auto& devId = idx >= 0 ?
+				Ui_.DevicesSelector_->itemData (idx, DeviceRoles::DevPersistentID).toString () :
+				QString ();
+		settings.setValue ("LastDeviceID", devId);
+
 		settings.endGroup ();
 	}
 
