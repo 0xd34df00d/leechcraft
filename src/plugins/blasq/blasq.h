@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/ipluginready.h>
 #include <interfaces/data/iimgsource.h>
 
 namespace LeechCraft
@@ -39,10 +40,11 @@ namespace Blasq
 {
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IPluginReady
 				 , public IImgSource
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IImgSource)
+		Q_INTERFACES (IInfo IPluginReady IImgSource)
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -51,6 +53,9 @@ namespace Blasq
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		QSet<QByteArray> GetExpectedPluginClasses () const;
+		void AddPlugin (QObject*);
 
 		ImageServiceInfos_t GetServices () const;
 		IPendingImgSourceRequest* RequestImages (const QByteArray& serviceId);

@@ -66,6 +66,18 @@ namespace Blasq
 		return QIcon ();
 	}
 
+	QSet<QByteArray> Plugin::GetExpectedPluginClasses () const
+	{
+		QSet<QByteArray> result;
+		result << "org.LeechCraft.Blasq.General";
+		result << "org.LeechCraft.Blasq.ServicePlugin";
+		return result;
+	}
+
+	void Plugin::AddPlugin (QObject *plugin)
+	{
+	}
+
 	ImageServiceInfos_t Plugin::GetServices () const
 	{
 		return {};
