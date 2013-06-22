@@ -29,6 +29,8 @@
 
 #include "blasq.h"
 #include <QIcon>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -36,6 +38,8 @@ namespace Blasq
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "blasqsettings.xml");
 	}
 
 	void Plugin::SecondInit ()
@@ -78,6 +82,11 @@ namespace Blasq
 	{
 	}
 
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
+	}
+
 	ImageServiceInfos_t Plugin::GetServices () const
 	{
 		return {};
@@ -96,4 +105,3 @@ namespace Blasq
 }
 
 LC_EXPORT_PLUGIN (leechcraft_blasq, LeechCraft::Blasq::Plugin);
-

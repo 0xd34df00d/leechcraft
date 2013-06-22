@@ -11,6 +11,7 @@ include_directories (
 	)
 set (SRCS
 	blasq.cpp
+	xmlsettingsmanager.cpp
 	)
 #CreateTrs("blasq" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("blasq" "en;ru_RU" "${SRCS}" "${FORMS}" "")
@@ -24,6 +25,7 @@ target_link_libraries (leechcraft_blasq
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_blasq DESTINATION ${LC_PLUGINS_DEST})
+install (FILES blasqsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 option (ENABLE_BLASQ_SPEGNERSI "Build Flickr client module for Blasq" ON)
 

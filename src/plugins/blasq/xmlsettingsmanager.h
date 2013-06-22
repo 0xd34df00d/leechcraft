@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,44 +29,22 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ipluginready.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/data/iimgsource.h>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
 namespace Blasq
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPluginReady
-				 , public IHaveSettings
-				 , public IImgSource
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPluginReady IHaveSettings IImgSource)
 
-		Util::XmlSettingsDialog_ptr XSD_;
+		XmlSettingsManager ();
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		QSet<QByteArray> GetExpectedPluginClasses () const;
-		void AddPlugin (QObject*);
-
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-
-		ImageServiceInfos_t GetServices () const;
-		IPendingImgSourceRequest* RequestImages (const QByteArray& serviceId);
-		IPendingImgSourceRequest* StartDefaultChooser ();
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
 	};
 }
 }
-

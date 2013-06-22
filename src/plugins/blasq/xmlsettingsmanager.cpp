@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,46 +27,33 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ipluginready.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/data/iimgsource.h>
+#include "xmlsettingsmanager.h"
+#include <QApplication>
 
 namespace LeechCraft
 {
 namespace Blasq
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPluginReady
-				 , public IHaveSettings
-				 , public IImgSource
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IPluginReady IHaveSettings IImgSource)
+		Util::BaseSettingsManager::Init ();
+	}
 
-		Util::XmlSettingsDialog_ptr XSD_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager xsm;
+		return xsm;
+	}
 
-		QSet<QByteArray> GetExpectedPluginClasses () const;
-		void AddPlugin (QObject*);
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-
-		ImageServiceInfos_t GetServices () const;
-		IPendingImgSourceRequest* RequestImages (const QByteArray& serviceId);
-		IPendingImgSourceRequest* StartDefaultChooser ();
-	};
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Blasq");
+		return settings;
+	}
 }
 }
-
