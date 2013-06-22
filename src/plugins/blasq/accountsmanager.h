@@ -48,6 +48,11 @@ namespace Blasq
 
 		ServicesManager * const SvcMgr_;
 		QStandardItemModel * const Model_;
+
+		enum Role
+		{
+			AccountObj = Qt::UserRole + 1
+		};
 	public:
 		AccountsManager (ServicesManager*, QObject* = 0);
 

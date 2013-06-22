@@ -66,8 +66,13 @@ namespace Blasq
 			new QStandardItem (service->GetServiceIcon (), acc->GetName ()),
 			new QStandardItem (service->GetServiceName ())
 		};
+
+		auto accVar = QVariant::fromValue (acc->GetQObject ());
 		for (auto item : row)
+		{
 			item->setEditable (false);
+			item->setData (accVar, Role::AccountObj);
+		}
 		Model_->appendRow (row);
 	}
 
