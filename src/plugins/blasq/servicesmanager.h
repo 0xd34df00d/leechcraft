@@ -30,46 +30,23 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ipluginready.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/data/iimgsource.h>
 
 namespace LeechCraft
 {
 namespace Blasq
 {
-	class ServicesManager;
+	class IServicesPlugin;
+	class IService;
 
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPluginReady
-				 , public IHaveSettings
-				 , public IImgSource
+	class ServicesManager : public QObject
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IPluginReady IHaveSettings IImgSource)
-
-		ServicesManager *ServicesMgr_;
-		Util::XmlSettingsDialog_ptr XSD_;
+		QList<IService*> Services_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		ServicesManager (QObject* = 0);
 
-		QSet<QByteArray> GetExpectedPluginClasses () const;
-		void AddPlugin (QObject*);
+		void AddPlugin (IServicesPlugin*);
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-
-		ImageServiceInfos_t GetServices () const;
-		IPendingImgSourceRequest* RequestImages (const QByteArray& serviceId);
-		IPendingImgSourceRequest* StartDefaultChooser ();
+		const QList<IService*>& GetServices () const;
 	};
 }
 }
-

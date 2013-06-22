@@ -13,6 +13,7 @@ set (SRCS
 	blasq.cpp
 	xmlsettingsmanager.cpp
 	accountswidget.cpp
+	servicesmanager.cpp
 	)
 set (FORMS
 	accountswidget.ui

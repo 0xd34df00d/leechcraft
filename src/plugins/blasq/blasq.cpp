@@ -30,7 +30,9 @@
 #include "blasq.h"
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "interfaces/blasq/iservicesplugin.h"
 #include "xmlsettingsmanager.h"
+#include "servicesmanager.h"
 
 namespace LeechCraft
 {
@@ -38,6 +40,8 @@ namespace Blasq
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		ServicesMgr_ = new ServicesManager;
+
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "blasqsettings.xml");
 	}
@@ -80,6 +84,8 @@ namespace Blasq
 
 	void Plugin::AddPlugin (QObject *plugin)
 	{
+		if (auto isp = qobject_cast<IServicesPlugin*> (plugin))
+			ServicesMgr_->AddPlugin (isp);
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const

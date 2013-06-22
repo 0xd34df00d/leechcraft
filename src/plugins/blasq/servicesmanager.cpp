@@ -27,49 +27,26 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ipluginready.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/data/iimgsource.h>
+#include "servicesmanager.h"
+#include "interfaces/blasq/iservicesplugin.h"
 
 namespace LeechCraft
 {
 namespace Blasq
 {
-	class ServicesManager;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPluginReady
-				 , public IHaveSettings
-				 , public IImgSource
+	ServicesManager::ServicesManager (QObject *parent)
+	: QObject (parent)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IPluginReady IHaveSettings IImgSource)
+	}
 
-		ServicesManager *ServicesMgr_;
-		Util::XmlSettingsDialog_ptr XSD_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+	void ServicesManager::AddPlugin (IServicesPlugin *plugin)
+	{
+		Services_ << plugin->GetServices ();
+	}
 
-		QSet<QByteArray> GetExpectedPluginClasses () const;
-		void AddPlugin (QObject*);
-
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-
-		ImageServiceInfos_t GetServices () const;
-		IPendingImgSourceRequest* RequestImages (const QByteArray& serviceId);
-		IPendingImgSourceRequest* StartDefaultChooser ();
-	};
+	const QList<IService*>& ServicesManager::GetServices () const
+	{
+		return Services_;
+	}
 }
 }
-
