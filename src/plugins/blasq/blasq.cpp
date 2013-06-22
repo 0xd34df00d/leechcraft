@@ -32,6 +32,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "interfaces/blasq/iservicesplugin.h"
 #include "xmlsettingsmanager.h"
+#include "accountswidget.h"
 #include "servicesmanager.h"
 
 namespace LeechCraft
@@ -44,6 +45,8 @@ namespace Blasq
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "blasqsettings.xml");
+
+		XSD_->SetCustomWidget ("AccountsWidget", new AccountsWidget (ServicesMgr_));
 	}
 
 	void Plugin::SecondInit ()

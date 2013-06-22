@@ -36,11 +36,18 @@ namespace LeechCraft
 {
 namespace Blasq
 {
+	class ServicesManager;
+
 	class AccountsWidget : public QWidget
 	{
+		Q_OBJECT
+
 		Ui::AccountsWidget Ui_;
+		ServicesManager * const ServicesMgr_;
 	public:
-		AccountsWidget (QWidget* = 0);
+		AccountsWidget (ServicesManager*, QWidget* = 0);
+	private slots:
+		void on_Add__released ();
 	};
 }
 }

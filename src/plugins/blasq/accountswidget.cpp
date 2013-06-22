@@ -28,15 +28,28 @@
  **********************************************************************/
 
 #include "accountswidget.h"
+#include <QWizard>
+#include <QtDebug>
+#include "newaccountwizardfirstpage.h"
 
 namespace LeechCraft
 {
 namespace Blasq
 {
-	AccountsWidget::AccountsWidget (QWidget *parent)
+	AccountsWidget::AccountsWidget (ServicesManager *svcMgr, QWidget *parent)
 	: QWidget (parent)
+	, ServicesMgr_ (svcMgr)
 	{
 		Ui_.setupUi (this);
+	}
+
+	void AccountsWidget::on_Add__released ()
+	{
+		auto wizard = new QWizard (this);
+		wizard->setAttribute (Qt::WA_DeleteOnClose);
+		wizard->setWindowTitle ("Add account");
+		wizard->addPage (new NewAccountWizardFirstPage (ServicesMgr_));
+		wizard->show ();
 	}
 }
 }
