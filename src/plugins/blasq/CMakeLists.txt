@@ -23,3 +23,9 @@ target_link_libraries (leechcraft_blasq
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_blasq DESTINATION ${LC_PLUGINS_DEST})
+
+option (ENABLE_BLASQ_SPEGNERSI "Build Flickr client module for Blasq" ON)
+
+if (ENABLE_BLASQ_SPEGNERSI)
+	add_subdirectory (plugins/spegnersi)
+endif ()
