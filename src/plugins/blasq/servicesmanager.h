@@ -40,6 +40,8 @@ namespace Blasq
 
 	class ServicesManager : public QObject
 	{
+		Q_OBJECT
+
 		QList<IService*> Services_;
 	public:
 		ServicesManager (QObject* = 0);
@@ -47,6 +49,8 @@ namespace Blasq
 		void AddPlugin (IServicesPlugin*);
 
 		const QList<IService*>& GetServices () const;
+	signals:
+		void serviceAdded (IService*);
 	};
 }
 }

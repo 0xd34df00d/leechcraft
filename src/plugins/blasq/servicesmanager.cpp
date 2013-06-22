@@ -41,7 +41,11 @@ namespace Blasq
 
 	void ServicesManager::AddPlugin (IServicesPlugin *plugin)
 	{
-		Services_ << plugin->GetServices ();
+		const auto& news = plugin->GetServices ();
+		Services_ << news;
+
+		for (auto service : news)
+			emit serviceAdded (service);
 	}
 
 	const QList<IService*>& ServicesManager::GetServices () const
