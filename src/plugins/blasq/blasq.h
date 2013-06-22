@@ -40,6 +40,7 @@ namespace LeechCraft
 namespace Blasq
 {
 	class ServicesManager;
+	class AccountsManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -51,6 +52,7 @@ namespace Blasq
 		Q_INTERFACES (IInfo IPluginReady IHaveSettings IImgSource)
 
 		ServicesManager *ServicesMgr_;
+		AccountsManager *AccountsMgr_;
 		Util::XmlSettingsDialog_ptr XSD_;
 	public:
 		void Init (ICoreProxy_ptr);

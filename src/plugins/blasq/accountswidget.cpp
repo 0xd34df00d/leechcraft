@@ -31,16 +31,20 @@
 #include <QWizard>
 #include <QtDebug>
 #include "newaccountwizardfirstpage.h"
+#include "accountsmanager.h"
 
 namespace LeechCraft
 {
 namespace Blasq
 {
-	AccountsWidget::AccountsWidget (ServicesManager *svcMgr, QWidget *parent)
+	AccountsWidget::AccountsWidget (ServicesManager *svcMgr,
+			AccountsManager *accMgr, QWidget *parent)
 	: QWidget (parent)
 	, ServicesMgr_ (svcMgr)
+	, AccountsMgr_ (accMgr)
 	{
 		Ui_.setupUi (this);
+		Ui_.View_->setModel (AccountsMgr_->GetModel ());
 	}
 
 	void AccountsWidget::on_Add__released ()

@@ -34,6 +34,7 @@
 #include "xmlsettingsmanager.h"
 #include "accountswidget.h"
 #include "servicesmanager.h"
+#include "accountsmanager.h"
 
 namespace LeechCraft
 {
@@ -42,11 +43,12 @@ namespace Blasq
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		ServicesMgr_ = new ServicesManager;
+		AccountsMgr_ = new AccountsManager (ServicesMgr_);
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "blasqsettings.xml");
 
-		XSD_->SetCustomWidget ("AccountsWidget", new AccountsWidget (ServicesMgr_));
+		XSD_->SetCustomWidget ("AccountsWidget", new AccountsWidget (ServicesMgr_, AccountsMgr_));
 	}
 
 	void Plugin::SecondInit ()
