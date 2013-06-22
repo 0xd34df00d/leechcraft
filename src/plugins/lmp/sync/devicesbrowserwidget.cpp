@@ -241,11 +241,6 @@ namespace LMP
 
 		const auto& params = Ui_.TranscodingOpts_->GetParams ();
 		Core::Instance ().GetSyncManager ()->AddFiles (CurrentSyncer_, to, paths, params);
-
-		const auto& devId = Ui_.DevicesSelector_->
-				itemData (idx, DeviceRoles::DevPersistentID).toString ();
-		Device2Params_ [devId] = params;
-		SaveLastParams ();
 	}
 
 	void DevicesBrowserWidget::UploadUnmountable (int idx)
@@ -269,9 +264,6 @@ namespace LMP
 		const auto& params = Ui_.TranscodingOpts_->GetParams ();
 		Core::Instance ().GetSyncUnmountableManager ()->AddFiles ({ syncer, info.ID_,
 				storageId, paths, params });
-
-		Device2Params_ [info.ID_] = params;
-		SaveLastParams ();
 	}
 
 	void DevicesBrowserWidget::HandleMountableSelected (int idx)
@@ -298,11 +290,6 @@ namespace LMP
 		}
 
 		Ui_.SyncTabs_->setEnabled (!FindSuitables (mountPath).isEmpty ());
-
-		const auto& devId = Ui_.DevicesSelector_->
-				itemData (idx, DeviceRoles::DevPersistentID).toString ();
-		if (Device2Params_.contains (devId))
-			Ui_.TranscodingOpts_->SetParams (Device2Params_.value (devId));
 	}
 
 	void DevicesBrowserWidget::HandleUnmountableSelected (int idx)
@@ -327,9 +314,6 @@ namespace LMP
 					storage.Name_;
 			Ui_.UnmountablePartsBox_->addItem (boxText, storage.ID_);
 		}
-
-		if (Device2Params_.contains (info.ID_))
-			Ui_.TranscodingOpts_->SetParams (Device2Params_.value (info.ID_));
 	}
 
 	void DevicesBrowserWidget::handleDevDataChanged (const QModelIndex& from, const QModelIndex& to)
@@ -357,6 +341,11 @@ namespace LMP
 			UploadMountable (idx);
 		else
 			UploadUnmountable (idx);
+
+		const auto& devId = Ui_.DevicesSelector_->
+				itemData (idx, DeviceRoles::DevPersistentID).toString ();
+		Device2Params_ [devId] = Ui_.TranscodingOpts_->GetParams ();
+		SaveLastParams ();
 	}
 
 	void DevicesBrowserWidget::on_DevicesSelector__activated (int idx)
@@ -374,6 +363,11 @@ namespace LMP
 			HandleMountableSelected (idx);
 		else
 			HandleUnmountableSelected (idx);
+
+		const auto& devId = Ui_.DevicesSelector_->
+				itemData (idx, DeviceRoles::DevPersistentID).toString ();
+		if (Device2Params_.contains (devId))
+			Ui_.TranscodingOpts_->SetParams (Device2Params_.value (devId));
 	}
 
 	void DevicesBrowserWidget::on_MountButton__released ()
