@@ -15,6 +15,7 @@ set (SRCS
 	accountswidget.cpp
 	newaccountwizardfirstpage.cpp
 	servicesmanager.cpp
+	accountsmanager.cpp
 	)
 set (FORMS
 	accountswidget.ui
