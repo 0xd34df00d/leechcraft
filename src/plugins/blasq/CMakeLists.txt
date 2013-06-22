@@ -13,10 +13,12 @@ set (SRCS
 	blasq.cpp
 	xmlsettingsmanager.cpp
 	accountswidget.cpp
+	newaccountwizardfirstpage.cpp
 	servicesmanager.cpp
 	)
 set (FORMS
 	accountswidget.ui
+	newaccountwizardfirstpage.ui
 	)
 #CreateTrs("blasq" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("blasq" "en;ru_RU" "${SRCS}" "${FORMS}" "")
