@@ -48,6 +48,7 @@ namespace Blasq
 
 		ServicesManager * const SvcMgr_;
 		QStandardItemModel * const Model_;
+		QList<IAccount*> Accounts_;
 
 		enum Role
 		{
@@ -57,6 +58,7 @@ namespace Blasq
 		AccountsManager (ServicesManager*, QObject* = 0);
 
 		QAbstractItemModel* GetModel ();
+		const QList<IAccount*>& GetAccounts () const;
 	private:
 		void HandleAccount (IAccount*);
 	private slots:

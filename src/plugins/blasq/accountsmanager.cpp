@@ -74,6 +74,8 @@ namespace Blasq
 			item->setData (accVar, Role::AccountObj);
 		}
 		Model_->appendRow (row);
+
+		Accounts_ << acc;
 	}
 
 	void AccountsManager::handleService (IService *service)
@@ -100,6 +102,8 @@ namespace Blasq
 
 	void AccountsManager::handleAccountRemoved (QObject *accObj)
 	{
+		Accounts_.removeAll (qobject_cast<IAccount*> (accObj));
+
 		auto accVar = QVariant::fromValue (accObj);
 
 		for (int i = 0; i < Model_->rowCount (); ++i)
