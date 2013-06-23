@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <QtKOAuth/QtKOAuth>
 #include <interfaces/blasq/iaccount.h>
 #include <interfaces/core/icoreproxy.h>
 
@@ -48,9 +49,14 @@ namespace Spegnersi
 
 		QString Name_;
 		const QByteArray ID_;
-		FlickrService *Service_;
+		FlickrService * const Service_;
 		const ICoreProxy_ptr Proxy_;
 
+		KQOAuthRequest * const Req_;
+		KQOAuthManager * const AuthMgr_;
+
+		QString AuthToken_;
+		QString AuthSecret_;
 	public:
 		FlickrAccount (const QString&, FlickrService*, ICoreProxy_ptr, const QByteArray& = QByteArray ());
 
@@ -58,6 +64,14 @@ namespace Spegnersi
 		IService* GetService () const;
 		QString GetName () const;
 		QByteArray GetID () const;
+	private:
+		KQOAuthRequest* MakeRequest (const QUrl&, KQOAuthRequest::RequestType = KQOAuthRequest::AuthorizedRequest);
+	private slots:
+		void requestTempToken ();
+
+		void handleTempToken (const QString&, const QString&);
+		void handleAuthorization (const QString&, const QString&);
+		void handleAccessToken (const QString&, const QString&);
 	};
 }
 }

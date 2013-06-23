@@ -28,6 +28,13 @@
  **********************************************************************/
 
 #include "flickraccount.h"
+#include <QTimer>
+#include <QSettings>
+#include <QCoreApplication>
+#include <QUuid>
+#include <QtDebug>
+#include <interfaces/core/ientitymanager.h>
+#include <util/util.h>
 #include "flickrservice.h"
 
 namespace LeechCraft
@@ -36,6 +43,10 @@ namespace Blasq
 {
 namespace Spegnersi
 {
+	const QString RequestTokenURL = "http://www.flickr.com/services/oauth/request_token";
+	const QString UserAuthURL = "http://www.flickr.com/services/oauth/authorize";
+	const QString AccessTokenURL = "http://www.flickr.com/services/oauth/access_token";
+
 	FlickrAccount::FlickrAccount (const QString& name,
 			FlickrService *service, ICoreProxy_ptr proxy, const QByteArray& id)
 	: QObject (service)
@@ -43,7 +54,36 @@ namespace Spegnersi
 	, ID_ (id.isEmpty () ? QUuid::createUuid ().toByteArray () : id)
 	, Service_ (service)
 	, Proxy_ (proxy)
+	, Req_ (new KQOAuthRequest (this))
+	, AuthMgr_ (new KQOAuthManager (this))
 	{
+		AuthMgr_->setNetworkManager (proxy->GetNetworkAccessManager ());
+		AuthMgr_->setHandleUserAuthorization (true);
+
+		connect (AuthMgr_,
+				SIGNAL (temporaryTokenReceived (QString, QString)),
+				this,
+				SLOT (handleTempToken (QString, QString)));
+		connect (AuthMgr_,
+				SIGNAL (authorizationReceived (QString, QString)),
+				this,
+				SLOT (handleAuthorization (QString, QString)));
+		connect (AuthMgr_,
+				SIGNAL (accessTokenReceived (QString, QString)),
+				this,
+				SLOT (handleAccessToken (QString, QString)));
+
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Blasq_Spegnersi");
+		settings.beginGroup ("Tokens");
+		settings.beginGroup (GetID ());
+		AuthToken_ = settings.value ("Token").toString ();
+		AuthSecret_ = settings.value ("Secret").toString ();
+		settings.endGroup ();
+		settings.endGroup ();
+
+		if (AuthToken_.isEmpty () || AuthSecret_.isEmpty ())
+			requestTempToken ();
 	}
 
 	QObject* FlickrAccount::GetQObject ()
@@ -64,6 +104,89 @@ namespace Spegnersi
 	QByteArray FlickrAccount::GetID () const
 	{
 		return ID_;
+	}
+
+	KQOAuthRequest* FlickrAccount::MakeRequest (const QUrl& url, KQOAuthRequest::RequestType type)
+	{
+		Req_->clearRequest ();
+		Req_->initRequest (type, url);
+		Req_->setConsumerKey ("08efe88f972b2b89bd35e42bb26f970e");
+		Req_->setConsumerSecretKey ("f70ac4b1ab7c499b");
+		Req_->setSignatureMethod (KQOAuthRequest::HMAC_SHA1);
+
+		if (!AuthToken_.isEmpty () && !AuthSecret_.isEmpty ())
+		{
+			Req_->setToken (AuthToken_);
+			Req_->setTokenSecret (AuthSecret_);
+		}
+
+		return Req_;
+	}
+
+	void FlickrAccount::requestTempToken ()
+	{
+		auto req = MakeRequest (RequestTokenURL, KQOAuthRequest::TemporaryCredentials);
+		AuthMgr_->executeRequest (req);
+	}
+
+	void FlickrAccount::handleTempToken (const QString&, const QString&)
+	{
+		if (AuthMgr_->lastError () != KQOAuthManager::NoError)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< AuthMgr_->lastError ();
+			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blasq Spegnersi",
+						tr ("Unable to get temporary auth token."),
+						PCritical_));
+
+			QTimer::singleShot (10 * 60 * 1000,
+					this,
+					SLOT (requestTempToken ()));
+			return;
+		}
+
+		AuthMgr_->getUserAuthorization (UserAuthURL);
+	}
+
+	void FlickrAccount::handleAuthorization (const QString&, const QString&)
+	{
+		switch (AuthMgr_->lastError ())
+		{
+		case KQOAuthManager::NoError:
+			break;
+		case KQOAuthManager::RequestUnauthorized:
+			return;
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< AuthMgr_->lastError ();
+			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blasq Spegnersi",
+						tr ("Unable to get user authorization."),
+						PCritical_));
+
+			QTimer::singleShot (10 * 60 * 1000,
+					this,
+					SLOT (requestTempToken ()));
+			return;
+		}
+
+		AuthMgr_->getUserAccessTokens (AccessTokenURL);
+	}
+
+	void FlickrAccount::handleAccessToken (const QString& token, const QString& secret)
+	{
+		qDebug () << Q_FUNC_INFO
+				<< "access token received";
+		AuthToken_ = token;
+		AuthSecret_ = secret;
+
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Blasq_Spegnersi");
+		settings.beginGroup ("Tokens");
+		settings.beginGroup (GetID ());
+		settings.setValue ("Token", AuthToken_);
+		settings.setValue ("Secret", AuthSecret_);
+		settings.endGroup ();
+		settings.endGroup ();
 	}
 }
 }

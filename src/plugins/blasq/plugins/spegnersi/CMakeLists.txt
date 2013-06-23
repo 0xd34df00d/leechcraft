@@ -6,6 +6,7 @@ set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 find_package (QtKOAuth)
 
+set (QT_USE_QTNETWORK TRUE)
 include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -27,5 +28,6 @@ add_library (leechcraft_blasq_spegnersi SHARED
 target_link_libraries (leechcraft_blasq_spegnersi
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
+	${QTKOAUTH_LIBRARIES}
 	)
 install (TARGETS leechcraft_blasq_spegnersi DESTINATION ${LC_PLUGINS_DEST})
