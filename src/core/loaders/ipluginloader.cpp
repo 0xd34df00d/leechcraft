@@ -75,7 +75,6 @@ namespace Loaders
 		if (!library.load ())
 			return static_cast<quint64> (-1);
 
-		bool apiMatches = true;
 		typedef quint64 (*APIVersion_t) ();
 		auto getter = reinterpret_cast<APIVersion_t> (library.resolve ("GetAPILevels"));
 		return getter ? getter () : static_cast<quint64> (-1);
