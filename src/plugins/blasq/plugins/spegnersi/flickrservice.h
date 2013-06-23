@@ -39,6 +39,8 @@ namespace Blasq
 {
 namespace Spegnersi
 {
+	class FlickrAccount;
+
 	class FlickrService : public QObject
 						, public IService
 	{
@@ -46,6 +48,8 @@ namespace Spegnersi
 		Q_INTERFACES (LeechCraft::Blasq::IService)
 
 		const ICoreProxy_ptr Proxy_;
+
+		QList<FlickrAccount*> Accounts_;
 	public:
 		FlickrService (ICoreProxy_ptr);
 

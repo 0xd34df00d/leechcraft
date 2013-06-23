@@ -29,6 +29,7 @@
 
 #include "flickrservice.h"
 #include <QIcon>
+#include "flickraccount.h"
 
 namespace LeechCraft
 {
@@ -58,7 +59,9 @@ namespace Spegnersi
 
 	QList<IAccount*> FlickrService::GetRegisteredAccounts () const
 	{
-		return {};
+		QList<IAccount*> result;
+		std::copy (Accounts_.begin (), Accounts_.end (), std::back_inserter (result));
+		return result;
 	}
 
 	QList<QWidget*> FlickrService::GetAccountRegistrationWidgets () const
@@ -66,8 +69,10 @@ namespace Spegnersi
 		return {};
 	}
 
-	void FlickrService::RegisterAccount (const QString& name, const QList<QWidget*>& widgets)
+	void FlickrService::RegisterAccount (const QString& name, const QList<QWidget*>&)
 	{
+		auto acc = new FlickrAccount (name, this, Proxy_);
+		emit accountAdded (acc);
 	}
 
 	void FlickrService::RemoveAccount (IAccount *acc)
