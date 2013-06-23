@@ -36,7 +36,8 @@ namespace Blasq
 {
 namespace Spegnersi
 {
-	FlickrService::FlickrService ()
+	FlickrService::FlickrService (ICoreProxy_ptr proxy)
+	: Proxy_ (proxy)
 	{
 	}
 

@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <interfaces/blasq/iservice.h>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -43,8 +44,10 @@ namespace Spegnersi
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Blasq::IService)
+
+		const ICoreProxy_ptr Proxy_;
 	public:
-		FlickrService ();
+		FlickrService (ICoreProxy_ptr);
 
 		QObject* GetQObject ();
 

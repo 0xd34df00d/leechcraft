@@ -38,7 +38,7 @@ namespace Spegnersi
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Service_ = new FlickrService ();
+		Service_ = new FlickrService (proxy);
 	}
 
 	void Plugin::SecondInit ()
