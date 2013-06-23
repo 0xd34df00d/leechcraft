@@ -31,6 +31,7 @@
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "interfaces/blasq/iservicesplugin.h"
+#include "interfaces/blasq/iaccount.h"
 #include "xmlsettingsmanager.h"
 #include "accountswidget.h"
 #include "servicesmanager.h"
@@ -100,7 +101,10 @@ namespace Blasq
 
 	ImageServiceInfos_t Plugin::GetServices () const
 	{
-		return {};
+		ImageServiceInfos_t result;
+		for (auto acc : AccountsMgr_->GetAccounts ())
+			result.append ({ acc->GetID (), acc->GetName () });
+		return result;
 	}
 
 	IPendingImgSourceRequest* Plugin::RequestImages (const QByteArray& serviceId)
