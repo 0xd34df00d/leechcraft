@@ -342,7 +342,7 @@ namespace AdvancedNotifications
 		}
 
 		int eventCount = 0;
-		Q_FOREACH (const EventData& event, Events_.values ())
+		for (const auto& event : Events_)
 			if (event.Category_ == category)
 				eventCount += event.Count_;
 
