@@ -36,10 +36,13 @@ namespace Blasq
 {
 namespace Spegnersi
 {
-	FlickrAccount::FlickrAccount (const QString& name, FlickrService *service)
+	FlickrAccount::FlickrAccount (const QString& name,
+			FlickrService *service, ICoreProxy_ptr proxy, const QByteArray& id)
 	: QObject (service)
 	, Name_ (name)
+	, ID_ (id.isEmpty () ? QUuid::createUuid ().toByteArray () : id)
 	, Service_ (service)
+	, Proxy_ (proxy)
 	{
 	}
 
@@ -56,6 +59,11 @@ namespace Spegnersi
 	QString FlickrAccount::GetName () const
 	{
 		return Name_;
+	}
+
+	QByteArray FlickrAccount::GetID () const
+	{
+		return ID_;
 	}
 }
 }

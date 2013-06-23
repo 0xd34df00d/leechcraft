@@ -49,6 +49,8 @@ namespace Blasq
 		virtual IService* GetService () const = 0;
 
 		virtual QString GetName () const = 0;
+
+		virtual QByteArray GetID () const = 0;
 	};
 }
 }

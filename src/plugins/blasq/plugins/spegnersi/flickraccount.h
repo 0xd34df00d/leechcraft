@@ -30,6 +30,7 @@
 #pragma once
 
 #include <interfaces/blasq/iaccount.h>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -46,13 +47,17 @@ namespace Spegnersi
 		Q_INTERFACES (LeechCraft::Blasq::IAccount)
 
 		QString Name_;
+		const QByteArray ID_;
 		FlickrService *Service_;
+		const ICoreProxy_ptr Proxy_;
+
 	public:
-		FlickrAccount (const QString&, FlickrService*);
+		FlickrAccount (const QString&, FlickrService*, ICoreProxy_ptr, const QByteArray& = QByteArray ());
 
 		QObject* GetQObject ();
 		IService* GetService () const;
 		QString GetName () const;
+		QByteArray GetID () const;
 	};
 }
 }
