@@ -347,7 +347,6 @@ namespace AdvancedNotifications
 				eventCount += event.Count_;
 
 		QFont font = qApp->font ();
-		font.setBold (true);
 		font.setItalic (true);
 
 		QIcon withText;
