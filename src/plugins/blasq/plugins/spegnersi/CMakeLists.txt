@@ -15,6 +15,7 @@ include_directories (
 set (SRCS
 	spegnersi.cpp
 	flickrservice.cpp
+	flickraccount.cpp
 	)
 #CreateTrs("blasq" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("blasq_spegnersi" "en;ru_RU" "${SRCS}" "${FORMS}" "")
