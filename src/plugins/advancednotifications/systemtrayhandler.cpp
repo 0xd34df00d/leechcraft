@@ -355,7 +355,7 @@ namespace AdvancedNotifications
 		{
 			const auto& px = icon.pixmap (size);
 			const auto& overlaid = Util::DrawOverlayText (px,
-					QString::number (eventCount), font, QPen (Qt::darkCyan));
+					QString::number (eventCount), font, QPen (Qt::red));
 			withText.addPixmap (overlaid);
 		}
 
