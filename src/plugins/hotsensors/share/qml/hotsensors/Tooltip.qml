@@ -46,5 +46,6 @@ Rectangle {
 
         source: "data:," + svg
         smooth: true
+        asynchronous: false
     }
 }
