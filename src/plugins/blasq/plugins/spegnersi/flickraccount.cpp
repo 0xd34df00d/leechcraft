@@ -137,6 +137,10 @@ namespace Spegnersi
 		return ID_;
 	}
 
+	void FlickrAccount::UpdateCollections ()
+	{
+	}
+
 	KQOAuthRequest* FlickrAccount::MakeRequest (const QUrl& url, KQOAuthRequest::RequestType type)
 	{
 		Req_->clearRequest ();

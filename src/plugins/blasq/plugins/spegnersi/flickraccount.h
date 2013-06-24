@@ -68,6 +68,8 @@ namespace Spegnersi
 		IService* GetService () const;
 		QString GetName () const;
 		QByteArray GetID () const;
+
+		void UpdateCollections ();
 	private:
 		KQOAuthRequest* MakeRequest (const QUrl&, KQOAuthRequest::RequestType = KQOAuthRequest::AuthorizedRequest);
 	private slots:
