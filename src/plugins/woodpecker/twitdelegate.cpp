@@ -51,20 +51,16 @@ namespace Woodpecker
 	const int IconSize = 48;
 	const int Padding = 5;
 	
-	TwitDelegate::TwitDelegate (QObject *parent)
+	TwitDelegate::TwitDelegate (QObject *parent, Plugin *plugin)
 	: QStyledItemDelegate (parent)
+	, ParentPlugin_ (plugin)
 	{
 	}
 	
 	void TwitDelegate::paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
 		const QStyleOptionViewItemV4 o = option;
-		QStyle *style = o.widget ?
-				o.widget->style () :
-				QApplication::style ();
-
 		auto r = o.rect;
-		const int maxIconHeight = r.height () - Padding * 2;
 
 		const QPen linePen (o.palette.color (QPalette::AlternateBase), 1, Qt::SolidLine);
 		QPen lineMarkedPen (o.palette.color (QPalette::Mid), 1, Qt::SolidLine);
@@ -116,7 +112,6 @@ namespace Woodpecker
 			qDebug () << "Can't recieve twit";
 			return;
 		}
-		const qulonglong id = currentTweet->GetId ();
 		const auto& author = currentTweet->GetAuthor ()->GetUsername ();
 		const auto& time = currentTweet->GetDateTime ().toString ();
 		QTextDocument* doc = currentTweet->GetDocument ();
@@ -194,8 +189,23 @@ namespace Woodpecker
 
 				if (parentWidget && !anchor.isEmpty ())
 				{
-					Entity url = Util::MakeEntity (QUrl (anchor), QString (), OnlyHandle | FromUserInitiated, QString ());
-					Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (url);
+					if (anchor.startsWith ("twitter://"))
+					{
+						if (anchor.startsWith ("twitter://user/@"))
+						{
+							const auto& username = anchor.mid (16);
+							KQOAuthParameters param;
+							param.insert ("screen_name", username.toUtf8 ().constData ());
+							ParentPlugin_->AddTab (QString ("User/%1").arg (username),
+													tr ("User tab"), tr ("Own timeline"),
+													FeedMode::UserTimeline, param);
+						}
+					}
+					else
+					{
+						Entity url = Util::MakeEntity (QUrl (anchor), QString (), OnlyHandle | FromUserInitiated);
+						Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (url);
+					}
 				}
 			}
 		}
