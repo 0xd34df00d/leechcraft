@@ -31,12 +31,14 @@
 #include <numeric>
 #include <QDeclarativeView>
 #include <QDeclarativeContext>
+#include <QDeclarativeEngine>
 #include <QGraphicsObject>
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <QStandardItemModel>
 #include <util/util.h>
 #include <util/qml/colorthemeproxy.h>
+#include <util/sys/paths.h>
 #include <interfaces/media/idiscographyprovider.h>
 #include <interfaces/media/ialbumartprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -87,6 +89,9 @@ namespace LMP
 		View_->rootContext ()->setContextProperty ("artistDiscoModel", DiscoModel_);
 		View_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
+
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
+			View_->engine ()->addImportPath (cand);
 	}
 
 	void BioViewManager::InitWithSource ()
