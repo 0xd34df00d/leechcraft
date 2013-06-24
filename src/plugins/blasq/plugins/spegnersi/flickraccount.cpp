@@ -161,13 +161,19 @@ namespace Spegnersi
 	void FlickrAccount::checkAuthTokens ()
 	{
 		if (AuthToken_.isEmpty () || AuthSecret_.isEmpty ())
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "requesting new tokens";
 			requestTempToken ();
+		}
 	}
 
 	void FlickrAccount::requestTempToken ()
 	{
 		auto req = MakeRequest (RequestTokenURL, KQOAuthRequest::TemporaryCredentials);
 		AuthMgr_->executeRequest (req);
+
+		State_ = State::AuthRequested;
 	}
 
 	void FlickrAccount::handleTempToken (const QString&, const QString&)
@@ -220,6 +226,11 @@ namespace Spegnersi
 		AuthToken_ = token;
 		AuthSecret_ = secret;
 		emit accountChanged (this);
+
+		State_ = State::Idle;
+
+		if (UpdateAfterAuth_)
+			UpdateCollections ();
 	}
 }
 }

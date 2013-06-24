@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <functional>
 #include <QtKOAuth/QtKOAuth>
 #include <interfaces/blasq/iaccount.h>
 #include <interfaces/core/icoreproxy.h>
@@ -57,6 +58,16 @@ namespace Spegnersi
 
 		QString AuthToken_;
 		QString AuthSecret_;
+		bool UpdateAfterAuth_ = false;
+
+		enum class State
+		{
+			Idle,
+			AuthRequested,
+			CollectionsRequested
+		} State_ = State::Idle;
+
+		QList<std::function<void ()>> CallQueue_;
 	public:
 		FlickrAccount (const QString&, FlickrService*, ICoreProxy_ptr, const QByteArray& = QByteArray ());
 		FlickrAccount (const QByteArray&, FlickrService*, ICoreProxy_ptr);
@@ -81,6 +92,8 @@ namespace Spegnersi
 		void handleAccessToken (const QString&, const QString&);
 	signals:
 		void accountChanged (FlickrAccount*);
+
+		void collectionListUpdated (const Collections_t&);
 	};
 }
 }
