@@ -27,51 +27,47 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-
-class QAbstractItemModel;
-class QStandardItemModel;
+#include "photostab.h"
+#include <QToolBar>
+#include <QComboBox>
+#include "accountsmanager.h"
+#include "interfaces/blasq/iaccount.h"
 
 namespace LeechCraft
 {
 namespace Blasq
 {
-	class ServicesManager;
-	class IService;
-	class IAccount;
-
-	class AccountsManager : public QObject
+	PhotosTab::PhotosTab (AccountsManager *accMgr, const TabClassInfo& tc, QObject *plugin)
+	: TC_ (tc)
+	, Plugin_ (plugin)
+	, AccMgr_ (accMgr)
+	, Toolbar_ (new QToolBar)
 	{
-		Q_OBJECT
+		auto box = new QComboBox;
+		box->setModel (AccMgr_->GetModel ());
+		box->setModelColumn (AccountsManager::Column::Name);
+		Toolbar_->addWidget (box);
+	}
 
-		ServicesManager * const SvcMgr_;
-		QStandardItemModel * const Model_;
-		QList<IAccount*> Accounts_;
+	TabClassInfo PhotosTab::GetTabClassInfo () const
+	{
+		return TC_;
+	}
 
-	public:
-		enum Column
-		{
-			Name,
-			Service
-		};
-		enum Role
-		{
-			AccountObj = Qt::UserRole + 1
-		};
+	QObject* PhotosTab::ParentMultiTabs ()
+	{
+		return Plugin_;
+	}
 
-		AccountsManager (ServicesManager*, QObject* = 0);
+	void PhotosTab::Remove ()
+	{
+		emit removeTab (this);
+		deleteLater ();
+	}
 
-		QAbstractItemModel* GetModel ();
-		const QList<IAccount*>& GetAccounts () const;
-	private:
-		void HandleAccount (IAccount*);
-	private slots:
-		void handleService (IService*);
-
-		void handleAccountAdded (QObject*);
-		void handleAccountRemoved (QObject*);
-	};
+	QToolBar* PhotosTab::GetToolBar () const
+	{
+		return Toolbar_.get ();
+	}
 }
 }

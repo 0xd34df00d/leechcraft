@@ -29,49 +29,37 @@
 
 #pragma once
 
-#include <QObject>
-
-class QAbstractItemModel;
-class QStandardItemModel;
+#include <memory>
+#include <QWidget>
+#include <interfaces/ihavetabs.h>
 
 namespace LeechCraft
 {
 namespace Blasq
 {
-	class ServicesManager;
-	class IService;
-	class IAccount;
+	class AccountsManager;
 
-	class AccountsManager : public QObject
+	class PhotosTab : public QWidget
+					, public ITabWidget
 	{
 		Q_OBJECT
+		Q_INTERFACES (ITabWidget)
 
-		ServicesManager * const SvcMgr_;
-		QStandardItemModel * const Model_;
-		QList<IAccount*> Accounts_;
+		const TabClassInfo TC_;
+		QObject * const Plugin_;
 
+		AccountsManager * const AccMgr_;
+
+		std::unique_ptr<QToolBar> Toolbar_;
 	public:
-		enum Column
-		{
-			Name,
-			Service
-		};
-		enum Role
-		{
-			AccountObj = Qt::UserRole + 1
-		};
+		PhotosTab (AccountsManager*, const TabClassInfo&, QObject*);
 
-		AccountsManager (ServicesManager*, QObject* = 0);
-
-		QAbstractItemModel* GetModel ();
-		const QList<IAccount*>& GetAccounts () const;
-	private:
-		void HandleAccount (IAccount*);
-	private slots:
-		void handleService (IService*);
-
-		void handleAccountAdded (QObject*);
-		void handleAccountRemoved (QObject*);
+		TabClassInfo GetTabClassInfo () const;
+		QObject* ParentMultiTabs ();
+		void Remove ();
+		QToolBar* GetToolBar () const;
+	signals:
+		void removeTab (QWidget*);
 	};
 }
 }
