@@ -169,6 +169,8 @@ namespace LeechCraft
 			}
 			break;
 		}
+		default:
+			break;
 		}
 
 		return false;

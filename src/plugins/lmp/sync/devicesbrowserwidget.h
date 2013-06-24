@@ -59,11 +59,17 @@ namespace LMP
 		QMap<QAbstractItemModel*, IRemovableDevManager*> Flattener2DevMgr_;
 
 		ISyncPlugin *CurrentSyncer_;
+
+		QString LastDevice_;
+		QMap<QString, TranscodingParams> Device2Params_;
 	public:
 		DevicesBrowserWidget (QWidget* = 0);
 
 		void InitializeDevices ();
 	private:
+		void LoadLastParams ();
+		void SaveLastParams () const;
+
 		void UploadMountable (int);
 		void UploadUnmountable (int);
 		void HandleMountableSelected (int);

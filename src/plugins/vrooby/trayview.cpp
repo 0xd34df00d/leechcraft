@@ -35,6 +35,8 @@
 #include <QDeclarativeImageProvider>
 #include <QGraphicsObject>
 #include <QSortFilterProxyModel>
+#include <QSettings>
+#include <QCoreApplication>
 #include <util/sys/paths.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/colorthemeproxy.h>
@@ -55,6 +57,23 @@ namespace Vrooby
 		, FilterEnabled_ (true)
 		{
 			setDynamicSortFilter (true);
+
+			QSettings settings (QCoreApplication::organizationName (),
+					QCoreApplication::applicationName () + "_Vrooby");
+			settings.beginGroup ("HiddenDevices");
+			Hidden_ = settings.value ("List").toStringList ().toSet ();
+			settings.endGroup ();
+		}
+
+		QVariant data (const QModelIndex& index, int role) const
+		{
+			if (role != FlatMountableItems::ToggleHiddenIcon)
+				return QSortFilterProxyModel::data (index, role);
+
+			const auto& id = index.data (DeviceRoles::DevPersistentID).toString ();
+			return Hidden_.contains (id) ?
+					"image://ThemeIcons/list-add" :
+					"image://ThemeIcons/list-remove";
 		}
 
 		void ToggleHidden (const QString& id)
@@ -62,7 +81,26 @@ namespace Vrooby
 			if (!Hidden_.remove (id))
 				Hidden_ << id;
 
-			invalidateFilter ();
+			QSettings settings (QCoreApplication::organizationName (),
+					QCoreApplication::applicationName () + "_Vrooby");
+			settings.beginGroup ("HiddenDevices");
+			settings.setValue ("List", QStringList (Hidden_.toList ()));
+			settings.endGroup ();
+
+			if (FilterEnabled_)
+				invalidateFilter ();
+			else
+			{
+				for (int i = 0; i < rowCount (); ++i)
+				{
+					const auto& idx = sourceModel ()->index (i, 0);
+					if (id != idx.data (DeviceRoles::DevPersistentID).toString ())
+						continue;
+
+					const auto& mapped = mapFromSource (idx);
+					emit dataChanged (mapped, mapped);
+				}
+			}
 		}
 
 		int GetHiddenCount () const

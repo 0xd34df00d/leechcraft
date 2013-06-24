@@ -161,15 +161,13 @@ Rectangle {
 
             ActionButton {
                 id: hideButton
-                actionIconURL: "image://ThemeIcons/list-remove"
+                actionIconURL: toggleHiddenIcon
                 visible: devPersistentID.length > 0
 
                 width: height
-                anchors.top: devFileLabel.bottom
-                anchors.topMargin: 5
+                height: mountButton.height * 2 / 3
                 anchors.right: mountButton.left
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 2
+                anchors.verticalCenter: mountButton.verticalCenter
 
                 onTriggered: rootRect.toggleHideRequested(devPersistentID)
             }

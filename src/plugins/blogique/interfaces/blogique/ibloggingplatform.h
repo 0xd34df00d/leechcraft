@@ -41,6 +41,13 @@ namespace LeechCraft
 {
 namespace Blogique
 {
+	struct InlineTagInserter
+	{
+		QString TagName_;
+		QVariantMap Parameters_;
+		std::function<void (QAction*)> ActionCustomizer_;
+	};
+
 	/** @brief Represents a blogging platform.
 	 *
 	 * IBloggingPlatform class represents a single blogging platform with its own set of
@@ -54,14 +61,6 @@ namespace Blogique
 	 * widgets.
 	 *
 	 */
-
-	struct InlineTagInserter
-	{
-		QString TagName_;
-		QVariantMap Parameters_;
-		std::function<void (QAction*)> ActionCustomizer_;
-	};
-
 	class IBloggingPlatform
 	{
 	public:

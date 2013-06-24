@@ -157,6 +157,10 @@ namespace Monocle
 
 			return Scene_->addWidget (edit);
 		}
+		case IFormFieldText::Type::File:
+			qWarning () << Q_FUNC_INFO
+					<< "unsupported File field type, please send the file to upstream";
+			return 0;
 		}
 
 		qWarning () << Q_FUNC_INFO

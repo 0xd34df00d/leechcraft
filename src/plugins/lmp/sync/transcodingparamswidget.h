@@ -52,6 +52,7 @@ namespace LMP
 		void SetMaskVisible (bool);
 
 		TranscodingParams GetParams () const;
+		void SetParams (const TranscodingParams&);
 	private:
 		Format_ptr GetCurrentFormat () const;
 		Format::BitrateType GetCurrentBitrateType () const;

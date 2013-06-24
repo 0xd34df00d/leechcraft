@@ -54,6 +54,7 @@ namespace Vrooby
 		names [CustomRoles::FormattedFreeSpace] = "formattedFreeSpace";
 		names [CustomRoles::UsedPercentage] = "usedPercentage";
 		names [CustomRoles::MountButtonIcon] = "mountButtonIcon";
+		names [CustomRoles::ToggleHiddenIcon] = "toggleHiddenIcon";
 		names [CustomRoles::MountedAt] = "mountedAt";
 		setRoleNames (names);
 	}

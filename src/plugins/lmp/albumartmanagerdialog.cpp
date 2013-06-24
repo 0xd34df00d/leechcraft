@@ -152,9 +152,7 @@ namespace LMP
 		if (image.isNull ())
 			return;
 
-#if QT_VERSION >= 0x040800
 		handleImages ({ GetArtist (), GetAlbum () }, { image });
-#endif
 	}
 
 	namespace
