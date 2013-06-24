@@ -41,12 +41,19 @@ namespace Blasq
 	: TC_ (tc)
 	, Plugin_ (plugin)
 	, AccMgr_ (accMgr)
+	, AccountsBox_ (new QComboBox)
 	, Toolbar_ (new QToolBar)
 	{
-		auto box = new QComboBox;
-		box->setModel (AccMgr_->GetModel ());
-		box->setModelColumn (AccountsManager::Column::Name);
-		Toolbar_->addWidget (box);
+		AccountsBox_->setModel (AccMgr_->GetModel ());
+		AccountsBox_->setModelColumn (AccountsManager::Column::Name);
+		connect (AccountsBox_,
+				SIGNAL (activated (int)),
+				this,
+				SLOT (handleAccountChosen (int)));
+		if (AccountsBox_->count ())
+			handleAccountChosen (0);
+
+		Toolbar_->addWidget (AccountsBox_);
 	}
 
 	TabClassInfo PhotosTab::GetTabClassInfo () const
@@ -68,6 +75,26 @@ namespace Blasq
 	QToolBar* PhotosTab::GetToolBar () const
 	{
 		return Toolbar_.get ();
+	}
+
+	void PhotosTab::handleAccountChosen (int idx)
+	{
+		auto accVar = AccountsBox_->itemData (idx, AccountsManager::Role::AccountObj);
+		auto accObj = accVar.value<QObject*> ();
+		auto acc = qobject_cast<IAccount*> (accObj);
+		if (acc == CurAcc_)
+			return;
+
+		if (CurAccObj_)
+			disconnect (CurAccObj_,
+					0,
+					this,
+					0);
+
+		CurAccObj_ = accObj;
+		CurAcc_ = acc;
+
+		CurAcc_->UpdateCollections ();
 	}
 }
 }

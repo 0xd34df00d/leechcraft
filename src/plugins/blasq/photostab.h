@@ -33,11 +33,14 @@
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 
+class QComboBox;
+
 namespace LeechCraft
 {
 namespace Blasq
 {
 	class AccountsManager;
+	class IAccount;
 
 	class PhotosTab : public QWidget
 					, public ITabWidget
@@ -50,7 +53,11 @@ namespace Blasq
 
 		AccountsManager * const AccMgr_;
 
+		QComboBox *AccountsBox_;
 		std::unique_ptr<QToolBar> Toolbar_;
+
+		IAccount *CurAcc_ = 0;
+		QObject *CurAccObj_ = 0;
 	public:
 		PhotosTab (AccountsManager*, const TabClassInfo&, QObject*);
 
@@ -58,6 +65,8 @@ namespace Blasq
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+	private slots:
+		void handleAccountChosen (int);
 	signals:
 		void removeTab (QWidget*);
 	};
