@@ -38,6 +38,7 @@
 #include <QStandardItemModel>
 #include <util/util.h>
 #include <util/qml/colorthemeproxy.h>
+#include <util/qml/themeimageprovider.h>
 #include <util/sys/paths.h>
 #include <interfaces/media/idiscographyprovider.h>
 #include <interfaces/media/ialbumartprovider.h>
@@ -85,10 +86,12 @@ namespace LMP
 	, BioPropProxy_ (new BioPropProxy (this))
 	, DiscoModel_ (new DiscoModel (this))
 	{
+		auto proxy = Core::Instance ().GetProxy ();
 		View_->rootContext ()->setContextObject (BioPropProxy_);
 		View_->rootContext ()->setContextProperty ("artistDiscoModel", DiscoModel_);
 		View_->rootContext ()->setContextProperty ("colorProxy",
-				new Util::ColorThemeProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
+				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
+		View_->engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			View_->engine ()->addImportPath (cand);
