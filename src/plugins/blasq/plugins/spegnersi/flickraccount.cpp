@@ -76,7 +76,45 @@ namespace Spegnersi
 		QTimer::singleShot (0,
 				this,
 				SLOT (checkAuthTokens ()));
+	}
 
+	QByteArray FlickrAccount::Serialize () const
+	{
+		QByteArray result;
+		{
+			QDataStream ostr (&result, QIODevice::WriteOnly);
+			ostr << static_cast<quint8> (1)
+					<< ID_
+					<< Name_
+					<< AuthToken_
+					<< AuthSecret_;
+		}
+		return result;
+	}
+
+	FlickrAccount* FlickrAccount::Deserialize (const QByteArray& ba, FlickrService *service, ICoreProxy_ptr proxy)
+	{
+		QDataStream istr (ba);
+
+		quint8 version = 0;
+		istr >> version;
+		if (version != 1)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown version"
+					<< version;
+			return nullptr;
+		}
+
+		QByteArray id;
+		QString name;
+		istr >> id
+				>> name;
+
+		auto acc = new FlickrAccount (name, service, proxy, id);
+		istr >> acc->AuthToken_
+				>> acc->AuthSecret_;
+		return acc;
 	}
 
 	QObject* FlickrAccount::GetQObject ()
@@ -177,15 +215,7 @@ namespace Spegnersi
 				<< "access token received";
 		AuthToken_ = token;
 		AuthSecret_ = secret;
-
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Blasq_Spegnersi");
-		settings.beginGroup ("Tokens");
-		settings.beginGroup (GetID ());
-		settings.setValue ("Token", AuthToken_);
-		settings.setValue ("Secret", AuthSecret_);
-		settings.endGroup ();
-		settings.endGroup ();
+		emit accountChanged (this);
 	}
 }
 }

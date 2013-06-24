@@ -59,6 +59,10 @@ namespace Spegnersi
 		QString AuthSecret_;
 	public:
 		FlickrAccount (const QString&, FlickrService*, ICoreProxy_ptr, const QByteArray& = QByteArray ());
+		FlickrAccount (const QByteArray&, FlickrService*, ICoreProxy_ptr);
+
+		QByteArray Serialize () const;
+		static FlickrAccount* Deserialize (const QByteArray&, FlickrService*, ICoreProxy_ptr);
 
 		QObject* GetQObject ();
 		IService* GetService () const;
@@ -67,11 +71,14 @@ namespace Spegnersi
 	private:
 		KQOAuthRequest* MakeRequest (const QUrl&, KQOAuthRequest::RequestType = KQOAuthRequest::AuthorizedRequest);
 	private slots:
+		void checkAuthTokens ();
 		void requestTempToken ();
 
 		void handleTempToken (const QString&, const QString&);
 		void handleAuthorization (const QString&, const QString&);
 		void handleAccessToken (const QString&, const QString&);
+	signals:
+		void accountChanged (FlickrAccount*);
 	};
 }
 }
