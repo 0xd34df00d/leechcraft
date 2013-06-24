@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QString>
+#include <QMetaType>
 #include "formats.h"
 
 namespace LeechCraft
@@ -53,5 +54,10 @@ namespace LMP
 		int Quality_;
 		int NumThreads_;
 	};
+
+	QDataStream& operator<< (QDataStream&, const TranscodingParams&);
+	QDataStream& operator>> (QDataStream&, TranscodingParams&);
 }
 }
+
+Q_DECLARE_METATYPE (LeechCraft::LMP::TranscodingParams)

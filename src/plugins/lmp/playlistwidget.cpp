@@ -398,7 +398,6 @@ namespace LMP
 
 		typedef QPair<QString, QList<SortingCriteria>> SortPair_t;
 		QList<SortPair_t> stdSorts;
-#if QT_VERSION >= 0x040800
 		stdSorts << SortPair_t (tr ("Artist / Year / Album / Track number"),
 					{
 						SortingCriteria::Artist,
@@ -417,7 +416,6 @@ namespace LMP
 						SortingCriteria::FileName
 					});
 		stdSorts << SortPair_t (tr ("No sort"), {});
-#endif
 
 		const auto& currentCriteria = Player_->GetSortingCriteria ();
 

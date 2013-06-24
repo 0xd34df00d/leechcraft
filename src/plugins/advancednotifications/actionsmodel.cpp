@@ -66,7 +66,8 @@ namespace AdvancedNotifications
 
 	void ActionsModel::handleActionToggled (bool checked)
 	{
-		const auto pos = Actions_.indexOf (static_cast<QAction*> (sender ()));
+		auto action = static_cast<QAction*> (sender ());
+		const auto pos = Actions_.indexOf (action);
 		if (pos == -1)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -77,6 +78,13 @@ namespace AdvancedNotifications
 		}
 
 		item (pos)->setData (checked, Roles::IsActionChecked);
+
+		const auto& off = action->property ("ActionIconOff").toString ();
+		if (!off.isEmpty ())
+		{
+			const auto& on = action->property ("ActionIcon").toString ();
+			item (pos)->setData (checked ? on : off, Roles::IconName);
+		}
 	}
 }
 }

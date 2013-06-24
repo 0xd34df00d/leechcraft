@@ -108,6 +108,7 @@ set (SRCS
 	sync/syncunmountablemanager.cpp
 	sync/transcodejob.cpp
 	sync/transcodemanager.cpp
+	sync/transcodingparams.cpp
 	sync/transcodingparamswidget.cpp
 	sync/unmountabledevmanager.cpp
 	sync/uploadmodel.cpp

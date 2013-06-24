@@ -40,6 +40,7 @@
 #include <interfaces/ihaverecoverabletabs.h>
 #include "twitterinterface.h"
 #include "twitdelegate.h"
+#include "woodpecker.h"
 #include "ui_twitterpage.h"
 
 namespace LeechCraft
@@ -54,7 +55,7 @@ namespace Woodpecker
 		Q_INTERFACES (ITabWidget IRecoverableTab)
 
 		const TabClassInfo TC_;
-		QObject *const ParentPlugin_;
+		Plugin *const ParentPlugin_;
 
 		QToolBar *Toolbar_;
 		QMenu *DoctypeMenu_;
@@ -70,21 +71,26 @@ namespace Woodpecker
 		bool TemporaryDocument_;
 
 		bool UpdateReady_;			/**< The flag is checked by timer for UI update */
-		QTimer *UiUpdateTimer_;	/**< Timer checks UpdateReady_ and updates the UI */
+		QTimer *UiUpdateTimer_;		/**< Timer checks UpdateReady_ and updates the UI */
 		TwitDelegate *Delegate_;
 		Ui::TwitterPage Ui_;
 		TwitterInterface *Interface_;
 		QTimer *TwitterTimer_;		/**< This timer sends network requests to get new twits */
 		QSettings *Settings_;
-		QList<std::shared_ptr<Tweet>> ScreenTwits_;
+		QList<Tweet_ptr> ScreenTwits_;
 
 		QAction *ActionRetwit_;
 		QAction *ActionReply_;
 		QAction *ActionSPAM_;
 		QAction *ActionOpenWeb_;
+		
+		const KQOAuthParameters PageDefaultParam_;	/**< Default API request parameter set for page */
+		const FeedMode PageMode_;					/**< API request mode for the page */
 
 	public:
-		explicit TwitterPage (const TabClassInfo&, QObject*);
+		explicit TwitterPage (const TabClassInfo&, Plugin*,
+							  const FeedMode mode = FeedMode::HomeTimeline,
+							  const KQOAuthParameters& params = KQOAuthParameters ());
 		~TwitterPage();
 
 		void Remove ();
@@ -100,8 +106,7 @@ namespace Woodpecker
 		
 	public slots:
 		void tryToLogin ();
-		void requestUserTimeline (const QString& username);
-		void updateScreenTwits (QList<std::shared_ptr<Tweet>> twits);
+		void updateScreenTwits (QList<Tweet_ptr> twits);
 		void recvdAuth (const QString& token, const QString& tokenSecret);
 		void twit ();
 		void retwit ();
@@ -109,12 +114,14 @@ namespace Woodpecker
 		void reportSpam ();
 		void sendReply ();
 		void webOpen ();
+		void openUserTimeline ();
 		void scrolledDown (int sliderPos);
 		void setUpdateReady ();
 		
 	private slots:
 		void on_TwitList__customContextMenuRequested (const QPoint&);
 		void updateTweetList ();
+		void requestUpdate ();
 		
 	signals:
 		void removeTab (QWidget*);

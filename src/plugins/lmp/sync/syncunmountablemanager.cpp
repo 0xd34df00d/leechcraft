@@ -48,6 +48,10 @@ namespace LMP
 				SIGNAL (finishedCopying ()),
 				this,
 				SLOT (handleFinishedCopying ()));
+		connect (CopyMgr_,
+				SIGNAL (errorCopying (QString, QString)),
+				this,
+				SLOT (handleErrorCopying (QString, QString)));
 	}
 
 	void SyncUnmountableManager::AddFiles (const AddFilesParams& params)
