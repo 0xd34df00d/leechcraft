@@ -29,13 +29,45 @@
 
 #include "biopropproxy.h"
 #include <algorithm>
+#include <QStandardItemModel>
+#include <QApplication>
+#include <QtDebug>
 
 namespace LeechCraft
 {
 namespace LMP
 {
+	namespace
+	{
+		class ArtistImagesModel : public QStandardItemModel
+		{
+		public:
+			enum Role
+			{
+				ThumbURL = Qt::UserRole + 1,
+				FullURL,
+				Title,
+				Author,
+				Date
+			};
+
+			ArtistImagesModel (QObject *parent)
+			: QStandardItemModel (parent)
+			{
+				QHash<int, QByteArray> roleNames;
+				roleNames [Role::ThumbURL] = "thumbURL";
+				roleNames [Role::FullURL] = "fullURL";
+				roleNames [Role::Title] = "title";
+				roleNames [Role::Author] = "author";
+				roleNames [Role::Date] = "date";
+				setRoleNames (roleNames);
+			}
+		};
+	}
+
 	BioPropProxy::BioPropProxy (QObject *parent)
 	: QObject (parent)
+	, ArtistImages_ (new ArtistImagesModel (this))
 	{
 	}
 
@@ -53,6 +85,20 @@ namespace LMP
 				Bio_.BasicInfo_.ShortDesc_ :
 				Bio_.BasicInfo_.FullDesc_;
 		CachedInfo_.replace ("\n", "<br />");
+
+		ArtistImages_->clear ();
+		QList<QStandardItem*> rows;
+		for (const auto& imageItem : bio.OtherImages_)
+		{
+			auto item = new QStandardItem ();
+			item->setData (imageItem.Thumb_, ArtistImagesModel::Role::ThumbURL);
+			item->setData (imageItem.Full_, ArtistImagesModel::Role::FullURL);
+			item->setData (imageItem.Title_, ArtistImagesModel::Role::Title);
+			item->setData (imageItem.Author_, ArtistImagesModel::Role::Author);
+			item->setData (imageItem.Date_, ArtistImagesModel::Role::Date);
+			rows << item;
+		}
+		ArtistImages_->invisibleRootItem ()->appendRows (rows);
 
 		emit artistNameChanged (GetArtistName ());
 		emit artistImageURLChanged (GetArtistImageURL ());
@@ -90,6 +136,11 @@ namespace LMP
 	QUrl BioPropProxy::GetArtistPageURL () const
 	{
 		return Bio_.BasicInfo_.Page_;
+	}
+
+	QObject* BioPropProxy::GetArtistImagesModel () const
+	{
+		return ArtistImages_;
 	}
 }
 }
