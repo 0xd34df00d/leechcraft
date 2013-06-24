@@ -55,7 +55,7 @@ namespace Woodpecker
 	, ParentPlugin_ (plugin)
 	{
 		Ui_.setupUi (this);
-		Delegate_ = new TwitDelegate (Ui_.TwitList_);
+		Delegate_ = new TwitDelegate (Ui_.TwitList_, ParentPlugin_);
 		Ui_.TwitList_->setItemDelegate (Delegate_);
 
 		//	Toolbar_->addAction (ui->actionRefresh);

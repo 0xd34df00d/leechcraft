@@ -86,9 +86,9 @@ namespace Woodpecker
 		const KQOAuthParameters PageDefaultParam_;	/**< Default API request parameter set for page */
 		const FeedMode PageMode_;					/**< API request mode for the page */
 
-	public:
 		Plugin *const ParentPlugin_;
 		
+	public:
 		explicit TwitterPage (const TabClassInfo&, Plugin*,
 							  const FeedMode mode = FeedMode::HomeTimeline,
 							  const KQOAuthParameters& params = KQOAuthParameters ());

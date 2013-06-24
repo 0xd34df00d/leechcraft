@@ -11,7 +11,6 @@ set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 find_package (QtKOAuth REQUIRED)
 find_package (QJSON REQUIRED)
 
-set (CMAKE_CXX_FLAGS "-Wall -std=c++11 -Werror")
 set (QT_USE_QTNETWORK TRUE)
 include (${QT_USE_FILE})
 include_directories (

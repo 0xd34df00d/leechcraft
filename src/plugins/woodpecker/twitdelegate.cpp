@@ -51,8 +51,9 @@ namespace Woodpecker
 	const int IconSize = 48;
 	const int Padding = 5;
 	
-	TwitDelegate::TwitDelegate (QObject *parent)
+	TwitDelegate::TwitDelegate (QObject *parent, Plugin *plugin)
 	: QStyledItemDelegate (parent)
+	, ParentPlugin_ (plugin)
 	{
 	}
 	
@@ -195,15 +196,14 @@ namespace Woodpecker
 							const auto& username = anchor.mid (16);
 							KQOAuthParameters param;
 							param.insert ("screen_name", username.toUtf8 ().constData ());
-							TwitterPage *const page = static_cast<TwitterPage*> (parent ()->parent ()->parent ());
-							page->ParentPlugin_->AddTab (QString ("User/%1").arg (username),
-									"User tab", "Own timeline", 
-									FeedMode::UserTimeline, param);
+							ParentPlugin_->AddTab (QString ("User/%1").arg (username),
+													tr ("User tab"), tr ("Own timeline"),
+													FeedMode::UserTimeline, param);
 						}
 					}
 					else
 					{
-						Entity url = Util::MakeEntity (QUrl (anchor), QString (), OnlyHandle | FromUserInitiated, QString ());
+						Entity url = Util::MakeEntity (QUrl (anchor), QString (), OnlyHandle | FromUserInitiated);
 						Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (url);
 					}
 				}

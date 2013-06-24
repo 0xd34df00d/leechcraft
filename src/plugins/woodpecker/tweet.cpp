@@ -51,9 +51,9 @@ namespace Woodpecker
 	}
 
 	Tweet::Tweet (const Tweet& original)
-	: Id_(original.GetId ())
-	, Author_(original.GetAuthor ())
-	, Created_(original.GetDateTime ())
+	: Id_ (original.GetId ())
+	, Author_ (original.GetAuthor ())
+	, Created_ (original.GetDateTime ())
 	{
 		SetText (original.GetText ());
 	}
