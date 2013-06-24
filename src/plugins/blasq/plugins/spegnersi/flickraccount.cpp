@@ -73,6 +73,11 @@ namespace Spegnersi
 				this,
 				SLOT (handleAccessToken (QString, QString)));
 
+		connect (AuthMgr_,
+				SIGNAL (requestReady (QByteArray)),
+				this,
+				SLOT (handleReply (QByteArray)));
+
 		QTimer::singleShot (0,
 				this,
 				SLOT (checkAuthTokens ()));
@@ -139,6 +144,34 @@ namespace Spegnersi
 
 	void FlickrAccount::UpdateCollections ()
 	{
+		switch (State_)
+		{
+		case State::CollectionsRequested:
+			return;
+		case State::Idle:
+			break;
+		default:
+			CallQueue_ << [this] { UpdateCollections (); };
+			return;
+		}
+
+		if (AuthToken_.isEmpty () || AuthSecret_.isEmpty ())
+		{
+			UpdateAfterAuth_ = true;
+			return;
+		}
+
+		UpdateAfterAuth_ = false;
+
+		auto req = MakeRequest (QString ("http://api.flickr.com/services/rest/"), KQOAuthRequest::AuthorizedRequest);
+		req->setAdditionalParameters (Util::MakeMap<QString, QString> ({
+					{ "user_id", "me" },
+					{ "format", "rest" },
+					{ "method", "flickr.photos.search" }
+				}));
+		AuthMgr_->executeRequest (req);
+
+		State_ = State::CollectionsRequested;
 	}
 
 	KQOAuthRequest* FlickrAccount::MakeRequest (const QUrl& url, KQOAuthRequest::RequestType type)
@@ -231,6 +264,11 @@ namespace Spegnersi
 
 		if (UpdateAfterAuth_)
 			UpdateCollections ();
+	}
+
+	void FlickrAccount::handleReply (const QByteArray& data)
+	{
+		qDebug () << Q_FUNC_INFO << data;
 	}
 }
 }

@@ -58,6 +58,7 @@ namespace Spegnersi
 
 		QString AuthToken_;
 		QString AuthSecret_;
+
 		bool UpdateAfterAuth_ = false;
 
 		enum class State
@@ -70,7 +71,6 @@ namespace Spegnersi
 		QList<std::function<void ()>> CallQueue_;
 	public:
 		FlickrAccount (const QString&, FlickrService*, ICoreProxy_ptr, const QByteArray& = QByteArray ());
-		FlickrAccount (const QByteArray&, FlickrService*, ICoreProxy_ptr);
 
 		QByteArray Serialize () const;
 		static FlickrAccount* Deserialize (const QByteArray&, FlickrService*, ICoreProxy_ptr);
@@ -90,6 +90,8 @@ namespace Spegnersi
 		void handleTempToken (const QString&, const QString&);
 		void handleAuthorization (const QString&, const QString&);
 		void handleAccessToken (const QString&, const QString&);
+
+		void handleReply (const QByteArray&);
 	signals:
 		void accountChanged (FlickrAccount*);
 
