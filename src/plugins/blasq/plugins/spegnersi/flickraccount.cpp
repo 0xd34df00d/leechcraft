@@ -73,17 +73,10 @@ namespace Spegnersi
 				this,
 				SLOT (handleAccessToken (QString, QString)));
 
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Blasq_Spegnersi");
-		settings.beginGroup ("Tokens");
-		settings.beginGroup (GetID ());
-		AuthToken_ = settings.value ("Token").toString ();
-		AuthSecret_ = settings.value ("Secret").toString ();
-		settings.endGroup ();
-		settings.endGroup ();
+		QTimer::singleShot (0,
+				this,
+				SLOT (checkAuthTokens ()));
 
-		if (AuthToken_.isEmpty () || AuthSecret_.isEmpty ())
-			requestTempToken ();
 	}
 
 	QObject* FlickrAccount::GetQObject ()
@@ -121,6 +114,12 @@ namespace Spegnersi
 		}
 
 		return Req_;
+	}
+
+	void FlickrAccount::checkAuthTokens ()
+	{
+		if (AuthToken_.isEmpty () || AuthSecret_.isEmpty ())
+			requestTempToken ();
 	}
 
 	void FlickrAccount::requestTempToken ()
