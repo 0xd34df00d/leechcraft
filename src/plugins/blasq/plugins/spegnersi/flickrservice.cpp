@@ -29,6 +29,9 @@
 
 #include "flickrservice.h"
 #include <QIcon>
+#include <QSettings>
+#include <QCoreApplication>
+#include <QtDebug>
 #include "flickraccount.h"
 
 namespace LeechCraft
@@ -89,6 +92,26 @@ namespace Spegnersi
 
 	void FlickrService::RemoveAccount (IAccount *acc)
 	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Blasq_Spegnersi");
+		settings.beginGroup ("Accounts");
+		settings.remove (acc->GetID ());
+		settings.endGroup ();
+
+		const auto pos = std::find (Accounts_.begin (), Accounts_.end (), acc);
+		if (pos == Accounts_.end ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "account"
+					<< acc->GetID ()
+					<< "not found";
+			return;
+		}
+
+		emit accountRemoved (*pos);
+		(*pos)->deleteLater ();
+
+		Accounts_.erase (pos);
 	}
 
 	void FlickrService::AddAccount (FlickrAccount *acc)
