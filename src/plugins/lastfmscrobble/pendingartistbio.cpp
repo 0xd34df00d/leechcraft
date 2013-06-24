@@ -109,7 +109,6 @@ namespace Lastfmscrobble
 				.firstChildElement ("item");
 		while (!item.isNull ())
 		{
-			qDebug () << "adding" << item.firstChildElement ("media:thumbnail").isNull () << item.firstChildElement ("media:thumbnail").attribute ("url");
 			const Media::ArtistImage img
 			{
 				item.firstChildElement ("title").text (),
