@@ -62,6 +62,10 @@ namespace Spegnersi
 		QList<QWidget*> GetAccountRegistrationWidgets () const;
 		void RegisterAccount (const QString&, const QList<QWidget*>&);
 		void RemoveAccount (IAccount*);
+	private:
+		void AddAccount (FlickrAccount*);
+	private slots:
+		void saveAccount (FlickrAccount*);
 	signals:
 		void accountAdded (QObject*);
 		void accountRemoved (QObject*);
