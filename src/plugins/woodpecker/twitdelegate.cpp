@@ -42,6 +42,7 @@
 #include <util/util.h>
 #include "core.h"
 #include "tweet.h"
+#include "twitterinterface.h"
 
 namespace LeechCraft
 {

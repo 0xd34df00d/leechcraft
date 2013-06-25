@@ -157,8 +157,7 @@ namespace Woodpecker
 	{
 		Settings_->deleteLater ();
 		TwitterTimer_->stop ();
-		TwitterTimer_->deleteLater ();
-		Interface_->deleteLater ();
+		UiUpdateTimer_->stop ();
 	}
 
 	TabClassInfo TwitterPage::GetTabClassInfo () const
