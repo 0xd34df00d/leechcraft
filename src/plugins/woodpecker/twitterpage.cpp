@@ -450,7 +450,7 @@ namespace Woodpecker
 								param);
 	}
 	
-	void TwitterPage::copyTwitText()
+	void TwitterPage::copyTwitText ()
 	{
 		const auto& idx = Ui_.TwitList_->currentItem ();
 		const auto& text = idx->data (Qt::UserRole).value<Tweet_ptr> ()->GetText ();
