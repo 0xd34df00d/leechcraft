@@ -31,6 +31,7 @@
 #include "twitterpage.h"
 #include <QListWidget>
 #include <QListWidgetItem>
+#include <QClipboard>
 #include <QCoreApplication>
 #include <qjson/parser.h>
 #include <interfaces/core/icoreproxy.h>
@@ -119,6 +120,13 @@ namespace Woodpecker
 				this,
 				SLOT (webOpen ()));
 
+		ActionCopyText_ = new QAction (tr ("Copy text to clipboard"), Ui_.TwitList_);
+		ActionCopyText_->setProperty ("ActionIcon", "edit-copy");
+		connect (ActionCopyText_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (copyTwitText ()));
+
 		connect (Ui_.TwitList_,
 				SIGNAL (itemDoubleClicked (QListWidgetItem*)),
 				this,
@@ -149,6 +157,7 @@ namespace Woodpecker
 	{
 		Settings_->deleteLater ();
 		TwitterTimer_->stop ();
+		UiUpdateTimer_->stop ();
 	}
 
 	TabClassInfo TwitterPage::GetTabClassInfo () const
@@ -353,7 +362,6 @@ namespace Woodpecker
 
 	void TwitterPage::on_TwitList__customContextMenuRequested (const QPoint& pos)
 	{
-		qDebug () << "MENUSLOT";
 		const auto& idx = Ui_.TwitList_->indexAt (pos);
 		if (!idx.isValid ())
 			return;
@@ -369,7 +377,8 @@ namespace Woodpecker
 				SLOT (openUserTimeline ()));
 
 		menu->addActions ({ ActionRetwit_, ActionReply_, menu->addSeparator (),
-			ActionSPAM_, menu->addSeparator (), ActionOpenWeb_, actionOpenTimeline});
+			ActionSPAM_, menu->addSeparator (), ActionCopyText_, ActionOpenWeb_,
+						  actionOpenTimeline});
 		menu->setAttribute (Qt::WA_DeleteOnClose);
 
 		menu->exec (Ui_.TwitList_->viewport ()->mapToGlobal (pos));
@@ -439,6 +448,14 @@ namespace Woodpecker
 								tr ("User tab"), tr ("Own timeline"), 
 								FeedMode::UserTimeline,
 								param);
+	}
+	
+	void TwitterPage::copyTwitText ()
+	{
+		const auto& idx = Ui_.TwitList_->currentItem ();
+		const auto& text = idx->data (Qt::UserRole).value<Tweet_ptr> ()->GetText ();
+		
+		QApplication::clipboard ()->setText (text, QClipboard::Clipboard);
 	}
 }
 }

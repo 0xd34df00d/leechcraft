@@ -82,6 +82,7 @@ namespace Woodpecker
 		QAction *ActionReply_;
 		QAction *ActionSPAM_;
 		QAction *ActionOpenWeb_;
+		QAction *ActionCopyText_;
 		
 		const KQOAuthParameters PageDefaultParam_;	/**< Default API request parameter set for page */
 		const FeedMode PageMode_;					/**< API request mode for the page */
@@ -118,6 +119,7 @@ namespace Woodpecker
 		void openUserTimeline ();
 		void scrolledDown (int sliderPos);
 		void setUpdateReady ();
+		void copyTwitText ();
 		
 	private slots:
 		void on_TwitList__customContextMenuRequested (const QPoint&);
