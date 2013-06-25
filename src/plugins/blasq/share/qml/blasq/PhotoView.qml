@@ -1,4 +1,5 @@
 import QtQuick 1.0
+import Effects 1.0
 import org.LC.common 1.0
 
 Rectangle {
@@ -19,13 +20,9 @@ Rectangle {
     }
 
     function showImage(url) {
-        if (url.length == 0) {
-            fullSizeImage.state = "hidden"
-            fullSizeImage.source = undefined
-        } else {
-            fullSizeImage.state = "loading"
-            fullSizeImage.source = url
-        }
+        console.log("show " + url)
+        fullSizeImage.source = url
+        console.log("showstate " + fullSizeImage.status)
     }
 
     Image {
@@ -33,36 +30,58 @@ Rectangle {
 
         z: collectionThumbsView.z + 1
 
-        anchors.fill: parent
-        anchors.margins: 32
+        anchors.centerIn: parent
+        width: Math.min(sourceSize.width, parent.width - 32)
+        height: Math.min(sourceSize.height, parent.height - 32)
+
+        fillMode: Image.PreserveAspectFit
 
         state: "hidden"
-
         states: [
             State {
                 name: "hidden"
-                PropertyChanges { target: fullSizeImage; opacity: 0; scale: 0 }
+                PropertyChanges { target: fullSizeImage; opacity: 0 }
+                PropertyChanges { target: photoViewBlur; blurRadius: 0 }
             },
             State {
                 name: "loading"
-                PropertyChanges {  }
+                PropertyChanges { target: photoViewBlur; blurRadius: 3 }
             },
             State {
-                name: "visible"
-                PropertyChanges { target: fullSizeImage; opacity: 1; scale: 1 }
+                name: "displayed"
+                PropertyChanges { target: fullSizeImage; opacity: 1 }
+                PropertyChanges { target: photoViewBlur; blurRadius: 10 }
             }
         ]
 
         transitions: Transition {
             PropertyAnimation { properties: "opacity"; duration: 300; easing.type: Easing.OutSine }
+            PropertyAnimation { target: ViewBlur; property: "blurRadius"; duration: 300; easing.type: Easing.OutSine }
         }
 
         MouseArea {
             anchors.fill: parent
-            onReleased: fullSizeImage.state = "hidden"
+            onReleased: rootRect.showImage("")//fullSizeImage.state = "hidden"
         }
 
-        onStatusChanged: if (status == Image.Ready) state = "visible"
+        onStateChanged: console.log("new state: " + state + "; " + source)
+        onStatusChanged: {
+            console.log("new status: " + status)
+            switch (status) {
+            case Image.Ready:
+                state = "displayed"
+                break;
+            case Image.Loading:
+                state = "loading"
+                break;
+            case Image.Null:
+                state = "hidden"
+                break;
+            case Image.Error:
+                state = "hidden"
+                break;
+            }
+        }
     }
 
     GridView {
@@ -76,6 +95,11 @@ Rectangle {
 
         property real horzMargin: cellWidth / 20
         property real vertMargin: cellHeight / 20
+
+        effect: Blur {
+            id: photoViewBlur
+            blurRadius: 0.0
+        }
 
         model: VisualDataModel {
             model: collectionModel
