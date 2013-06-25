@@ -76,8 +76,6 @@ namespace Azoth
 				std::function<void (IAuthable*, const QString&)> func);
 		void CreateActionsForEntry (ICLEntry*);
 		void UpdateActionsForEntry (ICLEntry*);
-
-		void ChangePerm (QAction*, const QString&) const;
 	private slots:
 		void handleActionOpenChatTriggered ();
 		void handleActionCopyEntryIDTriggered ();
@@ -108,7 +106,7 @@ namespace Azoth
 		void handleActionAddContactFromMUC ();
 		void handleActionCopyMUCPartID ();
 		void handleActionPermTriggered ();
-		void handleActionPermReasonTriggered ();
+		void handleActionPermAdvancedTriggered ();
 	signals:
 		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *action,

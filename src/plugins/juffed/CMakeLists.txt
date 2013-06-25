@@ -1,32 +1,32 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_juffed)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_juffed)
+include (InitLCPlugin OPTIONAL)
 
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
-SET (SRCS
+set (SRCS
 	juffed.cpp
 	juffedwidget.cpp
 	)
-SET (HEADERS
+set (HEADERS
 	juffed.h
 	juffedwidget.h
 	)
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif ()
 
-ADD_LIBRARY (leechcraft_juffed SHARED
+add_library (leechcraft_juffed SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_juffed
+target_link_libraries (leechcraft_juffed
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_juffed DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_juffed DESTINATION ${LC_PLUGINS_DEST})

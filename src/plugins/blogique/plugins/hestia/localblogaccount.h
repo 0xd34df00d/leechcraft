@@ -94,6 +94,7 @@ namespace Hestia
 	public slots:
 		void updateProfile ();
 		void submit (const Entry& event);
+		void preview (const Entry& event);
 		void backup ();
 
 		void handleLoadAllEvents ();
@@ -114,6 +115,9 @@ namespace Hestia
 		void gettingEntries2BackupFinished ();
 		void gotBlogStatistics (const QMap<QDate, int>& statistics);
 		void tagsUpdated (const QHash<QString, int>& tags);
+
+		void gotError(int errorCode, const QString& errorString,
+				const QString& localizedErrorString = QString ());
 
 	};
 }

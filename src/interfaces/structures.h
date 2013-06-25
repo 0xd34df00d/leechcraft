@@ -298,6 +298,7 @@ Q_DECLARE_METATYPE (QToolBar*);
 Q_DECLARE_METATYPE (QMenu*);
 Q_DECLARE_METATYPE (QObject_ptr);
 Q_DECLARE_METATYPE (QPointer<QObject*>);
+Q_DECLARE_METATYPE (LeechCraft::TaskParameters);
 Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::TaskParameters);
 
 #endif

@@ -1,19 +1,19 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_dbusmanager)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_dbusmanager)
+include (InitLCPlugin OPTIONAL)
 
-IF (NOT (QT_QTDBUS_FOUND AND UNIX))
-	MESSAGE (ERROR "DBusManager could not be built")
-ENDIF (NOT (QT_QTDBUS_FOUND AND UNIX))
+if (NOT (QT_QTDBUS_FOUND AND UNIX))
+	message (ERROR "DBusManager could not be built")
+endif ()
 
-SET (QT_USE_QTDBUS TRUE)
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR}
+set (QT_USE_QTDBUS TRUE)
+include (${QT_USE_FILE})
+include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 
-SET (SRCS
+set (SRCS
 	dbusmanager.cpp
 	core.cpp
 	iinfoadaptor.cpp
@@ -24,7 +24,7 @@ SET (SRCS
 	tasksadaptor.cpp
 	webfilestorageadaptor.cpp
 	)
-SET (HEADERS
+set (HEADERS
 	dbusmanager.h
 	core.h
 	iinfoadaptor.h
@@ -35,30 +35,30 @@ SET (HEADERS
 	tasksadaptor.h
 	webfilestorageadaptor.h
 	)
-SET (FORMS
+set (FORMS
 	)
-SET (RESOURCES
+set (RESOURCES
 	dbusmanagerresources.qrc
 	)
 CreateTrs ("dbusmanager" "ar;de;en;eo;es;fr;it;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
-ADD_LIBRARY (leechcraft_dbusmanager SHARED
+add_library (leechcraft_dbusmanager SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	${UIS_H}
 	${RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_dbusmanager
+target_link_libraries (leechcraft_dbusmanager
 		${QT_LIBRARIES}
 		${LEECHCRAFT_LIBRARIES}
 		)
-INSTALL (TARGETS leechcraft_dbusmanager DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
-INSTALL (FILES dbusmanagersettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (TARGETS leechcraft_dbusmanager DESTINATION ${LC_PLUGINS_DEST})
+install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (FILES dbusmanagersettings.xml DESTINATION ${LC_SETTINGS_DEST})

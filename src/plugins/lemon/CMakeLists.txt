@@ -1,21 +1,21 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_lemon)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_lemon)
+include (InitLCPlugin OPTIONAL)
 
-SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-FIND_PACKAGE (Libnl REQUIRED)
-FIND_PACKAGE (Qwt REQUIRED)
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+find_package (Libnl REQUIRED)
+find_package (Qwt REQUIRED)
 
-SET (QT_USE_QTNETWORK TRUE)
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+set (QT_USE_QTNETWORK TRUE)
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${LIBNL_INCLUDE_DIR}
 	${QWT_INCLUDE_DIRS}
 	)
-SET (SRCS
+set (SRCS
 	lemon.cpp
 	core.cpp
 	trafficmanager.cpp
@@ -23,21 +23,21 @@ SET (SRCS
 	platformbackend.cpp
 	linuxplatformbackend.cpp
 	)
-SET (FORMS
+set (FORMS
 	trafficdialog.ui
 	)
 QT4_WRAP_UI (UIS_H ${FORMS})
 
-ADD_LIBRARY (leechcraft_lemon SHARED
+add_library (leechcraft_lemon SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${UIS_H}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_lemon
+target_link_libraries (leechcraft_lemon
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${LIBNL_LIBRARIES}
 	${QWT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_lemon DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (DIRECTORY share/qml/lemon DESTINATION ${LC_QML_DEST})
+install (TARGETS leechcraft_lemon DESTINATION ${LC_PLUGINS_DEST})
+install (DIRECTORY share/qml/lemon DESTINATION ${LC_QML_DEST})

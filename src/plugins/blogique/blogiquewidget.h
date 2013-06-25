@@ -142,6 +142,8 @@ namespace Blogique
 		void handleRequestEntriesEnd ();
 		void handleTagsUpdated (const QHash<QString, int>& tags);
 		void handleInsertTag (const QString& tag);
+		void handleGotError (int errorCode, const QString& errorString,
+				const QString& localizedErrorString);
 
 	private slots:
 		void handleCurrentAccountChanged (int id);
@@ -163,6 +165,7 @@ namespace Blogique
 		void handleTagTextChanged (const QString& text);
 		void handleTagRemoved (const QString& tag);
 		void on_OpenInBrowser__triggered ();
+		void on_PreviewPost__triggered ();
 
 	signals:
 		void removeTab (QWidget *tab);

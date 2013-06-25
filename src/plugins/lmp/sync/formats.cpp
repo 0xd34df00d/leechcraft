@@ -66,7 +66,6 @@ namespace LMP
 		}
 	}
 
-#if QT_VERSION >= 0x040800
 	class OggFormat : public Format
 	{
 	public:
@@ -82,7 +81,7 @@ namespace LMP
 
 		QString GetCodecName () const
 		{
-			return "libvorbis";
+			return "vorbis";
 		}
 
 		QList<BitrateType> GetSupportedBitrates() const
@@ -213,7 +212,7 @@ namespace LMP
 
 		QString GetCodecName () const
 		{
-			return "libmp3lame";
+			return "mp3";
 		}
 
 		QList<BitrateType> GetSupportedBitrates () const
@@ -270,13 +269,11 @@ namespace LMP
 			return QList<int> ();
 		}
 	};
-#endif
 
 	QString Formats::S_FFmpegCodecs_;
 
 	Formats::Formats ()
 	{
-#if QT_VERSION >= 0x040800
 		if (S_FFmpegCodecs_.isEmpty ())
 		{
 			QProcess ffmpegProcess;
@@ -296,7 +293,6 @@ namespace LMP
 				{
 					return S_FFmpegCodecs_.contains (QRegExp (".EA... " + format->GetCodecName ()));
 				});
-#endif
 	}
 
 	QList<Format_ptr> Formats::GetFormats () const

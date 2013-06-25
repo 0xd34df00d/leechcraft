@@ -1,34 +1,34 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_monocle_mu)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_monocle_mu)
+include (InitLCPlugin OPTIONAL)
 
-SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-IF (MUPDF_VERSION)
-	ADD_DEFINITIONS (-DMUPDF_VERSION=${MUPDF_VERSION})
-ELSE (MUPDF_VERSION)
-	MESSAGE (WARNING "MuPDF version is not set, defaulting to 1.1")
-	ADD_DEFINITIONS (-DMUPDF_VERSION=0x0101)
-ENDIF (MUPDF_VERSION)
+if (MUPDF_VERSION)
+	add_definitions (-DMUPDF_VERSION=${MUPDF_VERSION})
+else ()
+	message (WARNING "MuPDF version is not set, defaulting to 1.2")
+	add_definitions (-DMUPDF_VERSION=0x0102)
+endif ()
 
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
-SET (SRCS
+set (SRCS
 	mu.cpp
 	document.cpp
 	)
 
-ADD_LIBRARY (leechcraft_monocle_mu SHARED
+add_library (leechcraft_monocle_mu SHARED
 	${SRCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_monocle_mu
+target_link_libraries (leechcraft_monocle_mu
 	fitz
 	jpeg
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_monocle_mu DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_monocle_mu DESTINATION ${LC_PLUGINS_DEST})

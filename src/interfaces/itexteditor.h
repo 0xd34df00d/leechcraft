@@ -243,6 +243,37 @@ public:
 		 * \endcode
 		 */
 		std::function<void (QDomElement&)> ToKnown_;
+
+		/** @brief The converter of an instance of the tag from HTML.
+		 *
+		 * This function is invoked to convert an instance of the tag
+		 * (passed as a QDomElement) from HTML. The conversion should be
+		 * done in-place: the resulting XML should be contained in the
+		 * passed QDomElement.
+		 *
+		 * An example function that turns back the boldified
+		 * <code><lj user="$username"/></code> from ToKnown_:
+		 *
+		 * \code
+		 * [] (QDomElement& elem) -> void
+		 * {
+		 * 	const auto& user = elem.text ();
+		 * 	elem.setTagName ("lj");
+		 * 	elem.setAttribute ("user", user);
+		 *
+		 * 	const auto& childNodes = elem.childNodes ();
+		 * 	while (!childNodes.isEmpty ())
+		 * 		elem.removeChild (childNodes.at (0));
+		 * }
+		 * \endcode
+		 *
+		 * One can leave this function unset, in this case the tag will
+		 * marked as non-modifyable.
+		 *
+		 * This function should return \em true if the convertation
+		 * succeeded, otherwise it should return \em false.
+		 */
+		std::function<bool (QDomElement&)> FromKnown_;
 	};
 	typedef QList<CustomTag> CustomTags_t;
 

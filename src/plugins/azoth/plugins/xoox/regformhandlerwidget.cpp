@@ -160,7 +160,7 @@ namespace Xoox
 		QXmppIq iq (QXmppIq::Set);
 		if (!ReqJID_.isEmpty ())
 			iq.setTo (ReqJID_);
-		iq.setExtensions (QXmppElementList () <<  queryElem);
+		iq.setExtensions (QXmppElementList () << queryElem);
 		Client_->sendPacket (iq);
 		LastStanzaID_ = iq.id ();
 
@@ -193,8 +193,15 @@ namespace Xoox
 
 	void RegFormHandlerWidget::HandleRegForm (const QXmppIq& iq)
 	{
+		if (iq.type () == QXmppIq::Error)
+		{
+			SetState (State::Error);
+			ShowMessage (tr ("Server error: %1.").arg (iq.error ().text ()));
+			return;
+		}
+
 		QXmppElement queryElem;
-		Q_FOREACH (const QXmppElement& elem, iq.extensions ())
+		for (const QXmppElement& elem : iq.extensions ())
 		{
 			if (elem.tagName () == "query" &&
 					elem.attribute ("xmlns") == NsRegister)

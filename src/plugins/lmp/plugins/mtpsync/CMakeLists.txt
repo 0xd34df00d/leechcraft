@@ -1,36 +1,36 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_lmp_mtpsync)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_lmp_mtpsync)
+include (InitLCPlugin OPTIONAL)
 
-SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-FIND_PACKAGE (MTP REQUIRED)
+find_package (MTP REQUIRED)
 
-SET (QT_USE_QTNETWORK TRUE)
-SET (QT_USE_QTXML TRUE)
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (${LMP_INCLUDE_DIR}
+set (QT_USE_QTNETWORK TRUE)
+set (QT_USE_QTXML TRUE)
+include (${QT_USE_FILE})
+include_directories (${LMP_INCLUDE_DIR}
 	${MTP_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 
-SET (MTPSYNC_SRCS
+set (MTPSYNC_SRCS
 	mtpsync.cpp
 	)
 
-ADD_DEFINITIONS (${MTP_DEFINITIONS})
+add_definitions (${MTP_DEFINITIONS})
 
-ADD_LIBRARY (leechcraft_lmp_mtpsync SHARED
+add_library (leechcraft_lmp_mtpsync SHARED
 	${MTPSYNC_COMPILED_TRANSLATIONS}
 	${MTPSYNC_SRCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_lmp_mtpsync
+target_link_libraries (leechcraft_lmp_mtpsync
 	${QT_LIBRARIES}
 	${MTP_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 
-INSTALL (TARGETS leechcraft_lmp_mtpsync DESTINATION ${LC_PLUGINS_DEST})
-#INSTALL (FILES lmpmtpsyncsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (TARGETS leechcraft_lmp_mtpsync DESTINATION ${LC_PLUGINS_DEST})
+#install (FILES lmpmtpsyncsettings.xml DESTINATION ${LC_SETTINGS_DEST})

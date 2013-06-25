@@ -387,7 +387,7 @@ namespace Monocle
 
 		recoverDocState (state);
 		Relayout ();
-		SetCurrentPage (state.CurrentPage_, false);
+		SetCurrentPage (state.CurrentPage_, true);
 
 		checkCurrentPageChange (true);
 
@@ -440,6 +440,10 @@ namespace Monocle
 		auto saveAsImage = menu->addAction (tr ("Save selection as image..."),
 				this, SLOT (handleSaveAsImage ()));
 		saveAsImage->setProperty ("ActionIcon", "document-save");
+
+		new Util::StdDataFilterMenuCreator (GetSelectionImg (),
+					Core::Instance ().GetProxy ()->GetEntityManager (),
+					menu);
 
 		if (qobject_cast<IHaveTextContent*> (CurrentDoc_->GetQObject ()))
 		{

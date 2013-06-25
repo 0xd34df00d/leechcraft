@@ -77,7 +77,8 @@ namespace LeechCraft
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "double-adding"
-					<< dw;
+					<< dw
+					<< dw->windowTitle ();
 			return;
 		}
 

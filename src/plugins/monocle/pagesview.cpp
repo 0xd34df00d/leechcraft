@@ -88,7 +88,7 @@ namespace Monocle
 
 	void PagesView::mouseMoveEvent (QMouseEvent *event)
 	{
-		if (ShowReleaseMenu_)
+		if (event->buttons () != Qt::NoButton && ShowReleaseMenu_)
 			ShowOnNextRelease_ = true;
 
 		QGraphicsView::mouseMoveEvent (event);

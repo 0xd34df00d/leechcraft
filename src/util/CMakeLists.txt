@@ -1,26 +1,26 @@
-IF (NOT USE_QT5)
-	SET (QT_USE_QTDECLARATIVE TRUE)
-	SET (QT_USE_QTNETWORK TRUE)
-	SET (QT_USE_QTSQL TRUE)
-	SET (QT_USE_QTXML TRUE)
-	INCLUDE (${QT_USE_FILE})
-ENDIF ()
+if (NOT USE_QT5)
+	set (QT_USE_QTDECLARATIVE TRUE)
+	set (QT_USE_QTNETWORK TRUE)
+	set (QT_USE_QTSQL TRUE)
+	set (QT_USE_QTXML TRUE)
+	include (${QT_USE_FILE})
+endif ()
 
-SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-FIND_PACKAGE (MAGIC)
-IF (MAGIC_FOUND)
-	ADD_DEFINITIONS (-DHAVE_MAGIC)
-ENDIF (MAGIC_FOUND)
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+find_package (MAGIC)
+if (MAGIC_FOUND)
+	add_definitions (-DHAVE_MAGIC)
+endif ()
 
-OPTION (WITH_X11 "Enable X11 support on Linux" ON)
+option (WITH_X11 "Enable X11 support on Linux" ON)
 
-INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIRS}
+include_directories (${Boost_INCLUDE_DIRS}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${MAGIC_INCLUDE_DIRS}
 	..)
 
-SET (SRCS
+set (SRCS
 	gui/autoresizemixin.cpp
 	gui/clearlineeditaddon.cpp
 	gui/findnotification.cpp
@@ -70,55 +70,55 @@ SET (SRCS
 	queuemanager.cpp
 	shortcuts/shortcutmanager.cpp
 	)
-SET (FORMS
+set (FORMS
 	backendselector.ui
 	gui/findnotification.ui
 	)
-IF (USE_QT5)
+if (USE_QT5)
 	qt5_wrap_ui (UIS_H ${FORMS})
-ELSE ()
+else ()
 	QT4_WRAP_UI (UIS_H ${FORMS})
-ENDIF ()
+endif ()
 
-IF (WITH_X11 AND NOT APPLE)
-	FIND_PACKAGE (X11)
+if (WITH_X11 AND NOT APPLE)
+	find_package (X11)
 
-	IF (X11_FOUND)
-		ADD_DEFINITIONS (-DHAVE_X11)
-		SET (ADDITIONAL_LIBS ${X11_X11_LIB})
+	if (X11_FOUND)
+		add_definitions (-DHAVE_X11)
+		set (ADDITIONAL_LIBS ${X11_X11_LIB})
 
-		SET (SRCS ${SRCS} x11/xwrapper.cpp)
-	ENDIF (X11_FOUND)
-ENDIF (WITH_X11 AND NOT APPLE)
+		set (SRCS ${SRCS} x11/xwrapper.cpp)
+	endif ()
+endif ()
 
-FOREACH (SRC ${SRCS})
-	SET (UTIL_SRCS "${UTIL_SRCS};util/${SRC}")
-ENDFOREACH (SRC)
-FOREACH (FORM ${FORMS})
-	SET (UTIL_FORMS "${UTIL_FORMS};util/${FORM}")
-ENDFOREACH (FORM)
-SET (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
-SET (UTIL_FORMS ${UTIL_FORMS} PARENT_SCOPE)
+foreach (SRC ${SRCS})
+	set (UTIL_SRCS "${UTIL_SRCS};util/${SRC}")
+endforeach ()
+foreach (FORM ${FORMS})
+	set (UTIL_FORMS "${UTIL_FORMS};util/${FORM}")
+endforeach ()
+set (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
+set (UTIL_FORMS ${UTIL_FORMS} PARENT_SCOPE)
 
-ADD_DEFINITIONS(${QT_DEFINITIONS})
-ADD_DEFINITIONS(-DQT_PLUGIN)
-ADD_DEFINITIONS(-DQT_NO_DEBUG)
-ADD_DEFINITIONS(-DQT_SHARED)
-ADD_DEFINITIONS(-DQT_GUI_LIB)
+add_definitions(${QT_DEFINITIONS})
+add_definitions(-DQT_PLUGIN)
+add_definitions(-DQT_NO_DEBUG)
+add_definitions(-DQT_SHARED)
+add_definitions(-DQT_GUI_LIB)
 
-ADD_LIBRARY (lcutil SHARED
+add_library (lcutil SHARED
 	${SRCS}
 	${UIS_H}
 	)
-TARGET_LINK_LIBRARIES (lcutil
+target_link_libraries (lcutil
 	${QT_LIBRARIES}
 	${MAGIC_LIBRARIES}
 	${ADDITIONAL_LIBS}
 	xmlsettingsdialog
 	)
-SET_PROPERTY (TARGET lcutil PROPERTY SOVERSION 0.5.0)
-INSTALL (TARGETS lcutil DESTINATION ${LIBDIR})
+set_property (TARGET lcutil PROPERTY SOVERSION 0.5.0)
+install (TARGETS lcutil DESTINATION ${LIBDIR})
 
-IF (USE_QT5)
+if (USE_QT5)
 	QT5_USE_MODULES (lcutil Declarative Network Xml Sql Widgets)
-ENDIF ()
+endif ()

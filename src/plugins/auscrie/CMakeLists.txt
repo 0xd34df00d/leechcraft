@@ -1,38 +1,36 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_auscrie)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_auscrie)
+include (InitLCPlugin OPTIONAL)
 
-SET (QT_USE_QTNETWORK TRUE)
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+set (QT_USE_QTNETWORK TRUE)
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
-SET (SRCS
+set (SRCS
 	auscrie.cpp
 	shooterdialog.cpp
-	poster.cpp
-	requestbuilder.cpp
 	)
-SET (FORMS
+set (FORMS
 	shooterdialog.ui
 	)
-SET (RESOURCES auscrieresources.qrc)
+set (RESOURCES auscrieresources.qrc)
 CreateTrs ("auscrie" "de;en;es;fr;it;oc;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
-ADD_LIBRARY (leechcraft_auscrie SHARED
+add_library (leechcraft_auscrie SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	${UIS_H}
 	${RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_auscrie
+target_link_libraries (leechcraft_auscrie
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_auscrie DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (TARGETS leechcraft_auscrie DESTINATION ${LC_PLUGINS_DEST})
+install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

@@ -14,33 +14,33 @@
 #
 #  Added more introspection for WIN32 (c) 2011 DZhon (TheDZhon@gmail.com)
 
-IF (SPEEX_LIBRARIES AND SPEEX_INCLUDE_DIRS)
+if (SPEEX_LIBRARIES AND SPEEX_INCLUDE_DIRS)
 	# in cache already
-	SET (SPEEX_FOUND TRUE)
-ELSE (SPEEX_LIBRARIES AND SPEEX_INCLUDE_DIRS)
+	set (SPEEX_FOUND TRUE)
+else ()
 	# use pkg-config to get the directories and then use these values
-	# in the FIND_PATH() and FIND_LIBRARY() calls
+	# in the find_path() and find_library() calls
 	#include(UsePkgConfig)
 
 	#FIXME pkgconfig does not work: return a carriage return that makes compilation failed
 	#pkgconfig(speex _SpeexIncDir _SpeexLinkDir _SpeexLinkFlags _SpeexCflags)
 
 	#set(SPEEX_DEFINITIONS ${_SpeexCflags})
-	SET (SPEEX_DEFINITIONS "")
+	set (SPEEX_DEFINITIONS "")
   
-	IF (WIN32)
-		IF (NOT DEFINED SPEEX_DIR)
-			IF (SPEEX_FIND_REQUIRED)
-				MESSAGE (FATAL_ERROR "Please set SPEEX_DIR variable")
-			ELSE (SPEEX_FIND_REQUIRED)
-				MESSAGE (STATUS "Please set SPEEX_DIR variable for speex support")
-			ENDIF (SPEEX_FIND_REQUIRED)
-		ENDIF (NOT DEFINED SPEEX_DIR)
-		SET (SPEEX_INCLUDE_WIN32 ${SPEEX_DIR}/include)
-		SET (SPEEX_LIB_WIN32 ${SPEEX_DIR}/lib)
-	ENDIF (WIN32)  
+	if (WIN32)
+		if (NOT DEFINED SPEEX_DIR)
+			if (SPEEX_FIND_REQUIRED)
+				message (FATAL_ERROR "Please set SPEEX_DIR variable")
+			else ()
+				message (STATUS "Please set SPEEX_DIR variable for speex support")
+			endif ()
+		endif ()
+		set (SPEEX_INCLUDE_WIN32 ${SPEEX_DIR}/include)
+		set (SPEEX_LIB_WIN32 ${SPEEX_DIR}/lib)
+	endif ()  
   
-	FIND_PATH (SPEEX_INCLUDE_DIR
+	find_path (SPEEX_INCLUDE_DIR
 		NAMES
 			speex/speex.h
 			speex.h
@@ -53,7 +53,7 @@ ELSE (SPEEX_LIBRARIES AND SPEEX_INCLUDE_DIRS)
 			${SPEEX_INCLUDE_WIN32}
 	)
 
-	FIND_LIBRARY (SPEEX_LIBRARY
+	find_library (SPEEX_LIBRARY
 		NAMES
 			speex
 			Speex
@@ -67,36 +67,36 @@ ELSE (SPEEX_LIBRARIES AND SPEEX_INCLUDE_DIRS)
 			${SPEEX_LIB_WIN32}
 	)
 
-	IF (SPEEX_LIBRARY)
-		SET (SPEEX_FOUND TRUE)
-	ENDIF (SPEEX_LIBRARY)
+	if (SPEEX_LIBRARY)
+		set (SPEEX_FOUND TRUE)
+	endif ()
 
-	SET (SPEEX_INCLUDE_DIRS
+	set (SPEEX_INCLUDE_DIRS
 		${SPEEX_INCLUDE_DIR}
 	)
 
-	IF (SPEEX_FOUND)
-		SET (SPEEX_LIBRARIES
+	if (SPEEX_FOUND)
+		set (SPEEX_LIBRARIES
 			${SPEEX_LIBRARIES}
 			${SPEEX_LIBRARY}
 		)
-	ENDIF (SPEEX_FOUND)
+	endif ()
 
-	IF (SPEEX_INCLUDE_DIRS AND SPEEX_LIBRARIES)
-		SET (SPEEX_FOUND TRUE)
-	ENDIF (SPEEX_INCLUDE_DIRS AND SPEEX_LIBRARIES)
+	if (SPEEX_INCLUDE_DIRS AND SPEEX_LIBRARIES)
+		set (SPEEX_FOUND TRUE)
+	endif ()
 
-	IF (SPEEX_FOUND)
-		IF (NOT Speex_FIND_QUIETLY)
-			MESSAGE (STATUS "Found Speex: ${SPEEX_LIBRARIES}")
-		ENDIF (NOT Speex_FIND_QUIETLY)
-		ELSE (SPEEX_FOUND)
-    IF (Speex_FIND_REQUIRED)
-		MESSAGE (FATAL_ERROR "Could not find Speex")
-    ENDIF (Speex_FIND_REQUIRED)
-	ENDIF (SPEEX_FOUND)
+	if (SPEEX_FOUND)
+		if (NOT Speex_FIND_QUIETLY)
+			message (STATUS "Found Speex: ${SPEEX_LIBRARIES}")
+		endif ()
+		else ()
+    if (Speex_FIND_REQUIRED)
+		message (FATAL_ERROR "Could not find Speex")
+    endif ()
+	endif ()
 
 	# show the SPEEX_INCLUDE_DIRS and SPEEX_LIBRARIES variables only in the advanced view
-	MARK_AS_ADVANCED (SPEEX_INCLUDE_DIRS SPEEX_LIBRARIES)
+	mark_as_advanced (SPEEX_INCLUDE_DIRS SPEEX_LIBRARIES)
 
-ENDIF (SPEEX_LIBRARIES AND SPEEX_INCLUDE_DIRS)
+endif ()

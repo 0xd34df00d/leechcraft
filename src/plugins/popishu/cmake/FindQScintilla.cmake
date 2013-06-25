@@ -10,48 +10,48 @@
 #
 # Redistribution and use is allowed according to the terms of the FreeBSD license.
 
-IF(NOT QT4_FOUND)
-    INCLUDE(FindQt4)
-ENDIF(NOT QT4_FOUND)
+if(NOT QT4_FOUND)
+    include(FindQt4)
+endif()
 
-SET(QSCINTILLA_FOUND FALSE)
+set(QSCINTILLA_FOUND FALSE)
 
-IF(QT4_FOUND)
-    FIND_PATH(QSCINTILLA_INCLUDE_DIR qsciglobal.h
+if(QT4_FOUND)
+    find_path(QSCINTILLA_INCLUDE_DIR qsciglobal.h
     "${QT_INCLUDE_DIR}/Qsci" /usr/include /usr/include/Qsci
     )
 
-    SET(QSCINTILLA_NAMES ${QSCINTILLA_NAMES} qscintilla2 libqscintilla2)
-    FIND_LIBRARY(QSCINTILLA_LIBRARY
+    set(QSCINTILLA_NAMES ${QSCINTILLA_NAMES} qscintilla2 libqscintilla2)
+    find_library(QSCINTILLA_LIBRARY
         NAMES ${QSCINTILLA_NAMES}
         PATHS ${QT_LIBRARY_DIR}
     )
 
-    IF (QSCINTILLA_LIBRARY AND QSCINTILLA_INCLUDE_DIR)
+    if (QSCINTILLA_LIBRARY AND QSCINTILLA_INCLUDE_DIR)
 
-        SET(QSCINTILLA_LIBRARIES ${QSCINTILLA_LIBRARY})
-        SET(QSCINTILLA_FOUND TRUE)
+        set(QSCINTILLA_LIBRARIES ${QSCINTILLA_LIBRARY})
+        set(QSCINTILLA_FOUND TRUE)
 
-        IF (CYGWIN)
-            IF(BUILD_SHARED_LIBS)
+        if (CYGWIN)
+            if(BUILD_SHARED_LIBS)
             # No need to define QSCINTILLA_USE_DLL here, because it's default for Cygwin.
-            ELSE(BUILD_SHARED_LIBS)
-            SET (QSCINTILLA_DEFINITIONS -DQSCINTILLA_STATIC)
-            ENDIF(BUILD_SHARED_LIBS)
-        ENDIF (CYGWIN)
+            else()
+            set (QSCINTILLA_DEFINITIONS -DQSCINTILLA_STATIC)
+            endif()
+        endif ()
 
-    ENDIF (QSCINTILLA_LIBRARY AND QSCINTILLA_INCLUDE_DIR)
-ENDIF(QT4_FOUND)
+    endif ()
+endif()
 
-IF (QSCINTILLA_FOUND)
-  IF (NOT QScintilla_FIND_QUIETLY)
-    MESSAGE(STATUS "Found QScintilla2: ${QSCINTILLA_LIBRARY}")
-  ENDIF (NOT QScintilla_FIND_QUIETLY)
-ELSE (QSCINTILLA_FOUND)
-  IF (QScintilla_FIND_REQUIRED)
-    MESSAGE(FATAL_ERROR "Could not find QScintilla library")
-  ENDIF (QScintilla_FIND_REQUIRED)
-ENDIF (QSCINTILLA_FOUND)
+if (QSCINTILLA_FOUND)
+  if (NOT QScintilla_FIND_QUIETLY)
+    message(STATUS "Found QScintilla2: ${QSCINTILLA_LIBRARY}")
+  endif ()
+else ()
+  if (QScintilla_FIND_REQUIRED)
+    message(FATAL_ERROR "Could not find QScintilla library")
+  endif ()
+endif ()
 
-MARK_AS_ADVANCED(QSCINTILLA_INCLUDE_DIR QSCINTILLA_LIBRARY)
+mark_as_advanced(QSCINTILLA_INCLUDE_DIR QSCINTILLA_LIBRARY)
 

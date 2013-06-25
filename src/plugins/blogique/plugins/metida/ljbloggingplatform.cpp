@@ -101,7 +101,7 @@ namespace Metida
 
 	IBloggingPlatform::BloggingPlatfromFeatures LJBloggingPlatform::GetFeatures () const
 	{
-		return BPFSupportsProfiles | BPFSelectablePostDestination | BPFSupportsBackup;
+		return BPFSupportsProfiles | BPFSelectablePostDestination | BPFSupportsBackup | BPFPostPreviewSupport;
 	}
 
 	QObjectList LJBloggingPlatform::GetRegisteredAccounts ()
@@ -224,6 +224,7 @@ namespace Metida
 		{
 			const auto& user = elem.attribute ("user");
 			elem.setTagName ("span");
+			elem.setAttribute ("contenteditable", "false");
 
 			QDomElement linkElem = elem.ownerDocument ().createElement ("a");
 			linkElem.setAttribute ("href", QString ("http://%1.livejournal.com/profile").arg (user));
@@ -236,6 +237,8 @@ namespace Metida
 			QDomElement nameElem = elem.ownerDocument ().createElement ("a");
 			nameElem.setAttribute ("href", QString ("http://%1.livejournal.com/profile").arg (user));
 			nameElem.setAttribute ("target", "_blank");
+			nameElem.setAttribute ("id", "nameLink");
+			nameElem.setAttribute ("contenteditable", "true");
 			nameElem.appendChild (elem.ownerDocument ().createTextNode (user));
 
 			elem.appendChild (linkElem);
@@ -243,7 +246,173 @@ namespace Metida
 
 			elem.removeAttribute ("user");
 		};
+		ljUserTag.FromKnown_ = [] (QDomElement& elem) -> bool
+		{
+			auto aElem = elem.firstChildElement ("a");
+			while (!aElem.isNull ())
+			{
+				if (aElem.attribute ("id") == "nameLink")
+					break;
+
+				aElem = aElem.nextSiblingElement ("a");
+			}
+			if (aElem.isNull ())
+				return false;
+			const auto& username = aElem.text ();
+
+			const auto& children = elem.childNodes ();
+			while (!children.isEmpty ())
+				elem.removeChild (children.at (0));
+
+			elem.setTagName ("lj");
+			elem.setAttribute ("user", username);
+
+			return true;
+		};
 		tags << ljUserTag;
+
+		IAdvancedHTMLEditor::CustomTag ljCutTag;
+		ljCutTag.TagName_ = "lj-cut";
+		ljCutTag.ToKnown_ = [] (QDomElement& elem) -> void
+		{
+			elem.setTagName ("div");
+			const auto& text = elem.attribute ("text");
+			elem.removeAttribute ("text");
+			elem.setAttribute ("id", "cutTag");
+			elem.setAttribute ("style", "overflow:auto;border-width:3px;border-style:dotted;margin-left:3em;padding:2em 2em;");
+			elem.setAttribute ("text", text);
+		};
+		ljCutTag.FromKnown_ = [] (QDomElement& elem) -> bool
+		{
+			if (!elem.hasAttribute ("id") ||
+					elem.attribute ("id") != "cutTag")
+				return false;
+
+			elem.removeAttribute ("id");
+			elem.removeAttribute ("style");
+			const auto& text = elem.attribute ("text");
+			elem.removeAttribute ("text");
+			elem.setTagName ("lj-cut");
+			if (!text.isEmpty ())
+				elem.setAttribute ("text", text);
+
+			return true;
+		};
+
+		tags << ljCutTag;
+
+		IAdvancedHTMLEditor::CustomTag ljPollTag;
+		ljPollTag.TagName_ = "lj-poll";
+		ljPollTag.ToKnown_ = [this] (QDomElement& elem) -> void
+		{
+			const auto& whoView = elem.attribute ("whoview");
+			const auto& whoVote = elem.attribute ("whovote");
+			const auto& name = elem.attribute ("name");
+
+			auto children = elem.childNodes ();
+			while (!children.isEmpty ())
+				elem.removeChild (children.at (0));
+
+			elem.setTagName ("div");
+			elem.setAttribute ("style", "overflow:auto;border-width:2px;border-style:solid;border-radius:5px;margin-left:3em;padding:2em 2em;");
+			elem.setAttribute ("id", "pollDiv");
+			elem.setAttribute ("ljPollWhoview", whoView);
+			elem.setAttribute ("ljPollWhovote", whoVote);
+			elem.setAttribute ("ljPollName", name);
+			auto textElem = elem.ownerDocument ().createTextNode (tr ("Poll: %1").arg (name));
+			elem.appendChild (textElem);
+		};
+		ljPollTag.FromKnown_ = [] (QDomElement& elem) -> bool
+		{
+			if (!elem.hasAttribute ("id") ||
+					elem.attribute ("id") != "pollDiv")
+				return false;
+
+			auto whoView = elem.attribute ("ljPollWhoview");
+			auto whoVote = elem.attribute ("ljPollWhovote");
+			auto name = elem.attribute ("ljPollName");
+
+			elem.removeAttribute ("style");
+			elem.removeAttribute ("ljPollWhoview");
+			elem.removeAttribute ("ljPollWhovot");
+			elem.removeAttribute ("ljPollName");
+			elem.removeAttribute ("id");
+			elem.removeChild (elem.firstChild ());
+
+			elem.setTagName ("lj-poll");
+			elem.setAttribute ("whoview", whoView);
+			elem.setAttribute ("whovote", whoVote);
+			elem.setAttribute ("name", name);
+
+			return true;
+		};
+
+		tags << ljPollTag;
+
+		IAdvancedHTMLEditor::CustomTag ljEmbedTag;
+		ljEmbedTag.TagName_ = "lj-embed";
+		ljEmbedTag.ToKnown_ = [this] (QDomElement& elem) -> void
+		{
+			const auto& id = elem.attribute ("id");
+			elem.removeAttribute ("id");
+
+			elem.setTagName ("div");
+			elem.setAttribute ("style", "overflow:auto;border-width:2px;border-style:solid;border-radius:5px;margin-left:3em;padding:2em 2em;");
+			elem.setAttribute ("id", "embedTag");
+			elem.setAttribute ("name", id);
+			auto textElem = elem.ownerDocument ().createTextNode (tr ("Embeded: %1")
+					.arg (id));
+			elem.appendChild (textElem);
+		};
+		ljEmbedTag.FromKnown_ = [] (QDomElement& elem) -> bool
+		{
+			if (!elem.hasAttribute ("id") ||
+					elem.attribute ("id") != "embedTag")
+				return false;
+
+			elem.removeAttribute ("style");
+			elem.removeChild (elem.firstChild ());
+			const auto& id = elem.attribute ("name");
+			elem.removeAttribute ("id");
+			elem.setTagName ("lj-embed");
+			elem.setAttribute ("id", id);
+			return true;
+		};
+
+		tags << ljEmbedTag;
+
+		IAdvancedHTMLEditor::CustomTag ljLikeTag;
+		ljLikeTag.TagName_ = "lj-like";
+		ljLikeTag.ToKnown_ = [this] (QDomElement& elem) -> void
+		{
+			const auto& buttons = elem.attribute ("buttons");
+			elem.removeAttribute ("buttons");
+
+			elem.setTagName ("div");
+			elem.setAttribute ("style", "overflow:auto;border-width:2px;border-style:solid;border-radius:5px;margin-left:3em;padding:2em 2em;");
+			elem.setAttribute ("likes", buttons);
+			auto textElem = elem.ownerDocument ().createTextNode (tr ("Likes: %1")
+					.arg (!buttons.isEmpty () ?
+						buttons :
+						"repost,facebook,twitter,google,vkontakte,surfingbird,tumblr,livejournal"));
+			elem.appendChild (textElem);
+		};
+		ljLikeTag.FromKnown_ = [] (QDomElement& elem) -> bool
+		{
+			const auto& likes = elem.attribute ("likes");
+			if (likes.isEmpty ())
+				return false;
+
+			elem.removeAttribute ("likes");
+			elem.removeAttribute ("style");
+			elem.setTagName ("lj-like");
+			elem.setAttribute ("buttons", likes);
+			elem.removeChild (elem.firstChild ());
+			return true;
+		};
+
+		tags << ljLikeTag;
+
 		return tags;
 	}
 

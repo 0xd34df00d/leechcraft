@@ -1,15 +1,15 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_launchy)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_launchy)
+include (InitLCPlugin OPTIONAL)
 
-SET (QT_USE_QTDECLARATIVE TRUE)
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+set (QT_USE_QTDECLARATIVE TRUE)
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
-SET (SRCS
+set (SRCS
 	launchy.cpp
 	fsdisplayer.cpp
 	item.cpp
@@ -20,19 +20,19 @@ SET (SRCS
 	quarkmanager.cpp
 	itemimageprovider.cpp
 	)
-SET (RESOURCES resources.qrc)
+set (RESOURCES resources.qrc)
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 CreateTrs ("launchy" "en;ru_RU" COMPILED_TRANSLATIONS)
 
-ADD_LIBRARY (leechcraft_launchy SHARED
+add_library (leechcraft_launchy SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_launchy
+target_link_libraries (leechcraft_launchy
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_launchy DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
-INSTALL (DIRECTORY share/qml/launchy DESTINATION ${LC_QML_DEST})
+install (TARGETS leechcraft_launchy DESTINATION ${LC_PLUGINS_DEST})
+install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (DIRECTORY share/qml/launchy DESTINATION ${LC_QML_DEST})

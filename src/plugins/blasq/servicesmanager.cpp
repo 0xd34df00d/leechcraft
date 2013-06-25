@@ -27,58 +27,30 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AUSCRIE_POSTER_H
-#define PLUGINS_AUSCRIE_POSTER_H
-#include <memory>
-#include <QObject>
-#include <QMap>
-
-class QNetworkReply;
-class QNetworkAccessManager;
+#include "servicesmanager.h"
+#include "interfaces/blasq/iservicesplugin.h"
 
 namespace LeechCraft
 {
-struct Entity;
-
-namespace Auscrie
+namespace Blasq
 {
-	struct Worker
+	ServicesManager::ServicesManager (QObject *parent)
+	: QObject (parent)
 	{
-		virtual ~Worker () {}
+	}
 
-		virtual QNetworkReply* Post (const QByteArray& imageData,
-				const QString& format, QNetworkAccessManager *am) const = 0;
-		virtual QString GetLink (const QString& contents, QNetworkReply *reply) const = 0;
-	};
-
-	typedef std::shared_ptr<Worker> Worker_ptr;
-
-	class Poster : public QObject
+	void ServicesManager::AddPlugin (IServicesPlugin *plugin)
 	{
-		Q_OBJECT
+		const auto& news = plugin->GetServices ();
+		Services_ << news;
 
-		QNetworkReply *Reply_;
-	public:
-		enum HostingService
-		{
-			DumpBitcheeseNet,
-			SavepicRu,
-			ImagebinCa
-		};
-	private:
-		const HostingService Service_;
-		QMap<HostingService, Worker_ptr> Workers_;
-	public:
-		Poster (HostingService,
-				const QByteArray&, const QString&,
-				QNetworkAccessManager*, QObject* = 0);
-	private slots:
-		void handleFinished ();
-		void handleError ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
-	};
+		for (auto service : news)
+			emit serviceAdded (service);
+	}
+
+	const QList<IService*>& ServicesManager::GetServices () const
+	{
+		return Services_;
+	}
 }
 }
-
-#endif

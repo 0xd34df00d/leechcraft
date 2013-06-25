@@ -128,6 +128,7 @@ namespace Xoox
 		QByteArray GetAffName (QObject*) const;
 		bool MayChangePerm (QObject*, const QByteArray&, const QByteArray&) const;
 		void SetPerm (QObject*, const QByteArray&, const QByteArray&, const QString&);
+		void TrySetPerm (const QString&, const QByteArray&, const QByteArray&, const QString&);
 		bool IsLessByPerm (QObject*, QObject*) const;
 		bool IsMultiPerm (const QByteArray&) const;
 		QString GetUserString (const QByteArray&) const;

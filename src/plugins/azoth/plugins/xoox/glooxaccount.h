@@ -49,6 +49,7 @@
 #include <interfaces/azoth/isupportriex.h>
 #include <interfaces/azoth/isupportbookmarks.h>
 #include <interfaces/azoth/ihavemicroblogs.h>
+#include <interfaces/azoth/iregmanagedaccount.h>
 #ifdef ENABLE_CRYPT
 #include <interfaces/azoth/isupportpgp.h>
 #endif
@@ -95,6 +96,7 @@ namespace Xoox
 #endif
 					   , public ISupportRIEX
 					   , public ISupportBookmarks
+					   , public IRegManagedAccount
 #ifdef ENABLE_CRYPT
 					   , public ISupportPGP
 #endif
@@ -112,6 +114,7 @@ namespace Xoox
 				LeechCraft::Azoth::ISupportGeolocation
 				LeechCraft::Azoth::ISupportRIEX
 				LeechCraft::Azoth::ISupportBookmarks
+				LeechCraft::Azoth::IRegManagedAccount
 			)
 
 #ifdef ENABLE_MEDIACALLS
@@ -208,6 +211,10 @@ namespace Xoox
 		QVariantList GetBookmarkedMUCs () const;
 		void SetBookmarkedMUCs (const QVariantList&);
 
+		// IRegManagedAccount
+		bool SupportsFeature (Feature) const;
+		void UpdateServerPassword (const QString& newPass);
+
 #ifdef ENABLE_CRYPT
 		// ISupportPGP
 		void SetPrivateKey (const QCA::PGPKey&);
@@ -275,6 +282,8 @@ namespace Xoox
 		void gotConsolePacket (const QByteArray&, int, const QString&);
 
 		void geolocationInfoChanged (const QString&, QObject*);
+
+		void serverPasswordUpdated (const QString&);
 
 #ifdef ENABLE_MEDIACALLS
 		void called (QObject*);

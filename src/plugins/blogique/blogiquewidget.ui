@@ -357,6 +357,14 @@
     <string>Submit to...</string>
    </property>
   </action>
+  <action name="PreviewPost_">
+   <property name="text">
+    <string>Preview post</string>
+   </property>
+   <property name="toolTip">
+    <string>Preview post in blog style</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

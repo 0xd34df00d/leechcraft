@@ -1,34 +1,34 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_azoth_juick)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_azoth_juick)
+include (InitLCPlugin OPTIONAL)
 
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
+include (${QT_USE_FILE})
+include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/azoth
 	)
-SET (JUICK_SRCS
+set (JUICK_SRCS
 	juick.cpp
 	)
-SET (JUICK_HEADERS
+set (JUICK_HEADERS
 	juick.h
 	)
-SET (JUICK_RESOURCES
+set (JUICK_RESOURCES
 	juick.qrc
 	)
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (JUICK_MOC_SRCS ${JUICK_HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif ()
 QT4_ADD_RESOURCES (JUICK_RCCS ${JUICK_RESOURCES})
 
-ADD_LIBRARY (leechcraft_azoth_juick SHARED
+add_library (leechcraft_azoth_juick SHARED
 	${JUICK_SRCS}
 	${JUICK_MOC_SRCS}
 	${JUICK_RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_azoth_juick
+target_link_libraries (leechcraft_azoth_juick
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_azoth_juick DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_azoth_juick DESTINATION ${LC_PLUGINS_DEST})

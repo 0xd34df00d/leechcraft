@@ -184,11 +184,10 @@ namespace Metida
 
 	public slots:
 		void handleValidatingFinished (bool success);
-		void handleXmlRpcError (int errorCode, const QString& msgInEng);
-		void handleNetworkError (int errorCode, const QString& msgInEng);
 		void updateProfile ();
 
 		void submit (const Entry& event);
+		void preview (const Entry& event);
 		void backup ();
 
 		void handleEventPosted (const QList<LJEvent>& entries);
@@ -214,6 +213,9 @@ namespace Metida
 		void entryPosted (const QList<Entry>& entries);
 		void entryUpdated (const QList<Entry>& entries);
 		void entryRemoved (int itemId);
+
+		void gotError(int errorCode, const QString& errorString,
+				const QString& localizedErrorString = QString ());
 
 		void gotEntries2Backup (const QList<Entry>& entries);
 		void gettingEntries2BackupFinished ();

@@ -1,26 +1,26 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_aggregator)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_aggregator)
+include (InitLCPlugin OPTIONAL)
 
-OPTION (ENABLE_AGGREGATOR_BODYFETCH "Enable BodyFetch for fetching full bodies of news items" ON)
-OPTION (ENABLE_AGGREGATOR_WEBACCESS "Enable WebAccess for providing HTTP access to Aggregator" OFF)
+option (ENABLE_AGGREGATOR_BODYFETCH "Enable BodyFetch for fetching full bodies of news items" ON)
+option (ENABLE_AGGREGATOR_WEBACCESS "Enable WebAccess for providing HTTP access to Aggregator" OFF)
 
-SET (QT_USE_QTSQL TRUE)
-SET (QT_USE_QTXML TRUE)
-SET (QT_USE_QTNETWORK TRUE)
+set (QT_USE_QTSQL TRUE)
+set (QT_USE_QTXML TRUE)
+set (QT_USE_QTNETWORK TRUE)
 
-IF (ENABLE_AGGREGATOR_BODYFETCH)
-	SET (QT_USE_QTWEBKIT TRUE)
-ENDIF (ENABLE_AGGREGATOR_BODYFETCH)
+if (ENABLE_AGGREGATOR_BODYFETCH)
+	set (QT_USE_QTWEBKIT TRUE)
+endif ()
 
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIRS}
+include (${QT_USE_FILE})
+include_directories (${Boost_INCLUDE_DIRS}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 
-SET (SRCS
+set (SRCS
     aggregator.cpp
     core.cpp
     addfeed.cpp
@@ -69,7 +69,7 @@ SET (SRCS
 	dbupdatethreadworker.cpp
 	tovarmaps.cpp
 	)
-SET (HEADERS
+set (HEADERS
     aggregator.h
     core.h
     addfeed.h
@@ -119,7 +119,7 @@ SET (HEADERS
 	dbupdatethreadworker.h
 	tovarmaps.h
 	)
-SET (FORMS
+set (FORMS
     mainwidget.ui
     addfeed.ui
 	itembucket.ui
@@ -135,38 +135,37 @@ SET (FORMS
 	startupthirdpage.ui
 	export2fb2dialog.ui
 	)
-SET (RESOURCES aggregatorresources.qrc)
+set (RESOURCES aggregatorresources.qrc)
 CreateTrs ("aggregator" "ar;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 
-ADD_DEFINITIONS(-DBOOST_DYN_LINK)
-IF (NOT LC_NO_MOC)
+add_definitions(-DBOOST_DYN_LINK)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
-ADD_LIBRARY (leechcraft_aggregator SHARED
+add_library (leechcraft_aggregator SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	${UIS_H}
 	${RCCS}
 	)
-LINK_DIRECTORIES (${Boost_LIBRARY_DIR})
-TARGET_LINK_LIBRARIES (leechcraft_aggregator
+link_directories (${Boost_LIBRARY_DIR})
+target_link_libraries (leechcraft_aggregator
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_aggregator DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
-INSTALL (FILES aggregatorsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (TARGETS leechcraft_aggregator DESTINATION ${LC_PLUGINS_DEST})
+install (FILES aggregatorsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-SET (AGGREGATOR_INCLUDE_DIR ${CURRENT_SOURCE_DIR})
+set (AGGREGATOR_INCLUDE_DIR ${CURRENT_SOURCE_DIR})
 
-IF (ENABLE_AGGREGATOR_BODYFETCH)
-	ADD_SUBDIRECTORY (plugins/bodyfetch)
-ENDIF (ENABLE_AGGREGATOR_BODYFETCH)
+if (ENABLE_AGGREGATOR_BODYFETCH)
+	add_subdirectory (plugins/bodyfetch)
+endif ()
 
-IF (ENABLE_AGGREGATOR_WEBACCESS)
-	ADD_SUBDIRECTORY (plugins/webaccess)
-ENDIF (ENABLE_AGGREGATOR_WEBACCESS)
+if (ENABLE_AGGREGATOR_WEBACCESS)
+	add_subdirectory (plugins/webaccess)
+endif ()

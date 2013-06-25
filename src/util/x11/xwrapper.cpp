@@ -567,14 +567,41 @@ namespace Util
 		SendMessage (AppWin_, GetAtom ("_NET_CURRENT_DESKTOP"), desktop);
 	}
 
+	QStringList XWrapper::GetDesktopNames ()
+	{
+		ulong length = 0;
+		Guarded<uchar> data;
+
+		if (!GetRootWinProp (GetAtom ("_NET_DESKTOP_NAMES"),
+				&length, data.GetAs<uchar**> (), GetAtom ("UTF8_STRING")))
+			return {};
+
+		if (!data)
+			return {};
+
+		QStringList result;
+		for (char *pos = data.GetAs<char*> (false), *end = data.GetAs<char*> (false) + length; pos < end; )
+		{
+			const auto& str = QString::fromUtf8 (pos);
+			result << str;
+			pos += str.toUtf8 ().size () + 1;
+		}
+		return result;
+	}
+
+	QString XWrapper::GetDesktopName (int desktop, const QString& def)
+	{
+		return GetDesktopNames ().value (desktop, def);
+	}
+
 	int XWrapper::GetWindowDesktop (Window wid)
 	{
 		ulong length = 0;
 		Guarded<ulong> data;
-		if (GetWinProp (wid, GetAtom ("_NET_WM_DESKTOP"), &length, data.GetAs<uchar**> (), XA_CARDINAL))
+		if (GetWinProp (wid, GetAtom ("_NET_WM_DESKTOP"), &length, data.GetAs<uchar**> (), XA_CARDINAL) && length)
 			return data [0];
 
-		if (GetWinProp (wid, GetAtom ("_WIN_WORKSPACE"), &length, data.GetAs<uchar**> (), XA_CARDINAL))
+		if (GetWinProp (wid, GetAtom ("_WIN_WORKSPACE"), &length, data.GetAs<uchar**> (), XA_CARDINAL) && length)
 			return data [0];
 
 		return -1;

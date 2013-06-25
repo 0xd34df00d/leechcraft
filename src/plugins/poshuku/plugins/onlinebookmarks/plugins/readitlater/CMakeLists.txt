@@ -1,14 +1,14 @@
-SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-FIND_PACKAGE (QJSON REQUIRED)
+find_package (QJSON REQUIRED)
 
-INCLUDE_DIRECTORIES (${ONLINEBOOKMARKS_INCLUDE_DIR}
+include_directories (${ONLINEBOOKMARKS_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${QJSON_INCLUDE_DIR}
 	)
 
-SET (READITLATER_SRCS
+set (READITLATER_SRCS
 	readitlater.cpp
 	readitlaterservice.cpp
 	readitlaterauthwidget.cpp
@@ -16,7 +16,7 @@ SET (READITLATER_SRCS
 	readitlaterapi.cpp
 	)
 
-SET (READITLATER_HEADERS
+set (READITLATER_HEADERS
 	readitlater.h
 	readitlaterservice.h
 	readitlaterauthwidget.h
@@ -24,21 +24,21 @@ SET (READITLATER_HEADERS
 	readitlaterapi.h
 	)
 
-SET (READITLATER_FORMS readitlaterauthwidget.ui)
+set (READITLATER_FORMS readitlaterauthwidget.ui)
 
-SET (READITLATER_RESOURCES onlinebookmarksreaditlater.qrc)
+set (READITLATER_RESOURCES onlinebookmarksreaditlater.qrc)
 CreateTrs ("poshuku_onlinebookmarks_readitlater" "en;ru_RU;uk_UA" ONLINEBOOKMARKS_READITLATER_COMPILED_TRANSLATIONS)
 
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (READITLATER_MOC_SRCS ${READITLATER_HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif ()
 QT4_WRAP_UI (READITLATER_UIS_H ${READITLATER_FORMS})
 QT4_ADD_RESOURCES (READITLATER_RCCS ${READITLATER_RESOURCES})
 
-SET (READITLATER_RESOURCES readitlaterresources.qrc)
+set (READITLATER_RESOURCES readitlaterresources.qrc)
 QT4_ADD_RESOURCES (READITLATER_RCCS ${READITLATER_RESOURCES})
 
-ADD_LIBRARY (leechcraft_poshuku_onlinebookmarks_readitlater SHARED
+add_library (leechcraft_poshuku_onlinebookmarks_readitlater SHARED
  	${ONLINEBOOKMARKS_READITLATER_COMPILED_TRANSLATIONS}
 	${READITLATER_SRCS}
 	${READITLATER_MOC_SRCS}
@@ -46,11 +46,11 @@ ADD_LIBRARY (leechcraft_poshuku_onlinebookmarks_readitlater SHARED
 	${READITLATER_RCCS}
 	)
 
-TARGET_LINK_LIBRARIES (leechcraft_poshuku_onlinebookmarks_readitlater
+target_link_libraries (leechcraft_poshuku_onlinebookmarks_readitlater
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${QJSON_LIBRARIES}
 	)
 
-INSTALL (TARGETS leechcraft_poshuku_onlinebookmarks_readitlater DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${ONLINEBOOKMARKS_READITLATER_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (TARGETS leechcraft_poshuku_onlinebookmarks_readitlater DESTINATION ${LC_PLUGINS_DEST})
+install (FILES ${ONLINEBOOKMARKS_READITLATER_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

@@ -7,31 +7,31 @@
 # Redistribution and use is allowed according to the terms of the BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
-IF (LIBMSN_INCLUDE_DIR AND LIBMSN_LIBRARIES)
+if (LIBMSN_INCLUDE_DIR AND LIBMSN_LIBRARIES)
     # Already in cache, be silent
-    SET(LIBMSN_FIND_QUIETLY TRUE)
-ENDIF (LIBMSN_INCLUDE_DIR AND LIBMSN_LIBRARIES)
+    set(LIBMSN_FIND_QUIETLY TRUE)
+endif ()
 
-FIND_PATH(LIBMSN_INCLUDE_DIR msn/msn.h
+find_path(LIBMSN_INCLUDE_DIR msn/msn.h
     PATHS ${CMAKE_INSTALL_PREFIX}
     PATH_SUFFIXES msn )
 
-FIND_LIBRARY(LIBMSN_LIBRARIES NAMES msn libmsn
+find_library(LIBMSN_LIBRARIES NAMES msn libmsn
     PATHS ${CMAKE_INSTALL_PREFIX}
     PATH_SUFFIXES lib)
 
 if (LIBMSN_INCLUDE_DIR AND LIBMSN_LIBRARIES)
-  SET(LIBMSN_FOUND TRUE)
-endif(LIBMSN_INCLUDE_DIR AND LIBMSN_LIBRARIES)
+  set(LIBMSN_FOUND TRUE)
+endif()
 
-IF (LIBMSN_FOUND)
-  IF (NOT LIBMSN_FIND_QUIETLY)
-    MESSAGE(STATUS "Found LibMSN: ${LIBMSN_LIBRARIES}")
-  ENDIF (NOT LIBMSN_FIND_QUIETLY)
-ELSE (LIBMSN_FOUND)
-  IF (LIBMSN_FIND_REQUIRED)
-    MESSAGE(FATAL_ERROR "Could NOT find an acceptable version of LibMSN (version 0.4 or later required)")
-  ENDIF (LIBMSN_FIND_REQUIRED)
-ENDIF (LIBMSN_FOUND)
+if (LIBMSN_FOUND)
+  if (NOT LIBMSN_FIND_QUIETLY)
+    message(STATUS "Found LibMSN: ${LIBMSN_LIBRARIES}")
+  endif ()
+else ()
+  if (LIBMSN_FIND_REQUIRED)
+    message(FATAL_ERROR "Could NOT find an acceptable version of LibMSN (version 0.4 or later required)")
+  endif ()
+endif ()
 
-MARK_AS_ADVANCED(LIBMSN_INCLUDE_DIR LIBMSN_LIBRARIES)
+mark_as_advanced(LIBMSN_INCLUDE_DIR LIBMSN_LIBRARIES)

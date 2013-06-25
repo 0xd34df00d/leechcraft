@@ -52,6 +52,18 @@ namespace Dolozhee
 		return ReportWizard::PageID::Final;
 	}
 
+	void FileAttachPage::AddFile (const QString& path)
+	{
+		auto pathItem = new QStandardItem (path);
+		pathItem->setEditable (false);
+
+		auto sizeItem = new QStandardItem (Util::MakePrettySize (QFileInfo (path).size ()));
+		sizeItem->setEditable (false);
+
+		auto descrItem = new QStandardItem ();
+		Model_->appendRow ({ pathItem, sizeItem, descrItem });
+	}
+
 	QStringList FileAttachPage::GetFiles () const
 	{
 		QStringList result;
@@ -67,16 +79,7 @@ namespace Dolozhee
 				QDir::homePath ());
 
 		for (auto path : paths)
-		{
-			auto pathItem = new QStandardItem (path);
-			pathItem->setEditable (false);
-
-			auto sizeItem = new QStandardItem (Util::MakePrettySize (QFileInfo (path).size ()));
-			sizeItem->setEditable (false);
-
-			auto descrItem = new QStandardItem ();
-			Model_->appendRow ({ pathItem, sizeItem, descrItem });
-		}
+			AddFile (path);
 	}
 
 	void FileAttachPage::on_RemoveFile__released ()

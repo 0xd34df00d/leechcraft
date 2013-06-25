@@ -1,27 +1,27 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_sysnotify)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_sysnotify)
+include (InitLCPlugin OPTIONAL)
 
-SET (QT_USE_QTDBUS TRUE)
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+set (QT_USE_QTDBUS TRUE)
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
-SET (SRCS
+set (SRCS
 	sysnotify.cpp
 	notificationmanager.cpp
 	)
 #CreateTrs("sysnotify" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("sysnotify" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
-ADD_LIBRARY (leechcraft_sysnotify SHARED
+add_library (leechcraft_sysnotify SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_sysnotify
+target_link_libraries (leechcraft_sysnotify
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_sysnotify DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_sysnotify DESTINATION ${LC_PLUGINS_DEST})

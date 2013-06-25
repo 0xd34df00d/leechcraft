@@ -29,6 +29,8 @@
 
 #include "util.h"
 #include <util/util.h>
+#include <interfaces/idatafilter.h>
+#include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
 {
@@ -53,6 +55,17 @@ namespace Util
 		else
 			e.Additional_ ["org.LC.AdvNotifications.Count"] = count;
 		return e;
+	}
+
+	QList<QObject*> GetDataFilters (const QVariant& data, IEntityManager* manager)
+	{
+		const auto& e = MakeEntity (data, QString (), {}, "x-leechcraft/data-filter-request");
+		const auto& handlers = manager->GetPossibleHandlers (e);
+
+		QList<QObject*> result;
+		std::copy_if (handlers.begin (), handlers.end (), std::back_inserter (result),
+				[] (QObject *obj) { return qobject_cast<IDataFilter*> (obj); });
+		return result;
 	}
 }
 }

@@ -27,77 +27,25 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "requestbuilder.h"
-#include <QUuid>
+#pragma once
+
+#include <QDialog>
+#include "ui_gwitemsremovaldialog.h"
 
 namespace LeechCraft
 {
-namespace Auscrie
+namespace Azoth
 {
-	RequestBuilder::RequestBuilder ()
+namespace Xoox
+{
+	class GlooxCLEntry;
+
+	class GWItemsRemovalDialog : public QDialog
 	{
-		QString rnd = QUuid::createUuid ().toString ();
-		rnd = rnd.mid (1, rnd.size () - 2);
-		rnd += rnd;
-		rnd = rnd.left (55);
-
-		Boundary_ = "----------";
-		Boundary_ += rnd;
-	}
-
-	void RequestBuilder::AddPair (const QString& name, const QString& value)
-	{
-		Result_ += "--";
-		Result_ += Boundary_;
-		Result_ += "\r\n";
-		Result_ += "Content-Disposition: form-data; name=\"";
-		Result_ += name.toAscii();
-		Result_ += "\"";
-		Result_ += "\r\n\r\n";
-		Result_ += value.toUtf8();
-		Result_ += "\r\n";
-	}
-
-	void RequestBuilder::AddFile (const QString& format,
-			const QString& name, const QByteArray& imageData)
-	{
-		Result_ += "--";
-		Result_ += Boundary_;
-		Result_ += "\r\n";
-		Result_ += "Content-Disposition: form-data; name=\"";
-		Result_ += name.toAscii ();
-		Result_ += "\"; ";
-		Result_ += "filename=\"";
-		Result_ += QString ("screenshot.%1")
-			.arg (format.toLower ())
-			.toAscii ();
-		Result_ += "\"";
-		Result_ += "\r\n";
-		Result_ += "Content-Type: ";
-		if (format.toLower () == "jpg")
-			Result_ += "image/jpeg";
-		else
-			Result_ += "image/png";
-		Result_ += "\r\n\r\n";
-
-		Result_ += imageData;
-		Result_ += "\r\n";
-	}
-
-	QByteArray RequestBuilder::Build ()
-	{
-		QByteArray formed = Result_;
-
-		formed += "--";
-		formed += Boundary_;
-		formed += "--";
-
-		return formed;
-	}
-
-	QString RequestBuilder::GetBoundary () const
-	{
-		return Boundary_;
-	}
+		Ui::GWItemsRemovalDialog Ui_;
+	public:
+		GWItemsRemovalDialog (const QList<GlooxCLEntry*>&, QWidget* = 0);
+	};
+}
 }
 }

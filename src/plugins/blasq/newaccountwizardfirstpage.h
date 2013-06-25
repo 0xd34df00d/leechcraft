@@ -27,28 +27,35 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AUSCRIE_REQUESTBUILDER_H
-#define PLUGINS_AUSCRIE_REQUESTBUILDER_H
-#include <QString>
+#pragma once
+
+#include <QWizardPage>
+#include "ui_newaccountwizardfirstpage.h"
 
 namespace LeechCraft
 {
-namespace Auscrie
+namespace Blasq
 {
-	class RequestBuilder
+	class ServicesManager;
+	class IService;
+
+	class NewAccountWizardFirstPage : public QWizardPage
 	{
-		QByteArray Result_;
-		QString Boundary_;
+		Q_OBJECT
+
+		Ui::NewAccountWizardFirstPage Ui_;
+
+		const ServicesManager * const ServicesMgr_;
+
+		IService *Service_ = 0;
+		QList<QWidget*> Widgets_;
 	public:
-		RequestBuilder ();
+		NewAccountWizardFirstPage (const ServicesManager*, QWidget* = 0);
 
-		void AddPair (const QString&, const QString&);
-		void AddFile (const QString&, const QString&, const QByteArray&);
-
-		QByteArray Build ();
-		QString GetBoundary () const;
+		void initializePage ();
+	private slots:
+		void updatePages ();
+		void handleAccepted ();
 	};
 }
 }
-
-#endif

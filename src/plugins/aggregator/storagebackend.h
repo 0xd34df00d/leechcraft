@@ -30,6 +30,7 @@
 #ifndef PLUGINS_AGGREGATOR_STORAGEBACKEND_H
 #define PLUGINS_AGGREGATOR_STORAGEBACKEND_H
 #include <QObject>
+#include <QSet>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "feed.h"
@@ -419,6 +420,10 @@ namespace Aggregator
 		 * item.
 		 */
 		void itemDataUpdated (Item_ptr item, Channel_ptr channel) const;
+
+		/** @brief Notifies that a number of items was removed.
+		 */
+		void itemsRemoved (const QSet<IDType_t>&) const;
 
 		/** @brief Should be emitted whenever a full item is loaded.
 		 *

@@ -57,6 +57,7 @@ namespace Azoth
 			case Qt::Key_Space:
 			case Qt::Key_Right:
 			case Qt::Key_Left:
+			case Qt::Key_Delete:
 				qApp->sendEvent (View_, e);
 				return true;
 			default:

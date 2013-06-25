@@ -188,6 +188,12 @@ namespace Blogique
 		 */
 		virtual void submit (const Entry& event) = 0;
 
+		/** @brief Preview post in blog stryle.
+		 *
+		 * @param[in] event Preview event.
+		 */
+		virtual void preview (const Entry& event) = 0;
+
 		/** @brief Request updating profile data.
 		 *
 		 */
@@ -244,6 +250,9 @@ namespace Blogique
 		 * @note This function is expected to be a signal.
 		 */
 		virtual void gettingEntries2BackupFinished () = 0;
+
+		virtual void gotError (int errorCode, const QString& errorString,
+				const QString& localizedErrorString = QString ()) = 0;
 	};
 }
 }

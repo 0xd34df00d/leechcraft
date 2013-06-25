@@ -32,8 +32,12 @@
 #include <QtDebug>
 #include <QCryptographicHash>
 #include <QDateTime>
+#include <QFile>
+#include <QTemporaryFile>
 #include <QXmlQuery>
+#include <QDesktopServices>
 #include <util/sysinfo.h>
+#include <util/util.h>
 #include "profiletypes.h"
 #include "ljfriendentry.h"
 #include "utils.h"
@@ -95,6 +99,13 @@ namespace Metida
 	void LJXmlRPC::UpdateProfileInfo ()
 	{
 		Validate (Account_->GetOurLogin (), Account_->GetPassword ());
+	}
+
+	void LJXmlRPC::Preview (const LJEvent& event)
+	{
+		ApiCallQueue_ << [event, this] (const QString& challenge)
+				{ PreviewEventRequest (event, challenge); };
+		GenerateChallenge ();
 	}
 
 	void LJXmlRPC::Submit (const LJEvent& event)
@@ -504,6 +515,57 @@ namespace Metida
 				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
+	void LJXmlRPC::PreviewEventRequest (const LJEvent& event, const QString& challenge)
+	{
+		QNetworkRequest request;
+		auto userAgent = "LeechCraft Blogique " +
+				Core::Instance ().GetCoreProxy ()->GetVersion ().toUtf8 ();
+		request.setUrl (QUrl ("http://www.livejournal.com/preview/entry.bml"));
+		request.setRawHeader ("User-Agent", userAgent);
+		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+
+		QString data = QString ("lj_form_auth=%1&rte_on=1&date_diff=1&postas=remote&postto=%2"
+					"&community=%3&date=%4&time=%5&prop_picture_keyword=%6&subject=%7"
+					"&event=%8&prop_taglist=%9&prop_current_moodid=%10&prop_current_mood=%11"
+					"&prop_current_music=%12&prop_current_location=%13&prop_adult_content=%14"
+					"&comment_settings=%15&prop_opt_screening=%16&security=%17&date_ymd_dd=%18"
+					"&date_ymd_mm=%19&date_ymd_yyyy=%20&date_diff=1")
+				.arg (challenge)
+				.arg (event.UseJournal_ == Account_->GetOurLogin () ?
+					"journal" :
+					"community")
+				//TODO community
+				.arg ("")
+				.arg (event.DateTime_.toString ("dd-MM-yyyy"))
+				.arg (event.DateTime_.toString ("hh:mm"))
+				.arg (event.Props_.PostAvatar_)
+				.arg (event.Subject_)
+				.arg (event.Event_)
+				.arg (event.Tags_.join (","))
+				.arg (event.Props_.CurrentMoodId_)
+				.arg (event.Props_.CurrentMood_)
+				.arg (event.Props_.CurrentMusic_)
+				.arg (event.Props_.CurrentLocation_)
+				.arg (MetidaUtils::GetStringForAdultContent (event.Props_.AdultContent_))
+				.arg ("default")
+				.arg (MetidaUtils::GetStringFromCommentsManagment (event.Props_.CommentsManagement_))
+				.arg (MetidaUtils::GetStringForAccess (event.Security_))
+				.arg (event.DateTime_.date ().day ())
+				.arg (event.DateTime_.date ().month ())
+				.arg (event.DateTime_.date ().year ());
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (request, data.toUtf8 ());
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handlePreviewEventReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
 	void LJXmlRPC::PostEventRequest (const LJEvent& event, const QString& challenge)
 	{
 		QDomDocument document ("PostEventRequest");
@@ -656,7 +718,7 @@ namespace Metida
 		element.appendChild (propsStruct.first);
 		propsStruct.second.appendChild (GetSimpleMemberElement ("current_location",
 				"string", event.Props_.CurrentLocation_, document));
-		if (!event.Props_.CurrentMood_.isEmpty ())
+		if (event.Props_.CurrentMoodId_ == -1)
 			propsStruct.second.appendChild (GetSimpleMemberElement ("current_mood",
 					"string", event.Props_.CurrentMood_, document));
 		else
@@ -1009,7 +1071,8 @@ namespace Metida
 		query.setQuery ("/methodResponse/fault/value/struct/member[name='faultString']/value/string/text()");
 		if (!query.evaluateTo (&errorString))
 			return;
-		emit error (errorCode.toInt (), errorString);
+		emit error (errorCode.toInt (), errorString,
+				MetidaUtils::GetLocalizedErrorMessage (errorCode.toInt ()));
 	}
 
 	namespace
@@ -1538,6 +1601,25 @@ namespace Metida
 		ParseForError (content);
 	}
 
+	void LJXmlRPC::handlePreviewEventReplyFinished ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		const QString path = QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
+				QString ("/blogique_preview_%1.bml")
+						.arg (QDateTime::currentDateTime ().toTime_t ());
+		QFile file (path);
+		if (file.open (QIODevice::WriteOnly))
+		{
+			file.write (reply->readAll ());
+			file.close ();
+			Core::Instance ().SendEntity (Util::MakeEntity (QUrl::fromLocalFile (file.fileName ()),
+					QString (), OnlyHandle | FromUserInitiated));
+		}
+	}
+
 	namespace
 	{
 		int GetEventItemId (const QDomDocument& document)
@@ -1988,6 +2070,7 @@ namespace Metida
 		if (!reply)
 			return;
 		reply->deleteLater ();
+		qDebug () << reply->errorString ();
 		emit networkError (err, reply->errorString ());
 	}
 

@@ -1,21 +1,21 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_blogique_metida)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_blogique_metida)
+include (InitLCPlugin OPTIONAL)
 
-SET (QT_USE_QTDECLARATIVE TRUE)
-SET (QT_USE_QTNETWORK TRUE)
-SET (QT_USE_QTXML TRUE)
-SET (QT_USE_QTXMLPATTERNS TRUE)
-INCLUDE (${QT_USE_FILE})
+set (QT_USE_QTDECLARATIVE TRUE)
+set (QT_USE_QTNETWORK TRUE)
+set (QT_USE_QTXML TRUE)
+set (QT_USE_QTXMLPATTERNS TRUE)
+include (${QT_USE_FILE})
 
-INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR}
+include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${BLOGIQUE_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/blogique
 	)
 
-SET (METIDA_SRCS
+set (METIDA_SRCS
 	addeditentrydialog.cpp
 	core.cpp
 	frienditemdelegate.cpp
@@ -42,7 +42,7 @@ SET (METIDA_SRCS
 	xmlsettingsmanager.cpp
 	)
 
-SET (METIDA_HEADERS
+set (METIDA_HEADERS
 	addeditentrydialog.h
 	core.h
 	entryoptions.h
@@ -69,7 +69,7 @@ SET (METIDA_HEADERS
 	xmlsettingsmanager.h
 	)
 
-SET (METIDA_FORMS
+set (METIDA_FORMS
 	addeditentrydialog.ui
 	ljaccountconfigurationdialog.ui
 	ljaccountconfigurationwidget.ui
@@ -81,27 +81,27 @@ SET (METIDA_FORMS
 	updatetypedialog.ui
 	)
 
-SET (METIDA_RESOURCES blogiquemetidaresources.qrc)
+set (METIDA_RESOURCES blogiquemetidaresources.qrc)
 
 # CreateTrVars ("blogique_metida" "de;en;es;fr;it;ru_RU;uk_UA" METIDA_TRANSLATIONS METIDA_COMPILED_TRANSLATIONS)
 
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (METIDA_MOC_SRCS ${METIDA_HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif ()
 QT4_WRAP_UI (METIDA_UIS_H ${METIDA_FORMS})
 QT4_ADD_RESOURCES (METIDA_RCCS ${METIDA_RESOURCES})
 
-# ADD_CUSTOM_COMMAND (OUTPUT
+# add_custom_command (OUTPUT
 # 	${METIDA_COMPILED_TRANSLATIONS}
 # 	COMMAND "${QT_LRELEASE_EXECUTABLE}" ${METIDA_TRANSLATIONS}
 # 	DEPENDS ${METIDA_TRANSLATIONS}
 # 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 # 	)
 
-SET (METIDA_RESOURCES metidaresources.qrc)
+set (METIDA_RESOURCES metidaresources.qrc)
 QT4_ADD_RESOURCES (METIDA_RCCS ${METIDA_RESOURCES})
 
-ADD_LIBRARY (leechcraft_blogique_metida SHARED
+add_library (leechcraft_blogique_metida SHARED
 	${METIDA_RCCS}
 	${METIDA_COMPILED_TRANSLATIONS}
 	${METIDA_SRCS}
@@ -110,15 +110,15 @@ ADD_LIBRARY (leechcraft_blogique_metida SHARED
 	${METIDA_RCCS}
 	)
 
-TARGET_LINK_LIBRARIES (leechcraft_blogique_metida
+target_link_libraries (leechcraft_blogique_metida
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 
-INSTALL (TARGETS leechcraft_blogique_metida
+install (TARGETS leechcraft_blogique_metida
 		DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${METIDA_COMPILED_TRANSLATIONS}
+install (FILES ${METIDA_COMPILED_TRANSLATIONS}
 		DESTINATION ${LC_TRANSLATIONS_DEST})
-INSTALL (FILES blogiquemetidasettings.xml
+install (FILES blogiquemetidasettings.xml
 		DESTINATION ${LC_SETTINGS_DEST})
-INSTALL(DIRECTORY share/qml/blogique DESTINATION ${LC_QML_DEST})
+install(DIRECTORY share/qml/blogique DESTINATION ${LC_QML_DEST})

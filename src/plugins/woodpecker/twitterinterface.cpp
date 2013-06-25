@@ -82,10 +82,10 @@ namespace Woodpecker
 		emit tweetsReady (ParseReply (jsonText));
 	}
 
-	QList<std::shared_ptr<Tweet>> TwitterInterface::ParseReply (const QByteArray& json)
+	QList<Tweet_ptr> TwitterInterface::ParseReply (const QByteArray& json)
 	{
 		QJson::Parser parser;
-		QList<std::shared_ptr<Tweet>> result;
+		QList<Tweet_ptr> result;
 		bool ok;
 
 		QVariantList answers = parser.parse (json, &ok).toList ();
@@ -158,33 +158,33 @@ namespace Woodpecker
 		switch (req)
 		{
 		case TwitterRequest::HomeTimeline:
-			reqUrl = "https://api.twitter.com/1/statuses/home_timeline.json";
+			reqUrl = "https://api.twitter.com/1.1/statuses/home_timeline.json";
 			params.insert ("count", "50");
 			params.insert ("include_entities", "true");
 			break;
 			
 		case TwitterRequest::UserTimeline:
-			reqUrl = "http://api.twitter.com/1/statuses/user_timeline.json";
+			reqUrl = "http://api.twitter.com/1.1/statuses/user_timeline.json";
 			params.insert ("include_entities", "true");
 			break;
 			
 		case TwitterRequest::Update:
-			reqUrl = "http://api.twitter.com/1/statuses/update.json";
+			reqUrl = "http://api.twitter.com/1.1/statuses/update.json";
 			break;
 			
 		case TwitterRequest::Direct:
-			reqUrl = "https://api.twitter.com/1/direct_messages.json";
+			reqUrl = "https://api.twitter.com/1.1/direct_messages.json";
 			
 		case TwitterRequest::Retweet:
-			reqUrl = QString ("http://api.twitter.com/1/statuses/retweet/").append (params.value ("rt_id")).append (".json");
+			reqUrl = QString ("http://api.twitter.com/1.1/statuses/retweet/").append (params.value ("rt_id")).append (".json");
 			break;
 			
 		case TwitterRequest::Reply:
-			reqUrl = "http://api.twitter.com/1/statuses/update.json";
+			reqUrl = "http://api.twitter.com/1.1/statuses/update.json";
 			break;
 			
 		case TwitterRequest::SpamReport:
-			reqUrl = "http://api.twitter.com/1/report_spam.json";
+			reqUrl = "http://api.twitter.com/1.1/report_spam.json";
 			break;
 			
 		default:
@@ -293,17 +293,6 @@ namespace Woodpecker
 		SignedRequest (TwitterRequest::HomeTimeline, KQOAuthRequest::GET);
 	}
 
-	void TwitterInterface::requestMoreTweets (const QString& last)
-	{
-		KQOAuthParameters param;
-
-		qDebug () << "Getting more tweets from " << last;
-		param.insert ("max_id", last);
-		param.insert ("count", QString ("%1").arg (30));
-		SetLastRequestMode (FeedMode::HomeTimeline);
-		SignedRequest (TwitterRequest::HomeTimeline, KQOAuthRequest::GET, param);
-	}
-
 	void TwitterInterface::requestUserTimeline (const QString& username)
 	{
 		KQOAuthParameters param;
@@ -337,6 +326,24 @@ namespace Woodpecker
 	void TwitterInterface::SetLastRequestMode (const FeedMode& newLastRequestMode)
 	{
 		LastRequestMode_ = newLastRequestMode;
+	}
+	
+	void TwitterInterface::request (const KQOAuthParameters& param, const FeedMode mode)
+	{
+		switch (mode) 
+		{
+			case FeedMode::UserTimeline:
+				SetLastRequestMode (FeedMode::UserTimeline);
+				SignedRequest (TwitterRequest::UserTimeline, KQOAuthRequest::GET, param);
+				break;
+				
+			case FeedMode::HomeTimeline:
+				SetLastRequestMode (FeedMode::HomeTimeline);
+				SignedRequest (TwitterRequest::HomeTimeline, KQOAuthRequest::GET, param);
+				break;
+			default:
+				qWarning () << Q_FUNC_INFO << "Unknown request";
+		}
 	}
 }
 }

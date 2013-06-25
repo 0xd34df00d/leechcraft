@@ -1,39 +1,39 @@
-IF (NOT QT_USE_FILE)
-	CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
-	IF (COMMAND cmake_policy)
+if (NOT QT_USE_FILE)
+	cmake_minimum_required (VERSION 2.6)
+	if (COMMAND cmake_policy)
 		cmake_policy (SET CMP0003 NEW)
-	ENDIF (COMMAND cmake_policy)
+	endif ()
 
-	PROJECT (leechcraft_snails)
+	project (leechcraft_snails)
 
-	IF (NOT CMAKE_MODULE_PATH)
-		SET (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
-	ENDIF (NOT CMAKE_MODULE_PATH)
+	if (NOT CMAKE_MODULE_PATH)
+		set (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
+	endif ()
 
-	FIND_PACKAGE (Boost REQUIRED)
-	FIND_PACKAGE (Qt4 REQUIRED)
-	FIND_PACKAGE (LeechCraft REQUIRED)
-ENDIF (NOT QT_USE_FILE)
+	find_package (Boost REQUIRED)
+	find_package (Qt4 REQUIRED)
+	find_package (LeechCraft REQUIRED)
+endif ()
 
-SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-FIND_PACKAGE (MAGIC)
-IF (MAGIC_FOUND)
-	ADD_DEFINITIONS (-DHAVE_MAGIC)
-ENDIF (MAGIC_FOUND)
+find_package (MAGIC)
+if (MAGIC_FOUND)
+	add_definitions (-DHAVE_MAGIC)
+endif ()
 
-SET (QT_USE_QTWEBKIT TRUE)
-SET (QT_USE_QTSQL TRUE)
+set (QT_USE_QTWEBKIT TRUE)
+set (QT_USE_QTSQL TRUE)
 
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${MAGIC_INCLUDE_DIRS}
 	)
-SET (SRCS
+set (SRCS
 	snails.cpp
 	core.cpp
 	mailtab.cpp
@@ -56,7 +56,7 @@ SET (SRCS
 	mailmodelmanager.cpp
 	common.cpp
 	)
-SET (HEADERS
+set (HEADERS
 	snails.h
 	core.h
 	mailtab.h
@@ -79,34 +79,34 @@ SET (HEADERS
 	mailmodelmanager.h
 	common.h
 	)
-SET (FORMS
+set (FORMS
 	mailtab.ui
 	accountslistwidget.ui
 	accountconfigdialog.ui
 	composemessagetab.ui
 	)
-SET (RESOURCES snailsresources.qrc)
+set (RESOURCES snailsresources.qrc)
 CreateTrs ("snails" "en;ru_RU" COMPILED_TRANSLATIONS)
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
-ADD_LIBRARY (leechcraft_snails SHARED
+add_library (leechcraft_snails SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	${UIS_H}
 	${RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_snails
+target_link_libraries (leechcraft_snails
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${MAGIC_LIBRARIES}
 	vmime
 	)
-INSTALL (TARGETS leechcraft_snails DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES snailssettings.xml DESTINATION ${LC_SETTINGS_DEST})
-INSTALL (DIRECTORY share/snails DESTINATION ${LC_SHARE_DEST})
-INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (TARGETS leechcraft_snails DESTINATION ${LC_PLUGINS_DEST})
+install (FILES snailssettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (DIRECTORY share/snails DESTINATION ${LC_SHARE_DEST})
+install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

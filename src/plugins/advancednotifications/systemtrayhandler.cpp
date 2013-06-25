@@ -342,12 +342,11 @@ namespace AdvancedNotifications
 		}
 
 		int eventCount = 0;
-		Q_FOREACH (const EventData& event, Events_.values ())
+		for (const auto& event : Events_)
 			if (event.Category_ == category)
 				eventCount += event.Count_;
 
 		QFont font = qApp->font ();
-		font.setBold (true);
 		font.setItalic (true);
 
 		QIcon withText;
@@ -355,7 +354,7 @@ namespace AdvancedNotifications
 		{
 			const auto& px = icon.pixmap (size);
 			const auto& overlaid = Util::DrawOverlayText (px,
-					QString::number (eventCount), font, QPen (Qt::darkCyan));
+					QString::number (eventCount), font, QPen (Qt::red));
 			withText.addPixmap (overlaid);
 		}
 

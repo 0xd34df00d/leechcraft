@@ -1,51 +1,52 @@
-INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR}
+include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}/..
 	${CMAKE_CURRENT_SOURCE_DIR}/..
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${Boost_INCLUDE_DIR}
 	)
 
-IF (NOT USE_QT5)
-	SET (QT_USE_QTNETWORK TRUE)
-	SET (QT_USE_QTXML TRUE)
-	SET (QT_USE_QTSQL TRUE)
-	SET (QT_USE_QTSCRIPT TRUE)
-	INCLUDE (${QT_USE_FILE})
-ENDIF ()
+if (NOT USE_QT5)
+	set (QT_USE_QTDBUS TRUE)
+	set (QT_USE_QTNETWORK TRUE)
+	set (QT_USE_QTXML TRUE)
+	set (QT_USE_QTSQL TRUE)
+	set (QT_USE_QTSCRIPT TRUE)
+	include (${QT_USE_FILE})
+endif ()
 
-ADD_DEFINITIONS (-DBOOST_PROGRAM_OPTIONS_DYN_LINK)
-ADD_DEFINITIONS (${QT_DEFINITIONS})
+add_definitions (-DBOOST_PROGRAM_OPTIONS_DYN_LINK)
+add_definitions (${QT_DEFINITIONS})
 
-OPTION (WITH_DOCS "Enable building documentation (requires Doxygen)" OFF)
-OPTION (WITH_DOCS_INSTALL "Install generated documentation (if WITH_DOCS is set)" OFF)
-IF (WITH_DOCS)
-	FIND_PACKAGE (Doxygen REQUIRED)
+option (WITH_DOCS "Enable building documentation (requires Doxygen)" OFF)
+option (WITH_DOCS_INSTALL "Install generated documentation (if WITH_DOCS is set)" OFF)
+if (WITH_DOCS)
+	find_package (Doxygen REQUIRED)
 
-	SET (DOXYDIR "${CMAKE_CURRENT_SOURCE_DIR}/../../doc/doxygen/core/")
-	SET (DOXYFILE "${DOXYDIR}/Doxyfile")
+	set (DOXYDIR "${CMAKE_CURRENT_SOURCE_DIR}/../../doc/doxygen/core/")
+	set (DOXYFILE "${DOXYDIR}/Doxyfile")
 
-	ADD_CUSTOM_TARGET (doc_core ALL
+	add_custom_target (doc_core ALL
 		"sed" "-i" "s/^PROJECT_NUMBER.*/PROJECT_NUMBER = '${LEECHCRAFT_VERSION}'/" "${DOXYFILE}"
 		COMMAND "${DOXYGEN_EXECUTABLE}" "${DOXYFILE}"
 		COMMAND "mv" "-f" "${DOXYDIR}/out" "${CMAKE_CURRENT_BINARY_DIR}/out"
 		WORKING_DIRECTORY "${DOXYDIR}"
 	)
-	IF (WITH_DOCS_INSTALL)
-		INSTALL (DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/out/html" DESTINATION "share/doc/leechcraft-core-${LEECHCRAFT_VERSION}")
-	ENDIF (WITH_DOCS_INSTALL)
-ENDIF (WITH_DOCS)
+	if (WITH_DOCS_INSTALL)
+		install (DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/out/html" DESTINATION "share/doc/leechcraft-core-${LEECHCRAFT_VERSION}")
+	endif ()
+endif ()
 
-OPTION (WITH_X11 "Enable X11 support on Linux" ON)
-IF (WITH_X11 AND NOT APPLE)
-	FIND_PACKAGE (X11)
+option (WITH_X11 "Enable X11 support on Linux" ON)
+if (WITH_X11 AND NOT APPLE)
+	find_package (X11)
 
-	IF (X11_FOUND)
-		ADD_DEFINITIONS (-DHAVE_X11)
-		SET (ADDITIONAL_LIBS ${X11_X11_LIB})
-	ENDIF (X11_FOUND)
-ENDIF (WITH_X11 AND NOT APPLE)
+	if (X11_FOUND)
+		add_definitions (-DHAVE_X11)
+		set (ADDITIONAL_LIBS ${X11_X11_LIB})
+	endif ()
+endif ()
 
-SET (SRCS
+set (SRCS
 	mainwindow.cpp
 	commonjobadder.cpp
 	core.cpp
@@ -90,8 +91,13 @@ SET (SRCS
 	colorthemeengine.cpp
 	rootwindowsmanager.cpp
 	docktoolbarmanager.cpp
+	loaders/ipluginloader.cpp
+	loaders/sopluginloader.cpp
+	loaders/dbuspluginloader.cpp
+	loaders/dbuswrapper.cpp
+	loaders/dbus/marshalling.cpp
 	)
-SET (FORMS
+set (FORMS
 	commonjobadder.ui
 	leechcraft.ui
 	pluginmanagerdialog.ui
@@ -106,20 +112,20 @@ SET (FORMS
 	settingstab.ui
 	acceptlangwidget.ui
 	)
-SET (RESOURCES mainresources.qrc)
+set (RESOURCES mainresources.qrc)
 
 CreateTrs ("" "ru_RU;de;uk_UA;it;ar;eo;es;tr;tt;en;be;fr;pl" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("" "en;ru_RU" "${SRCS};${UTIL_SRCS};${XSD_SRCS}" "${FORMS};${UTIL_FORMS};${XSD_FORMS}" "coresettings.xml")
 
-IF (USE_QT5)
+if (USE_QT5)
 	QT5_WRAP_UI (UIS_H ${FORMS})
 	QT5_ADD_RESOURCES (RCC ${RESOURCES})
-ELSE ()
+else ()
 	QT4_WRAP_UI (UIS_H ${FORMS})
 	QT4_ADD_RESOURCES (RCC ${RESOURCES})
-ENDIF ()
+endif ()
 
-ADD_EXECUTABLE (leechcraft WIN32
+add_executable (leechcraft WIN32
 	../config.h
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
@@ -127,17 +133,20 @@ ADD_EXECUTABLE (leechcraft WIN32
 	${RCC}
 	)
 
-TARGET_LINK_LIBRARIES (leechcraft
+target_link_libraries (leechcraft
 		${QT_QTMAIN_LIBRARY}
 		${QT_LIBRARIES}
 		${Boost_PROGRAM_OPTIONS_LIBRARY}
 		${LEECHCRAFT_LIBRARIES}
 		${ADDITIONAL_LIBS}
 		)
-INSTALL (TARGETS leechcraft DESTINATION ${LC_BINDIR})
-INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
-INSTALL (FILES coresettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-IF (USE_QT5)
+install (TARGETS leechcraft DESTINATION ${LC_BINDIR})
+install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (FILES coresettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+if (USE_QT5)
 	QT5_USE_MODULES (leechcraft Gui Network Widgets Xml Sql Script Concurrent DBus Svg)
-ENDIF ()
+endif ()
+
+add_subdirectory (loaders/dbus)

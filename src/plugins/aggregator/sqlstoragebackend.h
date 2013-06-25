@@ -255,6 +255,16 @@ namespace Aggregator
 							 */
 							ChannelNumberTrimmer_,
 							/** Binds:
+							 * - channel_id
+							 * - age
+							 */
+							ChannelDateGetter_,
+							/** Binds:
+							 * - channel_id
+							 * - number
+							 */
+							ChannelNumberGetter_,
+							/** Binds:
 							 * - unread
 							 * - parents_hash
 							 * - title

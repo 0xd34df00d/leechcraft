@@ -30,6 +30,7 @@
 #include "mainwidget.h"
 #include <QMenu>
 #include <QMainWindow>
+#include <QMessageBox>
 #include <QVBoxLayout>
 #include <QToolButton>
 #include <QInputDialog>
@@ -110,8 +111,7 @@ namespace Azoth
 		connect (Core::Instance ().GetChatTabsManager (),
 				SIGNAL (entryMadeCurrent (QObject*)),
 				this,
-				SLOT (handleEntryMadeCurrent (QObject*)),
-				Qt::QueuedConnection);
+				SLOT (handleEntryMadeCurrent (QObject*)));
 		connect (Core::Instance ().GetChatTabsManager (),
 				SIGNAL (entryLostCurrent (QObject*)),
 				this,
@@ -173,6 +173,15 @@ namespace Azoth
 		FastStatusButton_->setMenu (StatusMenuMgr_->CreateMenu (this, SLOT (fastStateChangeRequested ()), this));
 		FastStatusButton_->setPopupMode (QToolButton::InstantPopup);
 		updateFastStatusButton (SOffline);
+
+		ActionDeleteSelected_ = new QAction (this);
+		ActionDeleteSelected_->setShortcut (Qt::Key_Delete);
+		ActionDeleteSelected_->setShortcutContext (Qt::WidgetWithChildrenShortcut);
+		connect (ActionDeleteSelected_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleDeleteSelected ()));
+		addAction (ActionDeleteSelected_);
 
 		XmlSettingsManager::Instance ().RegisterObject ("ShowMenuBar",
 				this, "menuBarVisibilityToggled");
@@ -325,10 +334,15 @@ namespace Azoth
 		UsersListWidget w (entries,
 				[accCount] (ICLEntry *entry) -> QString
 				{
+					QString text = entry->GetEntryName ();
+					if (text != entry->GetHumanReadableID ())
+						text += " (" + entry->GetHumanReadableID () + ")";
+
 					if (accCount <= 1)
-						return entry->GetEntryName ();
+						return text;
+
 					auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
-					return entry->GetEntryName () + " (" + acc->GetAccountName () + ")";
+					return text + " [" + acc->GetAccountName () + "]";
 				},
 				this);
 		if (w.exec () != QDialog::Accepted)
@@ -642,6 +656,35 @@ namespace Azoth
 
 		if (!Ui_.FilterLine_->text ().isEmpty ())
 			Ui_.FilterLine_->setText (QString ());
+	}
+
+	void MainWidget::handleDeleteSelected ()
+	{
+		const auto& idx = ProxyModel_->mapToSource (Ui_.CLTree_->currentIndex ());
+		if (!idx.isValid ())
+			return;
+
+		if (idx.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)
+			return;
+
+		const auto& obj = idx.data (Core::CLREntryObject).value<QObject*> ();
+		auto entry = qobject_cast<ICLEntry*> (obj);
+		auto acc = entry ? qobject_cast<IAccount*> (entry->GetParentAccount ()) : 0;
+		if (!entry || !acc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no entry or account";
+			return;
+		}
+
+		if (QMessageBox::question (this,
+				"LeechCraft",
+				tr ("Are you sure you want to remove %1 from roster?")
+					.arg (entry->GetEntryName ()),
+				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
+
+		acc->RemoveEntry (obj);
 	}
 
 	void MainWidget::handleEntryMadeCurrent (QObject *obj)

@@ -74,6 +74,12 @@ namespace NetStoreManager
 				SLOT (handleFilesViewSectionResized (int, int, int)));
 		Ui_.FilesView_->setContextMenuPolicy (Qt::CustomContextMenu);
 
+		OpenFile_ = new QAction (Proxy_->GetIcon ("system-run"),
+				tr ("Open file"), this);
+		connect (OpenFile_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (flOpenFile ()));
 		CopyURL_ = new QAction (Proxy_->GetIcon ("edit-copy"),
 				tr ("Copy URL..."), this);
 		connect (CopyURL_,
@@ -330,16 +336,21 @@ namespace NetStoreManager
 					ListingRole::HashType);
 			name->setData (storageItem.IsDirectory_, ListingRole::IsDirectory);
 			name->setData (storageItem.IsTrashed_, ListingRole::InTrash);
-			name->setIcon (proxy->GetIcon (storageItem.IsDirectory_ ?
+			QIcon icon = proxy->GetIcon (storageItem.IsDirectory_ ?
 					"inode-directory" :
-					storageItem.MimeType_));
-			if (name->icon ().isNull ())
+					storageItem.MimeType_);
+			if (icon.isNull ())
+			{
 				qDebug () << "[NetStoreManager]"
 						<< "Unknown mime type:"
 						<< storageItem.MimeType_
 						<< "for file"
 						<< storageItem.Name_
 						<< storageItem.ID_;
+				icon = proxy->GetIcon ("unknown");
+			}
+			name->setIcon (icon);
+
 			QStandardItem *size = new QStandardItem (Util::MakePrettySize (storageItem
 					.IsDirectory_ ? folderSize : storageItem.Size_));
 			size->setEditable (false);
@@ -395,7 +406,7 @@ namespace NetStoreManager
 	{
 		QList<QByteArray> ids;
 		Q_FOREACH (const auto& idx, Ui_.FilesView_->selectionModel ()->selectedRows ())
-			ids << idx.data (ListingRole::ID).toByteArray ();
+			ids << ProxyModel_->mapToSource (idx).data (ListingRole::ID).toByteArray ();
 
 		return ids;
 	}
@@ -410,7 +421,7 @@ namespace NetStoreManager
 	{
 		QModelIndex idx = Ui_.FilesView_->currentIndex ();
 		idx = idx.sibling (idx.row (), Columns::Name);
-		return idx.data (ListingRole::ID).toByteArray ();
+		return ProxyModel_->mapToSource (idx).data (ListingRole::ID).toByteArray ();
 	}
 
 	void ManagerTab::CallOnSelection (std::function<void (ISupportFileListings*, QList<QByteArray>)> func)
@@ -536,7 +547,10 @@ namespace NetStoreManager
 		}
 
 		if (!idx.data (ListingRole::IsDirectory).toBool ())
+		{
+			flOpenFile ();
 			return;
+		}
 
 		ShowListItemsWithParent (idx.data (ListingRole::ID).toByteArray (),
 				OpenTrash_->isChecked ());
@@ -653,6 +667,22 @@ namespace NetStoreManager
 
 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 		sfl->MoveToTrash (ids);
+	}
+
+	void ManagerTab::flOpenFile ()
+	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		TaskParameters tp = OnlyDownload |
+				AutoAccept |
+				DoNotNotifyUser |
+				DoNotSaveInHistory |
+				FromUserInitiated;
+		acc->Download (GetCurrentID (),
+				Ui_.FilesView_->currentIndex ().data ().toString (), tp, true,
+				true);
 	}
 
 	void ManagerTab::flCopy ()
@@ -783,7 +813,9 @@ namespace NetStoreManager
 		if (!acc)
 			return;
 
-		acc->Download (GetCurrentID (), QString ());
+		acc->Download (GetCurrentID (),
+				Ui_.FilesView_->currentIndex ().data ().toString (),
+				OnlyDownload | FromUserInitiated);
 	}
 
 	void ManagerTab::flCopyUrl ()
@@ -793,9 +825,8 @@ namespace NetStoreManager
 			return;
 
 		const QByteArray id = GetCurrentID ();
-		if (!Id2Item_ [id].Url_.isEmpty () &&
-				Id2Item_ [id].Url_.isValid ())
-			handleGotFileUrl (Id2Item_ [id].Url_);
+		if (Id2Item_ [id].Shared_)
+			handleGotFileUrl (Id2Item_ [id].ShareUrl_);
 		else
 			qobject_cast<ISupportFileListings*> (acc->GetQObject ())->RequestUrl (id);
 	}
@@ -846,6 +877,13 @@ namespace NetStoreManager
 			StorageItem item;
 			if (Id2Item_.contains (id))
 				item = Id2Item_ [id];
+
+			if (item.IsValid () &&
+					!item.IsDirectory_)
+			{
+				menu->insertAction (CopyURL_, OpenFile_);
+				menu->insertSeparator (CopyURL_);
+			}
 
 			if (item.IsValid () &&
 					!item.ExportLinks.isEmpty ())
@@ -942,7 +980,7 @@ namespace NetStoreManager
 		{
 			if (change.Deleted_)
 				Id2Item_.remove (change.ItemID_);
-			else
+			else if (change.Item_.IsValid ())
 				Id2Item_ [change.ItemID_] = change.Item_;
 		}
 

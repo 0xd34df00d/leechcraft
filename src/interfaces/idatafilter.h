@@ -30,16 +30,16 @@
 #pragma once
 
 #include <QtPlugin>
-#include <QByteArray>
 #include <QString>
 #include <QList>
+#include <QIcon>
 
 /** @brief Base interface for data filter plugins.
  *
  * Data filter plugins provide some means to manipulate and alter data.
  * Examples of such plugins are image uploaders to various image bins,
  * text finders, etc.
- * 
+ *
  * The list of possible data filter variants (that is, image bins
  * supported by a single plugin) is returned from the GetFilterVariants()
  * function.
@@ -60,6 +60,7 @@ public:
 		QByteArray ID_;
 		QString Name_;
 		QString Description_;
+		QIcon Icon_;
 	};
 
 	virtual ~IDataFilter () {}

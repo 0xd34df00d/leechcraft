@@ -60,14 +60,13 @@ namespace Auscrie
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 	private slots:
+		void showDialog ();
 		void makeScreenshot ();
+		void performAction ();
 		void shoot ();
 	private:
 		QPixmap GetPixmap () const;
-		void Post (const QByteArray&);
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
-
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
 }

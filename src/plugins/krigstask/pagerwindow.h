@@ -54,7 +54,7 @@ namespace Krigstask
 		Util::SettableIconProvider *WinIconProv_;
 		ImageProvider *WinSnapshotProv_;
 	public:
-		PagerWindow (ICoreProxy_ptr, QWidget* = 0);
+		PagerWindow (int, ICoreProxy_ptr, QWidget* = 0);
 	private:
 		void FillModel ();
 		void FillSubmodel (SingleDesktopModel*, const QList<ulong>&, ulong);

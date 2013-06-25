@@ -1,25 +1,25 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_netstoremanager)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_netstoremanager)
+include (InitLCPlugin OPTIONAL)
 
-IF (CMAKE_HOST_UNIX AND NOT CMAKE_HOST_APPLE)
-	SET (INOTIFY_DEFAULT TRUE)
-ELSE (CMAKE_HOST_UNIX AND NOT CMAKE_HOST_APPLE)
-	SET (INOTIFY_DEFAULT FALSE)
-ENDIF (CMAKE_HOST_UNIX AND NOT CMAKE_HOST_APPLE)
+if (CMAKE_HOST_UNIX AND NOT CMAKE_HOST_APPLE)
+	set (INOTIFY_DEFAULT TRUE)
+else ()
+	set (INOTIFY_DEFAULT FALSE)
+endif ()
 
-OPTION (ENABLE_NETSTOREMANAGER_INOTIFY "Enable inotify file watcher backend for NetStoreManager" ${INOTIFY_DEFAULT})
+option (ENABLE_NETSTOREMANAGER_INOTIFY "Enable inotify file watcher backend for NetStoreManager" ${INOTIFY_DEFAULT})
 
-SET (QT_USE_QTNETWORK TRUE)
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+set (QT_USE_QTNETWORK TRUE)
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 
-SET (SRCS
+set (SRCS
 	netstoremanager.cpp
 	managertab.cpp
 	xmlsettingsmanager.cpp
@@ -40,7 +40,8 @@ SET (SRCS
 	utils.cpp
 	)
 
-SET (FORMS
+set (FORMS
+	managertab.ui
 	accountslistwidget.ui
 	addaccountdialog.ui
 	directorywidget.ui
@@ -49,38 +50,38 @@ SET (FORMS
 	syncwidget.ui
 	)
 
-IF (ENABLE_NETSTOREMANAGER_INOTIFY)
-	ADD_DEFINITIONS (-DENABLE_INOTIFY)
-	SET (SRCS ${SRCS} fileswatcher_inotify.cpp)
-	SET (HEADERS ${HEADERS} fileswatcher_inotify.h)
-ELSE (ENABLE_NETSTOREMANAGER_INOTIFY)
-	SET (SRCS ${SRCS} fileswatcher_dummy.cpp)
-	SET (HEADERS ${HEADERS} fileswatcher_dummy.h)
-ENDIF (ENABLE_NETSTOREMANAGER_INOTIFY)
+if (ENABLE_NETSTOREMANAGER_INOTIFY)
+	add_definitions (-DENABLE_INOTIFY)
+	set (SRCS ${SRCS} fileswatcher_inotify.cpp)
+	set (HEADERS ${HEADERS} fileswatcher_inotify.h)
+else ()
+	set (SRCS ${SRCS} fileswatcher_dummy.cpp)
+	set (HEADERS ${HEADERS} fileswatcher_dummy.h)
+endif ()
 
-SET (RESOURCES netstoremanagerresources.qrc)
+set (RESOURCES netstoremanagerresources.qrc)
 
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 CreateTrs ("netstoremanager" "en;es;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 
-ADD_LIBRARY (leechcraft_netstoremanager SHARED
+add_library (leechcraft_netstoremanager SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	${UIS_H}
 	${RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_netstoremanager
+target_link_libraries (leechcraft_netstoremanager
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_netstoremanager DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES netstoremanagersettings.xml DESTINATION ${LC_SETTINGS_DEST})
-INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (TARGETS leechcraft_netstoremanager DESTINATION ${LC_PLUGINS_DEST})
+install (FILES netstoremanagersettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 
-OPTION (ENABLE_NETSTOREMANAGER_GOOGLEDRIVE "Build support for Google Drive" ON)
+option (ENABLE_NETSTOREMANAGER_GOOGLEDRIVE "Build support for Google Drive" ON)
 
-IF (ENABLE_NETSTOREMANAGER_GOOGLEDRIVE)
-	ADD_SUBDIRECTORY (plugins/googledrive)
-ENDIF (ENABLE_NETSTOREMANAGER_GOOGLEDRIVE)
+if (ENABLE_NETSTOREMANAGER_GOOGLEDRIVE)
+	add_subdirectory (plugins/googledrive)
+endif ()

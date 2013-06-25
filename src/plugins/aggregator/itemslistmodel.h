@@ -33,6 +33,7 @@
 #include <QStringList>
 #include <QSet>
 #include <QPair>
+#include <QIcon>
 #include "item.h"
 
 namespace LeechCraft
@@ -46,8 +47,11 @@ namespace Aggregator
 		QStringList ItemHeaders_;
 		items_shorts_t CurrentItems_;
 		int CurrentRow_;
-		// First is ParentURL_ and second is Title_
 		IDType_t CurrentChannel_;
+
+		const QIcon StarredIcon_;
+		const QIcon UnreadIcon_;
+		const QIcon ReadIcon_;
 	public:
 		ItemsListModel (QObject* = 0);
 
@@ -74,6 +78,7 @@ namespace Aggregator
 		int rowCount (const QModelIndex& = QModelIndex ()) const;
 	private slots:
 		void handleChannelRemoved (IDType_t);
+		void handleItemsRemoved (const QSet<IDType_t>&);
 	};
 }
 }

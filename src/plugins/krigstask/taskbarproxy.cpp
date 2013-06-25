@@ -101,6 +101,11 @@ namespace Krigstask
 			w.ShadeWindow (wid);
 	}
 
+	void TaskbarProxy::moveToDesktop (const QString& widStr, int desk)
+	{
+		Util::XWrapper::Instance ().MoveWindowToDesktop (widStr.toULongLong (), desk);
+	}
+
 	void TaskbarProxy::closeWindow (const QString& widStr)
 	{
 		Util::XWrapper::Instance ().CloseWindow (widStr.toULong ());
@@ -187,6 +192,37 @@ namespace Krigstask
 							{ toggleShadeWindow (wid); }));
 		}
 
+		QMenu *desksMenu = 0;
+
+		{
+			const auto numDesks = w.GetDesktopCount ();
+			if (numDesks > 1)
+			{
+				desksMenu = menu->addMenu (tr ("Move to desktop"));
+
+				const auto winDesk = w.GetWindowDesktop (wid);
+
+				auto addAct = [this, actions, winDesk, desksMenu] (int num, const QString& name)
+				{
+					auto act = desksMenu->addAction (name);
+					act->setEnabled (actions & Util::AllowedActionFlag::ChangeDesktop);
+					act->setCheckable (true);
+					act->setChecked (winDesk == num);
+					act->setProperty ("Actor",
+							QVariant::fromValue<Actor_f> ([this, num] (const QString& wid)
+									{ moveToDesktop (wid, num); }));
+				};
+
+				const auto& deskNames = w.GetDesktopNames ();
+				for (int i = 0; i < numDesks; ++i)
+					addAct (i, deskNames.value (i, QString::number (i)));
+
+				desksMenu->addSeparator ();
+
+				addAct (0xFFFFFFFF, tr ("All desktops"));
+			}
+		}
+
 		menu->addSeparator ();
 
 		{
@@ -198,7 +234,10 @@ namespace Krigstask
 			closeAct->setIcon (Proxy_->GetIcon ("window-close"));
 		}
 
-		for (auto act : menu->actions () + moreMenu->actions ())
+		auto allActions = menu->actions () + moreMenu->actions ();
+		if (desksMenu)
+			allActions += desksMenu->actions ();
+		for (auto act : allActions)
 		{
 			act->setProperty ("WID", widStr);
 			connect (act,
@@ -218,9 +257,11 @@ namespace Krigstask
 			return;
 		}
 
-		Pager_ = new PagerWindow (Proxy_);
+		auto desktop = QApplication::desktop ();
+		const auto screen = desktop->screenNumber ({ x, y });
+		Pager_ = new PagerWindow (screen, Proxy_);
 		new Util::AutoResizeMixin ({ x, y },
-				[] () { return QApplication::desktop ()->availableGeometry (); },
+				[screen, desktop] () { return desktop->availableGeometry (screen); },
 				Pager_);
 		Pager_->show ();
 	}

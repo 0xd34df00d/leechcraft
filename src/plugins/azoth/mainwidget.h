@@ -61,6 +61,7 @@ namespace Azoth
 		QToolButton *FastStatusButton_;
 		QAction *ActionCLMode_;
 		QAction *ActionShowOffline_;
+		QAction *ActionDeleteSelected_;
 		QToolBar *BottomBar_;
 
 		QMenu *MenuChangeStatus_;
@@ -100,6 +101,8 @@ namespace Azoth
 
 		void handleShowOffline (bool);
 		void clearFilter ();
+
+		void handleDeleteSelected ();
 
 		void handleEntryMadeCurrent (QObject*);
 		void handleEntryLostCurrent (QObject*);

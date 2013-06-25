@@ -29,12 +29,22 @@
 
 #pragma once
 
+#include <QDateTime>
 #include "audiostructs.h"
 
 class QObject;
 
 namespace Media
 {
+	struct ArtistImage
+	{
+		QString Title_;
+		QString Author_;
+		QDateTime Date_;
+		QUrl Thumb_;
+		QUrl Full_;
+	};
+
 	/** @brief Information about artist biography.
 	 *
 	 * For now this structure only contains basic information about the
@@ -48,6 +58,13 @@ namespace Media
 		/** @brief Basic information about this artist.
 		 */
 		ArtistInfo BasicInfo_;
+
+		/** @brief Other images for this artist.
+		 *
+		 * This list will typically include posters, concerts photos and
+		 * similar stuff.
+		 */
+		QList<ArtistImage> OtherImages_;
 	};
 
 	/** @brief Pending biography request handle.

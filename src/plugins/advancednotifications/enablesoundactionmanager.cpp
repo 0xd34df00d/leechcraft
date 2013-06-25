@@ -40,7 +40,8 @@ namespace AdvancedNotifications
 	, EnableAction_ (new QAction (tr ("Enable sound notifications"), this))
 	{
 		EnableAction_->setCheckable (true);
-		EnableAction_->setProperty ("ActionIcon", "preferences-desktop-sound");
+		EnableAction_->setProperty ("ActionIcon", "audio-volume-high");
+		EnableAction_->setProperty ("ActionIconOff", "audio-volume-muted");
 		EnableAction_->setProperty ("Action/ID", "org.LeechCraft.AdvancedNotifications.EnableSound");
 
 		connect (EnableAction_,

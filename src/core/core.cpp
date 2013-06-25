@@ -245,8 +245,8 @@ namespace LeechCraft
 		const auto& map = qobject_cast<Application*> (qApp)->GetVarMap ();
 		if (map.count ("list-plugins"))
 		{
-			Q_FOREACH (QPluginLoader_ptr loader, PluginManager_->GetAllAvailable ())
-				std::cout << "Found plugin: " << loader->fileName ().toUtf8 ().constData () << std::endl;
+			for (auto loader : PluginManager_->GetAllAvailable ())
+				std::cout << "Found plugin: " << loader->GetFileName ().toUtf8 ().constData () << std::endl;
 			std::exit (0);
 		}
 

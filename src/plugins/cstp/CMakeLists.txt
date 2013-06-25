@@ -1,15 +1,15 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_cstp)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_cstp)
+include (InitLCPlugin OPTIONAL)
 
-SET (QT_USE_QTNETWORK TRUE)
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIRS}
+set (QT_USE_QTNETWORK TRUE)
+include (${QT_USE_FILE})
+include_directories (${Boost_INCLUDE_DIRS}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 
-SET (SRCS
+set (SRCS
 	cstp.cpp
 	core.cpp
 	task.cpp
@@ -17,7 +17,7 @@ SET (SRCS
 	xmlsettingsmanager.cpp
 	morphfile.cpp
 	)
-SET (HEADERS
+set (HEADERS
 	cstp.h
 	core.h
 	task.h
@@ -25,34 +25,34 @@ SET (HEADERS
 	xmlsettingsmanager.h
 	morphfile.h
 	)
-SET (FORMS
+set (FORMS
 	addtask.ui
 	)
-SET (RESOURCES
+set (RESOURCES
 	cstpresources.qrc
 	)
 CreateTrs ("cstp" "ar;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
-ADD_DEFINITIONS(${QT_DEFINITIONS})
-ADD_DEFINITIONS(-DQT_PLUGIN)
-ADD_DEFINITIONS(-DQT_SHARED)
-ADD_DEFINITIONS(-DQT_GUI_LIB)
-IF (NOT LC_NO_MOC)
+add_definitions(${QT_DEFINITIONS})
+add_definitions(-DQT_PLUGIN)
+add_definitions(-DQT_SHARED)
+add_definitions(-DQT_GUI_LIB)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
-ADD_LIBRARY (leechcraft_cstp SHARED
+add_library (leechcraft_cstp SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	${UIS_H}
 	${RCCS})
-LINK_DIRECTORIES (${Boost_LIBRARY_DIR})
-TARGET_LINK_LIBRARIES (leechcraft_cstp
+link_directories (${Boost_LIBRARY_DIR})
+target_link_libraries (leechcraft_cstp
                         ${QT_LIBRARIES}
 						${LEECHCRAFT_LIBRARIES}
 						)
-INSTALL (TARGETS leechcraft_cstp DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
-INSTALL (FILES cstpsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (TARGETS leechcraft_cstp DESTINATION ${LC_PLUGINS_DEST})
+install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (FILES cstpsettings.xml DESTINATION ${LC_SETTINGS_DEST})

@@ -169,7 +169,8 @@ namespace Monocle
 			size.rwidth () -= 2 * margin;
 			size.rheight () -= 2 * margin;
 
-			return dimGetter (size) / dim;
+			const auto res = dimGetter (size) / dim;
+			return res > 0 ? res : 1;
 		};
 
 		switch (ScaleMode_)

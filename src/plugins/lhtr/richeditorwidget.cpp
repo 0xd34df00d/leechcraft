@@ -44,6 +44,12 @@
 #include <QXmlStreamWriter>
 #include <QNetworkRequest>
 #include <QtDebug>
+
+#ifdef WITH_HTMLTIDY
+#include <tidy.h>
+#include <buffio.h>
+#endif
+
 #include <util/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include "hyperlinkdialog.h"
@@ -344,7 +350,7 @@ namespace LHTR
 		QString content;
 		content += "<!DOCTYPE html PUBLIC";
 		content += "	\"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
-		content += "	<html lang=\"ar\" dir=\"ltr\" xmlns=\"http://www.w3.org/1999/xhtml\">";
+		content += "	<html dir=\"ltr\" xmlns=\"http://www.w3.org/1999/xhtml\">";
 		content += "<head><title></title></head><body contenteditable='true'>";
 		switch (type)
 		{
@@ -357,6 +363,8 @@ namespace LHTR
 		}
 		content += "</body></html>";
 		Ui_.View_->setContent (content.toUtf8 (), MIMEType);
+
+		setupJS ();
 	}
 
 	void RichEditorWidget::AppendAction (QAction *act)
@@ -407,7 +415,33 @@ namespace LHTR
 
 	void RichEditorWidget::InsertHTML (const QString& html)
 	{
-		ExecCommand ("insertHTML", ExpandCustomTags (html));
+		auto expanded = ExpandCustomTags (html);
+
+		expanded.replace ('\n', "\\n");
+		expanded.replace ('\'', "\\'");
+
+		auto frame = Ui_.View_->page ()->mainFrame ();
+		frame->evaluateJavaScript (R"delim(
+			var s = window.getSelection();
+			if (!s.rangeCount || !s.getRangeAt(0).endContainer)
+				document.body.focus();
+
+			var wrapper = document.createElement("div");
+			wrapper.innerHTML = ')delim" + expanded + R"delim(';
+			var node = wrapper.childNodes[0];
+
+			var textNode = document.createTextNode(' ');
+			s.getRangeAt(0).insertNode(textNode);
+
+			s.getRangeAt(0).insertNode(node);
+
+			s.removeAllRanges();
+
+			var r = document.createRange();
+			r.setStartAfter(textNode);
+			r.setEndAfter(textNode);
+			s.addRange(r);
+			)delim");
 	}
 
 	void RichEditorWidget::SetTagsMappings (const Replacements_t& rich2html, const Replacements_t& html2rich)
@@ -532,6 +566,12 @@ namespace LHTR
 
 	void RichEditorWidget::ExecCommand (const QString& cmd, QString arg)
 	{
+		if (cmd == "insertHTML")
+		{
+			InsertHTML (arg);
+			return;
+		}
+
 		auto frame = Ui_.View_->page ()->mainFrame ();
 		const QString& js = arg.isEmpty () ?
 				QString ("document.execCommand('%1', false, null)").arg (cmd) :
@@ -558,9 +598,72 @@ namespace LHTR
 		dia->show ();
 	}
 
-	QString RichEditorWidget::ExpandCustomTags (const QString& html) const
+	namespace
+	{
+		void TryFixHTML (QString& html)
+		{
+#ifdef WITH_HTMLTIDY
+			TidyBuffer output = { 0 };
+			TidyBuffer errbuf = { 0 };
+
+			auto tdoc = tidyCreate ();
+
+			std::shared_ptr<void> guard (nullptr,
+					[&tdoc, &output, &errbuf] (void*) -> void
+					{
+						tidyBufFree (&output);
+						tidyBufFree (&errbuf);
+						tidyRelease (tdoc);
+					});
+
+			if (!tidyOptSetBool (tdoc, TidyXmlOut, yes) ||
+					!tidyOptSetBool (tdoc, TidyForceOutput, yes) ||
+					!tidyOptSetValue (tdoc, TidyCharEncoding, "utf8"))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "cannot set xhtml output";
+				return;
+			}
+
+			tidySetErrorBuffer (tdoc, &errbuf);
+
+			if (tidyParseString (tdoc, html.toUtf8 ().constData ()) < 0)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "failed to parse"
+						<< html;
+				return;
+			}
+
+			if (tidyCleanAndRepair (tdoc) < 0)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "failed to clean and repair"
+						<< html;
+				return;
+			}
+
+			if (tidySaveBuffer (tdoc, &output) < 0)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "cannot save buffer";
+				return;
+			}
+
+			html = QString::fromUtf8 (reinterpret_cast<char*> (output.bp));
+#else
+			Q_UNUSED (html);
+#endif
+		}
+	}
+
+	QString RichEditorWidget::ExpandCustomTags (QString html) const
 	{
 		QDomDocument doc;
+#ifdef WITH_HTMLTIDY
+		if (!doc.setContent (html))
+			TryFixHTML (html);
+#endif
 		if (!doc.setContent (html))
 		{
 			qWarning () << Q_FUNC_INFO
@@ -583,12 +686,14 @@ namespace LHTR
 				tag.ToKnown_ (elem);
 
 				elem.setAttribute ("__tagname__", tag.TagName_);
+
 				elem.setAttribute ("__original__", origContents.trimmed ());
-				elem.setAttribute ("contenteditable", "false");
+				if (!tag.FromKnown_)
+					elem.setAttribute ("contenteditable", "false");
 			}
 		}
 
-		return doc.toString ();
+		return doc.toString (-1);
 	}
 
 	QString RichEditorWidget::RevertCustomTags () const
@@ -599,7 +704,40 @@ namespace LHTR
 		{
 			const auto& elems = root.findAll ("*[__tagname__='" + tag.TagName_ + "']");
 			for (auto elem : elems)
-				elem.setOuterXml (elem.attribute ("__original__"));
+			{
+				QDomDocument doc;
+				if (!tag.FromKnown_)
+					elem.setOuterXml (elem.attribute ("__original__"));
+				else if (!doc.setContent (elem.toOuterXml ()))
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to parse"
+							<< elem.toOuterXml ();
+					elem.setOuterXml (elem.attribute ("__original__"));
+				}
+				else
+				{
+					auto docElem = doc.documentElement ();
+					const auto& original = docElem.attribute ("__original__");
+					docElem.removeAttribute ("__original__");
+					docElem.removeAttribute ("__tagname__");
+
+					if (tag.FromKnown_ (docElem))
+					{
+						QString contents;
+						QTextStream str (&contents);
+						docElem.save (str, 1);
+
+						elem.setOuterXml (contents);
+					}
+					else
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "FromKnown_ failed";
+						elem.setOuterXml (original);
+					}
+				}
+			}
 		}
 		return root.toOuterXml ();
 	}
@@ -764,6 +902,9 @@ namespace LHTR
 
 		auto frame = Ui_.View_->page ()->mainFrame ();
 		frame->evaluateJavaScript (jstr);
+
+		const auto& fullHtml = frame->documentElement ().toOuterXml ();
+		Ui_.View_->setContent (ExpandCustomTags (fullHtml).toUtf8 (), MIMEType);
 	}
 
 	void RichEditorWidget::handleBgColor ()

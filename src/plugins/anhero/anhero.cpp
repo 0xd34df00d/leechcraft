@@ -30,31 +30,134 @@
 #include "anhero.h"
 #include <QIcon>
 #include <QApplication>
-#include <KDE/KGlobal>
-#include <KDE/KCrash>
-#include <kdeversion.h>
+#include <QX11Info>
+#include <signal.h>
+#include <unistd.h>
+#include <sys/resource.h>
+#include <sys/wait.h>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
+
+#include <X11/Xlib.h>
 
 namespace LeechCraft
 {
 namespace AnHero
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	namespace
+	{
+		QByteArray AppPath_;
+		QByteArray AppVersion_;
+		QByteArray AppArgs_;
+
+		void CloseFiles ()
+		{
+			rlimit rlp;
+			getrlimit (RLIMIT_NOFILE, &rlp);
+			for (rlim_t i = 3; i < rlp.rlim_cur; ++i)
+				close (i);
+		}
+
+		void Exec (const char **argv)
+		{
+			pid_t pid = fork ();
+			switch (pid)
+			{
+			case -1:
+				fprintf (stderr, "%s: failed to fork(), errno: %d\n", Q_FUNC_INFO, errno);
+				break;
+			case 0:
+				CloseFiles ();
+				execvp (argv[0], const_cast<char**> (argv));
+				fprintf (stderr, "%s: failed to exec(), errno: %d\n", Q_FUNC_INFO, errno);
+				_exit (253);
+				break;
+			default:
+				alarm (0);
+				while (waitpid (-1, nullptr, 0) != pid)
+					;
+				break;
+			}
+		}
+
+		void DefaultCrashHandler (int signal)
+		{
+			static uint8_t RecGuard = 0;
+			if (RecGuard++)
+				return;
+
+			alarm (5);
+
+			char sigtxt [10];
+			sprintf (sigtxt, "%d", signal);
+
+			char pidtxt [10];
+			sprintf (pidtxt, "%lld", QCoreApplication::applicationPid ());
+
+			const char *argv [] =
+			{
+				"lc_anhero_crashprocess",
+				"-display",
+				QX11Info::display () ? XDisplayString (QX11Info::display ()) : getenv ("DISPLAY"),
+				"--signal",
+				sigtxt,
+				"--pid",
+				pidtxt,
+				"--path",
+				AppPath_.constData (),
+				"--version",
+				AppVersion_.constData (),
+				"--cmdline",
+				AppArgs_.constData (),
+				nullptr
+			};
+
+			Exec (argv);
+			_exit (255);
+		}
+
+		void SetCrashHandler (void (*handler) (int))
+		{
+			sigset_t mask;
+			sigemptyset (&mask);
+
+			auto add = [&mask, handler] (int sig)
+			{
+				signal (sig, handler);
+				sigaddset (&mask, sig);
+			};
+#ifdef SIGSEGV
+			add (SIGSEGV);
+#endif
+#ifdef SIGBUS
+			add (SIGBUS);
+#endif
+#ifdef SIGFPE
+			add (SIGFPE);
+#endif
+#ifdef SIGILL
+			add (SIGILL);
+#endif
+#ifdef SIGABRT
+			add (SIGABRT);
+#endif
+
+			sigprocmask (SIG_UNBLOCK, &mask, 0);
+		}
+	}
+
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Util::InstallTranslator ("anhero");
 
-		if (!QApplication::arguments ().contains ("-noanhero"))
-		{
-#if KDE_VERSION_MINOR < 6
-			KCrash::setApplicationPath (qApp->applicationDirPath ());
-#endif
-			KCrash::setApplicationName ("LeechCraft");
-#if KDE_VERSION_MINOR < 5
-			KCrash::setCrashHandler (KCrash::defaultCrashHandler);
-#else
-			KCrash::setDrKonqiEnabled (true);;
-#endif
-		}
+		const auto& args = QApplication::arguments ();
+		if (args.contains ("-noanhero"))
+			return;
+
+		AppPath_ = QCoreApplication::applicationFilePath ().toUtf8 ();
+		AppVersion_ = proxy->GetVersion ().toUtf8 ();
+		AppArgs_ = args.join (" ").toUtf8 ();
+		SetCrashHandler (DefaultCrashHandler);
 	}
 
 	void Plugin::SecondInit ()

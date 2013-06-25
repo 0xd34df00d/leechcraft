@@ -1,16 +1,16 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_azoth_astrality)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_azoth_astrality)
+include (InitLCPlugin OPTIONAL)
 
-SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-FIND_PACKAGE (TelepathyQt4 REQUIRED)
+find_package (TelepathyQt4 REQUIRED)
 
-IF (NOT WIN32)
-	SET (QT_USE_QTDBUS TRUE)
-ENDIF (NOT WIN32)
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
+if (NOT WIN32)
+	set (QT_USE_QTDBUS TRUE)
+endif ()
+include (${QT_USE_FILE})
+include_directories (${AZOTH_INCLUDE_DIR}
 	${TELEPATHY_QT4_INCLUDE_DIR}
 	${TELEPATHY_QT4_INCLUDE_DIR}/../
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -18,7 +18,7 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/azoth
 	)
-SET (ASTRALITY_SRCS
+set (ASTRALITY_SRCS
 	astrality.cpp
 	cmwrapper.cpp
 	protowrapper.cpp
@@ -29,7 +29,7 @@ SET (ASTRALITY_SRCS
 	astralityutil.cpp
 	vcarddialog.cpp
 	)
-SET (ASTRALITY_HEADERS
+set (ASTRALITY_HEADERS
 	astrality.h
 	cmwrapper.h
 	protowrapper.h
@@ -40,31 +40,31 @@ SET (ASTRALITY_HEADERS
 	astralityutil.h
 	vcarddialog.h
 	)
-SET (ASTRALITY_FORMS
+set (ASTRALITY_FORMS
 	accountregfirstpage.ui
 	vcarddialog.ui
 	)
-SET (ASTRALITY_RESOURCES azothastralityresources.qrc)
+set (ASTRALITY_RESOURCES azothastralityresources.qrc)
 CreateTrs ("azoth_astrality" "en;es;ru_RU;uk_UA" ASTRALITY_COMPILED_TRANSLATIONS)
 
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (ASTRALITY_MOC_SRCS ${ASTRALITY_HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif ()
 QT4_WRAP_UI (ASTRALITY_UIS_H ${ASTRALITY_FORMS})
 QT4_ADD_RESOURCES (ASTRALITY_RCCS ${ASTRALITY_RESOURCES})
 
-ADD_LIBRARY (leechcraft_azoth_astrality SHARED
+add_library (leechcraft_azoth_astrality SHARED
 	${ASTRALITY_COMPILED_TRANSLATIONS}
 	${ASTRALITY_SRCS}
 	${ASTRALITY_MOC_SRCS}
 	${ASTRALITY_UIS_H}
 	${ASTRALITY_RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_azoth_astrality
+target_link_libraries (leechcraft_azoth_astrality
 	${QT_LIBRARIES}
 	${TELEPATHY_QT4_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_azoth_astrality DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${ASTRALITY_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
-#INSTALL (FILES azothastralitysettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (TARGETS leechcraft_azoth_astrality DESTINATION ${LC_PLUGINS_DEST})
+install (FILES ${ASTRALITY_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+#install (FILES azothastralitysettings.xml DESTINATION ${LC_SETTINGS_DEST})

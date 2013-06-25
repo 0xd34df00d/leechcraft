@@ -30,6 +30,7 @@
 #include "graphsfactory.h"
 #include <QStringList>
 #include <QMap>
+#include <QApplication>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_histogram.h>
 #include <qwt_plot.h>
@@ -51,37 +52,91 @@ namespace Poleemery
 			auto opsMgr = Core::Instance ().GetOpsManager ();
 			auto entries = opsMgr->GetAllEntries ();
 
-			const auto& now = QDateTime::currentDateTime ();
-			const auto& startDt = now.addDays (-days);
-			auto pos = std::upper_bound (entries.begin (), entries.end (), startDt,
-					[] (const QDateTime& dt, const EntryBase_ptr& entry)
-						{ return dt < entry->Date_; });
-			entries.erase (entries.begin (), pos);
+			std::sort (entries.begin (), entries.end (),
+					[] (EntryBase_ptr l, EntryBase_ptr r)
+					{
+						return l->Date_ == r->Date_ ?
+								l->Amount_ < r->Amount_ :
+								l->Date_ < r->Date_;
+					});
+
+			for (auto i = entries.begin (); i < entries.end () - 1; )
+			{
+				const auto& item = *i;
+				const auto& next = *(i + 1);
+				if (item->Date_ == next->Date_ &&
+						item->Amount_ == next->Amount_ &&
+						item->GetType () != next->GetType ())
+					i = entries.erase (i, i + 2);
+				else
+					++i;
+			}
+
+			if (days > 0)
+			{
+				const auto& now = QDateTime::currentDateTime ();
+				const auto& startDt = now.addDays (-days);
+				auto pos = std::upper_bound (entries.begin (), entries.end (), startDt,
+						[] (const QDateTime& dt, const EntryBase_ptr& entry)
+							{ return dt < entry->Date_; });
+				entries.erase (entries.begin (), pos);
+			}
 			return entries;
 		}
 
-		QMap<int, BalanceInfo> GetDays2Infos (int days)
+		QMap<double, BalanceInfo> GetDays2Infos (int days)
 		{
 			auto opsMgr = Core::Instance ().GetOpsManager ();
 			const auto& entries = opsMgr->GetEntriesWBalance ();
+			if (entries.isEmpty ())
+				return {};
 
+			auto pos = entries.begin ();
 			const auto& now = QDateTime::currentDateTime ();
-			const auto& startDt = now.addDays (-days);
-			auto pos = std::upper_bound (entries.begin (), entries.end (), startDt,
-					[] (const QDateTime& dt, const EntryWithBalance& entry)
-						{ return dt < entry.Entry_->Date_; });
+			if (days > 0)
+			{
+				const auto& startDt = now.addDays (-days);
+				pos = std::upper_bound (entries.begin (), entries.end (), startDt,
+						[] (const QDateTime& dt, const EntryWithBalance& entry)
+							{ return dt < entry.Entry_->Date_; });
+			}
+			else
+				days = pos->Entry_->Date_.daysTo (now);
 
-			QMap<int, BalanceInfo> days2infos;
+			QMap<double, BalanceInfo> days2infos;
 			for (; pos != entries.end (); ++pos)
 			{
-				const auto daysBack = pos->Entry_->Date_.daysTo (now);
-				days2infos [days - daysBack] = pos->Balance_;
+				const auto& then = pos->Entry_->Date_;
+
+				const auto daysBack = then.daysTo (now);
+				days2infos [(days - daysBack) + then.time ().hour () / 24.] = pos->Balance_;
 			}
+
+			if (days2infos.isEmpty ())
+				return days2infos;
+
+			auto minNum = days2infos.begin ().key ();
+			auto prevBalance = days2infos.begin ().value ();
+			for (int d = 0; d < days; ++d)
+				for (int h = 0; h < 48; ++h)
+				{
+					const auto val = d + h / 48.;
+					if (val <= minNum)
+						continue;
+
+					if (days2infos.contains (val))
+					{
+						prevBalance = days2infos.value (val);
+						continue;
+					}
+
+					days2infos [val] = prevBalance;
+				}
 
 			return days2infos;
 		}
 
-		QMap<int, double> GetLastBalances (const QMap<int, BalanceInfo>& days2infos)
+		QMap<int, double> GetLastBalances (const QMap<double, BalanceInfo>& days2infos)
 		{
 			auto accsMgr = Core::Instance ().GetAccsManager ();
 			const auto& accs = accsMgr->GetAccounts ();
@@ -110,15 +165,22 @@ namespace Poleemery
 				curSum = vec = ZipWith (vec, curSum, std::plus<double> ());
 		}
 
-		QList<QColor> GenerateColors ()
+		QList<QColor> GenerateColors (int numColors)
 		{
-			return { Qt::green, Qt::blue, Qt::red, Qt::magenta, Qt::darkRed };
+			QList<QColor> result;
+			for (int i = 0; i < numColors; ++i)
+			{
+				QColor color;
+				color.setHsvF (i / static_cast<double> (numColors), 0.8, 0.8);
+				result << color;
+			}
+			return result;
 		}
 
 		QList<QwtPlotItem*> CreateBalanceItems (int days, bool cumulative)
 		{
 			const auto& days2infos = GetDays2Infos (days);
-			const auto& xData = Map (days2infos.keys (), [] (int d) -> double { return d; }).toVector ();
+			const auto& xData = days2infos.keys ().toVector ();
 			auto lastBalances = GetLastBalances (days2infos);
 
 			const auto& periodAccounts = lastBalances.keys ();
@@ -148,7 +210,7 @@ namespace Poleemery
 			if (cumulative)
 				AddUp (accBalances);
 
-			const auto& colors = GenerateColors ();
+			const auto& colors = GenerateColors (periodAccounts.size ());
 			int currentColor = 0;
 
 			QList<QwtPlotItem*> result;
@@ -186,38 +248,54 @@ namespace Poleemery
 			double income = 0;
 			double savings = 0;
 			QMap<QString, double> cat2amount;
+
+			auto accsMgr = Core::Instance ().GetAccsManager ();
+			auto curMgr = Core::Instance ().GetCurrenciesManager ();
 			for (auto entry : GetLastEntries (days))
 			{
+				auto acc = accsMgr->GetAccount (entry->AccountID_);
+				const auto amount = curMgr->ToUserCurrency (acc.Currency_, entry->Amount_);
+
 				switch (entry->GetType ())
 				{
 				case EntryType::Expense:
 				{
 					auto expense = std::dynamic_pointer_cast<ExpenseEntry> (entry);
 					if (expense->Categories_.isEmpty ())
-						cat2amount [QObject::tr ("uncategorized")] += expense->Amount_;
+						cat2amount [QObject::tr ("uncategorized")] += amount;
 					else
 						for (const auto& cat : expense->Categories_)
-							cat2amount [cat] += expense->Amount_;
+							cat2amount [cat] += amount;
 
-					savings -= entry->Amount_;
+					savings -= amount;
 					break;
 				}
 				case EntryType::Receipt:
-					income += entry->Amount_;
-					savings += entry->Amount_;
+					income += amount;
+					savings += amount;
 					break;
 				}
 			}
 
-			if (absolute)
-				cat2amount [QObject::tr ("income")] = income;
-			cat2amount [QObject::tr ("savings")] = savings;
+			if (income > 0)
+			{
+				if (absolute)
+					cat2amount [QObject::tr ("income")] = income;
+				if (savings > 0)
+					cat2amount [QObject::tr ("savings")] = savings;
+			}
+
+			if (cat2amount.isEmpty ())
+				return {};
 
 			if (!absolute)
+			{
+				const auto sum = std::accumulate (cat2amount.begin (), cat2amount.end (), 0.0);
 				for (auto& val : cat2amount)
-					val = val * 100 / income;
+					val = val * 100 / sum;
+			}
 
-			const auto& colors = GenerateColors ();
+			const auto& colors = GenerateColors (cat2amount.size ());
 			int currentIndex = 0;
 
 			QList<QwtPlotItem*> result;
@@ -248,50 +326,69 @@ namespace Poleemery
 
 	GraphsFactory::GraphsFactory ()
 	{
-		Infos_.append ({
-				QObject::tr ("Cumulative accounts balance (month)"),
-				[this] { return CreateBalanceItems (30, true); },
-				[] (QwtPlot *plot) -> void
+		auto prepareCummulative = [] (QwtPlot *plot) -> void
 				{
 					auto curMgr = Core::Instance ().GetCurrenciesManager ();
 					plot->enableAxis (QwtPlot::Axis::xBottom, true);
 					plot->enableAxis (QwtPlot::Axis::yLeft, true);
 					plot->setAxisTitle (QwtPlot::Axis::xBottom, QObject::tr ("Days"));
 					plot->setAxisTitle (QwtPlot::Axis::yLeft, curMgr->GetUserCurrency ());
-				}
+				};
+
+		Infos_.append ({
+				QObject::tr ("Cumulative accounts balance (month)"),
+				[this] { return CreateBalanceItems (30, true); },
+				prepareCummulative
 			});
 		Infos_.append ({
 				QObject::tr ("Comparative accounts balance (month)"),
 				[this] { return CreateBalanceItems (30, false); },
-				[] (QwtPlot *plot) -> void
-				{
-					auto curMgr = Core::Instance ().GetCurrenciesManager ();
-					plot->enableAxis (QwtPlot::Axis::xBottom, true);
-					plot->enableAxis (QwtPlot::Axis::yLeft, true);
-					plot->setAxisTitle (QwtPlot::Axis::xBottom, QObject::tr ("Days"));
-					plot->setAxisTitle (QwtPlot::Axis::yLeft, curMgr->GetUserCurrency ());
-				}
+				prepareCummulative
 			});
+		Infos_.append ({
+				QObject::tr ("Cumulative accounts balance (all-time)"),
+				[this] { return CreateBalanceItems (-1, true); },
+				prepareCummulative
+			});
+		Infos_.append ({
+				QObject::tr ("Comparative accounts balance (all-time)"),
+				[this] { return CreateBalanceItems (-1, false); },
+				prepareCummulative
+			});
+
+		auto prepareRelBreakdown = [] (QwtPlot *plot)
+		{
+			plot->enableAxis (QwtPlot::Axis::xBottom, false);
+			plot->enableAxis (QwtPlot::Axis::yLeft, true);
+			plot->setAxisTitle (QwtPlot::Axis::yLeft, "%");
+		};
+		auto prepareAbsBreakdown = [] (QwtPlot *plot)
+		{
+			plot->enableAxis (QwtPlot::Axis::xBottom, false);
+			plot->enableAxis (QwtPlot::Axis::yLeft, true);
+
+			auto curMgr = Core::Instance ().GetCurrenciesManager ();
+			plot->setAxisTitle (QwtPlot::Axis::yLeft, curMgr->GetUserCurrency ());
+		};
 		Infos_.append ({
 				QObject::tr ("Per-category spendings breakdown (absolute, month)"),
 				[this] { return CreateSpendingBreakdownItems (30, true); },
-				[] (QwtPlot *plot) -> void
-				{
-					auto curMgr = Core::Instance ().GetCurrenciesManager ();
-					plot->enableAxis (QwtPlot::Axis::xBottom, false);
-					plot->enableAxis (QwtPlot::Axis::yLeft, true);
-					plot->setAxisTitle (QwtPlot::Axis::yLeft, curMgr->GetUserCurrency ());
-				}
+				prepareAbsBreakdown
 			});
 		Infos_.append ({
 				QObject::tr ("Per-category spendings breakdown (relative, month)"),
 				[this] { return CreateSpendingBreakdownItems (30, false); },
-				[] (QwtPlot *plot) -> void
-				{
-					plot->enableAxis (QwtPlot::Axis::xBottom, false);
-					plot->enableAxis (QwtPlot::Axis::yLeft, true);
-					plot->setAxisTitle (QwtPlot::Axis::yLeft, "%");
-				}
+				prepareRelBreakdown
+			});
+		Infos_.append ({
+				QObject::tr ("Per-category spendings breakdown (absolute, all-time)"),
+				[this] { return CreateSpendingBreakdownItems (-1, true); },
+				prepareAbsBreakdown
+			});
+		Infos_.append ({
+				QObject::tr ("Per-category spendings breakdown (relative, all-time)"),
+				[this] { return CreateSpendingBreakdownItems (-1, false); },
+				prepareRelBreakdown
 			});
 	}
 

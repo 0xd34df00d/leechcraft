@@ -58,5 +58,6 @@ namespace Aggregator
 }
 
 Q_DECLARE_METATYPE (LeechCraft::Aggregator::IDType_t);
+Q_DECLARE_METATYPE (QList<LeechCraft::Aggregator::IDType_t>);
 
 #endif

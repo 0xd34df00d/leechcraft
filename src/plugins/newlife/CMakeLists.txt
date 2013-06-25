@@ -1,32 +1,32 @@
-IF (NOT QT_USE_FILE)
-	CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
-	IF (COMMAND cmake_policy)
+if (NOT QT_USE_FILE)
+	cmake_minimum_required (VERSION 2.6)
+	if (COMMAND cmake_policy)
 		cmake_policy (SET CMP0003 NEW)
-	ENDIF (COMMAND cmake_policy)
+	endif ()
 
-	PROJECT (leechcraft_newlife)
+	project (leechcraft_newlife)
 
-	IF (NOT CMAKE_MODULE_PATH)
-		SET (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
-	ENDIF (NOT CMAKE_MODULE_PATH)
+	if (NOT CMAKE_MODULE_PATH)
+		set (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
+	endif ()
 
-	FIND_PACKAGE (Boost REQUIRED)
-	FIND_PACKAGE (Qt4 REQUIRED)
-	FIND_PACKAGE (LeechCraft REQUIRED)
-ENDIF (NOT QT_USE_FILE)
+	find_package (Boost REQUIRED)
+	find_package (Qt4 REQUIRED)
+	find_package (LeechCraft REQUIRED)
+endif ()
 
-SET (QT_USE_QTXML TRUE)
-SET (QT_USE_QTSQL TRUE)
+set (QT_USE_QTXML TRUE)
+set (QT_USE_QTSQL TRUE)
 
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 
-SET (SRCS
+set (SRCS
 	newlife.cpp
 	importwizard.cpp
 	firstpage.cpp
@@ -52,7 +52,7 @@ SET (SRCS
 	importers/vacuum/vacuumimporter.cpp
 	importers/vacuum/vacuumimportpage.cpp
 	)
-SET (HEADERS
+set (HEADERS
 	newlife.h
 	importwizard.h
 	firstpage.h
@@ -78,32 +78,32 @@ SET (HEADERS
 	importers/vacuum/vacuumimporter.h
 	importers/vacuum/vacuumimportpage.h
 	)
-SET (FORMS
+set (FORMS
 	importwizard.ui
 	feedssettingsimportpage.ui
 	firstpage.ui
 	common/imimportpage.ui
 	importers/firefox/firefoxprofileselectpage.ui
 	)
-SET (RESOURCES newliferesources.qrc)
+set (RESOURCES newliferesources.qrc)
 CreateTrs ("newlife" "ar;be;de;en;fr;it;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
-ADD_LIBRARY (leechcraft_newlife SHARED
+add_library (leechcraft_newlife SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	${UIS_H}
 	${RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_newlife
+target_link_libraries (leechcraft_newlife
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_newlife DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (TARGETS leechcraft_newlife DESTINATION ${LC_PLUGINS_DEST})
+install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

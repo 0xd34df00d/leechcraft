@@ -1,33 +1,33 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_monocle_seen)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_monocle_seen)
+include (InitLCPlugin OPTIONAL)
 
-SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-FIND_PACKAGE (DjVuLibre REQUIRED)
+find_package (DjVuLibre REQUIRED)
 
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${DJVULIBRE_INCLUDE_DIR}
 	)
-SET (SRCS
+set (SRCS
 	seen.cpp
 	docmanager.cpp
 	document.cpp
 	)
 
-ADD_LIBRARY (leechcraft_monocle_seen SHARED
+add_library (leechcraft_monocle_seen SHARED
 	${SRCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_monocle_seen
+target_link_libraries (leechcraft_monocle_seen
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${DJVULIBRE_LIBRARY}
 	)
-INSTALL (TARGETS leechcraft_monocle_seen DESTINATION ${LC_PLUGINS_DEST})
-IF (UNIX AND NOT APPLE)
-	INSTALL (FILES freedesktop/leechcraft-monocle-seen.desktop DESTINATION share/applications)
-ENDIF (UNIX AND NOT APPLE)
+install (TARGETS leechcraft_monocle_seen DESTINATION ${LC_PLUGINS_DEST})
+if (UNIX AND NOT APPLE)
+	install (FILES freedesktop/leechcraft-monocle-seen.desktop DESTINATION share/applications)
+endif ()

@@ -56,6 +56,8 @@ namespace Krigstask
 		void moveWindowTo (const QString&, const QString&);
 		void toggleShadeWindow (const QString&);
 
+		void moveToDesktop (const QString&, int);
+
 		void closeWindow (const QString&);
 
 		void showMenu (const QString&, int, int);

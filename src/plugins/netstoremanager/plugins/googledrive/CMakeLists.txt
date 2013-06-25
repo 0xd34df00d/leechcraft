@@ -1,18 +1,18 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_netstoremanager_googledrive)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_netstoremanager_googledrive)
+include (InitLCPlugin OPTIONAL)
 
-SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-FIND_PACKAGE (QJSON REQUIRED)
-IF (NOT WIN32)
-	FIND_PACKAGE (MAGIC REQUIRED)
-	IF (MAGIC_FOUND)
-		ADD_DEFINITIONS (-DHAVE_MAGIC)
-	ENDIF (MAGIC_FOUND)
-ENDIF (NOT WIN32)
+find_package (QJSON REQUIRED)
+if (NOT WIN32)
+	find_package (MAGIC REQUIRED)
+	if (MAGIC_FOUND)
+		add_definitions (-DHAVE_MAGIC)
+	endif ()
+endif ()
 
-INCLUDE_DIRECTORIES (${NETSTOREMANAGER_INCLUDE_DIR}
+include_directories (${NETSTOREMANAGER_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
@@ -20,7 +20,7 @@ INCLUDE_DIRECTORIES (${NETSTOREMANAGER_INCLUDE_DIR}
 	${MAGIC_INCLUDE_DIR}
 	)
 
-SET (GOOGLEDRIVE_SRCS
+set (GOOGLEDRIVE_SRCS
 	account.cpp
 	authmanager.cpp
 	core.cpp
@@ -29,7 +29,7 @@ SET (GOOGLEDRIVE_SRCS
 	uploadmanager.cpp
 	xmlsettingsmanager.cpp
 	)
-SET (GOOGLEDRIVE_HEADERS
+set (GOOGLEDRIVE_HEADERS
 	account.h
 	authmanager.h
 	core.h
@@ -39,29 +39,29 @@ SET (GOOGLEDRIVE_HEADERS
 	xmlsettingsmanager.h
 	)
 
-SET (GOOGLEDRIVE_RESOURCES netstoremanagergoogledriveresources.qrc)
+set (GOOGLEDRIVE_RESOURCES netstoremanagergoogledriveresources.qrc)
 
 CreateTrs ("netstoremanager_googledrive" "en;ru_RU" GOOGLEDRIVE_COMPILED_TRANSLATIONS)
 
-IF (NOT LC_NO_MOC)
+if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (GOOGLEDRIVE_MOC_SRCS ${GOOGLEDRIVE_HEADERS})
-ENDIF (NOT LC_NO_MOC)
+endif ()
 QT4_ADD_RESOURCES (GOOGLEDRIVE_RCCS ${GOOGLEDRIVE_RESOURCES})
 
-ADD_LIBRARY (leechcraft_netstoremanager_googledrive SHARED
+add_library (leechcraft_netstoremanager_googledrive SHARED
 	${GOOGLEDRIVE_COMPILED_TRANSLATIONS}
 	${GOOGLEDRIVE_SRCS}
 	${GOOGLEDRIVE_MOC_SRCS}
 	${GOOGLEDRIVE_UIS_H}
 	${GOOGLEDRIVE_RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_netstoremanager_googledrive
+target_link_libraries (leechcraft_netstoremanager_googledrive
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${QJSON_LIBRARIES}
 	${MAGIC_LIBRARIES}
 	)
 
-INSTALL (TARGETS leechcraft_netstoremanager_googledrive DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES nsmgoogledrivesettings.xml DESTINATION ${LC_SETTINGS_DEST})
-INSTALL (FILES ${GOOGLEDRIVE_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (TARGETS leechcraft_netstoremanager_googledrive DESTINATION ${LC_PLUGINS_DEST})
+install (FILES nsmgoogledrivesettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (FILES ${GOOGLEDRIVE_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

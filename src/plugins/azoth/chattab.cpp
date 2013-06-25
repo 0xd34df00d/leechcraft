@@ -455,9 +455,13 @@ namespace Azoth
 		if (!muc)
 			return;
 
+		const auto entry = GetEntry<ICLEntry> ();
+
 		const int parts = muc->GetParticipants ().size ();
-		const QString& text = tr ("%1 (%n participant(s))", 0, parts)
-				.arg (GetEntry<ICLEntry> ()->GetEntryName ());
+		QString text = entry->GetEntryName ();
+		if (entry->GetHumanReadableID () != text)
+			text += " (" + entry->GetHumanReadableID () + ")";
+		text += ' ' + tr ("[%n participant(s)]", 0, parts);
 		Ui_.EntryInfo_->setText (text);
 	}
 
@@ -568,6 +572,8 @@ namespace Azoth
 			TypeTimer_->stop ();
 			TypeTimer_->start ();
 		}
+		else
+			TypeTimer_->stop ();
 
 		emit tabRecoverDataChanged ();
 	}
@@ -985,7 +991,10 @@ namespace Azoth
 
 	void ChatTab::handleChatPartStateChanged (const ChatPartState& state, const QString&)
 	{
-		QString text = GetEntry<ICLEntry> ()->GetEntryName ();
+		auto entry = GetEntry<ICLEntry> ();
+		QString text = entry->GetEntryName ();
+		if (entry->GetHumanReadableID () != text)
+			text += " (" + entry->GetHumanReadableID () + ")";
 
 		QString chatState;
 		switch (state)
@@ -1483,7 +1492,11 @@ namespace Azoth
 		ICLEntry *e = GetEntry<ICLEntry> ();
 		handleVariantsChanged (e->Variants ());
 		handleAvatarChanged (e->GetAvatar ());
-		Ui_.EntryInfo_->setText (e->GetEntryName ());
+
+		QString infoText = e->GetEntryName ();
+		if (e->GetHumanReadableID () != infoText)
+			infoText += " (" + e->GetHumanReadableID () + ")";
+		Ui_.EntryInfo_->setText (infoText);
 
 		const QString& accName =
 				qobject_cast<IAccount*> (e->GetParentAccount ())->

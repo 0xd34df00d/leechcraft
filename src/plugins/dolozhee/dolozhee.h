@@ -37,6 +37,8 @@ namespace LeechCraft
 {
 namespace Dolozhee
 {
+	class ReportWizard;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IActionsExporter
@@ -57,7 +59,8 @@ namespace Dolozhee
 
 		QList<QAction*> GetActions (LeechCraft::ActionsEmbedPlace area) const;
 	private slots:
-		void initiateReporting ();
+		void checkSavedReports ();
+		ReportWizard* initiateReporting ();
 	signals:
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 

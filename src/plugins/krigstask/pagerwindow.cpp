@@ -30,6 +30,8 @@
 #include "pagerwindow.h"
 #include <QUrl>
 #include <QStandardItemModel>
+#include <QDesktopWidget>
+#include <QApplication>
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
 #include <QtDebug>
@@ -120,7 +122,7 @@ namespace Krigstask
 		}
 	};
 
-	PagerWindow::PagerWindow (ICoreProxy_ptr proxy, QWidget *parent)
+	PagerWindow::PagerWindow (int screen, ICoreProxy_ptr proxy, QWidget *parent)
 	: QDeclarativeView (parent)
 	, DesktopsModel_ (new DesktopsModel (this))
 	, WinIconProv_ (new Util::SettableIconProvider)
@@ -140,6 +142,9 @@ namespace Krigstask
 
 		engine ()->addImageProvider ("WinIcons", WinIconProv_);
 		engine ()->addImageProvider ("WinSnaps", WinSnapshotProv_);
+
+		rootContext ()->setContextProperty ("geometry",
+				qApp->desktop ()->availableGeometry (screen));
 
 		FillModel ();
 		rootContext ()->setContextProperty ("desktopsModel", DesktopsModel_);
@@ -172,6 +177,8 @@ namespace Krigstask
 		const auto curDesk = w.GetCurrentDesktop ();
 		const auto activeApp = w.GetActiveApp ();
 
+		const auto& deskNames = w.GetDesktopNames ();
+
 		for (int i = 0; i < numDesktops; ++i)
 		{
 			auto subModel = new SingleDesktopModel (this);
@@ -179,7 +186,10 @@ namespace Krigstask
 
 			auto item = new QStandardItem;
 			item->setData (QVariant::fromValue<QObject*> (subModel), DesktopsModel::Role::SubModel);
-			item->setData ("Desktop " + QString::number (i + 1), DesktopsModel::Role::DesktopName);
+
+			const auto& deskName = deskNames.value (i, "Desktop " + QString::number (i + 1));
+			item->setData (deskName, DesktopsModel::Role::DesktopName);
+
 			item->setData (curDesk == i, DesktopsModel::Role::IsCurrent);
 			item->setData (i, DesktopsModel::Role::DesktopID);
 			DesktopsModel_->appendRow (item);

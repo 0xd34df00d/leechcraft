@@ -59,16 +59,22 @@ namespace Krigstask
 			QIcon Icon_;
 			int IconGenID_;
 			bool IsActive_;
+
+			int DesktopNum_;
+
 			Util::WinStateFlags State_;
 			Util::AllowedActionFlags Actions_;
 		};
 		QList<WinInfo> Windows_;
+
+		int CurrentDesktop_;
 
 		enum Role
 		{
 			WindowName = Qt::UserRole + 1,
 			WindowID,
 			IconGenID,
+			IsCurrentDesktop,
 			IsActiveWindow,
 			IsMinimizedWindow
 		};
@@ -97,6 +103,8 @@ namespace Krigstask
 		void updateWindowIcon (ulong);
 		void updateWindowState (ulong);
 		void updateWindowActions (ulong);
+		void updateWindowDesktop (ulong);
+		void updateCurrentDesktop ();
 	};
 }
 }

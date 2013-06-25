@@ -92,6 +92,7 @@ namespace Monocle
 	private:
 		void LayoutLinks ();
 		ILink_ptr FindLink (const QPointF&);
+		bool IsDisplayed () const;
 	private slots:
 		void handlePixmapRendered ();
 	};

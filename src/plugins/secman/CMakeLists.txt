@@ -1,55 +1,55 @@
-CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_secman)
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_secman)
+include (InitLCPlugin OPTIONAL)
 
-OPTION (TESTS_SECMAN "Enable SecMan tests")
+option (TESTS_SECMAN "Enable SecMan tests")
 
-IF (TESTS_SECMAN)
-	SET (QT_USE_QTTEST TRUE)
-ENDIF (TESTS_SECMAN)
+if (TESTS_SECMAN)
+	set (QT_USE_QTTEST TRUE)
+endif ()
 
-INCLUDE (${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+include (${QT_USE_FILE})
+include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 
-OPTION (ENABLE_SECMAN_SECURESTORAGE "Enable SecMan SecureStorage, the advanced encrypted private data storage" OFF)
-OPTION (ENABLE_SECMAN_SIMPLESTORAGE "Enable SecMan SimpleStorage, the basic unencrypted private data storage" ON)
+option (ENABLE_SECMAN_SECURESTORAGE "Enable SecMan SecureStorage, the advanced encrypted private data storage" OFF)
+option (ENABLE_SECMAN_SIMPLESTORAGE "Enable SecMan SimpleStorage, the basic unencrypted private data storage" ON)
 
-IF (ENABLE_SECMAN_SECURESTORAGE)
-	ADD_SUBDIRECTORY (plugins/securestorage)
-ENDIF (ENABLE_SECMAN_SECURESTORAGE)
-IF (ENABLE_SECMAN_SIMPLESTORAGE)
-	ADD_SUBDIRECTORY (plugins/simplestorage)
-ENDIF (ENABLE_SECMAN_SIMPLESTORAGE)
+if (ENABLE_SECMAN_SECURESTORAGE)
+	add_subdirectory (plugins/securestorage)
+endif ()
+if (ENABLE_SECMAN_SIMPLESTORAGE)
+	add_subdirectory (plugins/simplestorage)
+endif ()
 
-SET (SRCS
+set (SRCS
 	secman.cpp
 	core.cpp
 	contentsdisplaydialog.cpp
 	)
-SET (FORMS
+set (FORMS
 	contentsdisplaydialog.ui
 	)
-SET (RESOURCES
+set (RESOURCES
 	secmanresources.qrc
 	)
 
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
-ADD_LIBRARY (leechcraft_secman SHARED
+add_library (leechcraft_secman SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${UIS_H}
 	${RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_secman
+target_link_libraries (leechcraft_secman
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_secman DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (DIRECTORY interfaces DESTINATION "include/leechcraft")
+install (TARGETS leechcraft_secman DESTINATION ${LC_PLUGINS_DEST})
+install (DIRECTORY interfaces DESTINATION "include/leechcraft")

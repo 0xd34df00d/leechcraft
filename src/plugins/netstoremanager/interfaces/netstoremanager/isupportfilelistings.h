@@ -80,16 +80,21 @@ namespace NetStoreManager
 		} HashType_;
 
 		QUrl Url_;
+		QUrl ShareUrl_;
 		QMap<QUrl, QPair<QString, QString>> ExportLinks;
+
+		bool Shared_;
 
 		bool IsDirectory_;
 
 		bool IsTrashed_;
 
+
 		QString MimeType_;
 
 		StorageItem ()
 		: Size_ (0)
+		, Shared_ (false)
 		, IsDirectory_ (false)
 		, IsTrashed_ (false)
 		{

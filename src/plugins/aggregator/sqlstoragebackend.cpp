@@ -391,6 +391,8 @@ namespace Aggregator
 
 		QString common = "DELETE FROM items "
 			"WHERE channel_id = :channel_id ";
+		QString commonGet = "SELECT item_id FROM items "
+			"WHERE channel_id = :channel_id ";
 		QString cdt;
 		QString cnt;
 		switch (Type_)
@@ -415,6 +417,12 @@ namespace Aggregator
 
 		ChannelNumberTrimmer_ = QSqlQuery (DB_);
 		ChannelNumberTrimmer_.prepare (common + cnt);
+
+		ChannelDateGetter_ = QSqlQuery (DB_);
+		ChannelDateGetter_.prepare (commonGet + cdt);
+
+		ChannelNumberGetter_ = QSqlQuery (DB_);
+		ChannelNumberGetter_.prepare (commonGet + cnt);
 
 		UpdateShortItem_ = QSqlQuery (DB_);
 		UpdateShortItem_.prepare ("UPDATE items SET "
@@ -809,7 +817,7 @@ namespace Aggregator
 
 		ClearItemTags_.finish ();
 
-		Q_FOREACH (const ITagsManager::tag_id& tag, tags)
+		for (const auto& tag : tags)
 		{
 			AddItemTag_.bindValue (":tag", tag);
 			AddItemTag_.bindValue (":item_id", id);
@@ -821,6 +829,19 @@ namespace Aggregator
 		}
 
 		lock.Good ();
+
+		try
+		{
+			auto item = GetItem (id);
+			emit itemDataUpdated (item,
+					GetChannel (item->ChannelID_, FindParentFeedForChannel (item->ChannelID_)));
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error notifying about data changes"
+					<< e.what ();
+		}
 	}
 
 	QList<IDType_t> SQLStorageBackend::GetItemsForTag (const ITagsManager::tag_id& tag)
@@ -1133,9 +1154,29 @@ namespace Aggregator
 		ItemIDFromTitleURL_.finish ();
 		return result;
 	}
+
 	void SQLStorageBackend::TrimChannel (const IDType_t& channelId,
 			int days, int number)
 	{
+		QSet<IDType_t> removedIds;
+		ChannelDateGetter_.bindValue (":channel_id", channelId);
+		ChannelDateGetter_.bindValue (":age", days);
+		if (!ChannelDateGetter_.exec ())
+			LeechCraft::Util::DBLock::DumpError (ChannelDateGetter_);
+
+		while (ChannelDateGetter_.next ())
+			removedIds << ChannelDateGetter_.value (0).value<IDType_t> ();
+
+		ChannelNumberGetter_.bindValue (":channel_id", channelId);
+		ChannelNumberGetter_.bindValue (":number", number);
+		if (!ChannelNumberGetter_.exec ())
+			LeechCraft::Util::DBLock::DumpError (ChannelNumberGetter_);
+
+		while (ChannelNumberGetter_.next ())
+			removedIds << ChannelNumberGetter_.value (0).value<IDType_t> ();
+
+		emit itemsRemoved (removedIds);
+
 		ChannelDateTrimmer_.bindValue (":channel_id", channelId);
 		ChannelDateTrimmer_.bindValue (":age", days);
 		if (!ChannelDateTrimmer_.exec ())
@@ -1143,7 +1184,6 @@ namespace Aggregator
 
 		ChannelNumberTrimmer_.bindValue (":channel_id", channelId);
 		ChannelNumberTrimmer_.bindValue (":number", number);
-
 		if (!ChannelNumberTrimmer_.exec ())
 			LeechCraft::Util::DBLock::DumpError (ChannelNumberTrimmer_);
 
@@ -1164,6 +1204,11 @@ namespace Aggregator
 					<< "error updating channel data"
 					<< channelId
 					<< e.what ();
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error updating channel data";
 		}
 	}
 

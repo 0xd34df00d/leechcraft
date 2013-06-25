@@ -32,6 +32,7 @@
 #include <QAction>
 #include <util/util.h>
 #include <util/gui/util.h>
+#include <util/gui/unhoverdeletemixin.h>
 
 #ifdef ENABLE_UDISKS
 #include "backends/udisks/udisksbackend.h"
@@ -52,6 +53,7 @@ namespace Vrooby
 		Util::InstallTranslator ("vrooby");
 
 		TrayView_ = new TrayView (proxy);
+		new Util::UnhoverDeleteMixin (TrayView_, SLOT (hide ()));
 
 		QList<std::shared_ptr<DevBackend>> candidates;
 
@@ -164,26 +166,26 @@ namespace Vrooby
 		if (!TrayView_->HasItems ())
 		{
 			ActionDevices_.reset ();
-			showTrayView (false);
 			return;
 		}
 
 		ActionDevices_.reset (new QAction (tr ("Removable devices..."), this));
 		ActionDevices_->setProperty ("ActionIcon", "drive-removable-media-usb");
 
-		ActionDevices_->setCheckable (true);
 		connect (ActionDevices_.get (),
-				SIGNAL (toggled (bool)),
+				SIGNAL (triggered ()),
 				this,
-				SLOT (showTrayView (bool)));
+				SLOT (showTrayView ()));
 		emit gotActions ({ ActionDevices_.get () }, ActionsEmbedPlace::LCTray);
 	}
 
-	void Plugin::showTrayView (bool show)
+	void Plugin::showTrayView ()
 	{
-		if (show && !TrayView_->isVisible ())
-			TrayView_->move (Util::FitRectScreen (QCursor::pos (), TrayView_->size ()));
-		TrayView_->setVisible (show);
+		const auto shouldShow = !TrayView_->isVisible ();
+		if (shouldShow)
+			TrayView_->move (Util::FitRectScreen (QCursor::pos (),
+					TrayView_->size (), Util::FitFlag::NoOverlap));
+		TrayView_->setVisible (shouldShow);
 	}
 }
 }
