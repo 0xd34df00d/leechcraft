@@ -33,6 +33,7 @@
 #include <QCoreApplication>
 #include <QUuid>
 #include <QtDebug>
+#include <QStandardItemModel>
 #include <interfaces/core/ientitymanager.h>
 #include <util/util.h>
 #include "flickrservice.h"
@@ -56,6 +57,7 @@ namespace Spegnersi
 	, Proxy_ (proxy)
 	, Req_ (new KQOAuthRequest (this))
 	, AuthMgr_ (new KQOAuthManager (this))
+	, CollectionsModel_ (new QStandardItemModel (this))
 	{
 		AuthMgr_->setNetworkManager (proxy->GetNetworkAccessManager ());
 		AuthMgr_->setHandleUserAuthorization (true);
@@ -140,6 +142,11 @@ namespace Spegnersi
 	QByteArray FlickrAccount::GetID () const
 	{
 		return ID_;
+	}
+
+	QAbstractItemModel* FlickrAccount::GetCollectionsModel () const
+	{
+		return CollectionsModel_;
 	}
 
 	void FlickrAccount::UpdateCollections ()

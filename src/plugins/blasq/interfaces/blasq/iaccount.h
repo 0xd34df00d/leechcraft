@@ -32,6 +32,7 @@
 #include <QtPlugin>
 #include "collection.h"
 
+class QAbstractItemModel;
 class QString;
 
 namespace LeechCraft
@@ -53,9 +54,9 @@ namespace Blasq
 
 		virtual QByteArray GetID () const = 0;
 
+		virtual QAbstractItemModel* GetCollectionsModel () const = 0;
+
 		virtual void UpdateCollections () = 0;
-	signals:
-		virtual void collectionListUpdated (const Collections_t&) = 0;
 	};
 }
 }

@@ -56,6 +56,7 @@ namespace Spegnersi
 		KQOAuthRequest * const Req_;
 		KQOAuthManager * const AuthMgr_;
 
+		QStandardItemModel * const CollectionsModel_;
 		QString AuthToken_;
 		QString AuthSecret_;
 
@@ -80,6 +81,8 @@ namespace Spegnersi
 		QString GetName () const;
 		QByteArray GetID () const;
 
+		QAbstractItemModel* GetCollectionsModel () const;
+
 		void UpdateCollections ();
 	private:
 		KQOAuthRequest* MakeRequest (const QUrl&, KQOAuthRequest::RequestType = KQOAuthRequest::AuthorizedRequest);
@@ -94,8 +97,6 @@ namespace Spegnersi
 		void handleReply (const QByteArray&);
 	signals:
 		void accountChanged (FlickrAccount*);
-
-		void collectionListUpdated (const Collections_t&);
 	};
 }
 }

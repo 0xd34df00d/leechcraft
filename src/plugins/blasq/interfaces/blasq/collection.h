@@ -29,20 +29,41 @@
 
 #pragma once
 
-#include <QList>
+#include <Qt>
 
 namespace LeechCraft
 {
 namespace Blasq
 {
-	struct ImageInfo
+	enum CollectionRole
 	{
+		/** Contains a value of ItemType.
+		 */
+		Type = Qt::UserRole + 1,
+		ID,
+		Name,
+
+		/** Around 240 px.
+		 */
+		SmallThumb,
+		SmallThumbSize,
+
+		/** Around 640 px.
+		 */
+		MediumThumb,
+		MediumThumbSize,
+
+		/** Full-size original.
+		 */
+		Original,
+		OriginalSize
 	};
 
-	struct Collection
+	enum ItemType
 	{
+		Collection,
+		AllPhotos,
+		Image
 	};
-
-	typedef QList<Collection> Collections_t;
 }
 }
