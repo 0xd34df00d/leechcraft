@@ -48,7 +48,11 @@ namespace Woodpecker
 		OAuthRequest_ = new KQOAuthRequest (this);
 		OAuthManager_ = new KQOAuthManager (this);
 
-		OAuthRequest_->setEnableDebugOutput (false); // DONE: Remove debug
+#ifdef WP_DEBUG
+		OAuthRequest_->setEnableDebugOutput (true);
+#else
+		OAuthRequest_->setEnableDebugOutput (false);
+#endif
 		ConsumerKey_ = XmlSettingsManager::Instance ()->property ("consumer_key").toString ();
 		ConsumerKeySecret_ = XmlSettingsManager::Instance ()->property ("consumer_key_secret").toString ();
 
@@ -176,7 +180,7 @@ namespace Woodpecker
 			reqUrl = "https://api.twitter.com/1.1/direct_messages.json";
 			
 		case TwitterRequest::Retweet:
-			reqUrl = QString ("http://api.twitter.com/1.1/statuses/retweet/").append (params.value ("rt_id")).append (".json");
+			reqUrl = QString ("http://api.twitter.com/1.1/statuses/retweet/").append (params.value ("id")).append (".json");
 			break;
 			
 		case TwitterRequest::Reply:
@@ -185,6 +189,10 @@ namespace Woodpecker
 			
 		case TwitterRequest::SpamReport:
 			reqUrl = "http://api.twitter.com/1.1/report_spam.json";
+			break;
+		
+		case TwitterRequest::Delete:
+			reqUrl = QString ("http://api.twitter.com/1.1/statuses/destroy/").append (params.value ("id")).append (".json");
 			break;
 			
 		default:
@@ -211,7 +219,7 @@ namespace Woodpecker
 	void TwitterInterface::Retweet (const qulonglong id)
 	{
 		KQOAuthParameters param;
-		param.insert ("rt_id", QString::number (id));
+		param.insert ("id", QString::number (id));
 		SignedRequest (TwitterRequest::Retweet, KQOAuthRequest::POST, param);
 	}
 
@@ -344,6 +352,13 @@ namespace Woodpecker
 			default:
 				qWarning () << Q_FUNC_INFO << "Unknown request";
 		}
+	}
+	
+	void TwitterInterface::Delete (const qulonglong id)
+	{
+		KQOAuthParameters param;
+		param.insert ("id", QString::number (id));
+		SignedRequest (TwitterRequest::Delete, KQOAuthRequest::POST, param);
 	}
 }
 }
