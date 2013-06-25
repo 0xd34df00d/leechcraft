@@ -52,6 +52,7 @@ namespace Woodpecker
 		Retweet,
 		Reply,
 		SpamReport,
+		Delete,
 	};
 
 	enum class FeedMode
@@ -88,6 +89,7 @@ namespace Woodpecker
 		void Retweet (const qulonglong id);
 		void Reply (const qulonglong replyid, const QString& tweet);
 		void ReportSPAM (const QString& username, const qulonglong userid = 0);
+		void Delete (const qulonglong id);
 		void GetAccess ();
 		void Login (const QString& savedToken, const QString& savedTokenSecret);
 		FeedMode GetLastRequestMode () const;

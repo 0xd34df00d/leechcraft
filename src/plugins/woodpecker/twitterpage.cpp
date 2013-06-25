@@ -127,6 +127,13 @@ namespace Woodpecker
 				this,
 				SLOT (copyTwitText ()));
 
+		ActionDelete_ = new QAction (tr ("Delete twit"), Ui_.TwitList_);
+		ActionDelete_->setProperty ("ActionIcon", "edit-delete");
+		connect (ActionDelete_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (deleteTwit ()));
+
 		connect (Ui_.TwitList_,
 				SIGNAL (itemDoubleClicked (QListWidgetItem*)),
 				this,
@@ -290,15 +297,25 @@ namespace Woodpecker
 
 	void TwitterPage::retwit ()
 	{
-		const auto& idx = Ui_.TwitList_->currentItem ();
-		const auto twitid = (idx->data (Qt::UserRole).value<Tweet_ptr> ())->GetId ();
+		const auto idx = Ui_.TwitList_->currentItem ();
+		if (!idx)
+		{
+			qWarning () << Q_FUNC_INFO << "Malformed index";
+			return;
+		}
+		const auto twitid = idx->data (Qt::UserRole).value<Tweet_ptr> ()->GetId ();
 		Interface_->Retweet (twitid);
 	}
 
 	void TwitterPage::sendReply ()
 	{
-		const auto& idx = Ui_.TwitList_->currentItem ();
-		const auto twitid = (idx->data (Qt::UserRole).value<Tweet_ptr> ())->GetId ();
+		const auto idx = Ui_.TwitList_->currentItem ();
+		if (!idx)
+		{
+			qWarning () << Q_FUNC_INFO << "Malformed index";
+			return;
+		}
+		const auto twitid = idx->data (Qt::UserRole).value<Tweet_ptr> ()->GetId ();
 		Interface_->Reply (twitid, Ui_.TwitEdit_->text ());
 		Ui_.TwitEdit_->clear ();
 		disconnect (Ui_.TwitButton_,
@@ -318,7 +335,7 @@ namespace Woodpecker
 		if (!index)
 			idx = Ui_.TwitList_->currentItem ();
 
-		const auto twitid = (idx->data (Qt::UserRole).value<Tweet_ptr> ())->GetId ();
+		const auto twitid = idx->data (Qt::UserRole).value<Tweet_ptr> ()->GetId ();
 		auto replyto = std::find_if (ScreenTwits_.begin (), ScreenTwits_.end (),
 				[twitid] (decltype (ScreenTwits_.front ()) tweet)
 					{ return tweet->GetId () == twitid; });
@@ -377,8 +394,8 @@ namespace Woodpecker
 				SLOT (openUserTimeline ()));
 
 		menu->addActions ({ ActionRetwit_, ActionReply_, menu->addSeparator (),
-			ActionSPAM_, menu->addSeparator (), ActionCopyText_, ActionOpenWeb_,
-						  actionOpenTimeline});
+			ActionSPAM_, menu->addSeparator (), ActionDelete_, menu->addSeparator (), ActionCopyText_, 
+						  ActionOpenWeb_, actionOpenTimeline });
 		menu->setAttribute (Qt::WA_DeleteOnClose);
 
 		menu->exec (Ui_.TwitList_->viewport ()->mapToGlobal (pos));
@@ -386,7 +403,12 @@ namespace Woodpecker
 
 	void TwitterPage::reportSpam ()
 	{
-		const auto& idx = Ui_.TwitList_->currentItem ();
+		const auto idx = Ui_.TwitList_->currentItem ();
+		if (!idx)
+		{
+			qWarning () << Q_FUNC_INFO << "Malformed index";
+			return;
+		}
 		const auto& twitid = (idx->data (Qt::UserRole).value<Tweet_ptr> ())->GetId ();
 
 		auto spamTwit = std::find_if (ScreenTwits_.begin (), ScreenTwits_.end (),
@@ -397,7 +419,12 @@ namespace Woodpecker
 
 	void TwitterPage::webOpen ()
 	{
-		const auto& idx = Ui_.TwitList_->currentItem ();
+		const auto idx = Ui_.TwitList_->currentItem ();
+		if (!idx)
+		{
+			qWarning () << Q_FUNC_INFO << "Malformed index";
+			return;
+		}
 		const auto& twitid = idx->data (Qt::UserRole).value<Tweet_ptr> ()->GetId ();
 		auto currentTwit = std::find_if (ScreenTwits_.begin (), ScreenTwits_.end (),
 				[twitid] (decltype (ScreenTwits_.front ()) tweet)
@@ -440,7 +467,12 @@ namespace Woodpecker
 	
 	void TwitterPage::openUserTimeline ()
 	{
-		const auto& idx = Ui_.TwitList_->currentItem ();
+		const auto idx = Ui_.TwitList_->currentItem ();
+		if (!idx)
+		{
+			qWarning () << Q_FUNC_INFO << "Malformed index";
+			return;
+		}
 		const auto& username = idx->data (Qt::UserRole).value<Tweet_ptr> ()->GetAuthor ()->GetUsername ();
 		KQOAuthParameters param;
 		param.insert ("screen_name", username.toUtf8 ().constData ());
@@ -452,11 +484,30 @@ namespace Woodpecker
 	
 	void TwitterPage::copyTwitText ()
 	{
-		const auto& idx = Ui_.TwitList_->currentItem ();
+		const auto idx = Ui_.TwitList_->currentItem ();
+		if (!idx)
+		{
+			qWarning () << Q_FUNC_INFO << "Malformed index";
+			return;
+		}
 		const auto& text = idx->data (Qt::UserRole).value<Tweet_ptr> ()->GetText ();
 		
 		QApplication::clipboard ()->setText (text, QClipboard::Clipboard);
 	}
+	
+	void TwitterPage::deleteTwit ()
+	{
+		const auto idx = Ui_.TwitList_->currentItem ();
+		if (!idx)
+		{
+			qWarning () << Q_FUNC_INFO << "Malformed index";
+			return;
+		}
+		const auto& twitid = idx->data (Qt::UserRole).value<Tweet_ptr> ()->GetId ();
+		
+		Interface_->Delete (twitid);
+	}
+	
 }
 }
 
