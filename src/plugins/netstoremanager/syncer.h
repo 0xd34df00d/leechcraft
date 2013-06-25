@@ -64,8 +64,9 @@ namespace NetStoreManager
 
 		bool IsStarted () const;
 	private:
-		void CreatePath (const QStringList& path);
-		void DeletePath (const QStringList& path);
+		void CreateRemotePath (const QStringList& path);
+		void DeleteRemotePath (const QStringList& path);
+		void RenameItem (const StorageItem& item, const QString& path);
 
 	public slots:
 		void start ();
@@ -75,12 +76,12 @@ namespace NetStoreManager
 		void handleGotNewItem (const StorageItem& item, const QByteArray& parentId);
 		void handleGotChanges (const QList<Change>& changes);
 
-		void dirWasCreated (const QString& path);
-		void dirWasRemoved (const QString& path);
-		void fileWasCreated (const QString& path);
-		void fileWasRemoved (const QString& path);
-		void fileWasUpdated (const QString& path);
-		void fileWasRenamed (const QString& oldName, const QString& newName);
+		void localDirWasCreated (const QString& path);
+		void localDirWasRemoved (const QString& path);
+		void localFileWasCreated (const QString& path);
+		void localFileWasRemoved (const QString& path);
+		void localFileWasUpdated (const QString& path);
+		void localFileWasRenamed (const QString& oldName, const QString& newName);
 	};
 }
 }

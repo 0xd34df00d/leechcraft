@@ -143,35 +143,35 @@ namespace NetStoreManager
 	{
 		for (auto syncer : AccountID2Syncer_.values ())
 			if (path.startsWith (syncer->GetLocalPath ()))
-				syncer->dirWasCreated (path);
+				syncer->localDirWasCreated (path);
 	}
 
 	void SyncManager::handleDirWasRemoved (const QString& path)
 	{
 		for (auto syncer : AccountID2Syncer_.values ())
 			if (path.startsWith (syncer->GetLocalPath ()))
-				syncer->dirWasRemoved (path);
+				syncer->localDirWasRemoved (path);
 	}
 
 	void SyncManager::handleFileWasCreated (const QString& path)
 	{
 		for (auto syncer : AccountID2Syncer_.values ())
 			if (path.startsWith (syncer->GetLocalPath ()))
-				syncer->fileWasCreated (path);
+				syncer->localFileWasCreated (path);
 	}
 
 	void SyncManager::handleFileWasRemoved (const QString& path)
 	{
 		for (auto syncer : AccountID2Syncer_.values ())
 			if (path.startsWith (syncer->GetLocalPath ()))
-				syncer->fileWasRemoved (path);
+				syncer->localFileWasRemoved (path);
 	}
 
 	void SyncManager::handleFileWasUpdated (const QString& path)
 	{
 		for (auto syncer : AccountID2Syncer_.values ())
 			if (path.startsWith (syncer->GetLocalPath ()))
-				syncer->fileWasUpdated (path);
+				syncer->localFileWasUpdated (path);
 	}
 
 	void SyncManager::handleEntryWasMoved (const QString& oldPath,
@@ -185,7 +185,7 @@ namespace NetStoreManager
 	{
 		for (auto syncer : AccountID2Syncer_.values ())
 			if (oldName.startsWith (syncer->GetLocalPath ()))
-				syncer->fileWasRenamed (oldName, newName);
+				syncer->localFileWasRenamed (oldName, newName);
 	}
 
 	void SyncManager::handleGotListing (const QList<StorageItem>& items)
