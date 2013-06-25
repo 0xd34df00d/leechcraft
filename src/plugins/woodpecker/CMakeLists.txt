@@ -5,9 +5,9 @@ endif ()
 
 option (ENABLE_AZOTH_WOODPECKER_VERBOSE_LOG "Debug protocol messages & similar stuff with increased verbosity" OFF)
 
-if (ENABLE_AZOTH_WOODPECKER_VERBOSE_LOG)
+if (ENABLE_WOODPECKER_VERBOSE_LOG)
 	add_definitions (-DWP_DEBUG)
-endif (ENABLE_AZOTH_WOODPECKER_VERBOSE_LOG)
+endif ()
 
 project (leechcraft_woodpecker)
 include (InitLCPlugin OPTIONAL)
