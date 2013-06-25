@@ -185,6 +185,7 @@ namespace Spegnersi
 
 		AllPhotosItem_ = new QStandardItem (tr ("All photos"));
 		AllPhotosItem_->setData (ItemType::AllPhotos, CollectionRole::Type);
+		AllPhotosItem_->setEditable (false);
 		CollectionsModel_->appendRow (AllPhotosItem_);
 
 		State_ = State::CollectionsRequested;
@@ -234,6 +235,7 @@ namespace Spegnersi
 			auto item = new QStandardItem;
 
 			item->setText (photo.attribute ("title"));
+			item->setEditable (false);
 			item->setData (ItemType::Image, CollectionRole::Type);
 			item->setData (photo.attribute ("id"), CollectionRole::ID);
 			item->setData (photo.attribute ("title"), CollectionRole::Name);
