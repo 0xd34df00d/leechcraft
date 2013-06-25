@@ -29,39 +29,46 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/media/iartistbiofetcher.h>
+#include <memory>
+#include <QWidget>
+#include <interfaces/ihavetabs.h>
 
-class QNetworkAccessManager;
+class QComboBox;
 
 namespace LeechCraft
 {
-namespace Lastfmscrobble
+namespace Blasq
 {
-	class PendingArtistBio : public QObject
-						   , public Media::IPendingArtistBio
+	class AccountsManager;
+	class IAccount;
+
+	class PhotosTab : public QWidget
+					, public ITabWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (Media::IPendingArtistBio)
+		Q_INTERFACES (ITabWidget)
 
-		Media::ArtistBio Bio_;
-		bool BioFinished_;
-		bool ImagesFinished_;
+		const TabClassInfo TC_;
+		QObject * const Plugin_;
+
+		AccountsManager * const AccMgr_;
+
+		QComboBox *AccountsBox_;
+		std::unique_ptr<QToolBar> Toolbar_;
+
+		IAccount *CurAcc_ = 0;
+		QObject *CurAccObj_ = 0;
 	public:
-		PendingArtistBio (QString, QNetworkAccessManager*, QObject* = 0);
+		PhotosTab (AccountsManager*, const TabClassInfo&, QObject*);
 
-		QObject* GetQObject ();
-		Media::ArtistBio GetArtistBio () const;
-	private:
-		void CheckReady ();
+		TabClassInfo GetTabClassInfo () const;
+		QObject* ParentMultiTabs ();
+		void Remove ();
+		QToolBar* GetToolBar () const;
 	private slots:
-		void handleImagesFinished ();
-
-		void handleFinished ();
-		void handleError ();
+		void handleAccountChosen (int);
 	signals:
-		void ready ();
-		void error ();
+		void removeTab (QWidget*);
 	};
 }
 }

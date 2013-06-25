@@ -1,5 +1,6 @@
 import QtQuick 1.0
 import Effects 1.0
+import org.LC.common 1.0
 import "."
 
 Rectangle {
@@ -18,23 +19,26 @@ Rectangle {
         id: fullSizeArtistImg
         state: "hidden"
 
-        width: parent.width - 60
-        height: parent.height - 60
+        anchors.centerIn: parent
+        width: parent.width - 64
+        height: parent.height - 64
         z: 2
         smooth: true
         fillMode: Image.PreserveAspectFit
 
         visible: opacity != 0
 
+        property bool navVisible: false
+
         states: [
             State {
                 name: "hidden"
-                PropertyChanges { target: fullSizeArtistImg; opacity: 0; width: artistImageThumb.width; height: artistImageThumb.height; x: artistImageThumb.x; y: artistImageThumb.y }
+                PropertyChanges { target: fullSizeArtistImg; opacity: 0; width: artistImageThumb.width; height: artistImageThumb.height }
                 PropertyChanges { target: bioViewBlur; blurRadius: 0 }
             },
             State {
                 name: "visible"
-                PropertyChanges { target: fullSizeArtistImg; opacity: 1; width: parent.width - 60; height: parent.height - 60; x: 30; y: 30 }
+                PropertyChanges { target: fullSizeArtistImg; opacity: 1; width: parent.width - 64; height: parent.height - 64 }
                 PropertyChanges { target: bioViewBlur; blurRadius: 10 }
             }
         ]
@@ -50,6 +54,30 @@ Rectangle {
         }
 
         onStatusChanged: if (fullSizeArtistImg.status == Image.Ready) fullSizeArtistImg.state = "visible"
+
+        ActionButton {
+            visible: parent.navVisible
+
+            anchors.left: parent.left
+            anchors.verticalCenter: parent.verticalCenter
+            width: 32
+            height: width
+            actionIconURL: "image://ThemeIcons/go-previous"
+
+            onTriggered: artistImagesView.decrementCurrentIndex()
+        }
+
+        ActionButton {
+            visible: parent.navVisible
+
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            width: 32
+            height: width
+            actionIconURL: "image://ThemeIcons/go-next"
+
+            onTriggered: artistImagesView.incrementCurrentIndex()
+        }
     }
 
     Rectangle {
@@ -99,7 +127,9 @@ Rectangle {
 
                 onClicked: {
                     fullSizeArtistImg.source = artistBigImageURL
-                    if (fullSizeArtistImg.status == Image.Ready) fullSizeArtistImg.state = "visible"
+                    fullSizeArtistImg.navVisible = false
+                    if (fullSizeArtistImg.status == Image.Ready)
+                        fullSizeArtistImg.state = "visible"
                 }
             }
         }
@@ -220,6 +250,54 @@ Rectangle {
             }
         }
 
+        ListView {
+            id: artistImagesView
+            z: 3
+            anchors.right: parent.right
+            anchors.top: artistNameLabel.bottom
+            anchors.bottom: parent.bottom
+            width: Math.min(192, Math.max(rootRect.width / 8, 64))
+
+            model: artistImagesModel
+
+            clip: true
+
+            spacing: 3
+
+            keyNavigationWraps: true
+
+            onCurrentItemChanged: currentItem.updateFullSize()
+
+            delegate: Image {
+                id: delegateItem
+                source: thumbURL
+
+                width: artistImagesView.width
+                height: sourceSize.width > 0 ? Math.min(width, sourceSize.height * width / sourceSize.width) : width
+                fillMode: Image.PreserveAspectFit
+
+                smooth: true
+
+                function updateFullSize() {
+                    if (fullSizeArtistImg.state == "visible")
+                        fullSizeArtistImg.source = fullURL
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onClicked: {
+                        fullSizeArtistImg.navVisible = true
+                        fullSizeArtistImg.source = fullURL
+                        if (fullSizeArtistImg.status == Image.Ready)
+                            fullSizeArtistImg.state = "visible"
+
+                        artistImagesView.currentIndex = index
+                    }
+                }
+            }
+        }
+
         Rectangle {
             id: upTextShade
             z: 3
@@ -249,7 +327,7 @@ Rectangle {
             anchors.leftMargin: 5
             anchors.left: artistImageThumb.right
             anchors.rightMargin: 5
-            anchors.right: parent.right
+            anchors.right: artistImagesView.left
             anchors.top: artistNameLabel.bottom
             anchors.bottom: parent.bottom
 

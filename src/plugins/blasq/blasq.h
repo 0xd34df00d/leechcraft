@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/ihavetabs.h>
 #include <interfaces/ipluginready.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/data/iimgsource.h>
@@ -44,16 +45,19 @@ namespace Blasq
 
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IHaveTabs
 				 , public IPluginReady
 				 , public IHaveSettings
 				 , public IImgSource
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPluginReady IHaveSettings IImgSource)
+		Q_INTERFACES (IInfo IHaveTabs IPluginReady IHaveSettings IImgSource)
 
 		ServicesManager *ServicesMgr_;
 		AccountsManager *AccountsMgr_;
 		Util::XmlSettingsDialog_ptr XSD_;
+
+		TabClassInfo PhotosTabTC_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -63,6 +67,9 @@ namespace Blasq
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 
+		TabClasses_t GetTabClasses () const;
+		void TabOpenRequested (const QByteArray&);
+
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
 
@@ -71,6 +78,13 @@ namespace Blasq
 		ImageServiceInfos_t GetServices () const;
 		IPendingImgSourceRequest* RequestImages (const QByteArray& serviceId);
 		IPendingImgSourceRequest* StartDefaultChooser ();
+	signals:
+		void addNewTab (const QString&, QWidget*);
+		void removeTab (QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void statusBarChanged (QWidget*, const QString&);
+		void raiseTab (QWidget*);
 	};
 }
 }

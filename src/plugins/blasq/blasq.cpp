@@ -36,6 +36,7 @@
 #include "accountswidget.h"
 #include "servicesmanager.h"
 #include "accountsmanager.h"
+#include "photostab.h"
 
 namespace LeechCraft
 {
@@ -50,6 +51,16 @@ namespace Blasq
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "blasqsettings.xml");
 
 		XSD_->SetCustomWidget ("AccountsWidget", new AccountsWidget (ServicesMgr_, AccountsMgr_));
+
+		PhotosTabTC_ = TabClassInfo
+		{
+			GetUniqueID () + "/Photos",
+			tr ("Blasq"),
+			tr ("All the photos stored in the cloud"),
+			GetIcon (),
+			1,
+			TFOpenableByRequest | TFSuggestOpening
+		};
 	}
 
 	void Plugin::SecondInit ()
@@ -78,6 +89,28 @@ namespace Blasq
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	TabClasses_t Plugin::GetTabClasses () const
+	{
+		return { PhotosTabTC_ };
+	}
+
+	void Plugin::TabOpenRequested (const QByteArray& tcId)
+	{
+		if (tcId == PhotosTabTC_.TabClass_)
+		{
+			auto tab = new PhotosTab (AccountsMgr_, PhotosTabTC_, this);
+			connect (tab,
+					SIGNAL (removeTab (QWidget*)),
+					this,
+					SIGNAL (removeTab (QWidget*)));
+			emit addNewTab (PhotosTabTC_.VisibleName_, tab);
+		}
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "unknown tab class"
+					<< tcId;
 	}
 
 	QSet<QByteArray> Plugin::GetExpectedPluginClasses () const

@@ -29,6 +29,9 @@
 
 #include "flickrservice.h"
 #include <QIcon>
+#include <QSettings>
+#include <QCoreApplication>
+#include <QtDebug>
 #include "flickraccount.h"
 
 namespace LeechCraft
@@ -40,6 +43,17 @@ namespace Spegnersi
 	FlickrService::FlickrService (ICoreProxy_ptr proxy)
 	: Proxy_ (proxy)
 	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Blasq_Spegnersi");
+		settings.beginGroup ("Accounts");
+		for (const auto& key : settings.childKeys ())
+		{
+			const auto& serialized = settings.value (key).toByteArray ();
+			auto acc = FlickrAccount::Deserialize (serialized, this, proxy);
+			if (acc)
+				AddAccount (acc);
+		}
+		settings.endGroup ();
 	}
 
 	QObject* FlickrService::GetQObject ()
@@ -72,11 +86,51 @@ namespace Spegnersi
 	void FlickrService::RegisterAccount (const QString& name, const QList<QWidget*>&)
 	{
 		auto acc = new FlickrAccount (name, this, Proxy_);
-		emit accountAdded (acc);
+		AddAccount (acc);
+		saveAccount (acc);
 	}
 
 	void FlickrService::RemoveAccount (IAccount *acc)
 	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Blasq_Spegnersi");
+		settings.beginGroup ("Accounts");
+		settings.remove (acc->GetID ());
+		settings.endGroup ();
+
+		const auto pos = std::find (Accounts_.begin (), Accounts_.end (), acc);
+		if (pos == Accounts_.end ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "account"
+					<< acc->GetID ()
+					<< "not found";
+			return;
+		}
+
+		emit accountRemoved (*pos);
+		(*pos)->deleteLater ();
+
+		Accounts_.erase (pos);
+	}
+
+	void FlickrService::AddAccount (FlickrAccount *acc)
+	{
+		Accounts_ << acc;
+		emit accountAdded (acc);
+		connect (acc,
+				SIGNAL (accountChanged (FlickrAccount*)),
+				this,
+				SLOT (saveAccount (FlickrAccount*)));
+	}
+
+	void FlickrService::saveAccount (FlickrAccount *acc)
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Blasq_Spegnersi");
+		settings.beginGroup ("Accounts");
+		settings.setValue (acc->GetID (), acc->Serialize ());
+		settings.endGroup ();
 	}
 }
 }

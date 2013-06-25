@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QtPlugin>
+#include "collection.h"
 
 class QString;
 
@@ -51,6 +52,10 @@ namespace Blasq
 		virtual QString GetName () const = 0;
 
 		virtual QByteArray GetID () const = 0;
+
+		virtual void UpdateCollections () = 0;
+	signals:
+		virtual void collectionListUpdated (const Collections_t&) = 0;
 	};
 }
 }

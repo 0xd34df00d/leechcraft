@@ -29,39 +29,20 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/media/iartistbiofetcher.h>
-
-class QNetworkAccessManager;
+#include <QList>
 
 namespace LeechCraft
 {
-namespace Lastfmscrobble
+namespace Blasq
 {
-	class PendingArtistBio : public QObject
-						   , public Media::IPendingArtistBio
+	struct ImageInfo
 	{
-		Q_OBJECT
-		Q_INTERFACES (Media::IPendingArtistBio)
-
-		Media::ArtistBio Bio_;
-		bool BioFinished_;
-		bool ImagesFinished_;
-	public:
-		PendingArtistBio (QString, QNetworkAccessManager*, QObject* = 0);
-
-		QObject* GetQObject ();
-		Media::ArtistBio GetArtistBio () const;
-	private:
-		void CheckReady ();
-	private slots:
-		void handleImagesFinished ();
-
-		void handleFinished ();
-		void handleError ();
-	signals:
-		void ready ();
-		void error ();
 	};
+
+	struct Collection
+	{
+	};
+
+	typedef QList<Collection> Collections_t;
 }
 }

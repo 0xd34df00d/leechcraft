@@ -32,6 +32,8 @@
 #include <QObject>
 #include <interfaces/media/iartistbiofetcher.h>
 
+class QStandardItemModel;
+
 namespace LeechCraft
 {
 namespace LMP
@@ -46,11 +48,14 @@ namespace LMP
 		Q_PROPERTY (QString artistTags READ GetArtistTags NOTIFY artistTagsChanged)
 		Q_PROPERTY (QString artistInfo READ GetArtistInfo NOTIFY artistInfoChanged)
 		Q_PROPERTY (QUrl artistPageURL READ GetArtistPageURL NOTIFY artistPageURLChanged)
+		Q_PROPERTY (QObject* artistImagesModel READ GetArtistImagesModel NOTIFY artistImagesModelChanged)
 
 		Media::ArtistBio Bio_;
 
 		QString CachedTags_;
 		QString CachedInfo_;
+
+		QStandardItemModel *ArtistImages_;
 	public:
 		BioPropProxy (QObject* = 0);
 
@@ -62,6 +67,7 @@ namespace LMP
 		QString GetArtistTags () const;
 		QString GetArtistInfo () const;
 		QUrl GetArtistPageURL () const;
+		QObject* GetArtistImagesModel () const;
 	signals:
 		void artistNameChanged (const QString&);
 		void artistImageURLChanged (const QUrl&);
@@ -69,6 +75,7 @@ namespace LMP
 		void artistTagsChanged (const QString&);
 		void artistInfoChanged (const QString&);
 		void artistPageURLChanged (const QUrl&);
+		void artistImagesModelChanged (QObject*);
 	};
 }
 }

@@ -50,11 +50,17 @@ namespace Blasq
 		QStandardItemModel * const Model_;
 		QList<IAccount*> Accounts_;
 
+	public:
+		enum Column
+		{
+			Name,
+			Service
+		};
 		enum Role
 		{
 			AccountObj = Qt::UserRole + 1
 		};
-	public:
+
 		AccountsManager (ServicesManager*, QObject* = 0);
 
 		QAbstractItemModel* GetModel ();

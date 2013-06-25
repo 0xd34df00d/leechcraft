@@ -29,6 +29,7 @@
 
 #include "pendingartistbio.h"
 #include <algorithm>
+#include <memory>
 #include <QNetworkReply>
 #include <QDomDocument>
 #include <QtDebug>
@@ -38,9 +39,11 @@ namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
-	PendingArtistBio::PendingArtistBio (const QString& name,
+	PendingArtistBio::PendingArtistBio (QString name,
 			QNetworkAccessManager *nam, QObject *parent)
 	: QObject (parent)
+	, BioFinished_ (false)
+	, ImagesFinished_ (false)
 	{
 		QMap<QString, QString> params;
 		params ["artist"] = name;
@@ -55,6 +58,14 @@ namespace Lastfmscrobble
 				SIGNAL (error (QNetworkReply::NetworkError)),
 				this,
 				SLOT (handleError ()));
+
+		const QString imgUrl ("http://ws.audioscrobbler.com/2.0/artist/%1/images.rss");
+		QNetworkRequest req (imgUrl.arg (name.replace (' ', '+')));
+		auto imagesReply = nam->get (req);
+		connect (imagesReply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleImagesFinished ()));
 	}
 
 	QObject* PendingArtistBio::GetQObject ()
@@ -65,6 +76,52 @@ namespace Lastfmscrobble
 	Media::ArtistBio PendingArtistBio::GetArtistBio () const
 	{
 		return Bio_;
+	}
+
+	void PendingArtistBio::CheckReady ()
+	{
+		if (!BioFinished_ || !ImagesFinished_)
+			return;
+
+		emit ready ();
+		deleteLater ();
+	}
+
+	void PendingArtistBio::handleImagesFinished ()
+	{
+		ImagesFinished_ = true;
+		std::shared_ptr<void> checkGuard (nullptr, [this] (void*) { CheckReady (); });
+
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		QDomDocument doc;
+		if (!doc.setContent (reply->readAll ()))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to parse reply";
+			return;
+		}
+
+		auto item = doc
+				.documentElement ()
+				.firstChildElement ("channel")
+				.firstChildElement ("item");
+		while (!item.isNull ())
+		{
+			const Media::ArtistImage img
+			{
+				item.firstChildElement ("title").text (),
+				item.firstChildElement ("author").text (),
+				QDateTime (),
+				item.firstChildElement ("media:thumbnail").attribute ("url"),
+				item.firstChildElement ("media:content").attribute ("url")
+			};
+
+			Bio_.OtherImages_ << img;
+
+			item = item.nextSiblingElement ("item");
+		}
 	}
 
 	void PendingArtistBio::handleFinished ()
@@ -86,8 +143,9 @@ namespace Lastfmscrobble
 		Bio_.BasicInfo_ = GetArtistInfo (artist);
 		std::reverse (Bio_.BasicInfo_.Tags_.begin (), Bio_.BasicInfo_.Tags_.end ());
 
-		emit ready ();
-		deleteLater ();
+		BioFinished_ = true;
+
+		CheckReady ();
 	}
 
 	void PendingArtistBio::handleError ()

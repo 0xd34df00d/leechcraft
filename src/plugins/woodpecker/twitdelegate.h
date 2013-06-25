@@ -34,6 +34,7 @@
 #include <QStyledItemDelegate>
 #include <QRect>
 #include <interfaces/structures.h>
+#include "woodpecker.h"
 
 namespace LeechCraft
 {
@@ -41,8 +42,10 @@ namespace Woodpecker
 {
 	class TwitDelegate : public QStyledItemDelegate
 	{
+		Plugin *const ParentPlugin_;
+		
 	public:
-		TwitDelegate (QObject *parent = 0);
+		TwitDelegate (QObject *parent = 0, Plugin *plugin = 0);
 		
 		void paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
 		QSize sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const;

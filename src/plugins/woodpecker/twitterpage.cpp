@@ -48,14 +48,14 @@ namespace Woodpecker
 							  const FeedMode mode,
 							  const KQOAuthParameters& params)
 	: TC_ (tc)
-	, ParentPlugin_ (plugin)
 	, Toolbar_ (new QToolBar (this))
 	, EntityManager_ (Core::Instance ().GetCoreProxy ()->GetEntityManager ())
-	, PageMode_ (mode)
 	, PageDefaultParam_ (params)
+	, PageMode_ (mode)
+	, ParentPlugin_ (plugin)
 	{
 		Ui_.setupUi (this);
-		Delegate_ = new TwitDelegate (Ui_.TwitList_);
+		Delegate_ = new TwitDelegate (Ui_.TwitList_, ParentPlugin_);
 		Ui_.TwitList_->setItemDelegate (Delegate_);
 
 		//	Toolbar_->addAction (ui->actionRefresh);

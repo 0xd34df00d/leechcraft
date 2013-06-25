@@ -73,17 +73,53 @@ namespace Spegnersi
 				this,
 				SLOT (handleAccessToken (QString, QString)));
 
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Blasq_Spegnersi");
-		settings.beginGroup ("Tokens");
-		settings.beginGroup (GetID ());
-		AuthToken_ = settings.value ("Token").toString ();
-		AuthSecret_ = settings.value ("Secret").toString ();
-		settings.endGroup ();
-		settings.endGroup ();
+		connect (AuthMgr_,
+				SIGNAL (requestReady (QByteArray)),
+				this,
+				SLOT (handleReply (QByteArray)));
 
-		if (AuthToken_.isEmpty () || AuthSecret_.isEmpty ())
-			requestTempToken ();
+		QTimer::singleShot (0,
+				this,
+				SLOT (checkAuthTokens ()));
+	}
+
+	QByteArray FlickrAccount::Serialize () const
+	{
+		QByteArray result;
+		{
+			QDataStream ostr (&result, QIODevice::WriteOnly);
+			ostr << static_cast<quint8> (1)
+					<< ID_
+					<< Name_
+					<< AuthToken_
+					<< AuthSecret_;
+		}
+		return result;
+	}
+
+	FlickrAccount* FlickrAccount::Deserialize (const QByteArray& ba, FlickrService *service, ICoreProxy_ptr proxy)
+	{
+		QDataStream istr (ba);
+
+		quint8 version = 0;
+		istr >> version;
+		if (version != 1)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown version"
+					<< version;
+			return nullptr;
+		}
+
+		QByteArray id;
+		QString name;
+		istr >> id
+				>> name;
+
+		auto acc = new FlickrAccount (name, service, proxy, id);
+		istr >> acc->AuthToken_
+				>> acc->AuthSecret_;
+		return acc;
 	}
 
 	QObject* FlickrAccount::GetQObject ()
@@ -106,6 +142,38 @@ namespace Spegnersi
 		return ID_;
 	}
 
+	void FlickrAccount::UpdateCollections ()
+	{
+		switch (State_)
+		{
+		case State::CollectionsRequested:
+			return;
+		case State::Idle:
+			break;
+		default:
+			CallQueue_ << [this] { UpdateCollections (); };
+			return;
+		}
+
+		if (AuthToken_.isEmpty () || AuthSecret_.isEmpty ())
+		{
+			UpdateAfterAuth_ = true;
+			return;
+		}
+
+		UpdateAfterAuth_ = false;
+
+		auto req = MakeRequest (QString ("http://api.flickr.com/services/rest/"), KQOAuthRequest::AuthorizedRequest);
+		req->setAdditionalParameters (Util::MakeMap<QString, QString> ({
+					{ "user_id", "me" },
+					{ "format", "rest" },
+					{ "method", "flickr.photos.search" }
+				}));
+		AuthMgr_->executeRequest (req);
+
+		State_ = State::CollectionsRequested;
+	}
+
 	KQOAuthRequest* FlickrAccount::MakeRequest (const QUrl& url, KQOAuthRequest::RequestType type)
 	{
 		Req_->clearRequest ();
@@ -123,10 +191,22 @@ namespace Spegnersi
 		return Req_;
 	}
 
+	void FlickrAccount::checkAuthTokens ()
+	{
+		if (AuthToken_.isEmpty () || AuthSecret_.isEmpty ())
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "requesting new tokens";
+			requestTempToken ();
+		}
+	}
+
 	void FlickrAccount::requestTempToken ()
 	{
 		auto req = MakeRequest (RequestTokenURL, KQOAuthRequest::TemporaryCredentials);
 		AuthMgr_->executeRequest (req);
+
+		State_ = State::AuthRequested;
 	}
 
 	void FlickrAccount::handleTempToken (const QString&, const QString&)
@@ -178,15 +258,17 @@ namespace Spegnersi
 				<< "access token received";
 		AuthToken_ = token;
 		AuthSecret_ = secret;
+		emit accountChanged (this);
 
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Blasq_Spegnersi");
-		settings.beginGroup ("Tokens");
-		settings.beginGroup (GetID ());
-		settings.setValue ("Token", AuthToken_);
-		settings.setValue ("Secret", AuthSecret_);
-		settings.endGroup ();
-		settings.endGroup ();
+		State_ = State::Idle;
+
+		if (UpdateAfterAuth_)
+			UpdateCollections ();
+	}
+
+	void FlickrAccount::handleReply (const QByteArray& data)
+	{
+		qDebug () << Q_FUNC_INFO << data;
 	}
 }
 }
