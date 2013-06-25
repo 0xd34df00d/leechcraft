@@ -51,7 +51,18 @@ namespace Woodpecker
 
 		Core::Instance ().SetProxy (proxy);
 
-		AddTab ();
+		TabClasses_.append ({
+			{
+				GetUniqueID () + "/Home",
+				tr ("Twitter Home"),
+				tr ("User's main timeline"),
+				GetIcon (),
+				2,
+				TFOpenableByRequest
+			},
+			[this] (const TabClassInfo& tc)
+				{ MakeTab (new TwitterPage (tc, this), tc); }
+			});	
 	}
 	
 	void Plugin::AddTab (const QString& id, const QString& name, const QString& info, 
