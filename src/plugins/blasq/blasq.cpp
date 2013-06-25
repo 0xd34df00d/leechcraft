@@ -29,6 +29,7 @@
 
 #include "blasq.h"
 #include <QIcon>
+#include <QtDeclarative>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "interfaces/blasq/iservicesplugin.h"
 #include "interfaces/blasq/iaccount.h"
@@ -63,6 +64,8 @@ namespace Blasq
 			1,
 			TFOpenableByRequest | TFSuggestOpening
 		};
+
+		qmlRegisterType<QGraphicsBlurEffect> ("Effects", 1, 0, "Blur");
 	}
 
 	void Plugin::SecondInit ()
