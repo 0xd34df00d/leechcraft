@@ -27,8 +27,11 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "pastedialog.h"
-#include "pasteservicefactory.h"
+#include "hastebinservice.h"
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QtDebug>
+#include <qjson/parser.h>
 
 namespace LeechCraft
 {
@@ -36,46 +39,39 @@ namespace Azoth
 {
 namespace Autopaste
 {
-	PasteDialog::PasteDialog (QWidget *parent)
-	: QDialog (parent)
-	, Choice_ (Choice::Cancel)
+	HastebinService::HastebinService (QObject* entry, QObject *parent)
+	: PasteServiceBase (entry, parent)
 	{
-		Ui_.setupUi (this);
-
-		Q_FOREACH (const auto& info, PasteServiceFactory ().GetInfos ())
-            Ui_.ServiceCombo_->addItem (info.Icon_, info.Name_);
 	}
 
-	PasteDialog::Choice PasteDialog::GetChoice () const
+	void HastebinService::Paste (const PasteParams& params)
 	{
-		return Choice_;
+        QNetworkRequest req (QUrl (QLatin1String("http://hastebin.com/documents")));
+		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+        QByteArray data = params.Text_.toUtf8();
+
+        InitReply (params.NAM_->post (req, data));
 	}
 
-	PasteServiceFactory::Creator_f PasteDialog::GetCreator () const
-	{
-		return PasteServiceFactory ().GetInfos ().at (Ui_.ServiceCombo_->currentIndex ()).Creator_;
-	}
-
-	Highlight PasteDialog::GetHighlight () const
-	{
-		return static_cast<Highlight> (Ui_.HighlightCombo_->currentIndex ());
-	}
-
-	void PasteDialog::on_ButtonBox__clicked (QAbstractButton *button)
-	{
-		switch (Ui_.ButtonBox_->standardButton (button))
-		{
-		case QDialogButtonBox::Yes:
-			Choice_ = Choice::Yes;
-			break;
-		case QDialogButtonBox::No:
-			Choice_ = Choice::No;
-			break;
-		default:
-			Choice_ = Choice::Cancel;
-			break;
-		}
-	}
+    void HastebinService::handleFinished()
+    {
+        sender ()->deleteLater ();
+        QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+        QByteArray bytes = reply->readAll();
+        QJson::Parser parser;
+        bool ok;
+        QVariantMap result =  parser.parse (bytes, &ok).toMap();
+        if (!ok) {
+            qWarning () << Q_FUNC_INFO
+                    << "Ooops, cannot parse!"
+                    << sender ();
+        }
+        QUrl url("http://hastebin.com/");
+        url.setPath( result["key"].toString() );
+        QString location = url.toString();
+        if (!location.isEmpty ())
+            FeedURL (location);
+    }
 }
 }
-}
+} 

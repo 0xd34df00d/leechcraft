@@ -72,10 +72,10 @@ namespace Autopaste
 
 		virtual void Paste (const PasteParams&) = 0;
 	protected:
-		void InitReply (QNetworkReply*);
+        virtual void InitReply (QNetworkReply*);
 		void FeedURL (const QString&);
 	protected slots:
-		virtual void handleMetadata ();
+        virtual void handleMetadata ();
 		virtual void handleFinished ();
 		virtual void handleError ();
 	signals:

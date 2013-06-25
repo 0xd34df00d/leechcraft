@@ -13,15 +13,17 @@ set (AUTOPASTE_SRCS
 	autopaste.cpp
 	bpasteservice.cpp
 	codepadservice.cpp
+        hastebinservice.cpp
 	pastedialog.cpp
 	pasteservicebase.cpp
 	pasteservicefactory.cpp
-	xmlsettingsmanager.cpp
+        xmlsettingsmanager.cpp
 	)
 set (AUTOPASTE_HEADERS
 	autopaste.h
 	bpasteservice.h
 	codepadservice.h
+        hastebinservice.h
 	pastedialog.h
 	pasteservicebase.h
 	pasteservicefactory.h
@@ -44,10 +46,12 @@ add_library (leechcraft_azoth_autopaste SHARED
 	${AUTOPASTE_MOC_SRCS}
 	${AUTOPASTE_RCCS}
 	${AUTOPASTE_UIS_H}
+        ${QJSON_INCLUDE_DIR}
 	)
 target_link_libraries (leechcraft_azoth_autopaste
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
+        ${QJSON_LIBRARIES}
 	)
 install (TARGETS leechcraft_azoth_autopaste DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothautopastesettings.xml DESTINATION ${LC_SETTINGS_DEST})
