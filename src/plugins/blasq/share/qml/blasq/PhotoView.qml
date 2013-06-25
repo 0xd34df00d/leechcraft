@@ -137,6 +137,11 @@ Rectangle {
                         horizontalAlignment: Text.AlignHCenter
                         color: colorProxy.color_TextBox_TitleTextColor
                     }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onReleased: rootRect.showImage(original)
+                    }
                 }
             }
         }
