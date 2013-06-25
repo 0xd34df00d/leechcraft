@@ -172,11 +172,20 @@ namespace Spegnersi
 
 		auto req = MakeRequest (QString ("http://api.flickr.com/services/rest/"), KQOAuthRequest::AuthorizedRequest);
 		req->setAdditionalParameters (Util::MakeMap<QString, QString> ({
+					{ "method", "flickr.photos.search" },
 					{ "user_id", "me" },
 					{ "format", "rest" },
-					{ "method", "flickr.photos.search" }
+					{ "per_page", "500" },
+					{ "extras", "url_o,url_z,url_m" }
 				}));
 		AuthMgr_->executeRequest (req);
+
+		CollectionsModel_->clear ();
+		CollectionsModel_->setHorizontalHeaderLabels ({ tr ("Name") });
+
+		AllPhotosItem_ = new QStandardItem (tr ("All photos"));
+		AllPhotosItem_->setData (ItemType::AllPhotos, CollectionRole::Type);
+		CollectionsModel_->appendRow (AllPhotosItem_);
 
 		State_ = State::CollectionsRequested;
 	}
@@ -196,6 +205,61 @@ namespace Spegnersi
 		}
 
 		return Req_;
+	}
+
+	void FlickrAccount::HandleCollectionsReply (const QByteArray& data)
+	{
+		qDebug () << Q_FUNC_INFO;
+		QDomDocument doc;
+		if (!doc.setContent (data))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot parse"
+					<< data;
+			State_ = State::Idle;
+			return;
+		}
+
+		const auto& photos = doc
+				.documentElement ()
+				.firstChildElement ("photos");
+		if (photos.attribute ("pages").toInt () > 1)
+		{
+			// TODO request more
+		}
+
+		auto photo = photos.firstChildElement ("photo");
+		while (!photo.isNull ())
+		{
+			auto item = new QStandardItem;
+
+			item->setText (photo.attribute ("title"));
+			item->setData (ItemType::Image, CollectionRole::Type);
+			item->setData (photo.attribute ("id"), CollectionRole::ID);
+			item->setData (photo.attribute ("title"), CollectionRole::Name);
+
+			auto getSize = [&photo] (const QString& s) -> QSize
+			{
+				return
+				{
+					photo.attribute ("width_" + s).toInt (),
+					photo.attribute ("height_" + s).toInt ()
+				};
+			};
+
+			item->setData (QUrl (photo.attribute ("url_o")), CollectionRole::Original);
+			item->setData (getSize ("o"), CollectionRole::OriginalSize);
+			item->setData (QUrl (photo.attribute ("url_z")), CollectionRole::MediumThumb);
+			item->setData (getSize ("z"), CollectionRole::MediumThumbSize);
+			item->setData (QUrl (photo.attribute ("url_m")), CollectionRole::SmallThumb);
+			item->setData (getSize ("m"), CollectionRole::SmallThumbSize);
+
+			AllPhotosItem_->appendRow (item);
+
+			photo = photo.nextSiblingElement ("photo");
+		}
+
+		qDebug () << "done";
 	}
 
 	void FlickrAccount::checkAuthTokens ()
@@ -275,7 +339,14 @@ namespace Spegnersi
 
 	void FlickrAccount::handleReply (const QByteArray& data)
 	{
-		qDebug () << Q_FUNC_INFO << data;
+		switch (State_)
+		{
+		case State::CollectionsRequested:
+			HandleCollectionsReply (data);
+			break;
+		default:
+			return;
+		}
 	}
 }
 }

@@ -34,6 +34,9 @@
 #include <interfaces/blasq/iaccount.h>
 #include <interfaces/core/icoreproxy.h>
 
+class QStandardItemModel;
+class QStandardItem;
+
 namespace LeechCraft
 {
 namespace Blasq
@@ -57,6 +60,8 @@ namespace Spegnersi
 		KQOAuthManager * const AuthMgr_;
 
 		QStandardItemModel * const CollectionsModel_;
+		QStandardItem *AllPhotosItem_ = 0;
+
 		QString AuthToken_;
 		QString AuthSecret_;
 
@@ -86,6 +91,8 @@ namespace Spegnersi
 		void UpdateCollections ();
 	private:
 		KQOAuthRequest* MakeRequest (const QUrl&, KQOAuthRequest::RequestType = KQOAuthRequest::AuthorizedRequest);
+
+		void HandleCollectionsReply (const QByteArray&);
 	private slots:
 		void checkAuthTokens ();
 		void requestTempToken ();
