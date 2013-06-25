@@ -30,14 +30,20 @@
 #include "photostab.h"
 #include <QToolBar>
 #include <QComboBox>
+#include <QDeclarativeEngine>
+#include <QDeclarativeContext>
+#include <util/qml/colorthemeproxy.h>
+#include <util/sys/paths.h>
 #include "interfaces/blasq/iaccount.h"
 #include "accountsmanager.h"
+
+Q_DECLARE_METATYPE (QModelIndex)
 
 namespace LeechCraft
 {
 namespace Blasq
 {
-	PhotosTab::PhotosTab (AccountsManager *accMgr, const TabClassInfo& tc, QObject *plugin)
+	PhotosTab::PhotosTab (AccountsManager *accMgr, const TabClassInfo& tc, QObject *plugin, ICoreProxy_ptr proxy)
 	: TC_ (tc)
 	, Plugin_ (plugin)
 	, AccMgr_ (accMgr)
@@ -45,6 +51,20 @@ namespace Blasq
 	, Toolbar_ (new QToolBar)
 	{
 		Ui_.setupUi (this);
+
+		Ui_.ImagesView_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
+		Ui_.ImagesView_->rootContext ()->setContextProperty ("colorProxy",
+				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
+		Ui_.ImagesView_->rootContext ()->setContextProperty ("collectionModel", QStringList ());
+		Ui_.ImagesView_->rootContext ()->setContextProperty ("listingMode", "false");
+		Ui_.ImagesView_->rootContext ()->setContextProperty ("collRootIndex",
+				QVariant::fromValue (QModelIndex ()));
+
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
+			Ui_.ImagesView_->engine ()->addImportPath (cand);
+
+		const auto& path = Util::GetSysPath (Util::SysPath::QML, "blasq", "PhotoView.qml");
+		Ui_.ImagesView_->setSource (QUrl::fromLocalFile (path));
 
 		AccountsBox_->setModel (AccMgr_->GetModel ());
 		AccountsBox_->setModelColumn (AccountsManager::Column::Name);
@@ -56,6 +76,11 @@ namespace Blasq
 			handleAccountChosen (0);
 
 		Toolbar_->addWidget (AccountsBox_);
+
+		connect (Ui_.CollectionsTree_->selectionModel (),
+				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (handleRowChanged (QModelIndex)));
 	}
 
 	TabClassInfo PhotosTab::GetTabClassInfo () const
@@ -79,6 +104,18 @@ namespace Blasq
 		return Toolbar_.get ();
 	}
 
+	void PhotosTab::HandleImageSelected (const QModelIndex& index)
+	{
+		Ui_.ImagesView_->rootContext ()->setContextProperty ("listingMode", "false");
+	}
+
+	void PhotosTab::HandleCollectionSelected (const QModelIndex& index)
+	{
+		Ui_.ImagesView_->rootContext ()->setContextProperty ("listingMode", "true");
+		Ui_.ImagesView_->rootContext ()->setContextProperty ("collRootIndex",
+				QVariant::fromValue (index));
+	}
+
 	void PhotosTab::handleAccountChosen (int idx)
 	{
 		auto accVar = AccountsBox_->itemData (idx, AccountsManager::Role::AccountObj);
@@ -97,7 +134,20 @@ namespace Blasq
 		CurAcc_ = acc;
 
 		CurAcc_->UpdateCollections ();
-		Ui_.CollectionsTree_->setModel (CurAcc_->GetCollectionsModel ());
+
+		auto model = CurAcc_->GetCollectionsModel ();
+		Ui_.ImagesView_->rootContext ()->setContextProperty ("collectionModel",
+				QVariant::fromValue<QObject*> (model));
+		Ui_.ImagesView_->rootContext ()->setContextProperty ("listingMode", "false");
+		Ui_.CollectionsTree_->setModel (model);
+	}
+
+	void PhotosTab::handleRowChanged (const QModelIndex& index)
+	{
+		if (index.data (CollectionRole::Type).toInt () == ItemType::Image)
+			HandleImageSelected (index);
+		else
+			HandleCollectionSelected (index);
 	}
 }
 }

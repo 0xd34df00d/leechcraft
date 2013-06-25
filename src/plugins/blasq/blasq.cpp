@@ -44,6 +44,8 @@ namespace Blasq
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+
 		ServicesMgr_ = new ServicesManager;
 		AccountsMgr_ = new AccountsManager (ServicesMgr_);
 
@@ -100,7 +102,7 @@ namespace Blasq
 	{
 		if (tcId == PhotosTabTC_.TabClass_)
 		{
-			auto tab = new PhotosTab (AccountsMgr_, PhotosTabTC_, this);
+			auto tab = new PhotosTab (AccountsMgr_, PhotosTabTC_, this, Proxy_);
 			connect (tab,
 					SIGNAL (removeTab (QWidget*)),
 					this,
