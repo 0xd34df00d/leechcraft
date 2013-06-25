@@ -74,8 +74,8 @@ Rectangle {
         cellWidth: 200
         cellHeight: 200
 
-        property real horzMargin: cellWidth / 10
-        property real vertMargin: cellHeight / 10
+        property real horzMargin: cellWidth / 20
+        property real vertMargin: cellHeight / 20
 
         model: VisualDataModel {
             model: collectionModel
