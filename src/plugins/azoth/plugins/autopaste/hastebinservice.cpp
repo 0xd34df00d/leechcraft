@@ -39,39 +39,40 @@ namespace Azoth
 {
 namespace Autopaste
 {
-	HastebinService::HastebinService (QObject* entry, QObject *parent)
+	HastebinService::HastebinService (QObject *entry, QObject *parent)
 	: PasteServiceBase (entry, parent)
 	{
+
 	}
 
 	void HastebinService::Paste (const PasteParams& params)
 	{
-        QNetworkRequest req (QUrl (QLatin1String("http://hastebin.com/documents")));
+		QNetworkRequest req (QString ("http://hastebin.com/documents"));
 		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
-        QByteArray data = params.Text_.toUtf8();
+		QByteArray data = params.Text_.toUtf8 ();
 
-        InitReply (params.NAM_->post (req, data));
+		InitReply (params.NAM_->post (req, data));
 	}
 
-    void HastebinService::handleFinished()
-    {
-        sender ()->deleteLater ();
-        QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-        QByteArray bytes = reply->readAll();
-        QJson::Parser parser;
-        bool ok;
-        QVariantMap result =  parser.parse (bytes, &ok).toMap();
-        if (!ok) {
-            qWarning () << Q_FUNC_INFO
-                    << "Ooops, cannot parse!"
-                    << sender ();
-        }
-        QUrl url("http://hastebin.com/");
-        url.setPath( result["key"].toString() );
-        QString location = url.toString();
-        if (!location.isEmpty ())
-            FeedURL (location);
-    }
+	void HastebinService::handleFinished ()
+	{
+		sender ()->deleteLater ();
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		const auto &bytes = reply->readAll ();
+		QJson::Parser parser;
+		bool ok;
+		QVariantMap result = parser.parse (bytes, &ok).toMap ();
+		if (!ok)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "Ooops, cannot parse!"
+					<< sender ();
+			return;
+		}
+		QUrl url ("http://hastebin.com/");
+		url.setPath (result ["key"].toString ());
+		FeedURL (url.toString ());
+	}
 }
 }
-} 
+}

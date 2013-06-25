@@ -44,8 +44,8 @@ namespace Autopaste
 		HastebinService (QObject *entry, QObject* = 0);
 
 		void Paste (const PasteParams&);
-    protected:
-        virtual void handleFinished();
+	protected:
+		virtual void handleFinished ();
 	};
 }
 }
