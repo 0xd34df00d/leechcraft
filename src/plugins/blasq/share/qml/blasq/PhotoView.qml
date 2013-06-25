@@ -115,6 +115,7 @@ Rectangle {
                         anchors.right: parent.right
                         anchors.top: parent.top
                         anchors.bottom: nameLabel.top
+                        anchors.margins: 2
 
                         source: smallThumb
 
@@ -128,9 +129,13 @@ Rectangle {
                         anchors.left: parent.left
                         anchors.right: parent.right
                         anchors.bottom: parent.bottom
+                        anchors.margins: 2
 
                         text: name
+
                         elide: Text.ElideMiddle
+                        horizontalAlignment: Text.AlignHCenter
+                        color: colorProxy.color_TextBox_TitleTextColor
                     }
                 }
             }
