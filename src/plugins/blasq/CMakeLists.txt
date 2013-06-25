@@ -21,6 +21,7 @@ set (SRCS
 set (FORMS
 	accountswidget.ui
 	newaccountwizardfirstpage.ui
+	photostab.ui
 	)
 #CreateTrs("blasq" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("blasq" "en;ru_RU" "${SRCS}" "${FORMS}" "")

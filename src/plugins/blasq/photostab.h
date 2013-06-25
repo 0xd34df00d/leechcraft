@@ -32,6 +32,7 @@
 #include <memory>
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
+#include "ui_photostab.h"
 
 class QComboBox;
 
@@ -47,6 +48,8 @@ namespace Blasq
 	{
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
+
+		Ui::PhotosTab Ui_;
 
 		const TabClassInfo TC_;
 		QObject * const Plugin_;

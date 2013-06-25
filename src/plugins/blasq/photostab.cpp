@@ -30,8 +30,8 @@
 #include "photostab.h"
 #include <QToolBar>
 #include <QComboBox>
-#include "accountsmanager.h"
 #include "interfaces/blasq/iaccount.h"
+#include "accountsmanager.h"
 
 namespace LeechCraft
 {
@@ -44,6 +44,8 @@ namespace Blasq
 	, AccountsBox_ (new QComboBox)
 	, Toolbar_ (new QToolBar)
 	{
+		Ui_.setupUi (this);
+
 		AccountsBox_->setModel (AccMgr_->GetModel ());
 		AccountsBox_->setModelColumn (AccountsManager::Column::Name);
 		connect (AccountsBox_,
@@ -95,6 +97,7 @@ namespace Blasq
 		CurAcc_ = acc;
 
 		CurAcc_->UpdateCollections ();
+		Ui_.CollectionsTree_->setModel (CurAcc_->GetCollectionsModel ());
 	}
 }
 }
