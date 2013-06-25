@@ -30,6 +30,8 @@
 #pragma once
 
 #include <Qt>
+#include <QHash>
+#include <QByteArray>
 
 namespace LeechCraft
 {
@@ -57,6 +59,27 @@ namespace Blasq
 		 */
 		Original,
 		OriginalSize
+	};
+
+	template<typename T>
+	class NamedModel : public T
+	{
+	public:
+		NamedModel (QObject *parent)
+		: T (parent)
+		{
+			QHash<int, QByteArray> result;
+			result [CollectionRole::Type] = "type";
+			result [CollectionRole::ID] = "imageId";
+			result [CollectionRole::Name] = "name";
+			result [CollectionRole::SmallThumb] = "smallThumb";
+			result [CollectionRole::SmallThumbSize] = "smallThumbSize";
+			result [CollectionRole::MediumThumb] = "mediumThumb";
+			result [CollectionRole::MediumThumbSize] = "mediumThumbSize";
+			result [CollectionRole::Original] = "original";
+			result [CollectionRole::OriginalSize] = "originalSize";
+			T::setRoleNames (result);
+		}
 	};
 
 	enum ItemType

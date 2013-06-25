@@ -57,7 +57,7 @@ namespace Spegnersi
 	, Proxy_ (proxy)
 	, Req_ (new KQOAuthRequest (this))
 	, AuthMgr_ (new KQOAuthManager (this))
-	, CollectionsModel_ (new QStandardItemModel (this))
+	, CollectionsModel_ (new NamedModel<QStandardItemModel> (this))
 	{
 		AuthMgr_->setNetworkManager (proxy->GetNetworkAccessManager ());
 		AuthMgr_->setHandleUserAuthorization (true);
