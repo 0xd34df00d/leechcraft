@@ -127,6 +127,13 @@ namespace Woodpecker
 				this,
 				SLOT (copyTwitText ()));
 
+		ActionDelete_ = new QAction (tr ("Delete twit"), Ui_.TwitList_);
+		ActionDelete_->setProperty ("ActionIcon", "edit-delete");
+		connect (ActionDelete_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (deleteTwit ()));
+
 		connect (Ui_.TwitList_,
 				SIGNAL (itemDoubleClicked (QListWidgetItem*)),
 				this,
@@ -377,8 +384,8 @@ namespace Woodpecker
 				SLOT (openUserTimeline ()));
 
 		menu->addActions ({ ActionRetwit_, ActionReply_, menu->addSeparator (),
-			ActionSPAM_, menu->addSeparator (), ActionCopyText_, ActionOpenWeb_,
-						  actionOpenTimeline});
+			ActionSPAM_, menu->addSeparator (), ActionDelete_, menu->addSeparator (), ActionCopyText_, 
+						  ActionOpenWeb_, actionOpenTimeline});
 		menu->setAttribute (Qt::WA_DeleteOnClose);
 
 		menu->exec (Ui_.TwitList_->viewport ()->mapToGlobal (pos));
@@ -457,6 +464,15 @@ namespace Woodpecker
 		
 		QApplication::clipboard ()->setText (text, QClipboard::Clipboard);
 	}
+	
+	void TwitterPage::deleteTwit ()
+	{
+		const auto& idx = Ui_.TwitList_->currentItem ();
+		const auto& twitid = (idx->data (Qt::UserRole).value<Tweet_ptr> ())->GetId ();
+		
+		Interface_->Delete (twitid);
+	}
+	
 }
 }
 

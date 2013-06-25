@@ -3,6 +3,12 @@ if (COMMAND cmake_policy)
 	cmake_policy (SET CMP0003 NEW)
 endif ()
 
+option (ENABLE_AZOTH_WOODPECKER_VERBOSE_LOG "Debug protocol messages & similar stuff with increased verbosity" OFF)
+
+if (ENABLE_AZOTH_WOODPECKER_VERBOSE_LOG)
+	add_definitions (-DWP_DEBUG)
+endif (ENABLE_AZOTH_WOODPECKER_VERBOSE_LOG)
+
 project (leechcraft_woodpecker)
 include (InitLCPlugin OPTIONAL)
 
