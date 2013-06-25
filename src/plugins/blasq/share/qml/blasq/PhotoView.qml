@@ -108,6 +108,8 @@ Rectangle {
                     border.width: 1
                     border.color: colorProxy.color_TextBox_BorderColor
 
+                    smooth: true
+
                     Image {
                         anchors.left: parent.left
                         anchors.right: parent.right
