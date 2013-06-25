@@ -18,6 +18,53 @@ Rectangle {
         }
     }
 
+    function showImage(url) {
+        if (url.length == 0) {
+            fullSizeImage.state = "hidden"
+            fullSizeImage.source = undefined
+        } else {
+            fullSizeImage.state = "loading"
+            fullSizeImage.source = url
+        }
+    }
+
+    Image {
+        id: fullSizeImage
+
+        z: collectionThumbsView.z + 1
+
+        anchors.fill: parent
+        anchors.margins: 32
+
+        state: "hidden"
+
+        states: [
+            State {
+                name: "hidden"
+                PropertyChanges { target: fullSizeImage; opacity: 0; scale: 0 }
+            },
+            State {
+                name: "loading"
+                PropertyChanges {  }
+            },
+            State {
+                name: "visible"
+                PropertyChanges { target: fullSizeImage; opacity: 1; scale: 1 }
+            }
+        ]
+
+        transitions: Transition {
+            PropertyAnimation { properties: "opacity"; duration: 300; easing.type: Easing.OutSine }
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            onReleased: fullSizeImage.state = "hidden"
+        }
+
+        onStatusChanged: if (status == Image.Ready) state = "visible"
+    }
+
     GridView {
         id: collectionThumbsView
 

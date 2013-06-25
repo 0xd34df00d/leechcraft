@@ -32,6 +32,7 @@
 #include <QComboBox>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
+#include <QGraphicsObject>
 #include <util/qml/colorthemeproxy.h>
 #include <util/sys/paths.h>
 #include "interfaces/blasq/iaccount.h"
@@ -107,10 +108,18 @@ namespace Blasq
 	void PhotosTab::HandleImageSelected (const QModelIndex& index)
 	{
 		Ui_.ImagesView_->rootContext ()->setContextProperty ("listingMode", "false");
+
+		QMetaObject::invokeMethod (Ui_.ImagesView_->rootObject (),
+				"showImage",
+				Q_ARG (QVariant, index.data (CollectionRole::Original).toUrl ()));
 	}
 
 	void PhotosTab::HandleCollectionSelected (const QModelIndex& index)
 	{
+		QMetaObject::invokeMethod (Ui_.ImagesView_->rootObject (),
+				"showImage",
+				Q_ARG (QVariant, QUrl ()));
+
 		Ui_.ImagesView_->rootContext ()->setContextProperty ("listingMode", "true");
 		Ui_.ImagesView_->rootContext ()->setContextProperty ("collRootIndex",
 				QVariant::fromValue (index));
