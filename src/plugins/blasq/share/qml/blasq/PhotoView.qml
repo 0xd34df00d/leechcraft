@@ -20,9 +20,7 @@ Rectangle {
     }
 
     function showImage(url) {
-        console.log("show " + url)
         fullSizeImage.source = url
-        console.log("showstate " + fullSizeImage.status)
     }
 
     Image {
@@ -61,12 +59,10 @@ Rectangle {
 
         MouseArea {
             anchors.fill: parent
-            onReleased: rootRect.showImage("")//fullSizeImage.state = "hidden"
+            onReleased: rootRect.showImage("")
         }
 
-        onStateChanged: console.log("new state: " + state + "; " + source)
         onStatusChanged: {
-            console.log("new status: " + status)
             switch (status) {
             case Image.Ready:
                 state = "displayed"
