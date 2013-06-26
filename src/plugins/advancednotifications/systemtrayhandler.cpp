@@ -346,6 +346,8 @@ namespace AdvancedNotifications
 			if (event.Category_ == category)
 				eventCount += event.Count_;
 
+		const auto& palette = qApp->palette ();
+
 		QFont font = qApp->font ();
 		font.setBold (true);
 		font.setItalic (true);
@@ -355,7 +357,9 @@ namespace AdvancedNotifications
 		{
 			const auto& px = icon.pixmap (size);
 			const auto& overlaid = Util::DrawOverlayText (px,
-					QString::number (eventCount), font, QPen (Qt::red));
+					QString::number (eventCount), font,
+					QPen (palette.color (QPalette::ButtonText)),
+					QBrush (palette.color (QPalette::Button)));
 			withText.addPixmap (overlaid);
 		}
 
