@@ -54,7 +54,7 @@ Rectangle {
 
         transitions: Transition {
             PropertyAnimation { properties: "opacity"; duration: 300; easing.type: Easing.OutSine }
-            PropertyAnimation { target: ViewBlur; property: "blurRadius"; duration: 300; easing.type: Easing.OutSine }
+            PropertyAnimation { target: viewBlur; property: "blurRadius"; duration: 300; easing.type: Easing.OutSine }
         }
 
         MouseArea {
