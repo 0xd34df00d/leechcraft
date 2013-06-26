@@ -296,7 +296,7 @@ namespace LeechCraft
 		UTIL_API QVariantList GetPersistentData (const QList<QVariant>& keys,
 				QObject *object);
 
-		UTIL_API QPixmap DrawOverlayText (QPixmap px, const QString& text, QFont font, const QPen& pen);
+		UTIL_API QPixmap DrawOverlayText (QPixmap px, const QString& text, QFont font, const QPen& pen, const QBrush& brush);
 
 		/** @brief Returns an element for a given tags list.
 		 *
