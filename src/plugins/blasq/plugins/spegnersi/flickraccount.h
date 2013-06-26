@@ -104,6 +104,8 @@ namespace Spegnersi
 		void handleReply (const QByteArray&);
 	signals:
 		void accountChanged (FlickrAccount*);
+
+		void doneUpdating ();
 	};
 }
 }

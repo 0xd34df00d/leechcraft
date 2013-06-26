@@ -262,6 +262,7 @@ namespace Spegnersi
 		}
 
 		qDebug () << "done";
+		emit doneUpdating ();
 	}
 
 	void FlickrAccount::checkAuthTokens ()
