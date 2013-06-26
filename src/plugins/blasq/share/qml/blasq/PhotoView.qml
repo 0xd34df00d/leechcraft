@@ -40,15 +40,18 @@ Rectangle {
                 name: "hidden"
                 PropertyChanges { target: fullSizeImage; opacity: 0 }
                 PropertyChanges { target: photoViewBlur; blurRadius: 0 }
+                PropertyChanges { target: loadProgress; opacity: 0 }
             },
             State {
                 name: "loading"
                 PropertyChanges { target: photoViewBlur; blurRadius: 3 }
+                PropertyChanges { target: loadProgress; opacity: 1 }
             },
             State {
                 name: "displayed"
                 PropertyChanges { target: fullSizeImage; opacity: 1 }
                 PropertyChanges { target: photoViewBlur; blurRadius: 10 }
+                PropertyChanges { target: loadProgress; opacity: 0 }
             }
         ]
 
@@ -77,6 +80,19 @@ Rectangle {
                 state = "hidden"
                 break;
             }
+        }
+
+        ProgressBar {
+            id: loadProgress
+
+            value: parent.progress * 100
+
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: parent.bottom
+            height: 12
+
+            color: colorProxy.color_TextView_Aux3TextColor
         }
     }
 
