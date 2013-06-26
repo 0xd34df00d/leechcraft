@@ -367,8 +367,8 @@ QPixmap LeechCraft::Util::DrawOverlayText (QPixmap px, const QString& text, QFon
 {
 	const auto& iconSize = px.size ();
 
-	const auto fontHeight = px.height () / 3;
-	font.setPixelSize (std::max (6, fontHeight));
+	const auto fontHeight = px.height () * 0.45;
+	font.setPixelSize (std::max (6., fontHeight));
 
 	const QFontMetrics fm (font);
 	const auto width = fm.width (text) + 2. * px.width () / 10.;
