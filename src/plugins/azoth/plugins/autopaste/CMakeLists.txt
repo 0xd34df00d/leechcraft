@@ -2,6 +2,13 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_azoth_autopaste)
 include (InitLCPlugin OPTIONAL)
 
+option (WITH_AZOTH_AUTOPASTE_JSON "Enable support for JSON-based services in Azoth Autopaste module" ON)
+
+if (WITH_AZOTH_AUTOPASTE_JSON)
+	set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+	find_package (QJSON REQUIRED)
+endif ()
+
 set (QT_USE_QTNETWORK TRUE)
 include (${QT_USE_FILE})
 include_directories (${AZOTH_INCLUDE_DIR}
@@ -13,12 +20,18 @@ set (AUTOPASTE_SRCS
 	autopaste.cpp
 	bpasteservice.cpp
 	codepadservice.cpp
-	hastebinservice.cpp
 	pastedialog.cpp
 	pasteservicebase.cpp
 	pasteservicefactory.cpp
 	xmlsettingsmanager.cpp
 	)
+
+if (WITH_AZOTH_AUTOPASTE_JSON)
+	add_definitions (-DWITH_JSON)
+
+	set (AUTOIDLER_SRCS ${AUTOIDLER_SRCS} hastebinservice.cpp)
+endif (WITH_AZOTH_AUTOPASTE_JSON)
+
 set (AUTOPASTE_HEADERS
 	autopaste.h
 	bpasteservice.h
