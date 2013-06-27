@@ -37,6 +37,7 @@
 #include "interfaces/azoth/iaccount.h"
 #include "core.h"
 #include "transferjobmanager.h"
+#include "mucinvitedialog.h"
 
 namespace LeechCraft
 {
@@ -64,7 +65,7 @@ namespace Azoth
 		QStringList names;
 		QList<QUrl> urls;
 
-		Q_FOREACH (const QModelIndex& index, indexes)
+		for (const auto& index : indexes)
 		{
 			if (index.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)
 				continue;
@@ -78,10 +79,10 @@ namespace Azoth
 			const QString& thisGroup = index.parent ()
 					.data (Core::CLREntryCategory).toString ();
 
-			if (entry->GetEntryType () == ICLEntry::ETChat)
-				stream << entry->GetEntryID () << thisGroup;
+			stream << entry->GetEntryID () << thisGroup;
 
 			names << entry->GetEntryName ();
+
 			urls << QUrl (entry->GetHumanReadableID ());
 		}
 
@@ -100,6 +101,9 @@ namespace Azoth
 			return true;
 
 		if (PerformHooks (mime, row, parent))
+			return true;
+
+		if (TryInvite (mime, row, parent))
 			return true;
 
 		if (TryDropContact (mime, row, parent) ||
@@ -147,6 +151,50 @@ namespace Azoth
 		return proxy->IsCancelled ();
 	}
 
+	bool CLModel::TryInvite (const QMimeData *mime, int row, const QModelIndex& parent)
+	{
+		if (!mime->hasFormat (CLEntryFormat))
+			return false;
+
+		if (parent.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)
+			return false;
+
+		const auto targetObj = parent.data (Core::CLREntryObject).value<QObject*> ();
+		const auto targetEntry = qobject_cast<ICLEntry*> (targetObj);
+		const auto targetMuc = qobject_cast<IMUCEntry*> (targetObj);
+
+		bool accepted = false;
+
+		QDataStream stream (mime->data (CLEntryFormat));
+		while (!stream.atEnd ())
+		{
+			QString id;
+			QString group;
+			stream >> id >> group;
+
+			const auto serializedObj = Core::Instance ().GetEntry (id);
+			const auto serializedEntry = qobject_cast<ICLEntry*> (serializedObj);
+			if (!serializedEntry)
+				continue;
+
+			const auto serializedMuc = qobject_cast<IMUCEntry*> (serializedObj);
+			if ((targetMuc && serializedMuc) || (!targetMuc && !serializedMuc))
+				continue;
+
+			auto muc = serializedMuc ? serializedMuc : targetMuc;
+			auto entry = serializedMuc ? targetEntry : serializedEntry;
+
+			MUCInviteDialog dia (qobject_cast<IAccount*> (entry->GetParentAccount ()));
+			dia.SetID (entry->GetHumanReadableID ());
+			if (dia.exec () == QDialog::Accepted)
+				muc->InviteToMUC (dia.GetID (), dia.GetInviteMessage ());
+
+			accepted = true;
+		}
+
+		return accepted;
+	}
+
 	bool CLModel::TryDropContact (const QMimeData *mime, int row, const QModelIndex& parent)
 	{
 		if (!mime->hasFormat (CLEntryFormat))
@@ -190,13 +238,18 @@ namespace Azoth
 
 	bool CLModel::TryDropFile (const QMimeData* mime, const QModelIndex& parent)
 	{
+		// If MIME has CLEntryFormat, it's another serialized entry, we probably
+		// don't want to send it.
+		if (mime->hasFormat (CLEntryFormat))
+			return false;
+
 		if (parent.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)
 			return false;
 
 		QObject *entryObj = parent.data (Core::CLREntryObject).value<QObject*> ();
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 
-		const QList<QUrl>& urls = mime->urls ();
+		const auto& urls = mime->urls ();
 		if (urls.isEmpty ())
 			return false;
 

@@ -32,11 +32,12 @@
 #include <QTimer>
 #include <QCoreApplication>
 #include <QUuid>
+#include <QInputDialog>
 #include <QtDebug>
+#include <interfaces/azoth/imucentry.h>
 #include "metaaccount.h"
 #include "metaentry.h"
 #include "addtometacontactsdialog.h"
-#include <QInputDialog>
 
 namespace LeechCraft
 {
@@ -212,7 +213,11 @@ namespace Metacontacts
 		ICLEntry *source = qobject_cast<ICLEntry*> (sourceObj);
 		ICLEntry *target = qobject_cast<ICLEntry*> (targetObj);
 
-		if (!source || !target || source == target)
+		if (!source ||
+				!target ||
+				source == target ||
+				qobject_cast<IMUCEntry*> (sourceObj) ||
+				qobject_cast<IMUCEntry*> (targetObj))
 			return false;
 
 		MetaEntry *targetME = qobject_cast<MetaEntry*> (targetObj);

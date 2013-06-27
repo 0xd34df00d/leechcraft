@@ -27,73 +27,52 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "mucinvitedialog.h"
+#include "hastebinservice.h"
+#include <QNetworkRequest>
+#include <QNetworkReply>
 #include <QtDebug>
-#include "interfaces/azoth/iaccount.h"
-#include "interfaces/azoth/iclentry.h"
+#include <qjson/parser.h>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	MUCInviteDialog::MUCInviteDialog (IAccount *acc, QWidget *parent)
-	: QDialog (parent)
-	, ManualMode_ (false)
+namespace Autopaste
+{
+	HastebinService::HastebinService (QObject *entry, QObject *parent)
+	: PasteServiceBase (entry, parent)
 	{
-		Ui_.setupUi (this);
-		Ui_.Invitee_->setInsertPolicy (QComboBox::NoInsert);
 
-		Q_FOREACH (QObject *entryObj, acc->GetCLEntries ())
+	}
+
+	void HastebinService::Paste (const PasteParams& params)
+	{
+		QNetworkRequest req (QString ("http://hastebin.com/documents"));
+		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+		QByteArray data = params.Text_.toUtf8 ();
+
+		InitReply (params.NAM_->post (req, data));
+	}
+
+	void HastebinService::handleFinished ()
+	{
+		sender ()->deleteLater ();
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		const auto &bytes = reply->readAll ();
+		QJson::Parser parser;
+		bool ok;
+		QVariantMap result = parser.parse (bytes, &ok).toMap ();
+		if (!ok)
 		{
-			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-			if (!entry ||
-					entry->GetEntryType () != ICLEntry::ETChat)
-				continue;
-
-			const QString& id = entry->GetHumanReadableID ();
-			Ui_.Invitee_->addItem (QString ("%1 (%2)")
-						.arg (entry->GetEntryName ())
-						.arg (id),
-					id);
+			qWarning () << Q_FUNC_INFO
+					<< "Ooops, cannot parse!"
+					<< sender ();
+			return;
 		}
+		QUrl url ("http://hastebin.com/");
+		url.setPath (result ["key"].toString ());
+		FeedURL (url.toString ());
 	}
-
-	QString MUCInviteDialog::GetID () const
-	{
-		const int idx = Ui_.Invitee_->currentIndex ();
-		return (idx >= 0 && !ManualMode_) ?
-				Ui_.Invitee_->itemData (idx).toString () :
-				Ui_.Invitee_->currentText ();
-	}
-
-	void MUCInviteDialog::SetID (const QString& id)
-	{
-		for (int i = 0; i < Ui_.Invitee_->count (); ++i)
-			if (Ui_.Invitee_->itemData (i).toString () == id)
-			{
-				Ui_.Invitee_->setCurrentIndex (i);
-				ManualMode_ = false;
-				return;
-			}
-
-		Ui_.Invitee_->setEditText (id);
-
-		ManualMode_ = true;
-	}
-
-	QString MUCInviteDialog::GetInviteMessage () const
-	{
-		return Ui_.Message_->text ();
-	}
-
-	void MUCInviteDialog::on_Invitee__currentIndexChanged ()
-	{
-		ManualMode_ = false;
-	}
-
-	void MUCInviteDialog::on_Invitee__editTextChanged ()
-	{
-		ManualMode_ = true;
-	}
+}
 }
 }
