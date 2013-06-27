@@ -78,8 +78,7 @@ namespace Azoth
 			const QString& thisGroup = index.parent ()
 					.data (Core::CLREntryCategory).toString ();
 
-			if (entry->GetEntryType () == ICLEntry::ETChat)
-				stream << entry->GetEntryID () << thisGroup;
+			stream << entry->GetEntryID () << thisGroup;
 
 			names << entry->GetEntryName ();
 
