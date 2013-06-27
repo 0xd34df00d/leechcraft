@@ -54,4 +54,3 @@ target_link_libraries (leechcraft_azoth_autopaste
 	)
 install (TARGETS leechcraft_azoth_autopaste DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothautopastesettings.xml DESTINATION ${LC_SETTINGS_DEST})
-install (FILES ${AUTOPASTE_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
