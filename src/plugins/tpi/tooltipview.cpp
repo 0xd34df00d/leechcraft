@@ -30,6 +30,7 @@
 #include "tooltipview.h"
 #include <QAbstractItemModel>
 #include <QDeclarativeContext>
+#include <QDeclarativeEngine>
 #include <util/sys/paths.h>
 #include <util/gui/unhoverdeletemixin.h>
 #include <util/qml/colorthemeproxy.h>
@@ -49,6 +50,10 @@ namespace TPI
 
 		rootContext ()->setContextProperty ("infoModel", model);
 		rootContext ()->setContextProperty ("colorProxy", new Util::ColorThemeProxy (manager, this));
+
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
+			engine ()->addImportPath (cand);
+
 		setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, "tpi", "Tooltip.qml")));
 	}
 

@@ -646,9 +646,8 @@ namespace LeechCraft
 			PreviousWidget_ = CurrentWidget_;
 			CurrentWidget_ = Widget (index);
 			CurrentIndex_ = index;
+			emit currentChanged (index);
 		}
-
-		emit currentChanged (index);
 	}
 
 	void SeparateTabWidget::setCurrentTab (int tabIndex)
