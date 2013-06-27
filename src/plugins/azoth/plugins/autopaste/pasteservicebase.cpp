@@ -124,10 +124,10 @@ namespace Autopaste
 			qWarning () << Q_FUNC_INFO
 					<< "sender is not a QNetworkReply:"
 					<< sender ();
-			return;
+		return;
 		}
 
-		const auto& location = reply->header (QNetworkRequest::LocationHeader).toString ();
+	const auto& location = reply->header (QNetworkRequest::LocationHeader).toString ();
 		if (!location.isEmpty ())
 			FeedURL (location);
 	}

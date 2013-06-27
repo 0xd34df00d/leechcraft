@@ -27,8 +27,9 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "pastedialog.h"
-#include "pasteservicefactory.h"
+#pragma once
+
+#include "pasteservicebase.h"
 
 namespace LeechCraft
 {
@@ -36,46 +37,17 @@ namespace Azoth
 {
 namespace Autopaste
 {
-	PasteDialog::PasteDialog (QWidget *parent)
-	: QDialog (parent)
-	, Choice_ (Choice::Cancel)
+	class HastebinService : public PasteServiceBase
 	{
-		Ui_.setupUi (this);
+		Q_OBJECT
+	public:
+		HastebinService (QObject *entry, QObject* = 0);
 
-		Q_FOREACH (const auto& info, PasteServiceFactory ().GetInfos ())
-		  Ui_.ServiceCombo_->addItem (info.Icon_, info.Name_);
-	}
-
-	PasteDialog::Choice PasteDialog::GetChoice () const
-	{
-		return Choice_;
-	}
-
-	PasteServiceFactory::Creator_f PasteDialog::GetCreator () const
-	{
-		return PasteServiceFactory ().GetInfos ().at (Ui_.ServiceCombo_->currentIndex ()).Creator_;
-	}
-
-	Highlight PasteDialog::GetHighlight () const
-	{
-		return static_cast<Highlight> (Ui_.HighlightCombo_->currentIndex ());
-	}
-
-	void PasteDialog::on_ButtonBox__clicked (QAbstractButton *button)
-	{
-		switch (Ui_.ButtonBox_->standardButton (button))
-		{
-		case QDialogButtonBox::Yes:
-			Choice_ = Choice::Yes;
-			break;
-		case QDialogButtonBox::No:
-			Choice_ = Choice::No;
-			break;
-		default:
-			Choice_ = Choice::Cancel;
-			break;
-		}
-	}
+		void Paste (const PasteParams&);
+	protected:
+		virtual void handleFinished ();
+	};
 }
 }
 }
+ 
