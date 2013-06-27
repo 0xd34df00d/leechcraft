@@ -32,31 +32,17 @@ if (WITH_AZOTH_AUTOPASTE_JSON)
 	set (AUTOIDLER_SRCS ${AUTOIDLER_SRCS} hastebinservice.cpp)
 endif (WITH_AZOTH_AUTOPASTE_JSON)
 
-set (AUTOPASTE_HEADERS
-	autopaste.h
-	bpasteservice.h
-	codepadservice.h
-	hastebinservice.h
-	pastedialog.h
-	pasteservicebase.h
-	pasteservicefactory.h
-	xmlsettingsmanager.h
-	)
 set (AUTOPASTE_FORMS
 	pastedialog.ui
 	)
 set (AUTOPASTE_RESOURCES azothautopasteresources.qrc)
 CreateTrs ("azoth_autopaste" "en;es;ru_RU;uk_UA" AUTOPASTE_COMPILED_TRANSLATIONS)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (AUTOPASTE_MOC_SRCS ${AUTOPASTE_HEADERS})
-endif ()
 QT4_WRAP_UI (AUTOPASTE_UIS_H ${AUTOPASTE_FORMS})
 QT4_ADD_RESOURCES (AUTOPASTE_RCCS ${AUTOPASTE_RESOURCES})
 
 add_library (leechcraft_azoth_autopaste SHARED
 	${AUTOPASTE_COMPILED_TRANSLATIONS}
 	${AUTOPASTE_SRCS}
-	${AUTOPASTE_MOC_SRCS}
 	${AUTOPASTE_RCCS}
 	${AUTOPASTE_UIS_H}
 	${QJSON_INCLUDE_DIR}
