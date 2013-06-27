@@ -66,6 +66,21 @@ namespace Azoth
 				Ui_.Invitee_->currentText ();
 	}
 
+	void MUCInviteDialog::SetID (const QString& id)
+	{
+		for (int i = 0; i < Ui_.Invitee_->count (); ++i)
+			if (Ui_.Invitee_->itemData (i).toString () == id)
+			{
+				Ui_.Invitee_->setCurrentIndex (i);
+				ManualMode_ = false;
+				return;
+			}
+
+		Ui_.Invitee_->setEditText (id);
+
+		ManualMode_ = true;
+	}
+
 	QString MUCInviteDialog::GetInviteMessage () const
 	{
 		return Ui_.Message_->text ();
