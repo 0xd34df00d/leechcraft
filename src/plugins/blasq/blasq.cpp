@@ -29,6 +29,7 @@
 
 #include "blasq.h"
 #include <QIcon>
+#include <QtDeclarative>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "interfaces/blasq/iservicesplugin.h"
 #include "interfaces/blasq/iaccount.h"
@@ -44,6 +45,8 @@ namespace Blasq
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+
 		ServicesMgr_ = new ServicesManager;
 		AccountsMgr_ = new AccountsManager (ServicesMgr_);
 
@@ -61,6 +64,8 @@ namespace Blasq
 			1,
 			TFOpenableByRequest | TFSuggestOpening
 		};
+
+		qmlRegisterType<QGraphicsBlurEffect> ("Effects", 1, 0, "Blur");
 	}
 
 	void Plugin::SecondInit ()
@@ -100,7 +105,7 @@ namespace Blasq
 	{
 		if (tcId == PhotosTabTC_.TabClass_)
 		{
-			auto tab = new PhotosTab (AccountsMgr_, PhotosTabTC_, this);
+			auto tab = new PhotosTab (AccountsMgr_, PhotosTabTC_, this, Proxy_);
 			connect (tab,
 					SIGNAL (removeTab (QWidget*)),
 					this,

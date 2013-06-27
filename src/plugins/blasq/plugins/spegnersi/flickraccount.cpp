@@ -33,6 +33,7 @@
 #include <QCoreApplication>
 #include <QUuid>
 #include <QtDebug>
+#include <QStandardItemModel>
 #include <interfaces/core/ientitymanager.h>
 #include <util/util.h>
 #include "flickrservice.h"
@@ -56,6 +57,7 @@ namespace Spegnersi
 	, Proxy_ (proxy)
 	, Req_ (new KQOAuthRequest (this))
 	, AuthMgr_ (new KQOAuthManager (this))
+	, CollectionsModel_ (new NamedModel<QStandardItemModel> (this))
 	{
 		AuthMgr_->setNetworkManager (proxy->GetNetworkAccessManager ());
 		AuthMgr_->setHandleUserAuthorization (true);
@@ -142,6 +144,11 @@ namespace Spegnersi
 		return ID_;
 	}
 
+	QAbstractItemModel* FlickrAccount::GetCollectionsModel () const
+	{
+		return CollectionsModel_;
+	}
+
 	void FlickrAccount::UpdateCollections ()
 	{
 		switch (State_)
@@ -165,11 +172,21 @@ namespace Spegnersi
 
 		auto req = MakeRequest (QString ("http://api.flickr.com/services/rest/"), KQOAuthRequest::AuthorizedRequest);
 		req->setAdditionalParameters (Util::MakeMap<QString, QString> ({
+					{ "method", "flickr.photos.search" },
 					{ "user_id", "me" },
 					{ "format", "rest" },
-					{ "method", "flickr.photos.search" }
+					{ "per_page", "500" },
+					{ "extras", "url_o,url_z,url_m" }
 				}));
 		AuthMgr_->executeRequest (req);
+
+		CollectionsModel_->clear ();
+		CollectionsModel_->setHorizontalHeaderLabels ({ tr ("Name") });
+
+		AllPhotosItem_ = new QStandardItem (tr ("All photos"));
+		AllPhotosItem_->setData (ItemType::AllPhotos, CollectionRole::Type);
+		AllPhotosItem_->setEditable (false);
+		CollectionsModel_->appendRow (AllPhotosItem_);
 
 		State_ = State::CollectionsRequested;
 	}
@@ -189,6 +206,73 @@ namespace Spegnersi
 		}
 
 		return Req_;
+	}
+
+	void FlickrAccount::HandleCollectionsReply (const QByteArray& data)
+	{
+		qDebug () << Q_FUNC_INFO;
+		QDomDocument doc;
+		if (!doc.setContent (data))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot parse"
+					<< data;
+			State_ = State::Idle;
+			return;
+		}
+
+		const auto& photos = doc
+				.documentElement ()
+				.firstChildElement ("photos");
+
+		auto photo = photos.firstChildElement ("photo");
+		while (!photo.isNull ())
+		{
+			auto item = new QStandardItem;
+
+			item->setText (photo.attribute ("title"));
+			item->setEditable (false);
+			item->setData (ItemType::Image, CollectionRole::Type);
+			item->setData (photo.attribute ("id"), CollectionRole::ID);
+			item->setData (photo.attribute ("title"), CollectionRole::Name);
+
+			auto getSize = [&photo] (const QString& s) -> QSize
+			{
+				return
+				{
+					photo.attribute ("width_" + s).toInt (),
+					photo.attribute ("height_" + s).toInt ()
+				};
+			};
+
+			item->setData (QUrl (photo.attribute ("url_o")), CollectionRole::Original);
+			item->setData (getSize ("o"), CollectionRole::OriginalSize);
+			item->setData (QUrl (photo.attribute ("url_z")), CollectionRole::MediumThumb);
+			item->setData (getSize ("z"), CollectionRole::MediumThumbSize);
+			item->setData (QUrl (photo.attribute ("url_m")), CollectionRole::SmallThumb);
+			item->setData (getSize ("m"), CollectionRole::SmallThumbSize);
+
+			AllPhotosItem_->appendRow (item);
+
+			photo = photo.nextSiblingElement ("photo");
+		}
+
+		const auto thisPage = photos.attribute ("page").toInt ();
+		if (thisPage != photos.attribute ("pages").toInt ())
+		{
+			auto req = MakeRequest (QString ("http://api.flickr.com/services/rest/"), KQOAuthRequest::AuthorizedRequest);
+			req->setAdditionalParameters (Util::MakeMap<QString, QString> ({
+						{ "method", "flickr.photos.search" },
+						{ "user_id", "me" },
+						{ "format", "rest" },
+						{ "per_page", "500" },
+						{ "page", QString::number (thisPage + 1) },
+						{ "extras", "url_o,url_z,url_m" }
+					}));
+			AuthMgr_->executeRequest (req);
+		}
+		else
+			emit doneUpdating ();
 	}
 
 	void FlickrAccount::checkAuthTokens ()
@@ -268,7 +352,14 @@ namespace Spegnersi
 
 	void FlickrAccount::handleReply (const QByteArray& data)
 	{
-		qDebug () << Q_FUNC_INFO << data;
+		switch (State_)
+		{
+		case State::CollectionsRequested:
+			HandleCollectionsReply (data);
+			break;
+		default:
+			return;
+		}
 	}
 }
 }

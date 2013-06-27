@@ -29,20 +29,64 @@
 
 #pragma once
 
-#include <QList>
+#include <Qt>
+#include <QHash>
+#include <QByteArray>
 
 namespace LeechCraft
 {
 namespace Blasq
 {
-	struct ImageInfo
+	enum CollectionRole
 	{
+		/** Contains a value of ItemType.
+		 */
+		Type = Qt::UserRole + 1,
+		ID,
+		Name,
+
+		/** Around 240 px.
+		 */
+		SmallThumb,
+		SmallThumbSize,
+
+		/** Around 640 px.
+		 */
+		MediumThumb,
+		MediumThumbSize,
+
+		/** Full-size original.
+		 */
+		Original,
+		OriginalSize
 	};
 
-	struct Collection
+	template<typename T>
+	class NamedModel : public T
 	{
+	public:
+		NamedModel (QObject *parent)
+		: T (parent)
+		{
+			QHash<int, QByteArray> result;
+			result [CollectionRole::Type] = "type";
+			result [CollectionRole::ID] = "imageId";
+			result [CollectionRole::Name] = "name";
+			result [CollectionRole::SmallThumb] = "smallThumb";
+			result [CollectionRole::SmallThumbSize] = "smallThumbSize";
+			result [CollectionRole::MediumThumb] = "mediumThumb";
+			result [CollectionRole::MediumThumbSize] = "mediumThumbSize";
+			result [CollectionRole::Original] = "original";
+			result [CollectionRole::OriginalSize] = "originalSize";
+			T::setRoleNames (result);
+		}
 	};
 
-	typedef QList<Collection> Collections_t;
+	enum ItemType
+	{
+		Collection,
+		AllPhotos,
+		Image
+	};
 }
 }

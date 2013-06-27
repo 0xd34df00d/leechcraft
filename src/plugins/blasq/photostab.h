@@ -32,6 +32,8 @@
 #include <memory>
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/core/icoreproxy.h>
+#include "ui_photostab.h"
 
 class QComboBox;
 
@@ -48,6 +50,8 @@ namespace Blasq
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
 
+		Ui::PhotosTab Ui_;
+
 		const TabClassInfo TC_;
 		QObject * const Plugin_;
 
@@ -59,14 +63,18 @@ namespace Blasq
 		IAccount *CurAcc_ = 0;
 		QObject *CurAccObj_ = 0;
 	public:
-		PhotosTab (AccountsManager*, const TabClassInfo&, QObject*);
+		PhotosTab (AccountsManager*, const TabClassInfo&, QObject*, ICoreProxy_ptr);
 
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+	private:
+		void HandleImageSelected (const QModelIndex&);
+		void HandleCollectionSelected (const QModelIndex&);
 	private slots:
 		void handleAccountChosen (int);
+		void handleRowChanged (const QModelIndex&);
 	signals:
 		void removeTab (QWidget*);
 	};

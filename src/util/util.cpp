@@ -363,12 +363,13 @@ QVariantList LeechCraft::Util::GetPersistentData (const QList<QVariant>& keys,
 	return values;
 }
 
-QPixmap LeechCraft::Util::DrawOverlayText (QPixmap px, const QString& text, QFont font, const QPen& pen)
+QPixmap LeechCraft::Util::DrawOverlayText (QPixmap px,
+		const QString& text, QFont font, const QPen& pen, const QBrush& brush)
 {
 	const auto& iconSize = px.size ();
 
-	const auto fontHeight = px.height () / 3;
-	font.setPixelSize (std::max (6, fontHeight));
+	const auto fontHeight = px.height () * 0.45;
+	font.setPixelSize (std::max (6., fontHeight));
 
 	const QFontMetrics fm (font);
 	const auto width = fm.width (text) + 2. * px.width () / 10.;
@@ -378,7 +379,7 @@ QPixmap LeechCraft::Util::DrawOverlayText (QPixmap px, const QString& text, QFon
 	const QRect textRect (iconSize.width () - width, iconSize.height () - height, width, height);
 
 	QPainter p (&px);
-	p.setBrush (Qt::white);
+	p.setBrush (brush);
 	p.setFont (font);
 	p.setPen (pen);
 	p.setRenderHint (QPainter::Antialiasing);

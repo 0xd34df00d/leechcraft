@@ -2,6 +2,7 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_blasq)
 include (InitLCPlugin OPTIONAL)
 
+set (QT_USE_QTDECLARATIVE TRUE)
 include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -21,6 +22,7 @@ set (SRCS
 set (FORMS
 	accountswidget.ui
 	newaccountwizardfirstpage.ui
+	photostab.ui
 	)
 #CreateTrs("blasq" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("blasq" "en;ru_RU" "${SRCS}" "${FORMS}" "")
@@ -38,6 +40,7 @@ target_link_libraries (leechcraft_blasq
 	)
 install (TARGETS leechcraft_blasq DESTINATION ${LC_PLUGINS_DEST})
 install (FILES blasqsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (DIRECTORY share/qml/blasq DESTINATION ${LC_QML_DEST})
 
 option (ENABLE_BLASQ_SPEGNERSI "Build Flickr client module for Blasq" ON)
 

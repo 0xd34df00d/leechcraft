@@ -53,6 +53,8 @@ namespace Blasq
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveTabs IPluginReady IHaveSettings IImgSource)
 
+		ICoreProxy_ptr Proxy_;
+
 		ServicesManager *ServicesMgr_;
 		AccountsManager *AccountsMgr_;
 		Util::XmlSettingsDialog_ptr XSD_;

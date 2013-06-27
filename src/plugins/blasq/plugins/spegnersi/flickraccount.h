@@ -34,6 +34,9 @@
 #include <interfaces/blasq/iaccount.h>
 #include <interfaces/core/icoreproxy.h>
 
+class QStandardItemModel;
+class QStandardItem;
+
 namespace LeechCraft
 {
 namespace Blasq
@@ -55,6 +58,9 @@ namespace Spegnersi
 
 		KQOAuthRequest * const Req_;
 		KQOAuthManager * const AuthMgr_;
+
+		QStandardItemModel * const CollectionsModel_;
+		QStandardItem *AllPhotosItem_ = 0;
 
 		QString AuthToken_;
 		QString AuthSecret_;
@@ -80,9 +86,13 @@ namespace Spegnersi
 		QString GetName () const;
 		QByteArray GetID () const;
 
+		QAbstractItemModel* GetCollectionsModel () const;
+
 		void UpdateCollections ();
 	private:
 		KQOAuthRequest* MakeRequest (const QUrl&, KQOAuthRequest::RequestType = KQOAuthRequest::AuthorizedRequest);
+
+		void HandleCollectionsReply (const QByteArray&);
 	private slots:
 		void checkAuthTokens ();
 		void requestTempToken ();
@@ -95,7 +105,7 @@ namespace Spegnersi
 	signals:
 		void accountChanged (FlickrAccount*);
 
-		void collectionListUpdated (const Collections_t&);
+		void doneUpdating ();
 	};
 }
 }

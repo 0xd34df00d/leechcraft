@@ -1,5 +1,5 @@
 import QtQuick 1.1
-import "."
+import org.LC.common 1.0
 
 Rectangle {
     id: rootRect
