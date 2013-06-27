@@ -64,7 +64,7 @@ namespace Azoth
 		QStringList names;
 		QList<QUrl> urls;
 
-		Q_FOREACH (const QModelIndex& index, indexes)
+		for (const auto& index : indexes)
 		{
 			if (index.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)
 				continue;
@@ -82,6 +82,7 @@ namespace Azoth
 				stream << entry->GetEntryID () << thisGroup;
 
 			names << entry->GetEntryName ();
+
 			urls << QUrl (entry->GetHumanReadableID ());
 		}
 
@@ -190,13 +191,18 @@ namespace Azoth
 
 	bool CLModel::TryDropFile (const QMimeData* mime, const QModelIndex& parent)
 	{
+		// If MIME has CLEntryFormat, it's another serialized entry, we probably
+		// don't want to send it.
+		if (mime->hasFormat (CLEntryFormat))
+			return false;
+
 		if (parent.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)
 			return false;
 
 		QObject *entryObj = parent.data (Core::CLREntryObject).value<QObject*> ();
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 
-		const QList<QUrl>& urls = mime->urls ();
+		const auto& urls = mime->urls ();
 		if (urls.isEmpty ())
 			return false;
 
