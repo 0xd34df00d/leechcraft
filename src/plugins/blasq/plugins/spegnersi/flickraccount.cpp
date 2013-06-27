@@ -224,10 +224,6 @@ namespace Spegnersi
 		const auto& photos = doc
 				.documentElement ()
 				.firstChildElement ("photos");
-		if (photos.attribute ("pages").toInt () > 1)
-		{
-			// TODO request more
-		}
 
 		auto photo = photos.firstChildElement ("photo");
 		while (!photo.isNull ())
@@ -261,7 +257,22 @@ namespace Spegnersi
 			photo = photo.nextSiblingElement ("photo");
 		}
 
-		qDebug () << "done";
+		const auto thisPage = photos.attribute ("page").toInt ();
+		if (thisPage != photos.attribute ("pages").toInt ())
+		{
+			auto req = MakeRequest (QString ("http://api.flickr.com/services/rest/"), KQOAuthRequest::AuthorizedRequest);
+			req->setAdditionalParameters (Util::MakeMap<QString, QString> ({
+						{ "method", "flickr.photos.search" },
+						{ "user_id", "me" },
+						{ "format", "rest" },
+						{ "per_page", "500" },
+						{ "page", QString::number (thisPage + 1) },
+						{ "extras", "url_o,url_z,url_m" }
+					}));
+			AuthMgr_->executeRequest (req);
+		}
+		else
+			emit doneUpdating ();
 	}
 
 	void FlickrAccount::checkAuthTokens ()

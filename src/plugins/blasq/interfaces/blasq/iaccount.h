@@ -57,6 +57,8 @@ namespace Blasq
 		virtual QAbstractItemModel* GetCollectionsModel () const = 0;
 
 		virtual void UpdateCollections () = 0;
+	signals:
+		virtual void doneUpdating () = 0;
 	};
 }
 }
