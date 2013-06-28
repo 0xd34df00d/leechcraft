@@ -33,6 +33,7 @@
 #include <QUrl>
 #include <QString>
 #include <QList>
+#include <QSize>
 
 namespace LeechCraft
 {
@@ -47,10 +48,13 @@ namespace LeechCraft
 	struct RemoteImageInfo
 	{
 		QUrl Full_;
-		QUrl Preview_;
+		QSize FullSize_;
 
-		int Width_;
-		int Height_;
+		QUrl Preview_;
+		QSize PreviewSize_;
+
+		QUrl Thumb_;
+		QSize ThumbSize_;
 
 		QString Title_;
 	};
