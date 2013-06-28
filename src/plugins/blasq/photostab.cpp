@@ -54,12 +54,13 @@ namespace Blasq
 		Ui_.setupUi (this);
 
 		Ui_.ImagesView_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
-		Ui_.ImagesView_->rootContext ()->setContextProperty ("colorProxy",
+
+		auto rootCtx = Ui_.ImagesView_->rootContext ();
+		rootCtx->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
-		Ui_.ImagesView_->rootContext ()->setContextProperty ("collectionModel", QStringList ());
-		Ui_.ImagesView_->rootContext ()->setContextProperty ("listingMode", "false");
-		Ui_.ImagesView_->rootContext ()->setContextProperty ("collRootIndex",
-				QVariant::fromValue (QModelIndex ()));
+		rootCtx->setContextProperty ("collectionModel", QStringList ());
+		rootCtx->setContextProperty ("listingMode", "false");
+		rootCtx->setContextProperty ("collRootIndex", QVariant::fromValue (QModelIndex ()));
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			Ui_.ImagesView_->engine ()->addImportPath (cand);
