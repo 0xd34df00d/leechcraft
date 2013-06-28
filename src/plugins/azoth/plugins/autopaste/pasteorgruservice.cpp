@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2013  Slava Barinov <rayslava@gmail.com>
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,12 +27,10 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "pasteservicefactory.h"
-#include <QIcon>
-#include "codepadservice.h"
-#include "bpasteservice.h"
-#include "hastebinservice.h"
 #include "pasteorgruservice.h"
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -40,17 +38,31 @@ namespace Azoth
 {
 namespace Autopaste
 {
-	PasteServiceFactory::PasteServiceFactory ()
+	PasteOrgRuService::PasteOrgRuService (QObject *entry, QObject *parent)
+	: PasteServiceBase (entry, parent)
 	{
-		Infos_.push_back ({ "bpaste.net", QIcon (), [] (QObject *entry) { return new BPasteService (entry); } });
-		Infos_.push_back ({ "codepad.org", QIcon (), [] (QObject *entry) { return new CodepadService (entry); } });
-		Infos_.push_back ({ "hastebin.com", QIcon (), [] (QObject *entry) { return new HastebinService (entry); } });
-		Infos_.push_back ({ "paste.org.ru", QIcon (), [] (QObject *entry) { return new PasteOrgRuService (entry); } });
+
 	}
 
-	QList<PasteServiceFactory::PasteInfo> PasteServiceFactory::GetInfos () const
+	void PasteOrgRuService::Paste (const PasteParams& params)
 	{
-		return Infos_;
+		QNetworkRequest req (QString ("http://paste.org.ru"));
+		const QByteArray& data = params.Text_.toUtf8 ();
+		req.setHeader (QNetworkRequest::ContentTypeHeader, "text/plain");
+		req.setHeader (QNetworkRequest::ContentLengthHeader, data.length ());
+		qDebug() << Q_FUNC_INFO << __LINE__ << data;
+
+		InitReply (params.NAM_->post (req, data));
+	}
+
+	void PasteOrgRuService::handleFinished ()
+	{
+		sender ()->deleteLater ();
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		const auto &bytes = reply->readAll ();
+		qDebug() << Q_FUNC_INFO << __LINE__ << bytes;
+		QUrl url ("http://paste.org.ru/");
+		FeedURL (url.toString ());
 	}
 }
 }

@@ -14,6 +14,7 @@ set (AUTOPASTE_SRCS
 	bpasteservice.cpp
 	codepadservice.cpp
 	hastebinservice.cpp
+	pasteorgruservice.cpp
 	pastedialog.cpp
 	pasteservicebase.cpp
 	pasteservicefactory.cpp
@@ -24,6 +25,7 @@ set (AUTOPASTE_HEADERS
 	bpasteservice.h
 	codepadservice.h
 	hastebinservice.h
+	pasteorgruservice.h
 	pastedialog.h
 	pasteservicebase.h
 	pasteservicefactory.h
