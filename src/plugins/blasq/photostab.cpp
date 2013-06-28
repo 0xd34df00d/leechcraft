@@ -84,6 +84,11 @@ namespace Blasq
 				SLOT (handleRowChanged (QModelIndex)));
 	}
 
+	PhotosTab::PhotosTab (AccountsManager *accMgr, ICoreProxy_ptr proxy)
+	: PhotosTab (accMgr, {}, nullptr, proxy)
+	{
+	}
+
 	TabClassInfo PhotosTab::GetTabClassInfo () const
 	{
 		return TC_;
@@ -103,6 +108,12 @@ namespace Blasq
 	QToolBar* PhotosTab::GetToolBar () const
 	{
 		return Toolbar_.get ();
+	}
+
+	QModelIndex PhotosTab::GetSelectedImage () const
+	{
+		// TODO
+		return {};
 	}
 
 	void PhotosTab::HandleImageSelected (const QModelIndex& index)

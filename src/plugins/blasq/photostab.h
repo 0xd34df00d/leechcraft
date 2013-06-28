@@ -64,11 +64,14 @@ namespace Blasq
 		QObject *CurAccObj_ = 0;
 	public:
 		PhotosTab (AccountsManager*, const TabClassInfo&, QObject*, ICoreProxy_ptr);
+		PhotosTab (AccountsManager*, ICoreProxy_ptr);
 
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+
+		QModelIndex GetSelectedImage () const;
 	private:
 		void HandleImageSelected (const QModelIndex&);
 		void HandleCollectionSelected (const QModelIndex&);
