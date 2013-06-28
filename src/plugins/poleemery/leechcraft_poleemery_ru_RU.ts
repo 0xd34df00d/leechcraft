@@ -124,7 +124,22 @@
 <context>
     <name>LeechCraft::Poleemery::OperationsTab</name>
     <message>
-        <location filename="operationstab.cpp" line="199"/>
+        <location filename="operationstab.cpp" line="140"/>
+        <source>Poleemery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="operationstab.cpp" line="160"/>
+        <source>Add...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="operationstab.cpp" line="165"/>
+        <source>Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="operationstab.cpp" line="211"/>
         <source>Are you sure you want to delete entry %1?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -132,27 +147,33 @@
 <context>
     <name>LeechCraft::Poleemery::Plugin</name>
     <message>
-        <location filename="poleemery.cpp" line="56"/>
-        <source>Operations</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="poleemery.cpp" line="57"/>
+        <location filename="poleemery.cpp" line="58"/>
         <source>All operations on personal finances.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poleemery.cpp" line="68"/>
-        <source>Accounts</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="poleemery.cpp" line="69"/>
-        <source>Accounts management tab.</source>
+        <source>Finances accounts</source>
+        <oldsource>Accounts management tab.</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="poleemery.cpp" line="99"/>
+        <location filename="poleemery.cpp" line="70"/>
+        <source>Finances accounts management tab.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="poleemery.cpp" line="81"/>
+        <source>Spending graphs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="poleemery.cpp" line="82"/>
+        <source>Tab with various graphs helping to analyze spendings.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="poleemery.cpp" line="112"/>
         <source>The personal finances manager.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -175,66 +196,43 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="operationpropsdialog.ui" line="56"/>
+        <location filename="operationpropsdialog.ui" line="59"/>
         <source>Account:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="operationpropsdialog.ui" line="66"/>
+        <location filename="operationpropsdialog.ui" line="69"/>
         <source>Price/amount:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="operationpropsdialog.ui" line="80"/>
+        <location filename="operationpropsdialog.ui" line="90"/>
         <source>Name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="operationpropsdialog.ui" line="87"/>
+        <location filename="operationpropsdialog.ui" line="113"/>
         <source>Description:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="operationpropsdialog.ui" line="97"/>
+        <location filename="operationpropsdialog.ui" line="123"/>
         <source>Date:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="operationpropsdialog.ui" line="129"/>
+        <location filename="operationpropsdialog.ui" line="139"/>
         <source>Count:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="operationpropsdialog.ui" line="146"/>
+        <location filename="operationpropsdialog.ui" line="156"/>
         <source>Shop:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="operationpropsdialog.ui" line="153"/>
+        <location filename="operationpropsdialog.ui" line="163"/>
         <source>Categories:</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>OperationsTab</name>
-    <message>
-        <location filename="operationstab.ui" line="45"/>
-        <source>Add...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="operationstab.ui" line="51"/>
-        <source>Ins</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="operationstab.ui" line="58"/>
-        <source>Remove</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="operationstab.ui" line="64"/>
-        <source>Del</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -248,6 +246,51 @@
     <message>
         <location filename="structures.cpp" line="44"/>
         <source>cash</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="graphsfactory.cpp" line="334"/>
+        <source>Days</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="graphsfactory.cpp" line="339"/>
+        <source>Cumulative accounts balance (month)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="graphsfactory.cpp" line="344"/>
+        <source>Comparative accounts balance (month)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="graphsfactory.cpp" line="349"/>
+        <source>Cumulative accounts balance (all-time)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="graphsfactory.cpp" line="354"/>
+        <source>Comparative accounts balance (all-time)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="graphsfactory.cpp" line="374"/>
+        <source>Per-category spendings breakdown (absolute, month)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="graphsfactory.cpp" line="379"/>
+        <source>Per-category spendings breakdown (relative, month)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="graphsfactory.cpp" line="384"/>
+        <source>Per-category spendings breakdown (absolute, all-time)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="graphsfactory.cpp" line="389"/>
+        <source>Per-category spendings breakdown (relative, all-time)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
