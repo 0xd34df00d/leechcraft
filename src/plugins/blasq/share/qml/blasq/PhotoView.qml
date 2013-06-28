@@ -25,6 +25,8 @@ Rectangle {
 
     signal imageSelected(string id)
 
+    property string currentImageId
+
     Image {
         id: fullSizeImage
 
@@ -125,26 +127,36 @@ Rectangle {
                 height: collectionThumbsView.cellHeight
 
                 Rectangle {
+                    id: itemRect
+
                     anchors.fill: parent
                     anchors.leftMargin: collectionThumbsView.horzMargin
                     anchors.rightMargin: collectionThumbsView.horzMargin
                     anchors.topMargin: collectionThumbsView.vertMargin
                     anchors.bottomMargin: collectionThumbsView.vertMargin
 
+                    property bool isCurrent: imageId == rootRect.currentImageId
+
                     radius: 5
                     gradient: Gradient {
                         GradientStop {
                             position: 0
-                            color: colorProxy.color_TextBox_TopColor
+                            color: itemRect.isCurrent ?
+                                    colorProxy.color_TextBox_HighlightTopColor :
+                                    colorProxy.color_TextBox_TopColor
                         }
                         GradientStop {
                             position: 1
-                            color: colorProxy.color_TextBox_BottomColor
+                            color: itemRect.isCurrent ?
+                                    colorProxy.color_TextBox_HighlightBottomColor :
+                                    colorProxy.color_TextBox_BottomColor
                         }
                     }
 
                     border.width: 1
-                    border.color: colorProxy.color_TextBox_BorderColor
+                    border.color: isCurrent ?
+                            colorProxy.color_TextBox_HighlightBorderColor :
+                            colorProxy.color_TextBox_BorderColor
 
                     smooth: true
 
@@ -181,6 +193,8 @@ Rectangle {
                         onReleased: {
                             rootRect.showImage(original)
                             rootRect.imageSelected(imageId)
+
+                            rootRect.currentImageId = imageId
                         }
                     }
                 }
