@@ -227,7 +227,7 @@ namespace Woodpecker
 
 			int insertionShift = ScreenTwits_.length () - i;    // We've already got insertionShift twits to our list
 
-			for (i = 0; i < insertionShift && !twits.isEmpty (); i++)
+			for (i = 0; i < std::min (insertionShift, twits.length ()); i++)
 				twits.removeFirst ();
 
 			if (XmlSettingsManager::Instance ()->property ("notify").toBool ())
