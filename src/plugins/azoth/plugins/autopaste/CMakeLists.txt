@@ -29,7 +29,7 @@ set (AUTOPASTE_SRCS
 if (WITH_AZOTH_AUTOPASTE_JSON)
 	add_definitions (-DWITH_JSON)
 
-	set (AUTOIDLER_SRCS ${AUTOIDLER_SRCS} hastebinservice.cpp)
+	set (AUTOPASTE_SRCS ${AUTOPASTE_SRCS} hastebinservice.cpp)
 endif (WITH_AZOTH_AUTOPASTE_JSON)
 
 set (AUTOPASTE_FORMS
