@@ -177,12 +177,18 @@ namespace LeechCraft
 		void newTabMenuRequested ();
 		void currentChanged (int index);
 		void tabWasMoved (int from, int to);
+
 		// Hook
 		void hookTabContextMenuFill (LeechCraft::IHookProxy_ptr proxy,
 				QMenu *menu, int index, int windowsId);
-		void hookTabFinishedMoving (LeechCraft::IHookProxy_ptr proxy, int index,
+		void hookTabFinishedMoving (LeechCraft::IHookProxy_ptr proxy,
+				int index,
 				int windowId);
-		void hookTabSetText (LeechCraft::IHookProxy_ptr proxy, int index,
+		void hookTabSetText (LeechCraft::IHookProxy_ptr proxy,
+				int index,
+				int windowId);
+		void hookTabIsRemoving (LeechCraft::IHookProxy_ptr proxy,
+				int index,
 				int windowId);
 	};
 }

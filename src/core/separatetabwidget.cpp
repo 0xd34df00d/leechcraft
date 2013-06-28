@@ -467,13 +467,19 @@ namespace LeechCraft
 	void SeparateTabWidget::RemoveTab (int index)
 	{
 		if (index >= WidgetCount () &&
-			!AddTabButtonAction_->isVisible ())
+				!AddTabButtonAction_->isVisible ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "invalid index"
 					<< index;
 			return;
 		}
+
+		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		const auto winId = Core::Instance ().GetRootWindowsManager ()->GetWindowIndex (Window_);
+		emit hookTabIsRemoving (proxy, index, winId);
+		if (proxy->IsCancelled ())
+			return;
 
 		const auto widget = Widget (index);
 
