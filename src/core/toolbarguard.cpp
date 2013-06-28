@@ -53,9 +53,6 @@ namespace LeechCraft
 		if (Toolbar_ == newToolbar)
 			return;
 
-		if (!Toolbar_)
-			return;
-
 		if (Toolbar_)
 			Window_->GetTabWidget ()->RemoveWidgetFromSeparateTabWidget (Toolbar_);
 
