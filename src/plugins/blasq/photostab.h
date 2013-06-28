@@ -80,6 +80,7 @@ namespace Blasq
 	private slots:
 		void handleAccountChosen (int);
 		void handleRowChanged (const QModelIndex&);
+		void handleImageSelected (const QString&);
 	signals:
 		void removeTab (QWidget*);
 	};

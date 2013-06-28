@@ -23,6 +23,8 @@ Rectangle {
         fullSizeImage.source = url
     }
 
+    signal imageSelected(string id)
+
     Image {
         id: fullSizeImage
 
@@ -176,7 +178,10 @@ Rectangle {
 
                     MouseArea {
                         anchors.fill: parent
-                        onReleased: rootRect.showImage(original)
+                        onReleased: {
+                            rootRect.showImage(original)
+                            rootRect.imageSelected(imageId)
+                        }
                     }
                 }
             }

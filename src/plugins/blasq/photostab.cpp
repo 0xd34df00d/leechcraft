@@ -33,6 +33,7 @@
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 #include <QGraphicsObject>
+#include <QtDebug>
 #include <util/qml/colorthemeproxy.h>
 #include <util/sys/paths.h>
 #include "interfaces/blasq/iaccount.h"
@@ -67,6 +68,11 @@ namespace Blasq
 
 		const auto& path = Util::GetSysPath (Util::SysPath::QML, "blasq", "PhotoView.qml");
 		Ui_.ImagesView_->setSource (QUrl::fromLocalFile (path));
+
+		connect (Ui_.ImagesView_->rootObject (),
+				SIGNAL (imageSelected (QString)),
+				this,
+				SLOT (handleImageSelected (QString)));
 
 		AccountsBox_->setModel (AccMgr_->GetModel ());
 		AccountsBox_->setModelColumn (AccountsManager::Column::Name);
@@ -145,11 +151,11 @@ namespace Blasq
 	{
 		Ui_.ImagesView_->rootContext ()->setContextProperty ("listingMode", "false");
 
+		handleImageSelected (index.data (CollectionRole::ID).toString ());
+
 		QMetaObject::invokeMethod (Ui_.ImagesView_->rootObject (),
 				"showImage",
 				Q_ARG (QVariant, index.data (CollectionRole::Original).toUrl ()));
-
-		SelectedID_ = index.data (CollectionRole::ID).toString ();
 	}
 
 	void PhotosTab::HandleCollectionSelected (const QModelIndex& index)
@@ -197,6 +203,11 @@ namespace Blasq
 			HandleImageSelected (index);
 		else
 			HandleCollectionSelected (index);
+	}
+
+	void PhotosTab::handleImageSelected (const QString& id)
+	{
+		SelectedID_ = id;
 	}
 }
 }
