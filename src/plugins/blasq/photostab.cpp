@@ -34,8 +34,11 @@
 #include <QDeclarativeContext>
 #include <QGraphicsObject>
 #include <QtDebug>
+#include <interfaces/core/ientitymanager.h>
 #include <util/qml/colorthemeproxy.h>
+#include <util/qml/themeimageprovider.h>
 #include <util/sys/paths.h>
+#include <util/util.h>
 #include "interfaces/blasq/iaccount.h"
 #include "accountsmanager.h"
 
@@ -49,6 +52,7 @@ namespace Blasq
 	: TC_ (tc)
 	, Plugin_ (plugin)
 	, AccMgr_ (accMgr)
+	, Proxy_ (proxy)
 	, AccountsBox_ (new QComboBox)
 	, Toolbar_ (new QToolBar)
 	{
@@ -63,16 +67,27 @@ namespace Blasq
 		rootCtx->setContextProperty ("listingMode", "false");
 		rootCtx->setContextProperty ("collRootIndex", QVariant::fromValue (QModelIndex ()));
 
+		auto engine = Ui_.ImagesView_->engine ();
+		engine->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
-			Ui_.ImagesView_->engine ()->addImportPath (cand);
+			engine->addImportPath (cand);
 
 		const auto& path = Util::GetSysPath (Util::SysPath::QML, "blasq", "PhotoView.qml");
 		Ui_.ImagesView_->setSource (QUrl::fromLocalFile (path));
 
-		connect (Ui_.ImagesView_->rootObject (),
+		auto rootObj = Ui_.ImagesView_->rootObject ();
+		connect (rootObj,
 				SIGNAL (imageSelected (QString)),
 				this,
 				SLOT (handleImageSelected (QString)));
+		connect (rootObj,
+				SIGNAL (imageOpenRequested (QVariant)),
+				this,
+				SLOT (handleImageOpenRequested (QVariant)));
+		connect (rootObj,
+				SIGNAL (imageDownloadRequested (QVariant)),
+				this,
+				SLOT (handleImageDownloadRequested (QVariant)));
 
 		AccountsBox_->setModel (AccMgr_->GetModel ());
 		AccountsBox_->setModelColumn (AccountsManager::Column::Name);
@@ -208,6 +223,36 @@ namespace Blasq
 	void PhotosTab::handleImageSelected (const QString& id)
 	{
 		SelectedID_ = id;
+	}
+
+	void PhotosTab::handleImageOpenRequested (const QVariant& var)
+	{
+		const auto& url = var.toUrl ();
+		if (!url.isValid ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid URL"
+					<< var;
+			return;
+		}
+
+		const auto& entity = Util::MakeEntity (url, QString (), FromUserInitiated | OnlyHandle);
+		Proxy_->GetEntityManager ()->HandleEntity (entity);
+	}
+
+	void PhotosTab::handleImageDownloadRequested (const QVariant& var)
+	{
+		const auto& url = var.toUrl ();
+		if (!url.isValid ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid URL"
+					<< var;
+			return;
+		}
+
+		const auto& entity = Util::MakeEntity (url, QString (), FromUserInitiated | OnlyDownload);
+		Proxy_->GetEntityManager ()->HandleEntity (entity);
 	}
 }
 }

@@ -56,6 +56,7 @@ namespace Blasq
 		QObject * const Plugin_;
 
 		AccountsManager * const AccMgr_;
+		const ICoreProxy_ptr Proxy_;
 
 		QComboBox *AccountsBox_;
 		std::unique_ptr<QToolBar> Toolbar_;
@@ -80,7 +81,10 @@ namespace Blasq
 	private slots:
 		void handleAccountChosen (int);
 		void handleRowChanged (const QModelIndex&);
+
 		void handleImageSelected (const QString&);
+		void handleImageOpenRequested (const QVariant&);
+		void handleImageDownloadRequested (const QVariant&);
 	signals:
 		void removeTab (QWidget*);
 	};
