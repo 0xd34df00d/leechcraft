@@ -24,6 +24,8 @@ Rectangle {
     }
 
     signal imageSelected(string id)
+    signal imageOpenRequested(variant url)
+    signal imageDownloadRequested(variant url)
 
     property string currentImageId
 
@@ -188,14 +190,51 @@ Rectangle {
                         color: colorProxy.color_TextBox_TitleTextColor
                     }
 
+                    property bool isHovered: itemMouseArea.containsMouse ||
+                                openInBrowserAction.isHovered ||
+                                downloadOriginalAction.isHovered
+
                     MouseArea {
+                        id: itemMouseArea
                         anchors.fill: parent
+
+                        hoverEnabled: true
                         onReleased: {
                             rootRect.showImage(original)
                             rootRect.imageSelected(imageId)
 
                             rootRect.currentImageId = imageId
                         }
+                    }
+
+                    ActionButton {
+                        id: openInBrowserAction
+
+                        anchors.top: parent.top
+                        anchors.right: parent.right
+                        width: 24
+                        height: width
+
+                        opacity: parent.isHovered ? 1 : 0
+                        Behavior on opacity { PropertyAnimation {} }
+
+                        actionIconURL: "image://ThemeIcons/go-jump-locationbar"
+                        onTriggered: rootRect.imageOpenRequested(original)
+                    }
+
+                    ActionButton {
+                        id: downloadOriginalAction
+
+                        anchors.top: openInBrowserAction.bottom
+                        anchors.right: parent.right
+                        width: 24
+                        height: width
+
+                        opacity: parent.isHovered ? 1 : 0
+                        Behavior on opacity { PropertyAnimation {} }
+
+                        actionIconURL: "image://ThemeIcons/download"
+                        onTriggered: rootRect.imageDownloadRequested(original)
                     }
                 }
             }
