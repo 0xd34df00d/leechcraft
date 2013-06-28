@@ -57,6 +57,11 @@ namespace Blasq
 		return Model_;
 	}
 
+	const QList<IAccount*>& AccountsManager::GetAccounts () const
+	{
+		return Accounts_;
+	}
+
 	void AccountsManager::HandleAccount (IAccount *acc)
 	{
 		auto service = acc->GetService ();
