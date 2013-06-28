@@ -38,6 +38,7 @@
 #include "servicesmanager.h"
 #include "accountsmanager.h"
 #include "photostab.h"
+#include "defaultimagechooser.h"
 
 namespace LeechCraft
 {
@@ -152,7 +153,7 @@ namespace Blasq
 
 	IPendingImgSourceRequest* Plugin::StartDefaultChooser ()
 	{
-		return nullptr;
+		return new DefaultImageChooser (AccountsMgr_, Proxy_);
 	}
 }
 }
