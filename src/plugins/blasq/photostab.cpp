@@ -112,7 +112,31 @@ namespace Blasq
 
 	QModelIndex PhotosTab::GetSelectedImage () const
 	{
-		// TODO
+		if (SelectedID_.isEmpty ())
+			return {};
+
+		auto model = CurAcc_->GetCollectionsModel ();
+		QModelIndex allPhotosIdx;
+		for (auto i = 0; i < model->rowCount (); ++i)
+		{
+			const auto& idx = model->index (i, 0);
+			if (idx.data (CollectionRole::Type).toInt () == ItemType::AllPhotos)
+			{
+				allPhotosIdx = idx;
+				break;
+			}
+		}
+
+		if (!allPhotosIdx.isValid ())
+			return {};
+
+		for (auto i = 0, rc = model->rowCount (allPhotosIdx); i < rc; ++i)
+		{
+			const auto& idx = allPhotosIdx.child (i, 0);
+			if (idx.data (CollectionRole::ID).toString () == SelectedID_)
+				return idx;
+		}
+
 		return {};
 	}
 
@@ -123,6 +147,8 @@ namespace Blasq
 		QMetaObject::invokeMethod (Ui_.ImagesView_->rootObject (),
 				"showImage",
 				Q_ARG (QVariant, index.data (CollectionRole::Original).toUrl ()));
+
+		SelectedID_ = index.data (CollectionRole::ID).toString ();
 	}
 
 	void PhotosTab::HandleCollectionSelected (const QModelIndex& index)
@@ -134,6 +160,8 @@ namespace Blasq
 		Ui_.ImagesView_->rootContext ()->setContextProperty ("listingMode", "true");
 		Ui_.ImagesView_->rootContext ()->setContextProperty ("collRootIndex",
 				QVariant::fromValue (index));
+
+		SelectedID_.clear ();
 	}
 
 	void PhotosTab::handleAccountChosen (int idx)

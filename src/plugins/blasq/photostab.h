@@ -62,6 +62,8 @@ namespace Blasq
 
 		IAccount *CurAcc_ = 0;
 		QObject *CurAccObj_ = 0;
+
+		QString SelectedID_;
 	public:
 		PhotosTab (AccountsManager*, const TabClassInfo&, QObject*, ICoreProxy_ptr);
 		PhotosTab (AccountsManager*, ICoreProxy_ptr);
