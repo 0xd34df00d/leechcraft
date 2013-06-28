@@ -17,7 +17,7 @@ set (SRCS
 	taskbarproxy.cpp
 	pagerwindow.cpp
 	)
-#CreateTrs("krigstask" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrs("krigstask" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("krigstask" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
 add_library (leechcraft_krigstask SHARED
