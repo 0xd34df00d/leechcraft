@@ -794,12 +794,13 @@ namespace Azoth
 
 	void MainWidget::handleRowsInserted (const QModelIndex& parent, int begin, int end)
 	{
-		const QAbstractItemModel *clModel = ProxyModel_;
 		for (int i = begin; i <= end; ++i)
 		{
-			const QModelIndex& index = clModel->index (i, 0, parent);
-			const Core::CLEntryType type =
-					index.data (Core::CLREntryType).value<Core::CLEntryType> ();
+			const auto& index = ProxyModel_->index (i, 0, parent);
+			if (!index.isValid ())
+				continue;
+
+			const auto type = index.data (Core::CLREntryType).value<Core::CLEntryType> ();
 			if (type == Core::CLETCategory)
 			{
 				const QString& path = BuildPath (index);
@@ -812,7 +813,7 @@ namespace Azoth
 							Qt::QueuedConnection,
 							Q_ARG (QPersistentModelIndex, QPersistentModelIndex (index)));
 
-				if (clModel->rowCount (index))
+				if (ProxyModel_->rowCount (index))
 					handleRowsInserted (index, 0, ProxyModel_->rowCount (index) - 1);
 			}
 			else if (type == Core::CLETAccount)
@@ -822,7 +823,7 @@ namespace Azoth
 						Qt::QueuedConnection,
 						Q_ARG (QPersistentModelIndex, QPersistentModelIndex (index)));
 
-				if (clModel->rowCount (index))
+				if (ProxyModel_->rowCount (index))
 					handleRowsInserted (index, 0, ProxyModel_->rowCount (index) - 1);
 			}
 		}
