@@ -152,13 +152,13 @@ namespace Azoth
 				Qt::QueuedConnection,
 				Q_ARG (int, 0));
 
-		if (Core::Instance ().GetCLModel ()->rowCount ())
+		if (ProxyModel_->rowCount ())
 			QMetaObject::invokeMethod (this,
 					"handleRowsInserted",
 					Qt::QueuedConnection,
 					Q_ARG (QModelIndex, QModelIndex ()),
 					Q_ARG (int, 0),
-					Q_ARG (int, Core::Instance ().GetCLModel ()->rowCount () - 1));
+					Q_ARG (int, ProxyModel_->rowCount () - 1));
 
 		CreateMenu ();
 		MenuButton_->setMenu (MainMenu_);
