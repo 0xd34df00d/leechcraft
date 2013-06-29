@@ -67,7 +67,7 @@ namespace Azoth
 	void SortFilterProxyModel::SetMUCMode (bool muc)
 	{
 		MUCMode_ = muc;
-		invalidateFilter ();
+		invalidate ();
 
 		if (muc)
 		  emit mucMode ();
@@ -93,7 +93,7 @@ namespace Azoth
 					this,
 					SLOT (handleMUCDestroyed ()));
 
-		invalidateFilter ();
+		invalidate ();
 	}
 
 	void SortFilterProxyModel::showOfflineContacts (bool show)
