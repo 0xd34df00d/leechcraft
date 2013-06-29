@@ -93,7 +93,7 @@ namespace Azoth
 					this,
 					SLOT (handleMUCDestroyed ()));
 
-		invalidate ();
+		invalidateFilter ();
 	}
 
 	void SortFilterProxyModel::showOfflineContacts (bool show)

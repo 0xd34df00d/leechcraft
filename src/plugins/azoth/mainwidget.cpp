@@ -798,7 +798,16 @@ namespace Azoth
 		{
 			const auto& index = ProxyModel_->index (i, 0, parent);
 			if (!index.isValid ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "invalid index"
+						<< parent
+						<< i
+						<< "in"
+						<< begin
+						<< end;
 				continue;
+			}
 
 			const auto type = index.data (Core::CLREntryType).value<Core::CLEntryType> ();
 			if (type == Core::CLETCategory)
