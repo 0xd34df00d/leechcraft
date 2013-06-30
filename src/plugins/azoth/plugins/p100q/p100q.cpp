@@ -58,9 +58,9 @@ namespace p100q
 		PstoCommentRX_ =  QRegExp ("#[a-z]+/[0-9]+[:]", Qt::CaseInsensitive);
 		UserRX_ = QRegExp ("(?:[^>/]|<br />)@([\\w\\-]+)", Qt::CaseInsensitive);
 		PostAuthorRX_ = QRegExp ("<br />@([\\w\\-]+)", Qt::CaseInsensitive);
-		PostRX_ = QRegExp ("#([a-zA-Z]+)[\\+ :]", Qt::CaseInsensitive);
-		PostByUserRX_ = QRegExp ("\\s#([a-zA-Z]+)", Qt::CaseInsensitive);
-		CommentRX_ = QRegExp ("#([a-zA-Z]+)/([0-9]+)", Qt::CaseInsensitive);
+		PostRX_ = QRegExp ("#([a-z]+)[\\+ :]", Qt::CaseInsensitive);
+		PostByUserRX_ = QRegExp ("\\s#([a-z]+)", Qt::CaseInsensitive);
+		CommentRX_ = QRegExp ("#([a-z]+)/([0-9]+)", Qt::CaseInsensitive);
 		TagRX_ = QRegExp ("<br />[*] ([^*,<]+(, [^*,<]+)*)");
 		ImgRX_ = QRegExp ("<br /><a href=\"(http://[^\"]+[.](png|gif|jpe?g))\">[^<]*</a>", Qt::CaseInsensitive);
 	}
