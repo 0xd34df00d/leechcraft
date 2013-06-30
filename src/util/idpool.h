@@ -85,15 +85,10 @@ namespace Util
 
 		/** @brief Frees the id.
 		 *
-		 * If \em id is the last ID issues by the pool, it is reclaimed
-		 * and the next id will be \em id again. Otherwise this function does nothing.
-		 *
 		 * @param[in] id The ID to free.
 		 */
-		void FreeID (T id)
+		void FreeID (T)
 		{
-			if (id == CurrentID_)
-				--CurrentID_;
 		}
 
 		/** @brief Saves the state of this pool.
