@@ -637,7 +637,7 @@ namespace Xoox
 		entry->SetRole (pres.mucItem ().role ());
 
 		entry->SetPhotoHash (pres.photoHash ());
-		entry->HandlePresence (pres, "");
+		entry->HandlePresence (pres, QString ());
 
 		if (!existed)
 			Account_->handleGotRosterItems (QList<QObject*> () << entry.get ());
