@@ -470,9 +470,13 @@ namespace Xoox
 				status.State_ != SOffline)
 		{
 			auto conn = Account_->GetClientConnection ();
-			if (conn->GetInfoReqPolicyManager ()->IsRequestAllowed (InfoRequest::Version, this) &&
-					!variant.isEmpty ())
-				conn->FetchVersion (GetJID () + '/' + variant);
+			if (conn->GetInfoReqPolicyManager ()->IsRequestAllowed (InfoRequest::Version, this))
+			{
+				if (!variant.isEmpty ())
+					conn->FetchVersion (GetJID () + '/' + variant);
+				else
+					conn->FetchVersion (GetJID ());
+			}
 		}
 
 		if (status.State_ != SOffline)
