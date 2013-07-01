@@ -33,6 +33,8 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
 
+class QProcess;
+
 namespace LeechCraft
 {
 namespace Fenet
@@ -45,6 +47,7 @@ namespace Fenet
 		Q_INTERFACES (IInfo IHaveSettings)
 
 		Util::XmlSettingsDialog_ptr XSD_;
+		QProcess *Process_ = 0;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -55,6 +58,8 @@ namespace Fenet
 		QIcon GetIcon () const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+	private slots:
+		void handleProcessError ();
 	};
 }
 }

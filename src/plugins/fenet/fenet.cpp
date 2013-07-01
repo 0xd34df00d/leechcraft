@@ -29,6 +29,8 @@
 
 #include "fenet.h"
 #include <QIcon>
+#include <QApplication>
+#include <QProcess>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "wmfinder.h"
 #include "xmlsettingsmanager.h"
@@ -45,6 +47,35 @@ namespace Fenet
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "fenetsettings.xml");
 
 		XSD_->SetDataSource ("SelectedWM", finder->GetFoundModel ());
+
+		if (!QApplication::arguments ().contains ("--desktop"))
+			return;
+
+		Process_ = new QProcess (this);
+		connect (Process_,
+				SIGNAL (error (QProcess::ProcessError)),
+				this,
+				SLOT (handleProcessError ()));
+
+		const auto& found = finder->GetFound ();
+		if (found.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no known WMs are found, aborting";
+			return;
+		}
+
+		auto selected = XmlSettingsManager::Instance ()
+				.property ("SelectedWM").toString ();
+
+		auto pos = std::find_if (found.begin (), found.end (),
+				[&selected] (const WMInfo& info) { return info.Name_ == selected; });
+		if (pos == found.end ())
+			pos = found.begin ();
+
+		const auto& session = pos->Session_;
+		qDebug () << "starting" << session;
+		Process_->start (session);
 	}
 
 	void Plugin::SecondInit ()
@@ -58,6 +89,7 @@ namespace Fenet
 
 	void Plugin::Release ()
 	{
+		Process_->kill ();
 	}
 
 	QString Plugin::GetName () const
@@ -78,6 +110,16 @@ namespace Fenet
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return XSD_;
+	}
+
+	void Plugin::handleProcessError ()
+	{
+		qWarning () << Q_FUNC_INFO
+				<< "process error:"
+				<< Process_->error ()
+				<< Process_->errorString ()
+				<< Process_->exitCode ()
+				<< Process_->exitStatus ();
 	}
 }
 }
