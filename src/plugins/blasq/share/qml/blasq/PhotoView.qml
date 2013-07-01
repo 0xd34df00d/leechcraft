@@ -23,6 +23,12 @@ Rectangle {
         fullSizeImage.source = url
     }
 
+    signal imageSelected(string id)
+    signal imageOpenRequested(variant url)
+    signal imageDownloadRequested(variant url)
+
+    property string currentImageId
+
     Image {
         id: fullSizeImage
 
@@ -57,7 +63,7 @@ Rectangle {
 
         transitions: Transition {
             PropertyAnimation { properties: "opacity"; duration: 300; easing.type: Easing.OutSine }
-            PropertyAnimation { target: viewBlur; property: "blurRadius"; duration: 300; easing.type: Easing.OutSine }
+            PropertyAnimation { target: photoViewBlur; property: "blurRadius"; duration: 300; easing.type: Easing.OutSine }
         }
 
         MouseArea {
@@ -123,26 +129,36 @@ Rectangle {
                 height: collectionThumbsView.cellHeight
 
                 Rectangle {
+                    id: itemRect
+
                     anchors.fill: parent
                     anchors.leftMargin: collectionThumbsView.horzMargin
                     anchors.rightMargin: collectionThumbsView.horzMargin
                     anchors.topMargin: collectionThumbsView.vertMargin
                     anchors.bottomMargin: collectionThumbsView.vertMargin
 
+                    property bool isCurrent: imageId == rootRect.currentImageId
+
                     radius: 5
                     gradient: Gradient {
                         GradientStop {
                             position: 0
-                            color: colorProxy.color_TextBox_TopColor
+                            color: itemRect.isCurrent ?
+                                    colorProxy.color_TextBox_HighlightTopColor :
+                                    colorProxy.color_TextBox_TopColor
                         }
                         GradientStop {
                             position: 1
-                            color: colorProxy.color_TextBox_BottomColor
+                            color: itemRect.isCurrent ?
+                                    colorProxy.color_TextBox_HighlightBottomColor :
+                                    colorProxy.color_TextBox_BottomColor
                         }
                     }
 
                     border.width: 1
-                    border.color: colorProxy.color_TextBox_BorderColor
+                    border.color: isCurrent ?
+                            colorProxy.color_TextBox_HighlightBorderColor :
+                            colorProxy.color_TextBox_BorderColor
 
                     smooth: true
 
@@ -174,9 +190,51 @@ Rectangle {
                         color: colorProxy.color_TextBox_TitleTextColor
                     }
 
+                    property bool isHovered: itemMouseArea.containsMouse ||
+                                openInBrowserAction.isHovered ||
+                                downloadOriginalAction.isHovered
+
                     MouseArea {
+                        id: itemMouseArea
                         anchors.fill: parent
-                        onReleased: rootRect.showImage(original)
+
+                        hoverEnabled: true
+                        onReleased: {
+                            rootRect.showImage(original)
+                            rootRect.imageSelected(imageId)
+
+                            rootRect.currentImageId = imageId
+                        }
+                    }
+
+                    ActionButton {
+                        id: openInBrowserAction
+
+                        anchors.top: parent.top
+                        anchors.right: parent.right
+                        width: 24
+                        height: width
+
+                        opacity: parent.isHovered ? 1 : 0
+                        Behavior on opacity { PropertyAnimation {} }
+
+                        actionIconURL: "image://ThemeIcons/go-jump-locationbar"
+                        onTriggered: rootRect.imageOpenRequested(original)
+                    }
+
+                    ActionButton {
+                        id: downloadOriginalAction
+
+                        anchors.top: openInBrowserAction.bottom
+                        anchors.right: parent.right
+                        width: 24
+                        height: width
+
+                        opacity: parent.isHovered ? 1 : 0
+                        Behavior on opacity { PropertyAnimation {} }
+
+                        actionIconURL: "image://ThemeIcons/download"
+                        onTriggered: rootRect.imageDownloadRequested(original)
                     }
                 }
             }

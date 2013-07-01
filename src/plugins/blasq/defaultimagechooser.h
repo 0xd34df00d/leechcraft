@@ -27,73 +27,42 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "mucinvitedialog.h"
-#include <QtDebug>
-#include "interfaces/azoth/iaccount.h"
-#include "interfaces/azoth/iclentry.h"
+#pragma once
+
+#include <QObject>
+#include <interfaces/data/iimgsource.h>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Blasq
 {
-	MUCInviteDialog::MUCInviteDialog (IAccount *acc, QWidget *parent)
-	: QDialog (parent)
-	, ManualMode_ (false)
+	class AccountsManager;
+	class PhotosTab;
+
+	class DefaultImageChooser : public QObject
+							  , public IPendingImgSourceRequest
 	{
-		Ui_.setupUi (this);
-		Ui_.Invitee_->setInsertPolicy (QComboBox::NoInsert);
+		Q_OBJECT
+		Q_INTERFACES (IPendingImgSourceRequest)
 
-		Q_FOREACH (QObject *entryObj, acc->GetCLEntries ())
-		{
-			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-			if (!entry ||
-					entry->GetEntryType () != ICLEntry::ETChat)
-				continue;
+		AccountsManager * const AccMgr_;
+		const ICoreProxy_ptr Proxy_;
 
-			const QString& id = entry->GetHumanReadableID ();
-			Ui_.Invitee_->addItem (QString ("%1 (%2)")
-						.arg (entry->GetEntryName ())
-						.arg (id),
-					id);
-		}
-	}
+		PhotosTab * const Photos_;
 
-	QString MUCInviteDialog::GetID () const
-	{
-		const int idx = Ui_.Invitee_->currentIndex ();
-		return (idx >= 0 && !ManualMode_) ?
-				Ui_.Invitee_->itemData (idx).toString () :
-				Ui_.Invitee_->currentText ();
-	}
+		RemoteImageInfo Selected_;
+	public:
+		DefaultImageChooser (AccountsManager*, const ICoreProxy_ptr&);
 
-	void MUCInviteDialog::SetID (const QString& id)
-	{
-		for (int i = 0; i < Ui_.Invitee_->count (); ++i)
-			if (Ui_.Invitee_->itemData (i).toString () == id)
-			{
-				Ui_.Invitee_->setCurrentIndex (i);
-				ManualMode_ = false;
-				return;
-			}
-
-		Ui_.Invitee_->setEditText (id);
-
-		ManualMode_ = true;
-	}
-
-	QString MUCInviteDialog::GetInviteMessage () const
-	{
-		return Ui_.Message_->text ();
-	}
-
-	void MUCInviteDialog::on_Invitee__currentIndexChanged ()
-	{
-		ManualMode_ = false;
-	}
-
-	void MUCInviteDialog::on_Invitee__editTextChanged ()
-	{
-		ManualMode_ = true;
-	}
+		QObject* GetQObject ();
+		RemoteImageInfos_t GetInfos () const;
+	private slots:
+		void handleAccept ();
+		void handleReject ();
+	signals:
+		void ready ();
+		void error (const QString&);
+	};
 }
 }

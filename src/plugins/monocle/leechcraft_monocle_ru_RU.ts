@@ -119,97 +119,102 @@
 <context>
     <name>LeechCraft::Monocle::DocumentTab</name>
     <message>
-        <location filename="documenttab.cpp" line="483"/>
+        <location filename="documenttab.cpp" line="487"/>
         <source>Open...</source>
         <translation>Открыть...</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="503"/>
+        <location filename="documenttab.cpp" line="507"/>
         <source>Print...</source>
         <translation>Печать...</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="511"/>
+        <location filename="documenttab.cpp" line="515"/>
         <source>Save</source>
         <translation>Сохранить</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="521"/>
+        <location filename="documenttab.cpp" line="525"/>
         <source>Export as PDF...</source>
         <translation>Экспортировать в PDF...</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="551"/>
+        <location filename="documenttab.cpp" line="536"/>
+        <source>Find...</source>
+        <translation>Найти...</translation>
+    </message>
+    <message>
+        <location filename="documenttab.cpp" line="555"/>
         <source>Presentation...</source>
         <translation>Презентация...</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="561"/>
+        <location filename="documenttab.cpp" line="565"/>
         <source>Previous page</source>
         <translation>Предыдущая страница</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="590"/>
+        <location filename="documenttab.cpp" line="594"/>
         <source>Next page</source>
         <translation>Следующая страница</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="601"/>
+        <location filename="documenttab.cpp" line="605"/>
         <source>Fit width</source>
         <translation>По ширине</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="602"/>
+        <location filename="documenttab.cpp" line="606"/>
         <source>Fit page</source>
         <translation>Страница целиком</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="613"/>
+        <location filename="documenttab.cpp" line="617"/>
         <source>Zoom out</source>
         <translation>Уменьшить</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="622"/>
+        <location filename="documenttab.cpp" line="626"/>
         <source>Zoom in</source>
         <translation>Увеличить</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="633"/>
+        <location filename="documenttab.cpp" line="637"/>
         <source>One page</source>
         <translation>Одна страница</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="644"/>
+        <location filename="documenttab.cpp" line="648"/>
         <source>Two pages</source>
         <translation>Две страницы</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="657"/>
+        <location filename="documenttab.cpp" line="661"/>
         <source>Move mode</source>
         <translation>Режим перемещения</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="668"/>
+        <location filename="documenttab.cpp" line="672"/>
         <source>Selection mode</source>
         <translation>Режим выделения</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="905"/>
+        <location filename="documenttab.cpp" line="909"/>
         <source>Can&apos;t save document: %1.</source>
         <translation>Невозможно сохранить документ: %1.</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="923"/>
+        <location filename="documenttab.cpp" line="927"/>
         <source>Export to PDF</source>
         <translation>Экспорт в PDF</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="1218"/>
+        <location filename="documenttab.cpp" line="1222"/>
         <source>Save selection as</source>
         <translation>Сохранить выделение как</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="1220"/>
+        <location filename="documenttab.cpp" line="1224"/>
         <source>PNG images (*.png)</source>
         <translation>Изображения PNG (*.png)</translation>
     </message>
@@ -229,17 +234,17 @@
         <translation>Сохранить выделение как изображение...</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="680"/>
+        <location filename="documenttab.cpp" line="684"/>
         <source>Document info...</source>
         <translation>Информация о документе...</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="867"/>
+        <location filename="documenttab.cpp" line="871"/>
         <source>Seems like file %1 doesn&apos;t exist anymore.</source>
         <translation>Похоже, что файл %1 больше не существует.</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="880"/>
+        <location filename="documenttab.cpp" line="884"/>
         <source>Select file</source>
         <translation>Выбор файла</translation>
     </message>
@@ -249,7 +254,7 @@
         <translation>Скопировать как изображение</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="450"/>
+        <location filename="documenttab.cpp" line="454"/>
         <source>Copy selection as text</source>
         <translation>Скопировать как текст</translation>
     </message>

@@ -50,6 +50,8 @@ namespace Azoth
 	private:
 		bool PerformHooks (const QMimeData*, int, const QModelIndex&);
 		bool CheckHookDnDEntry2Entry (const QMimeData*, int, const QModelIndex&);
+
+		bool TryInvite (const QMimeData*, int, const QModelIndex&);
 		bool TryDropContact (const QMimeData*, int, const QModelIndex&);
 		bool TryDropFile (const QMimeData*, const QModelIndex&);
 	signals:

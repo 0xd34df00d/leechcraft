@@ -43,7 +43,7 @@ namespace Autopaste
 		Ui_.setupUi (this);
 
 		Q_FOREACH (const auto& info, PasteServiceFactory ().GetInfos ())
-			Ui_.ServiceCombo_->addItem (info.Icon_, info.Name_);
+		  Ui_.ServiceCombo_->addItem (info.Icon_, info.Name_);
 	}
 
 	PasteDialog::Choice PasteDialog::GetChoice () const

@@ -33,8 +33,12 @@
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 #include <QGraphicsObject>
+#include <QtDebug>
+#include <interfaces/core/ientitymanager.h>
 #include <util/qml/colorthemeproxy.h>
+#include <util/qml/themeimageprovider.h>
 #include <util/sys/paths.h>
+#include <util/util.h>
 #include "interfaces/blasq/iaccount.h"
 #include "accountsmanager.h"
 
@@ -48,24 +52,42 @@ namespace Blasq
 	: TC_ (tc)
 	, Plugin_ (plugin)
 	, AccMgr_ (accMgr)
+	, Proxy_ (proxy)
 	, AccountsBox_ (new QComboBox)
 	, Toolbar_ (new QToolBar)
 	{
 		Ui_.setupUi (this);
 
 		Ui_.ImagesView_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
-		Ui_.ImagesView_->rootContext ()->setContextProperty ("colorProxy",
-				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
-		Ui_.ImagesView_->rootContext ()->setContextProperty ("collectionModel", QStringList ());
-		Ui_.ImagesView_->rootContext ()->setContextProperty ("listingMode", "false");
-		Ui_.ImagesView_->rootContext ()->setContextProperty ("collRootIndex",
-				QVariant::fromValue (QModelIndex ()));
 
+		auto rootCtx = Ui_.ImagesView_->rootContext ();
+		rootCtx->setContextProperty ("colorProxy",
+				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
+		rootCtx->setContextProperty ("collectionModel", QStringList ());
+		rootCtx->setContextProperty ("listingMode", "false");
+		rootCtx->setContextProperty ("collRootIndex", QVariant::fromValue (QModelIndex ()));
+
+		auto engine = Ui_.ImagesView_->engine ();
+		engine->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
-			Ui_.ImagesView_->engine ()->addImportPath (cand);
+			engine->addImportPath (cand);
 
 		const auto& path = Util::GetSysPath (Util::SysPath::QML, "blasq", "PhotoView.qml");
 		Ui_.ImagesView_->setSource (QUrl::fromLocalFile (path));
+
+		auto rootObj = Ui_.ImagesView_->rootObject ();
+		connect (rootObj,
+				SIGNAL (imageSelected (QString)),
+				this,
+				SLOT (handleImageSelected (QString)));
+		connect (rootObj,
+				SIGNAL (imageOpenRequested (QVariant)),
+				this,
+				SLOT (handleImageOpenRequested (QVariant)));
+		connect (rootObj,
+				SIGNAL (imageDownloadRequested (QVariant)),
+				this,
+				SLOT (handleImageDownloadRequested (QVariant)));
 
 		AccountsBox_->setModel (AccMgr_->GetModel ());
 		AccountsBox_->setModelColumn (AccountsManager::Column::Name);
@@ -82,6 +104,11 @@ namespace Blasq
 				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
 				this,
 				SLOT (handleRowChanged (QModelIndex)));
+	}
+
+	PhotosTab::PhotosTab (AccountsManager *accMgr, ICoreProxy_ptr proxy)
+	: PhotosTab (accMgr, {}, nullptr, proxy)
+	{
 	}
 
 	TabClassInfo PhotosTab::GetTabClassInfo () const
@@ -105,9 +132,41 @@ namespace Blasq
 		return Toolbar_.get ();
 	}
 
+	QModelIndex PhotosTab::GetSelectedImage () const
+	{
+		if (SelectedID_.isEmpty ())
+			return {};
+
+		auto model = CurAcc_->GetCollectionsModel ();
+		QModelIndex allPhotosIdx;
+		for (auto i = 0; i < model->rowCount (); ++i)
+		{
+			const auto& idx = model->index (i, 0);
+			if (idx.data (CollectionRole::Type).toInt () == ItemType::AllPhotos)
+			{
+				allPhotosIdx = idx;
+				break;
+			}
+		}
+
+		if (!allPhotosIdx.isValid ())
+			return {};
+
+		for (auto i = 0, rc = model->rowCount (allPhotosIdx); i < rc; ++i)
+		{
+			const auto& idx = allPhotosIdx.child (i, 0);
+			if (idx.data (CollectionRole::ID).toString () == SelectedID_)
+				return idx;
+		}
+
+		return {};
+	}
+
 	void PhotosTab::HandleImageSelected (const QModelIndex& index)
 	{
 		Ui_.ImagesView_->rootContext ()->setContextProperty ("listingMode", "false");
+
+		handleImageSelected (index.data (CollectionRole::ID).toString ());
 
 		QMetaObject::invokeMethod (Ui_.ImagesView_->rootObject (),
 				"showImage",
@@ -123,6 +182,8 @@ namespace Blasq
 		Ui_.ImagesView_->rootContext ()->setContextProperty ("listingMode", "true");
 		Ui_.ImagesView_->rootContext ()->setContextProperty ("collRootIndex",
 				QVariant::fromValue (index));
+
+		SelectedID_.clear ();
 	}
 
 	void PhotosTab::handleAccountChosen (int idx)
@@ -157,6 +218,41 @@ namespace Blasq
 			HandleImageSelected (index);
 		else
 			HandleCollectionSelected (index);
+	}
+
+	void PhotosTab::handleImageSelected (const QString& id)
+	{
+		SelectedID_ = id;
+	}
+
+	void PhotosTab::handleImageOpenRequested (const QVariant& var)
+	{
+		const auto& url = var.toUrl ();
+		if (!url.isValid ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid URL"
+					<< var;
+			return;
+		}
+
+		const auto& entity = Util::MakeEntity (url, QString (), FromUserInitiated | OnlyHandle);
+		Proxy_->GetEntityManager ()->HandleEntity (entity);
+	}
+
+	void PhotosTab::handleImageDownloadRequested (const QVariant& var)
+	{
+		const auto& url = var.toUrl ();
+		if (!url.isValid ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid URL"
+					<< var;
+			return;
+		}
+
+		const auto& entity = Util::MakeEntity (url, QString (), FromUserInitiated | OnlyDownload);
+		Proxy_->GetEntityManager ()->HandleEntity (entity);
 	}
 }
 }

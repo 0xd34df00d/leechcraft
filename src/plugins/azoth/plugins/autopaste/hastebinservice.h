@@ -27,73 +27,27 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "mucinvitedialog.h"
-#include <QtDebug>
-#include "interfaces/azoth/iaccount.h"
-#include "interfaces/azoth/iclentry.h"
+#pragma once
+
+#include "pasteservicebase.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	MUCInviteDialog::MUCInviteDialog (IAccount *acc, QWidget *parent)
-	: QDialog (parent)
-	, ManualMode_ (false)
+namespace Autopaste
+{
+	class HastebinService : public PasteServiceBase
 	{
-		Ui_.setupUi (this);
-		Ui_.Invitee_->setInsertPolicy (QComboBox::NoInsert);
+		Q_OBJECT
+	public:
+		HastebinService (QObject *entry, QObject* = 0);
 
-		Q_FOREACH (QObject *entryObj, acc->GetCLEntries ())
-		{
-			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-			if (!entry ||
-					entry->GetEntryType () != ICLEntry::ETChat)
-				continue;
-
-			const QString& id = entry->GetHumanReadableID ();
-			Ui_.Invitee_->addItem (QString ("%1 (%2)")
-						.arg (entry->GetEntryName ())
-						.arg (id),
-					id);
-		}
-	}
-
-	QString MUCInviteDialog::GetID () const
-	{
-		const int idx = Ui_.Invitee_->currentIndex ();
-		return (idx >= 0 && !ManualMode_) ?
-				Ui_.Invitee_->itemData (idx).toString () :
-				Ui_.Invitee_->currentText ();
-	}
-
-	void MUCInviteDialog::SetID (const QString& id)
-	{
-		for (int i = 0; i < Ui_.Invitee_->count (); ++i)
-			if (Ui_.Invitee_->itemData (i).toString () == id)
-			{
-				Ui_.Invitee_->setCurrentIndex (i);
-				ManualMode_ = false;
-				return;
-			}
-
-		Ui_.Invitee_->setEditText (id);
-
-		ManualMode_ = true;
-	}
-
-	QString MUCInviteDialog::GetInviteMessage () const
-	{
-		return Ui_.Message_->text ();
-	}
-
-	void MUCInviteDialog::on_Invitee__currentIndexChanged ()
-	{
-		ManualMode_ = false;
-	}
-
-	void MUCInviteDialog::on_Invitee__editTextChanged ()
-	{
-		ManualMode_ = true;
-	}
+		void Paste (const PasteParams&);
+	protected:
+		virtual void handleFinished ();
+	};
 }
 }
+}
+ 

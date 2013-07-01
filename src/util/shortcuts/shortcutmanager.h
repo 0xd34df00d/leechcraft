@@ -64,7 +64,7 @@ namespace Util
 	 *
 	 * @sa IHaveShortcuts
 	 */
-	class ShortcutManager : public QObject
+	class UTIL_API ShortcutManager : public QObject
 	{
 		Q_OBJECT
 
@@ -82,7 +82,7 @@ namespace Util
 		 * your plugin.
 		 * @param[in] parent The parent object of this object.
 		 */
-		UTIL_API ShortcutManager (ICoreProxy_ptr proxy, QObject *parent = 0);
+		ShortcutManager (ICoreProxy_ptr proxy, QObject *parent = 0);
 
 		/** @brief Sets the plugin instance object of this manager.
 		 *
@@ -91,7 +91,7 @@ namespace Util
 		 *
 		 * @param[in] pluginObj The plugin instance object.
 		 */
-		UTIL_API void SetObject (QObject *pluginObj);
+		void SetObject (QObject *pluginObj);
 
 		/** @brief Registers the given QAction by the given id.
 		 *
@@ -119,7 +119,7 @@ namespace Util
 		 *
 		 * @sa RegisterShortcut(), RegisterActionInfo()
 		 */
-		UTIL_API void RegisterAction (const QString& id, QAction *action, bool update = false);
+		void RegisterAction (const QString& id, QAction *action, bool update = false);
 
 		/** @brief Registers the given QShortcut with the given id.
 		 *
@@ -143,7 +143,7 @@ namespace Util
 		 *
 		 * @sa RegisterAction(), RegisterActionInfo()
 		 */
-		UTIL_API void RegisterShortcut (const QString& id,
+		void RegisterShortcut (const QString& id,
 				const ActionInfo& info, QShortcut *shortcut, bool update = false);
 
 		/** @brief Registers the given action info with the given id.
@@ -160,7 +160,7 @@ namespace Util
 		 *
 		 * @sa RegisterAction(), RegisterShortcut()
 		 */
-		UTIL_API void RegisterActionInfo (const QString& id, const ActionInfo& info);
+		void RegisterActionInfo (const QString& id, const ActionInfo& info);
 
 		/** @brief Sets the key sequence for the given action.
 		 *
@@ -172,7 +172,7 @@ namespace Util
 		 * @param[in] id The ID of the action to update.
 		 * @param[in] sequences The list of sequences to for the action.
 		 */
-		UTIL_API void SetShortcut (const QString& id, const QKeySequences_t& sequences) const;
+		void SetShortcut (const QString& id, const QKeySequences_t& sequences) const;
 
 		/** @brief Returns the map with information about actions.
 		 *
@@ -181,7 +181,7 @@ namespace Util
 		 *
 		 * @return Action info map.
 		 */
-		UTIL_API QMap<QString, ActionInfo> GetActionInfo () const;
+		QMap<QString, ActionInfo> GetActionInfo () const;
 
 		typedef QPair<QString, QAction*> IDPair_t;
 		/** @brief Utility function equivalent to RegisterAction().
@@ -192,7 +192,7 @@ namespace Util
 		 * @param[in] pair The pair of action ID and the action itself.
 		 * @return The shortcut manager object.
 		 */
-		UTIL_API ShortcutManager& operator<< (const QPair<QString, QAction*>& pair);
+		ShortcutManager& operator<< (const QPair<QString, QAction*>& pair);
 	private slots:
 		void handleActionDestroyed ();
 		void handleShortcutDestroyed ();

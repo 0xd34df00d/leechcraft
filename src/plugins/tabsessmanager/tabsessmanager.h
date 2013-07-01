@@ -31,8 +31,10 @@
 #define PLUGINS_TABSESSMANAGER_TABSESSMANAGER_H
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/iplugin2.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihaverecoverabletabs.h>
+#include <interfaces/core/ihookproxy.h>
 
 namespace LeechCraft
 {
@@ -40,10 +42,11 @@ namespace TabSessManager
 {
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IPlugin2
 				 , public IActionsExporter
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IActionsExporter)
+		Q_INTERFACES (IInfo IPlugin2 IActionsExporter)
 
 		ICoreProxy_ptr Proxy_;
 		QList<QList<QObject*>> Tabs_;
@@ -69,12 +72,18 @@ namespace TabSessManager
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 
+		QSet<QByteArray> GetPluginClasses () const;
+
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 	protected:
 		bool eventFilter (QObject*, QEvent*);
 	private:
 		QByteArray GetCurrentSession () const;
 		void AddCustomSession (const QString&);
+	public slots:
+		void hookTabIsRemoving (LeechCraft::IHookProxy_ptr proxy,
+				int index,
+				int windowId);
 	private slots:
 		void handleNewTab (const QString&, QWidget*);
 		void handleRemoveTab (QWidget*);

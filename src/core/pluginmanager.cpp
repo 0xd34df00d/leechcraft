@@ -787,8 +787,8 @@ namespace LeechCraft
 
 		QList<std::function<void (Loaders::IPluginLoader_ptr)>> checks;
 		checks << Checks::IsFile
-				<< Checks::APILevel
 				<< Checks::TryLoad
+				<< Checks::APILevel
 				<< Checks::TryInstance;
 
 		for (int i = 0; i < PluginContainers_.size (); ++i)

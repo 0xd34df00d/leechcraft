@@ -67,7 +67,7 @@ namespace Azoth
 	void SortFilterProxyModel::SetMUCMode (bool muc)
 	{
 		MUCMode_ = muc;
-		invalidateFilter ();
+		invalidate ();
 
 		if (muc)
 		  emit mucMode ();

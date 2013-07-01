@@ -18,6 +18,7 @@ set (SRCS
 	servicesmanager.cpp
 	accountsmanager.cpp
 	photostab.cpp
+	defaultimagechooser.cpp
 	)
 set (FORMS
 	accountswidget.ui
