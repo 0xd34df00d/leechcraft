@@ -969,6 +969,11 @@ namespace Azoth
 		Ui_.AvatarLabel_->setVisible (!avatar.isNull ());
 	}
 
+	void ChatTab::handleNameChanged (const QString& name)
+	{
+		emit changeTabName (this, name);
+	}
+
 	void ChatTab::handleStatusChanged (const EntryStatus& status,
 			const QString& variant)
 	{
@@ -1488,6 +1493,10 @@ namespace Azoth
 				SIGNAL (avatarChanged (const QImage&)),
 				this,
 				SLOT (handleAvatarChanged (const QImage&)));
+		connect (GetEntry<QObject> (),
+				SIGNAL (nameChanged (QString)),
+				this,
+				SLOT (handleNameChanged (QString)));
 
 		ICLEntry *e = GetEntry<ICLEntry> ();
 		handleVariantsChanged (e->Variants ());

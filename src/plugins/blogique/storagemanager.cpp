@@ -111,14 +111,50 @@ namespace Blogique
 		AddDraft_.bindValue (":entry", e.Content_);
 		AddDraft_.bindValue (":date", e.Date_);
 		AddDraft_.bindValue (":subject", e.Subject_);
+
 		if (!AddDraft_.exec ())
 		{
 			Util::DBLock::DumpError (AddDraft_);
 			throw std::runtime_error ("unable to add draft");
 		}
 
+		const qint64 id = AddDraft_.lastInsertId ().toLongLong ();
+		for (const auto& tag : e.Tags_)
+		{
+			if (tag.isEmpty ())
+				continue;
+
+			AddDraftTag_.bindValue (":tag", tag);
+			AddDraftTag_.bindValue (":draft_id", id);
+			if (!AddDraftTag_.exec ())
+			{
+				Util::DBLock::DumpError (AddDraftTag_);
+				throw std::runtime_error ("unable to add draft's tag");
+			}
+		}
+
 		lock.Good ();
 		return AddDraft_.lastInsertId ().toLongLong ();
+	}
+
+	namespace
+	{
+		QStringList GetTags (QSqlQuery query)
+		{
+			if (!query.exec ())
+			{
+				Util::DBLock::DumpError (query);
+				throw std::runtime_error ("unable to get draft's tag");
+			}
+
+			QStringList tags;
+			while (query.next ())
+				tags << query.value (1).toString ();
+
+			query.finish ();
+
+			return tags;
+		}
 	}
 
 	qint64 StorageManager::UpdateDraft (const Entry& e, qint64 draftId)
@@ -140,6 +176,27 @@ namespace Blogique
 				Util::DBLock::DumpError (UpdateDraft_);
 				throw std::runtime_error ("unable to update draft");
 			}
+
+			RemoveDraftTags_.bindValue (":draft_id", draftId);
+			if (!RemoveDraftTags_.exec ())
+			{
+				Util::DBLock::DumpError (RemoveDraftTags_);
+				throw std::runtime_error ("unable to remove draft's tags");
+			}
+
+			for (const auto& tag : e.Tags_)
+			{
+				if (tag.isEmpty ())
+					continue;
+
+				AddDraftTag_.bindValue (":tag", tag);
+				AddDraftTag_.bindValue (":draft_id", draftId);
+				if (!AddDraftTag_.exec ())
+				{
+					Util::DBLock::DumpError (AddDraftTag_);
+					throw std::runtime_error ("unable to add draft's tag");
+				}
+			}
 		}
 
 		lock.Good ();
@@ -154,6 +211,13 @@ namespace Blogique
 		{
 			Util::DBLock::DumpError (RemoveDraft_);
 			throw std::runtime_error ("unable to remove draft");
+		}
+
+		RemoveDraftTags_.bindValue (":draft_id", draftId);
+		if (!RemoveDraftTags_.exec ())
+		{
+			Util::DBLock::DumpError (RemoveDraftTags_);
+			throw std::runtime_error ("unable to remove draft's tags");
 		}
 	}
 
@@ -175,6 +239,9 @@ namespace Blogique
 			e.Content_ = GetDrafts_.value (1).toString ();
 			e.Date_ = GetDrafts_.value (2).toDateTime ();
 			e.Subject_ = GetDrafts_.value (3).toString ();
+
+			GetDraftTags_.bindValue (":draft_id", e.EntryId_);
+			e.Tags_ = GetTags (GetDraftTags_);
 
 			list << e;
 		}
@@ -200,6 +267,9 @@ namespace Blogique
 			e.Content_ = GetDraftsByDate_.value (1).toString ();
 			e.Date_ = GetDraftsByDate_.value (2).toDateTime ();
 			e.Subject_ = GetDraftsByDate_.value (3).toString ();
+
+			GetDraftTags_.bindValue (":draft_id", e.EntryId_);
+			e.Tags_ = GetTags (GetDraftTags_);
 
 			list << e;
 		}
@@ -241,6 +311,9 @@ namespace Blogique
 			e.Content_ = GetFullDraft_.value (1).toString ();
 			e.Date_ = GetFullDraft_.value (2).toDateTime ();
 			e.Subject_ = GetFullDraft_.value (3).toString ();
+
+			GetDraftTags_.bindValue (":draft_id", e.EntryId_);
+			e.Tags_ = GetTags (GetDraftTags_);
 		}
 
 		GetFullDraft_.finish ();
@@ -260,6 +333,11 @@ namespace Blogique
 				"Entry TEXT, "
 				"Date DATE, "
 				"Subject TEXT "
+				");";
+		table2query ["drafts_tags"] = "CREATE TABLE IF NOT EXISTS tags ("
+				"Id INTEGER PRIMARY KEY AUTOINCREMENT, "
+				"Tag TEXT NOT NULL, "
+				"DraftId INTEGER NOT NULL REFERENCES drafts (Id) ON DELETE CASCADE "
 				");";
 
 		Util::DBLock lock (BlogiqueDB_);
@@ -313,6 +391,16 @@ namespace Blogique
 		GetDraftsCountByDate_ = QSqlQuery (BlogiqueDB_);
 		GetDraftsCountByDate_.prepare ("SELECT date (Date), COUNT (Id) FROM drafts "
 				" GROUP BY date (Date);");
+
+		AddDraftTag_ = QSqlQuery (BlogiqueDB_);
+		AddDraftTag_.prepare ("INSERT INTO tags "
+				"(Tag, DraftId) VALUES (:tag, :draft_id);");
+		RemoveDraftTags_ = QSqlQuery (BlogiqueDB_);
+		RemoveDraftTags_.prepare ("DELETE FROM tags WHERE DraftId = ("
+				" SELECT Id FROM drafts WHERE DraftId = :draft_id);");
+		GetDraftTags_ = QSqlQuery (BlogiqueDB_);
+		GetDraftTags_.prepare ("SELECT Id, Tag FROM tags WHERE DraftId = ("
+				" SELECT Id FROM drafts WHERE DraftId = :draft_id);");
 	}
 
 }

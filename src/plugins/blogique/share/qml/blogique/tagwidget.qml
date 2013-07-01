@@ -27,6 +27,7 @@ Rectangle
 
 	signal tagTextChanged (string text);
 	signal tagRemoved (string tag);
+	signal tagAdded (string tag);
 
 	function getTags ()
 	{
@@ -41,6 +42,7 @@ Rectangle
 
 	function setTags (tags)
 	{
+		TagBalloonList.clearBalloonsArray ();
 		var length = tags.length;
 		for (var i = 0; i < length; ++i)
 			TagBalloonList.addBalloon (createBalloonObject (tags [i]));
@@ -50,6 +52,7 @@ Rectangle
 	{
 		removeInputField ();
 		TagBalloonList.addBalloon (createBalloonObject (tag));
+		tagAdded (tag)
 		createInputFieldObject ();
 	}
 

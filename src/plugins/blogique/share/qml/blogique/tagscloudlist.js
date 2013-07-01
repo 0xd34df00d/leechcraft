@@ -13,6 +13,13 @@ function clearTextTagsArray ()
 	tagsInCloudArray.length = 0;
 }
 
+function unselectAllTags ()
+{
+	var length = tagsInCloudArray.length;
+	for (var i = 0; i < length; ++i)
+		tagsInCloudArray [i].font.strikeout = false;
+}
+
 function getTextTag (tag)
 {
 	var length = tagsInCloudArray.length;
