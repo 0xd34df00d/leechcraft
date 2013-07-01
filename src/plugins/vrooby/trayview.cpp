@@ -87,6 +87,9 @@ namespace Vrooby
 			settings.setValue ("List", QStringList (Hidden_.toList ()));
 			settings.endGroup ();
 
+			if (Hidden_.isEmpty ())
+				FilterEnabled_ = true;
+
 			if (FilterEnabled_)
 				invalidateFilter ();
 			else
