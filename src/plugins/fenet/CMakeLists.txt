@@ -23,4 +23,5 @@ target_link_libraries (leechcraft_fenet
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_fenet DESTINATION ${LC_PLUGINS_DEST})
+install (FILES leechcraft-session DESTINATION bin)
 install (DIRECTORY share/xsessions DESTINATION share)

@@ -3,7 +3,7 @@ Encoding=UTF-8
 Type=XSession
 Name=LeechCraft DE
 Comment=LeechCraft session with the window manager configured via Fenet
-Exec=leechcraft --desktop
-TryExec=leechcraft --desktop
+Exec=leechcraft-session
+TryExec=leechcraft-session
 Icon=leechcraft_main
 

@@ -1,0 +1,19 @@
+#!/bin/sh
+
+if test -n "$1"; then
+    echo "Syntax: leechcraft-session"
+    echo
+    echo "See the leechcraft-session(1) manpage for help."
+  exit
+fi
+
+xprop -root -remove _NET_NUMBER_OF_DESKTOPS \
+      -remove _NET_DESKTOP_NAMES \
+      -remove _NET_CURRENT_DESKTOP 2> /dev/null
+
+# D-Bus autolaunch is broken
+if which dbus-launch >/dev/null && test -z "$DBUS_SESSION_BUS_ADDRESS"; then
+    eval `dbus-launch --sh-syntax --exit-with-session`
+fi
+
+leechcraft  --restart --desktop
