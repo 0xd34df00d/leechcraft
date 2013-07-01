@@ -31,7 +31,10 @@ target_link_libraries (leechcraft_fenet
 	${QJSON_LIBRARIES}
 	)
 install (TARGETS leechcraft_fenet DESTINATION ${LC_PLUGINS_DEST})
-install (FILES leechcraft-session DESTINATION bin)
+install (FILES leechcraft-session DESTINATION bin
+		PERMISSIONS
+			OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ
+			WORLD_EXECUTE WORLD_READ)
 install (FILES fenetsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (DIRECTORY share/xsessions DESTINATION share)
 install (DIRECTORY share/fenet DESTINATION ${LC_SHARE_DEST} FILES_MATCHING PATTERN "*.json")
