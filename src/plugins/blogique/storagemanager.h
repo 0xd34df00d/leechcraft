@@ -56,6 +56,10 @@ namespace Blogique
 		QSqlQuery GetDraftsByDate_;
 		QSqlQuery GetDraftsCountByDate_;
 
+		QSqlQuery AddDraftTag_;
+		QSqlQuery RemoveDraftTags_;
+		QSqlQuery GetDraftTags_;
+
 	public:
 		enum class Mode
 		{

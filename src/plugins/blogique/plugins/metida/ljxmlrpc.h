@@ -84,6 +84,7 @@ namespace Metida
 
 		void UpdateProfileInfo ();
 
+		void Preview (const LJEvent& event);
 		void Submit (const LJEvent& event);
 		void BackupEvents ();
 		void GetLastEvents (int count);
@@ -115,6 +116,7 @@ namespace Metida
 				const QString& challenge);
 		void DeleteGroupRequest (int id, const QString& challenge);
 
+		void PreviewEventRequest (const LJEvent& event, const QString& challenge);
 		void PostEventRequest (const LJEvent& event, const QString& challenge);
 		void RemoveEventRequest (const LJEvent& event, const QString& challenge);
 		void UpdateEventRequest (const LJEvent& event, const QString& challenge);
@@ -149,6 +151,7 @@ namespace Metida
 		void handleRequestFriendsInfoFinished ();
 		void handleAddNewFriendReplyFinished ();
 		void handleReplyWithProfileUpdate ();
+		void handlePreviewEventReplyFinished ();
 		void handlePostEventReplyFinished ();
 		void handleBackupEventsReplyFinished ();
 		void handleGotEventsReplyFinished ();
