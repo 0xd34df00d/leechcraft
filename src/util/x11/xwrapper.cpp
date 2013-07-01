@@ -510,7 +510,7 @@ namespace Util
 			else if (ev->atom == GetAtom ("_NET_CURRENT_DESKTOP"))
 				emit desktopChanged ();
 		}
-		else if (ShouldShow (wid))
+		else
 		{
 			if (ev->atom == GetAtom ("_NET_WM_VISIBLE_NAME") ||
 					ev->atom == GetAtom ("WM_NAME"))
