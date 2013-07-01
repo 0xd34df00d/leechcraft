@@ -210,12 +210,7 @@ namespace Krigstask
 	{
 		auto pos = FindWinInfo (w);
 		if (pos == Windows_.end ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown window"
-					<< w;
 			return;
-		}
 
 		updater (*pos);
 
