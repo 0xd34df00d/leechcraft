@@ -32,4 +32,9 @@ target_link_libraries (leechcraft_fenet
 install (TARGETS leechcraft_fenet DESTINATION ${LC_PLUGINS_DEST})
 install (FILES leechcraft-session DESTINATION bin)
 install (DIRECTORY share/xsessions DESTINATION share)
-install (DIRECTORY share/fenet DESTINATION ${LC_SHARE_DEST})
+install (DIRECTORY share/fenet DESTINATION ${LC_SHARE_DEST} FILES_MATCHING PATTERN "*.json")
+install (DIRECTORY share/fenet DESTINATION ${LC_SHARE_DEST}
+		FILES_MATCHING PATTERN "*.sh"
+		PERMISSIONS
+			OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ
+			WORLD_EXECUTE WORLD_READ)
