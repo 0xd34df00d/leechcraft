@@ -37,6 +37,7 @@
 #include "xmlsettingsmanager.h"
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/istorageplugin.h"
+#include "utils.h"
 
 namespace LeechCraft
 {
@@ -100,19 +101,70 @@ namespace NetStoreManager
 	void SyncWidget::accept ()
 	{
 		QVariantMap map;
-		for (int i = 0; i < Model_->rowCount (); ++i)
+		QVariantMap oldMap = XmlSettingsManager::Instance ().property ("Synchronization").toMap ();
+		for (int i = Model_->rowCount () - 1; i >= 0 ; --i)
 		{
 			QStandardItem *accItem = Model_->item (i, SyncItemDelegate::Account);
 			QStandardItem *localDirItem = Model_->item (i, SyncItemDelegate::LocalDirectory);
 			QStandardItem *remoteDirItem = Model_->item (i, SyncItemDelegate::RemoteDirecory);
+
 			if (!accItem ||
-					!localDirItem ||
-					!remoteDirItem ||
 					accItem->data (SyncItemDelegate::AccountId).isNull () ||
+					!localDirItem ||
 					localDirItem->text ().isEmpty () ||
+					!remoteDirItem ||
 					remoteDirItem->text ().isEmpty ())
 			{
+				Model_->removeRow (i);
 				continue;
+			}
+
+			const auto& accId = accItem->data (SyncItemDelegate::AccountId).toString ();
+			if (!oldMap.contains (accId) ||
+					oldMap [accId].value<SyncDirs_t> ().first != localDirItem->text ())
+			{
+				QDir dir (localDirItem->text ());
+				if (dir.entryList (QDir::NoDotAndDotDot).count ())
+				{
+					auto res = QMessageBox::warning (this, "LeechCraft",
+							tr ("Local synchronization directory should be empty."
+									"Directory %1 is not empty. Remove all content from it?")
+											.arg (localDirItem->text ()),
+							QMessageBox::Yes | QMessageBox::No,
+							QMessageBox::No);
+					switch (res)
+					{
+					case QMessageBox::Yes:
+					{
+						QDir dir (localDirItem->text ());
+						bool result = false;
+						if (dir.exists (localDirItem->text ()))
+						{
+							for (const auto& info : dir.entryInfoList (QDir::NoDotAndDotDot))
+							{
+								if (info.isDir ())
+									result = Utils::RemoveDirectoryContent (info.absoluteFilePath ());
+								else
+									result = QFile::remove (info.absoluteFilePath ());
+
+								if (!result)
+								{
+									QMessageBox::warning (this, "LeechCraft",
+											tr ("Unable to remove content from directory %1")
+													.arg (localDirItem->text ()),
+											QMessageBox::Yes);
+									continue;
+								}
+							}
+						}
+						break;
+					}
+					case QMessageBox::No:
+					default:
+						Model_->removeRow (i);
+						continue;
+					}
+				}
 			}
 
 			map [accItem->data (SyncItemDelegate::AccountId).toString ()] =
@@ -120,12 +172,12 @@ namespace NetStoreManager
 							remoteDirItem->text ()));
 		}
 
-		const auto& oldMap = XmlSettingsManager::Instance ().property ("Synchronization").toMap ();
 		if (oldMap == map)
 			return;
 
+		qDebug () << map;/*
 		emit directoriesToSyncUpdated (map);
-		XmlSettingsManager::Instance ().setProperty ("Synchronization", map);
+		XmlSettingsManager::Instance ().setProperty ("Synchronization", map);*/
 	}
 
 	void SyncWidget::on_Add__released ()

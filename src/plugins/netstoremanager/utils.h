@@ -41,6 +41,7 @@ namespace NetStoreManager
 namespace Utils
 {
 	QStringList ScanDir (QDir::Filters filter, const QString& path, bool recursive = false);
+	bool RemoveDirectoryContent (const QString& dirPath);
 }
 }
 }
