@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=XSession
+Name=LeechCraft DE
+Comment=LeechCraft session with the window manager configured via Fenet
+Exec=leechcraft --desktop
+TryExec=leechcraft --desktop
+Icon=leechcraft_main
+

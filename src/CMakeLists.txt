@@ -181,6 +181,7 @@ option (ENABLE_QROSP "Build Qrosp, the scripting support plugin" OFF)
 option (ENABLE_BLASQ "Build Blasq, client for cloud image storages like Picasa or Flickr" ${WITH_PLUGINS})
 option (ENABLE_BLOGIQUE "Build Blogique, LeechCraft blogging client" ${WITH_PLUGINS})
 option (ENABLE_DOLOZHEE "Build Dolozhee, the feature request and bug reporter" ${WITH_PLUGINS})
+option (ENABLE_FENET "Build Fenet, WM control plugin" ${WITH_PLUGINS})
 option (ENABLE_GACTS "Build Global Actions provider plugin" ${WITH_PLUGINS})
 option (ENABLE_HOTSENSORS "Build HotSensors, temperature sensors quark" ${WITH_PLUGINS})
 option (ENABLE_HOTSTREAMS "Build HotStreams, radio streams provider module" ${WITH_PLUGINS})
@@ -499,6 +500,10 @@ endif ()
 
 if (ENABLE_CEMENTO)
 	add_subdirectory (plugins/cemento)
+endif ()
+
+if (ENABLE_FENET)
+	add_subdirectory (plugins/fenet)
 endif ()
 
 if (ENABLE_GACTS)
