@@ -546,7 +546,7 @@ namespace Util
 		Guarded<ulong> data;
 
 		if (GetRootWinProp (GetAtom ("_NET_NUMBER_OF_DESKTOPS"), &length, data.GetAs<uchar**> (), XA_CARDINAL))
-			return data [0];
+			return length > 0 ? data [0] : -1;
 
 		return -1;
 	}
@@ -557,7 +557,7 @@ namespace Util
 		Guarded<ulong> data;
 
 		if (GetRootWinProp (GetAtom ("_NET_CURRENT_DESKTOP"), &length, data.GetAs<uchar**> (), XA_CARDINAL))
-			return data [0];
+			return length > 0 ? data [0] : -1;
 
 		return -1;
 	}
