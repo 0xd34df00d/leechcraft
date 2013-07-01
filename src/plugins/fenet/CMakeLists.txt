@@ -16,6 +16,7 @@ include_directories (
 set (SRCS
 	fenet.cpp
 	wmfinder.cpp
+	xmlsettingsmanager.cpp
 	)
 #CreateTrs("fenet" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("fenet" "en;ru_RU" "${SRCS}" "${FORMS}" "")
@@ -31,6 +32,7 @@ target_link_libraries (leechcraft_fenet
 	)
 install (TARGETS leechcraft_fenet DESTINATION ${LC_PLUGINS_DEST})
 install (FILES leechcraft-session DESTINATION bin)
+install (FILES fenetsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (DIRECTORY share/xsessions DESTINATION share)
 install (DIRECTORY share/fenet DESTINATION ${LC_SHARE_DEST} FILES_MATCHING PATTERN "*.json")
 install (DIRECTORY share/fenet DESTINATION ${LC_SHARE_DEST}

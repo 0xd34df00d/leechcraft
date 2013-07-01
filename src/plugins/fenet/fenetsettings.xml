@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Window manager" />
+		<item type="combobox" property="SelectedWM" mayHaveDataSource="true">
+			<label value="Window manager:" />
+		</item>
+	</page>
+</settings>

@@ -29,6 +29,9 @@
 
 #include "fenet.h"
 #include <QIcon>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "wmfinder.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -36,6 +39,12 @@ namespace Fenet
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		auto finder = new WMFinder;
+
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "fenetsettings.xml");
+
+		XSD_->SetDataSource ("SelectedWM", finder->GetFoundModel ());
 	}
 
 	void Plugin::SecondInit ()
@@ -64,6 +73,11 @@ namespace Fenet
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 }
 }
