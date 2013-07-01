@@ -39,12 +39,16 @@ namespace LeechCraft
 {
 namespace Fenet
 {
+	class WMFinder;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IHaveSettings
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings)
+
+		WMFinder *Finder_;
 
 		Util::XmlSettingsDialog_ptr XSD_;
 		QProcess *Process_ = 0;
@@ -58,7 +62,11 @@ namespace Fenet
 		QIcon GetIcon () const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+	private:
+		void StartWM ();
+		void KillWM ();
 	private slots:
+		void restartWM ();
 		void handleProcessError ();
 	};
 }

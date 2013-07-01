@@ -41,12 +41,12 @@ namespace Fenet
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		auto finder = new WMFinder;
+		Finder_ = new WMFinder;
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "fenetsettings.xml");
 
-		XSD_->SetDataSource ("SelectedWM", finder->GetFoundModel ());
+		XSD_->SetDataSource ("SelectedWM", Finder_->GetFoundModel ());
 
 		if (!QApplication::arguments ().contains ("--desktop"))
 			return;
@@ -57,25 +57,9 @@ namespace Fenet
 				this,
 				SLOT (handleProcessError ()));
 
-		const auto& found = finder->GetFound ();
-		if (found.isEmpty ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no known WMs are found, aborting";
-			return;
-		}
+		StartWM ();
 
-		auto selected = XmlSettingsManager::Instance ()
-				.property ("SelectedWM").toString ();
-
-		auto pos = std::find_if (found.begin (), found.end (),
-				[&selected] (const WMInfo& info) { return info.Name_ == selected; });
-		if (pos == found.end ())
-			pos = found.begin ();
-
-		const auto& session = pos->Session_;
-		qDebug () << "starting" << session;
-		Process_->start (session);
+		XmlSettingsManager::Instance ().RegisterObject ("SelectedWM", this, "restartWM");
 	}
 
 	void Plugin::SecondInit ()
@@ -89,7 +73,7 @@ namespace Fenet
 
 	void Plugin::Release ()
 	{
-		Process_->kill ();
+		KillWM ();
 	}
 
 	QString Plugin::GetName () const
@@ -110,6 +94,42 @@ namespace Fenet
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return XSD_;
+	}
+
+	void Plugin::StartWM ()
+	{
+		const auto& found = Finder_->GetFound ();
+		if (found.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no known WMs are found, aborting";
+			return;
+		}
+
+		auto selected = XmlSettingsManager::Instance ()
+				.property ("SelectedWM").toString ();
+
+		auto pos = std::find_if (found.begin (), found.end (),
+				[&selected] (const WMInfo& info) { return info.Name_ == selected; });
+		if (pos == found.end ())
+			pos = found.begin ();
+
+		const auto& session = pos->Session_;
+		qDebug () << Q_FUNC_INFO << "starting" << session;
+		Process_->start (session);
+	}
+
+	void Plugin::KillWM ()
+	{
+		Process_->terminate ();
+		if (Process_->state () != QProcess::NotRunning && !Process_->waitForFinished (3000))
+			Process_->kill ();
+	}
+
+	void Plugin::restartWM ()
+	{
+		KillWM ();
+		StartWM ();
 	}
 
 	void Plugin::handleProcessError ()
