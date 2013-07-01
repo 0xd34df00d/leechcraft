@@ -29,6 +29,7 @@
 
 #include "wmfinder.h"
 #include <QDir>
+#include <QStandardItemModel>
 #include <QtDebug>
 #include <qjson/parser.h>
 #include <util/sys/paths.h>
@@ -40,6 +41,7 @@ namespace Fenet
 	WMFinder::WMFinder (QObject *parent)
 	: QObject (parent)
 	, Path_ (QString (qgetenv ("PATH")).split (":", QString::SkipEmptyParts))
+	, FoundModel_ (new QStandardItemModel (this))
 	{
 		qDebug () << Q_FUNC_INFO << "searching for WMs...";
 
@@ -50,6 +52,16 @@ namespace Fenet
 
 		qDebug () << Known_.size () << "known WMs;"
 				<< Found_.size () << "found WMs";
+	}
+
+	const WMInfos_t& WMFinder::GetFound () const
+	{
+		return Found_;
+	}
+
+	QAbstractItemModel* WMFinder::GetFoundModel () const
+	{
+		return FoundModel_;
 	}
 
 	void WMFinder::HandleDescr (const QString& filePath)
@@ -97,6 +109,11 @@ namespace Fenet
 		{
 			qDebug () << info.Name_ << "available";
 			Found_ << info;
+
+			auto item = new QStandardItem (info.Name_);
+			item->setEditable (false);
+			item->setToolTip (info.Comment_);
+			FoundModel_->appendRow (item);
 		}
 	}
 

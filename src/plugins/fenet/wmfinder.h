@@ -32,6 +32,9 @@
 #include <QObject>
 #include "wminfo.h"
 
+class QAbstractItemModel;
+class QStandardItemModel;
+
 namespace LeechCraft
 {
 namespace Fenet
@@ -44,8 +47,13 @@ namespace Fenet
 
 		WMInfos_t Known_;
 		WMInfos_t Found_;
+
+		QStandardItemModel *FoundModel_;
 	public:
 		WMFinder (QObject* = 0);
+
+		const WMInfos_t& GetFound () const;
+		QAbstractItemModel* GetFoundModel () const;
 	private:
 		void HandleDescr (const QString&);
 		bool IsAvailable (const QString&) const;
