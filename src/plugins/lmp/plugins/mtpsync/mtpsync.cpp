@@ -32,6 +32,8 @@
 #include <QIcon>
 #include <QTimer>
 #include <QFileInfo>
+#include <QtConcurrentRun>
+#include <QFutureWatcher>
 
 namespace LeechCraft
 {
@@ -338,39 +340,64 @@ namespace MTPSync
 		}
 	}
 
+	namespace
+	{
+		UnmountableDevInfos_t EnumerateWorker ()
+		{
+			qDebug () << Q_FUNC_INFO;
+			UnmountableDevInfos_t infos;
+
+			LIBMTP_raw_device_t *rawDevices;
+			int numRawDevices = 0;
+			LIBMTP_Detect_Raw_Devices (&rawDevices, &numRawDevices);
+			for (int i = 0; i < numRawDevices; ++i)
+			{
+				auto device = LIBMTP_Open_Raw_Device (&rawDevices [i]);
+				if (!device)
+					continue;
+
+				const auto& devName = QString::fromUtf8 (rawDevices [i].device_entry.vendor) + " " +
+						QString::fromUtf8 (rawDevices [i].device_entry.product) + " " +
+						LIBMTP_Get_Friendlyname (device);
+				const UnmountableDevInfo info
+				{
+					LIBMTP_Get_Serialnumber (device),
+					LIBMTP_Get_Manufacturername (device),
+					devName.simplified ().trimmed (),
+					GetPartitions (device),
+					GetSupportedFormats (device)
+				};
+				infos << info;
+
+				LIBMTP_Release_Device (device);
+			}
+			free (rawDevices);
+			qDebug () << "done";
+
+			return infos;
+		}
+	}
+
 	void Plugin::pollDevices ()
 	{
-		UnmountableDevInfos_t infos;
+		auto watcher = new QFutureWatcher<UnmountableDevInfos_t> ();
+		connect (watcher,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handlePollFinished ()));
+		auto future = QtConcurrent::run (EnumerateWorker);
+		watcher->setFuture (future);
+	}
 
-		LIBMTP_raw_device_t *rawDevices;
-		int numRawDevices = 0;
-		LIBMTP_Detect_Raw_Devices (&rawDevices, &numRawDevices);
-		for (int i = 0; i < numRawDevices; ++i)
-		{
-			auto device = LIBMTP_Open_Raw_Device (&rawDevices [i]);
-			if (!device)
-				continue;
-
-			const auto& devName = QString::fromUtf8 (rawDevices [i].device_entry.vendor) + " " +
-					QString::fromUtf8 (rawDevices [i].device_entry.product) + " " +
-					LIBMTP_Get_Friendlyname (device);
-			const UnmountableDevInfo info
-			{
-				LIBMTP_Get_Serialnumber (device),
-				LIBMTP_Get_Manufacturername (device),
-				devName.simplified ().trimmed (),
-				GetPartitions (device),
-				GetSupportedFormats (device)
-			};
-			infos << info;
-
-			LIBMTP_Release_Device (device);
-		}
-		free (rawDevices);
-
+	void Plugin::handlePollFinished ()
+	{
 		QTimer::singleShot (30000,
 				this,
 				SLOT (pollDevices ()));
+
+		auto watcher = dynamic_cast<QFutureWatcher<UnmountableDevInfos_t>*> (sender ());
+
+		const auto& infos = watcher->result ();
 
 		if (infos == Infos_)
 			return;

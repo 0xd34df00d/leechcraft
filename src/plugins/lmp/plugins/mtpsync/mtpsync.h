@@ -84,6 +84,7 @@ namespace MTPSync
 		LIBMTP_album_t* GetAlbum (LIBMTP_mtpdevice_t*, const UnmountableFileInfo&, uint32_t);
 	private slots:
 		void pollDevices ();
+		void handlePollFinished ();
 	signals:
 		void availableDevicesChanged ();
 		void uploadFinished (const QString&, QFile::FileError, const QString&);
