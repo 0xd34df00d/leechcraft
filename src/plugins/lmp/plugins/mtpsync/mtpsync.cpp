@@ -228,6 +228,7 @@ namespace MTPSync
 		track->artist = getStr (info.Artist_);
 		track->tracknumber = info.TrackNumber_;
 		track->filetype = GetFileType (info.FileFormat_);
+		track->filesize = QFileInfo (localPath).size ();
 
 		const auto res = LIBMTP_Send_Track_From_File (device,
 				localPath.toUtf8 ().constData (), track,
