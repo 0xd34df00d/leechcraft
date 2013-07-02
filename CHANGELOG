@@ -1,8 +1,38 @@
 This file lists only more or less major changes, refer to `git log` for
 the rest.
 
-Links to the corresponding development digests are also given for the
-relevant blocks of changes, so one could easily lookup
+!!! 0.5.98
+* Core: first show unassociated dock widgets.
+* Core: fixed some segfaults on tab closes.
+* Core: fixed notifications about current tab changes.
+* Core: fixed reusing IDs for jobs.
+* AN: moved "Update" button to a saner place.
+* AN: check if current rule is modified & suggest saving.
+* AN: fixed overlay text drawing on notification icons.
+* Aggregator: always save provider for delegated jobs.
+* Aggregator: download the rest of the feeds after killing a stall.
+* Azoth: fixed several rare segfaults.
+* Azoth: don't send "Paused" typing state after sending a message.
+* Azoth: take user-entered groups into account in RIEX.
+* Azoth: show JIDs in all users list.
+* Azoth: show contact JID in chat tab entry info line.
+* Azoth: activate first item in users list by default.
+* Azoth: don't try sending contact ID to another on DnD.
+* Azoth: change tab name after entry renaming.
+* Azoth MetaContacts: don't suggest unifying with MUC entries.
+* Azoth Xoox: properly handle server errors on form fetching.
+* Azoth Xoox: fetch versions for variant-less items as well.
+* Kinotify: fixed leaking state machine on each notification.
+* LMP: fixed broken synchronization symbol fixing.
+* LMP: temporary files are always removed after sync.
+* LMP: metadata is now mapped properly from the source.
+* Monocle: only render those pages that are actually visible.
+* Monocle: don't set negative scales.
+* Monocle: immediate scrolling to current page on load.
+* Monocle: menu is shown only if mouse moved with a button pressed.
+* Monocle Seen: safeguard against rendering a bunch of small images.
+* TSM: fixed occasional segfaults on tab closes.
+* Vrooby: proper partition naming in UDisks2 backend.
 
 !!! 0.5.97
 * Core: fixed colors for QML buttons (mucn neater now).
