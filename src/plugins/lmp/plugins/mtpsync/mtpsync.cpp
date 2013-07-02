@@ -41,9 +41,18 @@ namespace LMP
 {
 namespace MTPSync
 {
+	const int CacheLifetime = 120 * 1000;
+
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		LIBMTP_Init ();
+
+		CacheEvictTimer_ = new QTimer (this);
+		connect (CacheEvictTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (clearCaches ()));
+		CacheEvictTimer_->setInterval (CacheLifetime);
 
 		QTimer::singleShot (5000,
 				this,
@@ -160,6 +169,10 @@ namespace MTPSync
 		auto& entry = DevicesCache_ [devId];
 		UploadTo (entry.Device_.get (), storageId, localPath, origPath);
 		entry.LastAccess_ = QDateTime::currentDateTime ();
+
+		if (CacheEvictTimer_->isActive ())
+			CacheEvictTimer_->stop ();
+		CacheEvictTimer_->start ();
 	}
 
 	void Plugin::HandleTransfer (const QString& path, quint64 sent, quint64 total)
@@ -429,6 +442,21 @@ namespace MTPSync
 
 		Infos_ = infos;
 		emit availableDevicesChanged ();
+	}
+
+	void Plugin::clearCaches ()
+	{
+		const auto& now = QDateTime::currentDateTime ();
+		for (auto i = DevicesCache_.begin (); i != DevicesCache_.end (); )
+		{
+			if (i->LastAccess_.secsTo (now) > CacheLifetime)
+				i = DevicesCache_.erase (i);
+			else
+				++i;
+		}
+
+		if (DevicesCache_.isEmpty ())
+			CacheEvictTimer_->stop ();
 	}
 }
 }

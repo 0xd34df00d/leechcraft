@@ -38,6 +38,8 @@
 #include <interfaces/lmp/ilmpplugin.h>
 #include <interfaces/lmp/iunmountablesync.h>
 
+class QTimer;
+
 namespace LeechCraft
 {
 namespace LMP
@@ -67,6 +69,8 @@ namespace MTPSync
 			QDateTime LastAccess_;
 		};
 		QHash<QByteArray, DeviceCacheEntry> DevicesCache_;
+
+		QTimer *CacheEvictTimer_;
 
 		struct UploadQueueItem
 		{
@@ -104,6 +108,7 @@ namespace MTPSync
 	private slots:
 		void pollDevices ();
 		void handlePollFinished ();
+		void clearCaches ();
 	signals:
 		void availableDevicesChanged ();
 		void uploadFinished (const QString&, QFile::FileError, const QString&);
