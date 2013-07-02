@@ -225,10 +225,9 @@ namespace MTPSync
 		const auto id = storage->id;
 		const auto& info = OrigInfos_.take (origPath);
 
-		qDebug () << "uploading" << localPath << QFileInfo (localPath).size () << "to" << storage->id;
+		qDebug () << "uploading" << localPath << "of type" << GetFileType (info.FileFormat_) << "to" << storage->id;
 
 		auto track = LIBMTP_new_track_t ();
-		//track->parent_id = album ? album->album_id : 0;
 		track->storage_id = id;
 
 		auto getStr = [] (const QString& str) { return strdup (str.toUtf8 ().constData ()); };
