@@ -270,6 +270,9 @@ namespace MTPSync
 			LIBMTP_Dump_Errorstack (device);
 			LIBMTP_Clear_Errorstack (device);
 		}
+
+		AppendAlbum (device, track, info);
+
 		LIBMTP_destroy_track_t (track);
 	}
 
@@ -283,30 +286,78 @@ namespace MTPSync
 		}
 	}
 
-	LIBMTP_album_t* Plugin::GetAlbum (LIBMTP_mtpdevice_t *device, const UnmountableFileInfo& info, uint32_t storageId)
+	void Plugin::AppendAlbum (LIBMTP_mtpdevice_t *device, LIBMTP_track_t *track, const UnmountableFileInfo& info)
 	{
-		auto album = LIBMTP_new_album_t ();
+		auto albuminfo = LIBMTP_new_album_t ();
+		albuminfo->artist = strdup (info.Artist_.toUtf8 ().constData ());
+		albuminfo->name = strdup (info.Album_.toUtf8 ().constData ());
+		albuminfo->genre = strdup (info.Genres_.join ("; ").toUtf8 ().constData ());
 
-		album->artist = strdup (info.Artist_.toUtf8 ().constData ());
-		album->name = strdup (info.Album_.toUtf8 ().constData ());
-		album->genre = strdup (info.Genres_.join ("; ").toUtf8 ().constData ());
+		auto album = LIBMTP_Get_Album_List (device);
+		auto albumOrig = album;
 
-		album->album_id = 0;
-		album->next = 0;
-		album->no_tracks = 0;
-		album->parent_id = 0;
-		album->storage_id = storageId;
-		album->tracks = 0;
+		decltype (album) foundAlbum = nullptr;
 
-		if (!LIBMTP_Create_New_Album (device, album))
-			return album;
+		while (album)
+		{
+			if (album->name &&
+					(album->artist || album->composer) &&
+					QString::fromUtf8 (album->name) == info.Album_ &&
+					(QString::fromUtf8 (album->artist) == info.Artist_ ||
+					 QString::fromUtf8 (album->composer) == info.Artist_))
+			{
+				foundAlbum = album;
+				album = album->next;
+				foundAlbum->next = nullptr;
+			}
+			else
+				album = album->next;
+		}
 
-		qWarning () << Q_FUNC_INFO << "unable to create album";
-		LIBMTP_Dump_Errorstack (device);
-		LIBMTP_Clear_Errorstack (device);
+		if (foundAlbum)
+		{
+			auto tracks = static_cast<uint32_t*> (malloc ((foundAlbum->no_tracks + 1) * sizeof (uint32_t)));
 
-		LIBMTP_destroy_album_t (album);
-		return 0;
+			++foundAlbum->no_tracks;
+
+			if (foundAlbum->tracks)
+			{
+				memcpy (tracks, foundAlbum->tracks, foundAlbum->no_tracks * sizeof (uint32_t));
+				free (foundAlbum->tracks);
+			}
+
+			tracks [foundAlbum->no_tracks - 1] = track->item_id;
+			foundAlbum->tracks = tracks;
+
+			if (LIBMTP_Update_Album (device, foundAlbum))
+			{
+				LIBMTP_Dump_Errorstack (device);
+				LIBMTP_Clear_Errorstack (device);
+			}
+		}
+		else
+		{
+			auto trackId = static_cast<uint32_t*> (malloc (sizeof (uint32_t)));
+			*trackId = track->item_id;
+			albuminfo->tracks = trackId;
+			albuminfo->no_tracks = 1;
+			albuminfo->storage_id = track->storage_id;
+
+			if (LIBMTP_Create_New_Album (device, albuminfo))
+			{
+				LIBMTP_Dump_Errorstack (device);
+				LIBMTP_Clear_Errorstack (device);
+			}
+		}
+
+		while (albumOrig)
+		{
+			auto tmp = albumOrig;
+			albumOrig = albumOrig->next;
+			LIBMTP_destroy_album_t (tmp);
+		}
+
+		LIBMTP_destroy_album_t (albuminfo);
 	}
 
 	namespace

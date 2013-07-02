@@ -104,7 +104,7 @@ namespace MTPSync
 		void HandleTransfer (const QString&, quint64, quint64);
 	private:
 		void UploadTo (LIBMTP_mtpdevice_t*, const QByteArray&, const QString&, const QString&);
-		LIBMTP_album_t* GetAlbum (LIBMTP_mtpdevice_t*, const UnmountableFileInfo&, uint32_t);
+		void AppendAlbum (LIBMTP_mtpdevice_t*, LIBMTP_track_t*, const UnmountableFileInfo&);
 	private slots:
 		void pollDevices ();
 		void handlePollFinished ();
