@@ -121,6 +121,9 @@ namespace Fenet
 
 	void Plugin::KillWM ()
 	{
+		if (!Process_)
+			return;
+
 		Process_->terminate ();
 		if (Process_->state () != QProcess::NotRunning && !Process_->waitForFinished (3000))
 			Process_->kill ();
