@@ -34,6 +34,7 @@
 #include <QFileInfo>
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
+#include <QBuffer>
 
 namespace LeechCraft
 {
@@ -191,7 +192,6 @@ namespace MTPSync
 
 		int TransferCallback (uint64_t sent, uint64_t total, const void *rawData)
 		{
-			qDebug () << sent << total;
 			auto data = static_cast<const CallbackData*> (rawData);
 
 			data->Plugin_->HandleTransfer (data->LocalPath_, sent, total);
@@ -284,6 +284,36 @@ namespace MTPSync
 					info.Album_ == album->name &&
 					info.Genres_.join ("; ") == album->genre;
 		}
+
+		void SetAlbumArt (LIBMTP_mtpdevice_t *device, LIBMTP_album_t *album, const QString& path)
+		{
+			if (path.isEmpty ())
+				return;
+
+			QImage image (path);
+			if (image.isNull ())
+				return;
+
+			QBuffer buffer;
+			buffer.open (QIODevice::WriteOnly);
+			image.save (&buffer, "JPG", 90);
+
+			auto albumArt = LIBMTP_new_filesampledata_t ();
+			albumArt->data = static_cast<char*> (malloc (buffer.buffer ().size ()));
+			memcpy (albumArt->data, buffer.buffer ().constData (), buffer.buffer ().size ());
+			albumArt->size = buffer.buffer ().size ();
+			albumArt->filetype = LIBMTP_FILETYPE_JPEG;
+			albumArt->width = image.width ();
+			albumArt->height = image.height ();
+
+			if (LIBMTP_Send_Representative_Sample (device, album->album_id, albumArt))
+			{
+				LIBMTP_Dump_Errorstack (device);
+				LIBMTP_Clear_Errorstack (device);
+			}
+
+			LIBMTP_destroy_filesampledata_t (albumArt);
+		}
 	}
 
 	void Plugin::AppendAlbum (LIBMTP_mtpdevice_t *device, LIBMTP_track_t *track, const UnmountableFileInfo& info)
@@ -296,7 +326,7 @@ namespace MTPSync
 		auto album = LIBMTP_Get_Album_List (device);
 		auto albumOrig = album;
 
-		decltype (album) foundAlbum = nullptr;
+		decltype (album) foundAlbum = nullptr, resultingAlgum = nullptr;
 
 		while (album)
 		{
@@ -334,6 +364,8 @@ namespace MTPSync
 				LIBMTP_Dump_Errorstack (device);
 				LIBMTP_Clear_Errorstack (device);
 			}
+
+			resultingAlgum = foundAlbum;
 		}
 		else
 		{
@@ -348,7 +380,11 @@ namespace MTPSync
 				LIBMTP_Dump_Errorstack (device);
 				LIBMTP_Clear_Errorstack (device);
 			}
+
+			resultingAlgum = albuminfo;
 		}
+
+		SetAlbumArt (device, resultingAlgum, info.AlbumArtPath_);
 
 		while (albumOrig)
 		{
@@ -418,10 +454,7 @@ namespace MTPSync
 
 			return result;
 		}
-	}
 
-	namespace
-	{
 		UnmountableDevInfos_t EnumerateWorker ()
 		{
 			qDebug () << Q_FUNC_INFO;
