@@ -112,6 +112,12 @@ namespace MTPSync
 
 	void Plugin::Upload (const QString& localPath, const QString& origPath, const QByteArray& devId, const QByteArray& storageId)
 	{
+		if (IsPolling_)
+		{
+			UploadQueue_.append ({ localPath, origPath, devId, storageId });
+			return;
+		}
+
 		qDebug () << Q_FUNC_INFO << localPath << devId;
 		if (!DevicesCache_.contains (devId))
 		{
@@ -397,10 +403,19 @@ namespace MTPSync
 				SLOT (handlePollFinished ()));
 		auto future = QtConcurrent::run (EnumerateWorker);
 		watcher->setFuture (future);
+
+		IsPolling_ = true;
 	}
 
 	void Plugin::handlePollFinished ()
 	{
+		IsPolling_ = false;
+		while (!UploadQueue_.isEmpty ())
+		{
+			const auto& item = UploadQueue_.takeFirst ();
+			Upload (item.LocalPath_, item.OrigLocalPath_, item.To_, item.StorageID_);
+		}
+
 		QTimer::singleShot (30000,
 				this,
 				SLOT (pollDevices ()));

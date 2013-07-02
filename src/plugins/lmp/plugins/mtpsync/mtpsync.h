@@ -67,6 +67,17 @@ namespace MTPSync
 			QDateTime LastAccess_;
 		};
 		QHash<QByteArray, DeviceCacheEntry> DevicesCache_;
+
+		struct UploadQueueItem
+		{
+			QString LocalPath_;
+			QString OrigLocalPath_;
+			QByteArray To_;
+			QByteArray StorageID_;
+		};
+		QList<UploadQueueItem> UploadQueue_;
+
+		bool IsPolling_ = false;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
