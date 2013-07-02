@@ -113,37 +113,47 @@ namespace MTPSync
 	void Plugin::Upload (const QString& localPath, const QString& origPath, const QByteArray& devId, const QByteArray& storageId)
 	{
 		qDebug () << Q_FUNC_INFO << localPath << devId;
-		bool found = false;
-
-		LIBMTP_raw_device_t *rawDevices;
-		int numRawDevices = 0;
-		LIBMTP_Detect_Raw_Devices (&rawDevices, &numRawDevices);
-		for (int i = 0; i < numRawDevices; ++i)
+		if (!DevicesCache_.contains (devId))
 		{
-			std::shared_ptr<LIBMTP_mtpdevice_t> device (LIBMTP_Open_Raw_Device (&rawDevices [i]), LIBMTP_Release_Device);
-			if (!device)
-				continue;
+			qDebug () << "device not in cache, opening...";
 
-			const auto& serial = LIBMTP_Get_Serialnumber (device.get ());
-			qDebug () << "matching against" << serial;
-			if (serial == devId)
+			bool found = false;
+
+			LIBMTP_raw_device_t *rawDevices;
+			int numRawDevices = 0;
+			LIBMTP_Detect_Raw_Devices (&rawDevices, &numRawDevices);
+			for (int i = 0; i < numRawDevices; ++i)
 			{
-				UploadTo (device.get (), storageId, localPath, origPath);
-				found = true;
-				break;
+				std::shared_ptr<LIBMTP_mtpdevice_t> device (LIBMTP_Open_Raw_Device (&rawDevices [i]), LIBMTP_Release_Device);
+				if (!device)
+					continue;
+
+				const auto& serial = LIBMTP_Get_Serialnumber (device.get ());
+				qDebug () << "matching against" << serial;
+				if (serial == devId)
+				{
+					DevicesCache_ [devId] = DeviceCacheEntry { std::move (device), {} };
+					found = true;
+					break;
+				}
+			}
+			free (rawDevices);
+
+			if (!found)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to find device"
+						<< devId;
+				emit uploadFinished (localPath,
+						QFile::ResourceError,
+						tr ("Unable to find the requested device."));
+				return;
 			}
 		}
-		free (rawDevices);
 
-		if (!found)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to find device"
-					<< devId;
-			emit uploadFinished (localPath,
-					QFile::ResourceError,
-					tr ("Unable to find the requested device."));
-		}
+		auto& entry = DevicesCache_ [devId];
+		UploadTo (entry.Device_.get (), storageId, localPath, origPath);
+		entry.LastAccess_ = QDateTime::currentDateTime ();
 	}
 
 	void Plugin::HandleTransfer (const QString& path, quint64 sent, quint64 total)

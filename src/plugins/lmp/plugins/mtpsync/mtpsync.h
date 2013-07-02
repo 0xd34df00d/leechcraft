@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QHash>
+#include <QDateTime>
 #include <libmtp.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
@@ -59,6 +60,13 @@ namespace MTPSync
 		UnmountableDevInfos_t Infos_;
 
 		QHash<QString, UnmountableFileInfo> OrigInfos_;
+
+		struct DeviceCacheEntry
+		{
+			std::shared_ptr<LIBMTP_mtpdevice_t> Device_;
+			QDateTime LastAccess_;
+		};
+		QHash<QByteArray, DeviceCacheEntry> DevicesCache_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
