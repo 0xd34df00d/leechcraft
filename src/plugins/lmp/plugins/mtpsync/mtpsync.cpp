@@ -241,6 +241,7 @@ namespace MTPSync
 		track->tracknumber = info.TrackNumber_;
 		track->filetype = GetFileType (info.FileFormat_);
 		track->filesize = QFileInfo (localPath).size ();
+		track->date = getStr (QString::number (info.AlbumYear_) + "0101T0000.0");
 
 		const auto res = LIBMTP_Send_Track_From_File (device,
 				localPath.toUtf8 ().constData (), track,
