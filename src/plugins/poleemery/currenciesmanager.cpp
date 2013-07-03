@@ -60,6 +60,8 @@ namespace Poleemery
 			Enabled_ << "USD" << UserCurrency_;
 		Enabled_.sort ();
 
+		RatesFromUSD_ ["USD"] = 1;
+
 		struct CurInfo
 		{
 			QString Code_;
