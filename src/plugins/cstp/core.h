@@ -30,7 +30,7 @@
 #ifndef PLUGINS_CSTP_CORE_H
 #define PLUGINS_CSTP_CORE_H
 #include <vector>
-#include <boost/intrusive_ptr.hpp>
+#include <memory>
 #include <QAbstractItemModel>
 #include <QStringList>
 #include <QNetworkProxy>
@@ -54,15 +54,9 @@ namespace logic
 
 namespace LeechCraft
 {
-namespace Util
-{
-	class HistoryModel;
-}
 namespace CSTP
 {
 	class Task;
-	class HistoryModel;
-	class MorphFile;
 
 	class Core : public QAbstractItemModel
 	{
@@ -71,8 +65,8 @@ namespace CSTP
 
 		struct TaskDescr
 		{
-			boost::intrusive_ptr<Task> Task_;
-			boost::intrusive_ptr<MorphFile> File_;
+			std::shared_ptr<Task> Task_;
+			std::shared_ptr<QFile> File_;
 			QString Comment_;
 			bool ErrorFlag_;
 			LeechCraft::TaskParameters Parameters_;
@@ -100,7 +94,6 @@ namespace CSTP
 			, HDownloading
 		};
 
-		virtual ~Core ();
 		static Core& Instance ();
 		void Release ();
 		void SetCoreProxy (ICoreProxy_ptr);

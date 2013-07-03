@@ -38,7 +38,6 @@
 #include <QNetworkReply>
 #include <QStringList>
 #include <interfaces/structures.h>
-#include "morphfile.h"
 
 class QAuthenticator;
 class QNetworkProxy;
@@ -59,15 +58,15 @@ namespace CSTP
 		qint64 Done_, Total_, FileSizeAtStart_;
 		double Speed_;
 		QList<QByteArray> RedirectHistory_;
-		boost::intrusive_ptr<MorphFile> To_;
-		int Counter_;
+		std::shared_ptr<QFile> To_;
 		int UpdateCounter_;
 		QTimer *Timer_;
 		bool CanChangeName_;
 	public:
 		explicit Task (const QUrl& = QUrl ());
 		explicit Task (QNetworkReply*);
-		void Start (const boost::intrusive_ptr<MorphFile>&);
+
+		void Start (const std::shared_ptr<QFile>&);
 		void Stop ();
 		void ForbidNameChanges ();
 
@@ -82,9 +81,6 @@ namespace CSTP
 		int GetTimeFromStart () const;
 		bool IsRunning () const;
 		QString GetErrorString () const;
-
-		void AddRef ();
-		void Release ();
 	private:
 		void Reset ();
 		void RecalculateSpeed ();
@@ -105,9 +101,6 @@ namespace CSTP
 		void updateInterface ();
 		void done (bool);
 	};
-
-	void intrusive_ptr_add_ref (Task*);
-	void intrusive_ptr_release (Task*);
 }
 }
 

@@ -49,7 +49,6 @@
 #include <util/xpc/util.h>
 #include "task.h"
 #include "xmlsettingsmanager.h"
-#include "morphfile.h"
 #include "addtask.h"
 
 extern "C"
@@ -74,7 +73,7 @@ namespace CSTP
 	, Toolbar_ (0)
 	{
 		setObjectName ("CSTP Core");
-		qRegisterMetaType<boost::intrusive_ptr<MorphFile>> ("boost::intrusive_ptr<MorphFile>");
+		qRegisterMetaType<std::shared_ptr<QFile>> ("std::shared_ptr<QFile>");
 		qRegisterMetaType<QNetworkReply*> ("QNetworkReply*");
 
 		Headers_ << tr ("URL")
@@ -82,10 +81,6 @@ namespace CSTP
 			<< tr ("Progress");
 
 		ReadSettings ();
-	}
-
-	Core::~Core ()
-	{
 	}
 
 	Core& Core::Instance ()
@@ -272,8 +267,7 @@ namespace CSTP
 			LeechCraft::TaskParameters tp)
 	{
 		QDir dir (path);
-		td.File_.reset (new MorphFile (QDir::cleanPath (dir
-						.filePath (filename))));
+		td.File_.reset (new QFile (QDir::cleanPath (dir.filePath (filename))));
 		td.Comment_ = comment;
 		td.ErrorFlag_ = false;
 		td.Parameters_ = tp;
@@ -401,7 +395,7 @@ namespace CSTP
 		if (role == Qt::DisplayRole)
 		{
 			TaskDescr td = TaskAt (index.row ());
-			boost::intrusive_ptr<Task> task = td.Task_;
+			const auto& task = td.Task_;
 			switch (index.column ())
 			{
 				case HURL:
@@ -742,7 +736,7 @@ namespace CSTP
 					SLOT (updateInterface ()));
 
 			QString filename = settings.value ("Filename").toString ();
-			td.File_.reset (new MorphFile (filename));
+			td.File_.reset (new QFile (filename));
 
 			td.Comment_ = settings.value ("Comment").toString ();
 			td.ErrorFlag_ = settings.value ("ErrorFlag").toBool ();
