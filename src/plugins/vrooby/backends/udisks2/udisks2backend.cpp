@@ -98,6 +98,11 @@ namespace UDisks2
 		timer->start (10000);
 	}
 
+	bool Backend::SupportsDevType (DeviceType type) const
+	{
+		return type == DeviceType::MassStorage;
+	}
+
 	QAbstractItemModel* Backend::GetDevicesModel () const
 	{
 		return DevicesModel_;

@@ -62,6 +62,7 @@ namespace Vrooby
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 
+		bool SupportsDevType (DeviceType) const;
 		QAbstractItemModel* GetDevicesModel () const;
 		void MountDevice (const QString&);
 

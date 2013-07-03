@@ -66,6 +66,7 @@ namespace UDisks2
 		bool IsAvailable ();
 		void Start ();
 
+		bool SupportsDevType (DeviceType) const;
 		QAbstractItemModel* GetDevicesModel () const;
 		void MountDevice (const QString&);
 	private:

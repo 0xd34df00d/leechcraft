@@ -41,6 +41,8 @@ class Q_DECL_EXPORT IRemovableDevManager
 public:
 	virtual ~IRemovableDevManager () {}
 
+	virtual bool SupportsDevType (LeechCraft::DeviceType) const = 0;
+
 	virtual QAbstractItemModel* GetDevicesModel () const = 0;
 
 	virtual void MountDevice (const QString& id) = 0;
