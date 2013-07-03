@@ -145,6 +145,15 @@ namespace Poleemery
 		if (from == to)
 			return value;
 
+		if (!RatesFromUSD_.contains (to))
+			qWarning () << Q_FUNC_INFO
+					<< "unknown target currency"
+					<< to;
+		if (!RatesFromUSD_.contains (from))
+			qWarning () << Q_FUNC_INFO
+					<< "unknown source currency"
+					<< from;
+
 		return value * RatesFromUSD_.value (to, 1) / RatesFromUSD_.value (from, 1);
 	}
 
