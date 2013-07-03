@@ -30,15 +30,10 @@
 #pragma once
 
 #include <Qt>
+#include "devicetypes.h"
 
 namespace LeechCraft
 {
-	enum DeviceType
-	{
-		USBDevice,
-		MassStorage
-	};
-
 	enum PartitionType
 	{
 		NonPartition = -1,

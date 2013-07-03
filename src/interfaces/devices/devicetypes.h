@@ -29,21 +29,11 @@
 
 #pragma once
 
-#include <QList>
-#include <QString>
-#include <QtPlugin>
-#include "devicetypes.h"
-
-class QAbstractItemModel;
-
-class Q_DECL_EXPORT IRemovableDevManager
+namespace LeechCraft
 {
-public:
-	virtual ~IRemovableDevManager () {}
-
-	virtual QAbstractItemModel* GetDevicesModel () const = 0;
-
-	virtual void MountDevice (const QString& id) = 0;
-};
-
-Q_DECLARE_INTERFACE (IRemovableDevManager, "org.Deviant.LeechCraft.IRemovableDevManager/1.0");
+	enum DeviceType
+	{
+		USBDevice,
+		MassStorage
+	};
+}
