@@ -167,13 +167,24 @@ namespace NetStoreManager
 				}
 			}
 
-			map [accItem->data (SyncItemDelegate::AccountId).toString ()] =
-					QVariant::fromValue<SyncDirs_t> (qMakePair (localDirItem->text (),
+			map [accId] = QVariant::fromValue<SyncDirs_t> (qMakePair (localDirItem->text (),
 							remoteDirItem->text ()));
 		}
 
 		if (oldMap == map)
 			return;
+
+		if (oldMap.count () == map.count ())
+		{
+			bool found = false;
+			for (auto i1 = oldMap.begin (), i2 = map.begin (), e1 = oldMap.end (); i1 != e1; ++i1, ++i2)
+				if (i1.key () != i2.key () ||
+							i1.value ().value<SyncDirs_t> () != i2.value ().value<SyncDirs_t> ())
+					found = true;
+
+			if (!found)
+				return;
+		}
 
 		emit directoriesToSyncUpdated (map);
 		XmlSettingsManager::Instance ().setProperty ("Synchronization", map);
