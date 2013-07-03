@@ -59,8 +59,11 @@ namespace LeechCraft
 	enum USBDeviceRole
 	{
 		ID = CommonDevRole::CommonDevRoleMax + 1,
-		Bus,
+		Busnum,
 		Devnum,
+		Vendor,
+		Model,
+		SysFile,
 
 		USBDeviceRoleMax
 	};
