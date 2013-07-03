@@ -141,6 +141,9 @@ namespace LMP
 		const auto& mgrs = pm->GetAllCastableTo<IRemovableDevManager*> ();
 		for (const auto& mgr : mgrs)
 		{
+			if (!mgr->SupportsDevType (DeviceType::MassStorage))
+				continue;
+
 			auto flattener = new MountableFlattener (this);
 			flattener->SetSource (mgr->GetDevicesModel ());
 			Merger_->AddModel (flattener);
