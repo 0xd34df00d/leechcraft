@@ -350,7 +350,7 @@ namespace CSTP
 
 		const QString& scheme = url.scheme ();
 		if (scheme == "file")
-			return !(e.Parameters_ & FromUserInitiated) ?
+			return (!(e.Parameters_ & FromUserInitiated) && !(e.Parameters_ & IsDownloaded)) ?
 					EntityTestHandleResult (EntityTestHandleResult::PHigh) :
 					EntityTestHandleResult ();
 		else
