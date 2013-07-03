@@ -30,7 +30,7 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/iremovabledevmanager.h>
+#include <interfaces/devices/iremovabledevmanager.h>
 
 namespace LeechCraft
 {

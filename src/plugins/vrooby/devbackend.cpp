@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "devbackend.h"
-#include <interfaces/iremovabledevmanager.h>
 
 namespace LeechCraft
 {

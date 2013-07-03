@@ -30,7 +30,7 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/iremovabledevmanager.h>
+#include <interfaces/devices/deviceroles.h>
 
 class QAbstractItemModel;
 class QStandardItemModel;

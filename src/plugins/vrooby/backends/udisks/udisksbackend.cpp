@@ -38,6 +38,7 @@
 #include <QTimer>
 #include <QtDebug>
 #include <util/util.h>
+#include <interfaces/devices/deviceroles.h>
 
 typedef std::shared_ptr<QDBusInterface> QDBusInterface_ptr;
 

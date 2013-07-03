@@ -32,7 +32,7 @@
 #include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
-#include <interfaces/iremovabledevmanager.h>
+#include <interfaces/devices/iremovabledevmanager.h>
 #include <interfaces/iactionsexporter.h>
 
 namespace LeechCraft

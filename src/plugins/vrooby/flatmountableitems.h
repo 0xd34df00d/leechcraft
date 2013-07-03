@@ -32,7 +32,7 @@
 #include <QObject>
 #include <QAbstractItemModel>
 #include <util/models/flattenfiltermodel.h>
-#include <interfaces/iremovabledevmanager.h>
+#include <interfaces/devices/deviceroles.h>
 
 class QStandardItemModel;
 class QStandardItem;

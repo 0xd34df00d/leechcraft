@@ -30,7 +30,7 @@
 #include "flatmountableitems.h"
 #include <QStandardItemModel>
 #include <QtDebug>
-#include <interfaces/iremovabledevmanager.h>
+#include <interfaces/devices/deviceroles.h>
 #include <util/util.h>
 
 namespace LeechCraft

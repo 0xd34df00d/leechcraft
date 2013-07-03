@@ -35,7 +35,7 @@
 #include <util/models/flattenfiltermodel.h>
 #include <util/models/mergemodel.h>
 #include <util/util.h>
-#include <interfaces/iremovabledevmanager.h>
+#include <interfaces/devices/iremovabledevmanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/lmp/isyncplugin.h>
 #include <interfaces/lmp/iunmountablesync.h>

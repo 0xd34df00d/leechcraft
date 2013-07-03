@@ -32,7 +32,6 @@
 #include <QList>
 #include <QString>
 #include <QtPlugin>
-#include "devices/deviceroles.h"
 
 class QAbstractItemModel;
 
