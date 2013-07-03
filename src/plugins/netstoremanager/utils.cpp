@@ -56,7 +56,7 @@ namespace Utils
 
 		if (dir.exists (dirPath))
 		{
-			for (const auto& info : dir.entryInfoList (QDir::NoDotAndDotDot))
+			for (const auto& info : dir.entryInfoList (QDir::NoDotAndDotDot | QDir::AllEntries))
 			{
 				if (info.isDir ())
 					result = RemoveDirectoryContent (info.absoluteFilePath ());
@@ -70,7 +70,7 @@ namespace Utils
 			result = dir.rmdir (dirPath);
 		}
 
-		
+
 
 		return result;
 	}

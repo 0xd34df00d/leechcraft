@@ -124,7 +124,7 @@ namespace NetStoreManager
 					oldMap [accId].value<SyncDirs_t> ().first != localDirItem->text ())
 			{
 				QDir dir (localDirItem->text ());
-				if (dir.entryList (QDir::NoDotAndDotDot).count ())
+				if (dir.entryList (QDir::NoDotAndDotDot | QDir::AllEntries).count ())
 				{
 					auto res = QMessageBox::warning (this, "LeechCraft",
 							tr ("Local synchronization directory should be empty."
@@ -140,7 +140,7 @@ namespace NetStoreManager
 						bool result = false;
 						if (dir.exists (localDirItem->text ()))
 						{
-							for (const auto& info : dir.entryInfoList (QDir::NoDotAndDotDot))
+							for (const auto& info : dir.entryInfoList (QDir::NoDotAndDotDot | QDir::AllEntries))
 							{
 								if (info.isDir ())
 									result = Utils::RemoveDirectoryContent (info.absoluteFilePath ());
@@ -175,9 +175,8 @@ namespace NetStoreManager
 		if (oldMap == map)
 			return;
 
-		qDebug () << map;/*
 		emit directoriesToSyncUpdated (map);
-		XmlSettingsManager::Instance ().setProperty ("Synchronization", map);*/
+		XmlSettingsManager::Instance ().setProperty ("Synchronization", map);
 	}
 
 	void SyncWidget::on_Add__released ()
