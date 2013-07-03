@@ -36,11 +36,15 @@ namespace LeechCraft
 {
 namespace Devmon
 {
+	class UDevBackend;
+
 	class Plugin : public QObject
-					, public IInfo
+				 , public IInfo
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo)
+
+		UDevBackend *Backend_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

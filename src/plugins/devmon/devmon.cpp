@@ -29,6 +29,7 @@
 
 #include "devmon.h"
 #include <QIcon>
+#include "udevbackend.h"
 
 namespace LeechCraft
 {
@@ -36,6 +37,7 @@ namespace Devmon
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Backend_ = new UDevBackend (proxy);
 	}
 
 	void Plugin::SecondInit ()
@@ -49,6 +51,7 @@ namespace Devmon
 
 	void Plugin::Release ()
 	{
+		delete Backend_;
 	}
 
 	QString Plugin::GetName () const
