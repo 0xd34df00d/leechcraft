@@ -91,7 +91,7 @@ namespace LMP
 			{
 				auto item = new QStandardItem (device.Name_);
 				item->setData (QVariant::fromValue (mgrObj), Roles::ManagerObj);
-				item->setData (device.ID_, DeviceRoles::DevPersistentID);
+				item->setData (device.ID_, CommonDevRole::DevPersistentID);
 				item->setData (QVariant::fromValue (device), Roles::DeviceInfo);
 				DevListModel_->appendRow (item);
 			}

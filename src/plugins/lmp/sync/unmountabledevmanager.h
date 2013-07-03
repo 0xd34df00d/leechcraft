@@ -51,7 +51,7 @@ namespace LMP
 
 		enum Roles
 		{
-			DeviceInfo = DeviceRoles::DeviceRoleMax + 1,
+			DeviceInfo = CommonDevRole::CommonDevRoleMax + 1,
 			ManagerObj
 		};
 	public:

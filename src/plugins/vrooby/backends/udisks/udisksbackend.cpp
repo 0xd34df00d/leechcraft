@@ -251,25 +251,25 @@ namespace UDisks
 		if (!mountPaths.isEmpty ())
 		{
 			const auto& space = boost::filesystem::space (mountPaths.value (0).toStdWString ()).free;
-			item->setData (static_cast<qint64> (space), DeviceRoles::AvailableSize);
+			item->setData (static_cast<qint64> (space), MassStorageRole::AvailableSize);
 		}
 		else
-			item->setData (-1, DeviceRoles::AvailableSize);
+			item->setData (-1, MassStorageRole::AvailableSize);
 
 		item->setText (name);
-		item->setData (DeviceType::GenericDevice, DeviceRoles::DevType);
-		item->setData (iface->property ("DeviceFile").toString (), DeviceRoles::DevFile);
-		item->setData (iface->property ("PartitionType").toInt (), DeviceRoles::PartType);
-		item->setData (isRemovable, DeviceRoles::IsRemovable);
-		item->setData (isPartition, DeviceRoles::IsPartition);
-		item->setData (isPartition && hasRemovableParent, DeviceRoles::IsMountable);
-		item->setData (iface->property ("DeviceIsMounted").toBool (), DeviceRoles::IsMounted);
-		item->setData (iface->property ("DeviceIsMediaAvailable"), DeviceRoles::IsMediaAvailable);
-		item->setData (iface->path (), DeviceRoles::DevID);
-		item->setData (fullName, DeviceRoles::VisibleName);
-		item->setData (iface->property ("PartitionSize").toLongLong (), DeviceRoles::TotalSize);
+		item->setData (DeviceType::MassStorage, CommonDevRole::DevType);
+		item->setData (iface->property ("DeviceFile").toString (), MassStorageRole::DevFile);
+		item->setData (iface->property ("PartitionType").toInt (), MassStorageRole::PartType);
+		item->setData (isRemovable, MassStorageRole::IsRemovable);
+		item->setData (isPartition, MassStorageRole::IsPartition);
+		item->setData (isPartition && hasRemovableParent, MassStorageRole::IsMountable);
+		item->setData (iface->property ("DeviceIsMounted").toBool (), MassStorageRole::IsMounted);
+		item->setData (iface->property ("DeviceIsMediaAvailable"), MassStorageRole::IsMediaAvailable);
+		item->setData (iface->path (), CommonDevRole::DevID);
+		item->setData (fullName, MassStorageRole::VisibleName);
+		item->setData (iface->property ("PartitionSize").toLongLong (), MassStorageRole::TotalSize);
 		DevicesModel_->blockSignals (false);
-		item->setData (mountPaths, DeviceRoles::MountPoints);
+		item->setData (mountPaths, MassStorageRole::MountPoints);
 	}
 
 	void Backend::toggleMount (const QString& id)
@@ -405,14 +405,14 @@ namespace UDisks
 	{
 		for (QStandardItem *item : Object2Item_.values ())
 		{
-			const auto& mountPaths = item->data (DeviceRoles::MountPoints).toStringList ();
+			const auto& mountPaths = item->data (MassStorageRole::MountPoints).toStringList ();
 			if (mountPaths.isEmpty ())
 				continue;
 
 			const auto& space = boost::filesystem::space (mountPaths.value (0).toStdWString ());
 			const auto free = static_cast<qint64> (space.free);
-			if (free != item->data (DeviceRoles::AvailableSize).value<qint64> ())
-				item->setData (static_cast<qint64> (free), DeviceRoles::AvailableSize);
+			if (free != item->data (MassStorageRole::AvailableSize).value<qint64> ())
+				item->setData (static_cast<qint64> (free), MassStorageRole::AvailableSize);
 		}
 	}
 }

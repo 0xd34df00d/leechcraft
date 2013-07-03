@@ -41,15 +41,15 @@ namespace Vrooby
 	: Util::FlattenFilterModel (parent)
 	{
 		QHash<int, QByteArray> names;
-		names [DeviceRoles::VisibleName] = "devName";
-		names [DeviceRoles::DevFile] = "devFile";
-		names [DeviceRoles::IsRemovable] = "isRemovable";
-		names [DeviceRoles::IsPartition] = "isPartition";
-		names [DeviceRoles::IsMountable] = "isMountable";
-		names [DeviceRoles::DevID] = "devID";
-		names [DeviceRoles::DevPersistentID] = "devPersistentID";
-		names [DeviceRoles::AvailableSize] = "availableSize";
-		names [DeviceRoles::TotalSize] = "totalSize";
+		names [MassStorageRole::VisibleName] = "devName";
+		names [MassStorageRole::DevFile] = "devFile";
+		names [MassStorageRole::IsRemovable] = "isRemovable";
+		names [MassStorageRole::IsPartition] = "isPartition";
+		names [MassStorageRole::IsMountable] = "isMountable";
+		names [CommonDevRole::DevID] = "devID";
+		names [CommonDevRole::DevPersistentID] = "devPersistentID";
+		names [MassStorageRole::AvailableSize] = "availableSize";
+		names [MassStorageRole::TotalSize] = "totalSize";
 		names [CustomRoles::FormattedTotalSize] = "formattedTotalSize";
 		names [CustomRoles::FormattedFreeSpace] = "formattedFreeSpace";
 		names [CustomRoles::UsedPercentage] = "usedPercentage";
@@ -65,34 +65,34 @@ namespace Vrooby
 		{
 		case CustomRoles::FormattedTotalSize:
 		{
-			const auto size = index.data (DeviceRoles::TotalSize).toLongLong ();
+			const auto size = index.data (MassStorageRole::TotalSize).toLongLong ();
 			return tr ("total size: %1")
 				.arg (Util::MakePrettySize (size));
 		}
 		case CustomRoles::FormattedFreeSpace:
 		{
-			const auto size = index.data (DeviceRoles::AvailableSize).toLongLong ();
+			const auto size = index.data (MassStorageRole::AvailableSize).toLongLong ();
 			return tr ("available size: %1")
 				.arg (Util::MakePrettySize (size));
 		}
 		case CustomRoles::MountButtonIcon:
-			return index.data (DeviceRoles::IsMounted).toBool () ?
+			return index.data (MassStorageRole::IsMounted).toBool () ?
 					"image://ThemeIcons/emblem-unmounted" :
 					"image://ThemeIcons/emblem-mounted";
 		case CustomRoles::MountedAt:
 		{
-			const auto& mounts = index.data (DeviceRoles::MountPoints).toStringList ();
+			const auto& mounts = index.data (MassStorageRole::MountPoints).toStringList ();
 			return mounts.isEmpty () ?
 					"" :
 					tr ("Mounted at %1").arg (mounts.join ("; "));
 		}
 		case CustomRoles::UsedPercentage:
 		{
-			const qint64 free = index.data (DeviceRoles::AvailableSize).value<qint64> ();
+			const qint64 free = index.data (MassStorageRole::AvailableSize).value<qint64> ();
 			if (free < 0)
 				return -1;
 
-			const double total = index.data (DeviceRoles::TotalSize).value<qint64> ();
+			const double total = index.data (MassStorageRole::TotalSize).value<qint64> ();
 			return (1 - free / total) * 100;
 		}
 		default:
@@ -102,7 +102,7 @@ namespace Vrooby
 
 	bool FlatMountableItems::IsIndexAccepted (const QModelIndex& child) const
 	{
-		return child.data (DeviceRoles::IsMountable).toBool ();
+		return child.data (MassStorageRole::IsMountable).toBool ();
 	}
 }
 }

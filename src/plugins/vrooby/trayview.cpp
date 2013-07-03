@@ -70,7 +70,7 @@ namespace Vrooby
 			if (role != FlatMountableItems::ToggleHiddenIcon)
 				return QSortFilterProxyModel::data (index, role);
 
-			const auto& id = index.data (DeviceRoles::DevPersistentID).toString ();
+			const auto& id = index.data (CommonDevRole::DevPersistentID).toString ();
 			return Hidden_.contains (id) ?
 					"image://ThemeIcons/list-add" :
 					"image://ThemeIcons/list-remove";
@@ -94,7 +94,7 @@ namespace Vrooby
 				for (int i = 0; i < rowCount (); ++i)
 				{
 					const auto& idx = sourceModel ()->index (i, 0);
-					if (id != idx.data (DeviceRoles::DevPersistentID).toString ())
+					if (id != idx.data (CommonDevRole::DevPersistentID).toString ())
 						continue;
 
 					const auto& mapped = mapFromSource (idx);
@@ -126,7 +126,7 @@ namespace Vrooby
 				return true;
 
 			const auto& idx = sourceModel ()->index (row, 0);
-			const auto& id = idx.data (DeviceRoles::DevPersistentID).toString ();
+			const auto& id = idx.data (CommonDevRole::DevPersistentID).toString ();
 			return !Hidden_.contains (id);
 		}
 	};

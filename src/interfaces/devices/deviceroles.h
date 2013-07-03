@@ -29,21 +29,56 @@
 
 #pragma once
 
-#include <QList>
-#include <QString>
-#include <QtPlugin>
-#include "devices/deviceroles.h"
+#include <Qt>
 
-class QAbstractItemModel;
-
-class Q_DECL_EXPORT IRemovableDevManager
+namespace LeechCraft
 {
-public:
-	virtual ~IRemovableDevManager () {}
+	enum DeviceType
+	{
+		USBDevice,
+		MassStorage
+	};
 
-	virtual QAbstractItemModel* GetDevicesModel () const = 0;
+	enum PartitionType
+	{
+		NonPartition = -1,
+		Empty = 0x00,
+		Win95FAT32 = 0x0b,
+		Win95FAT32LBA = 0x0c
+	};
 
-	virtual void MountDevice (const QString& id) = 0;
-};
+	enum CommonDevRole
+	{
+		DevType = Qt::UserRole + 1,
+		DevID,
+		DevPersistentID,
 
-Q_DECLARE_INTERFACE (IRemovableDevManager, "org.Deviant.LeechCraft.IRemovableDevManager/1.0");
+		CommonDevRoleMax
+	};
+
+	enum USBDeviceRole
+	{
+		ID = CommonDevRole::CommonDevRoleMax + 1,
+		Bus,
+		Devnum,
+
+		USBDeviceRoleMax
+	};
+
+	enum MassStorageRole
+	{
+		DevFile = USBDeviceRole::USBDeviceRoleMax + 1,
+		PartType,
+		IsRemovable,
+		IsPartition,
+		IsMountable,
+		IsMounted,
+		IsMediaAvailable,
+		VisibleName,
+		AvailableSize,
+		TotalSize,
+		MountPoints,
+
+		MassStorageRoleMax
+	};
+}

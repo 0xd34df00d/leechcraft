@@ -50,7 +50,7 @@ namespace Vrooby
 	public:
 		enum CustomRoles
 		{
-			FormattedTotalSize = DeviceRoles::DeviceRoleMax + 1,
+			FormattedTotalSize = MassStorageRole::MassStorageRoleMax + 1,
 			FormattedFreeSpace,
 			UsedPercentage,
 			MountButtonIcon,
