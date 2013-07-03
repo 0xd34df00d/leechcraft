@@ -33,6 +33,9 @@
 #include <interfaces/core/icoreproxy.h>
 
 class QSocketNotifier;
+class QStandardItemModel;
+class QStandardItem;
+class QAbstractItemModel;
 
 struct udev;
 struct udev_monitor;
@@ -51,8 +54,12 @@ namespace Devmon
 		std::shared_ptr<udev_monitor> Mon_;
 
 		QSocketNotifier *Notifier_ = 0;
+
+		QStandardItemModel *Model_;
 	public:
 		UDevBackend (ICoreProxy_ptr, QObject* = 0);
+	private:
+		QStandardItem* FindItemForPath (const QString&) const;
 	private slots:
 		void handleSocket (int);
 	};
