@@ -181,6 +181,7 @@ option (ENABLE_QROSP "Build Qrosp, the scripting support plugin" OFF)
 option (ENABLE_BLASQ "Build Blasq, client for cloud image storages like Picasa or Flickr" ${WITH_PLUGINS})
 option (ENABLE_BLOGIQUE "Build Blogique, LeechCraft blogging client" ${WITH_PLUGINS})
 option (ENABLE_DEVMON "Build Devmon, the devices monitor plugin" ${WITH_PLUGINS})
+option (ENABLE_DLNIWE "Build DLNiwe, the DLNA server plugin" ${WITH_PLUGINS})
 option (ENABLE_DOLOZHEE "Build Dolozhee, the feature request and bug reporter" ${WITH_PLUGINS})
 option (ENABLE_FENET "Build Fenet, WM control plugin" ${WITH_PLUGINS})
 option (ENABLE_GACTS "Build Global Actions provider plugin" ${WITH_PLUGINS})
@@ -505,6 +506,10 @@ endif ()
 
 if (ENABLE_DEVMON)
 	add_subdirectory (plugins/devmon)
+endif ()
+
+if (ENABLE_DLNIWE)
+	add_subdirectory (plugins/dlniwe)
 endif ()
 
 if (ENABLE_FENET)
