@@ -38,7 +38,7 @@ namespace DLNiwe
 	: QObject (parent)
 	, Socket_ (new QUdpSocket (this))
 	{
-		Socket_->bind (1900);
+		Socket_->bind (1900, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
 		Socket_->joinMulticastGroup (QHostAddress ("239.255.255.250"));
 		connect (Socket_,
 				SIGNAL (readyRead ()),
