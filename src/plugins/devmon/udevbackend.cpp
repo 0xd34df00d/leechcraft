@@ -50,6 +50,8 @@ namespace Devmon
 		udev_monitor_filter_add_match_subsystem_devtype (Mon_.get (), "usb", "usb_device");
 		udev_monitor_enable_receiving (Mon_.get ());
 
+		EnumerateAll ();
+
 		Notifier_ = new QSocketNotifier (udev_monitor_get_fd (Mon_.get ()),
 				QSocketNotifier::Read, this);
 		connect (Notifier_,
@@ -61,18 +63,6 @@ namespace Devmon
 	QAbstractItemModel* UDevBackend::GetModel () const
 	{
 		return Model_;
-	}
-
-	QStandardItem* UDevBackend::FindItemForPath (const QString& sysPath) const
-	{
-		for (int i = 0; i < Model_->rowCount (); ++i)
-		{
-			auto item = Model_->item (i);
-			if (item->data (USBDeviceRole::SysFile).toString () == sysPath)
-				return item;
-		}
-
-		return 0;
 	}
 
 	namespace
@@ -123,6 +113,44 @@ namespace Devmon
 			item->setData (props ["DEVNUM"].toInt (), USBDeviceRole::Devnum);
 			item->setData (QString (udev_device_get_syspath (device)), USBDeviceRole::SysFile);
 		}
+	}
+
+	void UDevBackend::EnumerateAll ()
+	{
+		std::shared_ptr<udev_enumerate> enumerator (udev_enumerate_new (UDev_.get ()), udev_enumerate_unref);
+		udev_enumerate_add_match_subsystem (enumerator.get (), "usb");
+		udev_enumerate_add_match_is_initialized (enumerator.get ());
+
+		udev_enumerate_scan_devices (enumerator.get ());
+		auto entry = udev_enumerate_get_list_entry (enumerator.get ());
+		while (entry)
+		{
+			std::shared_ptr<void> guard (nullptr,
+					[&entry] (void*) { entry = udev_list_entry_get_next (entry); });
+
+			const auto syspath = udev_list_entry_get_name (entry);
+			std::shared_ptr<udev_device> device (udev_device_new_from_syspath (UDev_.get (), syspath), udev_device_unref);
+			if (strcmp (udev_device_get_devtype (device.get ()), "usb_device"))
+				continue;
+
+			const auto& props = GetProperties (device.get ());
+
+			auto item = new QStandardItem ();
+			FillItem (item, device.get (), props);
+			Model_->appendRow (item);
+		}
+	}
+
+	QStandardItem* UDevBackend::FindItemForPath (const QString& sysPath) const
+	{
+		for (int i = 0; i < Model_->rowCount (); ++i)
+		{
+			auto item = Model_->item (i);
+			if (item->data (USBDeviceRole::SysFile).toString () == sysPath)
+				return item;
+		}
+
+		return 0;
 	}
 
 	void UDevBackend::handleSocket (int fd)

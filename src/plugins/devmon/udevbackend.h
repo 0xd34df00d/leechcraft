@@ -61,6 +61,7 @@ namespace Devmon
 
 		QAbstractItemModel* GetModel () const;
 	private:
+		void EnumerateAll ();
 		QStandardItem* FindItemForPath (const QString&) const;
 	private slots:
 		void handleSocket (int);
