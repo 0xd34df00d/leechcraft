@@ -42,6 +42,7 @@ namespace LMP
 	: QObject (parent)
 	, DevListModel_ (new QStandardItemModel (this))
 	{
+		DevListModel_->setColumnCount (1);
 	}
 
 	QAbstractItemModel* UnmountableDevManager::GetDevListModel () const
