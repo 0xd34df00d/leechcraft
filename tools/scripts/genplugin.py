@@ -3,31 +3,31 @@
 from string import Template
 from optparse import OptionParser
 
-cmake_str = """CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
-PROJECT (leechcraft_${plug_lower})
-INCLUDE (InitLCPlugin OPTIONAL)
+cmake_str = """cmake_minimum_required (VERSION 2.8)
+project (leechcraft_${plug_lower})
+include (InitLCPlugin OPTIONAL)
 
-INCLUDE ($${QT_USE_FILE})
-INCLUDE_DIRECTORIES (
+include ($${QT_USE_FILE})
+include_directories (
 	$${CMAKE_CURRENT_BINARY_DIR}
 	$${Boost_INCLUDE_DIR}
 	$${LEECHCRAFT_INCLUDE_DIR}
 	)
-SET (SRCS
+set (SRCS
 	$plug_lower.cpp
 	)
 #CreateTrs("$plug_lower" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("$plug_lower" "en;ru_RU" "$${SRCS}" "$${FORMS}" "")
 
-ADD_LIBRARY (leechcraft_${plug_lower} SHARED
+add_library (leechcraft_${plug_lower} SHARED
 	$${COMPILED_TRANSLATIONS}
 	$${SRCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_${plug_lower}
+target_link_libraries (leechcraft_${plug_lower}
 	$${QT_LIBRARIES}
 	$${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_${plug_lower} DESTINATION $${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_${plug_lower} DESTINATION $${LC_PLUGINS_DEST})
 """
 
 header_str = """/**********************************************************************
@@ -69,7 +69,7 @@ namespace LeechCraft
 namespace $plug
 {
 	class Plugin : public QObject
-					, public $interfaces_inherit
+				 , public $interfaces_inherit
 	{
 		Q_OBJECT
 		Q_INTERFACES ($interfaces)
@@ -78,7 +78,6 @@ $interfaces_decls
 	};
 }
 }
-
 """
 
 source_str = """/**********************************************************************
@@ -122,7 +121,6 @@ $interfaces_defs
 }
 
 LC_EXPORT_PLUGIN (leechcraft_${plug_lower}, LeechCraft::$plug::Plugin);
-
 """
 
 decls_all = {}
