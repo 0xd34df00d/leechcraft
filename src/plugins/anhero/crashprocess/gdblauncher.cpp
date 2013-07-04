@@ -71,6 +71,10 @@ namespace CrashProcess
 				SIGNAL (readyReadStandardOutput ()),
 				this,
 				SLOT (consumeStdout ()));
+		connect (Proc_,
+				SIGNAL (finished (int,QProcess::ExitStatus)),
+				this,
+				SIGNAL (finished (int)));
 	}
 
 	void GDBLauncher::handleError ()

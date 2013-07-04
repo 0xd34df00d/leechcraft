@@ -78,6 +78,15 @@ namespace CrashProcess
 		file.write (Ui_.TraceDisplay_->toPlainText ().toUtf8 ());
 	}
 
+	void CrashDialog::SetInteractionAllowed (bool allowed)
+	{
+		Ui_.TraceDisplay_->setEnabled (allowed);
+		Ui_.Reload_->setEnabled (allowed);
+		Ui_.Copy_->setEnabled (allowed);
+		Ui_.Save_->setEnabled (allowed);
+		Ui_.DialogButtons_->button (QDialogButtonBox::Ok)->setEnabled (allowed);
+	}
+
 	namespace
 	{
 		QString GetNowFilename ()
@@ -108,6 +117,12 @@ namespace CrashProcess
 	void CrashDialog::appendTrace (const QString& part)
 	{
 		Ui_.TraceDisplay_->append (part);
+	}
+
+	void CrashDialog::handleFinished (int code)
+	{
+		Ui_.TraceDisplay_->append ("\n\nGDB exited with code " + QString::number (code));
+		SetInteractionAllowed (true);
 	}
 
 	void CrashDialog::reload ()
