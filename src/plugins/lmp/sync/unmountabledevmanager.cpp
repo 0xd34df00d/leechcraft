@@ -82,7 +82,8 @@ namespace LMP
 
 	void UnmountableDevManager::rebuildAvailableDevices ()
 	{
-		DevListModel_->clear ();
+		if (const auto rc = DevListModel_->rowCount ())
+			DevListModel_->removeRows (0, rc);
 
 		Q_FOREACH (auto mgrObj, Managers_)
 		{
