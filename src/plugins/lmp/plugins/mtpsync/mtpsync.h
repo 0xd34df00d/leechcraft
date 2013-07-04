@@ -39,6 +39,8 @@
 #include <interfaces/lmp/iunmountablesync.h>
 
 class QTimer;
+class QAbstractItemModel;
+class QModelIndex;
 
 namespace LeechCraft
 {
@@ -46,6 +48,14 @@ namespace LMP
 {
 namespace MTPSync
 {
+	struct USBDevInfo
+	{
+		UnmountableDevInfo Info_;
+		int Busnum_;
+		int Devnum_;
+	};
+	typedef QList<USBDevInfo> USBDevInfos_t;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
@@ -58,8 +68,9 @@ namespace MTPSync
 				LeechCraft::LMP::ILMPPlugin
 				LeechCraft::LMP::IUnmountableSync)
 
+		ICoreProxy_ptr Proxy_;
 		ILMPProxy_ptr LMPProxy_;
-		UnmountableDevInfos_t Infos_;
+		USBDevInfos_t Infos_;
 
 		QHash<QString, UnmountableFileInfo> OrigInfos_;
 
@@ -81,6 +92,9 @@ namespace MTPSync
 		};
 		QList<UploadQueueItem> UploadQueue_;
 
+		QAbstractItemModel *Model_ = 0;
+
+		bool FirstPoll_ = true;
 		bool IsPolling_ = false;
 	public:
 		void Init (ICoreProxy_ptr proxy);
@@ -105,9 +119,15 @@ namespace MTPSync
 	private:
 		void UploadTo (LIBMTP_mtpdevice_t*, const QByteArray&, const QString&, const QString&);
 		void AppendAlbum (LIBMTP_mtpdevice_t*, LIBMTP_track_t*, const UnmountableFileInfo&);
+
+		void Subscribe2Devs ();
 	private slots:
 		void pollDevices ();
 		void handlePollFinished ();
+
+		void handleRowsInserted (const QModelIndex&, int, int);
+		void handleRowsRemoved (const QModelIndex&, int, int);
+
 		void clearCaches ();
 	signals:
 		void availableDevicesChanged ();

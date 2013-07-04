@@ -29,12 +29,18 @@
 
 #include "mtpsync.h"
 #include <map>
+#include <thread>
 #include <QIcon>
 #include <QTimer>
 #include <QFileInfo>
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <QBuffer>
+#include <QAbstractItemModel>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/devices/iremovabledevmanager.h>
+#include <interfaces/devices/deviceroles.h>
 
 namespace LeechCraft
 {
@@ -44,8 +50,10 @@ namespace MTPSync
 {
 	const int CacheLifetime = 120 * 1000;
 
-	void Plugin::Init (ICoreProxy_ptr)
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+
 		LIBMTP_Init ();
 
 		CacheEvictTimer_ = new QTimer (this);
@@ -112,7 +120,11 @@ namespace MTPSync
 
 	UnmountableDevInfos_t Plugin::AvailableDevices () const
 	{
-		return Infos_;
+		UnmountableDevInfos_t result;
+		result.reserve (Infos_.size ());
+		for (const auto& item : Infos_)
+			result << item.Info_;
+		return result;
 	}
 
 	void Plugin::SetFileInfo (const QString& origLocalPath, const UnmountableFileInfo& info)
@@ -396,6 +408,26 @@ namespace MTPSync
 		LIBMTP_destroy_album_t (albuminfo);
 	}
 
+	void Plugin::Subscribe2Devs ()
+	{
+		for (auto mgr : Proxy_->GetPluginsManager ()->GetAllCastableTo<IRemovableDevManager*> ())
+		{
+			if (!mgr->SupportsDevType (USBDevice))
+				continue;
+
+			Model_ = mgr->GetDevicesModel ();
+			connect (Model_,
+					SIGNAL (rowsInserted (QModelIndex, int, int)),
+					this,
+					SLOT (handleRowsInserted (QModelIndex, int, int)));
+			connect (Model_,
+					SIGNAL (rowsAboutToBeRemoved (QModelIndex, int, int)),
+					this,
+					SLOT (handleRowsRemoved (QModelIndex, int, int)));
+			break;
+		}
+	}
+
 	namespace
 	{
 		QStringList GetSupportedFormats (LIBMTP_mtpdevice_t *device)
@@ -455,10 +487,25 @@ namespace MTPSync
 			return result;
 		}
 
-		UnmountableDevInfos_t EnumerateWorker ()
+		UnmountableDevInfo InfoFromDevice (LIBMTP_mtpdevice_t *device)
+		{
+			const auto& devName = QString::fromUtf8 (LIBMTP_Get_Manufacturername (device)) + " " +
+					QString::fromUtf8 (LIBMTP_Get_Modelname (device)) + " " +
+					LIBMTP_Get_Friendlyname (device);
+			return
+			{
+				LIBMTP_Get_Serialnumber (device),
+				LIBMTP_Get_Manufacturername (device),
+				devName.simplified ().trimmed (),
+				GetPartitions (device),
+				GetSupportedFormats (device)
+			};
+		}
+
+		USBDevInfos_t EnumerateWorker ()
 		{
 			qDebug () << Q_FUNC_INFO;
-			UnmountableDevInfos_t infos;
+			USBDevInfos_t infos;
 
 			LIBMTP_raw_device_t *rawDevices;
 			int numRawDevices = 0;
@@ -469,19 +516,11 @@ namespace MTPSync
 				if (!device)
 					continue;
 
-				const auto& devName = QString::fromUtf8 (rawDevices [i].device_entry.vendor) + " " +
-						QString::fromUtf8 (rawDevices [i].device_entry.product) + " " +
-						LIBMTP_Get_Friendlyname (device);
-				const UnmountableDevInfo info
-				{
-					LIBMTP_Get_Serialnumber (device),
-					LIBMTP_Get_Manufacturername (device),
-					devName.simplified ().trimmed (),
-					GetPartitions (device),
-					GetSupportedFormats (device)
-				};
-				infos << info;
-
+				infos.push_back ({
+						InfoFromDevice (device),
+						static_cast<int> (rawDevices [i].bus_location),
+						static_cast<int> (rawDevices [i].devnum)
+					});
 				LIBMTP_Release_Device (device);
 			}
 			free (rawDevices);
@@ -493,7 +532,10 @@ namespace MTPSync
 
 	void Plugin::pollDevices ()
 	{
-		auto watcher = new QFutureWatcher<UnmountableDevInfos_t> ();
+		if (IsPolling_)
+			return;
+
+		auto watcher = new QFutureWatcher<USBDevInfos_t> ();
 		connect (watcher,
 				SIGNAL (finished ()),
 				this,
@@ -513,19 +555,78 @@ namespace MTPSync
 			Upload (item.LocalPath_, item.OrigLocalPath_, item.To_, item.StorageID_);
 		}
 
-		QTimer::singleShot (30000,
-				this,
-				SLOT (pollDevices ()));
-
-		auto watcher = dynamic_cast<QFutureWatcher<UnmountableDevInfos_t>*> (sender ());
+		auto watcher = dynamic_cast<QFutureWatcher<USBDevInfos_t>*> (sender ());
+		watcher->deleteLater ();
 
 		const auto& infos = watcher->result ();
+		if (!infos.isEmpty ())
+		{
+			Infos_ = infos;
+			emit availableDevicesChanged ();
+		}
 
-		if (infos == Infos_)
+		if (FirstPoll_)
+		{
+			Subscribe2Devs ();
+			FirstPoll_ = false;
+		}
+	}
+
+	void Plugin::handleRowsInserted (const QModelIndex& parent, int start, int end)
+	{
+		if (parent.isValid ())
 			return;
 
-		Infos_ = infos;
-		emit availableDevicesChanged ();
+		bool hasNew = false;
+		for (auto i = start; i <= end; ++i)
+		{
+			const auto& idx = Model_->index (i, 0);
+
+			const auto busnum = idx.data (USBDeviceRole::Busnum).toInt ();
+			const auto devnum = idx.data (USBDeviceRole::Devnum).toInt ();
+
+			if (LIBMTP_Check_Specific_Device (busnum, devnum))
+			{
+				hasNew = true;
+				break;
+			}
+		}
+
+		if (!hasNew)
+			return;
+
+		QTimer::singleShot (1000,
+				this,
+				SLOT (pollDevices ()));
+	}
+
+	void Plugin::handleRowsRemoved (const QModelIndex& parent, int start, int end)
+	{
+		if (parent.isValid ())
+			return;
+
+		clearCaches ();
+
+		bool changed = false;
+		for (auto i = start; i <= end; ++i)
+		{
+			const auto& idx = Model_->index (i, 0);
+
+			const auto busnum = idx.data (USBDeviceRole::Busnum).toInt ();
+			const auto devnum = idx.data (USBDeviceRole::Devnum).toInt ();
+
+			const auto pos = std::find_if (Infos_.begin (), Infos_.end (),
+					[&busnum, &devnum] (const USBDevInfo& info)
+						{ return info.Busnum_ == busnum && info.Devnum_ == devnum; });
+			if (pos != Infos_.end ())
+			{
+				Infos_.erase (pos);
+				changed = true;
+			}
+		}
+
+		if (changed)
+			emit availableDevicesChanged ();
 	}
 
 	void Plugin::clearCaches ()
