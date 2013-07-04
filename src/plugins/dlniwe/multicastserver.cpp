@@ -53,6 +53,7 @@ namespace DLNiwe
 			QByteArray data;
 			data.resize (Socket_->pendingDatagramSize ());
 			Socket_->readDatagram (data.data (), data.size ());
+			qDebug () << data;
 		}
 	}
 }
