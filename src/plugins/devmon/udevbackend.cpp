@@ -110,7 +110,9 @@ namespace Devmon
 			const auto& id = GetID (props);
 			item->setData (id, CommonDevRole::DevID);
 			item->setData (id, CommonDevRole::DevPersistentID);
+			item->setData (props ["ID_VENDOR_ID"], USBDeviceRole::VendorID);
 			item->setData (props ["ID_VENDOR"], USBDeviceRole::Vendor);
+			item->setData (props ["ID_MODEL_ID"], USBDeviceRole::ModelID);
 			item->setData (props ["ID_MODEL"], USBDeviceRole::Model);
 			item->setData (props ["BUSNUM"].toInt (), USBDeviceRole::Busnum);
 			item->setData (props ["DEVNUM"].toInt (), USBDeviceRole::Devnum);

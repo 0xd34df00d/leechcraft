@@ -56,7 +56,9 @@ namespace LeechCraft
 		ID = CommonDevRole::CommonDevRoleMax + 1,
 		Busnum,
 		Devnum,
+		VendorID,
 		Vendor,
+		ModelID,
 		Model,
 		SysFile,
 
