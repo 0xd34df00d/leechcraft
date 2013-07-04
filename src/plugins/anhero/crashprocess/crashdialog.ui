@@ -32,6 +32,9 @@
      <property name="text">
       <string>You could save it for later use or just accept this dialog, and in this case the Dolozhee module (if installed) will prompt you to upload the crash log with some more data to our bugtracker.</string>
      </property>
+     <property name="textFormat">
+      <enum>Qt::RichText</enum>
+     </property>
      <property name="wordWrap">
       <bool>true</bool>
      </property>
@@ -53,12 +56,24 @@
       </spacer>
      </item>
      <item>
+      <widget class="QPushButton" name="Reload_">
+       <property name="text">
+        <string>Reload</string>
+       </property>
+       <property name="icon">
+        <iconset theme="view-refresh"/>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="Copy_">
        <property name="text">
         <string>Copy</string>
        </property>
        <property name="icon">
-        <iconset theme="edit-copy"/>
+        <iconset theme="edit-copy">
+         <normaloff/>
+        </iconset>
        </property>
       </widget>
      </item>
@@ -68,7 +83,9 @@
         <string>Save</string>
        </property>
        <property name="icon">
-        <iconset theme="document-save"/>
+        <iconset theme="document-save">
+         <normaloff/>
+        </iconset>
        </property>
       </widget>
      </item>
@@ -85,7 +102,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
+    <widget class="QDialogButtonBox" name="DialogButtons_">
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
@@ -96,7 +113,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>DialogButtons_</sender>
    <signal>rejected()</signal>
    <receiver>CrashDialog</receiver>
    <slot>reject()</slot>
@@ -112,7 +129,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>DialogButtons_</sender>
    <signal>accepted()</signal>
    <receiver>CrashDialog</receiver>
    <slot>accept()</slot>

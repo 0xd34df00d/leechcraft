@@ -36,7 +36,6 @@
 
 #include <QApplication>
 #include "appinfo.h"
-#include "gdblauncher.h"
 #include "crashdialog.h"
 
 namespace CrashProcess = LeechCraft::AnHero::CrashProcess;
@@ -83,12 +82,6 @@ int main (int argc, char **argv)
 
 	const auto& info = ParseOptions (argc, argv);
 
-	auto l = new CrashProcess::GDBLauncher (info.PID_, info.Path_);
-	auto dia = new CrashProcess::CrashDialog (info);
-	QObject::connect (l,
-			SIGNAL (gotOutput (QString)),
-			dia,
-			SLOT (appendTrace (QString)));
-
+	new CrashProcess::CrashDialog (info);
 	return app.exec ();
 }
