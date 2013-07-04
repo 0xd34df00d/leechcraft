@@ -29,7 +29,6 @@
 
 #ifndef UTIL_MERGEMODEL_H
 #define UTIL_MERGEMODEL_H
-#include <deque>
 #include <QPointer>
 #include <QAbstractProxyModel>
 #include <QStringList>
@@ -56,7 +55,7 @@ namespace LeechCraft
 
 			mutable bool DefaultAcceptsRowImpl_;
 		protected:
-			typedef std::deque<QPointer<QAbstractItemModel>> models_t;
+			typedef QList<QPointer<QAbstractItemModel>> models_t;
 			models_t Models_;
 		private:
 			QStringList Headers_;
