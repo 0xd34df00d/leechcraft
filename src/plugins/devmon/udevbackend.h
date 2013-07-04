@@ -58,6 +58,8 @@ namespace Devmon
 		QStandardItemModel *Model_;
 	public:
 		UDevBackend (ICoreProxy_ptr, QObject* = 0);
+
+		QAbstractItemModel* GetModel () const;
 	private:
 		QStandardItem* FindItemForPath (const QString&) const;
 	private slots:

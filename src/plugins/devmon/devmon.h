@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/devices/iremovabledevmanager.h>
 
 namespace LeechCraft
 {
@@ -40,9 +41,10 @@ namespace Devmon
 
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IRemovableDevManager
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IRemovableDevManager)
 
 		UDevBackend *Backend_;
 	public:
@@ -53,6 +55,10 @@ namespace Devmon
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		bool SupportsDevType (DeviceType) const;
+		QAbstractItemModel* GetDevicesModel () const;
+		void MountDevice (const QString& id);
 	};
 }
 }

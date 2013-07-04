@@ -58,6 +58,11 @@ namespace Devmon
 				SLOT (handleSocket (int)));
 	}
 
+	QAbstractItemModel* UDevBackend::GetModel () const
+	{
+		return Model_;
+	}
+
 	QStandardItem* UDevBackend::FindItemForPath (const QString& sysPath) const
 	{
 		for (int i = 0; i < Model_->rowCount (); ++i)

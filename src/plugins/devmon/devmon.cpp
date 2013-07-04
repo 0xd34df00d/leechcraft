@@ -68,6 +68,22 @@ namespace Devmon
 	{
 		return QIcon ();
 	}
+
+	bool Plugin::SupportsDevType (DeviceType type) const
+	{
+		return type == DeviceType::USBDevice;
+	}
+
+	QAbstractItemModel* Plugin::GetDevicesModel () const
+	{
+		return Backend_->GetModel ();
+	}
+
+	void Plugin::MountDevice (const QString&)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< "mounts aren't suported";
+	}
 }
 }
 
