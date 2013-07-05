@@ -29,6 +29,7 @@
 
 #include "accountconfigurationwidget.h"
 #include <QFileDialog>
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -37,14 +38,19 @@ namespace Blogique
 namespace Hestia
 {
 	AccountConfigurationWidget::AccountConfigurationWidget (QWidget *parent,
-			IBloggingPlatform::AccountAddOptions option)
+			IBloggingPlatform::AccountAddOptions option,
+			const QString& accName)
 	: QWidget (parent)
 	, Option_ (option)
+	, SuggestedPath_ (accName.isEmpty () ?
+				QString () :
+				Util::CreateIfNotExists ("blogique/hestia").absoluteFilePath (accName + ".db"))
 	{
 		Ui_.setupUi (this);
 		Ui_.Label_->setText (Option_ & IBloggingPlatform::AAORegisterNewAccount ?
 			tr ("Select new account base") :
 			tr ("Open existing account base"));
+		Ui_.AccountBasePath_->setText (SuggestedPath_);
 	}
 
 	void AccountConfigurationWidget::on_OpenAccountBase__released ()
@@ -52,11 +58,11 @@ namespace Hestia
 		QString path = (Option_ & IBloggingPlatform::AAORegisterNewAccount) ?
 			QFileDialog::getSaveFileName (this,
 					tr ("Select account base"),
-					QDir::homePath (),
+					SuggestedPath_,
 					tr ("Account bases (*.db)")) :
 			QFileDialog::getOpenFileName (this,
 					tr ("Open account base"),
-					QDir::homePath (),
+					SuggestedPath_,
 					tr ("Account bases (*.db)"));
 
 		if (path.isEmpty ())

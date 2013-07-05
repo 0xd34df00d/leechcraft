@@ -94,7 +94,7 @@ namespace Hestia
 	QList<QWidget*> LocalBloggingPlatform::GetAccountRegistrationWidgets (AccountAddOptions opts,
 			const QString& accName)
 	{
-		return { new AccountConfigurationWidget (0, opts) };
+		return { new AccountConfigurationWidget (0, opts, accName) };
 	}
 
 	void LocalBloggingPlatform::RegisterAccount (const QString& name,
