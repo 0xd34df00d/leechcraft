@@ -160,7 +160,7 @@ namespace Blogique
 	void AddAccountWizardFirstPage::handleAccountNameChanged (const QString&)
 	{
 		emit completeChanged ();
+		readdWidgets ();
 	}
-
 }
 }
