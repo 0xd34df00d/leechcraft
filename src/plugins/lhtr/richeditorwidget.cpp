@@ -355,13 +355,17 @@ namespace LHTR
 		switch (type)
 		{
 		case ContentType::HTML:
-			content += ExpandCustomTags (contents);
+			content += contents;
 			break;
 		case ContentType::PlainText:
 			content += "<pre>" + contents + "</pre>";
 			break;
 		}
 		content += "</body></html>";
+
+		if (type == ContentType::HTML)
+			content = ExpandCustomTags (content);
+
 		Ui_.View_->setContent (content.toUtf8 (), MIMEType);
 
 		setupJS ();
