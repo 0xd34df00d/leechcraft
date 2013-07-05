@@ -132,7 +132,7 @@ namespace Metida
 		return "Blogique.Metida.LiveJournal";
 	}
 
-	QList<QWidget*> LJBloggingPlatform::GetAccountRegistrationWidgets (IBloggingPlatform::AccountAddOptions)
+	QList<QWidget*> LJBloggingPlatform::GetAccountRegistrationWidgets (IBloggingPlatform::AccountAddOptions, const QString&)
 	{
 		QList<QWidget*> result;
 		result << new LJAccountConfigurationWidget ();

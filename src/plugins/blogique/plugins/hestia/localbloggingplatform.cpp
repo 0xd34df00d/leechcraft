@@ -91,7 +91,8 @@ namespace Hestia
 		return "Blogique.Hestia.LocalBlog";
 	}
 
-	QList<QWidget*> LocalBloggingPlatform::GetAccountRegistrationWidgets (IBloggingPlatform::AccountAddOptions opts)
+	QList<QWidget*> LocalBloggingPlatform::GetAccountRegistrationWidgets (AccountAddOptions opts,
+			const QString& accName)
 	{
 		return { new AccountConfigurationWidget (0, opts) };
 	}

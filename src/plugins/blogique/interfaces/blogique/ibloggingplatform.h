@@ -182,12 +182,14 @@ namespace Blogique
 		 *
 		 * @param[in] options The options selected by the user to
 		 * perform the account addition.
+		 * @param[in] accName The name of the account being registered
+		 * hint.
 		 *
 		 * @return The widgets to be shown and filled by the user.
 		 *
 		 * @sa RegisterAccount()
 		 */
-		virtual QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions) = 0;
+		virtual QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions, const QString& accName) = 0;
 
 		/** @brief Adds an account with the given name and widgets.
 		 *
