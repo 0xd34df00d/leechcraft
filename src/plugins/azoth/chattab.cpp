@@ -223,7 +223,7 @@ namespace Azoth
 		const int autoNum = XmlSettingsManager::Instance ()
 				.property ("ShowLastNMessages").toInt ();
 		if (entry->GetAllMessages ().size () <= 100 &&
-				entry->GetEntryType () == ICLEntry::ETChat &&
+				entry->GetEntryType () != ICLEntry::ETMUC &&
 				autoNum)
 			RequestLogs (autoNum);
 
