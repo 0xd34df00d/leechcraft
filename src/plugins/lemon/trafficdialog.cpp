@@ -32,8 +32,10 @@
 #include <qwt_plot_curve.h>
 #include <qwt_plot_grid.h>
 #include <qwt_legend.h>
-#include <qwt_plot_legenditem.h>
 #include <qwt_dyngrid_layout.h>
+#if QWT_VERSION >= 0x060100
+#include <qwt_plot_legenditem.h>
+#endif
 #include <util/util.h>
 #include "trafficmanager.h"
 
