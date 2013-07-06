@@ -31,12 +31,15 @@
 
 #include <QHash>
 #include <QStringList>
+#include <util/utilconfig.h>
 
 namespace LeechCraft
 {
-namespace Launchy
+namespace Util
 {
-	class FDODesktopParser
+namespace XDG
+{
+	class DesktopParser
 	{
 	public:
 		/** Mapping from language to the list of values.
@@ -48,7 +51,8 @@ namespace Launchy
 		typedef QHash<QString, LangValue_t> Group_t;
 		typedef QHash<QString, Group_t> Result_t;
 
-		Result_t operator() (const QByteArray&);
+		UTIL_API Result_t operator() (const QByteArray&);
 	};
+}
 }
 }

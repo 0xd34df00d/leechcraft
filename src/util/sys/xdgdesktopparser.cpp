@@ -27,15 +27,16 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "fdodesktopparser.h"
-#include <iostream>
+#include "xdgdesktopparser.h"
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/fusion/adapted.hpp>
 
 namespace LeechCraft
 {
-namespace Launchy
+namespace Util
+{
+namespace XDG
 {
 	namespace
 	{
@@ -63,22 +64,25 @@ namespace Launchy
 	}
 }
 }
+}
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Launchy::Field,
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Util::XDG::Field,
 		(std::string, Name_)
-		(LeechCraft::Launchy::Lang_t, Lang_)
-		(LeechCraft::Launchy::FieldVal_t, Val_));
+		(LeechCraft::Util::XDG::Lang_t, Lang_)
+		(LeechCraft::Util::XDG::FieldVal_t, Val_));
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Launchy::Group,
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Util::XDG::Group,
 		(std::string, Name_)
-		(LeechCraft::Launchy::Fields_t, Fields_));
+		(LeechCraft::Util::XDG::Fields_t, Fields_));
 
-BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Launchy::File,
-		(LeechCraft::Launchy::Groups_t, Groups_));
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Util::XDG::File,
+		(LeechCraft::Util::XDG::Groups_t, Groups_));
 
 namespace LeechCraft
 {
-namespace Launchy
+namespace Util
+{
+namespace XDG
 {
 	namespace
 	{
@@ -161,7 +165,7 @@ namespace Launchy
 		};
 	}
 
-	FDODesktopParser::Result_t FDODesktopParser::operator() (const QByteArray& data)
+	auto DesktopParser::operator() (const QByteArray& data) -> Result_t
 	{
 		const auto& file = Parse (data.begin (), data.end ());
 
@@ -179,5 +183,6 @@ namespace Launchy
 		}
 		return result;
 	}
+}
 }
 }

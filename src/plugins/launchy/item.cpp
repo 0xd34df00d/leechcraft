@@ -33,8 +33,8 @@
 #include <QUrl>
 #include <QProcess>
 #include <util/util.h>
+#include <util/sys/xdgdesktopparser.h>
 #include <interfaces/core/ientitymanager.h>
-#include "fdodesktopparser.h"
 
 namespace LeechCraft
 {
@@ -192,7 +192,7 @@ namespace Launchy
 		if (!file.open (QIODevice::ReadOnly))
 			throw std::runtime_error ("Unable to open file");
 
-		const auto& result = FDODesktopParser () (file.readAll ());
+		const auto& result = Util::XDG::DesktopParser () (file.readAll ());
 		const auto& group = result ["Desktop Entry"];
 
 		Item_ptr item (new Item);

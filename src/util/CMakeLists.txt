@@ -45,6 +45,7 @@ set (SRCS
 	sys/mimedetector.cpp
 	sys/paths.cpp
 	sys/xdg.cpp
+	sys/xdgdesktopparser.cpp
 	tags/categoryselector.cpp
 	tags/tagscompleter.cpp
 	tags/tagscompletionmodel.cpp

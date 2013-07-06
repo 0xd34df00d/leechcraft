@@ -15,7 +15,6 @@ set (SRCS
 	item.cpp
 	itemsfinder.cpp
 	itemssortfilterproxymodel.cpp
-	fdodesktopparser.cpp
 	favoritesmanager.cpp
 	quarkmanager.cpp
 	itemimageprovider.cpp
