@@ -29,23 +29,41 @@
 
 #pragma once
 
+#include <memory>
+#include <QObject>
 #include <QHash>
-#include <util/qml/widthiconprovider.h>
-#include <util/xdg/xdgfwd.h>
+#include <interfaces/core/icoreproxy.h>
+#include <util/utilconfig.h>
 
 namespace LeechCraft
 {
-namespace Launchy
+namespace Util
 {
-	class ItemImageProvider : public Util::WidthIconProvider
+namespace XDG
+{
+	class UTIL_API Item;
+	typedef std::shared_ptr<Item> Item_ptr;
+
+	class UTIL_API ItemsFinder : public QObject
 	{
-		QHash<QString, QIcon> PermID2Icon_;
+		Q_OBJECT
+
+		ICoreProxy_ptr Proxy_;
+		QHash<QString, QList<Item_ptr>> Items_;
+
+		bool IsReady_;
 	public:
-		ItemImageProvider ();
+		ItemsFinder (ICoreProxy_ptr, QObject* = 0);
 
-		void AddItem (Util::XDG::Item_ptr);
+		bool IsReady () const;
 
-		QIcon GetIcon (const QStringList&);
+		QHash<QString, QList<Item_ptr>> GetItems () const;
+		Item_ptr FindItem (const QString& permanentID) const;
+	public slots:
+		void update ();
+	signals:
+		void itemsListChanged ();
 	};
+}
 }
 }

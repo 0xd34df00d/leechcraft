@@ -34,6 +34,7 @@
 #include <QHash>
 #include <QDeclarativeView>
 #include <interfaces/core/icoreproxy.h>
+#include <util/xdg/xdgfwd.h>
 
 class QStandardItem;
 class QStandardItemModel;
@@ -45,20 +46,16 @@ struct Entity;
 
 namespace Launchy
 {
-	class ItemsFinder;
 	class ItemIconsProvider;
 	class ItemsSortFilterProxyModel;
 	class FavoritesManager;
-
-	class Item;
-	typedef std::shared_ptr<Item> Item_ptr;
 
 	class FSDisplayer : public QObject
 	{
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
-		ItemsFinder *Finder_;
+		Util::XDG::ItemsFinder *Finder_;
 		FavoritesManager *FavManager_;
 
 		QStandardItemModel *CatsModel_;
@@ -76,13 +73,14 @@ namespace Launchy
 		};
 		QHash<QString, ItemInfo> ItemInfos_;
 	public:
-		FSDisplayer (ICoreProxy_ptr, ItemsFinder *finder, FavoritesManager*, QObject* = 0);
+		FSDisplayer (ICoreProxy_ptr,
+				Util::XDG::ItemsFinder *finder, FavoritesManager*, QObject* = 0);
 		~FSDisplayer ();
 	private:
 		void MakeStdCategories ();
 		void MakeStdItems ();
 		void MakeCategories (const QStringList&);
-		void MakeItems (const QList<QList<Item_ptr>>&);
+		void MakeItems (const QList<QList<Util::XDG::Item_ptr>>&);
 		QStandardItem* FindItem (const QString&) const;
 	private slots:
 		void handleFinderUpdated ();

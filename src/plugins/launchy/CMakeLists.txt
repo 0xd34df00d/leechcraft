@@ -12,8 +12,6 @@ include_directories (
 set (SRCS
 	launchy.cpp
 	fsdisplayer.cpp
-	item.cpp
-	itemsfinder.cpp
 	itemssortfilterproxymodel.cpp
 	favoritesmanager.cpp
 	quarkmanager.cpp

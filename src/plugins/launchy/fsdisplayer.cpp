@@ -43,8 +43,8 @@
 #include <util/sys/paths.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/ihavetabs.h>
-#include "itemsfinder.h"
-#include "item.h"
+#include <util/xdg/itemsfinder.h>
+#include <util/xdg/item.h>
 #include "itemssortfilterproxymodel.h"
 #include "modelroles.h"
 #include "favoritesmanager.h"
@@ -112,7 +112,8 @@ namespace Launchy
 		};
 	}
 
-	FSDisplayer::FSDisplayer (ICoreProxy_ptr proxy, ItemsFinder *finder, FavoritesManager *favMgr, QObject *parent)
+	FSDisplayer::FSDisplayer (ICoreProxy_ptr proxy,
+			Util::XDG::ItemsFinder *finder, FavoritesManager *favMgr, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, Finder_ (finder)
@@ -308,21 +309,22 @@ namespace Launchy
 			CatsModel_->appendRow (item);
 	}
 
-	void FSDisplayer::MakeItems (const QList<QList<Item_ptr>>& items)
+	void FSDisplayer::MakeItems (const QList<QList<Util::XDG::Item_ptr>>& items)
 	{
 		MakeStdItems ();
 
 		const auto& curLang = Util::GetLanguage ().toLower ();
 
-		QList<Item_ptr> uniqueItems;
+		QList<Util::XDG::Item_ptr> uniqueItems;
 		for (const auto& sublist : items)
 			for (auto item : sublist)
 				if (!item->IsHidden () &&
 					std::find_if (uniqueItems.begin (), uniqueItems.end (),
-							[&item] (const Item_ptr other) { return *other == *item; }) == uniqueItems.end ())
+							[&item] (const Util::XDG::Item_ptr other)
+								{ return *other == *item; }) == uniqueItems.end ())
 					uniqueItems << item;
 		std::sort (uniqueItems.begin (), uniqueItems.end (),
-				[&curLang] (Item_ptr left, Item_ptr right)
+				[&curLang] (Util::XDG::Item_ptr left, Util::XDG::Item_ptr right)
 				{
 					return QString::localeAwareCompare (left->GetName (curLang), right->GetName (curLang)) < 0;
 				});

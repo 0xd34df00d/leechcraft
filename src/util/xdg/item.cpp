@@ -33,12 +33,14 @@
 #include <QUrl>
 #include <QProcess>
 #include <util/util.h>
-#include <util/xdg/desktopparser.h>
 #include <interfaces/core/ientitymanager.h>
+#include "desktopparser.h"
 
 namespace LeechCraft
 {
-namespace Launchy
+namespace Util
+{
+namespace XDG
 {
 	bool Item::operator== (const Item& item) const
 	{
@@ -232,5 +234,6 @@ namespace Launchy
 	{
 		return item.DebugPrint (dbg);
 	}
+}
 }
 }

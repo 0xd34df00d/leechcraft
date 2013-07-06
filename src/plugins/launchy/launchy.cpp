@@ -33,7 +33,7 @@
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include <util/shortcuts/shortcutmanager.h>
-#include "itemsfinder.h"
+#include <util/xdg/itemsfinder.h>
 #include "fsdisplayer.h"
 #include "favoritesmanager.h"
 #include "quarkmanager.h"
@@ -49,7 +49,7 @@ namespace Launchy
 
 		Proxy_ = proxy;
 
-		Finder_ = new ItemsFinder (proxy);
+		Finder_ = new Util::XDG::ItemsFinder (proxy);
 
 		FavManager_ = new FavoritesManager;
 

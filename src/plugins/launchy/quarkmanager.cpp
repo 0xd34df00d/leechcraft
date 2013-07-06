@@ -30,9 +30,9 @@
 #include "quarkmanager.h"
 #include <QStandardItemModel>
 #include <util/util.h>
+#include <util/xdg/itemsfinder.h>
+#include <util/xdg/item.h>
 #include "favoritesmanager.h"
-#include "itemsfinder.h"
-#include "item.h"
 #include "itemimageprovider.h"
 
 namespace LeechCraft
@@ -62,7 +62,7 @@ namespace Launchy
 	}
 
 	QuarkManager::QuarkManager (ICoreProxy_ptr proxy, FavoritesManager *favMgr,
-			ItemsFinder *finder, ItemImageProvider *prov, QObject *parent)
+			Util::XDG::ItemsFinder *finder, ItemImageProvider *prov, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, FavMgr_ (favMgr)

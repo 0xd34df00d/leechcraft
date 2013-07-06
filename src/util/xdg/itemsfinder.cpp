@@ -31,12 +31,14 @@
 #include <QDir>
 #include <QTimer>
 #include <QtDebug>
-#include <util/xdg/xdg.h>
+#include "xdg.h"
 #include "item.h"
 
 namespace LeechCraft
 {
-namespace Launchy
+namespace Util
+{
+namespace XDG
 {
 	ItemsFinder::ItemsFinder (ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
@@ -144,5 +146,6 @@ namespace Launchy
 
 		emit itemsListChanged ();
 	}
+}
 }
 }

@@ -30,36 +30,76 @@
 #pragma once
 
 #include <memory>
-#include <QObject>
 #include <QHash>
+#include <QDebug>
+#include <QIcon>
 #include <interfaces/core/icoreproxy.h>
+#include <util/utilconfig.h>
 
 namespace LeechCraft
 {
-namespace Launchy
+namespace Util
+{
+namespace XDG
 {
 	class Item;
+
 	typedef std::shared_ptr<Item> Item_ptr;
 
-	class ItemsFinder : public QObject
+	class UTIL_API Item
 	{
-		Q_OBJECT
+		QHash<QString, QString> Name_;
+		QHash<QString, QString> GenericName_;
+		QHash<QString, QString> Comments_;
 
-		ICoreProxy_ptr Proxy_;
-		QHash<QString, QList<Item_ptr>> Items_;
+		QStringList Categories_;
+		QString Command_;
+		QString WD_;
 
-		bool IsReady_;
+		QString IconName_;
+		QIcon Icon_;
+
+		bool IsHidden_;
 	public:
-		ItemsFinder (ICoreProxy_ptr, QObject* = 0);
+		enum class Type
+		{
+			Other,
+			Application,
+			URL,
+			Dir
+		};
+	private:
+		Type Type_;
+	public:
+		bool operator== (const Item&) const;
 
-		bool IsReady () const;
+		bool IsValid () const;
 
-		QHash<QString, QList<Item_ptr>> GetItems () const;
-		Item_ptr FindItem (const QString& permanentID) const;
-	public slots:
-		void update ();
-	signals:
-		void itemsListChanged ();
+		bool IsHidden () const;
+
+		void Execute (ICoreProxy_ptr) const;
+
+		QString GetName (const QString&) const;
+		QString GetGenericName (const QString&) const;
+		QString GetComment (const QString&) const;
+		QString GetIconName () const;
+		QStringList GetCategories () const;
+
+		Type GetType () const;
+		QString GetCommand () const;
+		QString GetWorkingDirectory () const;
+
+		QString GetPermanentID () const;
+
+		void SetIcon (const QIcon&);
+		QIcon GetIcon () const;
+
+		QDebug DebugPrint (QDebug) const;
+
+		static Item_ptr FromDesktopFile (const QString&);
 	};
+
+	QDebug operator<< (QDebug, const Item&);
+}
 }
 }

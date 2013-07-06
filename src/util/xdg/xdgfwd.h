@@ -30,72 +30,18 @@
 #pragma once
 
 #include <memory>
-#include <QHash>
-#include <QDebug>
-#include <QIcon>
-#include <interfaces/core/icoreproxy.h>
+#include "xdg.h"
 
 namespace LeechCraft
 {
-namespace Launchy
+namespace Util
 {
-	class Item;
-
+namespace XDG
+{
+	class UTIL_API Item;
 	typedef std::shared_ptr<Item> Item_ptr;
 
-	class Item
-	{
-		QHash<QString, QString> Name_;
-		QHash<QString, QString> GenericName_;
-		QHash<QString, QString> Comments_;
-
-		QStringList Categories_;
-		QString Command_;
-		QString WD_;
-
-		QString IconName_;
-		QIcon Icon_;
-
-		bool IsHidden_;
-	public:
-		enum class Type
-		{
-			Other,
-			Application,
-			URL,
-			Dir
-		};
-	private:
-		Type Type_;
-	public:
-		bool operator== (const Item&) const;
-
-		bool IsValid () const;
-
-		bool IsHidden () const;
-
-		void Execute (ICoreProxy_ptr) const;
-
-		QString GetName (const QString&) const;
-		QString GetGenericName (const QString&) const;
-		QString GetComment (const QString&) const;
-		QString GetIconName () const;
-		QStringList GetCategories () const;
-
-		Type GetType () const;
-		QString GetCommand () const;
-		QString GetWorkingDirectory () const;
-
-		QString GetPermanentID () const;
-
-		void SetIcon (const QIcon&);
-		QIcon GetIcon () const;
-
-		QDebug DebugPrint (QDebug) const;
-
-		static Item_ptr FromDesktopFile (const QString&);
-	};
-
-	QDebug operator<< (QDebug, const Item&);
+	class UTIL_API ItemsFinder;
+}
 }
 }
