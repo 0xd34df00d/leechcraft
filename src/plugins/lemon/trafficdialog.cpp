@@ -110,6 +110,8 @@ namespace Lemon
 #else
 		QwtLegend *legend = new QwtLegend;
 		legend->setItemMode (QwtLegend::CheckableItem);
+		Ui_.TrafficPlot_->insertLegend (legend, QwtPlot::ExternalLegend);
+
 		auto layout = qobject_cast<QwtDynGridLayout*> (legend->contentsWidget ()->layout ());
 		if (layout)
 			layout->setMaxCols (1);
@@ -117,6 +119,7 @@ namespace Lemon
 			qWarning () << Q_FUNC_INFO
 					<< "legend contents layout is not a QwtDynGridLayout:"
 					<< legend->contentsWidget ()->layout ();
+
 		Ui_.StatsFrame_->layout ()->addWidget (legend);
 #endif
 
