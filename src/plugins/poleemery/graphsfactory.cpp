@@ -237,7 +237,11 @@ namespace Poleemery
 			auto grid = new QwtPlotGrid;
 			grid->enableYMin (true);
 			grid->enableXMin (true);
+#if QWT_VERSION >= 0x060100
+			grid->setMinorPen (QPen (Qt::gray, 1, Qt::DashLine));
+#else
 			grid->setMinPen (QPen (Qt::gray, 1, Qt::DashLine));
+#endif
 			result << grid;
 
 			return result;
@@ -317,7 +321,11 @@ namespace Poleemery
 			auto grid = new QwtPlotGrid;
 			grid->enableYMin (true);
 			grid->enableX (false);
+#if QWT_VERSION >= 0x060100
+			grid->setMinorPen (QPen (Qt::gray, 1, Qt::DashLine));
+#else
 			grid->setMinPen (QPen (Qt::gray, 1, Qt::DashLine));
+#endif
 			result << grid;
 
 			return result;
