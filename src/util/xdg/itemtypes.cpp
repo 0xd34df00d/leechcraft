@@ -27,15 +27,9 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <util/utilconfig.h>
-
-template<typename T>
-class QSet;
-
-template<typename T>
-class QList;
+#include "itemtypes.h"
+#include <QSet>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -43,15 +37,32 @@ namespace Util
 {
 namespace XDG
 {
-	enum class Type
+	QSet<QString> ToPaths (Type type)
 	{
-		Other,
-		Application,
-		URL,
-		Dir
-	};
+		switch (type)
+		{
+		case Type::Application:
+		case Type::Dir:
+		case Type::URL:
+			return QSet<QString> () << "/usr/share/applications"
+					<< "/usr/local/share/applications";
+		case Type::Other:
+			return {};
+		}
 
-	UTIL_API QSet<QString> ToPaths (const QList<Type>&);
+		qWarning () << Q_FUNC_INFO
+				<< "unknown type"
+				<< static_cast<int> (type);
+		return {};
+	}
+
+	QSet<QString> ToPaths (const QList<Type>& types)
+	{
+		QSet<QString> result;
+		for (auto type : types)
+			result += ToPaths (type);
+		return result;
+	}
 }
 }
 }

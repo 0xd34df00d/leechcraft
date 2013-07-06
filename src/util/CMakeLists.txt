@@ -47,6 +47,7 @@ set (SRCS
 	xdg/desktopparser.cpp
 	xdg/item.cpp
 	xdg/itemsfinder.cpp
+	xdg/itemtypes.cpp
 	xdg/xdg.cpp
 	tags/categoryselector.cpp
 	tags/tagscompleter.cpp
