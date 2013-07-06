@@ -44,6 +44,8 @@ namespace XDG
 	class UTIL_API Item;
 	typedef std::shared_ptr<Item> Item_ptr;
 
+	enum class Type;
+
 	class UTIL_API ItemsFinder : public QObject
 	{
 		Q_OBJECT
@@ -52,8 +54,10 @@ namespace XDG
 		QHash<QString, QList<Item_ptr>> Items_;
 
 		bool IsReady_;
+
+		const QList<Type> Types_;
 	public:
-		ItemsFinder (ICoreProxy_ptr, QObject* = 0);
+		ItemsFinder (ICoreProxy_ptr, const QList<Type>&, QObject* = 0);
 
 		bool IsReady () const;
 

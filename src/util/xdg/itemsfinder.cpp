@@ -40,10 +40,12 @@ namespace Util
 {
 namespace XDG
 {
-	ItemsFinder::ItemsFinder (ICoreProxy_ptr proxy, QObject *parent)
+	ItemsFinder::ItemsFinder (ICoreProxy_ptr proxy,
+			const QList<Type>& types, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, IsReady_ (false)
+	, Types_ (types)
 	{
 		QTimer::singleShot (1000, this, SLOT (update ()));
 	}
@@ -112,7 +114,10 @@ namespace XDG
 		IsReady_ = true;
 
 		Items_.clear ();
-		auto paths = ScanDir ("/usr/share/applications");
+
+		QStringList paths;
+		for (const auto& dir : ToPaths (Types_))
+			paths << ScanDir (dir);
 
 		for (const auto& path : paths)
 		{
