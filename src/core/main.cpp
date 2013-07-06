@@ -34,6 +34,8 @@ int main (int argc, char **argv)
 	int author = 0xd34df00d;
 	Q_UNUSED (author);
 
+	LeechCraft::Application::setAttribute (Qt::AA_X11InitThreads);
+
 	LeechCraft::Application app (argc, argv);
 	return app.exec ();
 }
