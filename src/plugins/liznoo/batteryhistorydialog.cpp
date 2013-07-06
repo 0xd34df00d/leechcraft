@@ -29,12 +29,14 @@
 
 #include "batteryhistorydialog.h"
 #include <algorithm>
+#include <qwt_global.h>
 #include <qwt_plot_curve.h>
 #include <qwt_curve_fitter.h>
 #include <qwt_legend.h>
 #include <qwt_dyngrid_layout.h>
-#include "batteryinfo.h"
+#include <qwt_plot_legenditem.h>
 #include <util/util.h>
+#include "batteryinfo.h"
 
 namespace LeechCraft
 {
@@ -80,6 +82,18 @@ namespace Liznoo
 
 		Temperature_->setRenderHint (QwtPlotItem::RenderAntialiased);
 
+#if QWT_VERSION >= 0x060100
+		auto item = new QwtPlotLegendItem;
+		item->setMaxColumns (1);
+		item->setAlignment (Qt::AlignTop | Qt::AlignLeft);
+		item->attach (Ui_.PercentPlot_);
+
+		auto bgColor = palette ().color (QPalette::Button);
+		bgColor.setAlphaF (0.8);
+		item->setBackgroundBrush (bgColor);
+		item->setBorderRadius (3);
+		item->setBorderPen (QPen (palette ().color (QPalette::Dark), 1));
+#else
 		QwtLegend *legend = new QwtLegend;
 		legend->setItemMode (QwtLegend::ClickableItem);
 		Ui_.PercentPlot_->insertLegend (legend, QwtPlot::ExternalLegend);
@@ -93,6 +107,7 @@ namespace Liznoo
 					<< legend->contentsWidget ()->layout ();
 
 		Ui_.InfoFrame_->layout ()->addWidget (legend);
+#endif
 	}
 
 	void BatteryHistoryDialog::UpdateHistory (const QLinkedList<BatteryHistory>& hist, const BatteryInfo& info)
