@@ -68,7 +68,7 @@ namespace XDG
 	{
 		auto command = GetCommand ();
 
-		if (GetType () == Item::Type::Application)
+		if (GetType () == Type::Application)
 		{
 			command.remove ("%c");
 			command.remove ("%f");
@@ -86,7 +86,7 @@ namespace XDG
 
 			QProcess::startDetached (items.at (0), items.mid (1), GetWorkingDirectory ());
 		}
-		else if (GetType () == Item::Type::URL)
+		else if (GetType () == Type::URL)
 		{
 			const auto& e = Util::MakeEntity (QUrl (command),
 					QString (),
@@ -133,7 +133,7 @@ namespace XDG
 		return Categories_;
 	}
 
-	Item::Type Item::GetType () const
+	Type Item::GetType () const
 	{
 		return Type_;
 	}
