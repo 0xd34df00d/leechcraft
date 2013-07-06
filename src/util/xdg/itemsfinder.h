@@ -46,12 +46,14 @@ namespace XDG
 
 	enum class Type;
 
+	typedef QHash<QString, QList<Item_ptr>> Cat2Items_t;
+
 	class UTIL_API ItemsFinder : public QObject
 	{
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
-		QHash<QString, QList<Item_ptr>> Items_;
+		Cat2Items_t Items_;
 
 		bool IsReady_;
 
@@ -61,7 +63,7 @@ namespace XDG
 
 		bool IsReady () const;
 
-		QHash<QString, QList<Item_ptr>> GetItems () const;
+		Cat2Items_t GetItems () const;
 		Item_ptr FindItem (const QString& permanentID) const;
 	public slots:
 		void update ();

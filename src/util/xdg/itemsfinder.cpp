@@ -55,7 +55,7 @@ namespace XDG
 		return IsReady_;
 	}
 
-	QHash<QString, QList<Item_ptr>> ItemsFinder::GetItems () const
+	Cat2Items_t ItemsFinder::GetItems () const
 	{
 		return Items_;
 	}
@@ -99,7 +99,7 @@ namespace XDG
 			if (!result.isNull ())
 				return result;
 
-			result = Util::XDG::GetAppIcon (name);
+			result = GetAppIcon (name);
 			if (!result.isNull ())
 				return result;
 
