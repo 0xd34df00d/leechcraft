@@ -33,7 +33,7 @@
 #include <QUrl>
 #include <QProcess>
 #include <util/util.h>
-#include <util/xdg/xdgdesktopparser.h>
+#include <util/xdg/desktopparser.h>
 #include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
