@@ -33,30 +33,6 @@ set (SRCS
 	qml/eventproxyobject.cpp
 	qml/actionsproxyobject.cpp
 	)
-set (HEADERS
-	advancednotifications.h
-	core.h
-	generalhandler.h
-	concretehandlerbase.h
-	systemtrayhandler.h
-	notificationruleswidget.h
-	xmlsettingsmanager.h
-	notificationrule.h
-	fieldmatch.h
-	typedmatchers.h
-	matchconfigdialog.h
-	visualhandler.h
-	audiohandler.h
-	cmdrunhandler.h
-	enablesoundactionmanager.h
-	wmurgenthandler.h
-	rulesmanager.h
-	quarkproxy.h
-	actionsmodel.h
-	qml/visualnotificationsview.h
-	qml/eventproxyobject.h
-	qml/actionsproxyobject.h
-	)
 set (FORMS
 	notificationruleswidget.ui
 	matchconfigdialog.ui
@@ -69,16 +45,12 @@ add_definitions(-DHAVE_QML=1)
 set (RESOURCES advancednotificationsresources.qrc)
 
 CreateTrs ("advancednotifications" "en;es;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 add_library (leechcraft_advancednotifications SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${RCCS}
 	${UIS_H}
 	)
