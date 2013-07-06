@@ -31,6 +31,8 @@
 #include <QDir>
 #include <QTimer>
 #include <QtDebug>
+#include <QFutureWatcher>
+#include <QtConcurrentRun>
 #include "xdg.h"
 #include "item.h"
 
@@ -107,48 +109,77 @@ namespace XDG
 
 			return result;
 		}
+
+		Cat2Items_t FindAndParse (const QList<Type>& types, ICoreProxy_ptr proxy)
+		{
+			Cat2Items_t result;
+
+			QStringList paths;
+			for (const auto& dir : ToPaths (types))
+				paths << ScanDir (dir);
+
+			for (const auto& path : paths)
+			{
+				Item_ptr item;
+				try
+				{
+					item = Item::FromDesktopFile (path);
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "error parsing"
+							<< path
+							<< e.what ();
+					continue;
+				}
+				if (!item->IsValid ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "invalid item"
+							<< path;
+					continue;
+				}
+
+				item->SetIcon (GetIconDevice (proxy, item->GetIconName ()));
+
+				for (const auto& cat : item->GetCategories ())
+					if (!cat.startsWith ("X-"))
+						result [cat] << item;
+			}
+
+			return result;
+		}
 	}
 
 	void ItemsFinder::update ()
 	{
-		IsReady_ = true;
-
-		Items_.clear ();
-
-		QStringList paths;
-		for (const auto& dir : ToPaths (Types_))
-			paths << ScanDir (dir);
-
-		for (const auto& path : paths)
+		if (!IsReady_)
 		{
-			Item_ptr item;
-			try
-			{
-				item = Item::FromDesktopFile (path);
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "error parsing"
-						<< path
-						<< e.what ();
-				continue;
-			}
-			if (!item->IsValid ())
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "invalid item"
-						<< path;
-				continue;
-			}
-
-			item->SetIcon (GetIconDevice (Proxy_, item->GetIconName ()));
-
-			for (const auto& cat : item->GetCategories ())
-				if (!cat.startsWith ("X-"))
-					Items_ [cat] << item;
+			IsReady_ = true;
+			Items_ = FindAndParse (Types_, Proxy_);
+			emit itemsListChanged ();
+			return;
 		}
 
+		auto watcher = new QFutureWatcher<Cat2Items_t> ();
+		connect (watcher,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleScanParseFinished ()));
+		watcher->setFuture (QtConcurrent::run (FindAndParse, Types_, Proxy_));
+	}
+
+	void ItemsFinder::handleScanParseFinished ()
+	{
+		qDebug () << Q_FUNC_INFO;
+
+		auto watcher = dynamic_cast<QFutureWatcher<Cat2Items_t>*> (sender ());
+		auto result = watcher->result ();
+		if (result == Items_)
+			return;
+
+		Items_ = std::move (result);
 		emit itemsListChanged ();
 	}
 }
