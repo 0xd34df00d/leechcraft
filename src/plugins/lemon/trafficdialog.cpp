@@ -109,7 +109,7 @@ namespace Lemon
 		item->setBorderPen (QPen (palette ().color (QPalette::Dark), 1));
 #else
 		QwtLegend *legend = new QwtLegend;
-		legend->setItemMode (QwtLegend::Checkable);
+		legend->setItemMode (QwtLegend::CheckableItem);
 		auto layout = qobject_cast<QwtDynGridLayout*> (legend->contentsWidget ()->layout ());
 		if (layout)
 			layout->setMaxCols (1);
