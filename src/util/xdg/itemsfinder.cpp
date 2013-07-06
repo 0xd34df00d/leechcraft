@@ -172,8 +172,6 @@ namespace XDG
 
 	void ItemsFinder::handleScanParseFinished ()
 	{
-		qDebug () << Q_FUNC_INFO;
-
 		auto watcher = dynamic_cast<QFutureWatcher<Cat2Items_t>*> (sender ());
 		auto result = watcher->result ();
 		if (result == Items_)
