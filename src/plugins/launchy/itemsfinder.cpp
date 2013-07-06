@@ -31,8 +31,8 @@
 #include <QDir>
 #include <QTimer>
 #include <QtDebug>
+#include <util/xdg/xdg.h>
 #include "item.h"
-#include <util/sys/xdg.h>
 
 namespace LeechCraft
 {
