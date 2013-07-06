@@ -27,7 +27,9 @@ ADD_LIBRARY (leechcraft_monocle_mu SHARED
 	)
 TARGET_LINK_LIBRARIES (leechcraft_monocle_mu
 	fitz
+	jbig2dec
 	jpeg
+	openjpeg
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
