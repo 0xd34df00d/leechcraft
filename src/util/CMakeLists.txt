@@ -46,6 +46,7 @@ set (SRCS
 	sys/paths.cpp
 	xdg/desktopparser.cpp
 	xdg/item.cpp
+	xdg/itemsdatabase.cpp
 	xdg/itemsfinder.cpp
 	xdg/itemtypes.cpp
 	xdg/xdg.cpp
