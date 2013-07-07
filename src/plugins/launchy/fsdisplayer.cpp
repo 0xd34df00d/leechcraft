@@ -258,13 +258,27 @@ namespace Launchy
 				Infos_ ["Toys"] = { FSDisplayer::tr ("Toys"), "applications-toys" };
 				Infos_ ["Utilities"] = { FSDisplayer::tr ("Utilities"), "applications-utilities" };
 
-				Infos_ ["Application"] = Infos_ ["Utilities"];
-				Infos_ ["AudioVideo"] = Infos_ ["Multimedia"];
+				Infos_ ["Debugger"] = Infos_ ["Development"];
+				Infos_ ["IDE"] = Infos_ ["Development"];
+				Infos_ ["Translation"] = Infos_ ["Development"];
+
 				Infos_ ["InstantMessaging"] = Infos_ ["Internet"];
-				Infos_ ["Music"] = Infos_ ["Multimedia"];
 				Infos_ ["Network"] = Infos_ ["Internet"];
+				Infos_ ["P2P"] = Infos_ ["Internet"];
+				Infos_ ["WebBrowser"] = Infos_ ["Internet"];
+
+				Infos_ ["RasterGraphics"] = Infos_ ["Graphics"];
+
+				Infos_ ["Audio"] = Infos_ ["Multimedia"];
+				Infos_ ["AudioVideo"] = Infos_ ["Multimedia"];
+				Infos_ ["Music"] = Infos_ ["Multimedia"];
 				Infos_ ["Player"] = Infos_ ["Multimedia"];
 				Infos_ ["Recorder"] = Infos_ ["Multimedia"];
+
+				Infos_ ["DesktopSettings"] = Infos_ ["Settings"];
+				Infos_ ["HardwareSettings"] = Infos_ ["Settings"];
+
+				Infos_ ["Application"] = Infos_ ["Utilities"];
 				Infos_ ["Utility"] = Infos_ ["Utilities"];
 			}
 		};
