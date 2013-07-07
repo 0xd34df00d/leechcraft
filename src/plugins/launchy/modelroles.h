@@ -45,6 +45,7 @@ namespace Launchy
 		ItemIcon,
 		ItemDescription,
 		ItemID,
+		ItemCommand,
 
 		IsItemFavorite,
 

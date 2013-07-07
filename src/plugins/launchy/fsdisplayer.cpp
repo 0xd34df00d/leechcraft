@@ -335,6 +335,8 @@ namespace Launchy
 			auto appItem = new QStandardItem ();
 			appItem->setData (itemName, ModelRoles::ItemName);
 
+			appItem->setData (item->GetCommand (), ModelRoles::ItemCommand);
+
 			auto comment = item->GetComment (curLang);
 			if (comment.isEmpty ())
 				comment = item->GetGenericName (curLang);
