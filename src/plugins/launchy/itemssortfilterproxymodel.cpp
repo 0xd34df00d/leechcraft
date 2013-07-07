@@ -82,7 +82,8 @@ namespace Launchy
 		};
 
 		return checkStr (ModelRoles::ItemName) ||
-				checkStr (ModelRoles::ItemDescription);
+				checkStr (ModelRoles::ItemDescription) ||
+				checkStr (ModelRoles::ItemCommand);
 	}
 
 	void ItemsSortFilterProxyModel::setCategoryNames (const QStringList& cats)
