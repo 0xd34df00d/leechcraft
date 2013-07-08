@@ -55,21 +55,31 @@ namespace SB2
 
 	void ViewGeometryManager::Manage ()
 	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_SB2");
-		settings.beginGroup ("Toolbars");
+		auto settings = ViewMgr_->GetSettings ();
+		settings->beginGroup ("Toolbars");
 		const auto& posSettingName = "Pos_" + QString::number (ViewMgr_->GetWindowIndex ());
-		auto pos = settings.value (posSettingName, static_cast<int> (Qt::LeftToolBarArea)).toInt ();
-		settings.endGroup ();
+		auto pos = settings->value (posSettingName, static_cast<int> (Qt::LeftToolBarArea)).toInt ();
+		settings->endGroup ();
 
-		setOrientation ((pos == Qt::LeftToolBarArea || pos == Qt::RightToolBarArea) ? Qt::Vertical : Qt::Horizontal);
+		SetPosition (static_cast<Qt::ToolBarArea> (pos));
 
 		auto toolbar = ViewMgr_->GetToolbar ();
-
 		connect (toolbar,
 				SIGNAL (orientationChanged (Qt::Orientation)),
 				this,
 				SLOT (setOrientation (Qt::Orientation)));
+	}
+
+	void ViewGeometryManager::SetPosition (Qt::ToolBarArea pos)
+	{
+		setOrientation ((pos == Qt::LeftToolBarArea || pos == Qt::RightToolBarArea) ? Qt::Vertical : Qt::Horizontal);
+
+		auto toolbar = ViewMgr_->GetToolbar ();
+
+		auto settings = ViewMgr_->GetSettings ();
+		settings->beginGroup ("Toolbars");
+		settings->setValue ("Pos_" + QString::number (ViewMgr_->GetWindowIndex ()), static_cast<int> (pos));
+		settings->endGroup ();
 
 #ifdef WITH_X11
 		if (!ViewMgr_->IsDesktopMode ())
@@ -130,16 +140,17 @@ namespace SB2
 	void ViewGeometryManager::setOrientation (Qt::Orientation orientation)
 	{
 		auto view = ViewMgr_->GetView ();
+		const auto& size = view->sizeHint ();
 
 		switch (orientation)
 		{
 		case Qt::Vertical:
-			view->resize (view->minimumSize ());
+			view->resize (size);
 			view->setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Expanding);
 			view->rootContext ()->setContextProperty ("viewOrient", "vertical");
 			break;
 		case Qt::Horizontal:
-			view->resize (view->minimumSize ());
+			view->resize (size);
 			view->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Preferred);
 			view->rootContext ()->setContextProperty ("viewOrient", "horizontal");
 			break;
