@@ -67,6 +67,7 @@ namespace SB2
 		{
 #endif
 			toolbar->setFloatable (false);
+			toolbar->setMovable (false);
 #ifdef WITH_X11
 		}
 		else
