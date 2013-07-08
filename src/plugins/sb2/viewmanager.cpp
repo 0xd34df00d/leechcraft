@@ -253,6 +253,11 @@ namespace SB2
 		SaveQuarkOrder ();
 	}
 
+	void ViewManager::MovePanel (Qt::ToolBarArea area)
+	{
+		GeomManager_->SetPosition (area);
+	}
+
 	QuarkComponents_t ViewManager::FindAllQuarks () const
 	{
 		auto result = InternalComponents_;
