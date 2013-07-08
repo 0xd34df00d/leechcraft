@@ -61,6 +61,32 @@ namespace SB2
 		auto pos = settings->value (posSettingName, static_cast<int> (Qt::LeftToolBarArea)).toInt ();
 		settings->endGroup ();
 
+		auto toolbar = ViewMgr_->GetToolbar ();
+#ifdef WITH_X11
+		if (!ViewMgr_->IsDesktopMode ())
+		{
+#endif
+			toolbar->setFloatable (false);
+#ifdef WITH_X11
+		}
+		else
+		{
+			toolbar->setParent (nullptr);
+			toolbar->setWindowFlags (Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+
+			toolbar->setFloatable (true);
+			toolbar->setAllowedAreas (Qt::NoToolBarArea);
+
+			toolbar->setAttribute (Qt::WA_X11NetWmWindowTypeDock);
+			toolbar->setAttribute (Qt::WA_X11NetWmWindowTypeToolBar, false);
+			toolbar->setAttribute (Qt::WA_AlwaysShowToolTips);
+
+			toolbar->show ();
+
+			Util::XWrapper::Instance ().MoveWindowToDesktop (toolbar->winId (), 0xffffffff);
+		}
+#endif
+
 		SetPosition (static_cast<Qt::ToolBarArea> (pos));
 	}
 
@@ -122,10 +148,7 @@ namespace SB2
 		if (!ViewMgr_->IsDesktopMode ())
 		{
 #endif
-			toolbar->setFloatable (false);
 			ViewMgr_->GetManagedWindow ()->addToolBar (static_cast<Qt::ToolBarArea> (pos), toolbar);
-
-			Util::XWrapper::Instance ().MoveWindowToDesktop (toolbar->winId (), 0xffffffff);
 #ifdef Q_OS_MAC
 			// dunno WTF
 			ViewMgr_->GetManagedWindow ()->show ();
@@ -134,25 +157,10 @@ namespace SB2
 		}
 		else
 		{
-			toolbar->setParent (nullptr);
-			toolbar->setWindowFlags (Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
-
-			toolbar->setFloatable (true);
-			toolbar->setAllowedAreas (Qt::NoToolBarArea);
-
-			toolbar->setAttribute (Qt::WA_X11NetWmWindowTypeDock);
-			toolbar->setAttribute (Qt::WA_X11NetWmWindowTypeToolBar, false);
-			toolbar->setAttribute (Qt::WA_AlwaysShowToolTips);
-
-			toolbar->show ();
-
-			auto toolbar = ViewMgr_->GetToolbar ();
-
 			const auto screenGeometry = QApplication::desktop ()->
 					screenGeometry (ViewMgr_->GetManagedWindow ());
 
 			const auto& rect = ToGeom (screenGeometry, ViewMgr_->GetView ()->minimumSizeHint (), pos);
-			qDebug () << Q_FUNC_INFO << rect << screenGeometry << ViewMgr_->GetView ()->minimumSizeHint ();
 
 			toolbar->setGeometry (rect);
 			ViewMgr_->GetView ()->setFixedSize (rect.size ());
