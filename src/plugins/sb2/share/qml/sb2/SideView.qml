@@ -35,6 +35,87 @@ Rectangle {
         onTriggered: { isHighlight = !isHighlight; settingsMode = !settingsMode; }
     }
 
+    Item {
+        id: setPanelPosWidget
+
+        visible: enableSettingsModeButton.settingsMode
+        width: isVert ? parent.width : parent.height
+        height: width
+        anchors.bottom: isVert ? enableSettingsModeButton.top : undefined
+        anchors.right: isVert ? undefined : enableSettingsModeButton.left
+
+        ActionButton {
+            id: moveToTop
+
+            width: parent.width / 3
+            height: width
+            anchors.top: parent.top
+            anchors.horizontalCenter: parent.horizontalCenter
+            hoverScalesIcons: false
+
+            actionIconURL: "image://ThemeIcons/arrow-up"
+
+            onTriggered: quarkProxy.panelMoveRequested("top")
+        }
+
+        ActionButton {
+            id: moveToBottom
+
+            width: parent.width / 3
+            height: width
+            anchors.bottom: parent.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
+            hoverScalesIcons: false
+
+            actionIconURL: "image://ThemeIcons/arrow-down"
+
+            onTriggered: quarkProxy.panelMoveRequested("bottom")
+        }
+
+        ActionButton {
+            id: moveToLeft
+
+            width: parent.width / 3
+            height: width
+            anchors.left: parent.left
+            anchors.verticalCenter: parent.verticalCenter
+            hoverScalesIcons: false
+
+            actionIconURL: "image://ThemeIcons/arrow-left"
+
+            onTriggered: quarkProxy.panelMoveRequested("left")
+        }
+
+        ActionButton {
+            id: moveToRight
+
+            width: parent.width / 3
+            height: width
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            hoverScalesIcons: false
+
+            actionIconURL: "image://ThemeIcons/arrow-right"
+
+            onTriggered: quarkProxy.panelMoveRequested("right")
+        }
+    }
+
+    ActionButton {
+        id: addQuarkButton
+
+        visible: enableSettingsModeButton.settingsMode
+        width: isVert ? parent.width : parent.height
+        height: width
+        anchors.bottom: isVert ? setPanelPosWidget.top : undefined
+        anchors.right: isVert ? undefined : setPanelPosWidget.left
+
+        actionIconURL: "image://ThemeIcons/list-add"
+        textTooltip: SB2_addQuarkTooltip
+
+        onTriggered: commonJS.showTooltip(addQuarkButton, function(x, y) { quarkProxy.quarkAddRequested(x, y) })
+    }
+
     ActionButton {
         id: setQuarkOrderButton
         visible: enableSettingsModeButton.settingsMode
@@ -47,21 +128,6 @@ Rectangle {
         textTooltip: SB2_quarkOrderTooltip
 
         onTriggered: commonJS.showTooltip(setQuarkOrderButton, function(x, y) { quarkProxy.quarkOrderRequested(x, y) })
-    }
-
-    ActionButton {
-        id: addQuarkButton
-
-        visible: enableSettingsModeButton.settingsMode
-        width: isVert ? parent.width : parent.height
-        height: width
-        anchors.bottom: isVert ? enableSettingsModeButton.top : undefined
-        anchors.right: isVert ? undefined : enableSettingsModeButton.left
-
-        actionIconURL: "image://ThemeIcons/list-add"
-        textTooltip: SB2_addQuarkTooltip
-
-        onTriggered: commonJS.showTooltip(addQuarkButton, function(x, y) { quarkProxy.quarkAddRequested(x, y) })
     }
 
     Grid {
