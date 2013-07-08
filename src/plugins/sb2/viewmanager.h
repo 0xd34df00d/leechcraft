@@ -122,8 +122,6 @@ namespace SB2
 
 		void SaveQuarkOrder ();
 		void LoadQuarkOrder ();
-	public slots:
-		void handleToolbarTopLevel (bool);
 	};
 }
 }
