@@ -92,36 +92,53 @@ namespace SB2
 
 	namespace
 	{
-		QRect ToGeom (const QRect& screenGeometry, const QSize& minSize, Qt::ToolBarArea area)
+		QRect ToGeom (const QRect& screenGeometry, const QSize& minSize, Qt::ToolBarArea area, QSize *diff = 0)
 		{
+			const int addition = 2;
 			switch (area)
 			{
 			case Qt::BottomToolBarArea:
 			{
-				QRect rect { 0, 0, screenGeometry.width (), minSize.height () };
+				QRect rect { 0, 0, screenGeometry.width (), minSize.height () + addition };
 				rect.moveLeft (screenGeometry.left ());
 				rect.moveBottom (screenGeometry.bottom ());
+
+				if (diff)
+					*diff = { 0, addition };
+
 				return rect;
 			}
 			case Qt::TopToolBarArea:
 			{
-				QRect rect { 0, 0, screenGeometry.width (), minSize.height () };
+				QRect rect { 0, 0, screenGeometry.width (), minSize.height () + addition };
 				rect.moveLeft (screenGeometry.left ());
 				rect.moveTop (screenGeometry.top ());
+
+				if (diff)
+					*diff = { 0, addition };
+
 				return rect;
 			}
 			case Qt::LeftToolBarArea:
 			{
-				QRect rect { 0, 0, minSize.width (), screenGeometry.height () };
+				QRect rect { 0, 0, minSize.width () + addition, screenGeometry.height () };
 				rect.moveLeft (screenGeometry.left ());
 				rect.moveTop (screenGeometry.top ());
+
+				if (diff)
+					*diff = { addition, 0 };
+
 				return rect;
 			}
 			case Qt::RightToolBarArea:
 			{
-				QRect rect { 0, 0, minSize.width (), screenGeometry.height () };
+				QRect rect { 0, 0, minSize.width () + addition, screenGeometry.height () };
 				rect.moveRight (screenGeometry.right ());
 				rect.moveTop (screenGeometry.top ());
+
+				if (diff)
+					*diff = { addition, 0 };
+
 				return rect;
 			}
 			default:
@@ -160,10 +177,11 @@ namespace SB2
 			const auto screenGeometry = QApplication::desktop ()->
 					screenGeometry (ViewMgr_->GetManagedWindow ());
 
-			const auto& rect = ToGeom (screenGeometry, ViewMgr_->GetView ()->minimumSizeHint (), pos);
+			QSize diff;
+			const auto& rect = ToGeom (screenGeometry, ViewMgr_->GetView ()->minimumSizeHint (), pos, &diff);
 
 			toolbar->setGeometry (rect);
-			ViewMgr_->GetView ()->setFixedSize (rect.size ());
+			ViewMgr_->GetView ()->setFixedSize (rect.size () - diff);
 			toolbar->setFixedSize (rect.size ());
 
 			Util::XWrapper::Instance ().SetStrut (toolbar, pos);
