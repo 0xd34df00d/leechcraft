@@ -67,6 +67,11 @@ namespace NetStoreManager
 		return RemotePath_;
 	}
 
+	Snapshot_t Syncer::GetSnapshot () const
+	{
+		return Snapshot_;
+	}
+
 	bool Syncer::IsStarted () const
 	{
 		return Started_;
@@ -143,15 +148,16 @@ namespace NetStoreManager
 			{
 			case HashAlgorithm::Md4:
 				return QCryptographicHash::Md4;
-			case HashAlgorithm::Md5:
-				return QCryptographicHash::Md5;
 			case HashAlgorithm::Sha1:
 				return QCryptographicHash::Sha1;
+			case HashAlgorithm::Md5:
+			default:
+				return QCryptographicHash::Md5;
 			}
 		}
 	}
 
-	Syncer::Snapshot_t Syncer::CreateSnapshot ()
+	Snapshot_t Syncer::CreateSnapshot ()
 	{
 		Snapshot_t snapshot;
 
@@ -194,10 +200,12 @@ namespace NetStoreManager
 			change.Item_ = storage;
 			snapshot [change.ID_] = change;
 		}
+
+		return snapshot;
 	}
 
-	Syncer::Snapshot_t Syncer::CreateDiffSnapshot(const Syncer::Snapshot_t newSnapshot,
-			const Syncer::Snapshot_t oldSnapshot)
+	Snapshot_t Syncer::CreateDiffSnapshot(const Snapshot_t newSnapshot,
+			const Snapshot_t oldSnapshot)
 	{
 		Snapshot_t diffSnapshot;
 // 		for (auto it = oldSnapshot.begin (); it != oldSnapshot.end (); ++it)

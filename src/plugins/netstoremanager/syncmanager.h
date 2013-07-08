@@ -42,6 +42,8 @@ namespace NetStoreManager
 	class FilesWatcherBase;
 	class Syncer;
 
+	typedef QHash<QByteArray, Change> Snapshot_t;
+
 	class SyncManager : public QObject
 	{
 		Q_OBJECT

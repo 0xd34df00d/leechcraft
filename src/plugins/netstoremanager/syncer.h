@@ -34,6 +34,7 @@
 #include <QObject>
 #include <QQueue>
 #include "interfaces/netstoremanager/isupportfilelistings.h"
+#include "syncmanager.h"
 
 namespace LeechCraft
 {
@@ -54,7 +55,7 @@ namespace NetStoreManager
 		boost::bimaps::bimap<QByteArray, QString> Id2Path_;
 		QQueue<std::function<void (void)>> CallsQueue_;
 
-		typedef QHash<QByteArray, Change> Snapshot_t;
+		Snapshot_t Snapshot_;
 
 	public:
 		explicit Syncer (const QString& dirPath, const QString& remotePath,
@@ -63,6 +64,7 @@ namespace NetStoreManager
 		QByteArray GetAccountID () const;
 		QString GetLocalPath () const;
 		QString GetRemotePath () const;
+		Snapshot_t GetSnapshot () const;
 
 		bool IsStarted () const;
 	private:

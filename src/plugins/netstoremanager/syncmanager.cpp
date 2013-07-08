@@ -29,6 +29,7 @@
 
 #include "syncmanager.h"
 #include <QtDebug>
+#include <QSettings>
 #include "accountsmanager.h"
 #include "syncer.h"
 #if defined (Q_OS_LINUX)
@@ -103,6 +104,33 @@ namespace NetStoreManager
 
 	void SyncManager::Release ()
 	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_NetStoreManager");
+		settings.beginGroup ("Core");
+		settings.beginWriteArray ("Snapshots");
+		const auto& list = AccountID2Syncer_.values ();
+		for (int i = 0; i < list.count (); ++i)
+		{
+			settings.setArrayIndex (i);
+			const auto syncer = list.at (i);
+			try
+			{
+				settings.setValue ("AccountID", syncer->GetAccountID ());
+				settings.setValue ("LocalPath", syncer->GetLocalPath ());
+				settings.setValue ("RemotePath", syncer->GetRemotePath ());
+// 				settings.setValue ("Snapshot", syncer->GetSnapshot ().values ());
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO << e.what ();
+			}
+			catch (...)
+			{
+				qWarning () << Q_FUNC_INFO << "unknown exception";
+			}
+		}
+		settings.endArray ();
+		settings.endGroup ();
 	}
 
 	void SyncManager::handleDirectoriesToSyncUpdated (const QVariantMap& map)

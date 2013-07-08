@@ -37,6 +37,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/iwebfilestorage.h>
+#include "interfaces/netstoremanager/isupportfilelistings.h"
 
 namespace LeechCraft
 {
@@ -101,6 +102,13 @@ namespace NetStoreManager
 
 		void fileUploaded (const QString&, const QUrl&);
 	};
+
+
+	QDataStream &operator<<(QDataStream &out, const Change& change);
+	QDataStream &operator>>(QDataStream &in, Change& change);
+
+	QDataStream &operator<<(QDataStream &out, const StorageItem& item);
+	QDataStream &operator>>(QDataStream &in, StorageItem& item);
 }
 }
 

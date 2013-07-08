@@ -62,6 +62,10 @@ namespace NetStoreManager
 
 		qRegisterMetaType<SyncDirs_t> ("SyncDirs_t");
 		qRegisterMetaTypeStreamOperators<SyncDirs_t> ("SyncDirs_t");
+		qRegisterMetaType<Change> ("Change");
+		qRegisterMetaTypeStreamOperators<Change> ("Change");
+		qRegisterMetaType<StorageItem> ("StorageItem");
+		qRegisterMetaTypeStreamOperators<StorageItem> ("StorageItem");
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "netstoremanagersettings.xml");
@@ -198,6 +202,60 @@ namespace NetStoreManager
 
 		UpManager_->handleUploadRequest (account, filename);
 		UpManager_->ScheduleAutoshare (filename);
+	}
+
+	QDataStream& operator<< (QDataStream& out, const Change& change)
+	{
+		out << quint8 (1)
+				<< change.ID_
+				<< change.ItemID_
+				<< change.Deleted_
+				<< change.Item_;
+
+		return out;
+	}
+
+	QDataStream& operator>> (QDataStream& in, Change& change)
+	{
+		quint8 version = 0;
+		in >> version;
+		if (version == 1)
+			in >> change.ID_
+					>> change.ItemID_
+					>> change.Deleted_
+					>> change.Item_;
+
+		return in;
+	}
+
+	QDataStream& operator<< (QDataStream& out, const StorageItem& item)
+	{
+		out << quint8 (1)
+				<< item.ID_
+				<< item.ParentID_
+				<< item.Name_
+				<< item.IsDirectory_
+				<< item.Hash_
+				<< item.ModifyDate_
+				<< item.Size_;
+
+		return out;
+	}
+
+	QDataStream& operator>> (QDataStream& in, StorageItem& item)
+	{
+		quint8 version = 0;
+		in >> version;
+		if (version == 1)
+			in >> item.ID_
+					>> item.ParentID_
+					>> item.Name_
+					>> item.IsDirectory_
+					>> item.Hash_
+					>> item.ModifyDate_
+					>> item.Size_;
+
+		return in;
 	}
 }
 }
