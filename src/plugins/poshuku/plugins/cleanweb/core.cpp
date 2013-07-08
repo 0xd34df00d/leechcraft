@@ -874,6 +874,9 @@ namespace CleanWeb
 
 	void Core::handleFrameLayout (QPointer<QWebFrame> frame)
 	{
+		if (!frame)
+			return;
+
 		const QUrl& frameUrl = frame->url ();
 		const QString& urlStr = frameUrl.toString ();
 		const auto& urlUtf8 = urlStr.toUtf8 ();
