@@ -54,6 +54,8 @@ namespace NetStoreManager
 		boost::bimaps::bimap<QByteArray, QString> Id2Path_;
 		QQueue<std::function<void (void)>> CallsQueue_;
 
+		typedef QHash<QByteArray, Change> Snapshot_t;
+
 	public:
 		explicit Syncer (const QString& dirPath, const QString& remotePath,
 				IStorageAccount *isa, QObject *parent = 0);
@@ -67,6 +69,9 @@ namespace NetStoreManager
 		void CreateRemotePath (const QStringList& path);
 		void DeleteRemotePath (const QStringList& path);
 		void RenameItem (const StorageItem& item, const QString& path);
+		Snapshot_t CreateSnapshot ();
+		Snapshot_t CreateDiffSnapshot (const Snapshot_t newSnapshot,
+				const Snapshot_t oldSnapshot);
 
 	public slots:
 		void start ();

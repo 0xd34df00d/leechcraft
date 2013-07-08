@@ -27,10 +27,13 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
+#include <future>
 #include "syncer.h"
+#include <QCryptographicHash>
 #include <QFileInfo>
 #include <QStandardItem>
 #include <QtDebug>
+#include <QUuid>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "utils.h"
 
@@ -132,11 +135,108 @@ namespace NetStoreManager
 			}
 	}
 
+	namespace
+	{
+		QCryptographicHash::Algorithm NSMHashType2QtCryproHashAlgorithm (HashAlgorithm hash)
+		{
+			switch (hash)
+			{
+			case HashAlgorithm::Md4:
+				return QCryptographicHash::Md4;
+			case HashAlgorithm::Md5:
+				return QCryptographicHash::Md5;
+			case HashAlgorithm::Sha1:
+				return QCryptographicHash::Sha1;
+			}
+		}
+	}
+
+	Syncer::Snapshot_t Syncer::CreateSnapshot ()
+	{
+		Snapshot_t snapshot;
+
+		for (const auto& fi : QDir (LocalPath_).entryInfoList (QDir::NoDotAndDotDot | QDir::AllEntries))
+		{
+			const QString path = fi.absoluteFilePath ().remove (LocalPath_ + "/");
+			Change change;
+			StorageItem storage;
+			if (!Id2Path_.right.count (path))
+				change.ItemID_ = Id2Path_.right.at (path);
+			else
+			{
+				change.ItemID_ = QUuid::createUuid ().toByteArray ();
+
+				storage.IsDirectory_ = fi.isDir ();
+				storage.Name_ = fi.fileName ();
+				storage.ModifyDate_ = fi.lastModified ();
+				storage.ID_ = change.ItemID_;
+			}
+
+			if (fi.isFile ())
+			{
+				QFile file (fi.absoluteFilePath ());
+				if (file.open (QIODevice::ReadOnly))
+				{
+					const auto& ba = file.readAll ();
+					std::future<QByteArray> hash = std::async (std::launch::async,
+							[this, &ba] { return QCryptographicHash::hash (ba,
+									NSMHashType2QtCryproHashAlgorithm (SFLAccount_->GetCheckSumAlgorithm ())); });
+					storage.Hash_ = hash.get ();
+					file.close ();
+				}
+				else
+					qWarning () << Q_FUNC_INFO
+							<< "unable to open file for hash counting";
+
+				storage.Size_ = fi.size ();
+			}
+
+			change.Item_ = storage;
+			snapshot [change.ID_] = change;
+		}
+	}
+
+	Syncer::Snapshot_t Syncer::CreateDiffSnapshot(const Syncer::Snapshot_t newSnapshot,
+			const Syncer::Snapshot_t oldSnapshot)
+	{
+		Snapshot_t diffSnapshot;
+// 		for (auto it = oldSnapshot.begin (); it != oldSnapshot.end (); ++it)
+// 		{
+// 			if (!newSnapshot.contains (it.key ()))
+// 			{
+// 				it.value ().Deleted_ = true;
+// 				diffSnapshot.insert (it.key (), it.value ());
+// 			}
+// 			else if (it.value ().Item_.Name_ != newSnapshot [it.key ()].Item_.Name_)
+// 			{
+// 				diffSnapshot.insert (it.key (), newSnapshot [it.key ()]);
+// 				newSnapshot.remove (it.key ());
+// 			}
+// 			else if (it.value ().Item_.Name_ != newSnapshot [it.key ()].Item_.Name_)
+// 			{
+// 				diffSnapshot.insert (it.key (), newSnapshot [it.key ()]);
+// 				newSnapshot.remove (it.key ());
+// 			}
+// 			else if (it.value ().Item_.Hash_ != newSnapshot [it.key ()].Item_.Hash_)
+// 			{
+// 				diffSnapshot.insert (it.key (), newSnapshot [it.key ()]);
+// 				newSnapshot.remove (it.key ());
+// 			}
+// 		}
+
+		return diffSnapshot;
+	}
+
 	void Syncer::start ()
 	{
 		Started_ = true;
 		QStringList path = RemotePath_.split ('/');
 		CreateRemotePath (path);
+
+		//TODO load snapshot, send diff
+
+		const auto& newSnapshot = CreateSnapshot ();
+// 		const auto& diffSnapshot = CreateDiffSnapshot (newSnapshot, Snapshot_);
 	}
 
 	void Syncer::stop ()
@@ -255,13 +355,23 @@ namespace NetStoreManager
 
 		QString dirPath = path;
 		QString parentPath = QFileInfo (dirPath).dir ().absolutePath ();
+// 		StorageItem item;
+// 		item.IsDirectory_ = true;
+// 		item.ParentID_ = Id2Path_.right.at (parentPath);
+// 		item.Name_ = QFileInfo (path).fileName ();
+// 		Change change;
+// 		change.Deleted_ = false;
+// 		change.Item_ = item;
+// 		change.ID_ = path;
+// 		Snapshot_ << change;
+
 		dirPath.replace (LocalPath_, RemotePath_);
 		parentPath.replace (LocalPath_, RemotePath_);
 
-		if (Id2Path_.right.count (parentPath))
-			CreateRemotePath (dirPath.split ("/"));
-		else
-			CallsQueue_ << [this, path] () { localDirWasCreated (path); };
+		// 		if (Id2Path_.right.count (parentPath))
+// 			CreateRemotePath (dirPath.split ("/"));
+// 		else
+// 			CallsQueue_ << [this, path] () { localDirWasCreated (path); };
 	}
 
 	void Syncer::localDirWasRemoved (const QString& path)
@@ -273,7 +383,9 @@ namespace NetStoreManager
 		dirPath.replace (LocalPath_, RemotePath_);
 		if (!Id2Path_.right.count (dirPath))
 			return;
-		DeleteRemotePath (dirPath.split ('/'));
+
+
+// 		DeleteRemotePath (dirPath.split ('/'));
 	}
 
 	void Syncer::localFileWasCreated (const QString& path)
@@ -283,10 +395,10 @@ namespace NetStoreManager
 		filePath.replace (LocalPath_, RemotePath_);
 		dirPath.replace (LocalPath_, RemotePath_);
 		const QByteArray& id = Id2Path_.right.at (dirPath);
-		if (Id2Path_.right.count (dirPath))
-			Account_->Upload (path, id);
-		else
-			CallsQueue_ << [this, path, id] () { localFileWasCreated (path); };
+// 		if (Id2Path_.right.count (dirPath))
+// 			Account_->Upload (path, id);
+// 		else
+// 			CallsQueue_ << [this, path, id] () { localFileWasCreated (path); };
 	}
 
 	void Syncer::localFileWasRemoved (const QString& path)
@@ -296,7 +408,7 @@ namespace NetStoreManager
 
 		QString filePath = path;
 		filePath.replace (LocalPath_, RemotePath_);
-		DeleteRemotePath (filePath.split ('/'));
+// 		DeleteRemotePath (filePath.split ('/'));
 	}
 
 	void Syncer::localFileWasUpdated (const QString& path)
@@ -308,12 +420,12 @@ namespace NetStoreManager
 	{
 		QString filePath = oldName;
 		filePath.replace (LocalPath_, RemotePath_);
-		if (Id2Path_.right.count (filePath))
-			SFLAccount_->Rename (Id2Path_.right.at (filePath),
-					QFileInfo (newName).fileName ());
-		else
-			CallsQueue_ << [this, oldName, newName] ()
-					{ localFileWasRenamed (oldName, newName); };
+// 		if (Id2Path_.right.count (filePath))
+// 			SFLAccount_->Rename (Id2Path_.right.at (filePath),
+// 					QFileInfo (newName).fileName ());
+// 		else
+// 			CallsQueue_ << [this, oldName, newName] ()
+// 					{ localFileWasRenamed (oldName, newName); };
 	}
 
 }
