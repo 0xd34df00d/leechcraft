@@ -42,10 +42,12 @@ namespace SB2
 
 	QSize SBView::minimumSizeHint () const
 	{
-		auto res = QAbstractScrollArea::minimumSizeHint ();
-		res.rwidth () = 32;
-		res.rheight () = 32;
-		return res;
+		return { 32, 32 };
+	}
+
+	QSize SBView::sizeHint () const
+	{
+		return { 32, 32 };
 	}
 }
 }
