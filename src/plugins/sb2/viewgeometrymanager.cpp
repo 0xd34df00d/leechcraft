@@ -62,12 +62,6 @@ namespace SB2
 		settings->endGroup ();
 
 		SetPosition (static_cast<Qt::ToolBarArea> (pos));
-
-		auto toolbar = ViewMgr_->GetToolbar ();
-		connect (toolbar,
-				SIGNAL (orientationChanged (Qt::Orientation)),
-				this,
-				SLOT (setOrientation (Qt::Orientation)));
 	}
 
 	void ViewGeometryManager::SetPosition (Qt::ToolBarArea pos)
