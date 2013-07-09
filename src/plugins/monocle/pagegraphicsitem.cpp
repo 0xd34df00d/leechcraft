@@ -53,6 +53,7 @@ namespace Monocle
 	, YScale_ (1)
 	, Invalid_ (true)
 	{
+		setTransformationMode (Qt::SmoothTransformation);
 		setPixmap (QPixmap (Doc_->GetPageSize (page)));
 
 		if (!Links_.isEmpty ())
