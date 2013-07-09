@@ -43,6 +43,19 @@
      </property>
     </widget>
    </item>
+   <item>
+    <widget class="QToolButton" name="Reset_">
+     <property name="toolTip">
+      <string>Reset rotation</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset theme="view-restore"/>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources/>

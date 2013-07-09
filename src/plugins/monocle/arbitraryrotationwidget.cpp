@@ -60,5 +60,10 @@ namespace Monocle
 		Ui_.Slider_->setValue (val);
 		emit valueChanged (val);
 	}
+
+	void ArbitraryRotationWidget::on_Reset__released ()
+	{
+		setValue (0);
+	}
 }
 }

@@ -50,6 +50,7 @@ namespace Monocle
 	private slots:
 		void on_Slider__valueChanged (int);
 		void on_Spinbox__valueChanged (double);
+		void on_Reset__released ();
 	signals:
 		void valueChanged (double);
 	};
