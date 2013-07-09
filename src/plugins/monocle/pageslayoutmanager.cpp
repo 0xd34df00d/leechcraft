@@ -66,6 +66,8 @@ namespace Monocle
 	{
 		CurrentDoc_ = doc;
 		Pages_ = pages;
+		Rotation_ = 0;
+		emit rotationUpdated (0);
 
 		if (CurrentDoc_ && qobject_cast<IDynamicDocument*> (CurrentDoc_->GetQObject ()))
 			connect (CurrentDoc_->GetQObject (),
