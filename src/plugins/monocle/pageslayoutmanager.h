@@ -65,7 +65,7 @@ namespace Monocle
 		double HorMargin_;
 		double VertMargin_;
 
-		qreal Rotation_;
+		double Rotation_;
 	public:
 		PagesLayoutManager (PagesView*, QObject* = 0);
 
@@ -86,9 +86,9 @@ namespace Monocle
 		void SetFixedScale (double);
 		double GetCurrentScale () const;
 
-		void SetRotation (qreal);
-		void AddRotation (qreal);
-		qreal GetRotation () const;
+		void SetRotation (double);
+		void AddRotation (double);
+		double GetRotation () const;
 
 		void SetMargins (double horizontal, double vertical);
 
@@ -96,12 +96,15 @@ namespace Monocle
 	private:
 		QSizeF GetRotatedSize (int page) const;
 	public slots:
+		void scheduleSetRotation (double);
+
 		void scheduleRelayout ();
 		void handleRelayout ();
 	private slots:
 		void handlePageSizeChanged (int);
 	signals:
 		void scheduledRelayoutFinished ();
+		void rotationUpdated (double);
 	};
 }
 }

@@ -201,18 +201,19 @@ namespace Monocle
 		return 1;
 	}
 
-	void PagesLayoutManager::SetRotation (qreal angle)
+	void PagesLayoutManager::SetRotation (double angle)
 	{
 		Rotation_ = angle;
 		Relayout ();
+		emit rotationUpdated (angle);
 	}
 
-	void PagesLayoutManager::AddRotation (qreal dAngle)
+	void PagesLayoutManager::AddRotation (double dAngle)
 	{
 		SetRotation (GetRotation () + dAngle);
 	}
 
-	qreal PagesLayoutManager::GetRotation () const
+	double PagesLayoutManager::GetRotation () const
 	{
 		return Rotation_;
 	}
@@ -243,7 +244,7 @@ namespace Monocle
 		{
 			item->resetTransform ();
 
-			if (std::fabs (Rotation_) > std::numeric_limits<qreal>::epsilon ())
+			if (std::fabs (Rotation_) > std::numeric_limits<double>::epsilon ())
 			{
 				const auto& bounding = item->boundingRect ();
 				item->setTransformOriginPoint (bounding.width (), bounding.height ());
@@ -294,6 +295,12 @@ namespace Monocle
 	{
 		const auto& origSize = CurrentDoc_->GetPageSize (page);
 		return Pages_.at (page)->transform ().mapRect (QRectF { { 0, 0 }, origSize }).size ();
+	}
+
+	void PagesLayoutManager::scheduleSetRotation (double angle)
+	{
+		SetRotation (angle);
+		emit rotationUpdated (angle);
 	}
 
 	void PagesLayoutManager::scheduleRelayout ()
