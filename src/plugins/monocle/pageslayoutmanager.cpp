@@ -53,6 +53,7 @@ namespace Monocle
 	, RelayoutScheduled_ (false)
 	, HorMargin_ (0)
 	, VertMargin_ (0)
+	, Rotation_ (0)
 	{
 		connect (View_,
 				SIGNAL (sizeChanged ()),
@@ -160,7 +161,7 @@ namespace Monocle
 			if (pageIdx < 0)
 				pageIdx = 0;
 
-			double dim = dimGetter (CurrentDoc_->GetPageSize (pageIdx) + QSize (2 * HorMargin_, 2 * VertMargin_));
+			double dim = dimGetter (GetRotatedSize (pageIdx).toSize () + QSize (2 * HorMargin_, 2 * VertMargin_));
 			auto size = View_->maximumViewportSize ();
 			size.rwidth () -= View_->verticalScrollBar ()->size ().width ();
 			size.rheight () -= View_->horizontalScrollBar ()->size ().height ();
@@ -200,6 +201,22 @@ namespace Monocle
 		return 1;
 	}
 
+	void PagesLayoutManager::SetRotation (qreal angle)
+	{
+		Rotation_ = angle;
+		Relayout ();
+	}
+
+	void PagesLayoutManager::AddRotation (qreal dAngle)
+	{
+		SetRotation (GetRotation () + dAngle);
+	}
+
+	qreal PagesLayoutManager::GetRotation () const
+	{
+		return Rotation_;
+	}
+
 	void PagesLayoutManager::SetMargins (double horizontal, double vertical)
 	{
 		HorMargin_ = horizontal;
@@ -223,12 +240,25 @@ namespace Monocle
 		}
 
 		for (auto item : Pages_)
+		{
+			item->resetTransform ();
+
+			if (std::fabs (Rotation_) > std::numeric_limits<qreal>::epsilon ())
+			{
+				const auto& bounding = item->boundingRect ();
+				item->setTransformOriginPoint (bounding.width (), bounding.height ());
+				item->rotate (Rotation_);
+			}
+
 			item->SetScale (scale, scale);
+		}
 
 		for (int i = 0, pagesCount = Pages_.size (); i < pagesCount; ++i)
 		{
-			const auto& size = CurrentDoc_->GetPageSize (i) * scale;
 			auto page = Pages_ [i];
+
+			const auto& size = GetRotatedSize (i) * scale;
+
 			switch (LayMode_)
 			{
 			case LayoutMode::OnePage:
@@ -258,6 +288,12 @@ namespace Monocle
 			RelayoutScheduled_ = false;
 			emit scheduledRelayoutFinished ();
 		}
+	}
+
+	QSizeF PagesLayoutManager::GetRotatedSize (int page) const
+	{
+		const auto& origSize = CurrentDoc_->GetPageSize (page);
+		return Pages_.at (page)->transform ().mapRect (QRectF { { 0, 0 }, origSize }).size ();
 	}
 
 	void PagesLayoutManager::scheduleRelayout ()
