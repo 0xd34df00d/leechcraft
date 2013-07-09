@@ -32,6 +32,8 @@
 #include <QAction>
 #include <QTabWidget>
 #include <QActionEvent>
+#include <QToolButton>
+#include <QMenu>
 #include <QtDebug>
 #include "iconthemeengine.h"
 
@@ -51,13 +53,19 @@ bool ChildActionEventFilter::eventFilter (QObject *obj, QEvent *event)
 	if (event->type () == QEvent::ChildAdded ||
 			event->type () == QEvent::ChildPolished)
 	{
-		QChildEvent *e = dynamic_cast<QChildEvent*> (event);
+		QChildEvent *e = static_cast<QChildEvent*> (event);
 		auto child = e->child ();
 		child->installEventFilter (this);
 
-		QAction *act = dynamic_cast<QAction*> (child);
-		if (act)
-			IconThemeEngine::Instance ().UpdateIconSet (QList<QAction*> () << act);
+		if (auto act = qobject_cast<QAction*> (child))
+			IconThemeEngine::Instance ().UpdateIconSet ({ act });
+		else if (auto tb = qobject_cast<QToolButton*> (child))
+		{
+			if (auto act = tb->defaultAction ())
+				IconThemeEngine::Instance ().UpdateIconSet ({ act });
+			if (auto menu = tb->menu ())
+				IconThemeEngine::Instance ().UpdateIconSet ({ menu->menuAction () });
+		}
 		else
 		{
 			IconThemeEngine::Instance ()
