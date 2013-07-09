@@ -48,6 +48,7 @@
 #include <QTimer>
 #include <QScrollBar>
 #include <QShortcut>
+#include <QWidgetAction>
 #include <QUrl>
 #include <util/util.h>
 #include <util/xpc/stddatafiltermenucreator.h>
@@ -76,6 +77,7 @@
 #include "thumbswidget.h"
 #include "textsearchhandler.h"
 #include "formmanager.h"
+#include "arbitraryrotationwidget.h"
 
 namespace LeechCraft
 {
@@ -517,9 +519,24 @@ namespace Monocle
 				this, SLOT (rotateCW ()));
 		cwAction->setProperty ("ActionIcon", "object-rotate-right");
 
-		auto arbAction = rotateMenu->addAction (tr ("Rotate arbitrarily..."),
-				this, SLOT (rotateAribtrary ()));
+		auto arbAction = rotateMenu->addAction (tr ("Rotate arbitrarily..."));
 		arbAction->setProperty ("ActionIcon", "transform-rotate");
+
+		auto arbMenu = new QMenu ();
+		arbAction->setMenu (arbMenu);
+
+		auto arbWidget = new ArbitraryRotationWidget;
+		connect (arbWidget,
+				SIGNAL (valueChanged (double)),
+				LayoutManager_,
+				SLOT (scheduleSetRotation (double)));
+		connect (LayoutManager_,
+				SIGNAL (rotationUpdated (double)),
+				arbWidget,
+				SLOT (setValue (double)));
+		auto actionWidget = new QWidgetAction (this);
+		actionWidget->setDefaultWidget (arbWidget);
+		arbMenu->addAction (actionWidget);
 
 		auto rotateButton = new QToolButton ();
 		rotateButton->setDefaultAction (arbAction);
@@ -1109,10 +1126,6 @@ namespace Monocle
 	void DocumentTab::rotateCW ()
 	{
 		LayoutManager_->AddRotation (90);
-	}
-
-	void DocumentTab::rotateAribtrary ()
-	{
 	}
 
 	void DocumentTab::zoomOut ()

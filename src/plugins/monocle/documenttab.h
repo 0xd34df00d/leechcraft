@@ -180,7 +180,6 @@ namespace Monocle
 
 		void rotateCCW ();
 		void rotateCW ();
-		void rotateAribtrary ();
 
 		void zoomOut ();
 		void zoomIn ();
