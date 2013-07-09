@@ -120,6 +120,18 @@ namespace NetStoreManager
 			}
 
 			const auto& accId = accItem->data (SyncItemDelegate::AccountId).toString ();
+
+			for (int j = i - 1; j >= 0; --j)
+			{
+				if (Model_->item (j, SyncItemDelegate::Account)->data (SyncItemDelegate::AccountId).toString () == accId &&
+						Model_->item (j, SyncItemDelegate::LocalDirectory)->text () == localDirItem->text () &&
+						Model_->item (j, SyncItemDelegate::RemoteDirecory)->text () == remoteDirItem->text ())
+				{
+					Model_->removeRow (j);
+					continue;
+				}
+			}
+
 			if (!oldMap.contains (accId) ||
 					oldMap [accId].value<SyncDirs_t> ().first != localDirItem->text ())
 			{
