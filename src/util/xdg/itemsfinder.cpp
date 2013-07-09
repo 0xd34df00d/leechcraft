@@ -110,6 +110,14 @@ namespace XDG
 			return result;
 		}
 
+		void FixIcons (const Cat2Items_t& items, ICoreProxy_ptr proxy)
+		{
+			for (const auto& list : items)
+				for (auto item : list)
+					if (item->GetIcon ().isNull ())
+						item->SetIcon (GetIconDevice (proxy, item->GetIconName ()));
+		}
+
 		Cat2Items_t FindAndParse (const QList<Type>& types, ICoreProxy_ptr proxy)
 		{
 			Cat2Items_t result;
@@ -141,8 +149,6 @@ namespace XDG
 					continue;
 				}
 
-				item->SetIcon (GetIconDevice (proxy, item->GetIconName ()));
-
 				for (const auto& cat : item->GetCategories ())
 					if (!cat.startsWith ("X-"))
 						result [cat] << item;
@@ -158,6 +164,9 @@ namespace XDG
 		{
 			IsReady_ = true;
 			Items_ = FindAndParse (Types_, Proxy_);
+
+			FixIcons (Items_, Proxy_);
+
 			emit itemsListChanged ();
 			return;
 		}
@@ -178,6 +187,8 @@ namespace XDG
 			return;
 
 		Items_ = std::move (result);
+		FixIcons (Items_, Proxy_);
+
 		emit itemsListChanged ();
 	}
 }
