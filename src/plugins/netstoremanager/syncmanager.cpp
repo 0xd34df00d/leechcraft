@@ -43,6 +43,7 @@ namespace LeechCraft
 {
 namespace NetStoreManager
 {
+
 	SyncManager::SyncManager (AccountsManager *am, QObject *parent)
 	: QObject (parent)
 	, AM_ (am)
@@ -104,33 +105,7 @@ namespace NetStoreManager
 
 	void SyncManager::Release ()
 	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_NetStoreManager");
-		settings.beginGroup ("Core");
-		settings.beginWriteArray ("Snapshots");
-		const auto& list = AccountID2Syncer_.values ();
-		for (int i = 0; i < list.count (); ++i)
-		{
-			settings.setArrayIndex (i);
-			const auto syncer = list.at (i);
-			try
-			{
-				settings.setValue ("AccountID", syncer->GetAccountID ());
-				settings.setValue ("LocalPath", syncer->GetLocalPath ());
-				settings.setValue ("RemotePath", syncer->GetRemotePath ());
-// 				settings.setValue ("Snapshot", syncer->GetSnapshot ().values ());
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO << e.what ();
-			}
-			catch (...)
-			{
-				qWarning () << Q_FUNC_INFO << "unknown exception";
-			}
-		}
-		settings.endArray ();
-		settings.endGroup ();
+		WriteSnapshots ();
 	}
 
 	void SyncManager::handleDirectoriesToSyncUpdated (const QVariantMap& map)
@@ -165,6 +140,57 @@ namespace NetStoreManager
 	{
 		Syncer *syncer = new Syncer (baseDir, remoteDir, isa, this);
 		return syncer;
+	}
+
+	void SyncManager::WriteSnapshots ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_NetStoreManager");
+		settings.beginGroup ("Core");
+		settings.beginWriteArray ("Snapshots");
+		const auto& list = AccountID2Syncer_.values ();
+		for (int i = 0, size = list.count (); i < size; ++i)
+		{
+			settings.setArrayIndex (i);
+			const auto syncer = list.at (i);
+
+			settings.setValue ("AccountID", syncer->GetAccountID ());
+			settings.setValue ("LocalPath", syncer->GetLocalPath ());
+			settings.setValue ("RemotePath", syncer->GetRemotePath ());
+			settings.setValue ("Snapshot",
+					QVariant::fromValue<Changes_t> (syncer->GetSnapshot ()
+							.values ()));
+		}
+		settings.endArray ();
+		settings.endGroup ();
+	}
+
+	void SyncManager::ReadSnapshots ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_NetStoreManager");
+		settings.beginGroup ("Core");
+		int snapshots = settings.beginReadArray ("Snapshots");
+		for (int i = 0; i < snapshots; ++i)
+		{
+			settings.setArrayIndex (i);
+			const QByteArray& id = settings.value ("AccountID").toByteArray ();
+			const QString& localPath = settings.value ("LocalPath").toString ();
+			const QString& remotePath = settings.value ("RemotePath").toString ();
+
+			auto it = std::find_if (AccountID2Syncer_.begin (), AccountID2Syncer_.end (),
+					[id, localPath, remotePath] (Syncer *syncer)
+					{
+						return syncer->GetAccountID () == id &&
+								syncer->GetLocalPath () == localPath &&
+								syncer->GetRemotePath () == remotePath;
+					});
+
+			if (it != AccountID2Syncer_.end ())
+				it.value ()->SetSnapshot (settings.value ("Snapshot").value<Changes_t> ());
+		}
+		settings.endArray ();
+		settings.endGroup ();
 	}
 
 	void SyncManager::handleDirWasCreated (const QString& path)

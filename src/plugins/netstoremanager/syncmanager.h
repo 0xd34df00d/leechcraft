@@ -34,6 +34,9 @@
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/isupportfilelistings.h"
 
+typedef QList<LeechCraft::NetStoreManager::Change> Changes_t;
+Q_DECLARE_METATYPE (Changes_t)
+
 namespace LeechCraft
 {
 namespace NetStoreManager
@@ -59,6 +62,8 @@ namespace NetStoreManager
 	private:
 		Syncer* CreateSyncer (IStorageAccount *isa, const QString& baseDir,
 				const QString& remoteDir);
+		void WriteSnapshots ();
+		void ReadSnapshots ();
 
 	public slots:
 		void handleDirectoriesToSyncUpdated (const QVariantMap& map);

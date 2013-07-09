@@ -64,7 +64,9 @@ namespace NetStoreManager
 		QByteArray GetAccountID () const;
 		QString GetLocalPath () const;
 		QString GetRemotePath () const;
+
 		Snapshot_t GetSnapshot () const;
+		void SetSnapshot (Changes_t changes);
 
 		bool IsStarted () const;
 	private:

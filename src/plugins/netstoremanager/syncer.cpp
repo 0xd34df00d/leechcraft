@@ -72,6 +72,13 @@ namespace NetStoreManager
 		return Snapshot_;
 	}
 
+	void Syncer::SetSnapshot (Changes_t changes)
+	{
+		Snapshot_.clear ();
+		for (const auto& change : changes)
+			Snapshot_ [change.ID_] = change;
+	}
+
 	bool Syncer::IsStarted () const
 	{
 		return Started_;
