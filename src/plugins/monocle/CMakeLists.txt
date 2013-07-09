@@ -52,6 +52,7 @@ set (SRCS
 	pageslayoutmanager.cpp
 	textsearchhandler.cpp
 	formmanager.cpp
+	arbitraryrotationwidget.cpp
 	)
 set (FORMS
 	documenttab.ui
@@ -60,6 +61,7 @@ set (FORMS
 	docinfodialog.ui
 	bookmarkswidget.ui
 	thumbswidget.ui
+	arbitraryrotationwidget.ui
 	)
 set (RESOURCES monocleresources.qrc)
 CreateTrs ("monocle" "en;ru_RU" COMPILED_TRANSLATIONS)
