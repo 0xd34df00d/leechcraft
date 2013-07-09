@@ -395,7 +395,6 @@ namespace Monocle
 
 		auto docObj = CurrentDoc_->GetQObject ();
 
-		TOCEntryLevel_t topLevel;
 		auto toc = qobject_cast<IHaveTOC*> (docObj);
 		TOCWidget_->SetTOC (toc ? toc->GetTOC () : TOCEntryLevel_t ());
 
