@@ -215,30 +215,6 @@ namespace NetStoreManager
 			const Snapshot_t oldSnapshot)
 	{
 		Snapshot_t diffSnapshot;
-// 		for (auto it = oldSnapshot.begin (); it != oldSnapshot.end (); ++it)
-// 		{
-// 			if (!newSnapshot.contains (it.key ()))
-// 			{
-// 				it.value ().Deleted_ = true;
-// 				diffSnapshot.insert (it.key (), it.value ());
-// 			}
-// 			else if (it.value ().Item_.Name_ != newSnapshot [it.key ()].Item_.Name_)
-// 			{
-// 				diffSnapshot.insert (it.key (), newSnapshot [it.key ()]);
-// 				newSnapshot.remove (it.key ());
-// 			}
-// 			else if (it.value ().Item_.Name_ != newSnapshot [it.key ()].Item_.Name_)
-// 			{
-// 				diffSnapshot.insert (it.key (), newSnapshot [it.key ()]);
-// 				newSnapshot.remove (it.key ());
-// 			}
-// 			else if (it.value ().Item_.Hash_ != newSnapshot [it.key ()].Item_.Hash_)
-// 			{
-// 				diffSnapshot.insert (it.key (), newSnapshot [it.key ()]);
-// 				newSnapshot.remove (it.key ());
-// 			}
-// 		}
-
 		return diffSnapshot;
 	}
 
@@ -248,10 +224,8 @@ namespace NetStoreManager
 		QStringList path = RemotePath_.split ('/');
 		CreateRemotePath (path);
 
-		//TODO load snapshot, send diff
-
 		const auto& newSnapshot = CreateSnapshot ();
-// 		const auto& diffSnapshot = CreateDiffSnapshot (newSnapshot, Snapshot_);
+		//TODO create diff
 	}
 
 	void Syncer::stop ()
@@ -370,20 +344,10 @@ namespace NetStoreManager
 
 		QString dirPath = path;
 		QString parentPath = QFileInfo (dirPath).dir ().absolutePath ();
-// 		StorageItem item;
-// 		item.IsDirectory_ = true;
-// 		item.ParentID_ = Id2Path_.right.at (parentPath);
-// 		item.Name_ = QFileInfo (path).fileName ();
-// 		Change change;
-// 		change.Deleted_ = false;
-// 		change.Item_ = item;
-// 		change.ID_ = path;
-// 		Snapshot_ << change;
-
 		dirPath.replace (LocalPath_, RemotePath_);
 		parentPath.replace (LocalPath_, RemotePath_);
 
-		// 		if (Id2Path_.right.count (parentPath))
+// 		if (Id2Path_.right.count (parentPath))
 // 			CreateRemotePath (dirPath.split ("/"));
 // 		else
 // 			CallsQueue_ << [this, path] () { localDirWasCreated (path); };
@@ -398,7 +362,6 @@ namespace NetStoreManager
 		dirPath.replace (LocalPath_, RemotePath_);
 		if (!Id2Path_.right.count (dirPath))
 			return;
-
 
 // 		DeleteRemotePath (dirPath.split ('/'));
 	}
