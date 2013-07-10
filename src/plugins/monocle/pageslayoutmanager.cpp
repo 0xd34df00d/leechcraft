@@ -275,6 +275,9 @@ namespace Monocle
 			item->SetScale (scale, scale);
 		}
 
+		double currentY = 0;
+		double lastWidth = 0;
+		double lastHeight = 0;
 		for (int i = 0, pagesCount = Pages_.size (); i < pagesCount; ++i)
 		{
 			auto page = Pages_ [i];
@@ -284,11 +287,21 @@ namespace Monocle
 			switch (LayMode_)
 			{
 			case LayoutMode::OnePage:
-				page->setPos (0, Margin + (size.height () + Margin) * i);
+				page->setPos (0, currentY);
+				currentY += size.height () + Margin;
 				break;
 			case LayoutMode::TwoPages:
-				page->setPos ((i % 2) * (Margin / 3 + size.width ()),
-						Margin + (size.height () + Margin) * (i / 2));
+				if (i % 2)
+				{
+					page->setPos (lastWidth + Margin / 3, currentY);
+					currentY += std::max (lastHeight, size.height ()) + Margin;
+				}
+				else
+				{
+					page->setPos (0, currentY);
+					lastWidth = size.width ();
+					lastHeight = size.height ();
+				}
 				break;
 			}
 		}
