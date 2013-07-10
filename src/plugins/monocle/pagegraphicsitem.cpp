@@ -36,8 +36,11 @@
 #include <QApplication>
 #include <QGraphicsScene>
 #include <QGraphicsView>
+#include <QMenu>
+#include <QWidgetAction>
 #include "core.h"
 #include "pixmapcachemanager.h"
+#include "arbitraryrotationwidget.h"
 #include "pageslayoutmanager.h"
 
 namespace LeechCraft
@@ -235,15 +238,51 @@ namespace Monocle
 		auto relLink = FindLink (event->pos ());
 		const bool handle = relLink && relLink == PressedLink_;
 		PressedLink_ = ILink_ptr ();
-		if (!handle)
+		if (handle)
 		{
-			QGraphicsItem::mouseReleaseEvent (event);
-			if (ReleaseHandler_)
-				ReleaseHandler_ (PageNum_, event->pos ());
+			relLink->Execute ();
 			return;
 		}
 
-		relLink->Execute ();
+		QGraphicsItem::mouseReleaseEvent (event);
+		if (ReleaseHandler_)
+			ReleaseHandler_ (PageNum_, event->pos ());
+	}
+
+	void PageGraphicsItem::contextMenuEvent (QGraphicsSceneContextMenuEvent *event)
+	{
+		QMenu rotateMenu;
+
+		auto ccwAction = rotateMenu.addAction (tr ("Rotate 90 degrees counter-clockwise"),
+				this, SLOT (rotateCCW ()));
+		ccwAction->setProperty ("ActionIcon", "object-rotate-left");
+
+		auto cwAction = rotateMenu.addAction (tr ("Rotate 90 degrees clockwise"),
+				this, SLOT (rotateCW ()));
+		cwAction->setProperty ("ActionIcon", "object-rotate-right");
+
+		auto arbAction = rotateMenu.addAction (tr ("Rotate arbitrarily..."));
+		arbAction->setProperty ("ActionIcon", "transform-rotate");
+
+		auto arbMenu = new QMenu ();
+		arbAction->setMenu (arbMenu);
+
+		ArbWidget_ = new ArbitraryRotationWidget;
+		ArbWidget_->setValue (LayoutManager_->GetRotation () +
+				LayoutManager_->GetRotation (PageNum_));
+		connect (ArbWidget_,
+				SIGNAL (valueChanged (double)),
+				this,
+				SLOT (requestRotation (double)));
+		connect (LayoutManager_,
+				SIGNAL (rotationUpdated (double, int)),
+				this,
+				SLOT (updateRotation (double, int)));
+		auto actionWidget = new QWidgetAction (this);
+		actionWidget->setDefaultWidget (ArbWidget_);
+		arbMenu->addAction (actionWidget);
+
+		rotateMenu.exec (event->screenPos ());
 	}
 
 	void PageGraphicsItem::LayoutLinks ()
@@ -280,6 +319,32 @@ namespace Monocle
 		}
 
 		return false;
+	}
+
+	void PageGraphicsItem::rotateCCW ()
+	{
+		LayoutManager_->AddRotation (-90, PageNum_);
+	}
+
+	void PageGraphicsItem::rotateCW ()
+	{
+		LayoutManager_->AddRotation (90, PageNum_);
+	}
+
+	void PageGraphicsItem::requestRotation (double rotation)
+	{
+		LayoutManager_->SetRotation (rotation, PageNum_);
+	}
+
+	void PageGraphicsItem::updateRotation (double rotation, int page)
+	{
+		if (page != PageNum_)
+			return;
+
+		if (!ArbWidget_)
+			return;
+
+		ArbWidget_->setValue (rotation + LayoutManager_->GetRotation ());
 	}
 
 	void PageGraphicsItem::handlePixmapRendered ()
