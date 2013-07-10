@@ -37,6 +37,8 @@ namespace LeechCraft
 {
 namespace Monocle
 {
+	class PagesLayoutManager;
+
 	class PageGraphicsItem : public QObject
 						   , public QGraphicsPixmapItem
 	{
@@ -57,6 +59,7 @@ namespace Monocle
 
 		std::function<void (int, QPointF)> ReleaseHandler_;
 
+		PagesLayoutManager *LayoutManager_;
 	public:
 		typedef std::function<void (QRectF)> RectSetter_f;
 	private:
@@ -69,6 +72,8 @@ namespace Monocle
 	public:
 		PageGraphicsItem (IDocument_ptr, int, QGraphicsItem* = 0);
 		~PageGraphicsItem ();
+
+		void SetLayoutManager (PagesLayoutManager*);
 
 		void SetReleaseHandler (std::function<void (int, QPointF)>);
 

@@ -38,6 +38,7 @@
 #include <QGraphicsView>
 #include "core.h"
 #include "pixmapcachemanager.h"
+#include "pageslayoutmanager.h"
 
 namespace LeechCraft
 {
@@ -52,6 +53,7 @@ namespace Monocle
 	, XScale_ (1)
 	, YScale_ (1)
 	, Invalid_ (true)
+	, LayoutManager_ (0)
 	{
 		setTransformationMode (Qt::SmoothTransformation);
 		setPixmap (QPixmap (Doc_->GetPageSize (page)));
@@ -63,6 +65,11 @@ namespace Monocle
 	PageGraphicsItem::~PageGraphicsItem ()
 	{
 		Core::Instance ().GetPixmapCacheManager ()->PixmapDeleted (this);
+	}
+
+	void PageGraphicsItem::SetLayoutManager (PagesLayoutManager *manager)
+	{
+		LayoutManager_ = manager;
 	}
 
 	void PageGraphicsItem::SetReleaseHandler (std::function<void (int, QPointF)> handler)
