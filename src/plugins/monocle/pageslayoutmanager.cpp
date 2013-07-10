@@ -246,12 +246,10 @@ namespace Monocle
 		{
 			item->resetTransform ();
 
-			if (std::fabs (Rotation_) > std::numeric_limits<double>::epsilon ())
-			{
-				const auto& bounding = item->boundingRect ();
-				item->setTransformOriginPoint (bounding.width (), bounding.height ());
-				item->rotate (Rotation_);
-			}
+			const auto pageRotation = PageRotations_ [item->GetPageNum ()] + Rotation_;
+			const auto& bounding = item->boundingRect ();
+			item->setTransformOriginPoint (bounding.width () / 2, bounding.height () / 2);
+			item->setRotation (pageRotation);
 
 			item->SetScale (scale, scale);
 		}
