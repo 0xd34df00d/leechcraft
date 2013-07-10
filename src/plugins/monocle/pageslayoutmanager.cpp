@@ -69,6 +69,11 @@ namespace Monocle
 		Rotation_ = 0;
 		emit rotationUpdated (0);
 
+		PageRotations_ = QVector<double> (pages.size (), 0);
+
+		for (auto page : pages)
+			page->SetLayoutManager (this);
+
 		if (CurrentDoc_ && qobject_cast<IDynamicDocument*> (CurrentDoc_->GetQObject ()))
 			connect (CurrentDoc_->GetQObject (),
 					SIGNAL (pageSizeChanged (int)),
@@ -218,6 +223,23 @@ namespace Monocle
 	double PagesLayoutManager::GetRotation () const
 	{
 		return Rotation_;
+	}
+
+	void PagesLayoutManager::SetRotation (double angle, int page)
+	{
+		PageRotations_ [page] = angle;
+		Relayout ();
+		emit rotationUpdated (angle, page);
+	}
+
+	void PagesLayoutManager::AddRotation (double dAngle, int page)
+	{
+		SetRotation (dAngle + GetRotation (page), page);
+	}
+
+	double PagesLayoutManager::GetRotation (int page) const
+	{
+		return PageRotations_ [page];
 	}
 
 	void PagesLayoutManager::SetMargins (double horizontal, double vertical)
