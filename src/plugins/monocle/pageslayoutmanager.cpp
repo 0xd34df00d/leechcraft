@@ -266,11 +266,10 @@ namespace Monocle
 
 		for (auto item : Pages_)
 		{
-			item->resetTransform ();
-
 			const auto pageRotation = PageRotations_ [item->GetPageNum ()] + Rotation_;
 			const auto& bounding = item->boundingRect ();
 			item->setTransformOriginPoint (bounding.width () / 2, bounding.height () / 2);
+
 			item->setRotation (pageRotation);
 
 			item->SetScale (scale, scale);
@@ -316,7 +315,10 @@ namespace Monocle
 	QSizeF PagesLayoutManager::GetRotatedSize (int page) const
 	{
 		const auto& origSize = CurrentDoc_->GetPageSize (page);
-		return Pages_.at (page)->transform ().mapRect (QRectF { { 0, 0 }, origSize }).size ();
+		const auto rotation = Pages_.at (page)->rotation ();
+		QTransform tf;
+		tf.rotate (rotation);
+		return tf.mapRect (QRectF { { 0, 0 }, origSize }).size ();
 	}
 
 	void PagesLayoutManager::scheduleSetRotation (double angle)
