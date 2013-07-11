@@ -32,6 +32,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/ihavesettings.h>
 #include <interfaces/core/ihookproxy.h>
 
 namespace Media
@@ -54,14 +55,17 @@ namespace Xtazy
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
+				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
 		IProxyObject *AzothProxy_;
 		ICoreProxy_ptr Proxy_;
 
 		Media::ICurrentSongKeeper *Keeper_;
+
+		Util::XmlSettingsDialog_ptr XSD_;
 
 		typedef QPair<QPointer<QObject>, QString> UploadNotifee_t;
 		QMap<QString, QList<UploadNotifee_t>> PendingUploads_;
@@ -75,6 +79,8 @@ namespace Xtazy
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	private:
 		void HandleShare (LeechCraft::IHookProxy_ptr proxy,
 				QObject*, const QString&, const QUrl&);
