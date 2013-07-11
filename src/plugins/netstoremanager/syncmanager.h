@@ -64,6 +64,8 @@ namespace NetStoreManager
 				const QString& remoteDir);
 		void WriteSnapshots ();
 		void ReadSnapshots ();
+		Syncer* GetSyncerByID (const QByteArray& id) const;
+		Syncer* GetSyncerByLocalPath (const QString& localPath) const;
 
 	public slots:
 		void handleDirectoriesToSyncUpdated (const QVariantMap& map);

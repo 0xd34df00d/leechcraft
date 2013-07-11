@@ -194,39 +194,51 @@ namespace NetStoreManager
 		settings.endGroup ();
 	}
 
-	void SyncManager::handleDirWasCreated (const QString& path)
+	Syncer* SyncManager::GetSyncerByID (const QByteArray& id) const
+	{
+		for (auto accountId : AccountID2Syncer_.keys ())
+			if (id == accountId)
+				return AccountID2Syncer_ [accountId];
+		return 0;
+	}
+
+	Syncer* SyncManager::GetSyncerByLocalPath (const QString& localPath) const
 	{
 		for (auto syncer : AccountID2Syncer_.values ())
-			if (path.startsWith (syncer->GetLocalPath ()))
-				syncer->localDirWasCreated (path);
+			if (localPath.startsWith (syncer->GetLocalPath ()))
+				return syncer;
+
+		return 0;
+	}
+
+	void SyncManager::handleDirWasCreated (const QString& path)
+	{
+		if (auto syncer = GetSyncerByLocalPath (path))
+			syncer->localDirWasCreated (path);
 	}
 
 	void SyncManager::handleDirWasRemoved (const QString& path)
 	{
-		for (auto syncer : AccountID2Syncer_.values ())
-			if (path.startsWith (syncer->GetLocalPath ()))
-				syncer->localDirWasRemoved (path);
+		if (auto syncer = GetSyncerByLocalPath (path))
+			syncer->localDirWasRemoved (path);
 	}
 
 	void SyncManager::handleFileWasCreated (const QString& path)
 	{
-		for (auto syncer : AccountID2Syncer_.values ())
-			if (path.startsWith (syncer->GetLocalPath ()))
-				syncer->localFileWasCreated (path);
+		if (auto syncer = GetSyncerByLocalPath (path))
+			syncer->localFileWasCreated (path);
 	}
 
 	void SyncManager::handleFileWasRemoved (const QString& path)
 	{
-		for (auto syncer : AccountID2Syncer_.values ())
-			if (path.startsWith (syncer->GetLocalPath ()))
-				syncer->localFileWasRemoved (path);
+		if (auto syncer = GetSyncerByLocalPath (path))
+			syncer->localFileWasRemoved (path);
 	}
 
 	void SyncManager::handleFileWasUpdated (const QString& path)
 	{
-		for (auto syncer : AccountID2Syncer_.values ())
-			if (path.startsWith (syncer->GetLocalPath ()))
-				syncer->localFileWasUpdated (path);
+		if (auto syncer = GetSyncerByLocalPath (path))
+			syncer->localFileWasUpdated (path);
 	}
 
 	void SyncManager::handleEntryWasMoved (const QString& oldPath,
@@ -238,9 +250,8 @@ namespace NetStoreManager
 	void SyncManager::handleEntryWasRenamed (const QString& oldName,
 			const QString& newName)
 	{
-		for (auto syncer : AccountID2Syncer_.values ())
-			if (oldName.startsWith (syncer->GetLocalPath ()))
-				syncer->localFileWasRenamed (oldName, newName);
+		if (auto syncer = GetSyncerByLocalPath (oldName))
+			syncer->localFileWasRenamed (oldName, newName);
 	}
 
 	void SyncManager::handleGotListing (const QList<StorageItem>& items)
@@ -248,14 +259,12 @@ namespace NetStoreManager
 		auto isa = qobject_cast<IStorageAccount*> (sender ());
 		if (!isa)
 			return;
-		for (auto accountId : AccountID2Syncer_.keys ())
+
+		if (auto syncer = GetSyncerByID (isa->GetUniqueID ()))
 		{
-			if (isa->GetUniqueID () == accountId)
-			{
-				AccountID2Syncer_ [accountId]->handleGotItems (items);
-				if (!AccountID2Syncer_ [accountId]->IsStarted ())
-					AccountID2Syncer_ [accountId]->start ();
-			}
+			syncer->handleGotItems (items);
+			if (!syncer->IsStarted ())
+				syncer->start ();
 		}
 	}
 
@@ -266,9 +275,8 @@ namespace NetStoreManager
 		if (!isa)
 			return;
 
-		for (auto accountId : AccountID2Syncer_.keys ())
-			if (isa->GetUniqueID () == accountId)
-				AccountID2Syncer_ [accountId]->handleGotNewItem (item, parentId);
+		if (auto syncer = GetSyncerByID (isa->GetUniqueID ()))
+			syncer->handleGotNewItem (item, parentId);
 	}
 
 	void SyncManager::handleGotChanges (const QList<Change>& changes)
@@ -277,9 +285,8 @@ namespace NetStoreManager
 		if (!isa)
 			return;
 
-		for (auto accountId : AccountID2Syncer_.keys ())
-			if (isa->GetUniqueID () == accountId)
-				AccountID2Syncer_ [accountId]->handleGotChanges (changes);
+		if (auto syncer = GetSyncerByID (isa->GetUniqueID ()))
+			syncer->handleGotChanges (changes);
 	}
 
 }

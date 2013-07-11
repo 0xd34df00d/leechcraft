@@ -73,9 +73,9 @@ namespace NetStoreManager
 		const auto leftMap = WatchedPathes2Descriptors_.left;
 		QStringList pathsToRemove;
 		QStringList pathsToAdd;
-		for (auto it = leftMap.begin (); it != leftMap.end (); ++it)
+		for (const auto& pair : leftMap)
 		{
-			QString path = it->first;
+			QString path = pair.first;
 			if (path.startsWith (oldPath))
 			{
 				pathsToRemove << path;
