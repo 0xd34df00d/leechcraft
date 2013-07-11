@@ -29,7 +29,6 @@
 
 #pragma once
 
-#include <boost/bimap.hpp>
 #include <QString>
 #include <QDir>
 #include "interfaces/netstoremanager/isupportfilelistings.h"

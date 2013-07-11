@@ -30,8 +30,8 @@
 #ifndef PLUGINS_NETSTOREMANAGER_ACCOUNTSMANAGER_H
 #define PLUGINS_NETSTOREMANAGER_ACCOUNTSMANAGER_H
 #include <QObject>
-#include "interfaces/netstoremanager/isupportfilelistings.h"
 #include <interfaces/core/icoreproxy.h>
+#include "interfaces/netstoremanager/isupportfilelistings.h"
 
 class QAbstractItemModel;
 class QStandardItemModel;

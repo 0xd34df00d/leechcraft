@@ -86,12 +86,11 @@ namespace NetStoreManager
 		QStringList path;
 		do
 		{
-		 	path.prepend (index.data ().toString ());
+			path.prepend (index.data ().toString ());
 			index = index.parent ();
-		}
-		while (index.isValid ());
+		} while (index.isValid ());
 
-		return  path;
+		return path;
 	}
 
 	void RemoteDirectorySelectDialog::handleGotListing (const QList<StorageItem>& items)

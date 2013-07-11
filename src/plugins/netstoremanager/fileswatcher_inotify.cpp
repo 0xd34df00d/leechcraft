@@ -35,7 +35,6 @@
 #include <QStringList>
 #include <QTimer>
 #include "utils.h"
-#include <plugins/qrosp/third-party/qmetaobjectbuilder.h>
 
 namespace LeechCraft
 {
@@ -174,7 +173,7 @@ namespace NetStoreManager
 				RemoveWatchingPath (event->wd);
 		}
 
-		for (auto it = eventsBuffer.begin (); it < eventsBuffer.end ();)
+		for (auto it = eventsBuffer.begin (); it < eventsBuffer.end (); )
 		{
 			const QString path = WatchedPathes2Descriptors_.right.at ((*it)->wd);
 			const QString fullPath = path + "/" + QString ((*it)->name);
@@ -250,7 +249,7 @@ namespace NetStoreManager
 				AddPath (path);
 
 		for (auto it = WatchedPathes2Descriptors_.left.begin ();
-				it != WatchedPathes2Descriptors_.left.end ();)
+				it != WatchedPathes2Descriptors_.left.end (); )
 		{
 			if (!paths.contains (it->first))
 				it = WatchedPathes2Descriptors_.left.erase (it);

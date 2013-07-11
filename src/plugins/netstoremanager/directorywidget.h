@@ -37,6 +37,7 @@ namespace LeechCraft
 namespace NetStoreManager
 {
 	class AccountsManager;
+
 	class DirectoryWidget : public QWidget
 	{
 		Q_OBJECT

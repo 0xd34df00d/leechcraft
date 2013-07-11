@@ -88,7 +88,7 @@ namespace NetStoreManager
 		SyncManager_ = new SyncManager (AccountsManager_, this);
 		SyncWidget *w = new SyncWidget (AccountsManager_);
 		connect (w,
-				SIGNAL(directoriesToSyncUpdated (QVariantMap)),
+				SIGNAL (directoriesToSyncUpdated (QVariantMap)),
 				SyncManager_,
 				SLOT (handleDirectoriesToSyncUpdated (QVariantMap)));
 		XSD_->SetCustomWidget ("SyncWidget", w);
@@ -206,7 +206,7 @@ namespace NetStoreManager
 
 	QDataStream& operator<< (QDataStream& out, const Change& change)
 	{
-		out << quint8 (1)
+		out << static_cast<quint8> (1)
 				<< change.ID_
 				<< change.ItemID_
 				<< change.Deleted_
@@ -230,7 +230,7 @@ namespace NetStoreManager
 
 	QDataStream& operator<< (QDataStream& out, const StorageItem& item)
 	{
-		out << quint8 (1)
+		out << static_cast<quint8> (1)
 				<< item.ID_
 				<< item.ParentID_
 				<< item.Name_

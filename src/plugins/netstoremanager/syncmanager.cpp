@@ -35,7 +35,7 @@
 #if defined (Q_OS_LINUX)
 	#include "fileswatcher_inotify.h"
 #include "syncwidget.h"
-#elif defined(Q_OS_WIN32)
+#else
 	#include "fileswatcher_dummy.h"
 #endif
 
@@ -117,12 +117,13 @@ namespace NetStoreManager
 			paths << pair.first;
 			if (AccountID2Syncer_.contains (key))
 			{
-				if (AccountID2Syncer_ [key]->GetLocalPath () == pair.first &&
-						AccountID2Syncer_ [key]->GetRemotePath () == pair.second)
+				auto syncer = AccountID2Syncer_ [key];
+				if (syncer->GetLocalPath () == pair.first &&
+						syncer->GetRemotePath () == pair.second)
 					continue;
 				else
 				{
-					AccountID2Syncer_ [key]->stop ();
+					syncer->stop ();
 					AccountID2Syncer_.take (key)->deleteLater ();
 				}
 			}

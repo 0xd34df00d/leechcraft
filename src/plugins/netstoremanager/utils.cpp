@@ -70,8 +70,6 @@ namespace Utils
 			result = dir.rmdir (dirPath);
 		}
 
-
-
 		return result;
 	}
 

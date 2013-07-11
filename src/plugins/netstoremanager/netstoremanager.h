@@ -104,11 +104,11 @@ namespace NetStoreManager
 	};
 
 
-	QDataStream &operator<<(QDataStream &out, const Change& change);
-	QDataStream &operator>>(QDataStream &in, Change& change);
+	QDataStream &operator<< (QDataStream& out, const Change& change);
+	QDataStream &operator>> (QDataStream& in, Change& change);
 
-	QDataStream &operator<<(QDataStream &out, const StorageItem& item);
-	QDataStream &operator>>(QDataStream &in, StorageItem& item);
+	QDataStream &operator<< (QDataStream& out, const StorageItem& item);
+	QDataStream &operator>> (QDataStream& in, StorageItem& item);
 }
 }
 

@@ -61,9 +61,6 @@ namespace NetStoreManager
 	private:
 		void AddPath (const QString& path);
 		void RenamePath (const QString& oldPath, const QString& newPath);
-
-
-
 		void HandleNotification (int descriptor);
 		void AddPathWithNotify (const QString& path);
 		bool IsInExceptionList (const QString& path) const;

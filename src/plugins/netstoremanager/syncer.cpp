@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include <future>
 #include "syncer.h"
+#include <future>
 #include <QCryptographicHash>
 #include <QFileInfo>
 #include <QStandardItem>
@@ -72,7 +72,7 @@ namespace NetStoreManager
 		return Snapshot_;
 	}
 
-	void Syncer::SetSnapshot (Changes_t changes)
+	void Syncer::SetSnapshot (const Changes_t& changes)
 	{
 		Snapshot_.clear ();
 		for (const auto& change : changes)
@@ -192,14 +192,14 @@ namespace NetStoreManager
 				{
 					const auto& ba = file.readAll ();
 					std::future<QByteArray> hash = std::async (std::launch::async,
-							[this, &ba] { return QCryptographicHash::hash (ba,
+							[this, ba] { return QCryptographicHash::hash (ba,
 									NSMHashType2QtCryproHashAlgorithm (SFLAccount_->GetCheckSumAlgorithm ())); });
 					storage.Hash_ = hash.get ();
 					file.close ();
 				}
 				else
 					qWarning () << Q_FUNC_INFO
-							<< "unable to open file for hash counting";
+							<< "unable to open file for hash calculation";
 
 				storage.Size_ = fi.size ();
 			}
@@ -211,8 +211,8 @@ namespace NetStoreManager
 		return snapshot;
 	}
 
-	Snapshot_t Syncer::CreateDiffSnapshot(const Snapshot_t newSnapshot,
-			const Snapshot_t oldSnapshot)
+	Snapshot_t Syncer::CreateDiffSnapshot (const Snapshot_t& newSnapshot,
+			const Snapshot_t& oldSnapshot)
 	{
 		Snapshot_t diffSnapshot;
 		return diffSnapshot;
@@ -220,6 +220,9 @@ namespace NetStoreManager
 
 	void Syncer::start ()
 	{
+		if (Started_)
+			return;
+
 		Started_ = true;
 		QStringList path = RemotePath_.split ('/');
 		CreateRemotePath (path);
@@ -277,10 +280,7 @@ namespace NetStoreManager
 					QString ())
 						+ item->text () });
 			}
-			auto tempItems = parentItems;
-			parentItems = childItems;
-			childItems = tempItems;
-
+			std::swap (parentItems, childItems);
 			childItems.clear();
 		}
 

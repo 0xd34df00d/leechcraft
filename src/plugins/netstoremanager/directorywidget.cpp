@@ -66,25 +66,25 @@ namespace NetStoreManager
 		QStringList path;
 		switch (Type_)
 		{
-			case Type::Local:
-				path.append (QFileDialog::getExistingDirectory (this,
-						tr ("Select directory"),
-						Path_.isEmpty () ? QDir::homePath () : Path_));
-				break;
-			case Type::Remote:
+		case Type::Local:
+			path.append (QFileDialog::getExistingDirectory (this,
+					tr ("Select directory"),
+					Path_.isEmpty () ? QDir::homePath () : Path_));
+			break;
+		case Type::Remote:
+		{
+			if (AccountID_.isEmpty ())
 			{
-				if (AccountID_.isEmpty ())
-				{
-					QMessageBox::warning (this,
-						"LeechCraft",
-						tr ("Account hasn't been selected.\nYou should select an account in first column!"));
-					break;
-				}
-				RemoteDirectorySelectDialog dlg (AccountID_, AM_);
-				if (dlg.exec () != QDialog::Rejected)
-					path = dlg.GetDirectoryPath ();
+				QMessageBox::warning (this,
+					"LeechCraft",
+					tr ("Account hasn't been selected.\nYou should select an account in first column"));
 				break;
 			}
+			RemoteDirectorySelectDialog dlg (AccountID_, AM_);
+			if (dlg.exec () != QDialog::Rejected)
+				path = dlg.GetDirectoryPath ();
+			break;
+		}
 		};
 
 		if (path.isEmpty ())

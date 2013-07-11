@@ -66,7 +66,7 @@ namespace NetStoreManager
 		QString GetRemotePath () const;
 
 		Snapshot_t GetSnapshot () const;
-		void SetSnapshot (Changes_t changes);
+		void SetSnapshot (const Changes_t& changes);
 
 		bool IsStarted () const;
 	private:
@@ -74,8 +74,8 @@ namespace NetStoreManager
 		void DeleteRemotePath (const QStringList& path);
 		void RenameItem (const StorageItem& item, const QString& path);
 		Snapshot_t CreateSnapshot ();
-		Snapshot_t CreateDiffSnapshot (const Snapshot_t newSnapshot,
-				const Snapshot_t oldSnapshot);
+		Snapshot_t CreateDiffSnapshot (const Snapshot_t& newSnapshot,
+				const Snapshot_t& oldSnapshot);
 
 	public slots:
 		void start ();

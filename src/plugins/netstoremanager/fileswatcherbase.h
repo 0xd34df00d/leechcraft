@@ -44,8 +44,6 @@ namespace NetStoreManager
 
 	public slots:
 		virtual void updatePaths (const QStringList& paths) = 0;
-
-
 		virtual void checkNotifications () = 0;
 		virtual void release () = 0;
 		virtual void updateExceptions (QStringList masks) = 0;
