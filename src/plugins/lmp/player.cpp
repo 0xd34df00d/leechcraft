@@ -370,9 +370,13 @@ namespace LMP
 		{
 			auto parser = MakePlaylistParser (file);
 			if (parser)
-				return parser (file);
+			{
+				const auto& list = parser (file);
+				if (!list.isEmpty ())
+					return list;
+			}
 
-			return QList<Phonon::MediaSource> () << Phonon::MediaSource (file);
+			return { Phonon::MediaSource (file) };
 		}
 	}
 
