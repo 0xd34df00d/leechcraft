@@ -141,6 +141,7 @@ set (SRCS
 	statuschangemenumanager.cpp
 	customchatstylemanager.cpp
 	advancedpermchangedialog.cpp
+	groupremovedialog.cpp
 	)
 set (FORMS
 	mainwidget.ui
@@ -171,6 +172,7 @@ set (FORMS
 	colorlisteditorwidget.ui
 	userslistwidget.ui
 	advancedpermchangedialog.ui
+	groupremovedialog.ui
 	)
 set (RESOURCES azothresources.qrc)
 
