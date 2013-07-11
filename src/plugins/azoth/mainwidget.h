@@ -92,8 +92,10 @@ namespace Azoth
 		void fastStateChangeRequested ();
 
 		void handleEntryActivationType ();
+
 		void handleCatRenameTriggered ();
 		void handleSendGroupMsgTriggered ();
+		void handleRemoveChildrenTriggered ();
 
 		void handleManageBookmarks ();
 		void handleAddAccountRequested ();

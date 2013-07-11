@@ -57,6 +57,7 @@
 #include "keyboardrosterfixer.h"
 #include "statuschangemenumanager.h"
 #include "userslistwidget.h"
+#include "groupremovedialog.h"
 
 namespace LeechCraft
 {
@@ -388,17 +389,26 @@ namespace Azoth
 					SLOT (handleCatRenameTriggered ()));
 			actions << rename;
 
-			QAction *sendMsg = new QAction (tr ("Send message..."), menu);
 			QList<QVariant> entries;
 			for (int i = 0, cnt = index.model ()->rowCount (index);
 					i < cnt; ++i)
 				entries << index.child (i, 0).data (Core::CLREntryObject);
+
+			QAction *sendMsg = new QAction (tr ("Send message..."), menu);
 			sendMsg->setProperty ("Azoth/Entries", entries);
 			connect (sendMsg,
 					SIGNAL (triggered ()),
 					this,
 					SLOT (handleSendGroupMsgTriggered ()));
 			actions << sendMsg;
+
+			QAction *removeChildren = new QAction (tr ("Remove group's participants"), menu);
+			removeChildren->setProperty ("Azoth/Entries", entries);
+			connect (removeChildren,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleRemoveChildrenTriggered ()));
+			actions << removeChildren;
 			break;
 		}
 		case Core::CLETAccount:
@@ -604,15 +614,43 @@ namespace Azoth
 		}
 	}
 
+	namespace
+	{
+		QList<QObject*> GetEntriesFromSender (QObject *sender)
+		{
+			QList<QObject*> entries;
+			for (const auto& entryVar : sender->property ("Azoth/Entries").toList ())
+				entries << entryVar.value<QObject*> ();
+			return entries;
+		}
+	}
+
 	void MainWidget::handleSendGroupMsgTriggered ()
 	{
-		QList<QObject*> entries;
+		const auto& entries = GetEntriesFromSender (sender ());
 
-		Q_FOREACH (const QVariant& entryVar,
-				sender ()->property ("Azoth/Entries").toList ())
-			entries << entryVar.value<QObject*> ();
+		auto dlg = new GroupSendDialog (entries, this);
+		dlg->setAttribute (Qt::WA_DeleteOnClose, true);
+		dlg->show ();
+	}
 
-		GroupSendDialog *dlg = new GroupSendDialog (entries, this);
+	void MainWidget::handleRemoveChildrenTriggered ()
+	{
+		auto entries = GetEntriesFromSender (sender ());
+		for (auto i = entries.begin (); i != entries.end (); ++i)
+		{
+			auto entry = qobject_cast<ICLEntry*> (*i);
+			if (!entry ||
+				(entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) != ICLEntry::FPermanentEntry)
+				i = entries.erase (i);
+			else
+				++i;
+		}
+
+		if (entries.isEmpty ())
+			return;
+
+		auto dlg = new GroupRemoveDialog (entries, this);
 		dlg->setAttribute (Qt::WA_DeleteOnClose, true);
 		dlg->show ();
 	}
