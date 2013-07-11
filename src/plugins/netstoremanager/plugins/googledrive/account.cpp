@@ -133,6 +133,11 @@ namespace GoogleDrive
 		return ListingOp::Delete | ListingOp::TrashSupporting | ListingOp::DirectorySupport;
 	}
 
+	HashAlgorithm Account::GetCheckSumAlgorithm () const
+	{
+		return HashAlgorithm::Md5;
+	}
+
 	void Account::RefreshListing ()
 	{
 		DriveManager_->RefreshListing ();
@@ -306,7 +311,7 @@ namespace GoogleDrive
 			storageItem.Size_ = item.FileSize_;
 			storageItem.ModifyDate_ = item.ModifiedDate_;
 			storageItem.Hash_ = item.Md5_.toUtf8 ();
-			storageItem.HashType_ = StorageItem::HashType::Md5;
+			storageItem.HashType_ = HashAlgorithm::Md5;
 			storageItem.IsDirectory_ = item.IsFolder_;
 			storageItem.IsTrashed_ = item.Labels_ & DriveItem::ILRemoved;
 			storageItem.MimeType_ = item.Mime_;

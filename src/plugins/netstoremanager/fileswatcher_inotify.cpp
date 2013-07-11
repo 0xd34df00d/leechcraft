@@ -43,7 +43,7 @@ namespace NetStoreManager
 	FilesWatcherInotify::FilesWatcherInotify (QObject *parent)
 	: FilesWatcherBase (parent)
 	, INotifyDescriptor_ (inotify_init ())
-	, WatchMask_ (IN_CREATE | IN_DELETE | IN_DELETE_SELF | IN_MODIFY |IN_MOVED_FROM | IN_MOVED_TO )
+	, WatchMask_ (IN_CREATE | IN_DELETE | IN_DELETE_SELF | IN_MODIFY |IN_MOVED_FROM | IN_MOVED_TO)
 	, WaitMSecs_ (50)
 	, Timer_ (new QTimer (this))
 	{
@@ -57,6 +57,38 @@ namespace NetStoreManager
 				SIGNAL (timeout ()),
 				this,
 				SLOT (checkNotifications ()));
+	}
+
+	void FilesWatcherInotify::AddPath (const QString& path)
+	{
+		const int fd = inotify_add_watch (INotifyDescriptor_, path.toUtf8 (), WatchMask_);
+		WatchedPathes2Descriptors_.insert ({ path, fd });
+
+		if (!Timer_->isActive ())
+			Timer_->start (1000);
+	}
+
+	void FilesWatcherInotify::RenamePath (const QString& oldPath, const QString& newPath)
+	{
+		const auto leftMap = WatchedPathes2Descriptors_.left;
+		QStringList pathsToRemove;
+		QStringList pathsToAdd;
+		for (const auto& pair : leftMap)
+		{
+			QString path = pair.first;
+			if (path.startsWith (oldPath))
+			{
+				pathsToRemove << path;
+				path.replace (oldPath, newPath);
+				pathsToAdd << path;
+			}
+		}
+
+		for (const auto& path : pathsToRemove)
+			RemoveWatchingPath (path);
+
+		for (const auto& path : pathsToAdd)
+			AddPath (path);
 	}
 
 	void FilesWatcherInotify::HandleNotification (int descriptor)
@@ -81,9 +113,9 @@ namespace NetStoreManager
 
 			i += EventSize_ + event->len;
 
-			if (!(event->mask & IN_ISDIR) &&
-					IsInExceptionList (fullPath))
-				continue;
+// 			if (!(event->mask & IN_ISDIR) &&
+// 					IsInExceptionList (fullPath))
+// 				continue;
 
 			if (event->mask & IN_CREATE)
 			{
@@ -108,74 +140,70 @@ namespace NetStoreManager
 			}
 			else if (event->mask & IN_MOVED_TO)
 			{
-				if (!eventsBuffer.isEmpty ())
-				{
-					for (auto e : eventsBuffer)
-						if (e->cookie == event->cookie &&
-								e->wd == event->wd)
-						{
-							emit entryWasRenamed (path + "/" + QString (e->name),
-									fullPath);
-							eventsBuffer.removeAll (e);
-							break;
-						}
-						else if (e->cookie == event->cookie)
-						{
-							const QString oldPrePath = WatchedPathes2Descriptors_.right.at (e->wd);
-							emit entryWasMoved (oldPrePath + "/" + QString (e->name),
-									fullPath);
-							eventsBuffer.removeAll (e);
-							break;
-						}
-				}
-				else
+				if (eventsBuffer.isEmpty ())
 					AddPathWithNotify (fullPath);
+				else
+					for (auto it = eventsBuffer.begin (); it < eventsBuffer.end (); ++it)
+					{
+						if ((*it)->cookie == event->cookie &&
+								(*it)->wd == event->wd)
+						{
+							QString oldPath = path + "/" + QString ((*it)->name);
+							if (QFileInfo (fullPath).isDir ())
+								RenamePath (oldPath, fullPath);
+
+							emit entryWasRenamed (oldPath, fullPath);
+							it = eventsBuffer.erase (it);
+							break;
+						}
+						else if ((*it)->cookie == event->cookie)
+						{
+							const QString oldPrePath = WatchedPathes2Descriptors_.right.at ((*it)->wd);
+							emit entryWasMoved (oldPrePath + "/" + QString ((*it)->name),
+									fullPath);
+							it = eventsBuffer.erase (it);
+							break;
+						}
+					}
 			}
 			else if (event->mask & IN_DELETE_SELF)
-			{
 				emit dirWasRemoved (path);
-			}
 
 			if (event->mask & IN_IGNORED)
-			{
 				RemoveWatchingPath (event->wd);
-			}
 		}
 
-		for (auto e : eventsBuffer)
+		for (auto it = eventsBuffer.begin (); it < eventsBuffer.end (); )
 		{
-			const QString path = WatchedPathes2Descriptors_.right.at (e->wd);
-			const QString fullPath = path + "/" + QString (e->name);
+			const QString path = WatchedPathes2Descriptors_.right.at ((*it)->wd);
+			const QString fullPath = path + "/" + QString ((*it)->name);
 
-			if (e->mask & IN_ISDIR)
+			if ((*it)->mask & IN_ISDIR)
 				emit dirWasRemoved (fullPath);
 			else
 				emit fileWasRemoved (fullPath);
+
+			it = eventsBuffer.erase (it);
 		}
 	}
 
 	void FilesWatcherInotify::AddPathWithNotify (const QString& path)
 	{
-		if (!addPath (path))
+		if (!QFileInfo (path).isDir ())
 			return;
 
+		AddPath (path);
 		emit dirWasCreated (path);
-		auto paths = Utils::ScanDir (QDir::Dirs | QDir::NoDotAndDotDot,
+		const auto paths = Utils::ScanDir (QDir::AllEntries | QDir::NoDotAndDotDot,
 				path,
 				true);
 		for (const auto& p : paths)
-		{
-			if (!addPath (p))
-				continue;
-
-			emit dirWasCreated (p);
-		}
-
-		paths = Utils::ScanDir (QDir::AllEntries | QDir::NoDotAndDotDot,
-				path,
-				true);
-		for (const auto& p : paths)
-			if (!QFileInfo (p).isDir ())
+			if (QFileInfo (p).isDir ())
+			{
+				AddPath (p);
+				emit dirWasCreated (p);
+			}
+			else
 				emit fileWasCreated (p);
 	}
 
@@ -206,6 +234,30 @@ namespace NetStoreManager
 		WatchedPathes2Descriptors_.right.erase (descriptor);
 	}
 
+	void FilesWatcherInotify::RemoveWatchingPath (const QString& path)
+	{
+		if (!WatchedPathes2Descriptors_.left.count (path))
+			return;
+
+		RemoveWatchingPath (WatchedPathes2Descriptors_.left.at (path));
+	}
+
+	void FilesWatcherInotify::updatePaths (const QStringList& paths)
+	{
+		for (const auto& path : paths)
+			if (!WatchedPathes2Descriptors_.left.count (path))
+				AddPath (path);
+
+		for (auto it = WatchedPathes2Descriptors_.left.begin ();
+				it != WatchedPathes2Descriptors_.left.end (); )
+		{
+			if (!paths.contains (it->first))
+				it = WatchedPathes2Descriptors_.left.erase (it);
+			else
+				++it;
+		}
+	}
+
 	void FilesWatcherInotify::checkNotifications ()
 	{
 		struct pollfd pfd = { INotifyDescriptor_, POLLIN, 0 };
@@ -218,23 +270,6 @@ namespace NetStoreManager
 		}
 		else
 			HandleNotification (INotifyDescriptor_);
-	}
-
-	bool FilesWatcherInotify::addPath (QString path)
-	{
-		int fd = inotify_add_watch (INotifyDescriptor_, path.toUtf8 (), WatchMask_);
-		WatchedPathes2Descriptors_.insert ({ path, fd });
-
-		if (!Timer_->isActive ())
-			Timer_->start (1000);
-
-		return true;
-	}
-
-	void FilesWatcherInotify::addPathes (QStringList paths)
-	{
-		for (const auto& path : paths)
-			addPath (path);
 	}
 
 	void FilesWatcherInotify::release ()

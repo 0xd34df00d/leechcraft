@@ -30,6 +30,7 @@
 #include "syncitemdelegate.h"
 #include <QComboBox>
 #include <QMessageBox>
+#include <QStandardItemModel>
 #include <QtDebug>
 #include <QDir>
 #include "accountsmanager.h"
@@ -41,9 +42,11 @@ namespace LeechCraft
 {
 namespace NetStoreManager
 {
-	SyncItemDelegate::SyncItemDelegate (AccountsManager *am, QObject *parent)
+	SyncItemDelegate::SyncItemDelegate (AccountsManager *am,
+			QStandardItemModel *model, QObject *parent)
 	: QItemDelegate (parent)
 	, AM_ (am)
+	, Model_ (model)
 	{
 	}
 
@@ -58,9 +61,24 @@ namespace NetStoreManager
 			FillAccounts (box);
 			return box;
 		}
-		case Directory:
+		case LocalDirectory:
 		{
-			DirectoryWidget *dw = new DirectoryWidget (parent);
+			DirectoryWidget *dw = new DirectoryWidget (DirectoryWidget::Type::Local,
+					QByteArray (), 0, parent);
+			dw->setAttribute (Qt::WA_DeleteOnClose);
+			connect (dw,
+					SIGNAL (finished (QWidget*)),
+					this,
+					SLOT (handleCloseDirectoryEditor (QWidget*)));
+			return dw;
+		}
+		case RemoteDirecory:
+		{
+			DirectoryWidget *dw = new DirectoryWidget (DirectoryWidget::Type::Remote,
+					index.sibling (index.row (), Account)
+						.data (SyncItemDelegateRoles::AccountId).toByteArray (),
+					AM_, parent);
+			dw->setAttribute (Qt::WA_DeleteOnClose);
 			connect (dw,
 					SIGNAL (finished (QWidget*)),
 					this,
@@ -84,7 +102,8 @@ namespace NetStoreManager
 			box->setCurrentIndex (box->findText (accText, Qt::MatchExactly));
 			break;
 		}
-		case Directory:
+		case LocalDirectory:
+		case RemoteDirecory:
 		{
 			auto dw = static_cast<DirectoryWidget*> (editor);
 			dw->SetPath (index.data (Qt::EditRole).toString ());
@@ -111,7 +130,8 @@ namespace NetStoreManager
 					SyncItemDelegateRoles::AccountId);
 			break;
 		}
-		case Directory:
+		case LocalDirectory:
+		case RemoteDirecory:
 		{
 			auto dw = static_cast<DirectoryWidget*> (editor);
 			model->setData (index, dw->GetPath (), Qt::EditRole);
@@ -130,8 +150,7 @@ namespace NetStoreManager
 
 	void SyncItemDelegate::FillAccounts (QComboBox *box) const
 	{
-		const auto& accounts = AM_->GetAccounts ();
-		for (auto acc : accounts)
+		for (auto acc : AM_->GetAccounts ())
 		{
 			auto isp = qobject_cast<IStoragePlugin*> (acc->GetParentPlugin ());
 			if (!isp)
