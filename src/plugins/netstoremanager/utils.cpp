@@ -48,6 +48,31 @@ namespace Utils
 		}
 		return paths;
 	}
+
+	bool RemoveDirectoryContent (const QString& dirPath)
+	{
+		bool result = true;
+		QDir dir (dirPath);
+
+		if (dir.exists (dirPath))
+		{
+			for (const auto& info : dir.entryInfoList (QDir::NoDotAndDotDot | QDir::AllEntries))
+			{
+				if (info.isDir ())
+					result = RemoveDirectoryContent (info.absoluteFilePath ());
+				else
+					result = QFile::remove (info.absoluteFilePath ());
+
+				if (!result)
+					return result;
+			}
+
+			result = dir.rmdir (dirPath);
+		}
+
+		return result;
+	}
+
 }
 }
 }

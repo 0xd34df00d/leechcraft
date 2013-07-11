@@ -58,8 +58,15 @@ namespace NetStoreManager
 		TrashSupporting = 0x02,
 		DirectorySupport = 0x04
 	};
-
 	Q_DECLARE_FLAGS (ListingOps, ListingOp);
+
+	enum class HashAlgorithm
+	{
+		Md4,
+		Md5,
+		Sha1
+	};
+
 
 	struct StorageItem
 	{
@@ -72,12 +79,6 @@ namespace NetStoreManager
 		quint64 Size_;
 
 		QByteArray Hash_;
-		enum class HashType
-		{
-			Md4,
-			Md5,
-			Sha1
-		} HashType_;
 
 		QUrl Url_;
 		QUrl ShareUrl_;
@@ -89,6 +90,7 @@ namespace NetStoreManager
 
 		bool IsTrashed_;
 
+		HashAlgorithm HashType_;
 
 		QString MimeType_;
 
@@ -110,6 +112,7 @@ namespace NetStoreManager
 	{
 		QByteArray ID_;
 		bool Deleted_;
+
 		QByteArray ItemID_;
 		StorageItem Item_;
 	};
@@ -120,6 +123,7 @@ namespace NetStoreManager
 		virtual ~ISupportFileListings () {}
 
 		virtual ListingOps GetListingOps () const = 0;
+		virtual HashAlgorithm GetCheckSumAlgorithm () const = 0;
 
 		virtual void RefreshListing () = 0;
 

@@ -37,9 +37,10 @@ namespace LeechCraft
 {
 namespace NetStoreManager
 {
-	AccountsManager::AccountsManager (QObject *parent)
+	AccountsManager::AccountsManager (ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
 	, Model_ (new QStandardItemModel (this))
+	, Proxy_ (proxy)
 	{
 		Model_->setHorizontalHeaderLabels (QStringList (tr ("Account")) << tr ("Storage"));
 	}
@@ -102,6 +103,11 @@ namespace NetStoreManager
 
 		auto plugin = qobject_cast<IStoragePlugin*> (acc->GetParentPlugin ());
 		plugin->RemoveAccount (accObj);
+	}
+
+	ICoreProxy_ptr AccountsManager::GetProxy () const
+	{
+		return Proxy_;
 	}
 
 	void AccountsManager::handleAccountAdded (QObject *obj)

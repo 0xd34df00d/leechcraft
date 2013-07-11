@@ -41,12 +41,13 @@ namespace NetStoreManager
 		Q_OBJECT
 	public:
 		FilesWatcherBase (QObject* = 0);
+
 	public slots:
+		virtual void updatePaths (const QStringList& paths) = 0;
 		virtual void checkNotifications () = 0;
-		virtual bool addPath (QString path) = 0;
-		virtual void addPathes (QStringList paths) = 0;
 		virtual void release () = 0;
 		virtual void updateExceptions (QStringList masks) = 0;
+
 	signals:
 		void dirWasCreated (const QString& path);
 		void fileWasCreated (const QString& path);

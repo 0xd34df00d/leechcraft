@@ -29,46 +29,68 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_directorywidget.h"
+#include <functional>
+#include <boost/bimap.hpp>
+#include <QObject>
+#include <QQueue>
+#include "interfaces/netstoremanager/isupportfilelistings.h"
+#include "syncmanager.h"
 
 namespace LeechCraft
 {
 namespace NetStoreManager
 {
-	class AccountsManager;
+	class IStorageAccount;
 
-	class DirectoryWidget : public QWidget
+	class Syncer : public QObject
 	{
 		Q_OBJECT
 
-		Ui::SelectDirectoryWidget Ui_;
-		QString Path_;
-		QByteArray AccountID_;
-		AccountsManager *AM_;
+		QString LocalPath_;
+		QString RemotePath_;
+		bool Started_;
+		IStorageAccount *Account_;
+		ISupportFileListings *SFLAccount_;
+		QHash<QByteArray, StorageItem> Id2Item_;
+		boost::bimaps::bimap<QByteArray, QString> Id2Path_;
+		QQueue<std::function<void (void)>> CallsQueue_;
+
+		Snapshot_t Snapshot_;
+
 	public:
-		enum class Type
-		{
-			Local,
-			Remote
-		};
+		explicit Syncer (const QString& dirPath, const QString& remotePath,
+				IStorageAccount *isa, QObject *parent = 0);
+
+		QByteArray GetAccountID () const;
+		QString GetLocalPath () const;
+		QString GetRemotePath () const;
+
+		Snapshot_t GetSnapshot () const;
+		void SetSnapshot (const Changes_t& changes);
+
+		bool IsStarted () const;
 	private:
-		Type Type_;
+		void CreateRemotePath (const QStringList& path);
+		void DeleteRemotePath (const QStringList& path);
+		void RenameItem (const StorageItem& item, const QString& path);
+		Snapshot_t CreateSnapshot ();
+		Snapshot_t CreateDiffSnapshot (const Snapshot_t& newSnapshot,
+				const Snapshot_t& oldSnapshot);
 
-	public:
+	public slots:
+		void start ();
+		void stop ();
 
-		DirectoryWidget (Type t, const QByteArray& accId, AccountsManager *am = 0,
-				QWidget *parent = 0);
+		void handleGotItems (const QList<StorageItem>& items);
+		void handleGotNewItem (const StorageItem& item, const QByteArray& parentId);
+		void handleGotChanges (const QList<Change>& changes);
 
-		void SetPath (const QString& path, bool byHand = false);
-		QString GetPath () const;
-
-	private slots:
-		void on_OpenDir__released ();
-		void on_DirPath__editingFinished ();
-
-	signals:
-		void finished (QWidget *widget);
+		void localDirWasCreated (const QString& path);
+		void localDirWasRemoved (const QString& path);
+		void localFileWasCreated (const QString& path);
+		void localFileWasRemoved (const QString& path);
+		void localFileWasUpdated (const QString& path);
+		void localFileWasRenamed (const QString& oldName, const QString& newName);
 	};
 }
 }
