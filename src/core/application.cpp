@@ -109,7 +109,7 @@ namespace LeechCraft
 #endif
 			std::exit (EVersionRequested);
 		}
-		
+
 		QTextCodec::setCodecForCStrings (QTextCodec::codecForName ("UTF-8"));
 
 		if (VarMap_.count ("no-app-catch"))
@@ -200,7 +200,7 @@ namespace LeechCraft
 				this,
 				SLOT (handleQuit ()));
 
-		Splash_ = new QSplashScreen (QPixmap (":/resources/images/apocalypse.png"), Qt::SplashScreen);
+		Splash_ = new QSplashScreen (QPixmap (":/resources/images/macaroni.png"), Qt::SplashScreen);
 		Splash_->show ();
 		Splash_->setUpdatesEnabled (true);
 		Splash_->showMessage (tr ("Initializing LeechCraft..."), Qt::AlignLeft | Qt::AlignBottom, QColor ("#FF3000"));
