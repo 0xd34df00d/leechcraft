@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <interfaces/blasq/iaccount.h>
 #include <interfaces/core/icoreproxy.h>
@@ -40,10 +41,12 @@ namespace LeechCraft
 {
 namespace Util
 {
-namespace SvcAuth
-{
-	class VkAuthManager;
-}
+	class QueueManager;
+
+	namespace SvcAuth
+	{
+		class VkAuthManager;
+	}
 }
 
 namespace Blasq
@@ -65,16 +68,14 @@ namespace Rappor
 
 		QStandardItemModel * const CollectionsModel_;
 		QStandardItem *AllPhotosItem_ = 0;
+		QHash<int, QStandardItem*> Albums_;
 
 		Util::SvcAuth::VkAuthManager * const AuthMgr_;
 
-		enum Action
-		{
-			NoAction,
-			CollectionsRequested
-		} Action_ = Action::NoAction;
-
 		QByteArray LastCookies_;
+
+		Util::QueueManager *RequestQueue_;
+		QList<std::function<void (const QString&)>> CallQueue_;
 	public:
 		VkAccount (const QString&, VkService*, ICoreProxy_ptr,
 				const QByteArray& id = QByteArray (),
@@ -92,6 +93,10 @@ namespace Rappor
 
 		void UpdateCollections ();
 	private slots:
+		void handleGotAlbums ();
+		void handleGotPhotos ();
+
+		void handleAuthKey (const QString&);
 		void handleCookies (const QByteArray&);
 	signals:
 		void accountChanged (VkAccount*);

@@ -30,8 +30,12 @@
 #include "vkaccount.h"
 #include <QUuid>
 #include <QStandardItemModel>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QDomDocument>
 #include <QtDebug>
 #include <util/svcauth/vkauthmanager.h>
+#include <util/queuemanager.h>
 #include "vkservice.h"
 
 namespace LeechCraft
@@ -46,8 +50,9 @@ namespace Rappor
 	, ID_ (id.isEmpty () ? QUuid::createUuid ().toByteArray () : id)
 	, Service_ (service)
 	, Proxy_ (proxy)
-	, CollectionsModel_ (new QStandardItemModel (this))
+	, CollectionsModel_ (new NamedModel<QStandardItemModel> (this))
 	, AuthMgr_ (new Util::SvcAuth::VkAuthManager ("3762977", { "photos" }, cookies, proxy))
+	, RequestQueue_ (new Util::QueueManager (350, this))
 	{
 		CollectionsModel_->setHorizontalHeaderLabels ({ tr ("Name") });
 
@@ -60,6 +65,10 @@ namespace Rappor
 				SIGNAL (cookiesChanged (QByteArray)),
 				this,
 				SLOT (handleCookies (QByteArray)));
+		connect (AuthMgr_,
+				SIGNAL (gotAuthKey (QString)),
+				this,
+				SLOT (handleAuthKey (QString)));
 	}
 
 	QByteArray VkAccount::Serialize () const
@@ -127,8 +136,199 @@ namespace Rappor
 		if (auto rc = AllPhotosItem_->rowCount ())
 			AllPhotosItem_->removeRows (0, rc);
 
-		Action_ = Action::CollectionsRequested;
+		auto rootRc = CollectionsModel_->rowCount ();
+		if (rootRc > 1)
+			CollectionsModel_->removeRows (1, rootRc - 1);
+
+		Albums_.clear ();
+
+		CallQueue_.append ([this] (const QString& authKey) -> void
+			{
+				QUrl albumsUrl ("https://api.vk.com/method/photos.getAlbums.xml");
+				albumsUrl.addQueryItem ("access_token", authKey);
+				RequestQueue_->Schedule ([this, albumsUrl]
+					{
+						connect (Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (albumsUrl)),
+								SIGNAL (finished ()),
+								this,
+								SLOT (handleGotAlbums ()));
+					}, this);
+
+				QUrl photosUrl ("https://api.vk.com/method/photos.getAll.xml");
+				photosUrl.addQueryItem ("access_token", authKey);
+				photosUrl.addQueryItem ("count", "100");
+				photosUrl.addQueryItem ("photo_sizes", "1");
+				RequestQueue_->Schedule ([this, photosUrl]
+					{
+						connect (Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (photosUrl)),
+								SIGNAL (finished ()),
+								this,
+								SLOT (handleGotPhotos ()));
+					}, this);
+			});
+
 		AuthMgr_->GetAuthKey ();
+	}
+
+	void VkAccount::handleGotAlbums ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		const auto& data = reply->readAll ();
+		QDomDocument doc;
+		if (!doc.setContent (data))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot parse reply"
+					<< data;
+			return;
+		}
+
+		auto albumElem = doc
+				.documentElement ()
+				.firstChildElement ("album");
+		while (!albumElem.isNull ())
+		{
+			const auto& title = albumElem.firstChildElement ("title").text ();
+			auto item = new QStandardItem (title);
+			item->setEditable (false);
+			item->setData (ItemType::Collection, CollectionRole::Type);
+			CollectionsModel_->appendRow (item);
+
+			const auto aid = albumElem.firstChildElement ("aid").text ().toInt ();
+			Albums_ [aid] = item;
+
+			albumElem = albumElem.nextSiblingElement ("album");
+		}
+	}
+
+	void VkAccount::handleGotPhotos ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		const auto& data = reply->readAll ();
+		QDomDocument doc;
+		if (!doc.setContent (data))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot parse reply"
+					<< data;
+			return;
+		}
+
+		bool finishReached = false;
+
+		auto photoElem = doc
+				.documentElement ()
+				.firstChildElement ("photo");
+		while (!photoElem.isNull ())
+		{
+			auto mkItem = [&photoElem] () -> QStandardItem*
+			{
+				const auto& idText = photoElem.firstChildElement ("pid").text ();
+
+				auto item = new QStandardItem (idText);
+				item->setData (ItemType::Image, CollectionRole::Type);
+				item->setData (idText, CollectionRole::ID);
+				item->setData (QString (), CollectionRole::Name);
+
+				const auto& sizesElem = photoElem.firstChildElement ("sizes");
+				auto getType = [&sizesElem] (const QString& type) -> QPair<QUrl, QSize>
+				{
+					auto sizeElem = sizesElem.firstChildElement ("size");
+					while (!sizeElem.isNull ())
+					{
+						if (sizeElem.firstChildElement ("type").text () != type)
+						{
+							sizeElem = sizeElem.nextSiblingElement ("size");
+							continue;
+						}
+
+						const auto& src = sizeElem.firstChildElement ("src").text ();
+						const auto width = sizeElem.firstChildElement ("width").text ().toInt ();
+						const auto height = sizeElem.firstChildElement ("height").text ().toInt ();
+
+						return { src, { width, height } };
+					}
+
+					return {};
+				};
+
+				const auto& small = getType ("m");
+				const auto& mid = getType ("x");
+				auto orig = getType ("w");
+				QStringList sizeCandidates { "z", "y", "x", "r" };
+				while (orig.second.width () <= 0)
+				{
+					if (sizeCandidates.isEmpty ())
+						return nullptr;
+
+					orig = getType (sizeCandidates.takeFirst ());
+				}
+
+				item->setData (small.first, CollectionRole::SmallThumb);
+				item->setData (small.second, CollectionRole::SmallThumbSize);
+
+				item->setData (mid.first, CollectionRole::MediumThumb);
+				item->setData (mid.second, CollectionRole::MediumThumbSize);
+
+				item->setData (orig.first, CollectionRole::Original);
+				item->setData (orig.second, CollectionRole::OriginalSize);
+
+				return item;
+			};
+
+			auto allItem = mkItem ();
+			if (!allItem)
+			{
+				finishReached = true;
+				break;
+			}
+
+			AllPhotosItem_->appendRow (allItem);
+
+			const auto aid = photoElem.firstChildElement ("aid").text ().toInt ();
+			if (Albums_.contains (aid))
+				Albums_ [aid]->appendRow (mkItem ());
+
+			photoElem = photoElem.nextSiblingElement ("photo");
+		}
+
+		if (finishReached)
+			return;
+
+		const auto count = doc.documentElement ().firstChildElement ("count").text ().toInt ();
+		if (count == AllPhotosItem_->rowCount ())
+			return;
+
+		const auto offset = AllPhotosItem_->rowCount ();
+
+		CallQueue_.append ([this, offset] (const QString& authKey) -> void
+			{
+				QUrl photosUrl ("https://api.vk.com/method/photos.getAll.xml");
+				photosUrl.addQueryItem ("access_token", authKey);
+				photosUrl.addQueryItem ("count", "100");
+				photosUrl.addQueryItem ("offset", QString::number (offset));
+				photosUrl.addQueryItem ("photo_sizes", "1");
+				RequestQueue_->Schedule ([this, photosUrl]
+					{
+						connect (Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (photosUrl)),
+								SIGNAL (finished ()),
+								this,
+								SLOT (handleGotPhotos ()));
+					}, this);
+			});
+
+		AuthMgr_->GetAuthKey ();
+
+	}
+
+	void VkAccount::handleAuthKey (const QString& authKey)
+	{
+		while (!CallQueue_.isEmpty ())
+			CallQueue_.takeFirst () (authKey);
 	}
 
 	void VkAccount::handleCookies (const QByteArray& cookies)
