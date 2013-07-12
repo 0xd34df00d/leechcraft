@@ -49,6 +49,7 @@ namespace TouchStreams
 		Queue_ = new Util::QueueManager (350);
 
 		AuthMgr_ = new Util::SvcAuth::VkAuthManager ("3298289",
+				{ "audio" },
 				XmlSettingsManager::Instance ().property ("Cookies").toByteArray (),
 				proxy);
 		connect (AuthMgr_,

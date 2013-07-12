@@ -59,7 +59,7 @@ namespace SvcAuth
 		bool IsRequesting_;
 		const QUrl URL_;
 	public:
-		VkAuthManager (const QString& clientId, const QByteArray& cookies, ICoreProxy_ptr, QObject* = 0);
+		VkAuthManager (const QString& clientId, const QStringList& scope, const QByteArray& cookies, ICoreProxy_ptr, QObject* = 0);
 
 		void GetAuthKey ();
 		void Reauth ();

@@ -42,22 +42,24 @@ namespace SvcAuth
 {
 	namespace
 	{
-		QUrl URLFromClientID (const QString& id)
+		QUrl URLFromClientID (const QString& id, const QStringList& scope)
 		{
-			QUrl url = QUrl::fromEncoded ("https://oauth.vk.com/authorize?redirect_uri=http%3A%2F%2Foauth.vk.com%2Fblank.html&response_type=token&scope=8&state=");
+			QUrl url = QUrl::fromEncoded ("https://oauth.vk.com/authorize?redirect_uri=http%3A%2F%2Foauth.vk.com%2Fblank.html&response_type=token&state=");
 			url.addQueryItem ("client_id", id);
+			url.addQueryItem ("scope", scope.join (","));
 			return url;
 		}
 	}
 
-	VkAuthManager::VkAuthManager (const QString& id, const QByteArray& cookies, ICoreProxy_ptr proxy, QObject *parent)
+	VkAuthManager::VkAuthManager (const QString& id, const QStringList& scope,
+			const QByteArray& cookies, ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, AuthNAM_ (new QNetworkAccessManager (this))
 	, Cookies_ (new Util::CustomCookieJar)
 	, ValidFor_ (0)
 	, IsRequesting_ (false)
-	, URL_ (URLFromClientID (id))
+	, URL_ (URLFromClientID (id, scope))
 	{
 		AuthNAM_->setCookieJar (Cookies_);
 		Cookies_->Load (cookies);
