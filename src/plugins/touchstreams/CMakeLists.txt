@@ -13,7 +13,6 @@ include_directories (
 	)
 set (SRCS
 	touchstreams.cpp
-	authmanager.cpp
 	audiosearch.cpp
 	xmlsettingsmanager.cpp
 	)

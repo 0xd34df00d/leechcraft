@@ -39,6 +39,11 @@ namespace LeechCraft
 namespace Util
 {
 	class QueueManager;
+
+	namespace SvcAuth
+	{
+		class VkAuthManager;
+	}
 }
 
 namespace TouchStreams
@@ -57,7 +62,7 @@ namespace TouchStreams
 		Util::QueueManager *Queue_;
 
 		Util::XmlSettingsDialog_ptr XSD_;
-		AuthManager *AuthMgr_;
+		Util::SvcAuth::VkAuthManager *AuthMgr_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -72,6 +77,7 @@ namespace TouchStreams
 		Media::IPendingAudioSearch* Search (const Media::AudioSearchRequest&);
 	private slots:
 		void handlePushButton (const QString&);
+		void saveCookies (const QByteArray&);
 	};
 }
 }

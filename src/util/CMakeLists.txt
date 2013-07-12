@@ -2,6 +2,7 @@ if (NOT USE_QT5)
 	set (QT_USE_QTDECLARATIVE TRUE)
 	set (QT_USE_QTNETWORK TRUE)
 	set (QT_USE_QTSQL TRUE)
+	set (QT_USE_QTWEBKIT TRUE)
 	set (QT_USE_QTXML TRUE)
 	include (${QT_USE_FILE})
 endif ()
@@ -40,6 +41,7 @@ set (SRCS
 	qml/themeimageprovider.cpp
 	qml/unhidelistmodel.cpp
 	qml/unhidelistviewbase.cpp
+	svcauth/vkauthmanager.cpp
 	sync/syncdeltamanager.cpp
 	sync/syncops.cpp
 	sys/mimedetector.cpp

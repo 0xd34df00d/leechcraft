@@ -31,20 +31,19 @@
 
 #include <QObject>
 #include <QDateTime>
+#include <QUrl>
 #include <interfaces/core/icoreproxy.h>
-
-class QUrl;
+#include <util/utilconfig.h>
 
 namespace LeechCraft
 {
 namespace Util
 {
-	class CustomCookieJar;
-}
+class CustomCookieJar;
 
-namespace TouchStreams
+namespace SvcAuth
 {
-	class AuthManager : public QObject
+	class UTIL_API VkAuthManager : public QObject
 	{
 		Q_OBJECT
 
@@ -58,8 +57,9 @@ namespace TouchStreams
 		qint32 ValidFor_;
 
 		bool IsRequesting_;
+		const QUrl URL_;
 	public:
-		AuthManager (ICoreProxy_ptr, QObject* = 0);
+		VkAuthManager (const QString& clientId, const QByteArray& cookies, ICoreProxy_ptr, QObject* = 0);
 
 		void GetAuthKey ();
 		void Reauth ();
@@ -74,6 +74,9 @@ namespace TouchStreams
 		void handleViewUrlChanged (const QUrl&);
 	signals:
 		void gotAuthKey (const QString&);
+
+		void cookiesChanged (const QByteArray&);
 	};
+}
 }
 }

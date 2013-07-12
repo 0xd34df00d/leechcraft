@@ -38,6 +38,11 @@ namespace LeechCraft
 namespace Util
 {
 	class QueueManager;
+
+	namespace SvcAuth
+	{
+		class VkAuthManager;
+	}
 }
 
 namespace TouchStreams
@@ -53,12 +58,13 @@ namespace TouchStreams
 		ICoreProxy_ptr Proxy_;
 		Util::QueueManager *Queue_;
 
-		AuthManager *AuthMgr_;
+		Util::SvcAuth::VkAuthManager *AuthMgr_;
 		const Media::AudioSearchRequest Query_;
 
 		QList<Media::IPendingAudioSearch::Result> Result_;
 	public:
-		AudioSearch (ICoreProxy_ptr, const Media::AudioSearchRequest&, AuthManager*, Util::QueueManager*, QObject* = 0);
+		AudioSearch (ICoreProxy_ptr, const Media::AudioSearchRequest&,
+				Util::SvcAuth::VkAuthManager*, Util::QueueManager*, QObject* = 0);
 
 		QObject* GetQObject ();
 		QList<Result> GetResults () const;

@@ -27,37 +27,43 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "authmanager.h"
+#include "vkauthmanager.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QtDebug>
 #include <QWebView>
 #include <util/customcookiejar.h>
-#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
-namespace TouchStreams
+namespace Util
 {
-	const QUrl AuthURL = QUrl::fromEncoded ("https://oauth.vk.com/authorize?client_id=3298289&redirect_uri=http%3A%2F%2Foauth.vk.com%2Fblank.html&response_type=token&scope=8&state=");
+namespace SvcAuth
+{
+	namespace
+	{
+		QUrl URLFromClientID (const QString& id)
+		{
+			QUrl url = QUrl::fromEncoded ("https://oauth.vk.com/authorize?redirect_uri=http%3A%2F%2Foauth.vk.com%2Fblank.html&response_type=token&scope=8&state=");
+			url.addQueryItem ("client_id", id);
+			return url;
+		}
+	}
 
-	AuthManager::AuthManager (ICoreProxy_ptr proxy, QObject *parent)
+	VkAuthManager::VkAuthManager (const QString& id, const QByteArray& cookies, ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, AuthNAM_ (new QNetworkAccessManager (this))
 	, Cookies_ (new Util::CustomCookieJar)
 	, ValidFor_ (0)
 	, IsRequesting_ (false)
+	, URL_ (URLFromClientID (id))
 	{
 		AuthNAM_->setCookieJar (Cookies_);
-
-		const auto& cookies = XmlSettingsManager::Instance ()
-				.property ("Cookies").toByteArray ();
-		if (!cookies.isEmpty ())
-			Cookies_->Load (cookies);
+		Cookies_->Load (cookies);
 	}
 
-	void AuthManager::GetAuthKey ()
+	void VkAuthManager::GetAuthKey ()
 	{
 		if (Token_.isEmpty () ||
 				ReceivedAt_.secsTo (QDateTime::currentDateTime ()) > ValidFor_)
@@ -69,7 +75,7 @@ namespace TouchStreams
 		emit gotAuthKey (Token_);
 	}
 
-	void AuthManager::Reauth ()
+	void VkAuthManager::Reauth ()
 	{
 		auto view = new QWebView;
 		view->setWindowTitle (tr ("VK.com authentication"));
@@ -78,7 +84,7 @@ namespace TouchStreams
 		view->page ()->setNetworkAccessManager (AuthNAM_);
 		view->show ();
 
-		view->setUrl (AuthURL);
+		view->setUrl (URL_);
 
 		connect (view,
 				SIGNAL (urlChanged (QUrl)),
@@ -86,12 +92,12 @@ namespace TouchStreams
 				SLOT (handleViewUrlChanged (QUrl)));
 	}
 
-	void AuthManager::HandleError ()
+	void VkAuthManager::HandleError ()
 	{
 		IsRequesting_ = false;
 	}
 
-	void AuthManager::RequestURL (const QUrl& url)
+	void VkAuthManager::RequestURL (const QUrl& url)
 	{
 		qDebug () << Q_FUNC_INFO << url;
 		auto reply = AuthNAM_->get (QNetworkRequest (url));
@@ -105,16 +111,16 @@ namespace TouchStreams
 				SLOT (handleFormFetchError ()));
 	}
 
-	void AuthManager::RequestAuthKey ()
+	void VkAuthManager::RequestAuthKey ()
 	{
 		if (IsRequesting_)
 			return;
 
-		RequestURL (AuthURL);
+		RequestURL (URL_);
 		IsRequesting_ = true;
 	}
 
-	bool AuthManager::CheckIsBlank (QUrl location)
+	bool VkAuthManager::CheckIsBlank (QUrl location)
 	{
 		if (location.path () != "/blank.html")
 			return false;
@@ -131,7 +137,7 @@ namespace TouchStreams
 		return true;
 	}
 
-	void AuthManager::handleGotForm ()
+	void VkAuthManager::handleGotForm ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
@@ -149,7 +155,7 @@ namespace TouchStreams
 		RequestURL (location);
 	}
 
-	void AuthManager::handleFormFetchError ()
+	void VkAuthManager::handleFormFetchError ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
@@ -160,13 +166,14 @@ namespace TouchStreams
 		HandleError ();
 	}
 
-	void AuthManager::handleViewUrlChanged (const QUrl& url)
+	void VkAuthManager::handleViewUrlChanged (const QUrl& url)
 	{
 		if (!CheckIsBlank (url))
 			return;
 
-		XmlSettingsManager::Instance ().setProperty ("Cookies", Cookies_->Save ());
+		emit cookiesChanged (Cookies_->Save ());
 		sender ()->deleteLater ();
 	}
+}
 }
 }
