@@ -27,8 +27,11 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "rappor.h"
-#include "vkservice.h"
+#pragma once
+
+#include <QObject>
+#include <interfaces/blasq/iservice.h>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -36,52 +39,29 @@ namespace Blasq
 {
 namespace Rappor
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	class VkService : public QObject
+					, public IService
 	{
-		Service_ = new VkService (proxy);
-	}
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Blasq::IService)
 
-	void Plugin::SecondInit ()
-	{
-	}
+		ICoreProxy_ptr Proxy_;
+	public:
+		VkService (ICoreProxy_ptr);
 
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.Blasq.Rappor";
-	}
+		QObject* GetQObject ();
 
-	void Plugin::Release ()
-	{
-	}
+		QString GetServiceName () const;
+		QIcon GetServiceIcon () const;
 
-	QString Plugin::GetName () const
-	{
-		return "Blasq Rappor";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("VKontakte support module for Blasq.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	QSet<QByteArray> Plugin::GetPluginClasses () const
-	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Blasq.ServicePlugin";
-		return result;
-	}
-
-	QList<IService*> Plugin::GetServices () const
-	{
-		return { Service_ };
-	}
+		QList<IAccount*> GetRegisteredAccounts () const;
+		QList<QWidget*> GetAccountRegistrationWidgets () const;
+		void RegisterAccount (const QString&, const QList<QWidget*>&);
+		void RemoveAccount (IAccount*);
+	signals:
+		void accountAdded (QObject*);
+		void accountRemoved (QObject*);
+	};
 }
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_blasq_rappor, LeechCraft::Blasq::Rappor::Plugin);

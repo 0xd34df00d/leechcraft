@@ -12,6 +12,7 @@ include_directories (
 	)
 set (SRCS
 	rappor.cpp
+	vkservice.cpp
 	)
 #CreateTrs("blasq" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("blasq_rappor" "en;ru_RU" "${SRCS}" "${FORMS}" "")
