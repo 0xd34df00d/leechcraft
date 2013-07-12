@@ -30,6 +30,7 @@
 #ifndef PLUGINS_NETSTOREMANAGER_ACCOUNTSMANAGER_H
 #define PLUGINS_NETSTOREMANAGER_ACCOUNTSMANAGER_H
 #include <QObject>
+#include <interfaces/core/icoreproxy.h>
 #include "interfaces/netstoremanager/isupportfilelistings.h"
 
 class QAbstractItemModel;
@@ -54,8 +55,10 @@ namespace NetStoreManager
 		};
 
 		QList<IStoragePlugin*> Plugins_;
+		ICoreProxy_ptr Proxy_;
+
 	public:
-		AccountsManager (QObject* = 0);
+		AccountsManager (ICoreProxy_ptr proxy, QObject* = 0);
 
 		void AddPlugin (IStoragePlugin*);
 		QList<IStoragePlugin*> GetPlugins () const;
@@ -64,6 +67,8 @@ namespace NetStoreManager
 		QAbstractItemModel* GetModel () const;
 
 		void RemoveAccount (const QModelIndex&);
+
+		ICoreProxy_ptr GetProxy () const;
 
 	private slots:
 		void handleAccountAdded (QObject*);

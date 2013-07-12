@@ -974,7 +974,6 @@ namespace NetStoreManager
 				HandleEntity (Util::MakeNotification ("NetStoreManager", text, PInfo_));
 	}
 
-
 	void ManagerTab::handleGotChanges(const QList<Change>& changes)
 	{
 		for (const auto& change : changes)

@@ -28,20 +28,267 @@
  **********************************************************************/
 
 #include "syncmanager.h"
+#include <QtDebug>
+#include <QSettings>
+#include "accountsmanager.h"
+#include "syncer.h"
+#if defined (Q_OS_LINUX)
+	#include "fileswatcher_inotify.h"
+#include "syncwidget.h"
+#else
+	#include "fileswatcher_dummy.h"
+#endif
 
 namespace LeechCraft
 {
 namespace NetStoreManager
 {
+
 	SyncManager::SyncManager (AccountsManager *am, QObject *parent)
 	: QObject (parent)
 	, AM_ (am)
 	{
+#if defined (Q_OS_LINUX)
+		FilesWatcher_ = new FilesWatcherInotify (this);
+#else
+		FilesWatcher_ = new FilesWatcherDummy (this);
+#endif
+
+		connect (FilesWatcher_,
+				SIGNAL (dirWasCreated (QString)),
+				this,
+				SLOT (handleDirWasCreated (QString)));
+		connect (FilesWatcher_,
+				SIGNAL (dirWasRemoved (QString)),
+				this,
+				SLOT (handleDirWasRemoved (QString)));
+		connect (FilesWatcher_,
+				SIGNAL (fileWasCreated (QString)),
+				this,
+				SLOT (handleFileWasCreated (QString)));
+		connect (FilesWatcher_,
+				SIGNAL (fileWasRemoved (QString)),
+				this,
+				SLOT (handleFileWasRemoved (QString)));
+		connect (FilesWatcher_,
+				SIGNAL (fileWasUpdated (QString)),
+				this,
+				SLOT (handleFileWasUpdated (QString)));
+		connect (FilesWatcher_,
+				SIGNAL (entryWasMoved (QString, QString)),
+				this,
+				SLOT (handleEntryWasMoved (QString, QString)));
+		connect (FilesWatcher_,
+				SIGNAL (entryWasRenamed (QString, QString)),
+				this,
+				SLOT (handleEntryWasRenamed (QString, QString)));
+
+		for (auto account : AM_->GetAccounts ())
+		{
+			auto isfl = qobject_cast<ISupportFileListings*> (account->GetQObject ());
+			if (!isfl)
+				continue;
+			connect (account->GetQObject (),
+					SIGNAL (gotListing (QList<StorageItem>)),
+					this,
+					SLOT (handleGotListing (QList<StorageItem>)));
+			connect (account->GetQObject (),
+					SIGNAL (gotNewItem (StorageItem, QByteArray)),
+					this,
+					SLOT (handleGotNewItem (StorageItem, QByteArray)));
+			connect (account->GetQObject (),
+					SIGNAL (gotChanges (QList<Change>)),
+					this,
+					SLOT (handleGotChanges (QList<Change>)));
+		}
 	}
 
 	void SyncManager::Release ()
 	{
+		WriteSnapshots ();
 	}
+
+	void SyncManager::handleDirectoriesToSyncUpdated (const QVariantMap& map)
+	{
+		QStringList paths;
+		for (const auto& key : map.keys ())
+		{
+			const auto& pair = map [key].value<SyncDirs_t> ();
+			paths << pair.first;
+			if (AccountID2Syncer_.contains (key))
+			{
+				auto syncer = AccountID2Syncer_ [key];
+				if (syncer->GetLocalPath () == pair.first &&
+						syncer->GetRemotePath () == pair.second)
+					continue;
+				else
+				{
+					syncer->stop ();
+					AccountID2Syncer_.take (key)->deleteLater ();
+				}
+			}
+			auto acc = AM_->GetAccountFromUniqueID (key);
+			AccountID2Syncer_ [key] = CreateSyncer (acc, pair.first, pair.second);
+			if (auto isfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ()))
+				isfl->RefreshListing ();
+		}
+
+		FilesWatcher_->updatePaths (paths);
+	}
+
+	Syncer* SyncManager::CreateSyncer (IStorageAccount *isa,
+			const QString& baseDir, const QString& remoteDir)
+	{
+		Syncer *syncer = new Syncer (baseDir, remoteDir, isa, this);
+		return syncer;
+	}
+
+	void SyncManager::WriteSnapshots ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_NetStoreManager");
+		settings.beginGroup ("Core");
+		settings.beginWriteArray ("Snapshots");
+		const auto& list = AccountID2Syncer_.values ();
+		for (int i = 0, size = list.count (); i < size; ++i)
+		{
+			settings.setArrayIndex (i);
+			const auto syncer = list.at (i);
+
+			settings.setValue ("AccountID", syncer->GetAccountID ());
+			settings.setValue ("LocalPath", syncer->GetLocalPath ());
+			settings.setValue ("RemotePath", syncer->GetRemotePath ());
+			settings.setValue ("Snapshot",
+					QVariant::fromValue<Changes_t> (syncer->GetSnapshot ()
+							.values ()));
+		}
+		settings.endArray ();
+		settings.endGroup ();
+	}
+
+	void SyncManager::ReadSnapshots ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_NetStoreManager");
+		settings.beginGroup ("Core");
+		int snapshots = settings.beginReadArray ("Snapshots");
+		for (int i = 0; i < snapshots; ++i)
+		{
+			settings.setArrayIndex (i);
+			const QByteArray& id = settings.value ("AccountID").toByteArray ();
+			const QString& localPath = settings.value ("LocalPath").toString ();
+			const QString& remotePath = settings.value ("RemotePath").toString ();
+
+			auto it = std::find_if (AccountID2Syncer_.begin (), AccountID2Syncer_.end (),
+					[id, localPath, remotePath] (Syncer *syncer)
+					{
+						return syncer->GetAccountID () == id &&
+								syncer->GetLocalPath () == localPath &&
+								syncer->GetRemotePath () == remotePath;
+					});
+
+			if (it != AccountID2Syncer_.end ())
+				it.value ()->SetSnapshot (settings.value ("Snapshot").value<Changes_t> ());
+		}
+		settings.endArray ();
+		settings.endGroup ();
+	}
+
+	Syncer* SyncManager::GetSyncerByID (const QByteArray& id) const
+	{
+		for (auto accountId : AccountID2Syncer_.keys ())
+			if (id == accountId)
+				return AccountID2Syncer_ [accountId];
+		return 0;
+	}
+
+	Syncer* SyncManager::GetSyncerByLocalPath (const QString& localPath) const
+	{
+		for (auto syncer : AccountID2Syncer_.values ())
+			if (localPath.startsWith (syncer->GetLocalPath ()))
+				return syncer;
+
+		return 0;
+	}
+
+	void SyncManager::handleDirWasCreated (const QString& path)
+	{
+		if (auto syncer = GetSyncerByLocalPath (path))
+			syncer->localDirWasCreated (path);
+	}
+
+	void SyncManager::handleDirWasRemoved (const QString& path)
+	{
+		if (auto syncer = GetSyncerByLocalPath (path))
+			syncer->localDirWasRemoved (path);
+	}
+
+	void SyncManager::handleFileWasCreated (const QString& path)
+	{
+		if (auto syncer = GetSyncerByLocalPath (path))
+			syncer->localFileWasCreated (path);
+	}
+
+	void SyncManager::handleFileWasRemoved (const QString& path)
+	{
+		if (auto syncer = GetSyncerByLocalPath (path))
+			syncer->localFileWasRemoved (path);
+	}
+
+	void SyncManager::handleFileWasUpdated (const QString& path)
+	{
+		if (auto syncer = GetSyncerByLocalPath (path))
+			syncer->localFileWasUpdated (path);
+	}
+
+	void SyncManager::handleEntryWasMoved (const QString& oldPath,
+			const QString& newPath)
+	{
+		qDebug () << Q_FUNC_INFO << oldPath << newPath;
+	}
+
+	void SyncManager::handleEntryWasRenamed (const QString& oldName,
+			const QString& newName)
+	{
+		if (auto syncer = GetSyncerByLocalPath (oldName))
+			syncer->localFileWasRenamed (oldName, newName);
+	}
+
+	void SyncManager::handleGotListing (const QList<StorageItem>& items)
+	{
+		auto isa = qobject_cast<IStorageAccount*> (sender ());
+		if (!isa)
+			return;
+
+		if (auto syncer = GetSyncerByID (isa->GetUniqueID ()))
+		{
+			syncer->handleGotItems (items);
+			if (!syncer->IsStarted ())
+				syncer->start ();
+		}
+	}
+
+	void SyncManager::handleGotNewItem (const StorageItem& item,
+			const QByteArray& parentId)
+	{
+		auto isa = qobject_cast<IStorageAccount*> (sender ());
+		if (!isa)
+			return;
+
+		if (auto syncer = GetSyncerByID (isa->GetUniqueID ()))
+			syncer->handleGotNewItem (item, parentId);
+	}
+
+	void SyncManager::handleGotChanges (const QList<Change>& changes)
+	{
+		auto isa = qobject_cast<IStorageAccount*> (sender ());
+		if (!isa)
+			return;
+
+		if (auto syncer = GetSyncerByID (isa->GetUniqueID ()))
+			syncer->handleGotChanges (changes);
+	}
+
 }
 }
 

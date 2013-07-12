@@ -31,6 +31,7 @@
 
 #include <QItemDelegate>
 
+class QStandardItemModel;
 class QComboBox;
 
 namespace LeechCraft
@@ -44,12 +45,14 @@ namespace NetStoreManager
 		Q_OBJECT
 
 		AccountsManager *AM_;
+		QStandardItemModel *Model_;
 
 	public:
 		enum Columns
 		{
 			Account,
-			Directory
+			LocalDirectory,
+			RemoteDirecory
 		};
 
 		enum SyncItemDelegateRoles
@@ -57,7 +60,7 @@ namespace NetStoreManager
 			AccountId = Qt::UserRole + 1
 		};
 
-		SyncItemDelegate (AccountsManager *am, QObject *parent = 0);
+		SyncItemDelegate (AccountsManager *am, QStandardItemModel *model, QObject *parent = 0);
 
 		QWidget* createEditor (QWidget *parent,
 				const QStyleOptionViewItem& option, const QModelIndex& index) const;
@@ -68,7 +71,6 @@ namespace NetStoreManager
 				const QStyleOptionViewItem& option, const QModelIndex& index) const;
 	private:
 		void FillAccounts (QComboBox *box) const;
-// 		void FillAccountsAndSetCurrent (QComboBox *box, );
 
 	private slots:
 		void handleCloseDirectoryEditor (QWidget *w);
