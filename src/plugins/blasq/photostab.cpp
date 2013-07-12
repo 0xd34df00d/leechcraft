@@ -164,7 +164,7 @@ namespace Blasq
 
 	void PhotosTab::HandleImageSelected (const QModelIndex& index)
 	{
-		Ui_.ImagesView_->rootContext ()->setContextProperty ("listingMode", "false");
+		Ui_.ImagesView_->rootContext ()->setContextProperty ("listingMode", QVariant (false));
 
 		handleImageSelected (index.data (CollectionRole::ID).toString ());
 
@@ -175,13 +175,17 @@ namespace Blasq
 
 	void PhotosTab::HandleCollectionSelected (const QModelIndex& index)
 	{
-		QMetaObject::invokeMethod (Ui_.ImagesView_->rootObject (),
-				"showImage",
-				Q_ARG (QVariant, QUrl ()));
+		auto rootCtx = Ui_.ImagesView_->rootContext ();
+		if (!rootCtx->contextProperty ("listingMode").toBool ())
+		{
+			QMetaObject::invokeMethod (Ui_.ImagesView_->rootObject (),
+					"showImage",
+					Q_ARG (QVariant, QUrl ()));
 
-		Ui_.ImagesView_->rootContext ()->setContextProperty ("listingMode", "true");
-		Ui_.ImagesView_->rootContext ()->setContextProperty ("collRootIndex",
-				QVariant::fromValue (index));
+			rootCtx->setContextProperty ("listingMode", true);
+		}
+
+		rootCtx->setContextProperty ("collRootIndex", QVariant::fromValue (index));
 
 		SelectedID_.clear ();
 	}

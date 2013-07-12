@@ -102,6 +102,132 @@ Rectangle {
         }
     }
 
+    VisualDataModel {
+        id: collectionVisualModel
+        model: collectionModel
+
+        rootIndex: collRootIndex
+        onRootIndexChanged: {
+            collectionThumbsView.model = undefined
+            collectionThumbsView.model = collectionVisualModel
+        }
+
+        delegate: Item {
+            width: collectionThumbsView.cellWidth
+            height: collectionThumbsView.cellHeight
+
+            Rectangle {
+                id: itemRect
+
+                anchors.fill: parent
+                anchors.leftMargin: collectionThumbsView.horzMargin
+                anchors.rightMargin: collectionThumbsView.horzMargin
+                anchors.topMargin: collectionThumbsView.vertMargin
+                anchors.bottomMargin: collectionThumbsView.vertMargin
+
+                property bool isCurrent: imageId == rootRect.currentImageId
+
+                radius: 5
+                gradient: Gradient {
+                    GradientStop {
+                        position: 0
+                        color: itemRect.isCurrent ?
+                                colorProxy.color_TextBox_HighlightTopColor :
+                                colorProxy.color_TextBox_TopColor
+                    }
+                    GradientStop {
+                        position: 1
+                        color: itemRect.isCurrent ?
+                                colorProxy.color_TextBox_HighlightBottomColor :
+                                colorProxy.color_TextBox_BottomColor
+                    }
+                }
+
+                border.width: 1
+                border.color: isCurrent ?
+                        colorProxy.color_TextBox_HighlightBorderColor :
+                        colorProxy.color_TextBox_BorderColor
+
+                smooth: true
+
+                Image {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.bottom: nameLabel.top
+                    anchors.margins: 2
+
+                    source: smallThumb
+
+                    smooth: true
+                    fillMode: Image.PreserveAspectFit
+                }
+
+                Text {
+                    id: nameLabel
+
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.bottom: parent.bottom
+                    anchors.margins: 2
+
+                    text: name
+
+                    elide: Text.ElideMiddle
+                    horizontalAlignment: Text.AlignHCenter
+                    color: colorProxy.color_TextBox_TitleTextColor
+                }
+
+                property bool isHovered: itemMouseArea.containsMouse ||
+                            openInBrowserAction.isHovered ||
+                            downloadOriginalAction.isHovered
+
+                MouseArea {
+                    id: itemMouseArea
+                    anchors.fill: parent
+
+                    hoverEnabled: true
+                    onReleased: {
+                        rootRect.showImage(original)
+                        rootRect.imageSelected(imageId)
+
+                        rootRect.currentImageId = imageId
+                    }
+                }
+
+                ActionButton {
+                    id: openInBrowserAction
+
+                    anchors.top: parent.top
+                    anchors.right: parent.right
+                    width: 24
+                    height: width
+
+                    opacity: parent.isHovered ? 1 : 0
+                    Behavior on opacity { PropertyAnimation {} }
+
+                    actionIconURL: "image://ThemeIcons/go-jump-locationbar"
+                    onTriggered: rootRect.imageOpenRequested(original)
+                }
+
+                ActionButton {
+                    id: downloadOriginalAction
+
+                    anchors.top: openInBrowserAction.bottom
+                    anchors.right: parent.right
+                    width: 24
+                    height: width
+
+                    opacity: parent.isHovered ? 1 : 0
+                    Behavior on opacity { PropertyAnimation {} }
+
+                    actionIconURL: "image://ThemeIcons/download"
+                    onTriggered: rootRect.imageDownloadRequested(original)
+                }
+            }
+        }
+    }
+
     GridView {
         id: collectionThumbsView
 
@@ -119,125 +245,6 @@ Rectangle {
             blurRadius: 0.0
         }
 
-        model: VisualDataModel {
-            model: collectionModel
-
-            rootIndex: collRootIndex
-
-            delegate: Item {
-                width: collectionThumbsView.cellWidth
-                height: collectionThumbsView.cellHeight
-
-                Rectangle {
-                    id: itemRect
-
-                    anchors.fill: parent
-                    anchors.leftMargin: collectionThumbsView.horzMargin
-                    anchors.rightMargin: collectionThumbsView.horzMargin
-                    anchors.topMargin: collectionThumbsView.vertMargin
-                    anchors.bottomMargin: collectionThumbsView.vertMargin
-
-                    property bool isCurrent: imageId == rootRect.currentImageId
-
-                    radius: 5
-                    gradient: Gradient {
-                        GradientStop {
-                            position: 0
-                            color: itemRect.isCurrent ?
-                                    colorProxy.color_TextBox_HighlightTopColor :
-                                    colorProxy.color_TextBox_TopColor
-                        }
-                        GradientStop {
-                            position: 1
-                            color: itemRect.isCurrent ?
-                                    colorProxy.color_TextBox_HighlightBottomColor :
-                                    colorProxy.color_TextBox_BottomColor
-                        }
-                    }
-
-                    border.width: 1
-                    border.color: isCurrent ?
-                            colorProxy.color_TextBox_HighlightBorderColor :
-                            colorProxy.color_TextBox_BorderColor
-
-                    smooth: true
-
-                    Image {
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        anchors.top: parent.top
-                        anchors.bottom: nameLabel.top
-                        anchors.margins: 2
-
-                        source: smallThumb
-
-                        smooth: true
-                        fillMode: Image.PreserveAspectFit
-                    }
-
-                    Text {
-                        id: nameLabel
-
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        anchors.bottom: parent.bottom
-                        anchors.margins: 2
-
-                        text: name
-
-                        elide: Text.ElideMiddle
-                        horizontalAlignment: Text.AlignHCenter
-                        color: colorProxy.color_TextBox_TitleTextColor
-                    }
-
-                    property bool isHovered: itemMouseArea.containsMouse ||
-                                openInBrowserAction.isHovered ||
-                                downloadOriginalAction.isHovered
-
-                    MouseArea {
-                        id: itemMouseArea
-                        anchors.fill: parent
-
-                        hoverEnabled: true
-                        onReleased: {
-                            rootRect.showImage(original)
-                            rootRect.imageSelected(imageId)
-
-                            rootRect.currentImageId = imageId
-                        }
-                    }
-
-                    ActionButton {
-                        id: openInBrowserAction
-
-                        anchors.top: parent.top
-                        anchors.right: parent.right
-                        width: 24
-                        height: width
-
-                        opacity: parent.isHovered ? 1 : 0
-                        Behavior on opacity { PropertyAnimation {} }
-
-                        actionIconURL: "image://ThemeIcons/go-jump-locationbar"
-                        onTriggered: rootRect.imageOpenRequested(original)
-                    }
-
-                    ActionButton {
-                        id: downloadOriginalAction
-
-                        anchors.top: openInBrowserAction.bottom
-                        anchors.right: parent.right
-                        width: 24
-                        height: width
-
-                        opacity: parent.isHovered ? 1 : 0
-                        Behavior on opacity { PropertyAnimation {} }
-
-                        actionIconURL: "image://ThemeIcons/download"
-                        onTriggered: rootRect.imageDownloadRequested(original)
-                    }
-                }
-            }
-        }
+        model: collectionVisualModel
     }
 }
