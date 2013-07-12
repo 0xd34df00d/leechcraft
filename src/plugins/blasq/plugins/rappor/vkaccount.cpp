@@ -28,8 +28,10 @@
  **********************************************************************/
 
 #include "vkaccount.h"
-#include "vkservice.h"
 #include <QUuid>
+#include <QtDebug>
+#include <util/svcauth/vkauthmanager.h>
+#include "vkservice.h"
 
 namespace LeechCraft
 {
@@ -37,13 +39,49 @@ namespace Blasq
 {
 namespace Rappor
 {
-	VkAccount::VkAccount (const QString& name, VkService *service, ICoreProxy_ptr proxy, const QByteArray& id)
+	VkAccount::VkAccount (const QString& name, VkService *service, ICoreProxy_ptr proxy, const QByteArray& id, const QByteArray& cookies)
 	: QObject (service)
 	, Name_ (name)
 	, ID_ (id.isEmpty () ? QUuid::createUuid ().toByteArray () : id)
 	, Service_ (service)
 	, Proxy_ (proxy)
+	, AuthMgr_ (new Util::SvcAuth::VkAuthManager ("3762977", { "photos" }, cookies, proxy))
 	{
+	}
+
+	QByteArray VkAccount::Serialize () const
+	{
+		QByteArray result;
+		{
+			QDataStream out (&result, QIODevice::WriteOnly);
+			out << static_cast<quint8> (1)
+					<< Name_
+					<< ID_
+					<< LastCookies_;
+		}
+		return result;
+	}
+
+	VkAccount* VkAccount::Deserialize (const QByteArray& ba, VkService *service, ICoreProxy_ptr proxy)
+	{
+		QDataStream in (ba);
+
+		quint8 version = 0;
+		in >> version;
+		if (version != 1)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown version"
+					<< version;
+			return nullptr;
+		}
+
+		QString name;
+		QByteArray id;
+		QByteArray cookies;
+		in >> name >> id >> cookies;
+
+		return new VkAccount (name, service, proxy, id, cookies);
 	}
 
 	QObject* VkAccount::GetQObject ()
@@ -73,6 +111,8 @@ namespace Rappor
 
 	void VkAccount::UpdateCollections ()
 	{
+		Action_ = Action::CollectionsRequested;
+		AuthMgr_->GetAuthKey ();
 	}
 }
 }

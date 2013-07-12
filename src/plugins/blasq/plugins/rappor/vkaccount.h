@@ -35,6 +35,14 @@
 
 namespace LeechCraft
 {
+namespace Util
+{
+namespace SvcAuth
+{
+	class VkAuthManager;
+}
+}
+
 namespace Blasq
 {
 namespace Rappor
@@ -51,8 +59,23 @@ namespace Rappor
 		const QByteArray ID_;
 		VkService * const Service_;
 		const ICoreProxy_ptr Proxy_;
+
+		Util::SvcAuth::VkAuthManager * const AuthMgr_;
+
+		enum Action
+		{
+			NoAction,
+			CollectionsRequested
+		} Action_ = Action::NoAction;
+
+		QByteArray LastCookies_;
 	public:
-		VkAccount (const QString&, VkService*, ICoreProxy_ptr, const QByteArray& = QByteArray ());
+		VkAccount (const QString&, VkService*, ICoreProxy_ptr,
+				const QByteArray& id = QByteArray (),
+				const QByteArray& cookies = QByteArray ());
+
+		QByteArray Serialize () const;
+		static VkAccount* Deserialize (const QByteArray&, VkService*, ICoreProxy_ptr);
 
 		QObject* GetQObject ();
 		IService* GetService () const;
@@ -62,7 +85,10 @@ namespace Rappor
 		QAbstractItemModel* GetCollectionsModel () const;
 
 		void UpdateCollections ();
+	private slots:
 	signals:
+		void accountChanged (VkAccount*);
+
 		void doneUpdating ();
 	};
 }
