@@ -29,6 +29,7 @@
 
 #include "vkaccount.h"
 #include <QUuid>
+#include <QStandardItemModel>
 #include <QtDebug>
 #include <util/svcauth/vkauthmanager.h>
 #include "vkservice.h"
@@ -45,8 +46,15 @@ namespace Rappor
 	, ID_ (id.isEmpty () ? QUuid::createUuid ().toByteArray () : id)
 	, Service_ (service)
 	, Proxy_ (proxy)
+	, CollectionsModel_ (new QStandardItemModel (this))
 	, AuthMgr_ (new Util::SvcAuth::VkAuthManager ("3762977", { "photos" }, cookies, proxy))
 	{
+		CollectionsModel_->setHorizontalHeaderLabels ({ tr ("Name") });
+
+		AllPhotosItem_ = new QStandardItem (tr ("All photos"));
+		AllPhotosItem_->setData (ItemType::AllPhotos, CollectionRole::Type);
+		AllPhotosItem_->setEditable (false);
+		CollectionsModel_->appendRow (AllPhotosItem_);
 	}
 
 	QByteArray VkAccount::Serialize () const
@@ -106,11 +114,14 @@ namespace Rappor
 
 	QAbstractItemModel* VkAccount::GetCollectionsModel () const
 	{
-		return 0;
+		return CollectionsModel_;
 	}
 
 	void VkAccount::UpdateCollections ()
 	{
+		if (auto rc = AllPhotosItem_->rowCount ())
+			AllPhotosItem_->removeRows (0, rc);
+
 		Action_ = Action::CollectionsRequested;
 		AuthMgr_->GetAuthKey ();
 	}

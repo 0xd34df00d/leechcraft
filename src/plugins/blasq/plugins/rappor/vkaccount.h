@@ -33,6 +33,9 @@
 #include <interfaces/blasq/iaccount.h>
 #include <interfaces/core/icoreproxy.h>
 
+class QStandardItemModel;
+class QStandardItem;
+
 namespace LeechCraft
 {
 namespace Util
@@ -59,6 +62,9 @@ namespace Rappor
 		const QByteArray ID_;
 		VkService * const Service_;
 		const ICoreProxy_ptr Proxy_;
+
+		QStandardItemModel * const CollectionsModel_;
+		QStandardItem *AllPhotosItem_ = 0;
 
 		Util::SvcAuth::VkAuthManager * const AuthMgr_;
 
