@@ -55,6 +55,11 @@ namespace Rappor
 		AllPhotosItem_->setData (ItemType::AllPhotos, CollectionRole::Type);
 		AllPhotosItem_->setEditable (false);
 		CollectionsModel_->appendRow (AllPhotosItem_);
+
+		connect (AuthMgr_,
+				SIGNAL (cookiesChanged (QByteArray)),
+				this,
+				SLOT (handleCookies (QByteArray)));
 	}
 
 	QByteArray VkAccount::Serialize () const
@@ -124,6 +129,12 @@ namespace Rappor
 
 		Action_ = Action::CollectionsRequested;
 		AuthMgr_->GetAuthKey ();
+	}
+
+	void VkAccount::handleCookies (const QByteArray& cookies)
+	{
+		LastCookies_ = cookies;
+		emit accountChanged (this);
 	}
 }
 }

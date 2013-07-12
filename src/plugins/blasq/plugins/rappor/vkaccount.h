@@ -92,6 +92,7 @@ namespace Rappor
 
 		void UpdateCollections ();
 	private slots:
+		void handleCookies (const QByteArray&);
 	signals:
 		void accountChanged (VkAccount*);
 
