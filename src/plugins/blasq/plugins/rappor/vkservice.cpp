@@ -29,6 +29,10 @@
 
 #include "vkservice.h"
 #include <QIcon>
+#include <QCoreApplication>
+#include <QSettings>
+#include <QtDebug>
+#include "vkaccount.h"
 
 namespace LeechCraft
 {
@@ -39,6 +43,16 @@ namespace Rappor
 	VkService::VkService (ICoreProxy_ptr proxy)
 	: Proxy_ (proxy)
 	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Blasq_Rappor");
+		settings.beginGroup ("Accounts");
+		for (const auto& key : settings.childKeys ())
+		{
+			const auto& serialized = settings.value (key).toByteArray ();
+			if (auto acc = VkAccount::Deserialize (serialized, this, proxy))
+				AddAccount (acc);
+		}
+		settings.endGroup ();
 	}
 
 	QObject* VkService::GetQObject ()
@@ -58,7 +72,10 @@ namespace Rappor
 
 	QList<IAccount*> VkService::GetRegisteredAccounts () const
 	{
-		return {};
+		QList<IAccount*> result;
+		for (auto acc : Accounts_)
+			result << acc;
+		return result;
 	}
 
 	QList<QWidget*> VkService::GetAccountRegistrationWidgets () const
@@ -68,10 +85,52 @@ namespace Rappor
 
 	void VkService::RegisterAccount (const QString& name, const QList<QWidget*>&)
 	{
+		auto acc = new VkAccount (name, this, Proxy_);
+		AddAccount (acc);
+		saveAccount (acc);
 	}
 
 	void VkService::RemoveAccount (IAccount *account)
 	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Blasq_Spegnersi");
+		settings.beginGroup ("Accounts");
+		settings.remove (account->GetID ());
+		settings.endGroup ();
+
+		const auto pos = std::find (Accounts_.begin (), Accounts_.end (), account);
+		if (pos == Accounts_.end ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "account"
+					<< account->GetID ()
+					<< "not found";
+			return;
+		}
+
+		emit accountRemoved (*pos);
+		(*pos)->deleteLater ();
+
+		Accounts_.erase (pos);
+	}
+
+	void VkService::AddAccount (VkAccount *account)
+	{
+		Accounts_ << account;
+		emit accountAdded (account);
+		connect (account,
+				SIGNAL (accountChanged (VkAccount*)),
+				this,
+				SLOT (saveAccount (VkAccount*)));
+	}
+
+	void VkService::saveAccount (VkAccount *account)
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Blasq_Rappor");
+		settings.beginGroup ("Accounts");
+		settings.setValue (account->GetID (), account->Serialize ());
+		settings.endGroup ();
 	}
 }
 }

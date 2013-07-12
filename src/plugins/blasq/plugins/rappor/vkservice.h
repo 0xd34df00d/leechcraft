@@ -39,13 +39,17 @@ namespace Blasq
 {
 namespace Rappor
 {
+	class VkAccount;
+
 	class VkService : public QObject
 					, public IService
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Blasq::IService)
 
-		ICoreProxy_ptr Proxy_;
+		const ICoreProxy_ptr Proxy_;
+
+		QList<VkAccount*> Accounts_;
 	public:
 		VkService (ICoreProxy_ptr);
 
@@ -58,6 +62,10 @@ namespace Rappor
 		QList<QWidget*> GetAccountRegistrationWidgets () const;
 		void RegisterAccount (const QString&, const QList<QWidget*>&);
 		void RemoveAccount (IAccount*);
+	private:
+		void AddAccount (VkAccount*);
+	private slots:
+		void saveAccount (VkAccount*);
 	signals:
 		void accountAdded (QObject*);
 		void accountRemoved (QObject*);
