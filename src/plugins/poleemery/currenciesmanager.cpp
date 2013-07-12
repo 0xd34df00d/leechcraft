@@ -37,6 +37,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QtDebug>
+#include <QCoreApplication>
 #include <QDomDocument>
 #include "xmlsettingsmanager.h"
 #include "core.h"
@@ -61,6 +62,12 @@ namespace Poleemery
 		Enabled_.sort ();
 
 		RatesFromUSD_ ["USD"] = 1;
+		QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_Poleemery");
+		settings.beginGroup ("Currencies");
+		for (const auto& cur : settings.childKeys ())
+			RatesFromUSD_ [cur] = settings.value (cur).toDouble ();
+		settings.endGroup ();
 
 		struct CurInfo
 		{
@@ -217,7 +224,16 @@ namespace Poleemery
 		}
 
 		if (changed)
+		{
 			emit currenciesUpdated ();
+
+			QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Poleemery");
+			settings.beginGroup ("Currencies");
+			for (auto i = RatesFromUSD_.constBegin (); i != RatesFromUSD_.constEnd (); ++i)
+				settings.setValue (i.key (), *i);
+			settings.endGroup ();
+		}
 	}
 
 	void CurrenciesManager::handleItemChanged (QStandardItem *item)
