@@ -1,6 +1,18 @@
 This file lists only more or less major changes, refer to `git log` for
 the rest.
 
+!!! 0.5.99
+* AN: fixed a typo in user string.
+* AN: updated English and Russian translations.
+* Azoth: auto-request logs for MUC participants as well.
+* Azoth: fixed font zooming in fixed-font MUCs.
+* Azoth CH: don't test the entry type, leave that to core.
+* LMP: fixed a segfault on removable device removal in sync widget.
+* Lemon: added Qwt 6.1 compatibility.
+* Liznoo: added Qwt 6.1 compatibility.
+* Monocle Mu: depend on openjpeg and jbig2dec, required by mupdf.
+* Poshuku CleanWeb: fixed a rare segfault.
+
 !!! 0.5.98
 * Core: first show unassociated dock widgets.
 * Core: fixed some segfaults on tab closes.
