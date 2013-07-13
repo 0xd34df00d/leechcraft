@@ -25,7 +25,7 @@ set (FORMS
 	newaccountwizardfirstpage.ui
 	photostab.ui
 	)
-#CreateTrs("blasq" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrs("blasq" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("blasq" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
 QT4_WRAP_UI (UIS_H ${FORMS})

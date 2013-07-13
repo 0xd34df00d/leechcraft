@@ -31,6 +31,7 @@
 #include <QIcon>
 #include <QtDeclarative>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/util.h>
 #include "interfaces/blasq/iservicesplugin.h"
 #include "interfaces/blasq/iaccount.h"
 #include "xmlsettingsmanager.h"
@@ -46,6 +47,8 @@ namespace Blasq
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("blasq");
+
 		Proxy_ = proxy;
 
 		ServicesMgr_ = new ServicesManager;
