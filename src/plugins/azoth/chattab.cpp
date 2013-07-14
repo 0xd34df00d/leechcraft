@@ -1782,6 +1782,11 @@ namespace Azoth
 				!XmlSettingsManager::Instance ().property ("ShowStatusChangesEvents").toBool ())
 			return;
 
+		if (msg->GetMessageSubType () == IMessage::MSTParticipantStatusChange &&
+				(!parent || parent->GetEntryType () != ICLEntry::ETMUC) &&
+				!XmlSettingsManager::Instance ().property ("ShowStatusChangesEventsInPrivates").toBool ())
+			return;
+
 		if ((msg->GetMessageSubType () == IMessage::MSTParticipantJoin ||
 					msg->GetMessageSubType () == IMessage::MSTParticipantLeave) &&
 				!XmlSettingsManager::Instance ().property ("ShowJoinsLeaves").toBool ())
