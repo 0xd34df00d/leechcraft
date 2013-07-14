@@ -38,7 +38,7 @@
 					<label value="Recommend this psto" />
 				</item>
 				<item type="checkbox" property="AddToBookmarkButton" default="true">
-					<label value="Request Comments" />
+					<label value="Add to bookmarks" />
 				</item>
 			</groupbox>
 		</groupbox>
