@@ -87,6 +87,7 @@
 #include "serverinfostorage.h"
 #include "xmlsettingsmanager.h"
 #include "inforequestpolicymanager.h"
+#include "captchamanager.h"
 
 namespace LeechCraft
 {
@@ -107,6 +108,7 @@ namespace Xoox
 	, DeliveryReceiptsManager_ (new QXmppMessageReceiptManager)
 	, CaptchaManager_ (new XMPPCaptchaManager)
 	, BobManager_ (new XMPPBobManager)
+	, CaptchaDisplayManager_ (new CaptchaManager (CaptchaManager_, BobManager_, this))
 #ifdef ENABLE_MEDIACALLS
 	, CallManager_ (new QXmppCallManager)
 #endif
@@ -287,11 +289,6 @@ namespace Xoox
 				SIGNAL (messageDelivered (const QString&, const QString&)),
 				this,
 				SLOT (handleMessageDelivered (const QString&, const QString&)));
-
-		connect (CaptchaManager_,
-				SIGNAL (captchaFormReceived (const QString&, const QXmppDataForm&)),
-				this,
-				SLOT (handleCaptchaReceived (const QString&, const QXmppDataForm&)));
 
 		connect (BMManager_,
 				SIGNAL (bookmarksReceived (QXmppBookmarkSet)),
@@ -1181,36 +1178,6 @@ namespace Xoox
 		QPointer<GlooxMessage> msg = UndeliveredMessages_.take (msgId);
 		if (msg)
 			msg->SetDelivered (true);
-	}
-
-	void ClientConnection::handleCaptchaReceived (const QString& jid, const QXmppDataForm& dataForm)
-	{
-		FormBuilder builder (jid, BobManager_);
-
-		std::auto_ptr<QDialog> dialog (new QDialog ());
-		QWidget *widget = builder.CreateForm (dataForm, dialog.get ());
-		dialog->setWindowTitle (widget->windowTitle ().isEmpty () ?
-				tr ("Enter CAPTCHA") :
-				widget->windowTitle ());
-		dialog->setLayout (new QVBoxLayout ());
-		dialog->layout ()->addWidget (widget);
-		QDialogButtonBox *box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-		dialog->layout ()->addWidget (box);
-
-		connect (box,
-				SIGNAL (accepted ()),
-				dialog.get (),
-				SLOT (accept ()));
-		connect (box,
-				SIGNAL (rejected ()),
-				dialog.get (),
-				SLOT (reject ()));
-
-		if (dialog->exec () != QDialog::Accepted)
-			return;
-
-		QXmppDataForm form = builder.GetForm ();
-		CaptchaManager_->SendResponse (jid, form);
 	}
 
 	void ClientConnection::handleRoomInvitation (const QString& room,
