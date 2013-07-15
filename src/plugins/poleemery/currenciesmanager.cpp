@@ -205,6 +205,9 @@ namespace Poleemery
 				.firstChildElement ("rate");
 		while (!rateElem.isNull ())
 		{
+			std::shared_ptr<void> guard (nullptr,
+					[&rateElem] (void*) { rateElem = rateElem.nextSiblingElement ("rate"); });
+
 			auto toValue = rateElem.attribute ("id").mid (3);
 			if (toValue.size () != 3)
 			{
@@ -219,8 +222,6 @@ namespace Poleemery
 				RatesFromUSD_ [toValue] = newRate;
 				changed = true;
 			}
-
-			rateElem = rateElem.nextSiblingElement ("rate");
 		}
 
 		if (changed)
