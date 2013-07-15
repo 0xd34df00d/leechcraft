@@ -10,17 +10,17 @@ include_directories (
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
-set (SRCS
+set (RAPPOR_SRCS
 	rappor.cpp
 	vkservice.cpp
 	vkaccount.cpp
 	)
 #CreateTrs("blasq" "en;ru_RU" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("blasq_rappor" "en;ru_RU" "${SRCS}" "${FORMS}" "")
+CreateTrsUpTarget("blasq_rappor" "en;ru_RU" "${RAPPOR_SRCS}" "${RAPPOR_FORMS}" "")
 
 add_library (leechcraft_blasq_rappor SHARED
-	${COMPILED_TRANSLATIONS}
-	${SRCS}
+	${BLASQ_COMPILED_TRANSLATIONS}
+	${BLASQ_SRCS}
 	)
 target_link_libraries (leechcraft_blasq_rappor
 	${QT_LIBRARIES}
