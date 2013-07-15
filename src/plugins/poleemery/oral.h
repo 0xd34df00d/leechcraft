@@ -299,8 +299,8 @@ namespace oral
 
 		struct CachedFieldsData
 		{
-			const QString Table_;
-			const QSqlDatabase& DB_;
+			QString Table_;
+			QSqlDatabase DB_;
 
 			QList<QString> Fields_;
 			QList<QString> BoundFields_;
@@ -439,6 +439,119 @@ namespace oral
 			selectQuery->prepare (selectAll);
 			auto selector = [selectQuery] () { return PerformSelect<T> (selectQuery); };
 			return { selectQuery, selector };
+		}
+
+		template<int Field, int... Fields>
+		struct SelectFields
+		{
+			QList<QPair<QString, QString>> operator() (const CachedFieldsData& data) const
+			{
+				return QPair<QString, QString> { data.Fields_.at (Field), data.BoundFields_.at (Field) } + SelectFields<Fields...> {} (data);
+			}
+		};
+
+		template<int Field>
+		struct SelectFields<Field>
+		{
+			QList<QPair<QString, QString>> operator() (const CachedFieldsData& data) const
+			{
+				return { { data.Fields_.at (Field), data.BoundFields_.at (Field) } };
+			}
+		};
+
+		template<int HeadT, int... TailT>
+		struct FieldsUnpacker
+		{
+			static const int Head = HeadT;
+			typedef FieldsUnpacker<TailT...> Tail_t;
+		};
+
+		template<int HeadT>
+		struct FieldsUnpacker<HeadT>
+		{
+			static const int Head = HeadT;
+			typedef std::false_type Tail_t;
+		};
+
+		template<typename FieldsUnpacker, typename HeadArg, typename... TailArgs>
+		struct ValueBinder
+		{
+			QSqlQuery_ptr Query_;
+			QList<QString> BoundFields_;
+
+			void operator() (const HeadArg& arg, const TailArgs&... tail) const
+			{
+				Query_->bindValue (BoundFields_.at (FieldsUnpacker::Head), arg);
+
+				ValueBinder<typename FieldsUnpacker::Tail_t, TailArgs...> { Query_, BoundFields_ } (tail...);
+			}
+		};
+
+		template<typename FieldsUnpacker, typename HeadArg>
+		struct ValueBinder<FieldsUnpacker, HeadArg>
+		{
+			QSqlQuery_ptr Query_;
+			QList<QString> BoundFields_;
+
+			void operator() (const HeadArg& arg) const
+			{
+				Query_->bindValue (BoundFields_.at (FieldsUnpacker::Head), arg);
+			}
+		};
+
+		template<typename T>
+		class ByFieldsWrapper
+		{
+			CachedFieldsData Cached_;
+		public:
+			ByFieldsWrapper ()
+			{
+			}
+
+			ByFieldsWrapper (const CachedFieldsData& data)
+			: Cached_ (data)
+			{
+			}
+
+			template<int... Fields>
+			class ByFieldsSelector
+			{
+				const CachedFieldsData Cached_;
+				QSqlQuery_ptr Query_;
+			public:
+				ByFieldsSelector (const ByFieldsWrapper<T>& w)
+				: Cached_ (w.Cached_)
+				, Query_ (new QSqlQuery (w.Cached_.DB_))
+				{
+					QStringList whereClauses;
+					for (const auto& pair : SelectFields<Fields...> {} (Cached_))
+						whereClauses << pair.first + " = " + pair.second;
+
+					auto selectAll = "SELECT " + QStringList { Cached_.Fields_ }.join (", ") +
+							" FROM " + Cached_.Table_ +
+							" WHERE " + whereClauses.join (" AND ") + ";";
+					Query_->prepare (selectAll);
+				}
+
+				template<typename... Args>
+				QList<T> operator() (Args... args) const
+				{
+					ValueBinder<FieldsUnpacker<Fields...>, Args...> { Query_, Cached_.BoundFields_ } (args...);
+					return PerformSelect<T> (Query_);
+				}
+			};
+
+			template<int... Fields>
+			ByFieldsSelector<Fields...> Prepare ()
+			{
+				return { *this };
+			}
+		};
+
+		template<typename T>
+		ByFieldsWrapper<T> AdaptSelectFields (const CachedFieldsData& data)
+		{
+			return ByFieldsWrapper<T> (data);
 		}
 
 		template<typename OrigSeq, typename OrigIdx, typename RefSeq, typename MemberIdx>
@@ -656,6 +769,8 @@ namespace oral
 		QSqlQuery_ptr QueryDelete_;
 		std::function<void (T)> DoDelete_;
 
+		detail::ByFieldsWrapper<T> DoSelectByFields_;
+
 		QString CreateTable_;
 
 		ObjectInfo ()
@@ -666,6 +781,7 @@ namespace oral
 				decltype (QueryInsertOne_) insert, decltype (DoInsert_) doIns,
 				decltype (QueryUpdate_) update, decltype (DoUpdate_) doUpdate,
 				decltype (QueryDelete_) del, decltype (DoDelete_) doDelete,
+				decltype (DoSelectByFields_) byFields,
 				decltype (CreateTable_) createTable)
 		: QuerySelectAll_ (sel)
 		, DoSelectAll_ (doSel)
@@ -675,6 +791,7 @@ namespace oral
 		, DoUpdate_ (doUpdate)
 		, QueryDelete_ (del)
 		, DoDelete_ (doDelete)
+		, DoSelectByFields_ (byFields)
 		, CreateTable_ (createTable)
 		{
 		}
@@ -695,12 +812,15 @@ namespace oral
 		const auto& deletePair = detail::AdaptDelete<T> (cachedData);
 		const auto& createTable = detail::AdaptCreateTable<T> (cachedData);
 
+		const auto& byVal = detail::AdaptSelectFields<T> (cachedData);
+
 		ObjectInfo<T> info
 		{
 			selectPair.first, selectPair.second,
 			insertPair.first, insertPair.second,
 			updatePair.first, updatePair.second,
 			deletePair.first, deletePair.second,
+			byVal,
 			createTable
 		};
 
