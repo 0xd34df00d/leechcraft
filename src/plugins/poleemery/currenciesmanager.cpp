@@ -39,6 +39,7 @@
 #include <QtDebug>
 #include <QCoreApplication>
 #include <QDateTime>
+#include <QTimer>
 #include <QDomDocument>
 #include "xmlsettingsmanager.h"
 #include "core.h"
@@ -117,6 +118,13 @@ namespace Poleemery
 
 			Model_->appendRow (row);
 		}
+
+		auto timer = new QTimer (this);
+		connect (timer,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (updateRates ()));
+		timer->start (10 * 60 * 1000);
 	}
 
 	void CurrenciesManager::Load ()
@@ -125,7 +133,7 @@ namespace Poleemery
 
 		if (Enabled_ != RatesFromUSD_.keys () ||
 				LastFetch_.msecsTo (QDateTime::currentDateTime ()) > 60 * 1000)
-			FetchRates (Enabled_);
+			updateRates ();
 	}
 
 	const QStringList& CurrenciesManager::GetEnabledCurrencies () const
@@ -190,6 +198,11 @@ namespace Poleemery
 				SIGNAL (finished ()),
 				this,
 				SLOT (gotRateReply ()));
+	}
+
+	void CurrenciesManager::updateRates ()
+	{
+		FetchRates (Enabled_);
 	}
 
 	void CurrenciesManager::gotRateReply ()

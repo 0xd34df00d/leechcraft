@@ -71,6 +71,7 @@ namespace Poleemery
 	private:
 		void FetchRates (QStringList);
 	private slots:
+		void updateRates ();
 		void gotRateReply ();
 		void handleItemChanged (QStandardItem*);
 	signals:
