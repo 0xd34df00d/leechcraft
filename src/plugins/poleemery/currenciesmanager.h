@@ -31,7 +31,8 @@
 
 #include <QObject>
 #include <QStringList>
-#include <QHash>
+#include <QDateTime>
+#include <QMap>
 
 class QAbstractItemModel;
 class QStandardItemModel;
@@ -50,9 +51,11 @@ namespace Poleemery
 
 		QStringList Enabled_;
 
-		QHash<QString, double> RatesFromUSD_;
+		QMap<QString, double> RatesFromUSD_;
 
 		QString UserCurrency_;
+
+		QDateTime LastFetch_;
 	public:
 		CurrenciesManager (QObject* = 0);
 

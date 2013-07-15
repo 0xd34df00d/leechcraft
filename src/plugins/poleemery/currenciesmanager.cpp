@@ -68,8 +68,10 @@ namespace Poleemery
 		QSettings settings (QCoreApplication::organizationName (),
 			QCoreApplication::applicationName () + "_Poleemery");
 		settings.beginGroup ("Currencies");
+		LastFetch_ = settings.value ("LastFetch").toDateTime ();
 		for (const auto& cur : settings.childKeys ())
-			RatesFromUSD_ [cur] = settings.value (cur).toDouble ();
+			if (cur != "LastFetch")
+				RatesFromUSD_ [cur] = settings.value (cur).toDouble ();
 		settings.endGroup ();
 
 		struct CurInfo
@@ -119,7 +121,11 @@ namespace Poleemery
 
 	void CurrenciesManager::Load ()
 	{
-		FetchRates (Enabled_);
+		Enabled_.sort ();
+
+		if (Enabled_ != RatesFromUSD_.keys () ||
+				LastFetch_.msecsTo (QDateTime::currentDateTime ()) > 60 * 1000)
+			FetchRates (Enabled_);
 	}
 
 	const QStringList& CurrenciesManager::GetEnabledCurrencies () const
@@ -232,17 +238,19 @@ namespace Poleemery
 			Core::Instance ().GetStorage ()->AddRate (rate);
 		}
 
+		LastFetch_ = QDateTime::currentDateTime ();
+
+		QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_Poleemery");
+		settings.beginGroup ("Currencies");
+		settings.setValue ("LastFetch", LastFetch_);
 		if (changed)
 		{
 			emit currenciesUpdated ();
-
-			QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Poleemery");
-			settings.beginGroup ("Currencies");
 			for (auto i = RatesFromUSD_.constBegin (); i != RatesFromUSD_.constEnd (); ++i)
 				settings.setValue (i.key (), *i);
-			settings.endGroup ();
 		}
+		settings.endGroup ();
 	}
 
 	void CurrenciesManager::handleItemChanged (QStandardItem *item)
