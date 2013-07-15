@@ -19,7 +19,7 @@ set (SPEGNERSI_SRCS
 	flickrservice.cpp
 	flickraccount.cpp
 	)
-#CreateTrs("blasq" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrs("blasq_spegnersi" "en;ru_RU" BLASQ_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("blasq_spegnersi" "en;ru_RU" "${SPEGNERSI_SRCS}" "${SPEGNERSI_FORMS}" "")
 
 add_library (leechcraft_blasq_spegnersi SHARED
