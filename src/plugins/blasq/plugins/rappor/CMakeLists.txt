@@ -15,12 +15,12 @@ set (RAPPOR_SRCS
 	vkservice.cpp
 	vkaccount.cpp
 	)
-CreateTrs("blasq_rappor" "en;ru_RU" BLASQ_COMPILED_TRANSLATIONS)
+CreateTrs("blasq_rappor" "en;ru_RU" RAPPOR_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("blasq_rappor" "en;ru_RU" "${RAPPOR_SRCS}" "${RAPPOR_FORMS}" "")
 
 add_library (leechcraft_blasq_rappor SHARED
-	${BLASQ_COMPILED_TRANSLATIONS}
-	${BLASQ_SRCS}
+	${RAPPOR_COMPILED_TRANSLATIONS}
+	${RAPPOR_SRCS}
 	)
 target_link_libraries (leechcraft_blasq_rappor
 	${QT_LIBRARIES}
