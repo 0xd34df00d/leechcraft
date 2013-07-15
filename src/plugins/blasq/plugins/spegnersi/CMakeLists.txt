@@ -14,17 +14,17 @@ include_directories (
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
-set (SRCS
+set (SPEGNERSI_SRCS
 	spegnersi.cpp
 	flickrservice.cpp
 	flickraccount.cpp
 	)
 #CreateTrs("blasq" "en;ru_RU" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("blasq_spegnersi" "en;ru_RU" "${SRCS}" "${FORMS}" "")
+CreateTrsUpTarget("blasq_spegnersi" "en;ru_RU" "${SPEGNERSI_SRCS}" "${SPEGNERSI_FORMS}" "")
 
 add_library (leechcraft_blasq_spegnersi SHARED
-	${COMPILED_TRANSLATIONS}
-	${SRCS}
+	${BLASQ_COMPILED_TRANSLATIONS}
+	${SPEGNERSI_SRCS}
 	)
 target_link_libraries (leechcraft_blasq_spegnersi
 	${QT_LIBRARIES}
