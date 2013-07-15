@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "rappor.h"
+#include <util/util.h>
 #include "vkservice.h"
 
 namespace LeechCraft
@@ -38,6 +39,8 @@ namespace Rappor
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("blasq_rappor");
+
 		Service_ = new VkService (proxy);
 	}
 
