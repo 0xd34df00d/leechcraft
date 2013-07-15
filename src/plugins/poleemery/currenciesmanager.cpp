@@ -38,9 +38,12 @@
 #include <QNetworkReply>
 #include <QtDebug>
 #include <QCoreApplication>
+#include <QDateTime>
 #include <QDomDocument>
 #include "xmlsettingsmanager.h"
 #include "core.h"
+#include "structures.h"
+#include "storage.h"
 
 namespace LeechCraft
 {
@@ -199,6 +202,8 @@ namespace Poleemery
 			return;
 		}
 
+		const auto& now = QDateTime::currentDateTime ();
+
 		bool changed = false;
 		auto rateElem = doc.documentElement ()
 				.firstChildElement ("results")
@@ -208,7 +213,7 @@ namespace Poleemery
 			std::shared_ptr<void> guard (nullptr,
 					[&rateElem] (void*) { rateElem = rateElem.nextSiblingElement ("rate"); });
 
-			auto toValue = rateElem.attribute ("id").mid (3);
+			const auto& toValue = rateElem.attribute ("id").mid (3);
 			if (toValue.size () != 3)
 			{
 				qWarning () << "incorrect `to` value"
@@ -222,6 +227,9 @@ namespace Poleemery
 				RatesFromUSD_ [toValue] = newRate;
 				changed = true;
 			}
+
+			Rate rate { 0, toValue, now, newRate };
+			Core::Instance ().GetStorage ()->AddRate (rate);
 		}
 
 		if (changed)
