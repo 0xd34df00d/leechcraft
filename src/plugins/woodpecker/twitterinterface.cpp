@@ -172,6 +172,11 @@ namespace Woodpecker
 			params.insert ("include_entities", "true");
 			break;
 			
+		case TwitterRequest::Search:
+			reqUrl = "https://api.twitter.com/1.1/search/tweets.json";
+			params.insert ("include_entities", "true");
+			break;
+			
 		case TwitterRequest::Update:
 			reqUrl = "http://api.twitter.com/1.1/statuses/update.json";
 			break;
@@ -287,28 +292,6 @@ namespace Woodpecker
 		OAuthManager_->executeRequest (oauthRequest);
 	}
 
-	void TwitterInterface::searchTwitter (const QString& text)
-	{
-		QString link ("http://search.twitter.com/search.json?q=" + text);
-		SetLastRequestMode (FeedMode::SearchResult);
-		RequestTwitter (link);
-	}
-
-	void TwitterInterface::requestHomeFeed ()
-	{
-		qDebug () << "Getting home feed";
-		SetLastRequestMode (FeedMode::HomeTimeline);
-		SignedRequest (TwitterRequest::HomeTimeline, KQOAuthRequest::GET);
-	}
-
-	void TwitterInterface::requestUserTimeline (const QString& username)
-	{
-		KQOAuthParameters param;
-		param.insert ("screen_name", username);
-		SetLastRequestMode (FeedMode::UserTimeline);
-		SignedRequest (TwitterRequest::UserTimeline, KQOAuthRequest::GET, param);
-	}
-
 	void TwitterInterface::Login (const QString& savedToken, const QString& savedTokenSecret)
 	{
 		Token_ = savedToken;
@@ -349,6 +332,12 @@ namespace Woodpecker
 				SetLastRequestMode (FeedMode::HomeTimeline);
 				SignedRequest (TwitterRequest::HomeTimeline, KQOAuthRequest::GET, param);
 				break;
+				
+			case FeedMode::SearchResult:
+				SetLastRequestMode (FeedMode::SearchResult);
+				SignedRequest (TwitterRequest::Search, KQOAuthRequest::GET, param);
+				break;
+				
 			default:
 				qWarning () << Q_FUNC_INFO << "Unknown request";
 		}
