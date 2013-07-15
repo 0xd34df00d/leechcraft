@@ -286,6 +286,20 @@ namespace Poleemery
 		}
 	}
 
+	QList<Rate> Storage::GetRate (const QString& code)
+	{
+		try
+		{
+			return Impl_->RateInfo_.DoSelectByFields_.Prepare<1> () (code);
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
+	}
+
 	void Storage::AddRate (Rate& rate)
 	{
 		try
