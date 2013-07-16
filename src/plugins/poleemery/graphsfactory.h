@@ -31,6 +31,8 @@
 
 #include <functional>
 #include <QObject>
+#include <QPair>
+#include <QDateTime>
 
 class QwtPlot;
 class QwtPlotItem;
@@ -39,12 +41,14 @@ namespace LeechCraft
 {
 namespace Poleemery
 {
+	typedef QPair<QDateTime, QDateTime> DateSpan_t;
+
 	class GraphsFactory
 	{
 		struct GraphInfo
 		{
 			QString Name_;
-			std::function<QList<QwtPlotItem*> ()> Creator_;
+			std::function<QList<QwtPlotItem*> (DateSpan_t)> Creator_;
 			std::function<void (QwtPlot*)> Preparer_;
 		};
 		QList<GraphInfo> Infos_;
@@ -53,7 +57,7 @@ namespace Poleemery
 
 		QStringList GetNames () const;
 
-		QList<QwtPlotItem*> CreateItems (int);
+		QList<QwtPlotItem*> CreateItems (int, const DateSpan_t&);
 		void PreparePlot (int, QwtPlot*);
 	};
 }
