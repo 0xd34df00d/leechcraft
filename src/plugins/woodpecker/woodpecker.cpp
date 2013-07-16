@@ -177,7 +177,24 @@ namespace Woodpecker
 				stream >> param;
 				
 				AddTab (QString ("User/%1").arg (param.take ("username")),
-						"User tab", "Own timeline", FeedMode::UserTimeline, param);
+						tr ("User tab"), tr ("Own timeline"), 
+						FeedMode::UserTimeline, param);
+			}
+			else if (type.startsWith ("org.LeechCraft.Woodpecker/Search"))
+			{
+				for (const auto& pair : recInfo.DynProperties_)
+					setProperty (pair.first, pair.second);
+				
+				KQOAuthParameters param;
+				stream >> param;
+				
+				const auto& search = param.take ("q").toUtf8 ().constData ();
+				param.insert ("q", search);
+				
+				AddTab (QString ("Search/%1").arg (search),
+						tr ("Search"),
+						tr ("Twitter search timeline"), 
+						FeedMode::SearchResult, param);
 			}
 			else
 				qWarning () << Q_FUNC_INFO

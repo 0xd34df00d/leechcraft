@@ -93,6 +93,7 @@ namespace Woodpecker
 
 	void Tweet::SetText (const QString& text) 
 	{
+		/* HTML links matching */
 		QRegExp rx ("(\\s|^)((http|https)://[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(([0-9]{1,5})?/?.*))(\\s|,|$)");
 		rx.setMinimal (true);
 
@@ -117,6 +118,7 @@ namespace Woodpecker
 				pos += rx.matchedLength ();
 		}
 		
+		/* Twitter username matching */
 		QRegExp usernameRx ("(\\s|^)(@[\\w\\d_]+)(\\s|,|$|:)");
 		usernameRx.setMinimal (true);
 
@@ -136,6 +138,28 @@ namespace Woodpecker
 			}
 			else
 				pos += usernameRx.matchedLength ();
+		}
+	
+		/* Twitter tag matching */
+		QRegExp tagRx ("(\\s|^)(#[\\w\\d_]+)(\\s|,|$|:|\\.)");
+		tagRx.setMinimal (true);
+
+		/* Some regexp multiple match support magic for links highlighting.
+		 * Borrowed from Qt support forum */
+		pos = 0;
+		while ((pos = tagRx.indexIn (html, pos)) != -1)
+		{
+			if (tagRx.cap (2).startsWith ("#")) 
+			{
+				QString before = tagRx.cap (2);
+				if (before.endsWith ("."))
+					before.chop (1);
+				QString after = " <a href=\"twitter://search/" + before + "\">" + before + "</a> ";
+				html.replace (pos, before.length () + 1, after);
+				pos += after.length ();
+			}
+			else
+				pos += tagRx.matchedLength ();
 		}
 		
 		Document_.setHtml (html);
