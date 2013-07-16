@@ -119,9 +119,6 @@ namespace SB2
 	{
 		qmlRegisterType<LauncherDropArea> ("SB2", 1, 0, "LauncherDropArea");
 
-		qRegisterMetaType<QSet<QByteArray>> ("QSet<QByteArray>");
-		qRegisterMetaTypeStreamOperators<QSet<QByteArray>> ();
-
 		Component_->DynamicProps_ << QPair<QString, QObject*> ("SB2_launcherModel", Model_);
 		Component_->DynamicProps_ << QPair<QString, QObject*> ("SB2_launcherProxy", this);
 		Component_->ImageProviders_ << QPair<QString, QDeclarativeImageProvider*> (ImageProviderID, ImageProv_);
