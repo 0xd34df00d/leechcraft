@@ -154,7 +154,7 @@ namespace Woodpecker
 				QString before = tagRx.cap (2);
 				if (before.endsWith ("."))
 					before.chop (1);
-				QString after = " <a href=\"twitter://search/" + before + "\">" + before + "</a>";
+				QString after = " <a href=\"twitter://search/" + before + "\">" + before + "</a> ";
 				html.replace (pos, before.length () + 1, after);
 				pos += after.length ();
 			}

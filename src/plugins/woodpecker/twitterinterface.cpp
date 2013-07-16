@@ -82,7 +82,7 @@ namespace Woodpecker
 	{
 		QByteArray jsonText (qobject_cast<QNetworkReply*> (sender ())->readAll ());
 		sender ()->deleteLater ();
-
+		
 		emit tweetsReady (ParseReply (jsonText));
 	}
 
@@ -91,11 +91,18 @@ namespace Woodpecker
 		QJson::Parser parser;
 		QList<Tweet_ptr> result;
 		bool ok;
+		QVariantList answers;
 
-		QVariantList answers = parser.parse (json, &ok).toList ();
-
+		if (LastRequestMode_ == FeedMode::SearchResult)
+		{
+			const QVariantMap& sections = parser.parse (json, &ok).toMap ();
+			answers = sections["statuses"].toList ();
+		}
+		else
+			answers = parser.parse (json, &ok).toList ();
+		
 		if (!ok) 
-			qWarning () << "Parsing error at parseReply " << QString::fromUtf8 (json);
+			qWarning () << "Parsing error at " << Q_FUNC_INFO << QString::fromUtf8 (json);
 
 		QVariantMap tweetMap;
 		QVariantMap userMap;
@@ -174,6 +181,7 @@ namespace Woodpecker
 			
 		case TwitterRequest::Search:
 			reqUrl = "https://api.twitter.com/1.1/search/tweets.json";
+			params.insert ("count", "50");
 			params.insert ("include_entities", "true");
 			break;
 			

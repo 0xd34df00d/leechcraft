@@ -207,7 +207,8 @@ namespace Woodpecker
 							KQOAuthParameters param;
 							param.insert ("q", query.toUtf8 ().constData ());
 							ParentPlugin_->AddTab (QString ("Search/%1").arg (query),
-												   tr ("Search tab"), tr ("Twitter search timeline"), 
+												   tr ("Search"),
+												   tr ("Twitter search timeline"), 
 												   FeedMode::SearchResult, param);
 						}
 					}
