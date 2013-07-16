@@ -201,6 +201,16 @@ namespace Woodpecker
 													tr ("User tab"), tr ("Own timeline"),
 													FeedMode::UserTimeline, param);
 						}
+						else if (anchor.startsWith ("twitter://search/"))
+						{
+							const auto& query = anchor.mid (17);
+							KQOAuthParameters param;
+							param.insert ("q", query.toUtf8 ().constData ());
+							ParentPlugin_->AddTab (QString ("Search/%1").arg (query),
+												   tr ("Search"),
+												   tr ("Twitter search timeline"), 
+												   FeedMode::SearchResult, param);
+						}
 					}
 					else
 					{
