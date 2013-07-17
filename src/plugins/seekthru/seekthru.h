@@ -67,8 +67,6 @@ namespace LeechCraft
 
 				std::auto_ptr<QTranslator> Translator_;
 				std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
-
-				Sync::ChainIDs_t Chains_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
@@ -95,11 +93,7 @@ namespace LeechCraft
 
 				QList<QWizardPage*> GetWizardPages () const;
 
-				Sync::ChainIDs_t AvailableChains () const;
-				Sync::Payloads_t GetAllDeltas (const Sync::ChainID_t&) const;
-				Sync::Payloads_t GetNewDeltas (const Sync::ChainID_t&) const;
-				void PurgeNewDeltas (const Sync::ChainID_t&, quint32);
-				void ApplyDeltas (const Sync::Payloads_t&, const Sync::ChainID_t&);
+				ISyncProxy* GetSyncProxy ();
 			private slots:
 				void handleError (const QString&);
 				void handleWarning (const QString&);
@@ -108,7 +102,6 @@ namespace LeechCraft
 						int*, QObject**);
 				void gotEntity (const LeechCraft::Entity&);
 				void categoriesChanged (const QStringList&, const QStringList&);
-				void newDeltasAvailable (const Sync::ChainID_t&);
 			};
 		};
 	};

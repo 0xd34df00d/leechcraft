@@ -43,7 +43,6 @@
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/istartupwizard.h>
 #include <interfaces/ipluginready.h>
-#include <interfaces/isyncable.h>
 #include <interfaces/ihaverecoverabletabs.h>
 
 class QSystemTrayIcon;
@@ -70,7 +69,6 @@ namespace Aggregator
 					 , public IActionsExporter
 					 , public IStartupWizard
 					 , public IPluginReady
-					 , public ISyncable
 					 , public IHaveRecoverableTabs
 					 , public IRecoverableTab
 	{
@@ -85,7 +83,6 @@ namespace Aggregator
 				IStartupWizard
 				IActionsExporter
 				IPluginReady
-				ISyncable
 				IHaveRecoverableTabs
 				IRecoverableTab)
 
@@ -127,12 +124,6 @@ namespace Aggregator
 
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
-
-		Sync::ChainIDs_t AvailableChains () const;
-		Sync::Payloads_t GetAllDeltas (const Sync::ChainID_t&) const;
-		Sync::Payloads_t GetNewDeltas (const Sync::ChainID_t&) const;
-		void PurgeNewDeltas (const Sync::ChainID_t&, quint32);
-		void ApplyDeltas (const Sync::Payloads_t&, const Sync::ChainID_t&);
 
 		void RecoverTabs (const QList<TabRecoverInfo>& infos);
 
@@ -181,8 +172,6 @@ namespace Aggregator
 		void changeTooltip (QWidget*, QWidget*);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
-
-		void newDeltasAvailable (const LeechCraft::Sync::ChainID_t&);
 
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 

@@ -42,8 +42,6 @@ set (SRCS
 	qml/unhidelistmodel.cpp
 	qml/unhidelistviewbase.cpp
 	svcauth/vkauthmanager.cpp
-	sync/syncdeltamanager.cpp
-	sync/syncops.cpp
 	sys/mimedetector.cpp
 	sys/paths.cpp
 	xdg/desktopparser.cpp
