@@ -176,7 +176,7 @@ namespace Woodpecker
 				KQOAuthParameters param;
 				stream >> param;
 				
-				AddTab (QString ("User/%1").arg (param.take ("username")),
+				AddTab (QString ("User"),
 						tr ("User tab"), tr ("Own timeline"), 
 						FeedMode::UserTimeline, param);
 			}
@@ -191,7 +191,7 @@ namespace Woodpecker
 				const auto& search = param.take ("q").toUtf8 ().constData ();
 				param.insert ("q", search);
 				
-				AddTab (QString ("Search/%1").arg (search),
+				AddTab (QString ("Search"),
 						tr ("Search"),
 						tr ("Twitter search timeline"), 
 						FeedMode::SearchResult, param);

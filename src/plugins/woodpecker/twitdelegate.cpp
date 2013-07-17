@@ -192,21 +192,22 @@ namespace Woodpecker
 				{
 					if (anchor.startsWith ("twitter://"))
 					{
+						KQOAuthParameters param;
+						param.clear ();
 						if (anchor.startsWith ("twitter://user/@"))
 						{
 							const auto& username = anchor.mid (16);
-							KQOAuthParameters param;
 							param.insert ("screen_name", username.toUtf8 ().constData ());
-							ParentPlugin_->AddTab (QString ("User/%1").arg (username),
+							ParentPlugin_->AddTab (QString ("User"),
 													tr ("User tab"), tr ("Own timeline"),
 													FeedMode::UserTimeline, param);
 						}
 						else if (anchor.startsWith ("twitter://search/"))
 						{
 							const auto& query = anchor.mid (17);
-							KQOAuthParameters param;
-							param.insert ("q", query.toUtf8 ().constData ());
-							ParentPlugin_->AddTab (QString ("Search/%1").arg (query),
+							param.insert ("q", query.toUtf8 ());
+							qDebug() << "Query: " << query << "Param: " << param;
+							ParentPlugin_->AddTab (QString ("Search"),
 												   tr ("Search"),
 												   tr ("Twitter search timeline"), 
 												   FeedMode::SearchResult, param);
