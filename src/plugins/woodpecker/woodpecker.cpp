@@ -44,43 +44,55 @@ namespace Woodpecker
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Util::InstallTranslator ("woodpecker");
-
+		
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-				"woodpeckersettings.xml");
-
+											"woodpeckersettings.xml");
+		
 		Core::Instance ().SetProxy (proxy);
-
-		TabClasses_.append ({
-			{
-				GetUniqueID () + "/Home",
-				tr ("Twitter Home"),
-				tr ("User's main timeline"),
-				GetIcon (),
-				2,
-				TFOpenableByRequest
-			},
-			[this] (const TabClassInfo& tc)
-				{ MakeTab (new TwitterPage (tc, this), tc); }
-			});	
+		
+		HomeTC_ = {
+			GetUniqueID () + "_home",
+			tr ("Twitter Home"),
+			tr ("Own timeline"),
+			GetIcon (),
+			2,
+			TFOpenableByRequest
+		};
+		
+		UserTC_ = {
+			GetUniqueID () + "_user",
+			tr ("Twitter user timeline"),
+			tr ("User's timeline"),
+			GetIcon (),
+			2,
+			TFOpenableByRequest
+		};
+		
+		SearchTC_ = {
+			GetUniqueID () + "_search",
+			tr ("Twitter search timeline"),
+			tr ("Twitter search result timeline"),
+			GetIcon (),
+			2,
+			TFOpenableByRequest
+		};
+		
+		TabClasses_.append ({ HomeTC_,
+							[this] (const TabClassInfo& tc)
+								{MakeTab (new TwitterPage (tc, this), tc); } });
 	}
 	
-	void Plugin::AddTab (const QString& id, const QString& name, const QString& info, 
+	void Plugin::AddTab (const TabClassInfo& tc, const QString& name,
 						 const FeedMode mode, const KQOAuthParameters& params)
 	{
-		TabClasses_.append ({
-			{
-				GetUniqueID () + "/" + id.toUtf8 ().constData (),
-				name.isEmpty ()? tr ("Twitter Home") : name,
-				info.isEmpty ()? tr ("User's main timeline") : info,
-				GetIcon (),
-				2,
-				TFOpenableByRequest
-			},
-			[this, mode, params] (const TabClassInfo& tc)
-				{ MakeTab (new TwitterPage (tc, this, mode, params), tc); }
-			});	
-		TabOpenRequested (GetUniqueID () + "/" + id.toUtf8 ().constData ());
+		auto newtab = new TwitterPage (tc, this, mode, params);
+		
+		if (!name.isEmpty ())
+		{
+			emit addNewTab (name, newtab);
+			emit raiseTab (newtab);
+		}
 	}
 
 	void Plugin::SecondInit ()
@@ -125,6 +137,7 @@ namespace Woodpecker
 		const auto pos = std::find_if (TabClasses_.begin (), TabClasses_.end (),
 				[&tc] (decltype (TabClasses_.at (0)) pair)
 					{ return pair.first.TabClass_ == tc; });
+		
 		if (pos == TabClasses_.end ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -132,6 +145,7 @@ namespace Woodpecker
 					<< tc;
 			return;
 		}
+		
 		pos->second (pos->first);
 	}
 
@@ -161,14 +175,29 @@ namespace Woodpecker
 			
 			const QString type (buf);
 			
-			if (type.startsWith ("org.LeechCraft.Woodpecker/Home"))
+			if (type.startsWith ("org.LeechCraft.Woodpecker_home"))
 			{
 				for (const auto& pair : recInfo.DynProperties_)
 					setProperty (pair.first, pair.second);
 
-				TabOpenRequested (GetUniqueID () + "/Home");
+				TabOpenRequested (GetUniqueID () + "_home");
 			}
-			else if (type.startsWith ("org.LeechCraft.Woodpecker/User"))
+			else if (type.startsWith ("org.LeechCraft.Woodpecker_user"))
+			{
+				for (const auto& pair : recInfo.DynProperties_)
+					setProperty (pair.first, pair.second);
+				
+				KQOAuthParameters param;
+				stream >> param;
+
+				const auto& username = param.take ("screen_name");;
+				param.insert ("screen_name", username);
+
+				AddTab (UserTC_,
+						tr ("User ").append (username),
+						FeedMode::UserTimeline, param);
+			}
+			else if (type.startsWith ("org.LeechCraft.Woodpecker_search"))
 			{
 				for (const auto& pair : recInfo.DynProperties_)
 					setProperty (pair.first, pair.second);
@@ -176,8 +205,12 @@ namespace Woodpecker
 				KQOAuthParameters param;
 				stream >> param;
 				
-				AddTab (QString ("User/%1").arg (param.take ("username")),
-						"User tab", "Own timeline", FeedMode::UserTimeline, param);
+				const auto& search = param.take ("q").toUtf8 ().constData ();
+				param.insert ("q", search);
+				
+				AddTab (SearchTC_,
+						tr ("Search").append (search),
+						FeedMode::SearchResult, param);
 			}
 			else
 				qWarning () << Q_FUNC_INFO

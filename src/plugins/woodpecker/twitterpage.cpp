@@ -58,7 +58,7 @@ namespace Woodpecker
 		Ui_.setupUi (this);
 		Delegate_ = new TwitDelegate (Ui_.TwitList_, ParentPlugin_);
 		Ui_.TwitList_->setItemDelegate (Delegate_);
-
+		
 		//	Toolbar_->addAction (ui->actionRefresh);
 		Interface_ = new TwitterInterface (this);
 		connect (Interface_,
@@ -476,10 +476,10 @@ namespace Woodpecker
 		const auto& username = idx->data (Qt::UserRole).value<Tweet_ptr> ()->GetAuthor ()->GetUsername ();
 		KQOAuthParameters param;
 		param.insert ("screen_name", username.toUtf8 ().constData ());
-		ParentPlugin_->AddTab (QString ("User/%1").arg (username),
-								tr ("User tab"), tr ("Own timeline"), 
-								FeedMode::UserTimeline,
-								param);
+		
+		ParentPlugin_->AddTab (ParentPlugin_->UserTC_,
+							   tr ("User ").append (username),
+							   FeedMode::UserTimeline, param);
 	}
 	
 	void TwitterPage::copyTwitText ()
