@@ -31,8 +31,11 @@
 #include <QIcon>
 #include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include "core.h"
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/isyncable.h>
 #include "xmlsettingsmanager.h"
+#include "syncablemanager.h"
 
 namespace LeechCraft
 {
@@ -40,23 +43,21 @@ namespace Syncer
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Translator_.reset (Util::InstallTranslator ("syncer"));
+		Util::InstallTranslator ("syncer");
 
-		Core::Instance ().SetProxy (proxy);
+		Proxy_ = proxy;
 
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"syncersettings.xml");
 
-		connect (&Core::Instance (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+		SyncableMgr_ = new SyncableManager ();
 	}
 
 	void Plugin::SecondInit ()
 	{
-		Core::Instance ().SecondInit ();
+		for (auto plugin : Proxy_->GetPluginsManager ()->GetAllCastableTo<ISyncable*> ())
+			SyncableMgr_->AddPlugin (plugin);
 	}
 
 	void Plugin::Release ()
@@ -81,11 +82,6 @@ namespace Syncer
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
-	}
-
-	QStringList Plugin::Provides () const
-	{
-		return QStringList ("syncplugin");
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const

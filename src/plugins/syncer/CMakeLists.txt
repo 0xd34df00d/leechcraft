@@ -24,21 +24,9 @@ include_directories (
 	)
 set (SRCS
 	syncer.cpp
-	core.cpp
-	datastoragebase.cpp
-	datastorageserver.cpp
-	serverconnection.cpp
-	serverchainhandler.cpp
 	xmlsettingsmanager.cpp
-	)
-set (HEADERS
-	syncer.h
-	core.h
-	datastoragebase.h
-	datastorageserver.h
-	serverconnection.h
-	serverchainhandler.h
-	xmlsettingsmanager.h
+	syncablemanager.cpp
+	singlesyncable.cpp
 	)
 set (TRANSLATIONS
 	leechcraft_syncer_ru_RU.ts
@@ -48,9 +36,6 @@ set (COMPILED_TRANSLATIONS
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_syncer_ru_RU.qm
 	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_syncer_en.qm
 	)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 
 add_custom_command (OUTPUT
 	${COMPILED_TRANSLATIONS}

@@ -27,39 +27,66 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavesettings.h>
+#include "singlesyncable.h"
+#include <sstream>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/serialization/map.hpp>
+#include <boost/serialization/vector.hpp>
+#include <boost/serialization/string.hpp>
+#include <boost/serialization/variant.hpp>
+#include <QTimer>
+#include <QTcpSocket>
+#include <laretz/ops/item.h>
+#include <laretz/ops/operation.h>
+#include <interfaces/isyncable.h>
 
 namespace LeechCraft
 {
 namespace Syncer
 {
-	class SyncableManager;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveSettings
+	SingleSyncable::SingleSyncable (const QByteArray& id, ISyncProxy *proxy, QObject *parent)
+	: QObject (parent)
+	, ID_ (id)
+	, Proxy_ (proxy)
+	, Socket_ (new QTcpSocket (this))
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings)
+		connect (Socket_,
+				SIGNAL (connected ()),
+				this,
+				SLOT (handleSocketConnected ()));
 
-		ICoreProxy_ptr Proxy_;
-		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+		QTimer::singleShot (1000,
+				this,
+				SLOT (startSync ()));
+	}
 
-		SyncableManager *SyncableMgr_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+	void SingleSyncable::startSync ()
+	{
+		if (Socket_->isValid ())
+			return;
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-	};
+		Socket_->connectToHost ("127.0.0.1", 54093);
+	}
+
+	void SingleSyncable::handleSocketConnected ()
+	{
+		QByteArray data;
+
+		QDataStream out (&data, QIODevice::WriteOnly);
+		out << "Login: d34df00d\n";
+		out << "Password: shitfuck\n";
+		out << "\n";
+
+		std::vector<Laretz::Operation> ops;
+		ops.push_back ({ Laretz::OpType::List });
+
+		std::ostringstream ostr;
+		boost::archive::text_oarchive oars (ostr);
+		oars << ops;
+
+		out << ostr.str ().c_str ();
+
+		Socket_->write (data);
+	}
 }
 }

@@ -30,36 +30,28 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavesettings.h>
+
+class QTcpSocket;
+
+class ISyncProxy;
 
 namespace LeechCraft
 {
 namespace Syncer
 {
-	class SyncableManager;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveSettings
+	class SingleSyncable : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings)
 
-		ICoreProxy_ptr Proxy_;
-		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+		const QByteArray ID_;
+		ISyncProxy * const Proxy_;
 
-		SyncableManager *SyncableMgr_;
+		QTcpSocket * const Socket_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		SingleSyncable (const QByteArray& id, ISyncProxy *proxy, QObject* = 0);
+	private slots:
+		void startSync ();
+		void handleSocketConnected ();
 	};
 }
 }

@@ -27,39 +27,30 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
+#include "syncablemanager.h"
 #include <interfaces/iinfo.h>
-#include <interfaces/ihavesettings.h>
+#include <interfaces/isyncable.h>
+#include "singlesyncable.h"
 
 namespace LeechCraft
 {
 namespace Syncer
 {
-	class SyncableManager;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveSettings
+	SyncableManager::SyncableManager (QObject *parent)
+	: QObject (parent)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings)
+	}
 
-		ICoreProxy_ptr Proxy_;
-		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+	void SyncableManager::AddPlugin (ISyncable *syncable)
+	{
+		auto proxy = syncable->GetSyncProxy ();
+		if (!proxy)
+			return;
 
-		SyncableManager *SyncableMgr_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		auto info = dynamic_cast<IInfo*> (syncable);
+		const auto& id = info->GetUniqueID ();
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-	};
+		new SingleSyncable (id, proxy, this);
+	}
 }
 }

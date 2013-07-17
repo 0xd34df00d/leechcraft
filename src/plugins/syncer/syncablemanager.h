@@ -30,36 +30,20 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavesettings.h>
+
+class ISyncable;
 
 namespace LeechCraft
 {
 namespace Syncer
 {
-	class SyncableManager;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveSettings
+	class SyncableManager : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings)
-
-		ICoreProxy_ptr Proxy_;
-		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
-
-		SyncableManager *SyncableMgr_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		SyncableManager (QObject* = 0);
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		void AddPlugin (ISyncable*);
 	};
 }
 }
