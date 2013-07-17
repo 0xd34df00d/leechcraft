@@ -215,6 +215,29 @@ namespace LeechCraft
 {
 namespace Poleemery
 {
+	struct Rate
+	{
+		oral::PKey<int> ID_;
+
+		QString Code_;
+		QDateTime SnapshotTime_;
+		double Rate_;
+
+		static QString ClassName () { return "Rate"; }
+	};
+}
+}
+
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::Rate,
+		(decltype (LeechCraft::Poleemery::Rate::ID_), ID_)
+		(QString, Code_)
+		(QDateTime, SnapshotTime_)
+		(double, Rate_))
+
+namespace LeechCraft
+{
+namespace Poleemery
+{
 	struct BalanceInfo
 	{
 		double Total_;

@@ -119,9 +119,6 @@ namespace SB2
 	{
 		qmlRegisterType<LauncherDropArea> ("SB2", 1, 0, "LauncherDropArea");
 
-		qRegisterMetaType<QSet<QByteArray>> ("QSet<QByteArray>");
-		qRegisterMetaTypeStreamOperators<QSet<QByteArray>> ();
-
 		Component_->DynamicProps_ << QPair<QString, QObject*> ("SB2_launcherModel", Model_);
 		Component_->DynamicProps_ << QPair<QString, QObject*> ("SB2_launcherProxy", this);
 		Component_->ImageProviders_ << QPair<QString, QDeclarativeImageProvider*> (ImageProviderID, ImageProv_);
@@ -141,22 +138,20 @@ namespace SB2
 
 	void LauncherComponent::SaveHiddenTCs () const
 	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_SB2");
-		settings.beginGroup ("Launcher");
-		settings.setValue ("HiddenTCs", QVariant::fromValue (HiddenTCs_));
-		settings.endGroup ();
+		auto settings = View_->GetSettings ();
+		settings->beginGroup ("Launcher");
+		settings->setValue ("HiddenTCs", QVariant::fromValue (HiddenTCs_));
+		settings->endGroup ();
 	}
 
 	void LauncherComponent::LoadHiddenTCs ()
 	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_SB2");
-		settings.beginGroup ("Launcher");
-		HiddenTCs_ = settings.value ("HiddenTCs").value<decltype (HiddenTCs_)> ();
-		FirstRun_ = settings.value ("FirstRun", true).toBool () && HiddenTCs_.isEmpty ();
-		settings.setValue ("FirstRun", false);
-		settings.endGroup ();
+		auto settings = View_->GetSettings ();
+		settings->beginGroup ("Launcher");
+		HiddenTCs_ = settings->value ("HiddenTCs").value<decltype (HiddenTCs_)> ();
+		FirstRun_ = settings->value ("FirstRun", true).toBool () && HiddenTCs_.isEmpty ();
+		settings->setValue ("FirstRun", false);
+		settings->endGroup ();
 	}
 
 	namespace
