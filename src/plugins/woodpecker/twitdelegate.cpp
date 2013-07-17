@@ -198,8 +198,8 @@ namespace Woodpecker
 						{
 							const auto& username = anchor.mid (16);
 							param.insert ("screen_name", username.toUtf8 ().constData ());
-							ParentPlugin_->AddTab (QString ("User"),
-													tr ("User tab"), tr ("Own timeline"),
+							ParentPlugin_->AddTab (ParentPlugin_->UserTC_,
+													tr ("User ").append (username),
 													FeedMode::UserTimeline, param);
 						}
 						else if (anchor.startsWith ("twitter://search/"))
@@ -207,9 +207,8 @@ namespace Woodpecker
 							const auto& query = anchor.mid (17);
 							param.insert ("q", query.toUtf8 ());
 							qDebug() << "Query: " << query << "Param: " << param;
-							ParentPlugin_->AddTab (QString ("Search"),
-												   tr ("Search"),
-												   tr ("Twitter search timeline"), 
+							ParentPlugin_->AddTab (ParentPlugin_->SearchTC_,
+												   tr ("Search ").append (query),
 												   FeedMode::SearchResult, param);
 						}
 					}
