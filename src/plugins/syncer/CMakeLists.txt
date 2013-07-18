@@ -2,6 +2,7 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_sysnotify)
 include (InitLCPlugin OPTIONAL)
 
+find_package (LibLaretz REQUIRED)
 
 set (QT_USE_QTNETWORK TRUE)
 include (${QT_USE_FILE})
@@ -9,6 +10,7 @@ include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
+	${LARETZ_INCLUDE_DIRS}
 	)
 set (SRCS
 	syncer.cpp
@@ -39,6 +41,7 @@ add_library (leechcraft_syncer SHARED
 target_link_libraries (leechcraft_syncer
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
+	${LARETZ_LIBRARIES}
 	)
 install (TARGETS leechcraft_syncer DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
