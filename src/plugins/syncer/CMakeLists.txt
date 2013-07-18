@@ -1,19 +1,7 @@
-if (NOT QT_USE_FILE)
-	cmake_minimum_required (VERSION 2.6)
-	if (COMMAND cmake_policy)
-		cmake_policy (SET CMP0003 NEW)
-	endif ()
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_sysnotify)
+include (InitLCPlugin OPTIONAL)
 
-	project (leechcraft_syncer)
-
-	if (NOT CMAKE_MODULE_PATH)
-		set (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
-	endif ()
-
-	find_package (Boost REQUIRED)
-	find_package (Qt4 REQUIRED)
-	find_package (LeechCraft REQUIRED)
-endif ()
 
 set (QT_USE_QTNETWORK TRUE)
 include (${QT_USE_FILE})
