@@ -25,22 +25,6 @@ set (SRCS
 	icalparser.cpp
 	itemsmergedialog.cpp
 	)
-set (HEADERS
-	otlozhu.h
-	todotab.h
-	core.h
-	todomanager.h
-	todoitem.h
-	todostorage.h
-	storagemodel.h
-	addtododialog.h
-	todolistdelegate.h
-	todosfproxymodel.h
-	notificationsmanager.h
-	icalgenerator.h
-	icalparser.h
-	itemsmergedialog.h
-	)
 set (FORMS
 	todotab.ui
 	addtododialog.ui
@@ -48,9 +32,6 @@ set (FORMS
 	)
 set (RESOURCES otlozhuresources.qrc)
 CreateTrs ("otlozhu" "en;ru_RU" COMPILED_TRANSLATIONS)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
