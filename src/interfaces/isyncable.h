@@ -52,7 +52,7 @@ public:
 
 	virtual QList<Laretz::Operation> Merge (const QList<Laretz::Operation>& ours, const QList<Laretz::DBResult>& theirs) = 0;
 protected:
-	virtual void gotNewOps (const Laretz::Operation&) = 0;
+	virtual void gotNewOps (const QList<Laretz::Operation>&) = 0;
 };
 
 class Q_DECL_EXPORT ISyncable
@@ -63,4 +63,5 @@ public:
 	virtual ISyncProxy* GetSyncProxy () = 0;
 };
 
+Q_DECLARE_INTERFACE (ISyncProxy, "org.Deviant.LeechCraft.ISyncProxy/1.0");
 Q_DECLARE_INTERFACE (ISyncable, "org.Deviant.LeechCraft.ISyncable/1.0");
