@@ -88,10 +88,10 @@ namespace Woodpecker
 	void Plugin::AddTab (const TabClassInfo& tc, const QString& name,
 						 const FeedMode mode, const KQOAuthParameters& params)
 	{
-		auto newtab = new TwitterPage (tc, this, mode, params);
-		
 		if (!name.isEmpty ())
 		{
+			auto newtab = new TwitterPage (tc, this, mode, params);
+			
 			emit addNewTab (name, newtab);
 			emit raiseTab (newtab);
 		}
