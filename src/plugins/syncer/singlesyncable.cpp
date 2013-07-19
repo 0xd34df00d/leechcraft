@@ -95,7 +95,7 @@ namespace Syncer
 		parentItem.setSeq (lastSeq);
 		parentItem.setParentId (ID_.constData ());
 
-		const auto& str = Laretz::PacketGenerator<Laretz::Operation> {}
+		const auto& str = Laretz::PacketGenerator {}
 				({ Laretz::OpType::List, { parentItem } })
 				({ "Login", "d34df00d" })
 				({ "Password", "shitfuck" })
