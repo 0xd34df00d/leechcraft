@@ -29,9 +29,11 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 
 class QTcpSocket;
+class QSettings;
 
 class ISyncProxy;
 
@@ -49,6 +51,8 @@ namespace Syncer
 		QTcpSocket * const Socket_;
 	public:
 		SingleSyncable (const QByteArray& id, ISyncProxy *proxy, QObject* = 0);
+	private:
+		std::shared_ptr<QSettings> GetSettings ();
 	private slots:
 		void startSync ();
 		void handleSocketConnected ();

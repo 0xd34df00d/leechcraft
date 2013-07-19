@@ -36,6 +36,8 @@
 #include <boost/serialization/variant.hpp>
 #include <QTimer>
 #include <QTcpSocket>
+#include <QSettings>
+#include <QCoreApplication>
 #include <laretz/ops/item.h>
 #include <laretz/ops/operation.h>
 #include <interfaces/isyncable.h>
@@ -58,6 +60,19 @@ namespace Syncer
 		QTimer::singleShot (1000,
 				this,
 				SLOT (startSync ()));
+	}
+
+	std::shared_ptr<QSettings> SingleSyncable::GetSettings ()
+	{
+		std::shared_ptr<QSettings> settings (new QSettings (QCoreApplication::organizationName (),
+					QCoreApplication::applicationName () + "_Syncer_State"),
+				[] (QSettings *settings) -> void
+				{
+					settings->endGroup ();
+					delete settings;
+				});
+		settings->beginGroup (ID_);
+		return settings;
 	}
 
 	void SingleSyncable::startSync ()
