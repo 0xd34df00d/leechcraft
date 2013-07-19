@@ -87,23 +87,21 @@ namespace Syncer
 
 	void SingleSyncable::handleSocketConnected ()
 	{
-		QByteArray data;
+		qDebug () << Q_FUNC_INFO;
 
-		QDataStream out (&data, QIODevice::WriteOnly);
-		out << "Login: d34df00d\n";
-		out << "Password: shitfuck\n";
-		out << "\n";
+		auto lastSeq = GetSettings ()->value ("LastSyncID").value<uint64_t> ();
 
-		std::vector<Laretz::Operation> ops;
-		ops.push_back ({ Laretz::OpType::List });
+		Laretz::Item parentItem;
+		parentItem.setSeq (lastSeq);
+		parentItem.setParentId (ID_.constData ());
 
-		std::ostringstream ostr;
-		boost::archive::text_oarchive oars (ostr);
-		oars << ops;
+		const auto& str = Laretz::PacketGenerator<Laretz::Operation> {}
+				({ Laretz::OpType::List, { parentItem } })
+				({ "Login", "d34df00d" })
+				({ "Password", "shitfuck" })
+				();
 
-		out << ostr.str ().c_str ();
-
-		Socket_->write (data);
+		Socket_->write (str.c_str (), str.size ());
 	}
 }
 }
