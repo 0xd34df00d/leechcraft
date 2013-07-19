@@ -38,8 +38,10 @@
 #include <QTcpSocket>
 #include <QSettings>
 #include <QCoreApplication>
-#include <laretz/ops/item.h>
-#include <laretz/ops/operation.h>
+#include <laretz/item.h>
+#include <laretz/operation.h>
+#include <laretz/packetparser.h>
+#include <laretz/packetgenerator.h>
 #include <interfaces/isyncable.h>
 
 namespace LeechCraft
