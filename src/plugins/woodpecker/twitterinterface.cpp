@@ -82,7 +82,7 @@ namespace Woodpecker
 	{
 		QByteArray jsonText (qobject_cast<QNetworkReply*> (sender ())->readAll ());
 		sender ()->deleteLater ();
-
+		
 		emit tweetsReady (ParseReply (jsonText));
 	}
 
@@ -91,11 +91,18 @@ namespace Woodpecker
 		QJson::Parser parser;
 		QList<Tweet_ptr> result;
 		bool ok;
+		QVariantList answers;
 
-		QVariantList answers = parser.parse (json, &ok).toList ();
-
+		if (LastRequestMode_ == FeedMode::SearchResult)
+		{
+			const QVariantMap& sections = parser.parse (json, &ok).toMap ();
+			answers = sections ["statuses"].toList ();
+		}
+		else
+			answers = parser.parse (json, &ok).toList ();
+		
 		if (!ok) 
-			qWarning () << "Parsing error at parseReply " << QString::fromUtf8 (json);
+			qWarning () << Q_FUNC_INFO << "Parsing error at " << Q_FUNC_INFO << QString::fromUtf8 (json);
 
 		QVariantMap tweetMap;
 		QVariantMap userMap;
@@ -169,6 +176,12 @@ namespace Woodpecker
 			
 		case TwitterRequest::UserTimeline:
 			reqUrl = "http://api.twitter.com/1.1/statuses/user_timeline.json";
+			params.insert ("include_entities", "true");
+			break;
+			
+		case TwitterRequest::Search:
+			reqUrl = "https://api.twitter.com/1.1/search/tweets.json";
+			params.insert ("count", "50");
 			params.insert ("include_entities", "true");
 			break;
 			
@@ -287,28 +300,6 @@ namespace Woodpecker
 		OAuthManager_->executeRequest (oauthRequest);
 	}
 
-	void TwitterInterface::searchTwitter (const QString& text)
-	{
-		QString link ("http://search.twitter.com/search.json?q=" + text);
-		SetLastRequestMode (FeedMode::SearchResult);
-		RequestTwitter (link);
-	}
-
-	void TwitterInterface::requestHomeFeed ()
-	{
-		qDebug () << "Getting home feed";
-		SetLastRequestMode (FeedMode::HomeTimeline);
-		SignedRequest (TwitterRequest::HomeTimeline, KQOAuthRequest::GET);
-	}
-
-	void TwitterInterface::requestUserTimeline (const QString& username)
-	{
-		KQOAuthParameters param;
-		param.insert ("screen_name", username);
-		SetLastRequestMode (FeedMode::UserTimeline);
-		SignedRequest (TwitterRequest::UserTimeline, KQOAuthRequest::GET, param);
-	}
-
 	void TwitterInterface::Login (const QString& savedToken, const QString& savedTokenSecret)
 	{
 		Token_ = savedToken;
@@ -349,6 +340,12 @@ namespace Woodpecker
 				SetLastRequestMode (FeedMode::HomeTimeline);
 				SignedRequest (TwitterRequest::HomeTimeline, KQOAuthRequest::GET, param);
 				break;
+				
+			case FeedMode::SearchResult:
+				SetLastRequestMode (FeedMode::SearchResult);
+				SignedRequest (TwitterRequest::Search, KQOAuthRequest::GET, param);
+				break;
+				
 			default:
 				qWarning () << Q_FUNC_INFO << "Unknown request";
 		}
