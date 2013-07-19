@@ -96,13 +96,13 @@ namespace Woodpecker
 		if (LastRequestMode_ == FeedMode::SearchResult)
 		{
 			const QVariantMap& sections = parser.parse (json, &ok).toMap ();
-			answers = sections["statuses"].toList ();
+			answers = sections ["statuses"].toList ();
 		}
 		else
 			answers = parser.parse (json, &ok).toList ();
 		
 		if (!ok) 
-			qWarning () << "Parsing error at " << Q_FUNC_INFO << QString::fromUtf8 (json);
+			qWarning () << Q_FUNC_INFO << "Parsing error at " << Q_FUNC_INFO << QString::fromUtf8 (json);
 
 		QVariantMap tweetMap;
 		QVariantMap userMap;

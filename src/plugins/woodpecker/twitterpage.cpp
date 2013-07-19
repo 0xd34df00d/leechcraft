@@ -478,7 +478,7 @@ namespace Woodpecker
 		param.insert ("screen_name", username.toUtf8 ().constData ());
 		
 		ParentPlugin_->AddTab (ParentPlugin_->UserTC_,
-							   tr ("User ").append (username),
+							   tr ("User %1").arg (username),
 							   FeedMode::UserTimeline, param);
 	}
 	

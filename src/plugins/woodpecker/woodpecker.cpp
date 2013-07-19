@@ -66,7 +66,7 @@ namespace Woodpecker
 			tr ("User's timeline"),
 			GetIcon (),
 			2,
-			TFOpenableByRequest
+			TFEmpty
 		};
 		
 		SearchTC_ = {
@@ -75,12 +75,14 @@ namespace Woodpecker
 			tr ("Twitter search result timeline"),
 			GetIcon (),
 			2,
-			TFOpenableByRequest
+			TFEmpty
 		};
 		
 		TabClasses_.append ({ HomeTC_,
 							[this] (const TabClassInfo& tc)
-								{MakeTab (new TwitterPage (tc, this), tc); } });
+								{MakeTab (new TwitterPage (tc, this), tc); }});
+		TabClasses_.append ({ UserTC_, nullptr });
+		TabClasses_.append ({ SearchTC_, nullptr });
 	}
 	
 	void Plugin::AddTab (const TabClassInfo& tc, const QString& name,
@@ -194,7 +196,7 @@ namespace Woodpecker
 				param.insert ("screen_name", username);
 
 				AddTab (UserTC_,
-						tr ("User ").append (username),
+						tr ("User %1").arg (username),
 						FeedMode::UserTimeline, param);
 			}
 			else if (type.startsWith ("org.LeechCraft.Woodpecker_search"))
