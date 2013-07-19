@@ -37,6 +37,11 @@ class QSettings;
 
 class ISyncProxy;
 
+namespace Laretz
+{
+	struct ParseResult;
+}
+
 namespace LeechCraft
 {
 namespace Syncer
@@ -49,11 +54,21 @@ namespace Syncer
 		ISyncProxy * const Proxy_;
 
 		QTcpSocket * const Socket_;
+
+		enum class State
+		{
+			Idle,
+			ListRequested
+		} State_ = State::Idle;
 	public:
 		SingleSyncable (const QByteArray& id, ISyncProxy *proxy, QObject* = 0);
 	private:
 		std::shared_ptr<QSettings> GetSettings ();
+
+		void HandleList (const Laretz::ParseResult&);
 	private slots:
+		void handleSocketRead ();
+
 		void startSync ();
 		void handleSocketConnected ();
 	};

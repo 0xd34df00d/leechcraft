@@ -38,6 +38,7 @@
 #include <QTcpSocket>
 #include <QSettings>
 #include <QCoreApplication>
+#include <QtDebug>
 #include <laretz/item.h>
 #include <laretz/operation.h>
 #include <laretz/packetparser.h>
@@ -58,6 +59,10 @@ namespace Syncer
 				SIGNAL (connected ()),
 				this,
 				SLOT (handleSocketConnected ()));
+		connect (Socket_,
+				SIGNAL (readyRead ()),
+				this,
+				SLOT (handleSocketRead ()));
 
 		QTimer::singleShot (1000,
 				this,
@@ -77,6 +82,37 @@ namespace Syncer
 		return settings;
 	}
 
+	void SingleSyncable::HandleList (const Laretz::ParseResult& reply)
+	{
+	}
+
+	void SingleSyncable::handleSocketRead ()
+	{
+		const auto& data = Socket_->readAll ();
+		const auto& reply = Laretz::Parse ({ data.constData (), static_cast<size_t> (data.size ()) });
+
+		qDebug () << Q_FUNC_INFO << "results:" << reply.operations.size ();
+		for (auto p : reply.fields)
+			qDebug () << p.first.c_str () << "->" << p.second.c_str ();
+
+		if (reply.fields.at ("Status") != "Success")
+		{
+			// TODO handle error
+			return;
+		}
+
+		switch (State_)
+		{
+		case State::Idle:
+			qWarning () << Q_FUNC_INFO
+					<< "unexpected packet in Idle state";
+			break;
+		case State::ListRequested:
+			HandleList (reply);
+			break;
+		}
+	}
+
 	void SingleSyncable::startSync ()
 	{
 		if (Socket_->isValid ())
@@ -89,7 +125,7 @@ namespace Syncer
 	{
 		qDebug () << Q_FUNC_INFO;
 
-		auto lastSeq = GetSettings ()->value ("LastSyncID").value<uint64_t> ();
+		const auto lastSeq = GetSettings ()->value ("LastSyncID").value<uint64_t> ();
 
 		Laretz::Item parentItem;
 		parentItem.setSeq (lastSeq);
@@ -102,6 +138,8 @@ namespace Syncer
 				();
 
 		Socket_->write (str.c_str (), str.size ());
+
+		State_ = State::ListRequested;
 	}
 }
 }
