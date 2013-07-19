@@ -31,56 +31,40 @@
 
 #include <memory>
 #include <QObject>
-#include <QList>
-#include "structures.h"
+
+class QXmppDataForm;
+class QDialog;
 
 namespace LeechCraft
 {
-namespace Poleemery
+namespace Azoth
 {
-	struct StorageImpl;
+namespace Xoox
+{
+	class XMPPCaptchaManager;
+	class XMPPBobManager;
+	class FormBuilder;
 
-	class Storage : public QObject
+	class CaptchaManager : public QObject
 	{
-		std::shared_ptr<StorageImpl> Impl_;
+		Q_OBJECT
+
+		XMPPCaptchaManager *CaptchaManager_;
+		XMPPBobManager *BobManager_;
+
+		struct PendingCaptcha
+		{
+			QString JID_;
+			std::shared_ptr<FormBuilder> FB_;
+			QDialog *Dialog_;
+		};
+		QList<PendingCaptcha> Pendings_;
 	public:
-		Storage (QObject* = 0);
-
-		Storage (const Storage&) = delete;
-		Storage (Storage&&) = delete;
-		Storage& operator= (const Storage&) = delete;
-		Storage& operator= (Storage&&) = delete;
-
-		QList<Account> GetAccounts () const;
-		void AddAccount (Account&);
-		void UpdateAccount (const Account&);
-		void DeleteAccount (const Account&);
-
-		QList<ExpenseEntry> GetExpenseEntries ();
-		QList<ExpenseEntry> GetExpenseEntries (const Account&);
-		void AddExpenseEntry (ExpenseEntry&);
-		void UpdateExpenseEntry (const ExpenseEntry&);
-		void DeleteExpenseEntry (const ExpenseEntry&);
-
-		QList<ReceiptEntry> GetReceiptEntries ();
-		QList<ReceiptEntry> GetReceiptEntries (const Account&);
-		void AddReceiptEntry (ReceiptEntry&);
-		void UpdateReceiptEntry (const ReceiptEntry&);
-		void DeleteReceiptEntry (const ReceiptEntry&);
-
-		QList<Rate> GetRates ();
-		QList<Rate> GetRate (const QString&);
-		void AddRate (Rate&);
-	private:
-		Category AddCategory (const QString&);
-		void AddNewCategories (const ExpenseEntry&, const QStringList&);
-		void LinkEntry2Cat (const ExpenseEntry&, const Category&);
-		void UnlinkEntry2Cat (const ExpenseEntry&, const Category&);
-
-		QList<ExpenseEntry> HandleNaked (const QList<NakedExpenseEntry>&);
-
-		void InitializeTables ();
-		void LoadCategories ();
+		CaptchaManager (XMPPCaptchaManager*, XMPPBobManager*, QObject* = 0);
+	private slots:
+		void handleCaptchaReceived (const QString&, const QXmppDataForm&);
+		void handleDialogFinished (int);
 	};
+}
 }
 }

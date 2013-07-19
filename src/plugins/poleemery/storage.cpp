@@ -50,6 +50,7 @@ namespace Poleemery
 		oral::ObjectInfo<ReceiptEntry> ReceiptEntryInfo_;
 		oral::ObjectInfo<Category> CategoryInfo_;
 		oral::ObjectInfo<CategoryLink> CategoryLinkInfo_;
+		oral::ObjectInfo<Rate> RateInfo_;
 
 		QHash<QString, Category> CatCache_;
 		QHash<int, Category> CatIDCache_;
@@ -271,6 +272,48 @@ namespace Poleemery
 		Impl_->ReceiptEntryInfo_.DoDelete_ (entry);
 	}
 
+	QList<Rate> Storage::GetRates ()
+	{
+		try
+		{
+			return Impl_->RateInfo_.DoSelectAll_ ();
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
+	}
+
+	QList<Rate> Storage::GetRate (const QString& code)
+	{
+		try
+		{
+			return Impl_->RateInfo_.DoSelectByFields_.Prepare<1> () (code);
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
+	}
+
+	void Storage::AddRate (Rate& rate)
+	{
+		try
+		{
+			Impl_->RateInfo_.DoInsert_ (rate);
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
+	}
+
 	Category Storage::AddCategory (const QString& name)
 	{
 		Category cat { name };
@@ -380,6 +423,7 @@ namespace Poleemery
 		Impl_->ReceiptEntryInfo_ = oral::Adapt<ReceiptEntry> (Impl_->DB_);
 		Impl_->CategoryInfo_ = oral::Adapt<Category> (Impl_->DB_);
 		Impl_->CategoryLinkInfo_ = oral::Adapt<CategoryLink> (Impl_->DB_);
+		Impl_->RateInfo_ = oral::Adapt<Rate> (Impl_->DB_);
 
 		const auto& tables = Impl_->DB_.tables ();
 
@@ -389,6 +433,7 @@ namespace Poleemery
 		queryCreates [ReceiptEntry::ClassName ()] = Impl_->ReceiptEntryInfo_.CreateTable_;
 		queryCreates [Category::ClassName ()] = Impl_->CategoryInfo_.CreateTable_;
 		queryCreates [CategoryLink::ClassName ()] = Impl_->CategoryLinkInfo_.CreateTable_;
+		queryCreates [Rate::ClassName ()] = Impl_->RateInfo_.CreateTable_;
 
 		Util::DBLock lock (Impl_->DB_);
 		lock.Init ();

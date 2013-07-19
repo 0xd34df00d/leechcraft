@@ -629,6 +629,8 @@ namespace LHTR
 				return;
 			}
 
+			tidyOptSetInt (tdoc, TidyWrapLen, std::numeric_limits<int>::max ());
+
 			tidySetErrorBuffer (tdoc, &errbuf);
 
 			if (tidyParseString (tdoc, html.toUtf8 ().constData ()) < 0)
@@ -666,7 +668,10 @@ namespace LHTR
 		QDomDocument doc;
 #ifdef WITH_HTMLTIDY
 		if (!doc.setContent (html))
+		{
 			TryFixHTML (html);
+			html.remove ('\n');
+		}
 #endif
 		if (!doc.setContent (html))
 		{

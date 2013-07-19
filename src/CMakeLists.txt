@@ -185,6 +185,7 @@ option (ENABLE_DLNIWE "Build DLNiwe, the DLNA server plugin" ${WITH_PLUGINS})
 option (ENABLE_DOLOZHEE "Build Dolozhee, the feature request and bug reporter" ${WITH_PLUGINS})
 option (ENABLE_FENET "Build Fenet, WM control plugin" ${WITH_PLUGINS})
 option (ENABLE_GACTS "Build Global Actions provider plugin" ${WITH_PLUGINS})
+option (ENABLE_HARBINGER "Build Harbinger, the collections manager" ${WITH_PLUGINS})
 option (ENABLE_HOTSENSORS "Build HotSensors, temperature sensors quark" ${WITH_PLUGINS})
 option (ENABLE_HOTSTREAMS "Build HotStreams, radio streams provider module" ${WITH_PLUGINS})
 option (ENABLE_IMGASTE "Build Imgaste, simple image paster plugin" ${WITH_PLUGINS})
@@ -374,6 +375,10 @@ endif ()
 
 if (ENABLE_POPISHU)
 	add_subdirectory (plugins/popishu)
+endif ()
+
+if (ENABLE_HARBINGER)
+	add_subdirectory (plugins/harbinger)
 endif ()
 
 if (ENABLE_HOTSENSORS)
