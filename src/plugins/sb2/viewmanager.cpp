@@ -302,6 +302,7 @@ namespace SB2
 				{
 					if (subSet)
 						settings->endGroup ();
+					delete settings;
 				});
 
 		if (subSet)
