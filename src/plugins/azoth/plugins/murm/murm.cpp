@@ -29,6 +29,7 @@
 
 #include "murm.h"
 #include <QIcon>
+#include "vkprotocol.h"
 
 namespace LeechCraft
 {
@@ -36,8 +37,9 @@ namespace Azoth
 {
 namespace Murm
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proto_ = new VkProtocol (proxy, this);
 	}
 
 	void Plugin::SecondInit ()

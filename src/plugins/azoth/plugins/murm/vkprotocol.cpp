@@ -27,12 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/azoth/iprotocolplugin.h>
+#include "vkprotocol.h"
+#include <QIcon>
 
 namespace LeechCraft
 {
@@ -40,35 +36,65 @@ namespace Azoth
 {
 namespace Murm
 {
-	class VkProtocol;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public IProtocolPlugin
+	VkProtocol::VkProtocol (ICoreProxy_ptr proxy, QObject *plugin)
+	: QObject (plugin)
+	, Proxy_ (proxy)
+	, Plugin_ (plugin)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin);
+	}
 
-		VkProtocol *Proto_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+	QObject* VkProtocol::GetQObject ()
+	{
+		return this;
+	}
 
-		QSet<QByteArray> GetPluginClasses () const;
+	IProtocol::ProtocolFeatures VkProtocol::GetFeatures () const
+	{
+		return PFNone;
+	}
 
-		QObject* GetQObject ();
-		QList<QObject*> GetProtocols () const;
-	public slots:
-		void initPlugin (QObject*);
-	signals:
-		void gotNewProtocols (const QList<QObject*>&);
-	};
+	QList<QObject*> VkProtocol::GetRegisteredAccounts ()
+	{
+		return {};
+	}
+
+	QObject* VkProtocol::GetParentProtocolPlugin () const
+	{
+		return Plugin_;
+	}
+
+	QString VkProtocol::GetProtocolName () const
+	{
+		return tr ("VKontakte");
+	}
+
+	QIcon VkProtocol::GetProtocolIcon () const
+	{
+		return {};
+	}
+
+	QByteArray VkProtocol::GetProtocolID () const
+	{
+		return "Murm.VK";
+	}
+
+	QList<QWidget*> VkProtocol::GetAccountRegistrationWidgets (IProtocol::AccountAddOptions options)
+	{
+		return {};
+	}
+
+	void VkProtocol::RegisterAccount (const QString& name, const QList<QWidget*>& widgets)
+	{
+	}
+
+	QWidget* VkProtocol::GetMUCJoinWidget ()
+	{
+		return nullptr;
+	}
+
+	void VkProtocol::RemoveAccount (QObject *account)
+	{
+	}
 }
 }
 }

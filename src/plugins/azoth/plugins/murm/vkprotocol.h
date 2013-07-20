@@ -30,9 +30,8 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/azoth/iprotocolplugin.h>
+#include <interfaces/azoth/iprotocol.h>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -40,34 +39,33 @@ namespace Azoth
 {
 namespace Murm
 {
-	class VkProtocol;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public IProtocolPlugin
+	class VkProtocol : public QObject
+					 , public IProtocol
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin);
+		Q_INTERFACES (LeechCraft::Azoth::IProtocol)
 
-		VkProtocol *Proto_;
+		const ICoreProxy_ptr Proxy_;
+		QObject * const Plugin_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		QSet<QByteArray> GetPluginClasses () const;
+		VkProtocol (ICoreProxy_ptr, QObject*);
 
 		QObject* GetQObject ();
-		QList<QObject*> GetProtocols () const;
-	public slots:
-		void initPlugin (QObject*);
+		ProtocolFeatures GetFeatures () const;
+		QList<QObject*> GetRegisteredAccounts ();
+		QObject* GetParentProtocolPlugin () const;
+
+		QString GetProtocolName () const;
+		QIcon GetProtocolIcon () const;
+		QByteArray GetProtocolID () const;
+
+		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions options);
+		void RegisterAccount (const QString& name, const QList<QWidget*>& widgets);
+		QWidget* GetMUCJoinWidget ();
+		void RemoveAccount (QObject* account);
 	signals:
-		void gotNewProtocols (const QList<QObject*>&);
+		void accountAdded (QObject*);
+		void accountRemoved (QObject*);
 	};
 }
 }
