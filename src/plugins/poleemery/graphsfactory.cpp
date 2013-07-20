@@ -51,9 +51,9 @@ namespace Poleemery
 		void FilterBySpan (const DateSpan_t& span, Iter& pos, Iter& lastPos, G dateGetter)
 		{
 			auto begin = pos, end = lastPos;
-			pos = std::upper_bound (begin, end, span.first,
-						[dateGetter] (const QDateTime& dt, decltype (*pos) entry)
-							{ return dt < dateGetter (entry); });
+			pos = std::lower_bound (begin, end, span.first,
+						[dateGetter] (decltype (*pos) entry, const QDateTime& dt)
+							{ return dateGetter (entry) < dt; });
 			lastPos  = std::upper_bound (begin, end, span.second,
 						[dateGetter] (const QDateTime& dt, decltype (*pos) entry)
 							{ return dt < dateGetter (entry); });
