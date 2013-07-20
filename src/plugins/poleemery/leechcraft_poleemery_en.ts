@@ -43,6 +43,40 @@
     </message>
 </context>
 <context>
+    <name>GraphsTab</name>
+    <message>
+        <location filename="graphstab.ui" line="39"/>
+        <source>Last week</source>
+        <translation>Last week</translation>
+    </message>
+    <message>
+        <location filename="graphstab.ui" line="44"/>
+        <source>Last month</source>
+        <translation>Last month</translation>
+    </message>
+    <message>
+        <location filename="graphstab.ui" line="49"/>
+        <source>All time</source>
+        <translation>All time</translation>
+    </message>
+    <message>
+        <location filename="graphstab.ui" line="57"/>
+        <source>from</source>
+        <translation>from</translation>
+    </message>
+    <message>
+        <location filename="graphstab.ui" line="64"/>
+        <location filename="graphstab.ui" line="81"/>
+        <source>dd.MM.yyyy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="graphstab.ui" line="74"/>
+        <source>to</source>
+        <translation>to</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Poleemery::AccountsTab</name>
     <message>
         <location filename="accountstab.cpp" line="46"/>
@@ -63,12 +97,12 @@
 <context>
     <name>LeechCraft::Poleemery::CurrenciesManager</name>
     <message>
-        <location filename="currenciesmanager.cpp" line="53"/>
+        <location filename="currenciesmanager.cpp" line="58"/>
         <source>Code</source>
         <translation>Code</translation>
     </message>
     <message>
-        <location filename="currenciesmanager.cpp" line="53"/>
+        <location filename="currenciesmanager.cpp" line="58"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
@@ -146,6 +180,11 @@
 </context>
 <context>
     <name>LeechCraft::Poleemery::Plugin</name>
+    <message>
+        <location filename="poleemery.cpp" line="57"/>
+        <source>Finances operations</source>
+        <translation>Finances operations</translation>
+    </message>
     <message>
         <location filename="poleemery.cpp" line="58"/>
         <source>All operations on personal finances.</source>
@@ -249,49 +288,29 @@
         <translation>cash</translation>
     </message>
     <message>
-        <location filename="graphsfactory.cpp" line="334"/>
+        <location filename="graphsfactory.cpp" line="346"/>
         <source>Days</source>
         <translation>Days</translation>
     </message>
     <message>
-        <location filename="graphsfactory.cpp" line="339"/>
-        <source>Cumulative accounts balance (month)</source>
-        <translation>Cumulative accounts balance (month)</translation>
+        <location filename="graphsfactory.cpp" line="351"/>
+        <source>Cumulative accounts balance</source>
+        <translation>&apos;</translation>
     </message>
     <message>
-        <location filename="graphsfactory.cpp" line="344"/>
-        <source>Comparative accounts balance (month)</source>
-        <translation>Comparative accounts balance (month)</translation>
+        <location filename="graphsfactory.cpp" line="356"/>
+        <source>Comparative accounts balance</source>
+        <translation>Comparative accounts balance</translation>
     </message>
     <message>
-        <location filename="graphsfactory.cpp" line="349"/>
-        <source>Cumulative accounts balance (all-time)</source>
-        <translation>Cumulative accounts balance (all-time)</translation>
+        <location filename="graphsfactory.cpp" line="376"/>
+        <source>Per-category spendings breakdown (absolute)</source>
+        <translation>Per-category spendings breakdown (absolute)</translation>
     </message>
     <message>
-        <location filename="graphsfactory.cpp" line="354"/>
-        <source>Comparative accounts balance (all-time)</source>
-        <translation>Comparative accounts balance (all-time)</translation>
-    </message>
-    <message>
-        <location filename="graphsfactory.cpp" line="374"/>
-        <source>Per-category spendings breakdown (absolute, month)</source>
-        <translation>Per-category spendings breakdown (absolute, month)</translation>
-    </message>
-    <message>
-        <location filename="graphsfactory.cpp" line="379"/>
-        <source>Per-category spendings breakdown (relative, month)</source>
-        <translation>Per-category spendings breakdown (relative, month)</translation>
-    </message>
-    <message>
-        <location filename="graphsfactory.cpp" line="384"/>
-        <source>Per-category spendings breakdown (absolute, all-time)</source>
-        <translation>Per-category spendings breakdown (absolute, all-time)</translation>
-    </message>
-    <message>
-        <location filename="graphsfactory.cpp" line="389"/>
-        <source>Per-category spendings breakdown (relative, all-time)</source>
-        <translation>Per-category spendings breakdown (relative, all-time)</translation>
+        <location filename="graphsfactory.cpp" line="381"/>
+        <source>Per-category spendings breakdown (relative)</source>
+        <translation>Per-category spendings breakdown (relative)</translation>
     </message>
 </context>
 <context>
