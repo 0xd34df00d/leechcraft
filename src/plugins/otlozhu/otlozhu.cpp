@@ -36,6 +36,7 @@
 #include "core.h"
 #include "todomanager.h"
 #include "todostorage.h"
+#include "syncproxy.h"
 
 namespace LeechCraft
 {
@@ -60,6 +61,8 @@ namespace Otlozhu
 			20,
 			TFOpenableByRequest | TFSingle | TFSuggestOpening
 		};
+
+		SyncProxy_ = new SyncProxy;
 	}
 
 	void Plugin::SecondInit ()
@@ -147,8 +150,7 @@ namespace Otlozhu
 
 	ISyncProxy* Plugin::GetSyncProxy ()
 	{
-		// TODO ISyncProxy
-		return nullptr;
+		return SyncProxy_;
 	}
 }
 }

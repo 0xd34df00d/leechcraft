@@ -24,6 +24,7 @@ set (SRCS
 	icalgenerator.cpp
 	icalparser.cpp
 	itemsmergedialog.cpp
+	syncproxy.cpp
 	)
 set (FORMS
 	todotab.ui
@@ -45,6 +46,7 @@ add_library (leechcraft_otlozhu SHARED
 target_link_libraries (leechcraft_otlozhu
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
+	laretz_ops
 	)
 install (TARGETS leechcraft_otlozhu DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

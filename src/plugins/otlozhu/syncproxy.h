@@ -30,53 +30,26 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavetabs.h>
 #include <interfaces/isyncable.h>
-#include <interfaces/ientityhandler.h>
 
 namespace LeechCraft
 {
 namespace Otlozhu
 {
-	class SyncProxy;
-
-	class Plugin : public QObject
-					, public IInfo
-					, public IHaveTabs
-					, public IEntityHandler
-					, public ISyncable
+	class SyncProxy : public QObject
+					, public ISyncProxy
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IEntityHandler ISyncable)
-
-		TabClassInfo TCTodo_;
-		SyncProxy *SyncProxy_;
+		Q_INTERFACES (ISyncProxy)
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		SyncProxy (QObject* = 0);
 
-		TabClasses_t GetTabClasses () const;
-		void TabOpenRequested (const QByteArray&);
-
-		EntityTestHandleResult CouldHandle (const Entity&) const;
-		void Handle (Entity);
-
-		ISyncProxy* GetSyncProxy ();
+		QObject* GetQObject ();
+		QList<Laretz::Operation> GetAllOps () const;
+		void Merge (QList<Laretz::Operation>& ours, const QList<Laretz::Operation>& theirs);
+		void ApplyChanges (const QList<Laretz::Operation>&);
 	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
-
-		void gotEntity (const LeechCraft::Entity&);
+		void gotNewOps (const QList<Laretz::Operation>&);
 	};
 }
 }
