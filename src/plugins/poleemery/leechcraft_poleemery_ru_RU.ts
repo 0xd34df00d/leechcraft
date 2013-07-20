@@ -6,22 +6,22 @@
     <message>
         <location filename="accountpropsdialog.ui" line="14"/>
         <source>Account properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Свойства учётной записи</translation>
     </message>
     <message>
         <location filename="accountpropsdialog.ui" line="23"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя:</translation>
     </message>
     <message>
         <location filename="accountpropsdialog.ui" line="30"/>
         <source>Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип:</translation>
     </message>
     <message>
         <location filename="accountpropsdialog.ui" line="53"/>
         <source>Currency:</source>
-        <translation type="unfinished"></translation>
+        <translation>Валюта:</translation>
     </message>
 </context>
 <context>
@@ -29,17 +29,51 @@
     <message>
         <location filename="accountstab.ui" line="41"/>
         <source>Add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить...</translation>
     </message>
     <message>
         <location filename="accountstab.ui" line="48"/>
         <source>Modify...</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить...</translation>
     </message>
     <message>
         <location filename="accountstab.ui" line="55"/>
         <source>Remove</source>
+        <translation>Удалить</translation>
+    </message>
+</context>
+<context>
+    <name>GraphsTab</name>
+    <message>
+        <location filename="graphstab.ui" line="39"/>
+        <source>Last week</source>
+        <translation>Последняя неделя</translation>
+    </message>
+    <message>
+        <location filename="graphstab.ui" line="44"/>
+        <source>Last month</source>
+        <translation>Последний месяц</translation>
+    </message>
+    <message>
+        <location filename="graphstab.ui" line="49"/>
+        <source>All time</source>
+        <translation>Все время</translation>
+    </message>
+    <message>
+        <location filename="graphstab.ui" line="57"/>
+        <source>from</source>
+        <translation>от</translation>
+    </message>
+    <message>
+        <location filename="graphstab.ui" line="64"/>
+        <location filename="graphstab.ui" line="81"/>
+        <source>dd.MM.yyyy</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="graphstab.ui" line="74"/>
+        <source>to</source>
+        <translation>до</translation>
     </message>
 </context>
 <context>
@@ -47,30 +81,30 @@
     <message>
         <location filename="accountstab.cpp" line="46"/>
         <source>Account</source>
-        <translation type="unfinished"></translation>
+        <translation>Учётная запись</translation>
     </message>
     <message>
         <location filename="accountstab.cpp" line="46"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <location filename="accountstab.cpp" line="46"/>
         <source>Currency</source>
-        <translation type="unfinished"></translation>
+        <translation>Валюта</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Poleemery::CurrenciesManager</name>
     <message>
-        <location filename="currenciesmanager.cpp" line="53"/>
+        <location filename="currenciesmanager.cpp" line="58"/>
         <source>Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Код</translation>
     </message>
     <message>
-        <location filename="currenciesmanager.cpp" line="53"/>
+        <location filename="currenciesmanager.cpp" line="58"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя</translation>
     </message>
 </context>
 <context>
@@ -78,47 +112,47 @@
     <message>
         <location filename="entriesmodel.cpp" line="46"/>
         <source>Date</source>
-        <translation type="unfinished"></translation>
+        <translation>Дата</translation>
     </message>
     <message>
         <location filename="entriesmodel.cpp" line="46"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя</translation>
     </message>
     <message>
         <location filename="entriesmodel.cpp" line="46"/>
         <source>Price</source>
-        <translation type="unfinished"></translation>
+        <translation>Стоимость</translation>
     </message>
     <message>
         <location filename="entriesmodel.cpp" line="46"/>
         <source>Count</source>
-        <translation type="unfinished"></translation>
+        <translation>Кол-во единиц</translation>
     </message>
     <message>
         <location filename="entriesmodel.cpp" line="47"/>
         <source>Shop</source>
-        <translation type="unfinished"></translation>
+        <translation>Магазин</translation>
     </message>
     <message>
         <location filename="entriesmodel.cpp" line="47"/>
         <source>Categories</source>
-        <translation type="unfinished"></translation>
+        <translation>Категории</translation>
     </message>
     <message>
         <location filename="entriesmodel.cpp" line="48"/>
         <source>Account</source>
-        <translation type="unfinished"></translation>
+        <translation>Учётная запись</translation>
     </message>
     <message>
         <location filename="entriesmodel.cpp" line="48"/>
         <source>Account balance</source>
-        <translation type="unfinished"></translation>
+        <translation>Баланс</translation>
     </message>
     <message>
         <location filename="entriesmodel.cpp" line="48"/>
         <source>Sum balance</source>
-        <translation type="unfinished"></translation>
+        <translation>Суммарный баланс</translation>
     </message>
 </context>
 <context>
@@ -126,56 +160,61 @@
     <message>
         <location filename="operationstab.cpp" line="140"/>
         <source>Poleemery</source>
-        <translation type="unfinished"></translation>
+        <translation>Poleemery</translation>
     </message>
     <message>
         <location filename="operationstab.cpp" line="160"/>
         <source>Add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить...</translation>
     </message>
     <message>
         <location filename="operationstab.cpp" line="165"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить</translation>
     </message>
     <message>
         <location filename="operationstab.cpp" line="211"/>
         <source>Are you sure you want to delete entry %1?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы уверены, что хотите удалить запись %1?</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Poleemery::Plugin</name>
     <message>
+        <location filename="poleemery.cpp" line="57"/>
+        <source>Finances operations</source>
+        <translation>Финансовые операции</translation>
+    </message>
+    <message>
         <location filename="poleemery.cpp" line="58"/>
         <source>All operations on personal finances.</source>
-        <translation type="unfinished"></translation>
+        <translation>Все операции на персональных финансах.</translation>
     </message>
     <message>
         <location filename="poleemery.cpp" line="69"/>
         <source>Finances accounts</source>
         <oldsource>Accounts management tab.</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Учётные записи</translation>
     </message>
     <message>
         <location filename="poleemery.cpp" line="70"/>
         <source>Finances accounts management tab.</source>
-        <translation type="unfinished"></translation>
+        <translation>Вкладка управления финансовыми учётными записями.</translation>
     </message>
     <message>
         <location filename="poleemery.cpp" line="81"/>
         <source>Spending graphs</source>
-        <translation type="unfinished"></translation>
+        <translation>Графики трат</translation>
     </message>
     <message>
         <location filename="poleemery.cpp" line="82"/>
         <source>Tab with various graphs helping to analyze spendings.</source>
-        <translation type="unfinished"></translation>
+        <translation>Вкладка с различными графиками, позволяющими анализировать расходы.</translation>
     </message>
     <message>
         <location filename="poleemery.cpp" line="112"/>
         <source>The personal finances manager.</source>
-        <translation type="unfinished"></translation>
+        <translation>Персональный менеджер финансов.</translation>
     </message>
 </context>
 <context>
@@ -183,57 +222,57 @@
     <message>
         <location filename="operationpropsdialog.ui" line="14"/>
         <source>Operation properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Свойства операции</translation>
     </message>
     <message>
         <location filename="operationpropsdialog.ui" line="22"/>
         <source>Expense entry</source>
-        <translation type="unfinished"></translation>
+        <translation>Расход</translation>
     </message>
     <message>
         <location filename="operationpropsdialog.ui" line="45"/>
         <source>Receipt entry</source>
-        <translation type="unfinished"></translation>
+        <translation>Приход</translation>
     </message>
     <message>
         <location filename="operationpropsdialog.ui" line="59"/>
         <source>Account:</source>
-        <translation type="unfinished"></translation>
+        <translation>Учётная запись:</translation>
     </message>
     <message>
         <location filename="operationpropsdialog.ui" line="69"/>
         <source>Price/amount:</source>
-        <translation type="unfinished"></translation>
+        <translation>Цена:</translation>
     </message>
     <message>
         <location filename="operationpropsdialog.ui" line="90"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя:</translation>
     </message>
     <message>
         <location filename="operationpropsdialog.ui" line="113"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Описание:</translation>
     </message>
     <message>
         <location filename="operationpropsdialog.ui" line="123"/>
         <source>Date:</source>
-        <translation type="unfinished"></translation>
+        <translation>Дата:</translation>
     </message>
     <message>
         <location filename="operationpropsdialog.ui" line="139"/>
         <source>Count:</source>
-        <translation type="unfinished"></translation>
+        <translation>Число:</translation>
     </message>
     <message>
         <location filename="operationpropsdialog.ui" line="156"/>
         <source>Shop:</source>
-        <translation type="unfinished"></translation>
+        <translation>Магазин:</translation>
     </message>
     <message>
         <location filename="operationpropsdialog.ui" line="163"/>
         <source>Categories:</source>
-        <translation type="unfinished"></translation>
+        <translation>Категории:</translation>
     </message>
 </context>
 <context>
@@ -241,57 +280,37 @@
     <message>
         <location filename="structures.cpp" line="42"/>
         <source>bank account</source>
-        <translation type="unfinished"></translation>
+        <translation>банковская учётная запись</translation>
     </message>
     <message>
         <location filename="structures.cpp" line="44"/>
         <source>cash</source>
-        <translation type="unfinished"></translation>
+        <translation>нал</translation>
     </message>
     <message>
-        <location filename="graphsfactory.cpp" line="334"/>
+        <location filename="graphsfactory.cpp" line="346"/>
         <source>Days</source>
-        <translation type="unfinished"></translation>
+        <translation>Дни</translation>
     </message>
     <message>
-        <location filename="graphsfactory.cpp" line="339"/>
-        <source>Cumulative accounts balance (month)</source>
-        <translation type="unfinished"></translation>
+        <location filename="graphsfactory.cpp" line="351"/>
+        <source>Cumulative accounts balance</source>
+        <translation>Суммарный баланс учётных записей</translation>
     </message>
     <message>
-        <location filename="graphsfactory.cpp" line="344"/>
-        <source>Comparative accounts balance (month)</source>
-        <translation type="unfinished"></translation>
+        <location filename="graphsfactory.cpp" line="356"/>
+        <source>Comparative accounts balance</source>
+        <translation>Сравнительный баланс учётных записей</translation>
     </message>
     <message>
-        <location filename="graphsfactory.cpp" line="349"/>
-        <source>Cumulative accounts balance (all-time)</source>
-        <translation type="unfinished"></translation>
+        <location filename="graphsfactory.cpp" line="376"/>
+        <source>Per-category spendings breakdown (absolute)</source>
+        <translation>Разбиение трат по категориям (абсолютные значения)</translation>
     </message>
     <message>
-        <location filename="graphsfactory.cpp" line="354"/>
-        <source>Comparative accounts balance (all-time)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="graphsfactory.cpp" line="374"/>
-        <source>Per-category spendings breakdown (absolute, month)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="graphsfactory.cpp" line="379"/>
-        <source>Per-category spendings breakdown (relative, month)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="graphsfactory.cpp" line="384"/>
-        <source>Per-category spendings breakdown (absolute, all-time)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="graphsfactory.cpp" line="389"/>
-        <source>Per-category spendings breakdown (relative, all-time)</source>
-        <translation type="unfinished"></translation>
+        <location filename="graphsfactory.cpp" line="381"/>
+        <source>Per-category spendings breakdown (relative)</source>
+        <translation>Разбиение трат по категориям (относительные значения)</translation>
     </message>
 </context>
 <context>
@@ -299,12 +318,12 @@
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>Currencies</source>
-        <translation type="unfinished"></translation>
+        <translation>Валюты</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Enabled currencies</source>
-        <translation type="unfinished"></translation>
+        <translation>Включённые валюты</translation>
     </message>
 </context>
 </TS>
