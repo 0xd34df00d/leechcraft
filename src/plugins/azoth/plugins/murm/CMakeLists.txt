@@ -16,6 +16,7 @@ set (MURM_SRCS
 	murm.cpp
 	vkprotocol.cpp
 	vkaccount.cpp
+	vkconnection.cpp
 	)
 set (MURM_FORMS
 	)

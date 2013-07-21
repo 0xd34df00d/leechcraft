@@ -35,19 +35,12 @@
 
 namespace LeechCraft
 {
-namespace Util
-{
-namespace SvcAuth
-{
-	class VkAuthManager;
-}
-}
-
 namespace Azoth
 {
 namespace Murm
 {
 	class VkProtocol;
+	class VkConnection;
 
 	class VkAccount : public QObject
 					, public IAccount
@@ -60,8 +53,7 @@ namespace Murm
 
 		QString Name_;
 
-		Util::SvcAuth::VkAuthManager * const AuthMgr_;
-		QByteArray LastCookies_;
+		VkConnection * const Conn_;
 	public:
 		VkAccount (const QString& name, VkProtocol *proto, ICoreProxy_ptr proxy,
 				const QByteArray& id, const QByteArray& cookies);
@@ -92,7 +84,7 @@ namespace Murm
 		void RemoveEntry (QObject*);
 		QObject* GetTransferManager () const;
 	private slots:
-		void saveCookies (const QByteArray&);
+		void emitUpdateAcc ();
 	signals:
 		void accountRenamed (const QString&);
 		void gotCLItems (const QList<QObject*>&);

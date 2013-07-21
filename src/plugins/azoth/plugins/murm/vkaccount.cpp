@@ -30,8 +30,8 @@
 #include "vkaccount.h"
 #include <QUuid>
 #include <QtDebug>
-#include <util/svcauth/vkauthmanager.h>
 #include "vkprotocol.h"
+#include "vkconnection.h"
 
 namespace LeechCraft
 {
@@ -45,13 +45,12 @@ namespace Murm
 	, Proto_ (proto)
 	, ID_ (id.isEmpty () ? QUuid::createUuid ().toByteArray () : id)
 	, Name_ (name)
-	, AuthMgr_ (new Util::SvcAuth::VkAuthManager ("3778319",
-			{ "messages", "notifications", "friends" }, cookies, proxy, this))
+	, Conn_ (new VkConnection (cookies, proxy))
 	{
-		connect (AuthMgr_,
-				SIGNAL (cookiesChanged (QByteArray)),
+		connect (Conn_,
+				SIGNAL (cookiesChanged ()),
 				this,
-				SLOT (saveCookies (QByteArray)));
+				SLOT (emitUpdateAcc ()));
 	}
 
 	QByteArray VkAccount::Serialize () const
@@ -62,7 +61,7 @@ namespace Murm
 		out << static_cast<quint8> (1)
 				<< ID_
 				<< Name_
-				<< LastCookies_;
+				<< Conn_->GetCookies ();
 
 		return result;
 	}
@@ -177,9 +176,8 @@ namespace Murm
 		return nullptr;
 	}
 
-	void VkAccount::saveCookies (const QByteArray& cookies)
+	void VkAccount::emitUpdateAcc ()
 	{
-		LastCookies_ = cookies;
 		emit accountChanged (this);
 	}
 }
