@@ -15,8 +15,8 @@ include_directories (${AZOTH_INCLUDE_DIR}
 set (MURM_SRCS
 	murm.cpp
 	vkprotocol.cpp
+	vkaccount.cpp
 	)
-
 set (MURM_FORMS
 	)
 #set (MURM_RESOURCES azothmurmresources.qrc)
