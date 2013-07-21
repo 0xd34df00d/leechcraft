@@ -91,6 +91,8 @@ namespace Murm
 		void RequestAuth (const QString&, const QString& = QString (), const QString& = QString (), const QStringList& = QStringList ());
 		void RemoveEntry (QObject*);
 		QObject* GetTransferManager () const;
+	private slots:
+		void saveCookies (const QByteArray&);
 	signals:
 		void accountRenamed (const QString&);
 		void gotCLItems (const QList<QObject*>&);

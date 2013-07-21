@@ -48,6 +48,10 @@ namespace Murm
 	, AuthMgr_ (new Util::SvcAuth::VkAuthManager ("3778319",
 			{ "messages", "notifications", "friends" }, cookies, proxy, this))
 	{
+		connect (AuthMgr_,
+				SIGNAL (cookiesChanged (QByteArray)),
+				this,
+				SLOT (saveCookies (QByteArray)));
 	}
 
 	QByteArray VkAccount::Serialize () const
@@ -170,7 +174,13 @@ namespace Murm
 
 	QObject* VkAccount::GetTransferManager () const
 	{
-		return {};
+		return nullptr;
+	}
+
+	void VkAccount::saveCookies (const QByteArray& cookies)
+	{
+		LastCookies_ = cookies;
+		emit accountChanged (this);
 	}
 }
 }
