@@ -120,7 +120,9 @@ namespace Murm
 
 	void VkAccount::RenameAccount (const QString& name)
 	{
-		// TODO
+		Name_ = name;
+		emit accountRenamed (name);
+		emit accountChanged (this);
 	}
 
 	QByteArray VkAccount::GetAccountID () const
