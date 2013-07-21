@@ -39,6 +39,8 @@ namespace Azoth
 {
 namespace Murm
 {
+	class VkAccount;
+
 	class VkProtocol : public QObject
 					 , public IProtocol
 	{
@@ -47,6 +49,8 @@ namespace Murm
 
 		const ICoreProxy_ptr Proxy_;
 		QObject * const Plugin_;
+
+		QList<VkAccount*> Accounts_;
 	public:
 		VkProtocol (ICoreProxy_ptr, QObject*);
 
@@ -63,6 +67,10 @@ namespace Murm
 		void RegisterAccount (const QString& name, const QList<QWidget*>& widgets);
 		QWidget* GetMUCJoinWidget ();
 		void RemoveAccount (QObject* account);
+	private:
+		void AddAccount (VkAccount*);
+	private slots:
+		void saveAccount (VkAccount*);
 	signals:
 		void accountAdded (QObject*);
 		void accountRemoved (QObject*);

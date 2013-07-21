@@ -29,6 +29,9 @@
 
 #include "vkprotocol.h"
 #include <QIcon>
+#include <QApplication>
+#include <QSettings>
+#include "vkaccount.h"
 
 namespace LeechCraft
 {
@@ -41,6 +44,16 @@ namespace Murm
 	, Proxy_ (proxy)
 	, Plugin_ (plugin)
 	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Murm");
+		settings.beginGroup ("Accounts");
+		for (const auto& id : settings.childKeys ())
+		{
+			const auto& data = settings.value (id).toByteArray ();
+			if (auto acc = VkAccount::Deserialize (data, this, proxy))
+				AddAccount (acc);
+		}
+		settings.endGroup ();
 	}
 
 	QObject* VkProtocol::GetQObject ()
@@ -55,7 +68,10 @@ namespace Murm
 
 	QList<QObject*> VkProtocol::GetRegisteredAccounts ()
 	{
-		return {};
+		QList<QObject*> result;
+		for (auto acc : Accounts_)
+			result << acc;
+		return result;
 	}
 
 	QObject* VkProtocol::GetParentProtocolPlugin () const
@@ -78,13 +94,16 @@ namespace Murm
 		return "Murm.VK";
 	}
 
-	QList<QWidget*> VkProtocol::GetAccountRegistrationWidgets (IProtocol::AccountAddOptions options)
+	QList<QWidget*> VkProtocol::GetAccountRegistrationWidgets (IProtocol::AccountAddOptions)
 	{
 		return {};
 	}
 
 	void VkProtocol::RegisterAccount (const QString& name, const QList<QWidget*>& widgets)
 	{
+		auto acc = new VkAccount (name, this, Proxy_, {}, {});
+		saveAccount (acc);
+		AddAccount (acc);
 	}
 
 	QWidget* VkProtocol::GetMUCJoinWidget ()
@@ -94,6 +113,26 @@ namespace Murm
 
 	void VkProtocol::RemoveAccount (QObject *account)
 	{
+	}
+
+	void VkProtocol::AddAccount (VkAccount *acc)
+	{
+		Accounts_ << acc;
+		emit accountAdded (acc);
+
+		connect (acc,
+				SIGNAL (accountChanged (VkAccount*)),
+				this,
+				SLOT (saveAccount (VkAccount*)));
+	}
+
+	void VkProtocol::saveAccount (VkAccount *account)
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Murm");
+		settings.beginGroup ("Accounts");
+		settings.setValue (account->GetAccountID (), account->Serialize ());
+		settings.endGroup ();
 	}
 }
 }
