@@ -29,6 +29,7 @@
 
 #include "vkaccount.h"
 #include <QUuid>
+#include <QtDebug>
 #include <util/svcauth/vkauthmanager.h>
 #include "vkprotocol.h"
 
@@ -47,6 +48,44 @@ namespace Murm
 	, AuthMgr_ (new Util::SvcAuth::VkAuthManager ("3778319",
 			{ "messages", "notifications", "friends" }, cookies, proxy, this))
 	{
+	}
+
+	QByteArray VkAccount::Serialize () const
+	{
+		QByteArray result;
+		QDataStream out (&result, QIODevice::WriteOnly);
+
+		out << static_cast<quint8> (1)
+				<< ID_
+				<< Name_
+				<< LastCookies_;
+
+		return result;
+	}
+
+	VkAccount* VkAccount::Deserialize (const QByteArray& data, VkProtocol *proto, ICoreProxy_ptr proxy)
+	{
+		QDataStream in (data);
+
+		quint8 version = 0;
+		in >> version;
+		if (version != 1)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown version"
+					<< version;
+			return nullptr;
+		}
+
+		QByteArray id;
+		QString name;
+		QByteArray cookies;
+
+		in >> id
+				>> name
+				>> cookies;
+
+		return new VkAccount (name, proto, proxy, id, cookies);
 	}
 
 	QObject* VkAccount::GetQObject ()

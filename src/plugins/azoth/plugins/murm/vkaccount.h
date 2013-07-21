@@ -61,9 +61,13 @@ namespace Murm
 		QString Name_;
 
 		Util::SvcAuth::VkAuthManager * const AuthMgr_;
+		QByteArray LastCookies_;
 	public:
 		VkAccount (const QString& name, VkProtocol *proto, ICoreProxy_ptr proxy,
 				const QByteArray& id, const QByteArray& cookies);
+
+		QByteArray Serialize () const;
+		static VkAccount* Deserialize (const QByteArray&, VkProtocol*, ICoreProxy_ptr);
 
 		QObject* GetQObject ();
 		QObject* GetParentProtocol () const;
@@ -99,6 +103,8 @@ namespace Murm
 		void itemGrantedSubscription (QObject*, const QString&);
 		void statusChanged (const EntryStatus&);
 		void mucInvitationReceived (const QVariantMap&, const QString&, const QString&);
+
+		void accountChanged (VkAccount*);
 	};
 }
 }
