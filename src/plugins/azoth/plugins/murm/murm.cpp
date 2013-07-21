@@ -85,7 +85,7 @@ namespace Murm
 
 	QList<QObject*> Plugin::GetProtocols () const
 	{
-		return {};
+		return { Proto_ };
 	}
 
 	void Plugin::initPlugin (QObject *proxy)
