@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/azoth/iclentry.h>
 
 namespace LeechCraft
 {
@@ -53,17 +54,29 @@ namespace Murm
 		Q_OBJECT
 
 		Util::SvcAuth::VkAuthManager * const AuthMgr_;
+		const ICoreProxy_ptr Proxy_;
 
 		QByteArray LastCookies_;
 
 		QList<std::function<void (QString)>> PreparedCalls_;
 		Util::QueueManager *CallQueue_;
+
+		EntryStatus Status_;
+
+		QString LPKey_;
+		QString LPServer_;
+		QString LPTS_;
 	public:
 		VkConnection (const QByteArray&, ICoreProxy_ptr);
 
 		const QByteArray& GetCookies () const;
+
+		void SetStatus (const EntryStatus&);
+		const EntryStatus& GetStatus () const;
 	private slots:
 		void callWithKey (const QString&);
+
+		void handleGotLPServer ();
 
 		void saveCookies (const QByteArray&);
 	signals:

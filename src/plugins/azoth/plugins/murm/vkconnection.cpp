@@ -28,6 +28,10 @@
  **********************************************************************/
 
 #include "vkconnection.h"
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QtDebug>
 #include <util/svcauth/vkauthmanager.h>
 #include <util/queuemanager.h>
 
@@ -40,6 +44,7 @@ namespace Murm
 	VkConnection::VkConnection (const QByteArray& cookies, ICoreProxy_ptr proxy)
 	: AuthMgr_ (new Util::SvcAuth::VkAuthManager ("3778319",
 			{ "messages", "notifications", "friends" }, cookies, proxy, this))
+	, Proxy_ (proxy)
 	, CallQueue_ (new Util::QueueManager (350))
 	{
 		connect (AuthMgr_,
@@ -57,10 +62,49 @@ namespace Murm
 		return LastCookies_;
 	}
 
+	void VkConnection::SetStatus (const EntryStatus& status)
+	{
+		Status_ = status;
+		if (Status_.State_ == SOffline)
+			return;
+
+		if (!LPKey_.isEmpty ())
+			return;
+
+		PreparedCalls_.push_back ([this] (const QString& key)
+			{
+				QUrl lpUrl ("https://api.vk.com/method/messages.getLongPollServer");
+				lpUrl.addQueryItem ("access_token", key);
+				connect (Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (lpUrl)),
+						SIGNAL (finished ()),
+						this,
+						SLOT (handleGotLPServer ()));
+			});
+
+		AuthMgr_->GetAuthKey ();
+	}
+
+	const EntryStatus& VkConnection::GetStatus () const
+	{
+		return Status_;
+	}
+
 	void VkConnection::callWithKey (const QString& key)
 	{
 		while (!PreparedCalls_.isEmpty ())
-			PreparedCalls_.takeFirst () (key);
+		{
+			auto f = PreparedCalls_.takeFirst ();
+			CallQueue_->Schedule ([f, key] { f (key); });
+		}
+	}
+
+	void VkConnection::handleGotLPServer ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		const auto& data = reply->readAll ();
+		qDebug () << data;
 	}
 
 	void VkConnection::saveCookies (const QByteArray& cookies)
