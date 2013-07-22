@@ -103,6 +103,8 @@ namespace Murm
 
 		void gotLists (const QList<ListInfo>&);
 		void gotUsers (const QList<UserInfo>&);
+
+		void userStateChanged (qulonglong uid, bool online);
 	};
 }
 }

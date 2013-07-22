@@ -56,6 +56,11 @@ namespace Murm
 				SIGNAL (gotAuthKey (QString)),
 				this,
 				SLOT (callWithKey (QString)));
+
+		Dispatcher_ [8] = [this] (const QVariantList& items)
+			{ emit userStateChanged (items.value (1).toULongLong (), true); };
+		Dispatcher_ [9] = [this] (const QVariantList& items)
+			{ emit userStateChanged (items.value (1).toULongLong (), false); };
 	}
 
 	const QByteArray& VkConnection::GetCookies () const
