@@ -153,6 +153,7 @@ namespace Murm
 
 	void VkAccount::ChangeState (const EntryStatus& status)
 	{
+		Conn_->SetStatus (status);
 	}
 
 	void VkAccount::Authorize (QObject*)
