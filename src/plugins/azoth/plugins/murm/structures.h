@@ -29,77 +29,35 @@
 
 #pragma once
 
-#include <functional>
-#include <QObject>
-#include <QHash>
+#include <QString>
+#include <QList>
 #include <QUrl>
-#include <QVariantList>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/azoth/iclentry.h>
-#include "structures.h"
 
 namespace LeechCraft
 {
-namespace Util
-{
-	class QueueManager;
-
-	namespace SvcAuth
-	{
-		class VkAuthManager;
-	}
-}
-
 namespace Azoth
 {
 namespace Murm
 {
-	class VkConnection : public QObject
+	struct ListInfo
 	{
-		Q_OBJECT
+		qulonglong ID_;
+		QString Name_;
+	};
 
-		Util::SvcAuth::VkAuthManager * const AuthMgr_;
-		const ICoreProxy_ptr Proxy_;
+	struct UserInfo
+	{
+		qulonglong ID_;
 
-		QByteArray LastCookies_;
+		QString FirstName_;
+		QString LastName_;
+		QString Nick_;
 
-		QList<std::function<void (QString)>> PreparedCalls_;
-		Util::QueueManager *CallQueue_;
+		QUrl Photo_;
 
-		EntryStatus Status_;
+		bool IsOnline_;
 
-		QString LPKey_;
-		QString LPServer_;
-		qulonglong LPTS_;
-
-		QUrl LPURLTemplate_;
-
-		QHash<int, std::function<void (QVariantList)>> Dispatcher_;
-	public:
-		VkConnection (const QByteArray&, ICoreProxy_ptr);
-
-		const QByteArray& GetCookies () const;
-
-		void SetStatus (const EntryStatus&);
-		const EntryStatus& GetStatus () const;
-	private:
-		void PushLPFetchCall ();
-		void Poll ();
-	private slots:
-		void handlePollFinished ();
-
-		void callWithKey (const QString&);
-
-		void handleGotFriendLists ();
-		void handleGotFriends ();
-		void handleGotLPServer ();
-
-		void saveCookies (const QByteArray&);
-	signals:
-		void cookiesChanged ();
-
-		void gotLists (const QList<ListInfo>&);
-		void gotUsers (const QList<UserInfo>&);
+		QList<qulonglong> Lists_;
 	};
 }
 }
