@@ -61,6 +61,8 @@ namespace Murm
 		void Send (VkMessage*);
 		void Store (VkMessage*);
 
+		VkMessage* FindMessage (qulonglong) const;
+
 		QObject* GetQObject ();
 		QObject* GetParentAccount () const;
 		Features GetEntryFeatures () const;

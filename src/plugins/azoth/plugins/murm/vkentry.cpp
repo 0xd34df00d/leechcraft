@@ -73,6 +73,13 @@ namespace Murm
 		emit gotMessage (msg);
 	}
 
+	VkMessage* VkEntry::FindMessage (qulonglong id) const
+	{
+		const auto pos = std::find_if (Messages_.begin (), Messages_.end (),
+				[id] (VkMessage *msg) { return msg->GetID () == id; });
+		return pos == Messages_.end () ? nullptr : *pos;
+	}
+
 	QObject* VkEntry::GetQObject ()
 	{
 		return this;
