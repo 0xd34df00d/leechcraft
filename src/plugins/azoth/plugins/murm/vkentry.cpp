@@ -28,8 +28,9 @@
  **********************************************************************/
 
 #include "vkentry.h"
-#include "vkaccount.h"
 #include <QStringList>
+#include "vkaccount.h"
+#include "vkmessage.h"
 
 namespace LeechCraft
 {
@@ -111,9 +112,11 @@ namespace Murm
 		return Info_.IsOnline_ ? QStringList ("") : QStringList ();
 	}
 
-	QObject* VkEntry::CreateMessage (IMessage::MessageType type, const QString& variant, const QString& body)
+	QObject* VkEntry::CreateMessage (IMessage::MessageType type, const QString&, const QString& body)
 	{
-		return nullptr;
+		auto msg = new VkMessage (IMessage::DOut, type, this);
+		msg->SetBody (body);
+		return msg;
 	}
 
 	QList<QObject*> VkEntry::GetAllMessages () const
