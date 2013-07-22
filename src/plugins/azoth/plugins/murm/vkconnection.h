@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QUrl>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/azoth/iclentry.h>
 
@@ -71,7 +72,9 @@ namespace Murm
 
 		QString LPKey_;
 		QString LPServer_;
-		QString LPTS_;
+		qulonglong LPTS_;
+
+		QUrl LPURLTemplate_;
 	public:
 		VkConnection (const QByteArray&, ICoreProxy_ptr);
 
@@ -79,7 +82,12 @@ namespace Murm
 
 		void SetStatus (const EntryStatus&);
 		const EntryStatus& GetStatus () const;
+	private:
+		void PushLPFetchCall ();
+		void Poll ();
 	private slots:
+		void handlePollFinished ();
+
 		void callWithKey (const QString&);
 
 		void handleGotFriendLists ();

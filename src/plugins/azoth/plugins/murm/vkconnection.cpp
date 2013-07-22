@@ -46,7 +46,7 @@ namespace Murm
 	: AuthMgr_ (new Util::SvcAuth::VkAuthManager ("3778319",
 			{ "messages", "notifications", "friends" }, cookies, proxy, this))
 	, Proxy_ (proxy)
-	, CallQueue_ (new Util::QueueManager (350))
+	, CallQueue_ (new Util::QueueManager (400))
 	{
 		connect (AuthMgr_,
 				SIGNAL (cookiesChanged (QByteArray)),
@@ -73,7 +73,6 @@ namespace Murm
 			return;
 
 		auto nam = Proxy_->GetNetworkAccessManager ();
-
 		PreparedCalls_.push_back ([this, nam] (const QString& key)
 			{
 				QUrl lpUrl ("https://api.vk.com/method/friends.getLists");
@@ -83,6 +82,19 @@ namespace Murm
 						this,
 						SLOT (handleGotFriendLists ()));
 			});
+		PushLPFetchCall ();
+
+		AuthMgr_->GetAuthKey ();
+	}
+
+	const EntryStatus& VkConnection::GetStatus () const
+	{
+		return Status_;
+	}
+
+	void VkConnection::PushLPFetchCall ()
+	{
+		auto nam = Proxy_->GetNetworkAccessManager ();
 		PreparedCalls_.push_back ([this, nam] (const QString& key)
 			{
 				QUrl lpUrl ("https://api.vk.com/method/messages.getLongPollServer");
@@ -92,13 +104,41 @@ namespace Murm
 						this,
 						SLOT (handleGotLPServer ()));
 			});
-
-		AuthMgr_->GetAuthKey ();
 	}
 
-	const EntryStatus& VkConnection::GetStatus () const
+	void VkConnection::Poll ()
 	{
-		return Status_;
+		QUrl url = LPURLTemplate_;
+		url.addQueryItem ("ts", QString::number (LPTS_));
+		connect (Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (url)),
+				SIGNAL (finished ()),
+				this,
+				SLOT (handlePollFinished ()));
+	}
+
+	void VkConnection::handlePollFinished ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		const auto& data = QJson::Parser ().parse (reply);
+		const auto& rootMap = data.toMap ();
+		qDebug () << rootMap;
+		if (rootMap.contains ("failed"))
+		{
+			PushLPFetchCall ();
+			AuthMgr_->GetAuthKey ();
+			return;
+		}
+
+		for (const auto& update : rootMap ["updates"].toList ())
+		{
+			const auto& parmList = update.toList ();
+			qDebug () << parmList;
+		}
+
+		LPTS_ = rootMap ["ts"].toULongLong ();
+		Poll ();
 	}
 
 	void VkConnection::callWithKey (const QString& key)
@@ -132,8 +172,20 @@ namespace Murm
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
 
-		const auto& data = reply->readAll ();
-		qDebug () << data;
+		const auto& data = QJson::Parser ().parse (reply);
+		const auto& map = data.toMap () ["response"].toMap ();
+
+		LPKey_ = map ["key"].toString ();
+		LPServer_ = map ["server"].toString ();
+		LPTS_ = map ["ts"].toULongLong ();
+
+		LPURLTemplate_ = QUrl ("http://" + LPServer_);
+		LPURLTemplate_.addQueryItem ("act", "a_check");
+		LPURLTemplate_.addQueryItem ("key", LPKey_);
+		LPURLTemplate_.addQueryItem ("wait", "25");
+		LPURLTemplate_.addQueryItem ("mode", "2");
+
+		Poll ();
 	}
 
 	void VkConnection::saveCookies (const QByteArray& cookies)
