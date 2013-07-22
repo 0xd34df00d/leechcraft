@@ -32,6 +32,7 @@
 #include <QtDebug>
 #include "vkprotocol.h"
 #include "vkconnection.h"
+#include "vkentry.h"
 
 namespace LeechCraft
 {
@@ -51,6 +52,10 @@ namespace Murm
 				SIGNAL (cookiesChanged ()),
 				this,
 				SLOT (emitUpdateAcc ()));
+		connect (Conn_,
+				SIGNAL (gotUsers (QList<UserInfo>)),
+				this,
+				SLOT (handleUsers (QList<UserInfo>)));
 	}
 
 	QByteArray VkAccount::Serialize () const
@@ -108,7 +113,10 @@ namespace Murm
 
 	QList<QObject*> VkAccount::GetCLEntries ()
 	{
-		return {};
+		QList<QObject*> result;
+		result.reserve (Entries_.size ());
+		std::copy (Entries_.begin (), Entries_.end (), std::back_inserter (result));
+		return result;
 	}
 
 	QString VkAccount::GetAccountName () const
@@ -175,6 +183,26 @@ namespace Murm
 	QObject* VkAccount::GetTransferManager () const
 	{
 		return nullptr;
+	}
+
+	void VkAccount::handleUsers (const QList<UserInfo>& infos)
+	{
+		QList<QObject*> newEntries;
+		for (const auto& info : infos)
+		{
+			if (Entries_.contains (info.ID_))
+			{
+				Entries_ [info.ID_]->UpdateInfo (info);
+				continue;
+			}
+
+			auto entry = new VkEntry (info, this);
+			Entries_ [info.ID_] = entry;
+			newEntries << entry;
+		}
+
+		if (!newEntries.isEmpty ())
+			emit gotCLItems (newEntries);
 	}
 
 	void VkAccount::emitUpdateAcc ()

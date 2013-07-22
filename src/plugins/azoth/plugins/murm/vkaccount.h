@@ -32,6 +32,7 @@
 #include <QObject>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/core/icoreproxy.h>
+#include "structures.h"
 
 namespace LeechCraft
 {
@@ -39,6 +40,7 @@ namespace Azoth
 {
 namespace Murm
 {
+	class VkEntry;
 	class VkProtocol;
 	class VkConnection;
 
@@ -54,6 +56,7 @@ namespace Murm
 		QString Name_;
 
 		VkConnection * const Conn_;
+		QHash<qulonglong, VkEntry*> Entries_;
 	public:
 		VkAccount (const QString& name, VkProtocol *proto, ICoreProxy_ptr proxy,
 				const QByteArray& id, const QByteArray& cookies);
@@ -84,6 +87,7 @@ namespace Murm
 		void RemoveEntry (QObject*);
 		QObject* GetTransferManager () const;
 	private slots:
+		void handleUsers (const QList<UserInfo>&);
 		void emitUpdateAcc ();
 	signals:
 		void accountRenamed (const QString&);
