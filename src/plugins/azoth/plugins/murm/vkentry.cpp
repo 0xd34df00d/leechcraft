@@ -62,6 +62,17 @@ namespace Murm
 		return Info_;
 	}
 
+	void VkEntry::Send (VkMessage *msg)
+	{
+		Account_->Send (this, msg);
+	}
+
+	void VkEntry::Store (VkMessage *msg)
+	{
+		Messages_ << msg;
+		emit gotMessage (msg);
+	}
+
 	QObject* VkEntry::GetQObject ()
 	{
 		return this;
@@ -121,7 +132,10 @@ namespace Murm
 
 	QList<QObject*> VkEntry::GetAllMessages () const
 	{
-		return {};
+		QList<QObject*> result;
+		for (auto obj : Messages_)
+			result << obj;
+		return result;
 	}
 
 	void VkEntry::PurgeMessages (const QDateTime& before)

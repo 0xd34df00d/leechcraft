@@ -52,10 +52,13 @@ namespace Murm
 
 	void VkMessage::Send ()
 	{
+		Entry_->Send (this);
+		Store ();
 	}
 
 	void VkMessage::Store ()
 	{
+		Entry_->Store (this);
 	}
 
 	IMessage::Direction VkMessage::GetDirection () const

@@ -82,6 +82,8 @@ namespace Murm
 
 		void RerequestFriends ();
 
+		void SendMessage (qulonglong to, const QString& body);
+
 		void SetStatus (const EntryStatus&);
 		const EntryStatus& GetStatus () const;
 	private:

@@ -40,6 +40,7 @@ namespace Azoth
 namespace Murm
 {
 	class VkAccount;
+	class VkMessage;
 
 	class VkEntry : public QObject
 				  , public ICLEntry
@@ -49,11 +50,16 @@ namespace Murm
 
 		VkAccount * const Account_;
 		UserInfo Info_;
+
+		QList<VkMessage*> Messages_;
 	public:
 		VkEntry (const UserInfo&, VkAccount*);
 
 		void UpdateInfo (const UserInfo&);
 		const UserInfo& GetInfo () const;
+
+		void Send (VkMessage*);
+		void Store (VkMessage*);
 
 		QObject* GetQObject ();
 		QObject* GetParentAccount () const;

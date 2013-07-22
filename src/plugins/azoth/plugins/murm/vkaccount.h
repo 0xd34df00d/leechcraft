@@ -41,6 +41,7 @@ namespace Azoth
 namespace Murm
 {
 	class VkEntry;
+	class VkMessage;
 	class VkProtocol;
 	class VkConnection;
 
@@ -63,6 +64,8 @@ namespace Murm
 
 		QByteArray Serialize () const;
 		static VkAccount* Deserialize (const QByteArray&, VkProtocol*, ICoreProxy_ptr);
+
+		void Send (VkEntry*, VkMessage*);
 
 		QObject* GetQObject ();
 		QObject* GetParentProtocol () const;

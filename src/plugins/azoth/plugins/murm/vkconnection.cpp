@@ -74,6 +74,25 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
+	void VkConnection::SendMessage (qulonglong to, const QString& body)
+	{
+		auto nam = Proxy_->GetNetworkAccessManager ();
+		PreparedCalls_.push_back ([this, nam, to, body] (const QString& key)
+			{
+				QUrl url ("https://api.vk.com/method/messages.send");
+				url.addQueryItem ("access_token", key);
+				url.addQueryItem ("uid", QString::number (to));
+				url.addQueryItem ("message", body);
+				url.addQueryItem ("type", "1");
+
+				auto reply = nam->get (QNetworkRequest (url));
+				connect (reply,
+						SIGNAL (finished ()),
+						reply,
+						SLOT (deleteLater ()));
+			});
+	}
+
 	void VkConnection::SetStatus (const EntryStatus& status)
 	{
 		Status_ = status;
@@ -165,7 +184,8 @@ namespace Murm
 			if (!Dispatcher_.contains (code))
 				qWarning () << Q_FUNC_INFO
 						<< "unknown code"
-						<< code;
+						<< code
+						<< parmList;
 			else
 				Dispatcher_ [code] (parmList);
 		}

@@ -33,6 +33,7 @@
 #include "vkprotocol.h"
 #include "vkconnection.h"
 #include "vkentry.h"
+#include "vkmessage.h"
 
 namespace LeechCraft
 {
@@ -98,6 +99,12 @@ namespace Murm
 				>> cookies;
 
 		return new VkAccount (name, proto, proxy, id, cookies);
+	}
+
+	void VkAccount::Send (VkEntry *entry, VkMessage *msg)
+	{
+		Conn_->SendMessage (entry->GetInfo ().ID_,
+				msg->GetBody ());
 	}
 
 	QObject* VkAccount::GetQObject ()
