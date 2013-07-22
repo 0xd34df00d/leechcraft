@@ -80,9 +80,12 @@ namespace Murm
 
 		const QByteArray& GetCookies () const;
 
+		void RerequestFriends ();
+
 		void SetStatus (const EntryStatus&);
 		const EntryStatus& GetStatus () const;
 	private:
+		void PushFriendsRequest ();
 		void PushLPFetchCall ();
 		void Poll ();
 	private slots:

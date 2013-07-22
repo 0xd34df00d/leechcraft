@@ -63,6 +63,12 @@ namespace Murm
 		return LastCookies_;
 	}
 
+	void VkConnection::RerequestFriends ()
+	{
+		PushFriendsRequest ();
+		AuthMgr_->GetAuthKey ();
+	}
+
 	void VkConnection::SetStatus (const EntryStatus& status)
 	{
 		Status_ = status;
@@ -82,6 +88,20 @@ namespace Murm
 						this,
 						SLOT (handleGotFriendLists ()));
 			});
+		PushFriendsRequest ();
+		PushLPFetchCall ();
+
+		AuthMgr_->GetAuthKey ();
+	}
+
+	const EntryStatus& VkConnection::GetStatus () const
+	{
+		return Status_;
+	}
+
+	void VkConnection::PushFriendsRequest ()
+	{
+		auto nam = Proxy_->GetNetworkAccessManager ();
 		PreparedCalls_.push_back ([this, nam] (const QString& key)
 			{
 				QUrl friendsUrl ("https://api.vk.com/method/friends.get");
@@ -92,14 +112,6 @@ namespace Murm
 						this,
 						SLOT (handleGotFriends ()));
 			});
-		PushLPFetchCall ();
-
-		AuthMgr_->GetAuthKey ();
-	}
-
-	const EntryStatus& VkConnection::GetStatus () const
-	{
-		return Status_;
 	}
 
 	void VkConnection::PushLPFetchCall ()
