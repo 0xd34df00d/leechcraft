@@ -57,6 +57,10 @@ namespace Murm
 				this,
 				SLOT (callWithKey (QString)));
 
+		Dispatcher_ [1] = [this] (const QVariantList&) {};
+		Dispatcher_ [2] = [this] (const QVariantList&) {};
+		Dispatcher_ [3] = [this] (const QVariantList&) {};
+
 		Dispatcher_ [4] = [this] (const QVariantList& items)
 		{
 			emit gotMessage ({
