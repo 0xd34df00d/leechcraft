@@ -68,9 +68,9 @@ namespace Murm
 				});
 		};
 		Dispatcher_ [8] = [this] (const QVariantList& items)
-			{ emit userStateChanged (items.value (1).toULongLong (), true); };
+			{ emit userStateChanged (items.value (1).toLongLong () * -1, true); };
 		Dispatcher_ [9] = [this] (const QVariantList& items)
-			{ emit userStateChanged (items.value (1).toULongLong (), false); };
+			{ emit userStateChanged (items.value (1).toLongLong () * -1, false); };
 
 		Dispatcher_ [101] = [this] (const QVariantList&) {};	// unknown stuff
 	}
