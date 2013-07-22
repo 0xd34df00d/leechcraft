@@ -49,6 +49,12 @@ namespace Azoth
 {
 namespace Murm
 {
+	struct ListInfo
+	{
+		qulonglong ID_;
+		QString Name_;
+	};
+
 	class VkConnection : public QObject
 	{
 		Q_OBJECT
@@ -76,11 +82,14 @@ namespace Murm
 	private slots:
 		void callWithKey (const QString&);
 
+		void handleGotFriendLists ();
 		void handleGotLPServer ();
 
 		void saveCookies (const QByteArray&);
 	signals:
 		void cookiesChanged ();
+
+		void gotLists (const QList<ListInfo>&);
 	};
 }
 }

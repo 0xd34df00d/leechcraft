@@ -32,6 +32,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QtDebug>
+#include <qjson/parser.h>
 #include <util/svcauth/vkauthmanager.h>
 #include <util/queuemanager.h>
 
@@ -71,11 +72,22 @@ namespace Murm
 		if (!LPKey_.isEmpty ())
 			return;
 
-		PreparedCalls_.push_back ([this] (const QString& key)
+		auto nam = Proxy_->GetNetworkAccessManager ();
+
+		PreparedCalls_.push_back ([this, nam] (const QString& key)
+			{
+				QUrl lpUrl ("https://api.vk.com/method/friends.getLists");
+				lpUrl.addQueryItem ("access_token", key);
+				connect (nam->get (QNetworkRequest (lpUrl)),
+						SIGNAL (finished ()),
+						this,
+						SLOT (handleGotFriendLists ()));
+			});
+		PreparedCalls_.push_back ([this, nam] (const QString& key)
 			{
 				QUrl lpUrl ("https://api.vk.com/method/messages.getLongPollServer");
 				lpUrl.addQueryItem ("access_token", key);
-				connect (Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (lpUrl)),
+				connect (nam->get (QNetworkRequest (lpUrl)),
 						SIGNAL (finished ()),
 						this,
 						SLOT (handleGotLPServer ()));
@@ -96,6 +108,23 @@ namespace Murm
 			auto f = PreparedCalls_.takeFirst ();
 			CallQueue_->Schedule ([f, key] { f (key); });
 		}
+	}
+
+	void VkConnection::handleGotFriendLists ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		QList<ListInfo> lists;
+
+		const auto& data = QJson::Parser ().parse (reply);
+		for (const auto& item : data.toMap () ["response"].toList ())
+		{
+			const auto& map = item.toMap ();
+			lists.append ({ map ["lid"].toULongLong (), map ["name"].toString () });
+		}
+
+		emit gotLists (lists);
 	}
 
 	void VkConnection::handleGotLPServer ()
