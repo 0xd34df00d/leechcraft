@@ -56,6 +56,11 @@ namespace Murm
 		}
 	}
 
+	const UserInfo& VkEntry::GetInfo () const
+	{
+		return Info_;
+	}
+
 	QObject* VkEntry::GetQObject ()
 	{
 		return this;

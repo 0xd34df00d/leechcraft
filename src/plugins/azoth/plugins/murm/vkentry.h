@@ -53,6 +53,7 @@ namespace Murm
 		VkEntry (const UserInfo&, VkAccount*);
 
 		void UpdateInfo (const UserInfo&);
+		const UserInfo& GetInfo () const;
 
 		QObject* GetQObject ();
 		QObject* GetParentAccount () const;
