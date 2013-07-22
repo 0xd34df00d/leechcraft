@@ -115,6 +115,11 @@ namespace Murm
 	{
 		TS_ = timestamp;
 	}
+
+	bool VkMessage::IsDelivered () const
+	{
+		return ID_ != static_cast<qulonglong> (-1);
+	}
 }
 }
 }
