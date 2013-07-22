@@ -29,8 +29,11 @@
 
 #pragma once
 
+#include <functional>
 #include <QObject>
+#include <QHash>
 #include <QUrl>
+#include <QVariantList>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/azoth/iclentry.h>
 
@@ -75,6 +78,8 @@ namespace Murm
 		qulonglong LPTS_;
 
 		QUrl LPURLTemplate_;
+
+		QHash<int, std::function<void (QVariantList)>> Dispatcher_;
 	public:
 		VkConnection (const QByteArray&, ICoreProxy_ptr);
 

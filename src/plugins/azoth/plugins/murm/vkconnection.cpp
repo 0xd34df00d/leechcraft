@@ -123,7 +123,6 @@ namespace Murm
 
 		const auto& data = QJson::Parser ().parse (reply);
 		const auto& rootMap = data.toMap ();
-		qDebug () << rootMap;
 		if (rootMap.contains ("failed"))
 		{
 			PushLPFetchCall ();
@@ -134,7 +133,14 @@ namespace Murm
 		for (const auto& update : rootMap ["updates"].toList ())
 		{
 			const auto& parmList = update.toList ();
-			qDebug () << parmList;
+			const auto code = parmList.value (0).toInt ();
+
+			if (!Dispatcher_.contains (code))
+				qWarning () << Q_FUNC_INFO
+						<< "unknown code"
+						<< code;
+			else
+				Dispatcher_ [code] (parmList);
 		}
 
 		LPTS_ = rootMap ["ts"].toULongLong ();
