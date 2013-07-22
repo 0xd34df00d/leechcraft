@@ -57,6 +57,16 @@ namespace Murm
 				this,
 				SLOT (callWithKey (QString)));
 
+		Dispatcher_ [4] = [this] (const QVariantList& items)
+		{
+			emit gotMessage ({
+					items.value (1).toULongLong (),
+					items.value (3).toULongLong (),
+					items.value (7).toString (),
+					MessageFlags (items.value (2).toInt ()),
+					QDateTime::fromTime_t (items.value (4).toULongLong ())
+				});
+		};
 		Dispatcher_ [8] = [this] (const QVariantList& items)
 			{ emit userStateChanged (items.value (1).toULongLong (), true); };
 		Dispatcher_ [9] = [this] (const QVariantList& items)
