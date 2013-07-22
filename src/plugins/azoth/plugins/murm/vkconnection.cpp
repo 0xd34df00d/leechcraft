@@ -82,6 +82,16 @@ namespace Murm
 						this,
 						SLOT (handleGotFriendLists ()));
 			});
+		PreparedCalls_.push_back ([this, nam] (const QString& key)
+			{
+				QUrl friendsUrl ("https://api.vk.com/method/friends.get");
+				friendsUrl.addQueryItem ("access_token", key);
+				friendsUrl.addQueryItem ("fields", "first_name,last_name,nickname,photo");
+				connect (nam->get (QNetworkRequest (friendsUrl)),
+						SIGNAL (finished ()),
+						this,
+						SLOT (handleGotFriends ()));
+			});
 		PushLPFetchCall ();
 
 		AuthMgr_->GetAuthKey ();
@@ -171,6 +181,44 @@ namespace Murm
 		}
 
 		emit gotLists (lists);
+	}
+
+	void VkConnection::handleGotFriends ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		QList<UserInfo> users;
+
+		const auto& data = QJson::Parser ().parse (reply);
+		for (const auto& item : data.toMap () ["response"].toList ())
+		{
+			const auto& userMap = item.toMap ();
+			if (userMap.contains ("deactivated"))
+				continue;
+
+			QList<qulonglong> lists;
+			for (const auto& item : userMap ["lists"].toList ())
+				lists << item.toULongLong ();
+
+			const UserInfo ui
+			{
+				userMap ["uid"].toULongLong (),
+
+				userMap ["first_name"].toString (),
+				userMap ["last_name"].toString (),
+				userMap ["nickname"].toString (),
+
+				QUrl (userMap ["photo"].toString ()),
+
+				static_cast<bool> (userMap ["online"].toULongLong ()),
+
+				lists
+			};
+			users << ui;
+		}
+
+		emit gotUsers (users);
 	}
 
 	void VkConnection::handleGotLPServer ()

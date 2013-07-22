@@ -59,6 +59,21 @@ namespace Murm
 		QString Name_;
 	};
 
+	struct UserInfo
+	{
+		qulonglong ID_;
+
+		QString FirstName_;
+		QString LastName_;
+		QString Nick_;
+
+		QUrl Photo_;
+
+		bool IsOnline_;
+
+		QList<qulonglong> Lists_;
+	};
+
 	class VkConnection : public QObject
 	{
 		Q_OBJECT
@@ -96,6 +111,7 @@ namespace Murm
 		void callWithKey (const QString&);
 
 		void handleGotFriendLists ();
+		void handleGotFriends ();
 		void handleGotLPServer ();
 
 		void saveCookies (const QByteArray&);
@@ -103,6 +119,7 @@ namespace Murm
 		void cookiesChanged ();
 
 		void gotLists (const QList<ListInfo>&);
+		void gotUsers (const QList<UserInfo>&);
 	};
 }
 }
