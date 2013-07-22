@@ -41,7 +41,6 @@ namespace Murm
 	, Entry_ (entry)
 	, Type_ (type)
 	, Dir_ (dir)
-	, TS_ (QDateTime::currentDateTime ())
 	{
 	}
 
@@ -59,6 +58,17 @@ namespace Murm
 	void VkMessage::Store ()
 	{
 		Entry_->Store (this);
+	}
+
+	qulonglong VkMessage::GetID () const
+	{
+		return ID_;
+	}
+
+	void VkMessage::SetID (qulonglong id)
+	{
+		ID_ = id;
+		emit messageDelivered ();
 	}
 
 	IMessage::Direction VkMessage::GetDirection () const

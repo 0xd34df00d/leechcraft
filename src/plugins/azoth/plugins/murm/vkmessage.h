@@ -51,13 +51,18 @@ namespace Murm
 		const Direction Dir_;
 
 		QString Body_;
-		QDateTime TS_;
+		QDateTime TS_ = QDateTime::currentDateTime ();
+
+		qulonglong ID_ = -1;
 	public:
 		VkMessage (Direction, MessageType, VkEntry*);
 
 		QObject* GetQObject ();
 		void Send ();
 		void Store ();
+
+		qulonglong GetID () const;
+		void SetID (qulonglong);
 
 		Direction GetDirection () const;
 		MessageType GetMessageType () const;
