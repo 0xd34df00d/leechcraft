@@ -56,6 +56,10 @@ namespace Murm
 				SIGNAL (gotUsers (QList<UserInfo>)),
 				this,
 				SLOT (handleUsers (QList<UserInfo>)));
+		connect (Conn_,
+				SIGNAL (userStateChanged (qulonglong, bool)),
+				this,
+				SLOT (handleUserState (qulonglong, bool)));
 	}
 
 	QByteArray VkAccount::Serialize () const
@@ -203,6 +207,23 @@ namespace Murm
 
 		if (!newEntries.isEmpty ())
 			emit gotCLItems (newEntries);
+	}
+
+	void VkAccount::handleUserState (qulonglong id, bool isOnline)
+	{
+		if (!Entries_.contains (id))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown user"
+					<< id;
+			Conn_->RerequestFriends ();
+			return;
+		}
+
+		auto entry = Entries_.value (id);
+		auto info = entry->GetInfo ();
+		info.IsOnline_ = isOnline;
+		entry->UpdateInfo (info);
 	}
 
 	void VkAccount::emitUpdateAcc ()

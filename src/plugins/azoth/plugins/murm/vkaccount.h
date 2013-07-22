@@ -88,6 +88,7 @@ namespace Murm
 		QObject* GetTransferManager () const;
 	private slots:
 		void handleUsers (const QList<UserInfo>&);
+		void handleUserState (qulonglong, bool);
 		void emitUpdateAcc ();
 	signals:
 		void accountRenamed (const QString&);
