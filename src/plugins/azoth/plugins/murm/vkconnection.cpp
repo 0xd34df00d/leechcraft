@@ -61,6 +61,8 @@ namespace Murm
 			{ emit userStateChanged (items.value (1).toULongLong (), true); };
 		Dispatcher_ [9] = [this] (const QVariantList& items)
 			{ emit userStateChanged (items.value (1).toULongLong (), false); };
+
+		Dispatcher_ [101] = [this] (const QVariantList&) {};	// unknown stuff
 	}
 
 	const QByteArray& VkConnection::GetCookies () const
