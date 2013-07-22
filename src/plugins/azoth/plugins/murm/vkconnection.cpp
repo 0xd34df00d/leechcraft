@@ -105,6 +105,7 @@ namespace Murm
 						this,
 						SLOT (handleMessageSent ()));
 			});
+		AuthMgr_->GetAuthKey ();
 	}
 
 	void VkConnection::SetStatus (const EntryStatus& status)
