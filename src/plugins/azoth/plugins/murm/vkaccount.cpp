@@ -104,7 +104,8 @@ namespace Murm
 	void VkAccount::Send (VkEntry *entry, VkMessage *msg)
 	{
 		Conn_->SendMessage (entry->GetInfo ().ID_,
-				msg->GetBody ());
+				msg->GetBody (),
+				[msg] (qulonglong id) { msg->SetID (id); });
 	}
 
 	QObject* VkAccount::GetQObject ()

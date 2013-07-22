@@ -76,10 +76,11 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
-	void VkConnection::SendMessage (qulonglong to, const QString& body)
+	void VkConnection::SendMessage (qulonglong to,
+			const QString& body, std::function<void (qulonglong)> idSetter)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([this, nam, to, body] (const QString& key)
+		PreparedCalls_.push_back ([=] (const QString& key)
 			{
 				QUrl url ("https://api.vk.com/method/messages.send");
 				url.addQueryItem ("access_token", key);
@@ -88,10 +89,11 @@ namespace Murm
 				url.addQueryItem ("type", "1");
 
 				auto reply = nam->get (QNetworkRequest (url));
+				MsgReply2Setter_ [reply] = idSetter;
 				connect (reply,
 						SIGNAL (finished ()),
-						reply,
-						SLOT (deleteLater ()));
+						this,
+						SLOT (handleMessageSent ()));
 			});
 	}
 
@@ -279,6 +281,20 @@ namespace Murm
 		LPURLTemplate_.addQueryItem ("mode", "2");
 
 		Poll ();
+	}
+
+	void VkConnection::handleMessageSent ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		const auto& setter = MsgReply2Setter_.take (reply);
+		if (!setter)
+			return;
+
+		const auto& data = QJson::Parser ().parse (reply);
+		const auto code = data.toMap ().value ("response", -1).toULongLong ();
+		setter (code);
 	}
 
 	void VkConnection::saveCookies (const QByteArray& cookies)

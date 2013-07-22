@@ -75,6 +75,7 @@ namespace Murm
 		QUrl LPURLTemplate_;
 
 		QHash<int, std::function<void (QVariantList)>> Dispatcher_;
+		QHash<QNetworkReply*, std::function<void (qulonglong)>> MsgReply2Setter_;
 	public:
 		VkConnection (const QByteArray&, ICoreProxy_ptr);
 
@@ -82,7 +83,8 @@ namespace Murm
 
 		void RerequestFriends ();
 
-		void SendMessage (qulonglong to, const QString& body);
+		void SendMessage (qulonglong to, const QString& body,
+				std::function<void (qulonglong)> idSetter);
 
 		void SetStatus (const EntryStatus&);
 		const EntryStatus& GetStatus () const;
@@ -98,6 +100,7 @@ namespace Murm
 		void handleGotFriendLists ();
 		void handleGotFriends ();
 		void handleGotLPServer ();
+		void handleMessageSent ();
 
 		void saveCookies (const QByteArray&);
 	signals:
