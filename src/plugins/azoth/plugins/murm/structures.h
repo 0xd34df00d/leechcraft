@@ -32,6 +32,7 @@
 #include <QString>
 #include <QList>
 #include <QUrl>
+#include <QDateTime>
 
 namespace LeechCraft
 {
@@ -59,6 +60,37 @@ namespace Murm
 
 		QList<qulonglong> Lists_;
 	};
+
+	enum MessageFlag
+	{
+		None =			0,
+		Unread =		1 << 0,
+		Outbox = 		1 << 1,
+		Replied = 		1 << 2,
+		Important = 	1 << 3,
+		Chat = 			1 << 4,
+		Friends = 		1 << 5,
+		Spam = 			1 << 6,
+		Deleted = 		1 << 7,
+		Fixed = 		1 << 8,
+		Media = 		1 << 9
+	};
+
+	Q_DECLARE_FLAGS (MessageFlags, MessageFlag)
+
+	struct MessageInfo
+	{
+		qulonglong ID_;
+		qulonglong From_;
+
+		QString Text_;
+
+		MessageFlags Flags_;
+
+		QDateTime TS_;
+	};
 }
 }
 }
+
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::Murm::MessageFlags)
