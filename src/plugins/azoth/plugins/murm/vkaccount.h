@@ -83,7 +83,7 @@ namespace Murm
 		void ChangeState (const EntryStatus&);
 		void Authorize (QObject*);
 		void DenyAuth (QObject*);
-		void RequestAuth (const QString&, const QString& = QString (), const QString& = QString (), const QStringList& = QStringList ());
+		void RequestAuth (const QString&, const QString&, const QString&, const QStringList&);
 		void RemoveEntry (QObject*);
 		QObject* GetTransferManager () const;
 	private slots:
