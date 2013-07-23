@@ -136,6 +136,31 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
+	void VkConnection::MarkAsRead (const QList<qulonglong>& ids)
+	{
+		QStringList converted;
+		for (auto id : ids)
+			converted << QString::number (id);
+		const auto& joined = converted.join (",");
+
+		auto nam = Proxy_->GetNetworkAccessManager ();
+		PreparedCalls_.push_back ([this, nam, joined] (const QString& key) -> QNetworkReply*
+			{
+				QUrl url ("https://api.vk.com/method/messages.markAsRead");
+				url.addQueryItem ("access_token", key);
+				url.addQueryItem ("mids", joined);
+				qDebug () << url;
+
+				auto reply = nam->get (QNetworkRequest (url));
+				connect (reply,
+						SIGNAL (finished ()),
+						reply,
+						SLOT (deleteLater ()));
+				return reply;
+			});
+		AuthMgr_->GetAuthKey ();
+	}
+
 	void VkConnection::SetStatus (const EntryStatus& status)
 	{
 		Status_ = status;

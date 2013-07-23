@@ -93,6 +93,7 @@ namespace Murm
 		void SendMessage (qulonglong to, const QString& body,
 				std::function<void (qulonglong)> idSetter);
 		void SendTyping (qulonglong to);
+		void MarkAsRead (const QList<qulonglong>&);
 
 		void SetStatus (const EntryStatus&);
 		const EntryStatus& GetStatus () const;
