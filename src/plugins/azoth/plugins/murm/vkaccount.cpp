@@ -34,6 +34,7 @@
 #include "vkconnection.h"
 #include "vkentry.h"
 #include "vkmessage.h"
+#include "photostorage.h"
 
 namespace LeechCraft
 {
@@ -46,6 +47,7 @@ namespace Murm
 	: QObject (proto)
 	, Proto_ (proto)
 	, ID_ (id.isEmpty () ? QUuid::createUuid ().toByteArray () : id)
+	, PhotoStorage_ (new PhotoStorage (proxy->GetNetworkAccessManager (), ID_))
 	, Name_ (name)
 	, Conn_ (new VkConnection (cookies, proxy))
 	{
@@ -119,6 +121,11 @@ namespace Murm
 	VkConnection* VkAccount::GetConnection () const
 	{
 		return Conn_;
+	}
+
+	PhotoStorage* VkAccount::GetPhotoStorage () const
+	{
+		return PhotoStorage_;
 	}
 
 	QObject* VkAccount::GetQObject ()

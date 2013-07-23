@@ -44,6 +44,7 @@ namespace Murm
 	class VkMessage;
 	class VkProtocol;
 	class VkConnection;
+	class PhotoStorage;
 
 	class VkAccount : public QObject
 					, public IAccount
@@ -53,6 +54,8 @@ namespace Murm
 
 		VkProtocol * const Proto_;
 		const QByteArray ID_;
+
+		PhotoStorage * const PhotoStorage_;
 
 		QString Name_;
 
@@ -66,7 +69,9 @@ namespace Murm
 		static VkAccount* Deserialize (const QByteArray&, VkProtocol*, ICoreProxy_ptr);
 
 		void Send (VkEntry*, VkMessage*);
+
 		VkConnection* GetConnection () const;
+		PhotoStorage* GetPhotoStorage () const;
 
 		QObject* GetQObject ();
 		QObject* GetParentProtocol () const;

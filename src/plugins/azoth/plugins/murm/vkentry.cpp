@@ -35,6 +35,7 @@
 #include "vkaccount.h"
 #include "vkmessage.h"
 #include "vkconnection.h"
+#include "photostorage.h"
 
 namespace LeechCraft
 {
@@ -60,6 +61,14 @@ namespace Murm
 				SIGNAL (timeout ()),
 				this,
 				SLOT (sendTyping ()));
+
+		auto storage = account->GetPhotoStorage ();
+		Avatar_ = storage->GetImage (Info_.Photo_);
+		if (Avatar_.isNull () && Info_.Photo_.isValid ())
+			connect (storage,
+					SIGNAL (gotImage (QUrl)),
+					this,
+					SLOT (handleGotStorageImage (QUrl)));
 	}
 
 	void VkEntry::UpdateInfo (const UserInfo& info)
@@ -222,7 +231,7 @@ namespace Murm
 
 	QImage VkEntry::GetAvatar () const
 	{
-		return {};
+		return Avatar_;
 	}
 
 	QString VkEntry::GetRawInfo () const
@@ -275,6 +284,20 @@ namespace Murm
 	void VkEntry::sendTyping ()
 	{
 		Account_->GetConnection ()->SendTyping (Info_.ID_);
+	}
+
+	void VkEntry::handleGotStorageImage (const QUrl& url)
+	{
+		if (url != Info_.Photo_)
+			return;
+
+		disconnect (sender (),
+				0,
+				this,
+				0);
+
+		Avatar_ = Account_->GetPhotoStorage ()->GetImage (url);
+		emit avatarChanged (Avatar_);
 	}
 }
 }

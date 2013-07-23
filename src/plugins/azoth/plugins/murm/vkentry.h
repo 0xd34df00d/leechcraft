@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QImage>
 #include <interfaces/azoth/iclentry.h>
 #include "structures.h"
 
@@ -43,6 +44,7 @@ namespace Murm
 {
 	class VkAccount;
 	class VkMessage;
+	class PhotoStorage;
 
 	class VkEntry : public QObject
 				  , public ICLEntry
@@ -59,6 +61,8 @@ namespace Murm
 		QTimer *LocalTypingTimer_;
 
 		bool HasUnread_ = false;
+
+		QImage Avatar_;
 	public:
 		VkEntry (const UserInfo&, VkAccount*);
 
@@ -99,6 +103,8 @@ namespace Murm
 	private slots:
 		void handleTypingTimeout ();
 		void sendTyping ();
+
+		void handleGotStorageImage (const QUrl&);
 	signals:
 		void gotMessage (QObject*);
 		void statusChanged (const EntryStatus&, const QString&);
