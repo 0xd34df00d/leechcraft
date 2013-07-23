@@ -115,6 +115,7 @@ namespace Murm
 		auto msg = new VkMessage (dir, IMessage::MTChatMessage, this);
 		msg->SetBody (info.Text_);
 		msg->SetDateTime (info.TS_);
+		msg->SetID (info.ID_);
 		Store (msg);
 	}
 
