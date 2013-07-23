@@ -31,6 +31,7 @@
 
 #include <QDialog>
 #include "ui_vcarddialog.h"
+#include "structures.h"
 
 namespace LeechCraft
 {
@@ -38,13 +39,20 @@ namespace Azoth
 {
 namespace Murm
 {
-	struct UserInfo;
+	class PhotoStorage;
 
 	class VCardDialog : public QDialog
 	{
+		Q_OBJECT
+
 		Ui::VCardDialog Ui_;
+
+		const UserInfo Info_;
+		PhotoStorage * const Storage_;
 	public:
-		VCardDialog (const UserInfo&, QWidget* = 0);
+		VCardDialog (const UserInfo&, PhotoStorage*, QWidget* = 0);
+	private slots:
+		void handleImage (const QUrl&);
 	};
 }
 }

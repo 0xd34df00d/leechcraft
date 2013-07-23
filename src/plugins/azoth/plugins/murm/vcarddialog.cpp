@@ -29,6 +29,7 @@
 
 #include "vcarddialog.h"
 #include "structures.h"
+#include "photostorage.h"
 
 namespace LeechCraft
 {
@@ -36,8 +37,10 @@ namespace Azoth
 {
 namespace Murm
 {
-	VCardDialog::VCardDialog (const UserInfo& info, QWidget *parent)
+	VCardDialog::VCardDialog (const UserInfo& info, PhotoStorage *storage, QWidget *parent)
 	: QDialog (parent)
+	, Info_ (info)
+	, Storage_ (storage)
 	{
 		Ui_.setupUi (this);
 		setAttribute (Qt::WA_DeleteOnClose);
@@ -59,6 +62,33 @@ namespace Murm
 		if (info.Timezone_ > 0)
 			timezoneText.prepend ('+');
 		Ui_.Timezone_->setText (timezoneText);
+
+		if (!info.BigPhoto_.isValid ())
+			return;
+
+		const auto& image = storage->GetImage (info.BigPhoto_);
+		if (image.isNull ())
+			connect (storage,
+					SIGNAL (gotImage (QUrl)),
+					this,
+					SLOT (handleImage (QUrl)));
+		else
+			Ui_.PhotoLabel_->setPixmap (QPixmap::fromImage (image)
+					.scaled (Ui_.PhotoLabel_->size (),
+							Qt::KeepAspectRatio,
+							Qt::SmoothTransformation));
+	}
+
+	void VCardDialog::handleImage (const QUrl& url)
+	{
+		if (url != Info_.BigPhoto_)
+			return;
+
+		const auto& image = Storage_->GetImage (url);
+		Ui_.PhotoLabel_->setPixmap (QPixmap::fromImage (image)
+				.scaled (Ui_.PhotoLabel_->size (),
+						Qt::KeepAspectRatio,
+						Qt::SmoothTransformation));
 	}
 }
 }
