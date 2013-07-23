@@ -45,6 +45,20 @@ namespace Murm
 		Ui_.FirstName_->setText (info.FirstName_);
 		Ui_.LastName_->setText (info.LastName_);
 		Ui_.Nickname_->setText (info.Nick_);
+
+		Ui_.Birthday_->setDate (info.Birthday_);
+		Ui_.Birthday_->setDisplayFormat (info.Birthday_.year () != 1800 ? "dd MMMM yyyy" : "dd MMMM");
+
+		if (info.Gender_)
+			Ui_.Gender_->setText (info.Gender_ == 1 ? tr ("female") : tr ("male"));
+
+		Ui_.HomePhone_->setText (info.HomePhone_);
+		Ui_.MobilePhone_->setText (info.MobilePhone_);
+
+		auto timezoneText = QString::number (info.Timezone_) + " GMT";
+		if (info.Timezone_ > 0)
+			timezoneText.prepend ('+');
+		Ui_.Timezone_->setText (timezoneText);
 	}
 }
 }
