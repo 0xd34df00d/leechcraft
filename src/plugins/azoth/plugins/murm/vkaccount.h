@@ -66,6 +66,7 @@ namespace Murm
 		static VkAccount* Deserialize (const QByteArray&, VkProtocol*, ICoreProxy_ptr);
 
 		void Send (VkEntry*, VkMessage*);
+		VkConnection* GetConnection () const;
 
 		QObject* GetQObject ();
 		QObject* GetParentProtocol () const;

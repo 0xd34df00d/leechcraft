@@ -116,6 +116,11 @@ namespace Murm
 				[msg] (qulonglong id) { msg->SetID (id); });
 	}
 
+	VkConnection* VkAccount::GetConnection () const
+	{
+		return Conn_;
+	}
+
 	QObject* VkAccount::GetQObject ()
 	{
 		return this;
