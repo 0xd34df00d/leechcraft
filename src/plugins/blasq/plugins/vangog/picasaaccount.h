@@ -34,6 +34,7 @@
 #include <QObject>
 #include <interfaces/blasq/iaccount.h>
 #include <interfaces/core/icoreproxy.h>
+#include "picasamanager.h"
 
 class QStandardItemModel;
 class QStandardItem;
@@ -44,7 +45,6 @@ namespace Blasq
 {
 namespace Vangog
 {
-	class PicasaManager;
 	class PicasaService;
 
 	class PicasaAccount : public QObject
@@ -93,7 +93,7 @@ namespace Vangog
 		bool TryToEnterLoginIfNoExists ();
 
 	private slots:
-		void handleGotAlbums ();
+		void handleGotAlbums (const QList<Album>& albums);
 		void handleGotPhotos ();
 
 	signals:

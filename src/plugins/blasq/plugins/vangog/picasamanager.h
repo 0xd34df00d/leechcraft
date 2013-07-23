@@ -31,7 +31,9 @@
 
 #include <functional>
 #include <QObject>
+#include <QDateTime>
 #include <QQueue>
+#include <QUrl>
 #include <QVariant>
 
 namespace LeechCraft
@@ -41,6 +43,37 @@ namespace Blasq
 namespace Vangog
 {
 	class PicasaAccount;
+
+	enum class Access
+	{
+		Private,
+		Public
+	};
+
+	struct Author
+	{
+		QString Name_;
+		QUrl Image_;
+	};
+
+	struct Thumbnail
+	{
+		QUrl Url_;
+		int Width_;
+		int Height_;
+	};
+
+	struct Album
+	{
+		QString Title_;
+		QDateTime Published_;
+		QDateTime Updated_;
+		Access Access_;
+		Author Author_;
+		int NumberOfPhoto_;
+		quint64 BytesUsed_;
+		QList<Thumbnail> Thumbnails_;
+	};
 
 	class PicasaManager : public QObject
 	{
@@ -61,6 +94,10 @@ namespace Vangog
 
 	private slots:
 		void handleAuthTokenRequestFinished ();
+		void handleRequestCollectionFinished ();
+
+	signals:
+		void gotAlbums (const QList<Album>& albums);
 	};
 }
 }

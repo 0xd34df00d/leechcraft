@@ -36,11 +36,8 @@
 #include <QNetworkReply>
 #include <QDomDocument>
 #include <QtDebug>
-#include <util/svcauth/vkauthmanager.h>
-#include <util/queuemanager.h>
-#include "picasaservice.h"
-#include "picasamanager.h"
 #include <interfaces/core/irootwindowsmanager.h>
+#include "picasaservice.h"
 
 namespace LeechCraft
 {
@@ -61,6 +58,11 @@ namespace Vangog
 	, CollectionsModel_ (new NamedModel<QStandardItemModel> (this))
 	{
 		CollectionsModel_->setHorizontalHeaderLabels ({ tr ("Name") });
+
+		connect (PicasaManager_,
+				SIGNAL (gotAlbums (QList<Album>)),
+				this,
+				SLOT (handleGotAlbums (QList<Album>)));
 	}
 
 	ICoreProxy_ptr PicasaAccount::GetProxy () const
@@ -183,8 +185,18 @@ namespace Vangog
 		return true;
 	}
 
-	void PicasaAccount::handleGotAlbums ()
+	void PicasaAccount::handleGotAlbums (const QList<Album>& albums)
 	{
+		CollectionsModel_->clear ();
+		CollectionsModel_->setHorizontalHeaderLabels ({ tr ("Name") });
+
+		for (const auto& album : albums)
+		{
+			auto item = new QStandardItem (album.Title_);
+			item->setData (ItemType::Collection, CollectionRole::Type);
+			item->setEditable (false);
+			CollectionsModel_->appendRow (item);
+		}
 	}
 
 	void PicasaAccount::handleGotPhotos ()

@@ -31,8 +31,10 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QtDebug>
+#include <QDomDocument>
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
+#include <boost/concept_check.hpp>
 #include "picasaaccount.h"
 
 namespace LeechCraft
@@ -78,9 +80,29 @@ namespace Vangog
 
 	}
 
+	namespace
+	{
+		QNetworkRequest CreateRequest (const QUrl& url)
+		{
+			QNetworkRequest request (url);
+			request.setRawHeader ("GData-Version", "2");
+
+			return request;
+		}
+	}
+
 	void PicasaManager::RequestCollections (const QString& key)
 	{
+		QString urlStr = QString ("https://picasaweb.google.com/data/feed/api/user/%1?access_token=%2&access=all")
+				.arg (Account_->GetLogin ())
+				.arg (key);
+		QNetworkReply *reply = Account_->GetProxy ()->GetNetworkAccessManager ()->
+				get (CreateRequest (QUrl (urlStr)));
 
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleRequestCollectionFinished ()));
 	}
 
 	void PicasaManager::handleAuthTokenRequestFinished ()
@@ -108,11 +130,147 @@ namespace Vangog
 			return;
 		}
 
-		qDebug () << res;
 		if (ApiCallsQueue_.isEmpty ())
 			return;
 
 		ApiCallsQueue_.dequeue () (accessKey);
+	}
+
+	namespace
+	{
+		QByteArray CreateDomDocumentFromReply (QNetworkReply *reply, QDomDocument &document)
+		{
+			if (!reply)
+				return QByteArray ();
+
+			const auto& content = reply->readAll ();
+			reply->deleteLater ();
+			QString errorMsg;
+			int errorLine = -1, errorColumn = -1;
+			if (!document.setContent (content, &errorMsg, &errorLine, &errorColumn))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< errorMsg
+						<< "in line:"
+						<< errorLine
+						<< "column:"
+						<< errorColumn;
+				return QByteArray ();
+			}
+
+			return content;
+		}
+	}
+
+	namespace
+	{
+		Access PicasaRightsToAccess (const QString& rights)
+		{
+			if (rights == "protected")
+				return Access::Private;
+			else
+				return Access::Public;
+		}
+
+		Author PicasaAuthorToAuthor (const QDomElement& elem)
+		{
+			Author author;
+
+			const auto& fields = elem.childNodes ();
+			for (int i = 0, size = fields.size (); i < size; ++i)
+			{
+				const auto& field = fields.at (i).toElement ();
+				const QString& name = field.tagName ();
+				const QString& value = field.text ();
+				if (name == "name")
+					author.Name_ = value;
+				else if (name == "uri")
+					author.Image_ = value;
+			}
+
+			return author;
+		}
+
+		Thumbnail PicasaMediaGroupToThumbnail (const QDomElement& elem)
+		{
+			Thumbnail thumbnail;
+			const auto& fields = elem.childNodes ();
+			for (int i = 0, count = fields.size (); i < count; ++i)
+			{
+				const auto& field = fields.at (i).toElement ();
+				const QString& name = field.tagName ();
+				if (name == "media:thumbnail")
+				{
+					thumbnail.Height_ = field.attribute ("height").toInt ();
+					thumbnail.Width_ = field.attribute ("width").toInt ();
+					thumbnail.Url_ = QUrl (field.attribute ("url"));
+					break;
+				}
+			}
+
+			return thumbnail;
+		}
+
+		Album PicasaEntryToAlbum (const QDomElement& elem)
+		{
+			Album album;
+
+			const auto& fields = elem.childNodes ();
+			for (int i = 0, count = fields.size (); i < count; ++i)
+			{
+				const auto& field = fields.at (i).toElement ();
+				const QString& name = field.tagName ();
+				const QString& value = field.text ();
+				if (name == "published")
+					album.Published_ = QDateTime::fromString (value, Qt::ISODate);
+				else if (name == "updated")
+					album.Updated_ = QDateTime::fromString (value, Qt::ISODate);
+				else if (name == "title")
+					album.Title_ = value;
+				else if (name == "rights")
+					album.Access_ = PicasaRightsToAccess (value);
+				else if (name == "author")
+					album.Author_ = PicasaAuthorToAuthor (field);
+				else if (name == "gphoto:numphotos")
+					album.NumberOfPhoto_ = value.toInt ();
+				else if (name == "gphoto:bytesUsed")
+					album.BytesUsed_ = value.toULongLong ();
+				else if (name == "media:group")
+					//TODO check is it possible to more then one thumbnail
+					album.Thumbnails_ << PicasaMediaGroupToThumbnail (field);
+			}
+
+			return album;
+		}
+
+
+		QList<Album> ParseAlbums (const QDomDocument& document)
+		{
+			QList<Album> albums;
+			const auto& EntryElements = document.elementsByTagName ("entry");
+			if (EntryElements.isEmpty ())
+				return albums;
+
+			for (int i = 0, count = EntryElements.count (); i < count; ++i)
+				albums << PicasaEntryToAlbum (EntryElements.at (i).toElement ());
+
+			return albums;
+		}
+	}
+	void PicasaManager::handleRequestCollectionFinished ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		QDomDocument document;
+		QByteArray content;
+		content = CreateDomDocumentFromReply (reply, document);
+		if (content.isEmpty ())
+			return;
+
+		auto albums = ParseAlbums (document);
+		emit gotAlbums (albums);
 	}
 
 }
