@@ -104,17 +104,45 @@ namespace Woodpecker
 		if (!ok) 
 			qWarning () << Q_FUNC_INFO << "Parsing error at " << Q_FUNC_INFO << QString::fromUtf8 (json);
 
-		QVariantMap tweetMap;
-		QVariantMap userMap;
-
 		for (int i = answers.count () - 1; i >= 0 ; --i)
 		{
-			tweetMap = answers [i].toMap ();
-			userMap = tweetMap ["user"].toMap ();
+			const auto& tweetMap = answers [i].toMap ();
+			const auto& userMap = tweetMap ["user"].toMap ();
 			QLocale locale (QLocale::English);
+			QString text = tweetMap ["text"].toString ();
 			Tweet_ptr tempTweet (new Tweet ());
 
-			tempTweet->SetText (tweetMap ["text"].toString ());
+			if (tweetMap.contains ("entities"))
+			{
+				const auto& entities = tweetMap ["entities"].toMap ();
+				if (entities.contains ("media"))
+				{
+					for (const auto& media : entities ["media"].toList ())
+					{
+						const auto& medium = media.toMap ();
+						if (medium ["type"].toString () == "photo")
+						{
+							if (medium.contains ("media_url_https"))
+							{
+								text.replace (medium ["url"].toString (),
+									QString ("<a href=\"twitter://media/photo/%1\">photo</a>").arg (medium ["media_url_https"].toString ()));
+							}
+							else if (medium.contains ("media_url"))
+							{
+								text.replace (medium ["url"].toString (), 
+									QString ("<a href=\"twitter://media/photo/%1\">photo</a>").arg (medium ["media_url"].toString ()));
+							}
+							else
+							{
+								qWarning () << Q_FUNC_INFO << "Found photo without an url";
+								continue;
+							}
+						}
+					}
+				}
+			}
+
+			tempTweet->SetText (text);
 			tempTweet->GetAuthor ()->SetUsername (userMap ["screen_name"].toString ());
 			tempTweet->GetAuthor ()->DownloadAvatar (userMap ["profile_image_url"].toString ());
 			connect (tempTweet->GetAuthor ().get (),
