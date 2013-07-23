@@ -149,8 +149,29 @@ namespace Woodpecker
 				this,
 				SLOT (openSearchTimeline ()));
 
+		ActionShowFavorites_ = new QAction (tr ("Show user favorites"), Ui_.TwitList_);
+		ActionShowFavorites_->setProperty ("ActionIcon", "folder-favorites");
+		connect (ActionShowFavorites_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (showFavorites ()));
+
+		ActionMakeFavorite_ = new QAction (tr ("Mark as favorite"), Ui_.TwitList_);
+		ActionMakeFavorite_->setProperty ("ActionIcon", "favorites");
+		connect (ActionMakeFavorite_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (makeFavorite ()));
+
+		ActionDeleteFavorite_ = new QAction (tr ("Remove from favorites"), Ui_.TwitList_);
+		connect (ActionDeleteFavorite_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (deleteFavorite ()));
+
 		Ui_.TwitList_->addActions ({ ActionRetwit_, ActionReply_, ActionCopyText_, 
-			ActionDelete_, ActionOpenWeb_, ActionSearch_, ActionSPAM_ });
+			ActionDelete_, ActionShowFavorites_, ActionMakeFavorite_, ActionDeleteFavorite_,
+			ActionOpenWeb_, ActionSearch_, ActionSPAM_ });
 
 		if ((!Settings_->value ("token").isNull ()) && (!Settings_->value ("tokenSecret").isNull ()))
 		{
@@ -406,7 +427,12 @@ namespace Woodpecker
 
 		menu->addActions ({ ActionRetwit_, ActionReply_, menu->addSeparator (),
 			ActionSPAM_, menu->addSeparator (), ActionDelete_, menu->addSeparator (), ActionCopyText_, 
-						  actionOpenTimeline, menu->addSeparator (), ActionOpenWeb_, ActionSearch_ });
+						  actionOpenTimeline, menu->addSeparator (),
+						  ActionMakeFavorite_ });
+		if (TC_.TabClass_ == ParentPlugin_->FavoriteTC_.TabClass_)
+			menu->addAction (ActionDeleteFavorite_);
+		menu->addActions ({ ActionShowFavorites_, menu->addSeparator (), 
+						  ActionOpenWeb_, ActionSearch_ });
 		menu->setAttribute (Qt::WA_DeleteOnClose);
 
 		menu->exec (Ui_.TwitList_->viewport ()->mapToGlobal (pos));
@@ -532,6 +558,49 @@ namespace Woodpecker
 		const auto& twitid = idx->data (Qt::UserRole).value<Tweet_ptr> ()->GetId ();
 		
 		Interface_->Delete (twitid);
+	}
+	
+	void TwitterPage::makeFavorite ()
+	{
+		const auto idx = Ui_.TwitList_->currentItem ();
+		if (!idx)
+		{
+			qWarning () << Q_FUNC_INFO << "Malformed index";
+			return;
+		}
+		const auto& twitid = idx->data (Qt::UserRole).value<Tweet_ptr> ()->GetId ();
+
+		Interface_->MakeFavorite (twitid);
+	}
+	
+	void TwitterPage::deleteFavorite ()
+	{
+		const auto idx = Ui_.TwitList_->currentItem ();
+		if (!idx)
+		{
+			qWarning () << Q_FUNC_INFO << "Malformed index";
+			return;
+		}
+		const auto& twitid = idx->data (Qt::UserRole).value<Tweet_ptr> ()->GetId ();
+
+		Interface_->DeleteFavorite (twitid);	
+	}
+	
+	void TwitterPage::showFavorites ()
+	{
+		const auto idx = Ui_.TwitList_->currentItem ();
+		if (!idx)
+		{
+			qWarning () << Q_FUNC_INFO << "Malformed index";
+			return;
+		}
+		const auto& username = idx->data (Qt::UserRole).value<Tweet_ptr> ()->GetAuthor ()->GetUsername ();
+		KQOAuthParameters param;
+		param.insert ("screen_name", username.toUtf8 ().constData ());
+		
+		ParentPlugin_->AddTab (ParentPlugin_->FavoriteTC_,
+							   tr ("@%1 favorites").arg (username),
+							   FeedMode::Favorites, param);	
 	}
 }
 }
