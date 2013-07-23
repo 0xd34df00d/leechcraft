@@ -61,12 +61,16 @@ namespace Murm
 
 		VkConnection * const Conn_;
 		QHash<qulonglong, VkEntry*> Entries_;
+
+		QHash<qulonglong, ListInfo> ID2ListInfo_;
 	public:
 		VkAccount (const QString& name, VkProtocol *proto, ICoreProxy_ptr proxy,
 				const QByteArray& id, const QByteArray& cookies);
 
 		QByteArray Serialize () const;
 		static VkAccount* Deserialize (const QByteArray&, VkProtocol*, ICoreProxy_ptr);
+
+		ListInfo GetListInfo (qulonglong) const;
 
 		void Send (VkEntry*, VkMessage*);
 
@@ -96,6 +100,7 @@ namespace Murm
 		void RemoveEntry (QObject*);
 		QObject* GetTransferManager () const;
 	private slots:
+		void handleLists (const QList<ListInfo>&);
 		void handleUsers (const QList<UserInfo>&);
 		void handleUserState (qulonglong, bool);
 		void handleMessage (const MessageInfo&);

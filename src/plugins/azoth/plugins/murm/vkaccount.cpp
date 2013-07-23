@@ -60,6 +60,10 @@ namespace Murm
 				this,
 				SLOT (finishOffline ()));
 		connect (Conn_,
+				SIGNAL (gotLists (QList<ListInfo>)),
+				this,
+				SLOT (handleLists (QList<ListInfo>)));
+		connect (Conn_,
 				SIGNAL (gotUsers (QList<UserInfo>)),
 				this,
 				SLOT (handleUsers (QList<UserInfo>)));
@@ -117,6 +121,11 @@ namespace Murm
 				>> cookies;
 
 		return new VkAccount (name, proto, proxy, id, cookies);
+	}
+
+	ListInfo VkAccount::GetListInfo (qulonglong id) const
+	{
+		return ID2ListInfo_ [id];
 	}
 
 	void VkAccount::Send (VkEntry *entry, VkMessage *msg)
@@ -223,6 +232,13 @@ namespace Murm
 	QObject* VkAccount::GetTransferManager () const
 	{
 		return nullptr;
+	}
+
+	void VkAccount::handleLists (const QList<ListInfo>& lists)
+	{
+		ID2ListInfo_.clear ();
+		for (const auto& list : lists)
+			ID2ListInfo_ [list.ID_] = list;
 	}
 
 	void VkAccount::handleUsers (const QList<UserInfo>& infos)
