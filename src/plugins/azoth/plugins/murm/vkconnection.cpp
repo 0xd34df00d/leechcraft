@@ -67,7 +67,7 @@ namespace Murm
 			emit gotMessage ({
 					items.value (1).toULongLong (),
 					items.value (3).toULongLong (),
-					items.value (7).toString (),
+					items.value (6).toString (),
 					MessageFlags (items.value (2).toInt ()),
 					QDateTime::fromTime_t (items.value (4).toULongLong ())
 				});
