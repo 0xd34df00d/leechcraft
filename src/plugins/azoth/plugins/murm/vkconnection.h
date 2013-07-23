@@ -67,6 +67,8 @@ namespace Murm
 		QList<PreparedCall_f> PreparedCalls_;
 		Util::QueueManager *CallQueue_;
 
+		QList<QPair<QNetworkReply*, PreparedCall_f>> RunningCalls_;
+
 		EntryStatus Status_;
 
 		QString LPKey_;
@@ -77,6 +79,8 @@ namespace Murm
 
 		QHash<int, std::function<void (QVariantList)>> Dispatcher_;
 		QHash<QNetworkReply*, std::function<void (qulonglong)>> MsgReply2Setter_;
+		int APIErrorCount_ = 0;
+		bool ShouldRerunPrepared_ = false;
 	public:
 		VkConnection (const QByteArray&, ICoreProxy_ptr);
 
@@ -93,9 +97,12 @@ namespace Murm
 		void PushFriendsRequest ();
 		void PushLPFetchCall ();
 		void Poll ();
+
+		bool CheckFinishedReply (QNetworkReply*);
 	private slots:
 		void handlePollFinished ();
 
+		void rerunPrepared ();
 		void callWithKey (const QString&);
 
 		void handleGotFriendLists ();

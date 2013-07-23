@@ -32,6 +32,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QtDebug>
+#include <QTimer>
 #include <qjson/parser.h>
 #include <util/svcauth/vkauthmanager.h>
 #include <util/queuemanager.h>
@@ -188,6 +189,44 @@ namespace Murm
 				SLOT (handlePollFinished ()));
 	}
 
+	bool VkConnection::CheckFinishedReply (QNetworkReply *reply)
+	{
+		reply->deleteLater ();
+
+		const auto pos = std::find_if (RunningCalls_.begin (), RunningCalls_.end (),
+				[reply] (decltype (RunningCalls_.at (0)) call) { return call.first == reply; });
+		std::shared_ptr<void> eraseGuard (nullptr,
+				[this, pos] (void*)
+				{
+					if (pos != RunningCalls_.end ())
+						RunningCalls_.erase (pos);
+				});
+
+		if (reply->error () == QNetworkReply::NoError)
+		{
+			APIErrorCount_ = 0;
+			return true;
+		}
+
+		if (pos != RunningCalls_.end ())
+			PreparedCalls_.push_front (pos->second);
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "no running call found for the reply";
+
+		++APIErrorCount_;
+
+		if (!ShouldRerunPrepared_)
+		{
+			QTimer::singleShot (30000,
+					this,
+					SLOT (rerunPrepared ()));
+			ShouldRerunPrepared_ = true;
+		}
+
+		return false;
+	}
+
 	void VkConnection::handlePollFinished ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
@@ -220,19 +259,28 @@ namespace Murm
 		Poll ();
 	}
 
+	void VkConnection::rerunPrepared ()
+	{
+		ShouldRerunPrepared_ = false;
+
+		if (!PreparedCalls_.isEmpty ())
+			AuthMgr_->GetAuthKey ();
+	}
+
 	void VkConnection::callWithKey (const QString& key)
 	{
 		while (!PreparedCalls_.isEmpty ())
 		{
 			auto f = PreparedCalls_.takeFirst ();
-			CallQueue_->Schedule ([f, key] { f (key); });
+			CallQueue_->Schedule ([this, f, key] { RunningCalls_.append ({ f (key), f }); });
 		}
 	}
 
 	void VkConnection::handleGotFriendLists ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
+		if (!CheckFinishedReply (reply))
+			return;
 
 		QList<ListInfo> lists;
 
@@ -249,7 +297,8 @@ namespace Murm
 	void VkConnection::handleGotFriends ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
+		if (!CheckFinishedReply (reply))
+			return;
 
 		QList<UserInfo> users;
 
@@ -287,7 +336,8 @@ namespace Murm
 	void VkConnection::handleGotLPServer ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
+		if (!CheckFinishedReply (reply))
+			return;
 
 		const auto& data = QJson::Parser ().parse (reply);
 		const auto& map = data.toMap () ["response"].toMap ();
@@ -308,7 +358,8 @@ namespace Murm
 	void VkConnection::handleMessageSent ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
+		if (!CheckFinishedReply (reply))
+			return;
 
 		const auto& setter = MsgReply2Setter_.take (reply);
 		if (!setter)
