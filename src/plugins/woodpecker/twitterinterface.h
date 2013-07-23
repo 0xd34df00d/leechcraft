@@ -54,6 +54,9 @@ namespace Woodpecker
 		Reply,
 		SpamReport,
 		Delete,
+		CreateFavorite,
+		DeleteFavorite,
+		ListFavorite,
 	};
 
 	enum class FeedMode
@@ -63,6 +66,7 @@ namespace Woodpecker
 		UserTimeline,
 		SearchResult,
 		Direct,
+		Favorites,
 	};
 
 	class TwitterInterface : public QObject
@@ -95,6 +99,8 @@ namespace Woodpecker
 		void Login (const QString& savedToken, const QString& savedTokenSecret);
 		FeedMode GetLastRequestMode () const;
 		void SetLastRequestMode (const FeedMode& newLastRequestMode);
+		void MakeFavorite (const qulonglong id);
+		void DeleteFavorite (const qulonglong id);
 		
 	private slots:
 		void replyFinished ();

@@ -236,6 +236,20 @@ namespace Woodpecker
 			reqUrl = QString ("http://api.twitter.com/1.1/statuses/destroy/").append (params.value ("id")).append (".json");
 			break;
 			
+		case TwitterRequest::CreateFavorite:
+			reqUrl = QString ("https://api.twitter.com/1.1/favorites/create.json");
+			break;			
+			
+		case TwitterRequest::DeleteFavorite:
+			reqUrl = QString ("https://api.twitter.com/1.1/favorites/destroy.json");
+			break;			
+		
+		case TwitterRequest::ListFavorite:
+			reqUrl = "https://api.twitter.com/1.1/favorites/list.json";
+			params.insert ("include_entities", "true");
+			params.insert ("count", "50");
+			break;
+			
 		default:
 			return;
 		}
@@ -374,6 +388,11 @@ namespace Woodpecker
 				SignedRequest (TwitterRequest::Search, KQOAuthRequest::GET, param);
 				break;
 				
+			case FeedMode::Favorites:
+				SetLastRequestMode (FeedMode::Favorites);
+				SignedRequest (TwitterRequest::ListFavorite, KQOAuthRequest::GET, param);
+				break;
+				
 			default:
 				qWarning () << Q_FUNC_INFO << "Unknown request";
 		}
@@ -384,6 +403,22 @@ namespace Woodpecker
 		KQOAuthParameters param;
 		param.insert ("id", QString::number (id));
 		SignedRequest (TwitterRequest::Delete, KQOAuthRequest::POST, param);
+	}
+	
+	void TwitterInterface::MakeFavorite (const qulonglong id)
+	{
+		KQOAuthParameters param;
+
+		param.insert ("id", QString::number (id));
+		SignedRequest (TwitterRequest::CreateFavorite, KQOAuthRequest::POST, param);
+	}
+	
+	void TwitterInterface::DeleteFavorite (const qulonglong id)
+	{
+		KQOAuthParameters param;
+
+		param.insert ("id", QString::number (id));
+		SignedRequest (TwitterRequest::DeleteFavorite, KQOAuthRequest::POST, param);
 	}
 }
 }
