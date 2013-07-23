@@ -32,6 +32,7 @@
 #include <QListWidget>
 #include <QListWidgetItem>
 #include <QClipboard>
+#include <QInputDialog>
 #include <QCoreApplication>
 #include <qjson/parser.h>
 #include <interfaces/core/icoreproxy.h>
@@ -138,8 +139,18 @@ namespace Woodpecker
 				SIGNAL (itemDoubleClicked (QListWidgetItem*)),
 				this,
 				SLOT (reply ()));
+		
+		ActionSearch_ = new QAction (tr ("Search in Twitter"), Ui_.TwitList_);
+		ActionSearch_->setProperty ("ActionIcon", "edit-find");
+		ActionSearch_->setShortcut (QKeySequence (Qt::CTRL + Qt::Key_F));
+		ActionSearch_->setShortcutContext (Qt::WidgetWithChildrenShortcut);
+		connect (ActionSearch_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (openSearchTimeline ()));
 
-		Ui_.TwitList_->addActions ({ ActionRetwit_, ActionReply_ });
+		Ui_.TwitList_->addActions ({ ActionRetwit_, ActionReply_, ActionCopyText_, 
+			ActionDelete_, ActionOpenWeb_, ActionSearch_, ActionSPAM_ });
 
 		if ((!Settings_->value ("token").isNull ()) && (!Settings_->value ("tokenSecret").isNull ()))
 		{
@@ -395,7 +406,7 @@ namespace Woodpecker
 
 		menu->addActions ({ ActionRetwit_, ActionReply_, menu->addSeparator (),
 			ActionSPAM_, menu->addSeparator (), ActionDelete_, menu->addSeparator (), ActionCopyText_, 
-						  ActionOpenWeb_, actionOpenTimeline });
+						  actionOpenTimeline, menu->addSeparator (), ActionOpenWeb_, ActionSearch_ });
 		menu->setAttribute (Qt::WA_DeleteOnClose);
 
 		menu->exec (Ui_.TwitList_->viewport ()->mapToGlobal (pos));
@@ -480,6 +491,22 @@ namespace Woodpecker
 		ParentPlugin_->AddTab (ParentPlugin_->UserTC_,
 							   tr ("User %1").arg (username),
 							   FeedMode::UserTimeline, param);
+	}
+	
+	void TwitterPage::openSearchTimeline()
+	{
+		bool ok;
+		const QString& text = QInputDialog::getText (this, tr ("Twitter search"),
+													tr ("Search request"), QLineEdit::Normal,
+													QString (), &ok);
+		if (ok && !text.isEmpty ())
+		{
+			KQOAuthParameters param;
+			param.insert ("q", text.toUtf8 ());
+			ParentPlugin_->AddTab (ParentPlugin_->SearchTC_,
+								   tr ("Search %1").arg (text),
+								   FeedMode::SearchResult, param);
+		}
 	}
 	
 	void TwitterPage::copyTwitText ()
