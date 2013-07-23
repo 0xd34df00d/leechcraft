@@ -244,7 +244,7 @@ namespace Woodpecker
 			reqUrl = QString ("https://api.twitter.com/1.1/favorites/destroy.json");
 			break;			
 		
-		case TwitterRequest::ListFavorite:
+		case TwitterRequest::ListFavorites:
 			reqUrl = "https://api.twitter.com/1.1/favorites/list.json";
 			params.insert ("include_entities", "true");
 			params.insert ("count", "50");
@@ -390,7 +390,7 @@ namespace Woodpecker
 				
 			case FeedMode::Favorites:
 				SetLastRequestMode (FeedMode::Favorites);
-				SignedRequest (TwitterRequest::ListFavorite, KQOAuthRequest::GET, param);
+				SignedRequest (TwitterRequest::ListFavorites, KQOAuthRequest::GET, param);
 				break;
 				
 			default:

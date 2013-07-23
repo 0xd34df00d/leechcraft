@@ -51,7 +51,8 @@ namespace Woodpecker
 		
 		Core::Instance ().SetProxy (proxy);
 		
-		HomeTC_ = {
+		HomeTC_ = 
+		{
 			GetUniqueID () + "_home",
 			tr ("Twitter Home"),
 			tr ("Own timeline"),
@@ -60,7 +61,8 @@ namespace Woodpecker
 			TFOpenableByRequest
 		};
 		
-		UserTC_ = {
+		UserTC_ = 
+		{
 			GetUniqueID () + "_user",
 			tr ("Twitter user timeline"),
 			tr ("User's timeline"),
@@ -69,7 +71,8 @@ namespace Woodpecker
 			TFEmpty
 		};
 		
-		SearchTC_ = {
+		SearchTC_ = 
+		{
 			GetUniqueID () + "_search",
 			tr ("Twitter search timeline"),
 			tr ("Twitter search result timeline"),
@@ -78,9 +81,10 @@ namespace Woodpecker
 			TFEmpty
 		};
 		
-		FavoriteTC_ = {
+		FavoriteTC_ = 
+		{
 			GetUniqueID () + "_favorites",
-			tr ("Favorite"),
+			tr ("Favorite twits"),
 			tr ("Twitter favorite statuses timeline"),
 			GetIcon (),
 			2,
@@ -237,7 +241,7 @@ namespace Woodpecker
 				param.insert ("screen_name", username);
 				
 				AddTab (FavoriteTC_,
-						tr ("Favorites of @%1").arg (username),
+						tr ("@%1 favorites").arg (username),
 						FeedMode::Favorites, param);	
 			}
 			else

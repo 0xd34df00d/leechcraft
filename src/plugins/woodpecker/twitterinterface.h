@@ -56,7 +56,7 @@ namespace Woodpecker
 		Delete,
 		CreateFavorite,
 		DeleteFavorite,
-		ListFavorite,
+		ListFavorites,
 	};
 
 	enum class FeedMode

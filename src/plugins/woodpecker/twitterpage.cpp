@@ -154,20 +154,20 @@ namespace Woodpecker
 		connect (ActionShowFavorites_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT(showFavorites ()));
+				SLOT (showFavorites ()));
 
 		ActionMakeFavorite_ = new QAction (tr ("Mark as favorite"), Ui_.TwitList_);
 		ActionMakeFavorite_->setProperty ("ActionIcon", "favorites");
 		connect (ActionMakeFavorite_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT(makeFavorite ()));
+				SLOT (makeFavorite ()));
 
 		ActionDeleteFavorite_ = new QAction (tr ("Remove from favorites"), Ui_.TwitList_);
 		connect (ActionDeleteFavorite_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT(deleteFavorite ()));
+				SLOT (deleteFavorite ()));
 
 		Ui_.TwitList_->addActions ({ ActionRetwit_, ActionReply_, ActionCopyText_, 
 			ActionDelete_, ActionShowFavorites_, ActionMakeFavorite_, ActionDeleteFavorite_,
@@ -560,7 +560,7 @@ namespace Woodpecker
 		Interface_->Delete (twitid);
 	}
 	
-	void TwitterPage::makeFavorite()
+	void TwitterPage::makeFavorite ()
 	{
 		const auto idx = Ui_.TwitList_->currentItem ();
 		if (!idx)
@@ -573,7 +573,7 @@ namespace Woodpecker
 		Interface_->MakeFavorite (twitid);
 	}
 	
-	void TwitterPage::deleteFavorite()
+	void TwitterPage::deleteFavorite ()
 	{
 		const auto idx = Ui_.TwitList_->currentItem ();
 		if (!idx)
@@ -586,7 +586,7 @@ namespace Woodpecker
 		Interface_->DeleteFavorite (twitid);	
 	}
 	
-	void TwitterPage::showFavorites()
+	void TwitterPage::showFavorites ()
 	{
 		const auto idx = Ui_.TwitList_->currentItem ();
 		if (!idx)
@@ -599,7 +599,7 @@ namespace Woodpecker
 		param.insert ("screen_name", username.toUtf8 ().constData ());
 		
 		ParentPlugin_->AddTab (ParentPlugin_->FavoriteTC_,
-							   tr ("Favorites of @%1").arg (username),
+							   tr ("@%1 favorites").arg (username),
 							   FeedMode::Favorites, param);	
 	}
 }
