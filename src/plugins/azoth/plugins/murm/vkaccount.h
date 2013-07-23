@@ -92,6 +92,7 @@ namespace Murm
 	private slots:
 		void handleUsers (const QList<UserInfo>&);
 		void handleUserState (qulonglong, bool);
+		void handleMessage (const MessageInfo&);
 		void emitUpdateAcc ();
 	signals:
 		void accountRenamed (const QString&);

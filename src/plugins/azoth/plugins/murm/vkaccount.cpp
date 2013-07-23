@@ -61,6 +61,10 @@ namespace Murm
 				SIGNAL (userStateChanged (qulonglong, bool)),
 				this,
 				SLOT (handleUserState (qulonglong, bool)));
+		connect (Conn_,
+				SIGNAL (gotMessage (MessageInfo)),
+				this,
+				SLOT (handleMessage (MessageInfo)));
 	}
 
 	QByteArray VkAccount::Serialize () const
@@ -232,6 +236,21 @@ namespace Murm
 		auto info = entry->GetInfo ();
 		info.IsOnline_ = isOnline;
 		entry->UpdateInfo (info);
+	}
+
+	void VkAccount::handleMessage (const MessageInfo& info)
+	{
+		const auto from = info.From_;
+		if (!Entries_.contains (from))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "message from unknown user"
+					<< from;
+			return;
+		}
+
+		const auto entry = Entries_.value (from);
+		entry->HandleMessage (info);
 	}
 
 	void VkAccount::emitUpdateAcc ()

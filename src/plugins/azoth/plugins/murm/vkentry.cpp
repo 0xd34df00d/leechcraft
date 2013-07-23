@@ -29,6 +29,7 @@
 
 #include "vkentry.h"
 #include <QStringList>
+#include <QtDebug>
 #include "vkaccount.h"
 #include "vkmessage.h"
 
@@ -78,6 +79,20 @@ namespace Murm
 		const auto pos = std::find_if (Messages_.begin (), Messages_.end (),
 				[id] (VkMessage *msg) { return msg->GetID () == id; });
 		return pos == Messages_.end () ? nullptr : *pos;
+	}
+
+	void VkEntry::HandleMessage (const MessageInfo& info)
+	{
+		if (FindMessage (info.ID_))
+			return;
+
+		const auto dir = info.Flags_ & MessageFlag::Outbox ?
+				IMessage::DOut :
+				IMessage::DIn;
+		auto msg = new VkMessage (dir, IMessage::MTChatMessage, this);
+		msg->SetBody (info.Text_);
+		msg->SetDateTime (info.TS_);
+		Store (msg);
 	}
 
 	QObject* VkEntry::GetQObject ()

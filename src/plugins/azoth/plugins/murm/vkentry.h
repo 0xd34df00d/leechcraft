@@ -62,6 +62,7 @@ namespace Murm
 		void Store (VkMessage*);
 
 		VkMessage* FindMessage (qulonglong) const;
+		void HandleMessage (const MessageInfo&);
 
 		QObject* GetQObject ();
 		QObject* GetParentAccount () const;
