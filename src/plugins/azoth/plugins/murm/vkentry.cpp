@@ -31,6 +31,7 @@
 #include <QStringList>
 #include <QtDebug>
 #include <QTimer>
+#include <interfaces/azoth/azothutil.h>
 #include "vkaccount.h"
 #include "vkmessage.h"
 
@@ -182,6 +183,7 @@ namespace Murm
 
 	void VkEntry::PurgeMessages (const QDateTime& before)
 	{
+		Util::StandardPurgeMessages (Messages_, before);
 	}
 
 	void VkEntry::SetChatPartState (ChatPartState state, const QString& variant)
