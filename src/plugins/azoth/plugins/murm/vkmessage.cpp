@@ -27,91 +27,99 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <functional>
-#include <QObject>
-#include <QHash>
-#include <QUrl>
-#include <QVariantList>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/azoth/iclentry.h>
-#include "structures.h"
+#include "vkmessage.h"
+#include "vkentry.h"
 
 namespace LeechCraft
 {
-namespace Util
-{
-	class QueueManager;
-
-	namespace SvcAuth
-	{
-		class VkAuthManager;
-	}
-}
-
 namespace Azoth
 {
 namespace Murm
 {
-	class VkConnection : public QObject
+	VkMessage::VkMessage (Direction dir, MessageType type, VkEntry *entry)
+	: QObject (entry)
+	, Entry_ (entry)
+	, Type_ (type)
+	, Dir_ (dir)
 	{
-		Q_OBJECT
+	}
 
-		Util::SvcAuth::VkAuthManager * const AuthMgr_;
-		const ICoreProxy_ptr Proxy_;
+	QObject* VkMessage::GetQObject ()
+	{
+		return this;
+	}
 
-		QByteArray LastCookies_;
+	void VkMessage::Send ()
+	{
+		Entry_->Send (this);
+		Store ();
+	}
 
-		QList<std::function<void (QString)>> PreparedCalls_;
-		Util::QueueManager *CallQueue_;
+	void VkMessage::Store ()
+	{
+		Entry_->Store (this);
+	}
 
-		EntryStatus Status_;
+	qulonglong VkMessage::GetID () const
+	{
+		return ID_;
+	}
 
-		QString LPKey_;
-		QString LPServer_;
-		qulonglong LPTS_;
+	void VkMessage::SetID (qulonglong id)
+	{
+		ID_ = id;
+		emit messageDelivered ();
+	}
 
-		QUrl LPURLTemplate_;
+	IMessage::Direction VkMessage::GetDirection () const
+	{
+		return Dir_;
+	}
 
-		QHash<int, std::function<void (QVariantList)>> Dispatcher_;
-		QHash<QNetworkReply*, std::function<void (qulonglong)>> MsgReply2Setter_;
-	public:
-		VkConnection (const QByteArray&, ICoreProxy_ptr);
+	IMessage::MessageType VkMessage::GetMessageType () const
+	{
+		return Type_;
+	}
 
-		const QByteArray& GetCookies () const;
+	IMessage::MessageSubType VkMessage::GetMessageSubType () const
+	{
+		return MSTOther;
+	}
 
-		void RerequestFriends ();
+	QObject* VkMessage::OtherPart () const
+	{
+		return Entry_;
+	}
 
-		void SendMessage (qulonglong to, const QString& body,
-				std::function<void (qulonglong)> idSetter);
+	QString VkMessage::GetOtherVariant () const
+	{
+		return "";
+	}
 
-		void SetStatus (const EntryStatus&);
-		const EntryStatus& GetStatus () const;
-	private:
-		void PushFriendsRequest ();
-		void PushLPFetchCall ();
-		void Poll ();
-	private slots:
-		void handlePollFinished ();
+	QString VkMessage::GetBody () const
+	{
+		return Body_;
+	}
 
-		void callWithKey (const QString&);
+	void VkMessage::SetBody (const QString& body)
+	{
+		Body_ = body;
+	}
 
-		void handleGotFriendLists ();
-		void handleGotFriends ();
-		void handleGotLPServer ();
-		void handleMessageSent ();
+	QDateTime VkMessage::GetDateTime () const
+	{
+		return TS_;
+	}
 
-		void saveCookies (const QByteArray&);
-	signals:
-		void cookiesChanged ();
+	void VkMessage::SetDateTime (const QDateTime& timestamp)
+	{
+		TS_ = timestamp;
+	}
 
-		void gotLists (const QList<ListInfo>&);
-		void gotUsers (const QList<UserInfo>&);
-		void gotMessage (const MessageInfo&);
-
-		void userStateChanged (qulonglong uid, bool online);
-	};
+	bool VkMessage::IsDelivered () const
+	{
+		return ID_ != static_cast<qulonglong> (-1);
+	}
 }
 }
 }

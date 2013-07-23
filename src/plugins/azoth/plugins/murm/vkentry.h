@@ -29,88 +29,73 @@
 
 #pragma once
 
-#include <functional>
 #include <QObject>
-#include <QHash>
-#include <QUrl>
-#include <QVariantList>
-#include <interfaces/core/icoreproxy.h>
 #include <interfaces/azoth/iclentry.h>
 #include "structures.h"
 
 namespace LeechCraft
 {
-namespace Util
-{
-	class QueueManager;
-
-	namespace SvcAuth
-	{
-		class VkAuthManager;
-	}
-}
-
 namespace Azoth
 {
 namespace Murm
 {
-	class VkConnection : public QObject
+	class VkAccount;
+	class VkMessage;
+
+	class VkEntry : public QObject
+				  , public ICLEntry
 	{
 		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Azoth::ICLEntry)
 
-		Util::SvcAuth::VkAuthManager * const AuthMgr_;
-		const ICoreProxy_ptr Proxy_;
+		VkAccount * const Account_;
+		UserInfo Info_;
 
-		QByteArray LastCookies_;
-
-		QList<std::function<void (QString)>> PreparedCalls_;
-		Util::QueueManager *CallQueue_;
-
-		EntryStatus Status_;
-
-		QString LPKey_;
-		QString LPServer_;
-		qulonglong LPTS_;
-
-		QUrl LPURLTemplate_;
-
-		QHash<int, std::function<void (QVariantList)>> Dispatcher_;
-		QHash<QNetworkReply*, std::function<void (qulonglong)>> MsgReply2Setter_;
+		QList<VkMessage*> Messages_;
 	public:
-		VkConnection (const QByteArray&, ICoreProxy_ptr);
+		VkEntry (const UserInfo&, VkAccount*);
 
-		const QByteArray& GetCookies () const;
+		void UpdateInfo (const UserInfo&);
+		const UserInfo& GetInfo () const;
 
-		void RerequestFriends ();
+		void Send (VkMessage*);
+		void Store (VkMessage*);
 
-		void SendMessage (qulonglong to, const QString& body,
-				std::function<void (qulonglong)> idSetter);
+		VkMessage* FindMessage (qulonglong) const;
 
-		void SetStatus (const EntryStatus&);
-		const EntryStatus& GetStatus () const;
-	private:
-		void PushFriendsRequest ();
-		void PushLPFetchCall ();
-		void Poll ();
-	private slots:
-		void handlePollFinished ();
-
-		void callWithKey (const QString&);
-
-		void handleGotFriendLists ();
-		void handleGotFriends ();
-		void handleGotLPServer ();
-		void handleMessageSent ();
-
-		void saveCookies (const QByteArray&);
+		QObject* GetQObject ();
+		QObject* GetParentAccount () const;
+		Features GetEntryFeatures () const;
+		EntryType GetEntryType () const;
+		QString GetEntryName () const;
+		void SetEntryName (const QString& name);
+		QString GetEntryID () const;
+		QStringList Groups () const;
+		void SetGroups (const QStringList& groups);
+		QStringList Variants () const;
+		QObject* CreateMessage (IMessage::MessageType type, const QString& variant, const QString& body);
+		QList<QObject*> GetAllMessages () const;
+		void PurgeMessages (const QDateTime& before);
+		void SetChatPartState (ChatPartState state, const QString& variant);
+		EntryStatus GetStatus (const QString& variant = QString ()) const;
+		QImage GetAvatar () const;
+		QString GetRawInfo () const;
+		void ShowInfo ();
+		QList<QAction*> GetActions () const;
+		QMap<QString, QVariant> GetClientInfo (const QString&) const;
+		void MarkMsgsRead ();
+		void ChatTabClosed ();
 	signals:
-		void cookiesChanged ();
-
-		void gotLists (const QList<ListInfo>&);
-		void gotUsers (const QList<UserInfo>&);
-		void gotMessage (const MessageInfo&);
-
-		void userStateChanged (qulonglong uid, bool online);
+		void gotMessage (QObject*);
+		void statusChanged (const EntryStatus&, const QString&);
+		void availableVariantsChanged (const QStringList&);
+		void avatarChanged (const QImage&);
+		void rawinfoChanged (const QString&);
+		void nameChanged (const QString&);
+		void groupsChanged (const QStringList&);
+		void chatPartStateChanged (const ChatPartState&, const QString&);
+		void permsChanged ();
+		void entryGenerallyChanged ();
 	};
 }
 }

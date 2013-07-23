@@ -29,88 +29,57 @@
 
 #pragma once
 
-#include <functional>
 #include <QObject>
-#include <QHash>
-#include <QUrl>
-#include <QVariantList>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/azoth/iclentry.h>
-#include "structures.h"
+#include <interfaces/azoth/imessage.h>
+#include <interfaces/azoth/iadvancedmessage.h>
 
 namespace LeechCraft
 {
-namespace Util
-{
-	class QueueManager;
-
-	namespace SvcAuth
-	{
-		class VkAuthManager;
-	}
-}
-
 namespace Azoth
 {
 namespace Murm
 {
-	class VkConnection : public QObject
+	class VkEntry;
+
+	class VkMessage : public QObject
+					, public IMessage
+					, public IAdvancedMessage
 	{
 		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Azoth::IMessage LeechCraft::Azoth::IAdvancedMessage)
 
-		Util::SvcAuth::VkAuthManager * const AuthMgr_;
-		const ICoreProxy_ptr Proxy_;
+		VkEntry * const Entry_;
+		const MessageType Type_;
+		const Direction Dir_;
 
-		QByteArray LastCookies_;
+		QString Body_;
+		QDateTime TS_ = QDateTime::currentDateTime ();
 
-		QList<std::function<void (QString)>> PreparedCalls_;
-		Util::QueueManager *CallQueue_;
-
-		EntryStatus Status_;
-
-		QString LPKey_;
-		QString LPServer_;
-		qulonglong LPTS_;
-
-		QUrl LPURLTemplate_;
-
-		QHash<int, std::function<void (QVariantList)>> Dispatcher_;
-		QHash<QNetworkReply*, std::function<void (qulonglong)>> MsgReply2Setter_;
+		qulonglong ID_ = -1;
 	public:
-		VkConnection (const QByteArray&, ICoreProxy_ptr);
+		VkMessage (Direction, MessageType, VkEntry*);
 
-		const QByteArray& GetCookies () const;
+		QObject* GetQObject ();
+		void Send ();
+		void Store ();
 
-		void RerequestFriends ();
+		qulonglong GetID () const;
+		void SetID (qulonglong);
 
-		void SendMessage (qulonglong to, const QString& body,
-				std::function<void (qulonglong)> idSetter);
+		Direction GetDirection () const;
+		MessageType GetMessageType () const;
+		MessageSubType GetMessageSubType () const;
 
-		void SetStatus (const EntryStatus&);
-		const EntryStatus& GetStatus () const;
-	private:
-		void PushFriendsRequest ();
-		void PushLPFetchCall ();
-		void Poll ();
-	private slots:
-		void handlePollFinished ();
+		QObject* OtherPart () const;
+		QString GetOtherVariant () const;
+		QString GetBody () const;
+		void SetBody (const QString& body);
+		QDateTime GetDateTime () const;
+		void SetDateTime (const QDateTime& timestamp);
 
-		void callWithKey (const QString&);
-
-		void handleGotFriendLists ();
-		void handleGotFriends ();
-		void handleGotLPServer ();
-		void handleMessageSent ();
-
-		void saveCookies (const QByteArray&);
+		bool IsDelivered () const;
 	signals:
-		void cookiesChanged ();
-
-		void gotLists (const QList<ListInfo>&);
-		void gotUsers (const QList<UserInfo>&);
-		void gotMessage (const MessageInfo&);
-
-		void userStateChanged (qulonglong uid, bool online);
+		void messageDelivered ();
 	};
 }
 }

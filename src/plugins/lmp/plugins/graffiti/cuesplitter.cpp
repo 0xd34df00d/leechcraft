@@ -240,7 +240,7 @@ namespace Graffiti
 
 	void CueSplitter::split ()
 	{
-		const auto& cue = ParseCue (CueFile_);
+		const auto& cue = ParseCue (QDir (Dir_).absoluteFilePath (CueFile_));
 		qDebug () << cue.IsValid () << cue.Album_ << cue.Performer_ << cue.Date_;
 		for (const auto& file : cue.Files_)
 		{

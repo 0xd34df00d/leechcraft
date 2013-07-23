@@ -2,10 +2,15 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_azoth_murm)
 include (InitLCPlugin OPTIONAL)
 
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
+find_package (QJSON REQUIRED)
+
 set (QT_USE_QTNETWORK TRUE)
 set (QT_USE_QTXML TRUE)
 include (${QT_USE_FILE})
 include_directories (${AZOTH_INCLUDE_DIR}
+	${QJSON_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
@@ -17,6 +22,8 @@ set (MURM_SRCS
 	vkprotocol.cpp
 	vkaccount.cpp
 	vkconnection.cpp
+	vkentry.cpp
+	vkmessage.cpp
 	)
 set (MURM_FORMS
 	)
@@ -35,6 +42,7 @@ add_library (leechcraft_azoth_murm SHARED
 	)
 target_link_libraries (leechcraft_azoth_murm
 	${QT_LIBRARIES}
+	${QJSON_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 

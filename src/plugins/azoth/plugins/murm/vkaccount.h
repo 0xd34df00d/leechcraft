@@ -32,6 +32,7 @@
 #include <QObject>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/core/icoreproxy.h>
+#include "structures.h"
 
 namespace LeechCraft
 {
@@ -39,6 +40,8 @@ namespace Azoth
 {
 namespace Murm
 {
+	class VkEntry;
+	class VkMessage;
 	class VkProtocol;
 	class VkConnection;
 
@@ -54,12 +57,15 @@ namespace Murm
 		QString Name_;
 
 		VkConnection * const Conn_;
+		QHash<qulonglong, VkEntry*> Entries_;
 	public:
 		VkAccount (const QString& name, VkProtocol *proto, ICoreProxy_ptr proxy,
 				const QByteArray& id, const QByteArray& cookies);
 
 		QByteArray Serialize () const;
 		static VkAccount* Deserialize (const QByteArray&, VkProtocol*, ICoreProxy_ptr);
+
+		void Send (VkEntry*, VkMessage*);
 
 		QObject* GetQObject ();
 		QObject* GetParentProtocol () const;
@@ -80,10 +86,12 @@ namespace Murm
 		void ChangeState (const EntryStatus&);
 		void Authorize (QObject*);
 		void DenyAuth (QObject*);
-		void RequestAuth (const QString&, const QString& = QString (), const QString& = QString (), const QStringList& = QStringList ());
+		void RequestAuth (const QString&, const QString&, const QString&, const QStringList&);
 		void RemoveEntry (QObject*);
 		QObject* GetTransferManager () const;
 	private slots:
+		void handleUsers (const QList<UserInfo>&);
+		void handleUserState (qulonglong, bool);
 		void emitUpdateAcc ();
 	signals:
 		void accountRenamed (const QString&);
