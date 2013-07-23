@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QImage>
 #include <QPointer>
+#include <QStringList>
 #include <interfaces/azoth/iclentry.h>
 #include "structures.h"
 
@@ -67,6 +68,8 @@ namespace Murm
 		QImage Avatar_;
 
 		QPointer<VCardDialog> VCardDialog_;
+
+		QStringList Groups_;
 	public:
 		VkEntry (const UserInfo&, VkAccount*);
 

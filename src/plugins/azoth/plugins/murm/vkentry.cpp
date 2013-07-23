@@ -70,6 +70,13 @@ namespace Murm
 					SIGNAL (gotImage (QUrl)),
 					this,
 					SLOT (handleGotStorageImage (QUrl)));
+
+		for (const auto& id : info.Lists_)
+		{
+			const auto& info = account->GetListInfo (id);
+			if (info.ID_ == id)
+				Groups_ << info.Name_;
+		}
 	}
 
 	void VkEntry::UpdateInfo (const UserInfo& info)
@@ -179,7 +186,7 @@ namespace Murm
 
 	QStringList VkEntry::Groups () const
 	{
-		return {};
+		return Groups_;
 	}
 
 	void VkEntry::SetGroups (const QStringList&)
