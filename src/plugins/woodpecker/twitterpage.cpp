@@ -533,7 +533,6 @@ namespace Woodpecker
 		
 		Interface_->Delete (twitid);
 	}
-	
 }
 }
 
