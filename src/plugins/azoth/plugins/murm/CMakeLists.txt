@@ -24,6 +24,7 @@ set (MURM_SRCS
 	vkconnection.cpp
 	vkentry.cpp
 	vkmessage.cpp
+	photostorage.cpp
 	)
 set (MURM_FORMS
 	)
