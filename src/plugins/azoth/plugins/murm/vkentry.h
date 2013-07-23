@@ -55,7 +55,8 @@ namespace Murm
 
 		QList<VkMessage*> Messages_;
 
-		QTimer *TypingTimer_;
+		QTimer *RemoteTypingTimer_;
+		QTimer *LocalTypingTimer_;
 	public:
 		VkEntry (const UserInfo&, VkAccount*);
 
@@ -94,6 +95,7 @@ namespace Murm
 		void ChatTabClosed ();
 	private slots:
 		void handleTypingTimeout ();
+		void sendTyping ();
 	signals:
 		void gotMessage (QObject*);
 		void statusChanged (const EntryStatus&, const QString&);

@@ -34,6 +34,7 @@
 #include <interfaces/azoth/azothutil.h>
 #include "vkaccount.h"
 #include "vkmessage.h"
+#include "vkconnection.h"
 
 namespace LeechCraft
 {
@@ -45,13 +46,20 @@ namespace Murm
 	: QObject (account)
 	, Account_ (account)
 	, Info_ (info)
-	, TypingTimer_ (new QTimer (this))
+	, RemoteTypingTimer_ (new QTimer (this))
+	, LocalTypingTimer_ (new QTimer (this))
 	{
-		TypingTimer_->setInterval (6000);
-		connect (TypingTimer_,
+		RemoteTypingTimer_->setInterval (6000);
+		connect (RemoteTypingTimer_,
 				SIGNAL (timeout ()),
 				this,
 				SLOT (handleTypingTimeout ()));
+
+		LocalTypingTimer_->setInterval (5000);
+		connect (LocalTypingTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (sendTyping ()));
 	}
 
 	void VkEntry::UpdateInfo (const UserInfo& info)
@@ -101,7 +109,7 @@ namespace Murm
 		if (dir == IMessage::DIn)
 		{
 			emit chatPartStateChanged (CPSActive, "");
-			TypingTimer_->stop ();
+			RemoteTypingTimer_->stop ();
 		}
 
 		auto msg = new VkMessage (dir, IMessage::MTChatMessage, this);
@@ -113,7 +121,7 @@ namespace Murm
 	void VkEntry::HandleTypingNotification ()
 	{
 		emit chatPartStateChanged (CPSComposing, "");
-		TypingTimer_->start ();
+		RemoteTypingTimer_->start ();
 	}
 
 	QObject* VkEntry::GetQObject ()
@@ -186,8 +194,18 @@ namespace Murm
 		Util::StandardPurgeMessages (Messages_, before);
 	}
 
-	void VkEntry::SetChatPartState (ChatPartState state, const QString& variant)
+	void VkEntry::SetChatPartState (ChatPartState state, const QString&)
 	{
+		if (state == CPSComposing)
+		{
+			if (!LocalTypingTimer_->isActive ())
+			{
+				sendTyping ();
+				LocalTypingTimer_->start ();
+			}
+		}
+		else
+			LocalTypingTimer_->stop ();
 	}
 
 	EntryStatus VkEntry::GetStatus (const QString&) const
@@ -230,6 +248,11 @@ namespace Murm
 	void VkEntry::handleTypingTimeout ()
 	{
 		emit chatPartStateChanged (CPSPaused, "");
+	}
+
+	void VkEntry::sendTyping ()
+	{
+		Account_->GetConnection ()->SendTyping (Info_.ID_);
 	}
 }
 }
