@@ -25,8 +25,10 @@ set (MURM_SRCS
 	vkentry.cpp
 	vkmessage.cpp
 	photostorage.cpp
+	vcarddialog.cpp
 	)
 set (MURM_FORMS
+	vcarddialog.ui
 	)
 #set (MURM_RESOURCES azothmurmresources.qrc)
 
