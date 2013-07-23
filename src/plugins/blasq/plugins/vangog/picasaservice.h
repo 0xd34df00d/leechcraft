@@ -39,6 +39,7 @@ namespace Blasq
 {
 namespace Vangog
 {
+	class AuthManager;
 	class PicasaAccount;
 
 	class PicasaService : public QObject
@@ -50,6 +51,7 @@ namespace Vangog
 		const ICoreProxy_ptr Proxy_;
 
 		QList<PicasaAccount*> Accounts_;
+		AuthManager *AuthManager_;
 
 	public:
 		PicasaService (ICoreProxy_ptr proxy);
@@ -65,9 +67,11 @@ namespace Vangog
 		void RemoveAccount (IAccount *account);
 	private:
 		void AddAccount (PicasaAccount *account);
+		void ReadAccounts ();
 
 	private slots:
 		void saveAccount (PicasaAccount *account);
+		void handleAuthSuccess (QObject *accObj);
 
 	signals:
 		void accountAdded (QObject *accObj);

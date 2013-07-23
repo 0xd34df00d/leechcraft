@@ -50,6 +50,7 @@ namespace Vangog
 	, Name_ (name)
 	, Service_ (service)
 	, Proxy_ (proxy)
+	, ID_ (QUuid::createUuid ().toByteArray ())
 	, CollectionsModel_ (new NamedModel<QStandardItemModel> (this))
 	{
 		CollectionsModel_->setHorizontalHeaderLabels ({ tr ("Name") });
@@ -61,7 +62,8 @@ namespace Vangog
 		{
 			QDataStream out (&result, QIODevice::WriteOnly);
 			out << static_cast<quint8> (1)
-					<< Name_;
+					<< Name_
+					<< RefreshToken_;
 		}
 		return result;
 	}
@@ -83,8 +85,9 @@ namespace Vangog
 
 		QString name;
 		in >> name;
-
-		return new PicasaAccount (name, service, proxy);
+		auto acc = new PicasaAccount (name, service, proxy);;
+		in >> acc->RefreshToken_;
+		return acc;
 	}
 
 	QObject* PicasaAccount::GetQObject ()
@@ -105,6 +108,21 @@ namespace Vangog
 	QByteArray PicasaAccount::GetID () const
 	{
 		return ID_;
+	}
+
+	void PicasaAccount::SetAccessToken (const QString& token)
+	{
+		AccessToken_ = token;
+	}
+
+	void PicasaAccount::SetRefreshToken (const QString& token)
+	{
+		RefreshToken_ = token;
+	}
+
+	QString PicasaAccount::GetRefreshToken () const
+	{
+		return RefreshToken_;
 	}
 
 	QAbstractItemModel* PicasaAccount::GetCollectionsModel () const

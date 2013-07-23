@@ -39,7 +39,7 @@ namespace Vangog
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Util::InstallTranslator ("blasq_rappor");
+		Util::InstallTranslator ("blasq_vangog");
 
 		Service_ = new PicasaService (proxy);
 	}

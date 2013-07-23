@@ -29,13 +29,11 @@
 
 #pragma once
 
-#include <memory>
 #include <QObject>
-#include <interfaces/blasq/iaccount.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/structures.h>
 
-class QStandardItemModel;
-class QStandardItem;
+class QInputDialog;
 
 namespace LeechCraft
 {
@@ -43,52 +41,38 @@ namespace Blasq
 {
 namespace Vangog
 {
-	class PicasaService;
+	class PicasaAccount;
 
-	class PicasaAccount : public QObject
-						, public IAccount
+	class AuthManager : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blasq::IAccount)
 
-		QString Name_;
-		PicasaService * const Service_;
-		const ICoreProxy_ptr Proxy_;
-		QByteArray ID_;
-		QString AccessToken_;
-		QString RefreshToken_;
+		const QString ClientId_;
+		const QString ClientSecret_;
+		const QString Scope_;
+		const QString ResponseType_;
+		const QString RedirectUri_;
 
-		QStandardItemModel * const CollectionsModel_;
+		QInputDialog *InputDialog_;
+		QMap<QInputDialog*, PicasaAccount*> Dialog2Account_;
+		QMap<QNetworkReply*, PicasaAccount*> Reply2Account_;
+
+		ICoreProxy_ptr Proxy_;
 
 	public:
-		PicasaAccount (const QString& name,
-				PicasaService *service, ICoreProxy_ptr proxy);
-
-		QByteArray Serialize () const;
-		static PicasaAccount* Deserialize (const QByteArray& data,
-				PicasaService *service, ICoreProxy_ptr proxy);
-
-		QObject* GetQObject () override;
-		IService* GetService () const override;
-		QString GetName () const override;
-		QByteArray GetID () const override;
-
-		void SetAccessToken (const QString& token);
-		void SetRefreshToken (const QString& token);
-		QString GetRefreshToken () const;
-
-		QAbstractItemModel* GetCollectionsModel () const override;
-
-		void UpdateCollections () override;
+		AuthManager (ICoreProxy_ptr proxy, QObject *parent = 0);
+		void Auth (PicasaAccount *acc);
+	private:
+		void RequestAuthToken (const QString& code, PicasaAccount *acc);
 
 	private slots:
-		void handleGotAlbums ();
-		void handleGotPhotos ();
+		void handleDialogFinished (int code);
+		void handleRequestAuthTokenFinished ();
 
 	signals:
-		void accountChanged (PicasaAccount *acc);
-		void doneUpdating () override;
+		void authSuccess (QObject *accObj);
 	};
 }
 }
 }
+

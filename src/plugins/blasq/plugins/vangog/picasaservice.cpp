@@ -32,6 +32,7 @@
 #include <QCoreApplication>
 #include <QSettings>
 #include <QtDebug>
+#include "authmanager.h"
 #include "picasaaccount.h"
 
 namespace LeechCraft
@@ -43,16 +44,13 @@ namespace Vangog
 	PicasaService::PicasaService (ICoreProxy_ptr proxy)
 	: Proxy_ (proxy)
 	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Blasq_Vangog");
-		settings.beginGroup ("Accounts");
-		for (const auto& key : settings.childKeys ())
-		{
-			const auto& serialized = settings.value (key).toByteArray ();
-			if (auto acc = PicasaAccount::Deserialize (serialized, this, proxy))
-				AddAccount (acc);
-		}
-		settings.endGroup ();
+		AuthManager_ = new AuthManager (proxy, this);
+		connect (AuthManager_,
+				SIGNAL (authSuccess (QObject*)),
+				this,
+				SLOT (handleAuthSuccess (QObject*)));
+
+		ReadAccounts ();
 	}
 
 	QObject* PicasaService::GetQObject ()
@@ -86,8 +84,7 @@ namespace Vangog
 	void PicasaService::RegisterAccount (const QString& name, const QList<QWidget*>&)
 	{
 		auto acc = new PicasaAccount (name, this, Proxy_);
-		AddAccount (acc);
-		saveAccount (acc);
+		AuthManager_->Auth (acc);
 	}
 
 	void PicasaService::RemoveAccount (IAccount *account)
@@ -124,6 +121,20 @@ namespace Vangog
 				SLOT (saveAccount (PicasaAccount*)));
 	}
 
+	void PicasaService::ReadAccounts ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Blasq_Vangog");
+		settings.beginGroup ("Accounts");
+		for (const auto& key : settings.childKeys ())
+		{
+			const auto& serialized = settings.value (key).toByteArray ();
+			if (auto acc = PicasaAccount::Deserialize (serialized, this, Proxy_))
+				AddAccount (acc);
+		}
+		settings.endGroup ();
+	}
+
 	void PicasaService::saveAccount (PicasaAccount *account)
 	{
 		QSettings settings (QCoreApplication::organizationName (),
@@ -132,6 +143,14 @@ namespace Vangog
 		settings.setValue (account->GetID (), account->Serialize ());
 		settings.endGroup ();
 	}
+
+	void PicasaService::handleAuthSuccess (QObject *accObj)
+	{
+		auto acc (qobject_cast<PicasaAccount*> (accObj));
+		AddAccount (acc);
+		saveAccount (acc);
+	}
+
 }
 }
 }
