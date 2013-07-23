@@ -56,6 +56,8 @@ namespace Murm
 		QDateTime TS_ = QDateTime::currentDateTime ();
 
 		qulonglong ID_ = -1;
+
+		bool IsRead_ = Dir_ == DOut;
 	public:
 		VkMessage (Direction, MessageType, VkEntry*);
 
@@ -65,6 +67,9 @@ namespace Murm
 
 		qulonglong GetID () const;
 		void SetID (qulonglong);
+
+		bool IsRead () const;
+		void SetRead ();
 
 		Direction GetDirection () const;
 		MessageType GetMessageType () const;

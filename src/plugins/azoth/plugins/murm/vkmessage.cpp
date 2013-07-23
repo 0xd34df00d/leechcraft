@@ -71,6 +71,16 @@ namespace Murm
 		emit messageDelivered ();
 	}
 
+	bool VkMessage::IsRead () const
+	{
+		return IsRead_;
+	}
+
+	void VkMessage::SetRead ()
+	{
+		IsRead_ = true;
+	}
+
 	IMessage::Direction VkMessage::GetDirection () const
 	{
 		return Dir_;
