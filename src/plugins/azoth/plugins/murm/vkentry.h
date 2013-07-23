@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QImage>
+#include <QPointer>
 #include <interfaces/azoth/iclentry.h>
 #include "structures.h"
 
@@ -45,6 +46,7 @@ namespace Murm
 	class VkAccount;
 	class VkMessage;
 	class PhotoStorage;
+	class VCardDialog;
 
 	class VkEntry : public QObject
 				  , public ICLEntry
@@ -63,6 +65,8 @@ namespace Murm
 		bool HasUnread_ = false;
 
 		QImage Avatar_;
+
+		QPointer<VCardDialog> VCardDialog_;
 	public:
 		VkEntry (const UserInfo&, VkAccount*);
 

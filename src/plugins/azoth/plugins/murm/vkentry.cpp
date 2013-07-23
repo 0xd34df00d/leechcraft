@@ -36,6 +36,7 @@
 #include "vkmessage.h"
 #include "vkconnection.h"
 #include "photostorage.h"
+#include "vcarddialog.h"
 
 namespace LeechCraft
 {
@@ -241,6 +242,11 @@ namespace Murm
 
 	void VkEntry::ShowInfo ()
 	{
+		if (VCardDialog_)
+			return;
+
+		VCardDialog_ = new VCardDialog (Info_);
+		VCardDialog_->show ();
 	}
 
 	QList<QAction*> VkEntry::GetActions () const
