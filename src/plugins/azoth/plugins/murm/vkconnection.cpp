@@ -94,7 +94,7 @@ namespace Murm
 			const QString& body, std::function<void (qulonglong)> idSetter)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([=] (const QString& key)
+		PreparedCalls_.push_back ([=] (const QString& key) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/messages.send");
 				url.addQueryItem ("access_token", key);
@@ -108,6 +108,7 @@ namespace Murm
 						SIGNAL (finished ()),
 						this,
 						SLOT (handleMessageSent ()));
+				return reply;
 			});
 		AuthMgr_->GetAuthKey ();
 	}
@@ -122,14 +123,16 @@ namespace Murm
 			return;
 
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([this, nam] (const QString& key)
+		PreparedCalls_.push_back ([this, nam] (const QString& key) -> QNetworkReply*
 			{
 				QUrl lpUrl ("https://api.vk.com/method/friends.getLists");
 				lpUrl.addQueryItem ("access_token", key);
-				connect (nam->get (QNetworkRequest (lpUrl)),
+				auto reply = nam->get (QNetworkRequest (lpUrl));
+				connect (reply,
 						SIGNAL (finished ()),
 						this,
 						SLOT (handleGotFriendLists ()));
+				return reply;
 			});
 		PushFriendsRequest ();
 		PushLPFetchCall ();
@@ -145,29 +148,33 @@ namespace Murm
 	void VkConnection::PushFriendsRequest ()
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([this, nam] (const QString& key)
+		PreparedCalls_.push_back ([this, nam] (const QString& key) -> QNetworkReply*
 			{
 				QUrl friendsUrl ("https://api.vk.com/method/friends.get");
 				friendsUrl.addQueryItem ("access_token", key);
 				friendsUrl.addQueryItem ("fields", "first_name,last_name,nickname,photo");
-				connect (nam->get (QNetworkRequest (friendsUrl)),
+				auto reply = nam->get (QNetworkRequest (friendsUrl));
+				connect (reply,
 						SIGNAL (finished ()),
 						this,
 						SLOT (handleGotFriends ()));
+				return reply;
 			});
 	}
 
 	void VkConnection::PushLPFetchCall ()
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([this, nam] (const QString& key)
+		PreparedCalls_.push_back ([this, nam] (const QString& key) -> QNetworkReply*
 			{
 				QUrl lpUrl ("https://api.vk.com/method/messages.getLongPollServer");
 				lpUrl.addQueryItem ("access_token", key);
-				connect (nam->get (QNetworkRequest (lpUrl)),
+				auto reply = nam->get (QNetworkRequest (lpUrl));
+				connect (reply,
 						SIGNAL (finished ()),
 						this,
 						SLOT (handleGotLPServer ()));
+				return reply;
 			});
 	}
 

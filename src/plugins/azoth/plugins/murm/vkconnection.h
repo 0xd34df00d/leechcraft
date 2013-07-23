@@ -63,7 +63,8 @@ namespace Murm
 
 		QByteArray LastCookies_;
 
-		QList<std::function<void (QString)>> PreparedCalls_;
+		typedef std::function<QNetworkReply* (QString)> PreparedCall_f;
+		QList<PreparedCall_f> PreparedCalls_;
 		Util::QueueManager *CallQueue_;
 
 		EntryStatus Status_;
