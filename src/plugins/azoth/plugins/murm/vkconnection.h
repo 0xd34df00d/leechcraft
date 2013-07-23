@@ -119,6 +119,7 @@ namespace Murm
 		void gotLists (const QList<ListInfo>&);
 		void gotUsers (const QList<UserInfo>&);
 		void gotMessage (const MessageInfo&);
+		void gotTypingNotification (qulonglong uid);
 
 		void userStateChanged (qulonglong uid, bool online);
 	};

@@ -76,6 +76,8 @@ namespace Murm
 			{ emit userStateChanged (items.value (1).toLongLong () * -1, true); };
 		Dispatcher_ [9] = [this] (const QVariantList& items)
 			{ emit userStateChanged (items.value (1).toLongLong () * -1, false); };
+		Dispatcher_ [61] = [this] (const QVariantList& items)
+			{ emit gotTypingNotification (items.value (1).toULongLong ()); };
 
 		Dispatcher_ [101] = [this] (const QVariantList&) {};	// unknown stuff
 	}
