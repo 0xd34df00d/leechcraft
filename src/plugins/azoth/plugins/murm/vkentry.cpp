@@ -162,6 +162,11 @@ namespace Murm
 		return Account_->GetAccountID () + QString::number (Info_.ID_);
 	}
 
+	QString VkEntry::GetHumanReadableID () const
+	{
+		return QString::number (Info_.ID_);
+	}
+
 	QStringList VkEntry::Groups () const
 	{
 		return {};

@@ -80,6 +80,7 @@ namespace Murm
 		QString GetEntryName () const;
 		void SetEntryName (const QString& name);
 		QString GetEntryID () const;
+		QString GetHumanReadableID () const;
 		QStringList Groups () const;
 		void SetGroups (const QStringList& groups);
 		QStringList Variants () const;
