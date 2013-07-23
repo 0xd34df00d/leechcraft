@@ -51,7 +51,8 @@ namespace Woodpecker
 		
 		Core::Instance ().SetProxy (proxy);
 		
-		HomeTC_ = {
+		HomeTC_ = 
+		{
 			GetUniqueID () + "_home",
 			tr ("Twitter Home"),
 			tr ("Own timeline"),
@@ -60,7 +61,8 @@ namespace Woodpecker
 			TFOpenableByRequest
 		};
 		
-		UserTC_ = {
+		UserTC_ = 
+		{
 			GetUniqueID () + "_user",
 			tr ("Twitter user timeline"),
 			tr ("User's timeline"),
@@ -69,7 +71,8 @@ namespace Woodpecker
 			TFEmpty
 		};
 		
-		SearchTC_ = {
+		SearchTC_ = 
+		{
 			GetUniqueID () + "_search",
 			tr ("Twitter search timeline"),
 			tr ("Twitter search result timeline"),
@@ -78,11 +81,22 @@ namespace Woodpecker
 			TFEmpty
 		};
 		
+		FavoriteTC_ = 
+		{
+			GetUniqueID () + "_favorites",
+			tr ("Favorite twits"),
+			tr ("Twitter favorite statuses timeline"),
+			GetIcon (),
+			2,
+			TFEmpty
+		};
+	
 		TabClasses_.append ({ HomeTC_,
 							[this] (const TabClassInfo& tc)
 								{MakeTab (new TwitterPage (tc, this), tc); }});
 		TabClasses_.append ({ UserTC_, nullptr });
 		TabClasses_.append ({ SearchTC_, nullptr });
+		TabClasses_.append ({ FavoriteTC_, nullptr });
 	}
 	
 	void Plugin::AddTab (const TabClassInfo& tc, const QString& name,
@@ -213,6 +227,22 @@ namespace Woodpecker
 				AddTab (SearchTC_,
 						tr ("Search").append (search),
 						FeedMode::SearchResult, param);
+			}
+			else if (type.startsWith ("org.LeechCraft.Woodpecker_favorites"))
+			{
+				for (const auto& pair : recInfo.DynProperties_)
+					setProperty (pair.first, pair.second);
+				
+				KQOAuthParameters param;
+				stream >> param;
+				
+				
+				const auto& username = param.take ("screen_name");;
+				param.insert ("screen_name", username);
+				
+				AddTab (FavoriteTC_,
+						tr ("@%1 favorites").arg (username),
+						FeedMode::Favorites, param);	
 			}
 			else
 				qWarning () << Q_FUNC_INFO

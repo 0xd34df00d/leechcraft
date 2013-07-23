@@ -85,6 +85,9 @@ namespace Woodpecker
 		QAction *ActionCopyText_;
 		QAction *ActionDelete_;
 		QAction *ActionSearch_;
+		QAction *ActionShowFavorites_;
+		QAction *ActionMakeFavorite_;
+		QAction *ActionDeleteFavorite_;
 		
 		const KQOAuthParameters PageDefaultParam_;	/**< Default API request parameter set for page */
 		const FeedMode PageMode_;					/**< API request mode for the page */
@@ -124,6 +127,9 @@ namespace Woodpecker
 		void setUpdateReady ();
 		void copyTwitText ();
 		void deleteTwit ();
+		void makeFavorite ();
+		void deleteFavorite ();
+		void showFavorites ();
 		
 	private slots:
 		void on_TwitList__customContextMenuRequested (const QPoint&);
