@@ -116,6 +116,26 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
+	void VkConnection::SendTyping (qulonglong to)
+	{
+		auto nam = Proxy_->GetNetworkAccessManager ();
+		PreparedCalls_.push_back ([this, nam, to] (const QString& key) -> QNetworkReply*
+			{
+				QUrl url ("https://api.vk.com/method/messages.setActivity");
+				url.addQueryItem ("access_token", key);
+				url.addQueryItem ("uid", QString::number (to));
+				url.addQueryItem ("type", "typing");
+
+				auto reply = nam->get (QNetworkRequest (url));
+				connect (reply,
+						SIGNAL (finished ()),
+						reply,
+						SLOT (deleteLater ()));
+				return reply;
+			});
+		AuthMgr_->GetAuthKey ();
+	}
+
 	void VkConnection::SetStatus (const EntryStatus& status)
 	{
 		Status_ = status;
