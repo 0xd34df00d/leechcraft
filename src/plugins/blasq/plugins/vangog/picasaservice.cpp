@@ -34,6 +34,7 @@
 #include <QtDebug>
 #include "authmanager.h"
 #include "picasaaccount.h"
+#include "registerpage.h"
 
 namespace LeechCraft
 {
@@ -78,13 +79,17 @@ namespace Vangog
 
 	QList<QWidget*> PicasaService::GetAccountRegistrationWidgets () const
 	{
-		return {};
+		return { new RegisterPage };
 	}
 
-	void PicasaService::RegisterAccount (const QString& name, const QList<QWidget*>&)
+	void PicasaService::RegisterAccount (const QString& name, const QList<QWidget*>& widgets)
 	{
-		auto acc = new PicasaAccount (name, this, Proxy_);
-		AuthManager_->Auth (acc);
+		if (!widgets.isEmpty ())
+		{
+			const auto& login = qobject_cast<RegisterPage*> (widgets.at (0))->GetLogin ();
+			auto acc = new PicasaAccount (name, this, Proxy_, login);
+			AuthManager_->Auth (acc);
+		}
 	}
 
 	void PicasaService::RemoveAccount (IAccount *account)

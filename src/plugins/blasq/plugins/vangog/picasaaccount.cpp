@@ -30,6 +30,8 @@
 #include "picasaaccount.h"
 #include <QUuid>
 #include <QStandardItemModel>
+#include <QInputDialog>
+#include <QMainWindow>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QDomDocument>
@@ -37,6 +39,8 @@
 #include <util/svcauth/vkauthmanager.h>
 #include <util/queuemanager.h>
 #include "picasaservice.h"
+#include "picasamanager.h"
+#include <interfaces/core/irootwindowsmanager.h>
 
 namespace LeechCraft
 {
@@ -45,15 +49,23 @@ namespace Blasq
 namespace Vangog
 {
 	PicasaAccount::PicasaAccount (const QString& name, PicasaService *service,
-			ICoreProxy_ptr proxy)
+			ICoreProxy_ptr proxy, const QString& login)
 	: QObject (service)
 	, Name_ (name)
 	, Service_ (service)
 	, Proxy_ (proxy)
 	, ID_ (QUuid::createUuid ().toByteArray ())
+	, Login_ (login)
+	, Ready_ (false)
+	, PicasaManager_ (new PicasaManager (this, this))
 	, CollectionsModel_ (new NamedModel<QStandardItemModel> (this))
 	{
 		CollectionsModel_->setHorizontalHeaderLabels ({ tr ("Name") });
+	}
+
+	ICoreProxy_ptr PicasaAccount::GetProxy () const
+	{
+		return Proxy_;
 	}
 
 	QByteArray PicasaAccount::Serialize () const
@@ -61,9 +73,10 @@ namespace Vangog
 		QByteArray result;
 		{
 			QDataStream out (&result, QIODevice::WriteOnly);
-			out << static_cast<quint8> (1)
+			out << static_cast<quint8> (2)
 					<< Name_
-					<< RefreshToken_;
+					<< RefreshToken_
+					<< Login_;
 		}
 		return result;
 	}
@@ -75,7 +88,7 @@ namespace Vangog
 
 		quint8 version = 0;
 		in >> version;
-		if (version != 1)
+		if (version < 1 || version > 2)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -84,9 +97,16 @@ namespace Vangog
 		}
 
 		QString name;
-		in >> name;
-		auto acc = new PicasaAccount (name, service, proxy);;
-		in >> acc->RefreshToken_;
+		QString refreshKey;
+		QString login;
+		in >> name
+				>> refreshKey;
+		if (version == 2)
+			in >> login;
+
+		auto acc = new PicasaAccount (name, service, proxy, login);
+		acc->RefreshToken_ = refreshKey;
+
 		return acc;
 	}
 
@@ -108,6 +128,11 @@ namespace Vangog
 	QByteArray PicasaAccount::GetID () const
 	{
 		return ID_;
+	}
+
+	QString PicasaAccount::GetLogin () const
+	{
+		return Login_;
 	}
 
 	void PicasaAccount::SetAccessToken (const QString& token)
@@ -132,6 +157,30 @@ namespace Vangog
 
 	void PicasaAccount::UpdateCollections ()
 	{
+		if (TryToEnterLoginIfNoExists ())
+			PicasaManager_->UpdateCollections ();
+	}
+
+	bool PicasaAccount::TryToEnterLoginIfNoExists ()
+	{
+		if (Login_.isEmpty ())
+		{
+			const auto& text = QInputDialog::getText (Proxy_->GetRootWindowsManager ()->GetPreferredWindow (),
+					"LeechCraft",
+					tr ("Enter your Google login to access to Picasa Web Albums from <em>%1</em> account")
+							.arg (Name_));
+
+			if (!text.isEmpty ())
+			{
+				Login_ = text;
+				emit accountChanged (this);
+				return true;
+			}
+			else
+				return false;
+		}
+
+		return true;
 	}
 
 	void PicasaAccount::handleGotAlbums ()

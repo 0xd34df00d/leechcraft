@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <functional>
 #include <memory>
 #include <QObject>
 #include <interfaces/blasq/iaccount.h>
@@ -43,6 +44,7 @@ namespace Blasq
 {
 namespace Vangog
 {
+	class PicasaManager;
 	class PicasaService;
 
 	class PicasaAccount : public QObject
@@ -55,14 +57,20 @@ namespace Vangog
 		PicasaService * const Service_;
 		const ICoreProxy_ptr Proxy_;
 		QByteArray ID_;
+		QString Login_;
 		QString AccessToken_;
 		QString RefreshToken_;
+		bool Ready_;
+
+		PicasaManager *PicasaManager_;
 
 		QStandardItemModel * const CollectionsModel_;
 
 	public:
 		PicasaAccount (const QString& name,
-				PicasaService *service, ICoreProxy_ptr proxy);
+				PicasaService *service, ICoreProxy_ptr proxy, const QString& login);
+
+		ICoreProxy_ptr GetProxy () const;
 
 		QByteArray Serialize () const;
 		static PicasaAccount* Deserialize (const QByteArray& data,
@@ -73,6 +81,7 @@ namespace Vangog
 		QString GetName () const override;
 		QByteArray GetID () const override;
 
+		QString GetLogin () const;
 		void SetAccessToken (const QString& token);
 		void SetRefreshToken (const QString& token);
 		QString GetRefreshToken () const;
@@ -80,6 +89,8 @@ namespace Vangog
 		QAbstractItemModel* GetCollectionsModel () const override;
 
 		void UpdateCollections () override;
+	private:
+		bool TryToEnterLoginIfNoExists ();
 
 	private slots:
 		void handleGotAlbums ();

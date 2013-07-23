@@ -27,9 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "vangog.h"
-#include <util/util.h>
-#include "picasaservice.h"
+#include "registerpage.h"
 
 namespace LeechCraft
 {
@@ -37,53 +35,17 @@ namespace Blasq
 {
 namespace Vangog
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	RegisterPage::RegisterPage (QWidget *parent)
+	: QWizardPage (parent)
 	{
-		Util::InstallTranslator ("blasq_vangog");
-		Service_ = new PicasaService (proxy);
+		Ui_.setupUi (this);
 	}
 
-	void Plugin::SecondInit ()
+	QString RegisterPage::GetLogin () const
 	{
+		return Ui_.Login_->text ();
 	}
 
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.Blasq.Vangog";
-	}
-
-	void Plugin::Release ()
-	{
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Blasq Vangog";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Picasa support module for Blasq.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	QSet<QByteArray> Plugin::GetPluginClasses () const
-	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Blasq.ServicePlugin";
-		return result;
-	}
-
-	QList<IService*> Plugin::GetServices () const
-	{
-		return { Service_ };
-	}
 }
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_blasq_vangog, LeechCraft::Blasq::Vangog::Plugin);

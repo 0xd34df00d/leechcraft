@@ -27,9 +27,12 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "vangog.h"
-#include <util/util.h>
-#include "picasaservice.h"
+#pragma once
+
+#include <functional>
+#include <QObject>
+#include <QQueue>
+#include <QVariant>
 
 namespace LeechCraft
 {
@@ -37,53 +40,28 @@ namespace Blasq
 {
 namespace Vangog
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
-	{
-		Util::InstallTranslator ("blasq_vangog");
-		Service_ = new PicasaService (proxy);
-	}
+	class PicasaAccount;
 
-	void Plugin::SecondInit ()
+	class PicasaManager : public QObject
 	{
-	}
+		Q_OBJECT
 
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.Blasq.Vangog";
-	}
+		PicasaAccount *Account_;
+		QQueue<std::function<void (const QString&)>> ApiCallsQueue_;
 
-	void Plugin::Release ()
-	{
-	}
+	public:
+		PicasaManager (PicasaAccount *account, QObject *parent = 0);
 
-	QString Plugin::GetName () const
-	{
-		return "Blasq Vangog";
-	}
+		void UpdateCollections ();
+	private:
+		void RequestAccessToken ();
+		void ParseError (const QVariantMap& map);
 
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Picasa support module for Blasq.");
-	}
+		void RequestCollections (const QString& key);
 
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	QSet<QByteArray> Plugin::GetPluginClasses () const
-	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Blasq.ServicePlugin";
-		return result;
-	}
-
-	QList<IService*> Plugin::GetServices () const
-	{
-		return { Service_ };
-	}
+	private slots:
+		void handleAuthTokenRequestFinished ();
+	};
 }
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_blasq_vangog, LeechCraft::Blasq::Vangog::Plugin);

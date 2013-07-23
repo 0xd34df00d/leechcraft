@@ -49,7 +49,7 @@ namespace Vangog
 	: QObject (parent)
 	, ClientId_ ("844868161425.apps.googleusercontent.com")
 	, ClientSecret_ ("l09HkM6nbPMEYcMdcdeGBdaV")
-	, Scope_ ("https://www.googleapis.com/auth/picasa")
+	, Scope_ ("https://picasaweb.google.com/data/")
 	, ResponseType_ ("code")
 	, RedirectUri_ ("urn:ietf:wg:oauth:2.0:oob")
 	, Proxy_ (proxy)

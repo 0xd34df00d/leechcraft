@@ -32,6 +32,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/ihavesettings.h>
 #include <interfaces/blasq/iservicesplugin.h>
 
 namespace LeechCraft
@@ -51,6 +52,7 @@ namespace Vangog
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Blasq::IServicesPlugin)
 
 		PicasaService *Service_;
+
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
