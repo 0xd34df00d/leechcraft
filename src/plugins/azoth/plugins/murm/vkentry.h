@@ -57,6 +57,8 @@ namespace Murm
 
 		QTimer *RemoteTypingTimer_;
 		QTimer *LocalTypingTimer_;
+
+		bool HasUnread_ = false;
 	public:
 		VkEntry (const UserInfo&, VkAccount*);
 

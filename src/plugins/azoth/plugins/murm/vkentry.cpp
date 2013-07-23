@@ -110,6 +110,7 @@ namespace Murm
 		{
 			emit chatPartStateChanged (CPSActive, "");
 			RemoteTypingTimer_->stop ();
+			HasUnread_ = true;
 		}
 
 		auto msg = new VkMessage (dir, IMessage::MTChatMessage, this);
@@ -240,6 +241,21 @@ namespace Murm
 
 	void VkEntry::MarkMsgsRead ()
 	{
+		if (!HasUnread_)
+			return;
+
+		QList<qulonglong> ids;
+		for (auto msg : Messages_)
+			if (!msg->IsRead ())
+			{
+				ids << msg->GetID ();
+				msg->SetRead ();
+			}
+
+		HasUnread_ = false;
+
+		if (!ids.isEmpty ())
+			Account_->GetConnection ()->MarkAsRead (ids);
 	}
 
 	void VkEntry::ChatTabClosed()
