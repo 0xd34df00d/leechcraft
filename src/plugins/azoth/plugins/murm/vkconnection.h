@@ -70,6 +70,7 @@ namespace Murm
 		QList<QPair<QNetworkReply*, PreparedCall_f>> RunningCalls_;
 
 		EntryStatus Status_;
+		EntryStatus CurrentStatus_;
 
 		QString LPKey_;
 		QString LPServer_;
@@ -96,11 +97,12 @@ namespace Murm
 		void MarkAsRead (const QList<qulonglong>&);
 
 		void SetStatus (const EntryStatus&);
-		const EntryStatus& GetStatus () const;
+		EntryStatus GetStatus () const;
 	private:
 		void PushFriendsRequest ();
 		void PushLPFetchCall ();
 		void Poll ();
+		void GoOffline ();
 
 		bool CheckFinishedReply (QNetworkReply*);
 	private slots:
@@ -116,7 +118,11 @@ namespace Murm
 
 		void saveCookies (const QByteArray&);
 	signals:
+		void statusChanged (EntryStatus);
+
 		void cookiesChanged ();
+
+		void stoppedPolling ();
 
 		void gotLists (const QList<ListInfo>&);
 		void gotUsers (const QList<UserInfo>&);

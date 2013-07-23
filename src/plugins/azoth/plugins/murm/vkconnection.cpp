@@ -188,9 +188,9 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
-	const EntryStatus& VkConnection::GetStatus () const
+	EntryStatus VkConnection::GetStatus () const
 	{
-		return Status_;
+		return CurrentStatus_;
 	}
 
 	void VkConnection::PushFriendsRequest ()
@@ -283,10 +283,20 @@ namespace Murm
 		{
 			++PollErrorCount_;
 			Poll ();
+			if (PollErrorCount_ > 3)
+			{
+				CurrentStatus_ = EntryStatus ();
+				emit statusChanged (GetStatus ());
+			}
+
 			return;
 		}
-		else
+		else if (PollErrorCount_)
+		{
 			PollErrorCount_ = 0;
+			CurrentStatus_ = Status_;
+			emit statusChanged (GetStatus ());
+		}
 
 		const auto& data = QJson::Parser ().parse (reply);
 		const auto& rootMap = data.toMap ();
@@ -312,7 +322,19 @@ namespace Murm
 		}
 
 		LPTS_ = rootMap ["ts"].toULongLong ();
-		Poll ();
+
+		if (Status_.State_ != SOffline)
+			Poll ();
+		else
+			GoOffline ();
+	}
+
+	void VkConnection::GoOffline ()
+	{
+		CurrentStatus_ = Status_;
+		emit statusChanged (GetStatus ());
+
+		emit stoppedPolling ();
 	}
 
 	void VkConnection::rerunPrepared ()
@@ -407,6 +429,9 @@ namespace Murm
 		LPURLTemplate_.addQueryItem ("key", LPKey_);
 		LPURLTemplate_.addQueryItem ("wait", "25");
 		LPURLTemplate_.addQueryItem ("mode", "2");
+
+		CurrentStatus_ = Status_;
+		emit statusChanged (GetStatus ());
 
 		Poll ();
 	}

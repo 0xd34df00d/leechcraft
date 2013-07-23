@@ -101,6 +101,8 @@ namespace Murm
 		void handleMessage (const MessageInfo&);
 		void handleTypingNotification (qulonglong);
 
+		void finishOffline ();
+
 		void emitUpdateAcc ();
 	signals:
 		void accountRenamed (const QString&);

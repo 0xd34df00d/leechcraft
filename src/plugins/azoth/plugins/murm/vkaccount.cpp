@@ -56,6 +56,10 @@ namespace Murm
 				this,
 				SLOT (emitUpdateAcc ()));
 		connect (Conn_,
+				SIGNAL (stoppedPolling ()),
+				this,
+				SLOT (finishOffline ()));
+		connect (Conn_,
 				SIGNAL (gotUsers (QList<UserInfo>)),
 				this,
 				SLOT (handleUsers (QList<UserInfo>)));
@@ -71,6 +75,10 @@ namespace Murm
 				SIGNAL (gotTypingNotification (qulonglong)),
 				this,
 				SLOT (handleTypingNotification (qulonglong)));
+		connect (Conn_,
+				SIGNAL (statusChanged (EntryStatus)),
+				this,
+				SIGNAL (statusChanged (EntryStatus)));
 	}
 
 	QByteArray VkAccount::Serialize () const
@@ -188,7 +196,7 @@ namespace Murm
 
 	EntryStatus VkAccount::GetState () const
 	{
-		return {};
+		return Conn_->GetStatus ();
 	}
 
 	void VkAccount::ChangeState (const EntryStatus& status)
@@ -282,6 +290,13 @@ namespace Murm
 
 		const auto entry = Entries_.value (uid);
 		entry->HandleTypingNotification ();
+	}
+
+	void VkAccount::finishOffline ()
+	{
+		emit removedCLItems (GetCLEntries ());
+		qDeleteAll (Entries_);
+		Entries_.clear ();
 	}
 
 	void VkAccount::emitUpdateAcc ()
