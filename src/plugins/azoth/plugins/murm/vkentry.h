@@ -33,6 +33,8 @@
 #include <interfaces/azoth/iclentry.h>
 #include "structures.h"
 
+class QTimer;
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -52,6 +54,8 @@ namespace Murm
 		UserInfo Info_;
 
 		QList<VkMessage*> Messages_;
+
+		QTimer *TypingTimer_;
 	public:
 		VkEntry (const UserInfo&, VkAccount*);
 
@@ -63,6 +67,8 @@ namespace Murm
 
 		VkMessage* FindMessage (qulonglong) const;
 		void HandleMessage (const MessageInfo&);
+
+		void HandleTypingNotification ();
 
 		QObject* GetQObject ();
 		QObject* GetParentAccount () const;
@@ -86,6 +92,8 @@ namespace Murm
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
 		void MarkMsgsRead ();
 		void ChatTabClosed ();
+	private slots:
+		void handleTypingTimeout ();
 	signals:
 		void gotMessage (QObject*);
 		void statusChanged (const EntryStatus&, const QString&);

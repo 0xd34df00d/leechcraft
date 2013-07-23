@@ -93,6 +93,8 @@ namespace Murm
 		void handleUsers (const QList<UserInfo>&);
 		void handleUserState (qulonglong, bool);
 		void handleMessage (const MessageInfo&);
+		void handleTypingNotification (qulonglong);
+
 		void emitUpdateAcc ();
 	signals:
 		void accountRenamed (const QString&);

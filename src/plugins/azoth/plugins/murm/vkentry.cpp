@@ -30,6 +30,7 @@
 #include "vkentry.h"
 #include <QStringList>
 #include <QtDebug>
+#include <QTimer>
 #include "vkaccount.h"
 #include "vkmessage.h"
 
@@ -43,7 +44,13 @@ namespace Murm
 	: QObject (account)
 	, Account_ (account)
 	, Info_ (info)
+	, TypingTimer_ (new QTimer (this))
 	{
+		TypingTimer_->setInterval (6000);
+		connect (TypingTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (handleTypingTimeout ()));
 	}
 
 	void VkEntry::UpdateInfo (const UserInfo& info)
@@ -89,10 +96,23 @@ namespace Murm
 		const auto dir = info.Flags_ & MessageFlag::Outbox ?
 				IMessage::DOut :
 				IMessage::DIn;
+
+		if (dir == IMessage::DIn)
+		{
+			emit chatPartStateChanged (CPSActive, "");
+			TypingTimer_->stop ();
+		}
+
 		auto msg = new VkMessage (dir, IMessage::MTChatMessage, this);
 		msg->SetBody (info.Text_);
 		msg->SetDateTime (info.TS_);
 		Store (msg);
+	}
+
+	void VkEntry::HandleTypingNotification ()
+	{
+		emit chatPartStateChanged (CPSComposing, "");
+		TypingTimer_->start ();
 	}
 
 	QObject* VkEntry::GetQObject ()
@@ -203,6 +223,11 @@ namespace Murm
 
 	void VkEntry::ChatTabClosed()
 	{
+	}
+
+	void VkEntry::handleTypingTimeout ()
+	{
+		emit chatPartStateChanged (CPSPaused, "");
 	}
 }
 }

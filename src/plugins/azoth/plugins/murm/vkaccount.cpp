@@ -65,6 +65,10 @@ namespace Murm
 				SIGNAL (gotMessage (MessageInfo)),
 				this,
 				SLOT (handleMessage (MessageInfo)));
+		connect (Conn_,
+				SIGNAL (gotTypingNotification (qulonglong)),
+				this,
+				SLOT (handleTypingNotification (qulonglong)));
 	}
 
 	QByteArray VkAccount::Serialize () const
@@ -251,6 +255,21 @@ namespace Murm
 
 		const auto entry = Entries_.value (from);
 		entry->HandleMessage (info);
+	}
+
+	void VkAccount::handleTypingNotification (qulonglong uid)
+	{
+		if (!Entries_.contains (uid))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "message from unknown user"
+					<< uid;
+			Conn_->RerequestFriends ();
+			return;
+		}
+
+		const auto entry = Entries_.value (uid);
+		entry->HandleTypingNotification ();
 	}
 
 	void VkAccount::emitUpdateAcc ()
