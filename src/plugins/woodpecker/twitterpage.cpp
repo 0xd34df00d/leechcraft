@@ -495,11 +495,10 @@ namespace Woodpecker
 	
 	void TwitterPage::openSearchTimeline()
 	{
-		bool ok;
 		const QString& text = QInputDialog::getText (this, tr ("Twitter search"),
 													tr ("Search request"), QLineEdit::Normal,
-													QString (), &ok);
-		if (ok && !text.isEmpty ())
+													QString ());
+		if (!text.isEmpty ())
 		{
 			KQOAuthParameters param;
 			param.insert ("q", text.toUtf8 ());
@@ -534,7 +533,6 @@ namespace Woodpecker
 		
 		Interface_->Delete (twitid);
 	}
-	
 }
 }
 
