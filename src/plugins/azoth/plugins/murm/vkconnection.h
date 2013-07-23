@@ -58,14 +58,14 @@ namespace Murm
 	{
 		Q_OBJECT
 
-		Util::SvcAuth::VkAuthManager * const AuthMgr_;
+		LeechCraft::Util::SvcAuth::VkAuthManager * const AuthMgr_;
 		const ICoreProxy_ptr Proxy_;
 
 		QByteArray LastCookies_;
 
 		typedef std::function<QNetworkReply* (QString)> PreparedCall_f;
 		QList<PreparedCall_f> PreparedCalls_;
-		Util::QueueManager *CallQueue_;
+		LeechCraft::Util::QueueManager *CallQueue_;
 
 		QList<QPair<QNetworkReply*, PreparedCall_f>> RunningCalls_;
 
