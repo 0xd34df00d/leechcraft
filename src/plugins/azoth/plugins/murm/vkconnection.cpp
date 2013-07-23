@@ -200,7 +200,9 @@ namespace Murm
 			{
 				QUrl friendsUrl ("https://api.vk.com/method/friends.get");
 				friendsUrl.addQueryItem ("access_token", key);
-				friendsUrl.addQueryItem ("fields", "first_name,last_name,nickname,photo");
+				friendsUrl.addQueryItem ("fields",
+						"first_name,last_name,nickname,photo,photo_big,sex,"
+						"bdate,city,country,timezone,contacts,education");
 				auto reply = nam->get (QNetworkRequest (friendsUrl));
 				connect (reply,
 						SIGNAL (finished ()),
@@ -391,6 +393,12 @@ namespace Murm
 			for (const auto& item : userMap ["lists"].toList ())
 				lists << item.toULongLong ();
 
+			qDebug () << userMap;
+
+			auto dateString = userMap ["bdate"].toString ();
+			if (dateString.count ('.') == 1)
+				dateString += ".1800";
+
 			const UserInfo ui
 			{
 				userMap ["uid"].toULongLong (),
@@ -400,6 +408,16 @@ namespace Murm
 				userMap ["nickname"].toString (),
 
 				QUrl (userMap ["photo"].toString ()),
+				QUrl (userMap ["photo_big"].toString ()),
+
+				userMap ["sex"].toInt (),
+
+				QDate::fromString (dateString, "d.M.yyyy"),
+
+				userMap ["home_phone"].toString (),
+				userMap ["mobile_phone"].toString (),
+
+				userMap ["timezone"].toInt (),
 
 				static_cast<bool> (userMap ["online"].toULongLong ()),
 

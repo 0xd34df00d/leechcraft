@@ -55,6 +55,16 @@ namespace Murm
 		QString Nick_;
 
 		QUrl Photo_;
+		QUrl BigPhoto_;
+
+		int Gender_;
+	
+		QDate Birthday_;
+
+		QString HomePhone_;
+		QString MobilePhone_;
+
+		int Timezone_;
 
 		bool IsOnline_;
 
