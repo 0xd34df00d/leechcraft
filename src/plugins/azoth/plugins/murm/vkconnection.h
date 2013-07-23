@@ -79,6 +79,8 @@ namespace Murm
 
 		QHash<int, std::function<void (QVariantList)>> Dispatcher_;
 		QHash<QNetworkReply*, std::function<void (qulonglong)>> MsgReply2Setter_;
+
+		int PollErrorCount_ = 0;
 		int APIErrorCount_ = 0;
 		bool ShouldRerunPrepared_ = false;
 	public:

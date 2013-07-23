@@ -232,6 +232,15 @@ namespace Murm
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
 
+		if (reply->error () != QNetworkReply::NoError)
+		{
+			++PollErrorCount_;
+			Poll ();
+			return;
+		}
+		else
+			PollErrorCount_ = 0;
+
 		const auto& data = QJson::Parser ().parse (reply);
 		const auto& rootMap = data.toMap ();
 		if (rootMap.contains ("failed"))
