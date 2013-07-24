@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2013  Slava Barinov <rayslava@gmail.com>
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,12 +27,11 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "pasteservicefactory.h"
-#include <QIcon>
-#include "codepadservice.h"
-#include "bpasteservice.h"
-#include "hastebinservice.h"
 #include "pasteorgruservice.h"
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QtDebug>
+#include <QRegExp>
 
 namespace LeechCraft
 {
@@ -40,20 +39,34 @@ namespace Azoth
 {
 namespace Autopaste
 {
-	PasteServiceFactory::PasteServiceFactory ()
+	PasteOrgRuService::PasteOrgRuService (QObject *entry, QObject *parent)
+	: PasteServiceBase (entry, parent)
 	{
-		Infos_.push_back ({ "bpaste.net", QIcon (), [] (QObject *entry) { return new BPasteService (entry); } });
-		Infos_.push_back ({ "codepad.org", QIcon (), [] (QObject *entry) { return new CodepadService (entry); } });
-		Infos_.push_back ({ "paste.org.ru", QIcon (), [] (QObject *entry) { return new PasteOrgRuService (entry); } });
 
-#ifdef WITH_JSON
-		Infos_.push_back ({ "hastebin.com", QIcon (), [] (QObject *entry) { return new HastebinService (entry); } });
-#endif
 	}
 
-	QList<PasteServiceFactory::PasteInfo> PasteServiceFactory::GetInfos () const
+	void PasteOrgRuService::Paste (const PasteParams& params)
 	{
-		return Infos_;
+		QNetworkRequest req (QString ("http://paste.org.ru:2/"));
+		const QByteArray& data = "c=" + params.Text_.toUtf8 ().toPercentEncoding ();
+
+		InitReply (params.NAM_->post (req, data));
+	}
+
+	void PasteOrgRuService::handleFinished ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		const auto& bytes = reply->readAll ();
+		sender ()->deleteLater ();
+		
+		QRegExp rx("a href='(/\\?[A-Za-z0-9]+)'");
+		if (rx.indexIn (bytes) == -1)
+		{
+			qWarning () << Q_FUNC_INFO << "paste.org.ru service problem";
+			return;
+		}
+		QUrl url (QString ("http://paste.org.ru:2%1").arg (rx.cap (1)));
+		FeedURL (url.toString ());
 	}
 }
 }

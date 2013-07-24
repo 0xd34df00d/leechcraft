@@ -20,10 +20,23 @@ set (AUTOPASTE_SRCS
 	autopaste.cpp
 	bpasteservice.cpp
 	codepadservice.cpp
+	hastebinservice.cpp
+	pasteorgruservice.cpp
 	pastedialog.cpp
 	pasteservicebase.cpp
 	pasteservicefactory.cpp
 	xmlsettingsmanager.cpp
+	)
+set (AUTOPASTE_HEADERS
+	autopaste.h
+	bpasteservice.h
+	codepadservice.h
+	hastebinservice.h
+	pasteorgruservice.h
+	pastedialog.h
+	pasteservicebase.h
+	pasteservicefactory.h
+	xmlsettingsmanager.h
 	)
 
 if (WITH_AZOTH_AUTOPASTE_JSON)
