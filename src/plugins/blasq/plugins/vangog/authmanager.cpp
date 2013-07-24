@@ -45,13 +45,17 @@ namespace Blasq
 {
 namespace Vangog
 {
+	namespace
+	{
+		const QString ClientId_ ("844868161425.apps.googleusercontent.com");
+		const QString ClientSecret_ ("l09HkM6nbPMEYcMdcdeGBdaV");
+		const QString Scope_ ("https://picasaweb.google.com/data/");
+		const QString ResponseType_ ("code");
+		const QString RedirectUri_ ("urn:ietf:wg:oauth:2.0:oob");
+
+	}
 	AuthManager::AuthManager (ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
-	, ClientId_ ("844868161425.apps.googleusercontent.com")
-	, ClientSecret_ ("l09HkM6nbPMEYcMdcdeGBdaV")
-	, Scope_ ("https://picasaweb.google.com/data/")
-	, ResponseType_ ("code")
-	, RedirectUri_ ("urn:ietf:wg:oauth:2.0:oob")
 	, Proxy_ (proxy)
 	{
 	}
@@ -119,8 +123,7 @@ namespace Vangog
 		if (code == QDialog::Rejected)
 			return;
 
-		if (InputDialog_ &&
-				InputDialog_->textValue ().isEmpty ())
+		if (InputDialog_->textValue ().isEmpty ())
 			return;
 
 		RequestAuthToken (InputDialog_->textValue (), acc);

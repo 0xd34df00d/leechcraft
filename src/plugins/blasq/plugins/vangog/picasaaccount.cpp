@@ -46,12 +46,12 @@ namespace Blasq
 namespace Vangog
 {
 	PicasaAccount::PicasaAccount (const QString& name, PicasaService *service,
-			ICoreProxy_ptr proxy, const QString& login)
+			ICoreProxy_ptr proxy, const QString& login, const QByteArray& id)
 	: QObject (service)
 	, Name_ (name)
 	, Service_ (service)
 	, Proxy_ (proxy)
-	, ID_ (QUuid::createUuid ().toByteArray ())
+	, ID_ (id.isEmpty () ? QUuid::createUuid ().toByteArray () : id)
 	, Login_ (login)
 	, Ready_ (false)
 	, PicasaManager_ (new PicasaManager (this, this))
@@ -80,10 +80,11 @@ namespace Vangog
 		QByteArray result;
 		{
 			QDataStream out (&result, QIODevice::WriteOnly);
-			out << static_cast<quint8> (2)
+			out << static_cast<quint8> (3)
 					<< Name_
 					<< RefreshToken_
-					<< Login_;
+					<< Login_
+					<< ID_;
 		}
 		return result;
 	}
@@ -106,12 +107,16 @@ namespace Vangog
 		QString name;
 		QString refreshKey;
 		QString login;
+		QByteArray id;
 		in >> name
 				>> refreshKey;
-		if (version == 2)
+		if (version >= 2)
 			in >> login;
 
-		auto acc = new PicasaAccount (name, service, proxy, login);
+		if (version == 3)
+			in >> id;
+
+		auto acc = new PicasaAccount (name, service, proxy, login, id);
 		acc->RefreshToken_ = refreshKey;
 
 		return acc;
@@ -192,7 +197,8 @@ namespace Vangog
 
 	void PicasaAccount::handleGotAlbums (const QList<Album>& albums)
 	{
-		CollectionsModel_->clear ();
+		if (auto rc = CollectionsModel_->rowCount ())
+			CollectionsModel_->removeRows (0, rc);
 		CollectionsModel_->setHorizontalHeaderLabels ({ tr ("Name") });
 
 		AlbumId2AlbumItem_.clear ();
@@ -250,6 +256,7 @@ namespace Vangog
 			AlbumID2PhotosSet_ [photo.AlbumID_] << photo.ID_;
 			AlbumId2AlbumItem_ [photo.AlbumID_]->appendRow (mkItem ());
 		}
+		emit doneUpdating ();
 	}
 }
 }

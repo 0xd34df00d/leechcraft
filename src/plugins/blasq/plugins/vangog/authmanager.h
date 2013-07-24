@@ -47,12 +47,6 @@ namespace Vangog
 	{
 		Q_OBJECT
 
-		const QString ClientId_;
-		const QString ClientSecret_;
-		const QString Scope_;
-		const QString ResponseType_;
-		const QString RedirectUri_;
-
 		QInputDialog *InputDialog_;
 		QMap<QInputDialog*, PicasaAccount*> Dialog2Account_;
 		QMap<QNetworkReply*, PicasaAccount*> Reply2Account_;

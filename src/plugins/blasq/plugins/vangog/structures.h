@@ -29,16 +29,9 @@
 
 #pragma once
 
-#include <functional>
-#include <memory>
-#include <QObject>
-#include <QSet>
-#include <interfaces/blasq/iaccount.h>
-#include <interfaces/core/icoreproxy.h>
-#include "picasamanager.h"
-
-class QStandardItemModel;
-class QStandardItem;
+#include <QDateTime>
+#include <QStringList>
+#include <QUrl>
 
 namespace LeechCraft
 {
@@ -46,64 +39,90 @@ namespace Blasq
 {
 namespace Vangog
 {
-	class PicasaService;
-
-	class PicasaAccount : public QObject
-						, public IAccount
+	enum class Access
 	{
-		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blasq::IAccount)
+		Private,
+		Public
+	};
 
+	struct Author
+	{
 		QString Name_;
-		PicasaService * const Service_;
-		const ICoreProxy_ptr Proxy_;
+		QUrl Image_;
+	};
+
+	struct Thumbnail
+	{
+		QUrl Url_;
+		int Width_;
+		int Height_;
+
+		Thumbnail ()
+		: Width_ (0)
+		, Height_ (0)
+		{}
+	};
+
+	struct Album
+	{
 		QByteArray ID_;
-		QString Login_;
-		QString AccessToken_;
-		QString RefreshToken_;
-		bool Ready_;
+		QString Title_;
+		QDateTime Published_;
+		QDateTime Updated_;
+		Access Access_;
+		Author Author_;
+		int NumberOfPhoto_;
+		quint64 BytesUsed_;
+		QList<Thumbnail> Thumbnails_;
 
-		PicasaManager *PicasaManager_;
+		Album ()
+		: Access_ (Access::Private)
+		, NumberOfPhoto_ (0)
+		, BytesUsed_ (0)
+		{}
+	};
 
-		QStandardItemModel * const CollectionsModel_;
-		QStandardItem *AllPhotosItem_;
-		QHash<QByteArray, QStandardItem*> AlbumId2AlbumItem_;
-		QHash<QByteArray, QSet<QByteArray>> AlbumID2PhotosSet_;
+	struct Exif
+	{
+		QString Manufacturer_;
+		QString Model_;
+		int FNumber_;
+		float Exposure_;
+		bool Flash_;
+		float FocalLength_;
+		int ISO_;
 
-	public:
-		PicasaAccount (const QString& name, PicasaService *service,
-				ICoreProxy_ptr proxy, const QString& login,
-				const QByteArray& id = QByteArray ());
+		Exif ()
+		: FNumber_ (0)
+		, Exposure_ (0.0)
+		, Flash_ (false)
+		, FocalLength_ (0.0)
+		, ISO_ (0)
+		{}
+	};
 
-		ICoreProxy_ptr GetProxy () const;
+	struct Photo
+	{
+		QByteArray ID_;
+		QString Title_;
+		QDateTime Published_;
+		QDateTime Updated_;
+		Access Access_;
+		QByteArray AlbumID_;
+		int Width_;
+		int Height_;
+		quint64 Size_;
+		Exif Exif_;
+		QUrl Url_;
+		QStringList Tags_;
+		QList<Thumbnail> Thumbnails_;
 
-		QByteArray Serialize () const;
-		static PicasaAccount* Deserialize (const QByteArray& data,
-				PicasaService *service, ICoreProxy_ptr proxy);
-
-		QObject* GetQObject () override;
-		IService* GetService () const override;
-		QString GetName () const override;
-		QByteArray GetID () const override;
-
-		QString GetLogin () const;
-		void SetAccessToken (const QString& token);
-		void SetRefreshToken (const QString& token);
-		QString GetRefreshToken () const;
-
-		QAbstractItemModel* GetCollectionsModel () const override;
-
-		void UpdateCollections () override;
-	private:
-		bool TryToEnterLoginIfNoExists ();
-
-	private slots:
-		void handleGotAlbums (const QList<Album>& albums);
-		void handleGotPhotos (const QList<Photo>& photos);
-
-	signals:
-		void accountChanged (PicasaAccount *acc);
-		void doneUpdating () override;
+		Photo ()
+		: Access_ (Access::Private)
+		, Width_ (0)
+		, Height_ (0)
+		, Size_ (0)
+		{}
 	};
 }
 }

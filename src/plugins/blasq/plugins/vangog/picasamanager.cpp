@@ -268,13 +268,13 @@ namespace Vangog
 	QList<Album> PicasaManager::ParseAlbums (const QDomDocument& document)
 	{
 		QList<Album> albums;
-		const auto& EntryElements = document.elementsByTagName ("entry");
-		if (EntryElements.isEmpty ())
+		const auto& entryElements = document.elementsByTagName ("entry");
+		if (entryElements.isEmpty ())
 			return albums;
 
-		for (int i = 0, count = EntryElements.count (); i < count; ++i)
+		for (int i = 0, count = entryElements.count (); i < count; ++i)
 		{
-			const auto& album = PicasaEntryToAlbum (EntryElements.at (i).toElement ());
+			const auto& album = PicasaEntryToAlbum (entryElements.at (i).toElement ());
 			UpdatePhotos (album.ID_);
 			albums << album;
 		}
@@ -289,9 +289,7 @@ namespace Vangog
 			return;
 
 		QDomDocument document;
-		QByteArray content;
-		content = CreateDomDocumentFromReply (reply, document);
-		if (content.isEmpty ())
+		if (CreateDomDocumentFromReply (reply, document).isEmpty ())
 			return;
 
 		auto albums = ParseAlbums (document);
@@ -372,7 +370,8 @@ namespace Vangog
 							photo.Height_ = mgField.attribute ("height").toInt ();
 							photo.Width_ = mgField.attribute ("width").toInt ();
 							photo.Url_ = QUrl (mgField.attribute ("url"));
-						}else if (mgName == "media:keywords")
+						}
+						else if (mgName == "media:keywords")
 							photo.Tags_ = mgValue.split (',');
 						else if (mgName == "media:thumbnail")
 						{
@@ -409,9 +408,7 @@ namespace Vangog
 			return;
 
 		QDomDocument document;
-		QByteArray content;
-		content = CreateDomDocumentFromReply (reply, document);
-		if (content.isEmpty ())
+		if (CreateDomDocumentFromReply (reply, document).isEmpty ())
 			return;
 
 		emit gotPhotos (ParsePhotos (document));

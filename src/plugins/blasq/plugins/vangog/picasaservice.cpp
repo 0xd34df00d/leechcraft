@@ -61,7 +61,7 @@ namespace Vangog
 
 	QString PicasaService::GetServiceName () const
 	{
-		return tr ("Picasa");
+		return "Picasa";
 	}
 
 	QIcon PicasaService::GetServiceIcon () const

@@ -37,6 +37,7 @@
 #include <QQueue>
 #include <QUrl>
 #include <QVariant>
+#include "structures.h"
 
 namespace LeechCraft
 {
@@ -45,92 +46,6 @@ namespace Blasq
 namespace Vangog
 {
 	class PicasaAccount;
-
-	enum class Access
-	{
-		Private,
-		Public
-	};
-
-	struct Author
-	{
-		QString Name_;
-		QUrl Image_;
-	};
-
-	struct Thumbnail
-	{
-		QUrl Url_;
-		int Width_;
-		int Height_;
-
-		Thumbnail ()
-		: Width_ (0)
-		, Height_ (0)
-		{}
-	};
-
-	struct Album
-	{
-		QByteArray ID_;
-		QString Title_;
-		QDateTime Published_;
-		QDateTime Updated_;
-		Access Access_;
-		Author Author_;
-		int NumberOfPhoto_;
-		quint64 BytesUsed_;
-		QList<Thumbnail> Thumbnails_;
-
-		Album ()
-		: Access_ (Access::Private)
-		, NumberOfPhoto_ (0)
-		, BytesUsed_ (0)
-		{}
-	};
-
-	struct Exif
-	{
-		QString Manufacturer_;
-		QString Model_;
-		int FNumber_;
-		float Exposure_;
-		bool Flash_;
-		float FocalLength_;
-		int ISO_;
-
-		Exif ()
-		: FNumber_ (0)
-		, Exposure_ (0.0)
-		, Flash_ (false)
-		, FocalLength_ (0.0)
-		, ISO_ (0)
-		{}
-	};
-
-	struct Photo
-	{
-		QByteArray ID_;
-		QString Title_;
-		QDateTime Published_;
-		QDateTime Updated_;
-		Access Access_;
-		QByteArray AlbumID_;
-		int Width_;
-		int Height_;
-		quint64 Size_;
-		Exif Exif_;
-		QUrl Url_;
-		QStringList Tags_;
-		QList<Thumbnail> Thumbnails_;
-
-		Photo ()
-		: Access_ (Access::Private)
-		, Width_ (0)
-		, Height_ (0)
-		, Size_ (0)
-		{}
-	};
 
 	class PicasaManager : public QObject
 	{
