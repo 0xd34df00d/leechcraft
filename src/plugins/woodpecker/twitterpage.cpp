@@ -60,7 +60,6 @@ namespace Woodpecker
 		Delegate_ = new TwitDelegate (Ui_.TwitList_, ParentPlugin_);
 		Ui_.TwitList_->setItemDelegate (Delegate_);
 		
-		//	Toolbar_->addAction (ui->actionRefresh);
 		Interface_ = new TwitterInterface (this);
 		connect (Interface_,
 				SIGNAL (tweetsReady (QList<Tweet_ptr>)),
@@ -172,7 +171,16 @@ namespace Woodpecker
 		Ui_.TwitList_->addActions ({ ActionRetwit_, ActionReply_, ActionCopyText_, 
 			ActionDelete_, ActionShowFavorites_, ActionMakeFavorite_, ActionDeleteFavorite_,
 			ActionOpenWeb_, ActionSearch_, ActionSPAM_ });
+		
+		ActionShowOwnFavorites_ = new QAction (tr ("Show user favorites"), Ui_.TwitList_);
+		ActionShowOwnFavorites_->setProperty ("ActionIcon", "folder-favorites");
+		connect (ActionShowOwnFavorites_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (showOwnFavorites ()));
 
+		Toolbar_->addAction (ActionShowOwnFavorites_);
+		
 		if ((!Settings_->value ("token").isNull ()) && (!Settings_->value ("tokenSecret").isNull ()))
 		{
 			qDebug () << "Have an authorized" << Settings_->value ("token") << ":" << Settings_->value ("tokenSecret");
@@ -601,6 +609,13 @@ namespace Woodpecker
 		ParentPlugin_->AddTab (ParentPlugin_->FavoriteTC_,
 							   tr ("@%1 favorites").arg (username),
 							   FeedMode::Favorites, param);	
+	}
+	
+	void TwitterPage::showOwnFavorites ()
+	{
+			ParentPlugin_->AddTab (ParentPlugin_->FavoriteTC_,
+							   tr ("Favorite twits"),
+							   FeedMode::Favorites);	
 	}
 }
 }

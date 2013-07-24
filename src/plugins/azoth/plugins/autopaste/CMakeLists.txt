@@ -20,6 +20,8 @@ set (AUTOPASTE_SRCS
 	autopaste.cpp
 	bpasteservice.cpp
 	codepadservice.cpp
+	hastebinservice.cpp
+	pasteorgruservice.cpp
 	pastedialog.cpp
 	pasteservicebase.cpp
 	pasteservicefactory.cpp
