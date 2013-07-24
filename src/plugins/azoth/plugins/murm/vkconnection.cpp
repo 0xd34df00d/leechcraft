@@ -136,12 +136,21 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
+	namespace
+	{
+		template<typename T>
+		QString CommaJoin (const QList<T>& ids)
+		{
+			QStringList converted;
+			for (auto id : ids)
+				converted << QString::number (id);
+			return converted.join (",");
+		}
+	}
+
 	void VkConnection::MarkAsRead (const QList<qulonglong>& ids)
 	{
-		QStringList converted;
-		for (auto id : ids)
-			converted << QString::number (id);
-		const auto& joined = converted.join (",");
+		const auto& joined = CommaJoin (ids);
 
 		auto nam = Proxy_->GetNetworkAccessManager ();
 		PreparedCalls_.push_back ([this, nam, joined] (const QString& key) -> QNetworkReply*
@@ -149,7 +158,6 @@ namespace Murm
 				QUrl url ("https://api.vk.com/method/messages.markAsRead");
 				url.addQueryItem ("access_token", key);
 				url.addQueryItem ("mids", joined);
-				qDebug () << url;
 
 				auto reply = nam->get (QNetworkRequest (url));
 				connect (reply,
