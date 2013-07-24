@@ -26,6 +26,7 @@ set (MURM_SRCS
 	vkmessage.cpp
 	photostorage.cpp
 	vcarddialog.cpp
+	georesolver.cpp
 	)
 set (MURM_FORMS
 	vcarddialog.ui
