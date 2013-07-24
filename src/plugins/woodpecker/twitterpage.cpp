@@ -611,7 +611,7 @@ namespace Woodpecker
 							   FeedMode::Favorites, param);	
 	}
 	
-	void TwitterPage::showOwnFavorites()
+	void TwitterPage::showOwnFavorites ()
 	{
 			ParentPlugin_->AddTab (ParentPlugin_->FavoriteTC_,
 							   tr ("Favorite twits"),

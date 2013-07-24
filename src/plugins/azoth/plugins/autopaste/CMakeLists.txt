@@ -27,17 +27,6 @@ set (AUTOPASTE_SRCS
 	pasteservicefactory.cpp
 	xmlsettingsmanager.cpp
 	)
-set (AUTOPASTE_HEADERS
-	autopaste.h
-	bpasteservice.h
-	codepadservice.h
-	hastebinservice.h
-	pasteorgruservice.h
-	pastedialog.h
-	pasteservicebase.h
-	pasteservicefactory.h
-	xmlsettingsmanager.h
-	)
 
 if (WITH_AZOTH_AUTOPASTE_JSON)
 	add_definitions (-DWITH_JSON)
