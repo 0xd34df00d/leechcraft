@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2013  Oleg Linkin MaledictusDeMagog@gmail.com
+ * Copyright (C) 2010-2013  Oleg Linkin <MaledictusDeMagog@gmail.com>
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -35,9 +35,9 @@
 #include <QMainWindow>
 #include <qjson/parser.h>
 #include <util/util.h>
-#include "picasaaccount.h"
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/ientitymanager.h>
+#include "picasaaccount.h"
 
 namespace LeechCraft
 {
@@ -113,7 +113,7 @@ namespace Vangog
 	{
 		InputDialog_->deleteLater ();
 		PicasaAccount *acc = Dialog2Account_.take (InputDialog_);
-		std::shared_ptr<void> guard (static_cast<void*> (0),
+		std::shared_ptr<void> guard (nullptr,
 				[this] (void*) { InputDialog_ = 0; });
 
 		if (code == QDialog::Rejected)
@@ -145,7 +145,12 @@ namespace Vangog
 		QVariantMap map = res.toMap ();
 
 		if (map.contains ("error"))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "there is error in answer"
+					<< map;
 			return;
+		}
 
 		if (map.contains ("access_token"))
 			acc->SetAccessToken (map ["access_token"].toString ());

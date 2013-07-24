@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2013  Oleg Linkin MaledictusDeMagog@gmail.com
+ * Copyright (C) 2010-2013  Oleg Linkin <MaledictusDeMagog@gmail.com>
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,12 +30,10 @@
 #include "picasamanager.h"
 #include <QNetworkReply>
 #include <QNetworkRequest>
-#include <QtDebug>
 #include <QStandardItemModel>
+#include <QtDebug>
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
-#include <boost/concept_check.hpp>
-#include <boost/graph/graph_concepts.hpp>
 #include "picasaaccount.h"
 
 namespace LeechCraft
