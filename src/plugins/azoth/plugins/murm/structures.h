@@ -66,6 +66,9 @@ namespace Murm
 
 		int Timezone_;
 
+		int Country_;
+		int City_;
+
 		bool IsOnline_;
 
 		QList<qulonglong> Lists_;

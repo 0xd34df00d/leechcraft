@@ -434,8 +434,6 @@ namespace Murm
 			for (const auto& item : userMap ["lists"].toList ())
 				lists << item.toULongLong ();
 
-			qDebug () << userMap;
-
 			auto dateString = userMap ["bdate"].toString ();
 			if (dateString.count ('.') == 1)
 				dateString += ".1800";
@@ -459,6 +457,8 @@ namespace Murm
 				userMap ["mobile_phone"].toString (),
 
 				userMap ["timezone"].toInt (),
+				userMap ["country"].toInt (),
+				userMap ["city"].toInt (),
 
 				static_cast<bool> (userMap ["online"].toULongLong ()),
 
