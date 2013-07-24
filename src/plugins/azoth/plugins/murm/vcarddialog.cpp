@@ -30,6 +30,7 @@
 #include "vcarddialog.h"
 #include "structures.h"
 #include "photostorage.h"
+#include "georesolver.h"
 
 namespace LeechCraft
 {
@@ -37,7 +38,8 @@ namespace Azoth
 {
 namespace Murm
 {
-	VCardDialog::VCardDialog (const UserInfo& info, PhotoStorage *storage, QWidget *parent)
+	VCardDialog::VCardDialog (const UserInfo& info,
+			PhotoStorage *storage, GeoResolver *geo, QWidget *parent)
 	: QDialog (parent)
 	, Info_ (info)
 	, Storage_ (storage)
@@ -63,9 +65,15 @@ namespace Murm
 			timezoneText.prepend ('+');
 		Ui_.Timezone_->setText (timezoneText);
 
+		if (info.Country_ > 0)
+			geo->GetCountry (info.Country_,
+					[this] (const QString& country) { Ui_.Country_->setText (country); });
+		if (info.City_ > 0)
+			geo->GetCity (info.City_,
+					[this] (const QString& country) { Ui_.City_->setText (country); });
+
 		if (!info.BigPhoto_.isValid ())
 			return;
-
 		const auto& image = storage->GetImage (info.BigPhoto_);
 		if (image.isNull ())
 			connect (storage,

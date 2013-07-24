@@ -39,6 +39,7 @@ namespace Azoth
 {
 namespace Murm
 {
+	class GeoResolver;
 	class PhotoStorage;
 
 	class VCardDialog : public QDialog
@@ -50,7 +51,7 @@ namespace Murm
 		const UserInfo Info_;
 		PhotoStorage * const Storage_;
 	public:
-		VCardDialog (const UserInfo&, PhotoStorage*, QWidget* = 0);
+		VCardDialog (const UserInfo&, PhotoStorage*, GeoResolver*, QWidget* = 0);
 	private slots:
 		void handleImage (const QUrl&);
 	};

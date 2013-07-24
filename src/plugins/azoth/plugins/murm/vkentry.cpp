@@ -252,7 +252,8 @@ namespace Murm
 		if (VCardDialog_)
 			return;
 
-		VCardDialog_ = new VCardDialog (Info_, Account_->GetPhotoStorage ());
+		VCardDialog_ = new VCardDialog (Info_,
+				Account_->GetPhotoStorage (), Account_->GetGeoResolver ());
 		VCardDialog_->show ();
 	}
 
