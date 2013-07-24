@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2013  Slava Barinov <rayslava@gmail.com>
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,71 +27,47 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_SYNCER_SERVERCHAINHANDLER_H
-#define PLUGINS_SYNCER_SERVERCHAINHANDLER_H
-#include <QStateMachine>
-#include <interfaces/isyncable.h>
-
-class QFinalState;
+#include "pasteorgruservice.h"
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QtDebug>
+#include <QRegExp>
 
 namespace LeechCraft
 {
-namespace Syncer
+namespace Azoth
 {
-	class ServerConnection;
-
-	class ServerChainHandler : public QObject
+namespace Autopaste
+{
+	PasteOrgRuService::PasteOrgRuService (QObject *entry, QObject *parent)
+	: PasteServiceBase (entry, parent)
 	{
-		Q_OBJECT
 
-		QStateMachine SM_;
+	}
 
-		ServerConnection *ServerConnection_;
-		QByteArray Chain_;
+	void PasteOrgRuService::Paste (const PasteParams& params)
+	{
+		QNetworkRequest req (QString ("http://paste.org.ru:2/"));
+		const QByteArray& data = "c=" + params.Text_.toUtf8 ().toPercentEncoding ();
 
-		QState *Idle_;
-		QFinalState *ConnectionError_;
-		QState *LoginPending_;
-		QFinalState *LoginError_;
-		QState *Running_;
-		QState *ReqMaxDeltaPending_;
-		QState *GetDeltasPending_;
-		QState *ProcessDeltas_;
-		QState *PutDeltasPending_;
-		QFinalState *Finish_;
+		InitReply (params.NAM_->post (req, data));
+	}
 
-		quint32 NumLastSent_;
-		quint32 NumLastReceived_;
-	public:
-		ServerChainHandler (const QByteArray&, QObject*);
-	public:
-		void Sync ();
-	private slots:
-		void getNewDeltas ();
-		void handleSuccess (const QList<QByteArray>&);
-		void handleMaxDeltaIDReceived (quint32);
-		void handleDeltasReceived (const QList<QByteArray>&);
-		void handlePutDeltas ();
-		void handleFinished ();
-	signals:
-		void gotNewDeltas (const Sync::Deltas_t&, const QByteArray&);
-		void deltasRequired (Sync::Deltas_t*, const QByteArray&);
-		void successfullySentDeltas (quint32, const QByteArray&);
-
-		void loginError ();
-		void connectionError ();
-		void finishedSuccessfully (quint32 sent, quint32 received);
-
-		// Used internally to control the statemachine.
-		void initiated ();
-		void hasNewDeltas ();
-		void noNewDeltas ();
-		void deltasReceived ();
-		void deltasProcessed ();
-		void fail ();
-		void success ();
-	};
+	void PasteOrgRuService::handleFinished ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		const auto& bytes = reply->readAll ();
+		sender ()->deleteLater ();
+		
+		QRegExp rx("a href='(/\\?[A-Za-z0-9]+)'");
+		if (rx.indexIn (bytes) == -1)
+		{
+			qWarning () << Q_FUNC_INFO << "paste.org.ru service problem";
+			return;
+		}
+		QUrl url (QString ("http://paste.org.ru:2%1").arg (rx.cap (1)));
+		FeedURL (url.toString ());
+	}
 }
 }
-
-#endif
+}

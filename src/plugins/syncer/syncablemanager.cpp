@@ -27,34 +27,30 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "pasteservicefactory.h"
-#include <QIcon>
-#include "codepadservice.h"
-#include "bpasteservice.h"
-#include "hastebinservice.h"
-#include "pasteorgruservice.h"
+#include "syncablemanager.h"
+#include <interfaces/iinfo.h>
+#include <interfaces/isyncable.h>
+#include "singlesyncable.h"
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Syncer
 {
-namespace Autopaste
-{
-	PasteServiceFactory::PasteServiceFactory ()
+	SyncableManager::SyncableManager (QObject *parent)
+	: QObject (parent)
 	{
-		Infos_.push_back ({ "bpaste.net", QIcon (), [] (QObject *entry) { return new BPasteService (entry); } });
-		Infos_.push_back ({ "codepad.org", QIcon (), [] (QObject *entry) { return new CodepadService (entry); } });
-		Infos_.push_back ({ "paste.org.ru", QIcon (), [] (QObject *entry) { return new PasteOrgRuService (entry); } });
-
-#ifdef WITH_JSON
-		Infos_.push_back ({ "hastebin.com", QIcon (), [] (QObject *entry) { return new HastebinService (entry); } });
-#endif
 	}
 
-	QList<PasteServiceFactory::PasteInfo> PasteServiceFactory::GetInfos () const
+	void SyncableManager::AddPlugin (ISyncable *syncable)
 	{
-		return Infos_;
+		auto proxy = syncable->GetSyncProxy ();
+		if (!proxy)
+			return;
+
+		auto info = dynamic_cast<IInfo*> (syncable);
+		const auto& id = info->GetUniqueID ();
+
+		new SingleSyncable (id, proxy, this);
 	}
-}
 }
 }

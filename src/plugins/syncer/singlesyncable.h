@@ -29,50 +29,48 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
-#include <QSettings>
-#include <interfaces/isyncable.h>
-#include "todoitem.h"
+
+class QTcpSocket;
+class QSettings;
+
+class ISyncProxy;
+
+namespace Laretz
+{
+	struct ParseResult;
+}
 
 namespace LeechCraft
 {
-namespace Otlozhu
+namespace Syncer
 {
-	class DeltaGenerator : public QObject
+	class SingleSyncable : public QObject
 	{
 		Q_OBJECT
 
-		QSettings Settings_;
-		bool IsEnabled_;
-		bool IsMerging_;
+		const QByteArray ID_;
+		ISyncProxy * const Proxy_;
 
-		QStringList NewItems_;
-		QHash<QString, QVariantMap> Diffs_;
-		QStringList RemovedItems_;
-	public:
-		enum DeltaType
+		QTcpSocket * const Socket_;
+
+		enum class State
 		{
-			TodoCreated,
-			TodoUpdated,
-			TodoRemoved
-		};
-
-		DeltaGenerator (QObject* = 0);
-
-		void BeginRecording ();
-
-		Sync::Payloads_t GetAllDeltas ();
-		Sync::Payloads_t GetNewDeltas ();
-		void PurgeDeltas (quint32 num);
-		void Apply (const Sync::Payloads_t&);
+			Idle,
+			ListRequested
+		} State_ = State::Idle;
+	public:
+		SingleSyncable (const QByteArray& id, ISyncProxy *proxy, QObject* = 0);
 	private:
-		void ApplyCreated (QDataStream&);
-		void ApplyUpdated (QDataStream&);
-		void ApplyRemoved (QDataStream&);
+		std::shared_ptr<QSettings> GetSettings ();
+
+		void HandleList (const Laretz::ParseResult&);
 	private slots:
-		void handleItemAdded (int);
-		void handleItemRemoved (int);
-		void handleItemDiffGenerated (const QString&, const QVariantMap&);
+		void handleSocketRead ();
+
+		void startSync ();
+		void handleSocketConnected ();
 	};
 }
 }

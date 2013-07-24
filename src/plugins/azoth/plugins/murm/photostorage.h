@@ -27,34 +27,46 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_SYNCER_DATASTORAGEBASE_H
-#define PLUGINS_SYNCER_DATASTORAGEBASE_H
+#pragma once
+
 #include <QObject>
-#include <interfaces/isyncable.h>
+#include <QDir>
+#include <QHash>
+
+class QImage;
+class QUrl;
+class QNetworkAccessManager;
+class QNetworkReply;
 
 namespace LeechCraft
 {
-namespace Syncer
+namespace Util
 {
-	class DataStorageBase : public QObject
+	class QueueManager;
+}
+
+namespace Azoth
+{
+namespace Murm
+{
+	class PhotoStorage : public QObject
 	{
 		Q_OBJECT
-	public:
-		DataStorageBase (QObject*);
-		virtual ~DataStorageBase ();
-	public slots:
-		virtual void sync (const QByteArray&) = 0;
-	signals:
-		void deltasRequired (Sync::Deltas_t*, const QByteArray&);
-		void gotNewDeltas (const Sync::Deltas_t&, const QByteArray&);
-		void successfullySentDeltas (quint32, const QByteArray&);
 
-		void loginError (const QByteArray&);
-		void connectionError (const QByteArray&);
-		void finishedSuccessfully (quint32 sent, quint32 received,
-				const QByteArray& chain);
+		QNetworkAccessManager * const NAM_;
+		LeechCraft::Util::QueueManager * const FetchQueue_;
+		QDir StorageDir_;
+
+		QHash<QUrl, QNetworkReply*> Pending_;
+	public:
+		PhotoStorage (QNetworkAccessManager*, const QString&, QObject* = 0);
+
+		QImage GetImage (const QUrl&);
+	private slots:
+		void handleReply ();
+	signals:
+		void gotImage (const QUrl&);
 	};
 }
 }
-
-#endif
+}

@@ -27,44 +27,80 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_SEEKTHRU_DELTASTORAGE_H
-#define PLUGINS_SEEKTHRU_DELTASTORAGE_H
-#include <QObject>
-#include <QDir>
-#include <QSettings>
-#include <interfaces/isyncable.h>
+#pragma once
+
+#include <QString>
+#include <QList>
+#include <QUrl>
+#include <QDateTime>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+namespace Murm
+{
+	struct ListInfo
 	{
-		namespace SeekThru
-		{
-			class DeltaStorage : public QObject
-			{
-				Q_OBJECT
+		qulonglong ID_;
+		QString Name_;
+	};
 
-				QString ID_;
-				QSettings Settings_;
-			public:
-				DeltaStorage (const QString&, QObject* = 0);
-				virtual ~DeltaStorage ();
+	struct UserInfo
+	{
+		qulonglong ID_;
 
-				void Store (const Sync::ChainID_t&, const Sync::Payload&);
-				void Store (const Sync::ChainID_t&, const Sync::Payloads_t&);
+		QString FirstName_;
+		QString LastName_;
+		QString Nick_;
 
-				Sync::Payloads_t Get (const Sync::ChainID_t&);
-				void Purge (const Sync::ChainID_t&, quint32 num);
+		QUrl Photo_;
+		QUrl BigPhoto_;
 
-				void DeltasRequested (const Sync::ChainID_t&);
-			private:
-				QDir GetDir (const Sync::ChainID_t&) const;
-				int GetLastFileNum (const Sync::ChainID_t&);
-				void SetLastFileNum (const Sync::ChainID_t&, int);
-				void StoreImpl (const QString&, const Sync::Payload&);
-			};
-		}
-	}
+		int Gender_;
+	
+		QDate Birthday_;
+
+		QString HomePhone_;
+		QString MobilePhone_;
+
+		int Timezone_;
+
+		bool IsOnline_;
+
+		QList<qulonglong> Lists_;
+	};
+
+	enum MessageFlag
+	{
+		None =			0,
+		Unread =		1 << 0,
+		Outbox = 		1 << 1,
+		Replied = 		1 << 2,
+		Important = 	1 << 3,
+		Chat = 			1 << 4,
+		Friends = 		1 << 5,
+		Spam = 			1 << 6,
+		Deleted = 		1 << 7,
+		Fixed = 		1 << 8,
+		Media = 		1 << 9
+	};
+
+	Q_DECLARE_FLAGS (MessageFlags, MessageFlag)
+
+	struct MessageInfo
+	{
+		qulonglong ID_;
+		qulonglong From_;
+
+		QString Text_;
+
+		MessageFlags Flags_;
+
+		QDateTime TS_;
+	};
+}
+}
 }
 
-#endif
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::Murm::MessageFlags)

@@ -27,34 +27,23 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "pasteservicefactory.h"
-#include <QIcon>
-#include "codepadservice.h"
-#include "bpasteservice.h"
-#include "hastebinservice.h"
-#include "pasteorgruservice.h"
+#pragma once
+
+#include <QObject>
+
+class ISyncable;
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Syncer
 {
-namespace Autopaste
-{
-	PasteServiceFactory::PasteServiceFactory ()
+	class SyncableManager : public QObject
 	{
-		Infos_.push_back ({ "bpaste.net", QIcon (), [] (QObject *entry) { return new BPasteService (entry); } });
-		Infos_.push_back ({ "codepad.org", QIcon (), [] (QObject *entry) { return new CodepadService (entry); } });
-		Infos_.push_back ({ "paste.org.ru", QIcon (), [] (QObject *entry) { return new PasteOrgRuService (entry); } });
+		Q_OBJECT
+	public:
+		SyncableManager (QObject* = 0);
 
-#ifdef WITH_JSON
-		Infos_.push_back ({ "hastebin.com", QIcon (), [] (QObject *entry) { return new HastebinService (entry); } });
-#endif
-	}
-
-	QList<PasteServiceFactory::PasteInfo> PasteServiceFactory::GetInfos () const
-	{
-		return Infos_;
-	}
-}
+		void AddPlugin (ISyncable*);
+	};
 }
 }

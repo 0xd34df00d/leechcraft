@@ -27,29 +27,72 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef UTIL_SYNCOPS_H
-#define UTIL_SYNCOPS_H
-#include <QDataStream>
-#include <QByteArray>
-#include <interfaces/isyncable.h>
-#include <util/utilconfig.h>
+#include "murm.h"
+#include <QIcon>
+#include "vkprotocol.h"
 
 namespace LeechCraft
 {
-	namespace Sync
+namespace Azoth
+{
+namespace Murm
+{
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		UTIL_API bool operator== (const Payload&, const Payload&);
+		Proto_ = new VkProtocol (proxy, this);
+	}
 
-		UTIL_API QDataStream& operator<< (QDataStream&, const Payload&);
-		UTIL_API QDataStream& operator>> (QDataStream&, Payload&);
-		UTIL_API QByteArray Serialize (const Payload&);
-		UTIL_API Payload Deserialize (const QByteArray&);
+	void Plugin::SecondInit ()
+	{
+	}
 
-		UTIL_API Payload CreatePayload (const QByteArray&);
+	void Plugin::Release ()
+	{
+	}
 
-		UTIL_API QDataStream& operator<< (QDataStream&, const Delta&);
-		UTIL_API QDataStream& operator>> (QDataStream&, Delta&);
+	QByteArray Plugin::GetUniqueID () const
+	{
+		return "org.LeechCraft.Azoth.Murm";
+	}
+
+	QString Plugin::GetName () const
+	{
+		return "Azoth Murm";
+	}
+
+	QString Plugin::GetInfo () const
+	{
+		return tr ("Native support for the VKontakte messaging protocol.");
+	}
+
+	QIcon Plugin::GetIcon () const
+	{
+		static QIcon icon;
+		return icon;
+	}
+
+	QSet<QByteArray> Plugin::GetPluginClasses () const
+	{
+		QSet<QByteArray> classes;
+		classes << "org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin";
+		return classes;
+	}
+
+	QObject* Plugin::GetQObject ()
+	{
+		return this;
+	}
+
+	QList<QObject*> Plugin::GetProtocols () const
+	{
+		return { Proto_ };
+	}
+
+	void Plugin::initPlugin (QObject *proxy)
+	{
 	}
 }
+}
+}
 
-#endif
+LC_EXPORT_PLUGIN (leechcraft_azoth_murm, LeechCraft::Azoth::Murm::Plugin);

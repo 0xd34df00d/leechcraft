@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2013  Slava Barinov <rayslava@gmail.com>
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,53 +27,27 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_SYNCER_CORE_H
-#define PLUGINS_SYNCER_CORE_H
-#include <QObject>
-#include <QSettings>
-#include <interfaces/iinfo.h>
-#include <interfaces/isyncable.h>
+#pragma once
+
+#include "pasteservicebase.h"
 
 namespace LeechCraft
 {
-namespace Syncer
+namespace Azoth
 {
-	class DataStorageBase;
-
-	class Core : public QObject
+namespace Autopaste
+{
+	class PasteOrgRuService : public PasteServiceBase
 	{
 		Q_OBJECT
-
-		DataStorageBase *DataStorage_;
-		mutable QSettings Settings_;
-
-		ICoreProxy_ptr Proxy_;
-
-		QHash<QString, QObject*> ID2Object_;
-
-		Core ();
 	public:
-		static Core& Instance ();
-		void SetProxy (ICoreProxy_ptr);
-		void SecondInit ();
+		PasteOrgRuService (QObject *entry, QObject* = 0);
 
-		quint32 GetLastID (const QByteArray&) const;
-		void SetLastID (const QByteArray&, quint32);
-	private slots:
-		void syncAll ();
-
-		void handleNewDeltas (const Sync::Deltas_t&, const QByteArray&);
-		void handleDeltasRequired (Sync::Deltas_t*, const QByteArray&);
-		void handleSuccessfullySentDeltas (quint32, const QByteArray&);
-		void handleLoginError (const QByteArray&);
-		void handleConnectionError (const QByteArray&);
-		void handleFinishedSuccessfully (quint32, quint32, const QByteArray&);
-	private:
-		QString GetNameForChain (const QByteArray&);
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		void Paste (const PasteParams&);
+	protected:
+		virtual void handleFinished ();
 	};
 }
 }
-
-#endif
+}
+ 

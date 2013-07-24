@@ -27,19 +27,54 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "datastoragebase.h"
+#pragma once
+
+#include <QObject>
+#include <interfaces/azoth/iprotocol.h>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
-namespace Syncer
+namespace Azoth
 {
-	DataStorageBase::DataStorageBase (QObject *parent)
-	: QObject (parent)
-	{
-	}
+namespace Murm
+{
+	class VkAccount;
 
-	DataStorageBase::~DataStorageBase ()
+	class VkProtocol : public QObject
+					 , public IProtocol
 	{
-	}
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Azoth::IProtocol)
+
+		const ICoreProxy_ptr Proxy_;
+		QObject * const Plugin_;
+
+		QList<VkAccount*> Accounts_;
+	public:
+		VkProtocol (ICoreProxy_ptr, QObject*);
+
+		QObject* GetQObject ();
+		ProtocolFeatures GetFeatures () const;
+		QList<QObject*> GetRegisteredAccounts ();
+		QObject* GetParentProtocolPlugin () const;
+
+		QString GetProtocolName () const;
+		QIcon GetProtocolIcon () const;
+		QByteArray GetProtocolID () const;
+
+		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions options);
+		void RegisterAccount (const QString& name, const QList<QWidget*>& widgets);
+		QWidget* GetMUCJoinWidget ();
+		void RemoveAccount (QObject* account);
+	private:
+		void AddAccount (VkAccount*);
+	private slots:
+		void saveAccount (VkAccount*);
+	signals:
+		void accountAdded (QObject*);
+		void accountRemoved (QObject*);
+	};
+}
 }
 }

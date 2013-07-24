@@ -27,91 +27,109 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "syncops.h"
-#include <QDataStream>
-#include <QByteArray>
-#include <QtDebug>
-#include "util/exceptions.h"
+#include "vkmessage.h"
+#include "vkentry.h"
 
 namespace LeechCraft
 {
-	namespace Sync
+namespace Azoth
+{
+namespace Murm
+{
+	VkMessage::VkMessage (Direction dir, MessageType type, VkEntry *entry)
+	: QObject (entry)
+	, Entry_ (entry)
+	, Type_ (type)
+	, Dir_ (dir)
 	{
-		bool operator== (const Payload& p1, const Payload& p2)
-		{
-			return p1.Data_ == p2.Data_;
-		}
-
-		QDataStream& operator<< (QDataStream& out, const Payload& payload)
-		{
-			quint16 version = 1;
-			out << version
-					<< payload.Data_;
-			return out;
-		}
-
-		QDataStream& operator>> (QDataStream& in, Payload& payload)
-		{
-			quint16 version;
-			in >> version;
-			switch (version)
-			{
-			case 1:
-				in >> payload.Data_;
-				break;
-			default:
-				throw UnknownVersionException (version,
-						"unknown version while deserializing payload");
-			}
-			return in;
-		}
-
-		QByteArray Serialize (const Payload& payload)
-		{
-			QByteArray result;
-
-			{
-				QDataStream str (&result, QIODevice::WriteOnly);
-				str << payload;
-			}
-			return result;
-		}
-
-		Payload Deserialize (const QByteArray& data)
-		{
-			Payload result;
-
-			QDataStream in (data);
-			in >> result;
-			return result;
-		}
-
-		Payload CreatePayload (const QByteArray& from)
-		{
-			Payload p = { from };
-			return p;
-		}
-
-		QDataStream& operator<< (QDataStream& out, const Delta& delta)
-		{
-			quint16 version = 1;
-			out << version
-					<< delta.ID_
-					<< delta.Payload_;
-			return out;
-		}
-
-		QDataStream& operator>> (QDataStream& in, Delta& delta)
-		{
-			quint16 version = 0;
-			in >> version;
-			if (version == 1)
-				in >> delta.ID_
-					>> delta.Payload_;
-			else
-				throw UnknownVersionException (version,
-						"unknown version while deserializing delta");
-			return in;
-		}
 	}
+
+	QObject* VkMessage::GetQObject ()
+	{
+		return this;
+	}
+
+	void VkMessage::Send ()
+	{
+		Entry_->Send (this);
+		Store ();
+	}
+
+	void VkMessage::Store ()
+	{
+		Entry_->Store (this);
+	}
+
+	qulonglong VkMessage::GetID () const
+	{
+		return ID_;
+	}
+
+	void VkMessage::SetID (qulonglong id)
+	{
+		ID_ = id;
+		emit messageDelivered ();
+	}
+
+	bool VkMessage::IsRead () const
+	{
+		return IsRead_;
+	}
+
+	void VkMessage::SetRead ()
+	{
+		IsRead_ = true;
+	}
+
+	IMessage::Direction VkMessage::GetDirection () const
+	{
+		return Dir_;
+	}
+
+	IMessage::MessageType VkMessage::GetMessageType () const
+	{
+		return Type_;
+	}
+
+	IMessage::MessageSubType VkMessage::GetMessageSubType () const
+	{
+		return MSTOther;
+	}
+
+	QObject* VkMessage::OtherPart () const
+	{
+		return Entry_;
+	}
+
+	QString VkMessage::GetOtherVariant () const
+	{
+		return "";
+	}
+
+	QString VkMessage::GetBody () const
+	{
+		return Body_;
+	}
+
+	void VkMessage::SetBody (const QString& body)
+	{
+		Body_ = body;
+	}
+
+	QDateTime VkMessage::GetDateTime () const
+	{
+		return TS_;
+	}
+
+	void VkMessage::SetDateTime (const QDateTime& timestamp)
+	{
+		TS_ = timestamp;
+	}
+
+	bool VkMessage::IsDelivered () const
+	{
+		return ID_ != static_cast<qulonglong> (-1);
+	}
+}
+}
 }

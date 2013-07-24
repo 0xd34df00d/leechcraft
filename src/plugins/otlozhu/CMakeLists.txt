@@ -24,24 +24,7 @@ set (SRCS
 	icalgenerator.cpp
 	icalparser.cpp
 	itemsmergedialog.cpp
-	deltagenerator.cpp
-	)
-set (HEADERS
-	otlozhu.h
-	todotab.h
-	core.h
-	todomanager.h
-	todoitem.h
-	todostorage.h
-	storagemodel.h
-	addtododialog.h
-	todolistdelegate.h
-	todosfproxymodel.h
-	notificationsmanager.h
-	icalgenerator.h
-	icalparser.h
-	itemsmergedialog.h
-	deltagenerator.h
+	syncproxy.cpp
 	)
 set (FORMS
 	todotab.ui
@@ -50,9 +33,6 @@ set (FORMS
 	)
 set (RESOURCES otlozhuresources.qrc)
 CreateTrs ("otlozhu" "en;ru_RU" COMPILED_TRANSLATIONS)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
@@ -66,6 +46,7 @@ add_library (leechcraft_otlozhu SHARED
 target_link_libraries (leechcraft_otlozhu
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
+	laretz_ops
 	)
 install (TARGETS leechcraft_otlozhu DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

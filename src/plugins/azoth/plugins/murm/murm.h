@@ -27,54 +27,48 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_SYNCER_SERVERCONNECTION_H
-#define PLUGINS_SYNCER_SERVERCONNECTION_H
-#include <QObject>
+#pragma once
 
-class QTcpSocket;
+#include <QObject>
+#include <interfaces/iinfo.h>
+#include <interfaces/iplugin2.h>
+#include <interfaces/azoth/iprotocolplugin.h>
 
 namespace LeechCraft
 {
-namespace Syncer
+namespace Azoth
 {
-	class ServerConnection : public QObject
+namespace Murm
+{
+	class VkProtocol;
+
+	class Plugin : public QObject
+				 , public IInfo
+				 , public IPlugin2
+				 , public IProtocolPlugin
 	{
 		Q_OBJECT
+		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin);
 
-		QTcpSocket *Socket_;
-		QByteArray Chain_;
+		VkProtocol *Proto_;
 	public:
-		enum ErrorCode
-		{
-			ECUnknownCommand = 0,
-			ECUserRegistered,
-			ECUserNotRegistered,
-			ECWrongPassword,
-			ECAlreadyConnected,
-			ECOddFilterParameters,
-			ECWrongDeltaID
-		};
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-		ServerConnection (const QByteArray&, QObject* = 0);
+		QSet<QByteArray> GetPluginClasses () const;
 
-		static QByteArray FmtMsg (const QList<QByteArray>&);
-		static QList<QByteArray> UnfmtMsg (const QByteArray&);
-
+		QObject* GetQObject ();
+		QList<QObject*> GetProtocols () const;
 	public slots:
-		void performLogin ();
-		void reqMaxDelta ();
-		void getDeltas (quint32 from);
-		void putDeltas (const QList<QByteArray>&, quint32);
-	private slots:
-		void handleConnected ();
-		void handleReadyRead ();
+		void initPlugin (QObject*);
 	signals:
-		void success (const QList<QByteArray>&);
-		void fail ();
-		void deltaOutOfOrder ();
-		void maxDeltaIDReceived (quint32);
+		void gotNewProtocols (const QList<QObject*>&);
 	};
 }
 }
-
-#endif
+}

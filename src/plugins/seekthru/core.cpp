@@ -42,7 +42,6 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include <util/util.h>
-#include <util/sync/syncops.h>
 #include "findproxy.h"
 #include "tagsasker.h"
 
@@ -55,19 +54,11 @@ namespace LeechCraft
 			const QString Core::OS_ = "http://a9.com/-/spec/opensearch/1.1/";
 
 			Core::Core ()
-			: DeltaStorage_ ("org.LeechCraft.SeekThru", this)
 			{
 				qRegisterMetaType<Description> ("LeechCraft::Plugins::SeekThru::Description");
 				qRegisterMetaTypeStreamOperators<UrlDescription> ("LeechCraft::Plugins::SeekThru::UrlDescription");
 				qRegisterMetaTypeStreamOperators<QueryDescription> ("LeechCraft::Plugins::SeekThru::QueryDescription");
 				qRegisterMetaTypeStreamOperators<Description> ("LeechCraft::Plugins::SeekThru::Description");
-
-				ActionMapper_.AddFunctor (0, DADescrAdded,
-						[this] (QDataStream& str) { return HandleDADescrAdded (str); });
-				ActionMapper_.AddFunctor (0, DADescrRemoved,
-						[this] (QDataStream& str) { return HandleDADescrRemoved (str); });
-				ActionMapper_.AddFunctor (0, DATagsChanged,
-						[this] (QDataStream& str) { return HandleDATagsChanged (str); });
 
 				ReadSettings ();
 			}
@@ -244,71 +235,6 @@ namespace LeechCraft
 					}
 			}
 
-			Sync::Payloads_t Core::GetAllDeltas (const Sync::ChainID_t& chainId)
-			{
-				if (chainId != "osengines")
-					return Sync::Payloads_t ();
-
-				DeltaStorage_.DeltasRequested (chainId);
-
-				quint8 version = 0;
-				quint16 action = DADescrAdded;
-				Sync::Payloads_t result;
-				Q_FOREACH (Description descr, Descriptions_)
-				{
-					QStringList ids = descr.Tags_;
-					descr.Tags_.clear ();
-					Q_FOREACH (const QString& tag, ids)
-						descr.Tags_ << Proxy_->GetTagsManager ()->GetTag (tag);
-
-					QByteArray serialized;
-					{
-						QDataStream s (&serialized, QIODevice::WriteOnly);
-						s << version
-								<< action
-								<< descr;
-					}
-					Sync::Payload payload = Sync::CreatePayload (serialized);
-					result << payload;
-				}
-				return result;
-			}
-
-			Sync::Payloads_t Core::GetNewDeltas (const Sync::ChainID_t& chainId)
-			{
-				return DeltaStorage_.Get (chainId);
-			}
-
-			void Core::PurgeNewDeltas (const Sync::ChainID_t& chainId, quint32 num)
-			{
-				DeltaStorage_.Purge (chainId, num);
-			}
-
-			void Core::ApplyDeltas (const Sync::Payloads_t& payloads, const Sync::ChainID_t& chainId)
-			{
-				if (chainId != "osengines")
-					return;
-
-				Sync::Payloads_t our = GetNewDeltas (chainId);
-				quint32 ourSize = our.size ();
-				bool shouldResync = false;
-
-				Q_FOREACH (const Sync::Payload& pl, payloads)
-				{
-					shouldResync = shouldResync || our.removeAll (pl);
-					if (!ActionMapper_.Process (pl.Data_))
-						qWarning () << Q_FUNC_INFO
-								<< "failed to process the payload";
-				}
-
-				WriteSettings ();
-				if (shouldResync)
-				{
-					PurgeNewDeltas (chainId, ourSize);
-					DeltaStorage_.Store (chainId, our);
-				}
-			}
-
 			void Core::Add (const QUrl& url)
 			{
 				QString name = LeechCraft::Util::GetTemporaryName ();
@@ -337,15 +263,6 @@ namespace LeechCraft
 			{
 				QStringList oldCats = ComputeUniqueCategories ();
 
-				QByteArray serialized;
-				{
-					QDataStream ds (&serialized, QIODevice::WriteOnly);
-					ds << quint8 (0)
-							<< quint16 (DADescrRemoved)
-							<< Descriptions_.at (index.row ()).ShortName_;
-				}
-				DeltaStorage_.Store ("osengines", Sync::CreatePayload (serialized));
-
 				beginRemoveRows (QModelIndex (), index.row (), index.row ());
 				Descriptions_.removeAt (index.row ());
 				endRemoveRows ();
@@ -354,25 +271,11 @@ namespace LeechCraft
 
 				QStringList newCats = ComputeUniqueCategories ();
 				emit categoriesChanged (newCats, oldCats);
-
-				emit newDeltasAvailable ("osengines");
 			}
 
 			void Core::SetTags (const QModelIndex& index, const QStringList& tags)
 			{
 				SetTags (index.row (), tags);
-
-				QByteArray serialized;
-				{
-					QDataStream ds (&serialized, QIODevice::WriteOnly);
-					ds << quint8 (0)
-							<< quint16 (DATagsChanged)
-							<< Descriptions_.at (index.row ()).ShortName_
-							<< tags;
-				}
-				DeltaStorage_.Store ("osengines", Sync::CreatePayload (serialized));
-
-				emit newDeltasAvailable ("osengines");
 			}
 
 			void Core::SetTags (int pos, const QStringList& tags)

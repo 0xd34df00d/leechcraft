@@ -27,43 +27,65 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef UTIL_SYNCDELTAMANAGER_H
-#define UTIL_SYNCDELTAMANAGER_H
+#pragma once
+
 #include <QObject>
-#include <QDir>
-#include <QSettings>
-#include <interfaces/isyncable.h>
-#include <util/utilconfig.h>
+#include <interfaces/azoth/imessage.h>
+#include <interfaces/azoth/iadvancedmessage.h>
 
 namespace LeechCraft
 {
-	namespace Util
+namespace Azoth
+{
+namespace Murm
+{
+	class VkEntry;
+
+	class VkMessage : public QObject
+					, public IMessage
+					, public IAdvancedMessage
 	{
-		class UTIL_API SyncDeltaManager : public QObject
-		{
-			Q_OBJECT
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Azoth::IMessage LeechCraft::Azoth::IAdvancedMessage)
 
-			QString ID_;
-			QSettings Settings_;
-		public:
-			SyncDeltaManager (const QString&, QObject* = 0);
-			virtual ~SyncDeltaManager ();
+		VkEntry * const Entry_;
+		const MessageType Type_;
+		const Direction Dir_;
 
-			void Store (const Sync::ChainID_t&, const Sync::Payload&);
-			void Store (const Sync::ChainID_t&, const Sync::Payloads_t&);
+		QString Body_;
+		QDateTime TS_ = QDateTime::currentDateTime ();
 
-			Sync::Payloads_t Get (const Sync::ChainID_t&);
-			void Purge (const Sync::ChainID_t&, quint32 num);
+		qulonglong ID_ = -1;
 
-			void DeltasRequested (const Sync::ChainID_t&);
-		private:
-			QDir GetDir (const Sync::ChainID_t&) const;
-			int GetLastFileNum (const Sync::ChainID_t&);
-			void SetLastFileNum (const Sync::ChainID_t&, int);
-			void StoreImpl (const QString&, const Sync::Payload&);
-		};
-	}
+		bool IsRead_ = Dir_ == DOut;
+	public:
+		VkMessage (Direction, MessageType, VkEntry*);
+
+		QObject* GetQObject ();
+		void Send ();
+		void Store ();
+
+		qulonglong GetID () const;
+		void SetID (qulonglong);
+
+		bool IsRead () const;
+		void SetRead ();
+
+		Direction GetDirection () const;
+		MessageType GetMessageType () const;
+		MessageSubType GetMessageSubType () const;
+
+		QObject* OtherPart () const;
+		QString GetOtherVariant () const;
+		QString GetBody () const;
+		void SetBody (const QString& body);
+		QDateTime GetDateTime () const;
+		void SetDateTime (const QDateTime& timestamp);
+
+		bool IsDelivered () const;
+	signals:
+		void messageDelivered ();
+	};
 }
-
-#endif
-
+}
+}

@@ -89,8 +89,6 @@ namespace LeechCraft
 						this,
 						SIGNAL (gotEntity (LeechCraft::Entity)));
 				XmlSettingsDialog_->SetCustomWidget ("SearchersList", searchersList);
-
-				Chains_ << Sync::ChainID_t ("osengines");
 			}
 
 			void SeekThru::SecondInit ()
@@ -196,30 +194,10 @@ namespace LeechCraft
 				return wg->GetPages ();
 			}
 
-			Sync::ChainIDs_t SeekThru::AvailableChains () const
+			ISyncProxy* SeekThru::SeekThru::GetSyncProxy ()
 			{
-				return Chains_;
-			}
-
-			Sync::Payloads_t SeekThru::GetAllDeltas (const Sync::ChainID_t& chainId) const
-			{
-				return Core::Instance ().GetAllDeltas (chainId);
-			}
-
-			Sync::Payloads_t SeekThru::GetNewDeltas (const Sync::ChainID_t& chainId) const
-			{
-				return Core::Instance ().GetNewDeltas (chainId);
-			}
-
-			void SeekThru::PurgeNewDeltas (const Sync::ChainID_t& chainId, quint32 num)
-			{
-				Core::Instance ().PurgeNewDeltas (chainId, num);
-			}
-
-			void SeekThru::ApplyDeltas (const Sync::Payloads_t& payloads,
-					const Sync::ChainID_t& chainId)
-			{
-				Core::Instance ().ApplyDeltas (payloads, chainId);
+				// TODO ISyncProxy
+				return nullptr;
 			}
 
 			void SeekThru::handleError (const QString& error)

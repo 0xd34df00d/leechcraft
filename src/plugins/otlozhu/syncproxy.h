@@ -27,34 +27,29 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "pasteservicefactory.h"
-#include <QIcon>
-#include "codepadservice.h"
-#include "bpasteservice.h"
-#include "hastebinservice.h"
-#include "pasteorgruservice.h"
+#pragma once
+
+#include <QObject>
+#include <interfaces/isyncable.h>
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Otlozhu
 {
-namespace Autopaste
-{
-	PasteServiceFactory::PasteServiceFactory ()
+	class SyncProxy : public QObject
+					, public ISyncProxy
 	{
-		Infos_.push_back ({ "bpaste.net", QIcon (), [] (QObject *entry) { return new BPasteService (entry); } });
-		Infos_.push_back ({ "codepad.org", QIcon (), [] (QObject *entry) { return new CodepadService (entry); } });
-		Infos_.push_back ({ "paste.org.ru", QIcon (), [] (QObject *entry) { return new PasteOrgRuService (entry); } });
+		Q_OBJECT
+		Q_INTERFACES (ISyncProxy)
+	public:
+		SyncProxy (QObject* = 0);
 
-#ifdef WITH_JSON
-		Infos_.push_back ({ "hastebin.com", QIcon (), [] (QObject *entry) { return new HastebinService (entry); } });
-#endif
-	}
-
-	QList<PasteServiceFactory::PasteInfo> PasteServiceFactory::GetInfos () const
-	{
-		return Infos_;
-	}
-}
+		QObject* GetQObject ();
+		QList<Laretz::Operation> GetAllOps () const;
+		void Merge (QList<Laretz::Operation>& ours, const QList<Laretz::Operation>& theirs);
+		void ApplyChanges (const QList<Laretz::Operation>&);
+	signals:
+		void gotNewOps (const QList<Laretz::Operation>&);
+	};
 }
 }

@@ -42,6 +42,8 @@ namespace Woodpecker
 {
 	class TwitDelegate : public QStyledItemDelegate
 	{
+	Q_OBJECT
+	
 		Plugin *const ParentPlugin_;
 		
 	public:
@@ -50,6 +52,9 @@ namespace Woodpecker
 		void paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
 		QSize sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const;
 		bool editorEvent (QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem& option, const QModelIndex& index);
+		
+	private slots:
+		void showImage ();
 	};
 }
 }

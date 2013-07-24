@@ -64,7 +64,6 @@ set (SRCS
 	sqlstoragebackend_mysql.cpp
 	pluginmanager.cpp
 	proxyobject.cpp
-	syncdeltagenerator.cpp
 	dbupdatethread.cpp
 	dbupdatethreadworker.cpp
 	tovarmaps.cpp
@@ -114,7 +113,6 @@ set (HEADERS
 	sqlstoragebackend_mysql.h
 	pluginmanager.h
 	proxyobject.h
-	syncdeltagenerator.h
 	dbupdatethread.h
 	dbupdatethreadworker.h
 	tovarmaps.h

@@ -63,6 +63,7 @@ namespace Woodpecker
 		TabClassInfo HomeTC_;
 		TabClassInfo UserTC_;
 		TabClassInfo SearchTC_;
+		TabClassInfo FavoriteTC_;
 
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

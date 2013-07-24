@@ -29,7 +29,6 @@
 
 #include "core.h"
 #include "todomanager.h"
-#include "deltagenerator.h"
 
 namespace LeechCraft
 {
@@ -37,7 +36,6 @@ namespace Otlozhu
 {
 	Core::Core ()
 	: TodoManager_ (new TodoManager ("Default", this))
-	, DeltaGen_ (new DeltaGenerator (this))
 	{
 		connect (TodoManager_,
 				SIGNAL (gotEntity (LeechCraft::Entity)),
@@ -69,11 +67,6 @@ namespace Otlozhu
 	TodoManager* Core::GetTodoManager () const
 	{
 		return TodoManager_;
-	}
-
-	DeltaGenerator* Core::GetDeltaGenerator () const
-	{
-		return DeltaGen_;
 	}
 }
 }

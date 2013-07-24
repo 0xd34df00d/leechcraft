@@ -27,34 +27,33 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_SYNCER_DATASTORAGESERVER_H
-#define PLUGINS_SYNCER_DATASTORAGESERVER_H
-#include "datastoragebase.h"
-#include <QHash>
+#pragma once
+
+#include <QDialog>
+#include "ui_vcarddialog.h"
+#include "structures.h"
 
 namespace LeechCraft
 {
-namespace Syncer
+namespace Azoth
 {
-	class ServerChainHandler;
+namespace Murm
+{
+	class PhotoStorage;
 
-	class DataStorageServer : public DataStorageBase
+	class VCardDialog : public QDialog
 	{
 		Q_OBJECT
 
-		QHash<QByteArray, ServerChainHandler*> ChainHandlers_;
+		Ui::VCardDialog Ui_;
+
+		const UserInfo Info_;
+		PhotoStorage * const Storage_;
 	public:
-		DataStorageServer (QObject*);
-	public slots:
-		virtual void sync (const QByteArray&);
+		VCardDialog (const UserInfo&, PhotoStorage*, QWidget* = 0);
 	private slots:
-		void handleLoginError ();
-		void handleConnectionError ();
-		void handleFinishedSuccessfully (quint32, quint32);
-	private:
-		QByteArray GetChainForSender (QObject*);
+		void handleImage (const QUrl&);
 	};
 }
 }
-
-#endif
+}

@@ -27,52 +27,69 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_SYNCDELTAGENERATOR_H
-#define PLUGINS_AGGREGATOR_SYNCDELTAGENERATOR_H
-#include <QMap>
-#include <interfaces/isyncable.h>
-#include <util/sync/syncops.h>
-#include "feed.h"
-#include "channel.h"
-#include "item.h"
+#include "vcarddialog.h"
+#include "structures.h"
+#include "photostorage.h"
 
 namespace LeechCraft
 {
-namespace Aggregator
+namespace Azoth
 {
-	struct Feed;
-
-	class SyncDeltaGenerator
+namespace Murm
+{
+	VCardDialog::VCardDialog (const UserInfo& info, PhotoStorage *storage, QWidget *parent)
+	: QDialog (parent)
+	, Info_ (info)
+	, Storage_ (storage)
 	{
-		enum PayloadType
-		{
-			PTFeedAdded = 1,
-			PTChanAdded,
-			PTItemAdded,
-			PTItemRead,
-			PTChannelTagsChanged,
-			PTItemTagsChanged
-		};
-		
-		typedef QMap<IDType_t, IDType_t> IDMap_t;
-		IDMap_t Remote2LocalFeeds_;
-		IDMap_t Remote2LocalChannels_;
-		IDMap_t Remote2LocalItems_;
-	public:
-		Sync::Payloads_t GetFeedAdded (Feed_ptr);
-		Sync::Payloads_t GetChanAdded (Channel_ptr);
-		Sync::Payloads_t GetItemAdded (Item_ptr);
-		Sync::Payloads_t GetItemRead (Item_ptr, bool);
-		Sync::Payloads_t GetChannelTagsChanged (Channel_ptr, const QStringList&);
-		Sync::Payloads_t GetItemTagsChanged (Item_ptr, const QStringList&);
-		
-		void ParseDelta (const Sync::Payload&);
-	private:
-		IDType_t FixFeedID (IDType_t);
-		IDType_t FixChanID (IDType_t);
-		IDType_t FixItemID (IDType_t);
-	};
-}
-}
+		Ui_.setupUi (this);
+		setAttribute (Qt::WA_DeleteOnClose);
 
-#endif
+		Ui_.FirstName_->setText (info.FirstName_);
+		Ui_.LastName_->setText (info.LastName_);
+		Ui_.Nickname_->setText (info.Nick_);
+
+		Ui_.Birthday_->setDate (info.Birthday_);
+		Ui_.Birthday_->setDisplayFormat (info.Birthday_.year () != 1800 ? "dd MMMM yyyy" : "dd MMMM");
+
+		if (info.Gender_)
+			Ui_.Gender_->setText (info.Gender_ == 1 ? tr ("female") : tr ("male"));
+
+		Ui_.HomePhone_->setText (info.HomePhone_);
+		Ui_.MobilePhone_->setText (info.MobilePhone_);
+
+		auto timezoneText = QString::number (info.Timezone_) + " GMT";
+		if (info.Timezone_ > 0)
+			timezoneText.prepend ('+');
+		Ui_.Timezone_->setText (timezoneText);
+
+		if (!info.BigPhoto_.isValid ())
+			return;
+
+		const auto& image = storage->GetImage (info.BigPhoto_);
+		if (image.isNull ())
+			connect (storage,
+					SIGNAL (gotImage (QUrl)),
+					this,
+					SLOT (handleImage (QUrl)));
+		else
+			Ui_.PhotoLabel_->setPixmap (QPixmap::fromImage (image)
+					.scaled (Ui_.PhotoLabel_->size (),
+							Qt::KeepAspectRatio,
+							Qt::SmoothTransformation));
+	}
+
+	void VCardDialog::handleImage (const QUrl& url)
+	{
+		if (url != Info_.BigPhoto_)
+			return;
+
+		const auto& image = Storage_->GetImage (url);
+		Ui_.PhotoLabel_->setPixmap (QPixmap::fromImage (image)
+				.scaled (Ui_.PhotoLabel_->size (),
+						Qt::KeepAspectRatio,
+						Qt::SmoothTransformation));
+	}
+}
+}
+}
