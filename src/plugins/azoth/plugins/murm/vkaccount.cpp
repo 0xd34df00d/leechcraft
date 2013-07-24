@@ -35,6 +35,7 @@
 #include "vkentry.h"
 #include "vkmessage.h"
 #include "photostorage.h"
+#include "georesolver.h"
 
 namespace LeechCraft
 {
@@ -50,6 +51,7 @@ namespace Murm
 	, PhotoStorage_ (new PhotoStorage (proxy->GetNetworkAccessManager (), ID_))
 	, Name_ (name)
 	, Conn_ (new VkConnection (cookies, proxy))
+	, GeoResolver_ (new GeoResolver (Conn_, this))
 	{
 		connect (Conn_,
 				SIGNAL (cookiesChanged ()),
@@ -143,6 +145,11 @@ namespace Murm
 	PhotoStorage* VkAccount::GetPhotoStorage () const
 	{
 		return PhotoStorage_;
+	}
+
+	GeoResolver* VkAccount::GetGeoResolver () const
+	{
+		return GeoResolver_;
 	}
 
 	QObject* VkAccount::GetQObject ()
@@ -244,6 +251,7 @@ namespace Murm
 	void VkAccount::handleUsers (const QList<UserInfo>& infos)
 	{
 		QList<QObject*> newEntries;
+		QSet<int> newCountries;
 		for (const auto& info : infos)
 		{
 			if (Entries_.contains (info.ID_))
@@ -255,7 +263,11 @@ namespace Murm
 			auto entry = new VkEntry (info, this);
 			Entries_ [info.ID_] = entry;
 			newEntries << entry;
+
+			newCountries << info.Country_;
 		}
+
+		GeoResolver_->CacheCountries (newCountries.toList ());
 
 		if (!newEntries.isEmpty ())
 			emit gotCLItems (newEntries);

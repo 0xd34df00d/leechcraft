@@ -45,6 +45,7 @@ namespace Murm
 	class VkProtocol;
 	class VkConnection;
 	class PhotoStorage;
+	class GeoResolver;
 
 	class VkAccount : public QObject
 					, public IAccount
@@ -60,8 +61,9 @@ namespace Murm
 		QString Name_;
 
 		VkConnection * const Conn_;
-		QHash<qulonglong, VkEntry*> Entries_;
+		GeoResolver * const GeoResolver_;
 
+		QHash<qulonglong, VkEntry*> Entries_;
 		QHash<qulonglong, ListInfo> ID2ListInfo_;
 	public:
 		VkAccount (const QString& name, VkProtocol *proto, ICoreProxy_ptr proxy,
@@ -76,6 +78,7 @@ namespace Murm
 
 		VkConnection* GetConnection () const;
 		PhotoStorage* GetPhotoStorage () const;
+		GeoResolver* GetGeoResolver () const;
 
 		QObject* GetQObject ();
 		QObject* GetParentProtocol () const;
