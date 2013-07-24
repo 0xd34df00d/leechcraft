@@ -32,6 +32,7 @@
 #include <functional>
 #include <memory>
 #include <QObject>
+#include <QSet>
 #include <interfaces/blasq/iaccount.h>
 #include <interfaces/core/icoreproxy.h>
 #include "picasamanager.h"
@@ -65,6 +66,9 @@ namespace Vangog
 		PicasaManager *PicasaManager_;
 
 		QStandardItemModel * const CollectionsModel_;
+		QStandardItem *AllPhotosItem_;
+		QHash<QByteArray, QStandardItem*> AlbumId2AlbumItem_;
+		QHash<QByteArray, QSet<QByteArray>> AlbumID2PhotosSet_;
 
 	public:
 		PicasaAccount (const QString& name,
@@ -94,7 +98,7 @@ namespace Vangog
 
 	private slots:
 		void handleGotAlbums (const QList<Album>& albums);
-		void handleGotPhotos ();
+		void handleGotPhotos (const QList<Photo>& photos);
 
 	signals:
 		void accountChanged (PicasaAccount *acc);

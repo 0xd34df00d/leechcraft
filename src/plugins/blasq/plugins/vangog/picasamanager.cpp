@@ -31,10 +31,11 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QtDebug>
-#include <QDomDocument>
+#include <QStandardItemModel>
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
 #include <boost/concept_check.hpp>
+#include <boost/graph/graph_concepts.hpp>
 #include "picasaaccount.h"
 
 namespace LeechCraft
@@ -53,6 +54,11 @@ namespace Vangog
 	{
 		ApiCallsQueue_ << [this] (const QString& key) { RequestCollections (key); };
 		RequestAccessToken ();
+	}
+
+	void PicasaManager::UpdatePhotos (const QByteArray& albumId)
+	{
+		ApiCallsQueue_ << [this, albumId] (const QString& key) { RequestPhotos (albumId, key); };
 	}
 
 	void PicasaManager::RequestAccessToken ()
@@ -103,6 +109,21 @@ namespace Vangog
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleRequestCollectionFinished ()));
+	}
+
+	void PicasaManager::RequestPhotos (const QByteArray& albumId, const QString& key)
+	{
+		QString urlStr = QString ("https://picasaweb.google.com/data/feed/api/user/%1/albumid/%2?access_token=%3&imgmax=d")
+				.arg (Account_->GetLogin ())
+				.arg (QString::fromUtf8 (albumId))
+				.arg (key);
+		QNetworkReply *reply = Account_->GetProxy ()->GetNetworkAccessManager ()->
+				get (CreateRequest (QUrl (urlStr)));
+
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleRequestPhotosFinished ()));
 	}
 
 	void PicasaManager::handleAuthTokenRequestFinished ()
@@ -166,7 +187,7 @@ namespace Vangog
 	{
 		Access PicasaRightsToAccess (const QString& rights)
 		{
-			if (rights == "protected")
+			if (rights == "protected" || rights == "private")
 				return Access::Private;
 			else
 				return Access::Public;
@@ -231,6 +252,8 @@ namespace Vangog
 					album.Access_ = PicasaRightsToAccess (value);
 				else if (name == "author")
 					album.Author_ = PicasaAuthorToAuthor (field);
+				else if (name == "gphoto:id")
+					album.ID_ = value.toUtf8 ();
 				else if (name == "gphoto:numphotos")
 					album.NumberOfPhoto_ = value.toInt ();
 				else if (name == "gphoto:bytesUsed")
@@ -242,21 +265,25 @@ namespace Vangog
 
 			return album;
 		}
-
-
-		QList<Album> ParseAlbums (const QDomDocument& document)
-		{
-			QList<Album> albums;
-			const auto& EntryElements = document.elementsByTagName ("entry");
-			if (EntryElements.isEmpty ())
-				return albums;
-
-			for (int i = 0, count = EntryElements.count (); i < count; ++i)
-				albums << PicasaEntryToAlbum (EntryElements.at (i).toElement ());
-
-			return albums;
-		}
 	}
+
+	QList<Album> PicasaManager::ParseAlbums (const QDomDocument& document)
+	{
+		QList<Album> albums;
+		const auto& EntryElements = document.elementsByTagName ("entry");
+		if (EntryElements.isEmpty ())
+			return albums;
+
+		for (int i = 0, count = EntryElements.count (); i < count; ++i)
+		{
+			const auto& album = PicasaEntryToAlbum (EntryElements.at (i).toElement ());
+			UpdatePhotos (album.ID_);
+			albums << album;
+		}
+
+		return albums;
+	}
+
 	void PicasaManager::handleRequestCollectionFinished ()
 	{
 		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
@@ -270,7 +297,127 @@ namespace Vangog
 			return;
 
 		auto albums = ParseAlbums (document);
+
 		emit gotAlbums (albums);
+		RequestAccessToken ();
+	}
+
+	namespace
+	{
+		Exif PicasaExifTagsToExif (const QDomElement& element)
+		{
+			Exif exif;
+			const auto& fields = element.childNodes ();
+			for (int i = 0, count = fields.size (); i < count; ++i)
+			{
+				const auto& field = fields.at (i).toElement ();
+				const QString& name = field.tagName ();
+				const QString& value = field.text ();
+				if (name == "exif:fstop")
+					exif.FNumber_ = value.toInt ();
+				else if (name == "exif:make")
+					exif.Manufacturer_ = value;
+				else if (name == "exif:model")
+					exif.Model_ = value;
+				else if (name == "exif:exposure")
+					exif.Exposure_ = value.toFloat ();
+				else if (name == "exif:flash")
+					exif.Flash_ = (value == "true");
+				else if (name == "exif:focallength")
+					exif.FocalLength_ = value.toFloat ();
+				else if (name == "exif:iso")
+					exif.ISO_ = value.toInt ();
+			}
+			return exif;
+		}
+
+		Photo PicasaEntryToPhoto (const QDomElement& elem)
+		{
+			Photo photo;
+			const auto& fields = elem.childNodes ();
+			QDomElement mediaGroupElement;
+			for (int i = 0, count = fields.size (); i < count; ++i)
+			{
+				const auto& field = fields.at (i).toElement ();
+				const QString& name = field.tagName ();
+				const QString& value = field.text ();
+				if (name == "title")
+					photo.Title_ = value;
+				else if (name == "published")
+					photo.Published_ = QDateTime::fromString (value, Qt::ISODate);
+				else if (name == "updated")
+					photo.Updated_ = QDateTime::fromString (value, Qt::ISODate);
+				else if (name == "gphoto:id")
+					photo.ID_ = value.toUtf8 ();
+				else if (name == "gphoto:albumid")
+					photo.AlbumID_ = value.toUtf8 ();
+				else if (name == "gphoto:access")
+					photo.Access_ = PicasaRightsToAccess (value);
+				else if (name == "gphoto:width")
+					photo.Width_ = value.toInt ();
+				else if (name == "gphoto:height")
+					photo.Height_ = value.toInt ();
+				else if (name == "gphoto:size")
+					photo.Size_ = value.toULongLong ();
+				else if (name == "exif:tags")
+					photo.Exif_ = PicasaExifTagsToExif (field);
+				else if (name == "media:group")
+				{
+					const auto& mgFields = field.childNodes ();
+					for (int i = 0, count = mgFields.size (); i < count; ++i)
+					{
+						const auto& mgField = mgFields.at (i).toElement ();
+						const auto& mgName = mgFields.at (i).toElement ().tagName ();
+						const auto& mgValue = mgFields.at (i).toElement ().text ();
+						if (mgName == "media:content")
+						{
+							photo.Height_ = mgField.attribute ("height").toInt ();
+							photo.Width_ = mgField.attribute ("width").toInt ();
+							photo.Url_ = QUrl (mgField.attribute ("url"));
+						}else if (mgName == "media:keywords")
+							photo.Tags_ = mgValue.split (',');
+						else if (mgName == "media:thumbnail")
+						{
+							Thumbnail thumbnail;
+							thumbnail.Height_ = mgField.attribute ("height").toInt ();
+							thumbnail.Width_ = mgField.attribute ("width").toInt ();
+							thumbnail.Url_ = QUrl (mgField.attribute ("url"));
+							photo.Thumbnails_ << thumbnail;
+						}
+					}
+				}
+			}
+
+			return photo;
+		}
+
+		QList<Photo> ParsePhotos (const QDomDocument& document)
+		{
+			QList<Photo> photos;
+			const auto& EntryElements = document.elementsByTagName ("entry");
+			if (EntryElements.isEmpty ())
+				return photos;
+			for (int i = 0, count = EntryElements.count (); i < count; ++i)
+				photos << PicasaEntryToPhoto (EntryElements.at (i).toElement ());;
+
+			return photos;
+		}
+	}
+
+	void PicasaManager::handleRequestPhotosFinished ()
+	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		QDomDocument document;
+		QByteArray content;
+		content = CreateDomDocumentFromReply (reply, document);
+		if (content.isEmpty ())
+			return;
+
+		emit gotPhotos (ParsePhotos (document));
+		RequestAccessToken ();
 	}
 
 }

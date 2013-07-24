@@ -56,6 +56,7 @@ namespace Vangog
 	, Ready_ (false)
 	, PicasaManager_ (new PicasaManager (this, this))
 	, CollectionsModel_ (new NamedModel<QStandardItemModel> (this))
+	, AllPhotosItem_ (0)
 	{
 		CollectionsModel_->setHorizontalHeaderLabels ({ tr ("Name") });
 
@@ -63,6 +64,10 @@ namespace Vangog
 				SIGNAL (gotAlbums (QList<Album>)),
 				this,
 				SLOT (handleGotAlbums (QList<Album>)));
+		connect (PicasaManager_,
+				SIGNAL (gotPhotos (QList<Photo>)),
+				this,
+				SLOT (handleGotPhotos (QList<Photo>)));
 	}
 
 	ICoreProxy_ptr PicasaAccount::GetProxy () const
@@ -190,17 +195,56 @@ namespace Vangog
 		CollectionsModel_->clear ();
 		CollectionsModel_->setHorizontalHeaderLabels ({ tr ("Name") });
 
+		AlbumId2AlbumItem_.clear ();
+
+		AllPhotosItem_ = new QStandardItem (tr ("All photos"));
+		AllPhotosItem_->setData (ItemType::AllPhotos, CollectionRole::Type);
+		AllPhotosItem_->setEditable (false);
+		CollectionsModel_->appendRow (AllPhotosItem_);
+
 		for (const auto& album : albums)
 		{
 			auto item = new QStandardItem (album.Title_);
 			item->setData (ItemType::Collection, CollectionRole::Type);
 			item->setEditable (false);
+			AlbumId2AlbumItem_ [album.ID_] = item;
 			CollectionsModel_->appendRow (item);
 		}
 	}
 
-	void PicasaAccount::handleGotPhotos ()
+	void PicasaAccount::handleGotPhotos (const QList<Photo>& photos)
 	{
+		for (const auto& photo : photos)
+		{
+			auto item = new QStandardItem (photo.Title_);
+			item->setEditable (false);
+			item->setData (ItemType::Image, CollectionRole::Type);
+			item->setData (photo.ID_, CollectionRole::ID);
+			item->setData (photo.Title_, CollectionRole::Name);
+
+			item->setData (photo.Url_, CollectionRole::Original);
+			item->setData (QSize (photo.Width_, photo.Height_), CollectionRole::OriginalSize);
+			if (!photo.Thumbnails_.isEmpty ())
+			{
+				auto first = photo.Thumbnails_.first ();
+				auto last = photo.Thumbnails_.last ();
+				item->setData (first.Url_, CollectionRole::SmallThumb);
+				item->setData (QSize (first.Width_, first.Height_), CollectionRole::SmallThumbSize);
+				item->setData (last.Url_, CollectionRole::MediumThumb);
+				item->setData (QSize (last.Width_, last.Height_), CollectionRole::MediumThumb);
+			}
+
+			AllPhotosItem_->appendRow (item);
+
+			if (!AlbumId2AlbumItem_.contains (photo.AlbumID_))
+				continue;
+
+			if (AlbumID2PhotosSet_ [photo.AlbumID_].contains (photo.ID_))
+				continue;
+
+// 			AlbumID2PhotosSet_ [photo.AlbumID_] << photo.ID_;
+// 			AlbumId2AlbumItem_ [photo.AlbumID_]->appendRow (item);
+		}
 	}
 }
 }
