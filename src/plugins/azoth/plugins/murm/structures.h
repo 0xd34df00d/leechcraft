@@ -102,6 +102,12 @@ namespace Murm
 
 		QDateTime TS_;
 	};
+
+	enum class GeoIdType
+	{
+		Country,
+		City
+	};
 }
 }
 }

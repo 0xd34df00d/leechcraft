@@ -88,12 +88,6 @@ namespace Murm
 		int APIErrorCount_ = 0;
 		bool ShouldRerunPrepared_ = false;
 	public:
-		enum class GeoIdType
-		{
-			Country,
-			City
-		};
-
 		VkConnection (const QByteArray&, ICoreProxy_ptr);
 
 		const QByteArray& GetCookies () const;

@@ -44,31 +44,52 @@ namespace Murm
 
 	void GeoResolver::CacheCountries (QList<int> ids)
 	{
-		auto newEnd = std::remove_if (ids.begin (), ids.end (),
-				[this] (int id) { return Countries_.contains (id); });
-		ids.erase (newEnd, ids.end ());
-
-		Conn_->RequestGeoIds (ids,
-				[this] (const QHash<int, QString>& result)
-					{ Countries_.unite (result); },
-				VkConnection::GeoIdType::Country);
+		Cache (ids, Countries_, GeoIdType::Country);
 	}
 
 	void GeoResolver::GetCountry (int code, std::function<void (QString)> setter)
 	{
-		if (Countries_.contains (code))
+		Get (code, setter, Countries_, GeoIdType::Country);
+	}
+
+	void GeoResolver::CacheCities (QList<int> ids)
+	{
+		Cache (ids, Cities_, GeoIdType::Country);
+	}
+
+	void GeoResolver::GetCity (int code, std::function<void (QString)> setter)
+	{
+		Get (code, setter, Cities_, GeoIdType::City);
+	}
+
+	void GeoResolver::Cache (QList<int> ids, QHash<int, QString>& result, GeoIdType type)
+	{
+		auto newEnd = std::remove_if (ids.begin (), ids.end (),
+				[&result] (int id) { return result.contains (id); });
+		ids.erase (newEnd, ids.end ());
+
+		Conn_->RequestGeoIds (ids,
+				[&result] (const QHash<int, QString>& newItems)
+					{ result.unite (newItems); },
+				type);
+	}
+
+	void GeoResolver::Get (int code, std::function<void (QString)> setter,
+			QHash<int, QString>& hash, GeoIdType type)
+	{
+		if (hash.contains (code))
 		{
-			setter (Countries_ [code]);
+			setter (hash [code]);
 			return;
 		}
 
 		Conn_->RequestGeoIds ({ code },
-				[this, setter, code] (const QHash<int, QString>& result)
+				[&hash, setter, code] (const QHash<int, QString>& result)
 				{
-					Countries_.unite (result);
+					hash.unite (result);
 					setter (result [code]);
 				},
-				VkConnection::GeoIdType::Country);
+				type);
 	}
 }
 }

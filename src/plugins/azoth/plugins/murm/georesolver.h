@@ -39,6 +39,7 @@ namespace Azoth
 namespace Murm
 {
 	class VkConnection;
+	enum class GeoIdType;
 
 	class GeoResolver : public QObject
 	{
@@ -47,12 +48,18 @@ namespace Murm
 		VkConnection * const Conn_;
 
 		QHash<int, QString> Countries_;
+		QHash<int, QString> Cities_;
 	public:
 		GeoResolver (VkConnection*, QObject* = 0);
 
 		void CacheCountries (QList<int>);
-
 		void GetCountry (int, std::function<void (QString)>);
+
+		void CacheCities (QList<int>);
+		void GetCity (int, std::function<void (QString)>);
+	private:
+		void Cache (QList<int>, QHash<int, QString>&, GeoIdType);
+		void Get (int, std::function<void (QString)>, QHash<int, QString>&, GeoIdType);
 	};
 }
 }
