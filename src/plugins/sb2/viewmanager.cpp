@@ -122,11 +122,6 @@ namespace SB2
 		LoadRemovedList ();
 		LoadQuarkOrder ();
 
-		connect (Toolbar_,
-				SIGNAL (topLevelChanged (bool)),
-				this,
-				SLOT (handleToolbarTopLevel (bool)));
-
 		auto toggleAct = Toolbar_->toggleViewAction ();
 		toggleAct->setProperty ("ActionIcon", "layer-visible-on");
 		toggleAct->setShortcut (QString ("Ctrl+J,S"));
@@ -253,6 +248,11 @@ namespace SB2
 		SaveQuarkOrder ();
 	}
 
+	void ViewManager::MovePanel (Qt::ToolBarArea area)
+	{
+		GeomManager_->SetPosition (area);
+	}
+
 	QuarkComponents_t ViewManager::FindAllQuarks () const
 	{
 		auto result = InternalComponents_;
@@ -302,6 +302,7 @@ namespace SB2
 				{
 					if (subSet)
 						settings->endGroup ();
+					delete settings;
 				});
 
 		if (subSet)
@@ -443,19 +444,6 @@ namespace SB2
 	{
 		auto rootWM = Proxy_->GetRootWindowsManager ();
 		return rootWM->GetWindowIndex (Window_);
-	}
-
-	void ViewManager::handleToolbarTopLevel (bool topLevel)
-	{
-		if (topLevel)
-			return;
-
-		const auto pos = Window_->toolBarArea (Toolbar_);
-
-		auto settings = GetSettings ();
-		settings->beginGroup ("Toolbars");
-		settings->setValue ("Pos_" + QString::number (GetWindowIndex ()), static_cast<int> (pos));
-		settings->endGroup ();
 	}
 }
 }

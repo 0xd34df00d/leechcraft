@@ -57,6 +57,7 @@
 #include "keyboardrosterfixer.h"
 #include "statuschangemenumanager.h"
 #include "userslistwidget.h"
+#include "groupremovedialog.h"
 
 namespace LeechCraft
 {
@@ -152,13 +153,13 @@ namespace Azoth
 				Qt::QueuedConnection,
 				Q_ARG (int, 0));
 
-		if (Core::Instance ().GetCLModel ()->rowCount ())
+		if (ProxyModel_->rowCount ())
 			QMetaObject::invokeMethod (this,
 					"handleRowsInserted",
 					Qt::QueuedConnection,
 					Q_ARG (QModelIndex, QModelIndex ()),
 					Q_ARG (int, 0),
-					Q_ARG (int, Core::Instance ().GetCLModel ()->rowCount () - 1));
+					Q_ARG (int, ProxyModel_->rowCount () - 1));
 
 		CreateMenu ();
 		MenuButton_->setMenu (MainMenu_);
@@ -388,17 +389,26 @@ namespace Azoth
 					SLOT (handleCatRenameTriggered ()));
 			actions << rename;
 
-			QAction *sendMsg = new QAction (tr ("Send message..."), menu);
 			QList<QVariant> entries;
 			for (int i = 0, cnt = index.model ()->rowCount (index);
 					i < cnt; ++i)
 				entries << index.child (i, 0).data (Core::CLREntryObject);
+
+			QAction *sendMsg = new QAction (tr ("Send message..."), menu);
 			sendMsg->setProperty ("Azoth/Entries", entries);
 			connect (sendMsg,
 					SIGNAL (triggered ()),
 					this,
 					SLOT (handleSendGroupMsgTriggered ()));
 			actions << sendMsg;
+
+			QAction *removeChildren = new QAction (tr ("Remove group's participants"), menu);
+			removeChildren->setProperty ("Azoth/Entries", entries);
+			connect (removeChildren,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleRemoveChildrenTriggered ()));
+			actions << removeChildren;
 			break;
 		}
 		case Core::CLETAccount:
@@ -604,15 +614,43 @@ namespace Azoth
 		}
 	}
 
+	namespace
+	{
+		QList<QObject*> GetEntriesFromSender (QObject *sender)
+		{
+			QList<QObject*> entries;
+			for (const auto& entryVar : sender->property ("Azoth/Entries").toList ())
+				entries << entryVar.value<QObject*> ();
+			return entries;
+		}
+	}
+
 	void MainWidget::handleSendGroupMsgTriggered ()
 	{
-		QList<QObject*> entries;
+		const auto& entries = GetEntriesFromSender (sender ());
 
-		Q_FOREACH (const QVariant& entryVar,
-				sender ()->property ("Azoth/Entries").toList ())
-			entries << entryVar.value<QObject*> ();
+		auto dlg = new GroupSendDialog (entries, this);
+		dlg->setAttribute (Qt::WA_DeleteOnClose, true);
+		dlg->show ();
+	}
 
-		GroupSendDialog *dlg = new GroupSendDialog (entries, this);
+	void MainWidget::handleRemoveChildrenTriggered ()
+	{
+		auto entries = GetEntriesFromSender (sender ());
+		for (auto i = entries.begin (); i != entries.end (); ++i)
+		{
+			auto entry = qobject_cast<ICLEntry*> (*i);
+			if (!entry ||
+				(entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) != ICLEntry::FPermanentEntry)
+				i = entries.erase (i);
+			else
+				++i;
+		}
+
+		if (entries.isEmpty ())
+			return;
+
+		auto dlg = new GroupRemoveDialog (entries, this);
 		dlg->setAttribute (Qt::WA_DeleteOnClose, true);
 		dlg->show ();
 	}
@@ -794,12 +832,22 @@ namespace Azoth
 
 	void MainWidget::handleRowsInserted (const QModelIndex& parent, int begin, int end)
 	{
-		const QAbstractItemModel *clModel = ProxyModel_;
 		for (int i = begin; i <= end; ++i)
 		{
-			const QModelIndex& index = clModel->index (i, 0, parent);
-			const Core::CLEntryType type =
-					index.data (Core::CLREntryType).value<Core::CLEntryType> ();
+			const auto& index = ProxyModel_->index (i, 0, parent);
+			if (!index.isValid ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "invalid index"
+						<< parent
+						<< i
+						<< "in"
+						<< begin
+						<< end;
+				continue;
+			}
+
+			const auto type = index.data (Core::CLREntryType).value<Core::CLEntryType> ();
 			if (type == Core::CLETCategory)
 			{
 				const QString& path = BuildPath (index);
@@ -812,7 +860,7 @@ namespace Azoth
 							Qt::QueuedConnection,
 							Q_ARG (QPersistentModelIndex, QPersistentModelIndex (index)));
 
-				if (clModel->rowCount (index))
+				if (ProxyModel_->rowCount (index))
 					handleRowsInserted (index, 0, ProxyModel_->rowCount (index) - 1);
 			}
 			else if (type == Core::CLETAccount)
@@ -822,7 +870,7 @@ namespace Azoth
 						Qt::QueuedConnection,
 						Q_ARG (QPersistentModelIndex, QPersistentModelIndex (index)));
 
-				if (clModel->rowCount (index))
+				if (ProxyModel_->rowCount (index))
 					handleRowsInserted (index, 0, ProxyModel_->rowCount (index) - 1);
 			}
 		}

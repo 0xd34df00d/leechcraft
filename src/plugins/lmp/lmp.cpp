@@ -265,19 +265,17 @@ namespace LMP
 					url.scheme () == "file")
 			path = url.toLocalFile ();
 
-		if (!path.isEmpty ())
-		{
-			const auto& goodExt = XmlSettingsManager::Instance ()
-					.property ("TestExtensions").toString ()
-					.split (' ', QString::SkipEmptyParts);
-			const QFileInfo fi = QFileInfo (path);
-			if (fi.exists () && goodExt.contains (fi.suffix ()))
-				return EntityTestHandleResult (EntityTestHandleResult::PHigh);
-			else
-				return EntityTestHandleResult ();
-		}
+		if (path.isEmpty ())
+			return EntityTestHandleResult ();
 
-		return EntityTestHandleResult ();
+		const auto& goodExt = XmlSettingsManager::Instance ()
+				.property ("TestExtensions").toString ()
+				.split (' ', QString::SkipEmptyParts);
+		const QFileInfo fi = QFileInfo (path);
+		if (fi.exists () && goodExt.contains (fi.suffix ()))
+			return EntityTestHandleResult (EntityTestHandleResult::PHigh);
+		else
+			return EntityTestHandleResult ();
 	}
 
 	void Plugin::Handle (Entity e)
@@ -297,7 +295,13 @@ namespace LMP
 					SIGNAL (finished ()),
 					obj,
 					SLOT (deleteLater ()));
+			return;
 		}
+
+		if (!(e.Parameters_ & FromUserInitiated))
+			return;
+
+		PlayerTab_->GetPlayer ()->Enqueue (QStringList (path), false);
 	}
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace) const

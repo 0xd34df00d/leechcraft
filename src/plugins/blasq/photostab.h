@@ -56,25 +56,35 @@ namespace Blasq
 		QObject * const Plugin_;
 
 		AccountsManager * const AccMgr_;
+		const ICoreProxy_ptr Proxy_;
 
 		QComboBox *AccountsBox_;
 		std::unique_ptr<QToolBar> Toolbar_;
 
 		IAccount *CurAcc_ = 0;
 		QObject *CurAccObj_ = 0;
+
+		QString SelectedID_;
 	public:
 		PhotosTab (AccountsManager*, const TabClassInfo&, QObject*, ICoreProxy_ptr);
+		PhotosTab (AccountsManager*, ICoreProxy_ptr);
 
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+
+		QModelIndex GetSelectedImage () const;
 	private:
 		void HandleImageSelected (const QModelIndex&);
 		void HandleCollectionSelected (const QModelIndex&);
 	private slots:
 		void handleAccountChosen (int);
 		void handleRowChanged (const QModelIndex&);
+
+		void handleImageSelected (const QString&);
+		void handleImageOpenRequested (const QVariant&);
+		void handleImageDownloadRequested (const QVariant&);
 	signals:
 		void removeTab (QWidget*);
 	};

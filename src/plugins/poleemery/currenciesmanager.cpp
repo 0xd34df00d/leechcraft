@@ -37,9 +37,14 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QtDebug>
+#include <QCoreApplication>
+#include <QDateTime>
+#include <QTimer>
 #include <QDomDocument>
 #include "xmlsettingsmanager.h"
 #include "core.h"
+#include "structures.h"
+#include "storage.h"
 
 namespace LeechCraft
 {
@@ -59,6 +64,16 @@ namespace Poleemery
 		if (Enabled_.isEmpty ())
 			Enabled_ << "USD" << UserCurrency_;
 		Enabled_.sort ();
+
+		RatesFromUSD_ ["USD"] = 1;
+		QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_Poleemery");
+		settings.beginGroup ("Currencies");
+		LastFetch_ = settings.value ("LastFetch").toDateTime ();
+		for (const auto& cur : settings.childKeys ())
+			if (cur != "LastFetch")
+				RatesFromUSD_ [cur] = settings.value (cur).toDouble ();
+		settings.endGroup ();
 
 		struct CurInfo
 		{
@@ -103,11 +118,22 @@ namespace Poleemery
 
 			Model_->appendRow (row);
 		}
+
+		auto timer = new QTimer (this);
+		connect (timer,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (updateRates ()));
+		timer->start (10 * 60 * 1000);
 	}
 
 	void CurrenciesManager::Load ()
 	{
-		FetchRates (Enabled_);
+		Enabled_.sort ();
+
+		if (Enabled_ != RatesFromUSD_.keys () ||
+				LastFetch_.msecsTo (QDateTime::currentDateTime ()) > 60 * 1000)
+			updateRates ();
 	}
 
 	const QStringList& CurrenciesManager::GetEnabledCurrencies () const
@@ -143,6 +169,15 @@ namespace Poleemery
 		if (from == to)
 			return value;
 
+		if (!RatesFromUSD_.contains (to))
+			qWarning () << Q_FUNC_INFO
+					<< "unknown target currency"
+					<< to;
+		if (!RatesFromUSD_.contains (from))
+			qWarning () << Q_FUNC_INFO
+					<< "unknown source currency"
+					<< from;
+
 		return value * RatesFromUSD_.value (to, 1) / RatesFromUSD_.value (from, 1);
 	}
 
@@ -165,6 +200,11 @@ namespace Poleemery
 				SLOT (gotRateReply ()));
 	}
 
+	void CurrenciesManager::updateRates ()
+	{
+		FetchRates (Enabled_);
+	}
+
 	void CurrenciesManager::gotRateReply ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
@@ -181,13 +221,18 @@ namespace Poleemery
 			return;
 		}
 
+		const auto& now = QDateTime::currentDateTime ();
+
 		bool changed = false;
 		auto rateElem = doc.documentElement ()
 				.firstChildElement ("results")
 				.firstChildElement ("rate");
 		while (!rateElem.isNull ())
 		{
-			auto toValue = rateElem.attribute ("id").mid (3);
+			std::shared_ptr<void> guard (nullptr,
+					[&rateElem] (void*) { rateElem = rateElem.nextSiblingElement ("rate"); });
+
+			const auto& toValue = rateElem.attribute ("id").mid (3);
 			if (toValue.size () != 3)
 			{
 				qWarning () << "incorrect `to` value"
@@ -202,11 +247,23 @@ namespace Poleemery
 				changed = true;
 			}
 
-			rateElem = rateElem.nextSiblingElement ("rate");
+			Rate rate { 0, toValue, now, newRate };
+			Core::Instance ().GetStorage ()->AddRate (rate);
 		}
 
+		LastFetch_ = QDateTime::currentDateTime ();
+
+		QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_Poleemery");
+		settings.beginGroup ("Currencies");
+		settings.setValue ("LastFetch", LastFetch_);
 		if (changed)
+		{
 			emit currenciesUpdated ();
+			for (auto i = RatesFromUSD_.constBegin (); i != RatesFromUSD_.constEnd (); ++i)
+				settings.setValue (i.key (), *i);
+		}
+		settings.endGroup ();
 	}
 
 	void CurrenciesManager::handleItemChanged (QStandardItem *item)

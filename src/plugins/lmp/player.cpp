@@ -150,7 +150,19 @@ namespace LMP
 					const auto& localPath = url.toLocalFile ();
 					if (QFileInfo (localPath).isFile ())
 					{
-						sources << Phonon::MediaSource (localPath);
+						bool playlistHandled = false;
+						if (auto f = MakePlaylistParser (localPath))
+						{
+							const auto& playlistSrcs = f (localPath);
+							if (!playlistSrcs.isEmpty ())
+							{
+								playlistHandled = true;
+								sources += playlistSrcs;
+							}
+						}
+
+						if (!playlistHandled)
+							sources << Phonon::MediaSource (localPath);
 						continue;
 					}
 
@@ -370,9 +382,13 @@ namespace LMP
 		{
 			auto parser = MakePlaylistParser (file);
 			if (parser)
-				return parser (file);
+			{
+				const auto& list = parser (file);
+				if (!list.isEmpty ())
+					return list;
+			}
 
-			return QList<Phonon::MediaSource> () << Phonon::MediaSource (file);
+			return { Phonon::MediaSource (file) };
 		}
 	}
 

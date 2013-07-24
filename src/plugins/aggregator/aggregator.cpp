@@ -485,31 +485,6 @@ namespace Aggregator
 		Core::Instance ().AddPlugin (plugin);
 	}
 
-	Sync::ChainIDs_t Aggregator::AvailableChains () const
-	{
-		Sync::ChainIDs_t result;
-		result << "rss";
-		return result;
-	}
-
-	Sync::Payloads_t Aggregator::GetAllDeltas (const Sync::ChainID_t&) const
-	{
-		return Sync::Payloads_t ();
-	}
-
-	Sync::Payloads_t Aggregator::GetNewDeltas (const Sync::ChainID_t&) const
-	{
-		return Sync::Payloads_t ();
-	}
-
-	void Aggregator::PurgeNewDeltas (const Sync::ChainID_t&, quint32)
-	{
-	}
-
-	void Aggregator::ApplyDeltas (const Sync::Payloads_t&, const Sync::ChainID_t&)
-	{
-	}
-
 	void Aggregator::RecoverTabs (const QList<TabRecoverInfo>& infos)
 	{
 		Q_FOREACH (const auto& recInfo, infos)

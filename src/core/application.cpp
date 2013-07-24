@@ -159,9 +159,6 @@ namespace LeechCraft
 		qRegisterMetaType<Entity> ("LeechCraft::Entity");
 		qRegisterMetaType<Entity> ("Entity");
 		qRegisterMetaType<IHookProxy_ptr> ("LeechCraft::IHookProxy_ptr");
-		qRegisterMetaType<Sync::ChainID_t> ("LeechCraft::Sync::ChainID_t");
-		qRegisterMetaType<Sync::ChainID_t> ("Sync::ChainID_t");
-		qRegisterMetaType<Sync::ChainID_t> ("ChainID_t");
 		qRegisterMetaType<QKeySequences_t> ("QKeySequences_t");
 		qRegisterMetaTypeStreamOperators<QKeySequences_t> ("QKeySequences_t");
 		qRegisterMetaTypeStreamOperators<TagsManager::TagsDictionary_t> ("LeechCraft::TagsManager::TagsDictionary_t");
@@ -203,7 +200,7 @@ namespace LeechCraft
 				this,
 				SLOT (handleQuit ()));
 
-		Splash_ = new QSplashScreen (QPixmap (":/resources/images/apocalypse.png"), Qt::SplashScreen);
+		Splash_ = new QSplashScreen (QPixmap (":/resources/images/macaroni.jpg"), Qt::SplashScreen);
 		Splash_->show ();
 		Splash_->setUpdatesEnabled (true);
 		Splash_->showMessage (tr ("Initializing LeechCraft..."), Qt::AlignLeft | Qt::AlignBottom, QColor ("#FF3000"));

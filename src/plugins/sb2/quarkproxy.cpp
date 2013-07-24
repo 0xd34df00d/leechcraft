@@ -115,6 +115,26 @@ namespace SB2
 		return GetFreeCoords ();
 	}
 
+	void QuarkProxy::panelMoveRequested (const QString& position)
+	{
+		Qt::ToolBarArea area = Qt::BottomToolBarArea;
+
+		if (position == "left")
+			area = Qt::LeftToolBarArea;
+		else if (position == "right")
+			area = Qt::RightToolBarArea;
+		else if (position == "top")
+			area = Qt::TopToolBarArea;
+		else if (position == "bottom")
+			area = Qt::BottomToolBarArea;
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "unknown position"
+					<< position;
+
+		Manager_->MovePanel (area);
+	}
+
 	void QuarkProxy::quarkAddRequested (int x, int y)
 	{
 		auto toAdd = Manager_->FindAllQuarks ();

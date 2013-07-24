@@ -136,6 +136,11 @@ namespace Vrooby
 		return icon;
 	}
 
+	bool Plugin::SupportsDevType (DeviceType type) const
+	{
+		return type == DeviceType::MassStorage;
+	}
+
 	QAbstractItemModel* Plugin::GetDevicesModel () const
 	{
 		return Backend_ ? Backend_->GetDevicesModel () : 0;

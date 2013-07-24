@@ -212,6 +212,7 @@ namespace Blogique
 		Ui_.Subject_->setText (e.Subject_);
 		PostEdit_->SetContents (e.Content_, ContentType::HTML);
 
+		qDebug () << e.Tags_;
 		for (auto w : SidePluginsWidgets_)
 		{
 			auto ibsw = qobject_cast<IBlogiqueSideWidget*> (w);
@@ -354,6 +355,7 @@ namespace Blogique
 
 		Ui_.OpenInBrowser_->setProperty ("ActionIcon", "applications-internet");
 		Ui_.UpdateProfile_->setProperty ("ActionIcon", "view-refresh");
+		Ui_.PreviewPost_->setProperty ("ActionIcon", "view-preview");
 
 		ToolBar_->addSeparator ();
 
@@ -446,6 +448,10 @@ namespace Blogique
 				SIGNAL (tagRemoved (QString)),
 				this,
 				SLOT (handleTagRemoved (QString)));
+		connect (Ui_.Tags_->rootObject (),
+				SIGNAL (tagAdded (QString)),
+				this,
+				SLOT (handleTagAdded (QString)));
 	}
 
 	void BlogiqueWidget::RemovePostingTargetsWidget ()
@@ -637,6 +643,7 @@ namespace Blogique
 
 			ToolBar_->removeAction (Ui_.OpenInBrowser_);
 			ToolBar_->removeAction (Ui_.UpdateProfile_);
+// 			ToolBar_->removeAction (Ui_.PreviewPost_);
 			ToolBar_->removeAction (Ui_.SubmitTo_);
 
 		}
@@ -668,6 +675,9 @@ namespace Blogique
 			ToolBar_->insertAction (AccountsBoxAction_, Ui_.OpenInBrowser_);
 			if (ibp->GetFeatures () & IBloggingPlatform::BPFSupportsProfiles)
 				ToolBar_->insertAction (AccountsBoxAction_, Ui_.UpdateProfile_);
+
+// 			if (ibp->GetFeatures () & IBloggingPlatform::BPFPostPreviewSupport)
+// 				ToolBar_->insertAction (AccountsBoxAction_, Ui_.PreviewPost_);
 		}
 
 		for (auto action : ibp->GetEditorActions ())
@@ -1041,6 +1051,14 @@ namespace Blogique
 				Q_ARG (QVariant, false));
 	}
 
+	void BlogiqueWidget::handleTagAdded (const QString& tag)
+	{
+		QMetaObject::invokeMethod (Ui_.TagsCloud_->rootObject (),
+				"selectTag",
+				Q_ARG (QVariant, tag),
+				Q_ARG (QVariant, true));
+	}
+
 	void BlogiqueWidget::on_OpenInBrowser__triggered ()
 	{
 		if (EntryUrl_.isEmpty ())
@@ -1049,6 +1067,18 @@ namespace Blogique
 		Core::Instance ().SendEntity (Util::MakeEntity (EntryUrl_,
 				QString (),
 				static_cast<TaskParameters> (FromUserInitiated | OnlyHandle)));
+	}
+
+	void BlogiqueWidget::on_PreviewPost__triggered ()
+	{
+		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
+		if (!acc)
+			return;
+
+		const auto& e = GetCurrentEntry (true);
+
+		if (!e.IsEmpty ())
+			acc->preview (e);
 	}
 
 }

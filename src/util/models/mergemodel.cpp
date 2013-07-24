@@ -67,19 +67,33 @@ QVariant MergeModel::headerData (int column, Qt::Orientation orient, int role) c
 
 QVariant MergeModel::data (const QModelIndex& index, int role) const
 {
-	if (index.isValid ())
-	{
-		QModelIndex mapped = mapToSource (index);
-		return mapped.data (role);
-	}
-	else
+	if (!index.isValid ())
 		return QVariant ();
+
+	try
+	{
+		return mapToSource (index).data (role);
+	}
+	catch (const std::exception& e)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< e.what ();
+		return {};
+	}
 }
 
 Qt::ItemFlags MergeModel::flags (const QModelIndex& index) const
 {
-	QModelIndex mapped = mapToSource (index);
-	return mapped.flags ();
+	try
+	{
+		return mapToSource (index).flags ();
+	}
+	catch (const std::exception& e)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< e.what ();
+		return {};
+	}
 }
 
 QModelIndex MergeModel::index (int row, int column, const QModelIndex& parent) const
@@ -107,10 +121,17 @@ int MergeModel::rowCount (const QModelIndex& parent) const
 			result += RowCount (*i);
 		return result;
 	}
-	else
+
+	try
 	{
-		QModelIndex mapped = mapToSource (parent);
+		const auto& mapped = mapToSource (parent);
 		return mapped.model ()->rowCount (mapped);
+	}
+	catch (const std::exception& e)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< e.what ();
+		return 0;
 	}
 }
 
@@ -151,17 +172,11 @@ QModelIndex MergeModel::mapToSource (const QModelIndex& proxyIndex) const
 	}
 	catch (const std::runtime_error& e)
 	{
-		QStringList models;
-		Q_FOREACH (QAbstractItemModel *model, Models_)
-			models << model->objectName ();
 		qWarning () << Q_FUNC_INFO
-			<< "\n"
-			<< objectName ()
-			<< proxyIndex
-			<< "\n"
-			<< e.what ()
-			<< "\n"
-			<< models;
+				<< objectName ()
+				<< proxyIndex
+				<< e.what ()
+				<< Models_;
 		throw;
 	}
 
@@ -416,6 +431,7 @@ void MergeModel::handleRowsInserted (const QModelIndex&, int, int)
 
 void MergeModel::handleRowsRemoved (const QModelIndex&, int, int)
 {
+	qDebug () << Q_FUNC_INFO;
 	endRemoveRows ();
 }
 

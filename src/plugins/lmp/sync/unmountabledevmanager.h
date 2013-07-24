@@ -30,7 +30,7 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/iremovabledevmanager.h>
+#include <interfaces/devices/deviceroles.h>
 
 class QAbstractItemModel;
 class QStandardItemModel;
@@ -51,7 +51,7 @@ namespace LMP
 
 		enum Roles
 		{
-			DeviceInfo = DeviceRoles::DeviceRoleMax + 1,
+			DeviceInfo = CommonDevRole::CommonDevRoleMax + 1,
 			ManagerObj
 		};
 	public:

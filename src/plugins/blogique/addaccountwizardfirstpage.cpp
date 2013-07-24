@@ -117,7 +117,7 @@ namespace Blogique
 		if (Ui_.RegisterAccount_->isChecked ())
 			opts |= IBloggingPlatform::AAORegisterNewAccount;
 
-		Widgets_ = platform->GetAccountRegistrationWidgets (opts);
+		Widgets_ = platform->GetAccountRegistrationWidgets (opts, Ui_.NameEdit_->text ());
 		if (!Widgets_.size ())
 			return;
 
@@ -160,7 +160,7 @@ namespace Blogique
 	void AddAccountWizardFirstPage::handleAccountNameChanged (const QString&)
 	{
 		emit completeChanged ();
+		readdWidgets ();
 	}
-
 }
 }

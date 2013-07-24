@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QVector>
 #include "interfaces/monocle/idocument.h"
 
 class QGraphicsScene;
@@ -54,6 +55,7 @@ namespace Monocle
 		IDocument_ptr CurrentDoc_;
 
 		QList<PageGraphicsItem*> Pages_;
+		QVector<double> PageRotations_;
 
 		LayoutMode LayMode_;
 
@@ -64,6 +66,8 @@ namespace Monocle
 
 		double HorMargin_;
 		double VertMargin_;
+
+		double Rotation_;
 	public:
 		PagesLayoutManager (PagesView*, QObject* = 0);
 
@@ -84,16 +88,30 @@ namespace Monocle
 		void SetFixedScale (double);
 		double GetCurrentScale () const;
 
+		void SetRotation (double);
+		void AddRotation (double);
+		double GetRotation () const;
+
+		void SetRotation (double, int);
+		void AddRotation (double, int);
+		double GetRotation (int) const;
+
 		void SetMargins (double horizontal, double vertical);
 
 		void Relayout ();
+	private:
+		QSizeF GetRotatedSize (int page) const;
 	public slots:
+		void scheduleSetRotation (double);
+
 		void scheduleRelayout ();
 		void handleRelayout ();
 	private slots:
 		void handlePageSizeChanged (int);
 	signals:
 		void scheduledRelayoutFinished ();
+		void rotationUpdated (double);
+		void rotationUpdated (double, int);
 	};
 }
 }

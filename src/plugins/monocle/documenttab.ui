@@ -19,9 +19,6 @@
    </property>
    <item>
     <widget class="LeechCraft::Monocle::PagesView" name="PagesView_">
-     <property name="contextMenuPolicy">
-      <enum>Qt::ActionsContextMenu</enum>
-     </property>
      <property name="renderHints">
       <set>QPainter::Antialiasing|QPainter::HighQualityAntialiasing|QPainter::SmoothPixmapTransform|QPainter::TextAntialiasing</set>
      </property>

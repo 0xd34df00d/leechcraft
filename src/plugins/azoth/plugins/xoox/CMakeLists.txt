@@ -98,6 +98,7 @@ set (XOOX_SRCS
 	xmppcaptchaiq.cpp
 	xmppcaptchamanager.cpp
 	xmlsettingsmanager.cpp
+	captchamanager.cpp
 	)
 set (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui

@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "spegnersi.h"
+#include <util/util.h>
 #include "flickrservice.h"
 
 namespace LeechCraft
@@ -38,6 +39,8 @@ namespace Spegnersi
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("blasq_spegnersi");
+
 		Service_ = new FlickrService (proxy);
 	}
 

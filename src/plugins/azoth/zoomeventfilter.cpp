@@ -52,11 +52,23 @@ namespace Azoth
 
 		int degrees = e->delta () / 8;
 		int steps = static_cast<qreal> (degrees) / 15;
+
 		QWebView *view = qobject_cast<QWebView*> (viewObj);
-		QWebSettings *settings = view->settings ();
-		settings->setFontSize (QWebSettings::DefaultFontSize,
-				std::max (6, settings->fontSize (QWebSettings::DefaultFontSize) + steps));
-		view->page ()->mainFrame ()->evaluateJavaScript ("setTimeout(ScrollToBottom,0);");
+		if (e->modifiers () & Qt::ShiftModifier)
+		{
+			auto multiplier = view->textSizeMultiplier ();
+			multiplier += steps * 0.1;
+			view->setTextSizeMultiplier (multiplier);
+		}
+		else
+		{
+			QWebSettings *settings = view->settings ();
+			settings->setFontSize (QWebSettings::DefaultFontSize,
+					std::max (6, settings->fontSize (QWebSettings::DefaultFontSize) + steps));
+			auto frame = view->page ()->mainFrame ();
+			frame->evaluateJavaScript ("setTimeout(ScrollToBottom,0);");
+		}
+
 		return true;
 	}
 }

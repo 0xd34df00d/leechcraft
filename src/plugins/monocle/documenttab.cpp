@@ -48,6 +48,7 @@
 #include <QTimer>
 #include <QScrollBar>
 #include <QShortcut>
+#include <QWidgetAction>
 #include <QUrl>
 #include <util/util.h>
 #include <util/xpc/stddatafiltermenucreator.h>
@@ -76,6 +77,7 @@
 #include "thumbswidget.h"
 #include "textsearchhandler.h"
 #include "formmanager.h"
+#include "arbitraryrotationwidget.h"
 
 namespace LeechCraft
 {
@@ -393,7 +395,6 @@ namespace Monocle
 
 		auto docObj = CurrentDoc_->GetQObject ();
 
-		TOCEntryLevel_t topLevel;
 		auto toc = qobject_cast<IHaveTOC*> (docObj);
 		TOCWidget_->SetTOC (toc ? toc->GetTOC () : TOCEntryLevel_t ());
 
@@ -482,7 +483,7 @@ namespace Monocle
 		Ui_.PagesView_->SmoothCenterOn (point.x (), point.y ());
 	}
 
-	void DocumentTab::SetupToolbar ()
+	void DocumentTab::SetupToolbarOpen ()
 	{
 		auto open = new QAction (tr ("Open..."), this);
 		open->setProperty ("ActionIcon", "document-open");
@@ -503,6 +504,50 @@ namespace Monocle
 		openButton->setMenu (roMenu);
 		openButton->setPopupMode (QToolButton::MenuButtonPopup);
 		Toolbar_->addWidget (openButton);
+	}
+
+	void DocumentTab::SetupToolbarRotate ()
+	{
+		auto rotateMenu = new QMenu ();
+
+		auto ccwAction = rotateMenu->addAction (tr ("Rotate 90 degrees counter-clockwise"),
+				this, SLOT (rotateCCW ()));
+		ccwAction->setProperty ("ActionIcon", "object-rotate-left");
+
+		auto cwAction = rotateMenu->addAction (tr ("Rotate 90 degrees clockwise"),
+				this, SLOT (rotateCW ()));
+		cwAction->setProperty ("ActionIcon", "object-rotate-right");
+
+		auto arbAction = rotateMenu->addAction (tr ("Rotate arbitrarily..."));
+		arbAction->setProperty ("ActionIcon", "transform-rotate");
+
+		auto arbMenu = new QMenu ();
+		arbAction->setMenu (arbMenu);
+
+		auto arbWidget = new ArbitraryRotationWidget;
+		connect (arbWidget,
+				SIGNAL (valueChanged (double)),
+				LayoutManager_,
+				SLOT (scheduleSetRotation (double)));
+		connect (LayoutManager_,
+				SIGNAL (rotationUpdated (double)),
+				arbWidget,
+				SLOT (setValue (double)));
+		auto actionWidget = new QWidgetAction (this);
+		actionWidget->setDefaultWidget (arbWidget);
+		arbMenu->addAction (actionWidget);
+
+		auto rotateButton = new QToolButton ();
+		rotateButton->setDefaultAction (arbAction);
+		rotateButton->setMenu (rotateMenu);
+		rotateButton->setPopupMode (QToolButton::InstantPopup);
+
+		Toolbar_->addWidget (rotateButton);
+	}
+
+	void DocumentTab::SetupToolbar ()
+	{
+		SetupToolbarOpen ();
 
 		auto print = new QAction (tr ("Print..."), this);
 		print->setProperty ("ActionIcon", "document-print");
@@ -631,6 +676,9 @@ namespace Monocle
 				this,
 				SLOT (zoomIn ()));
 		Toolbar_->addAction (ZoomIn_);
+
+		SetupToolbarRotate ();
+
 		Toolbar_->addSeparator ();
 
 		auto viewGroup = new QActionGroup (this);
@@ -1067,6 +1115,16 @@ namespace Monocle
 
 		PrevCurrentPage_ = current;
 		emit currentPageChanged (current);
+	}
+
+	void DocumentTab::rotateCCW ()
+	{
+		LayoutManager_->AddRotation (-90);
+	}
+
+	void DocumentTab::rotateCW ()
+	{
+		LayoutManager_->AddRotation (90);
 	}
 
 	void DocumentTab::zoomOut ()

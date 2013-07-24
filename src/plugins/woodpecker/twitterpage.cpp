@@ -32,6 +32,7 @@
 #include <QListWidget>
 #include <QListWidgetItem>
 #include <QClipboard>
+#include <QInputDialog>
 #include <QCoreApplication>
 #include <qjson/parser.h>
 #include <interfaces/core/icoreproxy.h>
@@ -58,8 +59,7 @@ namespace Woodpecker
 		Ui_.setupUi (this);
 		Delegate_ = new TwitDelegate (Ui_.TwitList_, ParentPlugin_);
 		Ui_.TwitList_->setItemDelegate (Delegate_);
-
-		//	Toolbar_->addAction (ui->actionRefresh);
+		
 		Interface_ = new TwitterInterface (this);
 		connect (Interface_,
 				SIGNAL (tweetsReady (QList<Tweet_ptr>)),
@@ -138,9 +138,49 @@ namespace Woodpecker
 				SIGNAL (itemDoubleClicked (QListWidgetItem*)),
 				this,
 				SLOT (reply ()));
+		
+		ActionSearch_ = new QAction (tr ("Search in Twitter"), Ui_.TwitList_);
+		ActionSearch_->setProperty ("ActionIcon", "edit-find");
+		ActionSearch_->setShortcut (QKeySequence (Qt::CTRL + Qt::Key_F));
+		ActionSearch_->setShortcutContext (Qt::WidgetWithChildrenShortcut);
+		connect (ActionSearch_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (openSearchTimeline ()));
 
-		Ui_.TwitList_->addActions ({ ActionRetwit_, ActionReply_ });
+		ActionShowFavorites_ = new QAction (tr ("Show user favorites"), Ui_.TwitList_);
+		ActionShowFavorites_->setProperty ("ActionIcon", "folder-favorites");
+		connect (ActionShowFavorites_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (showFavorites ()));
 
+		ActionMakeFavorite_ = new QAction (tr ("Mark as favorite"), Ui_.TwitList_);
+		ActionMakeFavorite_->setProperty ("ActionIcon", "favorites");
+		connect (ActionMakeFavorite_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (makeFavorite ()));
+
+		ActionDeleteFavorite_ = new QAction (tr ("Remove from favorites"), Ui_.TwitList_);
+		connect (ActionDeleteFavorite_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (deleteFavorite ()));
+
+		Ui_.TwitList_->addActions ({ ActionRetwit_, ActionReply_, ActionCopyText_, 
+			ActionDelete_, ActionShowFavorites_, ActionMakeFavorite_, ActionDeleteFavorite_,
+			ActionOpenWeb_, ActionSearch_, ActionSPAM_ });
+		
+		ActionShowOwnFavorites_ = new QAction (tr ("Show user favorites"), Ui_.TwitList_);
+		ActionShowOwnFavorites_->setProperty ("ActionIcon", "folder-favorites");
+		connect (ActionShowOwnFavorites_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (showOwnFavorites ()));
+
+		Toolbar_->addAction (ActionShowOwnFavorites_);
+		
 		if ((!Settings_->value ("token").isNull ()) && (!Settings_->value ("tokenSecret").isNull ()))
 		{
 			qDebug () << "Have an authorized" << Settings_->value ("token") << ":" << Settings_->value ("tokenSecret");
@@ -227,7 +267,7 @@ namespace Woodpecker
 
 			int insertionShift = ScreenTwits_.length () - i;    // We've already got insertionShift twits to our list
 
-			for (i = 0; (i < insertionShift) && (!twits.isEmpty ()); i++)
+			for (i = 0; i < insertionShift && !twits.isEmpty (); i++)
 				twits.removeFirst ();
 
 			if (XmlSettingsManager::Instance ()->property ("notify").toBool ())
@@ -395,7 +435,12 @@ namespace Woodpecker
 
 		menu->addActions ({ ActionRetwit_, ActionReply_, menu->addSeparator (),
 			ActionSPAM_, menu->addSeparator (), ActionDelete_, menu->addSeparator (), ActionCopyText_, 
-						  ActionOpenWeb_, actionOpenTimeline });
+						  actionOpenTimeline, menu->addSeparator (),
+						  ActionMakeFavorite_ });
+		if (TC_.TabClass_ == ParentPlugin_->FavoriteTC_.TabClass_)
+			menu->addAction (ActionDeleteFavorite_);
+		menu->addActions ({ ActionShowFavorites_, menu->addSeparator (), 
+						  ActionOpenWeb_, ActionSearch_ });
 		menu->setAttribute (Qt::WA_DeleteOnClose);
 
 		menu->exec (Ui_.TwitList_->viewport ()->mapToGlobal (pos));
@@ -476,10 +521,25 @@ namespace Woodpecker
 		const auto& username = idx->data (Qt::UserRole).value<Tweet_ptr> ()->GetAuthor ()->GetUsername ();
 		KQOAuthParameters param;
 		param.insert ("screen_name", username.toUtf8 ().constData ());
-		ParentPlugin_->AddTab (QString ("User/%1").arg (username),
-								tr ("User tab"), tr ("Own timeline"), 
-								FeedMode::UserTimeline,
-								param);
+		
+		ParentPlugin_->AddTab (ParentPlugin_->UserTC_,
+							   tr ("User %1").arg (username),
+							   FeedMode::UserTimeline, param);
+	}
+	
+	void TwitterPage::openSearchTimeline()
+	{
+		const QString& text = QInputDialog::getText (this, tr ("Twitter search"),
+													tr ("Search request"), QLineEdit::Normal,
+													QString ());
+		if (!text.isEmpty ())
+		{
+			KQOAuthParameters param;
+			param.insert ("q", text.toUtf8 ());
+			ParentPlugin_->AddTab (ParentPlugin_->SearchTC_,
+								   tr ("Search %1").arg (text),
+								   FeedMode::SearchResult, param);
+		}
 	}
 	
 	void TwitterPage::copyTwitText ()
@@ -508,6 +568,55 @@ namespace Woodpecker
 		Interface_->Delete (twitid);
 	}
 	
+	void TwitterPage::makeFavorite ()
+	{
+		const auto idx = Ui_.TwitList_->currentItem ();
+		if (!idx)
+		{
+			qWarning () << Q_FUNC_INFO << "Malformed index";
+			return;
+		}
+		const auto& twitid = idx->data (Qt::UserRole).value<Tweet_ptr> ()->GetId ();
+
+		Interface_->MakeFavorite (twitid);
+	}
+	
+	void TwitterPage::deleteFavorite ()
+	{
+		const auto idx = Ui_.TwitList_->currentItem ();
+		if (!idx)
+		{
+			qWarning () << Q_FUNC_INFO << "Malformed index";
+			return;
+		}
+		const auto& twitid = idx->data (Qt::UserRole).value<Tweet_ptr> ()->GetId ();
+
+		Interface_->DeleteFavorite (twitid);	
+	}
+	
+	void TwitterPage::showFavorites ()
+	{
+		const auto idx = Ui_.TwitList_->currentItem ();
+		if (!idx)
+		{
+			qWarning () << Q_FUNC_INFO << "Malformed index";
+			return;
+		}
+		const auto& username = idx->data (Qt::UserRole).value<Tweet_ptr> ()->GetAuthor ()->GetUsername ();
+		KQOAuthParameters param;
+		param.insert ("screen_name", username.toUtf8 ().constData ());
+		
+		ParentPlugin_->AddTab (ParentPlugin_->FavoriteTC_,
+							   tr ("@%1 favorites").arg (username),
+							   FeedMode::Favorites, param);	
+	}
+	
+	void TwitterPage::showOwnFavorites()
+	{
+			ParentPlugin_->AddTab (ParentPlugin_->FavoriteTC_,
+							   tr ("Favorite twits"),
+							   FeedMode::Favorites);	
+	}
 }
 }
 

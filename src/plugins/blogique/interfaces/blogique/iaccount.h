@@ -188,6 +188,12 @@ namespace Blogique
 		 */
 		virtual void submit (const Entry& event) = 0;
 
+		/** @brief Preview post in blog stryle.
+		 *
+		 * @param[in] event Preview event.
+		 */
+		virtual void preview (const Entry& event) = 0;
+
 		/** @brief Request updating profile data.
 		 *
 		 */

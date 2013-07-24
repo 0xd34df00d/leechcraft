@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "itemimageprovider.h"
+#include <util/xdg/item.h>
 
 namespace LeechCraft
 {
@@ -37,7 +38,7 @@ namespace Launchy
 	{
 	}
 
-	void ItemImageProvider::AddItem (Item_ptr item)
+	void ItemImageProvider::AddItem (Util::XDG::Item_ptr item)
 	{
 		PermID2Icon_ [item->GetPermanentID ()] = item->GetIcon ();
 	}

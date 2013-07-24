@@ -59,19 +59,20 @@ namespace NetStoreManager
 	public:
 		FilesWatcherInotify (QObject *parent = 0);
 	private:
+		void AddPath (const QString& path);
+		void RenamePath (const QString& oldPath, const QString& newPath);
 		void HandleNotification (int descriptor);
 		void AddPathWithNotify (const QString& path);
 		bool IsInExceptionList (const QString& path) const;
 		void RemoveWatchingPath (int descriptor);
+		void RemoveWatchingPath (const QString& path);
 
 	public slots:
+		void updatePaths (const QStringList& paths);
+
 		void checkNotifications ();
-		bool addPath (QString path);
-		void addPathes (QStringList paths);
 		void release ();
 		void updateExceptions (QStringList masks);
 	};
-
-	typedef FilesWatcherInotify FilesWatcher;
 }
 }

@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <interfaces/core/icoreproxy.h>
+#include <util/xdg/xdgfwd.h>
 
 class QStandardItem;
 class QAbstractItemModel;
@@ -41,7 +42,6 @@ namespace LeechCraft
 namespace Launchy
 {
 	class FavoritesManager;
-	class ItemsFinder;
 	class ItemImageProvider;
 
 	class QuarkManager : public QObject
@@ -50,12 +50,13 @@ namespace Launchy
 
 		ICoreProxy_ptr Proxy_;
 		FavoritesManager *FavMgr_;
-		ItemsFinder *Finder_;
+		Util::XDG::ItemsFinder *Finder_;
 		ItemImageProvider *ImageProv_;
 
 		QStandardItemModel *Model_;
 	public:
-		QuarkManager (ICoreProxy_ptr, FavoritesManager*, ItemsFinder*, ItemImageProvider*, QObject* = 0);
+		QuarkManager (ICoreProxy_ptr, FavoritesManager*,
+				Util::XDG::ItemsFinder*, ItemImageProvider*, QObject* = 0);
 
 		QAbstractItemModel* GetModel () const;
 	private:

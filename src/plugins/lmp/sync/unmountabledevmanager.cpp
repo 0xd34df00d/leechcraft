@@ -42,6 +42,7 @@ namespace LMP
 	: QObject (parent)
 	, DevListModel_ (new QStandardItemModel (this))
 	{
+		DevListModel_->setColumnCount (1);
 	}
 
 	QAbstractItemModel* UnmountableDevManager::GetDevListModel () const
@@ -82,7 +83,8 @@ namespace LMP
 
 	void UnmountableDevManager::rebuildAvailableDevices ()
 	{
-		DevListModel_->clear ();
+		if (const auto rc = DevListModel_->rowCount ())
+			DevListModel_->removeRows (0, rc);
 
 		Q_FOREACH (auto mgrObj, Managers_)
 		{
@@ -91,7 +93,7 @@ namespace LMP
 			{
 				auto item = new QStandardItem (device.Name_);
 				item->setData (QVariant::fromValue (mgrObj), Roles::ManagerObj);
-				item->setData (device.ID_, DeviceRoles::DevPersistentID);
+				item->setData (device.ID_, CommonDevRole::DevPersistentID);
 				item->setData (QVariant::fromValue (device), Roles::DeviceInfo);
 				DevListModel_->appendRow (item);
 			}

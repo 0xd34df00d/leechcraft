@@ -35,14 +35,14 @@
 #include <QNetworkReply>
 #include <QtDebug>
 #include <util/queuemanager.h>
-#include "authmanager.h"
+#include <util/svcauth/vkauthmanager.h>
 
 namespace LeechCraft
 {
 namespace TouchStreams
 {
-	AudioSearch::AudioSearch (ICoreProxy_ptr proxy,
-			const Media::AudioSearchRequest& query, AuthManager *mgr, Util::QueueManager *queue, QObject *parent)
+	AudioSearch::AudioSearch (ICoreProxy_ptr proxy, const Media::AudioSearchRequest& query,
+			Util::SvcAuth::VkAuthManager *mgr, Util::QueueManager *queue, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, Queue_ (queue)

@@ -1,0 +1,6 @@
+{
+	"name": "Openbox",
+	"comment": "Use the Openbox window manager with LeechCraft",
+	"supportsReplace": true,
+	"execNames": [ "openbox" ]
+}

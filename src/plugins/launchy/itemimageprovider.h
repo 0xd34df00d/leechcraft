@@ -29,8 +29,9 @@
 
 #pragma once
 
+#include <QHash>
 #include <util/qml/widthiconprovider.h>
-#include "item.h"
+#include <util/xdg/xdgfwd.h>
 
 namespace LeechCraft
 {
@@ -42,7 +43,7 @@ namespace Launchy
 	public:
 		ItemImageProvider ();
 
-		void AddItem (Item_ptr);
+		void AddItem (Util::XDG::Item_ptr);
 
 		QIcon GetIcon (const QStringList&);
 	};

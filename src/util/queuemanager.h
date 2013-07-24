@@ -46,7 +46,7 @@ namespace Util
 	 * This class manages execution of functors that should be called
 	 * with some minimal timeout between them.
 	 */
-	class QueueManager : public QObject
+	class UTIL_API QueueManager : public QObject
 	{
 		Q_OBJECT
 
@@ -62,7 +62,7 @@ namespace Util
 		 * in milliseconds.
 		 * @param[in] parent The parent object of this queue manager.
 		 */
-		UTIL_API QueueManager (int timeout, QObject *parent = 0);
+		QueueManager (int timeout, QObject *parent = 0);
 
 		/** @brief Adds the given \em functor.
 		 *
@@ -79,7 +79,7 @@ namespace Util
 		 * @param[in] dependent The dependent object, or nullptr if this
 		 * \em functor doesn't depend on anything.
 		 */
-		UTIL_API void Schedule (std::function<void ()> functor, QObject *dependent = 0);
+		void Schedule (std::function<void ()> functor, QObject *dependent = 0);
 	private slots:
 		void exec ();
 	};

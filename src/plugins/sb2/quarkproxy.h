@@ -71,6 +71,8 @@ namespace SB2
 		QVariant openWindow (const QUrl&, const QString&, const QVariant&);
 		QRect getWinRect ();
 
+		void panelMoveRequested (const QString&);
+
 		void quarkAddRequested (int, int);
 		void quarkOrderRequested (int, int);
 	private slots:

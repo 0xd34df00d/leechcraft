@@ -30,6 +30,8 @@
 #include "graphstab.h"
 #include <qwt_legend.h>
 #include "graphsfactory.h"
+#include "core.h"
+#include "operationsmanager.h"
 
 namespace LeechCraft
 {
@@ -45,8 +47,32 @@ namespace Poleemery
 		Ui_.GraphType_->setCurrentIndex (-1);
 
 		auto legend = new QwtLegend;
+#if QWT_VERSION >= 0x060100
+		legend->setDefaultItemMode (QwtLegendData::Clickable);
+#else
 		legend->setItemMode (QwtLegend::ClickableItem);
+#endif
 		Ui_.Plot_->insertLegend (legend, QwtPlot::BottomLegend);
+
+		connect (Ui_.GraphType_,
+				SIGNAL (activated (int)),
+				this,
+				SLOT (updateGraph ()));
+		connect (Ui_.From_,
+				SIGNAL (dateChanged (QDate)),
+				this,
+				SLOT (updateGraph ()));
+		connect (Ui_.To_,
+				SIGNAL (dateChanged (QDate)),
+				this,
+				SLOT (updateGraph ()));
+
+		connect (Ui_.PredefinedDate_,
+				SIGNAL (currentIndexChanged (int)),
+				this,
+				SLOT (setPredefinedDate (int)));
+		setPredefinedDate (0);
+		Ui_.To_->setDateTime (QDateTime::currentDateTime ());
 	}
 
 	TabClassInfo GraphsTab::GetTabClassInfo () const
@@ -70,12 +96,19 @@ namespace Poleemery
 		return 0;
 	}
 
-	void GraphsTab::on_GraphType__currentIndexChanged (int index)
+	void GraphsTab::updateGraph ()
 	{
 		Ui_.Plot_->detachItems ();
 
+		const auto index = Ui_.GraphType_->currentIndex ();
+		if (index < 0)
+			return;
+
+		const auto& from = Ui_.From_->dateTime ();
+		const auto& to = Ui_.To_->dateTime ();
+
 		GraphsFactory f;
-		for (const auto& item : f.CreateItems (index))
+		for (const auto& item : f.CreateItems (index, { from, to }))
 		{
 			item->setRenderHint (QwtPlotItem::RenderAntialiased);
 			item->attach (Ui_.Plot_);
@@ -83,6 +116,35 @@ namespace Poleemery
 		f.PreparePlot (index, Ui_.Plot_);
 
 		Ui_.Plot_->replot ();
+	}
+
+	void GraphsTab::setPredefinedDate (int index)
+	{
+		const auto& now = QDateTime::currentDateTime ();
+
+		QDateTime first;
+		switch (index)
+		{
+		case 0:
+			first = now.addDays (-7);
+			break;
+		case 1:
+			first = now.addMonths (-1);
+			break;
+		default:
+		{
+			const auto& entries = Core::Instance ().GetOpsManager ()->GetAllEntries ();
+			first = std::accumulate (entries.begin (), entries.end (), now,
+					[] (const QDateTime& d, EntryBase_ptr e)
+						{ return std::min (d, e->Date_); });
+			break;
+		}
+		}
+
+		Ui_.From_->setDateTime (first);
+		Ui_.To_->setDateTime (now);
+
+		updateGraph ();
 	}
 }
 }

@@ -82,6 +82,7 @@ namespace GoogleDrive
 				TaskParameters tp, bool silent = false, bool open = false);
 
 		ListingOps GetListingOps () const;
+		HashAlgorithm GetCheckSumAlgorithm () const;
 
 		void RefreshListing ();
 

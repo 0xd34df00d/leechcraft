@@ -187,6 +187,7 @@ namespace Metida
 		void updateProfile ();
 
 		void submit (const Entry& event);
+		void preview (const Entry& event);
 		void backup ();
 
 		void handleEventPosted (const QList<LJEvent>& entries);

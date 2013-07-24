@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QPointer>
 
 class QMainWindow;
 class QToolBar;
@@ -43,7 +44,7 @@ namespace LeechCraft
 		Q_OBJECT
 
 		MainWindow *Window_;
-		QToolBar *Toolbar_;
+		QPointer<QToolBar> Toolbar_;
 	public:
 		ToolbarGuard (QMainWindow*);
 		virtual ~ToolbarGuard ();

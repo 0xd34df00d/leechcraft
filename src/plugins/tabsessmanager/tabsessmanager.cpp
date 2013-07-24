@@ -63,18 +63,12 @@ namespace TabSessManager
 
 		const auto& roots = Proxy_->GetPluginsManager ()->
 				GetAllCastableRoots<IHaveRecoverableTabs*> ();
-		Q_FOREACH (QObject *root, roots)
-		{
+		for (QObject *root : roots)
 			connect (root,
 					SIGNAL (addNewTab (const QString&, QWidget*)),
 					this,
 					SLOT (handleNewTab (const QString&, QWidget*)),
 					Qt::QueuedConnection);
-			connect (root,
-					SIGNAL (removeTab (QWidget*)),
-					this,
-					SLOT (handleRemoveTab (QWidget*)));
-		}
 
 		SessMgrMenu_ = new QMenu (tr ("Sessions"));
 		SessMgrMenu_->addAction (tr ("Save current session..."),
@@ -95,10 +89,6 @@ namespace TabSessManager
 				SIGNAL (windowAdded (int)),
 				this,
 				SLOT (handleWindow (int)));
-		connect (rootWM->GetQObject (),
-				SIGNAL (windowRemoved (int)),
-				this,
-				SLOT (handleWindowRemoved (int)));
 	}
 
 	void Plugin::SecondInit ()
@@ -133,6 +123,13 @@ namespace TabSessManager
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	QSet<QByteArray> Plugin::GetPluginClasses () const
+	{
+		QSet<QByteArray> result;
+		result << "org.LeechCraft.Core.Plugins/1.0";
+		return result;
 	}
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
@@ -224,6 +221,15 @@ namespace TabSessManager
 				this,
 				SLOT (loadCustomSession ()));
 		act->setProperty ("TabSessManager/SessName", name);
+	}
+
+	void Plugin::hookTabIsRemoving (IHookProxy_ptr proxy, int index, int windowId)
+	{
+		const auto rootWM = Proxy_->GetRootWindowsManager ();
+		const auto tabWidget = rootWM->GetTabWidget (windowId);
+		const auto widget = tabWidget->Widget (index);
+
+		handleRemoveTab (widget);
 	}
 
 	void Plugin::handleNewTab (const QString&, QWidget *widget)

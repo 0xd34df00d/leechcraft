@@ -54,7 +54,6 @@ namespace CSTP
 	, Total_ (0)
 	, FileSizeAtStart_ (-1)
 	, Speed_ (0)
-	, Counter_ (0)
 	, UpdateCounter_ (0)
 	, Timer_ (new QTimer (this))
 	, CanChangeName_ (true)
@@ -73,7 +72,6 @@ namespace CSTP
 	, Total_ (0)
 	, FileSizeAtStart_ (-1)
 	, Speed_ (0)
-	, Counter_ (0)
 	, UpdateCounter_ (0)
 	, Timer_ (new QTimer (this))
 	, CanChangeName_ (true)
@@ -86,7 +84,7 @@ namespace CSTP
 				SIGNAL (updateInterface ()));
 	}
 
-	void Task::Start (const boost::intrusive_ptr<MorphFile>& tof)
+	void Task::Start (const std::shared_ptr<QFile>& tof)
 	{
 		FileSizeAtStart_ = tof->size ();
 		To_ = tof;
@@ -262,18 +260,6 @@ namespace CSTP
 	{
 		// TODO implement own translations for errors.
 		return Reply_.get () ? Reply_->errorString () : tr ("Task isn't initialized properly");
-	}
-
-	void Task::AddRef ()
-	{
-		++Counter_;
-	}
-
-	void Task::Release ()
-	{
-		--Counter_;
-		if (!Counter_)
-			deleteLater ();
 	}
 
 	void Task::Reset ()
@@ -532,16 +518,6 @@ namespace CSTP
 	void Task::handleError ()
 	{
 		emit done (true);
-	}
-
-	void intrusive_ptr_add_ref (Task *task)
-	{
-		task->AddRef ();
-	}
-
-	void intrusive_ptr_release (Task *task)
-	{
-		task->Release ();
 	}
 }
 }

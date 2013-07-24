@@ -135,6 +135,8 @@ endif ()
 set (LEECHCRAFT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 set (LEECHCRAFT_LIBRARIES lcutil xmlsettingsdialog)
 
+set (CMAKE_MODULE_PATH "/usr/local/share/apps/cmake/modules;/usr/share/apps/cmake/modules;${CMAKE_MODULE_PATH}")
+
 # Various options
 option (STRICT_LICENSING "Makes LeechCraft more prepared, for example, to lacking artwork due to licensing restrictions" OFF)
 
@@ -180,8 +182,12 @@ option (ENABLE_QROSP "Build Qrosp, the scripting support plugin" OFF)
 # New
 option (ENABLE_BLASQ "Build Blasq, client for cloud image storages like Picasa or Flickr" ${WITH_PLUGINS})
 option (ENABLE_BLOGIQUE "Build Blogique, LeechCraft blogging client" ${WITH_PLUGINS})
+option (ENABLE_DEVMON "Build Devmon, the devices monitor plugin" ${WITH_PLUGINS})
+option (ENABLE_DLNIWE "Build DLNiwe, the DLNA server plugin" ${WITH_PLUGINS})
 option (ENABLE_DOLOZHEE "Build Dolozhee, the feature request and bug reporter" ${WITH_PLUGINS})
+option (ENABLE_FENET "Build Fenet, WM control plugin" ${WITH_PLUGINS})
 option (ENABLE_GACTS "Build Global Actions provider plugin" ${WITH_PLUGINS})
+option (ENABLE_HARBINGER "Build Harbinger, the collections manager" ${WITH_PLUGINS})
 option (ENABLE_HOTSENSORS "Build HotSensors, temperature sensors quark" ${WITH_PLUGINS})
 option (ENABLE_HOTSTREAMS "Build HotStreams, radio streams provider module" ${WITH_PLUGINS})
 option (ENABLE_IMGASTE "Build Imgaste, simple image paster plugin" ${WITH_PLUGINS})
@@ -373,6 +379,10 @@ if (ENABLE_POPISHU)
 	add_subdirectory (plugins/popishu)
 endif ()
 
+if (ENABLE_HARBINGER)
+	add_subdirectory (plugins/harbinger)
+endif ()
+
 if (ENABLE_HOTSENSORS)
 	add_subdirectory (plugins/hotsensors)
 endif ()
@@ -499,6 +509,18 @@ endif ()
 
 if (ENABLE_CEMENTO)
 	add_subdirectory (plugins/cemento)
+endif ()
+
+if (ENABLE_DEVMON)
+	add_subdirectory (plugins/devmon)
+endif ()
+
+if (ENABLE_DLNIWE)
+	add_subdirectory (plugins/dlniwe)
+endif ()
+
+if (ENABLE_FENET)
+	add_subdirectory (plugins/fenet)
 endif ()
 
 if (ENABLE_GACTS)

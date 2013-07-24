@@ -74,7 +74,7 @@ namespace Metida
 		QIcon GetBloggingPlatformIcon () const;
 		QByteArray GetBloggingPlatformID () const;
 
-		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions);
+		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions, const QString&);
 		void RegisterAccount (const QString& name, const QList<QWidget*>& widgets);
 		void RemoveAccount (QObject *account);
 		QList<QAction*> GetEditorActions () const;

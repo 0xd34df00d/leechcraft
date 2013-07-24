@@ -14,6 +14,14 @@ function removeBalloon (balloon)
 	balloon.destroy ();
 }
 
+function clearBalloonsArray ()
+{
+	var length = balloonArray.length;
+	for (var i = 0; i < length; ++i)
+		balloonArray [i].destroy ();
+	balloonArray.length = 0;
+}
+
 function getAllBalloones ()
 {
 	return balloonArray;

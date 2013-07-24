@@ -55,7 +55,8 @@ namespace Poleemery
 		void Remove ();
 		QToolBar* GetToolBar () const;
 	private slots:
-		void on_GraphType__currentIndexChanged (int);
+		void updateGraph ();
+		void setPredefinedDate (int);
 	signals:
 		void removeTab (QWidget*);
 	};

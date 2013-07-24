@@ -39,6 +39,8 @@ namespace LeechCraft
 {
 namespace Otlozhu
 {
+	class SyncProxy;
+
 	class Plugin : public QObject
 					, public IInfo
 					, public IHaveTabs
@@ -46,9 +48,10 @@ namespace Otlozhu
 					, public ISyncable
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IEntityHandler)
+		Q_INTERFACES (IInfo IHaveTabs IEntityHandler ISyncable)
 
 		TabClassInfo TCTodo_;
+		SyncProxy *SyncProxy_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -64,11 +67,7 @@ namespace Otlozhu
 		EntityTestHandleResult CouldHandle (const Entity&) const;
 		void Handle (Entity);
 
-		Sync::ChainIDs_t AvailableChains () const;
-		Sync::Payloads_t GetAllDeltas (const Sync::ChainID_t&) const;
-		Sync::Payloads_t GetNewDeltas (const Sync::ChainID_t&) const;
-		void PurgeNewDeltas (const Sync::ChainID_t&, quint32);
-		void ApplyDeltas (const Sync::Payloads_t&, const Sync::ChainID_t&);
+		ISyncProxy* GetSyncProxy ();
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);
@@ -76,8 +75,6 @@ namespace Otlozhu
 		void changeTabIcon (QWidget*, const QIcon&);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
-
-		void newDeltasAvailable (const LeechCraft::Sync::ChainID_t&);
 
 		void gotEntity (const LeechCraft::Entity&);
 	};

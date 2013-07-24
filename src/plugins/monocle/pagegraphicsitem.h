@@ -31,12 +31,16 @@
 
 #include <functional>
 #include <QGraphicsPixmapItem>
+#include <QPointer>
 #include "interfaces/monocle/idocument.h"
 
 namespace LeechCraft
 {
 namespace Monocle
 {
+	class PagesLayoutManager;
+	class ArbitraryRotationWidget;
+
 	class PageGraphicsItem : public QObject
 						   , public QGraphicsPixmapItem
 	{
@@ -57,6 +61,9 @@ namespace Monocle
 
 		std::function<void (int, QPointF)> ReleaseHandler_;
 
+		PagesLayoutManager *LayoutManager_;
+
+		QPointer<ArbitraryRotationWidget> ArbWidget_;
 	public:
 		typedef std::function<void (QRectF)> RectSetter_f;
 	private:
@@ -69,6 +76,8 @@ namespace Monocle
 	public:
 		PageGraphicsItem (IDocument_ptr, int, QGraphicsItem* = 0);
 		~PageGraphicsItem ();
+
+		void SetLayoutManager (PagesLayoutManager*);
 
 		void SetReleaseHandler (std::function<void (int, QPointF)>);
 
@@ -89,12 +98,21 @@ namespace Monocle
 		void hoverLeaveEvent (QGraphicsSceneHoverEvent*);
 		void mousePressEvent (QGraphicsSceneMouseEvent*);
 		void mouseReleaseEvent (QGraphicsSceneMouseEvent*);
+		void contextMenuEvent (QGraphicsSceneContextMenuEvent*);
 	private:
 		void LayoutLinks ();
 		ILink_ptr FindLink (const QPointF&);
 		bool IsDisplayed () const;
 	private slots:
+		void rotateCCW ();
+		void rotateCW ();
+		void requestRotation (double);
+
+		void updateRotation (double, int);
+
 		void handlePixmapRendered ();
+	signals:
+		void rotateRequested (double);
 	};
 }
 }

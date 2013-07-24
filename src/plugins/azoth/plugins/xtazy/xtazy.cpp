@@ -42,6 +42,7 @@
 #include <interfaces/azoth/iproxyobject.h>
 #include "tracksharedialog.h"
 #include "xmlsettingsmanager.h"
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 
 namespace LeechCraft
 {
@@ -55,6 +56,9 @@ namespace Xtazy
 
 		Proxy_ = proxy;
 		AzothProxy_ = 0;
+
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothxtazysettings.xml");
 
 		Keeper_ = 0;
 	}
@@ -102,6 +106,11 @@ namespace Xtazy
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		return result;
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 
 	void Plugin::HandleShare (LeechCraft::IHookProxy_ptr proxy, QObject *entryObj, const QString& variant, const QUrl& url)

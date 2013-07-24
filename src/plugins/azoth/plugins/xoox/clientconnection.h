@@ -91,6 +91,8 @@ namespace Xoox
 	class CryptHandler;
 	class ServerInfoStorage;
 
+	class CaptchaManager;
+
 	class ClientConnection : public QObject
 	{
 		Q_OBJECT
@@ -106,8 +108,11 @@ namespace Xoox
 		QXmppEntityTimeManager *EntityTimeManager_;
 		QXmppArchiveManager *ArchiveManager_;
 		QXmppMessageReceiptManager *DeliveryReceiptsManager_;
+
 		XMPPCaptchaManager *CaptchaManager_;
 		XMPPBobManager *BobManager_;
+		CaptchaManager *CaptchaDisplayManager_;
+
 #ifdef ENABLE_MEDIACALLS
 		QXmppCallManager *CallManager_;
 #endif
@@ -283,7 +288,7 @@ namespace Xoox
 		void handlePEPEvent (const QString&, PEPEventBase*);
 		void handlePEPAvatarUpdated (const QString&, const QImage&);
 		void handleMessageDelivered (const QString&, const QString&);
-		void handleCaptchaReceived (const QString&, const QXmppDataForm&);
+
 		void handleRoomInvitation (const QString&, const QString&, const QString&);
 		void handleGotRIEXItems (QString, QList<RIEXManager::Item>, bool);
 

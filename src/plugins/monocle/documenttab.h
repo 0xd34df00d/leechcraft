@@ -141,6 +141,8 @@ namespace Monocle
 		QPoint GetCurrentCenter () const;
 		void CenterOn (const QPoint&);
 	private:
+		void SetupToolbarOpen ();
+		void SetupToolbarRotate ();
 		void SetupToolbar ();
 
 		QPoint GetViewportCenter () const;
@@ -175,6 +177,9 @@ namespace Monocle
 		void navigateNumLabel ();
 		void updateNumLabel ();
 		void checkCurrentPageChange (bool force = false);
+
+		void rotateCCW ();
+		void rotateCW ();
 
 		void zoomOut ();
 		void zoomIn ();

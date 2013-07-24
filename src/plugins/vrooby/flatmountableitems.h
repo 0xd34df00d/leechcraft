@@ -32,7 +32,7 @@
 #include <QObject>
 #include <QAbstractItemModel>
 #include <util/models/flattenfiltermodel.h>
-#include <interfaces/iremovabledevmanager.h>
+#include <interfaces/devices/deviceroles.h>
 
 class QStandardItemModel;
 class QStandardItem;
@@ -50,7 +50,7 @@ namespace Vrooby
 	public:
 		enum CustomRoles
 		{
-			FormattedTotalSize = DeviceRoles::DeviceRoleMax + 1,
+			FormattedTotalSize = MassStorageRole::MassStorageRoleMax + 1,
 			FormattedFreeSpace,
 			UsedPercentage,
 			MountButtonIcon,

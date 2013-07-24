@@ -103,6 +103,8 @@ Rectangle
 
 	function setTags (tags)
 	{
+		TagsCloudList.unselectAllTags ();
+
 		var length = tags.length;
 		for (var i = 0; i < length; ++i)
 			selectTag (tags [i], true)

@@ -53,6 +53,7 @@ namespace Monocle
 	, RelayoutScheduled_ (false)
 	, HorMargin_ (0)
 	, VertMargin_ (0)
+	, Rotation_ (0)
 	{
 		connect (View_,
 				SIGNAL (sizeChanged ()),
@@ -65,6 +66,13 @@ namespace Monocle
 	{
 		CurrentDoc_ = doc;
 		Pages_ = pages;
+		Rotation_ = 0;
+		emit rotationUpdated (0);
+
+		PageRotations_ = QVector<double> (pages.size (), 0);
+
+		for (auto page : pages)
+			page->SetLayoutManager (this);
 
 		if (CurrentDoc_ && qobject_cast<IDynamicDocument*> (CurrentDoc_->GetQObject ()))
 			connect (CurrentDoc_->GetQObject (),
@@ -160,7 +168,7 @@ namespace Monocle
 			if (pageIdx < 0)
 				pageIdx = 0;
 
-			double dim = dimGetter (CurrentDoc_->GetPageSize (pageIdx) + QSize (2 * HorMargin_, 2 * VertMargin_));
+			double dim = dimGetter (GetRotatedSize (pageIdx).toSize () + QSize (2 * HorMargin_, 2 * VertMargin_));
 			auto size = View_->maximumViewportSize ();
 			size.rwidth () -= View_->verticalScrollBar ()->size ().width ();
 			size.rheight () -= View_->horizontalScrollBar ()->size ().height ();
@@ -200,6 +208,40 @@ namespace Monocle
 		return 1;
 	}
 
+	void PagesLayoutManager::SetRotation (double angle)
+	{
+		Rotation_ = angle;
+		Relayout ();
+		emit rotationUpdated (angle);
+	}
+
+	void PagesLayoutManager::AddRotation (double dAngle)
+	{
+		SetRotation (GetRotation () + dAngle);
+	}
+
+	double PagesLayoutManager::GetRotation () const
+	{
+		return Rotation_;
+	}
+
+	void PagesLayoutManager::SetRotation (double angle, int page)
+	{
+		PageRotations_ [page] = angle;
+		Relayout ();
+		emit rotationUpdated (angle, page);
+	}
+
+	void PagesLayoutManager::AddRotation (double dAngle, int page)
+	{
+		SetRotation (dAngle + GetRotation (page), page);
+	}
+
+	double PagesLayoutManager::GetRotation (int page) const
+	{
+		return PageRotations_ [page];
+	}
+
 	void PagesLayoutManager::SetMargins (double horizontal, double vertical)
 	{
 		HorMargin_ = horizontal;
@@ -223,20 +265,43 @@ namespace Monocle
 		}
 
 		for (auto item : Pages_)
-			item->SetScale (scale, scale);
+		{
+			const auto pageRotation = PageRotations_ [item->GetPageNum ()] + Rotation_;
+			const auto& bounding = item->boundingRect ();
+			item->setTransformOriginPoint (bounding.width () / 2, bounding.height () / 2);
 
+			item->setRotation (pageRotation);
+
+			item->SetScale (scale, scale);
+		}
+
+		double currentY = 0;
+		double lastWidth = 0;
+		double lastHeight = 0;
 		for (int i = 0, pagesCount = Pages_.size (); i < pagesCount; ++i)
 		{
-			const auto& size = CurrentDoc_->GetPageSize (i) * scale;
 			auto page = Pages_ [i];
+
+			const auto& size = GetRotatedSize (i) * scale;
+
 			switch (LayMode_)
 			{
 			case LayoutMode::OnePage:
-				page->setPos (0, Margin + (size.height () + Margin) * i);
+				page->setPos (0, currentY);
+				currentY += size.height () + Margin;
 				break;
 			case LayoutMode::TwoPages:
-				page->setPos ((i % 2) * (Margin / 3 + size.width ()),
-						Margin + (size.height () + Margin) * (i / 2));
+				if (i % 2)
+				{
+					page->setPos (lastWidth + Margin / 3, currentY);
+					currentY += std::max (lastHeight, size.height ()) + Margin;
+				}
+				else
+				{
+					page->setPos (0, currentY);
+					lastWidth = size.width ();
+					lastHeight = size.height ();
+				}
 				break;
 			}
 		}
@@ -258,6 +323,21 @@ namespace Monocle
 			RelayoutScheduled_ = false;
 			emit scheduledRelayoutFinished ();
 		}
+	}
+
+	QSizeF PagesLayoutManager::GetRotatedSize (int page) const
+	{
+		const auto& origSize = CurrentDoc_->GetPageSize (page);
+		const auto rotation = Pages_.at (page)->rotation ();
+		QTransform tf;
+		tf.rotate (rotation);
+		return tf.mapRect (QRectF { { 0, 0 }, origSize }).size ();
+	}
+
+	void PagesLayoutManager::scheduleSetRotation (double angle)
+	{
+		SetRotation (angle);
+		emit rotationUpdated (angle);
 	}
 
 	void PagesLayoutManager::scheduleRelayout ()

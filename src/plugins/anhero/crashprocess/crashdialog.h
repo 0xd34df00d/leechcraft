@@ -31,6 +31,7 @@
 
 #include <QDialog>
 #include "ui_crashdialog.h"
+#include "appinfo.h"
 
 namespace LeechCraft
 {
@@ -46,16 +47,21 @@ namespace CrashProcess
 
 		Ui::CrashDialog Ui_;
 		const QString CmdLine_;
+		const AppInfo Info_;
 	public:
 		CrashDialog (const AppInfo&, QWidget* = 0);
 	private:
 		void WriteTrace (const QString&);
+		void SetInteractionAllowed (bool);
 	public slots:
 		void accept ();
 		void done (int);
-
-		void appendTrace (const QString&);
 	private slots:
+		void appendTrace (const QString&);
+		void handleFinished (int);
+
+		void reload ();
+
 		void on_Copy__released ();
 		void on_Save__released ();
 	};

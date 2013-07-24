@@ -37,6 +37,7 @@
 #include <util/util.h>
 #include <util/sysinfo.h>
 #include "appinfo.h"
+#include "gdblauncher.h"
 
 namespace LeechCraft
 {
@@ -47,24 +48,18 @@ namespace CrashProcess
 	CrashDialog::CrashDialog (const AppInfo& info, QWidget *parent)
 	: QDialog (parent, Qt::Window)
 	, CmdLine_ (info.ExecLine_)
+	, Info_ (info)
 	{
 		Ui_.setupUi (this);
 
 		Ui_.InfoLabel_->setText (tr ("Unfortunately LeechCraft has crashed. This is the info we could collect:"));
-		Ui_.TraceDisplay_->append ("=== SYSTEM INFO ===");
-		Ui_.TraceDisplay_->append ("Offending signal: " + QString::number (info.Signal_));
-		Ui_.TraceDisplay_->append ("App path: " + info.Path_);
-		Ui_.TraceDisplay_->append ("App version: " + info.Version_);
-		Ui_.TraceDisplay_->append ("Qt version (build-time): " + QString (QT_VERSION_STR));
-		Ui_.TraceDisplay_->append ("Qt version (runtime): " + QString (qVersion ()));
+		Ui_.RestartBox_->setEnabled (!Info_.ExecLine_.isEmpty ());
 
-		const auto& osInfo = Util::SysInfo::GetOSNameSplit ();
-		Ui_.TraceDisplay_->append ("OS: " + osInfo.first);
-		Ui_.TraceDisplay_->append ("OS version: " + osInfo.second);
-
-		Ui_.TraceDisplay_->append ("\n\n=== BACKTRACE ===");
-
-		Ui_.RestartBox_->setEnabled (!info.ExecLine_.isEmpty ());
+		connect (Ui_.Reload_,
+				SIGNAL (released ()),
+				this,
+				SLOT (reload ()));
+		reload ();
 
 		show ();
 	}
@@ -81,6 +76,15 @@ namespace CrashProcess
 			return;
 		}
 		file.write (Ui_.TraceDisplay_->toPlainText ().toUtf8 ());
+	}
+
+	void CrashDialog::SetInteractionAllowed (bool allowed)
+	{
+		Ui_.TraceDisplay_->setEnabled (allowed);
+		Ui_.Reload_->setEnabled (allowed);
+		Ui_.Copy_->setEnabled (allowed);
+		Ui_.Save_->setEnabled (allowed);
+		Ui_.DialogButtons_->button (QDialogButtonBox::Ok)->setEnabled (allowed);
 	}
 
 	namespace
@@ -113,6 +117,42 @@ namespace CrashProcess
 	void CrashDialog::appendTrace (const QString& part)
 	{
 		Ui_.TraceDisplay_->append (part);
+	}
+
+	void CrashDialog::handleFinished (int code)
+	{
+		Ui_.TraceDisplay_->append ("\n\nGDB exited with code " + QString::number (code));
+		SetInteractionAllowed (true);
+	}
+
+	void CrashDialog::reload ()
+	{
+		Ui_.TraceDisplay_->clear ();
+
+		auto l = new GDBLauncher (Info_.PID_, Info_.Path_);
+		connect (l,
+				SIGNAL (gotOutput (QString)),
+				this,
+				SLOT (appendTrace (QString)));
+		connect (l,
+				SIGNAL (finished (int)),
+				this,
+				SLOT (handleFinished (int)));
+
+		Ui_.TraceDisplay_->append ("=== SYSTEM INFO ===");
+		Ui_.TraceDisplay_->append ("Offending signal: " + QString::number (Info_.Signal_));
+		Ui_.TraceDisplay_->append ("App path: " + Info_.Path_);
+		Ui_.TraceDisplay_->append ("App version: " + Info_.Version_);
+		Ui_.TraceDisplay_->append ("Qt version (build-time): " + QString (QT_VERSION_STR));
+		Ui_.TraceDisplay_->append ("Qt version (runtime): " + QString (qVersion ()));
+
+		const auto& osInfo = Util::SysInfo::GetOSNameSplit ();
+		Ui_.TraceDisplay_->append ("OS: " + osInfo.first);
+		Ui_.TraceDisplay_->append ("OS version: " + osInfo.second);
+
+		Ui_.TraceDisplay_->append ("\n\n=== BACKTRACE ===");
+
+		SetInteractionAllowed (false);
 	}
 
 	void CrashDialog::on_Copy__released ()

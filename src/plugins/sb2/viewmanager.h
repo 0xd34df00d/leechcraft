@@ -100,6 +100,8 @@ namespace SB2
 		void UnhideQuark (QuarkComponent_ptr, QuarkManager_ptr);
 		void MoveQuark (int from, int to);
 
+		void MovePanel (Qt::ToolBarArea);
+
 		QuarkComponents_t FindAllQuarks () const;
 		QList<QUrl> GetAddedQuarks () const;
 		QuarkManager_ptr GetAddedQuarkManager (const QUrl&) const;
@@ -120,8 +122,6 @@ namespace SB2
 
 		void SaveQuarkOrder ();
 		void LoadQuarkOrder ();
-	public slots:
-		void handleToolbarTopLevel (bool);
 	};
 }
 }

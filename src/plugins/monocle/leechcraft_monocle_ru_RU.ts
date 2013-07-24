@@ -2,6 +2,14 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
+    <name>ArbitraryRotationWidget</name>
+    <message>
+        <location filename="arbitraryrotationwidget.ui" line="49"/>
+        <source>Reset rotation</source>
+        <translation>Сбросить вращение</translation>
+    </message>
+</context>
+<context>
     <name>ChooseBackendDialog</name>
     <message>
         <location filename="choosebackenddialog.ui" line="14"/>
@@ -65,17 +73,17 @@
 <context>
     <name>LeechCraft::Monocle</name>
     <message>
-        <location filename="documenttab.cpp" line="141"/>
+        <location filename="documenttab.cpp" line="143"/>
         <source>Table of contents</source>
         <translation>Содержание</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="143"/>
+        <location filename="documenttab.cpp" line="145"/>
         <source>Bookmarks</source>
         <translation>Закладки</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="145"/>
+        <location filename="documenttab.cpp" line="147"/>
         <source>Thumbnails</source>
         <translation>Миниатюры</translation>
     </message>
@@ -119,139 +127,177 @@
 <context>
     <name>LeechCraft::Monocle::DocumentTab</name>
     <message>
-        <location filename="documenttab.cpp" line="483"/>
+        <location filename="documenttab.cpp" line="488"/>
         <source>Open...</source>
         <translation>Открыть...</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="503"/>
+        <location filename="documenttab.cpp" line="513"/>
+        <source>Rotate 90 degrees counter-clockwise</source>
+        <translation>Повернуть на 90° против часовой стрелки</translation>
+    </message>
+    <message>
+        <location filename="documenttab.cpp" line="517"/>
+        <source>Rotate 90 degrees clockwise</source>
+        <translation>Повернуть на 90° по часовой стрелке</translation>
+    </message>
+    <message>
+        <location filename="documenttab.cpp" line="521"/>
+        <source>Rotate arbitrarily...</source>
+        <translation>Произвольный поворот...</translation>
+    </message>
+    <message>
+        <location filename="documenttab.cpp" line="552"/>
         <source>Print...</source>
         <translation>Печать...</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="511"/>
+        <location filename="documenttab.cpp" line="560"/>
         <source>Save</source>
         <translation>Сохранить</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="521"/>
+        <location filename="documenttab.cpp" line="570"/>
         <source>Export as PDF...</source>
         <translation>Экспортировать в PDF...</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="551"/>
+        <location filename="documenttab.cpp" line="581"/>
+        <source>Find...</source>
+        <translation>Найти...</translation>
+    </message>
+    <message>
+        <location filename="documenttab.cpp" line="600"/>
         <source>Presentation...</source>
         <translation>Презентация...</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="561"/>
+        <location filename="documenttab.cpp" line="610"/>
         <source>Previous page</source>
         <translation>Предыдущая страница</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="590"/>
+        <location filename="documenttab.cpp" line="639"/>
         <source>Next page</source>
         <translation>Следующая страница</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="601"/>
+        <location filename="documenttab.cpp" line="650"/>
         <source>Fit width</source>
         <translation>По ширине</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="602"/>
+        <location filename="documenttab.cpp" line="651"/>
         <source>Fit page</source>
         <translation>Страница целиком</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="613"/>
+        <location filename="documenttab.cpp" line="662"/>
         <source>Zoom out</source>
         <translation>Уменьшить</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="622"/>
+        <location filename="documenttab.cpp" line="671"/>
         <source>Zoom in</source>
         <translation>Увеличить</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="633"/>
+        <location filename="documenttab.cpp" line="685"/>
         <source>One page</source>
         <translation>Одна страница</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="644"/>
+        <location filename="documenttab.cpp" line="696"/>
         <source>Two pages</source>
         <translation>Две страницы</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="657"/>
+        <location filename="documenttab.cpp" line="709"/>
         <source>Move mode</source>
         <translation>Режим перемещения</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="668"/>
+        <location filename="documenttab.cpp" line="720"/>
         <source>Selection mode</source>
         <translation>Режим выделения</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="905"/>
+        <location filename="documenttab.cpp" line="957"/>
         <source>Can&apos;t save document: %1.</source>
         <translation>Невозможно сохранить документ: %1.</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="923"/>
+        <location filename="documenttab.cpp" line="975"/>
         <source>Export to PDF</source>
         <translation>Экспорт в PDF</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="1218"/>
+        <location filename="documenttab.cpp" line="1280"/>
         <source>Save selection as</source>
         <translation>Сохранить выделение как</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="1220"/>
+        <location filename="documenttab.cpp" line="1282"/>
         <source>PNG images (*.png)</source>
         <translation>Изображения PNG (*.png)</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="359"/>
+        <location filename="documenttab.cpp" line="361"/>
         <source>Unable to open document %1.</source>
         <translation>Невозможно открыть документ %1.</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="111"/>
+        <location filename="documenttab.cpp" line="113"/>
         <source>Monocle dock</source>
         <translation>Док Monocle</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="440"/>
+        <location filename="documenttab.cpp" line="441"/>
         <source>Save selection as image...</source>
         <translation>Сохранить выделение как изображение...</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="680"/>
+        <location filename="documenttab.cpp" line="732"/>
         <source>Document info...</source>
         <translation>Информация о документе...</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="867"/>
+        <location filename="documenttab.cpp" line="919"/>
         <source>Seems like file %1 doesn&apos;t exist anymore.</source>
         <translation>Похоже, что файл %1 больше не существует.</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="880"/>
+        <location filename="documenttab.cpp" line="932"/>
         <source>Select file</source>
         <translation>Выбор файла</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="436"/>
+        <location filename="documenttab.cpp" line="437"/>
         <source>Copy selection as image</source>
         <translation>Скопировать как изображение</translation>
     </message>
     <message>
-        <location filename="documenttab.cpp" line="450"/>
+        <location filename="documenttab.cpp" line="455"/>
         <source>Copy selection as text</source>
         <translation>Скопировать как текст</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Monocle::PageGraphicsItem</name>
+    <message>
+        <location filename="pagegraphicsitem.cpp" line="256"/>
+        <source>Rotate 90 degrees counter-clockwise</source>
+        <translation>Повернуть на 90° против часовой стрелки</translation>
+    </message>
+    <message>
+        <location filename="pagegraphicsitem.cpp" line="260"/>
+        <source>Rotate 90 degrees clockwise</source>
+        <translation>Повернуть на 90° по часовой стрелке</translation>
+    </message>
+    <message>
+        <location filename="pagegraphicsitem.cpp" line="264"/>
+        <source>Rotate arbitrarily...</source>
+        <translation>Произвольный поворот...</translation>
     </message>
 </context>
 <context>

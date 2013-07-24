@@ -46,9 +46,11 @@ namespace Hestia
 		Ui::AccountConfigurationWidget Ui_;
 		IBloggingPlatform::AccountAddOptions Option_;
 
+		const QString SuggestedPath_;
 	public:
-		AccountConfigurationWidget (QWidget *parent = 0,
-				IBloggingPlatform::AccountAddOptions option = IBloggingPlatform::AAONoOptions);
+		AccountConfigurationWidget (QWidget* = 0,
+				IBloggingPlatform::AccountAddOptions = IBloggingPlatform::AAONoOptions,
+				const QString& = QString ());
 
 		void SetAccountBasePath (const QString& path);
 		QString GetAccountBasePath () const;

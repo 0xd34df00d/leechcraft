@@ -55,32 +55,19 @@ namespace SB2
 
 	void ViewGeometryManager::Manage ()
 	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_SB2");
-		settings.beginGroup ("Toolbars");
+		auto settings = ViewMgr_->GetSettings ();
+		settings->beginGroup ("Toolbars");
 		const auto& posSettingName = "Pos_" + QString::number (ViewMgr_->GetWindowIndex ());
-		auto pos = settings.value (posSettingName, static_cast<int> (Qt::LeftToolBarArea)).toInt ();
-		settings.endGroup ();
-
-		setOrientation ((pos == Qt::LeftToolBarArea || pos == Qt::RightToolBarArea) ? Qt::Vertical : Qt::Horizontal);
+		auto pos = settings->value (posSettingName, static_cast<int> (Qt::LeftToolBarArea)).toInt ();
+		settings->endGroup ();
 
 		auto toolbar = ViewMgr_->GetToolbar ();
-
-		connect (toolbar,
-				SIGNAL (orientationChanged (Qt::Orientation)),
-				this,
-				SLOT (setOrientation (Qt::Orientation)));
-
 #ifdef WITH_X11
 		if (!ViewMgr_->IsDesktopMode ())
 		{
 #endif
 			toolbar->setFloatable (false);
-			ViewMgr_->GetManagedWindow ()->addToolBar (static_cast<Qt::ToolBarArea> (pos), toolbar);
-#ifdef Q_OS_MAC
-			// dunno WTF
-			ViewMgr_->GetManagedWindow ()->show ();
-#endif
+			toolbar->setMovable (false);
 #ifdef WITH_X11
 		}
 		else
@@ -97,49 +84,126 @@ namespace SB2
 
 			toolbar->show ();
 
-			updatePos ();
-
 			Util::XWrapper::Instance ().MoveWindowToDesktop (toolbar->winId (), 0xffffffff);
 		}
 #endif
+
+		SetPosition (static_cast<Qt::ToolBarArea> (pos));
 	}
 
-	void ViewGeometryManager::updatePos ()
+	namespace
 	{
-#ifdef WITH_X11
-		setOrientation (Qt::Horizontal);
+		QRect ToGeom (const QRect& screenGeometry, const QSize& minSize, Qt::ToolBarArea area, QSize *diff = 0)
+		{
+			const int addition = 2;
+			switch (area)
+			{
+			case Qt::BottomToolBarArea:
+			{
+				QRect rect { 0, 0, screenGeometry.width (), minSize.height () + addition };
+				rect.moveLeft (screenGeometry.left ());
+				rect.moveBottom (screenGeometry.bottom ());
+
+				if (diff)
+					*diff = { 0, addition };
+
+				return rect;
+			}
+			case Qt::TopToolBarArea:
+			{
+				QRect rect { 0, 0, screenGeometry.width (), minSize.height () + addition };
+				rect.moveLeft (screenGeometry.left ());
+				rect.moveTop (screenGeometry.top ());
+
+				if (diff)
+					*diff = { 0, addition };
+
+				return rect;
+			}
+			case Qt::LeftToolBarArea:
+			{
+				QRect rect { 0, 0, minSize.width () + addition, screenGeometry.height () };
+				rect.moveLeft (screenGeometry.left ());
+				rect.moveTop (screenGeometry.top ());
+
+				if (diff)
+					*diff = { addition, 0 };
+
+				return rect;
+			}
+			case Qt::RightToolBarArea:
+			{
+				QRect rect { 0, 0, minSize.width () + addition, screenGeometry.height () };
+				rect.moveRight (screenGeometry.right ());
+				rect.moveTop (screenGeometry.top ());
+
+				if (diff)
+					*diff = { addition, 0 };
+
+				return rect;
+			}
+			default:
+				qWarning () << Q_FUNC_INFO
+						<< "unsupported area"
+						<< area;
+				return { { 0, 0 }, minSize };
+			}
+		}
+	}
+
+	void ViewGeometryManager::SetPosition (Qt::ToolBarArea pos)
+	{
+		setOrientation ((pos == Qt::LeftToolBarArea || pos == Qt::RightToolBarArea) ? Qt::Vertical : Qt::Horizontal);
 
 		auto toolbar = ViewMgr_->GetToolbar ();
 
-		const auto screenGeometry = QApplication::desktop ()->
-				screenGeometry (ViewMgr_->GetManagedWindow ());
+		auto settings = ViewMgr_->GetSettings ();
+		settings->beginGroup ("Toolbars");
+		settings->setValue ("Pos_" + QString::number (ViewMgr_->GetWindowIndex ()), static_cast<int> (pos));
+		settings->endGroup ();
 
-		const auto& minSize = toolbar->minimumSizeHint ();
-		QRect rect { 0, 0, screenGeometry.width (), minSize.height () };
-		rect.moveLeft (screenGeometry.left ());
-		rect.moveBottom (screenGeometry.bottom ());
+#ifdef WITH_X11
+		if (!ViewMgr_->IsDesktopMode ())
+		{
+#endif
+			ViewMgr_->GetManagedWindow ()->addToolBar (static_cast<Qt::ToolBarArea> (pos), toolbar);
+#ifdef Q_OS_MAC
+			// dunno WTF
+			ViewMgr_->GetManagedWindow ()->show ();
+#endif
+#ifdef WITH_X11
+		}
+		else
+		{
+			const auto screenGeometry = QApplication::desktop ()->
+					screenGeometry (ViewMgr_->GetManagedWindow ());
 
-		toolbar->setGeometry (rect);
-		ViewMgr_->GetView ()->setFixedSize (rect.size ());
-		toolbar->setFixedSize (rect.size ());
+			QSize diff;
+			const auto& rect = ToGeom (screenGeometry, ViewMgr_->GetView ()->minimumSizeHint (), pos, &diff);
 
-		Util::XWrapper::Instance ().SetStrut (toolbar, Qt::BottomToolBarArea);
+			toolbar->setGeometry (rect);
+			ViewMgr_->GetView ()->setFixedSize (rect.size () - diff);
+			toolbar->setFixedSize (rect.size ());
+
+			Util::XWrapper::Instance ().SetStrut (toolbar, pos);
+		}
 #endif
 	}
 
 	void ViewGeometryManager::setOrientation (Qt::Orientation orientation)
 	{
 		auto view = ViewMgr_->GetView ();
+		const auto& size = view->sizeHint ();
 
 		switch (orientation)
 		{
 		case Qt::Vertical:
-			view->resize (view->minimumSize ());
+			view->resize (size);
 			view->setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Expanding);
 			view->rootContext ()->setContextProperty ("viewOrient", "vertical");
 			break;
 		case Qt::Horizontal:
-			view->resize (view->minimumSize ());
+			view->resize (size);
 			view->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Preferred);
 			view->rootContext ()->setContextProperty ("viewOrient", "horizontal");
 			break;

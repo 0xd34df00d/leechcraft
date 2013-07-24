@@ -35,7 +35,7 @@
 #include <util/models/flattenfiltermodel.h>
 #include <util/models/mergemodel.h>
 #include <util/util.h>
-#include <interfaces/iremovabledevmanager.h>
+#include <interfaces/devices/iremovabledevmanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/lmp/isyncplugin.h>
 #include <interfaces/lmp/iunmountablesync.h>
@@ -70,22 +70,22 @@ namespace LMP
 				if (role != Qt::DisplayRole)
 					return Util::FlattenFilterModel::data (index, role);
 
-				const auto& mounts = index.data (DeviceRoles::MountPoints).toStringList ();
+				const auto& mounts = index.data (MassStorageRole::MountPoints).toStringList ();
 				const auto& mountText = mounts.isEmpty () ?
 						tr ("not mounted") :
 						tr ("mounted at %1").arg (mounts.join ("; "));
 
-				const auto& size = index.data (DeviceRoles::TotalSize).toLongLong ();
+				const auto& size = index.data (MassStorageRole::TotalSize).toLongLong ();
 				return QString ("%1 (%2, %3), %4")
-						.arg (index.data (DeviceRoles::VisibleName).toString ())
+						.arg (index.data (MassStorageRole::VisibleName).toString ())
 						.arg (Util::MakePrettySize (size))
-						.arg (index.data (DeviceRoles::DevFile).toString ())
+						.arg (index.data (MassStorageRole::DevFile).toString ())
 						.arg (mountText);
 			}
 		protected:
 			bool IsIndexAccepted (const QModelIndex& child) const
 			{
-				return child.data (DeviceRoles::IsMountable).toBool ();
+				return child.data (MassStorageRole::IsMountable).toBool ();
 			}
 		};
 	}
@@ -141,6 +141,9 @@ namespace LMP
 		const auto& mgrs = pm->GetAllCastableTo<IRemovableDevManager*> ();
 		for (const auto& mgr : mgrs)
 		{
+			if (!mgr->SupportsDevType (DeviceType::MassStorage))
+				continue;
+
 			auto flattener = new MountableFlattener (this);
 			flattener->SetSource (mgr->GetDevicesModel ());
 			Merger_->AddModel (flattener);
@@ -162,7 +165,8 @@ namespace LMP
 
 		for (int i = 0; i < Ui_.DevicesSelector_->count (); ++i)
 		{
-			const auto& thatId = Ui_.DevicesSelector_->itemData (i, DeviceRoles::DevPersistentID).toString ();
+			const auto& thatId = Ui_.DevicesSelector_->
+					itemData (i, CommonDevRole::DevPersistentID).toString ();
 			if (thatId != LastDevice_)
 				break;
 
@@ -196,7 +200,7 @@ namespace LMP
 
 		const auto idx = Ui_.DevicesSelector_->currentIndex ();
 		const auto& devId = idx >= 0 ?
-				Ui_.DevicesSelector_->itemData (idx, DeviceRoles::DevPersistentID).toString () :
+				Ui_.DevicesSelector_->itemData (idx, CommonDevRole::DevPersistentID).toString () :
 				QString ();
 		settings.setValue ("LastDeviceID", devId);
 
@@ -222,7 +226,7 @@ namespace LMP
 	void DevicesBrowserWidget::UploadMountable (int idx)
 	{
 		const auto& to = Ui_.DevicesSelector_->
-				itemData (idx, DeviceRoles::MountPoints).toStringList ().value (0);
+				itemData (idx, MassStorageRole::MountPoints).toStringList ().value (0);
 		if (to.isEmpty ())
 			return;
 
@@ -232,7 +236,7 @@ namespace LMP
 		else
 		{
 			QStringList items;
-			Q_FOREACH (ISyncPlugin *plugin, suitables)
+			for (ISyncPlugin *plugin : suitables)
 				items << plugin->GetSyncSystemName ();
 
 			const auto& name = QInputDialog::getItem (this,
@@ -289,19 +293,19 @@ namespace LMP
 		Ui_.UnmountablePartsWidget_->hide ();
 
 		auto isMounted = Ui_.DevicesSelector_->
-				itemData (idx, DeviceRoles::IsMounted).toBool ();
+				itemData (idx, MassStorageRole::IsMounted).toBool ();
 		Ui_.MountButton_->setEnabled (!isMounted);
 
 		if (!isMounted)
 			return;
 
 		const auto& mountPath = Ui_.DevicesSelector_->
-				itemData (idx, DeviceRoles::MountPoints).toStringList ().value (0);
+				itemData (idx, MassStorageRole::MountPoints).toStringList ().value (0);
 		if (mountPath.isEmpty ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "device seems to be mounted, but no mount points available:"
-					<< Ui_.DevicesSelector_->itemData (idx, DeviceRoles::DevID).toString ();
+					<< Ui_.DevicesSelector_->itemData (idx, CommonDevRole::DevID).toString ();
 			return;
 		}
 
@@ -359,7 +363,7 @@ namespace LMP
 			UploadUnmountable (idx);
 
 		const auto& devId = Ui_.DevicesSelector_->
-				itemData (idx, DeviceRoles::DevPersistentID).toString ();
+				itemData (idx, CommonDevRole::DevPersistentID).toString ();
 		Device2Params_ [devId] = Ui_.TranscodingOpts_->GetParams ();
 		SaveLastParams ();
 	}
@@ -381,7 +385,7 @@ namespace LMP
 			HandleUnmountableSelected (idx);
 
 		const auto& devId = Ui_.DevicesSelector_->
-				itemData (idx, DeviceRoles::DevPersistentID).toString ();
+				itemData (idx, CommonDevRole::DevPersistentID).toString ();
 		if (Device2Params_.contains (devId))
 			Ui_.TranscodingOpts_->SetParams (Device2Params_.value (devId));
 	}
@@ -396,7 +400,7 @@ namespace LMP
 		if (!Flattener2DevMgr_.contains (model))
 			return;
 
-		const auto& id = Ui_.DevicesSelector_->itemData (idx, DeviceRoles::DevID).toString ();
+		const auto& id = Ui_.DevicesSelector_->itemData (idx, CommonDevRole::DevID).toString ();
 		Flattener2DevMgr_ [model]->MountDevice (id);
 	}
 

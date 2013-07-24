@@ -164,9 +164,6 @@ namespace ChatHistory
 			return;
 		}
 
-		if (entry->GetEntryType () != ICLEntry::ETChat)
-			return;
-
 		IAccount *account = qobject_cast<IAccount*> (entry->GetParentAccount ());
 		if (!account)
 		{

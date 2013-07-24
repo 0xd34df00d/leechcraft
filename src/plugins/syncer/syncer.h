@@ -27,11 +27,9 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_SYNCER_SYNCER_H
-#define PLUGINS_SYNCER_SYNCER_H
-#include <memory>
+#pragma once
+
 #include <QObject>
-#include <QTranslator>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
 
@@ -39,15 +37,19 @@ namespace LeechCraft
 {
 namespace Syncer
 {
+	class SyncableManager;
+
 	class Plugin : public QObject
-					, public IInfo
-					, public IHaveSettings
+				 , public IInfo
+				 , public IHaveSettings
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings)
 
-		std::auto_ptr<QTranslator> Translator_;
+		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+
+		SyncableManager *SyncableMgr_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -56,13 +58,8 @@ namespace Syncer
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-		QStringList Provides () const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
-
-#endif

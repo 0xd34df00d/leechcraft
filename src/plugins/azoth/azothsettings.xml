@@ -131,6 +131,11 @@
 				<item type="spinbox" property="FontSize" default="12">
 					<label value="Font size:" />
 				</item>
+				<item type="spinbox" property="FontZoom" default="100" minimum="10" maximum="1600">
+					<label value="Font zoom:" />
+					<suffix value=" %" />
+					<tooltip>Some themes have fixed-size font and font size setting doesn't affect them. Use this option to change their font size.</tooltip>
+				</item>
 				<item type="spinbox" property="ShortenURLLength" default="100" minimum="10" maximum="1000">
 					<label value="Shorten URLs less than: " />
 					<suffix value=" symbols" />
@@ -310,6 +315,9 @@
 			<label value="Chat windows" />
 			<item type="checkbox" property="ShowStatusChangesEvents" default="false">
 				<label value="Show status changes" />
+			</item>
+			<item type="checkbox" property="ShowStatusChangesEventsInPrivates" default="true">
+				<label value="Show status changes in private chats" />
 			</item>
 			<item type="checkbox" property="ShowEndConversations" default="true">
 				<label value="Show when participant ends conversation" />

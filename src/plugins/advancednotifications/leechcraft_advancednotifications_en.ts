@@ -35,9 +35,17 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::AdvancedNotifications::EnableSoundActionManager</name>
+    <message>
+        <location filename="enablesoundactionmanager.cpp" line="40"/>
+        <source>Enable sound notifications</source>
+        <translation>Enable sound notifications</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::AdvancedNotifications::MatchConfigDialog</name>
     <message>
-        <location filename="matchconfigdialog.cpp" line="131"/>
+        <location filename="matchconfigdialog.cpp" line="142"/>
         <source>Invalid matcher type %1.</source>
         <translation>Invalid matcher type %1.</translation>
     </message>
@@ -45,157 +53,48 @@
 <context>
     <name>LeechCraft::AdvancedNotifications::NotificationRulesWidget</name>
     <message>
-        <location filename="notificationruleswidget.cpp" line="59"/>
-        <source>Instant messaging</source>
-        <translation>Instant messaging</translation>
-    </message>
-    <message>
-        <location filename="notificationruleswidget.cpp" line="61"/>
-        <source>Attention request</source>
-        <translation>Attention request</translation>
-    </message>
-    <message>
-        <location filename="notificationruleswidget.cpp" line="62"/>
-        <source>Incoming file transfer request</source>
-        <translation>Incoming file transfer request</translation>
-    </message>
-    <message>
-        <location filename="notificationruleswidget.cpp" line="63"/>
-        <source>Incoming chat message</source>
-        <translation>Incoming chat message</translation>
-    </message>
-    <message>
-        <location filename="notificationruleswidget.cpp" line="64"/>
-        <source>MUC highlight</source>
-        <translation>MUC highlight</translation>
-    </message>
-    <message>
-        <location filename="notificationruleswidget.cpp" line="65"/>
-        <source>MUC invitation</source>
-        <translation>MUC invitation</translation>
-    </message>
-    <message>
-        <location filename="notificationruleswidget.cpp" line="66"/>
-        <source>General MUC message</source>
-        <translation>General MUC message</translation>
-    </message>
-    <message>
-        <location filename="notificationruleswidget.cpp" line="67"/>
-        <source>Contact status change</source>
-        <translation>Contact status change</translation>
-    </message>
-    <message>
-        <location filename="notificationruleswidget.cpp" line="68"/>
-        <source>Authorization granted</source>
-        <translation>Authorization granted</translation>
-    </message>
-    <message>
-        <location filename="notificationruleswidget.cpp" line="69"/>
-        <source>Authorization revoked</source>
-        <translation>Authorization revoked</translation>
-    </message>
-    <message>
-        <location filename="notificationruleswidget.cpp" line="70"/>
-        <source>Authorization requested</source>
-        <translation>Authorization requested</translation>
-    </message>
-    <message>
-        <location filename="notificationruleswidget.cpp" line="71"/>
-        <source>Contact subscribed</source>
-        <translation>Contact subscribed</translation>
-    </message>
-    <message>
-        <location filename="notificationruleswidget.cpp" line="72"/>
-        <source>Contact unsubscribed</source>
-        <translation>Contact unsubscribed</translation>
-    </message>
-    <message>
-        <location filename="notificationruleswidget.cpp" line="131"/>
-        <source>Incoming chat messages</source>
-        <translation>Incoming chat messages</translation>
-    </message>
-    <message>
-        <location filename="notificationruleswidget.cpp" line="137"/>
-        <source>MUC highlights</source>
-        <translation>MUC highlights</translation>
-    </message>
-    <message>
-        <location filename="notificationruleswidget.cpp" line="143"/>
-        <source>MUC invitations</source>
-        <translation>MUC invitations</translation>
-    </message>
-    <message>
-        <location filename="notificationruleswidget.cpp" line="149"/>
-        <source>Incoming file transfers</source>
-        <translation>Incoming file transfers</translation>
-    </message>
-    <message>
-        <location filename="notificationruleswidget.cpp" line="154"/>
-        <source>Subscription requests</source>
-        <translation>Subscription requests</translation>
-    </message>
-    <message>
-        <location filename="notificationruleswidget.cpp" line="160"/>
-        <source>Subscription changes</source>
-        <translation>Subscription changes</translation>
-    </message>
-    <message>
-        <location filename="notificationruleswidget.cpp" line="168"/>
-        <source>Attention requests</source>
-        <translation>Attention requests</translation>
-    </message>
-    <message>
-        <location filename="notificationruleswidget.cpp" line="192"/>
-        <source>Name</source>
-        <translation>Name</translation>
-    </message>
-    <message>
-        <location filename="notificationruleswidget.cpp" line="193"/>
-        <source>Category</source>
-        <translation>Category</translation>
-    </message>
-    <message>
-        <location filename="notificationruleswidget.cpp" line="194"/>
-        <source>Type</source>
-        <translation>Type</translation>
-    </message>
-    <message>
-        <location filename="notificationruleswidget.cpp" line="203"/>
+        <location filename="notificationruleswidget.cpp" line="99"/>
         <source>Field name</source>
         <translation>Field name</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="204"/>
+        <location filename="notificationruleswidget.cpp" line="100"/>
         <source>Rule description</source>
         <translation>Rule description</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="331"/>
+        <location filename="notificationruleswidget.cpp" line="188"/>
         <source>&lt;empty matcher&gt;</source>
         <translation>&lt;empty matcher&gt;</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="493"/>
+        <location filename="notificationruleswidget.cpp" line="201"/>
+        <source>The rule has been changed. Do you want to save it?</source>
+        <oldsource>The rule has been changed. Do you want to save it</oldsource>
+        <translation>The rule has been changed. Do you want to save it?</translation>
+    </message>
+    <message>
+        <location filename="notificationruleswidget.cpp" line="311"/>
         <source>Are you sure you want to replace all rules with the default set?</source>
         <translation>Are you sure you want to replace all rules with the default set?</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="582"/>
+        <location filename="notificationruleswidget.cpp" line="395"/>
         <source>Select audio file</source>
         <translation>Select audio file</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="584"/>
+        <location filename="notificationruleswidget.cpp" line="397"/>
         <source>Audio files (*.ogg *.wav *.flac *.mp3);;All files (*.*)</source>
         <translation>Audio files (*.ogg *.wav *.flac *.mp3);;All files (*.*)</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="619"/>
+        <location filename="notificationruleswidget.cpp" line="432"/>
         <source>Please enter the argument:</source>
         <translation>Please enter the argument:</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="635"/>
+        <location filename="notificationruleswidget.cpp" line="447"/>
         <source>Please enter new argument text:</source>
         <translation>Please enter new argument text:</translation>
     </message>
@@ -203,15 +102,173 @@
 <context>
     <name>LeechCraft::AdvancedNotifications::Plugin</name>
     <message>
-        <location filename="advancednotifications.cpp" line="77"/>
+        <location filename="advancednotifications.cpp" line="75"/>
+        <source>Toggle Advanced Notifications rules...</source>
+        <translation>Toggle Advanced Notifications rules...</translation>
+    </message>
+    <message>
+        <location filename="advancednotifications.cpp" line="102"/>
         <source>Module for the advanced notifications framework.</source>
         <translation>Module for the advanced notifications framework.</translation>
     </message>
 </context>
 <context>
+    <name>LeechCraft::AdvancedNotifications::RulesManager</name>
+    <message>
+        <location filename="rulesmanager.cpp" line="84"/>
+        <source>Instant messaging</source>
+        <translation>Instant messaging</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="85"/>
+        <source>Attention request</source>
+        <translation>Attention request</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="86"/>
+        <source>Incoming file transfer request</source>
+        <translation>Incoming file transfer request</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="87"/>
+        <source>Incoming chat message</source>
+        <translation>Incoming chat message</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="88"/>
+        <source>MUC highlight</source>
+        <translation>MUC highlight</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="89"/>
+        <source>MUC invitation</source>
+        <translation>MUC invitation</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="90"/>
+        <source>General MUC message</source>
+        <translation>General MUC message</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="91"/>
+        <source>Contact status change</source>
+        <translation>Contact status change</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="92"/>
+        <source>Authorization granted</source>
+        <translation>Authorization granted</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="93"/>
+        <source>Authorization revoked</source>
+        <translation>Authorization revoked</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="94"/>
+        <source>Authorization requested</source>
+        <translation>Authorization requested</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="95"/>
+        <source>Contact subscribed</source>
+        <translation>Contact subscribed</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="96"/>
+        <source>Contact unsubscribed</source>
+        <translation>Contact unsubscribed</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="98"/>
+        <source>Organizer</source>
+        <translation>Organizer</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="99"/>
+        <location filename="rulesmanager.cpp" line="209"/>
+        <source>Event is due</source>
+        <translation>Event is due</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="101"/>
+        <source>Downloads</source>
+        <translation>Downloads</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="102"/>
+        <location filename="rulesmanager.cpp" line="223"/>
+        <source>Download error</source>
+        <translation>Download error</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="103"/>
+        <location filename="rulesmanager.cpp" line="218"/>
+        <source>Download finished</source>
+        <translation>Download finished</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="105"/>
+        <location filename="rulesmanager.cpp" line="106"/>
+        <location filename="rulesmanager.cpp" line="232"/>
+        <source>Generic</source>
+        <translation>Generic</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="163"/>
+        <source>Incoming chat messages</source>
+        <translation>Incoming chat messages</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="169"/>
+        <source>MUC highlights</source>
+        <translation>MUC highlights</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="175"/>
+        <source>MUC invitations</source>
+        <translation>MUC invitations</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="181"/>
+        <source>Incoming file transfers</source>
+        <translation>Incoming file transfers</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="186"/>
+        <source>Subscription requests</source>
+        <translation>Subscription requests</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="192"/>
+        <source>Subscription changes</source>
+        <translation>Subscription changes</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="200"/>
+        <source>Attention requests</source>
+        <translation>Attention requests</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="266"/>
+        <source>Name</source>
+        <translation>Name</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="267"/>
+        <source>Category</source>
+        <translation>Category</translation>
+    </message>
+    <message>
+        <location filename="rulesmanager.cpp" line="268"/>
+        <source>Type</source>
+        <translation>Type</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::AdvancedNotifications::SystemTrayHandler</name>
     <message>
-        <location filename="systemtrayhandler.cpp" line="182"/>
+        <location filename="systemtrayhandler.cpp" line="221"/>
         <source>Dismiss</source>
         <translation>Dismiss</translation>
     </message>
@@ -252,78 +309,78 @@
         <translation>Add</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="72"/>
+        <location filename="notificationruleswidget.ui" line="65"/>
         <location filename="notificationruleswidget.ui" line="265"/>
         <location filename="notificationruleswidget.ui" line="379"/>
         <source>Remove</source>
         <translation>Remove</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="37"/>
-        <source>Update</source>
-        <translation>Update</translation>
-    </message>
-    <message>
-        <location filename="notificationruleswidget.ui" line="51"/>
+        <location filename="notificationruleswidget.ui" line="44"/>
         <source>Move up</source>
         <translation>Move up</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="58"/>
+        <location filename="notificationruleswidget.ui" line="51"/>
         <source>Move down</source>
         <translation>Move down</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="79"/>
+        <location filename="notificationruleswidget.ui" line="72"/>
         <source>Default</source>
         <translation>Default</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="110"/>
+        <location filename="notificationruleswidget.ui" line="103"/>
         <source>Rule</source>
         <translation>Rule</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="126"/>
+        <location filename="notificationruleswidget.ui" line="119"/>
         <source>Name:</source>
         <translation>Name:</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="136"/>
+        <location filename="notificationruleswidget.ui" line="129"/>
         <source>Event category:</source>
         <translation>Event category:</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="146"/>
+        <location filename="notificationruleswidget.ui" line="139"/>
         <source>Event type:</source>
         <translation>Event type:</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="174"/>
+        <location filename="notificationruleswidget.ui" line="167"/>
         <source>Notify via:</source>
         <translation>Notify via:</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="194"/>
+        <location filename="notificationruleswidget.ui" line="187"/>
         <source>Visual</source>
         <translation>Visual</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="187"/>
+        <location filename="notificationruleswidget.ui" line="180"/>
         <source>System tray</source>
         <translation>System tray</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="201"/>
+        <location filename="notificationruleswidget.ui" line="194"/>
         <location filename="notificationruleswidget.ui" line="275"/>
         <source>Audio</source>
         <translation>Audio</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="208"/>
+        <location filename="notificationruleswidget.ui" line="201"/>
         <location filename="notificationruleswidget.ui" line="326"/>
         <source>Command</source>
         <translation>Command</translation>
+    </message>
+    <message>
+        <location filename="notificationruleswidget.ui" line="208"/>
+        <source>Draw attention to the window</source>
+        <translation>Draw attention to the window</translation>
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="218"/>
@@ -378,6 +435,11 @@
         <translation>Argument</translation>
     </message>
     <message>
+        <location filename="notificationruleswidget.ui" line="407"/>
+        <source>Save rule</source>
+        <translation>Save rule</translation>
+    </message>
+    <message>
         <location filename="notificationruleswidget.ui" line="287"/>
         <source>File:</source>
         <translation>File:</translation>
@@ -386,27 +448,27 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="typedmatchers.cpp" line="147"/>
+        <location filename="typedmatchers.cpp" line="158"/>
         <source>contains pattern `%1`</source>
         <translation>contains pattern `%1`</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="148"/>
+        <location filename="typedmatchers.cpp" line="159"/>
         <source>doesn&apos;t contain pattern `%1`</source>
         <translation>doesn&apos;t contain pattern `%1`</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="166"/>
+        <location filename="typedmatchers.cpp" line="177"/>
         <source>contains element matching %1</source>
         <translation>contains element matching %1</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="167"/>
+        <location filename="typedmatchers.cpp" line="178"/>
         <source>doesn&apos;t contain element matching %1</source>
         <translation>doesn&apos;t contain element matching %1</translation>
     </message>
     <message>
-        <location filename="typedmatchers.cpp" line="220"/>
+        <location filename="typedmatchers.cpp" line="232"/>
         <source>is %1 then %2</source>
         <translation>is %1 then %2</translation>
     </message>
@@ -485,6 +547,26 @@
         <location filename="dummy.cpp" line="10"/>
         <source>Enable for IM events</source>
         <translation>Enable for IM events</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="11"/>
+        <source>Enable for Organizer events</source>
+        <translation>Enable for Organizer events</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="12"/>
+        <source>Enable for Downloads events</source>
+        <translation>Enable for Downloads events</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="13"/>
+        <source>Behavior</source>
+        <translation>Behavior</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="14"/>
+        <source>Hide when mouse leaves the notifier</source>
+        <translation>Hide when mouse leaves the notifier</translation>
     </message>
 </context>
 </TS>

@@ -27,65 +27,42 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef INTERFACES_ISYNCABLE_H
-#define INTERFACES_ISYNCABLE_H
-#include <QByteArray>
-#include <QSet>
+#pragma once
+
 #include <QList>
-#include <QMetaType>
+#include <QtPlugin>
 
-namespace LeechCraft
+class QObject;
+
+namespace Laretz
 {
-	namespace Sync
-	{
-		struct Payload
-		{
-			QByteArray Data_;
-		};
-
-		typedef QList<Payload> Payloads_t;
-
-		struct Delta
-		{
-			quint32 ID_;
-			Payload Payload_;
-		};
-
-		typedef QList<Delta> Deltas_t;
-
-		typedef QByteArray ChainID_t;
-
-		typedef QSet<ChainID_t> ChainIDs_t;
-	}
+	class Item;
+	class Operation;
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Sync::ChainID_t);
+class ISyncProxy
+{
+public:
+	virtual ~ISyncProxy () {}
 
-/** @brief Interface for plugins that have content/data/settings that
- * can be synchronized via other plugins — syncers.
- *
- * To notify about new deltas, the following signal is expected:
- * newDeltasAvailable(const ChainID_t& chain)
- */
+	virtual QObject* GetQObject () = 0;
+
+	virtual QList<Laretz::Operation> GetAllOps () const = 0;
+
+	virtual void Merge (QList<Laretz::Operation>& ours, const QList<Laretz::Operation>& theirs) = 0;
+
+	virtual void ApplyChanges (const QList<Laretz::Operation>&) = 0;
+protected:
+	virtual void gotNewOps (const QList<Laretz::Operation>&) = 0;
+};
+
 class Q_DECL_EXPORT ISyncable
 {
 public:
 	virtual ~ISyncable () {}
 
-	virtual LeechCraft::Sync::ChainIDs_t AvailableChains () const = 0;
-
-	virtual LeechCraft::Sync::Payloads_t GetAllDeltas (const LeechCraft::Sync::ChainID_t& chain) const = 0;
-
-	virtual LeechCraft::Sync::Payloads_t GetNewDeltas (const LeechCraft::Sync::ChainID_t& chain) const = 0;
-
-	virtual void PurgeNewDeltas (const LeechCraft::Sync::ChainID_t& chain, quint32 numToPurge) = 0;
-
-	virtual void ApplyDeltas (const LeechCraft::Sync::Payloads_t& deltas,
-			const LeechCraft::Sync::ChainID_t& chain) = 0;
-			
-	virtual void newDeltasAvailable (const LeechCraft::Sync::ChainID_t& chain) = 0;
+	virtual ISyncProxy* GetSyncProxy () = 0;
 };
 
-Q_DECLARE_INTERFACE (ISyncable, "org.Deviant.LeechCraft.Sync.ISyncable/1.0");
-
-#endif
+Q_DECLARE_INTERFACE (ISyncProxy, "org.Deviant.LeechCraft.ISyncProxy/1.0");
+Q_DECLARE_INTERFACE (ISyncable, "org.Deviant.LeechCraft.ISyncable/1.0");

@@ -47,68 +47,38 @@ namespace Poleemery
 {
 	namespace
 	{
-		QList<EntryBase_ptr> GetLastEntries (int days)
+		template<typename G, typename Iter>
+		void FilterBySpan (const DateSpan_t& span, Iter& pos, Iter& lastPos, G dateGetter)
 		{
-			auto opsMgr = Core::Instance ().GetOpsManager ();
-			auto entries = opsMgr->GetAllEntries ();
-
-			std::sort (entries.begin (), entries.end (),
-					[] (EntryBase_ptr l, EntryBase_ptr r)
-					{
-						return l->Date_ == r->Date_ ?
-								l->Amount_ < r->Amount_ :
-								l->Date_ < r->Date_;
-					});
-
-			for (auto i = entries.begin (); i < entries.end () - 1; )
-			{
-				const auto& item = *i;
-				const auto& next = *(i + 1);
-				if (item->Date_ == next->Date_ &&
-						item->Amount_ == next->Amount_ &&
-						item->GetType () != next->GetType ())
-					i = entries.erase (i, i + 2);
-				else
-					++i;
-			}
-
-			if (days > 0)
-			{
-				const auto& now = QDateTime::currentDateTime ();
-				const auto& startDt = now.addDays (-days);
-				auto pos = std::upper_bound (entries.begin (), entries.end (), startDt,
-						[] (const QDateTime& dt, const EntryBase_ptr& entry)
-							{ return dt < entry->Date_; });
-				entries.erase (entries.begin (), pos);
-			}
-			return entries;
+			auto begin = pos, end = lastPos;
+			pos = std::lower_bound (begin, end, span.first,
+						[dateGetter] (decltype (*pos) entry, const QDateTime& dt)
+							{ return dateGetter (entry) < dt; });
+			lastPos  = std::upper_bound (begin, end, span.second,
+						[dateGetter] (const QDateTime& dt, decltype (*pos) entry)
+							{ return dt < dateGetter (entry); });
 		}
 
-		QMap<double, BalanceInfo> GetDays2Infos (int days)
+		QMap<double, BalanceInfo> GetDays2Infos (const DateSpan_t& span)
 		{
 			auto opsMgr = Core::Instance ().GetOpsManager ();
 			const auto& entries = opsMgr->GetEntriesWBalance ();
-			if (entries.isEmpty ())
+
+			auto pos = entries.begin (), lastPos = entries.end ();
+			FilterBySpan (span, pos, lastPos,
+					[] (const EntryWithBalance& entry) { return entry.Entry_->Date_; });
+
+			if (pos == entries.end ())
 				return {};
 
-			auto pos = entries.begin ();
-			const auto& now = QDateTime::currentDateTime ();
-			if (days > 0)
-			{
-				const auto& startDt = now.addDays (-days);
-				pos = std::upper_bound (entries.begin (), entries.end (), startDt,
-						[] (const QDateTime& dt, const EntryWithBalance& entry)
-							{ return dt < entry.Entry_->Date_; });
-			}
-			else
-				days = pos->Entry_->Date_.daysTo (now);
+			const auto days = pos->Entry_->Date_.daysTo (span.second) + 1;
 
 			QMap<double, BalanceInfo> days2infos;
-			for (; pos != entries.end (); ++pos)
+			for (; pos != lastPos; ++pos)
 			{
 				const auto& then = pos->Entry_->Date_;
 
-				const auto daysBack = then.daysTo (now);
+				const auto daysBack = then.daysTo (span.second);
 				days2infos [(days - daysBack) + then.time ().hour () / 24.] = pos->Balance_;
 			}
 
@@ -177,9 +147,9 @@ namespace Poleemery
 			return result;
 		}
 
-		QList<QwtPlotItem*> CreateBalanceItems (int days, bool cumulative)
+		QList<QwtPlotItem*> CreateBalanceItems (const DateSpan_t& span, bool cumulative)
 		{
-			const auto& days2infos = GetDays2Infos (days);
+			const auto& days2infos = GetDays2Infos (span);
 			const auto& xData = days2infos.keys ().toVector ();
 			auto lastBalances = GetLastBalances (days2infos);
 
@@ -237,13 +207,51 @@ namespace Poleemery
 			auto grid = new QwtPlotGrid;
 			grid->enableYMin (true);
 			grid->enableXMin (true);
+#if QWT_VERSION >= 0x060100
+			grid->setMinorPen (QPen (Qt::gray, 1, Qt::DashLine));
+#else
 			grid->setMinPen (QPen (Qt::gray, 1, Qt::DashLine));
+#endif
 			result << grid;
 
 			return result;
 		}
 
-		QList<QwtPlotItem*> CreateSpendingBreakdownItems (int days, bool absolute)
+		QList<EntryBase_ptr> GetLastEntries (const DateSpan_t& span)
+		{
+			auto opsMgr = Core::Instance ().GetOpsManager ();
+			auto entries = opsMgr->GetAllEntries ();
+
+			std::sort (entries.begin (), entries.end (),
+					[] (EntryBase_ptr l, EntryBase_ptr r)
+					{
+						return l->Date_ == r->Date_ ?
+								l->Amount_ < r->Amount_ :
+								l->Date_ < r->Date_;
+					});
+
+			for (auto i = entries.begin (); i < entries.end () - 1; )
+			{
+				const auto& item = *i;
+				const auto& next = *(i + 1);
+				if (item->Date_ == next->Date_ &&
+						item->Amount_ == next->Amount_ &&
+						item->GetType () != next->GetType ())
+					i = entries.erase (i, i + 2);
+				else
+					++i;
+			}
+
+			auto pos = entries.begin (), lastPos = entries.end ();
+			FilterBySpan (span, pos, lastPos,
+					[] (const EntryBase_ptr& entry) { return entry->Date_; });
+			entries.erase (entries.begin (), pos);
+			if (lastPos < entries.end ())
+				entries.erase (lastPos + 1, entries.end ());
+			return entries;
+		}
+
+		QList<QwtPlotItem*> CreateSpendingBreakdownItems (const DateSpan_t& span, bool absolute)
 		{
 			double income = 0;
 			double savings = 0;
@@ -251,7 +259,7 @@ namespace Poleemery
 
 			auto accsMgr = Core::Instance ().GetAccsManager ();
 			auto curMgr = Core::Instance ().GetCurrenciesManager ();
-			for (auto entry : GetLastEntries (days))
+			for (auto entry : GetLastEntries (span))
 			{
 				auto acc = accsMgr->GetAccount (entry->AccountID_);
 				const auto amount = curMgr->ToUserCurrency (acc.Currency_, entry->Amount_);
@@ -317,7 +325,11 @@ namespace Poleemery
 			auto grid = new QwtPlotGrid;
 			grid->enableYMin (true);
 			grid->enableX (false);
+#if QWT_VERSION >= 0x060100
+			grid->setMinorPen (QPen (Qt::gray, 1, Qt::DashLine));
+#else
 			grid->setMinPen (QPen (Qt::gray, 1, Qt::DashLine));
+#endif
 			result << grid;
 
 			return result;
@@ -336,23 +348,13 @@ namespace Poleemery
 				};
 
 		Infos_.append ({
-				QObject::tr ("Cumulative accounts balance (month)"),
-				[this] { return CreateBalanceItems (30, true); },
+				QObject::tr ("Cumulative accounts balance"),
+				[this] (const DateSpan_t& span) { return CreateBalanceItems (span, true); },
 				prepareCummulative
 			});
 		Infos_.append ({
-				QObject::tr ("Comparative accounts balance (month)"),
-				[this] { return CreateBalanceItems (30, false); },
-				prepareCummulative
-			});
-		Infos_.append ({
-				QObject::tr ("Cumulative accounts balance (all-time)"),
-				[this] { return CreateBalanceItems (-1, true); },
-				prepareCummulative
-			});
-		Infos_.append ({
-				QObject::tr ("Comparative accounts balance (all-time)"),
-				[this] { return CreateBalanceItems (-1, false); },
+				QObject::tr ("Comparative accounts balance"),
+				[this] (const DateSpan_t& span) { return CreateBalanceItems (span, false); },
 				prepareCummulative
 			});
 
@@ -371,23 +373,13 @@ namespace Poleemery
 			plot->setAxisTitle (QwtPlot::Axis::yLeft, curMgr->GetUserCurrency ());
 		};
 		Infos_.append ({
-				QObject::tr ("Per-category spendings breakdown (absolute, month)"),
-				[this] { return CreateSpendingBreakdownItems (30, true); },
+				QObject::tr ("Per-category spendings breakdown (absolute)"),
+				[this] (const DateSpan_t& span) { return CreateSpendingBreakdownItems (span, true); },
 				prepareAbsBreakdown
 			});
 		Infos_.append ({
-				QObject::tr ("Per-category spendings breakdown (relative, month)"),
-				[this] { return CreateSpendingBreakdownItems (30, false); },
-				prepareRelBreakdown
-			});
-		Infos_.append ({
-				QObject::tr ("Per-category spendings breakdown (absolute, all-time)"),
-				[this] { return CreateSpendingBreakdownItems (-1, true); },
-				prepareAbsBreakdown
-			});
-		Infos_.append ({
-				QObject::tr ("Per-category spendings breakdown (relative, all-time)"),
-				[this] { return CreateSpendingBreakdownItems (-1, false); },
+				QObject::tr ("Per-category spendings breakdown (relative)"),
+				[this] (const DateSpan_t& span) { return CreateSpendingBreakdownItems (span, false); },
 				prepareRelBreakdown
 			});
 	}
@@ -400,12 +392,12 @@ namespace Poleemery
 		return result;
 	}
 
-	QList<QwtPlotItem*> GraphsFactory::CreateItems (int index)
+	QList<QwtPlotItem*> GraphsFactory::CreateItems (int index, const DateSpan_t& span)
 	{
 		if (index < 0 || index >= Infos_.size ())
 			return {};
 
-		return Infos_.at (index).Creator_ ();
+		return Infos_.at (index).Creator_ (span);
 	}
 
 	void GraphsFactory::PreparePlot (int index, QwtPlot *plot)

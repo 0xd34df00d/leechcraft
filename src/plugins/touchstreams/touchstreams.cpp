@@ -31,9 +31,9 @@
 #include <QIcon>
 #include <util/queuemanager.h>
 #include <util/util.h>
+#include <util/svcauth/vkauthmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
-#include "authmanager.h"
 #include "audiosearch.h"
 
 namespace LeechCraft
@@ -48,7 +48,14 @@ namespace TouchStreams
 
 		Queue_ = new Util::QueueManager (350);
 
-		AuthMgr_ = new AuthManager (proxy);
+		AuthMgr_ = new Util::SvcAuth::VkAuthManager ("3298289",
+				{ "audio" },
+				XmlSettingsManager::Instance ().property ("Cookies").toByteArray (),
+				proxy);
+		connect (AuthMgr_,
+				SIGNAL (cookiesChanged (QByteArray)),
+				this,
+				SLOT (saveCookies (QByteArray)));
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "touchstreamssettings.xml");
@@ -114,6 +121,11 @@ namespace TouchStreams
 			qWarning () << Q_FUNC_INFO
 					<< "unknown name"
 					<< name;
+	}
+
+	void Plugin::saveCookies (const QByteArray& cookies)
+	{
+		XmlSettingsManager::Instance ().setProperty ("Cookies", cookies);
 	}
 }
 }

@@ -29,9 +29,18 @@
 
 #include "mtpsync.h"
 #include <map>
+#include <thread>
 #include <QIcon>
 #include <QTimer>
 #include <QFileInfo>
+#include <QtConcurrentRun>
+#include <QFutureWatcher>
+#include <QBuffer>
+#include <QAbstractItemModel>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/devices/iremovabledevmanager.h>
+#include <interfaces/devices/deviceroles.h>
 
 namespace LeechCraft
 {
@@ -39,9 +48,20 @@ namespace LMP
 {
 namespace MTPSync
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	const int CacheLifetime = 120 * 1000;
+
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+
 		LIBMTP_Init ();
+
+		CacheEvictTimer_ = new QTimer (this);
+		connect (CacheEvictTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (clearCaches ()));
+		CacheEvictTimer_->setInterval (CacheLifetime);
 
 		QTimer::singleShot (5000,
 				this,
@@ -100,7 +120,11 @@ namespace MTPSync
 
 	UnmountableDevInfos_t Plugin::AvailableDevices () const
 	{
-		return Infos_;
+		UnmountableDevInfos_t result;
+		result.reserve (Infos_.size ());
+		for (const auto& item : Infos_)
+			result << item.Info_;
+		return result;
 	}
 
 	void Plugin::SetFileInfo (const QString& origLocalPath, const UnmountableFileInfo& info)
@@ -110,38 +134,58 @@ namespace MTPSync
 
 	void Plugin::Upload (const QString& localPath, const QString& origPath, const QByteArray& devId, const QByteArray& storageId)
 	{
-		qDebug () << Q_FUNC_INFO << localPath << devId;
-		bool found = false;
-
-		LIBMTP_raw_device_t *rawDevices;
-		int numRawDevices = 0;
-		LIBMTP_Detect_Raw_Devices (&rawDevices, &numRawDevices);
-		for (int i = 0; i < numRawDevices; ++i)
+		if (IsPolling_)
 		{
-			std::shared_ptr<LIBMTP_mtpdevice_t> device (LIBMTP_Open_Raw_Device (&rawDevices [i]), LIBMTP_Release_Device);
-			if (!device)
-				continue;
+			UploadQueue_.append ({ localPath, origPath, devId, storageId });
+			return;
+		}
 
-			const auto& serial = LIBMTP_Get_Serialnumber (device.get ());
-			qDebug () << "matching against" << serial;
-			if (serial == devId)
+		qDebug () << Q_FUNC_INFO << localPath << devId;
+		if (!DevicesCache_.contains (devId))
+		{
+			qDebug () << "device not in cache, opening...";
+
+			bool found = false;
+
+			LIBMTP_raw_device_t *rawDevices;
+			int numRawDevices = 0;
+			LIBMTP_Detect_Raw_Devices (&rawDevices, &numRawDevices);
+			for (int i = 0; i < numRawDevices; ++i)
 			{
-				UploadTo (device.get (), storageId, localPath, origPath);
-				found = true;
-				break;
+				std::shared_ptr<LIBMTP_mtpdevice_t> device (LIBMTP_Open_Raw_Device (&rawDevices [i]), LIBMTP_Release_Device);
+				if (!device)
+					continue;
+
+				const auto& serial = LIBMTP_Get_Serialnumber (device.get ());
+				qDebug () << "matching against" << serial;
+				if (serial == devId)
+				{
+					DevicesCache_ [devId] = DeviceCacheEntry { std::move (device), {} };
+					found = true;
+					break;
+				}
+			}
+			free (rawDevices);
+
+			if (!found)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to find device"
+						<< devId;
+				emit uploadFinished (localPath,
+						QFile::ResourceError,
+						tr ("Unable to find the requested device."));
+				return;
 			}
 		}
-		free (rawDevices);
 
-		if (!found)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to find device"
-					<< devId;
-			emit uploadFinished (localPath,
-					QFile::ResourceError,
-					tr ("Unable to find the requested device."));
-		}
+		auto& entry = DevicesCache_ [devId];
+		UploadTo (entry.Device_.get (), storageId, localPath, origPath);
+		entry.LastAccess_ = QDateTime::currentDateTime ();
+
+		if (CacheEvictTimer_->isActive ())
+			CacheEvictTimer_->stop ();
+		CacheEvictTimer_->start ();
 	}
 
 	void Plugin::HandleTransfer (const QString& path, quint64 sent, quint64 total)
@@ -160,7 +204,6 @@ namespace MTPSync
 
 		int TransferCallback (uint64_t sent, uint64_t total, const void *rawData)
 		{
-			qDebug () << sent << total;
 			auto data = static_cast<const CallbackData*> (rawData);
 
 			data->Plugin_->HandleTransfer (data->LocalPath_, sent, total);
@@ -213,10 +256,9 @@ namespace MTPSync
 		const auto id = storage->id;
 		const auto& info = OrigInfos_.take (origPath);
 
-		qDebug () << "uploading" << localPath << QFileInfo (localPath).size () << "to" << storage->id;
+		qDebug () << "uploading" << localPath << "of type" << GetFileType (info.FileFormat_) << "to" << storage->id;
 
 		auto track = LIBMTP_new_track_t ();
-		//track->parent_id = album ? album->album_id : 0;
 		track->storage_id = id;
 
 		auto getStr = [] (const QString& str) { return strdup (str.toUtf8 ().constData ()); };
@@ -228,6 +270,8 @@ namespace MTPSync
 		track->artist = getStr (info.Artist_);
 		track->tracknumber = info.TrackNumber_;
 		track->filetype = GetFileType (info.FileFormat_);
+		track->filesize = QFileInfo (localPath).size ();
+		track->date = getStr (QString::number (info.AlbumYear_) + "0101T0000.0");
 
 		const auto res = LIBMTP_Send_Track_From_File (device,
 				localPath.toUtf8 ().constData (), track,
@@ -238,6 +282,9 @@ namespace MTPSync
 			LIBMTP_Dump_Errorstack (device);
 			LIBMTP_Clear_Errorstack (device);
 		}
+
+		AppendAlbum (device, track, info);
+
 		LIBMTP_destroy_track_t (track);
 	}
 
@@ -249,32 +296,136 @@ namespace MTPSync
 					info.Album_ == album->name &&
 					info.Genres_.join ("; ") == album->genre;
 		}
+
+		void SetAlbumArt (LIBMTP_mtpdevice_t *device, LIBMTP_album_t *album, const QString& path)
+		{
+			if (path.isEmpty ())
+				return;
+
+			QImage image (path);
+			if (image.isNull ())
+				return;
+
+			QBuffer buffer;
+			buffer.open (QIODevice::WriteOnly);
+			image.save (&buffer, "JPG", 90);
+
+			auto albumArt = LIBMTP_new_filesampledata_t ();
+			albumArt->data = static_cast<char*> (malloc (buffer.buffer ().size ()));
+			memcpy (albumArt->data, buffer.buffer ().constData (), buffer.buffer ().size ());
+			albumArt->size = buffer.buffer ().size ();
+			albumArt->filetype = LIBMTP_FILETYPE_JPEG;
+			albumArt->width = image.width ();
+			albumArt->height = image.height ();
+
+			if (LIBMTP_Send_Representative_Sample (device, album->album_id, albumArt))
+			{
+				LIBMTP_Dump_Errorstack (device);
+				LIBMTP_Clear_Errorstack (device);
+			}
+
+			LIBMTP_destroy_filesampledata_t (albumArt);
+		}
 	}
 
-	LIBMTP_album_t* Plugin::GetAlbum (LIBMTP_mtpdevice_t *device, const UnmountableFileInfo& info, uint32_t storageId)
+	void Plugin::AppendAlbum (LIBMTP_mtpdevice_t *device, LIBMTP_track_t *track, const UnmountableFileInfo& info)
 	{
-		auto album = LIBMTP_new_album_t ();
+		auto albuminfo = LIBMTP_new_album_t ();
+		albuminfo->artist = strdup (info.Artist_.toUtf8 ().constData ());
+		albuminfo->name = strdup (info.Album_.toUtf8 ().constData ());
+		albuminfo->genre = strdup (info.Genres_.join ("; ").toUtf8 ().constData ());
 
-		album->artist = strdup (info.Artist_.toUtf8 ().constData ());
-		album->name = strdup (info.Album_.toUtf8 ().constData ());
-		album->genre = strdup (info.Genres_.join ("; ").toUtf8 ().constData ());
+		auto album = LIBMTP_Get_Album_List (device);
+		auto albumOrig = album;
 
-		album->album_id = 0;
-		album->next = 0;
-		album->no_tracks = 0;
-		album->parent_id = 0;
-		album->storage_id = storageId;
-		album->tracks = 0;
+		decltype (album) foundAlbum = nullptr, resultingAlgum = nullptr;
 
-		if (!LIBMTP_Create_New_Album (device, album))
-			return album;
+		while (album)
+		{
+			if (album->name &&
+					(album->artist || album->composer) &&
+					QString::fromUtf8 (album->name) == info.Album_ &&
+					(QString::fromUtf8 (album->artist) == info.Artist_ ||
+					 QString::fromUtf8 (album->composer) == info.Artist_))
+			{
+				foundAlbum = album;
+				album = album->next;
+				foundAlbum->next = nullptr;
+			}
+			else
+				album = album->next;
+		}
 
-		qWarning () << Q_FUNC_INFO << "unable to create album";
-		LIBMTP_Dump_Errorstack (device);
-		LIBMTP_Clear_Errorstack (device);
+		if (foundAlbum)
+		{
+			auto tracks = static_cast<uint32_t*> (malloc ((foundAlbum->no_tracks + 1) * sizeof (uint32_t)));
 
-		LIBMTP_destroy_album_t (album);
-		return 0;
+			++foundAlbum->no_tracks;
+
+			if (foundAlbum->tracks)
+			{
+				memcpy (tracks, foundAlbum->tracks, foundAlbum->no_tracks * sizeof (uint32_t));
+				free (foundAlbum->tracks);
+			}
+
+			tracks [foundAlbum->no_tracks - 1] = track->item_id;
+			foundAlbum->tracks = tracks;
+
+			if (LIBMTP_Update_Album (device, foundAlbum))
+			{
+				LIBMTP_Dump_Errorstack (device);
+				LIBMTP_Clear_Errorstack (device);
+			}
+
+			resultingAlgum = foundAlbum;
+		}
+		else
+		{
+			auto trackId = static_cast<uint32_t*> (malloc (sizeof (uint32_t)));
+			*trackId = track->item_id;
+			albuminfo->tracks = trackId;
+			albuminfo->no_tracks = 1;
+			albuminfo->storage_id = track->storage_id;
+
+			if (LIBMTP_Create_New_Album (device, albuminfo))
+			{
+				LIBMTP_Dump_Errorstack (device);
+				LIBMTP_Clear_Errorstack (device);
+			}
+
+			resultingAlgum = albuminfo;
+		}
+
+		SetAlbumArt (device, resultingAlgum, info.AlbumArtPath_);
+
+		while (albumOrig)
+		{
+			auto tmp = albumOrig;
+			albumOrig = albumOrig->next;
+			LIBMTP_destroy_album_t (tmp);
+		}
+
+		LIBMTP_destroy_album_t (albuminfo);
+	}
+
+	void Plugin::Subscribe2Devs ()
+	{
+		for (auto mgr : Proxy_->GetPluginsManager ()->GetAllCastableTo<IRemovableDevManager*> ())
+		{
+			if (!mgr->SupportsDevType (USBDevice))
+				continue;
+
+			Model_ = mgr->GetDevicesModel ();
+			connect (Model_,
+					SIGNAL (rowsInserted (QModelIndex, int, int)),
+					this,
+					SLOT (handleRowsInserted (QModelIndex, int, int)));
+			connect (Model_,
+					SIGNAL (rowsAboutToBeRemoved (QModelIndex, int, int)),
+					this,
+					SLOT (handleRowsRemoved (QModelIndex, int, int)));
+			break;
+		}
 	}
 
 	namespace
@@ -335,25 +486,13 @@ namespace MTPSync
 
 			return result;
 		}
-	}
 
-	void Plugin::pollDevices ()
-	{
-		UnmountableDevInfos_t infos;
-
-		LIBMTP_raw_device_t *rawDevices;
-		int numRawDevices = 0;
-		LIBMTP_Detect_Raw_Devices (&rawDevices, &numRawDevices);
-		for (int i = 0; i < numRawDevices; ++i)
+		UnmountableDevInfo InfoFromDevice (LIBMTP_mtpdevice_t *device)
 		{
-			auto device = LIBMTP_Open_Raw_Device (&rawDevices [i]);
-			if (!device)
-				continue;
-
-			const auto& devName = QString::fromUtf8 (rawDevices [i].device_entry.vendor) + " " +
-					QString::fromUtf8 (rawDevices [i].device_entry.product) + " " +
+			const auto& devName = QString::fromUtf8 (LIBMTP_Get_Manufacturername (device)) + " " +
+					QString::fromUtf8 (LIBMTP_Get_Modelname (device)) + " " +
 					LIBMTP_Get_Friendlyname (device);
-			const UnmountableDevInfo info
+			return
 			{
 				LIBMTP_Get_Serialnumber (device),
 				LIBMTP_Get_Manufacturername (device),
@@ -361,21 +500,148 @@ namespace MTPSync
 				GetPartitions (device),
 				GetSupportedFormats (device)
 			};
-			infos << info;
-
-			LIBMTP_Release_Device (device);
 		}
-		free (rawDevices);
 
-		QTimer::singleShot (30000,
-				this,
-				SLOT (pollDevices ()));
+		USBDevInfos_t EnumerateWorker ()
+		{
+			qDebug () << Q_FUNC_INFO;
+			USBDevInfos_t infos;
 
-		if (infos == Infos_)
+			LIBMTP_raw_device_t *rawDevices;
+			int numRawDevices = 0;
+			LIBMTP_Detect_Raw_Devices (&rawDevices, &numRawDevices);
+			for (int i = 0; i < numRawDevices; ++i)
+			{
+				auto device = LIBMTP_Open_Raw_Device (&rawDevices [i]);
+				if (!device)
+					continue;
+
+				infos.push_back ({
+						InfoFromDevice (device),
+						static_cast<int> (rawDevices [i].bus_location),
+						static_cast<int> (rawDevices [i].devnum)
+					});
+				LIBMTP_Release_Device (device);
+			}
+			free (rawDevices);
+			qDebug () << "done";
+
+			return infos;
+		}
+	}
+
+	void Plugin::pollDevices ()
+	{
+		if (IsPolling_)
 			return;
 
-		Infos_ = infos;
-		emit availableDevicesChanged ();
+		auto watcher = new QFutureWatcher<USBDevInfos_t> ();
+		connect (watcher,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handlePollFinished ()));
+		auto future = QtConcurrent::run (EnumerateWorker);
+		watcher->setFuture (future);
+
+		IsPolling_ = true;
+	}
+
+	void Plugin::handlePollFinished ()
+	{
+		IsPolling_ = false;
+		while (!UploadQueue_.isEmpty ())
+		{
+			const auto& item = UploadQueue_.takeFirst ();
+			Upload (item.LocalPath_, item.OrigLocalPath_, item.To_, item.StorageID_);
+		}
+
+		auto watcher = dynamic_cast<QFutureWatcher<USBDevInfos_t>*> (sender ());
+		watcher->deleteLater ();
+
+		const auto& infos = watcher->result ();
+		if (!infos.isEmpty ())
+		{
+			Infos_ = infos;
+			emit availableDevicesChanged ();
+		}
+
+		if (FirstPoll_)
+		{
+			Subscribe2Devs ();
+			FirstPoll_ = false;
+		}
+	}
+
+	void Plugin::handleRowsInserted (const QModelIndex& parent, int start, int end)
+	{
+		if (parent.isValid ())
+			return;
+
+		bool hasNew = false;
+		for (auto i = start; i <= end; ++i)
+		{
+			const auto& idx = Model_->index (i, 0);
+
+			const auto busnum = idx.data (USBDeviceRole::Busnum).toInt ();
+			const auto devnum = idx.data (USBDeviceRole::Devnum).toInt ();
+
+			if (LIBMTP_Check_Specific_Device (busnum, devnum))
+			{
+				hasNew = true;
+				break;
+			}
+		}
+
+		if (!hasNew)
+			return;
+
+		QTimer::singleShot (1000,
+				this,
+				SLOT (pollDevices ()));
+	}
+
+	void Plugin::handleRowsRemoved (const QModelIndex& parent, int start, int end)
+	{
+		if (parent.isValid ())
+			return;
+
+		clearCaches ();
+
+		bool changed = false;
+		for (auto i = start; i <= end; ++i)
+		{
+			const auto& idx = Model_->index (i, 0);
+
+			const auto busnum = idx.data (USBDeviceRole::Busnum).toInt ();
+			const auto devnum = idx.data (USBDeviceRole::Devnum).toInt ();
+
+			const auto pos = std::find_if (Infos_.begin (), Infos_.end (),
+					[&busnum, &devnum] (const USBDevInfo& info)
+						{ return info.Busnum_ == busnum && info.Devnum_ == devnum; });
+			if (pos != Infos_.end ())
+			{
+				Infos_.erase (pos);
+				changed = true;
+			}
+		}
+
+		if (changed)
+			emit availableDevicesChanged ();
+	}
+
+	void Plugin::clearCaches ()
+	{
+		const auto& now = QDateTime::currentDateTime ();
+		for (auto i = DevicesCache_.begin (); i != DevicesCache_.end (); )
+		{
+			if (i->LastAccess_.secsTo (now) > CacheLifetime)
+				i = DevicesCache_.erase (i);
+			else
+				++i;
+		}
+
+		if (DevicesCache_.isEmpty ())
+			CacheEvictTimer_->stop ();
 	}
 }
 }

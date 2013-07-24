@@ -12,10 +12,7 @@ include_directories (
 set (SRCS
 	launchy.cpp
 	fsdisplayer.cpp
-	item.cpp
-	itemsfinder.cpp
 	itemssortfilterproxymodel.cpp
-	fdodesktopparser.cpp
 	favoritesmanager.cpp
 	quarkmanager.cpp
 	itemimageprovider.cpp
@@ -34,5 +31,4 @@ target_link_libraries (leechcraft_launchy
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_launchy DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (DIRECTORY share/qml/launchy DESTINATION ${LC_QML_DEST})

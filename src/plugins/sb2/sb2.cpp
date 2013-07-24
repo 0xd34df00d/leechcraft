@@ -46,6 +46,8 @@
 #include "desaturateeffect.h"
 #include "dockactioncomponent.h"
 
+Q_DECLARE_METATYPE (QSet<QByteArray>);
+
 namespace LeechCraft
 {
 namespace SB2
@@ -62,6 +64,9 @@ namespace SB2
 		qmlRegisterType<QGraphicsDropShadowEffect> ("Effects", 1, 0, "DropShadow");
 		qmlRegisterType<QGraphicsOpacityEffect> ("Effects", 1, 0, "OpacityEffect");
 		qmlRegisterType<DesaturateEffect> ("Effects", 1, 0, "Desaturate");
+
+		qRegisterMetaType<QSet<QByteArray>> ("QSet<QByteArray>");
+		qRegisterMetaTypeStreamOperators<QSet<QByteArray>> ();
 
 		auto rootWM = proxy->GetRootWindowsManager ();
 		for (int i = 0; i < rootWM->GetWindowsCount (); ++i)

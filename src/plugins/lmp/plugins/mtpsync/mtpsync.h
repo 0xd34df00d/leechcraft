@@ -31,11 +31,16 @@
 
 #include <QObject>
 #include <QHash>
+#include <QDateTime>
 #include <libmtp.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/lmp/ilmpplugin.h>
 #include <interfaces/lmp/iunmountablesync.h>
+
+class QTimer;
+class QAbstractItemModel;
+class QModelIndex;
 
 namespace LeechCraft
 {
@@ -43,6 +48,14 @@ namespace LMP
 {
 namespace MTPSync
 {
+	struct USBDevInfo
+	{
+		UnmountableDevInfo Info_;
+		int Busnum_;
+		int Devnum_;
+	};
+	typedef QList<USBDevInfo> USBDevInfos_t;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
@@ -55,10 +68,34 @@ namespace MTPSync
 				LeechCraft::LMP::ILMPPlugin
 				LeechCraft::LMP::IUnmountableSync)
 
+		ICoreProxy_ptr Proxy_;
 		ILMPProxy_ptr LMPProxy_;
-		UnmountableDevInfos_t Infos_;
+		USBDevInfos_t Infos_;
 
 		QHash<QString, UnmountableFileInfo> OrigInfos_;
+
+		struct DeviceCacheEntry
+		{
+			std::shared_ptr<LIBMTP_mtpdevice_t> Device_;
+			QDateTime LastAccess_;
+		};
+		QHash<QByteArray, DeviceCacheEntry> DevicesCache_;
+
+		QTimer *CacheEvictTimer_;
+
+		struct UploadQueueItem
+		{
+			QString LocalPath_;
+			QString OrigLocalPath_;
+			QByteArray To_;
+			QByteArray StorageID_;
+		};
+		QList<UploadQueueItem> UploadQueue_;
+
+		QAbstractItemModel *Model_ = 0;
+
+		bool FirstPoll_ = true;
+		bool IsPolling_ = false;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
@@ -81,9 +118,17 @@ namespace MTPSync
 		void HandleTransfer (const QString&, quint64, quint64);
 	private:
 		void UploadTo (LIBMTP_mtpdevice_t*, const QByteArray&, const QString&, const QString&);
-		LIBMTP_album_t* GetAlbum (LIBMTP_mtpdevice_t*, const UnmountableFileInfo&, uint32_t);
+		void AppendAlbum (LIBMTP_mtpdevice_t*, LIBMTP_track_t*, const UnmountableFileInfo&);
+
+		void Subscribe2Devs ();
 	private slots:
 		void pollDevices ();
+		void handlePollFinished ();
+
+		void handleRowsInserted (const QModelIndex&, int, int);
+		void handleRowsRemoved (const QModelIndex&, int, int);
+
+		void clearCaches ();
 	signals:
 		void availableDevicesChanged ();
 		void uploadFinished (const QString&, QFile::FileError, const QString&);

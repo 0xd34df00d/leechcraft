@@ -141,6 +141,7 @@ set (SRCS
 	statuschangemenumanager.cpp
 	customchatstylemanager.cpp
 	advancedpermchangedialog.cpp
+	groupremovedialog.cpp
 	)
 set (FORMS
 	mainwidget.ui
@@ -171,6 +172,7 @@ set (FORMS
 	colorlisteditorwidget.ui
 	userslistwidget.ui
 	advancedpermchangedialog.ui
+	groupremovedialog.ui
 	)
 set (RESOURCES azothresources.qrc)
 
@@ -226,6 +228,7 @@ option (ENABLE_AZOTH_KEESO "Build Keeso for TrAnSfOrMiNg TeXt LiKe ThIs" ON)
 option (ENABLE_AZOTH_LASTSEEN "Build plugin for keeping track of the date of contacts' being online" ON)
 option (ENABLE_AZOTH_METACONTACTS "Build support for metacontacts" ON)
 option (ENABLE_AZOTH_MODNOK "Build Modnok for rendering and displaying LaTeX formulas" ON)
+option (ENABLE_AZOTH_MURM "Build Murm, special plugin for extensive VKontakte messaging support" ON)
 option (ENABLE_AZOTH_NATIVEEMOTICONS "Build support for Azoth's own emoticons packs" ON)
 option (ENABLE_AZOTH_OTROID "Build OTRoid for supporting Off-the-Record messaging" OFF)
 option (ENABLE_AZOTH_P100Q "Build plugin for the psto.net microblogging service" ON)
@@ -288,6 +291,9 @@ if (ENABLE_AZOTH_METACONTACTS)
 endif ()
 if (ENABLE_AZOTH_MODNOK)
 	add_subdirectory (plugins/modnok)
+endif ()
+if (ENABLE_AZOTH_MURM)
+	add_subdirectory (plugins/murm)
 endif ()
 if (ENABLE_AZOTH_NATIVEEMOTICONS)
 	add_subdirectory (plugins/nativeemoticons)

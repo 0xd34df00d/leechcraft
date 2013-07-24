@@ -42,6 +42,7 @@ namespace SB2
 		SBView (QWidget* = 0);
 
 		QSize minimumSizeHint () const;
+		QSize sizeHint () const;
 	};
 }
 }

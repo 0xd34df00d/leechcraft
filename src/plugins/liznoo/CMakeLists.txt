@@ -121,5 +121,4 @@ target_link_libraries (leechcraft_liznoo
 	${AdditionalLibraries}
 	)
 install (TARGETS leechcraft_liznoo DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES liznoosettings.xml DESTINATION ${LC_SETTINGS_DEST})

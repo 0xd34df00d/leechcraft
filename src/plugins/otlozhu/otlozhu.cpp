@@ -34,9 +34,9 @@
 #include <interfaces/core/itagsmanager.h>
 #include "todotab.h"
 #include "core.h"
-#include "deltagenerator.h"
 #include "todomanager.h"
 #include "todostorage.h"
+#include "syncproxy.h"
 
 namespace LeechCraft
 {
@@ -61,6 +61,8 @@ namespace Otlozhu
 			20,
 			TFOpenableByRequest | TFSingle | TFSuggestOpening
 		};
+
+		SyncProxy_ = new SyncProxy;
 	}
 
 	void Plugin::SecondInit ()
@@ -146,31 +148,9 @@ namespace Otlozhu
 		mgr->GetTodoStorage ()->AddItem (item);
 	}
 
-	Sync::ChainIDs_t Plugin::AvailableChains () const
+	ISyncProxy* Plugin::GetSyncProxy ()
 	{
-		Sync::ChainIDs_t result;
-		result << GetUniqueID () + "_todos";
-		return result;
-	}
-
-	Sync::Payloads_t Plugin::GetAllDeltas (const Sync::ChainID_t&) const
-	{
-		return Core::Instance ().GetDeltaGenerator ()->GetAllDeltas ();
-	}
-
-	Sync::Payloads_t Plugin::GetNewDeltas (const Sync::ChainID_t&) const
-	{
-		return Core::Instance ().GetDeltaGenerator ()->GetNewDeltas ();
-	}
-
-	void Plugin::PurgeNewDeltas (const Sync::ChainID_t&, quint32 num)
-	{
-		Core::Instance ().GetDeltaGenerator ()->PurgeDeltas (num);
-	}
-
-	void Plugin::ApplyDeltas (const Sync::Payloads_t& deltas, const Sync::ChainID_t&)
-	{
-		Core::Instance ().GetDeltaGenerator ()->Apply (deltas);
+		return SyncProxy_;
 	}
 }
 }

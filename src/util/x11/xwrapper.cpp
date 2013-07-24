@@ -400,6 +400,36 @@ namespace Util
 					0, 0,
 					winGeom.left (), winGeom.right ());
 			break;
+		case Qt::TopToolBarArea:
+			SetStrut (wid,
+					0, 0, winGeom.height (), 0,
+					0, 0,
+					0, 0,
+					winGeom.left (), winGeom.right (),
+					0, 0);
+			break;
+		case Qt::LeftToolBarArea:
+			SetStrut (wid,
+					winGeom.width (), 0, 0, 0,
+					winGeom.top (), winGeom.bottom (),
+					0, 0,
+					0, 0,
+					0, 0);
+			break;
+		case Qt::RightToolBarArea:
+			SetStrut (wid,
+					0, winGeom.width (), 0, 0,
+					0, 0,
+					winGeom.top (), winGeom.bottom (),
+					0, 0,
+					0, 0);
+			break;
+		case Qt::AllToolBarAreas:
+		case Qt::NoToolBarArea:
+			qWarning () << Q_FUNC_INFO
+					<< "incorrect area passed"
+					<< area;
+			break;
 		}
 	}
 
@@ -510,7 +540,7 @@ namespace Util
 			else if (ev->atom == GetAtom ("_NET_CURRENT_DESKTOP"))
 				emit desktopChanged ();
 		}
-		else if (ShouldShow (wid))
+		else
 		{
 			if (ev->atom == GetAtom ("_NET_WM_VISIBLE_NAME") ||
 					ev->atom == GetAtom ("WM_NAME"))
@@ -546,7 +576,7 @@ namespace Util
 		Guarded<ulong> data;
 
 		if (GetRootWinProp (GetAtom ("_NET_NUMBER_OF_DESKTOPS"), &length, data.GetAs<uchar**> (), XA_CARDINAL))
-			return data [0];
+			return length > 0 ? data [0] : -1;
 
 		return -1;
 	}
@@ -557,7 +587,7 @@ namespace Util
 		Guarded<ulong> data;
 
 		if (GetRootWinProp (GetAtom ("_NET_CURRENT_DESKTOP"), &length, data.GetAs<uchar**> (), XA_CARDINAL))
-			return data [0];
+			return length > 0 ? data [0] : -1;
 
 		return -1;
 	}

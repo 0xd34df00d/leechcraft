@@ -32,7 +32,7 @@
 #include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
-#include <interfaces/iremovabledevmanager.h>
+#include <interfaces/devices/iremovabledevmanager.h>
 #include <interfaces/iactionsexporter.h>
 
 namespace LeechCraft
@@ -62,6 +62,7 @@ namespace Vrooby
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 
+		bool SupportsDevType (DeviceType) const;
 		QAbstractItemModel* GetDevicesModel () const;
 		void MountDevice (const QString&);
 

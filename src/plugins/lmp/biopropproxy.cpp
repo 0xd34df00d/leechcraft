@@ -98,7 +98,8 @@ namespace LMP
 			item->setData (imageItem.Date_, ArtistImagesModel::Role::Date);
 			rows << item;
 		}
-		ArtistImages_->invisibleRootItem ()->appendRows (rows);
+		if (!rows.isEmpty ())
+			ArtistImages_->invisibleRootItem ()->appendRows (rows);
 
 		emit artistNameChanged (GetArtistName ());
 		emit artistImageURLChanged (GetArtistImageURL ());

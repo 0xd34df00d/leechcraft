@@ -198,7 +198,7 @@ namespace AdvancedNotifications
 			if (uiRule != prevRule &&
 					QMessageBox::question (this,
 							"LeechCraft",
-							tr ("The rule has been changed. Do you want to save it"),
+							tr ("The rule has been changed. Do you want to save it?"),
 							QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
 				RM_->UpdateRule (prevIndex, uiRule);
 		}

@@ -53,13 +53,18 @@ namespace Woodpecker
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IHaveRecoverableTabs)
-
+		
 		QList<QPair<TabClassInfo, std::function<void (TabClassInfo)>>> TabClasses_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 
 		void MakeTab (QWidget*, const TabClassInfo&);
 
 	public:
+		TabClassInfo HomeTC_;
+		TabClassInfo UserTC_;
+		TabClassInfo SearchTC_;
+		TabClassInfo FavoriteTC_;
+
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
 		void Release ();
@@ -75,16 +80,14 @@ namespace Woodpecker
 		
 		/** @brief Create new tab with certain parameters
 		 * 
-		 * @param[in] id New tab unique id
+		 * @param[in] tc New tab class
 		 * @param[in] name Tab creation menu caption
-		 * @param[in] info Verbose description of tab contents
 		 * @param[in] mode Twitter API connection mode
 		 * @param[in] params Twitter API parameters which should be added to every request
 		 */
-		void AddTab (const QString& id = "Home", const QString& name = QString (),
-					const QString& info = QString (),
-					const FeedMode mode = FeedMode::HomeTimeline,
-					const KQOAuthParameters& params = KQOAuthParameters ());
+		void AddTab (const TabClassInfo& tc, const QString& name = QString (),
+					 const FeedMode mode = FeedMode::HomeTimeline,
+					 const KQOAuthParameters& params = KQOAuthParameters ());
 		
 	signals:
 		void addNewTab (const QString&, QWidget*);

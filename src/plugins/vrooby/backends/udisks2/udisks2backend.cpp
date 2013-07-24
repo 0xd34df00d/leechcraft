@@ -40,6 +40,7 @@
 #include <QtDebug>
 #include <QMetaMethod>
 #include <util/util.h>
+#include <interfaces/devices/deviceroles.h>
 #include "udisks2types.h"
 
 typedef std::shared_ptr<QDBusInterface> QDBusInterface_ptr;
@@ -95,6 +96,11 @@ namespace UDisks2
 				this,
 				SLOT (updateDeviceSpaces ()));
 		timer->start (10000);
+	}
+
+	bool Backend::SupportsDevType (DeviceType type) const
+	{
+		return type == DeviceType::MassStorage;
 	}
 
 	QAbstractItemModel* Backend::GetDevicesModel () const
@@ -334,26 +340,26 @@ namespace UDisks2
 						<< "error obtaining free space info:"
 						<< QString::fromUtf8 (e.what ());
 			}
-			item->setData (static_cast<qint64> (space), DeviceRoles::AvailableSize);
+			item->setData (static_cast<qint64> (space), MassStorageRole::AvailableSize);
 		}
 		else
-			item->setData (-1, DeviceRoles::AvailableSize);
+			item->setData (-1, MassStorageRole::AvailableSize);
 
 		item->setText (name);
-		item->setData (DeviceType::GenericDevice, DeviceRoles::DevType);
-		item->setData (ifaces.Block_->property ("Device").toByteArray (), DeviceRoles::DevFile);
-		item->setData (ifaces.Partition_->property ("PartitionType").toInt (), DeviceRoles::PartType);
-		item->setData (isRemovable, DeviceRoles::IsRemovable);
-		item->setData (isPartition, DeviceRoles::IsPartition);
-		item->setData (isPartition && isRemovable, DeviceRoles::IsMountable);
-		item->setData (!mountPaths.isEmpty (), DeviceRoles::IsMounted);
-		item->setData (ifaces.Drive_->property ("MediaAvailable"), DeviceRoles::IsMediaAvailable);
-		item->setData (ifaces.Block_->path (), DeviceRoles::DevID);
-		item->setData (ifaces.Block_->property ("IdUUID"), DeviceRoles::DevPersistentID);
-		item->setData (fullName, DeviceRoles::VisibleName);
-		item->setData (ifaces.Block_->property ("Size").toLongLong (), DeviceRoles::TotalSize);
+		item->setData (DeviceType::MassStorage, CommonDevRole::DevType);
+		item->setData (ifaces.Block_->property ("Device").toByteArray (), MassStorageRole::DevFile);
+		item->setData (ifaces.Partition_->property ("PartitionType").toInt (), MassStorageRole::PartType);
+		item->setData (isRemovable, MassStorageRole::IsRemovable);
+		item->setData (isPartition, MassStorageRole::IsPartition);
+		item->setData (isPartition && isRemovable, MassStorageRole::IsMountable);
+		item->setData (!mountPaths.isEmpty (), MassStorageRole::IsMounted);
+		item->setData (ifaces.Drive_->property ("MediaAvailable"), MassStorageRole::IsMediaAvailable);
+		item->setData (ifaces.Block_->path (), CommonDevRole::DevID);
+		item->setData (ifaces.Block_->property ("IdUUID"), CommonDevRole::DevPersistentID);
+		item->setData (fullName, MassStorageRole::VisibleName);
+		item->setData (ifaces.Block_->property ("Size").toLongLong (), MassStorageRole::TotalSize);
 		DevicesModel_->blockSignals (false);
-		item->setData (mountPaths, DeviceRoles::MountPoints);
+		item->setData (mountPaths, MassStorageRole::MountPoints);
 	}
 
 	void Backend::toggleMount (const QString& id)
@@ -366,7 +372,7 @@ namespace UDisks2
 		if (!item)
 			return;
 
-		const bool isMounted = !item->data (DeviceRoles::MountPoints).toStringList ().isEmpty ();
+		const bool isMounted = !item->data (MassStorageRole::MountPoints).toStringList ().isEmpty ();
 		if (isMounted)
 		{
 			auto async = iface->asyncCall ("Unmount", QVariantMap ());
@@ -505,14 +511,14 @@ namespace UDisks2
 	{
 		for (QStandardItem *item : Object2Item_.values ())
 		{
-			const auto& mountPaths = item->data (DeviceRoles::MountPoints).toStringList ();
+			const auto& mountPaths = item->data (MassStorageRole::MountPoints).toStringList ();
 			if (mountPaths.isEmpty ())
 				continue;
 
 			const auto& space = boost::filesystem::space (mountPaths.value (0).toStdWString ());
 			const auto free = static_cast<qint64> (space.free);
-			if (free != item->data (DeviceRoles::AvailableSize).value<qint64> ())
-				item->setData (static_cast<qint64> (free), DeviceRoles::AvailableSize);
+			if (free != item->data (MassStorageRole::AvailableSize).value<qint64> ())
+				item->setData (static_cast<qint64> (free), MassStorageRole::AvailableSize);
 		}
 	}
 }

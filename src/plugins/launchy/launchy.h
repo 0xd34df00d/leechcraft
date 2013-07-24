@@ -34,6 +34,7 @@
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/iquarkcomponentprovider.h>
 #include <interfaces/ihaveshortcuts.h>
+#include <util/xdg/xdgfwd.h>
 
 namespace LeechCraft
 {
@@ -44,7 +45,6 @@ namespace Util
 
 namespace Launchy
 {
-	class ItemsFinder;
 	class FavoritesManager;
 
 	class Plugin : public QObject
@@ -57,7 +57,7 @@ namespace Launchy
 		Q_INTERFACES (IInfo IActionsExporter IHaveShortcuts IQuarkComponentProvider)
 
 		ICoreProxy_ptr Proxy_;
-		ItemsFinder *Finder_;
+		Util::XDG::ItemsFinder *Finder_;
 		FavoritesManager *FavManager_;
 
 		Util::ShortcutManager *ShortcutMgr_;

@@ -47,12 +47,16 @@ namespace Woodpecker
 		HomeTimeline,
 		Mentions,
 		UserTimeline,
+		Search,
 		Update,
 		Direct,
 		Retweet,
 		Reply,
 		SpamReport,
 		Delete,
+		CreateFavorite,
+		DeleteFavorite,
+		ListFavorites,
 	};
 
 	enum class FeedMode
@@ -62,6 +66,7 @@ namespace Woodpecker
 		UserTimeline,
 		SearchResult,
 		Direct,
+		Favorites,
 	};
 
 	class TwitterInterface : public QObject
@@ -94,6 +99,8 @@ namespace Woodpecker
 		void Login (const QString& savedToken, const QString& savedTokenSecret);
 		FeedMode GetLastRequestMode () const;
 		void SetLastRequestMode (const FeedMode& newLastRequestMode);
+		void MakeFavorite (const qulonglong id);
+		void DeleteFavorite (const qulonglong id);
 		
 	private slots:
 		void replyFinished ();
@@ -109,9 +116,6 @@ namespace Woodpecker
 		void authorized (const QString&, const QString&);
 		
 	public slots:
-		void requestHomeFeed ();
-		void searchTwitter (const QString& text);
-		void requestUserTimeline (const QString& username);
 		void request (const KQOAuthParameters& param, const FeedMode mode);
 	};
 }

@@ -39,7 +39,6 @@ struct Entity;
 namespace Otlozhu
 {
 	class TodoManager;
-	class DeltaGenerator;
 
 	class Core : public QObject
 	{
@@ -47,7 +46,6 @@ namespace Otlozhu
 
 		ICoreProxy_ptr Proxy_;
 		TodoManager *TodoManager_;
-		DeltaGenerator *DeltaGen_;
 
 		Core ();
 	public:
@@ -59,7 +57,6 @@ namespace Otlozhu
 		void SendEntity (const LeechCraft::Entity&);
 
 		TodoManager* GetTodoManager () const;
-		DeltaGenerator* GetDeltaGenerator () const;
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};

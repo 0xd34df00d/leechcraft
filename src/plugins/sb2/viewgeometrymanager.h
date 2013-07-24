@@ -46,8 +46,8 @@ namespace SB2
 		ViewGeometryManager (ViewManager*);
 
 		void Manage ();
+		void SetPosition (Qt::ToolBarArea);
 	private slots:
-		void updatePos ();
 		void setOrientation (Qt::Orientation);
 	};
 }

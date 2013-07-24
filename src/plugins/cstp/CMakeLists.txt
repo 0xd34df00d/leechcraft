@@ -15,15 +15,6 @@ set (SRCS
 	task.cpp
 	addtask.cpp
 	xmlsettingsmanager.cpp
-	morphfile.cpp
-	)
-set (HEADERS
-	cstp.h
-	core.h
-	task.h
-	addtask.h
-	xmlsettingsmanager.h
-	morphfile.h
 	)
 set (FORMS
 	addtask.ui
@@ -32,13 +23,6 @@ set (RESOURCES
 	cstpresources.qrc
 	)
 CreateTrs ("cstp" "ar;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
-add_definitions(${QT_DEFINITIONS})
-add_definitions(-DQT_PLUGIN)
-add_definitions(-DQT_SHARED)
-add_definitions(-DQT_GUI_LIB)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 

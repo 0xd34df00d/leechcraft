@@ -223,7 +223,7 @@ namespace Azoth
 		const int autoNum = XmlSettingsManager::Instance ()
 				.property ("ShowLastNMessages").toInt ();
 		if (entry->GetAllMessages ().size () <= 100 &&
-				entry->GetEntryType () == ICLEntry::ETChat &&
+				entry->GetEntryType () != ICLEntry::ETMUC &&
 				autoNum)
 			RequestLogs (autoNum);
 
@@ -969,6 +969,11 @@ namespace Azoth
 		Ui_.AvatarLabel_->setVisible (!avatar.isNull ());
 	}
 
+	void ChatTab::handleNameChanged (const QString& name)
+	{
+		emit changeTabName (this, name);
+	}
+
 	void ChatTab::handleStatusChanged (const EntryStatus& status,
 			const QString& variant)
 	{
@@ -1364,6 +1369,10 @@ namespace Azoth
 		const int size = XmlSettingsManager::Instance ()
 				.property ("FontSize").toInt ();
 		Ui_.View_->settings ()->setFontSize (QWebSettings::DefaultFontSize, size);
+
+		const int zoom = XmlSettingsManager::Instance ()
+				.property ("FontZoom").toInt ();
+		Ui_.View_->setTextSizeMultiplier (zoom / 100.);
 	}
 
 	void ChatTab::handleAccountStyleChanged (IAccount *acc)
@@ -1488,6 +1497,10 @@ namespace Azoth
 				SIGNAL (avatarChanged (const QImage&)),
 				this,
 				SLOT (handleAvatarChanged (const QImage&)));
+		connect (GetEntry<QObject> (),
+				SIGNAL (nameChanged (QString)),
+				this,
+				SLOT (handleNameChanged (QString)));
 
 		ICLEntry *e = GetEntry<ICLEntry> ();
 		handleVariantsChanged (e->Variants ());
@@ -1685,7 +1698,7 @@ namespace Azoth
 
 	void ChatTab::RegisterSettings()
 	{
-		XmlSettingsManager::Instance ().RegisterObject ("FontSize",
+		XmlSettingsManager::Instance ().RegisterObject ({ "FontSize", "FontZoom" },
 				this, "handleFontSizeChanged");
 		handleFontSizeChanged ();
 
@@ -1767,6 +1780,11 @@ namespace Azoth
 		if (msg->GetMessageSubType () == IMessage::MSTParticipantStatusChange &&
 				(!parent || parent->GetEntryType () == ICLEntry::ETMUC) &&
 				!XmlSettingsManager::Instance ().property ("ShowStatusChangesEvents").toBool ())
+			return;
+
+		if (msg->GetMessageSubType () == IMessage::MSTParticipantStatusChange &&
+				(!parent || parent->GetEntryType () != ICLEntry::ETMUC) &&
+				!XmlSettingsManager::Instance ().property ("ShowStatusChangesEventsInPrivates").toBool ())
 			return;
 
 		if ((msg->GetMessageSubType () == IMessage::MSTParticipantJoin ||

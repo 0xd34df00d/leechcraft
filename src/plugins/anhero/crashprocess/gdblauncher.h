@@ -51,6 +51,7 @@ namespace CrashProcess
 		void consumeStdout ();
 	signals:
 		void gotOutput (const QString&);
+		void finished (int);
 	};
 }
 }
