@@ -169,6 +169,39 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
+	void VkConnection::RequestGeoIds (const QList<int>& codes, GeoSetter_f setter, GeoIdType type)
+	{
+		const auto& joined = CommaJoin (codes);
+
+		auto nam = Proxy_->GetNetworkAccessManager ();
+		PreparedCalls_.push_back ([=] (const QString& key) -> QNetworkReply*
+			{
+				QString method;
+				switch (type)
+				{
+				case GeoIdType::Country:
+					method = "getCountries";
+					break;
+				case GeoIdType::City:
+					method = "getCities";
+					break;
+				}
+
+				QUrl url ("https://api.vk.com/method/" + method);
+				url.addQueryItem ("access_token", key);
+				url.addQueryItem ("cids", joined);
+
+				auto reply = nam->get (QNetworkRequest (url));
+				CountryReply2Setter_ [reply] = setter;
+				connect (reply,
+						SIGNAL (finished ()),
+						this,
+						SLOT (handleCountriesFetched ()));
+				return reply;
+			});
+		AuthMgr_->GetAuthKey ();
+	}
+
 	void VkConnection::SetStatus (const EntryStatus& status)
 	{
 		Status_ = status;
@@ -475,6 +508,27 @@ namespace Murm
 		const auto& data = QJson::Parser ().parse (reply);
 		const auto code = data.toMap ().value ("response", -1).toULongLong ();
 		setter (code);
+	}
+
+	void VkConnection::handleCountriesFetched ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!CheckFinishedReply (reply))
+			return;
+
+		const auto& setter = CountryReply2Setter_.take (reply);
+		if (!setter)
+			return;
+
+		QHash<int, QString> result;
+
+		const auto& data = QJson::Parser ().parse (reply);
+		for (const auto& item : data.toMap () ["response"].toList ())
+		{
+			const auto& map = item.toMap ();
+			result [map ["cid"].toInt ()] = map ["name"].toString ();
+		}
+		setter (result);
 	}
 
 	void VkConnection::saveCookies (const QByteArray& cookies)

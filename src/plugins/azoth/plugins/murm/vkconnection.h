@@ -77,14 +77,23 @@ namespace Murm
 		qulonglong LPTS_;
 
 		QUrl LPURLTemplate_;
-
+	public:
+		typedef std::function<void (QHash<int, QString>)> GeoSetter_f;
+	private:
 		QHash<int, std::function<void (QVariantList)>> Dispatcher_;
 		QHash<QNetworkReply*, std::function<void (qulonglong)>> MsgReply2Setter_;
+		QHash<QNetworkReply*, GeoSetter_f> CountryReply2Setter_;
 
 		int PollErrorCount_ = 0;
 		int APIErrorCount_ = 0;
 		bool ShouldRerunPrepared_ = false;
 	public:
+		enum class GeoIdType
+		{
+			Country,
+			City
+		};
+
 		VkConnection (const QByteArray&, ICoreProxy_ptr);
 
 		const QByteArray& GetCookies () const;
@@ -95,6 +104,7 @@ namespace Murm
 				std::function<void (qulonglong)> idSetter);
 		void SendTyping (qulonglong to);
 		void MarkAsRead (const QList<qulonglong>&);
+		void RequestGeoIds (const QList<int>&, GeoSetter_f, GeoIdType);
 
 		void SetStatus (const EntryStatus&);
 		EntryStatus GetStatus () const;
@@ -115,6 +125,7 @@ namespace Murm
 		void handleGotFriends ();
 		void handleGotLPServer ();
 		void handleMessageSent ();
+		void handleCountriesFetched ();
 
 		void saveCookies (const QByteArray&);
 	signals:
