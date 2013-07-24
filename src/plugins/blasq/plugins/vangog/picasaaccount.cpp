@@ -216,25 +216,30 @@ namespace Vangog
 	{
 		for (const auto& photo : photos)
 		{
-			auto item = new QStandardItem (photo.Title_);
-			item->setEditable (false);
-			item->setData (ItemType::Image, CollectionRole::Type);
-			item->setData (photo.ID_, CollectionRole::ID);
-			item->setData (photo.Title_, CollectionRole::Name);
-
-			item->setData (photo.Url_, CollectionRole::Original);
-			item->setData (QSize (photo.Width_, photo.Height_), CollectionRole::OriginalSize);
-			if (!photo.Thumbnails_.isEmpty ())
+			auto mkItem = [&photo] () -> QStandardItem*
 			{
-				auto first = photo.Thumbnails_.first ();
-				auto last = photo.Thumbnails_.last ();
-				item->setData (first.Url_, CollectionRole::SmallThumb);
-				item->setData (QSize (first.Width_, first.Height_), CollectionRole::SmallThumbSize);
-				item->setData (last.Url_, CollectionRole::MediumThumb);
-				item->setData (QSize (last.Width_, last.Height_), CollectionRole::MediumThumb);
-			}
+				auto item = new QStandardItem (photo.Title_);
+				item->setEditable (false);
+				item->setData (ItemType::Image, CollectionRole::Type);
+				item->setData (photo.ID_, CollectionRole::ID);
+				item->setData (photo.Title_, CollectionRole::Name);
 
-			AllPhotosItem_->appendRow (item);
+				item->setData (photo.Url_, CollectionRole::Original);
+				item->setData (QSize (photo.Width_, photo.Height_), CollectionRole::OriginalSize);
+				if (!photo.Thumbnails_.isEmpty ())
+				{
+					auto first = photo.Thumbnails_.first ();
+					auto last = photo.Thumbnails_.last ();
+					item->setData (first.Url_, CollectionRole::SmallThumb);
+					item->setData (QSize (first.Width_, first.Height_), CollectionRole::SmallThumbSize);
+					item->setData (last.Url_, CollectionRole::MediumThumb);
+					item->setData (QSize (last.Width_, last.Height_), CollectionRole::MediumThumb);
+				}
+
+				return item;
+			};
+
+			AllPhotosItem_->appendRow (mkItem ());
 
 			if (!AlbumId2AlbumItem_.contains (photo.AlbumID_))
 				continue;
@@ -242,8 +247,8 @@ namespace Vangog
 			if (AlbumID2PhotosSet_ [photo.AlbumID_].contains (photo.ID_))
 				continue;
 
-// 			AlbumID2PhotosSet_ [photo.AlbumID_] << photo.ID_;
-// 			AlbumId2AlbumItem_ [photo.AlbumID_]->appendRow (item);
+			AlbumID2PhotosSet_ [photo.AlbumID_] << photo.ID_;
+			AlbumId2AlbumItem_ [photo.AlbumID_]->appendRow (mkItem ());
 		}
 	}
 }
