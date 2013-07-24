@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2013  Slava Barinov <rayslava@gmail.com>
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,12 +27,9 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "pasteservicefactory.h"
-#include <QIcon>
-#include "codepadservice.h"
-#include "bpasteservice.h"
-#include "hastebinservice.h"
-#include "pasteorgruservice.h"
+#pragma once
+
+#include "pasteservicebase.h"
 
 namespace LeechCraft
 {
@@ -40,21 +37,17 @@ namespace Azoth
 {
 namespace Autopaste
 {
-	PasteServiceFactory::PasteServiceFactory ()
+	class PasteOrgRuService : public PasteServiceBase
 	{
-		Infos_.push_back ({ "bpaste.net", QIcon (), [] (QObject *entry) { return new BPasteService (entry); } });
-		Infos_.push_back ({ "codepad.org", QIcon (), [] (QObject *entry) { return new CodepadService (entry); } });
-		Infos_.push_back ({ "paste.org.ru", QIcon (), [] (QObject *entry) { return new PasteOrgRuService (entry); } });
+		Q_OBJECT
+	public:
+		PasteOrgRuService (QObject *entry, QObject* = 0);
 
-#ifdef WITH_JSON
-		Infos_.push_back ({ "hastebin.com", QIcon (), [] (QObject *entry) { return new HastebinService (entry); } });
-#endif
-	}
-
-	QList<PasteServiceFactory::PasteInfo> PasteServiceFactory::GetInfos () const
-	{
-		return Infos_;
-	}
+		void Paste (const PasteParams&);
+	protected:
+		virtual void handleFinished ();
+	};
 }
 }
 }
+ 

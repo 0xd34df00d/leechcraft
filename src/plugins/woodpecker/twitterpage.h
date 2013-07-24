@@ -86,6 +86,7 @@ namespace Woodpecker
 		QAction *ActionDelete_;
 		QAction *ActionSearch_;
 		QAction *ActionShowFavorites_;
+		QAction *ActionShowOwnFavorites_;
 		QAction *ActionMakeFavorite_;
 		QAction *ActionDeleteFavorite_;
 		
@@ -130,6 +131,7 @@ namespace Woodpecker
 		void makeFavorite ();
 		void deleteFavorite ();
 		void showFavorites ();
+		void showOwnFavorites ();
 		
 	private slots:
 		void on_TwitList__customContextMenuRequested (const QPoint&);
