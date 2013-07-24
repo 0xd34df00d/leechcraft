@@ -31,6 +31,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QtDebug>
+#include <QRegExp>
 
 namespace LeechCraft
 {
@@ -46,22 +47,25 @@ namespace Autopaste
 
 	void PasteOrgRuService::Paste (const PasteParams& params)
 	{
-		QNetworkRequest req (QString ("http://paste.org.ru"));
-		const QByteArray& data = params.Text_.toUtf8 ();
-		req.setHeader (QNetworkRequest::ContentTypeHeader, "text/plain");
-		req.setHeader (QNetworkRequest::ContentLengthHeader, data.length ());
-		qDebug() << Q_FUNC_INFO << __LINE__ << data;
+		QNetworkRequest req (QString ("http://paste.org.ru:2/"));
+		const QByteArray& data = "c=" + params.Text_.toUtf8 ().toPercentEncoding ();
 
 		InitReply (params.NAM_->post (req, data));
 	}
 
 	void PasteOrgRuService::handleFinished ()
 	{
-		sender ()->deleteLater ();
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		const auto &bytes = reply->readAll ();
-		qDebug() << Q_FUNC_INFO << __LINE__ << bytes;
-		QUrl url ("http://paste.org.ru/");
+		const auto& bytes = reply->readAll ();
+		sender ()->deleteLater ();
+		
+		QRegExp rx("a href='(/\\?[A-Za-z0-9]+)'");
+		if (rx.indexIn (bytes) == -1)
+		{
+			qWarning () << Q_FUNC_INFO << "paste.org.ru service problem";
+			return;
+		}
+		QUrl url (QString ("http://paste.org.ru:2%1").arg (rx.cap (1)));
 		FeedURL (url.toString ());
 	}
 }
