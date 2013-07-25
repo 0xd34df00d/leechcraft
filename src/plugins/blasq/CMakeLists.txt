@@ -45,6 +45,7 @@ install (DIRECTORY share/qml/blasq DESTINATION ${LC_QML_DEST})
 
 option (ENABLE_BLASQ_RAPPOR "Build VKontakte client module for Blasq" ON)
 option (ENABLE_BLASQ_SPEGNERSI "Build Flickr client module for Blasq" ON)
+option (ENABLE_BLASQ_VANGOG "Build Picasa client module for Blasq" ON)
 
 if (ENABLE_BLASQ_RAPPOR)
 	add_subdirectory (plugins/rappor)
@@ -52,4 +53,8 @@ endif ()
 
 if (ENABLE_BLASQ_SPEGNERSI)
 	add_subdirectory (plugins/spegnersi)
+endif ()
+
+if (ENABLE_BLASQ_VANGOG)
+	add_subdirectory (plugins/vangog)
 endif ()
