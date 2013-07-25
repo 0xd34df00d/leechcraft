@@ -34,6 +34,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "wmfinder.h"
 #include "xmlsettingsmanager.h"
+#include "compfinder.h"
 
 namespace LeechCraft
 {
@@ -42,11 +43,13 @@ namespace Fenet
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Finder_ = new WMFinder;
+		CompFinder_ = new CompFinder;
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "fenetsettings.xml");
 
 		XSD_->SetDataSource ("SelectedWM", Finder_->GetFoundModel ());
+		XSD_->SetDataSource ("SelectedCompositor", CompFinder_->GetFoundModel ());
 
 		if (!QApplication::arguments ().contains ("--desktop"))
 			return;
@@ -57,9 +60,19 @@ namespace Fenet
 				this,
 				SLOT (handleProcessError ()));
 
-		StartWM ();
+		CompProcess_ = new QProcess (this);
+		connect (CompFinder_,
+				SIGNAL (error (QProcess::ProcessError)),
+				this,
+				SLOT (handleCompProcessError ()));
 
+		StartWM ();
 		XmlSettingsManager::Instance ().RegisterObject ("SelectedWM", this, "restartWM");
+
+		StartComp ();
+		XmlSettingsManager::Instance ()
+			.RegisterObject ({ "SelectedCompositor", "UseCompositor" },
+					this, "restartComp");
 	}
 
 	void Plugin::SecondInit ()
@@ -73,6 +86,7 @@ namespace Fenet
 
 	void Plugin::Release ()
 	{
+		KillComp ();
 		KillWM ();
 	}
 
@@ -129,10 +143,52 @@ namespace Fenet
 			Process_->kill ();
 	}
 
+	void Plugin::StartComp ()
+	{
+		if (!XmlSettingsManager::Instance ().property ("UseCompositor").toBool ())
+			return;
+
+		const auto& found = CompFinder_->GetFound ();
+		if (found.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no known compositors are found, aborting";
+			return;
+		}
+
+		auto selected = XmlSettingsManager::Instance ()
+				.property ("SelectedCompositor").toString ();
+
+		auto pos = std::find_if (found.begin (), found.end (),
+				[&selected] (const CompInfo& info) { return info.Name_ == selected; });
+		if (pos == found.end ())
+			pos = found.begin ();
+
+		const auto& executable = pos->ExecNames_.value (0);
+		qDebug () << Q_FUNC_INFO << "starting" << executable;
+		CompProcess_->start (executable);
+	}
+
+	void Plugin::KillComp ()
+	{
+		if (!CompProcess_)
+			return;
+
+		CompProcess_->terminate ();
+		if (CompProcess_->state () != QProcess::NotRunning && !Process_->waitForFinished (3000))
+			CompProcess_->kill ();
+	}
+
 	void Plugin::restartWM ()
 	{
 		KillWM ();
 		StartWM ();
+	}
+
+	void Plugin::restartComp ()
+	{
+		KillComp ();
+		StartComp ();
 	}
 
 	void Plugin::handleProcessError ()
@@ -143,6 +199,16 @@ namespace Fenet
 				<< Process_->errorString ()
 				<< Process_->exitCode ()
 				<< Process_->exitStatus ();
+	}
+
+	void Plugin::handleCompProcessError ()
+	{
+		qWarning () << Q_FUNC_INFO
+				<< "compositor process error:"
+				<< CompProcess_->error ()
+				<< CompProcess_->errorString ()
+				<< CompProcess_->exitCode ()
+				<< CompProcess_->exitStatus ();
 	}
 }
 }
