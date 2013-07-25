@@ -332,6 +332,10 @@ namespace LeechCraft
 
 	void SettingsTab::showSettingsFor (QObject *obj)
 	{
+		auto ihs = qobject_cast<IHaveSettings*> (obj);
+		if (!ihs)
+			return;
+
 		Toolbar_->clear ();
 		Item2Page_.clear ();
 
@@ -339,7 +343,6 @@ namespace LeechCraft
 		Ui_.SectionName_->setText (tr ("Settings for %1")
 				.arg (ii->GetName ()));
 
-		IHaveSettings *ihs = qobject_cast<IHaveSettings*> (obj);
 		auto sd = ihs->GetSettingsDialog ();
 		Ui_.DialogContents_->layout ()->addWidget (sd.get ());
 		sd->show ();
