@@ -39,94 +39,25 @@ namespace LeechCraft
 namespace Fenet
 {
 	WMFinder::WMFinder (QObject *parent)
-	: QObject (parent)
-	, Path_ (QString (qgetenv ("PATH")).split (":", QString::SkipEmptyParts))
-	, FoundModel_ (new QStandardItemModel (this))
+	: FinderBase (parent)
 	{
-		qDebug () << Q_FUNC_INFO << "searching for WMs...";
-
-		const auto& cands = Util::GetPathCandidates (Util::SysPath::Share, "fenet/wms");
-		for (const auto& cand : cands)
-			for (const auto& entry : QDir (cand).entryInfoList ({ "*.json" }))
-				HandleDescr (entry.absoluteFilePath ());
-
-		qDebug () << Known_.size () << "known WMs;"
-				<< Found_.size () << "found WMs";
+		Find ("wms");
 	}
 
-	const WMInfos_t& WMFinder::GetFound () const
+	WMInfo WMFinder::GetInfo (const QString& filePath,
+			const QStringList& execNames, const QVariantMap& varmap) const
 	{
-		return Found_;
-	}
-
-	QAbstractItemModel* WMFinder::GetFoundModel () const
-	{
-		return FoundModel_;
-	}
-
-	void WMFinder::HandleDescr (const QString& filePath)
-	{
-		QJson::Parser parser;
-
-		QFile file (filePath);
-		if (!file.open (QIODevice::ReadOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot open file"
-					<< file.fileName ()
-					<< file.errorString ();
-			return;
-		}
-
-		bool ok = false;
-		const auto& varmap = parser.parse (&file, &ok).toMap ();
-		if (!ok)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot parse file"
-					<< file.fileName ();
-			return;
-		}
-
-		QStringList execNames;
-		for (const auto& var : varmap ["execNames"].toList ())
-			execNames << var.toString ();
-
 		QString session = filePath;
 		session.chop (5);
 		session += ".sh";
-		WMInfo info
+		return
 		{
 			varmap ["name"].toString (),
 			varmap ["comment"].toString (),
 			execNames,
-			session
+			session,
+			varmap ["compositing"].toBool ()
 		};
-		Known_ << info;
-
-		if (std::any_of (execNames.begin (), execNames.end (),
-				[this] (const QString& name) { return IsAvailable (name); }))
-		{
-			qDebug () << info.Name_ << "available";
-			Found_ << info;
-
-			auto item = new QStandardItem (info.Name_);
-			item->setEditable (false);
-			item->setToolTip (info.Comment_);
-			FoundModel_->appendRow (item);
-		}
-	}
-
-	bool WMFinder::IsAvailable (const QString& executable) const
-	{
-		if (QFileInfo (executable).isExecutable ())
-			return true;
-
-		for (const auto& dir : Path_)
-			if (QFileInfo (dir + '/' + executable).isExecutable ())
-				return true;
-
-		return false;
 	}
 }
 }
