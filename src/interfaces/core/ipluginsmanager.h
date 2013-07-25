@@ -174,6 +174,13 @@ public:
 	 * @return The plugin manager as a QObject.
 	 */
 	virtual QObject* GetQObject () = 0;
+
+	/** @brief Opens the settings page for the given plugin object.
+	 *
+	 * If the plugin doesn't implement IHaveSettings, this function
+	 * does nthing.
+	 */
+	virtual void OpenSettings (QObject *plugin) = 0;
 };
 
 Q_DECLARE_INTERFACE (IPluginsManager, "org.Deviant.LeechCraft.IPluginsManager/1.0");
