@@ -355,15 +355,6 @@ namespace LeechCraft
 		Toolbar_->addAction (ActionApply_);
 		Toolbar_->addAction (ActionCancel_);
 		addSearchBox ();
-
-		/*
-		const int width = Ui_.Cats_->viewport ()->width ();
-		auto gridSize = Ui_.Cats_->gridSize ();
-		gridSize.setWidth (width);
-		Q_FOREACH (auto item, Item2Page_.keys ())
-			item->setSizeHint (gridSize);
-		Ui_.Cats_->setGridSize (gridSize);
-		*/
 	}
 
 	void SettingsTab::handleSearch (const QString& text)
