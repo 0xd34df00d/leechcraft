@@ -30,6 +30,7 @@
 #include "tablistview.h"
 #include <QStandardItemModel>
 #include <QGraphicsObject>
+#include <QMainWindow>
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
 #include <QtDebug>
@@ -68,11 +69,12 @@ namespace SB2
 		};
 	}
 
-	TabListView::TabListView (const QByteArray& tc,
-			const QList<QWidget*>& widgets, ICoreTabWidget *ictw, ICoreProxy_ptr proxy, QWidget *parent)
+	TabListView::TabListView (const QByteArray& tc, const QList<QWidget*>& widgets,
+			ICoreTabWidget *ictw, QMainWindow *win, ICoreProxy_ptr proxy, QWidget *parent)
 	: QDeclarativeView (parent)
 	, Proxy_ (proxy)
 	, ICTW_ (ictw)
+	, MW_ (win)
 	, TC_ (tc)
 	, Model_ (new TabsListModel (this))
 	, UnhoverDeleteMixin_ (new Util::UnhoverDeleteMixin (this))
@@ -191,6 +193,8 @@ namespace SB2
 
 		auto widgetObj = item->data (TabsListModel::Roles::TabWidgetObj).value<QObject*> ();
 		ICTW_->setCurrentWidget (static_cast<QWidget*> (widgetObj));
+		MW_->activateWindow ();
+		MW_->raise ();
 		deleteLater ();
 	}
 

@@ -333,7 +333,7 @@ namespace SB2
 		if (CurrentTabList_)
 			delete CurrentTabList_;
 
-		auto view = new TabListView (tc, widgets, ICTW_, Proxy_);
+		auto view = new TabListView (tc, widgets, ICTW_, View_->GetManagedWindow (), Proxy_);
 		view->move (Util::FitRect ({ x, y }, view->size (), View_->GetFreeCoords ()));
 		view->show ();
 		view->setFocus ();
