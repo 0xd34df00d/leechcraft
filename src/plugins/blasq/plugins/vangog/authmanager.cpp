@@ -47,13 +47,13 @@ namespace Vangog
 {
 	namespace
 	{
-		const QString ClientId_ ("844868161425.apps.googleusercontent.com");
-		const QString ClientSecret_ ("l09HkM6nbPMEYcMdcdeGBdaV");
-		const QString Scope_ ("https://picasaweb.google.com/data/");
-		const QString ResponseType_ ("code");
-		const QString RedirectUri_ ("urn:ietf:wg:oauth:2.0:oob");
-
+		const QString ClientId ("844868161425.apps.googleusercontent.com");
+		const QString ClientSecret ("l09HkM6nbPMEYcMdcdeGBdaV");
+		const QString Scope ("https://picasaweb.google.com/data/");
+		const QString ResponseType ("code");
+		const QString RedirectUri ("urn:ietf:wg:oauth:2.0:oob");
 	}
+
 	AuthManager::AuthManager (ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
@@ -63,10 +63,10 @@ namespace Vangog
 	void AuthManager::Auth (PicasaAccount *acc)
 	{
 		QUrl url (QString ("https://accounts.google.com/o/oauth2/auth?client_id=%1&scope=%2&response_type=%3&redirect_uri=%4")
-				.arg (ClientId_)
-				.arg (Scope_)
-				.arg (ResponseType_)
-				.arg (RedirectUri_));
+				.arg (ClientId)
+				.arg (Scope)
+				.arg (ResponseType)
+				.arg (RedirectUri));
 
 		Entity e = Util::MakeEntity (url,
 				QString (),
@@ -96,8 +96,8 @@ namespace Vangog
 		QNetworkRequest request (QUrl ("https://accounts.google.com/o/oauth2/token"));
 		QString str = QString ("code=%1&client_id=%2&client_secret=%3&grant_type=%4&redirect_uri=%5")
 				.arg (code)
-				.arg (ClientId_)
-				.arg (ClientSecret_)
+				.arg (ClientId)
+				.arg (ClientSecret)
 				.arg ("authorization_code")
 				.arg ("urn:ietf:wg:oauth:2.0:oob");
 
