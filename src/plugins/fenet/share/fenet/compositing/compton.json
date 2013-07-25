@@ -1,0 +1,23 @@
+{
+	"name": "compton",
+	"comment": "Use compton, the fork of xcompmgr-dana, for compositing",
+	"execNames": [ "compton" ],
+	"params": [
+		{
+			"param": "-r",
+			"desc": "The blur radius for shadows",
+			"default": 12
+		},
+		{
+			"param": "-o",
+			"desc": "The transluency for shadows",
+			"default": 0.75
+		}
+	],
+	"flags": [
+		{
+			"param": "-c",
+			"desc": "Enable cleint-side shadows on windows"
+		}
+	]
+}
