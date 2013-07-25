@@ -61,6 +61,8 @@ namespace Vangog
 		QString GetServiceName () const;
 		QIcon GetServiceIcon () const;
 
+		void Release ();
+
 		QList<IAccount*> GetRegisteredAccounts () const;
 		QList<QWidget*> GetAccountRegistrationWidgets () const;
 		void RegisterAccount (const QString& name, const QList<QWidget*>& widgets);

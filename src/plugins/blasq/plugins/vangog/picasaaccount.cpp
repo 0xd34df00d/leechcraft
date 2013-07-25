@@ -75,16 +75,23 @@ namespace Vangog
 		return Proxy_;
 	}
 
+	void PicasaAccount::Release ()
+	{
+		emit accountChanged (this);
+	}
+
 	QByteArray PicasaAccount::Serialize () const
 	{
 		QByteArray result;
 		{
 			QDataStream out (&result, QIODevice::WriteOnly);
-			out << static_cast<quint8> (3)
+			out << static_cast<quint8> (4)
 					<< Name_
 					<< RefreshToken_
 					<< Login_
-					<< ID_;
+					<< ID_
+					<< PicasaManager_->GetAccessToken ()
+					<< PicasaManager_->GetAccessTokenExpireDate ();
 		}
 		return result;
 	}
@@ -96,7 +103,7 @@ namespace Vangog
 
 		quint8 version = 0;
 		in >> version;
-		if (version < 1 || version > 2)
+		if (version < 1 || version > 4)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -113,10 +120,14 @@ namespace Vangog
 		if (version >= 2)
 			in >> login;
 
-		if (version == 3)
+		if (version >= 3)
 			in >> id;
 
 		auto acc = new PicasaAccount (name, service, proxy, login, id);
+		if (version == 4)
+			in >> acc->AccessToken_
+					>> acc->AccessTokenExpireDate_;
+
 		acc->RefreshToken_ = refreshKey;
 
 		return acc;
@@ -147,9 +158,14 @@ namespace Vangog
 		return Login_;
 	}
 
-	void PicasaAccount::SetAccessToken (const QString& token)
+	QString PicasaAccount::GetAccessToken () const
 	{
-		AccessToken_ = token;
+		return AccessToken_;
+	}
+
+	QDateTime PicasaAccount::GetAccessTokenExpireDate () const
+	{
+		return AccessTokenExpireDate_;
 	}
 
 	void PicasaAccount::SetRefreshToken (const QString& token)
@@ -170,7 +186,11 @@ namespace Vangog
 	void PicasaAccount::UpdateCollections ()
 	{
 		if (TryToEnterLoginIfNoExists ())
+		{
+			AlbumId2AlbumItem_.clear ();
+			AlbumID2PhotosSet_.clear ();
 			PicasaManager_->UpdateCollections ();
+		}
 	}
 
 	bool PicasaAccount::TryToEnterLoginIfNoExists ()

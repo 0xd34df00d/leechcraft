@@ -69,6 +69,12 @@ namespace Vangog
 		return {};
 	}
 
+	void PicasaService::Release ()
+	{
+		for (auto acc : Accounts_)
+			acc->Release ();
+	}
+
 	QList<IAccount*> PicasaService::GetRegisteredAccounts () const
 	{
 		QList<IAccount*> result;
