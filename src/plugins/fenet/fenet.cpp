@@ -73,6 +73,11 @@ namespace Fenet
 		StartWM ();
 		XmlSettingsManager::Instance ().RegisterObject ("SelectedWM", this, "restartWM");
 
+		XmlSettingsManager::Instance ().RegisterObject ("SelectedCompositor",
+				this, "updateCompParamsManager", Util::BaseSettingsManager::EventFlag::Select);
+		updateCompParamsManager (XmlSettingsManager::Instance ()
+				.property ("SelectedCompositor").toString ());
+
 		StartComp ();
 		XmlSettingsManager::Instance ()
 			.RegisterObject ({ "SelectedCompositor", "UseCompositor" },
@@ -91,10 +96,6 @@ namespace Fenet
 				CompParamsManager_,
 				SLOT (revert ()));
 
-		XmlSettingsManager::Instance ().RegisterObject ("SelectedCompositor",
-				this, "updateCompParamsManager", Util::BaseSettingsManager::EventFlag::Select);
-		updateCompParamsManager (XmlSettingsManager::Instance ()
-				.property ("SelectedCompositor").toString ());
 	}
 
 	void Plugin::SecondInit ()
