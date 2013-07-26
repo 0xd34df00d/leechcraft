@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QStringList>
+#include <QMetaType>
 
 namespace LeechCraft
 {
@@ -66,3 +67,7 @@ namespace Fenet
 	typedef QList<CompInfo> CompInfos_t;
 }
 }
+
+Q_DECLARE_METATYPE (LeechCraft::Fenet::Param)
+Q_DECLARE_METATYPE (LeechCraft::Fenet::Flag)
+Q_DECLARE_METATYPE (LeechCraft::Fenet::CompInfo)
