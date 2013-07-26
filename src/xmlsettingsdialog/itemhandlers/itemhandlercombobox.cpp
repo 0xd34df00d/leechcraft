@@ -233,5 +233,7 @@ namespace LeechCraft
 				<< box
 				<< data
 				<< "not found";
+
+		ChangedProperties_.remove (prop);
 	}
 }
