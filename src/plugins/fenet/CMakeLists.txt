@@ -22,7 +22,7 @@ set (SRCS
 	compparamswidget.cpp
 	)
 #CreateTrs("fenet" "en;ru_RU" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("fenet" "en;ru_RU" "${SRCS}" "${FORMS}" "")
+CreateTrsUpTarget("fenet" "en;ru_RU" "${SRCS}" "${FORMS}" "fenetsettings.xml")
 
 add_library (leechcraft_fenet SHARED
 	${COMPILED_TRANSLATIONS}
