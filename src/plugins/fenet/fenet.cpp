@@ -65,7 +65,7 @@ namespace Fenet
 				SLOT (handleProcessError ()));
 
 		CompProcess_ = new QProcess (this);
-		connect (CompFinder_,
+		connect (CompProcess_,
 				SIGNAL (error (QProcess::ProcessError)),
 				this,
 				SLOT (handleCompProcessError ()));
