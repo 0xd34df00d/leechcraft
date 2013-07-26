@@ -39,7 +39,11 @@ namespace Fenet
 	{
 		QString Name_;
 		QString Desc_;
+
 		double Default_;
+
+		double Min_;
+		double Max_;
 	};
 
 	struct Flag
