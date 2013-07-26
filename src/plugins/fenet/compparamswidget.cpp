@@ -93,6 +93,11 @@ namespace Fenet
 	: QTreeView (parent)
 	{
 		setItemDelegate (new EditDelegate (this));
+		setRootIsDecorated (false);
+
+		setColumnWidth (0, fontMetrics ().width ("Average compositor option description length"));
+		setColumnWidth (1, fontMetrics ().width ("average value"));
+		setColumnWidth (2, fontMetrics ().width ("flag"));
 	}
 
 	void CompParamsWidget::accept ()
