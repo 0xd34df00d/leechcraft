@@ -71,7 +71,7 @@ namespace LeechCraft
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerListView (this));
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerTreeView (this));
 
-		Q_FOREACH (ItemHandlerBase_ptr handler, Handlers_)
+		for (const auto& handler : Handlers_)
 			handler->SetXmlSettingsDialog (xsd);
 	}
 
@@ -82,7 +82,7 @@ namespace LeechCraft
 	bool ItemHandlerFactory::Handle (const QDomElement& element,
 			QWidget* widget)
 	{
-		Q_FOREACH (ItemHandlerBase_ptr handler, Handlers_)
+		for (const auto& handler : Handlers_)
 			if (handler->CanHandle (element))
 			{
 				handler->Handle (element, widget);
@@ -116,7 +116,7 @@ namespace LeechCraft
 	bool ItemHandlerFactory::UpdateSingle (QDomElement& element,
 			const QVariant& value) const
 	{
-		Q_FOREACH (ItemHandlerBase_ptr handler, Handlers_)
+		for (const auto& handler : Handlers_)
 			if (handler->CanHandle (element))
 			{
 				handler->UpdateValue (element, value);
@@ -129,7 +129,7 @@ namespace LeechCraft
 	QVariant ItemHandlerFactory::GetValue (const QDomElement& element,
 			const QVariant& value) const
 	{
-		Q_FOREACH (ItemHandlerBase_ptr handler, Handlers_)
+		for (const auto& handler : Handlers_)
 			if (handler->CanHandle (element))
 				return handler->GetValue (element, value);
 		return QVariant ();
@@ -138,14 +138,14 @@ namespace LeechCraft
 	ItemHandlerBase::Prop2NewValue_t ItemHandlerFactory::GetNewValues () const
 	{
 		ItemHandlerBase::Prop2NewValue_t result;
-		Q_FOREACH (ItemHandlerBase_ptr handler, Handlers_)
+		for (const auto& handler : Handlers_)
 			result.unite (handler->GetChangedProperties ());
 		return result;
 	}
 
 	void ItemHandlerFactory::ClearNewValues ()
 	{
-		Q_FOREACH (ItemHandlerBase_ptr handler, Handlers_)
+		for (const auto& handler : Handlers_)
 			handler->ClearChangedProperties ();
 	}
 
