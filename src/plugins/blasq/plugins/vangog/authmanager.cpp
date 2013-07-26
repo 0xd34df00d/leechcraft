@@ -155,8 +155,6 @@ namespace Vangog
 			return;
 		}
 
-		if (map.contains ("access_token"))
-			acc->SetAccessToken (map ["access_token"].toString ());
 		if (map.contains ("refresh_token"))
 			acc->SetRefreshToken (map ["refresh_token"].toString ());
 

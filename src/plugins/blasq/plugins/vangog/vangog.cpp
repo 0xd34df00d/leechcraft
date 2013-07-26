@@ -54,6 +54,7 @@ namespace Vangog
 
 	void Plugin::Release ()
 	{
+		Service_->Release ();
 	}
 
 	QString Plugin::GetName () const
