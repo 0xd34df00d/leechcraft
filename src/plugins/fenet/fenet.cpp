@@ -83,6 +83,11 @@ namespace Fenet
 			.RegisterObject ({ "SelectedCompositor", "UseCompositor" },
 					this, "restartComp");
 
+		connect (CompParamsManager_,
+				SIGNAL (paramsChanged ()),
+				this,
+				SLOT (restartComp ()));
+
 		auto view = new CompParamsWidget ();
 		view->setModel (CompParamsManager_->GetModel ());
 		XSD_->SetCustomWidget ("CompositorProps", view);
@@ -195,9 +200,10 @@ namespace Fenet
 		if (info.ExecNames_.isEmpty ())
 			return;
 
+		const auto& params = CompParamsManager_->GetCompParams (info.Name_);
 		const auto& executable = info.ExecNames_.value (0);
-		qDebug () << Q_FUNC_INFO << "starting" << executable;
-		CompProcess_->start (executable);
+		qDebug () << Q_FUNC_INFO << "starting" << executable << params;
+		CompProcess_->start (executable, params);
 	}
 
 	void Plugin::KillComp ()
