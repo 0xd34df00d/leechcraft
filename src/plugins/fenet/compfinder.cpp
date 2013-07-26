@@ -62,7 +62,11 @@ namespace Fenet
 			info.Params_.append ({
 					pMap ["param"].toString (),
 					pMap ["desc"].toString (),
-					pMap ["default"].toDouble ()
+
+					pMap ["default"].toDouble (),
+
+					pMap.value ("min", 0).toDouble (),
+					pMap.value ("max", 0).toDouble ()
 				});
 		}
 
