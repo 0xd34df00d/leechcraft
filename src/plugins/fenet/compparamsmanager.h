@@ -36,6 +36,7 @@
 #include "compinfo.h"
 
 class QStandardItemModel;
+class QStandardItem;
 class QAbstractItemModel;
 class QSettings;
 
@@ -52,7 +53,7 @@ namespace Fenet
 		CompInfo CurrentInfo_;
 
 		QHash<QString, QHash<QString, QVariant>> ChangedParams_;
-		QHash<QString, QSet<QString>> ChangedFlags_;
+		QHash<QString, QHash<QString, bool>> ChangedFlags_;
 	public:
 		enum Role
 		{
@@ -64,11 +65,17 @@ namespace Fenet
 		QAbstractItemModel* GetModel () const;
 
 		void SetCompInfo (const CompInfo&);
+
+		QStringList GetCompParams (const QString&) const;
 	private:
-		std::shared_ptr<QSettings> GetCurrentSettings () const;
+		std::shared_ptr<QSettings> GetSettings (QString compName = QString ()) const;
 	public slots:
+		void handleItemChanged (QStandardItem*);
+
 		void save ();
 		void revert ();
+	signals:
+		void paramsChanged ();
 	};
 }
 }
