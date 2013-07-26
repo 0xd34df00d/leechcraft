@@ -212,7 +212,7 @@ namespace Fenet
 			return;
 
 		CompProcess_->terminate ();
-		if (CompProcess_->state () != QProcess::NotRunning && !Process_->waitForFinished (3000))
+		if (CompProcess_->state () != QProcess::NotRunning && !CompProcess_->waitForFinished (3000))
 			CompProcess_->kill ();
 	}
 
