@@ -41,6 +41,8 @@ namespace Fenet
 {
 	class WMFinder;
 	class CompFinder;
+	class CompParamsManager;
+	struct CompInfo;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -50,7 +52,9 @@ namespace Fenet
 		Q_INTERFACES (IInfo IHaveSettings)
 
 		WMFinder *Finder_;
+
 		CompFinder *CompFinder_;
+		CompParamsManager *CompParamsManager_;
 
 		Util::XmlSettingsDialog_ptr XSD_;
 
@@ -70,11 +74,14 @@ namespace Fenet
 		void StartWM ();
 		void KillWM ();
 
+		CompInfo GetCompInfo (const QString&) const;
+
 		void StartComp ();
 		void KillComp ();
 	private slots:
 		void restartWM ();
 		void restartComp ();
+		void updateCompParamsManager (const QString&);
 
 		void handleProcessError ();
 		void handleCompProcessError ();

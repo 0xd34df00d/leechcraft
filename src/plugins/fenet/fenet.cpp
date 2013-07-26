@@ -30,11 +30,14 @@
 #include "fenet.h"
 #include <QIcon>
 #include <QApplication>
+#include <QTreeView>
 #include <QProcess>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "wmfinder.h"
 #include "xmlsettingsmanager.h"
 #include "compfinder.h"
+#include "compparamsmanager.h"
+#include "compparamswidget.h"
 
 namespace LeechCraft
 {
@@ -44,6 +47,7 @@ namespace Fenet
 	{
 		Finder_ = new WMFinder;
 		CompFinder_ = new CompFinder;
+		CompParamsManager_ = new CompParamsManager;
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "fenetsettings.xml");
@@ -73,6 +77,24 @@ namespace Fenet
 		XmlSettingsManager::Instance ()
 			.RegisterObject ({ "SelectedCompositor", "UseCompositor" },
 					this, "restartComp");
+
+		auto view = new CompParamsWidget ();
+		view->setModel (CompParamsManager_->GetModel ());
+		XSD_->SetCustomWidget ("CompositorProps", view);
+
+		connect (view,
+				SIGNAL (accepted ()),
+				CompParamsManager_,
+				SLOT (save ()));
+		connect (view,
+				SIGNAL (rejected ()),
+				CompParamsManager_,
+				SLOT (revert ()));
+
+		XmlSettingsManager::Instance ().RegisterObject ("SelectedCompositor",
+				this, "updateCompParamsManager", Util::BaseSettingsManager::EventFlag::Select);
+		updateCompParamsManager (XmlSettingsManager::Instance ()
+				.property ("SelectedCompositor").toString ());
 	}
 
 	void Plugin::SecondInit ()
@@ -143,28 +165,36 @@ namespace Fenet
 			Process_->kill ();
 	}
 
-	void Plugin::StartComp ()
+	CompInfo Plugin::GetCompInfo (const QString& selected) const
 	{
-		if (!XmlSettingsManager::Instance ().property ("UseCompositor").toBool ())
-			return;
-
 		const auto& found = CompFinder_->GetFound ();
 		if (found.isEmpty ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "no known compositors are found, aborting";
-			return;
+			return {};
 		}
-
-		auto selected = XmlSettingsManager::Instance ()
-				.property ("SelectedCompositor").toString ();
 
 		auto pos = std::find_if (found.begin (), found.end (),
 				[&selected] (const CompInfo& info) { return info.Name_ == selected; });
 		if (pos == found.end ())
 			pos = found.begin ();
 
-		const auto& executable = pos->ExecNames_.value (0);
+		return *pos;
+	}
+
+	void Plugin::StartComp ()
+	{
+		if (!XmlSettingsManager::Instance ().property ("UseCompositor").toBool ())
+			return;
+
+		auto selected = XmlSettingsManager::Instance ()
+				.property ("SelectedCompositor").toString ();
+		const auto& info = GetCompInfo (selected);
+		if (info.ExecNames_.isEmpty ())
+			return;
+
+		const auto& executable = info.ExecNames_.value (0);
 		qDebug () << Q_FUNC_INFO << "starting" << executable;
 		CompProcess_->start (executable);
 	}
@@ -189,6 +219,11 @@ namespace Fenet
 	{
 		KillComp ();
 		StartComp ();
+	}
+
+	void Plugin::updateCompParamsManager (const QString& name)
+	{
+		CompParamsManager_->SetCompInfo (GetCompInfo (name));
 	}
 
 	void Plugin::handleProcessError ()

@@ -18,6 +18,8 @@ set (SRCS
 	wmfinder.cpp
 	xmlsettingsmanager.cpp
 	compfinder.cpp
+	compparamsmanager.cpp
+	compparamswidget.cpp
 	)
 #CreateTrs("fenet" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("fenet" "en;ru_RU" "${SRCS}" "${FORMS}" "")
