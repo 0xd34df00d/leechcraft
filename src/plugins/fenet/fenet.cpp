@@ -100,7 +100,6 @@ namespace Fenet
 				SIGNAL (rejected ()),
 				CompParamsManager_,
 				SLOT (revert ()));
-
 	}
 
 	void Plugin::SecondInit ()
