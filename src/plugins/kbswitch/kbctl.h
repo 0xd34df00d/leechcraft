@@ -31,15 +31,29 @@
 
 #include <QObject>
 
+typedef struct _XDisplay Display;
+
 namespace LeechCraft
 {
 namespace KBSwitch
 {
 	class KBCtl : public QObject
 	{
+		Display *Display_ = 0;
+		int XkbEventType_;
+
+		Qt::HANDLE Window_;
+		Qt::HANDLE NetActiveWinAtom_;
+
+		bool ExtWM_ = false;
 	public:
 		KBCtl (QObject* = 0);
 		~KBCtl ();
+	private:
+		void InitDisplay ();
+		void CheckExtWM ();
+		void SetupNonExtListeners ();
+		void AssignWindow (Qt::HANDLE);
 	};
 }
 }

@@ -28,6 +28,10 @@
  **********************************************************************/
 
 #include "kbctl.h"
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/Xatom.h>
+#include <X11/XKBlib.h>
 
 namespace LeechCraft
 {
@@ -36,10 +40,93 @@ namespace KBSwitch
 	KBCtl::KBCtl (QObject *parent)
 	: QObject (parent)
 	{
+		InitDisplay ();
+
+		XWindowAttributes wa;
+		XGetWindowAttributes (Display_, Window_, &wa);
+		const auto rootEvents = StructureNotifyMask |
+				SubstructureNotifyMask |
+				PropertyChangeMask |
+				FocusChangeMask |
+				KeymapStateMask |
+				LeaveWindowMask |
+				EnterWindowMask;
+		XSelectInput (Display_, Window_, wa.your_event_mask | rootEvents);
+
+		XkbSelectEventDetails (Display_, XkbUseCoreKbd,
+				XkbStateNotify, XkbAllStateComponentsMask, XkbGroupStateMask);
+
+		CheckExtWM ();
+
+		if (!ExtWM_)
+			SetupNonExtListeners ();
 	}
 
 	KBCtl::~KBCtl ()
 	{
+		XCloseDisplay (Display_);
+	}
+
+	void KBCtl::InitDisplay ()
+	{
+		int xkbError, xkbReason;
+		int mjr = XkbMajorVersion, mnr = XkbMinorVersion;
+		Display_ = XkbOpenDisplay (nullptr,
+				&XkbEventType_,
+				&xkbError,
+				&mjr,
+				&mnr,
+				&xkbReason);
+		Window_ = DefaultRootWindow (Display_);
+
+		NetActiveWinAtom_ = XInternAtom (Display_, "_NET_ACTIVE_WINDOW", 0);
+	}
+
+	void KBCtl::CheckExtWM ()
+	{
+		Atom type;
+		int format;
+		uchar *prop = nullptr;
+		ulong count, after;
+		auto ret = XGetWindowProperty (Display_, Window_, NetActiveWinAtom_,
+				0, sizeof (Window), 0, XA_WINDOW, &type, &format, &count, &after, &prop);
+		if (ret == Success && prop)
+		{
+			XFree (prop);
+			ExtWM_ = true;
+		}
+	}
+
+	void KBCtl::SetupNonExtListeners ()
+	{
+		uint count = 0;
+		Window d1, d2;
+		Window *windows = nullptr;
+
+		if (!XQueryTree (Display_, Window_, &d1, &d2, &windows, &count))
+			return;
+
+		for (uint i = 0; i < count; ++i)
+			AssignWindow (windows [i]);
+
+		if (windows)
+			XFree (windows);
+	}
+
+	void KBCtl::AssignWindow (Qt::HANDLE window)
+	{
+		if (ExtWM_)
+			return;
+
+		XWindowAttributes wa;
+		if (!XGetWindowAttributes (Display_, window, &wa))
+			return;
+
+		const auto windowEvents = EnterWindowMask |
+				FocusChangeMask |
+				PropertyChangeMask |
+				StructureNotifyMask;
+		XSelectInput (Display_, window, windowEvents);
 	}
 }
 }
