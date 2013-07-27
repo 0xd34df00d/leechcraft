@@ -3,15 +3,15 @@
 	<page>
 		<label value="Keyboard layout" />
 		<item type="combobox" property="SwitchingPolicy">
-			<label lang="en" value="Switching keyboard layout policy:" />
+			<label value="Switching keyboard layout policy:" />
 			<option name="global" default="true">
-				<label lang="en" value="Use system layout" />
+				<label value="Use system layout" />
 			</option>
 			<option name="plugin">
-				<label lang="en" value="Keyboard layout per plugin" />
+				<label value="Keyboard layout per plugin" />
 			</option>
 			<option name="tab">
-				<label lang="en" value="Keyboard layout per tab" />
+				<label value="Keyboard layout per tab" />
 			</option>
 		</item>
 	</page>
