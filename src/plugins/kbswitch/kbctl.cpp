@@ -91,6 +91,64 @@ namespace KBSwitch
 
 	bool KBCtl::Filter (XEvent *event)
 	{
+		if (event->type == XkbEventType_)
+		{
+			HandleXkbEvent (event);
+			return false;
+		}
+
+		switch (event->type)
+		{
+		case FocusIn:
+		case FocusOut:
+		case PropertyNotify:
+			SetWindowLayout (Util::XWrapper::Instance ().GetActiveApp ());
+			break;
+		case CreateNotify:
+		{
+			const auto window = event->xcreatewindow.window;
+			AssignWindow (window);
+			break;
+		}
+		case DestroyNotify:
+			Win2Group_.remove (event->xdestroywindow.window);
+			break;
+		}
+
+		return false;
+	}
+
+	void KBCtl::HandleXkbEvent (XEvent *event)
+	{
+		XkbEvent xkbEv;
+		xkbEv.core = *event;
+
+		switch (xkbEv.any.xkb_type)
+		{
+		case XkbStateNotify:
+			if (xkbEv.state.group == xkbEv.state.locked_group)
+				Win2Group_ [Util::XWrapper::Instance ().GetActiveApp ()] = xkbEv.state.group;
+			emit groupChanged (xkbEv.state.group);
+			break;
+		case XkbNewKeyboardNotify:
+			Win2Group_.clear ();
+			UpdateGroupNames ();
+			break;
+		default:
+			break;
+		}
+	}
+
+	void KBCtl::SetWindowLayout (Qt::HANDLE window)
+	{
+		if (window == None)
+			return;
+
+		if (!Win2Group_.contains (window))
+			return;
+
+		const auto group = Win2Group_ [window];
+		XkbLockGroup (Display_, XkbUseCoreKbd, group);
 	}
 
 	void KBCtl::InitDisplay ()
@@ -105,7 +163,7 @@ namespace KBSwitch
 				&xkbReason);
 		Window_ = DefaultRootWindow (Display_);
 
-		NetActiveWinAtom_ = XInternAtom (Display_, "_NET_ACTIVE_WINDOW", 0);
+		NetActiveWinAtom_ = Util::XWrapper::Instance ().GetAtom ("_NET_ACTIVE_WINDOW");
 	}
 
 	void KBCtl::CheckExtWM ()
@@ -114,13 +172,17 @@ namespace KBSwitch
 		int format;
 		uchar *prop = nullptr;
 		ulong count, after;
-		auto ret = XGetWindowProperty (Display_, Window_, NetActiveWinAtom_,
-				0, sizeof (Window), 0, XA_WINDOW, &type, &format, &count, &after, &prop);
+		const auto ret = XGetWindowProperty (Display_, Window_, NetActiveWinAtom_,
+				0, sizeof (Window), 0, XA_WINDOW,
+				&type, &format, &count, &after, &prop);
 		if (ret == Success && prop)
 		{
 			XFree (prop);
 			ExtWM_ = true;
 		}
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "extended window manager hints support wasn't detected, this won't work";
 	}
 
 	void KBCtl::SetupNonExtListeners ()

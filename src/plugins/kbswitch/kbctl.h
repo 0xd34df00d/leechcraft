@@ -31,8 +31,10 @@
 
 #include <QObject>
 #include <QStringList>
+#include <QHash>
 
 typedef struct _XDisplay Display;
+typedef union  _XEvent XEvent;
 
 namespace LeechCraft
 {
@@ -50,6 +52,8 @@ namespace KBSwitch
 
 		QStringList Groups_;
 
+		QHash<Qt::HANDLE, uchar> Win2Group_;
+
 		KBCtl ();
 	public:
 		static KBCtl& Instance ();
@@ -57,6 +61,9 @@ namespace KBSwitch
 
 		bool Filter (XEvent*);
 	private:
+		void HandleXkbEvent (XEvent*);
+		void SetWindowLayout (Qt::HANDLE);
+
 		void InitDisplay ();
 		void CheckExtWM ();
 		void SetupNonExtListeners ();
@@ -64,6 +71,8 @@ namespace KBSwitch
 		void UpdateGroupNames ();
 
 		void AssignWindow (Qt::HANDLE);
+	signals:
+		void groupChanged (int);
 	};
 }
 }
