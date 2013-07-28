@@ -261,8 +261,9 @@ namespace Krigstask
 
 	void WindowsModel::updateActiveWindow ()
 	{
-		const auto active = Util::XWrapper::Instance ().GetActiveApp ();
-		if (!active || !Util::XWrapper::Instance ().ShouldShow (active))
+		auto& w = Util::XWrapper::Instance ();
+		const auto active = w.GetActiveApp ();
+		if (!active || !w.ShouldShow (active))
 			return;
 
 		for (auto i = 0; i < Windows_.size (); ++i)
