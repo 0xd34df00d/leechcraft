@@ -42,6 +42,8 @@ namespace KBSwitch
 {
 	class KBCtl : public QObject
 	{
+		Q_OBJECT
+
 		Display *Display_ = 0;
 		int XkbEventType_;
 
