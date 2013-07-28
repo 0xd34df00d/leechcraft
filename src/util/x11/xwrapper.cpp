@@ -378,6 +378,9 @@ namespace Util
 
 	void XWrapper::Subscribe (Window wid)
 	{
+		if (IsLCWindow (wid))
+			return;
+
 		XSelectInput (Display_, wid, PropertyChangeMask);
 	}
 
