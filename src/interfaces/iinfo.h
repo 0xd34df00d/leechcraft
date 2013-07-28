@@ -360,24 +360,14 @@ public:
 Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0");
 
 #define CURRENT_API_LEVEL 13
-#ifndef USE_QT5
-	#define LC_EXPORT_PLUGIN(name,file) \
-		extern "C"\
-		{\
-			Q_DECL_EXPORT quint64 GetAPILevels ()\
-			{\
-				return CURRENT_API_LEVEL;\
-			}\
-		}
 
-	#endif
-#else
-	#define LC_EXPORT_PLUGIN(name,file) \
-		extern "C"\
+#define LC_EXPORT_PLUGIN(name,file) Q_EXPORT_PLUGIN2(name, file) \
+	extern "C"\
+	{\
+		Q_DECL_EXPORT quint64 GetAPILevels ()\
 		{\
-			Q_DECL_EXPORT quint64 GetAPILevels ()\
-			{\
-				return CURRENT_API_LEVEL;\
-			}\
-		}
+			return CURRENT_API_LEVEL;\
+		}\
+	}
+
 #endif
