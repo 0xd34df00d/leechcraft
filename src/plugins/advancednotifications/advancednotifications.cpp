@@ -29,6 +29,7 @@
 
 #include "advancednotifications.h"
 #include <QIcon>
+#include <boost/graph/graph_concepts.hpp>
 #include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/resourceloader.h>
@@ -145,3 +146,5 @@ namespace AdvancedNotifications
 }
 
 LC_EXPORT_PLUGIN (leechcraft_advancednotifications, LeechCraft::AdvancedNotifications::Plugin);
+
+

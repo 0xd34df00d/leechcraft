@@ -413,7 +413,11 @@ namespace AdvancedNotifications
 			if (!view->isVisible ())
 			{
 				view->SetEvents (events);
+#ifndef USE_QT5
 				view->move (Util::FitRectScreen (QCursor::pos (), view->size ()));
+#else
+				view->setPosition (Util::FitRectScreen (QCursor::pos (), view->size ()));
+#endif
 			}
 			view->setVisible (!view->isVisible ());
 		}

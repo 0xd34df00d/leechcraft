@@ -29,9 +29,15 @@
 
 #include "visualnotificationsview.h"
 #include <QFile>
-#include <QDeclarativeContext>
-#include <QDeclarativeError>
-#include <QDeclarativeEngine>
+#ifndef USE_QT5
+	#include <QDeclarativeContext>
+	#include <QDeclarativeError>
+	#include <QDeclarativeEngine>
+#else
+	#include <QQmlContext>
+	#include <QQmlError>
+	#include <QQmlEngine>
+#endif
 #include <QtDebug>
 #include <util/util.h>
 #include <util/sys/paths.h>
@@ -46,17 +52,26 @@ namespace LeechCraft
 namespace AdvancedNotifications
 {
 	VisualNotificationsView::VisualNotificationsView (QWidget *parent)
+#ifndef USE_QT5
 	: QDeclarativeView (0)
+#else
+	: QQuickView (0)
+#endif
 	{
+#ifndef USE_QT5
 		setStyleSheet ("background: transparent");
 		setWindowFlags (Qt::WindowStaysOnTopHint | Qt::ToolTip);
 		setAttribute (Qt::WA_TranslucentBackground);
-
 		connect (this,
 				SIGNAL (statusChanged (QDeclarativeView::Status)),
 				this,
 				SLOT (handleStatusChanged (QDeclarativeView::Status)));
-
+#else
+		connect (this,
+				SIGNAL (statusChanged (QQuickView::Status)),
+				this,
+				SLOT (handleStatusChanged (QQuickView::Status)));
+#endif
 		const auto& fileLocation = Util::GetSysPath (Util::SysPath::QML, "advancednotifications", "visualnotificationsview.qml");
 
 		if (fileLocation.isEmpty ())
@@ -106,7 +121,11 @@ namespace AdvancedNotifications
 		qDeleteAll (oldEvents);
 	}
 
+#ifndef USE_QT5
 	void VisualNotificationsView::handleStatusChanged (QDeclarativeView::Status status)
+#else
+	void VisualNotificationsView::handleStatusChanged (QQuickView::Status status)
+#endif
 	{
 		qDebug () << Q_FUNC_INFO
 				<< status;
@@ -116,7 +135,11 @@ namespace AdvancedNotifications
 			qWarning () << Q_FUNC_INFO
 					<< "got errors:"
 					<< errors ().size ();
+#ifndef USE_QT5
 			Q_FOREACH (const QDeclarativeError& error, errors ())
+#else
+			Q_FOREACH (const QQmlError& error, errors ())
+#endif
 				qWarning () << error.toString ()
 						<< "["
 						<< error.description ()
