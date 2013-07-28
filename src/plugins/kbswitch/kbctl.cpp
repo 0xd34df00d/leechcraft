@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "kbctl.h"
+#include <QtDebug>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
@@ -60,6 +61,8 @@ namespace KBSwitch
 
 		if (!ExtWM_)
 			SetupNonExtListeners ();
+
+		UpdateGroupNames ();
 	}
 
 	KBCtl::~KBCtl ()
@@ -111,6 +114,37 @@ namespace KBSwitch
 
 		if (windows)
 			XFree (windows);
+	}
+
+	void KBCtl::UpdateGroupNames ()
+	{
+		auto desc = XkbAllocKeyboard ();
+		XkbGetControls (Display_, XkbAllControlsMask, desc);
+		XkbGetNames (Display_, XkbSymbolsNameMask | XkbGroupNamesMask, desc);
+
+		if (!desc->names || !desc->names->groups)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot get names";
+			return;
+		}
+
+		Groups_.clear ();
+
+		const auto group = desc->names->groups;
+		size_t groupCount = 0;
+		for (; groupCount < XkbNumKbdGroups && group [groupCount]; ++groupCount) ;
+
+		char **result = new char* [groupCount];
+		XGetAtomNames (Display_, group, groupCount, result);
+		for (size_t i = 0; i < groupCount; ++i)
+		{
+			Groups_ << QString (result [i]);
+			XFree (result [i]);
+		}
+		delete [] result;
+
+		qDebug () << Q_FUNC_INFO << Groups_;
 	}
 
 	void KBCtl::AssignWindow (Qt::HANDLE window)

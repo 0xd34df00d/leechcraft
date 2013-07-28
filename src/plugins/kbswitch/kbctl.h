@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QStringList>
 
 typedef struct _XDisplay Display;
 
@@ -46,6 +47,8 @@ namespace KBSwitch
 		Qt::HANDLE NetActiveWinAtom_;
 
 		bool ExtWM_ = false;
+
+		QStringList Groups_;
 	public:
 		KBCtl (QObject* = 0);
 		~KBCtl ();
@@ -53,6 +56,9 @@ namespace KBSwitch
 		void InitDisplay ();
 		void CheckExtWM ();
 		void SetupNonExtListeners ();
+
+		void UpdateGroupNames ();
+
 		void AssignWindow (Qt::HANDLE);
 	};
 }
