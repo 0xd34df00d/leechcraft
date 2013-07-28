@@ -55,11 +55,7 @@ namespace Util
 	protected:
 		QStandardItemModel *Model_;
 	public:
-#ifndef USE_QT5
 		UnhideListViewBase (ICoreProxy_ptr, QWidget* = 0);
-#else
-		UnhideListViewBase (ICoreProxy_ptr, QQuickWindow* = 0);
-#endif
 
 		void SetItems (const QList<QStandardItem*>&);
 	signals:

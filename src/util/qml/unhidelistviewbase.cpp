@@ -49,12 +49,11 @@ namespace LeechCraft
 namespace Util
 {
 	UnhideListViewBase::UnhideListViewBase (ICoreProxy_ptr proxy,
-#ifndef USE_QT5
 			QWidget *parent)
+#ifndef USE_QT5
 	: QDeclarativeView (parent)
 #else
-			QQuickWindow *parent)
-	: QQuickView (parent)
+	: QQuickView (parent->windowHandle ())
 #endif
 	, Model_ (new UnhideListModel (this))
 	{
