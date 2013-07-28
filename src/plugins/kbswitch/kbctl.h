@@ -56,8 +56,18 @@ namespace KBSwitch
 
 		KBCtl ();
 	public:
+		enum class SwitchPolicy
+		{
+			Global,
+			PerWindow
+		};
+	private:
+		SwitchPolicy Policy_;
+	public:
 		static KBCtl& Instance ();
 		void Release ();
+
+		void SetSwitchPolicy (SwitchPolicy);
 
 		bool Filter (XEvent*);
 	private:

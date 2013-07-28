@@ -89,6 +89,11 @@ namespace KBSwitch
 		XCloseDisplay (Display_);
 	}
 
+	void KBCtl::SetSwitchPolicy (SwitchPolicy policy)
+	{
+		Policy_ = policy;
+	}
+
 	bool KBCtl::Filter (XEvent *event)
 	{
 		if (event->type == XkbEventType_)
@@ -141,6 +146,9 @@ namespace KBSwitch
 
 	void KBCtl::SetWindowLayout (Qt::HANDLE window)
 	{
+		if (Policy_ != SwitchPolicy::PerWindow)
+			return;
+
 		if (window == None)
 			return;
 
