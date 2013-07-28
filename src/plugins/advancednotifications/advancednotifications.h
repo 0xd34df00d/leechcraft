@@ -52,7 +52,7 @@ namespace AdvancedNotifications
 	{
 		Q_OBJECT
 #ifdef USE_QT5
-Q_PLUGIN_METADATA (IID "org.LeechCraft.AdvancedNotifications");
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.AdvancedNotifications");
 #endif
 		Q_INTERFACES (IInfo IEntityHandler IHaveSettings IActionsExporter IQuarkComponentProvider)
 
