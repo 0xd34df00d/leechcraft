@@ -29,17 +29,28 @@
 
 #include "kbctl.h"
 #include <QtDebug>
+#include <util/x11/xwrapper.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
 #include <X11/XKBlib.h>
 
+typedef bool (*QX11FilterFunction) (XEvent *event);
+extern void qt_installX11EventFilter (QX11FilterFunction func);
+
 namespace LeechCraft
 {
 namespace KBSwitch
 {
-	KBCtl::KBCtl (QObject *parent)
-	: QObject (parent)
+	namespace
+	{
+		bool EventFilter (XEvent *msg)
+		{
+			return KBCtl::Instance ().Filter (msg);
+		}
+	}
+
+	KBCtl::KBCtl ()
 	{
 		InitDisplay ();
 
@@ -63,11 +74,23 @@ namespace KBSwitch
 			SetupNonExtListeners ();
 
 		UpdateGroupNames ();
+
+		qt_installX11EventFilter (&EventFilter);
 	}
 
-	KBCtl::~KBCtl ()
+	KBCtl& KBCtl::Instance ()
+	{
+		static KBCtl ctl;
+		return ctl;
+	}
+
+	void KBCtl::Release ()
 	{
 		XCloseDisplay (Display_);
+	}
+
+	bool KBCtl::Filter (XEvent *event)
+	{
 	}
 
 	void KBCtl::InitDisplay ()

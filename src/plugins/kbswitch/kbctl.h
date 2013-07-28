@@ -49,9 +49,13 @@ namespace KBSwitch
 		bool ExtWM_ = false;
 
 		QStringList Groups_;
+
+		KBCtl ();
 	public:
-		KBCtl (QObject* = 0);
-		~KBCtl ();
+		static KBCtl& Instance ();
+		void Release ();
+
+		bool Filter (XEvent*);
 	private:
 		void InitDisplay ();
 		void CheckExtWM ();

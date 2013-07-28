@@ -52,7 +52,7 @@ namespace KBSwitch
 		KBLayoutSwitcher_ = new KeyboardLayoutSwitcher (this);
 
 		if (QApplication::arguments ().contains ("--desktop"))
-			Ctl_.reset (new KBCtl (this));
+			KBCtl::Instance ();
 
 		auto rootWM = proxy->GetRootWindowsManager ();
 		for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
@@ -79,7 +79,8 @@ namespace KBSwitch
 
 	void Plugin::Release ()
 	{
-		Ctl_.reset ();
+		if (QApplication::arguments ().contains ("--desktop"))
+			KBCtl::Instance ().Release ();
 	}
 
 	QString Plugin::GetName () const
