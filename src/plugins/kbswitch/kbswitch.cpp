@@ -29,11 +29,13 @@
 
 #include "kbswitch.h"
 #include <QIcon>
+#include <QApplication>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "keyboardlayoutswitcher.h"
 #include "xmlsettingsmanager.h"
+#include "kbctl.h"
 
 namespace LeechCraft
 {
@@ -48,6 +50,9 @@ namespace KBSwitch
 				"kbswitchsettings.xml");
 
 		KBLayoutSwitcher_ = new KeyboardLayoutSwitcher (this);
+
+		if (QApplication::arguments ().contains ("--desktop"))
+			Ctl_.reset (new KBCtl (this));
 
 		auto rootWM = proxy->GetRootWindowsManager ();
 		for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
@@ -74,6 +79,7 @@ namespace KBSwitch
 
 	void Plugin::Release ()
 	{
+		Ctl_.reset ();
 	}
 
 	QString Plugin::GetName () const

@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/core/icoretabwidget.h>
@@ -39,6 +40,7 @@ namespace LeechCraft
 namespace KBSwitch
 {
 	class KeyboardLayoutSwitcher;
+	class KBCtl;
 
 	class Plugin : public QObject
 				, public IInfo
@@ -50,6 +52,7 @@ namespace KBSwitch
 		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		KeyboardLayoutSwitcher *KBLayoutSwitcher_;
+		std::shared_ptr<KBCtl> Ctl_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
