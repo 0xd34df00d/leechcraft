@@ -85,8 +85,8 @@ namespace LeechCraft
 
 		void FlatToFoldersProxyModel::SetTagsManager (ITagsManager *tm)
 		{
-			TM_ = tm;
 			beginResetModel ();
+			TM_ = tm;
 			endResetModel ();
 		}
 
@@ -498,10 +498,10 @@ namespace LeechCraft
 
 			if (SourceModel_)
 			{
+				beginResetModel ();
 				for (int i = 0, size = SourceModel_->rowCount ();
 						i < size; ++i)
 					HandleRowInserted (i);
-				beginResetModel ();
 				endResetModel ();
 			}
 		}
