@@ -44,7 +44,7 @@ namespace KBSwitch
 		{
 			QList<QPair<QString, QString>> result;
 			for (auto i = hash.begin (); i != hash.end (); ++i)
-				result.append ({ i.value (), i.key () });
+				result.append ({ i.key (), i.value () });
 
 			std::sort (result.begin (), result.end (),
 					[] (decltype (result.at (0)) l, decltype (result.at (0)) r)
@@ -105,11 +105,11 @@ namespace KBSwitch
 		if (auto rc = EnabledModel_->rowCount ())
 			EnabledModel_->removeRows (0, rc);
 
-		auto layouts = KBCtl::Instance ().GetLayoutsD2N ();
+		auto layouts = KBCtl::Instance ().GetLayoutsN2D ();
 
 		decltype (layouts) enabled;
-		for (const auto& desc : KBCtl::Instance ().GetEnabledGroups ())
-			enabled [desc] = layouts.take (desc);
+		for (const auto& name : KBCtl::Instance ().GetEnabledGroups ())
+			enabled [name] = layouts.take (name);
 
 		SetList (layouts, AvailableModel_);
 		SetList (enabled, EnabledModel_);

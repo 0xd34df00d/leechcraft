@@ -82,6 +82,7 @@ namespace KBSwitch
 		QString GetLayoutName (int group) const;
 		QString GetLayoutDesc (int group) const;
 		const QHash<QString, QString> GetLayoutsD2N () const;
+		const QHash<QString, QString> GetLayoutsN2D () const;
 
 		bool Filter (XEvent*);
 	private:

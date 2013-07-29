@@ -116,17 +116,22 @@ namespace KBSwitch
 
 	QString KBCtl::GetLayoutName (int group) const
 	{
-		return LayDesc2Name_ [GetLayoutDesc (group)];
+		return Groups_.value (group);
 	}
 
 	QString KBCtl::GetLayoutDesc (int group) const
 	{
-		return Groups_.value (group);
+		return LayName2Desc_ [GetLayoutName (group)];
 	}
 
 	const QHash<QString, QString> KBCtl::GetLayoutsD2N () const
 	{
 		return LayDesc2Name_;
+	}
+
+	const QHash<QString, QString> KBCtl::GetLayoutsN2D () const
+	{
+		return LayName2Desc_;
 	}
 
 	bool KBCtl::Filter (XEvent *event)
@@ -352,7 +357,7 @@ namespace KBSwitch
 		XGetAtomNames (Display_, group, groupCount, result);
 		for (size_t i = 0; i < groupCount; ++i)
 		{
-			Groups_ << QString (result [i]);
+			Groups_ << LayDesc2Name_ [result [i]];
 			XFree (result [i]);
 		}
 		delete [] result;
