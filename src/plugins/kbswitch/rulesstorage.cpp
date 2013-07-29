@@ -128,17 +128,23 @@ namespace KBSwitch
 			LayDesc2Name_ [desc.desc] = desc.name;
 		}
 
+		QStringList pcModelStrings;
 		for (int i = 0; i < xkbRules->models.num_desc; ++i)
 		{
 			const auto& model = xkbRules->models.desc [i];
 			KBModels_ [model.name] = model.desc;
 
 			const auto& kbString = QString ("%1 (%2)").arg (model.desc).arg (model.name);
-			KBModelsStrings_ << kbString;
+			if (QString (model.name).startsWith ("pc10"))
+				pcModelStrings << kbString;
+			else
+				KBModelsStrings_ << kbString;
 
 			KBModelString2Code_ [kbString] = model.name;
 		}
+		pcModelStrings.sort ();
 		KBModelsStrings_.sort ();
+		KBModelsStrings_ = pcModelStrings + KBModelsStrings_;
 	}
 
 	const QHash<QString, QString>& RulesStorage::GetLayoutsD2N () const
