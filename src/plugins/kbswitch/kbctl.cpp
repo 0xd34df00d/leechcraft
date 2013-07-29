@@ -98,6 +98,13 @@ namespace KBSwitch
 		Policy_ = policy;
 	}
 
+	int KBCtl::GetCurrentGroup () const
+	{
+		XkbStateRec state;
+		XkbGetState (Display_, XkbUseCoreKbd, &state);
+		return state.group;
+	}
+
 	QString KBCtl::GetLayoutName (int group) const
 	{
 		return LayDesc2Name_ [GetLayoutDesc (group)];

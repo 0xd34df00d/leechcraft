@@ -74,6 +74,8 @@ namespace KBSwitch
 
 		void SetSwitchPolicy (SwitchPolicy);
 
+		int GetCurrentGroup () const;
+
 		QString GetLayoutName (int group) const;
 		QString GetLayoutDesc (int group) const;
 
