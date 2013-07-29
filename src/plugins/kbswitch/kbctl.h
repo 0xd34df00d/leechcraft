@@ -75,9 +75,11 @@ namespace KBSwitch
 		void SetSwitchPolicy (SwitchPolicy);
 
 		int GetCurrentGroup () const;
+		const QStringList& GetEnabledGroups () const;
 
 		QString GetLayoutName (int group) const;
 		QString GetLayoutDesc (int group) const;
+		const QHash<QString, QString> GetLayoutsD2N () const;
 
 		bool Filter (XEvent*);
 	private:

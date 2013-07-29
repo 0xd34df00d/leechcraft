@@ -105,6 +105,11 @@ namespace KBSwitch
 		return state.group;
 	}
 
+	const QStringList& KBCtl::GetEnabledGroups () const
+	{
+		return Groups_;
+	}
+
 	QString KBCtl::GetLayoutName (int group) const
 	{
 		return LayDesc2Name_ [GetLayoutDesc (group)];
@@ -113,6 +118,11 @@ namespace KBSwitch
 	QString KBCtl::GetLayoutDesc (int group) const
 	{
 		return Groups_.value (group);
+	}
+
+	const QHash<QString, QString> KBCtl::GetLayoutsD2N () const
+	{
+		return LayDesc2Name_;
 	}
 
 	bool KBCtl::Filter (XEvent *event)
