@@ -56,6 +56,9 @@ namespace KBSwitch
 
 		QHash<Qt::HANDLE, uchar> Win2Group_;
 
+		QHash<QString, QString> LayName2Desc_;
+		QHash<QString, QString> LayDesc2Name_;
+
 		KBCtl ();
 	public:
 		enum class SwitchPolicy
@@ -71,6 +74,9 @@ namespace KBSwitch
 
 		void SetSwitchPolicy (SwitchPolicy);
 
+		QString GetLayoutName (int group) const;
+		QString GetLayoutDesc (int group) const;
+
 		bool Filter (XEvent*);
 	private:
 		void HandleXkbEvent (XEvent*);
@@ -79,6 +85,7 @@ namespace KBSwitch
 		void InitDisplay ();
 		void CheckExtWM ();
 		void SetupNonExtListeners ();
+		void SetupRules ();
 
 		void UpdateGroupNames ();
 

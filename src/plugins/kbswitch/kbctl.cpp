@@ -29,11 +29,13 @@
 
 #include "kbctl.h"
 #include <QtDebug>
+#include <QFile>
 #include <util/x11/xwrapper.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
 #include <X11/XKBlib.h>
+#include <X11/extensions/XKBrules.h>
 
 typedef bool (*QX11FilterFunction) (XEvent *event);
 extern void qt_installX11EventFilter (QX11FilterFunction func);
@@ -76,6 +78,8 @@ namespace KBSwitch
 		UpdateGroupNames ();
 
 		qt_installX11EventFilter (&EventFilter);
+
+		SetupRules ();
 	}
 
 	KBCtl& KBCtl::Instance ()
@@ -92,6 +96,16 @@ namespace KBSwitch
 	void KBCtl::SetSwitchPolicy (SwitchPolicy policy)
 	{
 		Policy_ = policy;
+	}
+
+	QString KBCtl::GetLayoutName (int group) const
+	{
+		return LayDesc2Name_ [GetLayoutDesc (group)];
+	}
+
+	QString KBCtl::GetLayoutDesc (int group) const
+	{
+		return Groups_.value (group);
 	}
 
 	bool KBCtl::Filter (XEvent *event)
@@ -207,6 +221,91 @@ namespace KBSwitch
 
 		if (windows)
 			XFree (windows);
+	}
+
+	namespace
+	{
+		QString FindX11Dir ()
+		{
+			static const auto dirs =
+			{
+				"/etc/X11",
+				"/usr/share/X11",
+				"/usr/local/share/X11",
+				"/usr/X11R6/lib/X11",
+				"/usr/X11R6/lib64/X11",
+				"/usr/local/X11R6/lib/X11",
+				"/usr/local/X11R6/lib64/X11",
+				"/usr/lib/X11",
+				"/usr/lib64/X11",
+				"/usr/local/lib/X11",
+				"/usr/local/lib64/X11",
+				"/usr/pkg/share/X11",
+				"/usr/pkg/xorg/lib/X11"
+			};
+
+			for (const auto& item : dirs)
+			{
+				const QString itemStr (item);
+				if (QFile::exists (itemStr + "/xkb/rules"))
+					return itemStr;
+			}
+
+			return {};
+		}
+
+		QString FindRulesFile (Display *display)
+		{
+			const auto& x11dir = FindX11Dir ();
+
+			XkbRF_VarDefsRec vd;
+			char *path = 0;
+			if (XkbRF_GetNamesProp (display, &path, &vd) && path)
+			{
+				const QString pathStr (path);
+				free (path);
+				return x11dir + "/xkb/rules/" + pathStr;
+			}
+
+			for (auto rfName : { "base", "xorg", "xfree86" })
+			{
+				const auto rf = QString ("/xkb/rules/") + rfName;
+				const auto& path = x11dir + rf;
+				if (QFile::exists (path))
+					return path;
+			}
+
+			return {};
+		}
+	}
+
+	void KBCtl::SetupRules ()
+	{
+		const auto& rf = FindRulesFile (Display_);
+		if (rf.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "rules file wasn't found";
+			return;
+		}
+
+		char *locale = { 0 };
+		const auto xkbRules = XkbRF_Load (QFile::encodeName (rf).data (),
+				locale, true, true);
+		if (!xkbRules)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot load rules from"
+					<< rf;
+			return;
+		}
+
+		for (int i = 0; i < xkbRules->layouts.num_desc; ++i)
+		{
+			const auto& desc = xkbRules->layouts.desc [i];
+			LayName2Desc_ [desc.name] = desc.desc;
+			LayName2Desc_ [desc.desc] = desc.name;
+		}
 	}
 
 	void KBCtl::UpdateGroupNames ()
