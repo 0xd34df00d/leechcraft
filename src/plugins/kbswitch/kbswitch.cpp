@@ -37,6 +37,7 @@
 #include "xmlsettingsmanager.h"
 #include "kbctl.h"
 #include "quarkproxy.h"
+#include "flagiconprovider.h"
 
 namespace LeechCraft
 {
@@ -70,6 +71,7 @@ namespace KBSwitch
 		auto qProxy = new QuarkProxy;
 		Indicator_.reset (new QuarkComponent ("kbswitch", "IndicatorQuark.qml"));
 		Indicator_->DynamicProps_.append ({ "KBSwitch_proxy", qProxy });
+		Indicator_->ImageProviders_.append ({ "KBSwitch_flags", new FlagIconProvider });
 	}
 
 	void Plugin::SecondInit ()

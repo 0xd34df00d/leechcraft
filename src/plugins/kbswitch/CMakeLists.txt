@@ -4,6 +4,7 @@ include (InitLCPlugin OPTIONAL)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
+set (QT_USE_QTDECLARATIVE TRUE)
 include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -16,6 +17,7 @@ set (SRCS
 	xmlsettingsmanager.cpp
 	kbctl.cpp
 	quarkproxy.cpp
+	flagiconprovider.cpp
 	)
 
 set (RESOURCES kbswitchresources.qrc)
