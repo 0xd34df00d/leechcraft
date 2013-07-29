@@ -31,6 +31,8 @@
 #include <QtDebug>
 #include <QFile>
 #include <util/x11/xwrapper.h>
+#include "xmlsettingsmanager.h"
+
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
@@ -99,6 +101,10 @@ namespace KBSwitch
 
 	void KBCtl::Apply ()
 	{
+		if (!XmlSettingsManager::Instance ()
+				.property ("ManageSystemWide").toBool ())
+			return;
+
 		if (!Modified_)
 			return;
 
@@ -106,7 +112,9 @@ namespace KBSwitch
 		QStringList args
 		{
 			"-layout",
-			Groups_.join (",")
+			Groups_.join (","),
+			"-option",
+			"-option"
 		};
 		qDebug () << Q_FUNC_INFO << args;
 	}
