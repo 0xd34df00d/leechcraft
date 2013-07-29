@@ -55,6 +55,7 @@ namespace KBSwitch
 	KBCtl::KBCtl ()
 	{
 		InitDisplay ();
+		SetupRules ();
 
 		XWindowAttributes wa;
 		XGetWindowAttributes (Display_, Window_, &wa);
@@ -78,8 +79,6 @@ namespace KBSwitch
 		UpdateGroupNames ();
 
 		qt_installX11EventFilter (&EventFilter);
-
-		SetupRules ();
 	}
 
 	KBCtl& KBCtl::Instance ()
