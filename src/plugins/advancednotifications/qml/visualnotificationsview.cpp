@@ -135,11 +135,7 @@ namespace AdvancedNotifications
 			qWarning () << Q_FUNC_INFO
 					<< "got errors:"
 					<< errors ().size ();
-#ifndef USE_QT5
-			Q_FOREACH (const QDeclarativeError& error, errors ())
-#else
-			Q_FOREACH (const QQmlError& error, errors ())
-#endif
+			Q_FOREACH (const auto& error, errors ())
 				qWarning () << error.toString ()
 						<< "["
 						<< error.description ()
