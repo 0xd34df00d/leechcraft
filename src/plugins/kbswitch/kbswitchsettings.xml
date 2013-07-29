@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
 	<page>
-		<label value="Keyboard layout" />
-		<item type="combobox" property="SwitchingPolicy">
-			<label value="Switching keyboard layout policy:" />
-			<option name="global" default="true">
-				<label value="Use system layout" />
-			</option>
-			<option name="plugin">
-				<label value="Keyboard layout per plugin" />
-			</option>
-			<option name="tab">
-				<label value="Keyboard layout per tab" />
-			</option>
-		</item>
+		<label value="KBSwitch" />
+		<tab>
+			<label value="Keyboard layout" />
+			<item type="combobox" property="SwitchingPolicy">
+				<label value="Switching keyboard layout policy:" />
+				<option name="global" default="true">
+					<label value="Use system layout" />
+				</option>
+				<option name="plugin">
+					<label value="Keyboard layout per plugin" />
+				</option>
+				<option name="tab">
+					<label value="Keyboard layout per tab" />
+				</option>
+			</item>
+		</tab>
+		<tab>
+			<label value="Layouts" />
+			<item type="customwidget" name="LayoutsConfigWidget" label="own" />
+		</tab>
 	</page>
 </settings>

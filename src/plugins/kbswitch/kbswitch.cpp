@@ -38,6 +38,7 @@
 #include "kbctl.h"
 #include "quarkproxy.h"
 #include "flagiconprovider.h"
+#include "layoutsconfigwidget.h"
 
 namespace LeechCraft
 {
@@ -50,6 +51,10 @@ namespace KBSwitch
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"kbswitchsettings.xml");
+
+		KBCtl::Instance ();
+
+		SettingsDialog_->SetCustomWidget ("LayoutsConfigWidget", new LayoutsConfigWidget);
 
 		KBLayoutSwitcher_ = new KeyboardLayoutSwitcher (this);
 
@@ -65,8 +70,6 @@ namespace KBSwitch
 				SIGNAL (currentWindowChanged (int, int)),
 				this,
 				SLOT(handleCurrentWindowChanged (int, int)));
-
-		KBCtl::Instance ();
 
 		auto qProxy = new QuarkProxy;
 		Indicator_.reset (new QuarkComponent ("kbswitch", "IndicatorQuark.qml"));
