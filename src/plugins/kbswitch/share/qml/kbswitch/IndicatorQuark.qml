@@ -9,6 +9,12 @@ Item {
 
     Image {
         anchors.fill: parent
+        anchors.margins: parent.width / 10
+
+        source: "image://KBSwitch_flags/" + KBSwitch_proxy.currentLangCode
+
+        smooth: true
+        fillMode: Image.PreserveAspectFit
     }
 
     Text {
@@ -22,5 +28,8 @@ Item {
         color: colorProxy.color_Panel_TextColor
 
         text: KBSwitch_proxy.currentLangCode
+
+        style: Text.Outline
+        styleColor: colorProxy.color_Panel_TopColor
     }
 }
