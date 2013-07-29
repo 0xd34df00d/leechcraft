@@ -36,6 +36,7 @@
 #include "keyboardlayoutswitcher.h"
 #include "xmlsettingsmanager.h"
 #include "kbctl.h"
+#include "quarkproxy.h"
 
 namespace LeechCraft
 {
@@ -51,9 +52,6 @@ namespace KBSwitch
 
 		KBLayoutSwitcher_ = new KeyboardLayoutSwitcher (this);
 
-		if (QApplication::arguments ().contains ("--desktop"))
-			KBCtl::Instance ();
-
 		auto rootWM = proxy->GetRootWindowsManager ();
 		for (int i = 0; i < rootWM->GetWindowsCount (); ++i)
 			handleWindow (i);
@@ -66,6 +64,12 @@ namespace KBSwitch
 				SIGNAL (currentWindowChanged (int, int)),
 				this,
 				SLOT(handleCurrentWindowChanged (int, int)));
+
+		KBCtl::Instance ();
+
+		auto qProxy = new QuarkProxy;
+		Indicator_.reset (new QuarkComponent ("kbswitch", "IndicatorQuark.qml"));
+		Indicator_->DynamicProps_.append ({ "KBSwitch_proxy", qProxy });
 	}
 
 	void Plugin::SecondInit ()
@@ -102,6 +106,11 @@ namespace KBSwitch
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return SettingsDialog_;
+	}
+
+	QuarkComponents_t Plugin::GetComponents () const
+	{
+		return { Indicator_ };
 	}
 
 	void Plugin::handleCurrentChanged (int index)
