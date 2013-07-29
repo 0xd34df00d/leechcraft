@@ -71,9 +71,8 @@ namespace KBSwitch
 				this,
 				SLOT(handleCurrentWindowChanged (int, int)));
 
-		auto qProxy = new QuarkProxy;
 		Indicator_.reset (new QuarkComponent ("kbswitch", "IndicatorQuark.qml"));
-		Indicator_->DynamicProps_.append ({ "KBSwitch_proxy", qProxy });
+		Indicator_->DynamicProps_.append ({ "KBSwitch_proxy", new QuarkProxy });
 		Indicator_->ImageProviders_.append ({ "KBSwitch_flags", new FlagIconProvider });
 	}
 
