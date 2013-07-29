@@ -304,7 +304,7 @@ namespace KBSwitch
 		{
 			const auto& desc = xkbRules->layouts.desc [i];
 			LayName2Desc_ [desc.name] = desc.desc;
-			LayName2Desc_ [desc.desc] = desc.name;
+			LayDesc2Name_ [desc.desc] = desc.name;
 		}
 	}
 
