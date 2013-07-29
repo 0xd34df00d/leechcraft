@@ -18,15 +18,20 @@ set (SRCS
 	kbctl.cpp
 	quarkproxy.cpp
 	flagiconprovider.cpp
+	layoutsconfigwidget.cpp
 	)
-
+set (FORMS
+	layoutsconfigwidget.ui
+	)
 set (RESOURCES kbswitchresources.qrc)
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+QT4_WRAP_UI (UIS_H ${FORMS})
 
 add_library (leechcraft_kbswitch SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${RCCS}
+	${UIS_H}
 	)
 target_link_libraries (leechcraft_kbswitch
 	${QT_LIBRARIES}
