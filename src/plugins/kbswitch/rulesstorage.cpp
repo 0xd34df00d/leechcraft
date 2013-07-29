@@ -126,6 +126,12 @@ namespace KBSwitch
 			LayName2Desc_ [desc.name] = desc.desc;
 			LayDesc2Name_ [desc.desc] = desc.name;
 		}
+
+		for (int i = 0; i < xkbRules->models.num_desc; ++i)
+		{
+			const auto& model = xkbRules->models.desc [i];
+			KBModels_ [model.name] = model.desc;
+		}
 	}
 
 	const QHash<QString, QString>& RulesStorage::GetLayoutsD2N () const
@@ -136,6 +142,11 @@ namespace KBSwitch
 	const QHash<QString, QString>& RulesStorage::GetLayoutsN2D () const
 	{
 		return LayName2Desc_;
+	}
+
+	const QHash<QString, QString>& RulesStorage::GetKBModels () const
+	{
+		return KBModels_;
 	}
 }
 }

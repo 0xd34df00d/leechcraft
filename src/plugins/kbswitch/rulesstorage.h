@@ -44,11 +44,15 @@ namespace KBSwitch
 
 		QHash<QString, QString> LayName2Desc_;
 		QHash<QString, QString> LayDesc2Name_;
+
+		QHash<QString, QString> KBModels_;
 	public:
 		RulesStorage (Display*, QObject* = 0);
 
 		const QHash<QString, QString>& GetLayoutsD2N () const;
 		const QHash<QString, QString>& GetLayoutsN2D () const;
+
+		const QHash<QString, QString>& GetKBModels () const;
 	};
 }
 }
