@@ -77,6 +77,8 @@ namespace KBSwitch
 		int GetCurrentGroup () const;
 		const QStringList& GetEnabledGroups () const;
 
+		int GetMaxEnabledGroups () const;
+
 		QString GetLayoutName (int group) const;
 		QString GetLayoutDesc (int group) const;
 		const QHash<QString, QString> GetLayoutsD2N () const;

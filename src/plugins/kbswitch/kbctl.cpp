@@ -110,6 +110,11 @@ namespace KBSwitch
 		return Groups_;
 	}
 
+	int KBCtl::GetMaxEnabledGroups () const
+	{
+		return XkbNumKbdGroups;
+	}
+
 	QString KBCtl::GetLayoutName (int group) const
 	{
 		return LayDesc2Name_ [GetLayoutDesc (group)];
