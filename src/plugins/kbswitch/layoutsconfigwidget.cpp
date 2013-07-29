@@ -29,6 +29,8 @@
 
 #include "layoutsconfigwidget.h"
 #include <QStandardItemModel>
+#include <QtDebug>
+#include <util/models/modeliterator.h>
 #include "kbctl.h"
 #include "flagiconprovider.h"
 
@@ -79,18 +81,81 @@ namespace KBSwitch
 		AvailableModel_->setHorizontalHeaderLabels (headers);
 		EnabledModel_->setHorizontalHeaderLabels (headers);
 
+		FillModels ();
+
 		Ui_.setupUi (this);
 		Ui_.AvailableView_->setModel (AvailableModel_);
 		Ui_.EnabledView_->setModel (EnabledModel_);
 
+		connect (Ui_.AvailableView_->selectionModel (),
+				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (updateActionsState ()));
+		connect (Ui_.EnabledView_->selectionModel (),
+				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (updateActionsState ()));
+		updateActionsState ();
+	}
+
+	void LayoutsConfigWidget::FillModels ()
+	{
+		if (auto rc = AvailableModel_->rowCount ())
+			AvailableModel_->removeRows (0, rc);
+		if (auto rc = EnabledModel_->rowCount ())
+			EnabledModel_->removeRows (0, rc);
+
 		auto layouts = KBCtl::Instance ().GetLayoutsD2N ();
 
-		QHash<QString, QString> enabled;
+		decltype (layouts) enabled;
 		for (const auto& desc : KBCtl::Instance ().GetEnabledGroups ())
 			enabled [desc] = layouts.take (desc);
 
 		SetList (layouts, AvailableModel_);
 		SetList (enabled, EnabledModel_);
+	}
+
+	void LayoutsConfigWidget::accept ()
+	{
+	}
+
+	void LayoutsConfigWidget::reject ()
+	{
+		FillModels ();
+	}
+
+	void LayoutsConfigWidget::on_Enable__released ()
+	{
+		const auto& toEnableIdx = Ui_.AvailableView_->currentIndex ();
+		if (!toEnableIdx.isValid ())
+			return;
+
+		EnabledModel_->appendRow (AvailableModel_->takeRow (toEnableIdx.row ()));
+	}
+
+	void LayoutsConfigWidget::on_Disable__released ()
+	{
+		const auto& toDisableIdx = Ui_.EnabledView_->currentIndex ();
+		if (!toDisableIdx.isValid ())
+			return;
+
+		const auto& row = EnabledModel_->takeRow (toDisableIdx.row ());
+		auto pos = std::upper_bound (Util::ModelIterator (AvailableModel_, 0),
+				Util::ModelIterator (AvailableModel_, AvailableModel_->rowCount ()),
+				row.first ()->text (),
+				[] (const QString& code, const QModelIndex& mi)
+					{ return code < mi.data ().toString (); });
+		AvailableModel_->insertRow (pos.GetRow (), row);
+	}
+
+	void LayoutsConfigWidget::updateActionsState ()
+	{
+		const auto& availIdx = Ui_.AvailableView_->currentIndex ();
+		const auto maxEnabled = KBCtl::Instance ().GetMaxEnabledGroups ();
+		Ui_.Enable_->setEnabled (availIdx.isValid () &&
+				EnabledModel_->rowCount () < maxEnabled);
+
+		Ui_.Disable_->setEnabled (Ui_.EnabledView_->currentIndex ().isValid ());
 	}
 }
 }

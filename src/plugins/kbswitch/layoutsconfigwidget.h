@@ -47,6 +47,16 @@ namespace KBSwitch
 		QStandardItemModel *EnabledModel_;
 	public:
 		LayoutsConfigWidget (QWidget* = 0);
+	private:
+		void FillModels ();
+	public slots:
+		void accept ();
+		void reject ();
+	private slots:
+		void on_Enable__released ();
+		void on_Disable__released ();
+
+		void updateActionsState ();
 	};
 }
 }
