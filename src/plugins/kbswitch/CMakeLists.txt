@@ -28,6 +28,7 @@ add_library (leechcraft_kbswitch SHARED
 target_link_libraries (leechcraft_kbswitch
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
+	xkbfile
 	)
 install (TARGETS leechcraft_kbswitch DESTINATION ${LC_PLUGINS_DEST})
 install (FILES kbswitchsettings.xml DESTINATION ${LC_SETTINGS_DEST})
