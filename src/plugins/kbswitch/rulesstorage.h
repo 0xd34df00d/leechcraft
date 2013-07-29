@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QHash>
+#include <QStringList>
 
 typedef struct _XDisplay Display;
 
@@ -46,6 +47,8 @@ namespace KBSwitch
 		QHash<QString, QString> LayDesc2Name_;
 
 		QHash<QString, QString> KBModels_;
+		QHash<QString, QString> KBModelString2Code_;
+		QStringList KBModelsStrings_;
 	public:
 		RulesStorage (Display*, QObject* = 0);
 
@@ -53,6 +56,7 @@ namespace KBSwitch
 		const QHash<QString, QString>& GetLayoutsN2D () const;
 
 		const QHash<QString, QString>& GetKBModels () const;
+		const QStringList& GetKBModelsStrings () const;
 	};
 }
 }

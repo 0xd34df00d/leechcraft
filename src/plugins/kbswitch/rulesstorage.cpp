@@ -30,6 +30,7 @@
 #include "rulesstorage.h"
 #include <QFile>
 #include <QtDebug>
+#include <QStringList>
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -131,7 +132,13 @@ namespace KBSwitch
 		{
 			const auto& model = xkbRules->models.desc [i];
 			KBModels_ [model.name] = model.desc;
+
+			const auto& kbString = QString ("%1 (%2)").arg (model.desc).arg (model.name);
+			KBModelsStrings_ << kbString;
+
+			KBModelString2Code_ [kbString] = model.name;
 		}
+		KBModelsStrings_.sort ();
 	}
 
 	const QHash<QString, QString>& RulesStorage::GetLayoutsD2N () const
@@ -147,6 +154,11 @@ namespace KBSwitch
 	const QHash<QString, QString>& RulesStorage::GetKBModels () const
 	{
 		return KBModels_;
+	}
+
+	const QStringList& RulesStorage::GetKBModelsStrings () const
+	{
+		return KBModelsStrings_;
 	}
 }
 }
