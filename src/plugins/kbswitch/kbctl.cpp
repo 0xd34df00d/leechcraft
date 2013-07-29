@@ -304,6 +304,8 @@ namespace KBSwitch
 		}
 		delete [] result;
 
+		XkbFreeNames (desc, XkbSymbolsNameMask | XkbGroupNamesMask, True);
+
 		qDebug () << Q_FUNC_INFO << Groups_;
 	}
 
