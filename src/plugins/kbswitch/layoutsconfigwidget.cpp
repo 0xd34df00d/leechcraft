@@ -117,6 +117,12 @@ namespace KBSwitch
 
 	void LayoutsConfigWidget::accept ()
 	{
+		QStringList codes;
+		for (int i = 0; i < EnabledModel_->rowCount (); ++i)
+			codes << EnabledModel_->item (i)->text ();
+
+		KBCtl::Instance ().SetEnabledGroups (codes);
+		KBCtl::Instance ().Apply ();
 	}
 
 	void LayoutsConfigWidget::reject ()

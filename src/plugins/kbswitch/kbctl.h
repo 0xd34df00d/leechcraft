@@ -59,6 +59,8 @@ namespace KBSwitch
 		QHash<QString, QString> LayName2Desc_;
 		QHash<QString, QString> LayDesc2Name_;
 
+		bool Modified_ = false;
+
 		KBCtl ();
 	public:
 		enum class SwitchPolicy
@@ -74,8 +76,11 @@ namespace KBSwitch
 
 		void SetSwitchPolicy (SwitchPolicy);
 
+		void Apply ();
+
 		int GetCurrentGroup () const;
 		const QStringList& GetEnabledGroups () const;
+		void SetEnabledGroups (const QStringList&);
 
 		int GetMaxEnabledGroups () const;
 

@@ -97,6 +97,20 @@ namespace KBSwitch
 		Policy_ = policy;
 	}
 
+	void KBCtl::Apply ()
+	{
+		if (!Modified_)
+			return;
+
+		Modified_ = false;
+		QStringList args
+		{
+			"-layout",
+			Groups_.join (",")
+		};
+		qDebug () << Q_FUNC_INFO << args;
+	}
+
 	int KBCtl::GetCurrentGroup () const
 	{
 		XkbStateRec state;
@@ -107,6 +121,15 @@ namespace KBSwitch
 	const QStringList& KBCtl::GetEnabledGroups () const
 	{
 		return Groups_;
+	}
+
+	void KBCtl::SetEnabledGroups (const QStringList& groups)
+	{
+		if (Groups_ == groups)
+			return;
+
+		Modified_ = true;
+		Groups_ = groups;
 	}
 
 	int KBCtl::GetMaxEnabledGroups () const
