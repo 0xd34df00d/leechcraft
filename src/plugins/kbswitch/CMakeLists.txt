@@ -15,6 +15,7 @@ set (SRCS
 	keyboardlayoutswitcher.cpp
 	xmlsettingsmanager.cpp
 	kbctl.cpp
+	quarkproxy.cpp
 	)
 
 set (RESOURCES kbswitchresources.qrc)
