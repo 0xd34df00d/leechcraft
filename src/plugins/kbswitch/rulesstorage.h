@@ -30,80 +30,25 @@
 #pragma once
 
 #include <QObject>
-#include <QStringList>
 #include <QHash>
 
 typedef struct _XDisplay Display;
-typedef union  _XEvent XEvent;
 
 namespace LeechCraft
 {
 namespace KBSwitch
 {
-	class RulesStorage;
-
-	class KBCtl : public QObject
+	class RulesStorage : public QObject
 	{
-		Q_OBJECT
+		Display * const Display_;
 
-		Display *Display_ = 0;
-		int XkbEventType_;
-
-		Qt::HANDLE Window_;
-		Qt::HANDLE NetActiveWinAtom_;
-
-		bool ExtWM_ = false;
-
-		QStringList Groups_;
-
-		QHash<Qt::HANDLE, uchar> Win2Group_;
-
-		RulesStorage *Rules_;
-
-		bool Modified_ = false;
-
-		KBCtl ();
+		QHash<QString, QString> LayName2Desc_;
+		QHash<QString, QString> LayDesc2Name_;
 	public:
-		enum class SwitchPolicy
-		{
-			Global,
-			PerWindow
-		};
-	private:
-		SwitchPolicy Policy_;
-	public:
-		static KBCtl& Instance ();
-		void Release ();
+		RulesStorage (Display*, QObject* = 0);
 
-		void SetSwitchPolicy (SwitchPolicy);
-
-		void Apply ();
-
-		int GetCurrentGroup () const;
-		const QStringList& GetEnabledGroups () const;
-		void SetEnabledGroups (const QStringList&);
-
-		int GetMaxEnabledGroups () const;
-
-		QString GetLayoutName (int group) const;
-		QString GetLayoutDesc (int group) const;
-
-		const RulesStorage* GetRulesStorage () const;
-
-		bool Filter (XEvent*);
-	private:
-		void HandleXkbEvent (XEvent*);
-		void SetWindowLayout (Qt::HANDLE);
-
-		void InitDisplay ();
-		void CheckExtWM ();
-		void SetupNonExtListeners ();
-
-		void UpdateGroupNames ();
-
-		void AssignWindow (Qt::HANDLE);
-	signals:
-		void groupChanged (int);
+		const QHash<QString, QString>& GetLayoutsD2N () const;
+		const QHash<QString, QString>& GetLayoutsN2D () const;
 	};
 }
 }

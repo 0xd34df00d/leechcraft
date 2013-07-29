@@ -33,6 +33,7 @@
 #include <util/models/modeliterator.h>
 #include "kbctl.h"
 #include "flagiconprovider.h"
+#include "rulesstorage.h"
 
 namespace LeechCraft
 {
@@ -105,7 +106,7 @@ namespace KBSwitch
 		if (auto rc = EnabledModel_->rowCount ())
 			EnabledModel_->removeRows (0, rc);
 
-		auto layouts = KBCtl::Instance ().GetLayoutsN2D ();
+		auto layouts = KBCtl::Instance ().GetRulesStorage ()->GetLayoutsN2D ();
 
 		decltype (layouts) enabled;
 		for (const auto& name : KBCtl::Instance ().GetEnabledGroups ())

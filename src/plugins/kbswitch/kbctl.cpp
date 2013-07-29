@@ -29,15 +29,14 @@
 
 #include "kbctl.h"
 #include <QtDebug>
-#include <QFile>
 #include <util/x11/xwrapper.h>
 #include "xmlsettingsmanager.h"
+#include "rulesstorage.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
 #include <X11/XKBlib.h>
-#include <X11/extensions/XKBrules.h>
 
 typedef bool (*QX11FilterFunction) (XEvent *event);
 extern void qt_installX11EventFilter (QX11FilterFunction func);
@@ -57,7 +56,8 @@ namespace KBSwitch
 	KBCtl::KBCtl ()
 	{
 		InitDisplay ();
-		SetupRules ();
+
+		Rules_ = new RulesStorage (Display_);
 
 		XWindowAttributes wa;
 		XGetWindowAttributes (Display_, Window_, &wa);
@@ -152,17 +152,12 @@ namespace KBSwitch
 
 	QString KBCtl::GetLayoutDesc (int group) const
 	{
-		return LayName2Desc_ [GetLayoutName (group)];
+		return Rules_->GetLayoutsN2D () [GetLayoutName (group)];
 	}
 
-	const QHash<QString, QString> KBCtl::GetLayoutsD2N () const
+	const RulesStorage* KBCtl::GetRulesStorage () const
 	{
-		return LayDesc2Name_;
-	}
-
-	const QHash<QString, QString> KBCtl::GetLayoutsN2D () const
-	{
-		return LayName2Desc_;
+		return Rules_;
 	}
 
 	bool KBCtl::Filter (XEvent *event)
@@ -280,91 +275,6 @@ namespace KBSwitch
 			XFree (windows);
 	}
 
-	namespace
-	{
-		QString FindX11Dir ()
-		{
-			static const auto dirs =
-			{
-				"/etc/X11",
-				"/usr/share/X11",
-				"/usr/local/share/X11",
-				"/usr/X11R6/lib/X11",
-				"/usr/X11R6/lib64/X11",
-				"/usr/local/X11R6/lib/X11",
-				"/usr/local/X11R6/lib64/X11",
-				"/usr/lib/X11",
-				"/usr/lib64/X11",
-				"/usr/local/lib/X11",
-				"/usr/local/lib64/X11",
-				"/usr/pkg/share/X11",
-				"/usr/pkg/xorg/lib/X11"
-			};
-
-			for (const auto& item : dirs)
-			{
-				const QString itemStr (item);
-				if (QFile::exists (itemStr + "/xkb/rules"))
-					return itemStr;
-			}
-
-			return {};
-		}
-
-		QString FindRulesFile (Display *display)
-		{
-			const auto& x11dir = FindX11Dir ();
-
-			XkbRF_VarDefsRec vd;
-			char *path = 0;
-			if (XkbRF_GetNamesProp (display, &path, &vd) && path)
-			{
-				const QString pathStr (path);
-				free (path);
-				return x11dir + "/xkb/rules/" + pathStr;
-			}
-
-			for (auto rfName : { "base", "xorg", "xfree86" })
-			{
-				const auto rf = QString ("/xkb/rules/") + rfName;
-				const auto& path = x11dir + rf;
-				if (QFile::exists (path))
-					return path;
-			}
-
-			return {};
-		}
-	}
-
-	void KBCtl::SetupRules ()
-	{
-		const auto& rf = FindRulesFile (Display_);
-		if (rf.isEmpty ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "rules file wasn't found";
-			return;
-		}
-
-		char *locale = { 0 };
-		const auto xkbRules = XkbRF_Load (QFile::encodeName (rf).data (),
-				locale, true, true);
-		if (!xkbRules)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot load rules from"
-					<< rf;
-			return;
-		}
-
-		for (int i = 0; i < xkbRules->layouts.num_desc; ++i)
-		{
-			const auto& desc = xkbRules->layouts.desc [i];
-			LayName2Desc_ [desc.name] = desc.desc;
-			LayDesc2Name_ [desc.desc] = desc.name;
-		}
-	}
-
 	void KBCtl::UpdateGroupNames ()
 	{
 		auto desc = XkbAllocKeyboard ();
@@ -386,9 +296,10 @@ namespace KBSwitch
 
 		char **result = new char* [groupCount];
 		XGetAtomNames (Display_, group, groupCount, result);
+		const auto& layoutsD2N = Rules_->GetLayoutsD2N ();
 		for (size_t i = 0; i < groupCount; ++i)
 		{
-			Groups_ << LayDesc2Name_ [result [i]];
+			Groups_ << layoutsD2N [result [i]];
 			XFree (result [i]);
 		}
 		delete [] result;

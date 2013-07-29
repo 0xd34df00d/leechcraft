@@ -18,6 +18,7 @@ set (SRCS
 	kbctl.cpp
 	quarkproxy.cpp
 	flagiconprovider.cpp
+	rulesstorage.cpp
 	layoutsconfigwidget.cpp
 	)
 set (FORMS
