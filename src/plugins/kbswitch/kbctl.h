@@ -55,6 +55,7 @@ namespace KBSwitch
 		bool ExtWM_ = false;
 
 		QStringList Groups_;
+		QStringList Options_;
 
 		QHash<Qt::HANDLE, uchar> Win2Group_;
 
@@ -85,6 +86,8 @@ namespace KBSwitch
 
 		QString GetLayoutName (int group) const;
 		QString GetLayoutDesc (int group) const;
+
+		void SetOptions (const QStringList&);
 
 		const RulesStorage* GetRulesStorage () const;
 

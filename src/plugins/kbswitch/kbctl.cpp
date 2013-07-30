@@ -142,6 +142,16 @@ namespace KBSwitch
 		return Rules_->GetLayoutsN2D () [GetLayoutName (group)];
 	}
 
+	void KBCtl::SetOptions (const QStringList& opts)
+	{
+		if (Options_ == opts)
+			return;
+
+		Options_ = opts;
+		Options_.sort ();
+		scheduleApply ();
+	}
+
 	const RulesStorage* KBCtl::GetRulesStorage () const
 	{
 		return Rules_;
@@ -341,9 +351,11 @@ namespace KBSwitch
 			Groups_.join (","),
 			"-model",
 			kbCode,
-			"-option",
 			"-option"
 		};
+		if (!Options_.isEmpty ())
+			args << "-option"
+					<< Options_.join (",");
 		qDebug () << Q_FUNC_INFO << args;
 	}
 }
