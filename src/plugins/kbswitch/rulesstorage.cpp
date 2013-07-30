@@ -166,5 +166,10 @@ namespace KBSwitch
 	{
 		return KBModelsStrings_;
 	}
+
+	QString RulesStorage::GetKBModelCode (const QString& string) const
+	{
+		return KBModelString2Code_ [string];
+	}
 }
 }

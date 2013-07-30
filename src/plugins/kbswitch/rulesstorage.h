@@ -57,6 +57,7 @@ namespace KBSwitch
 
 		const QHash<QString, QString>& GetKBModels () const;
 		const QStringList& GetKBModelsStrings () const;
+		QString GetKBModelCode (const QString&) const;
 	};
 }
 }
