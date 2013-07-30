@@ -145,6 +145,36 @@ namespace KBSwitch
 		pcModelStrings.sort ();
 		KBModelsStrings_.sort ();
 		KBModelsStrings_ = pcModelStrings + KBModelsStrings_;
+
+		for (int i = 0; i < xkbRules->options.num_desc; ++i)
+		{
+			const auto& desc = xkbRules->options.desc [i];
+
+			QString name (desc.name);
+			name = name.toLower ();
+
+			const auto colonIdx = name.indexOf (':');
+			if (colonIdx <= 0)
+			{
+				if (name == "compat")
+					name = "numpad";
+
+				if (name != "currencysign")
+					Options_ [name] [{}] = desc.desc;
+
+				continue;
+			}
+
+			const auto& group = name.left (colonIdx);
+			const auto& option = name.mid (colonIdx + 1);
+
+			QString descStr (desc.desc);
+			descStr.replace ("&lt;", "<");
+			descStr.replace ("&gt;", ">");
+			Options_ [group] [option] = descStr;
+		}
+
+		XkbRF_Free (xkbRules, True);
 	}
 
 	const QHash<QString, QString>& RulesStorage::GetLayoutsD2N () const
@@ -170,6 +200,11 @@ namespace KBSwitch
 	QString RulesStorage::GetKBModelCode (const QString& string) const
 	{
 		return KBModelString2Code_ [string];
+	}
+
+	const QMap<QString, QMap<QString, QString>>& RulesStorage::GetOptions () const
+	{
+		return Options_;
 	}
 }
 }

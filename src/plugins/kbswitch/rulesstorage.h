@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QHash>
+#include <QMap>
 #include <QStringList>
 
 typedef struct _XDisplay Display;
@@ -49,6 +50,8 @@ namespace KBSwitch
 		QHash<QString, QString> KBModels_;
 		QHash<QString, QString> KBModelString2Code_;
 		QStringList KBModelsStrings_;
+
+		QMap<QString, QMap<QString, QString>> Options_;
 	public:
 		RulesStorage (Display*, QObject* = 0);
 
@@ -58,6 +61,8 @@ namespace KBSwitch
 		const QHash<QString, QString>& GetKBModels () const;
 		const QStringList& GetKBModelsStrings () const;
 		QString GetKBModelCode (const QString&) const;
+
+		const QMap<QString, QMap<QString, QString>>& GetOptions () const;
 	};
 }
 }
