@@ -18,6 +18,9 @@
 			</item>
 			<item type="groupbox" checkable="true" property="ManageSystemWide" default="false">
 				<label value="Manage keyboard layouts system-wide" />
+				<item type="combobox" property="KeyboardModel" mayHaveDataSource="true">
+					<label value="Keyboard model:" />
+				</item>
 			</item>
 		</tab>
 		<tab>

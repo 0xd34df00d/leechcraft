@@ -30,6 +30,7 @@
 #include "kbswitch.h"
 #include <QIcon>
 #include <QApplication>
+#include <QStringListModel>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
@@ -39,6 +40,7 @@
 #include "quarkproxy.h"
 #include "flagiconprovider.h"
 #include "layoutsconfigwidget.h"
+#include "rulesstorage.h"
 
 namespace LeechCraft
 {
@@ -55,6 +57,10 @@ namespace KBSwitch
 		KBCtl::Instance ();
 
 		SettingsDialog_->SetCustomWidget ("LayoutsConfigWidget", new LayoutsConfigWidget);
+
+		auto rulesStorage = KBCtl::Instance ().GetRulesStorage ();
+		SettingsDialog_->SetDataSource ("KeyboardModel",
+				new QStringListModel (rulesStorage->GetKBModelsStrings ()));
 
 		KBLayoutSwitcher_ = new KeyboardLayoutSwitcher (this);
 
