@@ -89,7 +89,7 @@ namespace Dik
 				qWarning () << Q_FUNC_INFO
 						<< "error decompressing file"
 						<< e.what ();
-				break;
+				throw;
 			}
 
 			if (decompressed.size () > MaxRecordSize_)
