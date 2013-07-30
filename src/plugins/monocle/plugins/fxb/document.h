@@ -32,7 +32,6 @@
 #include <QObject>
 #include <QUrl>
 #include <interfaces/monocle/ihavetoc.h>
-#include <interfaces/monocle/isearchabledocument.h>
 #include "documentadapter.h"
 
 namespace LeechCraft
@@ -44,7 +43,6 @@ namespace FXB
 	class Document : public QObject
 				   , public DocumentAdapter
 				   , public IHaveTOC
-				   , public ISearchableDocument
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Monocle::IDocument
@@ -66,8 +64,6 @@ namespace FXB
 		QUrl GetDocURL () const;
 
 		TOCEntryLevel_t GetTOC ();
-
-		QMap<int, QList<QRectF>> GetTextPositions (const QString& text, Qt::CaseSensitivity cs);
 
 		void RequestNavigation (int);
 	signals:

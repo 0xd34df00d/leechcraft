@@ -30,6 +30,9 @@
 #include "documentadapter.h"
 #include <cmath>
 #include <QTextDocument>
+#include <QTextBlock>
+#include <QAbstractTextDocumentLayout>
+#include <QTextEdit>
 #include <QPainter>
 #include <QtDebug>
 
@@ -101,6 +104,49 @@ namespace FXB
 	void DocumentAdapter::SetDocument (QTextDocument *doc)
 	{
 		Doc_.reset (doc);
+	}
+
+	QMap<int, QList<QRectF>> DocumentAdapter::GetTextPositions (const QString& text, Qt::CaseSensitivity cs)
+	{
+		const auto& pageSize = Doc_->pageSize ();
+		const auto pageHeight = pageSize.height ();
+
+		QTextEdit hackyEdit;
+		hackyEdit.setHorizontalScrollBarPolicy (Qt::ScrollBarAlwaysOff);
+		hackyEdit.setVerticalScrollBarPolicy (Qt::ScrollBarAlwaysOff);
+		hackyEdit.setFixedSize (Doc_->pageSize ().toSize ());
+		hackyEdit.setDocument (Doc_.get ());
+		Doc_->setPageSize (pageSize);
+
+		const auto tdFlags = cs == Qt::CaseSensitive ?
+				QTextDocument::FindCaseSensitively :
+				QTextDocument::FindFlags ();
+
+		QMap<int, QList<QRectF>> result;
+		auto cursor = Doc_->find (text, 0, tdFlags);
+		while (!cursor.isNull ())
+		{
+			auto endRect = hackyEdit.cursorRect (cursor);
+			auto startCursor = cursor;
+			startCursor.setPosition (cursor.selectionStart ());
+			auto rect = hackyEdit.cursorRect (startCursor);
+
+			const int pageNum = rect.y () / pageHeight;
+			rect.moveTop (rect.y () - pageHeight * pageNum);
+			endRect.moveTop (endRect.y () - pageHeight * pageNum);
+
+			if (rect.y () != endRect.y ())
+			{
+				rect.setWidth (pageSize.width () - rect.x ());
+				endRect.setX (0);
+			}
+			auto bounding = rect | endRect;
+
+			result [pageNum] << bounding;
+
+			cursor = Doc_->find (text, cursor, tdFlags);
+		}
+		return result;
 	}
 }
 }

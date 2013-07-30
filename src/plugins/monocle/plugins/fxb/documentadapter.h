@@ -32,6 +32,7 @@
 #include <memory>
 #include <interfaces/monocle/idocument.h>
 #include <interfaces/monocle/isupportpainting.h>
+#include <interfaces/monocle/isearchabledocument.h>
 
 class QTextDocument;
 
@@ -43,6 +44,7 @@ namespace FXB
 {
 	class DocumentAdapter : public IDocument
 						  , public ISupportPainting
+						  , public ISearchableDocument
 	{
 	protected:
 		std::shared_ptr<QTextDocument> Doc_;
@@ -56,6 +58,8 @@ namespace FXB
 		QList<ILink_ptr> GetPageLinks (int);
 
 		void PaintPage (QPainter*, int);
+
+		QMap<int, QList<QRectF>> GetTextPositions (const QString& text, Qt::CaseSensitivity cs);
 	protected:
 		void SetDocument (QTextDocument*);
 	};
