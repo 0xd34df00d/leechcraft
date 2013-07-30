@@ -58,7 +58,7 @@ namespace Dik
 
 		virtual QByteArray operator() (const QByteArray&) = 0;
 
-		static Decompressor_ptr Create (Type, MobiParser*);
+		static Decompressor_ptr Create (Type, const MobiParser*);
 	};
 }
 }
