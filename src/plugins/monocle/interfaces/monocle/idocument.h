@@ -54,6 +54,9 @@ namespace Monocle
 		/** @brief The subject line of this document.
 		 */
 		QString Subject_;
+		/** @brief Description of the document.
+		 */
+		QString Description_;
 		/** @brief The author of the document.
 		 */
 		QString Author_;
