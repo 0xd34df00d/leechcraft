@@ -32,6 +32,8 @@
 #include <QDomDocument>
 #include <QtDebug>
 #include <QTextDocument>
+#include <QTextFrameFormat>
+#include <QTextFrame>
 #include "mobiparser.h"
 
 namespace LeechCraft
@@ -59,10 +61,17 @@ namespace Dik
 		}
 
 		auto doc = new QTextDocument;
+		doc->setPageSize (QSize (600, 800));
+		doc->setUndoRedoEnabled (false);
+
 		if (contents.contains ("<html", Qt::CaseInsensitive))
 			doc->setHtml (contents);
 		else
 			doc->setPlainText (contents);
+
+		QTextFrameFormat format;
+		format.setMargin (30);
+		doc->rootFrame ()->setFrameFormat (format);
 
 		SetDocument (doc);
 		Info_ = parser.GetDocInfo ();
