@@ -33,6 +33,7 @@
 #include <interfaces/monocle/idocument.h>
 #include <interfaces/monocle/isupportpainting.h>
 #include <interfaces/monocle/isearchabledocument.h>
+#include <util/monocle/monocleutilconfig.h>
 
 class QTextDocument;
 
@@ -40,16 +41,14 @@ namespace LeechCraft
 {
 namespace Monocle
 {
-namespace FXB
-{
-	class DocumentAdapter : public IDocument
-						  , public ISupportPainting
-						  , public ISearchableDocument
+	class MONOCLE_UTIL_API TextDocumentAdapter : public IDocument
+											   , public ISupportPainting
+											   , public ISearchableDocument
 	{
 	protected:
 		std::shared_ptr<QTextDocument> Doc_;
 	public:
-		DocumentAdapter (QTextDocument* = 0);
+		TextDocumentAdapter (QTextDocument* = 0);
 
 		bool IsValid () const;
 		int GetNumPages () const;
@@ -63,6 +62,5 @@ namespace FXB
 	protected:
 		void SetDocument (QTextDocument*);
 	};
-}
 }
 }

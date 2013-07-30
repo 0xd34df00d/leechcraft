@@ -29,47 +29,10 @@
 
 #pragma once
 
-#include <QObject>
-#include <QUrl>
-#include <interfaces/monocle/ihavetoc.h>
-#include <util/monocle/textdocumentadapter.h>
+#include <QtGlobal>
 
-namespace LeechCraft
-{
-namespace Monocle
-{
-namespace FXB
-{
-	class Document : public QObject
-				   , public TextDocumentAdapter
-				   , public IHaveTOC
-	{
-		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Monocle::IDocument
-				LeechCraft::Monocle::IHaveTOC
-				LeechCraft::Monocle::ISearchableDocument
-				LeechCraft::Monocle::ISupportPainting)
-
-		DocumentInfo Info_;
-		TOCEntryLevel_t TOC_;
-		QUrl DocURL_;
-
-		QObject *Plugin_;
-	public:
-		Document (const QString&, QObject*);
-
-		QObject* GetBackendPlugin () const;
-		QObject* GetQObject ();
-		DocumentInfo GetDocumentInfo () const;
-		QUrl GetDocURL () const;
-
-		TOCEntryLevel_t GetTOC ();
-
-		void RequestNavigation (int);
-	signals:
-		void navigateRequested (const QString&, int pageNum, double x, double y);
-		void printRequested (const QList<int>&);
-	};
-}
-}
-}
+# if defined(leechcraft_monocle_EXPORTS)
+#  define MONOCLE_UTIL_API Q_DECL_EXPORT
+# else
+#  define MONOCLE_UTIL_API Q_DECL_IMPORT
+#endif

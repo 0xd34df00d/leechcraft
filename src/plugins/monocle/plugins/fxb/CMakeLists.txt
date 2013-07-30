@@ -14,7 +14,6 @@ include_directories (
 set (SRCS
 	fxb.cpp
 	document.cpp
-	documentadapter.cpp
 	fb2converter.cpp
 	toclink.cpp
 	)

@@ -27,7 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "documentadapter.h"
+#include "textdocumentadapter.h"
 #include <cmath>
 #include <QTextDocument>
 #include <QTextBlock>
@@ -40,31 +40,29 @@ namespace LeechCraft
 {
 namespace Monocle
 {
-namespace FXB
-{
-	DocumentAdapter::DocumentAdapter (QTextDocument *doc)
+	TextDocumentAdapter::TextDocumentAdapter (QTextDocument *doc)
 	{
 		SetDocument (doc);
 	}
 
-	bool DocumentAdapter::IsValid () const
+	bool TextDocumentAdapter::IsValid () const
 	{
 		return static_cast<bool> (Doc_);
 	}
 
-	int DocumentAdapter::GetNumPages () const
+	int TextDocumentAdapter::GetNumPages () const
 	{
 		return Doc_->pageCount ();
 	}
 
-	QSize DocumentAdapter::GetPageSize (int) const
+	QSize TextDocumentAdapter::GetPageSize (int) const
 	{
 		auto size = Doc_->pageSize ();
 		size.setWidth (std::ceil (size.width ()));
 		return size.toSize ();
 	}
 
-	QImage DocumentAdapter::RenderPage (int page, double xScale, double yScale)
+	QImage TextDocumentAdapter::RenderPage (int page, double xScale, double yScale)
 	{
 		const auto& size = Doc_->pageSize ();
 
@@ -87,12 +85,12 @@ namespace FXB
 		return image;
 	}
 
-	QList<ILink_ptr> DocumentAdapter::GetPageLinks (int)
+	QList<ILink_ptr> TextDocumentAdapter::GetPageLinks (int)
 	{
 		return QList<ILink_ptr> ();
 	}
 
-	void DocumentAdapter::PaintPage (QPainter *painter, int page)
+	void TextDocumentAdapter::PaintPage (QPainter *painter, int page)
 	{
 		const auto& size = Doc_->pageSize ();
 
@@ -101,12 +99,12 @@ namespace FXB
 		Doc_->drawContents (painter, rect);
 	}
 
-	void DocumentAdapter::SetDocument (QTextDocument *doc)
+	void TextDocumentAdapter::SetDocument (QTextDocument *doc)
 	{
 		Doc_.reset (doc);
 	}
 
-	QMap<int, QList<QRectF>> DocumentAdapter::GetTextPositions (const QString& text, Qt::CaseSensitivity cs)
+	QMap<int, QList<QRectF>> TextDocumentAdapter::GetTextPositions (const QString& text, Qt::CaseSensitivity cs)
 	{
 		const auto& pageSize = Doc_->pageSize ();
 		const auto pageHeight = pageSize.height ();
@@ -148,6 +146,5 @@ namespace FXB
 		}
 		return result;
 	}
-}
 }
 }

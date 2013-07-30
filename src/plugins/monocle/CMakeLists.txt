@@ -53,6 +53,7 @@ set (SRCS
 	textsearchhandler.cpp
 	formmanager.cpp
 	arbitraryrotationwidget.cpp
+	util/monocle/textdocumentadapter.cpp
 	)
 set (FORMS
 	documenttab.ui
