@@ -74,6 +74,32 @@ namespace Dik
 				File_->read (RecordOffsets_.at (idx + 1) - offset);
 	}
 
+	QString MobiParser::GetText () const
+	{
+		QByteArray result;
+		for (quint32 i = 1; i <= TextRecordsCount_; ++i)
+		{
+			QByteArray decompressed;
+			try
+			{
+				decompressed = (*Dec_) (GetRecord (i));
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "error decompressing file"
+						<< e.what ();
+				break;
+			}
+
+			if (decompressed.size () > MaxRecordSize_)
+				decompressed.resize (MaxRecordSize_);
+
+			result += decompressed;
+		}
+		return Codec_->toUnicode (result);
+	}
+
 	bool MobiParser::InitRecords ()
 	{
 		if (!File_->seek (0x3c))
