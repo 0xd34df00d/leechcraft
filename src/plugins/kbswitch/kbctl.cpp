@@ -30,6 +30,7 @@
 #include "kbctl.h"
 #include <QtDebug>
 #include <QTimer>
+#include <QProcess>
 #include <util/x11/xwrapper.h>
 #include "xmlsettingsmanager.h"
 #include "rulesstorage.h"
@@ -356,7 +357,9 @@ namespace KBSwitch
 		if (!Options_.isEmpty ())
 			args << "-option"
 					<< Options_.join (",");
+
 		qDebug () << Q_FUNC_INFO << args;
+		QProcess::startDetached ("setxkbmap", args);
 	}
 }
 }
