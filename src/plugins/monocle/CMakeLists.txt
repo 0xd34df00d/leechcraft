@@ -83,11 +83,16 @@ install (TARGETS leechcraft_monocle DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES monoclesettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
+option (ENABLE_MONOCLE_DIK "Enable MOBI backend for Monocle" ON)
 option (ENABLE_MONOCLE_FXB "Enable FictionBook backend for Monocle" ON)
 option (ENABLE_MONOCLE_MU "Enable PDF backend for Monocle using the mupdf library" OFF)
 option (ENABLE_MONOCLE_PDF "Enable PDF backend for Monocle using the Poppler library" ON)
 option (ENABLE_MONOCLE_POSTRUS "Enable PostScript backend for Monocle using the libspectre library" ON)
 option (ENABLE_MONOCLE_SEEN "Enable DjVu backend for Monocle using the DjVu library" ON)
+
+if (ENABLE_MONOCLE_DIK)
+	add_subdirectory (plugins/dik)
+endif ()
 
 if (ENABLE_MONOCLE_FXB)
 	add_subdirectory (plugins/fxb)
