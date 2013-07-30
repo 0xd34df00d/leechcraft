@@ -29,6 +29,8 @@
 
 #pragma once
 
+#include <qglobal.h>
+
 namespace LeechCraft
 {
 namespace Monocle

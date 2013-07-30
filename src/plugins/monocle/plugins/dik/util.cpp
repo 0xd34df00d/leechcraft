@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "util.h"
+#include <QByteArray>
 
 namespace LeechCraft
 {
