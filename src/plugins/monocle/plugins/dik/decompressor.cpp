@@ -33,6 +33,7 @@
 #include <QByteArray>
 #include <QtDebug>
 #include "mobiparser.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -201,20 +202,6 @@ namespace Dik
 	private:
 		void Unpack (ToBits, int);
 	};
-
-	namespace
-	{
-		quint32 Read32 (const QByteArray& data, int offset)
-		{
-			quint32 result = 0;
-			for (int i = 0; i < 4; ++i)
-			{
-				result <<= 8;
-				result += static_cast<uchar> (data [offset + i]);
-			}
-			return result;
-		}
-	}
 
 	HuffDecompressor::HuffDecompressor (const MobiParser *parser)
 	: P_ (parser)

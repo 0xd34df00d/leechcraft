@@ -12,6 +12,7 @@ set (SRCS
 	dik.cpp
 	mobiparser.cpp
 	decompressor.cpp
+	util.cpp
 	)
 
 add_library (leechcraft_monocle_dik SHARED
