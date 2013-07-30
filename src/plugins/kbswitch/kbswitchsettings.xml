@@ -27,5 +27,9 @@
 			<label value="Layouts" />
 			<item type="customwidget" name="LayoutsConfigWidget" label="own" />
 		</tab>
+		<tab>
+			<label value="Options" />
+			<item type="customwidget" name="OptionsConfigWidget" label="own" />
+		</tab>
 	</page>
 </settings>

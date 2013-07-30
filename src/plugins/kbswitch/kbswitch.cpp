@@ -41,6 +41,7 @@
 #include "flagiconprovider.h"
 #include "layoutsconfigwidget.h"
 #include "rulesstorage.h"
+#include "optionsconfigwidget.h"
 
 namespace LeechCraft
 {
@@ -57,6 +58,7 @@ namespace KBSwitch
 		KBCtl::Instance ();
 
 		SettingsDialog_->SetCustomWidget ("LayoutsConfigWidget", new LayoutsConfigWidget);
+		SettingsDialog_->SetCustomWidget ("OptionsConfigWidget", new OptionsConfigWidget);
 
 		auto rulesStorage = KBCtl::Instance ().GetRulesStorage ();
 		SettingsDialog_->SetDataSource ("KeyboardModel",
@@ -80,6 +82,8 @@ namespace KBSwitch
 		Indicator_.reset (new QuarkComponent ("kbswitch", "IndicatorQuark.qml"));
 		Indicator_->DynamicProps_.append ({ "KBSwitch_proxy", new QuarkProxy });
 		Indicator_->ImageProviders_.append ({ "KBSwitch_flags", new FlagIconProvider });
+
+		KBCtl::Instance ().scheduleApply ();
 	}
 
 	void Plugin::SecondInit ()

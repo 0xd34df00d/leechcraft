@@ -20,6 +20,7 @@ set (SRCS
 	flagiconprovider.cpp
 	rulesstorage.cpp
 	layoutsconfigwidget.cpp
+	optionsconfigwidget.cpp
 	)
 set (FORMS
 	layoutsconfigwidget.ui
