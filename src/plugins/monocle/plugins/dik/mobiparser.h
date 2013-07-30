@@ -70,7 +70,9 @@ namespace Dik
 		bool IsValid () const;
 
 		QByteArray GetRecord (int) const;
+
 		QString GetText () const;
+		const DocumentInfo& GetDocInfo () const;
 	private:
 		bool InitRecords ();
 		bool InitHeader ();

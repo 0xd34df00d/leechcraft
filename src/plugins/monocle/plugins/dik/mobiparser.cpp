@@ -100,6 +100,11 @@ namespace Dik
 		return Codec_->toUnicode (result);
 	}
 
+	const DocumentInfo& MobiParser::GetDocInfo () const
+	{
+		return DocInfo_;
+	}
+
 	bool MobiParser::InitRecords ()
 	{
 		if (!File_->seek (0x3c))
