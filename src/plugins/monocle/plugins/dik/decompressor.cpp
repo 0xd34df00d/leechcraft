@@ -85,7 +85,7 @@ namespace Dik
 		for (int i = 0; i < data.size (); )
 		{
 			bool end = false;
-			const auto token = data.at (i++);
+			const uchar token = data.at (i++);
 			switch (TokenCode [token])
 			{
 			case 0:
