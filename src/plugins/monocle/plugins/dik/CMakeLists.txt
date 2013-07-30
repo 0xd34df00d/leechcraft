@@ -10,6 +10,8 @@ include_directories (
 	)
 set (SRCS
 	dik.cpp
+	mobiparser.cpp
+	decompressor.cpp
 	)
 
 add_library (leechcraft_monocle_dik SHARED
