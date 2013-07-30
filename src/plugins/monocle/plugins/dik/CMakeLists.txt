@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.8)
-project (leechcraft_monocle_fxb)
+project (leechcraft_monocle_dik)
 include (InitLCPlugin OPTIONAL)
 
 include (${QT_USE_FILE})
