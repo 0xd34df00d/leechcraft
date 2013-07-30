@@ -31,6 +31,7 @@
 #include <QStandardItemModel>
 #include <QTreeView>
 #include <QVBoxLayout>
+#include <QtDebug>
 #include "kbctl.h"
 #include "rulesstorage.h"
 #include "xmlsettingsmanager.h"
@@ -81,6 +82,13 @@ namespace KBSwitch
 			Model_->appendRow ({ groupRootItem, groupRootDesc });
 		}
 
+		KBCtl::Instance ().SetOptions (opts);
+
+		connect (Model_,
+				SIGNAL (itemChanged (QStandardItem*)),
+				this,
+				SLOT (markModified ()));
+
 		auto treeView = new QTreeView ();
 		auto layout = new QVBoxLayout ();
 		layout->setContentsMargins (0, 0, 0, 0);
@@ -92,10 +100,64 @@ namespace KBSwitch
 
 	void OptionsConfigWidget::accept ()
 	{
+		if (!Modified_)
+			return;
+
+		Modified_ = false;
+
+		auto opts = XmlSettingsManager::Instance ()
+				.property ("EnabledOptions").toStringList ();
+		opts.sort ();
+
+		QStringList newOpts;
+		for (int i = 0; i < Model_->rowCount (); ++i)
+		{
+			auto groupItem = Model_->item (i);
+
+			const auto& groupPrefix = groupItem->text ();
+
+			for (int j = 0; j < groupItem->rowCount (); ++j)
+			{
+				auto optItem = groupItem->child (j);
+				if (optItem->checkState () == Qt::Checked)
+					newOpts << groupPrefix + ':' + optItem->text ();
+			}
+		}
+		newOpts.sort ();
+
+		if (opts == newOpts)
+			return;
+
+		XmlSettingsManager::Instance ().setProperty ("EnabledOptions", newOpts);
+		KBCtl::Instance ().SetOptions (newOpts);
 	}
 
 	void OptionsConfigWidget::reject ()
 	{
+		const auto& opts = XmlSettingsManager::Instance ()
+				.property ("EnabledOptions").toStringList ();
+		for (int i = 0; i < Model_->rowCount (); ++i)
+		{
+			auto groupItem = Model_->item (i);
+
+			const auto& groupPrefix = groupItem->text ();
+
+			for (int j = 0; j < groupItem->rowCount (); ++j)
+			{
+				auto optItem = groupItem->child (j);
+				const auto& fullname = groupPrefix + ':' + optItem->text ();
+				optItem->setCheckState (opts.contains (fullname) ?
+						Qt::Checked :
+						Qt::Unchecked);
+			}
+		}
+
+		Modified_ = false;
+	}
+
+	void OptionsConfigWidget::markModified ()
+	{
+		Modified_ = true;
 	}
 }
 }

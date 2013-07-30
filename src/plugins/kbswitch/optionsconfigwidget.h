@@ -42,11 +42,14 @@ namespace KBSwitch
 		Q_OBJECT
 
 		QStandardItemModel *Model_;
+		bool Modified_ = false;
 	public:
 		OptionsConfigWidget (QWidget* = 0);
 	public slots:
 		virtual void accept ();
 		virtual void reject ();
+	private slots:
+		void markModified ();
 	};
 }
 }
