@@ -331,10 +331,16 @@ namespace KBSwitch
 				.property ("ManageSystemWide").toBool ())
 			return;
 
+		const auto& kbModel = XmlSettingsManager::Instance ()
+				.property ("KeyboardModel").toString ();
+		const auto& kbCode = Rules_->GetKBModelCode (kbModel);
+
 		QStringList args
 		{
 			"-layout",
 			Groups_.join (","),
+			"-model",
+			kbCode,
 			"-option",
 			"-option"
 		};
