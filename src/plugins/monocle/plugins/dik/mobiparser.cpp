@@ -31,6 +31,9 @@
 #include <QFile>
 #include <QtDebug>
 #include <QtEndian>
+#include <QTextCodec>
+#include "decompressor.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -49,11 +52,12 @@ namespace Dik
 			return;
 		}
 
-		if (!InitRecords () ||
-				!InitHeader ())
-			return;
+		IsValid_ = InitRecords () && InitHeader ();
+	}
 
-		IsValid_ = true;
+	bool MobiParser::IsValid () const
+	{
+		return IsValid_;
 	}
 
 	QByteArray MobiParser::GetRecord (int idx) const
@@ -94,13 +98,120 @@ namespace Dik
 		return true;
 	}
 
+	namespace
+	{
+		Decompressor::Type ToType (quint8 c)
+		{
+			switch (c)
+			{
+			case 1:
+				return Decompressor::Type::None;
+			case 2:
+				return Decompressor::Type::RLE;
+			case 'H':
+				return Decompressor::Type::Huff;
+			}
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown compression type"
+					<< c;
+			return Decompressor::Type::None;
+		}
+	}
+
 	bool MobiParser::InitHeader ()
 	{
 		const auto& headrec = GetRecord (0);
 		if (headrec.size () < 14)
 			return false;
 
+		try
+		{
+			if (!(Dec_ = Decompressor::Create (ToType (headrec [1]), this)))
+				return false;
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error creating decompressor:"
+					<< e.what ();
+			return false;
+		}
+
+		IsDRM_ = headrec [12] || headrec [13];
+
+		auto twoBytes = [&headrec] (int pos)
+		{
+			return (static_cast<quint16> (headrec [pos]) << 8) +
+					static_cast<uchar> (headrec [pos + 1]);
+		};
+
+		TextRecordsCount_ = twoBytes (8);
+		MaxRecordSize_ = twoBytes (10);
+
+		Codec_ = headrec.size () > 31 && Read32 (headrec, 28) == 65001 ?
+				QTextCodec::codecForName ("UTF-8") :
+				QTextCodec::codecForName ("CP1252");
+
+		if (headrec.size () > 176)
+			ParseEXTH (headrec);
+
 		return true;
+	}
+
+	namespace
+	{
+		QString ReadEXTHField (const QByteArray& data, quint32& offset, QTextCodec *codec)
+		{
+			auto len = Read32 (data, offset);
+			offset += 4;
+			len -= 8;
+
+			const auto& result = codec->toUnicode (data.mid (offset, len));
+			offset += len;
+			return result;
+		}
+	}
+
+	void MobiParser::ParseEXTH (const QByteArray& rec)
+	{
+		if (rec.size () >= 92)
+		{
+			const auto nameOffset = Read32 (rec, 0x54);
+			const auto nameLen = Read32 (rec, 0x58);
+			if (nameOffset + nameLen < static_cast<quint32> (rec.size ()))
+				DocInfo_.Title_ = Codec_->toUnicode (rec.mid (nameOffset, nameLen));
+		}
+
+		const auto exthOff = Read32 (rec, 0x14) + 16;
+		if (rec.mid (exthOff, 4) != "EXTH")
+			return;
+
+		const auto recs = Read32 (rec, exthOff + 8);
+		auto offset = exthOff + 12;
+		for (quint32 i = 0; i < recs; ++i)
+		{
+			if (offset + 4 > static_cast<quint32> (rec.size ()))
+				break;
+
+			const auto type = Read32 (rec, offset);
+			offset += 4;
+			switch (type)
+			{
+			case 100:
+				DocInfo_.Author_ = ReadEXTHField (rec, offset, Codec_);
+				break;
+			case 103:
+				DocInfo_.Description_ = ReadEXTHField (rec, offset, Codec_);
+				break;
+			case 105:
+				DocInfo_.Subject_ = ReadEXTHField (rec, offset, Codec_);
+				break;
+			case 109:
+				DocInfo_.Author_ = ReadEXTHField (rec, offset, Codec_);
+				break;
+			}
+		}
 	}
 }
 }
