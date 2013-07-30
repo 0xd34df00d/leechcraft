@@ -60,7 +60,7 @@ namespace KBSwitch
 
 		RulesStorage *Rules_;
 
-		bool Modified_ = false;
+		bool ApplyScheduled_ = false;
 
 		KBCtl ();
 	public:
@@ -76,8 +76,6 @@ namespace KBSwitch
 		void Release ();
 
 		void SetSwitchPolicy (SwitchPolicy);
-
-		void Apply ();
 
 		int GetCurrentGroup () const;
 		const QStringList& GetEnabledGroups () const;
@@ -102,6 +100,9 @@ namespace KBSwitch
 		void UpdateGroupNames ();
 
 		void AssignWindow (Qt::HANDLE);
+	public slots:
+		void scheduleApply ();
+		void apply ();
 	signals:
 		void groupChanged (int);
 	};

@@ -29,6 +29,7 @@
 
 #include "kbctl.h"
 #include <QtDebug>
+#include <QTimer>
 #include <util/x11/xwrapper.h>
 #include "xmlsettingsmanager.h"
 #include "rulesstorage.h"
@@ -81,6 +82,12 @@ namespace KBSwitch
 		UpdateGroupNames ();
 
 		qt_installX11EventFilter (&EventFilter);
+
+		XmlSettingsManager::Instance ().RegisterObject ({
+					"ManageSystemWide",
+					"KeyboardModel"
+				},
+				this, "scheduleApply");
 	}
 
 	KBCtl& KBCtl::Instance ()
@@ -97,26 +104,6 @@ namespace KBSwitch
 	void KBCtl::SetSwitchPolicy (SwitchPolicy policy)
 	{
 		Policy_ = policy;
-	}
-
-	void KBCtl::Apply ()
-	{
-		if (!XmlSettingsManager::Instance ()
-				.property ("ManageSystemWide").toBool ())
-			return;
-
-		if (!Modified_)
-			return;
-
-		Modified_ = false;
-		QStringList args
-		{
-			"-layout",
-			Groups_.join (","),
-			"-option",
-			"-option"
-		};
-		qDebug () << Q_FUNC_INFO << args;
 	}
 
 	int KBCtl::GetCurrentGroup () const
@@ -136,8 +123,8 @@ namespace KBSwitch
 		if (Groups_ == groups)
 			return;
 
-		Modified_ = true;
 		Groups_ = groups;
+		scheduleApply ();
 	}
 
 	int KBCtl::GetMaxEnabledGroups () const
@@ -323,6 +310,35 @@ namespace KBSwitch
 				PropertyChangeMask |
 				StructureNotifyMask;
 		XSelectInput (Display_, window, windowEvents);
+	}
+
+	void KBCtl::scheduleApply ()
+	{
+		if (ApplyScheduled_)
+			return;
+
+		ApplyScheduled_ = true;
+		QTimer::singleShot (100,
+				this,
+				SLOT (apply ()));
+	}
+
+	void KBCtl::apply ()
+	{
+		ApplyScheduled_ = false;
+
+		if (!XmlSettingsManager::Instance ()
+				.property ("ManageSystemWide").toBool ())
+			return;
+
+		QStringList args
+		{
+			"-layout",
+			Groups_.join (","),
+			"-option",
+			"-option"
+		};
+		qDebug () << Q_FUNC_INFO << args;
 	}
 }
 }
