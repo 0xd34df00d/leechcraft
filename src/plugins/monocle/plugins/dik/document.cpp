@@ -27,9 +27,12 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "dik.h"
-#include <QIcon>
 #include "document.h"
+#include <QFile>
+#include <QDomDocument>
+#include <QtDebug>
+#include <QTextDocument>
+#include "mobiparser.h"
 
 namespace LeechCraft
 {
@@ -37,59 +40,58 @@ namespace Monocle
 {
 namespace Dik
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	Document::Document (const QString& filename, QObject *plugin)
+	: DocURL_ (QUrl::fromLocalFile (filename))
+	, Plugin_ (plugin)
 	{
+		MobiParser parser (filename);
+		if (!parser.IsValid ())
+			return;
+
+		QString contents;
+		try
+		{
+			contents = parser.GetText ();
+		}
+		catch (const std::exception&)
+		{
+			return;
+		}
+
+		auto doc = new QTextDocument;
+		if (contents.contains ("<html", Qt::CaseInsensitive))
+			doc->setHtml (contents);
+		else
+			doc->setPlainText (contents);
+
+		SetDocument (doc);
+		Info_ = parser.GetDocInfo ();
 	}
 
-	void Plugin::SecondInit ()
+	QObject* Document::GetBackendPlugin () const
 	{
+		return Plugin_;
 	}
 
-	QByteArray Plugin::GetUniqueID () const
+	QObject* Document::GetQObject ()
 	{
-		return "org.LeechCraft.Monocle.Dik";
+		return this;
 	}
 
-	void Plugin::Release ()
+	DocumentInfo Document::GetDocumentInfo () const
 	{
+		return Info_;
 	}
 
-	QString Plugin::GetName () const
+	QUrl Document::GetDocURL () const
 	{
-		return "Monocle Dik";
+		return DocURL_;
 	}
 
-	QString Plugin::GetInfo () const
+	void Document::RequestNavigation (int page)
 	{
-		return tr ("MOBI backend for Monocle.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	QSet<QByteArray> Plugin::GetPluginClasses () const
-	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Monocle.IBackendPlugin";
-		return result;
-	}
-
-	bool Plugin::CanLoadDocument (const QString& file)
-	{
-		const auto& lower = file.toLower ();
-		return lower.endsWith (".mobi") ||
-				lower.endsWith (".prc");
-	}
-
-	IDocument_ptr Plugin::LoadDocument (const QString& file)
-	{
-		return IDocument_ptr (new Document (file, this));
+		emit navigateRequested (QString (), page, 0, 0.4);
 	}
 }
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_monocle_dik, LeechCraft::Monocle::Dik::Plugin);
-

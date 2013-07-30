@@ -27,9 +27,11 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "dik.h"
-#include <QIcon>
-#include "document.h"
+#pragma once
+
+#include <QObject>
+#include <QUrl>
+#include <util/monocle/textdocumentadapter.h>
 
 namespace LeechCraft
 {
@@ -37,59 +39,32 @@ namespace Monocle
 {
 namespace Dik
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	class Document : public QObject
+				   , public TextDocumentAdapter
 	{
-	}
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Monocle::IDocument
+				LeechCraft::Monocle::ISearchableDocument
+				LeechCraft::Monocle::ISupportPainting)
 
-	void Plugin::SecondInit ()
-	{
-	}
+		DocumentInfo Info_;
+		QUrl DocURL_;
 
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.Monocle.Dik";
-	}
+		QObject *Plugin_;
+	public:
+		Document (const QString&, QObject*);
 
-	void Plugin::Release ()
-	{
-	}
+		QObject* GetBackendPlugin () const;
+		QObject* GetQObject ();
+		DocumentInfo GetDocumentInfo () const;
+		QUrl GetDocURL () const;
 
-	QString Plugin::GetName () const
-	{
-		return "Monocle Dik";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("MOBI backend for Monocle.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	QSet<QByteArray> Plugin::GetPluginClasses () const
-	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Monocle.IBackendPlugin";
-		return result;
-	}
-
-	bool Plugin::CanLoadDocument (const QString& file)
-	{
-		const auto& lower = file.toLower ();
-		return lower.endsWith (".mobi") ||
-				lower.endsWith (".prc");
-	}
-
-	IDocument_ptr Plugin::LoadDocument (const QString& file)
-	{
-		return IDocument_ptr (new Document (file, this));
-	}
+		void RequestNavigation (int);
+	signals:
+		void navigateRequested (const QString&, int pageNum, double x, double y);
+		void printRequested (const QList<int>&);
+	};
 }
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_monocle_dik, LeechCraft::Monocle::Dik::Plugin);
 
