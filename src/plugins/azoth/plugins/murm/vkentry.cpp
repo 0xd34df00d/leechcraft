@@ -185,17 +185,13 @@ namespace Murm
 			HasUnread_ = true;
 		}
 
+		if (info.Params_.contains ("emoji"))
+			FixEmoji (info.Text_);
+
 		auto msg = new VkMessage (dir, IMessage::MTChatMessage, this);
 		msg->SetBody (info.Text_);
 		msg->SetDateTime (info.TS_);
 		msg->SetID (info.ID_);
-
-		if (info.Params_.contains ("emoji"))
-		{
-			auto richText = info.Text_;
-			FixEmoji (richText);
-			msg->SetRichBody (richText);
-		}
 
 		Store (msg);
 	}
