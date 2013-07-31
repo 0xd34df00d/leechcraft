@@ -33,6 +33,7 @@
 #include <QList>
 #include <QUrl>
 #include <QDateTime>
+#include <QVariantMap>
 
 namespace LeechCraft
 {
@@ -101,6 +102,8 @@ namespace Murm
 		MessageFlags Flags_;
 
 		QDateTime TS_;
+
+		QVariantMap Params_;
 	};
 
 	enum class GeoIdType

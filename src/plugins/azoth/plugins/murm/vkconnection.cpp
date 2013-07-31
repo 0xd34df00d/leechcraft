@@ -69,7 +69,8 @@ namespace Murm
 					items.value (3).toULongLong (),
 					items.value (6).toString (),
 					MessageFlags (items.value (2).toInt ()),
-					QDateTime::fromTime_t (items.value (4).toULongLong ())
+					QDateTime::fromTime_t (items.value (4).toULongLong ()),
+					items.value (7).toMap ()
 				});
 		};
 		Dispatcher_ [8] = [this] (const QVariantList& items)
