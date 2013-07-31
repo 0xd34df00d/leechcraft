@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <interfaces/azoth/iaccount.h>
+#include <interfaces/azoth/isupporttune.h>
 #include <interfaces/core/icoreproxy.h>
 #include "structures.h"
 
@@ -49,9 +50,10 @@ namespace Murm
 
 	class VkAccount : public QObject
 					, public IAccount
+					, public ISupportTune
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IAccount)
+		Q_INTERFACES (LeechCraft::Azoth::IAccount LeechCraft::Azoth::ISupportTune)
 
 		VkProtocol * const Proto_;
 		const QByteArray ID_;
@@ -102,6 +104,8 @@ namespace Murm
 		void RequestAuth (const QString&, const QString&, const QString&, const QStringList&);
 		void RemoveEntry (QObject*);
 		QObject* GetTransferManager () const;
+
+		void PublishTune (const QMap<QString, QVariant>& tuneData);
 	private slots:
 		void handleLists (const QList<ListInfo>&);
 		void handleUsers (const QList<UserInfo>&);

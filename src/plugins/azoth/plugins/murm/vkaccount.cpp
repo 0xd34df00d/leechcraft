@@ -36,6 +36,7 @@
 #include "vkmessage.h"
 #include "photostorage.h"
 #include "georesolver.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -239,6 +240,23 @@ namespace Murm
 	QObject* VkAccount::GetTransferManager () const
 	{
 		return nullptr;
+	}
+
+	void VkAccount::PublishTune (const QMap<QString, QVariant>& tuneData)
+	{
+		if (!XmlSettingsManager::Instance ().property ("PublishTune").toBool ())
+			return;
+
+		QStringList fields
+		{
+			tuneData ["artist"].toString (),
+			tuneData ["source"].toString (),
+			tuneData ["title"].toString ()
+		};
+		fields.removeAll ({});
+
+		const auto& toPublish = fields.join (QString::fromUtf8 (" — "));
+		Conn_->SetStatus (toPublish);
 	}
 
 	void VkAccount::handleLists (const QList<ListInfo>& lists)
