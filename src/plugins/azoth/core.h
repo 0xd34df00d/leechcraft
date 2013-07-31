@@ -94,8 +94,6 @@ namespace Azoth
 		ICoreProxy_ptr Proxy_;
 		QList<ANFieldData> ANFields_;
 
-		QRegExp ImageRegexp_;
-
 #ifdef ENABLE_CRYPT
 		boost::scoped_ptr<QCA::Initializer> QCAInit_;
 		boost::scoped_ptr<QCA::KeyStoreManager> KeyStoreMgr_;
