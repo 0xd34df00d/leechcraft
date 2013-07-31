@@ -45,7 +45,7 @@ namespace Murm
 {
 	VkConnection::VkConnection (const QByteArray& cookies, ICoreProxy_ptr proxy)
 	: AuthMgr_ (new Util::SvcAuth::VkAuthManager ("3778319",
-			{ "messages", "notifications", "friends" }, cookies, proxy, this))
+			{ "messages", "notifications", "friends", "status" }, cookies, proxy, this))
 	, Proxy_ (proxy)
 	, CallQueue_ (new Util::QueueManager (400))
 	{
@@ -197,6 +197,25 @@ namespace Murm
 						SIGNAL (finished ()),
 						this,
 						SLOT (handleCountriesFetched ()));
+				return reply;
+			});
+		AuthMgr_->GetAuthKey ();
+	}
+
+	void VkConnection::SetStatus (const QString& status)
+	{
+		auto nam = Proxy_->GetNetworkAccessManager ();
+		PreparedCalls_.push_back ([=] (const QString& key) -> QNetworkReply*
+			{
+				QUrl url ("https://api.vk.com/method/status.set");
+				url.addQueryItem ("access_token", key);
+				url.addQueryItem ("text", status);
+
+				auto reply = nam->get (QNetworkRequest (url));
+				connect (reply,
+						SIGNAL (finished ()),
+						reply,
+						SLOT (deleteLater ()));
 				return reply;
 			});
 		AuthMgr_->GetAuthKey ();

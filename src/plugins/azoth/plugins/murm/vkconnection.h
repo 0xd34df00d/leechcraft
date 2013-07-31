@@ -100,6 +100,8 @@ namespace Murm
 		void MarkAsRead (const QList<qulonglong>&);
 		void RequestGeoIds (const QList<int>&, GeoSetter_f, GeoIdType);
 
+		void SetStatus (const QString&);
+
 		void SetStatus (const EntryStatus&);
 		EntryStatus GetStatus () const;
 	private:
