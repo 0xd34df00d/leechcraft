@@ -80,7 +80,7 @@ namespace Murm
 		void Store (VkMessage*);
 
 		VkMessage* FindMessage (qulonglong) const;
-		void HandleMessage (const MessageInfo&);
+		void HandleMessage (MessageInfo);
 
 		void HandleTypingNotification ();
 
