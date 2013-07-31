@@ -32,6 +32,8 @@
 #include <QtDebug>
 #include <QtEndian>
 #include <QTextCodec>
+#include <QBuffer>
+#include <QImageReader>
 #include "decompressor.h"
 #include "util.h"
 
@@ -53,6 +55,7 @@ namespace Dik
 		}
 
 		IsValid_ = InitRecords () && InitHeader ();
+		FindImageRecord ();
 	}
 
 	bool MobiParser::IsValid () const
@@ -98,6 +101,16 @@ namespace Dik
 			result += decompressed;
 		}
 		return Codec_->toUnicode (result);
+	}
+
+	int MobiParser::GetImageCount () const
+	{
+		return NumRecords_ - TextRecordsCount_;
+	}
+
+	QImage MobiParser::GetImage (int imgIdx) const
+	{
+		return QImage::fromData (GetRecord (imgIdx + FirstImgRec_));
 	}
 
 	const DocumentInfo& MobiParser::GetDocInfo () const
@@ -242,6 +255,26 @@ namespace Dik
 				DocInfo_.Author_ = ReadEXTHField (rec, offset, Codec_);
 				break;
 			}
+		}
+	}
+
+	void MobiParser::FindImageRecord ()
+	{
+		if (FirstImgRec_)
+			return;
+
+		FirstImgRec_ = TextRecordsCount_ + 1;
+
+		for (FirstImgRec_ = TextRecordsCount_ + 1; FirstImgRec_ < NumRecords_; ++FirstImgRec_)
+		{
+			auto rec = GetRecord (FirstImgRec_);
+			if (rec.isNull ())
+				return;
+
+			QBuffer buf (&rec);
+			buf.open (QIODevice::ReadOnly);
+			if (QImageReader (&buf).canRead ())
+				break;
 		}
 	}
 }

@@ -61,6 +61,8 @@ namespace Dik
 		quint16 TextRecordsCount_ = 0;
 		quint16 MaxRecordSize_ = 0;
 
+		quint16 FirstImgRec_ = 0;
+
 		QTextCodec *Codec_ = 0;
 
 		DocumentInfo DocInfo_;
@@ -72,11 +74,17 @@ namespace Dik
 		QByteArray GetRecord (int) const;
 
 		QString GetText () const;
+
+		int GetImageCount () const;
+		QImage GetImage (int) const;
+
 		const DocumentInfo& GetDocInfo () const;
 	private:
 		bool InitRecords ();
 		bool InitHeader ();
 		void ParseEXTH (const QByteArray&);
+
+		void FindImageRecord ();
 
 		template<typename T>
 		void Read (T& t) const
