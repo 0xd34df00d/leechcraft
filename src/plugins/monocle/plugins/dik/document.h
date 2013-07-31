@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <QUrl>
 #include <util/monocle/textdocumentadapter.h>
@@ -39,6 +40,8 @@ namespace Monocle
 {
 namespace Dik
 {
+	class MobiParser;
+
 	class Document : public QObject
 				   , public TextDocumentAdapter
 	{
@@ -49,6 +52,8 @@ namespace Dik
 
 		DocumentInfo Info_;
 		QUrl DocURL_;
+
+		std::shared_ptr<MobiParser> Parser_;
 
 		QObject *Plugin_;
 	public:

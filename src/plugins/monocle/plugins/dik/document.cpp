@@ -42,30 +42,72 @@ namespace Monocle
 {
 namespace Dik
 {
+	namespace
+	{
+		class MobiTextDocument : public QTextDocument
+		{
+			const std::shared_ptr<MobiParser> P_;
+		public:
+			MobiTextDocument (const std::shared_ptr<MobiParser>& p, QObject *parent = 0)
+			: QTextDocument (parent)
+			, P_ (p)
+			{
+			}
+		protected:
+			QVariant loadResource (int type, const QUrl& name);
+		};
+
+		QVariant MobiTextDocument::loadResource (int type, const QUrl& name)
+		{
+			if (type != ImageResource || name.scheme () != "rec")
+				return QTextDocument::loadResource (type, name);
+
+			bool ok = false;
+			const quint16 recnum = static_cast<quint16> (name.path ().mid (1).toUInt (&ok));
+			if (!ok)
+				return {};
+
+			QVariant resource;
+			resource.setValue (P_->GetImage (recnum - 1));
+			addResource (type, name, resource);
+
+			return resource;
+		}
+
+		QString Fix (QString markup)
+		{
+			QRegExp imgRx ("<img.*recindex=\"([\\d]*)\".*>", Qt::CaseInsensitive);
+			imgRx.setMinimal (true);
+			markup.replace (imgRx, "<img src=\"rec:/\\1\">");
+
+			return markup;
+		}
+	}
+
 	Document::Document (const QString& filename, QObject *plugin)
 	: DocURL_ (QUrl::fromLocalFile (filename))
+	, Parser_ (new MobiParser (filename))
 	, Plugin_ (plugin)
 	{
-		MobiParser parser (filename);
-		if (!parser.IsValid ())
+		if (!Parser_->IsValid ())
 			return;
 
 		QString contents;
 		try
 		{
-			contents = parser.GetText ();
+			contents = Parser_->GetText ();
 		}
 		catch (const std::exception&)
 		{
 			return;
 		}
 
-		auto doc = new QTextDocument;
+		auto doc = new MobiTextDocument (Parser_);
 		doc->setPageSize (QSize (600, 800));
 		doc->setUndoRedoEnabled (false);
 
 		if (contents.contains ("<html", Qt::CaseInsensitive))
-			doc->setHtml (contents);
+			doc->setHtml (Fix (contents));
 		else
 			doc->setPlainText (contents);
 
@@ -74,7 +116,7 @@ namespace Dik
 		doc->rootFrame ()->setFrameFormat (format);
 
 		SetDocument (doc);
-		Info_ = parser.GetDocInfo ();
+		Info_ = Parser_->GetDocInfo ();
 	}
 
 	QObject* Document::GetBackendPlugin () const
