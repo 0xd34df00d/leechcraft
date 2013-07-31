@@ -32,6 +32,7 @@
 #include <QObject>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/iadvancedmessage.h>
+#include <interfaces/azoth/irichtextmessage.h>
 
 namespace LeechCraft
 {
@@ -44,15 +45,19 @@ namespace Murm
 	class VkMessage : public QObject
 					, public IMessage
 					, public IAdvancedMessage
+					, public IRichTextMessage
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMessage LeechCraft::Azoth::IAdvancedMessage)
+		Q_INTERFACES (LeechCraft::Azoth::IMessage
+				LeechCraft::Azoth::IAdvancedMessage
+				LeechCraft::Azoth::IRichTextMessage)
 
 		VkEntry * const Entry_;
 		const MessageType Type_;
 		const Direction Dir_;
 
 		QString Body_;
+		QString RichBody_;
 		QDateTime TS_ = QDateTime::currentDateTime ();
 
 		qulonglong ID_ = -1;
@@ -83,6 +88,9 @@ namespace Murm
 		void SetDateTime (const QDateTime& timestamp);
 
 		bool IsDelivered () const;
+
+		QString GetRichBody() const;
+		void SetRichBody (const QString&);
 	signals:
 		void messageDelivered ();
 	};
