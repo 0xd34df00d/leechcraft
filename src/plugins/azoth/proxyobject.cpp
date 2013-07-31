@@ -337,7 +337,9 @@ namespace Azoth
 		{
 			const auto& link = LinkRegexp_.cap (1);
 			if (pos > 0 &&
-					(body.at (pos - 1) == '"' || body.at (pos - 1) == '='))
+					(body.at (pos - 1) == '"' ||
+						body.at (pos - 1) == '=' ||
+						body.at (pos - 1) == '\''))
 			{
 				pos += link.size ();
 				continue;
