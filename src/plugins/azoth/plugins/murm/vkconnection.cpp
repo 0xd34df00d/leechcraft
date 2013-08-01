@@ -601,7 +601,7 @@ namespace Murm
 				}
 
 			result.append ({
-					map ["owner_id"].toULongLong (),
+					map ["owner_id"].toLongLong (),
 					map ["pid"].toULongLong (),
 					map ["aid"].toLongLong (),
 

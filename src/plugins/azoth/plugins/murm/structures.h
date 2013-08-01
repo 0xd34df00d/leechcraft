@@ -114,9 +114,9 @@ namespace Murm
 
 	struct PhotoInfo
 	{
-		qulonglong OwnerID_;
+		qlonglong OwnerID_;
 		qulonglong PhotoID_;
-		qulonglong AlbumID_;
+		qlonglong AlbumID_;
 
 		QString Thumbnail_;
 		QString Full_;
