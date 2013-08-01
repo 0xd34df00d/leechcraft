@@ -45,7 +45,8 @@ namespace Murm
 {
 	VkConnection::VkConnection (const QByteArray& cookies, ICoreProxy_ptr proxy)
 	: AuthMgr_ (new Util::SvcAuth::VkAuthManager ("3778319",
-			{ "messages", "notifications", "friends", "status" }, cookies, proxy, this))
+			{ "messages", "notifications", "friends", "status", "photos" },
+			cookies, proxy, this))
 	, Proxy_ (proxy)
 	, CallQueue_ (new Util::QueueManager (400))
 	{
@@ -198,6 +199,27 @@ namespace Murm
 						SIGNAL (finished ()),
 						this,
 						SLOT (handleCountriesFetched ()));
+				return reply;
+			});
+		AuthMgr_->GetAuthKey ();
+	}
+
+	void VkConnection::GetPhotoInfos (const QStringList& ids, VkConnection::PhotoInfoSetter_f setter)
+	{
+		const auto& joined = ids.join (",");
+		auto nam = Proxy_->GetNetworkAccessManager ();
+		PreparedCalls_.push_back ([=] (const QString& key) -> QNetworkReply*
+			{
+				QUrl url ("https://api.vk.com/method/photos.getById");
+				url.addQueryItem ("access_token", key);
+				url.addQueryItem ("photos", joined);
+
+				auto reply = nam->get (QNetworkRequest (url));
+				Reply2PhotoSetter_ [reply] = setter;
+				connect (reply,
+						SIGNAL (finished ()),
+						this,
+						SLOT (handlePhotoInfosFetched ()));
 				return reply;
 			});
 		AuthMgr_->GetAuthKey ();
@@ -548,6 +570,46 @@ namespace Murm
 			const auto& map = item.toMap ();
 			result [map ["cid"].toInt ()] = map ["name"].toString ();
 		}
+
+		setter (result);
+	}
+
+	void VkConnection::handlePhotoInfosFetched ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!CheckFinishedReply (reply))
+			return;
+
+		const auto& setter = Reply2PhotoSetter_.take (reply);
+		if (!setter)
+			return;
+
+		QList<PhotoInfo> result;
+
+		const auto& data = QJson::Parser ().parse (reply);
+		for (const auto& item : data.toMap () ["response"].toList ())
+		{
+			const auto& map = item.toMap ();
+
+			const auto& thumb = map ["src_small"].toString ();
+			QString big;
+			for (auto key : { "src_xxbig", "src_xbig", "src_big", "src" })
+				if (map.contains (key))
+				{
+					big = map [key].toString ();
+					break;
+				}
+
+			result.append ({
+					map ["owner_id"].toULongLong (),
+					map ["pid"].toULongLong (),
+					map ["aid"].toLongLong (),
+
+					thumb,
+					big
+				});
+		}
+
 		setter (result);
 	}
 
