@@ -389,9 +389,42 @@ namespace Murm
 		for (const auto& info : Attaches_)
 			if (info.Type_ == "photo")
 				photoIds << info.ID_;
-		if (!photoIds.isEmpty ())
-			Account_->GetConnection ()->GetPhotoInfos (photoIds,
-					[] (const QList<PhotoInfo>&) {});
+		if (photoIds.isEmpty ())
+			return;
+
+		QString newContents = msg->GetBody ();
+		for (const auto& id : photoIds)
+			newContents += "<div id='photostub_" + id + "'></div>";
+		msg->SetBody (newContents);
+
+		QPointer<VkMessage> safeMsg (msg);
+		Account_->GetConnection ()->GetPhotoInfos (photoIds,
+				[safeMsg] (const QList<PhotoInfo>& infos) -> void
+				{
+					if (!safeMsg)
+						return;
+
+					QString js;
+					auto body = safeMsg->GetBody ();
+					for (const auto& info : infos)
+					{
+						const auto& id = QString ("%1_%2")
+								.arg (info.OwnerID_)
+								.arg (info.PhotoID_);
+						const auto& replacement = QString ("<a href='%1' target='_blank'><img src='%2' alt='' /></a>")
+								.arg (info.Full_)
+								.arg (info.Thumbnail_);
+
+						body.replace ("<div id='photostub_" + id + "'></div>",
+								"<div>" + replacement + "</div>");
+						js += QString ("try { document.getElementById('photostub_%1').innerHTML = \"%2\"; } catch (e) {};")
+								.arg (id).arg (replacement);
+					}
+					safeMsg->SetBody (body);
+
+					auto safeThis = qobject_cast<VkEntry*> (safeMsg->OtherPart ());
+					safeThis->performJS (js);
+				});
 	}
 
 	void VkEntry::handleTypingTimeout ()

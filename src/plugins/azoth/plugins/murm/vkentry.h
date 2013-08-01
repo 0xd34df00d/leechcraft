@@ -34,6 +34,7 @@
 #include <QPointer>
 #include <QStringList>
 #include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/iupdatablechatentry.h>
 #include "structures.h"
 
 class QTimer;
@@ -51,9 +52,11 @@ namespace Murm
 
 	class VkEntry : public QObject
 				  , public ICLEntry
+				  , public IUpdatableChatEntry
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICLEntry)
+		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
+				LeechCraft::Azoth::IUpdatableChatEntry)
 
 		VkAccount * const Account_;
 		UserInfo Info_;
@@ -125,6 +128,8 @@ namespace Murm
 		void chatPartStateChanged (const ChatPartState&, const QString&);
 		void permsChanged ();
 		void entryGenerallyChanged ();
+
+		void performJS (const QString&);
 	};
 }
 }
