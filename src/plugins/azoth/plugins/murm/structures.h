@@ -111,6 +111,16 @@ namespace Murm
 		Country,
 		City
 	};
+
+	struct PhotoInfo
+	{
+		qulonglong OwnerID_;
+		qulonglong PhotoID_;
+		qulonglong AlbumID_;
+
+		QString Thumbnail_;
+		QString Full_;
+	};
 }
 }
 }
