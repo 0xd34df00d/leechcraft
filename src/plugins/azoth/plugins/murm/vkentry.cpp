@@ -185,13 +185,15 @@ namespace Murm
 			HasUnread_ = true;
 		}
 
-		if (info.Params_.contains ("emoji"))
+		if (info.Params_.remove ("emoji"))
 			FixEmoji (info.Text_);
 
 		auto msg = new VkMessage (dir, IMessage::MTChatMessage, this);
 		msg->SetBody (info.Text_);
 		msg->SetDateTime (info.TS_);
 		msg->SetID (info.ID_);
+
+		HandleAttaches (msg, info);
 
 		Store (msg);
 	}
@@ -347,6 +349,49 @@ namespace Murm
 
 	void VkEntry::ChatTabClosed()
 	{
+	}
+
+	void VkEntry::HandleAttaches (VkMessage *msg, const MessageInfo& info)
+	{
+		struct AttachInfo
+		{
+			QString Type_;
+			QString ID_;
+		};
+		QMap<int, AttachInfo> Attaches_;
+
+		const QString attachMarker ("attach");
+		const QString typeMarker ("_type");
+		for (auto pos = info.Params_.begin (); pos != info.Params_.end (); ++pos)
+		{
+			auto key = pos.key ();
+			if (!key.startsWith (attachMarker))
+				continue;
+
+			key = key.mid (attachMarker.size ());
+			const bool isType = key.endsWith (typeMarker);
+			if (isType)
+				key.chop (typeMarker.size ());
+
+			bool ok = false;
+			const auto num = key.toInt (&ok);
+			if (!ok)
+				continue;
+
+			auto& attach = Attaches_ [num];
+			if (isType)
+				attach.Type_ = pos->toString ();
+			else
+				attach.ID_ = pos->toString ();
+		}
+
+		QStringList photoIds;
+		for (const auto& info : Attaches_)
+			if (info.Type_ == "photo")
+				photoIds << info.ID_;
+		if (!photoIds.isEmpty ())
+			Account_->GetConnection ()->GetPhotoInfos (photoIds,
+					[] (const QList<PhotoInfo>&) {});
 	}
 
 	void VkEntry::handleTypingTimeout ()

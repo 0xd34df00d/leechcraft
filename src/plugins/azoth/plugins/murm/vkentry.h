@@ -107,6 +107,8 @@ namespace Murm
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
 		void MarkMsgsRead ();
 		void ChatTabClosed ();
+	private:
+		void HandleAttaches (VkMessage*, const MessageInfo&);
 	private slots:
 		void handleTypingTimeout ();
 		void sendTyping ();
