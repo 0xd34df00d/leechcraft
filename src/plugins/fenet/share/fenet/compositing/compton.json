@@ -1,0 +1,193 @@
+{
+	"name": "compton",
+	"comment": "Use compton, the fork of xcompmgr-dana, for compositing",
+	"execNames": [ "compton" ],
+	"params": [
+		{
+			"param": "-r",
+			"desc": "The blur radius for shadows.",
+			"default": 12,
+			"min": 0,
+			"max": 100
+		},
+		{
+			"param": "-o",
+			"desc": "The transluency for shadows.",
+			"default": 0.75,
+			"min": 0,
+			"max": 1
+		},
+		{
+			"param": "-l",
+			"desc": "The left offset for shadows.",
+			"default": -15,
+			"min": -100,
+			"max": 0
+		},
+		{
+			"param": "-t",
+			"desc": "The top offset for shadows.",
+			"default": -15,
+			"min": -100,
+			"max": 0
+		},
+		{
+			"param": "-I",
+			"desc": "Opacity change between steps while fading in.",
+			"default": 0.028,
+			"min": 0.005,
+			"max": 0.2
+		},
+		{
+			"param": "-O",
+			"desc": "Opacity change between steps while fading out.",
+			"default": 0.03,
+			"min": 0.005,
+			"max": 0.2
+		},
+		{
+			"param": "-O",
+			"desc": "The time between steps in a fade in milliseconds.",
+			"default": 10,
+			"min": 1,
+			"max": 1000
+		},
+		{
+			"param": "-m",
+			"desc": "The opacity for menus.",
+			"default": 1,
+			"min": 0.1,
+			"max": 1
+		},
+		{
+			"param": "-i",
+			"desc": "The opacity of inactive windows.",
+			"default": 1,
+			"min": 0.1,
+			"max": 1
+		},
+		{
+			"param": "-e",
+			"desc": "The opacity of window titlebars and borders.",
+			"default": 1,
+			"min": 0.1,
+			"max": 1
+		},
+		{
+			"param": "--shadow-red",
+			"desc": "Red color value of shadow.",
+			"default": 0,
+			"min": 0,
+			"max": 1
+		},
+		{
+			"param": "--shadow-green",
+			"desc": "Green color value of shadow.",
+			"default": 0,
+			"min": 0,
+			"max": 1
+		},
+		{
+			"param": "--shadow-blue",
+			"desc": "Blue color value of shadow.",
+			"default": 0,
+			"min": 0,
+			"max": 1
+		},
+		{
+			"param": "--inactive-dim",
+			"desc": "Dim inactive windows.",
+			"default": 0,
+			"min": 0,
+			"max": 1
+		},
+		{
+			"param": "--refresh-rate",
+			"desc": "Specify refresh rate of the screen. If 0, compton will try detecting this with X RandR extension.",
+			"default": 0,
+			"min": 0,
+			"max": 240
+		},
+		{
+			"param": "--alpha-step",
+			"desc": "Step for pregenerating alpha pictures.",
+			"default": 0.03,
+			"min": 0.01,
+			"max": 1
+		}
+	],
+	"flags": [
+		{
+			"param": "-c",
+			"desc": "Enable client-side shadows on windows."
+		},
+		{
+			"param": "-C",
+			"desc": "Avoid drawing shadows on dock/panel windows."
+		},
+		{
+			"param": "-z",
+			"desc": "Zero the part of the shadow's mask behind the window (experimental)."
+		},
+		{
+			"param": "-f",
+			"desc": "Fade windows in/out when opening/closing and when opacity changes, unless --no-fading-openclose is used."
+		},
+		{
+			"param": "-G",
+			"desc": "Don't draw shadows on DND windows."
+		},
+		{
+			"param": "--inactive-opacity-override",
+			"desc": "Inactive opacity set by -i overrides value of _NET_WM_OPACITY."
+		},
+		{
+			"param": "--mark-wmwin-focused",
+			"desc": "Try to detect WM windows and mark them as active."
+		},
+		{
+			"param": "--mark-ovredir-focused",
+			"desc": "Mark windows that have no WM frame as active."
+		},
+		{
+			"param": "--no-fading-openclose",
+			"desc": "Do not fade on window open/close."
+		},
+		{
+			"param": "--shadow-ignore-shaped",
+			"desc": "Do not paint shadows on shaped windows."
+		},
+		{
+			"param": "--detect-rounded-corners",
+			"desc": "Try to detect windows with rounded corners and don't consider them shaped windows."
+		},
+		{
+			"param": "--detect-client-opacity",
+			"desc": "Detect _NET_WM_OPACITY on client windows, useful for window managers not passing _NET_WM_OPACITY of client windows to frame windows."
+		},
+		{
+			"param": "--dbe",
+			"desc": "Enable DBE painting mode, intended to use with VSync to (hopefully) eliminate tearing."
+		},
+		{
+			"param": "--paint-on-overlay",
+			"desc": "Painting on X Composite overlay window."
+		},
+		{
+			"param": "--sw-opti",
+			"desc": "Limit compton to repaint at most once every 1 / refresh_rate second to boost performance. Experimental."
+		},
+		{
+			"param": "--vsync-aggressive",
+			"desc": "Attempt to send painting request before VBlank and do XFlush() during VBlank."
+		},
+		{
+			"param": "--use-ewmh-active-win",
+			"desc": "Use _NET_WM_ACTIVE_WINDOW on the root window to determine which window is focused instead of using FocusIn/Out events."
+		},
+		{
+			"param": "--unredir-if-possible",
+			"desc": "Unredirect all windows if a full-screen opaque window is detected, to maximize performance for full-screen windows. Experimental."
+		}
+	]
+}

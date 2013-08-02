@@ -31,8 +31,9 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
-#include <interfaces/core/icoretabwidget.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/iquarkcomponentprovider.h>
+#include <interfaces/core/icoretabwidget.h>
 
 namespace LeechCraft
 {
@@ -41,15 +42,18 @@ namespace KBSwitch
 	class KeyboardLayoutSwitcher;
 
 	class Plugin : public QObject
-				, public IInfo
-				, public IHaveSettings
+				 , public IInfo
+				 , public IHaveSettings
+				 , public IQuarkComponentProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings)
+		Q_INTERFACES (IInfo IHaveSettings IQuarkComponentProvider)
 
 		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		KeyboardLayoutSwitcher *KBLayoutSwitcher_;
+
+		QuarkComponent_ptr Indicator_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
@@ -60,6 +64,8 @@ namespace KBSwitch
 		QIcon GetIcon () const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+
+		QuarkComponents_t GetComponents () const;
 	private slots:
 		void handleCurrentChanged (int index);
 		void handleCurrentWindowChanged (int from, int to);

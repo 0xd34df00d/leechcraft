@@ -349,9 +349,6 @@ namespace Util
 
 	bool XWrapper::ShouldShow (Window wid)
 	{
-		if (IsLCWindow (wid))
-			return false;
-
 		const QList<Atom> ignoreAtoms
 		{
 			GetAtom ("_NET_WM_WINDOW_TYPE_DESKTOP"),
@@ -381,6 +378,9 @@ namespace Util
 
 	void XWrapper::Subscribe (Window wid)
 	{
+		if (IsLCWindow (wid))
+			return;
+
 		XSelectInput (Display_, wid, PropertyChangeMask);
 	}
 

@@ -45,7 +45,8 @@ namespace Murm
 {
 	VkConnection::VkConnection (const QByteArray& cookies, ICoreProxy_ptr proxy)
 	: AuthMgr_ (new Util::SvcAuth::VkAuthManager ("3778319",
-			{ "messages", "notifications", "friends" }, cookies, proxy, this))
+			{ "messages", "notifications", "friends", "status", "photos" },
+			cookies, proxy, this))
 	, Proxy_ (proxy)
 	, CallQueue_ (new Util::QueueManager (400))
 	{
@@ -69,7 +70,8 @@ namespace Murm
 					items.value (3).toULongLong (),
 					items.value (6).toString (),
 					MessageFlags (items.value (2).toInt ()),
-					QDateTime::fromTime_t (items.value (4).toULongLong ())
+					QDateTime::fromTime_t (items.value (4).toULongLong ()),
+					items.value (7).toMap ()
 				});
 		};
 		Dispatcher_ [8] = [this] (const QVariantList& items)
@@ -136,12 +138,21 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
+	namespace
+	{
+		template<typename T>
+		QString CommaJoin (const QList<T>& ids)
+		{
+			QStringList converted;
+			for (auto id : ids)
+				converted << QString::number (id);
+			return converted.join (",");
+		}
+	}
+
 	void VkConnection::MarkAsRead (const QList<qulonglong>& ids)
 	{
-		QStringList converted;
-		for (auto id : ids)
-			converted << QString::number (id);
-		const auto& joined = converted.join (",");
+		const auto& joined = CommaJoin (ids);
 
 		auto nam = Proxy_->GetNetworkAccessManager ();
 		PreparedCalls_.push_back ([this, nam, joined] (const QString& key) -> QNetworkReply*
@@ -149,7 +160,79 @@ namespace Murm
 				QUrl url ("https://api.vk.com/method/messages.markAsRead");
 				url.addQueryItem ("access_token", key);
 				url.addQueryItem ("mids", joined);
-				qDebug () << url;
+
+				auto reply = nam->get (QNetworkRequest (url));
+				connect (reply,
+						SIGNAL (finished ()),
+						reply,
+						SLOT (deleteLater ()));
+				return reply;
+			});
+		AuthMgr_->GetAuthKey ();
+	}
+
+	void VkConnection::RequestGeoIds (const QList<int>& codes, GeoSetter_f setter, GeoIdType type)
+	{
+		const auto& joined = CommaJoin (codes);
+
+		auto nam = Proxy_->GetNetworkAccessManager ();
+		PreparedCalls_.push_back ([=] (const QString& key) -> QNetworkReply*
+			{
+				QString method;
+				switch (type)
+				{
+				case GeoIdType::Country:
+					method = "getCountries";
+					break;
+				case GeoIdType::City:
+					method = "getCities";
+					break;
+				}
+
+				QUrl url ("https://api.vk.com/method/" + method);
+				url.addQueryItem ("access_token", key);
+				url.addQueryItem ("cids", joined);
+
+				auto reply = nam->get (QNetworkRequest (url));
+				CountryReply2Setter_ [reply] = setter;
+				connect (reply,
+						SIGNAL (finished ()),
+						this,
+						SLOT (handleCountriesFetched ()));
+				return reply;
+			});
+		AuthMgr_->GetAuthKey ();
+	}
+
+	void VkConnection::GetPhotoInfos (const QStringList& ids, VkConnection::PhotoInfoSetter_f setter)
+	{
+		const auto& joined = ids.join (",");
+		auto nam = Proxy_->GetNetworkAccessManager ();
+		PreparedCalls_.push_back ([=] (const QString& key) -> QNetworkReply*
+			{
+				QUrl url ("https://api.vk.com/method/photos.getById");
+				url.addQueryItem ("access_token", key);
+				url.addQueryItem ("photos", joined);
+
+				auto reply = nam->get (QNetworkRequest (url));
+				Reply2PhotoSetter_ [reply] = setter;
+				connect (reply,
+						SIGNAL (finished ()),
+						this,
+						SLOT (handlePhotoInfosFetched ()));
+				return reply;
+			});
+		AuthMgr_->GetAuthKey ();
+	}
+
+	void VkConnection::SetStatus (const QString& status)
+	{
+		auto nam = Proxy_->GetNetworkAccessManager ();
+		PreparedCalls_.push_back ([=] (const QString& key) -> QNetworkReply*
+			{
+				QUrl url ("https://api.vk.com/method/status.set");
+				url.addQueryItem ("access_token", key);
+				url.addQueryItem ("text", status);
 
 				auto reply = nam->get (QNetworkRequest (url));
 				connect (reply,
@@ -393,8 +476,6 @@ namespace Murm
 			for (const auto& item : userMap ["lists"].toList ())
 				lists << item.toULongLong ();
 
-			qDebug () << userMap;
-
 			auto dateString = userMap ["bdate"].toString ();
 			if (dateString.count ('.') == 1)
 				dateString += ".1800";
@@ -418,6 +499,8 @@ namespace Murm
 				userMap ["mobile_phone"].toString (),
 
 				userMap ["timezone"].toInt (),
+				userMap ["country"].toInt (),
+				userMap ["city"].toInt (),
 
 				static_cast<bool> (userMap ["online"].toULongLong ()),
 
@@ -467,6 +550,67 @@ namespace Murm
 		const auto& data = QJson::Parser ().parse (reply);
 		const auto code = data.toMap ().value ("response", -1).toULongLong ();
 		setter (code);
+	}
+
+	void VkConnection::handleCountriesFetched ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!CheckFinishedReply (reply))
+			return;
+
+		const auto& setter = CountryReply2Setter_.take (reply);
+		if (!setter)
+			return;
+
+		QHash<int, QString> result;
+
+		const auto& data = QJson::Parser ().parse (reply);
+		for (const auto& item : data.toMap () ["response"].toList ())
+		{
+			const auto& map = item.toMap ();
+			result [map ["cid"].toInt ()] = map ["name"].toString ();
+		}
+
+		setter (result);
+	}
+
+	void VkConnection::handlePhotoInfosFetched ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!CheckFinishedReply (reply))
+			return;
+
+		const auto& setter = Reply2PhotoSetter_.take (reply);
+		if (!setter)
+			return;
+
+		QList<PhotoInfo> result;
+
+		const auto& data = QJson::Parser ().parse (reply);
+		for (const auto& item : data.toMap () ["response"].toList ())
+		{
+			const auto& map = item.toMap ();
+
+			const auto& thumb = map ["src_small"].toString ();
+			QString big;
+			for (auto key : { "src_xxbig", "src_xbig", "src_big", "src" })
+				if (map.contains (key))
+				{
+					big = map [key].toString ();
+					break;
+				}
+
+			result.append ({
+					map ["owner_id"].toLongLong (),
+					map ["pid"].toULongLong (),
+					map ["aid"].toLongLong (),
+
+					thumb,
+					big
+				});
+		}
+
+		setter (result);
 	}
 
 	void VkConnection::saveCookies (const QByteArray& cookies)

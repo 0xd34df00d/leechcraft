@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2010-2013  Oleg Linkin <MaledictusDeMagog@gmail.com>
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,81 +27,45 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "documentadapter.h"
-#include <cmath>
-#include <QTextDocument>
-#include <QPainter>
-#include <QtDebug>
+#pragma once
+
+#include <QObject>
+#include <interfaces/iinfo.h>
+#include <interfaces/iplugin2.h>
+#include <interfaces/ihavesettings.h>
+#include <interfaces/blasq/iservicesplugin.h>
 
 namespace LeechCraft
 {
-namespace Monocle
+namespace Blasq
 {
-namespace FXB
+namespace Vangog
 {
-	DocumentAdapter::DocumentAdapter (QTextDocument *doc)
+	class PicasaService;
+
+	class Plugin : public QObject
+				 , public IInfo
+				 , public IPlugin2
+				 , public IServicesPlugin
 	{
-		SetDocument (doc);
-	}
+		Q_OBJECT
+		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Blasq::IServicesPlugin)
 
-	bool DocumentAdapter::IsValid () const
-	{
-		return static_cast<bool> (Doc_);
-	}
+		PicasaService *Service_;
 
-	int DocumentAdapter::GetNumPages () const
-	{
-		return Doc_->pageCount ();
-	}
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-	QSize DocumentAdapter::GetPageSize (int) const
-	{
-		auto size = Doc_->pageSize ();
-		size.setWidth (std::ceil (size.width ()));
-		return size.toSize ();
-	}
+		QSet<QByteArray> GetPluginClasses () const;
 
-	QImage DocumentAdapter::RenderPage (int page, double xScale, double yScale)
-	{
-		const auto& size = Doc_->pageSize ();
-
-		auto imgSize = size.toSize ();
-		imgSize.rwidth () *= xScale;
-		imgSize.rheight () *= yScale;
-		QImage image (imgSize, QImage::Format_ARGB32);
-		image.fill (Qt::white);
-
-		QRectF rect (QPointF (0, 0), size);
-		rect.moveTop (rect.height () * page);
-
-		QPainter painter;
-		painter.begin (&image);
-		painter.scale (xScale, yScale);
-		painter.translate (0, rect.height () * (-page));
-		Doc_->drawContents (&painter, rect);
-		painter.end ();
-
-		return image;
-	}
-
-	QList<ILink_ptr> DocumentAdapter::GetPageLinks (int)
-	{
-		return QList<ILink_ptr> ();
-	}
-
-	void DocumentAdapter::PaintPage (QPainter *painter, int page)
-	{
-		const auto& size = Doc_->pageSize ();
-
-		QRectF rect (QPointF (0, 0), size);
-		rect.moveTop (rect.height () * page);
-		Doc_->drawContents (painter, rect);
-	}
-
-	void DocumentAdapter::SetDocument (QTextDocument *doc)
-	{
-		Doc_.reset (doc);
-	}
+		QList<IService*> GetServices () const;
+	};
 }
 }
 }

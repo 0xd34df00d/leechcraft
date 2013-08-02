@@ -196,8 +196,7 @@ namespace Azoth
 	}
 
 	Core::Core ()
-	: ImageRegexp_ ("(\\b(?:data:image/)[\\w\\d/\\?.=:@&%#_;\\(?:\\)\\+\\-\\~\\*\\,]+)",
-			Qt::CaseInsensitive, QRegExp::RegExp2)
+	: Proxy_ (nullptr)
 #ifdef ENABLE_CRYPT
 	, QCAInit_ (new QCA::Initializer)
 	, KeyStoreMgr_ (new QCA::KeyStoreManager)

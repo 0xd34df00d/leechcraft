@@ -29,11 +29,19 @@
 
 #include "kbswitch.h"
 #include <QIcon>
+#include <QApplication>
+#include <QStringListModel>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "keyboardlayoutswitcher.h"
 #include "xmlsettingsmanager.h"
+#include "kbctl.h"
+#include "quarkproxy.h"
+#include "flagiconprovider.h"
+#include "layoutsconfigwidget.h"
+#include "rulesstorage.h"
+#include "optionsconfigwidget.h"
 
 namespace LeechCraft
 {
@@ -46,6 +54,15 @@ namespace KBSwitch
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"kbswitchsettings.xml");
+
+		KBCtl::Instance ();
+
+		SettingsDialog_->SetCustomWidget ("LayoutsConfigWidget", new LayoutsConfigWidget);
+		SettingsDialog_->SetCustomWidget ("OptionsConfigWidget", new OptionsConfigWidget);
+
+		auto rulesStorage = KBCtl::Instance ().GetRulesStorage ();
+		SettingsDialog_->SetDataSource ("KeyboardModel",
+				new QStringListModel (rulesStorage->GetKBModelsStrings ()));
 
 		KBLayoutSwitcher_ = new KeyboardLayoutSwitcher (this);
 
@@ -61,6 +78,12 @@ namespace KBSwitch
 				SIGNAL (currentWindowChanged (int, int)),
 				this,
 				SLOT(handleCurrentWindowChanged (int, int)));
+
+		Indicator_.reset (new QuarkComponent ("kbswitch", "IndicatorQuark.qml"));
+		Indicator_->DynamicProps_.append ({ "KBSwitch_proxy", new QuarkProxy });
+		Indicator_->ImageProviders_.append ({ "KBSwitch_flags", new FlagIconProvider });
+
+		KBCtl::Instance ().scheduleApply ();
 	}
 
 	void Plugin::SecondInit ()
@@ -74,6 +97,8 @@ namespace KBSwitch
 
 	void Plugin::Release ()
 	{
+		if (QApplication::arguments ().contains ("--desktop"))
+			KBCtl::Instance ().Release ();
 	}
 
 	QString Plugin::GetName () const
@@ -95,6 +120,11 @@ namespace KBSwitch
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return SettingsDialog_;
+	}
+
+	QuarkComponents_t Plugin::GetComponents () const
+	{
+		return { Indicator_ };
 	}
 
 	void Plugin::handleCurrentChanged (int index)

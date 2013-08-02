@@ -35,6 +35,8 @@
 #include "vkentry.h"
 #include "vkmessage.h"
 #include "photostorage.h"
+#include "georesolver.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -50,6 +52,7 @@ namespace Murm
 	, PhotoStorage_ (new PhotoStorage (proxy->GetNetworkAccessManager (), ID_))
 	, Name_ (name)
 	, Conn_ (new VkConnection (cookies, proxy))
+	, GeoResolver_ (new GeoResolver (Conn_, this))
 	{
 		connect (Conn_,
 				SIGNAL (cookiesChanged ()),
@@ -145,6 +148,11 @@ namespace Murm
 		return PhotoStorage_;
 	}
 
+	GeoResolver* VkAccount::GetGeoResolver () const
+	{
+		return GeoResolver_;
+	}
+
 	QObject* VkAccount::GetQObject ()
 	{
 		return this;
@@ -234,6 +242,23 @@ namespace Murm
 		return nullptr;
 	}
 
+	void VkAccount::PublishTune (const QMap<QString, QVariant>& tuneData)
+	{
+		if (!XmlSettingsManager::Instance ().property ("PublishTune").toBool ())
+			return;
+
+		QStringList fields
+		{
+			tuneData ["artist"].toString (),
+			tuneData ["source"].toString (),
+			tuneData ["title"].toString ()
+		};
+		fields.removeAll ({});
+
+		const auto& toPublish = fields.join (QString::fromUtf8 (" — "));
+		Conn_->SetStatus (toPublish);
+	}
+
 	void VkAccount::handleLists (const QList<ListInfo>& lists)
 	{
 		ID2ListInfo_.clear ();
@@ -244,6 +269,7 @@ namespace Murm
 	void VkAccount::handleUsers (const QList<UserInfo>& infos)
 	{
 		QList<QObject*> newEntries;
+		QSet<int> newCountries;
 		for (const auto& info : infos)
 		{
 			if (Entries_.contains (info.ID_))
@@ -255,7 +281,11 @@ namespace Murm
 			auto entry = new VkEntry (info, this);
 			Entries_ [info.ID_] = entry;
 			newEntries << entry;
+
+			newCountries << info.Country_;
 		}
+
+		GeoResolver_->CacheCountries (newCountries.toList ());
 
 		if (!newEntries.isEmpty ())
 			emit gotCLItems (newEntries);

@@ -114,7 +114,62 @@ namespace Murm
 		return pos == Messages_.end () ? nullptr : *pos;
 	}
 
-	void VkEntry::HandleMessage (const MessageInfo& info)
+	namespace
+	{
+		void FixEmoji (QString& text)
+		{
+			const uint32_t knowns []
+			{
+				0xD83DDE0A, 0xD83DDE03, 0xD83DDE09, 0xD83DDE06,
+				0xD83DDE1C, 0xD83DDE0B, 0xD83DDE0D, 0xD83DDE0E,
+				0xD83DDE12, 0xD83DDE0F, 0xD83DDE14, 0xD83DDE22,
+				0xD83DDE2D, 0xD83DDE29, 0xD83DDE28, 0xD83DDE10,
+				0xD83DDE0C, 0xD83DDE20, 0xD83DDE21, 0xD83DDE07,
+				0xD83DDE30, 0xD83DDE32, 0xD83DDE33, 0xD83DDE37,
+				0xD83DDE1A, 0xD83DDE08, 0x2764,		0xD83DDC4D,
+				0xD83DDC4E, 0x261D,		0x270C,		0xD83DDC4C,
+				0x26BD,		0x26C5,		0xD83CDF1F, 0xD83CDF4C,
+				0xD83CDF7A, 0xD83CDF7B, 0xD83CDF39, 0xD83CDF45,
+				0xD83CDF52, 0xD83CDF81, 0xD83CDF82, 0xD83CDF84,
+				0xD83CDFC1, 0xD83CDFC6, 0xD83DDC0E, 0xD83DDC0F,
+				0xD83DDC1C, 0xD83DDC2B, 0xD83DDC2E, 0xD83DDC03,
+				0xD83DDC3B, 0xD83DDC3C, 0xD83DDC05, 0xD83DDC13,
+				0xD83DDC18, 0xD83DDC94, 0xD83DDCAD, 0xD83DDC36,
+				0xD83DDC31, 0xD83DDC37, 0xD83DDC11, 0x23F3,
+				0x26BE,		0x26C4,		0x2600,		0xD83CDF3A,
+				0xD83CDF3B, 0xD83CDF3C, 0xD83CDF3D, 0xD83CDF4A,
+				0xD83CDF4B, 0xD83CDF4D, 0xD83CDF4E, 0xD83CDF4F,
+				0xD83CDF6D, 0xD83CDF37, 0xD83CDF38, 0xD83CDF46,
+				0xD83CDF49, 0xD83CDF50, 0xD83CDF51, 0xD83CDF53,
+				0xD83CDF54, 0xD83CDF55, 0xD83CDF56, 0xD83CDF57,
+				0xD83CDF69, 0xD83CDF83, 0xD83CDFAA, 0xD83CDFB1,
+				0xD83CDFB2, 0xD83CDFB7, 0xD83CDFB8, 0xD83CDFBE,
+				0xD83CDFC0, 0xD83CDFE6, 0xD83DDC00, 0xD83DDC0C,
+				0xD83DDC1B, 0xD83DDC1D, 0xD83DDC1F, 0xD83DDC2A,
+				0xD83DDC2C, 0xD83DDC2D, 0xD83DDC3A, 0xD83DDC3D,
+				0xD83DDC2F, 0xD83DDC5C, 0xD83DDC7B, 0xD83DDC14,
+				0xD83DDC23, 0xD83DDC24, 0xD83DDC40, 0xD83DDC42,
+				0xD83DDC43, 0xD83DDC46, 0xD83DDC47, 0xD83DDC48,
+				0xD83DDC51, 0xD83DDC60, 0xD83DDCA1, 0xD83DDCA3,
+				0xD83DDCAA, 0xD83DDCAC, 0xD83DDD14, 0xD83DDD25
+			};
+
+			for (auto known : knowns)
+			{
+				QString pattern;
+				if (known > 0xffff)
+					pattern.append (known >> 16).append (known & 0xffff);
+				else
+					pattern.append (known);
+
+				text.replace (pattern,
+						QString ("<img src='http://vk.com/images/emoji/%1.png'/>")
+							.arg (QString::number (known, 16).toUpper ()));
+			}
+		}
+	}
+
+	void VkEntry::HandleMessage (MessageInfo info)
 	{
 		if (FindMessage (info.ID_))
 			return;
@@ -130,10 +185,16 @@ namespace Murm
 			HasUnread_ = true;
 		}
 
+		if (info.Params_.remove ("emoji"))
+			FixEmoji (info.Text_);
+
 		auto msg = new VkMessage (dir, IMessage::MTChatMessage, this);
 		msg->SetBody (info.Text_);
 		msg->SetDateTime (info.TS_);
 		msg->SetID (info.ID_);
+
+		HandleAttaches (msg, info);
+
 		Store (msg);
 	}
 
@@ -252,7 +313,8 @@ namespace Murm
 		if (VCardDialog_)
 			return;
 
-		VCardDialog_ = new VCardDialog (Info_, Account_->GetPhotoStorage ());
+		VCardDialog_ = new VCardDialog (Info_,
+				Account_->GetPhotoStorage (), Account_->GetGeoResolver ());
 		VCardDialog_->show ();
 	}
 
@@ -287,6 +349,82 @@ namespace Murm
 
 	void VkEntry::ChatTabClosed()
 	{
+	}
+
+	void VkEntry::HandleAttaches (VkMessage *msg, const MessageInfo& info)
+	{
+		struct AttachInfo
+		{
+			QString Type_;
+			QString ID_;
+		};
+		QMap<int, AttachInfo> Attaches_;
+
+		const QString attachMarker ("attach");
+		const QString typeMarker ("_type");
+		for (auto pos = info.Params_.begin (); pos != info.Params_.end (); ++pos)
+		{
+			auto key = pos.key ();
+			if (!key.startsWith (attachMarker))
+				continue;
+
+			key = key.mid (attachMarker.size ());
+			const bool isType = key.endsWith (typeMarker);
+			if (isType)
+				key.chop (typeMarker.size ());
+
+			bool ok = false;
+			const auto num = key.toInt (&ok);
+			if (!ok)
+				continue;
+
+			auto& attach = Attaches_ [num];
+			if (isType)
+				attach.Type_ = pos->toString ();
+			else
+				attach.ID_ = pos->toString ();
+		}
+
+		QStringList photoIds;
+		for (const auto& info : Attaches_)
+			if (info.Type_ == "photo")
+				photoIds << info.ID_;
+		if (photoIds.isEmpty ())
+			return;
+
+		QString newContents = msg->GetBody ();
+		for (const auto& id : photoIds)
+			newContents += "<div id='photostub_" + id + "'></div>";
+		msg->SetBody (newContents);
+
+		QPointer<VkMessage> safeMsg (msg);
+		Account_->GetConnection ()->GetPhotoInfos (photoIds,
+				[safeMsg] (const QList<PhotoInfo>& infos) -> void
+				{
+					if (!safeMsg)
+						return;
+
+					QString js;
+					auto body = safeMsg->GetBody ();
+					for (const auto& info : infos)
+					{
+						const auto& id = QString ("%1_%2")
+								.arg (info.OwnerID_)
+								.arg (info.PhotoID_);
+						const auto& replacement = QString ("<a href='%1' target='_blank'><img src='%2' alt='' /></a>")
+								.arg (info.Full_)
+								.arg (info.Thumbnail_);
+
+						body.replace ("<div id='photostub_" + id + "'></div>",
+								"<div>" + replacement + "</div>");
+						js += QString ("try { document.getElementById('photostub_%1').innerHTML = \"%2\"; } catch (e) {};")
+								.arg (id).arg (replacement);
+					}
+					safeMsg->SetBody (body);
+
+					auto safeThis = qobject_cast<VkEntry*> (safeMsg->OtherPart ());
+					safeThis->performJS (js);
+				});
 	}
 
 	void VkEntry::handleTypingTimeout ()

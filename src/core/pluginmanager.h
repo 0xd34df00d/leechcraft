@@ -116,6 +116,8 @@ namespace LeechCraft
 
 		QObject* GetQObject ();
 
+		void OpenSettings (QObject*);
+
 		QObject* GetProvider (const QString&) const;
 
 		const QStringList& GetPluginLoadErrors () const;

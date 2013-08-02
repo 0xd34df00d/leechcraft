@@ -207,6 +207,8 @@ namespace Azoth
 		void handleFontSizeChanged ();
 
 		void handleAccountStyleChanged (IAccount*);
+
+		void performJS (const QString&);
 	private:
 		template<typename T>
 		T* GetEntry () const;

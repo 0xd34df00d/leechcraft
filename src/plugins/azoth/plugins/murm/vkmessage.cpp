@@ -130,6 +130,16 @@ namespace Murm
 	{
 		return ID_ != static_cast<qulonglong> (-1);
 	}
+
+	QString VkMessage::GetRichBody () const
+	{
+		return RichBody_;
+	}
+
+	void VkMessage::SetRichBody (const QString& body)
+	{
+		RichBody_ = body;
+	}
 }
 }
 }

@@ -34,6 +34,7 @@
 #include <QPointer>
 #include <QStringList>
 #include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/iupdatablechatentry.h>
 #include "structures.h"
 
 class QTimer;
@@ -51,9 +52,11 @@ namespace Murm
 
 	class VkEntry : public QObject
 				  , public ICLEntry
+				  , public IUpdatableChatEntry
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICLEntry)
+		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
+				LeechCraft::Azoth::IUpdatableChatEntry)
 
 		VkAccount * const Account_;
 		UserInfo Info_;
@@ -80,7 +83,7 @@ namespace Murm
 		void Store (VkMessage*);
 
 		VkMessage* FindMessage (qulonglong) const;
-		void HandleMessage (const MessageInfo&);
+		void HandleMessage (MessageInfo);
 
 		void HandleTypingNotification ();
 
@@ -107,6 +110,8 @@ namespace Murm
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
 		void MarkMsgsRead ();
 		void ChatTabClosed ();
+	private:
+		void HandleAttaches (VkMessage*, const MessageInfo&);
 	private slots:
 		void handleTypingTimeout ();
 		void sendTyping ();
@@ -123,6 +128,8 @@ namespace Murm
 		void chatPartStateChanged (const ChatPartState&, const QString&);
 		void permsChanged ();
 		void entryGenerallyChanged ();
+
+		void performJS (const QString&);
 	};
 }
 }

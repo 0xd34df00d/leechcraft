@@ -1,18 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
 	<page>
-		<label value="Keyboard layout" />
-		<item type="combobox" property="SwitchingPolicy">
-			<label lang="en" value="Switching keyboard layout policy:" />
-			<option name="global" default="true">
-				<label lang="en" value="Use system layout" />
-			</option>
-			<option name="plugin">
-				<label lang="en" value="Keyboard layout per plugin" />
-			</option>
-			<option name="tab">
-				<label lang="en" value="Keyboard layout per tab" />
-			</option>
-		</item>
+		<label value="KBSwitch" />
+		<tab>
+			<label value="General settings" />
+			<item type="combobox" property="SwitchingPolicy">
+				<label value="Keboard layout switching policy (LeechCraft window):" />
+				<option name="global" default="true">
+					<label value="Use system layout" />
+				</option>
+				<option name="plugin">
+					<label value="Keyboard layout per plugin" />
+				</option>
+				<option name="tab">
+					<label value="Keyboard layout per tab" />
+				</option>
+			</item>
+			<item type="groupbox" checkable="true" property="ManageSystemWide" default="false">
+				<label value="Manage keyboard layouts system-wide" />
+				<item type="combobox" property="KeyboardModel" mayHaveDataSource="true">
+					<label value="Keyboard model:" />
+				</item>
+			</item>
+		</tab>
+		<tab>
+			<label value="Layouts" />
+			<item type="customwidget" name="LayoutsConfigWidget" label="own" />
+		</tab>
+		<tab>
+			<label value="Options" />
+			<item type="customwidget" name="OptionsConfigWidget" label="own" />
+		</tab>
 	</page>
 </settings>

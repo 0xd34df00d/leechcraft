@@ -33,6 +33,7 @@
 #include <interfaces/core/icoreproxy.h>
 
 class QStandardItemModel;
+class QMainWindow;
 class QTimer;
 
 namespace LeechCraft
@@ -49,13 +50,16 @@ namespace SB2
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
-		ICoreTabWidget *ICTW_;
+		ICoreTabWidget * const ICTW_;
+		QMainWindow * const MW_;
+
 		const QByteArray TC_;
-		QStandardItemModel *Model_;
+		QStandardItemModel * const Model_;
 
 		Util::UnhoverDeleteMixin *UnhoverDeleteMixin_;
 	public:
-		TabListView (const QByteArray&, const QList<QWidget*>&, ICoreTabWidget*, ICoreProxy_ptr, QWidget* = 0);
+		TabListView (const QByteArray&, const QList<QWidget*>&,
+				ICoreTabWidget*, QMainWindow*, ICoreProxy_ptr, QWidget* = 0);
 
 		QByteArray GetTabClass () const;
 

@@ -77,9 +77,15 @@ namespace Murm
 		qulonglong LPTS_;
 
 		QUrl LPURLTemplate_;
-
+	public:
+		typedef std::function<void (QHash<int, QString>)> GeoSetter_f;
+		typedef std::function<void (QList<PhotoInfo>)> PhotoInfoSetter_f;
+	private:
 		QHash<int, std::function<void (QVariantList)>> Dispatcher_;
 		QHash<QNetworkReply*, std::function<void (qulonglong)>> MsgReply2Setter_;
+		QHash<QNetworkReply*, GeoSetter_f> CountryReply2Setter_;
+
+		QHash<QNetworkReply*, PhotoInfoSetter_f> Reply2PhotoSetter_;
 
 		int PollErrorCount_ = 0;
 		int APIErrorCount_ = 0;
@@ -95,6 +101,11 @@ namespace Murm
 				std::function<void (qulonglong)> idSetter);
 		void SendTyping (qulonglong to);
 		void MarkAsRead (const QList<qulonglong>&);
+		void RequestGeoIds (const QList<int>&, GeoSetter_f, GeoIdType);
+
+		void GetPhotoInfos (const QStringList& ids, PhotoInfoSetter_f setter);
+
+		void SetStatus (const QString&);
 
 		void SetStatus (const EntryStatus&);
 		EntryStatus GetStatus () const;
@@ -115,6 +126,8 @@ namespace Murm
 		void handleGotFriends ();
 		void handleGotLPServer ();
 		void handleMessageSent ();
+		void handleCountriesFetched ();
+		void handlePhotoInfosFetched ();
 
 		void saveCookies (const QByteArray&);
 	signals:

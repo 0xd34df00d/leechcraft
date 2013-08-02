@@ -1,0 +1,6 @@
+{
+	"quarkID": "org.LeechCraft.KBSwitch.Indicator",
+	"quarkName": "Keyboard layout",
+	"description": "Keyboard layout indicator",
+	"icon": "preferences-desktop-keyboard"
+}

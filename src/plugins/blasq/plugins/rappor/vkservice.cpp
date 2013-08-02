@@ -93,7 +93,7 @@ namespace Rappor
 	void VkService::RemoveAccount (IAccount *account)
 	{
 		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Blasq_Spegnersi");
+				QCoreApplication::applicationName () + "_Blasq_Rappor");
 		settings.beginGroup ("Accounts");
 		settings.remove (account->GetID ());
 		settings.endGroup ();

@@ -26,6 +26,8 @@ set (MURM_SRCS
 	vkmessage.cpp
 	photostorage.cpp
 	vcarddialog.cpp
+	georesolver.cpp
+	xmlsettingsmanager.cpp
 	)
 set (MURM_FORMS
 	vcarddialog.ui
@@ -50,3 +52,4 @@ target_link_libraries (leechcraft_azoth_murm
 	)
 
 install (TARGETS leechcraft_azoth_murm DESTINATION ${LC_PLUGINS_DEST})
+install (FILES azothmurmsettings.xml DESTINATION ${LC_SETTINGS_DEST})

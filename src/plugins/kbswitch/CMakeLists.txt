@@ -4,6 +4,7 @@ include (InitLCPlugin OPTIONAL)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
+set (QT_USE_QTDECLARATIVE TRUE)
 include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -14,27 +15,31 @@ set (SRCS
 	kbswitch.cpp
 	keyboardlayoutswitcher.cpp
 	xmlsettingsmanager.cpp
+	kbctl.cpp
+	quarkproxy.cpp
+	flagiconprovider.cpp
+	rulesstorage.cpp
+	layoutsconfigwidget.cpp
+	optionsconfigwidget.cpp
 	)
-set (HEADERS
-	kbswitch.h
-	keyboardlayoutswitcher.h
-	xmlsettingsmanager.h
+set (FORMS
+	layoutsconfigwidget.ui
 	)
 set (RESOURCES kbswitchresources.qrc)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+QT4_WRAP_UI (UIS_H ${FORMS})
 
 add_library (leechcraft_kbswitch SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${RCCS}
+	${UIS_H}
 	)
 target_link_libraries (leechcraft_kbswitch
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
+	xkbfile
 	)
 install (TARGETS leechcraft_kbswitch DESTINATION ${LC_PLUGINS_DEST})
 install (FILES kbswitchsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (DIRECTORY share/qml/kbswitch DESTINATION ${LC_QML_DEST})

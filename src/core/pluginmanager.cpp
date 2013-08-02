@@ -55,6 +55,7 @@
 #include "application.h"
 #include "loaders/sopluginloader.h"
 #include "loaders/dbuspluginloader.h"
+#include "settingstab.h"
 
 namespace LeechCraft
 {
@@ -617,6 +618,17 @@ namespace LeechCraft
 	QObject* PluginManager::GetQObject ()
 	{
 		return this;
+	}
+
+	void PluginManager::OpenSettings (QObject *plugin)
+	{
+		auto instObj = Core::Instance ().GetCoreInstanceObject ();
+
+		auto tab = instObj->GetSettingsTab ();
+		tab->showSettingsFor (plugin);
+
+		const auto& id = tab->GetTabClassInfo ().TabClass_;
+		instObj->TabOpenRequested (id);
 	}
 
 	QObject* PluginManager::GetProvider (const QString& feature) const

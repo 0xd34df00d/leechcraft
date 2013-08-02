@@ -5,5 +5,12 @@
 		<item type="combobox" property="SelectedWM" mayHaveDataSource="true">
 			<label value="Window manager:" />
 		</item>
+		<item type="groupbox" property="UseCompositor" checkable="true" default="true">
+			<label value="Use compositor" />
+			<item type="combobox" property="SelectedCompositor" mayHaveDataSource="true">
+				<label value="Compositor:" />
+			</item>
+			<item type="customwidget" name="CompositorProps" label="own" />
+		</item>
 	</page>
 </settings>

@@ -31,6 +31,7 @@
 #include <QTimer>
 #include <QDBusInterface>
 #include <QDBusReply>
+#include <QDBusConnectionInterface>
 #include <QtDebug>
 #include <util/util.h>
 #include "batteryinfo.h"
@@ -43,6 +44,23 @@ namespace Liznoo
 	: QObject (parent)
 	, SB_ (QDBusConnection::systemBus ())
 	{
+		auto iface = SB_.interface ();
+		auto checkRunning = [&iface]
+			{
+				return !iface->registeredServiceNames ()
+					.value ().filter ("org.freedesktop.UPower").isEmpty ();
+			};
+		if (!checkRunning ())
+		{
+			iface->startService ("org.freedesktop.UPower");
+			if (!checkRunning ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "failed to autostart UPower, we won't work :(";
+				return;
+			}
+		}
+
 		SB_.connect ("org.freedesktop.UPower",
 				"/org/freedesktop/UPower",
 				"org.freedesktop.UPower",

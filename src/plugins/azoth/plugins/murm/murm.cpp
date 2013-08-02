@@ -29,7 +29,9 @@
 
 #include "murm.h"
 #include <QIcon>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "vkprotocol.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -39,6 +41,9 @@ namespace Murm
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothmurmsettings.xml");
+
 		Proto_ = new VkProtocol (proxy, this);
 	}
 
@@ -76,6 +81,11 @@ namespace Murm
 		QSet<QByteArray> classes;
 		classes << "org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin";
 		return classes;
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 
 	QObject* Plugin::GetQObject ()

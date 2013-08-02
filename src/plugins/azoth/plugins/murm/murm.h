@@ -32,6 +32,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/ihavesettings.h>
 #include <interfaces/azoth/iprotocolplugin.h>
 
 namespace LeechCraft
@@ -45,12 +46,17 @@ namespace Murm
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
+				 , public IHaveSettings
 				 , public IProtocolPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin);
+		Q_INTERFACES (IInfo
+				IPlugin2
+				IHaveSettings
+				LeechCraft::Azoth::IProtocolPlugin)
 
 		VkProtocol *Proto_;
+		Util::XmlSettingsDialog_ptr XSD_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -61,6 +67,8 @@ namespace Murm
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		QObject* GetQObject ();
 		QList<QObject*> GetProtocols () const;

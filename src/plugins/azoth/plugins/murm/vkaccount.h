@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <interfaces/azoth/iaccount.h>
+#include <interfaces/azoth/isupporttune.h>
 #include <interfaces/core/icoreproxy.h>
 #include "structures.h"
 
@@ -45,12 +46,14 @@ namespace Murm
 	class VkProtocol;
 	class VkConnection;
 	class PhotoStorage;
+	class GeoResolver;
 
 	class VkAccount : public QObject
 					, public IAccount
+					, public ISupportTune
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IAccount)
+		Q_INTERFACES (LeechCraft::Azoth::IAccount LeechCraft::Azoth::ISupportTune)
 
 		VkProtocol * const Proto_;
 		const QByteArray ID_;
@@ -60,8 +63,9 @@ namespace Murm
 		QString Name_;
 
 		VkConnection * const Conn_;
-		QHash<qulonglong, VkEntry*> Entries_;
+		GeoResolver * const GeoResolver_;
 
+		QHash<qulonglong, VkEntry*> Entries_;
 		QHash<qulonglong, ListInfo> ID2ListInfo_;
 	public:
 		VkAccount (const QString& name, VkProtocol *proto, ICoreProxy_ptr proxy,
@@ -76,6 +80,7 @@ namespace Murm
 
 		VkConnection* GetConnection () const;
 		PhotoStorage* GetPhotoStorage () const;
+		GeoResolver* GetGeoResolver () const;
 
 		QObject* GetQObject ();
 		QObject* GetParentProtocol () const;
@@ -99,6 +104,8 @@ namespace Murm
 		void RequestAuth (const QString&, const QString&, const QString&, const QStringList&);
 		void RemoveEntry (QObject*);
 		QObject* GetTransferManager () const;
+
+		void PublishTune (const QMap<QString, QVariant>& tuneData);
 	private slots:
 		void handleLists (const QList<ListInfo>&);
 		void handleUsers (const QList<UserInfo>&);

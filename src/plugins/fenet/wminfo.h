@@ -43,6 +43,8 @@ namespace Fenet
 		QStringList ExecNames_;
 
 		QString Session_;
+
+		bool SupportsCompositing_;
 	};
 
 	typedef QList<WMInfo> WMInfos_t;

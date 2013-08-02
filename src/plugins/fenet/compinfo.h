@@ -29,36 +29,45 @@
 
 #pragma once
 
-#include <memory>
-#include <interfaces/monocle/idocument.h>
-#include <interfaces/monocle/isupportpainting.h>
-
-class QTextDocument;
+#include <QStringList>
+#include <QMetaType>
 
 namespace LeechCraft
 {
-namespace Monocle
+namespace Fenet
 {
-namespace FXB
-{
-	class DocumentAdapter : public IDocument
-						  , public ISupportPainting
+	struct Param
 	{
-	protected:
-		std::shared_ptr<QTextDocument> Doc_;
-	public:
-		DocumentAdapter (QTextDocument* = 0);
+		QString Name_;
+		QString Desc_;
 
-		bool IsValid () const;
-		int GetNumPages () const;
-		QSize GetPageSize (int) const;
-		QImage RenderPage (int , double xRes, double yRes);
-		QList<ILink_ptr> GetPageLinks (int);
+		double Default_;
 
-		void PaintPage (QPainter*, int);
-	protected:
-		void SetDocument (QTextDocument*);
+		double Min_;
+		double Max_;
 	};
+
+	struct Flag
+	{
+		QString Name_;
+		QString Desc_;
+	};
+
+	struct CompInfo
+	{
+		QList<Param> Params_;
+		QList<Flag> Flags_;
+
+		QString Name_;
+		QString Comment_;
+
+		QStringList ExecNames_;
+	};
+
+	typedef QList<CompInfo> CompInfos_t;
 }
 }
-}
+
+Q_DECLARE_METATYPE (LeechCraft::Fenet::Param)
+Q_DECLARE_METATYPE (LeechCraft::Fenet::Flag)
+Q_DECLARE_METATYPE (LeechCraft::Fenet::CompInfo)

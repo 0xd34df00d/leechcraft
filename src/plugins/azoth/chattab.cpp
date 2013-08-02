@@ -61,6 +61,7 @@
 #include "interfaces/azoth/imediacall.h"
 #include "interfaces/azoth/ihistoryplugin.h"
 #include "interfaces/azoth/imucperms.h"
+#include "interfaces/azoth/iupdatablechatentry.h"
 #ifdef ENABLE_CRYPT
 #include "interfaces/azoth/isupportpgp.h"
 #endif
@@ -1388,6 +1389,11 @@ namespace Azoth
 		PrepareTheme ();
 	}
 
+	void ChatTab::performJS (const QString& js)
+	{
+		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
+	}
+
 	template<typename T>
 	T* ChatTab::GetEntry () const
 	{
@@ -1481,23 +1487,24 @@ namespace Azoth
 
 	void ChatTab::InitEntry ()
 	{
-		connect (GetEntry<QObject> (),
+		auto obj = GetEntry<QObject> ();
+		connect (obj,
 				SIGNAL (gotMessage (QObject*)),
 				this,
 				SLOT (handleEntryMessage (QObject*)));
-		connect (GetEntry<QObject> (),
+		connect (obj,
 				SIGNAL (statusChanged (const EntryStatus&, const QString&)),
 				this,
 				SLOT (handleStatusChanged (const EntryStatus&, const QString&)));
-		connect (GetEntry<QObject> (),
+		connect (obj,
 				SIGNAL (availableVariantsChanged (const QStringList&)),
 				this,
 				SLOT (handleVariantsChanged (QStringList)));
-		connect (GetEntry<QObject> (),
+		connect (obj,
 				SIGNAL (avatarChanged (const QImage&)),
 				this,
 				SLOT (handleAvatarChanged (const QImage&)));
-		connect (GetEntry<QObject> (),
+		connect (obj,
 				SIGNAL (nameChanged (QString)),
 				this,
 				SLOT (handleNameChanged (QString)));
@@ -1515,6 +1522,12 @@ namespace Azoth
 				qobject_cast<IAccount*> (e->GetParentAccount ())->
 						GetAccountName ();
 		Ui_.AccountName_->setText (accName);
+
+		if (GetEntry<IUpdatableChatEntry> ())
+			connect (obj,
+					SIGNAL (performJS (QString)),
+					this,
+					SLOT (performJS (QString)));
 	}
 
 	void ChatTab::CheckMUC ()

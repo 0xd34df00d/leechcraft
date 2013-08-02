@@ -33,6 +33,7 @@
 #include <QList>
 #include <QUrl>
 #include <QDateTime>
+#include <QVariantMap>
 
 namespace LeechCraft
 {
@@ -66,6 +67,9 @@ namespace Murm
 
 		int Timezone_;
 
+		int Country_;
+		int City_;
+
 		bool IsOnline_;
 
 		QList<qulonglong> Lists_;
@@ -98,6 +102,24 @@ namespace Murm
 		MessageFlags Flags_;
 
 		QDateTime TS_;
+
+		QVariantMap Params_;
+	};
+
+	enum class GeoIdType
+	{
+		Country,
+		City
+	};
+
+	struct PhotoInfo
+	{
+		qlonglong OwnerID_;
+		qulonglong PhotoID_;
+		qlonglong AlbumID_;
+
+		QString Thumbnail_;
+		QString Full_;
 	};
 }
 }

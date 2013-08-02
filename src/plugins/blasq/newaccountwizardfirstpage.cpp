@@ -31,6 +31,7 @@
 #include <interfaces/blasq/iservice.h>
 #include "servicesmanager.h"
 #include <QVBoxLayout>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -93,6 +94,7 @@ namespace Blasq
 			}
 			wizard ()->addPage (page);
 		}
+		setFinalPage (false);
 	}
 
 	void NewAccountWizardFirstPage::handleAccepted ()

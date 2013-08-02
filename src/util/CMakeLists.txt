@@ -34,6 +34,7 @@ set (SRCS
 	models/flattofoldersproxymodel.cpp
 	models/listmodel.cpp
 	models/mergemodel.cpp
+	models/modeliterator.cpp
 	models/treeitem.cpp
 	qml/colorthemeproxy.cpp
 	qml/widthiconprovider.cpp
