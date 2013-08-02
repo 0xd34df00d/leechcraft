@@ -59,6 +59,8 @@ namespace KBSwitch
 		const QHash<QString, QString>& GetLayoutsD2N () const;
 		const QHash<QString, QString>& GetLayoutsN2D () const;
 
+		QStringList GetLayoutVariants (const QString&) const;
+
 		const QHash<QString, QString>& GetKBModels () const;
 		const QStringList& GetKBModelsStrings () const;
 		QString GetKBModelCode (const QString&) const;

@@ -31,6 +31,7 @@
 #include <QFile>
 #include <QtDebug>
 #include <QStringList>
+#include <QDir>
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -184,6 +185,56 @@ namespace KBSwitch
 	const QHash<QString, QString>& RulesStorage::GetLayoutsN2D () const
 	{
 		return LayName2Desc_;
+	}
+
+	QStringList RulesStorage::GetLayoutVariants (const QString& layout) const
+	{
+		QStringList result;
+
+		QString filename = X11Dir_ + "/xkb/symbols/";
+		if (QDir (filename + "pc").exists ())
+			filename += "pc/";
+		filename += layout;
+
+		QFile file (filename);
+		if (!file.open (QIODevice::ReadOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot open"
+					<< filename
+					<< "for"
+					<< layout;
+			return result;
+		}
+
+		QTextStream istr (&file);
+		QString line;
+		QString prev;
+
+		while (istr.status () == QTextStream::Ok)
+		{
+			prev = line;
+			line = istr.readLine ();
+			if (line.isNull ())
+				break;
+
+			line = line.simplified ();
+			if (line.isEmpty () || line [0] == '#' || line.left (2) == "//")
+				continue;
+
+			auto pos = line.indexOf ("xkb_symbols");
+			if (pos < 0)
+				continue;
+
+			pos = line.indexOf ('"', pos) + 1;
+			const auto nextPos = line.indexOf ('"', pos);
+			if (pos < 0 || nextPos < 0)
+				continue;
+
+			result.append (line.mid (pos, nextPos - pos));
+		}
+
+		return result;
 	}
 
 	const QHash<QString, QString>& RulesStorage::GetKBModels () const
