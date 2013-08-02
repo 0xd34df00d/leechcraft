@@ -31,6 +31,7 @@
 #include <QtDebug>
 #include <QTimer>
 #include <QProcess>
+#include <QCoreApplication>
 #include <util/x11/xwrapper.h>
 #include "xmlsettingsmanager.h"
 #include "rulesstorage.h"
@@ -81,6 +82,20 @@ namespace KBSwitch
 			SetupNonExtListeners ();
 
 		UpdateGroupNames ();
+
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_KBSwitch");
+		settings.beginGroup ("Groups");
+		auto enabledGroups = settings.childKeys ();
+		if (!enabledGroups.isEmpty ())
+		{
+			Variants_.clear ();
+			for (const auto& group : enabledGroups)
+				Variants_ [group] = settings.value (group).toString ();
+
+			SetEnabledGroups (enabledGroups);
+		}
+		settings.endGroup ();
 
 		qt_installX11EventFilter (&EventFilter);
 
@@ -363,11 +378,19 @@ namespace KBSwitch
 	{
 		ApplyScheduled_ = false;
 
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_KBSwitch");
+		settings.beginGroup ("Groups");
+		settings.remove ("");
+		for (const auto& group : Groups_)
+			settings.setValue (group, Variants_.value (group));
+		settings.endGroup ();
+
 		if (!XmlSettingsManager::Instance ()
 				.property ("ManageSystemWide").toBool ())
 			return;
 
-		const auto& kbModel = XmlSettingsManager::Instance ()
+		auto kbModel = XmlSettingsManager::Instance ()
 				.property ("KeyboardModel").toString ();
 		const auto& kbCode = Rules_->GetKBModelCode (kbModel);
 
