@@ -108,7 +108,7 @@ namespace KBSwitch
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Provides plugin- or tab-grained keyboard layout control.");
+		return tr ("Provides keyboard layout configurator and plugin- or tab-grained layout control.");
 	}
 
 	QIcon Plugin::GetIcon () const
