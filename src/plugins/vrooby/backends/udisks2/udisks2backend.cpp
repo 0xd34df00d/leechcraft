@@ -206,14 +206,7 @@ namespace UDisks2
 
 		auto driveIface = driveId.isEmpty () ? QDBusInterface_ptr () : GetDevInterface (driveId);
 		if (!driveIface || !driveIface->isValid ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no associated device"
-					<< str
-					<< blockIface->property ("Drive")
-					<< driveId;
 			return false;
-		}
 
 		auto partitionIface = GetPartitionInterface (str);
 		const bool isPartition = !partitionIface->property ("Type").toString ().isEmpty ();
