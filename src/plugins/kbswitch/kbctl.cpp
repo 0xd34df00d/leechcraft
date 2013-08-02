@@ -134,6 +134,25 @@ namespace KBSwitch
 		scheduleApply ();
 	}
 
+	QString KBCtl::GetGroupVariant (const QString& group) const
+	{
+		return Variants_ [group];
+	}
+
+	void KBCtl::SetGroupVariants (const QHash<QString, QString>& variants)
+	{
+		Variants_ = variants;
+		for (auto i = Variants_.begin (); i != Variants_.end (); )
+		{
+			if (i->isEmpty ())
+				i = Variants_.erase (i);
+			else
+				++i;
+		}
+
+		scheduleApply ();
+	}
+
 	int KBCtl::GetMaxEnabledGroups () const
 	{
 		return XkbNumKbdGroups;
@@ -360,9 +379,19 @@ namespace KBSwitch
 			kbCode,
 			"-option"
 		};
+
 		if (!Options_.isEmpty ())
 			args << "-option"
 					<< Options_.join (",");
+
+		if (!Variants_.isEmpty ())
+		{
+			QStringList variants;
+			for (const auto& group : Groups_)
+				variants << Variants_.value (group);
+			args << "-variant"
+					<< variants.join (",");
+		}
 
 		qDebug () << Q_FUNC_INFO << args;
 		QProcess::startDetached ("setxkbmap", args);
