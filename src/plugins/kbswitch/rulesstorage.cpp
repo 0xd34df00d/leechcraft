@@ -73,10 +73,8 @@ namespace KBSwitch
 			return {};
 		}
 
-		QString FindRulesFile (Display *display)
+		QString FindRulesFile (Display *display, const QString& x11dir)
 		{
-			const auto& x11dir = FindX11Dir ();
-
 			XkbRF_VarDefsRec vd;
 			char *path = 0;
 			if (XkbRF_GetNamesProp (display, &path, &vd) && path)
@@ -101,8 +99,9 @@ namespace KBSwitch
 	RulesStorage::RulesStorage (Display *dpy, QObject *parent)
 	: QObject (parent)
 	, Display_ (dpy)
+	, X11Dir_ (FindX11Dir ())
 	{
-		const auto& rf = FindRulesFile (Display_);
+		const auto& rf = FindRulesFile (Display_, X11Dir_);
 		if (rf.isEmpty ())
 		{
 			qWarning () << Q_FUNC_INFO

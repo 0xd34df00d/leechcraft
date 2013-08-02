@@ -43,6 +43,7 @@ namespace KBSwitch
 	class RulesStorage : public QObject
 	{
 		Display * const Display_;
+		const QString X11Dir_;
 
 		QHash<QString, QString> LayName2Desc_;
 		QHash<QString, QString> LayDesc2Name_;
