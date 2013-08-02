@@ -29,7 +29,10 @@
 
 #include "layoutsconfigwidget.h"
 #include <QStandardItemModel>
+#include <QStyledItemDelegate>
+#include <QComboBox>
 #include <QtDebug>
+#include <QSettings>
 #include <util/models/modeliterator.h>
 #include "kbctl.h"
 #include "flagiconprovider.h"
@@ -41,36 +44,82 @@ namespace KBSwitch
 {
 	namespace
 	{
-		QList<QPair<QString, QString>> ToSortedList (const QHash<QString, QString>& hash)
+		QList<QStringList> ToSortedList (const QHash<QString, QString>& hash)
 		{
-			QList<QPair<QString, QString>> result;
+			QList<QStringList> result;
 			for (auto i = hash.begin (); i != hash.end (); ++i)
 				result.append ({ i.key (), i.value () });
 
 			std::sort (result.begin (), result.end (),
 					[] (decltype (result.at (0)) l, decltype (result.at (0)) r)
-						{ return l.first < r.first; });
+						{ return l.at (0) < r.at (0); });
 
 			return result;
 		}
 
-		void SetList (const QHash<QString, QString>& hash, QStandardItemModel *model)
+		void SetList (const QList<QStringList>& lists, QStandardItemModel *model)
 		{
 			FlagIconProvider flagProv;
 
-			for (const auto& pair : ToSortedList (hash))
+			for (const auto& list : lists)
 			{
-				const auto& img = flagProv.requestImage (pair.first, nullptr, {});
-				QList<QStandardItem*> row
-				{
-					new QStandardItem ({ QPixmap::fromImage (img) }, pair.first),
-					new QStandardItem (pair.second)
-				};
-				for (auto item : row)
-					item->setEditable (false);
+				QList<QStandardItem*> row;
+				for (const auto& item : list)
+					row << new QStandardItem (item);
+
+				const auto& img = flagProv.requestImage (list.at (0), nullptr, {});
+				row.first ()->setIcon ({ QPixmap::fromImage (img) });
+
+				row.value (0)->setEditable (false);
+				row.value (1)->setEditable (false);
 				model->appendRow (row);
 			}
 		}
+
+		class EnabledItemDelegate : public QStyledItemDelegate
+		{
+		public:
+			EnabledItemDelegate (QObject *parent = 0)
+			: QStyledItemDelegate (parent)
+			{
+			}
+
+			QWidget* createEditor (QWidget *parent,
+					const QStyleOptionViewItem& option, const QModelIndex& index) const
+			{
+				if (index.column () != LayoutsConfigWidget::EnabledColumn::EnabledVariant)
+					return QStyledItemDelegate::createEditor (parent, option, index);
+
+				return new QComboBox (parent);
+			}
+
+			void setEditorData (QWidget *editor, const QModelIndex& index) const
+			{
+				if (index.column () != LayoutsConfigWidget::EnabledColumn::EnabledVariant)
+					return QStyledItemDelegate::setEditorData (editor, index);
+
+				const auto& codeIdx = index.sibling (index.row (),
+						LayoutsConfigWidget::EnabledColumn::EnabledCode);
+				const auto& code = codeIdx.data ().toString ();
+
+				const auto& variants = KBCtl::Instance ()
+						.GetRulesStorage ()->GetLayoutVariants (code);
+
+				auto box = qobject_cast<QComboBox*> (editor);
+				box->clear ();
+				box->addItem ({});
+				box->addItems (variants);
+			}
+
+			void setModelData (QWidget *editor, QAbstractItemModel *model, const QModelIndex& index) const
+			{
+				if (index.column () != LayoutsConfigWidget::EnabledColumn::EnabledVariant)
+					return QStyledItemDelegate::setModelData (editor, model, index);
+
+				const auto& item = qobject_cast<QComboBox*> (editor)->currentText ();
+				model->setData (index, item, Qt::DisplayRole);
+			}
+		};
 	}
 
 	LayoutsConfigWidget::LayoutsConfigWidget (QWidget *parent)
@@ -78,15 +127,17 @@ namespace KBSwitch
 	, AvailableModel_ (new QStandardItemModel (this))
 	, EnabledModel_ (new QStandardItemModel (this))
 	{
-		const QStringList headers { tr ("code"), tr ("description") };
-		AvailableModel_->setHorizontalHeaderLabels (headers);
-		EnabledModel_->setHorizontalHeaderLabels (headers);
+		QStringList availHeaders { tr ("Code"), tr ("Description") };
+		AvailableModel_->setHorizontalHeaderLabels (availHeaders);
+		EnabledModel_->setHorizontalHeaderLabels (availHeaders << tr ("Variant"));
 
 		FillModels ();
 
 		Ui_.setupUi (this);
 		Ui_.AvailableView_->setModel (AvailableModel_);
 		Ui_.EnabledView_->setModel (EnabledModel_);
+
+		Ui_.EnabledView_->setItemDelegate (new EnabledItemDelegate (Ui_.EnabledView_));
 
 		connect (Ui_.AvailableView_->selectionModel (),
 				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
@@ -108,20 +159,39 @@ namespace KBSwitch
 
 		auto layouts = KBCtl::Instance ().GetRulesStorage ()->GetLayoutsN2D ();
 
-		decltype (layouts) enabled;
-		for (const auto& name : KBCtl::Instance ().GetEnabledGroups ())
-			enabled [name] = layouts.take (name);
+		const auto& enabledGroups = KBCtl::Instance ().GetEnabledGroups ();
 
-		SetList (layouts, AvailableModel_);
+		QList<QStringList> enabled;
+		for (const auto& name : enabledGroups)
+		{
+			const QStringList enabledRow
+			{
+				name,
+				layouts.take (name),
+				KBCtl::Instance ().GetGroupVariant (name)
+			};
+			enabled << enabledRow;
+		}
+
+		SetList (ToSortedList (layouts), AvailableModel_);
 		SetList (enabled, EnabledModel_);
 	}
 
 	void LayoutsConfigWidget::accept ()
 	{
 		QStringList codes;
+		QHash<QString, QString> variants;
 		for (int i = 0; i < EnabledModel_->rowCount (); ++i)
-			codes << EnabledModel_->item (i)->text ();
+		{
+			const auto& code = EnabledModel_->item (i, EnabledColumn::EnabledCode)->text ();
+			codes << code;
+
+			const auto& variant = EnabledModel_->item (i, EnabledColumn::EnabledVariant)->text ();
+			if (!variant.isEmpty ())
+				variants [code] = variant;
+		}
 		KBCtl::Instance ().SetEnabledGroups (codes);
+		KBCtl::Instance ().SetGroupVariants (variants);
 	}
 
 	void LayoutsConfigWidget::reject ()
@@ -135,7 +205,9 @@ namespace KBSwitch
 		if (!toEnableIdx.isValid ())
 			return;
 
-		EnabledModel_->appendRow (AvailableModel_->takeRow (toEnableIdx.row ()));
+		auto row = AvailableModel_->takeRow (toEnableIdx.row ());
+		row << new QStandardItem;
+		EnabledModel_->appendRow (row);
 	}
 
 	void LayoutsConfigWidget::on_Disable__released ()
@@ -144,7 +216,9 @@ namespace KBSwitch
 		if (!toDisableIdx.isValid ())
 			return;
 
-		const auto& row = EnabledModel_->takeRow (toDisableIdx.row ());
+		auto row = EnabledModel_->takeRow (toDisableIdx.row ());
+		delete row.takeLast ();
+
 		auto pos = std::upper_bound (Util::ModelIterator (AvailableModel_, 0),
 				Util::ModelIterator (AvailableModel_, AvailableModel_->rowCount ()),
 				row.first ()->text (),
