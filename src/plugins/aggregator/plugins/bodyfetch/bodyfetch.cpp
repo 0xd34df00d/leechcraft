@@ -174,15 +174,8 @@ namespace BodyFetch
 
 	void Plugin::hookGotNewItems (IHookProxy_ptr, QVariantList items)
 	{
-		if (!WO_)
+		if (!WO_ || !WO_->IsOK ())
 			return;
-
-		if (!WO_->IsOk ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "worker object isn't ready :(";
-			return;
-		}
 
 		WO_->AppendItems (items);
 	}
