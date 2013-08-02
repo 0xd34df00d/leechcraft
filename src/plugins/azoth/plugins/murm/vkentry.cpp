@@ -347,7 +347,7 @@ namespace Murm
 			Account_->GetConnection ()->MarkAsRead (ids);
 	}
 
-	void VkEntry::ChatTabClosed()
+	void VkEntry::ChatTabClosed ()
 	{
 	}
 
