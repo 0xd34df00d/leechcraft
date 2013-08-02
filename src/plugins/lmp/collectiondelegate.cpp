@@ -90,8 +90,8 @@ namespace LMP
 		painter->drawLine (option.rect.bottomLeft (), option.rect.bottomRight ());
 	}
 
-	void CollectionDelegate::PaintOther (QPainter *painter,
-			QStyleOptionViewItemV4 option, const QModelIndex& index) const
+	void CollectionDelegate::PaintWPixmap (QPainter *painter,
+			QStyleOptionViewItemV4 option, const QModelIndex& index, const QPixmap& px) const
 	{
 		QStyle *style = option.widget ?
 				option.widget->style () :
@@ -102,21 +102,19 @@ namespace LMP
 		style->drawPrimitive (QStyle::PE_PanelItemViewItem, &option, painter, option.widget);
 
 		const int maxIconHeight = option.rect.height () - Padding * 2;
-		const auto& actualSize = option.icon.actualSize ({ maxIconHeight, maxIconHeight });
-		const bool hasIcon = !option.icon.isNull ();
+		const bool hasIcon = !px.isNull ();
 		if (hasIcon)
 		{
-			const auto horShift = (maxIconHeight - actualSize.width ()) / 2;
-			const auto vertShift = (option.rect.height () - actualSize.height ()) / 2;
+			const auto horShift = (maxIconHeight - px.size ().width ()) / 2;
+			const auto vertShift = (option.rect.height () - px.size ().height ()) / 2;
 			painter->drawPixmap (option.rect.left () + horShift,
 					option.rect.top () + vertShift,
-					option.icon.pixmap (actualSize));
+					px);
 		}
 
 		const auto& text = index.data ().toString ();
 		painter->setFont (option.font);
-		const auto horAdjust = hasIcon ? maxIconHeight + 2 * Padding : 0;
-		painter->drawText (option.rect.adjusted (horAdjust, 0, 0, 0),
+		painter->drawText (option.rect.adjusted (hasIcon ? maxIconHeight + 2 * Padding : 0, 0, 0, 0),
 				Qt::AlignVCenter, text);
 
 		PaintBorder (painter, option);
@@ -124,38 +122,30 @@ namespace LMP
 		painter->restore ();
 	}
 
+	void CollectionDelegate::PaintOther (QPainter *painter,
+			QStyleOptionViewItemV4 option, const QModelIndex& index) const
+	{
+		const int maxIconHeight = option.rect.height () - Padding * 2;
+		PaintWPixmap (painter, option, index,
+				option.icon.pixmap ({ maxIconHeight, maxIconHeight }));
+	}
+
 	void CollectionDelegate::PaintAlbum (QPainter *painter,
 			QStyleOptionViewItemV4 option, const QModelIndex& index) const
 	{
-		QStyle *style = option.widget ?
-				option.widget->style () :
-				QApplication::style ();
-
-		painter->save ();
-
-		style->drawPrimitive (QStyle::PE_PanelItemViewItem, &option, painter, option.widget);
-		const int maxIconHeight = option.rect.height () - Padding * 2;
-
 		const QString& path = index.data (LocalCollection::Role::AlbumArt).value<QString> ();
 		QPixmap *cached = PXCache_ [path];
 		QPixmap px = cached ? *cached : QPixmap (path);
 		const bool special = !px.isNull ();
 		if (!special)
 			px = DefaultAlbum_;
+
+		const int maxIconHeight = option.rect.height () - Padding * 2;
 		px = px.scaled (maxIconHeight, maxIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 		if (!cached && special)
 			PXCache_.insert (path, new QPixmap (px), px.size ().width () * px.size ().height ());
 
-		painter->drawPixmap (option.rect.left () + Padding, option.rect.top () + Padding, px);
-
-		const auto& text = index.data ().toString ();
-		painter->setFont (option.font);
-		painter->drawText (option.rect.adjusted (maxIconHeight + 2 * Padding, 0, 0, 0),
-				Qt::AlignVCenter, text);
-
-		PaintBorder (painter, option);
-
-		painter->restore ();
+		PaintWPixmap (painter, option, index, px);
 	}
 }
 }
