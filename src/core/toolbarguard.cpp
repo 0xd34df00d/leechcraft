@@ -50,13 +50,13 @@ namespace LeechCraft
 
 	void ToolbarGuard::AddToolbar (QToolBar *newToolbar)
 	{
-		if (Toolbar_ == newToolbar)
-			return;
+		if (Toolbar_ != newToolbar)
+		{
+			if (Toolbar_)
+				Window_->GetTabWidget ()->RemoveWidgetFromSeparateTabWidget (Toolbar_);
 
-		if (Toolbar_)
-			Window_->GetTabWidget ()->RemoveWidgetFromSeparateTabWidget (Toolbar_);
-
-		Toolbar_ = newToolbar;
+			Toolbar_ = newToolbar;
+		}
 
 		if (Toolbar_)
 		{
