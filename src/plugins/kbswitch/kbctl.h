@@ -79,8 +79,9 @@ namespace KBSwitch
 		void SetSwitchPolicy (SwitchPolicy);
 
 		int GetCurrentGroup () const;
+
 		const QStringList& GetEnabledGroups () const;
-		void SetEnabledGroups (const QStringList&);
+		void SetEnabledGroups (QStringList);
 
 		int GetMaxEnabledGroups () const;
 

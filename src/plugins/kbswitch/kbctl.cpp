@@ -119,8 +119,14 @@ namespace KBSwitch
 		return Groups_;
 	}
 
-	void KBCtl::SetEnabledGroups (const QStringList& groups)
+	void KBCtl::SetEnabledGroups (QStringList groups)
 	{
+		if (groups.contains ("us") && groups.at (0) != "us")
+		{
+			groups.removeAll ("us");
+			groups.prepend ("us");
+		}
+
 		if (Groups_ == groups)
 			return;
 
