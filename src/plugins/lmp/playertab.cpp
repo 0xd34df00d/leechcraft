@@ -195,6 +195,11 @@ namespace LMP
 				PreviewHandler_,
 				SLOT (previewTrack (QString, QString, int)));
 
+		auto pal = Ui_.CollectionTree_->palette ();
+		pal.setColor (QPalette::Base, pal.color (QPalette::Button));
+		pal.setColor (QPalette::AlternateBase, pal.color (QPalette::Button));
+		Ui_.CollectionTree_->setPalette (pal);
+
 #ifdef ENABLE_MPRIS
 		new MPRIS::Instance (this, Player_);
 #endif

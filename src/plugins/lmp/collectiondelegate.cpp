@@ -50,10 +50,24 @@ namespace LMP
 			const QStyleOptionViewItem& optionOld, const QModelIndex& index) const
 	{
 		const int type = index.data (LocalCollection::Role::Node).toInt ();
+
+		QStyleOptionViewItemV4 option = optionOld;
+		initStyleOption (&option, index);
+
+		auto& pal = option.palette;
+		if (!(option.features & QStyleOptionViewItemV4::Alternate))
+		{
+			QLinearGradient grad (0, 0, option.rect.width (), 0);
+			grad.setColorAt (0, pal.color (QPalette::Button).darker (105));
+			grad.setColorAt (0.5, pal.color (QPalette::Button).darker (120));
+			grad.setColorAt (1, pal.color (QPalette::Button).darker (105));
+			option.backgroundBrush = QBrush (grad);
+		}
+
 		if (type != LocalCollection::NodeType::Album)
-			QStyledItemDelegate::paint (painter, optionOld, index);
+			PaintOther (painter, option, index);
 		else
-			PaintAlbum (painter, optionOld, index);
+			PaintAlbum (painter, option, index);
 	}
 
 	QSize CollectionDelegate::sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const
@@ -64,10 +78,55 @@ namespace LMP
 		return result;
 	}
 
-	void CollectionDelegate::PaintAlbum (QPainter *painter,
-			const QStyleOptionViewItem& optionOld, const QModelIndex& index) const
+	void CollectionDelegate::PaintBorder (QPainter *painter, QStyleOptionViewItemV4 option) const
 	{
-		const QStyleOptionViewItemV4 option = optionOld;
+		auto& pal = option.palette;
+		QLinearGradient grad (0, 0, option.rect.width (), 0);
+		grad.setColorAt (0, pal.color (QPalette::Button));
+		grad.setColorAt (0.5, pal.color (QPalette::Dark));
+		grad.setColorAt (1, pal.color (QPalette::Button));
+
+		painter->setPen ({ grad, 1 });
+		painter->drawLine (option.rect.bottomLeft (), option.rect.bottomRight ());
+	}
+
+	void CollectionDelegate::PaintOther (QPainter *painter,
+			QStyleOptionViewItemV4 option, const QModelIndex& index) const
+	{
+		QStyle *style = option.widget ?
+				option.widget->style () :
+				QApplication::style ();
+
+		painter->save ();
+
+		style->drawPrimitive (QStyle::PE_PanelItemViewItem, &option, painter, option.widget);
+
+		const int maxIconHeight = option.rect.height () - Padding * 2;
+		const auto& actualSize = option.icon.actualSize ({ maxIconHeight, maxIconHeight });
+		const bool hasIcon = !option.icon.isNull ();
+		if (hasIcon)
+		{
+			const auto horShift = (maxIconHeight - actualSize.width ()) / 2;
+			const auto vertShift = (option.rect.height () - actualSize.height ()) / 2;
+			painter->drawPixmap (option.rect.left () + horShift,
+					option.rect.top () + vertShift,
+					option.icon.pixmap (actualSize));
+		}
+
+		const auto& text = index.data ().toString ();
+		painter->setFont (option.font);
+		const auto horAdjust = hasIcon ? maxIconHeight + 2 * Padding : 0;
+		painter->drawText (option.rect.adjusted (horAdjust, 0, 0, 0),
+				Qt::AlignVCenter, text);
+
+		PaintBorder (painter, option);
+
+		painter->restore ();
+	}
+
+	void CollectionDelegate::PaintAlbum (QPainter *painter,
+			QStyleOptionViewItemV4 option, const QModelIndex& index) const
+	{
 		QStyle *style = option.widget ?
 				option.widget->style () :
 				QApplication::style ();
@@ -93,6 +152,8 @@ namespace LMP
 		painter->setFont (option.font);
 		painter->drawText (option.rect.adjusted (maxIconHeight + 2 * Padding, 0, 0, 0),
 				Qt::AlignVCenter, text);
+
+		PaintBorder (painter, option);
 
 		painter->restore ();
 	}
