@@ -52,10 +52,22 @@ namespace LMP
 			const QStyleOptionViewItem& optionOld, const QModelIndex& index) const
 	{
 		const bool isAlbum = index.data (Player::Role::IsAlbum).toBool ();
+
+		QStyleOptionViewItemV4 option = optionOld;
+		auto& pal = option.palette;
+		if (!(option.features & QStyleOptionViewItemV4::Alternate))
+		{
+			QLinearGradient grad (0, 0, option.rect.width (), 0);
+			grad.setColorAt (0, pal.color (QPalette::Window).darker (105));
+			grad.setColorAt (0.5, pal.color (QPalette::Window).darker (120));
+			grad.setColorAt (1, pal.color (QPalette::Window).darker (105));
+			option.backgroundBrush = QBrush (grad);
+		}
+
 		if (isAlbum)
-			PaintAlbum (painter, optionOld, index);
+			PaintAlbum (painter, option, index);
 		else
-			PaintTrack (painter, optionOld, index);
+			PaintTrack (painter, option, index);
 	}
 
 	QSize PlaylistDelegate::sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const
@@ -87,9 +99,8 @@ namespace LMP
 	}
 
 	void PlaylistDelegate::PaintTrack (QPainter *painter,
-			const QStyleOptionViewItem& optionOld, const QModelIndex& index) const
+			QStyleOptionViewItemV4 option, const QModelIndex& index) const
 	{
-		QStyleOptionViewItemV4 option = optionOld;
 		const auto& info = index.data (Player::Role::Info).value<MediaInfo> ();
 
 		QStyle *style = option.widget ?
@@ -154,9 +165,8 @@ namespace LMP
 	}
 
 	void PlaylistDelegate::PaintAlbum (QPainter *painter,
-			const QStyleOptionViewItem& optionOld, const QModelIndex& index) const
+			QStyleOptionViewItemV4 option, const QModelIndex& index) const
 	{
-		QStyleOptionViewItemV4 option = optionOld;
 		const auto& info = index.data (Player::Role::Info).value<MediaInfo> ();
 
 		QStyle *style = option.widget ?
