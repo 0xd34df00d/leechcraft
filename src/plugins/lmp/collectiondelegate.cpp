@@ -52,15 +52,14 @@ namespace LMP
 		const int type = index.data (LocalCollection::Role::Node).toInt ();
 
 		QStyleOptionViewItemV4 option = optionOld;
-		initStyleOption (&option, index);
 
 		auto& pal = option.palette;
 		if (!(option.features & QStyleOptionViewItemV4::Alternate))
 		{
 			QLinearGradient grad (0, 0, option.rect.width (), 0);
-			grad.setColorAt (0, pal.color (QPalette::Button).darker (105));
-			grad.setColorAt (0.5, pal.color (QPalette::Button).darker (120));
-			grad.setColorAt (1, pal.color (QPalette::Button).darker (105));
+			grad.setColorAt (0, pal.color (QPalette::Window).darker (105));
+			grad.setColorAt (0.5, pal.color (QPalette::Window).darker (120));
+			grad.setColorAt (1, pal.color (QPalette::Window).darker (105));
 			option.backgroundBrush = QBrush (grad);
 		}
 

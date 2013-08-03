@@ -196,8 +196,8 @@ namespace LMP
 				SLOT (previewTrack (QString, QString, int)));
 
 		auto pal = Ui_.CollectionTree_->palette ();
-		pal.setColor (QPalette::Base, pal.color (QPalette::Button));
-		pal.setColor (QPalette::AlternateBase, pal.color (QPalette::Button));
+		pal.setColor (QPalette::Base, pal.color (QPalette::Window));
+		pal.setColor (QPalette::AlternateBase, pal.color (QPalette::Window));
 		Ui_.CollectionTree_->setPalette (pal);
 
 #ifdef ENABLE_MPRIS
