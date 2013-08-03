@@ -126,8 +126,9 @@ namespace LMP
 			QStyleOptionViewItemV4 option, const QModelIndex& index) const
 	{
 		const int maxIconHeight = option.rect.height () - Padding * 2;
+		const auto& icon = index.data (Qt::DecorationRole).value<QIcon> ();
 		PaintWPixmap (painter, option, index,
-				option.icon.pixmap ({ maxIconHeight, maxIconHeight }));
+				icon.pixmap ({ maxIconHeight, maxIconHeight }));
 	}
 
 	void CollectionDelegate::PaintAlbum (QPainter *painter,
