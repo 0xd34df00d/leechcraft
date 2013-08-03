@@ -31,6 +31,7 @@
 #include <QtDebug>
 #include <QTimer>
 #include <QProcess>
+#include <QCoreApplication>
 #include <util/x11/xwrapper.h>
 #include "xmlsettingsmanager.h"
 #include "rulesstorage.h"
@@ -82,6 +83,20 @@ namespace KBSwitch
 
 		UpdateGroupNames ();
 
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_KBSwitch");
+		settings.beginGroup ("Groups");
+		auto enabledGroups = settings.childKeys ();
+		if (!enabledGroups.isEmpty ())
+		{
+			Variants_.clear ();
+			for (const auto& group : enabledGroups)
+				Variants_ [group] = settings.value (group).toString ();
+
+			SetEnabledGroups (enabledGroups);
+		}
+		settings.endGroup ();
+
 		qt_installX11EventFilter (&EventFilter);
 
 		XmlSettingsManager::Instance ().RegisterObject ({
@@ -119,12 +134,37 @@ namespace KBSwitch
 		return Groups_;
 	}
 
-	void KBCtl::SetEnabledGroups (const QStringList& groups)
+	void KBCtl::SetEnabledGroups (QStringList groups)
 	{
+		if (groups.contains ("us") && groups.at (0) != "us")
+		{
+			groups.removeAll ("us");
+			groups.prepend ("us");
+		}
+
 		if (Groups_ == groups)
 			return;
 
 		Groups_ = groups;
+		scheduleApply ();
+	}
+
+	QString KBCtl::GetGroupVariant (const QString& group) const
+	{
+		return Variants_ [group];
+	}
+
+	void KBCtl::SetGroupVariants (const QHash<QString, QString>& variants)
+	{
+		Variants_ = variants;
+		for (auto i = Variants_.begin (); i != Variants_.end (); )
+		{
+			if (i->isEmpty ())
+				i = Variants_.erase (i);
+			else
+				++i;
+		}
+
 		scheduleApply ();
 	}
 
@@ -338,11 +378,19 @@ namespace KBSwitch
 	{
 		ApplyScheduled_ = false;
 
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_KBSwitch");
+		settings.beginGroup ("Groups");
+		settings.remove ("");
+		for (const auto& group : Groups_)
+			settings.setValue (group, Variants_.value (group));
+		settings.endGroup ();
+
 		if (!XmlSettingsManager::Instance ()
 				.property ("ManageSystemWide").toBool ())
 			return;
 
-		const auto& kbModel = XmlSettingsManager::Instance ()
+		auto kbModel = XmlSettingsManager::Instance ()
 				.property ("KeyboardModel").toString ();
 		const auto& kbCode = Rules_->GetKBModelCode (kbModel);
 
@@ -354,9 +402,19 @@ namespace KBSwitch
 			kbCode,
 			"-option"
 		};
+
 		if (!Options_.isEmpty ())
 			args << "-option"
 					<< Options_.join (",");
+
+		if (!Variants_.isEmpty ())
+		{
+			QStringList variants;
+			for (const auto& group : Groups_)
+				variants << Variants_.value (group);
+			args << "-variant"
+					<< variants.join (",");
+		}
 
 		qDebug () << Q_FUNC_INFO << args;
 		QProcess::startDetached ("setxkbmap", args);

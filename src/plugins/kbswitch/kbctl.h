@@ -55,6 +55,8 @@ namespace KBSwitch
 		bool ExtWM_ = false;
 
 		QStringList Groups_;
+		QHash<QString, QString> Variants_;
+
 		QStringList Options_;
 
 		QHash<Qt::HANDLE, uchar> Win2Group_;
@@ -79,8 +81,11 @@ namespace KBSwitch
 		void SetSwitchPolicy (SwitchPolicy);
 
 		int GetCurrentGroup () const;
+
 		const QStringList& GetEnabledGroups () const;
-		void SetEnabledGroups (const QStringList&);
+		void SetEnabledGroups (QStringList);
+		QString GetGroupVariant (const QString&) const;
+		void SetGroupVariants (const QHash<QString, QString>&);
 
 		int GetMaxEnabledGroups () const;
 

@@ -78,7 +78,9 @@ namespace Dik
 		{
 			QRegExp imgRx ("<img.*recindex=\"([\\d]*)\".*>", Qt::CaseInsensitive);
 			imgRx.setMinimal (true);
-			markup.replace (imgRx, "<img src=\"rec:/\\1\">");
+			markup.replace (imgRx, "<img src='rec:/\\1' />");
+
+			markup.replace ("<mbp:pagebreak/>", "<p style='page-break-after: always' />");
 
 			return markup;
 		}

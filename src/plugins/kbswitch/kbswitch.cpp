@@ -34,6 +34,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/util.h>
 #include "keyboardlayoutswitcher.h"
 #include "xmlsettingsmanager.h"
 #include "kbctl.h"
@@ -49,6 +50,8 @@ namespace KBSwitch
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("kbswitch");
+
 		Proxy_ = proxy;
 
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
@@ -108,7 +111,7 @@ namespace KBSwitch
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Provides plugin- or tab-grained keyboard layout control.");
+		return tr ("Provides keyboard layout configurator and plugin- or tab-grained layout control.");
 	}
 
 	QIcon Plugin::GetIcon () const

@@ -46,6 +46,13 @@ namespace KBSwitch
 		QStandardItemModel *AvailableModel_;
 		QStandardItemModel *EnabledModel_;
 	public:
+		enum EnabledColumn
+		{
+			EnabledCode,
+			EnabledDesc,
+			EnabledVariant
+		};
+
 		LayoutsConfigWidget (QWidget* = 0);
 	private:
 		void FillModels ();

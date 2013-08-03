@@ -41,8 +41,14 @@ namespace Krigstask
 {
 	class TaskbarImageProvider : public Util::WidthIconProvider
 	{
+		const QIcon DefaultIcon_;
 		QHash<QString, QIcon> Icons_;
 	public:
+		TaskbarImageProvider (const QIcon& def)
+		: DefaultIcon_ (def)
+		{
+		}
+
 		void SetIcon (const QString& wid, const QIcon& icon)
 		{
 			Icons_ [wid] = icon;
@@ -56,14 +62,17 @@ namespace Krigstask
 		QIcon GetIcon (const QStringList& path)
 		{
 			const auto& wid = path.value (0);
-			return Icons_.value (wid);
+			auto res = Icons_.value (wid);
+			if (res.isNull ())
+				res = DefaultIcon_;
+			return res;
 		}
 	};
 
 	WindowsModel::WindowsModel (QObject *parent)
 	: QAbstractItemModel (parent)
 	, CurrentDesktop_ (Util::XWrapper::Instance ().GetCurrentDesktop ())
-	, ImageProvider_ (new TaskbarImageProvider)
+	, ImageProvider_ (new TaskbarImageProvider (QIcon::fromTheme ("xorg")))
 	{
 		auto& w = Util::XWrapper::Instance ();
 		auto windows = w.GetWindows ();

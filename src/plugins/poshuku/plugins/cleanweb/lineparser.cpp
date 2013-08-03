@@ -262,10 +262,12 @@ namespace CleanWeb
 			const auto& remaining = ParseOptions (splitted.at (1).split (',', QString::SkipEmptyParts), f);
 			if (remaining.size ())
 			{
+				/*
 				qWarning () << Q_FUNC_INFO
 						<< "unsupported options for filter"
 						<< actualLine
 						<< remaining;
+						*/
 				return;
 			}
 		}

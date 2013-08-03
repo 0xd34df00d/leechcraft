@@ -234,6 +234,7 @@ namespace LeechCraft
 				<< data
 				<< "not found";
 
-		ChangedProperties_.remove (prop);
+		if (!data.toString ().isEmpty ())
+			ChangedProperties_.remove (prop);
 	}
 }

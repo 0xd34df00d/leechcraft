@@ -56,23 +56,22 @@ namespace Autosearch
 
 	QByteArray Plugin::GetUniqueID () const
 	{
-		return "org.LeechCraft.Poshuku.Plugin";
+		return "org.LeechCraft.Poshuku.Autosearch";
 	}
 
 	QString Plugin::GetName () const
 	{
-		return "Poshuku Plugin";
+		return "Poshuku Autosearch";
 	}
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Provides support for file:// scheme.");
+		return tr ("Provides support for Google search suggestions.");
 	}
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/plugins/poshuku/plugins/filescheme/resources/images/poshuku_filescheme.svg");
-		return icon;
+		return QIcon ();
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

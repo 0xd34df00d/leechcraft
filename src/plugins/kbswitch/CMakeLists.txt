@@ -29,6 +29,9 @@ set (RESOURCES kbswitchresources.qrc)
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 QT4_WRAP_UI (UIS_H ${FORMS})
 
+CreateTrs ("kbswitch" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("kbswitch" "en;ru_RU" "${SRCS}" "${FORMS}" "kbswitchsettings.xml")
+
 add_library (leechcraft_kbswitch SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
