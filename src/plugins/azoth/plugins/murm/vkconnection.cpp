@@ -250,9 +250,6 @@ namespace Murm
 		if (Status_.State_ == SOffline)
 			return;
 
-		if (!LPKey_.isEmpty ())
-			return;
-
 		auto nam = Proxy_->GetNetworkAccessManager ();
 		PreparedCalls_.push_back ([this, nam] (const QString& key) -> QNetworkReply*
 			{
