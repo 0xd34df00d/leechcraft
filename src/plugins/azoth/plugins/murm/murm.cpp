@@ -75,7 +75,7 @@ namespace Murm
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon;
+		static QIcon icon ("lcicons:/azoth/murm/resources/images/murm.svg");
 		return icon;
 	}
 

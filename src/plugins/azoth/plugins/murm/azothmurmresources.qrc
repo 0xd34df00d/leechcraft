@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/azoth/murm">
+    <file>resources/images/murm.svg</file>
+  </qresource>
+</RCC>
+

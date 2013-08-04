@@ -32,7 +32,7 @@ set (MURM_SRCS
 set (MURM_FORMS
 	vcarddialog.ui
 	)
-#set (MURM_RESOURCES azothmurmresources.qrc)
+set (MURM_RESOURCES azothmurmresources.qrc)
 
 CreateTrs ("azoth_murm" "en;ru_RU" MURM_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("azoth_murm" "en;ru_RU" "${MURM_SRCS}" "${MURM_FORMS}" "azothmurmsettings.xml")
