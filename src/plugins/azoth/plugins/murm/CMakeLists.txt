@@ -34,7 +34,8 @@ set (MURM_FORMS
 	)
 #set (MURM_RESOURCES azothmurmresources.qrc)
 
-#CreateTrs ("azoth_murm" "en;ru_RU" MURM_COMPILED_TRANSLATIONS)
+CreateTrs ("azoth_murm" "en;ru_RU" MURM_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("azoth_murm" "en;ru_RU" "${MURM_SRCS}" "${MURM_FORMS}" "azothmurmsettings.xml")
 
 QT4_WRAP_UI (MURM_UIS_H ${MURM_FORMS})
 QT4_ADD_RESOURCES (MURM_RCCS ${MURM_RESOURCES})
