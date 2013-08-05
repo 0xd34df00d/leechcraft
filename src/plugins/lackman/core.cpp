@@ -36,8 +36,10 @@
 #include <QTimer>
 #include <QtDebug>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <xmlsettingsdialog/datasourceroles.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/an/constants.h>
 #include "repoinfofetcher.h"
 #include "storage.h"
 #include "packagesmodel.h"
@@ -438,7 +440,7 @@ namespace LackMan
 			}
 		}
 
-		Q_FOREACH (const QString& component, components)
+		for (const QString& component : components)
 		{
 			QUrl compUrl = url;
 			compUrl.setPath ((compUrl.path () + "/dists/%1/all/").arg (component));
@@ -649,8 +651,8 @@ namespace LackMan
 		QMap<QString, QList<QString>> PackageName2NewVersions_;
 
 		int newPackages = 0;
-		Q_FOREACH (const PackageShortInfo& info, shortInfos)
-			Q_FOREACH (const QString& version, info.Versions_)
+		for (const auto& info : shortInfos)
+			for (const QString& version : info.Versions_)
 			{
 				int packageId = -1;
 				try
@@ -702,7 +704,7 @@ namespace LackMan
 				}
 			}
 
-		Q_FOREACH (const QString& packageName, PackageName2NewVersions_.keys ())
+		for (const QString& packageName : PackageName2NewVersions_.keys ())
 		{
 			auto packageUrl = repoUrl;
 			const QString& normalized = NormalizePackageName (packageName);
@@ -1086,7 +1088,7 @@ namespace LackMan
 			return;
 		}
 
-		Q_FOREACH (int presentPId, presentPackages)
+		for (int presentPId : presentPackages)
 		{
 			PackageShortInfo psi;
 			try
@@ -1107,7 +1109,7 @@ namespace LackMan
 
 			const QString& ourVersion = psi.Versions_.at (0);
 			bool found = false;
-			Q_FOREACH (const PackageShortInfo& candidate, shortInfos)
+			for (const auto& candidate : shortInfos)
 			{
 				if (candidate.Name_ == psi.Name_ &&
 						candidate.Versions_.contains (ourVersion))
