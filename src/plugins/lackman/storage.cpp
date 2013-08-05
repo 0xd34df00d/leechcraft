@@ -417,6 +417,24 @@ namespace LackMan
 		return result;
 	}
 
+	QStringList Storage::GetPackageVersions (const QString& name)
+	{
+		QueryGetPackageVersions_.bindValue (":name", name);
+		if (!QueryGetPackageVersions_.exec ())
+		{
+			Util::DBLock::DumpError (QueryGetPackageVersions_);
+			throw std::runtime_error ("Query execution failed");
+		}
+
+		QStringList result;
+		while (QueryGetPackageVersions_.next ())
+			result << QueryGetPackageVersions_.value (0).toString ();
+
+		QueryGetPackageVersions_.finish ();
+
+		return result;
+	}
+
 	int Storage::FindInstalledPackage (int packageId)
 	{
 		QueryFindInstalledPackage_.bindValue (":package_id", packageId);
@@ -1150,6 +1168,10 @@ namespace LackMan
 		QueryFindPackage_ = QSqlQuery (DB_);
 		QueryFindPackage_.prepare ("SELECT package_id "
 				"FROM packages WHERE name = :name AND version = :version;");
+
+		QueryGetPackageVersions_ = QSqlQuery (DB_);
+		QueryGetPackageVersions_.prepare ("SELECT version "
+				"FROM packages WHERE name = :name;");
 
 		QueryFindInstalledPackage_ = QSqlQuery (DB_);
 		QueryFindInstalledPackage_.prepare ("SELECT installed.package_id FROM installed, packages, packages AS tmp "
