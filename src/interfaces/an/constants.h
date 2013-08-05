@@ -103,6 +103,13 @@ namespace AN
 	 */
 	const QString TypeDownloadError = "org.LC.AdvNotifications.Downloads.DownloadError";
 
+	/** @brief Category of package manager-related events.
+	 */
+	const QString CatPackageManager = "org.LC.AdvNotifications.PackageManager";
+	/** @brief A package has been updated.
+	 */
+	const QString TypePackageUpdated = "org.LC.AdvNotifications.PackageManager.PackageUpdated";
+
 	/** @brief Generic notifications that don't fit into any other category.
 	 */
 	const QString CatGeneric = "org.LC.AdvNotifications.Generic";
