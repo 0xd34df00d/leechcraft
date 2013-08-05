@@ -58,6 +58,7 @@ namespace Sync
 	}
 
 	void FillItem (Laretz::Item&, const QVariantMap&);
+	QVariantMap ItemToMap (const Laretz::Item&);
 
 	class Stager : public QObject
 	{

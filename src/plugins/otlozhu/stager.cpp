@@ -36,6 +36,7 @@
 #include <boost/serialization/string.hpp>
 #include <boost/serialization/variant.hpp>
 #include <QDateTime>
+#include <QtDebug>
 #include <laretz/operation.h>
 #include <laretz/opsummer.h>
 #include <util/util.h>
@@ -81,6 +82,43 @@ namespace Sync
 	{
 		for (auto i = map.begin (); i != map.end (); ++i)
 			item [i.key ().toUtf8 ().constData ()] = ToField (i.value ());
+	}
+
+	namespace
+	{
+		struct ToVariant : boost::static_visitor<QVariant>
+		{
+			QVariant operator() (const std::vector<char>& data) const
+			{
+				QByteArray result;
+				result.reserve (data.size ());
+				std::copy (data.begin (), data.end (), std::back_inserter (result));
+				return result;
+			}
+
+			QVariant operator() (const std::string& str) const
+			{
+				return QString::fromUtf8 (str.c_str ());
+			}
+
+			QVariant operator() (int64_t num) const
+			{
+				return static_cast<qlonglong> (num);
+			}
+
+			QVariant operator() (double num) const
+			{
+				return num;
+			}
+		};
+	}
+
+	QVariantMap ItemToMap (const Laretz::Item& item)
+	{
+		QVariantMap result;
+		for (const auto& pair : item)
+			result [pair.first.c_str ()] = boost::apply_visitor (ToVariant (), pair.second);
+		return result;
 	}
 
 	Stager::Stager (const QString& areaId, QObject *parent)
