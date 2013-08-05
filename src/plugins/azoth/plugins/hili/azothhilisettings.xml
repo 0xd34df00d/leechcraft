@@ -6,6 +6,13 @@
 			<label value="HiLi" />
 			<item type="multiline" property="HighlightRegexps">
 				<label value="Regexps triggering highlights:" />
+				<tooltip>Enter the regular expressions that should trigger highlights here, one per line, like this:
+					&lt;blockquote>
+						yournickname&lt;br/>
+						l(ee|i)ch(c|k)raft
+					&lt;/blockquote>
+					The regexps are matched case-insensitively.
+				</tooltip>
 			</item>
 		</groupbox>
 	</page>
