@@ -102,6 +102,9 @@ namespace AdvancedNotifications
 		Type2HR_ [AN::TypeDownloadError] = tr ("Download error");
 		Type2HR_ [AN::TypeDownloadFinished] = tr ("Download finished");
 
+		Cat2HR_ [AN::CatPackageManager] = tr ("Package manager");
+		Type2HR_ [AN::TypePackageUpdated] = tr ("Package updated");
+
 		Cat2HR_ [AN::CatGeneric] = tr ("Generic");
 		Type2HR_ [AN::TypeGeneric] = tr ("Generic");
 
@@ -234,6 +237,14 @@ namespace AdvancedNotifications
 			generic.SetMethods (NMVisual | NMTray);
 			Rules_ << generic;
 		}
+
+		if (version == -1 || version == 4)
+		{
+			NotificationRule packageUpdated (tr ("Package updated"), AN::CatPackageManager,
+					{ AN::TypePackageUpdated });
+			packageUpdated.SetMethods (NMVisual | NMTray);
+			Rules_ << packageUpdated;
+		}
 	}
 
 	void RulesManager::LoadSettings ()
@@ -244,7 +255,7 @@ namespace AdvancedNotifications
 		Rules_ = settings.value ("RulesList").value<QList<NotificationRule>> ();
 		int rulesVersion = settings.value ("DefaultRulesVersion", 1).toInt ();
 
-		const int currentDefVersion = 4;
+		const int currentDefVersion = 5;
 		if (Rules_.isEmpty ())
 			LoadDefaultRules (0);
 
