@@ -49,6 +49,11 @@ namespace Otlozhu
 		return {};
 	}
 
+	QList<Laretz::Operation> SyncProxy::GetNewOps () const
+	{
+		return {};
+	}
+
 	void SyncProxy::Merge (QList<Laretz::Operation>& ours, const QList<Laretz::Operation>& theirs)
 	{
 	}

@@ -49,6 +49,8 @@ public:
 
 	virtual QList<Laretz::Operation> GetAllOps () const = 0;
 
+	virtual QList<Laretz::Operation> GetNewOps () const = 0;
+
 	virtual void Merge (QList<Laretz::Operation>& ours, const QList<Laretz::Operation>& theirs) = 0;
 
 	virtual void ApplyChanges (const QList<Laretz::Operation>&) = 0;
