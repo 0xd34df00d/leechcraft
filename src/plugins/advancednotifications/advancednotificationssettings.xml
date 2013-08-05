@@ -31,6 +31,12 @@
 				<item type="checkbox" property="EnableCounter.org.LC.AdvNotifications.Downloads" default="true">
 					<label value="Enable for Downloads events" />
 				</item>
+				<item type="checkbox" property="EnableCounter.org.LC.AdvNotifications.PackageManager" default="true">
+					<label value="Enable for Package Manager events" />
+				</item>
+				<item type="checkbox" property="EnableCounter.org.LC.AdvNotifications.Generic" default="true">
+					<label value="Enable for Generic events" />
+				</item>
 			</groupbox>
 			<groupbox>
 				<label value="Behavior" />
