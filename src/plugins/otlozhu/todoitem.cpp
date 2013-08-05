@@ -31,6 +31,7 @@
 #include <QUuid>
 #include <QDataStream>
 #include <QtDebug>
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -72,6 +73,19 @@ namespace Otlozhu
 		Due_ = item->Due_;
 		Percentage_ = item->Percentage_;
 		Deps_ = item->Deps_;
+	}
+
+	QVariantMap TodoItem::ToMap () const
+	{
+		return Util::MakeMap<QString, QVariant> ({
+				{ "Title", Title_ },
+				{ "Comment", Comment_ },
+				{ "Tags", TagIDs_ },
+				{ "Deps", Deps_ },
+				{ "Created", Created_ },
+				{ "Due", Due_ },
+				{ "Percentage", Percentage_ }
+			});
 	}
 
 	namespace
