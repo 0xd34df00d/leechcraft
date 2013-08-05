@@ -1156,6 +1156,8 @@ namespace LackMan
 			std::sort (versions.begin (), versions.end (), IsVersionLess);
 			const auto& greatest = versions.last ();
 
+			bool isInstalled = false;
+
 			Q_FOREACH (const auto& version, pInfo.Versions_)
 			{
 				const int packageId = Storage_->FindPackage (pInfo.Name_, version);
@@ -1171,8 +1173,26 @@ namespace LackMan
 						auto info = Storage_->GetSingleListPackageInfo (packageId);
 						info.HasNewVersion_ = info.IsInstalled_;
 						PackagesModel_->UpdateRow (info);
+						if (info.IsInstalled_)
+							isInstalled = true;
 					}
 				}
+			}
+
+			if (isInstalled)
+			{
+				const auto& entity = Util::MakeAN ("Lackman",
+						tr ("Package %1 has been updated.")
+							.arg ("<em>" + pInfo.Name_ + "</em>"),
+						PInfo_,
+						"org.LeechCraft.LackMan",
+						AN::CatPackageManager,
+						AN::TypePackageUpdated,
+						pInfo.Name_,
+						{ pInfo.Name_ },
+						0,
+						1);
+				emit gotEntity (entity);
 			}
 
 			emit tagsUpdated (GetAllTags ());
