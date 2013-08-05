@@ -27,48 +27,50 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/core/icoreproxy.h>
+#include "stagerhandler.h"
+#include <laretz/item.h>
+#include <laretz/operation.h>
+#include "stager.h"
+#include "core.h"
+#include "todomanager.h"
+#include "todostorage.h"
 
 namespace LeechCraft
 {
-namespace Util
-{
-namespace Sync
-{
-	class Stager;
-}
-}
-
-struct Entity;
-
 namespace Otlozhu
 {
-	class TodoManager;
-
-	class Core : public QObject
+	StagerHandler::StagerHandler (QObject *parent)
+	: QObject (parent)
 	{
-		Q_OBJECT
+	}
 
-		ICoreProxy_ptr Proxy_;
-		TodoManager *TodoManager_;
-		Util::Sync::Stager *Stager_;
+	void StagerHandler::handleItemAdded (int pos)
+	{
+		auto storage = Core::Instance ().GetTodoManager ()->GetTodoStorage ();
 
-		Core ();
-	public:
-		static Core& Instance ();
+		auto todoItem = storage->GetItemAt (pos);
+		const auto& id = todoItem->GetID ();
 
-		void SetProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetProxy () const;
+		Laretz::Item item (id.toStdString (), 0);
+		Util::Sync::FillItem (item, todoItem->ToMap ());
 
-		void SendEntity (const LeechCraft::Entity&);
+		Core::Instance ().GetStager ()->Add ({ { Laretz::OpType::Append, { item } } });
+	}
 
-		TodoManager* GetTodoManager () const;
-		Util::Sync::Stager* GetStager () const;
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
-	};
+	void StagerHandler::handleItemRemoved (int pos)
+	{
+		auto storage = Core::Instance ().GetTodoManager ()->GetTodoStorage ();
+		const auto& id = storage->GetItemAt (pos)->GetID ();
+
+		Core::Instance ().GetStager ()->Add ({ { Laretz::OpType::Delete, { { id.toStdString (), 0 } } } });
+	}
+
+	void StagerHandler::handleItemDiffGenerated (const QString& id, const QVariantMap& news)
+	{
+		Laretz::Item item (id.toStdString (), 0);
+		Util::Sync::FillItem (item, news);
+
+		Core::Instance ().GetStager ()->Add ({ { Laretz::OpType::Modify, { item } } });
+	}
 }
 }

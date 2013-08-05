@@ -30,45 +30,21 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/core/icoreproxy.h>
+#include <QVariantMap>
 
 namespace LeechCraft
 {
-namespace Util
-{
-namespace Sync
-{
-	class Stager;
-}
-}
-
-struct Entity;
-
 namespace Otlozhu
 {
-	class TodoManager;
-
-	class Core : public QObject
+	class StagerHandler : public QObject
 	{
 		Q_OBJECT
-
-		ICoreProxy_ptr Proxy_;
-		TodoManager *TodoManager_;
-		Util::Sync::Stager *Stager_;
-
-		Core ();
 	public:
-		static Core& Instance ();
-
-		void SetProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetProxy () const;
-
-		void SendEntity (const LeechCraft::Entity&);
-
-		TodoManager* GetTodoManager () const;
-		Util::Sync::Stager* GetStager () const;
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		StagerHandler (QObject* = 0);
+	public slots:
+		void handleItemAdded (int);
+		void handleItemRemoved (int);
+		void handleItemDiffGenerated (const QString&, const QVariantMap&);
 	};
 }
 }

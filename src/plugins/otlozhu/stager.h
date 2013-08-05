@@ -29,8 +29,17 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
-#include <interfaces/core/icoreproxy.h>
+#include <QDir>
+#include <QVariantMap>
+#include <laretz/item.h>
+
+namespace Laretz
+{
+	class Operation;
+	class OpSummer;
+}
 
 namespace LeechCraft
 {
@@ -38,37 +47,37 @@ namespace Util
 {
 namespace Sync
 {
-	class Stager;
-}
-}
+	Laretz::Field_t ToField (const QString&);
+	Laretz::Field_t ToField (const QDateTime&);
+	Laretz::Field_t ToField (const QVariant&);
 
-struct Entity;
+	template<typename T>
+	Laretz::Field_t ToField (T t)
+	{
+		return t;
+	}
 
-namespace Otlozhu
-{
-	class TodoManager;
+	void FillItem (Laretz::Item&, const QVariantMap&);
 
-	class Core : public QObject
+	class Stager : public QObject
 	{
 		Q_OBJECT
 
-		ICoreProxy_ptr Proxy_;
-		TodoManager *TodoManager_;
-		Util::Sync::Stager *Stager_;
+		QDir StagingDir_;
+		unsigned long LastID_;
 
-		Core ();
+		std::shared_ptr<Laretz::OpSummer> Summer_;
+
+		bool IsEnabled_;
 	public:
-		static Core& Instance ();
+		Stager (const QString& areaId, QObject* = 0);
 
-		void SetProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetProxy () const;
+		void Enable ();
+		bool IsEnabled () const;
 
-		void SendEntity (const LeechCraft::Entity&);
-
-		TodoManager* GetTodoManager () const;
-		Util::Sync::Stager* GetStager () const;
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		void Add (const std::vector<Laretz::Operation>&);
+		QList<Laretz::Operation> GetStagedOps () const;
 	};
+}
 }
 }

@@ -25,6 +25,8 @@ set (SRCS
 	icalparser.cpp
 	itemsmergedialog.cpp
 	syncproxy.cpp
+	stager.cpp
+	stagerhandler.cpp
 	)
 set (FORMS
 	todotab.ui
