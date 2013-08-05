@@ -72,6 +72,12 @@ namespace Otlozhu
 		return Items_ [idx]->Clone ();
 	}
 
+	TodoItem_ptr TodoStorage::GetItemByID (const QString& id) const
+	{
+		const auto pos = FindItem (id);
+		return pos == -1 ? nullptr : GetItemAt (pos);
+	}
+
 	QList<TodoItem_ptr> TodoStorage::GetAllItems () const
 	{
 		QList<TodoItem_ptr> result;
