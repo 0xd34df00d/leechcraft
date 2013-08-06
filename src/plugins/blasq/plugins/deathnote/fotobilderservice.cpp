@@ -33,6 +33,8 @@
 #include <QSettings>
 #include <QtDebug>
 #include "fotobilderaccount.h"
+#include "registerpage.h"
+#include <util/passutils.h>
 
 namespace LeechCraft
 {
@@ -71,11 +73,23 @@ namespace DeathNote
 
 	QList<QWidget*> FotoBilderService::GetAccountRegistrationWidgets () const
 	{
-		return { };
+		return { new RegisterPage };
 	}
 
-	void FotoBilderService::RegisterAccount (const QString&, const QList<QWidget*>&)
+	void FotoBilderService::RegisterAccount (const QString& name,
+			const QList<QWidget*>& widgets)
 	{
+		if (!widgets.isEmpty ())
+		{
+			auto rp = qobject_cast<RegisterPage*> (widgets.at (0));
+			const auto& login = rp->GetLogin ();
+			const auto& password = rp->GetPassword ();
+			auto acc = new FotoBilderAccount (name, this, Proxy_, login);
+			if (!password.isNull ())
+				Util::SavePassword (password,
+						"org.LeechCraft.Blasq.PassForAccount/" + acc->GetID (),
+						this);
+		}
 	}
 
 	void FotoBilderService::RemoveAccount (IAccount *account)
@@ -115,7 +129,7 @@ namespace DeathNote
 	void FotoBilderService::ReadAccounts ()
 	{
 		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Blasq_Vangog");
+				QCoreApplication::applicationName () + "_Blasq_DeathNote");
 		settings.beginGroup ("Accounts");
 		for (const auto& key : settings.childKeys ())
 		{

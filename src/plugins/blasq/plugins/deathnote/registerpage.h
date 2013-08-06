@@ -27,9 +27,10 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "deathnote.h"
-#include <util/util.h>
-#include "fotobilderservice.h"
+#pragma once
+
+#include <QWizardPage>
+#include "ui_registerpage.h"
 
 namespace LeechCraft
 {
@@ -37,57 +38,18 @@ namespace Blasq
 {
 namespace DeathNote
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	class RegisterPage : public QWizardPage
 	{
-		Util::InstallTranslator ("blasq_deathnote");
-		Service_ = new FotoBilderService (proxy);
-		connect (Service_,
-				SIGNAL (gotEntity (Entity)),
-				this,
-				SIGNAL (gotEntity (Entity)));
-	}
+		Q_OBJECT
 
-	void Plugin::SecondInit ()
-	{
-	}
+		Ui::RegisterPage Ui_;
 
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.Blasq.DeathNote";
-	}
+	public:
+		RegisterPage (QWidget *parent = 0);
 
-	void Plugin::Release ()
-	{
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Blasq DeathNote";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("LiveJournal FotoBilder support module for Blasq.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	QSet<QByteArray> Plugin::GetPluginClasses () const
-	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Blasq.ServicePlugin";
-		return result;
-	}
-
-	QList<IService*> Plugin::GetServices () const
-	{
-		return { Service_ };
-	}
+		QString GetLogin () const;
+		QString GetPassword () const;
+	};
 }
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_blasq_deathnote, LeechCraft::Blasq::DeathNote::Plugin);

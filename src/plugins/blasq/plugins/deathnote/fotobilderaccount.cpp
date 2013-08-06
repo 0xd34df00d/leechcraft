@@ -37,6 +37,8 @@
 #include <QtDebug>
 #include <QUuid>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <interfaces/core/ientitymanager.h>
+#include <util/passutils.h>
 #include "fotobilderservice.h"
 
 namespace LeechCraft
@@ -46,12 +48,13 @@ namespace Blasq
 namespace DeathNote
 {
 	FotoBilderAccount::FotoBilderAccount (const QString& name, FotoBilderService *service,
-			ICoreProxy_ptr proxy, const QByteArray& id)
+			ICoreProxy_ptr proxy, const QString& login, const QByteArray& id)
 	: QObject (service)
 	, Name_ (name)
 	, Service_ (service)
 	, Proxy_ (proxy)
 	, ID_ (id.isEmpty () ? QUuid::createUuid ().toByteArray () : id)
+	, Login_ (login)
 	, CollectionsModel_ (new NamedModel<QStandardItemModel> (this))
 	, AllPhotosItem_ (0)
 	{
@@ -70,7 +73,8 @@ namespace DeathNote
 			QDataStream out (&result, QIODevice::WriteOnly);
 			out << static_cast<quint8> (1)
 					<< Name_
-					<< ID_;
+					<< ID_
+					<< Login_;
 		}
 		return result;
 	}
@@ -91,13 +95,13 @@ namespace DeathNote
 		}
 
 		QString name;
+		QString login;
 		QByteArray id;
 		in >> name
-				>> id;
+				>> id
+				>> login;
 
-		auto acc = new FotoBilderAccount (name, service, proxy, id);
-
-		return acc;
+		return new FotoBilderAccount (name, service, proxy, login, id);
 	}
 
 	QObject* FotoBilderAccount::GetQObject ()
@@ -127,6 +131,12 @@ namespace DeathNote
 
 	void FotoBilderAccount::UpdateCollections ()
 	{
+	}
+
+	void FotoBilderAccount::GetPassword () const
+	{
+		QString key ("org.LeechCraft.Blasq.PassForAccount/" + GetID ());
+		return Util::GetPassword (key, QString (), Service_);
 	}
 
 	void FotoBilderAccount::handleGotAlbums ()

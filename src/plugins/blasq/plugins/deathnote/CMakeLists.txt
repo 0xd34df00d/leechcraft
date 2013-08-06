@@ -16,14 +16,21 @@ set (DEATHNOTE_SRCS
 	deathnote.cpp
 	fotobilderaccount.cpp
 	fotobilderservice.cpp
+	registerpage.cpp
 	)
 
+set (DEATHNOTE_FORMS
+	registerpage.ui
+	)
 # CreateTrs("blasq_vangog" "en;ru_RU" VANGOG_COMPILED_TRANSLATIONS)
 # CreateTrsUpTarget("blasq_vangog" "en;ru_RU" "${VANGOG_SRCS}" "${VANGOG_FORMS}" "")
+
+QT4_WRAP_UI (UIS_H ${DEATHNOTE_FORMS})
 
 add_library (leechcraft_blasq_deathnote SHARED
 # 	${VANGOG_COMPILED_TRANSLATIONS}
 	${DEATHNOTE_SRCS}
+	${UIS_H}
 	)
 
 target_link_libraries (leechcraft_blasq_deathnote

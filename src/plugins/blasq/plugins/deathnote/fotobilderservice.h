@@ -32,6 +32,7 @@
 #include <QObject>
 #include <interfaces/blasq/iservice.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/structures.h>
 
 namespace LeechCraft
 {
@@ -71,6 +72,7 @@ namespace DeathNote
 		void handleAuthSuccess (QObject *accObj);
 
 	signals:
+		void gotEntity (const Entity& entity);
 		void accountAdded (QObject *accObj);
 		void accountRemoved (QObject *accObj);
 	};

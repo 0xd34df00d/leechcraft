@@ -65,6 +65,9 @@ namespace DeathNote
 		QSet<QByteArray> GetPluginClasses () const;
 
 		QList<IService*> GetServices () const;
+
+	signals:
+		void gotEntity (const Entity& entity) override;
 	};
 }
 }

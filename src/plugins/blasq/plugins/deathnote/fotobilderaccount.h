@@ -57,13 +57,15 @@ namespace DeathNote
 		FotoBilderService * const Service_;
 		const ICoreProxy_ptr Proxy_;
 		QByteArray ID_;
+		QString Login_;
 
 		QStandardItemModel * const CollectionsModel_;
 		QStandardItem *AllPhotosItem_;
 
 	public:
 		FotoBilderAccount (const QString& name, FotoBilderService *service,
-				ICoreProxy_ptr proxy, const QByteArray& id = QByteArray ());
+				ICoreProxy_ptr proxy, const QString& login,
+				const QByteArray& id = QByteArray ());
 
 		ICoreProxy_ptr GetProxy () const;
 
@@ -79,6 +81,8 @@ namespace DeathNote
 		QAbstractItemModel* GetCollectionsModel () const override;
 
 		void UpdateCollections () override;
+	private:
+		void GetPassword () const;
 
 	private slots:
 		void handleGotAlbums ();
