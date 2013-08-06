@@ -133,9 +133,14 @@ namespace KBSwitch
 			const auto& desc = xkbRules->variants.desc [i];
 
 			const QString descStr (desc.desc);
-			const auto& varName = descStr.split (':', QString::SkipEmptyParts).value (0);
+			const auto& split = descStr.split (':', QString::SkipEmptyParts);
+			const auto& varName = split.value (0).trimmed ();
+			const auto& hrName = split.value (1).trimmed ();
+
 			const QString name (desc.name);
 			LayName2Variants_ [varName] << name;
+
+			VarLayHR2NameVarPair_ [hrName] = qMakePair (varName, name);
 		}
 
 		QStringList pcModelStrings;
