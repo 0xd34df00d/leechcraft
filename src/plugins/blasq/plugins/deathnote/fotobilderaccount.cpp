@@ -223,6 +223,12 @@ namespace DeathNote
 		GetChallenge ();
 	}
 
+	void FotoBilderAccount::RequestPictures ()
+	{
+		CallsQueue_ << [this] (const QString& challenge) { GetPicsRequest (challenge); };
+		GetChallenge ();
+	}
+
 	void FotoBilderAccount::UpdateCollections ()
 	{
 		if (FirstRequest_)
@@ -232,6 +238,7 @@ namespace DeathNote
 		}
 
 		RequestGalleries ();
+		RequestPictures ();
 	}
 
 	QString FotoBilderAccount::GetPassword () const
@@ -294,6 +301,24 @@ namespace DeathNote
 				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
+	void FotoBilderAccount::GetPicsRequest (const QString& challenge)
+	{
+		auto reply = Proxy_->GetNetworkAccessManager ()->
+				get (CreateRequest (Util::MakeMap<QByteArray, QByteArray> ({
+						{ "X-FB-User", Login_.toUtf8 () },
+						{ "X-FB-Mode", "GetPics" },
+						{ "X-FB-Auth", ("crp:" + challenge + ":" +
+								GetHashedChallenge (GetPassword (), challenge)).toUtf8 () } })));
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleGotPhotos ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
 	void FotoBilderAccount::handleGetChallengeRequestFinished ()
 	{
 		QDomDocument document;
@@ -347,7 +372,7 @@ namespace DeathNote
 			{
 				Album album;
 				const auto& fieldsList = list.at (0).childNodes ();
-				for (int j = 0, size = fieldsList.size (); j < size; ++j)
+				for (int j = 0, sz = fieldsList.size (); j < sz; ++j)
 				{
 					const auto& fieldElem = fieldsList.at (j).toElement ();
 					if (fieldElem.tagName () == "Name")
@@ -362,6 +387,46 @@ namespace DeathNote
 			}
 
 			return albums;
+		}
+
+		QList<Photo> ParseGetPicsRequest (const QDomDocument& document)
+		{
+			QList<Photo> photos;
+			const auto& list = document.elementsByTagName ("Pic");
+			for (int i = 0, size = list.size (); i < size; ++i)
+			{
+				Photo photo;
+				photo.ID_ = list.at (i).toElement ().attribute ("id").toUtf8 ();
+				const auto& fieldsList = list.at (0).childNodes ();
+				for (int j = 0, sz = fieldsList.size (); j < sz; ++j)
+				{
+					const auto& fieldElem = fieldsList.at (j).toElement ();
+					if (fieldElem.tagName () == "Bytes")
+						photo.Size_ = fieldElem.text ().toULongLong ();
+					else if (fieldElem.tagName () == "Format")
+						photo.Format_ = fieldElem.text ();
+					else if (fieldElem.tagName () == "Height")
+						photo.Height_ = fieldElem.text ().toInt ();
+					else if (fieldElem.tagName () == "MD5")
+						photo.MD5_ = fieldElem.text ().toUtf8 ();
+					else if (fieldElem.tagName () == "Meta")
+					{
+						if (fieldElem.attribute ("name") == "title")
+							photo.Title_ = fieldElem.text ();
+						else if (fieldElem.attribute ("name") == "description")
+							photo.Description_ = fieldElem.text ();
+						else if (fieldElem.attribute ("name") == "filename")
+							photo.OriginalFileName_ = fieldElem.text ();
+					}
+					else if (fieldElem.tagName () == "URL")
+						photo.Url_ = QUrl (fieldElem.text ());
+					else if (fieldElem.tagName () == "Width")
+						photo.Width_ = fieldElem.text ().toInt ();
+				}
+				photos << photo;
+			}
+
+			return photos;
 		}
 	}
 
@@ -423,6 +488,34 @@ namespace DeathNote
 
 	void FotoBilderAccount::handleGotPhotos ()
 	{
+		QDomDocument document;
+		QByteArray content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
+				document);
+		if (content.isEmpty ())
+			return;
+
+		if (FotoBilderErrorExists (content))
+			return;
+
+		for (const auto& photo : ParseGetPicsRequest (document))
+		{
+			auto mkItem = [&photo] () -> QStandardItem*
+			{
+				auto item = new QStandardItem (photo.Title_);
+				item->setEditable (false);
+				item->setData (ItemType::Image, CollectionRole::Type);
+				item->setData (photo.ID_, CollectionRole::ID);
+				item->setData (photo.Title_, CollectionRole::Name);
+
+				item->setData (photo.Url_, CollectionRole::Original);
+				item->setData (QSize (photo.Width_, photo.Height_), CollectionRole::OriginalSize);
+
+				return item;
+			};
+
+			AllPhotosItem_->appendRow (mkItem ());
+		}
+		emit doneUpdating ();
 	}
 }
 }

@@ -89,6 +89,7 @@ namespace DeathNote
 
 		void Login ();
 		void RequestGalleries ();
+		void RequestPictures ();
 
 		void UpdateCollections () override;
 	private:
@@ -97,6 +98,7 @@ namespace DeathNote
 		void GetChallenge ();
 		void LoginRequest (const QString& challenge);
 		void GetGalsRequest (const QString& challenge);
+		void GetPicsRequest (const QString& challenge);
 
 	private slots:
 		void handleGetChallengeRequestFinished ();
