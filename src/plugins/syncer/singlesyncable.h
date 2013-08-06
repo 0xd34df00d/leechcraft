@@ -30,6 +30,7 @@
 #pragma once
 
 #include <memory>
+#include <unordered_set>
 #include <QObject>
 
 class QTcpSocket;
@@ -40,6 +41,9 @@ class ISyncProxy;
 namespace Laretz
 {
 	struct ParseResult;
+
+	class Item;
+	class Operation;
 }
 
 namespace LeechCraft
@@ -58,14 +62,25 @@ namespace Syncer
 		enum class State
 		{
 			Idle,
-			ListRequested
+			ListRequested,
+			FetchRequested,
+			Sent,
+			RootCreateRequested
 		} State_ = State::Idle;
+
+		bool IsFirstSync_ = true;
+
+		std::unordered_set<std::string> RemoteIDs_;
 	public:
 		SingleSyncable (const QByteArray& id, ISyncProxy *proxy, QObject* = 0);
 	private:
 		std::shared_ptr<QSettings> GetSettings ();
 
 		void HandleList (const Laretz::ParseResult&);
+		void HandleFetch (const Laretz::ParseResult&);
+		void HandleSendResult (const Laretz::ParseResult&);
+		void HandleRootCreated (const Laretz::ParseResult&);
+		void CreateRoot ();
 	private slots:
 		void handleSocketRead ();
 
