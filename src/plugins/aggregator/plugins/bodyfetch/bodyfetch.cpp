@@ -174,7 +174,7 @@ namespace BodyFetch
 
 	void Plugin::hookGotNewItems (IHookProxy_ptr, QVariantList items)
 	{
-		if (!WO_ || !WO_->IsOK ())
+		if (!WO_ || !WO_->IsOk ())
 			return;
 
 		WO_->AppendItems (items);
