@@ -567,14 +567,15 @@ namespace DeathNote
 		AllPhotosItem_->setEditable (false);
 		CollectionsModel_->appendRow (AllPhotosItem_);
 
-		const auto& albums = ParseGetGalsRequest (document);
-		for (const auto& album : albums)
-		{
-			auto item = new QStandardItem (album.Title_);
-			item->setData (ItemType::Collection, CollectionRole::Type);
-			item->setEditable (false);
-			CollectionsModel_->appendRow (item);
-		}
+		//TODO temporarily disabled until there is a way to define the album on the picture
+// 		const auto& albums = ParseGetGalsRequest (document);
+// 		for (const auto& album : albums)
+// 		{
+// 			auto item = new QStandardItem (album.Title_);
+// 			item->setData (ItemType::Collection, CollectionRole::Type);
+// 			item->setEditable (false);
+// 			CollectionsModel_->appendRow (item);
+// 		}
 	}
 
 	void FotoBilderAccount::handleGotPhotos ()
