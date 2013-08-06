@@ -52,6 +52,15 @@ namespace Sync
 		return std::string (str.toUtf8 ().constData ());
 	}
 
+	Laretz::Field_t ToField (const QStringList& strList)
+	{
+		std::vector<std::string> result;
+		result.reserve (strList.size ());
+		for (const auto& str : strList)
+			result.push_back (str.toUtf8 ().constData ());
+		return result;
+	}
+
 	Laretz::Field_t ToField (const QDateTime& dt)
 	{
 		return static_cast<int64_t> (dt.toTime_t ());
@@ -65,6 +74,8 @@ namespace Sync
 			return ToField (var.toDateTime ());
 		case QVariant::String:
 			return ToField (var.toString ());
+		case QVariant::StringList:
+			return ToField (var.toStringList ());
 		case QVariant::UInt:
 		case QVariant::ULongLong:
 		case QVariant::Int:
@@ -99,6 +110,15 @@ namespace Sync
 			QVariant operator() (const std::string& str) const
 			{
 				return QString::fromUtf8 (str.c_str ());
+			}
+
+			QVariant operator() (const std::vector<std::string>& strList) const
+			{
+				QStringList result;
+				result.reserve (strList.size ());
+				for (const auto& str : strList)
+					result << QString::fromUtf8 (str.c_str ());
+				return result;
 			}
 
 			QVariant operator() (int64_t num) const

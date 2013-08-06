@@ -48,6 +48,7 @@ namespace Util
 namespace Sync
 {
 	Laretz::Field_t ToField (const QString&);
+	Laretz::Field_t ToField (const QStringList&);
 	Laretz::Field_t ToField (const QDateTime&);
 	Laretz::Field_t ToField (const QVariant&);
 
