@@ -54,6 +54,10 @@ namespace DeathNote
 	namespace
 	{
 		const QString Url ("http://pics.livejournal.com/interface/simple");
+		//Available sizes: 100, 300, 320, 600, 640, 900, 1000
+
+		const QString SmallSize ("320");
+		const QString MediumSize ("640");
 	}
 
 	FotoBilderAccount::FotoBilderAccount (const QString& name, FotoBilderService *service,
@@ -270,9 +274,11 @@ namespace DeathNote
 						{ "X-FB-User", Login_.toUtf8 () },
 						{ "X-FB-Mode", "Login" },
 						{ "X-FB-Auth", ("crp:" + challenge + ":" +
-								GetHashedChallenge (GetPassword (), challenge)).toUtf8 () },
+								GetHashedChallenge (GetPassword (), challenge))
+									.toUtf8 () },
 						{ "X-FB-Login.ClientVersion",
-								"LeechCraft Blasq/" + Proxy_->GetVersion ().toUtf8 () } })));
+								"LeechCraft Blasq/" + Proxy_->GetVersion ()
+										.toUtf8 () } })));
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -290,7 +296,8 @@ namespace DeathNote
 					{ "X-FB-User", Login_.toUtf8 () },
 					{ "X-FB-Mode", "GetGals" },
 					{ "X-FB-Auth", ("crp:" + challenge + ":" +
-							GetHashedChallenge (GetPassword (), challenge)).toUtf8 () } })));
+							GetHashedChallenge (GetPassword (), challenge))
+								.toUtf8 () } })));
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -308,7 +315,8 @@ namespace DeathNote
 						{ "X-FB-User", Login_.toUtf8 () },
 						{ "X-FB-Mode", "GetPics" },
 						{ "X-FB-Auth", ("crp:" + challenge + ":" +
-								GetHashedChallenge (GetPassword (), challenge)).toUtf8 () } })));
+								GetHashedChallenge (GetPassword (), challenge))
+									.toUtf8 () } })));
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -396,8 +404,9 @@ namespace DeathNote
 			for (int i = 0, size = list.size (); i < size; ++i)
 			{
 				Photo photo;
-				photo.ID_ = list.at (i).toElement ().attribute ("id").toUtf8 ();
-				const auto& fieldsList = list.at (0).childNodes ();
+				const auto& picNode = list.at (i);
+				photo.ID_ = picNode.toElement ().attribute ("id").toUtf8 ();
+				const auto& fieldsList = picNode.childNodes ();
 				for (int j = 0, sz = fieldsList.size (); j < sz; ++j)
 				{
 					const auto& fieldElem = fieldsList.at (j).toElement ();
@@ -423,6 +432,15 @@ namespace DeathNote
 					else if (fieldElem.tagName () == "Width")
 						photo.Width_ = fieldElem.text ().toInt ();
 				}
+				Thumbnail small;
+				small.Url_ = photo.Url_.toString ().replace ("original", SmallSize);
+				small.Height_ = SmallSize.toInt ();
+				small.Width_ = SmallSize.toInt ();
+				Thumbnail medium;
+				medium.Url_ = photo.Url_.toString ().replace ("original", MediumSize);
+				medium.Height_ = MediumSize.toInt ();
+				medium.Width_ = MediumSize.toInt ();
+				photo.Thumbnails_ << small << medium;
 				photos << photo;
 			}
 
@@ -489,7 +507,7 @@ namespace DeathNote
 	void FotoBilderAccount::handleGotPhotos ()
 	{
 		QDomDocument document;
-		QByteArray content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
+		auto content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
 				document);
 		if (content.isEmpty ())
 			return;
@@ -501,15 +519,27 @@ namespace DeathNote
 		{
 			auto mkItem = [&photo] () -> QStandardItem*
 			{
-				auto item = new QStandardItem (photo.Title_);
+				const auto& name = photo.Title_.isEmpty () ?
+					photo.OriginalFileName_ :
+					photo.Title_;
+				auto item = new QStandardItem (name);
 				item->setEditable (false);
 				item->setData (ItemType::Image, CollectionRole::Type);
 				item->setData (photo.ID_, CollectionRole::ID);
-				item->setData (photo.Title_, CollectionRole::Name);
+				item->setData (name , CollectionRole::Name);
 
 				item->setData (photo.Url_, CollectionRole::Original);
-				item->setData (QSize (photo.Width_, photo.Height_), CollectionRole::OriginalSize);
-
+				item->setData (QSize (photo.Width_, photo.Height_),
+						CollectionRole::OriginalSize);
+				if (!photo.Thumbnails_.isEmpty ())
+				{
+					auto first = photo.Thumbnails_.first ();
+					auto last = photo.Thumbnails_.last ();
+					item->setData (first.Url_, CollectionRole::SmallThumb);
+					item->setData (QSize (first.Width_, first.Height_), CollectionRole::SmallThumbSize);
+					item->setData (last.Url_, CollectionRole::MediumThumb);
+					item->setData (QSize (last.Width_, last.Height_), CollectionRole::MediumThumb);
+				}
 				return item;
 			};
 

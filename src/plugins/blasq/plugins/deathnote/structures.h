@@ -52,13 +52,24 @@ namespace DeathNote
 		{}
 	};
 
-	//TODO add Access to albums and photos
 	struct Album
 	{
 		QByteArray ID_;
 		QString Title_;
 		QDateTime CreationDate_;
 		QUrl Url_;
+	};
+
+	struct Thumbnail
+	{
+		QUrl Url_;
+		int Width_;
+		int Height_;
+
+		Thumbnail ()
+		: Width_ (0)
+		, Height_ (0)
+		{}
 	};
 
 	struct Photo
@@ -73,6 +84,8 @@ namespace DeathNote
 		QUrl Url_;
 		QString OriginalFileName_;
 		QString Description_;
+
+		QList<Thumbnail> Thumbnails_;
 
 		Photo ()
 		: Width_ (0)
