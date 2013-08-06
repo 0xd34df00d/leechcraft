@@ -31,8 +31,10 @@
 
 #include <functional>
 #include <memory>
+#include <QNetworkReply>
 #include <QObject>
 #include <QSet>
+#include <QQueue>
 #include <interfaces/blasq/iaccount.h>
 #include <interfaces/core/icoreproxy.h>
 
@@ -47,6 +49,19 @@ namespace DeathNote
 {
 	class FotoBilderService;
 
+	struct Quota
+	{
+		quint64 Total_;
+		quint64 Used_;
+		quint64 Remaining_;
+
+		Quota ()
+		: Total_ (0)
+		, Used_ (0)
+		, Remaining_ (0)
+		{}
+	};
+
 	class FotoBilderAccount : public QObject
 						, public IAccount
 	{
@@ -58,9 +73,13 @@ namespace DeathNote
 		const ICoreProxy_ptr Proxy_;
 		QByteArray ID_;
 		QString Login_;
+		bool FirstRequest_;
+		Quota Quota_;
 
 		QStandardItemModel * const CollectionsModel_;
 		QStandardItem *AllPhotosItem_;
+
+		QQueue<std::function <void (const QString&)>> CallsQueue_;
 
 	public:
 		FotoBilderAccount (const QString& name, FotoBilderService *service,
@@ -80,17 +99,27 @@ namespace DeathNote
 
 		QAbstractItemModel* GetCollectionsModel () const override;
 
+		void Login ();
 		void UpdateCollections () override;
 	private:
-		void GetPassword () const;
+		QString GetPassword () const;
+		bool FotoBilderErrorExists (const QByteArray& content);
+		void GetChallenge ();
+		void LoginRequest (const QString& challenge);
 
 	private slots:
+		void handleGetChallengeRequestFinished ();
+		void handleLoginRequestFinished ();
+
+		void handleNetworkError (QNetworkReply::NetworkError err);
+
 		void handleGotAlbums ();
 		void handleGotPhotos ();
 
 	signals:
 		void accountChanged (FotoBilderAccount *acc);
 		void doneUpdating () override;
+		void networkError (QNetworkReply::NetworkError err, const QString& errString);
 	};
 }
 }

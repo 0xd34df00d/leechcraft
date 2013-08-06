@@ -85,10 +85,16 @@ namespace DeathNote
 			const auto& login = rp->GetLogin ();
 			const auto& password = rp->GetPassword ();
 			auto acc = new FotoBilderAccount (name, this, Proxy_, login);
-			if (!password.isNull ())
+			//TODO error
+			if (login.isEmpty ())
+				return;
+
+			if (!password.isEmpty ())
 				Util::SavePassword (password,
 						"org.LeechCraft.Blasq.PassForAccount/" + acc->GetID (),
 						this);
+			AddAccount (acc);
+			saveAccount (acc);
 		}
 	}
 
@@ -148,14 +154,6 @@ namespace DeathNote
 		settings.setValue (account->GetID (), account->Serialize ());
 		settings.endGroup ();
 	}
-
-	void FotoBilderService::handleAuthSuccess (QObject *accObj)
-	{
-		auto acc (qobject_cast<FotoBilderAccount*> (accObj));
-		AddAccount (acc);
-		saveAccount (acc);
-	}
-
 }
 }
 }

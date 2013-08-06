@@ -69,10 +69,10 @@ namespace DeathNote
 
 	private slots:
 		void saveAccount (FotoBilderAccount *account);
-		void handleAuthSuccess (QObject *accObj);
 
 	signals:
-		void gotEntity (const Entity& entity);
+		void gotEntity (LeechCraft::Entity e);
+		void delegateEntity (LeechCraft::Entity e, int *id, QObject **obj);
 		void accountAdded (QObject *accObj);
 		void accountRemoved (QObject *accObj);
 	};

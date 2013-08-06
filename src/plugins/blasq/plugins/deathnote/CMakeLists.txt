@@ -4,6 +4,7 @@ include (InitLCPlugin OPTIONAL)
 
 set (QT_USE_QTNETWORK TRUE)
 set (QT_USE_QTXML TRUE)
+set (QT_USE_QTXMLPATTERNS TRUE)
 include (${QT_USE_FILE})
 
 include_directories (

@@ -29,6 +29,7 @@
 
 #include "fotobilderaccount.h"
 #include <QDomDocument>
+#include <QCryptographicHash>
 #include <QInputDialog>
 #include <QMainWindow>
 #include <QNetworkRequest>
@@ -36,9 +37,12 @@
 #include <QStandardItemModel>
 #include <QtDebug>
 #include <QUuid>
+#include <QXmlQuery>
+#include <boost/concept_check.hpp>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/passutils.h>
+#include <util/util.h>
 #include "fotobilderservice.h"
 
 namespace LeechCraft
@@ -47,6 +51,11 @@ namespace Blasq
 {
 namespace DeathNote
 {
+	namespace
+	{
+		const QString Url ("http://pics.livejournal.com/interface/simple");
+	}
+
 	FotoBilderAccount::FotoBilderAccount (const QString& name, FotoBilderService *service,
 			ICoreProxy_ptr proxy, const QString& login, const QByteArray& id)
 	: QObject (service)
@@ -55,6 +64,7 @@ namespace DeathNote
 	, Proxy_ (proxy)
 	, ID_ (id.isEmpty () ? QUuid::createUuid ().toByteArray () : id)
 	, Login_ (login)
+	, FirstRequest_ (true)
 	, CollectionsModel_ (new NamedModel<QStandardItemModel> (this))
 	, AllPhotosItem_ (0)
 	{
@@ -129,14 +139,203 @@ namespace DeathNote
 		return CollectionsModel_;
 	}
 
-	void FotoBilderAccount::UpdateCollections ()
+	namespace
 	{
+		QNetworkRequest CreateRequest (const QMap<QByteArray, QByteArray>& fields)
+		{
+			QNetworkRequest request (Url);
+			for (const auto& field : fields.keys ())
+				request.setRawHeader (field, fields [field]);
+
+			return request;
+		}
+
+		QByteArray CreateDomDocumentFromReply (QNetworkReply *reply, QDomDocument &document)
+		{
+			if (!reply)
+				return QByteArray ();
+
+			const auto& content = reply->readAll ();
+			reply->deleteLater ();
+			QString errorMsg;
+			int errorLine = -1, errorColumn = -1;
+			if (!document.setContent (content, &errorMsg, &errorLine, &errorColumn))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< errorMsg
+						<< "in line:"
+						<< errorLine
+						<< "column:"
+						<< errorColumn;
+				return QByteArray ();
+			}
+
+			return content;
+		}
+
+		QByteArray GetHashedChallenge (const QString& password, const QString& challenge)
+		{
+			const QByteArray passwordHash = QCryptographicHash::hash (password.toUtf8 (),
+					QCryptographicHash::Md5).toHex ();
+			return QCryptographicHash::hash ((challenge + passwordHash).toUtf8 (),
+					QCryptographicHash::Md5).toHex ();
+		}
 	}
 
-	void FotoBilderAccount::GetPassword () const
+	bool FotoBilderAccount::FotoBilderErrorExists (const QByteArray& content)
+	{
+		QXmlQuery query;
+		query.setFocus (content);
+
+		QString code;
+		query.setQuery ("/FBResponse/Error/@code/data(.)");
+		if (!query.evaluateTo (&code))
+			return false;
+
+		QString string;
+		query.setQuery ("/FBResponse/Error/text()");
+		if (!query.evaluateTo (&string))
+			return false;
+
+		if (code.isEmpty () || string.isEmpty ())
+			return false;
+
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blasq DeathNote",
+				tr ("Error code:%1 (%2)")
+						.arg (code)
+						.arg (string),
+				Priority::PWarning_));
+
+		return true;
+	}
+
+	void FotoBilderAccount::Login ()
+	{
+		CallsQueue_ << [this] (const QString& challenge) { LoginRequest (challenge); };
+		GetChallenge ();
+	}
+
+	void FotoBilderAccount::UpdateCollections ()
+	{
+		if (FirstRequest_)
+		{
+			Login ();
+			FirstRequest_ = false;
+		}
+	}
+
+	QString FotoBilderAccount::GetPassword () const
 	{
 		QString key ("org.LeechCraft.Blasq.PassForAccount/" + GetID ());
-		return Util::GetPassword (key, QString (), Service_);
+		return Util::GetPassword (key, tr ("Enter password"), Service_);
+	}
+
+	void FotoBilderAccount::GetChallenge ()
+	{
+		auto reply = Proxy_->GetNetworkAccessManager ()->
+				get (CreateRequest (Util::MakeMap<QByteArray, QByteArray> ({
+						{ "X-FB-User", Login_.toUtf8 () },
+						{ "X-FB-Mode", "GetChallenge" } })));
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleGetChallengeRequestFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void FotoBilderAccount::LoginRequest (const QString& challenge)
+	{
+		auto reply = Proxy_->GetNetworkAccessManager ()->
+				get (CreateRequest (Util::MakeMap<QByteArray, QByteArray> ({
+						{ "X-FB-User", Login_.toUtf8 () },
+						{ "X-FB-Mode", "Login" },
+						{ "X-FB-Auth", ("crp:" + challenge + ":" +
+								GetHashedChallenge (GetPassword (), challenge)).toUtf8 () },
+						{ "X-FB-Login.ClientVersion",
+								"LeechCraft Blasq/" + Proxy_->GetVersion ().toUtf8 () } })));
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleLoginRequestFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void FotoBilderAccount::handleGetChallengeRequestFinished ()
+	{
+		QDomDocument document;
+		QByteArray content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
+				document);
+		if (content.isEmpty ())
+			return;
+
+		QXmlQuery query;
+		query.setFocus (content);
+
+		QString challenge;
+		query.setQuery ("/FBResponse/GetChallengeResponse/Challenge/text()");
+		if (!query.evaluateTo (&challenge))
+			return;
+
+		if (!CallsQueue_.isEmpty ())
+			CallsQueue_.dequeue () (challenge.trimmed ());
+	}
+
+	namespace
+	{
+		Quota ParseLoginResponse (const QDomDocument& document)
+		{
+			Quota quota;
+
+			const auto& list = document.elementsByTagName ("Quota");
+			if (!list.isEmpty ())
+			{
+				const auto& fieldsList = list.at (0).childNodes ();
+				for (int i = 0, size = fieldsList.size (); i < size; ++i)
+				{
+					const auto& fieldElem = fieldsList.at (i).toElement ();
+					if (fieldElem.tagName () == "Total")
+						quota.Total_ = fieldElem.text ().toULongLong ();
+					else if (fieldElem.tagName () == "Used")
+						quota.Used_ = fieldElem.text ().toULongLong ();
+					else if (fieldElem.tagName () == "Remaining")
+						quota.Remaining_ = fieldElem.text ().toULongLong ();
+				}
+			}
+
+			return quota;
+		}
+	}
+
+	void FotoBilderAccount::handleLoginRequestFinished ()
+	{
+		QDomDocument document;
+		QByteArray content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
+				document);
+		if (content.isEmpty ())
+			return;
+
+		if (FotoBilderErrorExists (content))
+			return;
+
+		Quota_ = ParseLoginResponse (document);
+	}
+
+	void FotoBilderAccount::handleNetworkError (QNetworkReply::NetworkError err)
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+		reply->deleteLater ();
+		qWarning () << Q_FUNC_INFO
+				<< err
+				<< reply->errorString ();
+		emit networkError (err, reply->errorString ());
 	}
 
 	void FotoBilderAccount::handleGotAlbums ()

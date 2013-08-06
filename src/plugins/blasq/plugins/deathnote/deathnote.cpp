@@ -42,9 +42,13 @@ namespace DeathNote
 		Util::InstallTranslator ("blasq_deathnote");
 		Service_ = new FotoBilderService (proxy);
 		connect (Service_,
-				SIGNAL (gotEntity (Entity)),
+				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
-				SIGNAL (gotEntity (Entity)));
+				SIGNAL (gotEntity (LeechCraft::Entity)));
+		connect (Service_,
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
 	}
 
 	void Plugin::SecondInit ()
