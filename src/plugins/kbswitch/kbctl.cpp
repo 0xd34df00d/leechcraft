@@ -337,8 +337,17 @@ namespace KBSwitch
 		const auto& layoutsD2N = Rules_->GetLayoutsD2N ();
 		for (size_t i = 0; i < groupCount; ++i)
 		{
-			Groups_ << layoutsD2N [result [i]];
+			const QString str (result [i]);
 			XFree (result [i]);
+
+			if (!layoutsD2N.contains (str))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< str
+						<< "not present in layouts descr -> name map";
+				continue;
+			}
+			Groups_ << layoutsD2N [str];
 		}
 		delete [] result;
 
