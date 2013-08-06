@@ -77,6 +77,9 @@ namespace Sync
 		void Enable ();
 		bool IsEnabled () const;
 
+		typedef std::shared_ptr<void> MergeGuard_t;
+		MergeGuard_t EnterMergeMode ();
+
 		void Add (const std::vector<Laretz::Operation>&);
 		QList<Laretz::Operation> GetStagedOps () const;
 	};

@@ -173,6 +173,13 @@ namespace Sync
 		return IsEnabled_;
 	}
 
+	auto Stager::EnterMergeMode () -> MergeGuard_t
+	{
+		const bool was = IsEnabled_;
+		IsEnabled_ = false;
+		return MergeGuard_t (nullptr, [this, was] (void*) { IsEnabled_ = was; });
+	}
+
 	void Stager::Add (const std::vector<Laretz::Operation>& ops)
 	{
 		if (!IsEnabled_)
