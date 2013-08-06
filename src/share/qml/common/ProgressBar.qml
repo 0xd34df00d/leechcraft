@@ -24,12 +24,11 @@ Item {
 
     Rectangle {
         id: highlight
-        width: Math.floor(rootItem.width * (value - minimum) / (maximum - minimum) - 4)
+        width: rootItem.width * (value - minimum) / (maximum - minimum)
 
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        anchors.margins: 2
         color: parent.color
     }
 }
