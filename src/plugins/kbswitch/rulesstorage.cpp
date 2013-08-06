@@ -202,6 +202,11 @@ namespace KBSwitch
 		return LayName2Desc_;
 	}
 
+	const QHash<QString, QPair<QString, QString>>& RulesStorage::GetVariantsD2Layouts () const
+	{
+		return VarLayHR2NameVarPair_;
+	}
+
 	QStringList RulesStorage::GetLayoutVariants (const QString& layout) const
 	{
 		return LayName2Variants_ [layout];
