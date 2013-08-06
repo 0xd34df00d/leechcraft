@@ -340,11 +340,12 @@ namespace KBSwitch
 			const QString str (result [i]);
 			XFree (result [i]);
 
-			if (!layoutsD2N.contains (str))
+			if (layoutsD2N [str].isEmpty ())
 			{
 				qWarning () << Q_FUNC_INFO
 						<< str
-						<< "not present in layouts descr -> name map";
+						<< "not present in layouts descr -> name map"
+						<< layoutsD2N.keys ();
 				continue;
 			}
 			Groups_ << layoutsD2N [str];
