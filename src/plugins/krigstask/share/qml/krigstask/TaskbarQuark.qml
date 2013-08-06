@@ -91,7 +91,8 @@ Rectangle {
             visible: showPager
 
             actionIconURL: "image://ThemeIcons/user-desktop"
-            onTriggered: commonJS.showTooltip(showPagerButton, KT_taskbarProxy.showPager)
+            onTriggered: commonJS.showTooltip(showPagerButton,
+                    function(x, y) { KT_taskbarProxy.showPager(x, y, showThumbsInPager) })
         }
     }
 }

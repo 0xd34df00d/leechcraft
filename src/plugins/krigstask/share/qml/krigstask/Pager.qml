@@ -93,7 +93,8 @@ Rectangle {
                                 id: appRectangle
 
                                 width: rootRect.singleListWidth
-                                height: winIconImage.height + winSnapImage.height + winSnapImage.anchors.topMargin + winSnapImage.anchors.bottomMargin
+                                height: winIconImage.height + (winSnapImage.visible ? winSnapImage.height : 0) +
+                                        winSnapImage.anchors.topMargin + winSnapImage.anchors.bottomMargin
 
                                 border.width: 1
                                 border.color: isActive ? colorProxy.color_TextBox_HighlightBorderColor : colorProxy.color_TextBox_BorderColor
@@ -150,6 +151,8 @@ Rectangle {
                                     smooth: true
                                     fillMode: Image.PreserveAspectFit
                                     cache: false
+
+                                    visible: showThumbs
                                 }
 
                                 MouseArea {

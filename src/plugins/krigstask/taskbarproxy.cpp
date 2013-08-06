@@ -249,7 +249,7 @@ namespace Krigstask
 		menu->popup ({ x, y });
 	}
 
-	void TaskbarProxy::showPager (int x, int y)
+	void TaskbarProxy::showPager (int x, int y, bool showThumbs)
 	{
 		if (Pager_)
 		{
@@ -259,7 +259,7 @@ namespace Krigstask
 
 		auto desktop = QApplication::desktop ();
 		const auto screen = desktop->screenNumber ({ x, y });
-		Pager_ = new PagerWindow (screen, Proxy_);
+		Pager_ = new PagerWindow (screen, showThumbs, Proxy_);
 		new Util::AutoResizeMixin ({ x, y },
 				[screen, desktop] () { return desktop->availableGeometry (screen); },
 				Pager_);
