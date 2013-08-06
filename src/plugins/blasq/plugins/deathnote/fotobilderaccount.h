@@ -37,6 +37,7 @@
 #include <QQueue>
 #include <interfaces/blasq/iaccount.h>
 #include <interfaces/core/icoreproxy.h>
+#include "structures.h"
 
 class QStandardItemModel;
 class QStandardItem;
@@ -48,19 +49,6 @@ namespace Blasq
 namespace DeathNote
 {
 	class FotoBilderService;
-
-	struct Quota
-	{
-		quint64 Total_;
-		quint64 Used_;
-		quint64 Remaining_;
-
-		Quota ()
-		: Total_ (0)
-		, Used_ (0)
-		, Remaining_ (0)
-		{}
-	};
 
 	class FotoBilderAccount : public QObject
 						, public IAccount
@@ -100,12 +88,15 @@ namespace DeathNote
 		QAbstractItemModel* GetCollectionsModel () const override;
 
 		void Login ();
+		void RequestGalleries ();
+
 		void UpdateCollections () override;
 	private:
 		QString GetPassword () const;
 		bool FotoBilderErrorExists (const QByteArray& content);
 		void GetChallenge ();
 		void LoginRequest (const QString& challenge);
+		void GetGalsRequest (const QString& challenge);
 
 	private slots:
 		void handleGetChallengeRequestFinished ();

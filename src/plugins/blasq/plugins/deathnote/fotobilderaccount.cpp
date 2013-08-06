@@ -191,11 +191,13 @@ namespace DeathNote
 		query.setQuery ("/FBResponse/Error/@code/data(.)");
 		if (!query.evaluateTo (&code))
 			return false;
+		code = code.simplified ();
 
 		QString string;
 		query.setQuery ("/FBResponse/Error/text()");
 		if (!query.evaluateTo (&string))
 			return false;
+		string = string.simplified ();
 
 		if (code.isEmpty () || string.isEmpty ())
 			return false;
@@ -215,6 +217,12 @@ namespace DeathNote
 		GetChallenge ();
 	}
 
+	void FotoBilderAccount::RequestGalleries ()
+	{
+		CallsQueue_ << [this] (const QString& challenge) { GetGalsRequest (challenge); };
+		GetChallenge ();
+	}
+
 	void FotoBilderAccount::UpdateCollections ()
 	{
 		if (FirstRequest_)
@@ -222,6 +230,8 @@ namespace DeathNote
 			Login ();
 			FirstRequest_ = false;
 		}
+
+		RequestGalleries ();
 	}
 
 	QString FotoBilderAccount::GetPassword () const
@@ -260,6 +270,24 @@ namespace DeathNote
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleLoginRequestFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void FotoBilderAccount::GetGalsRequest (const QString& challenge)
+	{
+		auto reply = Proxy_->GetNetworkAccessManager ()->
+				get (CreateRequest (Util::MakeMap<QByteArray, QByteArray> ({
+					{ "X-FB-User", Login_.toUtf8 () },
+					{ "X-FB-Mode", "GetGals" },
+					{ "X-FB-Auth", ("crp:" + challenge + ":" +
+							GetHashedChallenge (GetPassword (), challenge)).toUtf8 () } })));
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleGotAlbums ()));
 		connect (reply,
 				SIGNAL (error (QNetworkReply::NetworkError)),
 				this,
@@ -310,6 +338,31 @@ namespace DeathNote
 
 			return quota;
 		}
+
+		QList<Album> ParseGetGalsRequest (const QDomDocument& document)
+		{
+			QList<Album> albums;
+			const auto& list = document.elementsByTagName ("Gal");
+			for (int i = 0, size = list.size (); i < size; ++i)
+			{
+				Album album;
+				const auto& fieldsList = list.at (0).childNodes ();
+				for (int j = 0, size = fieldsList.size (); j < size; ++j)
+				{
+					const auto& fieldElem = fieldsList.at (j).toElement ();
+					if (fieldElem.tagName () == "Name")
+						album.Title_ = fieldElem.text ();
+					else if (fieldElem.tagName () == "Date")
+						album.CreationDate_ = QDateTime::fromString (fieldElem.text (),
+								"yyyy-dd-mm hh:MM:ss");
+					else if (fieldElem.tagName () == "URL")
+						album.Url_ = QUrl (fieldElem.text ());
+				}
+				albums << album;
+			}
+
+			return albums;
+		}
 	}
 
 	void FotoBilderAccount::handleLoginRequestFinished ()
@@ -340,6 +393,32 @@ namespace DeathNote
 
 	void FotoBilderAccount::handleGotAlbums ()
 	{
+		QDomDocument document;
+		QByteArray content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
+				document);
+		if (content.isEmpty ())
+			return;
+
+		if (FotoBilderErrorExists (content))
+			return;
+
+		if (auto rc = CollectionsModel_->rowCount ())
+			CollectionsModel_->removeRows (0, rc);
+		CollectionsModel_->setHorizontalHeaderLabels ({ tr ("Name") });
+
+		AllPhotosItem_ = new QStandardItem (tr ("All photos"));
+		AllPhotosItem_->setData (ItemType::AllPhotos, CollectionRole::Type);
+		AllPhotosItem_->setEditable (false);
+		CollectionsModel_->appendRow (AllPhotosItem_);
+
+		const auto& albums = ParseGetGalsRequest (document);
+		for (const auto& album : albums)
+		{
+			auto item = new QStandardItem (album.Title_);
+			item->setData (ItemType::Collection, CollectionRole::Type);
+			item->setEditable (false);
+			CollectionsModel_->appendRow (item);
+		}
 	}
 
 	void FotoBilderAccount::handleGotPhotos ()
