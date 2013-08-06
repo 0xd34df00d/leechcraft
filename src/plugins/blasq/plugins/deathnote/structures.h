@@ -39,6 +39,14 @@ namespace Blasq
 {
 namespace DeathNote
 {
+	enum class Access
+	{
+		Private,
+		Public,
+		FriendsOnly,
+		CustomUsers
+	};
+
 	struct Quota
 	{
 		quint64 Total_;
@@ -58,6 +66,7 @@ namespace DeathNote
 		QString Title_;
 		QDateTime CreationDate_;
 		QUrl Url_;
+		Access Access_;
 	};
 
 	struct Thumbnail
@@ -84,6 +93,7 @@ namespace DeathNote
 		QUrl Url_;
 		QString OriginalFileName_;
 		QString Description_;
+		Access Access_;
 
 		QList<Thumbnail> Thumbnails_;
 

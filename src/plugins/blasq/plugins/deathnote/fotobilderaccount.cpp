@@ -186,6 +186,56 @@ namespace DeathNote
 		}
 	}
 
+	namespace
+	{
+		QString LocalizedErrorFromCode (int code)
+		{
+			switch (code)
+			{
+			case 100:
+				return QObject::tr ("User error");
+			case 101:
+				return QObject::tr ("No user specified");
+			case 102:
+				return QObject::tr ("Invalid user");
+			case 103:
+				return QObject::tr ("Unknown user");
+			case 200:
+				return QObject::tr ("Client error");
+			case 202:
+				return QObject::tr ("Invalid mode");
+			case 211:
+				return QObject::tr ("Invalid argument");
+			case 212:
+				return QObject::tr ("Missing required argument");
+			case 213:
+				return QObject::tr ("Invalid image for upload");
+			case 300:
+				return QObject::tr ("Access error");
+			case 301:
+				return QObject::tr ("No auth specified");
+			case 302:
+				return QObject::tr ("Invalid auth");
+			case 303:
+				return QObject::tr ("Account status does not allow upload");
+			case 400:
+				return QObject::tr ("Limit error");
+			case 401:
+				return QObject::tr ("No disk space remaining");
+			case 402:
+				return QObject::tr ("Insufficient disk space remaining");
+			case 500:
+				return QObject::tr ("Internal Server Error");
+			case 510:
+				return QObject::tr ("Error creating gpic");
+			case 512:
+				return QObject::tr ("Error creating gallery");
+			default:
+				return QString ();
+			}
+		}
+	}
+
 	bool FotoBilderAccount::FotoBilderErrorExists (const QByteArray& content)
 	{
 		QXmlQuery query;
@@ -207,8 +257,8 @@ namespace DeathNote
 			return false;
 
 		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blasq DeathNote",
-				tr ("Error code:%1 (%2)")
-						.arg (code)
+				tr ("%1 (original message: %2)")
+						.arg (LocalizedErrorFromCode (code.toInt ()))
 						.arg (string),
 				Priority::PWarning_));
 
@@ -372,6 +422,23 @@ namespace DeathNote
 			return quota;
 		}
 
+		Access Security2Access (int sec)
+		{
+			if (!sec)
+				return Access::Private;
+
+			if (sec == 253 || sec == 255)
+				return Access::Public;
+
+			if (sec == 254)
+				return Access::FriendsOnly;
+
+			if (sec >= 1 && sec <= 30)
+				return Access::CustomUsers;
+
+			return Access::Public;
+		}
+
 		QList<Album> ParseGetGalsRequest (const QDomDocument& document)
 		{
 			QList<Album> albums;
@@ -379,7 +446,9 @@ namespace DeathNote
 			for (int i = 0, size = list.size (); i < size; ++i)
 			{
 				Album album;
-				const auto& fieldsList = list.at (0).childNodes ();
+				const auto& node = list.at (i);
+				album.ID_ = node.toElement ().attribute ("id").toUtf8 ();
+				const auto& fieldsList = node.childNodes ();
 				for (int j = 0, sz = fieldsList.size (); j < sz; ++j)
 				{
 					const auto& fieldElem = fieldsList.at (j).toElement ();
@@ -390,6 +459,8 @@ namespace DeathNote
 								"yyyy-dd-mm hh:MM:ss");
 					else if (fieldElem.tagName () == "URL")
 						album.Url_ = QUrl (fieldElem.text ());
+					else if (fieldElem.tagName () == "Sec")
+						album.Access_ = Security2Access (fieldElem.text ().toInt());
 				}
 				albums << album;
 			}
@@ -431,6 +502,8 @@ namespace DeathNote
 						photo.Url_ = QUrl (fieldElem.text ());
 					else if (fieldElem.tagName () == "Width")
 						photo.Width_ = fieldElem.text ().toInt ();
+					else if (fieldElem.tagName () == "Sec")
+						photo.Access_ = Security2Access (fieldElem.text ().toInt());
 				}
 				Thumbnail small;
 				small.Url_ = photo.Url_.toString ().replace ("original", SmallSize);
