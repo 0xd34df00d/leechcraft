@@ -97,21 +97,51 @@ Rectangle {
                                         winSnapImage.anchors.topMargin + winSnapImage.anchors.bottomMargin
 
                                 border.width: 1
-                                border.color: isActive ? colorProxy.color_TextBox_HighlightBorderColor : colorProxy.color_TextBox_BorderColor
+                                border.color: colorProxy.color_TextBox_BorderColor
 
                                 radius: 5
                                 smooth: true
 
                                 gradient: Gradient {
                                     GradientStop {
+                                        id: topHighlightGradient
                                         position: 0
-                                        color: isActive ? colorProxy.color_TextBox_HighlightTopColor : colorProxy.color_TextBox_TopColor
+                                        color: colorProxy.color_TextBox_TopColor
                                     }
                                     GradientStop {
+                                        id: bottomHighlightGradient
                                         position: 1
-                                        color: isActive ? colorProxy.color_TextBox_HighlightBottomColor : colorProxy.color_TextBox_BottomColor
+                                        color: colorProxy.color_TextBox_BottomColor
                                     }
                                 }
+
+                                states: [
+                                    State {
+                                        name: "highlight"
+                                        when: isActive
+                                        PropertyChanges {
+                                            target: topHighlightGradient
+                                            color: colorProxy.color_TextBox_HighlightTopColor
+                                        }
+                                        PropertyChanges {
+                                            target: bottomHighlightGradient
+                                            color: colorProxy.color_TextBox_HighlightBottomColor
+                                        }
+                                        PropertyChanges {
+                                            target: appRectangle
+                                            border.color: colorProxy.color_TextBox_HighlightBorderColor
+                                        }
+                                    }
+                                ]
+
+                                transitions: [
+                                    Transition {
+                                        from: ""
+                                        to: "highlight"
+                                        reversible: true
+                                        PropertyAnimation { properties: "color"; duration: 350 }
+                                    }
+                                ]
 
                                 Image {
                                     id: winIconImage
