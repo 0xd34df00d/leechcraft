@@ -116,8 +116,8 @@ Rectangle {
                                 Image {
                                     id: winIconImage
                                     source: "image://WinIcons/" + wid + '/' + width
-                                    width: 64
-                                    height: 64
+                                    width: showThumbs ? 64 : 32
+                                    height: width
                                     anchors.top: parent.top
                                     anchors.topMargin: 2
                                     anchors.left: parent.left
