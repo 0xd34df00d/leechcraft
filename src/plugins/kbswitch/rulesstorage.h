@@ -48,6 +48,8 @@ namespace KBSwitch
 		QHash<QString, QString> LayName2Desc_;
 		QHash<QString, QString> LayDesc2Name_;
 
+		QHash<QString, QStringList> LayName2Variants_;
+
 		QHash<QString, QString> KBModels_;
 		QHash<QString, QString> KBModelString2Code_;
 		QStringList KBModelsStrings_;
