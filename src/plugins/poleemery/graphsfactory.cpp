@@ -35,6 +35,7 @@
 #include <qwt_plot_histogram.h>
 #include <qwt_plot_grid.h>
 #include <qwt_plot_tradingcurve.h>
+#include <qwt_date_scale_draw.h>
 #include <qwt_plot.h>
 #include "core.h"
 #include "operationsmanager.h"
@@ -358,12 +359,16 @@ namespace Poleemery
 				{
 					const auto high = *std::max_element (i->begin (), i->end ());
 					const auto low = *std::min_element (i->begin (), i->end ());
-					const QwtOHLCSample sample (i.key (), i->first (), high, low, i->last ());
+
+					const QDateTime datetime { span.first.date ().addDays (i.key ()), { 12, 00 } };
+					const QwtOHLCSample sample (QwtDate::toDouble (datetime),
+							i->first (), high, low, i->last ());
 					samples << sample;
 				}
 				auto item = new QwtPlotTradingCurve (currency);
 				item->setSamples (samples);
 				item->setSymbolPen (color);
+				item->setSymbolExtent (QwtDate::toDouble (QDateTime::fromTime_t (0).addDays (1)) * 3 / 5);
 				result << item;
 			}
 			else
@@ -373,7 +378,7 @@ namespace Poleemery
 
 				for (const auto& rate : rates)
 				{
-					xData << span.first.secsTo (rate.SnapshotTime_) / 86400.0;
+					xData << QwtDate::toDouble (rate.SnapshotTime_);
 					yData << rate.Rate_;
 				}
 
@@ -400,13 +405,15 @@ namespace Poleemery
 	GraphsFactory::GraphsFactory ()
 	{
 		auto prepareCummulative = [] (QwtPlot *plot) -> void
-				{
-					auto curMgr = Core::Instance ().GetCurrenciesManager ();
-					plot->enableAxis (QwtPlot::Axis::xBottom, true);
-					plot->enableAxis (QwtPlot::Axis::yLeft, true);
-					plot->setAxisTitle (QwtPlot::Axis::xBottom, QObject::tr ("Days"));
-					plot->setAxisTitle (QwtPlot::Axis::yLeft, curMgr->GetUserCurrency ());
-				};
+		{
+			auto curMgr = Core::Instance ().GetCurrenciesManager ();
+			plot->enableAxis (QwtPlot::Axis::xBottom, true);
+			plot->enableAxis (QwtPlot::Axis::yLeft, true);
+			plot->setAxisTitle (QwtPlot::Axis::xBottom, QObject::tr ("Days"));
+			plot->setAxisTitle (QwtPlot::Axis::yLeft, curMgr->GetUserCurrency ());
+
+			plot->setAxisScaleDraw (QwtPlot::Axis::xBottom, new QwtScaleDraw ());
+		};
 
 		Infos_.append ({
 				QObject::tr ("Cumulative accounts balance"),
@@ -424,6 +431,8 @@ namespace Poleemery
 			plot->enableAxis (QwtPlot::Axis::xBottom, false);
 			plot->enableAxis (QwtPlot::Axis::yLeft, true);
 			plot->setAxisTitle (QwtPlot::Axis::yLeft, "%");
+
+			plot->setAxisScaleDraw (QwtPlot::Axis::xBottom, new QwtScaleDraw ());
 		};
 		auto prepareAbsBreakdown = [] (QwtPlot *plot)
 		{
@@ -432,6 +441,8 @@ namespace Poleemery
 
 			auto curMgr = Core::Instance ().GetCurrenciesManager ();
 			plot->setAxisTitle (QwtPlot::Axis::yLeft, curMgr->GetUserCurrency ());
+
+			plot->setAxisScaleDraw (QwtPlot::Axis::xBottom, new QwtDateScaleDraw ());
 		};
 		Infos_.append ({
 				QObject::tr ("Per-category spendings breakdown (absolute)"),
@@ -460,6 +471,8 @@ namespace Poleemery
 						plot->enableAxis (QwtPlot::Axis::yLeft, true);
 						plot->setAxisTitle (QwtPlot::Axis::xBottom, QObject::tr ("Days"));
 						plot->setAxisTitle (QwtPlot::Axis::yLeft, curMgr->GetUserCurrency ());
+
+						plot->setAxisScaleDraw (QwtPlot::Axis::xBottom, new QwtDateScaleDraw ());
 					}
 				});
 			Infos_.append ({
@@ -472,6 +485,8 @@ namespace Poleemery
 						plot->enableAxis (QwtPlot::Axis::yLeft, true);
 						plot->setAxisTitle (QwtPlot::Axis::xBottom, QObject::tr ("Days"));
 						plot->setAxisTitle (QwtPlot::Axis::yLeft, curMgr->GetUserCurrency ());
+
+						plot->setAxisScaleDraw (QwtPlot::Axis::xBottom, new QwtDateScaleDraw ());
 					}
 				});
 		}
