@@ -290,7 +290,7 @@ namespace Poleemery
 	{
 		try
 		{
-			return Impl_->RateInfo_.DoSelectByFields_.Prepare<1> () (code);
+			return Impl_->RateInfo_.DoSelectByFields_ (oral::ph::_1 == code);
 		}
 		catch (const oral::QueryException& e)
 		{
