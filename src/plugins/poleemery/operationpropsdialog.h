@@ -37,6 +37,7 @@ namespace LeechCraft
 {
 namespace Poleemery
 {
+	class EntriesModel;
 	enum class EntryType;
 	struct ExpenseEntry;
 	struct ReceiptEntry;
@@ -51,16 +52,23 @@ namespace Poleemery
 		QStringList ExpenseNames_;
 		QStringList ReceiptNames_;
 		QStringList ShopNames_;
+
+		EntriesModel *ItemsModel_;
 	public:
 		OperationPropsDialog (QWidget* = 0);
 
 		EntryType GetEntryType () const;
 
-		EntryBase_ptr GetEntry () const;
+		QList<EntryBase_ptr> GetEntries () const;
+	private:
+		QDateTime GetDateTime () const;
 	private slots:
 		void on_AccsBox__currentIndexChanged (int);
 		void on_ExpenseEntry__released ();
 		void on_ReceiptEntry__released ();
+
+		void on_AddEntry__released ();
+		void on_RemoveEntry__released ();
 	};
 }
 }

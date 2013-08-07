@@ -37,6 +37,7 @@
 #include "accountsmanager.h"
 #include "operationsmanager.h"
 #include "currenciesmanager.h"
+#include "entriesmodel.h"
 
 namespace LeechCraft
 {
@@ -45,8 +46,13 @@ namespace Poleemery
 	OperationPropsDialog::OperationPropsDialog (QWidget *parent)
 	: QDialog (parent)
 	, Accounts_ (Core::Instance ().GetAccsManager ()->GetAccounts ())
+	, ItemsModel_ (new EntriesModel (this))
 	{
 		Ui_.setupUi (this);
+		Ui_.ItemsView_->setModel (ItemsModel_);
+		for (auto col : { EntriesModel::Shop, EntriesModel::Account, EntriesModel::AccBalance, EntriesModel::SumBalance })
+			Ui_.ItemsView_->setColumnHidden (col, true);
+
 		Ui_.DateEdit_->setDateTime (QDateTime::currentDateTime ());
 
 		for (const auto& acc : Accounts_)
@@ -95,7 +101,7 @@ namespace Poleemery
 				EntryType::Receipt;
 	}
 
-	EntryBase_ptr OperationPropsDialog::GetEntry () const
+	QList<EntryBase_ptr> OperationPropsDialog::GetEntries () const
 	{
 		const auto& acc = Accounts_.at (Ui_.AccsBox_->currentIndex ());
 		const auto accId = acc.ID_;
@@ -103,29 +109,41 @@ namespace Poleemery
 		auto curMgr = Core::Instance ().GetCurrenciesManager ();
 
 		const auto currency = Ui_.AmountCurrency_->currentText ();
-		const auto amount = curMgr->Convert (currency, acc.Currency_, Ui_.Amount_->value ());
 
-		const auto& name = Ui_.Name_->currentText ();
-		const auto& descr = Ui_.Description_->text ();
-		auto dt = Ui_.DateEdit_->dateTime ();
-		auto time = dt.time ();
-		dt.setTime ({ time.hour (), time.minute () });
-
-		switch (GetEntryType ())
+		if (GetEntryType () == EntryType::Receipt)
 		{
-		case EntryType::Receipt:
-			return std::make_shared<ReceiptEntry> (accId, amount, name, descr, dt);
-		case EntryType::Expense:
-			return std::make_shared<ExpenseEntry> (accId, amount, name, descr, dt,
+			const auto& name = Ui_.Name_->currentText ();
+			const auto& descr = Ui_.Description_->text ();
+			const auto amount = curMgr->Convert (currency, acc.Currency_, Ui_.Amount_->value ());
+
+			return { std::make_shared<ReceiptEntry> (accId, amount, name, descr, GetDateTime ()) };
+		}
+		else
+			return ItemsModel_->GetEntries ();
+
+		/*
+		QList<EntryBase_ptr> result;
+		for (int i = 0; i < ItemsModel_->rowCount (); ++i)
+		{
+			const auto& name = ItemsModel_->item (i, Column::Name).text ();
+			const auto& descr = ItemsModel_->item (i, Column::Description).text ();
+
+			result << std::make_shared<ExpenseEntry> (accId, amount, name, descr, dt,
 					Ui_.CountBox_->value (),
 					Ui_.Shop_->currentText (),
 					Core::Instance ().GetCoreProxy ()->
 							GetTagsManager ()->Split (Ui_.Categories_->text ()));
 		}
+		return result;
+		*/
+	}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown entry type";
-		return {};
+	QDateTime OperationPropsDialog::GetDateTime () const
+	{
+		auto dt = Ui_.DateEdit_->dateTime ();
+		auto time = dt.time ();
+		dt.setTime ({ time.hour (), time.minute () });
+		return dt;
 	}
 
 	void OperationPropsDialog::on_AccsBox__currentIndexChanged (int index)
@@ -148,6 +166,27 @@ namespace Poleemery
 		Ui_.Name_->clear ();
 		Ui_.Name_->addItems (QStringList (QString ()) + ReceiptNames_);
 		Ui_.PagesStack_->setCurrentWidget (Ui_.ReceiptPage_);
+	}
+
+	void OperationPropsDialog::on_AddEntry__released ()
+	{
+		const auto& acc = Accounts_.at (Ui_.AccsBox_->currentIndex ());
+		const auto accId = acc.ID_;
+
+		const auto& shop = Ui_.Shop_->currentText ();
+
+		auto entry = std::make_shared<ExpenseEntry> (accId,
+				0, QString (), QString (), GetDateTime (), 0, shop, QStringList ());
+		ItemsModel_->AddEntry (entry);
+	}
+
+	void OperationPropsDialog::on_RemoveEntry__released ()
+	{
+		const auto& selected = Ui_.ItemsView_->currentIndex ();
+		if (!selected.isValid ())
+			return;
+
+		ItemsModel_->RemoveEntry (selected);
 	}
 }
 }

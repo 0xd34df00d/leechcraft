@@ -195,7 +195,8 @@ namespace Poleemery
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
-		OpsManager_->AddEntry (dia.GetEntry ());
+		for (const auto& entry : dia.GetEntries ())
+			OpsManager_->AddEntry (entry);
 	}
 
 	void OperationsTab::remove ()
