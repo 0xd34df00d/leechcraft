@@ -33,13 +33,15 @@
 #include <QApplication>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_histogram.h>
-#include <qwt_plot.h>
 #include <qwt_plot_grid.h>
+#include <qwt_plot_tradingcurve.h>
+#include <qwt_plot.h>
 #include "core.h"
 #include "operationsmanager.h"
 #include "prelude.h"
 #include "accountsmanager.h"
 #include "currenciesmanager.h"
+#include "storage.h"
 
 namespace LeechCraft
 {
@@ -334,6 +336,65 @@ namespace Poleemery
 
 			return result;
 		}
+
+		QList<QwtPlotItem*> CreateCurrenciesRatesItems (const DateSpan_t& span, const QString& currency, bool ohlc)
+		{
+			const auto& rates = Core::Instance ().GetStorage ()->GetRate (currency, span.first, span.second);
+
+			QColor color (Qt::darkGreen);
+
+			QList<QwtPlotItem*> result;
+			if (ohlc)
+			{
+				QMap<int, QList<double>> byDay;
+				for (const auto& rate : rates)
+				{
+					const auto days = span.first.date ().daysTo (rate.SnapshotTime_.date ());
+					byDay [days] << rate.Rate_;
+				}
+
+				QVector<QwtOHLCSample> samples;
+				for (auto i = byDay.begin (), end = byDay.end (); i != end; ++i)
+				{
+					const auto high = *std::max_element (i->begin (), i->end ());
+					const auto low = *std::min_element (i->begin (), i->end ());
+					const QwtOHLCSample sample (i.key (), i->first (), high, low, i->last ());
+					samples << sample;
+				}
+				auto item = new QwtPlotTradingCurve (currency);
+				item->setSamples (samples);
+				item->setSymbolPen (color);
+				result << item;
+			}
+			else
+			{
+				QVector<double> xData;
+				QVector<double> yData;
+
+				for (const auto& rate : rates)
+				{
+					xData << span.first.secsTo (rate.SnapshotTime_) / 86400.0;
+					yData << rate.Rate_;
+				}
+
+				auto item = new QwtPlotCurve (currency);
+				item->setSamples (xData, yData);
+				item->setPen (color);
+				result << item;
+			}
+
+			auto grid = new QwtPlotGrid;
+			grid->enableYMin (true);
+			grid->enableXMin (true);
+#if QWT_VERSION >= 0x060100
+			grid->setMinorPen (QPen (Qt::gray, 1, Qt::DashLine));
+#else
+			grid->setMinPen (QPen (Qt::gray, 1, Qt::DashLine));
+#endif
+			result << grid;
+
+			return result;
+		}
 	}
 
 	GraphsFactory::GraphsFactory ()
@@ -382,6 +443,38 @@ namespace Poleemery
 				[this] (const DateSpan_t& span) { return CreateSpendingBreakdownItems (span, false); },
 				prepareRelBreakdown
 			});
+
+		auto curMgr = Core::Instance ().GetCurrenciesManager ();
+		for (const auto& cur : curMgr->GetEnabledCurrencies ())
+		{
+			if (cur == "USD")
+				continue;
+
+			Infos_.append ({
+					QObject::tr ("%1 to USD rate (OHLC)").arg (cur),
+					[this, cur] (const DateSpan_t& span) { return CreateCurrenciesRatesItems (span, cur, true); },
+					[] (QwtPlot *plot) -> void
+					{
+						auto curMgr = Core::Instance ().GetCurrenciesManager ();
+						plot->enableAxis (QwtPlot::Axis::xBottom, true);
+						plot->enableAxis (QwtPlot::Axis::yLeft, true);
+						plot->setAxisTitle (QwtPlot::Axis::xBottom, QObject::tr ("Days"));
+						plot->setAxisTitle (QwtPlot::Axis::yLeft, curMgr->GetUserCurrency ());
+					}
+				});
+			Infos_.append ({
+					QObject::tr ("%1 to USD rate (standard curve)").arg (cur),
+					[this, cur] (const DateSpan_t& span) { return CreateCurrenciesRatesItems (span, cur, false); },
+					[] (QwtPlot *plot) -> void
+					{
+						auto curMgr = Core::Instance ().GetCurrenciesManager ();
+						plot->enableAxis (QwtPlot::Axis::xBottom, true);
+						plot->enableAxis (QwtPlot::Axis::yLeft, true);
+						plot->setAxisTitle (QwtPlot::Axis::xBottom, QObject::tr ("Days"));
+						plot->setAxisTitle (QwtPlot::Axis::yLeft, curMgr->GetUserCurrency ());
+					}
+				});
+		}
 	}
 
 	QStringList GraphsFactory::GetNames () const
