@@ -40,6 +40,9 @@ namespace LeechCraft
 namespace Fenet
 {
 	class WMFinder;
+	class CompFinder;
+	class CompParamsManager;
+	struct CompInfo;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -50,8 +53,13 @@ namespace Fenet
 
 		WMFinder *Finder_;
 
+		CompFinder *CompFinder_;
+		CompParamsManager *CompParamsManager_;
+
 		Util::XmlSettingsDialog_ptr XSD_;
+
 		QProcess *Process_ = 0;
+		QProcess *CompProcess_ = 0;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -65,9 +73,18 @@ namespace Fenet
 	private:
 		void StartWM ();
 		void KillWM ();
+
+		CompInfo GetCompInfo (const QString&) const;
+
+		void StartComp ();
+		void KillComp ();
 	private slots:
 		void restartWM ();
+		void restartComp ();
+		void updateCompParamsManager (const QString&);
+
 		void handleProcessError ();
+		void handleCompProcessError ();
 	};
 }
 }

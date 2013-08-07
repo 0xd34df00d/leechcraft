@@ -191,10 +191,8 @@ namespace NetStoreManager
 				if (file.open (QIODevice::ReadOnly))
 				{
 					const auto& ba = file.readAll ();
-					std::future<QByteArray> hash = std::async (std::launch::async,
-							[this, ba] { return QCryptographicHash::hash (ba,
-									NSMHashType2QtCryproHashAlgorithm (SFLAccount_->GetCheckSumAlgorithm ())); });
-					storage.Hash_ = hash.get ();
+					storage.Hash_ = QCryptographicHash::hash (ba,
+							NSMHashType2QtCryproHashAlgorithm (SFLAccount_->GetCheckSumAlgorithm ()));
 					file.close ();
 				}
 				else

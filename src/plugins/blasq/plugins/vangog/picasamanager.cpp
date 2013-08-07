@@ -45,7 +45,18 @@ namespace Vangog
 	PicasaManager::PicasaManager (PicasaAccount *account, QObject *parent)
 	: QObject (parent)
 	, Account_ (account)
+	, FirstRequest_ (true)
 	{
+	}
+
+	QString PicasaManager::GetAccessToken () const
+	{
+		return AccessToken_;
+	}
+
+	QDateTime PicasaManager::GetAccessTokenExpireDate () const
+	{
+		return AccessTokenExpireDate_;
 	}
 
 	void PicasaManager::UpdateCollections ()
@@ -61,6 +72,23 @@ namespace Vangog
 
 	void PicasaManager::RequestAccessToken ()
 	{
+		if (FirstRequest_)
+		{
+			FirstRequest_ = false;
+			AccessToken_ = Account_->GetAccessToken ();
+			AccessTokenExpireDate_ = Account_->GetAccessTokenExpireDate ();
+		}
+
+		if (!AccessToken_.isEmpty () &&
+				QDateTime::currentDateTime ().addSecs (60) < AccessTokenExpireDate_)
+		{
+			if (ApiCallsQueue_.isEmpty ())
+				return;
+
+			ApiCallsQueue_.first () (AccessToken_);
+			return;
+		}
+
 		QNetworkRequest request (QUrl ("https://accounts.google.com/o/oauth2/token"));
 		QString str = QString ("refresh_token=%1&client_id=%2&client_secret=%3&grant_type=%4")
 				.arg (Account_->GetRefreshToken ())
@@ -141,9 +169,14 @@ namespace Vangog
 			return;
 		}
 
-		QString accessKey = res.toMap ().value ("access_token").toString ();
-		qDebug () << accessKey;
-		if (accessKey.isEmpty ())
+		const auto& map = res.toMap ();
+		AccessToken_ = map.value ("access_token").toString ();
+		AccessTokenExpireDate_ = QDateTime::currentDateTime ().addSecs (map.value ("expires_in").toInt ());
+		qDebug () << "your access token"
+				<< AccessToken_
+				<< "expires in"
+				<< AccessTokenExpireDate_.toString (Qt::ISODate);
+		if (AccessToken_.isEmpty ())
 		{
 			qWarning () << Q_FUNC_INFO << "access token is empty";
 			return;
@@ -152,33 +185,40 @@ namespace Vangog
 		if (ApiCallsQueue_.isEmpty ())
 			return;
 
-		ApiCallsQueue_.dequeue () (accessKey);
+		ApiCallsQueue_.first () (AccessToken_);
 	}
 
-	namespace
+	QByteArray PicasaManager::CreateDomDocumentFromReply (QNetworkReply *reply, QDomDocument &document)
 	{
-		QByteArray CreateDomDocumentFromReply (QNetworkReply *reply, QDomDocument &document)
+		if (!reply)
+			return QByteArray ();
+
+		const auto& content = reply->readAll ();
+		reply->deleteLater ();
+		QString errorMsg;
+		int errorLine = -1, errorColumn = -1;
+
+		if (QString::fromUtf8 (content).contains ("Invalid token"))
 		{
-			if (!reply)
-				return QByteArray ();
-
-			const auto& content = reply->readAll ();
-			reply->deleteLater ();
-			QString errorMsg;
-			int errorLine = -1, errorColumn = -1;
-			if (!document.setContent (content, &errorMsg, &errorLine, &errorColumn))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< errorMsg
-						<< "in line:"
-						<< errorLine
-						<< "column:"
-						<< errorColumn;
-				return QByteArray ();
-			}
-
-			return content;
+			AccessToken_ = "";
+			RequestAccessToken ();
+			return QByteArray ();
 		}
+
+		ApiCallsQueue_.removeFirst ();
+
+		if (!document.setContent (content, &errorMsg, &errorLine, &errorColumn))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< errorMsg
+					<< "in line:"
+					<< errorLine
+					<< "column:"
+					<< errorColumn;
+			return QByteArray ();
+		}
+
+		return content;
 	}
 
 	namespace

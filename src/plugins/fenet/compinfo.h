@@ -30,23 +30,44 @@
 #pragma once
 
 #include <QStringList>
+#include <QMetaType>
 
 namespace LeechCraft
 {
 namespace Fenet
 {
-	struct WMInfo
+	struct Param
 	{
+		QString Name_;
+		QString Desc_;
+
+		double Default_;
+
+		double Min_;
+		double Max_;
+	};
+
+	struct Flag
+	{
+		QString Name_;
+		QString Desc_;
+	};
+
+	struct CompInfo
+	{
+		QList<Param> Params_;
+		QList<Flag> Flags_;
+
 		QString Name_;
 		QString Comment_;
 
 		QStringList ExecNames_;
-
-		QString Session_;
-
-		bool SupportsCompositing_;
 	};
 
-	typedef QList<WMInfo> WMInfos_t;
+	typedef QList<CompInfo> CompInfos_t;
 }
 }
+
+Q_DECLARE_METATYPE (LeechCraft::Fenet::Param)
+Q_DECLARE_METATYPE (LeechCraft::Fenet::Flag)
+Q_DECLARE_METATYPE (LeechCraft::Fenet::CompInfo)

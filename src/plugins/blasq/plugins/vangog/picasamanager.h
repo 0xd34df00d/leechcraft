@@ -39,6 +39,8 @@
 #include <QVariant>
 #include "structures.h"
 
+class QNetworkReply;
+
 namespace LeechCraft
 {
 namespace Blasq
@@ -53,13 +55,20 @@ namespace Vangog
 
 		PicasaAccount *Account_;
 		QQueue<std::function<void (const QString&)>> ApiCallsQueue_;
+		QString AccessToken_;
+		QDateTime AccessTokenExpireDate_;
+		bool FirstRequest_;
 
 	public:
 		PicasaManager (PicasaAccount *account, QObject *parent = 0);
 
+		QString GetAccessToken () const;
+		QDateTime GetAccessTokenExpireDate () const;
+
 		void UpdateCollections ();
 		void UpdatePhotos (const QByteArray& albumId);
 	private:
+		QByteArray CreateDomDocumentFromReply (QNetworkReply *reply, QDomDocument &document);
 		void RequestAccessToken ();
 		void ParseError (const QVariantMap& map);
 

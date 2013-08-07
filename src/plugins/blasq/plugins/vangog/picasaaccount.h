@@ -60,6 +60,7 @@ namespace Vangog
 		QByteArray ID_;
 		QString Login_;
 		QString AccessToken_;
+		QDateTime AccessTokenExpireDate_;
 		QString RefreshToken_;
 		bool Ready_;
 
@@ -77,6 +78,7 @@ namespace Vangog
 
 		ICoreProxy_ptr GetProxy () const;
 
+		void Release ();
 		QByteArray Serialize () const;
 		static PicasaAccount* Deserialize (const QByteArray& data,
 				PicasaService *service, ICoreProxy_ptr proxy);
@@ -87,7 +89,8 @@ namespace Vangog
 		QByteArray GetID () const override;
 
 		QString GetLogin () const;
-		void SetAccessToken (const QString& token);
+		QString GetAccessToken () const;
+		QDateTime GetAccessTokenExpireDate () const;
 		void SetRefreshToken (const QString& token);
 		QString GetRefreshToken () const;
 

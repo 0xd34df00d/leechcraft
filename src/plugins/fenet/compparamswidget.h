@@ -29,24 +29,23 @@
 
 #pragma once
 
-#include <QStringList>
+#include <QTreeView>
 
 namespace LeechCraft
 {
 namespace Fenet
 {
-	struct WMInfo
+	class CompParamsWidget : public QTreeView
 	{
-		QString Name_;
-		QString Comment_;
-
-		QStringList ExecNames_;
-
-		QString Session_;
-
-		bool SupportsCompositing_;
+		Q_OBJECT
+	public:
+		CompParamsWidget (QWidget* = 0);
+	public slots:
+		void accept ();
+		void reject ();
+	signals:
+		void accepted ();
+		void rejected ();
 	};
-
-	typedef QList<WMInfo> WMInfos_t;
 }
 }

@@ -27,26 +27,50 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QStringList>
+#include "compfinder.h"
 
 namespace LeechCraft
 {
 namespace Fenet
 {
-	struct WMInfo
+	CompFinder::CompFinder (QObject *parent)
+	: FinderBase (parent)
 	{
-		QString Name_;
-		QString Comment_;
+		Find ("compositing");
+	}
 
-		QStringList ExecNames_;
+	CompInfo CompFinder::GetInfo (const QString&, const QStringList& execs, const QVariantMap& map) const
+	{
+		CompInfo info
+		{
+			{},
+			{},
+			map ["name"].toString (),
+			map ["comment"].toString (),
+			execs
+		};
 
-		QString Session_;
+		for (const auto& item : map ["flags"].toList ())
+		{
+			const auto& flagMap = item.toMap ();
+			info.Flags_.append ({ flagMap ["param"].toString (), flagMap ["desc"].toString () });
+		}
 
-		bool SupportsCompositing_;
-	};
+		for (const auto& item : map ["params"].toList ())
+		{
+			const auto& pMap = item.toMap ();
+			info.Params_.append ({
+					pMap ["param"].toString (),
+					pMap ["desc"].toString (),
 
-	typedef QList<WMInfo> WMInfos_t;
+					pMap ["default"].toDouble (),
+
+					pMap.value ("min", 0).toDouble (),
+					pMap.value ("max", 0).toDouble ()
+				});
+		}
+
+		return info;
+	}
 }
 }

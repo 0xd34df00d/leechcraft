@@ -59,8 +59,9 @@ namespace LeechCraft
 
 		if (item.attribute ("label") == "own")
 		{
-			lay->setRowStretch (0, 1);
-			lay->addWidget (widget, 0, 0, 1, -1);
+			const auto rc = lay->rowCount ();
+			lay->setRowStretch (rc, 1);
+			lay->addWidget (widget, rc, 0, 1, -1);
 		}
 	}
 };

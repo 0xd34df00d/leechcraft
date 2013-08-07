@@ -29,24 +29,53 @@
 
 #pragma once
 
-#include <QStringList>
+#include <memory>
+#include <QObject>
+#include <QHash>
+#include <QSet>
+#include "compinfo.h"
+
+class QStandardItemModel;
+class QStandardItem;
+class QAbstractItemModel;
+class QSettings;
 
 namespace LeechCraft
 {
 namespace Fenet
 {
-	struct WMInfo
+	class CompParamsManager : public QObject
 	{
-		QString Name_;
-		QString Comment_;
+		Q_OBJECT
 
-		QStringList ExecNames_;
+		QStandardItemModel * const ParamsModel_;
 
-		QString Session_;
+		CompInfo CurrentInfo_;
 
-		bool SupportsCompositing_;
+		QHash<QString, QHash<QString, QVariant>> ChangedParams_;
+		QHash<QString, QHash<QString, bool>> ChangedFlags_;
+	public:
+		enum Role
+		{
+			Description = Qt::UserRole + 1
+		};
+
+		CompParamsManager (QObject* = 0);
+
+		QAbstractItemModel* GetModel () const;
+
+		void SetCompInfo (const CompInfo&);
+
+		QStringList GetCompParams (const QString&) const;
+	private:
+		std::shared_ptr<QSettings> GetSettings (QString compName = QString ()) const;
+	public slots:
+		void handleItemChanged (QStandardItem*);
+
+		void save ();
+		void revert ();
+	signals:
+		void paramsChanged ();
 	};
-
-	typedef QList<WMInfo> WMInfos_t;
 }
 }

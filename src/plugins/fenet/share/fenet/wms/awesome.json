@@ -2,6 +2,6 @@
 	"name": "Awesome",
 	"comment": "Use the Awesome window manager with LeechCraft",
 	"supportsReplace": false,
-	"execNames": [ "awesome" ]
+	"execNames": [ "awesome" ],
+	"compositing": false
 }
-

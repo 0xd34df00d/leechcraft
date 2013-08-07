@@ -29,34 +29,19 @@
 
 #pragma once
 
-#include <QObject>
+#include "finderbase.h"
 #include "wminfo.h"
-
-class QAbstractItemModel;
-class QStandardItemModel;
 
 namespace LeechCraft
 {
 namespace Fenet
 {
-	class WMFinder : public QObject
+	class WMFinder : public FinderBase<WMInfo>
 	{
-		Q_OBJECT
-
-		const QStringList Path_;
-
-		WMInfos_t Known_;
-		WMInfos_t Found_;
-
-		QStandardItemModel *FoundModel_;
 	public:
 		WMFinder (QObject* = 0);
 
-		const WMInfos_t& GetFound () const;
-		QAbstractItemModel* GetFoundModel () const;
-	private:
-		void HandleDescr (const QString&);
-		bool IsAvailable (const QString&) const;
+		WMInfo GetInfo (const QString&, const QStringList&, const QVariantMap&) const;
 	};
 }
 }

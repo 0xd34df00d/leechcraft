@@ -28,25 +28,19 @@
  **********************************************************************/
 
 #pragma once
-
-#include <QStringList>
+#include "finderbase.h"
+#include "compinfo.h"
 
 namespace LeechCraft
 {
 namespace Fenet
 {
-	struct WMInfo
+	class CompFinder : public FinderBase<CompInfo>
 	{
-		QString Name_;
-		QString Comment_;
+	public:
+		CompFinder (QObject* = 0);
 
-		QStringList ExecNames_;
-
-		QString Session_;
-
-		bool SupportsCompositing_;
+		CompInfo GetInfo (const QString&, const QStringList&, const QVariantMap&) const;
 	};
-
-	typedef QList<WMInfo> WMInfos_t;
 }
 }
