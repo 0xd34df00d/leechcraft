@@ -29,7 +29,7 @@ else ()
 			endif ()
 		endif ()
 
-		set (QJSON_INCLUDE_WIN32 ${QJSON_DIR})		
+		set (QJSON_INCLUDE_WIN32 ${QJSON_DIR})
 
 		set (PROBE_DIR_Debug
 			${QJSON_DIR}/build/lib/Debug)
