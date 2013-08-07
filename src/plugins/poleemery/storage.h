@@ -69,6 +69,7 @@ namespace Poleemery
 		void DeleteReceiptEntry (const ReceiptEntry&);
 
 		QList<Rate> GetRates ();
+		QList<Rate> GetRates (const QDateTime& start, const QDateTime& end);
 		QList<Rate> GetRate (const QString&);
 		void AddRate (Rate&);
 	private:
