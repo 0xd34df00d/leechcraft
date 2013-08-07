@@ -32,107 +32,17 @@
 #include <QMessageBox>
 #include <QStringListModel>
 #include <QToolBar>
-#include <util/tags/tagslineedit.h>
-#include <util/tags/tagscompleter.h>
-#include <interfaces/core/itagsmanager.h>
 #include "core.h"
 #include "operationsmanager.h"
 #include "operationpropsdialog.h"
 #include "entriesmodel.h"
 #include "accountsmanager.h"
+#include "entriesdelegate.h"
 
 namespace LeechCraft
 {
 namespace Poleemery
 {
-	namespace
-	{
-		class OpsDelegate : public QStyledItemDelegate
-		{
-		public:
-			QWidget* createEditor (QWidget*, const QStyleOptionViewItem&, const QModelIndex&) const;
-			void setEditorData (QWidget*, const QModelIndex&) const;
-			void setModelData (QWidget*, QAbstractItemModel*, const QModelIndex&) const;
-		};
-
-		QWidget* OpsDelegate::createEditor (QWidget *parent, const QStyleOptionViewItem& option, const QModelIndex& index) const
-		{
-			switch (index.column ())
-			{
-				case EntriesModel::Columns::Account:
-					return new QComboBox (parent);
-				case EntriesModel::Columns::Categories:
-				{
-					auto result = new Util::TagsLineEdit (parent);
-					auto completer = new Util::TagsCompleter (result, result);
-
-					const auto& cats = Core::Instance ().GetOpsManager ()->
-							GetKnownCategories ().toList ();
-					completer->OverrideModel (new QStringListModel (cats, completer));
-
-					result->AddSelector ();
-
-					return result;
-				}
-				default:
-					return QStyledItemDelegate::createEditor (parent, option, index);
-			}
-		}
-
-		void OpsDelegate::setEditorData (QWidget *editor, const QModelIndex& index) const
-		{
-			switch (index.column ())
-			{
-				case EntriesModel::Columns::Account:
-				{
-					auto box = qobject_cast<QComboBox*> (editor);
-					const auto currentAccId = index.data (Qt::EditRole).toInt ();
-					int toFocus = -1;
-					for (const auto& acc : Core::Instance ().GetAccsManager ()->GetAccounts ())
-					{
-						if (acc.ID_ == currentAccId)
-							toFocus = box->count ();
-						box->addItem (acc.Name_, static_cast<int> (acc.ID_));
-					}
-					box->setCurrentIndex (toFocus);
-					break;
-				}
-				case EntriesModel::Columns::Categories:
-				{
-					auto edit = qobject_cast<Util::TagsLineEdit*> (editor);
-					edit->setTags (index.data (Qt::EditRole).toStringList ());
-					break;
-				}
-				default:
-					QStyledItemDelegate::setEditorData (editor, index);
-					break;
-			}
-		}
-
-		void OpsDelegate::setModelData (QWidget *editor, QAbstractItemModel *model, const QModelIndex& index) const
-		{
-			switch (index.column ())
-			{
-				case EntriesModel::Columns::Account:
-				{
-					auto box = qobject_cast<QComboBox*> (editor);
-					model->setData (index, box->itemData (box->currentIndex ()));
-					break;
-				}
-				case EntriesModel::Columns::Categories:
-				{
-					auto box = qobject_cast<Util::TagsLineEdit*> (editor);
-					auto itm = Core::Instance ().GetCoreProxy ()->GetTagsManager ();
-					model->setData (index, itm->Split (box->text ()));
-					break;
-				}
-				default:
-					QStyledItemDelegate::setModelData (editor, model, index);
-					break;
-			}
-		}
-	}
-
 	OperationsTab::OperationsTab (const TabClassInfo& tc, QObject *plugin)
 	: OpsManager_ (Core::Instance ().GetOpsManager ())
 	, TC_ (tc)
@@ -140,7 +50,7 @@ namespace Poleemery
 	, Toolbar_ (new QToolBar (tr ("Poleemery")))
 	{
 		Ui_.setupUi (this);
-		Ui_.OpsView_->setItemDelegate (new OpsDelegate);
+		Ui_.OpsView_->setItemDelegate (new EntriesDelegate);
 		Ui_.OpsView_->setModel (OpsManager_->GetModel ());
 
 		const auto& fm = fontMetrics ();
