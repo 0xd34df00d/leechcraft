@@ -520,12 +520,26 @@ namespace oral
 		{
 			switch (type)
 			{
-			case ExprType::Equal:
-				return "=";
+			case ExprType::Greater:
+				return ">";
 			case ExprType::Less:
 				return "<";
+			case ExprType::Equal:
+				return "=";
+			case ExprType::Geq:
+				return ">=";
+			case ExprType::Leq:
+				return "<=";
+			case ExprType::Neq:
+				return "!=";
 			case ExprType::And:
 				return "AND";
+			case ExprType::Or:
+				return "OR";
+
+			case ExprType::LeafPlaceholder:
+			case ExprType::LeafData:
+				return "invalid type";
 			}
 
 			qWarning () << Q_FUNC_INFO
