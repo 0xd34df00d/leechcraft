@@ -6,7 +6,9 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	)
 
 if (NOT USE_QT5)
-	set (QT_USE_QTDBUS TRUE)
+	if (NOT WIN32)
+		set (QT_USE_QTDBUS TRUE)
+	endif ()
 	set (QT_USE_QTNETWORK TRUE)
 	set (QT_USE_QTXML TRUE)
 	set (QT_USE_QTSQL TRUE)
@@ -93,10 +95,17 @@ set (SRCS
 	docktoolbarmanager.cpp
 	loaders/ipluginloader.cpp
 	loaders/sopluginloader.cpp
-	loaders/dbuspluginloader.cpp
-	loaders/dbuswrapper.cpp
-	loaders/dbus/marshalling.cpp
 	)
+
+if (NOT WIN32)
+	set (SRCS
+		${SRCS}
+		loaders/dbuspluginloader.cpp
+		loaders/dbuswrapper.cpp
+		loaders/dbus/marshalling.cpp
+	)
+endif ()
+
 set (FORMS
 	commonjobadder.ui
 	leechcraft.ui
@@ -149,4 +158,6 @@ if (USE_QT5)
 	QT5_USE_MODULES (leechcraft Gui Network Widgets Xml Sql Script Concurrent DBus Svg)
 endif ()
 
-add_subdirectory (loaders/dbus)
+if (NOT WIN32)
+	add_subdirectory (loaders/dbus)
+endif ()
