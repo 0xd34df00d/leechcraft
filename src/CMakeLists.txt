@@ -149,10 +149,7 @@ option (WITH_PLUGINS "Build a somewhat standard set of plugins as well" ON)
 # Basic & traditional set of options
 option (ENABLE_ADVANCEDNOTIFICATIONS "Build Advanced Notifications module for more customizable notifications" ${WITH_PLUGINS})
 option (ENABLE_AGGREGATOR "Build Aggregator, the RSS/Atom feed reader" ${WITH_PLUGINS})
-option (ENABLE_ANHERO "Build AnHero, the crash handler" ${WITH_PLUGINS})
-option (ENABLE_AUSCRIE "Build Auscrie, the auto screenshooter" ${WITH_PLUGINS})
 option (ENABLE_AZOTH "Build Azoth, the IM client" ${WITH_PLUGINS})
-option (ENABLE_DBUSMANAGER "Build DBusManager, the D-Bus support for the LeechCraft" ${WITH_PLUGINS})
 option (ENABLE_DEADLYRICS "Build DeadLyrics, the client for the lyricwiki.org site" ${WITH_PLUGINS})
 option (ENABLE_GLANCE "Quick overview of tabs" ${WITH_PLUGINS})
 option (ENABLE_GMAILNOTIFIER "Build GMail Notifier which notifies about new mail in your GMail inbox" ${WITH_PLUGINS})
@@ -225,6 +222,11 @@ option (ENABLE_WOODPECKER "Build Woodpecker, twitter client" ${WITH_PLUGINS})
 
 # Dumb alternatives
 option (ENABLE_DUMBEEP "Build Dumbeep, a dumb sound notifier for those fearing true LMP power" OFF)
+
+if (NOT WIN32)
+	option (ENABLE_AUSCRIE "Build Auscrie, the auto screenshooter" ${WITH_PLUGINS})
+	option (ENABLE_DBUSMANAGER "Build DBusManager, the D-Bus support for the LeechCraft" ${WITH_PLUGINS})
+endif ()
 
 if (WIN32)
 	option (ENABLE_Y7 "Build Y7, Windows 7 integration plugin" ${WITH_PLUGINS})
