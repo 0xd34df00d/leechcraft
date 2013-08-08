@@ -99,7 +99,9 @@ namespace Poleemery
 	namespace
 	{
 		template<typename T>
-		QVariant GetDataIf (EntryBase_ptr entry, EntryType expected, std::function<QVariant (std::shared_ptr<T>)> getter, const QVariant& def = QVariant ())
+		QVariant GetDataIf (EntryBase_ptr entry, EntryType expected,
+				std::function<QVariant (std::shared_ptr<T>)> getter,
+				const QVariant& def = QVariant ())
 		{
 			if (entry->GetType () != expected)
 				return def;
