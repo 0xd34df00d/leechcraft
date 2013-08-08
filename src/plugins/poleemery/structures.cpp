@@ -66,6 +66,7 @@ namespace Poleemery
 	EntryBase::EntryBase ()
 	: ID_ { -1 }
 	, AccountID_ { -1 }
+	, Amount_ { 0 }
 	{
 	}
 
@@ -84,6 +85,7 @@ namespace Poleemery
 	}
 
 	NakedExpenseEntry::NakedExpenseEntry ()
+	: Count_ { 0 }
 	{
 	}
 
