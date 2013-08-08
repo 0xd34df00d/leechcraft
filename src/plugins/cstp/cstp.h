@@ -63,6 +63,9 @@ namespace CSTP
 				, public IHaveSettings
 	{
 		Q_OBJECT
+#ifdef USE_QT5
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.CSTP");
+#endif
 		Q_INTERFACES (IInfo IDownload IJobHolder IHaveSettings)
 
 		QMenu *Plugins_;
