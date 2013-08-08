@@ -38,7 +38,7 @@
 #include "dockmanager.h"
 #include "xmlsettingsmanager.h"
 
-#if defined Q_OS_UNIX && HAVE_X11 && !USE_QT5
+#if defined Q_OS_UNIX && HAVE_X11
 #include <X11/Xutil.h>
 #include <QX11Info>
 #endif
@@ -249,7 +249,7 @@ namespace LeechCraft
 
 	namespace
 	{
-#if defined (Q_OS_UNIX) && defined (HAVE_X11) && !defined (USE_QT5)
+#if defined (Q_OS_UNIX) && defined (HAVE_X11)
 		void SetWMClass (QWidget *w, QByteArray name)
 		{
 			XClassHint hint;
