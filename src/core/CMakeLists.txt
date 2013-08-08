@@ -111,13 +111,8 @@ SET (RESOURCES mainresources.qrc)
 CreateTrs ("" "ru_RU;de;uk_UA;it;ar;eo;es;tr;tt;en;be;fr;pl" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("" "en;ru_RU" "${SRCS};${UTIL_SRCS};${XSD_SRCS}" "${FORMS};${UTIL_FORMS};${XSD_FORMS}" "coresettings.xml")
 
-IF (USE_QT5)
-	QT5_WRAP_UI (UIS_H ${FORMS})
-	QT5_ADD_RESOURCES (RCC ${RESOURCES})
-ELSE ()
-	QT4_WRAP_UI (UIS_H ${FORMS})
-	QT4_ADD_RESOURCES (RCC ${RESOURCES})
-ENDIF ()
+QtWrapUi (UIS_H ${FORMS})
+QtAddResources (RCC ${RESOURCES})
 
 ADD_EXECUTABLE (leechcraft WIN32
 	../config.h
