@@ -50,7 +50,12 @@ namespace Poleemery
 		{
 			Date,
 			Name,
+
 			Price,
+			EntryCurrency,
+			EntryRate,
+			NativePrice,
+
 			Count,
 			Shop,
 			Categories,
