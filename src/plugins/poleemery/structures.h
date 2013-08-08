@@ -109,13 +109,17 @@ namespace Poleemery
 		double Count_;
 		QString Shop_;
 
+		QString EntryCurrency_;
+		double Rate_;
+
 		static QString ClassName () { return "NakedExpenseEntry"; }
 
 		EntryType GetType () const { return EntryType::Expense; }
 
 		NakedExpenseEntry ();
-		NakedExpenseEntry (int accId, double amount, const QString& name, const QString& descr,
-				const QDateTime& dt, double count, const QString& shop);
+		NakedExpenseEntry (int accId, double amount,
+				const QString& name, const QString& descr, const QDateTime& dt,
+				double count, const QString& shop, const QString& currency, double rate);
 	};
 
 	struct ExpenseEntry : NakedExpenseEntry
@@ -126,7 +130,8 @@ namespace Poleemery
 		ExpenseEntry (const NakedExpenseEntry&);
 		ExpenseEntry (int accId, double amount,
 				const QString& name, const QString& descr, const QDateTime& dt,
-				double count, const QString& shop, const QStringList& cats);
+				double count, const QString& shop, const QString& currency, double rate,
+				const QStringList& cats);
 	};
 
 	typedef std::shared_ptr<ExpenseEntry> ExpenseEntry_ptr;
@@ -141,7 +146,9 @@ BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Poleemery::NakedExpenseEntry,
 		(QString, Description_)
 		(QDateTime, Date_)
 		(double, Count_)
-		(QString, Shop_))
+		(QString, Shop_)
+		(QString, EntryCurrency_)
+		(double, Rate_))
 
 namespace LeechCraft
 {

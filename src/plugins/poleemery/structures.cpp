@@ -86,15 +86,18 @@ namespace Poleemery
 
 	NakedExpenseEntry::NakedExpenseEntry ()
 	: Count_ { 0 }
+	, Rate_ { 0 }
 	{
 	}
 
 	NakedExpenseEntry::NakedExpenseEntry (int accId, double amount,
 			const QString& name, const QString& descr, const QDateTime& dt,
-			double count, const QString& shop)
-	: EntryBase { accId, amount, name, descr, dt }
+			double count, const QString& shop, const QString& currency, double rate)
+	: EntryBase { accId, amount, name, descr, dt, }
 	, Count_ { count }
 	, Shop_ { shop }
+	, EntryCurrency_ { currency }
+	, Rate_ { rate }
 	{
 	}
 
@@ -107,8 +110,11 @@ namespace Poleemery
 	{
 	}
 
-	ExpenseEntry::ExpenseEntry (int accId, double amount, const QString& name, const QString& descr, const QDateTime& dt, double count, const QString& shop, const QStringList& cats)
-	: NakedExpenseEntry { accId, amount, name, descr, dt, count, shop }
+	ExpenseEntry::ExpenseEntry (int accId, double amount,
+			const QString& name, const QString& descr, const QDateTime& dt,
+			double count, const QString& shop, const QString& currency, double rate,
+			const QStringList& cats)
+	: NakedExpenseEntry { accId, amount, name, descr, dt, count, shop, currency, rate }
 	, Categories_ { cats }
 	{
 	}
