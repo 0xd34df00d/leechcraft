@@ -75,6 +75,9 @@ namespace Aggregator
 					 , public IRecoverableTab
 	{
 		Q_OBJECT
+#ifdef USE_QT5
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.Aggregator");
+#endif
 		Q_INTERFACES (IInfo
 				IHaveTabs
 				ITabWidget

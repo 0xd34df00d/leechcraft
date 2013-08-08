@@ -117,9 +117,13 @@ namespace Aggregator
 				"http://feeds.feedburner.com/welinux");
 
 		Ui_.setupUi (this);
+#ifdef USE_QT5
+		Ui_.Tree_->header ()->setSectionResizeMode (0, QHeaderView::ResizeToContents);
+		Ui_.Tree_->header ()->setSectionResizeMode (1, QHeaderView::ResizeToContents);
+#else
 		Ui_.Tree_->header ()->setResizeMode (0, QHeaderView::ResizeToContents);
 		Ui_.Tree_->header ()->setResizeMode (1, QHeaderView::ResizeToContents);
-
+#endif
 		connect (Ui_.LocalizationBox_,
 				SIGNAL (currentIndexChanged (const QString&)),
 				this,
