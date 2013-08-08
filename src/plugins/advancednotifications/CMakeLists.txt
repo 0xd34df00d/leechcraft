@@ -59,16 +59,8 @@ set (RESOURCES advancednotificationsresources.qrc)
 
 CreateTrs ("advancednotifications" "en;es;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 
-if (NOT USE_QT5)
-	if (NOT LC_NO_MOC)
-		QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-	endif (NOT LC_NO_MOC)
-	QT4_WRAP_UI (UIS_H ${FORMS})
-	QT4_ADD_RESOURCES (RCCS ${RESOURCES})
-else ()
-	QT5_WRAP_UI (UIS_H ${FORMS})
-	QT5_ADD_RESOURCES (RCCS ${RESOURCES})
-endif ()
+QtWrapUi (UIS_H ${FORMS})
+QtAddResources (RCCS ${RESOURCES})
 
 set (ADD_LIBRARY_SET ${COMPILED_TRANSLATIONS}
 	${SRCS}
