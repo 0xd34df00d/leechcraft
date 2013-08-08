@@ -33,6 +33,7 @@
 #include <QSet>
 #include <QList>
 #include <QMetaType>
+#include <QtPlugin>
 
 namespace LeechCraft
 {
@@ -82,7 +83,7 @@ public:
 
 	virtual void ApplyDeltas (const LeechCraft::Sync::Payloads_t& deltas,
 			const LeechCraft::Sync::ChainID_t& chain) = 0;
-			
+
 	virtual void newDeltasAvailable (const LeechCraft::Sync::ChainID_t& chain) = 0;
 };
 
