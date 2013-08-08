@@ -5,14 +5,6 @@ INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	)
 
-IF (NOT USE_QT5)
-	SET (QT_USE_QTNETWORK TRUE)
-	SET (QT_USE_QTXML TRUE)
-	SET (QT_USE_QTSQL TRUE)
-	SET (QT_USE_QTSCRIPT TRUE)
-	INCLUDE (${QT_USE_FILE})
-ENDIF ()
-
 ADD_DEFINITIONS (-DBOOST_PROGRAM_OPTIONS_DYN_LINK)
 ADD_DEFINITIONS (${QT_DEFINITIONS})
 
@@ -84,7 +76,7 @@ SET (SRCS
 	mwproxy.cpp
 	winwarndialog.cpp
 	coreplugin2manager.cpp
-	dockmanager.cpp
+	dockmanager.cpp${_currentArg}
 	acceptlangwidget.cpp
 	entitymanager.cpp
 	colorthemeengine.cpp
@@ -122,6 +114,8 @@ ADD_EXECUTABLE (leechcraft WIN32
 	${RCC}
 	)
 
+FindQtLibs (leechcraft Gui Network Widgets Xml Sql Script Concurrent DBus Svg)
+
 TARGET_LINK_LIBRARIES (leechcraft
 		${QT_QTMAIN_LIBRARY}
 		${QT_LIBRARIES}
@@ -132,7 +126,3 @@ TARGET_LINK_LIBRARIES (leechcraft
 INSTALL (TARGETS leechcraft DESTINATION ${LC_BINDIR})
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 INSTALL (FILES coresettings.xml DESTINATION ${LC_SETTINGS_DEST})
-
-IF (USE_QT5)
-	QT5_USE_MODULES (leechcraft Gui Network Widgets Xml Sql Script Concurrent DBus Svg)
-ENDIF ()
