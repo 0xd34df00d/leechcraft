@@ -5,15 +5,6 @@ INCLUDE (InitLCPlugin OPTIONAL)
 OPTION (ENABLE_AGGREGATOR_BODYFETCH "Enable BodyFetch for fetching full bodies of news items" ON)
 OPTION (ENABLE_AGGREGATOR_WEBACCESS "Enable WebAccess for providing HTTP access to Aggregator" OFF)
 
-SET (QT_USE_QTSQL TRUE)
-SET (QT_USE_QTXML TRUE)
-SET (QT_USE_QTNETWORK TRUE)
-
-IF (ENABLE_AGGREGATOR_BODYFETCH)
-	SET (QT_USE_QTWEBKIT TRUE)
-ENDIF (ENABLE_AGGREGATOR_BODYFETCH)
-
-INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIRS}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -21,25 +12,25 @@ INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIRS}
 	)
 
 SET (SRCS
-    aggregator.cpp
-    core.cpp
-    addfeed.cpp
-    parserfactory.cpp
+	aggregator.cpp
+	core.cpp
+	addfeed.cpp
+	parserfactory.cpp
 	rssparser.cpp
-    rss20parser.cpp
+	rss20parser.cpp
 	rss10parser.cpp
 	rss091parser.cpp
 	atomparser.cpp
-    atom10parser.cpp
-    atom03parser.cpp
-    parser.cpp
-    item.cpp
-    channel.cpp
-    feed.cpp
-    xmlsettingsmanager.cpp
-    uistatepersist.cpp
-    channelsmodel.cpp
-    channelsfiltermodel.cpp
+	atom10parser.cpp
+	atom03parser.cpp
+	parser.cpp
+	item.cpp
+	channel.cpp
+	feed.cpp
+	xmlsettingsmanager.cpp
+	uistatepersist.cpp
+	channelsmodel.cpp
+	channelsfiltermodel.cpp
 	regexpmatcherui.cpp
 	singleregexp.cpp
 	regexpmatchermanager.cpp
@@ -70,25 +61,25 @@ SET (SRCS
 	tovarmaps.cpp
 	)
 SET (HEADERS
-    aggregator.h
-    core.h
-    addfeed.h
-    item.h
-    channel.h
-    feed.h
-    parserfactory.h
-    parser.h
+	aggregator.h
+	core.h
+	addfeed.h
+	item.h
+	channel.h
+	feed.h
+	parserfactory.h
+	parser.h
 	rssparser.h
-    rss20parser.h
+	rss20parser.h
 	rss10parser.h
 	rss091parser.h
 	atomparser.h
-    atom10parser.h
-    atom03parser.h
-    channelsmodel.h
-    xmlsettingsmanager.h
-    uistatepersist.h
-    channelsfiltermodel.h
+	atom10parser.h
+	atom03parser.h
+	channelsmodel.h
+	xmlsettingsmanager.h
+	uistatepersist.h
+	channelsfiltermodel.h
 	regexpmatcherui.h
 	singleregexp.h
 	regexpmatchermanager.h
@@ -120,8 +111,8 @@ SET (HEADERS
 	tovarmaps.h
 	)
 SET (FORMS
-    mainwidget.ui
-    addfeed.ui
+	mainwidget.ui
+	addfeed.ui
 	itembucket.ui
 	regexpmatcherui.ui
 	singleregexp.ui
@@ -139,19 +130,18 @@ SET (RESOURCES aggregatorresources.qrc)
 CreateTrs ("aggregator" "ar;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 
 ADD_DEFINITIONS(-DBOOST_DYN_LINK)
-IF (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
-QT4_WRAP_UI (UIS_H ${FORMS})
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+QtWrapUi (UIS_H ${FORMS})
+QtAddResources (RCCS ${RESOURCES})
 
 ADD_LIBRARY (leechcraft_aggregator SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${UIS_H}
 	${RCCS}
 	)
+
+FindQtLibs (leechcraft_aggregator Gui Widgets Sql Xml Network WebKit WebKitWidgets)
+
 LINK_DIRECTORIES (${Boost_LIBRARY_DIR})
 TARGET_LINK_LIBRARIES (leechcraft_aggregator
 	${QT_LIBRARIES}
