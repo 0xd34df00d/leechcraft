@@ -2,24 +2,10 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_advancednotifications)
 include (InitLCPlugin OPTIONAL)
 
-if (USE_QT5)
-	find_package (Qt5Quick REQUIRED)
-else ()
-	set (QT_USE_QTDECLARATIVE TRUE)
-	include (${QT_USE_FILE})
-endif ()
-
-set (INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR}
+include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
-if (USE_QT5)
-	set (INCLUDE_DIRS ${INCLUDE_DIRS}
-		${Qt5Quick_INCLUDE_DIRS}
-		)
-endif ()
-
-include_directories (${INCLUDE_DIRS})
 
 set (SRCS
 	advancednotifications.cpp
@@ -62,35 +48,18 @@ CreateTrs ("advancednotifications" "en;es;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 QtWrapUi (UIS_H ${FORMS})
 QtAddResources (RCCS ${RESOURCES})
 
-set (ADD_LIBRARY_SET ${COMPILED_TRANSLATIONS}
+add_library (leechcraft_advancednotifications SHARED
 	${SRCS}
 	${RCCS}
 	${UIS_H}
 	)
 
-if (NOT USE_QT5)
-	set (ADD_LIBRARY_SET ${ADD_LIBRARY_SET}
-		${MOC_SRCS}
-		)
-endif ()
+FindQtLibs (leechcraft_advancednotifications Quick)
 
-ADD_LIBRARY (leechcraft_advancednotifications SHARED
-	${ADD_LIBRARY_SET}
+TARGET_LINK_LIBRARIES (leechcraft_advancednotifications
+	${QT_LIBRARIES}
+	${LEECHCRAFT_LIBRARIES}
 	)
-
-if (USE_QT5)
-	QT5_USE_MODULES (leechcraft_advancednotifications
-		Quick
-		)
-	TARGET_LINK_LIBRARIES (leechcraft_advancednotifications
-		${LEECHCRAFT_LIBRARIES}
-		)
-else ()
-	TARGET_LINK_LIBRARIES (leechcraft_advancednotifications
-		${QT_LIBRARIES}
-		${LEECHCRAFT_LIBRARIES}
-		)
-endif ()
 
 INSTALL (TARGETS leechcraft_advancednotifications DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
