@@ -2,8 +2,6 @@ CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 PROJECT (leechcraft_auscrie)
 INCLUDE (InitLCPlugin OPTIONAL)
 
-SET (QT_USE_QTNETWORK TRUE)
-INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -20,16 +18,18 @@ SET (FORMS
 	)
 SET (RESOURCES auscrieresources.qrc)
 CreateTrs ("auscrie" "de;en;es;fr;it;oc;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
-QT4_WRAP_UI (UIS_H ${FORMS})
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+QtWrapUi (UIS_H ${FORMS})
+QtAddResources (RCCS ${RESOURCES})
 
 ADD_LIBRARY (leechcraft_auscrie SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${UIS_H}
 	${RCCS}
 	)
+
+FindQtLibs (leechcraft_auscrie Network)
+
 TARGET_LINK_LIBRARIES (leechcraft_auscrie
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
