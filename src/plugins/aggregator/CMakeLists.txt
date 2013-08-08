@@ -140,7 +140,7 @@ ADD_LIBRARY (leechcraft_aggregator SHARED
 	${RCCS}
 	)
 
-FindQtLibs (leechcraft_aggregator Gui Widgets Sql Xml Network WebKit WebKitWidgets)
+FindQtLibs (leechcraft_aggregator Gui Widgets Sql Xml Network WebKitWidgets)
 
 LINK_DIRECTORIES (${Boost_LIBRARY_DIR})
 TARGET_LINK_LIBRARIES (leechcraft_aggregator
