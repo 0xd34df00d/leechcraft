@@ -9,7 +9,6 @@ IF (NOT KDE4_FOUND)
 	RETURN ()
 ENDIF (NOT KDE4_FOUND)
 
-INCLUDE (${QT_USE_FILE})
 INCLUDE (KDE4Defaults)
 
 SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
@@ -28,17 +27,17 @@ SET (HEADERS
 	)
 SET (RESOURCES anheroresources.qrc)
 CreateTrs ("anhero" "ar;de;en;es;fr;it;oc;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
-IF (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+
+QtAddResources (RCCS ${RESOURCES})
 
 ADD_LIBRARY (leechcraft_anhero SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${RCCS}
 	)
+
+FindQtLibs (leechcraft_anhero Core)
+
 TARGET_LINK_LIBRARIES (leechcraft_anhero
 	${QT_LIBRARIES}
 	${KDE4_KUTILS_LIBS}

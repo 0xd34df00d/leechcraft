@@ -41,6 +41,9 @@ namespace AnHero
 					, public IInfo
 	{
 		Q_OBJECT
+#ifdef USE_QT5
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.AnHero");
+#endif
 		Q_INTERFACES (IInfo)
 	public:
 		void Init (ICoreProxy_ptr);
