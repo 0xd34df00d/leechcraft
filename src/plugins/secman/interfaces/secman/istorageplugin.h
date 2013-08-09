@@ -34,40 +34,37 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace SecMan
+{
+	class IStoragePlugin
 	{
-		namespace SecMan
+	public:
+		virtual ~IStoragePlugin () {}
+
+		enum StorageType
 		{
-			class IStoragePlugin
-			{
-			public:
-				virtual ~IStoragePlugin () {}
+			STInsecure,
+			STSecure
+		};
 
-				enum StorageType
-				{
-					STInsecure,
-					STSecure
-				};
+		Q_DECLARE_FLAGS (StorageTypes, StorageType)
 
-				Q_DECLARE_FLAGS (StorageTypes, StorageType)
-
-				virtual StorageTypes GetStorageTypes () const = 0;
-				virtual QList<QByteArray> ListKeys (StorageType st = STInsecure) = 0;
-				virtual void Save (const QByteArray& key,
-						const QVariantList& value,
-						StorageType st = STInsecure,
-						bool overwrite = false) = 0;
-				virtual QVariantList Load (const QByteArray& key, StorageType st = STInsecure) = 0;
-				virtual void Save (const QList<QPair<QByteArray, QVariantList>>& keyValues,
-						StorageType st = STInsecure,
-						bool overwrite = false) = 0;
-				virtual QList<QVariantList> Load (const QList<QByteArray>& keys, StorageType st = STInsecure) = 0;
-			};
-		}
-	}
+		virtual StorageTypes GetStorageTypes () const = 0;
+		virtual QList<QByteArray> ListKeys (StorageType st = STInsecure) = 0;
+		virtual void Save (const QByteArray& key,
+				const QVariantList& value,
+				StorageType st = STInsecure,
+				bool overwrite = false) = 0;
+		virtual QVariantList Load (const QByteArray& key, StorageType st = STInsecure) = 0;
+		virtual void Save (const QList<QPair<QByteArray, QVariantList>>& keyValues,
+				StorageType st = STInsecure,
+				bool overwrite = false) = 0;
+		virtual QList<QVariantList> Load (const QList<QByteArray>& keys, StorageType st = STInsecure) = 0;
+	};
+}
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Plugins::SecMan::IStoragePlugin,
-		"org.Deviant.LeechCraft.Plugins.SecMan.IStoragePlugin/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::SecMan::IStoragePlugin,
+		"org.Deviant.LeechCraft.SecMan.IStoragePlugin/1.0");
 
 #endif

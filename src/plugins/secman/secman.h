@@ -37,8 +37,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace SecMan
 {
 	class Plugin : public QObject
@@ -48,6 +46,9 @@ namespace SecMan
 					, public IActionsExporter
 	{
 		Q_OBJECT
+#ifdef USE_QT5
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.SecMan");
+#endif
 		Q_INTERFACES (IInfo IEntityHandler IPluginReady IActionsExporter)
 
 		QMap<QString, QList<QAction*>> MenuActions_;
@@ -73,6 +74,5 @@ namespace SecMan
 	signals:
 		void gotActions (QList<QAction*>, ActionsEmbedPlace);
 	};
-}
 }
 }
