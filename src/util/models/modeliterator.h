@@ -63,6 +63,9 @@ namespace Util
 		ModelIterator& operator-= (int);
 		int operator- (const ModelIterator& other) const;
 
+		bool operator== (const ModelIterator& other) const;
+		bool operator!= (const ModelIterator& other) const;
+
 		QModelIndex operator* () const;
 
 		int GetRow () const;
