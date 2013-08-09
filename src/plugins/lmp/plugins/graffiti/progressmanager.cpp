@@ -41,6 +41,7 @@ namespace Graffiti
 	: QObject (parent)
 	, Model_ (new QStandardItemModel (this))
 	{
+		Model_->setColumnCount (3);
 	}
 
 	QAbstractItemModel* ProgressManager::GetModel () const
@@ -56,14 +57,15 @@ namespace Graffiti
 			auto statusItem = new QStandardItem ();
 			auto progressItem = new QStandardItem ();
 
-			nameItem->setData (JobHolderRow::ProcessProgress, CustomDataRoles::RoleJobHolderRow);
-
 			const QList<QStandardItem*> row
 			{
 				nameItem,
 				statusItem,
 				progressItem
 			};
+			auto item = row.at (JobHolderColumn::JobProgress);
+			item->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
+					CustomDataRoles::RoleJobHolderRow);
 
 			TagsFetchObj2Row_ [obj] = row;
 			Model_->appendRow (row);
