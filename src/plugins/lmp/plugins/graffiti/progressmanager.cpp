@@ -27,14 +27,9 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/ihavetabs.h>
+#include "progressmanager.h"
+#include <QStandardItemModel>
 #include <interfaces/ijobholder.h>
-#include <interfaces/lmp/ilmpplugin.h>
 
 namespace LeechCraft
 {
@@ -42,53 +37,51 @@ namespace LMP
 {
 namespace Graffiti
 {
-	class ProgressManager;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public IHaveTabs
-				 , public IJobHolder
-				 , public ILMPPlugin
+	ProgressManager::ProgressManager (QObject *parent)
+	: QObject (parent)
+	, Model_ (new QStandardItemModel (this))
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo
-				IPlugin2
-				IHaveTabs
-				IJobHolder
-				LeechCraft::LMP::ILMPPlugin)
+	}
 
-		ICoreProxy_ptr CoreProxy_;
-		ILMPProxy_ptr LMPProxy_;
+	QAbstractItemModel* ProgressManager::GetModel () const
+	{
+		return Model_;
+	}
 
-		TabClassInfo TaggerTC_;
+	void ProgressManager::handleTagsFetch (int fetched, int total, QObject *obj)
+	{
+		if (!TagsFetchObj2Row_.contains (obj))
+		{
+			auto nameItem = new QStandardItem (tr ("Fetching tags..."));
+			auto statusItem = new QStandardItem ();
+			auto progressItem = new QStandardItem ();
 
-		ProgressManager *ProgressMgr_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+			nameItem->setData (JobHolderRow::ProcessProgress, CustomDataRoles::RoleJobHolderRow);
 
-		QSet<QByteArray> GetPluginClasses () const;
+			const QList<QStandardItem*> row
+			{
+				nameItem,
+				statusItem,
+				progressItem
+			};
 
-		TabClasses_t GetTabClasses () const;
-		void TabOpenRequested (const QByteArray& tabClass);
+			TagsFetchObj2Row_ [obj] = row;
+			Model_->appendRow (row);
+		}
 
-		QAbstractItemModel* GetRepresentation () const;
+		if (fetched == total)
+		{
+			const auto& list = TagsFetchObj2Row_.take (obj);
+			Model_->removeRow (list.first ()->row ());
+			return;
+		}
 
-		void SetLMPProxy (ILMPProxy_ptr);
-	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void raiseTab (QWidget*);
-		void statusBarChanged (QWidget*, const QString&);
-	};
+		const auto& list = TagsFetchObj2Row_ [obj];
+
+		auto item = list.at (JobHolderColumn::JobProgress);
+		item->setData (fetched, ProcessState::Done);
+		item->setData (total, ProcessState::Total);
+	}
 }
 }
 }

@@ -30,11 +30,11 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/ihavetabs.h>
-#include <interfaces/ijobholder.h>
-#include <interfaces/lmp/ilmpplugin.h>
+#include <QHash>
+
+class QStandardItemModel;
+class QAbstractItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
@@ -42,52 +42,18 @@ namespace LMP
 {
 namespace Graffiti
 {
-	class ProgressManager;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public IHaveTabs
-				 , public IJobHolder
-				 , public ILMPPlugin
+	class ProgressManager : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo
-				IPlugin2
-				IHaveTabs
-				IJobHolder
-				LeechCraft::LMP::ILMPPlugin)
 
-		ICoreProxy_ptr CoreProxy_;
-		ILMPProxy_ptr LMPProxy_;
-
-		TabClassInfo TaggerTC_;
-
-		ProgressManager *ProgressMgr_;
+		QStandardItemModel *Model_;
+		QHash<QObject*, QList<QStandardItem*>> TagsFetchObj2Row_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		ProgressManager (QObject* = 0);
 
-		QSet<QByteArray> GetPluginClasses () const;
-
-		TabClasses_t GetTabClasses () const;
-		void TabOpenRequested (const QByteArray& tabClass);
-
-		QAbstractItemModel* GetRepresentation () const;
-
-		void SetLMPProxy (ILMPProxy_ptr);
-	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void raiseTab (QWidget*);
-		void statusBarChanged (QWidget*, const QString&);
+		QAbstractItemModel* GetModel () const;
+	public slots:
+		void handleTagsFetch (int fetched, int total, QObject *obj);
 	};
 }
 }
