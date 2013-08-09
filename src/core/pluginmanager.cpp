@@ -54,7 +54,7 @@
 #include "shortcutmanager.h"
 #include "application.h"
 #include "loaders/sopluginloader.h"
-#ifdef Q_OS_LINUX
+#ifndef Q_OS_WIN32
 	#include "loaders/dbuspluginloader.h"
 #endif
 #include "settingstab.h"
