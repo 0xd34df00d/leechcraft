@@ -103,7 +103,8 @@ namespace Poleemery
 		case Columns::EntryCurrency:
 		case Columns::EntryRate:
 		case Columns::NativePrice:
-			if (Entries_.at (index.row ())->GetType () == EntryType::Expense)
+			if (RatePriceEditable_ &&
+					Entries_.at (index.row ())->GetType () == EntryType::Expense)
 				flags |= Qt::ItemIsEditable;
 			else
 				flags &= ~Qt::ItemIsEnabled;
@@ -326,6 +327,11 @@ namespace Poleemery
 		}
 
 		return QVariant ();
+	}
+
+	void EntriesModel::SetRatePriceEditable (bool editable)
+	{
+		RatePriceEditable_ = editable;
 	}
 
 	namespace
