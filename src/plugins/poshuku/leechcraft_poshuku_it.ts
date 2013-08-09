@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="it_IT">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="it" version="2.0">
 <context>
     <name>AddToFavoritesDialog</name>
     <message>
@@ -447,13 +445,13 @@
         <location filename="browserwidget.cpp" line="1619"/>
         <location filename="browserwidget.cpp" line="1620"/>
         <source>Remove bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="1637"/>
         <location filename="browserwidget.cpp" line="1638"/>
         <source>Add bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -513,8 +511,7 @@
     <message>
         <location filename="customwebpage.cpp" line="141"/>
         <source>&lt;a href=&quot;http://downforeveryoneorjustme.com/{host}&quot; target=&quot;_blank&quot;&gt;check&lt;/a&gt; if the site &lt;strong&gt;{host}&lt;/strong&gt; is down for you only;</source>
-        <comment>{host} would be substituded with site&apos;s host name.</comment>
-        <translatorcomment>{host} Ospitare sarebbe substituded con il nome host del sito.</translatorcomment>
+        <comment>{host} would be substituded with site's host name.</comment>
         <translation>&lt;a href=&quot;http://downforeveryoneorjustme.com/{host}&quot; target=&quot;_blank&quot;&gt; controllo &lt;/ a&gt; se il sito &lt;strong&gt; {HOST} &lt;/ strong&gt; è attivo solo per voi;</translation>
     </message>
     <message>
@@ -591,7 +588,7 @@
     <message>
         <location filename="customwebpage.cpp" line="323"/>
         <source>Unable to send the request to %1. Please try submitting it again.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="534"/>
@@ -680,12 +677,12 @@
     <message>
         <location filename="customwebview.cpp" line="333"/>
         <source>Save pixmap...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="customwebview.cpp" line="335"/>
         <source>Saves the rendered pixmap without redownloading.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="customwebview.cpp" line="339"/>
@@ -761,17 +758,17 @@
     <message>
         <location filename="customwebview.cpp" line="611"/>
         <source>Save pixmap</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="customwebview.cpp" line="613"/>
         <source>PNG image (*.png);;JPG image (*.jpg);;All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="customwebview.cpp" line="631"/>
         <source>Unable to save the image. Unable to open file for writing: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -824,7 +821,7 @@
     <message>
         <location filename="favoriteschecker.cpp" line="198"/>
         <source>%1 favorites total.&lt;br /&gt;%2 favorites are accessible.&lt;br /&gt;%3%4 are not correctly returned by the remote server.&lt;br /&gt;%5</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -956,6 +953,7 @@
         <location filename="passwordremember.ui" line="14"/>
         <location filename="passwordremember.ui" line="23"/>
         <source>Remember forms data</source>
+        <oldsource>Password remember</oldsource>
         <translation>Ricorda i dati dei moduli</translation>
     </message>
     <message>
@@ -999,10 +997,7 @@
     <message numerus="yes">
         <location filename="historymodel.cpp" line="90"/>
         <source>Last %n month(s)</source>
-        <translation>
-            <numerusform>Ultimo % mese</numerusform>
-            <numerusform>Ultimo % mesi</numerusform>
-        </translation>
+        <translation><numerusform>Ultimo % mese</numerusform><numerusform>Ultimo % mesi</numerusform></translation>
     </message>
     <message>
         <location filename="xbelparser.cpp" line="36"/>
@@ -1071,7 +1066,7 @@
     <message>
         <location filename="screenshotsavedialog.ui" line="13"/>
         <source>Page shooter</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="screenshotsavedialog.ui" line="28"/>
@@ -1150,7 +1145,7 @@
     <message>
         <location filename="dummy.cpp" line="8"/>
         <source>Paranoid downloads detection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="9"/>
@@ -1180,7 +1175,7 @@
     <message>
         <location filename="dummy.cpp" line="14"/>
         <source>Add bookmark in one click</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="15"/>
@@ -1201,22 +1196,22 @@
     <message>
         <location filename="dummy.cpp" line="19"/>
         <source>Enable XSS auditing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="20"/>
         <source>Specifies whether requests should be monitored for cross-site scripting attempts. Suspicious attempts would be blocked. This feature may have a slight negative impact on performance.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="21"/>
         <source>Enable hyperlink auditing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="22"/>
         <source>Enable sending hyperlink auditing pings.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="23"/>
@@ -1296,7 +1291,7 @@
     <message>
         <location filename="dummy.cpp" line="38"/>
         <source>Prefetch DNS entries</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="39"/>
@@ -1379,7 +1374,7 @@
     <message>
         <location filename="dummy.cpp" line="57"/>
         <source>Enable WebGL</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="58"/>
@@ -1420,7 +1415,7 @@
     <message>
         <location filename="dummy.cpp" line="66"/>
         <source>Fantasy font:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="67"/>

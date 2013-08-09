@@ -1,43 +1,41 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="it_IT">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="it" version="2.0">
 <context>
-    <name>LeechCraft::Plugins::Auscrie::Plugin</name>
+    <name>LeechCraft::Auscrie::Plugin</name>
     <message>
         <location filename="auscrie.cpp" line="45"/>
         <source>Make a screenshot</source>
         <translation>Fai una foto</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="73"/>
+        <location filename="auscrie.cpp" line="78"/>
         <source>Simple auto screenshoter.</source>
         <translation>Semplice auto catturare schermate.</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="121"/>
+        <location filename="auscrie.cpp" line="127"/>
         <source>Save as</source>
         <translation>Salva come</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="123"/>
+        <location filename="auscrie.cpp" line="129"/>
         <source>%1 files (*.%1);;All files (*.*)</source>
         <translation>%1 files (*.%1);;Tutii files (*.*)</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Auscrie::Poster</name>
+    <name>LeechCraft::Auscrie::Poster</name>
     <message>
-        <location filename="poster.cpp" line="189"/>
+        <location filename="poster.cpp" line="187"/>
         <source>Page parse failed</source>
         <translation>Pagina parse fallito</translation>
     </message>
     <message>
-        <location filename="poster.cpp" line="196"/>
+        <location filename="poster.cpp" line="194"/>
         <source>Image pasted: %1, the URL was copied to the clipboard</source>
         <translation>Immagine incollata: %1, l&apos;URL è stato copiato nella appunti</translation>
     </message>
     <message>
-        <location filename="poster.cpp" line="208"/>
+        <location filename="poster.cpp" line="206"/>
         <source>Upload of screenshot failed: %1</source>
         <translation>Carica di foto fallito: %1</translation>
     </message>
@@ -90,12 +88,42 @@
         <translation>Formato:</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="76"/>
+        <location filename="shooterdialog.ui" line="81"/>
         <source>JPG</source>
         <translation>JPG</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="81"/>
+        <location filename="shooterdialog.ui" line="142"/>
+        <source>Mode:</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="shooterdialog.ui" line="150"/>
+        <source>LeechCraft window and everything on top</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="shooterdialog.ui" line="155"/>
+        <source>LeechCraft window</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="shooterdialog.ui" line="160"/>
+        <source>Current screen</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="shooterdialog.ui" line="165"/>
+        <source>Whole desktop</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="shooterdialog.ui" line="173"/>
+        <source>Hide this dialog</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="shooterdialog.ui" line="76"/>
         <source>PNG</source>
         <translation>PNG</translation>
     </message>

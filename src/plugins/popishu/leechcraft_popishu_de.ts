@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="de">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="de" version="2.0">
 <context>
     <name>EditorPage</name>
     <message>
@@ -61,12 +59,12 @@
     <message>
         <location filename="editorpage.ui" line="127"/>
         <source>Show end of lines</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="editorpage.ui" line="138"/>
         <source>Show caret line</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="editorpage.ui" line="149"/>
@@ -82,12 +80,12 @@
     <message>
         <location filename="editorpage.ui" line="168"/>
         <source>Visible after indent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="editorpage.ui" line="176"/>
         <source>Automatic indentation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="editorpage.ui" line="184"/>
@@ -102,7 +100,7 @@
     <message>
         <location filename="editorpage.ui" line="206"/>
         <source>No wrap</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="editorpage.ui" line="214"/>
@@ -134,14 +132,9 @@
         <translation>Dokumenttyp</translation>
     </message>
     <message>
-        <location filename="editorpage.cpp" line="117"/>
-        <source>Recent files</source>
-        <translation>Zuletzt verwendete Dateien</translation>
-    </message>
-    <message>
         <location filename="editorpage.cpp" line="129"/>
         <source>Whitespace visibility</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="editorpage.cpp" line="136"/>
@@ -167,23 +160,12 @@
     <message>
         <location filename="editorpage.cpp" line="225"/>
         <source>The document &lt;em&gt;%1&lt;/em&gt; is modified. Do you want to save it now?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="editorpage.cpp" line="298"/>
         <source>Select file to open</source>
         <translation>Wählen Sie die zu öffnende Datei</translation>
-    </message>
-    <message>
-        <location filename="editorpage.cpp" line="453"/>
-        <source>Script wrapping failed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="editorpage.cpp" line="474"/>
-        <location filename="editorpage.cpp" line="510"/>
-        <source>Script injection failed: %1</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="editorpage.cpp" line="609"/>
@@ -193,22 +175,38 @@
     <message>
         <location filename="editorpage.cpp" line="610"/>
         <source>The requested file doesn&apos;t exist anymore.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="editorpage.cpp" line="628"/>
-        <source>Select file to save</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="editorpage.cpp" line="641"/>
-        <source>Could not open file %1 for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="editorpage.cpp" line="665"/>
         <source>Could not open file %1 for reading.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="editorpage.cpp" line="453"/>
+        <source>Script wrapping failed.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="editorpage.cpp" line="117"/>
+        <source>Recent files</source>
+        <translation>Zuletzt verwendete Dateien</translation>
+    </message>
+    <message>
+        <location filename="editorpage.cpp" line="474"/>
+        <location filename="editorpage.cpp" line="510"/>
+        <source>Script injection failed: %1</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="editorpage.cpp" line="628"/>
+        <source>Select file to save</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="editorpage.cpp" line="641"/>
+        <source>Could not open file %1 for writing.</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -216,7 +214,7 @@
     <message>
         <location filename="popishu.cpp" line="102"/>
         <source>Plain text editor with syntax highlighting and stuff.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -263,7 +261,7 @@
         <location filename="dummy.cpp" line="2"/>
         <location filename="dummy.cpp" line="3"/>
         <source>Editor settings</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
@@ -273,12 +271,12 @@
     <message>
         <location filename="dummy.cpp" line="5"/>
         <source>Identation width:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
         <source>Monospace font:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>
@@ -288,35 +286,35 @@
     <message>
         <location filename="dummy.cpp" line="8"/>
         <source>End wrap flag location:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="9"/>
         <location filename="dummy.cpp" line="13"/>
         <source>No wrap flag</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="10"/>
         <location filename="dummy.cpp" line="14"/>
         <source>By text</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="11"/>
         <location filename="dummy.cpp" line="15"/>
         <source>By border</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="12"/>
         <source>Start wrap flag location:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="16"/>
         <source>Indentation of wrapped line</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="17"/>
@@ -326,7 +324,7 @@
     <message>
         <location filename="dummy.cpp" line="18"/>
         <source>Remember this much recently opened files:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 </TS>

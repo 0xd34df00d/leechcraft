@@ -49,6 +49,29 @@
     </message>
 </context>
 <context>
+    <name>AcceptLangWidget</name>
+    <message>
+        <location filename="acceptlangwidget.ui" line="53"/>
+        <source>Add</source>
+        <translation>Додати</translation>
+    </message>
+    <message>
+        <location filename="acceptlangwidget.ui" line="66"/>
+        <source>Move up</source>
+        <translation>Вище</translation>
+    </message>
+    <message>
+        <location filename="acceptlangwidget.ui" line="73"/>
+        <source>Move down</source>
+        <translation>Нижче</translation>
+    </message>
+    <message>
+        <location filename="acceptlangwidget.ui" line="80"/>
+        <source>Remove</source>
+        <translation>Видалити</translation>
+    </message>
+</context>
+<context>
     <name>AuthenticationDialog</name>
     <message>
         <location filename="authenticationdialog.ui" line="13"/>
@@ -270,53 +293,52 @@
         <translation>На весь екран</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="142"/>
-        <location filename="leechcraft.ui" line="145"/>
-        <source>Log</source>
-        <translation>Журнал</translation>
+        <location filename="leechcraft.ui" line="196"/>
+        <source>Restart LeechCraft...</source>
+        <translation>Перезапустити LeechCraft...</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="150"/>
+        <location filename="leechcraft.ui" line="142"/>
         <source>About LeechCraft...</source>
         <translation>Про LeechCraft...</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="155"/>
+        <location filename="leechcraft.ui" line="147"/>
         <source>About Qt...</source>
         <translation>Про Qt...</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="164"/>
+        <location filename="leechcraft.ui" line="156"/>
         <source>Menu</source>
         <translation>Меню</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="175"/>
+        <location filename="leechcraft.ui" line="167"/>
         <source>Show status bar</source>
         <translation>Показувати рядок стану</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="180"/>
+        <location filename="leechcraft.ui" line="172"/>
         <source>Close tab</source>
         <translation>Закрити вкладку</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="183"/>
+        <location filename="leechcraft.ui" line="175"/>
         <source>Ctrl+W</source>
         <translation>Ctrl+W</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="199"/>
+        <location filename="leechcraft.ui" line="191"/>
         <source>Show toolbar</source>
         <translation>Показати панель інструментів</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="188"/>
+        <location filename="leechcraft.ui" line="180"/>
         <source>New tab</source>
         <translation>Нова вкладка</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="191"/>
+        <location filename="leechcraft.ui" line="183"/>
         <source>Ctrl+T</source>
         <translation>Ctrl+T</translation>
     </message>
@@ -335,151 +357,189 @@
         <translation>Провідний розробник і оригінальний автор.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="129"/>
+        <location filename="aboutdialog.cpp" line="133"/>
         <source>Firefox importer in New Life.</source>
         <translation>Firefox імпортер у New Life.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="130"/>
+        <location filename="aboutdialog.cpp" line="132"/>
         <source>Poshuku OnlineBookmarks.</source>
         <translation>Poshuku OnlineBookmarks.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="131"/>
+        <location filename="aboutdialog.cpp" line="129"/>
+        <source>Blogique module.</source>
+        <translation>Модуль Blogique.</translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="130"/>
         <source>Azoth Acetamide: IRC support for Azoth.</source>
         <translation>Azoth Acetamide: Підтримка IRC для Azoth.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="132"/>
+        <location filename="aboutdialog.cpp" line="131"/>
+        <source>Google Drive support in NetStoreManager module.</source>
+        <translation>Підтримка Google Drive у модулі NetStoreManager</translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="134"/>
         <source>Chrome-style tabs.</source>
         <translation>Вкладки у стилі Chrome.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="133"/>
-        <location filename="aboutdialog.cpp" line="140"/>
-        <location filename="aboutdialog.cpp" line="202"/>
-        <location filename="aboutdialog.cpp" line="206"/>
-        <location filename="aboutdialog.cpp" line="223"/>
+        <location filename="aboutdialog.cpp" line="135"/>
+        <location filename="aboutdialog.cpp" line="142"/>
+        <location filename="aboutdialog.cpp" line="209"/>
+        <location filename="aboutdialog.cpp" line="213"/>
+        <location filename="aboutdialog.cpp" line="230"/>
         <source>Various patches.</source>
         <translation>Різноманітні патчі.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="139"/>
+        <location filename="aboutdialog.cpp" line="141"/>
         <source>SecMan SecureStorage.</source>
         <translation>SecMan SecureStorage.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="144"/>
+        <location filename="aboutdialog.cpp" line="146"/>
         <source>Initial PKGBUILDs for Arch Linux.</source>
         <translation>Початкові PKGBUILD для Arch Linux.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="148"/>
-        <location filename="aboutdialog.cpp" line="224"/>
+        <location filename="aboutdialog.cpp" line="150"/>
+        <location filename="aboutdialog.cpp" line="231"/>
         <source>Ukrainian translations.</source>
         <translation>Українські переклади.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="152"/>
+        <location filename="aboutdialog.cpp" line="154"/>
         <source>Spanish translations.</source>
         <translation>Іспанські переклади.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="156"/>
+        <location filename="aboutdialog.cpp" line="158"/>
         <source>Artwork.</source>
         <oldsource>Artwork designer.</oldsource>
         <translation>Ілюстрації</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="160"/>
+        <location filename="aboutdialog.cpp" line="162"/>
         <source>Debian/Ubuntu maintainership.</source>
         <translation>Підтримка Debian/Ubuntu.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="161"/>
+        <location filename="aboutdialog.cpp" line="163"/>
         <source>Small fixes.</source>
         <translation>Невеликі виправлення</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="165"/>
+        <location filename="aboutdialog.cpp" line="167"/>
+        <source>Windows maintainership.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="168"/>
+        <source>Windows fixes.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="172"/>
         <source>French translations.</source>
         <translation>Французькі переклади.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="166"/>
+        <location filename="aboutdialog.cpp" line="173"/>
         <source>Italian translations.</source>
         <translation>Італійські переклади.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="167"/>
+        <location filename="aboutdialog.cpp" line="174"/>
         <source>Public relations.</source>
         <translation>Зв&apos;язки з громадськістю.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="171"/>
+        <location filename="aboutdialog.cpp" line="178"/>
         <source>Microsoft Windows backend for Liznoo plugin.</source>
         <translation>Вихідний буфер Microsoft Windows для плагіну Liznoo.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="172"/>
+        <location filename="aboutdialog.cpp" line="179"/>
         <source>Microsoft Windows builds.</source>
         <translation>Білди Microsoft Windows.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="181"/>
+        <location filename="aboutdialog.cpp" line="188"/>
         <source>Laure plugin.</source>
         <translation>Плагін Laure</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="182"/>
+        <location filename="aboutdialog.cpp" line="189"/>
         <source>Last.FM Scrobbler plugin.</source>
         <translation>Плагін Last.FM Scrobbler.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="183"/>
+        <location filename="aboutdialog.cpp" line="190"/>
         <source>openSUSE package maintainer</source>
         <translation>Мейнтейнер пакетів openSUSE</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="184"/>
+        <location filename="aboutdialog.cpp" line="191"/>
         <source>Fedora package maintainer</source>
         <translation>Мейнтейнер пакетів Fedora</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="192"/>
+        <location filename="aboutdialog.cpp" line="199"/>
         <source>Extensive and thorough testing.</source>
         <translation>Всестороннє і ретельне тестування.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="201"/>
+        <location filename="aboutdialog.cpp" line="208"/>
         <source>FatApe plugin, the GreaseMonkey support layer for Poshuku.</source>
         <translation>Плагін FatApe, підтримкакриптів GreaseMonkey для Poshuku.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="210"/>
+        <location filename="aboutdialog.cpp" line="217"/>
         <source>Graphical artwork.</source>
         <translation>Графіка.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="214"/>
+        <location filename="aboutdialog.cpp" line="221"/>
         <source>Arabic translations.</source>
         <translation>Арабські переклади.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="218"/>
+        <location filename="aboutdialog.cpp" line="225"/>
         <source>Esperanto translations</source>
         <translation>Переклади на Есперанто</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="222"/>
+        <location filename="aboutdialog.cpp" line="229"/>
         <source>Aggregator fixes and improvements.</source>
         <translation>Виправлення та поліпшення в Aggregator</translation>
     </message>
 </context>
 <context>
+    <name>LeechCraft::AcceptLangWidget</name>
+    <message>
+        <location filename="acceptlangwidget.cpp" line="79"/>
+        <source>Language</source>
+        <translation>Мова</translation>
+    </message>
+    <message>
+        <location filename="acceptlangwidget.cpp" line="79"/>
+        <source>Country</source>
+        <translation>Країна</translation>
+    </message>
+    <message>
+        <location filename="acceptlangwidget.cpp" line="79"/>
+        <source>Code</source>
+        <translation>Код</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Application</name>
     <message>
-        <location filename="application.cpp" line="101"/>
+        <location filename="application.cpp" line="105"/>
         <source>Could not create path %1/.leechcraft</source>
         <translation>Не вдалося створити шлях %1/.leechcraft</translation>
     </message>
@@ -508,43 +568,48 @@
 <context>
     <name>LeechCraft::Core</name>
     <message>
-        <location filename="core.cpp" line="320"/>
+        <location filename="core.cpp" line="309"/>
         <source>No plugins are able to download &quot;%1&quot;</source>
         <translation>Жоден з плагінів не може завантажити &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="470"/>
+        <location filename="core.cpp" line="459"/>
         <source>Do you really want to clear the network cache?</source>
         <translation>Ви справді бажаєте очистити мережевий кеш?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="482"/>
+        <location filename="core.cpp" line="471"/>
         <source>Do you really want to clear cookies?</source>
         <translation>Ви справді бажаєте очистити cookies?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="711"/>
-        <location filename="core.cpp" line="728"/>
+        <location filename="core.cpp" line="483"/>
+        <source>This security measure is easily circumvented by modifying LeechCraft&apos;s settings files (or registry on Windows) in a text editor. For proper and robust protection consider using some third-party tools like &lt;em&gt;encfs&lt;/em&gt; (http://www.arg0.net/encfs/).&lt;br/&gt;&lt;br/&gt;Accept this dialog if you understand the above and this kind of security through obscurity is OK for you.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="core.cpp" line="495"/>
+        <source>Enter new startup password:</source>
+        <translation>Уведіть новий стартовий пароль:</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="736"/>
+        <location filename="core.cpp" line="753"/>
         <source>Error</source>
         <translation>Помилка</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="712"/>
+        <location filename="core.cpp" line="737"/>
         <source>Could not add task to the selected downloader, would you like to try another one?</source>
         <translation>Не вдається створити задачу для вказаного завантажувача, бажаєте спробувати інший?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="729"/>
+        <location filename="core.cpp" line="754"/>
         <source>Could not handle task with the selected handler, would you like to try another one?</source>
         <translation>Не вдається виконати задачу за допомогою вказаного обробника, бажаєте спробувати інший?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="767"/>
-        <source>Could not handle download entity %1.</source>
-        <translation>Не вдалося обробити заванатажену сутність %1.</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="795"/>
+        <location filename="core.cpp" line="815"/>
         <source>Plugin load error</source>
         <translation>Помилка завантаження плагіну</translation>
     </message>
@@ -552,32 +617,24 @@
 <context>
     <name>LeechCraft::CoreInstanceObject</name>
     <message>
-        <location filename="coreinstanceobject.cpp" line="172"/>
+        <location filename="coreinstanceobject.cpp" line="176"/>
         <source>LeechCraft Core module.</source>
         <translation>Модуль ядра LeechCraft.</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="194"/>
+        <location filename="coreinstanceobject.cpp" line="198"/>
         <source>Settings</source>
         <translation>Налаштування</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="228"/>
+        <location filename="coreinstanceobject.cpp" line="232"/>
         <source>Context-dependent</source>
         <translation>Контекстно незалежний</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="264"/>
+        <location filename="coreinstanceobject.cpp" line="277"/>
         <source>Due to licensing issues, some artwork may have been removed from this package. Consider using the LackMan plugin to install that artwork.</source>
         <translation>У зв’язку з питаннями ліцензування, деякі ілюстрації могли бути вилучені з цього білду. Ви можете встановити плагін LackMan, щоб встановити ці ілюстрації.</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::FancyPopupManager</name>
-    <message>
-        <location filename="fancypopupmanager.cpp" line="122"/>
-        <source>LeechCraft Notification</source>
-        <translation>Повідомлення LeechCraft</translation>
     </message>
 </context>
 <context>
@@ -648,7 +705,7 @@
 <context>
     <name>LeechCraft::ItemHandlerCombobox</name>
     <message>
-        <location filename="xmlsettingsdialog/itemhandlers/itemhandlercombobox.cpp" line="75"/>
+        <location filename="xmlsettingsdialog/itemhandlers/itemhandlercombobox.cpp" line="76"/>
         <source>More stuff...</source>
         <translation>Більше матеріалу...</translation>
     </message>
@@ -656,66 +713,86 @@
 <context>
     <name>LeechCraft::MainWindow</name>
     <message>
-        <location filename="mainwindow.cpp" line="86"/>
+        <location filename="mainwindow.cpp" line="78"/>
+        <source>Startup password</source>
+        <translation>Стартовий пароль</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="79"/>
+        <source>Enter startup password for LeechCraft:</source>
+        <translation>Уведіть стартовий пароль для LeechCraft:</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="84"/>
+        <source>Sorry, incorrect password</source>
+        <translation>Вибачте, але пароль неправильний</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="96"/>
         <source>Initializing LeechCraft...</source>
         <translation>Інізіалізація LeechCraft...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="116"/>
+        <location filename="mainwindow.cpp" line="121"/>
         <source>Finalizing...</source>
         <translation>Завершення...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="160"/>
+        <location filename="mainwindow.cpp" line="165"/>
         <source>F11</source>
         <comment>FullScreen</comment>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="339"/>
+        <location filename="mainwindow.cpp" line="357"/>
         <source>View</source>
         <translation>Перегляд</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="343"/>
+        <location filename="mainwindow.cpp" line="361"/>
         <source>Tools</source>
         <translation>Засоби</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="406"/>
+        <location filename="mainwindow.cpp" line="425"/>
         <source>/s	</source>
         <translation>/s»</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="409"/>
-        <location filename="mainwindow.cpp" line="413"/>
-        <location filename="mainwindow.cpp" line="695"/>
-        <location filename="mainwindow.cpp" line="696"/>
+        <location filename="mainwindow.cpp" line="428"/>
+        <location filename="mainwindow.cpp" line="432"/>
+        <location filename="mainwindow.cpp" line="730"/>
+        <location filename="mainwindow.cpp" line="731"/>
         <source>/s</source>
         <translation>/s</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="510"/>
+        <location filename="mainwindow.cpp" line="527"/>
+        <source>Do you really want to restart?</source>
+        <translation>Ви справді бажаєте перезапустити?</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="543"/>
         <source>Do you really want to quit?</source>
         <translation>Ви справді бажаєте вийти?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="515"/>
+        <location filename="mainwindow.cpp" line="548"/>
         <source>Always</source>
         <translation>Завжди</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="592"/>
+        <location filename="mainwindow.cpp" line="625"/>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
         <translation>Для того, щоб ця зміна вступила в дію, необхідно перезапустити програму. Бажаєте перезапустити LeechCraft прямо зараз?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="702"/>
+        <location filename="mainwindow.cpp" line="737"/>
         <source>%1 down, %2 up</source>
         <translation>%1 вниз, %2 вгору</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="793"/>
+        <location filename="mainwindow.cpp" line="834"/>
         <source>LeechCraft menu</source>
         <translation>Меню LeechCraft</translation>
     </message>
@@ -723,23 +800,23 @@
 <context>
     <name>LeechCraft::NetworkAccessManager</name>
     <message>
-        <location filename="networkaccessmanager.cpp" line="172"/>
-        <location filename="networkaccessmanager.cpp" line="184"/>
+        <location filename="networkaccessmanager.cpp" line="217"/>
+        <location filename="networkaccessmanager.cpp" line="229"/>
         <source>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
         <translation>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;вимагає аутентифікації.</translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="212"/>
+        <location filename="networkaccessmanager.cpp" line="260"/>
         <source>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</source>
         <translation>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;містить SSL помилки. Що будемо робити?</translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="251"/>
+        <location filename="networkaccessmanager.cpp" line="297"/>
         <source>Could not create Core directory.</source>
         <translation>Неможливо створити директорію для Ядра.</translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="259"/>
+        <location filename="networkaccessmanager.cpp" line="305"/>
         <source>Could not save cookies, error opening cookie file.</source>
         <translation>Помилка відкриття файлу cookies - збереження cookies неможливе.</translation>
     </message>
@@ -747,12 +824,12 @@
 <context>
     <name>LeechCraft::NewTabMenuManager</name>
     <message>
-        <location filename="newtabmenumanager.cpp" line="30"/>
+        <location filename="newtabmenumanager.cpp" line="31"/>
         <source>New tab menu</source>
         <translation>Меню створення вкладки</translation>
     </message>
     <message>
-        <location filename="newtabmenumanager.cpp" line="31"/>
+        <location filename="newtabmenumanager.cpp" line="32"/>
         <source>Additional tab menu</source>
         <translation>Додаткове меню вкладок</translation>
     </message>
@@ -760,72 +837,72 @@
 <context>
     <name>LeechCraft::PluginManager</name>
     <message>
-        <location filename="pluginmanager.cpp" line="51"/>
+        <location filename="pluginmanager.cpp" line="53"/>
         <source>Name</source>
         <translation>Назва</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="52"/>
+        <location filename="pluginmanager.cpp" line="54"/>
         <source>Description</source>
         <translation>Опис</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="247"/>
+        <location filename="pluginmanager.cpp" line="258"/>
         <source>The following plugins would also be disabled as the result:</source>
         <translation>Як результат, такі плагіни будуть також вимкнені:</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="249"/>
+        <location filename="pluginmanager.cpp" line="260"/>
         <source>Are you sure you want to disable this one?</source>
         <translation>Ви впевнені, що хочете відключити цей плагін?</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="309"/>
+        <location filename="pluginmanager.cpp" line="320"/>
         <source>Initializing %1: stage one...</source>
         <translation>Ініціалізація %1: перший етап...</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="395"/>
+        <location filename="pluginmanager.cpp" line="409"/>
         <source>Initializing %1: stage two...</source>
         <translation>Ініціалізація %1: другий етап...</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="640"/>
+        <location filename="pluginmanager.cpp" line="686"/>
         <source>Refusing to load plugin from %1 because it&apos;s not a file.</source>
         <translation>Плагін %1 не завантажено, тому що це не файл.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="658"/>
+        <location filename="pluginmanager.cpp" line="704"/>
         <source>Could not load library %1: %2.</source>
         <translation>Не вдалося завантажити бібліотеку %1: %2.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="684"/>
+        <location filename="pluginmanager.cpp" line="730"/>
         <source>Could not load plugin from %1: API level mismatch.</source>
         <translation>Не вдалося завантажити плагін з %1: незбіжність рівня API.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="697"/>
+        <location filename="pluginmanager.cpp" line="743"/>
         <source>Could not load plugin from %1: %2.</source>
         <translation>Не вдалося завантажити плагін з %1: %2.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="717"/>
+        <location filename="pluginmanager.cpp" line="763"/>
         <source>Could not load plugin from %1: failed to construct plugin instance with exception %2.</source>
         <translation>Не вдалося завантажити плагін з %1: не вдалося створити екземпляр плагіну з винятком %2.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="728"/>
+        <location filename="pluginmanager.cpp" line="774"/>
         <source>Could not load plugin from %1: failed to construct plugin instance.</source>
         <translation>Не вдалося завантажити плагін з %1: не вдалося створити екземпляр плагіну.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="738"/>
+        <location filename="pluginmanager.cpp" line="784"/>
         <source>Could not load plugin from %1: unable to cast plugin instance to IInfo*.</source>
         <translation>Не вдалося завантажити плагін з %1: неможливо перетворити екземпляр плагіну в IInfo*.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="789"/>
+        <location filename="pluginmanager.cpp" line="835"/>
         <source>Plugin with ID %1 is already loaded from %2; aborting load from %3.</source>
         <translation>Плагін з ID %1 уже завантажений з %2; завантаження %3 скасовується.</translation>
     </message>
@@ -833,78 +910,83 @@
 <context>
     <name>LeechCraft::PrefDelegate</name>
     <message>
-        <location filename="pluginmanagerdialog.cpp" line="49"/>
+        <location filename="pluginmanagerdialog.cpp" line="52"/>
         <source>Configure...</source>
         <translation>Налаштувати...</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::SeparateTabWidget</name>
-    <message>
-        <location filename="separatetabwidget.cpp" line="52"/>
-        <source>Pin tab</source>
-        <translation>Прикріпити вкладку</translation>
-    </message>
-    <message>
-        <location filename="separatetabwidget.cpp" line="53"/>
-        <source>Unpin tab</source>
-        <translation>Відкріпити вкладку</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::SettingsTab</name>
     <message>
-        <location filename="settingstab.cpp" line="35"/>
+        <location filename="settingstab.cpp" line="42"/>
         <source>Settings bar</source>
         <translation>Панель налаштувань</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="36"/>
+        <location filename="settingstab.cpp" line="43"/>
         <source>Back</source>
         <translation>Назад</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="37"/>
+        <location filename="settingstab.cpp" line="44"/>
         <source>Apply</source>
         <translation>Застосувати</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="38"/>
+        <location filename="settingstab.cpp" line="45"/>
         <source>Cancel</source>
         <translation>Скасувати</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="84"/>
+        <location filename="settingstab.cpp" line="94"/>
         <source>Plugins for %1</source>
         <translation>Плагіни для %1</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="90"/>
+        <location filename="settingstab.cpp" line="100"/>
         <source>General second-level plugins</source>
         <translation>Загальні плагіни другого рівня</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="128"/>
-        <location filename="settingstab.cpp" line="154"/>
-        <location filename="settingstab.cpp" line="156"/>
-        <location filename="settingstab.cpp" line="157"/>
+        <location filename="settingstab.cpp" line="139"/>
+        <location filename="settingstab.cpp" line="165"/>
+        <location filename="settingstab.cpp" line="167"/>
+        <location filename="settingstab.cpp" line="168"/>
         <source>General plugins</source>
         <translation>Загальні плагіни</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="202"/>
+        <location filename="settingstab.cpp" line="225"/>
         <source>Settings</source>
         <translation>Налаштування</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="203"/>
+        <location filename="settingstab.cpp" line="226"/>
         <source>LeechCraft-wide settings dashboard</source>
         <translation>Панель налаштувань для усього LeechCraft.</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="231"/>
+        <location filename="settingstab.cpp" line="322"/>
+        <source>Search...</source>
+        <translation>Пошук...</translation>
+    </message>
+    <message>
+        <location filename="settingstab.cpp" line="344"/>
         <source>Settings for %1</source>
         <translation>Налаштування для %1</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::ShortcutManager</name>
+    <message>
+        <location filename="shortcutmanager.cpp" line="67"/>
+        <source>Name</source>
+        <translation>Назва</translation>
+    </message>
+    <message>
+        <location filename="shortcutmanager.cpp" line="67"/>
+        <source>Shortcut</source>
+        <translation>Комбінація клавіш</translation>
     </message>
 </context>
 <context>
@@ -1027,7 +1109,7 @@
 <context>
     <name>LeechCraft::TabManager</name>
     <message>
-        <location filename="tabmanager.cpp" line="70"/>
+        <location filename="tabmanager.cpp" line="61"/>
         <source>Close all but this</source>
         <translation>Закрити всі, крім поточної</translation>
     </message>
@@ -1035,7 +1117,7 @@
 <context>
     <name>LeechCraft::TagsManager</name>
     <message>
-        <location filename="tagsmanager.cpp" line="33"/>
+        <location filename="tagsmanager.cpp" line="34"/>
         <source>untagged</source>
         <translation>без позначок</translation>
     </message>
@@ -1056,17 +1138,17 @@
 <context>
     <name>LeechCraft::Util::CategorySelector</name>
     <message>
-        <location filename="util/categoryselector.cpp" line="37"/>
+        <location filename="util/tags/categoryselector.cpp" line="37"/>
         <source>Tags selector</source>
         <translation>Вибір позначок</translation>
     </message>
     <message>
-        <location filename="util/categoryselector.cpp" line="50"/>
+        <location filename="util/tags/categoryselector.cpp" line="50"/>
         <source>Select all</source>
         <translation>Вибрати всі</translation>
     </message>
     <message>
-        <location filename="util/categoryselector.cpp" line="56"/>
+        <location filename="util/tags/categoryselector.cpp" line="56"/>
         <source>Select none</source>
         <translation>Жодної</translation>
     </message>
@@ -1074,12 +1156,12 @@
 <context>
     <name>LeechCraft::Util::FlatToFoldersProxyModel</name>
     <message>
-        <location filename="util/flattofoldersproxymodel.cpp" line="101"/>
+        <location filename="util/models/flattofoldersproxymodel.cpp" line="101"/>
         <source>untagged</source>
         <translation>без позначок</translation>
     </message>
     <message>
-        <location filename="util/flattofoldersproxymodel.cpp" line="105"/>
+        <location filename="util/models/flattofoldersproxymodel.cpp" line="105"/>
         <source>&lt;unknown tag&gt;</source>
         <translation>&lt;невідома позначка&gt;</translation>
     </message>
@@ -1101,81 +1183,73 @@ LeechCraft для Windows поки що досить експериментаь�
     </message>
 </context>
 <context>
-    <name>LogToolBox</name>
-    <message>
-        <location filename="logtoolbox.ui" line="13"/>
-        <source>Log</source>
-        <translation>Журнал</translation>
-    </message>
-    <message>
-        <location filename="logtoolbox.ui" line="37"/>
-        <source>Clear</source>
-        <translation>Очистити</translation>
-    </message>
-</context>
-<context>
     <name>PluginManagerDialog</name>
     <message>
         <location filename="pluginmanagerdialog.ui" line="20"/>
         <source>Plugin Manager</source>
         <translation>Менеджер плагінів</translation>
     </message>
+    <message>
+        <location filename="pluginmanagerdialog.ui" line="33"/>
+        <source>Filter plugins...</source>
+        <translation>Фільтрувати модулі...</translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="util/util.cpp" line="52"/>
+        <location filename="util/util.cpp" line="53"/>
         <source>Too long to show</source>
         <translation>Занадто довга для показу</translation>
     </message>
     <message>
-        <location filename="util/util.cpp" line="69"/>
+        <location filename="util/util.cpp" line="70"/>
         <source>Binary entity</source>
         <translation>Двійкова сутність</translation>
     </message>
     <message>
-        <location filename="util/util.cpp" line="72"/>
+        <location filename="util/util.cpp" line="73"/>
         <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
         <translation>&lt;br /&gt;&lt;br /&gt;типу &lt;code&gt;%1&lt;/code&gt;</translation>
     </message>
     <message>
-        <location filename="util/util.cpp" line="79"/>
+        <location filename="util/util.cpp" line="80"/>
         <source>&lt;br /&gt;from %1</source>
         <translation>&lt;br /&gt;з %1</translation>
     </message>
     <message>
-        <location filename="util/util.cpp" line="109"/>
+        <location filename="util/util.cpp" line="110"/>
         <source> b</source>
         <translation> б</translation>
     </message>
     <message>
-        <location filename="util/util.cpp" line="111"/>
+        <location filename="util/util.cpp" line="112"/>
         <source> KiB</source>
         <translation> КіБ</translation>
     </message>
     <message>
-        <location filename="util/util.cpp" line="113"/>
+        <location filename="util/util.cpp" line="114"/>
         <source> MiB</source>
         <translation> МіБ</translation>
     </message>
     <message>
-        <location filename="util/util.cpp" line="115"/>
+        <location filename="util/util.cpp" line="116"/>
         <source> GiB</source>
         <translation> ГіБ</translation>
     </message>
     <message numerus="yes">
-        <location filename="util/util.cpp" line="127"/>
+        <location filename="util/util.cpp" line="128"/>
         <source>%n day(s), </source>
         <translation><numerusform>%n день, </numerusform><numerusform>%n дні, </numerusform><numerusform>%n днів, </numerusform></translation>
     </message>
     <message>
-        <location filename="util/util.cpp" line="223"/>
-        <location filename="util/util.cpp" line="240"/>
+        <location filename="util/util.cpp" line="236"/>
+        <location filename="util/util.cpp" line="253"/>
         <source>Could not cd into %1</source>
         <translation>Не вдалося увійти до %1</translation>
     </message>
     <message>
-        <location filename="util/util.cpp" line="217"/>
+        <location filename="util/util.cpp" line="230"/>
         <source>Could not create %1</source>
         <translation>Не вдалося створити %1</translation>
     </message>
@@ -1293,14 +1367,9 @@ LeechCraft для Windows поки що досить експериментаь�
         <translation>Менеджер комбінацій клавіш</translation>
     </message>
     <message>
-        <location filename="shortcutmanager.ui" line="21"/>
-        <source>Name</source>
-        <translation>Назва</translation>
-    </message>
-    <message>
-        <location filename="shortcutmanager.ui" line="26"/>
-        <source>Shortcut</source>
-        <translation>Комбінація клавіш</translation>
+        <location filename="shortcutmanager.ui" line="23"/>
+        <source>Filter...</source>
+        <translation>Фільтрувати...</translation>
     </message>
 </context>
 <context>
@@ -1442,225 +1511,265 @@ LeechCraft для Windows поки що досить експериментаь�
     </message>
     <message>
         <location filename="dummy.cpp" line="13"/>
+        <source>Default</source>
+        <translation>За замовчанням</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="14"/>
         <source>Plastique</source>
         <translation>Plastique</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="14"/>
+        <location filename="dummy.cpp" line="15"/>
         <source>Language:</source>
         <translation>Мова:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="15"/>
+        <location filename="dummy.cpp" line="16"/>
         <source>System</source>
         <translation>Система</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="16"/>
+        <location filename="dummy.cpp" line="17"/>
         <source>Default new tab contents:</source>
         <translation>Вміст нової вкладки за замовчуванням</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="17"/>
+        <location filename="dummy.cpp" line="18"/>
         <source>Context-dependent</source>
         <translation>Контекстно-залежний</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="18"/>
+        <location filename="dummy.cpp" line="19"/>
+        <source>Tab bar position</source>
+        <translation>Позиція панелі вкладок</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="20"/>
+        <source>Top</source>
+        <translation>Зверху</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="21"/>
+        <source>Bottom</source>
+        <translation>Знизу</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="22"/>
         <source>Maximum log lines:</source>
         <translation>Максимальна кількість рядків логу:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="19"/>
+        <location filename="dummy.cpp" line="25"/>
+        <source>Show icon in tray</source>
+        <translation>Показувати іконку у треї</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="35"/>
+        <source>Try external applications when no plugins can handle an entity</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="36"/>
+        <source>Set startup password</source>
+        <translation>Встановити стартовий пароль</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="42"/>
         <source>Shortcuts</source>
         <translation>Ярлики</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="20"/>
-        <location filename="dummy.cpp" line="21"/>
-        <location filename="dummy.cpp" line="22"/>
+        <location filename="dummy.cpp" line="23"/>
+        <location filename="dummy.cpp" line="24"/>
         <source>Behavior</source>
         <translation>Поведінка</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="23"/>
-        <source>Watch clipboard</source>
-        <translation>Спостерігати за буфером копіювання</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="24"/>
+        <location filename="dummy.cpp" line="26"/>
         <source>Ask quit confirmation</source>
         <translation>Запитувати підтверждення при виході</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="25"/>
+        <location filename="dummy.cpp" line="27"/>
         <source>Exit on close</source>
         <translation>Вийти при закритті</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="26"/>
+        <location filename="dummy.cpp" line="28"/>
         <source>Manual toolbar visibility control</source>
         <translation>Ручне налаштування видимості</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="27"/>
+        <location filename="dummy.cpp" line="29"/>
         <source>Open new tab next to current</source>
         <translation>Відкривати нову вкладку поряд із поточною</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="28"/>
+        <location filename="dummy.cpp" line="30"/>
         <source>Tab selection behavior: </source>
         <translation>Поведінка при виділенні вкладки:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="29"/>
+        <location filename="dummy.cpp" line="31"/>
         <source>Select the previously selected tab</source>
         <translation>Вибрати попередню вкладку</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="30"/>
+        <location filename="dummy.cpp" line="32"/>
         <source>Select the tab to the right of the one being removed</source>
         <translation>Перейти до вкладки справа від закритої</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="31"/>
+        <location filename="dummy.cpp" line="33"/>
         <source>Select the tab to the left of the one being removed</source>
         <translation>Перейти до вкладки зліва від закритої</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="32"/>
+        <location filename="dummy.cpp" line="34"/>
         <source>Automatically accept task when there is only one handler</source>
         <translation>Автоматично приймати задачу, коли є лише один обробник</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="33"/>
-        <source>Watch directory:</source>
-        <translation>Слідкувати за папкою:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="34"/>
+        <location filename="dummy.cpp" line="37"/>
         <source>Show plugin-dependent actions in tab bar context menu</source>
         <translation>Відображати дії, що залежать від модулів, у контекстному меню панелі вкладок</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="35"/>
+        <location filename="dummy.cpp" line="38"/>
         <source>Show as a submenu</source>
         <translation>Показувати як підменю</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="36"/>
+        <location filename="dummy.cpp" line="39"/>
         <source>Show messages in tray</source>
         <translation>Показувати повідомлення у треї</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="37"/>
+        <location filename="dummy.cpp" line="40"/>
         <source>Message timeout:</source>
         <translation>Таймаут для повідомлень:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="38"/>
+        <location filename="dummy.cpp" line="41"/>
         <source> s</source>
         <translation>s</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="39"/>
+        <location filename="dummy.cpp" line="43"/>
         <source>Tags</source>
         <translation>Теги</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="40"/>
+        <location filename="dummy.cpp" line="44"/>
         <source>Tags manager</source>
         <translation>Менеджер тегів</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="41"/>
+        <location filename="dummy.cpp" line="45"/>
+        <location filename="dummy.cpp" line="46"/>
         <source>Network</source>
         <translation>Мережа</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="42"/>
+        <location filename="dummy.cpp" line="47"/>
         <source>Cache size:</source>
         <translation>Розмір кешу:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="43"/>
+        <location filename="dummy.cpp" line="48"/>
         <source> MB</source>
         <translation>МБ</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="44"/>
+        <location filename="dummy.cpp" line="49"/>
         <source>Filter tracking cookies</source>
         <translation>Фільтри для відстеження cookies</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="45"/>
+        <location filename="dummy.cpp" line="50"/>
         <source>Clear cache</source>
         <translation>Очистити кеш</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="46"/>
+        <location filename="dummy.cpp" line="51"/>
         <source>Clear cookies</source>
         <translation>Очистити cookies</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="47"/>
+        <location filename="dummy.cpp" line="52"/>
         <source>Application-wide proxy</source>
         <translation>Проксі на рівні всієї програми </translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="48"/>
+        <location filename="dummy.cpp" line="53"/>
         <source>Host:</source>
         <translation>Хост:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="49"/>
+        <location filename="dummy.cpp" line="54"/>
         <source>Port:</source>
         <translation>Порт:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="50"/>
+        <location filename="dummy.cpp" line="55"/>
         <source>Login:</source>
         <translation>Логін:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="51"/>
+        <location filename="dummy.cpp" line="56"/>
         <source>Password:</source>
         <translation>Пароль:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="52"/>
+        <location filename="dummy.cpp" line="57"/>
         <source>Proxy type:</source>
         <translation>Тип проксі:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="53"/>
+        <location filename="dummy.cpp" line="58"/>
         <source>SOCKS5</source>
         <translation>SOCKS5</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="54"/>
+        <location filename="dummy.cpp" line="59"/>
         <source>Transparent HTTP</source>
         <translation>Прозорий HTTP</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="55"/>
+        <location filename="dummy.cpp" line="60"/>
         <source>Caching HTTP</source>
         <translation>Кешування HTTP</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="56"/>
+        <location filename="dummy.cpp" line="61"/>
         <source>Caching FTP</source>
         <translation>Кешування FTP</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="57"/>
+        <location filename="dummy.cpp" line="62"/>
+        <source>Languages</source>
+        <translation>Мови</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="63"/>
         <source>Plugins</source>
         <translation>Плагін</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="58"/>
+        <location filename="dummy.cpp" line="64"/>
         <source>Plugins manager</source>
         <translation>Менеджер плагінів</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="65"/>
+        <source>Enable all plugins</source>
+        <translation>Активувати усі модулі</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="66"/>
+        <source>Disable all plugins</source>
+        <translation>Деактивувати усі модулі</translation>
     </message>
 </context>
 </TS>

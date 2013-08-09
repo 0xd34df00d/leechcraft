@@ -1,45 +1,43 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="oc">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="oc" version="2.0">
 <context>
-    <name>LeechCraft::Plugins::Auscrie::Plugin</name>
+    <name>LeechCraft::Auscrie::Plugin</name>
     <message>
         <location filename="auscrie.cpp" line="45"/>
         <source>Make a screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="73"/>
+        <location filename="auscrie.cpp" line="78"/>
         <source>Simple auto screenshoter.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="121"/>
+        <location filename="auscrie.cpp" line="127"/>
         <source>Save as</source>
         <translation>Enregistrar jos</translation>
     </message>
     <message>
-        <location filename="auscrie.cpp" line="123"/>
+        <location filename="auscrie.cpp" line="129"/>
         <source>%1 files (*.%1);;All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Auscrie::Poster</name>
+    <name>LeechCraft::Auscrie::Poster</name>
     <message>
-        <location filename="poster.cpp" line="189"/>
+        <location filename="poster.cpp" line="187"/>
         <source>Page parse failed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="poster.cpp" line="196"/>
+        <location filename="poster.cpp" line="194"/>
         <source>Image pasted: %1, the URL was copied to the clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="poster.cpp" line="208"/>
+        <location filename="poster.cpp" line="206"/>
         <source>Upload of screenshot failed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -47,7 +45,7 @@
     <message>
         <location filename="shooterdialog.ui" line="14"/>
         <source>Make a screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="shooterdialog.ui" line="23"/>
@@ -57,17 +55,17 @@
     <message>
         <location filename="shooterdialog.ui" line="31"/>
         <source>upload to dump.bitcheese.net</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="shooterdialog.ui" line="36"/>
         <source>upload to Savepic.ru</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="shooterdialog.ui" line="41"/>
         <source>upload to Imagebin.ca</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="shooterdialog.ui" line="46"/>
@@ -90,12 +88,42 @@
         <translation>Format :</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="76"/>
+        <location filename="shooterdialog.ui" line="81"/>
         <source>JPG</source>
         <translation>JPG</translation>
     </message>
     <message>
-        <location filename="shooterdialog.ui" line="81"/>
+        <location filename="shooterdialog.ui" line="142"/>
+        <source>Mode:</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="shooterdialog.ui" line="150"/>
+        <source>LeechCraft window and everything on top</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="shooterdialog.ui" line="155"/>
+        <source>LeechCraft window</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="shooterdialog.ui" line="160"/>
+        <source>Current screen</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="shooterdialog.ui" line="165"/>
+        <source>Whole desktop</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="shooterdialog.ui" line="173"/>
+        <source>Hide this dialog</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="shooterdialog.ui" line="76"/>
         <source>PNG</source>
         <translation>PNG</translation>
     </message>

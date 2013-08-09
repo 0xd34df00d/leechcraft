@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="it_IT">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="it" version="2.0">
 <context>
     <name>LeechCraft::Summary::Core</name>
     <message>
@@ -123,16 +121,6 @@
         <translation>Cerca di parametri</translation>
     </message>
     <message>
-        <location filename="searchwidget.ui" line="39"/>
-        <source>AND</source>
-        <translation>E</translation>
-    </message>
-    <message>
-        <location filename="searchwidget.ui" line="49"/>
-        <source>OR</source>
-        <translation>O</translation>
-    </message>
-    <message>
         <location filename="searchwidget.ui" line="73"/>
         <source>String</source>
         <translation>Stringa</translation>
@@ -151,6 +139,16 @@
         <location filename="searchwidget.ui" line="88"/>
         <source>Tags</source>
         <translation>Tags</translation>
+    </message>
+    <message>
+        <location filename="searchwidget.ui" line="39"/>
+        <source>AND</source>
+        <translation>E</translation>
+    </message>
+    <message>
+        <location filename="searchwidget.ui" line="49"/>
+        <source>OR</source>
+        <translation>O</translation>
     </message>
 </context>
 </TS>
