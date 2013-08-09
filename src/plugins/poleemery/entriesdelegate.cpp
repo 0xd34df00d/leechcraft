@@ -36,6 +36,7 @@
 #include "entriesmodel.h"
 #include "core.h"
 #include "accountsmanager.h"
+#include "currenciesmanager.h"
 
 namespace LeechCraft
 {
@@ -46,6 +47,7 @@ namespace Poleemery
 		switch (index.column ())
 		{
 		case EntriesModel::Columns::Account:
+		case EntriesModel::Columns::EntryCurrency:
 			return new QComboBox (parent);
 		case EntriesModel::Columns::Categories:
 		{
@@ -82,6 +84,20 @@ namespace Poleemery
 			box->setCurrentIndex (toFocus);
 			break;
 		}
+		case EntriesModel::Columns::EntryCurrency:
+		{
+			auto box = qobject_cast<QComboBox*> (editor);
+			const auto currentCurrency = index.data (Qt::EditRole).toString ();
+
+			const auto& enabledCurrencies = Core::Instance ()
+					.GetCurrenciesManager ()->GetEnabledCurrencies ();
+			box->addItems (enabledCurrencies);
+
+			const auto idx = enabledCurrencies.indexOf (currentCurrency);
+			box->setCurrentIndex (idx);
+
+			break;
+		}
 		case EntriesModel::Columns::Categories:
 		{
 			auto edit = qobject_cast<Util::TagsLineEdit*> (editor);
@@ -102,6 +118,12 @@ namespace Poleemery
 		{
 			auto box = qobject_cast<QComboBox*> (editor);
 			model->setData (index, box->itemData (box->currentIndex ()));
+			break;
+		}
+		case EntriesModel::Columns::EntryCurrency:
+		{
+			auto box = qobject_cast<QComboBox*> (editor);
+			model->setData (index, box->currentText ());
 			break;
 		}
 		case EntriesModel::Columns::Categories:
