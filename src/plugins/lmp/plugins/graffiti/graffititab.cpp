@@ -53,6 +53,7 @@
 #include "genres.h"
 #include "fileswatcher.h"
 #include "cuesplitter.h"
+#include "tagsfetchmanager.h"
 
 namespace LeechCraft
 {
@@ -312,17 +313,32 @@ namespace Graffiti
 		if (provs.isEmpty ())
 			return;
 
-		auto prov = provs.first ();
-
-		for (const auto& index : Ui_.FilesList_->selectionModel ()->selectedRows ())
+		const auto& rows = Ui_.FilesList_->selectionModel ()->selectedRows ();
+		QStringList paths;
+		for (const auto& index : rows)
 		{
 			const auto& info = index.data (FilesModel::Roles::MediaInfoRole).value<MediaInfo> ();
-			auto pending = prov->FetchTags (info.LocalPath_);
-			connect (pending->GetQObject (),
-					SIGNAL (ready (QString, Media::AudioInfo)),
-					this,
-					SLOT (handleTagsFetched (QString, Media::AudioInfo)));
+			paths << info.LocalPath_;
 		}
+
+		if (paths.isEmpty ())
+			return;
+
+		GetTags_->setEnabled (false);
+
+		auto fetcher = new TagsFetchManager (paths, provs.first (), FilesModel_, this);
+		connect (fetcher,
+				SIGNAL (tagsFetchProgress (int, int, QObject*)),
+				this,
+				SIGNAL (tagsFetchProgress (int, int, QObject*)));
+		connect (fetcher,
+				SIGNAL (tagsFetched (QString)),
+				this,
+				SLOT (handleTagsFetched (QString)));
+		connect (fetcher,
+				SIGNAL (finished (bool)),
+				GetTags_,
+				SLOT (setEnabled (bool)));
 	}
 
 	void GraffitiTab::splitCue ()
@@ -369,63 +385,8 @@ namespace Graffiti
 				SLOT (handleCueSplitFinished ()));
 	}
 
-	namespace
+	void GraffitiTab::handleTagsFetched (const QString& filename)
 	{
-		template<typename T>
-		bool IsEmptyData (const T&)
-		{
-			static_assert (!sizeof (T), "unknown data type");
-			return false;
-		}
-
-		template<>
-		bool IsEmptyData<QString> (const QString& str)
-		{
-			return str.isEmpty ();
-		}
-
-		template<>
-		bool IsEmptyData<int> (const int& val)
-		{
-			return !val;
-		}
-
-		template<>
-		bool IsEmptyData<QStringList> (const QStringList& list)
-		{
-			return list.isEmpty ();
-		}
-
-		template<typename F>
-		void UpgradeInfo (MediaInfo& info, MediaInfo& other, F getter)
-		{
-			static_assert (std::is_lvalue_reference<typename std::result_of<F (MediaInfo&)>::type>::value,
-					"functor doesn't return an lvalue reference");
-
-			auto& data = getter (info);
-			const auto& otherData = getter (other);
-			if (!IsEmptyData (otherData) && IsEmptyData (data))
-				data = otherData;
-		}
-	}
-
-	void GraffitiTab::handleTagsFetched (const QString& filename, const Media::AudioInfo& result)
-	{
-		const auto& index = FilesModel_->FindIndex (filename);
-		if (!index.isValid ())
-			return;
-
-		auto newInfo = MediaInfo::FromAudioInfo (result);
-
-		auto info = index.data (FilesModel::Roles::MediaInfoRole).value<MediaInfo> ();
-		UpgradeInfo (info, newInfo, [] (MediaInfo& info) -> QString& { return info.Title_; });
-		UpgradeInfo (info, newInfo, [] (MediaInfo& info) -> QString& { return info.Artist_; });
-		UpgradeInfo (info, newInfo, [] (MediaInfo& info) -> QString& { return info.Album_; });
-		UpgradeInfo (info, newInfo, [] (MediaInfo& info) -> int& { return info.Year_; });
-		UpgradeInfo (info, newInfo, [] (MediaInfo& info) -> int& { return info.TrackNumber_; });
-		UpgradeInfo (info, newInfo, [] (MediaInfo& info) -> QStringList& { return info.Genres_; });
-		FilesModel_->UpdateInfo (index, info);
-
 		const auto& curIdx = Ui_.FilesList_->selectionModel ()->currentIndex ();
 		const auto& curInfo = curIdx.data (FilesModel::Roles::MediaInfoRole).value<MediaInfo> ();
 		if (curInfo.LocalPath_ == filename)

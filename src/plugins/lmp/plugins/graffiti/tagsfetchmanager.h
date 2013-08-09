@@ -29,17 +29,11 @@
 
 #pragma once
 
-#include <memory>
-#include <QWidget>
-#include <interfaces/ihavetabs.h>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/lmp/ilmpplugin.h>
-#include "ui_graffititab.h"
-
-class QFileSystemModel;
+#include <QObject>
 
 namespace Media
 {
+	class ITagsFetcher;
 	struct AudioInfo;
 }
 
@@ -47,77 +41,26 @@ namespace LeechCraft
 {
 namespace LMP
 {
-struct MediaInfo;
-
 namespace Graffiti
 {
 	class FilesModel;
-	class FilesWatcher;
 
-	class GraffitiTab : public QWidget
-					  , public ITabWidget
+	class TagsFetchManager : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
 
-		ICoreProxy_ptr CoreProxy_;
-		ILMPProxy_ptr LMPProxy_;
+		FilesModel * const FilesModel_;
 
-		const TabClassInfo TC_;
-		QObject * const Plugin_;
-
-		Ui::GraffitiTab Ui_;
-
-		QFileSystemModel *FSModel_;
-		FilesModel *FilesModel_;
-		FilesWatcher *FilesWatcher_;
-
-		std::shared_ptr<QToolBar> Toolbar_;
-		QAction *Save_;
-		QAction *Revert_;
-		QAction *RenameFiles_;
-		QAction *GetTags_;
-		QAction *SplitCue_;
-
-		bool IsChangingCurrent_;
+		int FetchedTags_;
+		const int TotalTags_;
 	public:
-		GraffitiTab (ICoreProxy_ptr, ILMPProxy_ptr, const TabClassInfo&, QObject*);
-
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
-		QToolBar* GetToolBar () const;
-	private:
-		template<typename T, typename F>
-		void UpdateData (const T& newData, F getter);
+		TagsFetchManager (const QStringList&, Media::ITagsFetcher*, FilesModel*, QObject*);
 	private slots:
-		void on_Artist__textChanged (const QString&);
-		void on_Album__textChanged (const QString&);
-		void on_Title__textChanged (const QString&);
-		void on_Genre__textChanged (const QString&);
-		void on_Year__valueChanged (int);
-
-		void save ();
-		void revert ();
-		void renameFiles ();
-		void fetchTags ();
-		void splitCue ();
-
-		void handleTagsFetched (const QString&);
-
-		void on_DirectoryTree__activated (const QModelIndex&);
-		void currentFileChanged (const QModelIndex&);
-		void handleRereadFiles ();
-
-		void handleIterateFinished ();
-		void handleScanFinished ();
-
-		void handleCueSplitError (const QString&);
-		void handleCueSplitFinished ();
+		void handleTagsFetched (const QString&, const Media::AudioInfo&);
 	signals:
-		void removeTab (QWidget*);
-
-		void tagsFetchProgress (int, int, QObject*);
+		void tagsFetchProgress (int done, int total, QObject *thisObj);
+		void tagsFetched (const QString&);
+		void finished (bool);
 	};
 }
 }

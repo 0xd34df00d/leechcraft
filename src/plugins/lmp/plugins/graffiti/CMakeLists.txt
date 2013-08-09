@@ -20,6 +20,7 @@ set (GRAFFITI_SRCS
 	renamedialog.cpp
 	fileswatcher.cpp
 	cuesplitter.cpp
+	tagsfetchmanager.cpp
 	)
 set (GRAFFITI_FORMS
 	graffititab.ui
