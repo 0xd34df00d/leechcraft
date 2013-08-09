@@ -53,6 +53,9 @@ namespace Blogique
 				, public IHaveRecoverableTabs
 	{
 		Q_OBJECT
+#ifdef USE_QT5
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.Blogique");
+#endif
 		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IPluginReady IActionsExporter
 				IHaveRecoverableTabs)
 
