@@ -378,6 +378,8 @@ namespace Blogique
 			AccountsBox_->addItem (acc->GetAccountName ());
 			Id2Account_ [AccountsBox_->count () - 1] = acc;
 		}
+		AccountsBox_->addItem (Core::Instance ().GetCoreProxy ()->GetIcon ("list-add"),
+				tr ("Add new account..."));
 
 		AccountsBoxAction_ = ToolBar_->addWidget (AccountsBox_);
 
@@ -606,7 +608,15 @@ namespace Blogique
 
 	void BlogiqueWidget::handleCurrentAccountChanged (int id)
 	{
-		if (Id2Account_.isEmpty ())
+		if (id == AccountsBox_->count () - 1)
+		{
+			Core::Instance ().GetCoreProxy ()->GetPluginsManager ()->
+					OpenSettings (ParentMultiTabs ());
+			AccountsBox_->setCurrentIndex (-1);
+			return;
+		}
+
+		if (!Id2Account_.contains (id))
 			return;
 
 		if (PrevAccountId_ != -1)
@@ -847,6 +857,31 @@ namespace Blogique
 				tr ("%1 (original message: %2)")
 					.arg (localizedErrorString, errorString),
 				PWarning_));
+	}
+
+	void BlogiqueWidget::handleAccountAdded (QObject *acc)
+	{
+		if (auto account = qobject_cast<IAccount*> (acc))
+		{
+			AccountsBox_->insertItem (AccountsBox_->count () - 1, account->GetAccountName ());
+			Id2Account_ [AccountsBox_->count () - 2] = account;
+		}
+	}
+
+	void BlogiqueWidget::handleAccountRemoved (QObject *acc)
+	{
+		if (auto account = qobject_cast<IAccount*> (acc))
+		{
+			for (const auto& value : Id2Account_.values ())
+			{
+				if (value != account)
+					continue;
+				auto id = Id2Account_.key (account);
+				Id2Account_.remove (id);
+				AccountsBox_->removeItem (id);
+				break;
+			}
+		}
 	}
 
 	void BlogiqueWidget::newEntry ()
