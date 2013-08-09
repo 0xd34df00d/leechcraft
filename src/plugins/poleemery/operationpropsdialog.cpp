@@ -28,9 +28,13 @@
  **********************************************************************/
 
 #include "operationpropsdialog.h"
+#include <limits>
+#include <algorithm>
 #include <QStringListModel>
+#include <QMessageBox>
 #include <QtDebug>
 #include <util/tags/tagscompleter.h>
+#include <util/models/modeliterator.h>
 #include <interfaces/core/itagsmanager.h>
 #include "structures.h"
 #include "core.h"
@@ -38,6 +42,7 @@
 #include "operationsmanager.h"
 #include "currenciesmanager.h"
 #include "entriesmodel.h"
+#include "entriesdelegate.h"
 
 namespace LeechCraft
 {
@@ -52,6 +57,7 @@ namespace Poleemery
 		Ui_.ItemsView_->setModel (ItemsModel_);
 		for (auto col : { EntriesModel::Shop, EntriesModel::Account, EntriesModel::AccBalance, EntriesModel::SumBalance })
 			Ui_.ItemsView_->setColumnHidden (col, true);
+		Ui_.ItemsView_->setItemDelegate (new EntriesDelegate);
 
 		Ui_.DateEdit_->setDateTime (QDateTime::currentDateTime ());
 
@@ -92,6 +98,11 @@ namespace Poleemery
 
 		if (!Accounts_.isEmpty ())
 			on_AccsBox__currentIndexChanged (0);
+
+		connect (Ui_.AmountBilled_,
+				SIGNAL (valueChanged (double)),
+				this,
+				SLOT (recalcNatives ()));
 	}
 
 	EntryType OperationPropsDialog::GetEntryType () const
@@ -120,22 +131,6 @@ namespace Poleemery
 		}
 		else
 			return ItemsModel_->GetEntries ();
-
-		/*
-		QList<EntryBase_ptr> result;
-		for (int i = 0; i < ItemsModel_->rowCount (); ++i)
-		{
-			const auto& name = ItemsModel_->item (i, Column::Name).text ();
-			const auto& descr = ItemsModel_->item (i, Column::Description).text ();
-
-			result << std::make_shared<ExpenseEntry> (accId, amount, name, descr, dt,
-					Ui_.CountBox_->value (),
-					Ui_.Shop_->currentText (),
-					Core::Instance ().GetCoreProxy ()->
-							GetTagsManager ()->Split (Ui_.Categories_->text ()));
-		}
-		return result;
-		*/
 	}
 
 	QDateTime OperationPropsDialog::GetDateTime () const
@@ -152,6 +147,78 @@ namespace Poleemery
 		const auto pos = Ui_.AmountCurrency_->findText (accCur);
 		if (pos >= 0)
 			Ui_.AmountCurrency_->setCurrentIndex (pos);
+
+		const auto accId = Accounts_.at (index).ID_.Val_;
+		for (int i = 0; i < ItemsModel_->rowCount (); ++i)
+		{
+			const auto& idx = ItemsModel_->index (i, EntriesModel::Columns::Account);
+			ItemsModel_->setData (idx, accId);
+		}
+
+		Ui_.AmountBilled_->setSuffix (" " + accCur);
+
+		recalcNatives ();
+	}
+
+	void OperationPropsDialog::on_AmountCurrency__currentIndexChanged (int)
+	{
+		if (!ItemsModel_->rowCount ())
+			return;
+
+		const bool recalc = QMessageBox::question (this,
+				tr ("Update prices"),
+				tr ("The selected currency has been changed. "
+					"Should prices be recalculated using the new currency?"),
+				QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes;
+
+		const auto& newCurrency = Ui_.AmountCurrency_->currentText ();
+		if (!recalc)
+		{
+			for (int i = 0; i < ItemsModel_->rowCount (); ++i)
+			{
+				const auto& idx = ItemsModel_->index (i, EntriesModel::Columns::EntryCurrency);
+				ItemsModel_->setData (idx, newCurrency);
+			}
+		}
+		else
+		{
+			const auto& sourceCurrency = ItemsModel_->
+					index (0, EntriesModel::Columns::EntryCurrency).data ().toString ();
+			const auto rate = Core::Instance ().GetCurrenciesManager ()->
+					GetRate (sourceCurrency, newCurrency);
+
+			for (int i = 0; i < ItemsModel_->rowCount (); ++i)
+			{
+				const auto& curIdx = ItemsModel_->index (i, EntriesModel::Columns::EntryCurrency);
+				ItemsModel_->setData (curIdx, newCurrency);
+
+				const auto& curPriceIdx = ItemsModel_->index (i, EntriesModel::Columns::Price);
+				ItemsModel_->setData (curPriceIdx,
+						curPriceIdx.data (Qt::EditRole).toDouble () * rate);
+
+				const auto& curRateIdx = ItemsModel_->index (i, EntriesModel::Columns::EntryRate);
+				ItemsModel_->setData (curRateIdx,
+						curRateIdx.data (Qt::EditRole).toDouble () / rate);
+			}
+		}
+	}
+
+	void OperationPropsDialog::on_DateEdit__dateTimeChanged (const QDateTime& datetime)
+	{
+		for (int i = 0; i < ItemsModel_->rowCount (); ++i)
+		{
+			const auto& idx = ItemsModel_->index (i, EntriesModel::Columns::Date);
+			ItemsModel_->setData (idx, datetime);
+		}
+	}
+
+	void OperationPropsDialog::on_Shop__editTextChanged (const QString& text)
+	{
+		for (int i = 0; i < ItemsModel_->rowCount (); ++i)
+		{
+			const auto& idx = ItemsModel_->index (i, EntriesModel::Columns::Shop);
+			ItemsModel_->setData (idx, text);
+		}
 	}
 
 	void OperationPropsDialog::on_ExpenseEntry__released ()
@@ -171,13 +238,19 @@ namespace Poleemery
 	void OperationPropsDialog::on_AddEntry__released ()
 	{
 		const auto& acc = Accounts_.at (Ui_.AccsBox_->currentIndex ());
-		const auto accId = acc.ID_;
 
-		const auto& shop = Ui_.Shop_->currentText ();
+		auto entry = std::make_shared<ExpenseEntry> ();
+		entry->AccountID_ = acc.ID_;
+		entry->Date_ = GetDateTime ();
+		entry->Shop_ = Ui_.Shop_->currentText ();
+		entry->EntryCurrency_ = Ui_.AmountCurrency_->currentText ();
 
-		auto entry = std::make_shared<ExpenseEntry> (accId,
-				0, QString (), QString (), GetDateTime (), 0, shop, QStringList ());
+		auto curMgr = Core::Instance ().GetCurrenciesManager ();
+		entry->Rate_ = curMgr->GetRate (entry->EntryCurrency_, acc.Currency_);
+
 		ItemsModel_->AddEntry (entry);
+
+		recalcNatives ();
 	}
 
 	void OperationPropsDialog::on_RemoveEntry__released ()
@@ -187,6 +260,33 @@ namespace Poleemery
 			return;
 
 		ItemsModel_->RemoveEntry (selected);
+	}
+
+	void OperationPropsDialog::recalcNatives ()
+	{
+		const auto val = Ui_.AmountBilled_->value ();
+
+		double rate = 1;
+		if (val >= std::numeric_limits<double>::epsilon ())
+		{
+			const auto sum = std::accumulate (Util::ModelIterator (ItemsModel_, 0, EntriesModel::Columns::Price),
+					Util::ModelIterator (ItemsModel_, ItemsModel_->rowCount (), EntriesModel::Columns::Price),
+					0.0,
+					[] (double sum, const QModelIndex& idx)
+						{ return sum + idx.data (Qt::EditRole).toDouble (); });
+			rate = val / sum;
+		}
+
+		for (int i = 0; i < ItemsModel_->rowCount (); ++i)
+		{
+			const auto& curRateIdx = ItemsModel_->index (i, EntriesModel::Columns::EntryRate);
+			ItemsModel_->setData (curRateIdx, rate);
+
+			const auto& curPriceIdx = ItemsModel_->index (i, EntriesModel::Columns::Price);
+			const auto& curNativePriceIdx = ItemsModel_->index (i, EntriesModel::Columns::NativePrice);
+			ItemsModel_->setData (curNativePriceIdx,
+					curPriceIdx.data (Qt::EditRole).toDouble () * rate);
+		}
 	}
 }
 }

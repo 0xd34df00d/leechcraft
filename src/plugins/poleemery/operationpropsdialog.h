@@ -64,11 +64,17 @@ namespace Poleemery
 		QDateTime GetDateTime () const;
 	private slots:
 		void on_AccsBox__currentIndexChanged (int);
+		void on_AmountCurrency__currentIndexChanged (int);
+		void on_DateEdit__dateTimeChanged (const QDateTime&);
+		void on_Shop__editTextChanged (const QString&);
+
 		void on_ExpenseEntry__released ();
 		void on_ReceiptEntry__released ();
 
 		void on_AddEntry__released ();
 		void on_RemoveEntry__released ();
+
+		void recalcNatives ();
 	};
 }
 }
