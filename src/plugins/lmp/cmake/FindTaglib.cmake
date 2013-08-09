@@ -52,7 +52,7 @@ else()
 
   find_path(TAGLIB_INCLUDES
     NAMES
-    taglib/tag.h
+	tag.h
     PATH_SUFFIXES taglib
     PATHS
     ${KDE4_INCLUDE_DIR}
@@ -73,7 +73,7 @@ else ()
     PATHS
     ${KDE4_LIB_DIR}
     ${LIB_INSTALL_DIR}
-    ${TAGLIB_DIR}/build/taglib
+    ${TAGLIB_DIR}/lib
   )
 endif ()
 

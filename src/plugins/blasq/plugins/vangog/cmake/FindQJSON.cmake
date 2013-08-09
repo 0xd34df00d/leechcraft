@@ -28,17 +28,21 @@ else ()
 				message(STATUS "Please set QJSON_DIR variable for onlinebookmarks support")
 			endif ()
 		endif ()
-
-		set (QJSON_INCLUDE_WIN32 ${QJSON_DIR})
-
-		set (PROBE_DIR_Debug
-			${QJSON_DIR}/build/lib/Debug)
-		set (PROBE_DIR_Release
-			${QJSON_DIR}/build/lib/MinSizeRel ${QJSON_DIR}/build/lib/Release)
-
-		find_library (QJSON_LIBRARY_DEBUG NAMES qjson.lib PATHS ${PROBE_DIR_Debug})
-		find_library (QJSON_LIBRARY_RELEASE NAMES qjson.lib PATHS ${PROBE_DIR_Release})
-		win32_tune_libs_names (QJSON)	
+	
+		if (MSVC)
+			set (QJSON_INCLUDE_WIN32 ${QJSON_DIR})		
+	
+			set (PROBE_DIR_Debug
+				${QJSON_DIR}/build/lib/Debug)
+			set (PROBE_DIR_Release
+				${QJSON_DIR}/build/lib/MinSizeRel ${QJSON_DIR}/build/lib/Release)
+	
+			find_library (QJSON_LIBRARY_DEBUG NAMES qjson.lib PATHS ${PROBE_DIR_Debug})
+			find_library (QJSON_LIBRARY_RELEASE NAMES qjson.lib PATHS ${PROBE_DIR_Release})
+			win32_tune_libs_names (QJSON)
+		else ()
+			find_library (QJSON_LIBRARIES NAMES libqjson.dll.a PATHS ${QJSON_DIR}/build/lib)
+		endif ()
 	endif ()
 
 if (NOT WIN32) # regression guard
