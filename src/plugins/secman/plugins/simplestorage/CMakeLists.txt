@@ -7,19 +7,18 @@ SET (SRCS
 SET (HEADERS
 	simplestorage.h
 	)
-IF (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-ENDIF (NOT LC_NO_MOC)
 
 SET (SIMPLESTORAGE_RESOURCES simplestorageresources.qrc)
-QT4_ADD_RESOURCES (SIMPLESTORAGE_RCCS ${SIMPLESTORAGE_RESOURCES})
+QtAddResources (SIMPLESTORAGE_RCCS ${SIMPLESTORAGE_RESOURCES})
 
 ADD_LIBRARY (leechcraft_secman_simplestorage SHARED
 	${SIMPLESTORAGE_RCCS}
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	)
+
+FindQtLibs (leechcraft_secman_simplestorage Core)
+
 TARGET_LINK_LIBRARIES (leechcraft_secman_simplestorage
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
