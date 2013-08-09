@@ -29,6 +29,7 @@
 
 #include "recentcommentsview.h"
 #include <QGraphicsObject>
+#include <QWidget>
 
 namespace LeechCraft
 {
@@ -37,7 +38,11 @@ namespace Blogique
 namespace Metida
 {
 	RecentCommentsView::RecentCommentsView (QWidget *parent)
+#ifdef USE_QT5
+	: QQuickView (parent->windowHandle ())
+#else
 	: QDeclarativeView (parent)
+#endif
 	{
 	}
 

@@ -50,6 +50,9 @@ namespace Metida
 				, public IBloggingPlatformPlugin
 	{
 		Q_OBJECT
+#ifdef USE_QT5
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.Blogique.Metida");
+#endif
 		Q_INTERFACES (IInfo IHaveSettings IPlugin2
 				LeechCraft::Blogique::IBloggingPlatformPlugin)
 

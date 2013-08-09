@@ -29,7 +29,11 @@
 
 #pragma once
 
-#include <QDeclarativeView>
+#ifdef USE_QT5
+	#include <QQuickView>
+#else
+	#include <QDeclarativeView>
+#endif
 
 class QGraphicsObject;
 
@@ -39,7 +43,11 @@ namespace Blogique
 {
 namespace Metida
 {
+#ifdef USE_QT5
+	class RecentCommentsView : public QQuickView
+#else
 	class RecentCommentsView : public QDeclarativeView
+#endif
 	{
 		Q_OBJECT
 
