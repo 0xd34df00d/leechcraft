@@ -62,6 +62,8 @@ namespace Graffiti
 		};
 		QList<SplitQueueItem> SplitQueue_;
 
+		int TotalItems_;
+
 		QSet<QString> EmittedErrors_;
 	public:
 		CueSplitter (const QString& cue, const QString& dir, QObject* = 0);
@@ -72,7 +74,9 @@ namespace Graffiti
 		void handleProcessError ();
 	signals:
 		void error (const QString&);
-		void finished ();
+		void finished (CueSplitter*);
+
+		void splitProgress (int, int, CueSplitter*);
 	};
 }
 }

@@ -380,7 +380,7 @@ namespace Graffiti
 				this,
 				SLOT (handleCueSplitError (QString)));
 		connect (splitter,
-				SIGNAL (finished ()),
+				SIGNAL (finished (CueSplitter*)),
 				this,
 				SLOT (handleCueSplitFinished ()));
 	}

@@ -299,15 +299,19 @@ namespace Graffiti
 					});
 		}
 
+		TotalItems_ = SplitQueue_.size ();
+
 		scheduleNext ();
 	}
 
 	void CueSplitter::scheduleNext ()
 	{
+		emit splitProgress (TotalItems_ - SplitQueue_.size (), TotalItems_, this);
+
 		if (SplitQueue_.isEmpty ())
 		{
 			deleteLater ();
-			emit finished ();
+			emit finished (this);
 			return;
 		}
 
