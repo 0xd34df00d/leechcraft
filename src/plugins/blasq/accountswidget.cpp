@@ -55,5 +55,14 @@ namespace Blasq
 		wizard->addPage (new NewAccountWizardFirstPage (ServicesMgr_));
 		wizard->show ();
 	}
+
+	void AccountsWidget::on_Remove__released ()
+	{
+		const auto& idx = Ui_.View_->currentIndex ();
+		if (!idx.isValid ())
+			return;
+
+		AccountsMgr_->RemoveAccount (idx);
+	}
 }
 }

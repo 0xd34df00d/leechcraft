@@ -62,6 +62,17 @@ namespace Blasq
 		return Accounts_;
 	}
 
+	void AccountsManager::RemoveAccount (const QModelIndex& index)
+	{
+		const auto accObj = index.data (Role::AccountObj).value<QObject*> ();
+		const auto acc = qobject_cast<IAccount*> (accObj);
+		if (!acc)
+			return;
+
+		const auto service = acc->GetService ();
+		service->RemoveAccount (acc);
+	}
+
 	void AccountsManager::HandleAccount (IAccount *acc)
 	{
 		auto service = acc->GetService ();

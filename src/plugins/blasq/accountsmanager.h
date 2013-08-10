@@ -31,6 +31,7 @@
 
 #include <QObject>
 
+class QModelIndex;
 class QAbstractItemModel;
 class QStandardItemModel;
 
@@ -65,6 +66,8 @@ namespace Blasq
 
 		QAbstractItemModel* GetModel ();
 		const QList<IAccount*>& GetAccounts () const;
+
+		void RemoveAccount (const QModelIndex&);
 	private:
 		void HandleAccount (IAccount*);
 	private slots:
