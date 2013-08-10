@@ -200,6 +200,18 @@ namespace Blogique
 				SIGNAL (gotError (int, QString, QString)),
 				newTab,
 				SLOT (handleGotError (int, QString, QString)));
+		connect (&Core::Instance (),
+				SIGNAL (gotError (int, QString, QString)),
+				newTab,
+				SLOT (handleGotError (int, QString, QString)));
+		connect (&Core::Instance (),
+				SIGNAL (accountAdded (QObject*)),
+				newTab,
+				SLOT (handleAccountAdded (QObject*)));
+		connect (&Core::Instance (),
+				SIGNAL (accountRemoved (QObject*)),
+				newTab,
+				SLOT (handleAccountRemoved (QObject*)));
 
 		return newTab;
 	}

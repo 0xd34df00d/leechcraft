@@ -517,45 +517,48 @@ namespace Metida
 
 	void LJXmlRPC::PreviewEventRequest (const LJEvent& event, const QString& challenge)
 	{
-		QNetworkRequest request;
+		QNetworkRequest request (QUrl ("http://www.livejournal.com/preview/entry.bml"));
 		auto userAgent = "LeechCraft Blogique " +
 				Core::Instance ().GetCoreProxy ()->GetVersion ().toUtf8 ();
-		request.setUrl (QUrl ("http://www.livejournal.com/preview/entry.bml"));
 		request.setRawHeader ("User-Agent", userAgent);
+		request.setRawHeader ("Referer", "http://www.livejournal.com/update.bml");
+		request.setRawHeader ("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+		request.setRawHeader ("Accept-Language", "en-US,en;q=0.5");
+		request.setRawHeader ("Accept-Encoding", "gzip, deflate");
+		request.setRawHeader ("Referer", "http://www.livejournal.com/update.bml");
 		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
-
-		QString data = QString ("lj_form_auth=%1&rte_on=1&date_diff=1&postas=remote&postto=%2"
-					"&community=%3&date=%4&time=%5&prop_picture_keyword=%6&subject=%7"
-					"&event=%8&prop_taglist=%9&prop_current_moodid=%10&prop_current_mood=%11"
-					"&prop_current_music=%12&prop_current_location=%13&prop_adult_content=%14"
-					"&comment_settings=%15&prop_opt_screening=%16&security=%17&date_ymd_dd=%18"
-					"&date_ymd_mm=%19&date_ymd_yyyy=%20&date_diff=1")
-				.arg (challenge)
-				.arg (event.UseJournal_ == Account_->GetOurLogin () ?
-					"journal" :
-					"community")
-				//TODO community
-				.arg ("")
-				.arg (event.DateTime_.toString ("dd-MM-yyyy"))
-				.arg (event.DateTime_.toString ("hh:mm"))
-				.arg (event.Props_.PostAvatar_)
-				.arg (event.Subject_)
-				.arg (event.Event_)
-				.arg (event.Tags_.join (","))
-				.arg (event.Props_.CurrentMoodId_)
-				.arg (event.Props_.CurrentMood_)
-				.arg (event.Props_.CurrentMusic_)
-				.arg (event.Props_.CurrentLocation_)
-				.arg (MetidaUtils::GetStringForAdultContent (event.Props_.AdultContent_))
-				.arg ("default")
-				.arg (MetidaUtils::GetStringFromCommentsManagment (event.Props_.CommentsManagement_))
-				.arg (MetidaUtils::GetStringForAccess (event.Security_))
-				.arg (event.DateTime_.date ().day ())
-				.arg (event.DateTime_.date ().month ())
-				.arg (event.DateTime_.date ().year ());
+		QUrl params;
+		params.addEncodedQueryItem ("lj_form_auth", QUrl::toPercentEncoding (challenge));
+		params.addEncodedQueryItem ("rte_on", "1");
+		params.addEncodedQueryItem ("date_diff", "1");
+		params.addEncodedQueryItem ("date_format", QUrl::toPercentEncoding ("%M/%D/%Y"));
+		params.addEncodedQueryItem ("postas", "remote");
+		params.addEncodedQueryItem ("postto", "journal");
+		params.addEncodedQueryItem ("community", "books_dot_ru");
+		params.addEncodedQueryItem ("altcommunity", "");
+		params.addEncodedQueryItem ("date", QUrl::toPercentEncoding (event.DateTime_.toString ("dd/MM/yyyy")));
+		params.addEncodedQueryItem ("time", QUrl::toPercentEncoding (event.DateTime_.toString ("hh:mm")));
+		params.addEncodedQueryItem ("custom_time", "0");
+		params.addEncodedQueryItem ("timezone", "300");
+		params.addEncodedQueryItem ("prop_picture_keyword", QUrl::toPercentEncoding (event.Props_.PostAvatar_));
+		params.addEncodedQueryItem ("subject", QUrl::toPercentEncoding (event.Subject_));
+		params.addEncodedQueryItem ("event", QUrl::toPercentEncoding (event.Event_));
+		params.addEncodedQueryItem ("prop_taglist", QUrl::toPercentEncoding (event.Tags_.join (",")));
+		params.addEncodedQueryItem ("prop_current_moodid", QByteArray::number (event.Props_.CurrentMoodId_));
+		params.addEncodedQueryItem ("prop_current_mood", QUrl::toPercentEncoding (event.Props_.CurrentMood_));
+		params.addEncodedQueryItem ("prop_current_music", QUrl::toPercentEncoding (event.Props_.CurrentMusic_));
+		params.addEncodedQueryItem ("prop_current_location", QUrl::toPercentEncoding (event.Props_.CurrentLocation_));
+		params.addEncodedQueryItem ("prop_adult_conten", QUrl::toPercentEncoding (MetidaUtils::GetStringForAdultContent (event.Props_.AdultContent_)));
+		params.addEncodedQueryItem ("comment_settings", QUrl::toPercentEncoding ("default"));
+		params.addEncodedQueryItem ("prop_opt_screening", "");
+		params.addEncodedQueryItem ("security", QUrl::toPercentEncoding (MetidaUtils::GetStringForAccess (event.Security_)));
+		params.addEncodedQueryItem ("date_ymd_dd", QByteArray::number (event.DateTime_.date ().day ()));
+		params.addEncodedQueryItem ("date_ymd_mm", QByteArray::number (event.DateTime_.date ().month ()));
+		params.addEncodedQueryItem ("date_ymd_yyyy", QByteArray::number (event.DateTime_.date ().year ()));
+		params.addEncodedQueryItem ("date_diff", "1");
 
 		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
-				GetNetworkAccessManager ()->post (request, data.toUtf8 ());
+				GetNetworkAccessManager ()->post (request, params.encodedQuery ());
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -2070,7 +2073,7 @@ namespace Metida
 		if (!reply)
 			return;
 		reply->deleteLater ();
-		qDebug () << reply->errorString ();
+		qWarning () << Q_FUNC_INFO << err << reply->errorString ();
 		emit networkError (err, reply->errorString ());
 	}
 
