@@ -38,7 +38,6 @@
 #include <QtDebug>
 #include <QUuid>
 #include <QXmlQuery>
-#include <boost/concept_check.hpp>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/passutils.h>

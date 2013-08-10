@@ -32,9 +32,9 @@
 #include <QCoreApplication>
 #include <QSettings>
 #include <QtDebug>
+#include <util/passutils.h>
 #include "fotobilderaccount.h"
 #include "registerpage.h"
-#include <util/passutils.h>
 
 namespace LeechCraft
 {
