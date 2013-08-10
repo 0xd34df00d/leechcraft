@@ -42,18 +42,25 @@ namespace LMP
 {
 namespace Graffiti
 {
+	class CueSplitter;
+
 	class ProgressManager : public QObject
 	{
 		Q_OBJECT
 
 		QStandardItemModel *Model_;
 		QHash<QObject*, QList<QStandardItem*>> TagsFetchObj2Row_;
+		QHash<CueSplitter*, QList<QStandardItem*>> Splitter2Row_;
 	public:
 		ProgressManager (QObject* = 0);
 
 		QAbstractItemModel* GetModel () const;
 	public slots:
 		void handleTagsFetch (int fetched, int total, QObject *obj);
+
+		void handleCueSplitter (CueSplitter*);
+		void handleSplitProgress (int, int, CueSplitter*);
+		void handleSplitFinished (CueSplitter*);
 	};
 }
 }
