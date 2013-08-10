@@ -238,6 +238,11 @@ namespace Graffiti
 				SLOT (split ()));
 	}
 
+	QString CueSplitter::GetCueFile () const
+	{
+		return CueFile_;
+	}
+
 	void CueSplitter::split ()
 	{
 		const auto& cue = ParseCue (QDir (Dir_).absoluteFilePath (CueFile_));

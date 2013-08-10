@@ -67,6 +67,8 @@ namespace Graffiti
 		QSet<QString> EmittedErrors_;
 	public:
 		CueSplitter (const QString& cue, const QString& dir, QObject* = 0);
+
+		QString GetCueFile () const;
 	private slots:
 		void split ();
 		void scheduleNext ();
