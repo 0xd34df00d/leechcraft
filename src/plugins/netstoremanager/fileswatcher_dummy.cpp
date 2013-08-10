@@ -38,16 +38,12 @@ namespace NetStoreManager
 	: FilesWatcherBase (parent)
 	{
 	}
+
+	void FilesWatcherDummy::updatePaths(const QStringList &paths)
+	{
+
+	}
 	void FilesWatcherDummy::checkNotifications ()
-	{
-	}
-
-	bool FilesWatcherDummy::addPath (QString)
-	{
-		return true;
-	}
-
-	void FilesWatcherDummy::addPathes (QStringList)
 	{
 	}
 
