@@ -38,9 +38,10 @@ namespace Azoth
 {
 namespace Murm
 {
-	VCardDialog::VCardDialog (const UserInfo& info,
-			PhotoStorage *storage, GeoResolver *geo, QWidget *parent)
+	VCardDialog::VCardDialog (const UserInfo& info, PhotoStorage *storage,
+			GeoResolver *geo, ICoreProxy_ptr proxy, QWidget *parent)
 	: QDialog (parent)
+	, Proxy_ (proxy)
 	, Info_ (info)
 	, Storage_ (storage)
 	{
