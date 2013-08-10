@@ -1,7 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012	Georg Rudoy
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2010-2013  Oleg Linkin <MaledictusDeMagog@gmail.com>
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,24 +29,27 @@
 
 #pragma once
 
-#include "fileswatcherbase.h"
+#include <QWizardPage>
+#include "ui_registerpage.h"
 
 namespace LeechCraft
 {
-namespace NetStoreManager
+namespace Blasq
 {
-	class FilesWatcherDummy : public FilesWatcherBase
+namespace DeathNote
+{
+	class RegisterPage : public QWizardPage
 	{
 		Q_OBJECT
-	public:
-		FilesWatcherDummy (QObject* = 0);
-	public slots:
-		void updatePaths (const QStringList& paths);
-		void checkNotifications ();
-		void release ();
-		void updateExceptions (QStringList masks);
-	};
 
-	typedef FilesWatcherDummy FilesWatcher;
+		Ui::RegisterPage Ui_;
+
+	public:
+		RegisterPage (QWidget *parent = 0);
+
+		QString GetLogin () const;
+		QString GetPassword () const;
+	};
+}
 }
 }

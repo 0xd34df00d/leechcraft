@@ -1,48 +1,42 @@
 cmake_minimum_required (VERSION 2.8)
-project (leechcraft_blasq_vangog)
+project (leechcraft_blasq_deathnote)
 include (InitLCPlugin OPTIONAL)
-
-set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 set (QT_USE_QTNETWORK TRUE)
 set (QT_USE_QTXML TRUE)
+set (QT_USE_QTXMLPATTERNS TRUE)
 include (${QT_USE_FILE})
-
-find_package (QJSON REQUIRED)
 
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
-	${QJSON_INCLUDE_DIR}
 	)
 
-set (VANGOG_SRCS
-	authmanager.cpp
-	picasaaccount.cpp
-	picasamanager.cpp
-	picasaservice.cpp
+set (DEATHNOTE_SRCS
+	deathnote.cpp
+	fotobilderaccount.cpp
+	fotobilderservice.cpp
 	registerpage.cpp
-	vangog.cpp
 	)
 
-set (VANGOG_FORMS
+set (DEATHNOTE_FORMS
 	registerpage.ui
 	)
 # CreateTrs("blasq_vangog" "en;ru_RU" VANGOG_COMPILED_TRANSLATIONS)
 # CreateTrsUpTarget("blasq_vangog" "en;ru_RU" "${VANGOG_SRCS}" "${VANGOG_FORMS}" "")
 
-QT4_WRAP_UI (VANGOG_UIS_H ${VANGOG_FORMS})
+QT4_WRAP_UI (UIS_H ${DEATHNOTE_FORMS})
 
-add_library (leechcraft_blasq_vangog SHARED
+add_library (leechcraft_blasq_deathnote SHARED
 # 	${VANGOG_COMPILED_TRANSLATIONS}
-	${VANGOG_SRCS}
-	${VANGOG_UIS_H}
+	${DEATHNOTE_SRCS}
+	${UIS_H}
 	)
-target_link_libraries (leechcraft_blasq_vangog
+
+target_link_libraries (leechcraft_blasq_deathnote
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
-	${QJSON_LIBRARIES}
 	)
-install (TARGETS leechcraft_blasq_vangog DESTINATION ${LC_PLUGINS_DEST})
 
+install (TARGETS leechcraft_blasq_deathnote DESTINATION ${LC_PLUGINS_DEST})

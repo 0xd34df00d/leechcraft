@@ -30,6 +30,7 @@
 #include "progressmanager.h"
 #include <QStandardItemModel>
 #include <interfaces/ijobholder.h>
+#include "cuesplitter.h"
 
 namespace LeechCraft
 {
@@ -41,6 +42,7 @@ namespace Graffiti
 	: QObject (parent)
 	, Model_ (new QStandardItemModel (this))
 	{
+		Model_->setColumnCount (3);
 	}
 
 	QAbstractItemModel* ProgressManager::GetModel () const
@@ -56,14 +58,15 @@ namespace Graffiti
 			auto statusItem = new QStandardItem ();
 			auto progressItem = new QStandardItem ();
 
-			nameItem->setData (JobHolderRow::ProcessProgress, CustomDataRoles::RoleJobHolderRow);
-
 			const QList<QStandardItem*> row
 			{
 				nameItem,
 				statusItem,
 				progressItem
 			};
+			auto item = row.at (JobHolderColumn::JobProgress);
+			item->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
+					CustomDataRoles::RoleJobHolderRow);
 
 			TagsFetchObj2Row_ [obj] = row;
 			Model_->appendRow (row);
@@ -81,6 +84,59 @@ namespace Graffiti
 		auto item = list.at (JobHolderColumn::JobProgress);
 		item->setData (fetched, ProcessState::Done);
 		item->setData (total, ProcessState::Total);
+	}
+
+	void ProgressManager::handleCueSplitter (CueSplitter *splitter)
+	{
+		const QList<QStandardItem*> row
+		{
+			new QStandardItem (tr ("Splitting CUE %1...").arg (splitter->GetCueFile ())),
+			new QStandardItem (),
+			new QStandardItem ()
+		};
+
+		auto item = row.at (JobHolderColumn::JobProgress);
+		item->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
+				CustomDataRoles::RoleJobHolderRow);
+
+		Splitter2Row_ [splitter] = row;
+		Model_->appendRow (row);
+
+		connect (splitter,
+				SIGNAL (splitProgress (int, int, CueSplitter*)),
+				this,
+				SLOT (handleSplitProgress (int, int, CueSplitter*)));
+		connect (splitter,
+				SIGNAL (finished (CueSplitter*)),
+				this,
+				SLOT (handleSplitFinished (CueSplitter*)));
+	}
+
+	void ProgressManager::handleSplitProgress (int done, int total, CueSplitter *splitter)
+	{
+		if (!Splitter2Row_.contains (splitter))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown splitter";
+			return;
+		}
+
+		if (done == total)
+			return;
+
+		const auto& list = Splitter2Row_ [splitter];
+
+		auto item = list.at (JobHolderColumn::JobProgress);
+		item->setData (done, ProcessState::Done);
+		item->setData (total, ProcessState::Total);
+	}
+
+	void ProgressManager::handleSplitFinished (CueSplitter *splitter)
+	{
+		if (!Splitter2Row_.contains (splitter))
+			return;
+
+		Model_->removeRow (Splitter2Row_.take (splitter).first ()->row ());
 	}
 }
 }

@@ -238,6 +238,11 @@ namespace Graffiti
 				SLOT (split ()));
 	}
 
+	QString CueSplitter::GetCueFile () const
+	{
+		return CueFile_;
+	}
+
 	void CueSplitter::split ()
 	{
 		const auto& cue = ParseCue (QDir (Dir_).absoluteFilePath (CueFile_));
@@ -299,15 +304,19 @@ namespace Graffiti
 					});
 		}
 
+		TotalItems_ = SplitQueue_.size ();
+
 		scheduleNext ();
 	}
 
 	void CueSplitter::scheduleNext ()
 	{
+		emit splitProgress (TotalItems_ - SplitQueue_.size (), TotalItems_, this);
+
 		if (SplitQueue_.isEmpty ())
 		{
 			deleteLater ();
-			emit finished ();
+			emit finished (this);
 			return;
 		}
 

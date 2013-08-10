@@ -1,7 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012	Georg Rudoy
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2010-2013  Oleg Linkin <MaledictusDeMagog@gmail.com>
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,24 +29,53 @@
 
 #pragma once
 
-#include "fileswatcherbase.h"
+#include <QObject>
+#include <interfaces/blasq/iservice.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/structures.h>
 
 namespace LeechCraft
 {
-namespace NetStoreManager
+namespace Blasq
 {
-	class FilesWatcherDummy : public FilesWatcherBase
+namespace DeathNote
+{
+	class FotoBilderAccount;
+
+	class FotoBilderService : public QObject
+							, public IService
 	{
 		Q_OBJECT
-	public:
-		FilesWatcherDummy (QObject* = 0);
-	public slots:
-		void updatePaths (const QStringList& paths);
-		void checkNotifications ();
-		void release ();
-		void updateExceptions (QStringList masks);
-	};
+		Q_INTERFACES (LeechCraft::Blasq::IService)
 
-	typedef FilesWatcherDummy FilesWatcher;
+		const ICoreProxy_ptr Proxy_;
+		QList<FotoBilderAccount*> Accounts_;
+
+	public:
+		FotoBilderService (ICoreProxy_ptr proxy);
+
+		QObject* GetQObject ();
+
+		QString GetServiceName () const;
+		QIcon GetServiceIcon () const;
+
+		QList<IAccount*> GetRegisteredAccounts () const;
+		QList<QWidget*> GetAccountRegistrationWidgets () const;
+		void RegisterAccount (const QString& name, const QList<QWidget*>& widgets);
+		void RemoveAccount (IAccount *account);
+	private:
+		void AddAccount (FotoBilderAccount *account);
+		void ReadAccounts ();
+
+	private slots:
+		void saveAccount (FotoBilderAccount *account);
+
+	signals:
+		void gotEntity (LeechCraft::Entity e);
+		void delegateEntity (LeechCraft::Entity e, int *id, QObject **obj);
+		void accountAdded (QObject *accObj);
+		void accountRemoved (QObject *accObj);
+	};
+}
 }
 }

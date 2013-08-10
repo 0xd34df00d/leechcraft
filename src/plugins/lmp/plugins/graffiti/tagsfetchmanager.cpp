@@ -53,6 +53,12 @@ namespace Graffiti
 					this,
 					SLOT (handleTagsFetched (QString, Media::AudioInfo)));
 		}
+
+		QMetaObject::invokeMethod (this,
+				"tagsFetchProgress",
+				Q_ARG (int, 0),
+				Q_ARG (int, TotalTags_),
+				Q_ARG (QObject*, this));
 	}
 
 	namespace

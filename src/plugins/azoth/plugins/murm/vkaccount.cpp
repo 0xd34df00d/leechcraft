@@ -47,6 +47,7 @@ namespace Murm
 	VkAccount::VkAccount (const QString& name, VkProtocol *proto,
 			ICoreProxy_ptr proxy, const QByteArray& id, const QByteArray& cookies)
 	: QObject (proto)
+	, CoreProxy_ (proxy)
 	, Proto_ (proto)
 	, ID_ (id.isEmpty () ? QUuid::createUuid ().toByteArray () : id)
 	, PhotoStorage_ (new PhotoStorage (proxy->GetNetworkAccessManager (), ID_))
@@ -136,6 +137,11 @@ namespace Murm
 		Conn_->SendMessage (entry->GetInfo ().ID_,
 				msg->GetBody (),
 				[msg] (qulonglong id) { msg->SetID (id); });
+	}
+
+	ICoreProxy_ptr VkAccount::GetCoreProxy () const
+	{
+		return CoreProxy_;
 	}
 
 	VkConnection* VkAccount::GetConnection () const

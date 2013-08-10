@@ -116,6 +116,10 @@ namespace Graffiti
 					SIGNAL (tagsFetchProgress (int, int, QObject*)),
 					ProgressMgr_,
 					SLOT (handleTagsFetch (int, int, QObject*)));
+			connect (tab,
+					SIGNAL (cueSplitStarted (CueSplitter*)),
+					ProgressMgr_,
+					SLOT (handleCueSplitter (CueSplitter*)));
 		}
 		else
 			qWarning () << Q_FUNC_INFO

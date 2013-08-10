@@ -53,6 +53,7 @@ namespace Graffiti
 {
 	class FilesModel;
 	class FilesWatcher;
+	class CueSplitter;
 
 	class GraffitiTab : public QWidget
 					  , public ITabWidget
@@ -118,6 +119,7 @@ namespace Graffiti
 		void removeTab (QWidget*);
 
 		void tagsFetchProgress (int, int, QObject*);
+		void cueSplitStarted (CueSplitter*);
 	};
 }
 }

@@ -1,7 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012	Georg Rudoy
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2010-2013  Oleg Linkin <MaledictusDeMagog@gmail.com>
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,24 +29,47 @@
 
 #pragma once
 
-#include "fileswatcherbase.h"
+#include <QObject>
+#include <interfaces/iinfo.h>
+#include <interfaces/iplugin2.h>
+#include <interfaces/ihavesettings.h>
+#include <interfaces/blasq/iservicesplugin.h>
 
 namespace LeechCraft
 {
-namespace NetStoreManager
+namespace Blasq
 {
-	class FilesWatcherDummy : public FilesWatcherBase
+namespace DeathNote
+{
+	class FotoBilderService;
+
+	class Plugin : public QObject
+				 , public IInfo
+				 , public IPlugin2
+				 , public IServicesPlugin
 	{
 		Q_OBJECT
-	public:
-		FilesWatcherDummy (QObject* = 0);
-	public slots:
-		void updatePaths (const QStringList& paths);
-		void checkNotifications ();
-		void release ();
-		void updateExceptions (QStringList masks);
-	};
+		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Blasq::IServicesPlugin)
 
-	typedef FilesWatcherDummy FilesWatcher;
+		FotoBilderService *Service_;
+
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+
+		QSet<QByteArray> GetPluginClasses () const;
+
+		QList<IService*> GetServices () const;
+
+	signals:
+		void gotEntity (const LeechCraft::Entity& e);
+		void delegateEntity (const LeechCraft::Entity& e, int *id, QObject **obj);
+	};
+}
 }
 }

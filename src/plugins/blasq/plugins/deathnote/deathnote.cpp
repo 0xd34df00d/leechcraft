@@ -1,7 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012	Georg Rudoy
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2010-2013  Oleg Linkin <MaledictusDeMagog@gmail.com>
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -28,26 +27,71 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include "fileswatcherbase.h"
+#include "deathnote.h"
+#include <util/util.h>
+#include "fotobilderservice.h"
 
 namespace LeechCraft
 {
-namespace NetStoreManager
+namespace Blasq
 {
-	class FilesWatcherDummy : public FilesWatcherBase
+namespace DeathNote
+{
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Q_OBJECT
-	public:
-		FilesWatcherDummy (QObject* = 0);
-	public slots:
-		void updatePaths (const QStringList& paths);
-		void checkNotifications ();
-		void release ();
-		void updateExceptions (QStringList masks);
-	};
+		Util::InstallTranslator ("blasq_deathnote");
+		Service_ = new FotoBilderService (proxy);
+		connect (Service_,
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)));
+		connect (Service_,
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
+	}
 
-	typedef FilesWatcherDummy FilesWatcher;
+	void Plugin::SecondInit ()
+	{
+	}
+
+	QByteArray Plugin::GetUniqueID () const
+	{
+		return "org.LeechCraft.Blasq.DeathNote";
+	}
+
+	void Plugin::Release ()
+	{
+	}
+
+	QString Plugin::GetName () const
+	{
+		return "Blasq DeathNote";
+	}
+
+	QString Plugin::GetInfo () const
+	{
+		return tr ("LiveJournal FotoBilder support module for Blasq.");
+	}
+
+	QIcon Plugin::GetIcon () const
+	{
+		return QIcon ();
+	}
+
+	QSet<QByteArray> Plugin::GetPluginClasses () const
+	{
+		QSet<QByteArray> result;
+		result << "org.LeechCraft.Blasq.ServicePlugin";
+		return result;
+	}
+
+	QList<IService*> Plugin::GetServices () const
+	{
+		return { Service_ };
+	}
 }
 }
+}
+
+LC_EXPORT_PLUGIN (leechcraft_blasq_deathnote, LeechCraft::Blasq::DeathNote::Plugin);

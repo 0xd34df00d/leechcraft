@@ -144,6 +144,8 @@ namespace Blogique
 		void handleInsertTag (const QString& tag);
 		void handleGotError (int errorCode, const QString& errorString,
 				const QString& localizedErrorString);
+		void handleAccountAdded (QObject *acc);
+		void handleAccountRemoved (QObject *acc);
 
 	private slots:
 		void handleCurrentAccountChanged (int id);

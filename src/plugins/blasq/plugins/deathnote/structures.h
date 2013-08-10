@@ -1,7 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012	Georg Rudoy
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2010-2013  Oleg Linkin <MaledictusDeMagog@gmail.com>
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,24 +29,80 @@
 
 #pragma once
 
-#include "fileswatcherbase.h"
+#include <QDateTime>
+#include <QStringList>
+#include <QUrl>
 
 namespace LeechCraft
 {
-namespace NetStoreManager
+namespace Blasq
 {
-	class FilesWatcherDummy : public FilesWatcherBase
+namespace DeathNote
+{
+	enum class Access
 	{
-		Q_OBJECT
-	public:
-		FilesWatcherDummy (QObject* = 0);
-	public slots:
-		void updatePaths (const QStringList& paths);
-		void checkNotifications ();
-		void release ();
-		void updateExceptions (QStringList masks);
+		Private,
+		Public,
+		FriendsOnly,
+		CustomUsers
 	};
 
-	typedef FilesWatcherDummy FilesWatcher;
+	struct Quota
+	{
+		quint64 Total_;
+		quint64 Used_;
+		quint64 Remaining_;
+
+		Quota ()
+		: Total_ (0)
+		, Used_ (0)
+		, Remaining_ (0)
+		{}
+	};
+
+	struct Album
+	{
+		QByteArray ID_;
+		QString Title_;
+		QDateTime CreationDate_;
+		QUrl Url_;
+		Access Access_;
+	};
+
+	struct Thumbnail
+	{
+		QUrl Url_;
+		int Width_;
+		int Height_;
+
+		Thumbnail ()
+		: Width_ (0)
+		, Height_ (0)
+		{}
+	};
+
+	struct Photo
+	{
+		QByteArray ID_;
+		QString Title_;
+		QString Format_;
+		int Width_;
+		int Height_;
+		quint64 Size_;
+		QByteArray MD5_;
+		QUrl Url_;
+		QString OriginalFileName_;
+		QString Description_;
+		Access Access_;
+
+		QList<Thumbnail> Thumbnails_;
+
+		Photo ()
+		: Width_ (0)
+		, Height_ (0)
+		, Size_ (0)
+		{}
+	};
+}
 }
 }
