@@ -383,6 +383,7 @@ namespace Graffiti
 				SIGNAL (finished (CueSplitter*)),
 				this,
 				SLOT (handleCueSplitFinished ()));
+		emit cueSplitStarted (splitter);
 	}
 
 	void GraffitiTab::handleTagsFetched (const QString& filename)
