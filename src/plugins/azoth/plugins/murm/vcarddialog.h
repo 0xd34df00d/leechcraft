@@ -57,6 +57,7 @@ namespace Murm
 		VCardDialog (const UserInfo&, PhotoStorage*, GeoResolver*, ICoreProxy_ptr, QWidget* = 0);
 	private slots:
 		void handleImage (const QUrl&);
+		void on_OpenVKPage__released ();
 	};
 }
 }

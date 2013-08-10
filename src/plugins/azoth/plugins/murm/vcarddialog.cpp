@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "vcarddialog.h"
+#include <util/util.h>
+#include <interfaces/core/ientitymanager.h>
 #include "structures.h"
 #include "photostorage.h"
 #include "georesolver.h"
@@ -98,6 +100,15 @@ namespace Murm
 				.scaled (Ui_.PhotoLabel_->size (),
 						Qt::KeepAspectRatio,
 						Qt::SmoothTransformation));
+	}
+
+	void VCardDialog::on_OpenVKPage__released ()
+	{
+		const auto& pageUrlStr = "http://vk.com/id" + QString::number (Info_.ID_);
+
+		const auto& e = Util::MakeEntity (QUrl (pageUrlStr),
+				QString (), FromUserInitiated | OnlyHandle);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 }
 }
