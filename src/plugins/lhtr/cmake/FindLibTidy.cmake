@@ -12,11 +12,11 @@ if (LIBTIDY_INCLUDE_DIR)
 endif (LIBTIDY_INCLUDE_DIR)
 
 # Look for the header file.
-find_path(LIBTIDY_INCLUDE_DIR tidy.h PATH_SUFFIXES tidy)
+find_path(LIBTIDY_INCLUDE_DIR tidy.h PATH_SUFFIXES tidy PATHS ${LIBTIDY_DIR}/include)
 mark_as_advanced(LIBTIDY_INCLUDE_DIR)
 
 # Look for the library.
-find_library(LIBTIDY_LIBRARY NAMES tidy)
+find_library(LIBTIDY_LIBRARY NAMES tidy PATHS ${LIBTIDY_DIR}/lib)
 mark_as_advanced(LIBTIDY_LIBRARY)
 
 if (LIBTIDY_INCLUDE_DIR AND LIBTIDY_LIBRARY)

@@ -42,9 +42,8 @@ namespace NetStoreManager
 	public:
 		FilesWatcherDummy (QObject* = 0);
 	public slots:
+		void updatePaths (const QStringList& paths);
 		void checkNotifications ();
-		bool addPath (QString path);
-		void addPathes (QStringList paths);
 		void release ();
 		void updateExceptions (QStringList masks);
 	};
