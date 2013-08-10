@@ -55,6 +55,8 @@ namespace Murm
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IAccount LeechCraft::Azoth::ISupportTune)
 
+		const ICoreProxy_ptr CoreProxy_;
+
 		VkProtocol * const Proto_;
 		const QByteArray ID_;
 
@@ -78,6 +80,7 @@ namespace Murm
 
 		void Send (VkEntry*, VkMessage*);
 
+		ICoreProxy_ptr GetCoreProxy () const;
 		VkConnection* GetConnection () const;
 		PhotoStorage* GetPhotoStorage () const;
 		GeoResolver* GetGeoResolver () const;
