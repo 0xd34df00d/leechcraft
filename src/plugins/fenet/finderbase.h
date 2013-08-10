@@ -116,17 +116,7 @@ namespace Fenet
 			Known_ << info;
 
 			if (std::any_of (execNames.begin (), execNames.end (),
-					[this] (const QString& name) -> bool
-					{
-						if (QFileInfo (name).isExecutable ())
-							return true;
-
-						for (const auto& dir : Path_)
-							if (QFileInfo (dir + '/' + name).isExecutable ())
-								return true;
-
-						return false;
-					}))
+					[this] (const QString& name) { return IsAvailable (name); }))
 			{
 				qDebug () << Q_FUNC_INFO << info.Name_ << "available";
 				Found_ << info;
@@ -140,6 +130,18 @@ namespace Fenet
 
 		virtual InfoT GetInfo (const QString& filePath,
 				const QStringList& execNames, const QVariantMap& varmap) const = 0;
+
+		bool IsAvailable (const QString& executable) const
+		{
+			if (QFileInfo (executable).isExecutable ())
+				return true;
+
+			for (const auto& dir : Path_)
+				if (QFileInfo (dir + '/' + executable).isExecutable ())
+					return true;
+
+			return false;
+		}
 	};
 }
 }
