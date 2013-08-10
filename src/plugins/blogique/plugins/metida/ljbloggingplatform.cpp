@@ -101,7 +101,7 @@ namespace Metida
 
 	IBloggingPlatform::BloggingPlatfromFeatures LJBloggingPlatform::GetFeatures () const
 	{
-		return BPFSupportsProfiles | BPFSelectablePostDestination | BPFSupportsBackup | BPFPostPreviewSupport;
+		return BPFSupportsProfiles | BPFSelectablePostDestination | BPFSupportsBackup;
 	}
 
 	QObjectList LJBloggingPlatform::GetRegisteredAccounts ()
