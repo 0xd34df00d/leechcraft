@@ -45,33 +45,27 @@
 <context>
     <name>GraphsTab</name>
     <message>
-        <location filename="graphstab.ui" line="39"/>
+        <location filename="graphstab.ui" line="42"/>
         <source>Last week</source>
         <translation>Последняя неделя</translation>
     </message>
     <message>
-        <location filename="graphstab.ui" line="44"/>
+        <location filename="graphstab.ui" line="47"/>
         <source>Last month</source>
         <translation>Последний месяц</translation>
     </message>
     <message>
-        <location filename="graphstab.ui" line="49"/>
+        <location filename="graphstab.ui" line="52"/>
         <source>All time</source>
         <translation>Все время</translation>
     </message>
     <message>
-        <location filename="graphstab.ui" line="57"/>
+        <location filename="graphstab.ui" line="60"/>
         <source>from</source>
         <translation>от</translation>
     </message>
     <message>
-        <location filename="graphstab.ui" line="64"/>
-        <location filename="graphstab.ui" line="81"/>
-        <source>dd.MM.yyyy</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="graphstab.ui" line="74"/>
+        <location filename="graphstab.ui" line="77"/>
         <source>to</source>
         <translation>до</translation>
     </message>
@@ -110,70 +104,98 @@
 <context>
     <name>LeechCraft::Poleemery::EntriesModel</name>
     <message>
-        <location filename="entriesmodel.cpp" line="46"/>
+        <location filename="entriesmodel.cpp" line="47"/>
         <source>Date</source>
         <translation>Дата</translation>
     </message>
     <message>
-        <location filename="entriesmodel.cpp" line="46"/>
+        <location filename="entriesmodel.cpp" line="48"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="entriesmodel.cpp" line="46"/>
+        <location filename="entriesmodel.cpp" line="49"/>
         <source>Price</source>
         <translation>Стоимость</translation>
     </message>
     <message>
-        <location filename="entriesmodel.cpp" line="46"/>
+        <location filename="entriesmodel.cpp" line="50"/>
+        <source>Currency</source>
+        <translation>Валюта</translation>
+    </message>
+    <message>
+        <location filename="entriesmodel.cpp" line="51"/>
+        <source>Rate</source>
+        <translation>Курс</translation>
+    </message>
+    <message>
+        <location filename="entriesmodel.cpp" line="52"/>
+        <source>Native price</source>
+        <translation>Стоимость (учётная запись)</translation>
+    </message>
+    <message>
+        <location filename="entriesmodel.cpp" line="53"/>
         <source>Count</source>
         <translation>Кол-во единиц</translation>
     </message>
     <message>
-        <location filename="entriesmodel.cpp" line="47"/>
+        <location filename="entriesmodel.cpp" line="54"/>
         <source>Shop</source>
         <translation>Магазин</translation>
     </message>
     <message>
-        <location filename="entriesmodel.cpp" line="47"/>
+        <location filename="entriesmodel.cpp" line="55"/>
         <source>Categories</source>
         <translation>Категории</translation>
     </message>
     <message>
-        <location filename="entriesmodel.cpp" line="48"/>
+        <location filename="entriesmodel.cpp" line="56"/>
         <source>Account</source>
         <translation>Учётная запись</translation>
     </message>
     <message>
-        <location filename="entriesmodel.cpp" line="48"/>
+        <location filename="entriesmodel.cpp" line="57"/>
         <source>Account balance</source>
         <translation>Баланс</translation>
     </message>
     <message>
-        <location filename="entriesmodel.cpp" line="48"/>
+        <location filename="entriesmodel.cpp" line="58"/>
         <source>Sum balance</source>
         <translation>Суммарный баланс</translation>
     </message>
 </context>
 <context>
+    <name>LeechCraft::Poleemery::OperationPropsDialog</name>
+    <message>
+        <location filename="operationpropsdialog.cpp" line="169"/>
+        <source>Update prices</source>
+        <translation>Обновление стоимости</translation>
+    </message>
+    <message>
+        <location filename="operationpropsdialog.cpp" line="170"/>
+        <source>The selected currency has been changed. Should prices be recalculated using the new currency?</source>
+        <translation>Выбранная валюта изменилась. Должны ли цены быть пересчитаны в соответствие с новой валютой?</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Poleemery::OperationsTab</name>
     <message>
-        <location filename="operationstab.cpp" line="140"/>
+        <location filename="operationstab.cpp" line="50"/>
         <source>Poleemery</source>
         <translation>Poleemery</translation>
     </message>
     <message>
-        <location filename="operationstab.cpp" line="160"/>
+        <location filename="operationstab.cpp" line="70"/>
         <source>Add...</source>
         <translation>Добавить...</translation>
     </message>
     <message>
-        <location filename="operationstab.cpp" line="165"/>
+        <location filename="operationstab.cpp" line="75"/>
         <source>Remove</source>
         <translation>Удалить</translation>
     </message>
     <message>
-        <location filename="operationstab.cpp" line="211"/>
+        <location filename="operationstab.cpp" line="122"/>
         <source>Are you sure you want to delete entry %1?</source>
         <translation>Вы уверены, что хотите удалить запись %1?</translation>
     </message>
@@ -240,39 +262,59 @@
         <translation>Учётная запись:</translation>
     </message>
     <message>
-        <location filename="operationpropsdialog.ui" line="69"/>
-        <source>Price/amount:</source>
-        <translation>Цена:</translation>
+        <location filename="operationpropsdialog.ui" line="79"/>
+        <source>Currency:</source>
+        <translation>Валюта:</translation>
     </message>
     <message>
-        <location filename="operationpropsdialog.ui" line="90"/>
+        <location filename="operationpropsdialog.ui" line="198"/>
         <source>Name:</source>
         <translation>Имя:</translation>
     </message>
     <message>
-        <location filename="operationpropsdialog.ui" line="113"/>
+        <location filename="operationpropsdialog.ui" line="221"/>
         <source>Description:</source>
         <translation>Описание:</translation>
     </message>
     <message>
-        <location filename="operationpropsdialog.ui" line="123"/>
+        <location filename="operationpropsdialog.ui" line="69"/>
         <source>Date:</source>
         <translation>Дата:</translation>
     </message>
     <message>
-        <location filename="operationpropsdialog.ui" line="139"/>
-        <source>Count:</source>
-        <translation>Число:</translation>
-    </message>
-    <message>
-        <location filename="operationpropsdialog.ui" line="156"/>
+        <location filename="operationpropsdialog.ui" line="104"/>
         <source>Shop:</source>
         <translation>Магазин:</translation>
     </message>
     <message>
-        <location filename="operationpropsdialog.ui" line="163"/>
+        <location filename="operationpropsdialog.ui" line="127"/>
+        <source>Items:</source>
+        <translation>Элементы:</translation>
+    </message>
+    <message>
+        <location filename="operationpropsdialog.ui" line="162"/>
+        <source>Add</source>
+        <translation>Добавить</translation>
+    </message>
+    <message>
+        <location filename="operationpropsdialog.ui" line="169"/>
+        <source>Remove</source>
+        <translation>Удалить</translation>
+    </message>
+    <message>
+        <location filename="operationpropsdialog.ui" line="181"/>
+        <source>Billed:</source>
+        <translation>Списано:</translation>
+    </message>
+    <message>
+        <location filename="operationpropsdialog.ui" line="231"/>
         <source>Categories:</source>
         <translation>Категории:</translation>
+    </message>
+    <message>
+        <location filename="operationpropsdialog.ui" line="241"/>
+        <source>Price:</source>
+        <translation>Цена:</translation>
     </message>
 </context>
 <context>
@@ -288,29 +330,41 @@
         <translation>нал</translation>
     </message>
     <message>
-        <location filename="graphsfactory.cpp" line="346"/>
+        <location filename="graphsfactory.cpp" line="412"/>
+        <location filename="graphsfactory.cpp" line="472"/>
+        <location filename="graphsfactory.cpp" line="486"/>
         <source>Days</source>
         <translation>Дни</translation>
     </message>
     <message>
-        <location filename="graphsfactory.cpp" line="351"/>
+        <location filename="graphsfactory.cpp" line="419"/>
         <source>Cumulative accounts balance</source>
         <translation>Суммарный баланс учётных записей</translation>
     </message>
     <message>
-        <location filename="graphsfactory.cpp" line="356"/>
+        <location filename="graphsfactory.cpp" line="424"/>
         <source>Comparative accounts balance</source>
         <translation>Сравнительный баланс учётных записей</translation>
     </message>
     <message>
-        <location filename="graphsfactory.cpp" line="376"/>
+        <location filename="graphsfactory.cpp" line="448"/>
         <source>Per-category spendings breakdown (absolute)</source>
         <translation>Разбиение трат по категориям (абсолютные значения)</translation>
     </message>
     <message>
-        <location filename="graphsfactory.cpp" line="381"/>
+        <location filename="graphsfactory.cpp" line="453"/>
         <source>Per-category spendings breakdown (relative)</source>
         <translation>Разбиение трат по категориям (относительные значения)</translation>
+    </message>
+    <message>
+        <location filename="graphsfactory.cpp" line="465"/>
+        <source>%1 to USD rate (OHLC)</source>
+        <translation>%1 к USD (OHLC)</translation>
+    </message>
+    <message>
+        <location filename="graphsfactory.cpp" line="479"/>
+        <source>%1 to USD rate (standard curve)</source>
+        <translation>%1 к USD (обычная кривая)</translation>
     </message>
 </context>
 <context>
