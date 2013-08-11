@@ -113,6 +113,7 @@ set (ACETAMIDE_FORMS
 set (ACETAMIDE_RESOURCES azothacetamideresources.qrc)
 
 CreateTrs ("azoth_acetamide" "de;en;es;fr;it;ru_RU;uk_UA" ACETAMIDE_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("azoth_acetamide" "en;ru_RU" "${ACETAMIDE_SRCS}" "${ACETAMIDE_FORMS}" "azothacetamidesettings.xml")
 
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (ACETAMIDE_MOC_SRCS ${ACETAMIDE_HEADERS})
