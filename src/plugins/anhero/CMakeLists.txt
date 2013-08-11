@@ -14,6 +14,7 @@ set (SRCS
 	)
 set (RESOURCES anheroresources.qrc)
 CreateTrs ("anhero" "ar;de;en;es;fr;it;oc;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("anhero" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 add_library (leechcraft_anhero SHARED
