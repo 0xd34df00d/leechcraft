@@ -13,11 +13,6 @@ set (AUTOIDLER_SRCS
 	xmlsettingsmanager.cpp
 	3dparty/idle.cpp
 	)
-set (AUTOIDLER_HEADERS
-	autoidler.h
-	xmlsettingsmanager.h
-	3dparty/idle.h
-	)
 set (AUTOIDLER_RESOURCES azothautoidlerresources.qrc)
 QT4_ADD_RESOURCES (AUTOIDLER_RCCS ${AUTOIDLER_RESOURCES})
 
@@ -41,9 +36,7 @@ endif ()
 add_definitions (-DUNICODE)
 
 CreateTrs ("azoth_autoidler" "en;es;ru_RU;uk_UA" AUTOIDLER_COMPILED_TRANSLATIONS)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (AUTOIDLER_MOC_SRCS ${AUTOIDLER_HEADERS})
-endif ()
+CreateTrsUpTarget ("azoth_autoidler" "en;ru_RU" "${AUTOIDLER_SRCS}" "" "azothautoidlersettings.xml")
 
 add_library (leechcraft_azoth_autoidler SHARED
 	${AUTOIDLER_COMPILED_TRANSLATIONS}
