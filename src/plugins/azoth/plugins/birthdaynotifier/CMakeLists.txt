@@ -12,16 +12,10 @@ set (BIRTHDAYNOTIFIER_SRCS
 	birthdaynotifier.cpp
 	xmlsettingsmanager.cpp
 	)
-set (BIRTHDAYNOTIFIER_HEADERS
-	birthdaynotifier.h
-	xmlsettingsmanager.h
-	)
 set (BIRTHDAYNOTIFIER_RESOURCES azothbirthdaynotifierresources.qrc)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (BIRTHDAYNOTIFIER_MOC_SRCS ${BIRTHDAYNOTIFIER_HEADERS})
-endif ()
 QT4_ADD_RESOURCES (BIRTHDAYNOTIFIER_RCCS ${BIRTHDAYNOTIFIER_RESOURCES})
 CreateTrs ("azoth_birthdaynotifier" "en;ru_RU" BIRTHDAYNOTIFIER_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("azoth_birthdaynotifier" "en;ru_RU" "${BIRTHDAYNOTIFIER_SRCS}" "" "azothbirthdaynotifiersettings.xml")
 
 add_library (leechcraft_azoth_birthdaynotifier SHARED
 	${BIRTHDAYNOTIFIER_COMPILED_TRANSLATIONS}

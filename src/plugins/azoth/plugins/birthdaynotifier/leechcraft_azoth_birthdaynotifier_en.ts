@@ -4,12 +4,12 @@
 <context>
     <name>LeechCraft::Azoth::BirthdayNotifier::Plugin</name>
     <message>
-        <location filename="birthdaynotifier.cpp" line="75"/>
+        <location filename="birthdaynotifier.cpp" line="89"/>
         <source>Notifies about birthdays of your buddies.</source>
         <translation>Notifies about birthdays of your buddies.</translation>
     </message>
     <message numerus="yes">
-        <location filename="birthdaynotifier.cpp" line="101"/>
+        <location filename="birthdaynotifier.cpp" line="115"/>
         <source>%1 has birthday in %n day(s)!</source>
         <translation>
             <numerusform>%1 has birthday in %n day!</numerusform>
@@ -17,12 +17,12 @@
         </translation>
     </message>
     <message>
-        <location filename="birthdaynotifier.cpp" line="102"/>
+        <location filename="birthdaynotifier.cpp" line="116"/>
         <source>%1 has birthday today!</source>
         <translation>%1 has birthday today!</translation>
     </message>
     <message>
-        <location filename="birthdaynotifier.cpp" line="103"/>
+        <location filename="birthdaynotifier.cpp" line="117"/>
         <source>Birthday reminder</source>
         <translation>Birthday reminder</translation>
     </message>
