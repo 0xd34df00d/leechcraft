@@ -49,12 +49,13 @@ namespace Krigstask
 	{
 		Q_OBJECT
 
-		DesktopsModel *DesktopsModel_;
+		DesktopsModel * const DesktopsModel_;
+		const bool ShowThumbs_;
 
 		Util::SettableIconProvider *WinIconProv_;
 		ImageProvider *WinSnapshotProv_;
 	public:
-		PagerWindow (int, ICoreProxy_ptr, QWidget* = 0);
+		PagerWindow (int, bool, ICoreProxy_ptr, QWidget* = 0);
 	private:
 		void FillModel ();
 		void FillSubmodel (SingleDesktopModel*, const QList<ulong>&, ulong);

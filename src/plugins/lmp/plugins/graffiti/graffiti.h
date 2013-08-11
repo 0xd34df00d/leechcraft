@@ -33,6 +33,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/ijobholder.h>
 #include <interfaces/lmp/ilmpplugin.h>
 
 namespace LeechCraft
@@ -41,22 +42,28 @@ namespace LMP
 {
 namespace Graffiti
 {
+	class ProgressManager;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
 				 , public IHaveTabs
+				 , public IJobHolder
 				 , public ILMPPlugin
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IPlugin2
 				IHaveTabs
+				IJobHolder
 				LeechCraft::LMP::ILMPPlugin)
 
 		ICoreProxy_ptr CoreProxy_;
 		ILMPProxy_ptr LMPProxy_;
 
 		TabClassInfo TaggerTC_;
+
+		ProgressManager *ProgressMgr_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -70,6 +77,8 @@ namespace Graffiti
 
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray& tabClass);
+
+		QAbstractItemModel* GetRepresentation () const;
 
 		void SetLMPProxy (ILMPProxy_ptr);
 	signals:

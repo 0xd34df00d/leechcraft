@@ -122,9 +122,10 @@ namespace Krigstask
 		}
 	};
 
-	PagerWindow::PagerWindow (int screen, ICoreProxy_ptr proxy, QWidget *parent)
+	PagerWindow::PagerWindow (int screen, bool showThumbs, ICoreProxy_ptr proxy, QWidget *parent)
 	: QDeclarativeView (parent)
 	, DesktopsModel_ (new DesktopsModel (this))
+	, ShowThumbs_ (showThumbs)
 	, WinIconProv_ (new Util::SettableIconProvider)
 	, WinSnapshotProv_ (new ImageProvider)
 	{
@@ -147,6 +148,7 @@ namespace Krigstask
 				qApp->desktop ()->availableGeometry (screen));
 
 		FillModel ();
+		rootContext ()->setContextProperty ("showThumbs", ShowThumbs_);
 		rootContext ()->setContextProperty ("desktopsModel", DesktopsModel_);
 		rootContext ()->setContextProperty ("pagerProxy", this);
 

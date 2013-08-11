@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="ru_RU" version="2.0">
 <context>
     <name>LeechCraft::NetStoreManager::YandexDisk::Account</name>
     <message>
@@ -67,7 +65,7 @@
     <message>
         <location filename="authmanager.cpp" line="103"/>
         <source>Unexpected server reply.</source>
-        <translation>Неожиданныйй ответ сервера.</translation>
+        <translation>Неожиданный ответ сервера.</translation>
     </message>
 </context>
 <context>

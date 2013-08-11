@@ -61,7 +61,7 @@ namespace Krigstask
 		void closeWindow (const QString&);
 
 		void showMenu (const QString&, int, int);
-		void showPager (int, int);
+		void showPager (int, int, bool);
 	private slots:
 		void handleAction ();
 	};

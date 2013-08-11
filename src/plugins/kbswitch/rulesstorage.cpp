@@ -128,6 +128,21 @@ namespace KBSwitch
 			LayDesc2Name_ [desc.desc] = desc.name;
 		}
 
+		for (int i = 0; i < xkbRules->variants.num_desc; ++i)
+		{
+			const auto& desc = xkbRules->variants.desc [i];
+
+			const QString descStr (desc.desc);
+			const auto& split = descStr.split (':', QString::SkipEmptyParts);
+			const auto& varName = split.value (0).trimmed ();
+			const auto& hrName = split.value (1).trimmed ();
+
+			const QString name (desc.name);
+			LayName2Variants_ [varName] << name;
+
+			VarLayHR2NameVarPair_ [hrName] = qMakePair (varName, name);
+		}
+
 		QStringList pcModelStrings;
 		for (int i = 0; i < xkbRules->models.num_desc; ++i)
 		{
@@ -187,54 +202,14 @@ namespace KBSwitch
 		return LayName2Desc_;
 	}
 
+	const QHash<QString, QPair<QString, QString>>& RulesStorage::GetVariantsD2Layouts () const
+	{
+		return VarLayHR2NameVarPair_;
+	}
+
 	QStringList RulesStorage::GetLayoutVariants (const QString& layout) const
 	{
-		QStringList result;
-
-		QString filename = X11Dir_ + "/xkb/symbols/";
-		if (QDir (filename + "pc").exists ())
-			filename += "pc/";
-		filename += layout;
-
-		QFile file (filename);
-		if (!file.open (QIODevice::ReadOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot open"
-					<< filename
-					<< "for"
-					<< layout;
-			return result;
-		}
-
-		QTextStream istr (&file);
-		QString line;
-		QString prev;
-
-		while (istr.status () == QTextStream::Ok)
-		{
-			prev = line;
-			line = istr.readLine ();
-			if (line.isNull ())
-				break;
-
-			line = line.simplified ();
-			if (line.isEmpty () || line [0] == '#' || line.left (2) == "//")
-				continue;
-
-			auto pos = line.indexOf ("xkb_symbols");
-			if (pos < 0)
-				continue;
-
-			pos = line.indexOf ('"', pos) + 1;
-			const auto nextPos = line.indexOf ('"', pos);
-			if (pos < 0 || nextPos < 0)
-				continue;
-
-			result.append (line.mid (pos, nextPos - pos));
-		}
-
-		return result;
+		return LayName2Variants_ [layout];
 	}
 
 	const QHash<QString, QString>& RulesStorage::GetKBModels () const

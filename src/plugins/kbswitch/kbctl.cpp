@@ -334,11 +334,34 @@ namespace KBSwitch
 
 		char **result = new char* [groupCount];
 		XGetAtomNames (Display_, group, groupCount, result);
+
 		const auto& layoutsD2N = Rules_->GetLayoutsD2N ();
+		const auto& varredLayouts = Rules_->GetVariantsD2Layouts ();
 		for (size_t i = 0; i < groupCount; ++i)
 		{
-			Groups_ << layoutsD2N [result [i]];
+			const QString str (result [i]);
 			XFree (result [i]);
+
+			if (!layoutsD2N [str].isEmpty ())
+			{
+				const auto& grp = layoutsD2N [str];
+				Groups_ << grp;
+				Variants_.remove (grp);
+			}
+			else if (!varredLayouts [str].first.isEmpty ())
+			{
+				const auto& grp = varredLayouts [str];
+				Groups_ << grp.first;
+				Variants_ [grp.first] = grp.second;
+			}
+			else
+			{
+				qWarning () << Q_FUNC_INFO
+						<< str
+						<< "not present anywhere";
+				qWarning () << varredLayouts.contains (str);
+				continue;
+			}
 		}
 		delete [] result;
 

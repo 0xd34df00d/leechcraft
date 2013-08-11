@@ -62,9 +62,13 @@ namespace Graffiti
 		};
 		QList<SplitQueueItem> SplitQueue_;
 
+		int TotalItems_;
+
 		QSet<QString> EmittedErrors_;
 	public:
 		CueSplitter (const QString& cue, const QString& dir, QObject* = 0);
+
+		QString GetCueFile () const;
 	private slots:
 		void split ();
 		void scheduleNext ();
@@ -72,7 +76,9 @@ namespace Graffiti
 		void handleProcessError ();
 	signals:
 		void error (const QString&);
-		void finished ();
+		void finished (CueSplitter*);
+
+		void splitProgress (int, int, CueSplitter*);
 	};
 }
 }

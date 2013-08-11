@@ -286,11 +286,39 @@ namespace Poleemery
 		}
 	}
 
+	QList<Rate> Storage::GetRates (const QDateTime& start, const QDateTime& end)
+	{
+		try
+		{
+			return Impl_->RateInfo_.DoSelectByFields_ (start < oral::ph::_2 && oral::ph::_2 < end);
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
+	}
+
 	QList<Rate> Storage::GetRate (const QString& code)
 	{
 		try
 		{
-			return Impl_->RateInfo_.DoSelectByFields_.Prepare<1> () (code);
+			return Impl_->RateInfo_.DoSelectByFields_ (oral::ph::_1 == code);
+		}
+		catch (const oral::QueryException& e)
+		{
+			qWarning () << Q_FUNC_INFO;
+			Util::DBLock::DumpError (e.GetQuery ());
+			throw;
+		}
+	}
+
+	QList<Rate> Storage::GetRate (const QString& code, const QDateTime& start, const QDateTime& end)
+	{
+		try
+		{
+			return Impl_->RateInfo_.DoSelectByFields_ (oral::ph::_1 == code && start < oral::ph::_2 && oral::ph::_2 < end);
 		}
 		catch (const oral::QueryException& e)
 		{

@@ -34,10 +34,10 @@
 #include "syncer.h"
 #if defined (Q_OS_LINUX)
 	#include "fileswatcher_inotify.h"
-#include "syncwidget.h"
 #else
 	#include "fileswatcher_dummy.h"
 #endif
+#include "syncwidget.h"
 
 namespace LeechCraft
 {

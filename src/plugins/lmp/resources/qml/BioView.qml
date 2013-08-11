@@ -33,13 +33,23 @@ Rectangle {
         states: [
             State {
                 name: "hidden"
-                PropertyChanges { target: fullSizeArtistImg; opacity: 0; width: artistImageThumb.width; height: artistImageThumb.height }
+                when: fullSizeArtistImg.status == Image.Null || fullSizeArtistImg.status == Image.Error
+                PropertyChanges { target: fullSizeArtistImg; opacity: 0 }
                 PropertyChanges { target: bioViewBlur; blurRadius: 0 }
+                PropertyChanges { target: loadProgress; opacity: 0 }
+            },
+            State {
+                name: "loading"
+                when: fullSizeArtistImg.status == Image.Loading
+                PropertyChanges { target: bioViewBlur; blurRadius: 1 }
+                PropertyChanges { target: loadProgress; opacity: 1 }
             },
             State {
                 name: "visible"
+                when: fullSizeArtistImg.status == Image.Ready
                 PropertyChanges { target: fullSizeArtistImg; opacity: 1; width: parent.width - 64; height: parent.height - 64 }
                 PropertyChanges { target: bioViewBlur; blurRadius: 10 }
+                PropertyChanges { target: loadProgress; opacity: 0 }
             }
         ]
 
@@ -52,8 +62,6 @@ Rectangle {
             anchors.fill: parent
             onClicked: fullSizeArtistImg.state = "hidden"
         }
-
-        onStatusChanged: if (fullSizeArtistImg.status == Image.Ready) fullSizeArtistImg.state = "visible"
 
         ActionButton {
             visible: parent.navVisible
@@ -77,6 +85,19 @@ Rectangle {
             actionIconURL: "image://ThemeIcons/go-next"
 
             onTriggered: artistImagesView.incrementCurrentIndex()
+        }
+
+        ProgressBar {
+            id: loadProgress
+
+            value: parent.progress * 100
+
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: parent.bottom
+            height: 12
+
+            color: colorProxy.color_TextView_Aux3TextColor
         }
     }
 

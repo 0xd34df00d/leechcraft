@@ -116,7 +116,7 @@ namespace Fenet
 			Known_ << info;
 
 			if (std::any_of (execNames.begin (), execNames.end (),
-					[this] (const QString& name) { return IsAvailable (name); }))
+					[this] (const QString& name) { return this->IsAvailable (name); }))
 			{
 				qDebug () << Q_FUNC_INFO << info.Name_ << "available";
 				Found_ << info;

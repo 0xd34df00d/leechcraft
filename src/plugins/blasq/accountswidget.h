@@ -51,6 +51,7 @@ namespace Blasq
 		AccountsWidget (ServicesManager*, AccountsManager*, QWidget* = 0);
 	private slots:
 		void on_Add__released ();
+		void on_Remove__released ();
 	};
 }
 }

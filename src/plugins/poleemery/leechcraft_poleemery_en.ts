@@ -45,33 +45,27 @@
 <context>
     <name>GraphsTab</name>
     <message>
-        <location filename="graphstab.ui" line="39"/>
+        <location filename="graphstab.ui" line="42"/>
         <source>Last week</source>
         <translation>Last week</translation>
     </message>
     <message>
-        <location filename="graphstab.ui" line="44"/>
+        <location filename="graphstab.ui" line="47"/>
         <source>Last month</source>
         <translation>Last month</translation>
     </message>
     <message>
-        <location filename="graphstab.ui" line="49"/>
+        <location filename="graphstab.ui" line="52"/>
         <source>All time</source>
         <translation>All time</translation>
     </message>
     <message>
-        <location filename="graphstab.ui" line="57"/>
+        <location filename="graphstab.ui" line="60"/>
         <source>from</source>
         <translation>from</translation>
     </message>
     <message>
-        <location filename="graphstab.ui" line="64"/>
-        <location filename="graphstab.ui" line="81"/>
-        <source>dd.MM.yyyy</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="graphstab.ui" line="74"/>
+        <location filename="graphstab.ui" line="77"/>
         <source>to</source>
         <translation>to</translation>
     </message>
@@ -110,70 +104,98 @@
 <context>
     <name>LeechCraft::Poleemery::EntriesModel</name>
     <message>
-        <location filename="entriesmodel.cpp" line="46"/>
+        <location filename="entriesmodel.cpp" line="47"/>
         <source>Date</source>
         <translation>Date</translation>
     </message>
     <message>
-        <location filename="entriesmodel.cpp" line="46"/>
+        <location filename="entriesmodel.cpp" line="48"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="entriesmodel.cpp" line="46"/>
+        <location filename="entriesmodel.cpp" line="49"/>
         <source>Price</source>
         <translation>Price</translation>
     </message>
     <message>
-        <location filename="entriesmodel.cpp" line="46"/>
+        <location filename="entriesmodel.cpp" line="50"/>
+        <source>Currency</source>
+        <translation>Currency</translation>
+    </message>
+    <message>
+        <location filename="entriesmodel.cpp" line="51"/>
+        <source>Rate</source>
+        <translation>Rate</translation>
+    </message>
+    <message>
+        <location filename="entriesmodel.cpp" line="52"/>
+        <source>Native price</source>
+        <translation>Native price</translation>
+    </message>
+    <message>
+        <location filename="entriesmodel.cpp" line="53"/>
         <source>Count</source>
         <translation>Count</translation>
     </message>
     <message>
-        <location filename="entriesmodel.cpp" line="47"/>
+        <location filename="entriesmodel.cpp" line="54"/>
         <source>Shop</source>
         <translation>Shop</translation>
     </message>
     <message>
-        <location filename="entriesmodel.cpp" line="47"/>
+        <location filename="entriesmodel.cpp" line="55"/>
         <source>Categories</source>
         <translation>Categories</translation>
     </message>
     <message>
-        <location filename="entriesmodel.cpp" line="48"/>
+        <location filename="entriesmodel.cpp" line="56"/>
         <source>Account</source>
         <translation>Account</translation>
     </message>
     <message>
-        <location filename="entriesmodel.cpp" line="48"/>
+        <location filename="entriesmodel.cpp" line="57"/>
         <source>Account balance</source>
         <translation>Account balance</translation>
     </message>
     <message>
-        <location filename="entriesmodel.cpp" line="48"/>
+        <location filename="entriesmodel.cpp" line="58"/>
         <source>Sum balance</source>
         <translation>Sum balance</translation>
     </message>
 </context>
 <context>
+    <name>LeechCraft::Poleemery::OperationPropsDialog</name>
+    <message>
+        <location filename="operationpropsdialog.cpp" line="169"/>
+        <source>Update prices</source>
+        <translation>Update prices</translation>
+    </message>
+    <message>
+        <location filename="operationpropsdialog.cpp" line="170"/>
+        <source>The selected currency has been changed. Should prices be recalculated using the new currency?</source>
+        <translation>The selected currency has been changed. Should prices be recalculated using the new currency?</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Poleemery::OperationsTab</name>
     <message>
-        <location filename="operationstab.cpp" line="140"/>
+        <location filename="operationstab.cpp" line="50"/>
         <source>Poleemery</source>
         <translation>Poleemery</translation>
     </message>
     <message>
-        <location filename="operationstab.cpp" line="160"/>
+        <location filename="operationstab.cpp" line="70"/>
         <source>Add...</source>
         <translation>Add...</translation>
     </message>
     <message>
-        <location filename="operationstab.cpp" line="165"/>
+        <location filename="operationstab.cpp" line="75"/>
         <source>Remove</source>
         <translation>Remove</translation>
     </message>
     <message>
-        <location filename="operationstab.cpp" line="211"/>
+        <location filename="operationstab.cpp" line="122"/>
         <source>Are you sure you want to delete entry %1?</source>
         <translation>Are you sure you want to delete entry %1?</translation>
     </message>
@@ -240,39 +262,59 @@
         <translation>Account:</translation>
     </message>
     <message>
-        <location filename="operationpropsdialog.ui" line="69"/>
-        <source>Price/amount:</source>
-        <translation>Price/amount:</translation>
+        <location filename="operationpropsdialog.ui" line="79"/>
+        <source>Currency:</source>
+        <translation>Currency:</translation>
     </message>
     <message>
-        <location filename="operationpropsdialog.ui" line="90"/>
+        <location filename="operationpropsdialog.ui" line="198"/>
         <source>Name:</source>
         <translation>Name:</translation>
     </message>
     <message>
-        <location filename="operationpropsdialog.ui" line="113"/>
+        <location filename="operationpropsdialog.ui" line="221"/>
         <source>Description:</source>
         <translation>Description:</translation>
     </message>
     <message>
-        <location filename="operationpropsdialog.ui" line="123"/>
+        <location filename="operationpropsdialog.ui" line="69"/>
         <source>Date:</source>
         <translation>Date:</translation>
     </message>
     <message>
-        <location filename="operationpropsdialog.ui" line="139"/>
-        <source>Count:</source>
-        <translation>Count:</translation>
-    </message>
-    <message>
-        <location filename="operationpropsdialog.ui" line="156"/>
+        <location filename="operationpropsdialog.ui" line="104"/>
         <source>Shop:</source>
         <translation>Shop:</translation>
     </message>
     <message>
-        <location filename="operationpropsdialog.ui" line="163"/>
+        <location filename="operationpropsdialog.ui" line="127"/>
+        <source>Items:</source>
+        <translation>Items:</translation>
+    </message>
+    <message>
+        <location filename="operationpropsdialog.ui" line="162"/>
+        <source>Add</source>
+        <translation>Add</translation>
+    </message>
+    <message>
+        <location filename="operationpropsdialog.ui" line="169"/>
+        <source>Remove</source>
+        <translation>Remove</translation>
+    </message>
+    <message>
+        <location filename="operationpropsdialog.ui" line="181"/>
+        <source>Billed:</source>
+        <translation>Billed:</translation>
+    </message>
+    <message>
+        <location filename="operationpropsdialog.ui" line="231"/>
         <source>Categories:</source>
         <translation>Categories:</translation>
+    </message>
+    <message>
+        <location filename="operationpropsdialog.ui" line="241"/>
+        <source>Price:</source>
+        <translation>Price:</translation>
     </message>
 </context>
 <context>
@@ -288,29 +330,41 @@
         <translation>cash</translation>
     </message>
     <message>
-        <location filename="graphsfactory.cpp" line="346"/>
+        <location filename="graphsfactory.cpp" line="412"/>
+        <location filename="graphsfactory.cpp" line="472"/>
+        <location filename="graphsfactory.cpp" line="486"/>
         <source>Days</source>
         <translation>Days</translation>
     </message>
     <message>
-        <location filename="graphsfactory.cpp" line="351"/>
+        <location filename="graphsfactory.cpp" line="419"/>
         <source>Cumulative accounts balance</source>
         <translation>&apos;</translation>
     </message>
     <message>
-        <location filename="graphsfactory.cpp" line="356"/>
+        <location filename="graphsfactory.cpp" line="424"/>
         <source>Comparative accounts balance</source>
         <translation>Comparative accounts balance</translation>
     </message>
     <message>
-        <location filename="graphsfactory.cpp" line="376"/>
+        <location filename="graphsfactory.cpp" line="448"/>
         <source>Per-category spendings breakdown (absolute)</source>
         <translation>Per-category spendings breakdown (absolute)</translation>
     </message>
     <message>
-        <location filename="graphsfactory.cpp" line="381"/>
+        <location filename="graphsfactory.cpp" line="453"/>
         <source>Per-category spendings breakdown (relative)</source>
         <translation>Per-category spendings breakdown (relative)</translation>
+    </message>
+    <message>
+        <location filename="graphsfactory.cpp" line="465"/>
+        <source>%1 to USD rate (OHLC)</source>
+        <translation>%1 to USD rate (OHLC)</translation>
+    </message>
+    <message>
+        <location filename="graphsfactory.cpp" line="479"/>
+        <source>%1 to USD rate (standard curve)</source>
+        <translation>%1 to USD rate (standard curve)</translation>
     </message>
 </context>
 <context>

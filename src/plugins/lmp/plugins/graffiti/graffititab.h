@@ -53,6 +53,7 @@ namespace Graffiti
 {
 	class FilesModel;
 	class FilesWatcher;
+	class CueSplitter;
 
 	class GraffitiTab : public QWidget
 					  , public ITabWidget
@@ -103,7 +104,7 @@ namespace Graffiti
 		void fetchTags ();
 		void splitCue ();
 
-		void handleTagsFetched (const QString&, const Media::AudioInfo&);
+		void handleTagsFetched (const QString&);
 
 		void on_DirectoryTree__activated (const QModelIndex&);
 		void currentFileChanged (const QModelIndex&);
@@ -116,6 +117,9 @@ namespace Graffiti
 		void handleCueSplitFinished ();
 	signals:
 		void removeTab (QWidget*);
+
+		void tagsFetchProgress (int, int, QObject*);
+		void cueSplitStarted (CueSplitter*);
 	};
 }
 }

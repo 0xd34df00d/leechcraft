@@ -45,12 +45,19 @@ namespace Poleemery
 
 		QList<EntryBase_ptr> Entries_;
 		QList<BalanceInfo> Sums_;
+
+		bool RatePriceEditable_ = true;
 	public:
 		enum Columns
 		{
 			Date,
 			Name,
+
 			Price,
+			EntryCurrency,
+			EntryRate,
+			NativePrice,
+
 			Count,
 			Shop,
 			Categories,
@@ -71,6 +78,8 @@ namespace Poleemery
 		QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
 		bool setData (const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 		QVariant headerData (int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+
+		void SetRatePriceEditable (bool);
 
 		void AddEntry (EntryBase_ptr);
 		void AddEntries (QList<EntryBase_ptr>);

@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QDialog>
+#include <interfaces/core/icoreproxy.h>
 #include "ui_vcarddialog.h"
 #include "structures.h"
 
@@ -48,12 +49,15 @@ namespace Murm
 
 		Ui::VCardDialog Ui_;
 
+		const ICoreProxy_ptr Proxy_;
+
 		const UserInfo Info_;
 		PhotoStorage * const Storage_;
 	public:
-		VCardDialog (const UserInfo&, PhotoStorage*, GeoResolver*, QWidget* = 0);
+		VCardDialog (const UserInfo&, PhotoStorage*, GeoResolver*, ICoreProxy_ptr, QWidget* = 0);
 	private slots:
 		void handleImage (const QUrl&);
+		void on_OpenVKPage__released ();
 	};
 }
 }

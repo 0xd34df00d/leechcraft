@@ -88,6 +88,19 @@ namespace Util
 		return Row_ - other.Row_;
 	}
 
+	bool ModelIterator::operator== (const ModelIterator& other) const
+	{
+		return Row_ == other.Row_ &&
+				Col_ == other.Col_ &&
+				Model_ == other.Model_ &&
+				Parent_ == other.Parent_;
+	}
+
+	bool ModelIterator::operator!= (const ModelIterator& other) const
+	{
+		return !(*this == other);
+	}
+
 	QModelIndex ModelIterator::operator*() const
 	{
 		return Model_->index (Row_, Col_, Parent_);

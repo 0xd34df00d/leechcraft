@@ -34,6 +34,14 @@
 
 namespace LeechCraft
 {
+namespace Util
+{
+namespace Sync
+{
+	class Stager;
+}
+}
+
 struct Entity;
 
 namespace Otlozhu
@@ -46,6 +54,7 @@ namespace Otlozhu
 
 		ICoreProxy_ptr Proxy_;
 		TodoManager *TodoManager_;
+		Util::Sync::Stager *Stager_;
 
 		Core ();
 	public:
@@ -57,6 +66,7 @@ namespace Otlozhu
 		void SendEntity (const LeechCraft::Entity&);
 
 		TodoManager* GetTodoManager () const;
+		Util::Sync::Stager* GetStager () const;
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};

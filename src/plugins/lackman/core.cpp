@@ -36,8 +36,10 @@
 #include <QTimer>
 #include <QtDebug>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <xmlsettingsdialog/datasourceroles.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/an/constants.h>
 #include "repoinfofetcher.h"
 #include "storage.h"
 #include "packagesmodel.h"
@@ -438,7 +440,7 @@ namespace LackMan
 			}
 		}
 
-		Q_FOREACH (const QString& component, components)
+		for (const QString& component : components)
 		{
 			QUrl compUrl = url;
 			compUrl.setPath ((compUrl.path () + "/dists/%1/all/").arg (component));
@@ -649,8 +651,8 @@ namespace LackMan
 		QMap<QString, QList<QString>> PackageName2NewVersions_;
 
 		int newPackages = 0;
-		Q_FOREACH (const PackageShortInfo& info, shortInfos)
-			Q_FOREACH (const QString& version, info.Versions_)
+		for (const auto& info : shortInfos)
+			for (const QString& version : info.Versions_)
 			{
 				int packageId = -1;
 				try
@@ -702,7 +704,7 @@ namespace LackMan
 				}
 			}
 
-		Q_FOREACH (const QString& packageName, PackageName2NewVersions_.keys ())
+		for (const QString& packageName : PackageName2NewVersions_.keys ())
 		{
 			auto packageUrl = repoUrl;
 			const QString& normalized = NormalizePackageName (packageName);
@@ -1086,7 +1088,7 @@ namespace LackMan
 			return;
 		}
 
-		Q_FOREACH (int presentPId, presentPackages)
+		for (int presentPId : presentPackages)
 		{
 			PackageShortInfo psi;
 			try
@@ -1107,7 +1109,7 @@ namespace LackMan
 
 			const QString& ourVersion = psi.Versions_.at (0);
 			bool found = false;
-			Q_FOREACH (const PackageShortInfo& candidate, shortInfos)
+			for (const auto& candidate : shortInfos)
 			{
 				if (candidate.Name_ == psi.Name_ &&
 						candidate.Versions_.contains (ourVersion))
@@ -1156,6 +1158,8 @@ namespace LackMan
 			std::sort (versions.begin (), versions.end (), IsVersionLess);
 			const auto& greatest = versions.last ();
 
+			bool isInstalled = false;
+
 			Q_FOREACH (const auto& version, pInfo.Versions_)
 			{
 				const int packageId = Storage_->FindPackage (pInfo.Name_, version);
@@ -1171,8 +1175,26 @@ namespace LackMan
 						auto info = Storage_->GetSingleListPackageInfo (packageId);
 						info.HasNewVersion_ = info.IsInstalled_;
 						PackagesModel_->UpdateRow (info);
+						if (info.IsInstalled_)
+							isInstalled = true;
 					}
 				}
+			}
+
+			if (isInstalled)
+			{
+				const auto& entity = Util::MakeAN ("Lackman",
+						tr ("Package %1 has been updated.")
+							.arg ("<em>" + pInfo.Name_ + "</em>"),
+						PInfo_,
+						"org.LeechCraft.LackMan",
+						AN::CatPackageManager,
+						AN::TypePackageUpdated,
+						pInfo.Name_,
+						{ pInfo.Name_ },
+						0,
+						1);
+				emit gotEntity (entity);
 			}
 
 			emit tagsUpdated (GetAllTags ());

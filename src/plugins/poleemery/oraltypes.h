@@ -138,6 +138,13 @@ namespace oral
 			return *this;
 		}
 
+		template<typename T>
+		References& operator= (const PKey<T>& key)
+		{
+			Val_ = key;
+			return *this;
+		}
+
 		operator value_type () const
 		{
 			return Val_;

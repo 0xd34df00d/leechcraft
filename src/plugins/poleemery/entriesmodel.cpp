@@ -43,9 +43,20 @@ namespace Poleemery
 {
 	EntriesModel::EntriesModel (QObject *parent)
 	: QAbstractItemModel (parent)
-	, HeaderData_ { tr ("Date"), tr ("Name"), tr ("Price"), tr ("Count"),
-			tr ("Shop"), tr ("Categories"),
-			tr ("Account"), tr ("Account balance"), tr ("Sum balance") }
+	, HeaderData_ {
+			tr ("Date"),
+			tr ("Name"),
+			tr ("Price"),
+			tr ("Currency"),
+			tr ("Rate"),
+			tr ("Native price"),
+			tr ("Count"),
+			tr ("Shop"),
+			tr ("Categories"),
+			tr ("Account"),
+			tr ("Account balance"),
+			tr ("Sum balance")
+		}
 	{
 	}
 
@@ -89,6 +100,15 @@ namespace Poleemery
 			if (Entries_.at (index.row ())->GetType () == EntryType::Expense)
 				flags |= Qt::ItemIsEditable;
 			break;
+		case Columns::EntryCurrency:
+		case Columns::EntryRate:
+		case Columns::NativePrice:
+			if (RatePriceEditable_ &&
+					Entries_.at (index.row ())->GetType () == EntryType::Expense)
+				flags |= Qt::ItemIsEditable;
+			else
+				flags &= ~Qt::ItemIsEnabled;
+			break;
 		default:
 			flags |= Qt::ItemIsEditable;
 			break;
@@ -99,7 +119,9 @@ namespace Poleemery
 	namespace
 	{
 		template<typename T>
-		QVariant GetDataIf (EntryBase_ptr entry, EntryType expected, std::function<QVariant (std::shared_ptr<T>)> getter, const QVariant& def = QVariant ())
+		QVariant GetDataIf (EntryBase_ptr entry, EntryType expected,
+				std::function<QVariant (std::shared_ptr<T>)> getter,
+				const QVariant& def = QVariant ())
 		{
 			if (entry->GetType () != expected)
 				return def;
@@ -127,7 +149,22 @@ namespace Poleemery
 			case Columns::Name:
 				return entry->Name_;
 			case Columns::Price:
-				return QString::number (entry->Amount_) + " " + acc.Currency_;
+				return QString::number (entry->Amount_, 'f', 2);
+			case Columns::EntryCurrency:
+				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
+						[] (ExpenseEntry_ptr exp)
+							{ return exp->EntryCurrency_; });
+			case Columns::EntryRate:
+				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
+						[] (ExpenseEntry_ptr exp)
+							{ return QString::number (exp->Rate_, 'f', 3); });
+			case Columns::NativePrice:
+				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
+						[&acc] (ExpenseEntry_ptr exp)
+						{
+							return QString::number (exp->Rate_ * exp->Amount_, 'f', 2) +
+									" " + acc.Currency_;
+						});
 			case Columns::Date:
 				return entry->Date_;
 			case Columns::Count:
@@ -163,6 +200,18 @@ namespace Poleemery
 				return entry->Name_;
 			case Columns::Price:
 				return entry->Amount_;
+			case Columns::EntryCurrency:
+				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
+						[] (ExpenseEntry_ptr exp)
+							{ return exp->EntryCurrency_; });
+			case Columns::EntryRate:
+				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
+						[] (ExpenseEntry_ptr exp)
+							{ return exp->Rate_; });
+			case Columns::NativePrice:
+				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
+						[&acc] (ExpenseEntry_ptr exp)
+							{ return exp->Rate_ * exp->Amount_; });
 			case Columns::Date:
 				return entry->Date_;
 			case Columns::Count:
@@ -200,6 +249,11 @@ namespace Poleemery
 		auto entry = Entries_.at (index.row ());
 		bool shouldRecalcSums = false;
 		bool resetModel = false;
+
+		auto expEntry = entry->GetType () == EntryType::Expense ?
+				std::dynamic_pointer_cast<ExpenseEntry> (entry) :
+				ExpenseEntry_ptr ();
+
 		switch (index.column ())
 		{
 		case Columns::Account:
@@ -213,18 +267,33 @@ namespace Poleemery
 			entry->Amount_ = value.toDouble ();
 			shouldRecalcSums = true;
 			break;
+		case Columns::EntryCurrency:
+			expEntry->EntryCurrency_ = value.toString ();
+			shouldRecalcSums = true;
+			break;
+		case Columns::EntryRate:
+			expEntry->Rate_ = value.toDouble ();
+			shouldRecalcSums = true;
+			break;
+		case Columns::NativePrice:
+			if (expEntry->Amount_)
+			{
+				expEntry->Rate_ = value.toDouble () / expEntry->Amount_;
+				shouldRecalcSums = true;
+			}
+			break;
 		case Columns::Date:
 			entry->Date_ = value.toDateTime ();
 			resetModel = true;
 			break;
 		case Columns::Count:
-			std::dynamic_pointer_cast<ExpenseEntry> (entry)->Count_ = value.toDouble ();
+			expEntry->Count_ = value.toDouble ();
 			break;
 		case Columns::Shop:
-			std::dynamic_pointer_cast<ExpenseEntry> (entry)->Shop_ = value.toString ();
+			expEntry->Shop_ = value.toString ();
 			break;
 		case Columns::Categories:
-			std::dynamic_pointer_cast<ExpenseEntry> (entry)->Categories_ = value.toStringList ();
+			expEntry->Categories_ = value.toStringList ();
 			break;
 		}
 
@@ -260,6 +329,11 @@ namespace Poleemery
 		return QVariant ();
 	}
 
+	void EntriesModel::SetRatePriceEditable (bool editable)
+	{
+		RatePriceEditable_ = editable;
+	}
+
 	namespace
 	{
 		bool DateLess (EntryBase_ptr e1, EntryBase_ptr e2)
@@ -273,8 +347,11 @@ namespace Poleemery
 			switch (entry->GetType ())
 			{
 			case EntryType::Expense:
-				val -= entry->Amount_;
+			{
+				const auto expEntry = std::dynamic_pointer_cast<ExpenseEntry> (entry);
+				val -= expEntry->Amount_ * expEntry->Rate_;
 				break;
+			}
 			case EntryType::Receipt:
 				val += entry->Amount_;
 				break;

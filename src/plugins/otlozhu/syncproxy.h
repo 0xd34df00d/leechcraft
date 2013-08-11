@@ -46,8 +46,8 @@ namespace Otlozhu
 
 		QObject* GetQObject ();
 		QList<Laretz::Operation> GetAllOps () const;
+		QList<Laretz::Operation> GetNewOps () const;
 		void Merge (QList<Laretz::Operation>& ours, const QList<Laretz::Operation>& theirs);
-		void ApplyChanges (const QList<Laretz::Operation>&);
 	signals:
 		void gotNewOps (const QList<Laretz::Operation>&);
 	};

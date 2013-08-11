@@ -31,6 +31,7 @@ set (SRCS
 	xmlsettingsmanager.cpp
 	graphstab.cpp
 	graphsfactory.cpp
+	entriesdelegate.cpp
 	)
 set (FORMS
 	accountstab.ui

@@ -4,9 +4,12 @@ include (InitLCPlugin OPTIONAL)
 
 option (WITH_AZOTH_AUTOPASTE_JSON "Enable support for JSON-based services in Azoth Autopaste module" ON)
 
+set (QJSON_INCLUDES)
+
 if (WITH_AZOTH_AUTOPASTE_JSON)
 	set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 	find_package (QJSON REQUIRED)
+	set (QJSON_INCLUDES ${QJSON_INCLUDE_DIR})
 endif ()
 
 set (QT_USE_QTNETWORK TRUE)
@@ -15,7 +18,9 @@ include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/azoth
+	${QJSON_INCLUDES}
 	)
+
 set (AUTOPASTE_SRCS
 	autopaste.cpp
 	bpasteservice.cpp

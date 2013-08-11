@@ -162,7 +162,9 @@ public:
 	 *
 	 * @return Representation model.
 	 *
-	 * @sa CustomDataRoles
+	 * @sa LeechCraft::CustomDataRoles
+	 * @sa LeechCraft::JobHolderRow
+	 * @sa LeechCraft::ProcessState
 	 */
 	virtual QAbstractItemModel* GetRepresentation () const = 0;
 

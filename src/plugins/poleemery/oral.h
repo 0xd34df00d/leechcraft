@@ -39,6 +39,7 @@
 #include <boost/fusion/include/vector.hpp>
 #include <boost/fusion/include/transform.hpp>
 #include <boost/fusion/include/zip.hpp>
+#include <boost/variant/variant.hpp>
 #include <QStringList>
 #include <QDateTime>
 #include <QPair>
@@ -89,12 +90,6 @@ namespace oral
 			static QString value () { return boost::fusion::extension::struct_member_name<Seq, Idx>::call (); }
 		};
 
-		template<typename Seq, int Idx>
-		struct GetBoundName
-		{
-			static QString value () { return ':' + Seq::ClassName () + "_" + GetFieldName<Seq, Idx>::value (); }
-		};
-
 		template<typename S, typename N>
 		struct GetFieldsNames_
 		{
@@ -116,6 +111,12 @@ namespace oral
 		template<typename S>
 		struct GetFieldsNames : GetFieldsNames_<S, boost::mpl::int_<0>>
 		{
+		};
+
+		template<typename Seq, int Idx>
+		struct GetBoundName
+		{
+			static QString value () { return ':' + Seq::ClassName () + "_" + GetFieldName<Seq, Idx>::value (); }
 		};
 	}
 
@@ -499,6 +500,220 @@ namespace oral
 			}
 		};
 
+		enum class ExprType
+		{
+			LeafPlaceholder,
+			LeafData,
+
+			Greater,
+			Less,
+			Equal,
+			Geq,
+			Leq,
+			Neq,
+
+			And,
+			Or
+		};
+
+		QString TypeToSql (ExprType type)
+		{
+			switch (type)
+			{
+			case ExprType::Greater:
+				return ">";
+			case ExprType::Less:
+				return "<";
+			case ExprType::Equal:
+				return "=";
+			case ExprType::Geq:
+				return ">=";
+			case ExprType::Leq:
+				return "<=";
+			case ExprType::Neq:
+				return "!=";
+			case ExprType::And:
+				return "AND";
+			case ExprType::Or:
+				return "OR";
+
+			case ExprType::LeafPlaceholder:
+			case ExprType::LeafData:
+				return "invalid type";
+			}
+
+			qWarning () << Q_FUNC_INFO
+					<< "unhandled type"
+					<< static_cast<int> (type);
+			return {};
+		}
+
+		template<ExprType Type>
+		struct IsLeaf : std::false_type {};
+
+		template<>
+		struct IsLeaf<ExprType::LeafPlaceholder> : std::true_type {};
+
+		template<>
+		struct IsLeaf<ExprType::LeafData> : std::true_type {};
+
+		template<ExprType Type1, ExprType Type2>
+		struct IsCompatible : std::false_type {};
+
+		template<ExprType Type>
+		struct IsCompatible<Type, ExprType::And> : std::true_type {};
+
+		template<ExprType Type>
+		struct IsCompatible<Type, ExprType::Or> : std::true_type {};
+
+		template<ExprType Type>
+		struct IsCompatible<Type, ExprType::LeafPlaceholder> : std::true_type {};
+
+		template<ExprType Type>
+		struct IsCompatible<Type, ExprType::LeafData> : std::true_type {};
+
+		template<typename T>
+		constexpr T Ctfy (T t)
+		{
+			return t;
+		}
+
+		template<ExprType T1, ExprType T2>
+		constexpr bool CheckCompatible ()
+		{
+			return IsCompatible<T1, T2>::value || IsCompatible<T2, T1>::value;
+		}
+
+		template<typename T>
+		struct ToSqlState
+		{
+			int LastID_;
+			QVariantMap BoundMembers_;
+		};
+
+		template<ExprType Type, typename L = void, typename R = void>
+		class ExprTree
+		{
+			static const ExprType Type_ = Type;
+
+			L Left_;
+			R Right_;
+		public:
+			ExprTree (const L& l, const R& r)
+			: Left_ (l)
+			, Right_ (r)
+			{
+			}
+
+			template<typename T>
+			QString ToSql (ToSqlState<T>& state) const
+			{
+				return Left_.ToSql (state) + " " + TypeToSql (Type_) + " " + Right_.ToSql (state);
+			}
+		};
+
+		template<>
+		class ExprTree<ExprType::LeafPlaceholder, void, void>
+		{
+			static const ExprType Type_ = ExprType::LeafPlaceholder;
+
+			int Index_;
+		public:
+			ExprTree (int idx)
+			: Index_ (idx)
+			{
+			}
+
+			template<typename T>
+			QString ToSql (ToSqlState<T>& state) const
+			{
+				return detail::GetFieldsNames<T> () ().at (Index_);
+			}
+		};
+
+		template<typename T>
+		class ExprTree<ExprType::LeafData, T, void>
+		{
+			static const ExprType Type_ = ExprType::LeafData;
+
+			T Data_;
+		public:
+			ExprTree (const T& t)
+			: Data_ (t)
+			{
+			}
+
+			template<typename ObjT>
+			QString ToSql (ToSqlState<ObjT>& state) const
+			{
+				const auto& name = ":bound_" + QString::number (++state.LastID_);
+				state.BoundMembers_ [name] = ToVariant<T> {} (Data_);
+				return name;
+			}
+		};
+
+		template<typename T>
+		struct IsExprTree : std::false_type {};
+
+		template<ExprType Type, typename L, typename R>
+		struct IsExprTree<ExprTree<Type, L, R>> : std::true_type {};
+
+		template<ExprType LType, typename LL, typename LR, ExprType RType, typename RL, typename RR>
+		ExprTree<ExprType::Less, ExprTree<LType, LL, LR>, ExprTree<RType, RL, RR>> operator< (const ExprTree<LType, LL, LR>& left, const ExprTree<RType, RL, RR>& right)
+		{
+			static_assert (CheckCompatible<LType, RType> (), "comparing incompatible subexpressions");
+			return { left, right };
+		}
+
+		template<ExprType LType, typename LL, typename LR, typename R>
+		ExprTree<ExprType::Less, ExprTree<LType, LL, LR>, ExprTree<ExprType::LeafData, R>> operator< (const ExprTree<LType, LL, LR>& left, const R& right)
+		{
+			return left < ExprTree<ExprType::LeafData, R> { right };
+		}
+
+		template<ExprType RType, typename RL, typename RR, typename L>
+		ExprTree<ExprType::Less, ExprTree<ExprType::LeafData, L>, ExprTree<RType, RL, RR>> operator< (const L& left, const ExprTree<RType, RL, RR>& right)
+		{
+			return ExprTree<ExprType::LeafData, L> { left } < right;
+		}
+
+		template<ExprType LType, typename LL, typename LR, ExprType RType, typename RL, typename RR>
+		ExprTree<ExprType::Equal, ExprTree<LType, LL, LR>, ExprTree<RType, RL, RR>> operator== (const ExprTree<LType, LL, LR>& left, const ExprTree<RType, RL, RR>& right)
+		{
+			static_assert (CheckCompatible<LType, RType> (), "comparing incompatible subexpressions");
+			return { left, right };
+		}
+
+		template<ExprType LType, typename LL, typename LR, typename R>
+		ExprTree<ExprType::Equal, ExprTree<LType, LL, LR>, ExprTree<ExprType::LeafData, R>> operator== (const ExprTree<LType, LL, LR>& left, const R& right)
+		{
+			return left == ExprTree<ExprType::LeafData, R> { right };
+		}
+
+		template<ExprType RType, typename RL, typename RR, typename L>
+		ExprTree<ExprType::Equal, ExprTree<ExprType::LeafData, L>, ExprTree<RType, RL, RR>> operator== (const L& left, const ExprTree<RType, RL, RR>& right)
+		{
+			return ExprTree<ExprType::LeafData, L> { left } == right;
+		}
+
+		template<ExprType LType, typename LL, typename LR, ExprType RType, typename RL, typename RR>
+		ExprTree<ExprType::And, ExprTree<LType, LL, LR>, ExprTree<RType, RL, RR>> operator&& (const ExprTree<LType, LL, LR>& left, const ExprTree<RType, RL, RR>& right)
+		{
+			return { left, right };
+		}
+
+		template<ExprType LType, typename LL, typename LR, typename R>
+		ExprTree<ExprType::And, ExprTree<LType, LL, LR>, ExprTree<ExprType::LeafData, R>> operator&& (const ExprTree<LType, LL, LR>& left, const R& right)
+		{
+			return left && ExprTree<ExprType::LeafData, R> { right };
+		}
+
+		template<ExprType RType, typename RL, typename RR, typename L>
+		ExprTree<ExprType::And, ExprTree<ExprType::LeafData, L>, ExprTree<RType, RL, RR>> operator&& (const L& left, const ExprTree<RType, RL, RR>& right)
+		{
+			return ExprTree<ExprType::LeafData, L> { left } && right;
+		}
+
 		template<typename T>
 		class ByFieldsWrapper
 		{
@@ -545,6 +760,23 @@ namespace oral
 			ByFieldsSelector<Fields...> Prepare ()
 			{
 				return { *this };
+			}
+
+			template<ExprType Type, typename L, typename R>
+			QList<T> operator() (const ExprTree<Type, L, R>& tree) const
+			{
+				ToSqlState<T> state { 0, {} };
+
+				auto selectAll = "SELECT " + QStringList { Cached_.Fields_ }.join (", ") +
+						" FROM " + Cached_.Table_ +
+						" WHERE " + tree.ToSql (state) + ";";
+				qDebug () << selectAll << state.BoundMembers_;
+
+				QSqlQuery_ptr query (new QSqlQuery (Cached_.DB_));
+				query->prepare (selectAll);
+				for (auto i = state.BoundMembers_.begin (), end = state.BoundMembers_.end (); i != end; ++i)
+					query->bindValue (i.key (), *i);
+				return PerformSelect<T> (query);
 			}
 		};
 
@@ -796,6 +1028,13 @@ namespace oral
 		{
 		}
 	};
+
+	namespace ph
+	{
+		static const detail::ExprTree<detail::ExprType::LeafPlaceholder> _0 { 0 };
+		static const detail::ExprTree<detail::ExprType::LeafPlaceholder> _1 { 1 };
+		static const detail::ExprTree<detail::ExprType::LeafPlaceholder> _2 { 2 };
+	}
 
 	template<typename T>
 	ObjectInfo<T> Adapt (const QSqlDatabase& db)

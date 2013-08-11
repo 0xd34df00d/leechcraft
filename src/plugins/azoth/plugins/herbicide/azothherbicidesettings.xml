@@ -20,12 +20,19 @@
 			</item>
 			<item type="multiline" property="BlacklistRegexps">
 				<label value="Entry ID regexps:" />
+				<tooltip>If the above option is active, only entry IDs that match these regular expressions will be asked with the challenge. Example regexps:
+					&lt;blockquote>
+						.*@jabber.org
+						.*@jabber.(org|ru)(/QIP)?
+					&lt;/blockquote>
+				</tooltip>
 			</item>
 		</tab>
 		<tab>
 			<label value="Whitelist" />
 			<item type="multiline" property="WhitelistRegexps">
 				<label value="Entry ID regexps:" />
+				<tooltip>Entry IDs matching these regular expressions won't be asked with the challenge. See the blacklist regexps option for examples.</tooltip>
 			</item>
 		</tab>
 	</page>

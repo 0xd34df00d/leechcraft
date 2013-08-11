@@ -31,6 +31,7 @@
 #include <QIcon>
 #include <util/util.h>
 #include "graffititab.h"
+#include "progressmanager.h"
 
 namespace LeechCraft
 {
@@ -43,6 +44,8 @@ namespace Graffiti
 		Util::InstallTranslator ("lmp_graffiti");
 
 		CoreProxy_ = proxy;
+
+		ProgressMgr_ = new ProgressManager ();
 
 		TaggerTC_ =
 		{
@@ -108,11 +111,25 @@ namespace Graffiti
 					SIGNAL (removeTab (QWidget*)),
 					this,
 					SIGNAL (removeTab (QWidget*)));
+
+			connect (tab,
+					SIGNAL (tagsFetchProgress (int, int, QObject*)),
+					ProgressMgr_,
+					SLOT (handleTagsFetch (int, int, QObject*)));
+			connect (tab,
+					SIGNAL (cueSplitStarted (CueSplitter*)),
+					ProgressMgr_,
+					SLOT (handleCueSplitter (CueSplitter*)));
 		}
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "unknown tab class"
 					<< tabClass;
+	}
+
+	QAbstractItemModel* Plugin::GetRepresentation () const
+	{
+		return ProgressMgr_->GetModel ();
 	}
 
 	void Plugin::SetLMPProxy (ILMPProxy_ptr proxy)

@@ -40,6 +40,8 @@ extern "C"
 #include <libavformat/avformat.h>
 #include <libavutil/audioconvert.h>
 #include <libavutil/samplefmt.h>
+#include <libavutil/opt.h>
+#include <libswresample/swresample.h>
 }
 
 namespace LeechCraft
@@ -79,34 +81,17 @@ namespace MusicZombie
 				throw std::runtime_error ("could not find stream");
 		}
 
+		AVCodec *codec = nullptr;
+		const auto streamIndex = av_find_best_stream (formatCtx.get (), AVMEDIA_TYPE_AUDIO, -1, -1, &codec, 0);
+		if (streamIndex < 0)
+			throw std::runtime_error ("could not find audio stream");
+
+		auto stream = formatCtx->streams [streamIndex];
+
 		bool codecOpened = false;
-		std::shared_ptr<AVCodecContext> codecCtx;
-		AVStream *stream = nullptr;
-		for (unsigned int i = 0; i < formatCtx->nb_streams; ++i)
-		{
-			codecCtx.reset (formatCtx->streams [i]->codec,
-					[&codecOpened, this] (AVCodecContext *ctx)
-					{
-						if (codecOpened)
-						{
-							QMutexLocker locker (&CodecMutex_);
-							avcodec_close (ctx);
-						}
-					});
-			if (codecCtx && codecCtx->codec_type == AVMEDIA_TYPE_AUDIO)
-			{
-				stream = formatCtx->streams [i];
-				break;
-			}
-		}
 
-		if (!stream)
-			throw std::runtime_error ("could not find stream");
-
-		auto codec = avcodec_find_decoder (codecCtx->codec_id);
-		if (!codec)
-			throw std::runtime_error ("unknown codec");
-
+		std::shared_ptr<AVCodecContext> codecCtx (stream->codec,
+				[&codecOpened] (AVCodecContext *ctx) { if (codecOpened) avcodec_close (ctx); });
 		{
 			QMutexLocker locker (&CodecMutex_);
 			if (avcodec_open2 (codecCtx.get (), codec, nullptr) < 0)
@@ -117,66 +102,82 @@ namespace MusicZombie
 		if (codecCtx->channels <= 0)
 			throw std::runtime_error ("no channels found");
 
-		/* TODO swresample
-		 *
-		 * Upstream ffmpeg/libav have migrated to it.
-		 * https://github.com/xbmc/xbmc/pull/882
-		 */
+		std::shared_ptr<SwrContext> swr;
 		if (codecCtx->sample_fmt != AV_SAMPLE_FMT_S16)
-			throw std::runtime_error ("invalid sampling format");
+		{
+			swr.reset (swr_alloc (), [] (SwrContext *ctx) { if (ctx) swr_free (&ctx); });
+			av_opt_set_int (swr.get (), "in_channel_layout", codecCtx->channel_layout, 0);
+			av_opt_set_int (swr.get (), "out_channel_layout", codecCtx->channel_layout,  0);
+			av_opt_set_int (swr.get (), "in_sample_rate", codecCtx->sample_rate, 0);
+			av_opt_set_int (swr.get (), "out_sample_rate", codecCtx->sample_rate, 0);
+			av_opt_set_sample_fmt (swr.get (), "in_sample_fmt", codecCtx->sample_fmt, 0);
+			av_opt_set_sample_fmt (swr.get (), "out_sample_fmt", AV_SAMPLE_FMT_S16, 0);
+			swr_init (swr.get ());
+		}
 
-		AVPacket packet, tmpPacket;
+		AVPacket packet;
 		av_init_packet (&packet);
-		av_init_packet (&tmpPacket);
 
 		const int maxLength = 120;
 		auto remaining = maxLength * codecCtx->channels * codecCtx->sample_rate;
 		chromaprint_start (Ctx_, codecCtx->sample_rate, codecCtx->channels);
 
-		const int bufferSize = AVCODEC_MAX_AUDIO_FRAME_SIZE * 2;
-		int16_t *buffer = static_cast<int16_t*> (av_malloc (bufferSize + 16));
+		std::shared_ptr<AVFrame> frame (avcodec_alloc_frame (),
+				[] (AVFrame *frame) { avcodec_free_frame (&frame); });
+		auto maxDstNbSamples = 0;
 
+		uint8_t *dstData [1] = { nullptr };
+		std::shared_ptr<void> dstDataGuard (nullptr,
+				[&dstData] (void*) { if (dstData [0]) av_freep (&dstData [0]); });
 		while (true)
 		{
 			if (av_read_frame (formatCtx.get (), &packet) < 0)
 				break;
 
-			tmpPacket.data = packet.data;
-			tmpPacket.size = packet.size;
+			std::shared_ptr<void> guard (nullptr,
+					[&packet] (void*) { if (packet.data) av_free_packet (&packet); });
+
+			if (packet.stream_index != streamIndex)
+				continue;
+
+			avcodec_get_frame_defaults (frame.get ());
+			int gotFrame = false;
+			auto consumed = avcodec_decode_audio4 (codecCtx.get (), frame.get (), &gotFrame, &packet);
+
+			if (consumed < 0 || !gotFrame)
+				continue;
+
+			uint8_t **data = nullptr;
+			if (swr)
+			{
+				if (frame->nb_samples > maxDstNbSamples)
+				{
+					if (dstData [0])
+						av_freep (&dstData [0]);
+					int linesize = 0;
+					if (av_samples_alloc (dstData, &linesize, codecCtx->channels, frame->nb_samples, AV_SAMPLE_FMT_S16, 1) < 0)
+						throw std::runtime_error ("cannot allocate memory for resampling");
+				}
+
+				if (swr_convert (swr.get (), dstData, frame->nb_samples, const_cast<const uint8_t**> (frame->data), frame->nb_samples) < 0)
+					throw std::runtime_error ("cannot resample audio");
+
+				data = dstData;
+			}
+			else
+				data = frame->data;
+
+			auto length = std::min (remaining, frame->nb_samples * codecCtx->channels);
+			if (!chromaprint_feed (Ctx_, data [0], length))
+				throw std::runtime_error ("cannot feed data");
 
 			bool finished = false;
-			while (tmpPacket.size > 0)
+			if (maxLength)
 			{
-				auto bufferUsed = bufferSize;
-				auto consumed = avcodec_decode_audio3 (codecCtx.get (), buffer, &bufferUsed, &tmpPacket);
-				if (consumed < 0)
-					break;
-
-				tmpPacket.data += consumed;
-				tmpPacket.size -= consumed;
-
-				if (bufferUsed <= 0 || bufferUsed >= bufferSize)
-				{
-					if (bufferUsed)
-						qWarning () << "invalid size returned";
-					continue;
-				}
-
-				const auto length = std::min (remaining, bufferUsed / 2);
-				if (!chromaprint_feed (Ctx_, buffer, length))
-					throw std::runtime_error ("fingerprint calculation failed");
-
-				if (maxLength)
-				{
-					remaining -= length;
-					if ((finished = (remaining <= 0)))
-						break;
-				}
+				remaining -= length;
+				if (remaining <= 0)
+					finished = true;
 			}
-
-			if (packet.data)
-				av_free_packet (&packet);
-
 			if (finished)
 				break;
 		}

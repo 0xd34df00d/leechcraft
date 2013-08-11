@@ -58,6 +58,7 @@ namespace LackMan
 		QSqlQuery QueryGetRepoComponents_;
 		QSqlQuery QueryFindComponent_;
 		QSqlQuery QueryFindPackage_;
+		QSqlQuery QueryGetPackageVersions_;
 		QSqlQuery QueryFindInstalledPackage_;
 		QSqlQuery QueryAddPackage_;
 		QSqlQuery QueryGetPackage_;
@@ -109,6 +110,8 @@ namespace LackMan
 		void RemoveComponent (int repoId, const QString& component);
 
 		int FindPackage (const QString& name, const QString& version);
+		QStringList GetPackageVersions (const QString& name);
+
 		int FindInstalledPackage (int packageId);
 		PackageShortInfo GetPackage (int packageId);
 		qint64 GetPackageSize (int packageId);

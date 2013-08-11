@@ -34,6 +34,7 @@
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/string.hpp>
 #include <boost/serialization/variant.hpp>
+#include <boost/lexical_cast.hpp>
 #include <QTimer>
 #include <QTcpSocket>
 #include <QSettings>
@@ -84,6 +85,118 @@ namespace Syncer
 
 	void SingleSyncable::HandleList (const Laretz::ParseResult& reply)
 	{
+		auto deletedList = std::find_if (reply.operations.begin (), reply.operations.end (),
+				[] (const Laretz::Operation& op) { return op.getType () == Laretz::OpType::Delete; });
+		auto knownList = std::find_if (reply.operations.begin (), reply.operations.end (),
+				[] (const Laretz::Operation& op) { return op.getType () == Laretz::OpType::List; });
+
+		if (deletedList != reply.operations.end ())
+		{
+			QList<Laretz::Operation> ourOps;
+			Proxy_->Merge (ourOps, { *deletedList });
+		}
+
+		if (knownList != reply.operations.end ())
+		{
+			const auto& str = Laretz::PacketGenerator {}
+					({ Laretz::OpType::Fetch, { knownList->getItems () } })
+					({ "Login", "d34df00d" })
+					({ "Password", "shitfuck" })
+					();
+
+			Socket_->write (str.c_str (), str.size ());
+
+			State_ = State::FetchRequested;
+		}
+		else
+			HandleFetch ({});
+	}
+
+	namespace
+	{
+		template<typename T>
+		QList<T> ToQList (const std::vector<T>& vector)
+		{
+			QList<T> result;
+			result.reserve (vector.size ());
+			std::copy (vector.begin (), vector.end (), std::back_inserter (result));
+			return result;
+		}
+
+		template<typename T>
+		std::vector<T> ToStdVector (const QList<T>& list)
+		{
+			std::vector<T> result;
+			result.reserve (list.size ());
+			std::copy (list.begin (), list.end (), std::back_inserter (result));
+			return result;
+		}
+	}
+
+	void SingleSyncable::HandleFetch (const Laretz::ParseResult& reply)
+	{
+		auto ourOps = Proxy_->GetNewOps ();
+		Proxy_->Merge (ourOps, ToQList (reply.operations));
+
+		if (ourOps.empty ())
+		{
+			State_ = State::Idle;
+			return;
+		}
+
+		for (auto& op : ourOps)
+			for (auto& item : op.getItems ())
+				if (item.getParentId ().empty ())
+					item.setParentId (ID_.constData ());
+
+		State_ = State::Sent;
+
+		const auto& str = Laretz::PacketGenerator {}
+				[ToStdVector (ourOps)]
+				({ "Login", "d34df00d" })
+				({ "Password", "shitfuck" })
+				();
+		Socket_->write (str.c_str (), str.size ());
+	}
+
+	void SingleSyncable::HandleRootCreated (const Laretz::ParseResult&)
+	{
+		const auto lastSeq = GetSettings ()->value ("LastSyncID", 0).value<uint64_t> ();
+
+		Laretz::Item parentItem;
+		parentItem.setSeq (lastSeq);
+		parentItem.setParentId (ID_.constData ());
+
+		const auto& str = Laretz::PacketGenerator {}
+				({ Laretz::OpType::List, { parentItem } })
+				({ "Login", "d34df00d" })
+				({ "Password", "shitfuck" })
+				();
+
+		Socket_->write (str.c_str (), str.size ());
+
+		State_ = State::ListRequested;
+	}
+
+	void SingleSyncable::HandleSendResult (const Laretz::ParseResult& reply)
+	{
+	}
+
+	void SingleSyncable::CreateRoot ()
+	{
+		Laretz::Item parentItem;
+		parentItem.setSeq (0);
+		parentItem.setId (ID_.constData ());
+
+		const auto& str = Laretz::PacketGenerator {}
+				({ Laretz::OpType::Append, { parentItem } })
+				({ "Login", "d34df00d" })
+				({ "Password", "shitfuck" })
+				();
+
+		Socket_->write (str.c_str (), str.size ());
+
+		State_ = State::RootCreateRequested;
 	}
 
 	void SingleSyncable::handleSocketRead ()
@@ -97,7 +210,39 @@ namespace Syncer
 
 		if (reply.fields.at ("Status") != "Success")
 		{
-			// TODO handle error
+			const auto reasonPos = reply.fields.find ("ErrorCode");
+			const auto reason = reasonPos != reply.fields.end () ?
+					boost::lexical_cast<int> (reasonPos->second) :
+					-1;
+
+			auto defErr = [this, reason]
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unknown error"
+						<< reason
+						<< "in state"
+						<< static_cast<int> (State_);
+			};
+
+			switch (State_)
+			{
+			case State::ListRequested:
+			{
+				switch (reason)
+				{
+				case Laretz::ErrorCode::UnknownParent:
+					CreateRoot ();
+					break;
+				default:
+					defErr ();
+					break;
+				}
+				break;
+			}
+			default:
+				defErr ();
+				break;
+			}
 			return;
 		}
 
@@ -109,6 +254,15 @@ namespace Syncer
 			break;
 		case State::ListRequested:
 			HandleList (reply);
+			break;
+		case State::FetchRequested:
+			HandleFetch (reply);
+			break;
+		case State::Sent:
+			HandleSendResult (reply);
+			break;
+		case State::RootCreateRequested:
+			HandleRootCreated (reply);
 			break;
 		}
 	}
@@ -125,21 +279,7 @@ namespace Syncer
 	{
 		qDebug () << Q_FUNC_INFO;
 
-		const auto lastSeq = GetSettings ()->value ("LastSyncID").value<uint64_t> ();
-
-		Laretz::Item parentItem;
-		parentItem.setSeq (lastSeq);
-		parentItem.setParentId (ID_.constData ());
-
-		const auto& str = Laretz::PacketGenerator {}
-				({ Laretz::OpType::List, { parentItem } })
-				({ "Login", "d34df00d" })
-				({ "Password", "shitfuck" })
-				();
-
-		Socket_->write (str.c_str (), str.size ());
-
-		State_ = State::ListRequested;
+		HandleRootCreated ({});
 	}
 }
 }
