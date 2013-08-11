@@ -11,23 +11,17 @@ include_directories (${AZOTH_INCLUDE_DIR}
 set (DEPESTER_SRCS
 	depester.cpp
 	)
-set (DEPESTER_HEADERS
-	depester.h
-	)
 set (DEPESTER_RESOURCES
 	depesterresources.qrc
 	)
 
 QT4_ADD_RESOURCES (DEPESTER_RCCS ${DEPESTER_RESOURCES})
 CreateTrs ("azoth_depester" "en;es;ru_RU;uk_UA" DEPESTER_COMPILED_TRANSLATIONS)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (DEPESTER_MOC_SRCS ${DEPESTER_HEADERS})
-endif ()
+CreateTrsUpTarget ("azoth_depester" "en;ru_RU" "${DEPESTER_SRCS}" "" "")
 
 add_library (leechcraft_azoth_depester SHARED
 	${DEPESTER_COMPILED_TRANSLATIONS}
 	${DEPESTER_SRCS}
-	${DEPESTER_MOC_SRCS}
 	${DEPESTER_UIS_H}
 	${DEPESTER_RCCS}
 	)
