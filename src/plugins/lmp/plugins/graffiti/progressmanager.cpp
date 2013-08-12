@@ -55,7 +55,7 @@ namespace Graffiti
 		if (!TagsFetchObj2Row_.contains (obj))
 		{
 			auto nameItem = new QStandardItem (tr ("Fetching tags..."));
-			auto statusItem = new QStandardItem ();
+			auto statusItem = new QStandardItem (tr ("Fetching..."));
 			auto progressItem = new QStandardItem ();
 
 			const QList<QStandardItem*> row
@@ -82,6 +82,7 @@ namespace Graffiti
 		const auto& list = TagsFetchObj2Row_ [obj];
 
 		auto item = list.at (JobHolderColumn::JobProgress);
+		item->setText (tr ("%1 of %2").arg (fetched).arg (total));
 		item->setData (fetched, ProcessState::Done);
 		item->setData (total, ProcessState::Total);
 	}
@@ -91,7 +92,7 @@ namespace Graffiti
 		const QList<QStandardItem*> row
 		{
 			new QStandardItem (tr ("Splitting CUE %1...").arg (splitter->GetCueFile ())),
-			new QStandardItem (),
+			new QStandardItem (tr ("Splitting...")),
 			new QStandardItem ()
 		};
 
@@ -127,6 +128,7 @@ namespace Graffiti
 		const auto& list = Splitter2Row_ [splitter];
 
 		auto item = list.at (JobHolderColumn::JobProgress);
+		item->setText (tr ("%1 of %2").arg (done).arg (total));
 		item->setData (done, ProcessState::Done);
 		item->setData (total, ProcessState::Total);
 	}
