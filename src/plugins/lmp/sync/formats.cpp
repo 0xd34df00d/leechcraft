@@ -42,10 +42,15 @@ namespace LMP
 		return GetFormatID ();
 	}
 
+	QString Format::GetCodecID () const
+	{
+		return GetCodecName ();
+	}
+
 	QStringList Format::ToFFmpeg (const TranscodingParams& params) const
 	{
 		QStringList result;
-		result << "-acodec" << GetCodecName ();
+		result << "-acodec" << GetCodecID ();
 		StandardQualityAppend (result, params);
 		return result;
 	}

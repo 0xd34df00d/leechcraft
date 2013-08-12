@@ -45,6 +45,7 @@ namespace LMP
 		virtual QString GetFileExtension () const;
 		virtual QString GetFormatName () const = 0;
 		virtual QString GetCodecName () const = 0;
+		virtual QString GetCodecID () const;
 
 		enum class BitrateType
 		{
