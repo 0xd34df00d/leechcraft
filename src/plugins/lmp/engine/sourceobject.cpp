@@ -95,6 +95,10 @@ namespace LMP
 				this,
 				SIGNAL (bufferStatus (int)));
 		connect (Obj_,
+				SIGNAL (totalTimeChanged (qint64)),
+				this,
+				SIGNAL (totalTimeChanged (qint64)));
+		connect (Obj_,
 				SIGNAL (tick (qint64)),
 				this,
 				SIGNAL (tick (qint64)));
