@@ -36,7 +36,7 @@ namespace LMP
 {
 	Output::Output (QObject *parent)
 	: QObject (parent)
-	, Output_ (new Phonon::AudioOutput (Phonon::MusicCategory))
+	, Output_ (new Phonon::AudioOutput (Phonon::MusicCategory, this))
 	{
 		connect (Output_,
 				SIGNAL (volumeChanged (qreal)),
@@ -46,6 +46,11 @@ namespace LMP
 				SIGNAL (volumeChanged (qreal)),
 				this,
 				SLOT (handlePhononVolumeChanged (qreal)));
+
+		connect (Output_,
+				SIGNAL (mutedChanged (bool)),
+				this,
+				SIGNAL (mutedChanged (bool)));
 	}
 
 	Phonon::AudioOutput* Output::ToPhonon () const
@@ -58,6 +63,11 @@ namespace LMP
 		return Output_->volume ();
 	}
 
+	bool Output::IsMuted () const
+	{
+		return Output_->isMuted ();
+	}
+
 	void Output::setVolume (double volume)
 	{
 		Output_->setVolume (volume);
@@ -66,6 +76,12 @@ namespace LMP
 	void Output::setVolume (int volume)
 	{
 		setVolume (volume / 100.);
+	}
+
+	void Output::toggleMuted ()
+	{
+		Output_->setMuted (!Output_->isMuted ());
+		emit mutedChanged (Output_->isMuted ());
 	}
 
 	void Output::handlePhononVolumeChanged (qreal volume)

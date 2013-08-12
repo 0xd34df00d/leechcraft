@@ -49,16 +49,21 @@ namespace LMP
 		Output (QObject* = 0);
 
 		double GetVolume () const;
+		bool IsMuted () const;
 
 		Phonon::AudioOutput* ToPhonon () const;
 	public slots:
 		void setVolume (double);
 		void setVolume (int);
+
+		void toggleMuted ();
 	private slots:
 		void handlePhononVolumeChanged (qreal);
 	signals:
 		void volumeChanged (qreal);
 		void volumeChanged (int);
+
+		void mutedChanged (bool);
 	};
 }
 }
