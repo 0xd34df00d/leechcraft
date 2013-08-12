@@ -30,7 +30,7 @@
 #pragma once
 
 #include <QStringList>
-#include <phonon/mediasource.h>
+#include "engine/audiosource.h"
 
 namespace LeechCraft
 {
@@ -39,7 +39,7 @@ namespace LMP
 namespace PLS
 {
 	QStringList Read (const QString&);
-	QList<Phonon::MediaSource> Read2Sources (const QString&);
+	QList<AudioSource> Read2Sources (const QString&);
 }
 }
 }

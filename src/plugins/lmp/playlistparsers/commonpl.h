@@ -31,7 +31,7 @@
 
 #include <functional>
 #include <QStringList>
-#include <phonon/mediasource.h>
+#include "engine/audiosource.h"
 
 namespace LeechCraft
 {
@@ -44,6 +44,6 @@ namespace LMP
 
 		std::function<QStringList (QString)> RawParser_;
 	};
-	QList<Phonon::MediaSource> CommonRead2Sources (const ReadParams&);
+	QList<AudioSource> CommonRead2Sources (const ReadParams&);
 }
 }

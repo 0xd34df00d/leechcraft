@@ -35,9 +35,10 @@
 #include <QString>
 #include <QStringList>
 #include <QVariant>
-#include <phonon/mediaobject.h>
 #include <phonon/audiooutput.h>
 #include "../player.h"
+#include "../engine/sourceobject.h"
+#include "../engine/output.h"
 #include "fdopropsadaptor.h"
 
 namespace LeechCraft
@@ -62,7 +63,7 @@ namespace MPRIS
 				this,
 				SLOT (handlePlayModeChanged ()));
 		connect (Player_->GetSourceObject (),
-				SIGNAL (stateChanged (Phonon::State, Phonon::State)),
+				SIGNAL (stateChanged (SourceObject::State, SourceObject::State)),
 				this,
 				SLOT (handleStateChanged ()));
 		connect (Player_->GetAudioOutput (),
@@ -102,7 +103,7 @@ namespace MPRIS
 
 	bool PlayerAdaptor::GetCanSeek () const
 	{
-		return Player_->GetSourceObject ()->isSeekable ();
+		return Player_->GetSourceObject ()->IsSeekable ();
 	}
 
 	QString PlayerAdaptor::GetLoopStatus () const
@@ -170,12 +171,12 @@ namespace MPRIS
 
 	QString PlayerAdaptor::GetPlaybackStatus () const
 	{
-		switch (Player_->GetSourceObject ()->state ())
+		switch (Player_->GetSourceObject ()->GetState ())
 		{
-		case Phonon::PausedState:
+		case SourceObject::State::Paused:
 			return "Paused";
-		case Phonon::StoppedState:
-		case Phonon::ErrorState:
+		case SourceObject::State::Stopped:
+		case SourceObject::State::Error:
 			return "Stopped";
 		default:
 			return "Playing";
@@ -184,7 +185,7 @@ namespace MPRIS
 
 	qlonglong PlayerAdaptor::GetPosition () const
 	{
-		return Player_->GetSourceObject ()->currentTime () * 1000;
+		return Player_->GetSourceObject ()->GetCurrentTime () * 1000;
 	}
 
 	double PlayerAdaptor::GetRate () const
@@ -210,7 +211,7 @@ namespace MPRIS
 
 	double PlayerAdaptor::GetVolume () const
 	{
-		return Player_->GetAudioOutput ()->volume ();
+		return Player_->GetAudioOutput ()->GetVolume ();
 	}
 
 	void PlayerAdaptor::SetVolume (double value)
@@ -263,7 +264,7 @@ namespace MPRIS
 
 	void PlayerAdaptor::Seek (qlonglong offset)
 	{
-		Player_->GetSourceObject ()->seek (offset / 1000);
+		Player_->GetSourceObject ()->Seek (offset / 1000);
 	}
 
 	void PlayerAdaptor::SetPosition (const QDBusObjectPath&, qlonglong)

@@ -30,7 +30,7 @@
 #pragma once
 
 #include <QStringList>
-#include <phonon/mediasource.h>
+#include "engine/audiosource.h"
 
 namespace LeechCraft
 {
@@ -41,8 +41,8 @@ namespace M3U
 	QStringList Read (const QString&);
 	void Write (const QString&, const QStringList&);
 
-	QList<Phonon::MediaSource> Read2Sources (const QString&);
-	void Write (const QString&, const QList<Phonon::MediaSource>&);
+	QList<AudioSource> Read2Sources (const QString&);
+	void Write (const QString&, const QList<AudioSource>&);
 }
 }
 }

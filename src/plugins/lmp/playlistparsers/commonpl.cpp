@@ -36,12 +36,12 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	QList<Phonon::MediaSource> CommonRead2Sources (const ReadParams& params)
+	QList<AudioSource> CommonRead2Sources (const ReadParams& params)
 	{
 		const auto& plDir = QFileInfo (params.Path_).absoluteDir ();
 
-		QList<Phonon::MediaSource> result;
-		Q_FOREACH (const auto& src, params.RawParser_ (params.Path_))
+		QList<AudioSource> result;
+		for (const auto& src : params.RawParser_ (params.Path_))
 		{
 			QUrl url (src);
 			if (!url.scheme ().isEmpty ())

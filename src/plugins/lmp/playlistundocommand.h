@@ -30,7 +30,7 @@
 #pragma once
 
 #include <QUndoCommand>
-#include <phonon/mediasource.h>
+#include "engine/audiosource.h"
 
 namespace LeechCraft
 {
@@ -41,9 +41,9 @@ namespace LMP
 	class PlaylistUndoCommand : public QUndoCommand
 	{
 		Player *Player_;
-		QList<Phonon::MediaSource> Sources_;
+		QList<AudioSource> Sources_;
 	public:
-		PlaylistUndoCommand (const QString&, const QList<Phonon::MediaSource>&, Player*);
+		PlaylistUndoCommand (const QString&, const QList<AudioSource>&, Player*);
 
 		void undo ();
 		void redo ();

@@ -73,7 +73,7 @@ namespace LMP
 
 		QAction *ActionToggleSearch_;
 
-		QList<Phonon::MediaSource> NextResetSelect_;
+		QList<AudioSource> NextResetSelect_;
 	public:
 		PlaylistWidget (QWidget* = 0);
 
@@ -86,8 +86,8 @@ namespace LMP
 
 		void EnableMoveButtons (bool);
 
-		QList<Phonon::MediaSource> GetSelected () const;
-		void SelectSources (const QList<Phonon::MediaSource>&);
+		QList<AudioSource> GetSelected () const;
+		void SelectSources (const QList<AudioSource>&);
 	public slots:
 		void focusIndex (const QModelIndex&);
 	private slots:

@@ -33,7 +33,6 @@
 #include <QPixmap>
 #include <QApplication>
 #include <QLabel>
-#include <phonon/mediasource.h>
 #include <util/util.h>
 #include <util/gui/util.h>
 #include "core.h"
@@ -234,11 +233,6 @@ namespace LMP
 			}
 		}
 		return trackTooltip;
-	}
-
-	bool operator!= (const Phonon::MediaSource& left, const Phonon::MediaSource& right)
-	{
-		return !(left == right);
 	}
 }
 }
