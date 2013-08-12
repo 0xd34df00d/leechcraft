@@ -99,6 +99,7 @@ set (SRCS
 	albumartmanagerdialog.cpp
 	progressmanager.cpp
 	engine/audiosource.cpp
+	engine/sourceobject.cpp
 	sync/cloudwidget.cpp
 	sync/clouduploadmanager.cpp
 	sync/clouduploader.cpp
