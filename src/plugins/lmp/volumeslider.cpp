@@ -29,6 +29,7 @@
 
 #include "volumeslider.h"
 #include "engine/output.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -49,6 +50,23 @@ namespace LMP
 				SIGNAL (volumeChanged (int)),
 				Ui_.Slider_,
 				SLOT (setValue (int)));
+
+		connect (out,
+				SIGNAL (mutedChanged (bool)),
+				this,
+				SLOT (handleMuted (bool)));
+		handleMuted (out->IsMuted ());
+
+		connect (Ui_.MuteButton_,
+				SIGNAL (released ()),
+				out,
+				SLOT (toggleMuted ()));
+	}
+
+	void VolumeSlider::handleMuted (bool muted)
+	{
+		const auto iconName = muted ? "player-volume-muted" : "player-volume";
+		Ui_.MuteButton_->setIcon (Core::Instance ().GetProxy ()->GetIcon (iconName));
 	}
 }
 }

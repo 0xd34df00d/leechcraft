@@ -45,6 +45,8 @@ namespace LMP
 		Ui::VolumeSlider Ui_;
 	public:
 		VolumeSlider (Output*, QWidget* = 0);
+	private slots:
+		void handleMuted (bool);
 	};
 }
 }
