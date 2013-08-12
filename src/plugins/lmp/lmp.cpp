@@ -45,6 +45,7 @@
 #include "rootpathsettingsmanager.h"
 #include "collectionstatsdialog.h"
 #include "artistbrowsertab.h"
+#include "progressmanager.h"
 
 namespace LeechCraft
 {
@@ -360,6 +361,11 @@ namespace LMP
 	void Plugin::AddPlugin (QObject *plugin)
 	{
 		Core::Instance ().AddPlugin (plugin);
+	}
+
+	QAbstractItemModel* Plugin::GetRepresentation () const
+	{
+		return Core::Instance ().GetProgressManager ()->GetModel ();
 	}
 
 	void Plugin::handleFullRaiseRequested ()
