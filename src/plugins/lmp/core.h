@@ -50,6 +50,7 @@ namespace LMP
 	class CloudUploadManager;
 	class Player;
 	class PreviewHandler;
+	class ProgressManager;
 
 	class Core : public QObject
 	{
@@ -60,9 +61,12 @@ namespace LMP
 		LocalFileResolver *Resolver_;
 		LocalCollection *Collection_;
 		PlaylistManager *PLManager_;
+
 		SyncManager *SyncManager_;
 		SyncUnmountableManager *SyncUnmountableManager_;
 		CloudUploadManager *CloudUpMgr_;
+
+		ProgressManager *ProgressManager_;
 
 		Player *Player_;
 		PreviewHandler *PreviewMgr_;
@@ -95,6 +99,8 @@ namespace LMP
 		SyncManager* GetSyncManager () const;
 		SyncUnmountableManager* GetSyncUnmountableManager () const;
 		CloudUploadManager* GetCloudUploadManager () const;
+
+		ProgressManager* GetProgressManager () const;
 
 		Player* GetPlayer () const;
 		PreviewHandler* GetPreviewHandler () const;

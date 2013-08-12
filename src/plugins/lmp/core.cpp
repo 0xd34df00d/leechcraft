@@ -43,6 +43,7 @@
 #include "lmpproxy.h"
 #include "player.h"
 #include "previewhandler.h"
+#include "progressmanager.h"
 
 namespace LeechCraft
 {
@@ -55,9 +56,13 @@ namespace LMP
 	, SyncManager_ (new SyncManager)
 	, SyncUnmountableManager_ (new SyncUnmountableManager)
 	, CloudUpMgr_ (new CloudUploadManager)
+	, ProgressManager_ (new ProgressManager)
 	, Player_ (0)
 	, PreviewMgr_ (0)
 	{
+		ProgressManager_->AddSyncManager (SyncManager_);
+		ProgressManager_->AddSyncManager (SyncUnmountableManager_);
+		ProgressManager_->AddSyncManager (CloudUpMgr_);
 	}
 
 	Core& Core::Instance ()
@@ -159,6 +164,11 @@ namespace LMP
 	CloudUploadManager* Core::GetCloudUploadManager () const
 	{
 		return CloudUpMgr_;
+	}
+
+	ProgressManager* Core::GetProgressManager () const
+	{
+		return ProgressManager_;
 	}
 
 	Player* Core::GetPlayer () const
