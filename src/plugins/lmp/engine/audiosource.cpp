@@ -43,7 +43,9 @@ namespace LMP
 	}
 
 	AudioSource::AudioSource (const QUrl& url)
-	: AudioSource_ (url)
+	: AudioSource_ (url.scheme () == "file" ?
+			Phonon::MediaSource (url.toLocalFile ()) :
+			Phonon::MediaSource (url))
 	{
 	}
 
