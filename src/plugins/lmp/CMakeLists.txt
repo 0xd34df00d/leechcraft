@@ -100,6 +100,7 @@ set (SRCS
 	progressmanager.cpp
 	engine/audiosource.cpp
 	engine/output.cpp
+	engine/path.cpp
 	engine/sourceobject.cpp
 	sync/cloudwidget.cpp
 	sync/clouduploadmanager.cpp
