@@ -60,6 +60,7 @@
 #include "albumartmanagerdialog.h"
 #include "engine/sourceobject.h"
 #include "engine/output.h"
+#include "volumeslider.h"
 
 #ifdef ENABLE_MPRIS
 #include "mpris/instance.h"
@@ -392,18 +393,7 @@ namespace LMP
 				this,
 				SLOT (handleCurrentPlayTime (qint64)));
 
-		auto out = Player_->GetAudioOutput ();
-		auto volumeSlider = new QSlider ();
-		volumeSlider->setOrientation (Qt::Horizontal);
-		volumeSlider->setRange (0, 100);
-		connect (volumeSlider,
-				SIGNAL (valueChanged (int)),
-				out,
-				SLOT (setVolume (int)));
-		connect (out,
-				SIGNAL (volumeChanged (int)),
-				volumeSlider,
-				SLOT (setValue (int)));
+		auto volumeSlider = new VolumeSlider (Player_->GetAudioOutput ());
 		volumeSlider->setMinimumWidth (100);
 		volumeSlider->setMaximumWidth (160);
 		TabToolbar_->addWidget (volumeSlider);

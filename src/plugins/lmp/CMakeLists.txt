@@ -98,6 +98,7 @@ set (SRCS
 	artistbrowsertab.cpp
 	albumartmanagerdialog.cpp
 	progressmanager.cpp
+	volumeslider.cpp
 	engine/audiosource.cpp
 	engine/output.cpp
 	engine/path.cpp
@@ -140,6 +141,7 @@ set (FORMS
 	hypeswidget.ui
 	artistbrowsertab.ui
 	albumartmanagerdialog.ui
+	volumeslider.ui
 	sync/cloudwidget.ui
 	sync/devicesbrowserwidget.ui
 	sync/transcodingparamswidget.ui
