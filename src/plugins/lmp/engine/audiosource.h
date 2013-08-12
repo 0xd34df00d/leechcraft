@@ -39,16 +39,43 @@ namespace LMP
 	{
 		Phonon::MediaSource AudioSource_;
 	public:
+		enum class Type
+		{
+			File,
+			Url,
+			Stream,
+			Empty
+		};
+
+		AudioSource ();
+
 		AudioSource (const QString&);
 		AudioSource (const QUrl&);
 
 		AudioSource (const AudioSource&);
 		AudioSource& operator= (const AudioSource&);
 
-		bool operator== (const AudioSource&);
-		bool operator!= (const AudioSource&);
+		bool operator== (const AudioSource&) const;
+		bool operator!= (const AudioSource&) const;
+
+		QUrl ToUrl () const;
+
+		bool IsLocalFile () const;
+		QString GetLocalPath () const;
+
+		bool IsRemote () const;
+
+		bool IsEmpty () const;
+
+		Type GetType () const;
 
 		const Phonon::MediaSource& ToPhonon () const;
+		static AudioSource FromPhonon (const Phonon::MediaSource&);
 	};
+
+	uint qHash (const AudioSource&);
 }
 }
+
+Q_DECLARE_METATYPE (LeechCraft::LMP::AudioSource);
+Q_DECLARE_METATYPE (QList<LeechCraft::LMP::AudioSource>);

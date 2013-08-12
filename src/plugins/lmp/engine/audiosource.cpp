@@ -33,6 +33,10 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	AudioSource::AudioSource ()
+	{
+	}
+
 	AudioSource::AudioSource (const QString& filename)
 	: AudioSource_ (filename)
 	{
@@ -54,19 +58,106 @@ namespace LMP
 		return *this;
 	}
 
-	bool AudioSource::operator== (const AudioSource& source)
+	bool AudioSource::operator== (const AudioSource& source) const
 	{
 		return AudioSource_ == source.AudioSource_;
 	}
 
-	bool AudioSource::operator!= (const AudioSource& source)
+	bool AudioSource::operator!= (const AudioSource& source) const
 	{
 		return !(*this == source);
+	}
+
+	QUrl AudioSource::ToUrl () const
+	{
+		return AudioSource_.type () == Phonon::MediaSource::LocalFile ?
+				QUrl::fromLocalFile (AudioSource_.fileName ()) :
+				AudioSource_.url ();
+	}
+
+	bool AudioSource::IsLocalFile () const
+	{
+		return AudioSource_.type () == Phonon::MediaSource::LocalFile;
+	}
+
+	QString AudioSource::GetLocalPath () const
+	{
+		return AudioSource_.fileName ();
+	}
+
+	bool AudioSource::IsRemote () const
+	{
+		if (IsEmpty ())
+			return false;
+
+		switch (AudioSource_.type ())
+		{
+		case Phonon::MediaSource::Url:
+			return AudioSource_.url ().scheme () != "file";
+		case Phonon::MediaSource::Stream:
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	bool AudioSource::IsEmpty () const
+	{
+		return AudioSource_.type () == Phonon::MediaSource::Empty ||
+				AudioSource_.type () == Phonon::MediaSource::Invalid;
+	}
+
+	AudioSource::Type AudioSource::GetType () const
+	{
+		switch (AudioSource_.type ())
+		{
+		case Phonon::MediaSource::LocalFile:
+			return Type::File;
+		case Phonon::MediaSource::Url:
+			return Type::Url;
+		case Phonon::MediaSource::Stream:
+			return Type::Stream;
+		default:
+			return Type::Empty;
+		}
 	}
 
 	const Phonon::MediaSource& AudioSource::ToPhonon () const
 	{
 		return AudioSource_;
+	}
+
+	AudioSource AudioSource::FromPhonon (const Phonon::MediaSource& source)
+	{
+		AudioSource s;
+		s.AudioSource_ = source;
+		return s;
+	}
+
+	uint qHash (const AudioSource& source)
+	{
+		const auto& src = source.ToPhonon ();
+
+		uint hash = 0;
+		switch (src.type ())
+		{
+		case Phonon::MediaSource::LocalFile:
+			hash = qHash (src.fileName ());
+			break;
+		case Phonon::MediaSource::Url:
+			hash = qHash (src.url ());
+			break;
+		case Phonon::MediaSource::Disc:
+			hash = src.discType ();
+			break;
+		case Phonon::MediaSource::Stream:
+			hash = qHash (src.deviceName ());
+			break;
+		default:
+			hash = 0;
+			break;
+		}
+		return hash << src.type ();
 	}
 }
 }
