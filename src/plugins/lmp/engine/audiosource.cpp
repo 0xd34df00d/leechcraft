@@ -82,7 +82,9 @@ namespace LMP
 
 	QString AudioSource::GetLocalPath () const
 	{
-		return AudioSource_.fileName ();
+		return AudioSource_.type () == Phonon::MediaSource::LocalFile ?
+				AudioSource_.fileName () :
+				AudioSource_.url ().toLocalFile ();
 	}
 
 	bool AudioSource::IsRemote () const
