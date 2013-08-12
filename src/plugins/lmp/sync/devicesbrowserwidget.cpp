@@ -111,20 +111,20 @@ namespace LMP
 				SLOT (appendUpLog (QString)));
 
 		connect (Core::Instance ().GetSyncManager (),
-				SIGNAL (transcodingProgress (int, int)),
+				SIGNAL (transcodingProgress (int, int, SyncManagerBase*)),
 				this,
 				SLOT (handleTranscodingProgress (int, int)));
 		connect (Core::Instance ().GetSyncManager (),
-				SIGNAL (uploadProgress (int, int)),
+				SIGNAL (uploadProgress (int, int, SyncManagerBase*)),
 				this,
 				SLOT (handleUploadProgress (int, int)));
 
 		connect (Core::Instance ().GetSyncUnmountableManager (),
-				SIGNAL (transcodingProgress (int, int)),
+				SIGNAL (transcodingProgress (int, int, SyncManagerBase*)),
 				this,
 				SLOT (handleTranscodingProgress (int, int)));
 		connect (Core::Instance ().GetSyncUnmountableManager (),
-				SIGNAL (uploadProgress (int, int)),
+				SIGNAL (uploadProgress (int, int, SyncManagerBase*)),
 				this,
 				SLOT (handleUploadProgress (int, int)));
 

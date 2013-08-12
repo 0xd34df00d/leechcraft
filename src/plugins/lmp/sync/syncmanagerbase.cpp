@@ -65,8 +65,8 @@ namespace LMP
 		TotalTCCount_ += numFiles;
 		TotalCopyCount_ += numFiles;
 
-		emit transcodingProgress (TranscodedCount_, TotalTCCount_);
-		emit uploadProgress (CopiedCount_, TotalCopyCount_);
+		emit transcodingProgress (TranscodedCount_, TotalTCCount_, this);
+		emit uploadProgress (CopiedCount_, TotalCopyCount_, this);
 
 		Transcoder_->Enqueue (files, params);
 
@@ -109,7 +109,7 @@ namespace LMP
 	void SyncManagerBase::HandleFileTranscoded (const QString&, const QString&)
 	{
 		qDebug () << Q_FUNC_INFO << "file transcoded, gonna copy";
-		emit transcodingProgress (++TranscodedCount_, TotalTCCount_);
+		emit transcodingProgress (++TranscodedCount_, TotalTCCount_, this);
 		CheckTCFinished ();
 	}
 
@@ -125,10 +125,10 @@ namespace LMP
 				.arg ("<em>" + QFileInfo (file).fileName () + "</em>"));
 		WereTCErrors_ = true;
 
-		emit transcodingProgress (TranscodedCount_, --TotalTCCount_);
+		emit transcodingProgress (TranscodedCount_, --TotalTCCount_, this);
 		CheckTCFinished ();
 
-		emit uploadProgress (CopiedCount_, --TotalCopyCount_);
+		emit uploadProgress (CopiedCount_, --TotalCopyCount_, this);
 		CheckUploadFinished ();
 	}
 
@@ -142,7 +142,7 @@ namespace LMP
 	{
 		emit uploadLog (tr ("File finished copying"));
 
-		emit uploadProgress (++CopiedCount_, TotalCopyCount_);
+		emit uploadProgress (++CopiedCount_, TotalCopyCount_, this);
 		CheckUploadFinished ();
 	}
 
@@ -156,7 +156,7 @@ namespace LMP
 					PWarning_));
 		emit uploadLog (text);
 
-		emit uploadProgress (++CopiedCount_, TotalCopyCount_);
+		emit uploadProgress (++CopiedCount_, TotalCopyCount_, this);
 		CheckUploadFinished ();
 	}
 }

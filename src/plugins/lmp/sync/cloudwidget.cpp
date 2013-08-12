@@ -68,11 +68,11 @@ namespace LMP
 				SLOT (appendUpLog (QString)));
 
 		connect (Core::Instance ().GetCloudUploadManager (),
-				SIGNAL (transcodingProgress (int, int)),
+				SIGNAL (transcodingProgress (int, int, SyncManagerBase*)),
 				this,
 				SLOT (handleTranscodingProgress (int, int)));
 		connect (Core::Instance ().GetCloudUploadManager (),
-				SIGNAL (uploadProgress (int, int)),
+				SIGNAL (uploadProgress (int, int, SyncManagerBase*)),
 				this,
 				SLOT (handleUploadProgress (int, int)));
 	}
