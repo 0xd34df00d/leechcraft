@@ -78,9 +78,6 @@ namespace LMP
 
 		QToolBar *TabToolbar_;
 
-		QLabel *PlayedTime_;
-		QLabel *RemainingTime_;
-
 		QHash<QString, Media::SimilarityInfos_t> Similars_;
 		QString LastArtist_;
 
@@ -123,7 +120,6 @@ namespace LMP
 		void RequestLyrics (const MediaInfo&);
 	private slots:
 		void handleSongChanged (const MediaInfo&);
-		void handleCurrentPlayTime (qint64);
 		void handleLoveTrack ();
 		void handleBanTrack ();
 

@@ -99,6 +99,7 @@ set (SRCS
 	albumartmanagerdialog.cpp
 	progressmanager.cpp
 	volumeslider.cpp
+	seekslider.cpp
 	engine/audiosource.cpp
 	engine/output.cpp
 	engine/path.cpp
@@ -142,6 +143,7 @@ set (FORMS
 	artistbrowsertab.ui
 	albumartmanagerdialog.ui
 	volumeslider.ui
+	seekslider.ui
 	sync/cloudwidget.ui
 	sync/devicesbrowserwidget.ui
 	sync/transcodingparamswidget.ui

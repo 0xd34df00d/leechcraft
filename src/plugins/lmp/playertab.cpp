@@ -39,7 +39,6 @@
 #include <QListWidget>
 #include <QTabBar>
 #include <QMessageBox>
-#include <phonon/seekslider.h>
 #include <util/util.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -61,6 +60,7 @@
 #include "engine/sourceobject.h"
 #include "engine/output.h"
 #include "volumeslider.h"
+#include "seekslider.h"
 
 #ifdef ENABLE_MPRIS
 #include "mpris/instance.h"
@@ -380,18 +380,9 @@ namespace LMP
 
 		TabToolbar_->addSeparator ();
 
-		PlayedTime_ = new QLabel ();
-		RemainingTime_ = new QLabel ();
-		auto seekSlider = new Phonon::SeekSlider (Player_->GetSourceObject ()->ToPhonon ());
-		seekSlider->setTracking (false);
-		TabToolbar_->addWidget (PlayedTime_);
+		auto seekSlider = new SeekSlider (Player_->GetSourceObject ());
 		TabToolbar_->addWidget (seekSlider);
-		TabToolbar_->addWidget (RemainingTime_);
 		TabToolbar_->addSeparator ();
-		connect (Player_->GetSourceObject (),
-				SIGNAL (tick (qint64)),
-				this,
-				SLOT (handleCurrentPlayTime (qint64)));
 
 		auto volumeSlider = new VolumeSlider (Player_->GetAudioOutput ());
 		volumeSlider->setMinimumWidth (100);
@@ -680,24 +671,6 @@ namespace LMP
 			LastArtist_ = info.Artist_;
 			FillSimilar (Similars_ [info.Artist_]);
 		}
-	}
-
-	void PlayerTab::handleCurrentPlayTime (qint64 time)
-	{
-		auto niceTime = [] (qint64 time) -> QString
-		{
-			if (!time)
-				return QString ();
-
-			QString played = Util::MakeTimeFromLong (time / 1000);
-			if (played.startsWith ("00:"))
-				played = played.mid (3);
-			return played;
-		};
-		PlayedTime_->setText (niceTime (time));
-
-		const auto remaining = Player_->GetSourceObject ()->GetRemainingTime ();
-		RemainingTime_->setText (remaining < 0 ? tr ("unknown") : niceTime (remaining));
 	}
 
 	namespace
