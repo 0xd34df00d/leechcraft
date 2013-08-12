@@ -38,6 +38,7 @@
 #include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/ipluginready.h>
 #include <interfaces/ihaveshortcuts.h>
+#include <interfaces/ijobholder.h>
 
 namespace LeechCraft
 {
@@ -54,6 +55,7 @@ namespace LMP
 				 , public IHaveRecoverableTabs
 				 , public IHaveShortcuts
 				 , public IPluginReady
+				 , public IJobHolder
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
@@ -63,7 +65,8 @@ namespace LMP
 				IActionsExporter
 				IHaveRecoverableTabs
 				IHaveShortcuts
-				IPluginReady)
+				IPluginReady
+				IJobHolder)
 
 		TabClassInfo PlayerTC_;
 		TabClassInfo ArtistBrowserTC_;
@@ -104,6 +107,8 @@ namespace LMP
 
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject* plugin);
+
+		QAbstractItemModel* GetRepresentation () const;
 	private slots:
 		void handleFullRaiseRequested ();
 		void showCollectionStats ();

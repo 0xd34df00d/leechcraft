@@ -18,30 +18,20 @@ set (CHATHISTORY_SRCS
 	historymessage.cpp
 	xmlsettingsmanager.cpp
 	)
-set (CHATHISTORY_HEADERS
-	chathistory.h
-	core.h
-	storage.h
-	chathistorywidget.h
-	storagethread.h
-	historymessage.h
-	xmlsettingsmanager.h
-	)
 set (CHATHISTORY_FORMS
 	chathistorywidget.ui
 	)
 set (CHATHISTORY_RESOURCES azothchathistoryresources.qrc)
+
 CreateTrs ("azoth_chathistory" "en;es;ru_RU;uk_UA" CHATHISTORY_COMPILED_TRANSLATIONS)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (CHATHISTORY_MOC_SRCS ${CHATHISTORY_HEADERS})
-endif ()
+CreateTrsUpTarget ("azoth_chathistory" "en;ru_RU" "${CHATHISTORY_SRCS}" "${CHATHISTORY_FORMS}" "azothchathistorysettings.xml")
+
 QT4_WRAP_UI (CHATHISTORY_UIS_H ${CHATHISTORY_FORMS})
 QT4_ADD_RESOURCES (CHATHISTORY_RCCS ${CHATHISTORY_RESOURCES})
 
 add_library (leechcraft_azoth_chathistory SHARED
 	${CHATHISTORY_COMPILED_TRANSLATIONS}
 	${CHATHISTORY_SRCS}
-	${CHATHISTORY_MOC_SRCS}
 	${CHATHISTORY_UIS_H}
 	${CHATHISTORY_RCCS}
 	)

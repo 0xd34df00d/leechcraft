@@ -13,26 +13,20 @@ set (HERBICIDE_SRCS
 	confwidget.cpp
 	xmlsettingsmanager.cpp
 	)
-set (HERBICIDE_HEADERS
-	herbicide.h
-	confwidget.h
-	xmlsettingsmanager.h
-	)
 set (HERBICIDE_FORMS
 	confwidget.ui
 	)
 set (HERBICIDE_RESOURCES azothherbicideresources.qrc)
+
 CreateTrs ("azoth_herbicide" "en;es;ru_RU;uk_UA" HERBICIDE_COMPILED_TRANSLATIONS)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (HERBICIDE_MOC_SRCS ${HERBICIDE_HEADERS})
-endif ()
+CreateTrsUpTarget ("azoth_herbicide" "en;ru_RU" "${HERBICIDE_SRCS}" "${HERBICIDE_FORMS}" "azothherbicidesettings.xml")
+
 QT4_WRAP_UI (HERBICIDE_UIS_H ${HERBICIDE_FORMS})
 QT4_ADD_RESOURCES (HERBICIDE_RCCS ${HERBICIDE_RESOURCES})
 
 add_library (leechcraft_azoth_herbicide SHARED
 	${HERBICIDE_COMPILED_TRANSLATIONS}
 	${HERBICIDE_SRCS}
-	${HERBICIDE_MOC_SRCS}
 	${HERBICIDE_UIS_H}
 	${HERBICIDE_RCCS}
 	)

@@ -46,6 +46,7 @@ set (ASTRALITY_FORMS
 	)
 set (ASTRALITY_RESOURCES azothastralityresources.qrc)
 CreateTrs ("azoth_astrality" "en;es;ru_RU;uk_UA" ASTRALITY_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("azoth_astrality" "en;ru_RU" "${ASTRALITY_SRCS}" "${ASTRALITY_FORMS}" "")
 
 if (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (ASTRALITY_MOC_SRCS ${ASTRALITY_HEADERS})

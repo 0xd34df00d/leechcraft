@@ -135,6 +135,7 @@ set (FORMS
 	)
 set (RESOURCES aggregatorresources.qrc)
 CreateTrs ("aggregator" "ar;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("aggregator" "en;ru_RU" "${SRCS}" "${FORMS}" "aggregatorsettings.xml")
 
 add_definitions(-DBOOST_DYN_LINK)
 if (NOT LC_NO_MOC)

@@ -71,8 +71,8 @@ namespace LMP
 	signals:
 		void uploadLog (const QString&);
 
-		void transcodingProgress (int, int);
-		void uploadProgress (int, int);
+		void transcodingProgress (int, int, SyncManagerBase*);
+		void uploadProgress (int, int, SyncManagerBase*);
 	};
 }
 }

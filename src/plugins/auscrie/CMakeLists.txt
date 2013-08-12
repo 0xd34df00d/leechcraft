@@ -18,6 +18,7 @@ set (FORMS
 	)
 set (RESOURCES auscrieresources.qrc)
 CreateTrs ("auscrie" "de;en;es;fr;it;oc;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("auscrie" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 

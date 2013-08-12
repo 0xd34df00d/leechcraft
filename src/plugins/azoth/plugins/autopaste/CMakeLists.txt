@@ -43,7 +43,10 @@ set (AUTOPASTE_FORMS
 	pastedialog.ui
 	)
 set (AUTOPASTE_RESOURCES azothautopasteresources.qrc)
+
 CreateTrs ("azoth_autopaste" "en;es;ru_RU;uk_UA" AUTOPASTE_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("azoth_autopaste" "en;ru_RU" "${AUTOPASTE_SRCS}" "${AUTOPASTE_FORMS}" "azothautopastesettings.xml")
+
 QT4_WRAP_UI (AUTOPASTE_UIS_H ${AUTOPASTE_FORMS})
 QT4_ADD_RESOURCES (AUTOPASTE_RCCS ${AUTOPASTE_RESOURCES})
 

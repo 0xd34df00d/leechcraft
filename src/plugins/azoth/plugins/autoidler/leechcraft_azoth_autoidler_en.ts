@@ -4,7 +4,7 @@
 <context>
     <name>LeechCraft::Azoth::Autoidler::Plugin</name>
     <message>
-        <location filename="autoidler.cpp" line="73"/>
+        <location filename="autoidler.cpp" line="86"/>
         <source>Automatically updates statuses depending on idle time.</source>
         <translation>Automatically updates statuses depending on idle time.</translation>
     </message>

@@ -29,49 +29,40 @@
 
 #pragma once
 
-#include <memory>
-#include <QStringList>
+#include <QObject>
+#include <QHash>
+
+class QAbstractItemModel;
+class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	struct TranscodingParams;
+	class SyncManagerBase;
 
-	class Format
+	class ProgressManager : public QObject
 	{
+		Q_OBJECT
+
+		QStandardItemModel *Model_;
+
+		typedef QHash<SyncManagerBase*, QList<QStandardItem*>> Syncer2Row_t;
+		Syncer2Row_t TCRows_;
+		Syncer2Row_t UpRows_;
 	public:
-		virtual QString GetFormatID () const = 0;
-		virtual QString GetFileExtension () const;
-		virtual QString GetFormatName () const = 0;
-		virtual QString GetCodecName () const = 0;
-		virtual QString GetCodecID () const;
+		ProgressManager (QObject* = 0);
 
-		enum class BitrateType
-		{
-			VBR,
-			CBR
-		};
-		virtual QList<BitrateType> GetSupportedBitrates () const = 0;
-		virtual QList<int> GetBitrateLabels (BitrateType) const = 0;
+		QAbstractItemModel* GetModel () const;
 
-		virtual QStringList ToFFmpeg (const TranscodingParams&) const;
-	protected:
-		void StandardQualityAppend (QStringList&, const TranscodingParams&) const;
-	};
-	typedef std::shared_ptr<Format> Format_ptr;
-
-	class Formats
-	{
-		QList<Format_ptr> Formats_;
-		QList<Format_ptr> EnabledFormats_;
-
-		static QString S_FFmpegCodecs_;
-	public:
-		Formats ();
-
-		QList<Format_ptr> GetFormats () const;
-		Format_ptr GetFormat (const QString&) const;
+		void AddSyncManager (SyncManagerBase*);
+	private:
+		void HandleWithHash (int, int, SyncManagerBase*,
+				Syncer2Row_t&, const QString&, const QString&);
+	private slots:
+		void handleTCProgress (int, int, SyncManagerBase*);
+		void handleUploadProgress (int, int, SyncManagerBase*);
 	};
 }
 }

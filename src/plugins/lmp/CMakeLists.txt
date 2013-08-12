@@ -97,6 +97,7 @@ set (SRCS
 	similarviewmanager.cpp
 	artistbrowsertab.cpp
 	albumartmanagerdialog.cpp
+	progressmanager.cpp
 	sync/cloudwidget.cpp
 	sync/clouduploadmanager.cpp
 	sync/clouduploader.cpp

@@ -54,48 +54,6 @@ set (ACETAMIDE_SRCS
 	vcarddialog.cpp
 	)
 
-set (ACETAMIDE_HEADERS
-	acetamide.h
-	bookmarkeditwidget.h
-	channelclentry.h
-	channelconfigwidget.h
-	channelhandler.h
-	channelparticipantentry.h
-	channelpublicmessage.h
-	channelslistdialog.h
-	channelslistfilterproxymodel.h
-	channelsmanager.h
-	clientconnection.h
-	core.h
-	entrybase.h
-	ircaccount.h
-	ircaccountconfigurationdialog.h
-	ircaccountconfigurationwidget.h
-	ircerrorhandler.h
-	ircjoingroupchat.h
-	ircmessage.h
-	ircparser.h
-	ircparticipantentry.h
-	ircprotocol.h
-	ircserversocket.h
-	ircserverclentry.h
-	ircserverhandler.h
-	invitechannelsdialog.h
-	localtypes.h
-	newnickservidentifydialog.h
-	nickservidentifywidget.h
-	rplisupportparser.h
-	servercommandmessage.h
-	serverinfowidget.h
-	serverparticipantentry.h
-	serverresponsemanager.h
-	sortfilterproxymodel.h
-	sslerrorsdialog.h
-	usercommandmanager.h
-	xmlsettingsmanager.h
-	vcarddialog.h
-	)
-
 set (ACETAMIDE_FORMS
 	bookmarkeditwidget.ui
 	channelconfigwidget.ui
@@ -113,10 +71,8 @@ set (ACETAMIDE_FORMS
 set (ACETAMIDE_RESOURCES azothacetamideresources.qrc)
 
 CreateTrs ("azoth_acetamide" "de;en;es;fr;it;ru_RU;uk_UA" ACETAMIDE_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("azoth_acetamide" "en;ru_RU" "${ACETAMIDE_SRCS}" "${ACETAMIDE_FORMS}" "azothacetamidesettings.xml")
 
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (ACETAMIDE_MOC_SRCS ${ACETAMIDE_HEADERS})
-endif ()
 QT4_WRAP_UI (ACETAMIDE_UIS_H ${ACETAMIDE_FORMS})
 QT4_ADD_RESOURCES (ACETAMIDE_RCCS ${ACETAMIDE_RESOURCES})
 
