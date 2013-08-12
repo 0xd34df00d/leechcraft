@@ -89,6 +89,11 @@ namespace LMP
 			return "vorbis";
 		}
 
+		QString GetCodecID () const
+		{
+			return "libvorbis";
+		}
+
 		QList<BitrateType> GetSupportedBitrates() const
 		{
 			return { BitrateType::VBR, BitrateType::CBR };
