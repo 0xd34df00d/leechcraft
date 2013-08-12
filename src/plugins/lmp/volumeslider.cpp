@@ -41,6 +41,7 @@ namespace LMP
 		Ui_.setupUi (this);
 		Ui_.Slider_->setOrientation (Qt::Horizontal);
 		Ui_.Slider_->setRange (0, 100);
+		Ui_.Slider_->setValue (out->GetVolume () * 100);
 
 		connect (Ui_.Slider_,
 				SIGNAL (valueChanged (int)),
