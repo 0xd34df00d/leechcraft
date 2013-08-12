@@ -34,7 +34,7 @@
 #include <QUrl>
 #include <QtDeclarative>
 #include <QGraphicsEffect>
-#include <phonon/mediaobject.h>
+#include <gst/gst.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <util/util.h>
@@ -55,13 +55,10 @@ namespace LMP
 	{
 		Util::InstallTranslator ("lmp");
 
-		const auto& paths = QCoreApplication::libraryPaths ();
-		if (std::find_if (paths.begin (), paths.end (),
-				[] (const QString& path) { return path.contains ("kde4"); }) == paths.end ())
-		{
-			QCoreApplication::addLibraryPath ("/usr/lib/kde4/plugins");
-			QCoreApplication::addLibraryPath ("/usr/lib64/kde4/plugins");
-		}
+		gint argc = 1;
+		gchar *argvarr [] = { "leechcraft", nullptr };
+		gchar **argv = argvarr;
+		gst_init (&argc, &argv);
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpsettings.xml");
@@ -290,12 +287,14 @@ namespace LMP
 
 		if (e.Parameters_ & Internal)
 		{
+			/* TODO
 			auto obj = Phonon::createPlayer (Phonon::NotificationCategory, path);
 			obj->play ();
 			connect (obj,
 					SIGNAL (finished ()),
 					obj,
 					SLOT (deleteLater ()));
+					*/
 			return;
 		}
 

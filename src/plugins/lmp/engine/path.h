@@ -30,7 +30,8 @@
 #pragma once
 
 #include <QObject>
-#include <phonon/path.h>
+
+typedef struct _GstElement GstElement;
 
 namespace LeechCraft
 {
@@ -41,9 +42,16 @@ namespace LMP
 
 	class Path : public QObject
 	{
-		Phonon::Path Path_;
+		GstElement *Pipeline_;
+		GstElement *Audiobin_;
 	public:
 		Path (SourceObject*, Output*, QObject* = 0);
+		~Path ();
+
+		GstElement* GetPipeline () const;
+
+		GstElement* GetAudioBin () const;
+		void SetAudioBin (GstElement*);
 	};
 }
 }

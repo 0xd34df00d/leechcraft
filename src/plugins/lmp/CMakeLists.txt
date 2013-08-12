@@ -4,24 +4,10 @@ include (InitLCPlugin OPTIONAL)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
-if (NOT WIN32)
-	find_package (Phonon)
-endif ()
-
-if (WIN32)
-	message (STATUS "Using Qt's Phonon on Windows")
-	set (QT_USE_PHONON TRUE)
-else ()
-	if (NOT PHONON_FOUND)
-		message (WARNING "KDE Phonon not found, trying Qt's one instead...")
-		set (QT_USE_PHONON TRUE)
-	else ()
-		message (STATUS "Found KDE Phonon! Woohoo!")
-		set (QT_PHONON_INCLUDES ${PHONON_INCLUDES})
-		set (QT_PHONON_LIBS ${PHONON_LIBS})
-		add_definitions (-DHAVE_KDE_PHONON)
-	endif ()
-endif ()
+# This stuff won't be need by GStreamer 1.0.
+find_package (LibXml2 REQUIRED)
+find_package (GStreamer REQUIRED)
+find_package (GLIB2 REQUIRED)
 
 find_package (Taglib REQUIRED)
 add_definitions (${TAGLIB_CFLAGS})
@@ -36,16 +22,15 @@ if (ENABLE_LMP_MPRIS)
 	set (QT_USE_QTDBUS TRUE)
 endif ()
 include (${QT_USE_FILE})
-if (NOT WIN32 AND NOT PHONON_FOUND)
-	message (FATAL_ERROR "No Phonon is found, LMP cannot be built")
-endif ()
 
 include_directories (
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
-	${QT_PHONON_INCLUDES}
 	${TAGLIB_INCLUDES}
+	${GSTREAMER_INCLUDE_DIR}
+	${GLIB2_INCLUDE_DIR}
+	${LIBXML2_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 set (SRCS
@@ -167,8 +152,10 @@ endif ()
 target_link_libraries (leechcraft_lmp
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
-	${QT_PHONON_LIBS}
 	${TAGLIB_LIBRARIES}
+	${GSTREAMER_LIBRARIES}
+	${GLIB2_LIBRARIES}
+	${LIBXML2_LIBRARIES}
 
 	${MPRIS_SUBLIB}
 	)

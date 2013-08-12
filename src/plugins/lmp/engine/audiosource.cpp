@@ -38,31 +38,29 @@ namespace LMP
 	}
 
 	AudioSource::AudioSource (const QString& filename)
-	: AudioSource_ (filename)
+	: Url_ (QUrl::fromLocalFile (filename))
 	{
 	}
 
 	AudioSource::AudioSource (const QUrl& url)
-	: AudioSource_ (url.scheme () == "file" ?
-			Phonon::MediaSource (url.toLocalFile ()) :
-			Phonon::MediaSource (url))
+	: Url_ (url)
 	{
 	}
 
 	AudioSource::AudioSource (const AudioSource& source)
-	: AudioSource_ (source.AudioSource_)
+	: Url_ (source.Url_)
 	{
 	}
 
 	AudioSource& AudioSource::operator= (const AudioSource& source)
 	{
-		AudioSource_ = source.AudioSource_;
+		Url_ = source.Url_;
 		return *this;
 	}
 
 	bool AudioSource::operator== (const AudioSource& source) const
 	{
-		return AudioSource_ == source.AudioSource_;
+		return Url_ == source.Url_;
 	}
 
 	bool AudioSource::operator!= (const AudioSource& source) const
@@ -72,21 +70,17 @@ namespace LMP
 
 	QUrl AudioSource::ToUrl () const
 	{
-		return AudioSource_.type () == Phonon::MediaSource::LocalFile ?
-				QUrl::fromLocalFile (AudioSource_.fileName ()) :
-				AudioSource_.url ();
+		return Url_;
 	}
 
 	bool AudioSource::IsLocalFile () const
 	{
-		return AudioSource_.type () == Phonon::MediaSource::LocalFile;
+		return Url_.scheme () == "file";
 	}
 
 	QString AudioSource::GetLocalPath () const
 	{
-		return AudioSource_.type () == Phonon::MediaSource::LocalFile ?
-				AudioSource_.fileName () :
-				AudioSource_.url ().toLocalFile ();
+		return Url_.toLocalFile ();
 	}
 
 	bool AudioSource::IsRemote () const
@@ -94,74 +88,22 @@ namespace LMP
 		if (IsEmpty ())
 			return false;
 
-		switch (AudioSource_.type ())
-		{
-		case Phonon::MediaSource::Url:
-			return AudioSource_.url ().scheme () != "file";
-		case Phonon::MediaSource::Stream:
-			return true;
-		default:
-			return false;
-		}
+		return !IsLocalFile ();
 	}
 
 	bool AudioSource::IsEmpty () const
 	{
-		return AudioSource_.type () == Phonon::MediaSource::Empty ||
-				AudioSource_.type () == Phonon::MediaSource::Invalid;
+		return Url_.isValid ();
 	}
 
 	AudioSource::Type AudioSource::GetType () const
 	{
-		switch (AudioSource_.type ())
-		{
-		case Phonon::MediaSource::LocalFile:
-			return Type::File;
-		case Phonon::MediaSource::Url:
-			return Type::Url;
-		case Phonon::MediaSource::Stream:
-			return Type::Stream;
-		default:
-			return Type::Empty;
-		}
-	}
-
-	const Phonon::MediaSource& AudioSource::ToPhonon () const
-	{
-		return AudioSource_;
-	}
-
-	AudioSource AudioSource::FromPhonon (const Phonon::MediaSource& source)
-	{
-		AudioSource s;
-		s.AudioSource_ = source;
-		return s;
+		return IsLocalFile () ? Type::File : Type::Url;
 	}
 
 	uint qHash (const AudioSource& source)
 	{
-		const auto& src = source.ToPhonon ();
-
-		uint hash = 0;
-		switch (src.type ())
-		{
-		case Phonon::MediaSource::LocalFile:
-			hash = qHash (src.fileName ());
-			break;
-		case Phonon::MediaSource::Url:
-			hash = qHash (src.url ());
-			break;
-		case Phonon::MediaSource::Disc:
-			hash = src.discType ();
-			break;
-		case Phonon::MediaSource::Stream:
-			hash = qHash (src.deviceName ());
-			break;
-		default:
-			hash = 0;
-			break;
-		}
-		return hash << src.type ();
+		return qHash (source.ToUrl ());
 	}
 }
 }

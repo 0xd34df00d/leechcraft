@@ -28,8 +28,8 @@
  **********************************************************************/
 
 #include "path.h"
-#include <phonon/mediaobject.h>
-#include <phonon/audiooutput.h>
+#include <QtDebug>
+#include <gst/gstpipeline.h>
 #include "sourceobject.h"
 #include "output.h"
 
@@ -37,10 +37,33 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	Path::Path (SourceObject *source, Output *out, QObject *parent)
+	Path::Path (SourceObject *source, Output *output, QObject *parent)
 	: QObject (parent)
-	, Path_ (Phonon::createPath (source->ToPhonon (), out->ToPhonon ()))
+	, Pipeline_ (gst_pipeline_new ("pipeline"))
+	, Audiobin_ (nullptr)
 	{
+		source->AddToPath (this);
+		output->AddToPath (this);
+	}
+
+	Path::~Path ()
+	{
+		gst_object_unref (Pipeline_);
+	}
+
+	GstElement* Path::GetPipeline () const
+	{
+		return Pipeline_;
+	}
+
+	GstElement* Path::GetAudioBin () const
+	{
+		return Audiobin_;
+	}
+
+	void Path::SetAudioBin (GstElement *bin)
+	{
+		Audiobin_ = bin;
 	}
 }
 }

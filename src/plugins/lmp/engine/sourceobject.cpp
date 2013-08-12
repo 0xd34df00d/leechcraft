@@ -28,9 +28,10 @@
  **********************************************************************/
 
 #include "sourceobject.h"
-#include "audiosource.h"
 #include <QtDebug>
-#include "phonon/mediaobject.h"
+#include <gst/gst.h>
+#include "audiosource.h"
+#include "path.h"
 
 namespace LeechCraft
 {
@@ -38,45 +39,22 @@ namespace LMP
 {
 	namespace
 	{
-		SourceObject::State ToState (Phonon::State state)
+		void CbNewpad (GstElement *decodebin, GstPad *pad, gpointer data)
 		{
-			switch (state)
-			{
-			case Phonon::State::BufferingState:
-			case Phonon::State::LoadingState:
-				return SourceObject::State::Buffering;
-			case Phonon::State::StoppedState:
-				return SourceObject::State::Stopped;
-			case Phonon::State::PausedState:
-				return SourceObject::State::Paused;
-			case Phonon::State::PlayingState:
-				return SourceObject::State::Playing;
-			case Phonon::State::ErrorState:
-				return SourceObject::State::Error;
-			}
-
-			qWarning () << Q_FUNC_INFO
-					<< "unknown state"
-					<< state;
-			return SourceObject::State::Error;
+			static_cast<SourceObject*> (data)->HandleNewpad (decodebin, pad);
 		}
 	}
 
 	SourceObject::SourceObject (QObject *parent)
 	: QObject (parent)
-	, Obj_ (new Phonon::MediaObject (this))
+	, Src_ (gst_element_factory_make ("filesrc", "source"))
+	, Dec_ (gst_element_factory_make ("decodebin2", "decoder"))
+	, Path_ (nullptr)
 	{
+		g_signal_connect (Dec_, "pad-added", G_CALLBACK (CbNewpad), this);
+		/*
 		Obj_->setTickInterval (1000);
 		Obj_->setPrefinishMark (2000);
-
-		connect (Obj_,
-				SIGNAL (currentSourceChanged (Phonon::MediaSource)),
-				this,
-				SLOT (handlePhononSourceChanged (Phonon::MediaSource)));
-		connect (Obj_,
-				SIGNAL (stateChanged (Phonon::State, Phonon::State)),
-				this,
-				SLOT (handlePhononStateChanged (Phonon::State, Phonon::State)));
 
 		connect (Obj_,
 				SIGNAL (aboutToFinish ()),
@@ -102,124 +80,200 @@ namespace LMP
 				SIGNAL (tick (qint64)),
 				this,
 				SIGNAL (tick (qint64)));
+				*/
 	}
+
+	SourceObject::~SourceObject ()
+	{
+	}
+
 
 	bool SourceObject::IsSeekable () const
 	{
-		return Obj_->isSeekable ();
+// 		return Obj_->isSeekable ();
 	}
 
 	SourceObject::State SourceObject::GetState () const
 	{
-		return ToState (Obj_->state ());
+// 		return ToState (Obj_->state ());
 	}
 
 	QString SourceObject::GetErrorString () const
 	{
-		return Obj_->errorString ();
+// 		return Obj_->errorString ();
 	}
 
 	QStringList SourceObject::GetMetadata (Metadata field) const
 	{
-		switch (field)
-		{
-		case Metadata::Artist:
-			return Obj_->metaData (Phonon::ArtistMetaData);
-		case Metadata::Album:
-			return Obj_->metaData (Phonon::AlbumMetaData);
-		case Metadata::Title:
-			return Obj_->metaData (Phonon::TitleMetaData);
-		case Metadata::Genre:
-			return Obj_->metaData (Phonon::GenreMetaData);
-		case Metadata::Tracknumber:
-			return Obj_->metaData (Phonon::TracknumberMetaData);
-		}
-
-		qWarning () << Q_FUNC_INFO
-				<< "unknown field"
-				<< static_cast<int> (field);
-
-		return {};
+// 		switch (field)
+// 		{
+// 		case Metadata::Artist:
+// 			return Obj_->metaData (Phonon::ArtistMetaData);
+// 		case Metadata::Album:
+// 			return Obj_->metaData (Phonon::AlbumMetaData);
+// 		case Metadata::Title:
+// 			return Obj_->metaData (Phonon::TitleMetaData);
+// 		case Metadata::Genre:
+// 			return Obj_->metaData (Phonon::GenreMetaData);
+// 		case Metadata::Tracknumber:
+// 			return Obj_->metaData (Phonon::TracknumberMetaData);
+// 		}
+//
+// 		qWarning () << Q_FUNC_INFO
+// 				<< "unknown field"
+// 				<< static_cast<int> (field);
+//
+// 		return {};
 	}
 
 	qint64 SourceObject::GetCurrentTime () const
 	{
-		return Obj_->currentTime ();
+// 		return Obj_->currentTime ();
 	}
 
 	qint64 SourceObject::GetRemainingTime () const
 	{
-		return Obj_->remainingTime ();
+// 		return Obj_->remainingTime ();
 	}
 
 	qint64 SourceObject::GetTotalTime () const
 	{
-		return Obj_->totalTime ();
+// 		return Obj_->totalTime ();
 	}
 
 	void SourceObject::Seek (qint64 pos)
 	{
-		Obj_->seek (pos);
+// 		Obj_->seek (pos);
 	}
 
 	void SourceObject::SetTransitionTime (int time)
 	{
-		Obj_->setTransitionTime (time);
+// 		Obj_->setTransitionTime (time);
 	}
 
 	AudioSource SourceObject::GetCurrentSource () const
 	{
-		return AudioSource::FromPhonon (Obj_->currentSource ());
+		return {};
 	}
 
 	void SourceObject::SetCurrentSource (const AudioSource& source)
 	{
-		Obj_->setCurrentSource (source.ToPhonon ());
+		const auto& path = source.GetLocalPath ();
+		g_object_set (G_OBJECT (Src_), "location", path.toUtf8 ().constData (), 0);
 	}
 
-	void SourceObject::Enqueue (const AudioSource& source)
+	void SourceObject::PrepareNextSource (const AudioSource& source)
 	{
-		Obj_->enqueue (source.ToPhonon ());
+		NextSource_ = source;
 	}
 
 	void SourceObject::Play ()
 	{
-		Obj_->play ();
+		gchar *value = nullptr;
+		g_object_get (G_OBJECT (Src_), "location", &value, nullptr);
+		if (strlen (value) <= 0)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "current source is invalid, setting next one";
+			SetCurrentSource (NextSource_);
+			ClearQueue ();
+		}
+		g_free (value);
+
+		gst_element_set_state (Path_->GetPipeline (), GST_STATE_PLAYING);
 	}
 
 	void SourceObject::Pause ()
 	{
-		Obj_->pause ();
+		gst_element_set_state (Path_->GetPipeline (), GST_STATE_PAUSED);
 	}
 
 	void SourceObject::Stop ()
 	{
-		Obj_->stop ();
+		gst_element_set_state (Path_->GetPipeline (), GST_STATE_NULL);
 	}
 
 	void SourceObject::Clear ()
 	{
-		Obj_->clear ();
+		ClearQueue ();
+		gst_element_set_state (Path_->GetPipeline (), GST_STATE_NULL);
 	}
 
 	void SourceObject::ClearQueue ()
 	{
-		Obj_->clearQueue ();
+		NextSource_ = AudioSource ();
 	}
 
-	Phonon::MediaObject* SourceObject::ToPhonon () const
+	void SourceObject::HandleNewpad (GstElement *decodebin, GstPad *pad)
 	{
-		return Obj_;
+		auto audiopad = gst_element_get_static_pad (Path_->GetAudioBin (), "sink");
+		if (GST_PAD_IS_LINKED (audiopad))
+		{
+			g_object_unref (audiopad);
+			return;
+		}
+
+		auto caps = gst_pad_get_caps (pad);
+		auto str = gst_caps_get_structure (caps, 0);
+
+		if (!g_strrstr (gst_structure_get_name (str), "audio"))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "not an audio";
+			gst_caps_unref (caps);
+			gst_object_unref (audiopad);
+			return;
+		}
+
+		gst_pad_link (pad, audiopad);
+
+		gst_caps_unref (caps);
+		gst_object_unref (audiopad);
 	}
 
-	void SourceObject::handlePhononSourceChanged (const Phonon::MediaSource& source)
+	void SourceObject::HandleAboutToFinish ()
 	{
-		emit currentSourceChanged (AudioSource::FromPhonon (source));
+		emit aboutToFinish ();
+		if (NextSource_.IsEmpty ())
+			return;
+
+		const auto& path = NextSource_.GetLocalPath ();
+		g_object_set (G_OBJECT (Src_), "location", path.toUtf8 ().constData (), 0);
+
+		ClearQueue ();
 	}
 
-	void SourceObject::handlePhononStateChanged (Phonon::State newState, Phonon::State oldState)
+	namespace
 	{
-		emit stateChanged (ToState (newState), ToState (oldState));
+		gboolean CbBus (GstBus *bus, GstMessage *message, gpointer data)
+		{
+			switch (GST_MESSAGE_TYPE (message))
+			{
+			default:
+				break;
+			}
+
+			return true;
+		}
+
+		gboolean CbAboutToFinish (GstElement*, gpointer data)
+		{
+			static_cast<SourceObject*> (data)->HandleAboutToFinish ();
+		}
+	}
+
+	void SourceObject::AddToPath (Path *path)
+	{
+		gst_bin_add_many (GST_BIN (path->GetPipeline ()), Src_, Dec_, nullptr);
+		gst_element_link (Src_, Dec_);
+		Path_ = path;
+
+		auto bus = gst_pipeline_get_bus (GST_PIPELINE (path->GetPipeline ()));
+		gst_bus_add_watch (bus, CbBus, this);
+		gst_object_unref (bus);
+
+		g_signal_connect (Dec_,
+				"drained", G_CALLBACK (CbAboutToFinish), this);
 	}
 }
 }

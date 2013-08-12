@@ -28,7 +28,8 @@
  **********************************************************************/
 
 #include "output.h"
-#include <phonon/audiooutput.h>
+#include "path.h"
+#include <gst/gst.h>
 
 namespace LeechCraft
 {
@@ -36,8 +37,16 @@ namespace LMP
 {
 	Output::Output (QObject *parent)
 	: QObject (parent)
-	, Output_ (new Phonon::AudioOutput (Phonon::MusicCategory, this))
+	, Audio_ (gst_bin_new ("audiobin"))
+	, Conv_ (gst_element_factory_make ("audioconvert", "aconv"))
+	, Audiopad_ (gst_element_get_static_pad (Conv_, "sink"))
+	, Sink_ (gst_element_factory_make ("alsasink", "sink"))
 	{
+		gst_bin_add_many (GST_BIN (Audio_), Conv_, Sink_, nullptr);
+		gst_element_link (Conv_, Sink_);
+		gst_element_add_pad (Audio_, gst_ghost_pad_new ("sink", Audiopad_));
+		gst_object_unref (Audiopad_);
+		/*
 		connect (Output_,
 				SIGNAL (volumeChanged (qreal)),
 				this,
@@ -51,42 +60,44 @@ namespace LMP
 				SIGNAL (mutedChanged (bool)),
 				this,
 				SIGNAL (mutedChanged (bool)));
-	}
-
-	Phonon::AudioOutput* Output::ToPhonon () const
-	{
-		return Output_;
+				*/
 	}
 
 	double Output::GetVolume () const
 	{
-		return Output_->volume ();
+// 		return Output_->volume ();
 	}
 
 	bool Output::IsMuted () const
 	{
-		return Output_->isMuted ();
+// 		return Output_->isMuted ();
+	}
+
+	void Output::AddToPath (Path *path)
+	{
+		gst_bin_add (GST_BIN (path->GetPipeline ()), Audio_);
+		path->SetAudioBin (Audio_);
 	}
 
 	void Output::setVolume (double volume)
 	{
-		Output_->setVolume (volume);
+// 		Output_->setVolume (volume);
 	}
 
 	void Output::setVolume (int volume)
 	{
-		setVolume (volume / 100.);
+// 		setVolume (volume / 100.);
 	}
 
 	void Output::toggleMuted ()
 	{
-		Output_->setMuted (!Output_->isMuted ());
-		emit mutedChanged (Output_->isMuted ());
+// 		Output_->setMuted (!Output_->isMuted ());
+// 		emit mutedChanged (Output_->isMuted ());
 	}
 
 	void Output::handlePhononVolumeChanged (qreal volume)
 	{
-		emit volumeChanged (static_cast<int> (volume * 100));
+// 		emit volumeChanged (static_cast<int> (volume * 100));
 	}
 }
 }

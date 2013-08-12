@@ -31,27 +31,30 @@
 
 #include <QObject>
 
-namespace Phonon
-{
-	class AudioOutput;
-}
+typedef struct _GstElement GstElement;
+typedef struct _GstPad GstPad;
 
 namespace LeechCraft
 {
 namespace LMP
 {
+	class Path;
+
 	class Output : public QObject
 	{
 		Q_OBJECT
 
-		Phonon::AudioOutput *Output_;
+		GstElement *Audio_;
+		GstElement *Conv_;
+		GstPad *Audiopad_;
+		GstElement *Sink_;
 	public:
 		Output (QObject* = 0);
 
 		double GetVolume () const;
 		bool IsMuted () const;
 
-		Phonon::AudioOutput* ToPhonon () const;
+		void AddToPath (Path*);
 	public slots:
 		void setVolume (double);
 		void setVolume (int);

@@ -35,7 +35,6 @@
 #include <QString>
 #include <QStringList>
 #include <QVariant>
-#include <phonon/audiooutput.h>
 #include "../player.h"
 #include "../engine/sourceobject.h"
 #include "../engine/output.h"

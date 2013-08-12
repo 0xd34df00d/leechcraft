@@ -31,25 +31,28 @@
 
 #include <QObject>
 #include <QStringList>
-#include <phonon/phononnamespace.h>
+#include "audiosource.h"
 
-namespace Phonon
-{
-	class MediaObject;
-	class MediaSource;
-}
+typedef struct _GstElement GstElement;
+typedef struct _GstPad GstPad;
 
 namespace LeechCraft
 {
 namespace LMP
 {
 	class AudioSource;
+	class Path;
 
 	class SourceObject : public QObject
 	{
 		Q_OBJECT
 
-		Phonon::MediaObject *Obj_;
+		GstElement *Src_;
+		GstElement *Dec_;
+
+		Path *Path_;
+
+		AudioSource NextSource_;
 	public:
 		enum class State
 		{
@@ -70,6 +73,7 @@ namespace LMP
 		};
 
 		SourceObject (QObject* = 0);
+		~SourceObject ();
 
 		SourceObject (const SourceObject&) = delete;
 		SourceObject& operator= (const SourceObject&) = delete;
@@ -90,7 +94,7 @@ namespace LMP
 
 		AudioSource GetCurrentSource () const;
 		void SetCurrentSource (const AudioSource&);
-		void Enqueue (const AudioSource&);
+		void PrepareNextSource (const AudioSource&);
 
 		void Play ();
 		void Pause ();
@@ -99,10 +103,9 @@ namespace LMP
 		void Clear ();
 		void ClearQueue ();
 
-		Phonon::MediaObject* ToPhonon () const;
-	private slots:
-		void handlePhononStateChanged (Phonon::State, Phonon::State);
-		void handlePhononSourceChanged (const Phonon::MediaSource&);
+		void HandleNewpad (GstElement*, GstPad*);
+		void HandleAboutToFinish ();
+		void AddToPath (Path*);
 	signals:
 		void stateChanged (SourceObject::State, SourceObject::State);
 		void currentSourceChanged (const AudioSource&);
