@@ -58,7 +58,8 @@ namespace LMP
 
 		void AddSyncManager (SyncManagerBase*);
 	private:
-		void HandleWithHash (int, int, SyncManagerBase*, Syncer2Row_t&);
+		void HandleWithHash (int, int, SyncManagerBase*,
+				Syncer2Row_t&, const QString&, const QString&);
 	private slots:
 		void handleTCProgress (int, int, SyncManagerBase*);
 		void handleUploadProgress (int, int, SyncManagerBase*);

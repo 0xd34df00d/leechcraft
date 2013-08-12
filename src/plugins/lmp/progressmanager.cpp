@@ -60,7 +60,7 @@ namespace LMP
 	}
 
 	void ProgressManager::HandleWithHash (int done, int total,
-			SyncManagerBase *syncer, Syncer2Row_t& hash)
+			SyncManagerBase *syncer, Syncer2Row_t& hash, const QString& name, const QString& status)
 	{
 		if (!hash.contains (syncer))
 		{
@@ -69,8 +69,8 @@ namespace LMP
 
 			const QList<QStandardItem*> row
 			{
-				new QStandardItem (tr ("Audio transcoding...")),
-				new QStandardItem (tr ("Transcoding")),
+				new QStandardItem (name),
+				new QStandardItem (status),
 				new QStandardItem ()
 			};
 			auto item = row.at (JobHolderColumn::JobProgress);
@@ -96,12 +96,14 @@ namespace LMP
 
 	void ProgressManager::handleTCProgress (int done, int total, SyncManagerBase *syncer)
 	{
-		HandleWithHash (done, total, syncer, TCRows_);
+		HandleWithHash (done, total, syncer, TCRows_,
+				tr ("Audio transcoding"), tr ("Transcoding..."));
 	}
 
 	void ProgressManager::handleUploadProgress (int done, int total, SyncManagerBase *syncer)
 	{
-		HandleWithHash (done, total, syncer, UpRows_);
+		HandleWithHash (done, total, syncer, UpRows_,
+				tr ("Audio upload"), tr ("Uploading..."));
 	}
 }
 }
