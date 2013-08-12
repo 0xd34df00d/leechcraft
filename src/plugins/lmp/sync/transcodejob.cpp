@@ -62,8 +62,13 @@ namespace LMP
 
 		TranscodedPath_ = dir.absoluteFilePath (fi.fileName () + '.' + format->GetFileExtension ());
 
-		QStringList args;
-		args << "-i" << path;
+		QStringList args
+		{
+			"-strict",
+			"-2",
+			"-i",
+			path
+		};
 		args << format->ToFFmpeg (params);
 		args << "-map_metadata" << "0";
 		args << TranscodedPath_;
