@@ -64,8 +64,6 @@ namespace LMP
 
 		QStringList args
 		{
-			"-strict",
-			"-2",
 			"-i",
 			path
 		};
