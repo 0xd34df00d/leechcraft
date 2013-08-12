@@ -47,7 +47,6 @@ namespace LMP
 	{
 		Q_OBJECT
 
-		GstElement *Src_;
 		GstElement *Dec_;
 
 		Path *Path_;

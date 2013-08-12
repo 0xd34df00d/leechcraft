@@ -47,8 +47,7 @@ namespace LMP
 
 	SourceObject::SourceObject (QObject *parent)
 	: QObject (parent)
-	, Src_ (gst_element_factory_make ("filesrc", "source"))
-	, Dec_ (gst_element_factory_make ("decodebin2", "decoder"))
+	, Dec_ (gst_element_factory_make ("uridecodebin", "decoder"))
 	, Path_ (nullptr)
 	{
 		g_signal_connect (Dec_, "pad-added", G_CALLBACK (CbNewpad), this);
@@ -158,8 +157,8 @@ namespace LMP
 
 	void SourceObject::SetCurrentSource (const AudioSource& source)
 	{
-		const auto& path = source.GetLocalPath ();
-		g_object_set (G_OBJECT (Src_), "location", path.toUtf8 ().constData (), 0);
+		const auto& path = source.ToUrl ().toString ();
+		g_object_set (G_OBJECT (Dec_), "uri", path.toUtf8 ().constData (), 0);
 	}
 
 	void SourceObject::PrepareNextSource (const AudioSource& source)
@@ -170,7 +169,7 @@ namespace LMP
 	void SourceObject::Play ()
 	{
 		gchar *value = nullptr;
-		g_object_get (G_OBJECT (Src_), "location", &value, nullptr);
+		g_object_get (G_OBJECT (Dec_), "uri", &value, nullptr);
 		if (strlen (value) <= 0)
 		{
 			qDebug () << Q_FUNC_INFO
@@ -237,8 +236,8 @@ namespace LMP
 		if (NextSource_.IsEmpty ())
 			return;
 
-		const auto& path = NextSource_.GetLocalPath ();
-		g_object_set (G_OBJECT (Src_), "location", path.toUtf8 ().constData (), 0);
+		const auto& path = NextSource_.ToUrl ().toString ();
+		g_object_set (G_OBJECT (Dec_), "uri", path.toUtf8 ().constData (), 0);
 
 		ClearQueue ();
 	}
@@ -264,8 +263,7 @@ namespace LMP
 
 	void SourceObject::AddToPath (Path *path)
 	{
-		gst_bin_add_many (GST_BIN (path->GetPipeline ()), Src_, Dec_, nullptr);
-		gst_element_link (Src_, Dec_);
+		gst_bin_add_many (GST_BIN (path->GetPipeline ()), Dec_, nullptr);
 		Path_ = path;
 
 		auto bus = gst_pipeline_get_bus (GST_PIPELINE (path->GetPipeline ()));
