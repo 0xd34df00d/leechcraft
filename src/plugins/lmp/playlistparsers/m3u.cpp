@@ -114,12 +114,8 @@ namespace M3U
 	void Write (const QString& path, const QList<AudioSource>& sources)
 	{
 		QStringList strings;
-		qDebug () << Q_FUNC_INFO;
 		for (const AudioSource& source : sources)
-		{
-			qDebug () << source.ToUrl ();
 			strings << source.ToUrl ().toString ();
-		}
 		Write (path, strings);
 	}
 }
