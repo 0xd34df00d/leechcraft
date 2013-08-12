@@ -46,7 +46,6 @@ target_link_libraries (leechcraft_lmp_graffiti
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${TAGLIB_LIBRARIES}
-	leechcraft_lmp
 	)
 
 install (TARGETS leechcraft_lmp_graffiti DESTINATION ${LC_PLUGINS_DEST})
