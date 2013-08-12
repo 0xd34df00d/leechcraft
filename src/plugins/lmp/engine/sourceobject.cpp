@@ -94,6 +94,10 @@ namespace LMP
 				SIGNAL (bufferStatus (int)),
 				this,
 				SIGNAL (bufferStatus (int)));
+		connect (Obj_,
+				SIGNAL (tick (qint64)),
+				this,
+				SIGNAL (tick (qint64)));
 	}
 
 	bool SourceObject::IsSeekable () const

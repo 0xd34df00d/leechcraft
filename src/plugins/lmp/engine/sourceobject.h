@@ -110,6 +110,8 @@ namespace LMP
 		void finished ();
 		void metaDataChanged ();
 		void bufferStatus (int);
+
+		void tick (qint64);
 	};
 }
 }
