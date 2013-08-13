@@ -61,6 +61,7 @@ namespace LMP
 						SLOT (updateTotalTime ()));
 				break;
 			default:
+				qDebug () << Q_FUNC_INFO << GST_MESSAGE_TYPE (message);
 				break;
 			}
 
