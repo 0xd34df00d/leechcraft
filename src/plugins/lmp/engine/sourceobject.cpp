@@ -353,8 +353,8 @@ namespace LMP
 		}
 
 		auto newNativeState = GstToState (newState);
-		emit stateChanged (newNativeState, OldState_);
 		OldState_ = newNativeState;
+		emit stateChanged (newNativeState, OldState_);
 	}
 
 	void SourceObject::AddToPath (Path *path)
