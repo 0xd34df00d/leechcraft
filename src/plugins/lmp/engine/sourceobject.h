@@ -117,6 +117,8 @@ namespace LMP
 
 		void AddToPath (Path*);
 		void PostAdd (Path*);
+	private slots:
+		void updateTotalTime ();
 	signals:
 		void stateChanged (SourceObject::State, SourceObject::State);
 		void currentSourceChanged (const AudioSource&);

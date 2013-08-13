@@ -30,6 +30,7 @@
 #include "sourceobject.h"
 #include <memory>
 #include <QtDebug>
+#include <QTimer>
 #include <gst/gst.h>
 #include "audiosource.h"
 #include "path.h"
@@ -53,6 +54,11 @@ namespace LMP
 				break;
 			case GST_MESSAGE_STATE_CHANGED:
 				src->HandleStateChangeMsg (message);
+				break;
+			case GST_MESSAGE_DURATION:
+				QTimer::singleShot (0,
+						src,
+						SLOT (updateTotalTime ()));
 				break;
 			default:
 				break;
@@ -165,17 +171,31 @@ namespace LMP
 
 	qint64 SourceObject::GetCurrentTime () const
 	{
-// 		return Obj_->currentTime ();
+		auto format = GST_FORMAT_TIME;
+		gint64 position = 0;
+		gst_element_query_position (GST_ELEMENT (Dec_), &format, &position);
+		return position / GST_MSECOND;
 	}
 
 	qint64 SourceObject::GetRemainingTime () const
 	{
-// 		return Obj_->remainingTime ();
+		auto format = GST_FORMAT_TIME;
+		gint64 duration = 0;
+		if (!gst_element_query_duration (GST_ELEMENT (Dec_), &format, &duration))
+			return -1;
+
+		gint64 position = 0;
+		gst_element_query_position (GST_ELEMENT (Dec_), &format, &position);
+		return (duration - position) / GST_MSECOND;
 	}
 
 	qint64 SourceObject::GetTotalTime () const
 	{
-// 		return Obj_->totalTime ();
+		auto format = GST_FORMAT_TIME;
+		gint64 duration = 0;
+		if (gst_element_query_duration (GST_ELEMENT (Dec_), &format, &duration))
+			return duration / GST_MSECOND;
+		return -1;
 	}
 
 	void SourceObject::Seek (qint64 pos)
@@ -337,6 +357,12 @@ namespace LMP
 	{
 		auto bin = path->GetAudioBin ();
 		g_object_set (GST_OBJECT (Dec_), "audio-sink", bin, nullptr);
+	}
+
+	void SourceObject::updateTotalTime ()
+	{
+		qDebug () << Q_FUNC_INFO << GetTotalTime ();
+		emit totalTimeChanged (GetTotalTime ());
 	}
 }
 }
