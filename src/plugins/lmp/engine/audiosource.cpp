@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "audiosource.h"
+#include <QUrl>
 
 namespace LeechCraft
 {
