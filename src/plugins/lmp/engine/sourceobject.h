@@ -59,6 +59,8 @@ namespace LMP
 
 		QMutex NextSrcMutex_;
 		QWaitCondition NextSrcWC_;
+
+		bool IsSeeking_;
 	public:
 		enum class State
 		{

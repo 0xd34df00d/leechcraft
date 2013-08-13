@@ -84,6 +84,7 @@ namespace LMP
 	: QObject (parent)
 	, Dec_ (gst_element_factory_make ("playbin2", "play"))
 	, Path_ (nullptr)
+	, IsSeeking_ (false)
 	, OldState_ (State::Stopped)
 	{
 		auto bus = gst_pipeline_get_bus (GST_PIPELINE (Dec_));
@@ -187,7 +188,12 @@ namespace LMP
 
 	void SourceObject::Seek (qint64 pos)
 	{
-// 		Obj_->seek (pos);
+		if (OldState_ == State::Playing)
+			IsSeeking_ = true;
+
+		gst_element_seek (GST_ELEMENT (Dec_), 1.0, GST_FORMAT_TIME,
+				GST_SEEK_FLAG_FLUSH, GST_SEEK_TYPE_SET, pos * GST_MSECOND,
+				GST_SEEK_TYPE_NONE, GST_CLOCK_TIME_NONE);
 	}
 
 	void SourceObject::SetTransitionTime (int time)
@@ -202,6 +208,8 @@ namespace LMP
 
 	void SourceObject::SetCurrentSource (const AudioSource& source)
 	{
+		IsSeeking_ = false;
+
 		CurrentSource_ = source;
 
 		const auto& path = source.ToUrl ().toString ();
@@ -328,6 +336,21 @@ namespace LMP
 
 		GstState oldState, newState, pending;
 		gst_message_parse_state_changed (msg, &oldState, &newState, &pending);
+
+		if (oldState == newState)
+			return;
+
+		if (IsSeeking_)
+		{
+			if (oldState == GST_STATE_PLAYING && newState == GST_STATE_PAUSED)
+				return;
+
+			if (oldState == GST_STATE_PAUSED && newState == GST_STATE_PLAYING)
+			{
+				IsSeeking_ = false;
+				return;
+			}
+		}
 
 		auto newNativeState = GstToState (newState);
 		emit stateChanged (newNativeState, OldState_);
