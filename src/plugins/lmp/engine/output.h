@@ -46,6 +46,7 @@ namespace LMP
 
 		GstElement *Bin_;
 		GstElement *Equalizer_;
+		GstElement *Volume_;
 		GstElement *Converter_;
 		GstElement *Sink_;
 	public:
@@ -61,8 +62,6 @@ namespace LMP
 		void setVolume (int);
 
 		void toggleMuted ();
-	private slots:
-		void handlePhononVolumeChanged (qreal);
 	signals:
 		void volumeChanged (qreal);
 		void volumeChanged (int);
