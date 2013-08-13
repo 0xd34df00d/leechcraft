@@ -68,6 +68,8 @@ namespace LMP
 
 		bool IsEmpty () const;
 
+		void Clear ();
+
 		Type GetType () const;
 	};
 

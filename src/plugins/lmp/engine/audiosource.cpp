@@ -96,6 +96,11 @@ namespace LMP
 		return !Url_.isValid ();
 	}
 
+	void AudioSource::Clear ()
+	{
+		Url_.clear ();
+	}
+
 	AudioSource::Type AudioSource::GetType () const
 	{
 		return IsLocalFile () ? Type::File : Type::Url;
