@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "sourceobject.h"
+#include <memory>
 #include <QtDebug>
 #include <gst/gst.h>
 #include "audiosource.h"
@@ -62,7 +63,6 @@ namespace LMP
 
 		gboolean CbAboutToFinish (GstElement*, gpointer data)
 		{
-			qDebug () << Q_FUNC_INFO;
 			static_cast<SourceObject*> (data)->HandleAboutToFinish ();
 		}
 
@@ -205,7 +205,13 @@ namespace LMP
 
 	void SourceObject::PrepareNextSource (const AudioSource& source)
 	{
+		NextSrcMutex_.lock ();
+
+		qDebug () << Q_FUNC_INFO << source.ToUrl ();
 		NextSource_ = source;
+
+		NextSrcWC_.wakeAll ();
+		NextSrcMutex_.unlock ();
 	}
 
 	void SourceObject::Play ()
@@ -250,9 +256,23 @@ namespace LMP
 
 	void SourceObject::HandleAboutToFinish ()
 	{
+		qDebug () << Q_FUNC_INFO;
 		emit aboutToFinish ();
+
+		NextSrcMutex_.lock ();
 		if (NextSource_.IsEmpty ())
+			NextSrcWC_.wait (&NextSrcMutex_, 500);
+		qDebug () << "wait finished";
+
+		std::shared_ptr<void> mutexGuard (nullptr,
+				[this] (void*) { NextSrcMutex_.unlock (); });
+
+		if (NextSource_.IsEmpty ())
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "no next source set, will stop playing";
 			return;
+		}
 
 		SetCurrentSource (NextSource_);
 		NextSource_.Clear ();

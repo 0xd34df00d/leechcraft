@@ -31,6 +31,8 @@
 
 #include <QObject>
 #include <QStringList>
+#include <QMutex>
+#include <QWaitCondition>
 #include "audiosource.h"
 
 typedef struct _GstElement GstElement;
@@ -54,6 +56,9 @@ namespace LMP
 
 		AudioSource CurrentSource_;
 		AudioSource NextSource_;
+
+		QMutex NextSrcMutex_;
+		QWaitCondition NextSrcWC_;
 	public:
 		enum class State
 		{
