@@ -83,7 +83,11 @@ namespace LMP
 
 	SourceObject::SourceObject (QObject *parent)
 	: QObject (parent)
+#if GST_VERSION_MAJOR < 1
 	, Dec_ (gst_element_factory_make ("playbin2", "play"))
+#else
+	, Dec_ (gst_element_factory_make ("playbin", "play"))
+#endif
 	, Path_ (nullptr)
 	, IsSeeking_ (false)
 	, OldState_ (State::Stopped)
