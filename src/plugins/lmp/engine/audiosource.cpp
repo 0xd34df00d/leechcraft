@@ -93,7 +93,7 @@ namespace LMP
 
 	bool AudioSource::IsEmpty () const
 	{
-		return Url_.isValid ();
+		return !Url_.isValid ();
 	}
 
 	AudioSource::Type AudioSource::GetType () const
