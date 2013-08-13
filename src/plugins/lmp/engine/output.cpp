@@ -37,15 +37,19 @@ namespace LMP
 {
 	Output::Output (QObject *parent)
 	: QObject (parent)
-	, Audio_ (gst_bin_new ("audiobin"))
-	, Conv_ (gst_element_factory_make ("audioconvert", "aconv"))
-	, Audiopad_ (gst_element_get_static_pad (Conv_, "sink"))
-	, Sink_ (gst_element_factory_make ("alsasink", "sink"))
+	, Bin_ (gst_bin_new ("audio_sink_bin"))
+	, Equalizer_ (gst_element_factory_make ("equalizer-3bands", "equalizer"))
+	, Converter_ (gst_element_factory_make ("audioconvert", "convert"))
+	, Sink_ (gst_element_factory_make ("autoaudiosink", "audio_sink"))
 	{
-		gst_bin_add_many (GST_BIN (Audio_), Conv_, Sink_, nullptr);
-		gst_element_link (Conv_, Sink_);
-		gst_element_add_pad (Audio_, gst_ghost_pad_new ("sink", Audiopad_));
-		gst_object_unref (Audiopad_);
+		gst_bin_add_many (GST_BIN (Bin_), Equalizer_, Converter_, Sink_, nullptr);
+		gst_element_link_many (Equalizer_, Converter_, Sink_, nullptr);
+
+		auto pad = gst_element_get_static_pad (Equalizer_, "sink");
+		auto ghostPad = gst_ghost_pad_new ("sink", pad);
+		gst_pad_set_active (ghostPad, TRUE);
+		gst_element_add_pad (Bin_, ghostPad);
+		gst_object_unref (pad);
 		/*
 		connect (Output_,
 				SIGNAL (volumeChanged (qreal)),
@@ -63,6 +67,15 @@ namespace LMP
 				*/
 	}
 
+	void Output::AddToPath (Path *path)
+	{
+		path->SetAudioBin (Bin_);
+	}
+
+	void Output::PostAdd (Path*)
+	{
+	}
+
 	double Output::GetVolume () const
 	{
 // 		return Output_->volume ();
@@ -71,12 +84,6 @@ namespace LMP
 	bool Output::IsMuted () const
 	{
 // 		return Output_->isMuted ();
-	}
-
-	void Output::AddToPath (Path *path)
-	{
-		gst_bin_add (GST_BIN (path->GetPipeline ()), Audio_);
-		path->SetAudioBin (Audio_);
 	}
 
 	void Output::setVolume (double volume)

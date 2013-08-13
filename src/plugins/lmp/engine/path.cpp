@@ -39,21 +39,28 @@ namespace LMP
 {
 	Path::Path (SourceObject *source, Output *output, QObject *parent)
 	: QObject (parent)
-	, Pipeline_ (gst_pipeline_new ("pipeline"))
+	, Pipeline_ (nullptr)
 	, Audiobin_ (nullptr)
 	{
 		source->AddToPath (this);
 		output->AddToPath (this);
+
+		source->PostAdd (this);
+		output->PostAdd (this);
 	}
 
 	Path::~Path ()
 	{
-		gst_object_unref (Pipeline_);
 	}
 
 	GstElement* Path::GetPipeline () const
 	{
 		return Pipeline_;
+	}
+
+	void Path::SetPipeline (GstElement *pipeline)
+	{
+		Pipeline_ = pipeline;
 	}
 
 	GstElement* Path::GetAudioBin () const

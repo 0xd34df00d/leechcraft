@@ -39,18 +39,53 @@ namespace LMP
 {
 	namespace
 	{
-		void CbNewpad (GstElement *decodebin, GstPad *pad, gpointer data)
+		gboolean CbBus (GstBus *bus, GstMessage *message, gpointer data)
 		{
-			static_cast<SourceObject*> (data)->HandleNewpad (decodebin, pad);
+			auto src = static_cast<SourceObject*> (data);
+
+			switch (GST_MESSAGE_TYPE (message))
+			{
+			case GST_MESSAGE_ERROR:
+				src->HandleErrorMsg (message);
+				break;
+			case GST_MESSAGE_TAG:
+				break;
+			case GST_MESSAGE_STATE_CHANGED:
+				src->HandleStateChangeMsg (message);
+				break;
+			default:
+				break;
+			}
+
+			return true;
+		}
+
+		gboolean CbAboutToFinish (GstElement*, gpointer data)
+		{
+			qDebug () << Q_FUNC_INFO;
+			static_cast<SourceObject*> (data)->HandleAboutToFinish ();
+		}
+
+		gboolean CbUriChanged (GstElement*, gpointer data)
+		{
+			qDebug () << Q_FUNC_INFO;
 		}
 	}
 
 	SourceObject::SourceObject (QObject *parent)
 	: QObject (parent)
-	, Dec_ (gst_element_factory_make ("uridecodebin", "decoder"))
+	, Dec_ (gst_element_factory_make ("playbin2", "play"))
 	, Path_ (nullptr)
+	, OldState_ (State::Stopped)
 	{
-		g_signal_connect (Dec_, "pad-added", G_CALLBACK (CbNewpad), this);
+		auto bus = gst_pipeline_get_bus (GST_PIPELINE (Dec_));
+		gst_bus_add_watch (bus, CbBus, this);
+		gst_object_unref (bus);
+
+		g_signal_connect (Dec_,
+				"about-to-finish", G_CALLBACK (CbAboutToFinish), this);
+		g_signal_connect (Dec_,
+				"notify::uri", G_CALLBACK (CbUriChanged), this);
 		/*
 		Obj_->setTickInterval (1000);
 		Obj_->setPrefinishMark (2000);
@@ -86,7 +121,6 @@ namespace LMP
 	{
 	}
 
-
 	bool SourceObject::IsSeekable () const
 	{
 // 		return Obj_->isSeekable ();
@@ -94,12 +128,13 @@ namespace LMP
 
 	SourceObject::State SourceObject::GetState () const
 	{
-// 		return ToState (Obj_->state ());
+		return OldState_;
 	}
 
 	QString SourceObject::GetErrorString () const
 	{
 // 		return Obj_->errorString ();
+		return {};
 	}
 
 	QStringList SourceObject::GetMetadata (Metadata field) const
@@ -123,6 +158,7 @@ namespace LMP
 // 				<< static_cast<int> (field);
 //
 // 		return {};
+		return {};
 	}
 
 	qint64 SourceObject::GetCurrentTime () const
@@ -152,13 +188,17 @@ namespace LMP
 
 	AudioSource SourceObject::GetCurrentSource () const
 	{
-		return {};
+		return CurrentSource_;
 	}
 
 	void SourceObject::SetCurrentSource (const AudioSource& source)
 	{
+		CurrentSource_ = source;
+
 		const auto& path = source.ToUrl ().toString ();
 		g_object_set (G_OBJECT (Dec_), "uri", path.toUtf8 ().constData (), 0);
+
+		emit currentSourceChanged (CurrentSource_);
 	}
 
 	void SourceObject::PrepareNextSource (const AudioSource& source)
@@ -168,16 +208,16 @@ namespace LMP
 
 	void SourceObject::Play ()
 	{
-		gchar *value = nullptr;
-		g_object_get (G_OBJECT (Dec_), "uri", &value, nullptr);
-		if (strlen (value) <= 0)
+		if (CurrentSource_.IsEmpty ())
 		{
 			qDebug () << Q_FUNC_INFO
 					<< "current source is invalid, setting next one";
+			if (NextSource_.IsEmpty ())
+				return;
+
 			SetCurrentSource (NextSource_);
-			ClearQueue ();
+			NextSource_.Clear ();
 		}
-		g_free (value);
 
 		gst_element_set_state (Path_->GetPipeline (), GST_STATE_PLAYING);
 	}
@@ -194,40 +234,16 @@ namespace LMP
 
 	void SourceObject::Clear ()
 	{
+		qDebug () << Q_FUNC_INFO;
+
 		ClearQueue ();
+		CurrentSource_.Clear ();
 		gst_element_set_state (Path_->GetPipeline (), GST_STATE_NULL);
 	}
 
 	void SourceObject::ClearQueue ()
 	{
-		NextSource_ = AudioSource ();
-	}
-
-	void SourceObject::HandleNewpad (GstElement *decodebin, GstPad *pad)
-	{
-		auto audiopad = gst_element_get_static_pad (Path_->GetAudioBin (), "sink");
-		if (GST_PAD_IS_LINKED (audiopad))
-		{
-			g_object_unref (audiopad);
-			return;
-		}
-
-		auto caps = gst_pad_get_caps (pad);
-		auto str = gst_caps_get_structure (caps, 0);
-
-		if (!g_strrstr (gst_structure_get_name (str), "audio"))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "not an audio";
-			gst_caps_unref (caps);
-			gst_object_unref (audiopad);
-			return;
-		}
-
-		gst_pad_link (pad, audiopad);
-
-		gst_caps_unref (caps);
-		gst_object_unref (audiopad);
+		NextSource_.Clear ();
 	}
 
 	void SourceObject::HandleAboutToFinish ()
@@ -236,42 +252,69 @@ namespace LMP
 		if (NextSource_.IsEmpty ())
 			return;
 
-		const auto& path = NextSource_.ToUrl ().toString ();
-		g_object_set (G_OBJECT (Dec_), "uri", path.toUtf8 ().constData (), 0);
+		SetCurrentSource (NextSource_);
+		NextSource_.Clear ();
 
 		ClearQueue ();
 	}
 
+	void SourceObject::HandleErrorMsg (GstMessage *msg)
+	{
+		GError *error = nullptr;
+		gchar *debug = nullptr;
+		gst_message_parse_error (msg, &error, &debug);
+
+		const auto& msgStr = QString::fromUtf8 (error->message);
+		const auto& debugStr = QString::fromUtf8 (debug);
+
+		g_error_free (error);
+		g_free (debug);
+
+		qWarning () << Q_FUNC_INFO
+				<< msgStr << debugStr;
+	}
+
 	namespace
 	{
-		gboolean CbBus (GstBus *bus, GstMessage *message, gpointer data)
+		SourceObject::State GstToState (GstState state)
 		{
-			switch (GST_MESSAGE_TYPE (message))
+			switch (state)
 			{
+			case GST_STATE_PAUSED:
+				return SourceObject::State::Paused;
+			case GST_STATE_READY:
+				return SourceObject::State::Stopped;
+			case GST_STATE_PLAYING:
+				return SourceObject::State::Playing;
 			default:
-				break;
+				return SourceObject::State::Error;
 			}
-
-			return true;
 		}
+	}
 
-		gboolean CbAboutToFinish (GstElement*, gpointer data)
-		{
-			static_cast<SourceObject*> (data)->HandleAboutToFinish ();
-		}
+	void SourceObject::HandleStateChangeMsg (GstMessage *msg)
+	{
+		if (msg->src != GST_OBJECT (Path_->GetPipeline ()))
+			return;
+
+		GstState oldState, newState, pending;
+		gst_message_parse_state_changed (msg, &oldState, &newState, &pending);
+
+		auto newNativeState = GstToState (newState);
+		emit stateChanged (newNativeState, OldState_);
+		OldState_ = newNativeState;
 	}
 
 	void SourceObject::AddToPath (Path *path)
 	{
-		gst_bin_add_many (GST_BIN (path->GetPipeline ()), Dec_, nullptr);
+		path->SetPipeline (Dec_);
 		Path_ = path;
+	}
 
-		auto bus = gst_pipeline_get_bus (GST_PIPELINE (path->GetPipeline ()));
-		gst_bus_add_watch (bus, CbBus, this);
-		gst_object_unref (bus);
-
-		g_signal_connect (Dec_,
-				"drained", G_CALLBACK (CbAboutToFinish), this);
+	void SourceObject::PostAdd (Path *path)
+	{
+		auto bin = path->GetAudioBin ();
+		g_object_set (GST_OBJECT (Dec_), "audio-sink", bin, nullptr);
 	}
 }
 }

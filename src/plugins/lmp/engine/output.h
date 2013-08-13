@@ -44,17 +44,18 @@ namespace LMP
 	{
 		Q_OBJECT
 
-		GstElement *Audio_;
-		GstElement *Conv_;
-		GstPad *Audiopad_;
+		GstElement *Bin_;
+		GstElement *Equalizer_;
+		GstElement *Converter_;
 		GstElement *Sink_;
 	public:
 		Output (QObject* = 0);
 
+		void AddToPath (Path*);
+		void PostAdd (Path*);
+
 		double GetVolume () const;
 		bool IsMuted () const;
-
-		void AddToPath (Path*);
 	public slots:
 		void setVolume (double);
 		void setVolume (int);

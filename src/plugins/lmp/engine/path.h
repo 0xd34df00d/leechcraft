@@ -49,6 +49,7 @@ namespace LMP
 		~Path ();
 
 		GstElement* GetPipeline () const;
+		void SetPipeline (GstElement*);
 
 		GstElement* GetAudioBin () const;
 		void SetAudioBin (GstElement*);

@@ -35,6 +35,7 @@
 
 typedef struct _GstElement GstElement;
 typedef struct _GstPad GstPad;
+typedef struct _GstMessage GstMessage;
 
 namespace LeechCraft
 {
@@ -51,6 +52,7 @@ namespace LMP
 
 		Path *Path_;
 
+		AudioSource CurrentSource_;
 		AudioSource NextSource_;
 	public:
 		enum class State
@@ -70,7 +72,9 @@ namespace LMP
 			Genre,
 			Tracknumber
 		};
-
+	private:
+		State OldState_;
+	public:
 		SourceObject (QObject* = 0);
 		~SourceObject ();
 
@@ -102,9 +106,12 @@ namespace LMP
 		void Clear ();
 		void ClearQueue ();
 
-		void HandleNewpad (GstElement*, GstPad*);
 		void HandleAboutToFinish ();
+		void HandleErrorMsg (GstMessage*);
+		void HandleStateChangeMsg (GstMessage*);
+
 		void AddToPath (Path*);
+		void PostAdd (Path*);
 	signals:
 		void stateChanged (SourceObject::State, SourceObject::State);
 		void currentSourceChanged (const AudioSource&);
