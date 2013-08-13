@@ -205,7 +205,7 @@ namespace LMP
 		CurrentSource_ = source;
 
 		const auto& path = source.ToUrl ().toString ();
-		g_object_set (G_OBJECT (Dec_), "uri", path.toUtf8 ().constData (), 0);
+		g_object_set (G_OBJECT (Dec_), "uri", path.toUtf8 ().constData (), nullptr);
 
 		emit currentSourceChanged (CurrentSource_);
 	}
