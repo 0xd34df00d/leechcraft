@@ -88,10 +88,8 @@ namespace LMP
 		gst_bus_add_watch (bus, CbBus, this);
 		gst_object_unref (bus);
 
-		g_signal_connect (Dec_,
-				"about-to-finish", G_CALLBACK (CbAboutToFinish), this);
-		g_signal_connect (Dec_,
-				"notify::uri", G_CALLBACK (CbUriChanged), this);
+		g_signal_connect (Dec_, "about-to-finish", G_CALLBACK (CbAboutToFinish), this);
+		g_signal_connect (Dec_, "notify::uri", G_CALLBACK (CbUriChanged), this);
 
 		qRegisterMetaType<AudioSource> ("AudioSource");
 
