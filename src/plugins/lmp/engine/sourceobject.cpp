@@ -86,6 +86,8 @@ namespace LMP
 				"about-to-finish", G_CALLBACK (CbAboutToFinish), this);
 		g_signal_connect (Dec_,
 				"notify::uri", G_CALLBACK (CbUriChanged), this);
+
+		qRegisterMetaType<AudioSource> ("AudioSource");
 		/*
 		Obj_->setTickInterval (1000);
 		Obj_->setPrefinishMark (2000);
