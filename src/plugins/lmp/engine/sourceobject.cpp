@@ -70,11 +70,13 @@ namespace LMP
 		gboolean CbAboutToFinish (GstElement*, gpointer data)
 		{
 			static_cast<SourceObject*> (data)->HandleAboutToFinish ();
+			return true;
 		}
 
 		gboolean CbUriChanged (GstElement*, gpointer data)
 		{
 			qDebug () << Q_FUNC_INFO;
+			return true;
 		}
 	}
 
