@@ -60,6 +60,9 @@ namespace LMP
 						src,
 						SLOT (updateTotalTime ()));
 				break;
+			case GST_MESSAGE_ELEMENT:
+				src->HandleElementMsg (message);
+				break;
 			default:
 				qDebug () << Q_FUNC_INFO << GST_MESSAGE_TYPE (message);
 				break;
@@ -76,6 +79,13 @@ namespace LMP
 
 		gboolean CbUriChanged (GstElement*, gpointer data)
 		{
+			return true;
+		}
+
+		gboolean CbElement (GstBus *bus, GstMessage *msg, gpointer data)
+		{
+			auto src = static_cast<SourceObject*> (data);
+			src->HandleElementMsg (msg);
 			return true;
 		}
 	}
@@ -97,6 +107,9 @@ namespace LMP
 
 		g_signal_connect (Dec_, "about-to-finish", G_CALLBACK (CbAboutToFinish), this);
 		g_signal_connect (Dec_, "notify::uri", G_CALLBACK (CbUriChanged), this);
+
+		// Seems like it never gets called.
+		// g_signal_connect (bus, "sync-message::element", G_CALLBACK (CbElement), this);
 
 		qRegisterMetaType<AudioSource> ("AudioSource");
 
@@ -218,8 +231,6 @@ namespace LMP
 
 		const auto& path = source.ToUrl ().toString ();
 		g_object_set (G_OBJECT (Dec_), "uri", path.toUtf8 ().constData (), nullptr);
-
-		emit currentSourceChanged (CurrentSource_);
 	}
 
 	void SourceObject::PrepareNextSource (const AudioSource& source)
@@ -358,6 +369,25 @@ namespace LMP
 		auto newNativeState = GstToState (newState);
 		OldState_ = newNativeState;
 		emit stateChanged (newNativeState, OldState_);
+	}
+
+	void SourceObject::HandleElementMsg (GstMessage *msg)
+	{
+		const auto msgStruct = gst_message_get_structure (msg);
+
+#if GST_VERSION_MAJOR < 1
+		if (gst_structure_has_name (msgStruct, "playbin2-stream-changed"))
+#else
+		if (gst_structure_has_name (msgStruct, "playbin-stream-changed"))
+#endif
+		{
+			gchar *uri = nullptr;
+			g_object_get (Dec_, "uri", &uri, nullptr);
+			qDebug () << Q_FUNC_INFO << uri;
+			g_free (uri);
+
+			emit currentSourceChanged (CurrentSource_);
+		}
 	}
 
 	void SourceObject::AddToPath (Path *path)

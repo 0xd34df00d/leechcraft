@@ -116,6 +116,7 @@ namespace LMP
 		void HandleAboutToFinish ();
 		void HandleErrorMsg (GstMessage*);
 		void HandleStateChangeMsg (GstMessage*);
+		void HandleElementMsg (GstMessage*);
 
 		void AddToPath (Path*);
 		void PostAdd (Path*);
