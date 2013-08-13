@@ -94,35 +94,13 @@ namespace LMP
 				"notify::uri", G_CALLBACK (CbUriChanged), this);
 
 		qRegisterMetaType<AudioSource> ("AudioSource");
-		/*
-		Obj_->setTickInterval (1000);
-		Obj_->setPrefinishMark (2000);
 
-		connect (Obj_,
-				SIGNAL (aboutToFinish ()),
+		auto timer = new QTimer (this);
+		connect (timer,
+				SIGNAL (timeout ()),
 				this,
-				SIGNAL (aboutToFinish ()));
-		connect (Obj_,
-				SIGNAL (finished ()),
-				this,
-				SIGNAL (finished ()));
-		connect (Obj_,
-				SIGNAL (metaDataChanged ()),
-				this,
-				SIGNAL (metaDataChanged ()));
-		connect (Obj_,
-				SIGNAL (bufferStatus (int)),
-				this,
-				SIGNAL (bufferStatus (int)));
-		connect (Obj_,
-				SIGNAL (totalTimeChanged (qint64)),
-				this,
-				SIGNAL (totalTimeChanged (qint64)));
-		connect (Obj_,
-				SIGNAL (tick (qint64)),
-				this,
-				SIGNAL (tick (qint64)));
-				*/
+				SLOT (handleTick ()));
+		timer->start (1000);
 	}
 
 	SourceObject::~SourceObject ()
@@ -363,6 +341,11 @@ namespace LMP
 	{
 		qDebug () << Q_FUNC_INFO << GetTotalTime ();
 		emit totalTimeChanged (GetTotalTime ());
+	}
+
+	void SourceObject::handleTick ()
+	{
+		emit tick (GetCurrentTime ());
 	}
 }
 }
