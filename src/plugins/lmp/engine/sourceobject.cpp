@@ -109,7 +109,16 @@ namespace LMP
 
 	bool SourceObject::IsSeekable () const
 	{
-// 		return Obj_->isSeekable ();
+		std::shared_ptr<GstQuery> query (gst_query_new_seeking (GST_FORMAT_TIME), gst_query_unref);
+
+		if (!gst_element_query (GST_ELEMENT (Dec_), query.get ()))
+			return false;
+
+		gboolean seekable = false;
+		GstFormat format;
+		gint64 start = 0, stop = 0;
+		gst_query_parse_seeking (query.get (), &format, &seekable, &start, &stop);
+		return seekable;
 	}
 
 	SourceObject::State SourceObject::GetState () const
