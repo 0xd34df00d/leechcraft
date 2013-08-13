@@ -76,7 +76,6 @@ namespace LMP
 
 		gboolean CbUriChanged (GstElement*, gpointer data)
 		{
-			qDebug () << Q_FUNC_INFO;
 			return true;
 		}
 	}
@@ -262,8 +261,6 @@ namespace LMP
 
 	void SourceObject::Clear ()
 	{
-		qDebug () << Q_FUNC_INFO;
-
 		ClearQueue ();
 		CurrentSource_.Clear ();
 		gst_element_set_state (Path_->GetPipeline (), GST_STATE_NULL);
@@ -313,7 +310,8 @@ namespace LMP
 		g_free (debug);
 
 		qWarning () << Q_FUNC_INFO
-				<< msgStr << debugStr;
+				<< msgStr
+				<< debugStr;
 	}
 
 	namespace
@@ -376,7 +374,6 @@ namespace LMP
 
 	void SourceObject::updateTotalTime ()
 	{
-		qDebug () << Q_FUNC_INFO << GetTotalTime ();
 		emit totalTimeChanged (GetTotalTime ());
 	}
 
