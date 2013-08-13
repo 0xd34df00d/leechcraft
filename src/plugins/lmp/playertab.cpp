@@ -650,7 +650,6 @@ namespace LMP
 		{
 			auto similars = Core::Instance ().GetProxy ()->
 					GetPluginsManager ()->GetAllCastableTo<Media::ISimilarArtists*> ();
-			qDebug () << Q_FUNC_INFO << similars.size ();
 			Q_FOREACH (auto *similar, similars)
 			{
 				auto obj = similar->GetSimilarArtists (info.Artist_, 15);

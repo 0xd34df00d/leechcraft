@@ -31,25 +31,36 @@
 
 #include <QObject>
 #include <QStringList>
-#include <phonon/phononnamespace.h>
+#include <QMutex>
+#include <QWaitCondition>
+#include "audiosource.h"
 
-namespace Phonon
-{
-	class MediaObject;
-	class MediaSource;
-}
+typedef struct _GstElement GstElement;
+typedef struct _GstPad GstPad;
+typedef struct _GstMessage GstMessage;
 
 namespace LeechCraft
 {
 namespace LMP
 {
 	class AudioSource;
+	class Path;
 
 	class SourceObject : public QObject
 	{
 		Q_OBJECT
 
-		Phonon::MediaObject *Obj_;
+		GstElement *Dec_;
+
+		Path *Path_;
+
+		AudioSource CurrentSource_;
+		AudioSource NextSource_;
+
+		QMutex NextSrcMutex_;
+		QWaitCondition NextSrcWC_;
+
+		bool IsSeeking_;
 	public:
 		enum class State
 		{
@@ -68,8 +79,11 @@ namespace LMP
 			Genre,
 			Tracknumber
 		};
-
+	private:
+		State OldState_;
+	public:
 		SourceObject (QObject* = 0);
+		~SourceObject ();
 
 		SourceObject (const SourceObject&) = delete;
 		SourceObject& operator= (const SourceObject&) = delete;
@@ -90,7 +104,7 @@ namespace LMP
 
 		AudioSource GetCurrentSource () const;
 		void SetCurrentSource (const AudioSource&);
-		void Enqueue (const AudioSource&);
+		void PrepareNextSource (const AudioSource&);
 
 		void Play ();
 		void Pause ();
@@ -99,10 +113,15 @@ namespace LMP
 		void Clear ();
 		void ClearQueue ();
 
-		Phonon::MediaObject* ToPhonon () const;
+		void HandleAboutToFinish ();
+		void HandleErrorMsg (GstMessage*);
+		void HandleStateChangeMsg (GstMessage*);
+
+		void AddToPath (Path*);
+		void PostAdd (Path*);
 	private slots:
-		void handlePhononStateChanged (Phonon::State, Phonon::State);
-		void handlePhononSourceChanged (const Phonon::MediaSource&);
+		void updateTotalTime ();
+		void handleTick ();
 	signals:
 		void stateChanged (SourceObject::State, SourceObject::State);
 		void currentSourceChanged (const AudioSource&);

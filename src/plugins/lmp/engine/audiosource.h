@@ -29,7 +29,8 @@
 
 #pragma once
 
-#include <phonon/mediasource.h>
+#include <QUrl>
+#include <QMetaType>
 
 namespace LeechCraft
 {
@@ -37,7 +38,7 @@ namespace LMP
 {
 	class AudioSource
 	{
-		Phonon::MediaSource AudioSource_;
+		QUrl Url_;
 	public:
 		enum class Type
 		{
@@ -67,10 +68,9 @@ namespace LMP
 
 		bool IsEmpty () const;
 
-		Type GetType () const;
+		void Clear ();
 
-		const Phonon::MediaSource& ToPhonon () const;
-		static AudioSource FromPhonon (const Phonon::MediaSource&);
+		Type GetType () const;
 	};
 
 	uint qHash (const AudioSource&);

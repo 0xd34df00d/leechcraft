@@ -1079,7 +1079,7 @@ namespace LMP
 	void Player::handleRadioStream (const QUrl& url, const Media::AudioInfo& info)
 	{
 		Url2Info_ [url] = info;
-		Source_->Enqueue (url);
+		Source_->SetCurrentSource (url);
 
 		qDebug () << Q_FUNC_INFO << static_cast<int> (Source_->GetState ());
 		if (Source_->GetState () == SourceObject::State::Stopped)
@@ -1134,7 +1134,7 @@ namespace LMP
 
 		const auto& next = GetNextSource (current);
 		if (!next.IsEmpty ())
-			Source_->Enqueue (next);
+			Source_->PrepareNextSource (next);
 	}
 
 	void Player::handlePlaybackFinished ()

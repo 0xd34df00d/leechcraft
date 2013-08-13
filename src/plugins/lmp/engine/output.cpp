@@ -28,65 +28,106 @@
  **********************************************************************/
 
 #include "output.h"
-#include <phonon/audiooutput.h>
+#include <QtDebug>
+#include <gst/gst.h>
+#include "path.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	Output::Output (QObject *parent)
-	: QObject (parent)
-	, Output_ (new Phonon::AudioOutput (Phonon::MusicCategory, this))
+	namespace
 	{
-		connect (Output_,
-				SIGNAL (volumeChanged (qreal)),
-				this,
-				SIGNAL (volumeChanged (qreal)));
-		connect (Output_,
-				SIGNAL (volumeChanged (qreal)),
-				this,
-				SLOT (handlePhononVolumeChanged (qreal)));
+		/* Signature found on
+		 * http://cgit.freedesktop.org/gstreamer/gst-plugins-base/commit/?id=de1db5ccbdc10a835a2dfdd5984892f3b0c9bcf4
+		 *
+		 * I love C language, it's freaking compile-time-safe and sane.
+		 */
+		gboolean CbVolumeChanged (GObject*, GParamSpec*, gpointer data)
+		{
+			auto output = static_cast<Output*> (data);
+			const auto volume = output->GetVolume ();
 
-		connect (Output_,
-				SIGNAL (mutedChanged (bool)),
-				this,
-				SIGNAL (mutedChanged (bool)));
+			QMetaObject::invokeMethod (output,
+					"volumeChanged",
+					Q_ARG (qreal, volume));
+			QMetaObject::invokeMethod (output,
+					"volumeChanged",
+					Q_ARG (int, volume * 100));
+
+			return true;
+		}
+
+		gboolean CbMuteChanged (GObject*, GParamSpec*, gpointer data)
+		{
+			auto output = static_cast<Output*> (data);
+			const auto isMuted = output->IsMuted ();
+
+			QMetaObject::invokeMethod (output,
+					"mutedChanged",
+					Q_ARG (bool, isMuted));
+
+			return true;
+		}
 	}
 
-	Phonon::AudioOutput* Output::ToPhonon () const
+	Output::Output (QObject *parent)
+	: QObject (parent)
+	, Bin_ (gst_bin_new ("audio_sink_bin"))
+	, Equalizer_ (gst_element_factory_make ("equalizer-3bands", "equalizer"))
+	, Volume_ (gst_element_factory_make ("volume", "volume"))
+	, Converter_ (gst_element_factory_make ("audioconvert", "convert"))
+	, Sink_ (gst_element_factory_make ("autoaudiosink", "audio_sink"))
 	{
-		return Output_;
+		gst_bin_add_many (GST_BIN (Bin_), Equalizer_, Volume_, Converter_, Sink_, nullptr);
+		gst_element_link_many (Equalizer_, Volume_, Converter_, Sink_, nullptr);
+
+		auto pad = gst_element_get_static_pad (Equalizer_, "sink");
+		auto ghostPad = gst_ghost_pad_new ("sink", pad);
+		gst_pad_set_active (ghostPad, TRUE);
+		gst_element_add_pad (Bin_, ghostPad);
+		gst_object_unref (pad);
+
+		g_signal_connect (Volume_, "notify::volume", G_CALLBACK (CbVolumeChanged), this);
+		g_signal_connect (Volume_, "notify::mute", G_CALLBACK (CbMuteChanged), this);
+	}
+
+	void Output::AddToPath (Path *path)
+	{
+		path->SetAudioBin (Bin_);
+	}
+
+	void Output::PostAdd (Path*)
+	{
 	}
 
 	double Output::GetVolume () const
 	{
-		return Output_->volume ();
+		gdouble value = 1;
+		g_object_get (G_OBJECT (Volume_), "volume", &value, nullptr);
+		return value;
 	}
 
 	bool Output::IsMuted () const
 	{
-		return Output_->isMuted ();
+		gboolean value = false;
+		g_object_get (G_OBJECT (Volume_), "mute", &value, nullptr);
+		return value;
 	}
 
 	void Output::setVolume (double volume)
 	{
-		Output_->setVolume (volume);
+		g_object_set (G_OBJECT (Volume_), "volume", static_cast<gdouble> (volume), nullptr);
 	}
 
 	void Output::setVolume (int volume)
 	{
-		setVolume (volume / 100.);
+ 		setVolume (volume / 100.);
 	}
 
 	void Output::toggleMuted ()
 	{
-		Output_->setMuted (!Output_->isMuted ());
-		emit mutedChanged (Output_->isMuted ());
-	}
-
-	void Output::handlePhononVolumeChanged (qreal volume)
-	{
-		emit volumeChanged (static_cast<int> (volume * 100));
+		g_object_set (G_OBJECT (Volume_), "mute", static_cast<gboolean> (!IsMuted ()), nullptr);
 	}
 }
 }

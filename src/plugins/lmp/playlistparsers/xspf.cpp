@@ -30,6 +30,7 @@
 #include "xspf.h"
 #include <QFile>
 #include <QDomDocument>
+#include <QtDebug>
 #include "commonpl.h"
 
 namespace LeechCraft
