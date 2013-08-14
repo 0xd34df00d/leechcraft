@@ -51,6 +51,8 @@ namespace LMP
 				src->HandleErrorMsg (message);
 				break;
 			case GST_MESSAGE_TAG:
+			case GST_MESSAGE_NEW_CLOCK:
+			case GST_MESSAGE_ASYNC_DONE:
 				break;
 			case GST_MESSAGE_STATE_CHANGED:
 				src->HandleStateChangeMsg (message);
