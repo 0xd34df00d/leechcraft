@@ -63,6 +63,9 @@ namespace LMP
 			case GST_MESSAGE_ELEMENT:
 				src->HandleElementMsg (message);
 				break;
+			case GST_MESSAGE_EOS:
+				src->HandleEosMsg (message);
+				break;
 			default:
 				qDebug () << Q_FUNC_INFO << GST_MESSAGE_TYPE (message);
 				break;
@@ -389,6 +392,11 @@ namespace LMP
 
 			emit currentSourceChanged (CurrentSource_);
 		}
+	}
+
+	void SourceObject::HandleEosMsg (GstMessage*)
+	{
+		gst_element_set_state (Path_->GetPipeline (), GST_STATE_READY);
 	}
 
 	void SourceObject::AddToPath (Path *path)
