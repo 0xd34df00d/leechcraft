@@ -54,6 +54,9 @@ namespace LMP
 			case GST_MESSAGE_NEW_CLOCK:
 			case GST_MESSAGE_ASYNC_DONE:
 				break;
+			case GST_MESSAGE_BUFFERING:
+				src->HandleBufferingMsg (message);
+				break;
 			case GST_MESSAGE_STATE_CHANGED:
 				src->HandleStateChangeMsg (message);
 				break;
@@ -330,6 +333,14 @@ namespace LMP
 		qWarning () << Q_FUNC_INFO
 				<< msgStr
 				<< debugStr;
+	}
+
+	void SourceObject::HandleBufferingMsg (GstMessage *msg)
+	{
+		gint percentage = 0;
+		gst_message_parse_buffering (msg, &percentage);
+
+		emit bufferStatus (percentage);
 	}
 
 	namespace
