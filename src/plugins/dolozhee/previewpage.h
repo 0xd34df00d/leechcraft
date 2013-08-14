@@ -30,40 +30,23 @@
 #pragma once
 
 #include <QWizardPage>
-#include "ui_finalpage.h"
-#include "structures.h"
+#include "ui_previewpage.h"
 
 namespace LeechCraft
 {
-struct Entity;
-
 namespace Dolozhee
 {
-	class FinalPage : public QWizardPage
+	class PreviewPage : public QWizardPage
 	{
 		Q_OBJECT
 
-		Ui::FinalPage Ui_;
+		Ui::RequestPreview Ui_;
 
-		QList<FileInfo> PendingFiles_;
-		FileInfo CurrentUpload_;
-		QList<FileInfo> UploadedFiles_;
 	public:
-		FinalPage (QWidget* = 0);
+		PreviewPage (QWidget *parent = 0);
 
 		void initializePage ();
-
-	private:
-		void UploadPending ();
-	private slots:
-		void handleUploadProgress (qint64);
-		void handleUploadReplyFinished ();
-
-		void handleReplyFinished ();
-
-		void on_Status__linkActivated (const QString&);
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		int nextId () const;
 	};
 }
 }

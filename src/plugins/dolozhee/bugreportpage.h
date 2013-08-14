@@ -51,6 +51,8 @@ namespace Dolozhee
 
 		QString GetTitle () const;
 		QString GetText () const;
+
+		QList<QPair<QString, QString>> GetReportSections () const;
 	};
 }
 }
