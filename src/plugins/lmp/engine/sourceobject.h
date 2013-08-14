@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QStringList>
+#include <QMap>
 #include <QMutex>
 #include <QWaitCondition>
 #include "audiosource.h"
@@ -65,6 +66,11 @@ namespace LMP
 		qint64 LastCurrentTime_;
 
 		uint PrevSoupRank_;
+
+	public:
+		typedef QMap<QString, QString> TagMap_t;
+	private:
+		TagMap_t Metadata_;
 	public:
 		enum class State
 		{

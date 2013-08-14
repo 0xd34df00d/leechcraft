@@ -164,25 +164,24 @@ namespace LMP
 
 	QStringList SourceObject::GetMetadata (Metadata field) const
 	{
-// 		switch (field)
-// 		{
-// 		case Metadata::Artist:
-// 			return Obj_->metaData (Phonon::ArtistMetaData);
-// 		case Metadata::Album:
-// 			return Obj_->metaData (Phonon::AlbumMetaData);
-// 		case Metadata::Title:
-// 			return Obj_->metaData (Phonon::TitleMetaData);
-// 		case Metadata::Genre:
-// 			return Obj_->metaData (Phonon::GenreMetaData);
-// 		case Metadata::Tracknumber:
-// 			return Obj_->metaData (Phonon::TracknumberMetaData);
-// 		}
-//
-// 		qWarning () << Q_FUNC_INFO
-// 				<< "unknown field"
-// 				<< static_cast<int> (field);
-//
-// 		return {};
+		switch (field)
+		{
+		case Metadata::Artist:
+			return { Metadata_ ["artist"] };
+		case Metadata::Album:
+			return { Metadata_ ["album"] };
+		case Metadata::Title:
+			return { Metadata_ ["title"] };
+		case Metadata::Genre:
+			return { Metadata_ ["genre"] };
+		case Metadata::Tracknumber:
+			return { Metadata_ ["tracknumber"] };
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown field"
+				<< static_cast<int> (field);
+
 		return {};
 	}
 
