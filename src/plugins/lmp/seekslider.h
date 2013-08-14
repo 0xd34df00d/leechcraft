@@ -46,6 +46,8 @@ namespace LMP
 
 		SourceObject * const Source_;
 		int CurrentTotal_;
+
+		bool IgnoreNextValChange_;
 	public:
 		SeekSlider (SourceObject*, QWidget* = 0);
 	private slots:
