@@ -52,7 +52,6 @@ namespace Dolozhee
 		FinalPage (QWidget* = 0);
 
 		void initializePage ();
-
 	private:
 		void UploadPending ();
 	private slots:

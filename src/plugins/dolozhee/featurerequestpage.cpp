@@ -73,6 +73,5 @@ namespace Dolozhee
 	{
 		return { { "Description", Ui_.Description_->toPlainText () } };
 	}
-
 }
 }
