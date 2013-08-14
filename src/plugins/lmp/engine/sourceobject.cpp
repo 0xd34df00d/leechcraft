@@ -102,6 +102,7 @@ namespace LMP
 #endif
 	, Path_ (nullptr)
 	, IsSeeking_ (false)
+	, LastCurrentTime_ (-1)
 	, OldState_ (State::Stopped)
 	{
 		auto bus = gst_pipeline_get_bus (GST_PIPELINE (Dec_));
@@ -177,12 +178,16 @@ namespace LMP
 		return {};
 	}
 
-	qint64 SourceObject::GetCurrentTime () const
+	qint64 SourceObject::GetCurrentTime ()
 	{
-		auto format = GST_FORMAT_TIME;
-		gint64 position = 0;
-		gst_element_query_position (GST_ELEMENT (Dec_), &format, &position);
-		return position / GST_MSECOND;
+		if (GetState () != State::Paused)
+		{
+			auto format = GST_FORMAT_TIME;
+			gint64 position = 0;
+			gst_element_query_position (GST_ELEMENT (Dec_), &format, &position);
+			LastCurrentTime_ = position / GST_MSECOND;
+		}
+		return LastCurrentTime_;
 	}
 
 	qint64 SourceObject::GetRemainingTime () const
@@ -308,8 +313,6 @@ namespace LMP
 
 		SetCurrentSource (NextSource_);
 		NextSource_.Clear ();
-
-		ClearQueue ();
 	}
 
 	void SourceObject::HandleErrorMsg (GstMessage *msg)
