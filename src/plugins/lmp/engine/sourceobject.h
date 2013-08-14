@@ -121,6 +121,7 @@ namespace LMP
 		void HandleStateChangeMsg (GstMessage*);
 		void HandleElementMsg (GstMessage*);
 		void HandleEosMsg (GstMessage*);
+		void SetupSource ();
 
 		void AddToPath (Path*);
 		void PostAdd (Path*);

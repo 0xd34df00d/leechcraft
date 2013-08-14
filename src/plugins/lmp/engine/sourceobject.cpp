@@ -34,6 +34,7 @@
 #include <gst/gst.h>
 #include "audiosource.h"
 #include "path.h"
+#include "../core.h"
 
 namespace LeechCraft
 {
@@ -85,8 +86,9 @@ namespace LMP
 			return true;
 		}
 
-		gboolean CbUriChanged (GstElement*, gpointer data)
+		gboolean CbSourceChanged (GstElement*, GParamSpec*, gpointer data)
 		{
+			static_cast<SourceObject*> (data)->SetupSource ();
 			return true;
 		}
 
@@ -115,7 +117,7 @@ namespace LMP
 		gst_object_unref (bus);
 
 		g_signal_connect (Dec_, "about-to-finish", G_CALLBACK (CbAboutToFinish), this);
-		g_signal_connect (Dec_, "notify::uri", G_CALLBACK (CbUriChanged), this);
+		g_signal_connect (Dec_, "notify::source", G_CALLBACK (CbSourceChanged), this);
 
 		// Seems like it never gets called.
 		// g_signal_connect (bus, "sync-message::element", G_CALLBACK (CbElement), this);
@@ -411,6 +413,32 @@ namespace LMP
 	void SourceObject::HandleEosMsg (GstMessage*)
 	{
 		gst_element_set_state (Path_->GetPipeline (), GST_STATE_READY);
+	}
+
+	void SourceObject::SetupSource ()
+	{
+		GstElement *src;
+		g_object_get (Dec_, "source", &src, nullptr);
+
+		if (!CurrentSource_.ToUrl ().scheme ().startsWith ("http"))
+			return;
+
+		if (!g_object_class_find_property (G_OBJECT_GET_CLASS (src), "user-agent"))
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "user-agent property not found for"
+					<< CurrentSource_.ToUrl ()
+					<< G_OBJECT_TYPE_NAME (src);
+			return;
+		}
+
+		const auto& str = QString ("LeechCraft LMP/%1 (%2)")
+				.arg (Core::Instance ().GetProxy ()->GetVersion ())
+				.arg (gst_version_string ());
+		qDebug () << Q_FUNC_INFO
+				<< "setting user-agent to"
+				<< str;
+		g_object_set (src, "user-agent", str.toUtf8 ().constData (), nullptr);
 	}
 
 	void SourceObject::AddToPath (Path *path)
