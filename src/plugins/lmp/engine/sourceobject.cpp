@@ -267,7 +267,7 @@ namespace LMP
 
 	void SourceObject::Stop ()
 	{
-		gst_element_set_state (Path_->GetPipeline (), GST_STATE_NULL);
+		gst_element_set_state (Path_->GetPipeline (), GST_STATE_READY);
 		Seek (0);
 	}
 
@@ -275,7 +275,7 @@ namespace LMP
 	{
 		ClearQueue ();
 		CurrentSource_.Clear ();
-		gst_element_set_state (Path_->GetPipeline (), GST_STATE_NULL);
+		gst_element_set_state (Path_->GetPipeline (), GST_STATE_READY);
 	}
 
 	void SourceObject::ClearQueue ()
