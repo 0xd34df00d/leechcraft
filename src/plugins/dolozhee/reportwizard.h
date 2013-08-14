@@ -47,6 +47,7 @@ namespace Dolozhee
 	class BugReportPage;
 	class FeatureRequestPage;
 	class FileAttachPage;
+	class PreviewPage;
 
 	class ReportWizard : public QWizard
 	{
@@ -60,6 +61,7 @@ namespace Dolozhee
 		BugReportPage *BugReportPage_;
 		FeatureRequestPage *FRPage_;
 		FileAttachPage *FilePage_;
+		PreviewPage *PreviewPage_;
 		bool FirstAuth_;
 	public:
 		enum PageID
@@ -70,6 +72,7 @@ namespace Dolozhee
 			BugDetails,
 			FeatureDetails,
 			FilePage,
+			PreviewRequestPage,
 			Final
 		};
 

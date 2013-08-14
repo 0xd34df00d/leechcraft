@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2010-2013  Oleg Linkin <MaledictusDeMagog@gmail.com>
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,68 +27,26 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "fileattachpage.h"
-#include "reportwizard.h"
-#include <QStandardItemModel>
-#include <QFileDialog>
-#include <util/util.h>
+#pragma once
+
+#include <QWizardPage>
+#include "ui_previewpage.h"
 
 namespace LeechCraft
 {
 namespace Dolozhee
 {
-	FileAttachPage::FileAttachPage (QWidget *page)
-	: QWizardPage (page)
-	, Model_ (new QStandardItemModel (this))
+	class PreviewPage : public QWizardPage
 	{
-		Ui_.setupUi (this);
+		Q_OBJECT
 
-		Model_->setHorizontalHeaderLabels ({ tr ("Path"), tr ("Size"), tr ("Description") });
-		Ui_.FilesView_->setModel (Model_);
-	}
+		Ui::RequestPreview Ui_;
 
-	int FileAttachPage::nextId () const
-	{
-		return ReportWizard::PageID::PreviewRequestPage;
-	}
+	public:
+		PreviewPage (QWidget *parent = 0);
 
-	void FileAttachPage::AddFile (const QString& path)
-	{
-		auto pathItem = new QStandardItem (path);
-		pathItem->setEditable (false);
-
-		auto sizeItem = new QStandardItem (Util::MakePrettySize (QFileInfo (path).size ()));
-		sizeItem->setEditable (false);
-
-		auto descrItem = new QStandardItem ();
-		Model_->appendRow ({ pathItem, sizeItem, descrItem });
-	}
-
-	QStringList FileAttachPage::GetFiles () const
-	{
-		QStringList result;
-		for (int i = 0; i < Model_->rowCount (); ++i)
-			result << Model_->item (i)->text ();
-		return result;
-	}
-
-	void FileAttachPage::on_AddFile__released ()
-	{
-		const auto& paths = QFileDialog::getOpenFileNames (this,
-				tr ("Select files to attach"),
-				QDir::homePath ());
-
-		for (auto path : paths)
-			AddFile (path);
-	}
-
-	void FileAttachPage::on_RemoveFile__released ()
-	{
-		const auto& idx = Ui_.FilesView_->currentIndex ();
-		if (!idx.isValid ())
-			return;
-
-		Model_->removeRow (idx.row ());
-	}
+		void initializePage ();
+		int nextId () const;
+	};
 }
 }

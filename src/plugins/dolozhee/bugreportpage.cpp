@@ -73,6 +73,19 @@ namespace Dolozhee
 		return Ui_.Title_->text ();
 	}
 
+	namespace
+	{
+		QString GetFormattedVersionString (ICoreProxy_ptr proxy)
+		{
+			return QString ("LeechCraft ") + proxy->GetVersion () + "\n" +
+					QString ("Built with Qt %1, running with Qt %2\n")
+							.arg (QT_VERSION_STR)
+							.arg (qVersion ()) +
+					QString ("Running on: %1\n")
+							.arg (Util::SysInfo::GetOSName ());
+		}
+	}
+
 	QString BugReportPage::GetText () const
 	{
 		QString result = Ui_.ShortDesc_->toPlainText () + "\n\n";
@@ -81,11 +94,20 @@ namespace Dolozhee
 		result += "*STR:*\n" + Ui_.STR_->toPlainText () + "\n\n";
 
 		result += "*System information:*\n";
-		result += QString ("LeechCraft ") + Proxy_->GetVersion () + "\n";
-		result += QString ("Built with Qt %1, running with Qt %2\n")
-				.arg (QT_VERSION_STR)
-				.arg (qVersion ());
-		result += QString ("Running on: %1\n").arg (Util::SysInfo::GetOSName ());
+		result += GetFormattedVersionString (Proxy_);
+
+		return result;
+	}
+
+	QList<QPair<QString, QString>> BugReportPage::GetReportSections () const
+	{
+		QList<QPair<QString, QString>> result;
+
+		result.append ({ "Short description", Ui_.ShortDesc_->toPlainText () });
+		result.append ({ "Expected result", Ui_.ER_->toPlainText () });
+		result.append ({ "Actual result", Ui_.AR_->toPlainText () });
+		result.append ({ "STR", Ui_.STR_->toPlainText () });
+		result.append ({ "System information", GetFormattedVersionString (Proxy_) });
 
 		return result;
 	}
