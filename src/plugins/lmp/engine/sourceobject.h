@@ -63,6 +63,8 @@ namespace LMP
 		bool IsSeeking_;
 
 		qint64 LastCurrentTime_;
+
+		uint PrevSoupRank_;
 	public:
 		enum class State
 		{

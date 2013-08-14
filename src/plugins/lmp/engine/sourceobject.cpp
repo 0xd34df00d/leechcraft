@@ -110,6 +110,7 @@ namespace LMP
 	, Path_ (nullptr)
 	, IsSeeking_ (false)
 	, LastCurrentTime_ (-1)
+	, PrevSoupRank_ (0)
 	, OldState_ (State::Stopped)
 	{
 		auto bus = gst_pipeline_get_bus (GST_PIPELINE (Dec_));
@@ -236,11 +237,34 @@ namespace LMP
 		return CurrentSource_;
 	}
 
+	namespace
+	{
+		uint SetSoupRank (uint rank)
+		{
+			const auto factory = gst_element_factory_find ("souphttpsrc");
+			if (!factory)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "cannot find soup factory";
+				return 0;
+			}
+
+			const auto oldRank = gst_plugin_feature_get_rank (GST_PLUGIN_FEATURE (factory));
+			gst_plugin_feature_set_rank (GST_PLUGIN_FEATURE (factory), rank);
+			gst_registry_add_feature (gst_registry_get_default (), GST_PLUGIN_FEATURE (factory));
+
+			return oldRank;
+		}
+	}
+
 	void SourceObject::SetCurrentSource (const AudioSource& source)
 	{
 		IsSeeking_ = false;
 
 		CurrentSource_ = source;
+
+		if (source.ToUrl ().scheme ().startsWith ("http"))
+			PrevSoupRank_ = SetSoupRank (G_MAXINT);
 
 		const auto& path = source.ToUrl ().toString ();
 		g_object_set (G_OBJECT (Dec_), "uri", path.toUtf8 ().constData (), nullptr);
@@ -422,6 +446,12 @@ namespace LMP
 
 		if (!CurrentSource_.ToUrl ().scheme ().startsWith ("http"))
 			return;
+
+		if (PrevSoupRank_)
+		{
+			SetSoupRank (PrevSoupRank_);
+			PrevSoupRank_ = 0;
+		}
 
 		if (!g_object_class_find_property (G_OBJECT_GET_CLASS (src), "user-agent"))
 		{
