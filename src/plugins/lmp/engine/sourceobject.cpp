@@ -52,6 +52,8 @@ namespace LMP
 				src->HandleErrorMsg (message);
 				break;
 			case GST_MESSAGE_TAG:
+				src->HandleTagMsg (message);
+				break;
 			case GST_MESSAGE_NEW_CLOCK:
 			case GST_MESSAGE_ASYNC_DONE:
 				break;
@@ -120,9 +122,6 @@ namespace LMP
 		g_signal_connect (Dec_, "about-to-finish", G_CALLBACK (CbAboutToFinish), this);
 		g_signal_connect (Dec_, "notify::source", G_CALLBACK (CbSourceChanged), this);
 
-		// Seems like it never gets called.
-		// g_signal_connect (bus, "sync-message::element", G_CALLBACK (CbElement), this);
-
 		qRegisterMetaType<AudioSource> ("AudioSource");
 
 		auto timer = new QTimer (this);
@@ -158,7 +157,6 @@ namespace LMP
 
 	QString SourceObject::GetErrorString () const
 	{
-// 		return Obj_->errorString ();
 		return {};
 	}
 
@@ -262,6 +260,8 @@ namespace LMP
 
 		CurrentSource_ = source;
 
+		Metadata_.clear ();
+
 		if (source.ToUrl ().scheme ().startsWith ("http"))
 			PrevSoupRank_ = SetSoupRank (G_MAXINT);
 
@@ -278,6 +278,8 @@ namespace LMP
 
 		NextSrcWC_.wakeAll ();
 		NextSrcMutex_.unlock ();
+
+		Metadata_.clear ();
 	}
 
 	void SourceObject::Play ()
@@ -360,6 +362,108 @@ namespace LMP
 				<< debugStr;
 	}
 
+	namespace
+	{
+		void TagFunction (const GstTagList *list, const gchar *tag, gpointer data)
+		{
+			auto& map = *static_cast<SourceObject::TagMap_t*> (data);
+			auto& valList = map [QString::fromUtf8 (tag).toLower ()];
+
+			switch (gst_tag_get_type (tag))
+			{
+			case G_TYPE_STRING:
+			{
+				gchar *str = nullptr;
+				gst_tag_list_get_string (list, tag, &str);
+				valList = QString::fromUtf8 (str);
+				g_free (str);
+				break;
+			}
+			case G_TYPE_BOOLEAN:
+			{
+				int val = 0;
+				gst_tag_list_get_boolean (list, tag, &val);
+				valList = QString::number (val);
+				break;
+			}
+			case G_TYPE_INT:
+			{
+				int val = 0;
+				gst_tag_list_get_int (list, tag, &val);
+				valList = QString::number (val);
+				break;
+			}
+			case G_TYPE_UINT:
+			{
+				uint val = 0;
+				gst_tag_list_get_uint (list, tag, &val);
+				valList = QString::number (val);
+				break;
+			}
+			case G_TYPE_FLOAT:
+			{
+				float val = 0;
+				gst_tag_list_get_float (list, tag, &val);
+				valList = QString::number (val);
+				break;
+			}
+			case G_TYPE_DOUBLE:
+			{
+				double val = 0;
+				gst_tag_list_get_double (list, tag, &val);
+				valList = QString::number (val);
+				break;
+			}
+			default:
+				qWarning () << Q_FUNC_INFO
+						<< "unhandled tag type"
+						<< gst_tag_get_type (tag)
+						<< "for"
+						<< tag;
+				break;
+			}
+		}
+	}
+
+	void SourceObject::HandleTagMsg (GstMessage *msg)
+	{
+		GstTagList *tagList = nullptr;
+		gst_message_parse_tag (msg, &tagList);
+		if (!tagList)
+			return;
+
+		const auto oldMetadata = Metadata_;
+		gst_tag_list_foreach (tagList,
+				TagFunction,
+				&Metadata_);
+
+		auto merge = [this] (const QString& oldName, const QString& stdName, bool emptyOnly)
+		{
+			if (Metadata_.contains (oldName) &&
+					(!emptyOnly || Metadata_.value (stdName).isEmpty ()))
+				Metadata_ [stdName] = Metadata_.value (oldName);
+		};
+
+		if (!Metadata_.contains ("artist"))
+		{
+			const auto& split = Metadata_.value ("title")
+					.split (" - ", QString::SkipEmptyParts);
+			if (split.size () == 2)
+			{
+				Metadata_ ["artist"] = split.value (0);
+				Metadata_ ["title"] = split.value (1);
+			}
+		}
+
+		merge ("organization", "album", true);
+		merge ("genre", "title", true);
+
+		if (oldMetadata == Metadata_)
+			return;
+
+		emit metaDataChanged ();
+	}
+
 	void SourceObject::HandleBufferingMsg (GstMessage *msg)
 	{
 		gint percentage = 0;
@@ -430,6 +534,7 @@ namespace LMP
 			g_free (uri);
 
 			emit currentSourceChanged (CurrentSource_);
+			emit metaDataChanged ();
 		}
 	}
 

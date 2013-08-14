@@ -125,6 +125,7 @@ namespace LMP
 
 		void HandleAboutToFinish ();
 		void HandleErrorMsg (GstMessage*);
+		void HandleTagMsg (GstMessage*);
 		void HandleBufferingMsg (GstMessage*);
 		void HandleStateChangeMsg (GstMessage*);
 		void HandleElementMsg (GstMessage*);
