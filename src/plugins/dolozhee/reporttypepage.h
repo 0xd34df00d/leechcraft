@@ -64,6 +64,7 @@ namespace Dolozhee
 
 		Type GetReportType () const;
 		int GetCategoryID () const;
+		QString GetCategoryName () const;
 		Priority GetPriority () const;
 	private slots:
 		void handleCategoriesFinished ();

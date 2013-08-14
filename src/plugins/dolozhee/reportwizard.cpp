@@ -39,6 +39,7 @@
 #include "bugreportpage.h"
 #include "featurerequestpage.h"
 #include "fileattachpage.h"
+#include "previewpage.h"
 #include "finalpage.h"
 
 namespace LeechCraft
@@ -54,6 +55,7 @@ namespace Dolozhee
 	, BugReportPage_ (new BugReportPage (proxy))
 	, FRPage_ (new FeatureRequestPage)
 	, FilePage_ (new FileAttachPage)
+	, PreviewPage_ (new PreviewPage)
 	, FirstAuth_ (true)
 	{
 		setWindowTitle (tr ("Issue reporter"));
@@ -72,6 +74,7 @@ namespace Dolozhee
 		setPage (PageID::ReportType, ReportType_);
 		setPage (PageID::BugDetails, BugReportPage_);
 		setPage (PageID::FeatureDetails, FRPage_);
+		setPage (PageID::PreviewRequestPage, PreviewPage_);
 		setPage (PageID::FilePage, FilePage_);
 		auto final = new FinalPage;
 		setPage (PageID::Final, final);
