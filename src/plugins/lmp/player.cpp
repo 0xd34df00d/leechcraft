@@ -262,7 +262,7 @@ namespace LMP
 		connect (Source_,
 				SIGNAL (stateChanged (SourceObject::State, SourceObject::State)),
 				this,
-				SLOT (handleStateChanged (SourceObject::State)));
+				SLOT (handleStateChanged ()));
 
 		connect (Source_,
 				SIGNAL (metaDataChanged ()),
@@ -1143,8 +1143,9 @@ namespace LMP
 		Source_->SetCurrentSource ({});
 	}
 
-	void Player::handleStateChanged (SourceObject::State state)
+	void Player::handleStateChanged ()
 	{
+		const auto state = Source_->GetState ();
 		qDebug () << Q_FUNC_INFO << static_cast<int> (state);
 		if (state == SourceObject::State::Error)
 			qDebug () << Source_->GetErrorString ();
