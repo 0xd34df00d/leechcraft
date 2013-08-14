@@ -54,6 +54,8 @@ Rectangle
 		TagBalloonList.addBalloon (createBalloonObject (tag));
 		tagAdded (tag)
 		createInputFieldObject ();
+
+		flickable.contentY = TagBalloonList.getOffset (flickable.contentHeight, flowElement.spacing);
 	}
 
 	function replaceBalloonWithInput ()
@@ -88,6 +90,12 @@ Rectangle
 	{
 		currentInputField = tagInputComponent.createObject (flowElement);
 		inputFieldExsists = true;
+		var res = TagBalloonList.calculateContentHeight (flowElement.width, flowElement.spacing);
+		console.log (res, flickable.contentHeight);
+		if (flickable.contentHeight <= res)
+		{
+			flickable.contentHeight = res;
+		}
 	}
 
 	Component
@@ -233,7 +241,7 @@ Rectangle
 		anchors.leftMargin: 10
 		anchors.rightMargin: 10
 		contentWidth: flickable.width;
-		contentHeight: flickable.height * 4;
+		contentHeight: flickable.height;
 
 		Flow
 		{
