@@ -21,6 +21,7 @@ set (SRCS
 	featurerequestpage.cpp
 	fileattachpage.cpp
 	finalpage.cpp
+	previewpage.cpp
 	)
 set (FORMS
 	chooseuserpage.ui
@@ -30,6 +31,7 @@ set (FORMS
 	featurerequestpage.ui
 	fileattachpage.ui
 	finalpage.ui
+	previewpage.ui
 	)
 CreateTrs ("dolozhee" "en;ru_RU" COMPILED_TRANSLATIONS)
 QT4_WRAP_UI (UIS_H ${FORMS})
