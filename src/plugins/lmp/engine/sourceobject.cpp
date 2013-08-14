@@ -265,8 +265,8 @@ namespace LMP
 		if (source.ToUrl ().scheme ().startsWith ("http"))
 			PrevSoupRank_ = SetSoupRank (G_MAXINT);
 
-		const auto& path = source.ToUrl ().toString ();
-		g_object_set (G_OBJECT (Dec_), "uri", path.toUtf8 ().constData (), nullptr);
+		auto path = source.ToUrl ().toEncoded ();
+		g_object_set (G_OBJECT (Dec_), "uri", path.constData (), nullptr);
 	}
 
 	void SourceObject::PrepareNextSource (const AudioSource& source)
