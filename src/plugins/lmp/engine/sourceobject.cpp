@@ -185,9 +185,9 @@ namespace LMP
 			auto format = GST_FORMAT_TIME;
 			gint64 position = 0;
 			gst_element_query_position (GST_ELEMENT (Dec_), &format, &position);
-			LastCurrentTime_ = position / GST_MSECOND;
+			LastCurrentTime_ = position;
 		}
-		return LastCurrentTime_;
+		return LastCurrentTime_ / GST_MSECOND;
 	}
 
 	qint64 SourceObject::GetRemainingTime () const
@@ -197,9 +197,7 @@ namespace LMP
 		if (!gst_element_query_duration (GST_ELEMENT (Dec_), &format, &duration))
 			return -1;
 
-		gint64 position = 0;
-		gst_element_query_position (GST_ELEMENT (Dec_), &format, &position);
-		return (duration - position) / GST_MSECOND;
+		return (duration - LastCurrentTime_) / GST_MSECOND;
 	}
 
 	qint64 SourceObject::GetTotalTime () const
