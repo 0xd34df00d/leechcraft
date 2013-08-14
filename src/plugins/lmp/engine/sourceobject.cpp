@@ -268,6 +268,7 @@ namespace LMP
 	void SourceObject::Stop ()
 	{
 		gst_element_set_state (Path_->GetPipeline (), GST_STATE_NULL);
+		Seek (0);
 	}
 
 	void SourceObject::Clear ()
