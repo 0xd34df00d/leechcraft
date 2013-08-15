@@ -65,3 +65,22 @@ function getBalloonByName (tagName)
 			return balloonArray [i];
 	return null;
 }
+
+function calculateContentHeight (spacing, defaultHeight)
+{
+	var height = defaultHeight;
+	if (balloonArray.length != 0)
+	{
+		var balloon = balloonArray [balloonArray.length - 1];
+		height = balloon.y + (balloon.height + spacing) * 2;
+	}
+	return height;
+}
+
+function getOffset ()
+{
+	var offset = 0;
+	if (balloonArray.length != 0)
+		offset = balloonArray [balloonArray.length - 1].y;
+	return offset;
+}
