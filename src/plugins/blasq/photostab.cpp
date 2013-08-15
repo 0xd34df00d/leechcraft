@@ -235,10 +235,11 @@ namespace Blasq
 
 		auto model = CurAcc_->GetCollectionsModel ();
 
-		disconnect (Ui_.CollectionsTree_->selectionModel (),
-				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
-				this,
-				SLOT (handleRowChanged (QModelIndex)));
+		if (auto sel = Ui_.CollectionsTree_->selectionModel ())
+			disconnect (sel,
+					SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
+					this,
+					SLOT (handleRowChanged (QModelIndex)));
 		Ui_.CollectionsTree_->setModel (model);
 		connect (Ui_.CollectionsTree_->selectionModel (),
 				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
