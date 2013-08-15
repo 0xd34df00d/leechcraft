@@ -36,11 +36,6 @@
 class QPixmap;
 class QPoint;
 
-namespace Phonon
-{
-	class MediaSource;
-}
-
 namespace LeechCraft
 {
 namespace LMP
@@ -62,7 +57,5 @@ namespace LMP
 	bool ShouldRememberProvs ();
 
 	QString MakeTrackListTooltip (const QList<QList<Media::ReleaseTrackInfo>>&);
-
-	bool operator!= (const Phonon::MediaSource&, const Phonon::MediaSource&);
 }
 }

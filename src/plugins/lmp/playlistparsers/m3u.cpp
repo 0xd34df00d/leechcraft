@@ -79,11 +79,11 @@ namespace M3U
 		file.write (lines.join ("\n").toUtf8 ());
 	}
 
-	QList<Phonon::MediaSource> Read2Sources (const QString& path)
+	QList<AudioSource> Read2Sources (const QString& path)
 	{
 		const auto& m3uDir = QFileInfo (path).absoluteDir ();
 
-		QList<Phonon::MediaSource> result;
+		QList<AudioSource> result;
 		Q_FOREACH (QString src, Read (path))
 		{
 			QUrl url (src);
@@ -93,7 +93,7 @@ namespace M3U
 			if (!url.scheme ().isEmpty ())
 #endif
 			{
-				result << (url.scheme () == "file" ? url.toLocalFile () : url);
+				result << url;
 				continue;
 			}
 
@@ -111,23 +111,11 @@ namespace M3U
 		return result;
 	}
 
-	void Write (const QString& path, const QList<Phonon::MediaSource>& sources)
+	void Write (const QString& path, const QList<AudioSource>& sources)
 	{
 		QStringList strings;
-		Q_FOREACH (const Phonon::MediaSource& source, sources)
-		{
-			switch (source.type ())
-			{
-			case Phonon::MediaSource::LocalFile:
-				strings << source.fileName ();
-				break;
-			case Phonon::MediaSource::Url:
-				strings << source.url ().toString ();
-				break;
-			default:
-				break;
-			}
-		}
+		for (const AudioSource& source : sources)
+			strings << source.ToUrl ().toString ();
 		Write (path, strings);
 	}
 }

@@ -291,7 +291,6 @@ namespace DeathNote
 		}
 
 		RequestGalleries ();
-		RequestPictures ();
 	}
 
 	QString FotoBilderAccount::GetPassword () const
@@ -575,6 +574,8 @@ namespace DeathNote
 // 			item->setEditable (false);
 // 			CollectionsModel_->appendRow (item);
 // 		}
+		
+		RequestPictures ();
 	}
 
 	void FotoBilderAccount::handleGotPhotos ()

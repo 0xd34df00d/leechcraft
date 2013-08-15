@@ -27,40 +27,26 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef NETWORKDISKCACHE_H
-#define NETWORKDISKCACHE_H
-#include <QNetworkDiskCache>
-#include <QMutex>
+#pragma once
+
+#include <QWidget>
+#include "ui_volumeslider.h"
 
 namespace LeechCraft
 {
-	class NetworkDiskCache : public QNetworkDiskCache
+namespace LMP
+{
+	class Output;
+
+	class VolumeSlider : public QWidget
 	{
 		Q_OBJECT
 
-		bool IsCollectingGarbage_;
-		qint64 CurrentSize_;
-
-		mutable QMutex InsertRemoveMutex_;
+		Ui::VolumeSlider Ui_;
 	public:
-		NetworkDiskCache (QObject* = 0);
-
-		virtual qint64 cacheSize () const;
-		virtual QIODevice* data (const QUrl& url);
-		virtual void insert (QIODevice *device);
-		virtual QNetworkCacheMetaData metaData (const QUrl& url);
-		virtual QIODevice* prepare (const QNetworkCacheMetaData&);
-		virtual bool remove (const QUrl& url);
-		virtual void updateMetaData (const QNetworkCacheMetaData& metaData);
-	protected:
-		virtual qint64 expire ();
-	public slots:
-		void handleCacheSize ();
-		void collectGarbage ();
+		VolumeSlider (Output*, QWidget* = 0);
 	private slots:
-		void handleCollectorFinished ();
+		void handleMuted (bool);
 	};
-};
-
-#endif
-
+}
+}

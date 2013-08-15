@@ -36,9 +36,8 @@
 #include <qdbuscontext.h>
 #endif
 
-#include <phonon/mediasource.h>
-#include <phonon/path.h>
 #include <interfaces/media/iradiostation.h>
+#include "engine/audiosource.h"
 #include "mediainfo.h"
 #include "sortingcriteria.h"
 
@@ -47,18 +46,15 @@ class QStandardItem;
 class QAbstractItemModel;
 class QStandardItemModel;
 
-namespace Phonon
-{
-	class MediaObject;
-	class AudioOutput;
-}
-
 typedef QPair<QString, QString> StringPair_t;
 
 namespace LeechCraft
 {
 namespace LMP
 {
+	class SourceObject;
+	class Output;
+	class Path;
 	struct MediaInfo;
 
 	class Player : public QObject
@@ -69,15 +65,15 @@ namespace LMP
 		Q_OBJECT
 
 		QStandardItemModel *PlaylistModel_;
-		Phonon::MediaObject *Source_;
-		Phonon::AudioOutput *Output_;
-		Phonon::Path Path_;
+		SourceObject *Source_;
+		Output *Output_;
+		Path *Path_;
 
-		QList<Phonon::MediaSource> CurrentQueue_;
-		QHash<Phonon::MediaSource, QStandardItem*> Items_;
+		QList<AudioSource> CurrentQueue_;
+		QHash<AudioSource, QStandardItem*> Items_;
 		QHash<QString, QList<QStandardItem*>> AlbumRoots_;
 
-		Phonon::MediaSource CurrentStopSource_;
+		AudioSource CurrentStopSource_;
 
 		Media::IRadioStation_ptr CurrentStation_;
 		QStandardItem *RadioItem_;
@@ -120,8 +116,8 @@ namespace LMP
 		Player (QObject* = 0);
 
 		QAbstractItemModel* GetPlaylistModel () const;
-		Phonon::MediaObject* GetSourceObject () const;
-		Phonon::AudioOutput* GetAudioOutput () const;
+		SourceObject* GetSourceObject () const;
+		Output* GetAudioOutput () const;
 
 		PlayMode GetPlayMode () const;
 		void SetPlayMode (PlayMode);
@@ -131,13 +127,13 @@ namespace LMP
 
 		void PrepareURLInfo (const QUrl&, const MediaInfo&);
 		void Enqueue (const QStringList&, bool = true);
-		void Enqueue (const QList<Phonon::MediaSource>&, bool = true);
-		void ReplaceQueue (const QList<Phonon::MediaSource>&, bool = true);
-		QList<Phonon::MediaSource> GetQueue () const;
-		QList<Phonon::MediaSource> GetIndexSources (const QModelIndex&) const;
+		void Enqueue (const QList<AudioSource>&, bool = true);
+		void ReplaceQueue (const QList<AudioSource>&, bool = true);
+		QList<AudioSource> GetQueue () const;
+		QList<AudioSource> GetIndexSources (const QModelIndex&) const;
 
 		void Dequeue (const QModelIndex&);
-		void Dequeue (const QList<Phonon::MediaSource>&);
+		void Dequeue (const QList<AudioSource>&);
 
 		void SetStopAfter (const QModelIndex&);
 
@@ -146,18 +142,18 @@ namespace LMP
 		MediaInfo GetCurrentMediaInfo () const;
 		QString GetCurrentAAPath () const;
 	private:
-		MediaInfo GetMediaInfo (const Phonon::MediaSource&) const;
+		MediaInfo GetMediaInfo (const AudioSource&) const;
 		MediaInfo GetPhononMediaInfo () const;
-		void AddToPlaylistModel (QList<Phonon::MediaSource>, bool);
+		void AddToPlaylistModel (QList<AudioSource>, bool);
 
-		bool HandleCurrentStop (const Phonon::MediaSource&);
+		bool HandleCurrentStop (const AudioSource&);
 
 		void UnsetRadio ();
 
 		template<typename T>
-		Phonon::MediaSource GetRandomBy (QList<Phonon::MediaSource>::const_iterator,
-				std::function<T (Phonon::MediaSource)>) const;
-		Phonon::MediaSource GetNextSource (const Phonon::MediaSource&) const;
+		AudioSource GetRandomBy (QList<AudioSource>::const_iterator,
+				std::function<T (AudioSource)>) const;
+		AudioSource GetNextSource (const AudioSource&) const;
 	public slots:
 		void play (const QModelIndex&);
 		void previousTrack ();
@@ -169,7 +165,7 @@ namespace LMP
 		void shufflePlaylist ();
 	private slots:
 		void handleSorted ();
-		void continueAfterSorted (const QList<QPair<Phonon::MediaSource, MediaInfo>>&);
+		void continueAfterSorted (const QList<QPair<AudioSource, MediaInfo>>&);
 
 		void restorePlaylist ();
 		void handleStationError (const QString&);
@@ -178,8 +174,8 @@ namespace LMP
 		void postPlaylistCleanup (const QString&);
 		void handleUpdateSourceQueue ();
 		void handlePlaybackFinished ();
-		void handleStateChanged (Phonon::State);
-		void handleCurrentSourceChanged (const Phonon::MediaSource&);
+		void handleStateChanged ();
+		void handleCurrentSourceChanged (const AudioSource&);
 		void handleMetadata ();
 		void refillPlaylist ();
 		void setTransitionTime ();

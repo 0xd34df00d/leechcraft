@@ -284,16 +284,6 @@
               <string>Tags</string>
              </property>
              <layout class="QGridLayout" name="gridLayout">
-              <item row="2" column="1">
-               <widget class="QPushButton" name="SelectTags_">
-                <property name="text">
-                 <string>Tags</string>
-                </property>
-                <property name="checkable">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
               <item row="0" column="0" rowspan="3">
                <widget class="QDeclarativeView" name="Tags_">
                 <property name="sizePolicy">
@@ -304,6 +294,16 @@
                 </property>
                 <property name="resizeMode">
                  <enum>QDeclarativeView::SizeRootObjectToView</enum>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QPushButton" name="SelectTags_">
+                <property name="text">
+                 <string>Tags</string>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>

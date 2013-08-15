@@ -39,7 +39,6 @@
 #include <QListWidget>
 #include <QTabBar>
 #include <QMessageBox>
-#include <phonon/seekslider.h>
 #include <util/util.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -58,12 +57,14 @@
 #include "nowplayingpixmaphandler.h"
 #include "previewhandler.h"
 #include "albumartmanagerdialog.h"
+#include "engine/sourceobject.h"
+#include "engine/output.h"
+#include "volumeslider.h"
+#include "seekslider.h"
 
 #ifdef ENABLE_MPRIS
 #include "mpris/instance.h"
 #endif
-
-Q_DECLARE_METATYPE (Phonon::MediaSource);
 
 namespace LeechCraft
 {
@@ -379,20 +380,11 @@ namespace LMP
 
 		TabToolbar_->addSeparator ();
 
-		PlayedTime_ = new QLabel ();
-		RemainingTime_ = new QLabel ();
-		auto seekSlider = new Phonon::SeekSlider (Player_->GetSourceObject ());
-		seekSlider->setTracking (false);
-		TabToolbar_->addWidget (PlayedTime_);
+		auto seekSlider = new SeekSlider (Player_->GetSourceObject ());
 		TabToolbar_->addWidget (seekSlider);
-		TabToolbar_->addWidget (RemainingTime_);
 		TabToolbar_->addSeparator ();
-		connect (Player_->GetSourceObject (),
-				SIGNAL (tick (qint64)),
-				this,
-				SLOT (handleCurrentPlayTime (qint64)));
 
-		auto volumeSlider = new Phonon::VolumeSlider (Player_->GetAudioOutput ());
+		auto volumeSlider = new VolumeSlider (Player_->GetAudioOutput ());
 		volumeSlider->setMinimumWidth (100);
 		volumeSlider->setMaximumWidth (160);
 		TabToolbar_->addWidget (volumeSlider);
@@ -415,9 +407,9 @@ namespace LMP
 				SLOT (closeLMP ()));
 
 		connect (Player_->GetSourceObject (),
-				SIGNAL (stateChanged (Phonon::State, Phonon::State)),
+				SIGNAL (stateChanged (SourceObject::State, SourceObject::State)),
 				this,
-				SLOT (handleStateChanged (Phonon::State, Phonon::State)));
+				SLOT (handleStateChanged ()));
 		TrayMenu_->addAction (previous);
 		TrayMenu_->addAction (PlayPause_);
 		TrayMenu_->addAction (stop);
@@ -584,21 +576,21 @@ namespace LMP
 
 	namespace
 	{
-		QIcon GetIconFromState (Phonon::State state)
+		QIcon GetIconFromState (SourceObject::State state)
 		{
 			switch (state)
 			{
-				case Phonon::PlayingState:
-					return Core::Instance ().GetProxy ()->GetIcon ("media-playback-start");
-				case Phonon::PausedState:
-					return Core::Instance ().GetProxy ()->GetIcon ("media-playback-pause");
-				default:
-					return QIcon ();
+			case SourceObject::State::Playing:
+				return Core::Instance ().GetProxy ()->GetIcon ("media-playback-start");
+			case SourceObject::State::Paused:
+				return Core::Instance ().GetProxy ()->GetIcon ("media-playback-pause");
+			default:
+				return QIcon ();
 			}
 		}
 
 		template<typename T>
-		void UpdateIcon (T iconable, Phonon::State state,
+		void UpdateIcon (T iconable, SourceObject::State state,
 				std::function<QSize (T)> iconSizeGetter)
 		{
 			QIcon icon = GetIconFromState (state);
@@ -658,7 +650,6 @@ namespace LMP
 		{
 			auto similars = Core::Instance ().GetProxy ()->
 					GetPluginsManager ()->GetAllCastableTo<Media::ISimilarArtists*> ();
-			qDebug () << Q_FUNC_INFO << similars.size ();
 			Q_FOREACH (auto *similar, similars)
 			{
 				auto obj = similar->GetSimilarArtists (info.Artist_, 15);
@@ -679,24 +670,6 @@ namespace LMP
 			LastArtist_ = info.Artist_;
 			FillSimilar (Similars_ [info.Artist_]);
 		}
-	}
-
-	void PlayerTab::handleCurrentPlayTime (qint64 time)
-	{
-		auto niceTime = [] (qint64 time) -> QString
-		{
-			if (!time)
-				return QString ();
-
-			QString played = Util::MakeTimeFromLong (time / 1000);
-			if (played.startsWith ("00:"))
-				played = played.mid (3);
-			return played;
-		};
-		PlayedTime_->setText (niceTime (time));
-
-		const auto remaining = Player_->GetSourceObject ()->remainingTime ();
-		RemainingTime_->setText (remaining < 0 ? tr ("unknown") : niceTime (remaining));
 	}
 
 	namespace
@@ -905,13 +878,14 @@ namespace LMP
 		Remove ();
 	}
 
-	void PlayerTab::handleStateChanged (Phonon::State newState, Phonon::State)
+	void PlayerTab::handleStateChanged ()
 	{
-		if (newState == Phonon::PlayingState)
+		const auto newState = Player_->GetSourceObject ()->GetState ();
+		if (newState == SourceObject::State::Playing)
 			PlayPause_->setProperty ("ActionIcon", "media-playback-pause");
 		else
 		{
-			if (newState == Phonon::StoppedState)
+			if (newState == SourceObject::State::Stopped)
 				TrayIcon_->handleSongChanged (MediaInfo ());
 			PlayPause_->setProperty ("ActionIcon", "media-playback-start");
 		}
@@ -943,7 +917,7 @@ namespace LMP
 
 	void PlayerTab::handleChangedVolume (qreal delta)
 	{
-		qreal volume = Player_->GetAudioOutput ()->volume ();
+		qreal volume = Player_->GetAudioOutput ()->GetVolume ();
 		qreal dl = delta > 0 ? 0.05 : -0.05;
 		if (volume != volume)
 			volume = 0.0;

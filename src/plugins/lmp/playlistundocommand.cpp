@@ -35,7 +35,7 @@ namespace LeechCraft
 namespace LMP
 {
 	PlaylistUndoCommand::PlaylistUndoCommand (const QString& title,
-			const QList<Phonon::MediaSource>& sources, Player *player)
+			const QList<AudioSource>& sources, Player *player)
 	: QUndoCommand (title)
 	, Player_ (player)
 	, Sources_ (sources)

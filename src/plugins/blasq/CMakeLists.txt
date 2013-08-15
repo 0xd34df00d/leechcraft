@@ -3,6 +3,7 @@ project (leechcraft_blasq)
 include (InitLCPlugin OPTIONAL)
 
 set (QT_USE_QTDECLARATIVE TRUE)
+set (QT_USE_QTNETWORK TRUE)
 include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -19,6 +20,7 @@ set (SRCS
 	accountsmanager.cpp
 	photostab.cpp
 	defaultimagechooser.cpp
+	enumsproxy.cpp
 	)
 set (FORMS
 	accountswidget.ui

@@ -39,11 +39,11 @@ namespace Blasq
 {
 	enum CollectionRole
 	{
+		Name = Qt::DisplayRole,
 		/** Contains a value of ItemType.
 		 */
 		Type = Qt::UserRole + 1,
 		ID,
-		Name,
 
 		/** Around 240 px.
 		 */
@@ -69,7 +69,7 @@ namespace Blasq
 		: T (parent)
 		{
 			QHash<int, QByteArray> result;
-			result [CollectionRole::Type] = "type";
+			result [CollectionRole::Type] = "itemType";
 			result [CollectionRole::ID] = "imageId";
 			result [CollectionRole::Name] = "name";
 			result [CollectionRole::SmallThumb] = "smallThumb";

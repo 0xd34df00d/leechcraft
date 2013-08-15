@@ -31,6 +31,7 @@
 #include <QStandardItemModel>
 #include <QInputDialog>
 #include <QSortFilterProxyModel>
+#include <QtDebug>
 #include <util/gui/clearlineeditaddon.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/iradiostationprovider.h>

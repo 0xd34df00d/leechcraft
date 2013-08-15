@@ -71,22 +71,11 @@ namespace LMP
 				QMimeData *result = new QMimeData;
 
 				QList<QUrl> urls;
-				Q_FOREACH (const auto& idx, indexes)
+				for (const auto& idx : indexes)
 				{
 					const auto& sources = Manager_->GetSources (idx);
 					std::transform (sources.begin (), sources.end (), std::back_inserter (urls),
-							[] (decltype (sources.front ()) src) -> QUrl
-							{
-								switch (src.type ())
-								{
-								case Phonon::MediaSource::LocalFile:
-									return QUrl::fromLocalFile (src.fileName ());
-								case Phonon::MediaSource::Url:
-									return src.url ();
-								default:
-									return QUrl ();
-								}
-							});
+							[] (decltype (sources.front ()) src) { return src.ToUrl (); });
 				}
 
 				urls.removeAll (QUrl ());
@@ -176,15 +165,15 @@ namespace LMP
 			Static_->DeleteCustomPlaylist (index.data ().toString ());
 	}
 
-	QList<Phonon::MediaSource> PlaylistManager::GetSources (const QModelIndex& index) const
+	QList<AudioSource> PlaylistManager::GetSources (const QModelIndex& index) const
 	{
 		auto col = Core::Instance ().GetLocalCollection ();
-		auto toSrcs = [col] (const QList<int>& ids) -> QList<Phonon::MediaSource>
+		auto toSrcs = [col] (const QList<int>& ids) -> QList<AudioSource>
 		{
 			const auto& paths = col->TrackList2PathList (ids);
-			QList<Phonon::MediaSource> result;
+			QList<AudioSource> result;
 			std::transform (paths.begin (), paths.end (), std::back_inserter (result),
-					[] (const QString& path) { return Phonon::MediaSource (path); });
+					[] (const QString& path) { return AudioSource (path); });
 			return result;
 		};
 
@@ -200,10 +189,10 @@ namespace LMP
 			return toSrcs (col->GetDynamicPlaylist (LocalCollection::DynamicPlaylist::BannedTracks));
 		default:
 		{
-			QList<Phonon::MediaSource> result;
+			QList<AudioSource> result;
 			const auto& urls = index.data (IPlaylistProvider::ItemRoles::SourceURLs).value<QList<QUrl>> ();
 			std::transform (urls.begin (), urls.end (), std::back_inserter (result),
-					[] (decltype (urls.front ()) path) { return Phonon::MediaSource (path); });
+					[] (decltype (urls.front ()) path) { return AudioSource (path); });
 			return result;
 		}
 		}

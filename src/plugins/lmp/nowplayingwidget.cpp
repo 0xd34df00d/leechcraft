@@ -192,7 +192,6 @@ namespace LMP
 	void NowPlayingWidget::updateLyricsSwitcher ()
 	{
 		const auto& size = PossibleLyrics_.size ();
-		qDebug () << Q_FUNC_INFO << size << LyricsVariantPos_ << PossibleLyrics_;
 		const auto& str = size ?
 				tr ("%n possible lyrics found", 0, size) :
 				QString ();

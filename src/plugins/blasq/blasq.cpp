@@ -40,6 +40,7 @@
 #include "accountsmanager.h"
 #include "photostab.h"
 #include "defaultimagechooser.h"
+#include "enumsproxy.h"
 
 namespace LeechCraft
 {
@@ -70,6 +71,8 @@ namespace Blasq
 		};
 
 		qmlRegisterType<QGraphicsBlurEffect> ("Effects", 1, 0, "Blur");
+		qmlRegisterUncreatableType<EnumsProxy> ("org.LC.Blasq", 1, 0, "Blasq",
+				"This exports otherwise unavailable Blasq datatypes to QML");
 	}
 
 	void Plugin::SecondInit ()

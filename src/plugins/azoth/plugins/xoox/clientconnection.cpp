@@ -44,7 +44,7 @@
 #include <QXmppMessageReceiptManager.h>
 #include <QXmppCallManager.h>
 #include <util/util.h>
-#include <util/socketerrorstrings.h>
+#include <util/network/socketerrorstrings.h>
 #include <util/sysinfo.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/azoth/iprotocol.h>

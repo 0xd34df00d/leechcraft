@@ -31,13 +31,13 @@
 
 #include <functional>
 #include <QString>
-#include <phonon/mediasource.h>
+#include "engine/audiosource.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	typedef std::function<QList<Phonon::MediaSource> (const QString&)> PlaylistParser_f;
+	typedef std::function<QList<AudioSource> (const QString&)> PlaylistParser_f;
 
 	PlaylistParser_f MakePlaylistParser (const QString& filename);
 }

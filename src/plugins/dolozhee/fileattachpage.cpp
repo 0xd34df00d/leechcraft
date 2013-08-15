@@ -49,7 +49,7 @@ namespace Dolozhee
 
 	int FileAttachPage::nextId () const
 	{
-		return ReportWizard::PageID::Final;
+		return ReportWizard::PageID::PreviewRequestPage;
 	}
 
 	void FileAttachPage::AddFile (const QString& path)

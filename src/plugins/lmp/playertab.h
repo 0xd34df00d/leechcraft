@@ -31,9 +31,6 @@
 
 #include <memory>
 #include <QWidget>
-#include <phonon/mediaobject.h>
-#include <phonon/audiooutput.h>
-#include <phonon/volumeslider.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/media/audiostructs.h>
 #include <interfaces/ihaverecoverabletabs.h>
@@ -81,9 +78,6 @@ namespace LMP
 
 		QToolBar *TabToolbar_;
 
-		QLabel *PlayedTime_;
-		QLabel *RemainingTime_;
-
 		QHash<QString, Media::SimilarityInfos_t> Similars_;
 		QString LastArtist_;
 
@@ -126,7 +120,6 @@ namespace LMP
 		void RequestLyrics (const MediaInfo&);
 	private slots:
 		void handleSongChanged (const MediaInfo&);
-		void handleCurrentPlayTime (qint64);
 		void handleLoveTrack ();
 		void handleBanTrack ();
 
@@ -147,7 +140,7 @@ namespace LMP
 		void handlePlayerAvailable (bool);
 
 		void closeLMP ();
-		void handleStateChanged (Phonon::State newState, Phonon::State oldState);
+		void handleStateChanged ();
 		void handleShowTrayIcon ();
 		void handleUseNavTabBar ();
 		void handleChangedVolume (qreal delta);

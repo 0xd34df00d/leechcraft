@@ -34,7 +34,7 @@
 #include <QNetworkAccessManager>
 #include <QString>
 #include <QtGlobal>
-#include <util/customcookiejar.h>
+#include <util/network/customcookiejar.h>
 #include "core.h"
 
 namespace LeechCraft

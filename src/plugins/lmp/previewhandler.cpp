@@ -196,7 +196,7 @@ namespace LMP
 	{
 		auto pending = qobject_cast<Media::IPendingAudioSearch*> (sender ());
 
-		QList<Phonon::MediaSource> sources;
+		QList<AudioSource> sources;
 		QSet<QUrl> urls;
 		QSet<SamenessCheckInfo> infos;
 		for (const auto& res : pending->GetResults ())
@@ -216,7 +216,7 @@ namespace LMP
 			infos << checkInfo;
 
 			Player_->PrepareURLInfo (res.Source_, MediaInfo::FromAudioInfo (res.Info_));
-			sources << Phonon::MediaSource (res.Source_);
+			sources << AudioSource (res.Source_);
 		}
 
 		if (!sources.isEmpty ())

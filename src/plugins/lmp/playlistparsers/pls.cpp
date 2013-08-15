@@ -28,9 +28,9 @@
  **********************************************************************/
 
 #include "pls.h"
-#include "commonpl.h"
 #include <algorithm>
 #include <QSettings>
+#include "commonpl.h"
 
 namespace LeechCraft
 {
@@ -58,7 +58,7 @@ namespace PLS
 		return result;
 	}
 
-	QList<Phonon::MediaSource> Read2Sources (const QString& path)
+	QList<AudioSource> Read2Sources (const QString& path)
 	{
 		return CommonRead2Sources ({ QStringList ("pls"), path, Read });
 	}

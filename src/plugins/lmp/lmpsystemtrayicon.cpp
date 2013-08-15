@@ -31,11 +31,11 @@
 #include <QWheelEvent>
 #include <QHelpEvent>
 #include <QToolTip>
-#include <phonon/audiooutput.h>
 #include "core.h"
 #include "playertab.h"
 #include "util.h"
 #include "player.h"
+#include "engine/output.h"
 
 namespace LeechCraft
 {
@@ -71,7 +71,7 @@ namespace LMP
 				int vol = 0;
 				if (ao)
 				{
-					qreal volume = ao->volume ();
+					qreal volume = ao->GetVolume ();
 					vol = volume * 100;
 				}
 				const QString& volumeText = tr ("Volume: %1%")

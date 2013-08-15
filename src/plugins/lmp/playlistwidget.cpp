@@ -510,16 +510,16 @@ namespace LMP
 		MoveDownButtonAction_->setVisible (enabled);
 	}
 
-	QList<Phonon::MediaSource> PlaylistWidget::GetSelected () const
+	QList<AudioSource> PlaylistWidget::GetSelected () const
 	{
 		const auto& selected = Ui_.Playlist_->selectionModel ()->selectedRows ();
-		QList<Phonon::MediaSource> sources;
+		QList<AudioSource> sources;
 		Q_FOREACH (const auto& index, selected)
 			sources += Player_->GetIndexSources (PlaylistFilter_->mapToSource (index));
 		return sources;
 	}
 
-	void PlaylistWidget::SelectSources (const QList<Phonon::MediaSource>& sources)
+	void PlaylistWidget::SelectSources (const QList<AudioSource>& sources)
 	{
 		auto tryIdx = [&sources, this] (const QModelIndex& idx)
 		{
@@ -674,7 +674,7 @@ namespace LMP
 			indexes << Ui_.Playlist_->currentIndex ();
 		indexes.removeAll (QModelIndex ());
 
-		QList<Phonon::MediaSource> removedSources;
+		QList<AudioSource> removedSources;
 		const QString& title = indexes.size () == 1 ?
 				tr ("Remove %1").arg (indexes.at (0).data ().toString ()) :
 				tr ("Remove %n song(s)", 0, indexes.size ());
@@ -833,7 +833,7 @@ namespace LMP
 			return;
 		}
 
-		Player_->Enqueue (QList<Phonon::MediaSource> () << urlObj);
+		Player_->Enqueue (QList<AudioSource> () << urlObj);
 	}
 
 	void PlaylistWidget::updateStatsLabel ()

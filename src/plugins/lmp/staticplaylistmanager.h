@@ -31,7 +31,7 @@
 
 #include <QObject>
 #include <QDir>
-#include <phonon/mediasource.h>
+#include "engine/audiosource.h"
 
 namespace LeechCraft
 {
@@ -45,16 +45,16 @@ namespace LMP
 	public:
 		StaticPlaylistManager (QObject* = 0);
 
-		void SetOnLoadPlaylist (const QList<Phonon::MediaSource>&);
-		QList<Phonon::MediaSource> GetOnLoadPlaylist () const;
+		void SetOnLoadPlaylist (const QList<AudioSource>&);
+		QList<AudioSource> GetOnLoadPlaylist () const;
 
-		void SaveCustomPlaylist (QString, const QList<Phonon::MediaSource>&);
+		void SaveCustomPlaylist (QString, const QList<AudioSource>&);
 		QStringList EnumerateCustomPlaylists () const;
-		QList<Phonon::MediaSource> GetCustomPlaylist (const QString&) const;
+		QList<AudioSource> GetCustomPlaylist (const QString&) const;
 		void DeleteCustomPlaylist (const QString&);
 	private:
-		void WritePlaylist (const QString&, const QList<Phonon::MediaSource>&);
-		QList<Phonon::MediaSource> ReadPlaylist (const QString&) const;
+		void WritePlaylist (const QString&, const QList<AudioSource>&);
+		QList<AudioSource> ReadPlaylist (const QString&) const;
 	signals:
 		void customPlaylistsChanged ();
 	};
