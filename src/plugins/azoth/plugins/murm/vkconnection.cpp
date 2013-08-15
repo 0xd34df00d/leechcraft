@@ -204,6 +204,26 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
+	void VkConnection::GetMessageInfo (qulonglong id, MessageInfoSetter_f setter)
+	{
+		auto nam = Proxy_->GetNetworkAccessManager ();
+		PreparedCalls_.push_back ([=] (const QString& key) -> QNetworkReply*
+			{
+				QUrl url ("https://api.vk.com/method/messages.getById");
+				url.addQueryItem ("access_token", key);
+				url.addQueryItem ("mid", QString::number (id));
+
+				auto reply = nam->get (QNetworkRequest (url));
+				Reply2MessageSetter_ [reply] = setter;
+				connect (reply,
+						SIGNAL (finished ()),
+						this,
+						SLOT (handleMessageInfoFetched ()));
+				return reply;
+			});
+		AuthMgr_->GetAuthKey ();
+	}
+
 	void VkConnection::GetPhotoInfos (const QStringList& ids, PhotoInfoSetter_f setter)
 	{
 		const auto& joined = ids.join (",");
@@ -571,6 +591,57 @@ namespace Murm
 		setter (result);
 	}
 
+	namespace
+	{
+		PhotoInfo PhotoMap2Info (const QVariantMap& map)
+		{
+			return
+			{
+				map ["owner_id"].toLongLong (),
+				map ["pid"].toULongLong (),
+				map ["aid"].toLongLong (),
+
+				map ["src"].toString (),
+				map ["src_big"].toString (),
+
+				map ["access_key"].toString ()
+			};
+		}
+	}
+
+	void VkConnection::handleMessageInfoFetched ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!CheckFinishedReply (reply))
+			return;
+
+		const auto& setter = Reply2MessageSetter_.take (reply);
+		if (!setter)
+			return;
+
+		FullMessageInfo info;
+
+		const auto& data = QJson::Parser ().parse (reply);
+		const auto& infoList = data.toMap () ["response"].toList ();
+		for (const auto& item : infoList)
+		{
+			if (item.type () != QVariant::Map)
+				continue;
+
+			const auto& map = item.toMap ();
+			const auto& attList = map ["attachments"].toList ();
+			qDebug () << "list" << attList;
+			for (const auto& attVar : attList)
+			{
+				const auto& attMap = attVar.toMap ();
+				if (attMap.contains ("photo"))
+					info.Photos_.append (PhotoMap2Info (attMap ["photo"].toMap ()));
+			}
+		}
+
+		setter (info);
+	}
+
 	void VkConnection::handlePhotoInfosFetched ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
@@ -579,7 +650,11 @@ namespace Murm
 
 		const auto& setter = Reply2PhotoSetter_.take (reply);
 		if (!setter)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no setter";
 			return;
+		}
 
 		QList<PhotoInfo> result;
 

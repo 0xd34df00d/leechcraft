@@ -80,11 +80,13 @@ namespace Murm
 	public:
 		typedef std::function<void (QHash<int, QString>)> GeoSetter_f;
 		typedef std::function<void (QList<PhotoInfo>)> PhotoInfoSetter_f;
+		typedef std::function<void (FullMessageInfo)> MessageInfoSetter_f;
 	private:
 		QHash<int, std::function<void (QVariantList)>> Dispatcher_;
 		QHash<QNetworkReply*, std::function<void (qulonglong)>> MsgReply2Setter_;
 		QHash<QNetworkReply*, GeoSetter_f> CountryReply2Setter_;
 
+		QHash<QNetworkReply*, MessageInfoSetter_f> Reply2MessageSetter_;
 		QHash<QNetworkReply*, PhotoInfoSetter_f> Reply2PhotoSetter_;
 
 		int PollErrorCount_ = 0;
@@ -103,6 +105,7 @@ namespace Murm
 		void MarkAsRead (const QList<qulonglong>&);
 		void RequestGeoIds (const QList<int>&, GeoSetter_f, GeoIdType);
 
+		void GetMessageInfo (qulonglong id, MessageInfoSetter_f setter);
 		void GetPhotoInfos (const QStringList& ids, PhotoInfoSetter_f setter);
 
 		void SetStatus (const QString&);
@@ -127,6 +130,7 @@ namespace Murm
 		void handleGotLPServer ();
 		void handleMessageSent ();
 		void handleCountriesFetched ();
+		void handleMessageInfoFetched ();
 		void handlePhotoInfosFetched ();
 
 		void saveCookies (const QByteArray&);
