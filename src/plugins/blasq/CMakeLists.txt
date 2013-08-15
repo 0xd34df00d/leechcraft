@@ -20,6 +20,7 @@ set (SRCS
 	accountsmanager.cpp
 	photostab.cpp
 	defaultimagechooser.cpp
+	enumsproxy.cpp
 	)
 set (FORMS
 	accountswidget.ui
