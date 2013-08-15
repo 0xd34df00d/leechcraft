@@ -101,6 +101,8 @@ namespace Blogique
 
 		void handleAutoSaveIntervalChanged ();
 
+		void exportBlog ();
+
 	signals:
 		void accountAdded (QObject *account);
 		void accountRemoved (QObject *account);

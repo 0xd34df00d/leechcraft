@@ -420,6 +420,12 @@ namespace Blogique
 		AutoSaveTimer_->start (XmlSettingsManager::Instance ()
 				.property ("AutoSave").toInt () * 1000);
 	}
+
+	void Core::exportBlog ()
+	{
+		
+	}
+
 }
 }
 

@@ -150,7 +150,18 @@ namespace Blogique
 		switch (area)
 		{
 			case ActionsEmbedPlace::ToolsMenu:
+			{
+				QAction *exportExtion = new QAction (Core::Instance ()
+							.GetCoreProxy ()->GetIcon ("document-export"),
+						tr ("Export blog"), this);
+				connect (exportExtion,
+						SIGNAL (triggered ()),
+						&Core::Instance (),
+						SLOT (exportBlog ()));
+
+				result << exportExtion;
 				break;
+			}
 			default:
 				break;
 		}
