@@ -68,7 +68,6 @@ set (SRCS
 	handlerchoicedialog.cpp
 	shortcutmanager.cpp
 	keysequencer.cpp
-	networkdiskcache.cpp
 	networkaccessmanager.cpp
 	coreproxy.cpp
 	tagsmanager.cpp

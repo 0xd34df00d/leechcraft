@@ -39,9 +39,9 @@
 #include <QSettings>
 #include <util/util.h>
 #include <util/network/customcookiejar.h>
+#include <util/network/networkdiskcache.h>
 #include <util/defaulthookproxy.h>
 #include "core.h"
-#include "networkdiskcache.h"
 #include "authenticationdialog.h"
 #include "sslerrorsdialog.h"
 #include "xmlsettingsmanager.h"
@@ -87,8 +87,12 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 	try
 	{
 		CreateIfNotExists ("core/cache");
-		NetworkDiskCache *cache = new NetworkDiskCache (this);
+		auto cache = new Util::NetworkDiskCache ("core/cache", this);
 		setCache (cache);
+
+		XmlSettingsManager::Instance ()->RegisterObject ("CacheSize",
+				this, "handleCacheSize");
+		handleCacheSize ();
 	}
 	catch (const std::runtime_error& e)
 	{
@@ -345,3 +349,9 @@ void LeechCraft::NetworkAccessManager::handleFilterTrackingCookies ()
 				property ("FilterTrackingCookies").toBool ());
 }
 
+void NetworkAccessManager::handleCacheSize ()
+{
+	auto ourCache = qobject_cast<Util::NetworkDiskCache*> (cache ());
+	ourCache->setMaximumCacheSize (XmlSettingsManager::Instance ()->
+			property ("CacheSize").toInt () * 1048576);
+}

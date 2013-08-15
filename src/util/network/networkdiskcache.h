@@ -27,14 +27,17 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef NETWORKDISKCACHE_H
-#define NETWORKDISKCACHE_H
+#pragma once
+
 #include <QNetworkDiskCache>
 #include <QMutex>
+#include <util/utilconfig.h>
 
 namespace LeechCraft
 {
-	class NetworkDiskCache : public QNetworkDiskCache
+namespace Util
+{
+	class UTIL_API NetworkDiskCache : public QNetworkDiskCache
 	{
 		Q_OBJECT
 
@@ -43,7 +46,7 @@ namespace LeechCraft
 
 		mutable QMutex InsertRemoveMutex_;
 	public:
-		NetworkDiskCache (QObject* = 0);
+		NetworkDiskCache (const QString&, QObject* = 0);
 
 		virtual qint64 cacheSize () const;
 		virtual QIODevice* data (const QUrl& url);
@@ -55,12 +58,10 @@ namespace LeechCraft
 	protected:
 		virtual qint64 expire ();
 	public slots:
-		void handleCacheSize ();
 		void collectGarbage ();
 	private slots:
 		void handleCollectorFinished ();
 	};
-};
-
-#endif
+}
+}
 

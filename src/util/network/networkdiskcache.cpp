@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "networkdiskcache.h"
+#include <util.h>
 #include <QtDebug>
 #include <QDateTime>
 #include <QDir>
@@ -36,21 +37,18 @@
 #include <QTimer>
 #include <QDirIterator>
 #include <QMutexLocker>
-#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
-	NetworkDiskCache::NetworkDiskCache (QObject *parent)
+namespace Util
+{
+	NetworkDiskCache::NetworkDiskCache (const QString& subpath, QObject *parent)
 	: QNetworkDiskCache (parent)
 	, IsCollectingGarbage_ (false)
 	, CurrentSize_ (-1)
 	, InsertRemoveMutex_ (QMutex::Recursive)
 	{
-		setCacheDirectory (QDir::homePath () + "/.leechcraft/core/cache");
-
-		XmlSettingsManager::Instance ()->RegisterObject ("CacheSize",
-				this, "handleCacheSize");
-		handleCacheSize ();
+		setCacheDirectory (CreateIfNotExists (subpath).absolutePath ());
 	}
 
 	qint64 NetworkDiskCache::cacheSize () const
@@ -107,13 +105,6 @@ namespace LeechCraft
 			collectGarbage ();
 
 		return CurrentSize_;
-	}
-
-	void NetworkDiskCache::handleCacheSize ()
-	{
-		setMaximumCacheSize (XmlSettingsManager::Instance ()->
-				property ("CacheSize").toInt () * 1048576);
-		expire ();
 	}
 
 	namespace
@@ -188,5 +179,5 @@ namespace LeechCraft
 
 		IsCollectingGarbage_ = false;
 	}
-};
-
+}
+}

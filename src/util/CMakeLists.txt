@@ -41,6 +41,7 @@ set (SRCS
 	models/treeitem.cpp
 	network/customcookiejar.cpp
 	network/customnetworkreply.cpp
+	network/networkdiskcache.cpp
 	network/socketerrorstrings.cpp
 	qml/colorthemeproxy.cpp
 	qml/widthiconprovider.cpp
