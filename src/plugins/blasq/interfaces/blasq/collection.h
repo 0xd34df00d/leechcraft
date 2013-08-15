@@ -39,11 +39,11 @@ namespace Blasq
 {
 	enum CollectionRole
 	{
+		Name = Qt::DisplayRole,
 		/** Contains a value of ItemType.
 		 */
 		Type = Qt::UserRole + 1,
 		ID,
-		Name,
 
 		/** Around 240 px.
 		 */
