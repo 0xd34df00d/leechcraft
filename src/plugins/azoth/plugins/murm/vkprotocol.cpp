@@ -86,7 +86,7 @@ namespace Murm
 
 	QIcon VkProtocol::GetProtocolIcon () const
 	{
-		static QIcon icon ("lcicons:/azoth/murm/resources/images/murm.svg");
+		static QIcon icon ("lcicons:/azoth/murm/resources/images/vk.svg");
 		return icon;
 	}
 
