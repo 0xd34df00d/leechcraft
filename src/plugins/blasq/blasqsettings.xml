@@ -4,4 +4,11 @@
 		<label value="Accounts" />
 		<item type="customwidget" name="AccountsWidget" label="own" />
 	</page>
+	<page>
+		<label value="Advanced" />
+		<item type="spinbox" property="CacheSize" default="100" mininum="0" maximum="1024">
+			<label value="Images cache size" />
+			<suffix value=" MiB" />
+		</item>
+	</page>
 </settings>

@@ -32,6 +32,7 @@
 #include <QComboBox>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
+#include <QDeclarativeNetworkAccessManagerFactory>
 #include <QGraphicsObject>
 #include <QtDebug>
 #include <interfaces/core/ientitymanager.h>
@@ -39,8 +40,10 @@
 #include <util/qml/themeimageprovider.h>
 #include <util/sys/paths.h>
 #include <util/util.h>
+#include <util/network/networkdiskcache.h>
 #include "interfaces/blasq/iaccount.h"
 #include "accountsmanager.h"
+#include "xmlsettingsmanager.h"
 
 Q_DECLARE_METATYPE (QModelIndex)
 
@@ -48,6 +51,26 @@ namespace LeechCraft
 {
 namespace Blasq
 {
+	namespace
+	{
+		class NAMFactory : public QDeclarativeNetworkAccessManagerFactory
+		{
+		public:
+			QNetworkAccessManager* create (QObject *parent)
+			{
+				auto nam = new QNetworkAccessManager (parent);
+
+				auto cache = new Util::NetworkDiskCache ("blasq/cache", nam);
+				const auto cacheSize = XmlSettingsManager::Instance ().property ("CacheSize").toInt ();
+				cache->setMaximumCacheSize (cacheSize * 1024 * 1024);
+
+				nam->setCache (cache);
+
+				return nam;
+			}
+		};
+	}
+
 	PhotosTab::PhotosTab (AccountsManager *accMgr, const TabClassInfo& tc, QObject *plugin, ICoreProxy_ptr proxy)
 	: TC_ (tc)
 	, Plugin_ (plugin)
@@ -71,6 +94,7 @@ namespace Blasq
 		engine->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			engine->addImportPath (cand);
+		engine->setNetworkAccessManagerFactory (new NAMFactory);
 
 		const auto& path = Util::GetSysPath (Util::SysPath::QML, "blasq", "PhotoView.qml");
 		Ui_.ImagesView_->setSource (QUrl::fromLocalFile (path));
