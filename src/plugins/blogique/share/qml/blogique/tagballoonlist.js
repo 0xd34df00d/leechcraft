@@ -66,39 +66,21 @@ function getBalloonByName (tagName)
 	return null;
 }
 
-function calculateContentHeight (width, spacing)
+function calculateContentHeight (spacing, defaultHeight)
 {
-	var length = balloonArray.length;
-	var lineLength = 0;
-	var result = spacing;
-	var tagsInLine = 0;
-	for (var i = 0; i < length; ++i)
+	var height = defaultHeight;
+	if (balloonArray.length != 0)
 	{
-		var diffSpacing = tagsInLine >= 1 ? spacing : 0;
-		if (i == length - 1 ||
-			lineLength + balloonArray [i].width + diffSpacing > width)
-		{
-			result += balloonArray [i].height + spacing;
-			lineLength = 0;
-			tagsInLine = 0;
-		}
-
-		lineLength += balloonArray [i].width;
-		lineLength += diffSpacing;
-		tagsInLine++;
+		var balloon = balloonArray [balloonArray.length - 1];
+		height = balloon.y + (balloon.height + spacing) * 2;
 	}
-
-	if (length > 0)
-		result += 2 * (balloonArray [0].height + spacing);
-
-	console.log (result, width)
-	return result;
+	return height;
 }
 
-function getOffset (contentHeight, spacing)
+function getOffset ()
 {
-	var ht = contentHeight;
-	ht -= 2 * (balloonArray [0].height + spacing);
-
-	return ht;
+	var offset = 0;
+	if (balloonArray.length != 0)
+		offset = balloonArray [balloonArray.length - 1].y;
+	return offset;
 }

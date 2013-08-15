@@ -40,12 +40,20 @@ Rectangle
 		return tags;
 	}
 
+	function updateFlickableHeight ()
+	{
+		var res = TagBalloonList.calculateContentHeight (flowElement.spacing, flowElement.height);
+		if (flickable.contentHeight <= res)
+			flickable.contentHeight = res;
+	}
+
 	function setTags (tags)
 	{
 		TagBalloonList.clearBalloonsArray ();
 		var length = tags.length;
 		for (var i = 0; i < length; ++i)
 			TagBalloonList.addBalloon (createBalloonObject (tags [i]));
+		updateFlickableHeight ();
 	}
 
 	function replaceInputWithBalloon (tag)
@@ -54,8 +62,7 @@ Rectangle
 		TagBalloonList.addBalloon (createBalloonObject (tag));
 		tagAdded (tag)
 		createInputFieldObject ();
-
-		flickable.contentY = TagBalloonList.getOffset (flickable.contentHeight, flowElement.spacing);
+		flickable.contentY = TagBalloonList.getOffset ();
 	}
 
 	function replaceBalloonWithInput ()
@@ -65,6 +72,8 @@ Rectangle
 		var lastBalloon = TagBalloonList.getLastBalloon ();
 		var tag = lastBalloon.tag;
 		TagBalloonList.removeBalloon (lastBalloon);
+		updateFlickableHeight ();
+		flickable.contentY = TagBalloonList.getOffset ();
 		tagRemoved (tag);
 
 		createInputFieldObject ()
@@ -90,12 +99,7 @@ Rectangle
 	{
 		currentInputField = tagInputComponent.createObject (flowElement);
 		inputFieldExsists = true;
-		var res = TagBalloonList.calculateContentHeight (flowElement.width, flowElement.spacing);
-		console.log (res, flickable.contentHeight);
-		if (flickable.contentHeight <= res)
-		{
-			flickable.contentHeight = res;
-		}
+		updateFlickableHeight ();
 	}
 
 	Component
@@ -106,7 +110,7 @@ Rectangle
 		{
 			id: tagInput
 			height: 25
-			width: 50
+			width: 10
 			cursorVisible: true
 			focus: true
 			color: colorProxy.color_TextView_TitleTextColor
