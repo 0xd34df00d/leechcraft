@@ -232,7 +232,7 @@ namespace Rappor
 				auto item = new QStandardItem (idText);
 				item->setData (ItemType::Image, CollectionRole::Type);
 				item->setData (idText, CollectionRole::ID);
-				item->setData (QString (), CollectionRole::Name);
+				item->setData (idText, CollectionRole::Name);
 
 				const auto& sizesElem = photoElem.firstChildElement ("sizes");
 				auto getType = [&sizesElem] (const QString& type) -> QPair<QUrl, QSize>
