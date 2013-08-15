@@ -69,7 +69,7 @@ namespace Blasq
 		: T (parent)
 		{
 			QHash<int, QByteArray> result;
-			result [CollectionRole::Type] = "type";
+			result [CollectionRole::Type] = "itemType";
 			result [CollectionRole::ID] = "imageId";
 			result [CollectionRole::Name] = "name";
 			result [CollectionRole::SmallThumb] = "smallThumb";
