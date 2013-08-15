@@ -108,6 +108,11 @@ namespace Dolozhee
 				-1;
 	}
 
+	QString ReportTypePage::GetCategoryName () const
+	{
+		return Ui_.CatCombo_->currentText ();
+	}
+
 	ReportTypePage::Priority ReportTypePage::GetPriority () const
 	{
 		return static_cast<Priority> (Ui_.PriorityBox_->currentIndex ());

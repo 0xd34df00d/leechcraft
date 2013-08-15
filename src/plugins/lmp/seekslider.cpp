@@ -38,6 +38,7 @@ namespace LMP
 	SeekSlider::SeekSlider (SourceObject *source, QWidget *parent)
 	: QWidget (parent)
 	, Source_ (source)
+	, IgnoreNextValChange_ (false)
 	{
 		Ui_.setupUi (this);
 
@@ -81,7 +82,11 @@ namespace LMP
 
 	void SeekSlider::updateRanges ()
 	{
-		Ui_.Slider_->setMaximum (Source_->GetTotalTime () / 1000);
+		const auto newMax = Source_->GetTotalTime () / 1000;
+		if (newMax <= Ui_.Slider_->value ())
+			IgnoreNextValChange_ = true;
+
+		Ui_.Slider_->setMaximum (newMax);
 	}
 
 	void SeekSlider::handleStateChanged ()
@@ -108,8 +113,11 @@ namespace LMP
 	void SeekSlider::on_Slider__valueChanged (int value)
 	{
 		value *= 1000;
-		if (std::abs (value - Source_->GetCurrentTime ()) < 1500)
+		if (std::abs (value - Source_->GetCurrentTime ()) < 1500 || IgnoreNextValChange_)
+		{
+			IgnoreNextValChange_ = false;
 			return;
+		}
 
 		Source_->Seek (value);
 	}

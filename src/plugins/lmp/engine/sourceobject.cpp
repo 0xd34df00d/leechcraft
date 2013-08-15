@@ -34,6 +34,7 @@
 #include <gst/gst.h>
 #include "audiosource.h"
 #include "path.h"
+#include "../core.h"
 
 namespace LeechCraft
 {
@@ -51,6 +52,11 @@ namespace LMP
 				src->HandleErrorMsg (message);
 				break;
 			case GST_MESSAGE_TAG:
+			case GST_MESSAGE_NEW_CLOCK:
+			case GST_MESSAGE_ASYNC_DONE:
+				break;
+			case GST_MESSAGE_BUFFERING:
+				src->HandleBufferingMsg (message);
 				break;
 			case GST_MESSAGE_STATE_CHANGED:
 				src->HandleStateChangeMsg (message);
@@ -62,6 +68,9 @@ namespace LMP
 				break;
 			case GST_MESSAGE_ELEMENT:
 				src->HandleElementMsg (message);
+				break;
+			case GST_MESSAGE_EOS:
+				src->HandleEosMsg (message);
 				break;
 			default:
 				qDebug () << Q_FUNC_INFO << GST_MESSAGE_TYPE (message);
@@ -77,8 +86,9 @@ namespace LMP
 			return true;
 		}
 
-		gboolean CbUriChanged (GstElement*, gpointer data)
+		gboolean CbSourceChanged (GstElement*, GParamSpec*, gpointer data)
 		{
+			static_cast<SourceObject*> (data)->SetupSource ();
 			return true;
 		}
 
@@ -99,6 +109,8 @@ namespace LMP
 #endif
 	, Path_ (nullptr)
 	, IsSeeking_ (false)
+	, LastCurrentTime_ (-1)
+	, PrevSoupRank_ (0)
 	, OldState_ (State::Stopped)
 	{
 		auto bus = gst_pipeline_get_bus (GST_PIPELINE (Dec_));
@@ -106,7 +118,7 @@ namespace LMP
 		gst_object_unref (bus);
 
 		g_signal_connect (Dec_, "about-to-finish", G_CALLBACK (CbAboutToFinish), this);
-		g_signal_connect (Dec_, "notify::uri", G_CALLBACK (CbUriChanged), this);
+		g_signal_connect (Dec_, "notify::source", G_CALLBACK (CbSourceChanged), this);
 
 		// Seems like it never gets called.
 		// g_signal_connect (bus, "sync-message::element", G_CALLBACK (CbElement), this);
@@ -174,12 +186,16 @@ namespace LMP
 		return {};
 	}
 
-	qint64 SourceObject::GetCurrentTime () const
+	qint64 SourceObject::GetCurrentTime ()
 	{
-		auto format = GST_FORMAT_TIME;
-		gint64 position = 0;
-		gst_element_query_position (GST_ELEMENT (Dec_), &format, &position);
-		return position / GST_MSECOND;
+		if (GetState () != State::Paused)
+		{
+			auto format = GST_FORMAT_TIME;
+			gint64 position = 0;
+			gst_element_query_position (GST_ELEMENT (Dec_), &format, &position);
+			LastCurrentTime_ = position;
+		}
+		return LastCurrentTime_ / GST_MSECOND;
 	}
 
 	qint64 SourceObject::GetRemainingTime () const
@@ -189,9 +205,7 @@ namespace LMP
 		if (!gst_element_query_duration (GST_ELEMENT (Dec_), &format, &duration))
 			return -1;
 
-		gint64 position = 0;
-		gst_element_query_position (GST_ELEMENT (Dec_), &format, &position);
-		return (duration - position) / GST_MSECOND;
+		return (duration - LastCurrentTime_) / GST_MSECOND;
 	}
 
 	qint64 SourceObject::GetTotalTime () const
@@ -223,11 +237,34 @@ namespace LMP
 		return CurrentSource_;
 	}
 
+	namespace
+	{
+		uint SetSoupRank (uint rank)
+		{
+			const auto factory = gst_element_factory_find ("souphttpsrc");
+			if (!factory)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "cannot find soup factory";
+				return 0;
+			}
+
+			const auto oldRank = gst_plugin_feature_get_rank (GST_PLUGIN_FEATURE (factory));
+			gst_plugin_feature_set_rank (GST_PLUGIN_FEATURE (factory), rank);
+			gst_registry_add_feature (gst_registry_get_default (), GST_PLUGIN_FEATURE (factory));
+
+			return oldRank;
+		}
+	}
+
 	void SourceObject::SetCurrentSource (const AudioSource& source)
 	{
 		IsSeeking_ = false;
 
 		CurrentSource_ = source;
+
+		if (source.ToUrl ().scheme ().startsWith ("http"))
+			PrevSoupRank_ = SetSoupRank (G_MAXINT);
 
 		const auto& path = source.ToUrl ().toString ();
 		g_object_set (G_OBJECT (Dec_), "uri", path.toUtf8 ().constData (), nullptr);
@@ -267,14 +304,15 @@ namespace LMP
 
 	void SourceObject::Stop ()
 	{
-		gst_element_set_state (Path_->GetPipeline (), GST_STATE_NULL);
+		gst_element_set_state (Path_->GetPipeline (), GST_STATE_READY);
+		Seek (0);
 	}
 
 	void SourceObject::Clear ()
 	{
 		ClearQueue ();
 		CurrentSource_.Clear ();
-		gst_element_set_state (Path_->GetPipeline (), GST_STATE_NULL);
+		gst_element_set_state (Path_->GetPipeline (), GST_STATE_READY);
 	}
 
 	void SourceObject::ClearQueue ()
@@ -304,8 +342,6 @@ namespace LMP
 
 		SetCurrentSource (NextSource_);
 		NextSource_.Clear ();
-
-		ClearQueue ();
 	}
 
 	void SourceObject::HandleErrorMsg (GstMessage *msg)
@@ -323,6 +359,14 @@ namespace LMP
 		qWarning () << Q_FUNC_INFO
 				<< msgStr
 				<< debugStr;
+	}
+
+	void SourceObject::HandleBufferingMsg (GstMessage *msg)
+	{
+		gint percentage = 0;
+		gst_message_parse_buffering (msg, &percentage);
+
+		emit bufferStatus (percentage);
 	}
 
 	namespace
@@ -388,6 +432,43 @@ namespace LMP
 
 			emit currentSourceChanged (CurrentSource_);
 		}
+	}
+
+	void SourceObject::HandleEosMsg (GstMessage*)
+	{
+		gst_element_set_state (Path_->GetPipeline (), GST_STATE_READY);
+	}
+
+	void SourceObject::SetupSource ()
+	{
+		GstElement *src;
+		g_object_get (Dec_, "source", &src, nullptr);
+
+		if (!CurrentSource_.ToUrl ().scheme ().startsWith ("http"))
+			return;
+
+		if (PrevSoupRank_)
+		{
+			SetSoupRank (PrevSoupRank_);
+			PrevSoupRank_ = 0;
+		}
+
+		if (!g_object_class_find_property (G_OBJECT_GET_CLASS (src), "user-agent"))
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "user-agent property not found for"
+					<< CurrentSource_.ToUrl ()
+					<< G_OBJECT_TYPE_NAME (src);
+			return;
+		}
+
+		const auto& str = QString ("LeechCraft LMP/%1 (%2)")
+				.arg (Core::Instance ().GetProxy ()->GetVersion ())
+				.arg (gst_version_string ());
+		qDebug () << Q_FUNC_INFO
+				<< "setting user-agent to"
+				<< str;
+		g_object_set (src, "user-agent", str.toUtf8 ().constData (), nullptr);
 	}
 
 	void SourceObject::AddToPath (Path *path)

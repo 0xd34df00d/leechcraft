@@ -38,7 +38,6 @@
 
 #include <interfaces/media/iradiostation.h>
 #include "engine/audiosource.h"
-#include "engine/sourceobject.h"
 #include "mediainfo.h"
 #include "sortingcriteria.h"
 
@@ -175,7 +174,7 @@ namespace LMP
 		void postPlaylistCleanup (const QString&);
 		void handleUpdateSourceQueue ();
 		void handlePlaybackFinished ();
-		void handleStateChanged (SourceObject::State);
+		void handleStateChanged ();
 		void handleCurrentSourceChanged (const AudioSource&);
 		void handleMetadata ();
 		void refillPlaylist ();

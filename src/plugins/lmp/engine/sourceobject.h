@@ -61,6 +61,10 @@ namespace LMP
 		QWaitCondition NextSrcWC_;
 
 		bool IsSeeking_;
+
+		qint64 LastCurrentTime_;
+
+		uint PrevSoupRank_;
 	public:
 		enum class State
 		{
@@ -95,7 +99,7 @@ namespace LMP
 
 		QStringList GetMetadata (Metadata) const;
 
-		qint64 GetCurrentTime () const;
+		qint64 GetCurrentTime ();
 		qint64 GetRemainingTime () const;
 		qint64 GetTotalTime () const;
 		void Seek (qint64);
@@ -115,8 +119,11 @@ namespace LMP
 
 		void HandleAboutToFinish ();
 		void HandleErrorMsg (GstMessage*);
+		void HandleBufferingMsg (GstMessage*);
 		void HandleStateChangeMsg (GstMessage*);
 		void HandleElementMsg (GstMessage*);
+		void HandleEosMsg (GstMessage*);
+		void SetupSource ();
 
 		void AddToPath (Path*);
 		void PostAdd (Path*);
