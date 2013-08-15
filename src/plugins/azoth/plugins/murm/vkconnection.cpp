@@ -204,7 +204,7 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
-	void VkConnection::GetPhotoInfos (const QStringList& ids, VkConnection::PhotoInfoSetter_f setter)
+	void VkConnection::GetPhotoInfos (const QStringList& ids, PhotoInfoSetter_f setter)
 	{
 		const auto& joined = ids.join (",");
 		auto nam = Proxy_->GetNetworkAccessManager ();
@@ -603,7 +603,9 @@ namespace Murm
 					map ["aid"].toLongLong (),
 
 					thumb,
-					big
+					big,
+
+					{}
 				});
 		}
 
