@@ -234,10 +234,21 @@ namespace Blasq
 		CurAcc_->UpdateCollections ();
 
 		auto model = CurAcc_->GetCollectionsModel ();
+
+		disconnect (Ui_.CollectionsTree_->selectionModel (),
+				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (handleRowChanged (QModelIndex)));
+		Ui_.CollectionsTree_->setModel (model);
+		connect (Ui_.CollectionsTree_->selectionModel (),
+				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (handleRowChanged (QModelIndex)));
+
+		Ui_.ImagesView_->rootContext ()->setContextProperty ("collRootIndex", QVariant::fromValue (QModelIndex ()));
 		Ui_.ImagesView_->rootContext ()->setContextProperty ("collectionModel",
 				QVariant::fromValue<QObject*> (model));
-		Ui_.ImagesView_->rootContext ()->setContextProperty ("listingMode", "false");
-		Ui_.CollectionsTree_->setModel (model);
+		HandleCollectionSelected ({});
 	}
 
 	void PhotosTab::handleRowChanged (const QModelIndex& index)
