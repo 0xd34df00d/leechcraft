@@ -38,7 +38,7 @@
 #include <QNetworkProxy>
 #include <QSettings>
 #include <util/util.h>
-#include <util/customcookiejar.h>
+#include <util/network/customcookiejar.h>
 #include <util/defaulthookproxy.h>
 #include "core.h"
 #include "networkdiskcache.h"

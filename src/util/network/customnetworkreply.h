@@ -30,7 +30,7 @@
 #pragma once
 
 #include <QNetworkReply>
-#include "utilconfig.h"
+#include <util/utilconfig.h>
 
 namespace LeechCraft
 {

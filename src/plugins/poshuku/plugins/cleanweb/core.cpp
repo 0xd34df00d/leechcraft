@@ -46,7 +46,7 @@
 #include <QMainWindow>
 #include <qwebview.h>
 #include <util/util.h>
-#include <util/customnetworkreply.h>
+#include <util/network/customnetworkreply.h>
 #include "xmlsettingsmanager.h"
 #include "flashonclickplugin.h"
 #include "flashonclickwhitelist.h"

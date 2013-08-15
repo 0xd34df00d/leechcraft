@@ -48,7 +48,7 @@
 #include <QMimeData>
 #include <QNetworkCookie>
 #include <util/util.h>
-#include <util/customcookiejar.h>
+#include <util/network/customcookiejar.h>
 #include <util/defaulthookproxy.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/iinfo.h>

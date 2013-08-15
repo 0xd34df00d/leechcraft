@@ -39,6 +39,9 @@ set (SRCS
 	models/mergemodel.cpp
 	models/modeliterator.cpp
 	models/treeitem.cpp
+	network/customcookiejar.cpp
+	network/customnetworkreply.cpp
+	network/socketerrorstrings.cpp
 	qml/colorthemeproxy.cpp
 	qml/widthiconprovider.cpp
 	qml/settableiconprovider.cpp
@@ -63,17 +66,14 @@ set (SRCS
 	xpc/util.cpp
 	util.cpp
 	dblock.cpp
-	customcookiejar.cpp
 	backendselector.cpp
 	structuresops.cpp
 	defaulthookproxy.cpp
 	basehookinterconnector.cpp
 	fileremoveguard.cpp
 	exceptions.cpp
-	customnetworkreply.cpp
 	resourceloader.cpp
 	notificationactionhandler.cpp
-	socketerrorstrings.cpp
 	sysinfo.cpp
 	passutils.cpp
 	queuemanager.cpp

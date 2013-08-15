@@ -31,7 +31,7 @@
 #define UTIL_CUSTOMCOOKIEJAR_H
 #include <QNetworkCookieJar>
 #include <QByteArray>
-#include "utilconfig.h"
+#include <util/utilconfig.h>
 
 namespace LeechCraft
 {

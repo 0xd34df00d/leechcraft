@@ -32,7 +32,7 @@
 #include <QNetworkReply>
 #include <QtDebug>
 #include <QWebView>
-#include <util/customcookiejar.h>
+#include <util/network/customcookiejar.h>
 
 namespace LeechCraft
 {

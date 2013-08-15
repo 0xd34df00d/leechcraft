@@ -30,7 +30,7 @@
 #include "clientconnectionerrormgr.h"
 #include <QTimer>
 #include <util/util.h>
-#include <util/socketerrorstrings.h>
+#include <util/network/socketerrorstrings.h>
 #include "clientconnection.h"
 #include "core.h"
 

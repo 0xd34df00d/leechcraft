@@ -30,7 +30,7 @@
 #ifndef UTIL_SOCKETERRORSTRINGS_H
 #define UTIL_SOCKETERRORSTRINGS_H
 #include <QAbstractSocket>
-#include "utilconfig.h"
+#include <util/utilconfig.h>
 
 class QString;
 
