@@ -24,6 +24,7 @@ set (SRCS
 	core.cpp
 	draftentrieswidget.cpp
 	entriesfilterproxymodel.cpp
+	exportwizard.cpp
 	pluginproxy.cpp
 	profiledialog.cpp
 	selecttargetdelegate.cpp
@@ -42,6 +43,7 @@ set (FORMS
 	blogentrieswidget.ui
 	blogiquewidget.ui
 	draftentrieswidget.ui
+	exportwizard.ui
 	profiledialog.ui
 	submittodialog.ui
 	updateentriesdialog.ui

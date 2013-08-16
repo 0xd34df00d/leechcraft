@@ -39,6 +39,7 @@
 #include "interfaces/blogique/iaccount.h"
 #include "interfaces/blogique/ibloggingplatformplugin.h"
 #include "interfaces/blogique/ibloggingplatform.h"
+#include "exportwizard.h"
 #include "pluginproxy.h"
 #include "storagemanager.h"
 #include "blogiquewidget.h"
@@ -423,7 +424,12 @@ namespace Blogique
 
 	void Core::exportBlog ()
 	{
-		
+		ExportWizard *wizard = new ExportWizard (Proxy_->GetRootWindowsManager ()->
+				GetPreferredWindow ());
+		wizard->setAttribute (Qt::WA_DeleteOnClose);
+		wizard->setWindowTitle (tr ("Export blog"));
+		wizard->show ();
+
 	}
 
 }

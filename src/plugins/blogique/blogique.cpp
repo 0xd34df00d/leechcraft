@@ -82,6 +82,13 @@ namespace Blogique
 				SIGNAL (changeTabName (QWidget*, QString)),
 				this,
 				SIGNAL (changeTabName (QWidget*, QString)));
+
+		ExportAction_ = new QAction (proxy->GetIcon ("document-export"),
+				tr ("Export blog"), this);
+		connect (ExportAction_,
+				SIGNAL (triggered ()),
+				&Core::Instance (),
+				SLOT (exportBlog ()));
 	}
 
 	void Plugin::SecondInit ()
@@ -150,18 +157,8 @@ namespace Blogique
 		switch (area)
 		{
 			case ActionsEmbedPlace::ToolsMenu:
-			{
-				QAction *exportExtion = new QAction (Core::Instance ()
-							.GetCoreProxy ()->GetIcon ("document-export"),
-						tr ("Export blog"), this);
-				connect (exportExtion,
-						SIGNAL (triggered ()),
-						&Core::Instance (),
-						SLOT (exportBlog ()));
-
-				result << exportExtion;
+				result << ExportAction_;
 				break;
-			}
 			default:
 				break;
 		}
