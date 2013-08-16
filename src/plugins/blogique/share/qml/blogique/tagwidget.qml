@@ -43,8 +43,7 @@ Rectangle
 	function updateFlickableHeight ()
 	{
 		var res = TagBalloonList.calculateContentHeight (flowElement.spacing, flowElement.height);
-		if (flickable.contentHeight <= res)
-			flickable.contentHeight = res;
+		flickable.contentHeight = res;
 	}
 
 	function setTags (tags)
@@ -200,6 +199,7 @@ Rectangle
 					if (running == false)
 					{
 						TagBalloonList.removeBalloon (rect)
+						updateFlickableHeight ();
 						tagRemoved (tag)
 					}
 			}
@@ -305,6 +305,8 @@ Rectangle
 					removeInputField ();
 
 				TagBalloonList.addBalloon (createBalloonObject (tag));
+				updateFlickableHeight ();
+				flickable.contentY = TagBalloonList.getOffset ();
 			}
 			else
 			{
