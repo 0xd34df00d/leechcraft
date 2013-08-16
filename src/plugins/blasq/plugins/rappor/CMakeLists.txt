@@ -14,13 +14,20 @@ set (RAPPOR_SRCS
 	rappor.cpp
 	vkservice.cpp
 	vkaccount.cpp
+	albumsettingsdialog.cpp
+	)
+set (RAPPOR_FORMS
+	albumsettingsdialog.ui
 	)
 CreateTrs("blasq_rappor" "en;ru_RU" RAPPOR_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("blasq_rappor" "en;ru_RU" "${RAPPOR_SRCS}" "${RAPPOR_FORMS}" "")
 
+QT4_WRAP_UI (RAPPOR_UIS_H ${RAPPOR_FORMS})
+
 add_library (leechcraft_blasq_rappor SHARED
 	${RAPPOR_COMPILED_TRANSLATIONS}
 	${RAPPOR_SRCS}
+	${RAPPOR_UIS_H}
 	)
 target_link_libraries (leechcraft_blasq_rappor
 	${QT_LIBRARIES}
