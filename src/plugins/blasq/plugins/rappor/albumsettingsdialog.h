@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QDialog>
+#include <interfaces/core/icoreproxy.h>
 #include "ui_albumsettingsdialog.h"
 
 namespace LeechCraft
@@ -44,7 +45,7 @@ namespace Rappor
 
 		Ui::AlbumSettingsDialog Ui_;
 	public:
-		AlbumSettingsDialog (const QString&, QWidget* = 0);
+		AlbumSettingsDialog (const QString&, ICoreProxy_ptr, QWidget* = 0);
 
 		QString GetName () const;
 		QString GetDesc () const;

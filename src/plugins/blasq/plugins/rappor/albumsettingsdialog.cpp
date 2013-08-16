@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "albumsettingsdialog.h"
+#include <util/gui/clearlineeditaddon.h>
 #include <QPushButton>
 
 namespace LeechCraft
@@ -36,11 +37,15 @@ namespace Blasq
 {
 namespace Rappor
 {
-	AlbumSettingsDialog::AlbumSettingsDialog (const QString& name, QWidget *parent)
+	AlbumSettingsDialog::AlbumSettingsDialog (const QString& name,
+			ICoreProxy_ptr proxy, QWidget *parent)
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
 		Ui_.Name_->setText (name);
+
+		new Util::ClearLineEditAddon (proxy, Ui_.Name_);
+		new Util::ClearLineEditAddon (proxy, Ui_.Desc_);
 
 		connect (Ui_.Name_,
 				SIGNAL (textChanged ()),
