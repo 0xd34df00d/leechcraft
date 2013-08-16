@@ -305,6 +305,8 @@ Rectangle
 					removeInputField ();
 
 				TagBalloonList.addBalloon (createBalloonObject (tag));
+				updateFlickableHeight ();
+				flickable.contentY = TagBalloonList.getOffset ();
 			}
 			else
 			{
