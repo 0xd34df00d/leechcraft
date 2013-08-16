@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>315</height>
+    <width>781</width>
+    <height>270</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,12 +24,19 @@
    <item row="0" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QLineEdit" name="AlbumName_"/>
+      <widget class="QLineEdit" name="AlbumName_">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="SelectAlbumButton_">
        <property name="text">
         <string>Select...</string>
+       </property>
+       <property name="icon">
+        <iconset theme="edit-select"/>
        </property>
       </widget>
      </item>
@@ -61,6 +68,9 @@
          <height>96</height>
         </size>
        </property>
+       <property name="viewMode">
+        <enum>QListView::IconMode</enum>
+       </property>
       </widget>
      </item>
      <item>
@@ -69,6 +79,9 @@
         <widget class="QPushButton" name="AddPhotoButton_">
          <property name="text">
           <string>Add...</string>
+         </property>
+         <property name="icon">
+          <iconset theme="list-add"/>
          </property>
         </widget>
        </item>

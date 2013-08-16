@@ -47,6 +47,19 @@ namespace Blasq
 		Ui_.PhotosView_->setModel (FilesModel_);
 	}
 
+	QModelIndex UploadPhotosDialog::GetSelectedCollection () const
+	{
+		return SelectedCollection_;
+	}
+
+	QStringList UploadPhotosDialog::GetSelectedFiles () const
+	{
+		QStringList result;
+		for (int i = 0, rc = FilesModel_->rowCount (); i < rc; ++i)
+			result << FilesModel_->index (i, 0).data (Role::Filepath).toString ();
+		return result;
+	}
+
 	void UploadPhotosDialog::on_SelectAlbumButton__released ()
 	{
 		SelectAlbumDialog dia (Acc_);
@@ -70,7 +83,8 @@ namespace Blasq
 			const auto& scaled = orig.scaled (Ui_.PhotosView_->gridSize () - QSize (32, 32),
 					Qt::KeepAspectRatio, Qt::SmoothTransformation);
 			auto item = new QStandardItem (scaled, QFileInfo (filename).fileName ());
-
+			item->setEditable (false);
+			item->setData (filename, Role::Filepath);
 			FilesModel_->appendRow (item);
 		}
 	}

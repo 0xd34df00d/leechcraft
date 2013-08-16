@@ -51,8 +51,16 @@ namespace Blasq
 
 		QStandardItemModel * const FilesModel_;
 		QModelIndex SelectedCollection_;
+
+		enum Role
+		{
+			Filepath = Qt::UserRole + 1
+		};
 	public:
 		UploadPhotosDialog (QObject *accObj, QWidget* = 0);
+
+		QModelIndex GetSelectedCollection () const;
+		QStringList GetSelectedFiles () const;
 	private slots:
 		void on_SelectAlbumButton__released ();
 		void on_AddPhotoButton__released ();
