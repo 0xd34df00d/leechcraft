@@ -32,6 +32,7 @@
 #include <memory>
 #include <QObject>
 #include <interfaces/blasq/iaccount.h>
+#include <interfaces/blasq/isupportuploads.h>
 #include <interfaces/core/icoreproxy.h>
 
 class QStandardItemModel;
@@ -57,9 +58,10 @@ namespace Rappor
 
 	class VkAccount : public QObject
 					, public IAccount
+					, public ISupportUploads
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blasq::IAccount)
+		Q_INTERFACES (LeechCraft::Blasq::IAccount LeechCraft::Blasq::ISupportUploads)
 
 		QString Name_;
 		const QByteArray ID_;
@@ -90,11 +92,15 @@ namespace Rappor
 		QByteArray GetID () const;
 
 		QAbstractItemModel* GetCollectionsModel () const;
-
 		void UpdateCollections ();
+
+		void CreateCollection (const QModelIndex& parent);
+		void UploadImages (const QModelIndex& collection, const QStringList& paths);
 	private slots:
 		void handleGotAlbums ();
 		void handleGotPhotos ();
+
+		void handleAlbumCreated ();
 
 		void handleAuthKey (const QString&);
 		void handleCookies (const QByteArray&);

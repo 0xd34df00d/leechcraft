@@ -37,6 +37,7 @@
 #include <util/svcauth/vkauthmanager.h>
 #include <util/queuemanager.h>
 #include "vkservice.h"
+#include "albumsettingsdialog.h"
 
 namespace LeechCraft
 {
@@ -170,6 +171,50 @@ namespace Rappor
 		AuthMgr_->GetAuthKey ();
 	}
 
+	void VkAccount::CreateCollection (const QModelIndex&)
+	{
+		AlbumSettingsDialog dia ({}, Proxy_);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		const struct
+		{
+			QString Name_;
+			QString Desc_;
+			int Priv_;
+			int CommentPriv_;
+		} params
+		{
+			dia.GetName (),
+			dia.GetDesc (),
+			dia.GetPrivacyLevel (),
+			dia.GetCommentsPrivacyLevel ()
+		};
+
+		CallQueue_.append ([this, params] (const QString& authKey) -> void
+			{
+				QUrl createUrl ("https://api.vk.com/method/photos.createAlbum.xml");
+				createUrl.addQueryItem ("title", params.Name_);
+				createUrl.addQueryItem ("description", params.Desc_);
+				createUrl.addQueryItem ("privacy", QString::number (params.Priv_));
+				createUrl.addQueryItem ("comment_privacy", QString::number (params.CommentPriv_));
+				createUrl.addQueryItem ("access_token", authKey);
+				RequestQueue_->Schedule ([this, createUrl]
+					{
+						connect (Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (createUrl)),
+								SIGNAL (finished ()),
+								this,
+								SLOT (handleAlbumCreated ()));
+					}, this);
+			});
+
+		AuthMgr_->GetAuthKey ();
+	}
+
+	void VkAccount::UploadImages (const QModelIndex& collection, const QStringList& paths)
+	{
+	}
+
 	void VkAccount::handleGotAlbums ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
@@ -201,6 +246,24 @@ namespace Rappor
 
 			albumElem = albumElem.nextSiblingElement ("album");
 		}
+	}
+
+	void VkAccount::handleAlbumCreated ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		const auto& data = reply->readAll ();
+		QDomDocument doc;
+		if (!doc.setContent (data))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot parse reply"
+					<< data;
+			return;
+		}
+
+		qDebug () << doc.toString ();
 	}
 
 	void VkAccount::handleGotPhotos ()
