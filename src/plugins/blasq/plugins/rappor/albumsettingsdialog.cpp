@@ -48,7 +48,7 @@ namespace Rappor
 		new Util::ClearLineEditAddon (proxy, Ui_.Desc_);
 
 		connect (Ui_.Name_,
-				SIGNAL (textChanged ()),
+				SIGNAL (textChanged (QString)),
 				this,
 				SLOT (validate ()));
 		validate ();
