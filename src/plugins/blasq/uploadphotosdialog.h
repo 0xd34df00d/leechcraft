@@ -50,9 +50,11 @@ namespace Blasq
 		IAccount * const Acc_;
 
 		QStandardItemModel * const FilesModel_;
+		QModelIndex SelectedCollection_;
 	public:
 		UploadPhotosDialog (QObject *accObj, QWidget* = 0);
 	private slots:
+		void on_SelectAlbumButton__released ();
 		void on_AddPhotoButton__released ();
 	};
 }

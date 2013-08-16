@@ -31,6 +31,7 @@
 #include <QStandardItemModel>
 #include <QFileDialog>
 #include "interfaces/blasq/iaccount.h"
+#include "selectalbumdialog.h"
 
 namespace LeechCraft
 {
@@ -44,6 +45,16 @@ namespace Blasq
 	{
 		Ui_.setupUi (this);
 		Ui_.PhotosView_->setModel (FilesModel_);
+	}
+
+	void UploadPhotosDialog::on_SelectAlbumButton__released ()
+	{
+		SelectAlbumDialog dia (Acc_);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		SelectedCollection_ = dia.GetSelectedCollection ();
+		Ui_.AlbumName_->setText (SelectedCollection_.data (CollectionRole::Name).toString ());
 	}
 
 	void UploadPhotosDialog::on_AddPhotoButton__released ()
