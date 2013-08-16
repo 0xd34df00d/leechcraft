@@ -215,6 +215,18 @@ namespace Rappor
 	{
 	}
 
+	void VkAccount::HandleAlbumElement (const QDomElement& albumElem)
+	{
+		const auto& title = albumElem.firstChildElement ("title").text ();
+		auto item = new QStandardItem (title);
+		item->setEditable (false);
+		item->setData (ItemType::Collection, CollectionRole::Type);
+		CollectionsModel_->appendRow (item);
+
+		const auto aid = albumElem.firstChildElement ("aid").text ().toInt ();
+		Albums_ [aid] = item;
+	}
+
 	void VkAccount::handleGotAlbums ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
@@ -235,15 +247,7 @@ namespace Rappor
 				.firstChildElement ("album");
 		while (!albumElem.isNull ())
 		{
-			const auto& title = albumElem.firstChildElement ("title").text ();
-			auto item = new QStandardItem (title);
-			item->setEditable (false);
-			item->setData (ItemType::Collection, CollectionRole::Type);
-			CollectionsModel_->appendRow (item);
-
-			const auto aid = albumElem.firstChildElement ("aid").text ().toInt ();
-			Albums_ [aid] = item;
-
+			HandleAlbumElement (albumElem);
 			albumElem = albumElem.nextSiblingElement ("album");
 		}
 	}
@@ -263,7 +267,7 @@ namespace Rappor
 			return;
 		}
 
-		qDebug () << doc.toString ();
+		HandleAlbumElement (doc.documentElement ().firstChildElement ("album"));
 	}
 
 	void VkAccount::handleGotPhotos ()

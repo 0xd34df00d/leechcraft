@@ -35,6 +35,7 @@
 #include <interfaces/blasq/isupportuploads.h>
 #include <interfaces/core/icoreproxy.h>
 
+class QDomElement;
 class QStandardItemModel;
 class QStandardItem;
 
@@ -96,6 +97,8 @@ namespace Rappor
 
 		void CreateCollection (const QModelIndex& parent);
 		void UploadImages (const QModelIndex& collection, const QStringList& paths);
+	private:
+		void HandleAlbumElement (const QDomElement&);
 	private slots:
 		void handleGotAlbums ();
 		void handleGotPhotos ();
