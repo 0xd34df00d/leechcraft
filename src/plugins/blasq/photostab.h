@@ -59,6 +59,7 @@ namespace Blasq
 		const ICoreProxy_ptr Proxy_;
 
 		QComboBox *AccountsBox_;
+		QAction *UploadAction_;
 		std::unique_ptr<QToolBar> Toolbar_;
 
 		IAccount *CurAcc_ = 0;
@@ -81,6 +82,8 @@ namespace Blasq
 	private slots:
 		void handleAccountChosen (int);
 		void handleRowChanged (const QModelIndex&);
+
+		void uploadPhotos ();
 
 		void handleImageSelected (const QString&);
 		void handleImageOpenRequested (const QVariant&);

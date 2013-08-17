@@ -42,8 +42,10 @@
 #include <util/util.h>
 #include <util/network/networkdiskcache.h>
 #include "interfaces/blasq/iaccount.h"
+#include "interfaces/blasq/isupportuploads.h"
 #include "accountsmanager.h"
 #include "xmlsettingsmanager.h"
+#include "uploadphotosdialog.h"
 
 Q_DECLARE_METATYPE (QModelIndex)
 
@@ -119,10 +121,20 @@ namespace Blasq
 				SIGNAL (activated (int)),
 				this,
 				SLOT (handleAccountChosen (int)));
+
+		UploadAction_ = new QAction (tr ("Upload photos..."), this);
+		UploadAction_->setProperty ("ActionIcon", "svn-commit");
+		connect (UploadAction_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (uploadPhotos ()));
+
 		if (AccountsBox_->count ())
 			handleAccountChosen (0);
 
 		Toolbar_->addWidget (AccountsBox_);
+		Toolbar_->addSeparator ();
+		Toolbar_->addAction (UploadAction_);
 
 		connect (Ui_.CollectionsTree_->selectionModel (),
 				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
@@ -250,6 +262,8 @@ namespace Blasq
 		Ui_.ImagesView_->rootContext ()->setContextProperty ("collectionModel",
 				QVariant::fromValue<QObject*> (model));
 		HandleCollectionSelected ({});
+
+		UploadAction_->setEnabled (qobject_cast<ISupportUploads*> (CurAccObj_));
 	}
 
 	void PhotosTab::handleRowChanged (const QModelIndex& index)
@@ -258,6 +272,16 @@ namespace Blasq
 			HandleImageSelected (index);
 		else
 			HandleCollectionSelected (index);
+	}
+
+	void PhotosTab::uploadPhotos ()
+	{
+		UploadPhotosDialog dia (CurAccObj_, this);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		auto isu = qobject_cast<ISupportUploads*> (CurAccObj_);
+		isu->UploadImages (dia.GetSelectedCollection (), dia.GetSelectedFiles ());
 	}
 
 	void PhotosTab::handleImageSelected (const QString& id)
