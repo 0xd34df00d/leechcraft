@@ -299,6 +299,74 @@ namespace Rappor
 
 	void VkAccount::handlePhotosUploadServer ()
 	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		const auto& data = reply->readAll ();
+		QDomDocument doc;
+		if (!doc.setContent (data))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot parse reply"
+					<< data;
+			return;
+		}
+
+		const auto& server = doc.documentElement ().firstChildElement ("upload_url").text ();
+		const auto& paths = PhotosUploadServer2Paths_.take (reply);
+
+		for (int reqIdx = 0; reqIdx <= paths.size () / 5 + 1; ++reqIdx)
+		{
+			auto multipart = new QHttpMultiPart (QHttpMultiPart::FormDataType);
+
+			bool added = false;
+			for (int fileIdx = 0; fileIdx < 5 && reqIdx * 5 + fileIdx < paths.size (); ++fileIdx)
+			{
+				const auto& path = paths.at (reqIdx * 5 + fileIdx);
+
+				auto file = new QFile (path, multipart);
+				file->open (QIODevice::ReadOnly);
+
+				QHttpPart filePart;
+
+				const auto& disp = QString ("form-data; name=\"file%1\"; filename=\"%2\"")
+						.arg (fileIdx + 1)
+						.arg (QFileInfo (path).fileName ());
+				filePart.setHeader (QNetworkRequest::ContentDispositionHeader, disp);
+
+				filePart.setBodyDevice (file);
+
+				multipart->append (filePart);
+
+				added = true;
+			}
+
+			if (!added)
+			{
+				delete multipart;
+				break;
+			}
+
+			const auto nam = Proxy_->GetNetworkAccessManager ();
+			auto reply = nam->post (QNetworkRequest (QUrl (server)), multipart);
+			connect (reply,
+					SIGNAL (finished ()),
+					this,
+					SLOT (handlePhotosUploaded ()));
+			connect (reply,
+					SIGNAL (uploadProgress (qint64, qint64)),
+					this,
+					SLOT (handlePhotosUploadProgress (qint64, qint64)));
+			multipart->setParent (reply);
+		}
+	}
+
+	void VkAccount::handlePhotosUploadProgress (qint64 done, qint64 total)
+	{
+	}
+
+	void VkAccount::handlePhotosUploaded ()
+	{
 	}
 
 	void VkAccount::handleGotPhotos ()
