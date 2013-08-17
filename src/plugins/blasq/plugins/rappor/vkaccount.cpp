@@ -244,9 +244,13 @@ namespace Rappor
 		auto item = new QStandardItem (title);
 		item->setEditable (false);
 		item->setData (ItemType::Collection, CollectionRole::Type);
+
+		const auto& aidStr = albumElem.firstChildElement ("aid").text ();
+		item->setData (aidStr, CollectionRole::ID);
+
 		CollectionsModel_->appendRow (item);
 
-		const auto aid = albumElem.firstChildElement ("aid").text ().toInt ();
+		const auto aid = aidStr.toInt ();
 		Albums_ [aid] = item;
 	}
 
