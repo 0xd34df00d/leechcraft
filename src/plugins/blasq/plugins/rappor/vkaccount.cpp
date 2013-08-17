@@ -255,6 +255,76 @@ namespace Rappor
 		Albums_ [aid] = item;
 	}
 
+	bool VkAccount::HandlePhotoElement (const QDomElement& photoElem)
+	{
+		auto mkItem = [&photoElem] () -> QStandardItem*
+		{
+			const auto& idText = photoElem.firstChildElement ("pid").text ();
+
+			auto item = new QStandardItem (idText);
+			item->setData (ItemType::Image, CollectionRole::Type);
+			item->setData (idText, CollectionRole::ID);
+			item->setData (idText, CollectionRole::Name);
+
+			const auto& sizesElem = photoElem.firstChildElement ("sizes");
+			auto getType = [&sizesElem] (const QString& type) -> QPair<QUrl, QSize>
+			{
+				auto sizeElem = sizesElem.firstChildElement ("size");
+				while (!sizeElem.isNull ())
+				{
+					if (sizeElem.firstChildElement ("type").text () != type)
+					{
+						sizeElem = sizeElem.nextSiblingElement ("size");
+						continue;
+					}
+
+					const auto& src = sizeElem.firstChildElement ("src").text ();
+					const auto width = sizeElem.firstChildElement ("width").text ().toInt ();
+					const auto height = sizeElem.firstChildElement ("height").text ().toInt ();
+
+					return { src, { width, height } };
+				}
+
+				return {};
+			};
+
+			const auto& small = getType ("m");
+			const auto& mid = getType ("x");
+			auto orig = getType ("w");
+			QStringList sizeCandidates { "z", "y", "x", "r" };
+			while (orig.second.width () <= 0)
+			{
+				if (sizeCandidates.isEmpty ())
+					return nullptr;
+
+				orig = getType (sizeCandidates.takeFirst ());
+			}
+
+			item->setData (small.first, CollectionRole::SmallThumb);
+			item->setData (small.second, CollectionRole::SmallThumbSize);
+
+			item->setData (mid.first, CollectionRole::MediumThumb);
+			item->setData (mid.second, CollectionRole::MediumThumbSize);
+
+			item->setData (orig.first, CollectionRole::Original);
+			item->setData (orig.second, CollectionRole::OriginalSize);
+
+			return item;
+		};
+
+		auto allItem = mkItem ();
+		if (!allItem)
+			return false;
+
+		AllPhotosItem_->appendRow (allItem);
+
+		const auto aid = photoElem.firstChildElement ("aid").text ().toInt ();
+		if (Albums_.contains (aid))
+			Albums_ [aid]->appendRow (mkItem ());
+
+		return true;
+	}
+
 	void VkAccount::handleGotAlbums ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
@@ -423,73 +493,11 @@ namespace Rappor
 				.firstChildElement ("photo");
 		while (!photoElem.isNull ())
 		{
-			auto mkItem = [&photoElem] () -> QStandardItem*
-			{
-				const auto& idText = photoElem.firstChildElement ("pid").text ();
-
-				auto item = new QStandardItem (idText);
-				item->setData (ItemType::Image, CollectionRole::Type);
-				item->setData (idText, CollectionRole::ID);
-				item->setData (idText, CollectionRole::Name);
-
-				const auto& sizesElem = photoElem.firstChildElement ("sizes");
-				auto getType = [&sizesElem] (const QString& type) -> QPair<QUrl, QSize>
-				{
-					auto sizeElem = sizesElem.firstChildElement ("size");
-					while (!sizeElem.isNull ())
-					{
-						if (sizeElem.firstChildElement ("type").text () != type)
-						{
-							sizeElem = sizeElem.nextSiblingElement ("size");
-							continue;
-						}
-
-						const auto& src = sizeElem.firstChildElement ("src").text ();
-						const auto width = sizeElem.firstChildElement ("width").text ().toInt ();
-						const auto height = sizeElem.firstChildElement ("height").text ().toInt ();
-
-						return { src, { width, height } };
-					}
-
-					return {};
-				};
-
-				const auto& small = getType ("m");
-				const auto& mid = getType ("x");
-				auto orig = getType ("w");
-				QStringList sizeCandidates { "z", "y", "x", "r" };
-				while (orig.second.width () <= 0)
-				{
-					if (sizeCandidates.isEmpty ())
-						return nullptr;
-
-					orig = getType (sizeCandidates.takeFirst ());
-				}
-
-				item->setData (small.first, CollectionRole::SmallThumb);
-				item->setData (small.second, CollectionRole::SmallThumbSize);
-
-				item->setData (mid.first, CollectionRole::MediumThumb);
-				item->setData (mid.second, CollectionRole::MediumThumbSize);
-
-				item->setData (orig.first, CollectionRole::Original);
-				item->setData (orig.second, CollectionRole::OriginalSize);
-
-				return item;
-			};
-
-			auto allItem = mkItem ();
-			if (!allItem)
+			if (!HandlePhotoElement (photoElem))
 			{
 				finishReached = true;
 				break;
 			}
-
-			AllPhotosItem_->appendRow (allItem);
-
-			const auto aid = photoElem.firstChildElement ("aid").text ().toInt ();
-			if (Albums_.contains (aid))
-				Albums_ [aid]->appendRow (mkItem ());
 
 			photoElem = photoElem.nextSiblingElement ("photo");
 		}
