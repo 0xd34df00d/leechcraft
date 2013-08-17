@@ -80,7 +80,7 @@ namespace Blasq
 		for (const auto& filename : filenames)
 		{
 			const QPixmap orig (filename);
-			const auto& scaled = orig.scaled (Ui_.PhotosView_->gridSize () - QSize (32, 32),
+			const auto& scaled = orig.scaled (Ui_.PhotosView_->iconSize (),
 					Qt::KeepAspectRatio, Qt::SmoothTransformation);
 			auto item = new QStandardItem (scaled, QFileInfo (filename).fileName ());
 			item->setEditable (false);
