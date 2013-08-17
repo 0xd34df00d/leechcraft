@@ -33,7 +33,10 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QDomDocument>
+#include <QHttpMultiPart>
 #include <QtDebug>
+#include <QFile>
+#include <QFileInfo>
 #include <util/svcauth/vkauthmanager.h>
 #include <util/queuemanager.h>
 #include "vkservice.h"
@@ -213,6 +216,26 @@ namespace Rappor
 
 	void VkAccount::UploadImages (const QModelIndex& collection, const QStringList& paths)
 	{
+		const auto& aidStr = collection.data (CollectionRole::ID).toString ();
+
+		CallQueue_.append ([this, paths, aidStr] (const QString& authKey) -> void
+			{
+				QUrl getUrl ("https://api.vk.com/method/photos.getUploadServer.xml");
+				getUrl.addQueryItem ("aid", aidStr);
+				getUrl.addQueryItem ("access_token", authKey);
+				RequestQueue_->Schedule ([this, getUrl, paths] () -> void
+					{
+						auto reply = Proxy_->GetNetworkAccessManager ()->
+								get (QNetworkRequest (getUrl));
+						connect (reply,
+								SIGNAL (finished ()),
+								this,
+								SLOT (handlePhotosUploadServer ()));
+						PhotosUploadServer2Paths_ [reply] = paths;
+					}, this);
+			});
+
+		AuthMgr_->GetAuthKey ();
 	}
 
 	void VkAccount::HandleAlbumElement (const QDomElement& albumElem)
@@ -268,6 +291,10 @@ namespace Rappor
 		}
 
 		HandleAlbumElement (doc.documentElement ().firstChildElement ("album"));
+	}
+
+	void VkAccount::handlePhotosUploadServer ()
+	{
 	}
 
 	void VkAccount::handleGotPhotos ()

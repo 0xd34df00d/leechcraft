@@ -35,6 +35,7 @@
 #include <interfaces/blasq/isupportuploads.h>
 #include <interfaces/core/icoreproxy.h>
 
+class QNetworkReply;
 class QDomElement;
 class QStandardItemModel;
 class QStandardItem;
@@ -79,6 +80,8 @@ namespace Rappor
 
 		Util::QueueManager *RequestQueue_;
 		QList<std::function<void (const QString&)>> CallQueue_;
+
+		QHash<QNetworkReply*, QStringList> PhotosUploadServer2Paths_;
 	public:
 		VkAccount (const QString&, VkService*, ICoreProxy_ptr,
 				const QByteArray& id = QByteArray (),
@@ -104,6 +107,9 @@ namespace Rappor
 		void handleGotPhotos ();
 
 		void handleAlbumCreated ();
+		void handlePhotosUploadServer ();
+		void handlePhotosUploadProgress (qint64, qint64);
+		void handlePhotosUploaded ();
 
 		void handleAuthKey (const QString&);
 		void handleCookies (const QByteArray&);
