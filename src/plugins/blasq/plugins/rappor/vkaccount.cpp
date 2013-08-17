@@ -37,6 +37,7 @@
 #include <QtDebug>
 #include <QFile>
 #include <QFileInfo>
+#include <qjson/parser.h>
 #include <util/svcauth/vkauthmanager.h>
 #include <util/queuemanager.h>
 #include "vkservice.h"
@@ -367,6 +368,37 @@ namespace Rappor
 
 	void VkAccount::handlePhotosUploaded ()
 	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		const auto& data = reply->readAll ();
+		const auto& parsed = QJson::Parser ().parse (data).toMap ();
+
+		CallQueue_.append ([this, parsed] (const QString& authKey) -> void
+			{
+				QUrl saveUrl ("https://api.vk.com/method/photos.save.xml");
+				auto add = [&saveUrl, &parsed] (const QString& name)
+					{ saveUrl.addQueryItem (name, parsed [name].toString ()); };
+				add ("server");
+				add ("photos_list");
+				add ("aid");
+				add ("hash");
+				saveUrl.addQueryItem ("access_token", authKey);
+				RequestQueue_->Schedule ([this, saveUrl]
+					{
+						connect (Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (saveUrl)),
+								SIGNAL (finished ()),
+								this,
+								SLOT (handlePhotosSaved ()));
+					}, this);
+			});
+		AuthMgr_->GetAuthKey ();
+	}
+
+	void VkAccount::handlePhotosSaved ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
 	}
 
 	void VkAccount::handleGotPhotos ()
