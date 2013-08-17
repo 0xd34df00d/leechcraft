@@ -469,6 +469,25 @@ namespace Rappor
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
+
+		const auto& data = reply->readAll ();
+		QDomDocument doc;
+		if (!doc.setContent (data))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot parse reply"
+					<< data;
+			return;
+		}
+
+		auto photoElem = doc
+				.documentElement ()
+				.firstChildElement ("photo");
+		while (!photoElem.isNull ())
+		{
+			HandlePhotoElement (photoElem);
+			photoElem = photoElem.nextSiblingElement ("photo");
+		}
 	}
 
 	void VkAccount::handleGotPhotos ()
