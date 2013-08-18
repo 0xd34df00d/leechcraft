@@ -98,6 +98,7 @@ namespace Rappor
 		QAbstractItemModel* GetCollectionsModel () const;
 		void UpdateCollections ();
 
+		bool HasUploadFeature (Feature) const;
 		void CreateCollection (const QModelIndex& parent);
 		void UploadImages (const QModelIndex& collection, const QStringList& paths);
 	private:

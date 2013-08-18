@@ -175,6 +175,17 @@ namespace Rappor
 		AuthMgr_->GetAuthKey ();
 	}
 
+	bool VkAccount::HasUploadFeature (Feature feature) const
+	{
+		switch (feature)
+		{
+		case Feature::RequiresAlbumOnUpload:
+			return true;
+		}
+
+		return false;
+	}
+
 	void VkAccount::CreateCollection (const QModelIndex&)
 	{
 		AlbumSettingsDialog dia ({}, Proxy_);
@@ -434,6 +445,7 @@ namespace Rappor
 
 	void VkAccount::handlePhotosUploadProgress (qint64 done, qint64 total)
 	{
+		qDebug () << "upload" << done << total;
 	}
 
 	void VkAccount::handlePhotosUploaded ()

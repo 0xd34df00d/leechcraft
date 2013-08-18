@@ -40,7 +40,21 @@ namespace Blasq
 	class ISupportUploads
 	{
 	public:
+		/** @brief Describes various pecularities of upload services.
+		 */
+		enum class Feature
+		{
+			/** @brief Requires an album to be selected on upload.
+			 *
+			 * Lacking this feature means that photos can be uploaded
+			 * without choosing the album to upload to.
+			 */
+			RequiresAlbumOnUpload
+		};
+
 		virtual ~ISupportUploads () {}
+
+		virtual bool HasUploadFeature (Feature) const = 0;
 
 		virtual void CreateCollection (const QModelIndex& parent) = 0;
 
