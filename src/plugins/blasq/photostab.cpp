@@ -34,6 +34,7 @@
 #include <QDeclarativeContext>
 #include <QDeclarativeNetworkAccessManagerFactory>
 #include <QGraphicsObject>
+#include <QClipboard>
 #include <QtDebug>
 #include <interfaces/core/ientitymanager.h>
 #include <util/qml/colorthemeproxy.h>
@@ -114,6 +115,10 @@ namespace Blasq
 				SIGNAL (imageDownloadRequested (QVariant)),
 				this,
 				SLOT (handleImageDownloadRequested (QVariant)));
+		connect (rootObj,
+				SIGNAL (copyURLRequested (QVariant)),
+				this,
+				SLOT (handleCopyURLRequested (QVariant)));
 
 		AccountsBox_->setModel (AccMgr_->GetModel ());
 		AccountsBox_->setModelColumn (AccountsManager::Column::Name);
@@ -317,6 +322,21 @@ namespace Blasq
 
 		const auto& entity = Util::MakeEntity (url, QString (), FromUserInitiated | OnlyDownload);
 		Proxy_->GetEntityManager ()->HandleEntity (entity);
+	}
+
+	void PhotosTab::handleCopyURLRequested (const QVariant& var)
+	{
+		const auto& url = var.toUrl ();
+		if (!url.isValid ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid URL"
+					<< var;
+			return;
+		}
+
+		auto cb = qApp->clipboard ();
+		cb->setText (url.toString (), QClipboard::Clipboard);
 	}
 }
 }

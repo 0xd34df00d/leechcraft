@@ -26,6 +26,7 @@ Rectangle {
     signal imageSelected(string id)
     signal imageOpenRequested(variant url)
     signal imageDownloadRequested(variant url)
+    signal copyURLRequested(variant url)
 
     property string currentImageId
 
@@ -180,7 +181,8 @@ Rectangle {
 
                 property bool isHovered: itemMouseArea.containsMouse ||
                             openInBrowserAction.isHovered ||
-                            downloadOriginalAction.isHovered
+                            downloadOriginalAction.isHovered ||
+                            copyURLAction.isHovered
 
                 MouseArea {
                     id: itemMouseArea
@@ -207,6 +209,7 @@ Rectangle {
                     Behavior on opacity { PropertyAnimation {} }
 
                     actionIconURL: "image://ThemeIcons/go-jump-locationbar"
+                    textTooltip: qsTr("Open in browser")
                     onTriggered: rootRect.imageOpenRequested(original)
                 }
 
@@ -222,7 +225,24 @@ Rectangle {
                     Behavior on opacity { PropertyAnimation {} }
 
                     actionIconURL: "image://ThemeIcons/download"
+                    textTooltip: qsTr("Download the original image")
                     onTriggered: rootRect.imageDownloadRequested(original)
+                }
+
+                ActionButton {
+                    id: copyURLAction
+
+                    anchors.top: downloadOriginalAction.bottom
+                    anchors.right: parent.right
+                    width: 24
+                    height: width
+
+                    opacity: parent.isHovered ? 1 : 0
+                    Behavior on opacity { PropertyAnimation {} }
+
+                    actionIconURL: "image://ThemeIcons/edit-copy"
+                    textTooltip: qsTr("Copy image URL")
+                    onTriggered: rootRect.copyURLRequested(original)
                 }
             }
         }
