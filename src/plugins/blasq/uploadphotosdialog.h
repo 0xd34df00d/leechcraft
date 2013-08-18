@@ -63,7 +63,9 @@ namespace Blasq
 		QStringList GetSelectedFiles () const;
 	private slots:
 		void on_SelectAlbumButton__released ();
+
 		void on_AddPhotoButton__released ();
+		void on_RemovePhotoButton__released ();
 	};
 }
 }

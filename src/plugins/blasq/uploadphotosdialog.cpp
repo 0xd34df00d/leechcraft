@@ -88,5 +88,16 @@ namespace Blasq
 			FilesModel_->appendRow (item);
 		}
 	}
+
+	void UploadPhotosDialog::on_RemovePhotoButton__released ()
+	{
+		const auto& rows = Ui_.PhotosView_->selectionModel ()->selectedRows ();
+		QList<QStandardItem*> items;
+		for (const auto& idx : rows)
+			items << FilesModel_->itemFromIndex (idx);
+
+		for (auto item : items)
+			FilesModel_->removeRow (item->row ());
+	}
 }
 }
