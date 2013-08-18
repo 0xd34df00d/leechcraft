@@ -23,7 +23,6 @@ Rectangle {
     signal browseInfo(string artist)
 
     property alias model: similarView.model
-    property string similarLabelPosition: "right"
 
     Image {
         id: fullSizeArtistImg
@@ -213,12 +212,10 @@ Rectangle {
                     id: similarityLabel
                     text: similarity
                     color: colorProxy.color_TextBox_Aux1TextColor
-                    anchors.top: similarLabelPosition == "right" ? parent.top : artistNameLabel.bottom
+                    anchors.top: artistNameLabel.bottom
                     anchors.topMargin: 2
-                    anchors.right: similarLabelPosition == "right" ? parent.right : undefined
-                    anchors.rightMargin: similarLabelPosition == "right" ? 2 : 0
-                    anchors.left: similarLabelPosition == "right" ? undefined : artistImageThumb.right
-                    anchors.leftMargin: similarLabelPosition == "right" ? 0 : 5
+                    anchors.left: artistImageThumb.right
+                    anchors.leftMargin: 5
                 }
 
                 Text {
@@ -227,7 +224,7 @@ Rectangle {
                     color: colorProxy.color_TextBox_Aux2TextColor
                     anchors.leftMargin: 5
                     anchors.left: artistImageThumb.right
-                    anchors.top: similarLabelPosition == "right" ? artistNameLabel.bottom : similarityLabel.bottom
+                    anchors.top: similarityLabel.bottom
                     anchors.topMargin: 0
                     anchors.right: parent.right
                     anchors.rightMargin: 5
