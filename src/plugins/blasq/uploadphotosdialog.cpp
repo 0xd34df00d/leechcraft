@@ -31,6 +31,7 @@
 #include <QStandardItemModel>
 #include <QFileDialog>
 #include "interfaces/blasq/iaccount.h"
+#include "interfaces/blasq/isupportuploads.h"
 #include "selectalbumdialog.h"
 
 namespace LeechCraft
@@ -41,10 +42,13 @@ namespace Blasq
 	: QDialog (parent)
 	, AccObj_ (accObj)
 	, Acc_ (qobject_cast<IAccount*> (accObj))
+	, ISU_ (qobject_cast<ISupportUploads*> (accObj))
 	, FilesModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
 		Ui_.PhotosView_->setModel (FilesModel_);
+
+		validate ();
 	}
 
 	QModelIndex UploadPhotosDialog::GetSelectedCollection () const
@@ -68,6 +72,8 @@ namespace Blasq
 
 		SelectedCollection_ = dia.GetSelectedCollection ();
 		Ui_.AlbumName_->setText (SelectedCollection_.data (CollectionRole::Name).toString ());
+
+		validate ();
 	}
 
 	void UploadPhotosDialog::on_AddPhotoButton__released ()
@@ -87,6 +93,8 @@ namespace Blasq
 			item->setData (filename, Role::Filepath);
 			FilesModel_->appendRow (item);
 		}
+
+		validate ();
 	}
 
 	void UploadPhotosDialog::on_RemovePhotoButton__released ()
@@ -98,6 +106,22 @@ namespace Blasq
 
 		for (auto item : items)
 			FilesModel_->removeRow (item->row ());
+
+		validate ();
+	}
+
+	void UploadPhotosDialog::validate ()
+	{
+		bool valid = true;
+
+		if (!FilesModel_->rowCount ())
+			valid = false;
+
+		if (ISU_->HasUploadFeature (ISupportUploads::Feature::RequiresAlbumOnUpload) &&
+				!SelectedCollection_.isValid ())
+			valid = false;
+
+		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (valid);
 	}
 }
 }

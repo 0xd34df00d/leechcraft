@@ -39,6 +39,7 @@ namespace LeechCraft
 namespace Blasq
 {
 	class IAccount;
+	class ISupportUploads;
 
 	class UploadPhotosDialog : public QDialog
 	{
@@ -48,6 +49,7 @@ namespace Blasq
 
 		QObject * const AccObj_;
 		IAccount * const Acc_;
+		ISupportUploads * const ISU_;
 
 		QStandardItemModel * const FilesModel_;
 		QModelIndex SelectedCollection_;
@@ -66,6 +68,8 @@ namespace Blasq
 
 		void on_AddPhotoButton__released ();
 		void on_RemovePhotoButton__released ();
+
+		void validate ();
 	};
 }
 }
