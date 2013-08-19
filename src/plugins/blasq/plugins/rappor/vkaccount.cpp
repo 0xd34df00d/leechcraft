@@ -266,7 +266,7 @@ namespace Rappor
 		Albums_ [aid] = item;
 	}
 
-	bool VkAccount::HandlePhotoElement (const QDomElement& photoElem)
+	bool VkAccount::HandlePhotoElement (const QDomElement& photoElem, bool atEnd)
 	{
 		auto mkItem = [&photoElem] () -> QStandardItem*
 		{
@@ -327,11 +327,20 @@ namespace Rappor
 		if (!allItem)
 			return false;
 
-		AllPhotosItem_->appendRow (allItem);
+		if (atEnd)
+			AllPhotosItem_->appendRow (allItem);
+		else
+			AllPhotosItem_->insertRow (0, allItem);
 
 		const auto aid = photoElem.firstChildElement ("aid").text ().toInt ();
 		if (Albums_.contains (aid))
-			Albums_ [aid]->appendRow (mkItem ());
+		{
+			auto album = Albums_ [aid];
+			if (atEnd)
+				album->appendRow (mkItem ());
+			else
+				album->insertRow (0, mkItem ());
+		}
 
 		return true;
 	}
