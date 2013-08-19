@@ -285,6 +285,13 @@ namespace Blasq
 	void PhotosTab::uploadPhotos ()
 	{
 		UploadPhotosDialog dia (CurAccObj_, this);
+
+		auto curSelectedIdx = Ui_.CollectionsTree_->currentIndex ();
+		if (curSelectedIdx.data (CollectionRole::Type).toInt () == ItemType::Image)
+			curSelectedIdx = curSelectedIdx.parent ();
+		if (curSelectedIdx.data (CollectionRole::Type).toInt () == ItemType::Collection)
+			dia.SetSelectedCollection (curSelectedIdx);
+
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
