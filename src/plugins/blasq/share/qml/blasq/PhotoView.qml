@@ -236,6 +236,7 @@ Rectangle {
                 Column {
                     anchors.top: parent.top
                     anchors.right: parent.right
+                    visible: itemType == Blasq.ImageItem
 
                     ActionButton {
                         id: openInBrowserAction
