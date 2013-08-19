@@ -501,12 +501,56 @@ namespace Rappor
 			return;
 		}
 
+		QStringList ids;
 		auto photoElem = doc
 				.documentElement ()
 				.firstChildElement ("photo");
 		while (!photoElem.isNull ())
 		{
-			HandlePhotoElement (photoElem);
+			ids << QString ("%1_%2")
+					.arg (photoElem.firstChildElement ("owner_id").text ())
+					.arg (photoElem.firstChildElement ("pid").text ());
+			photoElem = photoElem.nextSiblingElement ("photo");
+		}
+
+		CallQueue_.append ([this, ids] (const QString& authKey) -> void
+			{
+				QUrl getUrl ("https://api.vk.com/method/photos.getById.xml");
+				getUrl.addQueryItem ("photos", ids.join (","));
+				getUrl.addQueryItem ("photo_sizes", "1");
+				getUrl.addQueryItem ("access_token", authKey);
+				RequestQueue_->Schedule ([this, getUrl]
+					{
+						connect (Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (getUrl)),
+								SIGNAL (finished ()),
+								this,
+								SLOT (handlePhotosInfosFetched ()));
+					}, this);
+			});
+		AuthMgr_->GetAuthKey ();
+	}
+
+	void VkAccount::handlePhotosInfosFetched ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		const auto& data = reply->readAll ();
+		QDomDocument doc;
+		if (!doc.setContent (data))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot parse reply"
+					<< data;
+			return;
+		}
+
+		auto photoElem = doc
+				.documentElement ()
+				.firstChildElement ("photo");
+		while (!photoElem.isNull ())
+		{
+			HandlePhotoElement (photoElem, false);
 			photoElem = photoElem.nextSiblingElement ("photo");
 		}
 	}

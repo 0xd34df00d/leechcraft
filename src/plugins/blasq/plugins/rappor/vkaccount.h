@@ -113,6 +113,7 @@ namespace Rappor
 		void handlePhotosUploadProgress (qint64, qint64);
 		void handlePhotosUploaded ();
 		void handlePhotosSaved ();
+		void handlePhotosInfosFetched ();
 
 		void handleAuthKey (const QString&);
 		void handleCookies (const QByteArray&);
