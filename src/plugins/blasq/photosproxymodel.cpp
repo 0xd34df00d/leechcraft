@@ -63,7 +63,12 @@ namespace Blasq
 
 		QVariantList result;
 		for (int i = 0; i < std::min (ItemsInCollage, sourceModel ()->rowCount (srcIdx)); ++i)
-			result << sourceModel ()->index (i, 0, srcIdx).data (CollectionRole::SmallThumb);
+		{
+			const auto& photoIdx = sourceModel ()->index (i, 0, srcIdx);
+			const auto& url = photoIdx.data (CollectionRole::SmallThumb);
+			result << url;
+		}
+		std::reverse (result.begin (), result.end ());
 		return result;
 	}
 
