@@ -85,7 +85,7 @@ namespace Blasq
 		const auto& filenames = QFileDialog::getOpenFileNames (this,
 				tr ("Select photos to upload"),
 				QDir::homePath (),
-				tr ("Photos (*.jpg);;Images (*.jpg *.png *.gif);;All files (*.*)"));
+				tr ("Images (*.jpg *.png *.gif);;All files (*.*)"));
 
 		for (const auto& filename : filenames)
 		{
