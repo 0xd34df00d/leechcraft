@@ -855,6 +855,8 @@ namespace Xoox
 		logger->setLogFilePath (path);
 		logger->setMessageTypes (QXmppLogger::AnyMessage);
 		Client_->setLogger (logger);
+
+		SetSignaledLog (false);
 	}
 
 	void ClientConnection::Split (const QString& jid,
