@@ -47,6 +47,7 @@
 #include "accountsmanager.h"
 #include "xmlsettingsmanager.h"
 #include "uploadphotosdialog.h"
+#include "photosproxymodel.h"
 
 Q_DECLARE_METATYPE (QModelIndex)
 
@@ -79,6 +80,7 @@ namespace Blasq
 	, Plugin_ (plugin)
 	, AccMgr_ (accMgr)
 	, Proxy_ (proxy)
+	, ProxyModel_ (new NamedModel<PhotosProxyModel> (this))
 	, AccountsBox_ (new QComboBox)
 	, Toolbar_ (new QToolBar)
 	{
@@ -89,7 +91,8 @@ namespace Blasq
 		auto rootCtx = Ui_.ImagesView_->rootContext ();
 		rootCtx->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
-		rootCtx->setContextProperty ("collectionModel", QStringList ());
+		rootCtx->setContextProperty ("collectionModel",
+				QVariant::fromValue<QObject*> (ProxyModel_));
 		rootCtx->setContextProperty ("listingMode", "false");
 		rootCtx->setContextProperty ("collRootIndex", QVariant::fromValue (QModelIndex ()));
 
@@ -263,9 +266,9 @@ namespace Blasq
 				this,
 				SLOT (handleRowChanged (QModelIndex)));
 
+		ProxyModel_->setSourceModel (model);
+
 		Ui_.ImagesView_->rootContext ()->setContextProperty ("collRootIndex", QVariant::fromValue (QModelIndex ()));
-		Ui_.ImagesView_->rootContext ()->setContextProperty ("collectionModel",
-				QVariant::fromValue<QObject*> (model));
 		HandleCollectionSelected ({});
 
 		UploadAction_->setEnabled (qobject_cast<ISupportUploads*> (CurAccObj_));
@@ -274,9 +277,9 @@ namespace Blasq
 	void PhotosTab::handleRowChanged (const QModelIndex& index)
 	{
 		if (index.data (CollectionRole::Type).toInt () == ItemType::Image)
-			HandleImageSelected (index);
+			HandleImageSelected (ProxyModel_->mapFromSource (index));
 		else
-			HandleCollectionSelected (index);
+			HandleCollectionSelected (ProxyModel_->mapFromSource (index));
 	}
 
 	void PhotosTab::uploadPhotos ()

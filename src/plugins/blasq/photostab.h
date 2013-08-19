@@ -42,6 +42,7 @@ namespace LeechCraft
 namespace Blasq
 {
 	class AccountsManager;
+	class PhotosProxyModel;
 	class IAccount;
 
 	class PhotosTab : public QWidget
@@ -57,6 +58,8 @@ namespace Blasq
 
 		AccountsManager * const AccMgr_;
 		const ICoreProxy_ptr Proxy_;
+
+		PhotosProxyModel * const ProxyModel_;
 
 		QComboBox *AccountsBox_;
 		QAction *UploadAction_;
