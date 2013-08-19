@@ -56,6 +56,13 @@ namespace Blasq
 		return SelectedCollection_;
 	}
 
+	void UploadPhotosDialog::SetSelectedCollection (const QModelIndex& index)
+	{
+		SelectedCollection_ = index;
+		Ui_.AlbumName_->setText (index.data (CollectionRole::Name).toString ());
+		validate ();
+	}
+
 	QStringList UploadPhotosDialog::GetSelectedFiles () const
 	{
 		QStringList result;
@@ -70,10 +77,7 @@ namespace Blasq
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
-		SelectedCollection_ = dia.GetSelectedCollection ();
-		Ui_.AlbumName_->setText (SelectedCollection_.data (CollectionRole::Name).toString ());
-
-		validate ();
+		SetSelectedCollection (dia.GetSelectedCollection ());
 	}
 
 	void UploadPhotosDialog::on_AddPhotoButton__released ()
