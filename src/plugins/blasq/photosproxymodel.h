@@ -29,17 +29,22 @@
 
 #pragma once
 
-#include <QSortFilterProxyModel>
+#include <QIdentityProxyModel>
 
 namespace LeechCraft
 {
 namespace Blasq
 {
-	class PhotosProxyModel : public QSortFilterProxyModel
+	class PhotosProxyModel : public QIdentityProxyModel
 	{
 		Q_OBJECT
 	public:
 		PhotosProxyModel (QObject* = 0);
+
+		QVariant data (const QModelIndex&, int) const;
+		void setSourceModel (QAbstractItemModel* sourceModel) override;
+	private slots:
+		void handleRowsInserted (const QModelIndex&, int, int);
 	};
 }
 }

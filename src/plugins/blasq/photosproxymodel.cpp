@@ -28,15 +28,68 @@
  **********************************************************************/
 
 #include "photosproxymodel.h"
+#include <QStringList>
+#include <QUrl>
+#include <QtDebug>
+#include "interfaces/blasq/collection.h"
 
 namespace LeechCraft
 {
 namespace Blasq
 {
-	PhotosProxyModel::PhotosProxyModel (QObject *parent)
-	: QSortFilterProxyModel (parent)
+	namespace
 	{
-		setDynamicSortFilter (true);
+		const int ItemsInCollage = 3;
+	}
+
+	PhotosProxyModel::PhotosProxyModel (QObject *parent)
+	: QIdentityProxyModel (parent)
+	{
+	}
+
+	QVariant PhotosProxyModel::data (const QModelIndex& index, int role) const
+	{
+		const auto& srcIdx = mapToSource (index);
+		const auto& srcData = srcIdx.data (role);
+		if (!srcData.isNull ())
+			return srcData;
+
+		if (role != CollectionRole::SmallThumb)
+			return srcData;
+
+		const auto type = srcIdx.data (CollectionRole::Type).toInt ();
+		if (type == ItemType::Image)
+			return srcData;
+
+		QVariantList result;
+		for (int i = 0; i < std::min (ItemsInCollage, sourceModel ()->rowCount (srcIdx)); ++i)
+			result << sourceModel ()->index (i, 0, srcIdx).data (CollectionRole::SmallThumb);
+		return result;
+	}
+
+	void PhotosProxyModel::setSourceModel (QAbstractItemModel *model)
+	{
+		if (sourceModel ())
+			disconnect (sourceModel (),
+					SIGNAL (rowsInserted (QModelIndex, int, int)),
+					this,
+					SLOT (handleRowsInserted (QModelIndex, int, int)));
+
+		QIdentityProxyModel::setSourceModel (model);
+
+		if (model)
+			connect (model,
+					SIGNAL (rowsInserted (QModelIndex, int, int)),
+					this,
+					SLOT (handleRowsInserted (QModelIndex, int, int)));
+	}
+
+	void PhotosProxyModel::handleRowsInserted (const QModelIndex& parent, int from, int)
+	{
+		if (from >= ItemsInCollage)
+			return;
+
+		emit dataChanged (parent, parent);
 	}
 }
 }
