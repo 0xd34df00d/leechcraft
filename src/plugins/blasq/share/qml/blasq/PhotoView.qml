@@ -233,52 +233,51 @@ Rectangle {
                     }
                 }
 
-                ActionButton {
-                    id: openInBrowserAction
-
+                Column {
                     anchors.top: parent.top
                     anchors.right: parent.right
-                    width: 24
-                    height: width
 
-                    opacity: parent.isHovered ? 1 : 0
-                    Behavior on opacity { PropertyAnimation {} }
+                    ActionButton {
+                        id: openInBrowserAction
 
-                    actionIconURL: "image://ThemeIcons/go-jump-locationbar"
-                    textTooltip: qsTr("Open in browser")
-                    onTriggered: rootRect.imageOpenRequested(original)
-                }
+                        width: 24
+                        height: width
 
-                ActionButton {
-                    id: downloadOriginalAction
+                        opacity: itemRect.isHovered ? 1 : 0
+                        Behavior on opacity { PropertyAnimation {} }
 
-                    anchors.top: openInBrowserAction.bottom
-                    anchors.right: parent.right
-                    width: 24
-                    height: width
+                        actionIconURL: "image://ThemeIcons/go-jump-locationbar"
+                        textTooltip: qsTr("Open in browser")
+                        onTriggered: rootRect.imageOpenRequested(original)
+                    }
 
-                    opacity: parent.isHovered ? 1 : 0
-                    Behavior on opacity { PropertyAnimation {} }
+                    ActionButton {
+                        id: downloadOriginalAction
 
-                    actionIconURL: "image://ThemeIcons/download"
-                    textTooltip: qsTr("Download the original image")
-                    onTriggered: rootRect.imageDownloadRequested(original)
-                }
+                        width: 24
+                        height: width
 
-                ActionButton {
-                    id: copyURLAction
+                        opacity: itemRect.isHovered ? 1 : 0
+                        Behavior on opacity { PropertyAnimation {} }
 
-                    anchors.top: downloadOriginalAction.bottom
-                    anchors.right: parent.right
-                    width: 24
-                    height: width
+                        actionIconURL: "image://ThemeIcons/download"
+                        textTooltip: qsTr("Download the original image")
+                        onTriggered: rootRect.imageDownloadRequested(original)
+                    }
 
-                    opacity: parent.isHovered ? 1 : 0
-                    Behavior on opacity { PropertyAnimation {} }
+                    ActionButton {
+                        id: copyURLAction
 
-                    actionIconURL: "image://ThemeIcons/edit-copy"
-                    textTooltip: qsTr("Copy image URL")
-                    onTriggered: rootRect.copyURLRequested(original)
+                        width: 24
+                        height: width
+
+                        opacity: itemRect.isHovered ? 1 : 0
+                        Behavior on opacity { PropertyAnimation {} }
+
+                        actionIconURL: "image://ThemeIcons/edit-copy"
+                        textTooltip: qsTr("Copy image URL")
+                        onTriggered: rootRect.copyURLRequested(original)
+                    }
                 }
             }
         }
