@@ -30,9 +30,11 @@
 #include "vlc.h"
 #include <QIcon>
 #include <QMainWindow>
+#include <QDebug>
 #include <boost/graph/graph_concepts.hpp>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
+
 
 namespace LeechCraft
 {
@@ -80,29 +82,27 @@ namespace vlc
 	}
 	
 	void Plugin::createWindow() {
-		QMessageBox::about(Proxy_->GetRootWindowsManager()->GetMainWindow(0), tr("Hello title"), tr("Hello text"));
+		qDebug() << "vlc::createWindow";
+		//QMessageBox::about(Proxy_->GetRootWindowsManager()->GetMainWindow(0), tr("Hello title"), tr("Hello text"));
 	}
 	
-	void TabOpenRequested (const QByteArray& tabClass) {
+	void Plugin::TabOpenRequested (const QByteArray& tabClass) {
+		qDebug() << "vlc serious message";
+		QWidget *widget = new QWidget();
+		emit addNewTab (tr ("Hello, tab"), widget);
 	}
 	
-	void addNewTab (const QString& name, QWidget  *tabContents) {
-	}
-	
-	void removeTab (QWidget *tabContents) {
-	}
-	
-	void changeTabName (QWidget *tabContents, const QString& name) {
-	}
-	
-	void changeTabIcon (QWidget *tabContents, const QIcon& icon) {
-	}
-	
-	void statusBarChanged (QWidget *tabContents, const QString& text) {
-	}
-	
-	LeechCraft::TabClasses_t GetTabClasses () {
-		
+	LeechCraft::TabClasses_t Plugin::GetTabClasses () const {
+		TabClasses_t res;
+		TabClassInfo main;
+		main.Description_ = "Main tab for VLC plugin";
+		main.Priority_ = 1;
+		main.Icon_ = QIcon();
+		main.VisibleName_ = "Name of main tab of VLC plugin";
+		main.Features_ = TabFeature::TFByDefault | TabFeature::TFOpenableByRequest | TabFeature::TFSingle;
+		main.TabClass_ = "org.LeechCraft.vlc";
+		res.append(main);
+		return res;
 	}
 }
 }

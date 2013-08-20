@@ -57,19 +57,20 @@ namespace vlc
 		
 		void TabOpenRequested (const QByteArray&);
 		LeechCraft::TabClasses_t GetTabClasses () const;
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab(QWidget*);
-		
+				
 	private:
 		ICoreProxy_ptr Proxy_;
 		QAction *showWindow_;
 		QList<QAction *> allActionsThatIKnow_;
 	private slots:
 		void createWindow();
+	signals:
+		void addNewTab (const QString&, QWidget*);
+		void removeTab (QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void statusBarChanged (QWidget*, const QString&);
+		void raiseTab(QWidget*);
 	};
 }
 }
