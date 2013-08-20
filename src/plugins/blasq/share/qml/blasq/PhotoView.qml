@@ -157,7 +157,7 @@ Rectangle {
                 Component {
                     id: photoImageComponent
                     Image {
-                        source: smallThumb
+                        source: width > smallThumbSize.width ? mediumThumb : smallThumb
                         smooth: true
                         fillMode: Image.PreserveAspectFit
                     }
