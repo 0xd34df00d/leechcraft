@@ -58,7 +58,9 @@ namespace Blasq
 		/** Full-size original.
 		 */
 		Original,
-		OriginalSize
+		OriginalSize,
+
+		CollectionRoleMax
 	};
 
 	template<typename T>
