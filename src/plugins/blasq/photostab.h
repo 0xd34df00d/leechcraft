@@ -93,6 +93,7 @@ namespace Blasq
 		void handleImageOpenRequested (const QVariant&);
 		void handleImageDownloadRequested (const QVariant&);
 		void handleCopyURLRequested (const QVariant&);
+		void handleDeleteRequested (const QString&);
 	signals:
 		void removeTab (QWidget*);
 	};

@@ -44,6 +44,7 @@
 #include <util/network/networkdiskcache.h>
 #include "interfaces/blasq/iaccount.h"
 #include "interfaces/blasq/isupportuploads.h"
+#include "interfaces/blasq/isupportdeletes.h"
 #include "accountsmanager.h"
 #include "xmlsettingsmanager.h"
 #include "uploadphotosdialog.h"
@@ -122,6 +123,10 @@ namespace Blasq
 				SIGNAL (copyURLRequested (QVariant)),
 				this,
 				SLOT (handleCopyURLRequested (QVariant)));
+		connect (rootObj,
+				SIGNAL (deleteRequested (QString)),
+				this,
+				SLOT (handleDeleteRequested (QString)));
 
 		AccountsBox_->setModel (AccMgr_->GetModel ());
 		AccountsBox_->setModelColumn (AccountsManager::Column::Name);
@@ -353,6 +358,17 @@ namespace Blasq
 
 		auto cb = qApp->clipboard ();
 		cb->setText (url.toString (), QClipboard::Clipboard);
+	}
+
+	void PhotosTab::handleDeleteRequested (const QString& id)
+	{
+		auto isd = qobject_cast<ISupportDeletes*> (CurAccObj_);
+		if (!isd)
+			return;
+
+		const auto& idx = ImageID2Index (id);
+		if (idx.isValid ())
+			isd->Delete (idx);
 	}
 }
 }
