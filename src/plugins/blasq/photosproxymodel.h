@@ -30,12 +30,13 @@
 #pragma once
 
 #include <QIdentityProxyModel>
+#include "interfaces/blasq/collection.h"
 
 namespace LeechCraft
 {
 namespace Blasq
 {
-	class PhotosProxyModel : public QIdentityProxyModel
+	class PhotosProxyModel : public NamedModel<QIdentityProxyModel>
 	{
 		Q_OBJECT
 	public:

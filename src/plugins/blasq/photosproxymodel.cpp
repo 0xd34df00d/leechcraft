@@ -43,7 +43,7 @@ namespace Blasq
 	}
 
 	PhotosProxyModel::PhotosProxyModel (QObject *parent)
-	: QIdentityProxyModel (parent)
+	: NamedModel<QIdentityProxyModel> (parent)
 	{
 	}
 

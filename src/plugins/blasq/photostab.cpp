@@ -80,7 +80,7 @@ namespace Blasq
 	, Plugin_ (plugin)
 	, AccMgr_ (accMgr)
 	, Proxy_ (proxy)
-	, ProxyModel_ (new NamedModel<PhotosProxyModel> (this))
+	, ProxyModel_ (new PhotosProxyModel (this))
 	, AccountsBox_ (new QComboBox)
 	, Toolbar_ (new QToolBar)
 	{
