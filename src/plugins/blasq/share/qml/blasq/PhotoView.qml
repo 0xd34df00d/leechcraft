@@ -28,6 +28,7 @@ Rectangle {
     signal imageOpenRequested(variant url)
     signal imageDownloadRequested(variant url)
     signal copyURLRequested(variant url)
+    signal deleteRequested(string id)
 
     property string currentImageId
 
@@ -218,7 +219,8 @@ Rectangle {
                 property bool isHovered: itemMouseArea.containsMouse ||
                             openInBrowserAction.isHovered ||
                             downloadOriginalAction.isHovered ||
-                            copyURLAction.isHovered
+                            copyURLAction.isHovered ||
+                            deleteAction.isHovered
 
                 MouseArea {
                     id: itemMouseArea
@@ -278,6 +280,20 @@ Rectangle {
                         actionIconURL: "image://ThemeIcons/edit-copy"
                         textTooltip: qsTr("Copy image URL")
                         onTriggered: rootRect.copyURLRequested(original)
+                    }
+
+                    ActionButton {
+                        id: deleteAction
+
+                        width: 24
+                        height: width
+
+                        opacity: itemRect.isHovered && supportsDeletes ? 1 : 0
+                        Behavior on opacity { PropertyAnimation {} }
+
+                        actionIconURL: "image://ThemeIcons/list-remove"
+                        textTooltip: qsTr("Delete the image")
+                        onTriggered: rootRect.deleteRequested(imageId)
                     }
                 }
             }
