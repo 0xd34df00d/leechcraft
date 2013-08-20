@@ -205,6 +205,8 @@ namespace Blasq
 		lay->addStretch ();
 		lay->addWidget (slider, 0, Qt::AlignRight);
 
+		slider->setValue (XmlSettingsManager::Instance ()
+				.Property ("ScaleSliderValue", 20).toInt ());
 		connect (slider,
 				SIGNAL (valueChanged (int)),
 				this,
@@ -327,6 +329,8 @@ namespace Blasq
 		// value from 0 to 100; at 0 it should be lowest, at 100 it should be highest
 		const auto cellWidth = (highest - lowest) / (std::exp (1) - 1) * (std::exp (value / 100.) - 1) + lowest;
 		Ui_.ImagesView_->rootObject ()->setProperty ("cellSize", cellWidth);
+
+		XmlSettingsManager::Instance ().setProperty ("ScaleSliderValue", value);
 	}
 
 	void PhotosTab::uploadPhotos ()
