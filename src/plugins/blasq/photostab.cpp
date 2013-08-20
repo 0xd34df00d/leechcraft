@@ -181,29 +181,7 @@ namespace Blasq
 		if (SelectedID_.isEmpty ())
 			return {};
 
-		auto model = CurAcc_->GetCollectionsModel ();
-		QModelIndex allPhotosIdx;
-		for (auto i = 0; i < model->rowCount (); ++i)
-		{
-			const auto& idx = model->index (i, 0);
-			if (idx.data (CollectionRole::Type).toInt () == ItemType::AllPhotos)
-			{
-				allPhotosIdx = idx;
-				break;
-			}
-		}
-
-		if (!allPhotosIdx.isValid ())
-			return {};
-
-		for (auto i = 0, rc = model->rowCount (allPhotosIdx); i < rc; ++i)
-		{
-			const auto& idx = allPhotosIdx.child (i, 0);
-			if (idx.data (CollectionRole::ID).toString () == SelectedID_)
-				return idx;
-		}
-
-		return {};
+		return ImageID2Index (SelectedID_);
 	}
 
 	void PhotosTab::HandleImageSelected (const QModelIndex& index)
@@ -232,6 +210,33 @@ namespace Blasq
 		rootCtx->setContextProperty ("collRootIndex", QVariant::fromValue (index));
 
 		SelectedID_.clear ();
+	}
+
+	QModelIndex PhotosTab::ImageID2Index (const QString& id) const
+	{
+		auto model = CurAcc_->GetCollectionsModel ();
+		QModelIndex allPhotosIdx;
+		for (auto i = 0; i < model->rowCount (); ++i)
+		{
+			const auto& idx = model->index (i, 0);
+			if (idx.data (CollectionRole::Type).toInt () == ItemType::AllPhotos)
+			{
+				allPhotosIdx = idx;
+				break;
+			}
+		}
+
+		if (!allPhotosIdx.isValid ())
+			return {};
+
+		for (auto i = 0, rc = model->rowCount (allPhotosIdx); i < rc; ++i)
+		{
+			const auto& idx = allPhotosIdx.child (i, 0);
+			if (idx.data (CollectionRole::ID).toString () == id)
+				return idx;
+		}
+
+		return {};
 	}
 
 	void PhotosTab::handleAccountChosen (int idx)
