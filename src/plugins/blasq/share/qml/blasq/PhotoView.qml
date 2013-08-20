@@ -31,6 +31,7 @@ Rectangle {
     signal deleteRequested(string id)
 
     property string currentImageId
+    property real cellSize: 200
 
     Image {
         id: fullSizeImage
@@ -306,8 +307,8 @@ Rectangle {
         visible: listingMode
 
         anchors.fill: parent
-        cellWidth: 200
-        cellHeight: 200
+        cellWidth: rootRect.cellSize
+        cellHeight: rootRect.cellSize
 
         property real horzMargin: cellWidth / 20
         property real vertMargin: cellHeight / 20

@@ -80,12 +80,16 @@ namespace Blasq
 
 		QModelIndex GetSelectedImage () const;
 	private:
+		void AddScaleSlider ();
+
 		void HandleImageSelected (const QModelIndex&);
 		void HandleCollectionSelected (const QModelIndex&);
 		QModelIndex ImageID2Index (const QString&) const;
 	private slots:
 		void handleAccountChosen (int);
 		void handleRowChanged (const QModelIndex&);
+
+		void handleScaleSlider (int);
 
 		void uploadPhotos ();
 

@@ -35,6 +35,7 @@
 #include <QDeclarativeNetworkAccessManagerFactory>
 #include <QGraphicsObject>
 #include <QClipboard>
+#include <QDesktopWidget>
 #include <QtDebug>
 #include <interfaces/core/ientitymanager.h>
 #include <util/qml/colorthemeproxy.h>
@@ -149,6 +150,8 @@ namespace Blasq
 		Toolbar_->addSeparator ();
 		Toolbar_->addAction (UploadAction_);
 
+		AddScaleSlider ();
+
 		connect (Ui_.CollectionsTree_->selectionModel (),
 				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
 				this,
@@ -187,6 +190,28 @@ namespace Blasq
 			return {};
 
 		return ImageID2Index (SelectedID_);
+	}
+
+	void PhotosTab::AddScaleSlider ()
+	{
+		auto widget = new QWidget ();
+		auto lay = new QHBoxLayout;
+		widget->setLayout (lay);
+
+		auto slider = new QSlider (Qt::Horizontal);
+		slider->setMinimumWidth (300);
+		slider->setMaximumWidth (300);
+		slider->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Fixed);
+		lay->addStretch ();
+		lay->addWidget (slider, 0, Qt::AlignRight);
+
+		connect (slider,
+				SIGNAL (valueChanged (int)),
+				this,
+				SLOT (handleScaleSlider (int)));
+		handleScaleSlider (slider->value ());
+
+		Toolbar_->addWidget (widget);
 	}
 
 	void PhotosTab::HandleImageSelected (const QModelIndex& index)
@@ -291,6 +316,17 @@ namespace Blasq
 			HandleImageSelected (ProxyModel_->mapFromSource (index));
 		else
 			HandleCollectionSelected (ProxyModel_->mapFromSource (index));
+	}
+
+	void PhotosTab::handleScaleSlider (int value)
+	{
+		const auto width = qApp->desktop ()->screenGeometry (this).width ();
+		const int lowest = width / 20.;
+		const int highest = width / 5.;
+
+		// value from 0 to 100; at 0 it should be lowest, at 100 it should be highest
+		const auto cellWidth = (highest - lowest) / (std::exp (1) - 1) * (std::exp (value / 100.) - 1) + lowest;
+		Ui_.ImagesView_->rootObject ()->setProperty ("cellSize", cellWidth);
 	}
 
 	void PhotosTab::uploadPhotos ()
