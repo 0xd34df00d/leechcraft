@@ -39,11 +39,15 @@ namespace Blasq
 	class PhotosProxyModel : public NamedModel<QIdentityProxyModel>
 	{
 		Q_OBJECT
+
+		bool SupportsDeletes_ = false;
 	public:
 		PhotosProxyModel (QObject* = 0);
 
-		QVariant data (const QModelIndex&, int) const;
-		void setSourceModel (QAbstractItemModel* sourceModel) override;
+		QVariant data (const QModelIndex&, int) const override;
+		void setSourceModel (QAbstractItemModel *sourceModel) override;
+
+		void SetCurrentAccount (QObject*);
 	private slots:
 		void handleRowsInserted (const QModelIndex&, int, int);
 	};

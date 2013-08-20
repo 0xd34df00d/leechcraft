@@ -32,6 +32,7 @@
 #include <QUrl>
 #include <QtDebug>
 #include "interfaces/blasq/collection.h"
+#include "interfaces/blasq/isupportdeletes.h"
 
 namespace LeechCraft
 {
@@ -40,6 +41,11 @@ namespace Blasq
 	namespace
 	{
 		const int ItemsInCollage = 3;
+
+		enum ExtendedRole
+		{
+			SupportsDeletes = CollectionRole::CollectionRoleMax
+		};
 	}
 
 	PhotosProxyModel::PhotosProxyModel (QObject *parent)
@@ -49,6 +55,9 @@ namespace Blasq
 
 	QVariant PhotosProxyModel::data (const QModelIndex& index, int role) const
 	{
+		if (role == ExtendedRole::SupportsDeletes)
+			return SupportsDeletes_;
+
 		const auto& srcIdx = mapToSource (index);
 		const auto& srcData = srcIdx.data (role);
 		if (!srcData.isNull ())
@@ -80,13 +89,29 @@ namespace Blasq
 					this,
 					SLOT (handleRowsInserted (QModelIndex, int, int)));
 
+		beginResetModel ();
+		blockSignals (true);
+
 		QIdentityProxyModel::setSourceModel (model);
+
+		auto names = roleNames ();
+		names [ExtendedRole::SupportsDeletes] = "supportsDeletes";
+		setRoleNames (names);
+
+		blockSignals (false);
+		endResetModel ();
 
 		if (model)
 			connect (model,
 					SIGNAL (rowsInserted (QModelIndex, int, int)),
 					this,
 					SLOT (handleRowsInserted (QModelIndex, int, int)));
+
+	}
+
+	void PhotosProxyModel::SetCurrentAccount (QObject *accObj)
+	{
+		SupportsDeletes_ = qobject_cast<ISupportDeletes*> (accObj);
 	}
 
 	void PhotosProxyModel::handleRowsInserted (const QModelIndex& parent, int from, int)

@@ -266,6 +266,7 @@ namespace Blasq
 				this,
 				SLOT (handleRowChanged (QModelIndex)));
 
+		ProxyModel_->SetCurrentAccount (CurAccObj_);
 		ProxyModel_->setSourceModel (model);
 
 		Ui_.ImagesView_->rootContext ()->setContextProperty ("collRootIndex", QVariant::fromValue (QModelIndex ()));
