@@ -250,6 +250,51 @@ namespace Rappor
 		AuthMgr_->GetAuthKey ();
 	}
 
+	void VkAccount::Delete (const QModelIndex& item)
+	{
+		const auto type = item.data (CollectionRole::Type).toInt ();
+		const auto& id = item.data (CollectionRole::ID).toString ();
+		switch (type)
+		{
+		case ItemType::AllPhotos:
+			break;
+		case ItemType::Collection:
+		{
+			break;
+		}
+		case ItemType::Image:
+			CallQueue_.append ([this, id] (const QString& authKey) -> void
+				{
+					QUrl delUrl ("https://api.vk.com/method/photos.delete.xml");
+					delUrl.addQueryItem ("pid", id);
+					delUrl.addQueryItem ("access_token", authKey);
+					RequestQueue_->Schedule ([this, delUrl] () -> void
+						{
+							auto reply = Proxy_->GetNetworkAccessManager ()->
+									get (QNetworkRequest (delUrl));
+							connect (reply,
+									SIGNAL (finished ()),
+									reply,
+									SLOT (deleteLater ()));
+						}, this);
+				});
+			AuthMgr_->GetAuthKey ();
+
+			CollectionsModel_->removeRow (item.row (), item.parent ());
+			for (const auto& albumItem : Albums_)
+				for (int i = 0; i < albumItem->rowCount (); ++i)
+				{
+					const auto subItem = albumItem->child (i, 0);
+					if (subItem->data (CollectionRole::ID).toString () == id)
+					{
+						albumItem->removeRow (subItem->row ());
+						break;
+					}
+				}
+			break;
+		}
+	}
+
 	void VkAccount::HandleAlbumElement (const QDomElement& albumElem)
 	{
 		const auto& title = albumElem.firstChildElement ("title").text ();

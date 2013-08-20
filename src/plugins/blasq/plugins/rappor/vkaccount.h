@@ -33,6 +33,7 @@
 #include <QObject>
 #include <interfaces/blasq/iaccount.h>
 #include <interfaces/blasq/isupportuploads.h>
+#include <interfaces/blasq/isupportdeletes.h>
 #include <interfaces/core/icoreproxy.h>
 
 class QNetworkReply;
@@ -61,9 +62,12 @@ namespace Rappor
 	class VkAccount : public QObject
 					, public IAccount
 					, public ISupportUploads
+					, public ISupportDeletes
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blasq::IAccount LeechCraft::Blasq::ISupportUploads)
+		Q_INTERFACES (LeechCraft::Blasq::IAccount
+				LeechCraft::Blasq::ISupportUploads
+				LeechCraft::Blasq::ISupportDeletes)
 
 		QString Name_;
 		const QByteArray ID_;
@@ -101,6 +105,8 @@ namespace Rappor
 		bool HasUploadFeature (Feature) const;
 		void CreateCollection (const QModelIndex& parent);
 		void UploadImages (const QModelIndex& collection, const QStringList& paths);
+
+		void Delete (const QModelIndex&);
 	private:
 		void HandleAlbumElement (const QDomElement&);
 		bool HandlePhotoElement (const QDomElement&, bool atEnd = true);
