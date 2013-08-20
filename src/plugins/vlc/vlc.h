@@ -30,7 +30,9 @@
 #pragma once
 
 #include <QObject>
+#include <QMessageBox>
 #include <interfaces/iinfo.h>
+#include <interfaces/ihavetabs.h>
 
 namespace LeechCraft
 {
@@ -38,8 +40,10 @@ namespace vlc
 {
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IHaveTabs
 	{
 		Q_OBJECT
+ 		Q_INTERFACES (IInfo IHaveTabs)
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -49,7 +53,23 @@ namespace vlc
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 
-				QList<QAction*> GetActions () const;
+		QList<QAction*> GetActions () const;
+		
+		void TabOpenRequested (const QByteArray&);
+		LeechCraft::TabClasses_t GetTabClasses () const;
+		void addNewTab (const QString&, QWidget*);
+		void removeTab (QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void statusBarChanged (QWidget*, const QString&);
+		void raiseTab(QWidget*);
+		
+	private:
+		ICoreProxy_ptr Proxy_;
+		QAction *showWindow_;
+		QList<QAction *> allActionsThatIKnow_;
+	private slots:
+		void createWindow();
 	};
 }
 }

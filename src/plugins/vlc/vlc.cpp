@@ -29,6 +29,10 @@
 
 #include "vlc.h"
 #include <QIcon>
+#include <QMainWindow>
+#include <boost/graph/graph_concepts.hpp>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 
 namespace LeechCraft
 {
@@ -36,6 +40,10 @@ namespace vlc
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+		showWindow_ = new QAction(QIcon(), tr("Show test window"), this);
+		allActionsThatIKnow_.append(showWindow_);
+		connect(showWindow_, SIGNAL(triggered()), this, SLOT(createWindow()));
 	}
 
 	void Plugin::SecondInit ()
@@ -58,19 +66,44 @@ namespace vlc
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("");
+		return tr ("Abstract information about vlc");
 	}
 
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
 	}
-
-			QList<QAction*> Plugin::GetActions () const
-			{
-				QList<QAction*> result;
-				return result;
-			}
+	
+	QList<QAction*> Plugin::GetActions () const
+	{
+		return allActionsThatIKnow_;
+	}
+	
+	void Plugin::createWindow() {
+		QMessageBox::about(Proxy_->GetRootWindowsManager()->GetMainWindow(0), tr("Hello title"), tr("Hello text"));
+	}
+	
+	void TabOpenRequested (const QByteArray& tabClass) {
+	}
+	
+	void addNewTab (const QString& name, QWidget  *tabContents) {
+	}
+	
+	void removeTab (QWidget *tabContents) {
+	}
+	
+	void changeTabName (QWidget *tabContents, const QString& name) {
+	}
+	
+	void changeTabIcon (QWidget *tabContents, const QIcon& icon) {
+	}
+	
+	void statusBarChanged (QWidget *tabContents, const QString& text) {
+	}
+	
+	LeechCraft::TabClasses_t GetTabClasses () {
+		
+	}
 }
 }
 
