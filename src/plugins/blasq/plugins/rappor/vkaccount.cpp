@@ -266,7 +266,7 @@ namespace Rappor
 		Albums_ [aid] = item;
 	}
 
-	bool VkAccount::HandlePhotoElement (const QDomElement& photoElem)
+	bool VkAccount::HandlePhotoElement (const QDomElement& photoElem, bool atEnd)
 	{
 		auto mkItem = [&photoElem] () -> QStandardItem*
 		{
@@ -327,11 +327,20 @@ namespace Rappor
 		if (!allItem)
 			return false;
 
-		AllPhotosItem_->appendRow (allItem);
+		if (atEnd)
+			AllPhotosItem_->appendRow (allItem);
+		else
+			AllPhotosItem_->insertRow (0, allItem);
 
 		const auto aid = photoElem.firstChildElement ("aid").text ().toInt ();
 		if (Albums_.contains (aid))
-			Albums_ [aid]->appendRow (mkItem ());
+		{
+			auto album = Albums_ [aid];
+			if (atEnd)
+				album->appendRow (mkItem ());
+			else
+				album->insertRow (0, mkItem ());
+		}
 
 		return true;
 	}
@@ -492,12 +501,56 @@ namespace Rappor
 			return;
 		}
 
+		QStringList ids;
 		auto photoElem = doc
 				.documentElement ()
 				.firstChildElement ("photo");
 		while (!photoElem.isNull ())
 		{
-			HandlePhotoElement (photoElem);
+			ids << QString ("%1_%2")
+					.arg (photoElem.firstChildElement ("owner_id").text ())
+					.arg (photoElem.firstChildElement ("pid").text ());
+			photoElem = photoElem.nextSiblingElement ("photo");
+		}
+
+		CallQueue_.append ([this, ids] (const QString& authKey) -> void
+			{
+				QUrl getUrl ("https://api.vk.com/method/photos.getById.xml");
+				getUrl.addQueryItem ("photos", ids.join (","));
+				getUrl.addQueryItem ("photo_sizes", "1");
+				getUrl.addQueryItem ("access_token", authKey);
+				RequestQueue_->Schedule ([this, getUrl]
+					{
+						connect (Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (getUrl)),
+								SIGNAL (finished ()),
+								this,
+								SLOT (handlePhotosInfosFetched ()));
+					}, this);
+			});
+		AuthMgr_->GetAuthKey ();
+	}
+
+	void VkAccount::handlePhotosInfosFetched ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		const auto& data = reply->readAll ();
+		QDomDocument doc;
+		if (!doc.setContent (data))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot parse reply"
+					<< data;
+			return;
+		}
+
+		auto photoElem = doc
+				.documentElement ()
+				.firstChildElement ("photo");
+		while (!photoElem.isNull ())
+		{
+			HandlePhotoElement (photoElem, false);
 			photoElem = photoElem.nextSiblingElement ("photo");
 		}
 	}

@@ -1,6 +1,7 @@
 import QtQuick 1.0
 import Effects 1.0
 import org.LC.common 1.0
+import org.LC.Blasq 1.0
 
 Rectangle {
     id: rootRect
@@ -151,17 +152,52 @@ Rectangle {
 
                 smooth: true
 
-                Image {
+                Component {
+                    id: photoImageComponent
+                    Image {
+                        source: smallThumb
+                        smooth: true
+                        fillMode: Image.PreserveAspectFit
+                    }
+                }
+
+                Component {
+                    id: collectionCollageComponent
+                    Repeater {
+                        id: collectionCollageRepeater
+                        model: smallThumb
+                        property real logScale: count ? Math.log(Math.E - 1 + count) : 1
+
+                        Image {
+                            source: modelData
+
+                            width: imagesDisplay.width / collectionCollageRepeater.logScale
+                            height: imagesDisplay.height / collectionCollageRepeater.logScale
+
+                            property real norm: collectionCollageRepeater.count - 1
+                            property real xA: imagesDisplay.width / 25
+                            property real xB: (imagesDisplay.width - width) / 2 - xA * norm / 2
+
+                            x: xA * index + xB
+                            y: (imagesDisplay.height - height) / 2
+                            transformOrigin: Item.Bottom
+                            rotation: norm ? 15 * (index * 2 / norm - 1) : 0
+
+                            smooth: true
+                            fillMode: Image.PreserveAspectFit
+                        }
+                    }
+                }
+
+                Loader {
+                    id: imagesDisplay
+                    sourceComponent: itemType == Blasq.ImageItem ? photoImageComponent : collectionCollageComponent
+
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: nameLabel.top
                     anchors.margins: 2
-
-                    source: smallThumb
-
-                    smooth: true
-                    fillMode: Image.PreserveAspectFit
                 }
 
                 Text {
@@ -197,52 +233,52 @@ Rectangle {
                     }
                 }
 
-                ActionButton {
-                    id: openInBrowserAction
-
+                Column {
                     anchors.top: parent.top
                     anchors.right: parent.right
-                    width: 24
-                    height: width
+                    visible: itemType == Blasq.ImageItem
 
-                    opacity: parent.isHovered ? 1 : 0
-                    Behavior on opacity { PropertyAnimation {} }
+                    ActionButton {
+                        id: openInBrowserAction
 
-                    actionIconURL: "image://ThemeIcons/go-jump-locationbar"
-                    textTooltip: qsTr("Open in browser")
-                    onTriggered: rootRect.imageOpenRequested(original)
-                }
+                        width: 24
+                        height: width
 
-                ActionButton {
-                    id: downloadOriginalAction
+                        opacity: itemRect.isHovered ? 1 : 0
+                        Behavior on opacity { PropertyAnimation {} }
 
-                    anchors.top: openInBrowserAction.bottom
-                    anchors.right: parent.right
-                    width: 24
-                    height: width
+                        actionIconURL: "image://ThemeIcons/go-jump-locationbar"
+                        textTooltip: qsTr("Open in browser")
+                        onTriggered: rootRect.imageOpenRequested(original)
+                    }
 
-                    opacity: parent.isHovered ? 1 : 0
-                    Behavior on opacity { PropertyAnimation {} }
+                    ActionButton {
+                        id: downloadOriginalAction
 
-                    actionIconURL: "image://ThemeIcons/download"
-                    textTooltip: qsTr("Download the original image")
-                    onTriggered: rootRect.imageDownloadRequested(original)
-                }
+                        width: 24
+                        height: width
 
-                ActionButton {
-                    id: copyURLAction
+                        opacity: itemRect.isHovered ? 1 : 0
+                        Behavior on opacity { PropertyAnimation {} }
 
-                    anchors.top: downloadOriginalAction.bottom
-                    anchors.right: parent.right
-                    width: 24
-                    height: width
+                        actionIconURL: "image://ThemeIcons/download"
+                        textTooltip: qsTr("Download the original image")
+                        onTriggered: rootRect.imageDownloadRequested(original)
+                    }
 
-                    opacity: parent.isHovered ? 1 : 0
-                    Behavior on opacity { PropertyAnimation {} }
+                    ActionButton {
+                        id: copyURLAction
 
-                    actionIconURL: "image://ThemeIcons/edit-copy"
-                    textTooltip: qsTr("Copy image URL")
-                    onTriggered: rootRect.copyURLRequested(original)
+                        width: 24
+                        height: width
+
+                        opacity: itemRect.isHovered ? 1 : 0
+                        Behavior on opacity { PropertyAnimation {} }
+
+                        actionIconURL: "image://ThemeIcons/edit-copy"
+                        textTooltip: qsTr("Copy image URL")
+                        onTriggered: rootRect.copyURLRequested(original)
+                    }
                 }
             }
         }

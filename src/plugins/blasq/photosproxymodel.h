@@ -29,71 +29,22 @@
 
 #pragma once
 
-#include <memory>
-#include <QWidget>
-#include <interfaces/ihavetabs.h>
-#include <interfaces/core/icoreproxy.h>
-#include "ui_photostab.h"
-
-class QComboBox;
+#include <QIdentityProxyModel>
 
 namespace LeechCraft
 {
 namespace Blasq
 {
-	class AccountsManager;
-	class PhotosProxyModel;
-	class IAccount;
-
-	class PhotosTab : public QWidget
-					, public ITabWidget
+	class PhotosProxyModel : public QIdentityProxyModel
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
-
-		Ui::PhotosTab Ui_;
-
-		const TabClassInfo TC_;
-		QObject * const Plugin_;
-
-		AccountsManager * const AccMgr_;
-		const ICoreProxy_ptr Proxy_;
-
-		PhotosProxyModel * const ProxyModel_;
-
-		QComboBox *AccountsBox_;
-		QAction *UploadAction_;
-		std::unique_ptr<QToolBar> Toolbar_;
-
-		IAccount *CurAcc_ = 0;
-		QObject *CurAccObj_ = 0;
-
-		QString SelectedID_;
 	public:
-		PhotosTab (AccountsManager*, const TabClassInfo&, QObject*, ICoreProxy_ptr);
-		PhotosTab (AccountsManager*, ICoreProxy_ptr);
+		PhotosProxyModel (QObject* = 0);
 
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
-		QToolBar* GetToolBar () const;
-
-		QModelIndex GetSelectedImage () const;
-	private:
-		void HandleImageSelected (const QModelIndex&);
-		void HandleCollectionSelected (const QModelIndex&);
+		QVariant data (const QModelIndex&, int) const;
+		void setSourceModel (QAbstractItemModel* sourceModel) override;
 	private slots:
-		void handleAccountChosen (int);
-		void handleRowChanged (const QModelIndex&);
-
-		void uploadPhotos ();
-
-		void handleImageSelected (const QString&);
-		void handleImageOpenRequested (const QVariant&);
-		void handleImageDownloadRequested (const QVariant&);
-		void handleCopyURLRequested (const QVariant&);
-	signals:
-		void removeTab (QWidget*);
+		void handleRowsInserted (const QModelIndex&, int, int);
 	};
 }
 }

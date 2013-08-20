@@ -27,73 +27,74 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <memory>
-#include <QWidget>
-#include <interfaces/ihavetabs.h>
-#include <interfaces/core/icoreproxy.h>
-#include "ui_photostab.h"
-
-class QComboBox;
+#include "photosproxymodel.h"
+#include <QStringList>
+#include <QUrl>
+#include <QtDebug>
+#include "interfaces/blasq/collection.h"
 
 namespace LeechCraft
 {
 namespace Blasq
 {
-	class AccountsManager;
-	class PhotosProxyModel;
-	class IAccount;
-
-	class PhotosTab : public QWidget
-					, public ITabWidget
+	namespace
 	{
-		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
+		const int ItemsInCollage = 3;
+	}
 
-		Ui::PhotosTab Ui_;
+	PhotosProxyModel::PhotosProxyModel (QObject *parent)
+	: QIdentityProxyModel (parent)
+	{
+	}
 
-		const TabClassInfo TC_;
-		QObject * const Plugin_;
+	QVariant PhotosProxyModel::data (const QModelIndex& index, int role) const
+	{
+		const auto& srcIdx = mapToSource (index);
+		const auto& srcData = srcIdx.data (role);
+		if (!srcData.isNull ())
+			return srcData;
 
-		AccountsManager * const AccMgr_;
-		const ICoreProxy_ptr Proxy_;
+		if (role != CollectionRole::SmallThumb)
+			return srcData;
 
-		PhotosProxyModel * const ProxyModel_;
+		const auto type = srcIdx.data (CollectionRole::Type).toInt ();
+		if (type == ItemType::Image)
+			return srcData;
 
-		QComboBox *AccountsBox_;
-		QAction *UploadAction_;
-		std::unique_ptr<QToolBar> Toolbar_;
+		QVariantList result;
+		for (int i = 0; i < std::min (ItemsInCollage, sourceModel ()->rowCount (srcIdx)); ++i)
+		{
+			const auto& photoIdx = sourceModel ()->index (i, 0, srcIdx);
+			const auto& url = photoIdx.data (CollectionRole::SmallThumb);
+			result << url;
+		}
+		std::reverse (result.begin (), result.end ());
+		return result;
+	}
 
-		IAccount *CurAcc_ = 0;
-		QObject *CurAccObj_ = 0;
+	void PhotosProxyModel::setSourceModel (QAbstractItemModel *model)
+	{
+		if (sourceModel ())
+			disconnect (sourceModel (),
+					SIGNAL (rowsInserted (QModelIndex, int, int)),
+					this,
+					SLOT (handleRowsInserted (QModelIndex, int, int)));
 
-		QString SelectedID_;
-	public:
-		PhotosTab (AccountsManager*, const TabClassInfo&, QObject*, ICoreProxy_ptr);
-		PhotosTab (AccountsManager*, ICoreProxy_ptr);
+		QIdentityProxyModel::setSourceModel (model);
 
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
-		QToolBar* GetToolBar () const;
+		if (model)
+			connect (model,
+					SIGNAL (rowsInserted (QModelIndex, int, int)),
+					this,
+					SLOT (handleRowsInserted (QModelIndex, int, int)));
+	}
 
-		QModelIndex GetSelectedImage () const;
-	private:
-		void HandleImageSelected (const QModelIndex&);
-		void HandleCollectionSelected (const QModelIndex&);
-	private slots:
-		void handleAccountChosen (int);
-		void handleRowChanged (const QModelIndex&);
+	void PhotosProxyModel::handleRowsInserted (const QModelIndex& parent, int from, int)
+	{
+		if (from >= ItemsInCollage)
+			return;
 
-		void uploadPhotos ();
-
-		void handleImageSelected (const QString&);
-		void handleImageOpenRequested (const QVariant&);
-		void handleImageDownloadRequested (const QVariant&);
-		void handleCopyURLRequested (const QVariant&);
-	signals:
-		void removeTab (QWidget*);
-	};
+		emit dataChanged (parent, parent);
+	}
 }
 }

@@ -23,6 +23,7 @@ set (SRCS
 	enumsproxy.cpp
 	uploadphotosdialog.cpp
 	selectalbumdialog.cpp
+	photosproxymodel.cpp
 	)
 set (FORMS
 	accountswidget.ui

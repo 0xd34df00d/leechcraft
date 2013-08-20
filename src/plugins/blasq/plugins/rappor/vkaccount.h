@@ -103,7 +103,7 @@ namespace Rappor
 		void UploadImages (const QModelIndex& collection, const QStringList& paths);
 	private:
 		void HandleAlbumElement (const QDomElement&);
-		bool HandlePhotoElement (const QDomElement&);
+		bool HandlePhotoElement (const QDomElement&, bool atEnd = true);
 	private slots:
 		void handleGotAlbums ();
 		void handleGotPhotos ();
@@ -113,6 +113,7 @@ namespace Rappor
 		void handlePhotosUploadProgress (qint64, qint64);
 		void handlePhotosUploaded ();
 		void handlePhotosSaved ();
+		void handlePhotosInfosFetched ();
 
 		void handleAuthKey (const QString&);
 		void handleCookies (const QByteArray&);

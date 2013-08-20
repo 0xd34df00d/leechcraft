@@ -62,6 +62,8 @@ namespace Blasq
 		UploadPhotosDialog (QObject *accObj, QWidget* = 0);
 
 		QModelIndex GetSelectedCollection () const;
+		void SetSelectedCollection (const QModelIndex&);
+
 		QStringList GetSelectedFiles () const;
 	private slots:
 		void on_SelectAlbumButton__released ();
