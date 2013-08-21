@@ -180,6 +180,7 @@ namespace Rappor
 		switch (feature)
 		{
 		case Feature::RequiresAlbumOnUpload:
+		case Feature::SupportsDescriptions:
 			return true;
 		}
 
@@ -226,16 +227,16 @@ namespace Rappor
 		AuthMgr_->GetAuthKey ();
 	}
 
-	void VkAccount::UploadImages (const QModelIndex& collection, const QStringList& paths)
+	void VkAccount::UploadImages (const QModelIndex& collection, const QList<UploadItem>& items)
 	{
 		const auto& aidStr = collection.data (CollectionRole::ID).toString ();
 
-		CallQueue_.append ([this, paths, aidStr] (const QString& authKey) -> void
+		CallQueue_.append ([this, items, aidStr] (const QString& authKey) -> void
 			{
 				QUrl getUrl ("https://api.vk.com/method/photos.getUploadServer.xml");
 				getUrl.addQueryItem ("aid", aidStr);
 				getUrl.addQueryItem ("access_token", authKey);
-				RequestQueue_->Schedule ([this, getUrl, paths] () -> void
+				RequestQueue_->Schedule ([this, getUrl, items] () -> void
 					{
 						auto reply = Proxy_->GetNetworkAccessManager ()->
 								get (QNetworkRequest (getUrl));
@@ -243,7 +244,7 @@ namespace Rappor
 								SIGNAL (finished ()),
 								this,
 								SLOT (handlePhotosUploadServer ()));
-						PhotosUploadServer2Paths_ [reply] = paths;
+						PhotosUploadServer2Paths_ [reply] = items;
 					}, this);
 			});
 
@@ -458,7 +459,7 @@ namespace Rappor
 			bool added = false;
 			for (int fileIdx = 0; fileIdx < 5 && reqIdx * 5 + fileIdx < paths.size (); ++fileIdx)
 			{
-				const auto& path = paths.at (reqIdx * 5 + fileIdx);
+				const auto& path = paths.at (reqIdx * 5 + fileIdx).FilePath_;
 
 				auto file = new QFile (path, multipart);
 				file->open (QIODevice::ReadOnly);

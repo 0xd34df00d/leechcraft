@@ -40,6 +40,7 @@ namespace Blasq
 {
 	class IAccount;
 	class ISupportUploads;
+	struct UploadItem;
 
 	class UploadPhotosDialog : public QDialog
 	{
@@ -64,7 +65,7 @@ namespace Blasq
 		QModelIndex GetSelectedCollection () const;
 		void SetSelectedCollection (const QModelIndex&);
 
-		QStringList GetSelectedFiles () const;
+		QList<UploadItem> GetSelectedFiles () const;
 	private slots:
 		void on_SelectAlbumButton__released ();
 

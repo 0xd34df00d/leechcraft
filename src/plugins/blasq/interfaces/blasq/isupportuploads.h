@@ -37,6 +37,12 @@ namespace LeechCraft
 {
 namespace Blasq
 {
+	struct UploadItem
+	{
+		QString FilePath_;
+		QString Description_;
+	};
+
 	class ISupportUploads
 	{
 	public:
@@ -49,7 +55,11 @@ namespace Blasq
 			 * Lacking this feature means that photos can be uploaded
 			 * without choosing the album to upload to.
 			 */
-			RequiresAlbumOnUpload
+			RequiresAlbumOnUpload,
+
+			/** @brief Supports putting descriptions alongside the photos.
+			 */
+			SupportsDescriptions
 		};
 
 		virtual ~ISupportUploads () {}
@@ -58,7 +68,7 @@ namespace Blasq
 
 		virtual void CreateCollection (const QModelIndex& parent) = 0;
 
-		virtual void UploadImages (const QModelIndex& collection, const QStringList& paths) = 0;
+		virtual void UploadImages (const QModelIndex& collection, const QList<UploadItem>& paths) = 0;
 	};
 }
 }

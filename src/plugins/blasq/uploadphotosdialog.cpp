@@ -30,6 +30,7 @@
 #include "uploadphotosdialog.h"
 #include <QStandardItemModel>
 #include <QFileDialog>
+#include <util/util.h>
 #include "interfaces/blasq/iaccount.h"
 #include "interfaces/blasq/isupportuploads.h"
 #include "selectalbumdialog.h"
@@ -38,6 +39,16 @@ namespace LeechCraft
 {
 namespace Blasq
 {
+	namespace
+	{
+		enum Column
+		{
+			ThePhoto,
+			PhotoSize,
+			PhotoDesc
+		};
+	}
+
 	UploadPhotosDialog::UploadPhotosDialog (QObject *accObj, QWidget *parent)
 	: QDialog (parent)
 	, AccObj_ (accObj)
@@ -45,8 +56,18 @@ namespace Blasq
 	, ISU_ (qobject_cast<ISupportUploads*> (accObj))
 	, FilesModel_ (new QStandardItemModel (this))
 	{
+		FilesModel_->setHorizontalHeaderLabels ({ tr ("Photo"), tr ("Size"), tr ("Description") });
 		Ui_.setupUi (this);
 		Ui_.PhotosView_->setModel (FilesModel_);
+
+		Ui_.PhotosView_->setColumnWidth (Column::ThePhoto,
+				Ui_.PhotosView_->iconSize ().width () +
+					fontMetrics ().width (" typical image name "));
+		Ui_.PhotosView_->setColumnWidth (Column::PhotoSize,
+				fontMetrics ().width ("  999.999 KiB  "));
+
+		if (!ISU_->HasUploadFeature (ISupportUploads::Feature::SupportsDescriptions))
+			Ui_.PhotosView_->hideColumn (Column::PhotoDesc);
 
 		validate ();
 	}
@@ -63,12 +84,15 @@ namespace Blasq
 		validate ();
 	}
 
-	QStringList UploadPhotosDialog::GetSelectedFiles () const
+	QList<UploadItem> UploadPhotosDialog::GetSelectedFiles () const
 	{
-		QStringList result;
+		QList<UploadItem> items;
 		for (int i = 0, rc = FilesModel_->rowCount (); i < rc; ++i)
-			result << FilesModel_->index (i, 0).data (Role::Filepath).toString ();
-		return result;
+			items.append ({
+					FilesModel_->index (i, Column::ThePhoto).data (Role::Filepath).toString (),
+					FilesModel_->index (i, Column::PhotoDesc).data ().toString ()
+				});
+		return items;
 	}
 
 	void UploadPhotosDialog::on_SelectAlbumButton__released ()
@@ -92,10 +116,17 @@ namespace Blasq
 			const QPixmap orig (filename);
 			const auto& scaled = orig.scaled (Ui_.PhotosView_->iconSize (),
 					Qt::KeepAspectRatio, Qt::SmoothTransformation);
-			auto item = new QStandardItem (scaled, QFileInfo (filename).fileName ());
+
+			const QFileInfo finfo (filename);
+
+			auto item = new QStandardItem (scaled, finfo.fileName ());
 			item->setEditable (false);
 			item->setData (filename, Role::Filepath);
-			FilesModel_->appendRow (item);
+
+			auto sizeItem = new QStandardItem (Util::MakePrettySize (finfo.size ()));
+			sizeItem->setEditable (false);
+
+			FilesModel_->appendRow ({ item, sizeItem, new QStandardItem });
 		}
 
 		validate ();

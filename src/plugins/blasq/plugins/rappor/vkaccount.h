@@ -85,7 +85,7 @@ namespace Rappor
 		Util::QueueManager *RequestQueue_;
 		QList<std::function<void (const QString&)>> CallQueue_;
 
-		QHash<QNetworkReply*, QStringList> PhotosUploadServer2Paths_;
+		QHash<QNetworkReply*, QList<UploadItem>> PhotosUploadServer2Paths_;
 	public:
 		VkAccount (const QString&, VkService*, ICoreProxy_ptr,
 				const QByteArray& id = QByteArray (),
@@ -104,7 +104,7 @@ namespace Rappor
 
 		bool HasUploadFeature (Feature) const;
 		void CreateCollection (const QModelIndex& parent);
-		void UploadImages (const QModelIndex& collection, const QStringList& paths);
+		void UploadImages (const QModelIndex& collection, const QList<UploadItem>& paths);
 
 		void Delete (const QModelIndex&);
 	private:
