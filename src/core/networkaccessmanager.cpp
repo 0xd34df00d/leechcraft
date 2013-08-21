@@ -79,6 +79,9 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 	XmlSettingsManager::Instance ()->RegisterObject ("FilterTrackingCookies",
 			this,
 			"handleFilterTrackingCookies");
+	XmlSettingsManager::Instance ()->RegisterObject ("DeleteCookiesOnExit",
+			this,
+			"saveCookies");
 	XmlSettingsManager::Instance ()->RegisterObject ("EnableCookies",
 			this,
 			"setCookiesEnabled");
@@ -321,18 +324,12 @@ void LeechCraft::NetworkAccessManager::saveCookies () const
 		emit error (tr ("Could not save cookies, error opening cookie file."));
 		qWarning () << Q_FUNC_INFO
 			<< file.errorString ();
+		return;
 	}
-	else
-	{
-		CustomCookieJar *jar = static_cast<CustomCookieJar*> (cookieJar ());
-		if (!jar)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "jar is NULL";
-			return;
-		}
-		file.write (jar->Save ());
-	}
+
+	const bool saveEnabled = !XmlSettingsManager::Instance ()->
+			property ("DeleteCookiesOnExit").toBool ();
+	file.write (saveEnabled ? CookieJar_->Save () : QByteArray ());
 }
 
 void LeechCraft::NetworkAccessManager::handleFilterTrackingCookies ()

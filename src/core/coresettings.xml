@@ -193,6 +193,9 @@
 			<label value="Privacy" />
 			<item type="groupbox" checkable="true" property="EnableCookies" default="true">
 				<label value="Enable cookies" />
+				<item type="checkbox" property="DeleteCookiesOnExit" default="false">
+					<label value="Delete cookies on application exit" />
+				</item>
 				<item type="checkbox" property="FilterTrackingCookies" default="true">
 					<label lang="en" value="Filter tracking cookies" />
 				</item>
