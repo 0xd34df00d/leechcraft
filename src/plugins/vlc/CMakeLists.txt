@@ -2,6 +2,8 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_vlc)
 include (InitLCPlugin OPTIONAL)
 
+#find_package (VLC REQUIRED)
+
 include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -11,6 +13,7 @@ include_directories (
 set (SRCS
 	vlc.cpp
 	vlcwidget.cpp
+	vlcplayer.cpp
 	)
 	
 #CreateTrs("vlc" "en;ru_RU" COMPILED_TRANSLATIONS)
@@ -23,5 +26,6 @@ add_library (leechcraft_vlc SHARED
 target_link_libraries (leechcraft_vlc
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
+	/usr/lib/libvlc.so
 	)
 install (TARGETS leechcraft_vlc DESTINATION ${LC_PLUGINS_DEST})

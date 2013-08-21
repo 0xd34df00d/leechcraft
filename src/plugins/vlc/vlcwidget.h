@@ -52,6 +52,9 @@ namespace vlc
 		QToolBar* GetToolBar () const;
 		static TabClassInfo GetTabInfo ();
 		
+	private:
+    virtual void paintEvent(QPaintEvent*);
+		
 	signals:
 		void deleteMe (QWidget*);
 	};

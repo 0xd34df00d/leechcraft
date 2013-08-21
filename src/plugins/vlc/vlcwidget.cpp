@@ -28,6 +28,10 @@
  **********************************************************************/
 
 #include "vlcwidget.h"
+#include "vlcplayer.h"
+#include <QVBoxLayout>
+#include <QPainter>
+#include <QPaintEvent>
 
 namespace LeechCraft
 {
@@ -36,6 +40,9 @@ namespace vlc
 	VlcWidget::VlcWidget (QObject* parent): QWidget ()
 	{
 		parent_ = parent;
+		QVBoxLayout *layout = new QVBoxLayout;
+		layout->addWidget(new VlcPlayer);
+		this->setLayout(layout);
 	}
 
 	QObject* VlcWidget::ParentMultiTabs ()
@@ -53,6 +60,14 @@ namespace vlc
 		deleteLater ();
 		emit deleteMe (this);
 	}
+	
+	void VlcWidget::paintEvent(QPaintEvent *event)
+	{
+		QPainter p(this);
+		p.drawEllipse(100, 100, 100, 100);
+		p.end();
+	}
+
 	
 	TabClassInfo VlcWidget::GetTabClassInfo () const
 	{
