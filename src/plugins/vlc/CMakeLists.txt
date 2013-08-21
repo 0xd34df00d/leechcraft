@@ -15,6 +15,10 @@ set (SRCS
 	vlcwidget.cpp
 	vlcplayer.cpp
 	)
+set (FORMS
+	vlcinterface.ui
+	)
+QT4_WRAP_UI (UIS_H ${FORMS})
 	
 #CreateTrs("vlc" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("vlc" "en;ru_RU" "${SRCS}" "${FORMS}" "")
@@ -22,6 +26,7 @@ CreateTrsUpTarget("vlc" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 add_library (leechcraft_vlc SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
+	${UIS_H}
 	)
 target_link_libraries (leechcraft_vlc
 	${QT_LIBRARIES}

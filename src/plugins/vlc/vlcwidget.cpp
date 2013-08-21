@@ -32,6 +32,8 @@
 #include <QVBoxLayout>
 #include <QPainter>
 #include <QPaintEvent>
+#include <QFileDialog>
+#include <QTimer>
 
 namespace LeechCraft
 {
@@ -40,10 +42,41 @@ namespace vlc
 	VlcWidget::VlcWidget (QObject* parent): QWidget ()
 	{
 		parent_ = parent;
-		QVBoxLayout *layout = new QVBoxLayout;
-		layout->addWidget(new VlcPlayer);
-		this->setLayout(layout);
+		ui = new Ui::VlcInteface;
+		ui->setupUi(this);
+		vlcPlayer_ = new VlcPlayer(ui->vlcWidget);
+		generateToolBar();
+		QTimer *timer = new QTimer;
+		timer->setInterval(100);
+		timer->start();
+		
+		connect (timer,
+				SIGNAL (timeout()),
+				 this,
+				SLOT (updateIterface ()));
+		
+		connect (ui->stop,
+				SIGNAL (clicked ()),
+				 vlcPlayer_,
+				SLOT (stop ()));
+				
+		connect (ui->play,
+				SIGNAL(clicked ()),
+				 vlcPlayer_,
+				SLOT (play ()));
+		
+		connect (open_,
+				SIGNAL (triggered ()),
+				 this,
+				SLOT (addFile ()));
 	}
+	
+	VlcWidget::~VlcWidget()
+	{
+		vlcPlayer_->stop();
+		delete vlcPlayer_;
+	}
+
 
 	QObject* VlcWidget::ParentMultiTabs ()
 	{
@@ -52,7 +85,7 @@ namespace vlc
 	
 	QToolBar* VlcWidget::GetToolBar () const
 	{
-		return nullptr;
+		return bar_;
 	}
 	
 	void VlcWidget::Remove () 
@@ -61,6 +94,24 @@ namespace vlc
 		emit deleteMe (this);
 	}
 	
+	void VlcWidget::addFile()
+	{
+		QString file = QFileDialog::getOpenFileName(this,
+													tr("Open file"),
+													tr("Videos (*.mkv *.avi *.mov *.mpg)"));
+		if (QFile::exists(file))
+			vlcPlayer_->addUrl(file);
+	}
+	
+	void VlcWidget::updateIterface()
+	{
+		if (vlcPlayer_->nowPlaying())
+			ui->play->setText(tr("pause"));
+		else
+			ui->play->setText(tr("play"));
+	}
+
+
 	void VlcWidget::paintEvent(QPaintEvent *event)
 	{
 		QPainter p(this);
@@ -68,6 +119,11 @@ namespace vlc
 		p.end();
 	}
 
+	void VlcWidget::generateToolBar() {
+		bar_ = new QToolBar();
+		open_ = bar_->addAction(tr("Open"));
+		info_ = bar_->addAction(tr("Info"));
+	}
 	
 	TabClassInfo VlcWidget::GetTabClassInfo () const
 	{

@@ -30,12 +30,16 @@
 #pragma once
 
 #include <QWidget>
+#include <QToolBar>
+#include <boost/concept_check.hpp>
 #include <interfaces/ihavetabs.h>
+#include <ui_vlcinterface.h>
 
 namespace LeechCraft
 {
 namespace vlc
 {
+	class VlcPlayer;
 	class VlcWidget : public QWidget
 					, public ITabWidget
 	{
@@ -43,17 +47,28 @@ namespace vlc
 		Q_INTERFACES (ITabWidget)
 		
 		QObject *parent_;
+		Ui::VlcInteface *ui;
+		VlcPlayer *vlcPlayer_;
+		QToolBar *bar_;
+		QAction *open_;
+		QAction *info_;
+		
+		void generateToolBar();
 		
 	public:
 		explicit VlcWidget (QObject* parent = 0);
+		~VlcWidget();
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
 		static TabClassInfo GetTabInfo ();
 		
-	private:
-    virtual void paintEvent(QPaintEvent*);
+		virtual void paintEvent(QPaintEvent*);
+		
+	private slots:
+		void addFile();
+		void updateIterface();
 		
 	signals:
 		void deleteMe (QWidget*);
