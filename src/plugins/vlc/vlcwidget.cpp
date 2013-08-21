@@ -34,19 +34,19 @@ namespace LeechCraft
 {
 namespace vlc
 {
-	QToolBar* VlcWidget::GetToolBar() const
+	QToolBar* VlcWidget::GetToolBar () const
 	{
 		return NULL;
 	}
 	
-	void VlcWidget::Remove() 
+	void VlcWidget::Remove () 
 	{	
-		emit deleteMe(this);
+		emit deleteMe (this);
 	}
 	
-	TabClassInfo VlcWidget::GetTabClassInfo() const
+	TabClassInfo VlcWidget::GetTabClassInfo () const
 	{
-		return VlcWidgetTabClassInfo::getInfo();
+		return VlcWidgetTabClassInfo::getInfo ();
 	}
 }
 }

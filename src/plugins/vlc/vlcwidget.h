@@ -42,14 +42,14 @@ namespace vlc
 		Q_OBJECT
  		Q_INTERFACES (ITabWidget)
 	public:
-		TabClassInfo GetTabClassInfo() const;
-		QObject* ParentMultiTabs() {return NULL;};
-		void Remove();
-		QToolBar* GetToolBar() const;
+		TabClassInfo GetTabClassInfo () const;
+		QObject* ParentMultiTabs () {return NULL;};
+		void Remove ();
+		QToolBar* GetToolBar () const;
 	private:
 		
 	signals:
-		void deleteMe(QWidget*);
+		void deleteMe (QWidget*);
 	};
 }
 }
