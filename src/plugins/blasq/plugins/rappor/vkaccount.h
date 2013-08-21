@@ -85,7 +85,8 @@ namespace Rappor
 		Util::QueueManager *RequestQueue_;
 		QList<std::function<void (const QString&)>> CallQueue_;
 
-		QHash<QNetworkReply*, QList<UploadItem>> PhotosUploadServer2Paths_;
+		QHash<QNetworkReply*, QList<UploadItem>> PhotosUploadServer2Infos_;
+		QHash<QNetworkReply*, UploadItem> PhotoUpload2Info_;
 	public:
 		VkAccount (const QString&, VkService*, ICoreProxy_ptr,
 				const QByteArray& id = QByteArray (),

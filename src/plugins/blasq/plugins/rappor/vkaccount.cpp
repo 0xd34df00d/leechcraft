@@ -244,7 +244,7 @@ namespace Rappor
 								SIGNAL (finished ()),
 								this,
 								SLOT (handlePhotosUploadServer ()));
-						PhotosUploadServer2Paths_ [reply] = items;
+						PhotosUploadServer2Infos_ [reply] = items;
 					}, this);
 			});
 
@@ -450,39 +450,26 @@ namespace Rappor
 		}
 
 		const auto& server = doc.documentElement ().firstChildElement ("upload_url").text ();
-		const auto& paths = PhotosUploadServer2Paths_.take (reply);
+		const auto& infos = PhotosUploadServer2Infos_.take (reply);
 
-		for (int reqIdx = 0; reqIdx <= paths.size () / 5 + 1; ++reqIdx)
+		for (const auto& info : infos)
 		{
 			auto multipart = new QHttpMultiPart (QHttpMultiPart::FormDataType);
 
-			bool added = false;
-			for (int fileIdx = 0; fileIdx < 5 && reqIdx * 5 + fileIdx < paths.size (); ++fileIdx)
-			{
-				const auto& path = paths.at (reqIdx * 5 + fileIdx).FilePath_;
+			const auto& path = info.FilePath_;
 
-				auto file = new QFile (path, multipart);
-				file->open (QIODevice::ReadOnly);
+			auto file = new QFile (path, multipart);
+			file->open (QIODevice::ReadOnly);
 
-				QHttpPart filePart;
+			QHttpPart filePart;
 
-				const auto& disp = QString ("form-data; name=\"file%1\"; filename=\"%2\"")
-						.arg (fileIdx + 1)
-						.arg (QFileInfo (path).fileName ());
-				filePart.setHeader (QNetworkRequest::ContentDispositionHeader, disp);
+			const auto& disp = QString ("form-data; name=\"file1\"; filename=\"%1\"")
+					.arg (QFileInfo (path).fileName ());
+			filePart.setHeader (QNetworkRequest::ContentDispositionHeader, disp);
 
-				filePart.setBodyDevice (file);
+			filePart.setBodyDevice (file);
 
-				multipart->append (filePart);
-
-				added = true;
-			}
-
-			if (!added)
-			{
-				delete multipart;
-				break;
-			}
+			multipart->append (filePart);
 
 			const auto nam = Proxy_->GetNetworkAccessManager ();
 			auto reply = nam->post (QNetworkRequest (QUrl (server)), multipart);
@@ -494,6 +481,7 @@ namespace Rappor
 					SIGNAL (uploadProgress (qint64, qint64)),
 					this,
 					SLOT (handlePhotosUploadProgress (qint64, qint64)));
+			PhotoUpload2Info_ [reply] = info;
 			multipart->setParent (reply);
 		}
 	}
@@ -511,7 +499,9 @@ namespace Rappor
 		const auto& data = reply->readAll ();
 		const auto& parsed = QJson::Parser ().parse (data).toMap ();
 
-		CallQueue_.append ([this, parsed] (const QString& authKey) -> void
+		const auto& info = PhotoUpload2Info_.take (reply);
+
+		CallQueue_.append ([this, parsed, info] (const QString& authKey) -> void
 			{
 				QUrl saveUrl ("https://api.vk.com/method/photos.save.xml");
 				auto add = [&saveUrl, &parsed] (const QString& name)
@@ -521,6 +511,10 @@ namespace Rappor
 				add ("aid");
 				add ("hash");
 				saveUrl.addQueryItem ("access_token", authKey);
+
+				if (!info.Description_.isEmpty ())
+					saveUrl.addQueryItem ("caption", info.Description_);
+
 				RequestQueue_->Schedule ([this, saveUrl]
 					{
 						connect (Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (saveUrl)),
