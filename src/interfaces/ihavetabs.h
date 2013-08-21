@@ -136,6 +136,8 @@ namespace LeechCraft
 		quint16 Priority_;
 
 		/** @brief The features of this tab class.
+		 *
+		 * @sa TabFeature
 		 */
 		TabFeatures Features_;
 	};
