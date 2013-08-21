@@ -56,10 +56,10 @@ namespace vlc
 	
 	TabClassInfo VlcWidget::GetTabClassInfo () const
 	{
-		return VlcWidget::getTabInfo ();
+		return VlcWidget::GetTabInfo ();
 	}
 	
-	TabClassInfo VlcWidget::getTabInfo () {
+	TabClassInfo VlcWidget::GetTabInfo () {
 		static TabClassInfo main;
 		main.Description_ = "Main tab for VLC plugin";
 		main.Priority_ = 1;

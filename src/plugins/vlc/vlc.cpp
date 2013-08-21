@@ -30,7 +30,6 @@
 #include "vlc.h"
 #include "vlcwidget.h"
 #include <QIcon>
-#include <boost/graph/graph_concepts.hpp>
 #include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
@@ -74,7 +73,7 @@ namespace vlc
 	{
 		VlcWidget *widget = new VlcWidget;
 		emit addNewTab (tr ("Hello, tab"), widget);
-		connect(widget, 
+		connect (widget, 
 				SIGNAL (deleteMe (QWidget*)), 
 				this, 
 				SIGNAL (removeTab (QWidget*)));
@@ -82,7 +81,7 @@ namespace vlc
 	
 	LeechCraft::TabClasses_t Plugin::GetTabClasses () const 
 	{
-		return { VlcWidget::getTabInfo () };
+		return { VlcWidget::GetTabInfo () };
 	}
 }
 }
