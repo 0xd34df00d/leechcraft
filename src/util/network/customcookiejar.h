@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef UTIL_CUSTOMCOOKIEJAR_H
-#define UTIL_CUSTOMCOOKIEJAR_H
+#pragma once
+
 #include <QNetworkCookieJar>
 #include <QByteArray>
 #include <util/utilconfig.h>
@@ -88,8 +88,10 @@ namespace LeechCraft
 			 */
 			void CollectGarbage ();
 
-			/** Returns cookies for the given url, filtering out
-			 * duplicates.
+			/** @brief Returns cookies for the given url.
+			 *
+			 * This function automatically filters out
+			 * duplicate cookies.
 			 *
 			 * @param[in] url The url to return cookies for.
 			 * @return The list of cookies, dup-free.
@@ -101,6 +103,3 @@ namespace LeechCraft
 		};
 	};
 };
-
-#endif
-

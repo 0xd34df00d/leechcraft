@@ -52,10 +52,9 @@ QByteArray CustomCookieJar::Save () const
 {
 	QList<QNetworkCookie> cookies = allCookies ();
 	QByteArray result;
-	for (QList<QNetworkCookie>::const_iterator i = cookies.begin (),
-			end = cookies.end (); i != end; ++i)
+	for (const auto& cookie : cookies)
 	{
-		result += i->toRawForm ();
+		result += cookie.toRawForm ();
 		result += "\n";
 	}
 	return result;
@@ -64,11 +63,12 @@ QByteArray CustomCookieJar::Save () const
 void CustomCookieJar::Load (const QByteArray& data)
 {
 	QList<QByteArray> spcookies = data.split ('\n');
+
 	QList<QNetworkCookie> cookies, filteredCookies;
-	for (QList<QByteArray>::const_iterator i = spcookies.begin (),
-			end = spcookies.end (); i != end; ++i)
-		cookies += QNetworkCookie::parseCookies (*i);
-	Q_FOREACH (QNetworkCookie cookie, cookies)
+	for (const auto& ba : spcookies)
+		cookies += QNetworkCookie::parseCookies (ba);
+
+	for (const auto& cookie : cookies)
 		if (!(FilterTrackingCookies_ &&
 					cookie.name ().startsWith ("__utm")))
 			filteredCookies << cookie;
@@ -88,9 +88,8 @@ void CustomCookieJar::CollectGarbage ()
 
 QList<QNetworkCookie> CustomCookieJar::cookiesForUrl (const QUrl& url) const
 {
-	QList<QNetworkCookie> result = QNetworkCookieJar::cookiesForUrl (url);
 	QList<QNetworkCookie> filtered;
-	Q_FOREACH (QNetworkCookie cookie, result)
+	for (const auto& cookie : QNetworkCookieJar::cookiesForUrl (url))
 		if (!filtered.contains (cookie))
 			filtered << cookie;
 	return filtered;
