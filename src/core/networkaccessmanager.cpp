@@ -80,8 +80,8 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 			this,
 			"handleFilterTrackingCookies");
 
-	CustomCookieJar *jar = new CustomCookieJar (this);
-	setCookieJar (jar);
+	CookieJar_ = new CustomCookieJar (this);
+	setCookieJar (CookieJar_);
 	handleFilterTrackingCookies ();
 
 	try
@@ -104,7 +104,7 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 	QFile file (QDir::homePath () +
 			"/.leechcraft/core/cookies.txt");
 	if (file.open (QIODevice::ReadOnly))
-		jar->Load (file.readAll ());
+		CookieJar_->Load (file.readAll ());
 	else
 		qWarning () << Q_FUNC_INFO
 			<< "could not open file"
@@ -132,18 +132,7 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 
 NetworkAccessManager::~NetworkAccessManager ()
 {
-	CustomCookieJar *jar = static_cast<CustomCookieJar*> (cookieJar ());
-	if (!jar)
-	{
-		qWarning () << Q_FUNC_INFO
-			<< "jar is NULL";
-		return;
-	}
-	else
-	{
-		jar->CollectGarbage ();
-		saveCookies ();
-	}
+	saveCookies ();
 }
 
 QList<QLocale> NetworkAccessManager::GetAcceptLangs () const
@@ -344,8 +333,7 @@ void LeechCraft::NetworkAccessManager::saveCookies () const
 
 void LeechCraft::NetworkAccessManager::handleFilterTrackingCookies ()
 {
-	qobject_cast<CustomCookieJar*> (cookieJar ())->
-		SetFilterTrackingCookies (XmlSettingsManager::Instance ()->
+	CookieJar_->SetFilterTrackingCookies (XmlSettingsManager::Instance ()->
 				property ("FilterTrackingCookies").toBool ());
 }
 

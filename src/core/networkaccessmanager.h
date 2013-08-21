@@ -39,6 +39,11 @@ namespace LeechCraft
 {
 	class SslErrorsDialog;
 
+	namespace Util
+	{
+		class CustomCookieJar;
+	}
+
 	class NetworkAccessManager : public QNetworkAccessManager
 	{
 		Q_OBJECT
@@ -46,6 +51,8 @@ namespace LeechCraft
 		std::auto_ptr<QTimer> CookieSaveTimer_;
 		QList<QLocale> Locales_;
 		QString LocaleStr_;
+
+		Util::CustomCookieJar *CookieJar_;
 	public:
 		NetworkAccessManager (QObject* = 0);
 		virtual ~NetworkAccessManager ();
