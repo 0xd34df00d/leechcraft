@@ -36,6 +36,7 @@ using namespace LeechCraft::Util;
 CustomCookieJar::CustomCookieJar (QObject *parent)
 : QNetworkCookieJar (parent)
 , FilterTrackingCookies_ (false)
+, Enabled_ (true)
 {
 }
 
@@ -46,6 +47,11 @@ CustomCookieJar::~CustomCookieJar ()
 void CustomCookieJar::SetFilterTrackingCookies (bool filter)
 {
 	FilterTrackingCookies_ = filter;
+}
+
+void CustomCookieJar::SetEnabled (bool enabled)
+{
+	Enabled_ = enabled;
 }
 
 QByteArray CustomCookieJar::Save () const
@@ -88,6 +94,9 @@ void CustomCookieJar::CollectGarbage ()
 
 QList<QNetworkCookie> CustomCookieJar::cookiesForUrl (const QUrl& url) const
 {
+	if (!Enabled_)
+		return {};
+
 	QList<QNetworkCookie> filtered;
 	for (const auto& cookie : QNetworkCookieJar::cookiesForUrl (url))
 		if (!filtered.contains (cookie))
@@ -95,3 +104,10 @@ QList<QNetworkCookie> CustomCookieJar::cookiesForUrl (const QUrl& url) const
 	return filtered;
 }
 
+bool CustomCookieJar::setCookiesFromUrl (const QList<QNetworkCookie>& cookieList, const QUrl& url)
+{
+	if (!Enabled_)
+		return false;
+
+	return QNetworkCookieJar::setCookiesFromUrl (cookieList, url);
+}

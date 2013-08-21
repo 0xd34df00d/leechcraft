@@ -47,6 +47,7 @@ namespace LeechCraft
 			Q_OBJECT
 
 			bool FilterTrackingCookies_;
+			bool Enabled_;
 		public:
 			/** @brief Constructs the cookie jar.
 			 *
@@ -66,6 +67,13 @@ namespace LeechCraft
 			 * @param[in] filter Whether to filter tracking cookies.
 			 */
 			void SetFilterTrackingCookies (bool filter);
+
+			/** @brief Enables or disables the cookies.
+			 *
+			 * If cookie jar is disabled, no new cookies will be saved
+			 * and no cookies will be returned for any URL.
+			 */
+			void SetEnabled (bool enabled);
 
 			/** Serializes the cookie jar contents into a QByteArray
 			 * suitable for storage.
@@ -93,10 +101,22 @@ namespace LeechCraft
 			 * This function automatically filters out
 			 * duplicate cookies.
 			 *
+			 * If the cookie jar is disabled, this function does nothing.
+			 *
 			 * @param[in] url The url to return cookies for.
 			 * @return The list of cookies, dup-free.
 			 */
 			QList<QNetworkCookie> cookiesForUrl (const QUrl& url) const;
+
+			/** @brief Adds the cookieList for the given url to the jar.
+			 *
+			 * If the cookie jar is disabled, this function does nothing.
+			 *
+			 * @param[in] cookieList The list of cookies to add.
+			 * @param[in] url The url to set cookies for.
+			 * @return Whether the jar has been modified as the result.
+			 */
+			bool setCookiesFromUrl (const QList<QNetworkCookie>& cookieList, const QUrl& url);
 
 			using QNetworkCookieJar::allCookies;
 			using QNetworkCookieJar::setAllCookies;
