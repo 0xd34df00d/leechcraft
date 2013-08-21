@@ -31,119 +31,123 @@
 #include <QNetworkCookie>
 #include <QtDebug>
 
-using namespace LeechCraft::Util;
-
-CustomCookieJar::CustomCookieJar (QObject *parent)
-: QNetworkCookieJar (parent)
-, FilterTrackingCookies_ (false)
-, Enabled_ (true)
-, MatchDomainExactly_ (false)
+namespace LeechCraft
 {
-}
-
-CustomCookieJar::~CustomCookieJar ()
+namespace Util
 {
-}
-
-void CustomCookieJar::SetFilterTrackingCookies (bool filter)
-{
-	FilterTrackingCookies_ = filter;
-}
-
-void CustomCookieJar::SetEnabled (bool enabled)
-{
-	Enabled_ = enabled;
-}
-
-void CustomCookieJar::SetExactDomainMatch (bool enabled)
-{
-	MatchDomainExactly_ = enabled;
-}
-
-QByteArray CustomCookieJar::Save () const
-{
-	QList<QNetworkCookie> cookies = allCookies ();
-	QByteArray result;
-	for (const auto& cookie : cookies)
+	CustomCookieJar::CustomCookieJar (QObject *parent)
+	: QNetworkCookieJar (parent)
+	, FilterTrackingCookies_ (false)
+	, Enabled_ (true)
+	, MatchDomainExactly_ (false)
 	{
-		result += cookie.toRawForm ();
-		result += "\n";
 	}
-	return result;
-}
 
-void CustomCookieJar::Load (const QByteArray& data)
-{
-	QList<QByteArray> spcookies = data.split ('\n');
-
-	QList<QNetworkCookie> cookies, filteredCookies;
-	for (const auto& ba : spcookies)
-		cookies += QNetworkCookie::parseCookies (ba);
-
-	for (const auto& cookie : cookies)
-		if (!(FilterTrackingCookies_ &&
-					cookie.name ().startsWith ("__utm")))
-			filteredCookies << cookie;
-	setAllCookies (filteredCookies);
-}
-
-void CustomCookieJar::CollectGarbage ()
-{
-	QList<QNetworkCookie> cookies = allCookies ();
-	QList<QNetworkCookie> result;
-	Q_FOREACH (QNetworkCookie cookie, cookies)
-		if (!result.contains (cookie))
-			result << cookie;
-	qDebug () << Q_FUNC_INFO << cookies.size () << result.size ();
-	setAllCookies (result);
-}
-
-QList<QNetworkCookie> CustomCookieJar::cookiesForUrl (const QUrl& url) const
-{
-	if (!Enabled_)
-		return {};
-
-	QList<QNetworkCookie> filtered;
-	for (const auto& cookie : QNetworkCookieJar::cookiesForUrl (url))
-		if (!filtered.contains (cookie))
-			filtered << cookie;
-	return filtered;
-}
-
-namespace
-{
-	bool MatchDomain (QString domain, QString cookieDomain)
+	CustomCookieJar::~CustomCookieJar ()
 	{
-		auto normalize = [] (QString& s)
+	}
+
+	void CustomCookieJar::SetFilterTrackingCookies (bool filter)
+	{
+		FilterTrackingCookies_ = filter;
+	}
+
+	void CustomCookieJar::SetEnabled (bool enabled)
+	{
+		Enabled_ = enabled;
+	}
+
+	void CustomCookieJar::SetExactDomainMatch (bool enabled)
+	{
+		MatchDomainExactly_ = enabled;
+	}
+
+	QByteArray CustomCookieJar::Save () const
+	{
+		QList<QNetworkCookie> cookies = allCookies ();
+		QByteArray result;
+		for (const auto& cookie : cookies)
 		{
-			if (s.startsWith ('.'))
-				s = s.mid (1);
-		};
-		normalize (domain);
-		normalize (cookieDomain);
+			result += cookie.toRawForm ();
+			result += "\n";
+		}
+		return result;
+	}
 
-		if (domain == cookieDomain)
-			return true;
+	void CustomCookieJar::Load (const QByteArray& data)
+	{
+		QList<QByteArray> spcookies = data.split ('\n');
 
-		const auto idx = domain.indexOf (cookieDomain);
-		return idx > 0 && domain.at (idx - 1) == '.';
+		QList<QNetworkCookie> cookies, filteredCookies;
+		for (const auto& ba : spcookies)
+			cookies += QNetworkCookie::parseCookies (ba);
+
+		for (const auto& cookie : cookies)
+			if (!(FilterTrackingCookies_ &&
+						cookie.name ().startsWith ("__utm")))
+				filteredCookies << cookie;
+		setAllCookies (filteredCookies);
+	}
+
+	void CustomCookieJar::CollectGarbage ()
+	{
+		QList<QNetworkCookie> cookies = allCookies ();
+		QList<QNetworkCookie> result;
+		for (const auto& cookie : allCookies ())
+			if (!result.contains (cookie))
+				result << cookie;
+		qDebug () << Q_FUNC_INFO << cookies.size () << result.size ();
+		setAllCookies (result);
+	}
+
+	QList<QNetworkCookie> CustomCookieJar::cookiesForUrl (const QUrl& url) const
+	{
+		if (!Enabled_)
+			return {};
+
+		QList<QNetworkCookie> filtered;
+		for (const auto& cookie : QNetworkCookieJar::cookiesForUrl (url))
+			if (!filtered.contains (cookie))
+				filtered << cookie;
+		return filtered;
+	}
+
+	namespace
+	{
+		bool MatchDomain (QString domain, QString cookieDomain)
+		{
+			auto normalize = [] (QString& s)
+			{
+				if (s.startsWith ('.'))
+					s = s.mid (1);
+			};
+			normalize (domain);
+			normalize (cookieDomain);
+
+			if (domain == cookieDomain)
+				return true;
+
+			const auto idx = domain.indexOf (cookieDomain);
+			return idx > 0 && domain.at (idx - 1) == '.';
+		}
+	}
+
+	bool CustomCookieJar::setCookiesFromUrl (const QList<QNetworkCookie>& cookieList, const QUrl& url)
+	{
+		if (!Enabled_)
+			return false;
+
+		QList<QNetworkCookie> filtered;
+		filtered.reserve (cookieList.size ());
+		for (const auto& cookie : cookieList)
+		{
+			if (MatchDomainExactly_ && !MatchDomain (url.host (), cookie.domain ()))
+				continue;
+
+			filtered << cookie;
+		}
+
+		return QNetworkCookieJar::setCookiesFromUrl (filtered, url);
 	}
 }
-
-bool CustomCookieJar::setCookiesFromUrl (const QList<QNetworkCookie>& cookieList, const QUrl& url)
-{
-	if (!Enabled_)
-		return false;
-
-	QList<QNetworkCookie> filtered;
-	filtered.reserve (cookieList.size ());
-	for (const auto& cookie : cookieList)
-	{
-		if (MatchDomainExactly_ && !MatchDomain (url.host (), cookie.domain ()))
-			continue;
-
-		filtered << cookie;
-	}
-
-	return QNetworkCookieJar::setCookiesFromUrl (filtered, url);
 }
