@@ -44,7 +44,7 @@ namespace vlc
 					main.Priority_ = 1;
 					main.Icon_ = QIcon();
 					main.VisibleName_ = "Name of main tab of VLC plugin";
-					main.Features_ = TabFeature::TFByDefault | TabFeature::TFOpenableByRequest | TabFeature::TFSingle;
+					main.Features_ = /*TabFeature::TFByDefault | */TabFeature::TFOpenableByRequest | TabFeature::TFSingle;
 					main.TabClass_ = "org.LeechCraft.vlc";
 					return main;
 		};
