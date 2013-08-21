@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "vlcwidget.h"
-#include "vlcwidgettabclassinfo.h"
 
 namespace LeechCraft
 {
@@ -57,7 +56,18 @@ namespace vlc
 	
 	TabClassInfo VlcWidget::GetTabClassInfo () const
 	{
-		return VlcWidgetTabClassInfo::getInfo ();
+		return VlcWidget::getTabInfo ();
 	}
+	
+	TabClassInfo VlcWidget::getTabInfo () {
+		static TabClassInfo main;
+		main.Description_ = "Main tab for VLC plugin";
+		main.Priority_ = 1;
+		main.Icon_ = QIcon ();
+		main.VisibleName_ = "Name of main tab of VLC plugin";
+		main.Features_ = TabFeature::TFOpenableByRequest;
+		main.TabClass_ = "org.LeechCraft.vlc";
+		return main;
+	};
 }
 }

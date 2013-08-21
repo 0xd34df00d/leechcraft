@@ -13,9 +13,6 @@ set (SRCS
 	vlcwidget.cpp
 	)
 	
-set (HEADERS
-	vlcwidgettabclassinfo.h
-	)
 #CreateTrs("vlc" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("vlc" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 

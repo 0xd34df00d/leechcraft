@@ -50,6 +50,7 @@ namespace vlc
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+		static TabClassInfo getTabInfo ();
 		
 	signals:
 		void deleteMe (QWidget*);

@@ -29,7 +29,6 @@
 
 #include "vlc.h"
 #include "vlcwidget.h"
-#include "vlcwidgettabclassinfo.h"
 #include <QIcon>
 #include <boost/graph/graph_concepts.hpp>
 #include <interfaces/core/icoreproxy.h>
@@ -83,7 +82,7 @@ namespace vlc
 	
 	LeechCraft::TabClasses_t Plugin::GetTabClasses () const 
 	{
-		return { VlcWidgetTabClassInfo::getInfo () };
+		return { VlcWidget::getTabInfo () };
 	}
 }
 }
