@@ -2549,7 +2549,7 @@ namespace Azoth
 					const QString& notifMsg = body.size () > 50 ?
 							body.left (50) + "..." :
 							body;
-					msgString = tr ("Incoming chat message from <em>%1</em>: <em>%2</em>.")
+					msgString = tr ("Incoming chat message from <em>%1</em>: <em>%2</em>")
 							.arg (other->GetEntryName ())
 							.arg (notifMsg);
 				}
@@ -2571,7 +2571,7 @@ namespace Azoth
 					const QString& notifMsg = body.size () > 50 ?
 							body.left (50) + "..." :
 							body;
-					msgString = tr ("Highlighted in conference <em>%1</em> by <em>%2</em>: <em>%3</em>.")
+					msgString = tr ("Highlighted in conference <em>%1</em> by <em>%2</em>: <em>%3</em>")
 							.arg (parentCL->GetEntryName ())
 							.arg (other->GetEntryName ())
 							.arg (notifMsg);
