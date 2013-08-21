@@ -79,10 +79,14 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 	XmlSettingsManager::Instance ()->RegisterObject ("FilterTrackingCookies",
 			this,
 			"handleFilterTrackingCookies");
+	XmlSettingsManager::Instance ()->RegisterObject ("EnableCookies",
+			this,
+			"setCookiesEnabled");
 
 	CookieJar_ = new CustomCookieJar (this);
 	setCookieJar (CookieJar_);
 	handleFilterTrackingCookies ();
+	setCookiesEnabled ();
 
 	try
 	{
@@ -335,6 +339,12 @@ void LeechCraft::NetworkAccessManager::handleFilterTrackingCookies ()
 {
 	CookieJar_->SetFilterTrackingCookies (XmlSettingsManager::Instance ()->
 				property ("FilterTrackingCookies").toBool ());
+}
+
+void NetworkAccessManager::setCookiesEnabled ()
+{
+	CookieJar_->SetEnabled (XmlSettingsManager::Instance ()->
+			property ("EnableCookies").toBool ());
 }
 
 void NetworkAccessManager::handleCacheSize ()
