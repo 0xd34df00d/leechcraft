@@ -86,6 +86,8 @@ namespace Rappor
 		QList<std::function<void (const QString&)>> CallQueue_;
 
 		QHash<QNetworkReply*, QList<UploadItem>> PhotosUploadServer2Infos_;
+		QHash<QNetworkReply*, QList<UploadItem>> PhotoUpload2QueueTail_;
+		QHash<QNetworkReply*, QString> PhotoUpload2Server_;
 		QHash<QNetworkReply*, UploadItem> PhotoUpload2Info_;
 	public:
 		VkAccount (const QString&, VkService*, ICoreProxy_ptr,
@@ -111,6 +113,7 @@ namespace Rappor
 	private:
 		void HandleAlbumElement (const QDomElement&);
 		bool HandlePhotoElement (const QDomElement&, bool atEnd = true);
+		void StartUpload (const QString& server, QList<UploadItem> tail);
 	private slots:
 		void handleGotAlbums ();
 		void handleGotPhotos ();

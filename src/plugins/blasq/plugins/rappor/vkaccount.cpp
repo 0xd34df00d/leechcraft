@@ -391,6 +391,46 @@ namespace Rappor
 		return true;
 	}
 
+	void VkAccount::StartUpload (const QString& server, QList<UploadItem> infos)
+	{
+		if (infos.isEmpty ())
+			return;
+
+		const auto& info = infos.takeFirst ();
+
+		auto multipart = new QHttpMultiPart (QHttpMultiPart::FormDataType);
+
+		const auto& path = info.FilePath_;
+
+		auto file = new QFile (path, multipart);
+		file->open (QIODevice::ReadOnly);
+
+		QHttpPart filePart;
+
+		const auto& disp = QString ("form-data; name=\"file1\"; filename=\"%1\"")
+				.arg (QFileInfo (path).fileName ());
+		filePart.setHeader (QNetworkRequest::ContentDispositionHeader, disp);
+
+		filePart.setBodyDevice (file);
+
+		multipart->append (filePart);
+
+		const auto nam = Proxy_->GetNetworkAccessManager ();
+		auto reply = nam->post (QNetworkRequest (QUrl (server)), multipart);
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handlePhotosUploaded ()));
+		connect (reply,
+				SIGNAL (uploadProgress (qint64, qint64)),
+				this,
+				SLOT (handlePhotosUploadProgress (qint64, qint64)));
+		PhotoUpload2Info_ [reply] = info;
+		PhotoUpload2QueueTail_ [reply] = infos;
+		PhotoUpload2Server_ [reply] = server;
+		multipart->setParent (reply);
+	}
+
 	void VkAccount::handleGotAlbums ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
@@ -450,40 +490,7 @@ namespace Rappor
 		}
 
 		const auto& server = doc.documentElement ().firstChildElement ("upload_url").text ();
-		const auto& infos = PhotosUploadServer2Infos_.take (reply);
-
-		for (const auto& info : infos)
-		{
-			auto multipart = new QHttpMultiPart (QHttpMultiPart::FormDataType);
-
-			const auto& path = info.FilePath_;
-
-			auto file = new QFile (path, multipart);
-			file->open (QIODevice::ReadOnly);
-
-			QHttpPart filePart;
-
-			const auto& disp = QString ("form-data; name=\"file1\"; filename=\"%1\"")
-					.arg (QFileInfo (path).fileName ());
-			filePart.setHeader (QNetworkRequest::ContentDispositionHeader, disp);
-
-			filePart.setBodyDevice (file);
-
-			multipart->append (filePart);
-
-			const auto nam = Proxy_->GetNetworkAccessManager ();
-			auto reply = nam->post (QNetworkRequest (QUrl (server)), multipart);
-			connect (reply,
-					SIGNAL (finished ()),
-					this,
-					SLOT (handlePhotosUploaded ()));
-			connect (reply,
-					SIGNAL (uploadProgress (qint64, qint64)),
-					this,
-					SLOT (handlePhotosUploadProgress (qint64, qint64)));
-			PhotoUpload2Info_ [reply] = info;
-			multipart->setParent (reply);
-		}
+		StartUpload (server, PhotosUploadServer2Infos_.take (reply));
 	}
 
 	void VkAccount::handlePhotosUploadProgress (qint64 done, qint64 total)
@@ -495,6 +502,10 @@ namespace Rappor
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
+
+		const auto& tail = PhotoUpload2QueueTail_.take (reply);
+		const auto& server = PhotoUpload2Server_.take (reply);
+		StartUpload (server, tail);
 
 		const auto& data = reply->readAll ();
 		const auto& parsed = QJson::Parser ().parse (data).toMap ();
