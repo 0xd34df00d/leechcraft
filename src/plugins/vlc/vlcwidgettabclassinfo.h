@@ -27,79 +27,27 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "vlc.h"
-#include "vlcwidget.h"
-#include "vlcwidgettabclassinfo.h"
-#include <QIcon>
-#include <QMainWindow>
-#include <QDebug>
-#include <boost/graph/graph_concepts.hpp>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/core/irootwindowsmanager.h>
+#pragma once
 
+#include <interfaces/ihavetabs.h>
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	class VlcWidgetTabClassInfo
 	{
-		Proxy_ = proxy;
-		showWindow_ = new QAction(QIcon(), tr("Show test window"), this);
-		allActionsThatIKnow_.append(showWindow_);
-		connect(showWindow_, SIGNAL(triggered()), this, SLOT(createWindow()));
-	}
-
-	void Plugin::SecondInit ()
-	{
-	}
-
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.vlc";
-	}
-
-	void Plugin::Release ()
-	{
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "vlc";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Abstract information about vlc");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-	
-	QList<QAction*> Plugin::GetActions () const
-	{
-		return allActionsThatIKnow_;
-	}
-	
-	void Plugin::createWindow() {
-		qDebug() << "vlc::createWindow";
-		//QMessageBox::about(Proxy_->GetRootWindowsManager()->GetMainWindow(0), tr("Hello title"), tr("Hello text"));
-	}
-	
-	void Plugin::TabOpenRequested (const QByteArray& tabClass) {
-		qDebug() << "vlc serious message";
-		VlcWidget *widget = new VlcWidget;
-		emit addNewTab (tr ("Hello, tab"), widget);
-	}
-	
-	LeechCraft::TabClasses_t Plugin::GetTabClasses () const {
-		TabClasses_t res;
-		res.append(VlcWidgetTabClassInfo::getInfo());
-		return res;
-	}
+	public:
+		static TabClassInfo getInfo() {
+					TabClassInfo main;
+					main.Description_ = "Main tab for VLC plugin";
+					main.Priority_ = 1;
+					main.Icon_ = QIcon();
+					main.VisibleName_ = "Name of main tab of VLC plugin";
+					main.Features_ = TabFeature::TFByDefault | TabFeature::TFOpenableByRequest | TabFeature::TFSingle;
+					main.TabClass_ = "org.LeechCraft.vlc";
+					return main;
+		};
+	};
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_vlc, LeechCraft::vlc::Plugin);
