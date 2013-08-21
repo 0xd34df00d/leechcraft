@@ -72,6 +72,9 @@ namespace LeechCraft
 			 *
 			 * If cookie jar is disabled, no new cookies will be saved
 			 * and no cookies will be returned for any URL.
+			 *
+			 * @param[in] enabled Whether the cookie jar should be
+			 * enabled.
 			 */
 			void SetEnabled (bool enabled);
 
