@@ -47,7 +47,9 @@ namespace vlc
 		void Remove();
 		QToolBar* GetToolBar() const;
 	private:
-
+		
+	signals:
+		void deleteMe(QWidget*);
 	};
 }
 }

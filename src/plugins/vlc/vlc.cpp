@@ -83,7 +83,7 @@ namespace vlc
 		return allActionsThatIKnow_;
 	}
 	
-	void Plugin::createWindow() {
+	void Plugin::createWindow () {
 		qDebug() << "vlc::createWindow";
 		//QMessageBox::about(Proxy_->GetRootWindowsManager()->GetMainWindow(0), tr("Hello title"), tr("Hello text"));
 	}
@@ -92,6 +92,7 @@ namespace vlc
 		qDebug() << "vlc serious message";
 		VlcWidget *widget = new VlcWidget;
 		emit addNewTab (tr ("Hello, tab"), widget);
+		QObject::connect(widget, SIGNAL(deleteMe(QWidget*)), this, SIGNAL(removeTab(QWidget*)));
 	}
 	
 	LeechCraft::TabClasses_t Plugin::GetTabClasses () const {

@@ -41,6 +41,7 @@ namespace vlc
 	
 	void VlcWidget::Remove() 
 	{	
+		emit deleteMe(this);
 	}
 	
 	TabClassInfo VlcWidget::GetTabClassInfo() const

@@ -39,14 +39,14 @@ namespace vlc
 	{
 	public:
 		static TabClassInfo getInfo() {
-					TabClassInfo main;
-					main.Description_ = "Main tab for VLC plugin";
-					main.Priority_ = 1;
-					main.Icon_ = QIcon();
-					main.VisibleName_ = "Name of main tab of VLC plugin";
-					main.Features_ = /*TabFeature::TFByDefault | */TabFeature::TFOpenableByRequest | TabFeature::TFSingle;
-					main.TabClass_ = "org.LeechCraft.vlc";
-					return main;
+			TabClassInfo main;
+			main.Description_ = "Main tab for VLC plugin";
+			main.Priority_ = 1;
+			main.Icon_ = QIcon();
+			main.VisibleName_ = "Name of main tab of VLC plugin";
+			main.Features_ = TabFeature::TFOpenableByRequest;
+			main.TabClass_ = "org.LeechCraft.vlc";
+			return main;
 		};
 	};
 }
