@@ -85,11 +85,15 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 	XmlSettingsManager::Instance ()->RegisterObject ("EnableCookies",
 			this,
 			"setCookiesEnabled");
+	XmlSettingsManager::Instance ()->RegisterObject ("MatchDomainExactly",
+			this,
+			"setMatchDomainExactly");
 
 	CookieJar_ = new CustomCookieJar (this);
 	setCookieJar (CookieJar_);
 	handleFilterTrackingCookies ();
 	setCookiesEnabled ();
+	setMatchDomainExactly ();
 
 	try
 	{
@@ -342,6 +346,12 @@ void NetworkAccessManager::setCookiesEnabled ()
 {
 	CookieJar_->SetEnabled (XmlSettingsManager::Instance ()->
 			property ("EnableCookies").toBool ());
+}
+
+void NetworkAccessManager::setMatchDomainExactly ()
+{
+	CookieJar_->SetExactDomainMatch (XmlSettingsManager::Instance ()->
+			property ("MatchDomainExactly").toBool ());
 }
 
 void NetworkAccessManager::handleCacheSize ()

@@ -72,6 +72,7 @@ namespace LeechCraft
 		void saveCookies () const;
 		void handleFilterTrackingCookies ();
 		void setCookiesEnabled ();
+		void setMatchDomainExactly ();
 
 		void handleCacheSize ();
 	signals:
