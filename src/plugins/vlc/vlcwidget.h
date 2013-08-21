@@ -40,13 +40,16 @@ namespace vlc
 					, public ITabWidget
 	{
 		Q_OBJECT
- 		Q_INTERFACES (ITabWidget)
+		Q_INTERFACES (ITabWidget)
+		
+		QObject *parent_;
+		
 	public:
+		explicit VlcWidget (QObject* parent = 0);
 		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs () {return NULL;};
+		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
-	private:
 		
 	signals:
 		void deleteMe (QWidget*);

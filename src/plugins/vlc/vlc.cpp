@@ -37,7 +37,7 @@
 namespace LeechCraft
 {
 namespace vlc
-{
+{	
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
@@ -63,7 +63,7 @@ namespace vlc
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Abstract information about vlc");
+		return tr ("Video player, based on VLC");
 	}
 
 	QIcon Plugin::GetIcon () const
@@ -71,22 +71,19 @@ namespace vlc
 		return QIcon ();
 	}
 	
-	QList<QAction*> Plugin::GetActions () const
+	void Plugin::TabOpenRequested (const QByteArray& tabClass) 
 	{
-		QList<QAction*> res;
-		return res;
-	}
-		
-	void Plugin::TabOpenRequested (const QByteArray& tabClass) {
 		VlcWidget *widget = new VlcWidget;
 		emit addNewTab (tr ("Hello, tab"), widget);
-		QObject::connect(widget, SIGNAL (deleteMe (QWidget*)), this, SIGNAL (removeTab (QWidget*)));
+		connect(widget, 
+				SIGNAL (deleteMe (QWidget*)), 
+				this, 
+				SIGNAL (removeTab (QWidget*)));
 	}
 	
-	LeechCraft::TabClasses_t Plugin::GetTabClasses () const {
-		TabClasses_t res;
-		res.append(VlcWidgetTabClassInfo::getInfo ());
-		return res;
+	LeechCraft::TabClasses_t Plugin::GetTabClasses () const 
+	{
+		return { VlcWidgetTabClassInfo::getInfo () };
 	}
 }
 }

@@ -43,7 +43,10 @@ namespace vlc
 				 , public IHaveTabs
 	{
 		Q_OBJECT
- 		Q_INTERFACES (IInfo IHaveTabs)
+		Q_INTERFACES (IInfo IHaveTabs)
+	
+		ICoreProxy_ptr Proxy_;
+	
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -53,14 +56,9 @@ namespace vlc
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 
-		QList<QAction*> GetActions () const;
-		
 		void TabOpenRequested (const QByteArray&);
 		LeechCraft::TabClasses_t GetTabClasses () const;
-				
-	private:
-		ICoreProxy_ptr Proxy_;
-		
+					
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

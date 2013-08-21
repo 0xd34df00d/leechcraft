@@ -34,13 +34,24 @@ namespace LeechCraft
 {
 namespace vlc
 {
+	VlcWidget::VlcWidget (QObject* parent): QWidget ()
+	{
+		parent_ = parent;
+	}
+
+	QObject* VlcWidget::ParentMultiTabs ()
+	{
+		return parent_;
+	}
+	
 	QToolBar* VlcWidget::GetToolBar () const
 	{
-		return NULL;
+		return nullptr;
 	}
 	
 	void VlcWidget::Remove () 
 	{	
+		deleteLater ();
 		emit deleteMe (this);
 	}
 	
