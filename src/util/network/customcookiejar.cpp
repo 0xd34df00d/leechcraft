@@ -37,6 +37,7 @@ CustomCookieJar::CustomCookieJar (QObject *parent)
 : QNetworkCookieJar (parent)
 , FilterTrackingCookies_ (false)
 , Enabled_ (true)
+, MatchDomainExactly_ (false)
 {
 }
 
@@ -52,6 +53,11 @@ void CustomCookieJar::SetFilterTrackingCookies (bool filter)
 void CustomCookieJar::SetEnabled (bool enabled)
 {
 	Enabled_ = enabled;
+}
+
+void CustomCookieJar::SetExactDomainMatch (bool enabled)
+{
+	MatchDomainExactly_ = enabled;
 }
 
 QByteArray CustomCookieJar::Save () const
@@ -104,10 +110,40 @@ QList<QNetworkCookie> CustomCookieJar::cookiesForUrl (const QUrl& url) const
 	return filtered;
 }
 
+namespace
+{
+	bool MatchDomain (QString domain, QString cookieDomain)
+	{
+		auto normalize = [] (QString& s)
+		{
+			if (s.startsWith ('.'))
+				s = s.mid (1);
+		};
+		normalize (domain);
+		normalize (cookieDomain);
+
+		if (domain == cookieDomain)
+			return true;
+
+		const auto idx = domain.indexOf (cookieDomain);
+		return idx > 0 && domain.at (idx - 1) == '.';
+	}
+}
+
 bool CustomCookieJar::setCookiesFromUrl (const QList<QNetworkCookie>& cookieList, const QUrl& url)
 {
 	if (!Enabled_)
 		return false;
 
-	return QNetworkCookieJar::setCookiesFromUrl (cookieList, url);
+	QList<QNetworkCookie> filtered;
+	filtered.reserve (cookieList.size ());
+	for (const auto& cookie : cookieList)
+	{
+		if (MatchDomainExactly_ && !MatchDomain (url.host (), cookie.domain ()))
+			continue;
+
+		filtered << cookie;
+	}
+
+	return QNetworkCookieJar::setCookiesFromUrl (filtered, url);
 }

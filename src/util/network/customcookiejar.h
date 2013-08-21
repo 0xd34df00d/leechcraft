@@ -48,6 +48,7 @@ namespace LeechCraft
 
 			bool FilterTrackingCookies_;
 			bool Enabled_;
+			bool MatchDomainExactly_;
 		public:
 			/** @brief Constructs the cookie jar.
 			 *
@@ -77,6 +78,12 @@ namespace LeechCraft
 			 * enabled.
 			 */
 			void SetEnabled (bool enabled);
+
+			/** @brief Sets whether exact domain matching is enabled.
+			 *
+			 * @param[in] enabled Whether exact matching is enabled.
+			 */
+			void SetExactDomainMatch (bool enabled);
 
 			/** Serializes the cookie jar contents into a QByteArray
 			 * suitable for storage.
@@ -124,5 +131,5 @@ namespace LeechCraft
 			using QNetworkCookieJar::allCookies;
 			using QNetworkCookieJar::setAllCookies;
 		};
-	};
-};
+	}
+}
