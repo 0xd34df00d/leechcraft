@@ -220,6 +220,7 @@ option (ENABLE_SNAILS "Build Snails, LeechCraft mail client" OFF)
 option (ENABLE_TWIFEE "Build Twifee, the Twitter client" OFF)
 option (ENABLE_CEMENTO "Build Cemento, LeechCraft common persistent storage" OFF)
 option (ENABLE_WOODPECKER "Build Woodpecker, twitter client" ${WITH_PLUGINS})
+option (ENABLE_VLC "Build vlc, plugin for video" OFF)
 
 # Dumb alternatives
 option (ENABLE_DUMBEEP "Build Dumbeep, a dumb sound notifier for those fearing true LMP power" OFF)
@@ -590,6 +591,10 @@ endif ()
 
 if (ENABLE_DUMBEEP)
 	add_subdirectory (plugins/dumbeep)
+endif ()
+
+if (ENABLE_VLC)
+	add_subdirectory (plugins/vlc)
 endif ()
 
 if (UNIX AND NOT APPLE)
