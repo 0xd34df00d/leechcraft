@@ -31,9 +31,9 @@
 
 #include <QWidget>
 #include <QToolBar>
-#include <boost/concept_check.hpp>
 #include <interfaces/ihavetabs.h>
 #include <ui_vlcinterface.h>
+#include "vlcscrollbar.h"
 
 namespace LeechCraft
 {
@@ -52,6 +52,7 @@ namespace vlc
 		QToolBar *bar_;
 		QAction *open_;
 		QAction *info_;
+		VlcScrollBar *scrollBar_;
 		
 		void generateToolBar();
 		

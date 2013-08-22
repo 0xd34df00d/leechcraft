@@ -14,6 +14,7 @@ set (SRCS
 	vlc.cpp
 	vlcwidget.cpp
 	vlcplayer.cpp
+	vlcscrollbar.cpp
 	)
 set (FORMS
 	vlcinterface.ui

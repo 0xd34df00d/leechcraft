@@ -34,6 +34,7 @@
 #include <QPaintEvent>
 #include <QFileDialog>
 #include <QTimer>
+#include <QDebug>
 
 namespace LeechCraft
 {
@@ -43,17 +44,27 @@ namespace vlc
 	{
 		parent_ = parent;
 		ui = new Ui::VlcInteface;
-		ui->setupUi(this);
-		vlcPlayer_ = new VlcPlayer(ui->vlcWidget);
-		generateToolBar();
+		ui->setupUi (this);
+		scrollBar_ = new VlcScrollBar (ui->mainFrame);
+		QVBoxLayout *layout = new QVBoxLayout (this);
+		layout->addWidget (scrollBar_);
+		ui->scrollBarWidget->setLayout (layout);
+		scrollBar_->show ();
+		vlcPlayer_ = new VlcPlayer (ui->vlcWidget);
+		generateToolBar ();
 		QTimer *timer = new QTimer;
-		timer->setInterval(100);
-		timer->start();
+		timer->setInterval (100);
+		timer->start ();
 		
 		connect (timer,
-				SIGNAL (timeout()),
+				SIGNAL (timeout ()),
 				 this,
 				SLOT (updateIterface ()));
+		
+		connect (scrollBar_,
+				SIGNAL (changePosition (double)),
+				 vlcPlayer_,
+				SLOT (changePosition (double)));
 		
 		connect (ui->stop,
 				SIGNAL (clicked ()),
@@ -109,6 +120,9 @@ namespace vlc
 			ui->play->setText(tr("pause"));
 		else
 			ui->play->setText(tr("play"));
+		
+		scrollBar_->setPosition(vlcPlayer_->getPosition());
+		scrollBar_->repaint();
 	}
 
 
@@ -130,7 +144,8 @@ namespace vlc
 		return VlcWidget::GetTabInfo ();
 	}
 	
-	TabClassInfo VlcWidget::GetTabInfo () {
+	TabClassInfo VlcWidget::GetTabInfo () 
+	{
 		static TabClassInfo main;
 		main.Description_ = "Main tab for VLC plugin";
 		main.Priority_ = 1;
