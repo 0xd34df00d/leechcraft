@@ -138,6 +138,11 @@ namespace Rappor
 
 	void VkAccount::UpdateCollections ()
 	{
+		if (IsUpdating_)
+			return;
+
+		IsUpdating_ = true;
+
 		if (auto rc = AllPhotosItem_->rowCount ())
 			AllPhotosItem_->removeRows (0, rc);
 
@@ -443,6 +448,7 @@ namespace Rappor
 			qWarning () << Q_FUNC_INFO
 					<< "cannot parse reply"
 					<< data;
+			IsUpdating_ = false;
 			return;
 		}
 
@@ -618,6 +624,7 @@ namespace Rappor
 			qWarning () << Q_FUNC_INFO
 					<< "cannot parse reply"
 					<< data;
+			IsUpdating_ = false;
 			return;
 		}
 
@@ -638,11 +645,17 @@ namespace Rappor
 		}
 
 		if (finishReached)
+		{
+			IsUpdating_ = false;
 			return;
+		}
 
 		const auto count = doc.documentElement ().firstChildElement ("count").text ().toInt ();
 		if (count == AllPhotosItem_->rowCount ())
+		{
+			IsUpdating_ = false;
 			return;
+		}
 
 		const auto offset = AllPhotosItem_->rowCount ();
 
@@ -663,7 +676,6 @@ namespace Rappor
 			});
 
 		AuthMgr_->GetAuthKey ();
-
 	}
 
 	void VkAccount::handleAuthKey (const QString& authKey)

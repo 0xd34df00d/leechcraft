@@ -74,6 +74,8 @@ namespace Rappor
 		VkService * const Service_;
 		const ICoreProxy_ptr Proxy_;
 
+		bool IsUpdating_ = false;
+
 		QStandardItemModel * const CollectionsModel_;
 		QStandardItem *AllPhotosItem_ = 0;
 		QHash<int, QStandardItem*> Albums_;
