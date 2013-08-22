@@ -5,7 +5,16 @@ Rectangle {
     id: rootRect
     anchors.fill: parent
     focus: true
-    color: "#e0000000"
+    gradient: Gradient {
+        GradientStop {
+            position: 0
+            color: colorProxy.setAlpha(colorProxy.color_TextView_TopColor, 0.8)
+        }
+        GradientStop {
+            position: 1
+            color: colorProxy.setAlpha(colorProxy.color_TextView_BottomColor, 0.8)
+        }
+    }
 
     signal closeRequested()
     signal itemSelected(string id)
@@ -39,21 +48,6 @@ Rectangle {
             anchors.topMargin: 5
             currentIndex: 0
 
-            highlight: Rectangle {
-                width: catsView.width
-                height: 30
-
-                color: "#A51E00"
-                radius: 5
-                y: catsView.currentItem.y
-
-                Behavior on y {
-                    PropertyAnimation {}
-                }
-            }
-
-            highlightFollowsCurrentItem: false
-
             model: catsModel
 
             delegate: Rectangle {
@@ -63,8 +57,26 @@ Rectangle {
                 height: 30
                 radius: 5
 
-                color: (!ListView.isCurrentItem && categoryMouseArea.containsMouse) ? "#aa000000" : "#00000000"
-                Behavior on color { PropertyAnimation {} }
+                gradient: Gradient {
+                    GradientStop {
+                        position: 0
+                        color: categoryMouseArea.containsMouse ?
+                                colorProxy.color_ToolButton_HoveredTopColor :
+                                    (catsView.currentIndex == index ?
+                                        colorProxy.color_ToolButton_SelectedTopColor :
+                                        colorProxy.color_ToolButton_TopColor)
+                        Behavior on color { PropertyAnimation {} }
+                    }
+                    GradientStop {
+                        position: 1
+                        color: categoryMouseArea.containsMouse ?
+                                colorProxy.color_ToolButton_HoveredBottomColor :
+                                    (catsView.currentIndex == index ?
+                                        colorProxy.color_ToolButton_SelectedBottomColor :
+                                        colorProxy.color_ToolButton_BottomColor)
+                        Behavior on color { PropertyAnimation {} }
+                    }
+                }
 
                 Image {
                     id: categoryIconImage
@@ -83,7 +95,7 @@ Rectangle {
 
                     font.italic: true
                     font.pointSize: 12
-                    color: "#cccccc"
+                    color: colorProxy.color_ToolButton_TextColor
 
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.left: categoryIconImage.right
@@ -99,6 +111,7 @@ Rectangle {
                         appsFilterInput.text = "";
                         rootRect.categorySelected(index);
                         catsView.currentIndex = index
+                        itemsView.currentIndex = -1
                     }
                 }
             }
@@ -110,7 +123,7 @@ Rectangle {
                 height: 2
                 radius: 1
 
-                color: "#444444"
+                color: colorProxy.color_ToolButton_BorderColor
                 smooth: true
             }
         }
@@ -126,7 +139,7 @@ Rectangle {
         anchors.right: parent.right
         height: 22
 
-        color: "#cccccccc"
+        color: colorProxy.color_Panel_TopColor
 
         TextInput {
             id: appsFilterInput
@@ -136,6 +149,7 @@ Rectangle {
             anchors.margins: 4
             font.pointSize: 12
             font.italic: true
+            color:  colorProxy.color_Panel_TextColor
             focus: true
         }
 
@@ -153,6 +167,7 @@ Rectangle {
         anchors.bottom: itemDescriptionLabel.top
         anchors.right: parent.right
         anchors.margins: 5
+        currentIndex: -1
 
         cellWidth: 160
         cellHeight: 128
@@ -169,8 +184,26 @@ Rectangle {
             height: itemsView.cellHeight
             radius: 5
 
-            color: (itemMouseArea.containsMouse || GridView.isCurrentItem) ? "#AAA51E00" : "#33222222"
-            Behavior on color { PropertyAnimation {} }
+            gradient: Gradient {
+                GradientStop {
+                    position: 0
+                    color: itemMouseArea.containsMouse ?
+                            colorProxy.color_ToolButton_HoveredTopColor :
+                                (itemsView.currentIndex == index ?
+                                    colorProxy.color_ToolButton_SelectedTopColor :
+                                    colorProxy.setAlpha(colorProxy.color_ToolButton_TopColor, 0.5))
+                    Behavior on color { PropertyAnimation {} }
+                }
+                GradientStop {
+                    position: 1
+                    color: itemMouseArea.containsMouse ?
+                            colorProxy.color_ToolButton_HoveredBottomColor :
+                                (itemsView.currentIndex == index ?
+                                    colorProxy.color_ToolButton_SelectedBottomColor :
+                                    colorProxy.setAlpha(colorProxy.color_ToolButton_BottomColor, 0.5))
+                    Behavior on color { PropertyAnimation {} }
+                }
+            }
 
             Image {
                 width: 64
@@ -188,7 +221,7 @@ Rectangle {
 
                 width: parent.width
                 font.pointSize: 10
-                color: "#eeeeee"
+                color: colorProxy.color_ToolButton_TextColor
 
                 anchors.left: parent.left
                 anchors.bottom: parent.bottom
@@ -238,7 +271,7 @@ Rectangle {
 
         height: 16
 
-        color: "#aaaaaa"
+        color: colorProxy.color_TextView_Aux1TextColor
 
         anchors.left: catsContainer.right
         anchors.bottom: parent.bottom
