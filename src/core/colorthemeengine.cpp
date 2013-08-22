@@ -205,5 +205,24 @@ namespace LeechCraft
 				hash [key] = ParseColor (settings.value (key));
 			settings.endGroup ();
 		}
+
+		auto fixup = [this, &settings] (const QString& section,
+				const QString& name, const QString& fallback) -> void
+		{
+			auto& sec = QMLColors_ [section];
+			if (sec.contains (name))
+				return;
+
+			qWarning () << Q_FUNC_INFO
+					<< settings.fileName ()
+					<< "lacks"
+					<< (section + "_" + name)
+					<< "; falling back to"
+					<< fallback;
+			sec [name] = sec [fallback];
+		};
+
+		fixup ("ToolButton", "HoveredTopColor", "SelectedTopColor");
+		fixup ("ToolButton", "HoveredBottomColor", "SelectedBottomColor");
 	}
 }
