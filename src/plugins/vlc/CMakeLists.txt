@@ -9,6 +9,7 @@ include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
+#	${VLC_INCLUDE_DIRS}
 	)
 set (SRCS
 	vlc.cpp
@@ -33,6 +34,7 @@ add_library (leechcraft_vlc SHARED
 target_link_libraries (leechcraft_vlc
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
+#	${VLC_LIBRARIES}
 	/usr/lib/libvlc.so
 	)
 install (TARGETS leechcraft_vlc DESTINATION ${LC_PLUGINS_DEST})

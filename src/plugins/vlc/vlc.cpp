@@ -73,6 +73,7 @@ namespace vlc
 	{
 		VlcWidget *widget = new VlcWidget;
 		emit addNewTab (tr ("Hello, tab"), widget);
+		emit raiseTab (widget);
 		connect (widget, 
 				SIGNAL (deleteMe (QWidget*)), 
 				this, 

@@ -60,11 +60,11 @@ namespace vlc
 		ScrollBar_ = new VlcScrollBar (Ui_->scrollBarWidget_);
 		VlcPlayer_ = new VlcPlayer (VlcMainWidget_);
 		generateToolBar ();
-		QTimer *timer = new QTimer;
-		timer->setInterval (100);
-		timer->start ();
+		InterfaceUpdater_ = new QTimer;
+		InterfaceUpdater_->setInterval (100);
+		InterfaceUpdater_->start ();
 		
-		connect (timer,
+		connect (InterfaceUpdater_,
 				SIGNAL (timeout ()),
 				this,
 				SLOT (updateIterface ()));
@@ -150,16 +150,10 @@ namespace vlc
 		Ui_->currentTime_->setText (VlcPlayer_->GetCurrentTime ().toString ("HH:mm:ss")); 
 		Ui_->fullTime_->setText (VlcPlayer_->GetFullTime ().toString ("HH:mm:ss"));
 		
-		if (Ui_->play_->hasFocus() || Ui_->stop_->hasFocus())
-			VlcMainWidget_->setFocus ();
-		
-		if (FullScreen) {
+		VlcMainWidget_->setFocus ();
+		if (FullScreen) 
 			if (!FullScreenWidget_->isVisible ())
-				toggleFullScreen();
-			
-			if (FullScreenWidget_->hasFocus())
-				VlcMainWidget_->setFocus();
-		}
+				toggleFullScreen ();
 	}
 
 	void VlcWidget::mouseDoubleClickEvent (QMouseEvent *event)
@@ -240,5 +234,15 @@ namespace vlc
 		main.TabClass_ = "org.LeechCraft.vlc";
 		return main;
 	};
+	
+	void VlcWidget::TabLostCurrent()
+	{
+		InterfaceUpdater_->stop();
+	}
+	
+	void VlcWidget::TabMadeCurrent()
+	{
+		InterfaceUpdater_->start();
+	}
 }
 }

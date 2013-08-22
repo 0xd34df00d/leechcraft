@@ -58,6 +58,7 @@ namespace vlc
 		bool FullScreen;
 		QWidget *FullScreenWidget_;
 		QTimer *FullScreenTimer_;
+		QTimer *InterfaceUpdater_;
 		SignalledWidget *VlcMainWidget_;
 		SignalledWidget *Controls_;
 		
@@ -71,6 +72,8 @@ namespace vlc
 		void Remove ();
 		QToolBar *GetToolBar () const;
 		static TabClassInfo GetTabInfo ();
+		void TabMadeCurrent ();
+		void TabLostCurrent ();
 		
 	private slots:
 		void addFile ();
