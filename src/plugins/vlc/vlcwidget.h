@@ -56,8 +56,9 @@ namespace vlc
 		VlcScrollBar *ScrollBar_;
 		
 		bool FullScreen;
-		QWidget *FullScreenWidget;
-		SignalledWidget *VlcMainWidget;
+		QWidget *FullScreenWidget_;
+		QTimer *FullScreenTimer_;
+		SignalledWidget *VlcMainWidget_;
 		SignalledWidget *Controls_;
 		
 		void generateToolBar();

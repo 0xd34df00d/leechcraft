@@ -46,10 +46,11 @@ namespace vlc
 	{
 		Parent_ = parent;
 		Ui_ = new Ui::VlcControls;
-		VlcMainWidget = new SignalledWidget;
+		VlcMainWidget_ = new SignalledWidget;
 		Controls_ = new SignalledWidget;
 		QVBoxLayout *layout = new QVBoxLayout;
-		layout->addWidget (VlcMainWidget);
+		layout->setContentsMargins (0, 0, 0, 0);
+		layout->addWidget (VlcMainWidget_);
 		layout->addWidget (Controls_);
 		setLayout (layout);
 		Ui_->setupUi (Controls_);
@@ -57,7 +58,7 @@ namespace vlc
 		FullScreen = false;
 		
 		ScrollBar_ = new VlcScrollBar (Ui_->scrollBarWidget_);
-		VlcPlayer_ = new VlcPlayer (VlcMainWidget);
+		VlcPlayer_ = new VlcPlayer (VlcMainWidget_);
 		generateToolBar ();
 		QTimer *timer = new QTimer;
 		timer->setInterval (100);
@@ -68,12 +69,12 @@ namespace vlc
 				this,
 				SLOT (updateIterface ()));
 		
-		connect (VlcMainWidget,
+		connect (VlcMainWidget_,
 				SIGNAL (mouseDoubleClick (QMouseEvent*)),
 				this,
 				SLOT (mouseDoubleClickEvent (QMouseEvent*)));
 		
-		connect (VlcMainWidget,
+		connect (VlcMainWidget_,
 				SIGNAL (keyPress (QKeyEvent*)),
 				this,
 				SLOT (keyPressEvent (QKeyEvent*)));
@@ -174,16 +175,15 @@ namespace vlc
 	{
 		if (!FullScreen)
 		{
-			fprintf (stderr, "double click");
-			QWidget *widget = new QWidget;
-			widget->setLayout (layout ());
-			widget->show ();
-			widget->showFullScreen ();
+			FullScreenWidget_ = new QWidget;
+			FullScreenWidget_->setLayout (layout ());
+			FullScreenWidget_->setBackgroundRole (QPalette::Shadow);
+			FullScreenWidget_->show ();
+			FullScreenWidget_->showFullScreen ();
 			VlcPlayer_->switchWidget (VlcPlayer_->GetParent ());
-			FullScreenWidget = widget;
 			FullScreen = true;
 			
-			connect (widget,
+			connect (FullScreenWidget_,
 					SIGNAL (destroyed ()),
 					 this,
 					SLOT (deleteLater ()));
@@ -191,15 +191,15 @@ namespace vlc
 		else 
 		{
 			FullScreen = false;
-			setLayout (FullScreenWidget->layout ());
-			VlcPlayer_->switchWidget (VlcMainWidget);
+			setLayout (FullScreenWidget_->layout ());
+			VlcPlayer_->switchWidget (VlcMainWidget_);
 
-			disconnect (FullScreenWidget,
+			disconnect (FullScreenWidget_,
 						SIGNAL (destroyed ()),
 						this,
 						SLOT (deleteLater ()));
 
-			delete FullScreenWidget;
+			delete FullScreenWidget_;
 		}
 	}
 	

@@ -33,6 +33,7 @@
 #include <QPushButton>
 #include <QTime>
 #include <QMouseEvent>
+#include <QSizePolicy>
 
 namespace 
 {
