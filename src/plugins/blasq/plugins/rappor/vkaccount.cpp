@@ -33,15 +33,12 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QDomDocument>
-#include <QHttpMultiPart>
 #include <QtDebug>
-#include <QFile>
-#include <QFileInfo>
-#include <qjson/parser.h>
 #include <util/svcauth/vkauthmanager.h>
 #include <util/queuemanager.h>
 #include "vkservice.h"
 #include "albumsettingsdialog.h"
+#include "uploadmanager.h"
 
 namespace LeechCraft
 {
@@ -58,6 +55,7 @@ namespace Rappor
 	, CollectionsModel_ (new NamedModel<QStandardItemModel> (this))
 	, AuthMgr_ (new Util::SvcAuth::VkAuthManager ("3762977", { "photos" }, cookies, proxy))
 	, RequestQueue_ (new Util::QueueManager (350, this))
+	, UploadManager_ (new UploadManager (RequestQueue_, Proxy_, this))
 	{
 		CollectionsModel_->setHorizontalHeaderLabels ({ tr ("Name") });
 
@@ -109,6 +107,12 @@ namespace Rappor
 		in >> name >> id >> cookies;
 
 		return new VkAccount (name, service, proxy, id, cookies);
+	}
+
+	void VkAccount::Schedule (std::function<void (QString)> func)
+	{
+		CallQueue_ << func;
+		AuthMgr_->GetAuthKey ();
 	}
 
 	QObject* VkAccount::GetQObject ()
@@ -235,25 +239,7 @@ namespace Rappor
 	void VkAccount::UploadImages (const QModelIndex& collection, const QList<UploadItem>& items)
 	{
 		const auto& aidStr = collection.data (CollectionRole::ID).toString ();
-
-		CallQueue_.append ([this, items, aidStr] (const QString& authKey) -> void
-			{
-				QUrl getUrl ("https://api.vk.com/method/photos.getUploadServer.xml");
-				getUrl.addQueryItem ("aid", aidStr);
-				getUrl.addQueryItem ("access_token", authKey);
-				RequestQueue_->Schedule ([this, getUrl, items] () -> void
-					{
-						auto reply = Proxy_->GetNetworkAccessManager ()->
-								get (QNetworkRequest (getUrl));
-						connect (reply,
-								SIGNAL (finished ()),
-								this,
-								SLOT (handlePhotosUploadServer ()));
-						PhotosUploadServer2Infos_ [reply] = items;
-					}, this);
-			});
-
-		AuthMgr_->GetAuthKey ();
+		UploadManager_->Upload (aidStr, items);
 	}
 
 	void VkAccount::Delete (const QModelIndex& item)
@@ -396,46 +382,6 @@ namespace Rappor
 		return true;
 	}
 
-	void VkAccount::StartUpload (const QString& server, QList<UploadItem> infos)
-	{
-		if (infos.isEmpty ())
-			return;
-
-		const auto& info = infos.takeFirst ();
-
-		auto multipart = new QHttpMultiPart (QHttpMultiPart::FormDataType);
-
-		const auto& path = info.FilePath_;
-
-		auto file = new QFile (path, multipart);
-		file->open (QIODevice::ReadOnly);
-
-		QHttpPart filePart;
-
-		const auto& disp = QString ("form-data; name=\"file1\"; filename=\"%1\"")
-				.arg (QFileInfo (path).fileName ());
-		filePart.setHeader (QNetworkRequest::ContentDispositionHeader, disp);
-
-		filePart.setBodyDevice (file);
-
-		multipart->append (filePart);
-
-		const auto nam = Proxy_->GetNetworkAccessManager ();
-		auto reply = nam->post (QNetworkRequest (QUrl (server)), multipart);
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handlePhotosUploaded ()));
-		connect (reply,
-				SIGNAL (uploadProgress (qint64, qint64)),
-				this,
-				SLOT (handlePhotosUploadProgress (qint64, qint64)));
-		PhotoUpload2Info_ [reply] = info;
-		PhotoUpload2QueueTail_ [reply] = infos;
-		PhotoUpload2Server_ [reply] = server;
-		multipart->setParent (reply);
-	}
-
 	void VkAccount::handleGotAlbums ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
@@ -478,113 +424,6 @@ namespace Rappor
 		}
 
 		HandleAlbumElement (doc.documentElement ().firstChildElement ("album"));
-	}
-
-	void VkAccount::handlePhotosUploadServer ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		const auto& data = reply->readAll ();
-		QDomDocument doc;
-		if (!doc.setContent (data))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot parse reply"
-					<< data;
-			return;
-		}
-
-		const auto& server = doc.documentElement ().firstChildElement ("upload_url").text ();
-		StartUpload (server, PhotosUploadServer2Infos_.take (reply));
-	}
-
-	void VkAccount::handlePhotosUploadProgress (qint64 done, qint64 total)
-	{
-		qDebug () << "upload" << done << total;
-	}
-
-	void VkAccount::handlePhotosUploaded ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		const auto& tail = PhotoUpload2QueueTail_.take (reply);
-		const auto& server = PhotoUpload2Server_.take (reply);
-		StartUpload (server, tail);
-
-		const auto& data = reply->readAll ();
-		const auto& parsed = QJson::Parser ().parse (data).toMap ();
-
-		const auto& info = PhotoUpload2Info_.take (reply);
-
-		CallQueue_.append ([this, parsed, info] (const QString& authKey) -> void
-			{
-				QUrl saveUrl ("https://api.vk.com/method/photos.save.xml");
-				auto add = [&saveUrl, &parsed] (const QString& name)
-					{ saveUrl.addQueryItem (name, parsed [name].toString ()); };
-				add ("server");
-				add ("photos_list");
-				add ("aid");
-				add ("hash");
-				saveUrl.addQueryItem ("access_token", authKey);
-
-				if (!info.Description_.isEmpty ())
-					saveUrl.addQueryItem ("caption", info.Description_);
-
-				RequestQueue_->Schedule ([this, saveUrl]
-					{
-						connect (Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (saveUrl)),
-								SIGNAL (finished ()),
-								this,
-								SLOT (handlePhotosSaved ()));
-					}, this);
-			});
-		AuthMgr_->GetAuthKey ();
-	}
-
-	void VkAccount::handlePhotosSaved ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		const auto& data = reply->readAll ();
-		QDomDocument doc;
-		if (!doc.setContent (data))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot parse reply"
-					<< data;
-			return;
-		}
-
-		QStringList ids;
-		auto photoElem = doc
-				.documentElement ()
-				.firstChildElement ("photo");
-		while (!photoElem.isNull ())
-		{
-			ids << QString ("%1_%2")
-					.arg (photoElem.firstChildElement ("owner_id").text ())
-					.arg (photoElem.firstChildElement ("pid").text ());
-			photoElem = photoElem.nextSiblingElement ("photo");
-		}
-
-		CallQueue_.append ([this, ids] (const QString& authKey) -> void
-			{
-				QUrl getUrl ("https://api.vk.com/method/photos.getById.xml");
-				getUrl.addQueryItem ("photos", ids.join (","));
-				getUrl.addQueryItem ("photo_sizes", "1");
-				getUrl.addQueryItem ("access_token", authKey);
-				RequestQueue_->Schedule ([this, getUrl]
-					{
-						connect (Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (getUrl)),
-								SIGNAL (finished ()),
-								this,
-								SLOT (handlePhotosInfosFetched ()));
-					}, this);
-			});
-		AuthMgr_->GetAuthKey ();
 	}
 
 	void VkAccount::handlePhotosInfosFetched ()

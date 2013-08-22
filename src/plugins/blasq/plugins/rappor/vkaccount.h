@@ -58,6 +58,7 @@ namespace Blasq
 namespace Rappor
 {
 	class VkService;
+	class UploadManager;
 
 	class VkAccount : public QObject
 					, public IAccount
@@ -84,13 +85,10 @@ namespace Rappor
 
 		QByteArray LastCookies_;
 
+		QList<std::function<void (QString)>> CallQueue_;
 		Util::QueueManager *RequestQueue_;
-		QList<std::function<void (const QString&)>> CallQueue_;
 
-		QHash<QNetworkReply*, QList<UploadItem>> PhotosUploadServer2Infos_;
-		QHash<QNetworkReply*, QList<UploadItem>> PhotoUpload2QueueTail_;
-		QHash<QNetworkReply*, QString> PhotoUpload2Server_;
-		QHash<QNetworkReply*, UploadItem> PhotoUpload2Info_;
+		UploadManager * const UploadManager_;
 	public:
 		VkAccount (const QString&, VkService*, ICoreProxy_ptr,
 				const QByteArray& id = QByteArray (),
@@ -98,6 +96,8 @@ namespace Rappor
 
 		QByteArray Serialize () const;
 		static VkAccount* Deserialize (const QByteArray&, VkService*, ICoreProxy_ptr);
+
+		void Schedule (std::function<void (QString)>);
 
 		QObject* GetQObject ();
 		IService* GetService () const;
@@ -115,16 +115,11 @@ namespace Rappor
 	private:
 		void HandleAlbumElement (const QDomElement&);
 		bool HandlePhotoElement (const QDomElement&, bool atEnd = true);
-		void StartUpload (const QString& server, QList<UploadItem> tail);
 	private slots:
 		void handleGotAlbums ();
 		void handleGotPhotos ();
 
 		void handleAlbumCreated ();
-		void handlePhotosUploadServer ();
-		void handlePhotosUploadProgress (qint64, qint64);
-		void handlePhotosUploaded ();
-		void handlePhotosSaved ();
 		void handlePhotosInfosFetched ();
 
 		void handleAuthKey (const QString&);

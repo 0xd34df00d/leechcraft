@@ -19,6 +19,7 @@ set (RAPPOR_SRCS
 	vkservice.cpp
 	vkaccount.cpp
 	albumsettingsdialog.cpp
+	uploadmanager.cpp
 	)
 set (RAPPOR_FORMS
 	albumsettingsdialog.ui
