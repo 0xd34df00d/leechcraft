@@ -51,28 +51,28 @@ namespace vlc
 		
 		QWidget *parent_;
 		
-		QTime convertTime(libvlc_time_t);
+		QTime convertTime (libvlc_time_t);
 		
 	public:
-		explicit VlcPlayer(QWidget *parent = 0);
-		~VlcPlayer();
+		explicit VlcPlayer (QWidget *parent = 0);
+		~VlcPlayer ();
 		
-		void addSubtitles(QFile);
-		void clearAll();
-		bool nowPlaying();
-		double getPosition();
-		QWidget *getParent();
+		void addSubtitles (QFile);
+		void clearAll ();
+		bool nowPlaying ();
+		double getPosition ();
+		QWidget *getParent ();
 		
-		QTime getCurrentTime();
-		QTime getFullTime();
+		QTime getCurrentTime ();
+		QTime getFullTime ();
 		
 		
 	public slots:	
-		void stop();
-		void play();
-		void addUrl(QString);
-		void changePosition(double);
-		void switchWidget(QWidget*);
+		void stop ();
+		void play ();
+		void addUrl (QString);
+		void changePosition (double);
+		void switchWidget (QWidget*);
 	};
 }
 }

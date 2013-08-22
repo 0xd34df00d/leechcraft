@@ -74,13 +74,13 @@ namespace vlc
 		void paintEvent(QPaintEvent*);
 		
 	private slots:
-		void addFile();
-		void updateIterface();
-		void toggleFullScreen();
+		void addFile ();
+		void updateIterface ();
+		void toggleFullScreen ();
 		
-		void keyPressEvent(QKeyEvent*);
-		void mousePressEvent(QMouseEvent*);
-		void mouseDoubleClickEvent(QMouseEvent*);
+		void keyPressEvent (QKeyEvent*);
+		void mousePressEvent (QMouseEvent*);
+		void mouseDoubleClickEvent (QMouseEvent*);
 		
 	signals:
 		void deleteMe (QWidget*);

@@ -40,8 +40,8 @@ namespace vlc
 	VlcScrollBar::VlcScrollBar (QWidget* parent)
 	{
 		QVBoxLayout *layout = new QVBoxLayout;
-		layout->addWidget(this);
-		parent->setLayout(layout);
+		layout->addWidget (this);
+		parent->setLayout (layout);
 		currentPosition_ = 0;
 	}
 
@@ -67,7 +67,7 @@ namespace vlc
 		event->accept ();
 	}
 	
-	void VlcScrollBar::setPosition(double pos)
+	void VlcScrollBar::setPosition (double pos)
 	{
 		currentPosition_ = pos;
 	}

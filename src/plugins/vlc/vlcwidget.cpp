@@ -49,9 +49,9 @@ namespace vlc
 		vlcWidget = new StupidWidget;
 		controls_ = new StupidWidget;
 		QVBoxLayout *layout = new QVBoxLayout;
-		layout->addWidget(vlcWidget);
-		layout->addWidget(controls_);
-		setLayout(layout);
+		layout->addWidget (vlcWidget);
+		layout->addWidget (controls_);
+		setLayout (layout);
 		ui->setupUi (controls_);
 		
 		fullScreen = false;
@@ -106,7 +106,7 @@ namespace vlc
 	
 	VlcWidget::~VlcWidget()
 	{
-		vlcPlayer_->stop();
+		vlcPlayer_->stop ();
 		delete vlcPlayer_;
 		emit deleteMe(this);
 	}
@@ -127,13 +127,13 @@ namespace vlc
 		deleteLater ();
 	}
 	
-	void VlcWidget::addFile()
+	void VlcWidget::addFile ()
 	{
-		QString file = QFileDialog::getOpenFileName(this,
-													tr("Open file"),
-													tr("Videos (*.mkv *.avi *.mov *.mpg)"));
-		if (QFile::exists(file))
-			vlcPlayer_->addUrl(file);
+		QString file = QFileDialog::getOpenFileName (this,
+													tr ("Open file"),
+													tr ("Videos (*.mkv *.avi *.mov *.mpg)"));
+		if (QFile::exists (file))
+			vlcPlayer_->addUrl (file);
 	}
 	
 	void VlcWidget::updateIterface ()
@@ -153,9 +153,9 @@ namespace vlc
 
 	void VlcWidget::paintEvent (QPaintEvent *event)
 	{
-		QPainter p(this);
-		p.drawEllipse(100, 100, 100, 100);
-		p.end();
+		QPainter p (this);
+		p.drawEllipse (100, 100, 100, 100);
+		p.end ();
 	}
 	
 	void VlcWidget::mouseDoubleClickEvent (QMouseEvent *event)
@@ -171,22 +171,22 @@ namespace vlc
 	
 	void VlcWidget::keyPressEvent (QKeyEvent *event) 
 	{
-		if (event->text() == tr("f"))
-			toggleFullScreen();
-		else if (event->text() == tr("h"))
-			controls_->setVisible(!controls_->isVisible());
+		if (event->text () == tr ("f"))
+			toggleFullScreen ();
+		else if (event->text () == tr ("h"))
+			controls_->setVisible (!controls_->isVisible ());
 		
-		event->accept();
+		event->accept ();
 	}
 
-	void VlcWidget::toggleFullScreen() 
+	void VlcWidget::toggleFullScreen () 
 	{
 		if (!fullScreen)
 		{
 			fprintf (stderr, "double click");
 			QWidget *widget = new QWidget;
 			widget->setLayout (layout ());
-			widget->show();
+			widget->show ();
 			widget->showFullScreen ();
 			vlcPlayer_->switchWidget (vlcPlayer_->getParent ());
 			fullScreenWidget = widget;
