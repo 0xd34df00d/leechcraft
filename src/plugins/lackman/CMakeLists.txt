@@ -36,25 +36,6 @@ set (SRCS
 	delegatebuttongroup.cpp
 	stringfiltermodel.cpp
 	)
-set (HEADERS
-	lackman.h
-	core.h
-	repoinfo.h
-	repoinfofetcher.h
-	storage.h
-	deptreebuilder.h
-	packagesmodel.h
-	packagesdelegate.h
-	xmlparsers.h
-	externalresourcemanager.h
-	pendingmanager.h
-	packageprocessor.h
-	versioncomparator.h
-	typefilterproxymodel.h
-	xmlsettingsmanager.h
-	delegatebuttongroup.h
-	stringfiltermodel.h
-	)
 CreateTrs ("lackman" "de;en;es;fr;it;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 set (RESOURCES
 	lackmanresources.qrc
@@ -63,16 +44,12 @@ set (FORMS
 	lackman.ui
 	)
 
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 add_library (leechcraft_lackman SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${UIS_H}
 	${RCCS}
 	)
