@@ -2,9 +2,11 @@
 TopColor=0,0,0
 BottomColor=66,57,75
 BorderColor=0,0,0
-SelectedTopColor=47,7,0
-SelectedBottomColor=90,50,56
+SelectedTopColor=75,10,0
+SelectedBottomColor=120,67,75
 SelectedBorderColor=255,101,0
+HoveredTopColor=110,14,0
+HoveredBottomColor=164,85,95
 HoveredBorderColor=255,255,255
 PressedBorderColor=0,0,0
 TextColor=211,211,211
