@@ -280,7 +280,7 @@ namespace LackMan
 		const QString& action = entity.Entity_.toString ();
 		if (action == "ListPackages")
 		{
-			TypeFilter_->SetFilterMode (TypeFilterProxyModel::FMAll);
+			TypeFilter_->SetFilterMode (TypeFilterProxyModel::FilterMode::All);
 
 			const QStringList& tags = entity.Additional_ ["Tags"].toStringList ();
 
