@@ -395,6 +395,7 @@ namespace AdvancedNotifications
 
 		QMetaObject::invokeMethod (Events_ [event].HandlingObject_.get (),
 				"notificationActionTriggered",
+				Qt::QueuedConnection,
 				Q_ARG (int, index));
 	}
 
