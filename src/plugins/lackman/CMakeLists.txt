@@ -35,6 +35,7 @@ set (SRCS
 	xmlsettingsmanager.cpp
 	delegatebuttongroup.cpp
 	stringfiltermodel.cpp
+	updatesnotificationmanager.cpp
 	)
 CreateTrs ("lackman" "de;en;es;fr;it;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 set (RESOURCES
