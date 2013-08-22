@@ -137,6 +137,8 @@ namespace LackMan
 		void gotEntity (const LeechCraft::Entity&);
 		void tagsUpdated (const QStringList&);
 		void packageRowActionFinished (int row);
+
+		void openLackmanRequested ();
 	};
 }
 }

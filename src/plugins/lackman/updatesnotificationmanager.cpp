@@ -31,6 +31,8 @@
 #include <QTimer>
 #include <util/xpc/util.h>
 #include <util/models/modeliterator.h>
+#include <util/notificationactionhandler.h>
+#include <util/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/an/constants.h>
 #include "packagesmodel.h"
@@ -119,7 +121,7 @@ namespace LackMan
 			bodyText = tr ("New versions are available for %n package(s).",
 					nullptr, upgradableCount);
 
-		const auto& entity = Util::MakeAN ("Lackman",
+		auto entity = Util::MakeAN ("Lackman",
 				bodyText,
 				PInfo_,
 				"org.LeechCraft.LackMan",
@@ -129,7 +131,17 @@ namespace LackMan
 				{ "Lackman" },
 				0,
 				upgradableCount);
-		Proxy_->GetEntityManager ()->HandleEntity (entity);
+
+		auto em = Proxy_->GetEntityManager ();
+		auto nah = new Util::NotificationActionHandler (entity, this);
+		nah->AddFunction (tr ("Open LackMan"),
+				[this, entity, em] () -> void
+				{
+					emit openLackmanRequested ();
+					em->HandleEntity (Util::MakeANCancel (entity));
+				});
+
+		em->HandleEntity (entity);
 	}
 }
 }

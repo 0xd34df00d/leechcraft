@@ -153,7 +153,11 @@ namespace LackMan
 	{
 		ReadSettings ();
 
-		new UpdatesNotificationManager (PackagesModel_, Proxy_, this);
+		auto unm = new UpdatesNotificationManager (PackagesModel_, Proxy_, this);
+		connect (unm,
+				SIGNAL (openLackmanRequested ()),
+				this,
+				SIGNAL (openLackmanRequested ()));
 	}
 
 	void Core::SetProxy (ICoreProxy_ptr proxy)

@@ -58,6 +58,8 @@ namespace LackMan
 	private slots:
 		void handleDataChanged (const QModelIndex&, const QModelIndex&);
 		void notify ();
+	signals:
+		void openLackmanRequested ();
 	};
 }
 }
