@@ -84,8 +84,6 @@ namespace vlc
 	
 	VlcWidget::~VlcWidget()
 	{
-		vlcPlayer_->stop();
-		delete vlcPlayer_;
 	}
 
 
@@ -101,8 +99,10 @@ namespace vlc
 	
 	void VlcWidget::Remove () 
 	{	
+		vlcPlayer_->stop();
+		delete vlcPlayer_;
 		deleteLater ();
-		emit deleteMe (this);
+		emit deleteMe(this);
 	}
 	
 	void VlcWidget::addFile()
