@@ -30,12 +30,12 @@
 #pragma once
 
 #include <QWidget>
-#include <QToolBar>
 #include <interfaces/ihavetabs.h>
-#include <ui_vlcinterface.h>
+#include "ui_vlcinterface.h"
 #include "vlcscrollbar.h"
 #include "stupidwidget.h"
 
+class QToolBar;
 namespace LeechCraft
 {
 namespace vlc
@@ -47,18 +47,18 @@ namespace vlc
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
 		
-		QObject *parent_;
-		Ui::VlcInteface *ui;
-		VlcPlayer *vlcPlayer_;
-		QToolBar *bar_;
-		QAction *open_;
-		QAction *info_;
-		VlcScrollBar *scrollBar_;
+		QObject *Parent_;
+		Ui::VlcControls *Ui_;
+		VlcPlayer *VlcPlayer_;
+		QToolBar *Bar_;
+		QAction *Open_;
+		QAction *Info_;
+		VlcScrollBar *ScrollBar_;
 		
-		bool fullScreen;
-		QWidget *fullScreenWidget;
-		StupidWidget *vlcWidget;
-		StupidWidget *controls_;
+		bool FullScreen;
+		QWidget *FullScreenWidget;
+		StupidWidget *VlcMainWidget;
+		StupidWidget *Controls_;
 		
 		void generateToolBar();
 		
@@ -66,12 +66,10 @@ namespace vlc
 		explicit VlcWidget (QObject* parent = 0);
 		~VlcWidget();
 		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
+		QObject *ParentMultiTabs ();
 		void Remove ();
-		QToolBar* GetToolBar () const;
+		QToolBar *GetToolBar () const;
 		static TabClassInfo GetTabInfo ();
-		
-		void paintEvent(QPaintEvent*);
 		
 	private slots:
 		void addFile ();

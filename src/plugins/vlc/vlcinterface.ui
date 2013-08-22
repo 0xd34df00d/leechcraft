@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>VlcInteface</class>
- <widget class="QWidget" name="VlcInteface">
+ <class>VlcControls</class>
+ <widget class="QWidget" name="VlcControls">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -24,7 +24,7 @@
     <widget class="QWidget" name="widget_2" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QLabel" name="currentTime">
+       <widget class="QLabel" name="currentTime_">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -49,7 +49,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="scrollBarWidget" native="true">
+       <widget class="QWidget" name="scrollBarWidget_" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -59,7 +59,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="fullTime">
+       <widget class="QLabel" name="fullTime_">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -103,14 +103,14 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="stop">
+       <widget class="QPushButton" name="stop_">
         <property name="text">
          <string>Stop</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="play">
+       <widget class="QPushButton" name="play_">
         <property name="text">
          <string>Play</string>
         </property>
@@ -133,26 +133,6 @@
     </widget>
    </item>
   </layout>
-  <action name="actionOpen">
-   <property name="text">
-    <string>Open</string>
-   </property>
-  </action>
-  <action name="actionClose_tab">
-   <property name="text">
-    <string>Close tab</string>
-   </property>
-  </action>
-  <action name="actionAbout">
-   <property name="text">
-    <string>About</string>
-   </property>
-  </action>
-  <action name="actionAbout_Qt">
-   <property name="text">
-    <string>About Qt</string>
-   </property>
-  </action>
  </widget>
  <resources/>
  <connections/>

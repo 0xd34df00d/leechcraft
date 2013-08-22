@@ -39,7 +39,7 @@ namespace vlc
 	{
 		Q_OBJECT
 		
-		double currentPosition_;
+		double CurrentPosition_;
 		
 		void paintEvent (QPaintEvent*);
 		void mousePressEvent (QMouseEvent*);

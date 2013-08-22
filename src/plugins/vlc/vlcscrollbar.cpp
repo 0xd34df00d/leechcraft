@@ -42,7 +42,7 @@ namespace vlc
 		QVBoxLayout *layout = new QVBoxLayout;
 		layout->addWidget (this);
 		parent->setLayout (layout);
-		currentPosition_ = 0;
+		CurrentPosition_ = 0;
 	}
 
 	void VlcScrollBar::paintEvent (QPaintEvent *event)
@@ -55,7 +55,7 @@ namespace vlc
 		
 		p.setBrush (QColor ("black"));
 		p.setPen (QColor ("black"));
-		p.drawRect (this->width () * currentPosition_, 0, this->width (), this->height ());
+		p.drawRect (this->width () * CurrentPosition_, 0, this->width (), this->height ());
 		
 		p.end ();
 		event->accept ();
@@ -69,7 +69,7 @@ namespace vlc
 	
 	void VlcScrollBar::setPosition (double pos)
 	{
-		currentPosition_ = pos;
+		CurrentPosition_ = pos;
 	}
 }
 }

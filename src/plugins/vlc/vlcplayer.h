@@ -30,9 +30,6 @@
 #pragma once
 
 #include <QWidget>
-#include <QFrame>
-#include <QUrl>
-#include <QFile>
 #include <QTime>
 #include <vlc/vlc.h>
 #include "ui_vlcinterface.h"
@@ -45,26 +42,24 @@ namespace vlc
 	{
 		Q_OBJECT
 
-		libvlc_instance_t *vlcInstance_;
-		libvlc_media_player_t *mp_;
-		libvlc_media_t *m_;
+		libvlc_instance_t *VlcInstance_;
+		libvlc_media_player_t *Mp_;
+		libvlc_media_t *M_;
 		
-		QWidget *parent_;
-		
-		QTime convertTime (libvlc_time_t);
+		QWidget *Parent_;
 		
 	public:
 		explicit VlcPlayer (QWidget *parent = 0);
 		~VlcPlayer ();
 		
-		void addSubtitles (QFile);
-		void clearAll ();
-		bool nowPlaying ();
-		double getPosition ();
-		QWidget *getParent ();
+		void AddSubtitles (QString);
+		void ClearAll ();
+		bool NowPlaying ();
+		double GetPosition ();
+		QWidget *GetParent ();
 		
-		QTime getCurrentTime ();
-		QTime getFullTime ();
+		QTime GetCurrentTime ();
+		QTime GetFullTime ();
 		
 		
 	public slots:	
