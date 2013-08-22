@@ -65,42 +65,42 @@ namespace vlc
 		
 		connect (timer,
 				SIGNAL (timeout ()),
-				 this,
+				this,
 				SLOT (updateIterface ()));
 		
 		connect (VlcMainWidget,
 				SIGNAL (mouseDoubleClick (QMouseEvent*)),
-				 this,
+				this,
 				SLOT (mouseDoubleClickEvent (QMouseEvent*)));
 		
 		connect (VlcMainWidget,
 				SIGNAL (keyPress (QKeyEvent*)),
-				 this,
+				this,
 				SLOT (keyPressEvent (QKeyEvent*)));
 		
 		connect (Controls_,
 				SIGNAL (keyPress (QKeyEvent*)),
-				 this,
+				this,
 				SLOT (keyPressEvent (QKeyEvent*)));
 		
 		connect (ScrollBar_,
 				SIGNAL (changePosition (double)),
-				 VlcPlayer_,
+				VlcPlayer_,
 				SLOT (changePosition (double)));
 		
 		connect (Ui_->stop_,
 				SIGNAL (clicked ()),
-				 VlcPlayer_,
+				VlcPlayer_,
 				SLOT (stop ()));
 				
 		connect (Ui_->play_,
 				SIGNAL(clicked ()),
-				 VlcPlayer_,
+				VlcPlayer_,
 				SLOT (play ()));
 		
 		connect (Open_,
 				SIGNAL (triggered ()),
-				 this,
+				this,
 				SLOT (addFile ()));
 	}
 	
