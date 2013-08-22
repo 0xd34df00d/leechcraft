@@ -33,7 +33,7 @@
 #include <interfaces/ihavetabs.h>
 #include "ui_vlcinterface.h"
 #include "vlcscrollbar.h"
-#include "stupidwidget.h"
+#include "signalledwidget.h"
 
 class QToolBar;
 namespace LeechCraft
@@ -57,8 +57,8 @@ namespace vlc
 		
 		bool FullScreen;
 		QWidget *FullScreenWidget;
-		StupidWidget *VlcMainWidget;
-		StupidWidget *Controls_;
+		SignalledWidget *VlcMainWidget;
+		SignalledWidget *Controls_;
 		
 		void generateToolBar();
 		

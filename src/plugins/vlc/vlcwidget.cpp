@@ -46,8 +46,8 @@ namespace vlc
 	{
 		Parent_ = parent;
 		Ui_ = new Ui::VlcControls;
-		VlcMainWidget = new StupidWidget;
-		Controls_ = new StupidWidget;
+		VlcMainWidget = new SignalledWidget;
+		Controls_ = new SignalledWidget;
 		QVBoxLayout *layout = new QVBoxLayout;
 		layout->addWidget (VlcMainWidget);
 		layout->addWidget (Controls_);

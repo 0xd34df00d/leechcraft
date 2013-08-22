@@ -27,31 +27,31 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QWidget>
+#include "signalledwidget.h"
+#include <QPaintEvent>
 #include <QMouseEvent>
-#include <QKeyEvent>
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	class StupidWidget : public QWidget
+	SignalledWidget::SignalledWidget (QWidget *parent): QWidget (parent)
 	{
-		Q_OBJECT
+	}
 	
-		void mousePressEvent (QMouseEvent*);
-		void mouseDoubleClickEvent (QMouseEvent*);
-		void keyPressEvent (QKeyEvent*);
+	void SignalledWidget::keyPressEvent (QKeyEvent *event)
+	{
+		emit keyPress (event);
+	}
+	
+	void SignalledWidget::mousePressEvent (QMouseEvent *event)
+	{
+		emit mousePress (event);
+	}
 
-	public:
-		explicit StupidWidget (QWidget* parent = 0);
-		
-	signals:
-		void mousePress (QMouseEvent*);
-		void mouseDoubleClick (QMouseEvent*);
-		void keyPress (QKeyEvent*);
-	};
+	void SignalledWidget::mouseDoubleClickEvent (QMouseEvent *event)
+	{
+		emit mouseDoubleClick (event);
+	}
 }
 }
