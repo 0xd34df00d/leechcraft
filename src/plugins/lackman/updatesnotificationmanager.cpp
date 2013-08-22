@@ -106,13 +106,13 @@ namespace LackMan
 
 			if (upgradableCount == 1)
 				bodyText = tr ("A new version of %1 is available.")
-						.arg (names.value (0));
+						.arg ("<em>" + names.value (0) + "</em>");
 			else
 			{
 				const auto& lastName = names.takeLast ();
 				bodyText = tr ("New versions of %1 and %2 are available.")
-						.arg (names.join (", "))
-						.arg (lastName);
+						.arg ("<em>" + names.join ("</em>, <em>") + "</em>")
+						.arg ("<em>" + lastName + "</em>");
 			}
 		}
 		else
