@@ -58,6 +58,7 @@ namespace vlc
 		bool fullScreen;
 		QWidget *fullScreenWidget;
 		StupidWidget *vlcWidget;
+		StupidWidget *controls_;
 		
 		void generateToolBar();
 		
@@ -75,6 +76,7 @@ namespace vlc
 	private slots:
 		void addFile();
 		void updateIterface();
+		void toggleFullScreen();
 		
 		void keyPressEvent(QKeyEvent*);
 		void mousePressEvent(QMouseEvent*);

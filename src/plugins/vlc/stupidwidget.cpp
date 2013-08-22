@@ -51,7 +51,6 @@ namespace vlc
 
 	void StupidWidget::mouseDoubleClickEvent (QMouseEvent *event)
 	{
-		fprintf(stderr, "mouse dc event\n");
 		emit mouseDoubleClick (event);
 	}
 }

@@ -47,12 +47,12 @@ namespace vlc
 		parent_ = parent;
 		ui = new Ui::VlcInteface;
 		vlcWidget = new StupidWidget;
-		QWidget *controls = new QWidget;
+		controls_ = new StupidWidget;
 		QVBoxLayout *layout = new QVBoxLayout;
 		layout->addWidget(vlcWidget);
-		layout->addWidget(controls);
+		layout->addWidget(controls_);
 		setLayout(layout);
-		ui->setupUi (controls);
+		ui->setupUi (controls_);
 		
 		fullScreen = false;
 		
@@ -72,6 +72,16 @@ namespace vlc
 				SIGNAL (mouseDoubleClick (QMouseEvent*)),
 				 this,
 				SLOT (mouseDoubleClickEvent (QMouseEvent*)));
+		
+		connect (vlcWidget,
+				SIGNAL (keyPress (QKeyEvent*)),
+				 this,
+				SLOT (keyPressEvent (QKeyEvent*)));
+		
+		connect (controls_,
+				SIGNAL (keyPress (QKeyEvent*)),
+				 this,
+				SLOT (keyPressEvent (QKeyEvent*)));
 		
 		connect (scrollBar_,
 				SIGNAL (changePosition (double)),
@@ -150,6 +160,27 @@ namespace vlc
 	
 	void VlcWidget::mouseDoubleClickEvent (QMouseEvent *event)
 	{	
+		toggleFullScreen ();
+		event->accept ();
+	}
+
+	void VlcWidget::mousePressEvent (QMouseEvent *event)
+	{
+		
+	}
+	
+	void VlcWidget::keyPressEvent (QKeyEvent *event) 
+	{
+		if (event->text() == tr("f"))
+			toggleFullScreen();
+		else if (event->text() == tr("h"))
+			controls_->setVisible(!controls_->isVisible());
+		
+		event->accept();
+	}
+
+	void VlcWidget::toggleFullScreen() 
+	{
 		if (!fullScreen)
 		{
 			fprintf (stderr, "double click");
@@ -164,7 +195,7 @@ namespace vlc
 			connect (widget,
 					SIGNAL (destroyed ()),
 					 this,
-					SIGNAL (deleteLater ()));
+					SLOT (deleteLater ()));
 		} 
 		else 
 		{
@@ -175,27 +206,17 @@ namespace vlc
 			disconnect (fullScreenWidget,
 						SIGNAL (destroyed ()),
 						this,
-						SIGNAL (deleteLater ()));
+						SLOT (deleteLater ()));
 
 			delete fullScreenWidget;
 		}
-		
-		event->accept ();
 	}
 	
-	void VlcWidget::mousePressEvent (QMouseEvent *event)
+	void VlcWidget::generateToolBar () 
 	{
-	}
-	
-	void VlcWidget::keyPressEvent (QKeyEvent *event) 
-	{
-	}
-
-	void VlcWidget::generateToolBar() 
-	{
-		bar_ = new QToolBar();
-		open_ = bar_->addAction(tr("Open"));
-		info_ = bar_->addAction(tr("Info"));
+		bar_ = new QToolBar ();
+		open_ = bar_->addAction (tr ("Open"));
+		info_ = bar_->addAction (tr ("Info"));
 	}
 	
 	TabClassInfo VlcWidget::GetTabClassInfo () const

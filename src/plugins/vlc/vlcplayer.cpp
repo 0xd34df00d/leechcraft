@@ -52,7 +52,7 @@ namespace vlc
 		parent_ = parent;
 	}
 	
-	VlcPlayer::~VlcPlayer()
+	VlcPlayer::~VlcPlayer ()
 	{
 		libvlc_media_player_release(mp_);
 		libvlc_release(vlcInstance_);
@@ -69,9 +69,9 @@ namespace vlc
 	{	
 	}
 	
-	bool VlcPlayer::nowPlaying()
+	bool VlcPlayer::nowPlaying ()
 	{
-		return libvlc_media_player_is_playing(mp_);
+		return libvlc_media_player_is_playing (mp_);
 	}
 	
 	double VlcPlayer::getPosition() 
@@ -81,17 +81,17 @@ namespace vlc
 	
 	void VlcPlayer::play () 
 	{
-		if (nowPlaying())
-			libvlc_media_player_pause(mp_);
+		if (nowPlaying ())
+			libvlc_media_player_pause (mp_);
 		else
-			libvlc_media_player_play(mp_);
+			libvlc_media_player_play (mp_);
 	}
 	
 	void VlcPlayer::stop () {
 		libvlc_media_player_stop(mp_);
 	}
 	
-	void VlcPlayer::changePosition(double pos)
+	void VlcPlayer::changePosition (double pos)
 	{
 		if (libvlc_media_player_get_media (mp_) == nullptr)
 			return;
@@ -101,10 +101,10 @@ namespace vlc
 	
 	QTime VlcPlayer::convertTime (libvlc_time_t t) 
 	{
-		return QTime(t / 1000 / 60 / 60, t / 1000 / 60 % 60, t / 1000 % 60, t % 1000);
+		return QTime (t / 1000 / 60 / 60, t / 1000 / 60 % 60, t / 1000 % 60, t % 1000);
 	}
 
-	QTime VlcPlayer::getFullTime()
+	QTime VlcPlayer::getFullTime ()
 	{
 		if (libvlc_media_player_get_media (mp_) == nullptr)
 			return convertTime (0);
@@ -112,7 +112,7 @@ namespace vlc
 			return convertTime (libvlc_media_player_get_length (mp_));
 	}
 	
-	QTime VlcPlayer::getCurrentTime() 
+	QTime VlcPlayer::getCurrentTime () 
 	{
 		if (libvlc_media_player_get_media (mp_) == nullptr)
 			return convertTime (0);
