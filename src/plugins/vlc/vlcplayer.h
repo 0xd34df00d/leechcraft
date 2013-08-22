@@ -33,8 +33,9 @@
 #include <QFrame>
 #include <QUrl>
 #include <QFile>
+#include <QTime>
 #include <vlc/vlc.h>
-#include <boost/concept_check.hpp>
+#include "ui_vlcinterface.h"
 
 namespace LeechCraft
 {
@@ -43,28 +44,35 @@ namespace vlc
 	class VlcPlayer : public QObject
 	{
 		Q_OBJECT
-		
-		QWidget *parent_;
-		QFrame *output_;
 
 		libvlc_instance_t *vlcInstance_;
 		libvlc_media_player_t *mp_;
 		libvlc_media_t *m_;
 		
+		QWidget *parent_;
+		
+		QTime convertTime(libvlc_time_t);
+		
 	public:
-		explicit VlcPlayer(QWidget* parent = 0);
+		explicit VlcPlayer(QWidget *parent = 0);
 		~VlcPlayer();
 		
 		void addSubtitles(QFile);
 		void clearAll();
 		bool nowPlaying();
 		double getPosition();
+		QWidget *getParent();
+		
+		QTime getCurrentTime();
+		QTime getFullTime();
+		
 		
 	public slots:	
 		void stop();
 		void play();
 		void addUrl(QString);
 		void changePosition(double);
+		void switchWidget(QWidget*);
 	};
 }
 }

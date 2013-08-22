@@ -31,26 +31,25 @@
 #include <vlc/vlc.h>
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <QTime>
+#include <QMouseEvent>
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	VlcPlayer::VlcPlayer (QWidget* parent)
+	VlcPlayer::VlcPlayer (QWidget *parent)
 	{
-		output_ = new QFrame (parent);
-		QVBoxLayout *layout = new QVBoxLayout;
-		layout->addWidget (output_);
-		parent->setLayout (layout);
-		
 		const char * const vlc_args[] = {
               "-I", "dummy", /* Don't use any interface */
               "--ignore-config", /* Don't use VLC's config */
               "--extraintf=logger", //log anything
-              "--verbose=2"};
+              "--verbose=0"};
 
 		vlcInstance_ = libvlc_new (5, vlc_args);
 		mp_ = libvlc_media_player_new (vlcInstance_);
+		libvlc_media_player_set_xwindow (mp_, parent->winId ());
+		parent_ = parent;
 	}
 	
 	VlcPlayer::~VlcPlayer()
@@ -63,7 +62,6 @@ namespace vlc
 	{
 		m_ = libvlc_media_new_path (vlcInstance_, file.toLocal8Bit ());
 		libvlc_media_player_set_media (mp_, m_);
-		libvlc_media_player_set_xwindow (mp_, output_->winId ());
 		libvlc_media_player_play (mp_);
 	}
 	
@@ -81,7 +79,8 @@ namespace vlc
 		return libvlc_media_player_get_position(mp_);
 	}
 	
-	void VlcPlayer::play () {
+	void VlcPlayer::play () 
+	{
 		if (nowPlaying())
 			libvlc_media_player_pause(mp_);
 		else
@@ -99,6 +98,45 @@ namespace vlc
 		else
 			libvlc_media_player_set_position(mp_, pos);
 	}	
+	
+	QTime VlcPlayer::convertTime (libvlc_time_t t) 
+	{
+		return QTime(t / 1000 / 60 / 60, t / 1000 / 60 % 60, t / 1000 % 60, t % 1000);
+	}
 
+	QTime VlcPlayer::getFullTime()
+	{
+		if (libvlc_media_player_get_media (mp_) == nullptr)
+			return convertTime (0);
+		else
+			return convertTime (libvlc_media_player_get_length (mp_));
+	}
+	
+	QTime VlcPlayer::getCurrentTime() 
+	{
+		if (libvlc_media_player_get_media (mp_) == nullptr)
+			return convertTime (0);
+		else
+			return convertTime (libvlc_media_player_get_time (mp_));
+	}
+	
+	void VlcPlayer::switchWidget (QWidget *widget) 
+	{
+		libvlc_time_t cur;
+		if (libvlc_media_player_get_media (mp_) != nullptr)
+			cur = libvlc_media_player_get_time (mp_);
+		
+		libvlc_media_player_stop (mp_);
+		libvlc_media_player_set_xwindow (mp_, widget->winId ());
+		libvlc_media_player_play (mp_);
+		
+		if (libvlc_media_player_get_media (mp_) != nullptr)
+			libvlc_media_player_set_time (mp_, cur);
+	}
+	
+	QWidget *VlcPlayer::getParent ()
+	{
+		return parent_;
+	}
 }
 }

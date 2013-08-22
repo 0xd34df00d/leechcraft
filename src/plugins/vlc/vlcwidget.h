@@ -34,6 +34,7 @@
 #include <interfaces/ihavetabs.h>
 #include <ui_vlcinterface.h>
 #include "vlcscrollbar.h"
+#include "stupidwidget.h"
 
 namespace LeechCraft
 {
@@ -54,6 +55,10 @@ namespace vlc
 		QAction *info_;
 		VlcScrollBar *scrollBar_;
 		
+		bool fullScreen;
+		QWidget *fullScreenWidget;
+		StupidWidget *vlcWidget;
+		
 		void generateToolBar();
 		
 	public:
@@ -65,11 +70,15 @@ namespace vlc
 		QToolBar* GetToolBar () const;
 		static TabClassInfo GetTabInfo ();
 		
-		virtual void paintEvent(QPaintEvent*);
+		void paintEvent(QPaintEvent*);
 		
 	private slots:
 		void addFile();
 		void updateIterface();
+		
+		void keyPressEvent(QKeyEvent*);
+		void mousePressEvent(QMouseEvent*);
+		void mouseDoubleClickEvent(QMouseEvent*);
 		
 	signals:
 		void deleteMe (QWidget*);
