@@ -149,6 +149,17 @@ namespace vlc
 		
 		Ui_->currentTime_->setText (VlcPlayer_->GetCurrentTime ().toString ("HH:mm:ss")); 
 		Ui_->fullTime_->setText (VlcPlayer_->GetFullTime ().toString ("HH:mm:ss"));
+		
+		if (Ui_->play_->hasFocus() || Ui_->stop_->hasFocus())
+			VlcMainWidget_->setFocus ();
+		
+		if (FullScreen) {
+			if (!FullScreenWidget_->isVisible ())
+				toggleFullScreen();
+			
+			if (FullScreenWidget_->hasFocus())
+				VlcMainWidget_->setFocus();
+		}
 	}
 
 	void VlcWidget::mouseDoubleClickEvent (QMouseEvent *event)
@@ -163,10 +174,13 @@ namespace vlc
 	
 	void VlcWidget::keyPressEvent (QKeyEvent *event) 
 	{
+		fprintf(stderr, "%c\n", event->text()[0]);
 		if (event->text () == tr ("f"))
 			toggleFullScreen ();
 		else if (event->text () == tr ("h"))
 			Controls_->setVisible (!Controls_->isVisible ());
+		else if (event->text () == " ")
+			Ui_->play_->click ();
 		
 		event->accept ();
 	}
