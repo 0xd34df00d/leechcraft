@@ -55,6 +55,11 @@ Rectangle {
             width: sourceSize.width * rootRect.imageZoom / 100
             height: sourceSize.height * rootRect.imageZoom / 100
 
+            smooth: true
+
+            Behavior on width { PropertyAnimation { duration: 150; easing.type: Easing.InOutSine } }
+            Behavior on height { PropertyAnimation { duration: 150; easing.type: Easing.InOutSine } }
+
             state: "hidden"
             states: [
                 State {
