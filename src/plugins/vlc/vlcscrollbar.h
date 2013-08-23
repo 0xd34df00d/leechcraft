@@ -41,11 +41,12 @@ namespace vlc
 		
 		double CurrentPosition_;
 		
-		void paintEvent (QPaintEvent*);
-		void mousePressEvent (QMouseEvent*);
-		
 	public:
 		explicit VlcScrollBar (QWidget* parent = 0);
+
+	protected:
+		void paintEvent (QPaintEvent*);
+		void mousePressEvent (QMouseEvent*);		
 
 	public slots:	
 		void setPosition (double);

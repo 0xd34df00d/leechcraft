@@ -28,11 +28,12 @@
  **********************************************************************/
 
 #include "vlcplayer.h"
-#include <vlc/vlc.h>
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QTime>
 #include <QMouseEvent>
+#include <QWidget>
+#include <QTime>
 #include <QSizePolicy>
 
 namespace 
@@ -76,7 +77,7 @@ namespace vlc
 	{
 		libvlc_media_player_stop (Mp_);
 		if (M_)
-			libvlc_media_release(M_);
+			libvlc_media_release (M_);
 		M_ = libvlc_media_new_path (VlcInstance_, file.toLocal8Bit ());
 		
 		libvlc_media_player_set_media (Mp_, M_);
@@ -97,7 +98,7 @@ namespace vlc
 		return libvlc_media_player_get_position (Mp_);
 	}
 	
-	void VlcPlayer::play () 
+	void VlcPlayer::togglePlay () 
 	{
 		if (NowPlaying ())
 			libvlc_media_player_pause (Mp_);
@@ -105,7 +106,8 @@ namespace vlc
 			libvlc_media_player_play (Mp_);
 	}
 	
-	void VlcPlayer::stop () {
+	void VlcPlayer::stop () 
+	{
 		libvlc_media_player_stop (Mp_);
 	}
 	
@@ -134,20 +136,26 @@ namespace vlc
 	void VlcPlayer::switchWidget (QWidget *widget) 
 	{
 		libvlc_time_t cur;
-		if (libvlc_media_player_get_media (Mp_))
+		bool playingMedia = libvlc_media_player_get_media (Mp_);
+		if (playingMedia)
 			cur = libvlc_media_player_get_time (Mp_);
 		
 		libvlc_media_player_stop (Mp_);
 		libvlc_media_player_set_xwindow (Mp_, widget->winId ());
 		libvlc_media_player_play (Mp_);
 		
-		if (libvlc_media_player_get_media (Mp_))
+		if (playingMedia)
 			libvlc_media_player_set_time (Mp_, cur);
 	}
 	
 	QWidget *VlcPlayer::GetParent ()
 	{
 		return Parent_;
+	}
+	
+	libvlc_media_player_t *VlcPlayer::GetPlayer ()
+	{
+		return Mp_;
 	}
 }
 }

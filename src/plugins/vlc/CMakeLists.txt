@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_vlc)
 include (InitLCPlugin OPTIONAL)
 
-set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 find_package (VLC REQUIRED)
 
@@ -19,9 +19,10 @@ set (SRCS
 	vlcplayer.cpp
 	vlcscrollbar.cpp
 	signalledwidget.cpp
+	soundwidget.cpp
 	)
 set (FORMS
-	vlcinterface.ui
+	vlccontrolswidget.ui
 	)
 QT4_WRAP_UI (UIS_H ${FORMS})
 	

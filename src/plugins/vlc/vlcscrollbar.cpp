@@ -52,10 +52,10 @@ namespace vlc
 		QPainter p (this);
 		
 		p.setBrush (palette ().dark ());
-		p.drawRect (0, 0, this->width () - 1, this->height () - 1);
+		p.drawRect (0, 0, width () - 1, height () - 1);
 		
 		p.setBrush (palette ().button ());
-		p.drawRect (0, 0, min (int (this->width () * CurrentPosition_), this->width () - 1), this->height () - 1);
+		p.drawRect (0, 0, min (int (width () * CurrentPosition_), width () - 1), height () - 1);
 		
 		p.end ();
 		event->accept ();
@@ -63,7 +63,7 @@ namespace vlc
 	
 	void VlcScrollBar::mousePressEvent (QMouseEvent *event)
 	{
-		emit changePosition (event->x () / double (this->width ()));
+		emit changePosition (event->x () / double (width ()));
 		event->accept ();
 	}
 	

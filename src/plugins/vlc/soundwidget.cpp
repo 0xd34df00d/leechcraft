@@ -27,37 +27,77 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "signalledwidget.h"
-#include <QPaintEvent>
+#include "soundwidget.h"
+#include <QVBoxLayout>
 #include <QMouseEvent>
+#include <QPainter>
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	SignalledWidget::SignalledWidget (QWidget *parent): 
-		QWidget (parent)
+	SoundWidget::SoundWidget (QWidget *parent, libvlc_media_player_t *mp)
+	{
+		QVBoxLayout *layout = new QVBoxLayout;
+		layout->setContentsMargins (0, 0, 0, 0);
+		layout->addWidget (this);
+		parent->setLayout (layout);
+		Mp_ = mp;
+		libvlc_audio_set_volume (Mp_, 100);
+		
+		connect (this,
+				SIGNAL (volumeChanged (int)),
+				this,
+				SLOT (repaint ()));
+	}
+	
+	void SoundWidget::decreaseVolume ()
+	{
+		if (libvlc_audio_get_volume (Mp_) >= 10)
+			libvlc_audio_set_volume (Mp_, libvlc_audio_get_volume (Mp_) - 10);
+		
+		emit volumeChanged (libvlc_audio_get_volume (Mp_));
+	}
+	
+	void SoundWidget::increaseVolume ()
+	{
+		if (libvlc_audio_get_volume (Mp_) <= 190)
+			libvlc_audio_set_volume (Mp_, libvlc_audio_get_volume (Mp_) + 10);
+		
+		emit volumeChanged (libvlc_audio_get_volume (Mp_));
+	}
+	
+	void SoundWidget::mousePressEvent (QMouseEvent *event) 
 	{
 	}
 	
-	void SignalledWidget::keyPressEvent (QKeyEvent *event)
+	void SoundWidget::paintEvent (QPaintEvent *event)
 	{
-		emit keyPress (event);
-	}
-	
-	void SignalledWidget::mousePressEvent (QMouseEvent *event)
-	{
-		emit mousePress (event);
-	}
-
-	void SignalledWidget::mouseDoubleClickEvent (QMouseEvent *event)
-	{
-		emit mouseDoubleClick (event);
-	}
-	
-	void SignalledWidget::wheelEvent (QWheelEvent *event)
-	{
-		emit wheel (event);
+		QPainter p (this);
+		
+		int currentVolume = libvlc_audio_get_volume (Mp_);
+		for (int i = 1; i <= currentVolume; i++) 
+		{
+			if (i <= 100)
+				p.setPen (QColor (20, 200 + i / 2, 20));
+			else
+				p.setPen (QColor (255, 255 - (i - 100) * 2.5, 10));
+			
+			p.drawLine (i / 2, height () - height () * i / 200, i / 2, height ());
+		}
+		
+		p.setPen (Qt::black);
+		p.drawLine (1, height () - 1, width () - 1, height () - 1);
+		p.drawLine (width () - 1, 1, width () - 1, height () - 1);
+		p.drawLine (1, height () - 1, width () - 1, 1);
+		
+		QFont painterFont = font();
+		painterFont.setPointSize (8);
+		p.setFont (painterFont);
+		p.drawText (15, 20, QString::number (currentVolume) + "%");
+			
+		p.end();
+		event->accept();
 	}
 }
 }

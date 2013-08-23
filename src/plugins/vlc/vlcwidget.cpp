@@ -36,6 +36,7 @@
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include <QTimer>
+#include <QTime>
 #include <QToolBar>
 
 namespace LeechCraft
@@ -45,7 +46,7 @@ namespace vlc
 	VlcWidget::VlcWidget (QObject* parent): QWidget ()
 	{
 		Parent_ = parent;
-		Ui_ = new Ui::VlcControls;
+		Ui_ = new Ui::VlcControlsWidget;
 		VlcMainWidget_ = new SignalledWidget;
 		Controls_ = new SignalledWidget;
 		QVBoxLayout *layout = new QVBoxLayout;
@@ -55,11 +56,13 @@ namespace vlc
 		setLayout (layout);
 		Ui_->setupUi (Controls_);
 		
-		FullScreen = false;
+		FullScreen_ = false;
 		
 		ScrollBar_ = new VlcScrollBar (Ui_->scrollBarWidget_);
 		VlcPlayer_ = new VlcPlayer (VlcMainWidget_);
-		generateToolBar ();
+		SoundWidget_ = new SoundWidget (Ui_->soundWidget_, VlcPlayer_->GetPlayer ());
+		
+		GenerateToolBar ();
 		InterfaceUpdater_ = new QTimer;
 		InterfaceUpdater_->setInterval (100);
 		InterfaceUpdater_->start ();
@@ -79,6 +82,11 @@ namespace vlc
 				this,
 				SLOT (keyPressEvent (QKeyEvent*)));
 		
+		connect (VlcMainWidget_,
+				SIGNAL (wheel (QWheelEvent*)),
+				this,
+				SLOT (wheelEvent (QWheelEvent*)));
+		
 		connect (Controls_,
 				SIGNAL (keyPress (QKeyEvent*)),
 				this,
@@ -97,7 +105,7 @@ namespace vlc
 		connect (Ui_->play_,
 				SIGNAL(clicked ()),
 				VlcPlayer_,
-				SLOT (play ()));
+				SLOT (togglePlay ()));
 		
 		connect (Open_,
 				SIGNAL (triggered ()),
@@ -151,7 +159,7 @@ namespace vlc
 		Ui_->fullTime_->setText (VlcPlayer_->GetFullTime ().toString ("HH:mm:ss"));
 		
 		VlcMainWidget_->setFocus ();
-		if (FullScreen) 
+		if (FullScreen_) 
 			if (!FullScreenWidget_->isVisible ())
 				toggleFullScreen ();
 	}
@@ -164,6 +172,14 @@ namespace vlc
 
 	void VlcWidget::mousePressEvent (QMouseEvent *event)
 	{		
+	}
+	
+	void VlcWidget::wheelEvent (QWheelEvent *event)
+	{
+		if (event->delta () > 0)
+			SoundWidget_->increaseVolume ();
+		else
+			SoundWidget_->decreaseVolume ();
 	}
 	
 	void VlcWidget::keyPressEvent (QKeyEvent *event) 
@@ -181,7 +197,7 @@ namespace vlc
 
 	void VlcWidget::toggleFullScreen () 
 	{
-		if (!FullScreen)
+		if (!FullScreen_)
 		{
 			FullScreenWidget_ = new QWidget;
 			FullScreenWidget_->setLayout (layout ());
@@ -189,7 +205,7 @@ namespace vlc
 			FullScreenWidget_->show ();
 			FullScreenWidget_->showFullScreen ();
 			VlcPlayer_->switchWidget (VlcPlayer_->GetParent ());
-			FullScreen = true;
+			FullScreen_ = true;
 			
 			connect (FullScreenWidget_,
 					SIGNAL (destroyed ()),
@@ -198,7 +214,7 @@ namespace vlc
 		} 
 		else 
 		{
-			FullScreen = false;
+			FullScreen_ = false;
 			setLayout (FullScreenWidget_->layout ());
 			VlcPlayer_->switchWidget (VlcMainWidget_);
 
@@ -211,7 +227,7 @@ namespace vlc
 		}
 	}
 	
-	void VlcWidget::generateToolBar () 
+	void VlcWidget::GenerateToolBar () 
 	{
 		Bar_ = new QToolBar ();
 		Open_ = Bar_->addAction (tr ("Open"));

@@ -29,10 +29,11 @@
 
 #pragma once
 
-#include <QWidget>
-#include <QTime>
 #include <vlc/vlc.h>
 #include "ui_vlcinterface.h"
+
+class QWidget;
+class QTime;
 
 namespace LeechCraft
 {
@@ -57,14 +58,14 @@ namespace vlc
 		bool NowPlaying ();
 		double GetPosition ();
 		QWidget *GetParent ();
+		libvlc_media_player_t *GetPlayer ();
 		
 		QTime GetCurrentTime ();
 		QTime GetFullTime ();
 		
-		
 	public slots:	
 		void stop ();
-		void play ();
+		void togglePlay ();
 		void addUrl (QString);
 		void changePosition (double);
 		void switchWidget (QWidget*);

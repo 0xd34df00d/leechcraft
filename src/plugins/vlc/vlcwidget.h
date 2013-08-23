@@ -31,8 +31,9 @@
 
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
-#include "ui_vlcinterface.h"
+#include "ui_vlccontrolswidget.h"
 #include "vlcscrollbar.h"
+#include "soundwidget.h"
 #include "signalledwidget.h"
 
 class QToolBar;
@@ -48,21 +49,22 @@ namespace vlc
 		Q_INTERFACES (ITabWidget)
 		
 		QObject *Parent_;
-		Ui::VlcControls *Ui_;
+		Ui::VlcControlsWidget *Ui_;
 		VlcPlayer *VlcPlayer_;
 		QToolBar *Bar_;
 		QAction *Open_;
 		QAction *Info_;
 		VlcScrollBar *ScrollBar_;
 		
-		bool FullScreen;
+		bool FullScreen_;
 		QWidget *FullScreenWidget_;
 		QTimer *FullScreenTimer_;
 		QTimer *InterfaceUpdater_;
 		SignalledWidget *VlcMainWidget_;
 		SignalledWidget *Controls_;
+		SoundWidget *SoundWidget_;
 		
-		void generateToolBar();
+		void GenerateToolBar();
 		
 	public:
 		explicit VlcWidget (QObject* parent = 0);
@@ -83,6 +85,7 @@ namespace vlc
 		void keyPressEvent (QKeyEvent*);
 		void mousePressEvent (QMouseEvent*);
 		void mouseDoubleClickEvent (QMouseEvent*);
+		void wheelEvent (QWheelEvent*);
 		
 	signals:
 		void deleteMe (QWidget*);

@@ -32,6 +32,7 @@
 #include <QWidget>
 #include <QMouseEvent>
 #include <QKeyEvent>
+#include <QWheelEvent>
 
 namespace LeechCraft
 {
@@ -41,16 +42,19 @@ namespace vlc
 	{
 		Q_OBJECT
 	
-		void mousePressEvent (QMouseEvent*);
-		void mouseDoubleClickEvent (QMouseEvent*);
-		void keyPressEvent (QKeyEvent*);
-
 	public:
 		explicit SignalledWidget (QWidget* parent = 0);
+		
+	protected:
+		void mousePressEvent (QMouseEvent*);
+		void mouseDoubleClickEvent (QMouseEvent*);
+		void wheelEvent (QWheelEvent*);
+		void keyPressEvent (QKeyEvent*);
 		
 	signals:
 		void mousePress (QMouseEvent*);
 		void mouseDoubleClick (QMouseEvent*);
+		void wheel (QWheelEvent*);
 		void keyPress (QKeyEvent*);
 	};
 }

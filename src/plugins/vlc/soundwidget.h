@@ -27,37 +27,34 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "signalledwidget.h"
-#include <QPaintEvent>
-#include <QMouseEvent>
+#pragma once
+
+#include <QWidget>
+#include <vlc/vlc.h>
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	SignalledWidget::SignalledWidget (QWidget *parent): 
-		QWidget (parent)
+	class SoundWidget : public QWidget
 	{
-	}
+		Q_OBJECT
 	
-	void SignalledWidget::keyPressEvent (QKeyEvent *event)
-	{
-		emit keyPress (event);
-	}
+		libvlc_media_player_t *Mp_;
 	
-	void SignalledWidget::mousePressEvent (QMouseEvent *event)
-	{
-		emit mousePress (event);
-	}
+		void mousePressEvent (QMouseEvent*);
+		void paintEvent (QPaintEvent *);
 
-	void SignalledWidget::mouseDoubleClickEvent (QMouseEvent *event)
-	{
-		emit mouseDoubleClick (event);
-	}
+	public:
+		explicit SoundWidget (QWidget *parent, libvlc_media_player_t *mp);
+		int CurrentVolume ();
 	
-	void SignalledWidget::wheelEvent (QWheelEvent *event)
-	{
-		emit wheel (event);
-	}
+	public slots:
+		void increaseVolume ();
+		void decreaseVolume ();
+	
+	signals:
+		void volumeChanged (int);
+	};
 }
 }
