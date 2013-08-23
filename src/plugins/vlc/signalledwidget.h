@@ -43,7 +43,7 @@ namespace vlc
 		Q_OBJECT
 	
 	public:
-		explicit SignalledWidget (QWidget* parent = 0);
+		explicit SignalledWidget (QWidget *parent = 0);
 		
 	protected:
 		void mousePressEvent (QMouseEvent*);

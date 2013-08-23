@@ -37,6 +37,8 @@
 #include "signalledwidget.h"
 
 class QToolBar;
+class QMenu;
+
 namespace LeechCraft
 {
 namespace vlc
@@ -64,6 +66,7 @@ namespace vlc
 		SignalledWidget *VlcMainWidget_;
 		SignalledWidget *Controls_;
 		SoundWidget *SoundWidget_;
+		QMenu *ContextMenu_;
 		
 		void GenerateToolBar ();
 		void ForbidFullScreen ();
@@ -72,9 +75,9 @@ namespace vlc
 		explicit VlcWidget (QObject* parent = 0);
 		~VlcWidget();
 		TabClassInfo GetTabClassInfo () const;
-		QObject *ParentMultiTabs ();
+		QObject* ParentMultiTabs ();
 		void Remove ();
-		QToolBar *GetToolBar () const;
+		QToolBar* GetToolBar () const;
 		static TabClassInfo GetTabInfo ();
 		void TabMadeCurrent ();
 		void TabLostCurrent ();
@@ -84,6 +87,10 @@ namespace vlc
 		void updateIterface ();
 		void toggleFullScreen ();
 		void allowFullScreen ();
+		
+		void generateContextMenu (QPoint);
+		void setAudioTrack (QAction*);
+		void setSubtitles (QAction*);
 		
 		void keyPressEvent (QKeyEvent*);
 		void mousePressEvent (QMouseEvent*);

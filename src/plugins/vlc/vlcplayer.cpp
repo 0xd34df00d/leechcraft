@@ -36,6 +36,7 @@
 #include <QTime>
 #include <QTimer>
 #include <QSizePolicy>
+#include <boost/concept_check.hpp>
 
 namespace 
 {
@@ -70,7 +71,7 @@ namespace vlc
 	void VlcPlayer::addUrl (QString file) 
 	{
 		libvlc_media_player_stop (Mp_.get ());
-		M_ = std::shared_ptr<libvlc_media_t> (libvlc_media_new_path (VlcInstance_.get (), file.toLocal8Bit ()), libvlc_media_release);
+		M_.reset(libvlc_media_new_path (VlcInstance_.get (), file.toLocal8Bit ()), libvlc_media_release);
 		
 		libvlc_media_player_set_media (Mp_.get (), M_.get ());
 		libvlc_media_player_play (Mp_.get ());
@@ -128,21 +129,35 @@ namespace vlc
 	void VlcPlayer::switchWidget (QWidget *widget) 
 	{
 		libvlc_time_t cur;
+		int audio;
+		int subtitle;
 		bool playingMedia = libvlc_media_player_get_media (Mp_.get ());
-		if (playingMedia)
+		if (playingMedia) 
+		{
 			cur = libvlc_media_player_get_time (Mp_.get ());
+			audio = CurrentAudioTrack ();
+			subtitle = CurrentSubtitle ();
+		}
 		
 		bool isPlaying = libvlc_media_player_is_playing (Mp_.get ()); 
 		
 		libvlc_media_player_stop (Mp_.get ());
 		libvlc_media_player_set_xwindow (Mp_.get (), widget->winId ());
 		libvlc_media_player_play (Mp_.get ());
-		if (playingMedia)
-			libvlc_media_player_set_time (Mp_.get (), cur);
 		
-		QEventLoop *loop = new QEventLoop;
-		QTimer::singleShot (10, loop, SLOT (quit ()));
-		loop->exec();
+		while (!NowPlaying ())
+		{
+			QEventLoop *loop = new QEventLoop;
+			QTimer::singleShot (1, loop, SLOT (quit ()));
+			loop->exec();
+		}
+		
+		if (playingMedia) 
+		{
+			libvlc_media_player_set_time (Mp_.get (), cur);
+			setAudioTrack (audio);
+			setSubtitle (subtitle);
+		}
 		
 		if (!isPlaying)
 			libvlc_media_player_pause (Mp_.get ());
@@ -156,6 +171,55 @@ namespace vlc
 	std::shared_ptr<libvlc_media_player_t> VlcPlayer::GetPlayer ()
 	{
 		return Mp_;
+	}
+	
+	int VlcPlayer::NumberAudioTracks ()
+	{
+		return libvlc_audio_get_track_count (Mp_.get ());
+	}
+	
+	int VlcPlayer::CurrentAudioTrack ()
+	{
+		return libvlc_audio_get_track (Mp_.get ());
+	}
+	
+	void VlcPlayer::setAudioTrack (int track)
+	{
+		libvlc_audio_set_track (Mp_.get (), track);
+	}
+	
+	QString VlcPlayer::GetAudioTrackDescription (int track)
+	{
+		libvlc_track_description_t *t = libvlc_audio_get_track_description (Mp_.get ());
+		for (int i = 0; i < track; i++)
+			t = t->p_next;
+		
+		return QString (t->psz_name);
+	}
+	
+	int VlcPlayer::NumberSubtitles ()
+	{
+	
+	}
+	
+	void VlcPlayer::AddSubtitles (QString file)
+	{
+	
+	}
+
+	int VlcPlayer::CurrentSubtitle ()
+	{
+	
+	}
+	
+	QString VlcPlayer::GetSubtitleDescription (int number)
+	{
+	
+	}
+
+	void VlcPlayer::setSubtitle(int number)
+	{
+	
 	}
 }
 }

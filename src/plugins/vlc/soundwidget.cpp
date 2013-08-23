@@ -50,7 +50,7 @@ namespace vlc
 		connect (this,
 				SIGNAL (volumeChanged (int)),
 				this,
-				SLOT (repaint ()));
+				SLOT (update ()));
 	}
 	
 	void SoundWidget::decreaseVolume ()
@@ -66,20 +66,23 @@ namespace vlc
 	void SoundWidget::setVolume (int volume)
 	{
 		volume = std::min (std::max (volume, 0), 200);
-		volume = volume / 10 * 10;
+		volume -= volume % 10;
 		libvlc_audio_set_volume (Mp_.get (), volume);
 		emit volumeChanged (libvlc_audio_get_volume (Mp_.get ()));
 	}
 	
 	void SoundWidget::mousePressEvent (QMouseEvent *event) 
 	{
-		setVolume (event->x () * 2);
+		setVolume (event->x () * 200 / width ());
 	}
 	
 	void SoundWidget::paintEvent (QPaintEvent *event)
 	{
 		QPainter p (this);
 		QPen goodPen = p.pen();
+		
+		int h = height ();
+		int w = width ();
 		
 		int currentVolume = libvlc_audio_get_volume (Mp_.get ());
 		for (int i = 1; i <= currentVolume; i++) 
@@ -89,14 +92,14 @@ namespace vlc
 			else
 				p.setPen (QColor (255, 255 - (i - 100) * 2.5, 10));
 			
-			p.drawLine (i / 2, height () - height () * i / 200, i / 2, height ());
+			p.drawLine (i / 2, h - h * i / 200, i / 2, h);
 		}
 		
-		p.setPen(goodPen);
+		p.setPen (goodPen);
 		
-		p.drawLine (1, height () - 1, width () - 1, height () - 1);
-		p.drawLine (width () - 1, 1, width () - 1, height () - 1);
-		p.drawLine (1, height () - 1, width () - 1, 1);
+		p.drawLine (1, h - 1, w - 1, h - 1);
+		p.drawLine (w - 1, 1, w - 1, h - 1);
+		p.drawLine (1, h - 1, w - 1, 1);
 		
 		QFont painterFont = font ();
 		painterFont.setPointSize (8);

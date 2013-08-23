@@ -35,9 +35,10 @@ namespace LeechCraft
 {
 namespace vlc
 {
-	SignalledWidget::SignalledWidget (QWidget *parent): 
-		QWidget (parent)
+	SignalledWidget::SignalledWidget (QWidget *parent)
+	: QWidget (parent)
 	{
+		setContextMenuPolicy(Qt::CustomContextMenu);
 	}
 	
 	void SignalledWidget::keyPressEvent (QKeyEvent *event)

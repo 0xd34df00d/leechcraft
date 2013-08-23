@@ -38,12 +38,13 @@
 #include <QTimer>
 #include <QTime>
 #include <QToolBar>
+#include <QMenu>
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	VlcWidget::VlcWidget (QObject* parent): QWidget ()
+	VlcWidget::VlcWidget (QObject* parent)
 	{
 		Parent_ = parent;
 		Ui_ = new Ui::VlcControlsWidget;
@@ -55,7 +56,6 @@ namespace vlc
 		layout->addWidget (Controls_);
 		setLayout (layout);
 		Ui_->setupUi (Controls_);
-		
 		FullScreen_ = false;
 		forbidFullScreen_ = false;
 		
@@ -72,6 +72,11 @@ namespace vlc
 				SIGNAL (timeout ()),
 				this,
 				SLOT (updateIterface ()));
+		
+		connect (VlcMainWidget_,
+				SIGNAL (customContextMenuRequested (QPoint)),
+				this,
+				SLOT (generateContextMenu (QPoint)));
 		
 		connect (VlcMainWidget_,
 				SIGNAL (mouseDoubleClick (QMouseEvent*)),
@@ -112,12 +117,12 @@ namespace vlc
 	}
 
 
-	QObject* VlcWidget::ParentMultiTabs ()
+	QObject *VlcWidget::ParentMultiTabs ()
 	{
 		return Parent_;
 	}
 	
-	QToolBar* VlcWidget::GetToolBar () const
+	QToolBar *VlcWidget::GetToolBar () const
 	{
 		return Bar_;
 	}
@@ -261,6 +266,51 @@ namespace vlc
 	void VlcWidget::allowFullScreen ()
 	{
 		forbidFullScreen_ = false;
+	}
+	
+	void VlcWidget::generateContextMenu (QPoint pos)
+	{
+		ContextMenu_ = new QMenu;
+		
+		QMenu *subtitles = new QMenu (tr ("subtitles"), ContextMenu_);
+		QMenu *tracks = new QMenu (tr ("tracks"), ContextMenu_);
+		
+		for (int i = 0; i < VlcPlayer_->NumberAudioTracks (); i++) {
+			QAction *action = new QAction (tracks);
+			action->setData (QVariant (i));
+			action->setText (VlcPlayer_->GetAudioTrackDescription (i));
+			if ((VlcPlayer_->CurrentAudioTrack () == i) || ((VlcPlayer_->CurrentAudioTrack () == -1) && (i == 0)))
+			{
+				action->setCheckable (true);
+				action->setChecked (true);
+			}
+			tracks->addAction (action);
+		}
+		
+		ContextMenu_->addMenu (subtitles);
+		ContextMenu_->addMenu (tracks);
+		
+		connect (tracks,
+				SIGNAL (triggered (QAction*)),
+				this,
+				SLOT (setAudioTrack (QAction*)));
+				
+		ContextMenu_->exec (QCursor::pos ());
+	}
+	
+	void VlcWidget::setSubtitles(QAction *action)
+	{
+	
+	}
+	
+	void VlcWidget::setAudioTrack (QAction *action)
+	{
+		int track = action->data ().toInt ();
+		
+		if (track == 0)
+			track = -1;
+		
+		VlcPlayer_->setAudioTrack (track);
 	}
 }
 }

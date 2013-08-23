@@ -29,9 +29,9 @@
 
 #pragma once
 
+#include <memory>
 #include <vlc/vlc.h>
 #include "ui_vlcinterface.h"
-#include <memory>
 
 class QWidget;
 class QTime;
@@ -58,6 +58,15 @@ namespace vlc
 		bool NowPlaying ();
 		double GetPosition ();
 		QWidget *GetParent ();
+		
+		int NumberAudioTracks ();
+		int CurrentAudioTrack ();
+		QString GetAudioTrackDescription (int);
+		
+		int NumberSubtitles ();
+		int CurrentSubtitle ();
+		QString GetSubtitleDescription (int);
+		
 		std::shared_ptr<libvlc_media_player_t> GetPlayer ();
 		
 		QTime GetCurrentTime ();
@@ -69,6 +78,8 @@ namespace vlc
 		void addUrl (QString);
 		void changePosition (double);
 		void switchWidget (QWidget*);
+		void setAudioTrack (int);
+		void setSubtitle (int);
 	};
 }
 }

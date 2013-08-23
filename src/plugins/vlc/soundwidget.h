@@ -29,9 +29,9 @@
 
 #pragma once
 
+#include <memory>
 #include <QWidget>
 #include <vlc/vlc.h>
-#include <memory>
 
 namespace LeechCraft
 {
