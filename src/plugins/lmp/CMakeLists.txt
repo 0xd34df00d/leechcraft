@@ -85,6 +85,7 @@ set (SRCS
 	progressmanager.cpp
 	volumeslider.cpp
 	seekslider.cpp
+	palettefixerfilter.cpp
 	engine/audiosource.cpp
 	engine/output.cpp
 	engine/path.cpp
