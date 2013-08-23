@@ -30,6 +30,7 @@
 #include "soundwidget.h"
 #include <QVBoxLayout>
 #include <QMouseEvent>
+#include <QWheelEvent>
 #include <QPainter>
 
 namespace LeechCraft
@@ -77,6 +78,7 @@ namespace vlc
 	void SoundWidget::paintEvent (QPaintEvent *event)
 	{
 		QPainter p (this);
+		QPen goodPen = p.pen();
 		
 		int currentVolume = libvlc_audio_get_volume (Mp_);
 		for (int i = 1; i <= currentVolume; i++) 
@@ -89,18 +91,28 @@ namespace vlc
 			p.drawLine (i / 2, height () - height () * i / 200, i / 2, height ());
 		}
 		
-		p.setPen (Qt::black);
+		p.setPen(goodPen);
+		
 		p.drawLine (1, height () - 1, width () - 1, height () - 1);
 		p.drawLine (width () - 1, 1, width () - 1, height () - 1);
 		p.drawLine (1, height () - 1, width () - 1, 1);
 		
-		QFont painterFont = font();
+		QFont painterFont = font ();
 		painterFont.setPointSize (8);
 		p.setFont (painterFont);
 		p.drawText (3, 15, QString::number (currentVolume) + "%");
 			
-		p.end();
-		event->accept();
+		p.end ();
+		event->accept ();
 	}
+	
+	void SoundWidget::wheelEvent (QWheelEvent *event)
+	{
+		if (event->delta () > 0)
+			increaseVolume ();
+		else
+			decreaseVolume ();
+	}
+
 }
 }

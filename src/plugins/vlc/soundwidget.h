@@ -42,13 +42,15 @@ namespace vlc
 	
 		libvlc_media_player_t *Mp_;
 	
-		void mousePressEvent (QMouseEvent*);
-		void paintEvent (QPaintEvent *);
-
 	public:
 		explicit SoundWidget (QWidget *parent, libvlc_media_player_t *mp);
 		int CurrentVolume ();
 	
+	protected:
+		void mousePressEvent (QMouseEvent*);
+		void paintEvent (QPaintEvent *);
+		void wheelEvent (QWheelEvent *);
+		
 	public slots:
 		void increaseVolume ();
 		void decreaseVolume ();
