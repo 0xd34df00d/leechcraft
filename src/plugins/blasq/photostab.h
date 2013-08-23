@@ -36,6 +36,7 @@
 #include "ui_photostab.h"
 
 class QComboBox;
+class QSlider;
 
 namespace LeechCraft
 {
@@ -63,12 +64,15 @@ namespace Blasq
 
 		QComboBox *AccountsBox_;
 		QAction *UploadAction_;
+		QSlider *UniSlider_;
 		std::unique_ptr<QToolBar> Toolbar_;
 
 		IAccount *CurAcc_ = 0;
 		QObject *CurAccObj_ = 0;
 
 		QString SelectedID_;
+
+		bool SingleImageMode_ = false;
 	public:
 		PhotosTab (AccountsManager*, const TabClassInfo&, QObject*, ICoreProxy_ptr);
 		PhotosTab (AccountsManager*, ICoreProxy_ptr);
@@ -85,6 +89,8 @@ namespace Blasq
 		void HandleImageSelected (const QModelIndex&);
 		void HandleCollectionSelected (const QModelIndex&);
 		QModelIndex ImageID2Index (const QString&) const;
+
+		QByteArray GetUniSettingName () const;
 	private slots:
 		void handleAccountChosen (int);
 		void handleRowChanged (const QModelIndex&);
@@ -98,6 +104,7 @@ namespace Blasq
 		void handleImageDownloadRequested (const QVariant&);
 		void handleCopyURLRequested (const QVariant&);
 		void handleDeleteRequested (const QString&);
+		void handleSingleImageMode (bool);
 	signals:
 		void removeTab (QWidget*);
 	};

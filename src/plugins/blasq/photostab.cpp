@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "photostab.h"
+#include <array>
 #include <QToolBar>
 #include <QComboBox>
 #include <QDeclarativeEngine>
@@ -75,6 +76,8 @@ namespace Blasq
 				return nam;
 			}
 		};
+
+		const std::array<int, 13> Zooms { { 10, 25, 33, 50, 66, 100, 150, 200, 250, 500, 750, 1000, 1600 } };
 	}
 
 	PhotosTab::PhotosTab (AccountsManager *accMgr, const TabClassInfo& tc, QObject *plugin, ICoreProxy_ptr proxy)
@@ -128,6 +131,10 @@ namespace Blasq
 				SIGNAL (deleteRequested (QString)),
 				this,
 				SLOT (handleDeleteRequested (QString)));
+		connect (rootObj,
+				SIGNAL (singleImageMode (bool)),
+				this,
+				SLOT (handleSingleImageMode (bool)));
 
 		AccountsBox_->setModel (AccMgr_->GetModel ());
 		AccountsBox_->setModelColumn (AccountsManager::Column::Name);
@@ -143,14 +150,14 @@ namespace Blasq
 				this,
 				SLOT (uploadPhotos ()));
 
-		if (AccountsBox_->count ())
-			handleAccountChosen (0);
-
 		Toolbar_->addWidget (AccountsBox_);
 		Toolbar_->addSeparator ();
 		Toolbar_->addAction (UploadAction_);
 
 		AddScaleSlider ();
+
+		if (AccountsBox_->count ())
+			handleAccountChosen (0);
 
 		connect (Ui_.CollectionsTree_->selectionModel (),
 				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
@@ -198,20 +205,21 @@ namespace Blasq
 		auto lay = new QHBoxLayout;
 		widget->setLayout (lay);
 
-		auto slider = new QSlider (Qt::Horizontal);
-		slider->setMinimumWidth (300);
-		slider->setMaximumWidth (300);
-		slider->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Fixed);
+		UniSlider_ = new QSlider (Qt::Horizontal);
+		UniSlider_->setMinimumWidth (300);
+		UniSlider_->setMaximumWidth (300);
+		UniSlider_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Fixed);
 		lay->addStretch ();
-		lay->addWidget (slider, 0, Qt::AlignRight);
+		lay->addWidget (UniSlider_, 0, Qt::AlignRight);
 
-		slider->setValue (XmlSettingsManager::Instance ()
+		UniSlider_->setValue (XmlSettingsManager::Instance ()
 				.Property ("ScaleSliderValue", 20).toInt ());
-		connect (slider,
+		connect (UniSlider_,
 				SIGNAL (valueChanged (int)),
 				this,
 				SLOT (handleScaleSlider (int)));
-		handleScaleSlider (slider->value ());
+		handleSingleImageMode (true);
+		handleSingleImageMode (false);
 
 		Toolbar_->addWidget (widget);
 	}
@@ -271,6 +279,11 @@ namespace Blasq
 		return {};
 	}
 
+	QByteArray PhotosTab::GetUniSettingName () const
+	{
+		return SingleImageMode_ ? "ZoomSliderValue" : "ScaleSliderValue";
+	}
+
 	void PhotosTab::handleAccountChosen (int idx)
 	{
 		auto accVar = AccountsBox_->itemData (idx, AccountsManager::Role::AccountObj);
@@ -322,15 +335,19 @@ namespace Blasq
 
 	void PhotosTab::handleScaleSlider (int value)
 	{
-		const auto width = qApp->desktop ()->screenGeometry (this).width ();
-		const int lowest = width / 20.;
-		const int highest = width / 5.;
+		if (SingleImageMode_)
+			Ui_.ImagesView_->rootObject ()->setProperty ("imageZoom", Zooms [value]);
+		else
+		{
+			const auto width = qApp->desktop ()->screenGeometry (this).width ();
+			const int lowest = width / 20.;
+			const int highest = width / 5.;
 
-		// value from 0 to 100; at 0 it should be lowest, at 100 it should be highest
-		const auto cellWidth = (highest - lowest) / (std::exp (1) - 1) * (std::exp (value / 100.) - 1) + lowest;
-		Ui_.ImagesView_->rootObject ()->setProperty ("cellSize", cellWidth);
-
-		XmlSettingsManager::Instance ().setProperty ("ScaleSliderValue", value);
+			// value from 0 to 100; at 0 it should be lowest, at 100 it should be highest
+			const auto computed = (highest - lowest) / (std::exp (1) - 1) * (std::exp (value / 100.) - 1) + lowest;
+			Ui_.ImagesView_->rootObject ()->setProperty ("cellSize", computed);
+		}
+		XmlSettingsManager::Instance ().setProperty (GetUniSettingName (), value);
 	}
 
 	void PhotosTab::uploadPhotos ()
@@ -409,6 +426,28 @@ namespace Blasq
 		const auto& idx = ImageID2Index (id);
 		if (idx.isValid ())
 			isd->Delete (idx);
+	}
+
+	void PhotosTab::handleSingleImageMode (bool single)
+	{
+		SingleImageMode_ = single;
+
+		const auto defValue = SingleImageMode_ ?
+				std::distance (Zooms.begin (), std::find (Zooms.begin (), Zooms.end (), 100)) :
+				20;
+
+		const auto value = XmlSettingsManager::Instance ()
+				.Property (GetUniSettingName (), static_cast<int> (defValue)).toInt ();
+		if (value > UniSlider_->maximum ())
+		{
+			UniSlider_->setRange (0, SingleImageMode_ ? Zooms.size () - 1 : 100);
+			UniSlider_->setValue (value);
+		}
+		else
+		{
+			UniSlider_->setValue (value);
+			UniSlider_->setRange (0, SingleImageMode_ ? Zooms.size () - 1 : 100);
+		}
 	}
 }
 }
