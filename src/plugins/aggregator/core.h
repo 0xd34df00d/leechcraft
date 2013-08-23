@@ -164,7 +164,7 @@ namespace Aggregator
 		bool ReinitStorage ();
 
 		void AddFeed (const QString&, const QString&);
-		void AddFeed (const QString&, const QStringList&,
+		void AddFeed (QString, const QStringList&,
 				FeedSettings_ptr = FeedSettings_ptr ());
 		void RemoveFeed (const QModelIndex&);
 		void RemoveChannel (const QModelIndex&);
