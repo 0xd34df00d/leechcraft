@@ -34,25 +34,26 @@ Rectangle {
 
     property string currentImageId
     property real cellSize: 200
+    property real imageZoom: 100
 
     Flickable {
         z: collectionThumbsView.z + 1
         anchors.centerIn: parent
-        width: Math.min(fullSizeImage.width, parent.width)
-        height: Math.min(fullSizeImage.height, parent.height)
+        width: Math.min(contentWidth, parent.width)
+        height: Math.min(contentHeight, parent.height)
 
-        contentWidth: fullSizeImage.width
-        contentHeight: fullSizeImage.height
-        //contentX: (fullSizeImage.width - width) / 2
-        //contentY: (fullSizeImage.height - height) / 2
+        contentWidth: fullSizeImage.width * fullSizeImage.scale
+        contentHeight: fullSizeImage.height * fullSizeImage.scale
+        contentX: Math.max((contentWidth - width) / 2, 0)
+        contentY: Math.max((contentHeight - height) / 2, 0)
         opacity: fullSizeImage.opacity
 
         Image {
             id: fullSizeImage
 
-            width: sourceSize.width
-            height: sourceSize.height
             fillMode: Image.PreserveAspectFit
+            width: sourceSize.width * rootRect.imageZoom / 100
+            height: sourceSize.height * rootRect.imageZoom / 100
 
             state: "hidden"
             states: [
