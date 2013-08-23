@@ -57,6 +57,7 @@ namespace vlc
 		Ui_->setupUi (Controls_);
 		
 		FullScreen_ = false;
+		forbidFullScreen_ = false;
 		
 		ScrollBar_ = new VlcScrollBar (Ui_->scrollBarWidget_);
 		VlcPlayer_ = new VlcPlayer (VlcMainWidget_);
@@ -182,6 +183,9 @@ namespace vlc
 
 	void VlcWidget::toggleFullScreen () 
 	{
+		if (forbidFullScreen_)
+			return;
+		
 		if (!FullScreen_)
 		{
 			FullScreenWidget_ = new QWidget;
@@ -210,6 +214,8 @@ namespace vlc
 
 			delete FullScreenWidget_;
 		}
+		
+		ForbidFullScreen();
 	}
 	
 	void VlcWidget::GenerateToolBar () 
@@ -236,14 +242,25 @@ namespace vlc
 		return main;
 	};
 	
-	void VlcWidget::TabLostCurrent()
+	void VlcWidget::TabLostCurrent ()
 	{
-		InterfaceUpdater_->stop();
+		InterfaceUpdater_->stop ();
 	}
 	
-	void VlcWidget::TabMadeCurrent()
+	void VlcWidget::TabMadeCurrent ()
 	{
-		InterfaceUpdater_->start();
+		InterfaceUpdater_->start ();
+	}
+	
+	void VlcWidget::ForbidFullScreen ()
+	{
+		forbidFullScreen_ = true;
+		QTimer::singleShot (1000, this, SLOT (allowFullScreen ()));
+	}
+	
+	void VlcWidget::allowFullScreen ()
+	{
+		forbidFullScreen_ = false;
 	}
 }
 }

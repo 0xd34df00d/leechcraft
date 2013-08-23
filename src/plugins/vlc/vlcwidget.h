@@ -56,6 +56,7 @@ namespace vlc
 		QAction *Info_;
 		VlcScrollBar *ScrollBar_;
 		
+		bool forbidFullScreen_;
 		bool FullScreen_;
 		QWidget *FullScreenWidget_;
 		QTimer *FullScreenTimer_;
@@ -64,7 +65,8 @@ namespace vlc
 		SignalledWidget *Controls_;
 		SoundWidget *SoundWidget_;
 		
-		void GenerateToolBar();
+		void GenerateToolBar ();
+		void ForbidFullScreen ();
 		
 	public:
 		explicit VlcWidget (QObject* parent = 0);
@@ -81,6 +83,7 @@ namespace vlc
 		void addFile ();
 		void updateIterface ();
 		void toggleFullScreen ();
+		void allowFullScreen ();
 		
 		void keyPressEvent (QKeyEvent*);
 		void mousePressEvent (QMouseEvent*);
