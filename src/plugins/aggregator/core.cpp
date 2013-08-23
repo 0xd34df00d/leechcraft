@@ -477,9 +477,11 @@ namespace Aggregator
 		AddFeed (url, Proxy_->GetTagsManager ()->Split (tagString));
 	}
 
-	void Core::AddFeed (const QString& url, const QStringList& tags,
+	void Core::AddFeed (QString url, const QStringList& tags,
 			std::shared_ptr<Feed::FeedSettings> fs)
 	{
+		const auto& fixedUrl = QUrl::fromUserInput (url);
+		url = fixedUrl.toString ();
 		if (StorageBackend_->FindFeed (url) != static_cast<IDType_t> (-1))
 		{
 			ErrorNotification (tr ("Feed addition error"),
@@ -489,7 +491,7 @@ namespace Aggregator
 		}
 
 		QString name = LeechCraft::Util::GetTemporaryName ();
-		LeechCraft::Entity e = LeechCraft::Util::MakeEntity (QUrl (url),
+		LeechCraft::Entity e = LeechCraft::Util::MakeEntity (fixedUrl,
 				name,
 				LeechCraft::Internal |
 					LeechCraft::DoNotNotifyUser |
