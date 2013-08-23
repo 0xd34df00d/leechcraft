@@ -33,76 +33,85 @@ Rectangle {
     property string currentImageId
     property real cellSize: 200
 
-    Image {
-        id: fullSizeImage
-
+    Flickable {
         z: collectionThumbsView.z + 1
-
         anchors.centerIn: parent
-        width: Math.min(sourceSize.width, parent.width - 32)
-        height: Math.min(sourceSize.height, parent.height - 32)
+        width: Math.min(fullSizeImage.width, parent.width)
+        height: Math.min(fullSizeImage.height, parent.height)
 
-        fillMode: Image.PreserveAspectFit
+        contentWidth: fullSizeImage.width
+        contentHeight: fullSizeImage.height
+        //contentX: (fullSizeImage.width - width) / 2
+        //contentY: (fullSizeImage.height - height) / 2
+        opacity: fullSizeImage.opacity
 
-        state: "hidden"
-        states: [
-            State {
-                name: "hidden"
-                PropertyChanges { target: fullSizeImage; opacity: 0 }
-                PropertyChanges { target: photoViewBlur; blurRadius: 0 }
-                PropertyChanges { target: loadProgress; opacity: 0 }
-            },
-            State {
-                name: "loading"
-                PropertyChanges { target: photoViewBlur; blurRadius: 3 }
-                PropertyChanges { target: loadProgress; opacity: 1 }
-            },
-            State {
-                name: "displayed"
-                PropertyChanges { target: fullSizeImage; opacity: 1 }
-                PropertyChanges { target: photoViewBlur; blurRadius: 10 }
-                PropertyChanges { target: loadProgress; opacity: 0 }
+        Image {
+            id: fullSizeImage
+
+            width: sourceSize.width
+            height: sourceSize.height
+            fillMode: Image.PreserveAspectFit
+
+            state: "hidden"
+            states: [
+                State {
+                    name: "hidden"
+                    PropertyChanges { target: fullSizeImage; opacity: 0 }
+                    PropertyChanges { target: photoViewBlur; blurRadius: 0 }
+                    PropertyChanges { target: loadProgress; opacity: 0 }
+                },
+                State {
+                    name: "loading"
+                    PropertyChanges { target: photoViewBlur; blurRadius: 3 }
+                    PropertyChanges { target: loadProgress; opacity: 1 }
+                },
+                State {
+                    name: "displayed"
+                    PropertyChanges { target: fullSizeImage; opacity: 1 }
+                    PropertyChanges { target: photoViewBlur; blurRadius: 10 }
+                    PropertyChanges { target: loadProgress; opacity: 0 }
+                }
+            ]
+
+            transitions: Transition {
+                PropertyAnimation { properties: "opacity"; duration: 300; easing.type: Easing.OutSine }
+                PropertyAnimation { target: photoViewBlur; property: "blurRadius"; duration: 300; easing.type: Easing.OutSine }
             }
-        ]
 
-        transitions: Transition {
-            PropertyAnimation { properties: "opacity"; duration: 300; easing.type: Easing.OutSine }
-            PropertyAnimation { target: photoViewBlur; property: "blurRadius"; duration: 300; easing.type: Easing.OutSine }
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            onReleased: rootRect.showImage("")
-        }
-
-        onStatusChanged: {
-            switch (status) {
-            case Image.Ready:
-                state = "displayed"
-                break;
-            case Image.Loading:
-                state = "loading"
-                break;
-            case Image.Null:
-                state = "hidden"
-                break;
-            case Image.Error:
-                state = "hidden"
-                break;
+            MouseArea {
+                anchors.fill: parent
+                onReleased: rootRect.showImage("")
             }
-        }
 
-        ProgressBar {
-            id: loadProgress
+            onStatusChanged: {
+                switch (status) {
+                case Image.Ready:
+                    state = "displayed"
+                    break;
+                case Image.Loading:
+                    state = "loading"
+                    break;
+                case Image.Null:
+                    state = "hidden"
+                    break;
+                case Image.Error:
+                    state = "hidden"
+                    break;
+                }
+            }
 
-            value: parent.progress * 100
+            ProgressBar {
+                id: loadProgress
 
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.bottom
-            height: 12
+                value: parent.progress * 100
 
-            color: colorProxy.color_TextView_Aux3TextColor
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: parent.bottom
+                height: 12
+
+                color: colorProxy.color_TextView_Aux3TextColor
+            }
         }
     }
 
