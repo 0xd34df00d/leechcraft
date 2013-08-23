@@ -227,6 +227,12 @@ namespace Aggregator
 				str.remove (startPos, end - startPos + 1);
 			}
 		}
+
+		void RemovePair (const QString& name, QString& str)
+		{
+			RemoveTag (name, str);
+			RemoveTag ('/' + name, str);
+		}
 	}
 
 	QVariant ItemsListModel::data (const QModelIndex& index, int role) const
@@ -332,6 +338,12 @@ namespace Aggregator
 			const int maxDescriptionSize = 1000;
 			auto descr = item->Description_;
 			RemoveTag ("img", descr);
+			RemovePair ("font", descr);
+			RemovePair ("span", descr);
+			RemovePair ("p", descr);
+			RemovePair ("div", descr);
+			for (auto i : { 1, 2, 3, 4, 5, 6 })
+				RemovePair ("h" + QString::number (i), descr);
 			result += descr.left (maxDescriptionSize);
 			if (descr.size () > maxDescriptionSize)
 				result += "...";
