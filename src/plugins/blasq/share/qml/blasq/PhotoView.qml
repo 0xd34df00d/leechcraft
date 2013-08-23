@@ -22,8 +22,10 @@ Rectangle {
 
     function showImage(url) {
         fullSizeImage.source = url
+        rootRect.singleImageMode(url.toString().length > 0)
     }
 
+    signal singleImageMode(bool mode)
     signal imageSelected(string id)
     signal imageOpenRequested(variant url)
     signal imageDownloadRequested(variant url)
