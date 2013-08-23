@@ -97,16 +97,6 @@ namespace vlc
 				VlcPlayer_,
 				SLOT (changePosition (double)));
 		
-		connect (Ui_->stop_,
-				SIGNAL (clicked ()),
-				VlcPlayer_,
-				SLOT (stop ()));
-				
-		connect (Ui_->play_,
-				SIGNAL(clicked ()),
-				VlcPlayer_,
-				SLOT (togglePlay ()));
-		
 		connect (Open_,
 				SIGNAL (triggered ()),
 				this,
@@ -147,11 +137,6 @@ namespace vlc
 	
 	void VlcWidget::updateIterface ()
 	{
-		if (VlcPlayer_->NowPlaying ())
-			Ui_->play_->setText (tr ("pause"));
-		else
-			Ui_->play_->setText (tr ("play"));
-		
 		ScrollBar_->setPosition (VlcPlayer_->GetPosition ());
 		ScrollBar_->repaint ();
 		
@@ -190,7 +175,7 @@ namespace vlc
 		else if (event->text () == tr ("h"))
 			Controls_->setVisible (!Controls_->isVisible ());
 		else if (event->text () == " ")
-			Ui_->play_->click ();
+			VlcPlayer_->togglePlay();
 		
 		event->accept ();
 	}

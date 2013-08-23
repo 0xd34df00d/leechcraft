@@ -97,7 +97,7 @@ namespace vlc
 		QFont painterFont = font();
 		painterFont.setPointSize (8);
 		p.setFont (painterFont);
-		p.drawText (15, 20, QString::number (currentVolume) + "%");
+		p.drawText (3, 15, QString::number (currentVolume) + "%");
 			
 		p.end();
 		event->accept();

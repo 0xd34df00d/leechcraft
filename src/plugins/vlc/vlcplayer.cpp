@@ -34,6 +34,7 @@
 #include <QMouseEvent>
 #include <QWidget>
 #include <QTime>
+#include <QTimer>
 #include <QSizePolicy>
 
 namespace 
@@ -140,12 +141,21 @@ namespace vlc
 		if (playingMedia)
 			cur = libvlc_media_player_get_time (Mp_);
 		
+		bool isPlaying = libvlc_media_player_is_playing (Mp_); 
+		
 		libvlc_media_player_stop (Mp_);
 		libvlc_media_player_set_xwindow (Mp_, widget->winId ());
 		libvlc_media_player_play (Mp_);
-		
 		if (playingMedia)
 			libvlc_media_player_set_time (Mp_, cur);
+		
+		QEventLoop *loop = new QEventLoop;
+		QTimer::singleShot (10, loop, SLOT (quit ()));
+		loop->exec();
+		
+		if (!isPlaying)
+			libvlc_media_player_pause (Mp_);
+		
 	}
 	
 	QWidget *VlcPlayer::GetParent ()
