@@ -210,7 +210,7 @@ namespace Aggregator
 		void RemoveTag (const QString& name, QString& str)
 		{
 			int startPos = 0;
-			while ((startPos = str.indexOf ("<" + name, startPos, Qt::CaseInsensitive)) > 0)
+			while ((startPos = str.indexOf ("<" + name, startPos, Qt::CaseInsensitive)) >= 0)
 			{
 				const int end = str.indexOf ('>', startPos);
 				if (end < 0)
