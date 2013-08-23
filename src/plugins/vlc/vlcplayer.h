@@ -30,11 +30,13 @@
 #pragma once
 
 #include <memory>
-#include <vlc/vlc.h>
-#include "ui_vlcinterface.h"
+#include <QObject>
 
 class QWidget;
 class QTime;
+struct libvlc_instance_t;
+struct libvlc_media_player_t;
+struct libvlc_media_t;
 
 namespace LeechCraft
 {
@@ -55,22 +57,22 @@ namespace vlc
 		
 		void AddSubtitles (QString);
 		void ClearAll ();
-		bool NowPlaying ();
-		double GetPosition ();
-		QWidget *GetParent ();
+		bool NowPlaying () const;
+		double GetPosition () const;
+		QWidget *GetParent () const;
 		
-		int NumberAudioTracks ();
-		int CurrentAudioTrack ();
-		QString GetAudioTrackDescription (int);
+		int NumberAudioTracks () const;
+		int CurrentAudioTrack () const;
+		QString GetAudioTrackDescription (int) const;
 		
-		int NumberSubtitles ();
-		int CurrentSubtitle ();
-		QString GetSubtitleDescription (int);
+		int NumberSubtitles () const;
+		int CurrentSubtitle () const;
+		QString GetSubtitleDescription (int) const;
 		
-		std::shared_ptr<libvlc_media_player_t> GetPlayer ();
+		std::shared_ptr<libvlc_media_player_t> GetPlayer () const;
 		
-		QTime GetCurrentTime ();
-		QTime GetFullTime ();
+		QTime GetCurrentTime () const;
+		QTime GetFullTime () const;
 		
 	public slots:	
 		void stop ();

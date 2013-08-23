@@ -234,7 +234,7 @@ namespace vlc
 			delete FullScreenWidget_;
 		}
 		
-		ForbidFullScreen();
+		ForbidFullScreen ();
 	}
 	
 	void VlcWidget::GenerateToolBar () 

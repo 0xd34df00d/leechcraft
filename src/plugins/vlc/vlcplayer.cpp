@@ -36,7 +36,8 @@
 #include <QTime>
 #include <QTimer>
 #include <QSizePolicy>
-#include <boost/concept_check.hpp>
+#include <QEventLoop>
+#include <vlc/vlc.h>
 
 namespace 
 {
@@ -82,12 +83,12 @@ namespace vlc
 	{	
 	}
 	
-	bool VlcPlayer::NowPlaying ()
+	bool VlcPlayer::NowPlaying () const
 	{
 		return libvlc_media_player_is_playing (Mp_.get ());
 	}
 	
-	double VlcPlayer::GetPosition () 
+	double VlcPlayer::GetPosition () const
 	{
 		return libvlc_media_player_get_position (Mp_.get ());
 	}
@@ -111,7 +112,7 @@ namespace vlc
 			libvlc_media_player_set_position (Mp_.get (), pos);
 	}	
 	
-	QTime VlcPlayer::GetFullTime ()
+	QTime VlcPlayer::GetFullTime () const 
 	{
 		if (libvlc_media_player_get_media (Mp_.get ()))
 			return convertTime (libvlc_media_player_get_length (Mp_.get ()));
@@ -119,7 +120,7 @@ namespace vlc
 			return convertTime (0);
 	}
 	
-	QTime VlcPlayer::GetCurrentTime () 
+	QTime VlcPlayer::GetCurrentTime () const
 	{
 		if (libvlc_media_player_get_media (Mp_.get ()))
 			return convertTime (libvlc_media_player_get_time (Mp_.get ()));
@@ -164,22 +165,22 @@ namespace vlc
 			libvlc_media_player_pause (Mp_.get ());
 	}
 	
-	QWidget *VlcPlayer::GetParent ()
+	QWidget *VlcPlayer::GetParent () const
 	{
 		return Parent_;
 	}
 	
-	std::shared_ptr<libvlc_media_player_t> VlcPlayer::GetPlayer ()
+	std::shared_ptr<libvlc_media_player_t> VlcPlayer::GetPlayer () const
 	{
 		return Mp_;
 	}
 	
-	int VlcPlayer::NumberAudioTracks ()
+	int VlcPlayer::NumberAudioTracks () const
 	{
 		return libvlc_audio_get_track_count (Mp_.get ());
 	}
 	
-	int VlcPlayer::CurrentAudioTrack ()
+	int VlcPlayer::CurrentAudioTrack () const
 	{
 		return libvlc_audio_get_track (Mp_.get ());
 	}
@@ -189,7 +190,7 @@ namespace vlc
 		libvlc_audio_set_track (Mp_.get (), track);
 	}
 	
-	QString VlcPlayer::GetAudioTrackDescription (int track)
+	QString VlcPlayer::GetAudioTrackDescription (int track) const
 	{
 		libvlc_track_description_t *t = libvlc_audio_get_track_description (Mp_.get ());
 		for (int i = 0; i < track; i++)
@@ -198,7 +199,7 @@ namespace vlc
 		return QString (t->psz_name);
 	}
 	
-	int VlcPlayer::NumberSubtitles ()
+	int VlcPlayer::NumberSubtitles () const
 	{
 	
 	}
@@ -208,17 +209,17 @@ namespace vlc
 	
 	}
 
-	int VlcPlayer::CurrentSubtitle ()
+	int VlcPlayer::CurrentSubtitle () const
 	{
 	
 	}
 	
-	QString VlcPlayer::GetSubtitleDescription (int number)
+	QString VlcPlayer::GetSubtitleDescription (int number) const
 	{
 	
 	}
 
-	void VlcPlayer::setSubtitle(int number)
+	void VlcPlayer::setSubtitle (int number)
 	{
 	
 	}

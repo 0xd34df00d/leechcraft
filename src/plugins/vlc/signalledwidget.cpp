@@ -28,8 +28,9 @@
  **********************************************************************/
 
 #include "signalledwidget.h"
-#include <QPaintEvent>
 #include <QMouseEvent>
+#include <QKeyEvent>
+#include <QWheelEvent>
 
 namespace LeechCraft
 {

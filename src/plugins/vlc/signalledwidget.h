@@ -30,9 +30,6 @@
 #pragma once
 
 #include <QWidget>
-#include <QMouseEvent>
-#include <QKeyEvent>
-#include <QWheelEvent>
 
 namespace LeechCraft
 {

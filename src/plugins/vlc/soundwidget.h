@@ -29,9 +29,10 @@
 
 #pragma once
 
-#include <memory>
 #include <QWidget>
-#include <vlc/vlc.h>
+#include <memory>
+
+struct libvlc_media_player_t;
 
 namespace LeechCraft
 {
@@ -45,12 +46,12 @@ namespace vlc
 	
 	public:
 		explicit SoundWidget (QWidget *parent, std::shared_ptr<libvlc_media_player_t> mp);
-		int CurrentVolume ();
+		int CurrentVolume () const;
 	
 	protected:
 		void mousePressEvent (QMouseEvent*);
-		void paintEvent (QPaintEvent *);
-		void wheelEvent (QWheelEvent *);
+		void paintEvent (QPaintEvent*);
+		void wheelEvent (QWheelEvent*);
 		
 	public slots:
 		void increaseVolume ();

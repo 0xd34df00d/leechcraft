@@ -75,9 +75,9 @@ namespace vlc
 		explicit VlcWidget (QWidget *parent = 0);
 		~VlcWidget();
 		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
+		QObject *ParentMultiTabs ();
 		void Remove ();
-		QToolBar* GetToolBar () const;
+		QToolBar *GetToolBar () const;
 		static TabClassInfo GetTabInfo ();
 		void TabMadeCurrent ();
 		void TabLostCurrent ();

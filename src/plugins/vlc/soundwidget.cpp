@@ -32,7 +32,7 @@
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QPainter>
-#include <memory>
+#include <vlc/vlc.h>
 
 namespace LeechCraft
 {
@@ -76,7 +76,7 @@ namespace vlc
 	void SoundWidget::paintEvent (QPaintEvent *event)
 	{
 		QPainter p (this);
-		QPen goodPen = p.pen();
+		QPen goodPen = p.pen ();
 		
 		int h = height ();
 		int w = width ();

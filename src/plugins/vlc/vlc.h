@@ -30,7 +30,6 @@
 #pragma once
 
 #include <QObject>
-#include <QMessageBox>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
 
