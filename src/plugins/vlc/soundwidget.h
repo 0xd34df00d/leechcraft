@@ -31,6 +31,7 @@
 
 #include <QWidget>
 #include <vlc/vlc.h>
+#include <memory>
 
 namespace LeechCraft
 {
@@ -40,10 +41,10 @@ namespace vlc
 	{
 		Q_OBJECT
 	
-		libvlc_media_player_t *Mp_;
+		std::shared_ptr<libvlc_media_player_t> Mp_;
 	
 	public:
-		explicit SoundWidget (QWidget *parent, libvlc_media_player_t *mp);
+		explicit SoundWidget (QWidget *parent, std::shared_ptr<libvlc_media_player_t> mp);
 		int CurrentVolume ();
 	
 	protected:

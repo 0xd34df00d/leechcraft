@@ -60,29 +60,20 @@ namespace vlc
 		};
 
 		M_ = nullptr;
-		VlcInstance_ = libvlc_new (5, vlc_args);
-		Mp_ = libvlc_media_player_new (VlcInstance_);
-		libvlc_media_player_set_xwindow (Mp_, parent->winId ());
+		VlcInstance_ = std::shared_ptr<libvlc_instance_t> (libvlc_new (5, vlc_args), libvlc_release);
+		Mp_ = std::shared_ptr<libvlc_media_player_t> (libvlc_media_player_new (VlcInstance_.get ()), libvlc_media_player_release);
+		
+		libvlc_media_player_set_xwindow (Mp_.get (), parent->winId ());
 		Parent_ = parent;
-	}
-	
-	VlcPlayer::~VlcPlayer ()
-	{
-		if (libvlc_media_player_get_media (Mp_))
-			libvlc_media_release (libvlc_media_player_get_media (Mp_));
-		libvlc_media_player_release (Mp_);
-		libvlc_release (VlcInstance_);
 	}
 	
 	void VlcPlayer::addUrl (QString file) 
 	{
-		libvlc_media_player_stop (Mp_);
-		if (M_)
-			libvlc_media_release (M_);
-		M_ = libvlc_media_new_path (VlcInstance_, file.toLocal8Bit ());
+		libvlc_media_player_stop (Mp_.get ());
+		M_ = std::shared_ptr<libvlc_media_t> (libvlc_media_new_path (VlcInstance_.get (), file.toLocal8Bit ()), libvlc_media_release);
 		
-		libvlc_media_player_set_media (Mp_, M_);
-		libvlc_media_player_play (Mp_);
+		libvlc_media_player_set_media (Mp_.get (), M_.get ());
+		libvlc_media_player_play (Mp_.get ());
 	}
 	
 	void VlcPlayer::ClearAll () 
@@ -91,45 +82,45 @@ namespace vlc
 	
 	bool VlcPlayer::NowPlaying ()
 	{
-		return libvlc_media_player_is_playing (Mp_);
+		return libvlc_media_player_is_playing (Mp_.get ());
 	}
 	
 	double VlcPlayer::GetPosition () 
 	{
-		return libvlc_media_player_get_position (Mp_);
+		return libvlc_media_player_get_position (Mp_.get ());
 	}
 	
 	void VlcPlayer::togglePlay () 
 	{
 		if (NowPlaying ())
-			libvlc_media_player_pause (Mp_);
+			libvlc_media_player_pause (Mp_.get ());
 		else
-			libvlc_media_player_play (Mp_);
+			libvlc_media_player_play (Mp_.get ());
 	}
 	
 	void VlcPlayer::stop () 
 	{
-		libvlc_media_player_stop (Mp_);
+		libvlc_media_player_stop (Mp_.get ());
 	}
 	
 	void VlcPlayer::changePosition (double pos)
 	{
-		if (libvlc_media_player_get_media (Mp_))
-			libvlc_media_player_set_position (Mp_, pos);
+		if (libvlc_media_player_get_media (Mp_.get ()))
+			libvlc_media_player_set_position (Mp_.get (), pos);
 	}	
 	
 	QTime VlcPlayer::GetFullTime ()
 	{
-		if (libvlc_media_player_get_media (Mp_))
-			return convertTime (libvlc_media_player_get_length (Mp_));
+		if (libvlc_media_player_get_media (Mp_.get ()))
+			return convertTime (libvlc_media_player_get_length (Mp_.get ()));
 		else
 			return convertTime (0);
 	}
 	
 	QTime VlcPlayer::GetCurrentTime () 
 	{
-		if (libvlc_media_player_get_media (Mp_))
-			return convertTime (libvlc_media_player_get_time (Mp_));
+		if (libvlc_media_player_get_media (Mp_.get ()))
+			return convertTime (libvlc_media_player_get_time (Mp_.get ()));
 		else
 			return convertTime (0);
 	}
@@ -137,25 +128,24 @@ namespace vlc
 	void VlcPlayer::switchWidget (QWidget *widget) 
 	{
 		libvlc_time_t cur;
-		bool playingMedia = libvlc_media_player_get_media (Mp_);
+		bool playingMedia = libvlc_media_player_get_media (Mp_.get ());
 		if (playingMedia)
-			cur = libvlc_media_player_get_time (Mp_);
+			cur = libvlc_media_player_get_time (Mp_.get ());
 		
-		bool isPlaying = libvlc_media_player_is_playing (Mp_); 
+		bool isPlaying = libvlc_media_player_is_playing (Mp_.get ()); 
 		
-		libvlc_media_player_stop (Mp_);
-		libvlc_media_player_set_xwindow (Mp_, widget->winId ());
-		libvlc_media_player_play (Mp_);
+		libvlc_media_player_stop (Mp_.get ());
+		libvlc_media_player_set_xwindow (Mp_.get (), widget->winId ());
+		libvlc_media_player_play (Mp_.get ());
 		if (playingMedia)
-			libvlc_media_player_set_time (Mp_, cur);
+			libvlc_media_player_set_time (Mp_.get (), cur);
 		
 		QEventLoop *loop = new QEventLoop;
 		QTimer::singleShot (10, loop, SLOT (quit ()));
 		loop->exec();
 		
 		if (!isPlaying)
-			libvlc_media_player_pause (Mp_);
-		
+			libvlc_media_player_pause (Mp_.get ());
 	}
 	
 	QWidget *VlcPlayer::GetParent ()
@@ -163,7 +153,7 @@ namespace vlc
 		return Parent_;
 	}
 	
-	libvlc_media_player_t *VlcPlayer::GetPlayer ()
+	std::shared_ptr<libvlc_media_player_t> VlcPlayer::GetPlayer ()
 	{
 		return Mp_;
 	}

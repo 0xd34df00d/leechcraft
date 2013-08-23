@@ -32,19 +32,20 @@
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QPainter>
+#include <memory>
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	SoundWidget::SoundWidget (QWidget *parent, libvlc_media_player_t *mp)
+	SoundWidget::SoundWidget (QWidget *parent, std::shared_ptr<libvlc_media_player_t> mp)
 	{
 		QVBoxLayout *layout = new QVBoxLayout;
 		layout->setContentsMargins (0, 0, 0, 0);
 		layout->addWidget (this);
 		parent->setLayout (layout);
 		Mp_ = mp;
-		libvlc_audio_set_volume (Mp_, 100);
+		libvlc_audio_set_volume (Mp_.get (), 100);
 		
 		connect (this,
 				SIGNAL (volumeChanged (int)),
@@ -54,20 +55,20 @@ namespace vlc
 	
 	void SoundWidget::decreaseVolume ()
 	{
-		setVolume (libvlc_audio_get_volume (Mp_) - 10);
+		setVolume (libvlc_audio_get_volume (Mp_.get ()) - 10);
 	}
 	
 	void SoundWidget::increaseVolume ()
 	{
-		setVolume (libvlc_audio_get_volume (Mp_) + 10);
+		setVolume (libvlc_audio_get_volume (Mp_.get ()) + 10);
 	}
 	
 	void SoundWidget::setVolume (int volume)
 	{
 		volume = std::min (std::max (volume, 0), 200);
 		volume = volume / 10 * 10;
-		libvlc_audio_set_volume (Mp_, volume);
-		emit volumeChanged (libvlc_audio_get_volume (Mp_));		
+		libvlc_audio_set_volume (Mp_.get (), volume);
+		emit volumeChanged (libvlc_audio_get_volume (Mp_.get ()));
 	}
 	
 	void SoundWidget::mousePressEvent (QMouseEvent *event) 
@@ -80,7 +81,7 @@ namespace vlc
 		QPainter p (this);
 		QPen goodPen = p.pen();
 		
-		int currentVolume = libvlc_audio_get_volume (Mp_);
+		int currentVolume = libvlc_audio_get_volume (Mp_.get ());
 		for (int i = 1; i <= currentVolume; i++) 
 		{
 			if (i <= 100)

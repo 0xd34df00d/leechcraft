@@ -31,6 +31,7 @@
 
 #include <vlc/vlc.h>
 #include "ui_vlcinterface.h"
+#include <memory>
 
 class QWidget;
 class QTime;
@@ -43,22 +44,21 @@ namespace vlc
 	{
 		Q_OBJECT
 
-		libvlc_instance_t *VlcInstance_;
-		libvlc_media_player_t *Mp_;
-		libvlc_media_t *M_;
+		std::shared_ptr<libvlc_instance_t> VlcInstance_;
+		std::shared_ptr<libvlc_media_player_t> Mp_;
+		std::shared_ptr<libvlc_media_t> M_;
 		
 		QWidget *Parent_;
 		
 	public:
 		explicit VlcPlayer (QWidget *parent = 0);
-		~VlcPlayer ();
 		
 		void AddSubtitles (QString);
 		void ClearAll ();
 		bool NowPlaying ();
 		double GetPosition ();
 		QWidget *GetParent ();
-		libvlc_media_player_t *GetPlayer ();
+		std::shared_ptr<libvlc_media_player_t> GetPlayer ();
 		
 		QTime GetCurrentTime ();
 		QTime GetFullTime ();
