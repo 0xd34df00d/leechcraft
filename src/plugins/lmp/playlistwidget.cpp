@@ -54,6 +54,7 @@
 #include "playlistundocommand.h"
 #include "sortingcriteriadialog.h"
 #include "util.h"
+#include "palettefixerfilter.h"
 
 namespace LeechCraft
 {
@@ -227,11 +228,7 @@ namespace LMP
 					Ui_.Playlist_,
 					PlaylistFilter_));
 
-		auto pal = Ui_.Playlist_->palette ();
-		pal.setColor (QPalette::Base, pal.color (QPalette::Window));
-		pal.setColor (QPalette::AlternateBase, pal.color (QPalette::Window));
-		pal.setColor (QPalette::Text, pal.color (QPalette::WindowText));
-		Ui_.Playlist_->setPalette (pal);
+		new PaletteFixerFilter (Ui_.Playlist_);
 	}
 
 	void PlaylistWidget::InitToolbarActions ()
