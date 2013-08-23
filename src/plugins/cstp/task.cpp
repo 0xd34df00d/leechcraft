@@ -113,6 +113,8 @@ namespace CSTP
 				req.setRawHeader ("Range", QString ("bytes=%1-").arg (tof->size ()).toLatin1 ());
 			req.setRawHeader ("User-Agent", ua.toLatin1 ());
 			req.setRawHeader ("Referer", QString (QString ("http://") + URL_.host ()).toLatin1 ());
+			req.setRawHeader ("Host", URL_.host ().toLatin1 ());
+			req.setRawHeader ("Accept", "*/*");
 
 			StartTime_.restart ();
 			QNetworkAccessManager *nam = Core::Instance ().GetNetworkAccessManager ();
