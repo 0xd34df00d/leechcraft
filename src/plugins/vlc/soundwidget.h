@@ -52,6 +52,7 @@ namespace vlc
 	public slots:
 		void increaseVolume ();
 		void decreaseVolume ();
+		void setVolume (int);
 	
 	signals:
 		void volumeChanged (int);

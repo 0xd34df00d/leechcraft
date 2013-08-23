@@ -33,8 +33,6 @@
 #include <QPainter>
 #include <QVBoxLayout>
 
-using std::min;
-
 namespace LeechCraft
 {
 namespace vlc
@@ -55,7 +53,7 @@ namespace vlc
 		p.drawRect (0, 0, width () - 1, height () - 1);
 		
 		p.setBrush (palette ().button ());
-		p.drawRect (0, 0, min (int (width () * CurrentPosition_), width () - 1), height () - 1);
+		p.drawRect (0, 0, std::min (int (width () * CurrentPosition_), width () - 1), height () - 1);
 		
 		p.end ();
 		event->accept ();

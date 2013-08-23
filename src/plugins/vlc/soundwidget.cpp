@@ -53,22 +53,25 @@ namespace vlc
 	
 	void SoundWidget::decreaseVolume ()
 	{
-		if (libvlc_audio_get_volume (Mp_) >= 10)
-			libvlc_audio_set_volume (Mp_, libvlc_audio_get_volume (Mp_) - 10);
-		
-		emit volumeChanged (libvlc_audio_get_volume (Mp_));
+		setVolume (libvlc_audio_get_volume (Mp_) - 10);
 	}
 	
 	void SoundWidget::increaseVolume ()
 	{
-		if (libvlc_audio_get_volume (Mp_) <= 190)
-			libvlc_audio_set_volume (Mp_, libvlc_audio_get_volume (Mp_) + 10);
-		
-		emit volumeChanged (libvlc_audio_get_volume (Mp_));
+		setVolume (libvlc_audio_get_volume (Mp_) + 10);
+	}
+	
+	void SoundWidget::setVolume (int volume)
+	{
+		volume = std::min (std::max (volume, 0), 200);
+		volume = volume / 10 * 10;
+		libvlc_audio_set_volume (Mp_, volume);
+		emit volumeChanged (libvlc_audio_get_volume (Mp_));		
 	}
 	
 	void SoundWidget::mousePressEvent (QMouseEvent *event) 
 	{
+		setVolume (event->x () * 2);
 	}
 	
 	void SoundWidget::paintEvent (QPaintEvent *event)

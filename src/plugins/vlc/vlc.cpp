@@ -72,7 +72,7 @@ namespace vlc
 	void Plugin::TabOpenRequested (const QByteArray& tabClass) 
 	{
 		VlcWidget *widget = new VlcWidget;
-		emit addNewTab (tr ("Hello, tab"), widget);
+		emit addNewTab (tr ("VLC"), widget);
 		emit raiseTab (widget);
 		connect (widget, 
 				SIGNAL (deleteMe (QWidget*)), 
