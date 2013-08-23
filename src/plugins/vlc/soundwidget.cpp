@@ -39,11 +39,8 @@ namespace LeechCraft
 namespace vlc
 {
 	SoundWidget::SoundWidget (QWidget *parent, std::shared_ptr<libvlc_media_player_t> mp)
+	: QWidget (parent)
 	{
-		QVBoxLayout *layout = new QVBoxLayout;
-		layout->setContentsMargins (0, 0, 0, 0);
-		layout->addWidget (this);
-		parent->setLayout (layout);
 		Mp_ = mp;
 		libvlc_audio_set_volume (Mp_.get (), 100);
 		

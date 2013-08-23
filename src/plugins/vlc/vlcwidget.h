@@ -72,7 +72,7 @@ namespace vlc
 		void ForbidFullScreen ();
 		
 	public:
-		explicit VlcWidget (QObject* parent = 0);
+		explicit VlcWidget (QWidget *parent = 0);
 		~VlcWidget();
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();

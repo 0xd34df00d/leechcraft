@@ -40,11 +40,23 @@
 #include <QToolBar>
 #include <QMenu>
 
+namespace 
+{
+	void RewriteWidget (QWidget *widget, QWidget *parent)
+	{
+		QVBoxLayout *layout = new QVBoxLayout;
+		layout->addWidget (widget);
+		layout->setContentsMargins (0, 0, 0, 0);
+		parent->setLayout (layout);
+	}
+}
+
 namespace LeechCraft
 {
 namespace vlc
 {
-	VlcWidget::VlcWidget (QObject* parent)
+	VlcWidget::VlcWidget (QWidget *parent)
+	: QWidget (parent)
 	{
 		Parent_ = parent;
 		Ui_ = new Ui::VlcControlsWidget;
@@ -60,8 +72,10 @@ namespace vlc
 		forbidFullScreen_ = false;
 		
 		ScrollBar_ = new VlcScrollBar (Ui_->scrollBarWidget_);
+		RewriteWidget (ScrollBar_, Ui_->scrollBarWidget_);
 		VlcPlayer_ = new VlcPlayer (VlcMainWidget_);
 		SoundWidget_ = new SoundWidget (Ui_->soundWidget_, VlcPlayer_->GetPlayer ());
+		RewriteWidget (SoundWidget_, Ui_->soundWidget_);
 		
 		GenerateToolBar ();
 		InterfaceUpdater_ = new QTimer;

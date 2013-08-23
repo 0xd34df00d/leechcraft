@@ -51,6 +51,7 @@ namespace LeechCraft
 namespace vlc
 {
 	VlcPlayer::VlcPlayer (QWidget *parent)
+	: QObject (parent)
 	{
 		const char * const vlc_args[] = 
 		{

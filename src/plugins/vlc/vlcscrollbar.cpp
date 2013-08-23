@@ -38,10 +38,8 @@ namespace LeechCraft
 namespace vlc
 {
 	VlcScrollBar::VlcScrollBar (QWidget* parent)
+	: QWidget (parent)
 	{
-		QVBoxLayout *layout = new QVBoxLayout;
-		layout->addWidget (this);
-		parent->setLayout (layout);
 		CurrentPosition_ = 0;
 	}
 
