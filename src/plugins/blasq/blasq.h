@@ -32,6 +32,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/ipluginready.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/data/iimgsource.h>
@@ -46,12 +47,13 @@ namespace Blasq
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IHaveTabs
+				 , public IHaveRecoverableTabs
 				 , public IPluginReady
 				 , public IHaveSettings
 				 , public IImgSource
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IPluginReady IHaveSettings IImgSource)
+		Q_INTERFACES (IInfo IHaveTabs IHaveRecoverableTabs IPluginReady IHaveSettings IImgSource)
 
 		ICoreProxy_ptr Proxy_;
 
@@ -72,6 +74,8 @@ namespace Blasq
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
 
+		void RecoverTabs (const QList<TabRecoverInfo>& );
+
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
 
@@ -80,6 +84,8 @@ namespace Blasq
 		ImageServiceInfos_t GetServices () const;
 		IPendingImgSourceRequest* RequestImages (const QByteArray& serviceId);
 		IPendingImgSourceRequest* StartDefaultChooser ();
+	private:
+		void TabOpenRequested (const QByteArray&, const DynPropertiesList_t&, QDataStream* = nullptr);
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

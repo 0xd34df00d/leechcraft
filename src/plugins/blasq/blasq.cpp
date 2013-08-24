@@ -110,20 +110,25 @@ namespace Blasq
 
 	void Plugin::TabOpenRequested (const QByteArray& tcId)
 	{
-		if (tcId == PhotosTabTC_.TabClass_)
+		TabOpenRequested (tcId, {});
+	}
+
+	void Plugin::RecoverTabs (const QList<TabRecoverInfo>& infos)
+	{
+		for (const auto& info : infos)
 		{
-			auto tab = new PhotosTab (AccountsMgr_, PhotosTabTC_, this, Proxy_);
-			connect (tab,
-					SIGNAL (removeTab (QWidget*)),
-					this,
-					SIGNAL (removeTab (QWidget*)));
-			emit addNewTab (PhotosTabTC_.VisibleName_, tab);
-			emit raiseTab (tab);
+			quint8 version = 0;
+
+			QDataStream in (info.Data_);
+			in >> version;
+			if (version != 1)
+				continue;
+
+			QByteArray tc;
+			in >> tc;
+
+			TabOpenRequested (tc, info.DynProperties_, &in);
 		}
-		else
-			qWarning () << Q_FUNC_INFO
-					<< "unknown tab class"
-					<< tcId;
 	}
 
 	QSet<QByteArray> Plugin::GetExpectedPluginClasses () const
@@ -161,6 +166,28 @@ namespace Blasq
 	IPendingImgSourceRequest* Plugin::StartDefaultChooser ()
 	{
 		return new DefaultImageChooser (AccountsMgr_, Proxy_);
+	}
+
+	void Plugin::TabOpenRequested (const QByteArray& tcId,
+			const DynPropertiesList_t& list, QDataStream *recover)
+	{
+		if (tcId == PhotosTabTC_.TabClass_)
+		{
+			auto tab = new PhotosTab (AccountsMgr_, PhotosTabTC_, this, Proxy_);
+			connect (tab,
+					SIGNAL (removeTab (QWidget*)),
+					this,
+					SIGNAL (removeTab (QWidget*)));
+			emit addNewTab (PhotosTabTC_.VisibleName_, tab);
+			emit raiseTab (tab);
+
+			if (recover)
+				tab->RecoverState (*recover);
+		}
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "unknown tab class"
+					<< tcId;
 	}
 }
 }
