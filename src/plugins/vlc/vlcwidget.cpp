@@ -207,14 +207,19 @@ namespace vlc
 			return;
 				
 		ForbidFullScreen ();
+		
+		//don't touch it: BUG ZONE
 		if (!FullScreen_)
 		{
 			FullScreenWidget_ = new QWidget;
 			FullScreenWidget_->setBackgroundRole (QPalette::Shadow);
 			FullScreen_ = true;
+			bool controlsVisible = Controls_->isVisible ();
+			Controls_->show ();
 			hide ();
 			FullScreenWidget_->setLayout (layout ());
 			FullScreenWidget_->show ();
+			Controls_->setVisible (controlsVisible);
 			FullScreenWidget_->showFullScreen ();
 			VlcPlayer_->switchWidget (VlcMainWidget_);
 		} 
@@ -225,7 +230,13 @@ namespace vlc
 			setLayout (FullScreenWidget_->layout ());
 			show ();
 			VlcPlayer_->switchWidget (VlcMainWidget_);
-			delete FullScreenWidget_;
+			FullScreenWidget_->deleteLater ();
+			QEventLoop *loop = new QEventLoop;
+			connect (FullScreenWidget_,
+					SIGNAL (destroyed ()),
+					loop,
+					SLOT (quit ()));
+			loop->exec();
 		}
 	}
 	
