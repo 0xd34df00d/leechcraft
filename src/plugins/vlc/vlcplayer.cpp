@@ -187,7 +187,7 @@ namespace vlc
 	
 	void VlcPlayer::setAudioTrack (int track)
 	{
-		libvlc_audio_set_track (Mp_.get (), GetAudioTrackId (track));
+		libvlc_audio_set_track (Mp_.get (), track);
 	}
 	
 	QString VlcPlayer::GetAudioTrackDescription (int track) const
@@ -231,7 +231,7 @@ namespace vlc
 
 	void VlcPlayer::setSubtitle (int track)
 	{
-		libvlc_video_set_spu (Mp_.get (), GetSubtitleId (track));
+		libvlc_video_set_spu (Mp_.get (), track);
 	}
 	
 	libvlc_track_description_t* VlcPlayer::GetTrack(libvlc_track_description_t* t, int track) const

@@ -71,8 +71,6 @@ namespace vlc
 		Ui_->setupUi (Controls_);
 		FullScreen_ = false;
 		forbidFullScreen_ = false;
-		FullScreenWidget_ = new QWidget;
-		FullScreenWidget_->setBackgroundRole (QPalette::Shadow);
 			
 		ScrollBar_ = new VlcScrollBar (Ui_->scrollBarWidget_);
 		RewriteWidget (ScrollBar_, Ui_->scrollBarWidget_);
@@ -211,6 +209,8 @@ namespace vlc
 		ForbidFullScreen ();
 		if (!FullScreen_)
 		{
+			FullScreenWidget_ = new QWidget;
+			FullScreenWidget_->setBackgroundRole (QPalette::Shadow);
 			FullScreen_ = true;
 			hide ();
 			FullScreenWidget_->setLayout (layout ());
@@ -225,6 +225,7 @@ namespace vlc
 			setLayout (FullScreenWidget_->layout ());
 			show ();
 			VlcPlayer_->switchWidget (VlcMainWidget_);
+			FullScreenWidget_->deleteLater ();
 		}
 	}
 	
@@ -282,7 +283,7 @@ namespace vlc
 		
 		for (int i = 0; i < VlcPlayer_->NumberAudioTracks (); i++) {
 			QAction *action = new QAction (tracks);
-			action->setData (QVariant (i));
+			action->setData (QVariant (VlcPlayer_->GetAudioTrackId (i)));
 			action->setText (VlcPlayer_->GetAudioTrackDescription (i));
 			if (VlcPlayer_->GetAudioTrackId (i) == VlcPlayer_->CurrentAudioTrack ())
 			{
@@ -294,7 +295,7 @@ namespace vlc
 		
 		for (int i = 0; i < VlcPlayer_->NumberSubtitles (); i++) {
 			QAction *action = new QAction (subtitles);
-			action->setData (QVariant (i));
+			action->setData (QVariant (VlcPlayer_->GetSubtitleId (i)));
 			action->setText (VlcPlayer_->GetSubtitleDescription (i));
 			if (VlcPlayer_->GetSubtitleId (i) == VlcPlayer_->CurrentSubtitle ())
 			{
@@ -323,20 +324,12 @@ namespace vlc
 	void VlcWidget::setSubtitles(QAction *action)
 	{
 		int track = action->data ().toInt ();
-		
-		if (track == 0)
-			track = -1;
-		
 		VlcPlayer_->setSubtitle (track);
 	}
 	
 	void VlcWidget::setAudioTrack (QAction *action)
 	{
 		int track = action->data ().toInt ();
-		
-		if (track == 0)
-			track = -1;
-		
 		VlcPlayer_->setAudioTrack (track);
 	}
 }

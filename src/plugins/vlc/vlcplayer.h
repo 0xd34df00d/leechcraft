@@ -78,7 +78,7 @@ namespace vlc
 		QTime GetCurrentTime () const;
 		QTime GetFullTime () const;
 		
-	public slots:	
+	public slots:
 		void stop ();
 		void togglePlay ();
 		void addUrl (QString);
