@@ -37,6 +37,7 @@ class QTime;
 struct libvlc_instance_t;
 struct libvlc_media_player_t;
 struct libvlc_media_t;
+struct libvlc_track_description_t;
 
 namespace LeechCraft
 {
@@ -51,6 +52,7 @@ namespace vlc
 		std::shared_ptr<libvlc_media_t> M_;
 		
 		QWidget *Parent_;
+		libvlc_track_description_t* GetTrack(libvlc_track_description_t *t, int track) const;
 		
 	public:
 		explicit VlcPlayer (QWidget *parent = 0);
@@ -64,10 +66,12 @@ namespace vlc
 		int NumberAudioTracks () const;
 		int CurrentAudioTrack () const;
 		QString GetAudioTrackDescription (int) const;
+		int GetAudioTrackId (int) const;
 		
 		int NumberSubtitles () const;
 		int CurrentSubtitle () const;
 		QString GetSubtitleDescription (int) const;
+		int GetSubtitleId (int) const;
 		
 		std::shared_ptr<libvlc_media_player_t> GetPlayer () const;
 		

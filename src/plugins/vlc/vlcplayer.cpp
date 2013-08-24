@@ -187,16 +187,19 @@ namespace vlc
 	
 	void VlcPlayer::setAudioTrack (int track)
 	{
-		libvlc_audio_set_track (Mp_.get (), track);
+		libvlc_audio_set_track (Mp_.get (), GetAudioTrackId (track));
 	}
 	
 	QString VlcPlayer::GetAudioTrackDescription (int track) const
 	{
-		libvlc_track_description_t *t = libvlc_audio_get_track_description (Mp_.get ());
-		for (int i = 0; i < track; i++)
-			t = t->p_next;
-		
+		libvlc_track_description_t *t = GetTrack (libvlc_audio_get_track_description (Mp_.get ()), track);
 		return QString (t->psz_name);
+	}
+	
+	int VlcPlayer::GetAudioTrackId(int track) const
+	{
+		libvlc_track_description_t *t = GetTrack (libvlc_audio_get_track_description (Mp_.get ()), track);
+		return t->i_id;
 	}
 	
 	int VlcPlayer::NumberSubtitles () const
@@ -216,16 +219,28 @@ namespace vlc
 	
 	QString VlcPlayer::GetSubtitleDescription (int track) const
 	{
-		libvlc_track_description_t *t = libvlc_video_get_spu_description (Mp_.get ());
-		for (int i = 0; i < track; i++)
-			t = t->p_next;
-		
+		libvlc_track_description_t *t = GetTrack (libvlc_video_get_spu_description (Mp_.get ()), track);	
 		return QString (t->psz_name);
+	}
+	
+	int VlcPlayer::GetSubtitleId(int track) const
+	{
+		libvlc_track_description_t *t = GetTrack (libvlc_video_get_spu_description (Mp_.get ()), track);
+		return t->i_id;
 	}
 
 	void VlcPlayer::setSubtitle (int track)
 	{
-		libvlc_video_set_spu (Mp_.get (), track);
+		libvlc_video_set_spu (Mp_.get (), GetSubtitleId (track));
 	}
+	
+	libvlc_track_description_t* VlcPlayer::GetTrack(libvlc_track_description_t* t, int track) const
+	{
+		for (int i = 0; i < track; i++)
+			t = t->p_next;
+		
+		return t;
+	}
+
 }
 }

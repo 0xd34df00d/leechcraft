@@ -284,7 +284,7 @@ namespace vlc
 			QAction *action = new QAction (tracks);
 			action->setData (QVariant (i));
 			action->setText (VlcPlayer_->GetAudioTrackDescription (i));
-			if ((VlcPlayer_->CurrentAudioTrack () == i) || ((VlcPlayer_->CurrentAudioTrack () == -1) && (i == 0)))
+			if (VlcPlayer_->GetAudioTrackId (i) == VlcPlayer_->CurrentAudioTrack ())
 			{
 				action->setCheckable (true);
 				action->setChecked (true);
@@ -296,7 +296,7 @@ namespace vlc
 			QAction *action = new QAction (subtitles);
 			action->setData (QVariant (i));
 			action->setText (VlcPlayer_->GetSubtitleDescription (i));
-			if ((VlcPlayer_->CurrentSubtitle () == i) || ((VlcPlayer_->CurrentSubtitle () == -1) && (i == 0)))
+			if (VlcPlayer_->GetSubtitleId (i) == VlcPlayer_->CurrentSubtitle ())
 			{
 				action->setCheckable (true);
 				action->setChecked (true);
