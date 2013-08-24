@@ -230,13 +230,7 @@ namespace vlc
 			setLayout (FullScreenWidget_->layout ());
 			show ();
 			VlcPlayer_->switchWidget (VlcMainWidget_);
-			FullScreenWidget_->deleteLater ();
-			QEventLoop *loop = new QEventLoop;
-			connect (FullScreenWidget_,
-					SIGNAL (destroyed ()),
-					loop,
-					SLOT (quit ()));
-			loop->exec();
+			delete FullScreenWidget_;
 		}
 	}
 	
