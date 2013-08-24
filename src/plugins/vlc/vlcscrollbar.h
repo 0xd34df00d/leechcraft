@@ -42,7 +42,7 @@ namespace vlc
 		double CurrentPosition_;
 		
 	public:
-		explicit VlcScrollBar (QWidget* parent = 0);
+		explicit VlcScrollBar (QWidget *parent = 0);
 
 	protected:
 		void paintEvent (QPaintEvent*);

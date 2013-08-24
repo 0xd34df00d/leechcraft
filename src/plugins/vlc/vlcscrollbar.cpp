@@ -37,7 +37,7 @@ namespace LeechCraft
 {
 namespace vlc
 {
-	VlcScrollBar::VlcScrollBar (QWidget* parent)
+	VlcScrollBar::VlcScrollBar (QWidget *parent)
 	: QWidget (parent)
 	{
 		CurrentPosition_ = 0;
