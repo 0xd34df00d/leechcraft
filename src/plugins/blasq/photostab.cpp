@@ -191,6 +191,43 @@ namespace Blasq
 		return Toolbar_.get ();
 	}
 
+	QString PhotosTab::GetTabRecoverName () const
+	{
+		return CurAcc_ ? ("Blasq: " + CurAcc_->GetName ()) : "Blasq";
+	}
+
+	QIcon PhotosTab::GetTabRecoverIcon () const
+	{
+		return GetTabClassInfo ().Icon_;
+	}
+
+	QByteArray PhotosTab::GetTabRecoverData () const
+	{
+		QByteArray ba;
+		QDataStream out (&ba, QIODevice::WriteOnly);
+		out << static_cast<quint8> (1)
+				<< GetTabClassInfo ().TabClass_;
+
+		out << (CurAcc_ ? CurAcc_->GetID () : QByteArray ());
+		out << SelectedCollection_;
+
+		return ba;
+	}
+
+	void PhotosTab::RecoverState (QDataStream& in)
+	{
+		QByteArray accId;
+		in >> accId
+				>> OnUpdateCollectionId_;
+
+		const auto accIdx = AccMgr_->GetAccountIndex (accId);
+		if (accIdx < 0)
+			return;
+
+		AccountsBox_->setCurrentIndex (accIdx);
+		handleAccountChosen (accIdx);
+	}
+
 	QModelIndex PhotosTab::GetSelectedImage () const
 	{
 		if (SelectedID_.isEmpty ())
@@ -251,6 +288,8 @@ namespace Blasq
 
 		SelectedID_.clear ();
 		SelectedCollection_ = index.data (CollectionRole::ID).toString ();
+
+		emit tabRecoverDataChanged ();
 	}
 
 	QModelIndex PhotosTab::ImageID2Index (const QString& id) const
@@ -302,6 +341,11 @@ namespace Blasq
 		CurAccObj_ = accObj;
 		CurAcc_ = acc;
 
+		connect (CurAccObj_,
+				SIGNAL (doneUpdating ()),
+				this,
+				SLOT (handleAccDoneUpdating ()));
+
 		CurAcc_->UpdateCollections ();
 
 		auto model = CurAcc_->GetCollectionsModel ();
@@ -324,6 +368,8 @@ namespace Blasq
 		HandleCollectionSelected ({});
 
 		UploadAction_->setEnabled (qobject_cast<ISupportUploads*> (CurAccObj_));
+
+		emit tabRecoverDataChanged ();
 	}
 
 	void PhotosTab::handleRowChanged (const QModelIndex& index)
@@ -449,6 +495,41 @@ namespace Blasq
 			UniSlider_->setValue (value);
 			UniSlider_->setRange (0, SingleImageMode_ ? Zooms.size () - 1 : 100);
 		}
+	}
+
+	namespace
+	{
+		QModelIndex FindCollection (QAbstractItemModel *model, const QModelIndex& parent, const QString& id)
+		{
+			for (int i = 0, rc = model->rowCount (parent); i < rc; ++i)
+			{
+				const auto& idx = model->index (i, 0, parent);
+				if (idx.data (CollectionRole::Type).toInt () != ItemType::Collection)
+					continue;
+
+				if (idx.data (CollectionRole::ID).toString () == id)
+					return idx;
+
+				const auto& child = FindCollection (model, idx, id);
+				if (child.isValid ())
+					return child;
+			}
+
+			return {};
+		}
+	}
+
+	void PhotosTab::handleAccDoneUpdating ()
+	{
+		if (OnUpdateCollectionId_.isEmpty () || !CurAcc_)
+			return;
+
+		const auto& idx = FindCollection (CurAcc_->GetCollectionsModel (), {}, OnUpdateCollectionId_);
+		OnUpdateCollectionId_.clear ();
+		if (!idx.isValid ())
+			return;
+
+		Ui_.CollectionsTree_->setCurrentIndex (idx);
 	}
 }
 }
