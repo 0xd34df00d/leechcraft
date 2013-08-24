@@ -67,6 +67,8 @@ namespace Blasq
 		QAbstractItemModel* GetModel ();
 		const QList<IAccount*>& GetAccounts () const;
 
+		int GetAccountIndex (const QByteArray&) const;
+
 		void RemoveAccount (const QModelIndex&);
 	private:
 		void HandleAccount (IAccount*);
