@@ -59,7 +59,7 @@ namespace vlc
 		void ClearAll ();
 		bool NowPlaying () const;
 		double GetPosition () const;
-		QWidget *GetParent () const;
+		QWidget* GetParent () const;
 		
 		int NumberAudioTracks () const;
 		int CurrentAudioTrack () const;

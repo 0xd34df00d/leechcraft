@@ -134,12 +134,12 @@ namespace vlc
 	}
 
 
-	QObject *VlcWidget::ParentMultiTabs ()
+	QObject* VlcWidget::ParentMultiTabs ()
 	{
 		return Parent_;
 	}
 	
-	QToolBar *VlcWidget::GetToolBar () const
+	QToolBar* VlcWidget::GetToolBar () const
 	{
 		return Bar_;
 	}

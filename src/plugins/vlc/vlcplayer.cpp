@@ -165,7 +165,7 @@ namespace vlc
 			libvlc_media_player_pause (Mp_.get ());
 	}
 	
-	QWidget *VlcPlayer::GetParent () const
+	QWidget* VlcPlayer::GetParent () const
 	{
 		return Parent_;
 	}
