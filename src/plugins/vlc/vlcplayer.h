@@ -29,42 +29,63 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavetabs.h>
+
+class QWidget;
+class QTime;
+struct libvlc_instance_t;
+struct libvlc_media_player_t;
+struct libvlc_media_t;
+struct libvlc_track_description_t;
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveTabs
+	class VlcPlayer : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs)
-	
-		ICoreProxy_ptr Proxy_;
-	
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
 
-		void TabOpenRequested (const QByteArray&);
-		LeechCraft::TabClasses_t GetTabClasses () const;
-					
-	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
+		std::shared_ptr<libvlc_instance_t> VlcInstance_;
+		std::shared_ptr<libvlc_media_player_t> Mp_;
+		std::shared_ptr<libvlc_media_t> M_;
+		
+		QWidget *Parent_;
+		libvlc_track_description_t* GetTrack(libvlc_track_description_t *t, int track) const;
+		
+	public:
+		explicit VlcPlayer (QWidget *parent = 0);
+		
+		void AddSubtitles (QString);
+		void ClearAll ();
+		bool NowPlaying () const;
+		double GetPosition () const;
+		QWidget* GetParent () const;
+		
+		int NumberAudioTracks () const;
+		int CurrentAudioTrack () const;
+		QString GetAudioTrackDescription (int) const;
+		int GetAudioTrackId (int) const;
+		
+		int NumberSubtitles () const;
+		int CurrentSubtitle () const;
+		QString GetSubtitleDescription (int) const;
+		int GetSubtitleId (int) const;
+		
+		std::shared_ptr<libvlc_media_player_t> GetPlayer () const;
+		
+		QTime GetCurrentTime () const;
+		QTime GetFullTime () const;
+		
+	public slots:	
+		void stop ();
+		void togglePlay ();
+		void addUrl (QString);
+		void changePosition (double);
+		void switchWidget (QWidget*);
+		void setAudioTrack (int);
+		void setSubtitle (int);
 	};
 }
 }

@@ -29,42 +29,38 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavetabs.h>
+#include <QWidget>
+
+class QColor;
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveTabs
+	class SignalledWidget : public QWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs)
 	
-		ICoreProxy_ptr Proxy_;
+		QColor *backgroundColor_;
 	
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		void TabOpenRequested (const QByteArray&);
-		LeechCraft::TabClasses_t GetTabClasses () const;
-					
+		explicit SignalledWidget (QWidget *parent = 0);
+		~SignalledWidget();
+		
+		void SetBackGroundColor (QColor*);
+		
+	protected:
+		void mousePressEvent (QMouseEvent*);
+		void mouseDoubleClickEvent (QMouseEvent*);
+		void wheelEvent (QWheelEvent*);
+		void keyPressEvent (QKeyEvent*);
+		void paintEvent (QPaintEvent*);
+		
 	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
+		void mousePress (QMouseEvent*);
+		void mouseDoubleClick (QMouseEvent*);
+		void wheel (QWheelEvent*);
+		void keyPress (QKeyEvent*);
 	};
 }
 }
