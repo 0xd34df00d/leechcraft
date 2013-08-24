@@ -250,6 +250,7 @@ namespace Blasq
 		rootCtx->setContextProperty ("collRootIndex", QVariant::fromValue (index));
 
 		SelectedID_.clear ();
+		SelectedCollection_ = index.data (CollectionRole::ID).toString ();
 	}
 
 	QModelIndex PhotosTab::ImageID2Index (const QString& id) const

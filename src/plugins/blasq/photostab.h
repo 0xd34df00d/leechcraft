@@ -71,6 +71,7 @@ namespace Blasq
 		QObject *CurAccObj_ = 0;
 
 		QString SelectedID_;
+		QString SelectedCollection_;
 
 		bool SingleImageMode_ = false;
 	public:
