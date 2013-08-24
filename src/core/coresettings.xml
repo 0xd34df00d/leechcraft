@@ -191,8 +191,17 @@
 		</tab>
 		<tab>
 			<label value="Privacy" />
-			<item type="checkbox" property="FilterTrackingCookies" default="on">
-				<label lang="en" value="Filter tracking cookies" />
+			<item type="groupbox" checkable="true" property="EnableCookies" default="true">
+				<label value="Enable cookies" />
+				<item type="checkbox" property="DeleteCookiesOnExit" default="false">
+					<label value="Delete cookies on application exit" />
+				</item>
+				<item type="checkbox" property="MatchDomainExactly" default="false">
+					<label value="Match domain exactly" />
+				</item>
+				<item type="checkbox" property="FilterTrackingCookies" default="true">
+					<label lang="en" value="Filter tracking cookies" />
+				</item>
 			</item>
 			<item type="pushbutton" name="ClearCookies">
 				<label lang="en" value="Clear cookies" />

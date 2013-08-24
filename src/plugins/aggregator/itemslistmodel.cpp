@@ -218,7 +218,7 @@ namespace Aggregator
 		void RemoveTag (const QString& name, QString& str)
 		{
 			int startPos = 0;
-			while ((startPos = str.indexOf ("<" + name, startPos, Qt::CaseInsensitive)) > 0)
+			while ((startPos = str.indexOf ("<" + name, startPos, Qt::CaseInsensitive)) >= 0)
 			{
 				const int end = str.indexOf ('>', startPos);
 				if (end < 0)
@@ -226,6 +226,12 @@ namespace Aggregator
 
 				str.remove (startPos, end - startPos + 1);
 			}
+		}
+
+		void RemovePair (const QString& name, QString& str)
+		{
+			RemoveTag (name, str);
+			RemoveTag ('/' + name, str);
 		}
 	}
 
@@ -332,6 +338,12 @@ namespace Aggregator
 			const int maxDescriptionSize = 1000;
 			auto descr = item->Description_;
 			RemoveTag ("img", descr);
+			RemovePair ("font", descr);
+			RemovePair ("span", descr);
+			RemovePair ("p", descr);
+			RemovePair ("div", descr);
+			for (auto i : { 1, 2, 3, 4, 5, 6 })
+				RemovePair ("h" + QString::number (i), descr);
 			result += descr.left (maxDescriptionSize);
 			if (descr.size () > maxDescriptionSize)
 				result += "...";

@@ -156,6 +156,8 @@ namespace Util
 		DECL_PROP(ToolButton, SelectedTopColor)
 		DECL_PROP(ToolButton, SelectedBottomColor)
 		DECL_PROP(ToolButton, SelectedBorderColor)
+		DECL_PROP(ToolButton, HoveredTopColor)
+		DECL_PROP(ToolButton, HoveredBottomColor)
 		DECL_PROP(ToolButton, HoveredBorderColor)
 		DECL_PROP(ToolButton, PressedBorderColor)
 		DECL_PROP(ToolButton, TextColor)
@@ -190,6 +192,8 @@ namespace Util
 	Q_PROPERTY(QColor color_ToolButton_SelectedTopColor READ GetToolButtonSelectedTopColor NOTIFY colorsChanged) QColor GetToolButtonSelectedTopColor () const { return GetColor ("ToolButton", "SelectedTopColor"); }
 	Q_PROPERTY(QColor color_ToolButton_SelectedBottomColor READ GetToolButtonSelectedBottomColor NOTIFY colorsChanged) QColor GetToolButtonSelectedBottomColor () const { return GetColor ("ToolButton", "SelectedBottomColor"); }
 	Q_PROPERTY(QColor color_ToolButton_SelectedBorderColor READ GetToolButtonSelectedBorderColor NOTIFY colorsChanged) QColor GetToolButtonSelectedBorderColor () const { return GetColor ("ToolButton", "SelectedBorderColor"); }
+	Q_PROPERTY(QColor color_ToolButton_HoveredTopColor READ GetToolButtonHoveredTopColor NOTIFY colorsChanged) QColor GetToolButtonHoveredTopColor () const { return GetColor ("ToolButton", "HoveredTopColor"); }
+	Q_PROPERTY(QColor color_ToolButton_HoveredBottomColor READ GetToolButtonHoveredBottomColor NOTIFY colorsChanged) QColor GetToolButtonHoveredBottomColor () const { return GetColor ("ToolButton", "HoveredBottomColor"); }
 	Q_PROPERTY(QColor color_ToolButton_HoveredBorderColor READ GetToolButtonHoveredBorderColor NOTIFY colorsChanged) QColor GetToolButtonHoveredBorderColor () const { return GetColor ("ToolButton", "HoveredBorderColor"); }
 	Q_PROPERTY(QColor color_ToolButton_PressedBorderColor READ GetToolButtonPressedBorderColor NOTIFY colorsChanged) QColor GetToolButtonPressedBorderColor () const { return GetColor ("ToolButton", "PressedBorderColor"); }
 	Q_PROPERTY(QColor color_ToolButton_TextColor READ GetToolButtonTextColor NOTIFY colorsChanged) QColor GetToolButtonTextColor () const { return GetColor ("ToolButton", "TextColor"); }

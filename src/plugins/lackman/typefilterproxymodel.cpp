@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "typefilterproxymodel.h"
+#include <QtDebug>
 #include "packagesmodel.h"
 
 namespace LeechCraft
@@ -36,11 +37,11 @@ namespace LackMan
 {
 	TypeFilterProxyModel::TypeFilterProxyModel (QObject *parent)
 	: QSortFilterProxyModel (parent)
-	, Mode_ (FMAll)
+	, Mode_ (FilterMode::All)
 	{
 	}
 
-	void TypeFilterProxyModel::SetFilterMode (TypeFilterProxyModel::FilterMode fm)
+	void TypeFilterProxyModel::SetFilterMode (FilterMode fm)
 	{
 		Mode_ = fm;
 		invalidateFilter ();
@@ -48,19 +49,23 @@ namespace LackMan
 
 	bool TypeFilterProxyModel::filterAcceptsRow (int row, const QModelIndex& parent) const
 	{
-		QModelIndex index = sourceModel ()->index (row, 0, parent);
+		const auto& index = sourceModel ()->index (row, 0, parent);
 		switch (Mode_)
 		{
-		case FMInstalled:
+		case FilterMode::Installed:
 			return index.data (PackagesModel::PMRInstalled).toBool ();
-		case FMNotInstalled:
+		case FilterMode::NotInstalled:
 			return !index.data (PackagesModel::PMRInstalled).toBool ();
-		case FMUpgradable:
+		case FilterMode::Upgradable:
 			return index.data (PackagesModel::PMRUpgradable).toBool ();
-		case FMAll:
-		default:
+		case FilterMode::All:
 			return true;
 		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown filter mode"
+				<< static_cast<int> (Mode_);
+		return true;
 	}
 }
 }

@@ -832,6 +832,8 @@ namespace Blogique
 					Q_ARG (QVariant, tag),
 					Q_ARG (QVariant, tags.value (tag)),
 					Q_ARG (QVariant, max));
+		QMetaObject::invokeMethod (Ui_.TagsCloud_->rootObject (),
+				"updateTagsCloud");
 	}
 
 	void BlogiqueWidget::handleInsertTag (const QString& tag)

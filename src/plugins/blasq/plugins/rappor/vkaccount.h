@@ -32,8 +32,12 @@
 #include <memory>
 #include <QObject>
 #include <interfaces/blasq/iaccount.h>
+#include <interfaces/blasq/isupportuploads.h>
+#include <interfaces/blasq/isupportdeletes.h>
 #include <interfaces/core/icoreproxy.h>
 
+class QNetworkReply;
+class QDomElement;
 class QStandardItemModel;
 class QStandardItem;
 
@@ -54,17 +58,24 @@ namespace Blasq
 namespace Rappor
 {
 	class VkService;
+	class UploadManager;
 
 	class VkAccount : public QObject
 					, public IAccount
+					, public ISupportUploads
+					, public ISupportDeletes
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blasq::IAccount)
+		Q_INTERFACES (LeechCraft::Blasq::IAccount
+				LeechCraft::Blasq::ISupportUploads
+				LeechCraft::Blasq::ISupportDeletes)
 
 		QString Name_;
 		const QByteArray ID_;
 		VkService * const Service_;
 		const ICoreProxy_ptr Proxy_;
+
+		bool IsUpdating_ = false;
 
 		QStandardItemModel * const CollectionsModel_;
 		QStandardItem *AllPhotosItem_ = 0;
@@ -74,8 +85,10 @@ namespace Rappor
 
 		QByteArray LastCookies_;
 
+		QList<std::function<void (QString)>> CallQueue_;
 		Util::QueueManager *RequestQueue_;
-		QList<std::function<void (const QString&)>> CallQueue_;
+
+		UploadManager * const UploadManager_;
 	public:
 		VkAccount (const QString&, VkService*, ICoreProxy_ptr,
 				const QByteArray& id = QByteArray (),
@@ -84,17 +97,30 @@ namespace Rappor
 		QByteArray Serialize () const;
 		static VkAccount* Deserialize (const QByteArray&, VkService*, ICoreProxy_ptr);
 
+		void Schedule (std::function<void (QString)>);
+
 		QObject* GetQObject ();
 		IService* GetService () const;
 		QString GetName () const;
 		QByteArray GetID () const;
 
 		QAbstractItemModel* GetCollectionsModel () const;
-
 		void UpdateCollections ();
+
+		bool HasUploadFeature (Feature) const;
+		void CreateCollection (const QModelIndex& parent);
+		void UploadImages (const QModelIndex& collection, const QList<UploadItem>& paths);
+
+		void Delete (const QModelIndex&);
+	private:
+		void HandleAlbumElement (const QDomElement&);
+		bool HandlePhotoElement (const QDomElement&, bool atEnd = true);
 	private slots:
 		void handleGotAlbums ();
 		void handleGotPhotos ();
+
+		void handleAlbumCreated ();
+		void handlePhotosInfosFetched ();
 
 		void handleAuthKey (const QString&);
 		void handleCookies (const QByteArray&);

@@ -183,6 +183,11 @@ namespace LackMan
 		Ui_.Browser_->SetEverythingElseVisible (false);
 
 		Core::Instance ().SecondInit ();
+
+		connect (&Core::Instance (),
+				SIGNAL (openLackmanRequested ()),
+				this,
+				SLOT (openThis ()));
 	}
 
 	void Plugin::Release ()
@@ -280,7 +285,7 @@ namespace LackMan
 		const QString& action = entity.Entity_.toString ();
 		if (action == "ListPackages")
 		{
-			TypeFilter_->SetFilterMode (TypeFilterProxyModel::FMAll);
+			TypeFilter_->SetFilterMode (TypeFilterProxyModel::FilterMode::All);
 
 			const QStringList& tags = entity.Additional_ ["Tags"].toStringList ();
 
@@ -425,6 +430,11 @@ namespace LackMan
 			Ui_.TotalSizeLabel_->setText (tr ("Total size to be downloaded: %1")
 						.arg (Util::MakePrettySize (sumSize)));
 		Ui_.TotalSizeLabel_->setVisible (sumSize > 0);
+	}
+
+	void Plugin::openThis ()
+	{
+		TabOpenRequested (GetTabClassInfo ().TabClass_);
 	}
 
 	void Plugin::BuildActions ()

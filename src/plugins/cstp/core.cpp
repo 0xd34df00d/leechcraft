@@ -164,17 +164,18 @@ namespace CSTP
 			if (e.Additional_.contains ("Filename"))
 				return e.Additional_ ["Filename"].toString ();
 
-			return MakeFilename (e.Additional_ ["SourceURL"].toString ());
+			const auto& url = e.Entity_.toUrl ();
+			return MakeFilename (url.isValid () ? url : e.Additional_ ["SourceURL"].toUrl ());
 		}
 	}
 
 	int Core::AddTask (Entity& e)
 	{
-		QUrl entity = e.Entity_.toUrl ();
+		const QUrl entity = e.Entity_.toUrl ();
 		QNetworkReply *rep = e.Entity_.value<QNetworkReply*> ();
 		QStringList tags = e.Additional_ [" Tags"].toStringList ();
 
-		QUrl source = e.Additional_ ["SourceURL"].toUrl ();
+		const QUrl source = e.Additional_ ["SourceURL"].toUrl ();
 
 		const QFileInfo fi (e.Location_);
 		const auto& dir = fi.isDir () ? e.Location_ : fi.dir ().path ();

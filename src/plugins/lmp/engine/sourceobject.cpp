@@ -324,12 +324,14 @@ namespace LMP
 	void SourceObject::HandleAboutToFinish ()
 	{
 		qDebug () << Q_FUNC_INFO;
-		emit aboutToFinish ();
-
 		NextSrcMutex_.lock ();
 		if (NextSource_.IsEmpty ())
+		{
+			emit aboutToFinish ();
 			NextSrcWC_.wait (&NextSrcMutex_, 500);
-		qDebug () << "wait finished";
+		}
+		qDebug () << "wait finished; next source:" << NextSource_.ToUrl ()
+				<< "; current source:" << CurrentSource_.ToUrl ();
 
 		std::shared_ptr<void> mutexGuard (nullptr,
 				[this] (void*) { NextSrcMutex_.unlock (); });

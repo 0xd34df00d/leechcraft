@@ -118,6 +118,7 @@ namespace Blasq
 					this,
 					SIGNAL (removeTab (QWidget*)));
 			emit addNewTab (PhotosTabTC_.VisibleName_, tab);
+			emit raiseTab (tab);
 		}
 		else
 			qWarning () << Q_FUNC_INFO

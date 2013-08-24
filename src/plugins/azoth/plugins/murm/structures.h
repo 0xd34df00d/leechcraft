@@ -120,6 +120,13 @@ namespace Murm
 
 		QString Thumbnail_;
 		QString Full_;
+
+		QString AccessKey_;
+	};
+
+	struct FullMessageInfo
+	{
+		QList<PhotoInfo> Photos_;
 	};
 }
 }

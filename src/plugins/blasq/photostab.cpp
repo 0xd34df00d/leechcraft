@@ -28,12 +28,15 @@
  **********************************************************************/
 
 #include "photostab.h"
+#include <array>
 #include <QToolBar>
 #include <QComboBox>
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 #include <QDeclarativeNetworkAccessManagerFactory>
 #include <QGraphicsObject>
+#include <QClipboard>
+#include <QDesktopWidget>
 #include <QtDebug>
 #include <interfaces/core/ientitymanager.h>
 #include <util/qml/colorthemeproxy.h>
@@ -42,8 +45,12 @@
 #include <util/util.h>
 #include <util/network/networkdiskcache.h>
 #include "interfaces/blasq/iaccount.h"
+#include "interfaces/blasq/isupportuploads.h"
+#include "interfaces/blasq/isupportdeletes.h"
 #include "accountsmanager.h"
 #include "xmlsettingsmanager.h"
+#include "uploadphotosdialog.h"
+#include "photosproxymodel.h"
 
 Q_DECLARE_METATYPE (QModelIndex)
 
@@ -69,6 +76,8 @@ namespace Blasq
 				return nam;
 			}
 		};
+
+		const std::array<int, 13> Zooms { { 10, 25, 33, 50, 66, 100, 150, 200, 250, 500, 750, 1000, 1600 } };
 	}
 
 	PhotosTab::PhotosTab (AccountsManager *accMgr, const TabClassInfo& tc, QObject *plugin, ICoreProxy_ptr proxy)
@@ -76,6 +85,7 @@ namespace Blasq
 	, Plugin_ (plugin)
 	, AccMgr_ (accMgr)
 	, Proxy_ (proxy)
+	, ProxyModel_ (new PhotosProxyModel (this))
 	, AccountsBox_ (new QComboBox)
 	, Toolbar_ (new QToolBar)
 	{
@@ -86,7 +96,8 @@ namespace Blasq
 		auto rootCtx = Ui_.ImagesView_->rootContext ();
 		rootCtx->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
-		rootCtx->setContextProperty ("collectionModel", QStringList ());
+		rootCtx->setContextProperty ("collectionModel",
+				QVariant::fromValue<QObject*> (ProxyModel_));
 		rootCtx->setContextProperty ("listingMode", "false");
 		rootCtx->setContextProperty ("collRootIndex", QVariant::fromValue (QModelIndex ()));
 
@@ -112,6 +123,18 @@ namespace Blasq
 				SIGNAL (imageDownloadRequested (QVariant)),
 				this,
 				SLOT (handleImageDownloadRequested (QVariant)));
+		connect (rootObj,
+				SIGNAL (copyURLRequested (QVariant)),
+				this,
+				SLOT (handleCopyURLRequested (QVariant)));
+		connect (rootObj,
+				SIGNAL (deleteRequested (QString)),
+				this,
+				SLOT (handleDeleteRequested (QString)));
+		connect (rootObj,
+				SIGNAL (singleImageMode (bool)),
+				this,
+				SLOT (handleSingleImageMode (bool)));
 
 		AccountsBox_->setModel (AccMgr_->GetModel ());
 		AccountsBox_->setModelColumn (AccountsManager::Column::Name);
@@ -119,10 +142,22 @@ namespace Blasq
 				SIGNAL (activated (int)),
 				this,
 				SLOT (handleAccountChosen (int)));
-		if (AccountsBox_->count ())
-			handleAccountChosen (0);
+
+		UploadAction_ = new QAction (tr ("Upload photos..."), this);
+		UploadAction_->setProperty ("ActionIcon", "svn-commit");
+		connect (UploadAction_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (uploadPhotos ()));
 
 		Toolbar_->addWidget (AccountsBox_);
+		Toolbar_->addSeparator ();
+		Toolbar_->addAction (UploadAction_);
+
+		AddScaleSlider ();
+
+		if (AccountsBox_->count ())
+			handleAccountChosen (0);
 
 		connect (Ui_.CollectionsTree_->selectionModel (),
 				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
@@ -161,29 +196,32 @@ namespace Blasq
 		if (SelectedID_.isEmpty ())
 			return {};
 
-		auto model = CurAcc_->GetCollectionsModel ();
-		QModelIndex allPhotosIdx;
-		for (auto i = 0; i < model->rowCount (); ++i)
-		{
-			const auto& idx = model->index (i, 0);
-			if (idx.data (CollectionRole::Type).toInt () == ItemType::AllPhotos)
-			{
-				allPhotosIdx = idx;
-				break;
-			}
-		}
+		return ImageID2Index (SelectedID_);
+	}
 
-		if (!allPhotosIdx.isValid ())
-			return {};
+	void PhotosTab::AddScaleSlider ()
+	{
+		auto widget = new QWidget ();
+		auto lay = new QHBoxLayout;
+		widget->setLayout (lay);
 
-		for (auto i = 0, rc = model->rowCount (allPhotosIdx); i < rc; ++i)
-		{
-			const auto& idx = allPhotosIdx.child (i, 0);
-			if (idx.data (CollectionRole::ID).toString () == SelectedID_)
-				return idx;
-		}
+		UniSlider_ = new QSlider (Qt::Horizontal);
+		UniSlider_->setMinimumWidth (300);
+		UniSlider_->setMaximumWidth (300);
+		UniSlider_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Fixed);
+		lay->addStretch ();
+		lay->addWidget (UniSlider_, 0, Qt::AlignRight);
 
-		return {};
+		UniSlider_->setValue (XmlSettingsManager::Instance ()
+				.Property ("ScaleSliderValue", 20).toInt ());
+		connect (UniSlider_,
+				SIGNAL (valueChanged (int)),
+				this,
+				SLOT (handleScaleSlider (int)));
+		handleSingleImageMode (true);
+		handleSingleImageMode (false);
+
+		Toolbar_->addWidget (widget);
 	}
 
 	void PhotosTab::HandleImageSelected (const QModelIndex& index)
@@ -212,6 +250,38 @@ namespace Blasq
 		rootCtx->setContextProperty ("collRootIndex", QVariant::fromValue (index));
 
 		SelectedID_.clear ();
+	}
+
+	QModelIndex PhotosTab::ImageID2Index (const QString& id) const
+	{
+		auto model = CurAcc_->GetCollectionsModel ();
+		QModelIndex allPhotosIdx;
+		for (auto i = 0; i < model->rowCount (); ++i)
+		{
+			const auto& idx = model->index (i, 0);
+			if (idx.data (CollectionRole::Type).toInt () == ItemType::AllPhotos)
+			{
+				allPhotosIdx = idx;
+				break;
+			}
+		}
+
+		if (!allPhotosIdx.isValid ())
+			return {};
+
+		for (auto i = 0, rc = model->rowCount (allPhotosIdx); i < rc; ++i)
+		{
+			const auto& idx = allPhotosIdx.child (i, 0);
+			if (idx.data (CollectionRole::ID).toString () == id)
+				return idx;
+		}
+
+		return {};
+	}
+
+	QByteArray PhotosTab::GetUniSettingName () const
+	{
+		return SingleImageMode_ ? "ZoomSliderValue" : "ScaleSliderValue";
 	}
 
 	void PhotosTab::handleAccountChosen (int idx)
@@ -246,18 +316,55 @@ namespace Blasq
 				this,
 				SLOT (handleRowChanged (QModelIndex)));
 
+		ProxyModel_->SetCurrentAccount (CurAccObj_);
+		ProxyModel_->setSourceModel (model);
+
 		Ui_.ImagesView_->rootContext ()->setContextProperty ("collRootIndex", QVariant::fromValue (QModelIndex ()));
-		Ui_.ImagesView_->rootContext ()->setContextProperty ("collectionModel",
-				QVariant::fromValue<QObject*> (model));
 		HandleCollectionSelected ({});
+
+		UploadAction_->setEnabled (qobject_cast<ISupportUploads*> (CurAccObj_));
 	}
 
 	void PhotosTab::handleRowChanged (const QModelIndex& index)
 	{
 		if (index.data (CollectionRole::Type).toInt () == ItemType::Image)
-			HandleImageSelected (index);
+			HandleImageSelected (ProxyModel_->mapFromSource (index));
 		else
-			HandleCollectionSelected (index);
+			HandleCollectionSelected (ProxyModel_->mapFromSource (index));
+	}
+
+	void PhotosTab::handleScaleSlider (int value)
+	{
+		if (SingleImageMode_)
+			Ui_.ImagesView_->rootObject ()->setProperty ("imageZoom", Zooms [value]);
+		else
+		{
+			const auto width = qApp->desktop ()->screenGeometry (this).width ();
+			const int lowest = width / 20.;
+			const int highest = width / 5.;
+
+			// value from 0 to 100; at 0 it should be lowest, at 100 it should be highest
+			const auto computed = (highest - lowest) / (std::exp (1) - 1) * (std::exp (value / 100.) - 1) + lowest;
+			Ui_.ImagesView_->rootObject ()->setProperty ("cellSize", computed);
+		}
+		XmlSettingsManager::Instance ().setProperty (GetUniSettingName (), value);
+	}
+
+	void PhotosTab::uploadPhotos ()
+	{
+		UploadPhotosDialog dia (CurAccObj_, this);
+
+		auto curSelectedIdx = Ui_.CollectionsTree_->currentIndex ();
+		if (curSelectedIdx.data (CollectionRole::Type).toInt () == ItemType::Image)
+			curSelectedIdx = curSelectedIdx.parent ();
+		if (curSelectedIdx.data (CollectionRole::Type).toInt () == ItemType::Collection)
+			dia.SetSelectedCollection (curSelectedIdx);
+
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		auto isu = qobject_cast<ISupportUploads*> (CurAccObj_);
+		isu->UploadImages (dia.GetSelectedCollection (), dia.GetSelectedFiles ());
 	}
 
 	void PhotosTab::handleImageSelected (const QString& id)
@@ -293,6 +400,54 @@ namespace Blasq
 
 		const auto& entity = Util::MakeEntity (url, QString (), FromUserInitiated | OnlyDownload);
 		Proxy_->GetEntityManager ()->HandleEntity (entity);
+	}
+
+	void PhotosTab::handleCopyURLRequested (const QVariant& var)
+	{
+		const auto& url = var.toUrl ();
+		if (!url.isValid ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid URL"
+					<< var;
+			return;
+		}
+
+		auto cb = qApp->clipboard ();
+		cb->setText (url.toString (), QClipboard::Clipboard);
+	}
+
+	void PhotosTab::handleDeleteRequested (const QString& id)
+	{
+		auto isd = qobject_cast<ISupportDeletes*> (CurAccObj_);
+		if (!isd)
+			return;
+
+		const auto& idx = ImageID2Index (id);
+		if (idx.isValid ())
+			isd->Delete (idx);
+	}
+
+	void PhotosTab::handleSingleImageMode (bool single)
+	{
+		SingleImageMode_ = single;
+
+		const auto defValue = SingleImageMode_ ?
+				std::distance (Zooms.begin (), std::find (Zooms.begin (), Zooms.end (), 100)) :
+				20;
+
+		const auto value = XmlSettingsManager::Instance ()
+				.Property (GetUniSettingName (), static_cast<int> (defValue)).toInt ();
+		if (value > UniSlider_->maximum ())
+		{
+			UniSlider_->setRange (0, SingleImageMode_ ? Zooms.size () - 1 : 100);
+			UniSlider_->setValue (value);
+		}
+		else
+		{
+			UniSlider_->setValue (value);
+			UniSlider_->setRange (0, SingleImageMode_ ? Zooms.size () - 1 : 100);
+		}
 	}
 }
 }

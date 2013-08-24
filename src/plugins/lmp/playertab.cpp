@@ -61,6 +61,7 @@
 #include "engine/output.h"
 #include "volumeslider.h"
 #include "seekslider.h"
+#include "palettefixerfilter.h"
 
 #ifdef ENABLE_MPRIS
 #include "mpris/instance.h"
@@ -196,11 +197,7 @@ namespace LMP
 				PreviewHandler_,
 				SLOT (previewTrack (QString, QString, int)));
 
-		auto pal = Ui_.CollectionTree_->palette ();
-		pal.setColor (QPalette::Base, pal.color (QPalette::Window));
-		pal.setColor (QPalette::AlternateBase, pal.color (QPalette::Window));
-		pal.setColor (QPalette::Text, pal.color (QPalette::WindowText));
-		Ui_.CollectionTree_->setPalette (pal);
+		new PaletteFixerFilter (Ui_.CollectionTree_);
 
 #ifdef ENABLE_MPRIS
 		new MPRIS::Instance (this, Player_);
@@ -274,7 +271,6 @@ namespace LMP
 		NavButtons_->hide ();
 		NavButtons_->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Expanding);
 		NavButtons_->setFixedWidth (70);
-		NavButtons_->setStyleSheet ("background-color: palette(window);");
 		NavButtons_->setVerticalScrollBarPolicy (Qt::ScrollBarAlwaysOff);
 		NavButtons_->setFrameShape (QFrame::NoFrame);
 		NavButtons_->setFrameShadow (QFrame::Plain);
@@ -284,6 +280,7 @@ namespace LMP
 		NavButtons_->setGridSize (QSize (70, 65));
 		NavButtons_->setMovement (QListView::Static);
 		NavButtons_->setFlow (QListView::TopToBottom);
+		new PaletteFixerFilter (NavButtons_);
 
 		auto mkButton = [this] (const QString& title, const QString& iconName)
 		{

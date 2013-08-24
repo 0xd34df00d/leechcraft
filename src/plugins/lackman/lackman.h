@@ -123,6 +123,8 @@ namespace LackMan
 		void on_PackageStatus__currentIndexChanged (int);
 		void handlePackageSelected (const QModelIndex&);
 		void handleFetchListUpdated (const QList<int>&);
+
+		void openThis ();
 	private:
 		void BuildActions ();
 	signals:

@@ -493,15 +493,15 @@ namespace Murm
 		msg->SetBody (newContents);
 
 		QPointer<VkMessage> safeMsg (msg);
-		Account_->GetConnection ()->GetPhotoInfos (photoIds,
-				[safeMsg] (const QList<PhotoInfo>& infos) -> void
+		Account_->GetConnection ()->GetMessageInfo (msg->GetID (),
+				[safeMsg] (const FullMessageInfo& msgInfo) -> void
 				{
 					if (!safeMsg)
 						return;
 
 					QString js;
 					auto body = safeMsg->GetBody ();
-					for (const auto& info : infos)
+					for (const auto& info : msgInfo.Photos_)
 					{
 						const auto& id = QString ("%1_%2")
 								.arg (info.OwnerID_)

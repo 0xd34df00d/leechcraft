@@ -109,4 +109,9 @@ Rectangle
 		for (var i = 0; i < length; ++i)
 			selectTag (tags [i], true)
 	}
+
+	function updateTagsCloud ()
+	{
+		flickable.contentHeight = TagsCloudList.calculateContentHeight(flowElement.width, flowElement.spacing)
+	}
 }

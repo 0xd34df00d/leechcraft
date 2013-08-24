@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef TYPEFILTERPROXYMODEL_H
-#define TYPEFILTERPROXYMODEL_H
+#pragma once
+
 #include <QSortFilterProxyModel>
 
 namespace LeechCraft
@@ -39,12 +39,12 @@ namespace LackMan
 	{
 		Q_OBJECT
 	public:
-		enum FilterMode
+		enum class FilterMode
 		{
-			FMAll,
-			FMInstalled,
-			FMUpgradable,
-			FMNotInstalled
+			All,
+			Installed,
+			Upgradable,
+			NotInstalled
 		};
 	private:
 		FilterMode Mode_;
@@ -57,5 +57,3 @@ namespace LackMan
 	};
 }
 }
-
-#endif

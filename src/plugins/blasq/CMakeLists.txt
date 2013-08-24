@@ -21,11 +21,16 @@ set (SRCS
 	photostab.cpp
 	defaultimagechooser.cpp
 	enumsproxy.cpp
+	uploadphotosdialog.cpp
+	selectalbumdialog.cpp
+	photosproxymodel.cpp
 	)
 set (FORMS
 	accountswidget.ui
 	newaccountwizardfirstpage.ui
 	photostab.ui
+	uploadphotosdialog.ui
+	selectalbumdialog.ui
 	)
 CreateTrs("blasq" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("blasq" "en;ru_RU" "${SRCS}" "${FORMS}" "")

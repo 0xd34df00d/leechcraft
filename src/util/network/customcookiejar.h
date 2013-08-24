@@ -27,80 +27,108 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef UTIL_CUSTOMCOOKIEJAR_H
-#define UTIL_CUSTOMCOOKIEJAR_H
+#pragma once
+
 #include <QNetworkCookieJar>
 #include <QByteArray>
 #include <util/utilconfig.h>
 
 namespace LeechCraft
 {
-	namespace Util
+namespace Util
+{
+	/** @brief A customized cookie jar with additional features.
+	 *
+	 * Allows one to filter tracking cookies, filter duplicate cookies
+	 * and has unlimited storage period.
+	 */
+	class UTIL_API CustomCookieJar : public QNetworkCookieJar
 	{
-		/** @brief A customized cookie jar with additional features.
+		Q_OBJECT
+
+		bool FilterTrackingCookies_;
+		bool Enabled_;
+		bool MatchDomainExactly_;
+	public:
+		/** @brief Constructs the cookie jar.
 		 *
-		 * Allows one to filter tracking cookies, filter duplicate
-		 * cookies and has unlimited storage period.
+		 * Filtering of tracking cookies is false by default, and
+		 * cookies aren't restored.
+		 *
+		 * @param[in] parent The parent object.
 		 */
-		class UTIL_API CustomCookieJar : public QNetworkCookieJar
-		{
-			Q_OBJECT
+		CustomCookieJar (QObject *parent = 0);
 
-			bool FilterTrackingCookies_;
-		public:
-			/** @brief Constructs the cookie jar.
-			 *
-			 * Filtering of tracking cookies is false by default, and
-			 * cookies aren't restored.
-			 *
-			 * @param[in] parent The parent object.
-			 */
-			CustomCookieJar (QObject *parent = 0);
+		/** Destructs the cookie jar.
+		 */
+		virtual ~CustomCookieJar ();
 
-			/** Destructs the cookie jar.
-			 */
-			virtual ~CustomCookieJar ();
+		/** Enables or disables filtering tracking cookies.
+		 *
+		 * @param[in] filter Whether to filter tracking cookies.
+		 */
+		void SetFilterTrackingCookies (bool filter);
 
-			/** Enables or disables filtering tracking cookies.
-			 *
-			 * @param[in] filter Whether to filter tracking cookies.
-			 */
-			void SetFilterTrackingCookies (bool filter);
+		/** @brief Enables or disables the cookies.
+		 *
+		 * If cookie jar is disabled, no new cookies will be saved and
+		 * no cookies will be returned for any URL.
+		 *
+		 * @param[in] enabled Whether the cookie jar should be
+		 * enabled.
+		 */
+		void SetEnabled (bool enabled);
 
-			/** Serializes the cookie jar contents into a QByteArray
-			 * suitable for storage.
-			 *
-			 * @return The serialized cookies.
-			 *
-			 * @sa Load()
-			 */
-			QByteArray Save () const;
+		/** @brief Sets whether exact domain matching is enabled.
+		 *
+		 * @param[in] enabled Whether exact matching is enabled.
+		 */
+		void SetExactDomainMatch (bool enabled);
 
-			/** Restores the cookies from the array previously obtained
-			 * from Save().
-			 *
-			 * @param[in] data Serialized cookies.
-			 * @sa Save()
-			 */
-			void Load (const QByteArray& data);
+		/** Serializes the cookie jar contents into a QByteArray
+		 * suitable for storage.
+		 *
+		 * @return The serialized cookies.
+		 *
+		 * @sa Load()
+		 */
+		QByteArray Save () const;
 
-			/** Removes duplicate cookies.
-			 */
-			void CollectGarbage ();
+		/** Restores the cookies from the array previously obtained
+		 * from Save().
+		 *
+		 * @param[in] data Serialized cookies.
+		 * @sa Save()
+		 */
+		void Load (const QByteArray& data);
 
-			/** Returns cookies for the given url, filtering out
-			 * duplicates.
-			 *
-			 * @param[in] url The url to return cookies for.
-			 * @return The list of cookies, dup-free.
-			 */
-			QList<QNetworkCookie> cookiesForUrl (const QUrl& url) const;
+		/** Removes duplicate cookies.
+		 */
+		void CollectGarbage ();
 
-			using QNetworkCookieJar::allCookies;
-			using QNetworkCookieJar::setAllCookies;
-		};
+		/** @brief Returns cookies for the given url.
+		 *
+		 * This function automatically filters out duplicate cookies.
+		 *
+		 * If the cookie jar is disabled, this function does nothing.
+		 *
+		 * @param[in] url The url to return cookies for.
+		 * @return The list of cookies, dup-free.
+		 */
+		QList<QNetworkCookie> cookiesForUrl (const QUrl& url) const;
+
+		/** @brief Adds the cookieList for the given url to the jar.
+		 *
+		 * If the cookie jar is disabled, this function does nothing.
+		 *
+		 * @param[in] cookieList The list of cookies to add.
+		 * @param[in] url The url to set cookies for.
+		 * @return Whether the jar has been modified as the result.
+		 */
+		bool setCookiesFromUrl (const QList<QNetworkCookie>& cookieList, const QUrl& url);
+
+		using QNetworkCookieJar::allCookies;
+		using QNetworkCookieJar::setAllCookies;
 	};
-};
-
-#endif
-
+}
+}

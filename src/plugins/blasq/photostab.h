@@ -36,12 +36,14 @@
 #include "ui_photostab.h"
 
 class QComboBox;
+class QSlider;
 
 namespace LeechCraft
 {
 namespace Blasq
 {
 	class AccountsManager;
+	class PhotosProxyModel;
 	class IAccount;
 
 	class PhotosTab : public QWidget
@@ -58,13 +60,19 @@ namespace Blasq
 		AccountsManager * const AccMgr_;
 		const ICoreProxy_ptr Proxy_;
 
+		PhotosProxyModel * const ProxyModel_;
+
 		QComboBox *AccountsBox_;
+		QAction *UploadAction_;
+		QSlider *UniSlider_;
 		std::unique_ptr<QToolBar> Toolbar_;
 
 		IAccount *CurAcc_ = 0;
 		QObject *CurAccObj_ = 0;
 
 		QString SelectedID_;
+
+		bool SingleImageMode_ = false;
 	public:
 		PhotosTab (AccountsManager*, const TabClassInfo&, QObject*, ICoreProxy_ptr);
 		PhotosTab (AccountsManager*, ICoreProxy_ptr);
@@ -76,15 +84,27 @@ namespace Blasq
 
 		QModelIndex GetSelectedImage () const;
 	private:
+		void AddScaleSlider ();
+
 		void HandleImageSelected (const QModelIndex&);
 		void HandleCollectionSelected (const QModelIndex&);
+		QModelIndex ImageID2Index (const QString&) const;
+
+		QByteArray GetUniSettingName () const;
 	private slots:
 		void handleAccountChosen (int);
 		void handleRowChanged (const QModelIndex&);
 
+		void handleScaleSlider (int);
+
+		void uploadPhotos ();
+
 		void handleImageSelected (const QString&);
 		void handleImageOpenRequested (const QVariant&);
 		void handleImageDownloadRequested (const QVariant&);
+		void handleCopyURLRequested (const QVariant&);
+		void handleDeleteRequested (const QString&);
+		void handleSingleImageMode (bool);
 	signals:
 		void removeTab (QWidget*);
 	};

@@ -1,6 +1,7 @@
 import QtQuick 1.0
 import Effects 1.0
 import org.LC.common 1.0
+import org.LC.Blasq 1.0
 
 Rectangle {
     id: rootRect
@@ -21,84 +22,104 @@ Rectangle {
 
     function showImage(url) {
         fullSizeImage.source = url
+        rootRect.singleImageMode(url.toString().length > 0)
     }
 
+    signal singleImageMode(bool mode)
     signal imageSelected(string id)
     signal imageOpenRequested(variant url)
     signal imageDownloadRequested(variant url)
+    signal copyURLRequested(variant url)
+    signal deleteRequested(string id)
 
     property string currentImageId
+    property real cellSize: 200
+    property real imageZoom: 100
 
-    Image {
-        id: fullSizeImage
-
+    Flickable {
         z: collectionThumbsView.z + 1
-
         anchors.centerIn: parent
-        width: Math.min(sourceSize.width, parent.width - 32)
-        height: Math.min(sourceSize.height, parent.height - 32)
+        width: Math.min(contentWidth, parent.width)
+        height: Math.min(contentHeight, parent.height)
 
-        fillMode: Image.PreserveAspectFit
+        contentWidth: fullSizeImage.width * fullSizeImage.scale
+        contentHeight: fullSizeImage.height * fullSizeImage.scale
+        contentX: Math.max((contentWidth - width) / 2, 0)
+        contentY: Math.max((contentHeight - height) / 2, 0)
+        opacity: fullSizeImage.opacity
 
-        state: "hidden"
-        states: [
-            State {
-                name: "hidden"
-                PropertyChanges { target: fullSizeImage; opacity: 0 }
-                PropertyChanges { target: photoViewBlur; blurRadius: 0 }
-                PropertyChanges { target: loadProgress; opacity: 0 }
-            },
-            State {
-                name: "loading"
-                PropertyChanges { target: photoViewBlur; blurRadius: 3 }
-                PropertyChanges { target: loadProgress; opacity: 1 }
-            },
-            State {
-                name: "displayed"
-                PropertyChanges { target: fullSizeImage; opacity: 1 }
-                PropertyChanges { target: photoViewBlur; blurRadius: 10 }
-                PropertyChanges { target: loadProgress; opacity: 0 }
+        Image {
+            id: fullSizeImage
+
+            fillMode: Image.PreserveAspectFit
+            width: sourceSize.width * rootRect.imageZoom / 100
+            height: sourceSize.height * rootRect.imageZoom / 100
+
+            smooth: true
+
+            Behavior on width { PropertyAnimation { duration: 150; easing.type: Easing.InOutSine } }
+            Behavior on height { PropertyAnimation { duration: 150; easing.type: Easing.InOutSine } }
+
+            state: "hidden"
+            states: [
+                State {
+                    name: "hidden"
+                    PropertyChanges { target: fullSizeImage; opacity: 0 }
+                    PropertyChanges { target: photoViewBlur; blurRadius: 0 }
+                    PropertyChanges { target: loadProgress; opacity: 0 }
+                },
+                State {
+                    name: "loading"
+                    PropertyChanges { target: photoViewBlur; blurRadius: 3 }
+                    PropertyChanges { target: loadProgress; opacity: 1 }
+                },
+                State {
+                    name: "displayed"
+                    PropertyChanges { target: fullSizeImage; opacity: 1 }
+                    PropertyChanges { target: photoViewBlur; blurRadius: 10 }
+                    PropertyChanges { target: loadProgress; opacity: 0 }
+                }
+            ]
+
+            transitions: Transition {
+                PropertyAnimation { properties: "opacity"; duration: 300; easing.type: Easing.OutSine }
+                PropertyAnimation { target: photoViewBlur; property: "blurRadius"; duration: 300; easing.type: Easing.OutSine }
             }
-        ]
 
-        transitions: Transition {
-            PropertyAnimation { properties: "opacity"; duration: 300; easing.type: Easing.OutSine }
-            PropertyAnimation { target: photoViewBlur; property: "blurRadius"; duration: 300; easing.type: Easing.OutSine }
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            onReleased: rootRect.showImage("")
-        }
-
-        onStatusChanged: {
-            switch (status) {
-            case Image.Ready:
-                state = "displayed"
-                break;
-            case Image.Loading:
-                state = "loading"
-                break;
-            case Image.Null:
-                state = "hidden"
-                break;
-            case Image.Error:
-                state = "hidden"
-                break;
+            MouseArea {
+                anchors.fill: parent
+                onReleased: rootRect.showImage("")
             }
-        }
 
-        ProgressBar {
-            id: loadProgress
+            onStatusChanged: {
+                switch (status) {
+                case Image.Ready:
+                    state = "displayed"
+                    break;
+                case Image.Loading:
+                    state = "loading"
+                    break;
+                case Image.Null:
+                    state = "hidden"
+                    break;
+                case Image.Error:
+                    state = "hidden"
+                    break;
+                }
+            }
 
-            value: parent.progress * 100
+            ProgressBar {
+                id: loadProgress
 
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.bottom
-            height: 12
+                value: parent.progress * 100
 
-            color: colorProxy.color_TextView_Aux3TextColor
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: parent.bottom
+                height: 12
+
+                color: colorProxy.color_TextView_Aux3TextColor
+            }
         }
     }
 
@@ -150,17 +171,52 @@ Rectangle {
 
                 smooth: true
 
-                Image {
+                Component {
+                    id: photoImageComponent
+                    Image {
+                        source: width > smallThumbSize.width ? mediumThumb : smallThumb
+                        smooth: true
+                        fillMode: Image.PreserveAspectFit
+                    }
+                }
+
+                Component {
+                    id: collectionCollageComponent
+                    Repeater {
+                        id: collectionCollageRepeater
+                        model: smallThumb
+                        property real logScale: count ? Math.log(Math.E - 1 + count) : 1
+
+                        Image {
+                            source: modelData
+
+                            width: imagesDisplay.width / collectionCollageRepeater.logScale
+                            height: imagesDisplay.height / collectionCollageRepeater.logScale
+
+                            property real norm: collectionCollageRepeater.count - 1
+                            property real xA: imagesDisplay.width / 25
+                            property real xB: (imagesDisplay.width - width) / 2 - xA * norm / 2
+
+                            x: xA * index + xB
+                            y: (imagesDisplay.height - height) / 2
+                            transformOrigin: Item.Bottom
+                            rotation: norm ? 15 * (index * 2 / norm - 1) : 0
+
+                            smooth: true
+                            fillMode: Image.PreserveAspectFit
+                        }
+                    }
+                }
+
+                Loader {
+                    id: imagesDisplay
+                    sourceComponent: itemType == Blasq.ImageItem ? photoImageComponent : collectionCollageComponent
+
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.top: parent.top
                     anchors.bottom: nameLabel.top
                     anchors.margins: 2
-
-                    source: smallThumb
-
-                    smooth: true
-                    fillMode: Image.PreserveAspectFit
                 }
 
                 Text {
@@ -180,7 +236,9 @@ Rectangle {
 
                 property bool isHovered: itemMouseArea.containsMouse ||
                             openInBrowserAction.isHovered ||
-                            downloadOriginalAction.isHovered
+                            downloadOriginalAction.isHovered ||
+                            copyURLAction.isHovered ||
+                            deleteAction.isHovered
 
                 MouseArea {
                     id: itemMouseArea
@@ -195,34 +253,66 @@ Rectangle {
                     }
                 }
 
-                ActionButton {
-                    id: openInBrowserAction
-
+                Column {
                     anchors.top: parent.top
                     anchors.right: parent.right
-                    width: 24
-                    height: width
+                    visible: itemType == Blasq.ImageItem
 
-                    opacity: parent.isHovered ? 1 : 0
-                    Behavior on opacity { PropertyAnimation {} }
+                    ActionButton {
+                        id: openInBrowserAction
 
-                    actionIconURL: "image://ThemeIcons/go-jump-locationbar"
-                    onTriggered: rootRect.imageOpenRequested(original)
-                }
+                        width: 24
+                        height: width
 
-                ActionButton {
-                    id: downloadOriginalAction
+                        opacity: itemRect.isHovered ? 1 : 0
+                        Behavior on opacity { PropertyAnimation {} }
 
-                    anchors.top: openInBrowserAction.bottom
-                    anchors.right: parent.right
-                    width: 24
-                    height: width
+                        actionIconURL: "image://ThemeIcons/go-jump-locationbar"
+                        textTooltip: qsTr("Open in browser")
+                        onTriggered: rootRect.imageOpenRequested(original)
+                    }
 
-                    opacity: parent.isHovered ? 1 : 0
-                    Behavior on opacity { PropertyAnimation {} }
+                    ActionButton {
+                        id: downloadOriginalAction
 
-                    actionIconURL: "image://ThemeIcons/download"
-                    onTriggered: rootRect.imageDownloadRequested(original)
+                        width: 24
+                        height: width
+
+                        opacity: itemRect.isHovered ? 1 : 0
+                        Behavior on opacity { PropertyAnimation {} }
+
+                        actionIconURL: "image://ThemeIcons/download"
+                        textTooltip: qsTr("Download the original image")
+                        onTriggered: rootRect.imageDownloadRequested(original)
+                    }
+
+                    ActionButton {
+                        id: copyURLAction
+
+                        width: 24
+                        height: width
+
+                        opacity: itemRect.isHovered ? 1 : 0
+                        Behavior on opacity { PropertyAnimation {} }
+
+                        actionIconURL: "image://ThemeIcons/edit-copy"
+                        textTooltip: qsTr("Copy image URL")
+                        onTriggered: rootRect.copyURLRequested(original)
+                    }
+
+                    ActionButton {
+                        id: deleteAction
+
+                        width: 24
+                        height: width
+
+                        opacity: itemRect.isHovered && supportsDeletes ? 1 : 0
+                        Behavior on opacity { PropertyAnimation {} }
+
+                        actionIconURL: "image://ThemeIcons/list-remove"
+                        textTooltip: qsTr("Delete the image")
+                        onTriggered: rootRect.deleteRequested(imageId)
+                    }
                 }
             }
         }
@@ -234,8 +324,8 @@ Rectangle {
         visible: listingMode
 
         anchors.fill: parent
-        cellWidth: 200
-        cellHeight: 200
+        cellWidth: rootRect.cellSize
+        cellHeight: rootRect.cellSize
 
         property real horzMargin: cellWidth / 20
         property real vertMargin: cellHeight / 20

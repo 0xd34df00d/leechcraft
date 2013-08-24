@@ -55,8 +55,8 @@ namespace LeechCraft
 			Q_OBJECT
 
 			bool Internal_;
-			std::auto_ptr<QTextBrowser> InternalBrowser_;
-			std::auto_ptr<IWebWidget> ExternalBrowser_;
+			std::unique_ptr<QTextBrowser> InternalBrowser_;
+			std::unique_ptr<IWebWidget> ExternalBrowser_;
 		public:
 			/** @brief Constructs the browser with the given parent.
 			 *

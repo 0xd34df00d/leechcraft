@@ -37,6 +37,8 @@
 #include <util/svcauth/vkauthmanager.h>
 #include <util/queuemanager.h>
 #include "vkservice.h"
+#include "albumsettingsdialog.h"
+#include "uploadmanager.h"
 
 namespace LeechCraft
 {
@@ -53,6 +55,7 @@ namespace Rappor
 	, CollectionsModel_ (new NamedModel<QStandardItemModel> (this))
 	, AuthMgr_ (new Util::SvcAuth::VkAuthManager ("3762977", { "photos" }, cookies, proxy))
 	, RequestQueue_ (new Util::QueueManager (350, this))
+	, UploadManager_ (new UploadManager (RequestQueue_, Proxy_, this))
 	{
 		CollectionsModel_->setHorizontalHeaderLabels ({ tr ("Name") });
 
@@ -106,6 +109,12 @@ namespace Rappor
 		return new VkAccount (name, service, proxy, id, cookies);
 	}
 
+	void VkAccount::Schedule (std::function<void (QString)> func)
+	{
+		CallQueue_ << func;
+		AuthMgr_->GetAuthKey ();
+	}
+
 	QObject* VkAccount::GetQObject ()
 	{
 		return this;
@@ -133,6 +142,11 @@ namespace Rappor
 
 	void VkAccount::UpdateCollections ()
 	{
+		if (IsUpdating_)
+			return;
+
+		IsUpdating_ = true;
+
 		if (auto rc = AllPhotosItem_->rowCount ())
 			AllPhotosItem_->removeRows (0, rc);
 
@@ -170,7 +184,231 @@ namespace Rappor
 		AuthMgr_->GetAuthKey ();
 	}
 
+	bool VkAccount::HasUploadFeature (Feature feature) const
+	{
+		switch (feature)
+		{
+		case Feature::RequiresAlbumOnUpload:
+		case Feature::SupportsDescriptions:
+			return true;
+		}
+
+		return false;
+	}
+
+	void VkAccount::CreateCollection (const QModelIndex&)
+	{
+		AlbumSettingsDialog dia ({}, Proxy_);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		const struct
+		{
+			QString Name_;
+			QString Desc_;
+			int Priv_;
+			int CommentPriv_;
+		} params
+		{
+			dia.GetName (),
+			dia.GetDesc (),
+			dia.GetPrivacyLevel (),
+			dia.GetCommentsPrivacyLevel ()
+		};
+
+		CallQueue_.append ([this, params] (const QString& authKey) -> void
+			{
+				QUrl createUrl ("https://api.vk.com/method/photos.createAlbum.xml");
+				createUrl.addQueryItem ("title", params.Name_);
+				createUrl.addQueryItem ("description", params.Desc_);
+				createUrl.addQueryItem ("privacy", QString::number (params.Priv_));
+				createUrl.addQueryItem ("comment_privacy", QString::number (params.CommentPriv_));
+				createUrl.addQueryItem ("access_token", authKey);
+				RequestQueue_->Schedule ([this, createUrl]
+					{
+						connect (Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (createUrl)),
+								SIGNAL (finished ()),
+								this,
+								SLOT (handleAlbumCreated ()));
+					}, this);
+			});
+
+		AuthMgr_->GetAuthKey ();
+	}
+
+	void VkAccount::UploadImages (const QModelIndex& collection, const QList<UploadItem>& items)
+	{
+		const auto& aidStr = collection.data (CollectionRole::ID).toString ();
+		UploadManager_->Upload (aidStr, items);
+	}
+
+	void VkAccount::Delete (const QModelIndex& item)
+	{
+		const auto type = item.data (CollectionRole::Type).toInt ();
+		const auto& id = item.data (CollectionRole::ID).toString ();
+		switch (type)
+		{
+		case ItemType::AllPhotos:
+			break;
+		case ItemType::Collection:
+		{
+			break;
+		}
+		case ItemType::Image:
+			CallQueue_.append ([this, id] (const QString& authKey) -> void
+				{
+					QUrl delUrl ("https://api.vk.com/method/photos.delete.xml");
+					delUrl.addQueryItem ("pid", id);
+					delUrl.addQueryItem ("access_token", authKey);
+					RequestQueue_->Schedule ([this, delUrl] () -> void
+						{
+							auto reply = Proxy_->GetNetworkAccessManager ()->
+									get (QNetworkRequest (delUrl));
+							connect (reply,
+									SIGNAL (finished ()),
+									reply,
+									SLOT (deleteLater ()));
+						}, this);
+				});
+			AuthMgr_->GetAuthKey ();
+
+			CollectionsModel_->removeRow (item.row (), item.parent ());
+			for (const auto& albumItem : Albums_)
+				for (int i = 0; i < albumItem->rowCount (); ++i)
+				{
+					const auto subItem = albumItem->child (i, 0);
+					if (subItem->data (CollectionRole::ID).toString () == id)
+					{
+						albumItem->removeRow (subItem->row ());
+						break;
+					}
+				}
+			break;
+		}
+	}
+
+	void VkAccount::HandleAlbumElement (const QDomElement& albumElem)
+	{
+		const auto& title = albumElem.firstChildElement ("title").text ();
+		auto item = new QStandardItem (title);
+		item->setEditable (false);
+		item->setData (ItemType::Collection, CollectionRole::Type);
+
+		const auto& aidStr = albumElem.firstChildElement ("aid").text ();
+		item->setData (aidStr, CollectionRole::ID);
+
+		CollectionsModel_->appendRow (item);
+
+		const auto aid = aidStr.toInt ();
+		Albums_ [aid] = item;
+	}
+
+	bool VkAccount::HandlePhotoElement (const QDomElement& photoElem, bool atEnd)
+	{
+		auto mkItem = [&photoElem] () -> QStandardItem*
+		{
+			const auto& idText = photoElem.firstChildElement ("pid").text ();
+
+			auto item = new QStandardItem (idText);
+			item->setData (ItemType::Image, CollectionRole::Type);
+			item->setData (idText, CollectionRole::ID);
+			item->setData (idText, CollectionRole::Name);
+
+			const auto& sizesElem = photoElem.firstChildElement ("sizes");
+			auto getType = [&sizesElem] (const QString& type) -> QPair<QUrl, QSize>
+			{
+				auto sizeElem = sizesElem.firstChildElement ("size");
+				while (!sizeElem.isNull ())
+				{
+					if (sizeElem.firstChildElement ("type").text () != type)
+					{
+						sizeElem = sizeElem.nextSiblingElement ("size");
+						continue;
+					}
+
+					const auto& src = sizeElem.firstChildElement ("src").text ();
+					const auto width = sizeElem.firstChildElement ("width").text ().toInt ();
+					const auto height = sizeElem.firstChildElement ("height").text ().toInt ();
+
+					return { src, { width, height } };
+				}
+
+				return {};
+			};
+
+			const auto& small = getType ("m");
+			const auto& mid = getType ("x");
+			auto orig = getType ("w");
+			QStringList sizeCandidates { "z", "y", "x", "r" };
+			while (orig.second.width () <= 0)
+			{
+				if (sizeCandidates.isEmpty ())
+					return nullptr;
+
+				orig = getType (sizeCandidates.takeFirst ());
+			}
+
+			item->setData (small.first, CollectionRole::SmallThumb);
+			item->setData (small.second, CollectionRole::SmallThumbSize);
+
+			item->setData (mid.first, CollectionRole::MediumThumb);
+			item->setData (mid.second, CollectionRole::MediumThumbSize);
+
+			item->setData (orig.first, CollectionRole::Original);
+			item->setData (orig.second, CollectionRole::OriginalSize);
+
+			return item;
+		};
+
+		auto allItem = mkItem ();
+		if (!allItem)
+			return false;
+
+		if (atEnd)
+			AllPhotosItem_->appendRow (allItem);
+		else
+			AllPhotosItem_->insertRow (0, allItem);
+
+		const auto aid = photoElem.firstChildElement ("aid").text ().toInt ();
+		if (Albums_.contains (aid))
+		{
+			auto album = Albums_ [aid];
+			if (atEnd)
+				album->appendRow (mkItem ());
+			else
+				album->insertRow (0, mkItem ());
+		}
+
+		return true;
+	}
+
 	void VkAccount::handleGotAlbums ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		const auto& data = reply->readAll ();
+		QDomDocument doc;
+		if (!doc.setContent (data))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot parse reply"
+					<< data;
+			IsUpdating_ = false;
+			return;
+		}
+
+		auto albumElem = doc
+				.documentElement ()
+				.firstChildElement ("album");
+		while (!albumElem.isNull ())
+		{
+			HandleAlbumElement (albumElem);
+			albumElem = albumElem.nextSiblingElement ("album");
+		}
+	}
+
+	void VkAccount::handleAlbumCreated ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
@@ -185,21 +423,31 @@ namespace Rappor
 			return;
 		}
 
-		auto albumElem = doc
-				.documentElement ()
-				.firstChildElement ("album");
-		while (!albumElem.isNull ())
+		HandleAlbumElement (doc.documentElement ().firstChildElement ("album"));
+	}
+
+	void VkAccount::handlePhotosInfosFetched ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		const auto& data = reply->readAll ();
+		QDomDocument doc;
+		if (!doc.setContent (data))
 		{
-			const auto& title = albumElem.firstChildElement ("title").text ();
-			auto item = new QStandardItem (title);
-			item->setEditable (false);
-			item->setData (ItemType::Collection, CollectionRole::Type);
-			CollectionsModel_->appendRow (item);
+			qWarning () << Q_FUNC_INFO
+					<< "cannot parse reply"
+					<< data;
+			return;
+		}
 
-			const auto aid = albumElem.firstChildElement ("aid").text ().toInt ();
-			Albums_ [aid] = item;
-
-			albumElem = albumElem.nextSiblingElement ("album");
+		auto photoElem = doc
+				.documentElement ()
+				.firstChildElement ("photo");
+		while (!photoElem.isNull ())
+		{
+			HandlePhotoElement (photoElem, false);
+			photoElem = photoElem.nextSiblingElement ("photo");
 		}
 	}
 
@@ -215,6 +463,7 @@ namespace Rappor
 			qWarning () << Q_FUNC_INFO
 					<< "cannot parse reply"
 					<< data;
+			IsUpdating_ = false;
 			return;
 		}
 
@@ -225,83 +474,27 @@ namespace Rappor
 				.firstChildElement ("photo");
 		while (!photoElem.isNull ())
 		{
-			auto mkItem = [&photoElem] () -> QStandardItem*
-			{
-				const auto& idText = photoElem.firstChildElement ("pid").text ();
-
-				auto item = new QStandardItem (idText);
-				item->setData (ItemType::Image, CollectionRole::Type);
-				item->setData (idText, CollectionRole::ID);
-				item->setData (idText, CollectionRole::Name);
-
-				const auto& sizesElem = photoElem.firstChildElement ("sizes");
-				auto getType = [&sizesElem] (const QString& type) -> QPair<QUrl, QSize>
-				{
-					auto sizeElem = sizesElem.firstChildElement ("size");
-					while (!sizeElem.isNull ())
-					{
-						if (sizeElem.firstChildElement ("type").text () != type)
-						{
-							sizeElem = sizeElem.nextSiblingElement ("size");
-							continue;
-						}
-
-						const auto& src = sizeElem.firstChildElement ("src").text ();
-						const auto width = sizeElem.firstChildElement ("width").text ().toInt ();
-						const auto height = sizeElem.firstChildElement ("height").text ().toInt ();
-
-						return { src, { width, height } };
-					}
-
-					return {};
-				};
-
-				const auto& small = getType ("m");
-				const auto& mid = getType ("x");
-				auto orig = getType ("w");
-				QStringList sizeCandidates { "z", "y", "x", "r" };
-				while (orig.second.width () <= 0)
-				{
-					if (sizeCandidates.isEmpty ())
-						return nullptr;
-
-					orig = getType (sizeCandidates.takeFirst ());
-				}
-
-				item->setData (small.first, CollectionRole::SmallThumb);
-				item->setData (small.second, CollectionRole::SmallThumbSize);
-
-				item->setData (mid.first, CollectionRole::MediumThumb);
-				item->setData (mid.second, CollectionRole::MediumThumbSize);
-
-				item->setData (orig.first, CollectionRole::Original);
-				item->setData (orig.second, CollectionRole::OriginalSize);
-
-				return item;
-			};
-
-			auto allItem = mkItem ();
-			if (!allItem)
+			if (!HandlePhotoElement (photoElem))
 			{
 				finishReached = true;
 				break;
 			}
 
-			AllPhotosItem_->appendRow (allItem);
-
-			const auto aid = photoElem.firstChildElement ("aid").text ().toInt ();
-			if (Albums_.contains (aid))
-				Albums_ [aid]->appendRow (mkItem ());
-
 			photoElem = photoElem.nextSiblingElement ("photo");
 		}
 
 		if (finishReached)
+		{
+			IsUpdating_ = false;
 			return;
+		}
 
 		const auto count = doc.documentElement ().firstChildElement ("count").text ().toInt ();
 		if (count == AllPhotosItem_->rowCount ())
+		{
+			IsUpdating_ = false;
 			return;
+		}
 
 		const auto offset = AllPhotosItem_->rowCount ();
 
@@ -322,7 +515,6 @@ namespace Rappor
 			});
 
 		AuthMgr_->GetAuthKey ();
-
 	}
 
 	void VkAccount::handleAuthKey (const QString& authKey)

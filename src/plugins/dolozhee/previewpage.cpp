@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "previewpage.h"
+#include <QtDebug>
 #include "reportwizard.h"
 #include "reporttypepage.h"
 #include "bugreportpage.h"
@@ -61,6 +62,11 @@ namespace Dolozhee
 			case ReportTypePage::Priority::High:
 				return QObject::tr ("High");
 			}
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown priority"
+					<< static_cast<int> (priority);
+			return "unknown";
 		}
 	}
 
@@ -72,7 +78,6 @@ namespace Dolozhee
 
 		const auto typePage = wiz->GetReportTypePage ();
 		const auto type = typePage->GetReportType ();
-		const auto category = typePage->GetCategoryID ();
 
 		QString title;
 		QList<QPair<QString, QString>> sections;

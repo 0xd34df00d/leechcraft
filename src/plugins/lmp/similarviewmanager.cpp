@@ -54,7 +54,6 @@ namespace LMP
 	, Model_ (new SimilarModel (this))
 	{
 		View_->rootContext ()->setContextProperty ("similarModel", Model_);
-		View_->rootContext ()->setContextProperty ("similarLabelPosition", "right");
 		View_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
 	}

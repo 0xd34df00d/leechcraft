@@ -79,10 +79,21 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 	XmlSettingsManager::Instance ()->RegisterObject ("FilterTrackingCookies",
 			this,
 			"handleFilterTrackingCookies");
+	XmlSettingsManager::Instance ()->RegisterObject ("DeleteCookiesOnExit",
+			this,
+			"saveCookies");
+	XmlSettingsManager::Instance ()->RegisterObject ("EnableCookies",
+			this,
+			"setCookiesEnabled");
+	XmlSettingsManager::Instance ()->RegisterObject ("MatchDomainExactly",
+			this,
+			"setMatchDomainExactly");
 
-	CustomCookieJar *jar = new CustomCookieJar (this);
-	setCookieJar (jar);
+	CookieJar_ = new CustomCookieJar (this);
+	setCookieJar (CookieJar_);
 	handleFilterTrackingCookies ();
+	setCookiesEnabled ();
+	setMatchDomainExactly ();
 
 	try
 	{
@@ -104,7 +115,7 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 	QFile file (QDir::homePath () +
 			"/.leechcraft/core/cookies.txt");
 	if (file.open (QIODevice::ReadOnly))
-		jar->Load (file.readAll ());
+		CookieJar_->Load (file.readAll ());
 	else
 		qWarning () << Q_FUNC_INFO
 			<< "could not open file"
@@ -132,18 +143,7 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 
 NetworkAccessManager::~NetworkAccessManager ()
 {
-	CustomCookieJar *jar = static_cast<CustomCookieJar*> (cookieJar ());
-	if (!jar)
-	{
-		qWarning () << Q_FUNC_INFO
-			<< "jar is NULL";
-		return;
-	}
-	else
-	{
-		jar->CollectGarbage ();
-		saveCookies ();
-	}
+	saveCookies ();
 }
 
 QList<QLocale> NetworkAccessManager::GetAcceptLangs () const
@@ -328,25 +328,30 @@ void LeechCraft::NetworkAccessManager::saveCookies () const
 		emit error (tr ("Could not save cookies, error opening cookie file."));
 		qWarning () << Q_FUNC_INFO
 			<< file.errorString ();
+		return;
 	}
-	else
-	{
-		CustomCookieJar *jar = static_cast<CustomCookieJar*> (cookieJar ());
-		if (!jar)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "jar is NULL";
-			return;
-		}
-		file.write (jar->Save ());
-	}
+
+	const bool saveEnabled = !XmlSettingsManager::Instance ()->
+			property ("DeleteCookiesOnExit").toBool ();
+	file.write (saveEnabled ? CookieJar_->Save () : QByteArray ());
 }
 
 void LeechCraft::NetworkAccessManager::handleFilterTrackingCookies ()
 {
-	qobject_cast<CustomCookieJar*> (cookieJar ())->
-		SetFilterTrackingCookies (XmlSettingsManager::Instance ()->
+	CookieJar_->SetFilterTrackingCookies (XmlSettingsManager::Instance ()->
 				property ("FilterTrackingCookies").toBool ());
+}
+
+void NetworkAccessManager::setCookiesEnabled ()
+{
+	CookieJar_->SetEnabled (XmlSettingsManager::Instance ()->
+			property ("EnableCookies").toBool ());
+}
+
+void NetworkAccessManager::setMatchDomainExactly ()
+{
+	CookieJar_->SetExactDomainMatch (XmlSettingsManager::Instance ()->
+			property ("MatchDomainExactly").toBool ());
 }
 
 void NetworkAccessManager::handleCacheSize ()

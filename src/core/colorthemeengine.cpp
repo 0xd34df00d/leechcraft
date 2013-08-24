@@ -28,15 +28,18 @@
  **********************************************************************/
 
 #include "colorthemeengine.h"
-#include <util/resourceloader.h>
 #include <algorithm>
 #include <map>
 #include <QFile>
 #include <QStringList>
 #include <QApplication>
+#include <QMainWindow>
 #include <QDir>
 #include <QtDebug>
 #include <QSettings>
+#include <util/resourceloader.h>
+#include "core.h"
+#include "rootwindowsmanager.h"
 
 namespace LeechCraft
 {
@@ -170,6 +173,7 @@ namespace LeechCraft
 			return;
 		}
 
+		auto palette = StartupPalette_;
 		if (QFile::exists (themePath + "/colors.rc"))
 		{
 			QSettings settings (themePath + "/colors.rc", QSettings::IniFormat);
@@ -181,11 +185,18 @@ namespace LeechCraft
 				return;
 			}
 
-			auto palette = UpdatePalette (StartupPalette_, settings);
-			QApplication::setPalette (palette);
+			palette = UpdatePalette (StartupPalette_, settings);
 		}
-		else
-			QApplication::setPalette (StartupPalette_);
+		QApplication::setPalette (palette);
+		const auto rootWinMgr = Core::Instance ().GetRootWindowsManager ();
+		for (int i = 0; i < rootWinMgr->GetWindowsCount (); ++i)
+		{
+			const auto win = rootWinMgr->GetMainWindow (i);
+			win->setPalette (palette);
+
+			for (auto w : win->findChildren<QWidget*> ())
+				w->setPalette (palette);
+		}
 
 		QSettings qmlSettings (themePath + "/qml.rc", QSettings::IniFormat);
 		FillQML (qmlSettings);
@@ -205,5 +216,24 @@ namespace LeechCraft
 				hash [key] = ParseColor (settings.value (key));
 			settings.endGroup ();
 		}
+
+		auto fixup = [this, &settings] (const QString& section,
+				const QString& name, const QString& fallback) -> void
+		{
+			auto& sec = QMLColors_ [section];
+			if (sec.contains (name))
+				return;
+
+			qWarning () << Q_FUNC_INFO
+					<< settings.fileName ()
+					<< "lacks"
+					<< (section + "_" + name)
+					<< "; falling back to"
+					<< fallback;
+			sec [name] = sec [fallback];
+		};
+
+		fixup ("ToolButton", "HoveredTopColor", "SelectedTopColor");
+		fixup ("ToolButton", "HoveredBottomColor", "SelectedBottomColor");
 	}
 }
