@@ -225,7 +225,7 @@ namespace vlc
 			setLayout (FullScreenWidget_->layout ());
 			show ();
 			VlcPlayer_->switchWidget (VlcMainWidget_);
-			FullScreenWidget_->deleteLater ();
+			delete FullScreenWidget_;
 		}
 	}
 	
