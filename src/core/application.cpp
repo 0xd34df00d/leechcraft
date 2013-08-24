@@ -200,7 +200,7 @@ namespace LeechCraft
 				this,
 				SLOT (handleQuit ()));
 
-		Splash_ = new QSplashScreen (QPixmap (":/resources/images/macaroni.jpg"), Qt::SplashScreen);
+		Splash_ = new QSplashScreen (QPixmap (":/resources/images/splash.svg"), Qt::SplashScreen);
 		Splash_->show ();
 		Splash_->setUpdatesEnabled (true);
 		Splash_->showMessage (tr ("Initializing LeechCraft..."), Qt::AlignLeft | Qt::AlignBottom, QColor ("#FF3000"));
