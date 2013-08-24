@@ -27,44 +27,50 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavetabs.h>
+#include "vlcscrollbar.h"
+#include <QPaintEvent>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QVBoxLayout>
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveTabs
+	VlcScrollBar::VlcScrollBar (QWidget *parent)
+	: QWidget (parent)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs)
-	
-		ICoreProxy_ptr Proxy_;
-	
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		CurrentPosition_ = 0;
+	}
 
-		void TabOpenRequested (const QByteArray&);
-		LeechCraft::TabClasses_t GetTabClasses () const;
-					
-	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
-	};
+	void VlcScrollBar::paintEvent (QPaintEvent *event)
+	{
+		QPainter p (this);
+		
+		p.setBrush (palette ().mid ());
+		p.drawRect (0, 0, width () - 1, height () - 1);
+		
+		p.setBrush (palette ().dark ());
+		p.drawRect (0, 0, std::min (int (width () * CurrentPosition_), width () - 1), height () - 1);
+		
+		p.end ();
+		event->accept ();
+	}
+	
+	void VlcScrollBar::mousePressEvent (QMouseEvent *event)
+	{
+		emit changePosition (event->x () / double (width ()));
+		event->accept ();
+	}
+	
+	void VlcScrollBar::mouseMoveEvent (QMouseEvent *event)
+	{
+		mousePressEvent (event);
+	}
+	
+	void VlcScrollBar::setPosition (double pos)
+	{
+		CurrentPosition_ = pos;
+	}
 }
 }

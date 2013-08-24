@@ -29,42 +29,37 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavetabs.h>
+#include <QWidget>
+#include <memory>
+
+struct libvlc_media_player_t;
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveTabs
+	class SoundWidget : public QWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs)
 	
-		ICoreProxy_ptr Proxy_;
+		std::shared_ptr<libvlc_media_player_t> Mp_;
 	
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		void TabOpenRequested (const QByteArray&);
-		LeechCraft::TabClasses_t GetTabClasses () const;
-					
+		explicit SoundWidget (QWidget *parent, std::shared_ptr<libvlc_media_player_t> mp);
+		int CurrentVolume () const;
+	
+	protected:
+		void mousePressEvent (QMouseEvent*);
+		void paintEvent (QPaintEvent*);
+		void wheelEvent (QWheelEvent*);
+		
+	public slots:
+		void increaseVolume ();
+		void decreaseVolume ();
+		void setVolume (int);
+	
 	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
+		void volumeChanged (int);
 	};
 }
 }
