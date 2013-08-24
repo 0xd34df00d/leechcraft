@@ -61,7 +61,6 @@ namespace vlc
 		bool forbidFullScreen_;
 		bool FullScreen_;
 		QWidget *FullScreenWidget_;
-		QTimer *FullScreenTimer_;
 		QTimer *InterfaceUpdater_;
 		SignalledWidget *VlcMainWidget_;
 		SignalledWidget *Controls_;

@@ -47,10 +47,10 @@ namespace vlc
 	{
 		QPainter p (this);
 		
-		p.setBrush (palette ().dark ());
+		p.setBrush (palette ().mid ());
 		p.drawRect (0, 0, width () - 1, height () - 1);
 		
-		p.setBrush (palette ().button ());
+		p.setBrush (palette ().dark ());
 		p.drawRect (0, 0, std::min (int (width () * CurrentPosition_), width () - 1), height () - 1);
 		
 		p.end ();

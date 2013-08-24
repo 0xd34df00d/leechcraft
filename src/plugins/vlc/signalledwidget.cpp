@@ -31,6 +31,10 @@
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include <QWheelEvent>
+#include <QPaintEvent>
+#include <QPainter>
+#include <QColor>
+#include <QPen>
 
 namespace LeechCraft
 {
@@ -40,6 +44,13 @@ namespace vlc
 	: QWidget (parent)
 	{
 		setContextMenuPolicy(Qt::CustomContextMenu);
+		backgroundColor_ = nullptr;
+	}
+	
+	SignalledWidget::~SignalledWidget()
+	{
+		if (backgroundColor_ == nullptr)
+			delete backgroundColor_;
 	}
 	
 	void SignalledWidget::keyPressEvent (QKeyEvent *event)
@@ -60,6 +71,28 @@ namespace vlc
 	void SignalledWidget::wheelEvent (QWheelEvent *event)
 	{
 		emit wheel (event);
+	}
+	
+	void SignalledWidget::paintEvent (QPaintEvent *event)
+	{
+		if (backgroundColor_ != nullptr)
+		{
+			QPainter p (this);
+			p.setPen (QPen (*backgroundColor_));
+			p.setBrush (QBrush (*backgroundColor_));
+			p.drawRect (0, 0, width () - 1, height () - 1);
+			p.end ();
+			event->accept ();
+		}
+	}
+	
+	void SignalledWidget::SetBackGroundColor (QColor *color)
+	{
+		if (backgroundColor_ != nullptr)
+			delete backgroundColor_;
+		
+		backgroundColor_ = color;
+		update ();
 	}
 }
 }

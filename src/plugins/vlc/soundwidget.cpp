@@ -94,9 +94,9 @@ namespace vlc
 		
 		p.setPen (goodPen);
 		
-		p.drawLine (1, h - 1, w - 1, h - 1);
-		p.drawLine (w - 1, 1, w - 1, h - 1);
-		p.drawLine (1, h - 1, w - 1, 1);
+		p.drawLine (0, h - 1, w - 1, h - 1);
+		p.drawLine (w - 1, 0, w - 1, h - 1);
+		p.drawLine (0, h - 1, w - 1, 0);
 		
 		QFont painterFont = font ();
 		painterFont.setPointSize (8);

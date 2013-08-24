@@ -31,6 +31,8 @@
 
 #include <QWidget>
 
+class QColor;
+
 namespace LeechCraft
 {
 namespace vlc
@@ -39,14 +41,20 @@ namespace vlc
 	{
 		Q_OBJECT
 	
+		QColor *backgroundColor_;
+	
 	public:
 		explicit SignalledWidget (QWidget *parent = 0);
+		~SignalledWidget();
+		
+		void SetBackGroundColor (QColor*);
 		
 	protected:
 		void mousePressEvent (QMouseEvent*);
 		void mouseDoubleClickEvent (QMouseEvent*);
 		void wheelEvent (QWheelEvent*);
 		void keyPressEvent (QKeyEvent*);
+		void paintEvent (QPaintEvent*);
 		
 	signals:
 		void mousePress (QMouseEvent*);

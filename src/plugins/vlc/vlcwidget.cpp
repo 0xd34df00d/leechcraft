@@ -61,6 +61,7 @@ namespace vlc
 		Parent_ = parent;
 		Ui_ = new Ui::VlcControlsWidget;
 		VlcMainWidget_ = new SignalledWidget;
+		VlcMainWidget_->SetBackGroundColor(new QColor ("black"));
 		Controls_ = new SignalledWidget;
 		QVBoxLayout *layout = new QVBoxLayout;
 		layout->setContentsMargins (0, 0, 0, 0);
@@ -70,7 +71,9 @@ namespace vlc
 		Ui_->setupUi (Controls_);
 		FullScreen_ = false;
 		forbidFullScreen_ = false;
-		
+		FullScreenWidget_ = new QWidget;
+		FullScreenWidget_->setBackgroundRole (QPalette::Shadow);
+			
 		ScrollBar_ = new VlcScrollBar (Ui_->scrollBarWidget_);
 		RewriteWidget (ScrollBar_, Ui_->scrollBarWidget_);
 		VlcPlayer_ = new VlcPlayer (VlcMainWidget_);
@@ -127,7 +130,7 @@ namespace vlc
 	{
 		VlcPlayer_->stop ();
 		delete VlcPlayer_;
-		emit deleteMe(this);
+		emit deleteMe (this);
 	}
 
 
@@ -204,37 +207,24 @@ namespace vlc
 	{
 		if (forbidFullScreen_)
 			return;
-		
+				
+		ForbidFullScreen ();
 		if (!FullScreen_)
 		{
-			FullScreenWidget_ = new QWidget;
+			FullScreen_ = true;
 			FullScreenWidget_->setLayout (layout ());
-			FullScreenWidget_->setBackgroundRole (QPalette::Shadow);
 			FullScreenWidget_->show ();
 			FullScreenWidget_->showFullScreen ();
-			VlcPlayer_->switchWidget (VlcPlayer_->GetParent ());
-			FullScreen_ = true;
 			
-			connect (FullScreenWidget_,
-					SIGNAL (destroyed ()),
-					 this,
-					SLOT (deleteLater ()));
+			VlcPlayer_->switchWidget (VlcPlayer_->GetParent ());
 		} 
 		else 
 		{
-			FullScreen_ = false;
+ 			FullScreen_ = false;
+			FullScreenWidget_->hide ();
 			setLayout (FullScreenWidget_->layout ());
 			VlcPlayer_->switchWidget (VlcMainWidget_);
-
-			disconnect (FullScreenWidget_,
-						SIGNAL (destroyed ()),
-						this,
-						SLOT (deleteLater ()));
-
-			delete FullScreenWidget_;
 		}
-		
-		ForbidFullScreen ();
 	}
 	
 	void VlcWidget::GenerateToolBar () 
@@ -274,7 +264,7 @@ namespace vlc
 	void VlcWidget::ForbidFullScreen ()
 	{
 		forbidFullScreen_ = true;
-		QTimer::singleShot (1000, this, SLOT (allowFullScreen ()));
+		QTimer::singleShot (500, this, SLOT (allowFullScreen ()));
 	}
 	
 	void VlcWidget::allowFullScreen ()
