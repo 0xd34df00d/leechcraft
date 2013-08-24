@@ -46,7 +46,8 @@ namespace vlc
 
 	protected:
 		void paintEvent (QPaintEvent*);
-		void mousePressEvent (QMouseEvent*);		
+		void mousePressEvent (QMouseEvent*);	
+		void mouseMoveEvent (QMouseEvent*);
 
 	public slots:	
 		void setPosition (double);

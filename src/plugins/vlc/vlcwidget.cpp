@@ -212,6 +212,7 @@ namespace vlc
 		if (!FullScreen_)
 		{
 			FullScreen_ = true;
+			hide ();
 			FullScreenWidget_->setLayout (layout ());
 			FullScreenWidget_->show ();
 			FullScreenWidget_->showFullScreen ();
@@ -223,6 +224,7 @@ namespace vlc
  			FullScreen_ = false;
 			FullScreenWidget_->hide ();
 			setLayout (FullScreenWidget_->layout ());
+			show ();
 			VlcPlayer_->switchWidget (VlcMainWidget_);
 		}
 	}

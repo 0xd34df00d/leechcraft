@@ -63,6 +63,11 @@ namespace vlc
 		event->accept ();
 	}
 	
+	void VlcScrollBar::mouseMoveEvent (QMouseEvent *event)
+	{
+		mousePressEvent (event);
+	}
+	
 	void VlcScrollBar::setPosition (double pos)
 	{
 		CurrentPosition_ = pos;
