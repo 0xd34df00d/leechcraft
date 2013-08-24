@@ -201,27 +201,31 @@ namespace vlc
 	
 	int VlcPlayer::NumberSubtitles () const
 	{
-	
+		return libvlc_video_get_spu_count (Mp_.get ());
 	}
 	
 	void VlcPlayer::AddSubtitles (QString file)
 	{
-	
+		libvlc_video_set_subtitle_file (Mp_.get (), file.toLocal8Bit ());
 	}
 
 	int VlcPlayer::CurrentSubtitle () const
 	{
-	
+		return libvlc_video_get_spu (Mp_.get ());
 	}
 	
-	QString VlcPlayer::GetSubtitleDescription (int number) const
+	QString VlcPlayer::GetSubtitleDescription (int track) const
 	{
-	
+		libvlc_track_description_t *t = libvlc_video_get_spu_description (Mp_.get ());
+		for (int i = 0; i < track; i++)
+			t = t->p_next;
+		
+		return QString (t->psz_name);
 	}
 
-	void VlcPlayer::setSubtitle (int number)
+	void VlcPlayer::setSubtitle (int track)
 	{
-	
+		libvlc_video_set_spu (Mp_.get (), track);
 	}
 }
 }

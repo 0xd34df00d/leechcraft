@@ -61,7 +61,7 @@ namespace vlc
 		Parent_ = parent;
 		Ui_ = new Ui::VlcControlsWidget;
 		VlcMainWidget_ = new SignalledWidget;
-		VlcMainWidget_->SetBackGroundColor(new QColor ("black"));
+		VlcMainWidget_->SetBackGroundColor (new QColor ("black"));
 		Controls_ = new SignalledWidget;
 		QVBoxLayout *layout = new QVBoxLayout;
 		layout->setContentsMargins (0, 0, 0, 0);
@@ -216,7 +216,6 @@ namespace vlc
 			FullScreenWidget_->setLayout (layout ());
 			FullScreenWidget_->show ();
 			FullScreenWidget_->showFullScreen ();
-			
 			VlcPlayer_->switchWidget (VlcPlayer_->GetParent ());
 		} 
 		else 
@@ -293,6 +292,18 @@ namespace vlc
 			tracks->addAction (action);
 		}
 		
+		for (int i = 0; i < VlcPlayer_->NumberSubtitles (); i++) {
+			QAction *action = new QAction (subtitles);
+			action->setData (QVariant (i));
+			action->setText (VlcPlayer_->GetSubtitleDescription (i));
+			if ((VlcPlayer_->CurrentSubtitle () == i) || ((VlcPlayer_->CurrentSubtitle () == -1) && (i == 0)))
+			{
+				action->setCheckable (true);
+				action->setChecked (true);
+			}
+			subtitles->addAction (action);
+		}
+		
 		ContextMenu_->addMenu (subtitles);
 		ContextMenu_->addMenu (tracks);
 		
@@ -300,13 +311,23 @@ namespace vlc
 				SIGNAL (triggered (QAction*)),
 				this,
 				SLOT (setAudioTrack (QAction*)));
+		
+		connect (subtitles,
+				SIGNAL (triggered (QAction*)),
+				this,
+				SLOT (setSubtitles (QAction*)));
 				
 		ContextMenu_->exec (QCursor::pos ());
 	}
 	
 	void VlcWidget::setSubtitles(QAction *action)
 	{
-	
+		int track = action->data ().toInt ();
+		
+		if (track == 0)
+			track = -1;
+		
+		VlcPlayer_->setSubtitle (track);
 	}
 	
 	void VlcWidget::setAudioTrack (QAction *action)
