@@ -488,6 +488,7 @@ namespace Rappor
 				count == AllPhotosItem_->rowCount ())
 		{
 			IsUpdating_ = false;
+			emit doneUpdating ();
 			return;
 		}
 
