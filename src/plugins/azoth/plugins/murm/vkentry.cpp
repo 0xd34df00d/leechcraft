@@ -269,6 +269,19 @@ namespace Murm
 		if (FindMessage (info.ID_))
 			return;
 
+		if (info.Flags_ & MessageFlag::Outbox)
+		{
+			const auto& text = info.ID_;
+			for (int i = Messages_.size () - 1; i >= 0; --i)
+			{
+				auto msg = Messages_.at (i);
+				if (msg->GetID () == static_cast<qulonglong> (-1) &&
+						msg->GetDirection () == IMessage::DOut &&
+						msg->GetBody () == info.Text_)
+					return;
+			}
+		}
+
 		const auto dir = info.Flags_ & MessageFlag::Outbox ?
 				IMessage::DOut :
 				IMessage::DIn;
