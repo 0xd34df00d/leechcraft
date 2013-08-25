@@ -110,6 +110,9 @@ namespace Dolozhee
 					.arg (section.second);
 		preview += "<strong>Attached files:</strong><br/>" + wiz->GetFilePage ()->GetFiles ().join ("<br/>");
 
+		preview.remove ("\r");
+		preview.replace ("\n", "<br/>");
+
 		Ui_.Preview_->setHtml (preview);
 	}
 
