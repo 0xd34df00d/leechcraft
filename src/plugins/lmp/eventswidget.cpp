@@ -35,6 +35,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/ieventsprovider.h>
 #include <util/qml/colorthemeproxy.h>
+#include <util/qml/standardnamfactory.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
@@ -90,6 +91,10 @@ namespace LMP
 	, Model_ (new EventsModel (this))
 	{
 		Ui_.setupUi (this);
+
+		new Util::StandardNAMFactory ("lmp/cache",
+				[] { return 50 * 1024 * 1024; },
+				Ui_.View_->engine ());
 
 		Ui_.View_->rootContext ()->setContextProperty ("eventsModel", Model_);
 		Ui_.View_->rootContext ()->setContextProperty ("attendSureTextString", tr ("Sure!"));

@@ -30,6 +30,7 @@
 #include "biowidget.h"
 #include <QtDebug>
 #include <util/util.h>
+#include <util/qml/standardnamfactory.h>
 #include <interfaces/media/iartistbiofetcher.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -46,6 +47,11 @@ namespace LMP
 	: QWidget (parent)
 	{
 		Ui_.setupUi (this);
+
+		new Util::StandardNAMFactory ("lmp/cache",
+				[] { return 50 * 1024 * 1024; },
+				Ui_.View_->engine ());
+
 		Manager_ = new BioViewManager (Ui_.View_, this);
 		Ui_.View_->setSource (QUrl ("qrc:/lmp/resources/qml/BioView.qml"));
 		Manager_->InitWithSource ();

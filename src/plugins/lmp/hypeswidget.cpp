@@ -34,6 +34,7 @@
 #include <QGraphicsObject>
 #include <util/util.h>
 #include <util/qml/colorthemeproxy.h>
+#include <util/qml/standardnamfactory.h>
 #include <interfaces/media/ihypesprovider.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -91,6 +92,10 @@ namespace LMP
 
 		Ui_.HypesView_->engine ()->addImageProvider ("sysIcons",
 				new SysIconProvider (Core::Instance ().GetProxy ()));
+
+		new Util::StandardNAMFactory ("lmp/cache",
+				[] { return 50 * 1024 * 1024; },
+				Ui_.HypesView_->engine ());
 
 		auto root = Ui_.HypesView_->rootContext ();
 		root->setContextProperty ("newArtistsModel", NewArtistsModel_);

@@ -32,6 +32,7 @@
 #include <interfaces/media/iartistbiofetcher.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <util/gui/clearlineeditaddon.h>
+#include <util/qml/standardnamfactory.h>
 #include "similarviewmanager.h"
 #include "bioviewmanager.h"
 #include "core.h"
@@ -50,6 +51,9 @@ namespace LMP
 		BioMgr_ = new BioViewManager (Ui_.View_, this);
 		SimilarMgr_ = new SimilarViewManager (Ui_.View_, this);
 
+		new Util::StandardNAMFactory ("lmp/cache",
+				[] { return 50 * 1024 * 1024; },
+				Ui_.View_->engine ());
 		Ui_.View_->setSource (QUrl ("qrc:/lmp/resources/qml/ArtistBrowserView.qml"));
 
 		BioMgr_->InitWithSource ();
