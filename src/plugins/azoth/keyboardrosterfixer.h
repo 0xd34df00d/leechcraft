@@ -32,6 +32,7 @@
 #include <QObject>
 
 class QTreeView;
+class QLineEdit;
 
 namespace LeechCraft
 {
@@ -39,10 +40,11 @@ namespace Azoth
 {
 	class KeyboardRosterFixer : public QObject
 	{
-		QTreeView *View_;
+		QLineEdit * const Edit_;
+		QTreeView * const View_;
 		bool IsSearching_;
 	public:
-		KeyboardRosterFixer (QTreeView*, QObject* = 0);
+		KeyboardRosterFixer (QLineEdit*, QTreeView*, QObject* = 0);
 	protected:
 		bool eventFilter (QObject*, QEvent*);
 	};
