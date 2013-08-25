@@ -99,7 +99,7 @@ namespace Azoth
 		Ui_.FilterLine_->setPlaceholderText (tr ("Search..."));
 		Ui_.CLTree_->setFocusProxy (Ui_.FilterLine_);
 
-		Ui_.FilterLine_->installEventFilter (new KeyboardRosterFixer (Ui_.CLTree_, this));
+		new KeyboardRosterFixer (Ui_.FilterLine_, Ui_.CLTree_, this);
 
 		Ui_.CLTree_->setItemDelegate (new ContactListDelegate (Ui_.CLTree_));
 		ProxyModel_->setSourceModel (Core::Instance ().GetCLModel ());

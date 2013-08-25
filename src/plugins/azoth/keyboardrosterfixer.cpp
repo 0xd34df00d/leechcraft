@@ -31,16 +31,19 @@
 #include <QKeyEvent>
 #include <QApplication>
 #include <QTreeView>
+#include <QLineEdit>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	KeyboardRosterFixer::KeyboardRosterFixer (QTreeView *view, QObject *parent)
+	KeyboardRosterFixer::KeyboardRosterFixer (QLineEdit *edit, QTreeView *view, QObject *parent)
 	: QObject (parent)
+	, Edit_ (edit)
 	, View_ (view)
 	, IsSearching_ (false)
 	{
+		Edit_->installEventFilter (this);
 	}
 
 	bool KeyboardRosterFixer::eventFilter (QObject*, QEvent *e)
