@@ -202,6 +202,14 @@
 				<item type="checkbox" property="FilterTrackingCookies" default="true">
 					<label lang="en" value="Filter tracking cookies" />
 				</item>
+				<item type="multiline" property="CookiesWhitelist">
+					<label value="Cookie domains whitelist:" />
+					<tooltip>Cookies whose domain matches one of these will always be accepted. Whitelist rules override blacklist.</tooltip>
+				</item>
+				<item type="multiline" property="CookiesBlacklist">
+					<label value="Cookie domains blacklist:" />
+					<tooltip>Cookies whose domain matches one of these will always be rejected. Whitelist rules override blacklist.</tooltip>
+				</item>
 			</item>
 			<item type="pushbutton" name="ClearCookies">
 				<label lang="en" value="Clear cookies" />
