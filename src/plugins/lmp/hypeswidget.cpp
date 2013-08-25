@@ -203,7 +203,7 @@ namespace LMP
 				SLOT (handleTracks (QList<Media::HypedTrackInfo>, Media::IHypesProvider::HypeType)));
 
 		XmlSettingsManager::Instance ()
-				.setProperty ("LastUsedReleasesProvider", prov->GetServiceName ());
+				.setProperty ("LastUsedHypesProvider", prov->GetServiceName ());
 	}
 
 	namespace
