@@ -76,6 +76,7 @@ namespace Azoth
 		case Qt::Key_PageUp:
 		case Qt::Key_Enter:
 		case Qt::Key_Return:
+		case Qt::Key_Escape:
 			IsSearching_ = false;
 			qApp->sendEvent (View_, e);
 			return true;
