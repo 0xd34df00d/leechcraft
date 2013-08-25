@@ -89,12 +89,13 @@ namespace Blasq
 		engine->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			engine->addImportPath (cand);
-		engine->setNetworkAccessManagerFactory (new Util::StandardNAMFactory ("blasq/cache",
-				[]
-				{
-					return XmlSettingsManager::Instance ()
-							.property ("CacheSize").toInt () * 1024 * 1024;
-				}));
+		new Util::StandardNAMFactory ("blasq/cache",
+			[]
+			{
+				return XmlSettingsManager::Instance ()
+						.property ("CacheSize").toInt () * 1024 * 1024;
+			},
+			engine);
 
 		const auto& path = Util::GetSysPath (Util::SysPath::QML, "blasq", "PhotoView.qml");
 		Ui_.ImagesView_->setSource (QUrl::fromLocalFile (path));
