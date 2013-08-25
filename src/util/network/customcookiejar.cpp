@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "customcookiejar.h"
+#include <memory>
 #include <QNetworkCookie>
 #include <QtDebug>
 
@@ -60,6 +61,16 @@ namespace Util
 	void CustomCookieJar::SetExactDomainMatch (bool enabled)
 	{
 		MatchDomainExactly_ = enabled;
+	}
+
+	void CustomCookieJar::SetWhitelist (const QList<QRegExp>& list)
+	{
+		WL_ = list;
+	}
+
+	void CustomCookieJar::SetBlacklist (const QList<QRegExp>& list)
+	{
+		BL_ = list;
 	}
 
 	QByteArray CustomCookieJar::Save () const
@@ -130,6 +141,15 @@ namespace Util
 			const auto idx = domain.indexOf (cookieDomain);
 			return idx > 0 && domain.at (idx - 1) == '.';
 		}
+
+		bool Check (const QList<QRegExp>& list, const QString& str)
+		{
+			for (auto& rx : list)
+				if (str == rx.pattern () || rx.exactMatch (str))
+					return true;
+
+			return false;
+		}
 	}
 
 	bool CustomCookieJar::setCookiesFromUrl (const QList<QNetworkCookie>& cookieList, const QUrl& url)
@@ -139,12 +159,33 @@ namespace Util
 
 		QList<QNetworkCookie> filtered;
 		filtered.reserve (cookieList.size ());
-		for (const auto& cookie : cookieList)
+		for (auto cookie : cookieList)
 		{
-			if (MatchDomainExactly_ && !MatchDomain (url.host (), cookie.domain ()))
-				continue;
+			if (cookie.domain ().isEmpty ())
+				cookie.setDomain (url.host ());
 
-			filtered << cookie;
+			bool checkWhitelist = false;
+			std::shared_ptr<void> wlGuard (nullptr, [&] (void*)
+					{
+						if (checkWhitelist && Check (WL_, cookie.domain ()))
+							filtered << cookie;
+					});
+
+			if (MatchDomainExactly_ && !MatchDomain (url.host (), cookie.domain ()))
+			{
+				checkWhitelist = true;
+				continue;
+			}
+
+			if (FilterTrackingCookies_ &&
+					cookie.name ().startsWith ("__utm"))
+			{
+				checkWhitelist = true;
+				continue;
+			}
+
+			if (!Check (BL_, cookie.domain ()))
+				filtered << cookie;
 		}
 
 		return QNetworkCookieJar::setCookiesFromUrl (filtered, url);

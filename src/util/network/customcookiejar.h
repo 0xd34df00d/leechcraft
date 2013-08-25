@@ -31,6 +31,7 @@
 
 #include <QNetworkCookieJar>
 #include <QByteArray>
+#include <QRegExp>
 #include <util/utilconfig.h>
 
 namespace LeechCraft
@@ -49,6 +50,9 @@ namespace Util
 		bool FilterTrackingCookies_;
 		bool Enabled_;
 		bool MatchDomainExactly_;
+
+		QList<QRegExp> WL_;
+		QList<QRegExp> BL_;
 	public:
 		/** @brief Constructs the cookie jar.
 		 *
@@ -84,6 +88,36 @@ namespace Util
 		 * @param[in] enabled Whether exact matching is enabled.
 		 */
 		void SetExactDomainMatch (bool enabled);
+
+		/** @brief Sets the cookies whitelist.
+		 *
+		 * Cookies whose domains match regexps from the list will always
+		 * be accepted even despite the SetFilterTrackingCookies() and
+		 * SetExactDomainMatch() settings.
+		 *
+		 * If a cookie domain matches both a whitelist regexp and
+		 * blacklist regexp, it is accepted.
+		 *
+		 * If cookies are disabled via SetEnabled(), this option has no
+		 * effect.
+		 *
+		 * @param[in] list The whitelist.
+		 *
+		 * @sa SetBlacklist()
+		 */
+		void SetWhitelist (const QList<QRegExp>& list);
+
+		/** @brief Sets the cookies blacklist.
+		 *
+		 * Cookies whose domains match regexps from the list will always
+		 * be rejected until they are also present in the whitelist, in
+		 * which case they are accepted.
+		 *
+		 * @param[in] list The blacklist.
+		 *
+		 * @sa SetWhitelist()
+		 */
+		void SetBlacklist (const QList<QRegExp>& list);
 
 		/** Serializes the cookie jar contents into a QByteArray
 		 * suitable for storage.
