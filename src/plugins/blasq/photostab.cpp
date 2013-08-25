@@ -41,6 +41,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
+#include <util/qml/standardnamfactory.h>
 #include <util/sys/paths.h>
 #include <util/util.h>
 #include <util/network/networkdiskcache.h>
@@ -60,23 +61,6 @@ namespace Blasq
 {
 	namespace
 	{
-		class NAMFactory : public QDeclarativeNetworkAccessManagerFactory
-		{
-		public:
-			QNetworkAccessManager* create (QObject *parent)
-			{
-				auto nam = new QNetworkAccessManager (parent);
-
-				auto cache = new Util::NetworkDiskCache ("blasq/cache", nam);
-				const auto cacheSize = XmlSettingsManager::Instance ().property ("CacheSize").toInt ();
-				cache->setMaximumCacheSize (cacheSize * 1024 * 1024);
-
-				nam->setCache (cache);
-
-				return nam;
-			}
-		};
-
 		const std::array<int, 13> Zooms { { 10, 25, 33, 50, 66, 100, 150, 200, 250, 500, 750, 1000, 1600 } };
 	}
 
@@ -105,7 +89,12 @@ namespace Blasq
 		engine->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			engine->addImportPath (cand);
-		engine->setNetworkAccessManagerFactory (new NAMFactory);
+		engine->setNetworkAccessManagerFactory (new Util::StandardNAMFactory ("blasq/cache",
+				[]
+				{
+					return XmlSettingsManager::Instance ()
+							.property ("CacheSize").toInt () * 1024 * 1024;
+				}));
 
 		const auto& path = Util::GetSysPath (Util::SysPath::QML, "blasq", "PhotoView.qml");
 		Ui_.ImagesView_->setSource (QUrl::fromLocalFile (path));
