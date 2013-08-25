@@ -62,6 +62,15 @@ namespace Blasq
 		return Accounts_;
 	}
 
+	int AccountsManager::GetAccountIndex (const QByteArray& id) const
+	{
+		const auto pos = std::find_if (Accounts_.begin (), Accounts_.end (),
+				[&id] (IAccount *acc) { return acc->GetID () == id; });
+		return pos == Accounts_.end () ?
+				-1 :
+				static_cast<int> (std::distance (Accounts_.begin (), pos));
+	}
+
 	void AccountsManager::RemoveAccount (const QModelIndex& index)
 	{
 		const auto accObj = index.data (Role::AccountObj).value<QObject*> ();

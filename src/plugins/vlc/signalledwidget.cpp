@@ -27,44 +27,72 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavetabs.h>
+#include "signalledwidget.h"
+#include <QMouseEvent>
+#include <QKeyEvent>
+#include <QWheelEvent>
+#include <QPaintEvent>
+#include <QPainter>
+#include <QColor>
+#include <QPen>
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveTabs
+	SignalledWidget::SignalledWidget (QWidget *parent)
+	: QWidget (parent)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs)
+		setContextMenuPolicy(Qt::CustomContextMenu);
+		backgroundColor_ = nullptr;
+	}
 	
-		ICoreProxy_ptr Proxy_;
+	SignalledWidget::~SignalledWidget()
+	{
+		if (backgroundColor_ == nullptr)
+			delete backgroundColor_;
+	}
 	
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+	void SignalledWidget::keyPressEvent (QKeyEvent *event)
+	{
+		emit keyPress (event);
+	}
+	
+	void SignalledWidget::mousePressEvent (QMouseEvent *event)
+	{
+		emit mousePress (event);
+	}
 
-		void TabOpenRequested (const QByteArray&);
-		LeechCraft::TabClasses_t GetTabClasses () const;
-					
-	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
-	};
+	void SignalledWidget::mouseDoubleClickEvent (QMouseEvent *event)
+	{
+		emit mouseDoubleClick (event);
+	}
+	
+	void SignalledWidget::wheelEvent (QWheelEvent *event)
+	{
+		emit wheel (event);
+	}
+	
+	void SignalledWidget::paintEvent (QPaintEvent *event)
+	{
+		if (backgroundColor_ != nullptr)
+		{
+			QPainter p (this);
+			p.setPen (QPen (*backgroundColor_));
+			p.setBrush (QBrush (*backgroundColor_));
+			p.drawRect (0, 0, width () - 1, height () - 1);
+			p.end ();
+			event->accept ();
+		}
+	}
+	
+	void SignalledWidget::SetBackGroundColor (QColor *color)
+	{
+		if (backgroundColor_ != nullptr)
+			delete backgroundColor_;
+		
+		backgroundColor_ = color;
+		update ();
+	}
 }
 }

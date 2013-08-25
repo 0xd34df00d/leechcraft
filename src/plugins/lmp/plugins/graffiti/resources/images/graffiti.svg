@@ -14,8 +14,8 @@
    width="96"
    height="96"
    id="svg2408"
-   inkscape:version="0.48.3.1 r9886"
-   sodipodi:docname="lmp.svg"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="graffiti.svg"
    inkscape:export-filename="/home/buckstabu/Dropbox/Public/lcicons/lcproto_poshuku.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
@@ -28,15 +28,15 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1366"
-     inkscape:window-height="719"
+     inkscape:window-width="1918"
+     inkscape:window-height="1037"
      id="namedview68"
      showgrid="false"
      inkscape:zoom="3.3333333"
-     inkscape:cx="-10.926025"
-     inkscape:cy="76.362502"
+     inkscape:cx="-22.926025"
+     inkscape:cy="1.9707938"
      inkscape:window-x="0"
-     inkscape:window-y="29"
+     inkscape:window-y="19"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg2408" />
   <defs
@@ -362,24 +362,10 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
-  <g
-     id="layer2-8"
-     style="display:none"
-     transform="translate(127.2,68.7)">
-    <rect
-       width="86"
-       height="85"
-       rx="6"
-       ry="6"
-       x="5"
-       y="7"
-       id="rect3745-7"
-       style="opacity:0.9;fill:url(#ButtonShadow-4);fill-opacity:1;fill-rule:nonzero;stroke:none;filter:url(#filter3174-5)" />
-  </g>
   <rect
      style="fill:url(#radialGradient4113);fill-opacity:1;stroke:none"
      id="rect3461-7"
@@ -394,19 +380,6 @@
      id="rect3977-9"
      inkscape:connector-curvature="0"
      d="m 17.89831,14.489536 c -1.662,0 -3,1.338 -3,3 l 0,62 c 0,1.662 1.338,3 3,3 l 62,0 c 1.662,0 3,-1.338 3,-3 l 0,-62 c 0,-1.662 -1.338,-3 -3,-3 l -62,0 z m 0,0.96875 62,0 c 1.140081,0 2.03125,0.891169 2.03125,2.03125 l 0,62 c 0,1.140081 -0.891169,2.03125 -2.03125,2.03125 l -62,0 c -1.140081,0 -2.03125,-0.891169 -2.03125,-2.03125 l 0,-62 c 0,-1.140081 0.891169,-2.03125 2.03125,-2.03125 z" />
-  <g
-     id="layer2"
-     style="display:none">
-    <rect
-       width="86"
-       height="85"
-       rx="6"
-       ry="6"
-       x="5"
-       y="7"
-       id="rect3745"
-       style="opacity:0.9;fill:url(#ButtonShadow);fill-opacity:1;fill-rule:nonzero;stroke:none;filter:url(#filter3174)" />
-  </g>
   <path
      style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;opacity:0.15;color:#000000;fill:#000000;fill-opacity:1;stroke:none;stroke-width:4;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Abandoned Bitplane;-inkscape-font-specification:Abandoned Bitplane"
      id="rect3222-3-8"
@@ -417,39 +390,6 @@
      id="rect3981-0"
      inkscape:connector-curvature="0"
      d="m 17.89831,14.489536 c -1.662,0 -3,1.338 -3,3 l 0,62 c 0,1.662 1.338,3 3,3 l 62,0 c 1.662,0 3,-1.338 3,-3 l 0,-62 c 0,-1.662 -1.338,-3 -3,-3 l -62,0 z m 0,1.9375 62,0 c 0.618163,0 1.0625,0.444337 1.0625,1.0625 l 0,62 c 0,0.618163 -0.444337,1.0625 -1.0625,1.0625 l -62,0 c -0.618163,0 -1.0625,-0.444337 -1.0625,-1.0625 l 0,-62 c 0,-0.618163 0.444337,-1.0625 1.0625,-1.0625 z" />
-  <g
-     id="activity-gmail"
-     display="block"
-     style="display:block"
-     transform="translate(2.0249985,106.6005)" />
-  <g
-     id="layer2-4"
-     style="display:none"
-     transform="translate(293.40001,25.799999)">
-    <rect
-       width="86"
-       height="85"
-       rx="6"
-       ry="6"
-       x="5"
-       y="7"
-       id="rect3745-2"
-       style="opacity:0.9;fill:url(#ButtonShadow-9);fill-opacity:1;fill-rule:nonzero;stroke:none;filter:url(#filter3174-1)" />
-  </g>
-  <g
-     id="layer2-1"
-     style="display:none"
-     transform="translate(361.83909,197.76522)">
-    <rect
-       width="86"
-       height="85"
-       rx="6"
-       ry="6"
-       x="5"
-       y="7"
-       id="rect3745-0"
-       style="opacity:0.9;fill:url(#ButtonShadow-77);fill-opacity:1;fill-rule:nonzero;stroke:none;filter:url(#filter3174-52)" />
-  </g>
   <path
      style="color:#000000;fill:url(#linearGradient12365);fill-opacity:1.0;fill-rule:nonzero;stroke:#000000;stroke-width:1.27442633999999999;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
      d="m 70.022088,28.424815 c -1.35558,0 -2.4469,1.09132 -2.4469,2.4469 l 0,13.15208 -21.60152,-13.72557 a 1.8957717,2.0869767 0 0 0 -2.86746,1.79694 l 0,11.92863 -21.60153,-13.72557 a 1.8957717,2.0869767 0 0 0 -2.86746,1.79694 l 0,32.5361 a 1.8957717,2.0869767 0 0 0 2.86746,1.79694 l 21.60153,-13.72557 0,11.92863 a 1.8957717,2.0869767 0 0 0 2.86746,1.79694 l 21.60152,-13.72557 0,12.42566 c 0,1.35558 1.09132,2.44689 2.4469,2.44689 l 4.8938,0 c 1.35558,0 2.4469,-1.09131 2.4469,-2.44689 l 0,-34.25658 c 0,-1.35558 -1.09132,-2.4469 -2.4469,-2.4469 l -4.8938,0 z"
@@ -493,19 +433,7 @@
          d="m -86.399998,31.049999 c 0,1.905383 -1.544618,3.45 -3.45,3.45 -1.905383,0 -3.450001,-1.544617 -3.450001,-3.45 0,-1.905382 1.544618,-3.45 3.450001,-3.45 1.905382,0 3.45,1.544618 3.45,3.45 z"
          transform="translate(20.4,36)" />
     </g>
-    <flowRoot
-       transform="matrix(0.19394614,0.5581742,-0.5581742,0.19394614,22.343936,113.35105)"
-       style="font-size:16px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:'_LIFAD_V6_[seidbereit.ru]';-inkscape-font-specification:'_LIFAD_V6_[seidbereit.ru] Bold'"
-       id="flowRoot115274"
-       xml:space="preserve"><flowRegion
-         id="flowRegion115276"><rect
-           style="font-size:16px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'_LIFAD_V6_[seidbereit.ru]';-inkscape-font-specification:'_LIFAD_V6_[seidbereit.ru] Bold'"
-           y="119.7"
-           x="-97.800003"
-           height="59.400002"
-           width="143.7"
-           id="rect115278" /></flowRegion><flowPara
-         id="flowPara115280">graffiti</flowPara></flowRoot>  </g>
+  </g>
   <path
      style="opacity:0.07999998;fill:#d9c6ed;fill-opacity:1;stroke:none"
      id="rect3256-3"
@@ -545,4 +473,16 @@
        id="rect3171"
        style="opacity:0.1;fill:url(#linearGradient4102);fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;filter:url(#filter3794-2)" />
   </g>
+  <text
+     xml:space="preserve"
+     style="font-size:7.99999999px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans Bold"
+     x="50.561829"
+     y="-21.854023"
+     id="text3407"
+     sodipodi:linespacing="125%"
+     transform="matrix(0.32556617,0.94551926,-0.94551926,0.32556617,0,0)"><tspan
+       sodipodi:role="line"
+       id="tspan3409"
+       x="50.561829"
+       y="-21.854023">graffiti</tspan></text>
 </svg>

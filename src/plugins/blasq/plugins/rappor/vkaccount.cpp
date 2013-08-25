@@ -483,16 +483,12 @@ namespace Rappor
 			photoElem = photoElem.nextSiblingElement ("photo");
 		}
 
-		if (finishReached)
-		{
-			IsUpdating_ = false;
-			return;
-		}
-
 		const auto count = doc.documentElement ().firstChildElement ("count").text ().toInt ();
-		if (count == AllPhotosItem_->rowCount ())
+		if (finishReached ||
+				count == AllPhotosItem_->rowCount ())
 		{
 			IsUpdating_ = false;
+			emit doneUpdating ();
 			return;
 		}
 

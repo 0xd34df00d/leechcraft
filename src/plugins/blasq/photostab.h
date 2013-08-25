@@ -32,6 +32,7 @@
 #include <memory>
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/core/icoreproxy.h>
 #include "ui_photostab.h"
 
@@ -48,9 +49,10 @@ namespace Blasq
 
 	class PhotosTab : public QWidget
 					, public ITabWidget
+					, public IRecoverableTab
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
+		Q_INTERFACES (ITabWidget IRecoverableTab)
 
 		Ui::PhotosTab Ui_;
 
@@ -70,7 +72,10 @@ namespace Blasq
 		IAccount *CurAcc_ = 0;
 		QObject *CurAccObj_ = 0;
 
+		QString OnUpdateCollectionId_;
+
 		QString SelectedID_;
+		QString SelectedCollection_;
 
 		bool SingleImageMode_ = false;
 	public:
@@ -81,6 +86,12 @@ namespace Blasq
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+
+		QString GetTabRecoverName () const;
+		QIcon GetTabRecoverIcon () const;
+		QByteArray GetTabRecoverData () const;
+
+		void RecoverState (QDataStream&);
 
 		QModelIndex GetSelectedImage () const;
 	private:
@@ -105,8 +116,12 @@ namespace Blasq
 		void handleCopyURLRequested (const QVariant&);
 		void handleDeleteRequested (const QString&);
 		void handleSingleImageMode (bool);
+
+		void handleAccDoneUpdating ();
 	signals:
 		void removeTab (QWidget*);
+
+		void tabRecoverDataChanged ();
 	};
 }
 }

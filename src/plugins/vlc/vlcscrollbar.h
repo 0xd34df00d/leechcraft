@@ -29,42 +29,30 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavetabs.h>
+#include <QWidget>
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveTabs
+	class VlcScrollBar : public QWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs)
-	
-		ICoreProxy_ptr Proxy_;
-	
+		
+		double CurrentPosition_;
+		
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		explicit VlcScrollBar (QWidget *parent = 0);
 
-		void TabOpenRequested (const QByteArray&);
-		LeechCraft::TabClasses_t GetTabClasses () const;
-					
+	protected:
+		void paintEvent (QPaintEvent*);
+		void mousePressEvent (QMouseEvent*);
+		void mouseMoveEvent (QMouseEvent*);
+
+	public slots:	
+		void setPosition (double);
 	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
+		void changePosition (double);
 	};
 }
 }

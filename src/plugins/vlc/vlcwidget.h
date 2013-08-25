@@ -31,26 +31,70 @@
 
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
+#include "ui_vlccontrolswidget.h"
+#include "vlcscrollbar.h"
+#include "soundwidget.h"
+#include "signalledwidget.h"
+
+class QToolBar;
+class QMenu;
 
 namespace LeechCraft
 {
 namespace vlc
 {
+	class VlcPlayer;
 	class VlcWidget : public QWidget
 					, public ITabWidget
 	{
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
 		
-		QObject *parent_;
+		QObject *Parent_;
+		Ui::VlcControlsWidget *Ui_;
+		VlcPlayer *VlcPlayer_;
+		QToolBar *Bar_;
+		QAction *Open_;
+		QAction *Info_;
+		VlcScrollBar *ScrollBar_;
+		
+		bool forbidFullScreen_;
+		bool FullScreen_;
+		QWidget *FullScreenWidget_;
+		QTimer *InterfaceUpdater_;
+		SignalledWidget *VlcMainWidget_;
+		SignalledWidget *Controls_;
+		SoundWidget *SoundWidget_;
+		QMenu *ContextMenu_;
+		
+		void GenerateToolBar ();
+		void ForbidFullScreen ();
 		
 	public:
-		explicit VlcWidget (QObject* parent = 0);
+		explicit VlcWidget (QWidget *parent = 0);
+		~VlcWidget();
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
 		static TabClassInfo GetTabInfo ();
+		void TabMadeCurrent ();
+		void TabLostCurrent ();
+		
+	private slots:
+		void addFile ();
+		void updateIterface ();
+		void toggleFullScreen ();
+		void allowFullScreen ();
+		
+		void generateContextMenu (QPoint);
+		void setAudioTrack (QAction*);
+		void setSubtitles (QAction*);
+		
+		void keyPressEvent (QKeyEvent*);
+		void mousePressEvent (QMouseEvent*);
+		void mouseDoubleClickEvent (QMouseEvent*);
+		void wheelEvent (QWheelEvent*);
 		
 	signals:
 		void deleteMe (QWidget*);
