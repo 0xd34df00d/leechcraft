@@ -28,10 +28,12 @@
  **********************************************************************/
 
 #include "vlcscrollbar.h"
+#include <boost/concept_check.hpp>
 #include <QPaintEvent>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QVBoxLayout>
+#include <QPoint>
 
 namespace LeechCraft
 {
@@ -59,13 +61,15 @@ namespace vlc
 	
 	void VlcScrollBar::mousePressEvent (QMouseEvent *event)
 	{
+		lastMousePoint = event->globalPos ();
 		emit changePosition (event->x () / double (width ()));
 		event->accept ();
 	}
 	
 	void VlcScrollBar::mouseMoveEvent (QMouseEvent *event)
 	{
-		mousePressEvent (event);
+		if (lastMousePoint.x () != event->globalPos (). x())
+			mousePressEvent (event);
 	}
 	
 	void VlcScrollBar::setPosition (double pos)

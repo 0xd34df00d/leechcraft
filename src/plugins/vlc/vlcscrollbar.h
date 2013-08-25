@@ -31,6 +31,8 @@
 
 #include <QWidget>
 
+class QPoint;
+
 namespace LeechCraft
 {
 namespace vlc
@@ -40,6 +42,7 @@ namespace vlc
 		Q_OBJECT
 		
 		double CurrentPosition_;
+		QPoint lastMousePoint;
 		
 	public:
 		explicit VlcScrollBar (QWidget *parent = 0);
