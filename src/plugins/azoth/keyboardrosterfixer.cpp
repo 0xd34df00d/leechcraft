@@ -52,6 +52,10 @@ namespace Azoth
 			e->type () != QEvent::KeyRelease)
 			return false;
 
+		if (IsSearching_ &&
+				Edit_->text ().isEmpty ())
+			IsSearching_ = false;
+
 		QKeyEvent *ke = static_cast<QKeyEvent*> (e);
 		if (!IsSearching_)
 		{
