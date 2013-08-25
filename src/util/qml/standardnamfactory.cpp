@@ -29,16 +29,20 @@
 
 #include "standardnamfactory.h"
 #include <QNetworkAccessManager>
+#include <QDeclarativeEngine>
 #include <util/network/networkdiskcache.h>
 
 namespace LeechCraft
 {
 namespace Util
 {
-	StandardNAMFactory::StandardNAMFactory (const QString& subpath, CacheSizeGetter_f getter)
+	StandardNAMFactory::StandardNAMFactory (const QString& subpath,
+			CacheSizeGetter_f getter, QDeclarativeEngine *engine)
 	: Subpath_ (subpath)
 	, CacheSizeGetter_ (getter)
 	{
+		if (engine)
+			engine->setNetworkAccessManagerFactory (this);
 	}
 
 	QNetworkAccessManager* StandardNAMFactory::create (QObject *parent)

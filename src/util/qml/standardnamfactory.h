@@ -33,6 +33,8 @@
 #include <QDeclarativeNetworkAccessManagerFactory>
 #include <util/utilconfig.h>
 
+class QDeclarativeEngine;
+
 namespace LeechCraft
 {
 namespace Util
@@ -45,7 +47,8 @@ namespace Util
 	private:
 		CacheSizeGetter_f CacheSizeGetter_;
 	public:
-		StandardNAMFactory (const QString& subpath, CacheSizeGetter_f getter);
+		StandardNAMFactory (const QString& subpath,
+				CacheSizeGetter_f getter, QDeclarativeEngine *engine = nullptr);
 
 		QNetworkAccessManager* create (QObject*);
 	};
