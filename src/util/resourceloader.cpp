@@ -270,10 +270,11 @@ namespace LeechCraft
 				return QPixmap ();
 
 			const auto& data = dev->readAll ();
-			auto px = new QPixmap;
-			px->loadFromData (data);
-			CachePixmaps_.insert (basename, px, data.size ());
-			return *px;
+
+			QPixmap result;
+			result.loadFromData (data);
+			CachePixmaps_.insert (basename, new QPixmap (result), data.size ());
+			return result;
 		}
 
 		QAbstractItemModel* ResourceLoader::GetSubElemModel () const
