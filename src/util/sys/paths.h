@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QStringList>
+#include <QFileInfo>
 #include <util/utilconfig.h>
 
 namespace LeechCraft
@@ -113,5 +114,33 @@ namespace Util
 	 * @sa GetPathCandidates()
 	 */
 	UTIL_API QString GetSysPath (SysPath path, const QString& subfolder, const QString& filename);
+
+	/** @brief Returns the components of the system PATH variable.
+	 *
+	 * This function gets the PATH variable from the environment, parses
+	 * it and returns the list of the components to the caller.
+	 *
+	 * @return System PATH components.
+	 *
+	 * @sa FindInSystemPath()
+	 */
+	UTIL_API QStringList GetSystemPaths ();
+
+	/** @brief Searches for a file in system paths according to a filter.
+	 *
+	 * This function searches for a file named \em name in system paths
+	 * passed in \em paths and returns the full path for the first file
+	 * that matches \em filter, or an empty string if nothing is found.
+	 *
+	 * \em paths are most possibly obtained via GetSystemPaths(), but
+	 * an arbitrary set of paths is fine too.
+	 *
+	 * @param[in] name The name of the file to search for.
+	 * @param[in] paths The paths to search in.
+	 * @param[in] filter The filter function for the candidates.
+	 * @return The full path to the first found file or an empty string.
+	 */
+	UTIL_API QString FindInSystemPath (const QString& name, const QStringList& paths,
+			std::function<bool (QFileInfo)> filter = std::function<bool (QFileInfo)> ());
 }
 }
