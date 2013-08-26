@@ -32,6 +32,7 @@
 #include <QtDebug>
 #include <QTimer>
 #include <interfaces/azoth/azothutil.h>
+#include "xmlsettingsmanager.h"
 #include "vkaccount.h"
 #include "vkmessage.h"
 #include "vkconnection.h"
@@ -77,6 +78,9 @@ namespace Murm
 			if (info.ID_ == id)
 				Groups_ << info.Name_;
 		}
+
+		XmlSettingsManager::Instance ()
+				.RegisterObject ("EntryNameFormat", this, "handleEntryNameFormat");
 	}
 
 	void VkEntry::UpdateInfo (const UserInfo& info)
@@ -334,9 +338,12 @@ namespace Murm
 
 	QString VkEntry::GetEntryName () const
 	{
-		QStringList components { Info_.FirstName_, Info_.Nick_, Info_.LastName_ };
-		components.removeAll ({});
-		return components.join (" ");
+		auto string = XmlSettingsManager::Instance ().property ("EntryNameFormat").toString ();
+		string.replace ("$name", Info_.FirstName_);
+		string.replace ("$surname", Info_.LastName_);
+		string.replace ("$nick", Info_.Nick_);
+		string.replace ("  ", " ");
+		return string;
 	}
 
 	void VkEntry::SetEntryName (const QString&)
@@ -557,6 +564,11 @@ namespace Murm
 
 		Avatar_ = Account_->GetPhotoStorage ()->GetImage (url);
 		emit avatarChanged (Avatar_);
+	}
+
+	void VkEntry::handleEntryNameFormat ()
+	{
+		emit nameChanged (GetEntryName ());
 	}
 }
 }

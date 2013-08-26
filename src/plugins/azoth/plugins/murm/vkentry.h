@@ -117,6 +117,8 @@ namespace Murm
 		void sendTyping ();
 
 		void handleGotStorageImage (const QUrl&);
+
+		void handleEntryNameFormat ();
 	signals:
 		void gotMessage (QObject*);
 		void statusChanged (const EntryStatus&, const QString&);
