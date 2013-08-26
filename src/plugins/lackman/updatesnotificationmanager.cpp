@@ -97,6 +97,8 @@ namespace LackMan
 	{
 		NotifyScheduled_ = false;
 
+		auto em = Proxy_->GetEntityManager ();
+
 		const auto upgradableCount = UpgradablePackages_.size ();
 		QString bodyText;
 		if (upgradableCount <= 3)
@@ -117,6 +119,13 @@ namespace LackMan
 						.arg ("<em>" + lastName + "</em>");
 			}
 		}
+		else if (!upgradableCount)
+		{
+			auto cancel = Util::MakeANCancel ("org.LeechCraft.LackMan", "org.LeechCraft.LackMan");
+			em->HandleEntity (cancel);
+
+			return;
+		}
 		else
 			bodyText = tr ("New versions are available for %n package(s).",
 					nullptr, upgradableCount);
@@ -132,7 +141,6 @@ namespace LackMan
 				0,
 				upgradableCount);
 
-		auto em = Proxy_->GetEntityManager ();
 		auto nah = new Util::NotificationActionHandler (entity, this);
 		nah->AddFunction (tr ("Open LackMan"),
 				[this, entity, em] () -> void
