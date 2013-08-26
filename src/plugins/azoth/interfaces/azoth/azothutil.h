@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_INTERFACES_AZOTHUTIL_H
-#define PLUGINS_AZOTH_INTERFACES_AZOTHUTIL_H
+#pragma once
+
 #include <QList>
 #include <QDateTime>
 #include <QtDebug>
@@ -70,5 +70,3 @@ namespace Util
 }
 }
 }
-
-#endif
