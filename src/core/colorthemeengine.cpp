@@ -98,7 +98,7 @@ namespace LeechCraft
 			}
 
 			const auto& elems = var.toStringList ();
-			if (elems.size () != 3)
+			if (elems.size () < 3 || elems.size () > 4)
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "wrong color"
@@ -109,7 +109,8 @@ namespace LeechCraft
 
 			return QColor (elems.at (0).toInt (),
 					elems.at (1).toInt (),
-					elems.at (2).toInt ());
+					elems.at (2).toInt (),
+					elems.value (3, "255").toInt ());
 		}
 
 		void UpdateColor (QPalette& palette, QSettings& settings,
