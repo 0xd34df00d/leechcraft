@@ -78,7 +78,7 @@ namespace vlc
 		QPainter p (this);
 		QPen goodPen = p.pen ();
 		
-		int h = height ();
+		int h = height () - 5;
 		int w = width ();
 		
 		int currentVolume = libvlc_audio_get_volume (Mp_.get ());
@@ -89,7 +89,7 @@ namespace vlc
 			else
 				p.setPen (QColor (255, 255 - (i - 100) * 2.5, 10));
 			
-			p.drawLine (i / 2, h - h * i / 200, i / 2, h);
+			p.drawLine (i / 2, h - h * i / 200 - 1, i / 2, h - 1);
 		}
 		
 		p.setPen (goodPen);
@@ -101,7 +101,7 @@ namespace vlc
 		QFont painterFont = font ();
 		painterFont.setPointSize (8);
 		p.setFont (painterFont);
-		p.drawText (3, 15, QString::number (currentVolume) + "%");
+		p.drawText (3, 13, QString::number (currentVolume) + "%");
 			
 		p.end ();
 		event->accept ();

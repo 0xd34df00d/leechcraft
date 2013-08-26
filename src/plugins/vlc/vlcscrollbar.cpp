@@ -49,11 +49,12 @@ namespace vlc
 	{
 		QPainter p (this);
 		
+// 		//BUG ZONE magic constant 5
 		p.setBrush (palette ().mid ());
-		p.drawRect (0, 0, width () - 1, height () - 1);
+		p.drawRect (0, 0, width () - 5, height () - 5);
 		
 		p.setBrush (palette ().dark ());
-		p.drawRect (0, 0, std::min (int (width () * CurrentPosition_), width () - 1), height () - 1);
+		p.drawRect (0, 0, std::min (int ((width () - 5) * CurrentPosition_), width () - 5), height () - 5);
 		
 		p.end ();
 		event->accept ();
@@ -62,7 +63,7 @@ namespace vlc
 	void VlcScrollBar::mousePressEvent (QMouseEvent *event)
 	{
 		lastMousePoint = event->globalPos ();
-		emit changePosition (event->x () / double (width ()));
+		emit changePosition (event->x () / double (width () - 5));
 		event->accept ();
 	}
 	

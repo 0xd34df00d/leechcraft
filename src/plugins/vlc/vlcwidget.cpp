@@ -39,15 +39,21 @@
 #include <QTime>
 #include <QToolBar>
 #include <QMenu>
+#include <QSizePolicy>
 
 namespace 
 {
 	void RewriteWidget (QWidget *widget, QWidget *parent)
 	{
-		QVBoxLayout *layout = new QVBoxLayout;
-		layout->addWidget (widget);
+		if (parent->layout ())
+			delete parent->layout ();
+		
+		widget->setBaseSize (0, 0);
+		QVBoxLayout *layout = new QVBoxLayout (parent);
 		layout->setContentsMargins (0, 0, 0, 0);
+		layout->addWidget (widget);
 		parent->setLayout (layout);
+		//widget->setMaximumSize (16777215, 16777215);
 	}
 }
 
@@ -63,12 +69,12 @@ namespace vlc
 		VlcMainWidget_ = new SignalledWidget;
 		VlcMainWidget_->SetBackGroundColor (new QColor ("black"));
 		Controls_ = new SignalledWidget;
+		Ui_->setupUi (Controls_);
 		QVBoxLayout *layout = new QVBoxLayout;
 		layout->setContentsMargins (0, 0, 0, 0);
 		layout->addWidget (VlcMainWidget_);
 		layout->addWidget (Controls_);
 		setLayout (layout);
-		Ui_->setupUi (Controls_);
 		FullScreen_ = false;
 		forbidFullScreen_ = false;
 			
@@ -190,7 +196,6 @@ namespace vlc
 	
 	void VlcWidget::keyPressEvent (QKeyEvent *event) 
 	{
-		fprintf(stderr, "%c\n", event->text()[0]);
 		if (event->text () == tr ("f"))
 			toggleFullScreen ();
 		else if (event->text () == tr ("h"))
