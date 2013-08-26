@@ -31,13 +31,13 @@
 
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
-#include "ui_vlccontrolswidget.h"
 #include "vlcscrollbar.h"
 #include "soundwidget.h"
 #include "signalledwidget.h"
 
 class QToolBar;
 class QMenu;
+class QLabel;
 
 namespace LeechCraft
 {
@@ -51,24 +51,26 @@ namespace vlc
 		Q_INTERFACES (ITabWidget)
 		
 		QObject *Parent_;
-		Ui::VlcControlsWidget *Ui_;
 		VlcPlayer *VlcPlayer_;
 		QToolBar *Bar_;
 		QAction *Open_;
 		QAction *Info_;
+		
 		VlcScrollBar *ScrollBar_;
+		QLabel *timeLeft_;
+		QLabel *timeAll_;
 		
 		bool forbidFullScreen_;
 		bool FullScreen_;
-		QWidget *FullScreenWidget_;
+		SignalledWidget *FullScreenWidget_;
 		QTimer *InterfaceUpdater_;
 		SignalledWidget *VlcMainWidget_;
-		SignalledWidget *Controls_;
 		SoundWidget *SoundWidget_;
 		QMenu *ContextMenu_;
 		
 		void GenerateToolBar ();
 		void ForbidFullScreen ();
+		void ConnectWidgetToMe (SignalledWidget*);
 		
 	public:
 		explicit VlcWidget (QWidget *parent = 0);

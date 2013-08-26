@@ -40,22 +40,8 @@
 #include <QToolBar>
 #include <QMenu>
 #include <QSizePolicy>
-
-namespace 
-{
-	void RewriteWidget (QWidget *widget, QWidget *parent)
-	{
-		if (parent->layout ())
-			delete parent->layout ();
-		
-		widget->setBaseSize (0, 0);
-		QVBoxLayout *layout = new QVBoxLayout (parent);
-		layout->setContentsMargins (0, 0, 0, 0);
-		layout->addWidget (widget);
-		parent->setLayout (layout);
-		//widget->setMaximumSize (16777215, 16777215);
-	}
-}
+#include <QLabel>
+#include <QWidgetAction>
 
 namespace LeechCraft
 {
@@ -65,29 +51,24 @@ namespace vlc
 	: QWidget (parent)
 	{
 		Parent_ = parent;
-		Ui_ = new Ui::VlcControlsWidget;
 		VlcMainWidget_ = new SignalledWidget;
 		VlcMainWidget_->SetBackGroundColor (new QColor ("black"));
-		Controls_ = new SignalledWidget;
-		Ui_->setupUi (Controls_);
 		QVBoxLayout *layout = new QVBoxLayout;
 		layout->setContentsMargins (0, 0, 0, 0);
 		layout->addWidget (VlcMainWidget_);
-		layout->addWidget (Controls_);
 		setLayout (layout);
 		FullScreen_ = false;
 		forbidFullScreen_ = false;
-			
-		ScrollBar_ = new VlcScrollBar (Ui_->scrollBarWidget_);
-		RewriteWidget (ScrollBar_, Ui_->scrollBarWidget_);
+		FullScreenWidget_ = new SignalledWidget ();
 		VlcPlayer_ = new VlcPlayer (VlcMainWidget_);
-		SoundWidget_ = new SoundWidget (Ui_->soundWidget_, VlcPlayer_->GetPlayer ());
-		RewriteWidget (SoundWidget_, Ui_->soundWidget_);
-		
+
 		GenerateToolBar ();
 		InterfaceUpdater_ = new QTimer;
 		InterfaceUpdater_->setInterval (100);
 		InterfaceUpdater_->start ();
+		
+		ConnectWidgetToMe (VlcMainWidget_);
+		ConnectWidgetToMe (FullScreenWidget_);
 		
 		connect (InterfaceUpdater_,
 				SIGNAL (timeout ()),
@@ -98,26 +79,6 @@ namespace vlc
 				SIGNAL (customContextMenuRequested (QPoint)),
 				this,
 				SLOT (generateContextMenu (QPoint)));
-		
-		connect (VlcMainWidget_,
-				SIGNAL (mouseDoubleClick (QMouseEvent*)),
-				this,
-				SLOT (mouseDoubleClickEvent (QMouseEvent*)));
-		
-		connect (VlcMainWidget_,
-				SIGNAL (keyPress (QKeyEvent*)),
-				this,
-				SLOT (keyPressEvent (QKeyEvent*)));
-		
-		connect (VlcMainWidget_,
-				SIGNAL (wheel (QWheelEvent*)),
-				this,
-				SLOT (wheelEvent (QWheelEvent*)));
-		
-		connect (Controls_,
-				SIGNAL (keyPress (QKeyEvent*)),
-				this,
-				SLOT (keyPressEvent (QKeyEvent*)));
 		
 		connect (ScrollBar_,
 				SIGNAL (changePosition (double)),
@@ -167,13 +128,18 @@ namespace vlc
 		ScrollBar_->setPosition (VlcPlayer_->GetPosition ());
 		ScrollBar_->repaint ();
 		
-		Ui_->currentTime_->setText (VlcPlayer_->GetCurrentTime ().toString ("HH:mm:ss")); 
-		Ui_->fullTime_->setText (VlcPlayer_->GetFullTime ().toString ("HH:mm:ss"));
+		timeLeft_->setText (VlcPlayer_->GetCurrentTime ().toString ("HH:mm:ss")); 
+		timeAll_->setText (VlcPlayer_->GetFullTime ().toString ("HH:mm:ss"));
 		
-		VlcMainWidget_->setFocus ();
 		if (FullScreen_) 
+		{
 			if (!FullScreenWidget_->isVisible ())
 				toggleFullScreen ();
+			else
+				FullScreenWidget_->setFocus ();
+		}
+		else
+			VlcMainWidget_->setFocus ();
 	}
 
 	void VlcWidget::mouseDoubleClickEvent (QMouseEvent *event)
@@ -198,10 +164,8 @@ namespace vlc
 	{
 		if (event->text () == tr ("f"))
 			toggleFullScreen ();
-		else if (event->text () == tr ("h"))
-			Controls_->setVisible (!Controls_->isVisible ());
 		else if (event->text () == " ")
-			VlcPlayer_->togglePlay();
+			VlcPlayer_->togglePlay ();
 		
 		event->accept ();
 	}
@@ -213,37 +177,46 @@ namespace vlc
 				
 		ForbidFullScreen ();
 		
-		//don't touch it: BUG ZONE
 		if (!FullScreen_)
 		{
-			FullScreenWidget_ = new QWidget;
-			FullScreenWidget_->setBackgroundRole (QPalette::Shadow);
 			FullScreen_ = true;
-			bool controlsVisible = Controls_->isVisible ();
-			Controls_->show ();
-			hide ();
-			FullScreenWidget_->setLayout (layout ());
+			FullScreenWidget_->SetBackGroundColor (new QColor ("black"));
 			FullScreenWidget_->show ();
-			Controls_->setVisible (controlsVisible);
 			FullScreenWidget_->showFullScreen ();
-			VlcPlayer_->switchWidget (VlcMainWidget_);
+			VlcPlayer_->switchWidget (FullScreenWidget_);
 		} 
 		else 
 		{
  			FullScreen_ = false;
 			FullScreenWidget_->hide ();
-			setLayout (FullScreenWidget_->layout ());
-			show ();
 			VlcPlayer_->switchWidget (VlcMainWidget_);
-			delete FullScreenWidget_;
 		}
 	}
 	
 	void VlcWidget::GenerateToolBar () 
 	{
 		Bar_ = new QToolBar ();
+		timeLeft_ = new QLabel (this);
+		timeLeft_->setFocusPolicy (Qt::NoFocus);
+		Bar_->addWidget (timeLeft_);
+		ScrollBar_ = new VlcScrollBar (this);
+		ScrollBar_->setBaseSize (200, 25);
+		ScrollBar_->setFocusPolicy (Qt::NoFocus);
+		QSizePolicy pol;
+		pol.setHorizontalStretch (255);
+		pol.setHorizontalPolicy (QSizePolicy::Ignored);
+		pol.setVerticalPolicy (QSizePolicy::Expanding);
+		ScrollBar_->setSizePolicy(pol);
+		Bar_->addWidget (ScrollBar_);
+		timeAll_ = new QLabel;
+		timeAll_->setFocusPolicy (Qt::NoFocus);
+		Bar_->addWidget (timeAll_);
+		SoundWidget_ = new SoundWidget (this, VlcPlayer_->GetPlayer ());
+		SoundWidget_->setFixedSize (100, 25);
+		SoundWidget_->setFocusPolicy (Qt::NoFocus);
+		Bar_->addWidget (SoundWidget_);
 		Open_ = Bar_->addAction (tr ("Open"));
-		Info_ = Bar_->addAction (tr ("Info"));
+		Bar_->setFocusPolicy(Qt::NoFocus);
 	}
 	
 	TabClassInfo VlcWidget::GetTabClassInfo () const
@@ -341,6 +314,24 @@ namespace vlc
 	{
 		int track = action->data ().toInt ();
 		VlcPlayer_->setAudioTrack (track);
+	}
+	
+	void VlcWidget::ConnectWidgetToMe(SignalledWidget *widget)
+	{
+		connect (widget,
+				SIGNAL (mouseDoubleClick (QMouseEvent*)),
+				this,
+				SLOT (mouseDoubleClickEvent (QMouseEvent*)));
+		
+		connect (widget,
+				SIGNAL (keyPress (QKeyEvent*)),
+				this,
+				SLOT (keyPressEvent (QKeyEvent*)));
+		
+		connect (widget,
+				SIGNAL (wheel (QWheelEvent*)),
+				this,
+				SLOT (wheelEvent (QWheelEvent*)));
 	}
 }
 }
