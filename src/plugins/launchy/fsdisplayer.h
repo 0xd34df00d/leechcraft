@@ -65,13 +65,6 @@ namespace Launchy
 		QDeclarativeView *View_;
 		ItemIconsProvider *IconsProvider_;
 
-		typedef std::function<void ()> Executor_f;
-		struct ItemInfo
-		{
-			Executor_f Exec_;
-			QString PermanentID_;
-		};
-		QHash<QString, ItemInfo> ItemInfos_;
 	public:
 		FSDisplayer (ICoreProxy_ptr,
 				Util::XDG::ItemsFinder *finder, FavoritesManager*, QObject* = 0);

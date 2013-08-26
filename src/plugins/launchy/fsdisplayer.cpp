@@ -219,12 +219,9 @@ namespace Launchy
 				item->setData (tc.TabClass_, ModelRoles::ItemID);
 				item->setData (FavManager_->IsFavorite (tc.TabClass_), ModelRoles::IsItemFavorite);
 
-				auto executor = [iht, tc] () { iht->TabOpenRequested (tc.TabClass_); };
-				ItemInfos_ [tc.TabClass_] =
-				{
-					executor,
-					tc.TabClass_
-				};
+				auto executor = [iht, tc] { iht->TabOpenRequested (tc.TabClass_); };
+				item->setData (QVariant::fromValue<Executor_f> (executor),
+						ModelRoles::ExecutorFunctor);
 
 				ItemsModel_->appendRow (item);
 			}
@@ -361,16 +358,13 @@ namespace Launchy
 			IconsProvider_->AddIcon (iconName, item->GetIcon ());
 
 			appItem->setData (item->GetCategories (), ModelRoles::ItemNativeCategories);
+			appItem->setData (item->GetPermanentID (), ModelRoles::ItemID);
+			appItem->setData (FavManager_->IsFavorite (item->GetPermanentID ()),
+					ModelRoles::IsItemFavorite);
 
-			appItem->setData (itemName, ModelRoles::ItemID);
-
-			appItem->setData (FavManager_->IsFavorite (item->GetPermanentID ()), ModelRoles::IsItemFavorite);
-
-			ItemInfos_ [itemName] =
-			{
-				[this, item] () { item->Execute (Proxy_); },
-				item->GetPermanentID ()
-			};
+			auto executor = [this, item] { item->Execute (Proxy_); };
+			appItem->setData (QVariant::fromValue<Executor_f> (executor),
+					ModelRoles::ExecutorFunctor);
 
 			ItemsModel_->appendRow (appItem);
 		}
@@ -413,32 +407,35 @@ namespace Launchy
 		ItemsProxyModel_->setCategoryNames (list);
 	}
 
-	void FSDisplayer::handleExecRequested (const QString& item)
+	void FSDisplayer::handleExecRequested (const QString& id)
 	{
-		if (!ItemInfos_.contains (item))
+		auto item = FindItem (id);
+		if (!item)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "no such item"
-					<< item;
+					<< id;
 			return;
 		}
 
-		ItemInfos_ [item].Exec_ ();
+		item->data (ModelRoles::ExecutorFunctor).value<Executor_f> () ();
+
 		deleteLater ();
 	}
 
-	void FSDisplayer::handleItemBookmark (const QString& item)
+	void FSDisplayer::handleItemBookmark (const QString& id)
 	{
-		if (!ItemInfos_.contains (item))
+		auto item = FindItem (id);
+		if (!item)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "no such item"
-					<< item;
+					<< id;
 			return;
 		}
 
-		FavManager_->AddFavorite (ItemInfos_ [item].PermanentID_);
-		FindItem (item)->setData (false, ModelRoles::IsItemFavorite);
+		FavManager_->AddFavorite (item->data (ModelRoles::ItemID).toString ());
+		item->setData (true, ModelRoles::IsItemFavorite);
 	}
 
 	void FSDisplayer::handleViewStatus (QDeclarativeView::Status status)
