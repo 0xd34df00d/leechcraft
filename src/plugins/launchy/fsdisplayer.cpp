@@ -140,8 +140,8 @@ namespace Launchy
 
 		View_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
 		View_->rootContext ()->setContextProperty ("itemsModel", ItemsProxyModel_);
-		View_->rootContext ()->setContextProperty ("itemsModelFilter", ItemsProxyModel_);
 		View_->rootContext ()->setContextProperty ("catsModel", CatsModel_);
+		View_->rootContext ()->setContextProperty ("launchyProxy", this);
 		View_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), parent));
 
@@ -175,6 +175,19 @@ namespace Launchy
 	FSDisplayer::~FSDisplayer ()
 	{
 		delete View_;
+	}
+
+	QString FSDisplayer::GetAppFilterText () const
+	{
+		return ItemsProxyModel_->GetAppFilterText ();
+	}
+
+	void FSDisplayer::SetAppFilterText (const QString& text)
+	{
+		ItemsProxyModel_->SetAppFilterText (text);
+		emit appFilterTextChanged ();
+
+		SysPathHandler_->HandleQuery (text);
 	}
 
 	void FSDisplayer::MakeStdCategories ()

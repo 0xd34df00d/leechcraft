@@ -53,6 +53,7 @@ namespace Launchy
 	class FSDisplayer : public QObject
 	{
 		Q_OBJECT
+		Q_PROPERTY (QString appFilterText READ GetAppFilterText WRITE SetAppFilterText NOTIFY appFilterTextChanged);
 
 		ICoreProxy_ptr Proxy_;
 		Util::XDG::ItemsFinder *Finder_;
@@ -69,6 +70,9 @@ namespace Launchy
 		FSDisplayer (ICoreProxy_ptr,
 				Util::XDG::ItemsFinder *finder, FavoritesManager*, QObject* = 0);
 		~FSDisplayer ();
+
+		QString GetAppFilterText () const;
+		void SetAppFilterText (const QString&);
 	private:
 		void MakeStdCategories ();
 		void MakeStdItems ();
@@ -83,6 +87,8 @@ namespace Launchy
 		void handleViewStatus (QDeclarativeView::Status);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
+
+		void appFilterTextChanged ();
 	};
 }
 }

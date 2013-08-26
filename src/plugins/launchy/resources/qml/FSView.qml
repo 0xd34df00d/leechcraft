@@ -154,7 +154,7 @@ Rectangle {
         }
 
         Binding {
-            target: itemsModelFilter
+            target: launchyProxy
             property: "appFilterText"
             value: appsFilterInput.text
         }
