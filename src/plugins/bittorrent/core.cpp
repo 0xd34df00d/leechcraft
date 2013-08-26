@@ -543,13 +543,8 @@ namespace BitTorrent
 					else if (!status.paused &&
 								(status.state == libtorrent::torrent_status::finished ||
 								status.state == libtorrent::torrent_status::seeding))
-					{
-						auto total = status.num_incomplete;
-						if (total <= 0)
-							total = status.list_peers - status.list_seeds;
 						return tr ("100% (%1)")
 								.arg (Util::MakePrettySize (status.total_wanted));
-					}
 					else
 						return tr ("%1% (%2 of %3)")
 								.arg (status.progress * 100, 0, 'f', 2)
