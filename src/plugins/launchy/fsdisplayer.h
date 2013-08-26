@@ -49,6 +49,7 @@ namespace Launchy
 	class ItemIconsProvider;
 	class ItemsSortFilterProxyModel;
 	class FavoritesManager;
+	class SysPathItemProvider;
 
 	class FSDisplayer : public QObject
 	{
@@ -66,6 +67,7 @@ namespace Launchy
 		QDeclarativeView *View_;
 		ItemIconsProvider *IconsProvider_;
 
+		SysPathItemProvider *SysPathHandler_;
 	public:
 		FSDisplayer (ICoreProxy_ptr,
 				Util::XDG::ItemsFinder *finder, FavoritesManager*, QObject* = 0);

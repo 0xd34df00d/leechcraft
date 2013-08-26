@@ -48,6 +48,7 @@
 #include "itemssortfilterproxymodel.h"
 #include "modelroles.h"
 #include "favoritesmanager.h"
+#include "syspathitemprovider.h"
 
 namespace LeechCraft
 {
@@ -123,6 +124,7 @@ namespace Launchy
 	, ItemsProxyModel_ (new ItemsSortFilterProxyModel (ItemsModel_, this))
 	, View_ (new QDeclarativeView)
 	, IconsProvider_ (new ItemIconsProvider (proxy))
+	, SysPathHandler_ (new SysPathItemProvider (ItemsModel_, this))
 	{
 		View_->setStyleSheet ("background: transparent");
 		View_->setWindowFlags (Qt::Dialog | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
