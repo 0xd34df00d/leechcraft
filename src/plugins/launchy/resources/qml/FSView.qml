@@ -29,8 +29,14 @@ Rectangle {
     Keys.onRightPressed: itemsView.moveCurrentIndexRight()
     Keys.onUpPressed: itemsView.moveCurrentIndexUp()
     Keys.onDownPressed: itemsView.moveCurrentIndexDown()
-    Keys.onEnterPressed: itemsView.currentItem.trigger()
-    Keys.onReturnPressed: itemsView.currentItem.trigger()
+    Keys.onEnterPressed: trigger()
+    Keys.onReturnPressed: trigger()
+
+    function trigger() {
+        if (itemsView.currentItem == null)
+            itemsView.moveCurrentIndexRight();
+        itemsView.currentItem.trigger();
+    }
 
     Rectangle {
         id: catsContainer
