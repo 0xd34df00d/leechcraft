@@ -157,6 +157,8 @@ namespace CleanWeb
 	private:
 		bool Matches (const FilterItem&, const QString&, const QByteArray&, const QString&) const;
 		void HandleProvider (QObject*);
+
+		void AddFilter (const Filter&);
 		void Parse (const QString&);
 
 		/** Removes the subscription at
@@ -167,6 +169,7 @@ namespace CleanWeb
 		void ReadSettings ();
 		bool AssignSD (const SubscriptionData&);
 	private slots:
+		void handleParsed ();
 		void update ();
 		void handleJobFinished (int);
 		void handleJobError (int, IDownload::Error);
