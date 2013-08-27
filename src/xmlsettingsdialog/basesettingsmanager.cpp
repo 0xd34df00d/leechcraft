@@ -37,6 +37,7 @@ namespace Util
 {
 	BaseSettingsManager::BaseSettingsManager (bool readAllKeys, QObject *parent)
 	: QObject (parent)
+	, IsInitializing_ (false)
 	, CleanupScheduled_ (false)
 	, ReadAllKeys_ (readAllKeys)
 	{
@@ -44,12 +45,16 @@ namespace Util
 
 	void BaseSettingsManager::Init ()
 	{
+		IsInitializing_ = true;
+
 		auto settings = GetSettings ();
 		const auto& properties = ReadAllKeys_ ?
 				settings->allKeys () :
 				settings->childKeys ();
 		for (const auto& prop : properties)
 			setProperty (PROP2CHAR (prop), settings->value (prop));
+
+		IsInitializing_ = false;
 	}
 
 	void BaseSettingsManager::Release ()
@@ -136,13 +141,16 @@ namespace Util
 		const QByteArray& name = event->propertyName ();
 		const auto& propName = QString::fromUtf8 (name);
 		const auto& propValue = property (name);
-		GetSettings ()->setValue (propName, propValue);
+
+		if (!IsInitializing_)
+			GetSettings ()->setValue (propName, propValue);
+
 		PropertyChanged (propName, propValue);
 
 		if (ApplyProps_.contains (name))
 		{
 			const auto& objects = ApplyProps_.values (name);
-			Q_FOREACH (const auto& object, objects)
+			for (const auto& object : objects)
 			{
 				if (!object.first)
 					continue;

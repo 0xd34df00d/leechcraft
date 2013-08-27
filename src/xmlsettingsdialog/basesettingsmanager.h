@@ -61,6 +61,7 @@ namespace Util
 		Properties2Object_t ApplyProps_;
 		Properties2Object_t SelectProps_;
 
+		bool IsInitializing_;
 		bool CleanupScheduled_;
 	protected:
 		bool ReadAllKeys_;
