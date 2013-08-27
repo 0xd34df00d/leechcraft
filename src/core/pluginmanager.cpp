@@ -896,16 +896,11 @@ namespace LeechCraft
 
 			QString name = info->GetName ();
 			QString pinfo = info->GetInfo ();
-			QIcon icon = info->GetIcon ();
 
 			settings.beginGroup (loader->GetFileName ());
 			settings.setValue ("Name", name);
 			settings.setValue ("Info", pinfo);
-			settings.remove ("Icon");
 			settings.endGroup ();
-
-			const auto path = loader->GetFileName ().toUtf8 ().toBase64 ().replace ('/', '_');
-			icon.pixmap (48, 48).save (IconsDir_.absoluteFilePath (path), "PNG", 100);
 		}
 
 		settings.endGroup ();
