@@ -37,7 +37,6 @@ Rectangle {
             onBookmarkArtistRequested: rootRect.bookmarkArtistRequested(id, page, tags)
             onPreviewRequested: rootRect.previewRequested(artist)
             onBrowseInfo: rootRect.browseInfo(artist)
-            similarLabelPosition: "underArtist"
         }
     }
 }
