@@ -115,7 +115,7 @@ namespace Util
 			return;
 
 		const auto& objects = SelectProps_.values (prop);
-		Q_FOREACH (const ObjectElement_t& object, objects)
+		for (const ObjectElement_t& object : objects)
 		{
 			if (!object.first)
 				continue;
@@ -129,6 +129,15 @@ namespace Util
 					<< object.first
 					<< object.second;
 		}
+	}
+
+	std::shared_ptr<void> BaseSettingsManager::EnterInitMode ()
+	{
+		if (IsInitializing_)
+			return {};
+
+		IsInitializing_ = true;
+		return std::shared_ptr<void> (nullptr, [this] (void*) { IsInitializing_ = false; });
 	}
 
 	bool BaseSettingsManager::event (QEvent *e)

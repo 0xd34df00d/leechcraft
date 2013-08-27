@@ -165,6 +165,8 @@ namespace Util
 		QVariant GetRawValue (const QString& path, const QVariant& def = QVariant ()) const;
 
 		void OptionSelected (const QByteArray&, const QVariant&);
+
+		std::shared_ptr<void> EnterInitMode ();
 	protected:
 		virtual bool event (QEvent*);
 
