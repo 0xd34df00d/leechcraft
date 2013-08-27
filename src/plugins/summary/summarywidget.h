@@ -89,7 +89,7 @@ namespace Summary
 		void ConnectObject (QObject*);
 		SearchWidget* CreateSearchWidget ();
 		void ReinitToolbar ();
-		QList<QAction*> CreateProxyActions (const QList<QAction*>&) const;
+		QList<QAction*> CreateProxyActions (const QList<QAction*>&, QObject*) const;
 	private slots:
 		void handleActionTriggered (QAction*);
 		void checkDataChanged (const QModelIndex&, const QModelIndex&);
