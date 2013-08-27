@@ -60,6 +60,8 @@ namespace Util
 		typedef QMultiMap<QByteArray, ObjectElement_t> Properties2Object_t;
 		Properties2Object_t ApplyProps_;
 		Properties2Object_t SelectProps_;
+
+		bool CleanupScheduled_;
 	protected:
 		bool ReadAllKeys_;
 	public:
@@ -188,6 +190,7 @@ namespace Util
 	private:
 		Settings_ptr GetSettings () const;
 	private slots:
+		void scheduleCleanup ();
 		void cleanupObjects ();
 	};
 }

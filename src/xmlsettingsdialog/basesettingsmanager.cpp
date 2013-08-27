@@ -29,6 +29,7 @@
 
 #include "basesettingsmanager.h"
 #include <QtDebug>
+#include <QTimer>
 
 namespace LeechCraft
 {
@@ -36,6 +37,7 @@ namespace Util
 {
 	BaseSettingsManager::BaseSettingsManager (bool readAllKeys, QObject *parent)
 	: QObject (parent)
+	, CleanupScheduled_ (false)
 	, ReadAllKeys_ (readAllKeys)
 	{
 	}
@@ -69,7 +71,7 @@ namespace Util
 		connect (object,
 				SIGNAL (destroyed (QObject*)),
 				this,
-				SLOT (cleanupObjects ()),
+				SLOT (scheduleCleanup ()),
 				Qt::UniqueConnection);
 	}
 
@@ -172,16 +174,27 @@ namespace Util
 				});
 	}
 
+	void BaseSettingsManager::scheduleCleanup ()
+	{
+		if (CleanupScheduled_)
+			return;
+
+		CleanupScheduled_ = true;
+		QTimer::singleShot (100,
+				this,
+				SLOT (cleanupObjects ()));
+	}
+
 	void BaseSettingsManager::cleanupObjects ()
 	{
-		auto senderObj = sender ();
-		auto cleanupMap = [senderObj] (Properties2Object_t& map) -> void
+		CleanupScheduled_= false;
+		auto cleanupMap = [] (Properties2Object_t& map) -> void
 		{
 			for (const auto& key : map.keys ())
 			{
 				decltype (map.values (key)) vals2remove;
 				for (const auto& val : map.values (key))
-					if (!val.first || val.first == senderObj)
+					if (!val.first)
 						vals2remove << val;
 
 				for (const auto& val : vals2remove)
