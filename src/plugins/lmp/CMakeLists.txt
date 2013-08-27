@@ -1,6 +1,7 @@
 cmake_minimum_required (VERSION 2.8)
 project (leechcraft_lmp)
 include (InitLCPlugin OPTIONAL)
+include (CMakeDependentOption)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
@@ -12,7 +13,7 @@ find_package (GLIB2 REQUIRED)
 find_package (Taglib REQUIRED)
 add_definitions (${TAGLIB_CFLAGS})
 
-option (ENABLE_LMP_MPRIS "Enable MPRIS support for LMP" TRUE)
+cmake_dependent_option (ENABLE_LMP_MPRIS "Enable MPRIS support for LMP" ON "NOT WIN32" OFF)
 
 set (QT_USE_QTDECLARATIVE TRUE)
 set (QT_USE_QTNETWORK TRUE)
@@ -22,6 +23,7 @@ if (ENABLE_LMP_MPRIS)
 	set (QT_USE_QTDBUS TRUE)
 endif ()
 include (${QT_USE_FILE})
+
 
 include_directories (
 	${CMAKE_CURRENT_SOURCE_DIR}

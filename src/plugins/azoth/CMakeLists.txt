@@ -2,6 +2,7 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_azoth)
 include (InitLCPlugin OPTIONAL)
 set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+include (CMakeDependentOption)
 
 option (ENABLE_MEDIACALLS "Enable support for media calls" ON)
 

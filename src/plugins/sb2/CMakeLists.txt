@@ -1,11 +1,12 @@
 cmake_minimum_required (VERSION 2.8)
 project (leechcraft_sb2)
 include (InitLCPlugin OPTIONAL)
+include (CMakeDependentOption)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 find_package (QJSON REQUIRED)
 
-option (WITH_X11 "Enable X11 support on Linux" ON)
+cmake_dependent_option (WITH_X11 "Enable X11 support on Linux" ON "UNIX AND NOT APPLE" OFF)
 
 set (QT_USE_QTDECLARATIVE TRUE)
 include (${QT_USE_FILE})
@@ -37,7 +38,7 @@ set (SRCS
 	viewgeometrymanager.cpp
 	)
 
-if (WITH_X11 AND NOT APPLE)
+if (WITH_X11)
 	find_package (X11)
 
 	if (X11_FOUND)

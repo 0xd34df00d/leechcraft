@@ -15,3 +15,4 @@ dummyfile.cpp
 *.user
 tools/win32/build32/
 .tx/
+tools/win32/LeechCraft/
