@@ -203,7 +203,6 @@ namespace Azoth
 		CustomStatusesManager* GetCustomStatusesManager () const;
 		CustomChatStyleManager* GetCustomChatStyleManager () const;
 
-		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
 		void RegisterHookable (QObject*);
 
