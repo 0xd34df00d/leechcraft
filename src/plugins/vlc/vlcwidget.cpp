@@ -45,6 +45,7 @@
 #include <QWidgetAction>
 #include <QPushButton>
 #include <QTimer>
+#include <QDebug>
 
 namespace LeechCraft
 {
@@ -193,10 +194,9 @@ namespace vlc
 	void VlcWidget::mouseMoveEvent(QMouseEvent *event)
 	{
 		if (FullScreen_) 
-		{
 			fullScreenPanelRequested ();
-			event->accept ();
-		}
+		
+		event->accept ();
 	}
 
 
@@ -369,9 +369,7 @@ namespace vlc
 		FullScreen_ = false;
 		ForbidFullScreen_ = false;
 		FullScreenWidget_ = new SignalledWidget;
-		FullScreenWidget_->setMouseTracking (true);
 		FullScreenPanel_ = new SignalledWidget (this, Qt::Popup);
-		FullScreenPanel_->setMouseTracking (true);
 		QHBoxLayout *panelLayout = new QHBoxLayout;
 		FullScreenTimeLeft_ = new QLabel;
 		FullScreenTimeAll_ = new QLabel;
@@ -393,6 +391,7 @@ namespace vlc
 		
 		FullScreenTimeLeft_->show ();
 		FullScreenVlcScrollBar_->show ();
+		AllowMouseTracking ();
 		
 		connect (FullScreenWidget_,
 				SIGNAL (mouseMove (QMouseEvent*)),
@@ -407,7 +406,7 @@ namespace vlc
 		connect (FullScreenVlcScrollBar_,
 				SIGNAL (changePosition (double)),
 				VlcPlayer_,
-				SLOT (setPosition (double)));
+				SLOT (changePosition (double)));
 	}
 	
 	void VlcWidget::fullScreenPanelRequested ()
@@ -420,7 +419,23 @@ namespace vlc
 	void VlcWidget::hideFullScreenPanel ()
 	{
 		TerminatePanel_->stop ();
+		ForbidMouseTracking ();
 		FullScreenPanel_->hide ();
+	}
+	
+	void VlcWidget::AllowMouseTracking ()
+	{
+		qDebug () << "allow";
+		FullScreenWidget_->setMouseTracking (true);
+		FullScreenPanel_->setMouseTracking (true);
+	}
+	
+	void VlcWidget::ForbidMouseTracking ()
+	{
+		qDebug () << "forbid";
+		FullScreenWidget_->setMouseTracking (false);
+		FullScreenWidget_->setMouseTracking (false);
+		QTimer::singleShot (50, this, SLOT (AllowMouseTracking ()));
 	}
 }
 }

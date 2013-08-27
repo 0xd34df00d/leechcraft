@@ -111,6 +111,9 @@ namespace vlc
 		void fullScreenPanelRequested ();
 		void hideFullScreenPanel ();
 		
+		void AllowMouseTracking ();
+		void ForbidMouseTracking ();
+		
 	signals:
 		void deleteMe (QWidget*);
 	};
