@@ -69,6 +69,8 @@ namespace HotStreams
 		virtual QList<StreamInfo> Parse (const QByteArray&) = 0;
 	protected slots:
 		void handleReplyFinished ();
+	private slots:
+		void handleParsed ();
 	};
 }
 }

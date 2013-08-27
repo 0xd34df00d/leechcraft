@@ -28,10 +28,13 @@
  **********************************************************************/
 
 #include "streamlistfetcherbase.h"
+#include <functional>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
 #include <QStandardItem>
+#include <QFutureWatcher>
+#include <QtConcurrentRun>
 #include <interfaces/media/iradiostationprovider.h>
 #include "roles.h"
 
@@ -58,11 +61,39 @@ namespace HotStreams
 
 	void StreamListFetcherBase::HandleData (const QByteArray& data)
 	{
-		auto result = Parse (data);
-		std::sort (result.begin (), result.end (),
-				[] (decltype (result.at (0)) left, decltype (result.at (0)) right)
-					{ return QString::localeAwareCompare (left.Name_, right.Name_) < 0; });
-		for (const auto& stream : result)
+		auto watcher = new QFutureWatcher<decltype (Parse (data))> ();
+		connect (watcher,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleParsed ()));
+
+		auto task = [this, data] () -> decltype (Parse (data))
+		{
+			auto result = Parse (data);
+			std::sort (result.begin (), result.end (),
+					[] (decltype (result.at (0)) left, decltype (result.at (0)) right)
+						{ return QString::localeAwareCompare (left.Name_, right.Name_) < 0; });
+			return result;
+		};
+		watcher->setFuture (QtConcurrent::run (task));
+	}
+
+	void StreamListFetcherBase::handleReplyFinished ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		reply->deleteLater ();
+		HandleData (reply->readAll ());
+	}
+
+	void StreamListFetcherBase::handleParsed ()
+	{
+		auto watcher = dynamic_cast<QFutureWatcher<decltype (Parse ({}))>*> (sender ());
+		watcher->deleteLater ();
+
+		for (const auto& stream : watcher->result ())
 		{
 			auto name = stream.Name_;
 			if (!stream.Genres_.isEmpty ())
@@ -85,16 +116,6 @@ namespace HotStreams
 		}
 
 		deleteLater ();
-	}
-
-	void StreamListFetcherBase::handleReplyFinished ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-			return;
-
-		reply->deleteLater ();
-		HandleData (reply->readAll ());
 	}
 }
 }
