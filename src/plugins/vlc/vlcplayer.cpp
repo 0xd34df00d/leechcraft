@@ -136,8 +136,8 @@ namespace vlc
 		if (playingMedia) 
 		{
 			cur = libvlc_media_player_get_time (Mp_.get ());
-			audio = CurrentAudioTrack ();
-			subtitle = CurrentSubtitle ();
+			audio = GetCurrentAudioTrack ();
+			subtitle = GetCurrentSubtitle ();
 		}
 		
 		bool isPlaying = libvlc_media_player_is_playing (Mp_.get ()); 
@@ -174,12 +174,12 @@ namespace vlc
 		return Mp_;
 	}
 	
-	int VlcPlayer::NumberAudioTracks () const
+	int VlcPlayer::GetAudioTracksNumber () const
 	{
 		return libvlc_audio_get_track_count (Mp_.get ());
 	}
 	
-	int VlcPlayer::CurrentAudioTrack () const
+	int VlcPlayer::GetCurrentAudioTrack () const
 	{
 		return libvlc_audio_get_track (Mp_.get ());
 	}
@@ -201,7 +201,7 @@ namespace vlc
 		return t->i_id;
 	}
 	
-	int VlcPlayer::NumberSubtitles () const
+	int VlcPlayer::GetSubtitlesNumber () const
 	{
 		return libvlc_video_get_spu_count (Mp_.get ());
 	}
@@ -211,7 +211,7 @@ namespace vlc
 		libvlc_video_set_subtitle_file (Mp_.get (), file.toLocal8Bit ());
 	}
 
-	int VlcPlayer::CurrentSubtitle () const
+	int VlcPlayer::GetCurrentSubtitle () const
 	{
 		return libvlc_video_get_spu (Mp_.get ());
 	}

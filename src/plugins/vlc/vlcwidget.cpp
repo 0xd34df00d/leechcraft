@@ -54,8 +54,8 @@ namespace vlc
 {
 	VlcWidget::VlcWidget (QWidget *parent)
 	: QWidget (parent)
+	, Parent_ (parent)
 	{
-		Parent_ = parent;
 		AllowFullScreenPanel = false;
 		VlcMainWidget_ = new SignalledWidget;
 		VlcMainWidget_->SetBackGroundColor (new QColor ("black"));
@@ -220,7 +220,7 @@ namespace vlc
 		event->accept ();
 	}
 	
-	void VlcWidget::mouseMoveEvent(QMouseEvent *event)
+	void VlcWidget::mouseMoveEvent (QMouseEvent *event)
 	{
 		if (FullScreen_) 
 			fullScreenPanelRequested ();
@@ -257,7 +257,7 @@ namespace vlc
 	
 	void VlcWidget::GenerateToolBar () 
 	{
-		Bar_ = new QToolBar ();
+		Bar_ = new QToolBar (this);
 		Open_ = Bar_->addAction (tr ("Open"));
 		Open_->setProperty ("ActionIcon", "folder");
 		TogglePlay_ = Bar_->addAction (tr ("Play"));
@@ -335,11 +335,12 @@ namespace vlc
 		QMenu *subtitles = new QMenu (tr ("subtitles"), ContextMenu_);
 		QMenu *tracks = new QMenu (tr ("tracks"), ContextMenu_);
 		
-		for (int i = 0; i < VlcPlayer_->NumberAudioTracks (); i++) {
+		for (int i = 0; i < VlcPlayer_->GetAudioTracksNumber (); i++)
+		{
 			QAction *action = new QAction (tracks);
-			action->setData (QVariant (VlcPlayer_->GetAudioTrackId (i)));
+			action->setData (VlcPlayer_->GetAudioTrackId (i));
 			action->setText (VlcPlayer_->GetAudioTrackDescription (i));
-			if (VlcPlayer_->GetAudioTrackId (i) == VlcPlayer_->CurrentAudioTrack ())
+			if (VlcPlayer_->GetAudioTrackId (i) == VlcPlayer_->GetCurrentAudioTrack ())
 			{
 				action->setCheckable (true);
 				action->setChecked (true);
@@ -347,11 +348,11 @@ namespace vlc
 			tracks->addAction (action);
 		}
 		
-		for (int i = 0; i < VlcPlayer_->NumberSubtitles (); i++) {
+		for (int i = 0; i < VlcPlayer_->GetSubtitlesNumber (); i++) {
 			QAction *action = new QAction (subtitles);
 			action->setData (QVariant (VlcPlayer_->GetSubtitleId (i)));
 			action->setText (VlcPlayer_->GetSubtitleDescription (i));
-			if (VlcPlayer_->GetSubtitleId (i) == VlcPlayer_->CurrentSubtitle ())
+			if (VlcPlayer_->GetSubtitleId (i) == VlcPlayer_->GetCurrentSubtitle ())
 			{
 				action->setCheckable (true);
 				action->setChecked (true);
