@@ -27,7 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "vlcplayer.h"
+#include <vlc/vlc.h>
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QTime>
@@ -37,7 +37,7 @@
 #include <QTimer>
 #include <QSizePolicy>
 #include <QEventLoop>
-#include <vlc/vlc.h>
+#include "vlcplayer.h"
 
 namespace 
 {

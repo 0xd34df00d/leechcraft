@@ -42,7 +42,7 @@ namespace vlc
 		Q_OBJECT
 		
 		double CurrentPosition_;
-		QPoint lastMousePoint;
+		QPoint LastMousePoint_;
 		
 	public:
 		explicit VlcScrollBar (QWidget *parent = 0);

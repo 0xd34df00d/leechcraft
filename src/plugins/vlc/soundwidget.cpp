@@ -27,12 +27,12 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "soundwidget.h"
+#include <vlc/vlc.h>
 #include <QVBoxLayout>
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QPainter>
-#include <vlc/vlc.h>
+#include "soundwidget.h"
 
 namespace LeechCraft
 {

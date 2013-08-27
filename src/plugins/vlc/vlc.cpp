@@ -27,10 +27,10 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
+#include <interfaces/core/icoreproxy.h>
+#include <QIcon>
 #include "vlc.h"
 #include "vlcwidget.h"
-#include <QIcon>
-#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {

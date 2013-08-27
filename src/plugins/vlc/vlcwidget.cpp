@@ -27,8 +27,6 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "vlcwidget.h"
-#include "vlcplayer.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPainter>
@@ -47,6 +45,8 @@
 #include <QTimer>
 #include <QDebug>
 #include <QToolButton>
+#include "vlcwidget.h"
+#include "vlcplayer.h"
 
 namespace LeechCraft
 {
@@ -67,7 +67,7 @@ namespace vlc
 
 		GenerateToolBar ();
 		PrepareFullScreen ();
-		InterfaceUpdater_ = new QTimer;
+		InterfaceUpdater_ = new QTimer (this);
 		InterfaceUpdater_->setInterval (100);
 		InterfaceUpdater_->start ();
 		

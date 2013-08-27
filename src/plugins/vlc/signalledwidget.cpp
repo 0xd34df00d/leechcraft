@@ -27,7 +27,6 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "signalledwidget.h"
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include <QWheelEvent>
@@ -35,6 +34,7 @@
 #include <QPainter>
 #include <QColor>
 #include <QPen>
+#include "signalledwidget.h"
 
 namespace LeechCraft
 {
