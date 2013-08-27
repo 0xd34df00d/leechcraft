@@ -41,7 +41,7 @@ namespace vlc
 	{
 		Q_OBJECT
 	
-		QColor *backgroundColor_;
+		QColor *BackgroundColor_;
 	
 	public:
 		explicit SignalledWidget (QWidget *parent = 0, Qt::WindowFlags flags = 0);

@@ -46,6 +46,7 @@
 #include <QPushButton>
 #include <QTimer>
 #include <QDebug>
+#include <QToolButton>
 
 namespace LeechCraft
 {
@@ -55,6 +56,7 @@ namespace vlc
 	: QWidget (parent)
 	{
 		Parent_ = parent;
+		AllowFullScreenPanel = false;
 		VlcMainWidget_ = new SignalledWidget;
 		VlcMainWidget_->SetBackGroundColor (new QColor ("black"));
 		QVBoxLayout *layout = new QVBoxLayout;
@@ -84,7 +86,7 @@ namespace vlc
 		connect (InterfaceUpdater_,
 				SIGNAL (timeout ()),
 				this,
-				SLOT (updateIterface ()));
+				SLOT (updateInterface ()));
 		
 		connect (VlcMainWidget_,
 				SIGNAL (customContextMenuRequested (QPoint)),
@@ -100,6 +102,21 @@ namespace vlc
 				SIGNAL (triggered ()),
 				this,
 				SLOT (addFile ()));
+		
+		connect (TogglePlay_,
+				SIGNAL (triggered ()),
+				VlcPlayer_,
+				SLOT(togglePlay ()));
+		
+		connect (Stop_,
+				SIGNAL (triggered ()),
+				VlcPlayer_,
+				SLOT (stop ()));
+		
+		connect (FullScreenAction_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (toggleFullScreen ()));
 	}
 	
 	VlcWidget::~VlcWidget()
@@ -134,8 +151,19 @@ namespace vlc
 			VlcPlayer_->addUrl (file);
 	}
 	
-	void VlcWidget::updateIterface ()
+	void VlcWidget::updateInterface ()
 	{
+		if (VlcPlayer_->NowPlaying ()) 
+		{
+			TogglePlay_->setText (tr ("Pause"));
+			TogglePlay_->setProperty ("ActionIcon", "media-playback-pause");
+		}
+		else
+		{
+			TogglePlay_->setText (tr ("Play"));
+			TogglePlay_->setProperty ("ActionIcon", "media-playback-start");
+		}
+		
 		if (FullScreen_) 
 		{
 			FullScreenVlcScrollBar_->setPosition (VlcPlayer_->GetPosition ());
@@ -179,14 +207,15 @@ namespace vlc
 			SoundWidget_->increaseVolume ();
 		else
 			SoundWidget_->decreaseVolume ();
+		
+		fullScreenPanelRequested ();
+		event->accept ();
 	}
 	
 	void VlcWidget::keyPressEvent (QKeyEvent *event) 
 	{
 		if (event->text () == tr ("f"))
 			toggleFullScreen ();
-		else if (event->text () == " ")
-			VlcPlayer_->togglePlay ();
 		
 		event->accept ();
 	}
@@ -210,6 +239,7 @@ namespace vlc
 		if (!FullScreen_)
 		{
 			FullScreen_ = true;
+			AllowFullScreenPanel = true;
 			FullScreenWidget_->SetBackGroundColor (new QColor ("black"));
 			FullScreenWidget_->show ();
 			FullScreenWidget_->showFullScreen ();
@@ -217,6 +247,7 @@ namespace vlc
 		} 
 		else 
 		{
+			AllowFullScreenPanel = false;
  			FullScreen_ = false;
 			FullScreenWidget_->hide ();
 			FullScreenPanel_->hide ();
@@ -228,8 +259,18 @@ namespace vlc
 	{
 		Bar_ = new QToolBar ();
 		Open_ = Bar_->addAction (tr ("Open"));
+		Open_->setProperty ("ActionIcon", "folder");
+		TogglePlay_ = Bar_->addAction (tr ("Play"));
+		TogglePlay_->setShortcut (QKeySequence (" "));
+		TogglePlay_->setProperty ("ActionIcon", "media-playback-start");
+		TogglePlay_->setProperty ("WatchActionIconChange", true);
+		Stop_ = Bar_->addAction (tr ("Stop"));
+		Stop_->setProperty ("ActionIcon", "media-playback-stop");
+		FullScreenAction_ = Bar_->addAction (tr ("FullScreen"));
+		FullScreenAction_->setProperty ("ActionIcon", "view-fullscreen");
+		FullScreenAction_->setShortcut (QKeySequence ("f"));
 		TimeLeft_ = new QLabel (this);
-		TimeLeft_->setFocusPolicy (Qt::NoFocus);
+		Bar_->addWidget (TimeLeft_);
 		ScrollBar_ = new VlcScrollBar (this);
 		ScrollBar_->setBaseSize (200, 25);
 		ScrollBar_->setFocusPolicy (Qt::NoFocus);
@@ -364,11 +405,12 @@ namespace vlc
 				SLOT (wheelEvent (QWheelEvent*)));
 	}
 	
-	void VlcWidget::PrepareFullScreen()
+	void VlcWidget::PrepareFullScreen ()
 	{
 		FullScreen_ = false;
 		ForbidFullScreen_ = false;
 		FullScreenWidget_ = new SignalledWidget;
+		FullScreenWidget_->addAction (TogglePlay_);
 		FullScreenPanel_ = new SignalledWidget (this, Qt::Popup);
 		QHBoxLayout *panelLayout = new QHBoxLayout;
 		FullScreenTimeLeft_ = new QLabel;
@@ -380,6 +422,19 @@ namespace vlc
 		fullScreenVlcScrollBarPolicy.setHorizontalStretch (255);
 		FullScreenVlcScrollBar_->setSizePolicy (fullScreenVlcScrollBarPolicy);
 		
+		TogglePlayButton_ = new QToolButton;
+		TogglePlayButton_->setDefaultAction (TogglePlay_);
+		TogglePlayButton_->setAutoRaise (true);
+		StopButton_ = new QToolButton;
+		StopButton_->setDefaultAction (Stop_);
+		StopButton_->setAutoRaise (true);
+		FullScreenButton_ = new QToolButton;
+		FullScreenButton_->setDefaultAction (FullScreenAction_);
+		FullScreenButton_->setAutoRaise (true);
+		
+		panelLayout->addWidget (TogglePlayButton_);
+		panelLayout->addWidget (StopButton_);
+		panelLayout->addWidget (FullScreenButton_);
 		panelLayout->addWidget (FullScreenTimeLeft_);
 		panelLayout->addWidget (FullScreenVlcScrollBar_);
 		panelLayout->addWidget (FullScreenTimeAll_);
@@ -391,7 +446,9 @@ namespace vlc
 		
 		FullScreenTimeLeft_->show ();
 		FullScreenVlcScrollBar_->show ();
-		AllowMouseTracking ();
+		FullScreenWidget_->setMouseTracking (true);
+		FullScreenPanel_->setMouseTracking (true);
+
 		
 		connect (FullScreenWidget_,
 				SIGNAL (mouseMove (QMouseEvent*)),
@@ -407,10 +464,18 @@ namespace vlc
 				SIGNAL (changePosition (double)),
 				VlcPlayer_,
 				SLOT (changePosition (double)));
+		
+		connect (FullScreenWidget_,
+				SIGNAL (customContextMenuRequested (QPoint)),
+				this,
+				SLOT (generateContextMenu (QPoint)));
 	}
 	
 	void VlcWidget::fullScreenPanelRequested ()
 	{
+		if (!AllowFullScreenPanel)
+			return;
+		
 		FullScreenPanel_->setGeometry (5, FullScreenWidget_->height () - 30, FullScreenWidget_->width () - 10, 25);
 		FullScreenPanel_->show ();
 		TerminatePanel_->start ();
@@ -419,23 +484,19 @@ namespace vlc
 	void VlcWidget::hideFullScreenPanel ()
 	{
 		TerminatePanel_->stop ();
-		ForbidMouseTracking ();
+		ForbidPanel ();
 		FullScreenPanel_->hide ();
 	}
 	
-	void VlcWidget::AllowMouseTracking ()
+	void VlcWidget::AllowPanel ()
 	{
-		qDebug () << "allow";
-		FullScreenWidget_->setMouseTracking (true);
-		FullScreenPanel_->setMouseTracking (true);
+		AllowFullScreenPanel = true;
 	}
 	
-	void VlcWidget::ForbidMouseTracking ()
+	void VlcWidget::ForbidPanel ()
 	{
-		qDebug () << "forbid";
-		FullScreenWidget_->setMouseTracking (false);
-		FullScreenWidget_->setMouseTracking (false);
-		QTimer::singleShot (50, this, SLOT (AllowMouseTracking ()));
+		AllowFullScreenPanel = false;
+		QTimer::singleShot (50, this, SLOT (AllowPanel ()));
 	}
 }
 }

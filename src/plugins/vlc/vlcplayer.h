@@ -81,7 +81,7 @@ namespace vlc
 	public slots:
 		void stop ();
 		void togglePlay ();
-		void addUrl (QString);
+		void addUrl (const QString&);
 		void changePosition (double);
 		void switchWidget (QWidget*);
 		void setAudioTrack (int);

@@ -53,6 +53,8 @@ namespace vlc
 {
 	VlcPlayer::VlcPlayer (QWidget *parent)
 	: QObject (parent)
+	, M_ (nullptr)
+	, Parent_ (parent)
 	{
 		const char * const vlc_args[] = 
 		{
@@ -62,15 +64,12 @@ namespace vlc
 			"--verbose=0"
 		};
 
-		M_ = nullptr;
 		VlcInstance_ = std::shared_ptr<libvlc_instance_t> (libvlc_new (5, vlc_args), libvlc_release);
 		Mp_ = std::shared_ptr<libvlc_media_player_t> (libvlc_media_player_new (VlcInstance_.get ()), libvlc_media_player_release);
-		
 		libvlc_media_player_set_xwindow (Mp_.get (), parent->winId ());
-		Parent_ = parent;
 	}
 	
-	void VlcPlayer::addUrl (QString file) 
+	void VlcPlayer::addUrl (const QString &file) 
 	{
 		libvlc_media_player_stop (Mp_.get ());
 		M_.reset(libvlc_media_new_path (VlcInstance_.get (), file.toLocal8Bit ()), libvlc_media_release);
@@ -234,7 +233,7 @@ namespace vlc
 		libvlc_video_set_spu (Mp_.get (), track);
 	}
 	
-	libvlc_track_description_t* VlcPlayer::GetTrack(libvlc_track_description_t* t, int track) const
+	libvlc_track_description_t* VlcPlayer::GetTrack(libvlc_track_description_t *t, int track) const
 	{
 		for (int i = 0; i < track; i++)
 			t = t->p_next;

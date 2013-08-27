@@ -39,6 +39,7 @@ class QToolBar;
 class QMenu;
 class QLabel;
 class QTimer;
+class QToolButton;
 
 namespace LeechCraft
 {
@@ -55,7 +56,9 @@ namespace vlc
 		VlcPlayer *VlcPlayer_;
 		QToolBar *Bar_;
 		QAction *Open_;
-		QAction *Info_;
+		QAction *TogglePlay_;
+		QAction *Stop_;
+		QAction *FullScreenAction_;
 		
 		VlcScrollBar *ScrollBar_;
 		QLabel *TimeLeft_;
@@ -67,8 +70,13 @@ namespace vlc
 		SignalledWidget *FullScreenPanel_;
 		QTimer *TerminatePanel_;
 		
+		QToolButton *TogglePlayButton_;
+		QToolButton *StopButton_;
+		QToolButton *FullScreenButton_;
+		
 		bool ForbidFullScreen_;
 		bool FullScreen_;
+		bool AllowFullScreenPanel;
 		SignalledWidget *FullScreenWidget_;
 		QTimer *InterfaceUpdater_;
 		SignalledWidget *VlcMainWidget_;
@@ -94,7 +102,7 @@ namespace vlc
 		
 	private slots:
 		void addFile ();
-		void updateIterface ();
+		void updateInterface ();
 		void toggleFullScreen ();
 		void allowFullScreen ();
 		
@@ -111,8 +119,8 @@ namespace vlc
 		void fullScreenPanelRequested ();
 		void hideFullScreenPanel ();
 		
-		void AllowMouseTracking ();
-		void ForbidMouseTracking ();
+		void AllowPanel ();
+		void ForbidPanel ();
 		
 	signals:
 		void deleteMe (QWidget*);

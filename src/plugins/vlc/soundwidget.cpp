@@ -40,8 +40,8 @@ namespace vlc
 {
 	SoundWidget::SoundWidget (QWidget *parent, std::shared_ptr<libvlc_media_player_t> mp)
 	: QWidget (parent)
+	, Mp_ (mp)
 	{
-		Mp_ = mp;
 		libvlc_audio_set_volume (Mp_.get (), 100);
 		
 		connect (this,
@@ -78,8 +78,8 @@ namespace vlc
 		QPainter p (this);
 		QPen goodPen = p.pen ();
 		
-		int h = height () - 5;
-		int w = width ();
+		const int h = height () - 1;
+		const int w = width ();
 		
 		int currentVolume = libvlc_audio_get_volume (Mp_.get ());
 		for (int i = 1; i <= currentVolume; i++) 
