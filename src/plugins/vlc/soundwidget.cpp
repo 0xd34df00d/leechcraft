@@ -81,7 +81,7 @@ namespace vlc
 		const int h = height () - 1;
 		const int w = width ();
 		
-		int currentVolume = libvlc_audio_get_volume (Mp_.get ());
+		const int currentVolume = libvlc_audio_get_volume (Mp_.get ());
 		for (int i = 1; i <= currentVolume; i++) 
 		{
 			if (i <= 100)

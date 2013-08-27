@@ -40,8 +40,8 @@ namespace vlc
 {
 	VlcScrollBar::VlcScrollBar (QWidget *parent)
 	: QWidget (parent)
+	, CurrentPosition_ (0)
 	{
-		CurrentPosition_ = 0;
 	}
 
 	void VlcScrollBar::paintEvent (QPaintEvent *event)
