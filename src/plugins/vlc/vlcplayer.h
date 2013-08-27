@@ -63,13 +63,13 @@ namespace vlc
 		double GetPosition () const;
 		QWidget* GetParent () const;
 		
-		int NumberAudioTracks () const;
-		int CurrentAudioTrack () const;
+		int GetAudioTracksNumber () const;
+		int GetCurrentAudioTrack () const;
 		QString GetAudioTrackDescription (int) const;
 		int GetAudioTrackId (int) const;
 		
-		int NumberSubtitles () const;
-		int CurrentSubtitle () const;
+		int GetSubtitlesNumber () const;
+		int GetCurrentSubtitle () const;
 		QString GetSubtitleDescription (int) const;
 		int GetSubtitleId (int) const;
 		
@@ -78,10 +78,10 @@ namespace vlc
 		QTime GetCurrentTime () const;
 		QTime GetFullTime () const;
 		
-	public slots:	
+	public slots:
 		void stop ();
 		void togglePlay ();
-		void addUrl (QString);
+		void addUrl (const QString&);
 		void changePosition (double);
 		void switchWidget (QWidget*);
 		void setAudioTrack (int);

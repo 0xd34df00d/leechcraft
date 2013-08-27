@@ -27,12 +27,12 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "soundwidget.h"
+#include <vlc/vlc.h>
 #include <QVBoxLayout>
 #include <QMouseEvent>
 #include <QWheelEvent>
 #include <QPainter>
-#include <vlc/vlc.h>
+#include "soundwidget.h"
 
 namespace LeechCraft
 {
@@ -40,8 +40,8 @@ namespace vlc
 {
 	SoundWidget::SoundWidget (QWidget *parent, std::shared_ptr<libvlc_media_player_t> mp)
 	: QWidget (parent)
+	, Mp_ (mp)
 	{
-		Mp_ = mp;
 		libvlc_audio_set_volume (Mp_.get (), 100);
 		
 		connect (this,
@@ -78,10 +78,10 @@ namespace vlc
 		QPainter p (this);
 		QPen goodPen = p.pen ();
 		
-		int h = height ();
-		int w = width ();
+		const int h = height () - 1;
+		const int w = width ();
 		
-		int currentVolume = libvlc_audio_get_volume (Mp_.get ());
+		const int currentVolume = libvlc_audio_get_volume (Mp_.get ());
 		for (int i = 1; i <= currentVolume; i++) 
 		{
 			if (i <= 100)
@@ -89,7 +89,7 @@ namespace vlc
 			else
 				p.setPen (QColor (255, 255 - (i - 100) * 2.5, 10));
 			
-			p.drawLine (i / 2, h - h * i / 200, i / 2, h);
+			p.drawLine (i / 2, h - h * i / 200 - 1, i / 2, h - 1);
 		}
 		
 		p.setPen (goodPen);
@@ -101,7 +101,7 @@ namespace vlc
 		QFont painterFont = font ();
 		painterFont.setPointSize (8);
 		p.setFont (painterFont);
-		p.drawText (3, 15, QString::number (currentVolume) + "%");
+		p.drawText (3, 13, QString::number (currentVolume) + "%");
 			
 		p.end ();
 		event->accept ();
