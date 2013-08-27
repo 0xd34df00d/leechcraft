@@ -85,12 +85,14 @@ namespace Lastfmscrobble
 
 	void EventAttendMarker::handleFinished ()
 	{
+		sender ()->deleteLater ();
 		emit finished ();
 		deleteLater ();
 	}
 
 	void EventAttendMarker::handleError ()
 	{
+		sender ()->deleteLater ();
 		qWarning () << Q_FUNC_INFO
 				<< "error marking event";
 		deleteLater ();
