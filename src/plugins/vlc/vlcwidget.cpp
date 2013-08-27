@@ -55,8 +55,8 @@ namespace vlc
 	VlcWidget::VlcWidget (QWidget *parent)
 	: QWidget (parent)
 	, Parent_ (parent)
+	, AllowFullScreenPanel_ (false)
 	{
-		AllowFullScreenPanel = false;
 		VlcMainWidget_ = new SignalledWidget;
 		VlcMainWidget_->SetBackGroundColor (new QColor ("black"));
 		QVBoxLayout *layout = new QVBoxLayout;
@@ -239,7 +239,7 @@ namespace vlc
 		if (!FullScreen_)
 		{
 			FullScreen_ = true;
-			AllowFullScreenPanel = true;
+			AllowFullScreenPanel_ = true;
 			FullScreenWidget_->SetBackGroundColor (new QColor ("black"));
 			FullScreenWidget_->show ();
 			FullScreenWidget_->showFullScreen ();
@@ -247,7 +247,7 @@ namespace vlc
 		} 
 		else 
 		{
-			AllowFullScreenPanel = false;
+			AllowFullScreenPanel_ = false;
  			FullScreen_ = false;
 			FullScreenWidget_->hide ();
 			FullScreenPanel_->hide ();
@@ -330,7 +330,7 @@ namespace vlc
 	
 	void VlcWidget::generateContextMenu (QPoint pos)
 	{
-		ContextMenu_ = new QMenu;
+		ContextMenu_ = new QMenu (this);
 		
 		QMenu *subtitles = new QMenu (tr ("subtitles"), ContextMenu_);
 		QMenu *tracks = new QMenu (tr ("tracks"), ContextMenu_);
@@ -388,7 +388,7 @@ namespace vlc
 		VlcPlayer_->setAudioTrack (track);
 	}
 	
-	void VlcWidget::ConnectWidgetToMe(SignalledWidget *widget)
+	void VlcWidget::ConnectWidgetToMe (SignalledWidget *widget)
 	{
 		connect (widget,
 				SIGNAL (mouseDoubleClick (QMouseEvent*)),
@@ -479,7 +479,7 @@ namespace vlc
 	
 	void VlcWidget::fullScreenPanelRequested ()
 	{
-		if (!AllowFullScreenPanel)
+		if (!AllowFullScreenPanel_)
 			return;
 		
 		FullScreenPanel_->setGeometry (5, FullScreenWidget_->height () - 30, FullScreenWidget_->width () - 10, 25);
@@ -496,12 +496,12 @@ namespace vlc
 	
 	void VlcWidget::AllowPanel ()
 	{
-		AllowFullScreenPanel = true;
+		AllowFullScreenPanel_ = true;
 	}
 	
 	void VlcWidget::ForbidPanel ()
 	{
-		AllowFullScreenPanel = false;
+		AllowFullScreenPanel_ = false;
 		QTimer::singleShot (50, this, SLOT (AllowPanel ()));
 	}
 }

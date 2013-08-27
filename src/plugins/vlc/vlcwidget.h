@@ -76,7 +76,7 @@ namespace vlc
 		
 		bool ForbidFullScreen_;
 		bool FullScreen_;
-		bool AllowFullScreenPanel;
+		bool AllowFullScreenPanel_;
 		SignalledWidget *FullScreenWidget_;
 		QTimer *InterfaceUpdater_;
 		SignalledWidget *VlcMainWidget_;
