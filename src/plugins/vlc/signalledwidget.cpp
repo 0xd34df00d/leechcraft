@@ -27,7 +27,6 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "signalledwidget.h"
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include <QWheelEvent>
@@ -35,22 +34,23 @@
 #include <QPainter>
 #include <QColor>
 #include <QPen>
+#include "signalledwidget.h"
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	SignalledWidget::SignalledWidget (QWidget *parent)
-	: QWidget (parent)
+	SignalledWidget::SignalledWidget (QWidget *parent, Qt::WindowFlags flags)
+	: QWidget (parent, flags)
+	, BackgroundColor_ (nullptr)
 	{
-		setContextMenuPolicy(Qt::CustomContextMenu);
-		backgroundColor_ = nullptr;
+		setContextMenuPolicy (Qt::CustomContextMenu);
 	}
 	
 	SignalledWidget::~SignalledWidget()
 	{
-		if (backgroundColor_ == nullptr)
-			delete backgroundColor_;
+		if (BackgroundColor_ != nullptr)
+			delete BackgroundColor_;
 	}
 	
 	void SignalledWidget::keyPressEvent (QKeyEvent *event)
@@ -73,13 +73,18 @@ namespace vlc
 		emit wheel (event);
 	}
 	
+	void SignalledWidget::mouseMoveEvent (QMouseEvent *event)
+	{
+		emit mouseMove (event);
+	}
+	
 	void SignalledWidget::paintEvent (QPaintEvent *event)
 	{
-		if (backgroundColor_ != nullptr)
+		if (BackgroundColor_ != nullptr)
 		{
 			QPainter p (this);
-			p.setPen (QPen (*backgroundColor_));
-			p.setBrush (QBrush (*backgroundColor_));
+			p.setPen (QPen (*BackgroundColor_));
+			p.setBrush (QBrush (*BackgroundColor_));
 			p.drawRect (0, 0, width () - 1, height () - 1);
 			p.end ();
 			event->accept ();
@@ -88,10 +93,10 @@ namespace vlc
 	
 	void SignalledWidget::SetBackGroundColor (QColor *color)
 	{
-		if (backgroundColor_ != nullptr)
-			delete backgroundColor_;
+		if (BackgroundColor_ != nullptr)
+			delete BackgroundColor_;
 		
-		backgroundColor_ = color;
+		BackgroundColor_ = color;
 		update ();
 	}
 }
