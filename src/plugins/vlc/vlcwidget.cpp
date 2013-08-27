@@ -469,6 +469,11 @@ namespace vlc
 				SIGNAL (customContextMenuRequested (QPoint)),
 				this,
 				SLOT (generateContextMenu (QPoint)));
+		
+		connect (FullScreenPanel_,
+				SIGNAL (customContextMenuRequested (QPoint)),
+				this,
+				SLOT (generateContextMenu (QPoint)));
 	}
 	
 	void VlcWidget::fullScreenPanelRequested ()
