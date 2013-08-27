@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "vlcscrollbar.h"
-#include <boost/concept_check.hpp>
 #include <QPaintEvent>
 #include <QMouseEvent>
 #include <QPainter>

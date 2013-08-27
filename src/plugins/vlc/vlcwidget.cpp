@@ -30,6 +30,7 @@
 #include "vlcwidget.h"
 #include "vlcplayer.h"
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QPainter>
 #include <QPaintEvent>
 #include <QFileDialog>
@@ -42,6 +43,8 @@
 #include <QSizePolicy>
 #include <QLabel>
 #include <QWidgetAction>
+#include <QPushButton>
+#include <QTimer>
 
 namespace LeechCraft
 {
@@ -57,18 +60,25 @@ namespace vlc
 		layout->setContentsMargins (0, 0, 0, 0);
 		layout->addWidget (VlcMainWidget_);
 		setLayout (layout);
-		FullScreen_ = false;
-		forbidFullScreen_ = false;
-		FullScreenWidget_ = new SignalledWidget ();
 		VlcPlayer_ = new VlcPlayer (VlcMainWidget_);
 
 		GenerateToolBar ();
+		PrepareFullScreen ();
 		InterfaceUpdater_ = new QTimer;
 		InterfaceUpdater_->setInterval (100);
 		InterfaceUpdater_->start ();
 		
+		TerminatePanel_ = new QTimer (this);
+		TerminatePanel_->setInterval (2000);
+		
 		ConnectWidgetToMe (VlcMainWidget_);
 		ConnectWidgetToMe (FullScreenWidget_);
+		ConnectWidgetToMe (FullScreenPanel_);
+		
+		connect (TerminatePanel_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (hideFullScreenPanel ()));
 		
 		connect (InterfaceUpdater_,
 				SIGNAL (timeout ()),
@@ -125,11 +135,21 @@ namespace vlc
 	
 	void VlcWidget::updateIterface ()
 	{
-		ScrollBar_->setPosition (VlcPlayer_->GetPosition ());
-		ScrollBar_->repaint ();
+		if (FullScreen_) 
+		{
+			FullScreenVlcScrollBar_->setPosition (VlcPlayer_->GetPosition ());
+			FullScreenVlcScrollBar_->update ();
+			FullScreenTimeLeft_->setText (VlcPlayer_->GetCurrentTime ().toString ("HH:mm:ss"));
+			FullScreenTimeAll_->setText (VlcPlayer_->GetFullTime ().toString ("HH:mm:ss"));
+		}
+		else 
+		{
+			ScrollBar_->setPosition (VlcPlayer_->GetPosition ());
+			ScrollBar_->update ();
+			TimeLeft_->setText (VlcPlayer_->GetCurrentTime ().toString ("HH:mm:ss"));
+			TimeAll_->setText (VlcPlayer_->GetFullTime ().toString ("HH:mm:ss"));
+		}
 		
-		timeLeft_->setText (VlcPlayer_->GetCurrentTime ().toString ("HH:mm:ss")); 
-		timeAll_->setText (VlcPlayer_->GetFullTime ().toString ("HH:mm:ss"));
 		
 		if (FullScreen_) 
 		{
@@ -169,10 +189,20 @@ namespace vlc
 		
 		event->accept ();
 	}
+	
+	void VlcWidget::mouseMoveEvent(QMouseEvent *event)
+	{
+		if (FullScreen_) 
+		{
+			fullScreenPanelRequested ();
+			event->accept ();
+		}
+	}
+
 
 	void VlcWidget::toggleFullScreen () 
 	{
-		if (forbidFullScreen_)
+		if (ForbidFullScreen_)
 			return;
 				
 		ForbidFullScreen ();
@@ -189,6 +219,7 @@ namespace vlc
 		{
  			FullScreen_ = false;
 			FullScreenWidget_->hide ();
+			FullScreenPanel_->hide ();
 			VlcPlayer_->switchWidget (VlcMainWidget_);
 		}
 	}
@@ -196,9 +227,9 @@ namespace vlc
 	void VlcWidget::GenerateToolBar () 
 	{
 		Bar_ = new QToolBar ();
-		timeLeft_ = new QLabel (this);
-		timeLeft_->setFocusPolicy (Qt::NoFocus);
-		Bar_->addWidget (timeLeft_);
+		Open_ = Bar_->addAction (tr ("Open"));
+		TimeLeft_ = new QLabel (this);
+		TimeLeft_->setFocusPolicy (Qt::NoFocus);
 		ScrollBar_ = new VlcScrollBar (this);
 		ScrollBar_->setBaseSize (200, 25);
 		ScrollBar_->setFocusPolicy (Qt::NoFocus);
@@ -208,15 +239,14 @@ namespace vlc
 		pol.setVerticalPolicy (QSizePolicy::Expanding);
 		ScrollBar_->setSizePolicy(pol);
 		Bar_->addWidget (ScrollBar_);
-		timeAll_ = new QLabel;
-		timeAll_->setFocusPolicy (Qt::NoFocus);
-		Bar_->addWidget (timeAll_);
+		TimeAll_ = new QLabel;
+		TimeAll_->setFocusPolicy (Qt::NoFocus);
+		Bar_->addWidget (TimeAll_);
 		SoundWidget_ = new SoundWidget (this, VlcPlayer_->GetPlayer ());
 		SoundWidget_->setFixedSize (100, 25);
 		SoundWidget_->setFocusPolicy (Qt::NoFocus);
 		Bar_->addWidget (SoundWidget_);
-		Open_ = Bar_->addAction (tr ("Open"));
-		Bar_->setFocusPolicy(Qt::NoFocus);
+		Bar_->setFocusPolicy (Qt::NoFocus);
 	}
 	
 	TabClassInfo VlcWidget::GetTabClassInfo () const
@@ -248,13 +278,13 @@ namespace vlc
 	
 	void VlcWidget::ForbidFullScreen ()
 	{
-		forbidFullScreen_ = true;
+		ForbidFullScreen_ = true;
 		QTimer::singleShot (500, this, SLOT (allowFullScreen ()));
 	}
 	
 	void VlcWidget::allowFullScreen ()
 	{
-		forbidFullScreen_ = false;
+		ForbidFullScreen_ = false;
 	}
 	
 	void VlcWidget::generateContextMenu (QPoint pos)
@@ -332,6 +362,65 @@ namespace vlc
 				SIGNAL (wheel (QWheelEvent*)),
 				this,
 				SLOT (wheelEvent (QWheelEvent*)));
+	}
+	
+	void VlcWidget::PrepareFullScreen()
+	{
+		FullScreen_ = false;
+		ForbidFullScreen_ = false;
+		FullScreenWidget_ = new SignalledWidget;
+		FullScreenWidget_->setMouseTracking (true);
+		FullScreenPanel_ = new SignalledWidget (this, Qt::Popup);
+		FullScreenPanel_->setMouseTracking (true);
+		QHBoxLayout *panelLayout = new QHBoxLayout;
+		FullScreenTimeLeft_ = new QLabel;
+		FullScreenTimeAll_ = new QLabel;
+		FullScreenVlcScrollBar_ = new VlcScrollBar (this);
+		FullScreenSoundWidget_ = new SoundWidget (this, VlcPlayer_->GetPlayer ());
+		FullScreenSoundWidget_->setFixedSize (100, 25);
+		QSizePolicy fullScreenVlcScrollBarPolicy (QSizePolicy::Ignored, QSizePolicy::Ignored);
+		fullScreenVlcScrollBarPolicy.setHorizontalStretch (255);
+		FullScreenVlcScrollBar_->setSizePolicy (fullScreenVlcScrollBarPolicy);
+		
+		panelLayout->addWidget (FullScreenTimeLeft_);
+		panelLayout->addWidget (FullScreenVlcScrollBar_);
+		panelLayout->addWidget (FullScreenTimeAll_);
+		panelLayout->addWidget (FullScreenSoundWidget_);
+		panelLayout->setContentsMargins (5, 0, 5, 0);
+		
+		FullScreenPanel_->setLayout (panelLayout);
+		FullScreenPanel_->setWindowOpacity (0.5);
+		
+		FullScreenTimeLeft_->show ();
+		FullScreenVlcScrollBar_->show ();
+		
+		connect (FullScreenWidget_,
+				SIGNAL (mouseMove (QMouseEvent*)),
+				this,
+				SLOT (mouseMoveEvent (QMouseEvent*)));
+		
+		connect (FullScreenPanel_,
+				SIGNAL (mouseMove (QMouseEvent*)),
+				this,
+				SLOT (mouseMoveEvent (QMouseEvent*)));
+		
+		connect (FullScreenVlcScrollBar_,
+				SIGNAL (changePosition (double)),
+				VlcPlayer_,
+				SLOT (setPosition (double)));
+	}
+	
+	void VlcWidget::fullScreenPanelRequested ()
+	{
+		FullScreenPanel_->setGeometry (5, FullScreenWidget_->height () - 30, FullScreenWidget_->width () - 10, 25);
+		FullScreenPanel_->show ();
+		TerminatePanel_->start ();
+	}
+	
+	void VlcWidget::hideFullScreenPanel ()
+	{
+		TerminatePanel_->stop ();
+		FullScreenPanel_->hide ();
 	}
 }
 }

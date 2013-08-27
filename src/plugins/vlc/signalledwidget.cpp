@@ -40,8 +40,8 @@ namespace LeechCraft
 {
 namespace vlc
 {
-	SignalledWidget::SignalledWidget (QWidget *parent)
-	: QWidget (parent)
+	SignalledWidget::SignalledWidget (QWidget *parent, Qt::WindowFlags flags)
+	: QWidget (parent, flags)
 	{
 		setContextMenuPolicy(Qt::CustomContextMenu);
 		backgroundColor_ = nullptr;
@@ -72,6 +72,12 @@ namespace vlc
 	{
 		emit wheel (event);
 	}
+	
+	void SignalledWidget::mouseMoveEvent(QMouseEvent *event)
+	{
+		emit mouseMove (event);
+	}
+
 	
 	void SignalledWidget::paintEvent (QPaintEvent *event)
 	{
