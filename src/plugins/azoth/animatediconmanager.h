@@ -37,6 +37,7 @@
 #include <QTimerEvent>
 #include <QIcon>
 #include <QImageReader>
+#include <QCache>
 
 namespace LeechCraft
 {
@@ -53,6 +54,8 @@ namespace Azoth
 		};
 		QHash<T, IconInfo> Object2Icon_;
 		QHash<int, T> Timer2Object_;
+
+		QCache<QByteArray, QIcon> IconCache_;
 	public:
 		typedef boost::function<void (T, const QIcon&)> IconSetter_t;
 	private:
@@ -60,6 +63,7 @@ namespace Azoth
 	public:
 		AnimatedIconManager (IconSetter_t setter, QObject* parent = 0)
 		: QObject (parent)
+		, IconCache_ (2 * 1024 * 1024)
 		, Setter_ (setter)
 		{
 		}
@@ -84,6 +88,17 @@ namespace Azoth
 
 			if (dev && dev->atEnd ())
 				dev->seek (0);
+
+			const auto& data = dev->readAll ();
+			if (auto icon = IconCache_.object (data))
+			{
+				Setter_ (t, *icon);
+				return;
+			}
+
+			if (dev && dev->atEnd ())
+				dev->seek (0);
+
 			QImageReader reader (dev);
 			QImage image = reader.read ();
 			const int w = image.size ().width ();
@@ -91,7 +106,9 @@ namespace Azoth
 			if (w == h &&
 					reader.imageCount () <= 1)
 			{
-				Setter_ (t, QIcon (QPixmap::fromImage (image)));
+				const QIcon icon (QPixmap::fromImage (image));
+				Setter_ (t, icon);
+				IconCache_.insert (data, new QIcon (icon), data.size ());
 				return;
 			}
 
