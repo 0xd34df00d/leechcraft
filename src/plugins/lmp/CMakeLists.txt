@@ -48,13 +48,20 @@ INCLUDE_DIRECTORIES (
 	${TAGLIB_INCLUDES}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
+SET (COMMON_SRCS
+	mediainfo.cpp
+	)
+ADD_LIBRARY (leechcraft_lmp_common STATIC
+	${COMMON_SRCS}
+	)
+SET_TARGET_PROPERTIES (leechcraft_lmp_common PROPERTIES POSITION_INDEPENDENT_CODE True)
+
 SET (SRCS
 	lmp.cpp
 	xmlsettingsmanager.cpp
 	playertab.cpp
 	player.cpp
 	core.cpp
-	mediainfo.cpp
 	localfileresolver.cpp
 	playlistdelegate.cpp
 	localcollection.cpp
@@ -161,6 +168,7 @@ TARGET_LINK_LIBRARIES (leechcraft_lmp
 	${TAGLIB_LIBRARIES}
 
 	${MPRIS_SUBLIB}
+	leechcraft_lmp_common
 	)
 
 INSTALL (TARGETS leechcraft_lmp DESTINATION ${LC_PLUGINS_DEST})

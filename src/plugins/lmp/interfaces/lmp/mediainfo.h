@@ -32,13 +32,12 @@
 #include <QStringList>
 #include <QMetaType>
 #include <interfaces/media/audiostructs.h>
-#include "lmpconfig.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	struct LMP_API MediaInfo
+	struct MediaInfo
 	{
 		QString LocalPath_;
 
