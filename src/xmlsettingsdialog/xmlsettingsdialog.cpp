@@ -127,18 +127,22 @@ namespace Util
 			return;
 		}
 
-		QDomElement declaration = root.firstChildElement ("declare");
-		while (!declaration.isNull ())
 		{
-			HandleDeclaration (declaration);
-			declaration = declaration.nextSiblingElement ("declare");
-		}
+			auto initGuard = obj->EnterInitMode ();
 
-		QDomElement pageChild = root.firstChildElement ("page");
-		while (!pageChild.isNull ())
-		{
-			ParsePage (pageChild);
-			pageChild = pageChild.nextSiblingElement ("page");
+			QDomElement declaration = root.firstChildElement ("declare");
+			while (!declaration.isNull ())
+			{
+				HandleDeclaration (declaration);
+				declaration = declaration.nextSiblingElement ("declare");
+			}
+
+			QDomElement pageChild = root.firstChildElement ("page");
+			while (!pageChild.isNull ())
+			{
+				ParsePage (pageChild);
+				pageChild = pageChild.nextSiblingElement ("page");
+			}
 		}
 
 		obj->installEventFilter (this);
