@@ -24,7 +24,6 @@ if (ENABLE_LMP_MPRIS)
 endif ()
 include (${QT_USE_FILE})
 
-
 include_directories (
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -35,13 +34,20 @@ include_directories (
 	${LIBXML2_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
+set (COMMON_SRCS
+	mediainfo.cpp
+	)
+add_library (leechcraft_lmp_common STATIC
+	${COMMON_SRCS}
+	)
+set_target_properties (leechcraft_lmp_common PROPERTIES POSITION_INDEPENDENT_CODE True)
+
 set (SRCS
 	lmp.cpp
 	xmlsettingsmanager.cpp
 	playertab.cpp
 	player.cpp
 	core.cpp
-	mediainfo.cpp
 	localfileresolver.cpp
 	playlistdelegate.cpp
 	localcollection.cpp
@@ -161,6 +167,7 @@ target_link_libraries (leechcraft_lmp
 	${LIBXML2_LIBRARIES}
 
 	${MPRIS_SUBLIB}
+	leechcraft_lmp_common
 	)
 
 install (TARGETS leechcraft_lmp DESTINATION ${LC_PLUGINS_DEST})
