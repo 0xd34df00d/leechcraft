@@ -18,5 +18,5 @@ target_link_libraries (leechcraft_poshuku_autosearch
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_poshuku_autosearch DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_poshuku_autosearch RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${AUTOSEARCH_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

@@ -48,6 +48,6 @@ target_link_libraries (leechcraft_choroid
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_choroid DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_choroid RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (DIRECTORY share/qml/choroid DESTINATION ${LC_QML_DEST})

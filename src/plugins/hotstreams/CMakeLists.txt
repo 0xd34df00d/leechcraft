@@ -45,4 +45,4 @@ target_link_libraries (leechcraft_hotstreams
 	${LEECHCRAFT_LIBRARIES}
 	${QJSON_LIBRARIES}
 	)
-install (TARGETS leechcraft_hotstreams DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_hotstreams RUNTIME DESTINATION ${LC_PLUGINS_DEST})

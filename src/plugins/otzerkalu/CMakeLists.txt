@@ -50,4 +50,4 @@ target_link_libraries (leechcraft_otzerkalu
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_otzerkalu DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_otzerkalu RUNTIME DESTINATION ${LC_PLUGINS_DEST})

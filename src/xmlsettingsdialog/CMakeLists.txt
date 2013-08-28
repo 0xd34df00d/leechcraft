@@ -119,7 +119,7 @@ target_link_libraries (xmlsettingsdialog
 	${QT_LIBRARIES}
 	)
 set_property (TARGET xmlsettingsdialog PROPERTY SOVERSION 0.3.0)
-install (TARGETS xmlsettingsdialog DESTINATION ${LIBDIR})
+install (TARGETS xmlsettingsdialog RUNTIME DESTINATION ${LIBDIR})
 
 if (USE_QT5)
 	QT5_USE_MODULES (xmlsettingsdialog Xml Sql Widgets Script Network)

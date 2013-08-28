@@ -31,4 +31,4 @@ target_link_libraries (leechcraft_azoth_keeso
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_azoth_keeso DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_azoth_keeso RUNTIME DESTINATION ${LC_PLUGINS_DEST})

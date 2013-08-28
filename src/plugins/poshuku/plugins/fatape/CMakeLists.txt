@@ -43,6 +43,6 @@ target_link_libraries (leechcraft_poshuku_fatape
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_poshuku_fatape DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_poshuku_fatape RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (FILES poshukufatapesettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (FILES ${FATAPE_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

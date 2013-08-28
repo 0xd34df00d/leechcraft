@@ -49,6 +49,6 @@ target_link_libraries (leechcraft_azoth_autoidler
 	${LEECHCRAFT_LIBRARIES}
 	${ADDITIONAL_AUTOIDLER_LIBS}
 	)
-install (TARGETS leechcraft_azoth_autoidler DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_azoth_autoidler RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothautoidlersettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (FILES ${AUTOIDLER_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

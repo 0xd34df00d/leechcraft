@@ -23,5 +23,5 @@ target_link_libraries (leechcraft_tpi
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_tpi DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_tpi RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/qml/tpi DESTINATION ${LC_QML_DEST})

@@ -102,6 +102,6 @@ target_link_libraries (leechcraft_seekthru
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_seekthru DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_seekthru RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES seekthrusettings.xml DESTINATION ${LC_SETTINGS_DEST})

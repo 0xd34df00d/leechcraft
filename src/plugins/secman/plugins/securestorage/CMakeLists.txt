@@ -55,5 +55,5 @@ target_link_libraries (leechcraft_secman_securestorage
 	${LEECHCRAFT_LIBRARIES}
 	crypto
 	)
-install (TARGETS leechcraft_secman_securestorage DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_secman_securestorage RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (FILES securestoragesettings.xml DESTINATION ${LC_SETTINGS_DEST})

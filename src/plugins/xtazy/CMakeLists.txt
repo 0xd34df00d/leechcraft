@@ -39,5 +39,5 @@ target_link_libraries (leechcraft_xtazy
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_xtazy DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_xtazy RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (FILES xtazysettings.xml DESTINATION ${LC_SETTINGS_DEST})

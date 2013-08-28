@@ -24,4 +24,4 @@ target_link_libraries (leechcraft_secman_simplestorage
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_secman_simplestorage DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_secman_simplestorage RUNTIME DESTINATION ${LC_PLUGINS_DEST})

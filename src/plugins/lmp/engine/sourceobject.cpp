@@ -189,7 +189,13 @@ namespace LMP
 		{
 			auto format = GST_FORMAT_TIME;
 			gint64 position = 0;
-			gst_element_query_position (GST_ELEMENT (Dec_), &format, &position);
+            gst_element_query_position (GST_ELEMENT (Dec_),
+#if GST_VERSION_MAJOR >= 1
+                    format,
+#else
+                    &format,
+#endif
+                    &position);
 			LastCurrentTime_ = position;
 		}
 		return LastCurrentTime_ / GST_MSECOND;
@@ -199,7 +205,13 @@ namespace LMP
 	{
 		auto format = GST_FORMAT_TIME;
 		gint64 duration = 0;
-		if (!gst_element_query_duration (GST_ELEMENT (Dec_), &format, &duration))
+        if (!gst_element_query_duration (GST_ELEMENT (Dec_),
+#if GST_VERSION_MAJOR >= 1
+                format,
+#else
+                &format,
+#endif
+                &duration))
 			return -1;
 
 		return (duration - LastCurrentTime_) / GST_MSECOND;
@@ -209,7 +221,13 @@ namespace LMP
 	{
 		auto format = GST_FORMAT_TIME;
 		gint64 duration = 0;
-		if (gst_element_query_duration (GST_ELEMENT (Dec_), &format, &duration))
+        if (gst_element_query_duration (GST_ELEMENT (Dec_),
+#if GST_VERSION_MAJOR >= 1
+                format,
+#else
+                &format,
+#endif
+                &duration))
 			return duration / GST_MSECOND;
 		return -1;
 	}
@@ -248,7 +266,11 @@ namespace LMP
 
 			const auto oldRank = gst_plugin_feature_get_rank (GST_PLUGIN_FEATURE (factory));
 			gst_plugin_feature_set_rank (GST_PLUGIN_FEATURE (factory), rank);
-			gst_registry_add_feature (gst_registry_get_default (), GST_PLUGIN_FEATURE (factory));
+#if GST_VERSION_MAJOR >= 1
+            gst_registry_add_feature (gst_registry_get (), GST_PLUGIN_FEATURE (factory));
+#else
+            gst_registry_add_feature (gst_registry_get_default (), GST_PLUGIN_FEATURE (factory));
+#endif
 
 			return oldRank;
 		}

@@ -47,5 +47,5 @@ target_link_libraries (leechcraft_poshuku_onlinebookmarks_delicious
 	${LEECHCRAFT_LIBRARIES}
 	)
 
-install (TARGETS leechcraft_poshuku_onlinebookmarks_delicious DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_poshuku_onlinebookmarks_delicious RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${ONLINEBOOKMARKS_DELICIOUS_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

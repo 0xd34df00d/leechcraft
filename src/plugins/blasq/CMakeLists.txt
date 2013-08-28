@@ -46,7 +46,7 @@ target_link_libraries (leechcraft_blasq
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_blasq DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_blasq RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (FILES blasqsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (DIRECTORY share/qml/blasq DESTINATION ${LC_QML_DEST})
 

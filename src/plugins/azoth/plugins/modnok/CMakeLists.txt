@@ -33,7 +33,7 @@ target_link_libraries (leechcraft_azoth_modnok
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_azoth_modnok DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_azoth_modnok RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (PROGRAMS lc_azoth_modnok_latexconvert.sh DESTINATION ${LC_SHARE_DEST}/azoth)
 install (FILES azothmodnoksettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (FILES ${MODNOK_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

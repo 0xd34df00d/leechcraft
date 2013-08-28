@@ -170,7 +170,7 @@ target_link_libraries (leechcraft_lmp
 	leechcraft_lmp_common
 	)
 
-install (TARGETS leechcraft_lmp DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_lmp RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (FILES lmpsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (DIRECTORY interfaces DESTINATION include/leechcraft)
 

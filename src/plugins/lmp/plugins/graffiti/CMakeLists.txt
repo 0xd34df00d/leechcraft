@@ -49,5 +49,5 @@ target_link_libraries (leechcraft_lmp_graffiti
 	leechcraft_lmp_common
 	)
 
-install (TARGETS leechcraft_lmp_graffiti DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_lmp_graffiti RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 #install (FILES lmpgraffitisettings.xml DESTINATION ${LC_SETTINGS_DEST})

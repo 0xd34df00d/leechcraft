@@ -35,6 +35,6 @@ target_link_libraries (leechcraft_azoth_isterique
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_azoth_isterique DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_azoth_isterique RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${ISTERIQUE_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES azothisteriquesettings.xml DESTINATION ${LC_SETTINGS_DEST})

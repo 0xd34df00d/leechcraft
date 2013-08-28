@@ -32,4 +32,4 @@ target_link_libraries (leechcraft_azoth_embedmedia
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_azoth_embedmedia DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_azoth_embedmedia RUNTIME DESTINATION ${LC_PLUGINS_DEST})

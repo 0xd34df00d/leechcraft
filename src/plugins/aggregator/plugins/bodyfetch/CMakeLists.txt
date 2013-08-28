@@ -26,5 +26,5 @@ target_link_libraries (leechcraft_aggregator_bodyfetch
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_aggregator_bodyfetch DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_aggregator_bodyfetch RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/scripts DESTINATION ${LC_SHARE_DEST})

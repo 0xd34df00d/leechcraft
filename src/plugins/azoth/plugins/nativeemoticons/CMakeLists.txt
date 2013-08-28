@@ -40,5 +40,5 @@ target_link_libraries (leechcraft_azoth_nativeemoticons
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_azoth_nativeemoticons DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_azoth_nativeemoticons RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/azoth DESTINATION ${LC_SHARE_DEST})

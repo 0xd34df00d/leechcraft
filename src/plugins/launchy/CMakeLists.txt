@@ -31,5 +31,5 @@ target_link_libraries (leechcraft_launchy
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_launchy DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_launchy RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/qml/launchy DESTINATION ${LC_QML_DEST})

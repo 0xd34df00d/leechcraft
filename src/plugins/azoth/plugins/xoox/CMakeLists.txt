@@ -151,7 +151,7 @@ target_link_libraries (leechcraft_azoth_xoox
 	${SPEEX_LIBRARIES}
 	${QCA2_LIBRARIES}
 	)
-install (TARGETS leechcraft_azoth_xoox DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_azoth_xoox RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothxooxsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 if (UNIX AND NOT APPLE)
 	install (FILES freedesktop/leechcraft-azoth-xoox.desktop DESTINATION share/applications)

@@ -39,4 +39,4 @@ target_link_libraries (leechcraft_blasq_deathnote
 	${LEECHCRAFT_LIBRARIES}
 	)
 
-install (TARGETS leechcraft_blasq_deathnote DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_blasq_deathnote RUNTIME DESTINATION ${LC_PLUGINS_DEST})

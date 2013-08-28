@@ -51,5 +51,5 @@ target_link_libraries (leechcraft_secman
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_secman DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_secman RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY interfaces DESTINATION "include/leechcraft")

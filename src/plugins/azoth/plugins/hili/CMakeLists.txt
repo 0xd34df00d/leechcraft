@@ -33,6 +33,6 @@ target_link_libraries (leechcraft_azoth_hili
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_azoth_hili DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_azoth_hili RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothhilisettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (FILES ${HILI_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

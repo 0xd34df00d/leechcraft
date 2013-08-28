@@ -87,7 +87,7 @@ target_link_libraries (leechcraft_monocle
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_monocle DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_monocle RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES monoclesettings.xml DESTINATION ${LC_SETTINGS_DEST})
 

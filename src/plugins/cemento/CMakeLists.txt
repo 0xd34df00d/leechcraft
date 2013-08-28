@@ -27,4 +27,4 @@ target_link_libraries (leechcraft_cemento
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_cemento DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_cemento RUNTIME DESTINATION ${LC_PLUGINS_DEST})

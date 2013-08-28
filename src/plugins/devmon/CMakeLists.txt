@@ -28,4 +28,4 @@ target_link_libraries (leechcraft_devmon
 	${LEECHCRAFT_LIBRARIES}
 	${UDEV_LIBRARIES}
 	)
-install (TARGETS leechcraft_devmon DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_devmon RUNTIME DESTINATION ${LC_PLUGINS_DEST})

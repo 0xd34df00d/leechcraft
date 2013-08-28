@@ -50,5 +50,5 @@ target_link_libraries (leechcraft_otlozhu
 	${LEECHCRAFT_LIBRARIES}
 	laretz_ops
 	)
-install (TARGETS leechcraft_otlozhu DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_otlozhu RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

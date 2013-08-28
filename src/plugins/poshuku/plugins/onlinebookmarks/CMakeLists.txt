@@ -49,7 +49,7 @@ target_link_libraries (leechcraft_poshuku_onlinebookmarks
 	${LEECHCRAFT_LIBRARIES}
 	)
 
-install (TARGETS leechcraft_poshuku_onlinebookmarks DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_poshuku_onlinebookmarks RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${ONLINEBOOKMARKS_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES poshukuonlinebookmarkssettings.xml DESTINATION ${LC_SETTINGS_DEST})
 

@@ -34,5 +34,5 @@ target_link_libraries (leechcraft_pintab
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_pintab DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_pintab RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

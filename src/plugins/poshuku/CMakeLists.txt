@@ -167,7 +167,7 @@ target_link_libraries (leechcraft_poshuku
 	${LEECHCRAFT_LIBRARIES}
 	${IDN_LIB}
 	)
-install (TARGETS leechcraft_poshuku DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_poshuku RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES poshukusettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (DIRECTORY installed/poshuku/ DESTINATION ${LC_INSTALLEDMANIFEST_DEST}/poshuku)

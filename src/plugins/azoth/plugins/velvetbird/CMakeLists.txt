@@ -54,6 +54,6 @@ target_link_libraries (leechcraft_azoth_velvetbird
 	${LIBPURPLE_LIBRARIES}
 	)
 
-install (TARGETS leechcraft_azoth_velvetbird DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_azoth_velvetbird RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 #install (FILES ${VELVETBIRD_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 #install (FILES azothvelvetbirdsettings.xml DESTINATION ${LC_SETTINGS_DEST})

@@ -120,5 +120,5 @@ target_link_libraries (leechcraft_liznoo
 	${QWT_LIBRARIES}
 	${AdditionalLibraries}
 	)
-install (TARGETS leechcraft_liznoo DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_liznoo RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (FILES liznoosettings.xml DESTINATION ${LC_SETTINGS_DEST})

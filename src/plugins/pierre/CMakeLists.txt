@@ -24,5 +24,5 @@ target_link_libraries (leechcraft_pierre
 	${LEECHCRAFT_LIBRARIES}
 	"-framework AppKit"
 	)
-install (TARGETS leechcraft_pierre DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_pierre RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY data/ DESTINATION ${LC_BINDIR}/..)

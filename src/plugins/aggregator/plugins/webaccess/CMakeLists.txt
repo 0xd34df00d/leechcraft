@@ -33,4 +33,4 @@ target_link_libraries (leechcraft_aggregator_webaccess
 	${LEECHCRAFT_LIBRARIES}
 	${Wt_LIBRARIES}
 	)
-install (TARGETS leechcraft_aggregator_webaccess DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_aggregator_webaccess RUNTIME DESTINATION ${LC_PLUGINS_DEST})

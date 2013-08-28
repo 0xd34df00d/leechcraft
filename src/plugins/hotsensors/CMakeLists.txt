@@ -36,5 +36,5 @@ target_link_libraries (leechcraft_hotsensors
 	${QWT_LIBRARIES}
 	sensors
 	)
-install (TARGETS leechcraft_hotsensors DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_hotsensors RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/qml/hotsensors DESTINATION ${LC_QML_DEST})

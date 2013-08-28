@@ -77,6 +77,6 @@ target_link_libraries (leechcraft_lastfmscrobble
 	${LastFM_LIBRARIES}
 	)
 
-install (TARGETS leechcraft_lastfmscrobble DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_lastfmscrobble RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (FILES lastfmscrobblesettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

@@ -50,6 +50,6 @@ target_link_libraries (leechcraft_kinotify
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_kinotify DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_kinotify RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (FILES kinotifysettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (DIRECTORY themes DESTINATION ${LC_SHARE_DEST}/kinotify)

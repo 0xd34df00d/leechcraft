@@ -75,5 +75,5 @@ if (TESTS_LACKMAN)
 	add_test (VersionComparator lc_lackman_versioncomparatortest)
 endif ()
 
-install (TARGETS leechcraft_lackman DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_lackman RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (FILES lackmansettings.xml DESTINATION ${LC_SETTINGS_DEST})

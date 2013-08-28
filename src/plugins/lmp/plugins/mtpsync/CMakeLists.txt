@@ -32,5 +32,5 @@ target_link_libraries (leechcraft_lmp_mtpsync
 	${LEECHCRAFT_LIBRARIES}
 	)
 
-install (TARGETS leechcraft_lmp_mtpsync DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_lmp_mtpsync RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 #install (FILES lmpmtpsyncsettings.xml DESTINATION ${LC_SETTINGS_DEST})

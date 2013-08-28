@@ -52,5 +52,5 @@ target_link_libraries (leechcraft_poshuku_onlinebookmarks_readitlater
 	${QJSON_LIBRARIES}
 	)
 
-install (TARGETS leechcraft_poshuku_onlinebookmarks_readitlater DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_poshuku_onlinebookmarks_readitlater RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${ONLINEBOOKMARKS_READITLATER_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

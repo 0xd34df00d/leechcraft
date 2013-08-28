@@ -205,7 +205,7 @@ target_link_libraries (leechcraft_azoth
 	${QCA2_LIBRARIES}
 	${CUSTOM_SPEEX}
 	)
-install (TARGETS leechcraft_azoth DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_azoth RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (DIRECTORY share/azoth DESTINATION ${LC_SHARE_DEST})
 install (DIRECTORY interfaces DESTINATION include/leechcraft)

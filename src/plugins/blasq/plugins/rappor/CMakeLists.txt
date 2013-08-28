@@ -41,5 +41,5 @@ target_link_libraries (leechcraft_blasq_rappor
 	${LEECHCRAFT_LIBRARIES}
 	${QJSON_LIBRARIES}
 	)
-install (TARGETS leechcraft_blasq_rappor DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_blasq_rappor RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 

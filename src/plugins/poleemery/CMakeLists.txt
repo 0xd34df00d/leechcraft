@@ -54,5 +54,5 @@ target_link_libraries (leechcraft_poleemery
 	${LEECHCRAFT_LIBRARIES}
 	${QWT_LIBRARIES}
 	)
-install (TARGETS leechcraft_poleemery DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_poleemery RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (FILES poleemerysettings.xml DESTINATION ${LC_SETTINGS_DEST})

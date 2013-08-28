@@ -27,6 +27,6 @@ target_link_libraries (leechcraft_azoth_shx
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_azoth_shx DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_azoth_shx RUNTIME DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothshxsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 #install (FILES ${SHX_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

@@ -24,4 +24,4 @@ target_link_libraries (leechcraft_sysnotify
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_sysnotify DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_sysnotify RUNTIME DESTINATION ${LC_PLUGINS_DEST})
