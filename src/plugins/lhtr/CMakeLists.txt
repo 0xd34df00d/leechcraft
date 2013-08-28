@@ -55,5 +55,5 @@ target_link_libraries (leechcraft_lhtr
 	${LEECHCRAFT_LIBRARIES}
 	${ADDITIONAL_LIBRARES}
 	)
-install (TARGETS leechcraft_lhtr RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_lhtr DESTINATION ${LC_PLUGINS_DEST})
 install (FILES lhtrsettings.xml DESTINATION ${LC_SETTINGS_DEST})

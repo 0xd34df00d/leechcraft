@@ -45,5 +45,5 @@ target_link_libraries (leechcraft_tabslist
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_tabslist RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_tabslist DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

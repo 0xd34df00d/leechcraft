@@ -55,6 +55,6 @@ target_link_libraries (leechcraft_netstoremanager_yandexdisk
 	${LEECHCRAFT_LIBRARIES}
 	)
 
-install (TARGETS leechcraft_netstoremanager_yandexdisk RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_netstoremanager_yandexdisk DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${YANDEXDISK_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 #install (FILES netstoremanageryandexdisksettings.xml DESTINATION ${LC_SETTINGS_DEST})

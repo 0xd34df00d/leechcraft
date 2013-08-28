@@ -36,6 +36,6 @@ target_link_libraries (leechcraft_azoth_p100q
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_azoth_p100q RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_azoth_p100q DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothp100qsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (FILES ${P100Q_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

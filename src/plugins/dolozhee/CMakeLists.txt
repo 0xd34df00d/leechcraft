@@ -46,4 +46,4 @@ target_link_libraries (leechcraft_dolozhee
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_dolozhee RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_dolozhee DESTINATION ${LC_PLUGINS_DEST})

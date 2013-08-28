@@ -33,7 +33,7 @@ target_link_libraries (leechcraft_fenet
 	${LEECHCRAFT_LIBRARIES}
 	${QJSON_LIBRARIES}
 	)
-install (TARGETS leechcraft_fenet RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_fenet DESTINATION ${LC_PLUGINS_DEST})
 install (FILES leechcraft-session DESTINATION bin
 		PERMISSIONS
 			OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ

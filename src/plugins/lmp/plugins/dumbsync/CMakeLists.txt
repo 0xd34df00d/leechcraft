@@ -25,6 +25,6 @@ target_link_libraries (leechcraft_lmp_dumbsync
 	${LEECHCRAFT_LIBRARIES}
 	)
 
-install (TARGETS leechcraft_lmp_dumbsync RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_lmp_dumbsync DESTINATION ${LC_PLUGINS_DEST})
 install (FILES lmpdumbsyncsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (FILES ${DUMBSYNC_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

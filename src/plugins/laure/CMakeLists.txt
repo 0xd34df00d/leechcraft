@@ -105,7 +105,7 @@ target_link_libraries (leechcraft_laure
 	${MAGIC_LIBRARIES}
 	)
 
-install (TARGETS leechcraft_laure RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_laure DESTINATION ${LC_PLUGINS_DEST})
 install (FILES lauresettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 

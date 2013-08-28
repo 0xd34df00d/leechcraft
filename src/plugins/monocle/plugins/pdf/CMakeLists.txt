@@ -33,7 +33,7 @@ target_link_libraries (leechcraft_monocle_pdf
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_monocle_pdf RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_monocle_pdf DESTINATION ${LC_PLUGINS_DEST})
 if (UNIX AND NOT APPLE)
 	install (FILES freedesktop/leechcraft-monocle-pdf.desktop DESTINATION share/applications)
 endif ()

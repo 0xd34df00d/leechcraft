@@ -194,7 +194,7 @@ option (ENABLE_HARBINGER "Build Harbinger, the collections manager" ${WITH_PLUGI
 cmake_dependent_option (ENABLE_HOTSENSORS "Build HotSensors, temperature sensors quark" ${WITH_PLUGINS} "NOT WIN32" OFF)
 option (ENABLE_HOTSTREAMS "Build HotStreams, radio streams provider module" ${WITH_PLUGINS})
 option (ENABLE_IMGASTE "Build Imgaste, simple image paster plugin" ${WITH_PLUGINS})
-cmake_dependent_option (ENABLE_KBSWITCH "Build KBSwitch, a keyboard plugin" ${WITH_PLUGINS} "NOT WIN32" OFF)
+option (ENABLE_KBSWITCH "Build KBSwitch, a keyboard plugin" ${WITH_PLUGINS})
 cmake_dependent_option (ENABLE_KRIGSTASK "Build Krigstask, applications switcher" ${WITH_PLUGINS} "NOT WIN32" OFF)
 option (ENABLE_LACKMAN "Build LackMan, the package manager for LeechCraft" ${WITH_PLUGINS})
 option (ENABLE_LADS "Build Lads, Ubuntu Unity integration layer" ${WITH_PLUGINS})

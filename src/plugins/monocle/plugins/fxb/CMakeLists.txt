@@ -26,7 +26,7 @@ target_link_libraries (leechcraft_monocle_fxb
 	${LEECHCRAFT_LIBRARIES}
 	leechcraft_monocle_util
 	)
-install (TARGETS leechcraft_monocle_fxb RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_monocle_fxb DESTINATION ${LC_PLUGINS_DEST})
 if (UNIX AND NOT APPLE)
 	install (FILES freedesktop/leechcraft-monocle-fxb.desktop DESTINATION share/applications)
 endif ()

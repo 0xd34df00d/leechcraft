@@ -28,6 +28,6 @@ target_link_libraries (leechcraft_azoth_birthdaynotifier
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_azoth_birthdaynotifier RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_azoth_birthdaynotifier DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothbirthdaynotifiersettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (FILES ${BIRTHDAYNOTIFIER_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

@@ -24,7 +24,7 @@ target_link_libraries (leechcraft_monocle_postrus
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_monocle_postrus RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_monocle_postrus DESTINATION ${LC_PLUGINS_DEST})
 if (UNIX AND NOT APPLE)
 	install (FILES freedesktop/leechcraft-monocle-postrus.desktop DESTINATION share/applications)
 endif ()

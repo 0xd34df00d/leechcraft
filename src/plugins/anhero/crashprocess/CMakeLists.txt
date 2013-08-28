@@ -27,4 +27,4 @@ target_link_libraries (lc_anhero_crashprocess
 	${LEECHCRAFT_LIBRARIES}
 	${Boost_PROGRAM_OPTIONS_LIBRARY}
 	)
-install (TARGETS lc_anhero_crashprocess RUNTIME DESTINATION ${LC_BINDIR})
+install (TARGETS lc_anhero_crashprocess DESTINATION ${LC_BINDIR})

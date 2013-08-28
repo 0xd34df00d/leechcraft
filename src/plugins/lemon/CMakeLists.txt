@@ -39,5 +39,5 @@ target_link_libraries (leechcraft_lemon
 	${LIBNL_LIBRARIES}
 	${QWT_LIBRARIES}
 	)
-install (TARGETS leechcraft_lemon RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_lemon DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/qml/lemon DESTINATION ${LC_QML_DEST})

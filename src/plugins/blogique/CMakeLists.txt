@@ -68,7 +68,7 @@ target_link_libraries (leechcraft_blogique
 	${LEECHCRAFT_LIBRARIES}
 	)
 
-install (TARGETS leechcraft_blogique RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_blogique DESTINATION ${LC_PLUGINS_DEST})
 install (FILES blogiquesettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (DIRECTORY share/qml/blogique DESTINATION ${LC_QML_DEST})
 

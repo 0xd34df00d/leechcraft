@@ -49,5 +49,5 @@ target_link_libraries (leechcraft_dumbeep
 	${LEECHCRAFT_LIBRARIES}
 	${QT_PHONON_LIBS}
 	)
-install (TARGETS leechcraft_dumbeep RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_dumbeep DESTINATION ${LC_PLUGINS_DEST})
 install (FILES dumbeepsettings.xml DESTINATION ${LC_SETTINGS_DEST})

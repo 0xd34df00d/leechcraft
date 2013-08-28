@@ -43,6 +43,6 @@ target_link_libraries (leechcraft_syncer
 	${LEECHCRAFT_LIBRARIES}
 	${LARETZ_LIBRARIES}
 	)
-install (TARGETS leechcraft_syncer RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_syncer DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES syncersettings.xml DESTINATION ${LC_SETTINGS_DEST})

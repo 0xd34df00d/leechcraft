@@ -68,6 +68,6 @@ target_link_libraries (leechcraft_netstoremanager_googledrive
 	${MAGIC_LIBS}
 	)
 
-install (TARGETS leechcraft_netstoremanager_googledrive RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_netstoremanager_googledrive DESTINATION ${LC_PLUGINS_DEST})
 install (FILES nsmgoogledrivesettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (FILES ${GOOGLEDRIVE_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

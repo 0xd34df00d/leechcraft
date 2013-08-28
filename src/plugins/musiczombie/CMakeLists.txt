@@ -49,4 +49,4 @@ target_link_libraries (leechcraft_musiczombie
 	${LEECHCRAFT_LIBRARIES}
 	${EXTRA_LIBRARIES}
 	)
-install (TARGETS leechcraft_musiczombie RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_musiczombie DESTINATION ${LC_PLUGINS_DEST})

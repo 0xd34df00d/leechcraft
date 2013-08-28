@@ -128,7 +128,7 @@ target_link_libraries (lcutil
 	xmlsettingsdialog
 	)
 set_property (TARGET lcutil PROPERTY SOVERSION 0.5.0)
-install (TARGETS lcutil RUNTIME DESTINATION ${LIBDIR})
+install (TARGETS lcutil DESTINATION ${LIBDIR})
 
 if (USE_QT5)
 	QT5_USE_MODULES (lcutil Declarative Network Xml Sql Widgets)

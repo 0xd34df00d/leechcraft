@@ -27,5 +27,5 @@ target_link_libraries (leechcraft_poshuku_filescheme
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_poshuku_filescheme RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_poshuku_filescheme DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${FILESCHEME_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

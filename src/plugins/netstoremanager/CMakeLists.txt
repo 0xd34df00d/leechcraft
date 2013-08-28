@@ -76,7 +76,7 @@ target_link_libraries (leechcraft_netstoremanager
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_netstoremanager RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_netstoremanager DESTINATION ${LC_PLUGINS_DEST})
 install (FILES netstoremanagersettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 

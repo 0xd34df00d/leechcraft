@@ -39,4 +39,4 @@ target_link_libraries (leechcraft_vlc
 	${LEECHCRAFT_LIBRARIES}
 	${VLC_LIBRARIES}
 	)
-install (TARGETS leechcraft_vlc RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_vlc DESTINATION ${LC_PLUGINS_DEST})

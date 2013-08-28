@@ -52,5 +52,5 @@ target_link_libraries (leechcraft_azoth_murm
 	${LEECHCRAFT_LIBRARIES}
 	)
 
-install (TARGETS leechcraft_azoth_murm RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_azoth_murm DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothmurmsettings.xml DESTINATION ${LC_SETTINGS_DEST})

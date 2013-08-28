@@ -35,5 +35,5 @@ target_link_libraries (leechcraft_poshuku_keywords
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_poshuku_keywords RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_poshuku_keywords DESTINATION ${LC_PLUGINS_DEST})
 install (FILES poshukukeywordssettings.xml DESTINATION ${LC_SETTINGS_DEST})

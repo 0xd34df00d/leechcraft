@@ -13,7 +13,6 @@ include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
-	${QTKOAUTH_INCLUDE_DIR}
 	)
 set (SPEGNERSI_SRCS
 	spegnersi.cpp
@@ -32,4 +31,4 @@ target_link_libraries (leechcraft_blasq_spegnersi
 	${LEECHCRAFT_LIBRARIES}
 	${QTKOAUTH_LIBRARIES}
 	)
-install (TARGETS leechcraft_blasq_spegnersi RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_blasq_spegnersi DESTINATION ${LC_PLUGINS_DEST})

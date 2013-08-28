@@ -29,5 +29,5 @@ target_link_libraries (leechcraft_touchstreams
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_touchstreams RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_touchstreams DESTINATION ${LC_PLUGINS_DEST})
 install (FILES touchstreamssettings.xml DESTINATION ${LC_SETTINGS_DEST})

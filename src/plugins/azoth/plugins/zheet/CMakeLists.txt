@@ -77,6 +77,6 @@ target_link_libraries (leechcraft_azoth_zheet
 	${OPENSSL_LIBRARIES}
 	)
 
-install (TARGETS leechcraft_azoth_zheet RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_azoth_zheet DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${ZHEET_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 #install (FILES azothzheetsettings.xml DESTINATION ${LC_SETTINGS_DEST})

@@ -29,4 +29,4 @@ target_link_libraries (leechcraft_blackdash
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_blackdash RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_blackdash DESTINATION ${LC_PLUGINS_DEST})

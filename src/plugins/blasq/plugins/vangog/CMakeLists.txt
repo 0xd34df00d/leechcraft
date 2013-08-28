@@ -44,5 +44,5 @@ target_link_libraries (leechcraft_blasq_vangog
 	${LEECHCRAFT_LIBRARIES}
 	${QJSON_LIBRARIES}
 	)
-install (TARGETS leechcraft_blasq_vangog RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_blasq_vangog DESTINATION ${LC_PLUGINS_DEST})
 

@@ -84,6 +84,6 @@ target_link_libraries (leechcraft_poshuku_cleanweb
 	${LEECHCRAFT_LIBRARIES}
 	${PCRE_LIBRARIES}
 	)
-install (TARGETS leechcraft_poshuku_cleanweb RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_poshuku_cleanweb DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${CLEANWEB_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES poshukucleanwebsettings.xml DESTINATION ${LC_SETTINGS_DEST})

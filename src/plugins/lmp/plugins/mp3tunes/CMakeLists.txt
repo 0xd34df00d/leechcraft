@@ -29,5 +29,5 @@ target_link_libraries (leechcraft_lmp_mp3tunes
 	${LEECHCRAFT_LIBRARIES}
 	)
 
-install (TARGETS leechcraft_lmp_mp3tunes RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_lmp_mp3tunes DESTINATION ${LC_PLUGINS_DEST})
 install (FILES lmpmp3tunessettings.xml DESTINATION ${LC_SETTINGS_DEST})

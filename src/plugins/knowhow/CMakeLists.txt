@@ -38,6 +38,6 @@ target_link_libraries (leechcraft_knowhow
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_knowhow RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_knowhow DESTINATION ${LC_PLUGINS_DEST})
 install (FILES knowhowsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (DIRECTORY share/knowhow DESTINATION ${LC_SHARE_DEST})

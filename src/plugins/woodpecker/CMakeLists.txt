@@ -61,6 +61,6 @@ target_link_libraries (leechcraft_woodpecker
 	${QTKOAUTH_LIBRARIES}
 	)
 
-install (TARGETS leechcraft_woodpecker RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_woodpecker DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES woodpeckersettings.xml DESTINATION ${LC_SETTINGS_DEST})

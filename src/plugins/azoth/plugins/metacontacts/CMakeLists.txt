@@ -51,5 +51,5 @@ target_link_libraries (leechcraft_azoth_metacontacts
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_azoth_metacontacts RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_azoth_metacontacts DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${METACONTACTS_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

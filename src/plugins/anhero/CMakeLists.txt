@@ -27,6 +27,6 @@ target_link_libraries (leechcraft_anhero
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_anhero RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_anhero DESTINATION ${LC_PLUGINS_DEST})
 
 add_subdirectory(crashprocess)

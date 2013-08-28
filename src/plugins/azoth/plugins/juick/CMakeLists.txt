@@ -31,4 +31,4 @@ target_link_libraries (leechcraft_azoth_juick
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_azoth_juick RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_azoth_juick DESTINATION ${LC_PLUGINS_DEST})

@@ -26,4 +26,4 @@ target_link_libraries (leechcraft_imgaste
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_imgaste RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_imgaste DESTINATION ${LC_PLUGINS_DEST})

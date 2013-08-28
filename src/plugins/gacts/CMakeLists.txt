@@ -60,4 +60,4 @@ target_link_libraries (leechcraft_gacts
 	${QXT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_gacts RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_gacts DESTINATION ${LC_PLUGINS_DEST})

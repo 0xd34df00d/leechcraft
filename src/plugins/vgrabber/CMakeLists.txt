@@ -62,6 +62,6 @@ target_link_libraries (leechcraft_vgrabber
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_vgrabber RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_vgrabber DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES vgrabbersettings.xml DESTINATION ${LC_SETTINGS_DEST})

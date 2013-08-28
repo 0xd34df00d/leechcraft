@@ -156,7 +156,7 @@ target_link_libraries (leechcraft_aggregator
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_aggregator RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_aggregator DESTINATION ${LC_PLUGINS_DEST})
 install (FILES aggregatorsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 set (AGGREGATOR_INCLUDE_DIR ${CURRENT_SOURCE_DIR})

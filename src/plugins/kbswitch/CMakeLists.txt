@@ -43,6 +43,6 @@ target_link_libraries (leechcraft_kbswitch
 	${LEECHCRAFT_LIBRARIES}
 	xkbfile
 	)
-install (TARGETS leechcraft_kbswitch RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_kbswitch DESTINATION ${LC_PLUGINS_DEST})
 install (FILES kbswitchsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (DIRECTORY share/qml/kbswitch DESTINATION ${LC_QML_DEST})

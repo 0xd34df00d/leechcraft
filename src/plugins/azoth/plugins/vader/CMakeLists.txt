@@ -96,6 +96,6 @@ target_link_libraries (leechcraft_azoth_vader
 	${LEECHCRAFT_LIBRARIES}
 	)
 
-install (TARGETS leechcraft_azoth_vader RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_azoth_vader DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${VADER_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES azothvadersettings.xml DESTINATION ${LC_SETTINGS_DEST})

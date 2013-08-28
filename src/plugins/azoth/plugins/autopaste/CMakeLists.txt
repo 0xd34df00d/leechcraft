@@ -62,5 +62,5 @@ target_link_libraries (leechcraft_azoth_autopaste
 	${LEECHCRAFT_LIBRARIES}
 	${QJSON_LIBRARIES}
 	)
-install (TARGETS leechcraft_azoth_autopaste RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_azoth_autopaste DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothautopastesettings.xml DESTINATION ${LC_SETTINGS_DEST})

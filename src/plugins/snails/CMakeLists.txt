@@ -106,7 +106,7 @@ target_link_libraries (leechcraft_snails
 	${MAGIC_LIBRARIES}
 	vmime
 	)
-install (TARGETS leechcraft_snails RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_snails DESTINATION ${LC_PLUGINS_DEST})
 install (FILES snailssettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (DIRECTORY share/snails DESTINATION ${LC_SHARE_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

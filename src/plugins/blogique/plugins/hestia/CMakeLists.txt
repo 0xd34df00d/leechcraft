@@ -69,6 +69,9 @@ target_link_libraries (leechcraft_blogique_hestia
 	${LEECHCRAFT_LIBRARIES}
 	)
 
-install (TARGETS leechcraft_blogique_hestia RUNTIME	DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${HESTIA_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
-install (FILES blogiquehestiasettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (TARGETS leechcraft_blogique_hestia
+		DESTINATION ${LC_PLUGINS_DEST})
+install (FILES ${HESTIA_COMPILED_TRANSLATIONS}
+		DESTINATION ${LC_TRANSLATIONS_DEST})
+install (FILES blogiquehestiasettings.xml
+		DESTINATION ${LC_SETTINGS_DEST})

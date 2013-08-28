@@ -30,5 +30,5 @@ target_link_libraries (leechcraft_krigstask
 	${X11_X11_LIB}
 	${X11_Xcomposite_LIB}
 	)
-install (TARGETS leechcraft_krigstask RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_krigstask DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/qml/krigstask DESTINATION ${LC_QML_DEST})

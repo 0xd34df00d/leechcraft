@@ -115,7 +115,10 @@ target_link_libraries (leechcraft_blogique_metida
 	${LEECHCRAFT_LIBRARIES}
 	)
 
-install (TARGETS leechcraft_blogique_metida RUNTIME DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${METIDA_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
-install (FILES blogiquemetidasettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (TARGETS leechcraft_blogique_metida
+		DESTINATION ${LC_PLUGINS_DEST})
+install (FILES ${METIDA_COMPILED_TRANSLATIONS}
+		DESTINATION ${LC_TRANSLATIONS_DEST})
+install (FILES blogiquemetidasettings.xml
+		DESTINATION ${LC_SETTINGS_DEST})
 install(DIRECTORY share/qml/blogique DESTINATION ${LC_QML_DEST})

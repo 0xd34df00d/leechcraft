@@ -33,5 +33,5 @@ target_link_libraries (leechcraft_nacheku
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_nacheku RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_nacheku DESTINATION ${LC_PLUGINS_DEST})
 install (FILES nachekusettings.xml DESTINATION ${LC_SETTINGS_DEST})

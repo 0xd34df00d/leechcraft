@@ -59,7 +59,7 @@ target_link_libraries (leechcraft_advancednotifications
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-install (TARGETS leechcraft_advancednotifications RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_advancednotifications DESTINATION ${LC_PLUGINS_DEST})
 install (FILES advancednotificationssettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (DIRECTORY share/qml/advancednotifications DESTINATION ${LC_QML_DEST})
 install (DIRECTORY share/sounds DESTINATION ${LC_SHARE_DEST})
