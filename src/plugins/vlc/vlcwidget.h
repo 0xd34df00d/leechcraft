@@ -31,13 +31,15 @@
 
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
-#include "ui_vlccontrolswidget.h"
 #include "vlcscrollbar.h"
 #include "soundwidget.h"
 #include "signalledwidget.h"
 
 class QToolBar;
 class QMenu;
+class QLabel;
+class QTimer;
+class QToolButton;
 
 namespace LeechCraft
 {
@@ -51,24 +53,41 @@ namespace vlc
 		Q_INTERFACES (ITabWidget)
 		
 		QObject *Parent_;
-		Ui::VlcControlsWidget *Ui_;
 		VlcPlayer *VlcPlayer_;
 		QToolBar *Bar_;
 		QAction *Open_;
-		QAction *Info_;
-		VlcScrollBar *ScrollBar_;
+		QAction *TogglePlay_;
+		QAction *Stop_;
+		QAction *FullScreenAction_;
 		
-		bool forbidFullScreen_;
+		VlcScrollBar *ScrollBar_;
+		QLabel *TimeLeft_;
+		QLabel *TimeAll_;
+		
+		QLabel *FullScreenTimeLeft_;
+		QLabel *FullScreenTimeAll_;
+		VlcScrollBar *FullScreenVlcScrollBar_;
+		SignalledWidget *FullScreenPanel_;
+		QTimer *TerminatePanel_;
+		
+		QToolButton *TogglePlayButton_;
+		QToolButton *StopButton_;
+		QToolButton *FullScreenButton_;
+		
+		bool ForbidFullScreen_;
 		bool FullScreen_;
-		QWidget *FullScreenWidget_;
+		bool AllowFullScreenPanel_;
+		SignalledWidget *FullScreenWidget_;
 		QTimer *InterfaceUpdater_;
 		SignalledWidget *VlcMainWidget_;
-		SignalledWidget *Controls_;
 		SoundWidget *SoundWidget_;
+		SoundWidget *FullScreenSoundWidget_;
 		QMenu *ContextMenu_;
 		
 		void GenerateToolBar ();
+		void PrepareFullScreen ();
 		void ForbidFullScreen ();
+		void ConnectWidgetToMe (SignalledWidget*);
 		
 	public:
 		explicit VlcWidget (QWidget *parent = 0);
@@ -83,7 +102,7 @@ namespace vlc
 		
 	private slots:
 		void addFile ();
-		void updateIterface ();
+		void updateInterface ();
 		void toggleFullScreen ();
 		void allowFullScreen ();
 		
@@ -94,7 +113,14 @@ namespace vlc
 		void keyPressEvent (QKeyEvent*);
 		void mousePressEvent (QMouseEvent*);
 		void mouseDoubleClickEvent (QMouseEvent*);
+		void mouseMoveEvent (QMouseEvent*);
 		void wheelEvent (QWheelEvent*);
+		
+		void fullScreenPanelRequested ();
+		void hideFullScreenPanel ();
+		
+		void AllowPanel ();
+		void ForbidPanel ();
 		
 	signals:
 		void deleteMe (QWidget*);

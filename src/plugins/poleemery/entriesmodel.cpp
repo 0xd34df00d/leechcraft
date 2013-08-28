@@ -297,7 +297,8 @@ namespace Poleemery
 			break;
 		}
 
-		Core::Instance ().GetOpsManager ()->UpdateEntry (entry);
+		if (ModifiesStorage_)
+			Core::Instance ().GetOpsManager ()->UpdateEntry (entry);
 
 		if (resetModel)
 		{
@@ -332,6 +333,11 @@ namespace Poleemery
 	void EntriesModel::SetRatePriceEditable (bool editable)
 	{
 		RatePriceEditable_ = editable;
+	}
+
+	void EntriesModel::SetModifiesStorage (bool modifies)
+	{
+		ModifiesStorage_ = modifies;
 	}
 
 	namespace
