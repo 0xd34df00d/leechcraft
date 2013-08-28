@@ -159,7 +159,7 @@ target_link_libraries (leechcraft_bittorrent
 	${LEECHCRAFT_LIBRARIES}
 	${CRYPTOLIB}
 )
-install (TARGETS  leechcraft_bittorrent RUNTIME DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS  leechcraft_bittorrent DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES torrentsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 if (UNIX AND NOT APPLE)

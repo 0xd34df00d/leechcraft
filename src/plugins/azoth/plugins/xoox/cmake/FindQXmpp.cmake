@@ -13,6 +13,8 @@
 find_path(QXMPP_INCLUDE_DIR
 	NAMES
 	qxmpp/QXmppClient.h
+	HINTS
+	${QXMPP_DIR}/include
 	PATH
 	ENV
 )
@@ -20,6 +22,8 @@ find_library(QXMPP_LIBRARIES
 	NAMES
 	qxmpp0
 	qxmpp
+	HINTS
+	${QXMPP_DIR}/lib
 )
 
 if(QXMPP_LOCAL)
