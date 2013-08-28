@@ -32,6 +32,7 @@ find_path(LIBXML2_INCLUDE_DIR NAMES libxml/xpath.h
    HINTS
    ${PC_LIBXML_INCLUDEDIR}
    ${PC_LIBXML_INCLUDE_DIRS}
+   ${LIBXML2_DIR}/include
    PATH_SUFFIXES libxml2
    )
 
@@ -39,6 +40,7 @@ find_library(LIBXML2_LIBRARIES NAMES xml2 libxml2
    HINTS
    ${PC_LIBXML_LIBDIR}
    ${PC_LIBXML_LIBRARY_DIRS}
+   ${LIBXML2_DIR}/lib
    )
 
 find_program(LIBXML2_XMLLINT_EXECUTABLE xmllint)
