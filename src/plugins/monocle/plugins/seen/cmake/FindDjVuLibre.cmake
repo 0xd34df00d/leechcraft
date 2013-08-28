@@ -22,6 +22,7 @@ else ()
       ${PC_DJVULIBRE_INCLUDEDIR}
       ${PC_DJVULIBRE_INCLUDE_DIRS}
       ${GNUWIN32_DIR}/include
+      ${DJVULIBRE_DIR}/include
     )
 
     find_library(DJVULIBRE_LIBRARY NAMES djvulibre
@@ -29,6 +30,7 @@ else ()
       ${PC_DJVULIBRE_LIBDIR}
       ${PC_DJVULIBRE_LIBRARY_DIRS}
       ${GNUWIN32_DIR}/lib
+      ${DJVULIBRE_DIR}/lib
     )
 
   include(FindPackageHandleStandardArgs)
