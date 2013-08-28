@@ -27,11 +27,12 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "vlcscrollbar.h"
 #include <QPaintEvent>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QVBoxLayout>
+#include <QPoint>
+#include "vlcscrollbar.h"
 
 namespace LeechCraft
 {
@@ -39,8 +40,8 @@ namespace vlc
 {
 	VlcScrollBar::VlcScrollBar (QWidget *parent)
 	: QWidget (parent)
+	, CurrentPosition_ (0)
 	{
-		CurrentPosition_ = 0;
 	}
 
 	void VlcScrollBar::paintEvent (QPaintEvent *event)
@@ -51,7 +52,7 @@ namespace vlc
 		p.drawRect (0, 0, width () - 1, height () - 1);
 		
 		p.setBrush (palette ().dark ());
-		p.drawRect (0, 0, std::min (int (width () * CurrentPosition_), width () - 1), height () - 1);
+		p.drawRect (0, 0, std::min (int ((width () - 1) * CurrentPosition_), width () - 1), height () - 1);
 		
 		p.end ();
 		event->accept ();
@@ -59,13 +60,15 @@ namespace vlc
 	
 	void VlcScrollBar::mousePressEvent (QMouseEvent *event)
 	{
-		emit changePosition (event->x () / double (width ()));
+		LastMousePoint_ = event->globalPos ();
+		emit changePosition (event->x () / double (width () - 5));
 		event->accept ();
 	}
 	
 	void VlcScrollBar::mouseMoveEvent (QMouseEvent *event)
 	{
-		mousePressEvent (event);
+		if (LastMousePoint_.x () != event->globalPos (). x())
+			mousePressEvent (event);
 	}
 	
 	void VlcScrollBar::setPosition (double pos)

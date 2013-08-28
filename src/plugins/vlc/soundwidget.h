@@ -29,8 +29,8 @@
 
 #pragma once
 
-#include <QWidget>
 #include <memory>
+#include <QWidget>
 
 struct libvlc_media_player_t;
 
