@@ -85,6 +85,7 @@ namespace vlc
 		QMenu *ContextMenu_;
 		
 		void GenerateToolBar ();
+		QMenu* GenerateMenuForOpenAction ();
 		void PrepareFullScreen ();
 		void ForbidFullScreen ();
 		void ConnectWidgetToMe (SignalledWidget*);
@@ -102,6 +103,10 @@ namespace vlc
 		
 	private slots:
 		void addFile ();
+		void addFolder ();
+		void addUrl ();
+		void addDVD ();
+		
 		void updateInterface ();
 		void toggleFullScreen ();
 		void allowFullScreen ();

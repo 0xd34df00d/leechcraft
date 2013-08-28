@@ -32,6 +32,7 @@
 #include <QPainter>
 #include <QPaintEvent>
 #include <QFileDialog>
+#include <QInputDialog>
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include <QTimer>
@@ -45,8 +46,19 @@
 #include <QTimer>
 #include <QDebug>
 #include <QToolButton>
+#include <QUrl>
+#include <boost/graph/graph_concepts.hpp>
 #include "vlcwidget.h"
 #include "vlcplayer.h"
+
+namespace 
+{
+	QString EncodeUrl (QString s)
+	{
+		QUrl url (s);
+		return url.toEncoded ();
+	}
+}
 
 namespace LeechCraft
 {
@@ -72,7 +84,7 @@ namespace vlc
 		InterfaceUpdater_->start ();
 		
 		TerminatePanel_ = new QTimer (this);
-		TerminatePanel_->setInterval (2000);
+		TerminatePanel_->setInterval (3000);
 		
 		ConnectWidgetToMe (VlcMainWidget_);
 		ConnectWidgetToMe (FullScreenWidget_);
@@ -148,7 +160,35 @@ namespace vlc
 													tr ("Open file"),
 													tr ("Videos (*.mkv *.avi *.mov *.mpg)"));
 		if (QFile::exists (file))
-			VlcPlayer_->addUrl (file);
+			VlcPlayer_->addUrl ("file://" + EncodeUrl (file));
+	}
+	
+	void VlcWidget::addFolder () 
+	{
+		QString folder = QFileDialog::getExistingDirectory (this,
+													tr ("Open folder"),
+													tr ("Folder with video"));
+		
+		if (QFile::exists (folder))
+			VlcPlayer_->addUrl ("directory://" + EncodeUrl (folder));
+	}
+	
+	void VlcWidget::addDVD ()
+	{
+		QString folder = QFileDialog::getExistingDirectory (this,
+													tr ("Open DVD"),
+													tr ("Root of DVD directory"));
+		
+		if (QFile::exists (folder)) 
+			VlcPlayer_->addUrl ("dvdsimple://" + EncodeUrl (folder));
+	}
+
+	void VlcWidget::addUrl ()
+	{
+		QString url = QInputDialog::getText (this, tr ("Open URL"), tr ("enter URL"));
+		
+		if (!url.isEmpty ())
+			VlcPlayer_->addUrl (EncodeUrl (url));
 	}
 	
 	void VlcWidget::updateInterface ()
@@ -260,6 +300,7 @@ namespace vlc
 		Bar_ = new QToolBar (this);
 		Open_ = Bar_->addAction (tr ("Open"));
 		Open_->setProperty ("ActionIcon", "folder");
+		Open_->setMenu (GenerateMenuForOpenAction ());
 		TogglePlay_ = Bar_->addAction (tr ("Play"));
 		TogglePlay_->setShortcut (QKeySequence (" "));
 		TogglePlay_->setProperty ("ActionIcon", "media-playback-start");
@@ -443,7 +484,7 @@ namespace vlc
 		panelLayout->setContentsMargins (5, 0, 5, 0);
 		
 		FullScreenPanel_->setLayout (panelLayout);
-		FullScreenPanel_->setWindowOpacity (0.5);
+		FullScreenPanel_->setWindowOpacity (0.8);
 		
 		FullScreenTimeLeft_->show ();
 		FullScreenVlcScrollBar_->show ();
@@ -503,6 +544,27 @@ namespace vlc
 	{
 		AllowFullScreenPanel_ = false;
 		QTimer::singleShot (50, this, SLOT (AllowPanel ()));
+	}
+	
+	QMenu* VlcWidget::GenerateMenuForOpenAction()
+	{
+		QMenu *result = new QMenu;
+		connect (result->addAction (tr ("Open folder")),
+				SIGNAL (triggered ()),
+				this,
+				SLOT (addFolder ()));
+		
+		connect (result->addAction (tr ("Open url")),
+				SIGNAL (triggered ()),
+				this,
+				SLOT (addUrl ()));
+		
+		connect (result->addAction (tr ("Open DVD")),
+				SIGNAL (triggered ()),
+				this,
+				SLOT (addDVD ()));
+		
+		return result;
 	}
 }
 }

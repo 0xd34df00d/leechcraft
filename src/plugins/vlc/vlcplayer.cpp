@@ -69,10 +69,10 @@ namespace vlc
 		libvlc_media_player_set_xwindow (Mp_.get (), parent->winId ());
 	}
 	
-	void VlcPlayer::addUrl (const QString &file) 
+	void VlcPlayer::addUrl (const QString &url) 
 	{
 		libvlc_media_player_stop (Mp_.get ());
-		M_.reset(libvlc_media_new_path (VlcInstance_.get (), file.toLocal8Bit ()), libvlc_media_release);
+		M_.reset(libvlc_media_new_location (VlcInstance_.get (), url.toLocal8Bit ()), libvlc_media_release);
 		
 		libvlc_media_player_set_media (Mp_.get (), M_.get ());
 		libvlc_media_player_play (Mp_.get ());
@@ -137,7 +137,7 @@ namespace vlc
 		{
 			cur = libvlc_media_player_get_time (Mp_.get ());
 			audio = GetCurrentAudioTrack ();
-			subtitle = GetCurrentSubtitle ();
+// 			subtitle = GetCurrentSubtitle ();
 		}
 		
 		bool isPlaying = libvlc_media_player_is_playing (Mp_.get ()); 

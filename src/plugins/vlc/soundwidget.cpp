@@ -85,7 +85,7 @@ namespace vlc
 		for (int i = 1; i <= currentVolume; i++) 
 		{
 			if (i <= 100)
-				p.setPen (QColor (20, 200 + i / 2, 20));
+				p.setPen (QColor (20, 150 + i, 20));
 			else
 				p.setPen (QColor (255, 255 - (i - 100) * 2.5, 10));
 			
