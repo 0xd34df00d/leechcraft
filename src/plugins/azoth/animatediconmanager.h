@@ -89,7 +89,7 @@ namespace Azoth
 			if (dev && dev->atEnd ())
 				dev->seek (0);
 
-			const auto& data = dev->readAll ();
+			const auto& data = dev ? dev->readAll () : QByteArray ();
 			if (auto icon = IconCache_.object (data))
 			{
 				Setter_ (t, *icon);
@@ -108,7 +108,8 @@ namespace Azoth
 			{
 				const QIcon icon (QPixmap::fromImage (image));
 				Setter_ (t, icon);
-				IconCache_.insert (data, new QIcon (icon), data.size ());
+				if (!data.isEmpty ())
+					IconCache_.insert (data, new QIcon (icon), data.size ());
 				return;
 			}
 
