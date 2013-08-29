@@ -47,7 +47,6 @@
 #include <QDebug>
 #include <QToolButton>
 #include <QUrl>
-#include <boost/graph/graph_concepts.hpp>
 #include "vlcwidget.h"
 #include "vlcplayer.h"
 
