@@ -29,12 +29,12 @@ if (NOT WIN32)
 endif ()
 
 find_path(PCRE_INCLUDE_DIR pcre.h
-          HINTS ${PC_PCRE_INCLUDEDIR} ${PC_PCRE_INCLUDE_DIRS}
+          HINTS ${PC_PCRE_INCLUDEDIR} ${PC_PCRE_INCLUDE_DIRS} ${PCRE_DIR}/include
           PATH_SUFFIXES pcre)
 
-find_library(PCRE_PCRE_LIBRARY NAMES pcre pcred HINTS ${PC_PCRE_LIBDIR} ${PC_PCRE_LIBRARY_DIRS})
+find_library(PCRE_PCRE_LIBRARY NAMES pcre pcred HINTS ${PC_PCRE_LIBDIR} ${PC_PCRE_LIBRARY_DIRS} ${PCRE_DIR}/lib)
 
-find_library(PCRE_PCREPOSIX_LIBRARY NAMES pcreposix pcreposixd HINTS ${PC_PCRE_LIBDIR} ${PC_PCRE_LIBRARY_DIRS})
+find_library(PCRE_PCREPOSIX_LIBRARY NAMES pcreposix pcreposixd HINTS ${PC_PCRE_LIBDIR} ${PC_PCRE_LIBRARY_DIRS} ${PCRE_DIR}/lib)
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(PCRE DEFAULT_MSG PCRE_INCLUDE_DIR PCRE_PCRE_LIBRARY PCRE_PCREPOSIX_LIBRARY )

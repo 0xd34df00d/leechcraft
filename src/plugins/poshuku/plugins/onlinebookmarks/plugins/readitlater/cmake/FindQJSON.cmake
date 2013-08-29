@@ -41,7 +41,7 @@ else ()
 			find_library (QJSON_LIBRARY_RELEASE NAMES qjson.lib PATHS ${PROBE_DIR_Release})
 			win32_tune_libs_names (QJSON)
 		else ()
-			find_library (QJSON_LIBRARIES NAMES libqjson.dll.a PATHS ${QJSON_DIR}/build/lib)
+			find_library (QJSON_LIBRARIES NAMES libqjson.dll.a PATHS ${QJSON_DIR}/lib)
 		endif ()
 	endif ()
 
@@ -60,10 +60,8 @@ else () #may be works for linux too
 	find_path (QJSON_INCLUDE_DIR
     NAMES
 		qjson/qjson_export.h
-	PATH_SUFFIXES
-		qjson
     PATHS
-		${QJSON_DIR}
+		${QJSON_DIR}/include
 		${INCLUDE_INSTALL_DIR}
 		${KDE4_INCLUDE_DIR}
 		${QJSON_INCLUDE_WIN32}

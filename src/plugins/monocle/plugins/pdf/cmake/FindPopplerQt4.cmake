@@ -26,13 +26,13 @@ endif ()
 find_path (POPPLER_QT4_INCLUDE_DIR
 	NAMES poppler-qt4.h
 	PATHS ${PC_POPPLERQT4_INCLUDEDIR}
-		${POPPLER_DIR}
+		${POPPLER_DIR}/include
  	PATH_SUFFIXES poppler/qt4 poppler qt4/src)
 
 find_library(POPPLER_QT4_LIBRARY
 	NAMES poppler-qt4 libpoppler-qt4.dll.a
 	PATHS ${PC_POPPLERQT4_LIBDIR}
-		${POPPLER_DIR}
+		${POPPLER_DIR}/lib
   	PATH_SUFFIXES build/qt4/src
 )
 

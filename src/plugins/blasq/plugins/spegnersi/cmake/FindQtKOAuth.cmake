@@ -16,7 +16,7 @@ else ()
 					NAMES kqoauth kqoauth0
 					HINTS
 						${QT_LIBRARY_DIR}
-						${QTKOAUTH_DIR}
+						${QTKOAUTH_DIR}/lib
 						${PC_QTKOAUTH_LIBDIR}
 						${PC_QTKOAUTH_LIBRARY_DIRS}
 					)
@@ -27,7 +27,7 @@ else ()
 		PATH_SUFFIXES
 			QtKOAuth
 		HINTS
-			${QTKOAUTH_DIR}
+			${QTKOAUTH_DIR}/include
 			${INCLUDE_INSTALL_DIR}
 			${KDE4_INCLUDE_DIR}
 			${QT_INCLUDE_DIR}

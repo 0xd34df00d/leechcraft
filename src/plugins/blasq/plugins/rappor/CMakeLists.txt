@@ -2,6 +2,8 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_blasq_rappor)
 include (InitLCPlugin OPTIONAL)
 
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
 set (QT_USE_QTNETWORK TRUE)
 set (QT_USE_QTXML TRUE)
 include (${QT_USE_FILE})
