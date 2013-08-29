@@ -56,6 +56,7 @@ namespace vlc
 		VlcPlayer *VlcPlayer_;
 		QToolBar *Bar_;
 		QAction *Open_;
+		QToolButton *OpenButton_;
 		QAction *TogglePlay_;
 		QAction *Stop_;
 		QAction *FullScreenAction_;

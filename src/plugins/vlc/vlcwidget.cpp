@@ -47,6 +47,7 @@
 #include <QDebug>
 #include <QToolButton>
 #include <QUrl>
+#include <QEventLoop>
 #include "vlcwidget.h"
 #include "vlcplayer.h"
 
@@ -297,9 +298,13 @@ namespace vlc
 	void VlcWidget::GenerateToolBar () 
 	{
 		Bar_ = new QToolBar (this);
-		Open_ = Bar_->addAction (tr ("Open"));
+		OpenButton_ = new QToolButton (Bar_);
+		OpenButton_->setMenu (GenerateMenuForOpenAction ());
+		OpenButton_->setPopupMode (QToolButton::MenuButtonPopup);
+		Open_ = new QAction (OpenButton_);
 		Open_->setProperty ("ActionIcon", "folder");
-		Open_->setMenu (GenerateMenuForOpenAction ());
+		OpenButton_->setDefaultAction (Open_);
+		Bar_->addWidget (OpenButton_);
 		TogglePlay_ = Bar_->addAction (tr ("Play"));
 		TogglePlay_->setShortcut (QKeySequence (" "));
 		TogglePlay_->setProperty ("ActionIcon", "media-playback-start");
