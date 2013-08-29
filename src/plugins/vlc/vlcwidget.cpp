@@ -545,7 +545,7 @@ namespace vlc
 		QTimer::singleShot (50, this, SLOT (AllowPanel ()));
 	}
 	
-	QMenu* VlcWidget::GenerateMenuForOpenAction()
+	QMenu* VlcWidget::GenerateMenuForOpenAction ()
 	{
 		QMenu *result = new QMenu;
 		connect (result->addAction (tr ("Open folder")),
