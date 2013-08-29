@@ -137,7 +137,7 @@ namespace vlc
 		{
 			cur = libvlc_media_player_get_time (Mp_.get ());
 			audio = GetCurrentAudioTrack ();
- 			subtitle = GetCurrentSubtitle ();
+			subtitle = GetCurrentSubtitle ();
 		}
 		
 		bool isPlaying = libvlc_media_player_is_playing (Mp_.get ()); 
