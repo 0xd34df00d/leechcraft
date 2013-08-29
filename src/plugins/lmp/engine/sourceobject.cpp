@@ -189,7 +189,7 @@ namespace LMP
 		{
 			auto format = GST_FORMAT_TIME;
 			gint64 position = 0;
-#ifdef GST_VERSION_MAJOR >= 1
+#if GST_VERSION_MAJOR >= 1
 			gst_element_query_position (GST_ELEMENT (Dec_), format, &position);
 #else
 			gst_element_query_position (GST_ELEMENT (Dec_), &format, &position);
@@ -203,7 +203,7 @@ namespace LMP
 	{
 		auto format = GST_FORMAT_TIME;
 		gint64 duration = 0;
-#ifdef GST_VERSION_MAJOR >= 1
+#if GST_VERSION_MAJOR >= 1
 		if (!gst_element_query_duration (GST_ELEMENT (Dec_), format, &duration))
 #else
 		if (!gst_element_query_duration (GST_ELEMENT (Dec_), &format, &duration))
@@ -217,7 +217,7 @@ namespace LMP
 	{
 		auto format = GST_FORMAT_TIME;
 		gint64 duration = 0;
-#ifdef GST_VERSION_MAJOR >= 1
+#if GST_VERSION_MAJOR >= 1
 		if (gst_element_query_duration (GST_ELEMENT (Dec_), format, &duration))
 #else
 		if (gst_element_query_duration (GST_ELEMENT (Dec_), &format, &duration))
@@ -260,7 +260,7 @@ namespace LMP
 
 			const auto oldRank = gst_plugin_feature_get_rank (GST_PLUGIN_FEATURE (factory));
 			gst_plugin_feature_set_rank (GST_PLUGIN_FEATURE (factory), rank);
-#ifdef GST_VERSION_MAJOR >= 1
+#if GST_VERSION_MAJOR >= 1
 			gst_registry_add_feature (gst_registry_get (), GST_PLUGIN_FEATURE (factory));
 #else
 			gst_registry_add_feature (gst_registry_get_default (), GST_PLUGIN_FEATURE (factory));
