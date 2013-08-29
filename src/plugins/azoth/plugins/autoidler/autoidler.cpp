@@ -157,7 +157,9 @@ namespace Autoidler
 			auto acc = qobject_cast<IAccount*> (accObj);
 
 			const auto& accState = acc->GetState ();
-			if (accState.State_ == State::SOffline)
+			if (!OldStatuses_.contains (accObj) &&
+					accState.State_ != State::SOnline &&
+					accState.State_ != State::SChat)
 				continue;
 
 			if (!OldStatuses_.contains (accObj))
