@@ -60,6 +60,9 @@ namespace Util
 		typedef QMultiMap<QByteArray, ObjectElement_t> Properties2Object_t;
 		Properties2Object_t ApplyProps_;
 		Properties2Object_t SelectProps_;
+
+		bool IsInitializing_;
+		bool CleanupScheduled_;
 	protected:
 		bool ReadAllKeys_;
 	public:
@@ -162,6 +165,8 @@ namespace Util
 		QVariant GetRawValue (const QString& path, const QVariant& def = QVariant ()) const;
 
 		void OptionSelected (const QByteArray&, const QVariant&);
+
+		std::shared_ptr<void> EnterInitMode ();
 	protected:
 		virtual bool event (QEvent*);
 
@@ -188,6 +193,7 @@ namespace Util
 	private:
 		Settings_ptr GetSettings () const;
 	private slots:
+		void scheduleCleanup ();
 		void cleanupObjects ();
 	};
 }

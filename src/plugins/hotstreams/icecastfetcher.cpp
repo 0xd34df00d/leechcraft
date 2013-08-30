@@ -234,6 +234,8 @@ namespace HotStreams
 		auto watcher = dynamic_cast<QFutureWatcher<Stations_t>*> (sender ());
 		watcher->deleteLater ();
 
+		const auto& stringTemplate = tr ("Genre: %1\nBitrate: %2 kbps\nType: %3");
+
 		const auto& result = watcher->result ();
 		for (const auto& genre : result.keys ())
 		{
@@ -245,7 +247,7 @@ namespace HotStreams
 
 			for (const auto& station : result [genre])
 			{
-				const auto& tooltip = tr ("Genre: %1\nBitrate: %2 kbps\nType: %3")
+				const auto& tooltip = stringTemplate
 						.arg (station.Genre_)
 						.arg (station.Bitrate_)
 						.arg (station.MIME_);

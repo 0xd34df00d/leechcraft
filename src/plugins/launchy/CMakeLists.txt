@@ -16,6 +16,7 @@ set (SRCS
 	favoritesmanager.cpp
 	quarkmanager.cpp
 	itemimageprovider.cpp
+	syspathitemprovider.cpp
 	)
 set (RESOURCES resources.qrc)
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})

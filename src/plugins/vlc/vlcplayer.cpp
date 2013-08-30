@@ -27,7 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "vlcplayer.h"
+#include <vlc/vlc.h>
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QTime>
@@ -37,7 +37,7 @@
 #include <QTimer>
 #include <QSizePolicy>
 #include <QEventLoop>
-#include <vlc/vlc.h>
+#include "vlcplayer.h"
 
 namespace 
 {
@@ -53,6 +53,8 @@ namespace vlc
 {
 	VlcPlayer::VlcPlayer (QWidget *parent)
 	: QObject (parent)
+	, M_ (nullptr)
+	, Parent_ (parent)
 	{
 		const char * const vlc_args[] = 
 		{
@@ -62,15 +64,12 @@ namespace vlc
 			"--verbose=0"
 		};
 
-		M_ = nullptr;
 		VlcInstance_ = std::shared_ptr<libvlc_instance_t> (libvlc_new (5, vlc_args), libvlc_release);
 		Mp_ = std::shared_ptr<libvlc_media_player_t> (libvlc_media_player_new (VlcInstance_.get ()), libvlc_media_player_release);
-		
 		libvlc_media_player_set_xwindow (Mp_.get (), parent->winId ());
-		Parent_ = parent;
 	}
 	
-	void VlcPlayer::addUrl (QString file) 
+	void VlcPlayer::addUrl (const QString &file) 
 	{
 		libvlc_media_player_stop (Mp_.get ());
 		M_.reset(libvlc_media_new_path (VlcInstance_.get (), file.toLocal8Bit ()), libvlc_media_release);
@@ -137,8 +136,8 @@ namespace vlc
 		if (playingMedia) 
 		{
 			cur = libvlc_media_player_get_time (Mp_.get ());
-			audio = CurrentAudioTrack ();
-			subtitle = CurrentSubtitle ();
+			audio = GetCurrentAudioTrack ();
+			subtitle = GetCurrentSubtitle ();
 		}
 		
 		bool isPlaying = libvlc_media_player_is_playing (Mp_.get ()); 
@@ -175,19 +174,19 @@ namespace vlc
 		return Mp_;
 	}
 	
-	int VlcPlayer::NumberAudioTracks () const
+	int VlcPlayer::GetAudioTracksNumber () const
 	{
 		return libvlc_audio_get_track_count (Mp_.get ());
 	}
 	
-	int VlcPlayer::CurrentAudioTrack () const
+	int VlcPlayer::GetCurrentAudioTrack () const
 	{
 		return libvlc_audio_get_track (Mp_.get ());
 	}
 	
 	void VlcPlayer::setAudioTrack (int track)
 	{
-		libvlc_audio_set_track (Mp_.get (), GetAudioTrackId (track));
+		libvlc_audio_set_track (Mp_.get (), track);
 	}
 	
 	QString VlcPlayer::GetAudioTrackDescription (int track) const
@@ -202,7 +201,7 @@ namespace vlc
 		return t->i_id;
 	}
 	
-	int VlcPlayer::NumberSubtitles () const
+	int VlcPlayer::GetSubtitlesNumber () const
 	{
 		return libvlc_video_get_spu_count (Mp_.get ());
 	}
@@ -212,7 +211,7 @@ namespace vlc
 		libvlc_video_set_subtitle_file (Mp_.get (), file.toLocal8Bit ());
 	}
 
-	int VlcPlayer::CurrentSubtitle () const
+	int VlcPlayer::GetCurrentSubtitle () const
 	{
 		return libvlc_video_get_spu (Mp_.get ());
 	}
@@ -231,10 +230,10 @@ namespace vlc
 
 	void VlcPlayer::setSubtitle (int track)
 	{
-		libvlc_video_set_spu (Mp_.get (), GetSubtitleId (track));
+		libvlc_video_set_spu (Mp_.get (), track);
 	}
 	
-	libvlc_track_description_t* VlcPlayer::GetTrack(libvlc_track_description_t* t, int track) const
+	libvlc_track_description_t* VlcPlayer::GetTrack(libvlc_track_description_t *t, int track) const
 	{
 		for (int i = 0; i < track; i++)
 			t = t->p_next;

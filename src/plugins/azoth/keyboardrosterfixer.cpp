@@ -31,16 +31,19 @@
 #include <QKeyEvent>
 #include <QApplication>
 #include <QTreeView>
+#include <QLineEdit>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	KeyboardRosterFixer::KeyboardRosterFixer (QTreeView *view, QObject *parent)
+	KeyboardRosterFixer::KeyboardRosterFixer (QLineEdit *edit, QTreeView *view, QObject *parent)
 	: QObject (parent)
+	, Edit_ (edit)
 	, View_ (view)
 	, IsSearching_ (false)
 	{
+		Edit_->installEventFilter (this);
 	}
 
 	bool KeyboardRosterFixer::eventFilter (QObject*, QEvent *e)
@@ -48,6 +51,10 @@ namespace Azoth
 		if (e->type () != QEvent::KeyPress &&
 			e->type () != QEvent::KeyRelease)
 			return false;
+
+		if (IsSearching_ &&
+				Edit_->text ().isEmpty ())
+			IsSearching_ = false;
 
 		QKeyEvent *ke = static_cast<QKeyEvent*> (e);
 		if (!IsSearching_)
@@ -73,6 +80,7 @@ namespace Azoth
 		case Qt::Key_PageUp:
 		case Qt::Key_Enter:
 		case Qt::Key_Return:
+		case Qt::Key_Escape:
 			IsSearching_ = false;
 			qApp->sendEvent (View_, e);
 			return true;

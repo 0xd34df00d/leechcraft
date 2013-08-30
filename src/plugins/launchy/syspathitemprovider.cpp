@@ -27,75 +27,75 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "eventattendmarker.h"
-#include <QMap>
-#include <QNetworkReply>
-#include <QNetworkAccessManager>
+#include "syspathitemprovider.h"
+#include <QStandardItemModel>
+#include <QTimer>
 #include <QtDebug>
-#include "authenticator.h"
-#include "util.h"
+#include <QProcess>
+#include <util/sys/paths.h>
+#include "modelroles.h"
 
 namespace LeechCraft
 {
-namespace Lastfmscrobble
+namespace Launchy
 {
-	EventAttendMarker::EventAttendMarker (Authenticator *auth, QNetworkAccessManager *nam, qint64 id, Media::EventAttendType type, QObject *parent)
+	SysPathItemProvider::SysPathItemProvider (QStandardItemModel *model, QObject *parent)
 	: QObject (parent)
-	, NAM_ (nam)
-	, ID_ (id)
-	, Code_ (0)
+	, Model_ (model)
+	, SearchPathScheduled_ (false)
+	, PathItem_ (new QStandardItem)
 	{
-		switch (type)
+		PathItem_->setData (QString (), ModelRoles::ItemIcon);
+		PathItem_->setData (QStringList ("X-Console"), ModelRoles::ItemNativeCategories);
+		PathItem_->setData (false, ModelRoles::IsItemFavorite);
+
+		auto executor = [this] () -> void
 		{
-		case Media::EventAttendType::None:
-			Code_ = 2;
-			break;
-		case Media::EventAttendType::Maybe:
-			Code_ = 1;
-			break;
-		case Media::EventAttendType::Surely:
-			Code_ = 0;
-			break;
+			const auto& cmd = PathItem_->data (ModelRoles::ItemID).toString ();
+			if (!cmd.isEmpty ())
+				QProcess::startDetached (cmd);
+		};
+		PathItem_->setData (QVariant::fromValue<Executor_f> (executor),
+				ModelRoles::ExecutorFunctor);
+	}
+
+	void SysPathItemProvider::HandleQuery (const QString& query)
+	{
+		CurrentQuery_ = query;
+		ScheduleSearch ();
+	}
+
+	void SysPathItemProvider::ScheduleSearch ()
+	{
+		if (SearchPathScheduled_)
+			return;
+
+		SearchPathScheduled_ = true;
+		QTimer::singleShot (200,
+				this,
+				SLOT (searchPath ()));
+	}
+
+	void SysPathItemProvider::searchPath ()
+	{
+		SearchPathScheduled_ = false;
+
+		const auto& candidate = Util::FindInSystemPath (CurrentQuery_,
+				Util::GetSystemPaths (),
+				[] (const QFileInfo& fi) { return fi.isExecutable () && fi.isFile (); });
+
+		if (candidate.isEmpty ())
+		{
+			if (PathItem_->row () != -1)
+				Model_->takeRow (PathItem_->row ());
+			return;
 		}
 
-		if (auth->IsAuthenticated ())
-			mark ();
-		else
-			connect (auth,
-					SIGNAL (authenticated ()),
-					this,
-					SLOT (mark ()));
-	}
-
-	void EventAttendMarker::mark ()
-	{
-		QMap<QString, QString> params;
-		params ["event"] = QString::number (ID_);
-		params ["status"] = QString::number (Code_);
-		auto reply = Request ("event.attend", NAM_, params);
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleFinished ()));
-		connect (reply,
-				SIGNAL (error (QNetworkReply::NetworkError)),
-				this,
-				SLOT (handleError ()));
-	}
-
-	void EventAttendMarker::handleFinished ()
-	{
-		sender ()->deleteLater ();
-		emit finished ();
-		deleteLater ();
-	}
-
-	void EventAttendMarker::handleError ()
-	{
-		sender ()->deleteLater ();
-		qWarning () << Q_FUNC_INFO
-				<< "error marking event";
-		deleteLater ();
+		PathItem_->setData (CurrentQuery_, ModelRoles::ItemName);
+		PathItem_->setData (CurrentQuery_, ModelRoles::ItemDescription);
+		PathItem_->setData (candidate, ModelRoles::ItemID);
+		if (PathItem_->row () == -1)
+			Model_->appendRow (PathItem_);
 	}
 }
 }

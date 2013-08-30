@@ -145,7 +145,11 @@ namespace Azoth
 
 	QSet<QByteArray> Plugin::GetExpectedPluginClasses () const
 	{
-		return Core::Instance ().GetExpectedPluginClasses ();
+		QSet<QByteArray> classes;
+		classes << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
+		classes << "org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin";
+		classes << "org.LeechCraft.Plugins.Azoth.Plugins.IResourceSourcePlugin";
+		return classes;
 	}
 
 	void Plugin::AddPlugin (QObject *object)

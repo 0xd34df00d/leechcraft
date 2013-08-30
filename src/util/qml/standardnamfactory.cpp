@@ -27,13 +27,33 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
+#include "standardnamfactory.h"
+#include <QNetworkAccessManager>
+#include <QDeclarativeEngine>
+#include <util/network/networkdiskcache.h>
 
-#include <QtGlobal>
+namespace LeechCraft
+{
+namespace Util
+{
+	StandardNAMFactory::StandardNAMFactory (const QString& subpath,
+			CacheSizeGetter_f getter, QDeclarativeEngine *engine)
+	: Subpath_ (subpath)
+	, CacheSizeGetter_ (getter)
+	{
+		if (engine)
+			engine->setNetworkAccessManagerFactory (this);
+	}
 
-# if defined(leechcraft_lmp_EXPORTS)
-#  define LMP_API Q_DECL_EXPORT
-# else
-#  define LMP_API Q_DECL_IMPORT
-#endif
+	QNetworkAccessManager* StandardNAMFactory::create (QObject *parent)
+	{
+		auto nam = new QNetworkAccessManager (parent);
 
+		auto cache = new NetworkDiskCache (Subpath_, nam);
+		cache->setMaximumCacheSize (CacheSizeGetter_ ());
+		nam->setCache (cache);
+
+		return nam;
+	}
+}
+}

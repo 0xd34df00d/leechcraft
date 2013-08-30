@@ -34,6 +34,7 @@ set (FORMS
 	previewpage.ui
 	)
 CreateTrs ("dolozhee" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("dolozhee" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 QT4_WRAP_UI (UIS_H ${FORMS})
 
 add_library (leechcraft_dolozhee SHARED
@@ -46,4 +47,3 @@ target_link_libraries (leechcraft_dolozhee
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_dolozhee DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

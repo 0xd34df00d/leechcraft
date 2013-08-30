@@ -42,6 +42,8 @@
 #include <qwebpage.h>
 #include <qwebelement.h>
 #include <QCoreApplication>
+#include <QtConcurrentRun>
+#include <QFutureWatcher>
 #include <QMenu>
 #include <QMainWindow>
 #include <qwebview.h>
@@ -127,6 +129,41 @@ namespace CleanWeb
 					return f.SD_.URL_ == ID_;
 				}
 			};
+
+		QList<Filter> ParseToFilters (const QStringList& paths)
+		{
+			QList<Filter> result;
+			for (const auto& filePath : paths)
+			{
+				QFile file (filePath);
+				if (!file.open (QIODevice::ReadOnly))
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "could not open file"
+						<< filePath
+						<< file.errorString ();
+					result << Filter ();
+					continue;
+				}
+
+				const auto& data = QString::fromUtf8 (file.readAll ());
+				QStringList rawLines = data.split ('\n', QString::SkipEmptyParts);
+				if (rawLines.size ())
+					rawLines.removeAt (0);
+				QStringList lines;
+				std::transform (rawLines.begin (), rawLines.end (),
+						std::back_inserter (lines),
+						[] (const QString& t) { return t.trimmed (); });
+
+				Filter f;
+				std::for_each (lines.begin (), lines.end (), LineParser (&f));
+
+				f.SD_.Filename_ = QFileInfo (filePath).fileName ();
+
+				result << f;
+			}
+			return result;
+		}
 	};
 
 	Core::Core ()
@@ -155,14 +192,21 @@ namespace CleanWeb
 		QDir home = QDir::home ();
 		home.cd (".leechcraft");
 		home.cd ("cleanweb");
-		QFileInfoList infos = home.entryInfoList (QDir::Files | QDir::Readable);
-		Q_FOREACH (QFileInfo info, infos)
-			Parse (info.absoluteFilePath ());
 
-		ReadSettings ();
-		QTimer::singleShot (0,
-				this,
-				SLOT (update ()));
+		const auto& infos = home.entryInfoList (QDir::Files | QDir::Readable);
+		QStringList paths;
+		for (const auto info : infos)
+			paths << info.absoluteFilePath ();
+		if (!paths.isEmpty ())
+		{
+			auto watcher = new QFutureWatcher<QList<Filter>> ();
+			connect (watcher,
+					SIGNAL (finished ()),
+					this,
+					SLOT (handleParsed ()));
+			const auto& future = QtConcurrent::run (ParseToFilters, paths);
+			watcher->setFuture (future);
+		}
 
 		connect (UserFilters_,
 				SIGNAL (gotEntity (LeechCraft::Entity)),
@@ -206,14 +250,14 @@ namespace CleanWeb
 		int row = index.row ();
 		switch (index.column ())
 		{
-			case 0:
-				return Filters_.at (row).SD_.Name_;
-			case 1:
-				return Filters_.at (row).SD_.LastDateTime_;
-			case 2:
-				return Filters_.at (row).SD_.URL_.toString ();
-			default:
-				return QVariant ();
+		case 0:
+			return Filters_.at (row).SD_.Name_;
+		case 1:
+			return Filters_.at (row).SD_.LastDateTime_;
+		case 2:
+			return Filters_.at (row).SD_.URL_.toString ();
+		default:
+			return QVariant ();
 		}
 	}
 
@@ -266,7 +310,6 @@ namespace CleanWeb
 		return std::find_if (Filters_.begin (), Filters_.end (),
 				FilterFinder<FTName_> (subscrName)) != Filters_.end ();
 	}
-
 
 	bool Core::Exists (const QUrl& url) const
 	{
@@ -630,34 +673,9 @@ namespace CleanWeb
 				SLOT (handleJobError (int, IDownload::Error)));
 	}
 
-	void Core::Parse (const QString& filePath)
+	void Core::AddFilter (const Filter& f)
 	{
-		QFile file (filePath);
-		if (!file.open (QIODevice::ReadOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "could not open file"
-				<< filePath
-				<< file.errorString ();
-			return;
-		}
-
-		QString data = QTextCodec::codecForName ("UTF-8")->
-			toUnicode (file.readAll ());
-		QStringList rawLines = data.split ('\n', QString::SkipEmptyParts);
-		if (rawLines.size ())
-			rawLines.removeAt (0);
-		QStringList lines;
-		std::transform (rawLines.begin (), rawLines.end (),
-				std::back_inserter (lines),
-				[] (const QString& t) { return t.trimmed (); });
-
-		Filter f;
-		std::for_each (lines.begin (), lines.end (), LineParser (&f));
-
-		f.SD_.Filename_ = QFileInfo (filePath).fileName ();
-
-		auto pos = std::find_if (Filters_.begin (), Filters_.end (),
+		const auto pos = std::find_if (Filters_.begin (), Filters_.end (),
 				FilterFinder<FTFilename_> (f.SD_.Filename_));
 		if (pos != Filters_.end ())
 		{
@@ -671,6 +689,11 @@ namespace CleanWeb
 		beginInsertRows (QModelIndex (), Filters_.size (), Filters_.size ());
 		Filters_ << f;
 		endInsertRows ();
+	}
+
+	void Core::Parse (const QString& filePath)
+	{
+		AddFilter (ParseToFilters ({ filePath }).first ());
 	}
 
 	bool Core::Add (const QUrl& subscrUrl)
@@ -826,6 +849,24 @@ namespace CleanWeb
 		}
 		else
 			return false;
+	}
+
+	void Core::handleParsed ()
+	{
+		auto watcher = dynamic_cast<QFutureWatcher<QList<Filter>>*> (sender ());
+		watcher->deleteLater ();
+
+		const auto& result = watcher->result ();
+		qDebug () << Q_FUNC_INFO << "adding" << result.size () << "filters";
+
+		for (const auto& f : result)
+			AddFilter (f);
+
+		ReadSettings ();
+
+		QTimer::singleShot (0,
+				this,
+				SLOT (update ()));
 	}
 
 	void Core::update ()

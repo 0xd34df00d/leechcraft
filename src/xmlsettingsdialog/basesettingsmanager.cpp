@@ -29,6 +29,7 @@
 
 #include "basesettingsmanager.h"
 #include <QtDebug>
+#include <QTimer>
 
 namespace LeechCraft
 {
@@ -36,18 +37,24 @@ namespace Util
 {
 	BaseSettingsManager::BaseSettingsManager (bool readAllKeys, QObject *parent)
 	: QObject (parent)
+	, IsInitializing_ (false)
+	, CleanupScheduled_ (false)
 	, ReadAllKeys_ (readAllKeys)
 	{
 	}
 
 	void BaseSettingsManager::Init ()
 	{
+		IsInitializing_ = true;
+
 		auto settings = GetSettings ();
 		const auto& properties = ReadAllKeys_ ?
 				settings->allKeys () :
 				settings->childKeys ();
 		for (const auto& prop : properties)
 			setProperty (PROP2CHAR (prop), settings->value (prop));
+
+		IsInitializing_ = false;
 	}
 
 	void BaseSettingsManager::Release ()
@@ -69,7 +76,7 @@ namespace Util
 		connect (object,
 				SIGNAL (destroyed (QObject*)),
 				this,
-				SLOT (cleanupObjects ()),
+				SLOT (scheduleCleanup ()),
 				Qt::UniqueConnection);
 	}
 
@@ -108,7 +115,7 @@ namespace Util
 			return;
 
 		const auto& objects = SelectProps_.values (prop);
-		Q_FOREACH (const ObjectElement_t& object, objects)
+		for (const ObjectElement_t& object : objects)
 		{
 			if (!object.first)
 				continue;
@@ -124,6 +131,15 @@ namespace Util
 		}
 	}
 
+	std::shared_ptr<void> BaseSettingsManager::EnterInitMode ()
+	{
+		if (IsInitializing_)
+			return {};
+
+		IsInitializing_ = true;
+		return std::shared_ptr<void> (nullptr, [this] (void*) { IsInitializing_ = false; });
+	}
+
 	bool BaseSettingsManager::event (QEvent *e)
 	{
 		if (e->type () != QEvent::DynamicPropertyChange)
@@ -134,13 +150,16 @@ namespace Util
 		const QByteArray& name = event->propertyName ();
 		const auto& propName = QString::fromUtf8 (name);
 		const auto& propValue = property (name);
-		GetSettings ()->setValue (propName, propValue);
+
+		if (!IsInitializing_)
+			GetSettings ()->setValue (propName, propValue);
+
 		PropertyChanged (propName, propValue);
 
 		if (ApplyProps_.contains (name))
 		{
 			const auto& objects = ApplyProps_.values (name);
-			Q_FOREACH (const auto& object, objects)
+			for (const auto& object : objects)
 			{
 				if (!object.first)
 					continue;
@@ -172,16 +191,27 @@ namespace Util
 				});
 	}
 
+	void BaseSettingsManager::scheduleCleanup ()
+	{
+		if (CleanupScheduled_)
+			return;
+
+		CleanupScheduled_ = true;
+		QTimer::singleShot (100,
+				this,
+				SLOT (cleanupObjects ()));
+	}
+
 	void BaseSettingsManager::cleanupObjects ()
 	{
-		auto senderObj = sender ();
-		auto cleanupMap = [senderObj] (Properties2Object_t& map) -> void
+		CleanupScheduled_= false;
+		auto cleanupMap = [] (Properties2Object_t& map) -> void
 		{
 			for (const auto& key : map.keys ())
 			{
 				decltype (map.values (key)) vals2remove;
 				for (const auto& val : map.values (key))
-					if (!val.first || val.first == senderObj)
+					if (!val.first)
 						vals2remove << val;
 
 				for (const auto& val : vals2remove)

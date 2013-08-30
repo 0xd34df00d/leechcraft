@@ -29,10 +29,28 @@
 
 #pragma once
 
-#include <QtGlobal>
+#include <functional>
+#include <QDeclarativeNetworkAccessManagerFactory>
+#include <util/utilconfig.h>
 
-# if defined(leechcraft_monocle_EXPORTS)
-#  define MONOCLE_UTIL_API Q_DECL_EXPORT
-# else
-#  define MONOCLE_UTIL_API Q_DECL_IMPORT
-#endif
+class QDeclarativeEngine;
+
+namespace LeechCraft
+{
+namespace Util
+{
+	class UTIL_API StandardNAMFactory : public QDeclarativeNetworkAccessManagerFactory
+	{
+		const QString Subpath_;
+	public:
+		typedef std::function<int ()> CacheSizeGetter_f;
+	private:
+		CacheSizeGetter_f CacheSizeGetter_;
+	public:
+		StandardNAMFactory (const QString& subpath,
+				CacheSizeGetter_f getter, QDeclarativeEngine *engine = nullptr);
+
+		QNetworkAccessManager* create (QObject*);
+	};
+}
+}

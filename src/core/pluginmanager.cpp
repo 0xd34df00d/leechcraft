@@ -34,6 +34,7 @@
 #include <QDir>
 #include <QStringList>
 #include <QtDebug>
+#include <QtConcurrentMap>
 #include <QMessageBox>
 #include <QMainWindow>
 #include <util/util.h>
@@ -139,9 +140,10 @@ namespace LeechCraft
 						}
 					case Qt::DecorationRole:
 						{
-							const auto& path = AvailablePlugins_.at (index.row ())->GetFileName ();
-							const auto fName = path.toUtf8 ().toBase64 ().replace ('/', '_');
-							const auto& res = QPixmap (QString (IconsDir_.absoluteFilePath (fName)));
+							const auto& loader = AvailablePlugins_.at (index.row ());
+							if (!loader->IsLoaded ())
+								return DefaultPluginIcon_;
+							const auto& res = qobject_cast<IInfo*> (loader->Instance ())->GetIcon ();
 							return res.isNull () ? DefaultPluginIcon_ : res;
 						}
 					case Qt::CheckStateRole:
@@ -802,8 +804,35 @@ namespace LeechCraft
 		QList<std::function<void (Loaders::IPluginLoader_ptr)>> checks;
 		checks << Checks::IsFile
 				<< Checks::TryLoad
-				<< Checks::APILevel
-				<< Checks::TryInstance;
+				<< Checks::APILevel;
+
+		auto thrCheck = [checks] (Loaders::IPluginLoader_ptr loader) -> boost::optional<Checks::Fail>
+		{
+			for (const auto& check : checks)
+				try
+				{
+					check (loader);
+					{
+					}
+				}
+				catch (const Checks::Fail& f)
+				{
+					return f;
+				}
+
+			return {};
+		};
+		auto fails = QtConcurrent::mapped (PluginContainers_,
+				std::function<boost::optional<Checks::Fail> (Loaders::IPluginLoader_ptr)> (thrCheck)).results ();
+		for (int i = fails.size () - 1; i >= 0; --i)
+			if (fails [i])
+			{
+				PluginContainers_.removeAt (i);
+				PluginLoadErrors_ << fails [i]->Error_;
+			}
+
+		checks.clear ();
+		checks << Checks::TryInstance;
 
 		for (int i = 0; i < PluginContainers_.size (); ++i)
 		{
@@ -867,16 +896,11 @@ namespace LeechCraft
 
 			QString name = info->GetName ();
 			QString pinfo = info->GetInfo ();
-			QIcon icon = info->GetIcon ();
 
 			settings.beginGroup (loader->GetFileName ());
 			settings.setValue ("Name", name);
 			settings.setValue ("Info", pinfo);
-			settings.remove ("Icon");
 			settings.endGroup ();
-
-			const auto path = loader->GetFileName ().toUtf8 ().toBase64 ().replace ('/', '_');
-			icon.pixmap (48, 48).save (IconsDir_.absoluteFilePath (path), "PNG", 100);
 		}
 
 		settings.endGroup ();

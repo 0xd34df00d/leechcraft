@@ -27,75 +27,35 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "eventattendmarker.h"
-#include <QMap>
-#include <QNetworkReply>
-#include <QNetworkAccessManager>
-#include <QtDebug>
-#include "authenticator.h"
-#include "util.h"
+#pragma once
+
+#include <QObject>
+
+class QStandardItem;
+class QStandardItemModel;
 
 namespace LeechCraft
 {
-namespace Lastfmscrobble
+namespace Launchy
 {
-	EventAttendMarker::EventAttendMarker (Authenticator *auth, QNetworkAccessManager *nam, qint64 id, Media::EventAttendType type, QObject *parent)
-	: QObject (parent)
-	, NAM_ (nam)
-	, ID_ (id)
-	, Code_ (0)
+	class SysPathItemProvider : public QObject
 	{
-		switch (type)
-		{
-		case Media::EventAttendType::None:
-			Code_ = 2;
-			break;
-		case Media::EventAttendType::Maybe:
-			Code_ = 1;
-			break;
-		case Media::EventAttendType::Surely:
-			Code_ = 0;
-			break;
-		}
+		Q_OBJECT
 
-		if (auth->IsAuthenticated ())
-			mark ();
-		else
-			connect (auth,
-					SIGNAL (authenticated ()),
-					this,
-					SLOT (mark ()));
-	}
+		QStandardItemModel * const Model_;
 
-	void EventAttendMarker::mark ()
-	{
-		QMap<QString, QString> params;
-		params ["event"] = QString::number (ID_);
-		params ["status"] = QString::number (Code_);
-		auto reply = Request ("event.attend", NAM_, params);
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleFinished ()));
-		connect (reply,
-				SIGNAL (error (QNetworkReply::NetworkError)),
-				this,
-				SLOT (handleError ()));
-	}
+		bool SearchPathScheduled_;
+		QString CurrentQuery_;
 
-	void EventAttendMarker::handleFinished ()
-	{
-		sender ()->deleteLater ();
-		emit finished ();
-		deleteLater ();
-	}
+		QStandardItem *PathItem_;
+	public:
+		SysPathItemProvider (QStandardItemModel*, QObject* = 0);
 
-	void EventAttendMarker::handleError ()
-	{
-		sender ()->deleteLater ();
-		qWarning () << Q_FUNC_INFO
-				<< "error marking event";
-		deleteLater ();
-	}
+		void HandleQuery (const QString&);
+	private:
+		void ScheduleSearch ();
+	private slots:
+		void searchPath ();
+	};
 }
 }

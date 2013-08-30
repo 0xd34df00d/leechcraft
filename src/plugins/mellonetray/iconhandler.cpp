@@ -55,7 +55,6 @@ namespace Mellonetray
 	IconHandler::~IconHandler ()
 	{
 		Free ();
-		delete Proxy_;
 	}
 
 	ulong IconHandler::GetWID () const
@@ -87,7 +86,7 @@ namespace Mellonetray
 
 		if (!Proxy_ && WID_)
 		{
-			Proxy_ = new QX11EmbedContainer (view);
+			Proxy_.reset (new QX11EmbedContainer (view));
 			Proxy_->move (-1024, -1024);
 			Proxy_->show ();
 			Proxy_->embedClient (WID_);
@@ -113,7 +112,7 @@ namespace Mellonetray
 		if (Proxy_ && Proxy_->clientWinId ())
 		{
 			Proxy_->discardClient ();
-			delete Proxy_;
+			Proxy_.reset ();
 		}
 	}
 }

@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QGraphicsProxyWidget>
 
 class QX11EmbedContainer;
@@ -42,7 +43,7 @@ namespace Mellonetray
 		Q_OBJECT
 		Q_PROPERTY (unsigned long wid READ GetWID WRITE SetWID NOTIFY widChanged)
 
-		QX11EmbedContainer *Proxy_;
+		std::shared_ptr<QX11EmbedContainer> Proxy_;
 		unsigned long WID_;
 	public:
 		IconHandler (QGraphicsItem* = 0);

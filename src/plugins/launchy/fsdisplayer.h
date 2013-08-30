@@ -49,10 +49,12 @@ namespace Launchy
 	class ItemIconsProvider;
 	class ItemsSortFilterProxyModel;
 	class FavoritesManager;
+	class SysPathItemProvider;
 
 	class FSDisplayer : public QObject
 	{
 		Q_OBJECT
+		Q_PROPERTY (QString appFilterText READ GetAppFilterText WRITE SetAppFilterText NOTIFY appFilterTextChanged);
 
 		ICoreProxy_ptr Proxy_;
 		Util::XDG::ItemsFinder *Finder_;
@@ -65,17 +67,14 @@ namespace Launchy
 		QDeclarativeView *View_;
 		ItemIconsProvider *IconsProvider_;
 
-		typedef std::function<void ()> Executor_f;
-		struct ItemInfo
-		{
-			Executor_f Exec_;
-			QString PermanentID_;
-		};
-		QHash<QString, ItemInfo> ItemInfos_;
+		SysPathItemProvider *SysPathHandler_;
 	public:
 		FSDisplayer (ICoreProxy_ptr,
 				Util::XDG::ItemsFinder *finder, FavoritesManager*, QObject* = 0);
 		~FSDisplayer ();
+
+		QString GetAppFilterText () const;
+		void SetAppFilterText (const QString&);
 	private:
 		void MakeStdCategories ();
 		void MakeStdItems ();
@@ -90,6 +89,8 @@ namespace Launchy
 		void handleViewStatus (QDeclarativeView::Status);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
+
+		void appFilterTextChanged ();
 	};
 }
 }

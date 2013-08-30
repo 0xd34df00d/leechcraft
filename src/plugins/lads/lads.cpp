@@ -165,6 +165,13 @@ namespace Lads
 				firstLevelActions << action;
 			}
 
+		if (!lcMenu)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "LeechCraft menu not found";
+			return;
+		}
+
 		Q_FOREACH (auto act, firstLevelActions)
 			lcMenu->addAction (act);
 

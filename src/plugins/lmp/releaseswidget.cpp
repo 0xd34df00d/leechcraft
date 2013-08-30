@@ -35,6 +35,7 @@
 #include <QtDebug>
 #include <util/util.h>
 #include <util/qml/colorthemeproxy.h>
+#include <util/qml/standardnamfactory.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/irecentreleases.h>
@@ -85,6 +86,11 @@ namespace LMP
 	, ReleasesModel_ (new ReleasesModel (this))
 	{
 		Ui_.setupUi (this);
+
+		new Util::StandardNAMFactory ("lmp/cache",
+				[] { return 50 * 1024 * 1024; },
+				Ui_.ReleasesView_->engine ());
+
 		Ui_.ReleasesView_->engine ()->addImageProvider ("sysIcons",
 				new SysIconProvider (Core::Instance ().GetProxy ()));
 		Ui_.ReleasesView_->rootContext ()->setContextProperty ("releasesModel", ReleasesModel_);

@@ -31,7 +31,7 @@ find_path (RBTorrent_INCLUDE_DIR
 		${RBTorrent_DIR}/include
 		ENV PATH
 	)
-	
+
 if (RBTorrent_INCLUDE_DIR)
 	if (WIN32)
 		if (MSVC)
@@ -46,7 +46,7 @@ if (RBTorrent_INCLUDE_DIR)
 			win32_tune_libs_names (RBTorrent)
 			set (RBTorrent_LIBRARY ${RBTorrent_LIBRARIES})
 		else ()
-			find_library (RBTorrent_LIBRARY NAMES libtorrent.dll.a PATHS ${RBTorrent_DIR}/bin/gcc-mingw-4.7.2/release/boost-link-shared/boost-source/encryption-off/threading-multi)
+			find_library (RBTorrent_LIBRARY NAMES libtorrent.dll.a PATHS ${RBTorrent_DIR}/lib)
 		endif ()
 	else ()
 		find_library (RBTorrent_LIBRARY NAMES torrent-rasterbar PATH ENV)

@@ -47,7 +47,7 @@ namespace Proto
 
 	QByteArray ToMRIM16 (const QString& string)
 	{
-		return QTextCodec::codecForName ("UTF-16LE")->fromUnicode (string);
+		return QTextCodec::codecForName ("UTF-16LE")->fromUnicode (string).mid (2);
 	}
 
 	QByteArray ToMRIM (const QString& string)

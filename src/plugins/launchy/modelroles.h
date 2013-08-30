@@ -29,7 +29,9 @@
 
 #pragma once
 
+#include <functional>
 #include <Qt>
+#include <QMetaType>
 
 namespace LeechCraft
 {
@@ -50,7 +52,13 @@ namespace Launchy
 		IsItemFavorite,
 
 		ItemNativeCategories,
-		NativeCategories
+		NativeCategories,
+
+		ExecutorFunctor
 	};
+
+	typedef std::function<void ()> Executor_f;
 }
 }
+
+Q_DECLARE_METATYPE (LeechCraft::Launchy::Executor_f);

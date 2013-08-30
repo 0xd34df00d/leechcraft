@@ -263,8 +263,6 @@ namespace Dik
 		if (FirstImgRec_)
 			return;
 
-		FirstImgRec_ = TextRecordsCount_ + 1;
-
 		for (FirstImgRec_ = TextRecordsCount_ + 1; FirstImgRec_ < NumRecords_; ++FirstImgRec_)
 		{
 			auto rec = GetRecord (FirstImgRec_);

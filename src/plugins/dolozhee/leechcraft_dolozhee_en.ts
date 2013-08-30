@@ -109,6 +109,34 @@
     </message>
 </context>
 <context>
+    <name>FileAttachPage</name>
+    <message>
+        <location filename="fileattachpage.ui" line="14"/>
+        <source>Attach files</source>
+        <translation>Attach files</translation>
+    </message>
+    <message>
+        <location filename="fileattachpage.ui" line="17"/>
+        <source>Attach files to the issue</source>
+        <translation>Attach files to the issue</translation>
+    </message>
+    <message>
+        <location filename="fileattachpage.ui" line="20"/>
+        <source>On this page you can attach files to the issue, like log files for a bug report.</source>
+        <translation>On this page you can attach files to the issue, like log files for a bug report.</translation>
+    </message>
+    <message>
+        <location filename="fileattachpage.ui" line="34"/>
+        <source>Add...</source>
+        <translation>Add...</translation>
+    </message>
+    <message>
+        <location filename="fileattachpage.ui" line="41"/>
+        <source>Remove</source>
+        <translation>Remove</translation>
+    </message>
+</context>
+<context>
     <name>FinalPage</name>
     <message>
         <location filename="finalpage.ui" line="17"/>
@@ -122,19 +150,55 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::Dolozhee::ChooseUserPage</name>
+    <message>
+        <location filename="chooseuserpage.cpp" line="77"/>
+        <source>Please enter password for user %1:</source>
+        <translation>Please enter password for user %1:</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Dolozhee::FileAttachPage</name>
+    <message>
+        <location filename="fileattachpage.cpp" line="46"/>
+        <source>Path</source>
+        <translation>Path</translation>
+    </message>
+    <message>
+        <location filename="fileattachpage.cpp" line="46"/>
+        <source>Size</source>
+        <translation>Size</translation>
+    </message>
+    <message>
+        <location filename="fileattachpage.cpp" line="46"/>
+        <source>Description</source>
+        <translation>Description</translation>
+    </message>
+    <message>
+        <location filename="fileattachpage.cpp" line="78"/>
+        <source>Select files to attach</source>
+        <translation>Select files to attach</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Dolozhee::FinalPage</name>
     <message>
-        <location filename="finalpage.cpp" line="76"/>
+        <location filename="finalpage.cpp" line="83"/>
+        <source>Sending %1...</source>
+        <translation>Sending %1...</translation>
+    </message>
+    <message>
+        <location filename="finalpage.cpp" line="167"/>
         <source>I&apos;m very sorry to say that, but seems like we&apos;re unable to handle your report at the time :(</source>
         <translation>I&apos;m very sorry to say that, but seems like we&apos;re unable to handle your report at the time :(</translation>
     </message>
     <message>
-        <location filename="finalpage.cpp" line="84"/>
+        <location filename="finalpage.cpp" line="175"/>
         <source>Report has been sent successfully. Thanks for your time!</source>
         <translation>Report has been sent successfully. Thanks for your time!</translation>
     </message>
     <message>
-        <location filename="finalpage.cpp" line="88"/>
+        <location filename="finalpage.cpp" line="179"/>
         <source>Your issue number is %1. You can view it here:</source>
         <translation>Your issue number is %1. You can view it here:</translation>
     </message>
@@ -142,25 +206,43 @@
 <context>
     <name>LeechCraft::Dolozhee::Plugin</name>
     <message>
-        <location filename="dolozhee.cpp" line="32"/>
+        <location filename="dolozhee.cpp" line="48"/>
         <source>Report an issue...</source>
         <translation>Report an issue...</translation>
     </message>
     <message>
-        <location filename="dolozhee.cpp" line="60"/>
+        <location filename="dolozhee.cpp" line="79"/>
         <source>Bug and feature request reporter.</source>
         <translation>Bug and feature request reporter.</translation>
     </message>
 </context>
 <context>
+    <name>LeechCraft::Dolozhee::PreviewPage</name>
+    <message>
+        <location filename="previewpage.cpp" line="49"/>
+        <source>Send request</source>
+        <translation>Send request</translation>
+    </message>
+    <message>
+        <location filename="previewpage.cpp" line="90"/>
+        <source>Bug</source>
+        <translation>Bug</translation>
+    </message>
+    <message>
+        <location filename="previewpage.cpp" line="95"/>
+        <source>Feature</source>
+        <translation>Feature</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Dolozhee::ReportWizard</name>
     <message>
-        <location filename="reportwizard.cpp" line="46"/>
+        <location filename="reportwizard.cpp" line="61"/>
         <source>Issue reporter</source>
         <translation>Issue reporter</translation>
     </message>
     <message>
-        <location filename="reportwizard.cpp" line="110"/>
+        <location filename="reportwizard.cpp" line="137"/>
         <source>Invalid credentials</source>
         <translation>Invalid credentials</translation>
     </message>
@@ -168,9 +250,27 @@
 <context>
     <name>LeechCraft::Dolozhee::UserStatusPage</name>
     <message>
-        <location filename="userstatuspage.cpp" line="49"/>
+        <location filename="userstatuspage.cpp" line="60"/>
         <source>Registering %1...</source>
         <translation>Registering %1...</translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="previewpage.cpp" line="59"/>
+        <source>Low</source>
+        <translation>Low</translation>
+    </message>
+    <message>
+        <location filename="previewpage.cpp" line="61"/>
+        <source>Normal</source>
+        <translation>Normal</translation>
+    </message>
+    <message>
+        <location filename="previewpage.cpp" line="63"/>
+        <source>High</source>
+        <translation>High</translation>
     </message>
 </context>
 <context>
@@ -195,6 +295,44 @@
         <location filename="reporttypepage.ui" line="36"/>
         <source>a feature</source>
         <translation>a feature</translation>
+    </message>
+    <message>
+        <location filename="reporttypepage.ui" line="44"/>
+        <source>In:</source>
+        <translation>In:</translation>
+    </message>
+    <message>
+        <location filename="reporttypepage.ui" line="58"/>
+        <source>With priority:</source>
+        <translation>With priority:</translation>
+    </message>
+    <message>
+        <location filename="reporttypepage.ui" line="69"/>
+        <source>Low</source>
+        <translation>Low</translation>
+    </message>
+    <message>
+        <location filename="reporttypepage.ui" line="74"/>
+        <source>Normal</source>
+        <translation>Normal</translation>
+    </message>
+    <message>
+        <location filename="reporttypepage.ui" line="79"/>
+        <source>High</source>
+        <translation>High</translation>
+    </message>
+</context>
+<context>
+    <name>RequestPreview</name>
+    <message>
+        <location filename="previewpage.ui" line="14"/>
+        <source>Request preview</source>
+        <translation>Request preview</translation>
+    </message>
+    <message>
+        <location filename="previewpage.ui" line="17"/>
+        <source>The following report will be sent</source>
+        <translation>The following report will be sent</translation>
     </message>
 </context>
 <context>

@@ -39,7 +39,6 @@ namespace Launchy
 	class ItemsSortFilterProxyModel : public QSortFilterProxyModel
 	{
 		Q_OBJECT
-		Q_PROPERTY (QString appFilterText READ GetAppFilterText WRITE SetAppFilterText NOTIFY appFilterTextChanged);
 
 		QStringList CategoryNames_;
 		QString AppFilterText_;
@@ -54,8 +53,6 @@ namespace Launchy
 		void setCategoryNames (const QStringList&);
 	private slots:
 		void invalidateFilterSlot ();
-	signals:
-		void appFilterTextChanged ();
 	};
 }
 }

@@ -278,7 +278,7 @@ namespace Monocle
 				SIGNAL (rotationUpdated (double, int)),
 				this,
 				SLOT (updateRotation (double, int)));
-		auto actionWidget = new QWidgetAction (this);
+		auto actionWidget = new QWidgetAction (arbMenu);
 		actionWidget->setDefaultWidget (ArbWidget_);
 		arbMenu->addAction (actionWidget);
 

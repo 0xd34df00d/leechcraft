@@ -53,6 +53,7 @@ namespace Poleemery
 	, Accounts_ (Core::Instance ().GetAccsManager ()->GetAccounts ())
 	, ItemsModel_ (new EntriesModel (this))
 	{
+		ItemsModel_->SetModifiesStorage (false);
 		Ui_.setupUi (this);
 		Ui_.ItemsView_->setModel (ItemsModel_);
 		for (auto col : { EntriesModel::Shop, EntriesModel::Account, EntriesModel::AccBalance, EntriesModel::SumBalance })

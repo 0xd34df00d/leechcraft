@@ -259,17 +259,21 @@ namespace Metida
 		QStandardItemModel *model = 0;
 		switch (Ui_.PollType_->currentIndex ())
 		{
-			case CheckBoxes:
-				model = CheckModel_;
-				break;
-			case RadioButtons:
-				model = RadioModel_;
-				break;
-			case DropdownBox:
-				model = DropModel_;
-				break;
-			default:
-				break;
+		case CheckBoxes:
+			model = CheckModel_;
+			break;
+		case RadioButtons:
+			model = RadioModel_;
+			break;
+		case DropdownBox:
+			model = DropModel_;
+			break;
+		default:
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown poll type";
+			return;
+		}
 		}
 		model->appendRow (new QStandardItem (tr ("Field %1").arg (model->rowCount () + 1)));
 	}

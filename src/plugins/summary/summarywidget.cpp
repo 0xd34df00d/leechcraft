@@ -255,7 +255,7 @@ namespace Summary
 		Q_FOREACH (QAction *action, Toolbar_->actions ())
 		{
 			auto wa = qobject_cast<QWidgetAction*> (action);
-			if (!wa)
+			if (!wa || wa->defaultWidget () != SearchWidget_)
 			{
 				Toolbar_->removeAction (action);
 				delete action;
@@ -265,21 +265,21 @@ namespace Summary
 		}
 	}
 
-	QList<QAction*> SummaryWidget::CreateProxyActions (const QList<QAction*>& actions) const
+	QList<QAction*> SummaryWidget::CreateProxyActions (const QList<QAction*>& actions, QObject *parent) const
 	{
 		QList<QAction*> proxies;
 
 		Q_FOREACH (QAction *action, actions)
 		{
-			QAction *pa = new QAction (action->icon (),
-					action->text (), Toolbar_.get ());
-			if (action->isSeparator ())
-				pa->setSeparator (true);
-			else if (qobject_cast<QWidgetAction*> (action))
+			if (qobject_cast<QWidgetAction*> (action))
 			{
 				proxies << action;
 				continue;
 			}
+
+			QAction *pa = new QAction (action->icon (), action->text (), parent);
+			if (action->isSeparator ())
+				pa->setSeparator (true);
 			else
 			{
 				pa->setCheckable (action->isCheckable ());
@@ -407,7 +407,7 @@ namespace Summary
 						action->setIcon (Core::Instance ().GetProxy ()->GetIcon (ai));
 				}
 
-				const auto& proxies = CreateProxyActions (controls->actions ());
+				const auto& proxies = CreateProxyActions (controls->actions (), Toolbar_.get ());
 				Toolbar_->insertActions (Toolbar_->actions ().first (), proxies);
 			}
 			if (addiInfo != Ui_.ControlsDockWidget_->widget ())
@@ -451,7 +451,7 @@ namespace Summary
 				this,
 				SLOT (handleActionTriggered (QAction*)));
 		menu->setAttribute (Qt::WA_DeleteOnClose, true);
-		menu->addActions (CreateProxyActions (sourceMenu->actions ()));
+		menu->addActions (CreateProxyActions (sourceMenu->actions (), menu));
 		menu->setTitle (sourceMenu->title ());
 		menu->popup (Ui_.PluginsTasksTree_->viewport ()->mapToGlobal (pos));
 	}

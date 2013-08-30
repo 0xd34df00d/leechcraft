@@ -21,10 +21,6 @@ set (SRCS
 	signalledwidget.cpp
 	soundwidget.cpp
 	)
-set (FORMS
-	vlccontrolswidget.ui
-	)
-QT4_WRAP_UI (UIS_H ${FORMS})
 	
 #CreateTrs("vlc" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("vlc" "en;ru_RU" "${SRCS}" "${FORMS}" "")

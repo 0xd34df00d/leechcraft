@@ -378,15 +378,6 @@ namespace Azoth
 		return CustomChatStyleManager_.get ();
 	}
 
-	QSet<QByteArray> Core::GetExpectedPluginClasses () const
-	{
-		QSet<QByteArray> classes;
-		classes << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
-		classes << "org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin";
-		classes << "org.LeechCraft.Plugins.Azoth.Plugins.IResourceSourcePlugin";
-		return classes;
-	}
-
 	void Core::AddPlugin (QObject *plugin)
 	{
 		IPlugin2 *plugin2 = qobject_cast<IPlugin2*> (plugin);

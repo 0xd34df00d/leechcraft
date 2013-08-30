@@ -37,7 +37,7 @@ namespace Azoth
 {
 namespace Murm
 {
-	class XmlSettingsManager : public Util::BaseSettingsManager
+	class XmlSettingsManager : public LeechCraft::Util::BaseSettingsManager
 	{
 		Q_OBJECT
 

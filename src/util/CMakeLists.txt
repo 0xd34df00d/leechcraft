@@ -44,11 +44,12 @@ set (SRCS
 	network/networkdiskcache.cpp
 	network/socketerrorstrings.cpp
 	qml/colorthemeproxy.cpp
-	qml/widthiconprovider.cpp
 	qml/settableiconprovider.cpp
+	qml/standardnamfactory.cpp
 	qml/themeimageprovider.cpp
 	qml/unhidelistmodel.cpp
 	qml/unhidelistviewbase.cpp
+	qml/widthiconprovider.cpp
 	svcauth/vkauthmanager.cpp
 	sys/mimedetector.cpp
 	sys/paths.cpp

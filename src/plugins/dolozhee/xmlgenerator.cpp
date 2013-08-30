@@ -54,10 +54,12 @@ namespace Dolozhee
 	}
 
 	QByteArray XMLGenerator::CreateIssue (const QString& title,
-			const QString& desc, int category,
+			QString desc, int category,
 			ReportTypePage::Type type, ReportTypePage::Priority prio,
 			const QList<FileInfo>& files) const
 	{
+		desc.remove ("\r");
+
 		QByteArray result;
 
 		QXmlStreamWriter w (&result);

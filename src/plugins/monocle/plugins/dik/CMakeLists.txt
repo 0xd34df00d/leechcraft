@@ -22,6 +22,7 @@ add_library (leechcraft_monocle_dik SHARED
 target_link_libraries (leechcraft_monocle_dik
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
+	leechcraft_monocle_util
 	)
 install (TARGETS leechcraft_monocle_dik DESTINATION ${LC_PLUGINS_DEST})
 #if (UNIX AND NOT APPLE)

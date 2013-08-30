@@ -33,7 +33,6 @@
 #include <interfaces/monocle/idocument.h>
 #include <interfaces/monocle/isupportpainting.h>
 #include <interfaces/monocle/isearchabledocument.h>
-#include <util/monocle/monocleutilconfig.h>
 
 class QTextDocument;
 
@@ -41,9 +40,9 @@ namespace LeechCraft
 {
 namespace Monocle
 {
-	class MONOCLE_UTIL_API TextDocumentAdapter : public IDocument
-											   , public ISupportPainting
-											   , public ISearchableDocument
+	class TextDocumentAdapter : public IDocument
+							  , public ISupportPainting
+							  , public ISearchableDocument
 	{
 	protected:
 		std::shared_ptr<QTextDocument> Doc_;

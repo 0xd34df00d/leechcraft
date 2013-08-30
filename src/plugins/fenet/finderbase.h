@@ -56,7 +56,7 @@ namespace Fenet
 	public:
 		FinderBase (QObject *parent = 0)
 		: QObject (parent)
-		, Path_ (QString (qgetenv ("PATH")).split (":", QString::SkipEmptyParts))
+		, Path_ (Util::GetSystemPaths ())
 		, FoundModel_ (new QStandardItemModel (this))
 		{
 		}
@@ -136,11 +136,8 @@ namespace Fenet
 			if (QFileInfo (executable).isExecutable ())
 				return true;
 
-			for (const auto& dir : Path_)
-				if (QFileInfo (dir + '/' + executable).isExecutable ())
-					return true;
-
-			return false;
+			return !Util::FindInSystemPath (executable, Path_,
+					[] (const QFileInfo& fi) { return fi.isExecutable (); }).isEmpty ();
 		}
 	};
 }

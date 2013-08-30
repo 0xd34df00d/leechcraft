@@ -112,8 +112,21 @@ namespace Murm
 		return nullptr;
 	}
 
-	void VkProtocol::RemoveAccount (QObject *account)
+	void VkProtocol::RemoveAccount (QObject *accObj)
 	{
+		auto acc = qobject_cast<VkAccount*> (accObj);
+
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Murm");
+		settings.beginGroup ("Accounts");
+		settings.remove (acc->GetAccountID ());
+		settings.endGroup ();
+
+		emit accountRemoved (accObj);
+
+		Accounts_.removeAll (acc);
+
+		acc->deleteLater ();
 	}
 
 	void VkProtocol::AddAccount (VkAccount *acc)

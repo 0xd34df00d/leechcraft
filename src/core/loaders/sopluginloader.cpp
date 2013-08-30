@@ -37,7 +37,7 @@ namespace Loaders
 	SOPluginLoader::SOPluginLoader (const QString& filename)
 	: Loader_ { new QPluginLoader (filename) }
 	{
-		Loader_->setLoadHints (QLibrary::ResolveAllSymbolsHint | QLibrary::ExportExternalSymbolsHint);
+		Loader_->setLoadHints (QLibrary::ExportExternalSymbolsHint);
 	}
 
 	quint64 SOPluginLoader::GetAPILevel ()

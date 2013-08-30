@@ -1,6 +1,7 @@
 cmake_minimum_required (VERSION 2.8)
 project (leechcraft_lmp)
 include (InitLCPlugin OPTIONAL)
+include (CMakeDependentOption)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
@@ -12,7 +13,7 @@ find_package (GLIB2 REQUIRED)
 find_package (Taglib REQUIRED)
 add_definitions (${TAGLIB_CFLAGS})
 
-option (ENABLE_LMP_MPRIS "Enable MPRIS support for LMP" TRUE)
+cmake_dependent_option (ENABLE_LMP_MPRIS "Enable MPRIS support for LMP" ON "NOT WIN32" OFF)
 
 set (QT_USE_QTDECLARATIVE TRUE)
 set (QT_USE_QTNETWORK TRUE)
@@ -33,13 +34,20 @@ include_directories (
 	${LIBXML2_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
+set (COMMON_SRCS
+	mediainfo.cpp
+	)
+add_library (leechcraft_lmp_common STATIC
+	${COMMON_SRCS}
+	)
+set_target_properties (leechcraft_lmp_common PROPERTIES POSITION_INDEPENDENT_CODE True)
+
 set (SRCS
 	lmp.cpp
 	xmlsettingsmanager.cpp
 	playertab.cpp
 	player.cpp
 	core.cpp
-	mediainfo.cpp
 	localfileresolver.cpp
 	playlistdelegate.cpp
 	localcollection.cpp
@@ -159,6 +167,7 @@ target_link_libraries (leechcraft_lmp
 	${LIBXML2_LIBRARIES}
 
 	${MPRIS_SUBLIB}
+	leechcraft_lmp_common
 	)
 
 install (TARGETS leechcraft_lmp DESTINATION ${LC_PLUGINS_DEST})

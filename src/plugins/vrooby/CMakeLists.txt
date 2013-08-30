@@ -1,6 +1,7 @@
 cmake_minimum_required (VERSION 2.8)
 project (leechcraft_vrooby)
 include (InitLCPlugin OPTIONAL)
+include (CMakeDependentOption)
 
 set (QT_USE_QTDECLARATIVE TRUE)
 include (${QT_USE_FILE})
@@ -19,8 +20,8 @@ set (RESOURCES vroobyresources.qrc)
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 CreateTrs ("vrooby" "en;ru_RU" COMPILED_TRANSLATIONS)
 
-option (ENABLE_VROOBY_UDISKS "Enable UDisks backend for Vrooby" TRUE)
-option (ENABLE_VROOBY_UDISKS2 "Enable UDisks2 backend for Vrooby" FALSE)
+cmake_dependent_option (ENABLE_VROOBY_UDISKS "Enable UDisks backend for Vrooby" ON "NOT WIN32" OFF)
+cmake_dependent_option (ENABLE_VROOBY_UDISKS2 "Enable UDisks2 backend for Vrooby" OFF "NOT WIN32" OFF)
 
 if (ENABLE_VROOBY_UDISKS)
 	add_subdirectory (backends/udisks)

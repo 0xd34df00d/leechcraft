@@ -47,6 +47,7 @@ namespace Poleemery
 		QList<BalanceInfo> Sums_;
 
 		bool RatePriceEditable_ = true;
+		bool ModifiesStorage_ = true;
 	public:
 		enum Columns
 		{
@@ -80,6 +81,7 @@ namespace Poleemery
 		QVariant headerData (int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
 		void SetRatePriceEditable (bool);
+		void SetModifiesStorage (bool);
 
 		void AddEntry (EntryBase_ptr);
 		void AddEntries (QList<EntryBase_ptr>);

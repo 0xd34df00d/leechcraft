@@ -76,6 +76,9 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 			SLOT (handleSslErrors (QNetworkReply*,
 					const QList<QSslError>&)));
 
+	CookieJar_ = new CustomCookieJar (this);
+	setCookieJar (CookieJar_);
+
 	XmlSettingsManager::Instance ()->RegisterObject ("FilterTrackingCookies",
 			this,
 			"handleFilterTrackingCookies");
@@ -88,12 +91,14 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 	XmlSettingsManager::Instance ()->RegisterObject ("MatchDomainExactly",
 			this,
 			"setMatchDomainExactly");
+	XmlSettingsManager::Instance ()->RegisterObject ({ "CookiesWhitelist", "CookiesBlacklist" },
+			this,
+			"setCookiesLists");
 
-	CookieJar_ = new CustomCookieJar (this);
-	setCookieJar (CookieJar_);
 	handleFilterTrackingCookies ();
 	setCookiesEnabled ();
 	setMatchDomainExactly ();
+	setCookiesLists ();
 
 	try
 	{
@@ -352,6 +357,25 @@ void NetworkAccessManager::setMatchDomainExactly ()
 {
 	CookieJar_->SetExactDomainMatch (XmlSettingsManager::Instance ()->
 			property ("MatchDomainExactly").toBool ());
+}
+
+namespace
+{
+	QList<QRegExp> GetList (const QByteArray& setting)
+	{
+		const auto& stringList = XmlSettingsManager::Instance ()->
+				property (setting).toStringList ();
+		QList<QRegExp> result;
+		for (const auto& str : stringList)
+			result << QRegExp (str);
+		return result;
+	}
+}
+
+void NetworkAccessManager::setCookiesLists ()
+{
+	CookieJar_->SetWhitelist (GetList ("CookiesWhitelist"));
+	CookieJar_->SetBlacklist (GetList ("CookiesBlacklist"));
 }
 
 void NetworkAccessManager::handleCacheSize ()

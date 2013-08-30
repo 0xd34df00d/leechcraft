@@ -125,16 +125,23 @@ namespace LMP
 		possibleBases << "cover" << "folder" << "front";
 
 		const QDir& dir = QFileInfo (near).absoluteDir ();
-		const QStringList& entryList = dir.entryList (QStringList ("*.jpg") << "*.png" << "*.bmp");
-		auto pos = std::find_if (entryList.begin (), entryList.end (),
-				[&possibleBases] (const QString& name) -> bool
-				{
-					Q_FOREACH (const QString& pBase, possibleBases)
-						if (name.startsWith (pBase, Qt::CaseInsensitive))
-							return true;
-					return false;
-				});
-		return pos == entryList.end () ? QString () : dir.filePath (*pos);
+		const QStringList& entryList = dir.entryList ({ "*.jpg", "*.png", "*.bmp" });
+		if (entryList.size () > 1)
+		{
+			auto pos = std::find_if (entryList.begin (), entryList.end (),
+					[&possibleBases] (const QString& name) -> bool
+					{
+						for (const auto& pBase : possibleBases)
+							if (name.startsWith (pBase, Qt::CaseInsensitive))
+								return true;
+						return false;
+					});
+			return pos == entryList.end () ? QString () : dir.filePath (*pos);
+		}
+		else if (entryList.size () == 1)
+			return dir.filePath (entryList.first ());
+		else
+			return {};
 	}
 
 	QPixmap FindAlbumArt (const QString& near, bool ignoreCollection)

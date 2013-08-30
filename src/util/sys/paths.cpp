@@ -86,5 +86,27 @@ namespace Util
 				<< filename;
 		return QString ();
 	}
+
+	QStringList GetSystemPaths ()
+	{
+		return QString (qgetenv ("PATH")).split (":", QString::SkipEmptyParts);
+	}
+
+	QString FindInSystemPath (const QString& name, const QStringList& paths, std::function<bool (QFileInfo)> filter)
+	{
+		for (const auto& dir : paths)
+		{
+			const QFileInfo fi (dir + '/' + name);
+			if (!fi.exists ())
+				continue;
+
+			if (filter && !filter (fi))
+				continue;
+
+			return fi.absoluteFilePath ();
+		}
+
+		return {};
+	}
 }
 }

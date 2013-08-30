@@ -172,8 +172,8 @@ Item {
         opacity: isHighlight ? 1 : 0
         Behavior on opacity { PropertyAnimation {} }
 
-        width: parent.height / 18
-        height: parent.width / 2
+        width: parent.height / 12
+        height: parent.width / 1.5
         radius: 1
 
         rotation: isButtonVertical ? 0 : 90
@@ -186,7 +186,7 @@ Item {
         gradient: Gradient {
             GradientStop {
                 position: 0
-                color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedBorderColor, 0)
+                color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedBorderColor, 0.2)
             }
             GradientStop {
                 position: 0.5
@@ -194,7 +194,7 @@ Item {
             }
             GradientStop {
                 position: 1
-                color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedBorderColor, 0)
+                color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedBorderColor, 0.2)
             }
         }
     }
@@ -205,8 +205,8 @@ Item {
         opacity: isStrongHighlight ? 1 : 0
         Behavior on opacity { PropertyAnimation {} }
 
-        width: parent.height / 18
-        height: parent.width / 2
+        width: parent.height / 12
+        height: parent.width / 1.5
         radius: 1
 
         rotation: isButtonVertical ? 0 : 90
@@ -219,7 +219,7 @@ Item {
         gradient: Gradient {
             GradientStop {
                 position: 0
-                color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedBorderColor, 0)
+                color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedBorderColor, 0.2)
             }
             GradientStop {
                 position: 0.5
@@ -227,7 +227,7 @@ Item {
             }
             GradientStop {
                 position: 1
-                color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedBorderColor, 0)
+                color: colorProxy.setAlpha(colorProxy.color_ToolButton_SelectedBorderColor, 0.2)
             }
         }
     }

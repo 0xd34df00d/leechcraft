@@ -120,6 +120,7 @@ namespace Lastfmscrobble
 		}
 
 		emit gotRecentReleases (releases);
+		deleteLater ();
 	}
 
 	void RecentReleasesFetcher::handleReplyError ()

@@ -1,8 +1,9 @@
 cmake_minimum_required (VERSION 2.8)
 project (leechcraft_musiczombie)
 include (InitLCPlugin OPTIONAL)
+include (CMakeDependentOption)
 
-option (WITH_MUSICZOMBIE_CHROMAPRINT "Build support for Chromaprints in MusicZombie" ON)
+cmake_dependent_option (WITH_MUSICZOMBIE_CHROMAPRINT "Build support for Chromaprints in MusicZombie" ON "NOT WIN32" OFF)
 
 if (WITH_MUSICZOMBIE_CHROMAPRINT)
 	set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")

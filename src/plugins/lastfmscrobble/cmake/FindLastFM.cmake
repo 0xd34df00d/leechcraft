@@ -26,6 +26,7 @@ else ()
 		/usr/local/include
 		/opt/local/include
 		/sw/include
+		${LASTFM_DIR}/include
 	)
 
 	find_library (LastFM_LIBRARY
@@ -37,6 +38,7 @@ else ()
 		/usr/local/lib
 		/opt/local/lib
 		/sw/lib
+		${LASTFM_DIR}/lib
 	)
 
 	set (LastFM_INCLUDE_DIRS
