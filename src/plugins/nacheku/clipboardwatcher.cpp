@@ -57,6 +57,10 @@ namespace Nacheku
 
 	void ClipboardWatcher::handleClipboardTimer ()
 	{
+		if (!XmlSettingsManager::Instance ()
+				.property ("WatchClipboard").toBool ())
+			return;
+
 		const QString& text = QApplication::clipboard ()->text ();
 		if (text.isEmpty () || text == PreviousClipboardContents_)
 			return;
@@ -67,9 +71,7 @@ namespace Nacheku
 				QString (),
 				FromUserInitiated);
 
-		if (XmlSettingsManager::Instance ()
-				.property ("WatchClipboard").toBool ())
-			emit gotEntity (e);
+		emit gotEntity (e);
 	}
 }
 }
