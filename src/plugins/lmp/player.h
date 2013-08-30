@@ -56,6 +56,7 @@ namespace LMP
 	class Output;
 	class Path;
 	struct MediaInfo;
+	enum class SourceError;
 
 	class Player : public QObject
 #ifdef ENABLE_MPRIS
@@ -177,6 +178,9 @@ namespace LMP
 		void handleStateChanged ();
 		void handleCurrentSourceChanged (const AudioSource&);
 		void handleMetadata ();
+
+		void handleSourceError (const QString&, SourceError);
+
 		void refillPlaylist ();
 		void setTransitionTime ();
 	signals:

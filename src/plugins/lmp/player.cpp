@@ -38,6 +38,7 @@
 #include <QtConcurrentRun>
 #include <QApplication>
 #include <util/util.h>
+#include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "mediainfo.h"
 #include "localfileresolver.h"
@@ -272,6 +273,11 @@ namespace LMP
 				SIGNAL (bufferStatus (int)),
 				this,
 				SIGNAL (bufferStatusChanged (int)));
+
+		connect (Source_,
+				SIGNAL (error (QString, SourceError)),
+				this,
+				SLOT (handleSourceError (QString, SourceError)));
 
 		auto collection = Core::Instance ().GetLocalCollection ();
 		if (collection->IsReady ())
@@ -1209,6 +1215,24 @@ namespace LMP
 
 		FillItem (curItem, info);
 		emit songChanged (info);
+	}
+
+	void Player::handleSourceError (const QString& sourceText, SourceError error)
+	{
+		auto text = tr ("GStreamer says: %1.").arg (sourceText);
+		switch (error)
+		{
+		case SourceError::MissingPlugin:
+			text.prepend ("<br/>");
+			text.prepend (tr ("Cannot find a proper audio decoder. "
+					"You probably don't have all the codec plugins installed."));
+			break;
+		case SourceError::Other:
+			break;
+		}
+
+		const auto& e = Util::MakeNotification ("LMP", text, PCritical_);
+		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void Player::refillPlaylist ()
