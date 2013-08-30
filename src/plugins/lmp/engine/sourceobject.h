@@ -47,6 +47,12 @@ namespace LMP
 	class AudioSource;
 	class Path;
 
+	enum class SourceError
+	{
+		MissingPlugin,
+		Other
+	};
+
 	class SourceObject : public QObject
 	{
 		Q_OBJECT
@@ -147,6 +153,8 @@ namespace LMP
 		void totalTimeChanged (qint64);
 
 		void tick (qint64);
+
+		void error (const QString&, SourceError);
 	};
 }
 }
