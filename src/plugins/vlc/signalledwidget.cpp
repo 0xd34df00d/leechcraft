@@ -100,7 +100,7 @@ namespace vlc
 		update ();
 	}
 	
-	void SignalledWidget::resizeEvent(QResizeEvent *event)
+	void SignalledWidget::resizeEvent (QResizeEvent *event)
 	{
 		emit resize (event);
 	}

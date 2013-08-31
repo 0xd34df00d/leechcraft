@@ -257,7 +257,7 @@ namespace vlc
 		if (event->text () == tr ("f"))
 			toggleFullScreen ();
 		
-		event->ignore ();
+		event->accept ();
 	}
 	
 	void VlcWidget::mouseMoveEvent (QMouseEvent *event)
