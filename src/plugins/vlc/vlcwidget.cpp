@@ -51,15 +51,6 @@
 #include "vlcwidget.h"
 #include "vlcplayer.h"
 
-namespace 
-{
-	QString EncodeUrl (QString s)
-	{
-		QUrl url (s);
-		return url.toEncoded ();
-	}
-}
-
 namespace LeechCraft
 {
 namespace vlc
@@ -160,7 +151,7 @@ namespace vlc
 													tr ("Open file"),
 													tr ("Videos (*.mkv *.avi *.mov *.mpg)"));
 		if (QFile::exists (file))
-			VlcPlayer_->addUrl ("file://" + EncodeUrl (file));
+			VlcPlayer_->addUrl (QUrl::fromLocalFile (file));
 	}
 	
 	void VlcWidget::addFolder () 
@@ -170,7 +161,7 @@ namespace vlc
 													tr ("Folder with video"));
 		
 		if (QFile::exists (folder))
-			VlcPlayer_->addUrl ("directory://" + EncodeUrl (folder));
+			VlcPlayer_->addUrl (QUrl ("directory://" + folder));
 	}
 	
 	void VlcWidget::addDVD ()
@@ -180,7 +171,7 @@ namespace vlc
 													tr ("Root of DVD directory"));
 		
 		if (QFile::exists (folder)) 
-			VlcPlayer_->addUrl ("dvdsimple://" + EncodeUrl (folder));
+			VlcPlayer_->addUrl (QUrl ("dvdsimple://" + folder));
 	}
 
 	void VlcWidget::addUrl ()
@@ -188,7 +179,7 @@ namespace vlc
 		QString url = QInputDialog::getText (this, tr ("Open URL"), tr ("Enter URL"));
 		
 		if (!url.isEmpty ())
-			VlcPlayer_->addUrl (EncodeUrl (url));
+			VlcPlayer_->addUrl (QUrl (url));
 	}
 	
 	void VlcWidget::updateInterface ()

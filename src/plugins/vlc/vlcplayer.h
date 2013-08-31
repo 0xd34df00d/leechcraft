@@ -34,6 +34,7 @@
 
 class QWidget;
 class QTime;
+class QUrl;
 struct libvlc_instance_t;
 struct libvlc_media_player_t;
 struct libvlc_media_t;
@@ -81,7 +82,7 @@ namespace vlc
 	public slots:
 		void stop ();
 		void togglePlay ();
-		void addUrl (const QString&);
+		void addUrl (const QUrl&);
 		void changePosition (double);
 		void switchWidget (QWidget*);
 		void setAudioTrack (int);

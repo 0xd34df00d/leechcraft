@@ -37,6 +37,7 @@
 #include <QTimer>
 #include <QSizePolicy>
 #include <QEventLoop>
+#include <QUrl>
 #include "vlcplayer.h"
 
 namespace 
@@ -69,10 +70,10 @@ namespace vlc
 		libvlc_media_player_set_xwindow (Mp_.get (), parent->winId ());
 	}
 	
-	void VlcPlayer::addUrl (const QString &url) 
+	void VlcPlayer::addUrl (const QUrl &url) 
 	{
 		libvlc_media_player_stop (Mp_.get ());
-		M_.reset(libvlc_media_new_location (VlcInstance_.get (), url.toUtf8 ()), libvlc_media_release);
+		M_.reset(libvlc_media_new_location (VlcInstance_.get (), url.toString ().toUtf8 ()), libvlc_media_release);
 		
 		libvlc_media_player_set_media (Mp_.get (), M_.get ());
 		libvlc_media_player_play (Mp_.get ());
