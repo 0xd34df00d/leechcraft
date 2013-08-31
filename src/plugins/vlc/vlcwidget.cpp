@@ -49,6 +49,7 @@
 #include <QUrl>
 #include <QEventLoop>
 #include <QResizeEvent>
+#include <QCursor>
 #include "vlcwidget.h"
 #include "vlcplayer.h"
 
@@ -56,6 +57,10 @@ namespace LeechCraft
 {
 namespace vlc
 {
+	const int PANEL_SIDE_MARGIN = 5;
+	const int PANEL_BOTTOM_MARGIN = 5;
+	const int PANEL_HEIGHT = 27;
+	
 	VlcWidget::VlcWidget (QWidget *parent)
 	: QWidget (parent)
 	, Parent_ (parent)
@@ -76,7 +81,7 @@ namespace vlc
 		InterfaceUpdater_->start ();
 		
 		TerminatePanel_ = new QTimer (this);
-		TerminatePanel_->setInterval (3000);
+		TerminatePanel_->setInterval (500);
 		
 		ConnectWidgetToMe (VlcMainWidget_);
 		ConnectWidgetToMe (FullScreenWidget_);
@@ -202,6 +207,18 @@ namespace vlc
 			FullScreenVlcScrollBar_->update ();
 			FullScreenTimeLeft_->setText (VlcPlayer_->GetCurrentTime ().toString ("HH:mm:ss"));
 			FullScreenTimeAll_->setText (VlcPlayer_->GetFullTime ().toString ("HH:mm:ss"));
+			
+			if (FullScreenPanel_->isVisible ())
+				if (QCursor::pos ().x () > PANEL_SIDE_MARGIN && 
+					QCursor::pos ().x () < FullScreenWidget_->width () - PANEL_SIDE_MARGIN &&
+					QCursor::pos ().y () < FullScreenWidget_->height () - PANEL_BOTTOM_MARGIN && 
+					QCursor::pos ().y () > FullScreenWidget_->height () - PANEL_BOTTOM_MARGIN - PANEL_HEIGHT)
+				{
+					fullScreenPanelRequested ();
+					FullScreenPanel_->setWindowOpacity (0.9);
+				}
+				else
+					FullScreenPanel_->setWindowOpacity (0.4);
 		}
 		else 
 		{
@@ -541,7 +558,8 @@ namespace vlc
 		if (!AllowFullScreenPanel_ || !FullScreenWidget_->isVisible ())
 			return;
 		
-		FullScreenPanel_->setGeometry (5, FullScreenWidget_->height () - 30, FullScreenWidget_->width () - 10, 25);
+		FullScreenPanel_->setGeometry (PANEL_SIDE_MARGIN, FullScreenWidget_->height () - PANEL_BOTTOM_MARGIN - PANEL_HEIGHT, 
+									   FullScreenWidget_->width () - PANEL_SIDE_MARGIN * 2, PANEL_HEIGHT);
 		if (!FullScreenPanel_->isVisible ())
 			FullScreenPanel_->show ();
 		else
