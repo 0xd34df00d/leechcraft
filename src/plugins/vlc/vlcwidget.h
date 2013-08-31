@@ -85,6 +85,7 @@ namespace vlc
 		SoundWidget *FullScreenSoundWidget_;
 		QMenu *ContextMenu_;
 		
+		QString GetNewSubtitles ();
 		void GenerateToolBar ();
 		QMenu* GenerateMenuForOpenAction ();
 		void PrepareFullScreen ();

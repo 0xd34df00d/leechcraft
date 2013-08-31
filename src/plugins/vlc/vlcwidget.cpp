@@ -185,7 +185,7 @@ namespace vlc
 
 	void VlcWidget::addUrl ()
 	{
-		QString url = QInputDialog::getText (this, tr ("Open URL"), tr ("enter URL"));
+		QString url = QInputDialog::getText (this, tr ("Open URL"), tr ("Enter URL"));
 		
 		if (!url.isEmpty ())
 			VlcPlayer_->addUrl (EncodeUrl (url));
@@ -257,7 +257,7 @@ namespace vlc
 		if (event->text () == tr ("f"))
 			toggleFullScreen ();
 		
-		event->accept ();
+		event->ignore ();
 	}
 	
 	void VlcWidget::mouseMoveEvent (QMouseEvent *event)
@@ -405,6 +405,9 @@ namespace vlc
 			subtitles->addAction (action);
 		}
 		
+		subtitles->addSeparator ();
+		subtitles->addAction (tr ("Add subtitles..."));
+		
 		ContextMenu_->addMenu (subtitles);
 		ContextMenu_->addMenu (tracks);
 		
@@ -423,8 +426,20 @@ namespace vlc
 	
 	void VlcWidget::setSubtitles(QAction *action)
 	{
-		int track = action->data ().toInt ();
-		VlcPlayer_->setSubtitle (track);
+		if (action->data ().isNull ())
+			VlcPlayer_->AddSubtitles (GetNewSubtitles ());
+		else 
+		{
+			int track = action->data ().toInt ();
+			VlcPlayer_->setSubtitle (track);
+		}
+	}
+	
+	QString VlcWidget::GetNewSubtitles ()
+	{
+		return QFileDialog::getOpenFileName (this,
+											tr ("Open file"),
+											tr ("Subtitles (*.srt)"));
 	}
 	
 	void VlcWidget::setAudioTrack (QAction *action)
@@ -457,7 +472,8 @@ namespace vlc
 		ForbidFullScreen_ = false;
 		FullScreenWidget_ = new SignalledWidget;
 		FullScreenWidget_->addAction (TogglePlay_);
-		FullScreenPanel_ = new SignalledWidget (this, Qt::Popup);
+		FullScreenPanel_ = new SignalledWidget (FullScreenWidget_, Qt::Widget | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
+		FullScreenPanel_->SetBackGroundColor (new QColor (palette ().button ().color ()));
 		QHBoxLayout *panelLayout = new QHBoxLayout;
 		FullScreenTimeLeft_ = new QLabel;
 		FullScreenTimeAll_ = new QLabel;
@@ -520,15 +536,24 @@ namespace vlc
 				SIGNAL (customContextMenuRequested (QPoint)),
 				this,
 				SLOT (generateContextMenu (QPoint)));
+		
+		connect (FullScreenWidget_,
+				SIGNAL(resize (QResizeEvent*)),
+				this,
+				SLOT(fullScreenPanelRequested ()));
 	}
 	
 	void VlcWidget::fullScreenPanelRequested ()
 	{
-		if (!AllowFullScreenPanel_)
+		if (!AllowFullScreenPanel_ || !FullScreenWidget_->isVisible ())
 			return;
 		
 		FullScreenPanel_->setGeometry (5, FullScreenWidget_->height () - 30, FullScreenWidget_->width () - 10, 25);
-		FullScreenPanel_->show ();
+		if (!FullScreenPanel_->isVisible ())
+			FullScreenPanel_->show ();
+		else
+			FullScreenPanel_->update ();
+		
 		TerminatePanel_->start ();
 	}
 	
@@ -536,6 +561,7 @@ namespace vlc
 	{
 		TerminatePanel_->stop ();
 		ForbidPanel ();
+		FullScreenWidget_->setFocus ();
 		FullScreenPanel_->hide ();
 	}
 	

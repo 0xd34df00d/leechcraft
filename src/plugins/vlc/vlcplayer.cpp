@@ -72,7 +72,7 @@ namespace vlc
 	void VlcPlayer::addUrl (const QString &url) 
 	{
 		libvlc_media_player_stop (Mp_.get ());
-		M_.reset(libvlc_media_new_location (VlcInstance_.get (), url.toLocal8Bit ()), libvlc_media_release);
+		M_.reset(libvlc_media_new_location (VlcInstance_.get (), url.toUtf8 ()), libvlc_media_release);
 		
 		libvlc_media_player_set_media (Mp_.get (), M_.get ());
 		libvlc_media_player_play (Mp_.get ());
@@ -208,7 +208,7 @@ namespace vlc
 	
 	void VlcPlayer::AddSubtitles (QString file)
 	{
-		libvlc_video_set_subtitle_file (Mp_.get (), file.toLocal8Bit ());
+		libvlc_video_set_subtitle_file (Mp_.get (), file.toUtf8 ());
 	}
 
 	int VlcPlayer::GetCurrentSubtitle () const

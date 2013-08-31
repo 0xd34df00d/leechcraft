@@ -99,5 +99,10 @@ namespace vlc
 		BackgroundColor_ = color;
 		update ();
 	}
+	
+	void SignalledWidget::resizeEvent(QResizeEvent *event)
+	{
+		emit resize (event);
+	}
 }
 }
