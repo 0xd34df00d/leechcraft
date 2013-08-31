@@ -269,6 +269,8 @@ namespace vlc
 
 	void VlcWidget::mousePressEvent (QMouseEvent *event)
 	{		
+		if (event->button () == Qt::LeftButton)
+			VlcPlayer_->DVDNavigate (libvlc_navigate_activate);
 	}
 	
 	void VlcWidget::wheelEvent (QWheelEvent *event)
@@ -506,6 +508,11 @@ namespace vlc
 				SIGNAL (wheel (QWheelEvent*)),
 				this,
 				SLOT (wheelEvent (QWheelEvent*)));
+		
+		connect (widget,
+				SIGNAL (mousePress (QMouseEvent*)),
+				this,
+				SLOT (mousePressEvent (QMouseEvent*)));	
 	}
 	
 	void VlcWidget::PrepareFullScreen ()
