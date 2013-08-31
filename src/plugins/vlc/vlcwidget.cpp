@@ -48,6 +48,7 @@
 #include <QToolButton>
 #include <QUrl>
 #include <QEventLoop>
+#include <QResizeEvent>
 #include "vlcwidget.h"
 #include "vlcplayer.h"
 
@@ -204,6 +205,8 @@ namespace vlc
 		}
 		else 
 		{
+			if (FullScreenPanel_->isVisible ())
+				FullScreenPanel_->hide ();
 			ScrollBar_->setPosition (VlcPlayer_->GetPosition ());
 			ScrollBar_->update ();
 			TimeLeft_->setText (VlcPlayer_->GetCurrentTime ().toString ("HH:mm:ss"));
@@ -272,8 +275,8 @@ namespace vlc
 			FullScreen_ = true;
 			AllowFullScreenPanel_ = true;
 			FullScreenWidget_->SetBackGroundColor (new QColor ("black"));
-			FullScreenWidget_->show ();
 			FullScreenWidget_->showFullScreen ();
+			FullScreenWidget_->show ();
 			VlcPlayer_->switchWidget (FullScreenWidget_);
 		} 
 		else 
@@ -463,8 +466,7 @@ namespace vlc
 		ForbidFullScreen_ = false;
 		FullScreenWidget_ = new SignalledWidget;
 		FullScreenWidget_->addAction (TogglePlay_);
-		FullScreenPanel_ = new SignalledWidget (FullScreenWidget_, Qt::Widget | Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
-		FullScreenPanel_->SetBackGroundColor (new QColor (palette ().button ().color ()));
+		FullScreenPanel_ = new SignalledWidget (this, Qt::ToolTip);
 		QHBoxLayout *panelLayout = new QHBoxLayout;
 		FullScreenTimeLeft_ = new QLabel;
 		FullScreenTimeAll_ = new QLabel;
@@ -529,9 +531,9 @@ namespace vlc
 				SLOT (generateContextMenu (QPoint)));
 		
 		connect (FullScreenWidget_,
-				SIGNAL(resize (QResizeEvent*)),
+				SIGNAL (showEv (QShowEvent*)),
 				this,
-				SLOT(fullScreenPanelRequested ()));
+				SLOT (fullScreenPanelRequested ()));
 	}
 	
 	void VlcWidget::fullScreenPanelRequested ()

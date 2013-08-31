@@ -40,6 +40,7 @@ class QMenu;
 class QLabel;
 class QTimer;
 class QToolButton;
+class QResizeEvent;
 
 namespace LeechCraft
 {
