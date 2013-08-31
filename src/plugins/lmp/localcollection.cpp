@@ -536,15 +536,18 @@ namespace LMP
 		int trackCount = 0;
 		const bool shouldEmit = !Artists_.isEmpty ();
 
-		Q_FOREACH (const auto& artist, artists)
+		for (const auto& artist : artists)
 		{
 			if (std::find_if (Artists_.begin (), Artists_.end (),
 						[&artist] (decltype (artist) present) { return present.ID_ == artist.ID_; }) == Artists_.end ())
 				Artists_ += artist;
-			Q_FOREACH (auto album, artist.Albums_)
-				Q_FOREACH (const auto& track, album->Tracks_)
+			for (const auto& album : artist.Albums_)
+				for (const auto& track : album->Tracks_)
 					PresentPaths_ << track.FilePath_;
 		}
+
+		const auto autoFetchAA = XmlSettingsManager::Instance ()
+				.property ("AutoFetchAlbumArt").toBool ();
 
 		for (const auto& artist : artists)
 		{
@@ -564,7 +567,8 @@ namespace LMP
 			{
 				trackCount += album->Tracks_.size ();
 
-				AlbumArtMgr_->CheckAlbumArt (artist, album);
+				if (autoFetchAA)
+					AlbumArtMgr_->CheckAlbumArt (artist, album);
 
 				auto albumItem = GetItem (Album2Item_,
 						album->ID_,
