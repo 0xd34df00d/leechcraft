@@ -35,6 +35,7 @@
 class QWidget;
 class QTime;
 class QUrl;
+
 struct libvlc_instance_t;
 struct libvlc_media_player_t;
 struct libvlc_media_t;
@@ -73,6 +74,8 @@ namespace vlc
 		int GetCurrentSubtitle () const;
 		QString GetSubtitleDescription (int) const;
 		int GetSubtitleId (int) const;
+		
+		void DVDNavigate (unsigned);
 		
 		std::shared_ptr<libvlc_media_player_t> GetPlayer () const;
 		

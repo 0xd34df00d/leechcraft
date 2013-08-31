@@ -242,5 +242,10 @@ namespace vlc
 		return t;
 	}
 
+	void VlcPlayer::DVDNavigate(unsigned nav)
+	{
+		libvlc_media_player_navigate (Mp_.get (), nav);
+	}
+
 }
 }

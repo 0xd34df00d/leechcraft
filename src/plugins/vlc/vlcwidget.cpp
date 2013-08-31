@@ -27,6 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
+#include <vlc/vlc.h>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPainter>
@@ -52,6 +53,14 @@
 #include <QCursor>
 #include "vlcwidget.h"
 #include "vlcplayer.h"
+
+namespace
+{
+	int dist (QPoint a, QPoint b) // Manhetten forever
+	{
+		return std::abs (a.x () - b.x ()) + std::abs (a.y () - b.y ());
+	}
+}
 
 namespace LeechCraft
 {
@@ -170,7 +179,7 @@ namespace vlc
 			VlcPlayer_->addUrl (QUrl ("directory://" + folder));
 	}
 	
-	void VlcWidget::addDVD ()
+	void VlcWidget::addSimpleDVD ()
 	{
 		QString folder = QFileDialog::getExistingDirectory (this,
 													tr ("Open DVD"),
@@ -178,6 +187,16 @@ namespace vlc
 		
 		if (QFile::exists (folder)) 
 			VlcPlayer_->addUrl (QUrl ("dvdsimple://" + folder));
+	}
+	
+	void VlcWidget::addDVD ()
+	{
+		QString folder = QFileDialog::getExistingDirectory (this,
+													tr ("Open DVD"),
+													tr ("Root of DVD directory"));
+		
+		if (QFile::exists (folder))
+			VlcPlayer_->addUrl (QUrl ("dvd://" + folder));
 	}
 
 	void VlcWidget::addUrl ()
@@ -215,10 +234,10 @@ namespace vlc
 					QCursor::pos ().y () > FullScreenWidget_->height () - PANEL_BOTTOM_MARGIN - PANEL_HEIGHT)
 				{
 					fullScreenPanelRequested ();
-					FullScreenPanel_->setWindowOpacity (0.9);
+					FullScreenPanel_->setWindowOpacity (0.8);
 				}
 				else
-					FullScreenPanel_->setWindowOpacity (0.4);
+					FullScreenPanel_->setWindowOpacity (0.7);
 		}
 		else 
 		{
@@ -265,7 +284,17 @@ namespace vlc
 	
 	void VlcWidget::keyPressEvent (QKeyEvent *event) 
 	{
-		if (event->text () == tr ("f"))
+		if (event->key () == Qt::LeftArrow)
+			VlcPlayer_->DVDNavigate (libvlc_navigate_left);
+		else if (event->key () == Qt::RightArrow)
+			VlcPlayer_->DVDNavigate (libvlc_navigate_right);
+		else if (event->key () == Qt::UpArrow)
+			VlcPlayer_->DVDNavigate (libvlc_navigate_up);
+		else if (event->key () == Qt::DownArrow)
+			VlcPlayer_->DVDNavigate (libvlc_navigate_down);
+		else if (event->key () == Qt::Key_Enter)
+			VlcPlayer_->DVDNavigate (libvlc_navigate_activate);
+		else if (event->text () == tr ("f"))
 			toggleFullScreen ();
 		
 		event->accept ();
@@ -273,9 +302,11 @@ namespace vlc
 	
 	void VlcWidget::mouseMoveEvent (QMouseEvent *event)
 	{
-		if (FullScreen_) 
-			fullScreenPanelRequested ();
+		if (FullScreen_)
+			if (dist (event->pos (), LastMouseEvent_) > 2)
+				fullScreenPanelRequested ();
 		
+		LastMouseEvent_ = event->pos ();
 		event->accept ();
 	}
 
@@ -604,6 +635,11 @@ namespace vlc
 				SIGNAL (triggered ()),
 				this,
 				SLOT (addDVD ()));
+		
+		connect (result->addAction (tr ("Open Simple DVD")),
+				SIGNAL (triggered ()),
+				this,
+				SLOT (addSimpleDVD ()));
 		
 		return result;
 	}

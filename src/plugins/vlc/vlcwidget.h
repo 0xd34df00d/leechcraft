@@ -61,6 +61,7 @@ namespace vlc
 		QAction *TogglePlay_;
 		QAction *Stop_;
 		QAction *FullScreenAction_;
+		QPoint LastMouseEvent_;
 		
 		VlcScrollBar *ScrollBar_;
 		QLabel *TimeLeft_;
@@ -109,6 +110,7 @@ namespace vlc
 		void addFolder ();
 		void addUrl ();
 		void addDVD ();
+		void addSimpleDVD ();
 		
 		void updateInterface ();
 		void toggleFullScreen ();
