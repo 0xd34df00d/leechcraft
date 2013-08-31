@@ -73,7 +73,7 @@ namespace vlc
 	void VlcPlayer::addUrl (const QUrl &url) 
 	{
 		libvlc_media_player_stop (Mp_.get ());
-		M_.reset(libvlc_media_new_location (VlcInstance_.get (), url.toString ().toUtf8 ()), libvlc_media_release);
+		M_.reset(libvlc_media_new_location (VlcInstance_.get (), url.toEncoded ()), libvlc_media_release);
 		
 		libvlc_media_player_set_media (Mp_.get (), M_.get ());
 		libvlc_media_player_play (Mp_.get ());
