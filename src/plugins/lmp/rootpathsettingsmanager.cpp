@@ -81,11 +81,11 @@ namespace LMP
 
 	void RootPathSettingsManager::handleRootPathsChanged ()
 	{
-		while (Model_->rowCount ())
-			Model_->removeRow (0);
+		if (const auto rc = Model_->rowCount ())
+			Model_->removeRows (0, rc);
 
 		const auto& dirs = Core::Instance ().GetLocalCollection ()->GetDirs ();
-		Q_FOREACH (const auto& dir, dirs)
+		for (const auto& dir : dirs)
 			Model_->appendRow (new QStandardItem (dir));
 	}
 }
