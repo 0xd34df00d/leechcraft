@@ -25,6 +25,9 @@
 		<item type="checkbox" property="RequestLyrics" default="true">
 			<label value="Request lyrics" />
 		</item>
+		<item type="checkbox" property="AutoFetchAlbumArt" default="true">
+			<label value="Automatically fetch missing album art" />
+		</item>
 		<item type="checkbox" property="RememberUsedProviders" default="true">
 			<label value="Remember used data providers" />
 		</item>
