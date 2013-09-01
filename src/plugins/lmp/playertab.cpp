@@ -491,10 +491,10 @@ namespace LMP
 				SLOT (setFilterFixedString (QString)));
 	}
 
-	void PlayerTab::SetNowPlaying (const MediaInfo& info, const QPixmap&)
+	void PlayerTab::SetNowPlaying (const MediaInfo& info, const QPixmap& px)
 	{
 		Ui_.NowPlaying_->clear ();
-		NotifyCurrentTrack (false);
+		NotifyCurrentTrack (info, px, false);
 	}
 
 	void PlayerTab::Scrobble (const MediaInfo& info)
@@ -572,28 +572,31 @@ namespace LMP
 		}
 	}
 
-	void PlayerTab::NotifyCurrentTrack (bool fromUser)
+	void PlayerTab::NotifyCurrentTrack (const MediaInfo& info, QPixmap notifyPx, bool fromUser)
 	{
-		const auto& info = Player_->GetCurrentMediaInfo ();
-		const bool isKnown = !info.Title_.isEmpty () || !info.Artist_.isEmpty ();
-		if (!isKnown && !fromUser)
+		QString text;
+		if (Player_->GetState () != SourceState::Stopped)
+		{
+			qDebug () << Q_FUNC_INFO << static_cast<int> (Player_->GetState ());
+			const auto& title = info.Title_.isEmpty () ? tr ("unknown song") : info.Title_;
+			const auto& album = info.Album_.isEmpty () ? tr ("unknown album") : info.Album_;
+			const auto& track = info.Artist_.isEmpty () ? tr ("unknown artist") : info.Artist_;
+
+			text = tr ("Now playing: %1 from %2 by %3")
+					.arg ("<em>" + title + "</em>")
+					.arg ("<em>" + album + "</em>")
+					.arg ("<em>" + track + "</em>");
+			if (fromUser)
+				Ui_.NowPlaying_->setText (text);
+		}
+		else if (fromUser)
+			text = tr ("Playback is stopped.");
+		else
 			return;
 
-		const auto& title = info.Title_.isEmpty () ? tr ("unknown song") : info.Title_;
-		const auto& album = info.Album_.isEmpty () ? tr ("unknown album") : info.Album_;
-		const auto& track = info.Artist_.isEmpty () ? tr ("unknown artist") : info.Artist_;
-
-		const QString& text = tr ("Now playing: %1 from %2 by %3")
-				.arg ("<em>" + title + "</em>")
-				.arg ("<em>" + album + "</em>")
-				.arg ("<em>" + track + "</em>");
-		if (!fromUser && isKnown)
-			Ui_.NowPlaying_->setText (text);
-
-		if (fromUser ||
-				XmlSettingsManager::Instance ().property ("EnableNotifications").toBool ())
+		if (!text.isEmpty () && (fromUser ||
+				XmlSettingsManager::Instance ().property ("EnableNotifications").toBool ()))
 		{
-			auto notifyPx = GetPixmap (info).PX_;
 			int width = notifyPx.width ();
 			if (width > 200)
 			{
@@ -898,7 +901,8 @@ namespace LMP
 
 	void PlayerTab::notifyCurrentTrack ()
 	{
-		NotifyCurrentTrack (true);
+		const auto& info = Player_->GetCurrentMediaInfo ();
+		NotifyCurrentTrack (info, GetPixmap (info).PX_, true);
 	}
 
 	void PlayerTab::closeLMP ()
