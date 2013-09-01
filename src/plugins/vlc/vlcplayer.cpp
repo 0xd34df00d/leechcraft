@@ -37,7 +37,9 @@
 #include <QTimer>
 #include <QSizePolicy>
 #include <QEventLoop>
+#include <QTimeLine>
 #include <QUrl>
+#include <QDebug>
 #include "vlcplayer.h"
 
 namespace 
@@ -260,8 +262,17 @@ namespace vlc
 
 	void VlcPlayer::WaitForPlaying () const
 	{
-		while (!NowPlaying ())
-			sleep (1);
+		QTimeLine line;
+		line.start ();
+		while (!NowPlaying ()) 
+		{
+			sleep (5);
+			if (line.currentTime () > 1000)
+			{
+				qWarning () << Q_FUNC_INFO << "timeout";
+				break;
+			}
+		}
 	}
 }
 }
