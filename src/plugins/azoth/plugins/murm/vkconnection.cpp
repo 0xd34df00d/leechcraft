@@ -284,9 +284,6 @@ namespace Murm
 						SLOT (handleGotFriendLists ()));
 				return reply;
 			});
-		PushFriendsRequest ();
-		PushLPFetchCall ();
-
 		AuthMgr_->GetAuthKey ();
 	}
 
@@ -482,6 +479,9 @@ namespace Murm
 		}
 
 		emit gotLists (lists);
+
+		PushFriendsRequest ();
+		AuthMgr_->GetAuthKey ();
 	}
 
 	void VkConnection::handleGotFriends ()
@@ -537,6 +537,12 @@ namespace Murm
 		}
 
 		emit gotUsers (users);
+
+		if (LPServer_.isEmpty ())
+		{
+			PushLPFetchCall ();
+			AuthMgr_->GetAuthKey ();
+		}
 	}
 
 	void VkConnection::handleGotLPServer ()
