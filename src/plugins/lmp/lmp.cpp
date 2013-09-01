@@ -358,6 +358,7 @@ namespace LMP
 		e.Additional_ ["Receiver"] = QVariant::fromValue<QObject*> (PlayerTab_);
 		initShortcut (SLOT (handleLoveTrack ()), QString ("Meta+L"));
 
+		auto proxy = Core::Instance ().GetProxy ();
 		auto setInfo = [this, proxy] (const QByteArray& method,
 				const QString& userText, const QString& icon)
 		{
