@@ -589,6 +589,11 @@ namespace vlc
 				SIGNAL (showEv (QShowEvent*)),
 				this,
 				SLOT (fullScreenPanelRequested ()));
+		
+		connect (FullScreenWidget_,
+				SIGNAL (resize (QResizeEvent*)),
+				this,
+				SLOT (fullScreenPanelRequested ()));
 	}
 	
 	void VlcWidget::fullScreenPanelRequested ()
