@@ -577,7 +577,6 @@ namespace LMP
 		QString text;
 		if (Player_->GetState () != SourceState::Stopped)
 		{
-			qDebug () << Q_FUNC_INFO << static_cast<int> (Player_->GetState ());
 			const auto& title = info.Title_.isEmpty () ? tr ("unknown song") : info.Title_;
 			const auto& album = info.Album_.isEmpty () ? tr ("unknown album") : info.Album_;
 			const auto& track = info.Artist_.isEmpty () ? tr ("unknown artist") : info.Artist_;
