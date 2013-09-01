@@ -55,6 +55,8 @@ namespace vlc
 		
 		QWidget *Parent_;
 		libvlc_track_description_t* GetTrack(libvlc_track_description_t *t, int track) const;
+		void WaitForPlaying () const;
+		bool DVD_;
 		
 	public:
 		explicit VlcPlayer (QWidget *parent = 0);
