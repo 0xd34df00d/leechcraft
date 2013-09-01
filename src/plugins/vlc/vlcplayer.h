@@ -34,6 +34,8 @@
 
 class QWidget;
 class QTime;
+class QUrl;
+
 struct libvlc_instance_t;
 struct libvlc_media_player_t;
 struct libvlc_media_t;
@@ -53,6 +55,8 @@ namespace vlc
 		
 		QWidget *Parent_;
 		libvlc_track_description_t* GetTrack(libvlc_track_description_t *t, int track) const;
+		void WaitForPlaying () const;
+		bool DVD_;
 		
 	public:
 		explicit VlcPlayer (QWidget *parent = 0);
@@ -73,6 +77,8 @@ namespace vlc
 		QString GetSubtitleDescription (int) const;
 		int GetSubtitleId (int) const;
 		
+		void DVDNavigate (unsigned);
+		
 		std::shared_ptr<libvlc_media_player_t> GetPlayer () const;
 		
 		QTime GetCurrentTime () const;
@@ -81,7 +87,7 @@ namespace vlc
 	public slots:
 		void stop ();
 		void togglePlay ();
-		void addUrl (const QString&);
+		void addUrl (const QUrl&);
 		void changePosition (double);
 		void switchWidget (QWidget*);
 		void setAudioTrack (int);

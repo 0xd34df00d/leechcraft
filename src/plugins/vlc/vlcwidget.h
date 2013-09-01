@@ -40,6 +40,7 @@ class QMenu;
 class QLabel;
 class QTimer;
 class QToolButton;
+class QResizeEvent;
 
 namespace LeechCraft
 {
@@ -56,9 +57,11 @@ namespace vlc
 		VlcPlayer *VlcPlayer_;
 		QToolBar *Bar_;
 		QAction *Open_;
+		QToolButton *OpenButton_;
 		QAction *TogglePlay_;
 		QAction *Stop_;
 		QAction *FullScreenAction_;
+		QPoint LastMouseEvent_;
 		
 		VlcScrollBar *ScrollBar_;
 		QLabel *TimeLeft_;
@@ -84,7 +87,9 @@ namespace vlc
 		SoundWidget *FullScreenSoundWidget_;
 		QMenu *ContextMenu_;
 		
+		QString GetNewSubtitles ();
 		void GenerateToolBar ();
+		QMenu* GenerateMenuForOpenAction ();
 		void PrepareFullScreen ();
 		void ForbidFullScreen ();
 		void ConnectWidgetToMe (SignalledWidget*);
@@ -102,6 +107,11 @@ namespace vlc
 		
 	private slots:
 		void addFile ();
+		void addFolder ();
+		void addUrl ();
+		void addDVD ();
+		void addSimpleDVD ();
+		
 		void updateInterface ();
 		void toggleFullScreen ();
 		void allowFullScreen ();
