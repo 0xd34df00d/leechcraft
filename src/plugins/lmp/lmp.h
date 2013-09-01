@@ -109,6 +109,8 @@ namespace LMP
 		void AddPlugin (QObject* plugin);
 
 		QAbstractItemModel* GetRepresentation () const;
+	private:
+		void InitShortcuts ();
 	private slots:
 		void handleFullRaiseRequested ();
 		void showCollectionStats ();
