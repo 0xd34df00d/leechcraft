@@ -916,7 +916,6 @@ namespace LMP
 	void Player::stop ()
 	{
 		Source_->Stop ();
-		emit songChanged (MediaInfo ());
 
 		if (CurrentStation_)
 			UnsetRadio ();
@@ -1158,8 +1157,17 @@ namespace LMP
 	{
 		const auto state = Source_->GetState ();
 		qDebug () << Q_FUNC_INFO << static_cast<int> (state);
-		if (state == SourceState::Error)
+		switch (state)
+		{
+		case SourceState::Error:
 			qDebug () << Source_->GetErrorString ();
+			break;
+		case SourceState::Stopped:
+			emit songChanged ({});
+			break;
+		default:
+			break;
+		}
 	}
 
 	void Player::handleCurrentSourceChanged (const AudioSource& source)
