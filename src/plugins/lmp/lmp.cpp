@@ -354,6 +354,8 @@ namespace LMP
 		initShortcut (SLOT (previousTrack ()), QString ("Meta+V"));
 		initShortcut (SLOT (nextTrack ()), QString ("Meta+B"));
 		initShortcut (SLOT (stop ()), QString ("Meta+X"));
+		initShortcut (SLOT (volumeUp ()), {});
+		initShortcut (SLOT (volumeDown ()), {});
 
 		e.Additional_ ["Receiver"] = QVariant::fromValue<QObject*> (PlayerTab_);
 		initShortcut (SLOT (handleLoveTrack ()), QString ("Meta+L"));
@@ -375,6 +377,8 @@ namespace LMP
 		setInfo (SLOT (notifyCurrentTrack ()),
 				tr ("Notify about current track"),
 				"dialog-information");
+		setInfo (SLOT (volumeUp ()), tr ("Increase volume"), "audio-volume-high");
+		setInfo (SLOT (volumeDown ()), tr ("Decrease volume"), "audio-volume-low");
 	}
 
 	void Plugin::handleFullRaiseRequested ()
