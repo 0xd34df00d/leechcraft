@@ -266,6 +266,8 @@ namespace Murm
 
 	void VkConnection::SetStatus (const EntryStatus& status)
 	{
+		LPServer_.clear ();
+
 		Status_ = status;
 		if (Status_.State_ == SOffline)
 			return;
