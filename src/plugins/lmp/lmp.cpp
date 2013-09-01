@@ -357,6 +357,7 @@ namespace LMP
 
 		e.Additional_ ["Receiver"] = QVariant::fromValue<QObject*> (PlayerTab_);
 		initShortcut (SLOT (handleLoveTrack ()), QString ("Meta+L"));
+		initShortcut (SLOT (notifyCurrentTrack ()), {});
 
 		auto proxy = Core::Instance ().GetProxy ();
 		auto setInfo = [this, proxy] (const QByteArray& method,
@@ -371,6 +372,9 @@ namespace LMP
 		setInfo (SLOT (nextTrack ()), tr ("Next track"), "media-skip-forward");
 		setInfo (SLOT (stop ()), tr ("Stop playback"), "media-playback-stop");
 		setInfo (SLOT (handleLoveTrack ()), tr ("Love track"), "emblem-favorite");
+		setInfo (SLOT (notifyCurrentTrack ()),
+				tr ("Notify about current track"),
+				"dialog-information");
 	}
 
 	void Plugin::handleFullRaiseRequested ()
