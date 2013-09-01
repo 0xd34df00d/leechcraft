@@ -49,6 +49,8 @@ namespace LMP
 		GstElement *Volume_;
 		GstElement *Converter_;
 		GstElement *Sink_;
+
+		bool SaveVolumeScheduled_;
 	public:
 		Output (QObject* = 0);
 
@@ -57,11 +59,15 @@ namespace LMP
 
 		double GetVolume () const;
 		bool IsMuted () const;
+	private:
+		void ScheduleSaveVolume ();
 	public slots:
 		void setVolume (double);
 		void setVolume (int);
 
 		void toggleMuted ();
+	private slots:
+		void saveVolume ();
 	signals:
 		void volumeChanged (qreal);
 		void volumeChanged (int);

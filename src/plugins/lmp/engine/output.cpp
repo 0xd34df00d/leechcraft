@@ -29,8 +29,10 @@
 
 #include "output.h"
 #include <QtDebug>
+#include <QTimer>
 #include <gst/gst.h>
 #include "path.h"
+#include "../xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -78,6 +80,7 @@ namespace LMP
 	, Volume_ (gst_element_factory_make ("volume", "volume"))
 	, Converter_ (gst_element_factory_make ("audioconvert", "convert"))
 	, Sink_ (gst_element_factory_make ("autoaudiosink", "audio_sink"))
+	, SaveVolumeScheduled_ (false)
 	{
 		gst_bin_add_many (GST_BIN (Bin_), Equalizer_, Volume_, Converter_, Sink_, nullptr);
 		gst_element_link_many (Equalizer_, Volume_, Converter_, Sink_, nullptr);
@@ -90,6 +93,14 @@ namespace LMP
 
 		g_signal_connect (Volume_, "notify::volume", G_CALLBACK (CbVolumeChanged), this);
 		g_signal_connect (Volume_, "notify::mute", G_CALLBACK (CbMuteChanged), this);
+
+		const auto volume = XmlSettingsManager::Instance ()
+				.Property ("AudioVolume", 1).toDouble ();
+		setVolume (volume);
+
+		const auto isMuted = XmlSettingsManager::Instance ()
+				.Property ("AudioMuted", false).toBool ();
+		g_object_set (G_OBJECT (Volume_), "mute", static_cast<gboolean> (isMuted), nullptr);
 	}
 
 	void Output::AddToPath (Path *path)
@@ -115,9 +126,22 @@ namespace LMP
 		return value;
 	}
 
+	void Output::ScheduleSaveVolume ()
+	{
+		if (SaveVolumeScheduled_)
+			return;
+
+		SaveVolumeScheduled_ = true;
+		QTimer::singleShot (1000,
+				this,
+				SLOT (saveVolume ()));
+	}
+
 	void Output::setVolume (double volume)
 	{
 		g_object_set (G_OBJECT (Volume_), "volume", static_cast<gdouble> (volume), nullptr);
+
+		ScheduleSaveVolume ();
 	}
 
 	void Output::setVolume (int volume)
@@ -128,6 +152,16 @@ namespace LMP
 	void Output::toggleMuted ()
 	{
 		g_object_set (G_OBJECT (Volume_), "mute", static_cast<gboolean> (!IsMuted ()), nullptr);
+
+		ScheduleSaveVolume ();
+	}
+
+	void Output::saveVolume ()
+	{
+		SaveVolumeScheduled_ = false;
+
+		XmlSettingsManager::Instance ().setProperty ("AudioVolume", GetVolume ());
+		XmlSettingsManager::Instance ().setProperty ("AudioMuted", IsMuted ());
 	}
 }
 }
