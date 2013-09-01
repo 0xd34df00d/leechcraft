@@ -427,8 +427,16 @@ namespace Murm
 
 		LPTS_ = rootMap ["ts"].toULongLong ();
 
-		if (Status_.State_ != SOffline && !LPServer_.isEmpty ())
-			Poll ();
+		if (Status_.State_ != SOffline)
+		{
+			if (!LPServer_.isEmpty ())
+				Poll ();
+			else
+			{
+				PushLPFetchCall ();
+				AuthMgr_->GetAuthKey ();
+			}
+		}
 		else
 			GoOffline ();
 	}
