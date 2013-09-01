@@ -425,7 +425,7 @@ namespace Murm
 
 		LPTS_ = rootMap ["ts"].toULongLong ();
 
-		if (Status_.State_ != SOffline)
+		if (Status_.State_ != SOffline && !LPServer_.isEmpty ())
 			Poll ();
 		else
 			GoOffline ();
