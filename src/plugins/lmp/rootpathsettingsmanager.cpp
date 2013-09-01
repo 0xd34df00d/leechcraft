@@ -30,6 +30,7 @@
 #include "rootpathsettingsmanager.h"
 #include <QStandardItemModel>
 #include <QFile>
+#include <QMessageBox>
 #include <xmlsettingsdialog/datasourceroles.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
@@ -63,6 +64,21 @@ namespace LMP
 
 	void RootPathSettingsManager::addRequested (const QString&, const QVariantList& list)
 	{
+		if (!XmlSettingsManager::Instance ().Property ("HasAskedAboutAAFetch", false).toBool ())
+		{
+			XmlSettingsManager::Instance ().setProperty ("HasAskedAboutAAFetch", true);
+			const auto fetch = QMessageBox::question (nullptr,
+					"LeechCraft",
+					tr ("Do you want LMP to automatically fetch missing album art? It is done in "
+						"the background and won't disturb you, but can consume quite some traffic "
+						"and local storage space, especially if you have a lot of albums in your "
+						"collection.<br/><br/>You can always toggle this option later in LMP "
+						"settings"),
+					QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes;
+
+			XmlSettingsManager::Instance ().setProperty ("AutoFetchAlbumArt", fetch);
+		}
+
 		const QString& str = list.value (0).toString ();
 		if (QFile::exists (str))
 			Core::Instance ().GetLocalCollection ()->Scan (str);
@@ -81,11 +97,11 @@ namespace LMP
 
 	void RootPathSettingsManager::handleRootPathsChanged ()
 	{
-		while (Model_->rowCount ())
-			Model_->removeRow (0);
+		if (const auto rc = Model_->rowCount ())
+			Model_->removeRows (0, rc);
 
 		const auto& dirs = Core::Instance ().GetLocalCollection ()->GetDirs ();
-		Q_FOREACH (const auto& dir, dirs)
+		for (const auto& dir : dirs)
 			Model_->appendRow (new QStandardItem (dir));
 	}
 }

@@ -51,7 +51,8 @@ namespace LMP
 
 	void AlbumArtManager::CheckAlbumArt (const Collection::Artist& artist, Collection::Album_ptr album)
 	{
-		if (!album->CoverPath_.isEmpty ())
+		const auto& path = album->CoverPath_;
+		if (!path.isEmpty () && QFile::exists (path))
 			return;
 
 		CheckAlbumArt (artist.Name_, album->Name_, false);

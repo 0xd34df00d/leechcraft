@@ -403,8 +403,7 @@ namespace Xoox
 			SelfContact_->RemoveVariant (OurResource_, true);
 		}
 
-		if (state.State_ == SOffline &&
-				!FirstTimeConnect_)
+		if (state.State_ == SOffline)
 		{
 			emit statusChanged (EntryStatus (SOffline, state.Status_));
 			Client_->disconnectFromServer ();

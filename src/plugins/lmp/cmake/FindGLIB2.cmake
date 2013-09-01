@@ -44,8 +44,8 @@ set(GLIB2_LIBRARIES ${GLIB2_LIBRARY} ${GOBJECT2_LIBRARY})
 get_filename_component(glib2LibDir "${GLIB2_LIBRARIES}" PATH)
 
 find_path(GLIB2_INTERNAL_INCLUDE_DIR glibconfig.h
-          PATH_SUFFIXES glib-2.0/include
-          HINTS ${PC_LibGLIB2_INCLUDEDIR} "${glib2LibDir}" ${CMAKE_SYSTEM_LIBRARY_PATH} ${GLIB2_DIR}/lib)
+          HINTS ${PC_LibGLIB2_INCLUDEDIR} ${glib2LibDir} ${CMAKE_SYSTEM_LIBRARY_PATH} ${GLIB2_DIR}/lib
+          PATH_SUFFIXES glib-2.0/include)
 
 set(GLIB2_INCLUDE_DIR "${GLIB2_MAIN_INCLUDE_DIR}")
 

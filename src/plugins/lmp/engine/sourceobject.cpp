@@ -366,19 +366,34 @@ namespace LMP
 
 	void SourceObject::HandleErrorMsg (GstMessage *msg)
 	{
-		GError *error = nullptr;
+		GError *gerror = nullptr;
 		gchar *debug = nullptr;
-		gst_message_parse_error (msg, &error, &debug);
+		gst_message_parse_error (msg, &gerror, &debug);
 
-		const auto& msgStr = QString::fromUtf8 (error->message);
+		const auto& msgStr = QString::fromUtf8 (gerror->message);
 		const auto& debugStr = QString::fromUtf8 (debug);
 
-		g_error_free (error);
+		const auto code = gerror->code;
+
+		g_error_free (gerror);
 		g_free (debug);
 
 		qWarning () << Q_FUNC_INFO
+				<< code
 				<< msgStr
 				<< debugStr;
+
+		SourceError errCode = SourceError::Other;
+		switch (code)
+		{
+		case GST_CORE_ERROR_MISSING_PLUGIN:
+			errCode = SourceError::MissingPlugin;
+			break;
+		default:
+			break;
+		}
+
+		emit error (msgStr, errCode);
 	}
 
 	namespace
