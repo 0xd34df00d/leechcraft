@@ -167,6 +167,9 @@ namespace LMP
 		void stop ();
 		void clear ();
 		void shufflePlaylist ();
+
+		void volumeUp ();
+		void volumeDown ();
 	private slots:
 		void handleSorted ();
 		void continueAfterSorted (const QList<QPair<AudioSource, MediaInfo>>&);

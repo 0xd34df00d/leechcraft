@@ -950,6 +950,16 @@ namespace LMP
 		ReplaceQueue (queue, false);
 	}
 
+	void Player::volumeUp ()
+	{
+		Output_->setVolume (std::min (Output_->GetVolume () + 0.05, 1.));
+	}
+
+	void Player::volumeDown ()
+	{
+		Output_->setVolume (std::max (Output_->GetVolume () - 0.05, 0.));
+	}
+
 	void Player::handleSorted ()
 	{
 		auto watcher = dynamic_cast<QFutureWatcher<QList<QPair<AudioSource, MediaInfo>>>*> (sender ());
