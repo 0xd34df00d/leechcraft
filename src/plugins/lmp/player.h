@@ -57,6 +57,7 @@ namespace LMP
 	class Path;
 	struct MediaInfo;
 	enum class SourceError;
+	enum class SourceState;
 
 	class Player : public QObject
 #ifdef ENABLE_MPRIS
@@ -122,6 +123,8 @@ namespace LMP
 
 		PlayMode GetPlayMode () const;
 		void SetPlayMode (PlayMode);
+
+		SourceState GetState () const;
 
 		QList<SortingCriteria> GetSortingCriteria () const;
 		void SetSortingCriteria (const QList<SortingCriteria>&);
