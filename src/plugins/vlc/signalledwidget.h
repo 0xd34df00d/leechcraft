@@ -56,6 +56,8 @@ namespace vlc
 		void wheelEvent (QWheelEvent*);
 		void keyPressEvent (QKeyEvent*);
 		void paintEvent (QPaintEvent*);
+		void resizeEvent (QResizeEvent*);
+		void showEvent (QShowEvent*);
 		
 	signals:
 		void mousePress (QMouseEvent*);
@@ -63,6 +65,8 @@ namespace vlc
 		void mouseMove (QMouseEvent*);
 		void wheel (QWheelEvent*);
 		void keyPress (QKeyEvent*);
+		void resized (QResizeEvent*);
+		void shown (QShowEvent*);
 	};
 }
 }

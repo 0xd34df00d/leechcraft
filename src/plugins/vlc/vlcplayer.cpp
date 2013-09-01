@@ -37,6 +37,9 @@
 #include <QTimer>
 #include <QSizePolicy>
 #include <QEventLoop>
+#include <QTimeLine>
+#include <QUrl>
+#include <QDebug>
 #include "vlcplayer.h"
 
 namespace 
@@ -44,6 +47,13 @@ namespace
 	QTime convertTime (libvlc_time_t t) 
 	{
 		return QTime (t / 1000 / 60 / 60, t / 1000 / 60 % 60, t / 1000 % 60, t % 1000);
+	}
+	
+	void sleep (int ms)
+	{
+			QEventLoop loop;
+			QTimer::singleShot (ms, &loop, SLOT (quit ()));
+			loop.exec ();
 	}
 }
 
@@ -55,6 +65,7 @@ namespace vlc
 	: QObject (parent)
 	, M_ (nullptr)
 	, Parent_ (parent)
+	, DVD_ (false)
 	{
 		const char * const vlc_args[] = 
 		{
@@ -69,10 +80,12 @@ namespace vlc
 		libvlc_media_player_set_xwindow (Mp_.get (), parent->winId ());
 	}
 	
-	void VlcPlayer::addUrl (const QString &file) 
+	void VlcPlayer::addUrl (const QUrl &url) 
 	{
 		libvlc_media_player_stop (Mp_.get ());
-		M_.reset(libvlc_media_new_path (VlcInstance_.get (), file.toLocal8Bit ()), libvlc_media_release);
+		
+		DVD_ = url.scheme () == "dvd";
+		M_.reset (libvlc_media_new_location (VlcInstance_.get (), url.toEncoded ()), libvlc_media_release);
 		
 		libvlc_media_player_set_media (Mp_.get (), M_.get ());
 		libvlc_media_player_play (Mp_.get ());
@@ -141,19 +154,20 @@ namespace vlc
 		}
 		
 		bool isPlaying = libvlc_media_player_is_playing (Mp_.get ()); 
+		bool dvd = DVD_ && libvlc_media_player_get_length (Mp_.get ()) > 60 * 10 * 1000;
 		
 		libvlc_media_player_stop (Mp_.get ());
 		libvlc_media_player_set_xwindow (Mp_.get (), widget->winId ());
 		libvlc_media_player_play (Mp_.get ());
 		
-		while (!NowPlaying ())
+		WaitForPlaying ();
+		if (dvd)
 		{
-			QEventLoop *loop = new QEventLoop;
-			QTimer::singleShot (1, loop, SLOT (quit ()));
-			loop->exec();
+			libvlc_media_player_navigate (Mp_.get (), libvlc_navigate_activate);
+			sleep (150);
 		}
 		
-		if (playingMedia) 
+		if (playingMedia && (!DVD_ || dvd))
 		{
 			libvlc_media_player_set_time (Mp_.get (), cur);
 			setAudioTrack (audio);
@@ -208,7 +222,7 @@ namespace vlc
 	
 	void VlcPlayer::AddSubtitles (QString file)
 	{
-		libvlc_video_set_subtitle_file (Mp_.get (), file.toLocal8Bit ());
+		libvlc_video_set_subtitle_file (Mp_.get (), file.toUtf8 ());
 	}
 
 	int VlcPlayer::GetCurrentSubtitle () const
@@ -241,5 +255,24 @@ namespace vlc
 		return t;
 	}
 
+	void VlcPlayer::DVDNavigate (unsigned nav)
+	{
+		libvlc_media_player_navigate (Mp_.get (), nav);
+	}
+
+	void VlcPlayer::WaitForPlaying () const
+	{
+		QTimeLine line;
+		line.start ();
+		while (!NowPlaying ()) 
+		{
+			sleep (5);
+			if (line.currentTime () > 1000)
+			{
+				qWarning () << Q_FUNC_INFO << "timeout";
+				break;
+			}
+		}
+	}
 }
 }
