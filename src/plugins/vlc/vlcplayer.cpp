@@ -49,9 +49,9 @@ namespace
 	
 	void sleep (int ms)
 	{
-			QEventLoop *loop = new QEventLoop;
-			QTimer::singleShot (ms, loop, SLOT (quit ()));
-			loop->exec();
+			QEventLoop loop;
+			QTimer::singleShot (ms, &loop, SLOT (quit ()));
+			loop.exec();
 	}
 	
 	bool IsDVD (const char *s)
@@ -172,7 +172,7 @@ namespace vlc
 		if (dvd)
 		{
 			libvlc_media_player_navigate (Mp_.get (), libvlc_navigate_activate);
-			sleep (100);
+			sleep (150);
 		}
 		
 		if (playingMedia && (!DVD_ || dvd))
