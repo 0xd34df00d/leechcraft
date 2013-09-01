@@ -261,7 +261,7 @@ namespace LMP
 				this,
 				SLOT (handlePlaybackFinished ()));
 		connect (Source_,
-				SIGNAL (stateChanged (SourceObject::State, SourceObject::State)),
+				SIGNAL (stateChanged (SourceState, SourceState)),
 				this,
 				SLOT (handleStateChanged ()));
 
@@ -892,7 +892,7 @@ namespace LMP
 
 	void Player::togglePause ()
 	{
-		if (Source_->GetState () == SourceObject::State::Playing)
+		if (Source_->GetState () == SourceState::Playing)
 			Source_->Pause ();
 		else
 		{
@@ -933,7 +933,7 @@ namespace LMP
 		Core::Instance ().GetPlaylistManager ()->
 				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
 
-		if (Source_->GetState () != SourceObject::State::Playing)
+		if (Source_->GetState () != SourceState::Playing)
 			Source_->SetCurrentSource ({});
 	}
 
@@ -1049,7 +1049,7 @@ namespace LMP
 		Core::Instance ().GetPlaylistManager ()->
 				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
 
-		if (Source_->GetState () == SourceObject::State::Stopped)
+		if (Source_->GetState () == SourceState::Stopped)
 		{
 			const auto& song = XmlSettingsManager::Instance ().property ("LastSong").toString ();
 			if (!song.isEmpty ())
@@ -1088,7 +1088,7 @@ namespace LMP
 		Source_->SetCurrentSource (url);
 
 		qDebug () << Q_FUNC_INFO << static_cast<int> (Source_->GetState ());
-		if (Source_->GetState () == SourceObject::State::Stopped)
+		if (Source_->GetState () == SourceState::Stopped)
 			Source_->Play ();
 	}
 
@@ -1153,7 +1153,7 @@ namespace LMP
 	{
 		const auto state = Source_->GetState ();
 		qDebug () << Q_FUNC_INFO << static_cast<int> (state);
-		if (state == SourceObject::State::Error)
+		if (state == SourceState::Error)
 			qDebug () << Source_->GetErrorString ();
 	}
 

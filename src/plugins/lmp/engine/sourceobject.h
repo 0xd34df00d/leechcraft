@@ -53,6 +53,15 @@ namespace LMP
 		Other
 	};
 
+	enum class SourceState
+	{
+		Error,
+		Stopped,
+		Paused,
+		Buffering,
+		Playing
+	};
+
 	class SourceObject : public QObject
 	{
 		Q_OBJECT
@@ -78,15 +87,6 @@ namespace LMP
 	private:
 		TagMap_t Metadata_;
 	public:
-		enum class State
-		{
-			Error,
-			Stopped,
-			Paused,
-			Buffering,
-			Playing
-		};
-
 		enum class Metadata
 		{
 			Artist,
@@ -96,7 +96,7 @@ namespace LMP
 			Tracknumber
 		};
 	private:
-		State OldState_;
+		SourceState OldState_;
 	public:
 		SourceObject (QObject* = 0);
 		~SourceObject ();
@@ -105,7 +105,7 @@ namespace LMP
 		SourceObject& operator= (const SourceObject&) = delete;
 
 		bool IsSeekable () const;
-		State GetState () const;
+		SourceState GetState () const;
 
 		QString GetErrorString () const;
 
@@ -144,7 +144,7 @@ namespace LMP
 		void updateTotalTime ();
 		void handleTick ();
 	signals:
-		void stateChanged (SourceObject::State, SourceObject::State);
+		void stateChanged (SourceState, SourceState);
 		void currentSourceChanged (const AudioSource&);
 		void aboutToFinish ();
 		void finished ();

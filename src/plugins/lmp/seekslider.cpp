@@ -55,7 +55,7 @@ namespace LMP
 				this,
 				SLOT (handleCurrentPlayTime (qint64)));
 		connect (source,
-				SIGNAL (stateChanged (SourceObject::State, SourceObject::State)),
+				SIGNAL (stateChanged (SourceState, SourceState)),
 				this,
 				SLOT (handleStateChanged ()));
 	}
@@ -94,9 +94,9 @@ namespace LMP
 		const auto state = Source_->GetState ();
 		switch (state)
 		{
-		case SourceObject::State::Buffering:
-		case SourceObject::State::Playing:
-		case SourceObject::State::Paused:
+		case SourceState::Buffering:
+		case SourceState::Playing:
+		case SourceState::Paused:
 			updateRanges ();
 			handleCurrentPlayTime (Source_->GetCurrentTime ());
 			Ui_.Slider_->setEnabled (true);

@@ -113,7 +113,7 @@ namespace LMP
 	, IsSeeking_ (false)
 	, LastCurrentTime_ (-1)
 	, PrevSoupRank_ (0)
-	, OldState_ (State::Stopped)
+	, OldState_ (SourceState::Stopped)
 	{
 		auto bus = gst_pipeline_get_bus (GST_PIPELINE (Dec_));
 		gst_bus_add_watch (bus, CbBus, this);
@@ -150,7 +150,7 @@ namespace LMP
 		return seekable;
 	}
 
-	SourceObject::State SourceObject::GetState () const
+	SourceState SourceObject::GetState () const
 	{
 		return OldState_;
 	}
@@ -185,7 +185,7 @@ namespace LMP
 
 	qint64 SourceObject::GetCurrentTime ()
 	{
-		if (GetState () != State::Paused)
+		if (GetState () != SourceState::Paused)
 		{
 			auto format = GST_FORMAT_TIME;
 			gint64 position = 0;
@@ -228,7 +228,7 @@ namespace LMP
 
 	void SourceObject::Seek (qint64 pos)
 	{
-		if (OldState_ == State::Playing)
+		if (OldState_ == SourceState::Playing)
 			IsSeeking_ = true;
 
 		gst_element_seek (GST_ELEMENT (Dec_), 1.0, GST_FORMAT_TIME,
@@ -508,18 +508,18 @@ namespace LMP
 
 	namespace
 	{
-		SourceObject::State GstToState (GstState state)
+		SourceState GstToState (GstState state)
 		{
 			switch (state)
 			{
 			case GST_STATE_PAUSED:
-				return SourceObject::State::Paused;
+				return SourceState::Paused;
 			case GST_STATE_READY:
-				return SourceObject::State::Stopped;
+				return SourceState::Stopped;
 			case GST_STATE_PLAYING:
-				return SourceObject::State::Playing;
+				return SourceState::Playing;
 			default:
-				return SourceObject::State::Error;
+				return SourceState::Error;
 			}
 		}
 	}

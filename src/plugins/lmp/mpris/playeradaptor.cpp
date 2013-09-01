@@ -62,7 +62,7 @@ namespace MPRIS
 				this,
 				SLOT (handlePlayModeChanged ()));
 		connect (Player_->GetSourceObject (),
-				SIGNAL (stateChanged (SourceObject::State, SourceObject::State)),
+				SIGNAL (stateChanged (SourceState, SourceState)),
 				this,
 				SLOT (handleStateChanged ()));
 		connect (Player_->GetAudioOutput (),
@@ -172,10 +172,10 @@ namespace MPRIS
 	{
 		switch (Player_->GetSourceObject ()->GetState ())
 		{
-		case SourceObject::State::Paused:
+		case SourceState::Paused:
 			return "Paused";
-		case SourceObject::State::Stopped:
-		case SourceObject::State::Error:
+		case SourceState::Stopped:
+		case SourceState::Error:
 			return "Stopped";
 		default:
 			return "Playing";

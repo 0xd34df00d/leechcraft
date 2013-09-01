@@ -404,7 +404,7 @@ namespace LMP
 				SLOT (closeLMP ()));
 
 		connect (Player_->GetSourceObject (),
-				SIGNAL (stateChanged (SourceObject::State, SourceObject::State)),
+				SIGNAL (stateChanged (SourceState, SourceState)),
 				this,
 				SLOT (handleStateChanged ()));
 		TrayMenu_->addAction (previous);
@@ -610,13 +610,13 @@ namespace LMP
 
 	namespace
 	{
-		QIcon GetIconFromState (SourceObject::State state)
+		QIcon GetIconFromState (SourceState state)
 		{
 			switch (state)
 			{
-			case SourceObject::State::Playing:
+			case SourceState::Playing:
 				return Core::Instance ().GetProxy ()->GetIcon ("media-playback-start");
-			case SourceObject::State::Paused:
+			case SourceState::Paused:
 				return Core::Instance ().GetProxy ()->GetIcon ("media-playback-pause");
 			default:
 				return QIcon ();
@@ -624,8 +624,7 @@ namespace LMP
 		}
 
 		template<typename T>
-		void UpdateIcon (T iconable, SourceObject::State state,
-				std::function<QSize (T)> iconSizeGetter)
+		void UpdateIcon (T iconable, SourceState state, std::function<QSize (T)> iconSizeGetter)
 		{
 			QIcon icon = GetIconFromState (state);
 			QIcon baseIcon = icon.isNull() ?
@@ -910,11 +909,11 @@ namespace LMP
 	void PlayerTab::handleStateChanged ()
 	{
 		const auto newState = Player_->GetSourceObject ()->GetState ();
-		if (newState == SourceObject::State::Playing)
+		if (newState == SourceState::Playing)
 			PlayPause_->setProperty ("ActionIcon", "media-playback-pause");
 		else
 		{
-			if (newState == SourceObject::State::Stopped)
+			if (newState == SourceState::Stopped)
 				TrayIcon_->handleSongChanged (MediaInfo ());
 			PlayPause_->setProperty ("ActionIcon", "media-playback-start");
 		}
