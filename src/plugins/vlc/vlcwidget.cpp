@@ -56,9 +56,9 @@
 
 namespace
 {
-	int dist (QPoint a, QPoint b) // Manhetten forever
+	int dist (QPoint a, QPoint b)
 	{
-		return std::abs (a.x () - b.x ()) + std::abs (a.y () - b.y ());
+		return (a - b).manhattanLength ();
 	}
 }
 
@@ -227,7 +227,8 @@ namespace vlc
 			FullScreenTimeLeft_->setText (VlcPlayer_->GetCurrentTime ().toString ("HH:mm:ss"));
 			FullScreenTimeAll_->setText (VlcPlayer_->GetFullTime ().toString ("HH:mm:ss"));
 			
-			if (FullScreenPanel_->isVisible ())
+			if (FullScreenPanel_->isVisible ()) 
+			{
 				if (QCursor::pos ().x () > PANEL_SIDE_MARGIN && 
 					QCursor::pos ().x () < FullScreenWidget_->width () - PANEL_SIDE_MARGIN &&
 					QCursor::pos ().y () < FullScreenWidget_->height () - PANEL_BOTTOM_MARGIN && 
@@ -238,6 +239,7 @@ namespace vlc
 				}
 				else
 					FullScreenPanel_->setWindowOpacity (0.7);
+			}
 		}
 		else 
 		{
@@ -304,9 +306,8 @@ namespace vlc
 	
 	void VlcWidget::mouseMoveEvent (QMouseEvent *event)
 	{
-		if (FullScreen_)
-			if (dist (event->pos (), LastMouseEvent_) > 2)
-				fullScreenPanelRequested ();
+		if (FullScreen_ && dist (event->pos (), LastMouseEvent_) > 2)
+			fullScreenPanelRequested ();
 		
 		LastMouseEvent_ = event->pos ();
 		event->accept ();
@@ -586,12 +587,12 @@ namespace vlc
 				SLOT (generateContextMenu (QPoint)));
 		
 		connect (FullScreenWidget_,
-				SIGNAL (showEv (QShowEvent*)),
+				SIGNAL (shown (QShowEvent*)),
 				this,
 				SLOT (fullScreenPanelRequested ()));
 		
 		connect (FullScreenWidget_,
-				SIGNAL (resize (QResizeEvent*)),
+				SIGNAL (resized (QResizeEvent*)),
 				this,
 				SLOT (fullScreenPanelRequested ()));
 	}

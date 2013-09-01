@@ -53,16 +53,6 @@ namespace
 			QTimer::singleShot (ms, &loop, SLOT (quit ()));
 			loop.exec();
 	}
-	
-	bool IsDVD (const char *s)
-	{
-		int i;
-		for (i = 0; (i < 5) && (s[i] != 0); i++)
-			if (s[i] != "dvd:/"[i])
-				return false;
-			
-		return i == 5;
-	}
 }
 
 namespace LeechCraft
@@ -92,8 +82,8 @@ namespace vlc
 	{
 		libvlc_media_player_stop (Mp_.get ());
 		
-		DVD_ = IsDVD (url.toEncoded ().constData ());
-		M_.reset(libvlc_media_new_location (VlcInstance_.get (), url.toEncoded ()), libvlc_media_release);
+		DVD_ = url.scheme () == "dvd";
+		M_.reset (libvlc_media_new_location (VlcInstance_.get (), url.toEncoded ()), libvlc_media_release);
 		
 		libvlc_media_player_set_media (Mp_.get (), M_.get ());
 		libvlc_media_player_play (Mp_.get ());
@@ -162,7 +152,7 @@ namespace vlc
 		}
 		
 		bool isPlaying = libvlc_media_player_is_playing (Mp_.get ()); 
-		bool dvd = DVD_ && libvlc_media_player_get_length (Mp_.get ()) > 600000; // = 10 min
+		bool dvd = DVD_ && libvlc_media_player_get_length (Mp_.get ()) > 60 * 10 * 1000;
 		
 		libvlc_media_player_stop (Mp_.get ());
 		libvlc_media_player_set_xwindow (Mp_.get (), widget->winId ());

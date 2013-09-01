@@ -102,12 +102,12 @@ namespace vlc
 	
 	void SignalledWidget::resizeEvent (QResizeEvent *event)
 	{
-		emit resize (event);
+		emit resized (event);
 	}
 	
 	void SignalledWidget::showEvent(QShowEvent *event)
 	{	
-		emit showEv (event);
+		emit shown (event);
 	}
 
 }

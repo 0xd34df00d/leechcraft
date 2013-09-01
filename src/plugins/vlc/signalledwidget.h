@@ -65,8 +65,8 @@ namespace vlc
 		void mouseMove (QMouseEvent*);
 		void wheel (QWheelEvent*);
 		void keyPress (QKeyEvent*);
-		void resize (QResizeEvent*);
-		void showEv (QShowEvent*);
+		void resized (QResizeEvent*);
+		void shown (QShowEvent*);
 	};
 }
 }
