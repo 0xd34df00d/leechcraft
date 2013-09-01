@@ -53,7 +53,7 @@ namespace
 	{
 			QEventLoop loop;
 			QTimer::singleShot (ms, &loop, SLOT (quit ()));
-			loop.exec();
+			loop.exec ();
 	}
 }
 
