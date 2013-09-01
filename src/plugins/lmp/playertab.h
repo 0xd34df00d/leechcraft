@@ -141,6 +141,8 @@ namespace LMP
 
 		void handlePlayerAvailable (bool);
 
+		void notifyCurrentTrack ();
+
 		void closeLMP ();
 		void handleStateChanged ();
 		void handleShowTrayIcon ();

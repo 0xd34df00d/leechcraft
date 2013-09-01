@@ -897,6 +897,11 @@ namespace LMP
 		Ui_.RadioTab_->setEnabled (available);
 	}
 
+	void PlayerTab::notifyCurrentTrack ()
+	{
+		NotifyCurrentTrack (true);
+	}
+
 	void PlayerTab::closeLMP ()
 	{
 		Remove ();
