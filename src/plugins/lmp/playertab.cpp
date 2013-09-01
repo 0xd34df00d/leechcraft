@@ -491,37 +491,10 @@ namespace LMP
 				SLOT (setFilterFixedString (QString)));
 	}
 
-	void PlayerTab::SetNowPlaying (const MediaInfo& info, const QPixmap& px)
+	void PlayerTab::SetNowPlaying (const MediaInfo& info, const QPixmap&)
 	{
 		Ui_.NowPlaying_->clear ();
-		if (!info.Title_.isEmpty () || !info.Artist_.isEmpty ())
-		{
-			const auto& title = info.Title_.isEmpty () ? tr ("unknown song") : info.Title_;
-			const auto& album = info.Album_.isEmpty () ? tr ("unknown album") : info.Album_;
-			const auto& track = info.Artist_.isEmpty () ? tr ("unknown artist") : info.Artist_;
-
-			const QString& text = tr ("Now playing: %1 from %2 by %3")
-					.arg ("<em>" + title + "</em>")
-					.arg ("<em>" + album + "</em>")
-					.arg ("<em>" + track + "</em>");
-			Ui_.NowPlaying_->setText (text);
-
-			if (XmlSettingsManager::Instance ().property ("EnableNotifications").toBool ())
-			{
-				QPixmap notifyPx = px;
-				int width = notifyPx.width ();
-				if (width > 200)
-				{
-					while (width > 200)
-						width /= 2;
-					notifyPx = notifyPx.scaledToWidth (width);
-				}
-
-				Entity e = Util::MakeNotification ("LMP", text, PInfo_);
-				e.Additional_ ["NotificationPixmap"] = notifyPx;
-				emit gotEntity (e);
-			}
-		}
+		NotifyCurrentTrack (false);
 	}
 
 	void PlayerTab::Scrobble (const MediaInfo& info)
@@ -573,6 +546,70 @@ namespace LMP
 
 	namespace
 	{
+		struct PixmapInfo
+		{
+			QPixmap PX_;
+			QString CoverPath_;
+			bool IsCorrect_;
+		};
+
+		PixmapInfo GetPixmap (const MediaInfo& info)
+		{
+			PixmapInfo pi;
+
+			pi.CoverPath_ = FindAlbumArtPath (info.LocalPath_);
+			if (!pi.CoverPath_.isEmpty ())
+				pi.PX_ = QPixmap (pi.CoverPath_);
+
+			pi.IsCorrect_ = !pi.PX_.isNull ();
+			if (!pi.IsCorrect_)
+			{
+				pi.PX_ = QIcon::fromTheme ("media-optical").pixmap (128, 128);
+				pi.CoverPath_.clear ();
+			}
+
+			return pi;
+		}
+	}
+
+	void PlayerTab::NotifyCurrentTrack (bool fromUser)
+	{
+		const auto& info = Player_->GetCurrentMediaInfo ();
+		const bool isKnown = !info.Title_.isEmpty () || !info.Artist_.isEmpty ();
+		if (!isKnown && !fromUser)
+			return;
+
+		const auto& title = info.Title_.isEmpty () ? tr ("unknown song") : info.Title_;
+		const auto& album = info.Album_.isEmpty () ? tr ("unknown album") : info.Album_;
+		const auto& track = info.Artist_.isEmpty () ? tr ("unknown artist") : info.Artist_;
+
+		const QString& text = tr ("Now playing: %1 from %2 by %3")
+				.arg ("<em>" + title + "</em>")
+				.arg ("<em>" + album + "</em>")
+				.arg ("<em>" + track + "</em>");
+		if (!fromUser && isKnown)
+			Ui_.NowPlaying_->setText (text);
+
+		if (fromUser ||
+				XmlSettingsManager::Instance ().property ("EnableNotifications").toBool ())
+		{
+			auto notifyPx = GetPixmap (info).PX_;
+			int width = notifyPx.width ();
+			if (width > 200)
+			{
+				while (width > 200)
+					width /= 2;
+				notifyPx = notifyPx.scaledToWidth (width);
+			}
+
+			Entity e = Util::MakeNotification ("LMP", text, PInfo_);
+			e.Additional_ ["NotificationPixmap"] = notifyPx;
+			emit gotEntity (e);
+		}
+	}
+
+	namespace
+	{
 		QIcon GetIconFromState (SourceObject::State state)
 		{
 			switch (state)
@@ -618,23 +655,13 @@ namespace LMP
 
 	void PlayerTab::handleSongChanged (const MediaInfo& info)
 	{
-		auto coverPath = FindAlbumArtPath (info.LocalPath_);
-		QPixmap px;
-		if (!coverPath.isEmpty ())
-			px = QPixmap (coverPath);
+		const auto& pxInfo = GetPixmap (info);
 
-		const bool isCorrect = !px.isNull ();
-		if (!isCorrect)
-		{
-			px = QIcon::fromTheme ("media-optical").pixmap (128, 128);
-			coverPath.clear ();
-		}
-
-		NPPixmapHandler_->HandleSongChanged (info, coverPath, px, isCorrect);
+		NPPixmapHandler_->HandleSongChanged (info, pxInfo.CoverPath_, pxInfo.PX_, pxInfo.IsCorrect_);
 
 		Ui_.NPWidget_->SetTrackInfo (info);
 
-		SetNowPlaying (info, px);
+		SetNowPlaying (info, pxInfo.PX_);
 		Scrobble (info);
 		RequestLyrics (info);
 

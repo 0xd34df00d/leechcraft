@@ -118,6 +118,8 @@ namespace LMP
 		void Scrobble (const MediaInfo&);
 		void FillSimilar (const Media::SimilarityInfos_t&);
 		void RequestLyrics (const MediaInfo&);
+
+		void NotifyCurrentTrack (bool fromUser);
 	private slots:
 		void handleSongChanged (const MediaInfo&);
 		void handleLoveTrack ();
