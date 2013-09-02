@@ -86,6 +86,25 @@ public:
 	 */
 	virtual void AssociateDockWidget (QDockWidget *dock, QWidget *tab) = 0;
 
+	/** @brief Sets the visibility of the previously added dock widget.
+	 *
+	 * This function sets the visibility of the given \em dock (which
+	 * should be a dock widget previously added via AddDockWidget()).
+	 * If \em dock has been associated with a tab via
+	 * AssociateDockWidget(), calling this function makes sure that the
+	 * visibility of the dock \em dock will be equal to \em visible.
+	 *
+	 * @note This function should be called after AssociateDockWidget()
+	 * if the later is called at all.
+	 *
+	 * @param[in] dock The dock widget previously added via
+	 * AddDockWidget().
+	 * @param[in] visible The visibility of the dock widget.
+	 *
+	 * @sa AddDockWidget(), AssociateDockWidget()
+	 */
+	virtual void SetDockWidgetVisibility (QDockWidget *dock, bool visible) = 0;
+
 	/** @brief Toggles the visibility of the toggle view action.
 	 *
 	 * By default all newly added dock widgets have their toggle view

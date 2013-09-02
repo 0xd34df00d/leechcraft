@@ -52,6 +52,11 @@ namespace LeechCraft
 		Core::Instance ().GetDockManager ()->AssociateDockWidget (dock, tab);
 	}
 
+	void MWProxy::SetDockWidgetVisibility (QDockWidget *dock, bool visible)
+	{
+		Core::Instance ().GetDockManager ()->SetDockWidgetVisibility (dock, visible);
+	}
+
 	void MWProxy::ToggleViewActionVisiblity (QDockWidget *w, bool visible)
 	{
 		Core::Instance ().GetDockManager ()->ToggleViewActionVisiblity (w, visible);
