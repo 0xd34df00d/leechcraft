@@ -108,12 +108,12 @@ namespace vlc
 		return { VlcWidget::GetTabInfo () };
 	}
 	
-	QMap<QString, ActionInfo> Plugin::GetActionInfo() const
+	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
 	{
 		return Manager_->GetActionInfo ();
 	}
 	
-	void Plugin::SetShortcut(const QString &id, const QKeySequences_t &shortcuts)
+	void Plugin::SetShortcut (const QString &id, const QKeySequences_t &shortcuts)
 	{
 		Manager_->SetShortcut (id, shortcuts);
 	}
