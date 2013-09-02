@@ -738,10 +738,17 @@ namespace LMP
 		return *pos;
 	}
 
-	AudioSource Player::GetNextSource (const AudioSource& current) const
+	AudioSource Player::GetNextSource (const AudioSource& current)
 	{
 		if (CurrentQueue_.isEmpty ())
 			return {};
+
+		if (!CurrentOneShotQueue_.isEmpty ())
+		{
+			const auto first = CurrentOneShotQueue_.front ();
+			RemoveFromOneShotQueue (first);
+			return first;
+		}
 
 		auto pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
 
