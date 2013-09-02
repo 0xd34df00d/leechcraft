@@ -96,8 +96,6 @@ namespace vlc
 		libvlc_media_add_option (M_.get (), ":input-slave=" + url.toEncoded ());
 		libvlc_media_player_set_media (Mp_.get (), M_.get ());
 		UnFreeze ();		
-		for (int i = 0; i < Subtitles_.size (); i++)
-			libvlc_video_set_subtitle_file (Mp_.get (), Subtitles_[i].toUtf8 ());
 	}
 	
 	void VlcPlayer::ClearAll () 
@@ -192,6 +190,9 @@ namespace vlc
 		
 		if (!FreezeIsPlaying_)
 			libvlc_media_player_pause (Mp_.get ());
+		
+		for (int i = 0; i < Subtitles_.size (); i++)
+			libvlc_video_set_subtitle_file (Mp_.get (), Subtitles_[i].toUtf8 ());
 	}
 	
 	QWidget* VlcPlayer::GetParent () const
