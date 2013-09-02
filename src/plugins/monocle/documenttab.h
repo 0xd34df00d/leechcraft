@@ -204,6 +204,7 @@ namespace Monocle
 		void handleScaleChosen (int);
 
 		void handleDockLocation (Qt::DockWidgetArea);
+		void handleDockVisibility (bool);
 	signals:
 		void changeTabName (QWidget*, const QString&);
 		void removeTab (QWidget*);

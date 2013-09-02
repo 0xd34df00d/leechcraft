@@ -170,10 +170,16 @@ namespace Monocle
 		mw->AddDockWidget (dwa, DockWidget_);
 		mw->AssociateDockWidget (DockWidget_, this);
 		mw->ToggleViewActionVisiblity (DockWidget_, false);
+		if (!XmlSettingsManager::Instance ().Property ("DockWidgetVisible", true).toBool ())
+			mw->SetDockWidgetVisibility (DockWidget_, false);
 		connect (DockWidget_,
 				SIGNAL (dockLocationChanged (Qt::DockWidgetArea)),
 				this,
 				SLOT (handleDockLocation (Qt::DockWidgetArea)));
+		connect (DockWidget_,
+				SIGNAL (visibilityChanged (bool)),
+				this,
+				SLOT (handleDockVisibility (bool)));
 
 		connect (this,
 				SIGNAL (currentPageChanged (int)),
@@ -1343,6 +1349,11 @@ namespace Monocle
 		if (area != Qt::AllDockWidgetAreas &&
 				area != Qt::NoDockWidgetArea)
 			XmlSettingsManager::Instance ().setProperty ("DockWidgetArea", area);
+	}
+
+	void DocumentTab::handleDockVisibility (bool visible)
+	{
+		XmlSettingsManager::Instance ().setProperty ("DockWidgetVisible", visible);
 	}
 }
 }
