@@ -33,7 +33,6 @@
 #include <QStandardItemModel>
 #include <QFileInfo>
 #include <QDir>
-#include <QMimeData>
 #include <QUrl>
 #include <QtConcurrentRun>
 #include <QApplication>
@@ -47,6 +46,7 @@
 #include "playlistmanager.h"
 #include "staticplaylistmanager.h"
 #include "xmlsettingsmanager.h"
+#include "playlistmodel.h"
 #include "playlistparsers/playlistfactory.h"
 #include "engine/sourceobject.h"
 #include "engine/audiosource.h"
@@ -57,117 +57,6 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	namespace
-	{
-		class PlaylistModel : public QStandardItemModel
-		{
-			Player *Player_;
-		public:
-			PlaylistModel (Player *parent)
-			: QStandardItemModel (parent)
-			, Player_ (parent)
-			{
-				setSupportedDragActions (Qt::CopyAction | Qt::MoveAction);
-			}
-
-			QStringList mimeTypes () const
-			{
-				return QStringList ("text/uri-list");
-			}
-
-			QMimeData* mimeData (const QModelIndexList& indexes) const
-			{
-				QList<QUrl> urls;
-				for (const auto& index : indexes)
-				{
-					const auto& sources = Player_->GetIndexSources (index);
-					std::transform (sources.begin (), sources.end (), std::back_inserter (urls),
-							[] (decltype (sources.front ()) source)
-								{ return source.ToUrl (); });
-				}
-				urls.removeAll (QUrl ());
-
-				QMimeData *result = new QMimeData;
-				result->setUrls (urls);
-				return result;
-			}
-
-			bool dropMimeData (const QMimeData *data, Qt::DropAction action, int row, int, const QModelIndex& parent)
-			{
-				if (action == Qt::IgnoreAction)
-					return true;
-
-				if (!data->hasUrls ())
-					return false;
-
-				const auto& urls = data->urls ();
-				QList<AudioSource> sources;
-				for (const auto& url : urls)
-				{
-					if (url.scheme () != "file")
-					{
-						sources << AudioSource (url);
-						continue;
-					}
-
-					const auto& localPath = url.toLocalFile ();
-					if (QFileInfo (localPath).isFile ())
-					{
-						bool playlistHandled = false;
-						if (auto f = MakePlaylistParser (localPath))
-						{
-							const auto& playlistSrcs = f (localPath);
-							if (!playlistSrcs.isEmpty ())
-							{
-								playlistHandled = true;
-								sources += playlistSrcs;
-							}
-						}
-
-						if (!playlistHandled)
-							sources << AudioSource (localPath);
-						continue;
-					}
-
-					for (const auto& path : RecIterate (localPath, true))
-						sources << AudioSource (path);
-				}
-
-				auto afterIdx = row >= 0 ?
-						parent.child (row, 0) :
-						parent;
-				const auto& firstSrc = afterIdx.isValid () ?
-						Player_->GetIndexSources (afterIdx).value (0) :
-						AudioSource ();
-
-				auto existingQueue = Player_->GetQueue ();
-				if (action == Qt::MoveAction)
-					for (const auto& src : sources)
-					{
-						auto remPos = std::remove (existingQueue.begin (), existingQueue.end (), src);
-						existingQueue.erase (remPos, existingQueue.end ());
-					}
-
-				auto pos = std::find (existingQueue.begin (), existingQueue.end (), firstSrc);
-				if (pos == existingQueue.end ())
-					existingQueue << sources;
-				else
-				{
-					for (const auto& src : sources)
-						pos = existingQueue.insert (pos, src) + 1;
-				}
-
-				Player_->ReplaceQueue (existingQueue);
-				return true;
-			}
-
-			Qt::DropActions supportedDropActions () const
-			{
-				return Qt::CopyAction | Qt::MoveAction;
-			}
-		};
-	}
-
 	Player::Sorter::Sorter ()
 	{
 		Criteria_ << SortingCriteria::Artist
