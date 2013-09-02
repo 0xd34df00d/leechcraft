@@ -51,6 +51,7 @@
 #include <QEventLoop>
 #include <QResizeEvent>
 #include <QCursor>
+#include <util/shortcuts/shortcutmanager.h>
 #include "vlcwidget.h"
 #include "vlcplayer.h"
 
@@ -70,9 +71,10 @@ namespace vlc
 	const int PANEL_BOTTOM_MARGIN = 5;
 	const int PANEL_HEIGHT = 27;
 	
-	VlcWidget::VlcWidget (QWidget *parent)
+	VlcWidget::VlcWidget (Util::ShortcutManager *manager, QWidget *parent)
 	: QWidget (parent)
 	, Parent_ (parent)
+	, Manager_ (manager)
 	, AllowFullScreenPanel_ (false)
 	{
 		VlcMainWidget_ = new SignalledWidget;
@@ -135,6 +137,8 @@ namespace vlc
 				SIGNAL (triggered ()),
 				this,
 				SLOT (toggleFullScreen ()));
+		
+		InitNavigations ();
 	}
 	
 	VlcWidget::~VlcWidget()
@@ -288,20 +292,6 @@ namespace vlc
 	
 	void VlcWidget::keyPressEvent (QKeyEvent *event) 
 	{
-		if (event->key () == Qt::LeftArrow)
-			VlcPlayer_->DVDNavigate (libvlc_navigate_left);
-		else if (event->key () == Qt::RightArrow)
-			VlcPlayer_->DVDNavigate (libvlc_navigate_right);
-		else if (event->key () == Qt::UpArrow)
-			VlcPlayer_->DVDNavigate (libvlc_navigate_up);
-		else if (event->key () == Qt::DownArrow)
-			VlcPlayer_->DVDNavigate (libvlc_navigate_down);
-		else if (event->key () == Qt::Key_Enter)
-			VlcPlayer_->DVDNavigate (libvlc_navigate_activate);
-		else if (event->text () == tr ("f"))
-			toggleFullScreen ();
-		
-		event->accept ();
 	}
 	
 	void VlcWidget::mouseMoveEvent (QMouseEvent *event)
@@ -327,7 +317,7 @@ namespace vlc
 			AllowFullScreenPanel_ = true;
 			FullScreenWidget_->SetBackGroundColor (new QColor ("black"));
 			FullScreenWidget_->showFullScreen ();
-			FullScreenWidget_->show ();
+// 			FullScreenWidget_->show ();
 			VlcPlayer_->switchWidget (FullScreenWidget_);
 		} 
 		else 
@@ -351,14 +341,14 @@ namespace vlc
 		OpenButton_->setDefaultAction (Open_);
 		Bar_->addWidget (OpenButton_);
 		TogglePlay_ = Bar_->addAction (tr ("Play"));
-		TogglePlay_->setShortcut (QKeySequence (" "));
+		Manager_->RegisterAction ("org.vlc.toggle_play", TogglePlay_, true);
 		TogglePlay_->setProperty ("ActionIcon", "media-playback-start");
 		TogglePlay_->setProperty ("WatchActionIconChange", true);
 		Stop_ = Bar_->addAction (tr ("Stop"));
 		Stop_->setProperty ("ActionIcon", "media-playback-stop");
 		FullScreenAction_ = Bar_->addAction (tr ("FullScreen"));
 		FullScreenAction_->setProperty ("ActionIcon", "view-fullscreen");
-		FullScreenAction_->setShortcut (QKeySequence ("f"));
+		Manager_->RegisterAction ("org.vlc.toggle_fullscreen", FullScreenAction_, true);
 		TimeLeft_ = new QLabel (this);
 		Bar_->addWidget (TimeLeft_);
 		ScrollBar_ = new VlcScrollBar (this);
@@ -522,6 +512,7 @@ namespace vlc
 		ForbidFullScreen_ = false;
 		FullScreenWidget_ = new SignalledWidget;
 		FullScreenWidget_->addAction (TogglePlay_);
+		FullScreenWidget_->addAction (FullScreenAction_);
 		FullScreenPanel_ = new SignalledWidget (this, Qt::ToolTip);
 		QHBoxLayout *panelLayout = new QHBoxLayout;
 		FullScreenTimeLeft_ = new QLabel;
@@ -655,6 +646,58 @@ namespace vlc
 				SLOT (addSimpleDVD ()));
 		
 		return result;
+	}
+	
+	void VlcWidget::InitNavigations ()
+	{
+		NavigateDown_ = new QAction (this);
+		NavigateEnter_ = new QAction (this);
+		NavigateLeft_ = new QAction (this);
+		NavigateRight_ = new QAction (this);
+		NavigateUp_ = new QAction (this);
+		
+		Manager_->RegisterAction ("org.vlc.navigate_down", NavigateDown_, true);
+		Manager_->RegisterAction ("org.vlc.navigate_enter", NavigateEnter_, true);
+		Manager_->RegisterAction ("org.vlc.navigate_left", NavigateLeft_, true);
+		Manager_->RegisterAction ("org.vlc.navigate_right", NavigateRight_, true);
+		Manager_->RegisterAction ("org.vlc.navigate_up", NavigateUp_, true);
+		
+		connect (NavigateDown_, 
+				SIGNAL (triggered ()),
+				VlcPlayer_,
+				SLOT (dvdNavigateDown ()));
+				
+		connect (NavigateEnter_,
+				SIGNAL (triggered ()),
+				VlcPlayer_,
+				SLOT (dvdNavigateEnter ()));
+		
+		connect (NavigateLeft_,
+				SIGNAL (triggered ()),
+				VlcPlayer_,
+				SLOT (dvdNavigateLeft ()));
+		
+		connect (NavigateRight_,
+				SIGNAL (triggered ()),
+				VlcPlayer_,
+				SLOT (dvdNavigateRight ()));
+		
+		connect (NavigateUp_,
+				SIGNAL (triggered ()),
+				VlcPlayer_,
+				SLOT (dvdNavigateUp ()));
+		
+		addAction (NavigateDown_);
+		addAction (NavigateEnter_);
+		addAction (NavigateLeft_);
+		addAction (NavigateRight_);
+		addAction (NavigateUp_);
+		
+		FullScreenWidget_->addAction (NavigateDown_);
+		FullScreenWidget_->addAction (NavigateEnter_);
+		FullScreenWidget_->addAction (NavigateLeft_);
+		FullScreenWidget_->addAction (NavigateRight_);
+		FullScreenWidget_->addAction (NavigateUp_);
 	}
 }
 }
