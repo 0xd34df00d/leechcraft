@@ -968,6 +968,11 @@ namespace LMP
 			auto item = new QStandardItem ();
 			item->setEditable (false);
 			item->setData (QVariant::fromValue (source), Role::Source);
+			item->setData (source == CurrentStopSource_, Role::IsStop);
+
+			const auto oneShotPos = CurrentOneShotQueue_.indexOf (source);
+			if (oneShotPos >= 0)
+				item->setData (oneShotPos, Role::OneShotPos);
 			switch (source.GetType ())
 			{
 			case AudioSource::Type::Stream:
