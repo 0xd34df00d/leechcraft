@@ -1058,12 +1058,13 @@ namespace LMP
 
 		if (Source_->GetState () == SourceState::Stopped)
 		{
-			const auto& song = XmlSettingsManager::Instance ().property ("LastSong").toString ();
+			const auto& songUrl = XmlSettingsManager::Instance ().property ("LastSong").toByteArray ();
+			const auto& song = QUrl::fromEncoded (songUrl);
 			if (!song.isEmpty ())
 			{
 				const auto pos = std::find_if (CurrentQueue_.begin (), CurrentQueue_.end (),
 						[&song] (decltype (CurrentQueue_.front ()) item)
-							{ return song == item.GetLocalPath (); });
+							{ return song == item.ToUrl (); });
 				if (pos != CurrentQueue_.end ())
 					Source_->SetCurrentSource (*pos);
 			}
@@ -1181,7 +1182,7 @@ namespace LMP
 
 	void Player::handleCurrentSourceChanged (const AudioSource& source)
 	{
-		XmlSettingsManager::Instance ().setProperty ("LastSong", source.GetLocalPath ());
+		XmlSettingsManager::Instance ().setProperty ("LastSong", source.ToUrl ().toEncoded ());
 
 		QStandardItem *curItem = 0;
 		if (CurrentStation_)
