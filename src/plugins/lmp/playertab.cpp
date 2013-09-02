@@ -585,7 +585,7 @@ namespace LMP
 					.arg ("<em>" + title + "</em>")
 					.arg ("<em>" + album + "</em>")
 					.arg ("<em>" + track + "</em>");
-			if (fromUser)
+			if (!fromUser)
 				Ui_.NowPlaying_->setText (text);
 		}
 		else if (fromUser)
