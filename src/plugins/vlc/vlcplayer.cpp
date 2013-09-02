@@ -260,6 +260,31 @@ namespace vlc
 		libvlc_media_player_navigate (Mp_.get (), nav);
 	}
 
+	void VlcPlayer::dvdNavigateDown()
+	{
+		libvlc_media_player_navigate (Mp_.get (), libvlc_navigate_down);
+	}
+
+	void VlcPlayer::dvdNavigateUp()
+	{
+		libvlc_media_player_navigate (Mp_.get (), libvlc_navigate_up);
+	}
+	
+	void VlcPlayer::dvdNavigateRight()
+	{
+		libvlc_media_player_navigate (Mp_.get (), libvlc_navigate_right);
+	}
+	
+	void VlcPlayer::dvdNavigateLeft()
+	{
+		libvlc_media_player_navigate (Mp_.get (), libvlc_navigate_left);
+	}
+	
+	void VlcPlayer::dvdNavigateEnter()
+	{
+		libvlc_media_player_navigate (Mp_.get (), libvlc_navigate_activate);
+	}
+
 	void VlcPlayer::WaitForPlaying () const
 	{
 		QTimeLine line;

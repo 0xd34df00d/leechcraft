@@ -30,7 +30,11 @@
 #pragma once
 
 #include <QWidget>
+#include <QMap>
+#include <boost/concept_check.hpp>
+#include <boost/graph/graph_concepts.hpp>
 #include <interfaces/ihavetabs.h>
+#include <util/shortcuts/shortcutmanager.h>
 #include "vlcscrollbar.h"
 #include "soundwidget.h"
 #include "signalledwidget.h"
@@ -41,6 +45,7 @@ class QLabel;
 class QTimer;
 class QToolButton;
 class QResizeEvent;
+class QShortcut;
 
 namespace LeechCraft
 {
@@ -62,6 +67,13 @@ namespace vlc
 		QAction *Stop_;
 		QAction *FullScreenAction_;
 		QPoint LastMouseEvent_;
+		Util::ShortcutManager *Manager_;
+		
+		QAction *NavigateLeft_;
+		QAction *NavigateRight_;
+		QAction *NavigateUp_;
+		QAction *NavigateDown_;
+		QAction *NavigateEnter_;
 		
 		VlcScrollBar *ScrollBar_;
 		QLabel *TimeLeft_;
@@ -93,9 +105,10 @@ namespace vlc
 		void PrepareFullScreen ();
 		void ForbidFullScreen ();
 		void ConnectWidgetToMe (SignalledWidget*);
+		void InitNavigations ();
 		
 	public:
-		explicit VlcWidget (QWidget *parent = 0);
+		explicit VlcWidget (Util::ShortcutManager *manager, QWidget *parent = 0);
 		~VlcWidget();
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
@@ -104,6 +117,7 @@ namespace vlc
 		static TabClassInfo GetTabInfo ();
 		void TabMadeCurrent ();
 		void TabLostCurrent ();
+		
 		
 	private slots:
 		void addFile ();

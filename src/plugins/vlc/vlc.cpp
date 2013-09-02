@@ -29,8 +29,8 @@
 
 #include <interfaces/core/icoreproxy.h>
 #include <QIcon>
+#include <QShortcut>
 #include "vlc.h"
-#include "vlcwidget.h"
 
 namespace LeechCraft
 {
@@ -39,6 +39,29 @@ namespace vlc
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+		Manager_ = new Util::ShortcutManager (proxy);
+		Manager_->SetObject (this);
+		
+		Manager_->RegisterActionInfo ("org.vlc.navigate_left", 
+									ActionInfo (tr ("Key for navigate left in DVD menu"), QKeySequence (Qt::Key_Left), QIcon ()));
+		
+		Manager_->RegisterActionInfo ("org.vlc.navigate_right",
+									ActionInfo (tr ("Key for navigate right in DVD menu"), QKeySequence (Qt::Key_Right), QIcon ()));
+		
+		Manager_->RegisterActionInfo ("org.vlc.navigate_up",
+									ActionInfo (tr ("Key for navigate up in DVD menu"), QKeySequence (Qt::Key_Up), QIcon ()));
+		
+		Manager_->RegisterActionInfo ("org.vlc.navigate_down",
+									ActionInfo (tr ("Key for navigate down in DVD menu"), QKeySequence (Qt::Key_Down), QIcon ()));
+		
+		Manager_->RegisterActionInfo ("org.vlc.navigate_enter",
+									ActionInfo (tr ("Key for activate current in DVD menu"), QKeySequence (Qt::Key_Enter), QIcon ()));
+		
+		Manager_->RegisterActionInfo ("org.vlc.toggle_fullscreen",
+									ActionInfo (tr ("Key for toggle fullscreen"), QKeySequence (Qt::Key_F), QIcon ()));
+		
+		Manager_->RegisterActionInfo ("org.vlc.toggle_play",
+									ActionInfo (tr ("Key for switch play/pause"), QKeySequence (Qt::Key_Space), QIcon ()));
 	}
 
 	void Plugin::SecondInit ()
@@ -71,7 +94,7 @@ namespace vlc
 	
 	void Plugin::TabOpenRequested (const QByteArray& tabClass) 
 	{
-		VlcWidget *widget = new VlcWidget;
+		VlcWidget *widget = new VlcWidget (Manager_);
 		emit addNewTab ("VLC", widget);
 		emit raiseTab (widget);
 		connect (widget, 
@@ -83,6 +106,16 @@ namespace vlc
 	LeechCraft::TabClasses_t Plugin::GetTabClasses () const 
 	{
 		return { VlcWidget::GetTabInfo () };
+	}
+	
+	QMap<QString, ActionInfo> Plugin::GetActionInfo() const
+	{
+		return Manager_->GetActionInfo ();
+	}
+	
+	void Plugin::SetShortcut(const QString &id, const QKeySequences_t &shortcuts)
+	{
+		Manager_->SetShortcut (id, shortcuts);
 	}
 }
 }
