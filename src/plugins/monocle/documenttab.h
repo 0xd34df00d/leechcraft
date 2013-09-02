@@ -140,6 +140,8 @@ namespace Monocle
 
 		QPoint GetCurrentCenter () const;
 		void CenterOn (const QPoint&);
+
+		bool eventFilter (QObject*, QEvent*);
 	private:
 		void SetupToolbarOpen ();
 		void SetupToolbarRotate ();
