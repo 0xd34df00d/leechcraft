@@ -27,7 +27,6 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include <vlc/vlc.h>
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QTime>
@@ -38,7 +37,6 @@
 #include <QSizePolicy>
 #include <QEventLoop>
 #include <QTimeLine>
-#include <QUrl>
 #include <QDebug>
 #include "vlcplayer.h"
 
@@ -77,7 +75,7 @@ namespace vlc
 		libvlc_media_player_set_xwindow (Mp_.get (), parent->winId ());
 	}
 	
-	void VlcPlayer::addUrl (const QUrl &url) 
+	void VlcPlayer::setUrl (const QUrl &url) 
 	{
 		libvlc_media_player_stop (Mp_.get ());
 		
@@ -86,6 +84,17 @@ namespace vlc
 		
 		libvlc_media_player_set_media (Mp_.get (), M_.get ());
 		libvlc_media_player_play (Mp_.get ());
+		
+		LastMedia_ = url;
+	}
+	
+	void VlcPlayer::addUrl(const QUrl &url)
+	{
+		Freeze ();
+		M_.reset (libvlc_media_new_location (VlcInstance_.get (), LastMedia_.toEncoded ()), libvlc_media_release);
+		libvlc_media_add_option (M_.get (), ":input-slave=" + url.toEncoded ());
+		libvlc_media_player_set_media (Mp_.get (), M_.get ());
+		UnFreeze ();		
 	}
 	
 	void VlcPlayer::ClearAll () 
@@ -137,41 +146,48 @@ namespace vlc
 			return convertTime (0);
 	}
 	
-	void VlcPlayer::switchWidget (QWidget *widget) 
+	void VlcPlayer::Freeze ()
 	{
-		libvlc_time_t cur;
-		int audio;
-		int subtitle;
-		bool playingMedia = libvlc_media_player_get_media (Mp_.get ());
-		if (playingMedia) 
+		FreezePlayingMedia_ = libvlc_media_player_get_media (Mp_.get ());
+		if (FreezePlayingMedia_) 
 		{
-			cur = libvlc_media_player_get_time (Mp_.get ());
-			audio = GetCurrentAudioTrack ();
-			subtitle = GetCurrentSubtitle ();
+			FreezeCur_ = libvlc_media_player_get_time (Mp_.get ());
+			FreezeAudio_ = GetCurrentAudioTrack ();
+			FreezeSubtitle_ = GetCurrentSubtitle ();
 		}
 		
-		bool isPlaying = libvlc_media_player_is_playing (Mp_.get ()); 
-		bool dvd = DVD_ && libvlc_media_player_get_length (Mp_.get ()) > 60 * 10 * 1000;
+		FreezeIsPlaying_ = libvlc_media_player_is_playing (Mp_.get ()); 
+		FreezeDVD_ = DVD_ && libvlc_media_player_get_length (Mp_.get ()) > 60 * 10 * 1000;
 		
 		libvlc_media_player_stop (Mp_.get ());
+	}
+	
+	void VlcPlayer::switchWidget (QWidget *widget) 
+	{
+		Freeze ();
 		libvlc_media_player_set_xwindow (Mp_.get (), widget->winId ());
+		UnFreeze ();
+	}
+	
+	void VlcPlayer::UnFreeze()
+	{
 		libvlc_media_player_play (Mp_.get ());
 		
 		WaitForPlaying ();
-		if (dvd)
+		if (FreezeDVD_)
 		{
 			libvlc_media_player_navigate (Mp_.get (), libvlc_navigate_activate);
 			sleep (150);
 		}
 		
-		if (playingMedia && (!DVD_ || dvd))
+		if (FreezePlayingMedia_ && (!DVD_ || FreezeDVD_))
 		{
-			libvlc_media_player_set_time (Mp_.get (), cur);
-			setAudioTrack (audio);
-			setSubtitle (subtitle);
+			libvlc_media_player_set_time (Mp_.get (), FreezeCur_);
+			setAudioTrack (FreezeAudio_);
+			setSubtitle (FreezeSubtitle_);
 		}
 		
-		if (!isPlaying)
+		if (!FreezeIsPlaying_)
 			libvlc_media_player_pause (Mp_.get ());
 	}
 	

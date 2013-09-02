@@ -125,6 +125,7 @@ namespace vlc
 		void addUrl ();
 		void addDVD ();
 		void addSimpleDVD ();
+		void addSlave ();
 		
 		void updateInterface ();
 		void toggleFullScreen ();

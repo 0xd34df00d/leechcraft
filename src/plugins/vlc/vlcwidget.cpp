@@ -170,7 +170,7 @@ namespace vlc
 													tr ("Open file"),
 													tr ("Videos (*.mkv *.avi *.mov *.mpg)"));
 		if (QFile::exists (file))
-			VlcPlayer_->addUrl (QUrl::fromLocalFile (file));
+			VlcPlayer_->setUrl (QUrl::fromLocalFile (file));
 	}
 	
 	void VlcWidget::addFolder () 
@@ -180,7 +180,7 @@ namespace vlc
 													tr ("Folder with video"));
 		
 		if (QFile::exists (folder))
-			VlcPlayer_->addUrl (QUrl ("directory://" + folder));
+			VlcPlayer_->setUrl (QUrl ("directory://" + folder));
 	}
 	
 	void VlcWidget::addSimpleDVD ()
@@ -190,7 +190,7 @@ namespace vlc
 													tr ("Root of DVD directory"));
 		
 		if (QFile::exists (folder)) 
-			VlcPlayer_->addUrl (QUrl ("dvdsimple://" + folder));
+			VlcPlayer_->setUrl (QUrl ("dvdsimple://" + folder));
 	}
 	
 	void VlcWidget::addDVD ()
@@ -200,7 +200,7 @@ namespace vlc
 													tr ("Root of DVD directory"));
 		
 		if (QFile::exists (folder))
-			VlcPlayer_->addUrl (QUrl ("dvd://" + folder));
+			VlcPlayer_->setUrl (QUrl ("dvd://" + folder));
 	}
 
 	void VlcWidget::addUrl ()
@@ -208,7 +208,17 @@ namespace vlc
 		QString url = QInputDialog::getText (this, tr ("Open URL"), tr ("Enter URL"));
 		
 		if (!url.isEmpty ())
-			VlcPlayer_->addUrl (QUrl (url));
+			VlcPlayer_->setUrl (QUrl (url));
+	}
+	
+	void VlcWidget::addSlave()
+	{
+		QString url = QFileDialog::getOpenFileName (this,
+													tr ("Open file"),
+													tr ("Media (*.ac3)"));
+		
+		if (QFile::exists (url))
+			VlcPlayer_->addUrl (QUrl::fromLocalFile(url));
 	}
 	
 	void VlcWidget::updateInterface ()
@@ -443,6 +453,9 @@ namespace vlc
 		subtitles->addSeparator ();
 		subtitles->addAction (tr ("Add subtitles..."));
 		
+		tracks->addSeparator ();
+		tracks->addAction (tr ("Add external sound track"));
+		
 		ContextMenu_->addMenu (subtitles);
 		ContextMenu_->addMenu (tracks);
 		
@@ -479,8 +492,13 @@ namespace vlc
 	
 	void VlcWidget::setAudioTrack (QAction *action)
 	{
-		int track = action->data ().toInt ();
-		VlcPlayer_->setAudioTrack (track);
+		if (action->data ().isNull ())
+			addSlave ();
+		else
+		{
+			int track = action->data ().toInt ();
+			VlcPlayer_->setAudioTrack (track);
+		}
 	}
 	
 	void VlcWidget::ConnectWidgetToMe (SignalledWidget *widget)
