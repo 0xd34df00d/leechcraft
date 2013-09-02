@@ -46,37 +46,37 @@ namespace vlc
 		Manager_->RegisterActionInfo ("org.vlc.navigate_left", 
 									ActionInfo (tr ("Key for navigate left in DVD menu"), 
 									QKeySequence (Qt::Key_Left), 
-									Proxy_.get ()->GetIcon ("arrow-left")));
+									Proxy_->GetIcon ("arrow-left")));
 		
 		Manager_->RegisterActionInfo ("org.vlc.navigate_right",
 									ActionInfo (tr ("Key for navigate right in DVD menu"), 
 									QKeySequence (Qt::Key_Right), 
-									Proxy_.get ()->GetIcon ("arrow-right")));
+									Proxy_->GetIcon ("arrow-right")));
 		
 		Manager_->RegisterActionInfo ("org.vlc.navigate_up",
 									ActionInfo (tr ("Key for navigate up in DVD menu"), 
 									QKeySequence (Qt::Key_Up),
-									Proxy_.get ()->GetIcon ("arrow-up")));
+									Proxy_->GetIcon ("arrow-up")));
 		
 		Manager_->RegisterActionInfo ("org.vlc.navigate_down",
 									ActionInfo (tr ("Key for navigate down in DVD menu"), 
 									QKeySequence (Qt::Key_Down),
-									Proxy_.get ()->GetIcon ("arrow-down")));
+									Proxy_->GetIcon ("arrow-down")));
 		
 		Manager_->RegisterActionInfo ("org.vlc.navigate_enter",
 									ActionInfo (tr ("Key for activate current in DVD menu"), 
 									QKeySequence (Qt::Key_Enter), 
-									Proxy_.get ()->GetIcon ("key-enter")));
+									Proxy_->GetIcon ("key-enter")));
 		
 		Manager_->RegisterActionInfo ("org.vlc.toggle_fullscreen",
 									ActionInfo (tr ("Key for toggle fullscreen"),
 									QKeySequence (Qt::Key_F),
-									Proxy_.get ()->GetIcon ("view-fullscreen")));
+									Proxy_->GetIcon ("view-fullscreen")));
 		
 		Manager_->RegisterActionInfo ("org.vlc.toggle_play",
 									ActionInfo (tr ("Key for switch play/pause"),
 									QKeySequence (Qt::Key_Space),
-									Proxy_.get ()->GetIcon ("media-playback-start")));
+									Proxy_->GetIcon ("media-playback-start")));
 	}
 
 	void Plugin::SecondInit ()
