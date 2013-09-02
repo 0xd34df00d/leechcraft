@@ -30,6 +30,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <QIcon>
 #include <QShortcut>
+#include <util/shortcuts/shortcutmanager.h>
 #include "vlc.h"
 
 namespace LeechCraft

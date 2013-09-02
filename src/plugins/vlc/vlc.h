@@ -34,8 +34,9 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaveshortcuts.h>
-#include <util/shortcuts/shortcutmanager.h>
 #include "vlcwidget.h"
+
+class ShortcutManager;
 
 namespace LeechCraft
 {
