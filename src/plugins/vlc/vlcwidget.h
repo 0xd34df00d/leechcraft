@@ -55,7 +55,7 @@ namespace vlc
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
 		
-		QObject *Parent_;
+		QObject *const Parent_;
 		VlcPlayer *VlcPlayer_;
 		QToolBar *Bar_;
 		QAction *Open_;
@@ -64,7 +64,7 @@ namespace vlc
 		QAction *Stop_;
 		QAction *FullScreenAction_;
 		QPoint LastMouseEvent_;
-		Util::ShortcutManager *Manager_;
+		Util::ShortcutManager * const Manager_;
 		
 		QAction *NavigateLeft_;
 		QAction *NavigateRight_;

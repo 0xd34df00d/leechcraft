@@ -647,7 +647,7 @@ namespace vlc
 		return result;
 	}
 	
-	void VlcWidget::InitNavigations()
+	void VlcWidget::InitNavigations ()
 	{
 		NavigateDown_ = new QAction (this);
 		NavigateEnter_ = new QAction (this);
