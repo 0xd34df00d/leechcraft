@@ -1041,8 +1041,7 @@ namespace LMP
 				break;
 			}
 
-			if (item)
-				Items_ [source] = item;
+			Items_ [source] = item;
 		}
 
 		PlaylistModel_->blockSignals (false);
