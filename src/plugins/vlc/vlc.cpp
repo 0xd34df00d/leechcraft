@@ -29,8 +29,9 @@
 
 #include <interfaces/core/icoreproxy.h>
 #include <QIcon>
+#include <QShortcut>
+#include <util/shortcuts/shortcutmanager.h>
 #include "vlc.h"
-#include "vlcwidget.h"
 
 namespace LeechCraft
 {
@@ -39,6 +40,43 @@ namespace vlc
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+		Manager_ = new Util::ShortcutManager (proxy);
+		Manager_->SetObject (this);
+		
+		Manager_->RegisterActionInfo ("org.vlc.navigate_left", 
+									ActionInfo (tr ("Key for navigate left in DVD menu"), 
+									QKeySequence (Qt::Key_Left), 
+									Proxy_->GetIcon ("arrow-left")));
+		
+		Manager_->RegisterActionInfo ("org.vlc.navigate_right",
+									ActionInfo (tr ("Key for navigate right in DVD menu"), 
+									QKeySequence (Qt::Key_Right), 
+									Proxy_->GetIcon ("arrow-right")));
+		
+		Manager_->RegisterActionInfo ("org.vlc.navigate_up",
+									ActionInfo (tr ("Key for navigate up in DVD menu"), 
+									QKeySequence (Qt::Key_Up),
+									Proxy_->GetIcon ("arrow-up")));
+		
+		Manager_->RegisterActionInfo ("org.vlc.navigate_down",
+									ActionInfo (tr ("Key for navigate down in DVD menu"), 
+									QKeySequence (Qt::Key_Down),
+									Proxy_->GetIcon ("arrow-down")));
+		
+		Manager_->RegisterActionInfo ("org.vlc.navigate_enter",
+									ActionInfo (tr ("Key for activate current in DVD menu"), 
+									QKeySequence (Qt::Key_Enter), 
+									Proxy_->GetIcon ("key-enter")));
+		
+		Manager_->RegisterActionInfo ("org.vlc.toggle_fullscreen",
+									ActionInfo (tr ("Key for toggle fullscreen"),
+									QKeySequence (Qt::Key_F),
+									Proxy_->GetIcon ("view-fullscreen")));
+		
+		Manager_->RegisterActionInfo ("org.vlc.toggle_play",
+									ActionInfo (tr ("Key for switch play/pause"),
+									QKeySequence (Qt::Key_Space),
+									Proxy_->GetIcon ("media-playback-start")));
 	}
 
 	void Plugin::SecondInit ()
@@ -71,7 +109,7 @@ namespace vlc
 	
 	void Plugin::TabOpenRequested (const QByteArray& tabClass) 
 	{
-		VlcWidget *widget = new VlcWidget;
+		VlcWidget *widget = new VlcWidget (Manager_);
 		emit addNewTab ("VLC", widget);
 		emit raiseTab (widget);
 		connect (widget, 
@@ -83,6 +121,16 @@ namespace vlc
 	LeechCraft::TabClasses_t Plugin::GetTabClasses () const 
 	{
 		return { VlcWidget::GetTabInfo () };
+	}
+	
+	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
+	{
+		return Manager_->GetActionInfo ();
+	}
+	
+	void Plugin::SetShortcut (const QString &id, const QKeySequences_t &shortcuts)
+	{
+		Manager_->SetShortcut (id, shortcuts);
 	}
 }
 }

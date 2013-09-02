@@ -92,6 +92,12 @@ namespace vlc
 		void switchWidget (QWidget*);
 		void setAudioTrack (int);
 		void setSubtitle (int);
+		
+		void dvdNavigateLeft ();
+		void dvdNavigateRight ();
+		void dvdNavigateUp ();
+		void dvdNavigateDown ();
+		void dvdNavigateEnter ();
 	};
 }
 }

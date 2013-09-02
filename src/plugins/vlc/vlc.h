@@ -30,8 +30,11 @@
 #pragma once
 
 #include <QObject>
+#include <QMap>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/ihaveshortcuts.h>
+#include "vlcwidget.h"
 
 namespace LeechCraft
 {
@@ -40,11 +43,13 @@ namespace vlc
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IHaveTabs
+				 , public IHaveShortcuts
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs)
+		Q_INTERFACES (IInfo IHaveTabs IHaveShortcuts)
 	
 		ICoreProxy_ptr Proxy_;
+		Util::ShortcutManager *Manager_;
 	
 	public:
 		void Init (ICoreProxy_ptr);
@@ -57,7 +62,10 @@ namespace vlc
 
 		void TabOpenRequested (const QByteArray&);
 		LeechCraft::TabClasses_t GetTabClasses () const;
-					
+		
+		QMap<QString, ActionInfo> GetActionInfo () const;
+		void SetShortcut (const QString&, const QKeySequences_t&);
+		
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);
