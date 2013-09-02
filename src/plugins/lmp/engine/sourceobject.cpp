@@ -478,15 +478,14 @@ namespace LMP
 				Metadata_ [stdName] = Metadata_.value (oldName);
 		};
 
-		if (!Metadata_.contains ("artist"))
+		const auto& title = Metadata_.value ("title");
+		const auto& split = title.split (" - ", QString::SkipEmptyParts);
+		if (split.size () == 2 &&
+				(!Metadata_.contains ("artist") ||
+					Metadata_.value ("title") != split.value (1)))
 		{
-			const auto& split = Metadata_.value ("title")
-					.split (" - ", QString::SkipEmptyParts);
-			if (split.size () == 2)
-			{
-				Metadata_ ["artist"] = split.value (0);
-				Metadata_ ["title"] = split.value (1);
-			}
+			Metadata_ ["artist"] = split.value (0);
+			Metadata_ ["title"] = split.value (1);
 		}
 
 		merge ("organization", "album", true);
