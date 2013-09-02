@@ -382,6 +382,9 @@ namespace LMP
 		}
 
 		const auto& source = index.data (Role::Source).value<AudioSource> ();
+		if (CurrentOneShotQueue_.contains (source))
+			return;
+
 		CurrentOneShotQueue_ << source;
 
 		const auto pos = CurrentOneShotQueue_.size () - 1;
@@ -973,6 +976,7 @@ namespace LMP
 			const auto oneShotPos = CurrentOneShotQueue_.indexOf (source);
 			if (oneShotPos >= 0)
 				item->setData (oneShotPos, Role::OneShotPos);
+
 			switch (source.GetType ())
 			{
 			case AudioSource::Type::Stream:
