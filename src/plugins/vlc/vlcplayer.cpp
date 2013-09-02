@@ -69,13 +69,10 @@ namespace vlc
 	{
 		const char * const vlc_args[] = 
 		{
-			"-I", "dummy", /* Don't use any interface */
-			"--ignore-config", /* Don't use VLC's config */
-			"--extraintf=logger", //log anything
-			"--verbose=0"
+			"--ffmpeg-hw"
 		};
 
-		VlcInstance_ = std::shared_ptr<libvlc_instance_t> (libvlc_new (5, vlc_args), libvlc_release);
+		VlcInstance_ = std::shared_ptr<libvlc_instance_t> (libvlc_new (1, vlc_args), libvlc_release);
 		Mp_ = std::shared_ptr<libvlc_media_player_t> (libvlc_media_player_new (VlcInstance_.get ()), libvlc_media_player_release);
 		libvlc_media_player_set_xwindow (Mp_.get (), parent->winId ());
 	}
