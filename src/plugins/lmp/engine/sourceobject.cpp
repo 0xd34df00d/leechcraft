@@ -492,6 +492,10 @@ namespace LMP
 		merge ("organization", "album", true);
 		merge ("genre", "title", true);
 
+		Metadata_.remove ("bitrate");
+		Metadata_.remove ("minimum-bitrate");
+		Metadata_.remove ("maximum-bitrate");
+
 		if (oldMetadata == Metadata_)
 			return;
 
