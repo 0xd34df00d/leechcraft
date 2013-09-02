@@ -32,7 +32,6 @@
 #include <QWidget>
 #include <QMap>
 #include <interfaces/ihavetabs.h>
-#include <util/shortcuts/shortcutmanager.h>
 #include "vlcscrollbar.h"
 #include "soundwidget.h"
 #include "signalledwidget.h"
@@ -46,6 +45,11 @@ class QResizeEvent;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class ShortcutManager;
+}
+
 namespace vlc
 {
 	class VlcPlayer;

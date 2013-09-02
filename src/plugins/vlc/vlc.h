@@ -36,8 +36,6 @@
 #include <interfaces/ihaveshortcuts.h>
 #include "vlcwidget.h"
 
-class ShortcutManager;
-
 namespace LeechCraft
 {
 namespace vlc

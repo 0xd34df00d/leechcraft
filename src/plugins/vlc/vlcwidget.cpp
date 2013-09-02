@@ -51,6 +51,7 @@
 #include <QEventLoop>
 #include <QResizeEvent>
 #include <QCursor>
+#include <util/shortcuts/shortcutmanager.h>
 #include "vlcwidget.h"
 #include "vlcplayer.h"
 
