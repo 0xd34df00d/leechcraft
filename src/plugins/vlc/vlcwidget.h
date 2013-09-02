@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QWidget>
+#include <QMap>
 #include <interfaces/ihavetabs.h>
 #include "vlcscrollbar.h"
 #include "soundwidget.h"
@@ -44,6 +45,11 @@ class QResizeEvent;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class ShortcutManager;
+}
+
 namespace vlc
 {
 	class VlcPlayer;
@@ -53,7 +59,7 @@ namespace vlc
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
 		
-		QObject *Parent_;
+		QObject *const Parent_;
 		VlcPlayer *VlcPlayer_;
 		QToolBar *Bar_;
 		QAction *Open_;
@@ -62,6 +68,13 @@ namespace vlc
 		QAction *Stop_;
 		QAction *FullScreenAction_;
 		QPoint LastMouseEvent_;
+		Util::ShortcutManager * const Manager_;
+		
+		QAction *NavigateLeft_;
+		QAction *NavigateRight_;
+		QAction *NavigateUp_;
+		QAction *NavigateDown_;
+		QAction *NavigateEnter_;
 		
 		VlcScrollBar *ScrollBar_;
 		QLabel *TimeLeft_;
@@ -93,9 +106,10 @@ namespace vlc
 		void PrepareFullScreen ();
 		void ForbidFullScreen ();
 		void ConnectWidgetToMe (SignalledWidget*);
+		void InitNavigations ();
 		
 	public:
-		explicit VlcWidget (QWidget *parent = 0);
+		explicit VlcWidget (Util::ShortcutManager *manager, QWidget *parent = 0);
 		~VlcWidget();
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
