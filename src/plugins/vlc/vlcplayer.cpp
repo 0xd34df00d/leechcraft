@@ -98,10 +98,6 @@ namespace vlc
 		UnFreeze ();		
 	}
 	
-	void VlcPlayer::ClearAll () 
-	{	
-	}
-	
 	bool VlcPlayer::NowPlaying () const
 	{
 		return libvlc_media_player_is_playing (Mp_.get ());
@@ -114,10 +110,17 @@ namespace vlc
 	
 	void VlcPlayer::togglePlay () 
 	{
+		bool subtitlesRequired = false;
+		if (libvlc_media_player_get_state (Mp_.get ()) == libvlc_Stopped)
+			subtitlesRequired = true;
+		
 		if (NowPlaying ())
 			libvlc_media_player_pause (Mp_.get ());
 		else
 			libvlc_media_player_play (Mp_.get ());
+		
+		if (subtitlesRequired)
+			ReloadSubtitles ();
 	}
 	
 	void VlcPlayer::stop () 
@@ -191,9 +194,15 @@ namespace vlc
 		if (!FreezeIsPlaying_)
 			libvlc_media_player_pause (Mp_.get ());
 		
+		ReloadSubtitles ();
+	}
+	
+	void VlcPlayer::ReloadSubtitles()
+	{
 		for (int i = 0; i < Subtitles_.size (); i++)
 			libvlc_video_set_subtitle_file (Mp_.get (), Subtitles_[i].toUtf8 ());
 	}
+
 	
 	QWidget* VlcPlayer::GetParent () const
 	{

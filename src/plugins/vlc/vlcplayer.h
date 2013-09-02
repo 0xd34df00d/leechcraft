@@ -63,6 +63,8 @@ namespace vlc
 		QUrl LastMedia_;
 		QStringList Subtitles_;
 		
+		void ReloadSubtitles ();
+		
 		void Freeze ();
 		void UnFreeze ();
 		
@@ -77,7 +79,6 @@ namespace vlc
 		explicit VlcPlayer (QWidget *parent = 0);
 		
 		void AddSubtitles (QString);
-		void ClearAll ();
 		bool NowPlaying () const;
 		double GetPosition () const;
 		QWidget* GetParent () const;
