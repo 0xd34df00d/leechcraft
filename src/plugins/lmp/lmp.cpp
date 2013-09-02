@@ -140,37 +140,7 @@ namespace LMP
 				this,
 				SLOT (showCollectionStats ()));
 
-		Entity e = Util::MakeEntity (QVariant (), QString (), 0,
-				"x-leechcraft/global-action-register");
-		e.Additional_ ["Receiver"] = QVariant::fromValue<QObject*> (PlayerTab_->GetPlayer ());
-		auto initShortcut = [&e, this] (const QByteArray& method, const QKeySequence& seq)
-		{
-			Entity thisE = e;
-			thisE.Additional_ ["ActionID"] = "LMP_Global_" + method;
-			thisE.Additional_ ["Method"] = method;
-			thisE.Additional_ ["Shortcut"] = QVariant::fromValue (seq);
-			GlobAction2Entity_ ["LMP_Global_" + method] = thisE;
-		};
-		initShortcut (SLOT (togglePause ()), QString ("Meta+C"));
-		initShortcut (SLOT (previousTrack ()), QString ("Meta+V"));
-		initShortcut (SLOT (nextTrack ()), QString ("Meta+B"));
-		initShortcut (SLOT (stop ()), QString ("Meta+X"));
-
-		e.Additional_ ["Receiver"] = QVariant::fromValue<QObject*> (PlayerTab_);
-		initShortcut (SLOT (handleLoveTrack ()), QString ("Meta+L"));
-
-		auto setInfo = [this, proxy] (const QByteArray& method,
-				const QString& userText, const QString& icon)
-		{
-			const auto& id = "LMP_Global_" + method;
-			const auto& seq = GlobAction2Entity_ [id].Additional_ ["Shortcut"].value<QKeySequence> ();
-			GlobAction2Info_ [id] = { userText, seq, proxy->GetIcon (icon) };
-		};
-		setInfo (SLOT (togglePause ()), tr ("Play/pause"), "media-playback-start");
-		setInfo (SLOT (previousTrack ()), tr ("Previous track"), "media-skip-backward");
-		setInfo (SLOT (nextTrack ()), tr ("Next track"), "media-skip-forward");
-		setInfo (SLOT (stop ()), tr ("Stop playback"), "media-playback-stop");
-		setInfo (SLOT (handleLoveTrack ()), tr ("Love track"), "emblem-favorite");
+		InitShortcuts ();
 	}
 
 	void Plugin::SecondInit ()
@@ -365,6 +335,50 @@ namespace LMP
 	QAbstractItemModel* Plugin::GetRepresentation () const
 	{
 		return Core::Instance ().GetProgressManager ()->GetModel ();
+	}
+
+	void Plugin::InitShortcuts ()
+	{
+		Entity e = Util::MakeEntity (QVariant (), QString (), 0,
+				"x-leechcraft/global-action-register");
+		e.Additional_ ["Receiver"] = QVariant::fromValue<QObject*> (PlayerTab_->GetPlayer ());
+		auto initShortcut = [&e, this] (const QByteArray& method, const QKeySequence& seq)
+		{
+			Entity thisE = e;
+			thisE.Additional_ ["ActionID"] = "LMP_Global_" + method;
+			thisE.Additional_ ["Method"] = method;
+			thisE.Additional_ ["Shortcut"] = QVariant::fromValue (seq);
+			GlobAction2Entity_ ["LMP_Global_" + method] = thisE;
+		};
+		initShortcut (SLOT (togglePause ()), QString ("Meta+C"));
+		initShortcut (SLOT (previousTrack ()), QString ("Meta+V"));
+		initShortcut (SLOT (nextTrack ()), QString ("Meta+B"));
+		initShortcut (SLOT (stop ()), QString ("Meta+X"));
+		initShortcut (SLOT (volumeUp ()), {});
+		initShortcut (SLOT (volumeDown ()), {});
+
+		e.Additional_ ["Receiver"] = QVariant::fromValue<QObject*> (PlayerTab_);
+		initShortcut (SLOT (handleLoveTrack ()), QString ("Meta+L"));
+		initShortcut (SLOT (notifyCurrentTrack ()), {});
+
+		auto proxy = Core::Instance ().GetProxy ();
+		auto setInfo = [this, proxy] (const QByteArray& method,
+				const QString& userText, const QString& icon)
+		{
+			const auto& id = "LMP_Global_" + method;
+			const auto& seq = GlobAction2Entity_ [id].Additional_ ["Shortcut"].value<QKeySequence> ();
+			GlobAction2Info_ [id] = { userText, seq, proxy->GetIcon (icon) };
+		};
+		setInfo (SLOT (togglePause ()), tr ("Play/pause"), "media-playback-start");
+		setInfo (SLOT (previousTrack ()), tr ("Previous track"), "media-skip-backward");
+		setInfo (SLOT (nextTrack ()), tr ("Next track"), "media-skip-forward");
+		setInfo (SLOT (stop ()), tr ("Stop playback"), "media-playback-stop");
+		setInfo (SLOT (handleLoveTrack ()), tr ("Love track"), "emblem-favorite");
+		setInfo (SLOT (notifyCurrentTrack ()),
+				tr ("Notify about current track"),
+				"dialog-information");
+		setInfo (SLOT (volumeUp ()), tr ("Increase volume"), "audio-volume-high");
+		setInfo (SLOT (volumeDown ()), tr ("Decrease volume"), "audio-volume-low");
 	}
 
 	void Plugin::handleFullRaiseRequested ()

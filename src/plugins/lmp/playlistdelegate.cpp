@@ -128,9 +128,25 @@ namespace LMP
 		}
 
 		style->drawPrimitive (QStyle::PE_PanelItemViewItem, &bgOpt, painter, option.widget);
-		QString lengthText = Util::MakeTimeFromLong (info.Length_);
-		if (lengthText.startsWith ("00:"))
-			lengthText = lengthText.mid (3);
+
+		const auto& oneShotPosVar = index.data (Player::Role::OneShotPos);
+		if (oneShotPosVar.isValid ())
+		{
+			const auto& icon = Core::Instance ().GetProxy ()->GetIcon ("draw-circle");
+			const auto& px = icon.pixmap (option.rect.size ());
+			style->drawItemPixmap (painter, option.rect, Qt::AlignLeft | Qt::AlignVCenter, px);
+
+			const QRect textRect (0, option.rect.top () + (option.rect.height () - px.height ()) / 2,
+					px.width (), px.height ());
+			style->drawItemText (painter,
+					textRect,
+					Qt::AlignCenter,
+					option.palette,
+					true,
+					QString::number (oneShotPosVar.toInt () + 1));
+
+			option.rect.adjust (px.width () + Padding, 0, 0, 0);
+		}
 
 		if (index.data (Player::Role::IsStop).toBool ())
 		{
@@ -141,6 +157,9 @@ namespace LMP
 			option.rect.adjust (px.width () + Padding, 0, 0, 0);
 		}
 
+		QString lengthText = Util::MakeTimeFromLong (info.Length_);
+		if (lengthText.startsWith ("00:"))
+			lengthText = lengthText.mid (3);
 		const int width = option.fontMetrics.width (lengthText);
 		style->drawItemText (painter, option.rect,
 				Qt::AlignRight, option.palette, true, lengthText);

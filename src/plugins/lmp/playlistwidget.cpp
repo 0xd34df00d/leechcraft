@@ -476,6 +476,34 @@ namespace LMP
 				this,
 				SLOT (setStopAfterSelected ()));
 
+		ActionAddToOneShot_ = new QAction (tr ("Add to instant queue"), Ui_.Playlist_);
+		ActionAddToOneShot_->setProperty ("ActionIcon", "list-add");
+		connect (ActionAddToOneShot_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (addToOneShot ()));
+
+		ActionRemoveFromOneShot_ = new QAction (tr ("Remove from instant queue"), Ui_.Playlist_);
+		ActionRemoveFromOneShot_->setProperty ("ActionIcon", "list-remove");
+		connect (ActionRemoveFromOneShot_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (removeFromOneShot ()));
+
+		ActionMoveOneShotUp_ = new QAction (tr ("Move up in instant queue"), Ui_.Playlist_);
+		ActionMoveOneShotUp_->setProperty ("ActionIcon", "go-up");
+		connect (ActionMoveOneShotUp_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (moveOneShotUp ()));
+
+		ActionMoveOneShotDown_ = new QAction (tr ("Move down in instant queue"), Ui_.Playlist_);
+		ActionMoveOneShotDown_->setProperty ("ActionIcon", "go-down");
+		connect (ActionMoveOneShotDown_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (moveOneShotDown ()));
+
 		ActionShowTrackProps_ = new QAction (tr ("Show track properties"), Ui_.Playlist_);
 		ActionShowTrackProps_->setProperty ("ActionIcon", "document-properties");
 		connect (ActionShowTrackProps_,
@@ -559,9 +587,22 @@ namespace LMP
 		if (idx.data (Player::Role::IsAlbum).toBool ())
 			menu->addAction (ActionShowAlbumArt_);
 		else
-		{
-			menu->addAction (ActionStopAfterSelected_);
 			menu->addAction (ActionShowTrackProps_);
+
+		menu->addSeparator ();
+		menu->addAction (ActionStopAfterSelected_);
+
+		const auto& oneShotPosVar = idx.data (Player::Role::OneShotPos);
+		if (!oneShotPosVar.isValid ())
+			menu->addAction (ActionAddToOneShot_);
+		else
+		{
+			menu->addAction (ActionRemoveFromOneShot_);
+
+			if (oneShotPosVar.toInt () > 0)
+				menu->addAction (ActionMoveOneShotUp_);
+			if (oneShotPosVar.toInt () < Player_->GetOneShotQueueSize () - 1)
+				menu->addAction (ActionMoveOneShotDown_);
 		}
 
 		menu->addSeparator ();
@@ -685,11 +726,47 @@ namespace LMP
 
 	void PlaylistWidget::setStopAfterSelected ()
 	{
-		auto index = PlaylistFilter_->mapToSource (Ui_.Playlist_->currentIndex ());
+		const auto& index = PlaylistFilter_->mapToSource (Ui_.Playlist_->currentIndex ());
 		if (!index.isValid ())
 			return;
 
 		Player_->SetStopAfter (index);
+	}
+
+	void PlaylistWidget::addToOneShot ()
+	{
+		const auto& index = PlaylistFilter_->mapToSource (Ui_.Playlist_->currentIndex ());
+		if (!index.isValid ())
+			return;
+
+		Player_->AddToOneShotQueue (index);
+	}
+
+	void PlaylistWidget::removeFromOneShot ()
+	{
+		const auto& index = PlaylistFilter_->mapToSource (Ui_.Playlist_->currentIndex ());
+		if (!index.isValid ())
+			return;
+
+		Player_->RemoveFromOneShotQueue (index);
+	}
+
+	void PlaylistWidget::moveOneShotUp ()
+	{
+		const auto& index = PlaylistFilter_->mapToSource (Ui_.Playlist_->currentIndex ());
+		if (!index.isValid ())
+			return;
+
+		Player_->OneShotMoveUp (index);
+	}
+
+	void PlaylistWidget::moveOneShotDown ()
+	{
+		const auto& index = PlaylistFilter_->mapToSource (Ui_.Playlist_->currentIndex ());
+		if (!index.isValid ())
+			return;
+
+		Player_->OneShotMoveDown (index);
 	}
 
 	void PlaylistWidget::showTrackProps ()

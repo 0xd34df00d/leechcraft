@@ -266,6 +266,8 @@ namespace Murm
 
 	void VkConnection::SetStatus (const EntryStatus& status)
 	{
+		LPServer_.clear ();
+
 		Status_ = status;
 		if (Status_.State_ == SOffline)
 			return;
@@ -282,9 +284,6 @@ namespace Murm
 						SLOT (handleGotFriendLists ()));
 				return reply;
 			});
-		PushFriendsRequest ();
-		PushLPFetchCall ();
-
 		AuthMgr_->GetAuthKey ();
 	}
 
@@ -426,7 +425,15 @@ namespace Murm
 		LPTS_ = rootMap ["ts"].toULongLong ();
 
 		if (Status_.State_ != SOffline)
-			Poll ();
+		{
+			if (!LPServer_.isEmpty ())
+				Poll ();
+			else
+			{
+				PushLPFetchCall ();
+				AuthMgr_->GetAuthKey ();
+			}
+		}
 		else
 			GoOffline ();
 	}
@@ -472,6 +479,9 @@ namespace Murm
 		}
 
 		emit gotLists (lists);
+
+		PushFriendsRequest ();
+		AuthMgr_->GetAuthKey ();
 	}
 
 	void VkConnection::handleGotFriends ()
@@ -527,6 +537,12 @@ namespace Murm
 		}
 
 		emit gotUsers (users);
+
+		if (LPServer_.isEmpty ())
+		{
+			PushLPFetchCall ();
+			AuthMgr_->GetAuthKey ();
+		}
 	}
 
 	void VkConnection::handleGotLPServer ()

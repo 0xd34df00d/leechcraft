@@ -57,6 +57,7 @@ namespace LMP
 	class Path;
 	struct MediaInfo;
 	enum class SourceError;
+	enum class SourceState;
 
 	class Player : public QObject
 #ifdef ENABLE_MPRIS
@@ -75,12 +76,15 @@ namespace LMP
 		QHash<QString, QList<QStandardItem*>> AlbumRoots_;
 
 		AudioSource CurrentStopSource_;
+		QList<AudioSource> CurrentOneShotQueue_;
 
 		Media::IRadioStation_ptr CurrentStation_;
 		QStandardItem *RadioItem_;
 		QHash<QUrl, MediaInfo> Url2Info_;
 
 		MediaInfo LastPhononMediaInfo_;
+
+		bool FirstPlaylistRestore_;
 	public:
 		enum class PlayMode
 		{
@@ -111,7 +115,8 @@ namespace LMP
 			Source,
 			Info,
 			AlbumArt,
-			AlbumLength
+			AlbumLength,
+			OneShotPos
 		};
 
 		Player (QObject* = 0);
@@ -122,6 +127,8 @@ namespace LMP
 
 		PlayMode GetPlayMode () const;
 		void SetPlayMode (PlayMode);
+
+		SourceState GetState () const;
 
 		QList<SortingCriteria> GetSortingCriteria () const;
 		void SetSortingCriteria (const QList<SortingCriteria>&);
@@ -138,6 +145,12 @@ namespace LMP
 
 		void SetStopAfter (const QModelIndex&);
 
+		void AddToOneShotQueue (const QModelIndex&);
+		void RemoveFromOneShotQueue (const QModelIndex&);
+		void OneShotMoveUp (const QModelIndex&);
+		void OneShotMoveDown (const QModelIndex&);
+		int GetOneShotQueueSize () const;
+
 		void SetRadioStation (Media::IRadioStation_ptr);
 
 		MediaInfo GetCurrentMediaInfo () const;
@@ -149,12 +162,14 @@ namespace LMP
 
 		bool HandleCurrentStop (const AudioSource&);
 
+		void RemoveFromOneShotQueue (const AudioSource&);
+
 		void UnsetRadio ();
 
 		template<typename T>
 		AudioSource GetRandomBy (QList<AudioSource>::const_iterator,
 				std::function<T (AudioSource)>) const;
-		AudioSource GetNextSource (const AudioSource&) const;
+		AudioSource GetNextSource (const AudioSource&);
 	public slots:
 		void play (const QModelIndex&);
 		void previousTrack ();
@@ -164,6 +179,9 @@ namespace LMP
 		void stop ();
 		void clear ();
 		void shufflePlaylist ();
+
+		void volumeUp ();
+		void volumeDown ();
 	private slots:
 		void handleSorted ();
 		void continueAfterSorted (const QList<QPair<AudioSource, MediaInfo>>&);

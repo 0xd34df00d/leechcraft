@@ -33,7 +33,6 @@
 #include <QStandardItemModel>
 #include <QFileInfo>
 #include <QDir>
-#include <QMimeData>
 #include <QUrl>
 #include <QtConcurrentRun>
 #include <QApplication>
@@ -47,6 +46,7 @@
 #include "playlistmanager.h"
 #include "staticplaylistmanager.h"
 #include "xmlsettingsmanager.h"
+#include "playlistmodel.h"
 #include "playlistparsers/playlistfactory.h"
 #include "engine/sourceobject.h"
 #include "engine/audiosource.h"
@@ -57,117 +57,6 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	namespace
-	{
-		class PlaylistModel : public QStandardItemModel
-		{
-			Player *Player_;
-		public:
-			PlaylistModel (Player *parent)
-			: QStandardItemModel (parent)
-			, Player_ (parent)
-			{
-				setSupportedDragActions (Qt::CopyAction | Qt::MoveAction);
-			}
-
-			QStringList mimeTypes () const
-			{
-				return QStringList ("text/uri-list");
-			}
-
-			QMimeData* mimeData (const QModelIndexList& indexes) const
-			{
-				QList<QUrl> urls;
-				for (const auto& index : indexes)
-				{
-					const auto& sources = Player_->GetIndexSources (index);
-					std::transform (sources.begin (), sources.end (), std::back_inserter (urls),
-							[] (decltype (sources.front ()) source)
-								{ return source.ToUrl (); });
-				}
-				urls.removeAll (QUrl ());
-
-				QMimeData *result = new QMimeData;
-				result->setUrls (urls);
-				return result;
-			}
-
-			bool dropMimeData (const QMimeData *data, Qt::DropAction action, int row, int, const QModelIndex& parent)
-			{
-				if (action == Qt::IgnoreAction)
-					return true;
-
-				if (!data->hasUrls ())
-					return false;
-
-				const auto& urls = data->urls ();
-				QList<AudioSource> sources;
-				for (const auto& url : urls)
-				{
-					if (url.scheme () != "file")
-					{
-						sources << AudioSource (url);
-						continue;
-					}
-
-					const auto& localPath = url.toLocalFile ();
-					if (QFileInfo (localPath).isFile ())
-					{
-						bool playlistHandled = false;
-						if (auto f = MakePlaylistParser (localPath))
-						{
-							const auto& playlistSrcs = f (localPath);
-							if (!playlistSrcs.isEmpty ())
-							{
-								playlistHandled = true;
-								sources += playlistSrcs;
-							}
-						}
-
-						if (!playlistHandled)
-							sources << AudioSource (localPath);
-						continue;
-					}
-
-					for (const auto& path : RecIterate (localPath, true))
-						sources << AudioSource (path);
-				}
-
-				auto afterIdx = row >= 0 ?
-						parent.child (row, 0) :
-						parent;
-				const auto& firstSrc = afterIdx.isValid () ?
-						Player_->GetIndexSources (afterIdx).value (0) :
-						AudioSource ();
-
-				auto existingQueue = Player_->GetQueue ();
-				if (action == Qt::MoveAction)
-					for (const auto& src : sources)
-					{
-						auto remPos = std::remove (existingQueue.begin (), existingQueue.end (), src);
-						existingQueue.erase (remPos, existingQueue.end ());
-					}
-
-				auto pos = std::find (existingQueue.begin (), existingQueue.end (), firstSrc);
-				if (pos == existingQueue.end ())
-					existingQueue << sources;
-				else
-				{
-					for (const auto& src : sources)
-						pos = existingQueue.insert (pos, src) + 1;
-				}
-
-				Player_->ReplaceQueue (existingQueue);
-				return true;
-			}
-
-			Qt::DropActions supportedDropActions () const
-			{
-				return Qt::CopyAction | Qt::MoveAction;
-			}
-		};
-	}
-
 	Player::Sorter::Sorter ()
 	{
 		Criteria_ << SortingCriteria::Artist
@@ -230,7 +119,8 @@ namespace LMP
 	, Source_ (new SourceObject (this))
 	, Output_ (new Output (this))
 	, Path_ (new Path (Source_, Output_))
-	, RadioItem_ (0)
+	, RadioItem_ (nullptr)
+	, FirstPlaylistRestore_ (true)
 	, PlayMode_ (PlayMode::Sequential)
 	{
 		qRegisterMetaType<QList<AudioSource>> ("QList<AudioSource>");
@@ -261,7 +151,7 @@ namespace LMP
 				this,
 				SLOT (handlePlaybackFinished ()));
 		connect (Source_,
-				SIGNAL (stateChanged (SourceObject::State, SourceObject::State)),
+				SIGNAL (stateChanged (SourceState, SourceState)),
 				this,
 				SLOT (handleStateChanged ()));
 
@@ -316,6 +206,11 @@ namespace LMP
 
 		PlayMode_ = playMode;
 		emit playModeChanged (PlayMode_);
+	}
+
+	SourceState Player::GetState () const
+	{
+		return Source_->GetState ();
 	}
 
 	QList<SortingCriteria> Player::GetSortingCriteria () const
@@ -447,6 +342,8 @@ namespace LMP
 			}
 			else
 				PlaylistModel_->removeRow (item->row ());
+
+			RemoveFromOneShotQueue (source);
 		}
 
 		Core::Instance ().GetPlaylistManager ()->
@@ -474,6 +371,81 @@ namespace LMP
 			CurrentStopSource_ = stopSource;
 			Items_ [stopSource]->setData (true, Role::IsStop);
 		}
+	}
+
+	void Player::AddToOneShotQueue (const QModelIndex& index)
+	{
+		if (index.data (Role::IsAlbum).toBool ())
+		{
+			for (int i = 0, rc = PlaylistModel_->rowCount (index); i < rc; ++i)
+				AddToOneShotQueue (PlaylistModel_->index (i, 0, index));
+			return;
+		}
+
+		const auto& source = index.data (Role::Source).value<AudioSource> ();
+		if (CurrentOneShotQueue_.contains (source))
+			return;
+
+		CurrentOneShotQueue_ << source;
+
+		const auto pos = CurrentOneShotQueue_.size () - 1;
+		PlaylistModel_->itemFromIndex (index)->setData (pos, Role::OneShotPos);
+	}
+
+	void Player::RemoveFromOneShotQueue (const QModelIndex& index)
+	{
+		if (index.data (Role::IsAlbum).toBool ())
+		{
+			for (int i = 0, rc = PlaylistModel_->rowCount (index); i < rc; ++i)
+				RemoveFromOneShotQueue (PlaylistModel_->index (i, 0, index));
+			return;
+		}
+
+		const auto& source = index.data (Role::Source).value<AudioSource> ();
+		RemoveFromOneShotQueue (source);
+	}
+
+	void Player::OneShotMoveUp (const QModelIndex& index)
+	{
+		if (index.data (Role::IsAlbum).toBool ())
+		{
+			for (int i = 0, rc = PlaylistModel_->rowCount (index); i < rc; ++i)
+				OneShotMoveUp (PlaylistModel_->index (i, 0, index));
+			return;
+		}
+
+		const auto& source = index.data (Role::Source).value<AudioSource> ();
+		const auto pos = CurrentOneShotQueue_.indexOf (source);
+		if (pos <= 0)
+			return;
+
+		std::swap (CurrentOneShotQueue_ [pos], CurrentOneShotQueue_ [pos - 1]);
+		Items_ [CurrentOneShotQueue_.at (pos)]->setData (pos, Role::OneShotPos);
+		Items_ [CurrentOneShotQueue_.at (pos - 1)]->setData (pos - 1, Role::OneShotPos);
+	}
+
+	void Player::OneShotMoveDown (const QModelIndex& index)
+	{
+		if (index.data (Role::IsAlbum).toBool ())
+		{
+			for (int i = PlaylistModel_->rowCount (index) - 1; i >= 0; --i)
+				OneShotMoveDown (PlaylistModel_->index (i, 0, index));
+			return;
+		}
+
+		const auto& source = index.data (Role::Source).value<AudioSource> ();
+		const auto pos = CurrentOneShotQueue_.indexOf (source);
+		if (pos == CurrentOneShotQueue_.size () - 1)
+			return;
+
+		std::swap (CurrentOneShotQueue_ [pos], CurrentOneShotQueue_ [pos + 1]);
+		Items_ [CurrentOneShotQueue_.at (pos)]->setData (pos, Role::OneShotPos);
+		Items_ [CurrentOneShotQueue_.at (pos + 1)]->setData (pos + 1, Role::OneShotPos);
+	}
+
+	int Player::GetOneShotQueueSize () const
+	{
+		return CurrentOneShotQueue_.size ();
 	}
 
 	void Player::SetRadioStation (Media::IRadioStation_ptr station)
@@ -692,6 +664,19 @@ namespace LMP
 		return true;
 	}
 
+	void Player::RemoveFromOneShotQueue (const AudioSource& source)
+	{
+		const auto pos = CurrentOneShotQueue_.indexOf (source);
+		if (pos < 0)
+			return;
+
+		CurrentOneShotQueue_.removeAt (pos);
+		for (int i = pos; i < CurrentOneShotQueue_.size (); ++i)
+			Items_ [CurrentOneShotQueue_.at (i)]->setData (i, Role::OneShotPos);
+
+		Items_ [source]->setData ({}, Role::OneShotPos);
+	}
+
 	void Player::UnsetRadio ()
 	{
 		if (!CurrentStation_)
@@ -757,10 +742,17 @@ namespace LMP
 		return *pos;
 	}
 
-	AudioSource Player::GetNextSource (const AudioSource& current) const
+	AudioSource Player::GetNextSource (const AudioSource& current)
 	{
 		if (CurrentQueue_.isEmpty ())
 			return {};
+
+		if (!CurrentOneShotQueue_.isEmpty ())
+		{
+			const auto first = CurrentOneShotQueue_.front ();
+			RemoveFromOneShotQueue (first);
+			return first;
+		}
 
 		auto pos = std::find (CurrentQueue_.begin (), CurrentQueue_.end (), current);
 
@@ -892,7 +884,7 @@ namespace LMP
 
 	void Player::togglePause ()
 	{
-		if (Source_->GetState () == SourceObject::State::Playing)
+		if (Source_->GetState () == SourceState::Playing)
 			Source_->Pause ();
 		else
 		{
@@ -911,7 +903,6 @@ namespace LMP
 	void Player::stop ()
 	{
 		Source_->Stop ();
-		emit songChanged (MediaInfo ());
 
 		if (CurrentStation_)
 			UnsetRadio ();
@@ -926,6 +917,7 @@ namespace LMP
 		AlbumRoots_.clear ();
 		CurrentQueue_.clear ();
 		Url2Info_.clear ();
+		CurrentOneShotQueue_.clear ();
 		Source_->ClearQueue ();
 
 		XmlSettingsManager::Instance ().setProperty ("LastSong", QString ());
@@ -933,7 +925,7 @@ namespace LMP
 		Core::Instance ().GetPlaylistManager ()->
 				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
 
-		if (Source_->GetState () != SourceObject::State::Playing)
+		if (Source_->GetState () != SourceState::Playing)
 			Source_->SetCurrentSource ({});
 	}
 
@@ -944,6 +936,16 @@ namespace LMP
 		auto queue = GetQueue ();
 		std::random_shuffle (queue.begin (), queue.end ());
 		ReplaceQueue (queue, false);
+	}
+
+	void Player::volumeUp ()
+	{
+		Output_->setVolume (std::min (Output_->GetVolume () + 0.05, 1.));
+	}
+
+	void Player::volumeDown ()
+	{
+		Output_->setVolume (std::max (Output_->GetVolume () - 0.05, 0.));
 	}
 
 	void Player::handleSorted ()
@@ -970,6 +972,12 @@ namespace LMP
 			auto item = new QStandardItem ();
 			item->setEditable (false);
 			item->setData (QVariant::fromValue (source), Role::Source);
+			item->setData (source == CurrentStopSource_, Role::IsStop);
+
+			const auto oneShotPos = CurrentOneShotQueue_.indexOf (source);
+			if (oneShotPos >= 0)
+				item->setData (oneShotPos, Role::OneShotPos);
+
 			switch (source.GetType ())
 			{
 			case AudioSource::Type::Stream:
@@ -1038,8 +1046,7 @@ namespace LMP
 				break;
 			}
 
-			if (item)
-				Items_ [source] = item;
+			Items_ [source] = item;
 		}
 
 		PlaylistModel_->blockSignals (false);
@@ -1049,7 +1056,7 @@ namespace LMP
 		Core::Instance ().GetPlaylistManager ()->
 				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
 
-		if (Source_->GetState () == SourceObject::State::Stopped)
+		if (Source_->GetState () == SourceState::Stopped)
 		{
 			const auto& song = XmlSettingsManager::Instance ().property ("LastSong").toString ();
 			if (!song.isEmpty ())
@@ -1060,6 +1067,12 @@ namespace LMP
 				if (pos != CurrentQueue_.end ())
 					Source_->SetCurrentSource (*pos);
 			}
+
+			if (FirstPlaylistRestore_ &&
+					XmlSettingsManager::Instance ().property ("AutoContinuePlayback").toBool ())
+				Source_->Play ();
+
+			FirstPlaylistRestore_ = false;
 		}
 
 		const auto& currentSource = Source_->GetCurrentSource ();
@@ -1088,7 +1101,7 @@ namespace LMP
 		Source_->SetCurrentSource (url);
 
 		qDebug () << Q_FUNC_INFO << static_cast<int> (Source_->GetState ());
-		if (Source_->GetState () == SourceObject::State::Stopped)
+		if (Source_->GetState () == SourceState::Stopped)
 			Source_->Play ();
 	}
 
@@ -1153,8 +1166,17 @@ namespace LMP
 	{
 		const auto state = Source_->GetState ();
 		qDebug () << Q_FUNC_INFO << static_cast<int> (state);
-		if (state == SourceObject::State::Error)
+		switch (state)
+		{
+		case SourceState::Error:
 			qDebug () << Source_->GetErrorString ();
+			break;
+		case SourceState::Stopped:
+			emit songChanged ({});
+			break;
+		default:
+			break;
+		}
 	}
 
 	void Player::handleCurrentSourceChanged (const AudioSource& source)

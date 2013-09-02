@@ -118,6 +118,8 @@ namespace LMP
 		void Scrobble (const MediaInfo&);
 		void FillSimilar (const Media::SimilarityInfos_t&);
 		void RequestLyrics (const MediaInfo&);
+
+		void NotifyCurrentTrack (const MediaInfo&, QPixmap, bool fromUser);
 	private slots:
 		void handleSongChanged (const MediaInfo&);
 		void handleLoveTrack ();
@@ -138,6 +140,8 @@ namespace LMP
 		void handleCollectionItemSelected (const QModelIndex&);
 
 		void handlePlayerAvailable (bool);
+
+		void notifyCurrentTrack ();
 
 		void closeLMP ();
 		void handleStateChanged ();

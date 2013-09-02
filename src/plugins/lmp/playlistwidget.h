@@ -60,7 +60,13 @@ namespace LMP
 		bool ExpandAllScheduled_;
 
 		QAction *ActionRemoveSelected_;
+
 		QAction *ActionStopAfterSelected_;
+		QAction *ActionAddToOneShot_;
+		QAction *ActionRemoveFromOneShot_;
+		QAction *ActionMoveOneShotUp_;
+		QAction *ActionMoveOneShotDown_;
+
 		QAction *ActionShowTrackProps_;
 		QAction *ActionShowAlbumArt_;
 		QAction *ActionMoveTop_;
@@ -107,7 +113,13 @@ namespace LMP
 		void handleCustomSort ();
 
 		void removeSelectedSongs ();
+
 		void setStopAfterSelected ();
+		void addToOneShot ();
+		void removeFromOneShot ();
+		void moveOneShotUp ();
+		void moveOneShotDown ();
+
 		void showTrackProps ();
 
 		void showAlbumArt ();

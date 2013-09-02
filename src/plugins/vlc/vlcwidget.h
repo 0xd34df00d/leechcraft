@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QWidget>
+#include <QMap>
 #include <interfaces/ihavetabs.h>
 #include "vlcscrollbar.h"
 #include "soundwidget.h"
@@ -40,9 +41,15 @@ class QMenu;
 class QLabel;
 class QTimer;
 class QToolButton;
+class QResizeEvent;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class ShortcutManager;
+}
+
 namespace vlc
 {
 	class VlcPlayer;
@@ -52,13 +59,22 @@ namespace vlc
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
 		
-		QObject *Parent_;
+		QObject *const Parent_;
 		VlcPlayer *VlcPlayer_;
 		QToolBar *Bar_;
 		QAction *Open_;
+		QToolButton *OpenButton_;
 		QAction *TogglePlay_;
 		QAction *Stop_;
 		QAction *FullScreenAction_;
+		QPoint LastMouseEvent_;
+		Util::ShortcutManager * const Manager_;
+		
+		QAction *NavigateLeft_;
+		QAction *NavigateRight_;
+		QAction *NavigateUp_;
+		QAction *NavigateDown_;
+		QAction *NavigateEnter_;
 		
 		VlcScrollBar *ScrollBar_;
 		QLabel *TimeLeft_;
@@ -84,13 +100,16 @@ namespace vlc
 		SoundWidget *FullScreenSoundWidget_;
 		QMenu *ContextMenu_;
 		
+		QString GetNewSubtitles ();
 		void GenerateToolBar ();
+		QMenu* GenerateMenuForOpenAction ();
 		void PrepareFullScreen ();
 		void ForbidFullScreen ();
 		void ConnectWidgetToMe (SignalledWidget*);
+		void InitNavigations ();
 		
 	public:
-		explicit VlcWidget (QWidget *parent = 0);
+		explicit VlcWidget (Util::ShortcutManager *manager, QWidget *parent = 0);
 		~VlcWidget();
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
@@ -102,6 +121,11 @@ namespace vlc
 		
 	private slots:
 		void addFile ();
+		void addFolder ();
+		void addUrl ();
+		void addDVD ();
+		void addSimpleDVD ();
+		
 		void updateInterface ();
 		void toggleFullScreen ();
 		void allowFullScreen ();

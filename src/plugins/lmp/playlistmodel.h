@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2013  Vladislav Tyulbashev
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,88 +27,26 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include <QMouseEvent>
-#include <QKeyEvent>
-#include <QWheelEvent>
-#include <QPaintEvent>
-#include <QPainter>
-#include <QColor>
-#include <QPen>
-#include "signalledwidget.h"
+#pragma once
+
+#include <QStandardItemModel>
 
 namespace LeechCraft
 {
-namespace vlc
+namespace LMP
 {
-	SignalledWidget::SignalledWidget (QWidget *parent, Qt::WindowFlags flags)
-	: QWidget (parent, flags)
-	, BackgroundColor_ (nullptr)
-	{
-		setContextMenuPolicy (Qt::CustomContextMenu);
-	}
-	
-	SignalledWidget::~SignalledWidget()
-	{
-		if (BackgroundColor_ != nullptr)
-			delete BackgroundColor_;
-	}
-	
-	void SignalledWidget::keyPressEvent (QKeyEvent *event)
-	{
-		emit keyPress (event);
-	}
-	
-	void SignalledWidget::mousePressEvent (QMouseEvent *event)
-	{
-		emit mousePress (event);
-	}
+	class Player;
 
-	void SignalledWidget::mouseDoubleClickEvent (QMouseEvent *event)
+	class PlaylistModel : public QStandardItemModel
 	{
-		emit mouseDoubleClick (event);
-	}
-	
-	void SignalledWidget::wheelEvent (QWheelEvent *event)
-	{
-		emit wheel (event);
-	}
-	
-	void SignalledWidget::mouseMoveEvent (QMouseEvent *event)
-	{
-		emit mouseMove (event);
-	}
-	
-	void SignalledWidget::paintEvent (QPaintEvent *event)
-	{
-		if (BackgroundColor_ != nullptr)
-		{
-			QPainter p (this);
-			p.setPen (QPen (*BackgroundColor_));
-			p.setBrush (QBrush (*BackgroundColor_));
-			p.drawRect (0, 0, width () - 1, height () - 1);
-			p.end ();
-			event->accept ();
-		}
-	}
-	
-	void SignalledWidget::SetBackGroundColor (QColor *color)
-	{
-		if (BackgroundColor_ != nullptr)
-			delete BackgroundColor_;
-		
-		BackgroundColor_ = color;
-		update ();
-	}
-	
-	void SignalledWidget::resizeEvent (QResizeEvent *event)
-	{
-		emit resized (event);
-	}
-	
-	void SignalledWidget::showEvent(QShowEvent *event)
-	{	
-		emit shown (event);
-	}
+		Player * const Player_;
+	public:
+		PlaylistModel (Player*);
 
+		QStringList mimeTypes () const;
+		QMimeData* mimeData (const QModelIndexList&) const;
+		bool dropMimeData (const QMimeData*, Qt::DropAction, int, int, const QModelIndex&);
+		Qt::DropActions supportedDropActions () const;
+	};
 }
 }

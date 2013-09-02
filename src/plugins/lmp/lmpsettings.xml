@@ -40,6 +40,9 @@
 		<item type="checkbox" property="FollowSymLinks" default="false">
 			<label value="Follow symbolic links" />
 		</item>
+		<item type="checkbox" property="AutoContinuePlayback" default="false">
+			<label value="Continue playback automatically" />
+		</item>
 		<item type="spinbox" property="TransitionTime" default="0" step="100" minimum="-10000" maximum="10000">
 			<label value="Transition time between tracks:" />
 			<suffix value=" ms" />
