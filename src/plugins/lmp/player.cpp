@@ -341,6 +341,8 @@ namespace LMP
 			}
 			else
 				PlaylistModel_->removeRow (item->row ());
+
+			RemoveFromOneShotQueue (source);
 		}
 
 		Core::Instance ().GetPlaylistManager ()->
@@ -368,6 +370,78 @@ namespace LMP
 			CurrentStopSource_ = stopSource;
 			Items_ [stopSource]->setData (true, Role::IsStop);
 		}
+	}
+
+	void Player::AddToOneShotQueue (const QModelIndex& index)
+	{
+		if (index.data (Role::IsAlbum).toBool ())
+		{
+			for (int i = 0, rc = PlaylistModel_->rowCount (index); i < rc; ++i)
+				AddToOneShotQueue (PlaylistModel_->index (i, 0, index));
+			return;
+		}
+
+		const auto& source = index.data (Role::Source).value<AudioSource> ();
+		CurrentOneShotQueue_ << source;
+
+		const auto pos = CurrentOneShotQueue_.size () - 1;
+		PlaylistModel_->itemFromIndex (index)->setData (pos, Role::OneShotPos);
+	}
+
+	void Player::RemoveFromOneShotQueue (const QModelIndex& index)
+	{
+		if (index.data (Role::IsAlbum).toBool ())
+		{
+			for (int i = 0, rc = PlaylistModel_->rowCount (index); i < rc; ++i)
+				RemoveFromOneShotQueue (PlaylistModel_->index (i, 0, index));
+			return;
+		}
+
+		const auto& source = index.data (Role::Source).value<AudioSource> ();
+		RemoveFromOneShotQueue (source);
+	}
+
+	void Player::OneShotMoveUp (const QModelIndex& index)
+	{
+		if (index.data (Role::IsAlbum).toBool ())
+		{
+			for (int i = 0, rc = PlaylistModel_->rowCount (index); i < rc; ++i)
+				OneShotMoveUp (PlaylistModel_->index (i, 0, index));
+			return;
+		}
+
+		const auto& source = index.data (Role::Source).value<AudioSource> ();
+		const auto pos = CurrentOneShotQueue_.indexOf (source);
+		if (pos <= 0)
+			return;
+
+		std::swap (CurrentOneShotQueue_ [pos], CurrentOneShotQueue_ [pos - 1]);
+		Items_ [CurrentOneShotQueue_.at (pos)]->setData (pos, Role::OneShotPos);
+		Items_ [CurrentOneShotQueue_.at (pos - 1)]->setData (pos - 1, Role::OneShotPos);
+	}
+
+	void Player::OneShotMoveDown (const QModelIndex& index)
+	{
+		if (index.data (Role::IsAlbum).toBool ())
+		{
+			for (int i = PlaylistModel_->rowCount (index) - 1; i >= 0; --i)
+				OneShotMoveDown (PlaylistModel_->index (i, 0, index));
+			return;
+		}
+
+		const auto& source = index.data (Role::Source).value<AudioSource> ();
+		const auto pos = CurrentOneShotQueue_.indexOf (source);
+		if (pos == CurrentOneShotQueue_.size () - 1)
+			return;
+
+		std::swap (CurrentOneShotQueue_ [pos], CurrentOneShotQueue_ [pos + 1]);
+		Items_ [CurrentOneShotQueue_.at (pos)]->setData (pos, Role::OneShotPos);
+		Items_ [CurrentOneShotQueue_.at (pos + 1)]->setData (pos + 1, Role::OneShotPos);
+	}
+
+	int Player::GetOneShotQueueSize () const
+	{
+		return CurrentOneShotQueue_.size ();
 	}
 
 	void Player::SetRadioStation (Media::IRadioStation_ptr station)
@@ -584,6 +658,19 @@ namespace LMP
 		Items_ [source]->setData (false, Role::IsStop);
 
 		return true;
+	}
+
+	void Player::RemoveFromOneShotQueue (const AudioSource& source)
+	{
+		const auto pos = CurrentOneShotQueue_.indexOf (source);
+		if (pos < 0)
+			return;
+
+		CurrentOneShotQueue_.removeAt (pos);
+		for (int i = pos; i < CurrentOneShotQueue_.size (); ++i)
+			Items_ [CurrentOneShotQueue_.at (i)]->setData (i, Role::OneShotPos);
+
+		Items_ [source]->setData ({}, Role::OneShotPos);
 	}
 
 	void Player::UnsetRadio ()
@@ -819,6 +906,7 @@ namespace LMP
 		AlbumRoots_.clear ();
 		CurrentQueue_.clear ();
 		Url2Info_.clear ();
+		CurrentOneShotQueue_.clear ();
 		Source_->ClearQueue ();
 
 		XmlSettingsManager::Instance ().setProperty ("LastSong", QString ());

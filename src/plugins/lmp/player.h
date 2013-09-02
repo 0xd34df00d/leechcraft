@@ -76,6 +76,7 @@ namespace LMP
 		QHash<QString, QList<QStandardItem*>> AlbumRoots_;
 
 		AudioSource CurrentStopSource_;
+		QList<AudioSource> CurrentOneShotQueue_;
 
 		Media::IRadioStation_ptr CurrentStation_;
 		QStandardItem *RadioItem_;
@@ -112,7 +113,8 @@ namespace LMP
 			Source,
 			Info,
 			AlbumArt,
-			AlbumLength
+			AlbumLength,
+			OneShotPos
 		};
 
 		Player (QObject* = 0);
@@ -141,6 +143,12 @@ namespace LMP
 
 		void SetStopAfter (const QModelIndex&);
 
+		void AddToOneShotQueue (const QModelIndex&);
+		void RemoveFromOneShotQueue (const QModelIndex&);
+		void OneShotMoveUp (const QModelIndex&);
+		void OneShotMoveDown (const QModelIndex&);
+		int GetOneShotQueueSize () const;
+
 		void SetRadioStation (Media::IRadioStation_ptr);
 
 		MediaInfo GetCurrentMediaInfo () const;
@@ -151,6 +159,8 @@ namespace LMP
 		void AddToPlaylistModel (QList<AudioSource>, bool);
 
 		bool HandleCurrentStop (const AudioSource&);
+
+		void RemoveFromOneShotQueue (const AudioSource&);
 
 		void UnsetRadio ();
 
