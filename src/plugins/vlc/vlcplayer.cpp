@@ -77,6 +77,7 @@ namespace vlc
 	
 	void VlcPlayer::setUrl (const QUrl &url) 
 	{
+		Subtitles_.clear ();
 		libvlc_media_player_stop (Mp_.get ());
 		
 		DVD_ = url.scheme () == "dvd";
@@ -95,6 +96,8 @@ namespace vlc
 		libvlc_media_add_option (M_.get (), ":input-slave=" + url.toEncoded ());
 		libvlc_media_player_set_media (Mp_.get (), M_.get ());
 		UnFreeze ();		
+		for (int i = 0; i < Subtitles_.size (); i++)
+			libvlc_video_set_subtitle_file (Mp_.get (), Subtitles_[i].toUtf8 ());
 	}
 	
 	void VlcPlayer::ClearAll () 
@@ -236,6 +239,7 @@ namespace vlc
 	void VlcPlayer::AddSubtitles (QString file)
 	{
 		libvlc_video_set_subtitle_file (Mp_.get (), file.toUtf8 ());
+		Subtitles_ << file;
 	}
 
 	int VlcPlayer::GetCurrentSubtitle () const

@@ -32,6 +32,7 @@
 #include <memory>
 #include <QObject>
 #include <QUrl>
+#include <QStringList>
 #include <vlc/vlc.h>
 
 class QWidget;
@@ -58,7 +59,9 @@ namespace vlc
 		libvlc_track_description_t* GetTrack(libvlc_track_description_t *t, int track) const;
 		void WaitForPlaying () const;
 		bool DVD_;
+		
 		QUrl LastMedia_;
+		QStringList Subtitles_;
 		
 		void Freeze ();
 		void UnFreeze ();
