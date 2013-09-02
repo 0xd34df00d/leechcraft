@@ -83,6 +83,8 @@ namespace LMP
 		QHash<QUrl, MediaInfo> Url2Info_;
 
 		MediaInfo LastPhononMediaInfo_;
+
+		bool FirstPlaylistRestore_;
 	public:
 		enum class PlayMode
 		{

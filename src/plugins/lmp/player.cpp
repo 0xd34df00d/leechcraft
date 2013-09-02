@@ -119,7 +119,8 @@ namespace LMP
 	, Source_ (new SourceObject (this))
 	, Output_ (new Output (this))
 	, Path_ (new Path (Source_, Output_))
-	, RadioItem_ (0)
+	, RadioItem_ (nullptr)
+	, FirstPlaylistRestore_ (true)
 	, PlayMode_ (PlayMode::Sequential)
 	{
 		qRegisterMetaType<QList<AudioSource>> ("QList<AudioSource>");
@@ -1066,6 +1067,12 @@ namespace LMP
 				if (pos != CurrentQueue_.end ())
 					Source_->SetCurrentSource (*pos);
 			}
+
+			if (FirstPlaylistRestore_ &&
+					XmlSettingsManager::Instance ().property ("AutoContinuePlayback").toBool ())
+				Source_->Play ();
+
+			FirstPlaylistRestore_ = false;
 		}
 
 		const auto& currentSource = Source_->GetCurrentSource ();
