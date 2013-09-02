@@ -67,7 +67,6 @@ namespace vlc
 		QMap<QString, ActionInfo> GetActionInfo () const;
 		void SetShortcut (const QString&, const QKeySequences_t&);
 		
-					
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

@@ -31,8 +31,6 @@
 
 #include <QWidget>
 #include <QMap>
-#include <boost/concept_check.hpp>
-#include <boost/graph/graph_concepts.hpp>
 #include <interfaces/ihavetabs.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include "vlcscrollbar.h"
@@ -45,7 +43,6 @@ class QLabel;
 class QTimer;
 class QToolButton;
 class QResizeEvent;
-class QShortcut;
 
 namespace LeechCraft
 {
@@ -117,7 +114,6 @@ namespace vlc
 		static TabClassInfo GetTabInfo ();
 		void TabMadeCurrent ();
 		void TabLostCurrent ();
-		
 		
 	private slots:
 		void addFile ();

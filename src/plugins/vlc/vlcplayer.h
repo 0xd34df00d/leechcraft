@@ -31,7 +31,6 @@
 
 #include <memory>
 #include <QObject>
-#include <plugins/qrosp/third-party/qmetaobjectbuilder_48.h>
 
 class QWidget;
 class QTime;
