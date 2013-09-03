@@ -497,10 +497,8 @@ namespace LMP
 		merge ("organization", "album", true);
 		merge ("genre", "title", true);
 
-		if (oldMetadata == Metadata_)
-			return;
-
-		emit metaDataChanged ();
+		if (oldMetadata != Metadata_)
+			emit metaDataChanged ();
 	}
 
 	void SourceObject::HandleBufferingMsg (GstMessage *msg)
