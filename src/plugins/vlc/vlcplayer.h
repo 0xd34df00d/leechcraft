@@ -31,10 +31,12 @@
 
 #include <memory>
 #include <QObject>
+#include <QUrl>
+#include <QStringList>
+#include <vlc/vlc.h>
 
 class QWidget;
 class QTime;
-class QUrl;
 
 struct libvlc_instance_t;
 struct libvlc_media_player_t;
@@ -54,15 +56,22 @@ namespace vlc
 		std::shared_ptr<libvlc_media_t> M_;
 		
 		QWidget *Parent_;
-		libvlc_track_description_t* GetTrack(libvlc_track_description_t *t, int track) const;
-		void WaitForPlaying () const;
 		bool DVD_;
+		
+		QUrl LastMedia_;
+		QStringList Subtitles_;
+		
+		libvlc_time_t FreezeCur_;
+		int FreezeAudio_;
+		int FreezeSubtitle_;
+		bool FreezePlayingMedia_;
+		bool FreezeIsPlaying_;
+		bool FreezeDVD_;
 		
 	public:
 		explicit VlcPlayer (QWidget *parent = 0);
 		
-		void AddSubtitles (QString);
-		void ClearAll ();
+		void AddSubtitles (const QString&);
 		bool NowPlaying () const;
 		double GetPosition () const;
 		QWidget* GetParent () const;
@@ -84,10 +93,20 @@ namespace vlc
 		QTime GetCurrentTime () const;
 		QTime GetFullTime () const;
 		
+	private:
+		libvlc_track_description_t* GetTrack (libvlc_track_description_t *t, int track) const;
+		void WaitForPlaying () const;
+		void WaitForDVDPlaying () const;
+		void ReloadSubtitles ();
+		
+		void Freeze ();
+		void UnFreeze ();		
+		
 	public slots:
 		void stop ();
 		void togglePlay ();
 		void addUrl (const QUrl&);
+		void setUrl (const QUrl&);
 		void changePosition (double);
 		void switchWidget (QWidget*);
 		void setAudioTrack (int);

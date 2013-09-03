@@ -34,6 +34,7 @@
 #include <QPainter>
 #include <QColor>
 #include <QPen>
+#include <QDragEnterEvent>
 #include "signalledwidget.h"
 
 namespace LeechCraft
@@ -105,10 +106,9 @@ namespace vlc
 		emit resized (event);
 	}
 	
-	void SignalledWidget::showEvent(QShowEvent *event)
+	void SignalledWidget::showEvent (QShowEvent *event)
 	{	
 		emit shown (event);
 	}
-
 }
 }
