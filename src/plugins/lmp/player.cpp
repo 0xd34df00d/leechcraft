@@ -1231,7 +1231,6 @@ namespace LMP
 		auto curItem = Items_ [source];
 
 		const auto& info = GetPhononMediaInfo ();
-		LastPhononMediaInfo_ = info;
 
 		if (info.Album_ == LastPhononMediaInfo_.Album_ &&
 				info.Artist_ == LastPhononMediaInfo_.Artist_ &&
@@ -1242,6 +1241,8 @@ namespace LMP
 			FillItem (curItem, info);
 			emit songChanged (info);
 		}
+
+		LastPhononMediaInfo_ = info;
 	}
 
 	void Player::handleSourceError (const QString& sourceText, SourceError error)
