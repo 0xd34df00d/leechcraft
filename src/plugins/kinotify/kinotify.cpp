@@ -119,20 +119,29 @@ namespace Kinotify
 		if (prio == PLog_)
 			return;
 
+		const auto& sender = e.Additional_ ["org.LC.AdvNotifications.SenderID"].toString ();
+		const auto& event = e.Additional_ ["org.LC.AdvNotifications.EventID"].toString ();;
+		const auto& notifyId = sender + event;
+
+		auto sameIdPos = notifyId.isEmpty () ?
+				ActiveNotifications_.end () :
+				std::find_if (ActiveNotifications_.begin (), ActiveNotifications_.end (),
+						[&notifyId] (KinotifyWidget *w) { return notifyId == w->GetID (); });
+
 		const auto& header = e.Entity_.toString ();
 		const auto& text = e.Additional_ ["Text"].toString ();
-
 		const auto sameDataPos =
 				std::find_if (ActiveNotifications_.begin (), ActiveNotifications_.end (),
-						[&header, &text] (KinotifyWidget *w)
+						[&header, &text, &notifyId] (KinotifyWidget *w)
 							{ return w->GetTitle () == header && w->GetBody () == text; });
-		if (sameDataPos != ActiveNotifications_.end ())
+		if (sameDataPos != ActiveNotifications_.end () && sameIdPos == ActiveNotifications_.end ())
 				return;
 
 		int timeout = Proxy_->GetSettingsManager ()->
 				property ("FinishedDownloadMessageTimeout").toInt () * 1000;
 
 		auto notificationWidget = new KinotifyWidget (Proxy_, timeout);
+		notificationWidget->SetID (notifyId);
 		notificationWidget->SetThemeLoader (ThemeLoader_);
 		notificationWidget->SetEntity (e);
 
@@ -181,7 +190,21 @@ namespace Kinotify
 		if (!ActiveNotifications_.size ())
 			notificationWidget->PrepareNotification ();
 
-		ActiveNotifications_ << notificationWidget;
+		if (sameIdPos == ActiveNotifications_.end ())
+			ActiveNotifications_ << notificationWidget;
+		else if (sameIdPos == ActiveNotifications_.begin ())
+		{
+			auto oldNotify = *sameIdPos;
+			std::advance (sameIdPos, 1);
+			ActiveNotifications_.insert (sameIdPos, notificationWidget);
+			oldNotify->closeNotificationWidget ();
+		}
+		else
+		{
+			(*sameIdPos)->deleteLater ();
+			auto newPos = ActiveNotifications_.erase (sameIdPos);
+			ActiveNotifications_.insert (newPos, notificationWidget);
+		}
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
