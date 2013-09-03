@@ -61,6 +61,8 @@ namespace Aggregator
 			MarkAsRead,
 			MarkAsUnread,
 			MarkAsImportant,
+			PrevItem,
+			NextItem,
 			Delete,
 
 			MaxAction
@@ -133,6 +135,8 @@ namespace Aggregator
 		void on_ActionMarkItemAsRead__triggered ();
 		void on_ActionMarkItemAsImportant__triggered ();
 		void on_ActionDeleteItem__triggered ();
+		void on_ActionPrevItem__triggered ();
+		void on_ActionNextItem__triggered ();
 		void on_CaseSensitiveSearch__stateChanged (int);
 		void on_ActionItemCommentsSubscribe__triggered ();
 		void on_ActionItemLinkOpen__triggered ();
