@@ -318,6 +318,9 @@ namespace LMP
 		append (tr ("Length"), QString::number (info.Length_));
 		append (tr ("Local path"), info.LocalPath_.isEmpty () ? tr ("unknown") : info.LocalPath_);
 
+		for (auto i = info.Additional_.begin (), end = info.Additional_.end (); i != end; ++i)
+			append (i.key (), i.value ().toString ());
+
 		if (info.LocalPath_.isEmpty ())
 			return;
 
