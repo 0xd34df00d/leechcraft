@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "volumenotifycontroller.h"
+#include <QTimer>
 #include <util/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include "engine/output.h"
@@ -40,7 +41,14 @@ namespace LMP
 	VolumeNotifyController::VolumeNotifyController (Output *out, QObject *parent)
 	: QObject (parent)
 	, Output_ (out)
+	, NotifyTimer_ (new QTimer (this))
 	{
+		NotifyTimer_->setSingleShot (true);
+		NotifyTimer_->setInterval (200);
+		connect (NotifyTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (notify ()));
 	}
 
 	void VolumeNotifyController::volumeUp ()
@@ -48,11 +56,7 @@ namespace LMP
 		const auto val = std::min (Output_->GetVolume () + 0.05, 1.);
 		Output_->setVolume (val);
 
-		const auto& e = Util::MakeNotification ("LMP",
-				tr ("LMP volume has been changed to %1%.")
-					.arg (static_cast<int> (val * 100)),
-				PInfo_);
-		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
+		NotifyTimer_->start ();
 	}
 
 	void VolumeNotifyController::volumeDown ()
@@ -60,12 +64,16 @@ namespace LMP
 		const auto val = std::max (Output_->GetVolume () - 0.05, 0.);
 		Output_->setVolume (val);
 
-		const auto& e = Util::MakeNotification ("LMP",
+		NotifyTimer_->start ();
+	}
+
+	void VolumeNotifyController::notify ()
+	{
+		auto e = Util::MakeNotification ("LMP",
 				tr ("LMP volume has been changed to %1%.")
-					.arg (static_cast<int> (val * 100)),
+					.arg (static_cast<int> (Output_->GetVolume () * 100)),
 				PInfo_);
 		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
-
 }
 }

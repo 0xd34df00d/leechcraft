@@ -31,6 +31,8 @@
 
 #include <QObject>
 
+class QTimer;
+
 namespace LeechCraft
 {
 namespace LMP
@@ -42,11 +44,14 @@ namespace LMP
 		Q_OBJECT
 
 		Output * const Output_;
+		QTimer * const NotifyTimer_;
 	public:
 		VolumeNotifyController (Output*, QObject* = 0);
 	public slots:
 		void volumeUp ();
 		void volumeDown ();
+	private slots:
+		void notify ();
 	};
 }
 }
