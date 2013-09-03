@@ -122,6 +122,7 @@ namespace LMP
 		void NotifyCurrentTrack (const MediaInfo&, QPixmap, bool fromUser);
 	private slots:
 		void handleSongChanged (const MediaInfo&);
+		void handleSongInfoUpdated (const MediaInfo&);
 		void handleLoveTrack ();
 		void handleBanTrack ();
 

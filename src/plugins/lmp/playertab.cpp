@@ -143,6 +143,10 @@ namespace LMP
 				this,
 				SLOT (handleSongChanged (MediaInfo)));
 		connect (Player_,
+				SIGNAL (songInfoUpdated (MediaInfo)),
+				this,
+				SLOT (handleSongInfoUpdated (MediaInfo)));
+		connect (Player_,
 				SIGNAL (indexChanged (QModelIndex)),
 				Ui_.Playlist_,
 				SLOT (focusIndex (QModelIndex)));
@@ -695,6 +699,11 @@ namespace LMP
 			LastArtist_ = info.Artist_;
 			FillSimilar (Similars_ [info.Artist_]);
 		}
+	}
+
+	void PlayerTab::handleSongInfoUpdated (const MediaInfo& info)
+	{
+		Ui_.NPWidget_->SetTrackInfo (info);
 	}
 
 	namespace
