@@ -41,12 +41,11 @@ namespace LeechCraft
 {
 namespace vlc
 {
-	SignalledWidget::SignalledWidget (bool acceptDrops, QWidget *parent, Qt::WindowFlags flags)
+	SignalledWidget::SignalledWidget (QWidget *parent, Qt::WindowFlags flags)
 	: QWidget (parent, flags)
 	, BackgroundColor_ (nullptr)
 	{
 		setContextMenuPolicy (Qt::CustomContextMenu);
-		setAcceptDrops (acceptDrops);
 	}
 	
 	SignalledWidget::~SignalledWidget()
@@ -110,16 +109,6 @@ namespace vlc
 	void SignalledWidget::showEvent (QShowEvent *event)
 	{	
 		emit shown (event);
-	}
-
-	void SignalledWidget::dropEvent (QDropEvent *event)
-	{
-		emit drop (event);
-	}
-	
-	void SignalledWidget::dragEnterEvent (QDragEnterEvent *event)
-	{
-		emit dragEnter (event);
 	}
 }
 }

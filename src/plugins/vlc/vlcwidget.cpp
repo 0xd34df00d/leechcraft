@@ -78,7 +78,7 @@ namespace vlc
 	, Manager_ (manager)
 	, AllowFullScreenPanel_ (false)
 	{
-		VlcMainWidget_ = new SignalledWidget (true);
+		VlcMainWidget_ = new SignalledWidget;
 		VlcMainWidget_->SetBackGroundColor (new QColor ("black"));
 		QVBoxLayout *layout = new QVBoxLayout;
 		layout->setContentsMargins (0, 0, 0, 0);
@@ -530,11 +530,6 @@ namespace vlc
 				SIGNAL (mousePress (QMouseEvent*)),
 				this,
 				SLOT (mousePressEvent (QMouseEvent*)));	
-		
-		connect (widget,
-				SIGNAL (drop (QDropEvent *)),
-				this,
-				SLOT (dropEvent (QDropEvent *)));
 	}
 	
 	void VlcWidget::PrepareFullScreen ()
@@ -544,7 +539,7 @@ namespace vlc
 		FullScreenWidget_ = new SignalledWidget;
 		FullScreenWidget_->addAction (TogglePlay_);
 		FullScreenWidget_->addAction (FullScreenAction_);
-		FullScreenPanel_ = new SignalledWidget (false, this, Qt::ToolTip);
+		FullScreenPanel_ = new SignalledWidget (this, Qt::ToolTip);
 		QHBoxLayout *panelLayout = new QHBoxLayout;
 		FullScreenTimeLeft_ = new QLabel;
 		FullScreenTimeAll_ = new QLabel;
@@ -731,12 +726,19 @@ namespace vlc
 		FullScreenWidget_->addAction (NavigateUp_);
 	}
 	
-	void VlcWidget::dropEvent(QDropEvent *event)
+	void VlcWidget::dropEvent (QDropEvent *event)
 	{
-		VlcPlayer_->setUrl (event->mimeData ()->urls () [0]);
+		QUrl main = event->mimeData ()->urls () [0];
+		event->accept ();
+		if (main.toString ().right (3) == "ac3")
+			VlcPlayer_->addUrl (main);
+		else if (main.toString ().right (3) == "srt")
+			VlcPlayer_->AddSubtitles (main.toEncoded ());
+		else
+			VlcPlayer_->setUrl (main);
 	}
 	
-	void VlcWidget::dragEnterEvent(QDragEnterEvent *event)
+	void VlcWidget::dragEnterEvent (QDragEnterEvent *event)
 	{
 		if (event->mimeData ()->urls ().size () == 1)
 			event->accept ();

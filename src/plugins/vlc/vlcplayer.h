@@ -71,7 +71,7 @@ namespace vlc
 	public:
 		explicit VlcPlayer (QWidget *parent = 0);
 		
-		void AddSubtitles (QString);
+		void AddSubtitles (const QString&);
 		bool NowPlaying () const;
 		double GetPosition () const;
 		QWidget* GetParent () const;
@@ -94,7 +94,7 @@ namespace vlc
 		QTime GetFullTime () const;
 		
 	private:
-		libvlc_track_description_t* GetTrack(libvlc_track_description_t *t, int track) const;
+		libvlc_track_description_t* GetTrack (libvlc_track_description_t *t, int track) const;
 		void WaitForPlaying () const;
 		void WaitForDVDPlaying () const;
 		void ReloadSubtitles ();

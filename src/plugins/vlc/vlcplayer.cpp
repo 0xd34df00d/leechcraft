@@ -92,7 +92,7 @@ namespace vlc
 		LastMedia_ = url;
 	}
 	
-	void VlcPlayer::addUrl(const QUrl& url)
+	void VlcPlayer::addUrl (const QUrl& url)
 	{
 		Freeze ();
 		M_.reset (libvlc_media_new_location (VlcInstance_.get (), LastMedia_.toEncoded ()), libvlc_media_release);
@@ -201,7 +201,7 @@ namespace vlc
 		ReloadSubtitles ();
 	}
 	
-	void VlcPlayer::ReloadSubtitles()
+	void VlcPlayer::ReloadSubtitles ()
 	{
 		for (int i = 0; i < Subtitles_.size (); i++)
 			libvlc_video_set_subtitle_file (Mp_.get (), Subtitles_ [i].toUtf8 ());
@@ -250,8 +250,9 @@ namespace vlc
 		return libvlc_video_get_spu_count (Mp_.get ());
 	}
 	
-	void VlcPlayer::AddSubtitles (QString file)
+	void VlcPlayer::AddSubtitles (const QString &file)
 	{
+		qWarning () << Q_FUNC_INFO << file;
 		libvlc_video_set_subtitle_file (Mp_.get (), file.toUtf8 ());
 		Subtitles_ << file;
 	}
@@ -331,7 +332,7 @@ namespace vlc
 		}
 	}
 	
-	void VlcPlayer::WaitForDVDPlaying() const
+	void VlcPlayer::WaitForDVDPlaying () const
 	{
 		QTimeLine line;
 		line.start ();

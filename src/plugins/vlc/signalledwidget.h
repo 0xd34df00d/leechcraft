@@ -44,7 +44,7 @@ namespace vlc
 		QColor *BackgroundColor_;
 	
 	public:
-		explicit SignalledWidget (bool acceptDrops = false, QWidget *parent = 0, Qt::WindowFlags flags = 0);
+		explicit SignalledWidget (QWidget *parent = 0, Qt::WindowFlags flags = 0);
 		~SignalledWidget();
 		
 		void SetBackGroundColor (QColor*);
@@ -58,8 +58,6 @@ namespace vlc
 		void paintEvent (QPaintEvent*);
 		void resizeEvent (QResizeEvent*);
 		void showEvent (QShowEvent*);
-		void dropEvent (QDropEvent*);
-		void dragEnterEvent (QDragEnterEvent*);
 		
 	signals:
 		void mousePress (QMouseEvent*);
@@ -69,8 +67,6 @@ namespace vlc
 		void keyPress (QKeyEvent*);
 		void resized (QResizeEvent*);
 		void shown (QShowEvent*);
-		void drop (QDropEvent*);
-		void dragEnter (QDragEnterEvent*);
 	};
 }
 }
