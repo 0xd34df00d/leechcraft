@@ -508,11 +508,11 @@ namespace LMP
 	MediaInfo Player::GetPhononMediaInfo () const
 	{
 		MediaInfo info;
-		info.Artist_ = Source_->GetMetadata (SourceObject::Metadata::Artist).value (0);
-		info.Album_ = Source_->GetMetadata (SourceObject::Metadata::Album).value (0);
-		info.Title_ = Source_->GetMetadata (SourceObject::Metadata::Title).value (0);
-		info.Genres_ = Source_->GetMetadata (SourceObject::Metadata::Genre);
-		info.TrackNumber_ = Source_->GetMetadata (SourceObject::Metadata::Tracknumber).value (0).toInt ();
+		info.Artist_ = Source_->GetMetadata (SourceObject::Metadata::Artist);
+		info.Album_ = Source_->GetMetadata (SourceObject::Metadata::Album);
+		info.Title_ = Source_->GetMetadata (SourceObject::Metadata::Title);
+		info.Genres_ << Source_->GetMetadata (SourceObject::Metadata::Genre);
+		info.TrackNumber_ = Source_->GetMetadata (SourceObject::Metadata::Tracknumber).toInt ();
 		info.Length_ = Source_->GetTotalTime () / 1000;
 		info.LocalPath_ = Source_->GetCurrentSource ().ToUrl ().toString ();
 

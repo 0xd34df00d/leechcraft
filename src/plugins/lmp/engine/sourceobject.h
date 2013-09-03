@@ -93,7 +93,10 @@ namespace LMP
 			Album,
 			Title,
 			Genre,
-			Tracknumber
+			Tracknumber,
+			NominalBitrate,
+			MinBitrate,
+			MaxBitrate
 		};
 	private:
 		SourceState OldState_;
@@ -109,7 +112,7 @@ namespace LMP
 
 		QString GetErrorString () const;
 
-		QStringList GetMetadata (Metadata) const;
+		QString GetMetadata (Metadata) const;
 
 		qint64 GetCurrentTime ();
 		qint64 GetRemainingTime () const;

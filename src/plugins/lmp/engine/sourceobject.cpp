@@ -160,20 +160,20 @@ namespace LMP
 		return {};
 	}
 
-	QStringList SourceObject::GetMetadata (Metadata field) const
+	QString SourceObject::GetMetadata (Metadata field) const
 	{
 		switch (field)
 		{
 		case Metadata::Artist:
-			return { Metadata_ ["artist"] };
+			return Metadata_ ["artist"];
 		case Metadata::Album:
-			return { Metadata_ ["album"] };
+			return Metadata_ ["album"];
 		case Metadata::Title:
-			return { Metadata_ ["title"] };
+			return Metadata_ ["title"];
 		case Metadata::Genre:
-			return { Metadata_ ["genre"] };
+			return Metadata_ ["genre"];
 		case Metadata::Tracknumber:
-			return { Metadata_ ["tracknumber"] };
+			return Metadata_ ["tracknumber"];
 		}
 
 		qWarning () << Q_FUNC_INFO
