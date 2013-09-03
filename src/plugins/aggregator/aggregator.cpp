@@ -192,9 +192,7 @@ namespace Aggregator
 			return;
 		}
 
-		Impl_->Ui_.ItemsWidget_->
-			SetChannelsFilter (Core::Instance ()
-					.GetChannelsModel ());
+		Impl_->Ui_.ItemsWidget_->SetChannelsFilter (Core::Instance ().GetChannelsModel ());
 		Core::Instance ().GetJobHolderRepresentation ()->setParent (this);
 		Core::Instance ().GetReprWidget ()->SetAppWideActions (Impl_->AppWideActions_);
 		Core::Instance ().GetReprWidget ()->SetChannelActions (Impl_->ChannelActions_);
@@ -214,24 +212,17 @@ namespace Aggregator
 		XmlSettingsManager::Instance ()->RegisterObject ("GroupChannelsByTags",
 				this, "handleGroupChannels");
 
-		Impl_->Ui_.Feeds_->addAction (Impl_->
-				ChannelActions_.ActionMarkChannelAsRead_);
-		Impl_->Ui_.Feeds_->addAction (Impl_->
-				ChannelActions_.ActionMarkChannelAsUnread_);
+		Impl_->Ui_.Feeds_->addAction (Impl_->ChannelActions_.ActionMarkChannelAsRead_);
+		Impl_->Ui_.Feeds_->addAction (Impl_->ChannelActions_.ActionMarkChannelAsUnread_);
 		Impl_->Ui_.Feeds_->addAction (Util::CreateSeparator (Impl_->Ui_.Feeds_));
-		Impl_->Ui_.Feeds_->addAction (Impl_->
-				ChannelActions_.ActionRemoveFeed_);
-		Impl_->Ui_.Feeds_->addAction (Impl_->
-				ChannelActions_.ActionUpdateSelectedFeed_);
+		Impl_->Ui_.Feeds_->addAction (Impl_->ChannelActions_.ActionRemoveFeed_);
+		Impl_->Ui_.Feeds_->addAction (Impl_->ChannelActions_.ActionUpdateSelectedFeed_);
 		Impl_->Ui_.Feeds_->addAction (Util::CreateSeparator (Impl_->Ui_.Feeds_));
-		Impl_->Ui_.Feeds_->addAction (Impl_->
-				ChannelActions_.ActionRemoveChannel_);
+		Impl_->Ui_.Feeds_->addAction (Impl_->ChannelActions_.ActionRemoveChannel_);
 		Impl_->Ui_.Feeds_->addAction (Util::CreateSeparator (Impl_->Ui_.Feeds_));
-		Impl_->Ui_.Feeds_->addAction (Impl_->
-				ChannelActions_.ActionChannelSettings_);
+		Impl_->Ui_.Feeds_->addAction (Impl_->ChannelActions_.ActionChannelSettings_);
 		Impl_->Ui_.Feeds_->addAction (Util::CreateSeparator (Impl_->Ui_.Feeds_));
-		Impl_->Ui_.Feeds_->addAction (Impl_->
-				AppWideActions_.ActionAddFeed_);
+		Impl_->Ui_.Feeds_->addAction (Impl_->AppWideActions_.ActionAddFeed_);
 		connect (Impl_->Ui_.Feeds_,
 				SIGNAL (customContextMenuRequested (const QPoint&)),
 				this,
@@ -239,21 +230,15 @@ namespace Aggregator
 		QHeaderView *channelsHeader = Impl_->Ui_.Feeds_->header ();
 
 		QMenu *contextMenu = new QMenu (tr ("Feeds actions"));
-		contextMenu->addAction (Impl_->
-				ChannelActions_.ActionMarkChannelAsRead_);
-		contextMenu->addAction (Impl_->
-				ChannelActions_.ActionMarkChannelAsUnread_);
+		contextMenu->addAction (Impl_->ChannelActions_.ActionMarkChannelAsRead_);
+		contextMenu->addAction (Impl_->ChannelActions_.ActionMarkChannelAsUnread_);
 		contextMenu->addSeparator ();
-		contextMenu->addAction (Impl_->
-				ChannelActions_.ActionRemoveFeed_);
-		contextMenu->addAction (Impl_->
-				ChannelActions_.ActionUpdateSelectedFeed_);
+		contextMenu->addAction (Impl_->ChannelActions_.ActionRemoveFeed_);
+		contextMenu->addAction (Impl_->ChannelActions_.ActionUpdateSelectedFeed_);
 		contextMenu->addSeparator ();
-		contextMenu->addAction (Impl_->
-				ChannelActions_.ActionChannelSettings_);
+		contextMenu->addAction (Impl_->ChannelActions_.ActionChannelSettings_);
 		contextMenu->addSeparator ();
-		contextMenu->addAction (Impl_->
-				AppWideActions_.ActionAddFeed_);
+		contextMenu->addAction (Impl_->AppWideActions_.ActionAddFeed_);
 		Core::Instance ().SetContextMenu (contextMenu);
 
 		QFontMetrics fm = fontMetrics ();
