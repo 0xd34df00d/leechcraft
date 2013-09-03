@@ -161,6 +161,16 @@ namespace Kinotify
 		return Body_;
 	}
 
+	QString KinotifyWidget::GetID () const
+	{
+		return ID_;
+	}
+
+	void KinotifyWidget::SetID (const QString& id)
+	{
+		ID_ = id;
+	}
+
 	void KinotifyWidget::SetContent (const QString& title, const QString& body,
 			const QString& imgPath, const QSize& size)
 	{
@@ -402,7 +412,7 @@ namespace Kinotify
 		CheckTimer_->start (Timeout_);
 	}
 
-	void KinotifyWidget::closeNotificationWidget()
+	void KinotifyWidget::closeNotificationWidget ()
 	{
 		disconnect (CheckTimer_,
 				SIGNAL (timeout ()),
