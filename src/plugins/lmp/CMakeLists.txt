@@ -95,6 +95,7 @@ set (SRCS
 	seekslider.cpp
 	palettefixerfilter.cpp
 	playlistmodel.cpp
+	volumenotifycontroller.cpp
 	engine/audiosource.cpp
 	engine/output.cpp
 	engine/path.cpp

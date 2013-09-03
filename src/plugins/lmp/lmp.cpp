@@ -46,6 +46,7 @@
 #include "collectionstatsdialog.h"
 #include "artistbrowsertab.h"
 #include "progressmanager.h"
+#include "volumenotifycontroller.h"
 
 namespace LeechCraft
 {
@@ -354,6 +355,10 @@ namespace LMP
 		initShortcut (SLOT (previousTrack ()), QString ("Meta+V"));
 		initShortcut (SLOT (nextTrack ()), QString ("Meta+B"));
 		initShortcut (SLOT (stop ()), QString ("Meta+X"));
+
+		auto output = PlayerTab_->GetPlayer ()->GetAudioOutput ();
+		auto controller = new VolumeNotifyController (output, PlayerTab_->GetPlayer ());
+		e.Additional_ ["Receiver"] = QVariant::fromValue<QObject*> (controller);
 		initShortcut (SLOT (volumeUp ()), {});
 		initShortcut (SLOT (volumeDown ()), {});
 
