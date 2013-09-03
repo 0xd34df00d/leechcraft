@@ -241,7 +241,7 @@ namespace LeechCraft
 		if (formats.contains ("x-leechcraft/tab-drag-action") &&
 				data->data ("x-leechcraft/tab-drag-action") == "reordering")
 			event->acceptProposedAction ();
-		else
+		else if (tabIdx >= 0)
 			TabWidget_->setCurrentIndex (tabIdx);
 
 		if (auto idt = qobject_cast<IDNDTab*> (TabWidget_->Widget (tabIdx)))
