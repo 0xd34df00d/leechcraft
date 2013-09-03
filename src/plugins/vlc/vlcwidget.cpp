@@ -361,22 +361,32 @@ namespace vlc
 		Manager_->RegisterAction ("org.vlc.toggle_fullscreen", FullScreenAction_, true);
 		TimeLeft_ = new QLabel (this);
 		Bar_->addWidget (TimeLeft_);
-		ScrollBar_ = new VlcScrollBar (this);
+		ScrollBar_ = new VlcScrollBar;
 		ScrollBar_->setBaseSize (200, 25);
 		ScrollBar_->setFocusPolicy (Qt::NoFocus);
+		QWidget *tmp = new QWidget (this);
+		QVBoxLayout *layout = new QVBoxLayout;
+		layout->setContentsMargins (2, 2, 2, 2);
+		layout->addWidget (ScrollBar_);
+		tmp->setLayout (layout);
 		QSizePolicy pol;
 		pol.setHorizontalStretch (255);
 		pol.setHorizontalPolicy (QSizePolicy::Ignored);
 		pol.setVerticalPolicy (QSizePolicy::Expanding);
-		ScrollBar_->setSizePolicy(pol);
-		Bar_->addWidget (ScrollBar_);
+		tmp->setSizePolicy(pol);
+		Bar_->addWidget (tmp);
 		TimeAll_ = new QLabel;
 		TimeAll_->setFocusPolicy (Qt::NoFocus);
 		Bar_->addWidget (TimeAll_);
 		SoundWidget_ = new SoundWidget (this, VlcPlayer_->GetPlayer ());
 		SoundWidget_->setFixedSize (100, 25);
 		SoundWidget_->setFocusPolicy (Qt::NoFocus);
-		Bar_->addWidget (SoundWidget_);
+		layout = new QVBoxLayout;
+		layout->addWidget (SoundWidget_);
+		layout->setContentsMargins (2, 2, 2, 2);
+		tmp = new QWidget (this);
+		tmp->setLayout (layout);
+		Bar_->addWidget (tmp);
 		Bar_->setFocusPolicy (Qt::NoFocus);
 	}
 	
