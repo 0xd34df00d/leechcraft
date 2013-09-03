@@ -42,6 +42,14 @@ namespace LMP
 		Length_ = info.Length_;
 		Year_ = info.Year_;
 		TrackNumber_ = info.TrackNumber_;
+		Additional_ = info.Other_;
+
+		if (Additional_.contains ("URL"))
+		{
+			const auto& url = Additional_.take ("URL").toUrl ();
+			if (url.isLocalFile ())
+				LocalPath_ = url.toLocalFile ();
+		}
 
 		return *this;
 	}
@@ -62,7 +70,7 @@ namespace LMP
 			Length_,
 			Year_,
 			TrackNumber_,
-			QVariantMap ()
+			Additional_
 		};
 		aInfo.Other_ ["URL"] = QUrl::fromLocalFile (LocalPath_);
 		return aInfo;
