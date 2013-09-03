@@ -514,6 +514,7 @@ namespace LMP
 		info.Genres_ = Source_->GetMetadata (SourceObject::Metadata::Genre);
 		info.TrackNumber_ = Source_->GetMetadata (SourceObject::Metadata::Tracknumber).value (0).toInt ();
 		info.Length_ = Source_->GetTotalTime () / 1000;
+		info.LocalPath_ = Source_->GetCurrentSource ().ToUrl ().toString ();
 
 		if (info.Artist_.isEmpty () && info.Title_.contains (" - "))
 		{
