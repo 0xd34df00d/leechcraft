@@ -1241,15 +1241,17 @@ namespace LMP
 		auto curItem = Items_ [source];
 
 		const auto& info = GetPhononMediaInfo ();
+		LastPhononMediaInfo_ = info;
+
 		if (info.Album_ == LastPhononMediaInfo_.Album_ &&
 				info.Artist_ == LastPhononMediaInfo_.Artist_ &&
 				info.Title_ == LastPhononMediaInfo_.Title_)
-			return;
-
-		LastPhononMediaInfo_ = info;
-
-		FillItem (curItem, info);
-		emit songChanged (info);
+			emit songInfoUpdated (info);
+		else
+		{
+			FillItem (curItem, info);
+			emit songChanged (info);
+		}
 	}
 
 	void Player::handleSourceError (const QString& sourceText, SourceError error)
