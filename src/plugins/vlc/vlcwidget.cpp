@@ -51,6 +51,7 @@
 #include <QEventLoop>
 #include <QResizeEvent>
 #include <QCursor>
+#include <QDropEvent>
 #include <util/shortcuts/shortcutmanager.h>
 #include "vlcwidget.h"
 #include "vlcplayer.h"
@@ -77,7 +78,7 @@ namespace vlc
 	, Manager_ (manager)
 	, AllowFullScreenPanel_ (false)
 	{
-		VlcMainWidget_ = new SignalledWidget;
+		VlcMainWidget_ = new SignalledWidget (true);
 		VlcMainWidget_->SetBackGroundColor (new QColor ("black"));
 		QVBoxLayout *layout = new QVBoxLayout;
 		layout->setContentsMargins (0, 0, 0, 0);
@@ -139,6 +140,7 @@ namespace vlc
 				SLOT (toggleFullScreen ()));
 		
 		InitNavigations ();
+		setAcceptDrops (true);
 	}
 	
 	VlcWidget::~VlcWidget()
@@ -528,6 +530,11 @@ namespace vlc
 				SIGNAL (mousePress (QMouseEvent*)),
 				this,
 				SLOT (mousePressEvent (QMouseEvent*)));	
+		
+		connect (widget,
+				SIGNAL (drop (QDropEvent *)),
+				this,
+				SLOT (dropEvent (QDropEvent *)));
 	}
 	
 	void VlcWidget::PrepareFullScreen ()
@@ -537,7 +544,7 @@ namespace vlc
 		FullScreenWidget_ = new SignalledWidget;
 		FullScreenWidget_->addAction (TogglePlay_);
 		FullScreenWidget_->addAction (FullScreenAction_);
-		FullScreenPanel_ = new SignalledWidget (this, Qt::ToolTip);
+		FullScreenPanel_ = new SignalledWidget (false, this, Qt::ToolTip);
 		QHBoxLayout *panelLayout = new QHBoxLayout;
 		FullScreenTimeLeft_ = new QLabel;
 		FullScreenTimeAll_ = new QLabel;
@@ -722,6 +729,17 @@ namespace vlc
 		FullScreenWidget_->addAction (NavigateLeft_);
 		FullScreenWidget_->addAction (NavigateRight_);
 		FullScreenWidget_->addAction (NavigateUp_);
+	}
+	
+	void VlcWidget::dropEvent(QDropEvent *event)
+	{
+		VlcPlayer_->setUrl (event->mimeData ()->urls () [0]);
+	}
+	
+	void VlcWidget::dragEnterEvent(QDragEnterEvent *event)
+	{
+		if (event->mimeData ()->urls ().size () == 1)
+			event->accept ();
 	}
 }
 }

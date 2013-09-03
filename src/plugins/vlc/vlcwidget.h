@@ -141,6 +141,8 @@ namespace vlc
 		void mouseDoubleClickEvent (QMouseEvent*);
 		void mouseMoveEvent (QMouseEvent*);
 		void wheelEvent (QWheelEvent*);
+		void dropEvent (QDropEvent*);
+		void dragEnterEvent (QDragEnterEvent*);
 		
 		void fullScreenPanelRequested ();
 		void hideFullScreenPanel ();

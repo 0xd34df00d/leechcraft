@@ -34,17 +34,19 @@
 #include <QPainter>
 #include <QColor>
 #include <QPen>
+#include <QDragEnterEvent>
 #include "signalledwidget.h"
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	SignalledWidget::SignalledWidget (QWidget *parent, Qt::WindowFlags flags)
+	SignalledWidget::SignalledWidget (bool acceptDrops, QWidget *parent, Qt::WindowFlags flags)
 	: QWidget (parent, flags)
 	, BackgroundColor_ (nullptr)
 	{
 		setContextMenuPolicy (Qt::CustomContextMenu);
+		setAcceptDrops (acceptDrops);
 	}
 	
 	SignalledWidget::~SignalledWidget()
@@ -105,10 +107,19 @@ namespace vlc
 		emit resized (event);
 	}
 	
-	void SignalledWidget::showEvent(QShowEvent *event)
+	void SignalledWidget::showEvent (QShowEvent *event)
 	{	
 		emit shown (event);
 	}
 
+	void SignalledWidget::dropEvent (QDropEvent *event)
+	{
+		emit drop (event);
+	}
+	
+	void SignalledWidget::dragEnterEvent (QDragEnterEvent *event)
+	{
+		emit dragEnter (event);
+	}
 }
 }
