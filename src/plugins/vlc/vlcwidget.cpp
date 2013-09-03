@@ -363,7 +363,6 @@ namespace vlc
 		Bar_->addWidget (TimeLeft_);
 		ScrollBar_ = new VlcScrollBar;
 		ScrollBar_->setBaseSize (200, 25);
-		ScrollBar_->setFocusPolicy (Qt::NoFocus);
 		QWidget *tmp = new QWidget (this);
 		QVBoxLayout *layout = new QVBoxLayout;
 		layout->setContentsMargins (2, 2, 2, 2);
@@ -376,18 +375,15 @@ namespace vlc
 		tmp->setSizePolicy(pol);
 		Bar_->addWidget (tmp);
 		TimeAll_ = new QLabel;
-		TimeAll_->setFocusPolicy (Qt::NoFocus);
 		Bar_->addWidget (TimeAll_);
 		SoundWidget_ = new SoundWidget (this, VlcPlayer_->GetPlayer ());
 		SoundWidget_->setFixedSize (100, 25);
-		SoundWidget_->setFocusPolicy (Qt::NoFocus);
 		layout = new QVBoxLayout;
 		layout->addWidget (SoundWidget_);
 		layout->setContentsMargins (2, 2, 2, 2);
 		tmp = new QWidget (this);
 		tmp->setLayout (layout);
 		Bar_->addWidget (tmp);
-		Bar_->setFocusPolicy (Qt::NoFocus);
 	}
 	
 	TabClassInfo VlcWidget::GetTabClassInfo () const
