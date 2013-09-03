@@ -33,6 +33,7 @@
 #include <QGridLayout>
 #include <QtDebug>
 #include <QDesktopServices>
+#include <util/util.h>
 #include "../filepicker.h"
 
 namespace LeechCraft
@@ -96,15 +97,16 @@ namespace LeechCraft
 			else if (item.hasAttribute ("default"))
 			{
 				QString text = item.attribute ("default");
-				QMap<QString, QDesktopServices::StandardLocation> str2loc;
-				str2loc ["DOCUMENTS"] = QDesktopServices::DocumentsLocation;
-				str2loc ["DESKTOP"] = QDesktopServices::DocumentsLocation;
-				str2loc ["MUSIC"] = QDesktopServices::DocumentsLocation;
-				str2loc ["MOVIES"] = QDesktopServices::DocumentsLocation;
+				QMap<QString, QString> str2loc;
+				str2loc ["DOCUMENTS"] = QDesktopServices::storageLocation (QDesktopServices::DocumentsLocation);
+				str2loc ["DESKTOP"] = QDesktopServices::storageLocation (QDesktopServices::DesktopLocation);
+				str2loc ["MUSIC"] = QDesktopServices::storageLocation (QDesktopServices::MusicLocation);
+				str2loc ["MOVIES"] = QDesktopServices::storageLocation (QDesktopServices::MoviesLocation);
+				str2loc ["LCDIR"] = Util::GetUserDir ({}).absolutePath ();
 				Q_FOREACH (const QString& key, str2loc.keys ())
 					if (text.startsWith ("{" + key + "}"))
 					{
-						text.replace (0, key.length () + 2, QDesktopServices::storageLocation (str2loc [key]));
+						text.replace (0, key.length () + 2, str2loc [key]);
 						break;
 					}
 
