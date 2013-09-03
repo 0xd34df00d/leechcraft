@@ -112,6 +112,8 @@ namespace LMP
 		}
 
 		const auto& text = index.data ().toString ();
+		if (option.state & QStyle::State_Selected)
+			painter->setPen (option.palette.color (QPalette::HighlightedText));
 		painter->setFont (option.font);
 		painter->drawText (option.rect.adjusted (hasIcon ? maxIconHeight + 2 * Padding : 0, 0, 0, 0),
 				Qt::AlignVCenter, text);

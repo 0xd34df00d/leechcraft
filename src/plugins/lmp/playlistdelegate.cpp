@@ -124,8 +124,10 @@ namespace LMP
 			QFont font = option.font;
 			font.setItalic (true);
 			painter->setFont (font);
-			painter->setPen (bgOpt.palette.color (QPalette::HighlightedText));
 		}
+
+		if (index.data (Player::Role::IsCurrent).toBool () || option.state & QStyle::State_Selected)
+			painter->setPen (bgOpt.palette.color (QPalette::HighlightedText));
 
 		style->drawPrimitive (QStyle::PE_PanelItemViewItem, &bgOpt, painter, option.widget);
 
