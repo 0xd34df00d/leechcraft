@@ -96,6 +96,7 @@ namespace vlc
 	private:
 		libvlc_track_description_t* GetTrack(libvlc_track_description_t *t, int track) const;
 		void WaitForPlaying () const;
+		void WaitForDVDPlaying () const;
 		void ReloadSubtitles ();
 		
 		void Freeze ();

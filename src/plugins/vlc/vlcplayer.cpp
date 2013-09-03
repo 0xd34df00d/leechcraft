@@ -53,6 +53,9 @@ namespace
 			QTimer::singleShot (ms, &loop, SLOT (quit ()));
 			loop.exec ();
 	}
+	
+	const int DVD_IS_MORE_THAN = 10 * 60 * 1000; // in ms
+	const int MAX_TIMEOUT = 1000; // in ms
 }
 
 namespace LeechCraft
@@ -162,7 +165,7 @@ namespace vlc
 		}
 		
 		FreezeIsPlaying_ = libvlc_media_player_is_playing (Mp_.get ()); 
-		FreezeDVD_ = DVD_ && libvlc_media_player_get_length (Mp_.get ()) > 60 * 10 * 1000;
+		FreezeDVD_ = DVD_ && libvlc_media_player_get_length (Mp_.get ()) > DVD_IS_MORE_THAN;
 		
 		libvlc_media_player_stop (Mp_.get ());
 	}
@@ -182,7 +185,7 @@ namespace vlc
 		if (FreezeDVD_)
 		{
 			libvlc_media_player_navigate (Mp_.get (), libvlc_navigate_activate);
-			sleep (150);
+			WaitForDVDPlaying ();
 		}
 		
 		if (FreezePlayingMedia_ && (!DVD_ || FreezeDVD_))
@@ -320,12 +323,28 @@ namespace vlc
 		while (!NowPlaying ()) 
 		{
 			sleep (5);
-			if (line.currentTime () > 1000)
+			if (line.currentTime () > MAX_TIMEOUT)
 			{
 				qWarning () << Q_FUNC_INFO << "timeout";
 				break;
 			}
 		}
+	}
+	
+	void VlcPlayer::WaitForDVDPlaying() const
+	{
+		QTimeLine line;
+		line.start ();
+		while (libvlc_media_player_get_length (Mp_.get ()) < DVD_IS_MORE_THAN)
+		{
+			sleep (5);
+			if (line.currentTime () > MAX_TIMEOUT)
+			{
+				qWarning () << Q_FUNC_INFO << "timeout";
+			}
+		}
+		
+		WaitForPlaying ();
 	}
 }
 }
