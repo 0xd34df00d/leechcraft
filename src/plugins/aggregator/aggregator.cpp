@@ -180,6 +180,7 @@ namespace Aggregator
 		Impl_->Ui_.setupUi (this);
 		Impl_->Ui_.ItemsWidget_->SetAppWideActions (Impl_->AppWideActions_);
 		Impl_->Ui_.ItemsWidget_->SetChannelActions (Impl_->ChannelActions_);
+		Impl_->Ui_.ItemsWidget_->RegisterShortcuts ();
 
 		if (Impl_->InitFailed_)
 		{

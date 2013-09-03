@@ -341,6 +341,7 @@ namespace Aggregator
 
 		ReprWidget_ = new ItemsWidget ();
 		ReprWidget_->SetChannelsFilter (JobHolderRepresentation_);
+		ReprWidget_->RegisterShortcuts ();
 		ChannelsModel_->SetWidgets (ReprWidget_->GetToolBar (), ReprWidget_);
 
 		JobHolderRepresentation_->setSourceModel (ChannelsModel_);

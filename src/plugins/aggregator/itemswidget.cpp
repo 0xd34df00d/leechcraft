@@ -35,12 +35,14 @@
 #include <QSortFilterProxyModel>
 #include <QUrl>
 #include <QTimer>
+#include <QMessageBox>
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
 #include <util/tags/categoryselector.h>
 #include <util/util.h>
 #include <util/models/mergemodel.h>
 #include <util/gui/clearlineeditaddon.h>
+#include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -48,7 +50,6 @@
 #include "itemslistmodel.h"
 #include "channelsmodel.h"
 #include "uistatepersist.h"
-#include <qmessagebox.h>
 
 namespace LeechCraft
 {
@@ -252,6 +253,19 @@ namespace Aggregator
 				SLOT (invalidateMergeMode ()));
 	}
 
+	void ItemsWidget::RegisterShortcuts()
+	{
+		auto mgr = Core::Instance ().GetShortcutManager ();
+		auto addAct = [this, mgr] (ItemsWidget::Action actId) -> void
+		{
+			auto act = GetAction (actId);
+			mgr->RegisterAction (act->objectName (), act);
+		};
+
+		for (int i = 0; i < static_cast<int> (ItemsWidget::Action::MaxAction); ++i)
+			addAct (static_cast<ItemsWidget::Action> (i));
+	}
+
 	Item_ptr ItemsWidget::GetItem (const QModelIndex& index) const
 	{
 		QModelIndex mapped = Impl_->ItemLists_->mapToSource (index);
@@ -264,6 +278,29 @@ namespace Aggregator
 	QToolBar* ItemsWidget::GetToolBar () const
 	{
 		return Impl_->ControlToolBar_;
+	}
+
+	QAction* ItemsWidget::GetAction (Action action) const
+	{
+		switch (action)
+		{
+		case Action::MarkAsRead:
+			return Impl_->ActionMarkItemAsRead_;
+		case Action::MarkAsUnread:
+			return Impl_->ActionMarkItemAsUnread_;
+		case Action::MarkAsImportant:
+			return Impl_->ActionMarkItemAsImportant_;
+		case Action::Delete:
+			return Impl_->ActionDeleteItem_;
+		case Action::MaxAction:
+			break;
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown action"
+				<< static_cast<int> (action);
+
+		return nullptr;
 	}
 
 	void ItemsWidget::SetTapeMode (bool tape)
