@@ -87,8 +87,6 @@ namespace Aggregator
 		AppWideActions AppWideActions_;
 		ChannelActions ChannelActions_;
 
-		Util::ShortcutManager *ShortcutMgr_;
-
 		QMenu *ToolMenu_;
 
 		std::shared_ptr<Util::FlatToFoldersProxyModel> FlatToFolders_;
@@ -122,7 +120,6 @@ namespace Aggregator
 		Impl_->TabInfo_.Icon_ = GetIcon ();
 		Impl_->TabInfo_.Priority_ = 0;
 		Impl_->TabInfo_.Features_ = TabFeatures (TFSingle | TFOpenableByRequest);
-		Impl_->ShortcutMgr_ = new Util::ShortcutManager (proxy, this);
 
 		Impl_->ChannelActions_.SetupActionsStruct (this);
 		Impl_->AppWideActions_.SetupActionsStruct (this);
@@ -434,12 +431,12 @@ namespace Aggregator
 	void Aggregator::SetShortcut (const QString& name,
 			const QKeySequences_t& shortcuts)
 	{
-		Impl_->ShortcutMgr_->SetShortcut (name, shortcuts);
+		Core::Instance ().GetShortcutManager ()->SetShortcut (name, shortcuts);
 	}
 
 	QMap<QString, ActionInfo> Aggregator::GetActionInfo () const
 	{
-		return Impl_->ShortcutMgr_->GetActionInfo ();
+		return Core::Instance ().GetShortcutManager ()->GetActionInfo ();
 	}
 
 	QList<QWizardPage*> Aggregator::GetWizardPages () const
@@ -632,7 +629,8 @@ namespace Aggregator
 	void Aggregator::BuildID2ActionTupleMap ()
 	{
 		typedef Util::ShortcutManager::IDPair_t ID_t;
-		*Impl_->ShortcutMgr_ << ID_t ("ActionAddFeed", Impl_->AppWideActions_.ActionAddFeed_)
+		auto mgr = Core::Instance ().GetShortcutManager ();
+		*mgr << ID_t ("ActionAddFeed", Impl_->AppWideActions_.ActionAddFeed_)
 				<< ID_t ("ActionUpdateFeeds_", Impl_->AppWideActions_.ActionUpdateFeeds_)
 				<< ID_t ("ActionRegexpMatcher_", Impl_->AppWideActions_.ActionRegexpMatcher_)
 				<< ID_t ("ActionImportOPML_", Impl_->AppWideActions_.ActionImportOPML_)
