@@ -63,6 +63,8 @@ namespace LMP
 	private slots:
 		void rotateQueue ();
 		void handleSaved ();
+
+		void handleCoversPath ();
 	signals:
 		void gotImages (const Media::AlbumInfo&, const QList<QImage>&);
 	};

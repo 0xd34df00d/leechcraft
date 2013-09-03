@@ -8,6 +8,9 @@
 		<item type="checkbox" property="UseNavTabBar" default="false">
 			<label value="Use tabs for switching pages" />
 		</item>
+		<item type="checkbox" property="AutocenterCurrentTrack" default="true">
+			<label value="Automatically center on current track" />
+		</item>
 		<item type="lineedit" property="SingleTrackDisplayMask" default="$artist - $album - $title">
 			<label value="Format for single tracks in playlist:" />
 			<tooltip>The following variables are allowed: &lt;em>$artist&lt;/em>, &lt;em>$year&lt;/em>, &lt;em>$album&lt;/em>, &lt;em>$trackNumber&lt;/em>, &lt;em>$title&lt;/em>.</tooltip>
@@ -34,14 +37,14 @@
 		<item type="checkbox" property="SortWithThe" default="true">
 			<label value="Take 'The' into account when sorting" />
 		</item>
-		<item type="checkbox" property="AutocenterCurrentTrack" default="true">
-			<label value="Automatically center on current track" />
-		</item>
 		<item type="checkbox" property="FollowSymLinks" default="false">
 			<label value="Follow symbolic links" />
 		</item>
 		<item type="checkbox" property="AutoContinuePlayback" default="false">
 			<label value="Continue playback automatically" />
+		</item>
+		<item type="path" property="CoversStoragePath" default="{LCDIR}/lmp/covers">
+			<label value="Album art storage path:" />
 		</item>
 		<item type="spinbox" property="TransitionTime" default="0" step="100" minimum="-10000" maximum="10000">
 			<label value="Transition time between tracks:" />
