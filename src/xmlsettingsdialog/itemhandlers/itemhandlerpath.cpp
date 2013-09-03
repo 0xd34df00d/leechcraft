@@ -91,8 +91,7 @@ namespace LeechCraft
 		if (value.isNull () ||
 				value.toString ().isEmpty ())
 		{
-			if (item.hasAttribute ("defaultHomePath") &&
-					item.attribute ("defaultHomePath") == "true")
+			if (item.attribute ("defaultHomePath") == "true")
 				value = QDir::homePath ();
 			else if (item.hasAttribute ("default"))
 			{
