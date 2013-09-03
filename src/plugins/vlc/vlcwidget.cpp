@@ -211,9 +211,9 @@ namespace vlc
 			VlcPlayer_->setUrl (QUrl (url));
 	}
 	
-	void VlcWidget::addSlave()
+	void VlcWidget::addSlave ()
 	{
-		QString url = QFileDialog::getOpenFileName (this,
+		const QString& url = QFileDialog::getOpenFileName (this,
 													tr ("Open file"),
 													tr ("Media (*.ac3)"));
 		

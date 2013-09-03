@@ -100,14 +100,6 @@ namespace vlc
 		SoundWidget *FullScreenSoundWidget_;
 		QMenu *ContextMenu_;
 		
-		QString GetNewSubtitles ();
-		void GenerateToolBar ();
-		QMenu* GenerateMenuForOpenAction ();
-		void PrepareFullScreen ();
-		void ForbidFullScreen ();
-		void ConnectWidgetToMe (SignalledWidget*);
-		void InitNavigations ();
-		
 	public:
 		explicit VlcWidget (Util::ShortcutManager *manager, QWidget *parent = 0);
 		~VlcWidget();
@@ -118,6 +110,15 @@ namespace vlc
 		static TabClassInfo GetTabInfo ();
 		void TabMadeCurrent ();
 		void TabLostCurrent ();
+		
+	private:
+		QString GetNewSubtitles ();
+		void GenerateToolBar ();
+		QMenu* GenerateMenuForOpenAction ();
+		void PrepareFullScreen ();
+		void ForbidFullScreen ();
+		void ConnectWidgetToMe (SignalledWidget*);
+		void InitNavigations ();
 		
 	private slots:
 		void addFile ();

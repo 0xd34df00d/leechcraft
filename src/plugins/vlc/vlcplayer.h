@@ -56,17 +56,10 @@ namespace vlc
 		std::shared_ptr<libvlc_media_t> M_;
 		
 		QWidget *Parent_;
-		libvlc_track_description_t* GetTrack(libvlc_track_description_t *t, int track) const;
-		void WaitForPlaying () const;
 		bool DVD_;
 		
 		QUrl LastMedia_;
 		QStringList Subtitles_;
-		
-		void ReloadSubtitles ();
-		
-		void Freeze ();
-		void UnFreeze ();
 		
 		libvlc_time_t FreezeCur_;
 		int FreezeAudio_;
@@ -99,6 +92,14 @@ namespace vlc
 		
 		QTime GetCurrentTime () const;
 		QTime GetFullTime () const;
+		
+	private:
+		libvlc_track_description_t* GetTrack(libvlc_track_description_t *t, int track) const;
+		void WaitForPlaying () const;
+		void ReloadSubtitles ();
+		
+		void Freeze ();
+		void UnFreeze ();		
 		
 	public slots:
 		void stop ();

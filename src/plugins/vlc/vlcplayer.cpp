@@ -70,12 +70,12 @@ namespace vlc
 			"--ffmpeg-hw"
 		};
 
-		VlcInstance_ = std::shared_ptr<libvlc_instance_t> (libvlc_new (1, vlc_args), libvlc_release);
+		VlcInstance_ = std::shared_ptr<libvlc_instance_t> (libvlc_new (sizeof (vlc_args) / sizeof (vlc_args [0]), vlc_args), libvlc_release);
 		Mp_ = std::shared_ptr<libvlc_media_player_t> (libvlc_media_player_new (VlcInstance_.get ()), libvlc_media_player_release);
 		libvlc_media_player_set_xwindow (Mp_.get (), parent->winId ());
 	}
 	
-	void VlcPlayer::setUrl (const QUrl &url) 
+	void VlcPlayer::setUrl (const QUrl& url) 
 	{
 		Subtitles_.clear ();
 		libvlc_media_player_stop (Mp_.get ());
@@ -89,7 +89,7 @@ namespace vlc
 		LastMedia_ = url;
 	}
 	
-	void VlcPlayer::addUrl(const QUrl &url)
+	void VlcPlayer::addUrl(const QUrl& url)
 	{
 		Freeze ();
 		M_.reset (libvlc_media_new_location (VlcInstance_.get (), LastMedia_.toEncoded ()), libvlc_media_release);
@@ -111,7 +111,8 @@ namespace vlc
 	void VlcPlayer::togglePlay () 
 	{
 		bool subtitlesRequired = false;
-		if (libvlc_media_player_get_state (Mp_.get ()) == libvlc_Stopped)
+		if (libvlc_media_player_get_state (Mp_.get ()) == libvlc_Stopped || 
+			libvlc_media_player_get_state (Mp_.get ()) == libvlc_Ended)
 			subtitlesRequired = true;
 		
 		if (NowPlaying ())
@@ -200,7 +201,7 @@ namespace vlc
 	void VlcPlayer::ReloadSubtitles()
 	{
 		for (int i = 0; i < Subtitles_.size (); i++)
-			libvlc_video_set_subtitle_file (Mp_.get (), Subtitles_[i].toUtf8 ());
+			libvlc_video_set_subtitle_file (Mp_.get (), Subtitles_ [i].toUtf8 ());
 	}
 
 	
