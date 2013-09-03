@@ -567,19 +567,23 @@ namespace Aggregator
 		Impl_->ActionMarkItemAsUnread_ = new QAction (tr ("Mark item as unread"),
 				this);
 		Impl_->ActionMarkItemAsUnread_->setObjectName ("ActionMarkItemAsUnread_");
+		Impl_->ActionMarkItemAsUnread_->setShortcut ({ "U" });
 
 		Impl_->ActionMarkItemAsRead_ = new QAction (tr ("Mark item as read"),
 				this);
 		Impl_->ActionMarkItemAsRead_->setObjectName ("ActionMarkItemAsRead_");
+		Impl_->ActionMarkItemAsRead_->setShortcut ({ "R" });
 
 		Impl_->ActionMarkItemAsImportant_ = new QAction (tr ("Important"), this);
 		Impl_->ActionMarkItemAsImportant_->setObjectName ("ActionMarkItemAsImportant_");
 		Impl_->ActionMarkItemAsImportant_->setProperty ("ActionIcon", "rating");
 		Impl_->ActionMarkItemAsImportant_->setCheckable (true);
+		Impl_->ActionMarkItemAsImportant_->setShortcut ({ "I" });
 
 		Impl_->ActionDeleteItem_ = new QAction (tr ("Delete"), this);
 		Impl_->ActionDeleteItem_->setObjectName ("ActionDeleteItem_");
-		Impl_->ActionDeleteItem_->setProperty ("ActionName", "remove");
+		Impl_->ActionDeleteItem_->setProperty ("ActionIcon", "remove");
+		Impl_->ActionDeleteItem_->setShortcut ({ "Delete" });
 
 		Impl_->ActionItemCommentsSubscribe_ = new QAction (tr ("Subscribe to comments"),
 				this);
