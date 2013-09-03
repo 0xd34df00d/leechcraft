@@ -51,6 +51,7 @@
 #include <QEventLoop>
 #include <QResizeEvent>
 #include <QCursor>
+#include <QDropEvent>
 #include <util/shortcuts/shortcutmanager.h>
 #include "vlcwidget.h"
 #include "vlcplayer.h"
@@ -139,6 +140,7 @@ namespace vlc
 				SLOT (toggleFullScreen ()));
 		
 		InitNavigations ();
+		setAcceptDrops (true);
 	}
 	
 	VlcWidget::~VlcWidget()
@@ -170,7 +172,7 @@ namespace vlc
 													tr ("Open file"),
 													tr ("Videos (*.mkv *.avi *.mov *.mpg)"));
 		if (QFile::exists (file))
-			VlcPlayer_->addUrl (QUrl::fromLocalFile (file));
+			VlcPlayer_->setUrl (QUrl::fromLocalFile (file));
 	}
 	
 	void VlcWidget::addFolder () 
@@ -180,7 +182,7 @@ namespace vlc
 													tr ("Folder with video"));
 		
 		if (QFile::exists (folder))
-			VlcPlayer_->addUrl (QUrl ("directory://" + folder));
+			VlcPlayer_->setUrl (QUrl ("directory://" + folder));
 	}
 	
 	void VlcWidget::addSimpleDVD ()
@@ -190,7 +192,7 @@ namespace vlc
 													tr ("Root of DVD directory"));
 		
 		if (QFile::exists (folder)) 
-			VlcPlayer_->addUrl (QUrl ("dvdsimple://" + folder));
+			VlcPlayer_->setUrl (QUrl ("dvdsimple://" + folder));
 	}
 	
 	void VlcWidget::addDVD ()
@@ -200,7 +202,7 @@ namespace vlc
 													tr ("Root of DVD directory"));
 		
 		if (QFile::exists (folder))
-			VlcPlayer_->addUrl (QUrl ("dvd://" + folder));
+			VlcPlayer_->setUrl (QUrl ("dvd://" + folder));
 	}
 
 	void VlcWidget::addUrl ()
@@ -208,7 +210,17 @@ namespace vlc
 		QString url = QInputDialog::getText (this, tr ("Open URL"), tr ("Enter URL"));
 		
 		if (!url.isEmpty ())
-			VlcPlayer_->addUrl (QUrl (url));
+			VlcPlayer_->setUrl (QUrl (url));
+	}
+	
+	void VlcWidget::addSlave ()
+	{
+		const QString& url = QFileDialog::getOpenFileName (this,
+													tr ("Open file"),
+													tr ("Media (*.ac3)"));
+		
+		if (QFile::exists (url))
+			VlcPlayer_->addUrl (QUrl::fromLocalFile(url));
 	}
 	
 	void VlcWidget::updateInterface ()
@@ -351,23 +363,29 @@ namespace vlc
 		Manager_->RegisterAction ("org.vlc.toggle_fullscreen", FullScreenAction_, true);
 		TimeLeft_ = new QLabel (this);
 		Bar_->addWidget (TimeLeft_);
-		ScrollBar_ = new VlcScrollBar (this);
+		ScrollBar_ = new VlcScrollBar;
 		ScrollBar_->setBaseSize (200, 25);
-		ScrollBar_->setFocusPolicy (Qt::NoFocus);
+		QWidget *tmp = new QWidget (this);
+		QVBoxLayout *layout = new QVBoxLayout;
+		layout->setContentsMargins (2, 2, 2, 2);
+		layout->addWidget (ScrollBar_);
+		tmp->setLayout (layout);
 		QSizePolicy pol;
 		pol.setHorizontalStretch (255);
 		pol.setHorizontalPolicy (QSizePolicy::Ignored);
 		pol.setVerticalPolicy (QSizePolicy::Expanding);
-		ScrollBar_->setSizePolicy(pol);
-		Bar_->addWidget (ScrollBar_);
+		tmp->setSizePolicy(pol);
+		Bar_->addWidget (tmp);
 		TimeAll_ = new QLabel;
-		TimeAll_->setFocusPolicy (Qt::NoFocus);
 		Bar_->addWidget (TimeAll_);
 		SoundWidget_ = new SoundWidget (this, VlcPlayer_->GetPlayer ());
 		SoundWidget_->setFixedSize (100, 25);
-		SoundWidget_->setFocusPolicy (Qt::NoFocus);
-		Bar_->addWidget (SoundWidget_);
-		Bar_->setFocusPolicy (Qt::NoFocus);
+		layout = new QVBoxLayout;
+		layout->addWidget (SoundWidget_);
+		layout->setContentsMargins (2, 2, 2, 2);
+		tmp = new QWidget (this);
+		tmp->setLayout (layout);
+		Bar_->addWidget (tmp);
 	}
 	
 	TabClassInfo VlcWidget::GetTabClassInfo () const
@@ -443,6 +461,9 @@ namespace vlc
 		subtitles->addSeparator ();
 		subtitles->addAction (tr ("Add subtitles..."));
 		
+		tracks->addSeparator ();
+		tracks->addAction (tr ("Add external sound track"));
+		
 		ContextMenu_->addMenu (subtitles);
 		ContextMenu_->addMenu (tracks);
 		
@@ -479,8 +500,13 @@ namespace vlc
 	
 	void VlcWidget::setAudioTrack (QAction *action)
 	{
-		int track = action->data ().toInt ();
-		VlcPlayer_->setAudioTrack (track);
+		if (action->data ().isNull ())
+			addSlave ();
+		else
+		{
+			int track = action->data ().toInt ();
+			VlcPlayer_->setAudioTrack (track);
+		}
 	}
 	
 	void VlcWidget::ConnectWidgetToMe (SignalledWidget *widget)
@@ -698,6 +724,24 @@ namespace vlc
 		FullScreenWidget_->addAction (NavigateLeft_);
 		FullScreenWidget_->addAction (NavigateRight_);
 		FullScreenWidget_->addAction (NavigateUp_);
+	}
+	
+	void VlcWidget::dropEvent (QDropEvent *event)
+	{
+		QUrl main = event->mimeData ()->urls () [0];
+		event->accept ();
+		if (main.toString ().right (3) == "ac3")
+			VlcPlayer_->addUrl (main);
+		else if (main.toString ().right (3) == "srt")
+			VlcPlayer_->AddSubtitles (main.toEncoded ());
+		else
+			VlcPlayer_->setUrl (main);
+	}
+	
+	void VlcWidget::dragEnterEvent (QDragEnterEvent *event)
+	{
+		if (event->mimeData ()->urls ().size () == 1)
+			event->accept ();
 	}
 }
 }
