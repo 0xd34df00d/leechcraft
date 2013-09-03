@@ -533,6 +533,17 @@ namespace LMP
 			}
 		}
 
+		auto append = [&info, this] (SourceObject::Metadata md, const QString& name) -> void
+		{
+			const auto& value = Source_->GetMetadata (md);
+			if (!value.isEmpty ())
+				info.Additional_ [name] = value;
+		};
+
+		append (SourceObject::Metadata::NominalBitrate, tr ("Bitrate"));
+		append (SourceObject::Metadata::MinBitrate, tr ("Minimum bitrate"));
+		append (SourceObject::Metadata::MaxBitrate, tr ("Maximum bitrate"));
+
 		return info;
 	}
 

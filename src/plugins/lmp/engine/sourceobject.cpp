@@ -174,6 +174,12 @@ namespace LMP
 			return Metadata_ ["genre"];
 		case Metadata::Tracknumber:
 			return Metadata_ ["tracknumber"];
+		case Metadata::NominalBitrate:
+			return Metadata_ ["bitrate"];
+		case Metadata::MinBitrate:
+			return Metadata_ ["minimum-bitrate"];
+		case Metadata::MaxBitrate:
+			return Metadata_ ["maximum-bitrate"];
 		}
 
 		qWarning () << Q_FUNC_INFO
@@ -490,10 +496,6 @@ namespace LMP
 
 		merge ("organization", "album", true);
 		merge ("genre", "title", true);
-
-		Metadata_.remove ("bitrate");
-		Metadata_.remove ("minimum-bitrate");
-		Metadata_.remove ("maximum-bitrate");
 
 		if (oldMetadata == Metadata_)
 			return;
