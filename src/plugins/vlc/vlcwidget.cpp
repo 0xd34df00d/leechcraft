@@ -62,6 +62,9 @@ namespace
 	{
 		return (a - b).manhattanLength ();
 	}
+	
+	const QStringList KNOWN_AUDIO_FILE_FORMATS = {".ac3", ".mp3", ".ogg"};
+	const QStringList KNOWN_SUBTITLES_FILE_FORMATS = {".srt", ".smi", ".ssa", ".ass"};
 }
 
 namespace LeechCraft
@@ -138,6 +141,16 @@ namespace vlc
 				SIGNAL (triggered ()),
 				this,
 				SLOT (toggleFullScreen ()));
+		
+		connect (VlcPlayer_,
+				SIGNAL (stable ()),
+				ScrollBar_,
+				SLOT (unBlockUpdating ()));
+		
+		connect (VlcPlayer_,
+				SIGNAL (unstable ()),
+				ScrollBar_,
+				SLOT (blockUpdating ()));
 		
 		InitNavigations ();
 		setAcceptDrops (true);
@@ -728,11 +741,11 @@ namespace vlc
 	
 	void VlcWidget::dropEvent (QDropEvent *event)
 	{
-		QUrl main = event->mimeData ()->urls () [0];
+		QUrl& main = event->mimeData ()->urls () [0];
 		event->accept ();
-		if (main.toString ().right (3) == "ac3")
+		if (KNOWN_AUDIO_FILE_FORMATS.contains(main.toString ().right (4)))
 			VlcPlayer_->addUrl (main);
-		else if (main.toString ().right (3) == "srt")
+		else if (KNOWN_SUBTITLES_FILE_FORMATS.contains(main.toString ().right (4)))
 			VlcPlayer_->AddSubtitles (main.toEncoded ());
 		else
 			VlcPlayer_->setUrl (main);

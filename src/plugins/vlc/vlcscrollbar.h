@@ -43,6 +43,7 @@ namespace vlc
 		
 		double CurrentPosition_;
 		QPoint LastMousePoint_;
+		bool blocked;
 		
 	public:
 		explicit VlcScrollBar (QWidget *parent = 0);
@@ -54,6 +55,9 @@ namespace vlc
 
 	public slots:	
 		void setPosition (double);
+		void blockUpdating ();
+		void unBlockUpdating ();
+		
 	signals:
 		void changePosition (double);
 	};

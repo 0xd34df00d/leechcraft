@@ -37,6 +37,7 @@
 #include <QSizePolicy>
 #include <QEventLoop>
 #include <QTimeLine>
+#include <QDir>
 #include <QDebug>
 #include "vlcplayer.h"
 
@@ -70,7 +71,9 @@ namespace vlc
 	{
 		const char * const vlc_args[] = 
 		{
-			"--ffmpeg-hw"
+			"--ffmpeg-hw",
+			"--logfile",
+			(QDir::homePath () + "/.leechcraft/vlc-log.txt").toUtf8 ()
 		};
 
 		VlcInstance_ = std::shared_ptr<libvlc_instance_t> (libvlc_new (sizeof (vlc_args) / sizeof (vlc_args [0]), vlc_args), libvlc_release);
@@ -156,6 +159,7 @@ namespace vlc
 	
 	void VlcPlayer::Freeze ()
 	{
+		emit unstable ();
 		FreezePlayingMedia_ = libvlc_media_player_get_media (Mp_.get ());
 		if (FreezePlayingMedia_) 
 		{
@@ -199,6 +203,7 @@ namespace vlc
 			libvlc_media_player_pause (Mp_.get ());
 		
 		ReloadSubtitles ();
+		emit stable ();
 	}
 	
 	void VlcPlayer::ReloadSubtitles ()
@@ -250,9 +255,8 @@ namespace vlc
 		return libvlc_video_get_spu_count (Mp_.get ());
 	}
 	
-	void VlcPlayer::AddSubtitles (const QString &file)
+	void VlcPlayer::AddSubtitles (const QString& file)
 	{
-		qWarning () << Q_FUNC_INFO << file;
 		libvlc_video_set_subtitle_file (Mp_.get (), file.toUtf8 ());
 		Subtitles_ << file;
 	}
@@ -342,6 +346,7 @@ namespace vlc
 			if (line.currentTime () > MAX_TIMEOUT)
 			{
 				qWarning () << Q_FUNC_INFO << "timeout";
+				break;
 			}
 		}
 		

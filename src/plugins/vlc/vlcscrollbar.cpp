@@ -41,6 +41,7 @@ namespace vlc
 	VlcScrollBar::VlcScrollBar (QWidget *parent)
 	: QWidget (parent)
 	, CurrentPosition_ (0)
+	, blocked (false)
 	{
 	}
 
@@ -73,7 +74,18 @@ namespace vlc
 	
 	void VlcScrollBar::setPosition (double pos)
 	{
-		CurrentPosition_ = pos;
+		if (!blocked)
+			CurrentPosition_ = pos;
+	}
+	
+	void VlcScrollBar::blockUpdating ()
+	{
+		blocked = true;
+	}
+	
+	void VlcScrollBar::unBlockUpdating()
+	{
+		blocked = false;
 	}
 }
 }
