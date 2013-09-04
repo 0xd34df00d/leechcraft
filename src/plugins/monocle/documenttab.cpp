@@ -215,11 +215,11 @@ namespace Monocle
 
 	void DocumentTab::Remove ()
 	{
-		DockWidget_->widget ()->deleteLater ();
-		DockWidget_->deleteLater ();
-		TOCWidget_->deleteLater ();
-		BMWidget_->deleteLater ();
-		ThumbsWidget_->deleteLater ();
+		delete TOCWidget_;
+		delete BMWidget_;
+		delete ThumbsWidget_;
+		delete DockWidget_->widget ();
+		delete DockWidget_;
 
 		emit removeTab (this);
 		deleteLater ();
