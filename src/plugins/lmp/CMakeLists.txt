@@ -175,6 +175,9 @@ target_link_libraries (leechcraft_lmp
 install (TARGETS leechcraft_lmp DESTINATION ${LC_PLUGINS_DEST})
 install (FILES lmpsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (DIRECTORY interfaces DESTINATION include/leechcraft)
+if (UNIX AND NOT APPLE)
+	install (FILES freedesktop/leechcraft-lmp.desktop DESTINATION share/applications)
+endif ()
 
 option (ENABLE_LMP_DUMBSYNC "Enable DumbSync, plugin for syncing with Flash-like media players" ON)
 option (ENABLE_LMP_GRAFFITI "Enable Graffiti for manipulating audio file tags" ON)
