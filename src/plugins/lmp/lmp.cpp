@@ -240,8 +240,8 @@ namespace LMP
 		const auto& goodExt = XmlSettingsManager::Instance ()
 				.property ("TestExtensions").toString ()
 				.split (' ', QString::SkipEmptyParts);
-		const QFileInfo fi = QFileInfo (path);
-		if (fi.exists () && goodExt.contains (fi.suffix ()))
+		const QFileInfo fi (path);
+		if (fi.exists () && (goodExt.contains (fi.suffix ()) || e.Additional_ ["Action"] == "AudioEnqueue"))
 			return EntityTestHandleResult (EntityTestHandleResult::PHigh);
 		else
 			return EntityTestHandleResult ();
