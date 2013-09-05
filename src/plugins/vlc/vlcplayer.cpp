@@ -72,14 +72,23 @@ namespace vlc
 		const char * const vlc_args[] = 
 		{
 			"--ffmpeg-hw",
+			//"--extraintf=logger",
+			//"--verbose=2",
 			"--logfile",
-			(QDir::homePath () + "/.leechcraft/vlc-log.txt").toUtf8 ()
+			(QDir::homePath () + ".leechcraft/vlc-log.txt").toUtf8 ()
 		};
 
 		VlcInstance_ = std::shared_ptr<libvlc_instance_t> (libvlc_new (sizeof (vlc_args) / sizeof (vlc_args [0]), vlc_args), libvlc_release);
 		Mp_ = std::shared_ptr<libvlc_media_player_t> (libvlc_media_player_new (VlcInstance_.get ()), libvlc_media_player_release);
 		libvlc_media_player_set_xwindow (Mp_.get (), parent->winId ());
 	}
+	
+	void VlcPlayer::Init(QWidget *parent)
+	{
+		libvlc_media_player_set_xwindow (Mp_.get (), parent->winId ());
+		Parent_ = parent;
+	}
+
 	
 	void VlcPlayer::setUrl (const QUrl& url) 
 	{
@@ -97,11 +106,13 @@ namespace vlc
 	
 	void VlcPlayer::addUrl (const QUrl& url)
 	{
+		fprintf(stderr, "adding\n" );
 		Freeze ();
 		M_.reset (libvlc_media_new_location (VlcInstance_.get (), LastMedia_.toEncoded ()), libvlc_media_release);
 		libvlc_media_add_option (M_.get (), ":input-slave=" + url.toEncoded ());
 		libvlc_media_player_set_media (Mp_.get (), M_.get ());
 		UnFreeze ();		
+		fprintf(stderr, "end\n");
 	}
 	
 	bool VlcPlayer::NowPlaying () const
@@ -351,6 +362,11 @@ namespace vlc
 		}
 		
 		WaitForPlaying ();
+	}
+	
+	libvlc_instance_t* VlcPlayer::GetInstance() const
+	{
+		return VlcInstance_.get ();
 	}
 }
 }

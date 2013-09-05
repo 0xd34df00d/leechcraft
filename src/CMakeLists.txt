@@ -210,6 +210,7 @@ option (ENABLE_SHAITAN "Build Shaitan, Embedded terminal emulator" ${WITH_PLUGIN
 option (ENABLE_SYSNOTIFY "Build Sysnotify for using D-Bus notification API" ${WITH_PLUGINS})
 option (ENABLE_TOUCHSTREAMS "Build TouchStreams, VK.com music streaming plugin" ${WITH_PLUGINS})
 option (ENABLE_TPI "Build Task Progress Indicator quark plugin" ${WITH_PLUGINS})
+option (ENABLE_VLC "Build vlc, videoplayer" ${WITH_PLUGINS})
 option (ENABLE_VROOBY "Build Vrooby, removable storage devices manager" ${WITH_PLUGINS})
 option (ENABLE_XPROXY "Build XProxy, the advanced proxy manager" ${WITH_PLUGINS})
 option (ENABLE_XTAZY "Build Xtazy, plugin for keeping track of a currently playing song" ${WITH_PLUGINS})
@@ -220,7 +221,6 @@ option (ENABLE_SNAILS "Build Snails, LeechCraft mail client" OFF)
 option (ENABLE_TWIFEE "Build Twifee, the Twitter client" OFF)
 option (ENABLE_CEMENTO "Build Cemento, LeechCraft common persistent storage" OFF)
 option (ENABLE_WOODPECKER "Build Woodpecker, twitter client" ${WITH_PLUGINS})
-option (ENABLE_VLC "Build vlc, plugin for video" OFF)
 
 # Dumb alternatives
 option (ENABLE_DUMBEEP "Build Dumbeep, a dumb sound notifier for those fearing true LMP power" OFF)

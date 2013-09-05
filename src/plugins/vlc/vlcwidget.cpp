@@ -74,7 +74,6 @@ namespace vlc
 	const int PANEL_SIDE_MARGIN = 5;
 	const int PANEL_BOTTOM_MARGIN = 5;
 	const int PANEL_HEIGHT = 27;
-	
 	VlcWidget::VlcWidget (Util::ShortcutManager *manager, QWidget *parent)
 	: QWidget (parent)
 	, Parent_ (parent)
@@ -83,12 +82,22 @@ namespace vlc
 	{
 		VlcMainWidget_ = new SignalledWidget;
 		VlcMainWidget_->SetBackGroundColor (new QColor ("black"));
-		QVBoxLayout *layout = new QVBoxLayout;
+		PlaylistWidget_ = new PlaylistWidget;
+		QHBoxLayout *layout = new QHBoxLayout;
 		layout->setContentsMargins (0, 0, 0, 0);
 		layout->addWidget (VlcMainWidget_);
+		layout->addWidget (PlaylistWidget_);
 		setLayout (layout);
+		
 		VlcPlayer_ = new VlcPlayer (VlcMainWidget_);
-
+		QSizePolicy pol (QSizePolicy::Expanding, QSizePolicy::Expanding);
+		pol.setHorizontalStretch (255);
+		pol.setVerticalStretch (255);
+		VlcMainWidget_->setSizePolicy (pol);
+		
+		PlaylistWidget_->Init (VlcPlayer_->GetInstance (), VlcPlayer_->GetPlayer ().get ());
+		VlcPlayer_->Init (VlcMainWidget_);
+		
 		GenerateToolBar ();
 		PrepareFullScreen ();
 		InterfaceUpdater_ = new QTimer (this);
@@ -129,7 +138,7 @@ namespace vlc
 		
 		connect (TogglePlay_,
 				SIGNAL (triggered ()),
-				VlcPlayer_,
+				PlaylistWidget_,
 				SLOT(togglePlay ()));
 		
 		connect (Stop_,
@@ -156,7 +165,7 @@ namespace vlc
 		setAcceptDrops (true);
 	}
 	
-	VlcWidget::~VlcWidget()
+	VlcWidget::~VlcWidget ()
 	{
 		VlcPlayer_->stop ();
 		delete VlcPlayer_;
@@ -184,8 +193,12 @@ namespace vlc
 		QString file = QFileDialog::getOpenFileName (this,
 													tr ("Open file"),
 													tr ("Videos (*.mkv *.avi *.mov *.mpg)"));
+		
 		if (QFile::exists (file))
-			VlcPlayer_->setUrl (QUrl::fromLocalFile (file));
+		{
+			PlaylistWidget_->Clear ();
+			PlaylistWidget_->AddUrl (QUrl::fromLocalFile (file));
+		}
 	}
 	
 	void VlcWidget::addFolder () 
@@ -195,7 +208,10 @@ namespace vlc
 													tr ("Folder with video"));
 		
 		if (QFile::exists (folder))
-			VlcPlayer_->setUrl (QUrl ("directory://" + folder));
+		{
+			PlaylistWidget_->Clear ();
+			PlaylistWidget_->AddUrl (QUrl ("directory://" + folder));
+		}
 	}
 	
 	void VlcWidget::addSimpleDVD ()
@@ -204,8 +220,11 @@ namespace vlc
 													tr ("Open DVD"),
 													tr ("Root of DVD directory"));
 		
-		if (QFile::exists (folder)) 
-			VlcPlayer_->setUrl (QUrl ("dvdsimple://" + folder));
+		if (QFile::exists (folder))
+		{
+			PlaylistWidget_->Clear ();
+			PlaylistWidget_->AddUrl (QUrl ("dvdsimple://" + folder));
+		}
 	}
 	
 	void VlcWidget::addDVD ()
@@ -215,7 +234,10 @@ namespace vlc
 													tr ("Root of DVD directory"));
 		
 		if (QFile::exists (folder))
-			VlcPlayer_->setUrl (QUrl ("dvd://" + folder));
+		{
+			PlaylistWidget_->Clear ();
+			PlaylistWidget_->AddUrl (QUrl ("dvd://" + folder));
+		}
 	}
 
 	void VlcWidget::addUrl ()
@@ -223,7 +245,10 @@ namespace vlc
 		QString url = QInputDialog::getText (this, tr ("Open URL"), tr ("Enter URL"));
 		
 		if (!url.isEmpty ())
-			VlcPlayer_->setUrl (QUrl (url));
+		{
+			PlaylistWidget_->Clear ();
+			PlaylistWidget_->AddUrl (QUrl (url));
+		}
 	}
 	
 	void VlcWidget::addSlave ()
@@ -741,14 +766,19 @@ namespace vlc
 	
 	void VlcWidget::dropEvent (QDropEvent *event)
 	{
-		QUrl& main = event->mimeData ()->urls () [0];
+		qDebug () << event->mimeData()->urls().size();
+		QUrl main = event->mimeData ()->urls () [0];
+		qDebug () << "dropped" << main;
 		event->accept ();
 		if (KNOWN_AUDIO_FILE_FORMATS.contains(main.toString ().right (4)))
 			VlcPlayer_->addUrl (main);
 		else if (KNOWN_SUBTITLES_FILE_FORMATS.contains(main.toString ().right (4)))
 			VlcPlayer_->AddSubtitles (main.toEncoded ());
 		else
-			VlcPlayer_->setUrl (main);
+		{
+			PlaylistWidget_->Clear ();
+			PlaylistWidget_->AddUrl (main);
+		}
 	}
 	
 	void VlcWidget::dragEnterEvent (QDragEnterEvent *event)

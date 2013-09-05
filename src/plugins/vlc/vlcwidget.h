@@ -35,6 +35,7 @@
 #include "vlcscrollbar.h"
 #include "soundwidget.h"
 #include "signalledwidget.h"
+#include "playlistwidget.h"
 
 class QToolBar;
 class QMenu;
@@ -61,6 +62,7 @@ namespace vlc
 		
 		QObject *const Parent_;
 		VlcPlayer *VlcPlayer_;
+		PlaylistWidget *PlaylistWidget_;
 		QToolBar *Bar_;
 		QAction *Open_;
 		QToolButton *OpenButton_;

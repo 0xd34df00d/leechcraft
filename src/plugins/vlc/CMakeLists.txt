@@ -15,6 +15,7 @@ include_directories (
 	)
 set (SRCS
 	vlc.cpp
+	playlistwidget.cpp
 	vlcwidget.cpp
 	vlcplayer.cpp
 	vlcscrollbar.cpp
