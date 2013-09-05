@@ -3,7 +3,7 @@ compiler:
   - gcc
   - clang
 before_install:
-  - sudo add-apt-repository -y ppa:tehnick/leechcraft-unstable
+  - sudo add-apt-repository -y ppa:tehnick/leechcraft-stable
   - sudo apt-get update -qq
-  - sudo apt-get build-dep -qq leechcraft-unstable
+  - sudo apt-get build-dep -qq leechcraft-stable
 script: mkdir build && cd build && cmake ../src && make
