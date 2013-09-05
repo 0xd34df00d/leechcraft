@@ -74,6 +74,7 @@ namespace vlc
 	const int PANEL_SIDE_MARGIN = 5;
 	const int PANEL_BOTTOM_MARGIN = 5;
 	const int PANEL_HEIGHT = 27;
+	
 	VlcWidget::VlcWidget (Util::ShortcutManager *manager, QWidget *parent)
 	: QWidget (parent)
 	, Parent_ (parent)

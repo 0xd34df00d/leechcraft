@@ -106,13 +106,11 @@ namespace vlc
 	
 	void VlcPlayer::addUrl (const QUrl& url)
 	{
-		fprintf(stderr, "adding\n" );
 		Freeze ();
 		M_.reset (libvlc_media_new_location (VlcInstance_.get (), LastMedia_.toEncoded ()), libvlc_media_release);
 		libvlc_media_add_option (M_.get (), ":input-slave=" + url.toEncoded ());
 		libvlc_media_player_set_media (Mp_.get (), M_.get ());
 		UnFreeze ();		
-		fprintf(stderr, "end\n");
 	}
 	
 	bool VlcPlayer::NowPlaying () const
@@ -364,7 +362,7 @@ namespace vlc
 		WaitForPlaying ();
 	}
 	
-	libvlc_instance_t* VlcPlayer::GetInstance() const
+	libvlc_instance_t* VlcPlayer::GetInstance () const
 	{
 		return VlcInstance_.get ();
 	}

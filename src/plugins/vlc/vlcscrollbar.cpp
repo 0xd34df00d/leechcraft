@@ -83,7 +83,7 @@ namespace vlc
 		blocked = true;
 	}
 	
-	void VlcScrollBar::unBlockUpdating()
+	void VlcScrollBar::unBlockUpdating ()
 	{
 		blocked = false;
 	}
