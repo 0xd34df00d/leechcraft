@@ -237,6 +237,7 @@ namespace LeechCraft
 				("download,D", "only choose downloaders for the entity: it should be downloaded but not handled")
 				("handle,H", "only choose handlers for the entity: it should be handled but not downloaded")
 				("type,T", bpo::value<std::string> (), "the type of the entity: url, url_encoded, file (for file paths) and such")
+				("additional,A", bpo::value<std::vector<std::string>> (), "parameters for the Additional entity map in the form of name:value")
 				("automatic", "the entity is a result of some automatic stuff, not user's actions")
 				("bt", "print backtraces for warning messages into warning.log")
 				("plugin,P", bpo::value<std::vector<std::string>> (), "load only given plugin and ignore already running instances of LC")
