@@ -15,12 +15,16 @@ set (SRCS
 	multicastserver.cpp
 	contentdirectoryservice.cpp
 	)
+set (RESOURCES dlniweresources.qrc)
+QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+
 #CreateTrs("dlniwe" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("dlniwe" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
 add_library (leechcraft_dlniwe SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
+	${RCCS}
 	)
 target_link_libraries (leechcraft_dlniwe
 	${QT_LIBRARIES}
