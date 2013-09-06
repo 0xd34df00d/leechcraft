@@ -29,7 +29,6 @@
 
 #include "dlniwe.h"
 #include <QIcon>
-#include "multicastserver.h"
 
 namespace LeechCraft
 {
@@ -37,7 +36,6 @@ namespace DLNiwe
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		auto server = new MulticastServer ();
 	}
 
 	void Plugin::SecondInit ()
