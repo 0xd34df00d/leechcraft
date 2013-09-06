@@ -51,6 +51,7 @@ namespace NetStoreManager
 
 	protected:
 		void dropEvent (QDropEvent *event);
+		void keyReleaseEvent (QKeyEvent *event);
 
 	private slots:
 		void handleCopyItem ();
@@ -64,6 +65,10 @@ namespace NetStoreManager
 				const QByteArray& newParentId);
 		void itemsAboutToBeRestoredFromTrash (const QList<QByteArray>& ids);
 		void itemsAboutToBeTrashed (const QList<QByteArray>& ids);
+
+		void returnPressed ();
+		void backspacePressed ();
+		void quoteLeftPressed ();
 	};
 }
 }
