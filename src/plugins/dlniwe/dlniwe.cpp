@@ -29,13 +29,64 @@
 
 #include "dlniwe.h"
 #include <QIcon>
+#include <QtDebug>
+#include <HUpnpCore/HDeviceHostConfiguration>
+#include <HUpnpCore/HDeviceHost>
+#include <HUpnpCore/HDeviceInfo>
+#include <HUpnpCore/HServerDevice>
+#include <HUpnpCore/HServerService>
+#include <util/sys/paths.h>
+#include "contentdirectoryservice.h"
 
 namespace LeechCraft
 {
 namespace DLNiwe
 {
+	namespace HU = Herqq::Upnp;
+
+	namespace
+	{
+		class DLNADeviceModelCreator : public HU::HDeviceModelCreator
+		{
+		public:
+			HU::HServerDevice* createDevice (const HU::HDeviceInfo& info) const override
+			{
+				return nullptr;
+			}
+
+			HU::HServerService* createService (const HU::HServiceInfo& serviceInfo,
+					const HU::HDeviceInfo& parentDeviceInfo) const override
+			{
+				return new ContentDirectoryService ();
+			}
+		protected:
+			HClonable* newInstance () const override
+			{
+				return new DLNADeviceModelCreator ();
+			}
+		};
+	}
+
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		const auto& path = Util::GetSysPath (Util::SysPath::Share, "dlniwe/desc", "device.xml");
+		if (path.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot find device description XML file.";
+			return;
+		}
+
+		HU::HDeviceConfiguration devConf;
+		devConf.setPathToDeviceDescription (path);
+
+		HU::HDeviceHostConfiguration hostConf (devConf);
+		hostConf.setDeviceModelCreator (DLNADeviceModelCreator ());
+
+		auto host = new HU::HDeviceHost ();
+		if (!host->init (hostConf))
+			qWarning () << Q_FUNC_INFO
+					<< host->errorDescription ();
 	}
 
 	void Plugin::SecondInit ()
