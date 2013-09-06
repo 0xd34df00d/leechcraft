@@ -32,3 +32,4 @@ target_link_libraries (leechcraft_dlniwe
 	HUpnp
 	)
 install (TARGETS leechcraft_dlniwe DESTINATION ${LC_PLUGINS_DEST})
+install (DIRECTORY share/dlniwe DESTINATION ${LC_SHARE_DEST})
