@@ -162,6 +162,8 @@ namespace NetStoreManager
 				const QByteArray& parentId);
 		void performRestoreFromTrash (const QList<QByteArray>& ids);
 		void performMoveToTrash (const QList<QByteArray>& ids);
+		void handleReturnPressed ();
+		void handleBackspacePressed ();
 
 		void flOpenFile ();
 		void flCopy ();

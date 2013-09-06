@@ -83,8 +83,11 @@ namespace NetStoreManager
 					>> isInTrash
 					>> isDir
 					>> parentId;
-			ItemObject item { name, id, isInTrash, parentId };
-			items << item;
+			if (id != "netstoremanager.item_uplevel")
+			{
+				ItemObject item { name, id, isInTrash, parentId };
+				items << item;
+			}
 		}
 
 		const auto& targetIndex = indexAt (event->pos ());
@@ -162,6 +165,22 @@ namespace NetStoreManager
 		CurrentEvent_ = 0;
 		DraggedItemsIds_.clear ();
 		TargetItemId_.clear ();
+	}
+
+	void FilesView::keyReleaseEvent (QKeyEvent *event)
+	{
+		switch (event->key ())
+		{
+		case Qt::Key_Return:
+			emit returnPressed ();
+			break;
+		case Qt::Key_Backspace:
+			emit backspacePressed ();
+			break;
+		default:
+			QWidget::keyReleaseEvent (event);
+			break;
+		}
 	}
 
 	void FilesView::handleCopyItem ()

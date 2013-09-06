@@ -189,6 +189,14 @@ namespace NetStoreManager
 				SIGNAL (itemsAboutToBeTrashed (QList<QByteArray>)),
 				this,
 				SLOT (performMoveToTrash (QList<QByteArray>)));
+		connect (Ui_.FilesView_,
+				SIGNAL (returnPressed ()),
+				this,
+				SLOT (handleReturnPressed ()));
+		connect (Ui_.FilesView_,
+				SIGNAL (backspacePressed ()),
+				this,
+				SLOT (handleBackspacePressed ()));
 	}
 
 	TabClassInfo ManagerTab::GetTabClassInfo () const
@@ -406,7 +414,8 @@ namespace NetStoreManager
 	{
 		QList<QByteArray> ids;
 		Q_FOREACH (const auto& idx, Ui_.FilesView_->selectionModel ()->selectedRows ())
-			ids << ProxyModel_->mapToSource (idx).data (ListingRole::ID).toByteArray ();
+			if (ProxyModel_->mapToSource (idx).data (ListingRole::ID).toByteArray () != "netstoremanager.item_uplevel")
+				ids << ProxyModel_->mapToSource (idx).data (ListingRole::ID).toByteArray ();
 
 		return ids;
 	}
@@ -464,10 +473,7 @@ namespace NetStoreManager
 			QStandardItem *upLevel = new QStandardItem (Proxy_->GetIcon ("go-up"), "..");
 			upLevel->setData ("netstoremanager.item_uplevel", ListingRole::ID);
 			upLevel->setData (parentId);
-			upLevel->setFlags (Qt::ItemIsEnabled);
-			QStandardItem *upLevelModify = new QStandardItem;
-			upLevelModify->setFlags (Qt::ItemIsEnabled);
-			TreeModel_->appendRow ({ upLevel, upLevelModify });
+			TreeModel_->appendRow ({ upLevel });
 		}
 
 		for (const auto& item : Id2Item_.values ())
@@ -501,6 +507,8 @@ namespace NetStoreManager
 					ShowListItemsWithParent (QByteArray (), true);
 			}
 		}
+
+		Ui_.FilesView_->setCurrentIndex (ProxyModel_->index (0, 0));
 	}
 
 	void ManagerTab::handleRefresh ()
@@ -540,20 +548,13 @@ namespace NetStoreManager
 	void ManagerTab::handleDoubleClicked (const QModelIndex& idx)
 	{
 		if (idx.data (ListingRole::ID).toByteArray () == "netstoremanager.item_uplevel")
-		{
 			ShowListItemsWithParent (Id2Item_ [idx.data (Qt::UserRole + 1).toByteArray ()].ParentID_,
 					OpenTrash_->isChecked ());
-			return;
-		}
-
-		if (!idx.data (ListingRole::IsDirectory).toBool ())
-		{
+		else if (!idx.data (ListingRole::IsDirectory).toBool ())
 			flOpenFile ();
-			return;
-		}
-
-		ShowListItemsWithParent (idx.data (ListingRole::ID).toByteArray (),
-				OpenTrash_->isChecked ());
+		else
+			ShowListItemsWithParent (idx.data (ListingRole::ID).toByteArray (),
+					OpenTrash_->isChecked ());
 	}
 
 	void ManagerTab::handleAccountAdded (QObject *accObj)
@@ -667,6 +668,21 @@ namespace NetStoreManager
 
 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 		sfl->MoveToTrash (ids);
+	}
+
+	void ManagerTab::handleReturnPressed ()
+	{
+		handleDoubleClicked (Ui_.FilesView_->currentIndex ());
+	}
+
+	void ManagerTab::handleBackspacePressed ()
+	{
+		const auto& index = ProxyModel_->index (0, 0);
+		if (index.data (ListingRole::ID).toByteArray () != "netstoremanager.item_uplevel")
+			return;
+
+		const auto& id = index.data (Qt::UserRole + 1).toByteArray ();
+		ShowListItemsWithParent (Id2Item_ [id].ParentID_, OpenTrash_->isChecked ());
 	}
 
 	void ManagerTab::flOpenFile ()
@@ -840,6 +856,13 @@ namespace NetStoreManager
 	void ManagerTab::handleContextMenuRequested (const QPoint& point)
 	{
 		QList<QModelIndex> idxs = Ui_.FilesView_->selectionModel ()->selectedRows ();
+		for (int i = idxs.count () - 1; i >= 0; --i)
+			if (idxs.at (i).data (ListingRole::ID).toByteArray () == "netstoremanager.item_uplevel")
+			{
+				idxs.removeAt (i);
+				break;
+			}
+
 		IStorageAccount *acc = GetCurrentAccount ();
 		if (!acc)
 			return;

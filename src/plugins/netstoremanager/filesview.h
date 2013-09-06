@@ -31,6 +31,8 @@
 
 #include <QTreeView>
 
+class QKeyEvent;
+
 namespace LeechCraft
 {
 namespace NetStoreManager
@@ -51,6 +53,7 @@ namespace NetStoreManager
 
 	protected:
 		void dropEvent (QDropEvent *event);
+		virtual void keyReleaseEvent (QKeyEvent *event) override;
 
 	private slots:
 		void handleCopyItem ();
@@ -64,6 +67,9 @@ namespace NetStoreManager
 				const QByteArray& newParentId);
 		void itemsAboutToBeRestoredFromTrash (const QList<QByteArray>& ids);
 		void itemsAboutToBeTrashed (const QList<QByteArray>& ids);
+
+		void returnPressed ();
+		void backspacePressed ();
 	};
 }
 }
