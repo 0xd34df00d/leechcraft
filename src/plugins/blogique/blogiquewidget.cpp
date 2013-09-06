@@ -389,7 +389,8 @@ namespace Blogique
 				.property ("LastActiveAccountName").toString (),
 					Qt::MatchFixedString);
 
-		AccountsBox_->setCurrentIndex (index == -1 ? 0 : index);
+		AccountsBox_->setCurrentIndex (index == -1 ? -1 : index);
+
 		connect (AccountsBox_,
 				SIGNAL (currentIndexChanged (int)),
 				this,
