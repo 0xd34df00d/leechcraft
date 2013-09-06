@@ -13,6 +13,7 @@ include_directories (
 set (SRCS
 	dlniwe.cpp
 	multicastserver.cpp
+	contentdirectoryservice.cpp
 	)
 #CreateTrs("dlniwe" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("dlniwe" "en;ru_RU" "${SRCS}" "${FORMS}" "")
