@@ -498,6 +498,7 @@ namespace AdiumStyles
 					<< msg->GetBody ()
 					<< msg->OtherPart ()
 					<< msg->ParentCLEntry ();
+			return templ;
 		}
 
 		IAccount *acc = other ?
