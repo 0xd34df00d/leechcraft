@@ -29,5 +29,6 @@ add_library (leechcraft_dlniwe SHARED
 target_link_libraries (leechcraft_dlniwe
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
+	HUpnp
 	)
 install (TARGETS leechcraft_dlniwe DESTINATION ${LC_PLUGINS_DEST})
