@@ -38,6 +38,7 @@
 #include <QToolButton>
 #include <QtDebug>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include <util/util.h>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/istorageplugin.h"
@@ -242,6 +243,8 @@ namespace NetStoreManager
 			}
 		}
 
+		AccountsBox_->addItem (Proxy_->GetIcon ("list-add"),
+				tr ("Add new account..."));
 		ToolBar_->addWidget (AccountsBox_);
 
 		Refresh_ = new QAction (Proxy_->GetIcon ("view-refresh"), tr ("Refresh"), this);
@@ -274,7 +277,7 @@ namespace NetStoreManager
 
 		ToolBar_->addWidget (Trash_);
 
-		ShowAccountActions (AccountsBox_->count ());
+		ShowAccountActions (AccountsBox_->count () - 1);
 
 		connect (AccountsBox_,
 				SIGNAL (currentIndexChanged (int)),
@@ -284,8 +287,8 @@ namespace NetStoreManager
 		const auto& id = XmlSettingsManager::Instance ()
 				.property ("LastActiveAccount").toByteArray ();
 
-		int j = 0;
-		for (int i = 0; i < AccountsBox_->count (); ++i)
+		int j = -1;
+		for (int i = 0; i < AccountsBox_->count () - 1; ++i)
 			if (AccountsBox_->itemData (i)
 					.value<IStorageAccount*> ()->GetUniqueID () == id)
 			{
@@ -936,9 +939,16 @@ namespace NetStoreManager
 				OnlyHandle | FromUserInitiated));
 	}
 
-	void ManagerTab::handleCurrentIndexChanged (int)
+	void ManagerTab::handleCurrentIndexChanged (int id)
 	{
-		ClearModel ();
+		if (id == AccountsBox_->count () - 1)
+		{
+			Proxy_->GetPluginsManager ()->OpenSettings (ParentMultiTabs ());
+			AccountsBox_->setCurrentIndex (-1);
+		}
+		else if (id == -1)
+			AccountsBox_->setCurrentIndex (-1);
+
 		IStorageAccount *acc = GetCurrentAccount ();
 		if (!acc)
 		{
@@ -948,6 +958,8 @@ namespace NetStoreManager
 			return;
 		}
 
+
+		ClearModel ();
 		Id2Item_.clear ();
 		RequestFileListings (acc);
 
