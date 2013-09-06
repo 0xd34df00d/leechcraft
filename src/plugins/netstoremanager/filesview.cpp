@@ -177,6 +177,9 @@ namespace NetStoreManager
 		case Qt::Key_Backspace:
 			emit backspacePressed ();
 			break;
+		case Qt::Key_QuoteLeft:
+			emit quoteLeftPressed ();
+			break;
 		default:
 			QWidget::keyReleaseEvent (event);
 			break;

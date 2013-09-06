@@ -197,6 +197,10 @@ namespace NetStoreManager
 				SIGNAL (backspacePressed ()),
 				this,
 				SLOT (handleBackspacePressed ()));
+		connect (Ui_.FilesView_,
+				SIGNAL (quoteLeftPressed ()),
+				this,
+				SLOT (handleQuoteLeftPressed ()));
 	}
 
 	TabClassInfo ManagerTab::GetTabClassInfo () const
@@ -683,6 +687,11 @@ namespace NetStoreManager
 
 		const auto& id = index.data (Qt::UserRole + 1).toByteArray ();
 		ShowListItemsWithParent (Id2Item_ [id].ParentID_, OpenTrash_->isChecked ());
+	}
+
+	void ManagerTab::handleQuoteLeftPressed ()
+	{
+		ShowListItemsWithParent (QByteArray (), OpenTrash_->isChecked ());
 	}
 
 	void ManagerTab::flOpenFile ()
