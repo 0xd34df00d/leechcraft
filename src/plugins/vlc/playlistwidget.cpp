@@ -31,9 +31,14 @@
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QVBoxLayout>
-#include <QTreeWidget>
+#include <QTreeView>
+#include <QTimer>
 #include <QString>
+#include <QRect>
+#include <QModelIndex>
 #include "playlistwidget.h"
+#include "playlistmodel.h"
+#include <interfaces/devices/deviceroles.h>
 
 namespace LeechCraft
 {
@@ -43,14 +48,13 @@ namespace vlc
 	: QWidget (parent)
 	{
 		setAcceptDrops (true);
-		Tree_ = new QTreeWidget;
+		Tree_ = new QTreeView;
 		QVBoxLayout *layout = new QVBoxLayout;
 		layout->addWidget (Tree_);
 		setLayout (layout);
 		setFixedWidth (200);
 		Tree_->show ();
 		Tree_->setFocusPolicy (Qt::NoFocus);
-		Tree_->setHeaderLabel ("Playlist");
 	}
 	
 	void PlaylistWidget::Init (libvlc_instance_t *instance, libvlc_media_player_t *player)
@@ -60,17 +64,34 @@ namespace vlc
 		libvlc_media_list_player_set_media_player (Player_, player);
 		Playlist_ = libvlc_media_list_new (Instance_);
 		libvlc_media_list_player_set_media_list (Player_, Playlist_);
+		NativePlayer_ = player;
 		
+		Model_ = new PlaylistModel (Playlist_, this);
+		Tree_->setModel (Model_);
+		
+		
+		QTimer *timer = new QTimer (this);
+		timer->setInterval (1000);
+		connect (timer,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (updateInterface ()));
+		
+		timer->start ();
+		
+		connect (Tree_->selectionModel (),
+				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (selectionChanged (QModelIndex, QModelIndex)));
 	}
 	
 	void PlaylistWidget::AddUrl (const QUrl& url)
 	{
 		libvlc_media_t *m = libvlc_media_new_path (Instance_, url.toString ().toUtf8 ());
-		Tree_->addTopLevelItem (new QTreeWidgetItem ( { libvlc_media_get_meta (m, libvlc_meta_Title) } ));
 		libvlc_media_list_add_media (Playlist_, m);
 		libvlc_media_list_player_play (Player_);
 		
-		SyncOutput ();
+		updateInterface ();
 	}
 	
 	bool PlaylistWidget::NowPlaying ()
@@ -103,15 +124,37 @@ namespace vlc
 		libvlc_media_list_player_stop (Player_);
 		while (libvlc_media_list_count (Playlist_))
 			libvlc_media_list_remove_index (Playlist_, 0);
-		
-		SyncOutput ();
 	}
 	
-	void PlaylistWidget::SyncOutput ()
+	void PlaylistWidget::updateInterface ()
 	{
-		Tree_->clear ();
-		for (int i = 0; i < libvlc_media_list_count (Playlist_); i++)
-			Tree_->addTopLevelItem (new QTreeWidgetItem ( { QString (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_Title)) } ));
+		//Tree_->setCurrentItem (Tree_->itemAt (1, libvlc_media_list_index_of_item (Playlist_, libvlc_media_player_get_media (NativePlayer_))));
+		Model_->updateTable ();
+		Tree_->update ();
+		
+		int currentRow = libvlc_media_list_index_of_item (Playlist_, libvlc_media_player_get_media (NativePlayer_));
+		for (int i = 0; i < Model_->rowCount (); i++)
+			if (i != currentRow)
+				Tree_->selectionModel ()->select (Model_->indexFromItem (Model_->item (i)),
+													QItemSelectionModel::Deselect);
+				
+		Tree_->selectionModel ()->select (Model_->indexFromItem (Model_->item (currentRow)),
+											QItemSelectionModel::Select);
+		
+		//fprintf ("%d %d", Model_.)
+	}
+	
+	void PlaylistWidget::mousePressEvent(QMouseEvent *event)
+	{
+		const QModelIndex& index = Tree_->indexAt (event->pos ());
+		int item = index.row ();
+		libvlc_media_list_player_play_item_at_index (Player_, item);
+		fprintf (stderr, "%d\n", item);
+	}
+	
+	void PlaylistWidget::selectionChanged (const QModelIndex& current, const QModelIndex& previous)
+	{
+		libvlc_media_list_player_play_item_at_index (Player_, current.row ());
 	}
 }
 }

@@ -111,12 +111,12 @@ namespace vlc
 		emit shown (event);
 	}
 	
-	void SignalledWidget::dragEnterEvent(QDragEnterEvent *event)
+	void SignalledWidget::dragEnterEvent (QDragEnterEvent *event)
 	{
 		emit dragEnter (event);
 	}
 
-	void SignalledWidget::dropEvent(QDropEvent *event)
+	void SignalledWidget::dropEvent (QDropEvent *event)
 	{
 		emit drop (event);
 	}

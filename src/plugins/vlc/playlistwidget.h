@@ -37,21 +37,25 @@ struct libvlc_media_list_player_t;
 struct libvlc_instance_t;
 struct libvlc_media_list_t;
 
-class QTreeWidget;
+class QTreeView;
 
 namespace LeechCraft
 {
 namespace vlc
 {
+	class PlaylistModel;
+	
 	class PlaylistWidget : public QWidget
 	{
 		Q_OBJECT
 		
 		libvlc_media_list_player_t *Player_;
 		libvlc_media_list_t *Playlist_;
+		libvlc_media_player_t *NativePlayer_;
 		libvlc_instance_t *Instance_;
 		
-		QTreeWidget *Tree_;
+		QTreeView *Tree_;
+		PlaylistModel *Model_;
 	
 	public:
 		explicit PlaylistWidget (QWidget *parent = 0);
@@ -64,13 +68,12 @@ namespace vlc
 	protected:
 		void dragEnterEvent (QDragEnterEvent*);
 		void dropEvent (QDropEvent*);
-	
-	private:
-		void SyncOutput ();
+		void mousePressEvent (QMouseEvent*);
 		
 	private slots:
 		void togglePlay ();
-	
+		void updateInterface ();
+		void selectionChanged (const QModelIndex& current, const QModelIndex& previous);
 	};
 }
 }

@@ -21,6 +21,7 @@ set (SRCS
 	vlcscrollbar.cpp
 	signalledwidget.cpp
 	soundwidget.cpp
+	playlistmodel.cpp
 	)
 	
 #CreateTrs("vlc" "en;ru_RU" COMPILED_TRANSLATIONS)
