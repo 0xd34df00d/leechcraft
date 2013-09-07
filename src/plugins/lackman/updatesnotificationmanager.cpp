@@ -101,7 +101,14 @@ namespace LackMan
 
 		const auto upgradableCount = UpgradablePackages_.size ();
 		QString bodyText;
-		if (upgradableCount <= 3)
+		if (!upgradableCount)
+		{
+			auto cancel = Util::MakeANCancel ("org.LeechCraft.LackMan", "org.LeechCraft.LackMan");
+			em->HandleEntity (cancel);
+
+			return;
+		}
+		else if (upgradableCount <= 3)
 		{
 			QStringList names;
 			for (auto id : UpgradablePackages_)
@@ -118,13 +125,6 @@ namespace LackMan
 						.arg ("<em>" + names.join ("</em>, <em>") + "</em>")
 						.arg ("<em>" + lastName + "</em>");
 			}
-		}
-		else if (!upgradableCount)
-		{
-			auto cancel = Util::MakeANCancel ("org.LeechCraft.LackMan", "org.LeechCraft.LackMan");
-			em->HandleEntity (cancel);
-
-			return;
 		}
 		else
 			bodyText = tr ("New versions are available for %n package(s).",
