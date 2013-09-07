@@ -12,7 +12,6 @@ include_directories (
 	)
 set (SRCS
 	dlniwe.cpp
-	multicastserver.cpp
 	contentdirectoryservice.cpp
 	)
 set (RESOURCES dlniweresources.qrc)
