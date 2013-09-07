@@ -483,7 +483,7 @@ namespace Xoox
 		const QString& fname = QFileDialog::getOpenFileName (this,
 				tr ("Choose new photo"),
 				QDir::homePath (),
-				tr ("Images (*.png *.jpg *.gif);;All files (*.*)"));
+				tr ("Images (*.png *.jpg *.jpeg *.gif *.bmp);;All files (*.*)"));
 		if (fname.isEmpty ())
 			return;
 
