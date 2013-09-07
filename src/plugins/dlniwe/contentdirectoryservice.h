@@ -38,10 +38,17 @@ namespace DLNiwe
 	class ContentDirectoryService : public Herqq::Upnp::HServerService
 	{
 		Q_OBJECT
+
+		qint32 SystemUpdateID_;
 	public:
 		ContentDirectoryService ();
 
 		Q_INVOKABLE qint32 GetSystemUpdateID (const Herqq::Upnp::HActionArguments&, Herqq::Upnp::HActionArguments*);
+		Q_INVOKABLE qint32 GetSearchCapabilities (const Herqq::Upnp::HActionArguments&, Herqq::Upnp::HActionArguments*);
+		Q_INVOKABLE qint32 GetSortCapabilities (const Herqq::Upnp::HActionArguments&, Herqq::Upnp::HActionArguments*);
+		Q_INVOKABLE qint32 Browse (const Herqq::Upnp::HActionArguments&, Herqq::Upnp::HActionArguments*);
+		Q_INVOKABLE qint32 X_GetFeatureList (const Herqq::Upnp::HActionArguments&, Herqq::Upnp::HActionArguments*);
+		Q_INVOKABLE qint32 X_SetBookmark (const Herqq::Upnp::HActionArguments&, Herqq::Upnp::HActionArguments*);
 	};
 }
 }

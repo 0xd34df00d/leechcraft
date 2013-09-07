@@ -28,6 +28,9 @@
  **********************************************************************/
 
 #include "contentdirectoryservice.h"
+#include <QFile>
+#include <QtDebug>
+#include <HUpnpCore/HActionArguments>
 
 namespace LeechCraft
 {
@@ -39,8 +42,53 @@ namespace DLNiwe
 	{
 	}
 
-	qint32 ContentDirectoryService::GetSystemUpdateID (const HU::HActionArguments& inArgs, HU::HActionArguments* outArgs)
+	qint32 ContentDirectoryService::GetSystemUpdateID (const HU::HActionArguments& inArgs, HU::HActionArguments *outArgs)
 	{
+		qDebug () << Q_FUNC_INFO;
+		outArgs->setValue ("Id", QString::number (SystemUpdateID_));
+		return HU::UpnpSuccess;
+	}
+
+	qint32 ContentDirectoryService::GetSearchCapabilities (const HU::HActionArguments& inArgs, HU::HActionArguments *outArgs)
+	{
+		qDebug () << Q_FUNC_INFO;
+		outArgs->setValue ("SearchCaps", "dc:title,dc:description,av:keyword,upnp:genre,upnp:album");
+		return HU::UpnpSuccess;
+	}
+
+	qint32 ContentDirectoryService::GetSortCapabilities (const HU::HActionArguments& inArgs, HU::HActionArguments *outArgs)
+	{
+		qDebug () << Q_FUNC_INFO;
+		outArgs->setValue ("SortCaps", "dc:title,dc:description,av:keyword,upnp:genre,upnp:album");
+		return HU::UpnpSuccess;
+	}
+
+	qint32 ContentDirectoryService::Browse (const HU::HActionArguments& inArgs, HU::HActionArguments *outArgs)
+	{
+		qDebug () << Q_FUNC_INFO;
+		return HU::UpnpSuccess;
+	}
+
+	qint32 ContentDirectoryService::X_GetFeatureList (const HU::HActionArguments& inArgs, HU::HActionArguments *outArgs)
+	{
+		qDebug () << Q_FUNC_INFO;
+		QFile file (":/dlniwe/resources/desc/featurelist.xml");
+		if (!file.open (QIODevice::ReadOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot open featureslist file"
+					<< file.errorString ();
+
+			return HU::UpnpUndefinedFailure;
+		}
+
+		outArgs->setValue ("FeatureList", file.readAll ());
+		return HU::UpnpSuccess;
+	}
+
+	qint32 ContentDirectoryService::X_SetBookmark (const HU::HActionArguments& inArgs, HU::HActionArguments *outArgs)
+	{
+		qDebug () << Q_FUNC_INFO;
 		return HU::UpnpSuccess;
 	}
 }
