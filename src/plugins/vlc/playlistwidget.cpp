@@ -48,7 +48,7 @@ namespace vlc
 	: QTreeView (parent)
 	{
 		setAcceptDrops (true);
-		setFixedWidth (200);
+		setBaseSize (200, 0);
 		show ();
 	}
 	
@@ -80,7 +80,6 @@ namespace vlc
 				SLOT (selectionChanged (QModelIndex, QModelIndex)));
 		
 		DeleteAction_ = new QAction (this);
-		DeleteAction_->setShortcut (QKeySequence (Qt::Key_Delete));
 		
 		connect (this,
 				SIGNAL (customContextMenuRequested (QPoint)),
@@ -141,24 +140,32 @@ namespace vlc
 		int currentRow = libvlc_media_list_index_of_item (Playlist_, libvlc_media_player_get_media (NativePlayer_));
 		for (int i = 0; i < Model_->rowCount (); i++)
 			if (i != currentRow)
-				selectionModel ()->select (Model_->indexFromItem (Model_->item (i)),
-													QItemSelectionModel::Deselect);
+				for (int j = 0; j < 2; j++)
+					selectionModel ()->select (Model_->indexFromItem (Model_->item (i, j)),
+														QItemSelectionModel::Deselect);
 				
-		selectionModel ()->select (Model_->indexFromItem (Model_->item (currentRow)),
-									QItemSelectionModel::Select);
+		for (int i = 0; i < 2; i++)
+			selectionModel ()->select (Model_->indexFromItem (Model_->item (currentRow, i)),
+										QItemSelectionModel::Select);
 		
 		update ();
 	}
 	
 	void PlaylistWidget::mousePressEvent (QMouseEvent *event)
 	{
-		if (event->button () != Qt::LeftButton)
-			return;
-		
-		const QModelIndex& index = indexAt (event->pos ());
-		int item = index.row ();
-		libvlc_media_list_player_play_item_at_index (Player_, item);
-		fprintf (stderr, "%d\n", item);
+		if (event->button () == Qt::RightButton)
+		{
+			createMenu (event->pos ());
+			event->accept ();
+		}
+		else 
+		{
+			const QModelIndex& index = indexAt (event->pos ());
+			int item = index.row ();
+			libvlc_media_list_player_play_item_at_index (Player_, item);
+			fprintf (stderr, "%d\n", item);
+			event->accept ();
+		}
 	}
 	
 	void PlaylistWidget::selectionChanged (const QModelIndex& current, const QModelIndex& previous)
@@ -168,21 +175,29 @@ namespace vlc
 	
 	void PlaylistWidget::createMenu (QPoint p)
 	{
+		int index = indexAt (p).row ();
+		if (index == -1)
+			return;
+		
 		QMenu *menu = new QMenu (this);
 		QAction *action = new QAction (menu);
 		action->setText ("Delete");
-		action->setData (QVariant (indexAt (p).row ()));
-		menu->exec (p);
-		
+		action->setData (QVariant (index));
+		menu->addAction (action);
+
 		connect (menu,
 				SIGNAL (triggered (QAction*)),
 				this,
 				SLOT (deleteRequested (QAction*)));
+
+		menu->exec (QCursor::pos ());
 	}
 	
 	void PlaylistWidget::deleteRequested (QAction *object)
 	{
+		fprintf (stderr, "%d\n", object->data().toInt());
 		libvlc_media_list_remove_index (Playlist_, object->data ().toInt ());
+		Model_->updateTable ();
 	}
 }
 }

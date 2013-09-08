@@ -38,6 +38,7 @@
 #include <QKeyEvent>
 #include <QTimer>
 #include <QTime>
+#include <QSplitter>
 #include <QToolBar>
 #include <QMenu>
 #include <QSizePolicy>
@@ -84,10 +85,13 @@ namespace vlc
 		VlcMainWidget_ = new SignalledWidget;
 		VlcMainWidget_->SetBackGroundColor (new QColor ("black"));
 		PlaylistWidget_ = new PlaylistWidget;
-		QHBoxLayout *layout = new QHBoxLayout;
-		layout->setContentsMargins (0, 0, 0, 0);
-		layout->addWidget (VlcMainWidget_);
-		layout->addWidget (PlaylistWidget_);
+		
+		MainArea_ = new QSplitter (this);
+		MainArea_->addWidget (VlcMainWidget_);
+		MainArea_->addWidget (PlaylistWidget_);
+		
+		QVBoxLayout *layout = new QVBoxLayout;
+		layout->addWidget(MainArea_);
 		setLayout (layout);
 		
 		VlcPlayer_ = new VlcPlayer (VlcMainWidget_);

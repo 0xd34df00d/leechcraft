@@ -43,6 +43,7 @@ class QLabel;
 class QTimer;
 class QToolButton;
 class QResizeEvent;
+class QSplitter;
 
 namespace LeechCraft
 {
@@ -70,6 +71,7 @@ namespace vlc
 		QAction *Stop_;
 		QAction *FullScreenAction_;
 		QPoint LastMouseEvent_;
+		QSplitter *MainArea_;
 		Util::ShortcutManager * const Manager_;
 		
 		QAction *NavigateLeft_;
