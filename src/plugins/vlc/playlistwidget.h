@@ -31,13 +31,14 @@
 
 #include <QWidget>
 #include <QUrl>
+#include <QTreeView>
 
 struct libvlc_media_player_t;
 struct libvlc_media_list_player_t;
 struct libvlc_instance_t;
 struct libvlc_media_list_t;
 
-class QTreeView;
+class QAction;
 
 namespace LeechCraft
 {
@@ -45,7 +46,7 @@ namespace vlc
 {
 	class PlaylistModel;
 	
-	class PlaylistWidget : public QWidget
+	class PlaylistWidget : public QTreeView
 	{
 		Q_OBJECT
 		
@@ -54,8 +55,8 @@ namespace vlc
 		libvlc_media_player_t *NativePlayer_;
 		libvlc_instance_t *Instance_;
 		
-		QTreeView *Tree_;
 		PlaylistModel *Model_;
+		QAction *DeleteAction_;
 	
 	public:
 		explicit PlaylistWidget (QWidget *parent = 0);
@@ -74,6 +75,8 @@ namespace vlc
 		void togglePlay ();
 		void updateInterface ();
 		void selectionChanged (const QModelIndex& current, const QModelIndex& previous);
+		void createMenu (QPoint);
+		void deleteRequested (QAction*);
 	};
 }
 }

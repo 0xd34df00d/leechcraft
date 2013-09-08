@@ -31,30 +31,25 @@
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QVBoxLayout>
-#include <QTreeView>
 #include <QTimer>
 #include <QString>
 #include <QRect>
 #include <QModelIndex>
+#include <QAction>
+#include <QMenu>
 #include "playlistwidget.h"
 #include "playlistmodel.h"
-#include <interfaces/devices/deviceroles.h>
 
 namespace LeechCraft
 {
 namespace vlc
 {
 	PlaylistWidget::PlaylistWidget (QWidget *parent)
-	: QWidget (parent)
+	: QTreeView (parent)
 	{
 		setAcceptDrops (true);
-		Tree_ = new QTreeView;
-		QVBoxLayout *layout = new QVBoxLayout;
-		layout->addWidget (Tree_);
-		setLayout (layout);
 		setFixedWidth (200);
-		Tree_->show ();
-		Tree_->setFocusPolicy (Qt::NoFocus);
+		show ();
 	}
 	
 	void PlaylistWidget::Init (libvlc_instance_t *instance, libvlc_media_player_t *player)
@@ -67,7 +62,7 @@ namespace vlc
 		NativePlayer_ = player;
 		
 		Model_ = new PlaylistModel (Playlist_, this);
-		Tree_->setModel (Model_);
+		setModel (Model_);
 		
 		
 		QTimer *timer = new QTimer (this);
@@ -79,10 +74,18 @@ namespace vlc
 		
 		timer->start ();
 		
-		connect (Tree_->selectionModel (),
+		connect (selectionModel (),
 				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
 				this,
 				SLOT (selectionChanged (QModelIndex, QModelIndex)));
+		
+		DeleteAction_ = new QAction (this);
+		DeleteAction_->setShortcut (QKeySequence (Qt::Key_Delete));
+		
+		connect (this,
+				SIGNAL (customContextMenuRequested (QPoint)),
+				this,
+				SLOT (createMenu (QPoint)));
 	}
 	
 	void PlaylistWidget::AddUrl (const QUrl& url)
@@ -109,7 +112,9 @@ namespace vlc
 	
 	void PlaylistWidget::dragEnterEvent (QDragEnterEvent *event)
 	{
+		fprintf (stderr, "drag\n");
 		event->accept ();
+		fprintf (stderr, "%d\n", event->isAccepted ());
 	}
 
 	void PlaylistWidget::dropEvent (QDropEvent *event)
@@ -117,6 +122,9 @@ namespace vlc
 		QList <QUrl> urls = event->mimeData ()->urls ();
 		for (int i = 0; i < urls.size (); i++)
 			AddUrl (urls [i]);
+		
+		fprintf (stderr, "drop\n");
+		event->accept ();
 	}
 	
 	void PlaylistWidget::Clear ()
@@ -128,25 +136,26 @@ namespace vlc
 	
 	void PlaylistWidget::updateInterface ()
 	{
-		//Tree_->setCurrentItem (Tree_->itemAt (1, libvlc_media_list_index_of_item (Playlist_, libvlc_media_player_get_media (NativePlayer_))));
 		Model_->updateTable ();
-		Tree_->update ();
 		
 		int currentRow = libvlc_media_list_index_of_item (Playlist_, libvlc_media_player_get_media (NativePlayer_));
 		for (int i = 0; i < Model_->rowCount (); i++)
 			if (i != currentRow)
-				Tree_->selectionModel ()->select (Model_->indexFromItem (Model_->item (i)),
+				selectionModel ()->select (Model_->indexFromItem (Model_->item (i)),
 													QItemSelectionModel::Deselect);
 				
-		Tree_->selectionModel ()->select (Model_->indexFromItem (Model_->item (currentRow)),
-											QItemSelectionModel::Select);
+		selectionModel ()->select (Model_->indexFromItem (Model_->item (currentRow)),
+									QItemSelectionModel::Select);
 		
-		//fprintf ("%d %d", Model_.)
+		update ();
 	}
 	
-	void PlaylistWidget::mousePressEvent(QMouseEvent *event)
+	void PlaylistWidget::mousePressEvent (QMouseEvent *event)
 	{
-		const QModelIndex& index = Tree_->indexAt (event->pos ());
+		if (event->button () != Qt::LeftButton)
+			return;
+		
+		const QModelIndex& index = indexAt (event->pos ());
 		int item = index.row ();
 		libvlc_media_list_player_play_item_at_index (Player_, item);
 		fprintf (stderr, "%d\n", item);
@@ -155,6 +164,25 @@ namespace vlc
 	void PlaylistWidget::selectionChanged (const QModelIndex& current, const QModelIndex& previous)
 	{
 		libvlc_media_list_player_play_item_at_index (Player_, current.row ());
+	}
+	
+	void PlaylistWidget::createMenu (QPoint p)
+	{
+		QMenu *menu = new QMenu (this);
+		QAction *action = new QAction (menu);
+		action->setText ("Delete");
+		action->setData (QVariant (indexAt (p).row ()));
+		menu->exec (p);
+		
+		connect (menu,
+				SIGNAL (triggered (QAction*)),
+				this,
+				SLOT (deleteRequested (QAction*)));
+	}
+	
+	void PlaylistWidget::deleteRequested (QAction *object)
+	{
+		libvlc_media_list_remove_index (Playlist_, object->data ().toInt ());
 	}
 }
 }
