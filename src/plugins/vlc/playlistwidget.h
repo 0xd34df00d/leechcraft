@@ -66,10 +66,12 @@ namespace vlc
 		void Init (libvlc_instance_t *instance, libvlc_media_player_t *player);
 		void Clear ();
 		
+	private:
+		void findAndDelete (QUrl);
+		
 	protected:
 		void dragEnterEvent (QDragEnterEvent*);
 		void dropEvent (QDropEvent*);
-		void mousePressEvent (QMouseEvent*);
 		
 	private slots:
 		void togglePlay ();

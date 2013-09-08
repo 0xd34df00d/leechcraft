@@ -37,6 +37,9 @@
 #include <QModelIndex>
 #include <QAction>
 #include <QMenu>
+#include <QPaintEvent>
+#include <QPainter>
+#include <QDebug>
 #include "playlistwidget.h"
 #include "playlistmodel.h"
 
@@ -47,6 +50,8 @@ namespace vlc
 	PlaylistWidget::PlaylistWidget (QWidget *parent)
 	: QTreeView (parent)
 	{
+		setDragEnabled (true);
+		setDropIndicatorShown (true);
 		setAcceptDrops (true);
 		setBaseSize (200, 0);
 		show ();
@@ -90,6 +95,7 @@ namespace vlc
 	void PlaylistWidget::AddUrl (const QUrl& url)
 	{
 		libvlc_media_t *m = libvlc_media_new_path (Instance_, url.toString ().toUtf8 ());
+		libvlc_media_set_meta (m, libvlc_meta_URL, url.toEncoded ());
 		libvlc_media_list_add_media (Playlist_, m);
 		libvlc_media_list_player_play (Player_);
 		
@@ -119,10 +125,53 @@ namespace vlc
 	void PlaylistWidget::dropEvent (QDropEvent *event)
 	{
 		QList <QUrl> urls = event->mimeData ()->urls ();
-		for (int i = 0; i < urls.size (); i++)
-			AddUrl (urls [i]);
+		if (event->mimeData ()->colorData ().toString () == "vtyulb")
+		{
+			int maxIndex = indexAt (event->pos ()).row () - 1;
+			if (maxIndex == -2)
+				maxIndex = libvlc_media_list_count (Playlist_);
+			
+			QUrl insertAfter;
+			for (int i = maxIndex; i >= 0; i--)
+				if (!urls.contains (QUrl (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL))))
+				{
+					insertAfter = QUrl (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL));
+					break;
+				}
+			
+			for (int i = 0; i < urls.size (); i++)
+				findAndDelete (urls [i]);
+			
+			int after;
+			if (insertAfter.toString () == "")
+				after = -1;
+			else
+				for (int i = 0; i < libvlc_media_list_count (Playlist_); i++)
+					if (QUrl (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL)) == insertAfter)
+					{
+						after = i;
+						break;
+					}
+					
+			qDebug () << urls;
+			fprintf (stderr, "%s", insertAfter.toString().toUtf8().constData());
+			fprintf (stderr, "after %d\n", after);
+			for (int i = 0; i < urls.size (); i++)
+			{
+				fprintf (stderr, "re-add:%s", urls [i].toString ().toUtf8 ().constData());
+				libvlc_media_t *media = libvlc_media_new_path (Instance_, urls [i].toString ().toUtf8 ());
+				libvlc_media_set_meta (media, libvlc_meta_URL, urls [i].toEncoded ());
+				libvlc_media_list_insert_media (Playlist_, media, after + i + 2);
+			}
+			
+			Model_->updateTable ();
+		}
+		else
+		{
+			for (int i = 0; i < urls.size (); i++)
+				AddUrl (urls [i]);
+		}
 		
-		fprintf (stderr, "drop\n");
 		event->accept ();
 	}
 	
@@ -149,23 +198,6 @@ namespace vlc
 										QItemSelectionModel::Select);
 		
 		update ();
-	}
-	
-	void PlaylistWidget::mousePressEvent (QMouseEvent *event)
-	{
-		if (event->button () == Qt::RightButton)
-		{
-			createMenu (event->pos ());
-			event->accept ();
-		}
-		else 
-		{
-			const QModelIndex& index = indexAt (event->pos ());
-			int item = index.row ();
-			libvlc_media_list_player_play_item_at_index (Player_, item);
-			fprintf (stderr, "%d\n", item);
-			event->accept ();
-		}
 	}
 	
 	void PlaylistWidget::selectionChanged (const QModelIndex& current, const QModelIndex& previous)
@@ -198,6 +230,17 @@ namespace vlc
 		fprintf (stderr, "%d\n", object->data().toInt());
 		libvlc_media_list_remove_index (Playlist_, object->data ().toInt ());
 		Model_->updateTable ();
+	}
+	
+	void PlaylistWidget::findAndDelete (QUrl url)
+	{
+		for (int i = 0; i < libvlc_media_list_count (Playlist_); i++)
+			if (QUrl (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL)) == url)
+			{
+				libvlc_media_list_remove_index (Playlist_, i);
+				fprintf(stderr,"deleting");
+				return;
+			}
 	}
 }
 }
