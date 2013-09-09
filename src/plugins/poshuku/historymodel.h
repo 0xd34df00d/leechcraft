@@ -90,6 +90,7 @@ namespace Poshuku
 		void Add (const HistoryItem&, bool announce);
 	private slots:
 		void loadData ();
+		void collectGarbage ();
 		void handleItemAdded (const HistoryItem&);
 	signals:
 		// Hook support signals
