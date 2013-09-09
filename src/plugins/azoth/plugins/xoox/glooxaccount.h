@@ -135,6 +135,8 @@ namespace Xoox
 		std::shared_ptr<ClientConnection> ClientConnection_;
 		std::shared_ptr<TransferManager> TransferManager_;
 
+		QHash<QObject*, QPair<QString, QString>> ExistingEntry2JoinConflict_;
+
 		QAction *SelfVCardAction_;
 		QAction *PrivacyDialogAction_;
 	public:

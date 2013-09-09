@@ -753,10 +753,29 @@ namespace Xoox
 			return;
 		}
 
+		const auto existingObj = ClientConnection_->GetCLEntry (jid, {});
+		const auto existing = qobject_cast<ICLEntry*> (existingObj);
+		if (existing && existing->GetEntryType () != ICLEntry::ETMUC)
+		{
+			const auto res = QMessageBox::question (nullptr,
+					"LeechCraft",
+					tr ("Cannot join something that's already added to the roster. "
+						"Do you want to remove %1 from roster and retry?")
+						.arg ("<em>" + jid + "</em>"),
+					QMessageBox::Yes | QMessageBox::No);
+			if (res != QMessageBox::Yes)
+				return;
+
+			RemoveEntry (existingObj);
+			ExistingEntry2JoinConflict_ [existingObj] = qMakePair (jid, nick);
+			return;
+		}
+
 		RoomCLEntry *entry = ClientConnection_->JoinRoom (jid, nick);
 		if (!entry)
 			return;
-		emit gotCLItems (QList<QObject*> () << entry);
+
+		emit gotCLItems ({ entry });
 	}
 
 	void GlooxAccount::JoinRoom (const QString& server,
@@ -887,7 +906,13 @@ namespace Xoox
 
 	void GlooxAccount::handleEntryRemoved (QObject *entry)
 	{
-		emit removedCLItems (QObjectList () << entry);
+		emit removedCLItems ({ entry });
+
+		if (ExistingEntry2JoinConflict_.contains (entry))
+		{
+			const auto& pair = ExistingEntry2JoinConflict_.take (entry);
+			JoinRoom (pair.first, pair.second);
+		}
 	}
 
 	void GlooxAccount::handleGotRosterItems (const QList<QObject*>& items)
