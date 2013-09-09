@@ -75,6 +75,13 @@ namespace Blogique
 		};
 	};
 
+
+	struct Filter
+	{
+		QDateTime BeginDate_;
+		QDateTime EndDate_;
+		QStringList Tags_;
+	};
 	/** @brief Interface representing a single account.
 	 *
 	 **/
@@ -153,6 +160,7 @@ namespace Blogique
 		 */
 		virtual void GetEntriesByDate (const QDate& date) = 0;
 
+		virtual void GetEntriesWithFilter (const Filter& filter) = 0;
 		/** @brief Remove entry from blog.
 		 *
 		 * @param[in] entry Entry to remove.
@@ -198,8 +206,6 @@ namespace Blogique
 		 *
 		 */
 		virtual void updateProfile () = 0;
-
-		virtual void backup () = 0;
 
 	protected:
 		/** @brief This signal should be emitted when account is renamed.
