@@ -103,7 +103,7 @@ namespace AdvancedNotifications
 		QString GetCategory () const;
 		void SetCategory (const QString&);
 
-		QStringList GetTypes () const;
+		QSet<QString> GetTypes () const;
 		void SetTypes (const QStringList&);
 
 		NotificationMethods GetMethods () const;
