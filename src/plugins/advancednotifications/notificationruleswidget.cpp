@@ -212,7 +212,7 @@ namespace AdvancedNotifications
 		const int catIdx = Ui_.EventCat_->findData (rule.GetCategory ());
 		Ui_.EventCat_->setCurrentIndex (std::max (catIdx, 0));
 
-		const QStringList& types = rule.GetTypes ();
+		const auto& types = rule.GetTypes ();
 		for (int i = 0; i < Ui_.EventTypes_->topLevelItemCount (); ++i)
 		{
 			QTreeWidgetItem *item = Ui_.EventTypes_->topLevelItem (i);

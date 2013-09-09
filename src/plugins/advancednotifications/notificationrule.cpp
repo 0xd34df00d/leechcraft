@@ -120,9 +120,9 @@ namespace AdvancedNotifications
 		Category_ = cat;
 	}
 
-	QStringList NotificationRule::GetTypes () const
+	QSet<QString> NotificationRule::GetTypes () const
 	{
-		return Types_;
+		return Types_.toSet ();
 	}
 
 	void NotificationRule::SetTypes (const QStringList& types)
