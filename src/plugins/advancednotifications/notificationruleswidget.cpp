@@ -139,7 +139,7 @@ namespace AdvancedNotifications
 
 		const int audioIdx = Ui_.AudioFile_->currentIndex ();
 		const QString& audioFile = audioIdx >= 0 ?
-				Ui_.AudioFile_->itemData (audioIdx).toString () :
+				Ui_.AudioFile_->itemText (audioIdx) :
 				QString ();
 		rule.SetAudioParams (AudioParams (audioFile));
 
