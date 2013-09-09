@@ -158,26 +158,58 @@ namespace Blogique
 
 	void ExportWizard::handleCurrentIdChanged (int id)
 	{
-		if (id != OverviewPage)
-			return;
-
-		Ui_.AccountLabel_->setText (Ui_.AccountSelection_->currentText ());
-		Ui_.FormatLabel_->setText (Formats_->checkedButton ()->text ());
-		Ui_.EntriesLabel_->setText (Ui_.AllEntries_->isChecked () ?
-				tr ("All entries") :
-				tr ("Only between %1 and %2")
-						.arg (Ui_.FromDate_->text ())
-						.arg (Ui_.TillDate_->text ()));
-
 		QStringList selectedTags;
-		for (int i = 0; Ui_.SelectedTags_->isChecked () && i < SelectedTagsModel_->rowCount ();
-				++i)
-			selectedTags << SelectedTagsModel_->index (i, 0).data ().toString ();
-		Ui_.EntriesTagsLabel_->setText (Ui_.AllTags_->isChecked () ?
-				tr ("All tags") :
-				tr ("Only tags: %1")
+		switch (id)
+		{
+			case WelcomPage:
+			case FormatPage:
+			case ContentPage:
+			default:
+				return;
+			case OverviewPage:
+			{
+				Ui_.AccountLabel_->setText (Ui_.AccountSelection_->currentText ());
+				Ui_.FormatLabel_->setText (Formats_->checkedButton ()->text ());
+				Ui_.EntriesLabel_->setText (Ui_.AllEntries_->isChecked () ?
+					tr ("All entries") :
+					tr ("Only between %1 and %2")
+							.arg (Ui_.FromDate_->text ())
+							.arg (Ui_.TillDate_->text ()));
+
+				for (int i = 0; Ui_.SelectedTags_->isChecked () && i < SelectedTagsModel_->rowCount ();
+						++i)
+					 selectedTags << SelectedTagsModel_->index (i, 0).data ().toString ();
+				Ui_.EntriesTagsLabel_->setText (Ui_.AllTags_->isChecked () ?
+							tr ("All tags") :
+							tr ("Only tags: %1")
 						.arg (selectedTags.join (", ")));
-		Ui_.SavePathLabel_->setText (Ui_.SavePath_->text ());
+				Ui_.SavePathLabel_->setText (Ui_.SavePath_->text ());
+				break;
+			}
+			case ExportPage:
+			{
+				if (!Id2Account_.contains (Ui_.AccountSelection_->currentIndex ()))
+					return;
+
+				Filter filter;
+				if (Ui_.AllEntries_->isChecked ())
+				{
+					filter.BeginDate_ = QDateTime::fromString ("01.01.1970 00:00",
+							"dd.mm.yyyy hh:MM");
+					filter.EndDate_ = QDateTime::currentDateTime ();
+				}
+				else
+				{
+					filter.BeginDate_ = Ui_.FromDate_->dateTime ();
+					filter.EndDate_ = Ui_.TillDate_->dateTime ();
+				}
+
+				filter.Tags_ = selectedTags;
+
+				Id2Account_ [Ui_.AccountSelection_->currentIndex ()]->GetEntriesWithFilter (filter);
+				break;
+			}
+		}
 	}
 
 	void ExportWizard::selectExportPath ()
