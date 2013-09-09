@@ -292,5 +292,21 @@ namespace AdvancedNotifications
 	{
 		return !(r1 == r2);
 	}
+
+	void DebugEquals (const NotificationRule& r1, const NotificationRule& r2)
+	{
+		qDebug () << Q_FUNC_INFO;
+		qDebug () << (r1.GetMethods () == r2.GetMethods ());
+		qDebug () << (r1.IsEnabled () == r2.IsEnabled ());
+		qDebug () << (r1.IsSingleShot () == r2.IsSingleShot ());
+		qDebug () << (r1.GetName () == r2.GetName ());
+		qDebug () << (r1.GetCategory () == r2.GetCategory ());
+		qDebug () << (r1.GetTypes () == r2.GetTypes ());
+		qDebug () << (r1.GetFieldMatches () == r2.GetFieldMatches ());
+		qDebug () << (r1.GetVisualParams () == r2.GetVisualParams ());
+		qDebug () << (r1.GetAudioParams () == r2.GetAudioParams ());
+		qDebug () << (r1.GetTrayParams () == r2.GetTrayParams ());
+		qDebug () << (r1.GetCmdParams () == r2.GetCmdParams ());
+	}
 }
 }
