@@ -193,6 +193,11 @@ namespace Hestia
 		}
 	}
 
+	void LocalBlogAccount::GetEntriesWithFilter (const Filter& filter)
+	{
+		//TODO
+	}
+
 	QHash<QString, int> LocalBlogAccount::GetTags () const
 	{
 		try
@@ -304,10 +309,6 @@ namespace Hestia
 	}
 
 	void LocalBlogAccount::preview (const Entry&)
-	{
-	}
-
-	void LocalBlogAccount::backup ()
 	{
 	}
 
