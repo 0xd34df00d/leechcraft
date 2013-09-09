@@ -153,6 +153,7 @@ namespace Metida
 		QObject* GetProfile ();
 
 		void GetEntriesByDate (const QDate& date);
+		void GetEntriesWithFilter (const Filter& filter);
 		void RemoveEntry (const Entry& entry);
 		void UpdateEntry (const Entry& entry);
 
@@ -188,7 +189,6 @@ namespace Metida
 
 		void submit (const Entry& event);
 		void preview (const Entry& event);
-		void backup ();
 
 		void handleEventPosted (const QList<LJEvent>& entries);
 		void handleEventUpdated (const QList<LJEvent>& entries);

@@ -203,6 +203,11 @@ namespace Metida
 		LJXmlRpc_->GetEventsByDate (date);
 	}
 
+	void LJAccount::GetEntriesWithFilter (const Filter& filter)
+	{
+// 		LJXmlRpc_->GetEventsWithFilter (filter);
+	}
+
 	namespace
 	{
 		LJEventProperties GetLJEventPropetriesFromMap (const QVariantMap& map)
@@ -552,11 +557,6 @@ namespace Metida
 	void LJAccount::preview (const Entry& event)
 	{
 		LJXmlRpc_->Preview (Entry2LJEvent (event));
-	}
-
-	void LJAccount::backup ()
-	{
-		LJXmlRpc_->BackupEvents ();
 	}
 
 	void LJAccount::handleEventPosted (const QList<LJEvent>& events)
