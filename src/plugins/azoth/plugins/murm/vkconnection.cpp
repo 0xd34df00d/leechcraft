@@ -329,6 +329,8 @@ namespace Murm
 
 	void VkConnection::Poll ()
 	{
+		qDebug () << Q_FUNC_INFO << LPURLTemplate_;
+
 		QUrl url = LPURLTemplate_;
 		url.addQueryItem ("ts", QString::number (LPTS_));
 		connect (Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (url)),
@@ -385,11 +387,12 @@ namespace Murm
 			++PollErrorCount_;
 			qWarning () << Q_FUNC_INFO
 					<< "network error:"
+					<< reply->error ()
 					<< reply->errorString ()
 					<< "; error count:"
 					<< PollErrorCount_;
 			Poll ();
-			if (PollErrorCount_ > 3)
+			if (PollErrorCount_ == 4)
 			{
 				CurrentStatus_ = EntryStatus ();
 				emit statusChanged (GetStatus ());
@@ -399,6 +402,10 @@ namespace Murm
 		}
 		else if (PollErrorCount_)
 		{
+			qDebug () << Q_FUNC_INFO
+					<< "finally successful network reply after"
+					<< PollErrorCount_
+					<< "errors";
 			PollErrorCount_ = 0;
 			CurrentStatus_ = Status_;
 			emit statusChanged (GetStatus ());
