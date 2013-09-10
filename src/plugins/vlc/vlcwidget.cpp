@@ -771,9 +771,7 @@ namespace vlc
 	
 	void VlcWidget::dropEvent (QDropEvent *event)
 	{
-		qDebug () << event->mimeData()->urls().size();
 		QUrl main = event->mimeData ()->urls () [0];
-		qDebug () << "dropped" << main;
 		event->accept ();
 		if (KNOWN_AUDIO_FILE_FORMATS.contains(main.toString ().right (4)))
 			VlcPlayer_->addUrl (main);
