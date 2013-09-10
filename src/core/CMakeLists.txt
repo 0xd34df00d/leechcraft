@@ -133,12 +133,18 @@ else ()
 	QT4_ADD_RESOURCES (RCC ${RESOURCES})
 endif ()
 
+set (WIN_RESOURCES)
+if (WIN32)
+	set (WIN_RESOURCES ../../../tools/win32/leechcraft.rc)
+endif ()
+
 add_executable (leechcraft WIN32
 	../config.h
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${UIS_H}
 	${RCC}
+	${WIN_RESOURCES}
 	)
 
 target_link_libraries (leechcraft
