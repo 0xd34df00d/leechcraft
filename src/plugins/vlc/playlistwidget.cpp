@@ -166,7 +166,7 @@ namespace vlc
 		Model_->updateTable ();
 	}
 	
-	void PlaylistWidget::mouseDoubleClickEvent(QMouseEvent *event)
+	void PlaylistWidget::mouseDoubleClickEvent (QMouseEvent *event)
 	{
 		int row = indexAt (event->pos ()).row ();
 		if (row > -1 && row < libvlc_media_list_count (Playlist_))
@@ -175,7 +175,7 @@ namespace vlc
 		event->accept ();
 	}
 	
-	void PlaylistWidget::resizeEvent(QResizeEvent *event)
+	void PlaylistWidget::resizeEvent (QResizeEvent *event)
 	{
 		setColumnWidth (0, event->size ().width () - 60);
 	}

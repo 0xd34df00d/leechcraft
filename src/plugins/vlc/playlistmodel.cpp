@@ -175,7 +175,7 @@ namespace vlc
 	
 	Qt::ItemFlags PlaylistModel::flags (const QModelIndex &index) const
 	{
-		Qt::ItemFlags defaultFlags = QStandardItemModel::flags(index);
+		Qt::ItemFlags defaultFlags = QStandardItemModel::flags (index);
 	
 		if (index.isValid ())
 			return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;

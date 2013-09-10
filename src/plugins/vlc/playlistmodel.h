@@ -54,7 +54,7 @@ namespace vlc
 	public:
 		explicit PlaylistModel (PlaylistWidget *parent, libvlc_media_list_t *playlist);
 		
-		bool dropMimeData (const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent);
+		bool dropMimeData (const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex& parent);
 		QStringList mimeTypes () const;
 		QMimeData* mimeData (const QModelIndexList&) const;
 		Qt::DropActions supportedDropActions () const;
