@@ -29,53 +29,44 @@
 
 #pragma once
 
-#include <QWidget>
-#include <QUrl>
-#include <QTreeView>
+#include <QStandardItemModel>
+#include <QVector>
 
-struct libvlc_media_player_t;
-struct libvlc_media_list_player_t;
-struct libvlc_instance_t;
 struct libvlc_media_list_t;
 struct libvlc_media_t;
 
-class QAction;
+class QMimeData;
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	class PlaylistModel;
+	class PlaylistWidget;
 	
-	class PlaylistWidget : public QTreeView
+	class PlaylistModel : public QStandardItemModel
 	{
 		Q_OBJECT
 		
-		libvlc_media_list_player_t *Player_;
 		libvlc_media_list_t *Playlist_;
-		libvlc_media_player_t *NativePlayer_;
-		libvlc_instance_t *Instance_;
-		
-		PlaylistModel *Model_;
-		QAction *DeleteAction_;
+		QVector<QStandardItem*> Items_ [2];
+		PlaylistWidget *Parent_;
 	
 	public:
-		explicit PlaylistWidget (QWidget *parent = 0);
+		explicit PlaylistModel (PlaylistWidget *parent, libvlc_media_list_t *playlist);
+		
+		bool dropMimeData (const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent);
+		QStringList mimeTypes () const;
+		QMimeData* mimeData (const QModelIndexList&) const;
+		Qt::DropActions supportedDropActions () const;
+		Qt::ItemFlags flags(const QModelIndex &index) const;
 		
 		void AddUrl (const QUrl&);
-		bool NowPlaying ();
-		void Init (libvlc_instance_t *instance, libvlc_media_player_t *player);
-		void Clear ();
 		
-	protected:
-		void dragEnterEvent (QDragEnterEvent*);
+	private:
+		libvlc_media_t* findAndDelete (QUrl);
 		
-	private slots:
-		void togglePlay ();
-		void updateInterface ();
-		void selectionChanged (const QModelIndex& current, const QModelIndex& previous);
-		void createMenu (QPoint);
-		void deleteRequested (QAction*);
+	public slots:
+		void updateTable ();
 	};
 }
 }
