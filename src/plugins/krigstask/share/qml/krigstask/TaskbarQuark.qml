@@ -25,10 +25,21 @@ Rectangle {
         anchors.top: parent.top
         anchors.left: parent.left
 
-        property int itemCount: launcherItemRepeater.count + (showPager ? 1 : 0)
+        function calcCount() {
+            var cnt = 0;
+            for (var i = 0; i < launcherItemRepeater.count; ++i) {
+                var item = launcherItemRepeater.itemAt(i);
+                if (item && item.visible)
+                    ++cnt;
+            }
+            cnt += showPager ? 1 : 0;
+            return cnt;
+        }
 
-        columns: viewOrient == "vertical" ? 1 : itemCount
-        rows: viewOrient == "vertical" ? itemCount : 1
+        property alias fullItemCount: launcherItemRepeater.count
+
+        columns: viewOrient == "vertical" ? 1 : fullItemCount
+        rows: viewOrient == "vertical" ? fullItemCount : 1
 
         Repeater {
             id: launcherItemRepeater
@@ -41,7 +52,7 @@ Rectangle {
                 height: rootRect.itemSize
                 width: viewOrient == "vertical" ?
                         rootRect.itemSize :
-                        Math.min(150, rootRect.width / taskbarColumn.itemCount)
+                        Math.min(150, rootRect.width / taskbarColumn.calcCount())
 
                 ActionButton {
                     id: tcButton
