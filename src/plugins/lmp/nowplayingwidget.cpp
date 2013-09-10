@@ -145,13 +145,13 @@ namespace LMP
 			const QDateTime& current = QDateTime::currentDateTime ();
 			const int days = datetime.daysTo (current);
 			if (days > 30)
-				return datetime.toString ("MMMM yyyy");
+				return QLocale ().toString (datetime, "MMMM yyyy");
 			else if (days >= 7)
 				return NowPlayingWidget::tr ("%n day(s) ago", 0, days);
 			else if (days >= 1)
-				return datetime.toString ("dddd");
+				return QLocale ().toString (datetime, "dddd");
 			else
-				return datetime.time ().toString ();
+				return QLocale ().toString (datetime.time ());
 		}
 	}
 
