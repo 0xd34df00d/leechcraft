@@ -383,6 +383,11 @@ namespace Murm
 		if (reply->error () != QNetworkReply::NoError)
 		{
 			++PollErrorCount_;
+			qWarning () << Q_FUNC_INFO
+					<< "network error:"
+					<< reply->errorString ()
+					<< "; error count:"
+					<< PollErrorCount_;
 			Poll ();
 			if (PollErrorCount_ > 3)
 			{
