@@ -31,8 +31,10 @@
 #include <QModelIndex>
 #include <QVariant>
 #include <QTime>
+#include <QTimer>
 #include <QMimeData>
 #include <QDebug>
+#include <QItemSelectionModel>
 #include <QUrl>
 #include "playlistmodel.h"
 #include "playlistwidget.h"
@@ -120,7 +122,7 @@ namespace vlc
 						break;
 					}
 					
-			if ((parent == QModelIndex ()) && (after == -1)) 
+			if ((parent == QModelIndex ()) && (after == -1))  // VLC forever
 			{
 				for (int i = 0; i < urls.size (); i++)
 					libvlc_media_list_add_media (Playlist_, mediaList [i]);
@@ -193,7 +195,8 @@ namespace vlc
 			}
 			
 		if (res == nullptr)
-			fprintf (stderr, "fatal");
+			qWarning () << Q_FUNC_INFO << "fatal";
+		
 		return res;
 	}
 	

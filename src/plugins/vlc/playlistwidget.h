@@ -68,12 +68,12 @@ namespace vlc
 		void Clear ();
 		
 	protected:
-		void dragEnterEvent (QDragEnterEvent*);
+		void mouseDoubleClickEvent (QMouseEvent*);
+		void resizeEvent (QResizeEvent*);
 		
 	private slots:
 		void togglePlay ();
 		void updateInterface ();
-		void selectionChanged (const QModelIndex& current, const QModelIndex& previous);
 		void createMenu (QPoint);
 		void deleteRequested (QAction*);
 	};

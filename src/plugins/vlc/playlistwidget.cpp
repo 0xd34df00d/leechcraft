@@ -53,7 +53,7 @@ namespace vlc
 		setDragEnabled (true);
 		setDropIndicatorShown (true);
 		setAcceptDrops (true);
-		setBaseSize (200, 0);
+		setBaseSize (0, 0);
 		setRootIsDecorated (false);
 		show ();
 	}
@@ -70,7 +70,6 @@ namespace vlc
 		Model_ = new PlaylistModel (this, Playlist_);
 		setModel (Model_);
 		
-		
 		QTimer *timer = new QTimer (this);
 		timer->setInterval (1000);
 		connect (timer,
@@ -79,12 +78,7 @@ namespace vlc
 				SLOT (updateInterface ()));
 		
 		timer->start ();
-		
-		connect (selectionModel (),
-				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
-				this,
-				SLOT (selectionChanged (QModelIndex, QModelIndex)));
-		
+
 		DeleteAction_ = new QAction (this);
 		
 		connect (this,
@@ -122,17 +116,6 @@ namespace vlc
 			libvlc_media_list_player_play (Player_);
 	}
 	
-	void PlaylistWidget::dragEnterEvent (QDragEnterEvent *event)
-	{
-		fprintf (stderr, "drag\n");
-		event->accept ();
-		fprintf (stderr, "%d\n", event->isAccepted ());
-	}
-
-	/*void PlaylistWidget::dropEvent (QDropEvent *event)
-	{
-	}*/
-	
 	void PlaylistWidget::Clear ()
 	{
 		libvlc_media_list_player_stop (Player_);
@@ -143,7 +126,6 @@ namespace vlc
 	void PlaylistWidget::updateInterface ()
 	{
 		Model_->updateTable ();
-		
 		int currentRow = libvlc_media_list_index_of_item (Playlist_, libvlc_media_player_get_media (NativePlayer_));
 		for (int i = 0; i < Model_->rowCount (); i++)
 			if (i != currentRow)
@@ -156,11 +138,6 @@ namespace vlc
 										QItemSelectionModel::Select);
 		
 		update ();
-	}
-	
-	void PlaylistWidget::selectionChanged (const QModelIndex& current, const QModelIndex& previous)
-	{
-		libvlc_media_list_player_play_item_at_index (Player_, current.row ());
 	}
 	
 	void PlaylistWidget::createMenu (QPoint p)
@@ -185,9 +162,22 @@ namespace vlc
 	
 	void PlaylistWidget::deleteRequested (QAction *object)
 	{
-		fprintf (stderr, "%d\n", object->data().toInt());
 		libvlc_media_list_remove_index (Playlist_, object->data ().toInt ());
 		Model_->updateTable ();
+	}
+	
+	void PlaylistWidget::mouseDoubleClickEvent(QMouseEvent *event)
+	{
+		int row = indexAt (event->pos ()).row ();
+		if (row > -1 && row < libvlc_media_list_count (Playlist_))
+			libvlc_media_list_player_play_item_at_index (Player_, row);
+		
+		event->accept ();
+	}
+	
+	void PlaylistWidget::resizeEvent(QResizeEvent *event)
+	{
+		setColumnWidth (0, event->size ().width () - 60);
 	}
 }
 }
