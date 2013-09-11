@@ -4,7 +4,7 @@ include (InitLCPlugin OPTIONAL)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-FIND_PACKAGE (HUpnp REQUIRED)
+find_package (HUpnp REQUIRED)
 
 set (QT_USE_QTNETWORK TRUE)
 set (QT_USE_QTXML TRUE)
