@@ -2,6 +2,10 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_dlniwe)
 include (InitLCPlugin OPTIONAL)
 
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
+FIND_PACKAGE (HUpnp REQUIRED)
+
 set (QT_USE_QTNETWORK TRUE)
 set (QT_USE_QTXML TRUE)
 include (${QT_USE_FILE})
@@ -9,6 +13,7 @@ include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
+	${HUpnp_INCLUDE_DIR}
 	)
 set (SRCS
 	dlniwe.cpp
@@ -28,7 +33,7 @@ add_library (leechcraft_dlniwe SHARED
 target_link_libraries (leechcraft_dlniwe
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
-	HUpnp
+	${HUpnp_LIBRARIES}
 	)
 install (TARGETS leechcraft_dlniwe DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/dlniwe DESTINATION ${LC_SHARE_DEST})
