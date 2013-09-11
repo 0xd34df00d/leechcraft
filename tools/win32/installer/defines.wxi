@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include>
+  <?define ProductName="LeechCraft" ?>
+  <?define ProductVersion="0.6.60" ?>
+  <?define ProductTextVersion="0.6.60" ?>
+  <?define ProductCode="*" ?>
+  <?define UpgradeCode="{E4C7ACE5-6A54-444B-B2B8-E660859D56EF}" ?>
+  <?define Manufacturer="Deviant" ?>
+</Include>

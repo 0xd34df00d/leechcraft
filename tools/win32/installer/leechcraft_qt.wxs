@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="INSTALLFOLDER">
+      <Component Id="QTCORE4.DLL" DiskId="2" Guid="241819CE-468F-4592-969D-01D7E8DAFD48">
+        <File Id="QTCORE4.DLL" Name="QtCore4.dll" Source="$(var.SourcePath)\QtCore4.dll" />
+      </Component>
+      <Component Id="QTDECLARATIVE4.DLL" DiskId="2" Guid="87DA4742-FC48-4262-B202-5B6885AE76A3">
+        <File Id="QTDECLARATIVE4.DLL" Name="QtDeclarative4.dll" Source="$(var.SourcePath)\QtDeclarative4.dll" />
+      </Component>
+      <Component Id="QTGUI4.DLL" DiskId="2" Guid="D8A0DF70-C423-4D15-B1B9-F8F7B6B23CE2">
+        <File Id="QTGUI4.DLL" Name="QtGui4.dll" Source="$(var.SourcePath)\QtGui4.dll" />
+      </Component>
+      <Component Id="QTMULTIMEDIA4.DLL" DiskId="1" Guid="1D74D1B1-95D7-4914-B23F-CBB0E1401F97">
+        <File Id="QTMULTIMEDIA4.DLL" Name="QtMultimedia4.dll" Source="$(var.SourcePath)\QtMultimedia4.dll" />
+      </Component>
+      <Component Id="QTNETWORK4.DLL" DiskId="2" Guid="4F12CC14-05FB-48C9-9318-783546425F88">
+        <File Id="QTNETWORK4.DLL" Name="QtNetwork4.dll" Source="$(var.SourcePath)\QtNetwork4.dll" />
+      </Component>
+      <Component Id="QTOPENGL4.DLL" DiskId="2" Guid="30F1AD1F-D37E-419D-9313-07A2CFCDAC0F">
+        <File Id="QTOPENGL4.DLL" Name="QtOpenGL4.dll" Source="$(var.SourcePath)\QtOpenGL4.dll" />
+      </Component>
+      <Component Id="QTSCRIPT4.DLL" DiskId="2" Guid="7DD66B0D-871E-45A9-93B4-CAE540427DD8">
+        <File Id="QTSCRIPT4.DLL" Name="QtScript4.dll" Source="$(var.SourcePath)\QtScript4.dll" />
+      </Component>
+      <Component Id="QTSCRIPTTOOLS4.DLL" DiskId="2" Guid="626BD9CA-CACF-403A-886E-E3988F6B78F6">
+        <File Id="QTSCRIPTTOOLS4.DLL" Name="QtScriptTools4.dll" Source="$(var.SourcePath)\QtScriptTools4.dll" />
+      </Component>
+      <Component Id="QTSQL4.DLL" DiskId="2" Guid="E4767C9D-B034-435C-BD4A-BAA247DAE633">
+        <File Id="QTSQL4.DLL" Name="QtSql4.dll" Source="$(var.SourcePath)\QtSql4.dll" />
+      </Component>
+      <Component Id="QTSVG4.DLL" DiskId="2" Guid="5586E6A2-4C4F-461C-8C0A-FD87A2E5E683">
+        <File Id="QTSVG4.DLL" Name="QtSvg4.dll" Source="$(var.SourcePath)\QtSvg4.dll" />
+      </Component>
+      <Component Id="QTWEBKIT4.DLL" DiskId="2" Guid="8E590168-0A52-4753-8678-075282988C7E">
+        <File Id="QTWEBKIT4.DLL" Name="QtWebKit4.dll" Source="$(var.SourcePath)\QtWebKit4.dll" />
+      </Component>
+      <Component Id="QTXML4.DLL" DiskId="2" Guid="38A81082-70DF-41E5-916E-723F30723E77">
+        <File Id="QTXML4.DLL" Name="QtXml4.dll" Source="$(var.SourcePath)\QtXml4.dll" />
+      </Component>
+      <Component Id="QTXMLPATTERNS4.DLL" DiskId="2" Guid="E6BB5D4A-FF3E-42DC-9F14-1E14C88FDC68">
+        <File Id="QTXMLPATTERNS4.DLL" Name="QtXmlPatterns4.dll" Source="$(var.SourcePath)\QtXmlPatterns4.dll" />
+      </Component>
+    </DirectoryRef>
+
+    <ComponentGroup Id="CG_QtLibs">
+      <ComponentRef Id="QTCORE4.DLL"/>
+      <ComponentRef Id="QTDECLARATIVE4.DLL"/>
+      <ComponentRef Id="QTGUI4.DLL"/>
+      <ComponentRef Id="QTMULTIMEDIA4.DLL" />
+      <ComponentRef Id="QTNETWORK4.DLL"/>
+      <ComponentRef Id="QTGUI4.DLL"/>
+      <ComponentRef Id="QTOPENGL4.DLL"/>
+      <ComponentRef Id="QTSCRIPT4.DLL"/>
+      <ComponentRef Id="QTSCRIPTTOOLS4.DLL"/>
+      <ComponentRef Id="QTSQL4.DLL"/>
+      <ComponentRef Id="QTSVG4.DLL"/>
+      <ComponentRef Id="QTWEBKIT4.DLL"/>
+      <ComponentRef Id="QTXML4.DLL"/>
+      <ComponentRef Id="QTXMLPATTERNS4.DLL"/>
+    </ComponentGroup>
+
+    <DirectoryRef Id="DIR_imageformats">
+      <Component Id="QGIF4.DLL" DiskId="2" Guid="7C085610-8F0B-423C-8131-9FB7467418C2">
+        <File Id="QGIF4.DLL" Name="qgif4.dll" Source="$(var.SourcePath)\plugins\imageformats\qgif4.dll" />
+      </Component>
+      <Component Id="QICO4.DLL" DiskId="2" Guid="D252689A-E4C4-4C5C-A0DA-5255A733FD12">
+        <File Id="QICO4.DLL" Name="qico4.dll" Source="$(var.SourcePath)\plugins\imageformats\qico4.dll" />
+      </Component>
+      <Component Id="QJPEG4.DLL" DiskId="2" Guid="B74DD395-3A3B-4F94-B834-106DF6C67754">
+        <File Id="QJPEG4.DLL" Name="qjpeg4.dll" Source="$(var.SourcePath)\plugins\imageformats\qjpeg4.dll" />
+      </Component>
+      <Component Id="QMNG4.DLL" DiskId="2" Guid="471CFDC5-9B1A-4299-A5CB-3AC6092ADFF3">
+        <File Id="QMNG4.DLL" Name="qmng4.dll" Source="$(var.SourcePath)\plugins\imageformats\qmng4.dll" />
+      </Component>
+      <Component Id="QSVG4.DLL" DiskId="2" Guid="880E8BCB-DB71-41D6-8CA3-2205DDD8A496">
+        <File Id="QSVG4.DLL" Name="qsvg4.dll" Source="$(var.SourcePath)\plugins\imageformats\qsvg4.dll" />
+      </Component>
+      <Component Id="QTGA4.DLL" DiskId="2" Guid="F367ECD5-AA77-4FEB-AC64-7AAA2D09196E">
+        <File Id="QTGA4.DLL" Name="qtga4.dll" Source="$(var.SourcePath)\plugins\imageformats\qtga4.dll" />
+      </Component>
+      <Component Id="QTIFF4.DLL" DiskId="2" Guid="65A50C46-473D-4949-9C90-CC42A4BEF563">
+        <File Id="QTIFF4.DLL" Name="qtiff4.dll" Source="$(var.SourcePath)\plugins\imageformats\qtiff4.dll" />
+      </Component>
+    </DirectoryRef>
+    
+    <DirectoryRef Id="DIR_sqldrivers">
+      <Component Id="QSQLITE4.DLL" DiskId="2" Guid="24FAF6E3-7567-4845-8989-B94B257402BA">
+        <File Id="QSQLITE4.DLL" Name="qsqlite4.dll" Source="$(var.SourcePath)\plugins\sqldrivers\qsqlite4.dll" />
+      </Component>
+    </DirectoryRef>
+
+    <ComponentGroup Id="CG_QtPlugins">
+      <ComponentRef Id="QICO4.DLL"/>
+      <ComponentRef Id="QGIF4.DLL"/>
+      <ComponentRef Id="QJPEG4.DLL"/>
+      <ComponentRef Id="QMNG4.DLL"/>
+      <ComponentRef Id="QSVG4.DLL"/>
+      <ComponentRef Id="QTGA4.DLL"/>
+      <ComponentRef Id="QTIFF4.DLL"/>
+      <ComponentRef Id="QSQLITE4.DLL"/>
+    </ComponentGroup>
+    
+  </Fragment>
+</Wix>
