@@ -1,6 +1,53 @@
 This file lists only more or less major changes, refer to `git log` for
 the rest.
 
+!!! 0.6.0
+* Core: fixed showing toolbar after last tab is closed.
+* Core: fixed reapplying color theme, explicitly setting palette on all
+  widgets.
+* Core: check if there is a tab before activating it on DnD.
+* Core: set default locale according to language settings.
+* Util: fixed a possible use-after-free error in ResourceLoader on large
+  pixmaps.
+* XSD: don't count an item with just set datasource as changed.
+* AN: fixed three bugs that led to rules being considered modified when
+  they weren't.
+* Aggregator: feed URL string can already be encoded, check for it.
+* Aggregator: fixed tooltip cleanup code, removing tags like font, span,
+  div, p, h{1,2,3,4,5,6} tags.
+* Aggregator: don't notify about zero something.
+* Azoth: fixed a rare XML parsing issue.
+* Azoth: cancel roster search on Esc or as soon as search text is empty.
+* Azoth AdiumStyles: don't segfault on unknown entries.
+* Azoth Autoidler: handle only Online and Free to Chat statuses.
+* Azoth p100q: fixed bookmarks label in settings.
+* Azoth Vader: fixed compatibility with crappy clients not knowing about
+  BOM.
+* Azoth Vader: fixed microblog status encoding.
+* Azoth Xoox: fixed restoring file logging settings.
+* Azoth Xoox: fixed cancelling connecting to the server if there is a
+  network error.
+* Azoth Xoox: added *.jpeg and *.bmp masks to avatar filter.
+* Dolozhee: set proper stretch on widgets.
+* LastFMScrobble: fixed leaking attend markers.
+* LastFMScrobble: fixed leaking recent releases.
+* Launchy: use own settings instead of messing with LMP.
+* Liznoo: try autostarting UPower if it's unavailable.
+* LMP: properly handle playlists on DnD.
+* LMP: similarity label now is always under artist name.
+* LMP: consider arbitrary-named album art if it's a single image.
+* LMP: album-art autofetching now made optional.
+* LMP: format datetimes according to locale settings.
+* LMP Graffiti: fixed CUE splitting.
+* LMP Graffiti: fixed linking issues with primary LMP library.
+* LMP Graffiti: fixed garbage in plugin icon.
+* Poshuku: set target="_blank" on links in widgets requested by other
+  plugins.
+* Poshuku: fixed freezing on garbage collection with large history
+  databases.
+* Poshuku CW: don't complain about unsupported filters.
+* Summary: fixed leaking context menu actions.
+
 !!! 0.5.99
 * AN: fixed a typo in user string.
 * AN: updated English and Russian translations.
