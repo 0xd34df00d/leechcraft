@@ -1,0 +1,1165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <Feature Id="Feature_advancednotifications" Title="Advanced Notifications" Description="Module for the advanced notifications framework." Absent="allow" >
+      <Component Id="CMP_advancednotifications" Directory="DIR_leechcraft_plugins" Guid="{ca6f7529-1cb1-4a98-90e6-562c16f588cf}" >
+        <File Id="FILE_advancednotifications" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_advancednotifications.dll" />
+      </Component>
+      <Component Id="CMP_advancednotificationssettings" Directory="DIR_settings" Guid="{24bede50-603d-4cc0-9228-3d463ad623cd}" >
+        <File Id="FILE_advancednotificationssettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\advancednotificationssettings.xml" />
+      </Component>
+      <Component Id="CMP_advancednotificationstranslations" Directory="DIR_translations" Guid="{494aee34-4619-4e17-8a7e-93be4ceca2c0}" >
+        <File Id="FILE_advancednotificationstranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_advancednotifications_uk_UA.qm" />
+        <File Id="FILE_advancednotificationstranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_advancednotifications_ru_RU.qm" />
+        <File Id="FILE_advancednotificationstranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_advancednotifications_es.qm" />
+        <File Id="FILE_advancednotificationstranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_advancednotifications_en.qm" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_cstp" Title="CSTP" Description="Common Stream Transfer Protocols" Absent="allow" >
+      <Component Id="CMP_cstp" Directory="DIR_leechcraft_plugins" Guid="{9ccff888-34a2-402f-9128-5e83493d0791}" >
+        <File Id="FILE_cstp" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_cstp.dll" />
+      </Component>
+      <Component Id="CMP_cstpsettings" Directory="DIR_settings" Guid="{80f10254-35aa-4b72-9521-fa9524230af4}" >
+        <File Id="FILE_cstpsettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\cstpsettings.xml" />
+      </Component>
+      <Component Id="CMP_cstptranslations" Directory="DIR_translations" Guid="{7199b68f-d72c-4f5c-aa22-5250942f5127}" >
+        <File Id="FILE_cstptranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_cstp_uk_UA.qm" />
+        <File Id="FILE_cstptranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_cstp_ru_RU.qm" />
+        <File Id="FILE_cstptranslations_pl.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_cstp_pl.qm" />
+        <File Id="FILE_cstptranslations_oc.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_cstp_oc.qm" />
+        <File Id="FILE_cstptranslations_it.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_cstp_it.qm" />
+        <File Id="FILE_cstptranslations_fr.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_cstp_fr.qm" />
+        <File Id="FILE_cstptranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_cstp_es.qm" />
+        <File Id="FILE_cstptranslations_eo.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_cstp_eo.qm" />
+        <File Id="FILE_cstptranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_cstp_en.qm" />
+        <File Id="FILE_cstptranslations_de.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_cstp_de.qm" />
+        <File Id="FILE_cstptranslations_ar.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_cstp_ar.qm" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_aggregator" Title="Aggregator" Description="RSS/Atom feed reader." Absent="allow" >
+      <Component Id="CMP_aggregator" Directory="DIR_leechcraft_plugins" Guid="{b0cc0f93-8c19-40db-8fca-680d076d9e50}" >
+        <File Id="FILE_aggregator" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_aggregator.dll" />
+      </Component>
+      <Component Id="CMP_aggregatorsettings" Directory="DIR_settings" Guid="{0f5aa87a-9537-4e10-bb22-5de44db80afe}" >
+        <File Id="FILE_aggregatorsettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\aggregatorsettings.xml" />
+      </Component>
+      <Component Id="CMP_aggregatortranslations" Directory="DIR_translations" Guid="{17a76dff-12cf-4dd5-b50c-fcbf47d12391}" >
+        <File Id="FILE_aggregatortranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_aggregator_uk_UA.qm" />
+        <File Id="FILE_aggregatortranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_aggregator_ru_RU.qm" />
+        <File Id="FILE_aggregatortranslations_pl.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_aggregator_pl.qm" />
+        <File Id="FILE_aggregatortranslations_oc.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_aggregator_oc.qm" />
+        <File Id="FILE_aggregatortranslations_it.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_aggregator_it.qm" />
+        <File Id="FILE_aggregatortranslations_fr.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_aggregator_fr.qm" />
+        <File Id="FILE_aggregatortranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_aggregator_es.qm" />
+        <File Id="FILE_aggregatortranslations_eo.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_aggregator_eo.qm" />
+        <File Id="FILE_aggregatortranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_aggregator_en.qm" />
+        <File Id="FILE_aggregatortranslations_de.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_aggregator_de.qm" />
+        <File Id="FILE_aggregatortranslations_ar.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_aggregator_ar.qm" />
+      </Component>
+      <Feature Id="Feature_aggregator_bodyfetch" Title="Aggregator BodyFetch" Description="Fetches full bodies of news items following links in them." Absent="allow" >
+        <Component Id="CMP_aggregator_bodyfetch" Directory="DIR_leechcraft_plugins" Guid="{43357360-3e7d-4d4c-a316-c86f70e88f89}" >
+          <File Id="FILE_aggregator_bodyfetch" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_aggregator_bodyfetch.dll" />
+        </Component>
+      </Feature>
+    </Feature>
+    <Feature Id="Feature_auscrie" Title="Auscrie" Description="Simple auto screenshotter." Absent="allow" >
+      <Component Id="CMP_auscrie" Directory="DIR_leechcraft_plugins" Guid="{5652614b-ce96-4115-ae14-b17d172fddad}" >
+        <File Id="FILE_auscrie" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_auscrie.dll" />
+      </Component>
+      <Component Id="CMP_auscrietranslations" Directory="DIR_translations" Guid="{6938c0a6-c5aa-44b5-897b-300d7f4d65ef}" >
+        <File Id="FILE_auscrietranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_auscrie_uk_UA.qm" />
+        <File Id="FILE_auscrietranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_auscrie_ru_RU.qm" />
+        <File Id="FILE_auscrietranslations_oc.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_auscrie_oc.qm" />
+        <File Id="FILE_auscrietranslations_it.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_auscrie_it.qm" />
+        <File Id="FILE_auscrietranslations_fr.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_auscrie_fr.qm" />
+        <File Id="FILE_auscrietranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_auscrie_es.qm" />
+        <File Id="FILE_auscrietranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_auscrie_en.qm" />
+        <File Id="FILE_auscrietranslations_de.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_auscrie_de.qm" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_azoth" Title="Azoth" Description="Extensible IM client for LeechCraft." Absent="allow" >
+      <Component Id="CMP_azoth" Directory="DIR_leechcraft_plugins" Guid="{569ea557-a523-4a4e-9dbb-567a83a22b3b}" >
+        <File Id="FILE_azoth" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_azoth.dll" />
+      </Component>
+      <Component Id="CMP_azothsettings" Directory="DIR_settings" Guid="{3c0ee4df-603b-4e0d-aba9-fae7413c0103}" >
+        <File Id="FILE_azothsettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\azothsettings.xml" />
+      </Component>
+      <Component Id="CMP_azothtranslations" Directory="DIR_translations" Guid="{bba2e3bd-2f6d-4956-b38a-1aa409771b43}" >
+        <File Id="FILE_azothtranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_uk_UA.qm" />
+        <File Id="FILE_azothtranslations_tt.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_tt.qm" />
+        <File Id="FILE_azothtranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_ru_RU.qm" />
+        <File Id="FILE_azothtranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_es.qm" />
+        <File Id="FILE_azothtranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_en.qm" />
+      </Component>
+      <Component Id="CMP_qca" Directory="INSTALLFOLDER" Guid="{57946254-D03F-4F55-8D15-8601A4104DE6}">
+        <File Id="FILE_libqca.dll" KeyPath ="no" Source="$(var.SourcePath)\libqca.dll"/>
+      </Component>
+      <Feature Id="Feature_azoth_acetamide" Title="Azoth Acetamide" Description="IRC protocol support." Absent="allow" >
+        <Component Id="CMP_azoth_acetamide" Directory="DIR_leechcraft_plugins" Guid="{1cd83846-2fb2-415a-bb16-b259f27890e5}" >
+          <File Id="FILE_azoth_acetamide" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_azoth_acetamide.dll" />
+        </Component>
+        <Component Id="CMP_azoth_acetamidesettings" Directory="DIR_settings" Guid="{f92a4c63-70d4-407d-9f67-55f17757ce12}" >
+          <File Id="FILE_azothacetamidesettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\azothacetamidesettings.xml" />
+        </Component>
+        <Component Id="CMP_azoth_acetamidetranslations" Directory="DIR_translations" Guid="{0170a112-da33-4c2f-ba95-04033e8361f1}" >
+          <File Id="FILE_azoth_acetamidetranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_acetamide_uk_UA.qm" />
+          <File Id="FILE_azoth_acetamidetranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_acetamide_ru_RU.qm" />
+          <File Id="FILE_azoth_acetamidetranslations_it.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_acetamide_it.qm" />
+          <File Id="FILE_azoth_acetamidetranslations_fr.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_acetamide_fr.qm" />
+          <File Id="FILE_azoth_acetamidetranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_acetamide_es.qm" />
+          <File Id="FILE_azoth_acetamidetranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_acetamide_en.qm" />
+          <File Id="FILE_azoth_acetamidetranslations_de.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_acetamide_de.qm" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_azoth_adiumstyles" Title="Azoth AdiumStyles" Description="Support for Adium chat styles" Absent="allow" >
+        <Component Id="CMP_azoth_adiumstyles" Directory="DIR_leechcraft_plugins" Guid="{8aeb31f5-3db0-4c6e-aa92-3dd54b135e50}" >
+          <File Id="FILE_azoth_adiumstyles" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_azoth_adiumstyles.dll" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_azoth_autoidler" Title="Azoth Autoidler" Description="Automatically updates statuses depending on idle time." Absent="allow" >
+        <Component Id="CMP_azoth_autoidler" Directory="DIR_leechcraft_plugins" Guid="{ae9e8598-6597-4ac2-8ace-c939013b28fe}" >
+          <File Id="FILE_azoth_autoidler" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_azoth_autoidler.dll" />
+        </Component>
+        <Component Id="CMP_azoth_autoidlersettings" Directory="DIR_settings" Guid="{e2c78176-4458-47a7-9136-4c55e01fdcc8}" >
+          <File Id="FILE_azothautoidlersettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\azothautoidlersettings.xml" />
+        </Component>
+        <Component Id="CMP_azoth_autoidlertranslations" Directory="DIR_translations" Guid="{a8781f2c-9ea1-4418-84d6-b3d822b2c9b8}" >
+          <File Id="FILE_azoth_autoidlertranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_autoidler_uk_UA.qm" />
+          <File Id="FILE_azoth_autoidlertranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_autoidler_ru_RU.qm" />
+          <File Id="FILE_azoth_autoidlertranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_autoidler_es.qm" />
+          <File Id="FILE_azoth_autoidlertranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_autoidler_en.qm" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_azoth_autopaste" Title="Azoth Autopaste" Description="Detects long messages and suggests pasting them to a pastebin." Absent="allow" >
+        <Component Id="CMP_azoth_autopaste" Directory="DIR_leechcraft_plugins" Guid="{c98644d1-0140-43e0-a1d1-e11e57a4d55f}" >
+          <File Id="FILE_azoth_autopaste" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_azoth_autopaste.dll" />
+        </Component>
+        <Component Id="CMP_azoth_autopastesettings" Directory="DIR_settings" Guid="{5db19cb3-4afb-425d-a31f-b3d1509f1919}" >
+          <File Id="FILE_azothautopastesettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\azothautopastesettings.xml" />
+        </Component>
+        <Component Id="CMP_azoth_autopastetranslations" Directory="DIR_translations" Guid="{cb39d5f3-fd21-47f6-85ee-5e456d8ee366}" >
+          <File Id="FILE_azoth_autopastetranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_autopaste_uk_UA.qm" />
+          <File Id="FILE_azoth_autopastetranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_autopaste_ru_RU.qm" />
+          <File Id="FILE_azoth_autopastetranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_autopaste_es.qm" />
+          <File Id="FILE_azoth_autopastetranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_autopaste_en.qm" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_azoth_birthdaynotifier" Title="Azoth Birthday Notifier" Description="Notifies about birthdays of your buddies." Absent="allow" >
+        <Component Id="CMP_azoth_birthdaynotifier" Directory="DIR_leechcraft_plugins" Guid="{19ce258c-109a-482b-a81e-918533d3f7f0}" >
+          <File Id="FILE_azoth_birthdaynotifier" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_azoth_birthdaynotifier.dll" />
+        </Component>
+        <Component Id="CMP_azoth_birthdaynotifiersettings" Directory="DIR_settings" Guid="{1d2e2ca2-18db-466b-af49-fda6e3faa841}" >
+          <File Id="FILE_azothbirthdaynotifiersettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\azothbirthdaynotifiersettings.xml" />
+        </Component>
+        <Component Id="CMP_azoth_birthdaynotifiertranslations" Directory="DIR_translations" Guid="{392e35cb-a14d-4fb9-bdea-e3e2fc22daeb}" >
+          <File Id="FILE_azoth_birthdaynotifiertranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_birthdaynotifier_ru_RU.qm" />
+          <File Id="FILE_azoth_birthdaynotifiertranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_birthdaynotifier_en.qm" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_azoth_chathistory" Title="Azoth ChatHistory" Description="Stores message history in Azoth." Absent="allow" >
+        <Component Id="CMP_azoth_chathistory" Directory="DIR_leechcraft_plugins" Guid="{5f2b10d2-6958-45e8-a2b5-5a89ddc8efaf}" >
+          <File Id="FILE_azoth_chathistory" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_azoth_chathistory.dll" />
+        </Component>
+        <Component Id="CMP_azoth_chathistorysettings" Directory="DIR_settings" Guid="{cee6af27-342f-49f2-8f97-48c0e2391bb6}" >
+          <File Id="FILE_azothchathistorysettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\azothchathistorysettings.xml" />
+        </Component>
+        <Component Id="CMP_azoth_chathistorytranslations" Directory="DIR_translations" Guid="{98771756-32cd-4485-8e70-6f8f23297a52}" >
+          <File Id="FILE_azoth_chathistorytranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_chathistory_uk_UA.qm" />
+          <File Id="FILE_azoth_chathistorytranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_chathistory_ru_RU.qm" />
+          <File Id="FILE_azoth_chathistorytranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_chathistory_es.qm" />
+          <File Id="FILE_azoth_chathistorytranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_chathistory_en.qm" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_azoth_depester" Title="Azoth Depester" Description="Allows one to block messages from unwanted contacts in MUCs." Absent="allow" >
+        <Component Id="CMP_azoth_depester" Directory="DIR_leechcraft_plugins" Guid="{8d94df76-4fc0-4d1d-81be-45f4ce9b5a40}" >
+          <File Id="FILE_azoth_depester" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_azoth_depester.dll" />
+        </Component>
+        <Component Id="CMP_azoth_depestertranslations" Directory="DIR_translations" Guid="{8e9e9f35-bbd2-41ec-857c-1627e91c9f9e}" >
+          <File Id="FILE_azoth_depestertranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_depester_uk_UA.qm" />
+          <File Id="FILE_azoth_depestertranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_depester_ru_RU.qm" />
+          <File Id="FILE_azoth_depestertranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_depester_es.qm" />
+          <File Id="FILE_azoth_depestertranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_depester_en.qm" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_azoth_embedmedia" Title="Azoth EmbedMedia" Description="Enables displaying media objects right in chat windows." Absent="allow" >
+        <Component Id="CMP_azoth_embedmedia" Directory="DIR_leechcraft_plugins" Guid="{662ea4fa-655d-46aa-aee0-52ac3f3aaa18}" >
+          <File Id="FILE_azoth_embedmedia" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_azoth_embedmedia.dll" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_azoth_herbicide" Title="Azoth Herbicide" Description="A simple antispam plugin for Azoth." Absent="allow" >
+        <Component Id="CMP_azoth_herbicide" Directory="DIR_leechcraft_plugins" Guid="{6d7960f5-4a7f-4f7d-b0a1-e89166445acd}" >
+          <File Id="FILE_azoth_herbicide" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_azoth_herbicide.dll" />
+        </Component>
+        <Component Id="CMP_azoth_herbicidesettings" Directory="DIR_settings" Guid="{3bc235d4-9837-4156-ad77-055e42e8e4a6}" >
+          <File Id="FILE_azothherbicidesettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\azothherbicidesettings.xml" />
+        </Component>
+        <Component Id="CMP_azoth_herbicidetranslations" Directory="DIR_translations" Guid="{cc75077e-febb-434b-9436-e36992ebccca}" >
+          <File Id="FILE_azoth_herbicidetranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_herbicide_uk_UA.qm" />
+          <File Id="FILE_azoth_herbicidetranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_herbicide_ru_RU.qm" />
+          <File Id="FILE_azoth_herbicidetranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_herbicide_es.qm" />
+          <File Id="FILE_azoth_herbicidetranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_herbicide_en.qm" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_azoth_hili" Title="Azoth HiLi" Description="Azoth Hili allows one to customize the settings of highlights in conferences." Absent="allow" >
+        <Component Id="CMP_azoth_hili" Directory="DIR_leechcraft_plugins" Guid="{4be5fb8c-36a5-414a-969a-21ddd7376b93}" >
+          <File Id="FILE_azoth_hili" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_azoth_hili.dll" />
+        </Component>
+        <Component Id="CMP_azoth_hilisettings" Directory="DIR_settings" Guid="{d15835da-2d96-4562-8b64-a1c7bcde110e}" >
+          <File Id="FILE_azothhilisettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\azothhilisettings.xml" />
+        </Component>
+        <Component Id="CMP_azoth_hilitranslations" Directory="DIR_translations" Guid="{5ac25895-54a9-471d-aef5-c091c5c7f780}" >
+          <File Id="FILE_azoth_hilitranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_hili_uk_UA.qm" />
+          <File Id="FILE_azoth_hilitranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_hili_ru_RU.qm" />
+          <File Id="FILE_azoth_hilitranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_hili_es.qm" />
+          <File Id="FILE_azoth_hilitranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_hili_en.qm" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_azoth_isterique" Title="Azoth Isterique" Description="Azoth Isterique fixes excessive CAPS LOCK usage in incoming messages." Absent="allow" >
+        <Component Id="CMP_azoth_isterique" Directory="DIR_leechcraft_plugins" Guid="{70833bb8-2b4c-40a7-b3d0-8e49e67f6fc6}" >
+          <File Id="FILE_azoth_isterique" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_azoth_isterique.dll" />
+        </Component>
+        <Component Id="CMP_azoth_isteriquesettings" Directory="DIR_settings" Guid="{1092a6fc-0bfc-4c84-af29-4895e6a1d2cc}" >
+          <File Id="FILE_azothisteriquesettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\azothisteriquesettings.xml" />
+        </Component>
+        <Component Id="CMP_azoth_isteriquetranslations" Directory="DIR_translations" Guid="{e0a85846-9f2b-4f3e-9667-46aa163a5e12}" >
+          <File Id="FILE_azoth_isteriquetranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_isterique_uk_UA.qm" />
+          <File Id="FILE_azoth_isteriquetranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_isterique_ru_RU.qm" />
+          <File Id="FILE_azoth_isteriquetranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_isterique_en.qm" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_azoth_juick" Title="Azoth Juick" Description="Azoth Juick provides nicer support for the juick.com microblogging service." Absent="allow" >
+        <Component Id="CMP_azoth_juick" Directory="DIR_leechcraft_plugins" Guid="{3c61cd0d-ba7f-4fc4-afaf-5bf8a3de392f}" >
+          <File Id="FILE_azoth_juick" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_azoth_juick.dll" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_azoth_keeso" Title="Azoth Keeso" Description="Allows one to WrItE lIkE tHiS easily." Absent="allow" >
+        <Component Id="CMP_azoth_keeso" Directory="DIR_leechcraft_plugins" Guid="{c832cfc8-1b08-42eb-844b-e0bccb6768e8}" >
+          <File Id="FILE_azoth_keeso" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_azoth_keeso.dll" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_azoth_lastseen" Title="Azoth LastSeen" Description="Azoth LastSeen displays when a contact has been online and available for the list time." Absent="allow" >
+        <Component Id="CMP_azoth_lastseen" Directory="DIR_leechcraft_plugins" Guid="{39c2dd97-c98a-49a7-8566-7eeab706d79b}" >
+          <File Id="FILE_azoth_lastseen" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_azoth_lastseen.dll" />
+        </Component>
+        <Component Id="CMP_azoth_lastseentranslations" Directory="DIR_translations" Guid="{065364ef-8855-4dab-9b4f-300fab596398}" >
+          <File Id="FILE_azoth_lastseentranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_lastseen_uk_UA.qm" />
+          <File Id="FILE_azoth_lastseentranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_lastseen_ru_RU.qm" />
+          <File Id="FILE_azoth_lastseentranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_lastseen_es.qm" />
+          <File Id="FILE_azoth_lastseentranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_lastseen_en.qm" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_azoth_metacontacts" Title="Azoth Metacontacts" Description="Azoth Metacontacts provides support for joining different contacts into one metacontact." Absent="allow" >
+        <Component Id="CMP_azoth_metacontacts" Directory="DIR_leechcraft_plugins" Guid="{42c17e4c-a8a8-43c3-afcf-629c9ef89266}" >
+          <File Id="FILE_azoth_metacontacts" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_azoth_metacontacts.dll" />
+        </Component>
+        <Component Id="CMP_azoth_metacontactstranslations" Directory="DIR_translations" Guid="{01a7953a-a118-4960-806b-2336a7ed3117}" >
+          <File Id="FILE_azoth_metacontactstranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_metacontacts_uk_UA.qm" />
+          <File Id="FILE_azoth_metacontactstranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_metacontacts_ru_RU.qm" />
+          <File Id="FILE_azoth_metacontactstranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_metacontacts_es.qm" />
+          <File Id="FILE_azoth_metacontactstranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_metacontacts_en.qm" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_azoth_modnok" Title="Azoth Modnok" Description="Azoth Modnok allows one to render LaTeX formulas and display them in the chat window." Absent="allow" >
+        <Component Id="CMP_azoth_modnok" Directory="DIR_leechcraft_plugins" Guid="{b7fadd29-0b83-44be-b22c-9b39f31b3437}" >
+          <File Id="FILE_azoth_modnok" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_azoth_modnok.dll" />
+        </Component>
+        <Component Id="CMP_azoth_modnoksettings" Directory="DIR_settings" Guid="{09ed0234-ff7b-48bb-a618-40857bb5215b}" >
+          <File Id="FILE_azothmodnoksettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\azothmodnoksettings.xml" />
+        </Component>
+        <Component Id="CMP_azoth_modnoktranslations" Directory="DIR_translations" Guid="{9ebf38ac-6ac5-4564-ad6c-8466074066dd}" >
+          <File Id="FILE_azoth_modnoktranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_modnok_uk_UA.qm" />
+          <File Id="FILE_azoth_modnoktranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_modnok_ru_RU.qm" />
+          <File Id="FILE_azoth_modnoktranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_modnok_es.qm" />
+          <File Id="FILE_azoth_modnoktranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_modnok_en.qm" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_azoth_murm" Title="Azoth Murm" Description="Native support for the VKontakte messaging protocol." Absent="allow" >
+        <Component Id="CMP_azoth_murm" Directory="DIR_leechcraft_plugins" Guid="{b6276dbb-38a2-4701-92b2-157eaaefe116}" >
+          <File Id="FILE_azoth_murm" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_azoth_murm.dll" />
+        </Component>
+        <Component Id="CMP_azoth_murmsettings" Directory="DIR_settings" Guid="{e7e669bc-1a84-4ad1-bad2-446c0be8da13}" >
+          <File Id="FILE_azothmurmsettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\azothmurmsettings.xml" />
+        </Component>
+        <Component Id="CMP_azoth_murmtranslations" Directory="DIR_translations" Guid="{f923c2c6-bbe7-44e1-890c-60f8ee5866c5}" >
+          <File Id="FILE_azoth_murmtranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_murm_ru_RU.qm" />
+          <File Id="FILE_azoth_murmtranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_murm_en.qm" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_azoth_nativeemoticons" Title="Azoth NativeEmoticons" Description="Support for native Azoth emoticons packs" Absent="allow" >
+        <Component Id="CMP_azoth_nativeemoticons" Directory="DIR_leechcraft_plugins" Guid="{d244df11-f287-4691-8929-03206d3eef1a}" >
+          <File Id="FILE_azoth_nativeemoticons" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_azoth_nativeemoticons.dll" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_azoth_p100q" Title="Azoth p100q" Description="Azoth p100q enhances experience with the psto.net microblogging service." Absent="allow" >
+        <Component Id="CMP_azoth_p100q" Directory="DIR_leechcraft_plugins" Guid="{3d9f002c-5346-42f7-bf84-ddc8b6a7dfd2}" >
+          <File Id="FILE_azoth_p100q" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_azoth_p100q.dll" />
+        </Component>
+        <Component Id="CMP_azoth_p100qsettings" Directory="DIR_settings" Guid="{37b9627c-7238-43a6-a4cf-22af6bfdd4d4}" >
+          <File Id="FILE_azothp100qsettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\azothp100qsettings.xml" />
+        </Component>
+        <Component Id="CMP_azoth_p100qtranslations" Directory="DIR_translations" Guid="{fd9c8a9e-e85d-4dcb-912a-81324967aab8}" >
+          <File Id="FILE_azoth_p100qtranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_p100q_uk_UA.qm" />
+          <File Id="FILE_azoth_p100qtranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_p100q_ru_RU.qm" />
+          <File Id="FILE_azoth_p100qtranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_p100q_es.qm" />
+          <File Id="FILE_azoth_p100qtranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_p100q_en.qm" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_azoth_shx" Title="Azoth SHX" Description="Allows one to execute arbitrary shell commands and paste their result." Absent="allow" >
+        <Component Id="CMP_azoth_shx" Directory="DIR_leechcraft_plugins" Guid="{4ac5aff0-3a9c-46b7-826c-911b2a3bc5e6}" >
+          <File Id="FILE_azoth_shx" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_azoth_shx.dll" />
+        </Component>
+        <Component Id="CMP_azoth_shxsettings" Directory="DIR_settings" Guid="{d8703591-669e-41f2-a58e-fb17204362b3}" >
+          <File Id="FILE_azothshxsettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\azothshxsettings.xml" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_azoth_standardstyles" Title="Azoth StandardStyles" Description="Support for standard Azoth chat styles" Absent="allow" >
+        <Component Id="CMP_azoth_standardstyles" Directory="DIR_leechcraft_plugins" Guid="{95ffc0bb-a737-4e3a-a2b5-06a7f4740ebc}" >
+          <File Id="FILE_azoth_standardstyles" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_azoth_standardstyles.dll" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_azoth_vader" Title="Azoth Vader" Description="Support for the Mail.ru Agent protocol." Absent="allow" >
+        <Component Id="CMP_azoth_vader" Directory="DIR_leechcraft_plugins" Guid="{4f6ca8c3-ed36-4358-bdf6-e38442639ac7}" >
+          <File Id="FILE_azoth_vader" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_azoth_vader.dll" />
+        </Component>
+        <Component Id="CMP_azoth_vadersettings" Directory="DIR_settings" Guid="{d20f9ca6-1694-49f0-b5d5-acdffe6b9772}" >
+          <File Id="FILE_azothvadersettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\azothvadersettings.xml" />
+        </Component>
+        <Component Id="CMP_azoth_vadertranslations" Directory="DIR_translations" Guid="{17e2f8e8-9cf3-4863-b627-2480da0cad87}" >
+          <File Id="FILE_azoth_vadertranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_vader_uk_UA.qm" />
+          <File Id="FILE_azoth_vadertranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_vader_ru_RU.qm" />
+          <File Id="FILE_azoth_vadertranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_vader_es.qm" />
+          <File Id="FILE_azoth_vadertranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_vader_en.qm" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_azoth_xoox" Title="Azoth Xoox" Description="XMPP (Jabber) protocol module using the QXmpp library." Absent="allow" >
+        <Component Id="CMP_azoth_xoox" Directory="DIR_leechcraft_plugins" Guid="{849946f1-6ed4-49c7-9433-902f03035675}" >
+          <File Id="FILE_azoth_xoox" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_azoth_xoox.dll" />
+        </Component>
+        <Component Id="CMP_azoth_xooxsettings" Directory="DIR_settings" Guid="{12bc685d-07b1-4681-ba72-ec1c62866ec2}" >
+          <File Id="FILE_azothxooxsettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\azothxooxsettings.xml" />
+        </Component>
+        <Component Id="CMP_azoth_xooxtranslations" Directory="DIR_translations" Guid="{ce9e6c0c-9463-4fe0-8514-40e0ff0819b9}" >
+          <File Id="FILE_azoth_xooxtranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_xoox_uk_UA.qm" />
+          <File Id="FILE_azoth_xooxtranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_xoox_ru_RU.qm" />
+          <File Id="FILE_azoth_xooxtranslations_it.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_xoox_it.qm" />
+          <File Id="FILE_azoth_xooxtranslations_fr.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_xoox_fr.qm" />
+          <File Id="FILE_azoth_xooxtranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_xoox_es.qm" />
+          <File Id="FILE_azoth_xooxtranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_xoox_en.qm" />
+          <File Id="FILE_azoth_xooxtranslations_de.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_xoox_de.qm" />
+        </Component>
+        <Component Id="CMP_qxmpp" Directory="INSTALLFOLDER" Guid="{F3CE61FB-E5D6-4215-8DA8-C71B158DB10A}">
+          <File Id="FILE_qxmpp0.dll" KeyPath ="no" Source="$(var.SourcePath)\qxmpp0.dll"/>
+        </Component>
+      </Feature>
+      <Feature Id="Feature_azoth_xtazy" Title="Azoth Xtazy" Description="Publishes current tune." Absent="allow" >
+        <Component Id="CMP_azoth_xtazy" Directory="DIR_leechcraft_plugins" Guid="{58baa8ff-f026-478d-bdac-da6c48a5cb55}" >
+          <File Id="FILE_azoth_xtazy" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_azoth_xtazy.dll" />
+        </Component>
+        <Component Id="CMP_azoth_xtazysettings" Directory="DIR_settings" Guid="{ede090dd-e4dd-469a-9019-f2828f294c70}" >
+          <File Id="FILE_azothxtazysettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\azothxtazysettings.xml" />
+        </Component>
+        <Component Id="CMP_azoth_xtazytranslations" Directory="DIR_translations" Guid="{e69665f1-64fe-4a9f-88ef-74bd729c5c5d}" >
+          <File Id="FILE_azoth_xtazytranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_xtazy_uk_UA.qm" />
+          <File Id="FILE_azoth_xtazytranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_xtazy_ru_RU.qm" />
+          <File Id="FILE_azoth_xtazytranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_xtazy_es.qm" />
+          <File Id="FILE_azoth_xtazytranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_azoth_xtazy_en.qm" />
+        </Component>
+      </Feature>
+    </Feature>
+    <Feature Id="Feature_bittorrent" Title="BitTorrent" Description="Full-featured BitTorrent client." Absent="allow" >
+      <Component Id="CMP_bittorrent" Directory="DIR_leechcraft_plugins" Guid="{4cbcb219-2bb3-4f6c-aad2-699c8b8e4903}" >
+        <File Id="FILE_bittorrent" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_bittorrent.dll" />
+      </Component>
+      <Component Id="CMP_bittorrenttranslations" Directory="DIR_translations" Guid="{6a2b29a7-4ce2-4aea-b4a8-428fbee51e7d}" >
+        <File Id="FILE_bittorrenttranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_bittorrent_uk_UA.qm" />
+        <File Id="FILE_bittorrenttranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_bittorrent_ru_RU.qm" />
+        <File Id="FILE_bittorrenttranslations_pl.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_bittorrent_pl.qm" />
+        <File Id="FILE_bittorrenttranslations_oc.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_bittorrent_oc.qm" />
+        <File Id="FILE_bittorrenttranslations_it.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_bittorrent_it.qm" />
+        <File Id="FILE_bittorrenttranslations_fr.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_bittorrent_fr.qm" />
+        <File Id="FILE_bittorrenttranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_bittorrent_es.qm" />
+        <File Id="FILE_bittorrenttranslations_eo.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_bittorrent_eo.qm" />
+        <File Id="FILE_bittorrenttranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_bittorrent_en.qm" />
+        <File Id="FILE_bittorrenttranslations_de.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_bittorrent_de.qm" />
+        <File Id="FILE_bittorrenttranslations_be.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_bittorrent_be.qm" />
+        <File Id="FILE_bittorrenttranslations_ar.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_bittorrent_ar.qm" />
+      </Component>
+      <Component Id="CMP_libtorrent" Directory="INSTALLFOLDER" Guid="{77C1D2B0-8C86-4E82-9CC2-9B317872F548}">
+        <File Id="FILE_libtorrent.dll" KeyPath ="no" Source="$(var.SourcePath)\libtorrent.dll"/>
+        <File Id="FILE_libboost_system.dll" KeyPath ="no" Source="$(var.SourcePath)\libboost_system-mgw48-mt-1_54.dll"/>
+        <File Id="FILE_libboost_filesystem.dll" KeyPath ="no" Source="$(var.SourcePath)\libboost_filesystem-mgw48-mt-1_54.dll"/>
+      </Component>
+    </Feature>
+    <Feature Id="Feature_blasq" Title="Blasq" Description="Client for cloud image storage services like Flickr or Picasa." Absent="allow" >
+      <Component Id="CMP_blasq" Directory="DIR_leechcraft_plugins" Guid="{006c936d-7a4f-47cd-bf99-181f6c43e490}" >
+        <File Id="FILE_blasq" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_blasq.dll" />
+      </Component>
+      <Component Id="CMP_blasqsettings" Directory="DIR_settings" Guid="{fe5aefad-aec2-4613-94cb-605b1e3f597d}" >
+        <File Id="FILE_blasqsettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\blasqsettings.xml" />
+      </Component>
+      <Component Id="CMP_blasqtranslations" Directory="DIR_translations" Guid="{7cb21d93-80c5-4d39-9880-0f9bed3e0628}" >
+        <File Id="FILE_blasqtranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_blasq_ru_RU.qm" />
+        <File Id="FILE_blasqtranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_blasq_en.qm" />
+      </Component>
+      <Feature Id="Feature_blasq_deathnote" Title="Blasq DeathNote" Description="LiveJournal FotoBilder support module for Blasq." Absent="allow" >
+        <Component Id="CMP_blasq_deathnote" Directory="DIR_leechcraft_plugins" Guid="{8b3eb531-fa88-4bfa-a621-a8ba06ca7d65}" >
+          <File Id="FILE_blasq_deathnote" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_blasq_deathnote.dll" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_blasq_rappor" Title="Blasq Rappor" Description="VKontakte support module for Blasq." Absent="allow" >
+        <Component Id="CMP_blasq_rappor" Directory="DIR_leechcraft_plugins" Guid="{dd172efe-298c-45e8-9cd2-b3974ec1fc00}" >
+          <File Id="FILE_blasq_rappor" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_blasq_rappor.dll" />
+        </Component>
+        <Component Id="CMP_blasq_rapportranslations" Directory="DIR_translations" Guid="{f3205595-4a90-4729-8d72-2346bef16784}" >
+          <File Id="FILE_blasq_rapportranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_blasq_rappor_ru_RU.qm" />
+          <File Id="FILE_blasq_rapportranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_blasq_rappor_en.qm" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_blasq_spegnersi" Title="Blasq Spegnersi" Description="Flickr support module for Blasq." Absent="allow" >
+        <Component Id="CMP_blasq_spegnersi" Directory="DIR_leechcraft_plugins" Guid="{36ac0eeb-9b25-442e-90d6-dd1c3812787b}" >
+          <File Id="FILE_blasq_spegnersi" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_blasq_spegnersi.dll" />
+        </Component>
+        <Component Id="CMP_blasq_spegnersitranslations" Directory="DIR_translations" Guid="{bc472b12-3dca-402c-abe7-e5ec702c458e}" >
+          <File Id="FILE_blasq_spegnersitranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_blasq_spegnersi_ru_RU.qm" />
+          <File Id="FILE_blasq_spegnersitranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_blasq_spegnersi_en.qm" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_blasq_vangog" Title="Blasq Vangog" Description="Picasa support module for Blasq." Absent="allow" >
+        <Component Id="CMP_blasq_vangog" Directory="DIR_leechcraft_plugins" Guid="{1f6ba5a1-27fb-4d6c-81c5-6ac76626d664}" >
+          <File Id="FILE_blasq_vangog" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_blasq_vangog.dll" />
+        </Component>
+      </Feature>
+    </Feature>
+    <Feature Id="Feature_blogique" Title="Blogique" Description="Blogging client" Absent="allow" >
+      <Component Id="CMP_blogique" Directory="DIR_leechcraft_plugins" Guid="{255df50e-7ef6-42d5-ac93-058eea9a9a0a}" >
+        <File Id="FILE_blogique" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_blogique.dll" />
+      </Component>
+      <Component Id="CMP_blogiquesettings" Directory="DIR_settings" Guid="{1f997109-0d4a-4d00-9a42-b77e7886a365}" >
+        <File Id="FILE_blogiquesettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\blogiquesettings.xml" />
+      </Component>
+      <Component Id="CMP_blogiquetranslations" Directory="DIR_translations" Guid="{edf6e4d6-df11-472e-aef1-f449d82a4ada}" >
+        <File Id="FILE_blogiquetranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_blogique_ru_RU.qm" />
+        <File Id="FILE_blogiquetranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_blogique_en.qm" />
+      </Component>
+      <Feature Id="Feature_blogique_hestia" Title="Blogique Hestia" Description="Platform for local blogging" Absent="allow" >
+        <Component Id="CMP_blogique_hestia" Directory="DIR_leechcraft_plugins" Guid="{da309307-9ce0-43bd-91e6-95e255988bba}" >
+          <File Id="FILE_blogique_hestia" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_blogique_hestia.dll" />
+        </Component>
+        <Component Id="CMP_blogique_hestiasettings" Directory="DIR_settings" Guid="{292afe55-def6-4688-9317-116cf62aa968}" >
+          <File Id="FILE_blogiquehestiasettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\blogiquehestiasettings.xml" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_blogique_metida" Title="Blogique Metida" Description="LiveJournal blogging platform support" Absent="allow" >
+        <Component Id="CMP_blogique_metida" Directory="DIR_leechcraft_plugins" Guid="{2798ff3a-e47c-4c53-ae42-ce8e12e100dc}" >
+          <File Id="FILE_blogique_metida" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_blogique_metida.dll" />
+        </Component>
+        <Component Id="CMP_blogique_metidasettings" Directory="DIR_settings" Guid="{78a0f187-e94e-4acf-bbdd-ad25672c11ec}" >
+          <File Id="FILE_blogiquemetidasettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\blogiquemetidasettings.xml" />
+        </Component>
+      </Feature>
+    </Feature>
+    <Feature Id="Feature_deadlyrics" Title="DeadLyRicS" Description="Lyrics Searcher" Absent="allow" >
+      <Component Id="CMP_deadlyrics" Directory="DIR_leechcraft_plugins" Guid="{9db02be5-2599-4817-8b49-964a21559983}" >
+        <File Id="FILE_deadlyrics" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_deadlyrics.dll" />
+      </Component>
+      <Component Id="CMP_deadlyricstranslations" Directory="DIR_translations" Guid="{5f7ee8d3-cb20-4e6e-930b-bcde31fd59b9}" >
+        <File Id="FILE_deadlyricstranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_deadlyrics_uk_UA.qm" />
+        <File Id="FILE_deadlyricstranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_deadlyrics_ru_RU.qm" />
+        <File Id="FILE_deadlyricstranslations_pl.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_deadlyrics_pl.qm" />
+        <File Id="FILE_deadlyricstranslations_oc.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_deadlyrics_oc.qm" />
+        <File Id="FILE_deadlyricstranslations_it.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_deadlyrics_it.qm" />
+        <File Id="FILE_deadlyricstranslations_fr.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_deadlyrics_fr.qm" />
+        <File Id="FILE_deadlyricstranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_deadlyrics_es.qm" />
+        <File Id="FILE_deadlyricstranslations_eo.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_deadlyrics_eo.qm" />
+        <File Id="FILE_deadlyricstranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_deadlyrics_en.qm" />
+        <File Id="FILE_deadlyricstranslations_de.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_deadlyrics_de.qm" />
+        <File Id="FILE_deadlyricstranslations_ar.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_deadlyrics_ar.qm" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_dlniwe" Title="DLNiwe" Description="DLNA server plugin." Absent="allow" Level="4" >
+      <Component Id="CMP_dlniwe" Directory="DIR_leechcraft_plugins" Guid="{b3a7a185-087e-4e93-9468-a2f48e4cd897}" >
+        <File Id="FILE_dlniwe" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_dlniwe.dll" />
+      </Component>
+      <Component Id="CMP_dlniwe_libs" Directory="INSTALLFOLDER" Guid="{F5EFC9A7-CE21-42A7-84BA-FC57A5830159}">
+        <File Id="FILE_HUpnp.dll" KeyPath ="no" Source="$(var.SourcePath)\HUpnp.dll"/>
+        <File Id="FILE_QtSolutions_SOAP.dll" KeyPath ="no" Source="$(var.SourcePath)\QtSolutions_SOAP-2.7.dll"/>
+      </Component>
+    </Feature>
+    <Feature Id="Feature_dolozhee" Title="Dolozhee" Description="Bug and feature request reporter." Absent="allow" >
+      <Component Id="CMP_dolozhee" Directory="DIR_leechcraft_plugins" Guid="{0c06fa9b-a3cd-4074-bfb7-fac0665438c9}" >
+        <File Id="FILE_dolozhee" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_dolozhee.dll" />
+      </Component>
+      <Component Id="CMP_dolozheetranslations" Directory="DIR_translations" Guid="{4fb10a15-9017-46dd-bfde-fb459c8a9056}" >
+        <File Id="FILE_dolozheetranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_dolozhee_ru_RU.qm" />
+        <File Id="FILE_dolozheetranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_dolozhee_en.qm" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_gacts" Title="GActs" Description="Provides support for Global Actions registration for other LeechCraft plugins." Absent="allow" >
+      <Component Id="CMP_gacts" Directory="DIR_leechcraft_plugins" Guid="{0c92f7f8-f465-4e88-8dd3-3c3840a6a842}" >
+        <File Id="FILE_gacts" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_gacts.dll" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_glance" Title="Glance" Description="Quick overview of tabs." Absent="allow" >
+      <Component Id="CMP_glance" Directory="DIR_leechcraft_plugins" Guid="{065a36f7-2d7f-46ca-9753-2a2794afdc44}" >
+        <File Id="FILE_glance" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_glance.dll" />
+      </Component>
+      <Component Id="CMP_glancetranslations" Directory="DIR_translations" Guid="{78b55856-0eaf-48eb-aad0-026d19c7f6ec}" >
+        <File Id="FILE_glancetranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_glance_uk_UA.qm" />
+        <File Id="FILE_glancetranslations_tt.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_glance_tt.qm" />
+        <File Id="FILE_glancetranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_glance_ru_RU.qm" />
+        <File Id="FILE_glancetranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_glance_es.qm" />
+        <File Id="FILE_glancetranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_glance_en.qm" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_gmailnotifier" Title="Gmail Notifier" Description="Google mail notification plugin" Absent="allow" >
+      <Component Id="CMP_gmailnotifier" Directory="DIR_leechcraft_plugins" Guid="{bdda0d02-81c6-471b-a423-0cc040d20700}" >
+        <File Id="FILE_gmailnotifier" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_gmailnotifier.dll" />
+      </Component>
+      <Component Id="CMP_gmailnotifiersettings" Directory="DIR_settings" Guid="{9401ff65-dbb6-42b6-b637-122242fb7d7c}" >
+        <File Id="FILE_gmailnotifiersettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\gmailnotifiersettings.xml" />
+      </Component>
+      <Component Id="CMP_gmailnotifiertranslations" Directory="DIR_translations" Guid="{039c11ba-216f-4227-90e2-e0274a1d7c5f}" >
+        <File Id="FILE_gmailnotifiertranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_gmailnotifier_uk_UA.qm" />
+        <File Id="FILE_gmailnotifiertranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_gmailnotifier_ru_RU.qm" />
+        <File Id="FILE_gmailnotifiertranslations_it.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_gmailnotifier_it.qm" />
+        <File Id="FILE_gmailnotifiertranslations_fr.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_gmailnotifier_fr.qm" />
+        <File Id="FILE_gmailnotifiertranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_gmailnotifier_es.qm" />
+        <File Id="FILE_gmailnotifiertranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_gmailnotifier_en.qm" />
+        <File Id="FILE_gmailnotifiertranslations_de.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_gmailnotifier_de.qm" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_harbinger" Title="Harbinger" Description="The collections manager plugin." Absent="allow" Level="4">
+      <Component Id="CMP_harbinger" Directory="DIR_leechcraft_plugins" Guid="{e52b52be-ce3e-4853-97d8-976ae370e7d5}" >
+        <File Id="FILE_harbinger" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_harbinger.dll" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_historyholder" Title="History holder" Description="Holds history from various plugins" Absent="allow" >
+      <Component Id="CMP_historyholder" Directory="DIR_leechcraft_plugins" Guid="{1bbb3ce2-73b8-4c67-b1bd-3a2546067f58}" >
+        <File Id="FILE_historyholder" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_historyholder.dll" />
+      </Component>
+      <Component Id="CMP_historyholdertranslations" Directory="DIR_translations" Guid="{2f2c42be-236b-40ea-ac7f-fe74449b5f21}" >
+        <File Id="FILE_historyholdertranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_historyholder_uk_UA.qm" />
+        <File Id="FILE_historyholdertranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_historyholder_ru_RU.qm" />
+        <File Id="FILE_historyholdertranslations_pl.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_historyholder_pl.qm" />
+        <File Id="FILE_historyholdertranslations_oc.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_historyholder_oc.qm" />
+        <File Id="FILE_historyholdertranslations_it.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_historyholder_it.qm" />
+        <File Id="FILE_historyholdertranslations_fr.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_historyholder_fr.qm" />
+        <File Id="FILE_historyholdertranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_historyholder_es.qm" />
+        <File Id="FILE_historyholdertranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_historyholder_en.qm" />
+        <File Id="FILE_historyholdertranslations_de.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_historyholder_de.qm" />
+        <File Id="FILE_historyholdertranslations_ar.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_historyholder_ar.qm" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_hotstreams" Title="HotStreams" Description="Provides some radio streams like Digitally Imported and SomaFM to other plugins." Absent="allow" >
+      <Component Id="CMP_hotstreams" Directory="DIR_leechcraft_plugins" Guid="{e11bb1f4-f814-4c62-af3f-5861d4bee6dd}" >
+        <File Id="FILE_hotstreams" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_hotstreams.dll" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_imgaste" Title="Imgaste" Description="Simple image uploader to services like dump.bitcheese.net." Absent="allow" >
+      <Component Id="CMP_imgaste" Directory="DIR_leechcraft_plugins" Guid="{d70d7464-730f-4410-a46b-c41e8d5f0c6f}" >
+        <File Id="FILE_imgaste" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_imgaste.dll" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_kinotify" Title="Kinotify" Description="Fancy Kinetic notifications." Absent="allow" >
+      <Component Id="CMP_kinotify" Directory="DIR_leechcraft_plugins" Guid="{04d1c191-fbf5-46a5-9999-a0cff5850f59}" >
+        <File Id="FILE_kinotify" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_kinotify.dll" />
+      </Component>
+      <Component Id="CMP_kinotifysettings" Directory="DIR_settings" Guid="{e27b9bc5-3985-4459-8410-6e8dedd4a6b7}" >
+        <File Id="FILE_kinotifysettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\kinotifysettings.xml" />
+      </Component>
+      <Component Id="CMP_kinotifytranslations" Directory="DIR_translations" Guid="{18e73a60-9c03-4449-94d6-f334cba3e90d}" >
+        <File Id="FILE_kinotifytranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_kinotify_uk_UA.qm" />
+        <File Id="FILE_kinotifytranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_kinotify_ru_RU.qm" />
+        <File Id="FILE_kinotifytranslations_it.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_kinotify_it.qm" />
+        <File Id="FILE_kinotifytranslations_fr.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_kinotify_fr.qm" />
+        <File Id="FILE_kinotifytranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_kinotify_es.qm" />
+        <File Id="FILE_kinotifytranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_kinotify_en.qm" />
+        <File Id="FILE_kinotifytranslations_de.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_kinotify_de.qm" />
+        <File Id="FILE_kinotifytranslations_ar.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_kinotify_ar.qm" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_knowhow" Title="KnowHow" Description="A simple plugin providing various tips of the day regarding LeechCraft." Absent="allow" >
+      <Component Id="CMP_knowhow" Directory="DIR_leechcraft_plugins" Guid="{89a79154-ff23-4636-b6c2-74d7a1c47039}" >
+        <File Id="FILE_knowhow" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_knowhow.dll" />
+      </Component>
+      <Component Id="CMP_knowhowsettings" Directory="DIR_settings" Guid="{c1c0ca36-0200-45d6-9a58-78fb81bb55b7}" >
+        <File Id="FILE_knowhowsettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\knowhowsettings.xml" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_lackman" Title="LackMan" Description="LeechCraft Package Manager." Absent="allow" >
+      <Component Id="CMP_lackman" Directory="DIR_leechcraft_plugins" Guid="{d94ed0fb-6b76-436c-918b-117860718aff}" >
+        <File Id="FILE_lackman" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_lackman.dll" />
+      </Component>
+      <Component Id="CMP_lackmansettings" Directory="DIR_settings" Guid="{0c60de91-132a-4684-9f6d-721bf2cd4789}" >
+        <File Id="FILE_lackmansettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\lackmansettings.xml" />
+      </Component>
+      <Component Id="CMP_lackmantranslations" Directory="DIR_translations" Guid="{f146fe33-9d84-4f0f-8085-ffbc1d5fbcc3}" >
+        <File Id="FILE_lackmantranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_lackman_uk_UA.qm" />
+        <File Id="FILE_lackmantranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_lackman_ru_RU.qm" />
+        <File Id="FILE_lackmantranslations_it.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_lackman_it.qm" />
+        <File Id="FILE_lackmantranslations_fr.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_lackman_fr.qm" />
+        <File Id="FILE_lackmantranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_lackman_es.qm" />
+        <File Id="FILE_lackmantranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_lackman_en.qm" />
+        <File Id="FILE_lackmantranslations_de.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_lackman_de.qm" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_lastfmscrobble" Title="Last.FM Scrobbler" Description="Submits information about tracks you've listened to Last.FM." Absent="allow" >
+      <Component Id="CMP_lastfmscrobble" Directory="DIR_leechcraft_plugins" Guid="{99494cf6-7e72-467b-862f-103e452d74e8}" >
+        <File Id="FILE_lastfmscrobble" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_lastfmscrobble.dll" />
+      </Component>
+      <Component Id="CMP_lastfmscrobblesettings" Directory="DIR_settings" Guid="{f3760bf0-9dc4-45b6-8fb1-88ab22b6ccb4}" >
+        <File Id="FILE_lastfmscrobblesettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\lastfmscrobblesettings.xml" />
+      </Component>
+      <Component Id="CMP_lastfmscrobbletranslations" Directory="DIR_translations" Guid="{0842f7d1-bc96-43d8-9dfc-f48f5daf5884}" >
+        <File Id="FILE_lastfmscrobbletranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_lastfmscrobble_ru_RU.qm" />
+        <File Id="FILE_lastfmscrobbletranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_lastfmscrobble_en.qm" />
+      </Component>
+      <Component Id="CMP_liblastfm" Directory="INSTALLFOLDER" Guid="{BEEA9969-3B55-4B33-AA2A-1295AC5B3E68}">
+        <File Id="FILE_liblastfm.dll" KeyPath ="no" Source="$(var.SourcePath)\liblastfm.dll"/>
+      </Component>
+    </Feature>
+    <Feature Id="Feature_lhtr" Title="LHTR" Description="LeechCraft HTML Text editoR." Absent="allow" >
+      <Component Id="CMP_lhtr" Directory="DIR_leechcraft_plugins" Guid="{e6ddae65-f9f7-4327-b1ca-ce55dd8785f9}" >
+        <File Id="FILE_lhtr" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_lhtr.dll" />
+      </Component>
+      <Component Id="CMP_lhtrsettings" Directory="DIR_settings" Guid="{89653ae3-8754-4e11-bd3f-a747e049b5b1}" >
+        <File Id="FILE_lhtrsettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\lhtrsettings.xml" />
+      </Component>
+      <Component Id="CMP_lhtrtranslations" Directory="DIR_translations" Guid="{032e1a14-fa12-4e9a-aa30-1c437f37918c}" >
+        <File Id="FILE_lhtrtranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_lhtr_uk_UA.qm" />
+        <File Id="FILE_lhtrtranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_lhtr_ru_RU.qm" />
+        <File Id="FILE_lhtrtranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_lhtr_es.qm" />
+        <File Id="FILE_lhtrtranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_lhtr_en.qm" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_liznoo" Title="Liznoo" Description="UPower/WinAPI-based power manager." Absent="allow" >
+      <Component Id="CMP_liznoo" Directory="DIR_leechcraft_plugins" Guid="{9fe571db-0693-40c4-8fbf-7a793c403fcd}" >
+        <File Id="FILE_liznoo" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_liznoo.dll" />
+      </Component>
+      <Component Id="CMP_liznoosettings" Directory="DIR_settings" Guid="{e4f68477-1d47-48c9-8292-b2393b43c127}" >
+        <File Id="FILE_liznoosettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\liznoosettings.xml" />
+      </Component>
+      <Component Id="CMP_liznootranslations" Directory="DIR_translations" Guid="{d6827375-25cf-452d-b5eb-a39589857da4}" >
+        <File Id="FILE_liznootranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_liznoo_uk_UA.qm" />
+        <File Id="FILE_liznootranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_liznoo_ru_RU.qm" />
+        <File Id="FILE_liznootranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_liznoo_es.qm" />
+        <File Id="FILE_liznootranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_liznoo_en.qm" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_lmp" Title="LMP" Description="LeechCraft Music Player." Absent="allow" >
+      <Component Id="CMP_lmp" Directory="DIR_leechcraft_plugins" Guid="{4cd00c5f-bf4f-48bf-ab4d-f9ce22e37df0}" >
+        <File Id="FILE_lmp" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_lmp.dll" />
+      </Component>
+      <Component Id="CMP_lmpsettings" Directory="DIR_settings" Guid="{3a624027-f195-46e5-adc3-711844c40749}" >
+        <File Id="FILE_lmpsettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\lmpsettings.xml" />
+      </Component>
+      <Component Id="CMP_lmptranslations" Directory="DIR_translations" Guid="{62564e77-f71c-4941-862f-fe76099f48ae}" >
+        <File Id="FILE_lmptranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_lmp_ru_RU.qm" />
+        <File Id="FILE_lmptranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_lmp_es.qm" />
+        <File Id="FILE_lmptranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_lmp_en.qm" />
+      </Component>
+      <Component Id="CMP_lmp_libs" Directory="INSTALLFOLDER" Guid="{F871D369-F1FD-46B2-BF63-4DBB8A190A23}">
+        <File Id="FILE_libtag.dll" KeyPath ="no" Source="$(var.SourcePath)\libtag.dll"/>
+        <File Id="FILE_libgstreamer.dll" KeyPath ="no" Source="$(var.SourcePath)\libgstreamer-1.0-0.dll"/>
+        <File Id="FILE_libgmodule.dll" KeyPath ="no" Source="$(var.SourcePath)\libgmodule-2.0-0.dll"/>
+        <File Id="FILE_libgobject.dll" KeyPath ="no" Source="$(var.SourcePath)\libgobject-2.0-0.dll"/>
+        <File Id="FILE_libglib.dll" KeyPath ="no" Source="$(var.SourcePath)\libglib-2.0-0.dll"/>
+        <File Id="FILE_libintl8.dll" KeyPath ="no" Source="$(var.SourcePath)\libintl-8.dll"/>
+        <File Id="FILE_libffi6.dll" KeyPath ="no" Source="$(var.SourcePath)\libffi-6.dll"/>
+      </Component>
+      <Feature Id="Feature_lmp_dumbsync" Title="LMP DumbSync" Description="Adds support for synchronization with portable players that show themselves as Flash drives, like Rockbox players." Absent="allow" >
+        <Component Id="CMP_lmp_dumbsync" Directory="DIR_leechcraft_plugins" Guid="{ac89e94d-8598-44ff-88fa-7ce6f7fa8580}" >
+          <File Id="FILE_lmp_dumbsync" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_lmp_dumbsync.dll" />
+        </Component>
+        <Component Id="CMP_lmp_dumbsyncsettings" Directory="DIR_settings" Guid="{a8172e52-ce63-4b27-af12-8cd69943bfe2}" >
+          <File Id="FILE_lmpdumbsyncsettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\lmpdumbsyncsettings.xml" />
+        </Component>
+        <Component Id="CMP_lmp_dumbsynctranslations" Directory="DIR_translations" Guid="{ed90428a-2d91-4c01-9093-bfd7a877bd12}" >
+          <File Id="FILE_lmp_dumbsynctranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_lmp_dumbsync_ru_RU.qm" />
+          <File Id="FILE_lmp_dumbsynctranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_lmp_dumbsync_en.qm" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_lmp_graffiti" Title="LMP Graffiti" Description="Allows one to manipulate audio files tags." Absent="allow" >
+        <Component Id="CMP_lmp_graffiti" Directory="DIR_leechcraft_plugins" Guid="{180b6042-1326-4a09-888c-9ccc2426136d}" >
+          <File Id="FILE_lmp_graffiti" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_lmp_graffiti.dll" />
+        </Component>
+        <Component Id="CMP_lmp_graffititranslations" Directory="DIR_translations" Guid="{67050a85-1f22-4e16-add5-ac8723e9c65e}" >
+          <File Id="FILE_lmp_graffititranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_lmp_graffiti_ru_RU.qm" />
+          <File Id="FILE_lmp_graffititranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_lmp_graffiti_en.qm" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_lmp_mp3tunes" Title="LMP MP3tunes" Description="Adds support for the MP3tunes.com service, including its playlist and locker facilities." Absent="allow" >
+        <Component Id="CMP_lmp_mp3tunes" Directory="DIR_leechcraft_plugins" Guid="{7dd61956-450e-4514-acc0-c4e4ec789aaf}" >
+          <File Id="FILE_lmp_mp3tunes" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_lmp_mp3tunes.dll" />
+        </Component>
+        <Component Id="CMP_lmp_mp3tunessettings" Directory="DIR_settings" Guid="{9c721eb3-4ce0-40e1-ba58-6040e5f0e714}" >
+          <File Id="FILE_lmpmp3tunessettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\lmpmp3tunessettings.xml" />
+        </Component>
+      </Feature>
+    </Feature>
+    <Feature Id="Feature_monocle" Title="Monocle" Description="Modular document viewer for LeechCraft." Absent="allow" >
+      <Component Id="CMP_monocle" Directory="DIR_leechcraft_plugins" Guid="{7e5cfb92-9172-4f78-a2ff-d882dcc280b4}" >
+        <File Id="FILE_monocle" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_monocle.dll" />
+      </Component>
+      <Component Id="CMP_monoclesettings" Directory="DIR_settings" Guid="{076a8561-a48b-4677-93f0-4827ab12bf3b}" >
+        <File Id="FILE_monoclesettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\monoclesettings.xml" />
+      </Component>
+      <Component Id="CMP_monocletranslations" Directory="DIR_translations" Guid="{01a40e8a-274e-4b4e-aa7c-0486907cd233}" >
+        <File Id="FILE_monocletranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_monocle_ru_RU.qm" />
+        <File Id="FILE_monocletranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_monocle_en.qm" />
+      </Component>
+      <Feature Id="Feature_monocle_dik" Title="Monocle Dik" Description="MOBI backend for Monocle." Absent="allow" >
+        <Component Id="CMP_monocle_dik" Directory="DIR_leechcraft_plugins" Guid="{e2134d8d-36bd-442d-bfaa-55a8470738d0}" >
+          <File Id="FILE_monocle_dik" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_monocle_dik.dll" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_monocle_fxb" Title="Monocle FXB" Description="FictionBook (fb2) backend for Monocle." Absent="allow" >
+        <Component Id="CMP_monocle_fxb" Directory="DIR_leechcraft_plugins" Guid="{5c0ebb47-5f00-424b-8bc5-203440bde7e9}" >
+          <File Id="FILE_monocle_fxb" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_monocle_fxb.dll" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_monocle_pdf" Title="Monocle PDF" Description="PDF backend for Monocle." Absent="allow" >
+        <Component Id="CMP_monocle_pdf" Directory="DIR_leechcraft_plugins" Guid="{0abe9c89-d611-436d-8316-240e3ad9b36b}" >
+          <File Id="FILE_monocle_pdf" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_monocle_pdf.dll" />
+        </Component>
+        <Component Id="CMP_monocle_pdf_libs" Directory="INSTALLFOLDER" Guid="{8C44FD6B-FD3A-4EAB-A79C-22EF24CF09F3}">
+          <File Id="FILE_libpopplerqt4.dll" KeyPath ="no" Source="$(var.SourcePath)\libpoppler-qt4.dll"/>
+          <File Id="FILE_libpoppler.dll" KeyPath ="no" Source="$(var.SourcePath)\libpoppler.dll"/>
+          <File Id="FILE_freetype6.dll" KeyPath ="no" Source="$(var.SourcePath)\freetype6.dll"/>
+          <File Id="FILE_openjpeg.dll" KeyPath ="no" Source="$(var.SourcePath)\openjpeg.dll"/>
+          <File Id="FILE_zlib1.dll" KeyPath ="no" Source="$(var.SourcePath)\zlib1.dll"/>
+        </Component>
+      </Feature>
+      <Feature Id="Feature_monocle_postrus" Title="Monocle Postrus" Description="PostScript backend for Monocle." Absent="allow" >
+        <Component Id="CMP_monocle_postrus" Directory="DIR_leechcraft_plugins" Guid="{49fa024a-d5c9-4dc7-a635-67d9cf7cd65f}" >
+          <File Id="FILE_monocle_postrus" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_monocle_postrus.dll" />
+        </Component>
+        <Component Id="CMP_monocle_postrus_libs" Directory="INSTALLFOLDER" Guid="{19E7E1FF-5B5B-41DE-95D6-190EC0581C17}">
+          <File Id="FILE_libspectre1.dll" KeyPath ="no" Source="$(var.SourcePath)\libspectre-1.dll"/>
+          <File Id="FILE_libgs909.dll" KeyPath ="no" Source="$(var.SourcePath)\libgs-9-09.dll"/>
+        </Component>
+      </Feature>
+      <Feature Id="Feature_monocle_seen" Title="Monocle Seen" Description="DjVu backend for Monocle." Absent="allow" >
+        <Component Id="CMP_monocle_seen" Directory="DIR_leechcraft_plugins" Guid="{13fabc35-6129-4ec6-a885-3b106c70d261}" >
+          <File Id="FILE_monocle_seen" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_monocle_seen.dll" />
+        </Component>
+        <Component Id="CMP_monocle_seen_libs" Directory="INSTALLFOLDER" Guid="{CCA00F87-7961-443F-ABA3-5CB544EF117F}">
+          <File Id="FILE_libdjvulibre21.dll" KeyPath ="no" Source="$(var.SourcePath)\libdjvulibre-21.dll"/>
+        </Component>
+      </Feature>
+    </Feature>
+    <Feature Id="Feature_musiczombie" Title="MusicZombie" Description="Client for the MusicBrainz.org service." Absent="allow" >
+      <Component Id="CMP_musiczombie" Directory="DIR_leechcraft_plugins" Guid="{f2cbcb6c-cb06-4c93-80d1-64a5cb5ac87f}" >
+        <File Id="FILE_musiczombie" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_musiczombie.dll" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_nacheku" Title="Nacheku" Description="Nacheku watches clipboard for links and a directory for files." Absent="allow" >
+      <Component Id="CMP_nacheku" Directory="DIR_leechcraft_plugins" Guid="{61dd941b-9833-42e8-a5e4-1cd6e988ce76}" >
+        <File Id="FILE_nacheku" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_nacheku.dll" />
+      </Component>
+      <Component Id="CMP_nachekusettings" Directory="DIR_settings" Guid="{80d396a0-e7ea-4a83-97c6-fb8c7b38e020}" >
+        <File Id="FILE_nachekusettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\nachekusettings.xml" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_netstoremanager" Title="NetStoreManager" Description="Allows one to manage his network storages like Yandex.Disk." Absent="allow" >
+      <Component Id="CMP_netstoremanager" Directory="DIR_leechcraft_plugins" Guid="{462be092-071e-4d6f-93f5-7b30c3191df1}" >
+        <File Id="FILE_netstoremanager" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_netstoremanager.dll" />
+      </Component>
+      <Component Id="CMP_netstoremanagersettings" Directory="DIR_settings" Guid="{6a842ead-4fad-4e61-90f6-84142c74e2b9}" >
+        <File Id="FILE_netstoremanagersettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\netstoremanagersettings.xml" />
+      </Component>
+      <Component Id="CMP_netstoremanagertranslations" Directory="DIR_translations" Guid="{aef3e9df-8806-41dd-8fc9-cc0ab8290f63}" >
+        <File Id="FILE_netstoremanagertranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_netstoremanager_uk_UA.qm" />
+        <File Id="FILE_netstoremanagertranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_netstoremanager_ru_RU.qm" />
+        <File Id="FILE_netstoremanagertranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_netstoremanager_es.qm" />
+        <File Id="FILE_netstoremanagertranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_netstoremanager_en.qm" />
+      </Component>
+      <Feature Id="Feature_netstoremanager_googledrive" Title="NetStoreManager: GoogleDrive" Description="Support for the GoogleDrive for NetStoreManager plugin." Absent="allow" >
+        <Component Id="CMP_netstoremanager_googledrive" Directory="DIR_leechcraft_plugins" Guid="{57d13eee-09fa-4412-9022-2b64bc596784}" >
+          <File Id="FILE_netstoremanager_googledrive" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_netstoremanager_googledrive.dll" />
+        </Component>
+        <Component Id="CMP_netstoremanager_googledrivetranslations" Directory="DIR_translations" Guid="{b858406b-e7aa-4853-a976-fe4556d46a68}" >
+          <File Id="FILE_netstoremanager_googledrivetranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_netstoremanager_googledrive_ru_RU.qm" />
+          <File Id="FILE_netstoremanager_googledrivetranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_netstoremanager_googledrive_en.qm" />
+        </Component>
+      </Feature>
+    </Feature>
+    <Feature Id="Feature_networkmonitor" Title="NetworkMonitor" Description="Monitors HTTP network requests and responses." Absent="allow" >
+      <Component Id="CMP_networkmonitor" Directory="DIR_leechcraft_plugins" Guid="{c6025691-e659-444d-8f02-a0544584a289}" >
+        <File Id="FILE_networkmonitor" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_networkmonitor.dll" />
+      </Component>
+      <Component Id="CMP_networkmonitortranslations" Directory="DIR_translations" Guid="{1d61e926-9210-42e5-abf7-07e02de0cbe2}" >
+        <File Id="FILE_networkmonitortranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_networkmonitor_uk_UA.qm" />
+        <File Id="FILE_networkmonitortranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_networkmonitor_ru_RU.qm" />
+        <File Id="FILE_networkmonitortranslations_pl.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_networkmonitor_pl.qm" />
+        <File Id="FILE_networkmonitortranslations_it.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_networkmonitor_it.qm" />
+        <File Id="FILE_networkmonitortranslations_fr.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_networkmonitor_fr.qm" />
+        <File Id="FILE_networkmonitortranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_networkmonitor_es.qm" />
+        <File Id="FILE_networkmonitortranslations_eo.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_networkmonitor_eo.qm" />
+        <File Id="FILE_networkmonitortranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_networkmonitor_en.qm" />
+        <File Id="FILE_networkmonitortranslations_de.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_networkmonitor_de.qm" />
+        <File Id="FILE_networkmonitortranslations_ar.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_networkmonitor_ar.qm" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_newlife" Title="New Life" Description="The settings importer." Absent="allow" >
+      <Component Id="CMP_newlife" Directory="DIR_leechcraft_plugins" Guid="{aa05e8cc-4991-4d24-85d2-e473aeb814fd}" >
+        <File Id="FILE_newlife" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_newlife.dll" />
+      </Component>
+      <Component Id="CMP_newlifetranslations" Directory="DIR_translations" Guid="{a0c37815-7825-4323-a6eb-255eef0a3b98}" >
+        <File Id="FILE_newlifetranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_newlife_uk_UA.qm" />
+        <File Id="FILE_newlifetranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_newlife_ru_RU.qm" />
+        <File Id="FILE_newlifetranslations_pl.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_newlife_pl.qm" />
+        <File Id="FILE_newlifetranslations_it.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_newlife_it.qm" />
+        <File Id="FILE_newlifetranslations_fr.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_newlife_fr.qm" />
+        <File Id="FILE_newlifetranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_newlife_en.qm" />
+        <File Id="FILE_newlifetranslations_de.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_newlife_de.qm" />
+        <File Id="FILE_newlifetranslations_be.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_newlife_be.qm" />
+        <File Id="FILE_newlifetranslations_ar.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_newlife_ar.qm" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_pintab" Title="PinTab" Description="Support tabs pinning." Absent="allow" >
+      <Component Id="CMP_pintab" Directory="DIR_leechcraft_plugins" Guid="{5b705bd9-9159-4ee9-bf5e-0fabcb5bc751}" >
+        <File Id="FILE_pintab" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_pintab.dll" />
+      </Component>
+      <Component Id="CMP_pintabtranslations" Directory="DIR_translations" Guid="{2f687ed3-92ea-4fbf-bc8f-a7a596dd6a39}" >
+        <File Id="FILE_pintabtranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_pintab_ru_RU.qm" />
+        <File Id="FILE_pintabtranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_pintab_en.qm" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_pogooglue" Title="Pogooglue" Description="Allows one to search for selected text in Google in two clicks." Absent="allow" >
+      <Component Id="CMP_pogooglue" Directory="DIR_leechcraft_plugins" Guid="{653ef5f5-a1b5-4ad0-befa-f0ea12077fc9}" >
+        <File Id="FILE_pogooglue" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_pogooglue.dll" />
+      </Component>
+      <Component Id="CMP_pogoogluetranslations" Directory="DIR_translations" Guid="{24bbfc88-fb1a-4a3c-8db3-6ae901b211d9}" >
+        <File Id="FILE_pogoogluetranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_pogooglue_uk_UA.qm" />
+        <File Id="FILE_pogoogluetranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_pogooglue_ru_RU.qm" />
+        <File Id="FILE_pogoogluetranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_pogooglue_en.qm" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_poleemery" Title="Poleemery" Description="The personal finances manager." Absent="allow" Level="4">
+      <Component Id="CMP_poleemery" Directory="DIR_leechcraft_plugins" Guid="{387e9520-9069-4dcf-9444-b444209dc160}" >
+        <File Id="FILE_poleemery" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_poleemery.dll" />
+      </Component>
+      <Component Id="CMP_poleemerysettings" Directory="DIR_settings" Guid="{8f42e4a4-ffe5-4932-ae00-c00213d79920}" >
+        <File Id="FILE_poleemerysettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\poleemerysettings.xml" />
+      </Component>
+      <Component Id="CMP_poleemerytranslations" Directory="DIR_translations" Guid="{6e72c747-948a-4579-bed2-c4b82a3eb6b3}" >
+        <File Id="FILE_poleemerytranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poleemery_ru_RU.qm" />
+        <File Id="FILE_poleemerytranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poleemery_en.qm" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_poshuku" Title="Poshuku Browser" Description="Simple yet functional web browser" Absent="allow" >
+      <Component Id="CMP_poshuku" Directory="DIR_leechcraft_plugins" Guid="{4f668f44-5f29-49c2-aaae-c7eb1c0eae78}" >
+        <File Id="FILE_poshuku" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_poshuku.dll" />
+      </Component>
+      <Component Id="CMP_poshukusettings" Directory="DIR_settings" Guid="{a1e07936-5085-4d66-88fb-55098a25f5da}" >
+        <File Id="FILE_poshukusettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\poshukusettings.xml" />
+      </Component>
+      <Component Id="CMP_poshukutranslations" Directory="DIR_translations" Guid="{20742f0d-3b48-4145-89ea-cf15989d6852}" >
+        <File Id="FILE_poshukutranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_uk_UA.qm" />
+        <File Id="FILE_poshukutranslations_tt.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_tt.qm" />
+        <File Id="FILE_poshukutranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_ru_RU.qm" />
+        <File Id="FILE_poshukutranslations_pl.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_pl.qm" />
+        <File Id="FILE_poshukutranslations_it.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_it.qm" />
+        <File Id="FILE_poshukutranslations_fr.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_fr.qm" />
+        <File Id="FILE_poshukutranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_es.qm" />
+        <File Id="FILE_poshukutranslations_eo.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_eo.qm" />
+        <File Id="FILE_poshukutranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_en.qm" />
+        <File Id="FILE_poshukutranslations_de.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_de.qm" />
+        <File Id="FILE_poshukutranslations_be.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_be.qm" />
+        <File Id="FILE_poshukutranslations_ar.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_ar.qm" />
+      </Component>
+      <Feature Id="Feature_poshuku_autosearch" Title="Poshuku Autosearch" Description="Provides support for Google search suggestions." Absent="allow" >
+        <Component Id="CMP_poshuku_autosearch" Directory="DIR_leechcraft_plugins" Guid="{b132f8c7-5a16-4567-b176-935a51b52d65}" >
+          <File Id="FILE_poshuku_autosearch" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_poshuku_autosearch.dll" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_poshuku_cleanweb" Title="Poshuku CleanWeb" Description="Blocks unwanted ads." Absent="allow" >
+        <Component Id="CMP_poshuku_cleanweb" Directory="DIR_leechcraft_plugins" Guid="{613c20eb-e02d-4339-87ae-166d22db8796}" >
+          <File Id="FILE_poshuku_cleanweb" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_poshuku_cleanweb.dll" />
+        </Component>
+        <Component Id="CMP_poshuku_cleanwebsettings" Directory="DIR_settings" Guid="{74b538e4-88b4-44a9-97db-662c79110737}" >
+          <File Id="FILE_poshukucleanwebsettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\poshukucleanwebsettings.xml" />
+        </Component>
+        <Component Id="CMP_poshuku_cleanwebtranslations" Directory="DIR_translations" Guid="{9847ba71-e2fb-4750-891d-26f0aa51a79c}" >
+          <File Id="FILE_poshuku_cleanwebtranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_cleanweb_uk_UA.qm" />
+          <File Id="FILE_poshuku_cleanwebtranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_cleanweb_ru_RU.qm" />
+          <File Id="FILE_poshuku_cleanwebtranslations_pl.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_cleanweb_pl.qm" />
+          <File Id="FILE_poshuku_cleanwebtranslations_it.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_cleanweb_it.qm" />
+          <File Id="FILE_poshuku_cleanwebtranslations_fr.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_cleanweb_fr.qm" />
+          <File Id="FILE_poshuku_cleanwebtranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_cleanweb_es.qm" />
+          <File Id="FILE_poshuku_cleanwebtranslations_eo.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_cleanweb_eo.qm" />
+          <File Id="FILE_poshuku_cleanwebtranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_cleanweb_en.qm" />
+          <File Id="FILE_poshuku_cleanwebtranslations_de.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_cleanweb_de.qm" />
+          <File Id="FILE_poshuku_cleanwebtranslations_ar.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_cleanweb_ar.qm" />
+        </Component>
+        <Component Id="CMP_pcre" Directory="INSTALLFOLDER" Guid="{32D6508F-A861-4DBC-BDC6-72A80591C4EF}">
+          <File Id="FILE_libpcre1.dll" KeyPath ="no" Source="$(var.SourcePath)\libpcre-1.dll"/>
+        </Component>
+      </Feature>
+      <Feature Id="Feature_poshuku_fatape" Title="Poshuku FatApe" Description="GreaseMonkey support layer for the Poshuku browser." Absent="allow" >
+        <Component Id="CMP_poshuku_fatape" Directory="DIR_leechcraft_plugins" Guid="{968b93a6-75f3-4a61-8133-2684c5f1e13c}" >
+          <File Id="FILE_poshuku_fatape" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_poshuku_fatape.dll" />
+        </Component>
+        <Component Id="CMP_poshuku_fatapesettings" Directory="DIR_settings" Guid="{9a077294-8a7a-438d-bf13-42ffc0d01dd4}" >
+          <File Id="FILE_poshukufatapesettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\poshukufatapesettings.xml" />
+        </Component>
+        <Component Id="CMP_poshuku_fatapetranslations" Directory="DIR_translations" Guid="{6e99ab37-fc5e-40f8-a6c5-4509d294a360}" >
+          <File Id="FILE_poshuku_fatapetranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_fatape_uk_UA.qm" />
+          <File Id="FILE_poshuku_fatapetranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_fatape_ru_RU.qm" />
+          <File Id="FILE_poshuku_fatapetranslations_it.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_fatape_it.qm" />
+          <File Id="FILE_poshuku_fatapetranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_fatape_en.qm" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_poshuku_filescheme" Title="Poshuku FileScheme" Description="Provides support for file:// scheme." Absent="allow" >
+        <Component Id="CMP_poshuku_filescheme" Directory="DIR_leechcraft_plugins" Guid="{59006d37-eb7f-478e-8e81-7d2050621521}" >
+          <File Id="FILE_poshuku_filescheme" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_poshuku_filescheme.dll" />
+        </Component>
+        <Component Id="CMP_poshuku_fileschemetranslations" Directory="DIR_translations" Guid="{91c342a4-a25c-49a8-a289-966e5268670a}" >
+          <File Id="FILE_poshuku_fileschemetranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_filescheme_uk_UA.qm" />
+          <File Id="FILE_poshuku_fileschemetranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_filescheme_ru_RU.qm" />
+          <File Id="FILE_poshuku_fileschemetranslations_pl.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_filescheme_pl.qm" />
+          <File Id="FILE_poshuku_fileschemetranslations_it.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_filescheme_it.qm" />
+          <File Id="FILE_poshuku_fileschemetranslations_fr.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_filescheme_fr.qm" />
+          <File Id="FILE_poshuku_fileschemetranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_filescheme_es.qm" />
+          <File Id="FILE_poshuku_fileschemetranslations_eo.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_filescheme_eo.qm" />
+          <File Id="FILE_poshuku_fileschemetranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_filescheme_en.qm" />
+          <File Id="FILE_poshuku_fileschemetranslations_de.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_filescheme_de.qm" />
+          <File Id="FILE_poshuku_fileschemetranslations_ar.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_filescheme_ar.qm" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_poshuku_fua" Title="Poshuku FUA" Description="Allows one to set fake user agents for different sites." Absent="allow" >
+        <Component Id="CMP_poshuku_fua" Directory="DIR_leechcraft_plugins" Guid="{2871de00-d3d8-4912-af3c-0206a29c3648}" >
+          <File Id="FILE_poshuku_fua" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_poshuku_fua.dll" />
+        </Component>
+        <Component Id="CMP_poshuku_fuasettings" Directory="DIR_settings" Guid="{9ca54343-58ac-4f7f-907d-49294da8976f}" >
+          <File Id="FILE_poshukufuasettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\poshukufuasettings.xml" />
+        </Component>
+        <Component Id="CMP_poshuku_fuatranslations" Directory="DIR_translations" Guid="{25010f79-3395-4f1f-a1e3-ee6eba7fd5c5}" >
+          <File Id="FILE_poshuku_fuatranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_fua_uk_UA.qm" />
+          <File Id="FILE_poshuku_fuatranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_fua_ru_RU.qm" />
+          <File Id="FILE_poshuku_fuatranslations_pl.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_fua_pl.qm" />
+          <File Id="FILE_poshuku_fuatranslations_it.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_fua_it.qm" />
+          <File Id="FILE_poshuku_fuatranslations_fr.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_fua_fr.qm" />
+          <File Id="FILE_poshuku_fuatranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_fua_es.qm" />
+          <File Id="FILE_poshuku_fuatranslations_eo.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_fua_eo.qm" />
+          <File Id="FILE_poshuku_fuatranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_fua_en.qm" />
+          <File Id="FILE_poshuku_fuatranslations_de.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_fua_de.qm" />
+          <File Id="FILE_poshuku_fuatranslations_ar.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_fua_ar.qm" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_poshuku_keywords" Title="Poshuku Keywords" Description="URL keywords support for the Poshuku browser." Absent="allow" >
+        <Component Id="CMP_poshuku_keywords" Directory="DIR_leechcraft_plugins" Guid="{8986818d-38a5-47e7-8176-79b8599a1098}" >
+          <File Id="FILE_poshuku_keywords" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_poshuku_keywords.dll" />
+        </Component>
+        <Component Id="CMP_poshuku_keywordssettings" Directory="DIR_settings" Guid="{c4eb1826-9e1c-45f7-90dc-e96c960eb0bf}" >
+          <File Id="FILE_poshukukeywordssettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\poshukukeywordssettings.xml" />
+        </Component>
+      </Feature>
+      <Feature Id="Feature_poshuku_onlinebookmarks" Title="Poshuku OnlineBookmarks" Description="Sync local bookmarks with your account in online bookmark services like Read It Later" Absent="allow" >
+        <Component Id="CMP_poshuku_onlinebookmarks" Directory="DIR_leechcraft_plugins" Guid="{f5ccd0a5-a9b6-48ca-b4d9-1096c0f32a99}" >
+          <File Id="FILE_poshuku_onlinebookmarks" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_poshuku_onlinebookmarks.dll" />
+        </Component>
+        <Component Id="CMP_poshuku_onlinebookmarkssettings" Directory="DIR_settings" Guid="{6a9bc4f0-a51b-4fc3-90a9-67684449b39f}" >
+          <File Id="FILE_poshukuonlinebookmarkssettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\poshukuonlinebookmarkssettings.xml" />
+        </Component>
+        <Component Id="CMP_poshuku_onlinebookmarkstranslations" Directory="DIR_translations" Guid="{5f8c1401-9eb7-498b-82f0-2dfba51ea90a}" >
+          <File Id="FILE_poshuku_onlinebookmarkstranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_onlinebookmarks_uk_UA.qm" />
+          <File Id="FILE_poshuku_onlinebookmarkstranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_onlinebookmarks_ru_RU.qm" />
+          <File Id="FILE_poshuku_onlinebookmarkstranslations_it.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_onlinebookmarks_it.qm" />
+          <File Id="FILE_poshuku_onlinebookmarkstranslations_fr.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_onlinebookmarks_fr.qm" />
+          <File Id="FILE_poshuku_onlinebookmarkstranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_onlinebookmarks_en.qm" />
+          <File Id="FILE_poshuku_onlinebookmarkstranslations_de.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_onlinebookmarks_de.qm" />
+        </Component>
+        <Feature Id="Feature_poshuku_ob_delicious" Title="Poshuku OB: Delicious" Description="Sync local bookmarks with your Del.icio.us account." Absent="allow" >
+          <Component Id="CMP_poshuku_onlinebookmarks_delicious" Directory="DIR_leechcraft_plugins" Guid="{c6535175-a929-47b5-8fd2-11de53267010}" >
+            <File Id="FILE_poshuku_onlinebookmarks_delicious" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_poshuku_onlinebookmarks_delicious.dll" />
+          </Component>
+          <Component Id="CMP_poshuku_onlinebookmarks_delicioustranslations" Directory="DIR_translations" Guid="{14f3d009-5b29-42a0-a02d-2e0217ca2d0d}" >
+            <File Id="FILE_poshuku_onlinebookmarks_delicioustranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_onlinebookmarks_delicious_uk_UA.qm" />
+            <File Id="FILE_poshuku_onlinebookmarks_delicioustranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_onlinebookmarks_delicious_ru_RU.qm" />
+            <File Id="FILE_poshuku_onlinebookmarks_delicioustranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_onlinebookmarks_delicious_en.qm" />
+          </Component>
+        </Feature>
+        <Feature Id="Feature_poshuku_ob_readitlater" Title="Poshuku OB: Read It Later" Description="Sync local bookmarks with your Read It Later account." Absent="allow" >
+          <Component Id="CMP_poshuku_onlinebookmarks_readitlater" Directory="DIR_leechcraft_plugins" Guid="{8d23d682-68e7-4902-acbc-1e5877cd99e1}" >
+            <File Id="FILE_poshuku_onlinebookmarks_readitlater" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_poshuku_onlinebookmarks_readitlater.dll" />
+          </Component>
+          <Component Id="CMP_poshuku_onlinebookmarks_readitlatertranslations" Directory="DIR_translations" Guid="{dc745ebc-9dc0-4e24-a076-4afbf9056235}" >
+            <File Id="FILE_poshuku_onlinebookmarks_readitlatertranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_onlinebookmarks_readitlater_uk_UA.qm" />
+            <File Id="FILE_poshuku_onlinebookmarks_readitlatertranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_onlinebookmarks_readitlater_ru_RU.qm" />
+            <File Id="FILE_poshuku_onlinebookmarks_readitlatertranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_poshuku_onlinebookmarks_readitlater_en.qm" />
+          </Component>
+        </Feature>
+      </Feature>
+    </Feature>
+    <Feature Id="Feature_sb2" Title="SB2" Description="Next-generation fluid sidebar." Absent="allow" >
+      <Component Id="CMP_sb2" Directory="DIR_leechcraft_plugins" Guid="{416f0e42-f40b-4575-a4fc-cd782ae82284}" >
+        <File Id="FILE_sb2" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_sb2.dll" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_secman" Title="SecMan" Description="Security and personal data manager for LeechCraft" Absent="allow" >
+      <Component Id="CMP_secman" Directory="DIR_leechcraft_plugins" Guid="{ed4789fe-734f-41cc-9430-a31b8c33098e}" >
+        <File Id="FILE_secman" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_secman.dll" />
+      </Component>
+      <Feature Id="Feature_secman_simplestorage" Title="SimpleStorage" Description="Simple unencrypted storage plugin for SecMan" Absent="allow" >
+        <Component Id="CMP_secman_simplestorage" Directory="DIR_leechcraft_plugins" Guid="{52793629-0d41-490d-bb33-475038c7cdd4}" >
+          <File Id="FILE_secman_simplestorage" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_secman_simplestorage.dll" />
+        </Component>
+      </Feature>
+    </Feature>
+    <Feature Id="Feature_seekthru" Title="SeekThru" Description="Search via OpenSearch-aware search providers." Absent="allow" >
+      <Component Id="CMP_seekthru" Directory="DIR_leechcraft_plugins" Guid="{cbd5e42f-cbcf-4ae7-9505-8ac956a57e11}" >
+        <File Id="FILE_seekthru" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_seekthru.dll" />
+      </Component>
+      <Component Id="CMP_seekthrusettings" Directory="DIR_settings" Guid="{89b9e006-3210-4d51-9dea-240279ed380b}" >
+        <File Id="FILE_seekthrusettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\seekthrusettings.xml" />
+      </Component>
+      <Component Id="CMP_seekthrutranslations" Directory="DIR_translations" Guid="{2797ab75-f84e-4cf4-b4e5-bfec154ed15e}" >
+        <File Id="FILE_seekthrutranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_seekthru_uk_UA.qm" />
+        <File Id="FILE_seekthrutranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_seekthru_ru_RU.qm" />
+        <File Id="FILE_seekthrutranslations_pl.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_seekthru_pl.qm" />
+        <File Id="FILE_seekthrutranslations_fr.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_seekthru_fr.qm" />
+        <File Id="FILE_seekthrutranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_seekthru_es.qm" />
+        <File Id="FILE_seekthrutranslations_eo.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_seekthru_eo.qm" />
+        <File Id="FILE_seekthrutranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_seekthru_en.qm" />
+        <File Id="FILE_seekthrutranslations_de.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_seekthru_de.qm" />
+        <File Id="FILE_seekthrutranslations_be.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_seekthru_be.qm" />
+        <File Id="FILE_seekthrutranslations_ar.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_seekthru_ar.qm" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_summary" Title="Summary" Description="Summary of downloads and recent events" Absent="allow" >
+      <Component Id="CMP_summary" Directory="DIR_leechcraft_plugins" Guid="{8d33cea6-ae8d-47d0-a67f-b66ad22b7e45}" >
+        <File Id="FILE_summary" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_summary.dll" />
+      </Component>
+      <Component Id="CMP_summarytranslations" Directory="DIR_translations" Guid="{fe9e0db2-9ddd-494f-8abf-9dcbdaa04ae3}" >
+        <File Id="FILE_summarytranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_summary_uk_UA.qm" />
+        <File Id="FILE_summarytranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_summary_ru_RU.qm" />
+        <File Id="FILE_summarytranslations_it.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_summary_it.qm" />
+        <File Id="FILE_summarytranslations_fr.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_summary_fr.qm" />
+        <File Id="FILE_summarytranslations_es.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_summary_es.qm" />
+        <File Id="FILE_summarytranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_summary_en.qm" />
+        <File Id="FILE_summarytranslations_de.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_summary_de.qm" />
+        <File Id="FILE_summarytranslations_be.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_summary_be.qm" />
+        <File Id="FILE_summarytranslations_ar.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_summary_ar.qm" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_tabsessmanager" Title="TabSessManager" Description="Manages sessions of tabs in LeechCraft." Absent="allow" >
+      <Component Id="CMP_tabsessmanager" Directory="DIR_leechcraft_plugins" Guid="{52fb102e-a66f-4066-9b02-b5cddd46c4fb}" >
+        <File Id="FILE_tabsessmanager" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_tabsessmanager.dll" />
+      </Component>
+      <Component Id="CMP_tabsessmanagertranslations" Directory="DIR_translations" Guid="{819b5aa7-cde2-4a6d-8658-b30a30190c9c}" >
+        <File Id="FILE_tabsessmanagertranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_tabsessmanager_ru_RU.qm" />
+        <File Id="FILE_tabsessmanagertranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_tabsessmanager_en.qm" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_tabslist" Title="TabsList" Description="Displays the list of current tabs and allows one to select one of them." Absent="allow" >
+      <Component Id="CMP_tabslist" Directory="DIR_leechcraft_plugins" Guid="{11d25057-8666-4bfb-991c-d3e628e00bbc}" >
+        <File Id="FILE_tabslist" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_tabslist.dll" />
+      </Component>
+      <Component Id="CMP_tabslisttranslations" Directory="DIR_translations" Guid="{05d6d298-8d4c-440d-9295-7cf26e263208}" >
+        <File Id="FILE_tabslisttranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_tabslist_uk_UA.qm" />
+        <File Id="FILE_tabslisttranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_tabslist_ru_RU.qm" />
+        <File Id="FILE_tabslisttranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_tabslist_en.qm" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_touchstreams" Title="TouchStreams" Description="VK.com music streamer." Absent="allow" >
+      <Component Id="CMP_touchstreams" Directory="DIR_leechcraft_plugins" Guid="{8cdf38c9-09b8-4282-90b0-265f6aa3f13d}" >
+        <File Id="FILE_touchstreams" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_touchstreams.dll" />
+      </Component>
+      <Component Id="CMP_touchstreamssettings" Directory="DIR_settings" Guid="{42e58bbe-c9c5-4fdb-a02b-970b5f4aadab}" >
+        <File Id="FILE_touchstreamssettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\touchstreamssettings.xml" />
+      </Component>
+      <Component Id="CMP_touchstreamstranslations" Directory="DIR_translations" Guid="{4ea22366-a1d1-43be-a38d-1eaf6c61d908}" >
+        <File Id="FILE_touchstreamstranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_touchstreams_ru_RU.qm" />
+        <File Id="FILE_touchstreamstranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_touchstreams_en.qm" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_tpi" Title="TPI" Description="Task Progress Indicator quark plugin." Absent="allow" >
+      <Component Id="CMP_tpi" Directory="DIR_leechcraft_plugins" Guid="{65141c3c-fb00-46d9-bbe4-8d50fbd6a32d}" >
+        <File Id="FILE_tpi" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_tpi.dll" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_vgrabber" Title="vGrabber" Description="vkontakte.ru audio/video grabber." Absent="allow" >
+      <Component Id="CMP_vgrabber" Directory="DIR_leechcraft_plugins" Guid="{b5cc0f95-cbdd-4795-adea-f0397b58d4d4}" >
+        <File Id="FILE_vgrabber" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_vgrabber.dll" />
+      </Component>
+      <Component Id="CMP_vgrabbersettings" Directory="DIR_settings" Guid="{11d2154a-8817-4e3b-bb0e-0bebf3ff8caa}" >
+        <File Id="FILE_vgrabbersettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\vgrabbersettings.xml" />
+      </Component>
+      <Component Id="CMP_vgrabbertranslations" Directory="DIR_translations" Guid="{c37b9705-f79f-4e0b-8b2a-d1a82d85b9d4}" >
+        <File Id="FILE_vgrabbertranslations_uk_UA.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_vgrabber_uk_UA.qm" />
+        <File Id="FILE_vgrabbertranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_vgrabber_ru_RU.qm" />
+        <File Id="FILE_vgrabbertranslations_pl.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_vgrabber_pl.qm" />
+        <File Id="FILE_vgrabbertranslations_oc.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_vgrabber_oc.qm" />
+        <File Id="FILE_vgrabbertranslations_it.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_vgrabber_it.qm" />
+        <File Id="FILE_vgrabbertranslations_fr.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_vgrabber_fr.qm" />
+        <File Id="FILE_vgrabbertranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_vgrabber_en.qm" />
+        <File Id="FILE_vgrabbertranslations_de.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_vgrabber_de.qm" />
+        <File Id="FILE_vgrabbertranslations_ar.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_vgrabber_ar.qm" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_vrooby" Title="Vrooby" Description="Removable storage devices manager for LeechCraft." Absent="allow" Level="4">
+      <Component Id="CMP_vrooby" Directory="DIR_leechcraft_plugins" Guid="{f108c9d6-b039-4b49-b353-513a5d0dc889}" >
+        <File Id="FILE_vrooby" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_vrooby.dll" />
+      </Component>
+      <Component Id="CMP_vroobytranslations" Directory="DIR_translations" Guid="{ab4106f4-4387-4a77-903c-03f8b9efd5d0}" >
+        <File Id="FILE_vroobytranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_vrooby_ru_RU.qm" />
+        <File Id="FILE_vroobytranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_vrooby_en.qm" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_woodpecker" Title="Woodpecker" Description="Simple twitter client" Absent="allow" >
+      <Component Id="CMP_woodpecker" Directory="DIR_leechcraft_plugins" Guid="{d1557623-ffc1-4b5c-beb0-32ee2cb6820c}" >
+        <File Id="FILE_woodpecker" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_woodpecker.dll" />
+      </Component>
+      <Component Id="CMP_woodpeckersettings" Directory="DIR_settings" Guid="{273bed9c-05b8-466e-89f5-b67f4612999d}" >
+        <File Id="FILE_woodpeckersettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\woodpeckersettings.xml" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_xproxy" Title="XProxy" Description="Advanced proxy servers manager for LeechCraft." Absent="allow" >
+      <Component Id="CMP_xproxy" Directory="DIR_leechcraft_plugins" Guid="{17a76d9a-3f17-4249-81f6-82765d25f106}" >
+        <File Id="FILE_xproxy" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_xproxy.dll" />
+      </Component>
+      <Component Id="CMP_xproxysettings" Directory="DIR_settings" Guid="{e69d0548-474d-43b6-be48-d00526b04325}" >
+        <File Id="FILE_xproxysettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\xproxysettings.xml" />
+      </Component>
+      <Component Id="CMP_xproxytranslations" Directory="DIR_translations" Guid="{6f1b173c-fc7d-4265-9eba-2f601913d957}" >
+        <File Id="FILE_xproxytranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_xproxy_ru_RU.qm" />
+        <File Id="FILE_xproxytranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_xproxy_en.qm" />
+      </Component>
+    </Feature>
+    <Feature Id="Feature_xtazy" Title="Xtazy" Description="Keeps track of the currently playing song and provides it to other plugins." Absent="allow" >
+      <Component Id="CMP_xtazy" Directory="DIR_leechcraft_plugins" Guid="{ffe3208b-b850-4709-bdd5-21be20f41e36}" >
+        <File Id="FILE_xtazy" KeyPath="no" Source="$(var.SourcePath)\plugins\bin\libleechcraft_xtazy.dll" />
+      </Component>
+      <Component Id="CMP_xtazysettings" Directory="DIR_settings" Guid="{47aa3549-f59f-4188-be90-ad1d153bce65}" >
+        <File Id="FILE_xtazysettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\xtazysettings.xml" />
+      </Component>
+      <Component Id="CMP_xtazytranslations" Directory="DIR_translations" Guid="{18ffadb5-ea6d-4b6c-bfce-8f21d1138107}" >
+        <File Id="FILE_xtazytranslations_ru_RU.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_xtazy_ru_RU.qm" />
+        <File Id="FILE_xtazytranslations_en.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_xtazy_en.qm" />
+      </Component>
+    </Feature>
+
+    <DirectoryRef Id="INSTALLFOLDER">
+      <Component Id="CMP_qjson" Guid="{5b4ef0bd-0e6b-454d-a5c3-36f672bec886}">
+        <File Id="FILE_libqjson.dll" KeyPath="yes" Source="$(var.SourcePath)\libqjson.dll" />
+      </Component>
+      <Component Id="CMP_kqoauth" Guid="{a708086e-aa0d-4cf9-8e70-7b89b32083c5}">
+        <File Id="FILE_kqoauth.dll" KeyPath="yes" Source="$(var.SourcePath)\kqoauth0.dll" />
+      </Component>
+      <Component Id="CMP_qwt" Guid="{687881e2-83d0-4fab-ac32-7c23078eed8f}">
+        <File Id="FILE_qwt.dll" KeyPath="no" Source="$(var.SourcePath)\qwt.dll" />
+      </Component>
+      <Component Id="CMP_speex" Guid="{db4727bb-6c24-435d-9a57-202d0ea9c1ac}">
+        <File Id="FILE_speex.dll" KeyPath="yes" Source="$(var.SourcePath)\libspeex-1.dll" />
+      </Component>
+    </DirectoryRef>
+    <ComponentGroup Id="CG_CommonLibs">
+      <ComponentRef Id="CMP_qjson" />
+      <ComponentRef Id="CMP_kqoauth" />
+      <ComponentRef Id="CMP_qwt" />
+      <ComponentRef Id="CMP_speex" />
+    </ComponentGroup>
+  </Fragment>
+</Wix>

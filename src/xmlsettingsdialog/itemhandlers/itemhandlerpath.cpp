@@ -86,6 +86,28 @@ namespace LeechCraft
 		lay->addWidget (picker, row, 1);
 	}
 
+#ifdef Q_OS_WIN32
+	namespace
+	{
+		QDir GetUserDir (const QString& opath)
+		{
+			QString path = opath;
+			QDir home = QDir::home ();
+			path.prepend (".leechcraft/");
+
+			if (!home.exists (path))
+				throw std::runtime_error (qPrintable (QString ("The specified path doesn't exist: %1")
+							.arg (QDir::toNativeSeparators (home.filePath (path)))));
+
+			if (home.cd (path))
+				return home;
+			else
+				throw std::runtime_error (qPrintable (QObject::tr ("Could not cd into %1")
+							.arg (QDir::toNativeSeparators (home.filePath (path)))));
+		}
+	}
+#endif
+
 	QVariant ItemHandlerPath::GetValue (const QDomElement& item,
 			QVariant value) const
 	{
@@ -102,7 +124,11 @@ namespace LeechCraft
 				str2loc ["DESKTOP"] = QDesktopServices::storageLocation (QDesktopServices::DesktopLocation);
 				str2loc ["MUSIC"] = QDesktopServices::storageLocation (QDesktopServices::MusicLocation);
 				str2loc ["MOVIES"] = QDesktopServices::storageLocation (QDesktopServices::MoviesLocation);
+#ifdef Q_OS_WIN32
+				str2loc ["LCDIR"] = GetUserDir ({}).absolutePath ();
+#else
 				str2loc ["LCDIR"] = Util::GetUserDir ({}).absolutePath ();
+#endif
 				Q_FOREACH (const QString& key, str2loc.keys ())
 					if (text.startsWith ("{" + key + "}"))
 					{

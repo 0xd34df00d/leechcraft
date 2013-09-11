@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <ComponentGroup Id="CG_LeechCraftSettings">
+            <Component Id="cmp38D9A61B2EF371B8E1D66E0BB9DF3411" Directory="DIR_settings" Guid="{FB39F77A-B32B-4583-B060-7D4BA4C29BCC}">
+                <File Id="fil3561F6E521B20BACA7FDD080BA1688FF" KeyPath="yes" Source="$(var.SourcePath)\settings\coresettings.xml" />
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+</Wix>
