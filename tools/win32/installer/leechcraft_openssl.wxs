@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment>
+    <DirectoryRef Id="INSTALLFOLDER">
+      <Component Id="CMP_ssleay32.dll" Guid="{84DA392D-72DA-4BC2-8B2D-FBD7DAAA6291}">
+        <File Id="FILE_ssleay32.dll" Source="$(var.SourcePath)\ssleay32.dll" KeyPath="yes"/>
+      </Component>
+      <Component Id="CMP_libeay32.dll" Guid="{594D8677-2B0C-453C-A831-B422FCDF132F}">
+        <File Id="FILE_libeay32.dll" Source="$(var.SourcePath)\libeay32.dll" KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+
+    <ComponentGroup Id="CG_OpenSSLLibraries">
+      <ComponentRef Id="CMP_ssleay32.dll"/>
+      <ComponentRef Id="CMP_libeay32.dll"/>
+    </ComponentGroup>
+	</Fragment>
+</Wix>

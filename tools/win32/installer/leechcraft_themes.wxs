@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <ComponentGroup Id="CG_LeechCraftThemes">
+            <Component Id="cmp601C534EA961640F206EA41260975B81" Directory="dirD0B23C1834ED9A4AFF4E695BE51DCA74" Guid="{8B5E17A8-B958-4A30-B96F-D163C09CF804}">
+                <File Id="fil981C97A51EAEC9E4114DF0D7A2FF0EA2" KeyPath="yes" Source="$(var.SourcePath)\leechcraft\themes\oxygen" />
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="DIR_themes">
+            <Directory Id="dirD0B23C1834ED9A4AFF4E695BE51DCA74" Name="themes" />
+        </DirectoryRef>
+    </Fragment>
+</Wix>

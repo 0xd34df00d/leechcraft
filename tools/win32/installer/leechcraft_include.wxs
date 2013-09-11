@@ -1,0 +1,691 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <ComponentGroup Id="CG_LeechCraftInclude">
+            <Component Id="cmpC15B26A58A02212DAC6D5D4A8FCA4874" Directory="dirB705A3364CFC0A81AC8A9B0B125E8DD2" Guid="{57B2459A-8078-48D1-B053-A47ED87CA39C}">
+                <File Id="fil13558F9DA4257908055D019E636D67E4" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\config.h" />
+            </Component>
+            <Component Id="cmp2772351883BC6F4B4627A5E78EEB3DFB" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{AB9F200A-B8D2-463E-865F-C47D55912DE9}">
+                <File Id="fil18CF866349ACD5DB33130BAF8CF714B1" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\entitytesthandleresult.h" />
+            </Component>
+            <Component Id="cmp836B5A734927C6073C3F78A5BBDA52F2" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{6A332C4C-BB7E-4995-AA4A-85FF04404137}">
+                <File Id="fil3E3257A739B78F8B095A441DC56032E7" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\iactionsexporter.h" />
+            </Component>
+            <Component Id="cmpBAFD2C4F875727608C7243DA5AE69651" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{0E60A460-FF42-4AA6-A293-DCD00C82AC47}">
+                <File Id="fil4D76918FC77390BBBE01E10F1918DCDC" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\ianemitter.h" />
+            </Component>
+            <Component Id="cmp4204ABBC38A756928BFEB30D58A6BC46" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{822AE84D-7F53-43CE-9B2E-C49E4E98EB60}">
+                <File Id="fil9A53E6B849BEBA424AC75118D88F2E3C" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\idatafilter.h" />
+            </Component>
+            <Component Id="cmp118F280678094376BA91A6ACEC03AA9D" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{AC39890F-0A52-4A4C-A5E6-A0CC0C8117D1}">
+                <File Id="filBECF55B75753E270202B48ADFE99AD08" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\idndtab.h" />
+            </Component>
+            <Component Id="cmp7A5D001A3A0CFCAFCCF3B212E59A43EF" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{1496B7C0-42D8-46C3-82FC-5B377171E355}">
+                <File Id="filAD0A9459023FB5414000C558D148646C" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\idownload.h" />
+            </Component>
+            <Component Id="cmpE8C34DE673E3E4F81F19DB2CE7FD263E" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{77E7D7F8-FF9F-48E7-BF66-A9BC068CFD40}">
+                <File Id="fil20516023EC767C982A79090862622EA5" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\ientityhandler.h" />
+            </Component>
+            <Component Id="cmp77D75762FFA03228635511B7CBE6A726" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{E34859B4-8E1A-40F3-AE11-86BDFB9DBF6F}">
+                <File Id="fil0CF9BBE56C79A77AE3B18CB4639D66BF" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\ifinder.h" />
+            </Component>
+            <Component Id="cmpD78C2B470C21C4C4B858EB6D6AE5EB9A" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{110E8BDC-3A56-47ED-A54D-AE8DF9FC9717}">
+                <File Id="filA4A9C62587C8BBC9BC9ED3ACB4F5367A" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\ihavediaginfo.h" />
+            </Component>
+            <Component Id="cmp5B79C5CE12BA6940776B7E6132D30F82" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{CB8D5E23-DC7C-4959-BE6A-C80A96C88BE4}">
+                <File Id="fil3D2F1298E799D5B9D503E3AA6FC5E239" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\ihaverecoverabletabs.h" />
+            </Component>
+            <Component Id="cmp9F1412704885C46654CD00D53B86F252" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{7F943125-1F0C-4AA0-9F24-BDA8A16A5DE7}">
+                <File Id="fil1C09E8DD10198CB14B245CB334D13034" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\ihavesettings.h" />
+            </Component>
+            <Component Id="cmpB84C4DD69A7868B246B3ED97CF23657E" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{BC225DF5-71AA-4899-B9E2-D30AA3F089D4}">
+                <File Id="fil2634784F201D95CAFBA2BA8393EE7295" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\ihaveshortcuts.h" />
+            </Component>
+            <Component Id="cmp38ED897C1AEEBD220F840D83653D9113" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{4C1978B5-B3E2-47A3-AEE2-F8B03343F226}">
+                <File Id="fil4FE1C14A0BF2BE8485979EF348492B10" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\ihavetabs.h" />
+            </Component>
+            <Component Id="cmp3F99F4F084683CE6257CB3C89306C1F9" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{269171B3-C8FF-4206-AA86-4722CC0B4405}">
+                <File Id="fil3E544349BF8B52BC33506558602A4853" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\iimportexport.h" />
+            </Component>
+            <Component Id="cmpFA3E89757A74E9A30F6309E5461BF145" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{1333AAE2-B2E9-48BF-A5C2-14F23EF9ACE3}">
+                <File Id="fil83BFF337FF67DBA1AB7A32A311B321BC" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\iinfo.h" />
+            </Component>
+            <Component Id="cmp3C5313E81B10983215DAE26BC960DDC6" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{A7758434-1F34-46C3-99DC-87CCAA418B7E}">
+                <File Id="filB83BBC8146FA51A18558B6136C863328" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\ijobholder.h" />
+            </Component>
+            <Component Id="cmp16945F8B72785A2BADFC517B7D21648F" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{45B2A7BE-AC90-41E6-9BC7-B5F736ED11ED}">
+                <File Id="filC41A667B4956A00D0D2DFA90891B96A9" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\imediaplayer.h" />
+            </Component>
+            <Component Id="cmp1F3CCCCDCAC5C10A8E2C5027D894EB86" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{33F5CD2A-DB4F-405B-8231-1AF78656BC92}">
+                <File Id="filE2570F9DD8E873265C4F012B3FBA7682" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\imwproxy.h" />
+            </Component>
+            <Component Id="cmpF99A0729A397045F768DC0FCAED85F83" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{DD768280-B044-45C1-9D30-B2D01BB80522}">
+                <File Id="fil15BC723528B8CCF3B2C0A635291D33AF" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\iplugin2.h" />
+            </Component>
+            <Component Id="cmpEBF8218F293DFFAD7B3AC6CB6757F3B2" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{FFF9576C-1D67-42CE-814E-795EE57281E0}">
+                <File Id="filF06806535831C2643918A4ECA43064D3" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\ipluginadaptor.h" />
+            </Component>
+            <Component Id="cmpF457532CB577EB15ACBDC85F6E549E71" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{DBA58DBC-02C9-4021-B685-C1021CD176F4}">
+                <File Id="fil8694023B1CE5E58B202D57867CD7CDC7" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\ipluginready.h" />
+            </Component>
+            <Component Id="cmp744F3C012C5552E220457BDDDE283BF0" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{364C6B5B-DF34-4F34-AAF9-0A2463ACDF12}">
+                <File Id="fil4459AD89CEA15E160EA40C459A86AEAB" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\iquarkcomponentprovider.h" />
+            </Component>
+            <Component Id="cmp9BE8F39CBD4884821AEA8A1F31CD029B" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{A14ED0FD-563A-4467-B025-5B6CCFC39740}">
+                <File Id="filC4DB95F898D556A7CA3563FAE452C3B3" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\iscriptloader.h" />
+            </Component>
+            <Component Id="cmpE298B3CA45DBF5B0813BFD639AD5A561" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{EF3D2BDF-4B07-4CEA-94F2-F686B04BDC5F}">
+                <File Id="fil6E95BE17BFF7AB92133B4A0DA92B42F7" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\istartupwizard.h" />
+            </Component>
+            <Component Id="cmp905258E1300E9E22D3245C4BC71E5CFF" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{E4A527AB-F8FF-47C7-AFCB-A33E825E0684}">
+                <File Id="fil4C76B56681B9EE1471C745EB68B880DE" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\isummaryrepresentation.h" />
+            </Component>
+            <Component Id="cmpDE3AAEEB55B28BAA9C205B0E3E434A86" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{80A17FB0-0C8C-4171-8FDF-F6C8B84C20D9}">
+                <File Id="filC842A12B71461EF158C953E6FF6B5AE5" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\isyncable.h" />
+            </Component>
+            <Component Id="cmpCA5836841AD31E9CDFFD4149CB1DDB5C" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{6BAE1BF0-BCE9-419B-A45D-424FAC940130}">
+                <File Id="fil1CAAF2D1F3292507DCF372FA5D56607D" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\itaggablejobs.h" />
+            </Component>
+            <Component Id="cmpCA8A87EC80D266E94892EC7C8FC0B74A" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{5A48ABE8-6CDF-45D7-A45D-6D248696D614}">
+                <File Id="fil2C5B8A96E40B8E398368B6F88FFF4285" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\itexteditor.h" />
+            </Component>
+            <Component Id="cmpBA6E8531B562FCACEE0236A801B4CAAE" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{E67BD16E-420F-4455-B338-4BF4CE8AC688}">
+                <File Id="filFDB8F276F306D0EC189EC8F67C8C0D5E" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\iwebbrowser.h" />
+            </Component>
+            <Component Id="cmpED20916D22BCF81773EA672A4F833B09" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{C1C1E374-3B29-4FF2-888C-60F8221EE013}">
+                <File Id="filAE3C0BDC05ACA389B49B7742B583B3F3" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\iwebfilestorage.h" />
+            </Component>
+            <Component Id="cmpC6F5CFD3C2B03F5B3203BE2C9388C6CA" Directory="dirF3F66297287B6BA8516799F5B764F70F" Guid="{0149E32A-BCCB-4318-BDE2-35249E4B381E}">
+                <File Id="fil6D6DC7947E70967BC798D84640D39C78" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\structures.h" />
+            </Component>
+            <Component Id="cmpF2BEE25DAF07E63CA03AF6BD2FC2AA00" Directory="dir032CACFD54D0911A23B6ED0F8E252B26" Guid="{7D42B56A-A446-411A-956A-6C478ECED9E7}">
+                <File Id="filFDA23A91178F4AC67D2EDC1A1A371829" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\an\constants.h" />
+            </Component>
+            <Component Id="cmp19461D279C86755520D4E2E34500C044" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{45873406-C3EB-4E4A-95AC-5EA781AAF0C6}">
+                <File Id="filA122678E9F5B5E9B6F6FBBCD36FBB32F" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\azothcommon.h" />
+            </Component>
+            <Component Id="cmp66B086AEE8ABB6502A6FB735F5343EF1" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{37DE9FE8-D337-498E-BD73-AD50434AD9BD}">
+                <File Id="filDF92A40195A6C32CE768F0E4DBF91044" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\azothutil.h" />
+            </Component>
+            <Component Id="cmpB24A8A43BEEA2E4ECC907BDBF46421A9" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{C53A850F-07D4-4B51-AFBC-4DC1BDC7FB3C}">
+                <File Id="filC2815A13D1F2F24C08ACA586E4602632" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\iaccount.h" />
+            </Component>
+            <Component Id="cmpF8DFE8A035CF41AC5E08BC9183ED33A7" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{81EEF440-1E0F-4465-8D9B-76D4ABFD9092}">
+                <File Id="fil5A1E707517F8AE137B27660B57AB7F27" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\iadvancedclentry.h" />
+            </Component>
+            <Component Id="cmp392FECB454EDC8FB289050EDD6BBDC51" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{D5CDB31A-13F9-4517-A8CB-C3D95445AAC6}">
+                <File Id="fil6929062DE44F4AF4F8B36795F7168342" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\iadvancedmessage.h" />
+            </Component>
+            <Component Id="cmpD3ECF95B8915CDF7223C4FC8C9B72F68" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{1C250A86-1F2C-4474-81E0-496BF133345D}">
+                <File Id="fil02515784CB103CFDF1C2E4575D22DD19" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\iauthable.h" />
+            </Component>
+            <Component Id="cmp839A3BFDD41B53981761DD2BCC3CFE46" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{523FF0AF-4143-4B59-A43B-2F03FB119667}">
+                <File Id="fil2BBA7C14ADA8D6C4AF4829FB60A452F3" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\ichatstyleresourcesource.h" />
+            </Component>
+            <Component Id="cmpAB576A11BAC93DB7A282275F97EB6087" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{5E95517E-F781-45FD-AD3C-1222D53BB20E}">
+                <File Id="filEF79A242CA62732ACFE43B3C522AC9CC" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\iclentry.h" />
+            </Component>
+            <Component Id="cmpCE9101A64186848385F0C9278D3DD190" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{761B4875-0098-4761-B722-30E83A8B0401}">
+                <File Id="fil4AF895F65F16B7F2FC94AD1123A55A42" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\iconfigurablemuc.h" />
+            </Component>
+            <Component Id="cmpEDDE828010E10EE7D6F22D1CDB76E224" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{2071E4A1-A9D7-4F99-BD33-D2F8126F1619}">
+                <File Id="fil49134D931FA55793CB16684AA015FE1E" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\iextselfinfoaccount.h" />
+            </Component>
+            <Component Id="cmp543C3782F2FA8247F2EEE8A2E253D2AF" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{2FC6364C-4053-4107-9484-57B05A3E79F7}">
+                <File Id="fil13F979376809B7B8E332D8FB51936CBF" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\ihaveconsole.h" />
+            </Component>
+            <Component Id="cmp78BEB7C78EDBA39EB92E0077D19EA3AE" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{55EECCBC-3FAB-474A-8BEA-50A6390A6BE3}">
+                <File Id="fil4C0CD81CDA48E4F9B2562B518803B84A" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\ihavedirectedstatus.h" />
+            </Component>
+            <Component Id="cmpC8BD4C07D707C2FB8AD12DC45B646D14" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{DE910C94-E381-45C5-BDE2-2AA75AC73D65}">
+                <File Id="fil296F58C343F593A50EC30CF8FBF2AD08" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\ihavemicroblogs.h" />
+            </Component>
+            <Component Id="cmp9D3A0B99B586300F76178828624BEF04" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{3F2E20E6-2244-4160-B6B6-7C59E2AB3E62}">
+                <File Id="filA6CC8E3F5C6BE9F3FC0AEC05A728C377" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\ihavesearch.h" />
+            </Component>
+            <Component Id="cmp7792AF51236A17182D66EB0A02BB9A62" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{B249554A-CC64-49AC-8648-1F7570BC10E1}">
+                <File Id="filCCA84B2A81F54EBE198A5F18A3A8B4E8" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\ihaveservicediscovery.h" />
+            </Component>
+            <Component Id="cmp01D4C279C09A13441F7C426CD562D212" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{76C3DBD2-3E2D-40FE-B687-DDD3614D068B}">
+                <File Id="filF8A81EF981448F52B7101DB8A15A2BC8" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\ihistoryplugin.h" />
+            </Component>
+            <Component Id="cmp6C5FBD6EC50DA2DFEB2F7CDD1C0CD928" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{42718C81-A34F-435E-813B-4FF0B6FE07C5}">
+                <File Id="filD724C927E44E92F32DA00FBEE6CDAFEE" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\ilastactivityprovider.h" />
+            </Component>
+            <Component Id="cmpB1DA2707E9CA1A6BB7FB17BACA0E5286" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{C40862D1-1831-4B5C-9CDA-A7DFCE44F3BE}">
+                <File Id="filF58C2726B7B1C1BD947B0FE461B16326" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\imediacall.h" />
+            </Component>
+            <Component Id="cmpC40FECB23B30EAB1093FF9A6BAE8F149" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{EF5E80E9-F1F7-409E-B92B-F2CF2A6CE94A}">
+                <File Id="filB138A784B43302B1DD5FEB0F84034B89" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\imessage.h" />
+            </Component>
+            <Component Id="cmpB6467DAAD2DE2B112046270FA39FF6DE" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{00CC1F2E-16A5-4358-B1DD-A2B466F25483}">
+                <File Id="fil27506FBED66AD02A89B8DBCB69FF3331" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\imetainfoentry.h" />
+            </Component>
+            <Component Id="cmp85C46E4E10D99A2D9CD81BDB2022499E" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{1B2BB51C-B3DD-430C-8EBB-A35E8B89CBE4}">
+                <File Id="fil835570EAF2179B93B01D807681978576" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\imucbookmarkeditorwidget.h" />
+            </Component>
+            <Component Id="cmpEC8B7FEE53EC60F1A65427EE2A50B657" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{0462AE7F-7970-434B-9ED4-4AFAB97E793C}">
+                <File Id="fil6CC5723DC8573156F5390B8EFC5052E8" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\imucentry.h" />
+            </Component>
+            <Component Id="cmp8D568F75D49F1F0FEF2BCCBC2D10F95A" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{39615F02-AB11-47D9-85AD-243F8D575EBE}">
+                <File Id="fil78F3A0A3875A9A8E7EE4995213ED5965" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\imucjoinwidget.h" />
+            </Component>
+            <Component Id="cmp19DB067F5A1CCF0FA6CAC37AC35881E1" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{707754A1-1DBD-45FA-A7AD-97F5362136E7}">
+                <File Id="fil8E44935B8FB716DF3703BC80162143F8" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\imucperms.h" />
+            </Component>
+            <Component Id="cmp9DD2FD7209ABC50EC885515AF25B0E9E" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{0A4AED95-23DA-462F-B29E-161EBCFC9D4F}">
+                <File Id="fil3A28E2FF7FF5BECE6E4F51FBFB06AFE6" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\iprotocol.h" />
+            </Component>
+            <Component Id="cmpC26DB1A4E9C77E1927B9B8E10E9798D8" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{98161D55-7B9A-4332-8DBA-553DC1B97A09}">
+                <File Id="filEE0D1321400A289A1C0AAF7BFE45B0C9" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\iprotocolplugin.h" />
+            </Component>
+            <Component Id="cmpE5A893A53BBC448609B57EEFAE4A0E31" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{52DFBC8A-1DE0-4A3E-AC73-B32CC6724A15}">
+                <File Id="fil6A40254EC9EC357A1309D6E37BCD2FDD" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\iproxyobject.h" />
+            </Component>
+            <Component Id="cmp7CFB28C62AD7BC7536FE6528ECE0A576" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{1D60DDC1-9B67-40A6-970D-79835195E9B3}">
+                <File Id="fil1FB7A23AD6A09DCEAC1E0FF0F718279E" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\iregmanagedaccount.h" />
+            </Component>
+            <Component Id="cmpAF839002BE6210CC34F74E6DD960B7D6" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{C2BDC3E3-1086-44D7-9114-0103E6A03EE6}">
+                <File Id="fil44570C68D32AF32BD11F622D052E4E71" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\iresourceplugin.h" />
+            </Component>
+            <Component Id="cmp545559D7EE75CAB1CBC41D5FA067B03D" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{F5BC3722-15A0-49BA-AAEC-79E91C8F30C2}">
+                <File Id="fil715A19BEF1B2F9B0512DD14A5B3F9AE8" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\irichtextmessage.h" />
+            </Component>
+            <Component Id="cmpF3D065EF74F535FC9AEF28A7F0A45AED" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{69CD1AC7-4D13-494B-B891-FA1A56C31108}">
+                <File Id="fil9B0210199FABE0B8C8133C601089619F" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\isupportactivity.h" />
+            </Component>
+            <Component Id="cmp5F7DB639A834F42490FD859A2C708C93" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{FB70B278-67BC-428B-9B90-1CA1AA4B73E9}">
+                <File Id="fil2FE2E1CDDC0728A2963FF4C4B7BC2CCB" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\isupportbookmarks.h" />
+            </Component>
+            <Component Id="cmpB494D746150B045A7FA899EBC4C9432C" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{593361C8-B94F-4463-A87E-E19D4A0CCD3D}">
+                <File Id="fil9E1AE2327E3079B729FEAB482AC571F0" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\isupportgeolocation.h" />
+            </Component>
+            <Component Id="cmpC9FAA955FBCF15301A6BFD3B039A2F49" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{945B4B85-0DE6-4C55-8743-53847C71E25E}">
+                <File Id="fil7A156ACABBAE42615D33F8544CDB2943" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\isupportimport.h" />
+            </Component>
+            <Component Id="cmpC0B71E6A8CC7D8BC11D42150932993AC" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{41730B7A-2289-4299-A078-48D4A324988E}">
+                <File Id="fil37AE38718D09F57B9B032EC48A0B55E7" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\isupportmediacalls.h" />
+            </Component>
+            <Component Id="cmp31C8E58CDBADC0EA0FBBC20397759E24" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{3F6384B1-B73A-4484-95CA-C0900C5DC95E}">
+                <File Id="filDBCC58555F50F699F3F8558160A78763" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\isupportmicroblogs.h" />
+            </Component>
+            <Component Id="cmp9EAEB69683B50C07E7CEC01FCA38D010" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{D26ABAD9-7325-4B51-BB46-222D14F739E4}">
+                <File Id="fil9FA03A5AB39B4B2FE711EDAF1B2963D9" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\isupportmood.h" />
+            </Component>
+            <Component Id="cmp5A1012D55AC2D98AEF9C4812197A6F12" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{2FD71A01-DF85-4282-8B9F-C09A72C2F9D7}">
+                <File Id="filF529916C609BD6B2509F499F1ACCF720" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\isupportpgp.h" />
+            </Component>
+            <Component Id="cmpCD40F6A4C828D300BE7B15E5656AA5B5" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{D70586DA-5743-48B0-83CD-D9C746F2DD42}">
+                <File Id="fil619A2DE83B212708A79C49D09019BC46" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\isupportriex.h" />
+            </Component>
+            <Component Id="cmp9AC6D0A6C1A93EA522037AD03A721020" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{12FBEED7-5B0D-4BA2-9704-BC1FC2EC4607}">
+                <File Id="fil9769975EA34DD4B47D011922BFD214AD" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\isupporttune.h" />
+            </Component>
+            <Component Id="cmpAE987F8C5F233D455ABA9EE84D8CB037" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{AB3E1E69-3F51-4969-85EE-DA75D1D71335}">
+                <File Id="fil49D8981E4B280AC854A31B7E40744F02" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\itransfermanager.h" />
+            </Component>
+            <Component Id="cmp183DC49403CADE5B5E2A75F2546D0B9D" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{88A30D53-27CC-4764-BDAB-CB12E3CBDBFA}">
+                <File Id="filD739EF308165DE589DB4C6D0A0804369" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\iupdatablechatentry.h" />
+            </Component>
+            <Component Id="cmpDFB4D2DBD325F578E2B97E216E53DD74" Directory="dir42E0E2C08B82A7D927C2949AC8123B3A" Guid="{7DC65E51-67D6-4456-A846-A01DE3BB45BF}">
+                <File Id="filDAF71A1BCC61623A83426CB20060F737" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\azoth\iurihandler.h" />
+            </Component>
+            <Component Id="cmpD32FBF9EE816F219AE0098C7DBDEA316" Directory="dir8B252A7F9DF7CC79C6002F5209D50002" Guid="{9AB08C61-8DA2-4FFC-BB16-276F116D04E6}">
+                <File Id="filBF20AEBB6F16BC6672E6BE393BA2CAB9" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\core\icolorthememanager.h" />
+            </Component>
+            <Component Id="cmp48D7A47E8F32341BD10F332D64EA27DB" Directory="dir8B252A7F9DF7CC79C6002F5209D50002" Guid="{5C7E376A-765D-4623-A735-9BDE781D6047}">
+                <File Id="fil66C19CC26D645656B24C02C7A45A74D7" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\core\icoreproxy.h" />
+            </Component>
+            <Component Id="cmp02626000461C872BAA6170468D75B0C0" Directory="dir8B252A7F9DF7CC79C6002F5209D50002" Guid="{591C6831-C3BD-4669-AC62-F417AD66BEA9}">
+                <File Id="filE1DD8A50A82BCD7817B60B4692169B54" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\core\icoretabwidget.h" />
+            </Component>
+            <Component Id="cmp39322A472AE7E3F35286459FF479AFF0" Directory="dir8B252A7F9DF7CC79C6002F5209D50002" Guid="{07AADA3F-0CA7-4D82-8C58-3BA27C8DD347}">
+                <File Id="fil8524F3E58C36616F676E6897B294C351" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\core\ientitymanager.h" />
+            </Component>
+            <Component Id="cmpFFB213A41B2417C1E29100BA650E73AE" Directory="dir8B252A7F9DF7CC79C6002F5209D50002" Guid="{8E1F5C24-E6CA-4EC6-B900-EF124E7B5E1B}">
+                <File Id="fil7E3A5AC4F10CC1F14BFD1925351F6142" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\core\ihookproxy.h" />
+            </Component>
+            <Component Id="cmp5596D15D08ADDBFB322FA67972011F05" Directory="dir8B252A7F9DF7CC79C6002F5209D50002" Guid="{9C6A50C8-9D0C-4F8F-B788-047F2D941C65}">
+                <File Id="fil33CB8FD839FF17447E33DD6720B0F61B" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\core\ipluginsmanager.h" />
+            </Component>
+            <Component Id="cmp194FCCFA3904A2D1BCEFF72F96562272" Directory="dir8B252A7F9DF7CC79C6002F5209D50002" Guid="{671C9C93-4733-487E-BF64-4EFCC2C6A152}">
+                <File Id="fil0485E8A459421028841DF4319D61D16A" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\core\irootwindowsmanager.h" />
+            </Component>
+            <Component Id="cmp33765EC618B77F2CC9DEBF86E39D6DEC" Directory="dir8B252A7F9DF7CC79C6002F5209D50002" Guid="{169CEBE2-7064-4D15-9D94-14C6AC7F693B}">
+                <File Id="fil0B17BAA9D16E4CEB810AE1C2D5CF6800" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\core\itagsmanager.h" />
+            </Component>
+            <Component Id="cmpF85883E3AF2E15991FE71FDD78CFE4D1" Directory="dir6EB39F801F6AA7638697F847879A6C91" Guid="{1C25F92C-DF82-477B-8F42-D3B6351F05E5}">
+                <File Id="filBA17D6DC815F469D24735022FA5405EB" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\data\iimgsource.h" />
+            </Component>
+            <Component Id="cmpAE062A790BF5D26A1C5ADAE26AAAAD2B" Directory="dir5D03B052D59AB5F46FBC649BFBBB596D" Guid="{70FB2923-EF1E-4B6A-9A4A-97CE50F3790B}">
+                <File Id="fil0AFDC428F910817B7B613C8486229F4C" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\devices\deviceroles.h" />
+            </Component>
+            <Component Id="cmp65C05CB91DAA188ED81FF53923D86D43" Directory="dir5D03B052D59AB5F46FBC649BFBBB596D" Guid="{2BB327D6-D492-465B-A56A-872DBF4EBEA4}">
+                <File Id="fil84F0E52608EDBB63CF95C0CEDBA94B4F" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\devices\devicetypes.h" />
+            </Component>
+            <Component Id="cmp24217692E1242A7A3360622B71CFC74E" Directory="dir5D03B052D59AB5F46FBC649BFBBB596D" Guid="{3F1A2E29-E2D9-4406-91EA-77A9096EEB49}">
+                <File Id="fil1B32AE5C36CE1E13CEA1FC240C6F86E2" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\devices\iremovabledevmanager.h" />
+            </Component>
+            <Component Id="cmpD34E3B9E57E1FD1DF5A9E9B3C0319F0A" Directory="dir5D43AFB38FD4450A0F9A30711FC6EF2F" Guid="{76E07CCE-A6A3-4F62-9589-947E0ADCBA63}">
+                <File Id="fil65847138987AC52FB9D402182996456C" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\lmp\collectiontypes.h" />
+            </Component>
+            <Component Id="cmp1FA1C57137889409DD1421DC9CDC895E" Directory="dir5D43AFB38FD4450A0F9A30711FC6EF2F" Guid="{ECFC3492-9DD5-45CE-A625-59C085B74AB2}">
+                <File Id="filB954DB45C5AA650603D52710E730C9DC" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\lmp\icloudstorageplugin.h" />
+            </Component>
+            <Component Id="cmp3F611629C25E71428450A14ADCD051CD" Directory="dir5D43AFB38FD4450A0F9A30711FC6EF2F" Guid="{7C510EAD-7B72-483A-B12B-EF04E21AC708}">
+                <File Id="fil8B80918C57CC8E8E132F3475754333F7" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\lmp\ilmpplugin.h" />
+            </Component>
+            <Component Id="cmpF426BD882FBD47D5E3E7C1565D67B66F" Directory="dir5D43AFB38FD4450A0F9A30711FC6EF2F" Guid="{D3231746-A8F4-49D5-8E85-327AA336596D}">
+                <File Id="fil57F4BA925038FF69EC8BD35B65746CEC" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\lmp\ilmpproxy.h" />
+            </Component>
+            <Component Id="cmpBFB67F400134B783D9AA16F796120D49" Directory="dir5D43AFB38FD4450A0F9A30711FC6EF2F" Guid="{F998D3F9-9549-4266-9892-6690A61A6008}">
+                <File Id="filD665A79B71BB286C9C6E8FCB22CCEB3C" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\lmp\ilocalcollection.h" />
+            </Component>
+            <Component Id="cmp19D2AD6C290EED0160D0C9251F80F1F4" Directory="dir5D43AFB38FD4450A0F9A30711FC6EF2F" Guid="{66C90D2A-49E7-4802-9214-5B34B4E5AAFD}">
+                <File Id="filF20122611933F8F713D11410A5121843" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\lmp\iplaylistprovider.h" />
+            </Component>
+            <Component Id="cmp69FE1A6FD48BCD222274735B3BC2AB10" Directory="dir5D43AFB38FD4450A0F9A30711FC6EF2F" Guid="{70E89EB0-3FA7-4A85-90AB-2026DC6D0367}">
+                <File Id="fil293DA2FAFF776F99F09393886A0B4A19" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\lmp\isyncplugin.h" />
+            </Component>
+            <Component Id="cmp7A672FD623D61989D84EB19B2911E3C6" Directory="dir5D43AFB38FD4450A0F9A30711FC6EF2F" Guid="{872CEA36-01F8-4676-9594-D85F4D952ACE}">
+                <File Id="fil6F617BFD1D94BD609C32D0135E0D01A2" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\lmp\itagresolver.h" />
+            </Component>
+            <Component Id="cmp1A6001A9FF6BDF967537887B2DE44539" Directory="dir5D43AFB38FD4450A0F9A30711FC6EF2F" Guid="{2276DB8E-0E6F-4888-AD5F-8B6A96FBD442}">
+                <File Id="fil84E79130115642F51C1AD7AFFFDE0D5B" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\lmp\iunmountablesync.h" />
+            </Component>
+            <Component Id="cmp175A21A26B908A8246EC774EAEF839F6" Directory="dir5D43AFB38FD4450A0F9A30711FC6EF2F" Guid="{716274C6-0E26-4ACF-8AA9-FC9F6D9A28FB}">
+                <File Id="fil858A915023FA9E2FFA66F14E5AC00308" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\lmp\mediainfo.h" />
+            </Component>
+            <Component Id="cmpDC1035683C0B9A6A1EE1CB4974E98634" Directory="dir67774D4BF2AE513206F6C2D1F018F32E" Guid="{D581B659-86EF-437E-AB03-DFB7AB37DFC1}">
+                <File Id="filEB95B48F411297813C355A6EF1ED71BE" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\media\audiostructs.h" />
+            </Component>
+            <Component Id="cmp192C36A4A0E3DE14367E010468560031" Directory="dir67774D4BF2AE513206F6C2D1F018F32E" Guid="{D1D74974-18A7-457D-9FFB-4A42F75D15C0}">
+                <File Id="fil0DC17ED50DE290E817432BA17560C326" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\media\ialbumartprovider.h" />
+            </Component>
+            <Component Id="cmp6CB1D8657811263BBB557B844A0AE7B7" Directory="dir67774D4BF2AE513206F6C2D1F018F32E" Guid="{1237EA38-30A4-4459-BFB5-9450D4FD5112}">
+                <File Id="filEE5164D704925C49F6E1E0058FACDDEF" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\media\iartistbiofetcher.h" />
+            </Component>
+            <Component Id="cmp297C35F2AE55EDDA2C19953F5DB21B6D" Directory="dir67774D4BF2AE513206F6C2D1F018F32E" Guid="{3DECB6F3-53E7-4848-B12F-10C2CDF82A86}">
+                <File Id="fil1C1DCBAA045650121114DF12D74F5A52" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\media\iaudiopile.h" />
+            </Component>
+            <Component Id="cmp6879132F0A5EB5CCD10C3563C9862DF1" Directory="dir67774D4BF2AE513206F6C2D1F018F32E" Guid="{997433ED-54BF-4278-8241-787B15557A25}">
+                <File Id="fil15A7A88319FF121BA2A5AD004DF792A8" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\media\iaudioscrobbler.h" />
+            </Component>
+            <Component Id="cmpF4FD19AD842C3F6C8A435C08FD1B6B1F" Directory="dir67774D4BF2AE513206F6C2D1F018F32E" Guid="{FDF7DF65-F023-453A-ACC1-D5E072733FC6}">
+                <File Id="fil6D635FE63AA14030814D9EC94EEF82F7" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\media\icurrentsongkeeper.h" />
+            </Component>
+            <Component Id="cmp882D8308C0CF3A8175F06F2E45D3FA04" Directory="dir67774D4BF2AE513206F6C2D1F018F32E" Guid="{B659B5B6-4010-410A-8BDE-8DB438C01ACE}">
+                <File Id="fil441C48161F2F087B3E044A1E2A1C1488" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\media\idiscographyprovider.h" />
+            </Component>
+            <Component Id="cmp0D49CE4829DFD1D813D581B750C88B8D" Directory="dir67774D4BF2AE513206F6C2D1F018F32E" Guid="{F8D35730-E186-4AD5-92A7-5CA038EE2C2C}">
+                <File Id="fil0E6C6CB376E8614AD64BBAD1B7E20F88" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\media\ieventsprovider.h" />
+            </Component>
+            <Component Id="cmp8B21F9BEAE7B1F9F57C2187CC2F1D06C" Directory="dir67774D4BF2AE513206F6C2D1F018F32E" Guid="{CE691421-2039-4187-A851-69CA89A0CDD2}">
+                <File Id="fil9378D2F34F96A2D713CB8746D1CF2848" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\media\ihypesprovider.h" />
+            </Component>
+            <Component Id="cmpCB54FECF967E92AF59A1A50A1123B2F6" Directory="dir67774D4BF2AE513206F6C2D1F018F32E" Guid="{3657C7E7-2A7E-4B30-8705-62B87ABC0EC6}">
+                <File Id="fil204E5888AE25F260A308F7A0B96236C2" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\media\ilyricsfinder.h" />
+            </Component>
+            <Component Id="cmp66281BCFCBB1B09F81569EF93D5C4B53" Directory="dir67774D4BF2AE513206F6C2D1F018F32E" Guid="{2835DEDD-9B33-438A-AE85-7B04F2F82000}">
+                <File Id="filF3A840081CAE49E1E2F762C5B6427C4C" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\media\ipendingsimilarartists.h" />
+            </Component>
+            <Component Id="cmp474E8E3CB7C72E854B2C4D2EDD42A3EF" Directory="dir67774D4BF2AE513206F6C2D1F018F32E" Guid="{3B701BE2-4901-49F3-A4E2-ACB8FBE17EEE}">
+                <File Id="fil0C2EDF75685D3513A0936BAA99CF66C4" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\media\iradiostation.h" />
+            </Component>
+            <Component Id="cmp58B6B75077CA613F269978C56E317E1A" Directory="dir67774D4BF2AE513206F6C2D1F018F32E" Guid="{9EF22CAE-E075-4A6B-9D91-D9CC30ABCDF4}">
+                <File Id="filF580CE5700BB129CA63A4DD7251055EB" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\media\iradiostationprovider.h" />
+            </Component>
+            <Component Id="cmp89B8E223E106A17399144C065D9E0C77" Directory="dir67774D4BF2AE513206F6C2D1F018F32E" Guid="{438F9E50-EC0F-4FDD-A8DF-5A420381C8D0}">
+                <File Id="filD822AC4386AE48155F51AE2AA7BE2DE2" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\media\irecentreleases.h" />
+            </Component>
+            <Component Id="cmpD1BBCEB0654588374FAB1C827DFBED19" Directory="dir67774D4BF2AE513206F6C2D1F018F32E" Guid="{F1E5BA90-6F63-4432-A722-A5E5475DE04D}">
+                <File Id="fil33C94DDF627CBB644DE7C95FEB1FA911" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\media\irecommendedartists.h" />
+            </Component>
+            <Component Id="cmp36D1C950E19BB77F7AE47830E81DD08D" Directory="dir67774D4BF2AE513206F6C2D1F018F32E" Guid="{ED486377-40F1-4454-8398-2B35F1DD68A8}">
+                <File Id="filF33AD9B6C76EB74A612877C1C40DE872" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\media\isimilarartists.h" />
+            </Component>
+            <Component Id="cmp184265D878BB053E491D172147EC2385" Directory="dir67774D4BF2AE513206F6C2D1F018F32E" Guid="{5A34B7EF-17A8-4296-927E-A19EA5E270B4}">
+                <File Id="fil37023923E1A2BC6EA3F93B6E1CAA3C41" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\media\itagsfetcher.h" />
+            </Component>
+            <Component Id="cmpDCA698CF24060311F1402042ADD2271D" Directory="dir327EE04CB3577A55C940D4144ABF8693" Guid="{A9DBBEE6-3CA1-420C-B274-0AAC4440A994}">
+                <File Id="fil85DC075104C0614A1466EC626E263230" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\poshuku\config.h" />
+            </Component>
+            <Component Id="cmp3691F4856E015E4715340BA5A2BC20D7" Directory="dir327EE04CB3577A55C940D4144ABF8693" Guid="{B5FEEDF1-DC6A-4ED1-AEB2-95741E3D9014}">
+                <File Id="fil8C4C2E8F30E4FDBF8E142184058E0C4F" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\poshuku\iaddressbar.h" />
+            </Component>
+            <Component Id="cmpD73FA97F20E2B497F67381A105F077D8" Directory="dir327EE04CB3577A55C940D4144ABF8693" Guid="{C6CFF718-F73D-4DA8-B3CF-F2A523BE90C9}">
+                <File Id="fil697CA5BF447C9712C65FB348C3B91489" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\poshuku\ibrowserwidget.h" />
+            </Component>
+            <Component Id="cmp4A91734369DBEF45FCDE42CC0E96FDB2" Directory="dir327EE04CB3577A55C940D4144ABF8693" Guid="{4CCBE24A-BF36-4C9F-B5EB-803BC2CF2362}">
+                <File Id="fil4E68094544B351B1E0ED178692740E68" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\poshuku\iflashoverrider.h" />
+            </Component>
+            <Component Id="cmpE3C9A9FE6563F7A28424A3C05C30C56A" Directory="dir327EE04CB3577A55C940D4144ABF8693" Guid="{F61E5D69-291A-4C3C-83C0-F36D2CF1A715}">
+                <File Id="fil9B88FE5F1DB95C3C868EB984F9328CD3" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\poshuku\iproxyobject.h" />
+            </Component>
+            <Component Id="cmp0977930D91EF759956E419C800093ABE" Directory="dir327EE04CB3577A55C940D4144ABF8693" Guid="{D4A9447C-A589-4D89-AD85-BE40B8EB83DB}">
+                <File Id="fil4FD499E9E1D8488A826C653798F5425B" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\poshuku\iurlcompletionmodel.h" />
+            </Component>
+            <Component Id="cmpCB9872C96B508D157612ABDFE3918182" Directory="dir327EE04CB3577A55C940D4144ABF8693" Guid="{B1D08451-FE9B-4AD8-975E-C50EBF106859}">
+                <File Id="filCDA7698EE5A4400AC70445E98FDB26BD" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\poshuku\iwebplugin.h" />
+            </Component>
+            <Component Id="cmpCA6EF8FB1D449D3C05616F1C5AD2F0CA" Directory="dir327EE04CB3577A55C940D4144ABF8693" Guid="{B707E976-BF5C-4A1A-9E4F-568F721C2407}">
+                <File Id="filCFD925BE57847DE0ABEE68C9C903D1AD" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\poshuku\poshukutypes.h" />
+            </Component>
+            <Component Id="cmp6923324C9BBC11650C4C9580404FC864" Directory="dir5BEEC59729A089678D9A7EA4A79E412C" Guid="{FC01E510-E1E1-4ED0-B5D8-69374B53F3A3}">
+                <File Id="filE49A16228D9E2B6879F7A2FEEBD30059" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\interfaces\secman\istorageplugin.h" />
+            </Component>
+            <Component Id="cmp595E05C4E19A3D646560CF218755F289" Directory="dir0E35C475A3C1839381000560DE253557" Guid="{0A472ABA-2D78-4158-A277-4ED72BF8BC6B}">
+                <File Id="fil96626B47D13579DB03308F57A88FF296" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\backendselector.h" />
+            </Component>
+            <Component Id="cmpC5F1172BE4A1E7EC8C38D32117B8B64F" Directory="dir0E35C475A3C1839381000560DE253557" Guid="{CCD3C2AE-0C33-4A60-B782-71DFE98C07D3}">
+                <File Id="filA17F64FD221765CE12BAB4084DC9CBA6" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\basehookinterconnector.h" />
+            </Component>
+            <Component Id="cmpA6F138AD9B17F618FEB1BD4AD2ABC65F" Directory="dir0E35C475A3C1839381000560DE253557" Guid="{6416ABCA-0E64-4677-BA17-E56537F82C56}">
+                <File Id="filFCD25E15D2456EB8FA5899874A5936FF" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\dblock.h" />
+            </Component>
+            <Component Id="cmp1F4F97E63F19D65D498C1793A9C48E46" Directory="dir0E35C475A3C1839381000560DE253557" Guid="{647966ED-55EB-41B0-ACA7-8E0E1D0ACA03}">
+                <File Id="filA1357FAF185EAACE23D6022965A90CF1" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\defaulthookproxy.h" />
+            </Component>
+            <Component Id="cmpAF248BE82316A1F5C226806AE05BD591" Directory="dir0E35C475A3C1839381000560DE253557" Guid="{3FA368B5-425D-4C69-9BC3-B58E417FFE3A}">
+                <File Id="filB2EDC5CD8B1AA68CE06C4CC08BB2DB6F" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\exceptions.h" />
+            </Component>
+            <Component Id="cmp43E6B0EAD877B62F0C46DFE779CDCA94" Directory="dir0E35C475A3C1839381000560DE253557" Guid="{3CE3D396-DC4D-41E8-B21B-D347C77F9D2F}">
+                <File Id="fil224FF997338AE16C17561195F7C4FDF8" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\fileremoveguard.h" />
+            </Component>
+            <Component Id="cmp54D43E79FA23E558D7C9F7A0928533F5" Directory="dir0E35C475A3C1839381000560DE253557" Guid="{462C3884-76B2-481E-A857-E807C111CACC}">
+                <File Id="fil9CEBC7E2FBFF069EC453432B33FE9062" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\idpool.h" />
+            </Component>
+            <Component Id="cmp71D221EC7C231167A5E1F03946405166" Directory="dir0E35C475A3C1839381000560DE253557" Guid="{2D3B8055-33DF-4BBB-9565-CE01B8B6F234}">
+                <File Id="fil85BE13621C46093EADB80230A488396D" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\notificationactionhandler.h" />
+            </Component>
+            <Component Id="cmp9A1B23B75BFFB9D3E15A1D0CFC566CC8" Directory="dir0E35C475A3C1839381000560DE253557" Guid="{9EACF4A5-213C-4EAB-84A2-D09BFD141F51}">
+                <File Id="fil0A4AE62DCE970D7E3B50F6BCE665B95B" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\passutils.h" />
+            </Component>
+            <Component Id="cmp0C57897E99D49CEAEC10D7395DD4C33B" Directory="dir0E35C475A3C1839381000560DE253557" Guid="{C8D28856-BACE-488B-8B8A-147009A04B9D}">
+                <File Id="fil16EC2A95379166AFEE80573372E6D171" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\queuemanager.h" />
+            </Component>
+            <Component Id="cmpA705A1343C460EFD5D34367D40B7CC1D" Directory="dir0E35C475A3C1839381000560DE253557" Guid="{1CF8DED2-C507-47F8-98D9-DB6B9F3603BC}">
+                <File Id="filBA7D144297BF2580C9A70DF3AF11C73F" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\resourceloader.h" />
+            </Component>
+            <Component Id="cmp58039605765DCBEBDACF240A14788C27" Directory="dir0E35C475A3C1839381000560DE253557" Guid="{BDC23D62-B750-4F80-A634-EA6E4B373356}">
+                <File Id="filF0600748EBC16422D1B5D3918C63E04B" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\structuresops.h" />
+            </Component>
+            <Component Id="cmpCCAFF89F6BB5521BADDD3DD7007BDADF" Directory="dir0E35C475A3C1839381000560DE253557" Guid="{2D1B603A-D9FF-4844-A124-37947C7FEC5E}">
+                <File Id="fil1B5D8539FE358D6C698117C9AB7D5BE6" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\sysinfo.h" />
+            </Component>
+            <Component Id="cmp3E95F40E6E87CF48D665D61882281E1E" Directory="dir0E35C475A3C1839381000560DE253557" Guid="{ED1330FB-9DB4-4973-8F1D-AE9E06E182DD}">
+                <File Id="filE62DE8FBDFE003E385CB93FFAAE95EA1" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\util.h" />
+            </Component>
+            <Component Id="cmpFF3FDAF9CAB8F0CBE0D8DB2AE1D4399D" Directory="dir0E35C475A3C1839381000560DE253557" Guid="{AA21258B-1A04-4C1F-AF00-9F082123DC34}">
+                <File Id="fil9AF06B08866357A6083CA121A9C3CD96" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\utilconfig.h" />
+            </Component>
+            <Component Id="cmp21E97D5DC70878104942762C7395A6B2" Directory="dir2C6511E1C1F39E38581D365556F7C172" Guid="{0D1F2927-40AF-4FB9-A2E3-C58963449327}">
+                <File Id="filD091310F3BF68E2AFE32684790E2BDF3" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\gui\autoresizemixin.h" />
+            </Component>
+            <Component Id="cmp6F6990FD28CFFD3FA75A87BDBA401AB2" Directory="dir2C6511E1C1F39E38581D365556F7C172" Guid="{D3A3C49A-24DF-4F00-915D-26C9E8E2317F}">
+                <File Id="filE8866E744873C74D5098743B041C827F" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\gui\clearlineeditaddon.h" />
+            </Component>
+            <Component Id="cmp91D123D5BA907D164A0E78631EEC8B88" Directory="dir2C6511E1C1F39E38581D365556F7C172" Guid="{86D20D03-6077-423D-82E9-F499E40CE4AB}">
+                <File Id="filAF351311DE203F2CF87CEB995F421D5B" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\gui\findnotification.h" />
+            </Component>
+            <Component Id="cmp49C9084CB8136A5BA2E05084A553D639" Directory="dir2C6511E1C1F39E38581D365556F7C172" Guid="{1ACFB3E4-9549-43DF-AEA3-9E6444F967CC}">
+                <File Id="fil62C32C8C5AE8321F8832F5ACC2AFD9D4" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\gui\flowlayout.h" />
+            </Component>
+            <Component Id="cmp7BAF3465D6665E21392E9A60A7B0DAEB" Directory="dir2C6511E1C1F39E38581D365556F7C172" Guid="{D2D538F7-C7D4-4D02-B042-F3C638247E0D}">
+                <File Id="filE669A8E28C20973C27DCF74224AA102E" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\gui\pagenotification.h" />
+            </Component>
+            <Component Id="cmpF75F2D6FDFE24FE5FB4185F46A61208B" Directory="dir2C6511E1C1F39E38581D365556F7C172" Guid="{EADEA564-6B35-4EAA-9E93-A7B8B7844696}">
+                <File Id="fil89B5E5551DC64455ED656665573B94C9" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\gui\selectablebrowser.h" />
+            </Component>
+            <Component Id="cmpC7220EC5F95E23C8F40B49D1EE2BF35D" Directory="dir2C6511E1C1F39E38581D365556F7C172" Guid="{B2BE5998-7CE7-4C27-A20F-9CCAD010514B}">
+                <File Id="fil57333D0A0745C143D82BF8C97DC18FD8" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\gui\unhoverdeletemixin.h" />
+            </Component>
+            <Component Id="cmp2D522BD88B701952BDF260557DFF96B6" Directory="dir2C6511E1C1F39E38581D365556F7C172" Guid="{A31FB806-A9EA-41D5-B0C6-17B3A017368F}">
+                <File Id="filD4D8ABE1A71B7DCD5E76B680816C55A1" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\gui\util.h" />
+            </Component>
+            <Component Id="cmp218EC1F44D63308E0FA09343D9BE5AE5" Directory="dirCBF02E5D581CEDAA653E001E6A5B403A" Guid="{A18E56F6-146C-4E87-B217-B5E7DDA42C7B}">
+                <File Id="filE64007F86165CCB924C05BF41944F3AB" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\models\flattenfiltermodel.h" />
+            </Component>
+            <Component Id="cmp67FA46E4FBC28BB9C05A2AC8C0CA296E" Directory="dirCBF02E5D581CEDAA653E001E6A5B403A" Guid="{673E4189-02F6-4D4B-B8BD-164CE3A80612}">
+                <File Id="fil39FB1661ABC0C2E69463AE26F84DBB13" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\models\flattofoldersproxymodel.h" />
+            </Component>
+            <Component Id="cmpA40C801BBFCBD5954C90CCEF33DC72E4" Directory="dirCBF02E5D581CEDAA653E001E6A5B403A" Guid="{293214B6-AB2B-48BB-8B2A-B5F13F0CBCFF}">
+                <File Id="fil9CD4508017767B17C88B4E6825BB7B2D" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\models\listmodel.h" />
+            </Component>
+            <Component Id="cmp92FC03A883D67AFCD8006D83BED0A294" Directory="dirCBF02E5D581CEDAA653E001E6A5B403A" Guid="{36A310B8-7106-415E-9AE0-5C33CCC5D6B6}">
+                <File Id="filE1FD26B540AA9464DBAF4E8E158BBCBC" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\models\mergemodel.h" />
+            </Component>
+            <Component Id="cmp26037149F6E738911C7ABE2F1EBDE05D" Directory="dirCBF02E5D581CEDAA653E001E6A5B403A" Guid="{BB558357-A473-4B3A-BEEB-D7C006B82BE8}">
+                <File Id="filAC581FAB127056FE358A0BF47DF14DED" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\models\modeliterator.h" />
+            </Component>
+            <Component Id="cmpE5D36DFD4E25CA544AEB98C91CFEF3B1" Directory="dirCBF02E5D581CEDAA653E001E6A5B403A" Guid="{A9041E28-4498-4D78-BE69-9B823958952A}">
+                <File Id="filE1D763C8DC1CA206026FBBEE8CFA499E" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\models\treeitem.h" />
+            </Component>
+            <Component Id="cmp2ED4943D8552DB59EDB0A522AC743EFF" Directory="dirD432F76E96234106AAFF7BBEF6D3162E" Guid="{6A957147-02D9-46C7-8944-FDE07C76C1B3}">
+                <File Id="fil932C26B2D787B46751FE827F963BEE3C" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\network\customcookiejar.h" />
+            </Component>
+            <Component Id="cmpF7D35B8C57D57DC39DB9A9481682AAFC" Directory="dirD432F76E96234106AAFF7BBEF6D3162E" Guid="{0B994248-2FD9-42B0-8213-D45FA8D5F544}">
+                <File Id="fil65568D2FF9BE3839C41661BE34EE2953" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\network\customnetworkreply.h" />
+            </Component>
+            <Component Id="cmp3C2B2C0B75A0B55B03FCF1F320A4AC5F" Directory="dirD432F76E96234106AAFF7BBEF6D3162E" Guid="{3D4895DB-8B5A-4113-93CB-B8A93BDC3A33}">
+                <File Id="filD11E27259EC5C737C0FDC07E1F9943D9" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\network\networkdiskcache.h" />
+            </Component>
+            <Component Id="cmp4B564777F36A8FEAC2E3B4492BE2AF4B" Directory="dirD432F76E96234106AAFF7BBEF6D3162E" Guid="{F63FBEA4-0052-4B05-8277-92BB9B4E20E0}">
+                <File Id="fil9228BA597471293DDCEF2E2F05EC99FD" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\network\socketerrorstrings.h" />
+            </Component>
+            <Component Id="cmpBFDFDB53B5D9361B8AE0F4A663C68B5E" Directory="dirA0DFC935D4414985F1121546AE992880" Guid="{1A169CD4-5995-4570-997D-F95231FF66AB}">
+                <File Id="filE1E3C2DF01F919635B16EBB6397D91E1" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\qml\colorthemeproxy.h" />
+            </Component>
+            <Component Id="cmp7B254744BB3AAE0CAA26BA39B6F20262" Directory="dirA0DFC935D4414985F1121546AE992880" Guid="{E75E7ABE-7B4E-48BA-B7A6-C17D4CD1E8E4}">
+                <File Id="filE34F7EA3AA415C03C2DD12CB403AD1A6" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\qml\settableiconprovider.h" />
+            </Component>
+            <Component Id="cmpF390AE1B50E2AF18FBF5D5A0BF68A718" Directory="dirA0DFC935D4414985F1121546AE992880" Guid="{2FC41DEC-7838-42F5-8FA5-09FDE42E52D7}">
+                <File Id="fil9D97D8468ED25EE577AA427B4750FB24" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\qml\standardnamfactory.h" />
+            </Component>
+            <Component Id="cmpD3632692055393E832C478478145A12D" Directory="dirA0DFC935D4414985F1121546AE992880" Guid="{7D636997-4403-4712-8492-4D792BE65A59}">
+                <File Id="fil5EE2C250473AAB0025B0FA15609AED06" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\qml\themeimageprovider.h" />
+            </Component>
+            <Component Id="cmp918D273FE46B360BFB588B0BAE8A4ADE" Directory="dirA0DFC935D4414985F1121546AE992880" Guid="{C3499CDE-9682-4751-9A99-085168537602}">
+                <File Id="filF8B6B165D2C008052AAF03136D1F7403" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\qml\unhidelistmodel.h" />
+            </Component>
+            <Component Id="cmp860F1A4E6AE7537B53CAEBDC473A8431" Directory="dirA0DFC935D4414985F1121546AE992880" Guid="{AAF93C4B-1981-45C3-92C4-9FEA8EFE184A}">
+                <File Id="fil7BDDBF47DDE747F4860C13E5FEE78801" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\qml\unhidelistviewbase.h" />
+            </Component>
+            <Component Id="cmp4E70DA650DC570145FB6D0CC12188668" Directory="dirA0DFC935D4414985F1121546AE992880" Guid="{6F6154EA-AAD9-46BE-9E24-8EB89203D10B}">
+                <File Id="filD21530248B2910B9118BC343A2D29C93" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\qml\widthiconprovider.h" />
+            </Component>
+            <Component Id="cmpB6565F22B7E38DF2840623ADB037352C" Directory="dir54EE5FCB4185DF0D3C815047AF11D159" Guid="{54708AA6-4C5A-4253-B7B3-F0DAC8B7B045}">
+                <File Id="filB2861EAFE21B04D1F6982E46322C7922" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\shortcuts\shortcutmanager.h" />
+            </Component>
+            <Component Id="cmp7E292F11C208CD7DDA15AB739D91AF02" Directory="dir7B915992731E534A20170388DBAD63D1" Guid="{E89F9D50-341A-4C5F-B1A2-31CFFA4818CA}">
+                <File Id="fil0E52EB37BD08389E957EEB6FC00F2752" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\svcauth\vkauthmanager.h" />
+            </Component>
+            <Component Id="cmpC1A5E5F0CDEDC11DEC0CD8F044840C33" Directory="dirE3356F2BF71DE81C7E8EE7692E78B8FE" Guid="{8B080F35-F1B0-4304-BEEB-D950439593A0}">
+                <File Id="filFA78A5D8D1886D45D306F7636EE596EC" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\sys\mimedetector.h" />
+            </Component>
+            <Component Id="cmp7D8F1DD5CD424A4218C16736269C5DA2" Directory="dirE3356F2BF71DE81C7E8EE7692E78B8FE" Guid="{5A0BC9AF-F3F9-45C5-98FB-B9000B544A11}">
+                <File Id="fil6D863B49E4E1C3A6CB8265C4A50C94B9" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\sys\paths.h" />
+            </Component>
+            <Component Id="cmp33EC030AF8D451654C57EAAF69B9F062" Directory="dir89461243CADF82573161DCEF2D818ADA" Guid="{7496D43E-F943-446A-BCB1-B661DABC37F2}">
+                <File Id="filBAB6671849886AC8657F5F32D67B535D" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\tags\categoryselector.h" />
+            </Component>
+            <Component Id="cmp66F27AA5457EE28854CC1AF3729826F2" Directory="dir89461243CADF82573161DCEF2D818ADA" Guid="{7AB890A7-5060-4FA4-AD2B-E2E81C8A2BEE}">
+                <File Id="fil3EE783C46B40DA7A97060A458D19909E" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\tags\tagscompleter.h" />
+            </Component>
+            <Component Id="cmpA69D812B1778F81243DA2DFE2815C8A0" Directory="dir89461243CADF82573161DCEF2D818ADA" Guid="{B9FF1D4E-6E28-4A20-96CA-7F346437F0F9}">
+                <File Id="fil621D62C75E14F540B2A22A48F5F922B6" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\tags\tagscompletionmodel.h" />
+            </Component>
+            <Component Id="cmpB9A6CEAFD3952A500D472E9C82A41A32" Directory="dir89461243CADF82573161DCEF2D818ADA" Guid="{12FF0776-ED04-4721-B7FD-EAF2C572537A}">
+                <File Id="fil081AF778B9CF776138CCA068FB2F6C35" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\tags\tagsfiltermodel.h" />
+            </Component>
+            <Component Id="cmp2C95965CFB949249C33C43F0F4776AE4" Directory="dir89461243CADF82573161DCEF2D818ADA" Guid="{034B1F7C-3063-454C-9F61-4590D02A2C94}">
+                <File Id="fil84962E20F3D078678C74CC7DC8F5D012" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\tags\tagslineedit.h" />
+            </Component>
+            <Component Id="cmp1E3F0B427D34C12E6397C423C1A6A4FA" Directory="dir4CBFF96E54181127CBC8CB057B6C5780" Guid="{83C32F15-18B7-4232-8A71-22DA528B5180}">
+                <File Id="filF586F8F96B0474141AE65B89D3E327EC" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\x11\winflags.h" />
+            </Component>
+            <Component Id="cmp608157E361A06402C705B934A93B3760" Directory="dir4CBFF96E54181127CBC8CB057B6C5780" Guid="{FA8E48BC-0676-49B7-BCB1-0518BD04A331}">
+                <File Id="fil48D31A1B6AFDE05CA7C289A50F982E39" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\x11\xwrapper.h" />
+            </Component>
+            <Component Id="cmpF1C7616E42C79CB9015C3C36C8DD22AD" Directory="dirB4F3E275611838537832526502E8EFEB" Guid="{FC6ED401-EB6B-4936-99FB-8878BB1D4E11}">
+                <File Id="filE3C011EAF6ACDC634503D46F90FE4654" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\xdg\desktopparser.h" />
+            </Component>
+            <Component Id="cmp2B3D146B0B067F37E632C40EC99E07E7" Directory="dirB4F3E275611838537832526502E8EFEB" Guid="{1166ED2A-31E5-466D-A6AA-21B9C1834088}">
+                <File Id="fil5E87E27A8F8925F57E76B327917EC5F0" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\xdg\item.h" />
+            </Component>
+            <Component Id="cmpE65DBB2465D4C4AC1E75D0F9F4AEFF35" Directory="dirB4F3E275611838537832526502E8EFEB" Guid="{7FA88626-4B49-4BF6-BD18-5BEEC06ADF00}">
+                <File Id="fil7BFCEA9E9635922ED41EE989891A00BB" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\xdg\itemsdatabase.h" />
+            </Component>
+            <Component Id="cmp695096F5D2244421D88C98E3BE84E676" Directory="dirB4F3E275611838537832526502E8EFEB" Guid="{BC2EAC27-04A8-472B-9B7E-D3CC3FAFB823}">
+                <File Id="filAF46C3DFB6F8CE2213DC0D66C408F8D8" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\xdg\itemsfinder.h" />
+            </Component>
+            <Component Id="cmp27B1DB742EBCB3D42AF146D51C78F9E4" Directory="dirB4F3E275611838537832526502E8EFEB" Guid="{FD32059D-C5C0-4682-9706-4B35265DE46D}">
+                <File Id="filCBC5F858DC3926F5882BA898B62183E8" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\xdg\itemtypes.h" />
+            </Component>
+            <Component Id="cmp2021C00D8E73860E1DF00364BFBE6077" Directory="dirB4F3E275611838537832526502E8EFEB" Guid="{A2A81AF8-588A-4007-B810-FFF097A3600F}">
+                <File Id="filF04E920C1910460B523751270B4001A8" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\xdg\xdg.h" />
+            </Component>
+            <Component Id="cmp15C97DD814F8B8EA171FB4EFB5BE0135" Directory="dirB4F3E275611838537832526502E8EFEB" Guid="{60BA4BA1-9BE0-48D4-8385-22508DC777BE}">
+                <File Id="fil9B4B7EB8EEA60D1CCA580CE1A98FA8E8" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\xdg\xdgfwd.h" />
+            </Component>
+            <Component Id="cmpF41149C69ACFEE464FE528257C2A9202" Directory="dir7341A2036333DFB0EDFDD91A959D6F1A" Guid="{5FF3400B-4F75-421A-A8FB-7784F5FA512A}">
+                <File Id="fil29CA84290FEBFC1BF1F270825C4A0DA3" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\xpc\stddatafiltermenucreator.h" />
+            </Component>
+            <Component Id="cmp493E05CA0985745293106362833917B4" Directory="dir7341A2036333DFB0EDFDD91A959D6F1A" Guid="{AD78D1EB-E532-4FAE-AB20-51266AD01574}">
+                <File Id="fil71144E040AC9C3D6C4ED1831D00F8A10" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\util\xpc\util.h" />
+            </Component>
+            <Component Id="cmp0F3463B623656039F9D09DD49A29F1A2" Directory="dir7F725CB3C790BBF18B381CEF9F3703AA" Guid="{FDEA8396-F3E1-45E9-8EAB-B48AAD4AC7E2}">
+                <File Id="fil57F42463A0B58102E3C8E1129F87F225" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\xmlsettingsdialog\basesettingsmanager.h" />
+            </Component>
+            <Component Id="cmp5D3C564EBC22F7FE9B53E46E72649996" Directory="dir7F725CB3C790BBF18B381CEF9F3703AA" Guid="{55C56B65-BF6E-44B9-9FF8-CBBBAB8FF83D}">
+                <File Id="fil54EEFF0926246EC48D42C09759A2229C" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\xmlsettingsdialog\datasourceroles.h" />
+            </Component>
+            <Component Id="cmp37FEAF3FA0AE1A5815D5175BEEAD92DA" Directory="dir7F725CB3C790BBF18B381CEF9F3703AA" Guid="{A1BC721D-98DA-4EEF-8BA3-24BA99B09630}">
+                <File Id="fil3D153A82D7B606439AD12379E5DE2DE8" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\xmlsettingsdialog\xmlsettingsdialog.h" />
+            </Component>
+            <Component Id="cmp4E87E9E3F1C22A28C3D5CDD6F6158331" Directory="dir7F725CB3C790BBF18B381CEF9F3703AA" Guid="{50198D19-81F3-4FD7-9F2D-3747A6131EA8}">
+                <File Id="filD947930B2C16F04931440BA9D015D203" KeyPath="yes" Source="$(var.SourcePath)\include\leechcraft\xmlsettingsdialog\xsdconfig.h" />
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirF3F66297287B6BA8516799F5B764F70F">
+            <Directory Id="dir032CACFD54D0911A23B6ED0F8E252B26" Name="an" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirB705A3364CFC0A81AC8A9B0B125E8DD2">
+            <Directory Id="dir0E35C475A3C1839381000560DE253557" Name="util" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir0E35C475A3C1839381000560DE253557">
+            <Directory Id="dir2C6511E1C1F39E38581D365556F7C172" Name="gui" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirF3F66297287B6BA8516799F5B764F70F">
+            <Directory Id="dir327EE04CB3577A55C940D4144ABF8693" Name="poshuku" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirF3F66297287B6BA8516799F5B764F70F">
+            <Directory Id="dir42E0E2C08B82A7D927C2949AC8123B3A" Name="azoth" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir0E35C475A3C1839381000560DE253557">
+            <Directory Id="dir4CBFF96E54181127CBC8CB057B6C5780" Name="x11" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir0E35C475A3C1839381000560DE253557">
+            <Directory Id="dir54EE5FCB4185DF0D3C815047AF11D159" Name="shortcuts" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirF3F66297287B6BA8516799F5B764F70F">
+            <Directory Id="dir5BEEC59729A089678D9A7EA4A79E412C" Name="secman" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirF3F66297287B6BA8516799F5B764F70F">
+            <Directory Id="dir5D03B052D59AB5F46FBC649BFBBB596D" Name="devices" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirF3F66297287B6BA8516799F5B764F70F">
+            <Directory Id="dir5D43AFB38FD4450A0F9A30711FC6EF2F" Name="lmp" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirF3F66297287B6BA8516799F5B764F70F">
+            <Directory Id="dir67774D4BF2AE513206F6C2D1F018F32E" Name="media" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirF3F66297287B6BA8516799F5B764F70F">
+            <Directory Id="dir6EB39F801F6AA7638697F847879A6C91" Name="data" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir0E35C475A3C1839381000560DE253557">
+            <Directory Id="dir7341A2036333DFB0EDFDD91A959D6F1A" Name="xpc" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir0E35C475A3C1839381000560DE253557">
+            <Directory Id="dir7B915992731E534A20170388DBAD63D1" Name="svcauth" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirB705A3364CFC0A81AC8A9B0B125E8DD2">
+            <Directory Id="dir7F725CB3C790BBF18B381CEF9F3703AA" Name="xmlsettingsdialog" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir0E35C475A3C1839381000560DE253557">
+            <Directory Id="dir89461243CADF82573161DCEF2D818ADA" Name="tags" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirF3F66297287B6BA8516799F5B764F70F">
+            <Directory Id="dir8B252A7F9DF7CC79C6002F5209D50002" Name="core" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir0E35C475A3C1839381000560DE253557">
+            <Directory Id="dirA0DFC935D4414985F1121546AE992880" Name="qml" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir0E35C475A3C1839381000560DE253557">
+            <Directory Id="dirB4F3E275611838537832526502E8EFEB" Name="xdg" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="DIR_include">
+            <Directory Id="dirB705A3364CFC0A81AC8A9B0B125E8DD2" Name="leechcraft" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir0E35C475A3C1839381000560DE253557">
+            <Directory Id="dirCBF02E5D581CEDAA653E001E6A5B403A" Name="models" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir0E35C475A3C1839381000560DE253557">
+            <Directory Id="dirD432F76E96234106AAFF7BBEF6D3162E" Name="network" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir0E35C475A3C1839381000560DE253557">
+            <Directory Id="dirE3356F2BF71DE81C7E8EE7692E78B8FE" Name="sys" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirB705A3364CFC0A81AC8A9B0B125E8DD2">
+            <Directory Id="dirF3F66297287B6BA8516799F5B764F70F" Name="interfaces" />
+        </DirectoryRef>
+    </Fragment>
+</Wix>
