@@ -10,13 +10,6 @@
       <MajorUpgrade DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." AllowSameVersionUpgrades="yes" MigrateFeatures="yes" Schedule="afterInstallInitialize"/>
    
       <Directory Id="TARGETDIR" Name="SourceDir">
-        <Directory Id="DesktopFolder" Name="Desktop">
-          <Component Id="ApplicationShortcutDesktop" Guid="{BCBEDFAF-5881-45D6-9FDE-91F60E58ADB2}">
-            <Shortcut Id="ApplicationDesktopShortcut" Name="LeechCraft" Description="Launch LeechCraft" Target="[INSTALLFOLDER]leechcraft.exe" WorkingDirectory="INSTALLFOLDER" />
-            <RemoveFolder Id="DesktopFolder" On="uninstall" />
-            <RegistryValue Root="HKCU" Key="Software/$(var.Manufacturer)/$(var.ProductName)" Name="installed" Type="integer" Value="1" KeyPath="yes" />
-          </Component>
-        </Directory>
         <Directory Id="ProgramFilesFolder">
             <Directory Id="DIR_Deviant" Name="$(var.Manufacturer)">
                 <Directory Id="INSTALLFOLDER" Name="$(var.ProductName)">
@@ -34,8 +27,66 @@
                 </Directory>
             </Directory>
         </Directory>
+        <Directory Id="ProgramMenuFolder">
+          <Directory Id="ApplicationProgramsFolder" Name="$(var.ProductName)"/>
+        </Directory>
+          <Directory Id="DesktopFolder" Name="Desktop">
+        </Directory>
       </Directory>
+
+      <DirectoryRef Id="ApplicationProgramsFolder">
+        <Component Id="ApplicationShortcut" Guid="049F82C8-A0F1-11E1-B89F-EB146288709B">
+          <Shortcut Id="ApplicationStartMenuShortcut"
+                    Name="Launch $(var.ProductName)"
+                    Description="Launch $(var.ProductName)"
+                    Target="[INSTALLFOLDER]$(var.ProductName).exe"
+                    WorkingDirectory="INSTALLFOLDER"
+                    Icon="leechcraft.ico"/>
+          <Shortcut Id="UninstallProduct" 
+                    Name="Uninstall $(var.ProductName)" 
+                    Target="[SystemFolder]msiexec.exe" 
+                    Arguments="/x [ProductCode]"
+                    Description="Uninstalls LeechCraft from this machine" />
+          <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+          <RegistryValue Root="HKCU" Key="Software\Microsoft\Deviant\LeechCraft" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+        </Component>
+      </DirectoryRef>
+
+      <DirectoryRef Id="DesktopFolder">
+        <Component Id="ApplicationShortcutDesktop" Guid="{A072CB7F-5598-4d1c-85E3-C119659B1B19}">
+          <Shortcut Id="ApplicationDesktopShortcut"
+             Name="$(var.ProductName)"
+             Description="Launch LeechCraft"
+             Target="[INSTALLFOLDER]LeechCraft.exe"
+             WorkingDirectory="INSTALLFOLDER"
+             Icon="leechcraft.ico" />
+          <RemoveFolder Id="DesktopFolder" On="uninstall"/>
+          <RegistryValue
+              Root="HKCU"
+              Key="Software\Deviant\LeechCraft"
+              Name="installed"
+              Type="integer"
+              Value="1"
+              KeyPath="yes"/>
+        </Component>
+      </DirectoryRef>
       
+      <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+      <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
+      <WixVariable Id="WixUIDialogBmp" Value="installscreen.bmp" />
+        
+      <UI>
+        <UIRef Id="WixUI_Mondo" />
+        <Publish Dialog="ExitDialog"
+            Control="Finish"
+            Event="DoAction"
+            Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>
+      </UI>
+      <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch $(var.ProductName)" />
+      <Property Id="WixShellExecTarget" Value="[#FILE_leechcraft.exe]" />
+      <CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />      
+
+
       <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
       <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
       <WixVariable Id="WixUIDialogBmp" Value="installscreen.bmp" />
