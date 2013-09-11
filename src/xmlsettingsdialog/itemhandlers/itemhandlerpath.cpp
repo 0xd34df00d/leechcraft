@@ -86,6 +86,7 @@ namespace LeechCraft
 		lay->addWidget (picker, row, 1);
 	}
 
+#ifdef Q_OS_WIN32
 	namespace
 	{
 		QDir GetUserDir (const QString& opath)
@@ -105,6 +106,7 @@ namespace LeechCraft
 							.arg (QDir::toNativeSeparators (home.filePath (path)))));
 		}
 	}
+#endif
 
 	QVariant ItemHandlerPath::GetValue (const QDomElement& item,
 			QVariant value) const
@@ -122,7 +124,11 @@ namespace LeechCraft
 				str2loc ["DESKTOP"] = QDesktopServices::storageLocation (QDesktopServices::DesktopLocation);
 				str2loc ["MUSIC"] = QDesktopServices::storageLocation (QDesktopServices::MusicLocation);
 				str2loc ["MOVIES"] = QDesktopServices::storageLocation (QDesktopServices::MoviesLocation);
+#ifdef Q_OS_WIN32
 				str2loc ["LCDIR"] = GetUserDir ({}).absolutePath ();
+#else
+				str2loc ["LCDIR"] = Util::GetUserDir ({}).absolutePath ();
+#endif
 				Q_FOREACH (const QString& key, str2loc.keys ())
 					if (text.startsWith ("{" + key + "}"))
 					{
