@@ -59,6 +59,7 @@ namespace Metida
 		const int MaxGetEventsCount_;
 
 		QHash<QNetworkReply*, int> Reply2Skip_;
+		QHash<QNetworkReply*, Filter> Reply2Filter_;
 
 		enum class RequestType
 		{
@@ -86,7 +87,7 @@ namespace Metida
 
 		void Preview (const LJEvent& event);
 		void Submit (const LJEvent& event);
-		void BackupEvents ();
+		void GetEventsWithFilter (const Filter& filter);
 		void GetLastEvents (int count);
 		void GetChangedEvents (const QDateTime& dt);
 		void GetEventsByDate (const QDate& date);
@@ -121,7 +122,7 @@ namespace Metida
 		void RemoveEventRequest (const LJEvent& event, const QString& challenge);
 		void UpdateEventRequest (const LJEvent& event, const QString& challenge);
 
-		void BackupEventsRequest (int skip, const QString& challenge);
+		void BackupEventsRequest (int skip, const Filter& filter, const QString& challenge);
 
 		void GetLastEventsRequest (int count, const QString& challenge);
 		void GetChangedEventsRequest (const QDateTime& dt, const QString& challenge);

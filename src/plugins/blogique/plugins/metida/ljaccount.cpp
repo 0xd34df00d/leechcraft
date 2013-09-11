@@ -205,7 +205,7 @@ namespace Metida
 
 	void LJAccount::GetEntriesWithFilter (const Filter& filter)
 	{
-// 		LJXmlRpc_->GetEventsWithFilter (filter);
+		LJXmlRpc_->GetEventsWithFilter (filter);
 	}
 
 	namespace

@@ -115,10 +115,10 @@ namespace Metida
 		GenerateChallenge ();
 	}
 
-	void LJXmlRPC::BackupEvents ()
+	void LJXmlRPC::GetEventsWithFilter (const Filter& filter)
 	{
-		ApiCallQueue_ << [this] (const QString& challenge)
-				{ BackupEventsRequest (0, challenge); };
+		ApiCallQueue_ << [filter, this] (const QString& challenge)
+				{ BackupEventsRequest (0, filter, challenge); };
 		GenerateChallenge ();
 	}
 
@@ -768,7 +768,7 @@ namespace Metida
 				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
-	void LJXmlRPC::BackupEventsRequest (int skip, const QString& challenge)
+	void LJXmlRPC::BackupEventsRequest (int skip, const Filter& filter, const QString& challenge)
 	{
 		QDomDocument document ("BackupEventsRequest");
 		auto result = GetStartPart ("LJ.XMLRPC.getevents", document);
@@ -776,14 +776,16 @@ namespace Metida
 		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
 				Account_->GetPassword (), challenge, document);
 
+		element.appendChild (GetSimpleMemberElement ("noprops", "boolean",
+				"true", document));
 		element.appendChild (GetSimpleMemberElement ("selecttype", "string",
-				"before", document));
-		element.appendChild (GetSimpleMemberElement ("howmany", "int",
-				QString::number (MaxGetEventsCount_), document));
+				"syncitems", document));
+// 		element.appendChild (GetSimpleMemberElement ("howmany", "int",
+// 				QString::number (MaxGetEventsCount_), document));
 		element.appendChild (GetSimpleMemberElement ("skip", "int",
 				QString::number (skip), document));
-		element.appendChild (GetSimpleMemberElement ("before", "string",
-				QDateTime::currentDateTime ().toString ("yyyy-MM-dd hh:mm:ss"),
+		element.appendChild (GetSimpleMemberElement ("lastsync", "string",
+				filter.BeginDate_.toString ("yyyy-MM-dd hh:mm:ss"),
 				document));
 		element.appendChild (GetSimpleMemberElement ("usejournal", "string",
 				Account_->GetOurLogin (), document));
@@ -792,6 +794,7 @@ namespace Metida
 				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
 				document.toByteArray ());
 		Reply2Skip_ [reply] = skip;
+		Reply2Filter_ [reply] = filter;
 
 		connect (reply,
 				SIGNAL (finished ()),
@@ -1680,16 +1683,18 @@ namespace Metida
 			return;
 
 		const int skip = Reply2Skip_.take (reply);
+		const Filter filter = Reply2Filter_.take (reply);
 
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
 			const auto& eventsList = ParseFullEvents (document);
+			int count = eventsList.count ();
 			emit gotEvents2Backup (eventsList);
 
 			if (!eventsList.isEmpty ())
 			{
-				ApiCallQueue_ << [skip, this] (const QString& challenge)
-						{ BackupEventsRequest (skip + MaxGetEventsCount_, challenge); };
+				ApiCallQueue_ << [skip, count, filter, this] (const QString& challenge)
+						{ BackupEventsRequest (skip + count , filter, challenge); };
 				GenerateChallenge ();
 			}
 			else
