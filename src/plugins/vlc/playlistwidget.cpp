@@ -58,6 +58,13 @@ namespace vlc
 		show ();
 	}
 	
+	PlaylistWidget::~PlaylistWidget ()
+	{
+		libvlc_media_list_release (Playlist_);
+		libvlc_media_list_player_release (Player_);
+		delete DeleteAction_;
+	}
+	
 	void PlaylistWidget::Init (libvlc_instance_t *instance, libvlc_media_player_t *player)
 	{
 		Player_ = libvlc_media_list_player_new (instance);
@@ -80,11 +87,6 @@ namespace vlc
 		timer->start ();
 
 		DeleteAction_ = new QAction (this);
-		
-		connect (this,
-				SIGNAL (customContextMenuRequested (QPoint)),
-				this,
-				SLOT (createMenu (QPoint)));
 	}
 	
 	void PlaylistWidget::AddUrl (const QUrl& url)
@@ -142,6 +144,7 @@ namespace vlc
 	
 	void PlaylistWidget::createMenu (QPoint p)
 	{
+		fprintf (stderr, "create");
 		int index = indexAt (p).row ();
 		if (index == -1)
 			return;
@@ -162,7 +165,9 @@ namespace vlc
 	
 	void PlaylistWidget::deleteRequested (QAction *object)
 	{
+		libvlc_media_t *media = libvlc_media_list_item_at_index (Playlist_, object->data ().toInt ());
 		libvlc_media_list_remove_index (Playlist_, object->data ().toInt ());
+		libvlc_media_release (media);
 		Model_->updateTable ();
 	}
 	
@@ -173,6 +178,17 @@ namespace vlc
 			libvlc_media_list_player_play_item_at_index (Player_, row);
 		
 		event->accept ();
+	}
+	
+	void PlaylistWidget::mousePressEvent (QMouseEvent *event)
+	{
+		if (event->button () == Qt::RightButton) 
+		{
+			createMenu (event->pos ()); //customContextMenu would not call. I don't know why
+			event->accept ();
+		}
+		
+		QTimer::singleShot (50, Model_, SLOT (updateTable ()));
 	}
 	
 	void PlaylistWidget::resizeEvent (QResizeEvent *event)

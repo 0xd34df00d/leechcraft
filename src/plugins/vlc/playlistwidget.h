@@ -61,6 +61,7 @@ namespace vlc
 	
 	public:
 		explicit PlaylistWidget (QWidget *parent = 0);
+		~PlaylistWidget ();
 		
 		void AddUrl (const QUrl&);
 		bool NowPlaying ();
@@ -69,6 +70,7 @@ namespace vlc
 		
 	protected:
 		void mouseDoubleClickEvent (QMouseEvent*);
+		void mousePressEvent (QMouseEvent*);
 		void resizeEvent (QResizeEvent*);
 		
 	private slots:

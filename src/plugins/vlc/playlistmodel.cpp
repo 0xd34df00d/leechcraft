@@ -52,6 +52,14 @@ namespace vlc
 		setSupportedDragActions (Qt::MoveAction | Qt::CopyAction);
 	}
 	
+	PlaylistModel::~PlaylistModel ()
+	{
+		for (int i = 0; i < Items_ [0].size (); i++)
+			libvlc_media_release (libvlc_media_list_item_at_index (Playlist_, i));
+		
+		setRowCount (0);
+	}
+	
 	void PlaylistModel::updateTable ()
 	{
 		setRowCount (libvlc_media_list_count (Playlist_));
@@ -60,6 +68,7 @@ namespace vlc
 			int cnt = Items_ [0].size ();
 			Items_ [0].resize (libvlc_media_list_count (Playlist_));
 			Items_ [1].resize (libvlc_media_list_count (Playlist_));
+			
 			for (int i = cnt; i < Items_ [0].size (); i++)
 			{
 				Items_ [0][i] = new QStandardItem;
@@ -79,7 +88,6 @@ namespace vlc
 			time = time.addMSecs (libvlc_media_get_duration (media));
 			Items_ [1][i]->setText (time.toString ("hh:mm:ss"));
 		}
-		
 		
 		for (int i = 0; i < libvlc_media_list_count (Playlist_); i++)
 		{
