@@ -93,13 +93,6 @@ namespace LMP
 			static_cast<SourceObject*> (data)->SetupSource ();
 			return true;
 		}
-
-		gboolean CbElement (GstBus *bus, GstMessage *msg, gpointer data)
-		{
-			auto src = static_cast<SourceObject*> (data);
-			src->HandleElementMsg (msg);
-			return true;
-		}
 	}
 
 	SourceObject::SourceObject (QObject *parent)
