@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "graphsfactory.h"
+#include <numeric>
 #include <QStringList>
 #include <QMap>
 #include <QApplication>

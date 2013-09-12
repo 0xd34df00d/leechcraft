@@ -30,6 +30,7 @@
 #include "operationpropsdialog.h"
 #include <limits>
 #include <algorithm>
+#include <numeric>
 #include <QStringListModel>
 #include <QMessageBox>
 #include <QtDebug>
