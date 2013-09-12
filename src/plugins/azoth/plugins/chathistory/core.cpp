@@ -161,8 +161,9 @@ namespace ChatHistory
 				msg->GetMessageType () == IMessage::MTMUCMessage)
 			return;
 
+		const double secsDiff = msg->GetDateTime ().secsTo (QDateTime::currentDateTime ());
 		if (msg->GetMessageType () == IMessage::MTMUCMessage &&
-				std::abs (msg->GetDateTime ().secsTo (QDateTime::currentDateTime ())) >= 2)
+				std::abs (secsDiff) >= 2)
 			return;
 
 		ICLEntry *entry = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
