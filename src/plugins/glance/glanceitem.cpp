@@ -120,7 +120,7 @@ namespace Glance
 		if (cur)
 		{
 			setZValue (1);
-			QueueScaleAnim (scale (), std::max (0.5, Scale_ * 1.3));
+			QueueScaleAnim (scale (), std::max (0.5, Scale_ * 1.2));
 		}
 		else
 		{
