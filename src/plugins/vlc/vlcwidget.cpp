@@ -53,6 +53,8 @@
 #include <QResizeEvent>
 #include <QCursor>
 #include <QDropEvent>
+#include <QCoreApplication>
+#include <QSettings>
 #include <util/shortcuts/shortcutmanager.h>
 #include "vlcwidget.h"
 #include "vlcplayer.h"
@@ -168,15 +170,28 @@ namespace vlc
 		
 		InitNavigations ();
 		setAcceptDrops (true);
+		RestoreSettings ();
 	}
 	
 	VlcWidget::~VlcWidget ()
 	{
 		VlcPlayer_->stop ();
 		delete VlcPlayer_;
+		SaveSettings ();
 		emit deleteMe (this);
 	}
+	
+	void VlcWidget::RestoreSettings ()
+	{
+		Settings_ = new QSettings (QCoreApplication::organizationName (), QCoreApplication::applicationName () + "_Vlc");
+		PlaylistWidget_->restoreGeometry (Settings_->value ("PlaylistGeometry").toByteArray ());
+	}
 
+	void VlcWidget::SaveSettings ()
+	{
+		Settings_->setValue ("PlaylistGeometry", QVariant (PlaylistWidget_->saveGeometry ()));
+		delete Settings_;
+	}
 
 	QObject* VlcWidget::ParentMultiTabs ()
 	{

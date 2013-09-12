@@ -90,6 +90,8 @@ namespace vlc
 
 	void Plugin::Release ()
 	{
+		for (int i = 0; i < Tabs_.size (); i++)
+			delete Tabs_ [i];
 	}
 
 	QString Plugin::GetName () const
@@ -110,6 +112,7 @@ namespace vlc
 	void Plugin::TabOpenRequested (const QByteArray& tabClass) 
 	{
 		VlcWidget *widget = new VlcWidget (Manager_);
+		Tabs_.push_back (widget);
 		emit addNewTab ("VLC", widget);
 		emit raiseTab (widget);
 		connect (widget, 

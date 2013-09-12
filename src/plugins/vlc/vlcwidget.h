@@ -44,6 +44,7 @@ class QTimer;
 class QToolButton;
 class QResizeEvent;
 class QSplitter;
+class QSettings;
 
 namespace LeechCraft
 {
@@ -103,6 +104,7 @@ namespace vlc
 		SoundWidget *SoundWidget_;
 		SoundWidget *FullScreenSoundWidget_;
 		QMenu *ContextMenu_;
+		QSettings *Settings_;
 		
 	public:
 		explicit VlcWidget (Util::ShortcutManager *manager, QWidget *parent = 0);
@@ -123,6 +125,9 @@ namespace vlc
 		void ForbidFullScreen ();
 		void ConnectWidgetToMe (SignalledWidget*);
 		void InitNavigations ();
+		
+		void SaveSettings ();
+		void RestoreSettings ();
 		
 	private slots:
 		void addFile ();
