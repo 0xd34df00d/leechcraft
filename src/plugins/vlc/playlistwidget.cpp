@@ -193,7 +193,8 @@ namespace vlc
 	
 	void PlaylistWidget::resizeEvent (QResizeEvent *event)
 	{
-		setColumnWidth (0, event->size ().width () - 60);
+		setColumnWidth (0, event->size ().width () - 65);
+		setColumnWidth (1, 65);
 	}
 }
 }
