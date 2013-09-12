@@ -33,8 +33,10 @@
 #include <QX11Info>
 #include <signal.h>
 #include <unistd.h>
+#include <sys/types.h>
 #include <sys/resource.h>
 #include <sys/wait.h>
+#include <errno.h>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 
