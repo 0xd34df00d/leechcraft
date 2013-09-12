@@ -58,7 +58,6 @@ namespace vlc
 		QWidget *Parent_;
 		bool DVD_;
 		
-		QUrl LastMedia_;
 		QStringList Subtitles_;
 		
 		libvlc_time_t FreezeCur_;

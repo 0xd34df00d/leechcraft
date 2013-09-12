@@ -97,7 +97,7 @@ namespace vlc
 				qWarning () << "Ignoring url: double";
 				return;
 			}
-		libvlc_media_t *m = libvlc_media_new_path (Instance_, url.toString ().toUtf8 ());
+		libvlc_media_t *m = libvlc_media_new_path (Instance_, url.toEncoded ());
 		libvlc_media_set_meta (m, libvlc_meta_URL, url.toEncoded ());
 		libvlc_media_list_add_media (Playlist_, m);
 		libvlc_media_list_player_play (Player_);

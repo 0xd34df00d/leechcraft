@@ -184,12 +184,12 @@ namespace vlc
 	void VlcWidget::RestoreSettings ()
 	{
 		Settings_ = new QSettings (QCoreApplication::organizationName (), QCoreApplication::applicationName () + "_Vlc");
-		PlaylistWidget_->restoreGeometry (Settings_->value ("PlaylistGeometry").toByteArray ());
+		MainArea_->restoreState (Settings_->value ("PlaylistGeometry").toByteArray ());
 	}
 
 	void VlcWidget::SaveSettings ()
 	{
-		Settings_->setValue ("PlaylistGeometry", QVariant (PlaylistWidget_->saveGeometry ()));
+		Settings_->setValue ("PlaylistGeometry", QVariant (MainArea_->saveState ()));
 		delete Settings_;
 	}
 

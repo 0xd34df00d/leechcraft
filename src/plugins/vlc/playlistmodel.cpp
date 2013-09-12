@@ -79,7 +79,7 @@ namespace vlc
 		for (int i = 0; i < libvlc_media_list_count (Playlist_); i++)
 		{
 			libvlc_media_t *media = libvlc_media_list_item_at_index (Playlist_, i);
-			Items_ [0][i]->setText (QString (libvlc_media_get_meta (media, libvlc_meta_Title)));
+			Items_ [0][i]->setText (QString::fromUtf8 (libvlc_media_get_meta (media, libvlc_meta_Title)));
 			
 			if (!libvlc_media_is_parsed (media))
 				libvlc_media_parse (media);
@@ -99,6 +99,7 @@ namespace vlc
 	bool PlaylistModel::dropMimeData (const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent)
 	{
 		QList <QUrl> urls = data->urls ();
+		qDebug () << urls;
 		if (parent != invisibleRootItem ()->index ())
 			row = parent.row () - 1;
 		else	
