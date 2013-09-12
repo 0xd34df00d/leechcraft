@@ -96,7 +96,7 @@ set (SRCS
 	loaders/sopluginloader.cpp
 	)
 
-if (NOT WIN32)
+if (LINUX)
 	set (SRCS
 		${SRCS}
 		loaders/dbuspluginloader.cpp
@@ -163,6 +163,6 @@ if (USE_QT5)
 	QT5_USE_MODULES (leechcraft Gui Network Widgets Xml Sql Script Concurrent DBus Svg)
 endif ()
 
-if (NOT WIN32)
+if (LINUX)
 	add_subdirectory (loaders/dbus)
 endif ()
