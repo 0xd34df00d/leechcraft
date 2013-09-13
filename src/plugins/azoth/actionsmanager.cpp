@@ -644,6 +644,35 @@ namespace Azoth
 		return result;
 	}
 
+	namespace
+	{
+		void DuplicateMenu (QAction *parentAction, QAction *refAction, QObject *receiver, const QList<ICLEntry*>& entries)
+		{
+			auto menu = new QMenu (parentAction->text ());
+			parentAction->setMenu (menu);
+
+			for (auto refSA : refAction->menu ()->actions ())
+			{
+				auto subAction = menu->addAction (refSA->text ());
+				if (refSA->menu ())
+				{
+					DuplicateMenu (subAction, refSA, receiver, entries);
+					continue;
+				}
+
+				subAction->setSeparator (refSA->isSeparator ());
+				subAction->setProperty ("Azoth/Entries", QVariant::fromValue (entries));
+				subAction->setProperty ("Azoth/EntryActor", refSA->property ("Azoth/EntryActor"));
+				subAction->setProperty ("ActionIcon", refAction->property ("ActionIcon"));
+				subAction->setProperty ("ReferenceAction", QVariant::fromValue<QObject*> (refAction));
+				QObject::connect (subAction,
+						SIGNAL (triggered ()),
+						receiver,
+						SLOT (handleActoredActionTriggered ()));
+			}
+		}
+	}
+
 	QList<QAction*> ActionsManager::CreateEntriesActions (QList<ICLEntry*> entries, QObject *parent)
 	{
 		entries.removeAll (nullptr);
@@ -669,20 +698,24 @@ namespace Azoth
 					continue;
 
 				const auto refAction = Entry2Actions_ [entries.first ()] [name];
-				if (!pair.second.which () && !refAction->isSeparator ())
+				if (!pair.second.which () && !refAction->isSeparator () && !refAction->menu ())
 					continue;
 
 				auto action = new QAction (refAction->text (), parent);
-				action->setSeparator (refAction->isSeparator ());
-				action->setProperty ("Azoth/Entries", QVariant::fromValue (entries));
-				action->setProperty ("Azoth/EntryActor", QVariant::fromValue (pair.second));
-				action->setProperty ("ActionIcon", refAction->property ("ActionIcon"));
-				action->setProperty ("ReferenceAction", QVariant::fromValue<QObject*> (refAction));
-				connect (action,
-						SIGNAL (triggered ()),
-						this,
-						SLOT (handleActoredActionTriggered ()));
-
+				if (!refAction->menu ())
+				{
+					action->setSeparator (refAction->isSeparator ());
+					action->setProperty ("Azoth/Entries", QVariant::fromValue (entries));
+					action->setProperty ("Azoth/EntryActor", QVariant::fromValue (pair.second));
+					action->setProperty ("ActionIcon", refAction->property ("ActionIcon"));
+					action->setProperty ("ReferenceAction", QVariant::fromValue<QObject*> (refAction));
+					connect (action,
+							SIGNAL (triggered ()),
+							this,
+							SLOT (handleActoredActionTriggered ()));
+				}
+				else
+					DuplicateMenu (action, refAction, this, entries);
 				result << action;
 			}
 		};
