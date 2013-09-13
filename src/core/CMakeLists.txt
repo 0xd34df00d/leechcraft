@@ -163,6 +163,6 @@ if (USE_QT5)
 	QT5_USE_MODULES (leechcraft Gui Network Widgets Xml Sql Script Concurrent DBus Svg)
 endif ()
 
-if (LINUX)
+if (UNIX AND NOT APPLE)
 	add_subdirectory (loaders/dbus)
 endif ()
