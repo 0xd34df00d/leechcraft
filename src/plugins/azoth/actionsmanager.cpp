@@ -148,17 +148,18 @@ namespace Azoth
 			entry->SetEntryName (newName);
 		}
 
-		// We shall probably handle this differently for the list.
-		void ChangeGroups (ICLEntry *entry)
+		void ChangeGroups (QList<ICLEntry*> entries)
 		{
-			const auto& groups = entry->Groups ();
+			const auto& groups = entries.first ()->Groups ();
 			const auto& allGroups = Core::Instance ().GetChatGroups ();
 
 			GroupEditorDialog dia (groups, allGroups);
 			if (dia.exec () != QDialog::Accepted)
 				return;
 
-			entry->SetGroups (dia.GetGroups ());
+			const auto& newGroups = dia.GetGroups ();
+			for (auto entry : entries)
+				entry->SetGroups (newGroups);
 		}
 
 		void Remove (ICLEntry *entry)
@@ -184,30 +185,34 @@ namespace Azoth
 					QString ();
 		}
 
-		void SendDirectedStatus (ICLEntry *entry)
+		void SendDirectedStatus (QList<ICLEntry*> entries)
 		{
-			auto ihds = qobject_cast<IHaveDirectedStatus*> (entry->GetQObject ());
-
-			QStringList variants (ActionsManager::tr ("All variants"));
-			for (const QString& var : entry->Variants ())
-				if (!var.isEmpty () &&
-						ihds->CanSendDirectedStatusNow (var))
-					variants << var;
-
 			QString variant;
-			if (variants.size () > 2)
+			if (entries.size () == 1)
 			{
-				variant = QInputDialog::getItem (0,
-						ActionsManager::tr ("Select variant"),
-						ActionsManager::tr ("Select variant to send directed status to:"),
-						variants,
-						0,
-						false);
-				if (variant.isEmpty ())
-					return;
+				const auto entry = entries.front ();
+				auto ihds = qobject_cast<IHaveDirectedStatus*> (entry->GetQObject ());
 
-				if (variant == variants.front ())
-					variant.clear ();
+				QStringList variants (ActionsManager::tr ("All variants"));
+				for (const QString& var : entry->Variants ())
+					if (!var.isEmpty () &&
+							ihds->CanSendDirectedStatusNow (var))
+						variants << var;
+
+				if (variants.size () > 2)
+				{
+					variant = QInputDialog::getItem (0,
+							ActionsManager::tr ("Select variant"),
+							ActionsManager::tr ("Select variant to send directed status to:"),
+							variants,
+							0,
+							false);
+					if (variant.isEmpty ())
+						return;
+
+					if (variant == variants.front ())
+						variant.clear ();
+				}
 			}
 
 			SetStatusDialog dia ((QString ()));
@@ -215,7 +220,11 @@ namespace Azoth
 				return;
 
 			const EntryStatus st (dia.GetState (), dia.GetStatusText ());
-			ihds->SendDirectedStatus (st, variant);
+			for (const auto entry : entries)
+			{
+				auto ihds = qobject_cast<IHaveDirectedStatus*> (entry->GetQObject ());
+				ihds->SendDirectedStatus (st, variant);
+			}
 		}
 
 		void AddContactFromMUC (ICLEntry *entry)
@@ -409,10 +418,10 @@ namespace Azoth
 			{ "sendfile", SingleEntryActor_f ([] (ICLEntry *entry) { new FileSendDialog (entry); }) },
 			{ "sep_afterinitiate", {} },
 			{ "rename", SingleEntryActor_f (Rename) },
-			{ "changegroups", SingleEntryActor_f (ChangeGroups) },
+			{ "changegroups", MultiEntryActor_f (ChangeGroups) },
 			{ "remove", SingleEntryActor_f (Remove) },
 			{ "sep_afterrostermodify", {} },
-			{ "directedpresence", SingleEntryActor_f (SendDirectedStatus) },
+			{ "directedpresence", MultiEntryActor_f (SendDirectedStatus) },
 			{ "authorization", {} }
 		};
 
