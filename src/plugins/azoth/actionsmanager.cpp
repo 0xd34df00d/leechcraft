@@ -91,41 +91,364 @@ namespace Azoth
 
 	namespace
 	{
+		void DrawAttention (ICLEntry *entry)
+		{
+			IAdvancedCLEntry *advEntry = qobject_cast<IAdvancedCLEntry*> (entry->GetQObject ());
+			if (!advEntry)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< entry->GetQObject ()
+						<< "doesn't implement IAdvancedCLEntry";
+				return;
+			}
+
+			const auto& vars = entry->Variants ();
+
+			DrawAttentionDialog dia (vars);
+			if (dia.exec () != QDialog::Accepted)
+				return;
+
+			const auto& variant = dia.GetResource ();
+			const auto& text = dia.GetText ();
+
+			QStringList varsToDraw;
+			if (!variant.isEmpty ())
+				varsToDraw << variant;
+			else if (vars.isEmpty ())
+				varsToDraw << QString ();
+			else
+				varsToDraw = vars;
+
+			for (const auto& var : varsToDraw)
+				advEntry->DrawAttention (text, var);
+		}
+
+		void Rename (ICLEntry *entry)
+		{
+			const QString& oldName = entry->GetEntryName ();
+			const QString& newName = QInputDialog::getText (0,
+					ActionsManager::tr ("Rename contact"),
+					ActionsManager::tr ("Please enter new name for the contact %1:")
+						.arg (oldName),
+					QLineEdit::Normal,
+					oldName);
+
+			if (newName.isEmpty () ||
+					oldName == newName)
+				return;
+
+			entry->SetEntryName (newName);
+		}
+
+		// We shall probably handle this differently for the list.
+		void ChangeGroups (ICLEntry *entry)
+		{
+			const auto& groups = entry->Groups ();
+			const auto& allGroups = Core::Instance ().GetChatGroups ();
+
+			GroupEditorDialog dia (groups, allGroups);
+			if (dia.exec () != QDialog::Accepted)
+				return;
+
+			entry->SetGroups (dia.GetGroups ());
+		}
+
+		void Remove (ICLEntry *entry)
+		{
+			auto account = qobject_cast<IAccount*> (entry->GetParentAccount ());
+			if (!account)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< entry->GetQObject ()
+						<< "doesn't return proper IAccount:"
+						<< entry->GetParentAccount ();
+				return;
+			}
+
+			account->RemoveEntry (entry->GetQObject ());
+		}
+
+		QString GetMUCRealID (ICLEntry *entry)
+		{
+			const auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetParentCLEntry ());
+			return mucEntry ?
+					mucEntry->GetRealID (entry->GetQObject ()) :
+					QString ();
+		}
+
+		void SendDirectedStatus (ICLEntry *entry)
+		{
+			auto ihds = qobject_cast<IHaveDirectedStatus*> (entry->GetQObject ());
+
+			QStringList variants (ActionsManager::tr ("All variants"));
+			for (const QString& var : entry->Variants ())
+				if (!var.isEmpty () &&
+						ihds->CanSendDirectedStatusNow (var))
+					variants << var;
+
+			QString variant;
+			if (variants.size () > 2)
+			{
+				variant = QInputDialog::getItem (0,
+						ActionsManager::tr ("Select variant"),
+						ActionsManager::tr ("Select variant to send directed status to:"),
+						variants,
+						0,
+						false);
+				if (variant.isEmpty ())
+					return;
+
+				if (variant == variants.front ())
+					variant.clear ();
+			}
+
+			SetStatusDialog dia ((QString ()));
+			if (dia.exec () != QDialog::Accepted)
+				return;
+
+			const EntryStatus st (dia.GetState (), dia.GetStatusText ());
+			ihds->SendDirectedStatus (st, variant);
+		}
+
+		void AddContactFromMUC (ICLEntry *entry)
+		{
+			const auto& nick = entry->GetEntryName ();
+
+			IAccount *account = qobject_cast<IAccount*> (entry->GetParentAccount ());
+
+			AddContactDialog dia (account);
+			dia.SetContactID (GetMUCRealID (entry));
+			dia.SetNick (nick);
+			if (dia.exec () != QDialog::Accepted)
+				return;
+
+			dia.GetSelectedAccount ()->RequestAuth (dia.GetContactID (),
+						dia.GetReason (),
+						dia.GetNick (),
+						dia.GetGroups ());
+		}
+
+		void CopyMUCParticipantID (ICLEntry *entry)
+		{
+			const auto& id = GetMUCRealID (entry);
+			QApplication::clipboard ()->setText (id, QClipboard::Clipboard);
+			QApplication::clipboard ()->setText (id, QClipboard::Selection);
+		}
+
+#ifdef ENABLE_CRYPT
+		void ManagePGP (ICLEntry *entry)
+		{
+			QObject *accObj = entry->GetParentAccount ();
+			IAccount *acc = qobject_cast<IAccount*> (accObj);
+			ISupportPGP *pgp = qobject_cast<ISupportPGP*> (accObj);
+
+			if (!pgp)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< accObj
+						<< "doesn't implement ISupportPGP";
+				QMessageBox::warning (0,
+						"LeechCraft",
+						ActionsManager::tr ("The parent account %1 for entry %2 doesn't "
+							"support encryption.")
+								.arg (acc->GetAccountName ())
+								.arg (entry->GetEntryName ()));
+				return;
+			}
+
+			const QString& str = ActionsManager::tr ("Please select the key for %1 (%2).")
+					.arg (entry->GetEntryName ())
+					.arg (entry->GetHumanReadableID ());
+			PGPKeySelectionDialog dia (str, PGPKeySelectionDialog::TPublic,
+					pgp->GetEntryKey (entry->GetQObject ()));
+			if (dia.exec () != QDialog::Accepted)
+				return;
+
+			const QCA::PGPKey& key = dia.GetSelectedKey ();
+
+			pgp->SetEntryKey (entry->GetQObject (), key);
+
+			QSettings settings (QCoreApplication::organizationName (),
+					QCoreApplication::applicationName () + "_Azoth");
+			settings.beginGroup ("PublicEntryKeys");
+			if (key.isNull ())
+				settings.remove (entry->GetEntryID ());
+			else
+				settings.setValue (entry->GetEntryID (), key.keyId ());
+			settings.endGroup ();
+		}
+#endif
+
+		void ShareRIEX (ICLEntry *entry)
+		{
+			auto riex = qobject_cast<ISupportRIEX*> (entry->GetParentAccount ());
+			if (!riex)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< entry->GetParentAccount ()
+						<< "doesn't implement ISupportRIEX";
+				return;
+			}
+
+			ShareRIEXDialog dia (entry);
+			if (dia.exec () != QDialog::Accepted)
+				return;
+
+			const bool shareGroups = dia.ShouldSuggestGroups ();
+
+			QList<RIEXItem> items;
+			for (ICLEntry *toShare : dia.GetSelectedEntries ())
+			{
+				RIEXItem item =
+				{
+					RIEXItem::AAdd,
+					toShare->GetHumanReadableID (),
+					toShare->GetEntryName (),
+					shareGroups ? toShare->Groups () : QStringList ()
+				};
+				items << item;
+			}
+
+			riex->SuggestItems (items, entry->GetQObject (), dia.GetShareMessage ());
+		}
+
+		void Invite (ICLEntry *entry)
+		{
+			auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
+
+			MUCInviteDialog dia (qobject_cast<IAccount*> (entry->GetParentAccount ()));
+			if (dia.exec () != QDialog::Accepted)
+				return;
+
+			const QString& id = dia.GetID ();
+			const QString& msg = dia.GetInviteMessage ();
+			if (id.isEmpty ())
+				return;
+
+			mucEntry->InviteToMUC (id, msg);
+		}
+
+		void Leave (ICLEntry *entry)
+		{
+			IMUCEntry *mucEntry =
+					qobject_cast<IMUCEntry*> (entry->GetQObject ());
+			if (!mucEntry)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "hm, requested leave on an entry"
+						<< entry->GetQObject ()
+						<< "that doesn't implement IMUCEntry";
+				return;
+			}
+
+			if (XmlSettingsManager::Instance ().property ("CloseConfOnLeave").toBool ())
+			{
+				Core::Instance ().GetChatTabsManager ()->CloseChat (entry);
+				Q_FOREACH (QObject *partObj, mucEntry->GetParticipants ())
+				{
+					ICLEntry *partEntry = qobject_cast<ICLEntry*> (partObj);
+					if (!partEntry)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unable to cast"
+								<< partObj
+								<< "to ICLEntry";
+						continue;
+					}
+
+					Core::Instance ().GetChatTabsManager ()->CloseChat (partEntry);
+				}
+			}
+
+			mucEntry->Leave ();
+		}
+
+		void ConfigureMUC (ICLEntry *entry)
+		{
+			QObject *entryObj = entry->GetQObject ();
+			IConfigurableMUC *confMUC = qobject_cast<IConfigurableMUC*> (entryObj);
+			if (!confMUC)
+				return;
+
+			QWidget *w = confMUC->GetConfigurationWidget ();
+			if (!w)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "empty conf widget"
+						<< entryObj;
+				return;
+			}
+
+			SimpleDialog *dia = new SimpleDialog ();
+			dia->setWindowTitle (ActionsManager::tr ("Room configuration"));
+			dia->SetWidget (w);
+			QObject::connect (dia,
+					SIGNAL (accepted ()),
+					dia,
+					SLOT (deleteLater ()),
+					Qt::QueuedConnection);
+			dia->show ();
+		}
+
 		const std::map<QByteArray, EntryActor_f> BeforeRolesNames
 		{
 			{
 				"openchat",
-				[] (ICLEntry *entry)
-					{ Core::Instance ().GetChatTabsManager ()->OpenChat (entry); }
+				[] (ICLEntry *e) { Core::Instance ().GetChatTabsManager ()->OpenChat (e); }
 			},
-			{ "drawattention", {} },
-			{ "sendfile", {} },
+			{ "drawattention", DrawAttention },
+			{ "sendfile", [] (ICLEntry *entry) { new FileSendDialog (entry); } },
 			{ "sep_afterinitiate", {} },
-			{ "rename", {} },
-			{ "changegroups", {} },
-			{ "remove", {} },
+			{ "rename", Rename },
+			{ "changegroups", ChangeGroups },
+			{ "remove", Remove },
 			{ "sep_afterrostermodify", {} },
-			{ "directedpresence", {} },
+			{ "directedpresence", SendDirectedStatus },
 			{ "authorization", {} }
 		};
 
 		const std::map<QByteArray, EntryActor_f> AfterRolesNames
 		{
 			{ "sep_afterroles", {} },
-			{ "add_contact", {} },
-			{ "copy_muc_id", {} },
+			{ "add_contact", AddContactFromMUC },
+			{ "copy_muc_id", CopyMUCParticipantID },
 			{ "sep_afterjid", {} },
-			{ "managepgp", {} },
-			{ "shareRIEX", {} },
-			{ "copy_id", {} },
-			{ "vcard", {} },
-			{ "invite", {} },
-			{ "leave", {} },
-			{ "addtobm", {} },
-			{ "configuremuc", {} },
-			{ "userslist", {} },
-			{ "authorize", {} },
-			{ "denyauth", {} }
+#ifdef ENABLE_CRYPT
+			{ "managepgp", ManagePGP },
+#endif
+			{ "shareRIEX", ShareRIEX },
+			{
+				"copy_id",
+				[] (ICLEntry *e) -> void
+				{
+					const auto& id = e->GetHumanReadableID ();
+					QApplication::clipboard ()->setText (id, QClipboard::Clipboard);
+				}
+			},
+			{ "vcard", [] (ICLEntry *e) { e->ShowInfo (); } },
+			{ "invite", Invite },
+			{ "leave", Leave },
+			{
+				"addtobm",
+				[] (ICLEntry *e) -> void
+				{
+					auto dia = new BookmarksManagerDialog ();
+					dia->SuggestSaving (e->GetQObject ());
+					dia->show ();
+				}
+			},
+			{ "configuremuc", ConfigureMUC },
+			{
+				"userslist",
+				[] (ICLEntry *e) -> void
+				{
+					auto chatWidget = Core::Instance ().GetChatTabsManager ()->OpenChat (e);
+					auto tab = qobject_cast<ChatTab*> (chatWidget);
+					tab->ShowUsersList ();
+				}
+			},
+			{ "authorize", AuthorizeEntry },
+			{ "denyauth", DenyAuthForEntry }
 		};
 	}
 
@@ -347,20 +670,12 @@ namespace Azoth
 
 		auto copyEntryId = new QAction (tr ("Copy full entry ID"), entry->GetQObject ());
 		copyEntryId->setProperty ("ActionIcon", "edit-copy");
-		connect (copyEntryId,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleActionCopyEntryIDTriggered ()));
 		Action2Areas_ [copyEntryId] << CLEAAContactListCtxtMenu;
 		Entry2Actions_ [entry] ["copy_id"] = copyEntryId;
 
 		if (advEntry)
 		{
 			QAction *drawAtt = new QAction (tr ("Draw attention..."), entry->GetQObject ());
-			connect (drawAtt,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleActionDrawAttention ()));
 			drawAtt->setProperty ("ActionIcon", "task-attention");
 			Entry2Actions_ [entry] ["drawattention"] = drawAtt;
 			Action2Areas_ [drawAtt] << CLEAAContactListCtxtMenu
@@ -370,10 +685,6 @@ namespace Azoth
 		if (qobject_cast<ITransferManager*> (acc->GetTransferManager ()))
 		{
 			QAction *sendFile = new QAction (tr ("Send file..."), entry->GetQObject ());
-			connect (sendFile,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleActionSendFile ()));
 			sendFile->setProperty ("ActionIcon", "mail-attachment");
 			Entry2Actions_ [entry] ["sendfile"] = sendFile;
 			Action2Areas_ [sendFile] << CLEAAContactListCtxtMenu
@@ -381,10 +692,6 @@ namespace Azoth
 		}
 
 		QAction *rename = new QAction (tr ("Rename"), entry->GetQObject ());
-		connect (rename,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleActionRenameTriggered ()));
 		rename->setProperty ("ActionIcon", "edit-rename");
 		Entry2Actions_ [entry] ["rename"] = rename;
 		Action2Areas_ [rename] << CLEAAContactListCtxtMenu
@@ -393,10 +700,6 @@ namespace Azoth
 		if (entry->GetEntryFeatures () & ICLEntry::FSupportsGrouping)
 		{
 			QAction *changeGroups = new QAction (tr ("Change groups..."), entry->GetQObject ());
-			connect (changeGroups,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleActionChangeGroupsTriggered ()));
 			changeGroups->setProperty ("ActionIcon", "user-group-properties");
 			Entry2Actions_ [entry] ["changegroups"] = changeGroups;
 			Action2Areas_ [changeGroups] << CLEAAContactListCtxtMenu;
@@ -405,10 +708,6 @@ namespace Azoth
 		if (qobject_cast<IHaveDirectedStatus*> (entry->GetQObject ()))
 		{
 			QAction *sendDirected = new QAction (tr ("Send directed status..."), entry->GetQObject ());
-			connect (sendDirected,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleActionSendDirectedStatusTriggered ()));
 			sendDirected->setProperty ("ActionIcon", "im-status-message-edit");
 			Entry2Actions_ [entry] ["directedpresence"] = sendDirected;
 			Action2Areas_ [sendDirected] << CLEAAContactListCtxtMenu;
@@ -458,10 +757,6 @@ namespace Azoth
 		if (qobject_cast<ISupportPGP*> (entry->GetParentAccount ()))
 		{
 			QAction *manageGPG = new QAction (tr ("Manage PGP keys..."), entry->GetQObject ());
-			connect (manageGPG,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleActionManagePGPTriggered ()));
 			manageGPG->setProperty ("ActionIcon", "document-encrypt");
 			Entry2Actions_ [entry] ["managepgp"] = manageGPG;
 			Action2Areas_ [manageGPG] << CLEAAContactListCtxtMenu;
@@ -471,10 +766,6 @@ namespace Azoth
 		if (qobject_cast<ISupportRIEX*> (entry->GetParentAccount ()))
 		{
 			QAction *shareRIEX = new QAction (tr ("Share contacts..."), entry->GetQObject ());
-			connect (shareRIEX,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleActionShareContactsTriggered ()));
 			Entry2Actions_ [entry] ["shareRIEX"] = shareRIEX;
 			Action2Areas_ [shareRIEX] << CLEAAContactListCtxtMenu;
 		}
@@ -482,10 +773,6 @@ namespace Azoth
 		if (entry->GetEntryType () != ICLEntry::ETMUC)
 		{
 			QAction *vcard = new QAction (tr ("VCard"), entry->GetQObject ());
-			connect (vcard,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleActionVCardTriggered ()));
 			vcard->setProperty ("ActionIcon", "text-x-vcard");
 			Entry2Actions_ [entry] ["vcard"] = vcard;
 			Action2Areas_ [vcard] << CLEAAContactListCtxtMenu
@@ -540,10 +827,6 @@ namespace Azoth
 
 			QAction *addContact = new QAction (tr ("Add to contact list..."), entry->GetQObject ());
 			addContact->setProperty ("ActionIcon", "list-add");
-			connect (addContact,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleActionAddContactFromMUC ()));
 			Entry2Actions_ [entry] ["add_contact"] = addContact;
 			Action2Areas_ [addContact] << CLEAAContactListCtxtMenu
 					<< CLEAATabCtxtMenu
@@ -551,10 +834,6 @@ namespace Azoth
 
 			QAction *copyId = new QAction (tr ("Copy ID"), entry->GetQObject ());
 			copyId->setProperty ("ActionIcon", "edit-copy");
-			connect (copyId,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleActionCopyMUCPartID ()));
 			Entry2Actions_ [entry] ["copy_muc_id"] = copyId;
 			Action2Areas_ [copyId] << CLEAAContactListCtxtMenu
 					<< CLEAAChatCtxtMenu;
@@ -567,21 +846,12 @@ namespace Azoth
 		{
 			QAction *invite = new QAction (tr ("Invite..."), entry->GetQObject ());
 			invite->setProperty ("ActionIcon", "azoth_invite");
-			connect (invite,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleActionInviteTriggered ()));
 			Entry2Actions_ [entry] ["invite"] = invite;
 			Action2Areas_ [invite] << CLEAAContactListCtxtMenu
 					<< CLEAATabCtxtMenu;
 
 			QAction *leave = new QAction (tr ("Leave"), entry->GetQObject ());
 			leave->setProperty ("ActionIcon", "irc-close-channel");
-			connect (leave,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleActionLeaveTriggered ()),
-					Qt::QueuedConnection);
 			Entry2Actions_ [entry] ["leave"] = leave;
 			Action2Areas_ [leave] << CLEAAContactListCtxtMenu
 					<< CLEAATabCtxtMenu
@@ -590,10 +860,6 @@ namespace Azoth
 
 			QAction *bookmarks = new QAction (tr ("Add to bookmarks"), entry->GetQObject ());
 			bookmarks->setProperty ("ActionIcon", "bookmark-new");
-			connect (bookmarks,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleActionAddToBookmarks ()));
 			Entry2Actions_ [entry] ["addtobm"] = bookmarks;
 			Action2Areas_ [bookmarks] << CLEAAContactListCtxtMenu
 					<< CLEAAToolbar;
@@ -601,10 +867,6 @@ namespace Azoth
 			QAction *userList = new QAction (tr ("MUC users..."), entry->GetQObject ());
 			userList->setProperty ("ActionIcon", "system-users");
 			userList->setShortcut (QString ("Ctrl+M"));
-			connect (userList,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleActionUsersList ()));
 			Entry2Actions_ [entry] ["userslist"] = userList;
 			Action2Areas_ [userList] << CLEAAToolbar;
 			sm->RegisterAction ("org.LeechCraft.Azoth.MUCUsers", userList, true);
@@ -613,10 +875,6 @@ namespace Azoth
 			{
 				QAction *configureMUC = new QAction (tr ("Configure MUC..."), this);
 				configureMUC->setProperty ("ActionIcon", "configure");
-				connect (configureMUC,
-						SIGNAL (triggered ()),
-						this,
-						SLOT (handleActionConfigureMUC ()));
 				Entry2Actions_ [entry] ["configuremuc"] = configureMUC;
 				Action2Areas_ [configureMUC] << CLEAAContactListCtxtMenu
 						<< CLEAAToolbar;
@@ -625,18 +883,10 @@ namespace Azoth
 		else if (entry->GetEntryType () == ICLEntry::ETUnauthEntry)
 		{
 			QAction *authorize = new QAction (tr ("Authorize"), entry->GetQObject ());
-			connect (authorize,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleActionAuthorizeTriggered ()));
 			Entry2Actions_ [entry] ["authorize"] = authorize;
 			Action2Areas_ [authorize] << CLEAAContactListCtxtMenu;
 
 			QAction *denyAuth = new QAction (tr ("Deny authorization"), entry->GetQObject ());
-			connect (denyAuth,
-						SIGNAL (triggered ()),
-						this,
-						SLOT (handleActionDenyAuthTriggered ()));
 			Entry2Actions_ [entry] ["denyauth"] = denyAuth;
 			Action2Areas_ [denyAuth] << CLEAAContactListCtxtMenu;
 		}
@@ -738,16 +988,6 @@ namespace Azoth
 			Entry2Actions_ [entry] ["invite"]->
 					setEnabled (thisMuc->GetMUCFeatures () & IMUCEntry::MUCFCanInvite);
 
-		IMUCEntry *mucEntry =
-				qobject_cast<IMUCEntry*> (entry->GetParentCLEntry ());
-		if (entry->GetEntryType () == ICLEntry::ETPrivateChat &&
-				!mucEntry)
-			qWarning () << Q_FUNC_INFO
-					<< "parent of"
-					<< entry->GetQObject ()
-					<< entry->GetParentCLEntry ()
-					<< "doesn't implement IMUCEntry";
-
 		IMUCPerms *mucPerms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
 		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
 		{
@@ -761,11 +1001,9 @@ namespace Azoth
 							mucPerms, entryObj, permClass);
 			}
 
-			const QString& realJid = mucEntry->GetRealID (entry->GetQObject ());
+			const QString& realJid = GetMUCRealID (entry);
 			Entry2Actions_ [entry] ["add_contact"]->setEnabled (!realJid.isEmpty ());
-			Entry2Actions_ [entry] ["add_contact"]->setProperty ("Azoth/RealID", realJid);
 			Entry2Actions_ [entry] ["copy_muc_id"]->setEnabled (!realJid.isEmpty ());
-			Entry2Actions_ [entry] ["copy_muc_id"]->setProperty ("Azoth/RealID", realJid);
 		}
 	}
 
@@ -801,187 +1039,6 @@ namespace Azoth
 					<< action->text ();
 	}
 
-	void ActionsManager::handleActionCopyEntryIDTriggered ()
-	{
-		auto action = qobject_cast<QAction*> (sender ());
-
-		if (!action)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not a QAction";
-			return;
-		}
-
-		auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
-		const auto& id = entry->GetHumanReadableID ();
-		QApplication::clipboard ()->setText (id, QClipboard::Clipboard);
-	}
-
-	void ActionsManager::handleActionDrawAttention ()
-	{
-		QAction *action = qobject_cast<QAction*> (sender ());
-		if (!action)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not a QAction";
-			return;
-		}
-
-		ICLEntry *entry = action->
-				property ("Azoth/Entry").value<ICLEntry*> ();
-		IAdvancedCLEntry *advEntry = qobject_cast<IAdvancedCLEntry*> (entry->GetQObject ());
-		if (!advEntry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< entry->GetQObject ()
-					<< "doesn't implement IAdvancedCLEntry";
-			return;
-		}
-
-		const QStringList& vars = entry->Variants ();
-		DrawAttentionDialog dia (vars);
-		if (dia.exec () != QDialog::Accepted)
-			return;
-
-		const QString& variant = dia.GetResource ();
-		const QString& text = dia.GetText ();
-
-		QStringList varsToDraw;
-		if (!variant.isEmpty ())
-			varsToDraw << variant;
-		else if (vars.isEmpty ())
-			varsToDraw << QString ();
-		else
-			varsToDraw = vars;
-
-		Q_FOREACH (const QString& var, varsToDraw)
-			advEntry->DrawAttention (text, var);
-	}
-
-	void ActionsManager::handleActionSendFile ()
-	{
-		ICLEntry *entry = sender ()->
-				property ("Azoth/Entry").value<ICLEntry*> ();
-
-		new FileSendDialog (entry);
-	}
-
-	void ActionsManager::handleActionRenameTriggered ()
-	{
-		QAction *action = qobject_cast<QAction*> (sender ());
-		if (!action)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not a QAction";
-			return;
-		}
-
-		ICLEntry *entry = action->
-				property ("Azoth/Entry").value<ICLEntry*> ();
-
-		const QString& oldName = entry->GetEntryName ();
-		const QString& newName = QInputDialog::getText (0,
-				tr ("Rename contact"),
-				tr ("Please enter new name for the contact %1:")
-					.arg (oldName),
-				QLineEdit::Normal,
-				oldName);
-
-		if (newName.isEmpty () ||
-				oldName == newName)
-			return;
-
-		entry->SetEntryName (newName);
-	}
-
-	void ActionsManager::handleActionChangeGroupsTriggered ()
-	{
-		QAction *action = qobject_cast<QAction*> (sender ());
-		if (!action)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not a QAction";
-			return;
-		}
-
-		ICLEntry *entry = action->
-				property ("Azoth/Entry").value<ICLEntry*> ();
-
-		const QStringList& groups = entry->Groups ();
-		const QStringList& allGroups = Core::Instance ().GetChatGroups ();
-
-		GroupEditorDialog dia (groups, allGroups);
-		if (dia.exec () != QDialog::Accepted)
-			return;
-
-		entry->SetGroups (dia.GetGroups ());
-	}
-
-	void ActionsManager::handleActionSendDirectedStatusTriggered ()
-	{
-		ICLEntry *entry = sender ()->
-				property ("Azoth/Entry").value<ICLEntry*> ();
-		auto ihds = qobject_cast<IHaveDirectedStatus*> (entry->GetQObject ());
-
-		QStringList variants (tr ("All variants"));
-		Q_FOREACH (const QString& var, entry->Variants ())
-			if (!var.isEmpty () &&
-					ihds->CanSendDirectedStatusNow (var))
-				variants << var;
-
-		QString variant;
-		if (variants.size () > 2)
-		{
-			variant = QInputDialog::getItem (0,
-					tr ("Select variant"),
-					tr ("Select variant to send directed status to:"),
-					variants,
-					0,
-					false);
-			if (variant.isEmpty ())
-				return;
-
-			if (variant == variants.front ())
-				variant.clear ();
-		}
-
-		SetStatusDialog dia ((QString ()));
-		if (dia.exec () != QDialog::Accepted)
-			return;
-
-		const EntryStatus st (dia.GetState (), dia.GetStatusText ());
-		ihds->SendDirectedStatus (st, variant);
-	}
-
-	void ActionsManager::handleActionRemoveTriggered ()
-	{
-		QAction *action = qobject_cast<QAction*> (sender ());
-		if (!action)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not a QAction";
-			return;
-		}
-
-		auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
-		auto account = qobject_cast<IAccount*> (entry->GetParentAccount ());
-		if (!account)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< entry->GetQObject ()
-					<< "doesn't return proper IAccount:"
-					<< entry->GetParentAccount ();
-			return;
-		}
-
-		account->RemoveEntry (entry->GetQObject ());
-	}
-
 	void ActionsManager::handleActionGrantAuthTriggered()
 	{
 		ManipulateAuth ("grantauth",
@@ -1008,306 +1065,6 @@ namespace Azoth
 		ManipulateAuth ("rerequestauth",
 				tr ("Enter reason for rerequesting authorization from %1:"),
 				&IAuthable::RerequestAuth);
-	}
-
-#ifdef ENABLE_CRYPT
-	void ActionsManager::handleActionManagePGPTriggered ()
-	{
-		ICLEntry *entry = sender ()->
-				property ("Azoth/Entry").value<ICLEntry*> ();
-
-		QObject *accObj = entry->GetParentAccount ();
-		IAccount *acc = qobject_cast<IAccount*> (accObj);
-		ISupportPGP *pgp = qobject_cast<ISupportPGP*> (accObj);
-
-		if (!pgp)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< accObj
-					<< "doesn't implement ISupportPGP";
-			QMessageBox::warning (0,
-					"LeechCraft",
-					tr ("The parent account %1 for entry %2 doesn't "
-						"support encryption.")
-							.arg (acc->GetAccountName ())
-							.arg (entry->GetEntryName ()));
-			return;
-		}
-
-		const QString& str = tr ("Please select the key for %1 (%2).")
-				.arg (entry->GetEntryName ())
-				.arg (entry->GetHumanReadableID ());
-		PGPKeySelectionDialog dia (str, PGPKeySelectionDialog::TPublic,
-				pgp->GetEntryKey (entry->GetQObject ()));
-		if (dia.exec () != QDialog::Accepted)
-			return;
-
-		const QCA::PGPKey& key = dia.GetSelectedKey ();
-
-		pgp->SetEntryKey (entry->GetQObject (), key);
-
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth");
-		settings.beginGroup ("PublicEntryKeys");
-		if (key.isNull ())
-			settings.remove (entry->GetEntryID ());
-		else
-			settings.setValue (entry->GetEntryID (), key.keyId ());
-		settings.endGroup ();
-	}
-#endif
-
-	void ActionsManager::handleActionShareContactsTriggered ()
-	{
-		QAction *action = qobject_cast<QAction*> (sender ());
-		if (!action)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not a QAction";
-			return;
-		}
-
-		ICLEntry *entry = action->
-				property ("Azoth/Entry").value<ICLEntry*> ();
-
-		ISupportRIEX *riex = qobject_cast<ISupportRIEX*> (entry->GetParentAccount ());
-		if (!riex)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< entry->GetParentAccount ()
-					<< "doesn't implement ISupportRIEX";
-			return;
-		}
-
-		ShareRIEXDialog dia (entry);
-		if (dia.exec () != QDialog::Accepted)
-			return;
-
-		const bool shareGroups = dia.ShouldSuggestGroups ();
-
-		QList<RIEXItem> items;
-		Q_FOREACH (ICLEntry *toShare, dia.GetSelectedEntries ())
-		{
-			RIEXItem item =
-			{
-				RIEXItem::AAdd,
-				toShare->GetHumanReadableID (),
-				toShare->GetEntryName (),
-				shareGroups ? toShare->Groups () : QStringList ()
-			};
-			items << item;
-		}
-
-		riex->SuggestItems (items, entry->GetQObject (), dia.GetShareMessage ());
-	}
-
-	void ActionsManager::handleActionVCardTriggered ()
-	{
-		QAction *action = qobject_cast<QAction*> (sender ());
-		if (!action)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not a QAction";
-			return;
-		}
-
-		ICLEntry *entry = action->
-				property ("Azoth/Entry").value<ICLEntry*> ();
-		entry->ShowInfo ();
-	}
-
-
-	void ActionsManager::handleActionInviteTriggered ()
-	{
-		ICLEntry *entry = sender ()->
-				property ("Azoth/Entry").value<ICLEntry*> ();
-		IMUCEntry *mucEntry =
-				qobject_cast<IMUCEntry*> (entry->GetQObject ());
-
-		MUCInviteDialog dia (qobject_cast<IAccount*> (entry->GetParentAccount ()));
-		if (dia.exec () != QDialog::Accepted)
-			return;
-
-		const QString& id = dia.GetID ();
-		const QString& msg = dia.GetInviteMessage ();
-		if (id.isEmpty ())
-			return;
-
-		mucEntry->InviteToMUC (id, msg);
-	}
-
-	void ActionsManager::handleActionLeaveTriggered ()
-	{
-		QAction *action = qobject_cast<QAction*> (sender ());
-		if (!action)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not a QAction";
-			return;
-		}
-
-		ICLEntry *entry = action->
-				property ("Azoth/Entry").value<ICLEntry*> ();
-		IMUCEntry *mucEntry =
-				qobject_cast<IMUCEntry*> (entry->GetQObject ());
-		if (!mucEntry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "hm, requested leave on an entry"
-					<< entry->GetQObject ()
-					<< "that doesn't implement IMUCEntry"
-					<< sender ();
-			return;
-		}
-
-		if (XmlSettingsManager::Instance ().property ("CloseConfOnLeave").toBool ())
-		{
-			Core::Instance ().GetChatTabsManager ()->CloseChat (entry);
-			Q_FOREACH (QObject *partObj, mucEntry->GetParticipants ())
-			{
-				ICLEntry *partEntry = qobject_cast<ICLEntry*> (partObj);
-				if (!partEntry)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "unable to cast"
-							<< partObj
-							<< "to ICLEntry";
-					continue;
-				}
-
-				Core::Instance ().GetChatTabsManager ()->CloseChat (partEntry);
-			}
-		}
-
-		mucEntry->Leave ();
-	}
-
-	void ActionsManager::handleActionAddToBookmarks ()
-	{
-		ICLEntry *entry = sender ()->property ("Azoth/Entry").value<ICLEntry*> ();
-
-		BookmarksManagerDialog *dia = new BookmarksManagerDialog ();
-		dia->SuggestSaving (entry->GetQObject ());
-		dia->show ();
-	}
-
-	void ActionsManager::handleActionUsersList ()
-	{
-		auto entry = sender ()->property ("Azoth/Entry").value<ICLEntry*> ();
-
-		auto chatWidget = Core::Instance ().GetChatTabsManager ()->OpenChat (entry);
-		auto tab = qobject_cast<ChatTab*> (chatWidget);
-
-		tab->ShowUsersList ();
-	}
-
-	void ActionsManager::handleActionConfigureMUC ()
-	{
-		ICLEntry *entry = sender ()->property ("Azoth/Entry").value<ICLEntry*> ();
-		QObject *entryObj = entry->GetQObject ();
-		IConfigurableMUC *confMUC = qobject_cast<IConfigurableMUC*> (entryObj);
-		if (!confMUC)
-			return;
-
-		QWidget *w = confMUC->GetConfigurationWidget ();
-		if (!w)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "empty conf widget"
-					<< entryObj;
-			return;
-		}
-
-		SimpleDialog *dia = new SimpleDialog ();
-		dia->setWindowTitle (tr ("Room configuration"));
-		dia->SetWidget (w);
-		connect (dia,
-				SIGNAL (accepted ()),
-				dia,
-				SLOT (deleteLater ()),
-				Qt::QueuedConnection);
-		dia->show ();
-	}
-
-	void ActionsManager::handleActionAuthorizeTriggered ()
-	{
-		QAction *action = qobject_cast<QAction*> (sender ());
-		if (!action)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not a QAction";
-			return;
-		}
-
-		ICLEntry *entry = action->
-				property ("Azoth/Entry").value<ICLEntry*> ();
-		AuthorizeEntry (entry);
-	}
-
-	void ActionsManager::handleActionDenyAuthTriggered ()
-	{
-		QAction *action = qobject_cast<QAction*> (sender ());
-		if (!action)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not a QAction";
-			return;
-		}
-
-		ICLEntry *entry = action->
-				property ("Azoth/Entry").value<ICLEntry*> ();
-		DenyAuthForEntry (entry);
-	}
-
-	void ActionsManager::handleActionAddContactFromMUC ()
-	{
-		const QString& id = sender ()->property ("Azoth/RealID").toString ();
-		if (id.isEmpty ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "empty ID"
-					<< sender ()
-					<< sender ()->property ("Azoth/RealID");
-			return;
-		}
-
-		ICLEntry *entry = sender ()->
-				property ("Azoth/Entry").value<ICLEntry*> ();
-		const QString& nick = entry->GetEntryName ();
-
-		IAccount *account = qobject_cast<IAccount*> (entry->GetParentAccount ());
-
-		std::auto_ptr<AddContactDialog> dia (new AddContactDialog (account));
-		dia->SetContactID (id);
-		dia->SetNick (nick);
-		if (dia->exec () != QDialog::Accepted)
-			return;
-
-		dia->GetSelectedAccount ()->RequestAuth (dia->GetContactID (),
-					dia->GetReason (),
-					dia->GetNick (),
-					dia->GetGroups ());
-	}
-
-	void ActionsManager::handleActionCopyMUCPartID ()
-	{
-		const QString& id = sender ()->property ("Azoth/RealID").toString ();
-		if (id.isEmpty ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "empty ID"
-					<< sender ()
-					<< sender ()->property ("Azoth/RealID");
-			return;
-		}
-
-		QApplication::clipboard ()->setText (id, QClipboard::Clipboard);
-		QApplication::clipboard ()->setText (id, QClipboard::Selection);
 	}
 
 	namespace

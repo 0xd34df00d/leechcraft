@@ -80,33 +80,11 @@ namespace Azoth
 	private slots:
 		void handleActoredActionTriggered ();
 
-		void handleActionCopyEntryIDTriggered ();
-		void handleActionDrawAttention ();
-		void handleActionSendFile ();
-		void handleActionRenameTriggered ();
-		void handleActionChangeGroupsTriggered ();
-		void handleActionSendDirectedStatusTriggered ();
-		void handleActionRemoveTriggered ();
 		void handleActionGrantAuthTriggered ();
 		void handleActionRevokeAuthTriggered ();
 		void handleActionUnsubscribeTriggered ();
 		void handleActionRerequestTriggered ();
-#ifdef ENABLE_CRYPT
-		void handleActionManagePGPTriggered ();
-#endif
-		void handleActionShareContactsTriggered ();
-		void handleActionVCardTriggered ();
 
-		void handleActionInviteTriggered ();
-		void handleActionLeaveTriggered ();
-		void handleActionAddToBookmarks ();
-		void handleActionUsersList ();
-
-		void handleActionConfigureMUC ();
-		void handleActionAuthorizeTriggered ();
-		void handleActionDenyAuthTriggered ();
-		void handleActionAddContactFromMUC ();
-		void handleActionCopyMUCPartID ();
 		void handleActionPermTriggered ();
 		void handleActionPermAdvancedTriggered ();
 	signals:
