@@ -96,7 +96,7 @@ set (SRCS
 	loaders/sopluginloader.cpp
 	)
 
-if (LINUX)
+if (UNIX AND NOT APPLE)
 	set (SRCS
 		${SRCS}
 		loaders/dbuspluginloader.cpp
