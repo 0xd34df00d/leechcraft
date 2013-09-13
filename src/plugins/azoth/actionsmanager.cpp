@@ -28,6 +28,9 @@
  **********************************************************************/
 
 #include "actionsmanager.h"
+#include <functional>
+#include <algorithm>
+#include <map>
 #include <QAction>
 #include <QMenu>
 #include <QInputDialog>
@@ -71,6 +74,12 @@
 #include "filesenddialog.h"
 #include "advancedpermchangedialog.h"
 
+typedef std::function<void (LeechCraft::Azoth::ICLEntry*)> EntryActor_f;
+Q_DECLARE_METATYPE (EntryActor_f);
+
+typedef QList<LeechCraft::Azoth::ICLEntry*> EntriesList_t;
+Q_DECLARE_METATYPE (EntriesList_t);
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -80,10 +89,50 @@ namespace Azoth
 	{
 	}
 
+	namespace
+	{
+		const std::map<QByteArray, EntryActor_f> BeforeRolesNames
+		{
+			{
+				"openchat",
+				[] (ICLEntry *entry)
+					{ Core::Instance ().GetChatTabsManager ()->OpenChat (entry); }
+			},
+			{ "drawattention", {} },
+			{ "sendfile", {} },
+			{ "sep_afterinitiate", {} },
+			{ "rename", {} },
+			{ "changegroups", {} },
+			{ "remove", {} },
+			{ "sep_afterrostermodify", {} },
+			{ "directedpresence", {} },
+			{ "authorization", {} }
+		};
+
+		const std::map<QByteArray, EntryActor_f> AfterRolesNames
+		{
+			{ "sep_afterroles", {} },
+			{ "add_contact", {} },
+			{ "copy_muc_id", {} },
+			{ "sep_afterjid", {} },
+			{ "managepgp", {} },
+			{ "shareRIEX", {} },
+			{ "copy_id", {} },
+			{ "vcard", {} },
+			{ "invite", {} },
+			{ "leave", {} },
+			{ "addtobm", {} },
+			{ "configuremuc", {} },
+			{ "userslist", {} },
+			{ "authorize", {} },
+			{ "denyauth", {} }
+		};
+	}
+
 	QList<QAction*> ActionsManager::GetEntryActions (ICLEntry *entry)
 	{
 		if (!entry)
-			return QList<QAction*> ();
+			return {};
 
 		if (!Entry2Actions_.contains (entry))
 			CreateActionsForEntry (entry);
@@ -91,35 +140,34 @@ namespace Azoth
 
 		const QHash<QByteArray, QAction*>& id2action = Entry2Actions_ [entry];
 		QList<QAction*> result;
-		result << id2action.value ("openchat");
-		result << id2action.value ("drawattention");
-		result << id2action.value ("sendfile");
-		result << id2action.value ("sep_afterinitiate");
-		result << id2action.value ("rename");
-		result << id2action.value ("changegroups");
-		result << id2action.value ("remove");
-		result << id2action.value ("sep_afterrostermodify");
-		result << id2action.value ("directedpresence");
-		result << id2action.value ("authorization");
-		IMUCPerms *perms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
-		if (perms)
-			Q_FOREACH (const QByteArray& permClass, perms->GetPossiblePerms ().keys ())
+
+		auto setter = [&result, &id2action, this] (decltype (BeforeRolesNames) pairs) -> void
+		{
+			for (auto pair : pairs)
+			{
+				const auto& name = pair.first;
+				const auto action = id2action.value (name);
+				if (!action)
+					continue;
+
+				action->setProperty ("Azoth/EntryActor", QVariant::fromValue (pair.second));
+				connect (action,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleActoredActionTriggered ()),
+						Qt::UniqueConnection);
+				result << action;
+			}
+		};
+
+		setter (BeforeRolesNames);
+
+		if (auto perms =  qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ()))
+			for (const auto& permClass : perms->GetPossiblePerms ().keys ())
 				result << id2action.value (permClass);
-		result << id2action.value ("sep_afterroles");
-		result << id2action.value ("add_contact");
-		result << id2action.value ("copy_muc_id");
-		result << id2action.value ("sep_afterjid");
-		result << id2action.value ("managepgp");
-		result << id2action.value ("shareRIEX");
-		result << id2action.value ("copy_id");
-		result << id2action.value ("vcard");
-		result << id2action.value ("invite");
-		result << id2action.value ("leave");
-		result << id2action.value ("addtobm");
-		result << id2action.value ("configuremuc");
-		result << id2action.value ("userslist");
-		result << id2action.value ("authorize");
-		result << id2action.value ("denyauth");
+
+		setter (AfterRolesNames);
+
 		result << entry->GetActions ();
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
@@ -162,8 +210,7 @@ namespace Azoth
 
 	QList<ActionsManager::CLEntryActionArea> ActionsManager::GetAreasForAction (const QAction *action) const
 	{
-		return Action2Areas_.value (action,
-				QList<CLEntryActionArea> () << CLEAAContactListCtxtMenu);
+		return Action2Areas_.value (action, { CLEAAContactListCtxtMenu });
 	}
 
 	void ActionsManager::HandleEntryRemoved (ICLEntry *entry)
@@ -242,10 +289,6 @@ namespace Azoth
 
 		QAction *openChat = new QAction (tr ("Open chat"), entry->GetQObject ());
 		openChat->setProperty ("ActionIcon", "view-conversation-balloon");
-		connect (openChat,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleActionOpenChatTriggered ()));
 		Entry2Actions_ [entry] ["openchat"] = openChat;
 		Action2Areas_ [openChat] << CLEAAContactListCtxtMenu;
 		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
@@ -675,7 +718,7 @@ namespace Azoth
 		}
 	}
 
-	void ActionsManager::handleActionOpenChatTriggered ()
+	void ActionsManager::handleActoredActionTriggered ()
 	{
 		QAction *action = qobject_cast<QAction*> (sender ());
 		if (!action)
@@ -686,9 +729,25 @@ namespace Azoth
 			return;
 		}
 
-		ICLEntry *entry = action->
-				property ("Azoth/Entry").value<ICLEntry*> ();
-		Core::Instance ().GetChatTabsManager ()->OpenChat (entry);
+		auto function = action->property ("Azoth/EntryActor").value<EntryActor_f> ();
+		if (!function)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no function set on the action"
+					<< action->text ();
+			return;
+		}
+
+		const auto& entriesVar = action->property ("Azoth/Entries");
+		if (const auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ())
+			function (entry);
+		else if (entriesVar.isValid ())
+			for (const auto& entry : entriesVar.value<EntriesList_t> ())
+				function (entry);
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "neither Entry nor Entries properties are set for"
+					<< action->text ();
 	}
 
 	void ActionsManager::handleActionCopyEntryIDTriggered ()

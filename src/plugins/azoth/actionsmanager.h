@@ -77,7 +77,8 @@ namespace Azoth
 		void CreateActionsForEntry (ICLEntry*);
 		void UpdateActionsForEntry (ICLEntry*);
 	private slots:
-		void handleActionOpenChatTriggered ();
+		void handleActoredActionTriggered ();
+
 		void handleActionCopyEntryIDTriggered ();
 		void handleActionDrawAttention ();
 		void handleActionSendFile ();
