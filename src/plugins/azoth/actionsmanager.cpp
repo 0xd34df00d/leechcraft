@@ -586,12 +586,15 @@ namespace Azoth
 				if (!action)
 					continue;
 
-				action->setProperty ("Azoth/EntryActor", QVariant::fromValue (pair.second));
-				connect (action,
-						SIGNAL (triggered ()),
-						this,
-						SLOT (handleActoredActionTriggered ()),
-						Qt::UniqueConnection);
+				if (pair.second.which ())
+				{
+					action->setProperty ("Azoth/EntryActor", QVariant::fromValue (pair.second));
+					connect (action,
+							SIGNAL (triggered ()),
+							this,
+							SLOT (handleActoredActionTriggered ()),
+							Qt::UniqueConnection);
+				}
 				result << action;
 			}
 		};
@@ -721,6 +724,32 @@ namespace Azoth
 		};
 
 		setter (BeforeRolesNames);
+
+		if (const auto perms = qobject_cast<IMUCPerms*> (entries.front ()->GetParentCLEntry ()))
+		{
+			bool allSame = true;
+			for (const auto entry : entries)
+				if (perms != qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ()))
+				{
+					allSame = false;
+					break;
+				}
+
+			if (allSame)
+			{
+				std::remove_cv<decltype (BeforeRolesNames)>::type permPairs;
+				const auto& id2action = Entry2Actions_ [entries.first ()];
+				for (const auto& permClass : perms->GetPossiblePerms ().keys ())
+				{
+					const auto srcAct = id2action.value (permClass);
+					const auto& actorVar = srcAct->property ("Azoth/EntryActor");
+					permPairs [permClass] = actorVar.value<EntryActor_f> ();
+				}
+
+				setter (permPairs);
+			}
+		}
+
 		setter (AfterRolesNames);
 
 		Core::Instance ().GetProxy ()->UpdateIconset (result);
