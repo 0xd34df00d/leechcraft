@@ -35,17 +35,21 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	AdvancedPermChangeDialog::AdvancedPermChangeDialog (ICLEntry* entry,
+	AdvancedPermChangeDialog::AdvancedPermChangeDialog (const QList<ICLEntry*>& entries,
 			const QByteArray& permClass, const QByteArray& perm, QWidget *parent)
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
 
-		auto perms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
+		QStringList names;
+		for (const auto entry : entries)
+			names << entry->GetEntryName ();
+
+		auto perms = qobject_cast<IMUCPerms*> (entries.front ()->GetParentCLEntry ());
 		Ui_.NameLabel_->setText (tr ("Set %1 to %2 for %3")
 					.arg (perms->GetUserString (permClass))
 					.arg (perms->GetUserString (perm))
-					.arg ("<em>" + entry->GetEntryName () + "</em>"));
+					.arg ("<em>" + names.join ("</em>; <em>") + "</em>"));
 	}
 
 	QString AdvancedPermChangeDialog::GetReason () const

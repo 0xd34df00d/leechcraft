@@ -42,7 +42,7 @@ namespace Azoth
 	{
 		Ui::AdvancedPermChangeDialog Ui_;
 	public:
-		AdvancedPermChangeDialog (ICLEntry *entry,
+		AdvancedPermChangeDialog (const QList<ICLEntry*>& entry,
 				const QByteArray& permClass, const QByteArray& perm, QWidget* = 0);
 
 		QString GetReason () const;
