@@ -31,6 +31,7 @@
 #include <functional>
 #include <algorithm>
 #include <map>
+#include <boost/variant.hpp>
 #include <QAction>
 #include <QMenu>
 #include <QInputDialog>
@@ -74,7 +75,14 @@
 #include "filesenddialog.h"
 #include "advancedpermchangedialog.h"
 
-typedef std::function<void (LeechCraft::Azoth::ICLEntry*)> EntryActor_f;
+typedef std::function<void (LeechCraft::Azoth::ICLEntry*)> SingleEntryActor_f;
+typedef std::function<void (QList<LeechCraft::Azoth::ICLEntry*>)> MultiEntryActor_f;
+
+struct None
+{
+};
+
+typedef boost::variant<None, SingleEntryActor_f, MultiEntryActor_f> EntryActor_f;
 Q_DECLARE_METATYPE (EntryActor_f);
 
 typedef QList<LeechCraft::Azoth::ICLEntry*> EntriesList_t;
@@ -394,61 +402,62 @@ namespace Azoth
 		{
 			{
 				"openchat",
-				[] (ICLEntry *e) { Core::Instance ().GetChatTabsManager ()->OpenChat (e); }
+				SingleEntryActor_f ([] (ICLEntry *e)
+						{ Core::Instance ().GetChatTabsManager ()->OpenChat (e); })
 			},
-			{ "drawattention", DrawAttention },
-			{ "sendfile", [] (ICLEntry *entry) { new FileSendDialog (entry); } },
+			{ "drawattention", SingleEntryActor_f (DrawAttention) },
+			{ "sendfile", SingleEntryActor_f ([] (ICLEntry *entry) { new FileSendDialog (entry); }) },
 			{ "sep_afterinitiate", {} },
-			{ "rename", Rename },
-			{ "changegroups", ChangeGroups },
-			{ "remove", Remove },
+			{ "rename", SingleEntryActor_f (Rename) },
+			{ "changegroups", SingleEntryActor_f (ChangeGroups) },
+			{ "remove", SingleEntryActor_f (Remove) },
 			{ "sep_afterrostermodify", {} },
-			{ "directedpresence", SendDirectedStatus },
+			{ "directedpresence", SingleEntryActor_f (SendDirectedStatus) },
 			{ "authorization", {} }
 		};
 
 		const std::map<QByteArray, EntryActor_f> AfterRolesNames
 		{
 			{ "sep_afterroles", {} },
-			{ "add_contact", AddContactFromMUC },
-			{ "copy_muc_id", CopyMUCParticipantID },
+			{ "add_contact", SingleEntryActor_f (AddContactFromMUC) },
+			{ "copy_muc_id", SingleEntryActor_f (CopyMUCParticipantID) },
 			{ "sep_afterjid", {} },
 #ifdef ENABLE_CRYPT
-			{ "managepgp", ManagePGP },
+			{ "managepgp", SingleEntryActor_f (ManagePGP) },
 #endif
-			{ "shareRIEX", ShareRIEX },
+			{ "shareRIEX", SingleEntryActor_f (ShareRIEX) },
 			{
 				"copy_id",
-				[] (ICLEntry *e) -> void
-				{
-					const auto& id = e->GetHumanReadableID ();
-					QApplication::clipboard ()->setText (id, QClipboard::Clipboard);
-				}
+				SingleEntryActor_f ([] (ICLEntry *e) -> void
+					{
+						const auto& id = e->GetHumanReadableID ();
+						QApplication::clipboard ()->setText (id, QClipboard::Clipboard);
+					})
 			},
-			{ "vcard", [] (ICLEntry *e) { e->ShowInfo (); } },
-			{ "invite", Invite },
-			{ "leave", Leave },
+			{ "vcard", SingleEntryActor_f ([] (ICLEntry *e) { e->ShowInfo (); }) },
+			{ "invite", SingleEntryActor_f (Invite) },
+			{ "leave", SingleEntryActor_f (Leave) },
 			{
 				"addtobm",
-				[] (ICLEntry *e) -> void
-				{
-					auto dia = new BookmarksManagerDialog ();
-					dia->SuggestSaving (e->GetQObject ());
-					dia->show ();
-				}
+				SingleEntryActor_f ([] (ICLEntry *e) -> void
+					{
+						auto dia = new BookmarksManagerDialog ();
+						dia->SuggestSaving (e->GetQObject ());
+						dia->show ();
+					})
 			},
-			{ "configuremuc", ConfigureMUC },
+			{ "configuremuc", SingleEntryActor_f (ConfigureMUC) },
 			{
 				"userslist",
-				[] (ICLEntry *e) -> void
-				{
-					auto chatWidget = Core::Instance ().GetChatTabsManager ()->OpenChat (e);
-					auto tab = qobject_cast<ChatTab*> (chatWidget);
-					tab->ShowUsersList ();
-				}
+				SingleEntryActor_f ([] (ICLEntry *e) -> void
+					{
+						auto chatWidget = Core::Instance ().GetChatTabsManager ()->OpenChat (e);
+						auto tab = qobject_cast<ChatTab*> (chatWidget);
+						tab->ShowUsersList ();
+					})
 			},
-			{ "authorize", AuthorizeEntry },
-			{ "denyauth", DenyAuthForEntry }
+			{ "authorize", SingleEntryActor_f (AuthorizeEntry) },
+			{ "denyauth", SingleEntryActor_f (DenyAuthForEntry) }
 		};
 	}
 
@@ -556,7 +565,7 @@ namespace Azoth
 					continue;
 
 				const auto refAction = Entry2Actions_ [entries.first ()] [name];
-				if (!pair.second && !refAction->isSeparator ())
+				if (!pair.second.which () && !refAction->isSeparator ())
 					continue;
 
 				auto action = new QAction (refAction->text (), parent);
@@ -894,10 +903,6 @@ namespace Azoth
 		{
 			QAction *remove = new QAction (tr ("Remove"), entry->GetQObject ());
 			remove->setProperty ("ActionIcon", "list-remove");
-			connect (remove,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleActionRemoveTriggered ()));
 			Entry2Actions_ [entry] ["remove"] = remove;
 			Action2Areas_ [remove] << CLEAAContactListCtxtMenu;
 		}
@@ -1007,6 +1012,36 @@ namespace Azoth
 		}
 	}
 
+	namespace
+	{
+		struct EntryCallVisitor : public boost::static_visitor<void>
+		{
+			const QList<ICLEntry*>& Entries_;
+
+			EntryCallVisitor (const QList<ICLEntry*>& es)
+			: Entries_ (es)
+			{
+			}
+
+			void operator() (const SingleEntryActor_f& actor) const
+			{
+				for (const auto& entry : Entries_)
+					actor (entry);
+			}
+
+			void operator() (const MultiEntryActor_f& actor) const
+			{
+				actor (Entries_);
+			}
+
+			void operator() (const None&) const
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "called on None";
+			}
+		};
+	}
+
 	void ActionsManager::handleActoredActionTriggered ()
 	{
 		QAction *action = qobject_cast<QAction*> (sender ());
@@ -1019,7 +1054,7 @@ namespace Azoth
 		}
 
 		auto function = action->property ("Azoth/EntryActor").value<EntryActor_f> ();
-		if (!function)
+		if (!function.which ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "no function set on the action"
@@ -1028,15 +1063,21 @@ namespace Azoth
 		}
 
 		const auto& entriesVar = action->property ("Azoth/Entries");
+
+		QList<ICLEntry*> entries;
 		if (const auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ())
-			function (entry);
+			entries << entry;
 		else if (entriesVar.isValid ())
-			for (const auto& entry : entriesVar.value<EntriesList_t> ())
-				function (entry);
+			entries = entriesVar.value<EntriesList_t> ();
 		else
+		{
 			qWarning () << Q_FUNC_INFO
 					<< "neither Entry nor Entries properties are set for"
 					<< action->text ();
+			return;
+		}
+
+		boost::apply_visitor (EntryCallVisitor (entries), function);
 	}
 
 	void ActionsManager::handleActionGrantAuthTriggered()
