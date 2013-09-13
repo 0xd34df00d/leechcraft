@@ -226,17 +226,15 @@ namespace LHTR
 		auto addInlineCmd = [this] (const QString& name,
 				const QString& icon,
 				const QString& cmd,
-				const std::map<QString, QVariant>& attrs,
 				Addable addable) -> QAction*
 		{
 			auto act = addable.addAction (name, this, SLOT (handleInlineCmd ()));
 			act->setProperty ("ActionIcon", icon);
 			act->setProperty ("Editor/Command", cmd);
-			act->setProperty ("Editor/Attrs", QVariantMap (attrs));
 			return act;
 		};
 
-		addInlineCmd (tr ("Code"), "code-context", "code", {}, barAdd);
+		addInlineCmd (tr ("Code"), "code-context", "code", barAdd);
 
 		ViewBar_->addSeparator ();
 
@@ -434,7 +432,7 @@ namespace LHTR
 			wrapper.innerHTML = ')delim" + expanded + R"delim(';
 			var node = wrapper.childNodes[0];
 
-			var textNode = document.createTextNode(' ');
+			var textNode = document.createTextNode(' ');
 			s.getRangeAt(0).insertNode(textNode);
 
 			s.getRangeAt(0).insertNode(node);

@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "seekslider.h"
+#include <cmath>
 #include <util/util.h>
 #include "engine/sourceobject.h"
 
@@ -113,7 +114,8 @@ namespace LMP
 	void SeekSlider::on_Slider__valueChanged (int value)
 	{
 		value *= 1000;
-		if (std::abs (value - Source_->GetCurrentTime ()) < 1500 || IgnoreNextValChange_)
+		const double diff = value - Source_->GetCurrentTime ();
+		if (std::abs (diff) < 1500 || IgnoreNextValChange_)
 		{
 			IgnoreNextValChange_ = false;
 			return;

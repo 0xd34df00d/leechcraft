@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <functional>
 #include <QStringList>
 #include <QFileInfo>
 #include <util/utilconfig.h>

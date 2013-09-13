@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "graphstab.h"
+#include <numeric>
 #include <qwt_legend.h>
 #include "graphsfactory.h"
 #include "core.h"

@@ -86,7 +86,7 @@ namespace LeechCraft
 		lay->addWidget (picker, row, 1);
 	}
 
-#ifdef Q_OS_WIN32
+#ifndef Q_OS_LINUX
 	namespace
 	{
 		QDir GetUserDir (const QString& opath)
@@ -124,7 +124,7 @@ namespace LeechCraft
 				str2loc ["DESKTOP"] = QDesktopServices::storageLocation (QDesktopServices::DesktopLocation);
 				str2loc ["MUSIC"] = QDesktopServices::storageLocation (QDesktopServices::MusicLocation);
 				str2loc ["MOVIES"] = QDesktopServices::storageLocation (QDesktopServices::MoviesLocation);
-#ifdef Q_OS_WIN32
+#ifndef Q_OS_LINUX
 				str2loc ["LCDIR"] = GetUserDir ({}).absolutePath ();
 #else
 				str2loc ["LCDIR"] = Util::GetUserDir ({}).absolutePath ();
