@@ -84,9 +84,6 @@ namespace Azoth
 		void handleActionRevokeAuthTriggered ();
 		void handleActionUnsubscribeTriggered ();
 		void handleActionRerequestTriggered ();
-
-		void handleActionPermTriggered ();
-		void handleActionPermAdvancedTriggered ();
 	signals:
 		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *action,

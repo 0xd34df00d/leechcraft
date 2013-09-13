@@ -407,6 +407,101 @@ namespace Azoth
 			dia->show ();
 		}
 
+		void ChangePerm (QAction *action, ICLEntry* entry, const QString& text = QString (), bool global = false)
+		{
+			const auto& permClass = action->property ("Azoth/TargetPermClass").toByteArray ();
+			const auto& perm = action->property ("Azoth/TargetPerm").toByteArray ();
+			if (permClass.isEmpty () || perm.isEmpty ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "invalid perms set"
+						<< action->property ("Azoth/TargetPermClass")
+						<< action->property ("Azoth/TargetPerm");
+				return;
+			}
+
+			auto muc = qobject_cast<IMUCEntry*> (entry->GetParentCLEntry ());
+			auto mucPerms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
+			if (!muc || !mucPerms)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< entry->GetParentCLEntry ()
+						<< "doesn't implement IMUCEntry or IMUCPerms";
+				return;
+			}
+
+			const auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
+			const auto& realID = muc->GetRealID (entry->GetQObject ());
+
+			mucPerms->SetPerm (entry->GetQObject (), permClass, perm, text);
+
+			if (!global || realID.isEmpty ())
+				return;
+
+			for (auto item : acc->GetCLEntries ())
+			{
+				auto otherMuc = qobject_cast<IMUCEntry*> (item);
+				if (!otherMuc || otherMuc == muc)
+					continue;
+
+				auto perms = qobject_cast<IMUCPerms*> (item);
+				if (!perms)
+					continue;
+
+				bool found = false;
+				for (auto part : otherMuc->GetParticipants ())
+				{
+					if (otherMuc->GetRealID (part) != realID)
+						continue;
+
+					found = true;
+
+					if (perms->MayChangePerm (part, permClass, perm))
+					{
+						perms->SetPerm (part, permClass, perm, text);
+						continue;
+					}
+
+					const auto& body = ActionsManager::tr ("Failed to change %1 for %2 in %3 "
+							"due to insufficient permissions.")
+							.arg (perms->GetUserString (permClass))
+							.arg ("<em>" + realID + "</em>")
+							.arg (qobject_cast<ICLEntry*> (item)->GetEntryName ());
+					const auto& e = Util::MakeNotification ("Azoth", body, PWarning_);
+					Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
+				}
+
+				if (!found)
+					perms->TrySetPerm (realID, permClass, perm, text);
+			}
+		}
+
+		void ChangePermMulti (QAction *action, const QList<ICLEntry*>& entries, const QString& text = QString (), bool global = false)
+		{
+			for (const auto entry : entries)
+				ChangePerm (action, entry, text, global);
+		}
+
+		void ChangePermAdvanced (QAction *action, const QList<ICLEntry*>& entries)
+		{
+			const auto& entry = entries.front ();
+
+			if (!qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ()))
+				return;
+
+			const auto& permClass = action->property ("Azoth/TargetPermClass").toByteArray ();
+			const auto& perm = action->property ("Azoth/TargetPerm").toByteArray ();
+
+			AdvancedPermChangeDialog dia (entries, permClass, perm);
+			if (dia.exec () != QDialog::Accepted)
+				return;
+
+			const auto& text = dia.GetReason ();
+			const auto isGlobal = dia.IsGlobal ();
+
+			ChangePermMulti (action, entries, text, isGlobal);
+		}
+
 		const std::map<QByteArray, EntryActor_f> BeforeRolesNames
 		{
 			{
@@ -503,7 +598,7 @@ namespace Azoth
 
 		setter (BeforeRolesNames);
 
-		if (auto perms =  qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ()))
+		if (auto perms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ()))
 			for (const auto& permClass : perms->GetPossiblePerms ().keys ())
 				result << id2action.value (permClass);
 
@@ -804,7 +899,7 @@ namespace Azoth
 		{
 			if (perms)
 			{
-				const QMap<QByteArray, QList<QByteArray>>& possible = perms->GetPossiblePerms ();
+				const auto& possible = perms->GetPossiblePerms ();
 				for (const QByteArray& permClass : possible.keys ())
 				{
 					QMenu *changeClass = new QMenu (perms->GetUserString (permClass));
@@ -814,28 +909,43 @@ namespace Azoth
 							<< CLEAATabCtxtMenu;
 
 					const auto& possibles = possible [permClass];
-					auto addPossible = [&possibles, perms, entry, permClass, this] (QMenu *menu, const char *slot)
+
+					auto addPossible = [&possibles, perms, entry, permClass, this] (QMenu *menu, std::function<void (QList<ICLEntry*>, QAction*)> actor)
 					{
 						for (const QByteArray& perm : possibles)
 						{
 							QAction *permAct = menu->addAction (perms->GetUserString (perm),
 									this,
-									slot);
+									SLOT (handleActoredActionTriggered ()));
 							permAct->setParent (entry->GetQObject ());
 							permAct->setCheckable (true);
 							permAct->setProperty ("Azoth/TargetPermClass", permClass);
 							permAct->setProperty ("Azoth/TargetPerm", perm);
+
+							auto fixedActor = [actor, permAct] (const QList<ICLEntry*>& entries)
+									{ actor (entries, permAct); };
+							permAct->setProperty ("Azoth/EntryActor",
+									QVariant::fromValue<EntryActor_f> (MultiEntryActor_f (fixedActor)));
+							connect (permAct,
+									SIGNAL (triggered ()),
+									this,
+									SLOT (handleActoredActionTriggered ()),
+									Qt::UniqueConnection);
 						}
 					};
 
-					addPossible (changeClass, SLOT (handleActionPermTriggered ()));
+					addPossible (changeClass,
+							[] (const QList<ICLEntry*>& es, QAction *act)
+								{ ChangePermMulti (act, es); });
 
 					changeClass->addSeparator ();
 					auto advanced = changeClass->addMenu (tr ("Advanced..."));
 					advanced->setToolTip (tr ("Allows to set advanced fields like "
 							"reason or global flag"));
 
-					addPossible (advanced, SLOT (handleActionPermAdvancedTriggered ()));
+					addPossible (advanced,
+							[] (const QList<ICLEntry*>& es, QAction *act)
+								{ ChangePermAdvanced (act, es); });
 				}
 
 				QAction *sep = Util::CreateSeparator (entry->GetQObject ());
@@ -1115,120 +1225,6 @@ namespace Azoth
 		ManipulateAuth ("rerequestauth",
 				tr ("Enter reason for rerequesting authorization from %1:"),
 				&IAuthable::RerequestAuth);
-	}
-
-	namespace
-	{
-		void ChangePerm (QAction *action, const QString& text = QString (), bool global = false)
-		{
-			const auto& permClass = action->property ("Azoth/TargetPermClass").toByteArray ();
-			const auto& perm = action->property ("Azoth/TargetPerm").toByteArray ();
-			if (permClass.isEmpty () || perm.isEmpty ())
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "invalid perms set"
-						<< action->property ("Azoth/TargetPermClass")
-						<< action->property ("Azoth/TargetPerm");
-				return;
-			}
-
-			auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
-			auto muc = qobject_cast<IMUCEntry*> (entry->GetParentCLEntry ());
-			auto mucPerms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
-			if (!muc || !mucPerms)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< entry->GetParentCLEntry ()
-						<< "doesn't implement IMUCEntry or IMUCPerms";
-				return;
-			}
-
-			const auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
-			const auto& realID = muc->GetRealID (entry->GetQObject ());
-
-			mucPerms->SetPerm (entry->GetQObject (), permClass, perm, text);
-
-			if (!global || realID.isEmpty ())
-				return;
-
-			for (auto item : acc->GetCLEntries ())
-			{
-				auto otherMuc = qobject_cast<IMUCEntry*> (item);
-				if (!otherMuc || otherMuc == muc)
-					continue;
-
-				auto perms = qobject_cast<IMUCPerms*> (item);
-				if (!perms)
-					continue;
-
-				bool found = false;
-				for (auto part : otherMuc->GetParticipants ())
-				{
-					if (otherMuc->GetRealID (part) != realID)
-						continue;
-
-					found = true;
-
-					if (perms->MayChangePerm (part, permClass, perm))
-					{
-						perms->SetPerm (part, permClass, perm, text);
-						continue;
-					}
-
-					const auto& body = ActionsManager::tr ("Failed to change %1 for %2 in %3 "
-							"due to insufficient permissions.")
-							.arg (perms->GetUserString (permClass))
-							.arg ("<em>" + realID + "</em>")
-							.arg (qobject_cast<ICLEntry*> (item)->GetEntryName ());
-					const auto& e = Util::MakeNotification ("Azoth", body, PWarning_);
-					Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
-				}
-
-				if (!found)
-					perms->TrySetPerm (realID, permClass, perm, text);
-			}
-		}
-	}
-
-	void ActionsManager::handleActionPermTriggered ()
-	{
-		QAction *action = qobject_cast<QAction*> (sender ());
-		if (!action)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not a QAction";
-			return;
-		}
-
-		ChangePerm (action);
-	}
-
-	void ActionsManager::handleActionPermAdvancedTriggered ()
-	{
-		QAction *action = qobject_cast<QAction*> (sender ());
-		if (!action)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not a QAction";
-			return;
-		}
-
-		const auto& entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
-		if (!qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ()))
-			return;
-
-		const auto& permClass = action->property ("Azoth/TargetPermClass").toByteArray ();
-		const auto& perm = action->property ("Azoth/TargetPerm").toByteArray ();
-
-		AdvancedPermChangeDialog dia (entry, permClass, perm);
-		if (dia.exec () != QDialog::Accepted)
-			return;
-		const auto& text = dia.GetReason ();
-		const auto isGlobal = dia.IsGlobal ();
-
-		ChangePerm (action, text, isGlobal);
 	}
 }
 }
