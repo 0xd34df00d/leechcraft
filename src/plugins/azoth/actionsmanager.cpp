@@ -233,8 +233,11 @@ namespace Azoth
 					continue;
 
 				const auto refAction = Entry2Actions_ [entries.first ()] [name];
+				if (!pair.second && !refAction->isSeparator ())
+					continue;
 
 				auto action = new QAction (refAction->text (), parent);
+				action->setSeparator (refAction->isSeparator ());
 				action->setProperty ("Azoth/Entries", QVariant::fromValue (entries));
 				action->setProperty ("Azoth/EntryActor", QVariant::fromValue (pair.second));
 				action->setProperty ("ActionIcon", refAction->property ("ActionIcon"));
