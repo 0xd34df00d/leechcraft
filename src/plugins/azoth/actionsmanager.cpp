@@ -208,6 +208,54 @@ namespace Azoth
 		return result;
 	}
 
+	QList<QAction*> ActionsManager::CreateEntriesActions (QList<ICLEntry*> entries, QObject *parent)
+	{
+		entries.removeAll (nullptr);
+		if (entries.isEmpty ())
+			return {};
+
+		for (auto entry : entries)
+		{
+			if (!Entry2Actions_.contains (entry))
+				CreateActionsForEntry (entry);
+			UpdateActionsForEntry (entry);
+		}
+
+		QList<QAction*> result;
+		auto setter = [&result, &entries, parent, this] (decltype (BeforeRolesNames) pairs) -> void
+		{
+			for (auto pair : pairs)
+			{
+				const auto& name = pair.first;
+
+				if (!std::all_of (entries.begin (), entries.end (),
+						[this, &name] (ICLEntry *entry) { return Entry2Actions_ [entry].value (name); }))
+					continue;
+
+				const auto refAction = Entry2Actions_ [entries.first ()] [name];
+
+				auto action = new QAction (refAction->text (), parent);
+				action->setProperty ("Azoth/Entries", QVariant::fromValue (entries));
+				action->setProperty ("Azoth/EntryActor", QVariant::fromValue (pair.second));
+				action->setProperty ("ActionIcon", refAction->property ("ActionIcon"));
+				action->setProperty ("ReferenceAction", QVariant::fromValue<QObject*> (refAction));
+				connect (action,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleActoredActionTriggered ()));
+
+				result << action;
+			}
+		};
+
+		setter (BeforeRolesNames);
+		setter (AfterRolesNames);
+
+		Core::Instance ().GetProxy ()->UpdateIconset (result);
+
+		return result;
+	}
+
 	QList<ActionsManager::CLEntryActionArea> ActionsManager::GetAreasForAction (const QAction *action) const
 	{
 		return Action2Areas_.value (action, { CLEAAContactListCtxtMenu });

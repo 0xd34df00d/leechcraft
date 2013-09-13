@@ -67,6 +67,7 @@ namespace Azoth
 		ActionsManager (QObject* = 0);
 
 		QList<QAction*> GetEntryActions (ICLEntry *entry);
+		QList<QAction*> CreateEntriesActions (QList<ICLEntry*> entries, QObject *parent);
 		QList<CLEntryActionArea> GetAreasForAction (const QAction *action) const;
 
 		void HandleEntryRemoved (ICLEntry*);
