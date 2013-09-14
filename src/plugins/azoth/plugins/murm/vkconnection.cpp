@@ -36,6 +36,7 @@
 #include <qjson/parser.h>
 #include <util/svcauth/vkauthmanager.h>
 #include <util/queuemanager.h>
+#include "longpollmanager.h"
 
 namespace LeechCraft
 {
@@ -49,6 +50,7 @@ namespace Murm
 			cookies, proxy, this))
 	, Proxy_ (proxy)
 	, CallQueue_ (new Util::QueueManager (400))
+	, LPManager_ (new LongPollManager (this, proxy))
 	{
 		connect (AuthMgr_,
 				SIGNAL (cookiesChanged (QByteArray)),
@@ -58,6 +60,23 @@ namespace Murm
 				SIGNAL (gotAuthKey (QString)),
 				this,
 				SLOT (callWithKey (QString)));
+
+		connect (LPManager_,
+				SIGNAL (listening ()),
+				this,
+				SLOT (handleListening ()));
+		connect (LPManager_,
+				SIGNAL (stopped ()),
+				this,
+				SLOT (handlePollStopped ()));
+		connect (LPManager_,
+				SIGNAL (pollError ()),
+				this,
+				SLOT (handlePollError ()));
+		connect (LPManager_,
+				SIGNAL (gotPollData (QVariantMap)),
+				this,
+				SLOT (handlePollData (QVariantMap)));
 
 		Dispatcher_ [1] = [this] (const QVariantList&) {};
 		Dispatcher_ [2] = [this] (const QVariantList&) {};
@@ -266,11 +285,14 @@ namespace Murm
 
 	void VkConnection::SetStatus (const EntryStatus& status)
 	{
-		LPServer_.clear ();
+		LPManager_->ForceServerRequery ();
 
 		Status_ = status;
 		if (Status_.State_ == SOffline)
+		{
+			LPManager_->Stop ();
 			return;
+		}
 
 		auto nam = Proxy_->GetNetworkAccessManager ();
 		PreparedCalls_.push_back ([this, nam] (const QString& key) -> QNetworkReply*
@@ -292,6 +314,12 @@ namespace Murm
 		return CurrentStatus_;
 	}
 
+	void VkConnection::QueueRequest (VkConnection::PreparedCall_f call)
+	{
+		PreparedCalls_ << call;
+		AuthMgr_->GetAuthKey ();
+	}
+
 	void VkConnection::PushFriendsRequest ()
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
@@ -309,34 +337,6 @@ namespace Murm
 						SLOT (handleGotFriends ()));
 				return reply;
 			});
-	}
-
-	void VkConnection::PushLPFetchCall ()
-	{
-		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([this, nam] (const QString& key) -> QNetworkReply*
-			{
-				QUrl lpUrl ("https://api.vk.com/method/messages.getLongPollServer");
-				lpUrl.addQueryItem ("access_token", key);
-				auto reply = nam->get (QNetworkRequest (lpUrl));
-				connect (reply,
-						SIGNAL (finished ()),
-						this,
-						SLOT (handleGotLPServer ()));
-				return reply;
-			});
-	}
-
-	void VkConnection::Poll ()
-	{
-		qDebug () << Q_FUNC_INFO << LPURLTemplate_;
-
-		QUrl url = LPURLTemplate_;
-		url.addQueryItem ("ts", QString::number (LPTS_));
-		connect (Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (url)),
-				SIGNAL (finished ()),
-				this,
-				SLOT (handlePollFinished ()));
 	}
 
 	bool VkConnection::CheckFinishedReply (QNetworkReply *reply)
@@ -377,87 +377,6 @@ namespace Murm
 		return false;
 	}
 
-	void VkConnection::handlePollFinished ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		if (reply->error () != QNetworkReply::NoError)
-		{
-			++PollErrorCount_;
-			qWarning () << Q_FUNC_INFO
-					<< "network error:"
-					<< reply->error ()
-					<< reply->errorString ()
-					<< "; error count:"
-					<< PollErrorCount_;
-			Poll ();
-			if (PollErrorCount_ == 4)
-			{
-				CurrentStatus_ = EntryStatus ();
-				emit statusChanged (GetStatus ());
-			}
-
-			return;
-		}
-		else if (PollErrorCount_)
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "finally successful network reply after"
-					<< PollErrorCount_
-					<< "errors";
-			PollErrorCount_ = 0;
-			CurrentStatus_ = Status_;
-			emit statusChanged (GetStatus ());
-		}
-
-		const auto& data = QJson::Parser ().parse (reply);
-		const auto& rootMap = data.toMap ();
-		if (rootMap.contains ("failed"))
-		{
-			PushLPFetchCall ();
-			AuthMgr_->GetAuthKey ();
-			return;
-		}
-
-		for (const auto& update : rootMap ["updates"].toList ())
-		{
-			const auto& parmList = update.toList ();
-			const auto code = parmList.value (0).toInt ();
-
-			if (!Dispatcher_.contains (code))
-				qWarning () << Q_FUNC_INFO
-						<< "unknown code"
-						<< code
-						<< parmList;
-			else
-				Dispatcher_ [code] (parmList);
-		}
-
-		LPTS_ = rootMap ["ts"].toULongLong ();
-
-		if (Status_.State_ != SOffline)
-		{
-			if (!LPServer_.isEmpty ())
-				Poll ();
-			else
-			{
-				PushLPFetchCall ();
-				AuthMgr_->GetAuthKey ();
-			}
-		}
-		else
-			GoOffline ();
-	}
-
-	void VkConnection::GoOffline ()
-	{
-		CurrentStatus_ = Status_;
-		emit statusChanged (GetStatus ());
-
-		emit stoppedPolling ();
-	}
-
 	void VkConnection::rerunPrepared ()
 	{
 		ShouldRerunPrepared_ = false;
@@ -472,6 +391,43 @@ namespace Murm
 		{
 			auto f = PreparedCalls_.takeFirst ();
 			CallQueue_->Schedule ([this, f, key] { RunningCalls_.append ({ f (key), f }); });
+		}
+	}
+
+	void VkConnection::handleListening ()
+	{
+		CurrentStatus_ = Status_;
+		emit statusChanged (GetStatus ());
+	}
+
+	void VkConnection::handlePollError ()
+	{
+		CurrentStatus_ = EntryStatus ();
+		emit statusChanged (GetStatus ());
+	}
+
+	void VkConnection::handlePollStopped ()
+	{
+		CurrentStatus_ = Status_;
+		emit statusChanged (GetStatus ());
+
+		emit stoppedPolling ();
+	}
+
+	void VkConnection::handlePollData (const QVariantMap& rootMap)
+	{
+		for (const auto& update : rootMap ["updates"].toList ())
+		{
+			const auto& parmList = update.toList ();
+			const auto code = parmList.value (0).toInt ();
+
+			if (!Dispatcher_.contains (code))
+				qWarning () << Q_FUNC_INFO
+						<< "unknown code"
+						<< code
+						<< parmList;
+			else
+				Dispatcher_ [code] (parmList);
 		}
 	}
 
@@ -550,36 +506,7 @@ namespace Murm
 
 		emit gotUsers (users);
 
-		if (LPServer_.isEmpty ())
-		{
-			PushLPFetchCall ();
-			AuthMgr_->GetAuthKey ();
-		}
-	}
-
-	void VkConnection::handleGotLPServer ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!CheckFinishedReply (reply))
-			return;
-
-		const auto& data = QJson::Parser ().parse (reply);
-		const auto& map = data.toMap () ["response"].toMap ();
-
-		LPKey_ = map ["key"].toString ();
-		LPServer_ = map ["server"].toString ();
-		LPTS_ = map ["ts"].toULongLong ();
-
-		LPURLTemplate_ = QUrl ("http://" + LPServer_);
-		LPURLTemplate_.addQueryItem ("act", "a_check");
-		LPURLTemplate_.addQueryItem ("key", LPKey_);
-		LPURLTemplate_.addQueryItem ("wait", "25");
-		LPURLTemplate_.addQueryItem ("mode", "2");
-
-		CurrentStatus_ = Status_;
-		emit statusChanged (GetStatus ());
-
-		Poll ();
+		LPManager_->start ();
 	}
 
 	void VkConnection::handleMessageSent ()
