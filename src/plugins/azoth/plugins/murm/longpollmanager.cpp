@@ -65,6 +65,7 @@ namespace Murm
 
 		qDebug () << Q_FUNC_INFO << url;
 
+		LastPollDT_ = QDateTime::currentDateTime ();
 		connect (Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (url)),
 				SIGNAL (finished ()),
 				this,
@@ -75,6 +76,7 @@ namespace Murm
 	{
 		QUrl url = LPURLTemplate_;
 		url.addQueryItem ("ts", QString::number (LPTS_));
+		url.addQueryItem ("wait", QString::number (WaitTimeout_));
 		return url;
 	}
 
@@ -112,9 +114,29 @@ namespace Murm
 					<< reply->errorString ()
 					<< "; error count:"
 					<< PollErrorCount_;
+
+			switch (reply->error ())
+			{
+			case QNetworkReply::RemoteHostClosedError:
+			{
+				const auto diff = LastPollDT_.secsTo (QDateTime::currentDateTime ());
+				const auto newTimeout = std::max ((diff + WaitTimeout_) / 2 - 1, 5);
+				qWarning () << Q_FUNC_INFO
+						<< "got timeout with"
+						<< WaitTimeout_
+						<< diff
+						<< "; new timeout:"
+						<< newTimeout;
+				WaitTimeout_ = newTimeout;
+				break;
+			}
+			default:
+				if (PollErrorCount_ == 4)
+					emit pollError ();
+				break;
+			}
+
 			Poll ();
-			if (PollErrorCount_ == 4)
-				emit pollError ();
 
 			return;
 		}
@@ -179,7 +201,6 @@ namespace Murm
 		LPURLTemplate_ = QUrl ("http://" + LPServer_);
 		LPURLTemplate_.addQueryItem ("act", "a_check");
 		LPURLTemplate_.addQueryItem ("key", LPKey_);
-		LPURLTemplate_.addQueryItem ("wait", "25");
 		LPURLTemplate_.addQueryItem ("mode", "2");
 
 		emit listening ();

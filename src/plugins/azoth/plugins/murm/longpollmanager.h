@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QUrl>
 #include <QVariantMap>
+#include <QDateTime>
 #include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
@@ -58,6 +59,10 @@ namespace Murm
 		int PollErrorCount_ = 0;
 
 		bool ShouldStop_ = false;
+
+		int WaitTimeout_ = 25;
+
+		QDateTime LastPollDT_;
 	public:
 		LongPollManager (VkConnection*, ICoreProxy_ptr);
 
