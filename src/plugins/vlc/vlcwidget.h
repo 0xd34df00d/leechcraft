@@ -106,6 +106,8 @@ namespace vlc
 		QMenu *ContextMenu_;
 		QSettings *Settings_;
 		
+		QTimer *DisableScreenSaver_;
+		
 	public:
 		explicit VlcWidget (Util::ShortcutManager *manager, QWidget *parent = 0);
 		~VlcWidget();
@@ -158,6 +160,8 @@ namespace vlc
 		
 		void AllowPanel ();
 		void ForbidPanel ();
+		
+		void disableScreenSaver ();
 		
 	signals:
 		void deleteMe (QWidget*);

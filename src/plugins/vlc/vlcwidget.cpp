@@ -105,6 +105,9 @@ namespace vlc
 		PlaylistWidget_->Init (VlcPlayer_->GetInstance (), VlcPlayer_->GetPlayer ().get ());
 		VlcPlayer_->Init (VlcMainWidget_);
 		
+		DisableScreenSaver_ = new QTimer (this);
+		DisableScreenSaver_->setInterval (9000);
+		
 		GenerateToolBar ();
 		PrepareFullScreen ();
 		InterfaceUpdater_ = new QTimer (this);
@@ -167,6 +170,11 @@ namespace vlc
 				SIGNAL (unstable ()),
 				ScrollBar_,
 				SLOT (blockUpdating ()));
+		
+		connect (DisableScreenSaver_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (disableScreenSaver ()));
 		
 		InitNavigations ();
 		setAcceptDrops (true);
@@ -466,11 +474,13 @@ namespace vlc
 	void VlcWidget::TabLostCurrent ()
 	{
 		InterfaceUpdater_->stop ();
+		DisableScreenSaver_->stop ();
 	}
 	
 	void VlcWidget::TabMadeCurrent ()
 	{
 		InterfaceUpdater_->start ();
+		DisableScreenSaver_->start ();
 	}
 	
 	void VlcWidget::ForbidFullScreen ()
@@ -803,6 +813,11 @@ namespace vlc
 	{
 		if (event->mimeData ()->urls ().size () == 1)
 			event->accept ();
+	}
+	
+	void VlcWidget::disableScreenSaver ()
+	{
+		system ("qdbus org.freedesktop.ScreenSaver /ScreenSaver SimulateUserActivity > /dev/null"); //hello kaffeinety
 	}
 }
 }
