@@ -126,7 +126,17 @@ namespace Murm
 
 	struct FullMessageInfo
 	{
+		qlonglong OwnerID_;
+		qulonglong ID_;
+
+		QString Text_;
+
+		QDateTime PostDate_;
+		int Likes_;
+		int Reposts_;
+
 		QList<PhotoInfo> Photos_;
+		QList<FullMessageInfo> ContainedReposts_;
 	};
 }
 }
