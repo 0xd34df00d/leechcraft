@@ -562,6 +562,33 @@ namespace Murm
 				map ["access_key"].toString ()
 			};
 		}
+
+		void HandleAttachments (FullMessageInfo& info, const QVariant& attachments)
+		{
+			const auto& attList = attachments.toList ();
+			for (const auto& attVar : attList)
+			{
+				const auto& attMap = attVar.toMap ();
+				if (attMap.contains ("photo"))
+					info.Photos_.append (PhotoMap2Info (attMap ["photo"].toMap ()));
+				else if (attMap.contains ("wall"))
+				{
+					const auto& wallMap = attMap ["wall"].toMap ();
+
+					FullMessageInfo repost;
+					repost.OwnerID_ = wallMap ["from_id"].toLongLong ();
+					repost.ID_ = wallMap ["id"].toULongLong ();
+					repost.Text_ = wallMap ["text"].toString ();
+					repost.Likes_ = wallMap ["likes"].toMap () ["count"].toInt ();
+					repost.Reposts_ = wallMap ["reposts"].toMap () ["count"].toInt ();
+					repost.PostDate_ = QDateTime::fromTime_t (wallMap ["date"].toLongLong ());
+
+					HandleAttachments (repost, wallMap ["attachments"]);
+
+					info.ContainedReposts_.append (repost);
+				}
+			}
+		}
 	}
 
 	void VkConnection::handleMessageInfoFetched ()
@@ -584,14 +611,7 @@ namespace Murm
 				continue;
 
 			const auto& map = item.toMap ();
-			const auto& attList = map ["attachments"].toList ();
-			qDebug () << "list" << attList;
-			for (const auto& attVar : attList)
-			{
-				const auto& attMap = attVar.toMap ();
-				if (attMap.contains ("photo"))
-					info.Photos_.append (PhotoMap2Info (attMap ["photo"].toMap ()));
-			}
+			HandleAttachments (info, map ["attachments"]);
 		}
 
 		setter (info);
