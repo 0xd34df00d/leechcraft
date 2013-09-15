@@ -275,7 +275,6 @@ namespace Murm
 
 		if (info.Flags_ & MessageFlag::Outbox)
 		{
-			const auto& text = info.ID_;
 			for (int i = Messages_.size () - 1; i >= 0; --i)
 			{
 				auto msg = Messages_.at (i);
@@ -501,40 +500,76 @@ namespace Murm
 		}
 
 		QStringList photoIds;
+		QStringList wallIds;
 		for (const auto& info : Attaches_)
 			if (info.Type_ == "photo")
 				photoIds << info.ID_;
-		if (photoIds.isEmpty ())
+			else if (info.Type_ == "wall")
+				wallIds << info.ID_;
+		if (photoIds.isEmpty () && wallIds.isEmpty ())
 			return;
 
 		QString newContents = msg->GetBody ();
 		for (const auto& id : photoIds)
 			newContents += "<div id='photostub_" + id + "'></div>";
+		for (const auto& id : wallIds)
+			newContents += "<div id='wallstub_" + id + "'></div>";
 		msg->SetBody (newContents);
 
 		QPointer<VkMessage> safeMsg (msg);
 		Account_->GetConnection ()->GetMessageInfo (msg->GetID (),
-				[safeMsg] (const FullMessageInfo& msgInfo) -> void
+				[this, safeMsg] (const FullMessageInfo& msgInfo) -> void
 				{
 					if (!safeMsg)
 						return;
 
 					QString js;
 					auto body = safeMsg->GetBody ();
+
+					QList<QPair<QString, QString>> replacements;
 					for (const auto& info : msgInfo.Photos_)
 					{
-						const auto& id = QString ("%1_%2")
+						const auto& id = QString ("photostub_%1_%2")
 								.arg (info.OwnerID_)
 								.arg (info.PhotoID_);
 						const auto& replacement = QString ("<a href='%1' target='_blank'><img src='%2' alt='' /></a>")
 								.arg (info.Full_)
 								.arg (info.Thumbnail_);
 
-						body.replace ("<div id='photostub_" + id + "'></div>",
-								"<div>" + replacement + "</div>");
-						js += QString ("try { document.getElementById('photostub_%1').innerHTML = \"%2\"; } catch (e) {};")
-								.arg (id).arg (replacement);
+						replacements.append ({ id, replacement });
 					}
+
+					for (const auto& repost : msgInfo.ContainedReposts_)
+					{
+						const auto& id = QString ("wallstub_%1_%2")
+								.arg (repost.OwnerID_)
+								.arg (repost.ID_);
+
+						auto replacement = repost.Text_;
+						for (const auto& photo : repost.Photos_)
+						{
+							replacement += "<br/>";
+							replacement += QString ("<a href='%1' target='_blank'><img src='%2' alt='' /></a>")
+								.arg (photo.Full_)
+								.arg (photo.Thumbnail_);
+						}
+						replacement += "<div style='align:right'>";
+						replacement += tr ("Posted on: %1; %2; %3").arg (repost.PostDate_.toString ())
+								.arg (tr ("%n like(s)", 0, repost.Likes_))
+								.arg (tr ("%n repost(s)", 0, repost.Reposts_));
+
+						replacements.append ({ id, replacement });
+					}
+
+					for (const auto& pair : replacements)
+					{
+						body.replace ("<div id='" + pair.first + "'></div>",
+								"<div>" + pair.second + "</div>");
+						js += QString ("try { document.getElementById('%1').innerHTML = \"%2\"; } catch (e) {};")
+								.arg (pair.first)
+								.arg (pair.second);
+					}
+
 					safeMsg->SetBody (body);
 
 					auto safeThis = qobject_cast<VkEntry*> (safeMsg->OtherPart ());
