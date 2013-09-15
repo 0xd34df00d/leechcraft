@@ -179,9 +179,6 @@ namespace LMP
 		void stop ();
 		void clear ();
 		void shufflePlaylist ();
-
-		void volumeUp ();
-		void volumeDown ();
 	private slots:
 		void handleSorted ();
 		void continueAfterSorted (const QList<QPair<AudioSource, MediaInfo>>&);
@@ -203,6 +200,7 @@ namespace LMP
 		void setTransitionTime ();
 	signals:
 		void songChanged (const MediaInfo&);
+		void songInfoUpdated (const MediaInfo&);
 		void indexChanged (const QModelIndex&);
 		void insertedAlbum (const QModelIndex&);
 

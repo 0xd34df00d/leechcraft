@@ -27,34 +27,62 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "multicastserver.h"
-#include <QUdpSocket>
+#pragma once
+
+#include <QObject>
+#include <QUrl>
+#include <QVariantMap>
+#include <QDateTime>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
-namespace DLNiwe
+namespace Azoth
 {
-	MulticastServer::MulticastServer (QObject *parent)
-	: QObject (parent)
-	, Socket_ (new QUdpSocket (this))
-	{
-		Socket_->bind (1900, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
-		Socket_->joinMulticastGroup (QHostAddress ("239.255.255.250"));
-		connect (Socket_,
-				SIGNAL (readyRead ()),
-				this,
-				SLOT (processDatagrams ()));
-	}
+namespace Murm
+{
+	class VkConnection;
 
-	void MulticastServer::processDatagrams ()
+	class LongPollManager : public QObject
 	{
-		while (Socket_->hasPendingDatagrams ())
-		{
-			QByteArray data;
-			data.resize (Socket_->pendingDatagramSize ());
-			Socket_->readDatagram (data.data (), data.size ());
-			qDebug () << data;
-		}
-	}
+		Q_OBJECT
+
+		VkConnection * const Conn_;
+		const ICoreProxy_ptr Proxy_;
+
+		QString LPKey_;
+		QString LPServer_;
+		qulonglong LPTS_;
+
+		QUrl LPURLTemplate_;
+
+		int PollErrorCount_ = 0;
+
+		bool ShouldStop_ = false;
+
+		int WaitTimeout_ = 25;
+
+		QDateTime LastPollDT_;
+	public:
+		LongPollManager (VkConnection*, ICoreProxy_ptr);
+
+		void ForceServerRequery ();
+		void Stop ();
+	private:
+		void Poll ();
+
+		QUrl GetURLTemplate () const;
+	public slots:
+		void start ();
+	private slots:
+		void handlePollFinished ();
+		void handleGotLPServer ();
+	signals:
+		void listening ();
+		void stopped ();
+		void pollError ();
+		void gotPollData (const QVariantMap&);
+	};
+}
 }
 }

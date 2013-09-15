@@ -36,8 +36,10 @@
 #include <QFutureWatcher>
 #include <util/util.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/media/ialbumartprovider.h>
 #include "core.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -47,6 +49,9 @@ namespace LMP
 	: QObject (parent)
 	, AADir_ (Util::CreateIfNotExists ("lmp/covers"))
 	{
+		XmlSettingsManager::Instance ().RegisterObject ("CoversStoragePath",
+				this, "handleCoversPath");
+		handleCoversPath ();
 	}
 
 	void AlbumArtManager::CheckAlbumArt (const Collection::Artist& artist, Collection::Album_ptr album)
@@ -112,7 +117,7 @@ namespace LMP
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleSaved ()));
-		watcher->setFuture (QtConcurrent::run (std::function<void (void)> ([image, fullPath] () { image.save (fullPath, "PNG", 100); })));
+		watcher->setFuture (QtConcurrent::run ([image, fullPath] () { image.save (fullPath, "PNG", 100); }));
 	}
 
 	void AlbumArtManager::rotateQueue ()
@@ -147,6 +152,32 @@ namespace LMP
 		const auto& fullPath = sender ()->property ("FullPath").toString ();
 		Core::Instance ().GetLocalCollection ()->SetAlbumArt (id, fullPath);
 		sender ()->deleteLater ();
+	}
+
+	void AlbumArtManager::handleCoversPath ()
+	{
+		const auto& path = XmlSettingsManager::Instance ()
+				.property ("CoversStoragePath").toString ();
+
+		bool failed = false;
+		if (!QFile::exists (path) && !QDir::root ().mkpath (path))
+			failed = true;
+
+		const QFileInfo fi (path);
+		if (!failed && !(fi.isDir () && fi.isReadable ()))
+			failed = true;
+
+		if (failed)
+		{
+			const auto& e = Util::MakeNotification ("LMP",
+					tr ("Path %1 cannot be used as album art storage, default path will be used instead."),
+					PWarning_);
+			Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
+
+			AADir_ = Util::CreateIfNotExists ("lmp/covers");
+		}
+		else
+			AADir_ = QDir (path);
 	}
 }
 }

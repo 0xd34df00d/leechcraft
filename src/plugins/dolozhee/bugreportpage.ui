@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>429</width>
-    <height>403</height>
+    <width>476</width>
+    <height>389</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,7 +35,14 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QPlainTextEdit" name="ShortDesc_"/>
+    <widget class="QPlainTextEdit" name="ShortDesc_">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>1</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
    </item>
    <item row="4" column="0">
     <widget class="QLabel" name="label_3">
@@ -45,7 +52,14 @@
     </widget>
    </item>
    <item row="4" column="1">
-    <widget class="QPlainTextEdit" name="STR_"/>
+    <widget class="QPlainTextEdit" name="STR_">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>1</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
    </item>
    <item row="2" column="0">
     <widget class="QLabel" name="label_4">
@@ -55,7 +69,14 @@
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QPlainTextEdit" name="ER_"/>
+    <widget class="QPlainTextEdit" name="ER_">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>1</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
    </item>
    <item row="3" column="0">
     <widget class="QLabel" name="label_5">
@@ -65,7 +86,14 @@
     </widget>
    </item>
    <item row="3" column="1">
-    <widget class="QPlainTextEdit" name="AR_"/>
+    <widget class="QPlainTextEdit" name="AR_">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>1</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

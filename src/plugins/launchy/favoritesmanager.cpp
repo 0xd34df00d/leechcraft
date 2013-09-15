@@ -74,7 +74,7 @@ namespace Launchy
 	void FavoritesManager::Save () const
 	{
 		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_LMP");
+				QCoreApplication::applicationName () + "_Launchy");
 		settings.beginGroup ("Favorites");
 		settings.setValue ("IDs", QStringList (Favorites_.toList ()));
 		settings.endGroup ();
@@ -83,7 +83,7 @@ namespace Launchy
 	void FavoritesManager::Load ()
 	{
 		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_LMP");
+				QCoreApplication::applicationName () + "_Launchy");
 		settings.beginGroup ("Favorites");
 		Favorites_ = QSet<QString>::fromList (settings.value ("IDs").toStringList ());
 		settings.endGroup ();

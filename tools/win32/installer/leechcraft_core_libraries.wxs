@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <ComponentGroup Id="CG_LeechCraftCoreLibraries">
+            <Component Id="cmpF4D4CD2749973702889DA70D6382DA00" Directory="INSTALLFOLDER" Guid="{B5039A18-54B3-4A2E-BF84-0A476668E99C}">
+                <File Id="filFA569B599B492A2196C262B8644F0E2E" KeyPath="yes" Source="$(var.SourcePath)\libboost_program_options-mgw48-mt-1_54.dll" />
+            </Component>
+            <Component Id="cmp47286B0AEEDF63C3E3D5F5EA18107E56" Directory="INSTALLFOLDER" Guid="{658901E4-E63B-4811-AA66-818623E44054}">
+                <File Id="filBC92EED6649E15C11462361471F93A1A" KeyPath="yes" Source="$(var.SourcePath)\libgcc_s_dw2-1.dll" />
+            </Component>
+            <Component Id="cmp0E9803F1A7859EC9357D18E137334D6F" Directory="INSTALLFOLDER" Guid="{A246528E-DCE1-4470-9686-4B2F42D2FD6E}">
+                <File Id="filAB7740902E9B236D3CF1F9A6D579B7D2" KeyPath="yes" Source="$(var.SourcePath)\libstdc++-6.dll" />
+            </Component>
+            <Component Id="cmp14D111E3EE403D7E41F68E77888108D9" Directory="INSTALLFOLDER" Guid="{7810BA5D-E11F-4711-A576-DD2EC4287FDE}">
+                <File Id="filDF8C91F4A009400E0CB329137E62483A" KeyPath="yes" Source="$(var.SourcePath)\libwinpthread-1.dll" />
+            </Component>
+            <Component Id="cmpE5F726A4B1439DA99FEFEA6EC818E92D" Directory="INSTALLFOLDER" Guid="{055F35A3-0C85-479E-8D42-F6CA097251CA}">
+                <File Id="fil87732CF0030046E1723E51F5A9F5AC5D" KeyPath="yes" Source="$(var.SourcePath)\qt.conf" />
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+</Wix>

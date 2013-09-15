@@ -103,7 +103,7 @@ namespace AdvancedNotifications
 		QString GetCategory () const;
 		void SetCategory (const QString&);
 
-		QStringList GetTypes () const;
+		QSet<QString> GetTypes () const;
 		void SetTypes (const QStringList&);
 
 		NotificationMethods GetMethods () const;
@@ -136,6 +136,8 @@ namespace AdvancedNotifications
 
 	bool operator== (const NotificationRule&, const NotificationRule&);
 	bool operator!= (const NotificationRule&, const NotificationRule&);
+
+	void DebugEquals (const NotificationRule&, const NotificationRule&);
 }
 }
 

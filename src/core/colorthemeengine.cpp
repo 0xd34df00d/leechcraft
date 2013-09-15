@@ -153,6 +153,9 @@ namespace LeechCraft
 			updateAll (QPalette::ToolTipBase, "Tooltip", "BackgroundNormal");
 			updateAll (QPalette::ToolTipText, "Tooltip", "ForegroundNormal");
 
+			updateAll (QPalette::Highlight, "Selection", "BackgroundNormal");
+			updateAll (QPalette::HighlightedText, "Selection", "ForegroundNormal");
+
 			return palette;
 		}
 	}

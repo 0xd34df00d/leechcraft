@@ -109,6 +109,12 @@ namespace LeechCraft
 			return;
 	}
 
+	void DockManager::SetDockWidgetVisibility (QDockWidget *dw, bool visible)
+	{
+		dw->setVisible (visible);
+		HandleDockToggled (dw, visible);
+	}
+
 	QSet<QDockWidget*> DockManager::GetWindowDocks (MainWindow *window) const
 	{
 		QSet<QDockWidget*> result;
@@ -176,6 +182,20 @@ namespace LeechCraft
 		return false;
 	}
 
+	void DockManager::HandleDockToggled (QDockWidget *dock, bool isVisible)
+	{
+		if (isVisible)
+		{
+			if (ForcefullyClosed_.remove (dock))
+			{
+				auto win = Dock2Info_ [dock].Window_;
+				Window2DockToolbarMgr_ [win]->AddDock (dock, win->dockWidgetArea (dock));
+			}
+		}
+		else
+			ForcefullyClosed_ << dock;
+	}
+
 	void DockManager::handleTabMove (int from, int to, int tab)
 	{
 		auto rootWM = Core::Instance ().GetRootWindowsManager ();
@@ -218,16 +238,7 @@ namespace LeechCraft
 			return;
 		}
 
-		if (isVisible)
-		{
-			if (ForcefullyClosed_.remove (dock))
-			{
-				auto win = Dock2Info_ [dock].Window_;
-				Window2DockToolbarMgr_ [win]->AddDock (dock, win->dockWidgetArea (dock));
-			}
-		}
-		else
-			ForcefullyClosed_ << dock;
+		HandleDockToggled (dock, isVisible);
 	}
 
 	void DockManager::handleTabChanged (QWidget *tabWidget)

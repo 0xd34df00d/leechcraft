@@ -67,6 +67,7 @@ namespace Azoth
 		ActionsManager (QObject* = 0);
 
 		QList<QAction*> GetEntryActions (ICLEntry *entry);
+		QList<QAction*> CreateEntriesActions (QList<ICLEntry*> entries, QObject *parent);
 		QList<CLEntryActionArea> GetAreasForAction (const QAction *action) const;
 
 		void HandleEntryRemoved (ICLEntry*);
@@ -77,36 +78,12 @@ namespace Azoth
 		void CreateActionsForEntry (ICLEntry*);
 		void UpdateActionsForEntry (ICLEntry*);
 	private slots:
-		void handleActionOpenChatTriggered ();
-		void handleActionCopyEntryIDTriggered ();
-		void handleActionDrawAttention ();
-		void handleActionSendFile ();
-		void handleActionRenameTriggered ();
-		void handleActionChangeGroupsTriggered ();
-		void handleActionSendDirectedStatusTriggered ();
-		void handleActionRemoveTriggered ();
+		void handleActoredActionTriggered ();
+
 		void handleActionGrantAuthTriggered ();
 		void handleActionRevokeAuthTriggered ();
 		void handleActionUnsubscribeTriggered ();
 		void handleActionRerequestTriggered ();
-#ifdef ENABLE_CRYPT
-		void handleActionManagePGPTriggered ();
-#endif
-		void handleActionShareContactsTriggered ();
-		void handleActionVCardTriggered ();
-
-		void handleActionInviteTriggered ();
-		void handleActionLeaveTriggered ();
-		void handleActionAddToBookmarks ();
-		void handleActionUsersList ();
-
-		void handleActionConfigureMUC ();
-		void handleActionAuthorizeTriggered ();
-		void handleActionDenyAuthTriggered ();
-		void handleActionAddContactFromMUC ();
-		void handleActionCopyMUCPartID ();
-		void handleActionPermTriggered ();
-		void handleActionPermAdvancedTriggered ();
 	signals:
 		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *action,

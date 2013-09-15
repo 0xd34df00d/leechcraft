@@ -39,9 +39,10 @@ namespace Poleemery
 	auto ZipWith (const Container<T1>& c1, const Container<T2>& c2, F f) -> Container<decltype (f (T1 (), T2 ()))>
 	{
 		Container<decltype (f (T1 (), T2 ()))> result;
-		for (auto i1 = std::begin (c1), e1 = std::end (c1),
-					i2 = std::begin (c2), e2 = std::end (c2);
-				i1 != e1 && i2 != e2; ++i1, ++i2)
+
+		auto i1 = std::begin (c1), e1 = std::end (c1);
+		auto i2 = std::begin (c2), e2 = std::end (c2);
+		for ( ; i1 != e1 && i2 != e2; ++i1, ++i2)
 			result.push_back (f (*i1, *i2));
 		return result;
 	}

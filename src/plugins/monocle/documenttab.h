@@ -140,6 +140,8 @@ namespace Monocle
 
 		QPoint GetCurrentCenter () const;
 		void CenterOn (const QPoint&);
+
+		bool eventFilter (QObject*, QEvent*);
 	private:
 		void SetupToolbarOpen ();
 		void SetupToolbarRotate ();
@@ -204,6 +206,7 @@ namespace Monocle
 		void handleScaleChosen (int);
 
 		void handleDockLocation (Qt::DockWidgetArea);
+		void handleDockVisibility (bool);
 	signals:
 		void changeTabName (QWidget*, const QString&);
 		void removeTab (QWidget*);

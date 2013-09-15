@@ -69,7 +69,7 @@ namespace PDF
 		Q_INTERFACES (LeechCraft::Monocle::ILink)
 	protected:
 		Document *Doc_;
-		Poppler::LinkDestination *Dest_;
+		std::unique_ptr<Poppler::LinkDestination> Dest_;
 	public:
 		TOCLink (Document*, Poppler::LinkDestination*);
 

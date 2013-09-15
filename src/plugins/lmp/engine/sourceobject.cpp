@@ -93,13 +93,6 @@ namespace LMP
 			static_cast<SourceObject*> (data)->SetupSource ();
 			return true;
 		}
-
-		gboolean CbElement (GstBus *bus, GstMessage *msg, gpointer data)
-		{
-			auto src = static_cast<SourceObject*> (data);
-			src->HandleElementMsg (msg);
-			return true;
-		}
 	}
 
 	SourceObject::SourceObject (QObject *parent)
@@ -160,20 +153,26 @@ namespace LMP
 		return {};
 	}
 
-	QStringList SourceObject::GetMetadata (Metadata field) const
+	QString SourceObject::GetMetadata (Metadata field) const
 	{
 		switch (field)
 		{
 		case Metadata::Artist:
-			return { Metadata_ ["artist"] };
+			return Metadata_ ["artist"];
 		case Metadata::Album:
-			return { Metadata_ ["album"] };
+			return Metadata_ ["album"];
 		case Metadata::Title:
-			return { Metadata_ ["title"] };
+			return Metadata_ ["title"];
 		case Metadata::Genre:
-			return { Metadata_ ["genre"] };
+			return Metadata_ ["genre"];
 		case Metadata::Tracknumber:
-			return { Metadata_ ["tracknumber"] };
+			return Metadata_ ["tracknumber"];
+		case Metadata::NominalBitrate:
+			return Metadata_ ["bitrate"];
+		case Metadata::MinBitrate:
+			return Metadata_ ["minimum-bitrate"];
+		case Metadata::MaxBitrate:
+			return Metadata_ ["maximum-bitrate"];
 		}
 
 		qWarning () << Q_FUNC_INFO
@@ -491,14 +490,8 @@ namespace LMP
 		merge ("organization", "album", true);
 		merge ("genre", "title", true);
 
-		Metadata_.remove ("bitrate");
-		Metadata_.remove ("minimum-bitrate");
-		Metadata_.remove ("maximum-bitrate");
-
-		if (oldMetadata == Metadata_)
-			return;
-
-		emit metaDataChanged ();
+		if (oldMetadata != Metadata_)
+			emit metaDataChanged ();
 	}
 
 	void SourceObject::HandleBufferingMsg (GstMessage *msg)

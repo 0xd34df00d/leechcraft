@@ -96,7 +96,7 @@ set (SRCS
 	loaders/sopluginloader.cpp
 	)
 
-if (NOT WIN32)
+if (UNIX AND NOT APPLE)
 	set (SRCS
 		${SRCS}
 		loaders/dbuspluginloader.cpp
@@ -133,12 +133,18 @@ else ()
 	QT4_ADD_RESOURCES (RCC ${RESOURCES})
 endif ()
 
+set (WIN_RESOURCES)
+if (WIN32)
+	set (WIN_RESOURCES ../../../tools/win32/leechcraft.rc)
+endif ()
+
 add_executable (leechcraft WIN32
 	../config.h
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${UIS_H}
 	${RCC}
+	${WIN_RESOURCES}
 	)
 
 target_link_libraries (leechcraft
@@ -157,6 +163,6 @@ if (USE_QT5)
 	QT5_USE_MODULES (leechcraft Gui Network Widgets Xml Sql Script Concurrent DBus Svg)
 endif ()
 
-if (NOT WIN32)
+if (UNIX AND NOT APPLE)
 	add_subdirectory (loaders/dbus)
 endif ()

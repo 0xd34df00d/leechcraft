@@ -72,12 +72,16 @@ namespace LeechCraft
 
 		void ToggleViewActionVisiblity (QDockWidget*, bool);
 
+		void SetDockWidgetVisibility (QDockWidget*, bool);
+
 		QSet<QDockWidget*> GetWindowDocks (MainWindow*) const;
 		void MoveDock (QDockWidget *dock, MainWindow *from, MainWindow *to);
 
 		QSet<QDockWidget*> GetForcefullyClosed () const;
 	protected:
 		bool eventFilter (QObject*, QEvent*);
+	private:
+		void HandleDockToggled (QDockWidget*, bool);
 	public slots:
 		void handleTabMove (int, int, int);
 	private slots:

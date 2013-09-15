@@ -166,14 +166,28 @@ namespace Monocle
 		if (dwa == Qt::NoDockWidgetArea)
 			dwa = Qt::RightDockWidgetArea;
 
+		const auto& widthVar = XmlSettingsManager::Instance ().property ("DockWidgetWidth");
+		if (widthVar.isValid ())
+		{
+			DockWidget_->setMinimumWidth (widthVar.toInt ());
+			DockWidget_->setMaximumWidth (widthVar.toInt ());
+		}
+		DockWidget_->installEventFilter (this);
+
 		auto mw = Core::Instance ().GetProxy ()->GetRootWindowsManager ()->GetMWProxy (0);
 		mw->AddDockWidget (dwa, DockWidget_);
 		mw->AssociateDockWidget (DockWidget_, this);
 		mw->ToggleViewActionVisiblity (DockWidget_, false);
+		if (!XmlSettingsManager::Instance ().Property ("DockWidgetVisible", true).toBool ())
+			mw->SetDockWidgetVisibility (DockWidget_, false);
 		connect (DockWidget_,
 				SIGNAL (dockLocationChanged (Qt::DockWidgetArea)),
 				this,
 				SLOT (handleDockLocation (Qt::DockWidgetArea)));
+		connect (DockWidget_,
+				SIGNAL (visibilityChanged (bool)),
+				this,
+				SLOT (handleDockVisibility (bool)));
 
 		connect (this,
 				SIGNAL (currentPageChanged (int)),
@@ -201,11 +215,11 @@ namespace Monocle
 
 	void DocumentTab::Remove ()
 	{
-		DockWidget_->widget ()->deleteLater ();
-		DockWidget_->deleteLater ();
-		TOCWidget_->deleteLater ();
-		BMWidget_->deleteLater ();
-		ThumbsWidget_->deleteLater ();
+		delete TOCWidget_;
+		delete BMWidget_;
+		delete ThumbsWidget_;
+		delete DockWidget_->widget ();
+		delete DockWidget_;
 
 		emit removeTab (this);
 		deleteLater ();
@@ -481,6 +495,29 @@ namespace Monocle
 	void DocumentTab::CenterOn (const QPoint& point)
 	{
 		Ui_.PagesView_->SmoothCenterOn (point.x (), point.y ());
+	}
+
+	bool DocumentTab::eventFilter (QObject*, QEvent *event)
+	{
+		switch (event->type ())
+		{
+		case QEvent::Resize:
+		{
+			auto resizeEv = static_cast<QResizeEvent*> (event);
+			const auto width = resizeEv->size ().width ();
+			qDebug () << "filter" << width;
+			XmlSettingsManager::Instance ().setProperty ("DockWidgetWidth", width);
+			break;
+		}
+		case QEvent::Show:
+			DockWidget_->setMinimumWidth (0);
+			DockWidget_->setMaximumWidth (QWIDGETSIZE_MAX);
+			break;
+		default:
+			break;
+		}
+
+		return false;
 	}
 
 	void DocumentTab::SetupToolbarOpen ()
@@ -1343,6 +1380,11 @@ namespace Monocle
 		if (area != Qt::AllDockWidgetAreas &&
 				area != Qt::NoDockWidgetArea)
 			XmlSettingsManager::Instance ().setProperty ("DockWidgetArea", area);
+	}
+
+	void DocumentTab::handleDockVisibility (bool visible)
+	{
+		XmlSettingsManager::Instance ().setProperty ("DockWidgetVisible", visible);
 	}
 }
 }

@@ -29,6 +29,7 @@
 
 #include "ipluginloader.h"
 #if defined __GNUC__
+#include <cstdlib>
 #include <cxxabi.h>
 #endif
 #include <QLibrary>
@@ -57,7 +58,7 @@ namespace Loaders
 			if (auto rawStr = abi::__cxa_demangle (mangled.toLatin1 ().constData (), 0, 0, &status))
 			{
 				result = QString::fromLatin1 (rawStr);
-				free (rawStr);
+				std::free (rawStr);
 			}
 			return result;
 #else

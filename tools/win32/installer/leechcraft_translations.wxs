@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <ComponentGroup Id="CG_LeechCraftTranslations">
+      <Component Id="cmpD121B9E594ED48BC4C316086D0C67967" Directory="DIR_translations" Guid="{4C16F29E-0A0E-4A28-ACE2-B15B3FEE9996}">
+        <File Id="filF99B8442AC5E3098B23C07A9EF5DDDE5" KeyPath="yes" Source="$(var.SourcePath)\translations\leechcraft_ar.qm" />
+      </Component>
+      <Component Id="cmpFE105F678E31F8C752BCA95B73776569" Directory="DIR_translations" Guid="{89806F90-4A44-4A0B-AB69-E57BCEF7C4BD}">
+        <File Id="filE57598D53C7C5819FF68EA0B19C2B6C6" KeyPath="yes" Source="$(var.SourcePath)\translations\leechcraft_be.qm" />
+      </Component>
+      <Component Id="cmpD72986375A54EF9876274CC9B2D729BC" Directory="DIR_translations" Guid="{7C2AEFB3-E259-4B3D-8E0A-80D1CA0B7A96}">
+        <File Id="fil54FC9FEB9B104DEEB92BBCA070A863A9" KeyPath="yes" Source="$(var.SourcePath)\translations\leechcraft_de.qm" />
+      </Component>
+      <Component Id="cmpD775F8119115EEC423796A1D719176BC" Directory="DIR_translations" Guid="{3F06C563-4D12-4FBA-9ADF-FDC86CD5819A}">
+        <File Id="fil99A168888524216DF314C975247798CC" KeyPath="yes" Source="$(var.SourcePath)\translations\leechcraft_en.qm" />
+      </Component>
+      <Component Id="cmp231A032943D867FF67B0E07F9A8DECB1" Directory="DIR_translations" Guid="{52D574F4-D47E-4D83-ADB8-4C05CB060001}">
+        <File Id="fil513EA5F4AADAE3DD67EB15CB1C0AD8D9" KeyPath="yes" Source="$(var.SourcePath)\translations\leechcraft_eo.qm" />
+      </Component>
+      <Component Id="cmp1D33B0C4C003C5D68E7F527B3B71661F" Directory="DIR_translations" Guid="{256D0F7B-03C0-4874-83F0-D4975F518F0F}">
+        <File Id="fil3E0EB9C667D28EF578FAD7DD3E0B67E9" KeyPath="yes" Source="$(var.SourcePath)\translations\leechcraft_es.qm" />
+      </Component>
+      <Component Id="cmp9D4616F9B8312068372664E5C1FB9AAA" Directory="DIR_translations" Guid="{65BBAB3F-50F1-43D1-B3BC-847E7E232A93}">
+        <File Id="fil39D48AECFB828E16B8D989AE78E08D08" KeyPath="yes" Source="$(var.SourcePath)\translations\leechcraft_fr.qm" />
+      </Component>
+      <Component Id="cmpD16588752EF9F54138F40C93B233A37E" Directory="DIR_translations" Guid="{DC01569E-9DCD-4FBD-9764-497DC5B48DB8}">
+        <File Id="fil435B98625E50DB0D8A81802605A53F49" KeyPath="yes" Source="$(var.SourcePath)\translations\leechcraft_it.qm" />
+      </Component>
+      <Component Id="cmp8FB18CD763DF7981B89440F661A3A851" Directory="DIR_translations" Guid="{1F4F726A-12BE-4BD5-8F8A-16AD0281EAA2}">
+        <File Id="filEA0796477413FCAB9B58819F18762380" KeyPath="yes" Source="$(var.SourcePath)\translations\leechcraft_pl.qm" />
+      </Component>
+      <Component Id="cmp2D684F05F3D01A20A3BAD217C0B16A53" Directory="DIR_translations" Guid="{B5AD8FA0-8B9A-40D0-B422-0EE80462B5D8}">
+        <File Id="fil9B08D0A8F75A8BBCCAE66DF0906AD100" KeyPath="yes" Source="$(var.SourcePath)\translations\leechcraft_ru_RU.qm" />
+      </Component>
+      <Component Id="cmp9291D4EA78471BA04CBC0F4A4D2B073C" Directory="DIR_translations" Guid="{C3281E2F-360D-41AE-A2ED-7545846AA8D4}">
+        <File Id="fil83D0DEF06C0493163E85E47BF39937FB" KeyPath="yes" Source="$(var.SourcePath)\translations\leechcraft_tr.qm" />
+      </Component>
+      <Component Id="cmp64E95526D1992C0EE084A01915F845A0" Directory="DIR_translations" Guid="{D74873D6-A327-450B-BD16-85EBAFBE1839}">
+        <File Id="fil48366D17992C7612F285B24B1D5A10DA" KeyPath="yes" Source="$(var.SourcePath)\translations\leechcraft_tt.qm" />
+      </Component>
+      <Component Id="cmp393684C766BF769D9730FAE888B20F13" Directory="DIR_translations" Guid="{D028813D-026B-4268-9FFE-1F88B031BD43}">
+        <File Id="fil6D1E3F7AC495587DC5A8D68E34480585" KeyPath="yes" Source="$(var.SourcePath)\translations\leechcraft_uk_UA.qm" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

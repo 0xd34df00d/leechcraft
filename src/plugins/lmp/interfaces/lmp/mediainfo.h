@@ -51,6 +51,8 @@ namespace LMP
 		qint32 Year_;
 		qint32 TrackNumber_;
 
+		QVariantMap Additional_;
+
 		MediaInfo& operator= (const Media::AudioInfo&);
 
 		bool IsUseless () const;

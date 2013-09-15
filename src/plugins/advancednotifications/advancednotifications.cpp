@@ -112,7 +112,8 @@ namespace AdvancedNotifications
 	{
 		const bool can = e.Mime_.startsWith ("x-leechcraft/notification") &&
 			e.Additional_.contains ("org.LC.AdvNotifications.SenderID") &&
-			e.Additional_.contains ("org.LC.AdvNotifications.EventID");
+			e.Additional_.contains ("org.LC.AdvNotifications.EventID") &&
+			e.Additional_.contains ("org.LC.AdvNotifications.EventCategory");
 
 		if (!can)
 			return EntityTestHandleResult ();

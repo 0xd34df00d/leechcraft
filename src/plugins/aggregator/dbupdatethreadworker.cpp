@@ -273,9 +273,14 @@ namespace Aggregator
 
 			if (shouldShow)
 			{
-				QString str = tr ("Updated channel \"%1\" (%2, %3)").arg (channel->Title_)
-					.arg (tr ("%n new item(s)", "Channel update", newItems))
-					.arg (tr ("%n updated item(s)", "Channel update", updatedItems));
+				QStringList substrs;
+				if (newItems)
+					substrs << tr ("%n new item(s)", "Channel update", newItems);
+				if (updatedItems)
+					substrs << tr ("%n updated item(s)", "Channel update", updatedItems);
+				const auto& str = tr ("Updated channel \"%1\" (%2).")
+						.arg (channel->Title_)
+						.arg (substrs.join (", "));
 				emit gotEntity (Util::MakeNotification ("Aggregator", str, PInfo_));
 			}
 

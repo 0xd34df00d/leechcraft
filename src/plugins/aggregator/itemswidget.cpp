@@ -35,12 +35,14 @@
 #include <QSortFilterProxyModel>
 #include <QUrl>
 #include <QTimer>
+#include <QMessageBox>
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
 #include <util/tags/categoryselector.h>
 #include <util/util.h>
 #include <util/models/mergemodel.h>
 #include <util/gui/clearlineeditaddon.h>
+#include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -48,7 +50,6 @@
 #include "itemslistmodel.h"
 #include "channelsmodel.h"
 #include "uistatepersist.h"
-#include <qmessagebox.h>
 
 namespace LeechCraft
 {
@@ -67,6 +68,10 @@ namespace Aggregator
 		QAction *ActionMarkItemAsUnread_;
 		QAction *ActionMarkItemAsRead_;
 		QAction *ActionMarkItemAsImportant_;
+
+		QAction *ActionPrevItem_;
+		QAction *ActionNextItem_;
+
 		QAction *ActionDeleteItem_;
 		QAction *ActionItemCommentsSubscribe_;
 		QAction *ActionItemLinkOpen_;
@@ -139,6 +144,8 @@ namespace Aggregator
 		Impl_->Ui_.Items_->addAction (Impl_->ActionItemCommentsSubscribe_);
 		Impl_->Ui_.Items_->addAction (Impl_->ActionItemLinkOpen_);
 		Impl_->Ui_.Items_->setContextMenuPolicy (Qt::ActionsContextMenu);
+
+		addActions ({ Impl_->ActionPrevItem_, Impl_->ActionNextItem_ });
 
 		connect (Impl_->Ui_.SearchLine_,
 				SIGNAL (textChanged (const QString&)),
@@ -252,6 +259,19 @@ namespace Aggregator
 				SLOT (invalidateMergeMode ()));
 	}
 
+	void ItemsWidget::RegisterShortcuts()
+	{
+		auto mgr = Core::Instance ().GetShortcutManager ();
+		auto addAct = [this, mgr] (ItemsWidget::Action actId) -> void
+		{
+			auto act = GetAction (actId);
+			mgr->RegisterAction (act->objectName (), act);
+		};
+
+		for (int i = 0; i < static_cast<int> (ItemsWidget::Action::MaxAction); ++i)
+			addAct (static_cast<ItemsWidget::Action> (i));
+	}
+
 	Item_ptr ItemsWidget::GetItem (const QModelIndex& index) const
 	{
 		QModelIndex mapped = Impl_->ItemLists_->mapToSource (index);
@@ -264,6 +284,33 @@ namespace Aggregator
 	QToolBar* ItemsWidget::GetToolBar () const
 	{
 		return Impl_->ControlToolBar_;
+	}
+
+	QAction* ItemsWidget::GetAction (Action action) const
+	{
+		switch (action)
+		{
+		case Action::MarkAsRead:
+			return Impl_->ActionMarkItemAsRead_;
+		case Action::MarkAsUnread:
+			return Impl_->ActionMarkItemAsUnread_;
+		case Action::MarkAsImportant:
+			return Impl_->ActionMarkItemAsImportant_;
+		case Action::PrevItem:
+			return Impl_->ActionPrevItem_;
+		case Action::NextItem:
+			return Impl_->ActionNextItem_;
+		case Action::Delete:
+			return Impl_->ActionDeleteItem_;
+		case Action::MaxAction:
+			break;
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown action"
+				<< static_cast<int> (action);
+
+		return nullptr;
 	}
 
 	void ItemsWidget::SetTapeMode (bool tape)
@@ -564,22 +611,34 @@ namespace Aggregator
 		Impl_->ActionShowAsTape_->setChecked (XmlSettingsManager::Instance ()->
 				Property ("ShowAsTape", false).toBool ());
 
-		Impl_->ActionMarkItemAsUnread_ = new QAction (tr ("Mark item as unread"),
-				this);
+		Impl_->ActionMarkItemAsUnread_ = new QAction (tr ("Mark item as unread"), this);
 		Impl_->ActionMarkItemAsUnread_->setObjectName ("ActionMarkItemAsUnread_");
+		Impl_->ActionMarkItemAsUnread_->setShortcut ({ "U" });
 
-		Impl_->ActionMarkItemAsRead_ = new QAction (tr ("Mark item as read"),
-				this);
+		Impl_->ActionMarkItemAsRead_ = new QAction (tr ("Mark item as read"), this);
 		Impl_->ActionMarkItemAsRead_->setObjectName ("ActionMarkItemAsRead_");
+		Impl_->ActionMarkItemAsRead_->setShortcut ({ "R" });
 
 		Impl_->ActionMarkItemAsImportant_ = new QAction (tr ("Important"), this);
 		Impl_->ActionMarkItemAsImportant_->setObjectName ("ActionMarkItemAsImportant_");
 		Impl_->ActionMarkItemAsImportant_->setProperty ("ActionIcon", "rating");
 		Impl_->ActionMarkItemAsImportant_->setCheckable (true);
+		Impl_->ActionMarkItemAsImportant_->setShortcut ({ "I" });
+
+		Impl_->ActionPrevItem_ = new QAction (tr ("Previous item"), this);
+		Impl_->ActionPrevItem_->setObjectName ("ActionPrevItem_");
+		Impl_->ActionPrevItem_->setProperty ("ActionIcon", "go-previous");
+		Impl_->ActionPrevItem_->setShortcut ({ "K" });
+
+		Impl_->ActionNextItem_ = new QAction (tr ("Next item"), this);
+		Impl_->ActionNextItem_->setObjectName ("ActionNextItem_");
+		Impl_->ActionNextItem_->setProperty ("ActionIcon", "go-next");
+		Impl_->ActionNextItem_->setShortcut ({ "J" });
 
 		Impl_->ActionDeleteItem_ = new QAction (tr ("Delete"), this);
 		Impl_->ActionDeleteItem_->setObjectName ("ActionDeleteItem_");
-		Impl_->ActionDeleteItem_->setProperty ("ActionName", "remove");
+		Impl_->ActionDeleteItem_->setProperty ("ActionIcon", "remove");
+		Impl_->ActionDeleteItem_->setShortcut ({ "Delete" });
 
 		Impl_->ActionItemCommentsSubscribe_ = new QAction (tr ("Subscribe to comments"),
 				this);
@@ -1161,6 +1220,22 @@ namespace Aggregator
 		StorageBackend *sb = Core::Instance ().GetStorageBackend ();
 		Q_FOREACH (IDType_t id, ids)
 			sb->RemoveItem (id);
+	}
+
+	void ItemsWidget::on_ActionPrevItem__triggered ()
+	{
+		const auto& current = Impl_->Ui_.Items_->currentIndex ();
+		const auto& next = current.sibling (current.row () - 1, current.column ());
+		if (next.isValid ())
+			Impl_->Ui_.Items_->setCurrentIndex (next);
+	}
+
+	void ItemsWidget::on_ActionNextItem__triggered ()
+	{
+		const auto& current = Impl_->Ui_.Items_->currentIndex ();
+		const auto& next = current.sibling (current.row () + 1, current.column ());
+		if (next.isValid ())
+			Impl_->Ui_.Items_->setCurrentIndex (next);
 	}
 
 	void ItemsWidget::on_CaseSensitiveSearch__stateChanged (int state)

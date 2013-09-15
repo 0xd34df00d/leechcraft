@@ -13,6 +13,7 @@ include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
+	${QTKOAUTH_INCLUDE_DIR}
 	)
 set (SPEGNERSI_SRCS
 	spegnersi.cpp

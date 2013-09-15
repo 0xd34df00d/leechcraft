@@ -121,7 +121,7 @@ namespace Poshuku
 		connect (GarbageTimer_,
 				SIGNAL (timeout ()),
 				this,
-				SLOT (loadData ()));
+				SLOT (collectGarbage ()));
 	}
 
 	HistoryModel::~HistoryModel ()
@@ -299,15 +299,12 @@ namespace Poshuku
 
 	void HistoryModel::loadData ()
 	{
+		collectGarbage ();
+
 		beginResetModel ();
 
 		while (RootItem_->ChildCount ())
 			RootItem_->RemoveChild (0);
-		int age = XmlSettingsManager::Instance ()->
-			property ("HistoryClearOlderThan").toInt ();
-		int maxItems = XmlSettingsManager::Instance ()->
-			property ("HistoryKeepLessThan").toInt ();
-		Core::Instance ().GetStorageBackend ()->ClearOldHistory (age, maxItems);
 
 		Items_.clear ();
 		Core::Instance ().GetStorageBackend ()->LoadHistory (Items_);
@@ -325,6 +322,15 @@ namespace Poshuku
 	{
 		Items_.push_back (item);
 		Add (item, true);
+	}
+
+	void HistoryModel::collectGarbage ()
+	{
+		int age = XmlSettingsManager::Instance ()->
+			property ("HistoryClearOlderThan").toInt ();
+		int maxItems = XmlSettingsManager::Instance ()->
+			property ("HistoryKeepLessThan").toInt ();
+		Core::Instance ().GetStorageBackend ()->ClearOldHistory (age, maxItems);
 	}
 }
 }

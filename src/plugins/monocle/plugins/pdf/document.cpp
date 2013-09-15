@@ -285,35 +285,35 @@ namespace PDF
 				std::shared_ptr<void> guard (static_cast<void*> (0), nextGuard);
 
 				const auto& name = elem.tagName ();
-				const QString& destStr = elem.attribute ("Destination");
+
+				ILink_ptr link;
+				const auto& destStr = elem.attribute ("Destination");
 				if (!destStr.isEmpty ())
+					link.reset (new TOCLink (doc, new Poppler::LinkDestination (destStr)));
+				else
 				{
-					qWarning () << Q_FUNC_INFO
-							<< "non-empty destination, dunno how to handle that:"
-							<< destStr;
-					continue;
-				}
+					const auto& destName = elem.attribute ("DestinationName");
+					if (destName.isEmpty ())
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "empty destination name, dunno how to handle that";
+						continue;
+					}
 
-				const auto& destName = elem.attribute ("DestinationName");
-				if (destName.isEmpty ())
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "empty destination name, dunno how to handle that";
-					continue;
-				}
-
-				const auto dest = pDoc->linkDestination (destName);
-				if (!dest)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "empty destination for"
-							<< destName;
-					continue;
+					const auto dest = pDoc->linkDestination (destName);
+					if (!dest)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "empty destination for"
+								<< destName;
+						continue;
+					}
+					link.reset (new TOCLink (doc, dest));
 				}
 
 				TOCEntry entry =
 				{
-					ILink_ptr (new TOCLink (doc, dest)),
+					link,
 					name,
 					BuildTOCLevel (doc, pDoc, elem)
 				};

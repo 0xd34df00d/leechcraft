@@ -72,6 +72,8 @@ namespace AdvancedNotifications
 		Cat2Types_ [AN::CatDownloads] << AN::TypeDownloadError
 				<< AN::TypeDownloadFinished;
 
+		Cat2Types_ [AN::CatPackageManager] << AN::TypePackageUpdated;
+
 		Cat2Types_ [AN::CatGeneric] << AN::TypeGeneric;
 
 		Ui_.setupUi (this);
@@ -141,7 +143,7 @@ namespace AdvancedNotifications
 
 		const int audioIdx = Ui_.AudioFile_->currentIndex ();
 		const QString& audioFile = audioIdx >= 0 ?
-				Ui_.AudioFile_->itemData (audioIdx).toString () :
+				Ui_.AudioFile_->itemText (audioIdx) :
 				QString ();
 		rule.SetAudioParams (AudioParams (audioFile));
 
@@ -212,7 +214,7 @@ namespace AdvancedNotifications
 		const int catIdx = Ui_.EventCat_->findData (rule.GetCategory ());
 		Ui_.EventCat_->setCurrentIndex (std::max (catIdx, 0));
 
-		const QStringList& types = rule.GetTypes ();
+		const auto& types = rule.GetTypes ();
 		for (int i = 0; i < Ui_.EventTypes_->topLevelItemCount (); ++i)
 		{
 			QTreeWidgetItem *item = Ui_.EventTypes_->topLevelItem (i);

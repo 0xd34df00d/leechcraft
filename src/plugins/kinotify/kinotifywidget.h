@@ -52,10 +52,14 @@ namespace Kinotify
 		Q_PROPERTY (qreal opacity READ windowOpacity WRITE setWindowOpacity)
 
 		ICoreProxy_ptr Proxy_;
+
+		QString ID_;
+
 		QString Title_;
 		QString Body_;
 		QString ImagePath_;
 		QString Theme_;
+
 		QSize DefaultSize_;
 		int Timeout_;
 		int AnimationTime_;
@@ -81,6 +85,9 @@ namespace Kinotify
 
 		QString GetTitle () const;
 		QString GetBody () const;
+
+		QString GetID () const;
+		void SetID (const QString&);
 
 		void SetContent (const QString&, const QString&,
 				const QString&, const QSize& size = QSize (350, 70));

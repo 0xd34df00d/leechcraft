@@ -367,14 +367,47 @@ namespace Azoth
 		{
 		case Core::CLETContact:
 		{
-			QObject *obj = index.data (Core::CLREntryObject).value<QObject*> ();
-			ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
-			const QList<QAction*>& allActions = manager->GetEntryActions (entry);
-			Q_FOREACH (QAction *action, allActions)
-				if (manager->GetAreasForAction (action)
-						.contains (ActionsManager::CLEAAContactListCtxtMenu) ||
-					action->isSeparator ())
-					actions << action;
+			auto rows = Ui_.CLTree_->selectionModel ()->selectedRows ();
+			for (auto& row : rows)
+				row = ProxyModel_->mapToSource (row);
+
+			if (!rows.contains (index))
+				rows << index;
+
+			if (rows.size () == 1)
+			{
+				QObject *obj = index.data (Core::CLREntryObject).value<QObject*> ();
+				ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
+
+				const auto& allActions = manager->GetEntryActions (entry);
+				for (auto action : allActions)
+				{
+					const auto& areas = manager->GetAreasForAction (action);
+					if (action->isSeparator () ||
+							areas.contains (ActionsManager::CLEAAContactListCtxtMenu))
+						actions << action;
+				}
+			}
+			else
+			{
+				QList<ICLEntry*> entries;
+				for (const auto& row : rows)
+				{
+					const auto entryObj = row.data (Core::CLREntryObject).value<QObject*> ();
+					const auto entry = qobject_cast<ICLEntry*> (entryObj);
+					if (entry)
+						entries << entry;
+				}
+
+				const auto& allActions = manager->CreateEntriesActions (entries, menu);
+				for (auto action : allActions)
+				{
+					const auto& areas = manager->GetAreasForAction (action);
+					if (action->isSeparator () ||
+							areas.contains (ActionsManager::CLEAAContactListCtxtMenu))
+						actions << action;
+				}
+			}
 			break;
 		}
 		case Core::CLETCategory:

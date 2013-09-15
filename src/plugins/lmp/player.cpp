@@ -508,12 +508,13 @@ namespace LMP
 	MediaInfo Player::GetPhononMediaInfo () const
 	{
 		MediaInfo info;
-		info.Artist_ = Source_->GetMetadata (SourceObject::Metadata::Artist).value (0);
-		info.Album_ = Source_->GetMetadata (SourceObject::Metadata::Album).value (0);
-		info.Title_ = Source_->GetMetadata (SourceObject::Metadata::Title).value (0);
-		info.Genres_ = Source_->GetMetadata (SourceObject::Metadata::Genre);
-		info.TrackNumber_ = Source_->GetMetadata (SourceObject::Metadata::Tracknumber).value (0).toInt ();
+		info.Artist_ = Source_->GetMetadata (SourceObject::Metadata::Artist);
+		info.Album_ = Source_->GetMetadata (SourceObject::Metadata::Album);
+		info.Title_ = Source_->GetMetadata (SourceObject::Metadata::Title);
+		info.Genres_ << Source_->GetMetadata (SourceObject::Metadata::Genre);
+		info.TrackNumber_ = Source_->GetMetadata (SourceObject::Metadata::Tracknumber).toInt ();
 		info.Length_ = Source_->GetTotalTime () / 1000;
+		info.LocalPath_ = Source_->GetCurrentSource ().ToUrl ().toString ();
 
 		if (info.Artist_.isEmpty () && info.Title_.contains (" - "))
 		{
@@ -531,6 +532,17 @@ namespace LMP
 				break;
 			}
 		}
+
+		auto append = [&info, this] (SourceObject::Metadata md, const QString& name) -> void
+		{
+			const auto& value = Source_->GetMetadata (md);
+			if (!value.isEmpty ())
+				info.Additional_ [name] = value;
+		};
+
+		append (SourceObject::Metadata::NominalBitrate, tr ("Bitrate"));
+		append (SourceObject::Metadata::MinBitrate, tr ("Minimum bitrate"));
+		append (SourceObject::Metadata::MaxBitrate, tr ("Maximum bitrate"));
 
 		return info;
 	}
@@ -938,16 +950,6 @@ namespace LMP
 		ReplaceQueue (queue, false);
 	}
 
-	void Player::volumeUp ()
-	{
-		Output_->setVolume (std::min (Output_->GetVolume () + 0.05, 1.));
-	}
-
-	void Player::volumeDown ()
-	{
-		Output_->setVolume (std::max (Output_->GetVolume () - 0.05, 0.));
-	}
-
 	void Player::handleSorted ()
 	{
 		auto watcher = dynamic_cast<QFutureWatcher<QList<QPair<AudioSource, MediaInfo>>>*> (sender ());
@@ -1058,12 +1060,13 @@ namespace LMP
 
 		if (Source_->GetState () == SourceState::Stopped)
 		{
-			const auto& song = XmlSettingsManager::Instance ().property ("LastSong").toString ();
+			const auto& songUrl = XmlSettingsManager::Instance ().property ("LastSong").toByteArray ();
+			const auto& song = QUrl::fromEncoded (songUrl);
 			if (!song.isEmpty ())
 			{
 				const auto pos = std::find_if (CurrentQueue_.begin (), CurrentQueue_.end (),
 						[&song] (decltype (CurrentQueue_.front ()) item)
-							{ return song == item.GetLocalPath (); });
+							{ return song == item.ToUrl (); });
 				if (pos != CurrentQueue_.end ())
 					Source_->SetCurrentSource (*pos);
 			}
@@ -1181,7 +1184,7 @@ namespace LMP
 
 	void Player::handleCurrentSourceChanged (const AudioSource& source)
 	{
-		XmlSettingsManager::Instance ().setProperty ("LastSong", source.GetLocalPath ());
+		XmlSettingsManager::Instance ().setProperty ("LastSong", source.ToUrl ().toEncoded ());
 
 		QStandardItem *curItem = 0;
 		if (CurrentStation_)
@@ -1228,15 +1231,18 @@ namespace LMP
 		auto curItem = Items_ [source];
 
 		const auto& info = GetPhononMediaInfo ();
+
 		if (info.Album_ == LastPhononMediaInfo_.Album_ &&
 				info.Artist_ == LastPhononMediaInfo_.Artist_ &&
 				info.Title_ == LastPhononMediaInfo_.Title_)
-			return;
+			emit songInfoUpdated (info);
+		else
+		{
+			FillItem (curItem, info);
+			emit songChanged (info);
+		}
 
 		LastPhononMediaInfo_ = info;
-
-		FillItem (curItem, info);
-		emit songChanged (info);
 	}
 
 	void Player::handleSourceError (const QString& sourceText, SourceError error)

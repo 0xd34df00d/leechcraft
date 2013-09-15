@@ -33,6 +33,7 @@
 #include <QGridLayout>
 #include <QtDebug>
 #include <QDesktopServices>
+#include <util/util.h>
 #include "../filepicker.h"
 
 namespace LeechCraft
@@ -85,27 +86,53 @@ namespace LeechCraft
 		lay->addWidget (picker, row, 1);
 	}
 
+#ifndef Q_OS_LINUX
+	namespace
+	{
+		QDir GetUserDir (const QString& opath)
+		{
+			QString path = opath;
+			QDir home = QDir::home ();
+			path.prepend (".leechcraft/");
+
+			if (!home.exists (path))
+				throw std::runtime_error (qPrintable (QString ("The specified path doesn't exist: %1")
+							.arg (QDir::toNativeSeparators (home.filePath (path)))));
+
+			if (home.cd (path))
+				return home;
+			else
+				throw std::runtime_error (qPrintable (QObject::tr ("Could not cd into %1")
+							.arg (QDir::toNativeSeparators (home.filePath (path)))));
+		}
+	}
+#endif
+
 	QVariant ItemHandlerPath::GetValue (const QDomElement& item,
 			QVariant value) const
 	{
 		if (value.isNull () ||
 				value.toString ().isEmpty ())
 		{
-			if (item.hasAttribute ("defaultHomePath") &&
-					item.attribute ("defaultHomePath") == "true")
+			if (item.attribute ("defaultHomePath") == "true")
 				value = QDir::homePath ();
 			else if (item.hasAttribute ("default"))
 			{
 				QString text = item.attribute ("default");
-				QMap<QString, QDesktopServices::StandardLocation> str2loc;
-				str2loc ["DOCUMENTS"] = QDesktopServices::DocumentsLocation;
-				str2loc ["DESKTOP"] = QDesktopServices::DocumentsLocation;
-				str2loc ["MUSIC"] = QDesktopServices::DocumentsLocation;
-				str2loc ["MOVIES"] = QDesktopServices::DocumentsLocation;
+				QMap<QString, QString> str2loc;
+				str2loc ["DOCUMENTS"] = QDesktopServices::storageLocation (QDesktopServices::DocumentsLocation);
+				str2loc ["DESKTOP"] = QDesktopServices::storageLocation (QDesktopServices::DesktopLocation);
+				str2loc ["MUSIC"] = QDesktopServices::storageLocation (QDesktopServices::MusicLocation);
+				str2loc ["MOVIES"] = QDesktopServices::storageLocation (QDesktopServices::MoviesLocation);
+#ifndef Q_OS_LINUX
+				str2loc ["LCDIR"] = GetUserDir ({}).absolutePath ();
+#else
+				str2loc ["LCDIR"] = Util::GetUserDir ({}).absolutePath ();
+#endif
 				Q_FOREACH (const QString& key, str2loc.keys ())
 					if (text.startsWith ("{" + key + "}"))
 					{
-						text.replace (0, key.length () + 2, QDesktopServices::storageLocation (str2loc [key]));
+						text.replace (0, key.length () + 2, str2loc [key]);
 						break;
 					}
 

@@ -29,23 +29,26 @@
 
 #pragma once
 
-#include <QObject>
-
-class QUdpSocket;
+#include <HUpnpCore/HServerService>
 
 namespace LeechCraft
 {
 namespace DLNiwe
 {
-	class MulticastServer : public QObject
+	class ContentDirectoryService : public Herqq::Upnp::HServerService
 	{
 		Q_OBJECT
 
-		QUdpSocket *Socket_;
+		qint32 SystemUpdateID_;
 	public:
-		MulticastServer (QObject* = 0);
-	private slots:
-		void processDatagrams ();
+		ContentDirectoryService ();
+
+		Q_INVOKABLE qint32 GetSystemUpdateID (const Herqq::Upnp::HActionArguments&, Herqq::Upnp::HActionArguments*);
+		Q_INVOKABLE qint32 GetSearchCapabilities (const Herqq::Upnp::HActionArguments&, Herqq::Upnp::HActionArguments*);
+		Q_INVOKABLE qint32 GetSortCapabilities (const Herqq::Upnp::HActionArguments&, Herqq::Upnp::HActionArguments*);
+		Q_INVOKABLE qint32 Browse (const Herqq::Upnp::HActionArguments&, Herqq::Upnp::HActionArguments*);
+		Q_INVOKABLE qint32 X_GetFeatureList (const Herqq::Upnp::HActionArguments&, Herqq::Upnp::HActionArguments*);
+		Q_INVOKABLE qint32 X_SetBookmark (const Herqq::Upnp::HActionArguments&, Herqq::Upnp::HActionArguments*);
 	};
 }
 }

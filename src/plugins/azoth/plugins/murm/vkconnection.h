@@ -32,8 +32,8 @@
 #include <functional>
 #include <QObject>
 #include <QHash>
-#include <QUrl>
 #include <QVariantList>
+#include <QVariantMap>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/azoth/iclentry.h>
 #include "structures.h"
@@ -54,6 +54,8 @@ namespace Azoth
 {
 namespace Murm
 {
+	class LongPollManager;
+
 	class VkConnection : public QObject
 	{
 		Q_OBJECT
@@ -62,8 +64,9 @@ namespace Murm
 		const ICoreProxy_ptr Proxy_;
 
 		QByteArray LastCookies_;
-
+	public:
 		typedef std::function<QNetworkReply* (QString)> PreparedCall_f;
+	private:
 		QList<PreparedCall_f> PreparedCalls_;
 		LeechCraft::Util::QueueManager *CallQueue_;
 
@@ -72,11 +75,7 @@ namespace Murm
 		EntryStatus Status_;
 		EntryStatus CurrentStatus_;
 
-		QString LPKey_;
-		QString LPServer_;
-		qulonglong LPTS_;
-
-		QUrl LPURLTemplate_;
+		LongPollManager *LPManager_;
 	public:
 		typedef std::function<void (QHash<int, QString>)> GeoSetter_f;
 		typedef std::function<void (QList<PhotoInfo>)> PhotoInfoSetter_f;
@@ -89,7 +88,6 @@ namespace Murm
 		QHash<QNetworkReply*, MessageInfoSetter_f> Reply2MessageSetter_;
 		QHash<QNetworkReply*, PhotoInfoSetter_f> Reply2PhotoSetter_;
 
-		int PollErrorCount_ = 0;
 		int APIErrorCount_ = 0;
 		bool ShouldRerunPrepared_ = false;
 	public:
@@ -112,22 +110,22 @@ namespace Murm
 
 		void SetStatus (const EntryStatus&);
 		EntryStatus GetStatus () const;
+
+		void QueueRequest (PreparedCall_f);
 	private:
 		void PushFriendsRequest ();
-		void PushLPFetchCall ();
-		void Poll ();
-		void GoOffline ();
-
 		bool CheckFinishedReply (QNetworkReply*);
 	private slots:
-		void handlePollFinished ();
-
 		void rerunPrepared ();
 		void callWithKey (const QString&);
 
+		void handleListening ();
+		void handlePollError ();
+		void handlePollStopped ();
+		void handlePollData (const QVariantMap&);
+
 		void handleGotFriendLists ();
 		void handleGotFriends ();
-		void handleGotLPServer ();
 		void handleMessageSent ();
 		void handleCountriesFetched ();
 		void handleMessageInfoFetched ();

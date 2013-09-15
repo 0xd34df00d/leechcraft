@@ -47,6 +47,7 @@
 #include <util/util.h>
 #include <util/fileremoveguard.h>
 #include <util/defaulthookproxy.h>
+#include <util/shortcuts/shortcutmanager.h>
 #include "core.h"
 #include "regexpmatchermanager.h"
 #include "xmlsettingsmanager.h"
@@ -83,6 +84,7 @@ namespace Aggregator
 	, ReprWidget_ (0)
 	, PluginManager_ (new PluginManager)
 	, DBUpThread_ (new DBUpdateThread (this))
+	, ShortcutMgr_ (nullptr)
 	{
 		qRegisterMetaType<IDType_t> ("IDType_t");
 		qRegisterMetaType<QList<IDType_t>> ("QList<IDType_t>");
@@ -285,6 +287,8 @@ namespace Aggregator
 
 	bool Core::DoDelayedInit ()
 	{
+		ShortcutMgr_ = new Util::ShortcutManager (Proxy_, this);
+
 		QDir dir = QDir::home ();
 		if (!dir.cd (".leechcraft/aggregator") &&
 				!dir.mkpath (".leechcraft/aggregator"))
@@ -337,6 +341,7 @@ namespace Aggregator
 
 		ReprWidget_ = new ItemsWidget ();
 		ReprWidget_->SetChannelsFilter (JobHolderRepresentation_);
+		ReprWidget_->RegisterShortcuts ();
 		ChannelsModel_->SetWidgets (ReprWidget_->GetToolBar (), ReprWidget_);
 
 		JobHolderRepresentation_->setSourceModel (ChannelsModel_);
@@ -586,6 +591,11 @@ namespace Aggregator
 	ItemsWidget* Core::GetReprWidget () const
 	{
 		return ReprWidget_;
+	}
+
+	Util::ShortcutManager* Core::GetShortcutManager () const
+	{
+		return ShortcutMgr_;
 	}
 
 	ChannelsModel* Core::GetRawChannelsModel () const

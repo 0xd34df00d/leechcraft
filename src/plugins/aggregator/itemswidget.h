@@ -56,6 +56,18 @@ namespace Aggregator
 		friend class Aggregator;
 		ItemsWidget_Impl *Impl_;
 	public:
+		enum class Action
+		{
+			MarkAsRead,
+			MarkAsUnread,
+			MarkAsImportant,
+			PrevItem,
+			NextItem,
+			Delete,
+
+			MaxAction
+		};
+
 		ItemsWidget (QWidget* = 0);
 		virtual ~ItemsWidget ();
 
@@ -63,9 +75,13 @@ namespace Aggregator
 		void SetChannelActions (const ChannelActions&);
 		void SetChannelsFilter (QSortFilterProxyModel*);
 
+		void RegisterShortcuts ();
+
 		Item_ptr GetItem (const QModelIndex&) const;
 		QToolBar* GetToolBar () const;
 		void SetTapeMode (bool);
+
+		QAction* GetAction (Action) const;
 
 		/** Merge all that channels that are currently shown.
 			*
@@ -119,6 +135,8 @@ namespace Aggregator
 		void on_ActionMarkItemAsRead__triggered ();
 		void on_ActionMarkItemAsImportant__triggered ();
 		void on_ActionDeleteItem__triggered ();
+		void on_ActionPrevItem__triggered ();
+		void on_ActionNextItem__triggered ();
 		void on_CaseSensitiveSearch__stateChanged (int);
 		void on_ActionItemCommentsSubscribe__triggered ();
 		void on_ActionItemLinkOpen__triggered ();

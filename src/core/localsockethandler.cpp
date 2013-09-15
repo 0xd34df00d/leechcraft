@@ -122,6 +122,15 @@ namespace LeechCraft
 					<< e.what ();
 		}
 
+		QVariantMap addMap;
+		const auto& additionals = map ["additional"].as<std::vector<std::string>> ();
+		for (const auto& add : additionals)
+		{
+			const auto& split = QString::fromUtf8 (add.c_str ()).split (":", QString::SkipEmptyParts);
+			if (split.size () == 2)
+				addMap [split.value (0)] = split.value (1);
+		}
+
 		const auto& entities = map ["entity"].as<std::vector<std::wstring>> ();
 		Q_FOREACH (const std::wstring& rawEntity, entities)
 		{
@@ -145,9 +154,10 @@ namespace LeechCraft
 					ve = entity;
 			}
 
-			Entity e = Util::MakeEntity (ve,
+			auto e = Util::MakeEntity (ve,
 					QString (),
 					tp);
+			e.Additional_ = addMap;
 			emit gotEntity (e);
 		}
 	}

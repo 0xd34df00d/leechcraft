@@ -59,7 +59,7 @@ namespace Glance
 	, Scene_ (new QGraphicsScene)
 	, Shown_ (false)
 	{
-		setWindowFlags (Qt::Tool |
+		setWindowFlags (Qt::Dialog |
 				Qt::WindowStaysOnTopHint |
 				Qt::FramelessWindowHint);
 		setAttribute (Qt::WA_TranslucentBackground);

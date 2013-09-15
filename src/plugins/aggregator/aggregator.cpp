@@ -87,8 +87,6 @@ namespace Aggregator
 		AppWideActions AppWideActions_;
 		ChannelActions ChannelActions_;
 
-		Util::ShortcutManager *ShortcutMgr_;
-
 		QMenu *ToolMenu_;
 
 		std::shared_ptr<Util::FlatToFoldersProxyModel> FlatToFolders_;
@@ -122,7 +120,6 @@ namespace Aggregator
 		Impl_->TabInfo_.Icon_ = GetIcon ();
 		Impl_->TabInfo_.Priority_ = 0;
 		Impl_->TabInfo_.Features_ = TabFeatures (TFSingle | TFOpenableByRequest);
-		Impl_->ShortcutMgr_ = new Util::ShortcutManager (proxy, this);
 
 		Impl_->ChannelActions_.SetupActionsStruct (this);
 		Impl_->AppWideActions_.SetupActionsStruct (this);
@@ -183,6 +180,7 @@ namespace Aggregator
 		Impl_->Ui_.setupUi (this);
 		Impl_->Ui_.ItemsWidget_->SetAppWideActions (Impl_->AppWideActions_);
 		Impl_->Ui_.ItemsWidget_->SetChannelActions (Impl_->ChannelActions_);
+		Impl_->Ui_.ItemsWidget_->RegisterShortcuts ();
 
 		if (Impl_->InitFailed_)
 		{
@@ -195,9 +193,7 @@ namespace Aggregator
 			return;
 		}
 
-		Impl_->Ui_.ItemsWidget_->
-			SetChannelsFilter (Core::Instance ()
-					.GetChannelsModel ());
+		Impl_->Ui_.ItemsWidget_->SetChannelsFilter (Core::Instance ().GetChannelsModel ());
 		Core::Instance ().GetJobHolderRepresentation ()->setParent (this);
 		Core::Instance ().GetReprWidget ()->SetAppWideActions (Impl_->AppWideActions_);
 		Core::Instance ().GetReprWidget ()->SetChannelActions (Impl_->ChannelActions_);
@@ -217,24 +213,17 @@ namespace Aggregator
 		XmlSettingsManager::Instance ()->RegisterObject ("GroupChannelsByTags",
 				this, "handleGroupChannels");
 
-		Impl_->Ui_.Feeds_->addAction (Impl_->
-				ChannelActions_.ActionMarkChannelAsRead_);
-		Impl_->Ui_.Feeds_->addAction (Impl_->
-				ChannelActions_.ActionMarkChannelAsUnread_);
+		Impl_->Ui_.Feeds_->addAction (Impl_->ChannelActions_.ActionMarkChannelAsRead_);
+		Impl_->Ui_.Feeds_->addAction (Impl_->ChannelActions_.ActionMarkChannelAsUnread_);
 		Impl_->Ui_.Feeds_->addAction (Util::CreateSeparator (Impl_->Ui_.Feeds_));
-		Impl_->Ui_.Feeds_->addAction (Impl_->
-				ChannelActions_.ActionRemoveFeed_);
-		Impl_->Ui_.Feeds_->addAction (Impl_->
-				ChannelActions_.ActionUpdateSelectedFeed_);
+		Impl_->Ui_.Feeds_->addAction (Impl_->ChannelActions_.ActionRemoveFeed_);
+		Impl_->Ui_.Feeds_->addAction (Impl_->ChannelActions_.ActionUpdateSelectedFeed_);
 		Impl_->Ui_.Feeds_->addAction (Util::CreateSeparator (Impl_->Ui_.Feeds_));
-		Impl_->Ui_.Feeds_->addAction (Impl_->
-				ChannelActions_.ActionRemoveChannel_);
+		Impl_->Ui_.Feeds_->addAction (Impl_->ChannelActions_.ActionRemoveChannel_);
 		Impl_->Ui_.Feeds_->addAction (Util::CreateSeparator (Impl_->Ui_.Feeds_));
-		Impl_->Ui_.Feeds_->addAction (Impl_->
-				ChannelActions_.ActionChannelSettings_);
+		Impl_->Ui_.Feeds_->addAction (Impl_->ChannelActions_.ActionChannelSettings_);
 		Impl_->Ui_.Feeds_->addAction (Util::CreateSeparator (Impl_->Ui_.Feeds_));
-		Impl_->Ui_.Feeds_->addAction (Impl_->
-				AppWideActions_.ActionAddFeed_);
+		Impl_->Ui_.Feeds_->addAction (Impl_->AppWideActions_.ActionAddFeed_);
 		connect (Impl_->Ui_.Feeds_,
 				SIGNAL (customContextMenuRequested (const QPoint&)),
 				this,
@@ -242,21 +231,15 @@ namespace Aggregator
 		QHeaderView *channelsHeader = Impl_->Ui_.Feeds_->header ();
 
 		QMenu *contextMenu = new QMenu (tr ("Feeds actions"));
-		contextMenu->addAction (Impl_->
-				ChannelActions_.ActionMarkChannelAsRead_);
-		contextMenu->addAction (Impl_->
-				ChannelActions_.ActionMarkChannelAsUnread_);
+		contextMenu->addAction (Impl_->ChannelActions_.ActionMarkChannelAsRead_);
+		contextMenu->addAction (Impl_->ChannelActions_.ActionMarkChannelAsUnread_);
 		contextMenu->addSeparator ();
-		contextMenu->addAction (Impl_->
-				ChannelActions_.ActionRemoveFeed_);
-		contextMenu->addAction (Impl_->
-				ChannelActions_.ActionUpdateSelectedFeed_);
+		contextMenu->addAction (Impl_->ChannelActions_.ActionRemoveFeed_);
+		contextMenu->addAction (Impl_->ChannelActions_.ActionUpdateSelectedFeed_);
 		contextMenu->addSeparator ();
-		contextMenu->addAction (Impl_->
-				ChannelActions_.ActionChannelSettings_);
+		contextMenu->addAction (Impl_->ChannelActions_.ActionChannelSettings_);
 		contextMenu->addSeparator ();
-		contextMenu->addAction (Impl_->
-				AppWideActions_.ActionAddFeed_);
+		contextMenu->addAction (Impl_->AppWideActions_.ActionAddFeed_);
 		Core::Instance ().SetContextMenu (contextMenu);
 
 		QFontMetrics fm = fontMetrics ();
@@ -434,12 +417,12 @@ namespace Aggregator
 	void Aggregator::SetShortcut (const QString& name,
 			const QKeySequences_t& shortcuts)
 	{
-		Impl_->ShortcutMgr_->SetShortcut (name, shortcuts);
+		Core::Instance ().GetShortcutManager ()->SetShortcut (name, shortcuts);
 	}
 
 	QMap<QString, ActionInfo> Aggregator::GetActionInfo () const
 	{
-		return Impl_->ShortcutMgr_->GetActionInfo ();
+		return Core::Instance ().GetShortcutManager ()->GetActionInfo ();
 	}
 
 	QList<QWizardPage*> Aggregator::GetWizardPages () const
@@ -632,7 +615,8 @@ namespace Aggregator
 	void Aggregator::BuildID2ActionTupleMap ()
 	{
 		typedef Util::ShortcutManager::IDPair_t ID_t;
-		*Impl_->ShortcutMgr_ << ID_t ("ActionAddFeed", Impl_->AppWideActions_.ActionAddFeed_)
+		auto mgr = Core::Instance ().GetShortcutManager ();
+		*mgr << ID_t ("ActionAddFeed", Impl_->AppWideActions_.ActionAddFeed_)
 				<< ID_t ("ActionUpdateFeeds_", Impl_->AppWideActions_.ActionUpdateFeeds_)
 				<< ID_t ("ActionRegexpMatcher_", Impl_->AppWideActions_.ActionRegexpMatcher_)
 				<< ID_t ("ActionImportOPML_", Impl_->AppWideActions_.ActionImportOPML_)

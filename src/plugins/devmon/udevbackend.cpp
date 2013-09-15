@@ -130,7 +130,11 @@ namespace Devmon
 
 			const auto syspath = udev_list_entry_get_name (entry);
 			std::shared_ptr<udev_device> device (udev_device_new_from_syspath (UDev_.get (), syspath), udev_device_unref);
-			if (strcmp (udev_device_get_devtype (device.get ()), "usb_device"))
+			if (!device)
+				continue;
+
+			const auto type = udev_device_get_devtype (device.get ());
+			if (!type || strcmp (type, "usb_device"))
 				continue;
 
 			const auto& props = GetProperties (device.get ());

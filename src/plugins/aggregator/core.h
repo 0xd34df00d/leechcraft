@@ -56,6 +56,11 @@ class IWebBrowser;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class ShortcutManager;
+}
+
 namespace Aggregator
 {
 	class DBUpdateThread;
@@ -129,6 +134,8 @@ namespace Aggregator
 
 		DBUpdateThread *DBUpThread_;
 
+		Util::ShortcutManager *ShortcutMgr_;
+
 		Core ();
 	private:
 		QHash<PoolType, Util::IDPool<IDType_t>> Pools_;
@@ -169,6 +176,8 @@ namespace Aggregator
 		void RemoveFeed (const QModelIndex&);
 		void RemoveChannel (const QModelIndex&);
 		ItemsWidget* GetReprWidget () const;
+
+		Util::ShortcutManager* GetShortcutManager () const;
 
 		/** Returns the channels model as it is.
 			*

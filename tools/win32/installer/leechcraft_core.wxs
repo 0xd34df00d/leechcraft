@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment>
+    <DirectoryRef Id="INSTALLFOLDER">
+      <Component Id="CMP_leechcraft.exe" Guid="D0E93C80-FCF9-4F2F-A9E5-DA82443D6FFE">
+        <File Id="FILE_leechcraft.exe" Source="$(var.SourcePath)\leechcraft.exe" KeyPath="yes"/>
+      </Component>
+      <Component Id="CMP_lcutil.dll" Guid="BD798E5B-5214-45CB-8829-6FA2A5140FA1">
+        <File Id="FILE_lcutil.dll" Source="$(var.SourcePath)\liblcutil.dll" KeyPath="yes"/>
+      </Component>
+      <Component Id="CMP_xmlsettingsdialog.dll" Guid="31B97357-CABD-41B1-907F-C9C188DF00A1">
+        <File Id="FILE_xmlsettingsdialog.dll" Source="$(var.SourcePath)\libxmlsettingsdialog.dll" KeyPath="yes"/>
+      </Component>
+      <Component Id="CMP_7za.exe" Guid="{7D2BD5C1-52FB-416C-BBCE-CAEFD415F5BA}">
+        <File Id="FILE_7za.exe" Source="$(var.SourcePath)\7za.exe" KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+
+    <ComponentGroup Id="CG_CoreBinaries">
+      <ComponentRef Id="CMP_leechcraft.exe"/>
+      <ComponentRef Id="CMP_lcutil.dll"/>
+      <ComponentRef Id="CMP_xmlsettingsdialog.dll"/>
+      <ComponentRef Id="CMP_7za.exe"/>
+    </ComponentGroup>
+	</Fragment>
+</Wix>

@@ -180,7 +180,8 @@ namespace LeechCraft
 		contribs << ContributorInfo ("Dmitriy Perlow", "DA(P).DarkneSS",
 				"darkness@jabber.org.by", "dap@open.by",
 				QStringList (tr ("openSUSE maintainership."))
-					<< tr ("Lackman packages."),
+					<< tr ("Lackman packages.")
+					<< tr ("Azoth user guide."),
 				QList<int> () << 2012 << 2013);
 		contribs << ContributorInfo ("Dimitriy Ryazantcev", "DJm00n",
 				"djm00n@jabber.ru", "dimitriy.ryazantcev@gmail.com",

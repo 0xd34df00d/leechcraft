@@ -190,6 +190,10 @@ namespace LeechCraft
 
 		XmlSettingsDialog_->SetCustomWidget ("ShortcutManager", ShortcutManager_);
 		XmlSettingsDialog_->SetCustomWidget ("AcceptLanguages", new AcceptLangWidget);
+
+		const auto& lang = XmlSettingsManager::Instance ()->property ("Language").toString ();
+		if (lang != "system")
+			QLocale::setDefault ({ lang });
 	}
 
 	void CoreInstanceObject::SecondInit ()

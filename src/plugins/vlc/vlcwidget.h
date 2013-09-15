@@ -100,14 +100,6 @@ namespace vlc
 		SoundWidget *FullScreenSoundWidget_;
 		QMenu *ContextMenu_;
 		
-		QString GetNewSubtitles ();
-		void GenerateToolBar ();
-		QMenu* GenerateMenuForOpenAction ();
-		void PrepareFullScreen ();
-		void ForbidFullScreen ();
-		void ConnectWidgetToMe (SignalledWidget*);
-		void InitNavigations ();
-		
 	public:
 		explicit VlcWidget (Util::ShortcutManager *manager, QWidget *parent = 0);
 		~VlcWidget();
@@ -119,12 +111,22 @@ namespace vlc
 		void TabMadeCurrent ();
 		void TabLostCurrent ();
 		
+	private:
+		QString GetNewSubtitles ();
+		void GenerateToolBar ();
+		QMenu* GenerateMenuForOpenAction ();
+		void PrepareFullScreen ();
+		void ForbidFullScreen ();
+		void ConnectWidgetToMe (SignalledWidget*);
+		void InitNavigations ();
+		
 	private slots:
 		void addFile ();
 		void addFolder ();
 		void addUrl ();
 		void addDVD ();
 		void addSimpleDVD ();
+		void addSlave ();
 		
 		void updateInterface ();
 		void toggleFullScreen ();
@@ -139,6 +141,8 @@ namespace vlc
 		void mouseDoubleClickEvent (QMouseEvent*);
 		void mouseMoveEvent (QMouseEvent*);
 		void wheelEvent (QWheelEvent*);
+		void dropEvent (QDropEvent*);
+		void dragEnterEvent (QDragEnterEvent*);
 		
 		void fullScreenPanelRequested ();
 		void hideFullScreenPanel ();
