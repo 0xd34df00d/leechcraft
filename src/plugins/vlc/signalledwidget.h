@@ -69,8 +69,8 @@ namespace vlc
 		void keyPress (QKeyEvent*);
 		void resized (QResizeEvent*);
 		void shown (QShowEvent*);
-		void dragEnter (QDragEnterEvent*);
-		void drop (QDropEvent*);
+		void dragEntered (QDragEnterEvent*);
+		void dropped (QDropEvent*);
 	};
 }
 }

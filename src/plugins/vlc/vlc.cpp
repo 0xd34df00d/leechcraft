@@ -77,6 +77,13 @@ namespace vlc
 									ActionInfo (tr ("Key for switch play/pause"),
 									QKeySequence (Qt::Key_Space),
 									Proxy_->GetIcon ("media-playback-start")));
+		
+		Manager_->RegisterActionInfo ("org.vlc.volume_increase",
+									ActionInfo (tr ("Key for increasing volume"),
+									QKeySequence (Qt::Key_Plus),
+									Proxy_->GetIcon ("media-")
+									)
+		);
 	}
 
 	void Plugin::SecondInit ()

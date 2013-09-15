@@ -59,12 +59,11 @@ namespace vlc
 		QStringList mimeTypes () const;
 		QMimeData* mimeData (const QModelIndexList&) const;
 		Qt::DropActions supportedDropActions () const;
-		Qt::ItemFlags flags(const QModelIndex &index) const;
 		
 		void AddUrl (const QUrl&);
 		
 	private:
-		libvlc_media_t* findAndDelete (QUrl);
+		libvlc_media_t* FindAndDelete (QUrl);
 		
 	public slots:
 		void updateTable ();

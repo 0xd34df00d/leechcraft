@@ -27,7 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include <vlc/vlc.h>
+#include "playlistmodel.h"
 #include <QModelIndex>
 #include <QVariant>
 #include <QTime>
@@ -36,7 +36,7 @@
 #include <QDebug>
 #include <QItemSelectionModel>
 #include <QUrl>
-#include "playlistmodel.h"
+#include <vlc/vlc.h>
 #include "playlistwidget.h"
 
 namespace LeechCraft
@@ -44,17 +44,19 @@ namespace LeechCraft
 namespace vlc
 {
 	PlaylistModel::PlaylistModel (PlaylistWidget *parent, libvlc_media_list_t *playlist)
+	: QStandardItemModel (parent)
+	, Parent_ (parent)
+	, Playlist_ (playlist)
 	{
-		Parent_ = parent;
-		Playlist_ = playlist;
 		setColumnCount (2);
-		setHorizontalHeaderLabels ( {tr ("Name"), tr ("Duration")} );
+		setHorizontalHeaderLabels ({ tr ("Name"), tr ("Duration") });
 		setSupportedDragActions (Qt::MoveAction | Qt::CopyAction);
 	}
 	
 	PlaylistModel::~PlaylistModel ()
 	{
-		for (int i = 0; i < Items_ [0].size (); i++)
+		const int size = Items_ [0].size ();
+		for (int i = 0; i < size; i++)
 			libvlc_media_release (libvlc_media_list_item_at_index (Playlist_, i));
 		
 		setRowCount (0);
@@ -71,35 +73,36 @@ namespace vlc
 			
 			for (int i = cnt; i < Items_ [0].size (); i++)
 			{
-				Items_ [0][i] = new QStandardItem;
-				Items_ [1][i] = new QStandardItem;
+				Items_ [0] [i] = new QStandardItem;
+				Items_ [0] [i]->setFlags (Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled);
+				Items_ [1] [i] = new QStandardItem;
+				Items_ [1] [i]->setFlags (Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled);
 			}
 		}
 		
 		for (int i = 0; i < libvlc_media_list_count (Playlist_); i++)
 		{
 			libvlc_media_t *media = libvlc_media_list_item_at_index (Playlist_, i);
-			Items_ [0][i]->setText (QString::fromUtf8 (libvlc_media_get_meta (media, libvlc_meta_Title)));
+			Items_ [0] [i]->setText (QString::fromUtf8 (libvlc_media_get_meta (media, libvlc_meta_Title)));
 			
 			if (!libvlc_media_is_parsed (media))
 				libvlc_media_parse (media);
 				
 			QTime time (0, 0);
 			time = time.addMSecs (libvlc_media_get_duration (media));
-			Items_ [1][i]->setText (time.toString ("hh:mm:ss"));
+			Items_ [1] [i]->setText (time.toString ("hh:mm:ss"));
 		}
 		
 		for (int i = 0; i < libvlc_media_list_count (Playlist_); i++)
 		{
-			setItem (i, 0, Items_ [0][i]);
-			setItem (i, 1, Items_ [1][i]);
+			setItem (i, 0, Items_ [0] [i]);
+			setItem (i, 1, Items_ [1] [i]);
 		}
 	}
 	
-	bool PlaylistModel::dropMimeData (const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent)
+	bool PlaylistModel::dropMimeData (const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex& parent)
 	{
-		QList <QUrl> urls = data->urls ();
-		qDebug () << urls;
+		const QList <QUrl>& urls = data->urls ();
 		if (parent != invisibleRootItem ()->index ())
 			row = parent.row () - 1;
 		else	
@@ -118,10 +121,10 @@ namespace vlc
 			
 			QList<libvlc_media_t*> mediaList;
 			for (int i = 0; i < urls.size (); i++)
-				mediaList.push_back (findAndDelete (urls [i]));
+				mediaList << FindAndDelete (urls [i]);
 			
 			int after;
-			if (insertAfter.toString () == "")
+			if (insertAfter.isEmpty ())
 				after = -1;
 			else
 				for (int i = 0; i < libvlc_media_list_count (Playlist_); i++)
@@ -131,11 +134,9 @@ namespace vlc
 						break;
 					}
 					
-			if ((parent == QModelIndex ()) && (after == -1))  // VLC forever
-			{
+			if (!parent.isValid () && (after == -1))  // VLC forever
 				for (int i = 0; i < urls.size (); i++)
 					libvlc_media_list_add_media (Playlist_, mediaList [i]);
-			}
 			else
 				for (int i = 0; i < urls.size (); i++)
 					libvlc_media_list_insert_media (Playlist_, mediaList [i], after + i + 2);
@@ -143,10 +144,8 @@ namespace vlc
 			updateTable ();
 		}
 		else
-		{
 			for (int i = 0; i < urls.size (); i++)
 				AddUrl (urls [i]);
-		}
 		
 		return true;
 	}
@@ -165,15 +164,10 @@ namespace vlc
 		QList<QUrl> urls;
 		for (int i = 0; i < indexes.size (); i++)
 			if (indexes [i].column () == 0)
-			{
-				qDebug () << "mimedata" << indexes[i].column() << indexes[i].row();
-				urls.push_back (QUrl (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, indexes[i].row ()), libvlc_meta_URL)));
-			}
+				urls << QUrl (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, indexes[i].row ()), libvlc_meta_URL));
 		
 		result->setUrls (urls);
 		result->setColorData (QVariant ("vtyulb"));
-		qDebug () << result->urls ();
-		qDebug () << libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, 1), libvlc_meta_URL);
 		return result;
 	}
 	
@@ -181,18 +175,8 @@ namespace vlc
 	{
 		return Qt::MoveAction | Qt::CopyAction;
 	}
-	
-	Qt::ItemFlags PlaylistModel::flags (const QModelIndex &index) const
-	{
-		Qt::ItemFlags defaultFlags = QStandardItemModel::flags (index);
-	
-		if (index.isValid ())
-			return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
-		else
-			return Qt::ItemIsDropEnabled | defaultFlags;
-	}
-	
-	libvlc_media_t* PlaylistModel::findAndDelete (QUrl url)
+		
+	libvlc_media_t* PlaylistModel::FindAndDelete (QUrl url)
 	{
 		libvlc_media_t *res = nullptr;
 		for (int i = 0; i < libvlc_media_list_count (Playlist_); i++)
@@ -203,7 +187,7 @@ namespace vlc
 				break;
 			}
 			
-		if (res == nullptr)
+		if (!res)
 			qWarning () << Q_FUNC_INFO << "fatal";
 		
 		return res;

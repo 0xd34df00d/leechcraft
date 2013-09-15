@@ -50,7 +50,7 @@ namespace vlc
 	
 		ICoreProxy_ptr Proxy_;
 		Util::ShortcutManager *Manager_;
-		QVector <VlcWidget*> Tabs_;
+		QVector<VlcWidget*> Tabs_;
 	
 	public:
 		void Init (ICoreProxy_ptr);

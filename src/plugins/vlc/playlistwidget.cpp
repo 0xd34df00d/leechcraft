@@ -27,7 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include <vlc/vlc.h>
+#include "playlistwidget.h"
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QVBoxLayout>
@@ -40,7 +40,8 @@
 #include <QPaintEvent>
 #include <QPainter>
 #include <QDebug>
-#include "playlistwidget.h"
+#include <QFontMetrics>
+#include <vlc/vlc.h>
 #include "playlistmodel.h"
 
 namespace LeechCraft
@@ -55,7 +56,6 @@ namespace vlc
 		setAcceptDrops (true);
 		setBaseSize (0, 0);
 		setRootIsDecorated (false);
-		show ();
 	}
 	
 	PlaylistWidget::~PlaylistWidget ()
@@ -94,7 +94,7 @@ namespace vlc
 		for (int i = 0; i < libvlc_media_list_count (Playlist_); i++)
 			if (url.toEncoded () == libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL))
 			{
-				qWarning () << "Ignoring url: double";
+				qWarning () << Q_FUNC_INFO << "Ignoring already added url";
 				return;
 			}
 		libvlc_media_t *m = libvlc_media_new_path (Instance_, url.toEncoded ());
@@ -105,14 +105,14 @@ namespace vlc
 		updateInterface ();
 	}
 	
-	bool PlaylistWidget::NowPlaying ()
+	bool PlaylistWidget::IsPlaying () const
 	{
 		return libvlc_media_list_player_is_playing (Player_);
 	}
 	
 	void PlaylistWidget::togglePlay ()
 	{
-		if (NowPlaying ())
+		if (IsPlaying ())
 			libvlc_media_list_player_pause (Player_);
 		else
 			libvlc_media_list_player_play (Player_);
@@ -144,23 +144,22 @@ namespace vlc
 	
 	void PlaylistWidget::createMenu (QPoint p)
 	{
-		fprintf (stderr, "create");
 		int index = indexAt (p).row ();
 		if (index == -1)
 			return;
 		
-		QMenu *menu = new QMenu (this);
-		QAction *action = new QAction (menu);
+		QMenu menu;
+		QAction *action = new QAction (&menu);
 		action->setText ("Delete");
 		action->setData (QVariant (index));
-		menu->addAction (action);
+		menu.addAction (action);
 
-		connect (menu,
+		connect (&menu,
 				SIGNAL (triggered (QAction*)),
 				this,
 				SLOT (deleteRequested (QAction*)));
 
-		menu->exec (QCursor::pos ());
+		menu.exec (QCursor::pos ());
 	}
 	
 	void PlaylistWidget::deleteRequested (QAction *object)
@@ -193,8 +192,10 @@ namespace vlc
 	
 	void PlaylistWidget::resizeEvent (QResizeEvent *event)
 	{
-		setColumnWidth (0, event->size ().width () - 65);
-		setColumnWidth (1, 65);
+		QFontMetrics metrics (font ());
+		int len =  (metrics.width ("00:00:00")) + 10;
+		setColumnWidth (0, event->size ().width () - len);
+		setColumnWidth (1, len);
 	}
 }
 }
