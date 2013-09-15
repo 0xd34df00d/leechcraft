@@ -4,7 +4,7 @@
 <context>
     <name>LeechCraft::Azoth::Murm::Plugin</name>
     <message>
-        <location filename="murm.cpp" line="70"/>
+        <location filename="murm.cpp" line="73"/>
         <source>Native support for the VKontakte messaging protocol.</source>
         <translation>Прямая поддержка обмена сообщениями В Контакте.</translation>
     </message>
@@ -12,12 +12,12 @@
 <context>
     <name>LeechCraft::Azoth::Murm::VCardDialog</name>
     <message>
-        <location filename="vcarddialog.cpp" line="58"/>
+        <location filename="vcarddialog.cpp" line="61"/>
         <source>female</source>
         <translation>женский</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="58"/>
+        <location filename="vcarddialog.cpp" line="61"/>
         <source>male</source>
         <translation>мужской</translation>
     </message>
@@ -25,7 +25,7 @@
 <context>
     <name>LeechCraft::Azoth::Murm::VkAccount</name>
     <message>
-        <location filename="vkaccount.cpp" line="186"/>
+        <location filename="vkaccount.cpp" line="192"/>
         <source>me</source>
         <translation>я</translation>
     </message>
@@ -115,11 +115,26 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
+        <source>Appearance</source>
+        <translation>Внешний вид</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="4"/>
+        <source>Entry name format:</source>
+        <translation>Формат имен контактов:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="5"/>
+        <source>The following variables are allowed: $name, $nick, $surname.</source>
+        <translation>Разрешены следующие переменные: $name, $nick, $surname.</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="6"/>
         <source>Behavior</source>
         <translation>Поведение</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="4"/>
+        <location filename="dummy.cpp" line="7"/>
         <source>Publish current tune to VK status</source>
         <translation>Публиковать текущую песню как статус В Контакте</translation>
     </message>
