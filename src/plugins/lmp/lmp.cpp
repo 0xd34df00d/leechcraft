@@ -234,14 +234,12 @@ namespace LMP
 					url.scheme () == "file")
 			path = url.toLocalFile ();
 
-		if (path.isEmpty ())
-			return EntityTestHandleResult ();
-
 		const auto& goodExt = XmlSettingsManager::Instance ()
 				.property ("TestExtensions").toString ()
 				.split (' ', QString::SkipEmptyParts);
 		const QFileInfo fi (path);
-		if (fi.exists () && (goodExt.contains (fi.suffix ()) || e.Additional_ ["Action"] == "AudioEnqueue"))
+		if ((fi.exists () && goodExt.contains (fi.suffix ())) ||
+				e.Additional_ ["Action"] == "AudioEnqueue")
 			return EntityTestHandleResult (EntityTestHandleResult::PHigh);
 		else
 			return EntityTestHandleResult ();
@@ -272,7 +270,8 @@ namespace LMP
 		if (!(e.Parameters_ & FromUserInitiated))
 			return;
 
-		PlayerTab_->GetPlayer ()->Enqueue (QStringList (path), false);
+		auto player = PlayerTab_->GetPlayer ();
+		player->Enqueue ({ AudioSource (url) }, false);
 	}
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace) const
