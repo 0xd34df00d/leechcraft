@@ -288,6 +288,12 @@ namespace LMP
 		return sources;
 	}
 
+	QModelIndex Player::GetSourceIndex (const AudioSource& source) const
+	{
+		const auto item = Items_ [source];
+		return item ? item->index () : QModelIndex ();
+	}
+
 	namespace
 	{
 		void IncAlbumLength (QStandardItem *albumItem, int length)

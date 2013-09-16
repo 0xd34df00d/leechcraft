@@ -139,6 +139,7 @@ namespace LMP
 		void ReplaceQueue (const QList<AudioSource>&, bool = true);
 		QList<AudioSource> GetQueue () const;
 		QList<AudioSource> GetIndexSources (const QModelIndex&) const;
+		QModelIndex GetSourceIndex (const AudioSource&) const;
 
 		void Dequeue (const QModelIndex&);
 		void Dequeue (const QList<AudioSource>&);
