@@ -511,7 +511,7 @@ namespace Murm
 				result += "<img src='" + data + "' width='16' height='16' alt='" + name + "' title='" + name + "' />";
 			};
 
-			result += "<div style='border-color: #CDCCCC; margin-top: 2px; margin-bottom: 0px; border-width: 1px; border-style: solid; border-radius: 5px; padding-left: 1em; padding-right: 1em; padding-top: 2px; padding-bottom: 2px;'>";
+			result += "<div>";
 			result += "<a href='";
 			result += QString::fromUtf8 (enqueueUrl.toEncoded ());
 			result += "'>";
@@ -526,7 +526,7 @@ namespace Murm
 			addImage ("download", VkEntry::tr ("Download"));
 			result += "</a> ";
 			result += info.Artist_ + QString::fromUtf8 (" — ") + info.Title_;
-			result += " <span style='text-align:right'>" + durStr + "</span>";
+			result += " <span style='float:right'>" + durStr + "</span>";
 			result += "</div>";
 			return result;
 		}
@@ -577,18 +577,23 @@ namespace Murm
 		if (photoIds.isEmpty () && wallIds.isEmpty () && audioIds.isEmpty ())
 			return;
 
+		const QString audioDivStyle = "border-color: #CDCCCC; "
+				"margin-top: 2px; margin-bottom: 0px; "
+				"border-width: 1px; border-style: solid; border-radius: 5px; "
+				"padding-left: 5px; padding-right: 5px; padding-top: 2px; padding-bottom: 2px;";
+
 		QString newContents = msg->GetBody ();
 		for (const auto& id : photoIds)
 			newContents += "<div id='photostub_" + id + "'></div>";
 		for (const auto& id : wallIds)
 			newContents += "<div id='wallstub_" + id + "'></div>";
 		for (const auto& id : audioIds)
-			newContents += "<div id='audiostub_" + id + "'></div>";
+			newContents += "<div id='audiostub_" + id + "' style='" + audioDivStyle + "'></div>";
 		msg->SetBody (newContents);
 
 		QPointer<VkMessage> safeMsg (msg);
 		Account_->GetConnection ()->GetMessageInfo (msg->GetID (),
-				[this, safeMsg] (const FullMessageInfo& msgInfo) -> void
+				[this, safeMsg, audioDivStyle] (const FullMessageInfo& msgInfo) -> void
 				{
 					if (!safeMsg)
 						return;
@@ -623,9 +628,15 @@ namespace Murm
 						auto replacement = repost.Text_;
 						for (const auto& photo : repost.Photos_)
 							replacement += "<br/>" + Photo2Replacement (photo);
-						for (const auto& audio : repost.Audios_)
-							replacement += Audio2Replacement (audio,
-									Account_->GetCoreProxy ());
+
+						if (!repost.Audios_.empty ())
+						{
+							replacement += "<div style='" + audioDivStyle + "'>";
+							for (const auto& audio : repost.Audios_)
+								replacement += Audio2Replacement (audio,
+										Account_->GetCoreProxy ());
+							replacement += "</div>";
+						}
 
 						replacement += "<div style='text-align:right'>";
 						replacement += tr ("Posted on: %1")
