@@ -147,6 +147,7 @@ namespace LMP
 		void SetStopAfter (const QModelIndex&);
 
 		void AddToOneShotQueue (const QModelIndex&);
+		void AddToOneShotQueue (const AudioSource&);
 		void RemoveFromOneShotQueue (const QModelIndex&);
 		void OneShotMoveUp (const QModelIndex&);
 		void OneShotMoveDown (const QModelIndex&);

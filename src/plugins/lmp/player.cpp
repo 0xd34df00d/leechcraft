@@ -388,14 +388,20 @@ namespace LMP
 			return;
 		}
 
-		const auto& source = index.data (Role::Source).value<AudioSource> ();
+		AddToOneShotQueue (index.data (Role::Source).value<AudioSource> ());
+	}
+
+	void Player::AddToOneShotQueue (const AudioSource& source)
+	{
 		if (CurrentOneShotQueue_.contains (source))
 			return;
 
 		CurrentOneShotQueue_ << source;
 
 		const auto pos = CurrentOneShotQueue_.size () - 1;
-		PlaylistModel_->itemFromIndex (index)->setData (pos, Role::OneShotPos);
+
+		if (auto item = Items_ [source])
+			item->setData (pos, Role::OneShotPos);
 	}
 
 	void Player::RemoveFromOneShotQueue (const QModelIndex& index)
