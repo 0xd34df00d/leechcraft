@@ -557,6 +557,7 @@ namespace Murm
 						replacement += tr ("Posted on: %1; %2; %3").arg (repost.PostDate_.toString ())
 								.arg (tr ("%n like(s)", 0, repost.Likes_))
 								.arg (tr ("%n repost(s)", 0, repost.Reposts_));
+						replacement += "</div>";
 
 						replacements.append ({ id, replacement });
 					}
