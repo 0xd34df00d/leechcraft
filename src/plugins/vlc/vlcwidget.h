@@ -71,6 +71,8 @@ namespace vlc
 		QAction *TogglePlay_;
 		QAction *Stop_;
 		QAction *FullScreenAction_;
+		QAction *IncreaseVolumeAction_;
+		QAction *DecreaseVolumeAction_;
 		QPoint LastMouseEvent_;
 		QSplitter *MainArea_;
 		Util::ShortcutManager * const Manager_;
@@ -126,7 +128,9 @@ namespace vlc
 		void PrepareFullScreen ();
 		void ForbidFullScreen ();
 		void ConnectWidgetToMe (SignalledWidget*);
+		
 		void InitNavigations ();
+		void InitVolumeActions ();
 		
 		void SaveSettings ();
 		void RestoreSettings ();

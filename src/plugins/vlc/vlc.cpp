@@ -81,9 +81,12 @@ namespace vlc
 		Manager_->RegisterActionInfo ("org.vlc.volume_increase",
 									ActionInfo (tr ("Key for increasing volume"),
 									QKeySequence (Qt::Key_Plus),
-									Proxy_->GetIcon ("media-")
-									)
-		);
+									Proxy_->GetIcon ("audio-volume-high")));
+		
+		Manager_->RegisterActionInfo ("org.vlc.volume_decrease",
+									ActionInfo (tr ("Key for decreasing volume"),
+									QKeySequence (Qt::Key_Minus),
+									Proxy_->GetIcon ("audio-volume-low")));
 	}
 
 	void Plugin::SecondInit ()

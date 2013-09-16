@@ -177,6 +177,7 @@ namespace vlc
 				SLOT (disableScreenSaver ()));
 		
 		InitNavigations ();
+		InitVolumeActions ();
 		setAcceptDrops (true);
 		RestoreSettings ();
 	}
@@ -792,6 +793,31 @@ namespace vlc
 		FullScreenWidget_->addAction (NavigateLeft_);
 		FullScreenWidget_->addAction (NavigateRight_);
 		FullScreenWidget_->addAction (NavigateUp_);
+	}
+	
+	void VlcWidget::InitVolumeActions()
+	{
+		IncreaseVolumeAction_ = new QAction (this);
+		DecreaseVolumeAction_ = new QAction (this);
+		
+		Manager_->RegisterAction ("org.vlc.volume_increase", IncreaseVolumeAction_, true);
+		Manager_->RegisterAction ("org.vlc.volume_decrease", DecreaseVolumeAction_, true);
+		
+		connect (IncreaseVolumeAction_,
+				SIGNAL (triggered ()),
+				SoundWidget_,
+				SLOT (increaseVolume ()));
+		
+		connect (DecreaseVolumeAction_,
+				SIGNAL (triggered ()),
+				SoundWidget_,
+				SLOT (decreaseVolume ()));
+		
+		addAction (IncreaseVolumeAction_);
+		addAction (DecreaseVolumeAction_);
+		
+		FullScreenWidget_->addAction (IncreaseVolumeAction_);
+		FullScreenWidget_->addAction (DecreaseVolumeAction_);
 	}
 	
 	void VlcWidget::dropEvent (QDropEvent *event)
