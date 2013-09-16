@@ -475,7 +475,7 @@ namespace Murm
 					.arg (info.Thumbnail_);
 		}
 
-		QString Audio2Replacement (const AudioInfo& info)
+		QString Audio2Replacement (const AudioInfo& info, ICoreProxy_ptr proxy)
 		{
 			auto durStr = LeechCraft::Util::MakeTimeFromLong (info.Duration_);
 			if (durStr.startsWith ("00:"))
@@ -503,15 +503,31 @@ namespace Murm
 			downloadUrl.addQueryItem ("flags0", "OnlyDownload");
 
 			QString result;
+
+			auto addImage = [&proxy, &result] (const QString& icon, const QString& name) -> void
+			{
+				const auto& px = proxy->GetIcon (icon).pixmap (16, 16);
+				const auto& data = LeechCraft::Util::GetAsBase64Src (px.toImage ());
+				result += "<img src='" + data + "' width='16' height='16' alt='" + name + "' title='" + name + "' />";
+			};
+
+			result += "<div style='border-color: #CDCCCC; margin-top: 2px; margin-bottom: 0px; border-width: 1px; border-style: solid; border-radius: 5px; padding-left: 1em; padding-right: 1em; padding-top: 2px; padding-bottom: 2px;'>";
 			result += "<a href='";
 			result += QString::fromUtf8 (enqueueUrl.toEncoded ());
-			result += "'>[enqueue]</a> <a href='";
+			result += "'>";
+			addImage ("list-add", VkEntry::tr ("Enqueue"));
+			result += "</a> <a href='";
 			result += QString::fromUtf8 (playUrl.toEncoded ());
-			result += "'>[play]</a> <a href='";
+			result += "'>";
+			addImage ("media-playback-start", VkEntry::tr ("Play"));
+			result += "</a> <a href='";
 			result += QString::fromUtf8 (downloadUrl.toEncoded ());
-			result += "'>[download]</a> ";
+			result += "'>";
+			addImage ("download", VkEntry::tr ("Download"));
+			result += "</a> ";
 			result += info.Artist_ + QString::fromUtf8 (" — ") + info.Title_;
-			result += " " + durStr;
+			result += " <span style='text-align:right'>" + durStr + "</span>";
+			result += "</div>";
 			return result;
 		}
 	}
@@ -594,7 +610,8 @@ namespace Murm
 						const auto& id = QString ("audiostub_%1_%2")
 								.arg (audio.OwnerID_)
 								.arg (audio.ID_);
-						replacements.append ({ id, Audio2Replacement (audio) });
+						replacements.append ({ id,
+									Audio2Replacement (audio, Account_->GetCoreProxy ()) });
 					}
 
 					for (const auto& repost : msgInfo.ContainedReposts_)
@@ -607,7 +624,8 @@ namespace Murm
 						for (const auto& photo : repost.Photos_)
 							replacement += "<br/>" + Photo2Replacement (photo);
 						for (const auto& audio : repost.Audios_)
-							replacement += "<br/>" + Audio2Replacement (audio);
+							replacement += Audio2Replacement (audio,
+									Account_->GetCoreProxy ());
 
 						replacement += "<div style='text-align:right'>";
 						replacement += tr ("Posted on: %1")
