@@ -550,6 +550,14 @@ namespace Murm
 	{
 		PhotoInfo PhotoMap2Info (const QVariantMap& map)
 		{
+			QString srcBig;
+			for (auto str : { "src_xxxbig", "src_xxbig", "src_xbig", "src_big" })
+				if (map.contains (str))
+				{
+					srcBig = map [str].toString ();
+					break;
+				}
+
 			return
 			{
 				map ["owner_id"].toLongLong (),
@@ -557,7 +565,7 @@ namespace Murm
 				map ["aid"].toLongLong (),
 
 				map ["src"].toString (),
-				map ["src_big"].toString (),
+				srcBig,
 
 				map ["access_key"].toString ()
 			};
