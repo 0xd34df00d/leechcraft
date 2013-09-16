@@ -229,8 +229,13 @@ namespace LMP
 
 	namespace
 	{
-		QList<AudioSource> FileToSource (const QString& file)
+		QList<AudioSource> FileToSource (const AudioSource& source)
 		{
+			if (!source.IsLocalFile ())
+				return { source };
+
+			const auto& file = source.GetLocalPath ();
+
 			auto parser = MakePlaylistParser (file);
 			if (parser)
 			{
@@ -250,16 +255,19 @@ namespace LMP
 
 	void Player::Enqueue (const QStringList& paths, bool sort)
 	{
-		QList<AudioSource> sources;
-		std::for_each (paths.begin (), paths.end (),
-				[&sources] (decltype (paths.front ()) path)
-					{ sources += FileToSource (path); });
-		Enqueue (sources, sort);
+		QList<AudioSource> parsedSources;
+		for (const auto& path : paths)
+			parsedSources << AudioSource (path);
+		Enqueue (parsedSources, sort);
 	}
 
 	void Player::Enqueue (const QList<AudioSource>& sources, bool sort)
 	{
-		AddToPlaylistModel (sources, sort);
+		QList<AudioSource> parsedSources;
+		std::for_each (sources.begin (), sources.end (),
+				[&parsedSources] (decltype (sources.front ()) path)
+					{ parsedSources += FileToSource (path); });
+		AddToPlaylistModel (parsedSources, sort);
 	}
 
 	void Player::ReplaceQueue (const QList<AudioSource>& queue, bool sort)
@@ -286,6 +294,12 @@ namespace LMP
 		else
 			sources << index.data (Role::Source).value<AudioSource> ();
 		return sources;
+	}
+
+	QModelIndex Player::GetSourceIndex (const AudioSource& source) const
+	{
+		const auto item = Items_ [source];
+		return item ? item->index () : QModelIndex ();
 	}
 
 	namespace
@@ -382,14 +396,20 @@ namespace LMP
 			return;
 		}
 
-		const auto& source = index.data (Role::Source).value<AudioSource> ();
+		AddToOneShotQueue (index.data (Role::Source).value<AudioSource> ());
+	}
+
+	void Player::AddToOneShotQueue (const AudioSource& source)
+	{
 		if (CurrentOneShotQueue_.contains (source))
 			return;
 
 		CurrentOneShotQueue_ << source;
 
 		const auto pos = CurrentOneShotQueue_.size () - 1;
-		PlaylistModel_->itemFromIndex (index)->setData (pos, Role::OneShotPos);
+
+		if (auto item = Items_ [source])
+			item->setData (pos, Role::OneShotPos);
 	}
 
 	void Player::RemoveFromOneShotQueue (const QModelIndex& index)

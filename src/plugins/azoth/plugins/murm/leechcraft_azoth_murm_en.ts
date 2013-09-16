@@ -4,7 +4,7 @@
 <context>
     <name>LeechCraft::Azoth::Murm::Plugin</name>
     <message>
-        <location filename="murm.cpp" line="70"/>
+        <location filename="murm.cpp" line="73"/>
         <source>Native support for the VKontakte messaging protocol.</source>
         <translation>Native support for the VKontakte messaging protocol.</translation>
     </message>
@@ -12,12 +12,12 @@
 <context>
     <name>LeechCraft::Azoth::Murm::VCardDialog</name>
     <message>
-        <location filename="vcarddialog.cpp" line="58"/>
+        <location filename="vcarddialog.cpp" line="61"/>
         <source>female</source>
         <translation>female</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="58"/>
+        <location filename="vcarddialog.cpp" line="61"/>
         <source>male</source>
         <translation>male</translation>
     </message>
@@ -25,7 +25,7 @@
 <context>
     <name>LeechCraft::Azoth::Murm::VkAccount</name>
     <message>
-        <location filename="vkaccount.cpp" line="186"/>
+        <location filename="vkaccount.cpp" line="192"/>
         <source>me</source>
         <translation>me</translation>
     </message>
@@ -115,11 +115,26 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
+        <source>Appearance</source>
+        <translation>Appearance</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="4"/>
+        <source>Entry name format:</source>
+        <translation>Entry name format:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="5"/>
+        <source>The following variables are allowed: $name, $nick, $surname.</source>
+        <translation>The following variables are allowed: $name, $nick, $surname.</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="6"/>
         <source>Behavior</source>
         <translation>Behavior</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="4"/>
+        <location filename="dummy.cpp" line="7"/>
         <source>Publish current tune to VK status</source>
         <translation>Publish current tune to VK status</translation>
     </message>

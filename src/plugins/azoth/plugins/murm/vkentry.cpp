@@ -31,6 +31,7 @@
 #include <QStringList>
 #include <QtDebug>
 #include <QTimer>
+#include <util/util.h>
 #include <interfaces/azoth/azothutil.h>
 #include "xmlsettingsmanager.h"
 #include "vkaccount.h"
@@ -275,7 +276,6 @@ namespace Murm
 
 		if (info.Flags_ & MessageFlag::Outbox)
 		{
-			const auto& text = info.ID_;
 			for (int i = Messages_.size () - 1; i >= 0; --i)
 			{
 				auto msg = Messages_.at (i);
@@ -466,6 +466,56 @@ namespace Murm
 	{
 	}
 
+	namespace
+	{
+		QString Photo2Replacement (const PhotoInfo& info)
+		{
+			return QString ("<a href='%1' target='_blank'><img src='%2' alt='' /></a>")
+					.arg (info.Full_)
+					.arg (info.Thumbnail_);
+		}
+
+		QString Audio2Replacement (const AudioInfo& info)
+		{
+			auto durStr = LeechCraft::Util::MakeTimeFromLong (info.Duration_);
+			if (durStr.startsWith ("00:"))
+				durStr = durStr.mid (3);
+
+			QUrl azothUrl;
+			azothUrl.setScheme ("azoth");
+			azothUrl.setHost ("sendentities");
+			azothUrl.addQueryItem ("count", "1");
+			azothUrl.addQueryItem ("entityVar0", info.URL_.toEncoded ());
+			azothUrl.addQueryItem ("entityType0", "url");
+			azothUrl.addQueryItem ("addCount0", "1");
+
+			auto enqueueUrl = azothUrl;
+			enqueueUrl.addQueryItem ("flags0", "OnlyHandle");
+			enqueueUrl.addQueryItem ("add0key0", "Action");
+			enqueueUrl.addQueryItem ("add0value0", "AudioEnqueue");
+
+			auto playUrl = azothUrl;
+			playUrl.addQueryItem ("flags0", "OnlyHandle");
+			playUrl.addQueryItem ("add0key0", "Action");
+			playUrl.addQueryItem ("add0value0", "AudioEnqueuePlay");
+
+			auto downloadUrl = azothUrl;
+			downloadUrl.addQueryItem ("flags0", "OnlyDownload");
+
+			QString result;
+			result += "<a href='";
+			result += QString::fromUtf8 (enqueueUrl.toEncoded ());
+			result += "'>[enqueue]</a> <a href='";
+			result += QString::fromUtf8 (playUrl.toEncoded ());
+			result += "'>[play]</a> <a href='";
+			result += QString::fromUtf8 (downloadUrl.toEncoded ());
+			result += "'>[download]</a> ";
+			result += info.Artist_ + QString::fromUtf8 (" — ") + info.Title_;
+			result += " " + durStr;
+			return result;
+		}
+	}
+
 	void VkEntry::HandleAttaches (VkMessage *msg, const MessageInfo& info)
 	{
 		struct AttachInfo
@@ -500,41 +550,86 @@ namespace Murm
 				attach.ID_ = pos->toString ();
 		}
 
-		QStringList photoIds;
+		QStringList photoIds, wallIds, audioIds;
 		for (const auto& info : Attaches_)
 			if (info.Type_ == "photo")
 				photoIds << info.ID_;
-		if (photoIds.isEmpty ())
+			else if (info.Type_ == "wall")
+				wallIds << info.ID_;
+			else if (info.Type_ == "audio")
+				audioIds << info.ID_;
+		if (photoIds.isEmpty () && wallIds.isEmpty () && audioIds.isEmpty ())
 			return;
 
 		QString newContents = msg->GetBody ();
 		for (const auto& id : photoIds)
 			newContents += "<div id='photostub_" + id + "'></div>";
+		for (const auto& id : wallIds)
+			newContents += "<div id='wallstub_" + id + "'></div>";
+		for (const auto& id : audioIds)
+			newContents += "<div id='audiostub_" + id + "'></div>";
 		msg->SetBody (newContents);
 
 		QPointer<VkMessage> safeMsg (msg);
 		Account_->GetConnection ()->GetMessageInfo (msg->GetID (),
-				[safeMsg] (const FullMessageInfo& msgInfo) -> void
+				[this, safeMsg] (const FullMessageInfo& msgInfo) -> void
 				{
 					if (!safeMsg)
 						return;
 
 					QString js;
 					auto body = safeMsg->GetBody ();
+
+					QList<QPair<QString, QString>> replacements;
 					for (const auto& info : msgInfo.Photos_)
 					{
-						const auto& id = QString ("%1_%2")
+						const auto& id = QString ("photostub_%1_%2")
 								.arg (info.OwnerID_)
 								.arg (info.PhotoID_);
-						const auto& replacement = QString ("<a href='%1' target='_blank'><img src='%2' alt='' /></a>")
-								.arg (info.Full_)
-								.arg (info.Thumbnail_);
-
-						body.replace ("<div id='photostub_" + id + "'></div>",
-								"<div>" + replacement + "</div>");
-						js += QString ("try { document.getElementById('photostub_%1').innerHTML = \"%2\"; } catch (e) {};")
-								.arg (id).arg (replacement);
+						replacements.append ({ id, Photo2Replacement (info) });
 					}
+
+					for (const auto& audio : msgInfo.Audios_)
+					{
+						const auto& id = QString ("audiostub_%1_%2")
+								.arg (audio.OwnerID_)
+								.arg (audio.ID_);
+						replacements.append ({ id, Audio2Replacement (audio) });
+					}
+
+					for (const auto& repost : msgInfo.ContainedReposts_)
+					{
+						const auto& id = QString ("wallstub_%1_%2")
+								.arg (repost.OwnerID_)
+								.arg (repost.ID_);
+
+						auto replacement = repost.Text_;
+						for (const auto& photo : repost.Photos_)
+							replacement += "<br/>" + Photo2Replacement (photo);
+						for (const auto& audio : repost.Audios_)
+							replacement += "<br/>" + Audio2Replacement (audio);
+
+						replacement += "<div style='text-align:right'>";
+						replacement += tr ("Posted on: %1")
+								.arg (repost.PostDate_.toString ());
+						replacement += "<br/";
+						replacement += tr ("%n like(s)", 0, repost.Likes_);
+						replacement += "; ";
+						replacement += tr ("%n repost(s)", 0, repost.Reposts_);
+						replacement += "</div>";
+
+						replacements.append ({ id, replacement });
+					}
+
+					for (const auto& pair : replacements)
+					{
+						body.replace ("<div id='" + pair.first + "'></div>",
+								"<div>" + pair.second + "</div>");
+						js += QString ("try { document.getElementById('%1').innerHTML = \"%2\"; } catch (e) {};")
+								.arg (pair.first)
+								.arg (pair.second);
+					}
+
 					safeMsg->SetBody (body);
 
 					auto safeThis = qobject_cast<VkEntry*> (safeMsg->OtherPart ());

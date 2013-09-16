@@ -124,9 +124,33 @@ namespace Murm
 		QString AccessKey_;
 	};
 
+	struct AudioInfo
+	{
+		qlonglong OwnerID_;
+		qulonglong ID_;
+
+		QString Artist_;
+		QString Title_;
+
+		int Duration_;
+
+		QUrl URL_;
+	};
+
 	struct FullMessageInfo
 	{
+		qlonglong OwnerID_;
+		qulonglong ID_;
+
+		QString Text_;
+
+		QDateTime PostDate_;
+		int Likes_;
+		int Reposts_;
+
 		QList<PhotoInfo> Photos_;
+		QList<AudioInfo> Audios_;
+		QList<FullMessageInfo> ContainedReposts_;
 	};
 }
 }
