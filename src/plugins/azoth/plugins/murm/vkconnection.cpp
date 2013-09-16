@@ -571,6 +571,19 @@ namespace Murm
 			};
 		}
 
+		AudioInfo AudioMap2Info (const QVariantMap& map)
+		{
+			return
+			{
+				map ["owner_id"].toLongLong (),
+				map ["aid"].toULongLong (),
+				map ["artist"].toString (),
+				map ["title"].toString (),
+				map ["duration"].toInt (),
+				map ["url"].toString ()
+			};
+		}
+
 		void HandleAttachments (FullMessageInfo& info, const QVariant& attachments)
 		{
 			const auto& attList = attachments.toList ();
@@ -578,7 +591,9 @@ namespace Murm
 			{
 				const auto& attMap = attVar.toMap ();
 				if (attMap.contains ("photo"))
-					info.Photos_.append (PhotoMap2Info (attMap ["photo"].toMap ()));
+					info.Photos_ << PhotoMap2Info (attMap ["photo"].toMap ());
+				else if (attMap.contains ("audio"))
+					info.Audios_ << AudioMap2Info (attMap ["audio"].toMap ());
 				else if (attMap.contains ("wall"))
 				{
 					const auto& wallMap = attMap ["wall"].toMap ();
