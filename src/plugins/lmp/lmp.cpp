@@ -239,6 +239,7 @@ namespace LMP
 				.split (' ', QString::SkipEmptyParts);
 		const QFileInfo fi (path);
 		if ((fi.exists () && goodExt.contains (fi.suffix ())) ||
+				e.Additional_ ["Action"] == "AudioEnqueuePlay" ||
 				e.Additional_ ["Action"] == "AudioEnqueue")
 			return EntityTestHandleResult (EntityTestHandleResult::PHigh);
 		else
@@ -272,6 +273,9 @@ namespace LMP
 
 		auto player = PlayerTab_->GetPlayer ();
 		player->Enqueue ({ AudioSource (url) }, false);
+
+		if (e.Additional_ ["Action"] == "AudioEnqueuePlay")
+			player->AddToOneShotQueue (url);
 	}
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace) const
