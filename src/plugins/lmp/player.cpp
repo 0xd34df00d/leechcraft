@@ -229,8 +229,13 @@ namespace LMP
 
 	namespace
 	{
-		QList<AudioSource> FileToSource (const QString& file)
+		QList<AudioSource> FileToSource (const AudioSource& source)
 		{
+			if (!source.IsLocalFile ())
+				return { source };
+
+			const auto& file = source.GetLocalPath ();
+
 			auto parser = MakePlaylistParser (file);
 			if (parser)
 			{
@@ -250,16 +255,19 @@ namespace LMP
 
 	void Player::Enqueue (const QStringList& paths, bool sort)
 	{
-		QList<AudioSource> sources;
-		std::for_each (paths.begin (), paths.end (),
-				[&sources] (decltype (paths.front ()) path)
-					{ sources += FileToSource (path); });
-		Enqueue (sources, sort);
+		QList<AudioSource> parsedSources;
+		for (const auto& path : paths)
+			parsedSources << AudioSource (path);
+		Enqueue (parsedSources, sort);
 	}
 
 	void Player::Enqueue (const QList<AudioSource>& sources, bool sort)
 	{
-		AddToPlaylistModel (sources, sort);
+		QList<AudioSource> parsedSources;
+		std::for_each (sources.begin (), sources.end (),
+				[&parsedSources] (decltype (sources.front ()) path)
+					{ parsedSources += FileToSource (path); });
+		AddToPlaylistModel (parsedSources, sort);
 	}
 
 	void Player::ReplaceQueue (const QList<AudioSource>& queue, bool sort)
