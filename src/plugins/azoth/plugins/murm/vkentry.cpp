@@ -465,6 +465,16 @@ namespace Murm
 	{
 	}
 
+	namespace
+	{
+		QString Photo2Replacement (const PhotoInfo& info)
+		{
+			return QString ("<a href='%1' target='_blank'><img src='%2' alt='' /></a>")
+				.arg (info.Full_)
+				.arg (info.Thumbnail_);
+		}
+	}
+
 	void VkEntry::HandleAttaches (VkMessage *msg, const MessageInfo& info)
 	{
 		struct AttachInfo
@@ -532,9 +542,7 @@ namespace Murm
 						const auto& id = QString ("photostub_%1_%2")
 								.arg (info.OwnerID_)
 								.arg (info.PhotoID_);
-						const auto& replacement = QString ("<a href='%1' target='_blank'><img src='%2' alt='' /></a>")
-								.arg (info.Full_)
-								.arg (info.Thumbnail_);
+						replacements.append ({ id, Photo2Replacement (info) });
 
 						replacements.append ({ id, replacement });
 					}
@@ -547,12 +555,7 @@ namespace Murm
 
 						auto replacement = repost.Text_;
 						for (const auto& photo : repost.Photos_)
-						{
-							replacement += "<br/>";
-							replacement += QString ("<a href='%1' target='_blank'><img src='%2' alt='' /></a>")
-								.arg (photo.Full_)
-								.arg (photo.Thumbnail_);
-						}
+							replacement += "<br/>" + Photo2Replacement (photo);
 						replacement += "<div style='align:right'>";
 						replacement += tr ("Posted on: %1; %2; %3").arg (repost.PostDate_.toString ())
 								.arg (tr ("%n like(s)", 0, repost.Likes_))
