@@ -295,7 +295,7 @@ namespace Poshuku
 		Items_.clear ();
 		Core::Instance ().GetStorageBackend ()->LoadHistory (Items_);
 
-		QSet<QUrl> urls;
+		QSet<QString> urls;
 		for (auto i = Items_.begin (); i != Items_.end (); )
 		{
 			if (urls.contains (i->URL_))
