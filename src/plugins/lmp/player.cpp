@@ -328,6 +328,8 @@ namespace LMP
 			if (!CurrentQueue_.removeAll (source))
 				continue;
 
+			RemoveFromOneShotQueue (source);
+
 			auto item = Items_.take (source);
 			auto parent = item->parent ();
 			if (parent)
@@ -356,8 +358,6 @@ namespace LMP
 			}
 			else
 				PlaylistModel_->removeRow (item->row ());
-
-			RemoveFromOneShotQueue (source);
 		}
 
 		Core::Instance ().GetPlaylistManager ()->
