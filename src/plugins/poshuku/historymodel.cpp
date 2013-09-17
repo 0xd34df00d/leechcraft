@@ -309,8 +309,6 @@ namespace Poshuku
 		Items_.clear ();
 		Core::Instance ().GetStorageBackend ()->LoadHistory (Items_);
 
-		if (Items_.empty ())
-			return;
 
 		for (const auto& item : Items_)
 			Add (item, false);
