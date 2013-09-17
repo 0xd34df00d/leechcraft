@@ -126,7 +126,9 @@ namespace LMP
 			painter->setFont (font);
 		}
 
-		if (index.data (Player::Role::IsCurrent).toBool () || option.state & QStyle::State_Selected)
+		const bool drawSelected = index.data (Player::Role::IsCurrent).toBool () ||
+				option.state & QStyle::State_Selected;
+		if (drawSelected)
 			painter->setPen (bgOpt.palette.color (QPalette::HighlightedText));
 
 		style->drawPrimitive (QStyle::PE_PanelItemViewItem, &bgOpt, painter, option.widget);
@@ -134,20 +136,31 @@ namespace LMP
 		const auto& oneShotPosVar = index.data (Player::Role::OneShotPos);
 		if (oneShotPosVar.isValid ())
 		{
-			const auto& icon = Core::Instance ().GetProxy ()->GetIcon ("draw-circle");
-			const auto& px = icon.pixmap (option.rect.size ());
-			style->drawItemPixmap (painter, option.rect, Qt::AlignLeft | Qt::AlignVCenter, px);
+			const auto& text = QString::number (oneShotPosVar.toInt () + 1);
+			const auto& textWidth = option.fontMetrics.width (text);
 
-			const QRect textRect (0, option.rect.top () + (option.rect.height () - px.height ()) / 2,
-					px.width (), px.height ());
+			auto oneShotRect = option.rect;
+			oneShotRect.setWidth (std::max (textWidth + 2 * Padding, oneShotRect.height ()));
+
+			painter->save ();
+			painter->setRenderHint (QPainter::Antialiasing);
+			painter->setRenderHint (QPainter::HighQualityAntialiasing);
+			painter->setBrush (option.palette.brush (drawSelected ?
+						QPalette::Highlight :
+						QPalette::Button));
+			painter->setPen (option.palette.color (QPalette::ButtonText));
+			painter->drawEllipse (oneShotRect);
+			painter->restore ();
+			//style->drawItemPixmap (painter, option.rect, Qt::AlignLeft | Qt::AlignVCenter, px);
+
 			style->drawItemText (painter,
-					textRect,
+					oneShotRect,
 					Qt::AlignCenter,
 					option.palette,
 					true,
-					QString::number (oneShotPosVar.toInt () + 1));
+					text);
 
-			option.rect.adjust (px.width () + Padding, 0, 0, 0);
+			option.rect.adjust (oneShotRect.width () + Padding, 0, 0, 0);
 		}
 
 		if (index.data (Player::Role::IsStop).toBool ())
