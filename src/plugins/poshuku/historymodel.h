@@ -55,7 +55,7 @@ namespace Poshuku
 		QString URL_;
 	};
 
-	typedef std::vector<HistoryItem> history_items_t;
+	typedef QList<HistoryItem> history_items_t;
 
 	class HistoryModel : public QAbstractItemModel
 	{
