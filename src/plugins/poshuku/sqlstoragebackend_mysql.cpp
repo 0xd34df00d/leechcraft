@@ -79,7 +79,7 @@ namespace Poshuku
 				"date, "
 				"url "
 				"FROM history "
-				"ORDER BY date");
+				"ORDER BY date DESC");
 
 		HistoryRatedLoader_ = QSqlQuery (DB_);
 		HistoryRatedLoader_.prepare ("SELECT "

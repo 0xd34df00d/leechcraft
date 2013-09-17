@@ -288,7 +288,7 @@ namespace Poshuku
 
 		if (announce)
 			beginInsertRows (index (section, 0), 0, 0);
-		folder->PrependChild (thisItem);
+		folder->AppendChild (thisItem);
 		if (announce)
 			endInsertRows ();
 
