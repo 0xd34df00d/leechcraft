@@ -112,7 +112,7 @@ namespace Poshuku
 			url
 		};
 
-		pos = std::min (Items_.size (), pos);
+		pos = std::min (static_cast<size_t> (Items_.size ()), pos);
 
 		beginInsertRows (QModelIndex (), pos, pos);
 		Items_.insert (Items_.begin () + pos, item);
