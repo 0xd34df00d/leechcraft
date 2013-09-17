@@ -151,7 +151,6 @@ namespace LMP
 			painter->setPen (option.palette.color (QPalette::ButtonText));
 			painter->drawEllipse (oneShotRect);
 			painter->restore ();
-			//style->drawItemPixmap (painter, option.rect, Qt::AlignLeft | Qt::AlignVCenter, px);
 
 			style->drawItemText (painter,
 					oneShotRect,
