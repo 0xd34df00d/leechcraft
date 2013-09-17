@@ -87,6 +87,26 @@ namespace vlc
 									ActionInfo (tr ("Key for decreasing volume"),
 									QKeySequence (Qt::Key_Minus),
 									Proxy_->GetIcon ("audio-volume-low")));
+		
+		Manager_->RegisterActionInfo ("org.vlc.plus_3_percent",
+									ActionInfo (tr ("Key for +3 percent"),
+									QKeySequence (Qt::Key_Asterisk),
+									QIcon ()));
+		
+		Manager_->RegisterActionInfo ("org.vlc.minus_3_percent",
+									ActionInfo (tr ("Key for -3 percent"),
+									QKeySequence (Qt::Key_Slash),
+									QIcon ()));
+		
+		Manager_->RegisterActionInfo ("org.vlc.plus_10_seconds",
+									ActionInfo (tr ("Key for +10 seconds"),
+									QKeySequence (Qt::Key_0),
+									QIcon ()));
+
+		Manager_->RegisterActionInfo ("org.vlc.minus_10_seconds",
+									ActionInfo (tr ("Key for -10 seconds"),
+									QKeySequence (Qt::Key_9),
+									QIcon ()));
 	}
 
 	void Plugin::SecondInit ()

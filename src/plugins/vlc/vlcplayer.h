@@ -34,6 +34,7 @@
 #include <QUrl>
 #include <QStringList>
 #include <vlc/vlc.h>
+#include <boost/graph/graph_concepts.hpp>
 
 class QWidget;
 class QTime;
@@ -119,6 +120,11 @@ namespace vlc
 		void dvdNavigateUp ();
 		void dvdNavigateDown ();
 		void dvdNavigateEnter ();
+		
+		void minus10seconds ();
+		void plus10seconds ();
+		void plus3percent ();
+		void minus3percent ();
 		
 	signals:
 		void unstable ();

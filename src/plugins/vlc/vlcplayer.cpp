@@ -364,5 +364,25 @@ namespace vlc
 	{
 		return VlcInstance_.get ();
 	}
+	
+	void VlcPlayer::plus3percent ()
+	{
+		libvlc_media_player_set_time (Mp_.get (), libvlc_media_player_get_time (Mp_.get ()) + libvlc_media_player_get_length (Mp_.get ()) * 0.03);
+	}
+	
+	void VlcPlayer::minus3percent ()
+	{
+		libvlc_media_player_set_time (Mp_.get (), libvlc_media_player_get_time (Mp_.get ()) - libvlc_media_player_get_length (Mp_.get ()) * 0.03);
+	}
+
+	void VlcPlayer::plus10seconds ()
+	{
+		libvlc_media_player_set_time (Mp_.get (), libvlc_media_player_get_time (Mp_.get ()) + 10 * 1000);
+	}
+	
+	void VlcPlayer::minus10seconds ()
+	{
+		libvlc_media_player_set_time (Mp_.get (), libvlc_media_player_get_time (Mp_.get ()) - 10 * 1000);
+	}
 }
 }

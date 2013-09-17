@@ -178,6 +178,7 @@ namespace vlc
 		
 		InitNavigations ();
 		InitVolumeActions ();
+		InitRewindActions ();
 		setAcceptDrops (true);
 		RestoreSettings ();
 	}
@@ -818,6 +819,49 @@ namespace vlc
 		
 		FullScreenWidget_->addAction (IncreaseVolumeAction_);
 		FullScreenWidget_->addAction (DecreaseVolumeAction_);
+	}
+	
+	void VlcWidget::InitRewindActions ()
+	{
+		Plus3Percent_ = new QAction (this);
+		Plus10Seconds_ = new QAction (this);
+		Minus3Percent_ = new QAction (this);
+		Minus10Seconds_ = new QAction (this);
+		
+		Manager_->RegisterAction ("org.vlc.plus_3_percent", Plus3Percent_, true);
+		Manager_->RegisterAction ("org.vlc.plus_10_seconds", Plus10Seconds_, true);
+		Manager_->RegisterAction ("org.vlc.minus_3_percent", Minus3Percent_, true);
+		Manager_->RegisterAction ("org.vlc.minus_10_seconds", Minus10Seconds_, true);
+		
+		connect (Plus10Seconds_,
+				SIGNAL (triggered ()),
+				VlcPlayer_,
+				SLOT (plus10seconds ()));
+		
+		connect (Minus10Seconds_,
+				SIGNAL (triggered ()),
+				VlcPlayer_,
+				SLOT (minus10seconds ()));
+		
+		connect (Plus3Percent_,
+				SIGNAL (triggered ()),
+				VlcPlayer_,
+				SLOT (plus3percent ()));
+		
+		connect (Minus3Percent_,
+				SIGNAL (triggered ()),
+				VlcPlayer_,
+				SLOT (minus3percent ()));
+		
+		addAction (Plus10Seconds_);
+		addAction (Plus3Percent_);
+		addAction (Minus10Seconds_);
+		addAction (Minus3Percent_);
+		
+		FullScreenWidget_->addAction (Plus10Seconds_);
+		FullScreenWidget_->addAction (Plus3Percent_);
+		FullScreenWidget_->addAction (Minus10Seconds_);
+		FullScreenWidget_->addAction (Minus3Percent_);
 	}
 	
 	void VlcWidget::dropEvent (QDropEvent *event)
