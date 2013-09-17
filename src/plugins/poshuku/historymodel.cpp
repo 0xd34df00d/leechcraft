@@ -61,9 +61,11 @@ namespace Poshuku
 			* - ...
 			* - Last N months
 			*/
-		int SectionNumber (const QDateTime& date)
+		int SectionNumber (const QDateTime& date, QDateTime current = QDateTime ())
 		{
-			QDateTime current = QDateTime::currentDateTime ();
+			if (!current.isValid ())
+				current = QDateTime::currentDateTime ();
+
 			QDate orig = current.date ();
 			if (date.daysTo (current) == 0)
 				return 0;
@@ -247,10 +249,8 @@ namespace Poshuku
 		return result;
 	}
 
-	void HistoryModel::Add (const HistoryItem& item, bool announce)
+	void HistoryModel::Add (const HistoryItem& item, bool announce, int section)
 	{
-		int section = SectionNumber (item.DateTime_);
-
 		while (section >= RootItem_->ChildCount ())
 		{
 			QList<QVariant> data;
@@ -307,8 +307,9 @@ namespace Poshuku
 			}
 		}
 
+		const auto& now = QDateTime::currentDateTime ();
 		for (const auto& item : Items_)
-			Add (item, false);
+			Add (item, false, SectionNumber (item.DateTime_, now));
 
 		endResetModel ();
 	}
@@ -316,7 +317,7 @@ namespace Poshuku
 	void HistoryModel::handleItemAdded (const HistoryItem& item)
 	{
 		Items_.push_back (item);
-		Add (item, true);
+		Add (item, true, SectionNumber (item.DateTime_));
 	}
 
 	void HistoryModel::collectGarbage ()
