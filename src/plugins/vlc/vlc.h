@@ -74,6 +74,9 @@ namespace vlc
 		void changeTabIcon (QWidget*, const QIcon&);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
+		
+	private slots:
+		void deleteDeleted (QWidget*);
 	};
 }
 }

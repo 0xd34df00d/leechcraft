@@ -108,16 +108,18 @@ namespace vlc
 		else	
 			row -= 2;
 		
-		
 		if (data->colorData ().toString () == "vtyulb")
 		{	
 			QUrl insertAfter;
 			for (int i = row; i > 0; i--)
-				if (!urls.contains (QUrl (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL))))
+			{
+				QUrl url (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL));
+				if (!urls.contains (url))
 				{
-					insertAfter = QUrl (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL));
+					insertAfter = url;
 					break;
 				}
+			}
 			
 			QList<libvlc_media_t*> mediaList;
 			for (int i = 0; i < urls.size (); i++)

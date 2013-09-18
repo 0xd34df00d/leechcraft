@@ -30,6 +30,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <QIcon>
 #include <QShortcut>
+#include <boost/graph/graph_concepts.hpp>
 #include <util/shortcuts/shortcutmanager.h>
 #include "vlc.h"
 
@@ -142,13 +143,18 @@ namespace vlc
 	void Plugin::TabOpenRequested (const QByteArray& tabClass) 
 	{
 		VlcWidget *widget = new VlcWidget (Proxy_, Manager_);
-		Tabs_.push_back (widget);
+		Tabs_ << widget;
 		emit addNewTab ("VLC", widget);
 		emit raiseTab (widget);
 		connect (widget, 
 				SIGNAL (deleteMe (QWidget*)), 
 				this, 
 				SIGNAL (removeTab (QWidget*)));
+		
+		connect (widget,
+				SIGNAL(deleteMe (QWidget*)),
+				this,
+				SLOT (deleteDeleted (QWidget*)));
 	}
 	
 	LeechCraft::TabClasses_t Plugin::GetTabClasses () const 
@@ -164,6 +170,16 @@ namespace vlc
 	void Plugin::SetShortcut (const QString &id, const QKeySequences_t &shortcuts)
 	{
 		Manager_->SetShortcut (id, shortcuts);
+	}
+	
+	void Plugin::deleteDeleted (QWidget *widget)
+	{
+		for (QVector <VlcWidget*>::iterator i = Tabs_.begin (); i != Tabs_.end (); i++)
+			if (*i == widget)
+			{
+				Tabs_.erase (i);
+				return;
+			}
 	}
 }
 }
