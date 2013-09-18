@@ -71,27 +71,8 @@ namespace Metida
 			Tags
 		};
 
-		enum class DatePart
-		{
-			FullDate,
-			Day,
-			Month,
-			Year
-		};
-		QHash<QNetworkReply*, DatePart> Reply2DatePart_;
-
 		QHash<QNetworkReply*, RequestType> Reply2RequestType_;
 		QMap<QPair<int, int>, LJCommentEntry> Id2CommentEntry_;
-
-	public:
-		struct DateDiff
-		{
-			QList<QDate> Years_;
-			QList<QDate> Months_;
-			QList<QDate> Days_;
-		};
-	private:
-		QHash<QNetworkReply*, DateDiff> Reply2DateDiff_;
 
 	public:
 		LJXmlRPC (LJAccount *acc, QObject *parent = 0);
@@ -112,8 +93,7 @@ namespace Metida
 		void GetEventsWithFilter (const Filter& filter);
 		void GetLastEvents (int count);
 		void GetChangedEvents (const QDateTime& dt);
-		void GetEventsByDate (const QDate& date, int skip = 0,
-				const DateDiff& dd = DateDiff (), DatePart datePart = DatePart::FullDate);
+		void GetEventsByDate (const QDate& date, int skip = 0);
 
 		void RemoveEvent (const LJEvent& event);
 		void UpdateEvent (const LJEvent& event);
@@ -150,7 +130,6 @@ namespace Metida
 		void GetLastEventsRequest (int count, const QString& challenge);
 		void GetChangedEventsRequest (const QDateTime& dt, const QString& challenge);
 		void GetEventsByDateRequest (const QDate& date, int skip = 0,
-				const DateDiff& dd = DateDiff (), DatePart datePart = DatePart::FullDate,
 				const QString& challenge = QString ());
 		void GetParticularEventRequest (int id, RequestType prt,
 				const QString& challenge);
