@@ -11,9 +11,15 @@ if (HUpnp_INCLUDE_DIR AND HUpnp_LIBRARIES)
 	set (HUpnp_FOUND TRUE)
 else ()
 	if (NOT WIN32)
-		find_library (HUpnp_LIBRARIES
+		find_library (HUpnp_LIBRARY
 			NAMES
 				HUpnp
+			PATHS
+				ENV
+		)
+		find_library (HUpnpAv_LIBRARY
+			NAMES
+				HUpnpAv
 			PATHS
 				ENV
 		)
@@ -39,11 +45,12 @@ else ()
 			${INCLUDE_INSTALL_DIR}
 	)
 
-	if (HUpnp_INCLUDE_DIR AND HUpnp_LIBRARIES)
+	if (HUpnp_INCLUDE_DIR AND HUpnp_LIBRARY AND HUpnpAv_LIBRARY)
 		set (HUpnp_FOUND 1)
 	endif ()
 
 	if (HUpnp_FOUND)
+		set (HUpnp_LIBRARIES ${HUpnp_LIBRARY} ${HUpnpAv_LIBRARY})
 		message (STATUS "Found the HUpnp libraries at ${HUpnp_LIBRARIES}")
 		message (STATUS "Found the HUpnp headers at ${HUpnp_INCLUDE_DIR}")
 		if (WIN32)
