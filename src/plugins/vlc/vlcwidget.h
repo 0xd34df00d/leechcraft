@@ -145,6 +145,9 @@ namespace vlc
 		void RestoreSettings ();
 		void RestorePlaylist ();
 		
+	public slots:
+		void autostartChanged ();
+		
 	private slots:
 		void addFile ();
 		void addFolder ();

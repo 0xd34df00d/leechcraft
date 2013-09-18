@@ -40,6 +40,11 @@ namespace vlc
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+		
+		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
+		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (), "vlcsettings.xml");
+
+		
 		Manager_ = new Util::ShortcutManager (proxy);
 		Manager_->SetObject (this);
 		
@@ -142,6 +147,7 @@ namespace vlc
 	void Plugin::TabOpenRequested (const QByteArray& tabClass) 
 	{
 		VlcWidget *widget = new VlcWidget (Proxy_, Manager_);
+		XmlSettingsManager::Instance ().RegisterObject ("Autostart", widget, "autostartChanged");
 		Tabs_ << widget;
 		emit addNewTab ("VLC", widget);
 		emit raiseTab (widget);
@@ -179,6 +185,11 @@ namespace vlc
 				Tabs_.erase (i);
 				return;
 			}
+	}
+	
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XmlSettingsDialog_;
 	}
 }
 }

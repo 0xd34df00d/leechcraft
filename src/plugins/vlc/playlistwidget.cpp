@@ -154,7 +154,6 @@ namespace vlc
 	{
 		Model_->updateTable ();
 		int currentRow = libvlc_media_list_index_of_item (Playlist_, libvlc_media_player_get_media (NativePlayer_));
-		fprintf (stderr, "%d", currentRow);
 				
 		bool find = false;
 		for (int i = 0; i < Model_->GetPublicItems ()->size (); i++)

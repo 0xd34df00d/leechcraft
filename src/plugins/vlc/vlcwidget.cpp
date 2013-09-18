@@ -61,6 +61,7 @@
 #include <interfaces/imwproxy.h>
 #include "vlcwidget.h"
 #include "vlcplayer.h"
+#include "xmlsettingsmanager.h"
 
 namespace
 {
@@ -210,7 +211,7 @@ namespace vlc
 	
 	void VlcWidget::RestoreSettings ()
 	{
-		Settings_ = new QSettings (QCoreApplication::organizationName (), QCoreApplication::applicationName () + "_Vlc");
+		Settings_ = new QSettings (QCoreApplication::organizationName (), QCoreApplication::applicationName () + "_VLC");
 		RestorePlaylist ();
 	}
 	
@@ -228,6 +229,9 @@ namespace vlc
 	void VlcWidget::RestorePlaylist ()
 	{
 		QStringList playlist = Settings_->value ("Playlist").toStringList ();
+		if (playlist.size() < 2)
+			return;
+		
 		for (int i = 0; i < playlist.size () - 1; i++)
 			PlaylistWidget_->AddUrl (QUrl::fromEncoded (playlist [i].toUtf8 ()), false);
 		
@@ -919,6 +923,11 @@ namespace vlc
 	void VlcWidget::disableScreenSaver ()
 	{
 		system ("qdbus org.freedesktop.ScreenSaver /ScreenSaver SimulateUserActivity > /dev/null"); //hello kaffeinety
+	}
+	
+	void VlcWidget::autostartChanged ()
+	{
+		Autostart_ = XmlSettingsManager::Instance ().property ("Autostart").toBool ();
 	}
 }
 }

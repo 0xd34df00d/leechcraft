@@ -34,7 +34,10 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaveshortcuts.h>
+#include <interfaces/ihavesettings.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "vlcwidget.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -44,13 +47,15 @@ namespace vlc
 				 , public IInfo
 				 , public IHaveTabs
 				 , public IHaveShortcuts
+				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IHaveShortcuts)
+		Q_INTERFACES (IInfo IHaveTabs IHaveShortcuts IHaveSettings)
 	
 		ICoreProxy_ptr Proxy_;
 		Util::ShortcutManager *Manager_;
 		QVector<VlcWidget*> Tabs_;
+		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 	
 	public:
 		void Init (ICoreProxy_ptr);
@@ -60,7 +65,8 @@ namespace vlc
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		
 		void TabOpenRequested (const QByteArray&);
 		LeechCraft::TabClasses_t GetTabClasses () const;
 		

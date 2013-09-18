@@ -22,6 +22,7 @@ set (SRCS
 	signalledwidget.cpp
 	soundwidget.cpp
 	playlistmodel.cpp
+	xmlsettingsmanager.cpp
 	)
 	
 #CreateTrs("vlc" "en;ru_RU" COMPILED_TRANSLATIONS)
@@ -32,9 +33,12 @@ add_library (leechcraft_vlc SHARED
 	${SRCS}
 	${UIS_H}
 	)
+	
 target_link_libraries (leechcraft_vlc
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${VLC_LIBRARIES}
 	)
+	
 install (TARGETS leechcraft_vlc DESTINATION ${LC_PLUGINS_DEST})
+install (FILES vlcsettings.xml DESTINATION ${LC_SETTINGS_DEST})
