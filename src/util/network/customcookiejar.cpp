@@ -90,16 +90,22 @@ namespace Util
 
 	void CustomCookieJar::Load (const QByteArray& data)
 	{
-		QList<QByteArray> spcookies = data.split ('\n');
-
 		QList<QNetworkCookie> cookies, filteredCookies;
-		for (const auto& ba : spcookies)
-			cookies += QNetworkCookie::parseCookies (ba);
+		for (const auto& ba : data.split ('\n'))
+			cookies << QNetworkCookie::parseCookies (ba);
 
+		const auto& now = QDateTime::currentDateTime ();
 		for (const auto& cookie : cookies)
-			if (!(FilterTrackingCookies_ &&
-						cookie.name ().startsWith ("__utm")))
-				filteredCookies << cookie;
+		{
+			if (FilterTrackingCookies_ &&
+					cookie.name ().startsWith ("__utm"))
+				continue;
+
+			if (cookie.expirationDate () < now)
+				continue;
+
+			filteredCookies << cookie;
+		}
 		setAllCookies (filteredCookies);
 	}
 
