@@ -1,20 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<scpd xmlns="urn:schemas-upnp-org:service-1-0">
+<scpd xmlns="urn:schemas-upnp-org:service-1-0" configId="0">
 	<specVersion>
 		<major>1</major>
-		<minor>0</minor>
+		<minor>1</minor>
 	</specVersion>
 	<actionList>
-		<action>
-			<name>GetSystemUpdateID</name>
-			<argumentList>
-				<argument>
-					<name>Id</name>
-					<direction>out</direction>
-					<relatedStateVariable>SystemUpdateID</relatedStateVariable>
-				</argument>
-			</argumentList>
-		</action>
 		<action>
 			<name>GetSearchCapabilities</name>
 			<argumentList>
@@ -32,6 +22,36 @@
 					<name>SortCaps</name>
 					<direction>out</direction>
 					<relatedStateVariable>SortCapabilities</relatedStateVariable>
+				</argument>
+			</argumentList>
+		</action>
+		<action>
+			<name>GetFeatureList</name>
+			<argumentList>
+				<argument>
+					<name>FeatureList</name>
+					<direction>out</direction>
+					<relatedStateVariable>FeatureList</relatedStateVariable>
+				</argument>
+			</argumentList>
+		</action>
+		<action>
+			<name>GetSystemUpdateID</name>
+			<argumentList>
+				<argument>
+					<name>Id</name>
+					<direction>out</direction>
+					<relatedStateVariable>SystemUpdateID</relatedStateVariable>
+				</argument>
+			</argumentList>
+		</action>
+		<action>
+			<name>GetServiceResetToken</name>
+			<argumentList>
+				<argument>
+					<name>ResetToken</name>
+					<direction>out</direction>
+					<relatedStateVariable>ServiceResetToken</relatedStateVariable>
 				</argument>
 			</argumentList>
 		</action>
@@ -90,57 +110,30 @@
 				</argument>
 			</argumentList>
 		</action>
-		<action>
-			<name>X_GetFeatureList</name>
-			<argumentList>
-				<argument>
-					<name>FeatureList</name>
-					<direction>out</direction>
-					<relatedStateVariable>A_ARG_TYPE_Featurelist</relatedStateVariable>
-				</argument>
-			</argumentList>
-		</action>
-		<action>
-			<name>X_SetBookmark</name>
-			<argumentList>
-				<argument>
-					<name>CategoryType</name>
-					<direction>in</direction>
-					<relatedStateVariable>A_ARG_TYPE_CategoryType</relatedStateVariable>
-				</argument>
-				<argument>
-					<name>RID</name>
-					<direction>in</direction>
-					<relatedStateVariable>A_ARG_TYPE_RID</relatedStateVariable>
-				</argument>
-				<argument>
-					<name>ObjectID</name>
-					<direction>in</direction>
-					<relatedStateVariable>A_ARG_TYPE_ObjectID</relatedStateVariable>
-				</argument>
-				<argument>
-					<name>PosSecond</name>
-					<direction>in</direction>
-					<relatedStateVariable>A_ARG_TYPE_PosSec</relatedStateVariable>
-				</argument>
-			</argumentList>
-		</action>
 	</actionList>
 	<serviceStateTable>
 		<stateVariable sendEvents="no">
-			<name>A_ARG_TYPE_SortCriteria</name>
+			<name>SearchCapabilities</name>
 			<dataType>string</dataType>
 		</stateVariable>
 		<stateVariable sendEvents="no">
-			<name>A_ARG_TYPE_UpdateID</name>
+			<name>SortCapabilities</name>
+			<dataType>string</dataType>
+		</stateVariable>
+		<stateVariable sendEvents="yes">
+			<name>SystemUpdateID</name>
 			<dataType>ui4</dataType>
 		</stateVariable>
 		<stateVariable sendEvents="no">
-			<name>A_ARG_TYPE_SearchCriteria</name>
+			<name>ServiceResetToken</name>
 			<dataType>string</dataType>
 		</stateVariable>
 		<stateVariable sendEvents="no">
-			<name>A_ARG_TYPE_Filter</name>
+			<name>FeatureList</name>
+			<dataType>string</dataType>
+		</stateVariable>
+		<stateVariable sendEvents="no">
+			<name>A_ARG_TYPE_ObjectID</name>
 			<dataType>string</dataType>
 		</stateVariable>
 		<stateVariable sendEvents="no">
@@ -148,60 +141,32 @@
 			<dataType>string</dataType>
 		</stateVariable>
 		<stateVariable sendEvents="no">
-			<name>A_ARG_TYPE_Index</name>
-			<dataType>ui4</dataType>
-		</stateVariable>
-		<stateVariable sendEvents="no">
-			<name>A_ARG_TYPE_ObjectID</name>
-			<dataType>string</dataType>
-		</stateVariable>
-		<stateVariable sendEvents="no">
-			<name>SortCapabilities</name>
-			<dataType>string</dataType>
-		</stateVariable>
-		<stateVariable sendEvents="no">
-			<name>SearchCapabilities</name>
-			<dataType>string</dataType>
-		</stateVariable>
-		<stateVariable sendEvents="no">
-			<name>A_ARG_TYPE_Count</name>
-			<dataType>ui4</dataType>
-		</stateVariable>
-		<stateVariable sendEvents="no">
-			<name>A_ARG_TYPE_BrowseFlag</name>
+			<name>A_ARG_TYPE_BrowseFlag</name> 
 			<dataType>string</dataType>
 			<allowedValueList>
 				<allowedValue>BrowseMetadata</allowedValue>
 				<allowedValue>BrowseDirectChildren</allowedValue>
 			</allowedValueList>
 		</stateVariable>
-		<stateVariable sendEvents="yes">
-			<name>SystemUpdateID</name>
-			<dataType>ui4</dataType>
-		</stateVariable>
-		<stateVariable sendEvents="no">
-			<name>A_ARG_TYPE_BrowseLetter</name>
+		<stateVariable sendEvents="no"> 
+			<name>A_ARG_TYPE_Filter</name>
 			<dataType>string</dataType>
 		</stateVariable>
 		<stateVariable sendEvents="no">
-			<name>A_ARG_TYPE_CategoryType</name>
-			<dataType>ui4</dataType>
-			<defaultValue />
-		</stateVariable>
-		<stateVariable sendEvents="no">
-			<name>A_ARG_TYPE_RID</name>
-			<dataType>ui4</dataType>
-			<defaultValue />
-		</stateVariable>
-		<stateVariable sendEvents="no">
-			<name>A_ARG_TYPE_PosSec</name>
-			<dataType>ui4</dataType>
-			<defaultValue />
-		</stateVariable>
-		<stateVariable sendEvents="no">
-			<name>A_ARG_TYPE_Featurelist</name>
+			<name>A_ARG_TYPE_SortCriteria</name> 
 			<dataType>string</dataType>
-			<defaultValue />
+		</stateVariable>
+		<stateVariable sendEvents="no">
+			<name>A_ARG_TYPE_Index</name>
+			<dataType>ui4</dataType>
+		</stateVariable>
+		<stateVariable sendEvents="no">
+			<name>A_ARG_TYPE_Count</name> 
+			<dataType>ui4</dataType>
+		</stateVariable>
+		<stateVariable sendEvents="no">
+			<name>A_ARG_TYPE_UpdateID</name> 
+			<dataType>ui4</dataType>
 		</stateVariable>
 	</serviceStateTable>
 </scpd>

@@ -17,7 +17,6 @@ include_directories (
 	)
 set (SRCS
 	dlniwe.cpp
-	contentdirectoryservice.cpp
 	)
 set (RESOURCES dlniweresources.qrc)
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})

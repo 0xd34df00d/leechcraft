@@ -32,6 +32,17 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 
+namespace Herqq
+{
+namespace Upnp
+{
+namespace Av
+{
+	class HMediaServerDeviceConfiguration;
+}
+}
+}
+
 namespace LeechCraft
 {
 namespace DLNiwe
@@ -49,6 +60,8 @@ namespace DLNiwe
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+	private:
+		void GetMediaServerConfig (Herqq::Upnp::Av::HMediaServerDeviceConfiguration*) const;
 	};
 }
 }

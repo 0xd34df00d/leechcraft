@@ -35,37 +35,21 @@
 #include <HUpnpCore/HDeviceInfo>
 #include <HUpnpCore/HServerDevice>
 #include <HUpnpCore/HServerService>
+#include <HUpnpAv/HAvDeviceModelCreator>
+#include <HUpnpAv/HMediaServerDeviceConfiguration>
+#include <HUpnpAv/HContentDirectoryServiceConfiguration>
+#include <HUpnpAv/HCdsDataSource>
+#include <HUpnpAv/HFileSystemDataSource>
+#include <HUpnpAv/HFileSystemDataSourceConfiguration>
+#include <HUpnpAv/HRootDir>
 #include <util/sys/paths.h>
-#include "contentdirectoryservice.h"
 
 namespace LeechCraft
 {
 namespace DLNiwe
 {
 	namespace HU = Herqq::Upnp;
-
-	namespace
-	{
-		class DLNADeviceModelCreator : public HU::HDeviceModelCreator
-		{
-		public:
-			HU::HServerDevice* createDevice (const HU::HDeviceInfo& info) const override
-			{
-				return nullptr;
-			}
-
-			HU::HServerService* createService (const HU::HServiceInfo& serviceInfo,
-					const HU::HDeviceInfo& parentDeviceInfo) const override
-			{
-				return new ContentDirectoryService ();
-			}
-		protected:
-			HClonable* newInstance () const override
-			{
-				return new DLNADeviceModelCreator ();
-			}
-		};
-	}
+	namespace HAV = Herqq::Upnp::Av;
 
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
@@ -80,8 +64,13 @@ namespace DLNiwe
 		HU::HDeviceConfiguration devConf;
 		devConf.setPathToDeviceDescription (path);
 
+		HAV::HAvDeviceModelCreator avCreator;
+		HAV::HMediaServerDeviceConfiguration msConfig;
+		GetMediaServerConfig (&msConfig);
+		avCreator.setMediaServerConfiguration (msConfig);
+
 		HU::HDeviceHostConfiguration hostConf (devConf);
-		hostConf.setDeviceModelCreator (DLNADeviceModelCreator ());
+		hostConf.setDeviceModelCreator (avCreator);
 
 		auto host = new HU::HDeviceHost ();
 		if (!host->init (hostConf))
@@ -115,6 +104,23 @@ namespace DLNiwe
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	void Plugin::GetMediaServerConfig (HAV::HMediaServerDeviceConfiguration *msConfig) const
+	{
+		HAV::HFileSystemDataSourceConfiguration fsConfig;
+		fsConfig.addRootDir ({
+				{ "/home/d34df00d/storage/Serials" },
+				HAV::HRootDir::RecursiveScan,
+				HAV::HRootDir::WatchForChanges
+			});
+
+		auto fsSource = new HAV::HFileSystemDataSource (fsConfig);
+
+		HAV::HContentDirectoryServiceConfiguration cdsConfig;
+		cdsConfig.setDataSource (fsSource, true);
+
+		msConfig->setContentDirectoryConfiguration (cdsConfig);
 	}
 }
 }
