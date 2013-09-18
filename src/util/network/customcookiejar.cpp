@@ -79,6 +79,9 @@ namespace Util
 		QByteArray result;
 		for (const auto& cookie : cookies)
 		{
+			if (cookie.isSessionCookie ())
+				continue;
+
 			result += cookie.toRawForm ();
 			result += "\n";
 		}
