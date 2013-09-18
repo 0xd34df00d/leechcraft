@@ -31,6 +31,7 @@
 #include <memory>
 #include <QNetworkCookie>
 #include <QtDebug>
+#include <QDateTime>
 
 namespace LeechCraft
 {
@@ -111,11 +112,20 @@ namespace Util
 
 	void CustomCookieJar::CollectGarbage ()
 	{
-		QList<QNetworkCookie> cookies = allCookies ();
+		const auto& cookies = allCookies ();
 		QList<QNetworkCookie> result;
-		for (const auto& cookie : allCookies ())
-			if (!result.contains (cookie))
-				result << cookie;
+		const auto& now = QDateTime::currentDateTime ();
+		for (const auto& cookie : cookies)
+		{
+			if (!cookie.isSessionCookie () &&
+					cookie.expirationDate () < now)
+				continue;
+
+			if (result.contains (cookie))
+				continue;
+
+			result << cookie;
+		}
 		qDebug () << Q_FUNC_INFO << cookies.size () << result.size ();
 		setAllCookies (result);
 	}
