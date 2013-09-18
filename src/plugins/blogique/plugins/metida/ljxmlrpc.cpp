@@ -54,6 +54,7 @@ namespace Metida
 	, Account_ (acc)
 	, BitMaskForFriendsOnlyComments_ (0)
 	, MaxGetEventsCount_ (50)
+	, MaxGetEventsPerDayCount_ (200)
 	{
 	}
 
@@ -115,10 +116,62 @@ namespace Metida
 		GenerateChallenge ();
 	}
 
+	namespace
+	{
+		LJXmlRPC::DateDiff GetDateDiff (const QDateTime& beginDate, const QDateTime& endDate)
+		{
+			LJXmlRPC::DateDiff dateDiff;
+
+			if (qAbs (endDate.daysTo (QDateTime (QDate (endDate.date ().year (), 1, 1)))) >= endDate.date ().dayOfYear ())
+				dateDiff.Years_ << endDate.date ();
+			else
+			{
+				for (int i = 1; i < endDate.date ().month (); ++i)
+					dateDiff.Months_ << QDate (endDate.date ().year (), i, 1);
+				if (endDate.date ().daysInMonth () == endDate.date ().day ())
+					dateDiff.Months_ << endDate.date ();
+				else
+					for (int i = 1; i < endDate.date ().day (); ++i)
+						dateDiff.Days_ << QDate (endDate.date ().year (), endDate.date ().month (), i);
+			}
+
+			if (!dateDiff.Years_.contains (beginDate.date ()) &&
+					qAbs (beginDate.daysTo (QDateTime (QDate (beginDate.date ().year () + 1, 1, 1)))) >= beginDate.date ().daysInYear ())
+				dateDiff.Years_ << beginDate.date ();
+			else
+			{
+				for (int i = beginDate.date ().month () + 1; i <= 12; ++i)
+				{
+					const auto& date = QDate (beginDate.date ().year (), i, 1);
+					if (!dateDiff.Months_.contains (date))
+						dateDiff.Months_ << date;
+				}
+				for (int i = beginDate.date ().day (); i <= beginDate.date ().daysInMonth (); ++i)
+				{
+					const auto& dt = QDate (endDate.date ().year (), endDate.date ().month (), i);
+					if (!dateDiff.Days_.contains (dt))
+						dateDiff.Days_ << dt;
+				}
+			}
+
+			for (int i = beginDate.date ().year () + 1; i < endDate.date ().year (); ++i)
+				dateDiff.Years_ << QDate (i, 1, 1);
+
+			return dateDiff;
+		}
+	}
+
 	void LJXmlRPC::GetEventsWithFilter (const Filter& filter)
 	{
-		ApiCallQueue_ << [filter, this] (const QString& challenge)
-				{ BackupEventsRequest (0, filter, challenge); };
+		if (filter.CustomDate_)
+		{
+			DateDiff dd = GetDateDiff (filter.BeginDate_, filter.EndDate_);
+			ApiCallQueue_ << [filter, dd, this] (const QString&)
+					{ GetEventsByDate (QDate (), 0, dd); };
+		}
+		else
+			ApiCallQueue_ << [filter, this] (const QString& challenge)
+					{ BackupEventsRequest (0, filter, challenge); };
 		GenerateChallenge ();
 	}
 
@@ -136,10 +189,11 @@ namespace Metida
 		GenerateChallenge ();
 	}
 
-	void LJXmlRPC::GetEventsByDate (const QDate& date)
+	void LJXmlRPC::GetEventsByDate (const QDate& date, int skip,
+			const DateDiff& dd, DatePart datePart)
 	{
-		ApiCallQueue_ << [date, this] (const QString& challenge)
-				{ GetEventsByDateRequest (date, challenge); };
+		ApiCallQueue_ << [date, skip, dd, datePart, this] (const QString& challenge)
+				{ GetEventsByDateRequest (date, skip, dd, datePart, challenge); };
 		GenerateChallenge ();
 	}
 
@@ -768,7 +822,8 @@ namespace Metida
 				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
-	void LJXmlRPC::BackupEventsRequest (int skip, const Filter& filter, const QString& challenge)
+	void LJXmlRPC::BackupEventsRequest (int skip, const Filter& filter,
+			const QString& challenge)
 	{
 		QDomDocument document ("BackupEventsRequest");
 		auto result = GetStartPart ("LJ.XMLRPC.getevents", document);
@@ -779,22 +834,49 @@ namespace Metida
 		element.appendChild (GetSimpleMemberElement ("noprops", "boolean",
 				"true", document));
 		element.appendChild (GetSimpleMemberElement ("selecttype", "string",
-				"syncitems", document));
-// 		element.appendChild (GetSimpleMemberElement ("howmany", "int",
-// 				QString::number (MaxGetEventsCount_), document));
+				"before", document));
+		element.appendChild (GetSimpleMemberElement ("before", "string",
+				QDateTime::currentDateTime ().toString ("yyyy-mm-dd hh:MM:ss"),
+				document));
+		element.appendChild (GetSimpleMemberElement ("howmany", "int",
+				QString::number (MaxGetEventsCount_), document));
 		element.appendChild (GetSimpleMemberElement ("skip", "int",
 				QString::number (skip), document));
-		element.appendChild (GetSimpleMemberElement ("lastsync", "string",
-				filter.BeginDate_.toString ("yyyy-MM-dd hh:mm:ss"),
-				document));
 		element.appendChild (GetSimpleMemberElement ("usejournal", "string",
 				Account_->GetOurLogin (), document));
+		//TODO
+// 		DateDiff dateDiff = dd;
+// 		if (dateDiff.Days_.isEmpty () &&
+// 				dateDiff.Months_.isEmpty () &&
+// 				dateDiff.Years_.isEmpty ())
+// 			dateDiff = GetDateDiff (filter.BeginDate_, filter.EndDate_);
+//
+// 		if (!dateDiff.Years_.isEmpty ())
+// 		{
+// 			int year = dateDiff.Years_.takeFirst ().year ();
+// 			element.appendChild (GetSimpleMemberElement ("year", "int",
+// 					QString::number (year), document));
+// 		}
+// 		else if (!dateDiff.Months_.isEmpty ())
+// 		{
+// 			int month = dateDiff.Months_.takeFirst ().month ();
+// 			element.appendChild (GetSimpleMemberElement ("month", "int",
+// 					QString::number (month), document));
+// 		}
+// 		else if (!dateDiff.Days_.isEmpty ())
+// 		{
+// 			int day = dateDiff.Days_.takeFirst ().day ();
+// 			element.appendChild (GetSimpleMemberElement ("day", "int",
+// 					QString::number (day), document));
+// 		}
+
 
 		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
 				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
 				document.toByteArray ());
 		Reply2Skip_ [reply] = skip;
 		Reply2Filter_ [reply] = filter;
+// 		Reply2DateDiff_ [reply] = dateDiff;
 
 		connect (reply,
 				SIGNAL (finished ()),
@@ -866,7 +948,8 @@ namespace Metida
 				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
-	void LJXmlRPC::GetEventsByDateRequest (const QDate& date, const QString& challenge)
+	void LJXmlRPC::GetEventsByDateRequest (const QDate& date, int skip,
+			const DateDiff& dateDiff, DatePart datePart, const QString& challenge)
 	{
 		QDomDocument document ("GetLastEventsRequest");
 		auto result = GetStartPart ("LJ.XMLRPC.getevents", document);
@@ -876,12 +959,49 @@ namespace Metida
 
 		element.appendChild (GetSimpleMemberElement ("selecttype", "string",
 				"day", document));
-		element.appendChild (GetSimpleMemberElement ("year", "int",
-				QString::number (date.year ()), document));
-		element.appendChild (GetSimpleMemberElement ("month", "int",
-				QString::number (date.month ()), document));
-		element.appendChild (GetSimpleMemberElement ("day", "int",
-				QString::number (date.day ()), document));
+		datePart = DatePart::FullDate;
+		QDate selectedDate = date;
+		DateDiff dd = dateDiff;
+		if (!dd.Years_.isEmpty ())
+		{
+			datePart = DatePart::Year;
+			selectedDate = dd.Years_.takeFirst ();
+		}
+		else if (!dd.Months_.isEmpty ())
+		{
+			datePart = DatePart::Month;
+			selectedDate = dd.Months_.takeFirst ();
+		}
+		else if (!dd.Days_.isEmpty ())
+		{
+			datePart = DatePart::Day;
+			selectedDate = dd.Days_.takeFirst ();
+		}
+
+		switch (datePart)
+		{
+		case DatePart::FullDate:
+		case DatePart::Day:
+			element.appendChild (GetSimpleMemberElement ("day", "int",
+					QString::number (selectedDate.day ()), document));
+			element.appendChild (GetSimpleMemberElement ("month", "int",
+					QString::number (selectedDate.month ()), document));
+			element.appendChild (GetSimpleMemberElement ("year", "int",
+					QString::number (selectedDate.year ()), document));
+			break;
+		case DatePart::Month:
+			element.appendChild (GetSimpleMemberElement ("month", "int",
+					QString::number (selectedDate.month ()), document));
+			element.appendChild (GetSimpleMemberElement ("year", "int",
+					QString::number (selectedDate.year ()), document));
+			break;
+		case DatePart::Year:
+			element.appendChild (GetSimpleMemberElement ("year", "int",
+					QString::number (selectedDate.year ()), document));
+			break;
+		}
+		element.appendChild (GetSimpleMemberElement ("skip", "int",
+				QString::number (skip), document));
 		element.appendChild (GetSimpleMemberElement ("usejournal", "string",
 				Account_->GetOurLogin (), document));
 
@@ -889,10 +1009,21 @@ namespace Metida
 				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
 						document.toByteArray ());
 
+		if (!dd.Days_.isEmpty () ||
+				!dd.Months_.isEmpty () ||
+				!dd.Years_.isEmpty ())
+		{
+			Reply2DateDiff_ [reply] = dd;
+			Reply2DatePart_ [reply] = datePart;
+		}
+
+		Reply2Skip_ [reply] = skip;
+		Reply2Date_ [reply] = date;
+
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
-				SLOT (handleGotEventsReplyFinished ()));
+				SLOT (handleGotEventsByDateReplyFinished ()));
 		connect (reply,
 				SIGNAL (error (QNetworkReply::NetworkError)),
 				this,
@@ -1404,8 +1535,6 @@ namespace Metida
 
 		if (!ApiCallQueue_.isEmpty ())
 			ApiCallQueue_.dequeue () (challenge.simplified ());
-		if (!ApiCallQueue_.isEmpty ())
-			GenerateChallenge ();
 	}
 
 	namespace
@@ -1684,21 +1813,17 @@ namespace Metida
 
 		const int skip = Reply2Skip_.take (reply);
 		const Filter filter = Reply2Filter_.take (reply);
-
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
 			const auto& eventsList = ParseFullEvents (document);
 			int count = eventsList.count ();
-			emit gotEvents2Backup (eventsList);
-
-			if (!eventsList.isEmpty ())
+//TODO
+			if (count)
 			{
 				ApiCallQueue_ << [skip, count, filter, this] (const QString& challenge)
 						{ BackupEventsRequest (skip + count , filter, challenge); };
 				GenerateChallenge ();
 			}
-			else
-				emit gettingEvents2BackupFinished ();
 			return;
 		}
 
@@ -1717,6 +1842,51 @@ namespace Metida
 		{
 			emit gotEvents (ParseFullEvents (document));
 			return;
+		}
+
+		ParseForError (content);
+	}
+
+	void LJXmlRPC::handleGotEventsByDateReplyFinished ()
+	{
+		QDomDocument document;
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		QByteArray content = CreateDomDocumentFromReply (reply, document);
+		if (content.isEmpty ())
+			return;
+
+		const int skip = Reply2Skip_.take (reply);
+		QDate dt = Reply2Date_.take (reply);
+		DateDiff dd;
+		DatePart dp = DatePart::FullDate;
+		if (Reply2DateDiff_.contains (reply))
+		{
+			dd = Reply2DateDiff_.take (reply);
+			dp = Reply2DatePart_.take (reply);
+		}
+
+		if (document.elementsByTagName ("fault").isEmpty ())
+		{
+			auto events = ParseFullEvents (document);
+			const int count = events.count ();
+			if (count)
+				qDebug () << skip + count << events.first ().Subject_ << events.first().DateTime_
+				<< events.last ().Subject_ << events.last().DateTime_;
+			if (count)
+				ApiCallQueue_ << [skip, count, dt, dd, dp, this] (const QString&)
+						{ GetEventsByDate (dt, skip + count, dd, dp); };
+			else if (!dd.Days_.isEmpty () ||
+					!dd.Months_.isEmpty () ||
+					!dd.Years_.isEmpty ())
+				ApiCallQueue_ << [dd, this] (const QString&)
+						{ GetEventsByDate (QDate (), 0, dd, DatePart::FullDate); };
+			else
+			{
+				//TODO finished;
+			}
+			GenerateChallenge ();
+			return;
+
 		}
 
 		ParseForError (content);

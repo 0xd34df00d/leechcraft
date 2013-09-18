@@ -78,9 +78,14 @@ namespace Blogique
 
 	struct Filter
 	{
+		bool CustomDate_;
 		QDateTime BeginDate_;
 		QDateTime EndDate_;
 		QStringList Tags_;
+
+		Filter ()
+		: CustomDate_ (false)
+		{}
 	};
 	/** @brief Interface representing a single account.
 	 *

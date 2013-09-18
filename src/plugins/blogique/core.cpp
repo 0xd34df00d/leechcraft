@@ -429,7 +429,6 @@ namespace Blogique
 		wizard->setAttribute (Qt::WA_DeleteOnClose);
 		wizard->setWindowTitle (tr ("Export blog"));
 		wizard->show ();
-
 	}
 
 }

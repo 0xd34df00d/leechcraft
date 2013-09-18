@@ -64,7 +64,8 @@ namespace Blogique
 
 	public:
 		explicit ExportWizard (QWidget *parent = 0);
-		bool validateCurrentPage () override;
+		bool validateCurrentPage ();
+		void reject ();
 	private:
 		void FillTags (IAccount *acc);
 

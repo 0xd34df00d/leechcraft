@@ -140,12 +140,36 @@ namespace Blogique
 			}
 			return true;
 		case ContentPage:
+			if (Ui_.WithDateRange_->isChecked () &&
+					(Ui_.FromDate_->dateTime () > Ui_.TillDate_->dateTime ()))
+			{
+				QMessageBox::warning (this,
+						"LeechCraft",
+						tr ("Invalid date range"));
+				return false;
+			}
+
+			if (Ui_.SelectedTags_->isChecked () &&
+					!SelectedTagsModel_->rowCount ())
+			{
+				QMessageBox::warning (this,
+						"LeechCraft",
+						tr ("At least one tag should be selected"));
+				return false;
+			}
+			return true;
 		case OverviewPage:
 		case ExportPage:
 			return true;
 		}
 
 		return true;
+	}
+
+	void ExportWizard::reject ()
+	{
+		//TODO reject export
+		QDialog::reject ();
 	}
 
 	void ExportWizard::handleAccountChanged (int index)
@@ -164,6 +188,8 @@ namespace Blogique
 			case WelcomPage:
 			case FormatPage:
 			case ContentPage:
+				Ui_.FromDate_->setDate (QDate::fromString ("01.01.1970", "dd.MM.yyyy"));
+				Ui_.TillDate_->setDate (QDate::currentDate ());
 			default:
 				return;
 			case OverviewPage:
@@ -192,18 +218,9 @@ namespace Blogique
 					return;
 
 				Filter filter;
-				if (Ui_.AllEntries_->isChecked ())
-				{
-					filter.BeginDate_ = QDateTime::fromString ("01.01.1970 00:00",
-							"dd.mm.yyyy hh:MM");
-					filter.EndDate_ = QDateTime::currentDateTime ();
-				}
-				else
-				{
-					filter.BeginDate_ = Ui_.FromDate_->dateTime ();
-					filter.EndDate_ = Ui_.TillDate_->dateTime ();
-				}
-
+				filter.CustomDate_ = Ui_.WithDateRange_->isChecked ();
+				filter.BeginDate_ = Ui_.FromDate_->dateTime ();
+				filter.EndDate_ = Ui_.TillDate_->dateTime ();
 				filter.Tags_ = selectedTags;
 
 				Id2Account_ [Ui_.AccountSelection_->currentIndex ()]->GetEntriesWithFilter (filter);

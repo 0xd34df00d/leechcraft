@@ -6,7 +6,7 @@
  *
  * Permission is hereby granted, free of charge, to any person or organization
  * obtaining a copy of the software and accompanying documentation covered by
- * this license (the "Software") to use, reproduce, display, distribute,
+ * this license (the "Software") to use, reproduce, display, distribute
  * execute, and transmit the Software, and to prepare derivative works of the
  * Software, and to permit third-parties to whom the Software is furnished to
  * do so, all subject to the following:
@@ -57,9 +57,11 @@ namespace Metida
 
 		const int BitMaskForFriendsOnlyComments_;
 		const int MaxGetEventsCount_;
+		const int MaxGetEventsPerDayCount_;
 
 		QHash<QNetworkReply*, int> Reply2Skip_;
 		QHash<QNetworkReply*, Filter> Reply2Filter_;
+		QHash<QNetworkReply*, QDate> Reply2Date_;
 
 		enum class RequestType
 		{
@@ -68,8 +70,28 @@ namespace Metida
 			RecentComments,
 			Tags
 		};
+
+		enum class DatePart
+		{
+			FullDate,
+			Day,
+			Month,
+			Year
+		};
+		QHash<QNetworkReply*, DatePart> Reply2DatePart_;
+
 		QHash<QNetworkReply*, RequestType> Reply2RequestType_;
 		QMap<QPair<int, int>, LJCommentEntry> Id2CommentEntry_;
+
+	public:
+		struct DateDiff
+		{
+			QList<QDate> Years_;
+			QList<QDate> Months_;
+			QList<QDate> Days_;
+		};
+	private:
+		QHash<QNetworkReply*, DateDiff> Reply2DateDiff_;
 
 	public:
 		LJXmlRPC (LJAccount *acc, QObject *parent = 0);
@@ -90,7 +112,8 @@ namespace Metida
 		void GetEventsWithFilter (const Filter& filter);
 		void GetLastEvents (int count);
 		void GetChangedEvents (const QDateTime& dt);
-		void GetEventsByDate (const QDate& date);
+		void GetEventsByDate (const QDate& date, int skip = 0,
+				const DateDiff& dd = DateDiff (), DatePart datePart = DatePart::FullDate);
 
 		void RemoveEvent (const LJEvent& event);
 		void UpdateEvent (const LJEvent& event);
@@ -126,7 +149,9 @@ namespace Metida
 
 		void GetLastEventsRequest (int count, const QString& challenge);
 		void GetChangedEventsRequest (const QDateTime& dt, const QString& challenge);
-		void GetEventsByDateRequest (const QDate& date, const QString& challenge);
+		void GetEventsByDateRequest (const QDate& date, int skip = 0,
+				const DateDiff& dd = DateDiff (), DatePart datePart = DatePart::FullDate,
+				const QString& challenge = QString ());
 		void GetParticularEventRequest (int id, RequestType prt,
 				const QString& challenge);
 		void GetMultipleEventsRequest (const QStringList& ids, RequestType rt,
@@ -156,6 +181,7 @@ namespace Metida
 		void handlePostEventReplyFinished ();
 		void handleBackupEventsReplyFinished ();
 		void handleGotEventsReplyFinished ();
+		void handleGotEventsByDateReplyFinished ();
 		void handleRemoveEventReplyFinished ();
 		void handleUpdateEventReplyFinished ();
 		void handleGetParticularEventReplyFinished ();

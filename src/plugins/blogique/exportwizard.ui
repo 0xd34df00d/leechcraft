@@ -219,6 +219,22 @@ You can specify all export parameters in this wizard.</string>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
+           <property name="date">
+            <date>
+             <year>1970</year>
+             <month>1</month>
+             <day>1</day>
+            </date>
+           </property>
+           <property name="currentSection">
+            <enum>QDateTimeEdit::DaySection</enum>
+           </property>
+           <property name="displayFormat">
+            <string>dd.MM.yyyy</string>
+           </property>
+           <property name="calendarPopup">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
          <item>
@@ -241,6 +257,12 @@ You can specify all export parameters in this wizard.</string>
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
+           </property>
+           <property name="displayFormat">
+            <string>dd.MM.yyyy</string>
+           </property>
+           <property name="calendarPopup">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -293,7 +315,9 @@ You can specify all export parameters in this wizard.</string>
           <string/>
          </property>
          <property name="icon">
-          <iconset theme="go-previous"/>
+          <iconset theme="go-previous">
+           <normaloff/>
+          </iconset>
          </property>
         </widget>
        </item>
@@ -306,7 +330,9 @@ You can specify all export parameters in this wizard.</string>
           <string/>
          </property>
          <property name="icon">
-          <iconset theme="go-next"/>
+          <iconset theme="go-next">
+           <normaloff/>
+          </iconset>
          </property>
         </widget>
        </item>
