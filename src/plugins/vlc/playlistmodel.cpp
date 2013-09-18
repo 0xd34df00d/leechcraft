@@ -166,7 +166,7 @@ namespace vlc
 		QList<QUrl> urls;
 		for (int i = 0; i < indexes.size (); i++)
 			if (indexes [i].column () == 0)
-				urls << QUrl (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, indexes[i].row ()), libvlc_meta_URL));
+				urls << QUrl (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, indexes [i].row ()), libvlc_meta_URL));
 		
 		result->setUrls (urls);
 		result->setColorData (QVariant ("vtyulb"));

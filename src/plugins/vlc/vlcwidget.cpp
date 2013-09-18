@@ -38,7 +38,6 @@
 #include <QKeyEvent>
 #include <QTimer>
 #include <QTime>
-#include <QSplitter>
 #include <QToolBar>
 #include <QMenu>
 #include <QSizePolicy>
@@ -54,8 +53,8 @@
 #include <QCursor>
 #include <QDropEvent>
 #include <QCoreApplication>
-#include <QSettings>
 #include <QDockWidget>
+#include <QSettings>
 #include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/imwproxy.h>
@@ -204,12 +203,10 @@ namespace vlc
 	void VlcWidget::RestoreSettings ()
 	{
 		Settings_ = new QSettings (QCoreApplication::organizationName (), QCoreApplication::applicationName () + "_Vlc");
-		//MainArea_->restoreState (Settings_->value ("PlaylistGeometry").toByteArray ());
 	}
 
 	void VlcWidget::SaveSettings ()
 	{
-		//Settings_->setValue ("PlaylistGeometry", QVariant (MainArea_->saveState ()));
 		delete Settings_;
 	}
 

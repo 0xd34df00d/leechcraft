@@ -44,7 +44,6 @@ class QLabel;
 class QTimer;
 class QToolButton;
 class QResizeEvent;
-class QSplitter;
 class QSettings;
 class QDockWidget;
 

@@ -30,7 +30,6 @@
 #include <interfaces/core/icoreproxy.h>
 #include <QIcon>
 #include <QShortcut>
-#include <boost/graph/graph_concepts.hpp>
 #include <util/shortcuts/shortcutmanager.h>
 #include "vlc.h"
 
@@ -152,7 +151,7 @@ namespace vlc
 				SIGNAL (removeTab (QWidget*)));
 		
 		connect (widget,
-				SIGNAL(deleteMe (QWidget*)),
+				SIGNAL (deleteMe (QWidget*)),
 				this,
 				SLOT (deleteDeleted (QWidget*)));
 	}
