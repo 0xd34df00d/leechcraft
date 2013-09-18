@@ -182,7 +182,6 @@ namespace Blogique
 
 	void ExportWizard::handleCurrentIdChanged (int id)
 	{
-		QStringList selectedTags;
 		switch (id)
 		{
 			case WelcomPage:
@@ -201,7 +200,7 @@ namespace Blogique
 					tr ("Only between %1 and %2")
 							.arg (Ui_.FromDate_->text ())
 							.arg (Ui_.TillDate_->text ()));
-
+				QStringList selectedTags;
 				for (int i = 0; Ui_.SelectedTags_->isChecked () && i < SelectedTagsModel_->rowCount ();
 						++i)
 					 selectedTags << SelectedTagsModel_->index (i, 0).data ().toString ();
@@ -221,7 +220,11 @@ namespace Blogique
 				filter.CustomDate_ = Ui_.WithDateRange_->isChecked ();
 				filter.BeginDate_ = Ui_.FromDate_->dateTime ();
 				filter.EndDate_ = Ui_.TillDate_->dateTime ();
-				filter.Tags_ = selectedTags;
+				QStringList selectedTags;
+				for (int i = 0; Ui_.SelectedTags_->isChecked () && i < SelectedTagsModel_->rowCount ();
+					 ++i)
+					 selectedTags << SelectedTagsModel_->index (i, 0).data ().toString ();
+				filter.Tags_ = Ui_.SelectedTags_->isChecked () ? selectedTags : QStringList ();
 
 				Id2Account_ [Ui_.AccountSelection_->currentIndex ()]->GetEntriesWithFilter (filter);
 				break;
