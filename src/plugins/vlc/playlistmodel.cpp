@@ -197,7 +197,7 @@ namespace vlc
 	
 	void PlaylistModel::AddUrl (const QUrl& url)
 	{
-		Parent_->AddUrl (url);
+		Parent_->AddUrl (url, false);
 	}
 }
 }

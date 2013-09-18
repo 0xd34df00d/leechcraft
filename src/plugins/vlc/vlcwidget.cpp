@@ -55,6 +55,7 @@
 #include <QCoreApplication>
 #include <QDockWidget>
 #include <QSettings>
+#include <QStringList>
 #include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/imwproxy.h>
@@ -85,6 +86,7 @@ namespace vlc
 	, Parent_ (parent)
 	, Manager_ (manager)
 	, AllowFullScreenPanel_ (false)
+	, Autostart_ (true)
 	{
 		VlcMainWidget_ = new SignalledWidget;
 		VlcMainWidget_->SetBackGroundColor (new QColor ("black"));
@@ -185,6 +187,11 @@ namespace vlc
 				this,
 				SLOT (disableScreenSaver ()));
 		
+		connect (PlaylistWidget_,
+				SIGNAL (savePlaylist (QStringList)),
+				this,
+				SLOT (savePlaylist (QStringList)));
+		
 		InitNavigations ();
 		InitVolumeActions ();
 		InitRewindActions ();
@@ -195,6 +202,7 @@ namespace vlc
 	VlcWidget::~VlcWidget ()
 	{
 		VlcPlayer_->stop ();
+		delete PlaylistWidget_;
 		delete VlcPlayer_;
 		SaveSettings ();
 		emit deleteMe (this);
@@ -203,13 +211,29 @@ namespace vlc
 	void VlcWidget::RestoreSettings ()
 	{
 		Settings_ = new QSettings (QCoreApplication::organizationName (), QCoreApplication::applicationName () + "_Vlc");
+		RestorePlaylist ();
 	}
-
+	
 	void VlcWidget::SaveSettings ()
 	{
 		delete Settings_;
 	}
+	
+	void VlcWidget::savePlaylist (const QStringList& list)
+	{
+		qWarning () << list;
+		Settings_->setValue ("Playlist", QVariant (list));
+	}
 
+	void VlcWidget::RestorePlaylist ()
+	{
+		QStringList playlist = Settings_->value ("Playlist").toStringList ();
+		for (int i = 0; i < playlist.size () - 1; i++)
+			PlaylistWidget_->AddUrl (QUrl::fromEncoded (playlist [i].toUtf8 ()), false);
+		
+		PlaylistWidget_->SetCurrentMedia (playlist [playlist.size () - 1].toInt ());
+	}
+	
 	QObject* VlcWidget::ParentMultiTabs ()
 	{
 		return Parent_;
@@ -234,7 +258,7 @@ namespace vlc
 		if (QFile::exists (file))
 		{
 			PlaylistWidget_->Clear ();
-			PlaylistWidget_->AddUrl (QUrl::fromLocalFile (file));
+			PlaylistWidget_->AddUrl (QUrl::fromLocalFile (file), Autostart_);
 		}
 	}
 	
@@ -247,7 +271,7 @@ namespace vlc
 		if (QFile::exists (folder))
 		{
 			PlaylistWidget_->Clear ();
-			PlaylistWidget_->AddUrl (QUrl ("directory://" + folder));
+			PlaylistWidget_->AddUrl (QUrl ("directory://" + folder), Autostart_);
 		}
 	}
 	
@@ -260,7 +284,7 @@ namespace vlc
 		if (QFile::exists (folder))
 		{
 			PlaylistWidget_->Clear ();
-			PlaylistWidget_->AddUrl (QUrl ("dvdsimple://" + folder));
+			PlaylistWidget_->AddUrl (QUrl ("dvdsimple://" + folder), Autostart_);
 		}
 	}
 	
@@ -273,7 +297,7 @@ namespace vlc
 		if (QFile::exists (folder))
 		{
 			PlaylistWidget_->Clear ();
-			PlaylistWidget_->AddUrl (QUrl ("dvd://" + folder));
+			PlaylistWidget_->AddUrl (QUrl ("dvd://" + folder), Autostart_);
 		}
 	}
 
@@ -284,7 +308,7 @@ namespace vlc
 		if (!url.isEmpty ())
 		{
 			PlaylistWidget_->Clear ();
-			PlaylistWidget_->AddUrl (QUrl (url));
+			PlaylistWidget_->AddUrl (QUrl (url), Autostart_);
 		}
 	}
 	
@@ -882,7 +906,7 @@ namespace vlc
 		else
 		{
 			PlaylistWidget_->Clear ();
-			PlaylistWidget_->AddUrl (main);
+			PlaylistWidget_->AddUrl (main, Autostart_);
 		}
 	}
 	

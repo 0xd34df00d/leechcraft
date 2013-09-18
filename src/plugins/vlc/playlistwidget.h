@@ -41,6 +41,7 @@ struct libvlc_media_t;
 
 class QAction;
 class QStandardItem;
+class QStringList;
 
 namespace LeechCraft
 {
@@ -66,7 +67,8 @@ namespace vlc
 		explicit PlaylistWidget (QIcon playIcon, QWidget *parent = 0);
 		~PlaylistWidget ();
 		
-		void AddUrl (const QUrl&);
+		void SetCurrentMedia (int);
+		void AddUrl (const QUrl&, bool start);
 		bool IsPlaying () const;
 		void Init (libvlc_instance_t *instance, libvlc_media_player_t *player);
 		void Clear ();
@@ -80,6 +82,9 @@ namespace vlc
 		void updateInterface ();
 		void createMenu (QPoint);
 		void deleteRequested (QAction*);
+		
+	signals:
+		void savePlaylist (QStringList);
 	};
 }
 }

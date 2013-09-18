@@ -46,6 +46,7 @@ class QToolButton;
 class QResizeEvent;
 class QSettings;
 class QDockWidget;
+class QStringList;
 
 namespace LeechCraft
 {
@@ -113,6 +114,8 @@ namespace vlc
 		QMenu *ContextMenu_;
 		QSettings *Settings_;
 		
+		bool Autostart_;
+		
 		QTimer *DisableScreenSaver_;
 		
 	public:
@@ -140,6 +143,7 @@ namespace vlc
 		
 		void SaveSettings ();
 		void RestoreSettings ();
+		void RestorePlaylist ();
 		
 	private slots:
 		void addFile ();
@@ -172,6 +176,8 @@ namespace vlc
 		void ForbidPanel ();
 		
 		void disableScreenSaver ();
+		
+		void savePlaylist (const QStringList&);
 		
 	signals:
 		void deleteMe (QWidget*);
