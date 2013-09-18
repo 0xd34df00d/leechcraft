@@ -43,12 +43,19 @@ namespace vlc
 {
 	class PlaylistWidget;
 	
+	enum Columns
+	{
+		ColumnName,
+		ColumnDuration,
+		ColumnMax
+	};
+	
 	class PlaylistModel : public QStandardItemModel
 	{
 		Q_OBJECT
 		
 		libvlc_media_list_t *Playlist_;
-		QVector<QStandardItem*> Items_ [2];
+		QVector<QStandardItem*> Items_ [ColumnMax];
 		PlaylistWidget *Parent_;
 	
 	public:
@@ -61,6 +68,7 @@ namespace vlc
 		Qt::DropActions supportedDropActions () const;
 		
 		void AddUrl (const QUrl&);
+		inline QVector<QStandardItem*>* GetPublicItems () {return &Items_[ColumnName];};
 		
 	private:
 		libvlc_media_t* FindAndDelete (QUrl);

@@ -141,7 +141,7 @@ namespace vlc
 	
 	void Plugin::TabOpenRequested (const QByteArray& tabClass) 
 	{
-		VlcWidget *widget = new VlcWidget (Manager_);
+		VlcWidget *widget = new VlcWidget (Proxy_, Manager_);
 		Tabs_.push_back (widget);
 		emit addNewTab ("VLC", widget);
 		emit raiseTab (widget);

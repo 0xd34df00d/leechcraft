@@ -32,6 +32,7 @@
 #include <QWidget>
 #include <QMap>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/core/icoreproxy.h>
 #include "vlcscrollbar.h"
 #include "soundwidget.h"
 #include "signalledwidget.h"
@@ -45,6 +46,7 @@ class QToolButton;
 class QResizeEvent;
 class QSplitter;
 class QSettings;
+class QDockWidget;
 
 namespace LeechCraft
 {
@@ -78,7 +80,7 @@ namespace vlc
 		QAction *Plus10Seconds_;
 		QAction *Minus10Seconds_;
 		QPoint LastMouseEvent_;
-		QSplitter *MainArea_;
+		QDockWidget *PlaylistDock_;
 		Util::ShortcutManager * const Manager_;
 		
 		QAction *NavigateLeft_;
@@ -115,7 +117,7 @@ namespace vlc
 		QTimer *DisableScreenSaver_;
 		
 	public:
-		explicit VlcWidget (Util::ShortcutManager *manager, QWidget *parent = 0);
+		explicit VlcWidget (ICoreProxy_ptr proxy, Util::ShortcutManager *manager, QWidget *parent = 0);
 		~VlcWidget();
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();

@@ -55,7 +55,10 @@
 #include <QDropEvent>
 #include <QCoreApplication>
 #include <QSettings>
+#include <QDockWidget>
 #include <util/shortcuts/shortcutmanager.h>
+#include <interfaces/core/irootwindowsmanager.h>
+#include <interfaces/imwproxy.h>
 #include "vlcwidget.h"
 #include "vlcplayer.h"
 
@@ -78,7 +81,7 @@ namespace vlc
 	const int PANEL_BOTTOM_MARGIN = 5;
 	const int PANEL_HEIGHT = 27;
 	
-	VlcWidget::VlcWidget (Util::ShortcutManager *manager, QWidget *parent)
+	VlcWidget::VlcWidget (ICoreProxy_ptr proxy, Util::ShortcutManager *manager, QWidget *parent)
 	: QWidget (parent)
 	, Parent_ (parent)
 	, Manager_ (manager)
@@ -86,15 +89,22 @@ namespace vlc
 	{
 		VlcMainWidget_ = new SignalledWidget;
 		VlcMainWidget_->SetBackGroundColor (new QColor ("black"));
-		PlaylistWidget_ = new PlaylistWidget;
-		
-		MainArea_ = new QSplitter (this);
-		MainArea_->addWidget (VlcMainWidget_);
-		MainArea_->addWidget (PlaylistWidget_);
+		PlaylistWidget_ = new PlaylistWidget (proxy->GetIcon ("media-playback-start"));
 		
 		QVBoxLayout *layout = new QVBoxLayout;
-		layout->addWidget(MainArea_);
+		layout->addWidget(VlcMainWidget_);
 		setLayout (layout);
+		
+		PlaylistDock_ = new QDockWidget (this);
+		PlaylistDock_->setFeatures (QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable);
+		PlaylistDock_->setAllowedAreas (Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+		
+		auto mw = proxy->GetRootWindowsManager ()->GetMWProxy (0);
+		mw->AddDockWidget (Qt::LeftDockWidgetArea, PlaylistDock_);
+		mw->AssociateDockWidget (PlaylistDock_, this);
+		mw->ToggleViewActionVisiblity (PlaylistDock_, false);
+		
+		PlaylistDock_->setWidget (PlaylistWidget_);
 		
 		VlcPlayer_ = new VlcPlayer (VlcMainWidget_);
 		QSizePolicy pol (QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -194,12 +204,12 @@ namespace vlc
 	void VlcWidget::RestoreSettings ()
 	{
 		Settings_ = new QSettings (QCoreApplication::organizationName (), QCoreApplication::applicationName () + "_Vlc");
-		MainArea_->restoreState (Settings_->value ("PlaylistGeometry").toByteArray ());
+		//MainArea_->restoreState (Settings_->value ("PlaylistGeometry").toByteArray ());
 	}
 
 	void VlcWidget::SaveSettings ()
 	{
-		Settings_->setValue ("PlaylistGeometry", QVariant (MainArea_->saveState ()));
+		//Settings_->setValue ("PlaylistGeometry", QVariant (MainArea_->saveState ()));
 		delete Settings_;
 	}
 

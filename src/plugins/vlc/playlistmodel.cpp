@@ -67,36 +67,36 @@ namespace vlc
 		setRowCount (libvlc_media_list_count (Playlist_));
 		if (libvlc_media_list_count (Playlist_) != Items_ [0].size ())
 		{
-			int cnt = Items_ [0].size ();
-			Items_ [0].resize (libvlc_media_list_count (Playlist_));
-			Items_ [1].resize (libvlc_media_list_count (Playlist_));
+			int cnt = Items_ [ColumnName].size ();
+			Items_ [ColumnName].resize (libvlc_media_list_count (Playlist_));
+			Items_ [ColumnDuration].resize (libvlc_media_list_count (Playlist_));
 			
 			for (int i = cnt; i < Items_ [0].size (); i++)
 			{
-				Items_ [0] [i] = new QStandardItem;
-				Items_ [0] [i]->setFlags (Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled);
-				Items_ [1] [i] = new QStandardItem;
-				Items_ [1] [i]->setFlags (Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled);
+				Items_ [ColumnName] [i] = new QStandardItem;
+				Items_ [ColumnName] [i]->setFlags (Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+				Items_ [ColumnDuration] [i] = new QStandardItem;
+				Items_ [ColumnDuration] [i]->setFlags (Qt::ItemIsDropEnabled | Qt::ItemIsEnabled);
 			}
 		}
 		
 		for (int i = 0; i < libvlc_media_list_count (Playlist_); i++)
 		{
 			libvlc_media_t *media = libvlc_media_list_item_at_index (Playlist_, i);
-			Items_ [0] [i]->setText (QString::fromUtf8 (libvlc_media_get_meta (media, libvlc_meta_Title)));
+			Items_ [ColumnName] [i]->setText (QString::fromUtf8 (libvlc_media_get_meta (media, libvlc_meta_Title)));
 			
 			if (!libvlc_media_is_parsed (media))
 				libvlc_media_parse (media);
 				
 			QTime time (0, 0);
 			time = time.addMSecs (libvlc_media_get_duration (media));
-			Items_ [1] [i]->setText (time.toString ("hh:mm:ss"));
+			Items_ [ColumnDuration] [i]->setText (time.toString ("hh:mm:ss"));
 		}
 		
 		for (int i = 0; i < libvlc_media_list_count (Playlist_); i++)
 		{
-			setItem (i, 0, Items_ [0] [i]);
-			setItem (i, 1, Items_ [1] [i]);
+			setItem (i, ColumnName, Items_ [ColumnName] [i]);
+			setItem (i, ColumnDuration, Items_ [ColumnDuration] [i]);
 		}
 	}
 	

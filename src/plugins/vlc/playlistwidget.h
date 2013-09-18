@@ -40,6 +40,7 @@ struct libvlc_media_list_t;
 struct libvlc_media_t;
 
 class QAction;
+class QStandardItem;
 
 namespace LeechCraft
 {
@@ -56,11 +57,13 @@ namespace vlc
 		libvlc_media_player_t *NativePlayer_;
 		libvlc_instance_t *Instance_;
 		
+		QStandardItem *LastPlayingItem_;
 		PlaylistModel *Model_;
 		QAction *DeleteAction_;
+		const QIcon PlayIcon_;
 	
 	public:
-		explicit PlaylistWidget (QWidget *parent = 0);
+		explicit PlaylistWidget (QIcon playIcon, QWidget *parent = 0);
 		~PlaylistWidget ();
 		
 		void AddUrl (const QUrl&);
@@ -70,7 +73,6 @@ namespace vlc
 		
 	protected:
 		void mouseDoubleClickEvent (QMouseEvent*);
-		void mousePressEvent (QMouseEvent*);
 		void resizeEvent (QResizeEvent*);
 		
 	private slots:

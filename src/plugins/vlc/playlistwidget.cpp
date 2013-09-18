@@ -41,6 +41,7 @@
 #include <QPainter>
 #include <QDebug>
 #include <QFontMetrics>
+#include <QStandardItem>
 #include <vlc/vlc.h>
 #include "playlistmodel.h"
 
@@ -48,14 +49,22 @@ namespace LeechCraft
 {
 namespace vlc
 {
-	PlaylistWidget::PlaylistWidget (QWidget *parent)
+	PlaylistWidget::PlaylistWidget (QIcon playIcon, QWidget *parent)
 	: QTreeView (parent)
+	, PlayIcon_ (playIcon)
+	, LastPlayingItem_ (nullptr)
 	{
 		setDragEnabled (true);
 		setDropIndicatorShown (true);
 		setAcceptDrops (true);
 		setBaseSize (0, 0);
 		setRootIsDecorated (false);
+		setContextMenuPolicy (Qt::CustomContextMenu);
+		
+		connect (this,
+				SIGNAL (customContextMenuRequested (QPoint)),
+				this,
+				SLOT (createMenu (QPoint)));
 	}
 	
 	PlaylistWidget::~PlaylistWidget ()
@@ -78,7 +87,7 @@ namespace vlc
 		setModel (Model_);
 		
 		QTimer *timer = new QTimer (this);
-		timer->setInterval (1000);
+		timer->setInterval (300);
 		connect (timer,
 				SIGNAL (timeout ()),
 				this,
@@ -129,15 +138,26 @@ namespace vlc
 	{
 		Model_->updateTable ();
 		int currentRow = libvlc_media_list_index_of_item (Playlist_, libvlc_media_player_get_media (NativePlayer_));
-		for (int i = 0; i < Model_->rowCount (); i++)
-			if (i != currentRow)
-				for (int j = 0; j < 2; j++)
-					selectionModel ()->select (Model_->indexFromItem (Model_->item (i, j)),
-														QItemSelectionModel::Deselect);
 				
-		for (int i = 0; i < 2; i++)
-			selectionModel ()->select (Model_->indexFromItem (Model_->item (currentRow, i)),
-										QItemSelectionModel::Select);
+		bool find = false;
+		for (int i = 0; i < Model_->GetPublicItems ()->size (); i++)
+			if (LastPlayingItem_ == ((*Model_->GetPublicItems ()) [i]))
+			{
+				find = true;
+				break;
+			}
+			
+		if (!find)
+			LastPlayingItem_ = nullptr;
+		
+		if (LastPlayingItem_)
+			LastPlayingItem_->setIcon (QIcon ());
+		
+		if (currentRow == -1 || currentRow >= Model_->rowCount () || !libvlc_media_player_is_playing (NativePlayer_))
+			return;
+				
+		LastPlayingItem_ = Model_->item (currentRow, ColumnName);
+		LastPlayingItem_->setIcon (QIcon (PlayIcon_));
 		
 		update ();
 	}
@@ -176,18 +196,8 @@ namespace vlc
 		if (row > -1 && row < libvlc_media_list_count (Playlist_))
 			libvlc_media_list_player_play_item_at_index (Player_, row);
 		
+		updateInterface ();
 		event->accept ();
-	}
-	
-	void PlaylistWidget::mousePressEvent (QMouseEvent *event)
-	{
-		if (event->button () == Qt::RightButton) 
-		{
-			createMenu (event->pos ()); //customContextMenu would not call. I don't know why
-			event->accept ();
-		}
-		
-		QTimer::singleShot (50, Model_, SLOT (updateTable ()));
 	}
 	
 	void PlaylistWidget::resizeEvent (QResizeEvent *event)

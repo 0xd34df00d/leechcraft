@@ -72,8 +72,6 @@ namespace vlc
 		const char * const vlc_args[] = 
 		{
 			"--ffmpeg-hw",
-			//"--extraintf=logger",
-			//"--verbose=2",
 			"--logfile",
 			(QDir::homePath () + ".leechcraft/vlc-log.txt").toUtf8 ()
 		};
