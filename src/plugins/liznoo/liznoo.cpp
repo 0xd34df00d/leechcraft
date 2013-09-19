@@ -42,10 +42,12 @@
 
 #if defined(Q_OS_LINUX)
 	#include "platform/platformupower.h"
+	#include "screenplatform/screenplatformfreedesktop.h"
 #elif defined(Q_OS_WIN32)
 	#include "platform/platformwinapi.h"
 #elif defined(Q_OS_FREEBSD)
 	#include "platform/platformfreebsd.h"
+	#include "screenplatform/screenplatformfreedesktop.h"
 #elif defined(Q_OS_MAC)
 	#include "platform/platformmac.h"
 #else
@@ -70,10 +72,12 @@ namespace Liznoo
 
 #if defined(Q_OS_LINUX)
 		PL_ = new PlatformUPower (this);
+		SPL_ = new ScreenPlatformFreedesktop (this);
 #elif defined(Q_OS_WIN32)
 		PL_ = new PlatformWinAPI (this);
 #elif defined(Q_OS_FREEBSD)
 		PL_ = new PlatformFreeBSD (this);
+		SPL_ = new ScreenPlatformFreedesktop (this);
 #elif defined(Q_OS_MAC)
 		PL_ = new PlatformMac (this);
 #else

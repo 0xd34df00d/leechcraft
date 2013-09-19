@@ -56,6 +56,8 @@ elseif (NOT WIN32)
 			${UPOWER_SRCS}
 			)
 	endif ()
+
+	set (SRCS ${SRCS} "screenplatform/screenplatformfreedesktop.cpp")
 # Windows implementation using WinAPI
 else ()
 	set (SRCS
