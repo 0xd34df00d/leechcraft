@@ -28,13 +28,14 @@
  **********************************************************************/
 
 #include "finddialog.h"
+#include "core.h"
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
 	FindDialog::FindDialog (QWidget *parent)
-	: Util::FindNotification (parent)
+	: Util::FindNotification (Core::Instance ().GetProxy (), parent)
 	{
 	}
 

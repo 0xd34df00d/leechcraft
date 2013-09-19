@@ -30,6 +30,7 @@
 #pragma once
 
 #include <util/utilconfig.h>
+#include <interfaces/core/icoreproxy.h>
 #include "pagenotification.h"
 
 namespace Ui
@@ -101,8 +102,12 @@ namespace Util
 		 * Embedding is done only if possible — that is, if parent's
 		 * layout is QVBoxLayout. Otherwise one should place this widget
 		 * where needed himself.
+		 *
+		 * @param[in] proxy The core proxy to be used by this find
+		 * notification.
+		 * @param[in] parent The parent widget to embed into.
 		 */
-		FindNotification (QWidget*);
+		FindNotification (ICoreProxy_ptr proxy, QWidget *parent);
 		~FindNotification ();
 
 		/** @brief Sets the text in the find field.

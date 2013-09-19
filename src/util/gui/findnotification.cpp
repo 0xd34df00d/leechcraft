@@ -28,19 +28,22 @@
  **********************************************************************/
 
 #include "findnotification.h"
+#include "clearlineeditaddon.h"
 #include "ui_findnotification.h"
 
 namespace LeechCraft
 {
 namespace Util
 {
-	FindNotification::FindNotification (QWidget *parent)
+	FindNotification::FindNotification (ICoreProxy_ptr proxy, QWidget *parent)
 	: Util::PageNotification (parent)
 	, Ui_ (new Ui::FindNotification)
 	{
 		Ui_->setupUi (this);
 
 		setFocusProxy (Ui_->Pattern_);
+
+		new Util::ClearLineEditAddon (proxy, Ui_->Pattern_);
 	}
 
 	FindNotification::~FindNotification ()
