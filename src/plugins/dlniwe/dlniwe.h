@@ -31,17 +31,7 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
-
-namespace Herqq
-{
-namespace Upnp
-{
-namespace Av
-{
-	class HMediaServerDeviceConfiguration;
-}
-}
-}
+#include <interfaces/ihavesettings.h>
 
 namespace LeechCraft
 {
@@ -49,9 +39,12 @@ namespace DLNiwe
 {
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IHaveSettings)
+
+		Util::XmlSettingsDialog_ptr XSD_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -60,8 +53,8 @@ namespace DLNiwe
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-	private:
-		void GetMediaServerConfig (Herqq::Upnp::Av::HMediaServerDeviceConfiguration*) const;
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	};
 }
 }

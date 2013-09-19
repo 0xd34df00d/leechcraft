@@ -17,13 +17,14 @@ include_directories (
 	)
 set (SRCS
 	dlniwe.cpp
+	fspathsmanager.cpp
 	xmlsettingsmanager.cpp
 	)
 set (RESOURCES dlniweresources.qrc)
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 #CreateTrs("dlniwe" "en;ru_RU" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("dlniwe" "en;ru_RU" "${SRCS}" "${FORMS}" "")
+CreateTrsUpTarget("dlniwe" "en;ru_RU" "${SRCS}" "${FORMS}" "dlniwesettings.xml")
 
 add_library (leechcraft_dlniwe SHARED
 	${COMPILED_TRANSLATIONS}
@@ -37,3 +38,4 @@ target_link_libraries (leechcraft_dlniwe
 	)
 install (TARGETS leechcraft_dlniwe DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/dlniwe DESTINATION ${LC_SHARE_DEST})
+install (FILES dlniwesettings.xml DESTINATION ${LC_SETTINGS_DEST})

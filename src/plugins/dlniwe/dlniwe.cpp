@@ -43,6 +43,9 @@
 #include <HUpnpAv/HFileSystemDataSourceConfiguration>
 #include <HUpnpAv/HRootDir>
 #include <util/sys/paths.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "xmlsettingsmanager.h"
+#include "fspathsmanager.h"
 
 namespace LeechCraft
 {
@@ -61,12 +64,20 @@ namespace DLNiwe
 			return;
 		}
 
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "dlniwesettings.xml");
+
 		HU::HDeviceConfiguration devConf;
 		devConf.setPathToDeviceDescription (path);
 
 		HAV::HAvDeviceModelCreator avCreator;
 		HAV::HMediaServerDeviceConfiguration msConfig;
-		GetMediaServerConfig (&msConfig);
+
+		auto fsSource = new HAV::HFileSystemDataSource ({});
+		HAV::HContentDirectoryServiceConfiguration cdsConfig;
+		cdsConfig.setDataSource (fsSource, true);
+		msConfig.setContentDirectoryConfiguration (cdsConfig);
+
 		avCreator.setMediaServerConfiguration (msConfig);
 
 		HU::HDeviceHostConfiguration hostConf (devConf);
@@ -76,6 +87,9 @@ namespace DLNiwe
 		if (!host->init (hostConf))
 			qWarning () << Q_FUNC_INFO
 					<< host->errorDescription ();
+
+		auto pathsMgr = new FSPathsManager (fsSource);
+		XSD_->SetDataSource ("RootPathsView", pathsMgr->GetModel ());
 	}
 
 	void Plugin::SecondInit ()
@@ -106,21 +120,9 @@ namespace DLNiwe
 		return QIcon ();
 	}
 
-	void Plugin::GetMediaServerConfig (HAV::HMediaServerDeviceConfiguration *msConfig) const
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
-		HAV::HFileSystemDataSourceConfiguration fsConfig;
-		fsConfig.addRootDir ({
-				{ "/home/d34df00d/storage/Serials" },
-				HAV::HRootDir::RecursiveScan,
-				HAV::HRootDir::WatchForChanges
-			});
-
-		auto fsSource = new HAV::HFileSystemDataSource (fsConfig);
-
-		HAV::HContentDirectoryServiceConfiguration cdsConfig;
-		cdsConfig.setDataSource (fsSource, true);
-
-		msConfig->setContentDirectoryConfiguration (cdsConfig);
+		return XSD_;
 	}
 }
 }
