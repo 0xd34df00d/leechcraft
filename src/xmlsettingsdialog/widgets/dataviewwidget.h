@@ -43,6 +43,7 @@ namespace LeechCraft
 		DataViewWidget (QWidget* = 0);
 
 		void DisableAddition ();
+		void DisableModification ();
 		void DisableRemoval ();
 
 		void SetModel (QAbstractItemModel*);
