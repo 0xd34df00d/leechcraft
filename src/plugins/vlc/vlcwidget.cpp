@@ -100,6 +100,8 @@ namespace vlc
 		PlaylistDock_ = new QDockWidget (this);
 		PlaylistDock_->setFeatures (QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable);
 		PlaylistDock_->setAllowedAreas (Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+		PlaylistDock_->setTitleBarWidget (new QLabel (tr ("Playlist"), PlaylistDock_));
+		PlaylistDock_->titleBarWidget ()->setContentsMargins (10, 2, 10, 0);
 		
 		auto mw = proxy->GetRootWindowsManager ()->GetMWProxy (0);
 		mw->AddDockWidget (Qt::LeftDockWidgetArea, PlaylistDock_);
@@ -204,6 +206,7 @@ namespace vlc
 	{
 		VlcPlayer_->stop ();
 		delete PlaylistWidget_;
+		delete PlaylistDock_;
 		delete VlcPlayer_;
 		SaveSettings ();
 		emit deleteMe (this);
