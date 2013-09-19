@@ -336,6 +336,42 @@ namespace Blogique
 
 		void WriteHtml (const QList<Entry>& entries, const QString& filePath)
 		{
+
+			QFile file (filePath);
+			if (!file.open (QIODevice::Append))
+			{
+				QMessageBox::warning (0,
+						"LeechCraft",
+						QObject::tr ("Unable to open file %1: %2")
+								.arg (filePath)
+								.arg (file.errorString ()));
+				return;
+			}
+
+			QDateTime lastDate;
+			QString content;
+			QWebView wv;
+			for (const auto& entry : entries)
+			{
+				bool newDate = false;
+				if (lastDate != entry.Date_)
+				{
+					lastDate = entry.Date_;
+					newDate = true;
+				}
+
+				if (newDate)
+					content += "<br><br><br><br><i>" + entry.Date_.toString (Qt::DefaultLocaleLongDate) + "</i><br><br>";
+
+				content += "<b>" + entry.Subject_ + "</b><br><br>";
+				content += entry.Content_ + "<br><br>";
+				content += ("<b>Tags:</b><i>" + entry.Tags_.join (",") + "</i><br><br><br>");
+			}
+
+			wv.setHtml (content);
+
+			file.write (wv.page ()->currentFrame ()->toHtml ().toUtf8 ());
+			file.close ();
 		}
 
 		void WriteFb2 (const QList<Entry>& entries, const QString& filePath)
