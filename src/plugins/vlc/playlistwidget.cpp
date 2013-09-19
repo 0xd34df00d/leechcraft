@@ -97,7 +97,7 @@ namespace vlc
 		libvlc_media_list_player_set_media_list (Player_, Playlist_);
 		NativePlayer_ = player;
 		
-		Model_ = new PlaylistModel (this, Playlist_);
+		Model_ = new PlaylistModel (this, Playlist_, Instance_);
 		setModel (Model_);
 		
 		QTimer *timer = new QTimer (this);

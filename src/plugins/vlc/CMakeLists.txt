@@ -23,6 +23,7 @@ set (SRCS
 	soundwidget.cpp
 	playlistmodel.cpp
 	xmlsettingsmanager.cpp
+	playlisttitlewidget.cpp
 	)
 	
 #CreateTrs("vlc" "en;ru_RU" COMPILED_TRANSLATIONS)

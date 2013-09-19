@@ -43,10 +43,11 @@ namespace LeechCraft
 {
 namespace vlc
 {
-	PlaylistModel::PlaylistModel (PlaylistWidget *parent, libvlc_media_list_t *playlist)
+	PlaylistModel::PlaylistModel (PlaylistWidget *parent, libvlc_media_list_t *playlist, libvlc_instance_t *instance)
 	: QStandardItemModel (parent)
 	, Parent_ (parent)
 	, Playlist_ (playlist)
+	, Instance_ (instance)
 	{
 		setColumnCount (2);
 		setHorizontalHeaderLabels ({ tr ("Name"), tr ("Duration") });
@@ -108,46 +109,44 @@ namespace vlc
 		else	
 			row -= 2;
 		
-		if (data->colorData ().toString () == "vtyulb")
-		{	
-			QUrl insertAfter;
-			for (int i = row; i > 0; i--)
+		QUrl insertAfter;
+		for (int i = row; i > 0; i--)
+		{
+			QUrl url (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL));
+			if (!urls.contains (url))
 			{
-				QUrl url (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL));
-				if (!urls.contains (url))
-				{
-					insertAfter = url;
-					break;
-				}
+				insertAfter = url;
+				break;
 			}
-			
-			QList<libvlc_media_t*> mediaList;
+		}
+		
+		QList<libvlc_media_t*> mediaList;
+		if (data->colorData ().toString () == "vtyulb")
 			for (int i = 0; i < urls.size (); i++)
 				mediaList << FindAndDelete (urls [i]);
-			
-			int after;
-			if (insertAfter.isEmpty ())
-				after = -1;
-			else
-				for (int i = 0; i < libvlc_media_list_count (Playlist_); i++)
-					if (QUrl (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL)) == insertAfter)
-					{
-						after = i;
-						break;
-					}
-					
-			if (!parent.isValid () && (after == -1))  // VLC forever
-				for (int i = 0; i < urls.size (); i++)
-					libvlc_media_list_add_media (Playlist_, mediaList [i]);
-			else
-				for (int i = 0; i < urls.size (); i++)
-					libvlc_media_list_insert_media (Playlist_, mediaList [i], after + i + 2);
-			
-			updateTable ();
-		}
 		else
 			for (int i = 0; i < urls.size (); i++)
-				AddUrl (urls [i]);
+				mediaList << libvlc_media_new_path (Instance_, urls [i].toEncoded ());
+		
+		int after;
+		if (insertAfter.isEmpty ())
+			after = -1;
+		else
+			for (int i = 0; i < libvlc_media_list_count (Playlist_); i++)
+				if (QUrl (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL)) == insertAfter)
+				{
+					after = i;
+					break;
+				}
+				
+		if (!parent.isValid () && (after == -1))  // VLC forever
+			for (int i = 0; i < urls.size (); i++)
+				libvlc_media_list_add_media (Playlist_, mediaList [i]);
+		else
+			for (int i = 0; i < urls.size (); i++)
+				libvlc_media_list_insert_media (Playlist_, mediaList [i], after + i + 2);
+		
+		updateTable ();
 		
 		return true;
 	}

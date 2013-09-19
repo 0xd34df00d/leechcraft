@@ -27,56 +27,36 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QStandardItemModel>
-#include <QVector>
-
-struct libvlc_media_list_t;
-struct libvlc_media_t;
-struct libvlc_instance_t;
-
-class QMimeData;
+#include "playlisttitlewidget.h"
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QPushButton>
+#include <QLabel>
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	class PlaylistWidget;
-	
-	enum Columns
+	PlaylistTitleWidget::PlaylistTitleWidget (QWidget *parent)
+	: QWidget (parent)
 	{
-		ColumnName,
-		ColumnDuration,
-		ColumnMax
-	};
+		QVBoxLayout *layout = new QVBoxLayout;
+		layout->addWidget (new QLabel (tr ("Playlist")));
+		QWidget *widget = new QWidget;
+		
+		QHBoxLayout *layout2 = new QHBoxLayout;
+		
+		ClearPlaylist_ = new QPushButton (tr ("Clear"));
+		MagicSort_ = new QPushButton (tr ("Magic"));
+		AddFiles_ = new QPushButton (tr ("Add"));
+		
+		layout2->addWidget (AddFiles_);
+		layout2->addWidget (MagicSort_);
+		layout2->addWidget (ClearPlaylist_);
 	
-	class PlaylistModel : public QStandardItemModel
-	{
-		Q_OBJECT
-		
-		libvlc_media_list_t *Playlist_;
-		QVector<QStandardItem*> Items_ [ColumnMax];
-		PlaylistWidget *Parent_;
-		libvlc_instance_t *Instance_;
-	
-	public:
-		explicit PlaylistModel (PlaylistWidget *parent, libvlc_media_list_t *playlist, libvlc_instance_t *instance);
-		~PlaylistModel ();
-		
-		bool dropMimeData (const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex& parent);
-		QStringList mimeTypes () const;
-		QMimeData* mimeData (const QModelIndexList&) const;
-		Qt::DropActions supportedDropActions () const;
-		
-		void AddUrl (const QUrl&);
-		inline QVector<QStandardItem*>* GetPublicItems () {return &Items_[ColumnName];};
-		
-	private:
-		libvlc_media_t* FindAndDelete (QUrl);
-		
-	public slots:
-		void updateTable ();
-	};
+		widget->setLayout (layout2);		
+		layout->addWidget (widget);
+		setLayout (layout);
+	}
 }
 }

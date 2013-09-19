@@ -61,6 +61,7 @@
 #include <interfaces/imwproxy.h>
 #include "vlcwidget.h"
 #include "vlcplayer.h"
+#include "playlisttitlewidget.h"
 #include "xmlsettingsmanager.h"
 
 namespace
@@ -100,8 +101,7 @@ namespace vlc
 		PlaylistDock_ = new QDockWidget (this);
 		PlaylistDock_->setFeatures (QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable);
 		PlaylistDock_->setAllowedAreas (Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-		PlaylistDock_->setTitleBarWidget (new QLabel (tr ("Playlist"), PlaylistDock_));
-		PlaylistDock_->titleBarWidget ()->setContentsMargins (10, 2, 10, 0); // MAGIC
+		PlaylistDock_->setTitleBarWidget (new PlaylistTitleWidget (this));
 		
 		auto mw = proxy->GetRootWindowsManager ()->GetMWProxy (0);
 		mw->AddDockWidget (Qt::LeftDockWidgetArea, PlaylistDock_);
