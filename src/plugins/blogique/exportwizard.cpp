@@ -295,6 +295,30 @@ namespace Blogique
 
 	namespace
 	{
+		QString GetHtmlContent (const QList<Entry>& entries)
+		{
+			QString content;
+			QDateTime lastDate;
+			for (const auto& entry : entries)
+			{
+				bool newDate = false;
+				if (lastDate != entry.Date_)
+				{
+					lastDate = entry.Date_;
+					newDate = true;
+				}
+
+				if (newDate)
+					content += "<br><br><br><br><i>" + entry.Date_.toString (Qt::DefaultLocaleLongDate) + "</i><br><br>";
+
+				content += "<b>" + entry.Subject_ + "</b><br><br>";
+				content += entry.Content_ + "<br><br>";
+				content += ("<b>Tags:</b><i>" + entry.Tags_.join (",") + "</i><br><br><br>");
+			}
+
+			return content;
+		}
+
 		void WritePlainText (const QList<Entry>& entries, const QString& filePath)
 		{
 			QFile file (filePath);
@@ -348,27 +372,8 @@ namespace Blogique
 				return;
 			}
 
-			QDateTime lastDate;
-			QString content;
 			QWebView wv;
-			for (const auto& entry : entries)
-			{
-				bool newDate = false;
-				if (lastDate != entry.Date_)
-				{
-					lastDate = entry.Date_;
-					newDate = true;
-				}
-
-				if (newDate)
-					content += "<br><br><br><br><i>" + entry.Date_.toString (Qt::DefaultLocaleLongDate) + "</i><br><br>";
-
-				content += "<b>" + entry.Subject_ + "</b><br><br>";
-				content += entry.Content_ + "<br><br>";
-				content += ("<b>Tags:</b><i>" + entry.Tags_.join (",") + "</i><br><br><br>");
-			}
-
-			wv.setHtml (content);
+			wv.setHtml (GetHtmlContent (entries));
 
 			file.write (wv.page ()->currentFrame ()->toHtml ().toUtf8 ());
 			file.close ();
@@ -381,6 +386,16 @@ namespace Blogique
 
 		void WritePdf (const QList<Entry>& entries, const QString& filePath)
 		{
+			QWebView wv;
+			wv.setHtml (GetHtmlContent (entries));
+
+			QPrinter printer (QPrinter::HighResolution);
+			printer.setPaperSize (QPrinter::A4);
+			printer.setOutputFormat (QPrinter::PdfFormat);
+
+			printer.setOutputFileName(filePath);
+
+			wv.print (&printer);
 		}
 	}
 
