@@ -22,6 +22,7 @@ set (SRCS
 	batteryhistorydialog.cpp
 	xmlsettingsmanager.cpp
 	platform/platformlayer.cpp
+	screenplatform/screenplatformlayer.cpp
 	)
 
 set (FBSD_SRCS platform/platformfreebsd.cpp)
