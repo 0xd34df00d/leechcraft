@@ -86,7 +86,7 @@ namespace vlc
 			Items_ [ColumnName] [i]->setText (QString::fromUtf8 (libvlc_media_get_meta (media, libvlc_meta_Title)));
 			
 			if (!libvlc_media_is_parsed (media))
-				libvlc_media_parse (media);
+				libvlc_media_parse_async (media);
 				
 			QTime time (0, 0);
 			time = time.addMSecs (libvlc_media_get_duration (media));
