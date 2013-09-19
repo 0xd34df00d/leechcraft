@@ -111,8 +111,8 @@ namespace Hestia
 		void entryUpdated (const QList<Entry>& entries);
 
 		void gotEntries (const QList<Entry>& entries);
-		void gotEntries2Backup (const QList<Entry>& entries);
-		void gettingEntries2BackupFinished ();
+		void gotFilteredEntries(const QList< Entry >& entries);
+		void gettingFilteredEntriesFinished();
 		void gotBlogStatistics (const QMap<QDate, int>& statistics);
 		void tagsUpdated (const QHash<QString, int>& tags);
 

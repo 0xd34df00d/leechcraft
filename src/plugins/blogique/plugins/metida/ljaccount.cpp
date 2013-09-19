@@ -103,13 +103,13 @@ namespace Metida
 				this,
 				SLOT (handleEventUpdated (QList<LJEvent>)));
 		connect (LJXmlRpc_,
-				SIGNAL (gotEvents2Backup (QList<LJEvent>)),
+				SIGNAL (gotFilteredEvents (QList<LJEvent>)),
 				this,
-				SLOT (handleGotEvents2Backup (QList<LJEvent>)));
+				SLOT (handleGotFilteredEvents (QList<LJEvent>)));
 		connect (LJXmlRpc_,
-				SIGNAL (gettingEvents2BackupFinished ()),
+				SIGNAL (gettingFilteredEventsFinished ()),
 				this,
-				SLOT (handleGettingEvents2BackupFinished ()));
+				SLOT (handleGettingFilteredEventsFinished ()));
 		connect (LJXmlRpc_,
 				SIGNAL (gotEvents (QList<LJEvent>)),
 				this,
@@ -585,18 +585,18 @@ namespace Metida
 		CallLastUpdateMethod ();
 	}
 
-	void LJAccount::handleGotEvents2Backup (const QList<LJEvent>& ljEvents)
+	void LJAccount::handleGotFilteredEvents (const QList<LJEvent>& ljEvents)
 	{
 		QList<Entry> entries;
 		for (const auto& ljEvent : ljEvents)
 			entries << LJEvent2Entry (ljEvent, Login_);
 
-		emit gotEntries2Backup (entries);
+		emit gotFilteredEntries (entries);
 	}
 
-	void LJAccount::handleGettingEvents2BackupFinished ()
+	void LJAccount::handleGettingFilteredEventsFinished ()
 	{
-		emit gettingEntries2BackupFinished ();
+		emit gettingFilteredEntriesFinished ();
 	}
 
 	void LJAccount::handleGotEvents (const QList<LJEvent>& ljEvents)

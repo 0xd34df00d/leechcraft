@@ -183,8 +183,8 @@ namespace Metida
 		void eventUpdated (const QList<LJEvent>& events);
 		void eventRemoved (int itemId);
 
-		void gotEvents2Backup (const QList<LJEvent>& events);
-		void gettingEvents2BackupFinished ();
+		void gotFilteredEvents (const QList<LJEvent>& events);
+		void gettingFilteredEventsFinished ();
 
 		void gotEvents (const QList<LJEvent>& events);
 

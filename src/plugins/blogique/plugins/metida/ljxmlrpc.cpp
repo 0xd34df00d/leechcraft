@@ -1715,14 +1715,14 @@ namespace Metida
 					}
 				}
 
+				emit gotFilteredEvents (eventsList);
+
 				ApiCallQueue_ << [skip, count, filter, this] (const QString& challenge)
 						{ BackupEventsRequest (skip + count , filter, challenge); };
 				GenerateChallenge ();
 			}
 			else
-			{
-				//TODO finished
-			}
+				emit gettingFilteredEventsFinished ();
 			return;
 		}
 
@@ -1760,15 +1760,14 @@ namespace Metida
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
 			auto events = ParseFullEvents (document);
+			emit gotEvents (events);
 			const int count = events.count ();
 			if (count)
+			{
 				ApiCallQueue_ << [skip, count, dt, this] (const QString&)
 						{ GetEventsByDate (dt, skip + count); };
-			else
-			{
-				//TODO finished;
+				GenerateChallenge ();
 			}
-			GenerateChallenge ();
 			return;
 
 		}
