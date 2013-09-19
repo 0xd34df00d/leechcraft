@@ -33,6 +33,7 @@
 #include <QLinkedList>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/ientityhandler.h>
 #include <interfaces/iactionsexporter.h>
 #include "batteryhistory.h"
 #include "batteryinfo.h"
@@ -48,10 +49,11 @@ namespace Liznoo
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IHaveSettings
+				 , public IEntityHandler
 				 , public IActionsExporter
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings IActionsExporter)
+		Q_INTERFACES (IInfo IHaveSettings IEntityHandler IActionsExporter)
 
 		ICoreProxy_ptr Proxy_;
 
@@ -76,6 +78,9 @@ namespace Liznoo
 		QIcon GetIcon () const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+
+		EntityTestHandleResult CouldHandle (const Entity& entity) const;
+		void Handle (Entity entity);
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 		QMap<QString, QList<QAction*>> GetMenuActions () const;

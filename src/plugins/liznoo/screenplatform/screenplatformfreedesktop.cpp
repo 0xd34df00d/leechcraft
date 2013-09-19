@@ -68,7 +68,6 @@ namespace Liznoo
 
 	void ScreenPlatformFreedesktop::handleTimeout ()
 	{
-		// qdbus org.freedesktop.ScreenSaver /ScreenSaver SimulateUserActivity
 		QDBusInterface iface ("org.freedesktop.ScreenSaver", "/ScreenSaver");
 		iface.call ("SimulateUserActivity");
 	}

@@ -145,6 +145,32 @@ namespace Liznoo
 		return XSD_;
 	}
 
+	EntityTestHandleResult Plugin::CouldHandle (const Entity& entity) const
+	{
+		return entity.Mime_ == "x-leechcraft/power-management" ?
+				EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+				EntityTestHandleResult ();
+	}
+
+	void Plugin::Handle (Entity entity)
+	{
+		const auto& context = entity.Entity_.toString ();
+		if (context == "ScreensaverProhibition")
+		{
+			if (!SPL_)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "screen platform layer unavailable, screensaver prohibiton won't work";
+				return;
+			}
+
+			const auto enable = entity.Additional_ ["Enable"].toBool ();
+			const auto& id = entity.Additional_ ["ContextID"].toString ();
+
+			SPL_->ProhibitScreensaver (enable, id);
+		}
+	}
+
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
 	{
 		QList<QAction*> result;
