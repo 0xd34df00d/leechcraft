@@ -31,9 +31,12 @@
 #include <QFileDialog>
 #include <QStandardItemModel>
 #include <QMessageBox>
-#include <boost/concept_check.hpp>
-#include "interfaces/blogique/iaccount.h"
+#include <QPrinter>
+#include <QWebFrame>
+#include <QWebView>
 #include "interfaces/blogique/ibloggingplatform.h"
+#include <interfaces/core/ientitymanager.h>
+#include <util/util.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -80,6 +83,10 @@ namespace Blogique
 			Id2RadioButton_ [i] = btn;
 			Formats_->addButton (btn, i++);
 		}
+		Ui_.PlainText_->setProperty ("ExportFormat", ExportFormat::PlainText);
+		Ui_.Html_->setProperty ("ExportFormat", ExportFormat::Html);
+		Ui_.Fb2_->setProperty ("ExportFormat", ExportFormat::Fb2);
+		Ui_.Pdf_->setProperty ("ExportFormat", ExportFormat::Pdf);
 
 		Ui_.FromDate_->setCalendarPopup (true);
 		Ui_.TillDate_->setCalendarPopup (true);
@@ -160,6 +167,8 @@ namespace Blogique
 			return true;
 		case OverviewPage:
 		case ExportPage:
+			Ui_.ExportProgress_->setMinimum (0);
+			Ui_.ExportProgress_->setMaximum (0);
 			return true;
 		}
 
@@ -226,7 +235,16 @@ namespace Blogique
 					 selectedTags << SelectedTagsModel_->index (i, 0).data ().toString ();
 				filter.Tags_ = Ui_.SelectedTags_->isChecked () ? selectedTags : QStringList ();
 
-				Id2Account_ [Ui_.AccountSelection_->currentIndex ()]->GetEntriesWithFilter (filter);
+				auto account = Id2Account_ [Ui_.AccountSelection_->currentIndex ()];
+				connect (account->GetQObject (),
+						SIGNAL (gotFilteredEntries (QList<Entry>)),
+						this,
+						SLOT (handleGotFilteredEntries (QList<Entry>)));
+				connect (account->GetQObject (),
+						SIGNAL (gettingFilteredEntriesFinished ()),
+						this,
+						SLOT (handleGettingFilteredEntriesFinished ()));
+				account->GetEntriesWithFilter (filter);
 				break;
 			}
 		}
@@ -273,6 +291,94 @@ namespace Blogique
 
 			FillTags (acc);
 		}
+	}
+
+	namespace
+	{
+		void WritePlainText (const QList<Entry>& entries, const QString& filePath)
+		{
+			QFile file (filePath);
+			if (!file.open (QIODevice::Append))
+			{
+				QMessageBox::warning (0,
+						"LeechCraft",
+						QObject::tr ("Unable to open file %1: %2")
+								.arg (filePath)
+								.arg (file.errorString ()));
+				return;
+			}
+
+			QDateTime lastDate;
+			QString content;
+			QWebView wv;
+			for (const auto& entry : entries)
+			{
+				bool newDate = false;
+				if (lastDate != entry.Date_)
+				{
+					lastDate = entry.Date_;
+					newDate = true;
+				}
+
+				if (newDate)
+					content += "<br><br><br><br>" + entry.Date_.toString (Qt::DefaultLocaleLongDate) + "<br><br>";
+
+				content += entry.Subject_ + "<br><br>";
+				content += entry.Content_ + "<br><br>";
+				content += ("Tags:" + entry.Tags_.join (",") + "<br><br><br>");
+			}
+
+			wv.setHtml (content);
+
+			file.write (wv.page ()->currentFrame ()->toPlainText ().toUtf8 ());
+			file.close ();
+		}
+
+		void WriteHtml (const QList<Entry>& entries, const QString& filePath)
+		{
+		}
+
+		void WriteFb2 (const QList<Entry>& entries, const QString& filePath)
+		{
+
+		}
+
+		void WritePdf (const QList<Entry>& entries, const QString& filePath)
+		{
+		}
+	}
+
+	void ExportWizard::handleGotFilteredEntries (const QList<Entry>& entries)
+	{
+		Entries_ << entries;
+	}
+
+	void ExportWizard::handleGettingFilteredEntriesFinished ()
+	{
+		switch (Formats_->checkedButton ()->property ("ExportFormat").toInt ())
+		{
+			case PlainText:
+				WritePlainText (Entries_, Ui_.SavePath_->text ());
+				break;
+			case Html:
+				WriteHtml (Entries_, Ui_.SavePath_->text ());
+				break;
+			case Fb2:
+				WriteFb2 (Entries_, Ui_.SavePath_->text ());
+				break;
+			case Pdf:
+				WritePdf (Entries_, Ui_.SavePath_->text ());
+				break;
+			default:
+				return;
+		}
+
+		qDebug () << Q_FUNC_INFO << "got entries for export finished";
+		Core::Instance ().GetCoreProxy ()->GetEntityManager ()->
+				HandleEntity (Util::MakeNotification ("Blogique",
+						tr ("Exporting finished"),
+						Priority::PInfo_));
+		deleteLater ();
 	}
 
 }

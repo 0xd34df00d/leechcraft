@@ -3,6 +3,7 @@ project (leechcraft_blogique)
 include (InitLCPlugin OPTIONAL)
 
 set (QT_USE_QTSQL TRUE)
+set (QT_USE_QTWEBKIT TRUE)
 set (QT_USE_QTDECLARATIVE TRUE)
 include (${QT_USE_FILE})
 

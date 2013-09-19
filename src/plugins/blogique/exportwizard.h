@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QWizard>
+#include "interfaces/blogique/iaccount.h"
 #include "ui_exportwizard.h"
 
 class QStandardItemModel;
@@ -52,6 +53,16 @@ namespace Blogique
 		QStandardItemModel *SelectedTagsModel_;
 		QButtonGroup *Formats_;
 		QMap<int, QRadioButton*> Id2RadioButton_;
+
+		QList<Entry> Entries_;
+
+		enum ExportFormat
+		{
+			PlainText,
+			Html,
+			Fb2,
+			Pdf
+		};
 
 		enum Pages
 		{
@@ -77,6 +88,8 @@ namespace Blogique
 		void removeTag();
 
 		void handleTagsUpdated (const QHash<QString, int>& tags);
+		void handleGotFilteredEntries (const QList<Entry>& entries);
+		void handleGettingFilteredEntriesFinished ();
 	};
 }
 }

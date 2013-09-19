@@ -290,14 +290,6 @@ namespace Blogique
 				this,
 				SLOT (handleEntryUpdated (QList<Entry>)));
 		connect (accObj,
-				SIGNAL (gotEntries2Backup (QList<Entry>)),
-				this,
-				SLOT (handleGotEntries2Backup (QList<Entry>)));
-		connect (accObj,
-				SIGNAL (gettingEntries2BackupFinished ()),
-				this,
-				SLOT (handleGettingEntries2BackupFinished ()));
-		connect (accObj,
 				SIGNAL (tagsUpdated (QHash<QString, int>)),
 				this,
 				SIGNAL (tagsUpdated (QHash<QString, int>)));
@@ -401,21 +393,6 @@ namespace Blogique
 		acc->RequestTags ();
 	}
 
-	void Core::handleGotEntries2Backup (const QList<Entry>&)
-	{
-		auto acc = qobject_cast<IAccount*> (sender ());
-		if (!acc)
-			return;
-		//TODO
-	}
-
-	void Core::handleGettingEntries2BackupFinished ()
-	{
-		SendEntity (Util::MakeNotification ("Blogique",
-				tr ("Entries were backuped successfully."),
-				Priority::PInfo_));
-	}
-
 	void Core::handleAutoSaveIntervalChanged ()
 	{
 		AutoSaveTimer_->start (XmlSettingsManager::Instance ()
@@ -426,7 +403,6 @@ namespace Blogique
 	{
 		ExportWizard *wizard = new ExportWizard (Proxy_->GetRootWindowsManager ()->
 				GetPreferredWindow ());
-		wizard->setAttribute (Qt::WA_DeleteOnClose);
 		wizard->setWindowTitle (tr ("Export blog"));
 		wizard->show ();
 	}
