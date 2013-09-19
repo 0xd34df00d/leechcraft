@@ -452,10 +452,10 @@ namespace vlc
 	{
 		Bar_ = new QToolBar (this);
 		OpenButton_ = new QToolButton (Bar_);
-		OpenButton_->setMenu (GenerateMenuForOpenAction ());
-		OpenButton_->setPopupMode (QToolButton::MenuButtonPopup);
 		Open_ = new QAction (OpenButton_);
 		Open_->setProperty ("ActionIcon", "folder");
+		OpenButton_->setMenu (GenerateMenuForOpenAction ());
+		OpenButton_->setPopupMode (QToolButton::MenuButtonPopup);
 		OpenButton_->setDefaultAction (Open_);
 		Bar_->addWidget (OpenButton_);
 		TogglePlay_ = Bar_->addAction (tr ("Play"));
@@ -759,6 +759,12 @@ namespace vlc
 	QMenu* VlcWidget::GenerateMenuForOpenAction ()
 	{
 		QMenu *result = new QMenu;
+		
+		connect (result->addAction (tr ("Open file")),
+				SIGNAL (triggered ()),
+				this,
+				SLOT (addFile ()));
+		
 		connect (result->addAction (tr ("Open folder")),
 				SIGNAL (triggered ()),
 				this,
