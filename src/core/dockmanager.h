@@ -33,6 +33,7 @@
 #include <QMap>
 #include <QHash>
 #include <QSet>
+#include <QPointer>
 #include <interfaces/core/ihookproxy.h>
 
 class QMainWindow;
@@ -85,7 +86,7 @@ namespace LeechCraft
 	public slots:
 		void handleTabMove (int, int, int);
 	private slots:
-		void revertDockSizes (QDockWidget*, int, int);
+		void revertDockSizes (QPointer<QDockWidget>, int, int);
 
 		void handleDockDestroyed ();
 		void handleDockToggled (bool);
