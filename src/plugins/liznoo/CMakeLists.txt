@@ -50,18 +50,10 @@ elseif (NOT WIN32)
 			${SRCS}
 			${FBSD_SRCS}
 			)
-		set (HEADERS
-			${HEADERS}
-			${FBSD_HEADERS}
-			)
 	else ()
 		set (SRCS
 			${SRCS}
 			${UPOWER_SRCS}
-			)
-		set (HEADERS
-			${HEADERS}
-			${UPOWER_HEADERS}
 			)
 	endif ()
 # Windows implementation using WinAPI
@@ -82,16 +74,12 @@ set (FORMS
 set (RESOURCES liznooresources.qrc)
 CreateTrs ("liznoo" "en;es;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("liznoo" "en;ru_RU" "${SRCS};${FBSD_SRCS};${UPOWER_SRCS};${WIN32_SRCS}" "${FORMS}" "liznoosettings.xml")
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 add_library (leechcraft_liznoo SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${UIS_H}
 	${RCCS}
 	)
