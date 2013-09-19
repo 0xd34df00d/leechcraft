@@ -30,36 +30,33 @@
 #pragma once
 
 #include <QObject>
+#include <QDBusConnection>
 #include <interfaces/structures.h>
-#include "batteryinfo.h"
+#include "../batteryinfo.h"
+#include "platformlayer.h"
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-	class PlatformLayer : public QObject
+	class DBusConnector : public QObject
 	{
 		Q_OBJECT
+
+		QDBusConnection SB_;
 	public:
-		PlatformLayer (QObject* = 0);
-
-		virtual void Stop () = 0;
-
-		enum class PowerState
-		{
-			Suspend,
-			Hibernate
-		};
-		virtual void ChangeState (PowerState);
-
-		void EmitGonnaSleep (int);
-		void EmitWokeUp ();
+		DBusConnector (QObject* = 0);
+	public slots:
+		void changeState (Liznoo::PlatformLayer::PowerState);
+	private slots:
+		void handleGonnaSleep ();
+		void handleWokeUp ();
+		void enumerateDevices ();
+		void requeryDevice (const QString&);
 	signals:
-		void started ();
 		void gotEntity (const LeechCraft::Entity&);
 		void batteryInfoUpdated (Liznoo::BatteryInfo);
 	};
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Liznoo::PlatformLayer::PowerState);

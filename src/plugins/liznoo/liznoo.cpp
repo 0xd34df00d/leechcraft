@@ -34,19 +34,20 @@
 #include <QAction>
 #include <QTimer>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/entitytesthandleresult.h>
 #include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "batteryhistorydialog.h"
 
 #if defined(Q_OS_LINUX)
-	#include "platformupower.h"
+	#include "platform/platformupower.h"
 #elif defined(Q_OS_WIN32)
-	#include "platformwinapi.h"
+	#include "platform/platformwinapi.h"
 #elif defined(Q_OS_FREEBSD)
-	#include "platformfreebsd.h"
+	#include "platform/platformfreebsd.h"
 #elif defined(Q_OS_MAC)
-	#include "platformmac.h"
+	#include "platform/platformmac.h"
 #else
 	#pragma message ("Unsupported system")
 #endif
