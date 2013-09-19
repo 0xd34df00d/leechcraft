@@ -17,6 +17,7 @@ include_directories (
 	)
 set (SRCS
 	dlniwe.cpp
+	xmlsettingsmanager.cpp
 	)
 set (RESOURCES dlniweresources.qrc)
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
