@@ -37,7 +37,6 @@
 #include <QItemSelectionModel>
 #include <QUrl>
 #include <vlc/vlc.h>
-#include <boost/concept_check.hpp>
 #include "playlistwidget.h"
 
 namespace LeechCraft
