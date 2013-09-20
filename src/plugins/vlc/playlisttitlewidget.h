@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QWidget>
+#include <interfaces/core/icoreproxy.h>
 
 class QToolButton;
 class QAction;
@@ -47,7 +48,7 @@ namespace vlc
 		QToolButton *AddFiles_;
 	
 	public:
-		explicit PlaylistTitleWidget (QWidget *parent = 0);
+		explicit PlaylistTitleWidget (ICoreProxy_ptr proxy, QWidget *parent = 0);
 		
 		QAction *ClearAction_;
 		QAction *MagicAction_;

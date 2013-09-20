@@ -197,8 +197,13 @@ namespace vlc
 	
 	void PlaylistWidget::deleteRequested (QAction *object)
 	{
-		libvlc_media_t *media = libvlc_media_list_item_at_index (Playlist_, object->data ().toInt ());
-		libvlc_media_list_remove_index (Playlist_, object->data ().toInt ());
+		DeleteRequested (object->data ().toInt ());
+	}
+	
+	void PlaylistWidget::DeleteRequested (int index)
+	{
+		libvlc_media_t *media = libvlc_media_list_item_at_index (Playlist_, index);
+		libvlc_media_list_remove_index (Playlist_, index);
 		libvlc_media_release (media);
 		Model_->updateTable ();
 	}
@@ -237,6 +242,12 @@ namespace vlc
 			
 			libvlc_media_player_stop (NativePlayer_);
 		}
+	}
+	
+	void PlaylistWidget::clearPlaylist ()
+	{
+		while (libvlc_media_list_count (Playlist_))
+			DeleteRequested (0);
 	}
 }
 }

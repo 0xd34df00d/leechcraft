@@ -71,10 +71,14 @@ namespace vlc
 		bool IsPlaying () const;
 		void Init (libvlc_instance_t *instance, libvlc_media_player_t *player);
 		void Clear ();
+		void DeleteRequested (int index);
 		
 	protected:
 		void mouseDoubleClickEvent (QMouseEvent*);
 		void resizeEvent (QResizeEvent*);
+		
+	public slots:
+		void clearPlaylist ();
 		
 	private slots:
 		void togglePlay ();

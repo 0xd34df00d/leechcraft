@@ -38,7 +38,7 @@ namespace LeechCraft
 {
 namespace vlc
 {
-	PlaylistTitleWidget::PlaylistTitleWidget (QWidget *parent)
+	PlaylistTitleWidget::PlaylistTitleWidget (ICoreProxy_ptr proxy, QWidget *parent)
 	: QWidget (parent)
 	{
 		QVBoxLayout *layout = new QVBoxLayout;
@@ -49,19 +49,23 @@ namespace vlc
 		
 		ClearPlaylist_ = new QToolButton;
 		ClearAction_ = new QAction (ClearPlaylist_);
+		ClearAction_->setIcon (proxy->GetIcon ("edit-clear-list"));
 		ClearPlaylist_->setDefaultAction (ClearAction_);
 		
 		MagicSort_ = new QToolButton;
 		MagicAction_ = new QAction (MagicSort_);
+		MagicAction_->setIcon (proxy->GetIcon ("tools-wizard"));
 		MagicSort_->setDefaultAction (MagicAction_);
 		
 		AddFiles_ = new QToolButton;
 		AddAction_ = new QAction (AddFiles_);
+		AddAction_->setIcon (proxy->GetIcon ("document-open-folder"));
 		AddFiles_->setDefaultAction (AddAction_);
 		
 		layout2->addWidget (AddFiles_);
 		layout2->addWidget (MagicSort_);
 		layout2->addWidget (ClearPlaylist_);
+		layout2->addStretch (255);
 	
 		widget->setLayout (layout2);		
 		layout->addWidget (widget);

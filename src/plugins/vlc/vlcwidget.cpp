@@ -101,7 +101,7 @@ namespace vlc
 		PlaylistDock_ = new QDockWidget (this);
 		PlaylistDock_->setFeatures (QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable);
 		PlaylistDock_->setAllowedAreas (Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-		TitleWidget_ = new PlaylistTitleWidget (this);
+		TitleWidget_ = new PlaylistTitleWidget (proxy, this);
 		PlaylistDock_->setTitleBarWidget (TitleWidget_);
 		
 		auto mw = proxy->GetRootWindowsManager ()->GetMWProxy (0);
@@ -196,6 +196,16 @@ namespace vlc
 				SIGNAL (unstable ()),
 				ScrollBar_,
 				SLOT (blockUpdating ()));
+		
+		connect (TitleWidget_->AddAction_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (addFile ()));
+		
+		connect (TitleWidget_->ClearAction_,
+				SIGNAL (triggered ()),
+				PlaylistWidget_,
+				SLOT (clearPlaylist ()));
 		
 		InitNavigations ();
 		InitVolumeActions ();
