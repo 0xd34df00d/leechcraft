@@ -649,10 +649,14 @@ namespace LMP
 			std::sort (result.begin (), result.end (),
 					[sorter] (decltype (result.at (0)) s1, decltype (result.at (0)) s2) -> bool
 					{
-						if (!s1.first.IsLocalFile () || !s2.first.IsLocalFile ())
+						if (s1.first.IsLocalFile () && !s2.first.IsLocalFile ())
+							return true;
+						else if (!s1.first.IsLocalFile () && s2.first.IsLocalFile ())
+							return false;
+						else if (!s1.first.IsLocalFile () || !s2.first.IsLocalFile ())
 							return qHash (s1.first) < qHash (s2.first);
-
-						return sorter (s1.second, s2.second);
+						else
+							return sorter (s1.second, s2.second);
 					});
 
 			return result;
