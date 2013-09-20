@@ -298,19 +298,9 @@ namespace Blogique
 		QString GetHtmlContent (const QList<Entry>& entries)
 		{
 			QString content;
-			QDateTime lastDate;
 			for (const auto& entry : entries)
 			{
-				bool newDate = false;
-				if (lastDate != entry.Date_)
-				{
-					lastDate = entry.Date_;
-					newDate = true;
-				}
-
-				if (newDate)
-					content += "<br><br><br><br><i>" + entry.Date_.toString (Qt::DefaultLocaleLongDate) + "</i><br><br>";
-
+				content += "<br><br><br><br><i>" + entry.Date_.toString (Qt::DefaultLocaleLongDate) + "</i><br><br>";
 				content += "<b>" + entry.Subject_ + "</b><br><br>";
 				content += entry.Content_ + "<br><br>";
 				content += ("<b>Tags:</b><i>" + entry.Tags_.join (",") + "</i><br><br><br>");
@@ -319,10 +309,25 @@ namespace Blogique
 			return content;
 		}
 
+		QString GetPlainTextContent (const QList<Entry>& entries)
+		{
+			QString content;
+			for (const auto& entry : entries)
+			{
+				content += "\n\n\n\n" + entry.Date_.toString (Qt::DefaultLocaleLongDate) + "\n\n";
+				content += entry.Subject_ + "\n\n\n";
+				content += entry.Content_ + "\n\n";
+				content += "Tags: " + entry.Tags_.join (",") + "\n\n\n";
+			}
+
+			return content;
+		}
+
+
 		void WritePlainText (const QList<Entry>& entries, const QString& filePath)
 		{
 			QFile file (filePath);
-			if (!file.open (QIODevice::Append))
+			if (!file.open (QIODevice::WriteOnly))
 			{
 				QMessageBox::warning (0,
 						"LeechCraft",
@@ -332,28 +337,8 @@ namespace Blogique
 				return;
 			}
 
-			QDateTime lastDate;
-			QString content;
 			QWebView wv;
-			for (const auto& entry : entries)
-			{
-				bool newDate = false;
-				if (lastDate != entry.Date_)
-				{
-					lastDate = entry.Date_;
-					newDate = true;
-				}
-
-				if (newDate)
-					content += "<br><br><br><br>" + entry.Date_.toString (Qt::DefaultLocaleLongDate) + "<br><br>";
-
-				content += entry.Subject_ + "<br><br>";
-				content += entry.Content_ + "<br><br>";
-				content += ("Tags:" + entry.Tags_.join (",") + "<br><br><br>");
-			}
-
-			wv.setHtml (content);
-
+			wv.setContent (GetPlainTextContent (entries).toUtf8 (), "text/plain; charset=UTF-8");
 			file.write (wv.page ()->currentFrame ()->toPlainText ().toUtf8 ());
 			file.close ();
 		}
@@ -362,7 +347,7 @@ namespace Blogique
 		{
 
 			QFile file (filePath);
-			if (!file.open (QIODevice::Append))
+			if (!file.open (QIODevice::WriteOnly))
 			{
 				QMessageBox::warning (0,
 						"LeechCraft",
@@ -381,7 +366,65 @@ namespace Blogique
 
 		void WriteFb2 (const QList<Entry>& entries, const QString& filePath)
 		{
+			QDomDocument doc;
+			QDomElement root = doc.createElement ("FictionBook");
+			root.setAttribute ("xmlns", "http://www.gribuser.ru/xml/fictionbook/2.0");
+			root.setAttribute ("xmlns:l", "http://www.w3.org/1999/xlink");
+			doc.appendChild (root);
+			QDomProcessingInstruction instruction = doc.createProcessingInstruction ("xml", "version=\"1.0\" encoding=\"UTF-8\"");
+			doc.insertBefore (instruction, root);
+			QDomElement description = doc.createElement ("description");
+			root.appendChild (description);
+			QDomElement titleInfo = doc.createElement ("title-info");
+			description.appendChild (titleInfo);
+			QDomElement bookTitle = doc.createElement ("book-title");
+			titleInfo.appendChild (bookTitle);
+			QDomText bookTitleText = doc.createTextNode ("Exported blog");
+			bookTitle.appendChild (bookTitleText);
+			QDomElement body = doc.createElement ("body");
+			root.appendChild (body);
 
+			for (const auto& entry : entries)
+			{
+				QDomElement section = doc.createElement ("section");
+				body.appendChild (section);
+				QDomElement sectionTitle = doc.createElement ("title");
+				section.appendChild (sectionTitle);
+				QDomElement p1 = doc.createElement ("p");
+				sectionTitle.appendChild (p1);
+				QDomElement strong = doc.createElement ("strong");
+				p1.appendChild (strong);
+				QDomText sectionTitleSubject = doc.createTextNode (entry.Subject_);
+				strong.appendChild (sectionTitleSubject);
+				QDomElement p2 = doc.createElement ("p");
+				section.appendChild (p2);
+				QDomElement emphasis = doc.createElement ("emphasis");
+				p2.appendChild (emphasis);
+				QDomText sectionTitleDate = doc.createTextNode (entry.Date_.toString (Qt::DefaultLocaleLongDate));
+				emphasis.appendChild (sectionTitleDate);
+
+				QWebView wv;
+				wv.setContent (entry.Content_.toUtf8 (), "text/html; charset=UTF-8");
+				QDomElement p3 = doc.createElement ("p");
+				section.appendChild (p3);
+				QDomText content = doc.createTextNode (wv.page ()->
+						currentFrame ()->toPlainText ());
+				p3.appendChild (content);
+			}
+
+			QFile file (filePath);
+			if (!file.open (QIODevice::WriteOnly))
+			{
+				QMessageBox::warning (0,
+					"LeechCraft",
+					QObject::tr ("Unable to open file %1: %2")
+						.arg (filePath)
+						.arg (file.errorString ()));
+				return;
+			}
+
+			file.write (doc.toByteArray ());
+			file.close ();
 		}
 
 		void WritePdf (const QList<Entry>& entries, const QString& filePath)
@@ -393,7 +436,7 @@ namespace Blogique
 			printer.setPaperSize (QPrinter::A4);
 			printer.setOutputFormat (QPrinter::PdfFormat);
 
-			printer.setOutputFileName(filePath);
+			printer.setOutputFileName (filePath);
 
 			wv.print (&printer);
 		}
