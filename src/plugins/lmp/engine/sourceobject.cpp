@@ -42,6 +42,7 @@ extern "C"
 #include "audiosource.h"
 #include "path.h"
 #include "../core.h"
+#include "../xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -410,7 +411,10 @@ namespace LMP
 			if (cp1252.isEmpty ())
 				return;
 
-			const auto encoding = libguess_determine_encoding (cp1252.constData (), cp1252.size (), GUESS_REGION_RU);
+			const auto region = XmlSettingsManager::Instance ()
+					.property ("TagsRecodingRegion").toString ();
+			const auto encoding = libguess_determine_encoding (cp1252.constData (),
+					cp1252.size (), region.toUtf8 ().constData ());
 			if (!encoding)
 				return;
 
@@ -443,7 +447,10 @@ namespace LMP
 				gst_tag_list_get_string (list, tag, &str);
 				valList = QString::fromUtf8 (str);
 
-				if (tagName == "title" || tagName == "album" || tagName == "artist")
+				const auto recodingEnabled = XmlSettingsManager::Instance ()
+						.property ("EnableTagsRecoding").toBool ();
+				if (recodingEnabled &&
+						(tagName == "title" || tagName == "album" || tagName == "artist"))
 					FixEncoding (valList, str);
 
 				g_free (str);
