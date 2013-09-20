@@ -170,6 +170,7 @@ target_link_libraries (leechcraft_lmp
 
 	${MPRIS_SUBLIB}
 	leechcraft_lmp_common
+	guess
 	)
 
 install (TARGETS leechcraft_lmp DESTINATION ${LC_PLUGINS_DEST})
