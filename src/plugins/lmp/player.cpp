@@ -654,7 +654,7 @@ namespace LMP
 						else if (!s1.first.IsLocalFile () && s2.first.IsLocalFile ())
 							return false;
 						else if (!s1.first.IsLocalFile () || !s2.first.IsLocalFile ())
-							return qHash (s1.first) < qHash (s2.first);
+							return s1.first.ToUrl () < s2.first.ToUrl ();
 						else
 							return sorter (s1.second, s2.second);
 					});
