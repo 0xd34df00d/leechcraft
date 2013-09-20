@@ -58,6 +58,7 @@ namespace Util
 namespace vlc
 {
 	class VlcPlayer;
+	class PlaylistTitleWidget;
 	class VlcWidget : public QWidget
 					, public ITabWidget
 	{
@@ -67,6 +68,7 @@ namespace vlc
 		QObject *const Parent_;
 		VlcPlayer *VlcPlayer_;
 		PlaylistWidget *PlaylistWidget_;
+		PlaylistTitleWidget *TitleWidget_;
 		QToolBar *Bar_;
 		QAction *Open_;
 		QToolButton *OpenButton_;

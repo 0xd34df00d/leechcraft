@@ -49,67 +49,67 @@ namespace vlc
 		Manager_->SetObject (this);
 		
 		Manager_->RegisterActionInfo ("org.vlc.navigate_left", 
-									ActionInfo (tr ("Key for navigate left in DVD menu"), 
+									ActionInfo (tr ("Navigate left in DVD menu"), 
 									QKeySequence (Qt::Key_Left), 
 									Proxy_->GetIcon ("arrow-left")));
 		
 		Manager_->RegisterActionInfo ("org.vlc.navigate_right",
-									ActionInfo (tr ("Key for navigate right in DVD menu"), 
+									ActionInfo (tr ("Navigate right in DVD menu"), 
 									QKeySequence (Qt::Key_Right), 
 									Proxy_->GetIcon ("arrow-right")));
 		
 		Manager_->RegisterActionInfo ("org.vlc.navigate_up",
-									ActionInfo (tr ("Key for navigate up in DVD menu"), 
+									ActionInfo (tr ("Navigate up in DVD menu"), 
 									QKeySequence (Qt::Key_Up),
 									Proxy_->GetIcon ("arrow-up")));
 		
 		Manager_->RegisterActionInfo ("org.vlc.navigate_down",
-									ActionInfo (tr ("Key for navigate down in DVD menu"), 
+									ActionInfo (tr ("Navigate down in DVD menu"), 
 									QKeySequence (Qt::Key_Down),
 									Proxy_->GetIcon ("arrow-down")));
 		
 		Manager_->RegisterActionInfo ("org.vlc.navigate_enter",
-									ActionInfo (tr ("Key for activate current in DVD menu"), 
+									ActionInfo (tr ("Activate current in DVD menu"), 
 									QKeySequence (Qt::Key_Enter), 
 									Proxy_->GetIcon ("key-enter")));
 		
 		Manager_->RegisterActionInfo ("org.vlc.toggle_fullscreen",
-									ActionInfo (tr ("Key for toggle fullscreen"),
+									ActionInfo (tr ("Toggle fullscreen"),
 									QKeySequence (Qt::Key_F),
 									Proxy_->GetIcon ("view-fullscreen")));
 		
 		Manager_->RegisterActionInfo ("org.vlc.toggle_play",
-									ActionInfo (tr ("Key for switch play/pause"),
+									ActionInfo (tr ("Switch play/pause"),
 									QKeySequence (Qt::Key_Space),
 									Proxy_->GetIcon ("media-playback-start")));
 		
 		Manager_->RegisterActionInfo ("org.vlc.volume_increase",
-									ActionInfo (tr ("Key for increasing volume"),
+									ActionInfo (tr ("Increase volume"),
 									QKeySequence (Qt::Key_Plus),
 									Proxy_->GetIcon ("audio-volume-high")));
 		
 		Manager_->RegisterActionInfo ("org.vlc.volume_decrease",
-									ActionInfo (tr ("Key for decreasing volume"),
+									ActionInfo (tr ("Decrease volume"),
 									QKeySequence (Qt::Key_Minus),
 									Proxy_->GetIcon ("audio-volume-low")));
 		
 		Manager_->RegisterActionInfo ("org.vlc.plus_3_percent",
-									ActionInfo (tr ("Key for +3 percent"),
+									ActionInfo (tr ("+3% video stream"),
 									QKeySequence (Qt::Key_Asterisk),
 									QIcon ()));
 		
 		Manager_->RegisterActionInfo ("org.vlc.minus_3_percent",
-									ActionInfo (tr ("Key for -3 percent"),
+									ActionInfo (tr ("-3% video stream"),
 									QKeySequence (Qt::Key_Slash),
 									QIcon ()));
 		
 		Manager_->RegisterActionInfo ("org.vlc.plus_10_seconds",
-									ActionInfo (tr ("Key for +10 seconds"),
+									ActionInfo (tr ("+10 seconds video"),
 									QKeySequence (Qt::Key_0),
 									QIcon ()));
 
 		Manager_->RegisterActionInfo ("org.vlc.minus_10_seconds",
-									ActionInfo (tr ("Key for -10 seconds"),
+									ActionInfo (tr ("-10 seconds video"),
 									QKeySequence (Qt::Key_9),
 									QIcon ()));
 	}

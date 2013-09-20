@@ -31,7 +31,8 @@
 
 #include <QWidget>
 
-class QPushButton;
+class QToolButton;
+class QAction;
 
 namespace LeechCraft
 {
@@ -41,12 +42,16 @@ namespace vlc
 	{
 		Q_OBJECT
 		
-		QPushButton *ClearPlaylist_;
-		QPushButton *MagicSort_;
-		QPushButton *AddFiles_;
+		QToolButton *ClearPlaylist_;
+		QToolButton *MagicSort_;
+		QToolButton *AddFiles_;
 	
 	public:
 		explicit PlaylistTitleWidget (QWidget *parent = 0);
+		
+		QAction *ClearAction_;
+		QAction *MagicAction_;
+		QAction *AddAction_;
 	};
 }
 }

@@ -85,7 +85,6 @@ namespace vlc
 
 		libvlc_media_list_release (Playlist_);
 		libvlc_media_list_player_release (Player_);
-		delete DeleteAction_;
 	}
 	
 	void PlaylistWidget::Init (libvlc_instance_t *instance, libvlc_media_player_t *player)
@@ -108,8 +107,6 @@ namespace vlc
 				SLOT (updateInterface ()));
 		
 		timer->start ();
-
-		DeleteAction_ = new QAction (this);
 	}
 	
 	void PlaylistWidget::AddUrl (const QUrl& url, bool start)
@@ -219,7 +216,7 @@ namespace vlc
 	void PlaylistWidget::resizeEvent (QResizeEvent *event)
 	{
 		QFontMetrics metrics (font ());
-		int len =  (metrics.width ("00:00:00")) + 10;
+		const int len =  (metrics.width (" 00:00:00 "));
 		setColumnWidth (0, event->size ().width () - len);
 		setColumnWidth (1, len);
 	}

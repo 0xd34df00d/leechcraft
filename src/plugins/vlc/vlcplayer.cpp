@@ -71,9 +71,7 @@ namespace vlc
 	{
 		const char * const vlc_args[] = 
 		{
-			"--ffmpeg-hw",
-			"--logfile",
-			(QDir::homePath () + ".leechcraft/vlc-log.txt").toUtf8 ()
+			"--ffmpeg-hw"
 		};
 
 		VlcInstance_ = std::shared_ptr<libvlc_instance_t> (libvlc_new (sizeof (vlc_args) / sizeof (vlc_args [0]), vlc_args), libvlc_release);
@@ -101,7 +99,7 @@ namespace vlc
 	
 	void VlcPlayer::addUrl (const QUrl& url)
 	{
-		QUrl lastMedia = QUrl::fromEncoded (libvlc_media_get_meta (libvlc_media_player_get_media (Mp_.get ()), libvlc_meta_URL));
+		const QUrl &lastMedia = QUrl::fromEncoded (libvlc_media_get_meta (libvlc_media_player_get_media (Mp_.get ()), libvlc_meta_URL));
 		Freeze ();
 		M_.reset (libvlc_media_new_location (VlcInstance_.get (), lastMedia.toEncoded ()), libvlc_media_release);
 		libvlc_media_add_option (M_.get (), ":input-slave=" + url.toEncoded ());

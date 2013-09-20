@@ -71,17 +71,17 @@ namespace
 		return (a - b).manhattanLength ();
 	}
 	
-	const QStringList KNOWN_AUDIO_FILE_FORMATS = {".ac3", ".mp3", ".ogg"};
-	const QStringList KNOWN_SUBTITLES_FILE_FORMATS = {".srt", ".smi", ".ssa", ".ass"};
+	const QStringList Known_Audio_File_Formats = { ".ac3", ".mp3", ".ogg", ".flac", ".aac" };
+	const QStringList Known_Subtitles_File_Formats = { ".srt", ".smi", ".ssa", ".ass" };
 }
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	const int PANEL_SIDE_MARGIN = 5;
-	const int PANEL_BOTTOM_MARGIN = 5;
-	const int PANEL_HEIGHT = 27;
+	const int Panel_Side_Margin = 5;
+	const int Panel_Bottom_Margin = 5;
+	const int Panel_Height = 27;
 	
 	VlcWidget::VlcWidget (ICoreProxy_ptr proxy, Util::ShortcutManager *manager, QWidget *parent)
 	: QWidget (parent)
@@ -101,7 +101,8 @@ namespace vlc
 		PlaylistDock_ = new QDockWidget (this);
 		PlaylistDock_->setFeatures (QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable);
 		PlaylistDock_->setAllowedAreas (Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-		PlaylistDock_->setTitleBarWidget (new PlaylistTitleWidget (this));
+		TitleWidget_ = new PlaylistTitleWidget (this);
+		PlaylistDock_->setTitleBarWidget (TitleWidget_);
 		
 		auto mw = proxy->GetRootWindowsManager ()->GetMWProxy (0);
 		mw->AddDockWidget (Qt::LeftDockWidgetArea, PlaylistDock_);
@@ -111,6 +112,7 @@ namespace vlc
 		PlaylistDock_->setWidget (PlaylistWidget_);
 		
 		VlcPlayer_ = new VlcPlayer (VlcMainWidget_);
+		
 		QSizePolicy pol (QSizePolicy::Expanding, QSizePolicy::Expanding);
 		pol.setHorizontalStretch (255);
 		pol.setVerticalStretch (255);
@@ -175,16 +177,6 @@ namespace vlc
 				this,
 				SLOT (toggleFullScreen ()));
 		
-		connect (VlcPlayer_,
-				SIGNAL (stable ()),
-				ScrollBar_,
-				SLOT (unBlockUpdating ()));
-		
-		connect (VlcPlayer_,
-				SIGNAL (unstable ()),
-				ScrollBar_,
-				SLOT (blockUpdating ()));
-		
 		connect (DisableScreenSaver_,
 				SIGNAL (timeout ()),
 				this,
@@ -194,6 +186,16 @@ namespace vlc
 				SIGNAL (savePlaylist (QStringList)),
 				this,
 				SLOT (savePlaylist (QStringList)));
+		
+		connect (VlcPlayer_,
+				SIGNAL (stable ()),
+				ScrollBar_,
+				SLOT (unBlockUpdating ()));
+		
+		connect (VlcPlayer_,
+				SIGNAL (unstable ()),
+				ScrollBar_,
+				SLOT (blockUpdating ()));
 		
 		InitNavigations ();
 		InitVolumeActions ();
@@ -225,14 +227,13 @@ namespace vlc
 	
 	void VlcWidget::savePlaylist (const QStringList& list)
 	{
-		qWarning () << list;
-		Settings_->setValue ("Playlist", QVariant (list));
+		Settings_->setValue ("Playlist", list);
 	}
 
 	void VlcWidget::RestorePlaylist ()
 	{
 		QStringList playlist = Settings_->value ("Playlist").toStringList ();
-		if (playlist.size() < 2)
+		if (playlist.size () < 2)
 			return;
 		
 		for (int i = 0; i < playlist.size () - 1; i++)
@@ -351,10 +352,10 @@ namespace vlc
 			
 			if (FullScreenPanel_->isVisible ()) 
 			{
-				if (QCursor::pos ().x () > PANEL_SIDE_MARGIN && 
-					QCursor::pos ().x () < FullScreenWidget_->width () - PANEL_SIDE_MARGIN &&
-					QCursor::pos ().y () < FullScreenWidget_->height () - PANEL_BOTTOM_MARGIN && 
-					QCursor::pos ().y () > FullScreenWidget_->height () - PANEL_BOTTOM_MARGIN - PANEL_HEIGHT)
+				if (QCursor::pos ().x () > Panel_Side_Margin && 
+					QCursor::pos ().x () < FullScreenWidget_->width () - Panel_Side_Margin &&
+					QCursor::pos ().y () < FullScreenWidget_->height () - Panel_Bottom_Margin && 
+					QCursor::pos ().y () > FullScreenWidget_->height () - Panel_Bottom_Margin - Panel_Height)
 				{
 					fullScreenPanelRequested ();
 					FullScreenPanel_->setWindowOpacity (0.8);
@@ -727,8 +728,8 @@ namespace vlc
 		if (!AllowFullScreenPanel_ || !FullScreenWidget_->isVisible ())
 			return;
 		
-		FullScreenPanel_->setGeometry (PANEL_SIDE_MARGIN, FullScreenWidget_->height () - PANEL_BOTTOM_MARGIN - PANEL_HEIGHT, 
-									   FullScreenWidget_->width () - PANEL_SIDE_MARGIN * 2, PANEL_HEIGHT);
+		FullScreenPanel_->setGeometry (Panel_Side_Margin, FullScreenWidget_->height () - Panel_Bottom_Margin - Panel_Height, 
+									   FullScreenWidget_->width () - Panel_Side_Margin * 2, Panel_Height);
 		if (!FullScreenPanel_->isVisible ())
 			FullScreenPanel_->show ();
 		else
@@ -912,9 +913,9 @@ namespace vlc
 	{
 		QUrl main = event->mimeData ()->urls () [0];
 		event->accept ();
-		if (KNOWN_AUDIO_FILE_FORMATS.contains(main.toString ().right (4)))
+		if (Known_Audio_File_Formats.contains (main.toString ().right (4)))
 			VlcPlayer_->addUrl (main);
-		else if (KNOWN_SUBTITLES_FILE_FORMATS.contains(main.toString ().right (4)))
+		else if (Known_Subtitles_File_Formats.contains (main.toString ().right (4)))
 			VlcPlayer_->AddSubtitles (main.toEncoded ());
 		else
 		{

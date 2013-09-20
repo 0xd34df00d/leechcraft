@@ -37,6 +37,7 @@
 #include <QItemSelectionModel>
 #include <QUrl>
 #include <vlc/vlc.h>
+#include <boost/concept_check.hpp>
 #include "playlistwidget.h"
 
 namespace LeechCraft
@@ -87,7 +88,7 @@ namespace vlc
 			Items_ [ColumnName] [i]->setText (QString::fromUtf8 (libvlc_media_get_meta (media, libvlc_meta_Title)));
 			
 			if (!libvlc_media_is_parsed (media))
-				libvlc_media_parse_async (media);
+				libvlc_media_parse (media);
 				
 			QTime time (0, 0);
 			time = time.addMSecs (libvlc_media_get_duration (media));
@@ -103,7 +104,10 @@ namespace vlc
 	
 	bool PlaylistModel::dropMimeData (const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex& parent)
 	{
-		const QList <QUrl>& urls = data->urls ();
+		const QList<QUrl>& urls = data->urls ();
+		if (urls.size () == 0)
+			return false;
+		
 		if (parent != invisibleRootItem ()->index ())
 			row = parent.row () - 1;
 		else	
@@ -121,9 +125,19 @@ namespace vlc
 		}
 		
 		QList<libvlc_media_t*> mediaList;
-		if (data->colorData ().toString () == "vtyulb")
+		
+		bool dropFromThis = false;
+		const int count = libvlc_media_list_count (Playlist_);
+		for (int i = 0; i < count; i++)
+			if (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL) == urls [0].toString ())
+			{
+				dropFromThis = true;
+				break;
+			}
+		
+		if (dropFromThis)
 			for (int i = 0; i < urls.size (); i++)
-				mediaList << FindAndDelete (urls [i]);
+				mediaList << Take (urls [i]);
 		else
 			for (int i = 0; i < urls.size (); i++)
 				mediaList << libvlc_media_new_path (Instance_, urls [i].toEncoded ());
@@ -153,7 +167,7 @@ namespace vlc
 	
 	QStringList PlaylistModel::mimeTypes () const
 	{
-		return QStringList ("text/uri-list");
+		return { "text/uri-list" };
 	}
 	
 	QMimeData* PlaylistModel::mimeData (const QModelIndexList& indexes) const
@@ -168,7 +182,6 @@ namespace vlc
 				urls << QUrl (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, indexes [i].row ()), libvlc_meta_URL));
 		
 		result->setUrls (urls);
-		result->setColorData (QVariant ("vtyulb"));
 		return result;
 	}
 	
@@ -177,7 +190,7 @@ namespace vlc
 		return Qt::MoveAction | Qt::CopyAction;
 	}
 		
-	libvlc_media_t* PlaylistModel::FindAndDelete (QUrl url)
+	libvlc_media_t* PlaylistModel::Take (const QUrl& url)
 	{
 		libvlc_media_t *res = nullptr;
 		for (int i = 0; i < libvlc_media_list_count (Playlist_); i++)

@@ -30,7 +30,8 @@
 #include "playlisttitlewidget.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QPushButton>
+#include <QToolButton>
+#include <QAction>
 #include <QLabel>
 
 namespace LeechCraft
@@ -46,9 +47,17 @@ namespace vlc
 		
 		QHBoxLayout *layout2 = new QHBoxLayout;
 		
-		ClearPlaylist_ = new QPushButton (tr ("Clear"));
-		MagicSort_ = new QPushButton (tr ("Magic"));
-		AddFiles_ = new QPushButton (tr ("Add"));
+		ClearPlaylist_ = new QToolButton;
+		ClearAction_ = new QAction (ClearPlaylist_);
+		ClearPlaylist_->setDefaultAction (ClearAction_);
+		
+		MagicSort_ = new QToolButton;
+		MagicAction_ = new QAction (MagicSort_);
+		MagicSort_->setDefaultAction (MagicAction_);
+		
+		AddFiles_ = new QToolButton;
+		AddAction_ = new QAction (AddFiles_);
+		AddFiles_->setDefaultAction (AddAction_);
 		
 		layout2->addWidget (AddFiles_);
 		layout2->addWidget (MagicSort_);

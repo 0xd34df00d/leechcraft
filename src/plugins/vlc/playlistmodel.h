@@ -73,7 +73,7 @@ namespace vlc
 		inline QVector<QStandardItem*>* GetPublicItems () {return &Items_[ColumnName];};
 		
 	private:
-		libvlc_media_t* FindAndDelete (QUrl);
+		libvlc_media_t* Take (const QUrl&);
 		
 	public slots:
 		void updateTable ();

@@ -60,7 +60,6 @@ namespace vlc
 		
 		QStandardItem *LastPlayingItem_;
 		PlaylistModel *Model_;
-		QAction *DeleteAction_;
 		const QIcon PlayIcon_;
 	
 	public:
