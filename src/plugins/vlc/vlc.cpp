@@ -94,22 +94,22 @@ namespace vlc
 									Proxy_->GetIcon ("audio-volume-low")));
 		
 		Manager_->RegisterActionInfo ("org.vlc.plus_3_percent",
-									ActionInfo (tr ("+3% video stream"),
+									ActionInfo (tr ("3% seek forward"),
 									QKeySequence (Qt::Key_Asterisk),
 									QIcon ()));
 		
 		Manager_->RegisterActionInfo ("org.vlc.minus_3_percent",
-									ActionInfo (tr ("-3% video stream"),
+									ActionInfo (tr ("3% seek backward"),
 									QKeySequence (Qt::Key_Slash),
 									QIcon ()));
 		
 		Manager_->RegisterActionInfo ("org.vlc.plus_10_seconds",
-									ActionInfo (tr ("+10 seconds video"),
+									ActionInfo (tr ("10 seconds seek forward"),
 									QKeySequence (Qt::Key_0),
 									QIcon ()));
 
 		Manager_->RegisterActionInfo ("org.vlc.minus_10_seconds",
-									ActionInfo (tr ("-10 seconds video"),
+									ActionInfo (tr ("10 seconds seek backward"),
 									QKeySequence (Qt::Key_9),
 									QIcon ()));
 	}
