@@ -195,7 +195,16 @@ namespace Hestia
 
 	void LocalBlogAccount::GetEntriesWithFilter (const Filter& filter)
 	{
-		//TODO
+		try
+		{
+			emit gotFilteredEntries (AccountStorage_->GetEntriesWithFilter (filter));
+			emit gettingFilteredEntriesFinished ();
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+		}
 	}
 
 	QHash<QString, int> LocalBlogAccount::GetTags () const

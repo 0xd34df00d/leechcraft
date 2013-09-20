@@ -321,6 +321,44 @@ namespace Hestia
 		return list;
 	}
 
+	QList<Entry> AccountStorage::GetEntriesWithFilter (const Filter& filter)
+	{
+		GetFilteredEntries_.bindValue (":beginDate", filter.BeginDate_);
+		GetFilteredEntries_.bindValue (":endDate", filter.EndDate_);
+		if (!GetFilteredEntries_.exec ())
+		{
+			Util::DBLock::DumpError (GetFilteredEntries_);
+			throw std::runtime_error ("unable to get entries");
+		}
+
+		QList<Entry> list;
+		while (GetFilteredEntries_.next ())
+		{
+			Entry e;
+			e.EntryId_ = GetFilteredEntries_.value (0).toLongLong ();
+			e.Content_ = GetFilteredEntries_.value (1).toString ();
+			e.Date_ = GetFilteredEntries_.value (2).toDateTime ();
+			e.Subject_ = GetFilteredEntries_.value (3).toString ();
+
+			GetEntryTags_.bindValue (":entry_id", e.EntryId_);
+			e.Tags_ = GetTags (GetEntryTags_);
+
+			bool found = false;
+			for (const auto& tag : filter.Tags_)
+				if (e.Tags_.contains (tag))
+				{
+					found = true;
+					break;
+				}
+
+			if (found)
+				list << e;
+		}
+		GetFilteredEntries_.finish ();
+
+		return list;
+	}
+
 	QMap<QDate, int> AccountStorage::GetEntriesCountByDate ()
 	{
 		if (!GetEntriesCountByDate_.exec ())
@@ -440,6 +478,9 @@ namespace Hestia
 		GetEntriesCountByDate_ = QSqlQuery (AccountDB_);
 		GetEntriesCountByDate_.prepare ("SELECT date (Date), COUNT (Id) FROM entries "
 				"GROUP BY date (Date);");
+		GetFilteredEntries_ = QSqlQuery (AccountDB_);
+		GetFilteredEntries_.prepare ("SELECT  Id, Entry, Date, Subject FROM entries "
+				"WHERE Date >= :beginDate AND Date <= :endDate;");
 
 		AddEntryTag_ = QSqlQuery (AccountDB_);
 		AddEntryTag_.prepare ("INSERT INTO tags "

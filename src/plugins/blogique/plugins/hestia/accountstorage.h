@@ -61,6 +61,7 @@ namespace Hestia
 		QSqlQuery GetFullEntry_;
 		QSqlQuery GetEntriesByDate_;
 		QSqlQuery GetEntriesCountByDate_;
+		QSqlQuery GetFilteredEntries_;
 
 		QSqlQuery AddEntryTag_;
 		QSqlQuery RemoveEntryTags_;
@@ -86,6 +87,7 @@ namespace Hestia
 		QList<Entry> GetEntries (Mode mode);
 		QList<Entry> GetLastEntries (Mode mode, int count);
 		QList<Entry> GetEntriesByDate (const QDate& date);
+		QList<Entry> GetEntriesWithFilter (const Filter& filter);
 		QMap<QDate, int> GetEntriesCountByDate ();
 		Entry GetFullEntry (qint64 entryId);
 		QHash<QString, int> GetAllTags ();
