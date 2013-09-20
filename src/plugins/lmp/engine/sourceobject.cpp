@@ -31,7 +31,14 @@
 #include <memory>
 #include <QtDebug>
 #include <QTimer>
+#include <QTextCodec>
 #include <gst/gst.h>
+
+extern "C"
+{
+#include <libguess/libguess.h>
+}
+
 #include "audiosource.h"
 #include "path.h"
 #include "../core.h"
@@ -397,10 +404,36 @@ namespace LMP
 
 	namespace
 	{
+		void FixEncoding (QString& out, const gchar *origStr)
+		{
+			const auto& cp1252 = QTextCodec::codecForName ("CP-1252")->fromUnicode (origStr);
+			if (cp1252.isEmpty ())
+				return;
+
+			const auto encoding = libguess_determine_encoding (cp1252.constData (), cp1252.size (), GUESS_REGION_RU);
+			if (!encoding)
+				return;
+
+			auto codec = QTextCodec::codecForName (encoding);
+			if (!codec)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "no codec for encoding"
+						<< encoding;
+				return;
+			}
+
+			const auto& proper = codec->toUnicode (cp1252.constData ());
+			if (!proper.isEmpty ())
+				out = proper;
+		}
+
 		void TagFunction (const GstTagList *list, const gchar *tag, gpointer data)
 		{
 			auto& map = *static_cast<SourceObject::TagMap_t*> (data);
-			auto& valList = map [QString::fromUtf8 (tag).toLower ()];
+
+			const auto& tagName = QString::fromUtf8 (tag).toLower ();
+			auto& valList = map [tagName];
 
 			switch (gst_tag_get_type (tag))
 			{
@@ -409,6 +442,10 @@ namespace LMP
 				gchar *str = nullptr;
 				gst_tag_list_get_string (list, tag, &str);
 				valList = QString::fromUtf8 (str);
+
+				if (tagName == "title" || tagName == "album" || tagName == "artist")
+					FixEncoding (valList, str);
+
 				g_free (str);
 				break;
 			}
