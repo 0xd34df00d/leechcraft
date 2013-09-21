@@ -112,11 +112,14 @@ namespace vlc
 	void PlaylistWidget::AddUrl (const QUrl& url, bool start)
 	{
 		for (int i = 0; i < libvlc_media_list_count (Playlist_); i++)
+		{
+			qDebug () << url.toEncoded() << libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL);
 			if (url.toEncoded () == libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL))
 			{
 				qWarning () << Q_FUNC_INFO << "Ignoring already added url";
 				return;
 			}
+		}
 		libvlc_media_t *m = libvlc_media_new_path (Instance_, url.toEncoded ());
 		libvlc_media_set_meta (m, libvlc_meta_URL, url.toEncoded ());
 		libvlc_media_list_add_media (Playlist_, m);
@@ -138,13 +141,6 @@ namespace vlc
 			libvlc_media_list_player_pause (Player_);
 		else
 			libvlc_media_list_player_play (Player_);
-	}
-	
-	void PlaylistWidget::Clear ()
-	{
-		libvlc_media_list_player_stop (Player_);
-		while (libvlc_media_list_count (Playlist_))
-			libvlc_media_list_remove_index (Playlist_, 0);
 	}
 	
 	void PlaylistWidget::updateInterface ()

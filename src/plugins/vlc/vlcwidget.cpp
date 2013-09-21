@@ -273,7 +273,7 @@ namespace vlc
 													tr ("Open file"),
 													tr ("Videos (*.mkv *.avi *.mov *.mpg)"));
 		
-		PlaylistWidget_->Clear ();
+		PlaylistWidget_->clearPlaylist ();
 		for (int i = 0; i < files.size (); i++)
 			if (QFile::exists (files [i]))
 				PlaylistWidget_->AddUrl (QUrl::fromLocalFile (files [i]), Autostart_);
@@ -287,7 +287,7 @@ namespace vlc
 		
 		if (QFile::exists (folder))
 		{
-			PlaylistWidget_->Clear ();
+			PlaylistWidget_->clearPlaylist ();
 			PlaylistWidget_->AddUrl (QUrl ("directory://" + folder), Autostart_);
 		}
 	}
@@ -300,7 +300,7 @@ namespace vlc
 		
 		if (QFile::exists (folder))
 		{
-			PlaylistWidget_->Clear ();
+			PlaylistWidget_->clearPlaylist ();
 			PlaylistWidget_->AddUrl (QUrl ("dvdsimple://" + folder), Autostart_);
 		}
 	}
@@ -313,7 +313,7 @@ namespace vlc
 		
 		if (QFile::exists (folder))
 		{
-			PlaylistWidget_->Clear ();
+			PlaylistWidget_->clearPlaylist ();
 			PlaylistWidget_->AddUrl (QUrl ("dvd://" + folder), Autostart_);
 		}
 	}
@@ -324,7 +324,7 @@ namespace vlc
 		
 		if (!url.isEmpty ())
 		{
-			PlaylistWidget_->Clear ();
+			PlaylistWidget_->clearPlaylist ();
 			PlaylistWidget_->AddUrl (QUrl (url), Autostart_);
 		}
 	}
@@ -928,7 +928,7 @@ namespace vlc
 			VlcPlayer_->AddSubtitles (main.toEncoded ());
 		else
 		{
-			PlaylistWidget_->Clear ();
+			PlaylistWidget_->clearPlaylist ();
 			PlaylistWidget_->AddUrl (main, Autostart_);
 		}
 	}

@@ -70,7 +70,6 @@ namespace vlc
 		void AddUrl (const QUrl&, bool start);
 		bool IsPlaying () const;
 		void Init (libvlc_instance_t *instance, libvlc_media_player_t *player);
-		void Clear ();
 		void DeleteRequested (int index);
 		
 	protected:

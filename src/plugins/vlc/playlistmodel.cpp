@@ -115,7 +115,7 @@ namespace vlc
 		QUrl insertAfter;
 		for (int i = row; i > 0; i--)
 		{
-			QUrl url (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL));
+			QUrl url = QUrl::fromEncoded(libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL));
 			if (!urls.contains (url))
 			{
 				insertAfter = url;
@@ -124,22 +124,17 @@ namespace vlc
 		}
 		
 		QList<libvlc_media_t*> mediaList;
-		
-		bool dropFromThis = false;
-		const int count = libvlc_media_list_count (Playlist_);
-		for (int i = 0; i < count; i++) 
-			if (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL) == urls [0].toEncoded ())
+		for (int i = 0; i < urls.size (); i++)
+		{
+			libvlc_media_t *media = Take (urls [i]);
+			if (media)
+				mediaList << media;
+			else
 			{
-				dropFromThis = true;
-				break;
-			}
-		
-		if (dropFromThis)
-			for (int i = 0; i < urls.size (); i++)
-				mediaList << Take (urls [i]);
-		else
-			for (int i = 0; i < urls.size (); i++)
 				mediaList << libvlc_media_new_path (Instance_, urls [i].toEncoded ());
+				libvlc_media_set_meta (mediaList [i], libvlc_meta_URL, urls [i].toEncoded ());
+			}
+		}
 		
 		int after;
 		if (insertAfter.isEmpty ())
@@ -192,16 +187,14 @@ namespace vlc
 	libvlc_media_t* PlaylistModel::Take (const QUrl& url)
 	{
 		libvlc_media_t *res = nullptr;
-		for (int i = 0; i < libvlc_media_list_count (Playlist_); i++)
-			if (QUrl (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL)) == url)
+		for (int i = 0; i < libvlc_media_list_count (Playlist_); i++) {
+			if (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL) == url.toEncoded ())
 			{
 				res = libvlc_media_list_item_at_index (Playlist_, i);
 				libvlc_media_list_remove_index (Playlist_, i);
 				break;
 			}
-			
-		if (!res)
-			qWarning () << Q_FUNC_INFO << "fatal";
+		}
 		
 		return res;
 	}
