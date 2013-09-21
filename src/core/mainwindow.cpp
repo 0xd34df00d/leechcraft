@@ -540,10 +540,6 @@ void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)
 	}
 }
 
-void LeechCraft::MainWindow::on_MainTabWidget__currentChanged (int index)
-{
-}
-
 namespace
 {
 	Qt::ToolButtonStyle GetToolButtonStyle ()
@@ -735,8 +731,6 @@ void LeechCraft::MainWindow::FillToolMenu ()
 	int i = 0;
 	Q_FOREACH (QAction *act, atm->actions ())
 		Ui_.MainTabWidget_->InsertAction2TabBar (i++, act);
-
-	on_MainTabWidget__currentChanged (0);
 }
 
 void LeechCraft::MainWindow::InitializeShortcuts ()

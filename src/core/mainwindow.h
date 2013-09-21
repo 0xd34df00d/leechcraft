@@ -132,7 +132,6 @@ namespace LeechCraft
 		void on_ActionShowStatusBar__triggered ();
 		void on_ActionMenu__triggered ();
 		void on_ActionFullscreenMode__triggered (bool);
-		void on_MainTabWidget__currentChanged (int);
 		void handleShortcutFullscreenMode ();
 		void handleToolButtonStyleChanged ();
 		void handleShowTrayIconChanged ();
