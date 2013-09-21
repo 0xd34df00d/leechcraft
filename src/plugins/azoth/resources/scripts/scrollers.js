@@ -1,6 +1,6 @@
 function ScrollToBottom() {
 	if (window.ShouldScroll)
-		window.scroll(0, document.height - window.innerHeight + 100);
+		document.body.scrollTop = document.height - window.innerHeight;
 }
 function TestScroll() {
 	window.ShouldScroll = document.height <= (window.innerHeight + window.pageYOffset + window.innerHeight / 5);
