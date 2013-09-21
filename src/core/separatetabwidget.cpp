@@ -654,14 +654,17 @@ namespace LeechCraft
 		MainTabBar_->setCurrentIndex (index);
 
 		if (auto bar = tabManager->GetToolBar (index))
+		{
 			AddWidget2SeparateTabWidget (bar);
+			bar->show ();
+		}
 		MainStackedWidget_->setCurrentIndex (index);
 
+		CurrentIndex_ = index;
 		if (CurrentWidget_ != Widget (index))
 		{
 			PreviousWidget_ = CurrentWidget_;
 			CurrentWidget_ = Widget (index);
-			CurrentIndex_ = index;
 			emit currentChanged (index);
 		}
 	}
