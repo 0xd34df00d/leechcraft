@@ -53,7 +53,6 @@
 #include "application.h"
 #include "startupwizard.h"
 #include "aboutdialog.h"
-#include "toolbarguard.h"
 #include "newtabmenumanager.h"
 #include "tabmanager.h"
 #include "coreinstanceobject.h"
@@ -69,7 +68,6 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 , TrayIcon_ (0)
 , IsShown_ (true)
 , WasMaximized_ (false)
-, Guard_ (new ToolbarGuard (this))
 , IsQuitting_ (false)
 , LeftDockToolbar_ (new QToolBar ())
 , RightDockToolbar_ (new QToolBar ())
@@ -170,11 +168,6 @@ void LeechCraft::MainWindow::SetAdditionalTitle (const QString& title)
 		setWindowTitle ("LeechCraft");
 	else
 		setWindowTitle (QString ("%1 - LeechCraft").arg (title));
-}
-
-LeechCraft::ToolbarGuard* LeechCraft::MainWindow::GetGuard () const
-{
-	return Guard_;
 }
 
 QMenu* LeechCraft::MainWindow::GetMainMenu () const
