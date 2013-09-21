@@ -644,8 +644,18 @@ namespace LeechCraft
 				!AddTabButtonAction_->isVisible ())
 			index = WidgetCount () - 1;
 
-		MainStackedWidget_->setCurrentIndex (index);
+		auto rootWM = Core::Instance ().GetRootWindowsManager ();
+		auto tabManager = rootWM->GetTabManager (Window_);
+
+		MainStackedWidget_->setCurrentIndex (-1);
+		if (auto prevBar = tabManager->GetToolBar (CurrentIndex_))
+			RemoveWidgetFromSeparateTabWidget (prevBar);
+
 		MainTabBar_->setCurrentIndex (index);
+
+		if (auto bar = tabManager->GetToolBar (index))
+			AddWidget2SeparateTabWidget (bar);
+		MainStackedWidget_->setCurrentIndex (index);
 
 		if (CurrentWidget_ != Widget (index))
 		{

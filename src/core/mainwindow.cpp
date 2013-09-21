@@ -542,10 +542,6 @@ void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)
 
 void LeechCraft::MainWindow::on_MainTabWidget__currentChanged (int index)
 {
-	auto rootWM = Core::Instance ().GetRootWindowsManager ();
-	auto bar = rootWM->GetTabManager (this)->GetToolBar (index);
-
-	GetGuard ()->AddToolbar (bar);
 }
 
 namespace
