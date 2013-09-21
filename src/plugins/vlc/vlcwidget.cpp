@@ -237,6 +237,7 @@ namespace vlc
 	
 	void VlcWidget::savePlaylist (const QStringList& list)
 	{
+		qDebug () << list;
 		Settings_->setValue ("Playlist", list);
 	}
 

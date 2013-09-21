@@ -56,10 +56,6 @@ namespace vlc
 	
 	PlaylistModel::~PlaylistModel ()
 	{
-		const int size = Items_ [0].size ();
-		for (int i = 0; i < size; i++)
-			libvlc_media_release (libvlc_media_list_item_at_index (Playlist_, i));
-		
 		setRowCount (0);
 	}
 	

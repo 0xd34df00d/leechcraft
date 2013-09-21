@@ -82,6 +82,8 @@ namespace vlc
 			save << QString::number (LastPlayingItem_->row ());
 		
 		emit savePlaylist (save);
+		
+		clearPlaylist ();
 
 		libvlc_media_list_release (Playlist_);
 		libvlc_media_list_player_release (Player_);
