@@ -112,14 +112,12 @@ namespace vlc
 	void PlaylistWidget::AddUrl (const QUrl& url, bool start)
 	{
 		for (int i = 0; i < libvlc_media_list_count (Playlist_); i++)
-		{
-			qDebug () << url.toEncoded() << libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL);
 			if (url.toEncoded () == libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL))
 			{
 				qWarning () << Q_FUNC_INFO << "Ignoring already added url";
 				return;
 			}
-		}
+		
 		libvlc_media_t *m = libvlc_media_new_path (Instance_, url.toEncoded ());
 		libvlc_media_set_meta (m, libvlc_meta_URL, url.toEncoded ());
 		libvlc_media_list_add_media (Playlist_, m);
@@ -149,8 +147,8 @@ namespace vlc
 		int currentRow = libvlc_media_list_index_of_item (Playlist_, libvlc_media_player_get_media (NativePlayer_));
 				
 		bool find = false;
-		for (int i = 0; i < Model_->GetPublicItems ()->size (); i++)
-			if (LastPlayingItem_ == ((*Model_->GetPublicItems ()) [i]))
+		for (int i = 0; i < Model_->rowCount (); i++)
+			if (LastPlayingItem_ == Model_->item (i))
 			{
 				find = true;
 				break;

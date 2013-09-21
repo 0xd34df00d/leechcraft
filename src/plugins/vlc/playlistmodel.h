@@ -70,7 +70,6 @@ namespace vlc
 		Qt::DropActions supportedDropActions () const;
 		
 		void AddUrl (const QUrl&);
-		inline QVector<QStandardItem*>* GetPublicItems () {return &Items_[ColumnName];};
 		
 	private:
 		libvlc_media_t* Take (const QUrl&);

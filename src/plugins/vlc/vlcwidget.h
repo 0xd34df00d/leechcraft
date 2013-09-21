@@ -152,6 +152,7 @@ namespace vlc
 		
 	private slots:
 		void addFiles ();
+		void addFilesWithoutClearingPlaylist ();
 		void addFolder ();
 		void addUrl ();
 		void addDVD ();

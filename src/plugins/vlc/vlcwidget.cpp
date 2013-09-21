@@ -200,7 +200,7 @@ namespace vlc
 		connect (TitleWidget_->AddAction_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (addFiles ()));
+				SLOT (addFilesWithoutClearingPlaylist ()));
 		
 		connect (TitleWidget_->ClearAction_,
 				SIGNAL (triggered ()),
@@ -270,13 +270,25 @@ namespace vlc
 	void VlcWidget::addFiles ()
 	{
 		QStringList files = QFileDialog::getOpenFileNames (this,
-													tr ("Open file"),
+													tr ("Open files"),
 													tr ("Videos (*.mkv *.avi *.mov *.mpg)"));
 		
 		PlaylistWidget_->clearPlaylist ();
 		for (int i = 0; i < files.size (); i++)
 			if (QFile::exists (files [i]))
 				PlaylistWidget_->AddUrl (QUrl::fromLocalFile (files [i]), Autostart_);
+	}
+	
+	void VlcWidget::addFilesWithoutClearingPlaylist ()
+	{
+		QStringList files = QFileDialog::getOpenFileNames (this,
+													tr ("Open files"),
+													tr ("Videos (*.mkv *.avi *.mov *.mpg)"));
+		
+		for (int i = 0; i < files.size (); i++)
+			if (QFile::exists (files [i]))
+				PlaylistWidget_->AddUrl (QUrl::fromLocalFile (files [i]), Autostart_);
+
 	}
 	
 	void VlcWidget::addFolder () 
