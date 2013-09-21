@@ -268,8 +268,12 @@ namespace LMP
 	void PlayerTab::SetupNavButtons ()
 	{
 		NavBar_ = new QTabBar ();
-		NavBar_->setShape (QTabBar::RoundedWest);
 		NavBar_->hide ();
+		NavBar_->setShape (QTabBar::RoundedWest);
+		NavBar_->setUsesScrollButtons (false);
+		NavBar_->setElideMode (Qt::ElideRight);
+		NavBar_->setExpanding (false);
+		NavBar_->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Expanding);
 
 		NavButtons_ = new QListWidget ();
 		NavButtons_->hide ();
