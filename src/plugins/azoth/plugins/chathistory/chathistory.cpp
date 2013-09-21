@@ -38,6 +38,7 @@
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/azothcommon.h>
+#include <interfaces/azoth/imucentry.h>
 #include "core.h"
 #include "chathistorywidget.h"
 #include "historymessage.h"
@@ -286,21 +287,40 @@ namespace ChatHistory
 			return;
 
 		QObject *entryObj = RequestedLogs_ [accId].take (entryId);
+		auto mucEntry = qobject_cast<IMUCEntry*> (entryObj);
+
+		const auto& parts = mucEntry ?
+				mucEntry->GetParticipants () :
+				QObjectList ();
 
 		QList<QObject*> result;
-		Q_FOREACH (const QVariant& messageVar, logs.toList ())
+		for (const auto& messageVar : logs.toList ())
 		{
 			const QVariantMap& msgMap = messageVar.toMap ();
 
-			const IMessage::Direction dir =
-				msgMap ["Direction"].toString () == "IN" ?
+			const auto& variant = msgMap ["Variant"].toString ();
+			QObject *participantObj = nullptr;
+			for (auto part : parts)
+				if (qobject_cast<ICLEntry*> (part)->GetEntryName () == variant)
+				{
+					participantObj = part;
+					break;
+				}
+
+			const auto dir = msgMap ["Direction"].toString () == "IN" ?
 						IMessage::DIn :
 						IMessage::DOut;
+			const auto type = participantObj ?
+					IMessage::MTMUCMessage :
+					IMessage::MTChatMessage;
+
 			HistoryMessage *msg = new HistoryMessage (dir,
-					entryObj,
-					msgMap ["Variant"].toString (),
+					participantObj ? participantObj : entryObj,
+					type,
+					participantObj ? QString () : variant,
 					msgMap ["Message"].toString (),
 					msgMap ["Date"].toDateTime ());
+
 			result << msg;
 		}
 

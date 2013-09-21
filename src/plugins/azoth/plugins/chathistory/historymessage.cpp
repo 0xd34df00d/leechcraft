@@ -29,6 +29,7 @@
 
 #include "historymessage.h"
 #include <QtDebug>
+#include <interfaces/azoth/imucentry.h>
 
 namespace LeechCraft
 {
@@ -38,11 +39,13 @@ namespace ChatHistory
 {
 	HistoryMessage::HistoryMessage (IMessage::Direction dir,
 			QObject *otherPart,
+			MessageType type,
 			const QString& variant,
 			const QString& body,
 			const QDateTime& dt)
 	: Direction_ (dir)
 	, OtherPart_ (otherPart)
+	, Type_ (type)
 	, Variant_ (variant)
 	, Body_ (body)
 	, DateTime_ (dt)
@@ -73,7 +76,7 @@ namespace ChatHistory
 
 	IMessage::MessageType HistoryMessage::GetMessageType () const
 	{
-		return MTChatMessage;
+		return Type_;
 	}
 
 	IMessage::MessageSubType HistoryMessage::GetMessageSubType () const
