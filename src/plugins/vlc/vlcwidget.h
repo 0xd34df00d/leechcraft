@@ -151,7 +151,7 @@ namespace vlc
 		void autostartChanged ();
 		
 	private slots:
-		void addFile ();
+		void addFiles ();
 		void addFolder ();
 		void addUrl ();
 		void addDVD ();

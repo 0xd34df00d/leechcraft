@@ -160,7 +160,7 @@ namespace vlc
 		connect (Open_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (addFile ()));
+				SLOT (addFiles ()));
 		
 		connect (TogglePlay_,
 				SIGNAL (triggered ()),
@@ -200,7 +200,7 @@ namespace vlc
 		connect (TitleWidget_->AddAction_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (addFile ()));
+				SLOT (addFiles ()));
 		
 		connect (TitleWidget_->ClearAction_,
 				SIGNAL (triggered ()),
@@ -267,17 +267,16 @@ namespace vlc
 		deleteLater ();
 	}
 	
-	void VlcWidget::addFile ()
+	void VlcWidget::addFiles ()
 	{
-		QString file = QFileDialog::getOpenFileName (this,
+		QStringList files = QFileDialog::getOpenFileNames (this,
 													tr ("Open file"),
 													tr ("Videos (*.mkv *.avi *.mov *.mpg)"));
 		
-		if (QFile::exists (file))
-		{
-			PlaylistWidget_->Clear ();
-			PlaylistWidget_->AddUrl (QUrl::fromLocalFile (file), Autostart_);
-		}
+		PlaylistWidget_->Clear ();
+		for (int i = 0; i < files.size (); i++)
+			if (QFile::exists (files [i]))
+				PlaylistWidget_->AddUrl (QUrl::fromLocalFile (files [i]), Autostart_);
 	}
 	
 	void VlcWidget::addFolder () 
@@ -774,7 +773,7 @@ namespace vlc
 		connect (result->addAction (tr ("Open file")),
 				SIGNAL (triggered ()),
 				this,
-				SLOT (addFile ()));
+				SLOT (addFiles ()));
 		
 		connect (result->addAction (tr ("Open folder")),
 				SIGNAL (triggered ()),
@@ -942,7 +941,8 @@ namespace vlc
 	
 	void VlcWidget::disableScreenSaver ()
 	{
-		system ("qdbus org.freedesktop.ScreenSaver /ScreenSaver SimulateUserActivity > /dev/null"); //hello kaffeinety
+		if (libvlc_media_player_is_playing (VlcPlayer_->GetPlayer ().get ()))
+			system ("qdbus org.freedesktop.ScreenSaver /ScreenSaver SimulateUserActivity > /dev/null"); //hello kaffeinety
 	}
 	
 	void VlcWidget::autostartChanged ()

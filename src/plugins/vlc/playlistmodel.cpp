@@ -127,8 +127,8 @@ namespace vlc
 		
 		bool dropFromThis = false;
 		const int count = libvlc_media_list_count (Playlist_);
-		for (int i = 0; i < count; i++)
-			if (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL) == urls [0].toString ())
+		for (int i = 0; i < count; i++) 
+			if (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL) == urls [0].toEncoded ())
 			{
 				dropFromThis = true;
 				break;
