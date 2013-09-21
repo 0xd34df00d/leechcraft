@@ -298,6 +298,7 @@ namespace LMP
 			but->setIcon (icon);
 
 			NavBar_->addTab (icon, title);
+			NavBar_->setTabToolTip (NavBar_->count () - 1, title);
 		};
 
 		mkButton (tr ("Current song"), "view-media-lyrics");
