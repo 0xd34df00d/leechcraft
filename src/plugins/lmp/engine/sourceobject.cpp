@@ -34,10 +34,12 @@
 #include <QTextCodec>
 #include <gst/gst.h>
 
+#ifdef WITH_LIBGUESS
 extern "C"
 {
 #include <libguess/libguess.h>
 }
+#endif
 
 #include "audiosource.h"
 #include "path.h"
@@ -407,6 +409,7 @@ namespace LMP
 	{
 		void FixEncoding (QString& out, const gchar *origStr)
 		{
+#ifdef WITH_LIBGUESS
 			const auto& cp1252 = QTextCodec::codecForName ("CP-1252")->fromUnicode (origStr);
 			if (cp1252.isEmpty ())
 				return;
@@ -430,6 +433,10 @@ namespace LMP
 			const auto& proper = codec->toUnicode (cp1252.constData ());
 			if (!proper.isEmpty ())
 				out = proper;
+#else
+			Q_UNUSED (out);
+			Q_UNUSED (origStr);
+#endif
 		}
 
 		void TagFunction (const GstTagList *list, const gchar *tag, gpointer data)
