@@ -69,7 +69,7 @@ namespace Util
 			ss.append ("255,0,0");
 		else
 		{
-			auto color = Ui_->Pattern_->palette ().color (QPalette::Base);
+			auto color = QApplication::palette ().color (QPalette::Base);
 			color.setRedF (color.redF () / 2);
 			color.setBlueF (color.blueF () / 2);
 
