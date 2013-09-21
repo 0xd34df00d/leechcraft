@@ -8,6 +8,6 @@ function TestScroll() {
 function InstallEventListeners() {
 	window.ShouldScroll = true;
 	document.body.addEventListener ("DOMNodeInserted", function () { setTimeout (ScrollToBottom, 0); }, false);
-	window.addEventListener ("resize", function () { setTimeout (ScrollToBottom, 2); });
+	window.addEventListener ("resize", function () { setTimeout (ScrollToBottom, 0); });
 	window.addEventListener ("scroll", TestScroll);
 }
