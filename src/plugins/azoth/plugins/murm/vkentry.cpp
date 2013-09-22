@@ -93,6 +93,13 @@ namespace Murm
 		{
 			emit statusChanged (GetStatus (""), "");
 			emit availableVariantsChanged (Variants ());
+
+			auto msg = new VkMessage (IMessage::DIn, IMessage::MTStatusMessage, this);
+			const auto& entryName = GetEntryName ();
+			msg->SetBody (info.IsOnline_ ?
+					tr ("%1 is now on the site again").arg (entryName) :
+					tr ("%1 has left the site").arg (entryName));
+			Store (msg);
 		}
 	}
 
