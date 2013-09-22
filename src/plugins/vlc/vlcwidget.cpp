@@ -562,14 +562,12 @@ namespace vlc
 	{
 		InterfaceUpdater_->stop ();
 		DisableScreenSaver_->stop ();
-		allowScreenSaver ();
 	}
 	
 	void VlcWidget::TabMadeCurrent ()
 	{
 		InterfaceUpdater_->start ();
 		DisableScreenSaver_->start ();
-		disableScreenSaver ();
 	}
 	
 	void VlcWidget::ForbidFullScreen ()
@@ -990,25 +988,11 @@ namespace vlc
 	
 	void VlcWidget::disableScreenSaver ()
 	{
-		if (libvlc_media_player_is_playing (VlcPlayer_->GetPlayer ().get ()))
-		{
-			auto e = Util::MakeEntity ("ScreensaverProhibition", {}, {}, "x-leechcraft/power-management");
-			e.Additional_ ["ContextID"] = "org.vlc.VlcTab";
-			e.Additional_ ["Enable"] = true; 
-			
-			Proxy_->GetEntityManager ()->HandleEntity (e);
-		}
-		else
-			allowScreenSaver();
-	}
-	
-	void VlcWidget::allowScreenSaver ()
-	{
 		auto e = Util::MakeEntity ("ScreensaverProhibition", {}, {}, "x-leechcraft/power-management");
 		e.Additional_ ["ContextID"] = "org.vlc.VlcTab";
-		e.Additional_ ["Enable"] = false; 
+		e.Additional_ ["Enable"] = libvlc_media_player_is_playing (VlcPlayer_->GetPlayer ().get ()); 
 		
-		Proxy_->GetEntityManager ()->HandleEntity (e);	
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 	
 	void VlcWidget::autostartChanged ()

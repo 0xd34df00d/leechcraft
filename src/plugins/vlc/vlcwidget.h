@@ -187,7 +187,6 @@ namespace vlc
 		void ForbidPanel ();
 		
 		void disableScreenSaver ();
-		void allowScreenSaver ();
 		
 		void savePlaylist (const QStringList&);
 		
