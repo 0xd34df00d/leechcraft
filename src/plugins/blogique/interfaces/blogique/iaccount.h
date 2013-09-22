@@ -75,6 +75,19 @@ namespace Blogique
 		};
 	};
 
+
+	struct Filter
+	{
+		bool CustomDate_;
+		QDateTime BeginDate_;
+		QDateTime EndDate_;
+		QStringList Tags_;
+
+		Filter ()
+		: CustomDate_ (false)
+		{}
+	};
+
 	/** @brief Interface representing a single account.
 	 *
 	 **/
@@ -153,6 +166,8 @@ namespace Blogique
 		 */
 		virtual void GetEntriesByDate (const QDate& date) = 0;
 
+		virtual void GetEntriesWithFilter (const Filter& filter) = 0;
+
 		/** @brief Remove entry from blog.
 		 *
 		 * @param[in] entry Entry to remove.
@@ -199,8 +214,6 @@ namespace Blogique
 		 */
 		virtual void updateProfile () = 0;
 
-		virtual void backup () = 0;
-
 	protected:
 		/** @brief This signal should be emitted when account is renamed.
 		 *
@@ -243,13 +256,13 @@ namespace Blogique
 		 *
 		 * @note This function is expected to be a signal.
 		 */
-		virtual void gotEntries2Backup (const QList<Entry>& entries) = 0;
+		virtual void gotFilteredEntries (const QList<Entry>& entries) = 0;
 
 		/** @brief This signal should be emitted all entries for backup were downloaded.
 		 *
 		 * @note This function is expected to be a signal.
 		 */
-		virtual void gettingEntries2BackupFinished () = 0;
+		virtual void gettingFilteredEntriesFinished () = 0;
 
 		virtual void gotError (int errorCode, const QString& errorString,
 				const QString& localizedErrorString = QString ()) = 0;

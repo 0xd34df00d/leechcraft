@@ -153,6 +153,7 @@ namespace Metida
 		QObject* GetProfile ();
 
 		void GetEntriesByDate (const QDate& date);
+		void GetEntriesWithFilter (const Filter& filter);
 		void RemoveEntry (const Entry& entry);
 		void UpdateEntry (const Entry& entry);
 
@@ -188,14 +189,13 @@ namespace Metida
 
 		void submit (const Entry& event);
 		void preview (const Entry& event);
-		void backup ();
 
 		void handleEventPosted (const QList<LJEvent>& entries);
 		void handleEventUpdated (const QList<LJEvent>& entries);
 		void handleEventRemoved (int id);
 
-		void handleGotEvents2Backup (const QList<LJEvent>& events);
-		void handleGettingEvents2BackupFinished ();
+		void handleGotFilteredEvents (const QList<LJEvent>& events);
+		void handleGettingFilteredEventsFinished ();
 		void handleGotEvents (const QList<LJEvent>& events);
 
 		void handleLoadLastEvents ();
@@ -217,8 +217,8 @@ namespace Metida
 		void gotError(int errorCode, const QString& errorString,
 				const QString& localizedErrorString = QString ());
 
-		void gotEntries2Backup (const QList<Entry>& entries);
-		void gettingEntries2BackupFinished ();
+		void gotFilteredEntries (const QList<Entry>& entries);
+		void gettingFilteredEntriesFinished ();
 
 		void gotEntries (const QList<Entry>& entries);
 		void gotRecentComments (const QList<LJCommentEntry>& comments);
