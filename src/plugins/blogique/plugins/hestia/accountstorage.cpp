@@ -323,8 +323,8 @@ namespace Hestia
 
 	QList<Entry> AccountStorage::GetEntriesWithFilter (const Filter& filter)
 	{
-		GetFilteredEntries_.bindValue (":beginDate", filter.BeginDate_);
-		GetFilteredEntries_.bindValue (":endDate", filter.EndDate_);
+		GetFilteredEntries_.bindValue (":begin_date", filter.BeginDate_);
+		GetFilteredEntries_.bindValue (":end_date", filter.EndDate_);
 		if (!GetFilteredEntries_.exec ())
 		{
 			Util::DBLock::DumpError (GetFilteredEntries_);
@@ -480,7 +480,7 @@ namespace Hestia
 				"GROUP BY date (Date);");
 		GetFilteredEntries_ = QSqlQuery (AccountDB_);
 		GetFilteredEntries_.prepare ("SELECT  Id, Entry, Date, Subject FROM entries "
-				"WHERE Date >= :beginDate AND Date <= :endDate;");
+				"WHERE Date >= :begin_date AND Date <= :end_date;");
 
 		AddEntryTag_ = QSqlQuery (AccountDB_);
 		AddEntryTag_.prepare ("INSERT INTO tags "

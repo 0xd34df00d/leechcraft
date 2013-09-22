@@ -32,11 +32,12 @@
 #include <QStandardItemModel>
 #include <QMessageBox>
 #include <QPrinter>
+#include <QCloseEvent>
 #include <QWebFrame>
 #include <QWebView>
-#include "interfaces/blogique/ibloggingplatform.h"
 #include <interfaces/core/ientitymanager.h>
 #include <util/util.h>
+#include "interfaces/blogique/ibloggingplatform.h"
 #include "core.h"
 
 namespace LeechCraft
@@ -54,7 +55,7 @@ namespace Blogique
 		connect (this,
 				SIGNAL (currentIdChanged (int)),
 				this,
-				SLOT(handleCurrentIdChanged (int)));
+				SLOT (handleCurrentIdChanged (int)));
 
 		connect (Ui_.AccountSelection_,
 				SIGNAL (currentIndexChanged (int)),
@@ -101,9 +102,9 @@ namespace Blogique
 				this,
 				SLOT (addTag ()));
 		connect (Ui_.RemoveTag_,
-				SIGNAL(released ()),
+				SIGNAL (released ()),
 				this,
-				SLOT (removeTag()));
+				SLOT (removeTag ()));
 
 		connect (Ui_.SelectPath_,
 				SIGNAL (released ()),
@@ -128,7 +129,7 @@ namespace Blogique
 	{
 		switch (currentId ())
 		{
-		case WelcomPage:
+		case WelcomePage:
 			if (Ui_.AccountSelection_->currentIndex () == -1)
 			{
 				QMessageBox::warning (this,
@@ -177,7 +178,7 @@ namespace Blogique
 
 	void ExportWizard::reject ()
 	{
-		//TODO reject export
+		deleteLater ();
 		QDialog::reject ();
 	}
 
@@ -193,13 +194,12 @@ namespace Blogique
 	{
 		switch (id)
 		{
-			case WelcomPage:
+			case WelcomePage:
 			case FormatPage:
 			case ContentPage:
 				Ui_.FromDate_->setDate (QDate::fromString ("01.01.1970", "dd.MM.yyyy"));
 				Ui_.TillDate_->setDate (QDate::currentDate ());
-			default:
-				return;
+				break;
 			case OverviewPage:
 			{
 				Ui_.AccountLabel_->setText (Ui_.AccountSelection_->currentText ());
@@ -231,8 +231,8 @@ namespace Blogique
 				filter.EndDate_ = Ui_.TillDate_->dateTime ();
 				QStringList selectedTags;
 				for (int i = 0; Ui_.SelectedTags_->isChecked () && i < SelectedTagsModel_->rowCount ();
-					 ++i)
-					 selectedTags << SelectedTagsModel_->index (i, 0).data ().toString ();
+						++i)
+					selectedTags << SelectedTagsModel_->index (i, 0).data ().toString ();
 				filter.Tags_ = Ui_.SelectedTags_->isChecked () ? selectedTags : QStringList ();
 
 				auto account = Id2Account_ [Ui_.AccountSelection_->currentIndex ()];
@@ -247,13 +247,15 @@ namespace Blogique
 				account->GetEntriesWithFilter (filter);
 				break;
 			}
+			default:
+				break;
 		}
 	}
 
 	void ExportWizard::selectExportPath ()
 	{
 		const auto& path = QFileDialog::getSaveFileName (this,
-				"LeechCraft",
+				tr ("Select export path"),
 				QDir::homePath ());
 
 		Ui_.SavePath_->setText (path);
@@ -300,10 +302,10 @@ namespace Blogique
 			QString content;
 			for (const auto& entry : entries)
 			{
-				content += "<br><br><br><br><i>" + entry.Date_.toString (Qt::DefaultLocaleLongDate) + "</i><br><br>";
-				content += "<b>" + entry.Subject_ + "</b><br><br>";
-				content += entry.Content_ + "<br><br>";
-				content += ("<b>Tags:</b><i>" + entry.Tags_.join (",") + "</i><br><br><br>");
+				content += "<br/><br/><br/><br/><em>" + entry.Date_.toString (Qt::DefaultLocaleLongDate) + "</em><br/><br/>";
+				content += "<strong>" + entry.Subject_ + "</strong><br/><br/>";
+				content += entry.Content_ + "<br/><br/>";
+				content += ("<strong>Tags:</strong><em>" + entry.Tags_.join (",") + "</em><br/><br/><br/>");
 			}
 
 			return content;
@@ -345,7 +347,6 @@ namespace Blogique
 
 		void WriteHtml (const QList<Entry>& entries, const QString& filePath)
 		{
-
 			QFile file (filePath);
 			if (!file.open (QIODevice::WriteOnly))
 			{
@@ -467,7 +468,6 @@ namespace Blogique
 				return;
 		}
 
-		qDebug () << Q_FUNC_INFO << "got entries for export finished";
 		Core::Instance ().GetCoreProxy ()->GetEntityManager ()->
 				HandleEntity (Util::MakeNotification ("Blogique",
 						tr ("Exporting finished"),

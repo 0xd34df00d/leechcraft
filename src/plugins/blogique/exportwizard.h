@@ -66,7 +66,7 @@ namespace Blogique
 
 		enum Pages
 		{
-			WelcomPage,
+			WelcomePage,
 			FormatPage,
 			ContentPage,
 			OverviewPage,
