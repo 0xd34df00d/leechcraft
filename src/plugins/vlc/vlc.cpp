@@ -112,6 +112,16 @@ namespace vlc
 									ActionInfo (tr ("10 seconds seek backward"),
 									QKeySequence (Qt::Key_9),
 									QIcon ()));
+		
+		Manager_->RegisterActionInfo ("org.vlc.next",
+									ActionInfo (tr ("Next in playlist"),
+									QKeySequence (Qt::Key_R),
+									QIcon ()));
+		
+		Manager_->RegisterActionInfo ("org.vlc.prev",
+									ActionInfo (tr ("Prev in playlist"),
+									QKeySequence (Qt::Key_T),
+									QIcon ()));
 	}
 
 	void Plugin::SecondInit ()

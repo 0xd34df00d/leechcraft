@@ -245,5 +245,15 @@ namespace vlc
 		while (libvlc_media_list_count (Playlist_))
 			DeleteRequested (0);
 	}
+	
+	void PlaylistWidget::next()
+	{
+		libvlc_media_list_player_next (Player_);
+	}
+	
+	void PlaylistWidget::prev()
+	{
+		libvlc_media_list_player_previous (Player_);
+	}
 }
 }

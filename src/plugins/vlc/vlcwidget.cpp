@@ -57,6 +57,9 @@
 #include <QSettings>
 #include <QStringList>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/util.h>
+#include <interfaces/ientityhandler.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/imwproxy.h>
 #include "vlcwidget.h"
@@ -89,6 +92,7 @@ namespace vlc
 	, Manager_ (manager)
 	, AllowFullScreenPanel_ (false)
 	, Autostart_ (true)
+	, Proxy_ (proxy)
 	{
 		VlcMainWidget_ = new SignalledWidget;
 		VlcMainWidget_->SetBackGroundColor (new QColor ("black"));
@@ -458,7 +462,6 @@ namespace vlc
 			AllowFullScreenPanel_ = true;
 			FullScreenWidget_->SetBackGroundColor (new QColor ("black"));
 			FullScreenWidget_->showFullScreen ();
-// 			FullScreenWidget_->show ();
 			VlcPlayer_->switchWidget (FullScreenWidget_);
 		} 
 		else 
@@ -481,12 +484,33 @@ namespace vlc
 		OpenButton_->setPopupMode (QToolButton::MenuButtonPopup);
 		OpenButton_->setDefaultAction (Open_);
 		Bar_->addWidget (OpenButton_);
+		
+		Prev_ = Bar_->addAction (tr ("Prev"));
+		Prev_->setProperty ("ActionIcon", "media-seek-backward");
+		Manager_->RegisterAction ("org.vlc.prev", Prev_, true);
+		
+		connect (Prev_,
+				SIGNAL (triggered ()),
+				PlaylistWidget_,
+				SLOT (prev ()));
+		
 		TogglePlay_ = Bar_->addAction (tr ("Play"));
 		Manager_->RegisterAction ("org.vlc.toggle_play", TogglePlay_, true);
 		TogglePlay_->setProperty ("ActionIcon", "media-playback-start");
 		TogglePlay_->setProperty ("WatchActionIconChange", true);
+		
 		Stop_ = Bar_->addAction (tr ("Stop"));
 		Stop_->setProperty ("ActionIcon", "media-playback-stop");
+		
+		Next_ = Bar_->addAction (tr ("Next"));
+		Next_->setProperty ("ActionIcon", "media-seek-forward");
+		Manager_->RegisterAction ("org.vlc.next", Next_, true);
+		
+		connect (Next_,
+				SIGNAL (triggered ()),
+				PlaylistWidget_,
+				SLOT (next ()));
+		
 		FullScreenAction_ = Bar_->addAction (tr ("FullScreen"));
 		FullScreenAction_->setProperty ("ActionIcon", "view-fullscreen");
 		Manager_->RegisterAction ("org.vlc.toggle_fullscreen", FullScreenAction_, true);
@@ -538,12 +562,14 @@ namespace vlc
 	{
 		InterfaceUpdater_->stop ();
 		DisableScreenSaver_->stop ();
+		allowScreenSaver ();
 	}
 	
 	void VlcWidget::TabMadeCurrent ()
 	{
 		InterfaceUpdater_->start ();
 		DisableScreenSaver_->start ();
+		disableScreenSaver ();
 	}
 	
 	void VlcWidget::ForbidFullScreen ()
@@ -670,6 +696,8 @@ namespace vlc
 		FullScreenWidget_ = new SignalledWidget;
 		FullScreenWidget_->addAction (TogglePlay_);
 		FullScreenWidget_->addAction (FullScreenAction_);
+		FullScreenWidget_->addAction (Next_);
+		FullScreenWidget_->addAction (Prev_);
 		FullScreenPanel_ = new SignalledWidget (this, Qt::ToolTip);
 		QHBoxLayout *panelLayout = new QHBoxLayout;
 		FullScreenTimeLeft_ = new QLabel;
@@ -690,9 +718,14 @@ namespace vlc
 		FullScreenButton_ = new QToolButton;
 		FullScreenButton_->setDefaultAction (FullScreenAction_);
 		FullScreenButton_->setAutoRaise (true);
+		NextButton_ = new QToolButton;
+		NextButton_->setDefaultAction (Next_);
+		NextButton_->setAutoRaise (true);
 		
+		panelLayout->addWidget (PrevButton_);
 		panelLayout->addWidget (TogglePlayButton_);
 		panelLayout->addWidget (StopButton_);
+		panelLayout->addWidget (NextButton_);
 		panelLayout->addWidget (FullScreenButton_);
 		panelLayout->addWidget (FullScreenTimeLeft_);
 		panelLayout->addWidget (FullScreenVlcScrollBar_);
@@ -895,6 +928,9 @@ namespace vlc
 		Minus3Percent_ = new QAction (this);
 		Minus10Seconds_ = new QAction (this);
 		
+		Next_ = new QAction (this);
+		Prev_ = new QAction (this);
+		
 		Manager_->RegisterAction ("org.vlc.plus_3_percent", Plus3Percent_, true);
 		Manager_->RegisterAction ("org.vlc.plus_10_seconds", Plus10Seconds_, true);
 		Manager_->RegisterAction ("org.vlc.minus_3_percent", Minus3Percent_, true);
@@ -955,7 +991,24 @@ namespace vlc
 	void VlcWidget::disableScreenSaver ()
 	{
 		if (libvlc_media_player_is_playing (VlcPlayer_->GetPlayer ().get ()))
-			system ("qdbus org.freedesktop.ScreenSaver /ScreenSaver SimulateUserActivity > /dev/null"); //hello kaffeinety
+		{
+			auto e = Util::MakeEntity ("ScreensaverProhibition", {}, {}, "x-leechcraft/power-management");
+			e.Additional_ ["ContextID"] = "org.vlc.VlcTab";
+			e.Additional_ ["Enable"] = true; 
+			
+			Proxy_->GetEntityManager ()->HandleEntity (e);
+		}
+		else
+			allowScreenSaver();
+	}
+	
+	void VlcWidget::allowScreenSaver ()
+	{
+		auto e = Util::MakeEntity ("ScreensaverProhibition", {}, {}, "x-leechcraft/power-management");
+		e.Additional_ ["ContextID"] = "org.vlc.VlcTab";
+		e.Additional_ ["Enable"] = false; 
+		
+		Proxy_->GetEntityManager ()->HandleEntity (e);	
 	}
 	
 	void VlcWidget::autostartChanged ()

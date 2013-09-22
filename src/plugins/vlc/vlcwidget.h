@@ -65,6 +65,7 @@ namespace vlc
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
 		
+		ICoreProxy_ptr Proxy_;
 		QObject *const Parent_;
 		VlcPlayer *VlcPlayer_;
 		PlaylistWidget *PlaylistWidget_;
@@ -72,6 +73,8 @@ namespace vlc
 		QToolBar *Bar_;
 		QAction *Open_;
 		QToolButton *OpenButton_;
+		QToolButton *NextButton_;
+		QToolButton *PrevButton_;
 		QAction *TogglePlay_;
 		QAction *Stop_;
 		QAction *FullScreenAction_;
@@ -81,6 +84,8 @@ namespace vlc
 		QAction *Minus3Percent_;
 		QAction *Plus10Seconds_;
 		QAction *Minus10Seconds_;
+		QAction *Next_;
+		QAction *Prev_;
 		QPoint LastMouseEvent_;
 		QDockWidget *PlaylistDock_;
 		Util::ShortcutManager * const Manager_;
@@ -182,6 +187,7 @@ namespace vlc
 		void ForbidPanel ();
 		
 		void disableScreenSaver ();
+		void allowScreenSaver ();
 		
 		void savePlaylist (const QStringList&);
 		

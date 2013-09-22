@@ -78,6 +78,8 @@ namespace vlc
 		
 	public slots:
 		void clearPlaylist ();
+		void next ();
+		void prev ();
 		
 	private slots:
 		void togglePlay ();
