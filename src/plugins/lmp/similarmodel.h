@@ -42,6 +42,7 @@ namespace LMP
 {
 	class SimilarModel : public QStandardItemModel
 	{
+		Q_OBJECT
 	public:
 		enum Role
 		{
