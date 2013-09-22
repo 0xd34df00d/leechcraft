@@ -51,6 +51,11 @@ namespace Xoox
 				SLOT (handleFileReceived (QXmppTransferJob*)));
 	}
 
+	bool TransferManager::IsAvailable () const
+	{
+		return true;
+	}
+
 	QObject* TransferManager::SendFile (const QString& id,
 			const QString& sourceVar, const QString& name, const QString& comment)
 	{

@@ -52,6 +52,7 @@ namespace Xoox
 	public:
 		TransferManager (QXmppTransferManager*, GlooxAccount*);
 
+		bool IsAvailable () const;
 		QObject* SendFile (const QString&, const QString&, const QString&, const QString&);
 		GlooxAccount* GetAccount () const;
 	private slots:

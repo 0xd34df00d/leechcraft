@@ -54,6 +54,7 @@ namespace Zheet
 	public:
 		TransferManager (Callbacks*, MSNAccount*);
 
+		bool IsAvailable () const;
 		QObject* SendFile (const QString& id,
 				const QString&,
 				const QString& name,
