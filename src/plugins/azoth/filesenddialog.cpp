@@ -66,7 +66,8 @@ namespace Azoth
 		Ui_.TargetLabel_->setText (name);
 
 		auto acc = qobject_cast<IAccount*> (Entry_->GetParentAccount ());
-		if (acc->GetTransferManager ())
+		auto itm = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
+		if (itm && itm->IsAvailable ())
 		{
 			AccSupportsFT_ = true;
 			Ui_.TransferMethod_->addItem (tr ("Protocol file transfer"));
