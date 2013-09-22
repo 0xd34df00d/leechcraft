@@ -221,6 +221,7 @@ namespace vlc
 	VlcWidget::~VlcWidget ()
 	{
 		VlcPlayer_->stop ();
+		disableScreenSaver ();
 		delete PlaylistWidget_;
 		delete PlaylistDock_;
 		delete VlcPlayer_;
