@@ -97,6 +97,12 @@ namespace Blogique
 		Ui_.AllTagsView_->setHeaderHidden (true);
 		Ui_.SelectedTagsView_->setModel (SelectedTagsModel_);
 		Ui_.SelectedTagsView_->setHeaderHidden (true);
+
+		Ui_.WelcomePageErrorLabel_->setVisible (false);
+		Ui_.ExportPageErrorLabel_->setVisible (false);
+		Ui_.ContentPageDateErrorLabel_->setVisible (false);
+		Ui_.ContentPageTagsErrorLabel_->setVisible (false);
+
 		connect (Ui_.AddTag_,
 				SIGNAL(released ()),
 				this,
@@ -130,20 +136,16 @@ namespace Blogique
 		switch (currentId ())
 		{
 		case WelcomePage:
-			if (Ui_.AccountSelection_->currentIndex () == -1)
+			if ( Ui_.AccountSelection_->currentIndex () == -1)
 			{
-				QMessageBox::warning (this,
-						"LechCraft",
-						tr ("You should select an account to export"));
+				Ui_.WelcomePageErrorLabel_->setVisible (true);
 				return false;
 			}
 			return true;
 		case FormatPage:
 			if (Ui_.SavePath_->text ().isEmpty ())
 			{
-				QMessageBox::warning (this,
-					"LeechCraft",
-					tr ("You should enter export path"));
+				Ui_.ExportPageErrorLabel_->setVisible (true);
 				return false;
 			}
 			return true;
@@ -151,18 +153,14 @@ namespace Blogique
 			if (Ui_.WithDateRange_->isChecked () &&
 					(Ui_.FromDate_->dateTime () > Ui_.TillDate_->dateTime ()))
 			{
-				QMessageBox::warning (this,
-						"LeechCraft",
-						tr ("Invalid date range"));
+				Ui_.ContentPageDateErrorLabel_->setVisible (true);
 				return false;
 			}
 
 			if (Ui_.SelectedTags_->isChecked () &&
 					!SelectedTagsModel_->rowCount ())
 			{
-				QMessageBox::warning (this,
-						"LeechCraft",
-						tr ("At least one tag should be selected"));
+				Ui_.ContentPageTagsErrorLabel_->setVisible (true);
 				return false;
 			}
 			return true;
@@ -269,6 +267,8 @@ namespace Blogique
 
 		auto row = AllTagsModel_->takeRow (srcIndex.row ());
 		SelectedTagsModel_->appendRow (row);
+		if (Ui_.ContentPageTagsErrorLabel_->isVisible ())
+			Ui_.ContentPageTagsErrorLabel_->setVisible (false);
 	}
 
 	void ExportWizard::removeTag ()
@@ -279,6 +279,32 @@ namespace Blogique
 
 		auto row = SelectedTagsModel_->takeRow (srcIndex.row ());
 		AllTagsModel_->appendRow (row);
+	}
+
+	void ExportWizard::on_AccountSelection__currentIndexChanged (int index)
+	{
+		if (Ui_.WelcomePageErrorLabel_->isVisible () && index != -1)
+			Ui_.WelcomePageErrorLabel_->setVisible (false);
+	}
+
+	void ExportWizard::on_SavePath__textChanged (const QString& text)
+	{
+		if (Ui_.ExportPageErrorLabel_->isVisible () && !text.isEmpty ())
+			Ui_.ExportPageErrorLabel_->setVisible (false);
+	}
+
+	void ExportWizard::on_FromDate__dateChanged (const QDate& date)
+	{
+		if (Ui_.ContentPageDateErrorLabel_->isVisible () &&
+				date < Ui_.TillDate_->date ())
+			Ui_.ContentPageDateErrorLabel_->setVisible (false);
+	}
+
+	void ExportWizard::on_TillDate__dateChanged (const QDate& date)
+	{
+		if (Ui_.ContentPageDateErrorLabel_->isVisible () &&
+				date > Ui_.FromDate_->date ())
+			Ui_.ContentPageDateErrorLabel_->setVisible (false);
 	}
 
 	void ExportWizard::handleTagsUpdated (const QHash<QString, int>& tags)

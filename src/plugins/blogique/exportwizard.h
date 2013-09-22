@@ -87,6 +87,11 @@ namespace Blogique
 		void addTag ();
 		void removeTag();
 
+		void on_AccountSelection__currentIndexChanged (int index);
+		void on_SavePath__textChanged (const QString& text);
+		void on_FromDate__dateChanged (const QDate& date);
+		void on_TillDate__dateChanged (const QDate& date);
+
 		void handleTagsUpdated (const QHash<QString, int>& tags);
 		void handleGotFilteredEntries (const QList<Entry>& entries);
 		void handleGettingFilteredEntriesFinished ();
