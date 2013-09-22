@@ -329,7 +329,10 @@ namespace LMP
 
 	void SourceObject::Pause ()
 	{
-		gst_element_set_state (Path_->GetPipeline (), GST_STATE_PAUSED);
+		if (!IsSeekable ())
+			Stop ();
+		else
+			gst_element_set_state (Path_->GetPipeline (), GST_STATE_PAUSED);
 	}
 
 	void SourceObject::Stop ()
