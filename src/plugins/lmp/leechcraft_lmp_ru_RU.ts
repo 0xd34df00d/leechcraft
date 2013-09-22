@@ -309,6 +309,16 @@
 <context>
     <name>LeechCraft::LMP::DevicesBrowserWidget</name>
     <message>
+        <location filename="sync/devicesbrowserwidget.cpp" line="75"/>
+        <source>not mounted</source>
+        <translation>не подключено</translation>
+    </message>
+    <message>
+        <location filename="sync/devicesbrowserwidget.cpp" line="76"/>
+        <source>mounted at %1</source>
+        <translation>подключено на %1</translation>
+    </message>
+    <message>
         <location filename="sync/devicesbrowserwidget.cpp" line="243"/>
         <source>Select syncer</source>
         <translation>Выбор модуля синхронизации</translation>
@@ -486,19 +496,6 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::LMP::MountableFlattener</name>
-    <message>
-        <location filename="sync/devicesbrowserwidget.cpp" line="75"/>
-        <source>not mounted</source>
-        <translation>не подключено</translation>
-    </message>
-    <message>
-        <location filename="sync/devicesbrowserwidget.cpp" line="76"/>
-        <source>mounted at %1</source>
-        <translation>подключено на %1</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::LMP::NowPlayingWidget</name>
     <message>
         <location filename="nowplayingwidget.cpp" line="114"/>
@@ -549,47 +546,47 @@
 <context>
     <name>LeechCraft::LMP::Player</name>
     <message>
-        <location filename="player.cpp" line="473"/>
+        <location filename="player.cpp" line="493"/>
         <source>Radio</source>
         <translation>Радио</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="543"/>
+        <location filename="player.cpp" line="563"/>
         <source>Bitrate</source>
         <translation>Битрейт</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="544"/>
+        <location filename="player.cpp" line="564"/>
         <source>Minimum bitrate</source>
         <translation>Минимальный битрейт</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="545"/>
+        <location filename="player.cpp" line="565"/>
         <source>Maximum bitrate</source>
         <translation>Максимальный битрейт</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="650"/>
+        <location filename="player.cpp" line="674"/>
         <source>Playlist</source>
         <translation>Список воспроизведения</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="986"/>
+        <location filename="player.cpp" line="1010"/>
         <source>Stream</source>
         <translation>Поток</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1095"/>
+        <location filename="player.cpp" line="1119"/>
         <source>Radio station error: %1.</source>
         <translation>Ошибка радиостанции: %1.</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1250"/>
+        <location filename="player.cpp" line="1274"/>
         <source>GStreamer says: %1.</source>
         <translation>GStreamer сообщает: %1.</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1255"/>
+        <location filename="player.cpp" line="1279"/>
         <source>Cannot find a proper audio decoder. You probably don&apos;t have all the codec plugins installed.</source>
         <translation>Невозможно найти необходимый аудиодекодер. Возможно, у вас не установлены все необходимые модули кодеков.</translation>
     </message>
@@ -597,132 +594,132 @@
 <context>
     <name>LeechCraft::LMP::PlayerTab</name>
     <message>
-        <location filename="playertab.cpp" line="303"/>
+        <location filename="playertab.cpp" line="308"/>
         <source>Current song</source>
         <translation>Текущая песня</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="304"/>
+        <location filename="playertab.cpp" line="309"/>
         <source>Collection</source>
         <translation>Коллекция</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="305"/>
+        <location filename="playertab.cpp" line="310"/>
         <source>Playlists</source>
         <translation>Списки воспроизведения</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="306"/>
+        <location filename="playertab.cpp" line="311"/>
         <source>Social</source>
         <translation>Социальное</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="307"/>
+        <location filename="playertab.cpp" line="312"/>
         <source>Internet</source>
         <translation>Интернет</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="308"/>
+        <location filename="playertab.cpp" line="313"/>
         <source>Filesystem</source>
         <translation>Файловая система</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="309"/>
+        <location filename="playertab.cpp" line="314"/>
         <source>Devices</source>
         <translation>Устройства</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="329"/>
+        <location filename="playertab.cpp" line="334"/>
         <source>Previous track</source>
         <translation>Предыдущий трек</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="337"/>
+        <location filename="playertab.cpp" line="342"/>
         <source>Play/Pause</source>
         <translation>Играть/Приостановить</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="346"/>
+        <location filename="playertab.cpp" line="351"/>
         <source>Stop</source>
         <translation>Остановить</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="354"/>
+        <location filename="playertab.cpp" line="359"/>
         <source>Next track</source>
         <translation>Следующий трек</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="364"/>
+        <location filename="playertab.cpp" line="369"/>
         <source>Love</source>
         <translation>Отметить как любимое</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="373"/>
+        <location filename="playertab.cpp" line="378"/>
         <source>Ban</source>
         <translation>Запретить</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="403"/>
+        <location filename="playertab.cpp" line="408"/>
         <source>Close LMP</source>
         <translation>Закрыть LMP</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="433"/>
+        <location filename="playertab.cpp" line="438"/>
         <source>Add to playlist</source>
         <translation>Добавить в список воспроизведения</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="441"/>
+        <location filename="playertab.cpp" line="446"/>
         <source>Show track properties</source>
         <translation>Показать свойства трека</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="449"/>
+        <location filename="playertab.cpp" line="454"/>
         <source>Show album art</source>
         <translation>Показать обложку альбома</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="457"/>
+        <location filename="playertab.cpp" line="462"/>
         <source>Album art manager...</source>
         <translation>Менеджер обложек...</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="466"/>
+        <location filename="playertab.cpp" line="471"/>
         <source>Remove from collection...</source>
         <translation>Удалить из коллекции...</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="474"/>
+        <location filename="playertab.cpp" line="479"/>
         <source>Delete from disk...</source>
         <translation>Удалить с диска...</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="584"/>
+        <location filename="playertab.cpp" line="589"/>
         <source>unknown song</source>
         <translation>неизвестная песня</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="585"/>
+        <location filename="playertab.cpp" line="590"/>
         <source>unknown album</source>
         <translation>неизвестный альбом</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="586"/>
+        <location filename="playertab.cpp" line="591"/>
         <source>unknown artist</source>
         <translation>неизвестный исполнитель</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="588"/>
+        <location filename="playertab.cpp" line="593"/>
         <source>Now playing: %1 from %2 by %3</source>
         <translation>Сейчас играется: %1 с %2 от %3</translation>
     </message>
     <message>
-        <location filename="playertab.cpp" line="596"/>
+        <location filename="playertab.cpp" line="601"/>
         <source>Playback is stopped.</source>
         <translation>Воспроизведение остановлено.</translation>
     </message>
     <message numerus="yes">
-        <location filename="playertab.cpp" line="843"/>
+        <location filename="playertab.cpp" line="848"/>
         <source>Are you sure you want to remove %n track(s) from your collection?&lt;br/&gt;&lt;br/&gt;Please note that if tracks remain on your disk they will be re-added next time collection is scanned, but you will lose the statistics.</source>
         <translation>
             <numerusform>Вы уверены, что хотите удалить %n трек из коллекции?&lt;br/&gt;&lt;br/&gt;Обратите внимание, что если треки останутся на диске, то они будут добавлены при следующем сканировании коллекции, но вы потеряете статистику.</numerusform>
@@ -731,7 +728,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="playertab.cpp" line="866"/>
+        <location filename="playertab.cpp" line="871"/>
         <source>Are you sure you want to erase %n track(s)? This action cannot be undone.</source>
         <translation>
             <numerusform>Вы уверены, что хотите удалить %n трек? Это действие невозможно отменить.</numerusform>
@@ -993,7 +990,7 @@
     <name>LeechCraft::LMP::Plugin</name>
     <message>
         <location filename="lmp.cpp" line="85"/>
-        <location filename="lmp.cpp" line="408"/>
+        <location filename="lmp.cpp" line="411"/>
         <source>Artist browser</source>
         <translation>Обзор исполнителей</translation>
     </message>
@@ -1014,42 +1011,42 @@
         <translation>Статистика по коллекции</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="377"/>
+        <location filename="lmp.cpp" line="380"/>
         <source>Play/pause</source>
         <translation>Играть/приостановить</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="378"/>
+        <location filename="lmp.cpp" line="381"/>
         <source>Previous track</source>
         <translation>Предыдущий трек</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="379"/>
+        <location filename="lmp.cpp" line="382"/>
         <source>Next track</source>
         <translation>Следующий трек</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="380"/>
+        <location filename="lmp.cpp" line="383"/>
         <source>Stop playback</source>
         <translation>Остановать воспроизведение</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="381"/>
+        <location filename="lmp.cpp" line="384"/>
         <source>Love track</source>
         <translation>Отметить трек как любимый</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="383"/>
+        <location filename="lmp.cpp" line="386"/>
         <source>Notify about current track</source>
         <translation>Уведомить о текущем треке</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="385"/>
+        <location filename="lmp.cpp" line="388"/>
         <source>Increase volume</source>
         <translation>Увеличить громкость</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="386"/>
+        <location filename="lmp.cpp" line="389"/>
         <source>Decrease volume</source>
         <translation>Уменьшить громкость</translation>
     </message>
@@ -1618,26 +1615,91 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="22"/>
+        <source>Enable tracks recoding</source>
+        <translation>Включить перекодировку тегов треков</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="23"/>
+        <source>Tags region:</source>
+        <translation>Регион:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="24"/>
+        <source>arabic</source>
+        <translation>арабский</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="25"/>
+        <source>baltic</source>
+        <translation>балтийский</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="26"/>
+        <source>chinese</source>
+        <translation>китайский</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="27"/>
+        <source>greek</source>
+        <translation>греческий</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="28"/>
+        <source>hebrew</source>
+        <translation>иврит</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="29"/>
+        <source>japanese</source>
+        <translation>японский</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="30"/>
+        <source>korean</source>
+        <translation>корейский</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="31"/>
+        <source>polish</source>
+        <translation>польский</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="32"/>
+        <source>russian</source>
+        <translation>русский</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="33"/>
+        <source>taiwanese</source>
+        <translation>тайваньский</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="34"/>
+        <source>turkish</source>
+        <translation>турецкий</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="35"/>
         <source>Collection</source>
         <translation>Коллекция</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="23"/>
+        <location filename="dummy.cpp" line="36"/>
         <source>Root paths</source>
         <translation>Корневые каталоги</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="24"/>
+        <location filename="dummy.cpp" line="37"/>
         <source>Plugin communication</source>
         <translation>Взаимодействие с модулями</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="25"/>
+        <location filename="dummy.cpp" line="38"/>
         <source>Test only these extensions</source>
         <translation>Проверять только эти расширения</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="26"/>
+        <location filename="dummy.cpp" line="39"/>
         <source>Extenstions list:</source>
         <translation>Список расширений:</translation>
     </message>
