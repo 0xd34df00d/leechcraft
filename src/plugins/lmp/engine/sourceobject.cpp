@@ -237,6 +237,9 @@ namespace LMP
 
 	void SourceObject::Seek (qint64 pos)
 	{
+		if (!IsSeekable ())
+			return;
+
 		if (OldState_ == SourceState::Playing)
 			IsSeeking_ = true;
 
