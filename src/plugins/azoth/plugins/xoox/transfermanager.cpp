@@ -33,6 +33,7 @@
 #include "glooxaccount.h"
 #include "clientconnection.h"
 #include "glooxclentry.h"
+#include "accountsettingsholder.h"
 
 namespace LeechCraft
 {
@@ -53,7 +54,8 @@ namespace Xoox
 
 	bool TransferManager::IsAvailable () const
 	{
-		return true;
+		const auto settings = Account_->GetSettings ();
+		return settings->GetFTMethods () != QXmppTransferJob::NoMethod;
 	}
 
 	QObject* TransferManager::SendFile (const QString& id,
