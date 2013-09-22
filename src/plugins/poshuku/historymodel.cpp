@@ -61,9 +61,11 @@ namespace Poshuku
 			* - ...
 			* - Last N months
 			*/
-		int SectionNumber (const QDateTime& date)
+		int SectionNumber (const QDateTime& date, QDateTime current = QDateTime ())
 		{
-			QDateTime current = QDateTime::currentDateTime ();
+			if (!current.isValid ())
+				current = QDateTime::currentDateTime ();
+
 			QDate orig = current.date ();
 			if (date.daysTo (current) == 0)
 				return 0;
@@ -247,10 +249,8 @@ namespace Poshuku
 		return result;
 	}
 
-	void HistoryModel::Add (const HistoryItem& item, bool announce)
+	void HistoryModel::Add (const HistoryItem& item, bool announce, int section)
 	{
-		int section = SectionNumber (item.DateTime_);
-
 		while (section >= RootItem_->ChildCount ())
 		{
 			QList<QVariant> data;
@@ -270,25 +270,11 @@ namespace Poshuku
 			<< item.DateTime_;
 
 		TreeItem *folder = RootItem_->Child (section);
-
-		TreeItem *thisItem = new TreeItem (data, RootItem_->Child (section));
-
-		for (int i = folder->ChildCount () - 1; i >= 0; --i)
-		{
-			auto child = folder->Child (i);
-			if (child->Data (ColumnURL) == item.URL_)
-			{
-				if (announce)
-					beginRemoveRows (index (section, 0), i, i);
-				folder->RemoveChild (i);
-				if (announce)
-					endRemoveRows ();
-			}
-		}
+		TreeItem *thisItem = new TreeItem (data, folder);
 
 		if (announce)
 			beginInsertRows (index (section, 0), 0, 0);
-		folder->PrependChild (thisItem);
+		folder->AppendChild (thisItem);
 		if (announce)
 			endInsertRows ();
 
@@ -309,11 +295,21 @@ namespace Poshuku
 		Items_.clear ();
 		Core::Instance ().GetStorageBackend ()->LoadHistory (Items_);
 
-		if (Items_.empty ())
-			return;
+		QSet<QString> urls;
+		for (auto i = Items_.begin (); i != Items_.end (); )
+		{
+			if (urls.contains (i->URL_))
+				i = Items_.erase (i);
+			else
+			{
+				urls << i->URL_;
+				++i;
+			}
+		}
 
+		const auto& now = QDateTime::currentDateTime ();
 		for (const auto& item : Items_)
-			Add (item, false);
+			Add (item, false, SectionNumber (item.DateTime_, now));
 
 		endResetModel ();
 	}
@@ -321,7 +317,7 @@ namespace Poshuku
 	void HistoryModel::handleItemAdded (const HistoryItem& item)
 	{
 		Items_.push_back (item);
-		Add (item, true);
+		Add (item, true, SectionNumber (item.DateTime_));
 	}
 
 	void HistoryModel::collectGarbage ()

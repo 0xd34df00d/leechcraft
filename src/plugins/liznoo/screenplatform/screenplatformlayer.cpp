@@ -27,39 +27,15 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/structures.h>
-#include "batteryinfo.h"
+#include "screenplatformlayer.h"
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-	class PlatformLayer : public QObject
+	ScreenPlatformLayer::ScreenPlatformLayer (QObject *parent)
+	: QObject (parent)
 	{
-		Q_OBJECT
-	public:
-		PlatformLayer (QObject* = 0);
-
-		virtual void Stop () = 0;
-
-		enum class PowerState
-		{
-			Suspend,
-			Hibernate
-		};
-		virtual void ChangeState (PowerState);
-
-		void EmitGonnaSleep (int);
-		void EmitWokeUp ();
-	signals:
-		void started ();
-		void gotEntity (const LeechCraft::Entity&);
-		void batteryInfoUpdated (Liznoo::BatteryInfo);
-	};
+	}
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::Liznoo::PlatformLayer::PowerState);

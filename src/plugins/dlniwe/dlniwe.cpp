@@ -35,37 +35,24 @@
 #include <HUpnpCore/HDeviceInfo>
 #include <HUpnpCore/HServerDevice>
 #include <HUpnpCore/HServerService>
+#include <HUpnpAv/HAvDeviceModelCreator>
+#include <HUpnpAv/HMediaServerDeviceConfiguration>
+#include <HUpnpAv/HContentDirectoryServiceConfiguration>
+#include <HUpnpAv/HCdsDataSource>
+#include <HUpnpAv/HFileSystemDataSource>
+#include <HUpnpAv/HFileSystemDataSourceConfiguration>
+#include <HUpnpAv/HRootDir>
 #include <util/sys/paths.h>
-#include "contentdirectoryservice.h"
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "xmlsettingsmanager.h"
+#include "fspathsmanager.h"
 
 namespace LeechCraft
 {
 namespace DLNiwe
 {
 	namespace HU = Herqq::Upnp;
-
-	namespace
-	{
-		class DLNADeviceModelCreator : public HU::HDeviceModelCreator
-		{
-		public:
-			HU::HServerDevice* createDevice (const HU::HDeviceInfo& info) const override
-			{
-				return nullptr;
-			}
-
-			HU::HServerService* createService (const HU::HServiceInfo& serviceInfo,
-					const HU::HDeviceInfo& parentDeviceInfo) const override
-			{
-				return new ContentDirectoryService ();
-			}
-		protected:
-			HClonable* newInstance () const override
-			{
-				return new DLNADeviceModelCreator ();
-			}
-		};
-	}
+	namespace HAV = Herqq::Upnp::Av;
 
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
@@ -77,16 +64,32 @@ namespace DLNiwe
 			return;
 		}
 
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "dlniwesettings.xml");
+
 		HU::HDeviceConfiguration devConf;
 		devConf.setPathToDeviceDescription (path);
 
+		HAV::HAvDeviceModelCreator avCreator;
+		HAV::HMediaServerDeviceConfiguration msConfig;
+
+		auto fsSource = new HAV::HFileSystemDataSource ({});
+		HAV::HContentDirectoryServiceConfiguration cdsConfig;
+		cdsConfig.setDataSource (fsSource, true);
+		msConfig.setContentDirectoryConfiguration (cdsConfig);
+
+		avCreator.setMediaServerConfiguration (msConfig);
+
 		HU::HDeviceHostConfiguration hostConf (devConf);
-		hostConf.setDeviceModelCreator (DLNADeviceModelCreator ());
+		hostConf.setDeviceModelCreator (avCreator);
 
 		auto host = new HU::HDeviceHost ();
 		if (!host->init (hostConf))
 			qWarning () << Q_FUNC_INFO
 					<< host->errorDescription ();
+
+		auto pathsMgr = new FSPathsManager (fsSource);
+		XSD_->SetDataSource ("RootPathsView", pathsMgr->GetModel ());
 	}
 
 	void Plugin::SecondInit ()
@@ -115,6 +118,11 @@ namespace DLNiwe
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 }
 }

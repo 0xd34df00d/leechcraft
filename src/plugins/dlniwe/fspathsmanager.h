@@ -27,42 +27,49 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "toolbarguard.h"
-#include <QMainWindow>
-#include <QToolBar>
-#include <QtDebug>
-#include "mainwindow.h"
+#pragma once
+
+#include <QObject>
+#include <QVariantList>
+#include <QModelIndexList>
+
+class QStandardItemModel;
+
+namespace Herqq
+{
+namespace Upnp
+{
+namespace Av
+{
+	class HFileSystemDataSource;
+}
+}
+}
 
 namespace LeechCraft
 {
-	ToolbarGuard::ToolbarGuard (QMainWindow *window)
-	: QObject (window)
-	, Window_ (qobject_cast<MainWindow*> (window))
-	, Toolbar_ (0)
+namespace DLNiwe
+{
+	class FSPathsManager : public QObject
 	{
-	}
+		Q_OBJECT
 
-	ToolbarGuard::~ToolbarGuard ()
-	{
-		if (Toolbar_)
-			Window_->GetTabWidget ()->RemoveWidgetFromSeparateTabWidget (Toolbar_);
-	}
+		QStandardItemModel * const Model_;
+		Herqq::Upnp::Av::HFileSystemDataSource * const FSSource_;
+	public:
+		FSPathsManager (Herqq::Upnp::Av::HFileSystemDataSource*, QObject* = 0);
 
-	void ToolbarGuard::AddToolbar (QToolBar *newToolbar)
-	{
-		if (Toolbar_ != newToolbar)
-		{
-			if (Toolbar_)
-				Window_->GetTabWidget ()->RemoveWidgetFromSeparateTabWidget (Toolbar_);
+		QAbstractItemModel* GetModel () const;
+	private:
+		void RefillSource ();
 
-			Toolbar_ = newToolbar;
-		}
+		void AppendItem (const QString&);
 
-		if (Toolbar_)
-		{
-			Window_->GetTabWidget ()->AddWidget2SeparateTabWidget (Toolbar_);
-			Toolbar_->show ();
-		}
-	}
+		void LoadSettings ();
+		void SaveSettings ();
+	private slots:
+		void addRequested (const QString&, const QVariantList&);
+		void removeRequested (const QString&, QModelIndexList);
+	};
 }
-
+}

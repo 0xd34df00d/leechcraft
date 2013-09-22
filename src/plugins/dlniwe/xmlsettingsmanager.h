@@ -29,72 +29,22 @@
 
 #pragma once
 
-#include <QObject>
-#include <QMap>
-#include <QHash>
-#include <QSet>
-#include <QPointer>
-#include <interfaces/core/ihookproxy.h>
-
-class QMainWindow;
-class QDockWidget;
-class QAction;
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
-	class MainWindow;
-	class RootWindowsManager;
-	class DockToolbarManager;
-
-	class DockManager : public QObject
+namespace DLNiwe
+{
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
 		Q_OBJECT
 
-		RootWindowsManager *RootWM_;
-
-		struct DockInfo
-		{
-			QWidget *Associated_;
-			MainWindow *Window_;
-			int Width_;
-
-			DockInfo ();
-		};
-		QHash<QDockWidget*, DockInfo> Dock2Info_;
-		QHash<QAction*, QDockWidget*> ToggleAct2Dock_;
-		QSet<QDockWidget*> ForcefullyClosed_;
-
-		QHash<QMainWindow*, DockToolbarManager*> Window2DockToolbarMgr_;
+		XmlSettingsManager ();
 	public:
-		DockManager (RootWindowsManager*, QObject* = 0);
-
-		void AddDockWidget (QDockWidget*, Qt::DockWidgetArea);
-		void AssociateDockWidget (QDockWidget*, QWidget*);
-
-		void ToggleViewActionVisiblity (QDockWidget*, bool);
-
-		void SetDockWidgetVisibility (QDockWidget*, bool);
-
-		QSet<QDockWidget*> GetWindowDocks (MainWindow*) const;
-		void MoveDock (QDockWidget *dock, MainWindow *from, MainWindow *to);
-
-		QSet<QDockWidget*> GetForcefullyClosed () const;
+		static XmlSettingsManager& Instance ();
 	protected:
-		bool eventFilter (QObject*, QEvent*);
-	private:
-		void HandleDockToggled (QDockWidget*, bool);
-	public slots:
-		void handleTabMove (int, int, int);
-	private slots:
-		void revertDockSizes (QPointer<QDockWidget>, int, int);
-
-		void handleDockDestroyed ();
-		void handleDockToggled (bool);
-		void handleTabChanged (QWidget*);
-
-		void handleWindow (int);
-		void handleWindowDestroyed ();
-	signals:
-		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr, QMainWindow*, QDockWidget*, bool);
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
 	};
+}
 }

@@ -28,19 +28,22 @@
  **********************************************************************/
 
 #include "findnotification.h"
+#include "clearlineeditaddon.h"
 #include "ui_findnotification.h"
 
 namespace LeechCraft
 {
 namespace Util
 {
-	FindNotification::FindNotification (QWidget *parent)
+	FindNotification::FindNotification (ICoreProxy_ptr proxy, QWidget *parent)
 	: Util::PageNotification (parent)
 	, Ui_ (new Ui::FindNotification)
 	{
 		Ui_->setupUi (this);
 
 		setFocusProxy (Ui_->Pattern_);
+
+		new Util::ClearLineEditAddon (proxy, Ui_->Pattern_);
 	}
 
 	FindNotification::~FindNotification ()
@@ -62,11 +65,23 @@ namespace Util
 	{
 		QString ss = QString ("QLineEdit {"
 				"background-color:rgb(");
-		if (success)
-			ss.append ("0,255");
+		if (!success)
+			ss.append ("255,0,0");
 		else
-			ss.append ("255,0");
-		ss.append (",0) }");
+		{
+			auto color = QApplication::palette ().color (QPalette::Base);
+			color.setRedF (color.redF () / 2);
+			color.setBlueF (color.blueF () / 2);
+
+			int r = 0, g = 0, b = 0;
+			color.getRgb (&r, &g, &b);
+
+			ss.append (QString ("%1,%2,%3")
+					.arg (r)
+					.arg (g)
+					.arg (b));
+		}
+		ss.append (") }");
 		Ui_->Pattern_->setStyleSheet (ss);
 	}
 

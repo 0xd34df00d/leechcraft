@@ -72,8 +72,8 @@ namespace LMP
 
 				const auto& mounts = index.data (MassStorageRole::MountPoints).toStringList ();
 				const auto& mountText = mounts.isEmpty () ?
-						tr ("not mounted") :
-						tr ("mounted at %1").arg (mounts.join ("; "));
+						DevicesBrowserWidget::tr ("not mounted") :
+						DevicesBrowserWidget::tr ("mounted at %1").arg (mounts.join ("; "));
 
 				const auto& size = index.data (MassStorageRole::TotalSize).toLongLong ();
 				return QString ("%1 (%2, %3), %4")

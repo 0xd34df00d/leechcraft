@@ -156,7 +156,12 @@ namespace Monocle
 		auto pageItem = static_cast<PageGraphicsItem*> (item->parentItem ());
 		const auto pageIdx = LayoutMgr_->GetPages ().indexOf (pageItem);
 		if (pageIdx >= 0)
-			LayoutMgr_->SetCurrentPage (pageIdx, false);
+		{
+			const auto& bounding = pageItem->boundingRect ();
+			const auto x = item->rect ().x () / bounding.width ();
+			const auto y = item->rect ().y () / bounding.height ();
+			emit navigateRequested ({}, pageIdx, x, y);
+		}
 	}
 }
 }

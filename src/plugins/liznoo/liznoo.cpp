@@ -34,19 +34,22 @@
 #include <QAction>
 #include <QTimer>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/entitytesthandleresult.h>
 #include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "batteryhistorydialog.h"
 
 #if defined(Q_OS_LINUX)
-	#include "platformupower.h"
+	#include "platform/platformupower.h"
+	#include "screenplatform/screenplatformfreedesktop.h"
 #elif defined(Q_OS_WIN32)
-	#include "platformwinapi.h"
+	#include "platform/platformwinapi.h"
 #elif defined(Q_OS_FREEBSD)
-	#include "platformfreebsd.h"
+	#include "platform/platformfreebsd.h"
+	#include "screenplatform/screenplatformfreedesktop.h"
 #elif defined(Q_OS_MAC)
-	#include "platformmac.h"
+	#include "platform/platformmac.h"
 #else
 	#pragma message ("Unsupported system")
 #endif
@@ -69,10 +72,12 @@ namespace Liznoo
 
 #if defined(Q_OS_LINUX)
 		PL_ = new PlatformUPower (this);
+		SPL_ = new ScreenPlatformFreedesktop (this);
 #elif defined(Q_OS_WIN32)
 		PL_ = new PlatformWinAPI (this);
 #elif defined(Q_OS_FREEBSD)
 		PL_ = new PlatformFreeBSD (this);
+		SPL_ = new ScreenPlatformFreedesktop (this);
 #elif defined(Q_OS_MAC)
 		PL_ = new PlatformMac (this);
 #else
@@ -138,6 +143,32 @@ namespace Liznoo
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return XSD_;
+	}
+
+	EntityTestHandleResult Plugin::CouldHandle (const Entity& entity) const
+	{
+		return entity.Mime_ == "x-leechcraft/power-management" ?
+				EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+				EntityTestHandleResult ();
+	}
+
+	void Plugin::Handle (Entity entity)
+	{
+		const auto& context = entity.Entity_.toString ();
+		if (context == "ScreensaverProhibition")
+		{
+			if (!SPL_)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "screen platform layer unavailable, screensaver prohibiton won't work";
+				return;
+			}
+
+			const auto enable = entity.Additional_ ["Enable"].toBool ();
+			const auto& id = entity.Additional_ ["ContextID"].toString ();
+
+			SPL_->ProhibitScreensaver (enable, id);
+		}
 	}
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const

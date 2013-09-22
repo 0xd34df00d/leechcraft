@@ -75,7 +75,6 @@ set (SRCS
 	aboutdialog.cpp
 	startupwizard.cpp
 	localsockethandler.cpp
-	toolbarguard.cpp
 	wizardtypechoicepage.cpp
 	newtabmenumanager.cpp
 	plugintreebuilder.cpp

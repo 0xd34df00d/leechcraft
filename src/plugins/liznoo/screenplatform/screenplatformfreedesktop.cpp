@@ -27,28 +27,49 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <HUpnpCore/HServerService>
+#include "screenplatformfreedesktop.h"
+#include <QTimer>
+#include <QDBusConnection>
+#include <QDBusInterface>
+#include <QDBusPendingCall>
 
 namespace LeechCraft
 {
-namespace DLNiwe
+namespace Liznoo
 {
-	class ContentDirectoryService : public Herqq::Upnp::HServerService
+	ScreenPlatformFreedesktop::ScreenPlatformFreedesktop (QObject *parent)
+	: ScreenPlatformLayer (parent)
+	, ActivityTimer_ (new QTimer (this))
 	{
-		Q_OBJECT
+		connect (ActivityTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (handleTimeout ()));
+		ActivityTimer_->setInterval (30000);
+	}
 
-		qint32 SystemUpdateID_;
-	public:
-		ContentDirectoryService ();
+	void ScreenPlatformFreedesktop::ProhibitScreensaver (bool prohibit, const QString& id)
+	{
+		if (prohibit)
+		{
+			if (ActiveProhibitions_.isEmpty ())
+				ActivityTimer_->start ();
 
-		Q_INVOKABLE qint32 GetSystemUpdateID (const Herqq::Upnp::HActionArguments&, Herqq::Upnp::HActionArguments*);
-		Q_INVOKABLE qint32 GetSearchCapabilities (const Herqq::Upnp::HActionArguments&, Herqq::Upnp::HActionArguments*);
-		Q_INVOKABLE qint32 GetSortCapabilities (const Herqq::Upnp::HActionArguments&, Herqq::Upnp::HActionArguments*);
-		Q_INVOKABLE qint32 Browse (const Herqq::Upnp::HActionArguments&, Herqq::Upnp::HActionArguments*);
-		Q_INVOKABLE qint32 X_GetFeatureList (const Herqq::Upnp::HActionArguments&, Herqq::Upnp::HActionArguments*);
-		Q_INVOKABLE qint32 X_SetBookmark (const Herqq::Upnp::HActionArguments&, Herqq::Upnp::HActionArguments*);
-	};
+			ActiveProhibitions_ << id;
+		}
+		else
+		{
+			ActiveProhibitions_.remove (id);
+
+			if (ActiveProhibitions_.isEmpty ())
+				ActivityTimer_->stop ();
+		}
+	}
+
+	void ScreenPlatformFreedesktop::handleTimeout ()
+	{
+		QDBusInterface iface ("org.freedesktop.ScreenSaver", "/ScreenSaver");
+		iface.call ("SimulateUserActivity");
+	}
 }
 }

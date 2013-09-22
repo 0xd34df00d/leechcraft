@@ -45,13 +45,15 @@ namespace ChatHistory
 		Q_INTERFACES (LeechCraft::Azoth::IMessage)
 
 		Direction Direction_;
-		QObject *OtherPart_;
+		QObject * const OtherPart_;
+		MessageType Type_;
 		QString Variant_;
 		QString Body_;
 		QDateTime DateTime_;
 	public:
 		HistoryMessage (Direction dir,
 				QObject *other,
+				MessageType type,
 				const QString& variant,
 				const QString& body,
 				const QDateTime& datetime);

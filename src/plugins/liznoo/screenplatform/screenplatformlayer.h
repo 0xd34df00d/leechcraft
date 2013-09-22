@@ -30,33 +30,21 @@
 #pragma once
 
 #include <QObject>
-#include <QDBusConnection>
-#include <interfaces/structures.h>
-#include "batteryinfo.h"
-#include "platformlayer.h"
+#include <QSet>
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-	class DBusConnector : public QObject
+	class ScreenPlatformLayer : public QObject
 	{
 		Q_OBJECT
-
-		QDBusConnection SB_;
+	protected:
+		QSet<QString> ActiveProhibitions_;
 	public:
-		DBusConnector (QObject* = 0);
-	public slots:
-		void changeState (Liznoo::PlatformLayer::PowerState);
-	private slots:
-		void handleGonnaSleep ();
-		void handleWokeUp ();
-		void enumerateDevices ();
-		void requeryDevice (const QString&);
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
-		void batteryInfoUpdated (Liznoo::BatteryInfo);
+		ScreenPlatformLayer (QObject* = 0);
+
+		virtual void ProhibitScreensaver (bool prohibit, const QString& id) = 0;
 	};
 }
 }
-

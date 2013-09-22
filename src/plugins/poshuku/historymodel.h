@@ -55,7 +55,7 @@ namespace Poshuku
 		QString URL_;
 	};
 
-	typedef std::vector<HistoryItem> history_items_t;
+	typedef QList<HistoryItem> history_items_t;
 
 	class HistoryModel : public QAbstractItemModel
 	{
@@ -87,7 +87,7 @@ namespace Poshuku
 				QDateTime datetime, QObject *browserwidget = 0);
 		QList<QMap<QString, QVariant>> getItemsMap () const;
 	private:
-		void Add (const HistoryItem&, bool announce);
+		void Add (const HistoryItem&, bool announce, int section);
 	private slots:
 		void loadData ();
 		void collectGarbage ();

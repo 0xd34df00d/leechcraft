@@ -67,6 +67,8 @@ namespace Monocle
 		bool Search (const QString&, Util::FindNotification::FindFlags);
 	private:
 		void SelectItem (int);
+	signals:
+		void navigateRequested (const QString&, int, double, double);
 	};
 }
 }

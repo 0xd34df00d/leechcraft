@@ -82,9 +82,6 @@ namespace Xoox
 		MessageType GetMessageType () const;
 		MessageSubType GetMessageSubType () const;
 
-		/** Since it's outgoing message, the other part
-		 * always equals to the room entry.
-		 */
 		QObject* OtherPart () const;
 		QObject* ParentCLEntry () const;
 		QString GetOtherVariant () const;

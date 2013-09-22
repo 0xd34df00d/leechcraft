@@ -72,6 +72,8 @@ namespace LeechCraft
 
 		if (item.attribute ("addEnabled") == "false")
 			view->DisableAddition ();
+		if (item.attribute ("modifyEnabled") == "false")
+			view->DisableModification ();
 		if (item.attribute ("removeEnabled") == "false")
 			view->DisableRemoval ();
 

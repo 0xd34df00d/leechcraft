@@ -78,6 +78,7 @@
 #include "textsearchhandler.h"
 #include "formmanager.h"
 #include "arbitraryrotationwidget.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -88,7 +89,7 @@ namespace Monocle
 		TextSearchHandler *SearchHandler_;
 	public:
 		FindDialog (TextSearchHandler *searchHandler, QWidget *parent)
-		: Util::FindNotification (parent)
+		: Util::FindNotification (Core::Instance ().GetProxy (), parent)
 		, SearchHandler_ (searchHandler)
 		{
 		}
@@ -125,6 +126,10 @@ namespace Monocle
 
 		LayoutManager_ = new PagesLayoutManager (Ui_.PagesView_, this);
 		SearchHandler_ = new TextSearchHandler (Ui_.PagesView_, LayoutManager_, this);
+		connect (SearchHandler_,
+				SIGNAL (navigateRequested (QString, int, double, double)),
+				this,
+				SLOT (handleNavigateRequested (QString, int, double, double)));
 		FormManager_ = new FormManager (Ui_.PagesView_, this);
 
 		FindDialog_ = new FindDialog (SearchHandler_, this);

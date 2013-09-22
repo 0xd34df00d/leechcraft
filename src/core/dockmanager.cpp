@@ -40,6 +40,7 @@
 #include "docktoolbarmanager.h"
 
 Q_DECLARE_METATYPE (QDockWidget*)
+Q_DECLARE_METATYPE (QPointer<QDockWidget>)
 
 namespace LeechCraft
 {
@@ -49,6 +50,7 @@ namespace LeechCraft
 	, Width_ (-1)
 	{
 		qRegisterMetaType<QDockWidget*> ("QDockWidget*");
+		qRegisterMetaType<QPointer<QDockWidget>> ("QPointer<QDockWidget>");
 	}
 
 	DockManager::DockManager (RootWindowsManager *rootWM, QObject *parent)
@@ -169,7 +171,7 @@ namespace LeechCraft
 				QMetaObject::invokeMethod (this,
 						"revertDockSizes",
 						Qt::QueuedConnection,
-						Q_ARG (QDockWidget*, dock),
+						Q_ARG (QPointer<QDockWidget>, dock),
 						Q_ARG (int, prevMin),
 						Q_ARG (int, prevMax));
 			}
@@ -209,8 +211,11 @@ namespace LeechCraft
 				MoveDock (i.key (), fromWin, toWin);
 	}
 
-	void DockManager::revertDockSizes (QDockWidget *dock, int min, int max)
+	void DockManager::revertDockSizes (QPointer<QDockWidget> dock, int min, int max)
 	{
+		if (!dock)
+			return;
+
 		dock->setMinimumWidth (min);
 		dock->setMaximumWidth (max);
 	}

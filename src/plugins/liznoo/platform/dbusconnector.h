@@ -30,25 +30,33 @@
 #pragma once
 
 #include <QObject>
-#include <QPointer>
-
-class QMainWindow;
-class QToolBar;
+#include <QDBusConnection>
+#include <interfaces/structures.h>
+#include "../batteryinfo.h"
+#include "platformlayer.h"
 
 namespace LeechCraft
 {
-	class MainWindow;
-
-	class ToolbarGuard : public QObject
+namespace Liznoo
+{
+	class DBusConnector : public QObject
 	{
 		Q_OBJECT
 
-		MainWindow *Window_;
-		QPointer<QToolBar> Toolbar_;
+		QDBusConnection SB_;
 	public:
-		ToolbarGuard (QMainWindow*);
-		virtual ~ToolbarGuard ();
-
-		void AddToolbar (QToolBar*);
+		DBusConnector (QObject* = 0);
+	public slots:
+		void changeState (Liznoo::PlatformLayer::PowerState);
+	private slots:
+		void handleGonnaSleep ();
+		void handleWokeUp ();
+		void enumerateDevices ();
+		void requeryDevice (const QString&);
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
+		void batteryInfoUpdated (Liznoo::BatteryInfo);
 	};
-};
+}
+}
+

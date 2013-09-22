@@ -31,10 +31,20 @@
 #include <memory>
 #include <QtDebug>
 #include <QTimer>
+#include <QTextCodec>
 #include <gst/gst.h>
+
+#ifdef WITH_LIBGUESS
+extern "C"
+{
+#include <libguess/libguess.h>
+}
+#endif
+
 #include "audiosource.h"
 #include "path.h"
 #include "../core.h"
+#include "../xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -227,6 +237,9 @@ namespace LMP
 
 	void SourceObject::Seek (qint64 pos)
 	{
+		if (!IsSeekable ())
+			return;
+
 		if (OldState_ == SourceState::Playing)
 			IsSeeking_ = true;
 
@@ -316,7 +329,10 @@ namespace LMP
 
 	void SourceObject::Pause ()
 	{
-		gst_element_set_state (Path_->GetPipeline (), GST_STATE_PAUSED);
+		if (!IsSeekable ())
+			Stop ();
+		else
+			gst_element_set_state (Path_->GetPipeline (), GST_STATE_PAUSED);
 	}
 
 	void SourceObject::Stop ()
@@ -397,10 +413,44 @@ namespace LMP
 
 	namespace
 	{
+		void FixEncoding (QString& out, const gchar *origStr)
+		{
+#ifdef WITH_LIBGUESS
+			const auto& cp1252 = QTextCodec::codecForName ("CP-1252")->fromUnicode (origStr);
+			if (cp1252.isEmpty ())
+				return;
+
+			const auto region = XmlSettingsManager::Instance ()
+					.property ("TagsRecodingRegion").toString ();
+			const auto encoding = libguess_determine_encoding (cp1252.constData (),
+					cp1252.size (), region.toUtf8 ().constData ());
+			if (!encoding)
+				return;
+
+			auto codec = QTextCodec::codecForName (encoding);
+			if (!codec)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "no codec for encoding"
+						<< encoding;
+				return;
+			}
+
+			const auto& proper = codec->toUnicode (cp1252.constData ());
+			if (!proper.isEmpty ())
+				out = proper;
+#else
+			Q_UNUSED (out);
+			Q_UNUSED (origStr);
+#endif
+		}
+
 		void TagFunction (const GstTagList *list, const gchar *tag, gpointer data)
 		{
 			auto& map = *static_cast<SourceObject::TagMap_t*> (data);
-			auto& valList = map [QString::fromUtf8 (tag).toLower ()];
+
+			const auto& tagName = QString::fromUtf8 (tag).toLower ();
+			auto& valList = map [tagName];
 
 			switch (gst_tag_get_type (tag))
 			{
@@ -409,6 +459,13 @@ namespace LMP
 				gchar *str = nullptr;
 				gst_tag_list_get_string (list, tag, &str);
 				valList = QString::fromUtf8 (str);
+
+				const auto recodingEnabled = XmlSettingsManager::Instance ()
+						.property ("EnableTagsRecoding").toBool ();
+				if (recodingEnabled &&
+						(tagName == "title" || tagName == "album" || tagName == "artist"))
+					FixEncoding (valList, str);
+
 				g_free (str);
 				break;
 			}

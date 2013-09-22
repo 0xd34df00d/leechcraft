@@ -53,7 +53,6 @@
 #include "application.h"
 #include "startupwizard.h"
 #include "aboutdialog.h"
-#include "toolbarguard.h"
 #include "newtabmenumanager.h"
 #include "tabmanager.h"
 #include "coreinstanceobject.h"
@@ -69,7 +68,6 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 , TrayIcon_ (0)
 , IsShown_ (true)
 , WasMaximized_ (false)
-, Guard_ (new ToolbarGuard (this))
 , IsQuitting_ (false)
 , LeftDockToolbar_ (new QToolBar ())
 , RightDockToolbar_ (new QToolBar ())
@@ -170,11 +168,6 @@ void LeechCraft::MainWindow::SetAdditionalTitle (const QString& title)
 		setWindowTitle ("LeechCraft");
 	else
 		setWindowTitle (QString ("%1 - LeechCraft").arg (title));
-}
-
-LeechCraft::ToolbarGuard* LeechCraft::MainWindow::GetGuard () const
-{
-	return Guard_;
 }
 
 QMenu* LeechCraft::MainWindow::GetMainMenu () const
@@ -540,14 +533,6 @@ void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)
 	}
 }
 
-void LeechCraft::MainWindow::on_MainTabWidget__currentChanged (int index)
-{
-	auto rootWM = Core::Instance ().GetRootWindowsManager ();
-	auto bar = rootWM->GetTabManager (this)->GetToolBar (index);
-
-	GetGuard ()->AddToolbar (bar);
-}
-
 namespace
 {
 	Qt::ToolButtonStyle GetToolButtonStyle ()
@@ -739,8 +724,6 @@ void LeechCraft::MainWindow::FillToolMenu ()
 	int i = 0;
 	Q_FOREACH (QAction *act, atm->actions ())
 		Ui_.MainTabWidget_->InsertAction2TabBar (i++, act);
-
-	on_MainTabWidget__currentChanged (0);
 }
 
 void LeechCraft::MainWindow::InitializeShortcuts ()

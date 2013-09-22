@@ -30,71 +30,36 @@
 #pragma once
 
 #include <QObject>
-#include <QMap>
-#include <QHash>
-#include <QSet>
-#include <QPointer>
-#include <interfaces/core/ihookproxy.h>
-
-class QMainWindow;
-class QDockWidget;
-class QAction;
+#include <interfaces/structures.h>
+#include "../batteryinfo.h"
 
 namespace LeechCraft
 {
-	class MainWindow;
-	class RootWindowsManager;
-	class DockToolbarManager;
-
-	class DockManager : public QObject
+namespace Liznoo
+{
+	class PlatformLayer : public QObject
 	{
 		Q_OBJECT
-
-		RootWindowsManager *RootWM_;
-
-		struct DockInfo
-		{
-			QWidget *Associated_;
-			MainWindow *Window_;
-			int Width_;
-
-			DockInfo ();
-		};
-		QHash<QDockWidget*, DockInfo> Dock2Info_;
-		QHash<QAction*, QDockWidget*> ToggleAct2Dock_;
-		QSet<QDockWidget*> ForcefullyClosed_;
-
-		QHash<QMainWindow*, DockToolbarManager*> Window2DockToolbarMgr_;
 	public:
-		DockManager (RootWindowsManager*, QObject* = 0);
+		PlatformLayer (QObject* = 0);
 
-		void AddDockWidget (QDockWidget*, Qt::DockWidgetArea);
-		void AssociateDockWidget (QDockWidget*, QWidget*);
+		virtual void Stop () = 0;
 
-		void ToggleViewActionVisiblity (QDockWidget*, bool);
+		enum class PowerState
+		{
+			Suspend,
+			Hibernate
+		};
+		virtual void ChangeState (PowerState);
 
-		void SetDockWidgetVisibility (QDockWidget*, bool);
-
-		QSet<QDockWidget*> GetWindowDocks (MainWindow*) const;
-		void MoveDock (QDockWidget *dock, MainWindow *from, MainWindow *to);
-
-		QSet<QDockWidget*> GetForcefullyClosed () const;
-	protected:
-		bool eventFilter (QObject*, QEvent*);
-	private:
-		void HandleDockToggled (QDockWidget*, bool);
-	public slots:
-		void handleTabMove (int, int, int);
-	private slots:
-		void revertDockSizes (QPointer<QDockWidget>, int, int);
-
-		void handleDockDestroyed ();
-		void handleDockToggled (bool);
-		void handleTabChanged (QWidget*);
-
-		void handleWindow (int);
-		void handleWindowDestroyed ();
+		void EmitGonnaSleep (int);
+		void EmitWokeUp ();
 	signals:
-		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr, QMainWindow*, QDockWidget*, bool);
+		void started ();
+		void gotEntity (const LeechCraft::Entity&);
+		void batteryInfoUpdated (Liznoo::BatteryInfo);
 	};
 }
+}
+
+Q_DECLARE_METATYPE (LeechCraft::Liznoo::PlatformLayer::PowerState);

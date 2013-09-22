@@ -34,7 +34,7 @@
 #include <QDBusConnectionInterface>
 #include <QtDebug>
 #include <util/util.h>
-#include "batteryinfo.h"
+#include "../batteryinfo.h"
 
 namespace LeechCraft
 {

@@ -29,72 +29,25 @@
 
 #pragma once
 
-#include <QObject>
-#include <QMap>
-#include <QHash>
-#include <QSet>
-#include <QPointer>
-#include <interfaces/core/ihookproxy.h>
+#include "screenplatformlayer.h"
 
-class QMainWindow;
-class QDockWidget;
-class QAction;
+class QTimer;
 
 namespace LeechCraft
 {
-	class MainWindow;
-	class RootWindowsManager;
-	class DockToolbarManager;
-
-	class DockManager : public QObject
+namespace Liznoo
+{
+	class ScreenPlatformFreedesktop : public ScreenPlatformLayer
 	{
 		Q_OBJECT
 
-		RootWindowsManager *RootWM_;
-
-		struct DockInfo
-		{
-			QWidget *Associated_;
-			MainWindow *Window_;
-			int Width_;
-
-			DockInfo ();
-		};
-		QHash<QDockWidget*, DockInfo> Dock2Info_;
-		QHash<QAction*, QDockWidget*> ToggleAct2Dock_;
-		QSet<QDockWidget*> ForcefullyClosed_;
-
-		QHash<QMainWindow*, DockToolbarManager*> Window2DockToolbarMgr_;
+		QTimer * const ActivityTimer_;
 	public:
-		DockManager (RootWindowsManager*, QObject* = 0);
+		ScreenPlatformFreedesktop (QObject* = 0);
 
-		void AddDockWidget (QDockWidget*, Qt::DockWidgetArea);
-		void AssociateDockWidget (QDockWidget*, QWidget*);
-
-		void ToggleViewActionVisiblity (QDockWidget*, bool);
-
-		void SetDockWidgetVisibility (QDockWidget*, bool);
-
-		QSet<QDockWidget*> GetWindowDocks (MainWindow*) const;
-		void MoveDock (QDockWidget *dock, MainWindow *from, MainWindow *to);
-
-		QSet<QDockWidget*> GetForcefullyClosed () const;
-	protected:
-		bool eventFilter (QObject*, QEvent*);
-	private:
-		void HandleDockToggled (QDockWidget*, bool);
-	public slots:
-		void handleTabMove (int, int, int);
+		void ProhibitScreensaver (bool prohibit, const QString& id);
 	private slots:
-		void revertDockSizes (QPointer<QDockWidget>, int, int);
-
-		void handleDockDestroyed ();
-		void handleDockToggled (bool);
-		void handleTabChanged (QWidget*);
-
-		void handleWindow (int);
-		void handleWindowDestroyed ();
-	signals:
-		void hookDockWidgetActionVisToggled (LeechCraft::IHookProxy_ptr, QMainWindow*, QDockWidget*, bool);
+		void handleTimeout ();
 	};
+}
 }

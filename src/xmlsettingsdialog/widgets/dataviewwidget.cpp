@@ -55,6 +55,11 @@ namespace LeechCraft
 		Ui_.Add_->setEnabled (false);
 	}
 
+	void DataViewWidget::DisableModification ()
+	{
+		Ui_.Modify_->setEnabled (false);
+	}
+
 	void DataViewWidget::DisableRemoval ()
 	{
 		Ui_.Remove_->setEnabled (false);

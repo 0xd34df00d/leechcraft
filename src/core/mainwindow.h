@@ -60,7 +60,6 @@ namespace LeechCraft
 	class PluginInfo;
 	class PluginManagerDialog;
 	class ShortcutManager;
-	class ToolbarGuard;
 
 	class MainWindow : public QMainWindow
 	{
@@ -71,7 +70,6 @@ namespace LeechCraft
 		QSystemTrayIcon *TrayIcon_;
 		bool IsShown_;
 		bool WasMaximized_;
-		ToolbarGuard *Guard_;
 		QShortcut *FullScreenShortcut_;
 		QShortcut *CloseTabShortcut_;
 		bool IsQuitting_;
@@ -93,7 +91,6 @@ namespace LeechCraft
 		SeparateTabWidget* GetTabWidget () const;
 		QSplitter* GetMainSplitter () const;
 		void SetAdditionalTitle (const QString&);
-		ToolbarGuard* GetGuard () const;
 
 		QMenu* GetMainMenu () const;
 		void HideMainMenu ();
@@ -132,7 +129,6 @@ namespace LeechCraft
 		void on_ActionShowStatusBar__triggered ();
 		void on_ActionMenu__triggered ();
 		void on_ActionFullscreenMode__triggered (bool);
-		void on_MainTabWidget__currentChanged (int);
 		void handleShortcutFullscreenMode ();
 		void handleToolButtonStyleChanged ();
 		void handleShowTrayIconChanged ();

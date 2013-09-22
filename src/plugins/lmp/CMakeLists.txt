@@ -15,6 +15,12 @@ add_definitions (${TAGLIB_CFLAGS})
 
 cmake_dependent_option (ENABLE_LMP_MPRIS "Enable MPRIS support for LMP" ON "NOT WIN32" OFF)
 
+option (ENABLE_LMP_LIBGUESS "Enable tags recoding using the LibGuess library" ON)
+if (ENABLE_LMP_LIBGUESS)
+	find_package (LibGuess REQUIRED)
+	add_definitions (-DWITH_LIBGUESS)
+endif ()
+
 set (QT_USE_QTDECLARATIVE TRUE)
 set (QT_USE_QTNETWORK TRUE)
 set (QT_USE_QTSQL TRUE)
@@ -32,6 +38,7 @@ include_directories (
 	${GSTREAMER_INCLUDE_DIR}
 	${GLIB2_INCLUDE_DIR}
 	${LIBXML2_INCLUDE_DIR}
+	${LibGuess_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 set (COMMON_SRCS
@@ -167,6 +174,7 @@ target_link_libraries (leechcraft_lmp
 	${GSTREAMER_LIBRARIES}
 	${GLIB2_LIBRARIES}
 	${LIBXML2_LIBRARIES}
+	${LibGuess_LIBRARIES}
 
 	${MPRIS_SUBLIB}
 	leechcraft_lmp_common

@@ -31,6 +31,7 @@
 #include <memory>
 #include <QNetworkCookie>
 #include <QtDebug>
+#include <QDateTime>
 
 namespace LeechCraft
 {
@@ -79,6 +80,9 @@ namespace Util
 		QByteArray result;
 		for (const auto& cookie : cookies)
 		{
+			if (cookie.isSessionCookie ())
+				continue;
+
 			result += cookie.toRawForm ();
 			result += "\n";
 		}
@@ -87,26 +91,41 @@ namespace Util
 
 	void CustomCookieJar::Load (const QByteArray& data)
 	{
-		QList<QByteArray> spcookies = data.split ('\n');
-
 		QList<QNetworkCookie> cookies, filteredCookies;
-		for (const auto& ba : spcookies)
-			cookies += QNetworkCookie::parseCookies (ba);
+		for (const auto& ba : data.split ('\n'))
+			cookies << QNetworkCookie::parseCookies (ba);
 
+		const auto& now = QDateTime::currentDateTime ();
 		for (const auto& cookie : cookies)
-			if (!(FilterTrackingCookies_ &&
-						cookie.name ().startsWith ("__utm")))
-				filteredCookies << cookie;
+		{
+			if (FilterTrackingCookies_ &&
+					cookie.name ().startsWith ("__utm"))
+				continue;
+
+			if (cookie.expirationDate () < now)
+				continue;
+
+			filteredCookies << cookie;
+		}
 		setAllCookies (filteredCookies);
 	}
 
 	void CustomCookieJar::CollectGarbage ()
 	{
-		QList<QNetworkCookie> cookies = allCookies ();
+		const auto& cookies = allCookies ();
 		QList<QNetworkCookie> result;
-		for (const auto& cookie : allCookies ())
-			if (!result.contains (cookie))
-				result << cookie;
+		const auto& now = QDateTime::currentDateTime ();
+		for (const auto& cookie : cookies)
+		{
+			if (!cookie.isSessionCookie () &&
+					cookie.expirationDate () < now)
+				continue;
+
+			if (result.contains (cookie))
+				continue;
+
+			result << cookie;
+		}
 		qDebug () << Q_FUNC_INFO << cookies.size () << result.size ();
 		setAllCookies (result);
 	}

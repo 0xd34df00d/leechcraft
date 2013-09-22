@@ -20,43 +20,24 @@ set (SRCS
 	batteryinfo.cpp
 	batteryhistory.cpp
 	batteryhistorydialog.cpp
-	platformlayer.cpp
 	xmlsettingsmanager.cpp
-	)
-set (HEADERS
-	liznoo.h
-	batteryinfo.h
-	batteryhistory.h
-	batteryhistorydialog.h
-	platformlayer.h
-	xmlsettingsmanager.h
+	platform/platformlayer.cpp
+	screenplatform/screenplatformlayer.cpp
 	)
 
-set (FBSD_SRCS platformfreebsd.cpp)
-set (FBSD_HEADERS platformfreebsd.h)
+set (FBSD_SRCS platform/platformfreebsd.cpp)
+set (FBSD_HEADERS platform/platformfreebsd.h)
 set (UPOWER_SRCS
-	platformupower.cpp
-	dbusthread.cpp
-	dbusconnector.cpp
-	)
-set (UPOWER_HEADERS
-	platformupower.h
-	dbusthread.h
-	dbusconnector.h
+	platform/platformupower.cpp
+	platform/dbusthread.cpp
+	platform/dbusconnector.cpp
 	)
 set (MAC_SRCS
-	platformmac.mm
-	)
-set (MAC_HEADERS
-	platformmac.h
+	platform/platformmac.mm
 	)
 set (WIN32_SRCS
-	platformwinapi.cpp
-	fakeqwidgetwinapi.cpp
-	)
-set (WIN32_HEADERS
-	platformwinapi.h
-	fakeqwidgetwinapi.h
+	platform/platformwinapi.cpp
+	platform/fakeqwidgetwinapi.cpp
 	)
 # Default implementation using UPower
 if (APPLE)
@@ -69,20 +50,14 @@ elseif (NOT WIN32)
 			${SRCS}
 			${FBSD_SRCS}
 			)
-		set (HEADERS
-			${HEADERS}
-			${FBSD_HEADERS}
-			)
 	else ()
 		set (SRCS
 			${SRCS}
 			${UPOWER_SRCS}
 			)
-		set (HEADERS
-			${HEADERS}
-			${UPOWER_HEADERS}
-			)
 	endif ()
+
+	set (SRCS ${SRCS} "screenplatform/screenplatformfreedesktop.cpp")
 # Windows implementation using WinAPI
 else ()
 	set (SRCS
@@ -101,16 +76,12 @@ set (FORMS
 set (RESOURCES liznooresources.qrc)
 CreateTrs ("liznoo" "en;es;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("liznoo" "en;ru_RU" "${SRCS};${FBSD_SRCS};${UPOWER_SRCS};${WIN32_SRCS}" "${FORMS}" "liznoosettings.xml")
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 add_library (leechcraft_liznoo SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${UIS_H}
 	${RCCS}
 	)
