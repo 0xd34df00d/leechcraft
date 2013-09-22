@@ -75,6 +75,17 @@ namespace Azoth
 
 		FillSharers ();
 
+		if (!Ui_.TransferMethod_->count ())
+		{
+			QMessageBox::warning (this,
+					"LeechCraft",
+					tr ("There aren't any file transfer methods available. "
+						"Please either make sure protocol file transfers are enabled and "
+						"active, or install a module like NetStoreManager."));
+			deleteLater ();
+			return;
+		}
+
 		if (suggested.isEmpty ())
 			on_FileBrowse__released ();
 		else
