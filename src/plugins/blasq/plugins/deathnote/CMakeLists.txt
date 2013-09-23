@@ -14,14 +14,18 @@ include_directories (
 	)
 
 set (DEATHNOTE_SRCS
+	albumsettingsdialog.cpp
 	deathnote.cpp
 	fotobilderaccount.cpp
 	fotobilderservice.cpp
 	registerpage.cpp
+	selectgroupsdialog.cpp
 	)
 
 set (DEATHNOTE_FORMS
+	albumsettingsdialog.ui
 	registerpage.ui
+	selectgroupsdialog.ui
 	)
 # CreateTrs("blasq_vangog" "en;ru_RU" VANGOG_COMPILED_TRANSLATIONS)
 # CreateTrsUpTarget("blasq_vangog" "en;ru_RU" "${VANGOG_SRCS}" "${VANGOG_FORMS}" "")

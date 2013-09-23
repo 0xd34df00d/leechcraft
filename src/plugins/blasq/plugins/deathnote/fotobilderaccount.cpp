@@ -42,6 +42,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include <util/passutils.h>
 #include <util/util.h>
+#include "albumsettingsdialog.h"
 #include "fotobilderservice.h"
 
 namespace LeechCraft
@@ -140,6 +141,32 @@ namespace DeathNote
 	QAbstractItemModel* FotoBilderAccount::GetCollectionsModel () const
 	{
 		return CollectionsModel_;
+	}
+
+	void FotoBilderAccount::CreateCollection (const QModelIndex& parent)
+	{
+		AlbumSettingsDialog dia ({}, Proxy_);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		const auto& name = dia.GetName ();
+		int priv = dia.GetPrivacyLevel ();
+
+		CallsQueue_.append ([this, name, priv] (const QString& challenge) -> void
+			{
+				CreateGallery (name, priv, challenge);
+			});
+		GetChallenge ();
+	}
+
+	bool FotoBilderAccount::HasUploadFeature (ISupportUploads::Feature) const
+	{
+
+	}
+
+	void FotoBilderAccount::UploadImages (const QModelIndex& collection, const QList<UploadItem>& paths)
+	{
+
 	}
 
 	namespace
@@ -341,11 +368,11 @@ namespace DeathNote
 	{
 		auto reply = Proxy_->GetNetworkAccessManager ()->
 				get (CreateRequest (Util::MakeMap<QByteArray, QByteArray> ({
-					{ "X-FB-User", Login_.toUtf8 () },
-					{ "X-FB-Mode", "GetGals" },
-					{ "X-FB-Auth", ("crp:" + challenge + ":" +
-							GetHashedChallenge (GetPassword (), challenge))
-								.toUtf8 () } })));
+						{ "X-FB-User", Login_.toUtf8 () },
+						{ "X-FB-Mode", "GetGals" },
+						{ "X-FB-Auth", ("crp:" + challenge + ":" +
+								GetHashedChallenge (GetPassword (), challenge))
+									.toUtf8 () } })));
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -369,6 +396,31 @@ namespace DeathNote
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleGotPhotos ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void FotoBilderAccount::CreateGallery (const QString& name, int privacyLevel,
+			const QString& challenge)
+	{
+		auto reply = Proxy_->GetNetworkAccessManager ()->
+				get (CreateRequest (Util::MakeMap<QByteArray, QByteArray> ({
+						{ "X-FB-User", Login_.toUtf8 () },
+						{ "X-FB-Mode", "CreateGals" },
+						{ "X-FB-Auth", ("crp:" + challenge + ":" +
+								GetHashedChallenge (GetPassword (), challenge))
+									.toUtf8 () },
+						{ "X-FB-CreateGals.Gallery._size", "1" },
+						{ "X-FB-CreateGals.Gallery.0.ParentID", "0" },
+						{ "X-FB-CreateGals.Gallery.0.GalName", name.toUtf8 () },
+						{ "X-FB-CreateGals.Gallery.0.GalSec",
+								QString::number (privacyLevel).toUtf8 () } })));
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleGalleryCreated ()));
 		connect (reply,
 				SIGNAL (error (QNetworkReply::NetworkError)),
 				this,
@@ -574,7 +626,7 @@ namespace DeathNote
 // 			item->setEditable (false);
 // 			CollectionsModel_->appendRow (item);
 // 		}
-		
+
 		RequestPictures ();
 	}
 
@@ -621,6 +673,18 @@ namespace DeathNote
 		}
 		emit doneUpdating ();
 	}
+
+	void FotoBilderAccount::handleGalleryCreated ()
+	{
+		QDomDocument document;
+		auto content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
+				document);
+		if (content.isEmpty ())
+			return;
+
+
+	}
+
 }
 }
 }

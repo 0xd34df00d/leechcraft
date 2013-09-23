@@ -35,8 +35,9 @@
 #include <QObject>
 #include <QSet>
 #include <QQueue>
-#include <interfaces/blasq/iaccount.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/blasq/iaccount.h>
+#include <interfaces/blasq/isupportuploads.h>
 #include "structures.h"
 
 class QStandardItemModel;
@@ -51,10 +52,11 @@ namespace DeathNote
 	class FotoBilderService;
 
 	class FotoBilderAccount : public QObject
-						, public IAccount
+							, public IAccount
+							, public ISupportUploads
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blasq::IAccount)
+		Q_INTERFACES (LeechCraft::Blasq::IAccount LeechCraft::Blasq::ISupportUploads)
 
 		QString Name_;
 		FotoBilderService * const Service_;
@@ -87,6 +89,10 @@ namespace DeathNote
 
 		QAbstractItemModel* GetCollectionsModel () const override;
 
+		void CreateCollection (const QModelIndex& parent) override;
+		bool HasUploadFeature (Feature) const override;
+		void UploadImages (const QModelIndex& collection, const QList<UploadItem>& paths) override;
+
 		void Login ();
 		void RequestGalleries ();
 		void RequestPictures ();
@@ -99,6 +105,7 @@ namespace DeathNote
 		void LoginRequest (const QString& challenge);
 		void GetGalsRequest (const QString& challenge);
 		void GetPicsRequest (const QString& challenge);
+		void CreateGallery (const QString& name, int privacyLevel, const QString& challenge);
 
 	private slots:
 		void handleGetChallengeRequestFinished ();
@@ -108,6 +115,7 @@ namespace DeathNote
 
 		void handleGotAlbums ();
 		void handleGotPhotos ();
+		void handleGalleryCreated ();
 
 	signals:
 		void accountChanged (FotoBilderAccount *acc);
