@@ -39,6 +39,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "batteryhistorydialog.h"
+#include "screenplatform/screenplatformlayer.h"
 
 #if defined(Q_OS_LINUX)
 	#include "platform/platformupower.h"
