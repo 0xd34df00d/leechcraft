@@ -39,14 +39,20 @@ namespace Blasq
 {
 namespace DeathNote
 {
+	class FotoBilderAccount;
+
 	class AlbumSettingsDialog : public QDialog
 	{
 		Q_OBJECT
 
 		Ui::AlbumSettingsDialog Ui_;
 		int PrivacyLevel_;
+		QString Login_;
+		FotoBilderAccount *Account_;
+
 	public:
-		AlbumSettingsDialog (const QString&, ICoreProxy_ptr, QWidget* = 0);
+		AlbumSettingsDialog (const QString& name, const QString& login,
+				FotoBilderAccount *acc, QWidget* = 0);
 
 		QString GetName () const;
 		int GetPrivacyLevel () const;

@@ -30,6 +30,8 @@
 #pragma once
 
 #include <QDialog>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 #include "ui_selectgroupsdialog.h"
 
 class QStandardItemModel;
@@ -40,18 +42,51 @@ namespace Blasq
 {
 namespace DeathNote
 {
+	class FotoBilderAccount;
+
+	struct FriendsGroup
+	{
+		bool Public_;
+		QString Name_;
+		uint Id_;
+		uint SortOrder_;
+		uint RealId_;
+	};
+
+	struct ParsedMember
+	{
+		QString Name_;
+		QVariantList Value_;
+	};
+
 	class SelectGroupsDialog : public QDialog
 	{
 		Q_OBJECT
 
 		Ui::SelectGroupsDialog Ui_;
 		QStandardItemModel *Model_;
-	public:
-		SelectGroupsDialog (QWidget *parent = 0);
+		QString Login_;
+		FotoBilderAccount *Account_;
 
-		QList<uint> GetSelectedGroupsIds () const;
+	public:
+		SelectGroupsDialog (const QString& login, FotoBilderAccount *acc,
+				QWidget *parent = 0);
+
+		uint GetSelectedGroupId () const;
+	private:
+		void RequestFriendsGroups ();
+		void FriendsGroupsRequest (const QString& challenge);
+		void GenerateChallenge ();
+		QString GetPassword () const;
+		QNetworkRequest CreateNetworkRequest ();
+
+	private slots:
+		void handleChallengeReplyFinished ();
+		void handleNetworkError (QNetworkReply::NetworkError error);
+		void handleRequestFriendsGroupsFinished ();
 	};
 }
 }
 }
 
+Q_DECLARE_METATYPE (LeechCraft::Blasq::DeathNote::ParsedMember)

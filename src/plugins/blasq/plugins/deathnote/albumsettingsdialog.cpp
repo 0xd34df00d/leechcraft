@@ -28,8 +28,11 @@
  **********************************************************************/
 
 #include "albumsettingsdialog.h"
-#include <util/gui/clearlineeditaddon.h>
 #include <QPushButton>
+#include <QtDebug>
+#include <util/gui/clearlineeditaddon.h>
+#include "fotobilderaccount.h"
+#include "selectgroupsdialog.h"
 
 namespace LeechCraft
 {
@@ -37,15 +40,17 @@ namespace Blasq
 {
 namespace DeathNote
 {
-	AlbumSettingsDialog::AlbumSettingsDialog (const QString& name,
-			ICoreProxy_ptr proxy, QWidget *parent)
+	AlbumSettingsDialog::AlbumSettingsDialog (const QString& name, const QString& login,
+			FotoBilderAccount *acc, QWidget *parent)
 	: QDialog (parent)
 	, PrivacyLevel_ (255)
+	, Login_ (login)
+	, Account_ (acc)
 	{
 		Ui_.setupUi (this);
 		Ui_.Name_->setText (name);
 
-		new Util::ClearLineEditAddon (proxy, Ui_.Name_);
+		new Util::ClearLineEditAddon (Account_->GetProxy (), Ui_.Name_);
 
 		connect (Ui_.Name_,
 				SIGNAL (textChanged (QString)),
@@ -74,19 +79,22 @@ namespace DeathNote
 	{
 		switch (index)
 		{
-			case 1:
-				PrivacyLevel_ = 254;
+		case 1:
+			PrivacyLevel_ = 254;
+			break;
+		case 2:
+		{
+			SelectGroupsDialog dlg (Login_, Account_);
+			if (dlg.exec () == QDialog::Rejected)
 				break;
-			case 2:
-				//TODO call SelectGroupDialog
-				break;
-			case 3:
-				PrivacyLevel_ = 0;
-				break;
-			case 0:
-			default:
-				PrivacyLevel_ = 255;
-				break;
+
+			PrivacyLevel_ = dlg.GetSelectedGroupId ();
+			break;
+		}
+		case 0:
+		default:
+			PrivacyLevel_ = 255;
+			break;
 		}
 	}
 

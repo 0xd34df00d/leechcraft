@@ -69,6 +69,8 @@ namespace DeathNote
 		QStandardItemModel * const CollectionsModel_;
 		QStandardItem *AllPhotosItem_;
 
+		QHash<QByteArray, QStandardItem*> Id2AlbumItem_;
+
 		QQueue<std::function <void (const QString&)>> CallsQueue_;
 
 	public:
@@ -86,6 +88,8 @@ namespace DeathNote
 		IService* GetService () const override;
 		QString GetName () const override;
 		QByteArray GetID () const override;
+		QString GetPassword () const;
+		QByteArray GetHashedChallenge (const QString& password, const QString& challenge);
 
 		QAbstractItemModel* GetCollectionsModel () const override;
 
@@ -98,8 +102,8 @@ namespace DeathNote
 		void RequestPictures ();
 
 		void UpdateCollections () override;
+
 	private:
-		QString GetPassword () const;
 		bool FotoBilderErrorExists (const QByteArray& content);
 		void GetChallenge ();
 		void LoginRequest (const QString& challenge);

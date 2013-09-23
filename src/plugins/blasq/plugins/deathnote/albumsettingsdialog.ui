@@ -51,11 +51,6 @@
        <string>groups of friends</string>
       </property>
      </item>
-     <item>
-      <property name="text">
-       <string>just me</string>
-      </property>
-     </item>
     </widget>
    </item>
    <item row="2" column="0" colspan="2">

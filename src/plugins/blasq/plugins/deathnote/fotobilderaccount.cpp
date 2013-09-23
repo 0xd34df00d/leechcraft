@@ -138,6 +138,20 @@ namespace DeathNote
 		return ID_;
 	}
 
+	QString FotoBilderAccount::GetPassword () const
+	{
+		QString key ("org.LeechCraft.Blasq.PassForAccount/" + GetID ());
+		return Util::GetPassword (key, tr ("Enter password"), Service_);
+	}
+
+	QByteArray FotoBilderAccount::GetHashedChallenge (const QString& password, const QString& challenge)
+	{
+		const QByteArray passwordHash = QCryptographicHash::hash (password.toUtf8 (),
+				QCryptographicHash::Md5).toHex ();
+		return QCryptographicHash::hash ((challenge + passwordHash).toUtf8 (),
+				QCryptographicHash::Md5).toHex ();
+	}
+
 	QAbstractItemModel* FotoBilderAccount::GetCollectionsModel () const
 	{
 		return CollectionsModel_;
@@ -145,7 +159,7 @@ namespace DeathNote
 
 	void FotoBilderAccount::CreateCollection (const QModelIndex& parent)
 	{
-		AlbumSettingsDialog dia ({}, Proxy_);
+		AlbumSettingsDialog dia ({}, Login_, this);
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
@@ -201,14 +215,6 @@ namespace DeathNote
 			}
 
 			return content;
-		}
-
-		QByteArray GetHashedChallenge (const QString& password, const QString& challenge)
-		{
-			const QByteArray passwordHash = QCryptographicHash::hash (password.toUtf8 (),
-					QCryptographicHash::Md5).toHex ();
-			return QCryptographicHash::hash ((challenge + passwordHash).toUtf8 (),
-					QCryptographicHash::Md5).toHex ();
 		}
 	}
 
@@ -270,13 +276,21 @@ namespace DeathNote
 		QString code;
 		query.setQuery ("/FBResponse/Error/@code/data(.)");
 		if (!query.evaluateTo (&code))
-			return false;
+		{
+			query.setQuery ("/FBResponse/CreateGalsResponse/Error/@code/data(.)");
+			if (!query.evaluateTo (&code))
+				return false;
+		}
 		code = code.simplified ();
 
 		QString string;
 		query.setQuery ("/FBResponse/Error/text()");
 		if (!query.evaluateTo (&string))
-			return false;
+		{
+			query.setQuery ("/FBResponse/CreateGalsResponse/Error/text()");
+			if (!query.evaluateTo (&string))
+				return false;
+		}
 		string = string.simplified ();
 
 		if (code.isEmpty () || string.isEmpty ())
@@ -318,12 +332,6 @@ namespace DeathNote
 		}
 
 		RequestGalleries ();
-	}
-
-	QString FotoBilderAccount::GetPassword () const
-	{
-		QString key ("org.LeechCraft.Blasq.PassForAccount/" + GetID ());
-		return Util::GetPassword (key, tr ("Enter password"), Service_);
 	}
 
 	void FotoBilderAccount::GetChallenge ()
@@ -617,15 +625,17 @@ namespace DeathNote
 		AllPhotosItem_->setEditable (false);
 		CollectionsModel_->appendRow (AllPhotosItem_);
 
-		//TODO temporarily disabled until there is a way to define the album on the picture
-// 		const auto& albums = ParseGetGalsRequest (document);
-// 		for (const auto& album : albums)
-// 		{
-// 			auto item = new QStandardItem (album.Title_);
-// 			item->setData (ItemType::Collection, CollectionRole::Type);
-// 			item->setEditable (false);
-// 			CollectionsModel_->appendRow (item);
-// 		}
+		//TODO enable due to upload issues
+		const auto& albums = ParseGetGalsRequest (document);
+		for (const auto& album : albums)
+		{
+			auto item = new QStandardItem (album.Title_);
+			item->setData (ItemType::Collection, CollectionRole::Type);
+			item->setEditable (false);
+			item->setData (album.ID_, CollectionRole::ID);
+			CollectionsModel_->appendRow (item);
+			Id2AlbumItem_ [album.ID_] = item;
+		}
 
 		RequestPictures ();
 	}
@@ -682,7 +692,38 @@ namespace DeathNote
 		if (content.isEmpty ())
 			return;
 
+		if (FotoBilderErrorExists (content))
+			return;
 
+		auto galleries = document.elementsByTagName ("Gallery");
+		Album album;
+		for (int i = 0, size = galleries.count (); i < size; ++i)
+		{
+			const auto& elem = galleries.at (i).toElement ();
+			const auto& albumFields = elem.childNodes ();
+			for (int j = 0, count = albumFields.size (); j < count; ++j)
+			{
+				const auto& fieldElem = albumFields.at (j).toElement ();
+				if (fieldElem.tagName () == "GalID")
+					album.ID_ = fieldElem.text ().toUtf8 ();
+				else if (fieldElem.tagName () == "GalName")
+					album.Title_ = fieldElem.text ();
+				else if (fieldElem.tagName () == "GalURL")
+					album.Url_ = QUrl (fieldElem.text ());
+			}
+		}
+
+		if (album.ID_.isEmpty ())
+			return;
+
+		auto item = new QStandardItem (album.Title_);
+		item->setEditable (false);
+		item->setData (ItemType::Collection, CollectionRole::Type);
+		item->setData (album.ID_, CollectionRole::ID);
+
+		CollectionsModel_->appendRow (item);
+
+		Id2AlbumItem_ [album.ID_] = item;
 	}
 
 }
