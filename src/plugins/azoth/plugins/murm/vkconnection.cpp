@@ -552,6 +552,7 @@ namespace Murm
 		PhotoInfo PhotoMap2Info (const QVariantMap& map)
 		{
 			QString bigSrc;
+			QSize bigSize;
 			QString thumbSrc;
 			QSize thumbSize;
 
@@ -562,16 +563,22 @@ namespace Murm
 			{
 				const auto& eMap = elem.toMap ();
 
+				auto size = [&eMap]
+				{
+					return QSize (eMap ["width"].toInt (), eMap ["height"].toInt ());
+				};
+
 				const auto& type = eMap ["type"].toString ();
 				if (type == "m")
 				{
 					thumbSrc = eMap ["src"].toString ();
-					thumbSize = QSize (eMap ["width"].toInt (), eMap ["height"].toInt ());
+					thumbSize = size ();
 				}
 				else if (bigTypes.indexOf (type) > bigTypes.indexOf (currentBigType))
 				{
 					currentBigType = type;
 					bigSrc = eMap ["src"].toString ();
+					bigSize = size ();
 				}
 			}
 
@@ -584,6 +591,7 @@ namespace Murm
 				thumbSrc,
 				thumbSize,
 				bigSrc,
+				bigSize,
 
 				map ["access_key"].toString ()
 			};
