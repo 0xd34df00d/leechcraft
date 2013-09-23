@@ -453,21 +453,10 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
-	void VkConnection::handleGotFriends ()
+	namespace
 	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!CheckFinishedReply (reply))
-			return;
-
-		QList<UserInfo> users;
-
-		const auto& data = QJson::Parser ().parse (reply);
-		for (const auto& item : data.toMap () ["response"].toList ())
+		UserInfo UserMap2Info (const QVariantMap& userMap)
 		{
-			const auto& userMap = item.toMap ();
-			if (userMap.contains ("deactivated"))
-				continue;
-
 			QList<qulonglong> lists;
 			for (const auto& item : userMap ["lists"].toList ())
 				lists << item.toULongLong ();
@@ -476,7 +465,7 @@ namespace Murm
 			if (dateString.count ('.') == 1)
 				dateString += ".1800";
 
-			const UserInfo ui
+			return
 			{
 				userMap ["uid"].toULongLong (),
 
@@ -502,7 +491,25 @@ namespace Murm
 
 				lists
 			};
-			users << ui;
+		}
+	}
+
+	void VkConnection::handleGotFriends ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!CheckFinishedReply (reply))
+			return;
+
+		QList<UserInfo> users;
+
+		const auto& data = QJson::Parser ().parse (reply);
+		for (const auto& item : data.toMap () ["response"].toList ())
+		{
+			const auto& userMap = item.toMap ();
+			if (userMap.contains ("deactivated"))
+				continue;
+
+			users << UserMap2Info (userMap);
 		}
 
 		emit gotUsers (users);
