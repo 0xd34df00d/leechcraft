@@ -477,9 +477,15 @@ namespace Murm
 	{
 		QString Photo2Replacement (const PhotoInfo& info)
 		{
-			return QString ("<a href='%1' target='_blank'><img src='%2' alt='' /></a>")
+			const auto& fullSizeStr = QString::number (info.FullSize_.width ()) +
+					QString::fromUtf8 ("×") +
+					QString::number (info.FullSize_.height ());
+			return QString ("<a href='%1' target='_blank'><img src='%2' width='%3' height='%4' alt='%5' /></a>")
 					.arg (info.Full_)
-					.arg (info.Thumbnail_);
+					.arg (info.Thumbnail_)
+					.arg (info.ThumbnailSize_.width ())
+					.arg (info.ThumbnailSize_.height ())
+					.arg (fullSizeStr);
 		}
 
 		QString Audio2Replacement (const AudioInfo& info, ICoreProxy_ptr proxy)
