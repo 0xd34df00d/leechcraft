@@ -56,11 +56,21 @@ namespace Azoth
 
 		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList (other->GetEntryName ());
 
+		int win = 0;
 		const auto tab = Core::Instance ()
 				.GetChatTabsManager ()->GetChatTab (other->GetEntryID ());
 
 		const auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
-		const auto win = rootWM->GetWindowForTab (tab);
+		if (tab)
+			win = rootWM->GetWindowForTab (tab);
+		if (!tab || win == -1)
+		{
+			const auto& tc = other->GetEntryType () == ICLEntry::ETMUC ?
+					ChatTab::GetMUCTabClassInfo () :
+					ChatTab::GetChatTabClassInfo ();
+			win = rootWM->GetPreferredWindowIndex (tc.TabClass_);
+		}
+
 		e.Additional_ ["org.LC.AdvNotifications.WindowIndex"] = win;
 
 		e.Additional_ ["org.LC.Plugins.Azoth.SourceName"] = other->GetEntryName ();
