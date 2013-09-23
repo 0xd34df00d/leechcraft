@@ -58,7 +58,6 @@ namespace vlc
 		QWidget *Parent_;
 		bool DVD_;
 		
-		QUrl LastMedia_;
 		QStringList Subtitles_;
 		
 		libvlc_time_t FreezeCur_;
@@ -76,6 +75,8 @@ namespace vlc
 		double GetPosition () const;
 		QWidget* GetParent () const;
 		
+		void Init (QWidget *parent);
+		
 		int GetAudioTracksNumber () const;
 		int GetCurrentAudioTrack () const;
 		QString GetAudioTrackDescription (int) const;
@@ -89,6 +90,7 @@ namespace vlc
 		void DVDNavigate (unsigned);
 		
 		std::shared_ptr<libvlc_media_player_t> GetPlayer () const;
+		libvlc_instance_t* GetInstance () const;
 		
 		QTime GetCurrentTime () const;
 		QTime GetFullTime () const;
@@ -117,6 +119,15 @@ namespace vlc
 		void dvdNavigateUp ();
 		void dvdNavigateDown ();
 		void dvdNavigateEnter ();
+		
+		void minus10seconds ();
+		void plus10seconds ();
+		void plus3percent ();
+		void minus3percent ();
+		
+	signals:
+		void unstable ();
+		void stable ();
 	};
 }
 }

@@ -52,9 +52,20 @@
 #include <QResizeEvent>
 #include <QCursor>
 #include <QDropEvent>
+#include <QCoreApplication>
+#include <QDockWidget>
+#include <QSettings>
+#include <QStringList>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/util.h>
+#include <interfaces/ientityhandler.h>
+#include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/irootwindowsmanager.h>
+#include <interfaces/imwproxy.h>
 #include "vlcwidget.h"
 #include "vlcplayer.h"
+#include "playlisttitlewidget.h"
+#include "xmlsettingsmanager.h"
 
 namespace
 {
@@ -62,30 +73,61 @@ namespace
 	{
 		return (a - b).manhattanLength ();
 	}
+	
+	const QStringList Known_Audio_File_Formats = { ".ac3", ".mp3", ".ogg", ".flac", ".aac" };
+	const QStringList Known_Subtitles_File_Formats = { ".srt", ".smi", ".ssa", ".ass" };
 }
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	const int PANEL_SIDE_MARGIN = 5;
-	const int PANEL_BOTTOM_MARGIN = 5;
-	const int PANEL_HEIGHT = 27;
+	const int Panel_Side_Margin = 5;
+	const int Panel_Bottom_Margin = 5;
+	const int Panel_Height = 27;
 	
-	VlcWidget::VlcWidget (Util::ShortcutManager *manager, QWidget *parent)
+	VlcWidget::VlcWidget (ICoreProxy_ptr proxy, Util::ShortcutManager *manager, QWidget *parent)
 	: QWidget (parent)
 	, Parent_ (parent)
 	, Manager_ (manager)
 	, AllowFullScreenPanel_ (false)
+	, Autostart_ (true)
+	, Proxy_ (proxy)
 	{
 		VlcMainWidget_ = new SignalledWidget;
 		VlcMainWidget_->SetBackGroundColor (new QColor ("black"));
+		PlaylistWidget_ = new PlaylistWidget (proxy->GetIcon ("media-playback-start"));
+		
 		QVBoxLayout *layout = new QVBoxLayout;
-		layout->setContentsMargins (0, 0, 0, 0);
-		layout->addWidget (VlcMainWidget_);
+		layout->addWidget(VlcMainWidget_);
 		setLayout (layout);
+		
+		PlaylistDock_ = new QDockWidget (this);
+		PlaylistDock_->setFeatures (QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable);
+		PlaylistDock_->setAllowedAreas (Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+		TitleWidget_ = new PlaylistTitleWidget (proxy, this);
+		PlaylistDock_->setTitleBarWidget (TitleWidget_);
+		
+		auto mw = proxy->GetRootWindowsManager ()->GetMWProxy (0);
+		mw->AddDockWidget (Qt::LeftDockWidgetArea, PlaylistDock_);
+		mw->AssociateDockWidget (PlaylistDock_, this);
+		mw->ToggleViewActionVisiblity (PlaylistDock_, false);
+		
+		PlaylistDock_->setWidget (PlaylistWidget_);
+		
 		VlcPlayer_ = new VlcPlayer (VlcMainWidget_);
-
+		
+		QSizePolicy pol (QSizePolicy::Expanding, QSizePolicy::Expanding);
+		pol.setHorizontalStretch (255);
+		pol.setVerticalStretch (255);
+		VlcMainWidget_->setSizePolicy (pol);
+		
+		PlaylistWidget_->Init (VlcPlayer_->GetInstance (), VlcPlayer_->GetPlayer ().get ());
+		VlcPlayer_->Init (VlcMainWidget_);
+		
+		DisableScreenSaver_ = new QTimer (this);
+		DisableScreenSaver_->setInterval (9000);
+		
 		GenerateToolBar ();
 		PrepareFullScreen ();
 		InterfaceUpdater_ = new QTimer (this);
@@ -122,11 +164,11 @@ namespace vlc
 		connect (Open_,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (addFile ()));
+				SLOT (addFiles ()));
 		
 		connect (TogglePlay_,
 				SIGNAL (triggered ()),
-				VlcPlayer_,
+				PlaylistWidget_,
 				SLOT(togglePlay ()));
 		
 		connect (Stop_,
@@ -139,18 +181,83 @@ namespace vlc
 				this,
 				SLOT (toggleFullScreen ()));
 		
+		connect (DisableScreenSaver_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (disableScreenSaver ()));
+		
+		connect (PlaylistWidget_,
+				SIGNAL (savePlaylist (QStringList)),
+				this,
+				SLOT (savePlaylist (QStringList)));
+		
+		connect (VlcPlayer_,
+				SIGNAL (stable ()),
+				ScrollBar_,
+				SLOT (unBlockUpdating ()));
+		
+		connect (VlcPlayer_,
+				SIGNAL (unstable ()),
+				ScrollBar_,
+				SLOT (blockUpdating ()));
+		
+		connect (TitleWidget_->AddAction_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (addFilesWithoutClearingPlaylist ()));
+		
+		connect (TitleWidget_->ClearAction_,
+				SIGNAL (triggered ()),
+				PlaylistWidget_,
+				SLOT (clearPlaylist ()));
+		
 		InitNavigations ();
+		InitVolumeActions ();
+		InitRewindActions ();
 		setAcceptDrops (true);
+		RestoreSettings ();
 	}
 	
-	VlcWidget::~VlcWidget()
+	VlcWidget::~VlcWidget ()
 	{
 		VlcPlayer_->stop ();
+		disableScreenSaver ();
+		delete PlaylistWidget_;
+		delete PlaylistDock_;
 		delete VlcPlayer_;
+		SaveSettings ();
 		emit deleteMe (this);
 	}
+	
+	void VlcWidget::RestoreSettings ()
+	{
+		Settings_ = new QSettings (QCoreApplication::organizationName (), QCoreApplication::applicationName () + "_VLC");
+		RestorePlaylist ();
+	}
+	
+	void VlcWidget::SaveSettings ()
+	{
+		delete Settings_;
+	}
+	
+	void VlcWidget::savePlaylist (const QStringList& list)
+	{
+		qDebug () << list;
+		Settings_->setValue ("Playlist", list);
+	}
 
-
+	void VlcWidget::RestorePlaylist ()
+	{
+		QStringList playlist = Settings_->value ("Playlist").toStringList ();
+		if (playlist.size () < 2)
+			return;
+		
+		for (int i = 0; i < playlist.size () - 1; i++)
+			PlaylistWidget_->AddUrl (QUrl::fromEncoded (playlist [i].toUtf8 ()), false);
+		
+		PlaylistWidget_->SetCurrentMedia (playlist [playlist.size () - 1].toInt ());
+	}
+	
 	QObject* VlcWidget::ParentMultiTabs ()
 	{
 		return Parent_;
@@ -166,13 +273,28 @@ namespace vlc
 		deleteLater ();
 	}
 	
-	void VlcWidget::addFile ()
+	void VlcWidget::addFiles ()
 	{
-		QString file = QFileDialog::getOpenFileName (this,
-													tr ("Open file"),
+		QStringList files = QFileDialog::getOpenFileNames (this,
+													tr ("Open files"),
 													tr ("Videos (*.mkv *.avi *.mov *.mpg)"));
-		if (QFile::exists (file))
-			VlcPlayer_->setUrl (QUrl::fromLocalFile (file));
+		
+		PlaylistWidget_->clearPlaylist ();
+		for (int i = 0; i < files.size (); i++)
+			if (QFile::exists (files [i]))
+				PlaylistWidget_->AddUrl (QUrl::fromLocalFile (files [i]), Autostart_);
+	}
+	
+	void VlcWidget::addFilesWithoutClearingPlaylist ()
+	{
+		QStringList files = QFileDialog::getOpenFileNames (this,
+													tr ("Open files"),
+													tr ("Videos (*.mkv *.avi *.mov *.mpg)"));
+		
+		for (int i = 0; i < files.size (); i++)
+			if (QFile::exists (files [i]))
+				PlaylistWidget_->AddUrl (QUrl::fromLocalFile (files [i]), Autostart_);
+
 	}
 	
 	void VlcWidget::addFolder () 
@@ -182,7 +304,10 @@ namespace vlc
 													tr ("Folder with video"));
 		
 		if (QFile::exists (folder))
-			VlcPlayer_->setUrl (QUrl ("directory://" + folder));
+		{
+			PlaylistWidget_->clearPlaylist ();
+			PlaylistWidget_->AddUrl (QUrl ("directory://" + folder), Autostart_);
+		}
 	}
 	
 	void VlcWidget::addSimpleDVD ()
@@ -191,8 +316,11 @@ namespace vlc
 													tr ("Open DVD"),
 													tr ("Root of DVD directory"));
 		
-		if (QFile::exists (folder)) 
-			VlcPlayer_->setUrl (QUrl ("dvdsimple://" + folder));
+		if (QFile::exists (folder))
+		{
+			PlaylistWidget_->clearPlaylist ();
+			PlaylistWidget_->AddUrl (QUrl ("dvdsimple://" + folder), Autostart_);
+		}
 	}
 	
 	void VlcWidget::addDVD ()
@@ -202,7 +330,10 @@ namespace vlc
 													tr ("Root of DVD directory"));
 		
 		if (QFile::exists (folder))
-			VlcPlayer_->setUrl (QUrl ("dvd://" + folder));
+		{
+			PlaylistWidget_->clearPlaylist ();
+			PlaylistWidget_->AddUrl (QUrl ("dvd://" + folder), Autostart_);
+		}
 	}
 
 	void VlcWidget::addUrl ()
@@ -210,7 +341,10 @@ namespace vlc
 		QString url = QInputDialog::getText (this, tr ("Open URL"), tr ("Enter URL"));
 		
 		if (!url.isEmpty ())
-			VlcPlayer_->setUrl (QUrl (url));
+		{
+			PlaylistWidget_->clearPlaylist ();
+			PlaylistWidget_->AddUrl (QUrl (url), Autostart_);
+		}
 	}
 	
 	void VlcWidget::addSlave ()
@@ -245,10 +379,10 @@ namespace vlc
 			
 			if (FullScreenPanel_->isVisible ()) 
 			{
-				if (QCursor::pos ().x () > PANEL_SIDE_MARGIN && 
-					QCursor::pos ().x () < FullScreenWidget_->width () - PANEL_SIDE_MARGIN &&
-					QCursor::pos ().y () < FullScreenWidget_->height () - PANEL_BOTTOM_MARGIN && 
-					QCursor::pos ().y () > FullScreenWidget_->height () - PANEL_BOTTOM_MARGIN - PANEL_HEIGHT)
+				if (QCursor::pos ().x () > Panel_Side_Margin && 
+					QCursor::pos ().x () < FullScreenWidget_->width () - Panel_Side_Margin &&
+					QCursor::pos ().y () < FullScreenWidget_->height () - Panel_Bottom_Margin && 
+					QCursor::pos ().y () > FullScreenWidget_->height () - Panel_Bottom_Margin - Panel_Height)
 				{
 					fullScreenPanelRequested ();
 					FullScreenPanel_->setWindowOpacity (0.8);
@@ -329,7 +463,6 @@ namespace vlc
 			AllowFullScreenPanel_ = true;
 			FullScreenWidget_->SetBackGroundColor (new QColor ("black"));
 			FullScreenWidget_->showFullScreen ();
-// 			FullScreenWidget_->show ();
 			VlcPlayer_->switchWidget (FullScreenWidget_);
 		} 
 		else 
@@ -346,18 +479,39 @@ namespace vlc
 	{
 		Bar_ = new QToolBar (this);
 		OpenButton_ = new QToolButton (Bar_);
-		OpenButton_->setMenu (GenerateMenuForOpenAction ());
-		OpenButton_->setPopupMode (QToolButton::MenuButtonPopup);
 		Open_ = new QAction (OpenButton_);
 		Open_->setProperty ("ActionIcon", "folder");
+		OpenButton_->setMenu (GenerateMenuForOpenAction ());
+		OpenButton_->setPopupMode (QToolButton::MenuButtonPopup);
 		OpenButton_->setDefaultAction (Open_);
 		Bar_->addWidget (OpenButton_);
+		
+		Prev_ = Bar_->addAction (tr ("Prev"));
+		Prev_->setProperty ("ActionIcon", "media-seek-backward");
+		Manager_->RegisterAction ("org.vlc.prev", Prev_, true);
+		
+		connect (Prev_,
+				SIGNAL (triggered ()),
+				PlaylistWidget_,
+				SLOT (prev ()));
+		
 		TogglePlay_ = Bar_->addAction (tr ("Play"));
 		Manager_->RegisterAction ("org.vlc.toggle_play", TogglePlay_, true);
 		TogglePlay_->setProperty ("ActionIcon", "media-playback-start");
 		TogglePlay_->setProperty ("WatchActionIconChange", true);
+		
 		Stop_ = Bar_->addAction (tr ("Stop"));
 		Stop_->setProperty ("ActionIcon", "media-playback-stop");
+		
+		Next_ = Bar_->addAction (tr ("Next"));
+		Next_->setProperty ("ActionIcon", "media-seek-forward");
+		Manager_->RegisterAction ("org.vlc.next", Next_, true);
+		
+		connect (Next_,
+				SIGNAL (triggered ()),
+				PlaylistWidget_,
+				SLOT (next ()));
+		
 		FullScreenAction_ = Bar_->addAction (tr ("FullScreen"));
 		FullScreenAction_->setProperty ("ActionIcon", "view-fullscreen");
 		Manager_->RegisterAction ("org.vlc.toggle_fullscreen", FullScreenAction_, true);
@@ -408,11 +562,13 @@ namespace vlc
 	void VlcWidget::TabLostCurrent ()
 	{
 		InterfaceUpdater_->stop ();
+		DisableScreenSaver_->stop ();
 	}
 	
 	void VlcWidget::TabMadeCurrent ()
 	{
 		InterfaceUpdater_->start ();
+		DisableScreenSaver_->start ();
 	}
 	
 	void VlcWidget::ForbidFullScreen ()
@@ -539,6 +695,8 @@ namespace vlc
 		FullScreenWidget_ = new SignalledWidget;
 		FullScreenWidget_->addAction (TogglePlay_);
 		FullScreenWidget_->addAction (FullScreenAction_);
+		FullScreenWidget_->addAction (Next_);
+		FullScreenWidget_->addAction (Prev_);
 		FullScreenPanel_ = new SignalledWidget (this, Qt::ToolTip);
 		QHBoxLayout *panelLayout = new QHBoxLayout;
 		FullScreenTimeLeft_ = new QLabel;
@@ -559,9 +717,14 @@ namespace vlc
 		FullScreenButton_ = new QToolButton;
 		FullScreenButton_->setDefaultAction (FullScreenAction_);
 		FullScreenButton_->setAutoRaise (true);
+		NextButton_ = new QToolButton;
+		NextButton_->setDefaultAction (Next_);
+		NextButton_->setAutoRaise (true);
 		
+		panelLayout->addWidget (PrevButton_);
 		panelLayout->addWidget (TogglePlayButton_);
 		panelLayout->addWidget (StopButton_);
+		panelLayout->addWidget (NextButton_);
 		panelLayout->addWidget (FullScreenButton_);
 		panelLayout->addWidget (FullScreenTimeLeft_);
 		panelLayout->addWidget (FullScreenVlcScrollBar_);
@@ -619,8 +782,8 @@ namespace vlc
 		if (!AllowFullScreenPanel_ || !FullScreenWidget_->isVisible ())
 			return;
 		
-		FullScreenPanel_->setGeometry (PANEL_SIDE_MARGIN, FullScreenWidget_->height () - PANEL_BOTTOM_MARGIN - PANEL_HEIGHT, 
-									   FullScreenWidget_->width () - PANEL_SIDE_MARGIN * 2, PANEL_HEIGHT);
+		FullScreenPanel_->setGeometry (Panel_Side_Margin, FullScreenWidget_->height () - Panel_Bottom_Margin - Panel_Height, 
+									   FullScreenWidget_->width () - Panel_Side_Margin * 2, Panel_Height);
 		if (!FullScreenPanel_->isVisible ())
 			FullScreenPanel_->show ();
 		else
@@ -651,6 +814,12 @@ namespace vlc
 	QMenu* VlcWidget::GenerateMenuForOpenAction ()
 	{
 		QMenu *result = new QMenu;
+		
+		connect (result->addAction (tr ("Open file")),
+				SIGNAL (triggered ()),
+				this,
+				SLOT (addFiles ()));
+		
 		connect (result->addAction (tr ("Open folder")),
 				SIGNAL (triggered ()),
 				this,
@@ -726,22 +895,110 @@ namespace vlc
 		FullScreenWidget_->addAction (NavigateUp_);
 	}
 	
+	void VlcWidget::InitVolumeActions()
+	{
+		IncreaseVolumeAction_ = new QAction (this);
+		DecreaseVolumeAction_ = new QAction (this);
+		
+		Manager_->RegisterAction ("org.vlc.volume_increase", IncreaseVolumeAction_, true);
+		Manager_->RegisterAction ("org.vlc.volume_decrease", DecreaseVolumeAction_, true);
+		
+		connect (IncreaseVolumeAction_,
+				SIGNAL (triggered ()),
+				SoundWidget_,
+				SLOT (increaseVolume ()));
+		
+		connect (DecreaseVolumeAction_,
+				SIGNAL (triggered ()),
+				SoundWidget_,
+				SLOT (decreaseVolume ()));
+		
+		addAction (IncreaseVolumeAction_);
+		addAction (DecreaseVolumeAction_);
+		
+		FullScreenWidget_->addAction (IncreaseVolumeAction_);
+		FullScreenWidget_->addAction (DecreaseVolumeAction_);
+	}
+	
+	void VlcWidget::InitRewindActions ()
+	{
+		Plus3Percent_ = new QAction (this);
+		Plus10Seconds_ = new QAction (this);
+		Minus3Percent_ = new QAction (this);
+		Minus10Seconds_ = new QAction (this);
+		
+		Next_ = new QAction (this);
+		Prev_ = new QAction (this);
+		
+		Manager_->RegisterAction ("org.vlc.plus_3_percent", Plus3Percent_, true);
+		Manager_->RegisterAction ("org.vlc.plus_10_seconds", Plus10Seconds_, true);
+		Manager_->RegisterAction ("org.vlc.minus_3_percent", Minus3Percent_, true);
+		Manager_->RegisterAction ("org.vlc.minus_10_seconds", Minus10Seconds_, true);
+		
+		connect (Plus10Seconds_,
+				SIGNAL (triggered ()),
+				VlcPlayer_,
+				SLOT (plus10seconds ()));
+		
+		connect (Minus10Seconds_,
+				SIGNAL (triggered ()),
+				VlcPlayer_,
+				SLOT (minus10seconds ()));
+		
+		connect (Plus3Percent_,
+				SIGNAL (triggered ()),
+				VlcPlayer_,
+				SLOT (plus3percent ()));
+		
+		connect (Minus3Percent_,
+				SIGNAL (triggered ()),
+				VlcPlayer_,
+				SLOT (minus3percent ()));
+		
+		addAction (Plus10Seconds_);
+		addAction (Plus3Percent_);
+		addAction (Minus10Seconds_);
+		addAction (Minus3Percent_);
+		
+		FullScreenWidget_->addAction (Plus10Seconds_);
+		FullScreenWidget_->addAction (Plus3Percent_);
+		FullScreenWidget_->addAction (Minus10Seconds_);
+		FullScreenWidget_->addAction (Minus3Percent_);
+	}
+	
 	void VlcWidget::dropEvent (QDropEvent *event)
 	{
 		QUrl main = event->mimeData ()->urls () [0];
 		event->accept ();
-		if (main.toString ().right (3) == "ac3")
+		if (Known_Audio_File_Formats.contains (main.toString ().right (4)))
 			VlcPlayer_->addUrl (main);
-		else if (main.toString ().right (3) == "srt")
+		else if (Known_Subtitles_File_Formats.contains (main.toString ().right (4)))
 			VlcPlayer_->AddSubtitles (main.toEncoded ());
 		else
-			VlcPlayer_->setUrl (main);
+		{
+			PlaylistWidget_->clearPlaylist ();
+			PlaylistWidget_->AddUrl (main, Autostart_);
+		}
 	}
 	
 	void VlcWidget::dragEnterEvent (QDragEnterEvent *event)
 	{
 		if (event->mimeData ()->urls ().size () == 1)
 			event->accept ();
+	}
+	
+	void VlcWidget::disableScreenSaver ()
+	{
+		auto e = Util::MakeEntity ("ScreensaverProhibition", {}, {}, "x-leechcraft/power-management");
+		e.Additional_ ["ContextID"] = "org.vlc.VlcTab";
+		e.Additional_ ["Enable"] = libvlc_media_player_is_playing (VlcPlayer_->GetPlayer ().get ()); 
+		
+		Proxy_->GetEntityManager ()->HandleEntity (e);
+	}
+	
+	void VlcWidget::autostartChanged ()
+	{
+		Autostart_ = XmlSettingsManager::Instance ().property ("Autostart").toBool ();
 	}
 }
 }

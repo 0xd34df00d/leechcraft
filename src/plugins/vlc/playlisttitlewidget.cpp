@@ -27,50 +27,49 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QWidget>
-
-class QColor;
+#include "playlisttitlewidget.h"
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QToolButton>
+#include <QAction>
+#include <QLabel>
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	class SignalledWidget : public QWidget
+	PlaylistTitleWidget::PlaylistTitleWidget (ICoreProxy_ptr proxy, QWidget *parent)
+	: QWidget (parent)
 	{
-		Q_OBJECT
+		QVBoxLayout *layout = new QVBoxLayout;
+		layout->addWidget (new QLabel (tr ("Playlist")));
+		QWidget *widget = new QWidget;
+		
+		QHBoxLayout *layout2 = new QHBoxLayout;
+		
+		ClearPlaylist_ = new QToolButton;
+		ClearAction_ = new QAction (ClearPlaylist_);
+		ClearAction_->setIcon (proxy->GetIcon ("edit-clear-list"));
+		ClearPlaylist_->setDefaultAction (ClearAction_);
+		
+		MagicSort_ = new QToolButton;
+		MagicAction_ = new QAction (MagicSort_);
+		MagicAction_->setIcon (proxy->GetIcon ("tools-wizard"));
+		MagicSort_->setDefaultAction (MagicAction_);
+		
+		AddFiles_ = new QToolButton;
+		AddAction_ = new QAction (AddFiles_);
+		AddAction_->setIcon (proxy->GetIcon ("document-open-folder"));
+		AddFiles_->setDefaultAction (AddAction_);
+		
+		layout2->addWidget (AddFiles_);
+		layout2->addWidget (MagicSort_);
+		layout2->addWidget (ClearPlaylist_);
+		layout2->addStretch (255);
 	
-		QColor *BackgroundColor_;
-	
-	public:
-		explicit SignalledWidget (QWidget *parent = 0, Qt::WindowFlags flags = 0);
-		~SignalledWidget();
-		
-		void SetBackGroundColor (QColor*);
-		
-	protected:
-		void mousePressEvent (QMouseEvent*);
-		void mouseDoubleClickEvent (QMouseEvent*);
-		void mouseMoveEvent (QMouseEvent*);
-		void wheelEvent (QWheelEvent*);
-		void keyPressEvent (QKeyEvent*);
-		void paintEvent (QPaintEvent*);
-		void resizeEvent (QResizeEvent*);
-		void showEvent (QShowEvent*);
-		void dragEnterEvent (QDragEnterEvent*);
-		void dropEvent (QDropEvent*);
-		
-	signals:
-		void mousePress (QMouseEvent*);
-		void mouseDoubleClick (QMouseEvent*);
-		void mouseMove (QMouseEvent*);
-		void wheel (QWheelEvent*);
-		void keyPress (QKeyEvent*);
-		void resized (QResizeEvent*);
-		void shown (QShowEvent*);
-		void dragEntered (QDragEnterEvent*);
-		void dropped (QDropEvent*);
-	};
+		widget->setLayout (layout2);		
+		layout->addWidget (widget);
+		setLayout (layout);
+	}
 }
 }

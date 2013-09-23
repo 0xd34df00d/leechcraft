@@ -30,47 +30,29 @@
 #pragma once
 
 #include <QWidget>
+#include <interfaces/core/icoreproxy.h>
 
-class QColor;
+class QToolButton;
+class QAction;
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	class SignalledWidget : public QWidget
+	class PlaylistTitleWidget : public QWidget
 	{
 		Q_OBJECT
-	
-		QColor *BackgroundColor_;
+		
+		QToolButton *ClearPlaylist_;
+		QToolButton *MagicSort_;
+		QToolButton *AddFiles_;
 	
 	public:
-		explicit SignalledWidget (QWidget *parent = 0, Qt::WindowFlags flags = 0);
-		~SignalledWidget();
+		explicit PlaylistTitleWidget (ICoreProxy_ptr proxy, QWidget *parent = 0);
 		
-		void SetBackGroundColor (QColor*);
-		
-	protected:
-		void mousePressEvent (QMouseEvent*);
-		void mouseDoubleClickEvent (QMouseEvent*);
-		void mouseMoveEvent (QMouseEvent*);
-		void wheelEvent (QWheelEvent*);
-		void keyPressEvent (QKeyEvent*);
-		void paintEvent (QPaintEvent*);
-		void resizeEvent (QResizeEvent*);
-		void showEvent (QShowEvent*);
-		void dragEnterEvent (QDragEnterEvent*);
-		void dropEvent (QDropEvent*);
-		
-	signals:
-		void mousePress (QMouseEvent*);
-		void mouseDoubleClick (QMouseEvent*);
-		void mouseMove (QMouseEvent*);
-		void wheel (QWheelEvent*);
-		void keyPress (QKeyEvent*);
-		void resized (QResizeEvent*);
-		void shown (QShowEvent*);
-		void dragEntered (QDragEnterEvent*);
-		void dropped (QDropEvent*);
+		QAction *ClearAction_;
+		QAction *MagicAction_;
+		QAction *AddAction_;
 	};
 }
 }

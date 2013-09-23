@@ -37,6 +37,7 @@
 #include <QSizePolicy>
 #include <QEventLoop>
 #include <QTimeLine>
+#include <QDir>
 #include <QDebug>
 #include "vlcplayer.h"
 
@@ -78,6 +79,12 @@ namespace vlc
 		libvlc_media_player_set_xwindow (Mp_.get (), parent->winId ());
 	}
 	
+	void VlcPlayer::Init (QWidget *parent)
+	{
+		libvlc_media_player_set_xwindow (Mp_.get (), parent->winId ());
+		Parent_ = parent;
+	}
+	
 	void VlcPlayer::setUrl (const QUrl& url) 
 	{
 		Subtitles_.clear ();
@@ -88,14 +95,13 @@ namespace vlc
 		
 		libvlc_media_player_set_media (Mp_.get (), M_.get ());
 		libvlc_media_player_play (Mp_.get ());
-		
-		LastMedia_ = url;
 	}
 	
 	void VlcPlayer::addUrl (const QUrl& url)
 	{
+		const QUrl &lastMedia = QUrl::fromEncoded (libvlc_media_get_meta (libvlc_media_player_get_media (Mp_.get ()), libvlc_meta_URL));
 		Freeze ();
-		M_.reset (libvlc_media_new_location (VlcInstance_.get (), LastMedia_.toEncoded ()), libvlc_media_release);
+		M_.reset (libvlc_media_new_location (VlcInstance_.get (), lastMedia.toEncoded ()), libvlc_media_release);
 		libvlc_media_add_option (M_.get (), ":input-slave=" + url.toEncoded ());
 		libvlc_media_player_set_media (Mp_.get (), M_.get ());
 		UnFreeze ();		
@@ -156,6 +162,7 @@ namespace vlc
 	
 	void VlcPlayer::Freeze ()
 	{
+		emit unstable ();
 		FreezePlayingMedia_ = libvlc_media_player_get_media (Mp_.get ());
 		if (FreezePlayingMedia_) 
 		{
@@ -199,6 +206,7 @@ namespace vlc
 			libvlc_media_player_pause (Mp_.get ());
 		
 		ReloadSubtitles ();
+		emit stable ();
 	}
 	
 	void VlcPlayer::ReloadSubtitles ()
@@ -250,9 +258,8 @@ namespace vlc
 		return libvlc_video_get_spu_count (Mp_.get ());
 	}
 	
-	void VlcPlayer::AddSubtitles (const QString &file)
+	void VlcPlayer::AddSubtitles (const QString& file)
 	{
-		qWarning () << Q_FUNC_INFO << file;
 		libvlc_video_set_subtitle_file (Mp_.get (), file.toUtf8 ());
 		Subtitles_ << file;
 	}
@@ -342,10 +349,36 @@ namespace vlc
 			if (line.currentTime () > MAX_TIMEOUT)
 			{
 				qWarning () << Q_FUNC_INFO << "timeout";
+				break;
 			}
 		}
 		
 		WaitForPlaying ();
+	}
+	
+	libvlc_instance_t* VlcPlayer::GetInstance () const
+	{
+		return VlcInstance_.get ();
+	}
+	
+	void VlcPlayer::plus3percent ()
+	{
+		libvlc_media_player_set_time (Mp_.get (), libvlc_media_player_get_time (Mp_.get ()) + libvlc_media_player_get_length (Mp_.get ()) * 0.03);
+	}
+	
+	void VlcPlayer::minus3percent ()
+	{
+		libvlc_media_player_set_time (Mp_.get (), libvlc_media_player_get_time (Mp_.get ()) - libvlc_media_player_get_length (Mp_.get ()) * 0.03);
+	}
+
+	void VlcPlayer::plus10seconds ()
+	{
+		libvlc_media_player_set_time (Mp_.get (), libvlc_media_player_get_time (Mp_.get ()) + 10 * 1000);
+	}
+	
+	void VlcPlayer::minus10seconds ()
+	{
+		libvlc_media_player_set_time (Mp_.get (), libvlc_media_player_get_time (Mp_.get ()) - 10 * 1000);
 	}
 }
 }

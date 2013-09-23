@@ -30,47 +30,65 @@
 #pragma once
 
 #include <QWidget>
+#include <QUrl>
+#include <QTreeView>
 
-class QColor;
+struct libvlc_media_player_t;
+struct libvlc_media_list_player_t;
+struct libvlc_instance_t;
+struct libvlc_media_list_t;
+struct libvlc_media_t;
+
+class QAction;
+class QStandardItem;
+class QStringList;
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	class SignalledWidget : public QWidget
+	class PlaylistModel;
+	
+	class PlaylistWidget : public QTreeView
 	{
 		Q_OBJECT
-	
-		QColor *BackgroundColor_;
+		
+		libvlc_media_list_player_t *Player_;
+		libvlc_media_list_t *Playlist_;
+		libvlc_media_player_t *NativePlayer_;
+		libvlc_instance_t *Instance_;
+		
+		QStandardItem *LastPlayingItem_;
+		PlaylistModel *Model_;
+		const QIcon PlayIcon_;
 	
 	public:
-		explicit SignalledWidget (QWidget *parent = 0, Qt::WindowFlags flags = 0);
-		~SignalledWidget();
+		explicit PlaylistWidget (QIcon playIcon, QWidget *parent = 0);
+		~PlaylistWidget ();
 		
-		void SetBackGroundColor (QColor*);
+		void SetCurrentMedia (int);
+		void AddUrl (const QUrl&, bool start);
+		bool IsPlaying () const;
+		void Init (libvlc_instance_t *instance, libvlc_media_player_t *player);
+		void DeleteRequested (int index);
 		
 	protected:
-		void mousePressEvent (QMouseEvent*);
 		void mouseDoubleClickEvent (QMouseEvent*);
-		void mouseMoveEvent (QMouseEvent*);
-		void wheelEvent (QWheelEvent*);
-		void keyPressEvent (QKeyEvent*);
-		void paintEvent (QPaintEvent*);
 		void resizeEvent (QResizeEvent*);
-		void showEvent (QShowEvent*);
-		void dragEnterEvent (QDragEnterEvent*);
-		void dropEvent (QDropEvent*);
+		
+	public slots:
+		void clearPlaylist ();
+		void next ();
+		void prev ();
+		
+	private slots:
+		void togglePlay ();
+		void updateInterface ();
+		void createMenu (QPoint);
+		void deleteRequested (QAction*);
 		
 	signals:
-		void mousePress (QMouseEvent*);
-		void mouseDoubleClick (QMouseEvent*);
-		void mouseMove (QMouseEvent*);
-		void wheel (QWheelEvent*);
-		void keyPress (QKeyEvent*);
-		void resized (QResizeEvent*);
-		void shown (QShowEvent*);
-		void dragEntered (QDragEnterEvent*);
-		void dropped (QDropEvent*);
+		void savePlaylist (QStringList);
 	};
 }
 }
