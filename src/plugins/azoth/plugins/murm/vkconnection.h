@@ -126,6 +126,8 @@ namespace Murm
 
 		void handleGotFriendLists ();
 		void handleGotFriends ();
+		void handleGotUnreadMessages ();
+
 		void handleMessageSent ();
 		void handleCountriesFetched ();
 		void handleMessageInfoFetched ();

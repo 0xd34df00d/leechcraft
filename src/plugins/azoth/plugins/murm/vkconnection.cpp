@@ -514,7 +514,51 @@ namespace Murm
 
 		emit gotUsers (users);
 
+		auto nam = Proxy_->GetNetworkAccessManager ();
+		PreparedCalls_.push_back ([this, nam] (const QString& key) -> QNetworkReply*
+			{
+				QUrl msgUrl ("https://api.vk.com/method/messages.get");
+				msgUrl.addQueryItem ("access_token", key);
+				msgUrl.addQueryItem ("filters", "1");
+				auto reply = nam->get (QNetworkRequest (msgUrl));
+				connect (reply,
+						SIGNAL (finished ()),
+						this,
+						SLOT (handleGotUnreadMessages ()));
+				return reply;
+			});
+
 		LPManager_->start ();
+	}
+
+	void VkConnection::handleGotUnreadMessages ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!CheckFinishedReply (reply))
+			return;
+
+		const auto& data = QJson::Parser ().parse (reply);
+		auto respList = data.toMap () ["response"].toList ();
+		respList.removeFirst ();
+
+		for (const auto& msgMapVar : respList)
+		{
+			const auto& map = msgMapVar.toMap ();
+			qDebug () << map;
+
+			MessageFlags flags = MessageFlag::Unread;
+			if (map ["out"].toULongLong ())
+				flags |= MessageFlag::Outbox;
+
+			emit gotMessage ({
+					map ["mid"].toULongLong (),
+					map ["uid"].toULongLong (),
+					map ["body"].toString (),
+					flags,
+					QDateTime::fromTime_t (map ["date"].toULongLong ()),
+					{}
+				});
+		}
 	}
 
 	void VkConnection::handleMessageSent ()
