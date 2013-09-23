@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2013  Vladislav Tyulbashev
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,50 +27,33 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QWidget>
-
-class QColor;
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	class SignalledWidget : public QWidget
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		Q_OBJECT
-	
-		QColor *BackgroundColor_;
-	
-	public:
-		explicit SignalledWidget (QWidget *parent = 0, Qt::WindowFlags flags = 0);
-		~SignalledWidget();
-		
-		void SetBackGroundColor (QColor*);
-		
-	protected:
-		void mousePressEvent (QMouseEvent*);
-		void mouseDoubleClickEvent (QMouseEvent*);
-		void mouseMoveEvent (QMouseEvent*);
-		void wheelEvent (QWheelEvent*);
-		void keyPressEvent (QKeyEvent*);
-		void paintEvent (QPaintEvent*);
-		void resizeEvent (QResizeEvent*);
-		void showEvent (QShowEvent*);
-		void dragEnterEvent (QDragEnterEvent*);
-		void dropEvent (QDropEvent*);
-		
-	signals:
-		void mousePress (QMouseEvent*);
-		void mouseDoubleClick (QMouseEvent*);
-		void mouseMove (QMouseEvent*);
-		void wheel (QWheelEvent*);
-		void keyPress (QKeyEvent*);
-		void resized (QResizeEvent*);
-		void shown (QShowEvent*);
-		void dragEntered (QDragEnterEvent*);
-		void dropped (QDropEvent*);
-	};
+		LeechCraft::Util::BaseSettingsManager::Init ();
+	}
+
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager xsm;
+		return xsm;
+	}
+
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_VLC");
+		return settings;
+	}
+
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
 }
 }
