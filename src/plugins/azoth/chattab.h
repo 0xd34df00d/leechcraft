@@ -112,6 +112,9 @@ namespace Azoth
 		static void SetChatTabClassInfo (const TabClassInfo&);
 		static void SetMUCTabClassInfo (const TabClassInfo&);
 
+		static const TabClassInfo& GetChatTabClassInfo ();
+		static const TabClassInfo& GetMUCTabClassInfo ();
+
 		ChatTab (const QString&, QWidget* = 0);
 		~ChatTab ();
 

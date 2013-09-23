@@ -107,6 +107,16 @@ namespace Azoth
 		S_MUCTabClass_ = tc;
 	}
 
+	const TabClassInfo& ChatTab::GetChatTabClassInfo ()
+	{
+		return S_ChatTabClass_;
+	}
+
+	const TabClassInfo& ChatTab::GetMUCTabClassInfo ()
+	{
+		return S_MUCTabClass_;
+	}
+
 	class CopyFilter : public QObject
 	{
 		QWebView *View_;
