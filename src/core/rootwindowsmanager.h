@@ -69,6 +69,7 @@ namespace LeechCraft
 		int GetWindowsCount () const;
 		int GetPreferredWindowIndex () const;
 		int GetPreferredWindowIndex (ITabWidget*) const;
+		int GetPreferredWindowIndex (const QByteArray&) const;
 		int GetWindowForTab (ITabWidget*) const;
 		int GetWindowIndex (QMainWindow*) const;
 
