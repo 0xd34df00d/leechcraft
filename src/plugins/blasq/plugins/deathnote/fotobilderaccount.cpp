@@ -192,19 +192,7 @@ namespace DeathNote
 			return;
 
 		const auto& aidStr = collection.data (CollectionRole::ID).toByteArray ();
-		if (items.count () == 1)
-			CallsQueue_ << [aidStr, items, this] (const QString& challenge)
-				{
-					UploadOneImage (aidStr, items.value (0), challenge);
-				};
-		else
-		{
-			CallsQueue_ << [aidStr, items, this] (const QString& challenge)
-				{
-					UploadImages (aidStr, items, challenge);
-				};
-		}
-		GetChallenge ();
+		UploadImagesRequest (aidStr, items);
 	}
 
 	namespace
@@ -456,6 +444,17 @@ namespace DeathNote
 				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
+	void FotoBilderAccount::UploadImagesRequest (const QByteArray& albumId, const QList< UploadItem >& items)
+	{
+		CallsQueue_ << [albumId, items, this] (const QString& challenge)
+		{
+			items.count () == 1 ?
+				UploadOneImage (albumId, items.value (0), challenge):
+				UploadImages (albumId, items, challenge);
+		};
+		GetChallenge ();
+	}
+
 	void FotoBilderAccount::UploadOneImage (const QByteArray& id,
 			const UploadItem& item, const QString& challenge)
 	{
@@ -504,7 +503,7 @@ namespace DeathNote
 				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
-	void FotoBilderAccount::UploadImages(const QString& id,
+	void FotoBilderAccount::UploadImages(const QByteArray& id,
 			const QList<UploadItem>& items, const QString& challenge)
 	{
 		struct Receipt
@@ -517,12 +516,12 @@ namespace DeathNote
 
 		QMap<QByteArray, QByteArray> requestMap;
 		requestMap = Util::MakeMap<QByteArray, QByteArray> ({
-				{ "X-FB-User", Login_.toUtf8 () },
-				{ "X-FB-Mode", "UploadPrepare" },
-				{ "X-FB-Auth", ("crp:" + challenge + ":" +
-						GetHashedChallenge (GetPassword (), challenge))
-							.toUtf8 () },
-				{ "X-FB-UploadPrepare.Pic._size", QString::number (receipts.count ()).toUtf8 () } });
+					{ "X-FB-User", Login_.toUtf8 () },
+					{ "X-FB-Mode", "UploadPrepare" },
+					{ "X-FB-Auth", ("crp:" + challenge + ":" +
+							GetHashedChallenge (GetPassword (), challenge))
+								.toUtf8 () },
+					{ "X-FB-UploadPrepare.Pic._size", QString::number (receipts.count ()).toUtf8 () } });
 		for (int i = 0, itemsCount = items.count (); i < itemsCount; ++i)
 		{
 			const auto& item = items.at (i);
@@ -541,12 +540,12 @@ namespace DeathNote
 					.arg (i).toUtf8 (), magic.toHex ());
 			requestMap.insert (QString ("X-FB-UploadPrepare.Pic.%1.Size")
 					.arg (i).toUtf8 (), QByteArray::number (file.size ()));
-// 			Hash2UploadItem_ [md5.toHex ()] = item;
+			Hash2UploadItem_ [md5.toHex ()] = item;
 			file.close ();
 		}
 
-		auto reply = Proxy_->GetNetworkAccessManager ()->
-				get (CreateRequest (requestMap));
+		auto reply = Proxy_->GetNetworkAccessManager ()->get (CreateRequest (requestMap));
+		Reply2Gallery_ [reply] = id;
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -914,29 +913,22 @@ namespace DeathNote
 		if (FotoBilderErrorExists (content))
 			return;
 
-// 		QDomNodeList pics = document.elementsByTagName ("Pic");
-// 		for (int i = 0, size = pics.count (); i < size; ++i)
-// 		{
-// 			const auto& elem = pics.at (i).toElement ();
-// 			const auto& errorList = elem.elementsByTagName ("Error");
-// 			const auto& hash = elem.elementsByTagName ("MD5").at (0).toElement ();
-// 			if (!errorList.isEmpty ())
-// 				Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blasq",
-// 						tr ("%1: %2")
-// 								.arg (errorList.at (0).toElement ().text ())
-// 								.arg (Hash2UploadItem_.take (hash.text ().toUtf8 ()).FilePath_),
-// 						PWarning_));
-// 		}
-//
-// 		for (const auto& uploadItem : Hash2UploadItem_)
-// 		{
-// 			QString name = Reply2Gallery_.take (reply);
-// // 			CallsQueue_ << [this, uploadItem, name] (const QString& challenge)
-// // 			{
-// // 				UploadOneImage (name, uploadItem, challenge);
-// // 			};
-// 		}
-// 		GetChallenge ();
+		QDomNodeList pics = document.elementsByTagName ("Pic");
+		for (int i = 0, size = pics.count (); i < size; ++i)
+		{
+			const auto& elem = pics.at (i).toElement ();
+			const auto& errorList = elem.elementsByTagName ("Error");
+			const auto& hash = elem.elementsByTagName ("MD5").at (0).toElement ();
+			if (!errorList.isEmpty ())
+				Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blasq",
+						tr ("%1: %2")
+								.arg (errorList.at (0).toElement ().text ())
+								.arg (Hash2UploadItem_.take (hash.text ().toUtf8 ()).FilePath_),
+						PWarning_));
+		}
+
+		for (const auto& uploadItem : Hash2UploadItem_)
+			UploadImagesRequest (Reply2Gallery_.take (reply), { uploadItem });
 	}
 
 }

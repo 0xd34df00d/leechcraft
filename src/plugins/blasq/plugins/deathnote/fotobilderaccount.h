@@ -71,7 +71,8 @@ namespace DeathNote
 
 		QHash<QByteArray, QStandardItem*> Id2AlbumItem_;
 		QHash<QNetworkReply*, UploadItem> Reply2UploadItem_;
-		QHash<QNetworkReply*, QString> Reply2Gallery_;
+		QHash<QByteArray, UploadItem> Hash2UploadItem_;
+		QHash<QNetworkReply*, QByteArray> Reply2Gallery_;
 
 		QQueue<std::function <void (const QString&)>> CallsQueue_;
 
@@ -112,9 +113,10 @@ namespace DeathNote
 		void GetGalsRequest (const QString& challenge);
 		void GetPicsRequest (const QString& challenge);
 		void CreateGallery (const QString& name, int privacyLevel, const QString& challenge);
+		void UploadImagesRequest (const QByteArray& albumId, const QList<UploadItem>& items);
 		void UploadOneImage (const QByteArray& id,
 				const UploadItem& item, const QString& challenge);
-		void UploadImages (const QString& id,
+		void UploadImages (const QByteArray& id,
 				const QList<UploadItem>& item, const QString& challenge);
 
 	private slots:
