@@ -67,6 +67,10 @@ namespace Vangog
 
 		void UpdateCollections ();
 		void UpdatePhotos (const QByteArray& albumId);
+
+		void DeletePhoto (const QByteArray& photoId, const QByteArray& albumId);
+		void DeleteAlbum (const QByteArray& albumId);
+
 	private:
 		QByteArray CreateDomDocumentFromReply (QNetworkReply *reply, QDomDocument &document);
 		void RequestAccessToken ();
@@ -75,12 +79,18 @@ namespace Vangog
 		void RequestCollections (const QString& key);
 		void RequestPhotos (const QByteArray& albumId, const QString& key);
 
+		void DeletePhoto (const QByteArray& photoId,
+				const QByteArray& albumId, const QString& key);
+		void DeleteAlbum (const QByteArray& albumId, const QString& key);
+
 		QList<Album> ParseAlbums (const QDomDocument& document);
 
 	private slots:
 		void handleAuthTokenRequestFinished ();
 		void handleRequestCollectionFinished ();
 		void handleRequestPhotosFinished ();
+		void handleDeletePhotoFinished ();
+		void handleDeleteAlbumFinished ();
 
 	signals:
 		void gotAlbums (const QList<Album>& albums);

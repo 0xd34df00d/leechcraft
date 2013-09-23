@@ -193,6 +193,23 @@ namespace Vangog
 		}
 	}
 
+	void PicasaAccount::Delete (const QModelIndex& index)
+	{
+		switch (index.data (CollectionRole::Type).toInt ())
+		{
+			case ItemType::Collection:
+				PicasaManager_->DeleteAlbum (index.data (CollectionRole::ID).toByteArray ());
+				break;
+			case ItemType::Image:
+				PicasaManager_->DeletePhoto (index.data (CollectionRole::ID).toByteArray (),
+						index.parent ().data (CollectionRole::ID).toByteArray ());
+				break;
+			case ItemType::AllPhotos:
+			default:
+				break;
+		}
+	}
+
 	bool PicasaAccount::TryToEnterLoginIfNoExists ()
 	{
 		if (Login_.isEmpty ())

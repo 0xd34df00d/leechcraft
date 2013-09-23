@@ -70,6 +70,20 @@ namespace Vangog
 		ApiCallsQueue_ << [this, albumId] (const QString& key) { RequestPhotos (albumId, key); };
 	}
 
+	void PicasaManager::DeletePhoto (const QByteArray& photoId, const QByteArray& albumId)
+	{
+		ApiCallsQueue_ << [this, photoId, albumId] (const QString& key)
+				{ DeletePhoto (photoId, albumId, key); };
+		RequestAccessToken ();
+	}
+
+	void PicasaManager::DeleteAlbum (const QByteArray& albumId)
+	{
+		ApiCallsQueue_ << [this, albumId] (const QString& key)
+				{ DeleteAlbum (albumId, key); };
+		RequestAccessToken ();
+	}
+
 	void PicasaManager::RequestAccessToken ()
 	{
 		if (FirstRequest_)
@@ -150,6 +164,42 @@ namespace Vangog
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleRequestPhotosFinished ()));
+	}
+
+	void PicasaManager::DeletePhoto (const QByteArray& photoId,
+			const QByteArray& albumId, const QString& key)
+	{
+		QString str = QString ("https://picasaweb.google.com/data/entry/api/user/%1/albumid/%2/photoid/%3?access_token=%4")
+				.arg (Account_->GetLogin ())
+				.arg (QString::fromUtf8 (albumId))
+				.arg (QString::fromUtf8 (photoId))
+				.arg (key);
+		QNetworkRequest request;
+		request.setUrl (QUrl (str));
+
+		QNetworkReply *reply = Account_->GetProxy ()->
+				GetNetworkAccessManager ()->deleteResource (request);
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleDeletePhotoFinished ()));
+	}
+
+	void PicasaManager::DeleteAlbum (const QByteArray& albumId, const QString& key)
+	{
+		QString str = QString ("https://picasaweb.google.com/data/entry/api/user/%1/albumid/%2?access_token=%4")
+				.arg (Account_->GetLogin ())
+				.arg (QString::fromUtf8 (albumId))
+				.arg (key);
+		QNetworkRequest request;
+		request.setUrl (QUrl (str));
+
+		QNetworkReply *reply = Account_->GetProxy ()->
+				GetNetworkAccessManager ()->deleteResource (request);
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleDeleteAlbumFinished ()));
 	}
 
 	void PicasaManager::handleAuthTokenRequestFinished ()
@@ -453,6 +503,16 @@ namespace Vangog
 
 		emit gotPhotos (ParsePhotos (document));
 		RequestAccessToken ();
+	}
+
+	void PicasaManager::handleDeletePhotoFinished ()
+	{
+
+	}
+
+	void PicasaManager::handleDeleteAlbumFinished ()
+	{
+
 	}
 
 }
