@@ -231,6 +231,7 @@ namespace Murm
 				QUrl url ("https://api.vk.com/method/messages.getById");
 				url.addQueryItem ("access_token", key);
 				url.addQueryItem ("mid", QString::number (id));
+				url.addQueryItem ("photo_sizes", "1");
 
 				auto reply = nam->get (QNetworkRequest (url));
 				Reply2MessageSetter_ [reply] = setter;
@@ -550,13 +551,29 @@ namespace Murm
 	{
 		PhotoInfo PhotoMap2Info (const QVariantMap& map)
 		{
-			QString srcBig;
-			for (auto str : { "src_xxxbig", "src_xxbig", "src_xbig", "src_big" })
-				if (map.contains (str))
+			QString bigSrc;
+			QString thumbSrc;
+			QSize thumbSize;
+
+			QString currentBigType;
+			const QStringList bigTypes { "x", "y", "z", "w" };
+
+			for (const auto& elem : map ["sizes"].toList ())
+			{
+				const auto& eMap = elem.toMap ();
+
+				const auto& type = eMap ["type"].toString ();
+				if (type == "m")
 				{
-					srcBig = map [str].toString ();
-					break;
+					thumbSrc = eMap ["src"].toString ();
+					thumbSize = QSize (eMap ["width"].toInt (), eMap ["height"].toInt ());
 				}
+				else if (bigTypes.indexOf (type) > bigTypes.indexOf (currentBigType))
+				{
+					currentBigType = type;
+					bigSrc = eMap ["src"].toString ();
+				}
+			}
 
 			return
 			{
@@ -564,8 +581,9 @@ namespace Murm
 				map ["pid"].toULongLong (),
 				map ["aid"].toLongLong (),
 
-				map ["src"].toString (),
-				srcBig,
+				thumbSrc,
+				thumbSize,
+				bigSrc,
 
 				map ["access_key"].toString ()
 			};

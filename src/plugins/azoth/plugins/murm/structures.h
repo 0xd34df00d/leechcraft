@@ -119,6 +119,7 @@ namespace Murm
 		qlonglong AlbumID_;
 
 		QString Thumbnail_;
+		QSize ThumbnailSize_;
 		QString Full_;
 
 		QString AccessKey_;
