@@ -387,6 +387,21 @@ namespace LMP
 		}
 	}
 
+	void Player::RestorePlayState ()
+	{
+		const auto wasPlaying = XmlSettingsManager::Instance ().Property ("WasPlaying", false).toBool ();
+		if (wasPlaying)
+			Source_->Play ();
+	}
+
+	void Player::SavePlayState ()
+	{
+		const auto state = Source_->GetState ();
+		const auto isPlaying = state == SourceState::Playing ||
+				state == SourceState::Buffering;
+		XmlSettingsManager::Instance ().setProperty ("WasPlaying", isPlaying);
+	}
+
 	void Player::AddToOneShotQueue (const QModelIndex& index)
 	{
 		if (index.data (Role::IsAlbum).toBool ())

@@ -146,6 +146,9 @@ namespace LMP
 
 		void SetStopAfter (const QModelIndex&);
 
+		void RestorePlayState ();
+		void SavePlayState ();
+
 		void AddToOneShotQueue (const QModelIndex&);
 		void AddToOneShotQueue (const AudioSource&);
 		void RemoveFromOneShotQueue (const QModelIndex&);
