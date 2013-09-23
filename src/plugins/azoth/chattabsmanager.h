@@ -71,6 +71,7 @@ namespace Azoth
 		bool IsActiveChat (const ICLEntry*) const;
 		bool IsOpenedChat (const QString&) const;
 		ChatTab* GetActiveChatTab () const;
+		ChatTab* GetChatTab (const QString& entryId) const;
 
 		void UpdateEntryMapping (const QString&, QObject*);
 
