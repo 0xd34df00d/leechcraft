@@ -44,6 +44,7 @@
 #include <util/util.h>
 #include "albumsettingsdialog.h"
 #include "fotobilderservice.h"
+#include <boost/concept_check.hpp>
 
 namespace LeechCraft
 {
@@ -173,14 +174,37 @@ namespace DeathNote
 		GetChallenge ();
 	}
 
-	bool FotoBilderAccount::HasUploadFeature (ISupportUploads::Feature) const
+	bool FotoBilderAccount::HasUploadFeature (ISupportUploads::Feature feature) const
 	{
+		switch (feature)
+		{
+			case Feature::RequiresAlbumOnUpload:
+			case Feature::SupportsDescriptions:
+				return true;
+		}
 
+		return false;
 	}
 
-	void FotoBilderAccount::UploadImages (const QModelIndex& collection, const QList<UploadItem>& paths)
+	void FotoBilderAccount::UploadImages (const QModelIndex& collection, const QList<UploadItem>& items)
 	{
+		if (!items.count ())
+			return;
 
+		const auto& aidStr = collection.data (CollectionRole::ID).toByteArray ();
+		if (items.count () == 1)
+			CallsQueue_ << [aidStr, items, this] (const QString& challenge)
+				{
+					UploadOneImage (aidStr, items.value (0), challenge);
+				};
+		else
+		{
+			CallsQueue_ << [aidStr, items, this] (const QString& challenge)
+				{
+					UploadImages (aidStr, items, challenge);
+				};
+		}
+		GetChallenge ();
 	}
 
 	namespace
@@ -216,10 +240,7 @@ namespace DeathNote
 
 			return content;
 		}
-	}
 
-	namespace
-	{
 		QString LocalizedErrorFromCode (int code)
 		{
 			switch (code)
@@ -435,6 +456,107 @@ namespace DeathNote
 				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
+	void FotoBilderAccount::UploadOneImage (const QByteArray& id,
+			const UploadItem& item, const QString& challenge)
+	{
+		QFile file (item.FilePath_);
+		if (!file.open (QIODevice::ReadOnly))
+			return;
+
+		auto content = file.readAll ();
+		QByteArray md5 = QCryptographicHash::hash (content, QCryptographicHash::Md5);
+		file.close ();
+		auto reply = Proxy_->GetNetworkAccessManager ()->
+				put (CreateRequest (Util::MakeMap<QByteArray, QByteArray> ({
+							{ "X-FB-User", Login_.toUtf8 () },
+							{ "X-FB-Mode", "UploadPic" },
+							{ "X-FB-Auth", ("crp:" + challenge + ":" +
+									GetHashedChallenge (GetPassword (), challenge))
+										.toUtf8 () },
+							{ "X-FB-AuthVerifier", "md5=" + md5 + "&mode=UploadPic" },
+							{ "X-FB-UploadPic.ImageData", QDateTime::currentDateTime ()
+									.toString (Qt::ISODate).toUtf8 () },
+							{ "X-FB-UploadPic.MD5", md5 },
+							//TODO access to images
+							{ "X-FB-UploadPic.PicSec", "255" },
+							{ "X-FB-UploadPic.Meta.Filename", QFileInfo (item.FilePath_)
+									.fileName ().toUtf8 () },
+							{ "X-FB-UploadPic.Meta.Title", QFileInfo (item.FilePath_)
+									.fileName ().toUtf8 () },
+							{ "X-FB-UploadPic.Meta.Description", item.Description_.toUtf8 () },
+							{ "X-FB-UploadPic.Gallery._size", "1" },
+							{ "X-FB-UploadPic.Gallery.0.GalID", id },
+							{ "X-FB-UploadPic.ImageSize", QString::number (QFileInfo (item.FilePath_)
+									.size ()).toUtf8 () } })),
+						content);
+		Reply2UploadItem_ [reply] = item;
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleImageUploaded ()));
+		connect (reply,
+				SIGNAL (uploadProgress (qint64, qint64)),
+				this,
+				SLOT (handleUploadProgress (qint64, qint64)));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void FotoBilderAccount::UploadImages(const QString& id,
+			const QList<UploadItem>& items, const QString& challenge)
+	{
+		struct Receipt
+		{
+			QByteArray Md5_;
+			QByteArray Magic_;
+			quint64 Size_;
+		};
+		QList<Receipt> receipts;
+
+		QMap<QByteArray, QByteArray> requestMap;
+		requestMap = Util::MakeMap<QByteArray, QByteArray> ({
+				{ "X-FB-User", Login_.toUtf8 () },
+				{ "X-FB-Mode", "UploadPrepare" },
+				{ "X-FB-Auth", ("crp:" + challenge + ":" +
+						GetHashedChallenge (GetPassword (), challenge))
+							.toUtf8 () },
+				{ "X-FB-UploadPrepare.Pic._size", QString::number (receipts.count ()).toUtf8 () } });
+		for (int i = 0, itemsCount = items.count (); i < itemsCount; ++i)
+		{
+			const auto& item = items.at (i);
+			QFile file (item.FilePath_);
+			if (!file.open (QIODevice::ReadOnly))
+				continue;
+
+			auto content = file.readAll ();
+			file.seek (0);
+			QByteArray magic = file.read (10);
+			QByteArray md5 = QCryptographicHash::hash (content, QCryptographicHash::Md5).toHex ();
+
+			requestMap.insert (QString ("X-FB-UploadPrepare.Pic.%1.MD5")
+					.arg (i).toUtf8 (), md5);
+			requestMap.insert (QString ("X-FB-UploadPrepare.Pic.%1.Magic")
+					.arg (i).toUtf8 (), magic.toHex ());
+			requestMap.insert (QString ("X-FB-UploadPrepare.Pic.%1.Size")
+					.arg (i).toUtf8 (), QByteArray::number (file.size ()));
+// 			Hash2UploadItem_ [md5.toHex ()] = item;
+			file.close ();
+		}
+
+		auto reply = Proxy_->GetNetworkAccessManager ()->
+				get (CreateRequest (requestMap));
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleUploadPrepareFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
 	void FotoBilderAccount::handleGetChallengeRequestFinished ()
 	{
 		QDomDocument document;
@@ -526,56 +648,85 @@ namespace DeathNote
 			return albums;
 		}
 
+		QList<Thumbnail> GenerateThumbnails (const QUrl& originalUrl)
+		{
+			Thumbnail small;
+			small.Url_ = originalUrl.toString ().replace ("original", SmallSize);
+			small.Height_ = SmallSize.toInt ();
+			small.Width_ = SmallSize.toInt ();
+			Thumbnail medium;
+			medium.Url_ = originalUrl.toString ().replace ("original", MediumSize);
+			medium.Height_ = MediumSize.toInt ();
+			medium.Width_ = MediumSize.toInt ();
+			return { small, medium };
+		}
+
+		Photo CreatePhoto (const QDomNodeList& fields)
+		{
+			Photo photo;
+			for (int j = 0, sz = fields.size (); j < sz; ++j)
+			{
+				const auto& fieldElem = fields.at (j).toElement ();
+				if (fieldElem.tagName () == "PicID")
+					photo.ID_ = fieldElem.text ().toUtf8 ();
+				else if (fieldElem.tagName () == "Bytes")
+					photo.Size_ = fieldElem.text ().toULongLong ();
+				else if (fieldElem.tagName () == "Format")
+					photo.Format_ = fieldElem.text ();
+				else if (fieldElem.tagName () == "Height")
+					photo.Height_ = fieldElem.text ().toInt ();
+				else if (fieldElem.tagName () == "MD5")
+					photo.MD5_ = fieldElem.text ().toUtf8 ();
+				else if (fieldElem.tagName () == "Meta")
+				{
+					if (fieldElem.attribute ("name") == "title")
+						photo.Title_ = fieldElem.text ();
+					else if (fieldElem.attribute ("name") == "description")
+						photo.Description_ = fieldElem.text ();
+					else if (fieldElem.attribute ("name") == "filename")
+						photo.OriginalFileName_ = fieldElem.text ();
+				}
+				else if (fieldElem.tagName () == "URL")
+					photo.Url_ = QUrl (fieldElem.text ());
+				else if (fieldElem.tagName () == "Width")
+					photo.Width_ = fieldElem.text ().toInt ();
+				else if (fieldElem.tagName () == "Sec")
+					photo.Access_ = Security2Access (fieldElem.text ().toInt());
+			}
+			return photo;
+		}
+
 		QList<Photo> ParseGetPicsRequest (const QDomDocument& document)
 		{
 			QList<Photo> photos;
 			const auto& list = document.elementsByTagName ("Pic");
 			for (int i = 0, size = list.size (); i < size; ++i)
 			{
-				Photo photo;
+
 				const auto& picNode = list.at (i);
-				photo.ID_ = picNode.toElement ().attribute ("id").toUtf8 ();
 				const auto& fieldsList = picNode.childNodes ();
-				for (int j = 0, sz = fieldsList.size (); j < sz; ++j)
-				{
-					const auto& fieldElem = fieldsList.at (j).toElement ();
-					if (fieldElem.tagName () == "Bytes")
-						photo.Size_ = fieldElem.text ().toULongLong ();
-					else if (fieldElem.tagName () == "Format")
-						photo.Format_ = fieldElem.text ();
-					else if (fieldElem.tagName () == "Height")
-						photo.Height_ = fieldElem.text ().toInt ();
-					else if (fieldElem.tagName () == "MD5")
-						photo.MD5_ = fieldElem.text ().toUtf8 ();
-					else if (fieldElem.tagName () == "Meta")
-					{
-						if (fieldElem.attribute ("name") == "title")
-							photo.Title_ = fieldElem.text ();
-						else if (fieldElem.attribute ("name") == "description")
-							photo.Description_ = fieldElem.text ();
-						else if (fieldElem.attribute ("name") == "filename")
-							photo.OriginalFileName_ = fieldElem.text ();
-					}
-					else if (fieldElem.tagName () == "URL")
-						photo.Url_ = QUrl (fieldElem.text ());
-					else if (fieldElem.tagName () == "Width")
-						photo.Width_ = fieldElem.text ().toInt ();
-					else if (fieldElem.tagName () == "Sec")
-						photo.Access_ = Security2Access (fieldElem.text ().toInt());
-				}
-				Thumbnail small;
-				small.Url_ = photo.Url_.toString ().replace ("original", SmallSize);
-				small.Height_ = SmallSize.toInt ();
-				small.Width_ = SmallSize.toInt ();
-				Thumbnail medium;
-				medium.Url_ = photo.Url_.toString ().replace ("original", MediumSize);
-				medium.Height_ = MediumSize.toInt ();
-				medium.Width_ = MediumSize.toInt ();
-				photo.Thumbnails_ << small << medium;
+				Photo photo = CreatePhoto (fieldsList);
+				photo.ID_ = picNode.toElement ().attribute ("id").toUtf8 ();
+				photo.Thumbnails_ = GenerateThumbnails (photo.Url_);
 				photos << photo;
 			}
 
 			return photos;
+		}
+
+		Photo ParseUploadedPictureResponse (const QDomDocument& document)
+		{
+			const auto& list = document.elementsByTagName ("UploadPicResponse");
+			Photo photo;
+			for (int i = 0, size = list.size (); i < size; ++i)
+			{
+				const auto& picNode = list.at (i);
+				const auto& fieldsList = picNode.childNodes ();
+				photo = CreatePhoto (fieldsList);
+				photo.Thumbnails_ = GenerateThumbnails (photo.Url_);
+			}
+
+			return photo;
 		}
 	}
 
@@ -640,6 +791,37 @@ namespace DeathNote
 		RequestPictures ();
 	}
 
+	namespace
+	{
+		QStandardItem* CreatePhotoItem (const Photo& photo)
+		{
+			const auto& name = photo.Title_.isEmpty () ?
+				photo.OriginalFileName_ :
+				photo.Title_;
+			auto item = new QStandardItem (name);
+			item->setEditable (false);
+			item->setData (ItemType::Image, CollectionRole::Type);
+			item->setData (photo.ID_, CollectionRole::ID);
+			item->setData (name , CollectionRole::Name);
+
+			item->setData (photo.Url_, CollectionRole::Original);
+			item->setData (QSize (photo.Width_, photo.Height_),
+					CollectionRole::OriginalSize);
+			if (!photo.Thumbnails_.isEmpty ())
+			{
+				auto first = photo.Thumbnails_.first ();
+				auto last = photo.Thumbnails_.last ();
+				item->setData (first.Url_, CollectionRole::SmallThumb);
+				item->setData (QSize (first.Width_, first.Height_),
+						CollectionRole::SmallThumbSize);
+				item->setData (last.Url_, CollectionRole::MediumThumb);
+				item->setData (QSize (last.Width_, last.Height_),
+						CollectionRole::MediumThumb);
+			}
+			return item;
+		}
+	}
+
 	void FotoBilderAccount::handleGotPhotos ()
 	{
 		QDomDocument document;
@@ -652,35 +834,7 @@ namespace DeathNote
 			return;
 
 		for (const auto& photo : ParseGetPicsRequest (document))
-		{
-			auto mkItem = [&photo] () -> QStandardItem*
-			{
-				const auto& name = photo.Title_.isEmpty () ?
-					photo.OriginalFileName_ :
-					photo.Title_;
-				auto item = new QStandardItem (name);
-				item->setEditable (false);
-				item->setData (ItemType::Image, CollectionRole::Type);
-				item->setData (photo.ID_, CollectionRole::ID);
-				item->setData (name , CollectionRole::Name);
-
-				item->setData (photo.Url_, CollectionRole::Original);
-				item->setData (QSize (photo.Width_, photo.Height_),
-						CollectionRole::OriginalSize);
-				if (!photo.Thumbnails_.isEmpty ())
-				{
-					auto first = photo.Thumbnails_.first ();
-					auto last = photo.Thumbnails_.last ();
-					item->setData (first.Url_, CollectionRole::SmallThumb);
-					item->setData (QSize (first.Width_, first.Height_), CollectionRole::SmallThumbSize);
-					item->setData (last.Url_, CollectionRole::MediumThumb);
-					item->setData (QSize (last.Width_, last.Height_), CollectionRole::MediumThumb);
-				}
-				return item;
-			};
-
-			AllPhotosItem_->appendRow (mkItem ());
-		}
+			AllPhotosItem_->appendRow (CreatePhotoItem (photo));
 		emit doneUpdating ();
 	}
 
@@ -724,6 +878,65 @@ namespace DeathNote
 		CollectionsModel_->appendRow (item);
 
 		Id2AlbumItem_ [album.ID_] = item;
+	}
+
+	void FotoBilderAccount::handleUploadProgress (qint64 sent, qint64 total)
+	{
+		qDebug () << Q_FUNC_INFO << sent << total;
+	}
+
+	void FotoBilderAccount::handleImageUploaded ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		QDomDocument document;
+		QByteArray content = CreateDomDocumentFromReply (reply, document);
+		if (content.isEmpty ())
+			return;
+
+		if (FotoBilderErrorExists (content))
+			return;
+
+		auto pic = ParseUploadedPictureResponse (document);
+		pic.Title_ = QFileInfo (Reply2UploadItem_.take (reply).FilePath_).fileName ();
+		AllPhotosItem_->appendRow (CreatePhotoItem (pic));
+		emit doneUpdating ();
+	}
+
+	void FotoBilderAccount::handleUploadPrepareFinished ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		QDomDocument document;
+		QByteArray content = CreateDomDocumentFromReply (reply,
+				 document);
+		if (content.isEmpty ())
+			return;
+
+		if (FotoBilderErrorExists (content))
+			return;
+
+// 		QDomNodeList pics = document.elementsByTagName ("Pic");
+// 		for (int i = 0, size = pics.count (); i < size; ++i)
+// 		{
+// 			const auto& elem = pics.at (i).toElement ();
+// 			const auto& errorList = elem.elementsByTagName ("Error");
+// 			const auto& hash = elem.elementsByTagName ("MD5").at (0).toElement ();
+// 			if (!errorList.isEmpty ())
+// 				Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blasq",
+// 						tr ("%1: %2")
+// 								.arg (errorList.at (0).toElement ().text ())
+// 								.arg (Hash2UploadItem_.take (hash.text ().toUtf8 ()).FilePath_),
+// 						PWarning_));
+// 		}
+//
+// 		for (const auto& uploadItem : Hash2UploadItem_)
+// 		{
+// 			QString name = Reply2Gallery_.take (reply);
+// // 			CallsQueue_ << [this, uploadItem, name] (const QString& challenge)
+// // 			{
+// // 				UploadOneImage (name, uploadItem, challenge);
+// // 			};
+// 		}
+// 		GetChallenge ();
 	}
 
 }

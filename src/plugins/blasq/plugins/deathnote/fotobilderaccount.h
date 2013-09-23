@@ -70,6 +70,8 @@ namespace DeathNote
 		QStandardItem *AllPhotosItem_;
 
 		QHash<QByteArray, QStandardItem*> Id2AlbumItem_;
+		QHash<QNetworkReply*, UploadItem> Reply2UploadItem_;
+		QHash<QNetworkReply*, QString> Reply2Gallery_;
 
 		QQueue<std::function <void (const QString&)>> CallsQueue_;
 
@@ -110,6 +112,10 @@ namespace DeathNote
 		void GetGalsRequest (const QString& challenge);
 		void GetPicsRequest (const QString& challenge);
 		void CreateGallery (const QString& name, int privacyLevel, const QString& challenge);
+		void UploadOneImage (const QByteArray& id,
+				const UploadItem& item, const QString& challenge);
+		void UploadImages (const QString& id,
+				const QList<UploadItem>& item, const QString& challenge);
 
 	private slots:
 		void handleGetChallengeRequestFinished ();
@@ -120,6 +126,9 @@ namespace DeathNote
 		void handleGotAlbums ();
 		void handleGotPhotos ();
 		void handleGalleryCreated ();
+		void handleUploadProgress (qint64 sent, qint64 total);
+		void handleImageUploaded ();
+		void handleUploadPrepareFinished ();
 
 	signals:
 		void accountChanged (FotoBilderAccount *acc);
