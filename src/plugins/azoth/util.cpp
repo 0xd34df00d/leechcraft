@@ -33,10 +33,13 @@
 #include <util/util.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/structures.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/irootwindowsmanager.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
 #include "addaccountwizardfirstpage.h"
 #include "core.h"
+#include "chattabsmanager.h"
 
 namespace LeechCraft
 {
@@ -52,6 +55,13 @@ namespace Azoth
 				"org.LC.Plugins.Azoth.IncomingMessageFrom/" + other->GetEntryID ();
 
 		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList (other->GetEntryName ());
+
+		const auto tab = Core::Instance ()
+				.GetChatTabsManager ()->GetChatTab (other->GetEntryID ());
+
+		const auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
+		const auto win = rootWM->GetWindowForTab (tab);
+		e.Additional_ ["org.LC.AdvNotifications.WindowIndex"] = win;
 
 		e.Additional_ ["org.LC.Plugins.Azoth.SourceName"] = other->GetEntryName ();
 		e.Additional_ ["org.LC.Plugins.Azoth.SourceID"] = other->GetEntryID ();
