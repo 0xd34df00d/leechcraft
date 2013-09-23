@@ -372,7 +372,7 @@ namespace Murm
 		return Groups_;
 	}
 
-	void VkEntry::SetGroups (const QStringList&)
+	void VkEntry::SetGroups (const QStringList& groups)
 	{
 	}
 

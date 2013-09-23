@@ -258,7 +258,7 @@ namespace LMP
 			if (e.Entity_ == "Sleeping")
 			{
 				player->SavePlayState (true);
-				player->stop ();
+				player->setPause ();
 			}
 			else if (e.Entity_ == "WokeUp")
 				player->RestorePlayState ();

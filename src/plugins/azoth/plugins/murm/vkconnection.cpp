@@ -622,7 +622,7 @@ namespace Murm
 					info.Audios_ << AudioMap2Info (attMap ["audio"].toMap ());
 				else if (attMap.contains ("wall"))
 				{
-					const auto& wallMap = attMap ["wall"].toMap ();
+					auto wallMap = attMap ["wall"].toMap ();
 
 					FullMessageInfo repost;
 					repost.OwnerID_ = wallMap ["from_id"].toLongLong ();
@@ -632,10 +632,14 @@ namespace Murm
 					repost.Reposts_ = wallMap ["reposts"].toMap () ["count"].toInt ();
 					repost.PostDate_ = QDateTime::fromTime_t (wallMap ["date"].toLongLong ());
 
-					HandleAttachments (repost, wallMap ["attachments"]);
+					HandleAttachments (repost, wallMap.take ("attachments"));
+					wallMap.take ("attachment");
+					qDebug () << wallMap;
 
 					info.ContainedReposts_.append (repost);
 				}
+				else
+					qDebug () << Q_FUNC_INFO << attMap.keys ();
 			}
 		}
 	}
