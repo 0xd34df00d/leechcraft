@@ -41,7 +41,7 @@
                     Description="Launch $(var.ProductName)"
                     Target="[INSTALLFOLDER]$(var.ProductName).exe"
                     WorkingDirectory="INSTALLFOLDER"
-                    Icon="leechcraft.ico"/>
+                    Icon="AppIcon"/>
           <Shortcut Id="UninstallProduct" 
                     Name="Uninstall $(var.ProductName)" 
                     Target="[SystemFolder]msiexec.exe" 
@@ -59,7 +59,7 @@
              Description="Launch LeechCraft"
              Target="[INSTALLFOLDER]LeechCraft.exe"
              WorkingDirectory="INSTALLFOLDER"
-             Icon="leechcraft.ico" />
+             Icon="AppIcon" />
           <RemoveFolder Id="DesktopFolder" On="uninstall"/>
           <RegistryValue
               Root="HKCU"
@@ -70,18 +70,15 @@
               KeyPath="yes"/>
         </Component>
       </DirectoryRef>
-      
-      <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
-      <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
-      <WixVariable Id="WixUIDialogBmp" Value="installscreen.bmp" />
-        
+         
       <UI>
-        <UIRef Id="WixUI_Mondo" />
+        <UIRef Id="MondoWithBrowserDlg" />
         <Publish Dialog="ExitDialog"
             Control="Finish"
             Event="DoAction"
             Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>
       </UI>
+
       <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch $(var.ProductName)" />
       <Property Id="WixShellExecTarget" Value="[#FILE_leechcraft.exe]" />
       <CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />      
@@ -94,9 +91,6 @@
 
       <Icon Id="AppIcon" SourceFile="$(var.SourcePath)\leechcraft.ico"/>
       <Property Id="ARPPRODUCTICON" Value="AppIcon" />
-      <UI>
-        <UIRef Id="WixUI_Mondo" />
-      </UI>
 
       <Feature Id="Feature_Core" Title="Core" Level="1" Absent="disallow">
         <Feature Id="Feature_LeechCraft" Title="LeechCraft" Absent="disallow" Description="LeechCraft's core">
@@ -106,6 +100,7 @@
           <ComponentGroupRef Id="CG_LeechCraftShare" />
           <ComponentGroupRef Id="CG_LeechCraftSettings" />
           <ComponentRef Id="ApplicationShortcutDesktop"/>
+          <ComponentRef Id="ApplicationShortcut"/>
         </Feature>
         <Feature Id="Feature_Qt" Title="Qt" Absent="disallow" Description="Qt libraries" >
           <ComponentGroupRef Id="CG_QtLibs" />
