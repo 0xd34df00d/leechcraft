@@ -29,48 +29,53 @@
 
 #pragma once
 
-#include <QWidget>
+#include <QStandardItemModel>
+#include <QVector>
 
-class QColor;
+struct libvlc_media_list_t;
+struct libvlc_media_t;
+struct libvlc_instance_t;
+
+class QMimeData;
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	class SignalledWidget : public QWidget
+	class PlaylistWidget;
+	
+	enum Columns
+	{
+		ColumnName,
+		ColumnDuration,
+		ColumnMax
+	};
+	
+	class PlaylistModel : public QStandardItemModel
 	{
 		Q_OBJECT
-	
-		QColor *BackgroundColor_;
+		
+		libvlc_media_list_t *Playlist_;
+		QVector<QStandardItem*> Items_ [ColumnMax];
+		PlaylistWidget *Parent_;
+		libvlc_instance_t *Instance_;
 	
 	public:
-		explicit SignalledWidget (QWidget *parent = 0, Qt::WindowFlags flags = 0);
-		~SignalledWidget();
+		explicit PlaylistModel (PlaylistWidget *parent, libvlc_media_list_t *playlist, libvlc_instance_t *instance);
+		~PlaylistModel ();
 		
-		void SetBackGroundColor (QColor*);
+		bool dropMimeData (const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex& parent);
+		QStringList mimeTypes () const;
+		QMimeData* mimeData (const QModelIndexList&) const;
+		Qt::DropActions supportedDropActions () const;
 		
-	protected:
-		void mousePressEvent (QMouseEvent*);
-		void mouseDoubleClickEvent (QMouseEvent*);
-		void mouseMoveEvent (QMouseEvent*);
-		void wheelEvent (QWheelEvent*);
-		void keyPressEvent (QKeyEvent*);
-		void paintEvent (QPaintEvent*);
-		void resizeEvent (QResizeEvent*);
-		void showEvent (QShowEvent*);
-		void dragEnterEvent (QDragEnterEvent*);
-		void dropEvent (QDropEvent*);
+		void AddUrl (const QUrl&);
 		
-	signals:
-		void mousePress (QMouseEvent*);
-		void mouseDoubleClick (QMouseEvent*);
-		void mouseMove (QMouseEvent*);
-		void wheel (QWheelEvent*);
-		void keyPress (QKeyEvent*);
-		void resized (QResizeEvent*);
-		void shown (QShowEvent*);
-		void dragEntered (QDragEnterEvent*);
-		void dropped (QDropEvent*);
+	private:
+		libvlc_media_t* Take (const QUrl&);
+		
+	public slots:
+		void updateTable ();
 	};
 }
 }

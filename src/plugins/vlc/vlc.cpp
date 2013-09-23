@@ -40,43 +40,88 @@ namespace vlc
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+		
+		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
+		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (), "vlcsettings.xml");
+
+		
 		Manager_ = new Util::ShortcutManager (proxy);
 		Manager_->SetObject (this);
 		
 		Manager_->RegisterActionInfo ("org.vlc.navigate_left", 
-									ActionInfo (tr ("Key for navigate left in DVD menu"), 
+									ActionInfo (tr ("Navigate left in DVD menu"), 
 									QKeySequence (Qt::Key_Left), 
 									Proxy_->GetIcon ("arrow-left")));
 		
 		Manager_->RegisterActionInfo ("org.vlc.navigate_right",
-									ActionInfo (tr ("Key for navigate right in DVD menu"), 
+									ActionInfo (tr ("Navigate right in DVD menu"), 
 									QKeySequence (Qt::Key_Right), 
 									Proxy_->GetIcon ("arrow-right")));
 		
 		Manager_->RegisterActionInfo ("org.vlc.navigate_up",
-									ActionInfo (tr ("Key for navigate up in DVD menu"), 
+									ActionInfo (tr ("Navigate up in DVD menu"), 
 									QKeySequence (Qt::Key_Up),
 									Proxy_->GetIcon ("arrow-up")));
 		
 		Manager_->RegisterActionInfo ("org.vlc.navigate_down",
-									ActionInfo (tr ("Key for navigate down in DVD menu"), 
+									ActionInfo (tr ("Navigate down in DVD menu"), 
 									QKeySequence (Qt::Key_Down),
 									Proxy_->GetIcon ("arrow-down")));
 		
 		Manager_->RegisterActionInfo ("org.vlc.navigate_enter",
-									ActionInfo (tr ("Key for activate current in DVD menu"), 
+									ActionInfo (tr ("Activate current in DVD menu"), 
 									QKeySequence (Qt::Key_Enter), 
 									Proxy_->GetIcon ("key-enter")));
 		
 		Manager_->RegisterActionInfo ("org.vlc.toggle_fullscreen",
-									ActionInfo (tr ("Key for toggle fullscreen"),
+									ActionInfo (tr ("Toggle fullscreen"),
 									QKeySequence (Qt::Key_F),
 									Proxy_->GetIcon ("view-fullscreen")));
 		
 		Manager_->RegisterActionInfo ("org.vlc.toggle_play",
-									ActionInfo (tr ("Key for switch play/pause"),
+									ActionInfo (tr ("Switch play/pause"),
 									QKeySequence (Qt::Key_Space),
 									Proxy_->GetIcon ("media-playback-start")));
+		
+		Manager_->RegisterActionInfo ("org.vlc.volume_increase",
+									ActionInfo (tr ("Increase volume"),
+									QKeySequence (Qt::Key_Plus),
+									Proxy_->GetIcon ("audio-volume-high")));
+		
+		Manager_->RegisterActionInfo ("org.vlc.volume_decrease",
+									ActionInfo (tr ("Decrease volume"),
+									QKeySequence (Qt::Key_Minus),
+									Proxy_->GetIcon ("audio-volume-low")));
+		
+		Manager_->RegisterActionInfo ("org.vlc.plus_3_percent",
+									ActionInfo (tr ("3% seek forward"),
+									QKeySequence (Qt::Key_Asterisk),
+									QIcon ()));
+		
+		Manager_->RegisterActionInfo ("org.vlc.minus_3_percent",
+									ActionInfo (tr ("3% seek backward"),
+									QKeySequence (Qt::Key_Slash),
+									QIcon ()));
+		
+		Manager_->RegisterActionInfo ("org.vlc.plus_10_seconds",
+									ActionInfo (tr ("10 seconds seek forward"),
+									QKeySequence (Qt::Key_0),
+									QIcon ()));
+
+		Manager_->RegisterActionInfo ("org.vlc.minus_10_seconds",
+									ActionInfo (tr ("10 seconds seek backward"),
+									QKeySequence (Qt::Key_9),
+									QIcon ()));
+		
+		Manager_->RegisterActionInfo ("org.vlc.next",
+									ActionInfo (tr ("Next in playlist"),
+									QKeySequence (Qt::Key_R),
+									QIcon ()));
+		
+		Manager_->RegisterActionInfo ("org.vlc.prev",
+									ActionInfo (tr ("Prev in playlist"),
+									QKeySequence (Qt::Key_T),
+									QIcon ()));
 	}
 
 	void Plugin::SecondInit ()
@@ -90,6 +135,8 @@ namespace vlc
 
 	void Plugin::Release ()
 	{
+		for (int i = 0; i < Tabs_.size (); i++)
+			delete Tabs_ [i];
 	}
 
 	QString Plugin::GetName () const
@@ -109,13 +156,20 @@ namespace vlc
 	
 	void Plugin::TabOpenRequested (const QByteArray& tabClass) 
 	{
-		VlcWidget *widget = new VlcWidget (Manager_);
+		VlcWidget *widget = new VlcWidget (Proxy_, Manager_);
+		XmlSettingsManager::Instance ().RegisterObject ("Autostart", widget, "autostartChanged");
+		Tabs_ << widget;
 		emit addNewTab ("VLC", widget);
 		emit raiseTab (widget);
 		connect (widget, 
 				SIGNAL (deleteMe (QWidget*)), 
 				this, 
 				SIGNAL (removeTab (QWidget*)));
+		
+		connect (widget,
+				SIGNAL (deleteMe (QWidget*)),
+				this,
+				SLOT (deleteDeleted (QWidget*)));
 	}
 	
 	LeechCraft::TabClasses_t Plugin::GetTabClasses () const 
@@ -131,6 +185,21 @@ namespace vlc
 	void Plugin::SetShortcut (const QString &id, const QKeySequences_t &shortcuts)
 	{
 		Manager_->SetShortcut (id, shortcuts);
+	}
+	
+	void Plugin::deleteDeleted (QWidget *widget)
+	{
+		for (QVector <VlcWidget*>::iterator i = Tabs_.begin (); i != Tabs_.end (); i++)
+			if (*i == widget)
+			{
+				Tabs_.erase (i);
+				return;
+			}
+	}
+	
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XmlSettingsDialog_;
 	}
 }
 }
