@@ -658,29 +658,7 @@ namespace Murm
 
 		const auto& data = QJson::Parser ().parse (reply);
 		for (const auto& item : data.toMap () ["response"].toList ())
-		{
-			const auto& map = item.toMap ();
-
-			const auto& thumb = map ["src_small"].toString ();
-			QString big;
-			for (auto key : { "src_xxbig", "src_xbig", "src_big", "src" })
-				if (map.contains (key))
-				{
-					big = map [key].toString ();
-					break;
-				}
-
-			result.append ({
-					map ["owner_id"].toLongLong (),
-					map ["pid"].toULongLong (),
-					map ["aid"].toLongLong (),
-
-					thumb,
-					big,
-
-					{}
-				});
-		}
+			result << PhotoMap2Info (item.toMap ());
 
 		setter (result);
 	}
