@@ -1902,8 +1902,11 @@ namespace BitTorrent
 					});
 		}
 		nah->AddFunction (tr ("Show folder"),
-				[savePathStr] ()
-					{ QDesktopServices::openUrl (QFileInfo (savePathStr).absolutePath ()); });
+				[savePathStr] () -> void
+				{
+					const auto& dirPath = QFileInfo (savePathStr).absolutePath ();
+					QDesktopServices::openUrl (QUrl::fromLocalFile (dirPath));
+				});
 #endif
 		emit gotEntity (notifyE);
 
