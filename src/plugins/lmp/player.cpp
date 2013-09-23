@@ -392,14 +392,21 @@ namespace LMP
 		const auto wasPlaying = XmlSettingsManager::Instance ().Property ("WasPlaying", false).toBool ();
 		if (wasPlaying)
 			Source_->Play ();
+
+		IgnoreNextSaves_ = false;
 	}
 
-	void Player::SavePlayState ()
+	void Player::SavePlayState (bool ignoreNext)
 	{
+		if (IgnoreNextSaves_)
+			return;
+
 		const auto state = Source_->GetState ();
 		const auto isPlaying = state == SourceState::Playing ||
 				state == SourceState::Buffering;
 		XmlSettingsManager::Instance ().setProperty ("WasPlaying", isPlaying);
+
+		IgnoreNextSaves_ = ignoreNext;
 	}
 
 	void Player::AddToOneShotQueue (const QModelIndex& index)
@@ -1112,8 +1119,7 @@ namespace LMP
 
 			if (FirstPlaylistRestore_ &&
 					XmlSettingsManager::Instance ().property ("AutoContinuePlayback").toBool ())
-				Source_->Play ();
-
+				RestorePlayState ();
 			FirstPlaylistRestore_ = false;
 		}
 
@@ -1219,6 +1225,8 @@ namespace LMP
 		default:
 			break;
 		}
+
+		SavePlayState (false);
 	}
 
 	void Player::handleCurrentSourceChanged (const AudioSource& source)

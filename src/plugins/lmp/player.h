@@ -85,6 +85,7 @@ namespace LMP
 		MediaInfo LastPhononMediaInfo_;
 
 		bool FirstPlaylistRestore_;
+		bool IgnoreNextSaves_;
 	public:
 		enum class PlayMode
 		{
@@ -147,7 +148,7 @@ namespace LMP
 		void SetStopAfter (const QModelIndex&);
 
 		void RestorePlayState ();
-		void SavePlayState ();
+		void SavePlayState (bool ignoreNext);
 
 		void AddToOneShotQueue (const QModelIndex&);
 		void AddToOneShotQueue (const AudioSource&);
