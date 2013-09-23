@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2010-2013  Oleg Linkin  <MaledictusDeMagog@gmail.com>
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,35 +27,74 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "backupmanager.h"
+#pragma once
+
+#include <QWizard>
 #include "interfaces/blogique/iaccount.h"
-#include "core.h"
-#include "accountsselectdialog.h"
+#include "ui_exportwizard.h"
+
+class QStandardItemModel;
 
 namespace LeechCraft
 {
 namespace Blogique
 {
-	BackupManager::BackupManager (QObject *parent)
-	: QObject (parent)
+	class IAccount;
+
+	class ExportWizard : public QWizard
 	{
-	}
+		Q_OBJECT
 
-	void BackupManager::backup ()
-	{
-		const auto& accounts = Core::Instance ().GetAccounts ();
-		AccountsSelectDialog dlg;
-		dlg.FillAccounts (accounts);
-		if (dlg.exec () == QDialog::Rejected)
-			return;
+		Ui::ExportWizard Ui_;
 
-		for (auto acc : dlg.GetSelectedAccounts ())
-			acc->backup ();
-	}
+		QMap<int, IAccount*> Id2Account_;
+		QMap<IAccount*, QStringList> Account2Tags_;
+		QStandardItemModel *AllTagsModel_;
+		QStandardItemModel *SelectedTagsModel_;
+		QButtonGroup *Formats_;
+		QMap<int, QRadioButton*> Id2RadioButton_;
 
-	void BackupManager::backup (IAccount*)
-	{
-	}
+		QList<Entry> Entries_;
 
+		enum ExportFormat
+		{
+			PlainText,
+			Html,
+			Fb2,
+			Pdf
+		};
+
+		enum Pages
+		{
+			WelcomePage,
+			FormatPage,
+			ContentPage,
+			OverviewPage,
+			ExportPage
+		} Pages_;
+
+	public:
+		explicit ExportWizard (QWidget *parent = 0);
+		bool validateCurrentPage ();
+		void reject ();
+	private:
+		void FillTags (IAccount *acc);
+
+	private slots:
+		void handleAccountChanged (int index);
+		void handleCurrentIdChanged (int id);
+		void selectExportPath ();
+		void addTag ();
+		void removeTag();
+
+		void on_AccountSelection__currentIndexChanged (int index);
+		void on_SavePath__textChanged (const QString& text);
+		void on_FromDate__dateChanged (const QDate& date);
+		void on_TillDate__dateChanged (const QDate& date);
+
+		void handleTagsUpdated (const QHash<QString, int>& tags);
+		void handleGotFilteredEntries (const QList<Entry>& entries);
+		void handleGettingFilteredEntriesFinished ();
+	};
 }
 }

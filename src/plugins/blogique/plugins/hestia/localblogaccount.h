@@ -80,6 +80,7 @@ namespace Hestia
 		void RequestStatistics ();
 		void RequestTags ();
 		void GetEntriesByDate (const QDate& date);
+		void GetEntriesWithFilter(const Filter& filter);
 
 		QHash<QString, int> GetTags () const;
 
@@ -95,7 +96,6 @@ namespace Hestia
 		void updateProfile ();
 		void submit (const Entry& event);
 		void preview (const Entry& event);
-		void backup ();
 
 		void handleLoadAllEvents ();
 
@@ -111,8 +111,8 @@ namespace Hestia
 		void entryUpdated (const QList<Entry>& entries);
 
 		void gotEntries (const QList<Entry>& entries);
-		void gotEntries2Backup (const QList<Entry>& entries);
-		void gettingEntries2BackupFinished ();
+		void gotFilteredEntries(const QList< Entry >& entries);
+		void gettingFilteredEntriesFinished();
 		void gotBlogStatistics (const QMap<QDate, int>& statistics);
 		void tagsUpdated (const QHash<QString, int>& tags);
 

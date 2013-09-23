@@ -96,10 +96,9 @@ namespace Blogique
 		void handleEntryRemoved (int itemId);
 		void handleEntryUpdated (const QList<Entry>& entries);
 
-		void handleGotEntries2Backup (const QList<Entry>& entries);
-		void handleGettingEntries2BackupFinished ();
-
 		void handleAutoSaveIntervalChanged ();
+
+		void exportBlog ();
 
 	signals:
 		void accountAdded (QObject *account);
