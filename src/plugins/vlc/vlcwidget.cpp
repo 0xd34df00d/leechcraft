@@ -720,6 +720,9 @@ namespace vlc
 		NextButton_ = new QToolButton;
 		NextButton_->setDefaultAction (Next_);
 		NextButton_->setAutoRaise (true);
+		PrevButton_ = new QToolButton;
+		PrevButton_->setDefaultAction (Prev_);
+		PrevButton_->setAutoRaise (true);
 		
 		panelLayout->addWidget (PrevButton_);
 		panelLayout->addWidget (TogglePlayButton_);
