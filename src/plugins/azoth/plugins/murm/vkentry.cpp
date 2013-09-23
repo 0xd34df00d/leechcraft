@@ -663,10 +663,14 @@ namespace Murm
 						replacements.append ({ id, replacement });
 					}
 
-					for (const auto& pair : replacements)
+					for (auto& pair : replacements)
 					{
 						body.replace ("<div id='" + pair.first + "'></div>",
 								"<div>" + pair.second + "</div>");
+
+						pair.second.replace ('\\', "\\\\");
+						pair.second.replace ('"', "\\\"");
+
 						js += QString ("try { document.getElementById('%1').innerHTML = \"%2\"; } catch (e) {};")
 								.arg (pair.first)
 								.arg (pair.second);
