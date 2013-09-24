@@ -134,25 +134,6 @@ namespace LeechCraft
 	{
 		CoreShortcutManager_->SetObject (this);
 
-#ifndef Q_OS_MAC
-		const auto sysModifier = Qt::CTRL;
-#else
-		const auto sysModifier = Qt::ALT;
-#endif
-		CoreShortcutManager_->RegisterActionInfo ("SwitchToPrevTab",
-				{
-					tr ("Switch to previously active tab"),
-					sysModifier + Qt::Key_Space,
-					QIcon ()
-				});
-
-		CoreShortcutManager_->RegisterActionInfo ("CloseTab",
-				{
-					tr ("Close tab"),
-					QString ("Ctrl+W"),
-					CoreProxy ().GetIcon ("close-tab")
-				});
-
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"coresettings.xml");
 		connect (XmlSettingsDialog_.get (),
@@ -168,6 +149,24 @@ namespace LeechCraft
 
 	void CoreInstanceObject::Init (ICoreProxy_ptr)
 	{
+#ifndef Q_OS_MAC
+		const auto sysModifier = Qt::CTRL;
+#else
+		const auto sysModifier = Qt::ALT;
+#endif
+		CoreShortcutManager_->RegisterActionInfo ("SwitchToPrevTab",
+				{
+					tr ("Switch to previously active tab"),
+					sysModifier + Qt::Key_Space,
+					QIcon ()
+				});
+		CoreShortcutManager_->RegisterActionInfo ("CloseTab",
+				{
+					tr ("Close tab"),
+					QString ("Ctrl+W"),
+					CoreProxy ().GetIcon ("tab-close")
+				});
+
 		Classes_ << SettingsTab_->GetTabClassInfo ();
 
 		XmlSettingsDialog_->SetCustomWidget ("PluginManager", new PluginManagerDialog);
