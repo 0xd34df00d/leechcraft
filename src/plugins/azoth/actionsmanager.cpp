@@ -329,6 +329,23 @@ namespace Azoth
 			riex->SuggestItems (items, entry->GetQObject (), dia.GetShareMessage ());
 		}
 
+		void ChangeNick (const QList<ICLEntry*>& entries)
+		{
+			auto mucEntry = qobject_cast<IMUCEntry*> (entries.at (0)->GetQObject ());
+			const auto& nick = mucEntry->GetNick ();
+
+			const auto& newNick = QInputDialog::getText (nullptr,
+					"LeechCraft",
+					ActionsManager::tr ("Enter new nickname:"),
+					QLineEdit::Normal,
+					nick);
+			if (newNick.isEmpty () || newNick == nick)
+				return;
+
+			for (auto entry : entries)
+				qobject_cast<IMUCEntry*> (entry->GetQObject ())->SetNick (newNick);
+		}
+
 		void Invite (ICLEntry *entry)
 		{
 			auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
@@ -539,6 +556,7 @@ namespace Azoth
 					})
 			},
 			{ "vcard", SingleEntryActor_f ([] (ICLEntry *e) { e->ShowInfo (); }) },
+			{ "changenick", MultiEntryActor_f (ChangeNick) },
 			{ "invite", SingleEntryActor_f (Invite) },
 			{ "leave", SingleEntryActor_f (Leave) },
 			{
@@ -1034,6 +1052,13 @@ namespace Azoth
 		}
 		else if (entry->GetEntryType () == ICLEntry::ETMUC)
 		{
+			QAction *changeNick = new QAction (tr ("Change nickname..."), entry->GetQObject ());
+			changeNick->setProperty ("ActionIcon", "user-properties");
+			Entry2Actions_ [entry] ["changenick"] = changeNick;
+			Action2Areas_ [changeNick] << CLEAAContactListCtxtMenu
+					<< CLEAATabCtxtMenu
+					<< CLEAAToolbar;
+
 			QAction *invite = new QAction (tr ("Invite..."), entry->GetQObject ());
 			invite->setProperty ("ActionIcon", "azoth_invite");
 			Entry2Actions_ [entry] ["invite"] = invite;
