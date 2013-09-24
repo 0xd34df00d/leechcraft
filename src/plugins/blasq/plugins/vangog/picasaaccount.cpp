@@ -202,7 +202,7 @@ namespace Vangog
 				break;
 			case ItemType::Image:
 				PicasaManager_->DeletePhoto (index.data (CollectionRole::ID).toByteArray (),
-						index.parent ().data (CollectionRole::ID).toByteArray ());
+						index.data (AlbumId).toByteArray ());
 				break;
 			case ItemType::AllPhotos:
 			default:
@@ -278,6 +278,8 @@ namespace Vangog
 					item->setData (last.Url_, CollectionRole::MediumThumb);
 					item->setData (QSize (last.Width_, last.Height_), CollectionRole::MediumThumb);
 				}
+
+				item->setData (photo.AlbumID_, AlbumId);
 
 				return item;
 			};

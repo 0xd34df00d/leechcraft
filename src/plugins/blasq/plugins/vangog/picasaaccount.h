@@ -74,6 +74,11 @@ namespace Vangog
 		QHash<QByteArray, QSet<QByteArray>> AlbumID2PhotosSet_;
 
 	public:
+		enum PicasaRole
+		{
+			AlbumId = Qt::UserRole + 1
+		};
+
 		PicasaAccount (const QString& name, PicasaService *service,
 				ICoreProxy_ptr proxy, const QString& login,
 				const QByteArray& id = QByteArray ());
