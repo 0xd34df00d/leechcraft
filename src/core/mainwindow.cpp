@@ -145,6 +145,8 @@ void LeechCraft::MainWindow::Init ()
 			SLOT (handleCloseCurrentTab ()),
 			0);
 	sm->RegisterShortcut ("CloseTab", {}, CloseTabShortcut_);
+
+	sm->RegisterAction ("Quit", Ui_.ActionQuit_);
 }
 
 void LeechCraft::MainWindow::handleShortcutFullscreenMode ()

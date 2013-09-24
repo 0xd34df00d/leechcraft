@@ -172,6 +172,12 @@ namespace LeechCraft
 					QString ("Ctrl+W"),
 					CoreProxy ().GetIcon ("tab-close")
 				});
+		CoreShortcutManager_->RegisterActionInfo ("Quit",
+				{
+					tr ("Quit LeechCraft"),
+					QString ("F10"),
+					CoreProxy ().GetIcon ("application-exit")
+				});
 
 		Classes_ << SettingsTab_->GetTabClassInfo ();
 
