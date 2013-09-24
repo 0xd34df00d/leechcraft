@@ -101,15 +101,7 @@ namespace Azoth
 		setSOM ("ChatWindowStyle");
 		setSOM ("MUCWindowStyle");
 
-		Entity e = Util::MakeEntity (QVariant (),
-				QString (),
-				OnlyHandle,
-				"x-leechcraft/global-action-register");
-		e.Additional_ ["ActionID"] = GetUniqueID () + "_ShowNextUnread";
-		e.Additional_ ["Receiver"] = QVariant::fromValue<QObject*> (&Core::Instance ());
-		e.Additional_ ["Method"] = SLOT (handleShowNextUnread ());
-		e.Additional_ ["Shortcut"] = QKeySequence (QString ("Ctrl+Alt+Shift+M"));
-		emit gotEntity (e);
+		Core::Instance ().GetShortcutManager ()->AnnounceGlobalShorcuts ();
 	}
 
 	void Plugin::Release ()
@@ -337,6 +329,14 @@ namespace Azoth
 				ActionInfo (tr ("Open last link in chat"),
 						QString ("Ctrl+O"),
 						proxy->GetIcon ("document-open-remote")));
+
+		sm->RegisterGlobalShortcut ("org.LeechCraft.Azoth.ShowNextUnread",
+				&Core::Instance (), SLOT (handleShowNextUnread ()),
+				{
+					tr ("Show next unread message (global shortcut)"),
+					QString ("Ctrl+Alt+Shift+M"),
+					proxy->GetIcon ("mail-unread-new")
+				});
 	}
 
 	void Plugin::InitSettings ()
