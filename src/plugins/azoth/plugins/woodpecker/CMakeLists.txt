@@ -27,7 +27,7 @@ include_directories (
 	${QJSON_INCLUDE_DIR}
 	${QTKOAUTH_INCLUDE_DIR}
 	)
-set (SRCS
+set (WOODPECKER_SRCS
 	core.cpp
 	tweet.cpp
 	twitdelegate.cpp
@@ -37,22 +37,22 @@ set (SRCS
 	woodpecker.cpp
 	xmlsettingsmanager.cpp
 	)
-set (RESOURCES
+set (WOODPECKER_RESOURCES
 	woodpeckerresources.qrc
 	)
-set (FORMS
+set (WOODPECKER_FORMS
 	twitterpage.ui
 	)
-# CreateTrs ("woodpecker" "en;ru_RU" COMPILED_TRANSLATIONS)
-# CreateTrsUpTarget("woodpecker" "en;ru_RU" "${SRCS}" "${FORMS}" "azothwoodpeckersettings.xml")
-QT4_WRAP_UI (UIS_H ${FORMS})
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+CreateTrs ("woodpecker" "en;ru_RU" WOODPECKER_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("woodpecker" "en;ru_RU" "${SRCS}" "${FORMS}" "azothwoodpeckersettings.xml")
+QT4_WRAP_UI (WOODPECKER_UIS_H ${WOODPECKER_FORMS})
+QT4_ADD_RESOURCES (WOODPECKER_RCCS ${WOODPECKER_RESOURCES})
 
 add_library (leechcraft_azoth_woodpecker SHARED
-	${COMPILED_TRANSLATIONS}
-	${SRCS}
-	${UIS_H}
-	${RCCS}
+	${WOODPECKER_COMPILED_TRANSLATIONS}
+	${WOODPECKER_SRCS}
+	${WOODPECKER_UIS_H}
+	${WOODPECKER_RCCS}
 	)
 target_link_libraries (leechcraft_azoth_woodpecker
 	${QT_LIBRARIES}
