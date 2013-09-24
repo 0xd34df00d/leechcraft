@@ -45,6 +45,8 @@
 
 namespace LeechCraft
 {
+namespace Azoth
+{
 namespace Woodpecker
 {
 	class TwitterPage : public QWidget
@@ -150,6 +152,7 @@ namespace Woodpecker
 		void gotEntity (const LeechCraft::Entity&);
 		void tabRecoverDataChanged ();
 	};
+}
 }
 }
 

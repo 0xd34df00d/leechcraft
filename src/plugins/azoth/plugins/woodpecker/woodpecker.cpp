@@ -39,6 +39,8 @@
 
 namespace LeechCraft
 {
+namespace Azoth
+{
 namespace Woodpecker
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
@@ -47,7 +49,7 @@ namespace Woodpecker
 		
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-											"woodpeckersettings.xml");
+											"azothwoodpeckersettings.xml");
 		
 		Core::Instance ().SetProxy (proxy);
 		
@@ -146,6 +148,13 @@ namespace Woodpecker
 		for (const auto& item : TabClasses_)
 			result << item.first;
 		return result;
+	}
+
+	QSet<QByteArray> Plugin::GetPluginClasses () const
+	{
+		QSet<QByteArray> classes;
+		classes << "org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin";
+		return classes;
 	}
 
 	void Plugin::TabOpenRequested (const QByteArray& tc)
@@ -252,5 +261,6 @@ namespace Woodpecker
 	}
 }
 }
+}
 
-LC_EXPORT_PLUGIN (leechcraft_woodpecker, LeechCraft::Woodpecker::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_woodpecker, LeechCraft::Azoth::Woodpecker::Plugin);

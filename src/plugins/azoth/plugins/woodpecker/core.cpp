@@ -27,42 +27,34 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QIcon>
-#include <interfaces/iinfo.h>
-#include <interfaces/structures.h>
-#include <interfaces/ihavetabs.h>
-#include <interfaces/core/icoreproxy.h>
+#include "core.h"
 #include "twitterpage.h"
 
 namespace LeechCraft
 {
+namespace Azoth
+{
 namespace Woodpecker
 {
-	class TwitterPage;
-
-	class Core : public QObject
+	Core::Core ()
 	{
-		Q_OBJECT
+	}
 
-		ICoreProxy_ptr Proxy_;
+	Core& Core::Instance ()
+	{
+		static Core c;
+		return c;
+	}
 
-		Core ();
-		
-		Core (const Core&) = delete;
-		Core (Core&&) = delete;
-		
-		Core& operator= (const Core&) = delete;
-		Core& operator= (Core&&) = delete;
-		
-	public:
-		static Core& Instance ();
+	void Core::SetProxy (ICoreProxy_ptr proxy)
+	{
+		Proxy_ = proxy;
+	}
 
-		void SetProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetCoreProxy () const;
-	};
+	ICoreProxy_ptr Core::GetCoreProxy () const
+	{
+		return Proxy_;
+	}
 };
 };
-
+}
