@@ -29,46 +29,43 @@
 
 #pragma once
 
-#include <memory>
-#include <QNetworkAccessManager>
 #include <QObject>
-#include <QPixmap>
-#include <QDebug>
+#include <QIcon>
+#include <interfaces/iinfo.h>
+#include <interfaces/structures.h>
+#include <interfaces/ihavetabs.h>
+#include <interfaces/core/icoreproxy.h>
+#include "twitterpage.h"
 
 namespace LeechCraft
 {
+namespace Azoth
+{
 namespace Woodpecker
 {
-	class TwitterUser : public QObject
+	class TwitterPage;
+
+	class Core : public QObject
 	{
 		Q_OBJECT
+
+		ICoreProxy_ptr Proxy_;
+
+		Core ();
 		
-		QString Username_;
-		QNetworkAccessManager *Http_;
+		Core (const Core&) = delete;
+		Core (Core&&) = delete;
+		
+		Core& operator= (const Core&) = delete;
+		Core& operator= (Core&&) = delete;
 		
 	public:
-		QPixmap  Avatar;
-		
-		explicit TwitterUser (QObject *parent = nullptr);
-		explicit TwitterUser (const QString& username, QObject *parent = nullptr);
-		
-		void SetUsername (const QString& username);
-		QString GetUsername () const ;
-		
-		/** @brief Grabs avatar from Twitter
-		 * 	@param path http url of image
-		 */
-		void DownloadAvatar (const QString& path);
-		
-	signals:
-		void userReady ();
-		
-	public slots:
-		void avatarDownloaded ();
-		
+		static Core& Instance ();
+
+		void SetProxy (ICoreProxy_ptr);
+		ICoreProxy_ptr GetCoreProxy () const;
 	};
-	
-	typedef std::shared_ptr<TwitterUser> TwitterUser_ptr;
-}
+};
+};
 }
 

@@ -29,25 +29,49 @@
 
 #pragma once
 
-#include <xmlsettingsdialog/basesettingsmanager.h>
+#include <memory>
+#include <QNetworkAccessManager>
+#include <QObject>
+#include <QPixmap>
+#include <QDebug>
 
 namespace LeechCraft
 {
+namespace Azoth
+{
 namespace Woodpecker
 {
-	class XmlSettingsManager : public Util::BaseSettingsManager
+	class TwitterUser : public QObject
 	{
 		Q_OBJECT
 		
-		XmlSettingsManager ();
+		QString Username_;
+		QNetworkAccessManager *Http_;
 		
 	public:
-		static XmlSettingsManager* Instance ();
+		QPixmap  Avatar;
 		
-	protected:
-		virtual QSettings* BeginSettings () const;
-		virtual void EndSettings (QSettings*) const;
+		explicit TwitterUser (QObject *parent = nullptr);
+		explicit TwitterUser (const QString& username, QObject *parent = nullptr);
+		
+		void SetUsername (const QString& username);
+		QString GetUsername () const ;
+		
+		/** @brief Grabs avatar from Twitter
+		 * 	@param path http url of image
+		 */
+		void DownloadAvatar (const QString& path);
+		
+	signals:
+		void userReady ();
+		
+	public slots:
+		void avatarDownloaded ();
+		
 	};
-};
-};
+	
+	typedef std::shared_ptr<TwitterUser> TwitterUser_ptr;
+}
+}
+}
 

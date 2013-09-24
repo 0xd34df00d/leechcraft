@@ -32,6 +32,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/iplugin2.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/structures.h>
@@ -43,6 +44,8 @@ class QTranslator;
 
 namespace LeechCraft
 {
+namespace Azoth
+{
 namespace Woodpecker
 {
 	class Plugin	: public QObject
@@ -50,9 +53,10 @@ namespace Woodpecker
 					, public IHaveTabs
 					, public IHaveSettings
 					, public IHaveRecoverableTabs
+					, public IPlugin2
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IHaveRecoverableTabs)
+		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IHaveRecoverableTabs IPlugin2)
 		
 		QList<QPair<TabClassInfo, std::function<void (TabClassInfo)>>> TabClasses_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
@@ -72,6 +76,8 @@ namespace Woodpecker
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		QSet<QByteArray> GetPluginClasses () const;
 
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
@@ -100,4 +106,4 @@ namespace Woodpecker
 	};
 };
 };
-
+};
