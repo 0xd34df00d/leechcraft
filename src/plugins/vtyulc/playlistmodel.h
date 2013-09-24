@@ -27,88 +27,55 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include <QMouseEvent>
-#include <QKeyEvent>
-#include <QWheelEvent>
-#include <QPaintEvent>
-#include <QPainter>
-#include <QColor>
-#include <QPen>
-#include <QDragEnterEvent>
-#include "signalledwidget.h"
+#pragma once
+
+#include <QStandardItemModel>
+#include <QVector>
+
+struct libvlc_media_list_t;
+struct libvlc_media_t;
+struct libvlc_instance_t;
+
+class QMimeData;
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	SignalledWidget::SignalledWidget (QWidget *parent, Qt::WindowFlags flags)
-	: QWidget (parent, flags)
-	, BackgroundColor_ (nullptr)
-	{
-		setContextMenuPolicy (Qt::CustomContextMenu);
-	}
+	class PlaylistWidget;
 	
-	SignalledWidget::~SignalledWidget()
+	enum Columns
 	{
-		if (BackgroundColor_ != nullptr)
-			delete BackgroundColor_;
-	}
+		ColumnName,
+		ColumnDuration,
+		ColumnMax
+	};
 	
-	void SignalledWidget::keyPressEvent (QKeyEvent *event)
+	class PlaylistModel : public QStandardItemModel
 	{
-		emit keyPress (event);
-	}
-	
-	void SignalledWidget::mousePressEvent (QMouseEvent *event)
-	{
-		emit mousePress (event);
-	}
-
-	void SignalledWidget::mouseDoubleClickEvent (QMouseEvent *event)
-	{
-		emit mouseDoubleClick (event);
-	}
-	
-	void SignalledWidget::wheelEvent (QWheelEvent *event)
-	{
-		emit wheel (event);
-	}
-	
-	void SignalledWidget::mouseMoveEvent (QMouseEvent *event)
-	{
-		emit mouseMove (event);
-	}
-	
-	void SignalledWidget::paintEvent (QPaintEvent *event)
-	{
-		if (BackgroundColor_ != nullptr)
-		{
-			QPainter p (this);
-			p.setPen (QPen (*BackgroundColor_));
-			p.setBrush (QBrush (*BackgroundColor_));
-			p.drawRect (0, 0, width () - 1, height () - 1);
-			p.end ();
-			event->accept ();
-		}
-	}
-	
-	void SignalledWidget::SetBackGroundColor (QColor *color)
-	{
-		if (BackgroundColor_ != nullptr)
-			delete BackgroundColor_;
+		Q_OBJECT
 		
-		BackgroundColor_ = color;
-		update ();
-	}
+		libvlc_media_list_t *Playlist_;
+		QVector<QStandardItem*> Items_ [ColumnMax];
+		PlaylistWidget *Parent_;
+		libvlc_instance_t *Instance_;
 	
-	void SignalledWidget::resizeEvent (QResizeEvent *event)
-	{
-		emit resized (event);
-	}
-	
-	void SignalledWidget::showEvent (QShowEvent *event)
-	{	
-		emit shown (event);
-	}
+	public:
+		explicit PlaylistModel (PlaylistWidget *parent, libvlc_media_list_t *playlist, libvlc_instance_t *instance);
+		~PlaylistModel ();
+		
+		bool dropMimeData (const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex& parent);
+		QStringList mimeTypes () const;
+		QMimeData* mimeData (const QModelIndexList&) const;
+		Qt::DropActions supportedDropActions () const;
+		
+		void AddUrl (const QUrl&);
+		
+	private:
+		libvlc_media_t* Take (const QUrl&);
+		
+	public slots:
+		void updateTable ();
+	};
 }
 }

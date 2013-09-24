@@ -34,6 +34,7 @@
 #include <QUrl>
 #include <QDateTime>
 #include <QVariantMap>
+#include <QSize>
 
 namespace LeechCraft
 {
@@ -119,7 +120,9 @@ namespace Murm
 		qlonglong AlbumID_;
 
 		QString Thumbnail_;
+		QSize ThumbnailSize_;
 		QString Full_;
+		QSize FullSize_;
 
 		QString AccessKey_;
 	};

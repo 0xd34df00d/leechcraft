@@ -39,6 +39,7 @@
 #include "interfaces/blogique/iaccount.h"
 #include "interfaces/blogique/ibloggingplatformplugin.h"
 #include "interfaces/blogique/ibloggingplatform.h"
+#include "exportwizard.h"
 #include "pluginproxy.h"
 #include "storagemanager.h"
 #include "blogiquewidget.h"
@@ -289,14 +290,6 @@ namespace Blogique
 				this,
 				SLOT (handleEntryUpdated (QList<Entry>)));
 		connect (accObj,
-				SIGNAL (gotEntries2Backup (QList<Entry>)),
-				this,
-				SLOT (handleGotEntries2Backup (QList<Entry>)));
-		connect (accObj,
-				SIGNAL (gettingEntries2BackupFinished ()),
-				this,
-				SLOT (handleGettingEntries2BackupFinished ()));
-		connect (accObj,
 				SIGNAL (tagsUpdated (QHash<QString, int>)),
 				this,
 				SIGNAL (tagsUpdated (QHash<QString, int>)));
@@ -400,26 +393,20 @@ namespace Blogique
 		acc->RequestTags ();
 	}
 
-	void Core::handleGotEntries2Backup (const QList<Entry>&)
-	{
-		auto acc = qobject_cast<IAccount*> (sender ());
-		if (!acc)
-			return;
-		//TODO
-	}
-
-	void Core::handleGettingEntries2BackupFinished ()
-	{
-		SendEntity (Util::MakeNotification ("Blogique",
-				tr ("Entries were backuped successfully."),
-				Priority::PInfo_));
-	}
-
 	void Core::handleAutoSaveIntervalChanged ()
 	{
 		AutoSaveTimer_->start (XmlSettingsManager::Instance ()
 				.property ("AutoSave").toInt () * 1000);
 	}
+
+	void Core::exportBlog ()
+	{
+		ExportWizard *wizard = new ExportWizard (Proxy_->GetRootWindowsManager ()->
+				GetPreferredWindow ());
+		wizard->setWindowTitle (tr ("Export blog"));
+		wizard->show ();
+	}
+
 }
 }
 

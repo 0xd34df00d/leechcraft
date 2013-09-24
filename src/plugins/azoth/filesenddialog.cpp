@@ -66,13 +66,25 @@ namespace Azoth
 		Ui_.TargetLabel_->setText (name);
 
 		auto acc = qobject_cast<IAccount*> (Entry_->GetParentAccount ());
-		if (acc->GetTransferManager ())
+		auto itm = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
+		if (itm && itm->IsAvailable ())
 		{
 			AccSupportsFT_ = true;
 			Ui_.TransferMethod_->addItem (tr ("Protocol file transfer"));
 		}
 
 		FillSharers ();
+
+		if (!Ui_.TransferMethod_->count ())
+		{
+			QMessageBox::warning (this,
+					"LeechCraft",
+					tr ("There aren't any file transfer methods available. "
+						"Please either make sure protocol file transfers are enabled and "
+						"active, or install a module like NetStoreManager."));
+			deleteLater ();
+			return;
+		}
 
 		if (suggested.isEmpty ())
 			on_FileBrowse__released ();

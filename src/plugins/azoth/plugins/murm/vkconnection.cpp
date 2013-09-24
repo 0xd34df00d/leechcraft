@@ -231,6 +231,7 @@ namespace Murm
 				QUrl url ("https://api.vk.com/method/messages.getById");
 				url.addQueryItem ("access_token", key);
 				url.addQueryItem ("mid", QString::number (id));
+				url.addQueryItem ("photo_sizes", "1");
 
 				auto reply = nam->get (QNetworkRequest (url));
 				Reply2MessageSetter_ [reply] = setter;
@@ -452,21 +453,10 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
-	void VkConnection::handleGotFriends ()
+	namespace
 	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!CheckFinishedReply (reply))
-			return;
-
-		QList<UserInfo> users;
-
-		const auto& data = QJson::Parser ().parse (reply);
-		for (const auto& item : data.toMap () ["response"].toList ())
+		UserInfo UserMap2Info (const QVariantMap& userMap)
 		{
-			const auto& userMap = item.toMap ();
-			if (userMap.contains ("deactivated"))
-				continue;
-
 			QList<qulonglong> lists;
 			for (const auto& item : userMap ["lists"].toList ())
 				lists << item.toULongLong ();
@@ -475,7 +465,7 @@ namespace Murm
 			if (dateString.count ('.') == 1)
 				dateString += ".1800";
 
-			const UserInfo ui
+			return
 			{
 				userMap ["uid"].toULongLong (),
 
@@ -501,12 +491,74 @@ namespace Murm
 
 				lists
 			};
-			users << ui;
+		}
+	}
+
+	void VkConnection::handleGotFriends ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!CheckFinishedReply (reply))
+			return;
+
+		QList<UserInfo> users;
+
+		const auto& data = QJson::Parser ().parse (reply);
+		for (const auto& item : data.toMap () ["response"].toList ())
+		{
+			const auto& userMap = item.toMap ();
+			if (userMap.contains ("deactivated"))
+				continue;
+
+			users << UserMap2Info (userMap);
 		}
 
 		emit gotUsers (users);
 
+		auto nam = Proxy_->GetNetworkAccessManager ();
+		PreparedCalls_.push_back ([this, nam] (const QString& key) -> QNetworkReply*
+			{
+				QUrl msgUrl ("https://api.vk.com/method/messages.get");
+				msgUrl.addQueryItem ("access_token", key);
+				msgUrl.addQueryItem ("filters", "1");
+				auto reply = nam->get (QNetworkRequest (msgUrl));
+				connect (reply,
+						SIGNAL (finished ()),
+						this,
+						SLOT (handleGotUnreadMessages ()));
+				return reply;
+			});
+
 		LPManager_->start ();
+	}
+
+	void VkConnection::handleGotUnreadMessages ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!CheckFinishedReply (reply))
+			return;
+
+		const auto& data = QJson::Parser ().parse (reply);
+		auto respList = data.toMap () ["response"].toList ();
+		respList.removeFirst ();
+
+		for (const auto& msgMapVar : respList)
+		{
+			const auto& map = msgMapVar.toMap ();
+			qDebug () << map;
+
+			MessageFlags flags = MessageFlag::Unread;
+			if (map ["out"].toULongLong ())
+				flags |= MessageFlag::Outbox;
+
+			emit gotMessage ({
+					map ["mid"].toULongLong (),
+					map ["uid"].toULongLong (),
+					map ["body"].toString (),
+					flags,
+					QDateTime::fromTime_t (map ["date"].toULongLong ()),
+					{}
+				});
+		}
 	}
 
 	void VkConnection::handleMessageSent ()
@@ -550,13 +602,36 @@ namespace Murm
 	{
 		PhotoInfo PhotoMap2Info (const QVariantMap& map)
 		{
-			QString srcBig;
-			for (auto str : { "src_xxxbig", "src_xxbig", "src_xbig", "src_big" })
-				if (map.contains (str))
+			QString bigSrc;
+			QSize bigSize;
+			QString thumbSrc;
+			QSize thumbSize;
+
+			QString currentBigType;
+			const QStringList bigTypes { "x", "y", "z", "w" };
+
+			for (const auto& elem : map ["sizes"].toList ())
+			{
+				const auto& eMap = elem.toMap ();
+
+				auto size = [&eMap]
 				{
-					srcBig = map [str].toString ();
-					break;
+					return QSize (eMap ["width"].toInt (), eMap ["height"].toInt ());
+				};
+
+				const auto& type = eMap ["type"].toString ();
+				if (type == "m")
+				{
+					thumbSrc = eMap ["src"].toString ();
+					thumbSize = size ();
 				}
+				else if (bigTypes.indexOf (type) > bigTypes.indexOf (currentBigType))
+				{
+					currentBigType = type;
+					bigSrc = eMap ["src"].toString ();
+					bigSize = size ();
+				}
+			}
 
 			return
 			{
@@ -564,8 +639,10 @@ namespace Murm
 				map ["pid"].toULongLong (),
 				map ["aid"].toLongLong (),
 
-				map ["src"].toString (),
-				srcBig,
+				thumbSrc,
+				thumbSize,
+				bigSrc,
+				bigSize,
 
 				map ["access_key"].toString ()
 			};
@@ -596,7 +673,7 @@ namespace Murm
 					info.Audios_ << AudioMap2Info (attMap ["audio"].toMap ());
 				else if (attMap.contains ("wall"))
 				{
-					const auto& wallMap = attMap ["wall"].toMap ();
+					auto wallMap = attMap ["wall"].toMap ();
 
 					FullMessageInfo repost;
 					repost.OwnerID_ = wallMap ["from_id"].toLongLong ();
@@ -606,10 +683,14 @@ namespace Murm
 					repost.Reposts_ = wallMap ["reposts"].toMap () ["count"].toInt ();
 					repost.PostDate_ = QDateTime::fromTime_t (wallMap ["date"].toLongLong ());
 
-					HandleAttachments (repost, wallMap ["attachments"]);
+					HandleAttachments (repost, wallMap.take ("attachments"));
+					wallMap.take ("attachment");
+					qDebug () << wallMap;
 
 					info.ContainedReposts_.append (repost);
 				}
+				else
+					qDebug () << Q_FUNC_INFO << attMap.keys ();
 			}
 		}
 	}
@@ -658,29 +739,7 @@ namespace Murm
 
 		const auto& data = QJson::Parser ().parse (reply);
 		for (const auto& item : data.toMap () ["response"].toList ())
-		{
-			const auto& map = item.toMap ();
-
-			const auto& thumb = map ["src_small"].toString ();
-			QString big;
-			for (auto key : { "src_xxbig", "src_xbig", "src_big", "src" })
-				if (map.contains (key))
-				{
-					big = map [key].toString ();
-					break;
-				}
-
-			result.append ({
-					map ["owner_id"].toLongLong (),
-					map ["pid"].toULongLong (),
-					map ["aid"].toLongLong (),
-
-					thumb,
-					big,
-
-					{}
-				});
-		}
+			result << PhotoMap2Info (item.toMap ());
 
 		setter (result);
 	}

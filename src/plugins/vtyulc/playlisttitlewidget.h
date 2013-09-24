@@ -27,53 +27,32 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include <QPaintEvent>
-#include <QMouseEvent>
-#include <QPainter>
-#include <QVBoxLayout>
-#include <QPoint>
-#include "vlcscrollbar.h"
+#pragma once
+
+#include <QWidget>
+#include <interfaces/core/icoreproxy.h>
+
+class QToolButton;
+class QAction;
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	VlcScrollBar::VlcScrollBar (QWidget *parent)
-	: QWidget (parent)
-	, CurrentPosition_ (0)
+	class PlaylistTitleWidget : public QWidget
 	{
-	}
-
-	void VlcScrollBar::paintEvent (QPaintEvent *event)
-	{
-		QPainter p (this);
+		Q_OBJECT
 		
-		p.setBrush (palette ().mid ());
-		p.drawRect (0, 0, width () - 1, height () - 1);
+		QToolButton *ClearPlaylist_;
+		QToolButton *MagicSort_;
+		QToolButton *AddFiles_;
+	
+	public:
+		explicit PlaylistTitleWidget (ICoreProxy_ptr proxy, QWidget *parent = 0);
 		
-		p.setBrush (palette ().dark ());
-		p.drawRect (0, 0, std::min (int ((width () - 1) * CurrentPosition_), width () - 1), height () - 1);
-		
-		p.end ();
-		event->accept ();
-	}
-	
-	void VlcScrollBar::mousePressEvent (QMouseEvent *event)
-	{
-		LastMousePoint_ = event->globalPos ();
-		emit changePosition (event->x () / double (width () - 5));
-		event->accept ();
-	}
-	
-	void VlcScrollBar::mouseMoveEvent (QMouseEvent *event)
-	{
-		if (LastMousePoint_.x () != event->globalPos (). x())
-			mousePressEvent (event);
-	}
-	
-	void VlcScrollBar::setPosition (double pos)
-	{
-		CurrentPosition_ = pos;
-	}
+		QAction *ClearAction_;
+		QAction *MagicAction_;
+		QAction *AddAction_;
+	};
 }
 }

@@ -384,6 +384,9 @@
         <File Id="FILE_bittorrenttranslations_be.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_bittorrent_be.qm" />
         <File Id="FILE_bittorrenttranslations_ar.qm" KeyPath="no" Source="$(var.SourcePath)\translations\leechcraft_bittorrent_ar.qm" />
       </Component>
+      <Component Id="CMP_torrentsettings" Directory="DIR_settings" Guid="{D322F2EB-F393-4F82-BCA9-84061CCB6173}" >
+        <File Id="FILE_torrentsettings.xml" KeyPath="no" Source="$(var.SourcePath)\settings\torrentsettings.xml" />
+      </Component>
       <Component Id="CMP_libtorrent" Directory="INSTALLFOLDER" Guid="{77C1D2B0-8C86-4E82-9CC2-9B317872F548}">
         <File Id="FILE_libtorrent.dll" KeyPath ="no" Source="$(var.SourcePath)\libtorrent.dll"/>
         <File Id="FILE_libboost_system.dll" KeyPath ="no" Source="$(var.SourcePath)\libboost_system-mgw48-mt-1_54.dll"/>

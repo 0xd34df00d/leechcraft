@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2013  Vladislav Tyulbashev
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,35 +27,49 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "backupmanager.h"
-#include "interfaces/blogique/iaccount.h"
-#include "core.h"
-#include "accountsselectdialog.h"
+#include "playlisttitlewidget.h"
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QToolButton>
+#include <QAction>
+#include <QLabel>
 
 namespace LeechCraft
 {
-namespace Blogique
+namespace vlc
 {
-	BackupManager::BackupManager (QObject *parent)
-	: QObject (parent)
+	PlaylistTitleWidget::PlaylistTitleWidget (ICoreProxy_ptr proxy, QWidget *parent)
+	: QWidget (parent)
 	{
+		QVBoxLayout *layout = new QVBoxLayout;
+		layout->addWidget (new QLabel (tr ("Playlist")));
+		QWidget *widget = new QWidget;
+		
+		QHBoxLayout *layout2 = new QHBoxLayout;
+		
+		ClearPlaylist_ = new QToolButton;
+		ClearAction_ = new QAction (ClearPlaylist_);
+		ClearAction_->setIcon (proxy->GetIcon ("edit-clear-list"));
+		ClearPlaylist_->setDefaultAction (ClearAction_);
+		
+		MagicSort_ = new QToolButton;
+		MagicAction_ = new QAction (MagicSort_);
+		MagicAction_->setIcon (proxy->GetIcon ("tools-wizard"));
+		MagicSort_->setDefaultAction (MagicAction_);
+		
+		AddFiles_ = new QToolButton;
+		AddAction_ = new QAction (AddFiles_);
+		AddAction_->setIcon (proxy->GetIcon ("document-open-folder"));
+		AddFiles_->setDefaultAction (AddAction_);
+		
+		layout2->addWidget (AddFiles_);
+		layout2->addWidget (MagicSort_);
+		layout2->addWidget (ClearPlaylist_);
+		layout2->addStretch (255);
+	
+		widget->setLayout (layout2);		
+		layout->addWidget (widget);
+		setLayout (layout);
 	}
-
-	void BackupManager::backup ()
-	{
-		const auto& accounts = Core::Instance ().GetAccounts ();
-		AccountsSelectDialog dlg;
-		dlg.FillAccounts (accounts);
-		if (dlg.exec () == QDialog::Rejected)
-			return;
-
-		for (auto acc : dlg.GetSelectedAccounts ())
-			acc->backup ();
-	}
-
-	void BackupManager::backup (IAccount*)
-	{
-	}
-
 }
 }

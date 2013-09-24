@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2013  Vladislav Tyulbashev
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,35 +27,33 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QWidget>
-
-class QPoint;
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	class VlcScrollBar : public QWidget
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		Q_OBJECT
-		
-		double CurrentPosition_;
-		QPoint LastMousePoint_;
-		
-	public:
-		explicit VlcScrollBar (QWidget *parent = 0);
+		LeechCraft::Util::BaseSettingsManager::Init ();
+	}
 
-	protected:
-		void paintEvent (QPaintEvent*);
-		void mousePressEvent (QMouseEvent*);
-		void mouseMoveEvent (QMouseEvent*);
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager xsm;
+		return xsm;
+	}
 
-	public slots:	
-		void setPosition (double);
-	signals:
-		void changePosition (double);
-	};
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_VLC");
+		return settings;
+	}
+
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
 }
 }

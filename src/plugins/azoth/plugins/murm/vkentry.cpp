@@ -93,6 +93,13 @@ namespace Murm
 		{
 			emit statusChanged (GetStatus (""), "");
 			emit availableVariantsChanged (Variants ());
+
+			auto msg = new VkMessage (IMessage::DIn, IMessage::MTStatusMessage, this);
+			const auto& entryName = GetEntryName ();
+			msg->SetBody (info.IsOnline_ ?
+					tr ("%1 is now on the site again").arg (entryName) :
+					tr ("%1 has left the site").arg (entryName));
+			Store (msg);
 		}
 	}
 
@@ -365,7 +372,7 @@ namespace Murm
 		return Groups_;
 	}
 
-	void VkEntry::SetGroups (const QStringList&)
+	void VkEntry::SetGroups (const QStringList& groups)
 	{
 	}
 
@@ -470,9 +477,15 @@ namespace Murm
 	{
 		QString Photo2Replacement (const PhotoInfo& info)
 		{
-			return QString ("<a href='%1' target='_blank'><img src='%2' alt='' /></a>")
+			const auto& fullSizeStr = QString::number (info.FullSize_.width ()) +
+					QString::fromUtf8 ("×") +
+					QString::number (info.FullSize_.height ());
+			return QString ("<a href='%1' target='_blank'><img src='%2' width='%3' height='%4' alt='%5' /></a>")
 					.arg (info.Full_)
-					.arg (info.Thumbnail_);
+					.arg (info.Thumbnail_)
+					.arg (info.ThumbnailSize_.width ())
+					.arg (info.ThumbnailSize_.height ())
+					.arg (fullSizeStr);
 		}
 
 		QString Audio2Replacement (const AudioInfo& info, ICoreProxy_ptr proxy)
@@ -650,10 +663,14 @@ namespace Murm
 						replacements.append ({ id, replacement });
 					}
 
-					for (const auto& pair : replacements)
+					for (auto& pair : replacements)
 					{
 						body.replace ("<div id='" + pair.first + "'></div>",
 								"<div>" + pair.second + "</div>");
+
+						pair.second.replace ('\\', "\\\\");
+						pair.second.replace ('"', "\\\"");
+
 						js += QString ("try { document.getElementById('%1').innerHTML = \"%2\"; } catch (e) {};")
 								.arg (pair.first)
 								.arg (pair.second);

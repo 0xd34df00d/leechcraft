@@ -121,12 +121,15 @@ namespace LeechCraft
 
 	int RootWindowsManager::GetPreferredWindowIndex (ITabWidget *itw) const
 	{
+		return GetPreferredWindowIndex (itw->GetTabClassInfo ().TabClass_);
+	}
+
+	int RootWindowsManager::GetPreferredWindowIndex (const QByteArray& tc) const
+	{
 		const auto& winMode = XmlSettingsManager::Instance ()->
 				property ("WindowSelectionMode").toString ();
 		if (winMode == "current")
 			return GetPreferredWindowIndex ();
-
-		const auto& thisTC = itw->GetTabClassInfo ().TabClass_;
 
 		QPair<int, int> currentMax { -1, 0 };
 		for (int i = 0; i < GetWindowsCount (); ++i)
@@ -141,7 +144,7 @@ namespace LeechCraft
 			for (int j = 0; j < widgetCount; ++j)
 			{
 				auto other = qobject_cast<ITabWidget*> (tm->GetWidget (j));
-				if (other->GetTabClassInfo ().TabClass_ == thisTC)
+				if (other->GetTabClassInfo ().TabClass_ == tc)
 					++count;
 			}
 

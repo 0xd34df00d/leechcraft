@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2013  Vladislav Tyulbashev
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,72 +29,37 @@
 
 #pragma once
 
-#include <QObject>
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <interfaces/blogique/iaccount.h>
+#include <QWidget>
+
+class QPoint;
 
 namespace LeechCraft
 {
-namespace Blogique
+namespace vlc
 {
-namespace Hestia
-{
-	class LocalBlogAccount;
-
-	class AccountStorage : public QObject
+	class VlcScrollBar : public QWidget
 	{
 		Q_OBJECT
-
-		LocalBlogAccount *Account_;
-		bool Ready_;
-
-		QSqlDatabase AccountDB_;
-
-		QSqlQuery AddEntry_;
-		QSqlQuery RemoveEntry_;
-		QSqlQuery UpdateEntry_;
-
-		QSqlQuery GetEntries_;
-		QSqlQuery GetLastEntries_;
-		QSqlQuery GetShortEntries_;
-		QSqlQuery GetFullEntry_;
-		QSqlQuery GetEntriesByDate_;
-		QSqlQuery GetEntriesCountByDate_;
-		QSqlQuery GetFilteredEntries_;
-
-		QSqlQuery AddEntryTag_;
-		QSqlQuery RemoveEntryTags_;
-		QSqlQuery GetEntryTags_;
-		QSqlQuery GetTags_;
-
+		
+		double CurrentPosition_;
+		QPoint LastMousePoint_;
+		bool blocked;
+		
 	public:
-		enum class Mode
-		{
-			ShortMode,
-			FullMode
-		};
+		explicit VlcScrollBar (QWidget *parent = 0);
 
-		explicit AccountStorage (LocalBlogAccount *acc, QObject *parent = 0);
+	protected:
+		void paintEvent (QPaintEvent*);
+		void mousePressEvent (QMouseEvent*);
+		void mouseMoveEvent (QMouseEvent*);
 
-		void Init (const QString& dbPath);
-		bool IsReady () const;
-		bool CheckDatabase (const QString& dbPath);
-
-		qint64 SaveNewEntry (const Entry& e);
-		qint64 UpdateEntry (const Entry& e, qint64 entryId);
-		void RemoveEntry(qint64 entryId);
-		QList<Entry> GetEntries (Mode mode);
-		QList<Entry> GetLastEntries (Mode mode, int count);
-		QList<Entry> GetEntriesByDate (const QDate& date);
-		QList<Entry> GetEntriesWithFilter (const Filter& filter);
-		QMap<QDate, int> GetEntriesCountByDate ();
-		Entry GetFullEntry (qint64 entryId);
-		QHash<QString, int> GetAllTags ();
-	private:
-		void CreateTables ();
-		void PrepareQueries ();
+	public slots:	
+		void setPosition (double);
+		void blockUpdating ();
+		void unBlockUpdating ();
+		
+	signals:
+		void changePosition (double);
 	};
-}
 }
 }

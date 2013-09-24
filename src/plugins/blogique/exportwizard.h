@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2013  Vladislav Tyulbashev
+ * Copyright (C) 2010-2013  Oleg Linkin  <MaledictusDeMagog@gmail.com>
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,50 +29,72 @@
 
 #pragma once
 
-#include <QObject>
-#include <QMap>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavetabs.h>
-#include <interfaces/ihaveshortcuts.h>
-#include "vlcwidget.h"
+#include <QWizard>
+#include "interfaces/blogique/iaccount.h"
+#include "ui_exportwizard.h"
+
+class QStandardItemModel;
 
 namespace LeechCraft
 {
-namespace vlc
+namespace Blogique
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveTabs
-				 , public IHaveShortcuts
+	class IAccount;
+
+	class ExportWizard : public QWizard
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IHaveShortcuts)
-	
-		ICoreProxy_ptr Proxy_;
-		Util::ShortcutManager *Manager_;
-	
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
 
-		void TabOpenRequested (const QByteArray&);
-		LeechCraft::TabClasses_t GetTabClasses () const;
-		
-		QMap<QString, ActionInfo> GetActionInfo () const;
-		void SetShortcut (const QString&, const QKeySequences_t&);
-		
-	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
+		Ui::ExportWizard Ui_;
+
+		QMap<int, IAccount*> Id2Account_;
+		QMap<IAccount*, QStringList> Account2Tags_;
+		QStandardItemModel *AllTagsModel_;
+		QStandardItemModel *SelectedTagsModel_;
+		QButtonGroup *Formats_;
+		QMap<int, QRadioButton*> Id2RadioButton_;
+
+		QList<Entry> Entries_;
+
+		enum ExportFormat
+		{
+			PlainText,
+			Html,
+			Fb2,
+			Pdf
+		};
+
+		enum Pages
+		{
+			WelcomePage,
+			FormatPage,
+			ContentPage,
+			OverviewPage,
+			ExportPage
+		} Pages_;
+
+	public:
+		explicit ExportWizard (QWidget *parent = 0);
+		bool validateCurrentPage ();
+		void reject ();
+	private:
+		void FillTags (IAccount *acc);
+
+	private slots:
+		void handleAccountChanged (int index);
+		void handleCurrentIdChanged (int id);
+		void selectExportPath ();
+		void addTag ();
+		void removeTag();
+
+		void on_AccountSelection__currentIndexChanged (int index);
+		void on_SavePath__textChanged (const QString& text);
+		void on_FromDate__dateChanged (const QDate& date);
+		void on_TillDate__dateChanged (const QDate& date);
+
+		void handleTagsUpdated (const QHash<QString, int>& tags);
+		void handleGotFilteredEntries (const QList<Entry>& entries);
+		void handleGettingFilteredEntriesFinished ();
 	};
 }
 }

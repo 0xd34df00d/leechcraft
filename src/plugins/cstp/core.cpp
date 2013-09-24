@@ -618,9 +618,10 @@ namespace CSTP
 							QDesktopServices::openUrl (QUrl::fromLocalFile (filename));
 						});
 				nah->AddFunction (tr ("Show folder"),
-						[filename] ()
+						[filename] () -> void
 						{
-							QDesktopServices::openUrl (QFileInfo (filename).absolutePath ());
+							const auto& dirPath = QFileInfo (filename).absolutePath ();
+							QDesktopServices::openUrl (QUrl::fromLocalFile (dirPath));
 						});
 			}
 

@@ -227,6 +227,9 @@ namespace LMP
 
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
 	{
+		if (e.Mime_ == "x-leechcraft/power-state-changed")
+			return EntityTestHandleResult (EntityTestHandleResult::PHigh);
+
 		QString path = e.Entity_.toString ();
 		const QUrl& url = e.Entity_.toUrl ();
 		if (path.isEmpty () &&
@@ -248,6 +251,21 @@ namespace LMP
 
 	void Plugin::Handle (Entity e)
 	{
+		auto player = PlayerTab_->GetPlayer ();
+
+		if (e.Mime_ == "x-leechcraft/power-state-changed")
+		{
+			if (e.Entity_ == "Sleeping")
+			{
+				player->SavePlayState (true);
+				player->setPause ();
+			}
+			else if (e.Entity_ == "WokeUp")
+				player->RestorePlayState ();
+
+			return;
+		}
+
 		QString path = e.Entity_.toString ();
 		const QUrl& url = e.Entity_.toUrl ();
 		if (path.isEmpty () &&
@@ -271,7 +289,6 @@ namespace LMP
 		if (!(e.Parameters_ & FromUserInitiated))
 			return;
 
-		auto player = PlayerTab_->GetPlayer ();
 		player->Enqueue ({ AudioSource (url) }, false);
 
 		if (e.Additional_ ["Action"] == "AudioEnqueuePlay")

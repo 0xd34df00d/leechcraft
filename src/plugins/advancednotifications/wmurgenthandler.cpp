@@ -53,8 +53,11 @@ namespace AdvancedNotifications
 		if (e.Additional_ ["org.LC.AdvNotifications.EventCategory"].toString () == "org.LC.AdvNotifications.Cancel")
 			return;
 
+		bool ok = false;
+		const auto winIdx = e.Additional_ ["org.LC.AdvNotifications.WindowIndex"].toInt (&ok);
+
 		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
-		auto win = rootWM->GetPreferredWindow ();
+		auto win = rootWM->GetMainWindow (ok ? winIdx : rootWM->GetPreferredWindowIndex ());
 
 		if (!win->isActiveWindow ())
 			QApplication::alert (win);

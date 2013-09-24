@@ -93,6 +93,22 @@ public:
 	 */
 	virtual int GetPreferredWindowIndex () const = 0;
 
+	/** @brief Returns the preferred window for the given \em tabclass.
+	 *
+	 * This function returns the window that would be used to host a new
+	 * tab of the given \em tabclass if the tab is opened right after
+	 * this call.
+	 *
+	 * Please note that preferred windows algorithm can be dynamic, so
+	 * the result of this function may become irrelevant after a few
+	 * other tabs are opened, closed or moved.
+	 *
+	 * @param[in] tabclass The tab class to check.
+	 * @return The window that would host the tablcass if it's opened
+	 * right now.
+	 */
+	virtual int GetPreferredWindowIndex (const QByteArray& tabclass) const = 0;
+
 	/** @brief Returns the currently preferred window.
 	 *
 	 * It is a helper function returning the window with the index of

@@ -51,6 +51,11 @@ namespace Zheet
 				SLOT (handleSuggestion (MSN::fileTransferInvite)));
 	}
 
+	bool TransferManager::IsAvailable () const
+	{
+		return true;
+	}
+
 	QObject* TransferManager::SendFile (const QString& id,
 			const QString&, const QString& name, const QString& comment)
 	{

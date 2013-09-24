@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2013  Vladislav Tyulbashev
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,23 +30,59 @@
 #pragma once
 
 #include <QObject>
+#include <QMap>
+#include <interfaces/iinfo.h>
+#include <interfaces/ihavetabs.h>
+#include <interfaces/ihaveshortcuts.h>
+#include <interfaces/ihavesettings.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "vlcwidget.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
-namespace Blogique
+namespace vlc
 {
-	class IAccount;
-
-	class BackupManager : public QObject
+	class Plugin : public QObject
+				 , public IInfo
+				 , public IHaveTabs
+				 , public IHaveShortcuts
+				 , public IHaveSettings
 	{
 		Q_OBJECT
-
+		Q_INTERFACES (IInfo IHaveTabs IHaveShortcuts IHaveSettings)
+	
+		ICoreProxy_ptr Proxy_;
+		Util::ShortcutManager *Manager_;
+		QVector<VlcWidget*> Tabs_;
+		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+	
 	public:
-		BackupManager (QObject *parent = 0);
-
-	public slots:
-		void backup ();
-		void backup (IAccount *acc);
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		
+		void TabOpenRequested (const QByteArray&);
+		LeechCraft::TabClasses_t GetTabClasses () const;
+		
+		QMap<QString, ActionInfo> GetActionInfo () const;
+		void SetShortcut (const QString&, const QKeySequences_t&);
+		
+	signals:
+		void addNewTab (const QString&, QWidget*);
+		void removeTab (QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void statusBarChanged (QWidget*, const QString&);
+		void raiseTab (QWidget*);
+		
+	private slots:
+		void deleteDeleted (QWidget*);
 	};
 }
 }

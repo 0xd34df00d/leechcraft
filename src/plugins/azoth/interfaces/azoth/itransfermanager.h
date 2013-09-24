@@ -193,6 +193,21 @@ namespace Azoth
 	public:
 		virtual ~ITransferManager () {}
 
+		/** @brief Returns whether transfer manager is available.
+		 *
+		 * This method returns whether file transfers are available via
+		 * the corresponding IAccount.
+		 *
+		 * For example, an XMPP implementation may have in-band
+		 * transfers prohibited and no SOCKS server to perform the
+		 * transfers out of band. In this case this method should return
+		 * false, though technically XMPP supports file transfers.
+		 *
+		 * @return Whether files can be sent right now through this
+		 * transfer manager.
+		 */
+		virtual bool IsAvailable () const = 0;
+
 		/** @brief Requests a file transfer with the remote party.
 		 *
 		 * The entry is identified by the ID, which is the result of

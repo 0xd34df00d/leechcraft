@@ -29,94 +29,66 @@
 
 #pragma once
 
-#include <memory>
-#include <QObject>
+#include <QWidget>
 #include <QUrl>
-#include <QStringList>
-#include <vlc/vlc.h>
+#include <QTreeView>
 
-class QWidget;
-class QTime;
-
-struct libvlc_instance_t;
 struct libvlc_media_player_t;
+struct libvlc_media_list_player_t;
+struct libvlc_instance_t;
+struct libvlc_media_list_t;
 struct libvlc_media_t;
-struct libvlc_track_description_t;
+
+class QAction;
+class QStandardItem;
+class QStringList;
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	class VlcPlayer : public QObject
+	class PlaylistModel;
+	
+	class PlaylistWidget : public QTreeView
 	{
 		Q_OBJECT
-
-		std::shared_ptr<libvlc_instance_t> VlcInstance_;
-		std::shared_ptr<libvlc_media_player_t> Mp_;
-		std::shared_ptr<libvlc_media_t> M_;
 		
-		QWidget *Parent_;
-		bool DVD_;
+		libvlc_media_list_player_t *Player_;
+		libvlc_media_list_t *Playlist_;
+		libvlc_media_player_t *NativePlayer_;
+		libvlc_instance_t *Instance_;
 		
-		QUrl LastMedia_;
-		QStringList Subtitles_;
-		
-		libvlc_time_t FreezeCur_;
-		int FreezeAudio_;
-		int FreezeSubtitle_;
-		bool FreezePlayingMedia_;
-		bool FreezeIsPlaying_;
-		bool FreezeDVD_;
-		
+		QStandardItem *LastPlayingItem_;
+		PlaylistModel *Model_;
+		const QIcon PlayIcon_;
+	
 	public:
-		explicit VlcPlayer (QWidget *parent = 0);
+		explicit PlaylistWidget (QIcon playIcon, QWidget *parent = 0);
+		~PlaylistWidget ();
 		
-		void AddSubtitles (const QString&);
-		bool NowPlaying () const;
-		double GetPosition () const;
-		QWidget* GetParent () const;
+		void SetCurrentMedia (int);
+		void AddUrl (const QUrl&, bool start);
+		bool IsPlaying () const;
+		void Init (libvlc_instance_t *instance, libvlc_media_player_t *player);
+		void DeleteRequested (int index);
 		
-		int GetAudioTracksNumber () const;
-		int GetCurrentAudioTrack () const;
-		QString GetAudioTrackDescription (int) const;
-		int GetAudioTrackId (int) const;
-		
-		int GetSubtitlesNumber () const;
-		int GetCurrentSubtitle () const;
-		QString GetSubtitleDescription (int) const;
-		int GetSubtitleId (int) const;
-		
-		void DVDNavigate (unsigned);
-		
-		std::shared_ptr<libvlc_media_player_t> GetPlayer () const;
-		
-		QTime GetCurrentTime () const;
-		QTime GetFullTime () const;
-		
-	private:
-		libvlc_track_description_t* GetTrack (libvlc_track_description_t *t, int track) const;
-		void WaitForPlaying () const;
-		void WaitForDVDPlaying () const;
-		void ReloadSubtitles ();
-		
-		void Freeze ();
-		void UnFreeze ();		
+	protected:
+		void mouseDoubleClickEvent (QMouseEvent*);
+		void resizeEvent (QResizeEvent*);
 		
 	public slots:
-		void stop ();
-		void togglePlay ();
-		void addUrl (const QUrl&);
-		void setUrl (const QUrl&);
-		void changePosition (double);
-		void switchWidget (QWidget*);
-		void setAudioTrack (int);
-		void setSubtitle (int);
+		void clearPlaylist ();
+		void next ();
+		void prev ();
 		
-		void dvdNavigateLeft ();
-		void dvdNavigateRight ();
-		void dvdNavigateUp ();
-		void dvdNavigateDown ();
-		void dvdNavigateEnter ();
+	private slots:
+		void togglePlay ();
+		void updateInterface ();
+		void createMenu (QPoint);
+		void deleteRequested (QAction*);
+		
+	signals:
+		void savePlaylist (QStringList);
 	};
 }
 }

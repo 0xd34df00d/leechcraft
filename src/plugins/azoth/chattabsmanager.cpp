@@ -166,6 +166,11 @@ namespace Azoth
 		return LastCurrentTab_;
 	}
 
+	ChatTab* ChatTabsManager::GetChatTab (const QString& entryId) const
+	{
+		return Entry2Tab_ [entryId];
+	}
+
 	void ChatTabsManager::UpdateEntryMapping (const QString& id, QObject *obj)
 	{
 		if (!Entry2Tab_.contains (id))

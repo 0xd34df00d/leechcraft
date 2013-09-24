@@ -32,9 +32,11 @@
 #include <QWidget>
 #include <QMap>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/core/icoreproxy.h>
 #include "vlcscrollbar.h"
 #include "soundwidget.h"
 #include "signalledwidget.h"
+#include "playlistwidget.h"
 
 class QToolBar;
 class QMenu;
@@ -42,6 +44,9 @@ class QLabel;
 class QTimer;
 class QToolButton;
 class QResizeEvent;
+class QSettings;
+class QDockWidget;
+class QStringList;
 
 namespace LeechCraft
 {
@@ -53,21 +58,36 @@ namespace Util
 namespace vlc
 {
 	class VlcPlayer;
+	class PlaylistTitleWidget;
 	class VlcWidget : public QWidget
 					, public ITabWidget
 	{
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
 		
+		ICoreProxy_ptr Proxy_;
 		QObject *const Parent_;
 		VlcPlayer *VlcPlayer_;
+		PlaylistWidget *PlaylistWidget_;
+		PlaylistTitleWidget *TitleWidget_;
 		QToolBar *Bar_;
 		QAction *Open_;
 		QToolButton *OpenButton_;
+		QToolButton *NextButton_;
+		QToolButton *PrevButton_;
 		QAction *TogglePlay_;
 		QAction *Stop_;
 		QAction *FullScreenAction_;
+		QAction *IncreaseVolumeAction_;
+		QAction *DecreaseVolumeAction_;
+		QAction *Plus3Percent_;
+		QAction *Minus3Percent_;
+		QAction *Plus10Seconds_;
+		QAction *Minus10Seconds_;
+		QAction *Next_;
+		QAction *Prev_;
 		QPoint LastMouseEvent_;
+		QDockWidget *PlaylistDock_;
 		Util::ShortcutManager * const Manager_;
 		
 		QAction *NavigateLeft_;
@@ -99,9 +119,14 @@ namespace vlc
 		SoundWidget *SoundWidget_;
 		SoundWidget *FullScreenSoundWidget_;
 		QMenu *ContextMenu_;
+		QSettings *Settings_;
+		
+		bool Autostart_;
+		
+		QTimer *DisableScreenSaver_;
 		
 	public:
-		explicit VlcWidget (Util::ShortcutManager *manager, QWidget *parent = 0);
+		explicit VlcWidget (ICoreProxy_ptr proxy, Util::ShortcutManager *manager, QWidget *parent = 0);
 		~VlcWidget();
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
@@ -118,10 +143,21 @@ namespace vlc
 		void PrepareFullScreen ();
 		void ForbidFullScreen ();
 		void ConnectWidgetToMe (SignalledWidget*);
+		
 		void InitNavigations ();
+		void InitVolumeActions ();
+		void InitRewindActions ();
+		
+		void SaveSettings ();
+		void RestoreSettings ();
+		void RestorePlaylist ();
+		
+	public slots:
+		void autostartChanged ();
 		
 	private slots:
-		void addFile ();
+		void addFiles ();
+		void addFilesWithoutClearingPlaylist ();
 		void addFolder ();
 		void addUrl ();
 		void addDVD ();
@@ -149,6 +185,10 @@ namespace vlc
 		
 		void AllowPanel ();
 		void ForbidPanel ();
+		
+		void disableScreenSaver ();
+		
+		void savePlaylist (const QStringList&);
 		
 	signals:
 		void deleteMe (QWidget*);

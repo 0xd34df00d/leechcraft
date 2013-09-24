@@ -58,6 +58,8 @@ namespace vlc
 		void paintEvent (QPaintEvent*);
 		void resizeEvent (QResizeEvent*);
 		void showEvent (QShowEvent*);
+		void dragEnterEvent (QDragEnterEvent*);
+		void dropEvent (QDropEvent*);
 		
 	signals:
 		void mousePress (QMouseEvent*);
@@ -67,6 +69,8 @@ namespace vlc
 		void keyPress (QKeyEvent*);
 		void resized (QResizeEvent*);
 		void shown (QShowEvent*);
+		void dragEntered (QDragEnterEvent*);
+		void dropped (QDropEvent*);
 	};
 }
 }
