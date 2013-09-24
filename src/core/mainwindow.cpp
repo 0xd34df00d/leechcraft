@@ -138,6 +138,7 @@ void LeechCraft::MainWindow::Init ()
 			SIGNAL (activated ()),
 			this,
 			SLOT (handleShortcutFullscreenMode ()));
+	sm->RegisterShortcut ("FullScreen", {}, FullScreenShortcut_);
 
 	CloseTabShortcut_ = new QShortcut (QString ("Ctrl+W"),
 			this,

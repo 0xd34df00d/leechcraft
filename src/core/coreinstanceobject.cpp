@@ -160,6 +160,12 @@ namespace LeechCraft
 					sysModifier + Qt::Key_Space,
 					QIcon ()
 				});
+		CoreShortcutManager_->RegisterActionInfo ("FullScreen",
+				{
+					tr ("Toggle fullscreen"),
+					QString ("F11"),
+					CoreProxy ().GetIcon ("view-fullscreen")
+				});
 		CoreShortcutManager_->RegisterActionInfo ("CloseTab",
 				{
 					tr ("Close tab"),
