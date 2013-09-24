@@ -41,6 +41,7 @@
 #include "chattabsmanager.h"
 #include "transferjobmanager.h"
 #include "pendinguploadpaster.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -87,7 +88,10 @@ namespace Azoth
 		}
 
 		if (suggested.isEmpty ())
-			on_FileBrowse__released ();
+		{
+			if (XmlSettingsManager::Instance ().property ("AutoOpenFileDialogOnSend").toBool ())
+				on_FileBrowse__released ();
+		}
 		else
 			Ui_.FileEdit_->setText (suggested);
 	}
