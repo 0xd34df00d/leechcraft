@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.8)
-project (leechcraft_vlc)
+project (leechcraft_vtyulc)
 include (InitLCPlugin OPTIONAL)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
@@ -29,17 +29,17 @@ set (SRCS
 #CreateTrs("vlc" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("vlc" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
-add_library (leechcraft_vlc SHARED
+add_library (leechcraft_vtyulc SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${UIS_H}
 	)
 	
-target_link_libraries (leechcraft_vlc
+target_link_libraries (leechcraft_vtyulc
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${VLC_LIBRARIES}
 	)
 	
-install (TARGETS leechcraft_vlc DESTINATION ${LC_PLUGINS_DEST})
-install (FILES vlcsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (TARGETS leechcraft_vtyulc DESTINATION ${LC_PLUGINS_DEST})
+install (FILES vtyulcsettings.xml DESTINATION ${LC_SETTINGS_DEST})
