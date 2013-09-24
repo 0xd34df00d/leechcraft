@@ -171,6 +171,7 @@ namespace vlc
 		void generateContextMenu (QPoint);
 		void setAudioTrack (QAction*);
 		void setSubtitles (QAction*);
+		void setAspectRatio (QAction*);
 		
 		void keyPressEvent (QKeyEvent*);
 		void mousePressEvent (QMouseEvent*);

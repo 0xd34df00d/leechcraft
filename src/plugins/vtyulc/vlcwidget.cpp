@@ -76,6 +76,7 @@ namespace
 	
 	const QStringList Known_Audio_File_Formats = { ".ac3", ".mp3", ".ogg", ".flac", ".aac" };
 	const QStringList Known_Subtitles_File_Formats = { ".srt", ".smi", ".ssa", ".ass" };
+	const QStringList Known_Aspect_Ratios = { "16:9", "16:10", "4:3", "1:1" };
 }
 
 namespace LeechCraft
@@ -588,6 +589,7 @@ namespace vlc
 		
 		QMenu *subtitles = new QMenu (tr ("subtitles"), ContextMenu_);
 		QMenu *tracks = new QMenu (tr ("tracks"), ContextMenu_);
+		QMenu *aspectRatio = new QMenu (tr ("Aspect ration"), ContextMenu_);
 		
 		for (int i = 0; i < VlcPlayer_->GetAudioTracksNumber (); i++)
 		{
@@ -620,8 +622,25 @@ namespace vlc
 		tracks->addSeparator ();
 		tracks->addAction (tr ("Add external sound track"));
 		
+		for (int i = 0; i < Known_Aspect_Ratios.size (); i++) 
+		{
+			QAction *action = new QAction (aspectRatio);
+			action->setText (Known_Aspect_Ratios [i]);
+			if (VlcPlayer_->GetAspectRatio () == Known_Aspect_Ratios [i])
+			{
+				action->setCheckable (true);
+				action->setChecked (true);
+			}
+			
+			aspectRatio->addAction (action);
+		}
+		aspectRatio->addSeparator ();
+		aspectRatio->addAction (tr ("Default"));
+		
 		ContextMenu_->addMenu (subtitles);
 		ContextMenu_->addMenu (tracks);
+		ContextMenu_->addSeparator ();
+		ContextMenu_->addMenu (aspectRatio);
 		
 		connect (tracks,
 				SIGNAL (triggered (QAction*)),
@@ -632,8 +651,21 @@ namespace vlc
 				SIGNAL (triggered (QAction*)),
 				this,
 				SLOT (setSubtitles (QAction*)));
+		
+		connect (aspectRatio,
+				SIGNAL (triggered (QAction*)),
+				this,
+				SLOT (setAspectRatio (QAction*)));
 				
 		ContextMenu_->exec (QCursor::pos ());
+	}
+	
+	void VlcWidget::setAspectRatio (QAction *action)
+	{
+		if (action->text () == tr ("Default"))
+			VlcPlayer_->setAspectRatio (nullptr);
+		else
+			VlcPlayer_->setAspectRatio (action->text ().toUtf8 ().constData ());
 	}
 	
 	void VlcWidget::setSubtitles(QAction *action)
