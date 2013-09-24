@@ -158,7 +158,7 @@ namespace LeechCraft
 				{
 					tr ("Switch to previously active tab"),
 					sysModifier + Qt::Key_Space,
-					QIcon ()
+					CoreProxy ().GetIcon ("edit-undo")
 				});
 		CoreShortcutManager_->RegisterActionInfo ("FullScreen",
 				{
