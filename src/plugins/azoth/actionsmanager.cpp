@@ -743,7 +743,7 @@ namespace Azoth
 				{
 					const auto srcAct = id2action.value (permClass);
 					const auto& actorVar = srcAct->property ("Azoth/EntryActor");
-					permPairs [permClass] = actorVar.value<EntryActor_f> ();
+					permPairs.push_back ({ permClass, actorVar.value<EntryActor_f> () });
 				}
 
 				setter (permPairs);
