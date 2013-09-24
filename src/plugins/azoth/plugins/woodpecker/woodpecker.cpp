@@ -49,7 +49,7 @@ namespace Woodpecker
 		
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-											"woodpeckersettings.xml");
+											"azothwoodpeckersettings.xml");
 		
 		Core::Instance ().SetProxy (proxy);
 		

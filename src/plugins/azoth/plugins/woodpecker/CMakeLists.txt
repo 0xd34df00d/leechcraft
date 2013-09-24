@@ -44,7 +44,7 @@ set (FORMS
 	twitterpage.ui
 	)
 # CreateTrs ("woodpecker" "en;ru_RU" COMPILED_TRANSLATIONS)
-# CreateTrsUpTarget("woodpecker" "en;ru_RU" "${SRCS}" "${FORMS}" "woodpeckersettings.xml")
+# CreateTrsUpTarget("woodpecker" "en;ru_RU" "${SRCS}" "${FORMS}" "azothwoodpeckersettings.xml")
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
@@ -63,4 +63,4 @@ target_link_libraries (leechcraft_azoth_woodpecker
 
 install (TARGETS leechcraft_azoth_woodpecker DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
-install (FILES woodpeckersettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (FILES azothwoodpeckersettings.xml DESTINATION ${LC_SETTINGS_DEST})
