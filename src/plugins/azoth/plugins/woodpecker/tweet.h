@@ -39,6 +39,8 @@
 
 namespace LeechCraft
 {
+namespace Azoth
+{
 namespace Woodpecker
 {
 	class Tweet : public QObject
@@ -94,7 +96,8 @@ namespace Woodpecker
 	typedef std::shared_ptr<Tweet> Tweet_ptr;
 }
 }
+}
 
-Q_DECLARE_METATYPE (LeechCraft::Woodpecker::Tweet);
-Q_DECLARE_METATYPE (LeechCraft::Woodpecker::Tweet_ptr);
+Q_DECLARE_METATYPE (LeechCraft::Azoth::Woodpecker::Tweet);
+Q_DECLARE_METATYPE (LeechCraft::Azoth::Woodpecker::Tweet_ptr);
 

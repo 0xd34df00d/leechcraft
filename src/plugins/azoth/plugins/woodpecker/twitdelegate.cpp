@@ -47,6 +47,8 @@
 
 namespace LeechCraft
 {
+namespace Azoth
+{
 namespace Woodpecker
 {
 	const int ImageSpace = 50;
@@ -265,5 +267,6 @@ namespace Woodpecker
 			Util::ShowPixmapLabel(image, position);
 		}
 	}
+}
 }
 }

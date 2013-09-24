@@ -27,34 +27,29 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "xmlsettingsmanager.h"
-#include <QCoreApplication>
+#pragma once
+
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
+namespace Azoth
+{
 namespace Woodpecker
 {
-	XmlSettingsManager::XmlSettingsManager ()
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
-		Util::BaseSettingsManager::Init ();
-	}
-
-	XmlSettingsManager* XmlSettingsManager::Instance ()
-	{
-		static XmlSettingsManager manager;
-		return &manager;
-	}
-
-	QSettings* XmlSettingsManager::BeginSettings () const
-	{
-		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Woodpecker");
-		return settings;
-	}
-
-	void XmlSettingsManager::EndSettings (QSettings*) const
-	{
-	}
+		Q_OBJECT
+		
+		XmlSettingsManager ();
+		
+	public:
+		static XmlSettingsManager* Instance ();
+		
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
+	};
 };
 };
-
+};

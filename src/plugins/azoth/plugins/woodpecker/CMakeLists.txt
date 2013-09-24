@@ -5,11 +5,11 @@ endif ()
 
 option (ENABLE_AZOTH_WOODPECKER_VERBOSE_LOG "Debug protocol messages & similar stuff with increased verbosity" OFF)
 
-if (ENABLE_WOODPECKER_VERBOSE_LOG)
+if (ENABLE_AZOTH_WOODPECKER_VERBOSE_LOG)
 	add_definitions (-DWP_DEBUG)
 endif ()
 
-project (leechcraft_woodpecker)
+project (leechcraft_azoth_woodpecker)
 include (InitLCPlugin OPTIONAL)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
@@ -27,7 +27,7 @@ include_directories (
 	${QJSON_INCLUDE_DIR}
 	${QTKOAUTH_INCLUDE_DIR}
 	)
-set (SRCS
+set (WOODPECKER_SRCS
 	core.cpp
 	tweet.cpp
 	twitdelegate.cpp
@@ -37,30 +37,30 @@ set (SRCS
 	woodpecker.cpp
 	xmlsettingsmanager.cpp
 	)
-set (RESOURCES
+set (WOODPECKER_RESOURCES
 	woodpeckerresources.qrc
 	)
-set (FORMS
+set (WOODPECKER_FORMS
 	twitterpage.ui
 	)
-# CreateTrs ("woodpecker" "en;ru_RU" COMPILED_TRANSLATIONS)
-# CreateTrsUpTarget("woodpecker" "en;ru_RU" "${SRCS}" "${FORMS}" "woodpeckersettings.xml")
-QT4_WRAP_UI (UIS_H ${FORMS})
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+#CreateTrs ("woodpecker" "en;ru_RU" WOODPECKER_COMPILED_TRANSLATIONS)
+#CreateTrsUpTarget("woodpecker" "en;ru_RU" "${SRCS}" "${FORMS}" "azothwoodpeckersettings.xml")
+QT4_WRAP_UI (WOODPECKER_UIS_H ${WOODPECKER_FORMS})
+QT4_ADD_RESOURCES (WOODPECKER_RCCS ${WOODPECKER_RESOURCES})
 
-add_library (leechcraft_woodpecker SHARED
-	${COMPILED_TRANSLATIONS}
-	${SRCS}
-	${UIS_H}
-	${RCCS}
+add_library (leechcraft_azoth_woodpecker SHARED
+	${WOODPECKER_COMPILED_TRANSLATIONS}
+	${WOODPECKER_SRCS}
+	${WOODPECKER_UIS_H}
+	${WOODPECKER_RCCS}
 	)
-target_link_libraries (leechcraft_woodpecker
+target_link_libraries (leechcraft_azoth_woodpecker
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${QJSON_LIBRARIES}
 	${QTKOAUTH_LIBRARIES}
 	)
 
-install (TARGETS leechcraft_woodpecker DESTINATION ${LC_PLUGINS_DEST})
+install (TARGETS leechcraft_azoth_woodpecker DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
-install (FILES woodpeckersettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (FILES azothwoodpeckersettings.xml DESTINATION ${LC_SETTINGS_DEST})

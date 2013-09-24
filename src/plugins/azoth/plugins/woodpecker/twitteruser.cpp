@@ -27,31 +27,56 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
+
+#include "twitteruser.h"
 #include "core.h"
-#include "twitterpage.h"
 
 namespace LeechCraft
 {
+namespace Azoth
+{
 namespace Woodpecker
 {
-	Core::Core ()
+	TwitterUser::TwitterUser (QObject *parent)
+	: QObject (parent)
 	{
+		Http_ = Core::Instance ().GetCoreProxy ()->GetNetworkAccessManager ();
 	}
 
-	Core& Core::Instance ()
+	TwitterUser::TwitterUser (const QString& username, QObject *parent)
+	: QObject (parent)
 	{
-		static Core c;
-		return c;
+		this->Username_ = username;
 	}
 
-	void Core::SetProxy (ICoreProxy_ptr proxy)
+	void TwitterUser::avatarDownloaded ()
 	{
-		Proxy_ = proxy;
+		QByteArray data = qobject_cast<QNetworkReply*> (sender ())->readAll ();
+		sender ()->deleteLater ();
+		
+		Avatar.loadFromData (data);
+		emit userReady ();
 	}
 
-	ICoreProxy_ptr Core::GetCoreProxy () const
+	void TwitterUser::DownloadAvatar (const QString& path)
 	{
-		return Proxy_;
+		auto reply = Http_->get (QNetworkRequest (QUrl (path)));
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (avatarDownloaded ()));
 	}
-};
-};
+
+	void TwitterUser::SetUsername (const QString& username)
+	{
+		Username_ = username;
+	}
+	
+	QString TwitterUser::GetUsername () const
+	{
+		return Username_;
+	}
+}
+}
+}
+
