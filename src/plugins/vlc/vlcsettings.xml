@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<settings>
-	<page>
-		<label lang="en" value="Local settings" />
-		<item type="checkbox" property="Autostart" default="true">
-			<label lang="en" value="Auto start when adding files" />
-		</item>
-	</page>
-</settings>
