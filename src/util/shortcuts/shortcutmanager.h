@@ -172,7 +172,7 @@ namespace Util
 		 * @param[in] id The ID of the action to update.
 		 * @param[in] sequences The list of sequences to for the action.
 		 */
-		void SetShortcut (const QString& id, const QKeySequences_t& sequences) const;
+		void SetShortcut (const QString& id, const QKeySequences_t& sequences);
 
 		/** @brief Returns the map with information about actions.
 		 *

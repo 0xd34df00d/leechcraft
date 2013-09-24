@@ -88,7 +88,7 @@ namespace Util
 			ActionInfo_ [id] = info;
 	}
 
-	void ShortcutManager::SetShortcut (const QString& id, const QKeySequences_t& seqs) const
+	void ShortcutManager::SetShortcut (const QString& id, const QKeySequences_t& seqs)
 	{
 		for (auto act : Actions_ [id])
 			act->setShortcuts (seqs);
