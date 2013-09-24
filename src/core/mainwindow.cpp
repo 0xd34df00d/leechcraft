@@ -146,6 +146,7 @@ void LeechCraft::MainWindow::Init ()
 			0);
 	sm->RegisterShortcut ("CloseTab", {}, CloseTabShortcut_);
 
+	sm->RegisterAction ("Settings", Ui_.ActionSettings_);
 	sm->RegisterAction ("Quit", Ui_.ActionQuit_);
 }
 
