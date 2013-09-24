@@ -27,35 +27,37 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <memory>
-#include <QPainter>
-#include <QStyledItemDelegate>
-#include <QRect>
-#include <interfaces/structures.h>
-#include "woodpecker.h"
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
+namespace Azoth
+{
 namespace Woodpecker
 {
-	class TwitDelegate : public QStyledItemDelegate
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-	Q_OBJECT
-	
-		Plugin *const ParentPlugin_;
-		
-	public:
-		TwitDelegate (QObject *parent = 0, Plugin *plugin = 0);
-		
-		void paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
-		QSize sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const;
-		bool editorEvent (QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem& option, const QModelIndex& index);
-		
-	private slots:
-		void showImage ();
-	};
-}
+		Util::BaseSettingsManager::Init ();
+	}
+
+	XmlSettingsManager* XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager manager;
+		return &manager;
+	}
+
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Woodpecker");
+		return settings;
+	}
+
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
+};
+};
 }
 

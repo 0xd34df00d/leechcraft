@@ -39,6 +39,8 @@
 
 namespace LeechCraft
 {
+namespace Azoth
+{
 namespace Woodpecker
 {
 	TwitterInterface::TwitterInterface (QObject *parent)
@@ -420,6 +422,7 @@ namespace Woodpecker
 		param.insert ("id", QString::number (id));
 		SignedRequest (TwitterRequest::DeleteFavorite, KQOAuthRequest::POST, param);
 	}
+}
 }
 }
 

@@ -40,6 +40,8 @@
 
 namespace LeechCraft
 {
+namespace Azoth
+{
 namespace Woodpecker
 {
 	enum class TwitterRequest
@@ -118,6 +120,7 @@ namespace Woodpecker
 	public slots:
 		void request (const KQOAuthParameters& param, const FeedMode mode);
 	};
+}
 }
 }
 

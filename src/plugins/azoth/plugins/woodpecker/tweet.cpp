@@ -31,6 +31,8 @@
 
 namespace LeechCraft
 {
+namespace Azoth
+{
 namespace Woodpecker
 {
 	Tweet::Tweet (QObject *parent)
@@ -204,5 +206,6 @@ namespace Woodpecker
 	{
 		Id_ = id;
 	}
+}
 }
 }

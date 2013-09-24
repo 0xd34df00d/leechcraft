@@ -27,53 +27,38 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
+#pragma once
 
-#include "twitteruser.h"
-#include "core.h"
+#include <memory>
+#include <QPainter>
+#include <QStyledItemDelegate>
+#include <QRect>
+#include <interfaces/structures.h>
+#include "woodpecker.h"
 
 namespace LeechCraft
 {
+namespace Azoth
+{
 namespace Woodpecker
 {
-	TwitterUser::TwitterUser (QObject *parent)
-	: QObject (parent)
+	class TwitDelegate : public QStyledItemDelegate
 	{
-		Http_ = Core::Instance ().GetCoreProxy ()->GetNetworkAccessManager ();
-	}
-
-	TwitterUser::TwitterUser (const QString& username, QObject *parent)
-	: QObject (parent)
-	{
-		this->Username_ = username;
-	}
-
-	void TwitterUser::avatarDownloaded ()
-	{
-		QByteArray data = qobject_cast<QNetworkReply*> (sender ())->readAll ();
-		sender ()->deleteLater ();
-		
-		Avatar.loadFromData (data);
-		emit userReady ();
-	}
-
-	void TwitterUser::DownloadAvatar (const QString& path)
-	{
-		auto reply = Http_->get (QNetworkRequest (QUrl (path)));
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (avatarDownloaded ()));
-	}
-
-	void TwitterUser::SetUsername (const QString& username)
-	{
-		Username_ = username;
-	}
+	Q_OBJECT
 	
-	QString TwitterUser::GetUsername () const
-	{
-		return Username_;
-	}
+		Plugin *const ParentPlugin_;
+		
+	public:
+		TwitDelegate (QObject *parent = 0, Plugin *plugin = 0);
+		
+		void paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
+		QSize sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const;
+		bool editorEvent (QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem& option, const QModelIndex& index);
+		
+	private slots:
+		void showImage ();
+	};
+}
 }
 }
 

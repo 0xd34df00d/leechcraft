@@ -39,6 +39,8 @@
 
 namespace LeechCraft
 {
+namespace Azoth
+{
 namespace Woodpecker
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
@@ -148,6 +150,13 @@ namespace Woodpecker
 		return result;
 	}
 
+	QSet<QByteArray> Plugin::GetPluginClasses () const
+	{
+		QSet<QByteArray> classes;
+		classes << "org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin";
+		return classes;
+	}
+
 	void Plugin::TabOpenRequested (const QByteArray& tc)
 	{
 		const auto pos = std::find_if (TabClasses_.begin (), TabClasses_.end (),
@@ -252,5 +261,6 @@ namespace Woodpecker
 	}
 }
 }
+}
 
-LC_EXPORT_PLUGIN (leechcraft_woodpecker, LeechCraft::Woodpecker::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_woodpecker, LeechCraft::Azoth::Woodpecker::Plugin);

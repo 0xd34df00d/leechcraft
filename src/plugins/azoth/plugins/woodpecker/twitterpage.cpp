@@ -44,6 +44,8 @@ Q_DECLARE_METATYPE (QObject**);
 
 namespace LeechCraft
 {
+namespace Azoth
+{
 namespace Woodpecker
 {
 	TwitterPage::TwitterPage (const TabClassInfo& tc, Plugin *plugin, 
@@ -617,6 +619,7 @@ namespace Woodpecker
 							   tr ("Favorite twits"),
 							   FeedMode::Favorites);	
 	}
+}
 }
 }
 
