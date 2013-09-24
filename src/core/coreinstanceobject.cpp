@@ -140,7 +140,11 @@ namespace LeechCraft
 		const auto sysModifier = Qt::ALT;
 #endif
 		CoreShortcutManager_->RegisterActionInfo ("SwitchToPrevTab",
-				{ tr ("Switch to previously active tab"), sysModifier + Qt::Key_Space, QIcon () });
+				{
+					tr ("Switch to previously active tab"),
+					sysModifier + Qt::Key_Space,
+					QIcon ()
+				});
 
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"coresettings.xml");
