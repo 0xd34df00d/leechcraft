@@ -146,6 +146,13 @@ namespace LeechCraft
 					QIcon ()
 				});
 
+		CoreShortcutManager_->RegisterActionInfo ("CloseTab",
+				{
+					tr ("Close tab"),
+					QString ("Ctrl+W"),
+					CoreProxy ().GetIcon ("close-tab")
+				});
+
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"coresettings.xml");
 		connect (XmlSettingsDialog_.get (),

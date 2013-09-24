@@ -130,6 +130,8 @@ void LeechCraft::MainWindow::Init ()
 			this,
 			SLOT (doDelayedInit ()));
 
+	auto sm = Core::Instance ().GetCoreInstanceObject ()->GetCoreShortcutManager ();
+
 	FullScreenShortcut_ = new QShortcut (QKeySequence (tr ("F11", "FullScreen")), this);
 	FullScreenShortcut_->setContext (Qt::WidgetWithChildrenShortcut);
 	connect (FullScreenShortcut_,
@@ -141,6 +143,7 @@ void LeechCraft::MainWindow::Init ()
 			this,
 			SLOT (handleCloseCurrentTab ()),
 			0);
+	sm->RegisterShortcut ("CloseTab", {}, CloseTabShortcut_);
 }
 
 void LeechCraft::MainWindow::handleShortcutFullscreenMode ()
