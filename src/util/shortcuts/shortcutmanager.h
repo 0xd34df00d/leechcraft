@@ -41,6 +41,8 @@ class IShortcutProxy;
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace Util
 {
 	/** @brief Aids in providing configurable shortcuts.
@@ -73,6 +75,7 @@ namespace Util
 
 		QHash<QString, QList<QAction*>> Actions_;
 		QHash<QString, QList<QShortcut*>> Shortcuts_;
+		QHash<QString, Entity> Globals_;
 
 		QMap<QString, ActionInfo> ActionInfo_;
 	public:
@@ -161,6 +164,12 @@ namespace Util
 		 * @sa RegisterAction(), RegisterShortcut()
 		 */
 		void RegisterActionInfo (const QString& id, const ActionInfo& info);
+
+		void RegisterGlobalShortcut (const QString& id,
+				QObject *target, const QByteArray& method,
+				const ActionInfo& info);
+
+		void AnnounceGlobalShorcuts ();
 
 		/** @brief Sets the key sequence for the given action.
 		 *
