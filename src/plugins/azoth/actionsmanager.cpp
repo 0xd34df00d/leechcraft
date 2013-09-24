@@ -502,7 +502,7 @@ namespace Azoth
 			ChangePermMulti (action, entries, text, isGlobal);
 		}
 
-		const std::map<QByteArray, EntryActor_f> BeforeRolesNames
+		const std::vector<std::pair<QByteArray, EntryActor_f>> BeforeRolesNames
 		{
 			{
 				"openchat",
@@ -520,7 +520,7 @@ namespace Azoth
 			{ "authorization", {} }
 		};
 
-		const std::map<QByteArray, EntryActor_f> AfterRolesNames
+		const std::vector<std::pair<QByteArray, EntryActor_f>> AfterRolesNames
 		{
 			{ "sep_afterroles", {} },
 			{ "add_contact", SingleEntryActor_f (AddContactFromMUC) },
