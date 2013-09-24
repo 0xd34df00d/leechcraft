@@ -172,6 +172,18 @@ namespace LeechCraft
 					QString ("Ctrl+W"),
 					CoreProxy ().GetIcon ("tab-close")
 				});
+		CoreShortcutManager_->RegisterActionInfo ("SwitchToLeftTab",
+				{
+					tr ("Switch to tab to the left"),
+					QString ("Ctrl+PgUp"),
+					CoreProxy ().GetIcon ("go-previous")
+				});
+		CoreShortcutManager_->RegisterActionInfo ("SwitchToRightTab",
+				{
+					tr ("Switch to tab to the right"),
+					QString ("Ctrl+PgDown"),
+					CoreProxy ().GetIcon ("go-next")
+				});
 		CoreShortcutManager_->RegisterActionInfo ("Settings",
 				{
 					tr ("Settings"),

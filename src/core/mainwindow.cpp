@@ -762,14 +762,20 @@ void LeechCraft::MainWindow::InitializeShortcuts ()
 			SIGNAL (activated ()),
 			tm,
 			SLOT (rotateLeft ()));
-	connect (new QShortcut (QKeySequence ("Ctrl+PgUp"), this),
+
+	auto leftShortcut = new QShortcut (QKeySequence ("Ctrl+PgUp"), this);
+	connect (leftShortcut,
 			SIGNAL (activated ()),
 			tm,
 			SLOT (rotateLeft ()));
-	connect (new QShortcut (QKeySequence ("Ctrl+PgDown"), this),
+	sm->RegisterShortcut ("SwitchToLeftTab", {}, leftShortcut, true);
+	auto rightShortcut = new QShortcut (QKeySequence ("Ctrl+PgDown"), this);
+	connect (rightShortcut,
 			SIGNAL (activated ()),
 			tm,
 			SLOT (rotateRight ()));
+	sm->RegisterShortcut ("SwitchToRightTab", {}, rightShortcut, true);
+
 	connect (new QShortcut (QKeySequence (Qt::CTRL + Qt::Key_T), this),
 			SIGNAL (activated ()),
 			Ui_.MainTabWidget_,
