@@ -42,83 +42,83 @@ namespace vlc
 		Proxy_ = proxy;
 		
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
-		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (), "vlcsettings.xml");
+		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (), "vtyulcsettings.xml");
 
 		
 		Manager_ = new Util::ShortcutManager (proxy);
 		Manager_->SetObject (this);
 		
-		Manager_->RegisterActionInfo ("org.vlc.navigate_left", 
+		Manager_->RegisterActionInfo ("org.vtyulc.navigate_left", 
 									ActionInfo (tr ("Navigate left in DVD menu"), 
 									QKeySequence (Qt::Key_Left), 
 									Proxy_->GetIcon ("arrow-left")));
 		
-		Manager_->RegisterActionInfo ("org.vlc.navigate_right",
+		Manager_->RegisterActionInfo ("org.vtyulc.navigate_right",
 									ActionInfo (tr ("Navigate right in DVD menu"), 
 									QKeySequence (Qt::Key_Right), 
 									Proxy_->GetIcon ("arrow-right")));
 		
-		Manager_->RegisterActionInfo ("org.vlc.navigate_up",
+		Manager_->RegisterActionInfo ("org.vtyulc.navigate_up",
 									ActionInfo (tr ("Navigate up in DVD menu"), 
 									QKeySequence (Qt::Key_Up),
 									Proxy_->GetIcon ("arrow-up")));
 		
-		Manager_->RegisterActionInfo ("org.vlc.navigate_down",
+		Manager_->RegisterActionInfo ("org.vtyulc.navigate_down",
 									ActionInfo (tr ("Navigate down in DVD menu"), 
 									QKeySequence (Qt::Key_Down),
 									Proxy_->GetIcon ("arrow-down")));
 		
-		Manager_->RegisterActionInfo ("org.vlc.navigate_enter",
+		Manager_->RegisterActionInfo ("org.vtyulc.navigate_enter",
 									ActionInfo (tr ("Activate current in DVD menu"), 
 									QKeySequence (Qt::Key_Enter), 
 									Proxy_->GetIcon ("key-enter")));
 		
-		Manager_->RegisterActionInfo ("org.vlc.toggle_fullscreen",
+		Manager_->RegisterActionInfo ("org.vtyulc.toggle_fullscreen",
 									ActionInfo (tr ("Toggle fullscreen"),
 									QKeySequence (Qt::Key_F),
 									Proxy_->GetIcon ("view-fullscreen")));
 		
-		Manager_->RegisterActionInfo ("org.vlc.toggle_play",
+		Manager_->RegisterActionInfo ("org.vtyulc.toggle_play",
 									ActionInfo (tr ("Switch play/pause"),
 									QKeySequence (Qt::Key_Space),
 									Proxy_->GetIcon ("media-playback-start")));
 		
-		Manager_->RegisterActionInfo ("org.vlc.volume_increase",
+		Manager_->RegisterActionInfo ("org.vtyulc.volume_increase",
 									ActionInfo (tr ("Increase volume"),
 									QKeySequence (Qt::Key_Plus),
 									Proxy_->GetIcon ("audio-volume-high")));
 		
-		Manager_->RegisterActionInfo ("org.vlc.volume_decrease",
+		Manager_->RegisterActionInfo ("org.vtyulc.volume_decrease",
 									ActionInfo (tr ("Decrease volume"),
 									QKeySequence (Qt::Key_Minus),
 									Proxy_->GetIcon ("audio-volume-low")));
 		
-		Manager_->RegisterActionInfo ("org.vlc.plus_3_percent",
+		Manager_->RegisterActionInfo ("org.vtyulc.plus_3_percent",
 									ActionInfo (tr ("3% seek forward"),
 									QKeySequence (Qt::Key_Asterisk),
 									QIcon ()));
 		
-		Manager_->RegisterActionInfo ("org.vlc.minus_3_percent",
+		Manager_->RegisterActionInfo ("org.vtyulc.minus_3_percent",
 									ActionInfo (tr ("3% seek backward"),
 									QKeySequence (Qt::Key_Slash),
 									QIcon ()));
 		
-		Manager_->RegisterActionInfo ("org.vlc.plus_10_seconds",
+		Manager_->RegisterActionInfo ("org.vtyulc.plus_10_seconds",
 									ActionInfo (tr ("10 seconds seek forward"),
 									QKeySequence (Qt::Key_0),
 									QIcon ()));
 
-		Manager_->RegisterActionInfo ("org.vlc.minus_10_seconds",
+		Manager_->RegisterActionInfo ("org.vtyulc.minus_10_seconds",
 									ActionInfo (tr ("10 seconds seek backward"),
 									QKeySequence (Qt::Key_9),
 									QIcon ()));
 		
-		Manager_->RegisterActionInfo ("org.vlc.next",
+		Manager_->RegisterActionInfo ("org.vtyulc.next",
 									ActionInfo (tr ("Next in playlist"),
 									QKeySequence (Qt::Key_R),
 									QIcon ()));
 		
-		Manager_->RegisterActionInfo ("org.vlc.prev",
+		Manager_->RegisterActionInfo ("org.vtyulc.prev",
 									ActionInfo (tr ("Prev in playlist"),
 									QKeySequence (Qt::Key_T),
 									QIcon ()));
@@ -130,7 +130,7 @@ namespace vlc
 
 	QByteArray Plugin::GetUniqueID () const
 	{
-		return "org.LeechCraft.vlc";
+		return "org.LeechCraft.vtyulc";
 	}
 
 	void Plugin::Release ()
@@ -141,7 +141,7 @@ namespace vlc
 
 	QString Plugin::GetName () const
 	{
-		return "vlc";
+		return "VtyuLC";
 	}
 
 	QString Plugin::GetInfo () const
@@ -159,7 +159,7 @@ namespace vlc
 		VlcWidget *widget = new VlcWidget (Proxy_, Manager_);
 		XmlSettingsManager::Instance ().RegisterObject ("Autostart", widget, "autostartChanged");
 		Tabs_ << widget;
-		emit addNewTab ("VLC", widget);
+		emit addNewTab ("VtyuLC", widget);
 		emit raiseTab (widget);
 		connect (widget, 
 				SIGNAL (deleteMe (QWidget*)), 

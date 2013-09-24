@@ -199,6 +199,16 @@ namespace vlc
 	void PlaylistWidget::DeleteRequested (int index)
 	{
 		libvlc_media_t *media = libvlc_media_list_item_at_index (Playlist_, index);
+		if (libvlc_media_player_get_media (NativePlayer_) == media)
+		{
+			bool playing = libvlc_media_player_is_playing (NativePlayer_);
+			libvlc_media_list_player_next (Player_);
+			if (playing)
+				libvlc_media_player_play (NativePlayer_);
+			else
+				libvlc_media_player_stop (NativePlayer_); //VLC forever
+		}
+
 		libvlc_media_list_remove_index (Playlist_, index);
 		libvlc_media_release (media);
 		Model_->updateTable ();

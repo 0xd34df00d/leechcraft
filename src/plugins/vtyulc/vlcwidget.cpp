@@ -231,7 +231,7 @@ namespace vlc
 	
 	void VlcWidget::RestoreSettings ()
 	{
-		Settings_ = new QSettings (QCoreApplication::organizationName (), QCoreApplication::applicationName () + "_VLC");
+		Settings_ = new QSettings (QCoreApplication::organizationName (), QCoreApplication::applicationName () + "_VTYULC");
 		RestorePlaylist ();
 	}
 	
@@ -488,7 +488,7 @@ namespace vlc
 		
 		Prev_ = Bar_->addAction (tr ("Prev"));
 		Prev_->setProperty ("ActionIcon", "media-seek-backward");
-		Manager_->RegisterAction ("org.vlc.prev", Prev_, true);
+		Manager_->RegisterAction ("org.vtyulc.prev", Prev_, true);
 		
 		connect (Prev_,
 				SIGNAL (triggered ()),
@@ -496,7 +496,7 @@ namespace vlc
 				SLOT (prev ()));
 		
 		TogglePlay_ = Bar_->addAction (tr ("Play"));
-		Manager_->RegisterAction ("org.vlc.toggle_play", TogglePlay_, true);
+		Manager_->RegisterAction ("org.vtyulc.toggle_play", TogglePlay_, true);
 		TogglePlay_->setProperty ("ActionIcon", "media-playback-start");
 		TogglePlay_->setProperty ("WatchActionIconChange", true);
 		
@@ -505,7 +505,7 @@ namespace vlc
 		
 		Next_ = Bar_->addAction (tr ("Next"));
 		Next_->setProperty ("ActionIcon", "media-seek-forward");
-		Manager_->RegisterAction ("org.vlc.next", Next_, true);
+		Manager_->RegisterAction ("org.vtyulc.next", Next_, true);
 		
 		connect (Next_,
 				SIGNAL (triggered ()),
@@ -514,7 +514,7 @@ namespace vlc
 		
 		FullScreenAction_ = Bar_->addAction (tr ("FullScreen"));
 		FullScreenAction_->setProperty ("ActionIcon", "view-fullscreen");
-		Manager_->RegisterAction ("org.vlc.toggle_fullscreen", FullScreenAction_, true);
+		Manager_->RegisterAction ("org.vtyulc.toggle_fullscreen", FullScreenAction_, true);
 		TimeLeft_ = new QLabel (this);
 		Bar_->addWidget (TimeLeft_);
 		ScrollBar_ = new VlcScrollBar;
@@ -854,11 +854,11 @@ namespace vlc
 		NavigateRight_ = new QAction (this);
 		NavigateUp_ = new QAction (this);
 		
-		Manager_->RegisterAction ("org.vlc.navigate_down", NavigateDown_, true);
-		Manager_->RegisterAction ("org.vlc.navigate_enter", NavigateEnter_, true);
-		Manager_->RegisterAction ("org.vlc.navigate_left", NavigateLeft_, true);
-		Manager_->RegisterAction ("org.vlc.navigate_right", NavigateRight_, true);
-		Manager_->RegisterAction ("org.vlc.navigate_up", NavigateUp_, true);
+		Manager_->RegisterAction ("org.vtyulc.navigate_down", NavigateDown_, true);
+		Manager_->RegisterAction ("org.vtyulc.navigate_enter", NavigateEnter_, true);
+		Manager_->RegisterAction ("org.vtyulc.navigate_left", NavigateLeft_, true);
+		Manager_->RegisterAction ("org.vtyulc.navigate_right", NavigateRight_, true);
+		Manager_->RegisterAction ("org.vtyulc.navigate_up", NavigateUp_, true);
 		
 		connect (NavigateDown_, 
 				SIGNAL (triggered ()),
@@ -903,8 +903,8 @@ namespace vlc
 		IncreaseVolumeAction_ = new QAction (this);
 		DecreaseVolumeAction_ = new QAction (this);
 		
-		Manager_->RegisterAction ("org.vlc.volume_increase", IncreaseVolumeAction_, true);
-		Manager_->RegisterAction ("org.vlc.volume_decrease", DecreaseVolumeAction_, true);
+		Manager_->RegisterAction ("org.vtyulc.volume_increase", IncreaseVolumeAction_, true);
+		Manager_->RegisterAction ("org.vtyulc.volume_decrease", DecreaseVolumeAction_, true);
 		
 		connect (IncreaseVolumeAction_,
 				SIGNAL (triggered ()),
@@ -933,10 +933,10 @@ namespace vlc
 		Next_ = new QAction (this);
 		Prev_ = new QAction (this);
 		
-		Manager_->RegisterAction ("org.vlc.plus_3_percent", Plus3Percent_, true);
-		Manager_->RegisterAction ("org.vlc.plus_10_seconds", Plus10Seconds_, true);
-		Manager_->RegisterAction ("org.vlc.minus_3_percent", Minus3Percent_, true);
-		Manager_->RegisterAction ("org.vlc.minus_10_seconds", Minus10Seconds_, true);
+		Manager_->RegisterAction ("org.vtyulc.plus_3_percent", Plus3Percent_, true);
+		Manager_->RegisterAction ("org.vtyulc.plus_10_seconds", Plus10Seconds_, true);
+		Manager_->RegisterAction ("org.vtyulc.minus_3_percent", Minus3Percent_, true);
+		Manager_->RegisterAction ("org.vtyulc.minus_10_seconds", Minus10Seconds_, true);
 		
 		connect (Plus10Seconds_,
 				SIGNAL (triggered ()),
@@ -993,7 +993,7 @@ namespace vlc
 	void VlcWidget::disableScreenSaver ()
 	{
 		auto e = Util::MakeEntity ("ScreensaverProhibition", {}, {}, "x-leechcraft/power-management");
-		e.Additional_ ["ContextID"] = "org.vlc.VlcTab";
+		e.Additional_ ["ContextID"] = "org.vtyulc.VlcTab";
 		e.Additional_ ["Enable"] = libvlc_media_player_is_playing (VlcPlayer_->GetPlayer ().get ()); 
 		
 		Proxy_->GetEntityManager ()->HandleEntity (e);
