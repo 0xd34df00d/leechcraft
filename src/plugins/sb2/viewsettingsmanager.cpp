@@ -47,6 +47,8 @@ namespace SB2
 		public:
 			XmlViewSettingsManager (ViewManager*);
 		protected:
+			Settings_ptr GetSettings () const;
+
 			QSettings* BeginSettings () const;
 			void EndSettings (QSettings*) const;
 		};
@@ -57,15 +59,18 @@ namespace SB2
 		{
 		}
 
+		Settings_ptr XmlViewSettingsManager::GetSettings () const
+		{
+			return ViewMgr_->GetSettings ();
+		}
+
 		QSettings* XmlViewSettingsManager::BeginSettings () const
 		{
-			SettingsInstance_ = ViewMgr_->GetSettings ();
-			return SettingsInstance_.get ();
+			return nullptr;
 		}
 
 		void XmlViewSettingsManager::EndSettings (QSettings*) const
 		{
-			SettingsInstance_.reset ();
 		}
 	}
 
