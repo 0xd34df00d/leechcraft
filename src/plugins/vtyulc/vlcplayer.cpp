@@ -184,7 +184,7 @@ namespace vlc
 		UnFreeze ();
 	}
 	
-	void VlcPlayer::UnFreeze()
+	void VlcPlayer::UnFreeze ()
 	{
 		libvlc_media_player_play (Mp_.get ());
 		
@@ -379,6 +379,21 @@ namespace vlc
 	void VlcPlayer::minus10seconds ()
 	{
 		libvlc_media_player_set_time (Mp_.get (), libvlc_media_player_get_time (Mp_.get ()) - 10 * 1000);
+	}
+	
+	void VlcPlayer::setAspectRatio (const QByteArray& ratio)
+	{
+		libvlc_video_set_aspect_ratio (Mp_.get (), ratio);
+	}
+	
+	void VlcPlayer::setRealZoom (const QByteArray& zoom)
+	{
+		libvlc_video_set_crop_geometry (Mp_.get (), zoom.constData ());
+	}
+	
+	QString VlcPlayer::GetAspectRatio () const
+	{
+		return libvlc_video_get_aspect_ratio (Mp_.get ());
 	}
 }
 }

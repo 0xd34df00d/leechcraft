@@ -58,6 +58,7 @@
 #include <QStringList>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/util.h>
+#include <interfaces/entitytesthandleresult.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -73,26 +74,27 @@ namespace
 	{
 		return (a - b).manhattanLength ();
 	}
-	
-	const QStringList Known_Audio_File_Formats = { ".ac3", ".mp3", ".ogg", ".flac", ".aac" };
-	const QStringList Known_Subtitles_File_Formats = { ".srt", ".smi", ".ssa", ".ass" };
 }
 
 namespace LeechCraft
 {
 namespace vlc
-{
-	const int Panel_Side_Margin = 5;
-	const int Panel_Bottom_Margin = 5;
-	const int Panel_Height = 27;
+{	
+	const QStringList KnownAudioFileFormats = { ".ac3", ".mp3", ".ogg", ".flac", ".aac" };
+	const QStringList KnownSubtitlesFileFormats = { ".srt", ".smi", ".ssa", ".ass" };
+	const QStringList KnownAspectRatios = { "16:9", "16:10", "4:3", "1:1" };
+
+	const int PanelSideMargin = 5;
+	const int PanelBottomMargin = 5;
+	const int PanelHeight = 27;
 	
 	VlcWidget::VlcWidget (ICoreProxy_ptr proxy, Util::ShortcutManager *manager, QWidget *parent)
 	: QWidget (parent)
+	, Proxy_ (proxy)
 	, Parent_ (parent)
 	, Manager_ (manager)
 	, AllowFullScreenPanel_ (false)
 	, Autostart_ (true)
-	, Proxy_ (proxy)
 	{
 		VlcMainWidget_ = new SignalledWidget;
 		VlcMainWidget_->SetBackGroundColor (new QColor ("black"));
@@ -379,10 +381,10 @@ namespace vlc
 			
 			if (FullScreenPanel_->isVisible ()) 
 			{
-				if (QCursor::pos ().x () > Panel_Side_Margin && 
-					QCursor::pos ().x () < FullScreenWidget_->width () - Panel_Side_Margin &&
-					QCursor::pos ().y () < FullScreenWidget_->height () - Panel_Bottom_Margin && 
-					QCursor::pos ().y () > FullScreenWidget_->height () - Panel_Bottom_Margin - Panel_Height)
+				if (QCursor::pos ().x () > PanelSideMargin && 
+					QCursor::pos ().x () < FullScreenWidget_->width () - PanelSideMargin &&
+					QCursor::pos ().y () < FullScreenWidget_->height () - PanelBottomMargin && 
+					QCursor::pos ().y () > FullScreenWidget_->height () - PanelBottomMargin - PanelHeight)
 				{
 					fullScreenPanelRequested ();
 					FullScreenPanel_->setWindowOpacity (0.8);
@@ -588,6 +590,8 @@ namespace vlc
 		
 		QMenu *subtitles = new QMenu (tr ("subtitles"), ContextMenu_);
 		QMenu *tracks = new QMenu (tr ("tracks"), ContextMenu_);
+		QMenu *aspectRatio = new QMenu (tr ("Aspect ratio"), ContextMenu_);
+		QMenu *realZoom = new QMenu (tr ("Real zoom"), ContextMenu_);
 		
 		for (int i = 0; i < VlcPlayer_->GetAudioTracksNumber (); i++)
 		{
@@ -620,8 +624,33 @@ namespace vlc
 		tracks->addSeparator ();
 		tracks->addAction (tr ("Add external sound track"));
 		
+		for (int i = 0; i < KnownAspectRatios.size (); i++) 
+		{
+			QAction *action = new QAction (KnownAspectRatios [i], aspectRatio);
+			action->setData (QVariant (QByteArray (KnownAspectRatios [i].toUtf8 ())));
+			if (VlcPlayer_->GetAspectRatio () == KnownAspectRatios [i])
+			{
+				action->setCheckable (true);
+				action->setChecked (true);
+			}
+			
+			aspectRatio->addAction (action);
+		}
+		aspectRatio->addSeparator ();
+		aspectRatio->addAction (tr ("Default"));
+		
+		for (int i = 0; i < KnownAspectRatios.size (); i++)
+		{
+			QAction *action = new QAction (KnownAspectRatios [i], realZoom);
+			action->setData (QVariant (KnownAspectRatios [i]));
+			realZoom->addAction (action);
+		}
+		
 		ContextMenu_->addMenu (subtitles);
 		ContextMenu_->addMenu (tracks);
+		ContextMenu_->addSeparator ();
+		ContextMenu_->addMenu (aspectRatio);
+		ContextMenu_->addMenu (realZoom);
 		
 		connect (tracks,
 				SIGNAL (triggered (QAction*)),
@@ -632,8 +661,31 @@ namespace vlc
 				SIGNAL (triggered (QAction*)),
 				this,
 				SLOT (setSubtitles (QAction*)));
+		
+		connect (aspectRatio,
+				SIGNAL (triggered (QAction*)),
+				this,
+				SLOT (setAspectRatio (QAction*)));
+		
+		connect (realZoom,
+				SIGNAL (triggered (QAction*)),
+				this,
+				SLOT (setRealZoom (QAction*)));
 				
 		ContextMenu_->exec (QCursor::pos ());
+	}
+	
+	void VlcWidget::setAspectRatio (QAction *action)
+	{
+		if (action->data ().isNull ())
+			VlcPlayer_->setAspectRatio (nullptr);
+		else
+			VlcPlayer_->setAspectRatio (action->data ().toByteArray ());
+	}
+	
+	void VlcWidget::setRealZoom(QAction *action)
+	{
+		VlcPlayer_->setRealZoom (action->data ().toByteArray ());
 	}
 	
 	void VlcWidget::setSubtitles(QAction *action)
@@ -785,8 +837,8 @@ namespace vlc
 		if (!AllowFullScreenPanel_ || !FullScreenWidget_->isVisible ())
 			return;
 		
-		FullScreenPanel_->setGeometry (Panel_Side_Margin, FullScreenWidget_->height () - Panel_Bottom_Margin - Panel_Height, 
-									   FullScreenWidget_->width () - Panel_Side_Margin * 2, Panel_Height);
+		FullScreenPanel_->setGeometry (PanelSideMargin, FullScreenWidget_->height () - PanelBottomMargin - PanelHeight, 
+									   FullScreenWidget_->width () - PanelSideMargin * 2, PanelHeight);
 		if (!FullScreenPanel_->isVisible ())
 			FullScreenPanel_->show ();
 		else
@@ -973,9 +1025,9 @@ namespace vlc
 	{
 		QUrl main = event->mimeData ()->urls () [0];
 		event->accept ();
-		if (Known_Audio_File_Formats.contains (main.toString ().right (4)))
+		if (KnownAudioFileFormats.contains (main.toString ().right (4)))
 			VlcPlayer_->addUrl (main);
-		else if (Known_Subtitles_File_Formats.contains (main.toString ().right (4)))
+		else if (KnownSubtitlesFileFormats.contains (main.toString ().right (4)))
 			VlcPlayer_->AddSubtitles (main.toEncoded ());
 		else
 		{
@@ -1002,6 +1054,11 @@ namespace vlc
 	void VlcWidget::autostartChanged ()
 	{
 		Autostart_ = XmlSettingsManager::Instance ().property ("Autostart").toBool ();
+	}
+	
+	void VlcWidget::Pause ()
+	{
+		libvlc_media_player_pause (VlcPlayer_->GetPlayer ().get ());
 	}
 }
 }
