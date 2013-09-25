@@ -95,6 +95,8 @@ namespace LMP
 
 		virtual void Upload (const QString& localPath, const QString& origLocalPath,
 				const QByteArray& devId, const QByteArray& storageId) = 0;
+
+		virtual void Refresh () = 0;
 	protected:
 		virtual void availableDevicesChanged () = 0;
 

@@ -188,6 +188,11 @@ namespace MTPSync
 		CacheEvictTimer_->start ();
 	}
 
+	void Plugin::Refresh ()
+	{
+		pollDevices ();
+	}
+
 	void Plugin::HandleTransfer (const QString& path, quint64 sent, quint64 total)
 	{
 		if (sent == total)

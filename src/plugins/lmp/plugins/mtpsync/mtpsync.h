@@ -114,6 +114,7 @@ namespace MTPSync
 		UnmountableDevInfos_t AvailableDevices () const;
 		void SetFileInfo (const QString& origLocalPath, const UnmountableFileInfo& info);
 		void Upload (const QString& localPath, const QString& origLocalPath, const QByteArray& to, const QByteArray& storageId);
+		void Refresh ();
 
 		void HandleTransfer (const QString&, quint64, quint64);
 	private:
