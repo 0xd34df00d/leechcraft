@@ -149,7 +149,7 @@ Rectangle {
             width: isVert ? quarkDisplayRoot.width : quarkDisplayRoot.height
             height: width
 
-            actionIconURL: "image://ThemeIcons/preferences-plugin"
+            actionIconURL: "image://ThemeIcons/configure"
             textTooltip: SB2_settingsModeTooltip
 
             property bool settingsMode: false
