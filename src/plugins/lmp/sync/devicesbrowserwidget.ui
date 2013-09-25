@@ -41,6 +41,9 @@
        <property name="text">
         <string>Mount</string>
        </property>
+       <property name="ActionIcon" stdset="0">
+        <string>emblem-mounted</string>
+       </property>
       </widget>
      </item>
     </layout>

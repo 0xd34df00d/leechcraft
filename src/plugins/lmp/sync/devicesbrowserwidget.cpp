@@ -100,7 +100,6 @@ namespace LMP
 		LoadLastParams ();
 
 		Ui_.setupUi (this);
-		Ui_.UploadButton_->setIcon (Core::Instance ().GetProxy ()->GetIcon ("svn-commit"));
 
 		DevUploadModel_->setSourceModel (Core::Instance ().GetLocalCollection ()->GetCollectionModel ());
 		Ui_.OurCollection_->setModel (DevUploadModel_);
