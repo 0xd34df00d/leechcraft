@@ -337,7 +337,7 @@ namespace Murm
 
 	ICLEntry::Features VkEntry::GetEntryFeatures () const
 	{
-		return FPermanentEntry;
+		return FPermanentEntry | FSupportsGrouping;
 	}
 
 	ICLEntry::EntryType VkEntry::GetEntryType () const
@@ -376,6 +376,10 @@ namespace Murm
 
 	void VkEntry::SetGroups (const QStringList& groups)
 	{
+		Account_->GetGroupsManager ()->UpdateGroups (Groups_, groups, Info_.ID_);
+
+		Groups_ = groups;
+		emit groupsChanged (Groups_);
 	}
 
 	QStringList VkEntry::Variants () const
