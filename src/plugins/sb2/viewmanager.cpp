@@ -49,6 +49,7 @@
 #include "quarkproxy.h"
 #include "quarkmanager.h"
 #include "viewgeometrymanager.h"
+#include "viewsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -90,6 +91,7 @@ namespace SB2
 	, GeomManager_ (new ViewGeometryManager (this))
 	, IsDesktopMode_ (qApp->arguments ().contains ("--desktop"))
 	, OnloadWindowIndex_ (GetWindowIndex ())
+	, SettingsManager_ (new ViewSettingsManager (this))
 	{
 		const auto& file = Util::GetSysPath (Util::SysPath::QML, "sb2", "SideView.qml");
 		if (file.isEmpty ())
@@ -109,6 +111,7 @@ namespace SB2
 		View_->rootContext ()->setContextProperty ("SB2_settingsModeTooltip", tr ("Settings mode"));
 		View_->rootContext ()->setContextProperty ("SB2_quarkOrderTooltip", tr ("Quarks order"));
 		View_->rootContext ()->setContextProperty ("SB2_addQuarkTooltip", tr ("Add quark"));
+		View_->rootContext ()->setContextProperty ("SB2_showPanelSettingsTooltip", tr ("Show panel settings"));
 		View_->rootContext ()->setContextProperty ("quarkContext", "panel_" + QString::number (GetWindowIndex ()));
 		View_->engine ()->addImageProvider (ImageProviderID, new Util::ThemeImageProvider (proxy));
 
@@ -170,6 +173,11 @@ namespace SB2
 			}
 
 		return result;
+	}
+
+	ViewSettingsManager* ViewManager::GetViewSettingsManager () const
+	{
+		return SettingsManager_;
 	}
 
 	bool ViewManager::IsDesktopMode () const

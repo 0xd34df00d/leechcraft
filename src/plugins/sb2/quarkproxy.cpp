@@ -42,6 +42,7 @@
 #include "quarkunhidelistview.h"
 #include "quarkorderview.h"
 #include "declarativewindow.h"
+#include "viewsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -173,6 +174,11 @@ namespace SB2
 				SIGNAL (quarkClassHovered (QString)),
 				this,
 				SLOT (handleExtHoveredQuarkClass (QString)));
+	}
+
+	void QuarkProxy::panelSettingsRequested ()
+	{
+		Manager_->GetViewSettingsManager ()->ShowSettings ();
 	}
 
 	void QuarkProxy::handleExtHoveredQuarkClass (const QString& qClass)

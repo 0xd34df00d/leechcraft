@@ -52,8 +52,8 @@ Rectangle {
         anchors.right: parent.right
         anchors.bottom: parent.bottom
 
-        columns: isVert ? 1 : 4
-        rows: isVert ? 4 : 1
+        columns: isVert ? 1 : 5
+        rows: isVert ? 5 : 1
 
         Item {
             id: setPanelPosWidget
@@ -142,6 +142,18 @@ Rectangle {
             textTooltip: SB2_quarkOrderTooltip
 
             onTriggered: commonJS.showTooltip(setQuarkOrderButton, function(x, y) { quarkProxy.quarkOrderRequested(x, y) })
+        }
+
+        ActionButton {
+            id: showPanelSettings
+            visible: enableSettingsModeButton.settingsMode
+            width: isVert ? quarkDisplayRoot.width : quarkDisplayRoot.height
+            height: width
+
+            actionIconURL: "image://ThemeIcons/configure-toolbars"
+            textTooltip: SB2_showPanelSettingsTooltip
+
+            onTriggered: quarkProxy.panelSettingsRequested()
         }
 
         ActionButton {

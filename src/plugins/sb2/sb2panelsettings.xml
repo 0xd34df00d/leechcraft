@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="SB2 panel" />
+		<item type="spinbox" property="PanelSize" default="32" minimum="12" maximum="256">
+			<label value="Panel size:" />
+			<suffix value=" px" />
+		</item>
+	</page>
+</settings>
