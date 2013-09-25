@@ -27,9 +27,10 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include <interfaces/core/icoreproxy.h>
 #include <QIcon>
 #include <QShortcut>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/entitytesthandleresult.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include "vlc.h"
 
@@ -200,6 +201,21 @@ namespace vlc
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return XmlSettingsDialog_;
+	}
+	
+	EntityTestHandleResult Plugin::CouldHandle (const Entity& entity) const
+	{
+		if (entity.Mime_ == "x-leechcraft/power-state-changed")
+			return EntityTestHandleResult (EntityTestHandleResult::PHigh);
+		else
+			return EntityTestHandleResult ();
+	}
+
+	void Plugin::Handle (Entity entity)
+	{
+		if (entity.Entity_ == "Sleeping")
+			for (int i = 0; i < Tabs_.size (); i++)
+				Tabs_ [i]->Pause ();
 	}
 }
 }

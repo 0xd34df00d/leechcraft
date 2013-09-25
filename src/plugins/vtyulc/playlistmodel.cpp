@@ -132,7 +132,7 @@ namespace vlc
 			}
 		}
 		
-		int after;
+		int after = 0;
 		if (insertAfter.isEmpty ())
 			after = -1;
 		else
