@@ -32,9 +32,6 @@
 #include <QDeclarativeContext>
 #include <QDeclarativeImageProvider>
 #include <QStandardItem>
-#include <QDialog>
-#include <QVBoxLayout>
-#include <QDialogButtonBox>
 #include <QFile>
 #include <QtDebug>
 #include <QFileInfo>
@@ -44,6 +41,7 @@
 #include "viewmanager.h"
 #include "sbview.h"
 #include "quarksettingsmanager.h"
+#include "sb2util.h"
 
 namespace LeechCraft
 {
@@ -150,36 +148,10 @@ namespace SB2
 		if (!HasSettings ())
 			return;
 
-		QDialog dia;
 		const auto& settingsTitle = Name_.isEmpty () ?
 				tr ("Settings") :
 				tr ("Settings for %1").arg (Name_);
-		dia.setWindowTitle (settingsTitle);
-
-		dia.setLayout (new QVBoxLayout ());
-		dia.layout ()->addWidget (XSD_.get ());
-
-		auto box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-		connect (box,
-				SIGNAL (accepted ()),
-				&dia,
-				SLOT (accept ()));
-		connect (box,
-				SIGNAL (rejected ()),
-				&dia,
-				SLOT (reject ()));
-		connect (box,
-				SIGNAL (accepted ()),
-				XSD_.get (),
-				SLOT (accept ()));
-		connect (box,
-				SIGNAL (rejected ()),
-				XSD_.get (),
-				SLOT (reject ()));
-		dia.layout ()->addWidget (box);
-
-		dia.exec ();
-		XSD_->setParent (0);
+		OpenSettingsDialog (XSD_.get (), settingsTitle);
 	}
 
 	QString QuarkManager::GetSuffixedName (const QString& suffix) const

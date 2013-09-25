@@ -36,6 +36,7 @@ set (SRCS
 	quarkorderview.cpp
 	declarativewindow.cpp
 	viewgeometrymanager.cpp
+	sb2util.cpp
 	)
 
 if (WITH_X11)
