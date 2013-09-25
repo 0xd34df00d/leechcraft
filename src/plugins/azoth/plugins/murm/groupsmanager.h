@@ -54,6 +54,8 @@ namespace Murm
 
 		QSet<qulonglong> ModifiedLists_;
 		QHash<QString, QSet<qulonglong>> NewLists_;
+
+		bool IsApplyScheduled_ = false;
 	public:
 		GroupsManager (VkConnection*);
 

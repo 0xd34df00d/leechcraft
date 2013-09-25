@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "groupsmanager.h"
+#include <QTimer>
 #include "vkconnection.h"
 #include "structures.h"
 
@@ -97,7 +98,13 @@ namespace Murm
 				ModifiedLists_ << list;
 			}
 
-		applyChanges ();
+		if (!IsApplyScheduled_)
+		{
+			IsApplyScheduled_ = true;
+			QTimer::singleShot (1000,
+					this,
+					SLOT (applyChanges ()));
+		}
 	}
 
 	void GroupsManager::applyChanges ()
@@ -109,6 +116,8 @@ namespace Murm
 			Conn_->AddFriendList (i.key (), i.value ().toList ());
 
 		ModifiedLists_.clear ();
+
+		IsApplyScheduled_ = false;
 	}
 
 	void GroupsManager::handleLists (const QList<ListInfo>& lists)
