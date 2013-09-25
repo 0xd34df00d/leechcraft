@@ -49,6 +49,7 @@ namespace Woodpecker
 		HttpClient_ = Core::Instance ().GetCoreProxy ()->GetNetworkAccessManager ();
 		OAuthRequest_ = new KQOAuthRequest (this);
 		OAuthManager_ = new KQOAuthManager (this);
+		OAuthManager_->setNetworkManager(HttpClient_);
 
 #ifdef WP_DEBUG
 		OAuthRequest_->setEnableDebugOutput (true);
@@ -76,7 +77,7 @@ namespace Woodpecker
 				SIGNAL (finished ()),
 				this,
 				SLOT (replyFinished ()));
-		//           getAccess ();
+		//			GetAccess ();
 		//           xauth ();
 	}
 
@@ -162,6 +163,9 @@ namespace Woodpecker
 
 	void TwitterInterface::GetAccess () 
 	{
+#ifdef WP_DEBUG
+		qDebug() << Q_FUNC_INFO;
+#endif
 		connect (OAuthManager_,
 				SIGNAL (temporaryTokenReceived (QString, QString)),
 				this,
@@ -290,17 +294,24 @@ namespace Woodpecker
 
 	void TwitterInterface::onAuthorizedRequestDone ()
 	{
-		qDebug () << "Request sent to Twitter!";
+#ifdef WP_DEBUG
+		qDebug () << Q_FUNC_INFO << "Request sent to Twitter!";
+#endif
 	}
 
 	void TwitterInterface::onRequestReady (const QByteArray& response)
 	{
-		qDebug () << "Response from the service: recvd";// << response;
+#ifdef WP_DEBUG
+		qDebug () << Q_FUNC_INFO << "Response from the service: recvd";// << response;
+#endif
 		emit tweetsReady (ParseReply (response));
 	}
 
 	void TwitterInterface::onAuthorizationReceived (const QString& token, const QString& verifier)
 	{
+#ifdef WP_DEBUG
+		qDebug() << Q_FUNC_INFO;
+#endif
 		OAuthManager_->getUserAccessTokens (QUrl ("https://api.twitter.com/oauth/access_token"));
 
 		if (OAuthManager_->lastError () != KQOAuthManager::NoError) 
@@ -311,6 +322,9 @@ namespace Woodpecker
 
 	void TwitterInterface::onAccessTokenReceived (const QString& token, const QString& tokenSecret) 
 	{
+#ifdef WP_DEBUG
+		qDebug() << Q_FUNC_INFO;
+#endif
 		this->Token_ = token;
 		this->TokenSecret_ = tokenSecret;
 
@@ -321,6 +335,9 @@ namespace Woodpecker
 
 	void TwitterInterface::onTemporaryTokenReceived (const QString& token, const QString& tokenSecret)
 	{
+#ifdef WP_DEBUG
+		qDebug() << Q_FUNC_INFO;
+#endif
 		QUrl userAuthURL ("https://api.twitter.com/oauth/authorize");
 
 		if (OAuthManager_->lastError () == KQOAuthManager::NoError)
@@ -332,6 +349,9 @@ namespace Woodpecker
 
 	void TwitterInterface::Xauth () 
 	{
+#ifdef WP_DEBUG
+		qDebug() << Q_FUNC_INFO;
+#endif
 		connect (OAuthManager_, 
 				SIGNAL (accessTokenReceived (QString, QString)),
 				this, 
@@ -348,7 +368,9 @@ namespace Woodpecker
 	{
 		Token_ = savedToken;
 		TokenSecret_ = savedTokenSecret;
-		qDebug () << "Successfully logged in";
+#ifdef WP_DEBUG
+		qDebug () << Q_FUNC_INFO << "Successfully logged in";
+#endif
 	}
 
 	void TwitterInterface::ReportSPAM (const QString& username, const qulonglong userid)

@@ -189,7 +189,7 @@ namespace Woodpecker
 			Interface_->Login (Settings_->value ("token").toString (), Settings_->value ("tokenSecret").toString ());
 			requestUpdate ();
 			TwitterTimer_->start ();
-		}
+		};
 
 		UpdateReady_ = false;
 		UiUpdateTimer_ = new QTimer (this);
