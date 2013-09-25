@@ -88,10 +88,10 @@ namespace SB2
 	, View_ (new SBView)
 	, Toolbar_ (new QToolBar (tr ("SB2 panel")))
 	, Window_ (window)
+	, SettingsManager_ (new ViewSettingsManager (this))
 	, GeomManager_ (new ViewGeometryManager (this))
 	, IsDesktopMode_ (qApp->arguments ().contains ("--desktop"))
 	, OnloadWindowIndex_ (GetWindowIndex ())
-	, SettingsManager_ (new ViewSettingsManager (this))
 	{
 		const auto& file = Util::GetSysPath (Util::SysPath::QML, "sb2", "SideView.qml");
 		if (file.isEmpty ())

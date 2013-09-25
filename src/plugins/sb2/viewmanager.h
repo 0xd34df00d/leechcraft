@@ -79,11 +79,11 @@ class ViewSettingsManager;
 
 		QuarkComponents_t InternalComponents_;
 
+		ViewSettingsManager *SettingsManager_;
+
 		ViewGeometryManager *GeomManager_;
 		const bool IsDesktopMode_;
 		const int OnloadWindowIndex_;
-
-		ViewSettingsManager *SettingsManager_;
 	public:
 		ViewManager (ICoreProxy_ptr, Util::ShortcutManager*, QMainWindow*, QObject* = 0);
 
