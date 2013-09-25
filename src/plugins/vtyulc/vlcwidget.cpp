@@ -74,19 +74,19 @@ namespace
 	{
 		return (a - b).manhattanLength ();
 	}
+	
+	const QStringList Known_Audio_File_Formats = { ".ac3", ".mp3", ".ogg", ".flac", ".aac" };
+	const QStringList Known_Subtitles_File_Formats = { ".srt", ".smi", ".ssa", ".ass" };
+	const QStringList Known_Aspect_Ratios = { "16:9", "16:10", "4:3", "1:1" };
 }
 
 namespace LeechCraft
 {
 namespace vlc
-{	
-	const QStringList KnownAudioFileFormats = { ".ac3", ".mp3", ".ogg", ".flac", ".aac" };
-	const QStringList KnownSubtitlesFileFormats = { ".srt", ".smi", ".ssa", ".ass" };
-	const QStringList KnownAspectRatios = { "16:9", "16:10", "4:3", "1:1" };
-
-	const int PanelSideMargin = 5;
-	const int PanelBottomMargin = 5;
-	const int PanelHeight = 27;
+{
+	const int Panel_Side_Margin = 5;
+	const int Panel_Bottom_Margin = 5;
+	const int Panel_Height = 27;
 	
 	VlcWidget::VlcWidget (ICoreProxy_ptr proxy, Util::ShortcutManager *manager, QWidget *parent)
 	: QWidget (parent)
@@ -381,10 +381,10 @@ namespace vlc
 			
 			if (FullScreenPanel_->isVisible ()) 
 			{
-				if (QCursor::pos ().x () > PanelSideMargin && 
-					QCursor::pos ().x () < FullScreenWidget_->width () - PanelSideMargin &&
-					QCursor::pos ().y () < FullScreenWidget_->height () - PanelBottomMargin && 
-					QCursor::pos ().y () > FullScreenWidget_->height () - PanelBottomMargin - PanelHeight)
+				if (QCursor::pos ().x () > Panel_Side_Margin && 
+					QCursor::pos ().x () < FullScreenWidget_->width () - Panel_Side_Margin &&
+					QCursor::pos ().y () < FullScreenWidget_->height () - Panel_Bottom_Margin && 
+					QCursor::pos ().y () > FullScreenWidget_->height () - Panel_Bottom_Margin - Panel_Height)
 				{
 					fullScreenPanelRequested ();
 					FullScreenPanel_->setWindowOpacity (0.8);
@@ -624,11 +624,10 @@ namespace vlc
 		tracks->addSeparator ();
 		tracks->addAction (tr ("Add external sound track"));
 		
-		for (int i = 0; i < KnownAspectRatios.size (); i++) 
+		for (int i = 0; i < Known_Aspect_Ratios.size (); i++) 
 		{
-			QAction *action = new QAction (KnownAspectRatios [i], aspectRatio);
-			action->setData (QVariant (QByteArray (KnownAspectRatios [i].toUtf8 ())));
-			if (VlcPlayer_->GetAspectRatio () == KnownAspectRatios [i])
+			QAction *action = new QAction (Known_Aspect_Ratios [i], aspectRatio);
+			if (VlcPlayer_->GetAspectRatio () == Known_Aspect_Ratios [i])
 			{
 				action->setCheckable (true);
 				action->setChecked (true);
@@ -639,10 +638,9 @@ namespace vlc
 		aspectRatio->addSeparator ();
 		aspectRatio->addAction (tr ("Default"));
 		
-		for (int i = 0; i < KnownAspectRatios.size (); i++)
+		for (int i = 0; i < Known_Aspect_Ratios.size (); i++)
 		{
-			QAction *action = new QAction (KnownAspectRatios [i], realZoom);
-			action->setData (QVariant (KnownAspectRatios [i]));
+			QAction *action = new QAction (Known_Aspect_Ratios [i], realZoom);
 			realZoom->addAction (action);
 		}
 		
@@ -677,15 +675,15 @@ namespace vlc
 	
 	void VlcWidget::setAspectRatio (QAction *action)
 	{
-		if (action->data ().isNull ())
+		if (action->text () == tr ("Default"))
 			VlcPlayer_->setAspectRatio (nullptr);
 		else
-			VlcPlayer_->setAspectRatio (action->data ().toByteArray ());
+			VlcPlayer_->setAspectRatio (action->text ().toUtf8 ().constData ());
 	}
 	
 	void VlcWidget::setRealZoom(QAction *action)
 	{
-		VlcPlayer_->setRealZoom (action->data ().toByteArray ());
+		VlcPlayer_->setRealZoom (action->text ().toUtf8 ().constData ());
 	}
 	
 	void VlcWidget::setSubtitles(QAction *action)
@@ -837,8 +835,8 @@ namespace vlc
 		if (!AllowFullScreenPanel_ || !FullScreenWidget_->isVisible ())
 			return;
 		
-		FullScreenPanel_->setGeometry (PanelSideMargin, FullScreenWidget_->height () - PanelBottomMargin - PanelHeight, 
-									   FullScreenWidget_->width () - PanelSideMargin * 2, PanelHeight);
+		FullScreenPanel_->setGeometry (Panel_Side_Margin, FullScreenWidget_->height () - Panel_Bottom_Margin - Panel_Height, 
+									   FullScreenWidget_->width () - Panel_Side_Margin * 2, Panel_Height);
 		if (!FullScreenPanel_->isVisible ())
 			FullScreenPanel_->show ();
 		else
@@ -1025,9 +1023,9 @@ namespace vlc
 	{
 		QUrl main = event->mimeData ()->urls () [0];
 		event->accept ();
-		if (KnownAudioFileFormats.contains (main.toString ().right (4)))
+		if (Known_Audio_File_Formats.contains (main.toString ().right (4)))
 			VlcPlayer_->addUrl (main);
-		else if (KnownSubtitlesFileFormats.contains (main.toString ().right (4)))
+		else if (Known_Subtitles_File_Formats.contains (main.toString ().right (4)))
 			VlcPlayer_->AddSubtitles (main.toEncoded ());
 		else
 		{

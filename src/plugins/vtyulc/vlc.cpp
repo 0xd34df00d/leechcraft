@@ -206,16 +206,15 @@ namespace vlc
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& entity) const
 	{
 		if (entity.Mime_ == "x-leechcraft/power-state-changed")
-			return EntityTestHandleResult (EntityTestHandleResult::PHigh);
+			return EntityTestHandleResult (EntityTestHandleResult::PNormal);
 		else
 			return EntityTestHandleResult ();
 	}
 
 	void Plugin::Handle (Entity entity)
 	{
-		if (entity.Entity_ == "Sleeping")
-			for (int i = 0; i < Tabs_.size (); i++)
-				Tabs_ [i]->Pause ();
+		for (int i = 0; i < Tabs_.size (); i++)
+			Tabs_ [i]->Pause ();
 	}
 }
 }

@@ -66,6 +66,7 @@ namespace vlc
 		bool FreezePlayingMedia_;
 		bool FreezeIsPlaying_;
 		bool FreezeDVD_;
+		char *FreezeAspectRatio;
 		
 	public:
 		explicit VlcPlayer (QWidget *parent = 0);
@@ -116,8 +117,8 @@ namespace vlc
 		
 		void setAudioTrack (int);
 		void setSubtitle (int);
-		void setAspectRatio (const QByteArray&);
-		void setRealZoom (const QByteArray&);
+		void setAspectRatio (const char*);
+		void setRealZoom (const char*);
 		
 		void dvdNavigateLeft ();
 		void dvdNavigateRight ();

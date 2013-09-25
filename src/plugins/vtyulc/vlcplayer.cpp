@@ -173,6 +173,7 @@ namespace vlc
 		
 		FreezeIsPlaying_ = libvlc_media_player_is_playing (Mp_.get ()); 
 		FreezeDVD_ = DVD_ && libvlc_media_player_get_length (Mp_.get ()) > DVD_IS_MORE_THAN;
+		FreezeAspectRatio = libvlc_video_get_aspect_ratio (Mp_.get ());
 		
 		libvlc_media_player_stop (Mp_.get ());
 	}
@@ -187,6 +188,7 @@ namespace vlc
 	void VlcPlayer::UnFreeze ()
 	{
 		libvlc_media_player_play (Mp_.get ());
+		libvlc_video_set_aspect_ratio (Mp_.get (), FreezeAspectRatio);
 		
 		WaitForPlaying ();
 		if (FreezeDVD_)
@@ -381,19 +383,19 @@ namespace vlc
 		libvlc_media_player_set_time (Mp_.get (), libvlc_media_player_get_time (Mp_.get ()) - 10 * 1000);
 	}
 	
-	void VlcPlayer::setAspectRatio (const QByteArray& ratio)
+	void VlcPlayer::setAspectRatio (const char *ratio)
 	{
 		libvlc_video_set_aspect_ratio (Mp_.get (), ratio);
 	}
 	
-	void VlcPlayer::setRealZoom (const QByteArray& zoom)
+	void VlcPlayer::setRealZoom(const char *zoom)
 	{
-		libvlc_video_set_crop_geometry (Mp_.get (), zoom.constData ());
+		libvlc_video_set_crop_geometry (Mp_.get (), zoom);
 	}
 	
-	QString VlcPlayer::GetAspectRatio () const
+	QString VlcPlayer::GetAspectRatio() const
 	{
-		return libvlc_video_get_aspect_ratio (Mp_.get ());
+		return QString (libvlc_video_get_aspect_ratio (Mp_.get ()));
 	}
 }
 }
