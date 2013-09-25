@@ -114,9 +114,11 @@ namespace vlc
 		void setUrl (const QUrl&);
 		void changePosition (double);
 		void switchWidget (QWidget*);
+		
 		void setAudioTrack (int);
 		void setSubtitle (int);
 		void setAspectRatio (const char*);
+		void setRealZoom (const char*);
 		
 		void dvdNavigateLeft ();
 		void dvdNavigateRight ();

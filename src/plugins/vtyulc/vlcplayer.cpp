@@ -388,6 +388,11 @@ namespace vlc
 		libvlc_video_set_aspect_ratio (Mp_.get (), ratio);
 	}
 	
+	void VlcPlayer::setRealZoom(const char *zoom)
+	{
+		libvlc_video_set_crop_geometry (Mp_.get (), zoom);
+	}
+	
 	QString VlcPlayer::GetAspectRatio() const
 	{
 		return QString (libvlc_video_get_aspect_ratio (Mp_.get ()));

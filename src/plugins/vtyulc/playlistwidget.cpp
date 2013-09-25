@@ -53,8 +53,8 @@ namespace vlc
 {
 	PlaylistWidget::PlaylistWidget (QIcon playIcon, QWidget *parent)
 	: QTreeView (parent)
-	, PlayIcon_ (playIcon)
 	, LastPlayingItem_ (nullptr)
+	, PlayIcon_ (playIcon)
 	{
 		setDragEnabled (true);
 		setDropIndicatorShown (true);
@@ -237,7 +237,6 @@ namespace vlc
 		libvlc_media_t *media = libvlc_media_list_item_at_index (Playlist_, current);
 		if (current > -1 && current < libvlc_media_list_count (Playlist_))
 		{
-			int count = libvlc_media_list_count (Playlist_);
 			libvlc_media_list_player_play_item (Player_, media);
 			while (!libvlc_media_player_is_playing (NativePlayer_))
 			{

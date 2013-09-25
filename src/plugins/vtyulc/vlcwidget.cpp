@@ -58,6 +58,7 @@
 #include <QStringList>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/util.h>
+#include <interfaces/entitytesthandleresult.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -89,11 +90,11 @@ namespace vlc
 	
 	VlcWidget::VlcWidget (ICoreProxy_ptr proxy, Util::ShortcutManager *manager, QWidget *parent)
 	: QWidget (parent)
+	, Proxy_ (proxy)
 	, Parent_ (parent)
 	, Manager_ (manager)
 	, AllowFullScreenPanel_ (false)
 	, Autostart_ (true)
-	, Proxy_ (proxy)
 	{
 		VlcMainWidget_ = new SignalledWidget;
 		VlcMainWidget_->SetBackGroundColor (new QColor ("black"));
@@ -589,7 +590,8 @@ namespace vlc
 		
 		QMenu *subtitles = new QMenu (tr ("subtitles"), ContextMenu_);
 		QMenu *tracks = new QMenu (tr ("tracks"), ContextMenu_);
-		QMenu *aspectRatio = new QMenu (tr ("Aspect ration"), ContextMenu_);
+		QMenu *aspectRatio = new QMenu (tr ("Aspect ratio"), ContextMenu_);
+		QMenu *realZoom = new QMenu (tr ("Real zoom"), ContextMenu_);
 		
 		for (int i = 0; i < VlcPlayer_->GetAudioTracksNumber (); i++)
 		{
@@ -624,8 +626,7 @@ namespace vlc
 		
 		for (int i = 0; i < Known_Aspect_Ratios.size (); i++) 
 		{
-			QAction *action = new QAction (aspectRatio);
-			action->setText (Known_Aspect_Ratios [i]);
+			QAction *action = new QAction (Known_Aspect_Ratios [i], aspectRatio);
 			if (VlcPlayer_->GetAspectRatio () == Known_Aspect_Ratios [i])
 			{
 				action->setCheckable (true);
@@ -637,10 +638,17 @@ namespace vlc
 		aspectRatio->addSeparator ();
 		aspectRatio->addAction (tr ("Default"));
 		
+		for (int i = 0; i < Known_Aspect_Ratios.size (); i++)
+		{
+			QAction *action = new QAction (Known_Aspect_Ratios [i], realZoom);
+			realZoom->addAction (action);
+		}
+		
 		ContextMenu_->addMenu (subtitles);
 		ContextMenu_->addMenu (tracks);
 		ContextMenu_->addSeparator ();
 		ContextMenu_->addMenu (aspectRatio);
+		ContextMenu_->addMenu (realZoom);
 		
 		connect (tracks,
 				SIGNAL (triggered (QAction*)),
@@ -656,6 +664,11 @@ namespace vlc
 				SIGNAL (triggered (QAction*)),
 				this,
 				SLOT (setAspectRatio (QAction*)));
+		
+		connect (realZoom,
+				SIGNAL (triggered (QAction*)),
+				this,
+				SLOT (setRealZoom (QAction*)));
 				
 		ContextMenu_->exec (QCursor::pos ());
 	}
@@ -666,6 +679,11 @@ namespace vlc
 			VlcPlayer_->setAspectRatio (nullptr);
 		else
 			VlcPlayer_->setAspectRatio (action->text ().toUtf8 ().constData ());
+	}
+	
+	void VlcWidget::setRealZoom(QAction *action)
+	{
+		VlcPlayer_->setRealZoom (action->text ().toUtf8 ().constData ());
 	}
 	
 	void VlcWidget::setSubtitles(QAction *action)
@@ -1034,6 +1052,11 @@ namespace vlc
 	void VlcWidget::autostartChanged ()
 	{
 		Autostart_ = XmlSettingsManager::Instance ().property ("Autostart").toBool ();
+	}
+	
+	void VlcWidget::Pause ()
+	{
+		libvlc_media_player_pause (VlcPlayer_->GetPlayer ().get ());
 	}
 }
 }
