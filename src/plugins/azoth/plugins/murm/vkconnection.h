@@ -88,6 +88,8 @@ namespace Murm
 		QHash<QNetworkReply*, MessageInfoSetter_f> Reply2MessageSetter_;
 		QHash<QNetworkReply*, PhotoInfoSetter_f> Reply2PhotoSetter_;
 
+		QHash<QNetworkReply*, QString> Reply2ListName_;
+
 		int APIErrorCount_ = 0;
 		bool ShouldRerunPrepared_ = false;
 	public:
@@ -105,6 +107,9 @@ namespace Murm
 
 		void GetMessageInfo (qulonglong id, MessageInfoSetter_f setter);
 		void GetPhotoInfos (const QStringList& ids, PhotoInfoSetter_f setter);
+
+		void AddFriendList (const QString&, const QList<qulonglong>&);
+		void ModifyFriendList (const ListInfo&, const QList<qulonglong>&);
 
 		void SetStatus (const QString&);
 
@@ -124,6 +129,7 @@ namespace Murm
 		void handlePollStopped ();
 		void handlePollData (const QVariantMap&);
 
+		void handleFriendListAdded ();
 		void handleGotFriendLists ();
 		void handleGotFriends ();
 		void handleGotUnreadMessages ();
@@ -142,6 +148,7 @@ namespace Murm
 		void stoppedPolling ();
 
 		void gotLists (const QList<ListInfo>&);
+		void addedLists (const QList<ListInfo>&);
 		void gotUsers (const QList<UserInfo>&);
 		void gotMessage (const MessageInfo&);
 		void gotTypingNotification (qulonglong uid);

@@ -265,6 +265,50 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
+	void VkConnection::AddFriendList (const QString& name, const QList<qulonglong>& ids)
+	{
+		const auto& joined = CommaJoin (ids);
+		auto nam = Proxy_->GetNetworkAccessManager ();
+		PreparedCalls_.push_back ([this, joined, name, nam] (const QString& key) -> QNetworkReply*
+			{
+				QUrl url ("https://api.vk.com/method/friends.addList");
+				url.addQueryItem ("access_token", key);
+				url.addQueryItem ("name", name);
+				url.addQueryItem ("uids", joined);
+
+				auto reply = nam->get (QNetworkRequest (url));
+				Reply2ListName_ [reply] = name;
+				connect (reply,
+						SIGNAL (finished ()),
+						this,
+						SLOT (handleFriendListAdded ()));
+				return reply;
+			});
+		AuthMgr_->GetAuthKey ();
+	}
+
+	void VkConnection::ModifyFriendList (const ListInfo& list, const QList<qulonglong>& newContents)
+	{
+		const auto& joined = CommaJoin (newContents);
+		auto nam = Proxy_->GetNetworkAccessManager ();
+		PreparedCalls_.push_back ([this, joined, list, nam] (const QString& key) -> QNetworkReply*
+			{
+				QUrl url ("https://api.vk.com/method/friends.editList");
+				url.addQueryItem ("access_token", key);
+				url.addQueryItem ("lid", QString::number (list.ID_));
+				url.addQueryItem ("name", list.Name_);
+				url.addQueryItem ("uids", joined);
+
+				auto reply = nam->get (QNetworkRequest (url));
+				connect (reply,
+						SIGNAL (finished ()),
+						reply,
+						SLOT (deleteLater ()));
+				return reply;
+			});
+		AuthMgr_->GetAuthKey ();
+	}
+
 	void VkConnection::SetStatus (const QString& status)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
@@ -430,6 +474,20 @@ namespace Murm
 			else
 				Dispatcher_ [code] (parmList);
 		}
+	}
+
+	void VkConnection::handleFriendListAdded ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!CheckFinishedReply (reply))
+			return;
+
+		const auto& name = Reply2ListName_.take (reply);
+
+		const auto& data = QJson::Parser ().parse (reply);
+		const auto id = data.toMap () ["response"].toMap () ["lid"].toULongLong ();
+
+		emit addedLists ({ { id, name } });
 	}
 
 	void VkConnection::handleGotFriendLists ()
