@@ -1,7 +1,0 @@
-<RCC>
-	<qresource prefix="/plugins/laure">
-		<file>resources/img/volumeslider-inset.png</file>
-		<file>resources/img/volumeslider-gradient.png</file>
-		<file>resources/img/laure.svg</file>
-	</qresource>
-</RCC>

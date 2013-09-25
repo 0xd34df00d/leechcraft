@@ -241,7 +241,6 @@ option (ENABLE_SHELLOPEN "Build ShellOpen, the plugin supporting handling entiti
 # Defunct
 option (ENABLE_JUFFED "Build JuffEd, the advanced text editor" OFF)
 option (ENABLE_OTZERKALU "Build Otzerkalu, which allows one to download web sites recursively" OFF)
-option (ENABLE_LAURE "Build Laure, the new generation audio/video player" OFF)
 
 enable_testing ()
 
@@ -406,10 +405,6 @@ endif ()
 
 if (ENABLE_SHELLOPEN)
 	add_subdirectory (plugins/shellopen)
-endif ()
-
-if (ENABLE_LAURE)
-	add_subdirectory (plugins/laure)
 endif ()
 
 if (ENABLE_JUFFED)
