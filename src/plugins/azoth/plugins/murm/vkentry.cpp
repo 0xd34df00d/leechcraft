@@ -39,6 +39,7 @@
 #include "vkconnection.h"
 #include "photostorage.h"
 #include "vcarddialog.h"
+#include "groupsmanager.h"
 
 namespace LeechCraft
 {
@@ -73,9 +74,10 @@ namespace Murm
 					this,
 					SLOT (handleGotStorageImage (QUrl)));
 
+		auto gm = account->GetGroupsManager ();
 		for (const auto& id : info.Lists_)
 		{
-			const auto& info = account->GetListInfo (id);
+			const auto& info = gm->GetListInfo (id);
 			if (info.ID_ == id)
 				Groups_ << info.Name_;
 		}

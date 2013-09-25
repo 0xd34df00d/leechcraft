@@ -47,6 +47,7 @@ namespace Murm
 	class VkConnection;
 	class PhotoStorage;
 	class GeoResolver;
+	class GroupsManager;
 
 	class VkAccount : public QObject
 					, public IAccount
@@ -65,10 +66,10 @@ namespace Murm
 		QString Name_;
 
 		VkConnection * const Conn_;
+		GroupsManager * const GroupsMgr_;
 		GeoResolver * const GeoResolver_;
 
 		QHash<qulonglong, VkEntry*> Entries_;
-		QHash<qulonglong, ListInfo> ID2ListInfo_;
 	public:
 		VkAccount (const QString& name, VkProtocol *proto, ICoreProxy_ptr proxy,
 				const QByteArray& id, const QByteArray& cookies);
@@ -76,14 +77,13 @@ namespace Murm
 		QByteArray Serialize () const;
 		static VkAccount* Deserialize (const QByteArray&, VkProtocol*, ICoreProxy_ptr);
 
-		ListInfo GetListInfo (qulonglong) const;
-
 		void Send (VkEntry*, VkMessage*);
 
 		ICoreProxy_ptr GetCoreProxy () const;
 		VkConnection* GetConnection () const;
 		PhotoStorage* GetPhotoStorage () const;
 		GeoResolver* GetGeoResolver () const;
+		GroupsManager* GetGroupsManager () const;
 
 		QObject* GetQObject ();
 		QObject* GetParentProtocol () const;
@@ -110,7 +110,6 @@ namespace Murm
 
 		void PublishTune (const QMap<QString, QVariant>& tuneData);
 	private slots:
-		void handleLists (const QList<ListInfo>&);
 		void handleUsers (const QList<UserInfo>&);
 		void handleUserState (qulonglong, bool);
 		void handleMessage (const MessageInfo&);

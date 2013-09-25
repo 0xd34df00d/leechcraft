@@ -36,6 +36,7 @@
 #include "vkmessage.h"
 #include "photostorage.h"
 #include "georesolver.h"
+#include "groupsmanager.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -53,6 +54,7 @@ namespace Murm
 	, PhotoStorage_ (new PhotoStorage (proxy->GetNetworkAccessManager (), ID_))
 	, Name_ (name)
 	, Conn_ (new VkConnection (cookies, proxy))
+	, GroupsMgr_ (new GroupsManager (Conn_))
 	, GeoResolver_ (new GeoResolver (Conn_, this))
 	{
 		connect (Conn_,
@@ -63,10 +65,6 @@ namespace Murm
 				SIGNAL (stoppedPolling ()),
 				this,
 				SLOT (finishOffline ()));
-		connect (Conn_,
-				SIGNAL (gotLists (QList<ListInfo>)),
-				this,
-				SLOT (handleLists (QList<ListInfo>)));
 		connect (Conn_,
 				SIGNAL (gotUsers (QList<UserInfo>)),
 				this,
@@ -127,11 +125,6 @@ namespace Murm
 		return new VkAccount (name, proto, proxy, id, cookies);
 	}
 
-	ListInfo VkAccount::GetListInfo (qulonglong id) const
-	{
-		return ID2ListInfo_ [id];
-	}
-
 	void VkAccount::Send (VkEntry *entry, VkMessage *msg)
 	{
 		Conn_->SendMessage (entry->GetInfo ().ID_,
@@ -157,6 +150,11 @@ namespace Murm
 	GeoResolver* VkAccount::GetGeoResolver () const
 	{
 		return GeoResolver_;
+	}
+
+	GroupsManager* VkAccount::GetGroupsManager () const
+	{
+		return GroupsMgr_;
 	}
 
 	QObject* VkAccount::GetQObject ()
@@ -263,13 +261,6 @@ namespace Murm
 
 		const auto& toPublish = fields.join (QString::fromUtf8 (" — "));
 		Conn_->SetStatus (toPublish);
-	}
-
-	void VkAccount::handleLists (const QList<ListInfo>& lists)
-	{
-		ID2ListInfo_.clear ();
-		for (const auto& list : lists)
-			ID2ListInfo_ [list.ID_] = list;
 	}
 
 	void VkAccount::handleUsers (const QList<UserInfo>& infos)

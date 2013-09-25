@@ -29,6 +29,7 @@ set (MURM_SRCS
 	georesolver.cpp
 	xmlsettingsmanager.cpp
 	longpollmanager.cpp
+	groupsmanager.cpp
 	)
 set (MURM_FORMS
 	vcarddialog.ui
