@@ -38,8 +38,12 @@ namespace SB2
 	class SBView : public QDeclarativeView
 	{
 		Q_OBJECT
+
+		int Dim_;
 	public:
 		SBView (QWidget* = 0);
+
+		void SetDimensions (int);
 
 		QSize minimumSizeHint () const;
 		QSize sizeHint () const;
