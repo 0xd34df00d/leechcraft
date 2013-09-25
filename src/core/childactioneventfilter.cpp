@@ -30,6 +30,7 @@
 #include "childactioneventfilter.h"
 #include <QEvent>
 #include <QAction>
+#include <QPushButton>
 #include <QTabWidget>
 #include <QActionEvent>
 #include <QToolButton>
@@ -66,10 +67,14 @@ bool ChildActionEventFilter::eventFilter (QObject *obj, QEvent *event)
 			if (auto menu = tb->menu ())
 				IconThemeEngine::Instance ().UpdateIconSet ({ menu->menuAction () });
 		}
+		else if (auto pb = qobject_cast<QPushButton*> (child))
+			IconThemeEngine::Instance ().UpdateIconSet ({ pb });
 		else
 		{
 			IconThemeEngine::Instance ()
 				.UpdateIconSet (child->findChildren<QAction*> ());
+			IconThemeEngine::Instance ()
+				.UpdateIconSet (child->findChildren<QPushButton*> ());
 			IconThemeEngine::Instance ()
 				.UpdateIconSet (child->findChildren<QTabWidget*> ());
 		}

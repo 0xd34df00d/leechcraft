@@ -38,6 +38,7 @@
 
 class QIcon;
 class QAction;
+class QPushButton;
 class QTabWidget;
 class QFile;
 
@@ -58,12 +59,14 @@ namespace LeechCraft
 
 		QIcon GetIcon (const QString&, const QString&) const;
 		void UpdateIconSet (const QList<QAction*>&);
+		void UpdateIconSet (const QList<QPushButton*>&);
 		void UpdateIconSet (const QList<QTabWidget*>&);
 		QStringList ListIcons () const;
 	protected:
 		bool eventFilter (QObject*, QEvent*);
 	private:
-		void SetIcon (QAction*);
+		template<typename T>
+		void SetIcon (T);
 		void FindIconSets ();
 		void FindIcons ();
 	private slots:

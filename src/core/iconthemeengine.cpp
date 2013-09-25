@@ -30,6 +30,7 @@
 #include "iconthemeengine.h"
 #include <algorithm>
 #include <QAction>
+#include <QPushButton>
 #include <QTabWidget>
 #include <QIcon>
 #include <QDir>
@@ -119,6 +120,19 @@ void IconThemeEngine::UpdateIconSet (const QList<QAction*>& actions)
 	}
 }
 
+void IconThemeEngine::UpdateIconSet (const QList<QPushButton*>& buttons)
+{
+	FindIcons ();
+
+	for (auto button : buttons)
+	{
+		if (!button->property ("ActionIcon").isValid ())
+			continue;
+
+		SetIcon (button);
+	}
+}
+
 void IconThemeEngine::UpdateIconSet (const QList<QTabWidget*>& tabs)
 {
 	FindIcons ();
@@ -155,12 +169,13 @@ bool IconThemeEngine::eventFilter (QObject *obj, QEvent *e)
 	return QObject::eventFilter (obj, e);
 }
 
-void IconThemeEngine::SetIcon (QAction *act)
+template<typename T>
+void IconThemeEngine::SetIcon (T iconable)
 {
-	QString actionIcon = act->property ("ActionIcon").toString ();
-	QString actionIconOff = act->property ("ActionIconOff").toString ();
+	QString actionIcon = iconable->property ("ActionIcon").toString ();
+	QString actionIconOff = iconable->property ("ActionIconOff").toString ();
 
-	act->setIcon (GetIcon (actionIcon, actionIconOff));
+	iconable->setIcon (GetIcon (actionIcon, actionIconOff));
 }
 
 void IconThemeEngine::FindIconSets ()
