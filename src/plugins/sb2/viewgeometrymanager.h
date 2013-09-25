@@ -49,6 +49,7 @@ namespace SB2
 		void SetPosition (Qt::ToolBarArea);
 	private slots:
 		void setOrientation (Qt::Orientation);
+		void updatePanelSize ();
 	};
 }
 }

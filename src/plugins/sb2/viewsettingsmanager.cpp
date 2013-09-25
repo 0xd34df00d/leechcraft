@@ -87,5 +87,10 @@ namespace SB2
 	{
 		OpenSettingsDialog (XSD_.get (), tr ("SB2 panel settings"));
 	}
+
+	const std::shared_ptr<Util::BaseSettingsManager>& ViewSettingsManager::GetXSM () const
+	{
+		return XSM_;
+	}
 }
 }

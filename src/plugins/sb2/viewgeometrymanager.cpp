@@ -35,6 +35,7 @@
 #include <QMainWindow>
 #include <QDesktopWidget>
 #include <QtDebug>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 #ifdef WITH_X11
 #include <util/x11/xwrapper.h>
@@ -42,6 +43,7 @@
 
 #include "viewmanager.h"
 #include "sbview.h"
+#include "viewsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -51,6 +53,9 @@ namespace SB2
 	: QObject (parent)
 	, ViewMgr_ (parent)
 	{
+		const auto& xsm = ViewMgr_->GetViewSettingsManager ()->GetXSM ();
+		xsm->RegisterObject ("PanelSize", this, "updatePanelSize");
+		updatePanelSize ();
 	}
 
 	void ViewGeometryManager::Manage ()
@@ -208,6 +213,12 @@ namespace SB2
 			view->rootContext ()->setContextProperty ("viewOrient", "horizontal");
 			break;
 		}
+	}
+
+	void ViewGeometryManager::updatePanelSize ()
+	{
+		const auto& xsm = ViewMgr_->GetViewSettingsManager ()->GetXSM ();
+		ViewMgr_->GetView ()->SetDimensions (xsm->property ("PanelSize").toInt ());
 	}
 }
 }

@@ -54,6 +54,8 @@ namespace SB2
 		ViewSettingsManager (ViewManager*);
 
 		void ShowSettings ();
+
+		const std::shared_ptr<Util::BaseSettingsManager>& GetXSM () const;
 	};
 }
 }
