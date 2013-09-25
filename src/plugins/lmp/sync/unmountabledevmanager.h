@@ -62,6 +62,8 @@ namespace LMP
 
 		QObject* GetDeviceManager (int) const;
 		UnmountableDevInfo GetDeviceInfo (int) const;
+
+		void Refresh ();
 	private slots:
 		void rebuildAvailableDevices ();
 	};

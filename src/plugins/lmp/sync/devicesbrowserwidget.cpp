@@ -367,6 +367,11 @@ namespace LMP
 		SaveLastParams ();
 	}
 
+	void DevicesBrowserWidget::on_RefreshButton__released ()
+	{
+		UnmountableMgr_->Refresh ();
+	}
+
 	void DevicesBrowserWidget::on_DevicesSelector__activated (int idx)
 	{
 		CurrentSyncer_ = 0;

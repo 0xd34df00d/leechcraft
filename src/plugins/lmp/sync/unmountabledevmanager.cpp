@@ -54,7 +54,7 @@ namespace LMP
 	{
 		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
 		Managers_ = pm->GetAllCastableRoots<IUnmountableSync*> ();
-		Q_FOREACH (auto mgr, Managers_)
+		for (auto mgr : Managers_)
 			connect (mgr,
 					SIGNAL (availableDevicesChanged ()),
 					this,
@@ -81,12 +81,18 @@ namespace LMP
 		return item->data (Roles::DeviceInfo).value<UnmountableDevInfo> ();
 	}
 
+	void UnmountableDevManager::Refresh ()
+	{
+		for (auto mgrObj : Managers_)
+			qobject_cast<IUnmountableSync*> (mgrObj)->Refresh ();
+	}
+
 	void UnmountableDevManager::rebuildAvailableDevices ()
 	{
 		if (const auto rc = DevListModel_->rowCount ())
 			DevListModel_->removeRows (0, rc);
 
-		Q_FOREACH (auto mgrObj, Managers_)
+		for (auto mgrObj : Managers_)
 		{
 			auto mgr = qobject_cast<IUnmountableSync*> (mgrObj);
 			for (const auto& device : mgr->AvailableDevices ())
