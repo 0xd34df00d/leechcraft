@@ -36,6 +36,7 @@ set (SRCS
 	quarkorderview.cpp
 	declarativewindow.cpp
 	viewgeometrymanager.cpp
+	viewsettingsmanager.cpp
 	sb2util.cpp
 	)
 
