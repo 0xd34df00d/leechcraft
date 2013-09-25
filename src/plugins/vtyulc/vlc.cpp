@@ -32,6 +32,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/util.h>
 #include "vlc.h"
 
 namespace LeechCraft
@@ -40,6 +41,8 @@ namespace vlc
 {	
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("vtyulc");
+
 		Proxy_ = proxy;
 		
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());

@@ -26,8 +26,8 @@ set (SRCS
 	playlisttitlewidget.cpp
 	)
 	
-#CreateTrs("vlc" "en;ru_RU" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("vlc" "en;ru_RU" "${SRCS}" "${FORMS}" "")
+CreateTrs("vtyulc" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("vtyulc" "en;ru_RU" "${SRCS}" "${FORMS}" "vtyulcsettings.xml")
 
 add_library (leechcraft_vtyulc SHARED
 	${COMPILED_TRANSLATIONS}
