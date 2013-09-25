@@ -136,6 +136,8 @@ namespace vlc
 		void TabMadeCurrent ();
 		void TabLostCurrent ();
 		
+		void Pause ();
+		
 	private:
 		QString GetNewSubtitles ();
 		void GenerateToolBar ();
@@ -171,6 +173,8 @@ namespace vlc
 		void generateContextMenu (QPoint);
 		void setAudioTrack (QAction*);
 		void setSubtitles (QAction*);
+		void setAspectRatio (QAction*);
+		void setRealZoom (QAction*);
 		
 		void keyPressEvent (QKeyEvent*);
 		void mousePressEvent (QMouseEvent*);

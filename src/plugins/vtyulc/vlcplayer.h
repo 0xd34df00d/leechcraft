@@ -87,6 +87,8 @@ namespace vlc
 		QString GetSubtitleDescription (int) const;
 		int GetSubtitleId (int) const;
 		
+		QString GetAspectRatio () const;
+		
 		void DVDNavigate (unsigned);
 		
 		std::shared_ptr<libvlc_media_player_t> GetPlayer () const;
@@ -111,8 +113,11 @@ namespace vlc
 		void setUrl (const QUrl&);
 		void changePosition (double);
 		void switchWidget (QWidget*);
+		
 		void setAudioTrack (int);
 		void setSubtitle (int);
+		void setAspectRatio (const QByteArray&);
+		void setRealZoom (const QByteArray&);
 		
 		void dvdNavigateLeft ();
 		void dvdNavigateRight ();
