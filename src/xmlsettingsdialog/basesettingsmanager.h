@@ -190,8 +190,8 @@ namespace Util
 		virtual void EndSettings (QSettings *settings) const = 0;
 
 		virtual void PropertyChanged (const QString&, const QVariant&);
-	private:
-		Settings_ptr GetSettings () const;
+
+		virtual Settings_ptr GetSettings () const;
 	private slots:
 		void scheduleCleanup ();
 		void cleanupObjects ();

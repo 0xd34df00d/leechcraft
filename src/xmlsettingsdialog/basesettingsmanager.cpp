@@ -181,7 +181,7 @@ namespace Util
 	{
 	}
 
-	Settings_ptr BaseSettingsManager::GetSettings() const
+	Settings_ptr BaseSettingsManager::GetSettings () const
 	{
 		return Settings_ptr (BeginSettings (),
 				[this] (QSettings *settings)
