@@ -41,6 +41,8 @@ class IShortcutProxy;
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace Util
 {
 	/** @brief Aids in providing configurable shortcuts.
@@ -59,6 +61,9 @@ namespace Util
 	 * still have customized shortcuts (if any), but only if another
 	 * action with the same ID has been added during IInfo::Init().
 	 *
+	 * ShortcutManager also supports global shortcuts via the
+	 * RegisterGlobalShortcut() and AnnounceGlobalShorcuts() methods.
+	 *
 	 * See the documentation for IHaveShortcuts for more information
 	 * about actions and their IDs.
 	 *
@@ -73,6 +78,7 @@ namespace Util
 
 		QHash<QString, QList<QAction*>> Actions_;
 		QHash<QString, QList<QShortcut*>> Shortcuts_;
+		QHash<QString, Entity> Globals_;
 
 		QMap<QString, ActionInfo> ActionInfo_;
 	public:
@@ -162,6 +168,36 @@ namespace Util
 		 */
 		void RegisterActionInfo (const QString& id, const ActionInfo& info);
 
+		/** @brief Registers the given global shortcut with the given id.
+		 *
+		 * Registered global shortcuts need to be announced during
+		 * SecondInit() of your plugin by calling the
+		 * AnnounceGlobalShorcuts() method.
+		 *
+		 * @param[in] id The ID of the global shortcut to register.
+		 * @param[in] target The object whose \em method will be invoked
+		 * on shortcut activation.
+		 * @param[in] method The method of the \em object which will be
+		 * invoked on shortcut activation.
+		 * @param[in] info The ActionInfo about this global shortcut.
+		 *
+		 * @sa AnnounceGlobalShorcuts()
+		 */
+		void RegisterGlobalShortcut (const QString& id,
+				QObject *target, const QByteArray& method,
+				const ActionInfo& info);
+
+		/** @brief Announces the global shortcuts.
+		 *
+		 * This function announces global shortcuts registered via
+		 * RegisterGlobalShortcut() method. Because global shortcuts are
+		 * handled by a special plugin like GActs, this function needs to
+		 * be called in IInfo::SecondInit() of your plugin.
+		 *
+		 * @sa RegisterGlobalShortcut()
+		 */
+		void AnnounceGlobalShorcuts ();
+
 		/** @brief Sets the key sequence for the given action.
 		 *
 		 * This function updates all the registered actions with the
@@ -172,7 +208,7 @@ namespace Util
 		 * @param[in] id The ID of the action to update.
 		 * @param[in] sequences The list of sequences to for the action.
 		 */
-		void SetShortcut (const QString& id, const QKeySequences_t& sequences) const;
+		void SetShortcut (const QString& id, const QKeySequences_t& sequences);
 
 		/** @brief Returns the map with information about actions.
 		 *

@@ -30,7 +30,9 @@
 #include "shortcutmanager.h"
 #include <QAction>
 #include <QShortcut>
+#include "util/util.h"
 #include "interfaces/ihaveshortcuts.h"
+#include "interfaces/core/ientitymanager.h"
 
 namespace LeechCraft
 {
@@ -84,17 +86,45 @@ namespace Util
 
 	void ShortcutManager::RegisterActionInfo (const QString& id, const ActionInfo& info)
 	{
-		if (!ActionInfo_.contains (id))
+		if (!ActionInfo_.contains (id) ||
+				ActionInfo_ [id].UserVisibleText_.isEmpty ())
 			ActionInfo_ [id] = info;
 	}
 
-	void ShortcutManager::SetShortcut (const QString& id, const QKeySequences_t& seqs) const
+	void ShortcutManager::RegisterGlobalShortcut (const QString& id,
+			QObject *target, const QByteArray& method, const ActionInfo& info)
+	{
+		Entity e = Util::MakeEntity ({}, {}, 0,
+				"x-leechcraft/global-action-register");
+		e.Additional_ ["Receiver"] = QVariant::fromValue (target);
+		e.Additional_ ["ActionID"] = id;
+		e.Additional_ ["Method"] = method;
+		e.Additional_ ["Shortcut"] = QVariant::fromValue (info.Seqs_.value (0));
+		Globals_ [id] = e;
+
+		ActionInfo_ [id] = info;
+	}
+
+	void ShortcutManager::AnnounceGlobalShorcuts ()
+	{
+		for (const auto& entity : Globals_)
+			CoreProxy_->GetEntityManager ()->HandleEntity (entity);
+	}
+
+	void ShortcutManager::SetShortcut (const QString& id, const QKeySequences_t& seqs)
 	{
 		for (auto act : Actions_ [id])
 			act->setShortcuts (seqs);
 
 		for (auto sc : Shortcuts_ [id])
 			sc->setKey (seqs.value (0));
+
+		if (Globals_.contains (id))
+		{
+			auto& e = Globals_ [id];
+			e.Additional_ ["Shortcut"] = QVariant::fromValue (seqs.value (0));
+			CoreProxy_->GetEntityManager ()->HandleEntity (e);
+		}
 	}
 
 	QMap<QString, ActionInfo> ShortcutManager::GetActionInfo () const

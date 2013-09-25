@@ -130,17 +130,24 @@ void LeechCraft::MainWindow::Init ()
 			this,
 			SLOT (doDelayedInit ()));
 
+	auto sm = Core::Instance ().GetCoreInstanceObject ()->GetCoreShortcutManager ();
+
 	FullScreenShortcut_ = new QShortcut (QKeySequence (tr ("F11", "FullScreen")), this);
 	FullScreenShortcut_->setContext (Qt::WidgetWithChildrenShortcut);
 	connect (FullScreenShortcut_,
 			SIGNAL (activated ()),
 			this,
 			SLOT (handleShortcutFullscreenMode ()));
+	sm->RegisterShortcut ("FullScreen", {}, FullScreenShortcut_);
 
 	CloseTabShortcut_ = new QShortcut (QString ("Ctrl+W"),
 			this,
 			SLOT (handleCloseCurrentTab ()),
 			0);
+	sm->RegisterShortcut ("CloseTab", {}, CloseTabShortcut_);
+
+	sm->RegisterAction ("Settings", Ui_.ActionSettings_);
+	sm->RegisterAction ("Quit", Ui_.ActionQuit_);
 }
 
 void LeechCraft::MainWindow::handleShortcutFullscreenMode ()
@@ -755,14 +762,20 @@ void LeechCraft::MainWindow::InitializeShortcuts ()
 			SIGNAL (activated ()),
 			tm,
 			SLOT (rotateLeft ()));
-	connect (new QShortcut (QKeySequence ("Ctrl+PgUp"), this),
+
+	auto leftShortcut = new QShortcut (QKeySequence ("Ctrl+PgUp"), this);
+	connect (leftShortcut,
 			SIGNAL (activated ()),
 			tm,
 			SLOT (rotateLeft ()));
-	connect (new QShortcut (QKeySequence ("Ctrl+PgDown"), this),
+	sm->RegisterShortcut ("SwitchToLeftTab", {}, leftShortcut, true);
+	auto rightShortcut = new QShortcut (QKeySequence ("Ctrl+PgDown"), this);
+	connect (rightShortcut,
 			SIGNAL (activated ()),
 			tm,
 			SLOT (rotateRight ()));
+	sm->RegisterShortcut ("SwitchToRightTab", {}, rightShortcut, true);
+
 	connect (new QShortcut (QKeySequence (Qt::CTRL + Qt::Key_T), this),
 			SIGNAL (activated ()),
 			Ui_.MainTabWidget_,
