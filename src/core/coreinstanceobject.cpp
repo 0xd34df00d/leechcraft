@@ -134,14 +134,6 @@ namespace LeechCraft
 	{
 		CoreShortcutManager_->SetObject (this);
 
-#ifndef Q_OS_MAC
-		const auto sysModifier = Qt::CTRL;
-#else
-		const auto sysModifier = Qt::ALT;
-#endif
-		CoreShortcutManager_->RegisterActionInfo ("SwitchToPrevTab",
-				{ tr ("Switch to previously active tab"), sysModifier + Qt::Key_Space, QIcon () });
-
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"coresettings.xml");
 		connect (XmlSettingsDialog_.get (),
@@ -157,6 +149,54 @@ namespace LeechCraft
 
 	void CoreInstanceObject::Init (ICoreProxy_ptr)
 	{
+#ifndef Q_OS_MAC
+		const auto sysModifier = Qt::CTRL;
+#else
+		const auto sysModifier = Qt::ALT;
+#endif
+		CoreShortcutManager_->RegisterActionInfo ("SwitchToPrevTab",
+				{
+					tr ("Switch to previously active tab"),
+					sysModifier + Qt::Key_Space,
+					CoreProxy ().GetIcon ("edit-undo")
+				});
+		CoreShortcutManager_->RegisterActionInfo ("FullScreen",
+				{
+					tr ("Toggle fullscreen"),
+					QString ("F11"),
+					CoreProxy ().GetIcon ("view-fullscreen")
+				});
+		CoreShortcutManager_->RegisterActionInfo ("CloseTab",
+				{
+					tr ("Close tab"),
+					QString ("Ctrl+W"),
+					CoreProxy ().GetIcon ("tab-close")
+				});
+		CoreShortcutManager_->RegisterActionInfo ("SwitchToLeftTab",
+				{
+					tr ("Switch to tab to the left"),
+					QString ("Ctrl+PgUp"),
+					CoreProxy ().GetIcon ("go-previous")
+				});
+		CoreShortcutManager_->RegisterActionInfo ("SwitchToRightTab",
+				{
+					tr ("Switch to tab to the right"),
+					QString ("Ctrl+PgDown"),
+					CoreProxy ().GetIcon ("go-next")
+				});
+		CoreShortcutManager_->RegisterActionInfo ("Settings",
+				{
+					tr ("Settings"),
+					QString ("Ctrl+P"),
+					CoreProxy ().GetIcon ("configure")
+				});
+		CoreShortcutManager_->RegisterActionInfo ("Quit",
+				{
+					tr ("Quit LeechCraft"),
+					QString ("F10"),
+					CoreProxy ().GetIcon ("application-exit")
+				});
+
 		Classes_ << SettingsTab_->GetTabClassInfo ();
 
 		XmlSettingsDialog_->SetCustomWidget ("PluginManager", new PluginManagerDialog);

@@ -329,6 +329,23 @@ namespace Azoth
 			riex->SuggestItems (items, entry->GetQObject (), dia.GetShareMessage ());
 		}
 
+		void ChangeNick (const QList<ICLEntry*>& entries)
+		{
+			auto mucEntry = qobject_cast<IMUCEntry*> (entries.at (0)->GetQObject ());
+			const auto& nick = mucEntry->GetNick ();
+
+			const auto& newNick = QInputDialog::getText (nullptr,
+					"LeechCraft",
+					ActionsManager::tr ("Enter new nickname:"),
+					QLineEdit::Normal,
+					nick);
+			if (newNick.isEmpty () || newNick == nick)
+				return;
+
+			for (auto entry : entries)
+				qobject_cast<IMUCEntry*> (entry->GetQObject ())->SetNick (newNick);
+		}
+
 		void Invite (ICLEntry *entry)
 		{
 			auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
@@ -502,7 +519,7 @@ namespace Azoth
 			ChangePermMulti (action, entries, text, isGlobal);
 		}
 
-		const std::map<QByteArray, EntryActor_f> BeforeRolesNames
+		const std::vector<std::pair<QByteArray, EntryActor_f>> BeforeRolesNames
 		{
 			{
 				"openchat",
@@ -520,7 +537,7 @@ namespace Azoth
 			{ "authorization", {} }
 		};
 
-		const std::map<QByteArray, EntryActor_f> AfterRolesNames
+		const std::vector<std::pair<QByteArray, EntryActor_f>> AfterRolesNames
 		{
 			{ "sep_afterroles", {} },
 			{ "add_contact", SingleEntryActor_f (AddContactFromMUC) },
@@ -539,6 +556,7 @@ namespace Azoth
 					})
 			},
 			{ "vcard", SingleEntryActor_f ([] (ICLEntry *e) { e->ShowInfo (); }) },
+			{ "changenick", MultiEntryActor_f (ChangeNick) },
 			{ "invite", SingleEntryActor_f (Invite) },
 			{ "leave", SingleEntryActor_f (Leave) },
 			{
@@ -743,7 +761,7 @@ namespace Azoth
 				{
 					const auto srcAct = id2action.value (permClass);
 					const auto& actorVar = srcAct->property ("Azoth/EntryActor");
-					permPairs [permClass] = actorVar.value<EntryActor_f> ();
+					permPairs.push_back ({ permClass, actorVar.value<EntryActor_f> () });
 				}
 
 				setter (permPairs);
@@ -1034,6 +1052,13 @@ namespace Azoth
 		}
 		else if (entry->GetEntryType () == ICLEntry::ETMUC)
 		{
+			QAction *changeNick = new QAction (tr ("Change nickname..."), entry->GetQObject ());
+			changeNick->setProperty ("ActionIcon", "user-properties");
+			Entry2Actions_ [entry] ["changenick"] = changeNick;
+			Action2Areas_ [changeNick] << CLEAAContactListCtxtMenu
+					<< CLEAATabCtxtMenu
+					<< CLEAAToolbar;
+
 			QAction *invite = new QAction (tr ("Invite..."), entry->GetQObject ());
 			invite->setProperty ("ActionIcon", "azoth_invite");
 			Entry2Actions_ [entry] ["invite"] = invite;
