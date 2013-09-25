@@ -33,6 +33,7 @@
 #include <interfaces/media/irecommendedartists.h>
 #include <interfaces/media/iaudioscrobbler.h>
 #include <interfaces/media/ipendingsimilarartists.h>
+#include <interfaces/iinfo.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
@@ -58,13 +59,14 @@ namespace LMP
 
 		const auto& roots = Core::Instance ().GetProxy ()->GetPluginsManager ()->
 				GetAllCastableRoots<Media::IRecommendedArtists*> ();
-		Q_FOREACH (auto root, roots)
+		for (auto root : roots)
 		{
 			auto scrob = qobject_cast<Media::IAudioScrobbler*> (root);
 			if (!scrob)
 				continue;
 
-			Ui_.RecProvider_->addItem (scrob->GetServiceName ());
+			Ui_.RecProvider_->addItem (qobject_cast<IInfo*> (root)->GetIcon (),
+					scrob->GetServiceName ());
 			ProvRoots_ << root;
 			Providers_ << qobject_cast<Media::IRecommendedArtists*> (root);
 

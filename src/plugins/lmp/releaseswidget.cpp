@@ -40,6 +40,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/irecentreleases.h>
 #include <interfaces/media/idiscographyprovider.h>
+#include <interfaces/iinfo.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
@@ -128,10 +129,14 @@ namespace LMP
 
 		bool lastFound = false;
 
-		Providers_ = pm->GetAllCastableTo<Media::IRecentReleases*> ();
-		Q_FOREACH (auto prov, Providers_)
+		const auto& objList = pm->GetAllCastableRoots<Media::IRecentReleases*> ();
+		for (auto provObj : objList)
 		{
-			Ui_.InfoProvider_->addItem (prov->GetServiceName ());
+			const auto prov = qobject_cast<Media::IRecentReleases*> (provObj);
+			Providers_ << prov;
+
+			Ui_.InfoProvider_->addItem (qobject_cast<IInfo*> (provObj)->GetIcon (),
+					prov->GetServiceName ());
 
 			if (prov->GetServiceName () == lastProv)
 			{

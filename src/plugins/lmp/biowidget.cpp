@@ -34,6 +34,7 @@
 #include <interfaces/media/iartistbiofetcher.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/iinfo.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
 #include "bioviewmanager.h"
@@ -59,11 +60,16 @@ namespace LMP
 		const auto& lastProv = XmlSettingsManager::Instance ()
 				.Property ("LastUsedBioProvider", QString ()).toString ();
 
-		Providers_ = Core::Instance ().GetProxy ()->GetPluginsManager ()->
-				GetAllCastableTo<Media::IArtistBioFetcher*> ();
-		Q_FOREACH (auto provider, Providers_)
+		auto providerObjs = Core::Instance ().GetProxy ()->GetPluginsManager ()->
+				GetAllCastableRoots<Media::IArtistBioFetcher*> ();
+		for (auto providerObj : providerObjs)
 		{
-			Ui_.Provider_->addItem (provider->GetServiceName ());
+			const auto provider = qobject_cast<Media::IArtistBioFetcher*> (providerObj);
+
+			Providers_ << provider;
+
+			const auto& icon = qobject_cast<IInfo*> (providerObj)->GetIcon ();
+			Ui_.Provider_->addItem (icon, provider->GetServiceName ());
 			if (lastProv == provider->GetServiceName ())
 				Ui_.Provider_->setCurrentIndex (Ui_.Provider_->count () - 1);
 		}

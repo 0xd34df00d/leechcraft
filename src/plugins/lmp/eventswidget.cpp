@@ -34,6 +34,7 @@
 #include <QtDebug>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/ieventsprovider.h>
+#include <interfaces/iinfo.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/standardnamfactory.h>
 #include "core.h"
@@ -135,7 +136,8 @@ namespace LMP
 			if (!scrob)
 				continue;
 
-			Ui_.Provider_->addItem (scrob->GetServiceName ());
+			const auto& icon = qobject_cast<IInfo*> (root)->GetIcon ();
+			Ui_.Provider_->addItem (icon, scrob->GetServiceName ());
 			Providers_ << qobject_cast<Media::IEventsProvider*> (root);
 
 			connect (root,

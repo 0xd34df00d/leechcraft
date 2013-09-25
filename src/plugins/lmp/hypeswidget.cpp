@@ -38,6 +38,7 @@
 #include <interfaces/media/ihypesprovider.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/iinfo.h>
 #include "util.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
@@ -149,7 +150,8 @@ namespace LMP
 		{
 			auto prov = qobject_cast<Media::IHypesProvider*> (provObj);
 
-			Ui_.InfoProvider_->addItem (prov->GetServiceName ());
+			Ui_.InfoProvider_->addItem (qobject_cast<IInfo*> (provObj)->GetIcon (),
+					prov->GetServiceName ());
 			if (prov->GetServiceName () == lastProv)
 			{
 				const int idx = Providers_.size () - 1;
