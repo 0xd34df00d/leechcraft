@@ -162,11 +162,13 @@ Rectangle {
 
         anchors.top: parent.top
         anchors.left: parent.left
-        height: isVert ? undefined : parent.height
-        width: isVert ? parent.width : undefined
+        height: isVert ? parent.height - ownStuffGrid.height : parent.height
+        width: isVert ? parent.width : parent.width - ownStuffGrid.width
 
         columns: isVert ? 1 : itemsRepeater.count
         rows: isVert ? itemsRepeater.count : 1
+
+        clip: true
 
         Repeater {
             id: itemsRepeater
