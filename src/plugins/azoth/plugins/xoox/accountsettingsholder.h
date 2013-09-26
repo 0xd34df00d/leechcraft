@@ -70,6 +70,13 @@ namespace Xoox
 		QXmppTransferJob::Methods FTMethods_;
 		bool UseSOCKS5Proxy_;
 		QString SOCKS5Proxy_;
+
+		QString StunHost_;
+		int StunPort_;
+		QString TurnHost_;
+		int TurnPort_;
+		QString TurnUser_;
+		QString TurnPass_;
 	public:
 		AccountSettingsHolder (GlooxAccount* = 0);
 
@@ -119,6 +126,16 @@ namespace Xoox
 
 		QString GetSOCKS5Proxy () const;
 		void SetSOCKS5Proxy (const QString&);
+
+		QString GetStunHost () const;
+		int GetStunPort () const;
+		void SetStunParams (const QString& host, int port);
+
+		QString GetTurnHost () const;
+		int GetTurnPort () const;
+		QString GetTurnUser () const;
+		QString GetTurnPass () const;
+		void SetTurnParams (const QString& host, int port, const QString& user, const QString& pass);
 	private slots:
 		void scheduleReconnect ();
 		void handleReconnect ();
@@ -135,6 +152,9 @@ namespace Xoox
 		void tlsModeChanged (QXmppConfiguration::StreamSecurityMode);
 
 		void fileTransferSettingsChanged ();
+
+		void stunSettingsChanged ();
+		void turnSettingsChanged ();
 
 		void accountSettingsChanged ();
 	};

@@ -53,6 +53,8 @@ namespace Xoox
 	, TLSMode_ (QXmppConfiguration::TLSEnabled)
 	, FTMethods_ (QXmppTransferJob::AnyMethod)
 	, UseSOCKS5Proxy_ (false)
+	, StunPort_ (3478)
+	, TurnPort_ (3478)
 	{
 		connect (this,
 				SIGNAL (jidChanged (QString)),
@@ -91,7 +93,13 @@ namespace Xoox
 			<< static_cast<bool> (FTMethods_ & QXmppTransferJob::SocksMethod)
 			<< UseSOCKS5Proxy_
 			<< SOCKS5Proxy_
-			<< static_cast<quint8> (TLSMode_);
+			<< static_cast<quint8> (TLSMode_)
+			<< StunHost_
+			<< StunPort_
+			<< TurnHost_
+			<< TurnPort_
+			<< TurnUser_
+			<< TurnPass_;
 	}
 
 	void AccountSettingsHolder::Deserialize (QDataStream& in, quint16 version)
@@ -129,6 +137,15 @@ namespace Xoox
 			in >> mode;
 			TLSMode_ = static_cast<decltype (TLSMode_)> (mode);
 		}
+		if (version >= 8)
+		{
+			in >> StunHost_
+				>> StunPort_
+				>> TurnHost_
+				>> TurnPort_
+				>> TurnUser_
+				>> TurnPass_;
+		}
 	}
 
 	void AccountSettingsHolder::OpenConfigDialog ()
@@ -156,6 +173,13 @@ namespace Xoox
 		dia->W ()->SetSOCKS5Proxy (GetSOCKS5Proxy ());
 		dia->W ()->SetTLSMode (GetTLSMode ());
 
+		dia->W ()->SetStunServer (StunHost_);
+		dia->W ()->SetStunPort (StunPort_);
+		dia->W ()->SetTurnServer (TurnHost_);
+		dia->W ()->SetTurnPort (TurnPort_);
+		dia->W ()->SetTurnUser (TurnUser_);
+		dia->W ()->SetTurnPassword (TurnPass_);
+
 		if (dia->exec () == QDialog::Rejected)
 			return;
 
@@ -175,6 +199,9 @@ namespace Xoox
 		SetUseSOCKS5Proxy (w->GetUseSOCKS5Proxy ());
 		SetSOCKS5Proxy (w->GetSOCKS5Proxy ());
 		SetTLSMode (w->GetTLSMode ());
+		SetStunParams (w->GetStunServer (), w->GetStunPort ());
+		SetTurnParams (w->GetTurnServer (), w->GetTurnPort (),
+				w->GetTurnUser (), w->GetTurnPassword ());
 
 		const QString& pass = w->GetPassword ();
 		if (!pass.isNull ())
@@ -371,6 +398,59 @@ namespace Xoox
 
 		SOCKS5Proxy_ = proxy;
 		emit fileTransferSettingsChanged ();
+	}
+
+	QString AccountSettingsHolder::GetStunHost () const
+	{
+		return StunHost_;
+	}
+
+	int AccountSettingsHolder::GetStunPort () const
+	{
+		return StunPort_;
+	}
+
+	void AccountSettingsHolder::SetStunParams (const QString& host, int port)
+	{
+		if (host == StunHost_ && port == StunPort_)
+			return;
+
+		StunHost_ = host;
+		StunPort_ = port;
+
+		emit stunSettingsChanged ();
+	}
+
+	QString AccountSettingsHolder::GetTurnHost () const
+	{
+		return TurnHost_;
+	}
+
+	int AccountSettingsHolder::GetTurnPort () const
+	{
+		return TurnPort_;
+	}
+
+	QString AccountSettingsHolder::GetTurnUser () const
+	{
+		return TurnUser_;
+	}
+
+	QString AccountSettingsHolder::GetTurnPass () const
+	{
+		return TurnPass_;
+	}
+
+	void AccountSettingsHolder::SetTurnParams (const QString& host, int port, const QString& user, const QString& pass)
+	{
+		if (host == TurnHost_ && port == TurnPort_ && user == TurnUser_ && pass == TurnPass_)
+			return;
+
+		TurnHost_ = host;
+		TurnPort_ = port;
+		TurnUser_ = user;
+		TurnPass_ = pass;
+		emit turnSettingsChanged ();
 	}
 
 	void AccountSettingsHolder::scheduleReconnect ()
