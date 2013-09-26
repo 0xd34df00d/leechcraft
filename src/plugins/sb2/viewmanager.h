@@ -72,6 +72,8 @@ class ViewSettingsManager;
 		QToolBar *Toolbar_;
 
 		QMainWindow *Window_;
+		const bool IsDesktopMode_;
+		const int OnloadWindowIndex_;
 
 		QHash<QUrl, QuarkManager_ptr> Quark2Manager_;
 		QSet<QString> RemovedIDs_;
@@ -82,8 +84,6 @@ class ViewSettingsManager;
 		ViewSettingsManager *SettingsManager_;
 
 		ViewGeometryManager *GeomManager_;
-		const bool IsDesktopMode_;
-		const int OnloadWindowIndex_;
 	public:
 		ViewManager (ICoreProxy_ptr, Util::ShortcutManager*, QMainWindow*, QObject* = 0);
 
