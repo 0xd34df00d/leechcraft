@@ -73,7 +73,6 @@ namespace Woodpecker
 				SIGNAL (timeout ()),
 				this,
 				SLOT (requestUpdate ()));
-		tryToLogin ();
 
 		connect (Ui_.TwitEdit_,
 				SIGNAL (returnPressed ()),
@@ -91,6 +90,8 @@ namespace Woodpecker
 				SLOT (twit ()));
 		Settings_ = new QSettings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Woodpecker");
+
+		tryToLogin ();
 
 		ActionRetwit_ = new QAction (tr ("Retwit"), Ui_.TwitList_);
 		ActionRetwit_->setShortcut (Qt::Key_R + Qt::ALT);
@@ -242,11 +243,11 @@ namespace Woodpecker
 
 	void TwitterPage::tryToLogin ()
 	{
-		Interface_->GetAccess ();
 		connect (Interface_,
 				SIGNAL (authorized (QString, QString)),
 				this,
 				SLOT (recvdAuth (QString, QString)));
+		Interface_->GetAccess ();
 	}
 
 	void TwitterPage::updateScreenTwits (QList<Tweet_ptr> twits)

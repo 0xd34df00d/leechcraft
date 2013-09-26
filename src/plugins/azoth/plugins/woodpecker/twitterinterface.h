@@ -112,6 +112,7 @@ namespace Woodpecker
 		void onRequestReady (const QByteArray&);
 		void onAuthorizedRequestDone ();
 		void onAccessTokenReceived (const QString& token, const QString& tokenSecret);
+		void onAuthorizationPageRequested (QUrl);
 		
 	signals:
 		void tweetsReady (const QList<Tweet_ptr>&);
