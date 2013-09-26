@@ -306,7 +306,7 @@ namespace SB2
 		const auto& org = QCoreApplication::organizationName ();
 		const auto& app = QCoreApplication::applicationName () + "_SB2";
 		std::shared_ptr<QSettings> result (new QSettings (org, app),
-				[subSet] (QSettings *settings)
+				[subSet] (QSettings *settings) -> void
 				{
 					if (subSet)
 						settings->endGroup ();
