@@ -41,8 +41,15 @@ Rectangle {
 
         property alias fullItemCount: launcherItemRepeater.count
 
-        columns: viewOrient == "vertical" ? 1 : fullItemCount
-        rows: viewOrient == "vertical" ? fullItemCount : 1
+        columns: viewOrient == "vertical" ? taskbarRowCount : fullItemCount
+        rows: viewOrient == "vertical" ? fullItemCount : taskbarRowCount
+
+        flow: viewOrient == "vertical" ? Grid.LeftToRight : Grid.TopToBottom
+
+        property int itemHeight: rootRect.itemSize / taskbarRowCount
+        property int itemWidth: viewOrient == "vertical" ?
+                            rootRect.itemSize / taskbarRowCount :
+                            Math.min(150, rootRect.width * taskbarRowCount / taskbarColumn.calcCount())
 
         Repeater {
             id: launcherItemRepeater
@@ -52,10 +59,8 @@ Rectangle {
 
                 visible: showFromAllDesks || isCurrentDesktop
 
-                height: rootRect.itemSize
-                width: viewOrient == "vertical" ?
-                        rootRect.itemSize :
-                        Math.min(150, rootRect.width / taskbarColumn.calcCount())
+                height: taskbarColumn.itemHeight
+                width: taskbarColumn.itemWidth
 
                 ActionButton {
                     id: tcButton

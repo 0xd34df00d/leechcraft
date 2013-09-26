@@ -7,6 +7,9 @@
 			<item type="checkbox" property="showFromAllDesks" default="true">
 				<label value="Show windows from all desktops" />
 			</item>
+			<item type="spinbox" property="taskbarRowCount" default="1" min="1" max="4">
+				<label value="Taskbar rows:" />
+			</item>
 		</groupbox>
 		<item type="groupbox" checkable="true" property="showPager" default="true">
 			<label value="Show pager" />
