@@ -279,10 +279,20 @@ namespace Azoth
 		QString data = Core::Instance ().GetSelectedChatTemplate (GetEntry<QObject> (),
 				Ui_.View_->page ()->mainFrame ());
 		if (data.isEmpty ())
-			data = "<h1 style='color:red;'>" +
-					tr ("Unable to load style, "
-						"please check you've enabled at least one styles plugin.") +
-					"</h1>";
+			data = QString (R"delim(
+				<?xml version="1.0" encoding="utf-8"?>
+				<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+				<html xmlns="http://www.w3.org/1999/xhtml">
+					<head>
+						<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+						<title></title>
+					</head>
+					<body>
+						<h1 style="color:red">%1</h1>
+					</body>
+				</html>)delim")
+					.arg (tr ("Unable to load style, please check you've enabled at least one styles plugin."));
+
 		Ui_.View_->setContent (data.toUtf8 (),
 				"text/html", //"application/xhtml+xml" fails to work, though better to use it
 				Core::Instance ().GetSelectedChatTemplateURL (GetEntry<QObject> ()));
