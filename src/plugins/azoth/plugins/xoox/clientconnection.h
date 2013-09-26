@@ -305,6 +305,7 @@ namespace Xoox
 		void handlePhotoHash ();
 		void handlePriorityChanged (int);
 		void updateFTSettings ();
+		void updateCallSettings ();
 		void handleDetectedBSProxy (const QString&);
 
 		void handleVersionSettingsChanged ();

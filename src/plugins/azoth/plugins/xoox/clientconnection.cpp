@@ -29,6 +29,7 @@
 
 #include "clientconnection.h"
 #include <QTimer>
+#include <QHostAddress>
 #include <QtDebug>
 #include <QXmppClient.h>
 #include <QXmppMucManager.h>
@@ -333,6 +334,16 @@ namespace Xoox
 				this,
 				SLOT (updateFTSettings ()));
 		updateFTSettings ();
+
+		connect (Settings_,
+				SIGNAL (stunSettingsChanged ()),
+				this,
+				SLOT (updateCallSettings ()));
+		connect (Settings_,
+				SIGNAL (turnSettingsChanged ()),
+				this,
+				SLOT (updateCallSettings ()));
+		updateCallSettings ();
 
 		connect (ServerInfoStorage_,
 				SIGNAL (bytestreamsProxyChanged (QString)),
@@ -1424,6 +1435,16 @@ namespace Xoox
 		ft->setProxy (Settings_->GetUseSOCKS5Proxy () ? Settings_->GetSOCKS5Proxy () : QString ());
 
 		handleDetectedBSProxy (ServerInfoStorage_->GetBytestreamsProxy ());
+	}
+
+	void ClientConnection::updateCallSettings ()
+	{
+#ifdef ENABLE_MEDIACALLS
+		CallManager_->setStunServer (QHostAddress (Settings_->GetStunHost ()), Settings_->GetStunPort ());
+		CallManager_->setTurnServer (QHostAddress (Settings_->GetTurnHost ()), Settings_->GetTurnPort ());
+		CallManager_->setTurnUser (Settings_->GetTurnUser ());
+		CallManager_->setTurnPassword (Settings_->GetTurnPass ());
+#endif
 	}
 
 	void ClientConnection::handleDetectedBSProxy (const QString& proxy)
