@@ -9,8 +9,8 @@ Rectangle {
 
     property bool isExpandable: true
 
-    implicitWidth: viewOrient == "vertical" ? itemSize : longDim
-    implicitHeight: viewOrient == "vertical" ? longDim : itemSize
+    implicitWidth: viewOrient == "vertical" ? itemSize : longDim + itemSize
+    implicitHeight: viewOrient == "vertical" ? longDim + itemSize : itemSize
 
     radius: 2
 
@@ -24,6 +24,9 @@ Rectangle {
         id: taskbarColumn
         anchors.top: parent.top
         anchors.left: parent.left
+
+        width: viewOrient == "vertical" ? rootRect.itemSize : longDim
+        height: viewOrient == "vertical" ? longDim : rootRect.itemSize
 
         function calcCount() {
             var cnt = 0;
@@ -92,18 +95,20 @@ Rectangle {
                 }
             }
         }
+    }
 
-        ActionButton {
-            id: showPagerButton
+    ActionButton {
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        id: showPagerButton
 
-            width: rootRect.itemSize
-            height: rootRect.itemSize
+        width: rootRect.itemSize
+        height: rootRect.itemSize
 
-            visible: showPager
+        visible: showPager
 
-            actionIconURL: "image://ThemeIcons/user-desktop"
-            onTriggered: commonJS.showTooltip(showPagerButton,
-                    function(x, y) { KT_taskbarProxy.showPager(x, y, showThumbsInPager) })
-        }
+        actionIconURL: "image://ThemeIcons/user-desktop"
+        onTriggered: commonJS.showTooltip(showPagerButton,
+                function(x, y) { KT_taskbarProxy.showPager(x, y, showThumbsInPager) })
     }
 }
