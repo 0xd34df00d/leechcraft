@@ -437,7 +437,15 @@ namespace LMP
 			}
 
 			const auto& proper = codec->toUnicode (cp1252.constData ());
-			if (!proper.isEmpty ())
+			if (proper.isEmpty ())
+				return;
+
+			int origQCount = 0;
+			while (*origStr)
+				if (*(origStr++) == '?')
+					++origQCount;
+
+			if (origQCount >= proper.count ('?'))
 				out = proper;
 #else
 			Q_UNUSED (out);
