@@ -57,6 +57,7 @@ namespace SB2
 		: BaseSettingsManager ()
 		, ViewMgr_ (view)
 		{
+			Util::BaseSettingsManager::Init ();
 		}
 
 		Settings_ptr XmlViewSettingsManager::GetSettings () const
