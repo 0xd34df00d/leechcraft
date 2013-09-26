@@ -188,6 +188,66 @@ namespace Xoox
 		Ui_.SOCKS5ProxyAddress_->setText (proxy);
 	}
 
+	QString GlooxAccountConfigurationWidget::GetStunServer () const
+	{
+		return Ui_.StunHost_->text ();
+	}
+
+	void GlooxAccountConfigurationWidget::SetStunServer (const QString& host)
+	{
+		Ui_.StunHost_->setText (host);
+	}
+
+	int GlooxAccountConfigurationWidget::GetStunPort () const
+	{
+		return Ui_.StunPort_->value ();
+	}
+
+	void GlooxAccountConfigurationWidget::SetStunPort (int port)
+	{
+		Ui_.StunPort_->setValue (port);
+	}
+
+	QString GlooxAccountConfigurationWidget::GetTurnServer () const
+	{
+		return Ui_.TurnHost_->text ();
+	}
+
+	void GlooxAccountConfigurationWidget::SetTurnServer (const QString& host)
+	{
+		Ui_.TurnHost_->setText (host);
+	}
+
+	int GlooxAccountConfigurationWidget::GetTurnPort () const
+	{
+		return Ui_.TurnPort_->value ();
+	}
+
+	void GlooxAccountConfigurationWidget::SetTurnPort (int port)
+	{
+		Ui_.TurnPort_->setValue (port);
+	}
+
+	QString GlooxAccountConfigurationWidget::GetTurnUser () const
+	{
+		return Ui_.TurnUser_->text ();
+	}
+
+	void GlooxAccountConfigurationWidget::SetTurnUser (const QString& user)
+	{
+		Ui_.TurnUser_->setText (user);
+	}
+
+	QString GlooxAccountConfigurationWidget::GetTurnPassword () const
+	{
+		return Ui_.TurnPassword_->text ();
+	}
+
+	void GlooxAccountConfigurationWidget::SetTurnPassword (const QString& pass)
+	{
+		Ui_.TurnPassword_->setText (pass);
+	}
+
 	QString GlooxAccountConfigurationWidget::GetPassword () const
 	{
 		return Password_;

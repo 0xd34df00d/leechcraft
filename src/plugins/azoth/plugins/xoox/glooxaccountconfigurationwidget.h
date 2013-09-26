@@ -84,6 +84,24 @@ namespace Xoox
 		QString GetSOCKS5Proxy () const;
 		void SetSOCKS5Proxy (const QString&);
 
+		QString GetStunServer () const;
+		void SetStunServer (const QString&);
+
+		int GetStunPort () const;
+		void SetStunPort (int);
+
+		QString GetTurnServer () const;
+		void SetTurnServer (const QString&);
+
+		int GetTurnPort () const;
+		void SetTurnPort (int);
+
+		QString GetTurnUser () const;
+		void SetTurnUser (const QString&);
+
+		QString GetTurnPassword () const;
+		void SetTurnPassword (const QString&);
+
 		QString GetPassword () const;
 	private slots:
 		void on_UpdatePassword__released ();
