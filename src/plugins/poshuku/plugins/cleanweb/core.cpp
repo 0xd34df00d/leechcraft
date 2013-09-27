@@ -1079,6 +1079,9 @@ namespace CleanWeb
 
 	void Core::regenFilterCaches ()
 	{
+		ExceptionsCache_.clear ();
+		FilterItemsCache_.clear ();
+
 		QList<Filter> allFilters = Filters_;
 		allFilters << UserFilters_->GetFilter ();
 
