@@ -35,6 +35,7 @@
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
 #include "picasaaccount.h"
+#include <../qrosp/third-party/qmetaobjectbuilder.h>
 
 namespace LeechCraft
 {
@@ -84,6 +85,23 @@ namespace Vangog
 		RequestAccessToken ();
 	}
 
+	namespace
+	{
+		QString GetPicasaAccessFromInt (int access)
+		{
+			switch (access)
+			{
+			case 0:
+				return "public";
+			case 1:
+			default:
+				return "private";
+			}
+
+			return "private";
+		}
+	}
+
 	void PicasaManager::RequestAccessToken ()
 	{
 		if (FirstRequest_)
@@ -123,7 +141,7 @@ namespace Vangog
 
 	void PicasaManager::ParseError (const QVariantMap& map)
 	{
-
+		qWarning () << Q_FUNC_INFO << map;
 	}
 
 	namespace
@@ -174,11 +192,11 @@ namespace Vangog
 				.arg (QString::fromUtf8 (albumId))
 				.arg (QString::fromUtf8 (photoId))
 				.arg (key);
-		QNetworkRequest request;
-		request.setUrl (QUrl (str));
-
+		QNetworkRequest request = CreateRequest (QUrl (str));
+		request.setRawHeader ("If-Match", "*");
 		QNetworkReply *reply = Account_->GetProxy ()->
 				GetNetworkAccessManager ()->deleteResource (request);
+		Reply2Id_ [reply] = photoId;
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -191,11 +209,11 @@ namespace Vangog
 				.arg (Account_->GetLogin ())
 				.arg (QString::fromUtf8 (albumId))
 				.arg (key);
-		QNetworkRequest request;
-		request.setUrl (QUrl (str));
-
+		QNetworkRequest request = CreateRequest (QUrl (str));
+		request.setRawHeader ("If-Match", "*");
 		QNetworkReply *reply = Account_->GetProxy ()->
 				GetNetworkAccessManager ()->deleteResource (request);
+		Reply2Id_ [reply] = albumId;
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -507,14 +525,27 @@ namespace Vangog
 
 	void PicasaManager::handleDeletePhotoFinished ()
 	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
 
+		ApiCallsQueue_.removeFirst ();
+		const auto& content = reply->readAll ();
+		const auto& id = Reply2Id_.take (reply);
+		content.isEmpty () ?
+			emit deletedPhoto (id) :
+			emit gotError (QString::fromUtf8 (content));
+		reply->deleteLater ();
 	}
 
 	void PicasaManager::handleDeleteAlbumFinished ()
 	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
 
+		qDebug () << Q_FUNC_INFO << reply->readAll ();
 	}
-
 }
 }
 }

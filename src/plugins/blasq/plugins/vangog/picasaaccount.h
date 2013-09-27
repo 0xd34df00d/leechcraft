@@ -72,11 +72,13 @@ namespace Vangog
 		QStandardItem *AllPhotosItem_;
 		QHash<QByteArray, QStandardItem*> AlbumId2AlbumItem_;
 		QHash<QByteArray, QSet<QByteArray>> AlbumID2PhotosSet_;
+		QHash<QStandardItem*, QByteArray> Item2PhotoId_;
+		QHash<QByteArray, QModelIndex> DeletedPhotoId2Index_;
 
 	public:
 		enum PicasaRole
 		{
-			AlbumId = Qt::UserRole + 1
+			AlbumId = CollectionRole::CollectionRoleMax + 1
 		};
 
 		PicasaAccount (const QString& name, PicasaService *service,
@@ -112,6 +114,7 @@ namespace Vangog
 	private slots:
 		void handleGotAlbums (const QList<Album>& albums);
 		void handleGotPhotos (const QList<Photo>& photos);
+		void handleDeletedPhotos (const QByteArray& id);
 
 	signals:
 		void accountChanged (PicasaAccount *acc);

@@ -53,11 +53,13 @@ namespace Vangog
 	{
 		Q_OBJECT
 
-		PicasaAccount *Account_;
+		PicasaAccount * const Account_;
 		QQueue<std::function<void (const QString&)>> ApiCallsQueue_;
 		QString AccessToken_;
 		QDateTime AccessTokenExpireDate_;
 		bool FirstRequest_;
+
+		QHash<QNetworkReply*, QByteArray> Reply2Id_;
 
 	public:
 		PicasaManager (PicasaAccount *account, QObject *parent = 0);
@@ -70,7 +72,6 @@ namespace Vangog
 
 		void DeletePhoto (const QByteArray& photoId, const QByteArray& albumId);
 		void DeleteAlbum (const QByteArray& albumId);
-
 	private:
 		QByteArray CreateDomDocumentFromReply (QNetworkReply *reply, QDomDocument &document);
 		void RequestAccessToken ();
@@ -95,6 +96,8 @@ namespace Vangog
 	signals:
 		void gotAlbums (const QList<Album>& albums);
 		void gotPhotos (const QList<Photo>& photos);
+		void deletedPhoto (const QByteArray& id);
+		void gotError (const QString& errorString);
 	};
 }
 }

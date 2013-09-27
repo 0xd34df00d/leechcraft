@@ -37,6 +37,7 @@
 #include <QtDebug>
 #include <QUuid>
 #include <interfaces/core/irootwindowsmanager.h>
+#include "albumsettingsdialog.h"
 #include "picasaservice.h"
 
 namespace LeechCraft
@@ -68,6 +69,10 @@ namespace Vangog
 				SIGNAL (gotPhotos (QList<Photo>)),
 				this,
 				SLOT (handleGotPhotos (QList<Photo>)));
+		connect (PicasaManager_,
+				SIGNAL (deletedPhoto (QByteArray)),
+				this,
+				SLOT (handleDeletedPhotos (QByteArray)));
 	}
 
 	ICoreProxy_ptr PicasaAccount::GetProxy () const
@@ -197,16 +202,19 @@ namespace Vangog
 	{
 		switch (index.data (CollectionRole::Type).toInt ())
 		{
-			case ItemType::Collection:
-				PicasaManager_->DeleteAlbum (index.data (CollectionRole::ID).toByteArray ());
-				break;
-			case ItemType::Image:
-				PicasaManager_->DeletePhoto (index.data (CollectionRole::ID).toByteArray (),
-						index.data (AlbumId).toByteArray ());
-				break;
-			case ItemType::AllPhotos:
-			default:
-				break;
+		case ItemType::Collection:
+			PicasaManager_->DeleteAlbum (index.data (CollectionRole::ID).toByteArray ());
+			break;
+		case ItemType::Image:
+		{
+			const auto& id = index.data (CollectionRole::ID).toByteArray ();
+			PicasaManager_->DeletePhoto (id, index.data (AlbumId).toByteArray ());
+			DeletedPhotoId2Index_ [id] = index;
+			break;
+		}
+		case ItemType::AllPhotos:
+		default:
+			break;
 		}
 	}
 
@@ -259,7 +267,7 @@ namespace Vangog
 	{
 		for (const auto& photo : photos)
 		{
-			auto mkItem = [&photo] () -> QStandardItem*
+			auto mkItem = [&photo, this] () -> QStandardItem*
 			{
 				auto item = new QStandardItem (photo.Title_);
 				item->setEditable (false);
@@ -276,10 +284,11 @@ namespace Vangog
 					item->setData (first.Url_, CollectionRole::SmallThumb);
 					item->setData (QSize (first.Width_, first.Height_), CollectionRole::SmallThumbSize);
 					item->setData (last.Url_, CollectionRole::MediumThumb);
-					item->setData (QSize (last.Width_, last.Height_), CollectionRole::MediumThumb);
+					item->setData (QSize (last.Width_, last.Height_), CollectionRole::MediumThumbSize);
 				}
 
 				item->setData (photo.AlbumID_, AlbumId);
+				Item2PhotoId_ [item] = photo.ID_;
 
 				return item;
 			};
@@ -297,6 +306,34 @@ namespace Vangog
 		}
 		emit doneUpdating ();
 	}
+
+	void PicasaAccount::handleDeletedPhotos (const QByteArray& photoId)
+	{
+		if (!DeletedPhotoId2Index_.contains (photoId))
+			return;
+
+		auto index = DeletedPhotoId2Index_.take (photoId);
+		if (!index.isValid ())
+			return;
+
+		CollectionsModel_->removeRow (index.row (), index.parent ());
+		const auto& albumId = index.data (AlbumId).toByteArray ();
+		if (!AlbumId2AlbumItem_.contains (albumId))
+			return;
+
+		auto albumItem = AlbumId2AlbumItem_ [albumId];
+		for (int i = 0, count = albumItem->rowCount (); i < count; ++i)
+		{
+			auto childItem = albumItem->child (i);
+			if (childItem->data (CollectionRole::ID).toByteArray () == photoId)
+			{
+				CollectionsModel_->removeRow (i, albumItem->index ());
+				break;
+			}
+		}
+		emit doneUpdating ();
+	}
+
 }
 }
 }
