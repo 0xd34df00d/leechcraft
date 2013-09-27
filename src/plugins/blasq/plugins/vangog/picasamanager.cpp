@@ -50,6 +50,12 @@ namespace Vangog
 	{
 	}
 
+	void PicasaManager::Schedule (std::function<void (QString)> func)
+	{
+		ApiCallsQueue_ << func;
+		RequestAccessToken ();
+	}
+
 	QString PicasaManager::GetAccessToken () const
 	{
 		return AccessToken_;
@@ -110,13 +116,8 @@ namespace Vangog
 		RequestAccessToken ();
 	}
 
-	QByteArray PicasaManager::CreateDomDocumentFromReply (QNetworkReply *reply, QDomDocument &document)
+	QByteArray PicasaManager::CreateDomDocument (const QByteArray& content, QDomDocument &document)
 	{
-		if (!reply)
-			return QByteArray ();
-
-		const auto& content = reply->readAll ();
-		reply->deleteLater ();
 		QString errorMsg;
 		int errorLine = -1, errorColumn = -1;
 
@@ -127,7 +128,8 @@ namespace Vangog
 			return QByteArray ();
 		}
 
-		ApiCallsQueue_.removeFirst ();
+		if (!ApiCallsQueue_.isEmpty ())
+			ApiCallsQueue_.removeFirst ();
 
 		if (!document.setContent (content, &errorMsg, &errorLine, &errorColumn))
 		{
@@ -452,7 +454,8 @@ namespace Vangog
 			return;
 
 		QDomDocument document;
-		if (CreateDomDocumentFromReply (reply, document).isEmpty ())
+		reply->deleteLater ();
+		if (CreateDomDocument (reply->readAll (), document).isEmpty ())
 			return;
 		emit gotAlbums (ParseAlbums (document));
 		RequestAccessToken ();
@@ -568,7 +571,8 @@ namespace Vangog
 			return;
 
 		QDomDocument document;
-		if (CreateDomDocumentFromReply (reply, document).isEmpty ())
+		reply->deleteLater ();
+		if (CreateDomDocument (reply->readAll (), document).isEmpty ())
 			return;
 
 		emit gotPhotos (ParsePhotos (document));
@@ -602,13 +606,38 @@ namespace Vangog
 
 	void PicasaManager::handleCreateAlbumFinished ()
 	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
 		QDomDocument doc;
-		const auto& content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()), doc);
-		if (content.isEmpty ())
+		if (CreateDomDocument (reply->readAll (), doc).isEmpty ())
 			return;
 		emit gotAlbum (ParseAlbums (doc).value (0));
 		RequestAccessToken ();
 	}
+
+	void PicasaManager::handleImageUploaded (const QByteArray& response)
+	{
+		QByteArray content;
+		QDomDocument document;
+		if (!response.isEmpty ())
+			content = response;
+		else
+		{
+			auto reply = qobject_cast<QNetworkReply*> (sender ());
+			if (!reply)
+				return;
+			content = reply->readAll ();
+		}
+
+		if (CreateDomDocument (content, document).isEmpty ())
+			return;
+
+		emit gotPhoto (ParsePhotos (document).value (0));
+		RequestAccessToken ();
+	}
+
 }
 }
 }

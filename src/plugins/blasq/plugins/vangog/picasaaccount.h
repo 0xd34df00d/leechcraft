@@ -44,10 +44,16 @@ class QStandardItem;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class QueueManager;
+}
+
 namespace Blasq
 {
 namespace Vangog
 {
+	class UploadManager;
 	class PicasaService;
 
 	class PicasaAccount : public QObject
@@ -78,6 +84,9 @@ namespace Vangog
 		QHash<QStandardItem*, QByteArray> Item2PhotoId_;
 		QHash<QByteArray, QModelIndex> DeletedPhotoId2Index_;
 
+		Util::QueueManager *RequestQueue_;
+		UploadManager *UploadManager_;
+
 	public:
 		enum PicasaRole
 		{
@@ -94,6 +103,8 @@ namespace Vangog
 		QByteArray Serialize () const;
 		static PicasaAccount* Deserialize (const QByteArray& data,
 				PicasaService *service, ICoreProxy_ptr proxy);
+
+		void Schedule (std::function<void (QString)> func);
 
 		QObject* GetQObject () override;
 		IService* GetService () const override;
@@ -115,6 +126,9 @@ namespace Vangog
 		void CreateCollection(const QModelIndex& parent) override;
 		bool HasUploadFeature(Feature ) const override;
 		void UploadImages(const QModelIndex& collection, const QList<UploadItem>& paths) override;
+
+		void ImageUploadResponse (const QByteArray& content);
+
 	private:
 		bool TryToEnterLoginIfNoExists ();
 
@@ -122,6 +136,7 @@ namespace Vangog
 		void handleGotAlbums (const QList<Album>& albums);
 		void handleGotAlbum (const Album& album);
 		void handleGotPhotos (const QList<Photo>& photos);
+		void handleGotPhoto (const Photo& photo);
 		void handleDeletedPhotos (const QByteArray& id);
 
 	signals:

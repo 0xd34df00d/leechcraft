@@ -24,6 +24,7 @@ set (VANGOG_SRCS
 	picasamanager.cpp
 	picasaservice.cpp
 	registerpage.cpp
+	uploadmanager.cpp
 	vangog.cpp
 	)
 
