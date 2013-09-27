@@ -50,7 +50,7 @@ namespace Woodpecker
 		HttpClient_ = Core::Instance ().GetCoreProxy ()->GetNetworkAccessManager ();
 		OAuthRequest_ = new KQOAuthRequest (this);
 		OAuthManager_ = new KQOAuthManager (this);
-		OAuthManager_->setNetworkManager(HttpClient_);
+		OAuthManager_->setNetworkManager (HttpClient_);
 
 #ifdef WP_DEBUG
 		OAuthRequest_->setEnableDebugOutput (true);
@@ -181,9 +181,9 @@ namespace Woodpecker
 				SLOT (onAccessTokenReceived (QString, QString)));
 
 		connect (OAuthManager_,
-				SIGNAL(authorizationPageRequested(QUrl)),
+				SIGNAL (authorizationPageRequested (QUrl)),
 				this,
-				SLOT (onAuthorizationPageRequested (QUrl)));
+				SLOT (onAuthorizationPageRequested (const QUrl&)));
 		
 		OAuthRequest_->initRequest (KQOAuthRequest::TemporaryCredentials, QUrl ("https://api.twitter.com/oauth/request_token"));
 		OAuthRequest_->setConsumerKey (ConsumerKey_);
@@ -453,9 +453,9 @@ namespace Woodpecker
 		SignedRequest (TwitterRequest::DeleteFavorite, KQOAuthRequest::POST, param);
 	}
 	
-	void TwitterInterface::onAuthorizationPageRequested (QUrl userAuthURL)
+	void TwitterInterface::onAuthorizationPageRequested (const QUrl& userAuthURL)
 	{
-		const auto& e = Util::MakeEntity (QUrl (userAuthURL),
+		const auto& e = Util::MakeEntity (userAuthURL,
 										  QString (), OnlyHandle | FromUserInitiated);
 		
 		Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
