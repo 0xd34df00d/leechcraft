@@ -344,10 +344,7 @@ namespace CleanWeb
 	{
 		void RemoveElem (QWebElement elem)
 		{
-			auto parent = elem.parent ();
-			elem.removeFromDocument ();
-			if (!parent.isNull () && !parent.findAll ("*").count ())
-				RemoveElem (parent);
+			elem.setStyleProperty ("visibility", "hidden !important");
 		}
 	}
 
@@ -419,8 +416,8 @@ namespace CleanWeb
 	}
 
 	void Core::HandleContextMenu (const QWebHitTestResult& r,
-		QWebView *view, QMenu *menu,
-		LeechCraft::Poshuku::WebViewCtxMenuStage stage)
+			QWebView *view, QMenu *menu,
+			LeechCraft::Poshuku::WebViewCtxMenuStage stage)
 	{
 		QUrl iurl = r.imageUrl ();
 		if (stage == WVSAfterImage &&
