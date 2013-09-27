@@ -929,9 +929,8 @@ namespace CleanWeb
 		QList<Filter> allFilters = Filters_;
 		allFilters << UserFilters_->GetFilter ();
 		int numItems = 0;
-		QList<QWebElement> elems;
-		Q_FOREACH (const Filter& filter, allFilters)
-			Q_FOREACH (const auto& item, filter.Filters_)
+		for (const Filter& filter : allFilters)
+			for (const auto& item : filter.Filters_)
 			{
 				if (item.Option_.HideSelector_.isEmpty ())
 					continue;
@@ -950,8 +949,8 @@ namespace CleanWeb
 							<< item.Option_.HideSelector_
 							<< frameUrl;
 
-				Q_FOREACH (auto elem, matchingElems)
-					RemoveElem (elem);
+				for (int i = matchingElems.count () - 1; i >= 0; --i)
+					RemoveElem (matchingElems.at (i));
 
 				if (!(++numItems % 100))
 				{
