@@ -941,8 +941,7 @@ namespace CleanWeb
 				SLOT (hidingElementsFound ()));
 		watcher->setFuture (QtConcurrent::run ([=] () -> HidingWorkerResult
 					{
-						HidingWorkerResult result { frame, {} };
-
+						QStringList sels;
 						for (const Filter& filter : allFilters)
 							for (const auto& item : filter.Filters_)
 							{
@@ -955,9 +954,9 @@ namespace CleanWeb
 								if (!item.OrigString_.isEmpty () && !Matches (item, url, utf8, domain))
 									continue;
 
-								result.Selectors_ << item.Option_.HideSelector_;
+								sels << item.Option_.HideSelector_;
 							}
-						return result;
+						return { frame, 0, sels };
 					}));
 
 		for (auto childFrame : frame->childFrames ())
@@ -978,13 +977,12 @@ namespace CleanWeb
 		if (!result.Frame_)
 			return;
 
-		const int chunkSize = 500;
+		const int chunkSize = 100;
 
-		const auto endPos = std::min (result.Selectors_.end (),
-				result.Selectors_.begin () + chunkSize);
-		for (auto pos = result.Selectors_.begin (); pos != endPos; ++pos)
+		auto& i = result.CurrentPos_;
+		for (auto end = std::min (i + chunkSize, result.Selectors_.size ()); i < end; ++i)
 		{
-			const auto& selector = *pos;
+			const auto& selector = result.Selectors_.value (i);
 
 			const auto& matchingElems = result.Frame_->findAllElements (selector);
 			if (matchingElems.count ())
@@ -998,9 +996,7 @@ namespace CleanWeb
 				RemoveElem (matchingElems.at (i));
 		}
 
-		result.Selectors_.erase (result.Selectors_.begin (), endPos);
-
-		if (!result.Selectors_.isEmpty ())
+		if (result.CurrentPos_ < result.Selectors_.size ())
 			QMetaObject::invokeMethod (this,
 					"hideElementsChunk",
 					Qt::QueuedConnection,
