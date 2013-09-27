@@ -981,18 +981,15 @@ namespace CleanWeb
 	void Core::moreDelayedRemoveElements ()
 	{
 		QWebFrame *frame = qobject_cast<QWebFrame*> (sender ());
-		Q_FOREACH (const QString& url, MoreDelayedURLs_ [frame])
+		for (const QString& url : MoreDelayedURLs_.take (frame))
 		{
-			QWebElementCollection elems =
-					frame->findAllElements ("*[src=\"" + url + "\"]");
+			auto elems = frame->findAllElements ("*[src=\"" + url + "\"]");
 			if (elems.count ())
 				Q_FOREACH (QWebElement elem, elems)
 					elem.removeFromDocument ();
 			else
-				qWarning () << Q_FUNC_INFO << "not found" << url;
+				qWarning () << Q_FUNC_INFO << "not found" << url << frame;
 		}
-
-		MoreDelayedURLs_.remove (frame);
 	}
 
 	void Core::handleFrameDestroyed ()
