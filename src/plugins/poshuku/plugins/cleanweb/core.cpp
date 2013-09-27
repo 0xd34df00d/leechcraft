@@ -1121,11 +1121,23 @@ namespace CleanWeb
 		QList<Filter> allFilters = Filters_;
 		allFilters << UserFilters_->GetFilter ();
 
-		const int chunkSize = 1500;
+		int exceptionsCount = 0;
+		int filtersCount = 0;
+		for (const Filter& filter : allFilters)
+		{
+			exceptionsCount += filter.Exceptions_.size ();
+			filtersCount += filter.Filters_.size ();
+		}
+
+		auto idealThreads = std::max (QThread::idealThreadCount (), 2);
+
+		const int exChunkSize = std::max (exceptionsCount / idealThreads / 4, 200);
+		const int fChunkSize = std::max (filtersCount / idealThreads / 4, 200);
+		qDebug () << Q_FUNC_INFO << exceptionsCount << filtersCount << exChunkSize << fChunkSize;
 
 		QList<FilterItem> lastItemsChunk, lastExceptionsChunk;
-		lastItemsChunk.reserve (chunkSize);
-		lastExceptionsChunk.reserve (chunkSize);
+		lastItemsChunk.reserve (fChunkSize);
+		lastExceptionsChunk.reserve (exChunkSize);
 
 		for (const Filter& filter : allFilters)
 		{
@@ -1133,11 +1145,10 @@ namespace CleanWeb
 				if (item.Option_.HideSelector_.isEmpty ())
 				{
 					lastExceptionsChunk << item;
-					if (lastExceptionsChunk.size () >= chunkSize)
+					if (lastExceptionsChunk.size () >= exChunkSize)
 					{
 						ExceptionsCache_ << lastExceptionsChunk;
 						lastExceptionsChunk.clear ();
-						lastExceptionsChunk.reserve (chunkSize);
 					}
 				}
 
@@ -1147,11 +1158,10 @@ namespace CleanWeb
 					continue;
 
 				lastItemsChunk << item;
-				if (lastItemsChunk.size () >= chunkSize)
+				if (lastItemsChunk.size () >= fChunkSize)
 				{
 					FilterItemsCache_ << lastItemsChunk;
 					lastItemsChunk.clear ();
-					lastItemsChunk.reserve (chunkSize);
 				}
 			}
 		}
