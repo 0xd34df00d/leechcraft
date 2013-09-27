@@ -959,7 +959,7 @@ namespace CleanWeb
 		{
 			const auto& baseUrl = frame->baseUrl ();
 
-			const auto& elems = frame->findAllElements ("img,script,frame,applet,object");
+			const auto& elems = frame->findAllElements ("img,script,iframe,applet,object");
 
 			bool removed = false;
 			for (int i = elems.count () - 1; i >= 0; --i)
