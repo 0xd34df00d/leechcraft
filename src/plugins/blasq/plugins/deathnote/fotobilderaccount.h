@@ -107,7 +107,7 @@ namespace DeathNote
 		void UpdateCollections () override;
 
 	private:
-		bool FotoBilderErrorExists (const QByteArray& content);
+		bool IsErrorReply (const QByteArray& content);
 		void GetChallenge ();
 		void LoginRequest (const QString& challenge);
 		void GetGalsRequest (const QString& challenge);

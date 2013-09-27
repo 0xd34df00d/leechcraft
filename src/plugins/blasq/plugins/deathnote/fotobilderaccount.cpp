@@ -44,7 +44,6 @@
 #include <util/util.h>
 #include "albumsettingsdialog.h"
 #include "fotobilderservice.h"
-#include <boost/concept_check.hpp>
 
 namespace LeechCraft
 {
@@ -158,7 +157,7 @@ namespace DeathNote
 		return CollectionsModel_;
 	}
 
-	void FotoBilderAccount::CreateCollection (const QModelIndex& parent)
+	void FotoBilderAccount::CreateCollection (const QModelIndex&)
 	{
 		AlbumSettingsDialog dia ({}, Login_, this);
 		if (dia.exec () != QDialog::Accepted)
@@ -167,7 +166,7 @@ namespace DeathNote
 		const auto& name = dia.GetName ();
 		int priv = dia.GetPrivacyLevel ();
 
-		CallsQueue_.append ([this, name, priv] (const QString& challenge) -> void
+		CallsQueue_.append ([this, name, priv] (const QString& challenge)
 			{
 				CreateGallery (name, priv, challenge);
 			});
@@ -178,9 +177,9 @@ namespace DeathNote
 	{
 		switch (feature)
 		{
-			case Feature::RequiresAlbumOnUpload:
-			case Feature::SupportsDescriptions:
-				return true;
+		case Feature::RequiresAlbumOnUpload:
+		case Feature::SupportsDescriptions:
+			return true;
 		}
 
 		return false;
@@ -277,7 +276,7 @@ namespace DeathNote
 		}
 	}
 
-	bool FotoBilderAccount::FotoBilderErrorExists (const QByteArray& content)
+	bool FotoBilderAccount::IsErrorReply (const QByteArray& content)
 	{
 		QXmlQuery query;
 		query.setFocus (content);
@@ -444,7 +443,7 @@ namespace DeathNote
 				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
-	void FotoBilderAccount::UploadImagesRequest (const QByteArray& albumId, const QList< UploadItem >& items)
+	void FotoBilderAccount::UploadImagesRequest (const QByteArray& albumId, const QList<UploadItem>& items)
 	{
 		CallsQueue_ << [albumId, items, this] (const QString& challenge)
 		{
@@ -529,10 +528,9 @@ namespace DeathNote
 			if (!file.open (QIODevice::ReadOnly))
 				continue;
 
-			auto content = file.readAll ();
-			file.seek (0);
-			QByteArray magic = file.read (10);
-			QByteArray md5 = QCryptographicHash::hash (content, QCryptographicHash::Md5).toHex ();
+			const auto& content = file.readAll ();
+			QByteArray magic = content.mid (0, 10);
+			const QByteArray& md5 = QCryptographicHash::hash (content, QCryptographicHash::Md5).toHex ();
 
 			requestMap.insert (QString ("X-FB-UploadPrepare.Pic.%1.MD5")
 					.arg (i).toUtf8 (), md5);
@@ -559,7 +557,7 @@ namespace DeathNote
 	void FotoBilderAccount::handleGetChallengeRequestFinished ()
 	{
 		QDomDocument document;
-		QByteArray content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
+		const QByteArray& content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
 				document);
 		if (content.isEmpty ())
 			return;
@@ -717,13 +715,13 @@ namespace DeathNote
 		{
 			const auto& list = document.elementsByTagName ("UploadPicResponse");
 			Photo photo;
-			for (int i = 0, size = list.size (); i < size; ++i)
-			{
-				const auto& picNode = list.at (i);
-				const auto& fieldsList = picNode.childNodes ();
-				photo = CreatePhoto (fieldsList);
-				photo.Thumbnails_ = GenerateThumbnails (photo.Url_);
-			}
+			if (list.isEmpty ())
+				return photo;
+
+			const auto& picNode = list.at (0);
+			const auto& fieldsList = picNode.childNodes ();
+			photo = CreatePhoto (fieldsList);
+			photo.Thumbnails_ = GenerateThumbnails (photo.Url_);
 
 			return photo;
 		}
@@ -732,12 +730,12 @@ namespace DeathNote
 	void FotoBilderAccount::handleLoginRequestFinished ()
 	{
 		QDomDocument document;
-		QByteArray content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
+		const QByteArray& content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
 				document);
 		if (content.isEmpty ())
 			return;
 
-		if (FotoBilderErrorExists (content))
+		if (IsErrorReply (content))
 			return;
 
 		Quota_ = ParseLoginResponse (document);
@@ -758,12 +756,12 @@ namespace DeathNote
 	void FotoBilderAccount::handleGotAlbums ()
 	{
 		QDomDocument document;
-		QByteArray content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
+		const QByteArray& content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
 				document);
 		if (content.isEmpty ())
 			return;
 
-		if (FotoBilderErrorExists (content))
+		if (IsErrorReply (content))
 			return;
 
 		if (auto rc = CollectionsModel_->rowCount ())
@@ -824,12 +822,12 @@ namespace DeathNote
 	void FotoBilderAccount::handleGotPhotos ()
 	{
 		QDomDocument document;
-		auto content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
+		const auto& content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
 				document);
 		if (content.isEmpty ())
 			return;
 
-		if (FotoBilderErrorExists (content))
+		if (IsErrorReply (content))
 			return;
 
 		for (const auto& photo : ParseGetPicsRequest (document))
@@ -840,12 +838,12 @@ namespace DeathNote
 	void FotoBilderAccount::handleGalleryCreated ()
 	{
 		QDomDocument document;
-		auto content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
+		const auto& content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
 				document);
 		if (content.isEmpty ())
 			return;
 
-		if (FotoBilderErrorExists (content))
+		if (IsErrorReply (content))
 			return;
 
 		auto galleries = document.elementsByTagName ("Gallery");
@@ -888,11 +886,11 @@ namespace DeathNote
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		QDomDocument document;
-		QByteArray content = CreateDomDocumentFromReply (reply, document);
+		const QByteArray& content = CreateDomDocumentFromReply (reply, document);
 		if (content.isEmpty ())
 			return;
 
-		if (FotoBilderErrorExists (content))
+		if (IsErrorReply (content))
 			return;
 
 		auto pic = ParseUploadedPictureResponse (document);
@@ -905,12 +903,12 @@ namespace DeathNote
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		QDomDocument document;
-		QByteArray content = CreateDomDocumentFromReply (reply,
+		const QByteArray& content = CreateDomDocumentFromReply (reply,
 				 document);
 		if (content.isEmpty ())
 			return;
 
-		if (FotoBilderErrorExists (content))
+		if (IsErrorReply (content))
 			return;
 
 		QDomNodeList pics = document.elementsByTagName ("Pic");
