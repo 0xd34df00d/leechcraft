@@ -58,6 +58,7 @@
 Q_DECLARE_METATYPE (QWebFrame*);
 Q_DECLARE_METATYPE (QPointer<QWebFrame>);
 Q_DECLARE_METATYPE (QNetworkReply*);
+Q_DECLARE_METATYPE (LeechCraft::Poshuku::CleanWeb::HidingWorkerResult);
 
 namespace LeechCraft
 {
@@ -212,6 +213,8 @@ namespace CleanWeb
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
 				SIGNAL (gotEntity (LeechCraft::Entity)));
+
+		qRegisterMetaType<HidingWorkerResult> ("HidingWorkerResult");
 	}
 
 	Core& Core::Instance ()
@@ -913,20 +916,12 @@ namespace CleanWeb
 		PendingJobs_.remove (id);
 	}
 
-	namespace
-	{
-		struct HidingWorkerResult
-		{
-			QPointer<QWebFrame> Frame_;
-			QStringList Selectors_;
-		};
-	}
-
 	void Core::handleFrameLayout (QPointer<QWebFrame> frame)
 	{
 		if (!frame)
 			return;
 
+		qDebug () << Q_FUNC_INFO << frame;
 		const QUrl& frameUrl = frame->url ();
 		const QString& urlStr = frameUrl.toString ();
 		const auto& urlUtf8 = urlStr.toUtf8 ();
@@ -971,11 +966,23 @@ namespace CleanWeb
 		watcher->deleteLater ();
 
 		const auto& result = watcher->result ();
+
+		hideElementsChunk (result);
+	}
+
+	void Core::hideElementsChunk (HidingWorkerResult result)
+	{
 		if (!result.Frame_)
 			return;
 
-		for (const auto& selector : result.Selectors_)
+		const int chunkSize = 500;
+
+		const auto endPos = std::min (result.Selectors_.end (),
+				result.Selectors_.begin () + chunkSize);
+		for (auto pos = result.Selectors_.begin (); pos != endPos; ++pos)
 		{
+			const auto& selector = *pos;
+
 			const auto& matchingElems = result.Frame_->findAllElements (selector);
 			if (matchingElems.count ())
 				qDebug () << "removing"
@@ -987,6 +994,14 @@ namespace CleanWeb
 			for (int i = matchingElems.count () - 1; i >= 0; --i)
 				RemoveElem (matchingElems.at (i));
 		}
+
+		result.Selectors_.erase (result.Selectors_.begin (), endPos);
+
+		if (!result.Selectors_.isEmpty ())
+			QMetaObject::invokeMethod (this,
+					"hideElementsChunk",
+					Qt::QueuedConnection,
+					Q_ARG (HidingWorkerResult, result));
 	}
 
 	namespace

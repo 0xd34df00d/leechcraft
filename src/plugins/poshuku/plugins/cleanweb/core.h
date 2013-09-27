@@ -56,6 +56,13 @@ namespace CleanWeb
 	class FlashOnClickWhitelist;
 	class UserFiltersModel;
 
+
+	struct HidingWorkerResult
+	{
+		QPointer<QWebFrame> Frame_;
+		QStringList Selectors_;
+	};
+
 	class Core : public QAbstractItemModel
 	{
 		Q_OBJECT
@@ -175,6 +182,7 @@ namespace CleanWeb
 		void handleJobError (int, IDownload::Error);
 		void handleFrameLayout (QPointer<QWebFrame>);
 		void hidingElementsFound ();
+		void hideElementsChunk (HidingWorkerResult);
 		void delayedRemoveElements (QPointer<QWebFrame>, const QUrl&);
 		void moreDelayedRemoveElements ();
 		void handleFrameDestroyed ();
