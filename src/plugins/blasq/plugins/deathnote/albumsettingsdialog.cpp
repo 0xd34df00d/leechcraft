@@ -79,6 +79,9 @@ namespace DeathNote
 	{
 		switch (index)
 		{
+		case 0:
+			PrivacyLevel_ = 255;
+			break;
 		case 1:
 			PrivacyLevel_ = 254;
 			break;
@@ -91,9 +94,9 @@ namespace DeathNote
 			PrivacyLevel_ = dlg.GetSelectedGroupId ();
 			break;
 		}
-		case 0:
 		default:
-			PrivacyLevel_ = 255;
+			qWarning () << Q_FUNC_INFO
+					<< "unknown index of photo privacy level";
 			break;
 		}
 	}

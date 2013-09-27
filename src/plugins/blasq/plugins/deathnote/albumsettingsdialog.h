@@ -48,7 +48,7 @@ namespace DeathNote
 		Ui::AlbumSettingsDialog Ui_;
 		int PrivacyLevel_;
 		QString Login_;
-		FotoBilderAccount *Account_;
+		FotoBilderAccount * const Account_;
 
 	public:
 		AlbumSettingsDialog (const QString& name, const QString& login,
