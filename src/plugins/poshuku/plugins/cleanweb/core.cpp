@@ -962,8 +962,6 @@ namespace CleanWeb
 		if (elems.count ())
 			Q_FOREACH (QWebElement elem, elems)
 				RemoveElem (elem);
-		else if (frame->parentFrame ())
-			delayedRemoveElements (frame->parentFrame (), url);
 		else
 		{
 			connect (frame,
