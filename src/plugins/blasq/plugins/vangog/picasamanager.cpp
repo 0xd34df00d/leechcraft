@@ -102,6 +102,47 @@ namespace Vangog
 		}
 	}
 
+	void PicasaManager::CreateAlbum (const QString& name, const QString& desc, int access)
+	{
+		QString accessStr = GetPicasaAccessFromInt (access);
+		ApiCallsQueue_ << [this, name, desc, accessStr] (const QString& key)
+				{ CreateAlbum (name, desc, accessStr, key); };
+		RequestAccessToken ();
+	}
+
+	QByteArray PicasaManager::CreateDomDocumentFromReply (QNetworkReply *reply, QDomDocument &document)
+	{
+		if (!reply)
+			return QByteArray ();
+
+		const auto& content = reply->readAll ();
+		reply->deleteLater ();
+		QString errorMsg;
+		int errorLine = -1, errorColumn = -1;
+
+		if (QString::fromUtf8 (content).contains ("Invalid token"))
+		{
+			AccessToken_ = "";
+			RequestAccessToken ();
+			return QByteArray ();
+		}
+
+		ApiCallsQueue_.removeFirst ();
+
+		if (!document.setContent (content, &errorMsg, &errorLine, &errorColumn))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< errorMsg
+					<< "in line:"
+					<< errorLine
+					<< "column:"
+					<< errorColumn;
+			return QByteArray ();
+		}
+
+		return content;
+	}
+
 	void PicasaManager::RequestAccessToken ()
 	{
 		if (FirstRequest_)
@@ -220,6 +261,51 @@ namespace Vangog
 				SLOT (handleDeleteAlbumFinished ()));
 	}
 
+	void PicasaManager::CreateAlbum (const QString& name, const QString& desc,
+			const QString& accessStr, const QString& key)
+	{
+		QDomDocument doc;
+		QDomElement root = doc.createElement ("entry");
+		root.setAttribute ("xmlns","http://www.w3.org/2005/Atom");
+		root.setAttribute ("xmlns:media","http://search.yahoo.com/mrss/");
+		root.setAttribute ("xmlns:gphoto","http://schemas.google.com/photos/2007");
+		doc.appendChild (root);
+		QDomElement title = doc.createElement ("title");
+		title.setAttribute ("type", "text");
+		root.appendChild (title);
+		QDomText albumName = doc.createTextNode (name);
+		title.appendChild (albumName);
+		QDomElement summary = doc.createElement ("summary");
+		summary.setAttribute ("type", "text");
+		root.appendChild (summary);
+		QDomText description = doc.createTextNode (desc);
+		summary.appendChild (description);
+		QDomElement access = doc.createElement ("gphoto:access");
+		root.appendChild (access);
+		QDomText accessRights = doc.createTextNode (accessStr);
+		access.appendChild (accessRights);
+		QDomElement timestamp = doc.createElement ("gphoto:timestamp");
+		root.appendChild (timestamp);
+		QDomText timestampValue = doc.createTextNode (QString::number (QDateTime::currentDateTime ().toTime_t ()));
+		timestamp.appendChild (timestampValue);
+		QDomElement category = doc.createElement ("category");
+		category.setAttribute ("scheme", "http://schemas.google.com/g/2005#kind");
+		category.setAttribute ("term", "http://schemas.google.com/photos/2007#album");
+		root.appendChild (category);
+
+		QString urlString = QString ("https://picasaweb.google.com/data/feed/api/user/%1?access_token=%2")
+				.arg (Account_->GetLogin ())
+				.arg (key);
+		QNetworkRequest request = CreateRequest (QUrl (urlString));
+		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/atom+xml");
+		auto reply = Account_->GetProxy ()->GetNetworkAccessManager ()->
+				post (request, doc.toByteArray ());
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleCreateAlbumFinished ()));
+	}
+
 	void PicasaManager::handleAuthTokenRequestFinished ()
 	{
 		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
@@ -254,39 +340,6 @@ namespace Vangog
 			return;
 
 		ApiCallsQueue_.first () (AccessToken_);
-	}
-
-	QByteArray PicasaManager::CreateDomDocumentFromReply (QNetworkReply *reply, QDomDocument &document)
-	{
-		if (!reply)
-			return QByteArray ();
-
-		const auto& content = reply->readAll ();
-		reply->deleteLater ();
-		QString errorMsg;
-		int errorLine = -1, errorColumn = -1;
-
-		if (QString::fromUtf8 (content).contains ("Invalid token"))
-		{
-			AccessToken_ = "";
-			RequestAccessToken ();
-			return QByteArray ();
-		}
-
-		ApiCallsQueue_.removeFirst ();
-
-		if (!document.setContent (content, &errorMsg, &errorLine, &errorColumn))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< errorMsg
-					<< "in line:"
-					<< errorLine
-					<< "column:"
-					<< errorColumn;
-			return QByteArray ();
-		}
-
-		return content;
 	}
 
 	namespace
@@ -354,6 +407,8 @@ namespace Vangog
 					album.Updated_ = QDateTime::fromString (value, Qt::ISODate);
 				else if (name == "title")
 					album.Title_ = value;
+				else if (name == "summary")
+					album.Description_ = value;
 				else if (name == "rights")
 					album.Access_ = PicasaRightsToAccess (value);
 				else if (name == "author")
@@ -399,10 +454,7 @@ namespace Vangog
 		QDomDocument document;
 		if (CreateDomDocumentFromReply (reply, document).isEmpty ())
 			return;
-
-		auto albums = ParseAlbums (document);
-
-		emit gotAlbums (albums);
+		emit gotAlbums (ParseAlbums (document));
 		RequestAccessToken ();
 	}
 
@@ -536,6 +588,7 @@ namespace Vangog
 			emit deletedPhoto (id) :
 			emit gotError (QString::fromUtf8 (content));
 		reply->deleteLater ();
+		RequestAccessToken ();
 	}
 
 	void PicasaManager::handleDeleteAlbumFinished ()
@@ -545,6 +598,16 @@ namespace Vangog
 			return;
 
 		qDebug () << Q_FUNC_INFO << reply->readAll ();
+	}
+
+	void PicasaManager::handleCreateAlbumFinished ()
+	{
+		QDomDocument doc;
+		const auto& content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()), doc);
+		if (content.isEmpty ())
+			return;
+		emit gotAlbum (ParseAlbums (doc).value (0));
+		RequestAccessToken ();
 	}
 }
 }

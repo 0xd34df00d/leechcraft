@@ -18,6 +18,7 @@ include_directories (
 	)
 
 set (VANGOG_SRCS
+	albumsettingsdialog.cpp
 	authmanager.cpp
 	picasaaccount.cpp
 	picasamanager.cpp
@@ -27,6 +28,7 @@ set (VANGOG_SRCS
 	)
 
 set (VANGOG_FORMS
+	albumsettingsdialog.ui
 	registerpage.ui
 	)
 # CreateTrs("blasq_vangog" "en;ru_RU" VANGOG_COMPILED_TRANSLATIONS)

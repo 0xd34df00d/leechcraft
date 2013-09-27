@@ -72,6 +72,7 @@ namespace Vangog
 
 		void DeletePhoto (const QByteArray& photoId, const QByteArray& albumId);
 		void DeleteAlbum (const QByteArray& albumId);
+		void CreateAlbum (const QString& name, const QString& desc, int access);
 	private:
 		QByteArray CreateDomDocumentFromReply (QNetworkReply *reply, QDomDocument &document);
 		void RequestAccessToken ();
@@ -83,6 +84,8 @@ namespace Vangog
 		void DeletePhoto (const QByteArray& photoId,
 				const QByteArray& albumId, const QString& key);
 		void DeleteAlbum (const QByteArray& albumId, const QString& key);
+		void CreateAlbum (const QString& name, const QString& desc,
+				const QString& accessStr, const QString& key);
 
 		QList<Album> ParseAlbums (const QDomDocument& document);
 
@@ -92,9 +95,11 @@ namespace Vangog
 		void handleRequestPhotosFinished ();
 		void handleDeletePhotoFinished ();
 		void handleDeleteAlbumFinished ();
+		void handleCreateAlbumFinished ();
 
 	signals:
 		void gotAlbums (const QList<Album>& albums);
+		void gotAlbum (const Album album);
 		void gotPhotos (const QList<Photo>& photos);
 		void deletedPhoto (const QByteArray& id);
 		void gotError (const QString& errorString);

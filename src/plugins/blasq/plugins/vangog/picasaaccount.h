@@ -36,6 +36,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/blasq/iaccount.h>
 #include <interfaces/blasq/isupportdeletes.h>
+#include <interfaces/blasq/isupportuploads.h>
 #include "picasamanager.h"
 
 class QStandardItemModel;
@@ -52,9 +53,11 @@ namespace Vangog
 	class PicasaAccount : public QObject
 						, public IAccount
 						, public ISupportDeletes
+						, public ISupportUploads
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blasq::IAccount LeechCraft::Blasq::ISupportDeletes)
+		Q_INTERFACES (LeechCraft::Blasq::IAccount LeechCraft::Blasq::ISupportDeletes
+				LeechCraft::Blasq::ISupportUploads)
 
 		QString Name_;
 		PicasaService * const Service_;
@@ -108,11 +111,16 @@ namespace Vangog
 		void UpdateCollections () override;
 
 		void Delete (const QModelIndex& index) override;
+
+		void CreateCollection(const QModelIndex& parent) override;
+		bool HasUploadFeature(Feature ) const override;
+		void UploadImages(const QModelIndex& collection, const QList<UploadItem>& paths) override;
 	private:
 		bool TryToEnterLoginIfNoExists ();
 
 	private slots:
 		void handleGotAlbums (const QList<Album>& albums);
+		void handleGotAlbum (const Album& album);
 		void handleGotPhotos (const QList<Photo>& photos);
 		void handleDeletedPhotos (const QByteArray& id);
 

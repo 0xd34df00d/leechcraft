@@ -66,6 +66,10 @@ namespace Vangog
 				this,
 				SLOT (handleGotAlbums (QList<Album>)));
 		connect (PicasaManager_,
+				SIGNAL (gotAlbum (Album)),
+				this,
+				SLOT (handleGotAlbum (Album)));
+		connect (PicasaManager_,
 				SIGNAL (gotPhotos (QList<Photo>)),
 				this,
 				SLOT (handleGotPhotos (QList<Photo>)));
@@ -218,6 +222,34 @@ namespace Vangog
 		}
 	}
 
+	void PicasaAccount::CreateCollection (const QModelIndex&)
+	{
+		AlbumSettingsDialog dia ({}, Proxy_);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		PicasaManager_->CreateAlbum (dia.GetName (),
+				dia.GetDesc (), dia.GetPrivacyLevel ());
+	}
+
+	bool PicasaAccount::HasUploadFeature (ISupportUploads::Feature feature) const
+	{
+		switch (feature)
+		{
+		case Feature::RequiresAlbumOnUpload:
+			return false;
+		case Feature::SupportsDescriptions:
+			return true;
+		}
+
+		return false;
+	}
+
+	void PicasaAccount::UploadImages (const QModelIndex& collection, const QList<UploadItem>& paths)
+	{
+
+	}
+
 	bool PicasaAccount::TryToEnterLoginIfNoExists ()
 	{
 		if (Login_.isEmpty ())
@@ -261,6 +293,15 @@ namespace Vangog
 			AlbumId2AlbumItem_ [album.ID_] = item;
 			CollectionsModel_->appendRow (item);
 		}
+	}
+
+	void PicasaAccount::handleGotAlbum (const Album& album)
+	{
+		auto item = new QStandardItem (album.Title_);
+		item->setData (ItemType::Collection, CollectionRole::Type);
+		item->setEditable (false);
+		AlbumId2AlbumItem_ [album.ID_] = item;
+		CollectionsModel_->appendRow (item);
 	}
 
 	void PicasaAccount::handleGotPhotos (const QList<Photo>& photos)
