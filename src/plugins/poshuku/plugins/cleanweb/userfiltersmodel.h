@@ -72,6 +72,8 @@ namespace CleanWeb
 		void blockImage ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
+
+		void filtersChanged ();
 	};
 }
 }
