@@ -968,9 +968,8 @@ namespace CleanWeb
 		auto watcher = dynamic_cast<QFutureWatcher<HidingWorkerResult>*> (sender ());
 		watcher->deleteLater ();
 
-		const auto& result = watcher->result ();
+		hideElementsChunk (watcher->result ());
 
-		hideElementsChunk (result);
 	}
 
 	void Core::hideElementsChunk (HidingWorkerResult result)
