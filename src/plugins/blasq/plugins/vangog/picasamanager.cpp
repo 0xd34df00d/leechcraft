@@ -28,14 +28,12 @@
  **********************************************************************/
 
 #include "picasamanager.h"
-#include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QStandardItemModel>
 #include <QtDebug>
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
 #include "picasaaccount.h"
-#include <../qrosp/third-party/qmetaobjectbuilder.h>
 
 namespace LeechCraft
 {
@@ -180,6 +178,10 @@ namespace Vangog
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleAuthTokenRequestFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
 	void PicasaManager::ParseError (const QVariantMap& map)
@@ -210,6 +212,10 @@ namespace Vangog
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleRequestCollectionFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
 	void PicasaManager::RequestPhotos (const QByteArray& albumId, const QString& key)
@@ -225,6 +231,10 @@ namespace Vangog
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleRequestPhotosFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
 	void PicasaManager::DeletePhoto (const QByteArray& photoId,
@@ -244,6 +254,10 @@ namespace Vangog
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleDeletePhotoFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
 	void PicasaManager::DeleteAlbum (const QByteArray& albumId, const QString& key)
@@ -261,6 +275,10 @@ namespace Vangog
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleDeleteAlbumFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
 	void PicasaManager::CreateAlbum (const QString& name, const QString& desc,
@@ -306,6 +324,10 @@ namespace Vangog
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleCreateAlbumFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
 	void PicasaManager::handleAuthTokenRequestFinished ()
@@ -590,7 +612,7 @@ namespace Vangog
 		const auto& id = Reply2Id_.take (reply);
 		content.isEmpty () ?
 			emit deletedPhoto (id) :
-			emit gotError (QString::fromUtf8 (content));
+			emit gotError (reply->error (), QString::fromUtf8 (content));
 		reply->deleteLater ();
 		RequestAccessToken ();
 	}
@@ -636,6 +658,18 @@ namespace Vangog
 
 		emit gotPhoto (ParsePhotos (document).value (0));
 		RequestAccessToken ();
+	}
+
+	void PicasaManager::handleNetworkError (QNetworkReply::NetworkError error)
+	{
+		auto reply = qobject_cast<QNetworkReply *> (sender ());
+		QString errorText;
+		if (reply)
+		{
+			errorText = reply->errorString ();
+			reply->deleteLater ();
+		}
+		emit gotError (error, errorText);
 	}
 
 }

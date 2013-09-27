@@ -131,6 +131,7 @@ namespace Vangog
 
 	private:
 		bool TryToEnterLoginIfNoExists ();
+		void CreatePhotoItem (const Photo& photo);
 
 	private slots:
 		void handleGotAlbums (const QList<Album>& albums);
@@ -138,6 +139,7 @@ namespace Vangog
 		void handleGotPhotos (const QList<Photo>& photos);
 		void handleGotPhoto (const Photo& photo);
 		void handleDeletedPhotos (const QByteArray& id);
+		void handleGotError (int errorCode, const QString& errorString);
 
 	signals:
 		void accountChanged (PicasaAccount *acc);

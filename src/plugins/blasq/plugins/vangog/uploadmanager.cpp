@@ -30,7 +30,6 @@
 #include "uploadmanager.h"
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
-#include <QNetworkReply>
 #include <QFileInfo>
 #include <util/util.h>
 #include <util/queuemanager.h>
@@ -89,6 +88,10 @@ namespace Vangog
 							SIGNAL (finished ()),
 							this,
 							SLOT (handleUploadFinished ()));
+					connect (reply,
+							SIGNAL (error (QNetworkReply::NetworkError)),
+							this,
+							SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 				}, this);
 			}
 		});
@@ -104,6 +107,18 @@ namespace Vangog
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		Account_->ImageUploadResponse (reply->readAll ());
 		reply->deleteLater ();
+	}
+
+	void UploadManager::handleNetworkError (QNetworkReply::NetworkError error)
+	{
+		auto reply = qobject_cast<QNetworkReply *> (sender ());
+		QString errorText;
+		if (reply)
+		{
+			errorText = reply->errorString ();
+			reply->deleteLater ();
+		}
+		emit gotError (error, errorText);
 	}
 }
 }

@@ -87,6 +87,14 @@ namespace Vangog
 				SIGNAL (deletedPhoto (QByteArray)),
 				this,
 				SLOT (handleDeletedPhotos (QByteArray)));
+		connect (PicasaManager_,
+				SIGNAL (gotError (int, QString)),
+				this,
+				SLOT (handleGotError (int, QString)));
+		connect (UploadManager_,
+				SIGNAL (gotError (int, QString)),
+				this,
+				SLOT (handleGotError (int, QString)));
 	}
 
 	ICoreProxy_ptr PicasaAccount::GetProxy () const
@@ -213,6 +221,8 @@ namespace Vangog
 		{
 			AlbumId2AlbumItem_.clear ();
 			AlbumID2PhotosSet_.clear ();
+			if (int rowCount = CollectionsModel_->rowCount ())
+				CollectionsModel_->removeRows (0, rowCount);
 			PicasaManager_->UpdateCollections ();
 		}
 	}
@@ -227,8 +237,8 @@ namespace Vangog
 		case ItemType::Image:
 		{
 			const auto& id = index.data (CollectionRole::ID).toByteArray ();
-			PicasaManager_->DeletePhoto (id, index.data (AlbumId).toByteArray ());
 			DeletedPhotoId2Index_ [id] = index;
+			PicasaManager_->DeletePhoto (id, index.data (AlbumId).toByteArray ());
 			break;
 		}
 		case ItemType::AllPhotos:
@@ -293,52 +303,7 @@ namespace Vangog
 		return true;
 	}
 
-	void PicasaAccount::handleGotAlbums (const QList<Album>& albums)
-	{
-		if (auto rc = CollectionsModel_->rowCount ())
-			CollectionsModel_->removeRows (0, rc);
-		CollectionsModel_->setHorizontalHeaderLabels ({ tr ("Name") });
-
-		AlbumId2AlbumItem_.clear ();
-
-		AllPhotosItem_ = new QStandardItem (tr ("All photos"));
-		AllPhotosItem_->setData (ItemType::AllPhotos, CollectionRole::Type);
-		AllPhotosItem_->setEditable (false);
-		CollectionsModel_->appendRow (AllPhotosItem_);
-
-		for (const auto& album : albums)
-		{
-			auto item = new QStandardItem (album.Title_);
-			item->setData (ItemType::Collection, CollectionRole::Type);
-			item->setData (album.ID_, CollectionRole::ID);
-			item->setEditable (false);
-			AlbumId2AlbumItem_ [album.ID_] = item;
-			CollectionsModel_->appendRow (item);
-		}
-	}
-
-	void PicasaAccount::handleGotAlbum (const Album& album)
-	{
-		auto item = new QStandardItem (album.Title_);
-		item->setData (ItemType::Collection, CollectionRole::Type);
-		item->setData (album.ID_, CollectionRole::ID);
-		item->setEditable (false);
-		AlbumId2AlbumItem_ [album.ID_] = item;
-		CollectionsModel_->appendRow (item);
-		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blasq",
-				tr ("Album was created successfully"), PInfo_));
-	}
-
-	void PicasaAccount::handleGotPhotos (const QList<Photo>& photos)
-	{
-		for (const auto& photo : photos)
-			handleGotPhoto (photo);
-		emit doneUpdating ();
-		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blasq",
-				tr ("Image uploaded successfully"), PInfo_));
-	}
-
-	void PicasaAccount::handleGotPhoto (const Photo& photo)
+	void PicasaAccount::CreatePhotoItem (const Photo& photo)
 	{
 		auto mkItem = [&photo, this] () -> QStandardItem*
 		{
@@ -376,7 +341,55 @@ namespace Vangog
 
 		AlbumID2PhotosSet_ [photo.AlbumID_] << photo.ID_;
 		AlbumId2AlbumItem_ [photo.AlbumID_]->appendRow (mkItem ());
+	}
+
+	void PicasaAccount::handleGotAlbums (const QList<Album>& albums)
+	{
+		CollectionsModel_->setHorizontalHeaderLabels ({ tr ("Name") });
+
+		AlbumId2AlbumItem_.clear ();
+
+		AllPhotosItem_ = new QStandardItem (tr ("All photos"));
+		AllPhotosItem_->setData (ItemType::AllPhotos, CollectionRole::Type);
+		AllPhotosItem_->setEditable (false);
+		CollectionsModel_->appendRow (AllPhotosItem_);
+
+		for (const auto& album : albums)
+		{
+			auto item = new QStandardItem (album.Title_);
+			item->setData (ItemType::Collection, CollectionRole::Type);
+			item->setData (album.ID_, CollectionRole::ID);
+			item->setEditable (false);
+			AlbumId2AlbumItem_ [album.ID_] = item;
+			CollectionsModel_->appendRow (item);
+		}
+	}
+
+	void PicasaAccount::handleGotAlbum (const Album& album)
+	{
+		auto item = new QStandardItem (album.Title_);
+		item->setData (ItemType::Collection, CollectionRole::Type);
+		item->setData (album.ID_, CollectionRole::ID);
+		item->setEditable (false);
+		AlbumId2AlbumItem_ [album.ID_] = item;
+		CollectionsModel_->appendRow (item);
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blasq",
+				tr ("Album was created successfully"), PInfo_));
+	}
+
+	void PicasaAccount::handleGotPhotos (const QList<Photo>& photos)
+	{
+		for (const auto& photo : photos)
+			CreatePhotoItem (photo);
 		emit doneUpdating ();
+	}
+
+	void PicasaAccount::handleGotPhoto (const Photo& photo)
+	{
+		CreatePhotoItem (photo);
+		emit doneUpdating ();
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blasq",
+				tr ("Image was uploaded successfully"), PInfo_));
 	}
 
 	void PicasaAccount::handleDeletedPhotos (const QByteArray& photoId)
@@ -388,8 +401,8 @@ namespace Vangog
 		if (!index.isValid ())
 			return;
 
+		const auto albumId = index.data (AlbumId).toByteArray ();
 		CollectionsModel_->removeRow (index.row (), index.parent ());
-		const auto& albumId = index.data (AlbumId).toByteArray ();
 		if (!AlbumId2AlbumItem_.contains (albumId))
 			return;
 
@@ -407,6 +420,15 @@ namespace Vangog
 
 		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blasq",
 				tr ("Image was removed successfully"), PInfo_));
+	}
+
+	void PicasaAccount::handleGotError (int errorCode, const QString& errorString)
+	{
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blasq",
+				tr ("Error during operation: %1 (%2)")
+					.arg (errorCode)
+					.arg (errorString),
+				PWarning_));
 	}
 
 }

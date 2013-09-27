@@ -37,6 +37,7 @@
 #include <QQueue>
 #include <QUrl>
 #include <QVariant>
+#include <QNetworkReply>
 #include "structures.h"
 
 class QNetworkReply;
@@ -98,6 +99,7 @@ namespace Vangog
 		void handleDeletePhotoFinished ();
 		void handleDeleteAlbumFinished ();
 		void handleCreateAlbumFinished ();
+		void handleNetworkError (QNetworkReply::NetworkError error);
 	public slots:
 		void handleImageUploaded (const QByteArray& image = QByteArray ());
 
@@ -107,7 +109,7 @@ namespace Vangog
 		void gotPhotos (const QList<Photo>& photos);
 		void gotPhoto (const Photo& photos);
 		void deletedPhoto (const QByteArray& id);
-		void gotError (const QString& errorString);
+		void gotError (int errorCode, const QString& errorString);
 	};
 }
 }

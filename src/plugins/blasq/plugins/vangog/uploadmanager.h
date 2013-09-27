@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QPointer>
 #include <QStandardItem>
+#include <QNetworkReply>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/blasq/isupportuploads.h>
 
@@ -64,6 +65,10 @@ namespace Vangog
 	private slots:
 		void handleUploadProgress (qint64 sent, qint64 total);
 		void handleUploadFinished ();
+		void handleNetworkError (QNetworkReply::NetworkError err);
+
+	signals:
+		void gotError (int errorCode, const QString& errorString);
 	};
 }
 }
