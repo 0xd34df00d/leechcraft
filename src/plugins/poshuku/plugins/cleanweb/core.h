@@ -77,7 +77,7 @@ namespace CleanWeb
 		};
 		QMap<int, PendingJob> PendingJobs_;
 
-		QHash<QWebFrame*, QStringList> MoreDelayedURLs_;
+		QHash<QWebFrame*, QList<QUrl>> MoreDelayedURLs_;
 
 		ICoreProxy_ptr Proxy_;
 
@@ -174,7 +174,7 @@ namespace CleanWeb
 		void handleJobFinished (int);
 		void handleJobError (int, IDownload::Error);
 		void handleFrameLayout (QPointer<QWebFrame>);
-		void delayedRemoveElements (QPointer<QWebFrame>, const QString&);
+		void delayedRemoveElements (QPointer<QWebFrame>, const QUrl&);
 		void moreDelayedRemoveElements ();
 		void handleFrameDestroyed ();
 	signals:

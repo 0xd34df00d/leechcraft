@@ -381,7 +381,7 @@ namespace CleanWeb
 					"delayedRemoveElements",
 					Qt::QueuedConnection,
 					Q_ARG (QPointer<QWebFrame>, frame),
-					Q_ARG (QString, req.url ().toEncoded ()));
+					Q_ARG (QUrl, req.url ()));
 
 		Util::CustomNetworkReply *result = new Util::CustomNetworkReply (req.url (), this);
 		result->SetContent (QString ("Blocked by Poshuku CleanWeb"));
@@ -405,14 +405,14 @@ namespace CleanWeb
 		if (error->error != QNetworkReply::ContentAccessDenied)
 			return;
 
-		QString url = error->url.toEncoded ();
+		auto url = error->url;
 		proxy->CancelDefault ();
 		proxy->SetReturnValue (true);
 		QMetaObject::invokeMethod (this,
 				"delayedRemoveElements",
 				Qt::QueuedConnection,
 				Q_ARG (QPointer<QWebFrame>, page->mainFrame ()),
-				Q_ARG (QString, url));
+				Q_ARG (QUrl, url));
 	}
 
 	void Core::HandleContextMenu (const QWebHitTestResult& r,
@@ -953,43 +953,44 @@ namespace CleanWeb
 			}
 	}
 
-	void Core::delayedRemoveElements (QPointer<QWebFrame> frame, const QString& url)
+	namespace
+	{
+		void RemoveElements (QWebFrame *frame, const QList<QUrl>& urls)
+		{
+			const auto& baseUrl = frame->baseUrl ();
+
+			const auto& elems = frame->findAllElements ("img,script,frame,applet,object");
+			for (int i = elems.count () - 1; i >= 0; --i)
+			{
+				auto elem = elems.at (i);
+				if (urls.contains (baseUrl.resolved (QUrl (elem.attribute ("src")))))
+					elem.removeFromDocument ();
+			}
+		}
+	}
+
+	void Core::delayedRemoveElements (QPointer<QWebFrame> frame, const QUrl& url)
 	{
 		if (!frame)
 			return;
 
-		const auto& elems = frame->findAllElements ("*[src=\"" + url + "\"]");
-		if (elems.count ())
-			Q_FOREACH (QWebElement elem, elems)
-				RemoveElem (elem);
-		else
-		{
-			connect (frame,
-					SIGNAL (loadFinished (bool)),
-					this,
-					SLOT (moreDelayedRemoveElements ()),
-					Qt::UniqueConnection);
-			connect (frame,
-					SIGNAL (destroyed (QObject*)),
-					this,
-					SLOT (handleFrameDestroyed ()),
-					Qt::UniqueConnection);
-			MoreDelayedURLs_ [frame] << url;
-		}
+		connect (frame,
+				SIGNAL (loadFinished (bool)),
+				this,
+				SLOT (moreDelayedRemoveElements ()),
+				Qt::UniqueConnection);
+		connect (frame,
+				SIGNAL (destroyed (QObject*)),
+				this,
+				SLOT (handleFrameDestroyed ()),
+				Qt::UniqueConnection);
+		MoreDelayedURLs_ [frame] << url;
 	}
 
 	void Core::moreDelayedRemoveElements ()
 	{
 		QWebFrame *frame = qobject_cast<QWebFrame*> (sender ());
-		for (const QString& url : MoreDelayedURLs_.take (frame))
-		{
-			auto elems = frame->findAllElements ("*[src=\"" + url + "\"]");
-			if (elems.count ())
-				Q_FOREACH (QWebElement elem, elems)
-					elem.removeFromDocument ();
-			else
-				qWarning () << Q_FUNC_INFO << "not found" << url << frame;
-		}
+		RemoveElements (frame, MoreDelayedURLs_.take (frame));
 	}
 
 	void Core::handleFrameDestroyed ()
