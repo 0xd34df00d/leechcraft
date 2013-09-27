@@ -73,6 +73,10 @@ namespace CleanWeb
 		UserFiltersModel *UserFilters_;
 
 		QList<Filter> Filters_;
+
+		QList<QList<FilterItem>> ExceptionsCache_;
+		QList<QList<FilterItem>> FilterItemsCache_;
+
 		QObjectList Downloaders_;
 		QStringList HeaderLabels_;
 
@@ -123,7 +127,7 @@ namespace CleanWeb
 				QWebView*, QMenu*,
 				WebViewCtxMenuStage);
 
-		bool ShouldReject (const QNetworkRequest&, QString*) const;
+		bool ShouldReject (const QNetworkRequest&) const;
 
 		UserFiltersModel* GetUserFiltersModel () const;
 		FlashOnClickPlugin* GetFlashOnClick ();
@@ -186,6 +190,8 @@ namespace CleanWeb
 		void delayedRemoveElements (QPointer<QWebFrame>, const QUrl&);
 		void moreDelayedRemoveElements ();
 		void handleFrameDestroyed ();
+
+		void regenFilterCaches ();
 	signals:
 		void delegateEntity (const LeechCraft::Entity&,
 				int*, QObject**);

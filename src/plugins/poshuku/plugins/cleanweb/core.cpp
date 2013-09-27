@@ -43,6 +43,7 @@
 #include <qwebelement.h>
 #include <QCoreApplication>
 #include <QtConcurrentRun>
+#include <QtConcurrentMap>
 #include <QFutureWatcher>
 #include <QMenu>
 #include <QMainWindow>
@@ -215,6 +216,11 @@ namespace CleanWeb
 				SIGNAL (gotEntity (LeechCraft::Entity)));
 
 		qRegisterMetaType<HidingWorkerResult> ("HidingWorkerResult");
+
+		connect (UserFilters_,
+				SIGNAL (filtersChanged ()),
+				this,
+				SLOT (regenFilterCaches ()));
 	}
 
 	Core& Core::Instance ()
@@ -368,14 +374,13 @@ namespace CleanWeb
 		if (req.url ().scheme () == "data")
 			return 0;
 
-		QString matched;
-		if (!ShouldReject (req, &matched))
+		if (!ShouldReject (req))
 			return 0;
 
 		hook->CancelDefault ();
 
 		QWebFrame *frame = qobject_cast<QWebFrame*> (req.originatingObject ());
-		qDebug () << "rejecting against" << matched << frame;
+		qDebug () << "rejecting" << frame;
 		if (frame)
 			QMetaObject::invokeMethod (this,
 					"delayedRemoveElements",
@@ -562,6 +567,16 @@ namespace CleanWeb
 			return false;
 		}
 	}
+
+	namespace
+	{
+		void DumbReductor (bool& res, bool value)
+		{
+			if (value)
+				res = true;
+		}
+	}
+
 	/** We test each filter until we know that we should reject it or until
 	 * it gets whitelisted.
 	 *
@@ -583,7 +598,7 @@ namespace CleanWeb
 	 *
 	 * The same is applied to the filter strings.
 	 */
-	bool Core::ShouldReject (const QNetworkRequest& req, QString *matchedFilter) const
+	bool Core::ShouldReject (const QNetworkRequest& req) const
 	{
 		if (!req.hasRawHeader ("referer"))
 			return false;
@@ -622,11 +637,49 @@ namespace CleanWeb
 		const auto& domainUtf8 = domain.toUtf8 ();
 		const bool isForeign = !req.rawHeader ("Referer").contains (domainUtf8);
 
-		QList<Filter> allFilters = Filters_;
+#if 1
+		auto matches = [=] (const QList<QList<FilterItem>>& chunks) -> bool
+			{
+				return QtConcurrent::blockingMappedReduced (chunks.begin (), chunks.end (),
+						std::function<bool (const QList<FilterItem>&)>
+						{
+							[=] (const QList<FilterItem>& items) -> bool
+							{
+								for (const auto& item : items)
+								{
+									const auto& opt = item.Option_;
+									if (opt.AbortForeign_ && isForeign)
+										continue;
+
+									if (opt.MatchObjects_ != FilterOption::MatchObject::All &&
+											objs != FilterOption::MatchObject::All &&
+											!(objs & opt.MatchObjects_))
+										continue;
+
+									const auto& url = item.Option_.Case_ == Qt::CaseSensitive ? urlStr : cinUrlStr;
+									const auto& utf8 = item.Option_.Case_ == Qt::CaseSensitive ? urlUtf8 : cinUrlUtf8;
+									if (Matches (item, url, utf8, domain))
+										return true;
+								}
+
+								return false;
+							}
+						}, DumbReductor);
+			};
+		if (matches (ExceptionsCache_))
+			return false;
+		if (matches (FilterItemsCache_))
+			return true;
+
+		return false;
+#endif
+
+#if 0
+		auto allFilters = Filters_;
 		allFilters << UserFilters_->GetFilter ();
-		Q_FOREACH (const Filter& filter, allFilters)
+		for (const Filter& filter : allFilters)
 		{
-			Q_FOREACH (const auto& item, filter.Exceptions_)
+			for (const auto& item : filter.Exceptions_)
 			{
 				const auto& url = item.Option_.Case_ == Qt::CaseSensitive ? urlStr : cinUrlStr;
 				const auto& utf8 = item.Option_.Case_ == Qt::CaseSensitive ? urlUtf8 : cinUrlUtf8;
@@ -634,7 +687,7 @@ namespace CleanWeb
 					return false;
 			}
 
-			Q_FOREACH (const auto& item, filter.Filters_)
+			for (const auto& item : filter.Filters_)
 			{
 				if (!item.Option_.HideSelector_.isEmpty ())
 					continue;
@@ -651,14 +704,12 @@ namespace CleanWeb
 				const auto& url = opt.Case_ == Qt::CaseSensitive ? urlStr : cinUrlStr;
 				const auto& utf8 = opt.Case_ == Qt::CaseSensitive ? urlUtf8 : cinUrlUtf8;
 				if (Matches (item, url, utf8, domain))
-				{
-					*matchedFilter = item.OrigString_;
 					return true;
-				}
 			}
 		}
 
 		return false;
+#endif
 	}
 
 	void Core::HandleProvider (QObject *provider)
@@ -693,6 +744,8 @@ namespace CleanWeb
 		beginInsertRows (QModelIndex (), Filters_.size (), Filters_.size ());
 		Filters_ << f;
 		endInsertRows ();
+
+		regenFilterCaches ();
 	}
 
 	void Core::Parse (const QString& filePath)
@@ -1061,6 +1114,52 @@ namespace CleanWeb
 	void Core::handleFrameDestroyed ()
 	{
 		MoreDelayedURLs_.remove (static_cast<QWebFrame*> (sender ()));
+	}
+
+	void Core::regenFilterCaches ()
+	{
+		QList<Filter> allFilters = Filters_;
+		allFilters << UserFilters_->GetFilter ();
+
+		const int chunkSize = 1500;
+
+		QList<FilterItem> lastItemsChunk, lastExceptionsChunk;
+		lastItemsChunk.reserve (chunkSize);
+		lastExceptionsChunk.reserve (chunkSize);
+
+		for (const Filter& filter : allFilters)
+		{
+			for (const auto& item : filter.Exceptions_)
+				if (item.Option_.HideSelector_.isEmpty ())
+				{
+					lastExceptionsChunk << item;
+					if (lastExceptionsChunk.size () >= chunkSize)
+					{
+						ExceptionsCache_ << lastExceptionsChunk;
+						lastExceptionsChunk.clear ();
+						lastExceptionsChunk.reserve (chunkSize);
+					}
+				}
+
+			for (const auto& item : filter.Filters_)
+			{
+				if (!item.Option_.HideSelector_.isEmpty ())
+					continue;
+
+				lastItemsChunk << item;
+				if (lastItemsChunk.size () >= chunkSize)
+				{
+					FilterItemsCache_ << lastItemsChunk;
+					lastItemsChunk.clear ();
+					lastItemsChunk.reserve (chunkSize);
+				}
+			}
+		}
+
+		if (!lastItemsChunk.isEmpty ())
+			ExceptionsCache_ << lastItemsChunk;
+		if (!lastExceptionsChunk.isEmpty ())
+			FilterItemsCache_ << lastExceptionsChunk;
 	}
 }
 }
