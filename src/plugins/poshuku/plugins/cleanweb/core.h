@@ -162,7 +162,6 @@ namespace CleanWeb
 		 */
 		bool Load (const QUrl& url, const QString& subscrName);
 	private:
-		bool Matches (const FilterItem&, const QString&, const QByteArray&, const QString&) const;
 		void HandleProvider (QObject*);
 
 		void AddFilter (const Filter&);

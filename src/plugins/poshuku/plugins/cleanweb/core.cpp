@@ -448,6 +448,120 @@ namespace CleanWeb
 		return FlashOnClickWhitelist_;
 	}
 
+	namespace
+	{
+#if defined (Q_OS_WIN32) || defined (Q_OS_MAC)
+		// Thanks for this goes to http://www.codeproject.com/KB/string/patmatch.aspx
+		bool WildcardMatches (const char *pattern, const char *str)
+		{
+			enum State {
+				Exact,        // exact match
+				Any,        // ?
+				AnyRepeat    // *
+			};
+
+			const char *s = str;
+			const char *p = pattern;
+			const char *q = 0;
+			int state = 0;
+
+			bool match = true;
+			while (match && *p) {
+				if (*p == '*') {
+					state = AnyRepeat;
+					q = p+1;
+				} else if (*p == '?') state = Any;
+				else state = Exact;
+
+				if (*s == 0) break;
+
+				switch (state) {
+					case Exact:
+						match = *s == *p;
+						s++;
+						p++;
+						break;
+
+					case Any:
+						match = true;
+						s++;
+						p++;
+						break;
+
+					case AnyRepeat:
+						match = true;
+						s++;
+
+						if (*s == *q) p++;
+						break;
+				}
+			}
+
+			if (state == AnyRepeat) return (*s == *q);
+			else if (state == Any) return (*s == *p);
+			else return match && (*s == *p);
+		}
+#else
+#include <fnmatch.h>
+
+		bool WildcardMatches (const char *pat, const char *str)
+		{
+			return !fnmatch (pat, str, 0);
+		}
+#endif
+
+		bool Matches (const FilterItem& item,
+				const QString& urlStr, const QByteArray& urlUtf8, const QString& domain)
+		{
+			if (item.Option_.MatchObjects_ != FilterOption::MatchObject::All)
+			{
+				if (!(item.Option_.MatchObjects_ & FilterOption::MatchObject::CSS) &&
+						!(item.Option_.MatchObjects_ & FilterOption::MatchObject::Image) &&
+						!(item.Option_.MatchObjects_ & FilterOption::MatchObject::Script) &&
+						!(item.Option_.MatchObjects_ & FilterOption::MatchObject::Object) &&
+						!(item.Option_.MatchObjects_ & FilterOption::MatchObject::ObjSubrequest))
+					return false;
+			}
+
+			const auto& opt = item.Option_;
+			if (!opt.NotDomains_.isEmpty ())
+			{
+				for (const auto& notDomain : opt.NotDomains_)
+					if (domain.endsWith (notDomain, opt.Case_))
+						return false;
+			}
+
+			if (!opt.Domains_.isEmpty ())
+			{
+				bool shouldFurther = false;
+				for (const auto& doDomain : opt.Domains_)
+					if (domain.endsWith (doDomain, opt.Case_))
+					{
+						shouldFurther = true;
+						break;
+					}
+
+				if (!shouldFurther)
+					return false;
+			}
+
+			switch (opt.MatchType_)
+			{
+			case FilterOption::MTRegexp:
+				return item.RegExp_.Matches (urlStr);
+			case FilterOption::MTWildcard:
+				return WildcardMatches (item.OrigString_.constData (), urlUtf8.constData ());
+			case FilterOption::MTPlain:
+				return item.PlainMatcher_.indexIn (urlUtf8) >= 0;
+			case FilterOption::MTBegin:
+				return urlStr.startsWith (item.OrigString_);
+			case FilterOption::MTEnd:
+				return urlStr.endsWith (item.OrigString_);
+			}
+
+			return false;
+		}
+	}
 	/** We test each filter until we know that we should reject it or until
 	 * it gets whitelisted.
 	 *
@@ -542,116 +656,6 @@ namespace CleanWeb
 					return true;
 				}
 			}
-		}
-
-		return false;
-	}
-
-	#if defined (Q_OS_WIN32) || defined (Q_OS_MAC)
-	// Thanks for this goes to http://www.codeproject.com/KB/string/patmatch.aspx
-	bool WildcardMatches (const char *pattern, const char *str)
-	{
-		enum State {
-			Exact,        // exact match
-			Any,        // ?
-			AnyRepeat    // *
-		};
-
-		const char *s = str;
-		const char *p = pattern;
-		const char *q = 0;
-		int state = 0;
-
-		bool match = true;
-		while (match && *p) {
-			if (*p == '*') {
-				state = AnyRepeat;
-				q = p+1;
-			} else if (*p == '?') state = Any;
-			else state = Exact;
-
-			if (*s == 0) break;
-
-			switch (state) {
-				case Exact:
-					match = *s == *p;
-					s++;
-					p++;
-					break;
-
-				case Any:
-					match = true;
-					s++;
-					p++;
-					break;
-
-				case AnyRepeat:
-					match = true;
-					s++;
-
-					if (*s == *q) p++;
-					break;
-			}
-		}
-
-		if (state == AnyRepeat) return (*s == *q);
-		else if (state == Any) return (*s == *p);
-		else return match && (*s == *p);
-	}
-	#else
-	#include <fnmatch.h>
-
-	bool WildcardMatches (const char *pat, const char *str)
-	{
-		return !fnmatch (pat, str, 0);
-	}
-	#endif
-
-	bool Core::Matches (const FilterItem& item, const QString& urlStr, const QByteArray& urlUtf8, const QString& domain) const
-	{
-		if (item.Option_.MatchObjects_ != FilterOption::MatchObject::All)
-		{
-			if (!(item.Option_.MatchObjects_ & FilterOption::MatchObject::CSS) &&
-					!(item.Option_.MatchObjects_ & FilterOption::MatchObject::Image) &&
-					!(item.Option_.MatchObjects_ & FilterOption::MatchObject::Script) &&
-					!(item.Option_.MatchObjects_ & FilterOption::MatchObject::Object) &&
-					!(item.Option_.MatchObjects_ & FilterOption::MatchObject::ObjSubrequest))
-				return false;
-		}
-
-		const auto& opt = item.Option_;
-		if (!opt.NotDomains_.isEmpty ())
-		{
-			Q_FOREACH (const auto& notDomain, opt.NotDomains_)
-				if (domain.endsWith (notDomain, opt.Case_))
-					return false;
-		}
-
-		if (!opt.Domains_.isEmpty ())
-		{
-			bool shouldFurther = false;
-			Q_FOREACH (QString doDomain, opt.Domains_)
-				if (domain.endsWith (doDomain, opt.Case_))
-				{
-					shouldFurther = true;
-					break;
-				}
-			if (!shouldFurther)
-				return false;
-		}
-
-		switch (opt.MatchType_)
-		{
-		case FilterOption::MTRegexp:
-			return item.RegExp_.Matches (urlStr);
-		case FilterOption::MTWildcard:
-			return WildcardMatches (item.OrigString_.constData (), urlUtf8.constData ());
-		case FilterOption::MTPlain:
-			return item.PlainMatcher_.indexIn (urlUtf8) >= 0;
-		case FilterOption::MTBegin:
-			return urlStr.startsWith (item.OrigString_);
-		case FilterOption::MTEnd:
-			return urlStr.endsWith (item.OrigString_);
 		}
 
 		return false;
