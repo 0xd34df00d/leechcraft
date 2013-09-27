@@ -45,7 +45,7 @@ namespace Xoox
 	{
 		Q_OBJECT
 
-		QXmppClient *Client_;
+		QXmppClient * const Client_;
 		RegFormHandlerWidget *RegForm_;
 		InBandAccountRegFirstPage *FirstPage_;
 	public:
@@ -60,6 +60,7 @@ namespace Xoox
 		void initializePage ();
 	private slots:
 		void handleConnected ();
+		void handleClientError (QXmppClient::Error);
 	signals:
 		void successfulReg ();
 		void regError (const QString&);
