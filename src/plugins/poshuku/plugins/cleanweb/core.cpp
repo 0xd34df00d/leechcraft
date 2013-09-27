@@ -637,7 +637,6 @@ namespace CleanWeb
 		const auto& domainUtf8 = domain.toUtf8 ();
 		const bool isForeign = !req.rawHeader ("Referer").contains (domainUtf8);
 
-#if 1
 		auto matches = [=] (const QList<QList<FilterItem>>& chunks) -> bool
 			{
 				return QtConcurrent::blockingMappedReduced (chunks.begin (), chunks.end (),
@@ -672,44 +671,6 @@ namespace CleanWeb
 			return true;
 
 		return false;
-#endif
-
-#if 0
-		auto allFilters = Filters_;
-		allFilters << UserFilters_->GetFilter ();
-		for (const Filter& filter : allFilters)
-		{
-			for (const auto& item : filter.Exceptions_)
-			{
-				const auto& url = item.Option_.Case_ == Qt::CaseSensitive ? urlStr : cinUrlStr;
-				const auto& utf8 = item.Option_.Case_ == Qt::CaseSensitive ? urlUtf8 : cinUrlUtf8;
-				if (item.Option_.HideSelector_.isEmpty () && Matches (item, url, utf8, domain))
-					return false;
-			}
-
-			for (const auto& item : filter.Filters_)
-			{
-				if (!item.Option_.HideSelector_.isEmpty ())
-					continue;
-
-				const auto& opt = item.Option_;
-				if (opt.AbortForeign_ && isForeign)
-					continue;
-
-				if (opt.MatchObjects_ != FilterOption::MatchObject::All &&
-						objs != FilterOption::MatchObject::All &&
-						!(objs & opt.MatchObjects_))
-					continue;
-
-				const auto& url = opt.Case_ == Qt::CaseSensitive ? urlStr : cinUrlStr;
-				const auto& utf8 = opt.Case_ == Qt::CaseSensitive ? urlUtf8 : cinUrlUtf8;
-				if (Matches (item, url, utf8, domain))
-					return true;
-			}
-		}
-
-		return false;
-#endif
 	}
 
 	void Core::HandleProvider (QObject *provider)
