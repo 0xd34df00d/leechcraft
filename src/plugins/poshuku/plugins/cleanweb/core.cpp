@@ -928,7 +928,6 @@ namespace CleanWeb
 
 		QList<Filter> allFilters = Filters_;
 		allFilters << UserFilters_->GetFilter ();
-		int numItems = 0;
 		for (const Filter& filter : allFilters)
 			for (const auto& item : filter.Filters_)
 			{
@@ -951,17 +950,6 @@ namespace CleanWeb
 
 				for (int i = matchingElems.count () - 1; i >= 0; --i)
 					RemoveElem (matchingElems.at (i));
-
-				if (!(++numItems % 100))
-				{
-					qApp->processEvents ();
-					if (!frame)
-					{
-						qDebug () << Q_FUNC_INFO
-								<< "frame destroyed in processEvents(), stopping";
-						return;
-					}
-				}
 			}
 	}
 
