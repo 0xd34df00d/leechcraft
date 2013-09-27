@@ -958,6 +958,9 @@ namespace CleanWeb
 							}
 						return result;
 					}));
+
+		for (auto childFrame : frame->childFrames ())
+			handleFrameLayout (childFrame);
 	}
 
 	void Core::hidingElementsFound ()
