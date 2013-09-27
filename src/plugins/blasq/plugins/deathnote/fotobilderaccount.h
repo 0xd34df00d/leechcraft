@@ -35,8 +35,9 @@
 #include <QObject>
 #include <QSet>
 #include <QQueue>
-#include <interfaces/blasq/iaccount.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/blasq/iaccount.h>
+#include <interfaces/blasq/isupportuploads.h>
 #include "structures.h"
 
 class QStandardItemModel;
@@ -51,10 +52,11 @@ namespace DeathNote
 	class FotoBilderService;
 
 	class FotoBilderAccount : public QObject
-						, public IAccount
+							, public IAccount
+							, public ISupportUploads
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blasq::IAccount)
+		Q_INTERFACES (LeechCraft::Blasq::IAccount LeechCraft::Blasq::ISupportUploads)
 
 		QString Name_;
 		FotoBilderService * const Service_;
@@ -66,6 +68,11 @@ namespace DeathNote
 
 		QStandardItemModel * const CollectionsModel_;
 		QStandardItem *AllPhotosItem_;
+
+		QHash<QByteArray, QStandardItem*> Id2AlbumItem_;
+		QHash<QNetworkReply*, UploadItem> Reply2UploadItem_;
+		QHash<QByteArray, UploadItem> Hash2UploadItem_;
+		QHash<QNetworkReply*, QByteArray> Reply2Gallery_;
 
 		QQueue<std::function <void (const QString&)>> CallsQueue_;
 
@@ -84,21 +91,33 @@ namespace DeathNote
 		IService* GetService () const override;
 		QString GetName () const override;
 		QByteArray GetID () const override;
+		QString GetPassword () const;
+		QByteArray GetHashedChallenge (const QString& password, const QString& challenge);
 
 		QAbstractItemModel* GetCollectionsModel () const override;
+
+		void CreateCollection (const QModelIndex& parent) override;
+		bool HasUploadFeature (Feature) const override;
+		void UploadImages (const QModelIndex& collection, const QList<UploadItem>& paths) override;
 
 		void Login ();
 		void RequestGalleries ();
 		void RequestPictures ();
 
 		void UpdateCollections () override;
+
 	private:
-		QString GetPassword () const;
-		bool FotoBilderErrorExists (const QByteArray& content);
+		bool IsErrorReply (const QByteArray& content);
 		void GetChallenge ();
 		void LoginRequest (const QString& challenge);
 		void GetGalsRequest (const QString& challenge);
 		void GetPicsRequest (const QString& challenge);
+		void CreateGallery (const QString& name, int privacyLevel, const QString& challenge);
+		void UploadImagesRequest (const QByteArray& albumId, const QList<UploadItem>& items);
+		void UploadOneImage (const QByteArray& id,
+				const UploadItem& item, const QString& challenge);
+		void UploadImages (const QByteArray& id,
+				const QList<UploadItem>& item, const QString& challenge);
 
 	private slots:
 		void handleGetChallengeRequestFinished ();
@@ -108,6 +127,10 @@ namespace DeathNote
 
 		void handleGotAlbums ();
 		void handleGotPhotos ();
+		void handleGalleryCreated ();
+		void handleUploadProgress (qint64 sent, qint64 total);
+		void handleImageUploaded ();
+		void handleUploadPrepareFinished ();
 
 	signals:
 		void accountChanged (FotoBilderAccount *acc);
