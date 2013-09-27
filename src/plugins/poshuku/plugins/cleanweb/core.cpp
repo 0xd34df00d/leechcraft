@@ -965,7 +965,7 @@ namespace CleanWeb
 			for (int i = elems.count () - 1; i >= 0; --i)
 			{
 				auto elem = elems.at (i);
-				if (urls.contains (baseUrl.resolved (QUrl (elem.attribute ("src")))))
+				if (urls.contains (baseUrl.resolved (QUrl::fromEncoded (elem.attribute ("src").toUtf8 ()))))
 				{
 					elem.removeFromDocument ();
 					removed = true;
