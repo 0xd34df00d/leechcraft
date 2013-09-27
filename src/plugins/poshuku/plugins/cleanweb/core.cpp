@@ -955,23 +955,32 @@ namespace CleanWeb
 
 	namespace
 	{
-		void RemoveElements (QWebFrame *frame, const QList<QUrl>& urls)
+		bool RemoveElements (QWebFrame *frame, const QList<QUrl>& urls)
 		{
 			const auto& baseUrl = frame->baseUrl ();
 
 			const auto& elems = frame->findAllElements ("img,script,frame,applet,object");
+
+			bool removed = false;
 			for (int i = elems.count () - 1; i >= 0; --i)
 			{
 				auto elem = elems.at (i);
 				if (urls.contains (baseUrl.resolved (QUrl (elem.attribute ("src")))))
+				{
 					elem.removeFromDocument ();
+					removed = true;
+				}
 			}
+			return removed;
 		}
 	}
 
 	void Core::delayedRemoveElements (QPointer<QWebFrame> frame, const QUrl& url)
 	{
 		if (!frame)
+			return;
+
+		if (RemoveElements (frame, { url }))
 			return;
 
 		connect (frame,
@@ -989,8 +998,14 @@ namespace CleanWeb
 
 	void Core::moreDelayedRemoveElements ()
 	{
-		QWebFrame *frame = qobject_cast<QWebFrame*> (sender ());
-		RemoveElements (frame, MoreDelayedURLs_.take (frame));
+		auto frame = qobject_cast<QWebFrame*> (sender ());
+
+		const auto& urls = MoreDelayedURLs_.take (frame);
+		if (!RemoveElements (frame, urls))
+			qWarning () << Q_FUNC_INFO
+					<< urls
+					<< "not found for"
+					<< frame;
 	}
 
 	void Core::handleFrameDestroyed ()
