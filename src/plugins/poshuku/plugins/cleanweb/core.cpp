@@ -913,6 +913,15 @@ namespace CleanWeb
 		PendingJobs_.remove (id);
 	}
 
+	namespace
+	{
+		struct HidingWorkerResult
+		{
+			QPointer<QWebFrame> Frame_;
+			QStringList Selectors_;
+		};
+	}
+
 	void Core::handleFrameLayout (QPointer<QWebFrame> frame)
 	{
 		if (!frame)
@@ -928,29 +937,56 @@ namespace CleanWeb
 
 		QList<Filter> allFilters = Filters_;
 		allFilters << UserFilters_->GetFilter ();
-		for (const Filter& filter : allFilters)
-			for (const auto& item : filter.Filters_)
-			{
-				if (item.Option_.HideSelector_.isEmpty ())
-					continue;
 
-				const auto& opt = item.Option_;
-				const auto& url = opt.Case_ == Qt::CaseSensitive ? urlStr : cinUrlStr;
-				const auto& utf8 = opt.Case_ == Qt::CaseSensitive ? urlUtf8 : cinUrlUtf8;
-				if (!item.OrigString_.isEmpty () && !Matches (item, url, utf8, domain))
-					continue;
+		auto watcher = new QFutureWatcher<HidingWorkerResult> (this);
+		connect (watcher,
+				SIGNAL (finished ()),
+				this,
+				SLOT (hidingElementsFound ()));
+		watcher->setFuture (QtConcurrent::run ([=] () -> HidingWorkerResult
+					{
+						HidingWorkerResult result { frame, {} };
 
-				const auto& matchingElems = frame->findAllElements (item.Option_.HideSelector_);
-				if (matchingElems.count ())
-					qDebug () << "removing"
-							<< matchingElems.count ()
-							<< "elems for"
-							<< item.Option_.HideSelector_
-							<< frameUrl;
+						for (const Filter& filter : allFilters)
+							for (const auto& item : filter.Filters_)
+							{
+								if (item.Option_.HideSelector_.isEmpty ())
+									continue;
 
-				for (int i = matchingElems.count () - 1; i >= 0; --i)
-					RemoveElem (matchingElems.at (i));
-			}
+								const auto& opt = item.Option_;
+								const auto& url = opt.Case_ == Qt::CaseSensitive ? urlStr : cinUrlStr;
+								const auto& utf8 = opt.Case_ == Qt::CaseSensitive ? urlUtf8 : cinUrlUtf8;
+								if (!item.OrigString_.isEmpty () && !Matches (item, url, utf8, domain))
+									continue;
+
+								result.Selectors_ << item.Option_.HideSelector_;
+							}
+						return result;
+					}));
+	}
+
+	void Core::hidingElementsFound ()
+	{
+		auto watcher = dynamic_cast<QFutureWatcher<HidingWorkerResult>*> (sender ());
+		watcher->deleteLater ();
+
+		const auto& result = watcher->result ();
+		if (!result.Frame_)
+			return;
+
+		for (const auto& selector : result.Selectors_)
+		{
+			const auto& matchingElems = result.Frame_->findAllElements (selector);
+			if (matchingElems.count ())
+				qDebug () << "removing"
+						<< matchingElems.count ()
+						<< "elems for"
+						<< selector
+						<< result.Frame_->url ();
+
+			for (int i = matchingElems.count () - 1; i >= 0; --i)
+				RemoveElem (matchingElems.at (i));
+		}
 	}
 
 	namespace
