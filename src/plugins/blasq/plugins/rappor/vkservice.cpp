@@ -67,7 +67,8 @@ namespace Rappor
 
 	QIcon VkService::GetServiceIcon () const
 	{
-		return {};
+		static QIcon icon (":/blasq/rappor/resources/images/vk.png");
+		return icon;
 	}
 
 	QList<IAccount*> VkService::GetRegisteredAccounts () const

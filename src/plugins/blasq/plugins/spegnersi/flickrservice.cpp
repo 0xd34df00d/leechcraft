@@ -68,7 +68,8 @@ namespace Spegnersi
 
 	QIcon FlickrService::GetServiceIcon () const
 	{
-		return QIcon ();
+		static QIcon icon (":/blasq/spegnersi/resources/images/flickricon.png");
+		return icon;
 	}
 
 	QList<IAccount*> FlickrService::GetRegisteredAccounts () const
