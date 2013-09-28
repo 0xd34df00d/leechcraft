@@ -18,15 +18,18 @@ include_directories (
 	)
 
 set (VANGOG_SRCS
+	albumsettingsdialog.cpp
 	authmanager.cpp
 	picasaaccount.cpp
 	picasamanager.cpp
 	picasaservice.cpp
 	registerpage.cpp
+	uploadmanager.cpp
 	vangog.cpp
 	)
 
 set (VANGOG_FORMS
+	albumsettingsdialog.ui
 	registerpage.ui
 	)
 

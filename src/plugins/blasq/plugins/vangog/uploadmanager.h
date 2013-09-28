@@ -29,101 +29,46 @@
 
 #pragma once
 
-#include <QDateTime>
-#include <QStringList>
-#include <QUrl>
+#include <QObject>
+#include <QPointer>
+#include <QStandardItem>
+#include <QNetworkReply>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/blasq/isupportuploads.h>
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class QueueManager;
+}
+
 namespace Blasq
 {
 namespace Vangog
 {
-	enum class Access
+	class PicasaAccount;
+
+	class UploadManager : public QObject
 	{
-		Private,
-		Public
-	};
+		Q_OBJECT
 
-	struct Author
-	{
-		QString Name_;
-		QUrl Image_;
-	};
+		PicasaAccount * const Account_;
+		const ICoreProxy_ptr Proxy_;
+		Util::QueueManager * const RequestQueue_;
 
-	struct Thumbnail
-	{
-		QUrl Url_;
-		int Width_;
-		int Height_;
+	public:
+		UploadManager (Util::QueueManager *reqQueue, ICoreProxy_ptr proxy,
+				PicasaAccount *acc);
+		void Upload (const QByteArray& albumId, const QList<UploadItem>& items);
 
-		Thumbnail ()
-		: Width_ (0)
-		, Height_ (0)
-		{}
-	};
+	private slots:
+		void handleUploadProgress (qint64 sent, qint64 total);
+		void handleUploadFinished ();
+		void handleNetworkError (QNetworkReply::NetworkError err);
 
-	struct Album
-	{
-		QByteArray ID_;
-		QString Title_;
-		QString Description_;
-		QDateTime Published_;
-		QDateTime Updated_;
-		Access Access_;
-		Author Author_;
-		int NumberOfPhoto_;
-		quint64 BytesUsed_;
-		QList<Thumbnail> Thumbnails_;
-
-		Album ()
-		: Access_ (Access::Private)
-		, NumberOfPhoto_ (0)
-		, BytesUsed_ (0)
-		{}
-	};
-
-	struct Exif
-	{
-		QString Manufacturer_;
-		QString Model_;
-		int FNumber_;
-		float Exposure_;
-		bool Flash_;
-		float FocalLength_;
-		int ISO_;
-
-		Exif ()
-		: FNumber_ (0)
-		, Exposure_ (0.0)
-		, Flash_ (false)
-		, FocalLength_ (0.0)
-		, ISO_ (0)
-		{}
-	};
-
-	struct Photo
-	{
-		QByteArray ID_;
-		QString Title_;
-		QDateTime Published_;
-		QDateTime Updated_;
-		Access Access_;
-		QByteArray AlbumID_;
-		int Width_;
-		int Height_;
-		quint64 Size_;
-		Exif Exif_;
-		QUrl Url_;
-		QStringList Tags_;
-		QList<Thumbnail> Thumbnails_;
-
-		Photo ()
-		: Access_ (Access::Private)
-		, Width_ (0)
-		, Height_ (0)
-		, Size_ (0)
-		{}
+	signals:
+		void gotError (int errorCode, const QString& errorString);
 	};
 }
 }
