@@ -1,12 +1,3 @@
-if (NOT USE_QT5)
-	set (QT_USE_QTDECLARATIVE TRUE)
-	set (QT_USE_QTNETWORK TRUE)
-	set (QT_USE_QTSQL TRUE)
-	set (QT_USE_QTWEBKIT TRUE)
-	set (QT_USE_QTXML TRUE)
-	include (${QT_USE_FILE})
-endif ()
-
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 find_package (MAGIC)
 if (MAGIC_FOUND)
@@ -121,6 +112,9 @@ add_library (lcutil SHARED
 	${SRCS}
 	${UIS_H}
 	)
+
+FindQtLibs (lcutil Concurrent Quick Qml Network Xml Sql WebKitWidgets Widgets)
+
 target_link_libraries (lcutil
 	${QT_LIBRARIES}
 	${MAGIC_LIBRARIES}
@@ -129,7 +123,3 @@ target_link_libraries (lcutil
 	)
 set_property (TARGET lcutil PROPERTY SOVERSION 0.5.0)
 install (TARGETS lcutil DESTINATION ${LIBDIR})
-
-if (USE_QT5)
-	QT5_USE_MODULES (lcutil Quick Network Xml Sql Widgets)
-endif ()
