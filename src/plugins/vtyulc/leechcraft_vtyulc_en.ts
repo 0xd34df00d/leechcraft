@@ -6,12 +6,12 @@
     <message>
         <location filename="playlistmodel.cpp" line="53"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="playlistmodel.cpp" line="53"/>
         <source>Duration</source>
-        <translation type="unfinished"></translation>
+        <translation>Duration</translation>
     </message>
 </context>
 <context>
@@ -19,90 +19,90 @@
     <message>
         <location filename="playlisttitlewidget.cpp" line="45"/>
         <source>Playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Playlist</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::vlc::Plugin</name>
     <message>
-        <location filename="vlc.cpp" line="53"/>
+        <location filename="vlc.cpp" line="55"/>
         <source>Navigate left in DVD menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Navigate left in DVD menu</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="58"/>
+        <location filename="vlc.cpp" line="60"/>
         <source>Navigate right in DVD menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Navigate right in DVD menu</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="63"/>
+        <location filename="vlc.cpp" line="65"/>
         <source>Navigate up in DVD menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Navigate up in DVD menu</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="68"/>
+        <location filename="vlc.cpp" line="70"/>
         <source>Navigate down in DVD menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Navigate down in DVD menu</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="73"/>
+        <location filename="vlc.cpp" line="75"/>
         <source>Activate current in DVD menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Activate current in DVD menu</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="78"/>
+        <location filename="vlc.cpp" line="80"/>
         <source>Toggle fullscreen</source>
-        <translation type="unfinished"></translation>
+        <translation>Toggle fullscreen</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="83"/>
+        <location filename="vlc.cpp" line="85"/>
         <source>Switch play/pause</source>
-        <translation type="unfinished"></translation>
+        <translation>Switch play/pause</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="88"/>
+        <location filename="vlc.cpp" line="90"/>
         <source>Increase volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Increase volume</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="93"/>
+        <location filename="vlc.cpp" line="95"/>
         <source>Decrease volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Decrease volume</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="98"/>
+        <location filename="vlc.cpp" line="100"/>
         <source>3% seek forward</source>
-        <translation type="unfinished"></translation>
+        <translation>3% seek forward</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="103"/>
+        <location filename="vlc.cpp" line="105"/>
         <source>3% seek backward</source>
-        <translation type="unfinished"></translation>
+        <translation>3% seek backward</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="108"/>
+        <location filename="vlc.cpp" line="110"/>
         <source>10 seconds seek forward</source>
-        <translation type="unfinished"></translation>
+        <translation>10 seconds seek forward</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="113"/>
+        <location filename="vlc.cpp" line="115"/>
         <source>10 seconds seek backward</source>
-        <translation type="unfinished"></translation>
+        <translation>10 seconds seek backward</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="118"/>
+        <location filename="vlc.cpp" line="120"/>
         <source>Next in playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Next in playlist</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="123"/>
+        <location filename="vlc.cpp" line="125"/>
         <source>Prev in playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Prev in playlist</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="150"/>
+        <location filename="vlc.cpp" line="152"/>
         <source>Video player, based on VLC</source>
-        <translation type="unfinished"></translation>
+        <translation>Video player, based on VLC</translation>
     </message>
 </context>
 <context>
@@ -111,140 +111,143 @@
         <location filename="vlcwidget.cpp" line="281"/>
         <location filename="vlcwidget.cpp" line="293"/>
         <source>Open files</source>
-        <translation type="unfinished"></translation>
+        <translation>Open files</translation>
     </message>
     <message>
         <location filename="vlcwidget.cpp" line="282"/>
         <location filename="vlcwidget.cpp" line="294"/>
         <source>Videos (*.mkv *.avi *.mov *.mpg)</source>
-        <translation type="unfinished"></translation>
+        <translation>Videos (*.mkv *.avi *.mov *.mpg)</translation>
     </message>
     <message>
         <location filename="vlcwidget.cpp" line="305"/>
-        <location filename="vlcwidget.cpp" line="878"/>
+        <location filename="vlcwidget.cpp" line="879"/>
         <source>Open folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Open folder</translation>
     </message>
     <message>
         <location filename="vlcwidget.cpp" line="306"/>
         <source>Folder with video</source>
-        <translation type="unfinished"></translation>
+        <translation>Folder with video</translation>
     </message>
     <message>
         <location filename="vlcwidget.cpp" line="318"/>
         <location filename="vlcwidget.cpp" line="331"/>
-        <location filename="vlcwidget.cpp" line="888"/>
+        <location filename="vlcwidget.cpp" line="889"/>
         <source>Open DVD</source>
-        <translation type="unfinished"></translation>
+        <translation>Open DVD</translation>
     </message>
     <message>
         <location filename="vlcwidget.cpp" line="319"/>
         <location filename="vlcwidget.cpp" line="332"/>
         <source>Root of DVD directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Root of DVD directory</translation>
     </message>
     <message>
         <location filename="vlcwidget.cpp" line="343"/>
+        <location filename="vlcwidget.cpp" line="884"/>
         <source>Open URL</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="vlcwidget.cpp" line="343"/>
-        <source>Enter URL</source>
-        <translation type="unfinished"></translation>
+        <translation>Open URL</translation>
     </message>
     <message>
         <location filename="vlcwidget.cpp" line="355"/>
-        <location filename="vlcwidget.cpp" line="705"/>
-        <location filename="vlcwidget.cpp" line="873"/>
+        <location filename="vlcwidget.cpp" line="706"/>
+        <location filename="vlcwidget.cpp" line="874"/>
         <source>Open file</source>
-        <translation type="unfinished"></translation>
+        <translation>Open file</translation>
     </message>
     <message>
         <location filename="vlcwidget.cpp" line="356"/>
         <source>Media (*.ac3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Media (*.ac3)</translation>
     </message>
     <message>
         <location filename="vlcwidget.cpp" line="366"/>
         <source>Pause</source>
-        <translation type="unfinished"></translation>
+        <translation>Pause</translation>
     </message>
     <message>
         <location filename="vlcwidget.cpp" line="371"/>
-        <location filename="vlcwidget.cpp" line="500"/>
+        <location filename="vlcwidget.cpp" line="501"/>
         <source>Play</source>
-        <translation type="unfinished"></translation>
+        <translation>Play</translation>
     </message>
     <message>
-        <location filename="vlcwidget.cpp" line="491"/>
+        <location filename="vlcwidget.cpp" line="492"/>
         <source>Prev</source>
-        <translation type="unfinished"></translation>
+        <translation>Prev</translation>
     </message>
     <message>
-        <location filename="vlcwidget.cpp" line="505"/>
+        <location filename="vlcwidget.cpp" line="506"/>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Stop</translation>
     </message>
     <message>
-        <location filename="vlcwidget.cpp" line="508"/>
+        <location filename="vlcwidget.cpp" line="509"/>
         <source>Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Next</translation>
     </message>
     <message>
-        <location filename="vlcwidget.cpp" line="517"/>
-        <source>FullScreen</source>
-        <translation type="unfinished"></translation>
+        <location filename="vlcwidget.cpp" line="518"/>
+        <source>Fullscreen</source>
+        <translation>Fullscreen</translation>
     </message>
     <message>
-        <location filename="vlcwidget.cpp" line="591"/>
-        <source>subtitles</source>
-        <translation type="unfinished"></translation>
+        <location filename="vlcwidget.cpp" line="556"/>
+        <source>Main tab for VLC plugin</source>
+        <translation>Main tab for VLC plugin</translation>
     </message>
     <message>
         <location filename="vlcwidget.cpp" line="592"/>
-        <source>tracks</source>
-        <translation type="unfinished"></translation>
+        <source>Subtitles</source>
+        <translation>Subtitles</translation>
     </message>
     <message>
         <location filename="vlcwidget.cpp" line="593"/>
-        <source>Aspect ratio</source>
-        <translation type="unfinished"></translation>
+        <source>Tracks</source>
+        <translation>Tracks</translation>
     </message>
     <message>
         <location filename="vlcwidget.cpp" line="594"/>
+        <source>Aspect ratio</source>
+        <translation>Aspect ratio</translation>
+    </message>
+    <message>
+        <location filename="vlcwidget.cpp" line="595"/>
         <source>Real zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>Real zoom</translation>
     </message>
     <message>
-        <location filename="vlcwidget.cpp" line="622"/>
+        <location filename="vlcwidget.cpp" line="623"/>
         <source>Add subtitles...</source>
-        <translation type="unfinished"></translation>
+        <translation>Add subtitles...</translation>
     </message>
     <message>
-        <location filename="vlcwidget.cpp" line="625"/>
+        <location filename="vlcwidget.cpp" line="626"/>
         <source>Add external sound track</source>
-        <translation type="unfinished"></translation>
+        <translation>Add external sound track</translation>
     </message>
     <message>
-        <location filename="vlcwidget.cpp" line="640"/>
+        <location filename="vlcwidget.cpp" line="641"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Default</translation>
     </message>
     <message>
-        <location filename="vlcwidget.cpp" line="706"/>
+        <location filename="vlcwidget.cpp" line="707"/>
         <source>Subtitles (*.srt)</source>
-        <translation type="unfinished"></translation>
+        <translation>Subtitles (*.srt)</translation>
     </message>
     <message>
-        <location filename="vlcwidget.cpp" line="883"/>
-        <source>Open url</source>
-        <translation type="unfinished"></translation>
+        <location filename="vlcwidget.cpp" line="343"/>
+        <location filename="vlcwidget.cpp" line="884"/>
+        <source>Open URL</source>
+        <oldsource>Open url</oldsource>
+        <translation type="unfinished">Open url</translation>
     </message>
     <message>
-        <location filename="vlcwidget.cpp" line="893"/>
+        <location filename="vlcwidget.cpp" line="894"/>
         <source>Open Simple DVD</source>
-        <translation type="unfinished"></translation>
+        <translation>Open Simple DVD</translation>
     </message>
 </context>
 <context>
@@ -252,12 +255,12 @@
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>Local settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Local settings</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Auto start when adding files</source>
-        <translation type="unfinished"></translation>
+        <translation>Auto start when adding files</translation>
     </message>
 </context>
 </TS>

@@ -6,12 +6,12 @@
     <message>
         <location filename="playlistmodel.cpp" line="53"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя</translation>
     </message>
     <message>
         <location filename="playlistmodel.cpp" line="53"/>
         <source>Duration</source>
-        <translation type="unfinished"></translation>
+        <translation>Продолжительность</translation>
     </message>
 </context>
 <context>
@@ -19,90 +19,90 @@
     <message>
         <location filename="playlisttitlewidget.cpp" line="45"/>
         <source>Playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Список воспроизведения</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::vlc::Plugin</name>
     <message>
-        <location filename="vlc.cpp" line="53"/>
+        <location filename="vlc.cpp" line="55"/>
         <source>Navigate left in DVD menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Перейти влево в DVD-меню</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="58"/>
+        <location filename="vlc.cpp" line="60"/>
         <source>Navigate right in DVD menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Перейти вправо в DVD-меню</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="63"/>
+        <location filename="vlc.cpp" line="65"/>
         <source>Navigate up in DVD menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Перейти вверх в DVD-меню</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="68"/>
+        <location filename="vlc.cpp" line="70"/>
         <source>Navigate down in DVD menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Перейти вниз в DVD-меню</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="73"/>
+        <location filename="vlc.cpp" line="75"/>
         <source>Activate current in DVD menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбрать текущий пункт в DVD-меню</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="78"/>
+        <location filename="vlc.cpp" line="80"/>
         <source>Toggle fullscreen</source>
-        <translation type="unfinished"></translation>
+        <translation>Переключить полноэкранный режим</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="83"/>
+        <location filename="vlc.cpp" line="85"/>
         <source>Switch play/pause</source>
-        <translation type="unfinished"></translation>
+        <translation>Воспроизведение/пауза</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="88"/>
+        <location filename="vlc.cpp" line="90"/>
         <source>Increase volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Увеличить громкость</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="93"/>
+        <location filename="vlc.cpp" line="95"/>
         <source>Decrease volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Уменьшить громкость</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="98"/>
+        <location filename="vlc.cpp" line="100"/>
         <source>3% seek forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Промотать вперед на 3%</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="103"/>
+        <location filename="vlc.cpp" line="105"/>
         <source>3% seek backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Промотать назад на 3%</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="108"/>
+        <location filename="vlc.cpp" line="110"/>
         <source>10 seconds seek forward</source>
-        <translation type="unfinished"></translation>
+        <translation>Промотать вперед на 10 секунд</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="113"/>
+        <location filename="vlc.cpp" line="115"/>
         <source>10 seconds seek backward</source>
-        <translation type="unfinished"></translation>
+        <translation>Промотать назад на 10 секунд</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="118"/>
+        <location filename="vlc.cpp" line="120"/>
         <source>Next in playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Следующее в списке воспроизведения</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="123"/>
+        <location filename="vlc.cpp" line="125"/>
         <source>Prev in playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Предыдущее в списке воспроизведения</translation>
     </message>
     <message>
-        <location filename="vlc.cpp" line="150"/>
+        <location filename="vlc.cpp" line="152"/>
         <source>Video player, based on VLC</source>
-        <translation type="unfinished"></translation>
+        <translation>Видеоплеер, основанный на VLC</translation>
     </message>
 </context>
 <context>
@@ -111,140 +111,136 @@
         <location filename="vlcwidget.cpp" line="281"/>
         <location filename="vlcwidget.cpp" line="293"/>
         <source>Open files</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть файлы</translation>
     </message>
     <message>
         <location filename="vlcwidget.cpp" line="282"/>
         <location filename="vlcwidget.cpp" line="294"/>
         <source>Videos (*.mkv *.avi *.mov *.mpg)</source>
-        <translation type="unfinished"></translation>
+        <translation>Видео (*.mkv *.avi *.mov *.mpg)</translation>
     </message>
     <message>
         <location filename="vlcwidget.cpp" line="305"/>
-        <location filename="vlcwidget.cpp" line="878"/>
+        <location filename="vlcwidget.cpp" line="879"/>
         <source>Open folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть каталог</translation>
     </message>
     <message>
         <location filename="vlcwidget.cpp" line="306"/>
         <source>Folder with video</source>
-        <translation type="unfinished"></translation>
+        <translation>Каталог с видео</translation>
     </message>
     <message>
         <location filename="vlcwidget.cpp" line="318"/>
         <location filename="vlcwidget.cpp" line="331"/>
-        <location filename="vlcwidget.cpp" line="888"/>
+        <location filename="vlcwidget.cpp" line="889"/>
         <source>Open DVD</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть DVD</translation>
     </message>
     <message>
         <location filename="vlcwidget.cpp" line="319"/>
         <location filename="vlcwidget.cpp" line="332"/>
         <source>Root of DVD directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Корневая директория DVD</translation>
     </message>
     <message>
         <location filename="vlcwidget.cpp" line="343"/>
+        <location filename="vlcwidget.cpp" line="884"/>
         <source>Open URL</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="vlcwidget.cpp" line="343"/>
-        <source>Enter URL</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть URL</translation>
     </message>
     <message>
         <location filename="vlcwidget.cpp" line="355"/>
-        <location filename="vlcwidget.cpp" line="705"/>
-        <location filename="vlcwidget.cpp" line="873"/>
+        <location filename="vlcwidget.cpp" line="706"/>
+        <location filename="vlcwidget.cpp" line="874"/>
         <source>Open file</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть файл</translation>
     </message>
     <message>
         <location filename="vlcwidget.cpp" line="356"/>
         <source>Media (*.ac3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Медиа (*.ac3)</translation>
     </message>
     <message>
         <location filename="vlcwidget.cpp" line="366"/>
         <source>Pause</source>
-        <translation type="unfinished"></translation>
+        <translation>Пауза</translation>
     </message>
     <message>
         <location filename="vlcwidget.cpp" line="371"/>
-        <location filename="vlcwidget.cpp" line="500"/>
+        <location filename="vlcwidget.cpp" line="501"/>
         <source>Play</source>
-        <translation type="unfinished"></translation>
+        <translation>Воспроизведение</translation>
     </message>
     <message>
-        <location filename="vlcwidget.cpp" line="491"/>
+        <location filename="vlcwidget.cpp" line="492"/>
         <source>Prev</source>
-        <translation type="unfinished"></translation>
+        <translation>Предыдущее</translation>
     </message>
     <message>
-        <location filename="vlcwidget.cpp" line="505"/>
+        <location filename="vlcwidget.cpp" line="506"/>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Остановить</translation>
     </message>
     <message>
-        <location filename="vlcwidget.cpp" line="508"/>
+        <location filename="vlcwidget.cpp" line="509"/>
         <source>Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Следующее</translation>
     </message>
     <message>
-        <location filename="vlcwidget.cpp" line="517"/>
-        <source>FullScreen</source>
-        <translation type="unfinished"></translation>
+        <location filename="vlcwidget.cpp" line="518"/>
+        <source>Fullscreen</source>
+        <translation>Полноэкранный режим</translation>
     </message>
     <message>
-        <location filename="vlcwidget.cpp" line="591"/>
-        <source>subtitles</source>
-        <translation type="unfinished"></translation>
+        <location filename="vlcwidget.cpp" line="556"/>
+        <source>Main tab for VLC plugin</source>
+        <translation>Основная вкладка модуля VLC</translation>
     </message>
     <message>
         <location filename="vlcwidget.cpp" line="592"/>
-        <source>tracks</source>
-        <translation type="unfinished"></translation>
+        <source>Subtitles</source>
+        <translation>Субтитры</translation>
     </message>
     <message>
         <location filename="vlcwidget.cpp" line="593"/>
-        <source>Aspect ratio</source>
-        <translation type="unfinished"></translation>
+        <source>Tracks</source>
+        <translation>Дорожки</translation>
     </message>
     <message>
         <location filename="vlcwidget.cpp" line="594"/>
+        <source>Aspect ratio</source>
+        <translation>Соотношение сторон</translation>
+    </message>
+    <message>
+        <location filename="vlcwidget.cpp" line="595"/>
         <source>Real zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>Увеличение</translation>
     </message>
     <message>
-        <location filename="vlcwidget.cpp" line="622"/>
+        <location filename="vlcwidget.cpp" line="623"/>
         <source>Add subtitles...</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить субтитры…</translation>
     </message>
     <message>
-        <location filename="vlcwidget.cpp" line="625"/>
+        <location filename="vlcwidget.cpp" line="626"/>
         <source>Add external sound track</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить внешнюю звуковую дорожку</translation>
     </message>
     <message>
-        <location filename="vlcwidget.cpp" line="640"/>
+        <location filename="vlcwidget.cpp" line="641"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>По умолчанию</translation>
     </message>
     <message>
-        <location filename="vlcwidget.cpp" line="706"/>
+        <location filename="vlcwidget.cpp" line="707"/>
         <source>Subtitles (*.srt)</source>
-        <translation type="unfinished"></translation>
+        <translation>Субтитры (*.srt)</translation>
     </message>
     <message>
-        <location filename="vlcwidget.cpp" line="883"/>
-        <source>Open url</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="vlcwidget.cpp" line="893"/>
+        <location filename="vlcwidget.cpp" line="894"/>
         <source>Open Simple DVD</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть Simple DVD</translation>
     </message>
 </context>
 <context>
@@ -252,12 +248,12 @@
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>Local settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Локальные настройки</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Auto start when adding files</source>
-        <translation type="unfinished"></translation>
+        <translation>Автоматически запускать воспроизведение при добавлении файлов</translation>
     </message>
 </context>
 </TS>
