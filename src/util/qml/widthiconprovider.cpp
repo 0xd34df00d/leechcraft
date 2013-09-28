@@ -35,7 +35,11 @@ namespace LeechCraft
 namespace Util
 {
 	WidthIconProvider::WidthIconProvider ()
+#ifndef USE_QT5
 	: QDeclarativeImageProvider (Pixmap)
+#else
+	: QQuickImageProvider (Pixmap)
+#endif
 	{
 	}
 

@@ -29,7 +29,11 @@
 
 #include "eventproxyobject.h"
 #include <QVariant>
-#include <QDeclarativeContext>
+#ifndef USE_QT5
+	#include <QDeclarativeContext>
+#else
+	#include <QQmlContext>
+#endif
 #include <util/util.h>
 #include "actionsproxyobject.h"
 

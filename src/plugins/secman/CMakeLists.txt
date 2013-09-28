@@ -8,7 +8,6 @@ if (TESTS_SECMAN)
 	set (QT_USE_QTTEST TRUE)
 endif ()
 
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -38,8 +37,8 @@ set (RESOURCES
 	secmanresources.qrc
 	)
 
-QT4_WRAP_UI (UIS_H ${FORMS})
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+QtWrapUi (UIS_H ${FORMS})
+QtAddResources (RCCS ${RESOURCES})
 
 add_library (leechcraft_secman SHARED
 	${COMPILED_TRANSLATIONS}
@@ -47,6 +46,9 @@ add_library (leechcraft_secman SHARED
 	${UIS_H}
 	${RCCS}
 	)
+
+FindQtLibs (leechcraft_secman Core)
+
 target_link_libraries (leechcraft_secman
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}

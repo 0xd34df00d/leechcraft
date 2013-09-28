@@ -42,6 +42,7 @@ namespace AdvancedNotifications
 		Q_OBJECT
 
 		QList<QAction*> Actions_;
+		QHash<int, QByteArray> RoleNames_;
 	public:
 		enum Roles
 		{
@@ -52,6 +53,10 @@ namespace AdvancedNotifications
 		ActionsModel (QObject*);
 
 		void AddAction (QAction*);
+
+#ifdef USE_QT5
+		QHash<int, QByteArray> roleNames () const;
+#endif
 	public slots:
 		void triggerAction (int);
 	private slots:

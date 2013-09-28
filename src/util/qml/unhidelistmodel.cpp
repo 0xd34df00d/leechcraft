@@ -36,12 +36,20 @@ namespace Util
 	UnhideListModel::UnhideListModel (QObject *parent)
 	: QStandardItemModel (parent)
 	{
-		QHash<int, QByteArray> roleNames;
-		roleNames [Roles::ItemClass] = "itemClass";
-		roleNames [Roles::ItemName] = "itemName";
-		roleNames [Roles::ItemDescription] = "itemDescr";
-		roleNames [Roles::ItemIcon] = "itemIcon";
-		setRoleNames (roleNames);
+		RoleNames_ [Roles::ItemClass] = "itemClass";
+		RoleNames_ [Roles::ItemName] = "itemName";
+		RoleNames_ [Roles::ItemDescription] = "itemDescr";
+		RoleNames_ [Roles::ItemIcon] = "itemIcon";
+#ifndef USE_QT5
+		setRoleNames (RoleNames_);
+#endif
 	}
+
+#ifdef USE_QT5
+	QHash<int, QByteArray> UnhideListModel::roleNames () const
+	{
+		return RoleNames_;
+	}
+#endif
 }
 }

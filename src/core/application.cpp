@@ -72,6 +72,10 @@
 #include "winwarndialog.h"
 #endif
 
+#ifdef USE_QT5
+	#define qInstallMsgHandler qInstallMessageHandler
+#endif
+
 namespace bpo = boost::program_options;
 
 namespace LeechCraft

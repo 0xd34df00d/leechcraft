@@ -2,13 +2,11 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_advancednotifications)
 include (InitLCPlugin OPTIONAL)
 
-set (QT_USE_QTDECLARATIVE TRUE)
-include (${QT_USE_FILE})
-include_directories (
-	${CMAKE_CURRENT_BINARY_DIR}
+include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
+
 set (SRCS
 	advancednotifications.cpp
 	core.cpp
@@ -46,15 +44,18 @@ set (RESOURCES advancednotificationsresources.qrc)
 
 CreateTrs ("advancednotifications" "en;es;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("advancednotifications" "en;ru_RU" "${SRCS}" "${FORMS}" "advancednotificationssettings.xml")
-QT4_WRAP_UI (UIS_H ${FORMS})
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+
+QtWrapUi (UIS_H ${FORMS})
+QtAddResources (RCCS ${RESOURCES})
 
 add_library (leechcraft_advancednotifications SHARED
-	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${RCCS}
 	${UIS_H}
 	)
+
+FindQtLibs (leechcraft_advancednotifications Quick)
+
 target_link_libraries (leechcraft_advancednotifications
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}

@@ -54,6 +54,7 @@ namespace AdvancedNotifications
 	{
 		class RulesModel : public QStandardItemModel
 		{
+			QHash<int, QByteArray> RoleNames_;
 		public:
 			enum Roles
 			{
@@ -64,11 +65,20 @@ namespace AdvancedNotifications
 			RulesModel (QObject *parent)
 			: QStandardItemModel (parent)
 			{
-				QHash<int, QByteArray> roleNames;
-				roleNames [Roles::RuleName] = "ruleName";
-				roleNames [Roles::IsRuleEnabled] = "isRuleEnabled";
-				setRoleNames (roleNames);
+
+				RoleNames_ [Roles::RuleName] = "ruleName";
+				RoleNames_ [Roles::IsRuleEnabled] = "isRuleEnabled";
+#ifndef USE_QT5
+				setRoleNames (RoleNames_);
+#endif
 			}
+
+#ifdef USE_QT5
+			QHash<int, QByteArray> roleNames () const
+			{
+				return RoleNames_;
+			}
+#endif
 		};
 	}
 

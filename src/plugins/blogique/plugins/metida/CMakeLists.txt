@@ -2,12 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_blogique_metida)
 include (InitLCPlugin OPTIONAL)
 
-set (QT_USE_QTDECLARATIVE TRUE)
-set (QT_USE_QTNETWORK TRUE)
-set (QT_USE_QTXML TRUE)
-set (QT_USE_QTXMLPATTERNS TRUE)
-include (${QT_USE_FILE})
-
 include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${BLOGIQUE_INCLUDE_DIR}
@@ -85,30 +79,20 @@ set (METIDA_RESOURCES blogiquemetidaresources.qrc)
 
 # CreateTrVars ("blogique_metida" "de;en;es;fr;it;ru_RU;uk_UA" METIDA_TRANSLATIONS METIDA_COMPILED_TRANSLATIONS)
 
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (METIDA_MOC_SRCS ${METIDA_HEADERS})
-endif ()
-QT4_WRAP_UI (METIDA_UIS_H ${METIDA_FORMS})
-QT4_ADD_RESOURCES (METIDA_RCCS ${METIDA_RESOURCES})
-
-# add_custom_command (OUTPUT
-# 	${METIDA_COMPILED_TRANSLATIONS}
-# 	COMMAND "${QT_LRELEASE_EXECUTABLE}" ${METIDA_TRANSLATIONS}
-# 	DEPENDS ${METIDA_TRANSLATIONS}
-# 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-# 	)
+QtWrapUi (METIDA_UIS_H ${METIDA_FORMS})
 
 set (METIDA_RESOURCES metidaresources.qrc)
-QT4_ADD_RESOURCES (METIDA_RCCS ${METIDA_RESOURCES})
+QtAddResources (METIDA_RCCS ${METIDA_RESOURCES})
 
 add_library (leechcraft_blogique_metida SHARED
 	${METIDA_RCCS}
 	${METIDA_COMPILED_TRANSLATIONS}
 	${METIDA_SRCS}
-	${METIDA_MOC_SRCS}
 	${METIDA_UIS_H}
 	${METIDA_RCCS}
 	)
+
+FindQtLibs (leechcraft_blogique_metida Qml Quick Network Xml XmlPatterns)
 
 target_link_libraries (leechcraft_blogique_metida
 	${QT_LIBRARIES}

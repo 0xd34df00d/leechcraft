@@ -38,14 +38,20 @@ namespace Metida
 	RecentCommentsModel::RecentCommentsModel (QObject *parent)
 	: QStandardItemModel (parent)
 	{
-		QHash<int, QByteArray> roleNames;
-		roleNames [NodeSubject] = "nodeSubject";
-		roleNames [NodeUrl] = "nodeUrl";
-		roleNames [CommentBody] = "commentBody";
-		roleNames [CommentInfo] = "commentInfo";
-		setRoleNames (roleNames);
+		RoleNames_ [NodeSubject] = "nodeSubject";
+		RoleNames_ [NodeUrl] = "nodeUrl";
+		RoleNames_ [CommentBody] = "commentBody";
+		RoleNames_ [CommentInfo] = "commentInfo";
+#ifndef USE_QT5
+		setRoleNames (RoleNames_);
+#endif
 	}
-
+#ifdef USE_QT5
+	QHash<int, QByteArray> RecentCommentsModel::roleNames () const
+	{
+		return RoleNames_;
+	}
+#endif
 }
 }
 }

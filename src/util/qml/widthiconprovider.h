@@ -29,7 +29,11 @@
 
 #pragma once
 
-#include <QDeclarativeImageProvider>
+#ifndef USE_QT5
+	#include <QDeclarativeImageProvider>
+#else
+	#include <QQuickImageProvider>
+#endif
 #include <util/utilconfig.h>
 
 class QIcon;
@@ -62,7 +66,11 @@ namespace Util
 	 *
 	 * @sa ThemeImageProvider
 	 */
+#ifndef USE_QT5
 	class UTIL_API WidthIconProvider : public QDeclarativeImageProvider
+#else
+	class UTIL_API WidthIconProvider : public QQuickImageProvider
+#endif
 	{
 	public:
 		WidthIconProvider ();

@@ -72,8 +72,9 @@ namespace Aggregator
 
 	void ItemsListModel::SetCurrentChannel (const IDType_t& channel)
 	{
+		beginResetModel ();
 		CurrentChannel_ = channel;
-		reset ();
+		endResetModel ();
 	}
 
 	void ItemsListModel::Selected (const QModelIndex& index)
@@ -116,16 +117,18 @@ namespace Aggregator
 
 	void ItemsListModel::Reset (const IDType_t& channel)
 	{
+		beginResetModel ();
 		CurrentChannel_ = channel;
 		CurrentRow_ = -1;
 		CurrentItems_.clear ();
 		if (channel != static_cast<IDType_t> (-1))
 			Core::Instance ().GetStorageBackend ()->GetItems (CurrentItems_, channel);
-		reset ();
+		endResetModel ();
 	}
 
 	void ItemsListModel::Reset (const QList<IDType_t>& items)
 	{
+		beginResetModel ();
 		CurrentChannel_ = -1;
 		CurrentRow_ = -1;
 		CurrentItems_.clear ();
@@ -134,7 +137,7 @@ namespace Aggregator
 		for (const IDType_t& itemId : items)
 			CurrentItems_.push_back (sb->GetItem (itemId)->ToShort ());
 
-		reset ();
+		endResetModel ();
 	}
 
 	void ItemsListModel::RemoveItems (QSet<IDType_t> ids)
@@ -143,6 +146,9 @@ namespace Aggregator
 			return;
 
 		const bool shouldReset = ids.size () > 10;
+
+		if (shouldReset)
+			beginResetModel ();
 
 		for (auto i = CurrentItems_.begin ();
 				i != CurrentItems_.end () && !ids.isEmpty (); )
@@ -168,7 +174,7 @@ namespace Aggregator
 		}
 
 		if (shouldReset)
-			reset ();
+			endResetModel ();
 	}
 
 	void ItemsListModel::ItemDataUpdated (Item_ptr item)

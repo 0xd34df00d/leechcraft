@@ -38,10 +38,11 @@ namespace AdvancedNotifications
 	ActionsModel::ActionsModel (QObject *parent)
 	: QStandardItemModel (parent)
 	{
-		QHash<int, QByteArray> roleNames;
-		roleNames [Roles::IconName] = "iconName";
-		roleNames [Roles::IsActionChecked] = "isActionChecked";
-		setRoleNames (roleNames);
+		RoleNames_ [Roles::IconName] = "iconName";
+		RoleNames_ [Roles::IsActionChecked] = "isActionChecked";
+#ifndef USE_QT5
+		setRoleNames (RoleNames_);
+#endif
 	}
 
 	void ActionsModel::AddAction (QAction *action)
@@ -86,5 +87,11 @@ namespace AdvancedNotifications
 			item (pos)->setData (checked ? on : off, Roles::IconName);
 		}
 	}
+#ifdef USE_QT5
+	QHash<int, QByteArray> ActionsModel::roleNames () const
+	{
+		return RoleNames_;
+	}
+#endif
 }
 }

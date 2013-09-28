@@ -5,17 +5,6 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	)
 
-if (NOT USE_QT5)
-	if (NOT WIN32)
-		set (QT_USE_QTDBUS TRUE)
-	endif ()
-	set (QT_USE_QTNETWORK TRUE)
-	set (QT_USE_QTXML TRUE)
-	set (QT_USE_QTSQL TRUE)
-	set (QT_USE_QTSCRIPT TRUE)
-	include (${QT_USE_FILE})
-endif ()
-
 add_definitions (-DBOOST_PROGRAM_OPTIONS_DYN_LINK)
 add_definitions (${QT_DEFINITIONS})
 
@@ -85,7 +74,7 @@ set (SRCS
 	mwproxy.cpp
 	winwarndialog.cpp
 	coreplugin2manager.cpp
-	dockmanager.cpp
+	dockmanager.cpp${_currentArg}
 	acceptlangwidget.cpp
 	entitymanager.cpp
 	colorthemeengine.cpp
@@ -124,18 +113,13 @@ set (RESOURCES mainresources.qrc)
 CreateTrs ("" "ru_RU;de;uk_UA;it;ar;eo;es;tr;tt;en;be;fr;pl" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("" "en;ru_RU" "${SRCS};${UTIL_SRCS};${XSD_SRCS}" "${FORMS};${UTIL_FORMS};${XSD_FORMS}" "coresettings.xml")
 
-if (USE_QT5)
-	QT5_WRAP_UI (UIS_H ${FORMS})
-	QT5_ADD_RESOURCES (RCC ${RESOURCES})
-else ()
-	QT4_WRAP_UI (UIS_H ${FORMS})
-	QT4_ADD_RESOURCES (RCC ${RESOURCES})
-endif ()
-
 set (WIN_RESOURCES)
 if (WIN32)
 	set (WIN_RESOURCES ../../../tools/win32/leechcraft.rc)
 endif ()
+
+QtWrapUi (UIS_H ${FORMS})
+QtAddResources (RCC ${RESOURCES})
 
 add_executable (leechcraft WIN32
 	../config.h
@@ -145,6 +129,8 @@ add_executable (leechcraft WIN32
 	${RCC}
 	${WIN_RESOURCES}
 	)
+
+FindQtLibs (leechcraft Gui Network Widgets Xml Sql Script Concurrent DBus Svg)
 
 target_link_libraries (leechcraft
 		${QT_QTMAIN_LIBRARY}
@@ -157,10 +143,6 @@ target_link_libraries (leechcraft
 install (TARGETS leechcraft DESTINATION ${LC_BINDIR})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES coresettings.xml DESTINATION ${LC_SETTINGS_DEST})
-
-if (USE_QT5)
-	QT5_USE_MODULES (leechcraft Gui Network Widgets Xml Sql Script Concurrent DBus Svg)
-endif ()
 
 if (UNIX AND NOT APPLE)
 	add_subdirectory (loaders/dbus)

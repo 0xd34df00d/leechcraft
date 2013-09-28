@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QList>
+#include <QMetaType>
 #include <QtPlugin>
 
 class QObject;

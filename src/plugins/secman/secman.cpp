@@ -36,8 +36,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace SecMan
 {
 	void Plugin::Init (ICoreProxy_ptr)
@@ -121,6 +119,5 @@ namespace SecMan
 	}
 }
 }
-}
 
-LC_EXPORT_PLUGIN (leechcraft_secman, LeechCraft::Plugins::SecMan::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_secman, LeechCraft::SecMan::Plugin);

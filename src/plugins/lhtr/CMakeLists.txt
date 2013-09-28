@@ -11,9 +11,6 @@ if (WITH_LHTR_HTML)
 	add_definitions (-DWITH_HTMLTIDY)
 endif (WITH_LHTR_HTML)
 
-set (QT_USE_QTNETWORK TRUE)
-set (QT_USE_QTWEBKIT TRUE)
-include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -36,20 +33,21 @@ set (FORMS
 	finddialog.ui
 	inserttabledialog.ui
 	)
-QT4_WRAP_UI (UIS_H ${FORMS})
+QtWrapUi (UIS_H ${FORMS})
 CreateTrs ("lhtr" "en;es;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("lhtr" "en;ru_RU" "${SRCS}" "${FORMS}" "lhtrsettings.xml")
 
 set (LHTR_RESOURCES lhtrresources.qrc)
-QT4_ADD_RESOURCES (LHTR_RCCS ${LHTR_RESOURCES})
+QtAddResources (LHTR_RCCS ${LHTR_RESOURCES})
 
 add_library (leechcraft_lhtr SHARED
 	${LHTR_RCCS}
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${UIS_H}
 	)
+
+FindQtLibs (leechcraft_lhtr Network WebKitWidgets)
 target_link_libraries (leechcraft_lhtr
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}

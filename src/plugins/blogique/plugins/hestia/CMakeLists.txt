@@ -2,9 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_blogique_hestia)
 include (InitLCPlugin OPTIONAL)
 
-set (QT_USE_QTSQL TRUE)
-include (${QT_USE_FILE})
-
 include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${BLOGIQUE_INCLUDE_DIR}
@@ -43,26 +40,17 @@ set (HESTIA_FORMS
 
 # CreateTrVars ("blogique_hestia" "de;en;es;fr;it;ru_RU;uk_UA" HESTIA_TRANSLATIONS HESTIA_COMPILED_TRANSLATIONS)
 
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (HESTIA_MOC_SRCS ${HESTIA_HEADERS})
-endif ()
-QT4_WRAP_UI (HESTIA_UIS_H ${HESTIA_FORMS})
-QT4_ADD_RESOURCES (HESTIA_RCCS ${HESTIA_RESOURCES})
-
-# add_custom_command (OUTPUT
-# 	${HESTIA_COMPILED_TRANSLATIONS}
-# 	COMMAND "${QT_LRELEASE_EXECUTABLE}" ${HESTIA_TRANSLATIONS}
-# 	DEPENDS ${HESTIA_TRANSLATIONS}
-# 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-# 	)
+QtWrapUi (HESTIA_UIS_H ${HESTIA_FORMS})
+QtAddResources (HESTIA_RCCS ${HESTIA_RESOURCES})
 
 add_library (leechcraft_blogique_hestia SHARED
 	${HESTIA_COMPILED_TRANSLATIONS}
 	${HESTIA_SRCS}
-	${HESTIA_MOC_SRCS}
 	${HESTIA_UIS_H}
 	${HESTIA_RCCS}
 	)
+
+FindQtLibs (leechcraft_blogique_hestia Sql)
 
 target_link_libraries (leechcraft_blogique_hestia
 	${QT_LIBRARIES}

@@ -5,15 +5,6 @@ include (InitLCPlugin OPTIONAL)
 option (ENABLE_AGGREGATOR_BODYFETCH "Enable BodyFetch for fetching full bodies of news items" ON)
 option (ENABLE_AGGREGATOR_WEBACCESS "Enable WebAccess for providing HTTP access to Aggregator" OFF)
 
-set (QT_USE_QTSQL TRUE)
-set (QT_USE_QTXML TRUE)
-set (QT_USE_QTNETWORK TRUE)
-
-if (ENABLE_AGGREGATOR_BODYFETCH)
-	set (QT_USE_QTWEBKIT TRUE)
-endif ()
-
-include (${QT_USE_FILE})
 include_directories (${Boost_INCLUDE_DIRS}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -26,20 +17,20 @@ set (SRCS
     addfeed.cpp
     parserfactory.cpp
 	rssparser.cpp
-    rss20parser.cpp
+	rss20parser.cpp
 	rss10parser.cpp
 	rss091parser.cpp
 	atomparser.cpp
-    atom10parser.cpp
-    atom03parser.cpp
-    parser.cpp
-    item.cpp
-    channel.cpp
-    feed.cpp
-    xmlsettingsmanager.cpp
-    uistatepersist.cpp
-    channelsmodel.cpp
-    channelsfiltermodel.cpp
+	atom10parser.cpp
+	atom03parser.cpp
+	parser.cpp
+	item.cpp
+	channel.cpp
+	feed.cpp
+	xmlsettingsmanager.cpp
+	uistatepersist.cpp
+	channelsmodel.cpp
+	channelsfiltermodel.cpp
 	regexpmatcherui.cpp
 	singleregexp.cpp
 	regexpmatchermanager.cpp
@@ -78,16 +69,16 @@ set (HEADERS
     parserfactory.h
     parser.h
 	rssparser.h
-    rss20parser.h
+	rss20parser.h
 	rss10parser.h
 	rss091parser.h
 	atomparser.h
-    atom10parser.h
-    atom03parser.h
-    channelsmodel.h
-    xmlsettingsmanager.h
-    uistatepersist.h
-    channelsfiltermodel.h
+	atom10parser.h
+	atom03parser.h
+	channelsmodel.h
+	xmlsettingsmanager.h
+	uistatepersist.h
+	channelsfiltermodel.h
 	regexpmatcherui.h
 	singleregexp.h
 	regexpmatchermanager.h
@@ -138,19 +129,18 @@ CreateTrs ("aggregator" "ar;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" COMPILED_TRANSL
 CreateTrsUpTarget ("aggregator" "en;ru_RU" "${SRCS}" "${FORMS}" "aggregatorsettings.xml")
 
 add_definitions(-DBOOST_DYN_LINK)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
-endif ()
-QT4_WRAP_UI (UIS_H ${FORMS})
-QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+QtWrapUi (UIS_H ${FORMS})
+QtAddResources (RCCS ${RESOURCES})
 
 add_library (leechcraft_aggregator SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
 	${UIS_H}
 	${RCCS}
 	)
+
+FindQtLibs (leechcraft_aggregator Gui Widgets Sql Xml Network WebKitWidgets)
+
 link_directories (${Boost_LIBRARY_DIR})
 target_link_libraries (leechcraft_aggregator
 	${QT_LIBRARIES}

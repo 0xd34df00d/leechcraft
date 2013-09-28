@@ -40,7 +40,7 @@ namespace Metida
 	class RecentCommentsModel : public QStandardItemModel
 	{
 		Q_OBJECT
-
+		QHash<int, QByteArray> RoleNames_;
 	public:
 		enum CommentRoles
 		{
@@ -51,6 +51,9 @@ namespace Metida
 		};
 
 		explicit RecentCommentsModel (QObject *parent = 0);
+#ifdef USE_QT5
+		QHash<int, QByteArray> roleNames () const;
+#endif
 	};
 }
 }

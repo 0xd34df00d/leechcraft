@@ -49,6 +49,9 @@ namespace Hestia
 				, public IBloggingPlatformPlugin
 	{
 		Q_OBJECT
+#ifdef USE_QT5
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.Blogique.Hestia");
+#endif
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings
 				LeechCraft::Blogique::IBloggingPlatformPlugin)
 

@@ -34,14 +34,22 @@
 #error "Trying to compile QML notifications view without having QML :("
 #endif
 
-#include <QDeclarativeView>
+#ifndef USE_QT5
+	#include <QDeclarativeView>
+#else
+	#include <QQuickView>
+#endif
 #include "../eventdata.h"
 
 namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
+#ifndef USE_QT5
 	class VisualNotificationsView : public QDeclarativeView
+#else
+	class VisualNotificationsView : public QQuickView
+#endif
 	{
 		Q_OBJECT
 
@@ -52,7 +60,11 @@ namespace AdvancedNotifications
 
 		void SetEvents (const QList<EventData>&);
 	private slots:
+#ifndef USE_QT5
 		void handleStatusChanged (QDeclarativeView::Status);
+#else
+		void handleStatusChanged (QQuickView::Status);
+#endif
 	signals:
 		void actionTriggered (const QString&, int);
 		void dismissEvent (const QString&);
