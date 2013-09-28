@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/blasq/rappor">
+    <file>resources/images/vk.png</file>
+  </qresource>
+</RCC>
+
