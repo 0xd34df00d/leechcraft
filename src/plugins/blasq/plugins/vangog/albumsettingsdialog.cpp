@@ -28,14 +28,14 @@
  **********************************************************************/
 
 #include "albumsettingsdialog.h"
-#include <util/gui/clearlineeditaddon.h>
 #include <QPushButton>
+#include <util/gui/clearlineeditaddon.h>
 
 namespace LeechCraft
 {
 namespace Blasq
 {
-	namespace Vangog
+namespace Vangog
 {
 	AlbumSettingsDialog::AlbumSettingsDialog (const QString& name,
 			ICoreProxy_ptr proxy, QWidget *parent)

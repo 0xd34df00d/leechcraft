@@ -123,9 +123,9 @@ namespace Vangog
 
 		void Delete (const QModelIndex& index) override;
 
-		void CreateCollection(const QModelIndex& parent) override;
-		bool HasUploadFeature(Feature ) const override;
-		void UploadImages(const QModelIndex& collection, const QList<UploadItem>& paths) override;
+		void CreateCollection (const QModelIndex& parent) override;
+		bool HasUploadFeature (Feature) const override;
+		void UploadImages (const QModelIndex& collection, const QList<UploadItem>& paths) override;
 
 		void ImageUploadResponse (const QByteArray& content);
 

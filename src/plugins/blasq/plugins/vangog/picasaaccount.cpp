@@ -417,9 +417,6 @@ namespace Vangog
 			}
 		}
 		emit doneUpdating ();
-
-		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Blasq",
-				tr ("Image was removed successfully"), PInfo_));
 	}
 
 	void PicasaAccount::handleGotError (int errorCode, const QString& errorString)

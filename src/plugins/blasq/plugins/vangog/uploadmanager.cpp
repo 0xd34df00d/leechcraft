@@ -53,48 +53,48 @@ namespace Vangog
 	void UploadManager::Upload (const QByteArray& albumId, const QList<UploadItem>& items)
 	{
 		Account_->Schedule ([this, items, albumId] (const QString& authKey) -> void
-		{
-			QString urlStr = QString ("https://picasaweb.google.com/data/feed/api/user/%1/albumid/%2?access_token=%3")
-					.arg (Account_->GetLogin ())
-					.arg (albumId.isEmpty () ? "default" : QString::fromUtf8 (albumId))
-					.arg (authKey);
-
-			for (const auto& item : items)
 			{
-				RequestQueue_->Schedule ([this, urlStr, item] () -> void
+				QString urlStr = QString ("https://picasaweb.google.com/data/feed/api/user/%1/albumid/%2?access_token=%3")
+						.arg (Account_->GetLogin ())
+						.arg (albumId.isEmpty () ? "default" : QString::fromUtf8 (albumId))
+						.arg (authKey);
+
+				for (const auto& item : items)
 				{
-					QNetworkRequest request { QUrl (urlStr) };
-					request.setHeader (QNetworkRequest::ContentTypeHeader, "image/jpeg");
-					request.setRawHeader ("Slug",
-							QFileInfo (item.FilePath_).fileName ().toUtf8 ());
-					QFile file (item.FilePath_);
-					if (!file.open (QIODevice::ReadOnly))
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "unable to open file"
-								<< item.FilePath_
-								<< ":"
-								<< file.errorString ();
-						return;
-					}
-					QNetworkReply *reply = Proxy_->GetNetworkAccessManager ()->
-							post (request, file.readAll ());
-					file.close ();
-					connect (reply,
-							SIGNAL (uploadProgress (qint64, qint64)),
-							this,
-							SLOT (handleUploadProgress (qint64, qint64)));
-					connect (reply,
-							SIGNAL (finished ()),
-							this,
-							SLOT (handleUploadFinished ()));
-					connect (reply,
-							SIGNAL (error (QNetworkReply::NetworkError)),
-							this,
-							SLOT (handleNetworkError (QNetworkReply::NetworkError)));
-				}, this);
-			}
-		});
+					RequestQueue_->Schedule ([this, urlStr, item] () -> void
+						{
+							QNetworkRequest request { urlStr };
+							request.setHeader (QNetworkRequest::ContentTypeHeader, "image/jpeg");
+							request.setRawHeader ("Slug",
+									QFileInfo (item.FilePath_).fileName ().toUtf8 ());
+							QFile *file = new QFile (item.FilePath_);
+							if (!file->open (QIODevice::ReadOnly))
+							{
+								qWarning () << Q_FUNC_INFO
+										<< "unable to open file"
+										<< item.FilePath_
+										<< ":"
+										<< file->errorString ();
+								return;
+							}
+							QNetworkReply *reply = Proxy_->GetNetworkAccessManager ()->
+									post (request, file);
+							file->setParent (reply);
+							connect (reply,
+									SIGNAL (uploadProgress (qint64, qint64)),
+									this,
+									SLOT (handleUploadProgress (qint64, qint64)));
+							connect (reply,
+									SIGNAL (finished ()),
+									this,
+									SLOT (handleUploadFinished ()));
+							connect (reply,
+									SIGNAL (error (QNetworkReply::NetworkError)),
+									this,
+									SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+						}, this);
+				}
+			});
 	}
 
 	void UploadManager::handleUploadProgress (qint64 sent, qint64 total)

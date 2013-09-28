@@ -98,7 +98,6 @@ namespace Vangog
 			case 0:
 				return "public";
 			case 1:
-			default:
 				return "private";
 			}
 
