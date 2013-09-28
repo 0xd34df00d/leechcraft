@@ -1,0 +1,5 @@
+<RCC>
+	<qresource prefix="/blasq/vangog">
+		<file>resources/images/picasalogo.png</file>
+	</qresource>
+</RCC>
