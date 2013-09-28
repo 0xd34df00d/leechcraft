@@ -115,7 +115,9 @@ namespace LeechCraft
 			std::exit (EVersionRequested);
 		}
 
+#ifndef USE_QT5
 		QTextCodec::setCodecForCStrings (QTextCodec::codecForName ("UTF-8"));
+#endif
 
 		if (VarMap_.count ("no-app-catch"))
 			CatchExceptions_ = false;

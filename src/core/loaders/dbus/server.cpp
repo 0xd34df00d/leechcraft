@@ -43,6 +43,10 @@
 #include "../sopluginloader.h"
 #include "marshalling.h"
 
+#ifdef USE_QT5
+	#define qInstallMsgHandler qInstallMessageHandler
+#endif
+
 namespace LeechCraft
 {
 namespace DBus
@@ -52,8 +56,15 @@ namespace DBus
 		QMutex G_DbgMutex;
 		uint Counter = 0;
 
+#ifndef USE_QT5
 		void Write (QtMsgType type, const char *message)
 		{
+#else
+		void Write (QtMsgType type, const QMessageLogContext&, const QString& msgStr)
+		{
+			const auto& messageBA = msgStr.toUtf8 ();
+			const auto message = messageBA.constData ();
+#endif
 			if (!strcmp (message, "QPixmap::handle(): Pixmap is not an X11 class pixmap") ||
 					strstr (message, ": Painter not active"))
 				return;
