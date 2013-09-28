@@ -33,8 +33,10 @@
 #include <memory>
 #include <QObject>
 #include <QSet>
-#include <interfaces/blasq/iaccount.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/blasq/iaccount.h>
+#include <interfaces/blasq/isupportdeletes.h>
+#include <interfaces/blasq/isupportuploads.h>
 #include "picasamanager.h"
 
 class QStandardItemModel;
@@ -42,17 +44,26 @@ class QStandardItem;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class QueueManager;
+}
+
 namespace Blasq
 {
 namespace Vangog
 {
+	class UploadManager;
 	class PicasaService;
 
 	class PicasaAccount : public QObject
 						, public IAccount
+						, public ISupportDeletes
+						, public ISupportUploads
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Blasq::IAccount)
+		Q_INTERFACES (LeechCraft::Blasq::IAccount LeechCraft::Blasq::ISupportDeletes
+				LeechCraft::Blasq::ISupportUploads)
 
 		QString Name_;
 		PicasaService * const Service_;
@@ -70,8 +81,18 @@ namespace Vangog
 		QStandardItem *AllPhotosItem_;
 		QHash<QByteArray, QStandardItem*> AlbumId2AlbumItem_;
 		QHash<QByteArray, QSet<QByteArray>> AlbumID2PhotosSet_;
+		QHash<QStandardItem*, QByteArray> Item2PhotoId_;
+		QHash<QByteArray, QModelIndex> DeletedPhotoId2Index_;
+
+		Util::QueueManager *RequestQueue_;
+		UploadManager *UploadManager_;
 
 	public:
+		enum PicasaRole
+		{
+			AlbumId = CollectionRole::CollectionRoleMax + 1
+		};
+
 		PicasaAccount (const QString& name, PicasaService *service,
 				ICoreProxy_ptr proxy, const QString& login,
 				const QByteArray& id = QByteArray ());
@@ -82,6 +103,8 @@ namespace Vangog
 		QByteArray Serialize () const;
 		static PicasaAccount* Deserialize (const QByteArray& data,
 				PicasaService *service, ICoreProxy_ptr proxy);
+
+		void Schedule (std::function<void (QString)> func);
 
 		QObject* GetQObject () override;
 		IService* GetService () const override;
@@ -97,12 +120,26 @@ namespace Vangog
 		QAbstractItemModel* GetCollectionsModel () const override;
 
 		void UpdateCollections () override;
+
+		void Delete (const QModelIndex& index) override;
+
+		void CreateCollection (const QModelIndex& parent) override;
+		bool HasUploadFeature (Feature) const override;
+		void UploadImages (const QModelIndex& collection, const QList<UploadItem>& paths) override;
+
+		void ImageUploadResponse (const QByteArray& content);
+
 	private:
 		bool TryToEnterLoginIfNoExists ();
+		void CreatePhotoItem (const Photo& photo);
 
 	private slots:
 		void handleGotAlbums (const QList<Album>& albums);
+		void handleGotAlbum (const Album& album);
 		void handleGotPhotos (const QList<Photo>& photos);
+		void handleGotPhoto (const Photo& photo);
+		void handleDeletedPhotos (const QByteArray& id);
+		void handleGotError (int errorCode, const QString& errorString);
 
 	signals:
 		void accountChanged (PicasaAccount *acc);

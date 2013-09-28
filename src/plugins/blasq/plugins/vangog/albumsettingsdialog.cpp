@@ -27,11 +27,9 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QDateTime>
-#include <QStringList>
-#include <QUrl>
+#include "albumsettingsdialog.h"
+#include <QPushButton>
+#include <util/gui/clearlineeditaddon.h>
 
 namespace LeechCraft
 {
@@ -39,92 +37,43 @@ namespace Blasq
 {
 namespace Vangog
 {
-	enum class Access
+	AlbumSettingsDialog::AlbumSettingsDialog (const QString& name,
+			ICoreProxy_ptr proxy, QWidget *parent)
+	: QDialog (parent)
 	{
-		Private,
-		Public
-	};
+		Ui_.setupUi (this);
+		Ui_.Name_->setText (name);
 
-	struct Author
+		new Util::ClearLineEditAddon (proxy, Ui_.Name_);
+		new Util::ClearLineEditAddon (proxy, Ui_.Desc_);
+
+		connect (Ui_.Name_,
+				SIGNAL (textChanged (QString)),
+				this,
+				SLOT (validate ()));
+		validate ();
+	}
+
+	QString AlbumSettingsDialog::GetName () const
 	{
-		QString Name_;
-		QUrl Image_;
-	};
+		return Ui_.Name_->text ();
+	}
 
-	struct Thumbnail
+	QString AlbumSettingsDialog::GetDesc () const
 	{
-		QUrl Url_;
-		int Width_;
-		int Height_;
+		return Ui_.Desc_->text ();
+	}
 
-		Thumbnail ()
-		: Width_ (0)
-		, Height_ (0)
-		{}
-	};
-
-	struct Album
+	int AlbumSettingsDialog::GetPrivacyLevel () const
 	{
-		QByteArray ID_;
-		QString Title_;
-		QString Description_;
-		QDateTime Published_;
-		QDateTime Updated_;
-		Access Access_;
-		Author Author_;
-		int NumberOfPhoto_;
-		quint64 BytesUsed_;
-		QList<Thumbnail> Thumbnails_;
+		return Ui_.PhotosPrivacy_->currentIndex ();
+	}
 
-		Album ()
-		: Access_ (Access::Private)
-		, NumberOfPhoto_ (0)
-		, BytesUsed_ (0)
-		{}
-	};
-
-	struct Exif
+	void AlbumSettingsDialog::validate ()
 	{
-		QString Manufacturer_;
-		QString Model_;
-		int FNumber_;
-		float Exposure_;
-		bool Flash_;
-		float FocalLength_;
-		int ISO_;
-
-		Exif ()
-		: FNumber_ (0)
-		, Exposure_ (0.0)
-		, Flash_ (false)
-		, FocalLength_ (0.0)
-		, ISO_ (0)
-		{}
-	};
-
-	struct Photo
-	{
-		QByteArray ID_;
-		QString Title_;
-		QDateTime Published_;
-		QDateTime Updated_;
-		Access Access_;
-		QByteArray AlbumID_;
-		int Width_;
-		int Height_;
-		quint64 Size_;
-		Exif Exif_;
-		QUrl Url_;
-		QStringList Tags_;
-		QList<Thumbnail> Thumbnails_;
-
-		Photo ()
-		: Access_ (Access::Private)
-		, Width_ (0)
-		, Height_ (0)
-		, Size_ (0)
-		{}
-	};
+		const bool isValid = !GetName ().isEmpty ();
+		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (isValid);
+	}
 }
 }
 }

@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "picasamanager.h"
-#include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QStandardItemModel>
 #include <QtDebug>
@@ -47,6 +46,12 @@ namespace Vangog
 	, Account_ (account)
 	, FirstRequest_ (true)
 	{
+	}
+
+	void PicasaManager::Schedule (std::function<void (QString)> func)
+	{
+		ApiCallsQueue_ << func;
+		RequestAccessToken ();
 	}
 
 	QString PicasaManager::GetAccessToken () const
@@ -68,6 +73,73 @@ namespace Vangog
 	void PicasaManager::UpdatePhotos (const QByteArray& albumId)
 	{
 		ApiCallsQueue_ << [this, albumId] (const QString& key) { RequestPhotos (albumId, key); };
+	}
+
+	void PicasaManager::DeletePhoto (const QByteArray& photoId, const QByteArray& albumId)
+	{
+		ApiCallsQueue_ << [this, photoId, albumId] (const QString& key)
+				{ DeletePhoto (photoId, albumId, key); };
+		RequestAccessToken ();
+	}
+
+	void PicasaManager::DeleteAlbum (const QByteArray& albumId)
+	{
+		ApiCallsQueue_ << [this, albumId] (const QString& key)
+				{ DeleteAlbum (albumId, key); };
+		RequestAccessToken ();
+	}
+
+	namespace
+	{
+		QString GetPicasaAccessFromInt (int access)
+		{
+			switch (access)
+			{
+			case 0:
+				return "public";
+			case 1:
+				return "private";
+			}
+
+			return "private";
+		}
+	}
+
+	void PicasaManager::CreateAlbum (const QString& name, const QString& desc, int access)
+	{
+		QString accessStr = GetPicasaAccessFromInt (access);
+		ApiCallsQueue_ << [this, name, desc, accessStr] (const QString& key)
+				{ CreateAlbum (name, desc, accessStr, key); };
+		RequestAccessToken ();
+	}
+
+	QByteArray PicasaManager::CreateDomDocument (const QByteArray& content, QDomDocument &document)
+	{
+		QString errorMsg;
+		int errorLine = -1, errorColumn = -1;
+
+		if (QString::fromUtf8 (content).contains ("Invalid token"))
+		{
+			AccessToken_ = "";
+			RequestAccessToken ();
+			return QByteArray ();
+		}
+
+		if (!ApiCallsQueue_.isEmpty ())
+			ApiCallsQueue_.removeFirst ();
+
+		if (!document.setContent (content, &errorMsg, &errorLine, &errorColumn))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< errorMsg
+					<< "in line:"
+					<< errorLine
+					<< "column:"
+					<< errorColumn;
+			return QByteArray ();
+		}
+
+		return content;
 	}
 
 	void PicasaManager::RequestAccessToken ()
@@ -105,11 +177,15 @@ namespace Vangog
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleAuthTokenRequestFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
 	void PicasaManager::ParseError (const QVariantMap& map)
 	{
-
+		qWarning () << Q_FUNC_INFO << map;
 	}
 
 	namespace
@@ -135,6 +211,10 @@ namespace Vangog
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleRequestCollectionFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
 	void PicasaManager::RequestPhotos (const QByteArray& albumId, const QString& key)
@@ -150,6 +230,103 @@ namespace Vangog
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleRequestPhotosFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void PicasaManager::DeletePhoto (const QByteArray& photoId,
+			const QByteArray& albumId, const QString& key)
+	{
+		QString str = QString ("https://picasaweb.google.com/data/entry/api/user/%1/albumid/%2/photoid/%3?access_token=%4")
+				.arg (Account_->GetLogin ())
+				.arg (QString::fromUtf8 (albumId))
+				.arg (QString::fromUtf8 (photoId))
+				.arg (key);
+		QNetworkRequest request = CreateRequest (QUrl (str));
+		request.setRawHeader ("If-Match", "*");
+		QNetworkReply *reply = Account_->GetProxy ()->
+				GetNetworkAccessManager ()->deleteResource (request);
+		Reply2Id_ [reply] = photoId;
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleDeletePhotoFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void PicasaManager::DeleteAlbum (const QByteArray& albumId, const QString& key)
+	{
+		QString str = QString ("https://picasaweb.google.com/data/entry/api/user/%1/albumid/%2?access_token=%4")
+				.arg (Account_->GetLogin ())
+				.arg (QString::fromUtf8 (albumId))
+				.arg (key);
+		QNetworkRequest request = CreateRequest (QUrl (str));
+		request.setRawHeader ("If-Match", "*");
+		QNetworkReply *reply = Account_->GetProxy ()->
+				GetNetworkAccessManager ()->deleteResource (request);
+		Reply2Id_ [reply] = albumId;
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleDeleteAlbumFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void PicasaManager::CreateAlbum (const QString& name, const QString& desc,
+			const QString& accessStr, const QString& key)
+	{
+		QDomDocument doc;
+		QDomElement root = doc.createElement ("entry");
+		root.setAttribute ("xmlns","http://www.w3.org/2005/Atom");
+		root.setAttribute ("xmlns:media","http://search.yahoo.com/mrss/");
+		root.setAttribute ("xmlns:gphoto","http://schemas.google.com/photos/2007");
+		doc.appendChild (root);
+		QDomElement title = doc.createElement ("title");
+		title.setAttribute ("type", "text");
+		root.appendChild (title);
+		QDomText albumName = doc.createTextNode (name);
+		title.appendChild (albumName);
+		QDomElement summary = doc.createElement ("summary");
+		summary.setAttribute ("type", "text");
+		root.appendChild (summary);
+		QDomText description = doc.createTextNode (desc);
+		summary.appendChild (description);
+		QDomElement access = doc.createElement ("gphoto:access");
+		root.appendChild (access);
+		QDomText accessRights = doc.createTextNode (accessStr);
+		access.appendChild (accessRights);
+		QDomElement timestamp = doc.createElement ("gphoto:timestamp");
+		root.appendChild (timestamp);
+		QDomText timestampValue = doc.createTextNode (QString::number (QDateTime::currentDateTime ().toTime_t ()));
+		timestamp.appendChild (timestampValue);
+		QDomElement category = doc.createElement ("category");
+		category.setAttribute ("scheme", "http://schemas.google.com/g/2005#kind");
+		category.setAttribute ("term", "http://schemas.google.com/photos/2007#album");
+		root.appendChild (category);
+
+		QString urlString = QString ("https://picasaweb.google.com/data/feed/api/user/%1?access_token=%2")
+				.arg (Account_->GetLogin ())
+				.arg (key);
+		QNetworkRequest request = CreateRequest (QUrl (urlString));
+		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/atom+xml");
+		auto reply = Account_->GetProxy ()->GetNetworkAccessManager ()->
+				post (request, doc.toByteArray ());
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleCreateAlbumFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
 	void PicasaManager::handleAuthTokenRequestFinished ()
@@ -186,39 +363,6 @@ namespace Vangog
 			return;
 
 		ApiCallsQueue_.first () (AccessToken_);
-	}
-
-	QByteArray PicasaManager::CreateDomDocumentFromReply (QNetworkReply *reply, QDomDocument &document)
-	{
-		if (!reply)
-			return QByteArray ();
-
-		const auto& content = reply->readAll ();
-		reply->deleteLater ();
-		QString errorMsg;
-		int errorLine = -1, errorColumn = -1;
-
-		if (QString::fromUtf8 (content).contains ("Invalid token"))
-		{
-			AccessToken_ = "";
-			RequestAccessToken ();
-			return QByteArray ();
-		}
-
-		ApiCallsQueue_.removeFirst ();
-
-		if (!document.setContent (content, &errorMsg, &errorLine, &errorColumn))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< errorMsg
-					<< "in line:"
-					<< errorLine
-					<< "column:"
-					<< errorColumn;
-			return QByteArray ();
-		}
-
-		return content;
 	}
 
 	namespace
@@ -286,6 +430,8 @@ namespace Vangog
 					album.Updated_ = QDateTime::fromString (value, Qt::ISODate);
 				else if (name == "title")
 					album.Title_ = value;
+				else if (name == "summary")
+					album.Description_ = value;
 				else if (name == "rights")
 					album.Access_ = PicasaRightsToAccess (value);
 				else if (name == "author")
@@ -329,12 +475,10 @@ namespace Vangog
 			return;
 
 		QDomDocument document;
-		if (CreateDomDocumentFromReply (reply, document).isEmpty ())
+		reply->deleteLater ();
+		if (CreateDomDocument (reply->readAll (), document).isEmpty ())
 			return;
-
-		auto albums = ParseAlbums (document);
-
-		emit gotAlbums (albums);
+		emit gotAlbums (ParseAlbums (document));
 		RequestAccessToken ();
 	}
 
@@ -448,11 +592,83 @@ namespace Vangog
 			return;
 
 		QDomDocument document;
-		if (CreateDomDocumentFromReply (reply, document).isEmpty ())
+		reply->deleteLater ();
+		if (CreateDomDocument (reply->readAll (), document).isEmpty ())
 			return;
 
 		emit gotPhotos (ParsePhotos (document));
 		RequestAccessToken ();
+	}
+
+	void PicasaManager::handleDeletePhotoFinished ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		ApiCallsQueue_.removeFirst ();
+		const auto& content = reply->readAll ();
+		const auto& id = Reply2Id_.take (reply);
+		content.isEmpty () ?
+			emit deletedPhoto (id) :
+			emit gotError (reply->error (), QString::fromUtf8 (content));
+		reply->deleteLater ();
+		RequestAccessToken ();
+	}
+
+	void PicasaManager::handleDeleteAlbumFinished ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		qDebug () << Q_FUNC_INFO << reply->readAll ();
+	}
+
+	void PicasaManager::handleCreateAlbumFinished ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+
+		QDomDocument doc;
+		if (CreateDomDocument (reply->readAll (), doc).isEmpty ())
+			return;
+		emit gotAlbum (ParseAlbums (doc).value (0));
+		RequestAccessToken ();
+	}
+
+	void PicasaManager::handleImageUploaded (const QByteArray& response)
+	{
+		QByteArray content;
+		QDomDocument document;
+		if (!response.isEmpty ())
+			content = response;
+		else
+		{
+			auto reply = qobject_cast<QNetworkReply*> (sender ());
+			if (!reply)
+				return;
+			content = reply->readAll ();
+		}
+
+		if (CreateDomDocument (content, document).isEmpty ())
+			return;
+
+		emit gotPhoto (ParsePhotos (document).value (0));
+		RequestAccessToken ();
+	}
+
+	void PicasaManager::handleNetworkError (QNetworkReply::NetworkError error)
+	{
+		auto reply = qobject_cast<QNetworkReply *> (sender ());
+		QString errorText;
+		if (reply)
+		{
+			errorText = reply->errorString ();
+			reply->deleteLater ();
+		}
+		emit gotError (error, errorText);
 	}
 
 }
