@@ -1,0 +1,5 @@
+<RCC>
+	<qresource prefix="/blasq/deathnote">
+		<file>resources/images/livejournalicon.svg</file>
+	</qresource>
+</RCC>

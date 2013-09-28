@@ -66,7 +66,8 @@ namespace Vangog
 
 	QIcon PicasaService::GetServiceIcon () const
 	{
-		return {};
+		static QIcon icon (":/blasq/vangog/resources/images/picasalogo.png");
+		return icon;
 	}
 
 	void PicasaService::Release ()

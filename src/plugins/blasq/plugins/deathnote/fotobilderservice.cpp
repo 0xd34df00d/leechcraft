@@ -60,7 +60,8 @@ namespace DeathNote
 
 	QIcon FotoBilderService::GetServiceIcon () const
 	{
-		return {};
+		static QIcon icon (":/blasq/deathnote/resources/images/livejournalicon.svg");
+		return icon;
 	}
 
 	QList<IAccount*> FotoBilderService::GetRegisteredAccounts () const
