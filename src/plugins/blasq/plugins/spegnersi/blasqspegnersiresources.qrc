@@ -1,0 +1,5 @@
+<RCC>
+	<qresource prefix="/blasq/spegnersi">
+		<file>resources/images/flickricon.png</file>
+	</qresource>
+</RCC>
