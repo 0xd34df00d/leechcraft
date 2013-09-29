@@ -190,7 +190,7 @@ namespace vlc
 		Manager_->SetShortcut (id, shortcuts);
 	}
 
-	void Plugin::deleteDeleted (QWidget *widget)
+	void Plugin::deleted (QWidget *widget)
 	{
 		for (auto i = Tabs_.begin (); i != Tabs_.end (); i++)
 			if (*i == widget)

@@ -87,7 +87,7 @@ namespace vlc
 		void raiseTab (QWidget*);
 
 	private slots:
-		void deleteDeleted (QWidget*);
+		void deleted (QWidget*);
 	};
 }
 }

@@ -69,12 +69,7 @@ namespace vlc
 	, Parent_ (parent)
 	, DVD_ (false)
 	{
-		const char * const vlc_args[] = 
-		{
-			"--ffmpeg-hw"
-		};
-
-		VlcInstance_ = std::shared_ptr<libvlc_instance_t> (libvlc_new (sizeof (vlc_args) / sizeof (vlc_args [0]), vlc_args), libvlc_release);
+		VlcInstance_ = std::shared_ptr<libvlc_instance_t> (libvlc_new (0, nullptr), libvlc_release);
 		Mp_ = std::shared_ptr<libvlc_media_player_t> (libvlc_media_player_new (VlcInstance_.get ()), libvlc_media_player_release);
 		libvlc_media_player_set_xwindow (Mp_.get (), parent->winId ());
 	}

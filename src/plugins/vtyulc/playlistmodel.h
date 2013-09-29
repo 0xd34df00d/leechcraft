@@ -55,9 +55,9 @@ namespace vlc
 	{
 		Q_OBJECT
 		
+		PlaylistWidget *Parent_;
 		libvlc_media_list_t *Playlist_;
 		QVector<QStandardItem*> Items_ [ColumnMax];
-		PlaylistWidget *Parent_;
 		libvlc_instance_t *Instance_;
 	
 	public:
