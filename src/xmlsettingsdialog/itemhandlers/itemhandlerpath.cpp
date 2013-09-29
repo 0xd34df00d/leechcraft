@@ -133,9 +133,9 @@ namespace LeechCraft
 				str2loc ["MOVIES"] = QDesktopServices::storageLocation (QDesktopServices::MoviesLocation);
 #else
 				str2loc ["DOCUMENTS"] = QStandardPaths::writableLocation (QStandardPaths::DocumentsLocation);
-				str2loc ["DESKTOP"] = QStandardPaths::writableLocation (QStandardPaths::DocumentsLocation);
-				str2loc ["MUSIC"] = QStandardPaths::writableLocation (QStandardPaths::DocumentsLocation);
-				str2loc ["MOVIES"] = QStandardPaths::writableLocation (QStandardPaths::DocumentsLocation);
+				str2loc ["DESKTOP"] = QStandardPaths::writableLocation (QStandardPaths::DesktopLocation);
+				str2loc ["MUSIC"] = QStandardPaths::writableLocation (QStandardPaths::MusicLocation);
+				str2loc ["MOVIES"] = QStandardPaths::writableLocation (QStandardPaths::MoviesLocation);
 #endif
 
 #ifndef Q_OS_LINUX
