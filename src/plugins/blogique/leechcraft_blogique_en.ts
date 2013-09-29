@@ -431,8 +431,9 @@ You can specify all export parameters in this wizard.</translation>
     </message>
     <message>
         <location filename="exportwizard.ui" line="499"/>
-        <source>Entries&apos; filter:</source>
-        <translation>Entries&apos; filter:</translation>
+        <source>Entries filter:</source>
+        <oldsource>Entries&apos; filter:</oldsource>
+        <translation>Entries filter:</translation>
     </message>
     <message>
         <location filename="exportwizard.ui" line="522"/>
