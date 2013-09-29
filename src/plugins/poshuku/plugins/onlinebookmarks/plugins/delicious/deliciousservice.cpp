@@ -73,7 +73,7 @@ namespace Delicious
 
 	QIcon DeliciousService::GetServiceIcon () const
 	{
-		return QIcon (":/plugins/poshuku/plugins/onlinebookmarks/plugins/delicious/resources/images/delicious.png");
+		return QIcon ("lcicons:/poshuku/onlinebookmarks:delicious/resources/images/delicious.png");
 	}
 
 	QWidget* DeliciousService::GetAuthWidget ()

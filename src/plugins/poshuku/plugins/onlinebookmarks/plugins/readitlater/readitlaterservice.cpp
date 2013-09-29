@@ -73,7 +73,7 @@ namespace ReadItLater
 
 	QIcon ReadItLaterService::GetServiceIcon () const
 	{
-		return QIcon (":/plugins/poshuku/plugins/onlinebookmarks/plugins/readitlater/resources/images/readitlater.ico");
+		return QIcon ("lcicons:/poshuku/onlinebookmarks:readitlater/resources/images/readitlater.ico");
 	}
 
 	QWidget* ReadItLaterService::GetAuthWidget ()
