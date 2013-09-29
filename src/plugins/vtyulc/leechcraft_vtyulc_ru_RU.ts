@@ -6,12 +6,12 @@
     <message>
         <location filename="playlistmodel.cpp" line="53"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Название</translation>
     </message>
     <message>
         <location filename="playlistmodel.cpp" line="53"/>
         <source>Duration</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Длительность</translation>
     </message>
 </context>
 <context>
@@ -19,7 +19,7 @@
     <message>
         <location filename="playlisttitlewidget.cpp" line="45"/>
         <source>Playlist</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Плейлист</translation>
     </message>
 </context>
 <context>
@@ -27,27 +27,27 @@
     <message>
         <location filename="vlc.cpp" line="53"/>
         <source>Navigate left in DVD menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Налево в меню DVD</translation>
     </message>
     <message>
         <location filename="vlc.cpp" line="58"/>
         <source>Navigate right in DVD menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Направо в меню DVD</translation>
     </message>
     <message>
         <location filename="vlc.cpp" line="63"/>
         <source>Navigate up in DVD menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Наверх в меню DVD</translation>
     </message>
     <message>
         <location filename="vlc.cpp" line="68"/>
         <source>Navigate down in DVD menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Вниз в меню DVD</translation>
     </message>
     <message>
         <location filename="vlc.cpp" line="73"/>
         <source>Activate current in DVD menu</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Активировать текущий выбор в меню DVD</translation>
     </message>
     <message>
         <location filename="vlc.cpp" line="78"/>
@@ -62,47 +62,47 @@
     <message>
         <location filename="vlc.cpp" line="88"/>
         <source>Increase volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Увеличить громкость</translation>
     </message>
     <message>
         <location filename="vlc.cpp" line="93"/>
         <source>Decrease volume</source>
-        <translation type="unfinished"></translation>
+        <translation>Уменьшить громкость</translation>
     </message>
     <message>
         <location filename="vlc.cpp" line="98"/>
         <source>3% seek forward</source>
-        <translation type="unfinished"></translation>
+        <translation>3% вперед</translation>
     </message>
     <message>
         <location filename="vlc.cpp" line="103"/>
         <source>3% seek backward</source>
-        <translation type="unfinished"></translation>
+        <translation>3% назад</translation>
     </message>
     <message>
         <location filename="vlc.cpp" line="108"/>
         <source>10 seconds seek forward</source>
-        <translation type="unfinished"></translation>
+        <translation>10 секунд вперед</translation>
     </message>
     <message>
         <location filename="vlc.cpp" line="113"/>
         <source>10 seconds seek backward</source>
-        <translation type="unfinished"></translation>
+        <translation>10 секунд назад</translation>
     </message>
     <message>
         <location filename="vlc.cpp" line="118"/>
         <source>Next in playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Следующий в плейлисте</translation>
     </message>
     <message>
         <location filename="vlc.cpp" line="123"/>
         <source>Prev in playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Предыдущий в плейлисте</translation>
     </message>
     <message>
         <location filename="vlc.cpp" line="150"/>
         <source>Video player, based on VLC</source>
-        <translation type="unfinished"></translation>
+        <translation>Видеоплеер, основанный на VLC</translation>
     </message>
 </context>
 <context>
