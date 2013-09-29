@@ -78,6 +78,8 @@ namespace Metida
 		void on_UserPic__currentIndexChanged (int index);
 		void on_AutoDetect__released ();
 		void handleCurrentSongChanged (const Media::AudioInfo& ai);
+		void handleHideMainOptions (bool checked);
+		void handleHideLikeButtons (bool checked);
 	};
 }
 }
