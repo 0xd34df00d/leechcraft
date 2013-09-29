@@ -61,6 +61,19 @@ namespace Metida
 				this, "handleAutoUpdateCurrentMusic");
 		handleAutoUpdateCurrentMusic ();
 		FillItems ();
+
+		connect (Ui_.HideMainOptions_,
+				SIGNAL (toggled (bool)),
+				this,
+				SLOT (handleHideMainOptions (bool)));
+		connect (Ui_.HideLikeButtons_,
+				SIGNAL (toggled (bool)),
+				this,
+				SLOT (handleHideLikeButtons (bool)));
+		Ui_.HideMainOptions_->setChecked (!XmlSettingsManager::Instance ()
+				.Property ("CollapseMainOptions", false).toBool ());
+		Ui_.HideLikeButtons_->setChecked (!XmlSettingsManager::Instance ()
+				.Property ("CollapseLikeButtons", false).toBool ());
 	}
 
 	QString PostOptionsWidget::GetName () const
@@ -401,6 +414,25 @@ namespace Metida
 			Ui_.Music_->setText (QString ("\"%1\" by %2").arg (ai.Title_)
 					.arg (ai.Artist_));
 	}
+
+	void PostOptionsWidget::handleHideMainOptions (bool checked)
+	{
+		Ui_.HideMainOptions_->setText (Ui_.HideMainOptions_->isChecked () ?
+			tr ("Collapse") :
+			tr ("Expand"));
+		XmlSettingsManager::Instance ().setProperty ("CollapseMainOptions",
+				!Ui_.HideMainOptions_->isChecked ());
+	}
+
+	void PostOptionsWidget::handleHideLikeButtons (bool checked)
+	{
+		Ui_.HideLikeButtons_->setText (Ui_.HideLikeButtons_->isChecked () ?
+			tr ("Collapse") :
+			tr ("Expand"));
+		XmlSettingsManager::Instance ().setProperty ("CollapseLikeButtons",
+				!Ui_.HideLikeButtons_->isChecked ());
+	}
+
 }
 }
 }
