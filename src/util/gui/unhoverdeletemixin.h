@@ -78,6 +78,7 @@ namespace Util
 #ifndef USE_QT5
 		UTIL_API UnhoverDeleteMixin (QWidget *parent, const char *slot = SLOT (deleteLater ()));
 #else
+		UTIL_API UnhoverDeleteMixin (QWidget *parent, const char *slot = SLOT (deleteLater ()));
 		UTIL_API UnhoverDeleteMixin (QWindow *parent, const char *slot = SLOT (deleteLater ()));
 #endif
 

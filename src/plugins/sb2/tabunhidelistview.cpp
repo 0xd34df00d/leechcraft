@@ -28,7 +28,11 @@
  **********************************************************************/
 
 #include "tabunhidelistview.h"
+#ifdef USE_QT5
+#include <QQuickItem>
+#else
 #include <QGraphicsObject>
+#endif
 #include <QtDebug>
 #include <util/util.h>
 #include <util/qml/unhidelistmodel.h>

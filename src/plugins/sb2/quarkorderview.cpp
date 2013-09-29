@@ -28,8 +28,14 @@
  **********************************************************************/
 
 #include "quarkorderview.h"
+#ifdef USE_QT5
+#include <QQmlContext>
+#include <QQmlContext>
+#include <QQuickItem>
+#else
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
+#endif
 #include <QGraphicsObject>
 #include <QtDebug>
 #include <util/gui/unhoverdeletemixin.h>
@@ -45,9 +51,8 @@ namespace LeechCraft
 {
 namespace SB2
 {
-	QuarkOrderView::QuarkOrderView (ViewManager *manager, ICoreProxy_ptr proxy, QWidget *parent)
-	: QDeclarativeView (parent)
-	, Manager_ (manager)
+	QuarkOrderView::QuarkOrderView (ViewManager *manager, ICoreProxy_ptr proxy)
+	: Manager_ (manager)
 	, Proxy_ (proxy)
 	, Model_ (new Util::UnhideListModel (this))
 	{
@@ -81,9 +86,13 @@ namespace SB2
 			Model_->appendRow (item);
 		}
 
+#ifdef USE_QT5
+		setFlags (Qt::ToolTip);
+#else
 		setStyleSheet ("background: transparent");
 		setWindowFlags (Qt::ToolTip);
 		setAttribute (Qt::WA_TranslucentBackground);
+#endif
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			engine ()->addImportPath (cand);

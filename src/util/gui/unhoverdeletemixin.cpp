@@ -40,6 +40,11 @@ namespace Util
 #ifndef USE_QT5
 	UnhoverDeleteMixin::UnhoverDeleteMixin (QWidget *watched, const char *slot)
 #else
+	UnhoverDeleteMixin::UnhoverDeleteMixin (QWidget *watched, const char *slot)
+	: UnhoverDeleteMixin (watched->windowHandle (), slot)
+	{
+	}
+
 	UnhoverDeleteMixin::UnhoverDeleteMixin (QWindow *watched, const char *slot)
 #endif
 	: QObject (watched)

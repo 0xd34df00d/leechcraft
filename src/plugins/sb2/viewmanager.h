@@ -54,8 +54,7 @@ namespace Util
 
 namespace SB2
 {
-
-class ViewSettingsManager;
+	class ViewSettingsManager;
 	class SBView;
 	class QuarkManager;
 	class ViewGeometryManager;

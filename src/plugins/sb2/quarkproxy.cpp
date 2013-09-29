@@ -28,7 +28,11 @@
  **********************************************************************/
 
 #include "quarkproxy.h"
+#if USE_QT5
+#include <QQuickItem>
+#else
 #include <QGraphicsObject>
+#endif
 #include <QToolTip>
 #include <QApplication>
 #include <QToolBar>
@@ -152,7 +156,7 @@ namespace SB2
 		if (toAdd.isEmpty ())
 			return;
 
-		auto unhide = new QuarkUnhideListView (toAdd, Manager_, Proxy_, Manager_->GetView ());
+		auto unhide = new QuarkUnhideListView (toAdd, Manager_, Proxy_);
 		new Util::AutoResizeMixin ({ x, y }, [this] () { return Manager_->GetFreeCoords (); }, unhide);
 		unhide->show ();
 	}
@@ -166,8 +170,13 @@ namespace SB2
 		}
 
 		QuarkOrderView_ = new QuarkOrderView (Manager_, Proxy_);
-		QuarkOrderView_->move (Util::FitRect ({ x, y }, QuarkOrderView_->size (), GetFreeCoords (),
-				Util::FitFlag::NoOverlap));
+		const auto& pos = Util::FitRect ({ x, y }, QuarkOrderView_->size (), GetFreeCoords (),
+				Util::FitFlag::NoOverlap);
+#ifdef USE_QT5
+		QuarkOrderView_->setPosition (pos);
+#else
+		QuarkOrderView_->move (pos);
+#endif
 		QuarkOrderView_->show ();
 
 		connect (QuarkOrderView_,

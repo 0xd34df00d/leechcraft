@@ -31,8 +31,14 @@
 #include <QStandardItemModel>
 #include <QGraphicsObject>
 #include <QMainWindow>
+#ifdef USE_QT5
+#include <QQmlContext>
+#include <QQmlEngine>
+#include <QQuickItem>
+#else
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
+#endif
 #include <QtDebug>
 #include <util/util.h>
 #include <util/sys/paths.h>
@@ -61,18 +67,24 @@ namespace SB2
 			TabsListModel (QObject *parent)
 			: QStandardItemModel (parent)
 			{
+#ifndef USE_QT5
+				setRoleNames (roleNames ());
+#endif
+			}
+
+			QHash<int, QByteArray> roleNames () const
+			{
 				QHash<int, QByteArray> names;
 				names [Roles::TabIcon] = "tabIcon";
 				names [Roles::TabName] = "tabName";
-				setRoleNames (names);
+				return names;
 			}
 		};
 	}
 
 	TabListView::TabListView (const QByteArray& tc, const QList<QWidget*>& widgets,
-			ICoreTabWidget *ictw, QMainWindow *win, ICoreProxy_ptr proxy, QWidget *parent)
-	: QDeclarativeView (parent)
-	, Proxy_ (proxy)
+			ICoreTabWidget *ictw, QMainWindow *win, ICoreProxy_ptr proxy)
+	: Proxy_ (proxy)
 	, ICTW_ (ictw)
 	, MW_ (win)
 	, TC_ (tc)
@@ -88,9 +100,13 @@ namespace SB2
 			return;
 		}
 
+#ifdef USE_QT5
+		setFlags (Qt::ToolTip);
+#else
 		setStyleSheet ("background: transparent");
 		setWindowFlags (Qt::ToolTip);
 		setAttribute (Qt::WA_TranslucentBackground);
+#endif
 
 		QString longestText;
 

@@ -29,8 +29,14 @@
 
 #include "declarativewindow.h"
 #include <QResizeEvent>
+#ifdef USE_QT5
+#include <QQmlContext>
+#include <QQmlEngine>
+#include <QQuickItem>
+#else
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
+#endif
 #include <QGraphicsObject>
 #include <QtDebug>
 #include <QFile>
@@ -47,17 +53,20 @@ namespace LeechCraft
 namespace SB2
 {
 	DeclarativeWindow::DeclarativeWindow (const QUrl& url, QVariantMap params,
-			const QPoint& orig, ViewManager *viewMgr, ICoreProxy_ptr proxy, QWidget *parent)
-	: QDeclarativeView (parent)
+			const QPoint& orig, ViewManager *viewMgr, ICoreProxy_ptr proxy)
 	{
 		new Util::AutoResizeMixin (orig, [viewMgr] () { return viewMgr->GetFreeCoords (); }, this);
 
 		if (!params.take ("keepOnFocusLeave").toBool ())
 			new Util::UnhoverDeleteMixin (this);
 
+#ifdef USE_QT5
+		setFlags (Qt::ToolTip);
+#else
 		setStyleSheet ("background: transparent");
 		setWindowFlags (Qt::ToolTip);
 		setAttribute (Qt::WA_TranslucentBackground);
+#endif
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			engine ()->addImportPath (cand);

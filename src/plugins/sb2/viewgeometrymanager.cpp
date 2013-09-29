@@ -31,7 +31,12 @@
 #include <QSettings>
 #include <QToolBar>
 #include <QApplication>
+
+#ifdef USE_QT5
+#include <QQmlContext>
+#else
 #include <QDeclarativeContext>
+#endif
 #include <QMainWindow>
 #include <QDesktopWidget>
 #include <QtDebug>
@@ -203,13 +208,25 @@ namespace SB2
 		switch (orientation)
 		{
 		case Qt::Vertical:
+#ifdef USE_QT5
+			view->GetParent ()->resize (size);
+			view->GetParent ()->setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Expanding);
+#else
 			view->resize (size);
 			view->setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Expanding);
+#endif
 			view->rootContext ()->setContextProperty ("viewOrient", "vertical");
 			break;
 		case Qt::Horizontal:
 			view->resize (size);
+#ifdef USE_QT5
+			view->GetParent ()->setMinimumSize (size);
+			view->GetParent ()->resize (size);
+			view->GetParent ()->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Preferred);
+#else
+			view->resize (size);
 			view->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Preferred);
+#endif
 			view->rootContext ()->setContextProperty ("viewOrient", "horizontal");
 			break;
 		}
