@@ -55,6 +55,10 @@ namespace Delicious
 		Q_INTERFACES (IInfo IPlugin2
 				LeechCraft::Poshuku::OnlineBookmarks::IServicePlugin)
 
+#ifdef USE_QT5
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.Poshuku.OnlineBookmarks.Delicious");
+#endif
+
 		std::shared_ptr<DeliciousService> DeliciousService_;
 	public:
 		void Init (ICoreProxy_ptr proxy);

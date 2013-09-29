@@ -31,6 +31,8 @@
 #define PLUGINS_POSHUKU_HTMLHIGHLIGHTER_H
 #include <QSyntaxHighlighter>
 
+class QTextEdit;
+
 namespace LeechCraft
 {
 namespace Poshuku

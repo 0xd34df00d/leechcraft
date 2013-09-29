@@ -12,27 +12,15 @@ set (DELICIOUS_SRCS
 	deliciousaccount.cpp
 	deliciousapi.cpp
 	)
-
-set (DELICIOUS_HEADERS
-	delicious.h
-	deliciousauthwidget.h
-	deliciousservice.h
-	deliciousaccount.h
-	deliciousapi.h
-	)
-
 set (DELICIOUS_FORMS deliciousauthwidget.ui)
 
 set (DELICIOUS_RESOURCES onlinebookmarksdelicious.qrc)
 CreateTrs ("poshuku_onlinebookmarks_delicious" "en;ru_RU;uk_UA" ONLINEBOOKMARKS_DELICIOUS_COMPILED_TRANSLATIONS)
 
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (DELICIOUS_MOC_SRCS ${DELICIOUS_HEADERS})
-endif ()
-QT4_WRAP_UI (DELICIOUS_UIS_H ${DELICIOUS_FORMS})
-QT4_ADD_RESOURCES (DELICIOUS_RCCS ${DELICIOUS_RESOURCES})
+QtWrapUi (DELICIOUS_UIS_H ${DELICIOUS_FORMS})
+QtAddResources (DELICIOUS_RCCS ${DELICIOUS_RESOURCES})
 set (DELICIOUS_RESOURCES deliciousresources.qrc)
-QT4_ADD_RESOURCES (DELICIOUS_RCCS ${DELICIOUS_RESOURCES})
+QtAddResources (DELICIOUS_RCCS ${DELICIOUS_RESOURCES})
 
 add_library (leechcraft_poshuku_onlinebookmarks_delicious SHARED
  	${ONLINEBOOKMARKS_DELICIOUS_COMPILED_TRANSLATIONS}
@@ -41,6 +29,8 @@ add_library (leechcraft_poshuku_onlinebookmarks_delicious SHARED
 	${DELICIOUS_UIS_H}
 	${DELICIOUS_RCCS}
 	)
+
+FindQtLibs (leechcraft_poshuku_onlinebookmarks_delicious Network Xml)
 
 target_link_libraries (leechcraft_poshuku_onlinebookmarks_delicious
 	${QT_LIBRARIES}

@@ -50,6 +50,10 @@ namespace FileScheme
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2)
 
+#ifdef USE_QT5
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.Poshuku.FileScheme");
+#endif
+
 		std::auto_ptr<QTranslator> Translator_;
 	public:
 		void Init (ICoreProxy_ptr);

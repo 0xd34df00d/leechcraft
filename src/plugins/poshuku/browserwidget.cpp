@@ -66,6 +66,7 @@
 #include <QKeySequence>
 #include <QLabel>
 #include <QXmlStreamWriter>
+#include <QMimeData>
 #include <util/util.h>
 #include <util/defaulthookproxy.h>
 #include <util/notificationactionhandler.h>
@@ -1489,7 +1490,12 @@ namespace Poshuku
 		w.writeStartDocument ();
 			w.writeStartElement ("html");
 				w.writeStartElement ("head");
-					w.writeTextElement ("title", Qt::escape (WebView_->url ().toString ()));
+					w.writeTextElement ("title",
+#ifdef USE_QT5
+							WebView_->url ().toString ().toHtmlEscaped ());
+#else
+							Qt::escape (WebView_->url ().toString ()));
+#endif
 				w.writeEndElement ();
 				w.writeStartElement ("body");
 					w.writeAttribute ("style", "font-family:monospace;");
@@ -1587,13 +1593,19 @@ namespace Poshuku
 		QString text;
 		Priority prio = PInfo_;
 
+#ifdef USE_QT5
+		const auto& escaped = WebView_->title ().toHtmlEscaped ();
+#else
+		const auto& escaped = Qt::escape (WebView_->title ());
+#endif
+
 		if (ok)
 			text = tr ("Page load finished: %1")
-				.arg (Qt::escape (WebView_->title ()));
+					.arg (escaped);
 		else
 		{
 			text = tr ("Page load failed: %1")
-				.arg (Qt::escape (WebView_->title ()));
+					.arg (escaped);
 			prio = PWarning_;
 		}
 

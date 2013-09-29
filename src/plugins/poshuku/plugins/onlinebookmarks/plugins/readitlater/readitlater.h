@@ -55,6 +55,10 @@ namespace ReadItLater
 		Q_INTERFACES (IInfo IPlugin2
 				LeechCraft::Poshuku::OnlineBookmarks::IServicePlugin)
 
+#ifdef USE_QT5
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.Poshuku.OnlineBookmarks.ReadItLater");
+#endif
+
 		std::shared_ptr<ReadItLaterService> ReadItLaterService_;
 	public:
 		void Init (ICoreProxy_ptr proxy);

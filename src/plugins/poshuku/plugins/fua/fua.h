@@ -60,6 +60,10 @@ namespace Fua
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
+#ifdef USE_QT5
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.Poshuku.Fua");
+#endif
+
 		std::shared_ptr<QStandardItemModel> Model_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 		QMap<QString, QString> Browser2ID_;
