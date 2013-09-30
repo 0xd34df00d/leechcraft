@@ -48,7 +48,7 @@ namespace LMP
 {
 namespace MTPSync
 {
-	const int CacheLifetime = 120 * 1000;
+	const int CacheLifetime = 300 * 1000;
 
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
@@ -134,13 +134,13 @@ namespace MTPSync
 
 	void Plugin::Upload (const QString& localPath, const QString& origPath, const QByteArray& devId, const QByteArray& storageId)
 	{
+		qDebug () << Q_FUNC_INFO << IsPolling_ << localPath << devId;
 		if (IsPolling_)
 		{
 			UploadQueue_.append ({ localPath, origPath, devId, storageId });
 			return;
 		}
 
-		qDebug () << Q_FUNC_INFO << localPath << devId;
 		if (!DevicesCache_.contains (devId))
 		{
 			qDebug () << "device not in cache, opening...";
@@ -185,7 +185,6 @@ namespace MTPSync
 
 		if (CacheEvictTimer_->isActive ())
 			CacheEvictTimer_->stop ();
-		CacheEvictTimer_->start ();
 	}
 
 	void Plugin::Refresh ()
@@ -195,8 +194,6 @@ namespace MTPSync
 
 	void Plugin::HandleTransfer (const QString& path, quint64 sent, quint64 total)
 	{
-		if (sent == total)
-			emit uploadFinished (path, QFile::NoError, QString ());
 	}
 
 	namespace
@@ -231,6 +228,15 @@ namespace MTPSync
 			map ["wma"] = LIBMTP_FILETYPE_WMA;
 			return map.value (format, LIBMTP_FILETYPE_UNDEF_AUDIO);
 		}
+
+		struct UploadInfo
+		{
+			int Res_;
+			LIBMTP_mtpdevice_t *Device_;
+			QString LocalPath_;
+			LIBMTP_track_t *Track_;
+			UnmountableFileInfo Info_;
+		};
 	}
 
 	void Plugin::UploadTo (LIBMTP_mtpdevice_t *device, const QByteArray& storageId,
@@ -243,6 +249,7 @@ namespace MTPSync
 
 		while (storage)
 		{
+			qDebug () << "st" << storage->id;
 			if (QByteArray::number (storage->id) == storageId)
 				break;
 			storage = storage->next;
@@ -279,19 +286,19 @@ namespace MTPSync
 		track->filesize = QFileInfo (localPath).size ();
 		track->date = getStr (QString::number (info.AlbumYear_) + "0101T0000.0");
 
-		const auto res = LIBMTP_Send_Track_From_File (device,
-				localPath.toUtf8 ().constData (), track,
-				TransferCallback, new CallbackData ({ this, localPath }));
-		qDebug () << "send result:" << res;
-		if (res)
-		{
-			LIBMTP_Dump_Errorstack (device);
-			LIBMTP_Clear_Errorstack (device);
-		}
-
-		AppendAlbum (device, track, info);
-
-		LIBMTP_destroy_track_t (track);
+		auto watcher = new QFutureWatcher<UploadInfo> ();
+		connect (watcher,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleUploadFinished ()));
+		const auto future = QtConcurrent::run ([=] () -> UploadInfo
+			{
+				const auto res = LIBMTP_Send_Track_From_File (device,
+						localPath.toUtf8 ().constData (), track,
+						nullptr, nullptr);
+				return { res, device, localPath, track, info };
+			});
+		watcher->setFuture (future);
 	}
 
 	namespace
@@ -536,6 +543,30 @@ namespace MTPSync
 		}
 	}
 
+	void Plugin::handleUploadFinished ()
+	{
+		auto watcher = dynamic_cast<QFutureWatcher<UploadInfo>*> (sender ());
+		watcher->deleteLater ();
+
+		const auto& info = watcher->result ();
+
+		qDebug () << "send result:" << info.Res_;
+		if (info.Res_)
+		{
+			LIBMTP_Dump_Errorstack (info.Device_);
+			LIBMTP_Clear_Errorstack (info.Device_);
+		}
+
+		AppendAlbum (info.Device_, info.Track_, info.Info_);
+
+		LIBMTP_destroy_track_t (info.Track_);
+
+		if (!CacheEvictTimer_->isActive ())
+			CacheEvictTimer_->stop ();
+
+		emit uploadFinished (info.LocalPath_, QFile::NoError, {});
+	}
+
 	void Plugin::pollDevices ()
 	{
 		if (IsPolling_)
@@ -641,7 +672,10 @@ namespace MTPSync
 		for (auto i = DevicesCache_.begin (); i != DevicesCache_.end (); )
 		{
 			if (i->LastAccess_.secsTo (now) > CacheLifetime)
+			{
+				qDebug () << Q_FUNC_INFO << "erased";
 				i = DevicesCache_.erase (i);
+			}
 			else
 				++i;
 		}

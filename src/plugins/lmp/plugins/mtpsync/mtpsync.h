@@ -123,6 +123,7 @@ namespace MTPSync
 
 		void Subscribe2Devs ();
 	private slots:
+		void handleUploadFinished ();
 		void pollDevices ();
 		void handlePollFinished ();
 
