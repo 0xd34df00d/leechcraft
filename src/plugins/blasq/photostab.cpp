@@ -314,6 +314,29 @@ namespace Blasq
 		return SingleImageMode_ ? "ZoomSliderValue" : "ScaleSliderValue";
 	}
 
+	void PhotosTab::FinishUploadDialog (UploadPhotosDialog& dia)
+	{
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		auto isu = qobject_cast<ISupportUploads*> (CurAccObj_);
+		isu->UploadImages (dia.GetSelectedCollection (), dia.GetSelectedFiles ());
+	}
+
+	void PhotosTab::PerformCtxMenu (std::function<void (QModelIndex)> functor)
+	{
+		const auto& idx = sender ()->property ("Blasq/Index").value<QModelIndex> ();
+		if (!idx.isValid ())
+			return;
+
+		auto rows = Ui_.CollectionsTree_->selectionModel ()->selectedRows ();
+		if (!rows.contains (idx))
+			rows.prepend (idx);
+
+		for (const auto& row : rows)
+			functor (row);
+	}
+
 	void PhotosTab::handleAccountChosen (int idx)
 	{
 		auto accVar = AccountsBox_->itemData (idx, AccountsManager::Role::AccountObj);
@@ -370,6 +393,54 @@ namespace Blasq
 			HandleCollectionSelected (ProxyModel_->mapFromSource (index));
 	}
 
+	void PhotosTab::on_CollectionsTree__customContextMenuRequested (const QPoint& point)
+	{
+		const auto& idx = Ui_.CollectionsTree_->indexAt (point);
+		if (!idx.isValid ())
+			return;
+
+		const auto type = idx.data (CollectionRole::Type).toInt ();
+		const auto isAll = type == ItemType::AllPhotos;
+		const auto isColl = type == ItemType::Collection;
+		const auto isImage = type == ItemType::Image;
+
+		QMenu menu;
+		if (isImage)
+		{
+			menu.addAction (Proxy_->GetIcon ("go-jump-locationbar"), tr ("Open in browser"),
+					this,
+					SLOT (handleImageOpenRequested ()));
+			menu.addAction (Proxy_->GetIcon ("download"), tr ("Download original"),
+					this,
+					SLOT (handleImageDownloadRequested ()));
+			menu.addAction (Proxy_->GetIcon ("edit-copy"), tr ("Copy image URL"),
+					this,
+					SLOT (handleCopyURLRequested ()));
+		}
+
+		if (auto isd = qobject_cast<ISupportDeletes*> (CurAccObj_))
+		{
+			if ((isColl && isd->SupportsFeature (DeleteFeature::DeleteCollections)) ||
+				(isImage && isd->SupportsFeature (DeleteFeature::DeleteImages)))
+				menu.addAction (Proxy_->GetIcon ("list-remove"), tr ("Delete"),
+						this,
+						SLOT (handleDeleteRequested ()));
+		}
+
+		if (auto isu = qobject_cast<ISupportUploads*> (CurAccObj_))
+			if (isColl || (isAll && !isu->HasUploadFeature (ISupportUploads::Feature::RequiresAlbumOnUpload)))
+				menu.addAction (Proxy_->GetIcon ("svn-commit"), tr ("Upload"),
+						this,
+						SLOT (handleUploadRequested ()));
+
+		const auto idxVar = QVariant::fromValue (idx);
+		for (auto act : menu.actions ())
+			act->setProperty ("Blasq/Index", idxVar);
+
+		if (!menu.actions ().isEmpty ())
+			menu.exec (Ui_.CollectionsTree_->viewport ()->mapToGlobal (point));
+	}
+
 	void PhotosTab::handleScaleSlider (int value)
 	{
 		if (SingleImageMode_)
@@ -397,11 +468,17 @@ namespace Blasq
 		if (curSelectedIdx.data (CollectionRole::Type).toInt () == ItemType::Collection)
 			dia.SetSelectedCollection (curSelectedIdx);
 
-		if (dia.exec () != QDialog::Accepted)
-			return;
+		FinishUploadDialog (dia);
+	}
 
-		auto isu = qobject_cast<ISupportUploads*> (CurAccObj_);
-		isu->UploadImages (dia.GetSelectedCollection (), dia.GetSelectedFiles ());
+	void PhotosTab::handleUploadRequested ()
+	{
+		PerformCtxMenu ([this] (const QModelIndex& idx) -> void
+				{
+					UploadPhotosDialog dia (CurAccObj_, this);
+					dia.SetSelectedCollection (idx);
+					FinishUploadDialog (dia);
+				});
 	}
 
 	void PhotosTab::handleImageSelected (const QString& id)
@@ -424,6 +501,16 @@ namespace Blasq
 		Proxy_->GetEntityManager ()->HandleEntity (entity);
 	}
 
+	void PhotosTab::handleImageOpenRequested ()
+	{
+		PerformCtxMenu ([this] (const QModelIndex& idx) -> void
+				{
+					const auto& url = idx.data (CollectionRole::Original).toUrl ();
+					const auto& entity = Util::MakeEntity (url, QString (), FromUserInitiated | OnlyHandle);
+					Proxy_->GetEntityManager ()->HandleEntity (entity);
+				});
+	}
+
 	void PhotosTab::handleImageDownloadRequested (const QVariant& var)
 	{
 		const auto& url = var.toUrl ();
@@ -437,6 +524,16 @@ namespace Blasq
 
 		const auto& entity = Util::MakeEntity (url, QString (), FromUserInitiated | OnlyDownload);
 		Proxy_->GetEntityManager ()->HandleEntity (entity);
+	}
+
+	void PhotosTab::handleImageDownloadRequested ()
+	{
+		PerformCtxMenu ([this] (const QModelIndex& idx) -> void
+				{
+					const auto& url = idx.data (CollectionRole::Original).toUrl ();
+					const auto& entity = Util::MakeEntity (url, QString (), FromUserInitiated | OnlyDownload);
+					Proxy_->GetEntityManager ()->HandleEntity (entity);
+				});
 	}
 
 	void PhotosTab::handleCopyURLRequested (const QVariant& var)
@@ -454,6 +551,16 @@ namespace Blasq
 		cb->setText (url.toString (), QClipboard::Clipboard);
 	}
 
+	void PhotosTab::handleCopyURLRequested ()
+	{
+		auto cb = qApp->clipboard ();
+		PerformCtxMenu ([cb] (const QModelIndex& idx) -> void
+				{
+					const auto& url = idx.data (CollectionRole::Original).toUrl ();
+					cb->setText (url.toString (), QClipboard::Clipboard);
+				});
+	}
+
 	void PhotosTab::handleDeleteRequested (const QString& id)
 	{
 		auto isd = qobject_cast<ISupportDeletes*> (CurAccObj_);
@@ -461,6 +568,17 @@ namespace Blasq
 			return;
 
 		const auto& idx = ImageID2Index (id);
+		if (idx.isValid ())
+			isd->Delete (idx);
+	}
+
+	void PhotosTab::handleDeleteRequested ()
+	{
+		auto isd = qobject_cast<ISupportDeletes*> (CurAccObj_);
+		if (!isd)
+			return;
+
+		const auto& idx = sender ()->property ("Blasq/Index").value<QModelIndex> ();
 		if (idx.isValid ())
 			isd->Delete (idx);
 	}
