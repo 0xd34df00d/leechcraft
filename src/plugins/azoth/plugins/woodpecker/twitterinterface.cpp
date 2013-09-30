@@ -183,7 +183,7 @@ namespace Woodpecker
 		connect (OAuthManager_,
 				SIGNAL (authorizationPageRequested (QUrl)),
 				this,
-				SLOT (onAuthorizationPageRequested (const QUrl&)));
+				SLOT (onAuthorizationPageRequested (QUrl)));
 		
 		OAuthRequest_->initRequest (KQOAuthRequest::TemporaryCredentials, QUrl ("https://api.twitter.com/oauth/request_token"));
 		OAuthRequest_->setConsumerKey (ConsumerKey_);
