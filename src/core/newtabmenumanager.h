@@ -67,6 +67,7 @@ namespace LeechCraft
 		void ToggleHide (QObject*, const QByteArray&, bool);
 		void OpenTab (QAction*);
 		void InsertAction (QAction*);
+		void InsertActionWParent (QAction*, QObject*, bool sub);
 	private slots:
 		void handleNewTabRequested ();
 	signals:

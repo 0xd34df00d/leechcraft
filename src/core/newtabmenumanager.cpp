@@ -33,7 +33,9 @@
 #include <QtDebug>
 #include "interfaces/iinfo.h"
 #include "interfaces/ihavetabs.h"
+#include <interfaces/iplugin2.h>
 #include "xmlsettingsmanager.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -241,6 +243,20 @@ namespace LeechCraft
 	{
 		auto pObj = act->property ("PluginObj").value<QObject*> ();
 
+		auto ip2 = qobject_cast<IPlugin2*> (pObj);
+		if (!ip2)
+		{
+			InsertActionWParent (act, pObj, false);
+			return;
+		}
+
+		const auto pm = Core::Instance ().GetPluginManager ();
+		for (auto plugin : pm->GetFirstLevels (ip2->GetPluginClasses ()))
+			InsertActionWParent (act, plugin, true);
+	}
+
+	void NewTabMenuManager::InsertActionWParent (QAction *act, QObject *pObj, bool sub)
+	{
 		const auto& tabClasses = qobject_cast<IHaveTabs*> (pObj)->GetTabClasses ();
 		const auto& tcCount = std::count_if (tabClasses.begin (), tabClasses.end (),
 				[] (const TabClassInfo& tc) { return tc.Features_ & TFOpenableByRequest; });
@@ -249,7 +265,7 @@ namespace LeechCraft
 		const auto& name = ii->GetName ();
 
 		auto rootMenu = NewTabMenu_;
-		if (tcCount > 1)
+		if (sub || tcCount > 1)
 		{
 			bool menuFound = false;
 			for (auto menuAct : rootMenu->actions ())
