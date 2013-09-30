@@ -109,6 +109,9 @@ namespace LeechCraft
 
 		QObject* GetPluginByID (const QByteArray&) const;
 
+		QObjectList GetFirstLevels (const QByteArray& pclass) const;
+		QObjectList GetFirstLevels (const QSet<QByteArray>& pclasses) const;
+
 		void InjectPlugin (QObject *object);
 		void ReleasePlugin (QObject *object);
 
