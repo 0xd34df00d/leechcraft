@@ -122,6 +122,10 @@ namespace Blasq
 				this,
 				SLOT (handleDeleteRequested (QString)));
 		connect (rootObj,
+				SIGNAL (albumSelected (QVariant)),
+				this,
+				SLOT (handleAlbumSelected (QVariant)));
+		connect (rootObj,
 				SIGNAL (singleImageMode (bool)),
 				this,
 				SLOT (handleSingleImageMode (bool)));
@@ -581,6 +585,12 @@ namespace Blasq
 		const auto& idx = sender ()->property ("Blasq/Index").value<QModelIndex> ();
 		if (idx.isValid ())
 			isd->Delete (idx);
+	}
+
+	void PhotosTab::handleAlbumSelected (const QVariant& var)
+	{
+		const auto& index = var.value<QModelIndex> ();
+		Ui_.CollectionsTree_->setCurrentIndex (ProxyModel_->mapToSource (index));
 	}
 
 	void PhotosTab::handleSingleImageMode (bool single)

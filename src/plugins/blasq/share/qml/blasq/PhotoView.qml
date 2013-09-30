@@ -31,6 +31,7 @@ Rectangle {
     signal imageDownloadRequested(variant url)
     signal copyURLRequested(variant url)
     signal deleteRequested(string id)
+    signal albumSelected(variant index)
 
     property string currentImageId
     property real cellSize: 200
@@ -140,10 +141,13 @@ Rectangle {
             height: collectionThumbsView.cellHeight
 
             onTriggered: {
-                console.log("clicked")
-                rootRect.showImage(original)
-                rootRect.imageSelected(imageId)
-                rootRect.currentImageId = imageId
+                if (itemType == Blasq.ImageItem) {
+                    rootRect.showImage(original)
+                    rootRect.imageSelected(imageId)
+                    rootRect.currentImageId = imageId
+                } else {
+                    rootRect.albumSelected(collectionVisualModel.modelIndex(index))
+                }
             }
 
             Rectangle {

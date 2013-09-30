@@ -129,6 +129,7 @@ namespace Blasq
 		void handleCopyURLRequested ();
 		void handleDeleteRequested (const QString&);
 		void handleDeleteRequested ();
+		void handleAlbumSelected (const QVariant&);
 		void handleSingleImageMode (bool);
 
 		void handleAccDoneUpdating ();
