@@ -33,6 +33,8 @@
 #include <QLineEdit>
 #include <QTimer>
 #include <QMenu>
+#include <QSortFilterProxyModel>
+#include <util/gui/clearlineeditaddon.h>
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/ihaveservicediscovery.h"
 #include "core.h"
@@ -48,11 +50,47 @@ namespace Azoth
 		S_ParentMultiTabs_ = parent;
 	}
 
+	namespace
+	{
+		class SDFilterModel : public QSortFilterProxyModel
+		{
+		public:
+			SDFilterModel (QObject *parent)
+			: QSortFilterProxyModel (parent)
+			{
+				setDynamicSortFilter (true);
+			}
+		protected:
+			bool filterAcceptsRow (int row, const QModelIndex& parent) const
+			{
+				const auto& filter = filterRegExp ().pattern ();
+				if (filter.isEmpty ())
+					return true;
+
+				const auto& idx = sourceModel ()->index (row, 0, parent);
+				for (int i = 0, rc = sourceModel ()->rowCount (idx); i < rc; ++i)
+					if (filterAcceptsRow (i, idx))
+						return true;
+
+				for (int i = 0, cc = sourceModel ()->columnCount (parent); i < cc; ++i)
+				{
+					const auto& idx = sourceModel ()->index (row, i, parent);
+					if (idx.data ().toString ().contains (filter, Qt::CaseInsensitive))
+						return true;
+				}
+
+				return false;
+			}
+		};
+	}
+
 	ServiceDiscoveryWidget::ServiceDiscoveryWidget (QWidget *parent)
 	: QWidget (parent)
 	, Toolbar_ (new QToolBar)
 	, AccountBox_ (new QComboBox)
 	, AddressLine_ (new QLineEdit)
+	, FilterLine_ (new QLineEdit)
+	, FilterModel_ (new SDFilterModel (this))
 	, DiscoveryTimer_ (new QTimer (this))
 	{
 		Ui_.setupUi (this);
@@ -60,8 +98,12 @@ namespace Azoth
 		DiscoveryTimer_->setSingleShot (true);
 		DiscoveryTimer_->setInterval (1500);
 
+		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), FilterLine_);
+
 		Toolbar_->addWidget (AccountBox_);
 		Toolbar_->addWidget (AddressLine_);
+		Toolbar_->addWidget (FilterLine_);
+		FilterLine_->setPlaceholderText (tr ("Filter..."));
 
 		connect (AccountBox_,
 				SIGNAL (currentIndexChanged (int)),
@@ -75,10 +117,16 @@ namespace Azoth
 				SIGNAL (returnPressed ()),
 				this,
 				SLOT (discover ()));
+		connect (FilterLine_,
+				SIGNAL (textChanged (QString)),
+				FilterModel_,
+				SLOT (setFilterFixedString (QString)));
 		connect (DiscoveryTimer_,
 				SIGNAL (timeout ()),
 				this,
 				SLOT (discover ()));
+
+		Ui_.DiscoveryTree_->setModel (FilterModel_);
 
 		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
 		{
@@ -152,9 +200,8 @@ namespace Azoth
 	{
 		AddressLine_->setText (session->GetQuery ());
 		SDSession_.reset (session);
-		if (Ui_.DiscoveryTree_->selectionModel ())
-			Ui_.DiscoveryTree_->selectionModel ()->deleteLater ();
-		Ui_.DiscoveryTree_->setModel (session->GetRepresentationModel ());
+
+		FilterModel_->setSourceModel (session->GetRepresentationModel ());
 	}
 
 	void ServiceDiscoveryWidget::handleDiscoveryAddressChanged ()
@@ -165,12 +212,11 @@ namespace Azoth
 
 	void ServiceDiscoveryWidget::on_DiscoveryTree__customContextMenuRequested (const QPoint& point)
 	{
-		const QModelIndex& idx = Ui_.DiscoveryTree_->indexAt (point);
+		const auto& idx = FilterModel_->mapToSource (Ui_.DiscoveryTree_->indexAt (point));
 		if (!idx.isValid ())
 			return;
 
-		const QList<QPair<QByteArray, QString>>& actions =
-				SDSession_->GetActionsFor (idx);
+		const auto& actions = SDSession_->GetActionsFor (idx);
 		if (actions.isEmpty ())
 			return;
 
@@ -178,8 +224,7 @@ namespace Azoth
 		for (auto i = actions.begin (), end = actions.end (); i != end; ++i)
 			 menu->addAction (i->second)->setProperty ("Azoth/ID", i->first);
 
-		QAction *result = menu->exec (Ui_.DiscoveryTree_->
-					viewport ()->mapToGlobal (point));
+		QAction *result = menu->exec (Ui_.DiscoveryTree_->viewport ()->mapToGlobal (point));
 		menu->deleteLater ();
 		if (!result)
 			return;
@@ -192,9 +237,7 @@ namespace Azoth
 	{
 		DiscoveryTimer_->stop ();
 
-		if (Ui_.DiscoveryTree_->selectionModel ())
-			Ui_.DiscoveryTree_->selectionModel ()->deleteLater ();
-		Ui_.DiscoveryTree_->setModel (0);
+		FilterModel_->setSourceModel (0);
 		SDSession_.reset ();
 
 		const int index = AccountBox_->currentIndex ();
