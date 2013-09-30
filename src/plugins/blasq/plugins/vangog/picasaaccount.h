@@ -122,13 +122,13 @@ namespace Vangog
 		void UpdateCollections () override;
 
 		void Delete (const QModelIndex& index) override;
+		bool SupportsFeature (DeleteFeature) const override;
 
 		void CreateCollection (const QModelIndex& parent) override;
 		bool HasUploadFeature (Feature) const override;
 		void UploadImages (const QModelIndex& collection, const QList<UploadItem>& paths) override;
 
 		void ImageUploadResponse (const QByteArray& content);
-
 	private:
 		bool TryToEnterLoginIfNoExists ();
 		void CreatePhotoItem (const Photo& photo);

@@ -247,6 +247,22 @@ namespace Vangog
 		}
 	}
 
+	bool PicasaAccount::SupportsFeature (DeleteFeature feature) const
+	{
+		switch (feature)
+		{
+		case DeleteFeature::DeleteImages:
+			return true;
+		case DeleteFeature::DeleteCollections:
+			return false;
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown feature"
+				<< static_cast<int> (feature);
+		return false;
+	}
+
 	void PicasaAccount::CreateCollection (const QModelIndex&)
 	{
 		AlbumSettingsDialog dia ({}, Proxy_);

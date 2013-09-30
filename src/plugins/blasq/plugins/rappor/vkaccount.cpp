@@ -242,6 +242,22 @@ namespace Rappor
 		UploadManager_->Upload (aidStr, items);
 	}
 
+	bool VkAccount::SupportsFeature (DeleteFeature feature) const
+	{
+		switch (feature)
+		{
+		case DeleteFeature::DeleteImages:
+			return true;
+		case DeleteFeature::DeleteCollections:
+			return false;
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown feature"
+				<< static_cast<int> (feature);
+		return false;
+	}
+
 	void VkAccount::Delete (const QModelIndex& item)
 	{
 		const auto type = item.data (CollectionRole::Type).toInt ();
