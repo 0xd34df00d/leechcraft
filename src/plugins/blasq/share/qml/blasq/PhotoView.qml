@@ -133,9 +133,18 @@ Rectangle {
             collectionThumbsView.model = collectionVisualModel
         }
 
-        delegate: Item {
+        delegate: ActionButton {
+            id: delegateRoot
+
             width: collectionThumbsView.cellWidth
             height: collectionThumbsView.cellHeight
+
+            onTriggered: {
+                console.log("clicked")
+                rootRect.showImage(original)
+                rootRect.imageSelected(imageId)
+                rootRect.currentImageId = imageId
+            }
 
             Rectangle {
                 id: itemRect
@@ -234,24 +243,11 @@ Rectangle {
                     color: colorProxy.color_TextBox_TitleTextColor
                 }
 
-                property bool isHovered: itemMouseArea.containsMouse ||
+                property bool isHovered: delegateRoot.isHovered ||
                             openInBrowserAction.isHovered ||
                             downloadOriginalAction.isHovered ||
                             copyURLAction.isHovered ||
                             deleteAction.isHovered
-
-                MouseArea {
-                    id: itemMouseArea
-                    anchors.fill: parent
-
-                    hoverEnabled: true
-                    onReleased: {
-                        rootRect.showImage(original)
-                        rootRect.imageSelected(imageId)
-
-                        rootRect.currentImageId = imageId
-                    }
-                }
 
                 Column {
                     anchors.top: parent.top
