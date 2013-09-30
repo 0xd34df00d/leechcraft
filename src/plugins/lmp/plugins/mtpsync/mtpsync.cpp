@@ -236,7 +236,8 @@ namespace MTPSync
 	void Plugin::UploadTo (LIBMTP_mtpdevice_t *device, const QByteArray& storageId,
 			const QString& localPath, const QString& origPath)
 	{
-		LIBMTP_Get_Storage (device, 0);
+		if (!device->storage)
+			LIBMTP_Get_Storage (device, 0);
 
 		auto storage = device->storage;
 
