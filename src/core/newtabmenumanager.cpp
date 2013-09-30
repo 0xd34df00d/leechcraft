@@ -52,7 +52,7 @@ namespace LeechCraft
 
 		IInfo *ii = qobject_cast<IInfo*> (obj);
 
-		Q_FOREACH (const TabClassInfo& info, imt->GetTabClasses ())
+		for (const auto& info : imt->GetTabClasses ())
 		{
 			if (!(info.Features_ & TFOpenableByRequest))
 				continue;
@@ -193,7 +193,7 @@ namespace LeechCraft
 			return;
 		}
 
-		const QByteArray& id = ii->GetUniqueID () + '|' + tabClass;
+		const auto& id = ii->GetUniqueID () + '|' + tabClass;
 		XmlSettingsManager::Instance ()->setProperty ("Hide" + id, hide);
 	}
 
@@ -225,20 +225,51 @@ namespace LeechCraft
 			ToggleHide (pObj, tabClass, false);
 	}
 
+	namespace
+	{
+		QAction* FindActionBefore (const QString& name, QMenu *menu)
+		{
+			for (auto otherAct : menu->actions ())
+				if (otherAct->isSeparator () ||
+						QString::localeAwareCompare (otherAct->text (), name) > 0)
+					return otherAct;
+			return nullptr;
+		}
+	}
+
 	void NewTabMenuManager::InsertAction (QAction *act)
 	{
-		bool inserted = false;
-		Q_FOREACH (QAction *menuAct, NewTabMenu_->actions ())
-			if (menuAct->isSeparator () ||
-					QString::localeAwareCompare (menuAct->text (), act->text ()) > 0)
-			{
-				NewTabMenu_->insertAction (menuAct, act);
-				inserted = true;
-				break;
-			}
+		auto pObj = act->property ("PluginObj").value<QObject*> ();
 
-		if (!inserted)
-			NewTabMenu_->addAction (act);
+		const auto& tabClasses = qobject_cast<IHaveTabs*> (pObj)->GetTabClasses ();
+		const auto& tcCount = std::count_if (tabClasses.begin (), tabClasses.end (),
+				[] (const TabClassInfo& tc) { return tc.Features_ & TFOpenableByRequest; });
+
+		const auto ii = qobject_cast<IInfo*> (pObj);
+		const auto& name = ii->GetName ();
+
+		auto rootMenu = NewTabMenu_;
+		if (tcCount > 1)
+		{
+			bool menuFound = false;
+			for (auto menuAct : rootMenu->actions ())
+				if (menuAct->menu () && menuAct->text () == name)
+				{
+					rootMenu = menuAct->menu ();
+					menuFound = true;
+					break;
+				}
+
+			if (!menuFound)
+			{
+				auto menu = new QMenu (name, rootMenu);
+				menu->setIcon (ii->GetIcon ());
+				rootMenu->insertMenu (FindActionBefore (name, rootMenu), menu);
+				rootMenu = menu;
+			}
+		}
+
+		rootMenu->insertAction (FindActionBefore (act->text (), rootMenu), act);
 	}
 
 	void NewTabMenuManager::handleNewTabRequested ()
