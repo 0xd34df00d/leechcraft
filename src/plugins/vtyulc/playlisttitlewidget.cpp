@@ -50,16 +50,19 @@ namespace vlc
 		ClearPlaylist_ = new QToolButton;
 		ClearAction_ = new QAction (ClearPlaylist_);
 		ClearAction_->setIcon (proxy->GetIcon ("edit-clear-list"));
+		ClearAction_->setToolTip (tr ("Clear playlist"));
 		ClearPlaylist_->setDefaultAction (ClearAction_);
 		
 		MagicSort_ = new QToolButton;
 		MagicAction_ = new QAction (MagicSort_);
 		MagicAction_->setIcon (proxy->GetIcon ("tools-wizard"));
+		MagicAction_->setToolTip (tr ("Magic sort"));
 		MagicSort_->setDefaultAction (MagicAction_);
 		
 		AddFiles_ = new QToolButton;
 		AddAction_ = new QAction (AddFiles_);
 		AddAction_->setIcon (proxy->GetIcon ("document-open-folder"));
+		AddAction_->setToolTip (tr ("Open files"));
 		AddFiles_->setDefaultAction (AddAction_);
 		
 		layout2->addWidget (AddFiles_);
