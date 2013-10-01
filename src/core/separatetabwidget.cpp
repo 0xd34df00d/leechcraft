@@ -68,6 +68,7 @@ namespace LeechCraft
 	, CurrentWidget_ (0)
 	, CurrentIndex_ (-1)
 	, PreviousWidget_ (0)
+	, CurrentToolBar_ (0)
 	{
 		XmlSettingsManager::Instance ()->RegisterObject ("SelectionBehavior",
 			this, "handleSelectionBehavior");
@@ -648,8 +649,11 @@ namespace LeechCraft
 		auto tabManager = rootWM->GetTabManager (Window_);
 
 		MainStackedWidget_->setCurrentIndex (-1);
-		if (auto prevBar = tabManager->GetToolBar (CurrentIndex_))
-			RemoveWidgetFromSeparateTabWidget (prevBar);
+		if (CurrentToolBar_)
+		{
+			RemoveWidgetFromSeparateTabWidget (CurrentToolBar_);
+			CurrentToolBar_ = nullptr;
+		}
 
 		MainTabBar_->setCurrentIndex (index);
 
@@ -657,6 +661,7 @@ namespace LeechCraft
 		{
 			AddWidget2SeparateTabWidget (bar);
 			bar->show ();
+			CurrentToolBar_ = bar;
 		}
 		MainStackedWidget_->setCurrentIndex (index);
 
