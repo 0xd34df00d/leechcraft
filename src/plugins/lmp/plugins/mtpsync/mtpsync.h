@@ -133,6 +133,7 @@ namespace MTPSync
 		void clearCaches ();
 	signals:
 		void availableDevicesChanged ();
+		void uploadProgress (qint64, qint64);
 		void uploadFinished (const QString&, QFile::FileError, const QString&);
 	};
 }
