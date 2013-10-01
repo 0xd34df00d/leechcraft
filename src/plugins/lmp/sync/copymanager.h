@@ -51,6 +51,7 @@ namespace LMP
 				QFile::FileError error, const QString& errorStr) = 0;
 	signals:
 		void startedCopying (const QString&);
+		void copyProgress (qint64, qint64);
 		void finishedCopying ();
 		void errorCopying (const QString&, const QString&);
 	};
@@ -85,6 +86,13 @@ namespace LMP
 					this,
 					SLOT (handleUploadFinished (QString, QFile::FileError, QString)),
 					Qt::UniqueConnection);
+
+			const auto& norm = QMetaObject::normalizedSignature ("uploadProgress (qint64, qint64)");
+			if (job.GetQObject ()->metaObject ()->indexOfSignal (norm) >= 0)
+				connect (job.GetQObject (),
+						SIGNAL (uploadProgress (qint64, qint64)),
+						this,
+						SIGNAL (copyProgress (qint64, qint64)));
 
 			job.Upload ();
 
