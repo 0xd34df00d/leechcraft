@@ -70,7 +70,19 @@ namespace Media
 
 		/** @brief A predefined radio station like an Icecast stream.
 		 */
-		Predefined
+		Predefined,
+
+		/** @brief A predefined list of single tracks, not a stream.
+		 *
+		 * Items of this type should provide RadioItemRole::TracksInfos.
+		 */
+		TracksList,
+
+		/** @brief A single song.
+		 *
+		 * Items of this type should provide RadioItemRole::TracksInfos.
+		 */
+		SingleTrack
 	};
 
 	/** @brief Custom user roles for the items in the model.
@@ -88,6 +100,22 @@ namespace Media
 		/** @brief The internal ID of the radio.
 		 */
 		RadioID,
+
+		/** @brief The tracks list.
+		 *
+		 * This role should be available for RadioType::SingleTrack and
+		 * RadioType::TracksList. The role should return a
+		 * <code>QList<Media::AudioInfo></code>.The list should consist
+		 * of one element for RadioType::SingleSong and of all child
+		 * songs for RadioType::TracksList.
+		 *
+		 * The Media::AudioInfo elements in the list should contain all
+		 * the available metadata and must have the "URL" element in the
+		 * additional map.
+		 *
+		 * @sa Media::AudioInfo
+		 */
+		TracksInfos,
 
 		/** @brief Maximum role.
 		 */
