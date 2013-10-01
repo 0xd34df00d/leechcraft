@@ -42,6 +42,7 @@
 #include <util/util.h>
 #include <util/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/delayedexecutor.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include "interfaces/azoth/iclentry.h"
@@ -53,6 +54,7 @@
 #include "interfaces/azoth/itransfermanager.h"
 #include "interfaces/azoth/iconfigurablemuc.h"
 #include "interfaces/azoth/ihavedirectedstatus.h"
+#include "interfaces/azoth/imucjoinwidget.h"
 
 #ifdef ENABLE_CRYPT
 #include "interfaces/azoth/isupportpgp.h"
@@ -364,8 +366,7 @@ namespace Azoth
 
 		void Leave (ICLEntry *entry)
 		{
-			IMUCEntry *mucEntry =
-					qobject_cast<IMUCEntry*> (entry->GetQObject ());
+			auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
 			if (!mucEntry)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -395,6 +396,41 @@ namespace Azoth
 			}
 
 			mucEntry->Leave ();
+		}
+
+		void Reconnect (ICLEntry *entry)
+		{
+			auto mucEntry = qobject_cast<IMUCEntry*> (entry->GetQObject ());
+			if (!mucEntry)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "requested reconnect on an entry"
+						<< entry->GetQObject ()
+						<< "that doesn't implement IMUCEntry";
+				return;
+			}
+
+			auto accObj = entry->GetParentAccount ();
+			auto acc = qobject_cast<IAccount*> (accObj);
+			auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
+
+			const auto& data = mucEntry->GetIdentifyingData ();
+			mucEntry->Leave ();
+
+			auto w = proto->GetMUCJoinWidget ();
+			auto imjw = qobject_cast<IMUCJoinWidget*> (w);
+			imjw->AccountSelected (accObj);
+			imjw->SetIdentifyingData (data);
+
+			new Util::DelayedExecutor
+			{
+				[w, imjw, accObj] () -> void
+				{
+					imjw->Join (accObj);
+					w->deleteLater ();
+				},
+				1000
+			};
 		}
 
 		void ConfigureMUC (ICLEntry *entry)
@@ -559,6 +595,7 @@ namespace Azoth
 			{ "changenick", MultiEntryActor_f (ChangeNick) },
 			{ "invite", SingleEntryActor_f (Invite) },
 			{ "leave", SingleEntryActor_f (Leave) },
+			{ "reconnect", SingleEntryActor_f (Reconnect) },
 			{
 				"addtobm",
 				SingleEntryActor_f ([] (ICLEntry *e) -> void
@@ -1072,6 +1109,12 @@ namespace Azoth
 					<< CLEAATabCtxtMenu
 					<< CLEAAToolbar;
 			sm->RegisterAction ("org.LeechCraft.Azoth.LeaveMUC", leave, true);
+
+			QAction *reconnect = new QAction (tr ("Reconnect"), entry->GetQObject ());
+			reconnect->setProperty ("ActionIcon", "view-refresh");
+			Entry2Actions_ [entry] ["reconnect"] = reconnect;
+			Action2Areas_ [reconnect] << CLEAAContactListCtxtMenu
+					<< CLEAATabCtxtMenu;
 
 			QAction *bookmarks = new QAction (tr ("Add to bookmarks"), entry->GetQObject ());
 			bookmarks->setProperty ("ActionIcon", "bookmark-new");
