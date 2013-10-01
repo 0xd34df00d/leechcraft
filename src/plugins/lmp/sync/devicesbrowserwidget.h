@@ -86,6 +86,7 @@ namespace LMP
 
 		void handleTranscodingProgress (int, int);
 		void handleUploadProgress (int, int);
+		void handleSingleUploadProgress (int, int);
 	};
 }
 }
