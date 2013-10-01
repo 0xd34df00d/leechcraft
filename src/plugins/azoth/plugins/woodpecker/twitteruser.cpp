@@ -74,7 +74,7 @@ namespace Woodpecker
 
 	void TwitterUser::DownloadAvatar (const QString& path)
 	{
-		QNetworkReply* reply = Http_->get (QNetworkRequest (QUrl (path)));
+		auto reply = Http_->get (QNetworkRequest (QUrl (path)));
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
