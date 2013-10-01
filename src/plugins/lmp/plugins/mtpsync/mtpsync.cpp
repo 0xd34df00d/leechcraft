@@ -215,9 +215,6 @@ namespace MTPSync
 				data->Plugin_->HandleTransfer (sent, total);
 			}
 
-			if (sent == total)
-				delete data;
-
 			return 0;
 		}
 
@@ -298,9 +295,11 @@ namespace MTPSync
 				SLOT (handleUploadFinished ()));
 		const auto future = QtConcurrent::run ([=] () -> UploadInfo
 			{
+				const auto cbData = new CallbackData { this, 0 };
 				const auto res = LIBMTP_Send_Track_From_File (device,
 						localPath.toUtf8 ().constData (), track,
-						TransferCallback, new CallbackData { this, 0 });
+						TransferCallback, cbData);
+				delete cbData;
 				return { res, device, localPath, track, info };
 			});
 		watcher->setFuture (future);
