@@ -235,6 +235,7 @@ namespace vlc
 	{
 		Settings_ = new QSettings (QCoreApplication::organizationName (), QCoreApplication::applicationName () + "_VTYULC");
 		RestorePlaylist ();
+		Autostart_ = XmlSettingsManager::Instance ().property ("Autostart").toBool ();
 	}
 
 	void VlcWidget::SaveSettings ()

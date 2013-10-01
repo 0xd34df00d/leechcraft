@@ -61,8 +61,8 @@ namespace vlc
 		
 		AddFiles_ = new QToolButton;
 		AddAction_ = new QAction (AddFiles_);
-		AddAction_->setIcon (proxy->GetIcon ("document-open-folder"));
-		AddAction_->setToolTip (tr ("Open files"));
+		AddAction_->setIcon (proxy->GetIcon ("list-add"));
+		AddAction_->setToolTip (tr ("Add files to playlist"));
 		AddFiles_->setDefaultAction (AddAction_);
 		
 		layout2->addWidget (AddFiles_);
