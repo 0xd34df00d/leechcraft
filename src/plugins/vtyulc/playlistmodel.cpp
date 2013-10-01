@@ -127,7 +127,9 @@ namespace vlc
 				mediaList << media;
 			else
 			{
-				mediaList << libvlc_media_new_path (Instance_, urls [i].toEncoded ());
+				qDebug () << urls[i] << "recreating";
+				mediaList << libvlc_media_new_location (Instance_, urls [i].toEncoded ());
+				libvlc_media_parse (mediaList [i]);
 				libvlc_media_set_meta (mediaList [i], libvlc_meta_URL, urls [i].toEncoded ());
 			}
 		}
@@ -169,7 +171,7 @@ namespace vlc
 		QList<QUrl> urls;
 		for (int i = 0; i < indexes.size (); i++)
 			if (indexes [i].column () == 0)
-				urls << QUrl (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, indexes [i].row ()), libvlc_meta_URL));
+				urls << QUrl::fromEncoded (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, indexes [i].row ()), libvlc_meta_URL));
 		
 		result->setUrls (urls);
 		return result;
@@ -184,7 +186,7 @@ namespace vlc
 	{
 		libvlc_media_t *res = nullptr;
 		for (int i = 0; i < libvlc_media_list_count (Playlist_); i++) {
-			if (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL) == url.toEncoded ())
+			if (QUrl::fromEncoded (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL)) == url)
 			{
 				res = libvlc_media_list_item_at_index (Playlist_, i);
 				libvlc_media_list_remove_index (Playlist_, i);

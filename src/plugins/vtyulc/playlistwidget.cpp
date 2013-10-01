@@ -121,6 +121,7 @@ namespace vlc
 			}
 		
 		libvlc_media_t *m = libvlc_media_new_location (Instance_, url.toEncoded ());
+		libvlc_media_parse (m);
 		libvlc_media_set_meta (m, libvlc_meta_URL, url.toEncoded ());
 		libvlc_media_list_add_media (Playlist_, m);
 		
