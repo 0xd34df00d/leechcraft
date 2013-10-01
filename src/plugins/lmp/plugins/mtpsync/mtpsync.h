@@ -116,7 +116,7 @@ namespace MTPSync
 		void Upload (const QString& localPath, const QString& origLocalPath, const QByteArray& to, const QByteArray& storageId);
 		void Refresh ();
 
-		void HandleTransfer (const QString&, quint64, quint64);
+		void HandleTransfer (quint64, quint64);
 	private:
 		void UploadTo (LIBMTP_mtpdevice_t*, const QByteArray&, const QString&, const QString&);
 		void AppendAlbum (LIBMTP_mtpdevice_t*, LIBMTP_track_t*, const UnmountableFileInfo&);

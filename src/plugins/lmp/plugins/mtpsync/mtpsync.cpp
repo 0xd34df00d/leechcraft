@@ -192,8 +192,9 @@ namespace MTPSync
 		pollDevices ();
 	}
 
-	void Plugin::HandleTransfer (const QString& path, quint64 sent, quint64 total)
+	void Plugin::HandleTransfer (quint64 sent, quint64 total)
 	{
+		emit uploadProgress (sent, total);
 	}
 
 	namespace
@@ -201,14 +202,18 @@ namespace MTPSync
 		struct CallbackData
 		{
 			Plugin *Plugin_;
-			QString LocalPath_;
+			mutable uint64_t PrevSent_;
 		};
 
 		int TransferCallback (uint64_t sent, uint64_t total, const void *rawData)
 		{
 			auto data = static_cast<const CallbackData*> (rawData);
 
-			data->Plugin_->HandleTransfer (data->LocalPath_, sent, total);
+			if (sent - data->PrevSent_ > total / 200)
+			{
+				data->PrevSent_ = sent;
+				data->Plugin_->HandleTransfer (sent, total);
+			}
 
 			if (sent == total)
 				delete data;
@@ -295,7 +300,7 @@ namespace MTPSync
 			{
 				const auto res = LIBMTP_Send_Track_From_File (device,
 						localPath.toUtf8 ().constData (), track,
-						nullptr, nullptr);
+						TransferCallback, new CallbackData { this, 0 });
 				return { res, device, localPath, track, info };
 			});
 		watcher->setFuture (future);
