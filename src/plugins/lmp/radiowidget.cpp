@@ -143,6 +143,31 @@ namespace LMP
 			if (param.isEmpty ())
 				return;
 			break;
+		case Media::RadioType::TracksList:
+		case Media::RadioType::SingleTrack:
+		{
+			const auto& infosVar = item->data (Media::RadioItemRole::TracksInfos);
+
+			QList<AudioSource> sources;
+			for (const auto& info : infosVar.value<QList<Media::AudioInfo>> ())
+			{
+				const auto& url = info.Other_ ["URL"].toUrl ();
+				if (!url.isValid ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "ignoring invalid URL"
+							<< info.Other_;
+					continue;
+				}
+
+				Player_->PrepareURLInfo (url, MediaInfo::FromAudioInfo (info));
+				sources << url;
+			}
+			qDebug () << Q_FUNC_INFO << sources.size ();
+
+			Player_->Enqueue (sources, false);
+			break;
+		}
 		}
 
 		auto station = Root2Prov_ [root]->GetRadioStation (item, param);
