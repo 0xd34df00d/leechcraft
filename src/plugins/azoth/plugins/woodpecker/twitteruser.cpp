@@ -54,6 +54,8 @@ namespace Woodpecker
 		QNetworkReply* reply = qobject_cast<QNetworkReply*> (sender ());
 		if (!reply)
 			return;
+		
+		reply->deleteLater ();
 		if (reply->error ())
 		{
 			qDebug () << Q_FUNC_INFO << "Avatar downloading problem: " << reply->error ();
@@ -67,7 +69,6 @@ namespace Woodpecker
 			Avatar.loadFromData (data);
 			emit userReady ();
 		}
-		reply->deleteLater ();
 	}
 
 	void TwitterUser::DownloadAvatar (const QString& path)

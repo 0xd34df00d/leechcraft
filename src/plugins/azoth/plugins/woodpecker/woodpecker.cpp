@@ -138,7 +138,7 @@ namespace Woodpecker
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/plugins/woodpecker/resources/images/woodpecker.svg");
+		static QIcon icon ("lcicons:/plugins/azoth/woodpecker/resources/images/woodpecker.svg");
 		return icon;
 	}
 
