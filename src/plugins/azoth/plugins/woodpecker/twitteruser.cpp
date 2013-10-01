@@ -46,16 +46,30 @@ namespace Woodpecker
 	TwitterUser::TwitterUser (const QString& username, QObject *parent)
 	: QObject (parent)
 	{
-		this->Username_ = username;
+		Username_ = username;
 	}
 
 	void TwitterUser::avatarDownloaded ()
 	{
-		QByteArray data = qobject_cast<QNetworkReply*> (sender ())->readAll ();
-		sender ()->deleteLater ();
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
 		
-		Avatar.loadFromData (data);
-		emit userReady ();
+		if (reply->error ())
+		{
+			qWarning () << Q_FUNC_INFO << "Avatar downloading problem: " << reply->error ();
+			reply->deleteLater ();
+			return;
+		}
+		
+		const auto& data = reply->readAll ();
+		
+		if (!data.isNull ())
+		{
+			Avatar_.loadFromData (data);
+			emit userAvatarReady ();
+		}
+		reply->deleteLater ();
 	}
 
 	void TwitterUser::DownloadAvatar (const QString& path)
@@ -75,6 +89,11 @@ namespace Woodpecker
 	QString TwitterUser::GetUsername () const
 	{
 		return Username_;
+	}
+	
+	QPixmap TwitterUser::GetAvatar () const
+	{
+		return Avatar_;
 	}
 }
 }
