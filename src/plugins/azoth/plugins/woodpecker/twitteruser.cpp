@@ -51,11 +51,23 @@ namespace Woodpecker
 
 	void TwitterUser::avatarDownloaded ()
 	{
-		QByteArray data = qobject_cast<QNetworkReply*> (sender ())->readAll ();
-		sender ()->deleteLater ();
+		QNetworkReply* reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+			return;
+		if (reply->error ())
+		{
+			qDebug () << Q_FUNC_INFO << "Avatar downloading problem: " << reply->error ();
+			return;
+		}
 		
-		Avatar.loadFromData (data);
-		emit userReady ();
+		QByteArray data = reply->readAll ();
+		
+		if (!data.isNull ())
+		{
+			Avatar.loadFromData (data);
+			emit userReady ();
+		}
+		reply->deleteLater ();
 	}
 
 	void TwitterUser::DownloadAvatar (const QString& path)
