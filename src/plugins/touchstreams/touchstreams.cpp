@@ -35,6 +35,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "audiosearch.h"
+#include "albumsmanager.h"
 
 namespace LeechCraft
 {
@@ -56,6 +57,8 @@ namespace TouchStreams
 				SIGNAL (cookiesChanged (QByteArray)),
 				this,
 				SLOT (saveCookies (QByteArray)));
+
+		AlbumsMgr_ = new AlbumsManager (AuthMgr_, Queue_, proxy, this);
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "touchstreamssettings.xml");
@@ -111,6 +114,16 @@ namespace TouchStreams
 		}
 
 		return new AudioSearch (Proxy_, realReq, AuthMgr_, Queue_);
+	}
+
+	QList<QStandardItem*> Plugin::GetRadioListItems () const
+	{
+		return { AlbumsMgr_->GetRootItem () };
+	}
+
+	Media::IRadioStation_ptr Plugin::GetRadioStation (QStandardItem*, const QString&)
+	{
+		return {};
 	}
 
 	void Plugin::handlePushButton (const QString& name)

@@ -33,6 +33,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/media/iaudiopile.h>
+#include <interfaces/media/iradiostationprovider.h>
 
 namespace LeechCraft
 {
@@ -48,21 +49,27 @@ namespace Util
 
 namespace TouchStreams
 {
-	class AuthManager;
+	class AlbumsManager;
 
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IHaveSettings
 				 , public Media::IAudioPile
+				 , public Media::IRadioStationProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings Media::IAudioPile)
+		Q_INTERFACES (IInfo
+				IHaveSettings
+				Media::IAudioPile
+				Media::IRadioStationProvider)
 
 		ICoreProxy_ptr Proxy_;
 		Util::QueueManager *Queue_;
 
 		Util::XmlSettingsDialog_ptr XSD_;
 		Util::SvcAuth::VkAuthManager *AuthMgr_;
+
+		AlbumsManager *AlbumsMgr_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -75,6 +82,9 @@ namespace TouchStreams
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		Media::IPendingAudioSearch* Search (const Media::AudioSearchRequest&);
+
+		QList<QStandardItem*> GetRadioListItems () const;
+		Media::IRadioStation_ptr GetRadioStation (QStandardItem* , const QString&);
 	private slots:
 		void handlePushButton (const QString&);
 		void saveCookies (const QByteArray&);
