@@ -49,7 +49,7 @@ namespace Woodpecker
 		QNetworkAccessManager *Http_;
 		
 	public:
-		QPixmap  Avatar;
+		QPixmap  Avatar_;
 		
 		explicit TwitterUser (QObject *parent = nullptr);
 		explicit TwitterUser (const QString& username, QObject *parent = nullptr);
