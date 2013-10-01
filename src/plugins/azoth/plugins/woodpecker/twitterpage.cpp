@@ -310,10 +310,10 @@ namespace Woodpecker
 			tmpitem->setData (Qt::DisplayRole, "Title");
 			tmpitem->setData (Qt::UserRole, QVariant::fromValue(twit));
 
-			if (twit->GetAuthor ()->Avatar.isNull ())
-				tmpitem->setData (Qt::DecorationRole, QIcon ("lcicons:/plugins/woodpecker/resources/images/woodpecker.svg"));
+			if (twit->GetAuthor ()->GetAvatar ().isNull ())
+				tmpitem->setData (Qt::DecorationRole, QIcon ("lcicons:/plugins/azoth/woodpecker/resources/images/woodpecker.svg"));
 			else
-				tmpitem->setData (Qt::DecorationRole, twit->GetAuthor ()->Avatar);
+				tmpitem->setData (Qt::DecorationRole, twit->GetAuthor ()->GetAvatar ());
 			Ui_.TwitList_->insertItem (0, tmpitem);
 			Ui_.TwitList_->updateGeometry ();
 		}
