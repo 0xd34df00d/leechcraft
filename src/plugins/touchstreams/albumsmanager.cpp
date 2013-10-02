@@ -46,8 +46,15 @@ namespace TouchStreams
 {
 	AlbumsManager::AlbumsManager (Util::SvcAuth::VkAuthManager *authMgr,
 			Util::QueueManager *queue, ICoreProxy_ptr proxy, QObject *parent)
+	: AlbumsManager (-1, authMgr, queue, proxy, parent)
+	{
+	}
+
+	AlbumsManager::AlbumsManager (qlonglong id, Util::SvcAuth::VkAuthManager *authMgr,
+			Util::QueueManager *queue, ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
+	, UserID_ (id)
 	, AuthMgr_ (authMgr)
 	, Queue_ (queue)
 	, AlbumsRootItem_ (new QStandardItem (tr ("VKontakte: your audio")))
@@ -79,6 +86,8 @@ namespace TouchStreams
 					QUrl url ("https://api.vk.com/method/audio.getAlbums");
 					url.addQueryItem ("access_token", key);
 					url.addQueryItem ("count", "100");
+					if (UserID_ >= 0)
+						url.addQueryItem ("uid", QString::number (UserID_));
 
 					auto nam = Proxy_->GetNetworkAccessManager ();
 					connect (nam->get (QNetworkRequest (url)),
@@ -141,6 +150,8 @@ namespace TouchStreams
 					QUrl url ("https://api.vk.com/method/audio.get");
 					url.addQueryItem ("access_token", key);
 					url.addQueryItem ("count", "1000");
+					if (UserID_ >= 0)
+						url.addQueryItem ("uid", QString::number (UserID_));
 
 					auto nam = Proxy_->GetNetworkAccessManager ();
 					connect (nam->get (QNetworkRequest (url)),

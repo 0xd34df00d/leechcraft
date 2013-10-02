@@ -55,6 +55,7 @@ namespace TouchStreams
 		Q_OBJECT
 
 		const ICoreProxy_ptr Proxy_;
+		const qlonglong UserID_ = -1;
 
 		Util::SvcAuth::VkAuthManager * const AuthMgr_;
 		Util::QueueManager * const Queue_;
@@ -76,6 +77,7 @@ namespace TouchStreams
 		};
 	public:
 		AlbumsManager (Util::SvcAuth::VkAuthManager*, Util::QueueManager*, ICoreProxy_ptr, QObject* = 0);
+		AlbumsManager (qlonglong, Util::SvcAuth::VkAuthManager*, Util::QueueManager*, ICoreProxy_ptr, QObject* = 0);
 		~AlbumsManager ();
 
 		QStandardItem* GetRootItem () const;
