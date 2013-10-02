@@ -35,8 +35,10 @@
 #include <util/gui/clearlineeditaddon.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/iradiostationprovider.h>
+#include <interfaces/media/iaudiopile.h>
 #include "core.h"
 #include "player.h"
+#include "previewhandler.h"
 
 namespace LeechCraft
 {
@@ -65,6 +67,11 @@ namespace LMP
 				return idx.data ().toString ().contains (pat, Qt::CaseInsensitive);
 			}
 		};
+
+		enum RadioWidgetRole
+		{
+			PileObject = Media::RadioItemRole::MaxRadioRole + 1
+		};
 	}
 
 	RadioWidget::RadioWidget (QWidget *parent)
@@ -89,12 +96,26 @@ namespace LMP
 
 	void RadioWidget::InitializeProviders ()
 	{
-		auto providerObjs = Core::Instance ().GetProxy ()->GetPluginsManager ()->
-				GetAllCastableRoots<Media::IRadioStationProvider*> ();
-		Q_FOREACH (auto provObj, providerObjs)
+		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
+		auto pileObjs = pm->GetAllCastableRoots<Media::IAudioPile*> ();
+		for (auto pileObj : pileObjs)
+		{
+			auto pile = qobject_cast<Media::IAudioPile*> (pileObj);
+
+			auto item = new QStandardItem (tr ("Search in %1")
+					.arg (pile->GetServiceName ()));
+			item->setIcon (pile->GetServiceIcon ());
+			item->setEditable (false);
+			item->setData (QVariant::fromValue (pileObj), RadioWidgetRole::PileObject);
+
+			StationsModel_->appendRow (item);
+		}
+
+		auto providerObjs = pm->GetAllCastableRoots<Media::IRadioStationProvider*> ();
+		for (auto provObj : providerObjs)
 		{
 			auto prov = qobject_cast<Media::IRadioStationProvider*> (provObj);
-			Q_FOREACH (auto item, prov->GetRadioListItems ())
+			for (auto item : prov->GetRadioListItems ())
 			{
 				StationsModel_->appendRow (item);
 				Root2Prov_ [item] = prov;
@@ -107,10 +128,29 @@ namespace LMP
 		Player_ = player;
 	}
 
+	void RadioWidget::HandlePile (QStandardItem*, QObject *pileObj)
+	{
+		const auto& query = QInputDialog::getText (this,
+				tr ("Audio search"),
+				tr ("Enter the string to search for:"));
+		if (query.isEmpty ())
+			return;
+
+		Media::AudioSearchRequest req;
+		req.FreeForm_ = query;
+
+		const auto pending = qobject_cast<Media::IAudioPile*> (pileObj)->Search (req);
+		Core::Instance ().GetPreviewHandler ()->HandlePending (pending);
+	}
+
 	void RadioWidget::on_StationsView__doubleClicked (const QModelIndex& unmapped)
 	{
 		const auto& index = StationsProxy_->mapToSource (unmapped);
 		const auto item = StationsModel_->itemFromIndex (index);
+
+		if (const auto pileObj = item->data (RadioWidgetRole::PileObject).value<QObject*> ())
+			return HandlePile (item, pileObj);
+
 		auto root = item;
 		while (auto parent = root->parent ())
 			root = parent;

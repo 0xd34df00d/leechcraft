@@ -63,6 +63,8 @@ namespace LMP
 
 		void SetPlayer (Player*);
 		void InitializeProviders ();
+	private:
+		void HandlePile (QStandardItem*, QObject*);
 	private slots:
 		void on_StationsView__doubleClicked (const QModelIndex&);
 	};
