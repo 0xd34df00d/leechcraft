@@ -44,6 +44,14 @@ namespace LeechCraft
 {
 namespace TouchStreams
 {
+	namespace
+	{
+		enum Role
+		{
+			AlbumID = Media::RadioItemRole::MaxRadioRole + 1
+		};
+	}
+
 	AlbumsManager::AlbumsManager (Util::SvcAuth::VkAuthManager *authMgr,
 			Util::QueueManager *queue, ICoreProxy_ptr proxy, QObject *parent)
 	: AlbumsManager (-1, authMgr, queue, proxy, parent)

@@ -71,11 +71,6 @@ namespace TouchStreams
 
 		QStandardItem * const AlbumsRootItem_;
 
-		enum Role
-		{
-			AlbumID = Qt::UserRole + 1
-		};
-
 		quint32 TracksCount_ = 0;
 	public:
 		AlbumsManager (Util::SvcAuth::VkAuthManager*, Util::QueueManager*, ICoreProxy_ptr, QObject* = 0);
