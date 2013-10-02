@@ -54,7 +54,7 @@ namespace TouchStreams
 	{
 		AlbumsRootItem_->setEditable (false);
 
-		QTimer::singleShot (5000,
+		QTimer::singleShot (1000,
 				this,
 				SLOT (refetchAlbums ()));
 
@@ -73,7 +73,8 @@ namespace TouchStreams
 
 	void AlbumsManager::refetchAlbums ()
 	{
-		RequestQueue_.append ([this] (const QString& key) -> void
+		RequestQueue_.append ({
+				[this] (const QString& key) -> void
 				{
 					QUrl url ("https://api.vk.com/method/audio.getAlbums");
 					url.addQueryItem ("access_token", key);
@@ -84,7 +85,9 @@ namespace TouchStreams
 							SIGNAL (finished ()),
 							this,
 							SLOT (handleAlbumsFetched ()));
-				});
+				},
+				Util::QueuePriority::Normal
+			});
 		AuthMgr_->GetAuthKey ();
 	}
 
@@ -132,7 +135,8 @@ namespace TouchStreams
 			AlbumsRootItem_->appendRow (item);
 		}
 
-		RequestQueue_.append ([this] (const QString& key) -> void
+		RequestQueue_.prepend ({
+				[this] (const QString& key) -> void
 				{
 					QUrl url ("https://api.vk.com/method/audio.get");
 					url.addQueryItem ("access_token", key);
@@ -143,7 +147,9 @@ namespace TouchStreams
 							SIGNAL (finished ()),
 							this,
 							SLOT (handleTracksFetched ()));
-				});
+				},
+				Util::QueuePriority::High
+			});
 		AuthMgr_->GetAuthKey ();
 	}
 

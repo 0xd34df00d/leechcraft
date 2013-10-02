@@ -45,7 +45,9 @@ namespace SvcAuth
 }
 
 class QueueManager;
+enum class QueuePriority;
 }
+
 namespace TouchStreams
 {
 	class AlbumsManager : public QObject
@@ -56,7 +58,7 @@ namespace TouchStreams
 
 		Util::SvcAuth::VkAuthManager * const AuthMgr_;
 		Util::QueueManager * const Queue_;
-		QList<std::function<void (QString)>> RequestQueue_;
+		QList<QPair<std::function<void (QString)>, Util::QueuePriority>> RequestQueue_;
 
 		struct AlbumInfo
 		{
