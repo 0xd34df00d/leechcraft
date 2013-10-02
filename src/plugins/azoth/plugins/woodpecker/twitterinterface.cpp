@@ -50,7 +50,6 @@ namespace Woodpecker
 		HttpClient_ = Core::Instance ().GetCoreProxy ()->GetNetworkAccessManager ();
 		OAuthRequest_ = new KQOAuthRequest (this);
 		OAuthManager_ = new KQOAuthManager (this);
-		OAuthManager_->setNetworkManager (HttpClient_);
 
 #ifdef WP_DEBUG
 		OAuthRequest_->setEnableDebugOutput (true);
