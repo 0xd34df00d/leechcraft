@@ -50,6 +50,7 @@ namespace Util
 namespace TouchStreams
 {
 	class AlbumsManager;
+	class FriendsManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -70,6 +71,7 @@ namespace TouchStreams
 		Util::SvcAuth::VkAuthManager *AuthMgr_;
 
 		AlbumsManager *AlbumsMgr_;
+		FriendsManager *FriendsMgr_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

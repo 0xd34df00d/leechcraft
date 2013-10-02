@@ -36,6 +36,7 @@
 #include "xmlsettingsmanager.h"
 #include "audiosearch.h"
 #include "albumsmanager.h"
+#include "friendsmanager.h"
 
 namespace LeechCraft
 {
@@ -47,18 +48,20 @@ namespace TouchStreams
 
 		Util::InstallTranslator ("touchstreams");
 
-		Queue_ = new Util::QueueManager (350);
+		Queue_ = new Util::QueueManager (400);
 
 		AuthMgr_ = new Util::SvcAuth::VkAuthManager ("3298289",
-				{ "audio" },
+				{ "audio", "friends" },
 				XmlSettingsManager::Instance ().property ("Cookies").toByteArray (),
-				proxy);
+				proxy,
+				Queue_);
 		connect (AuthMgr_,
 				SIGNAL (cookiesChanged (QByteArray)),
 				this,
 				SLOT (saveCookies (QByteArray)));
 
 		AlbumsMgr_ = new AlbumsManager (AuthMgr_, Queue_, proxy, this);
+		FriendsMgr_ = new FriendsManager (AuthMgr_, Queue_, proxy, this);
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "touchstreamssettings.xml");
@@ -129,7 +132,7 @@ namespace TouchStreams
 
 	QList<QStandardItem*> Plugin::GetRadioListItems () const
 	{
-		return { AlbumsMgr_->GetRootItem () };
+		return { AlbumsMgr_->GetRootItem (), FriendsMgr_->GetRootItem () };
 	}
 
 	Media::IRadioStation_ptr Plugin::GetRadioStation (QStandardItem*, const QString&)
