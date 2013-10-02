@@ -161,6 +161,8 @@ namespace TouchStreams
 
 			const auto albumId = map.value ("album", "-1").toLongLong ();
 			const auto& url = QUrl::fromEncoded (map ["url"].toString ().toUtf8 ());
+			if (!url.isValid ())
+				continue;
 
 			Media::AudioInfo info {};
 			info.Title_ = map ["title"].toString ();
