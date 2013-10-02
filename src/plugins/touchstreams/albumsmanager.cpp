@@ -58,11 +58,12 @@ namespace TouchStreams
 				this,
 				SLOT (refetchAlbums ()));
 
-		connect (AuthMgr_,
-				SIGNAL (gotAuthKey (QString)),
-				this,
-				SLOT (rotateQueue (QString)),
-				Qt::QueuedConnection);
+		AuthMgr_->ManageQueue (&RequestQueue_);
+	}
+
+	AlbumsManager::~AlbumsManager ()
+	{
+		AuthMgr_->UnmanageQueue (&RequestQueue_);
 	}
 
 	QStandardItem* AlbumsManager::GetRootItem () const
@@ -189,14 +190,6 @@ namespace TouchStreams
 			auto item = Albums_ [i.key ()].Item_;
 			item->setData (QVariant::fromValue (i.value ()), Media::RadioItemRole::TracksInfos);
 		}
-	}
-
-	void AlbumsManager::rotateQueue (const QString& key)
-	{
-		decltype (RequestQueue_) queue;
-		std::swap (queue, RequestQueue_);
-		for (const auto& req : queue)
-			Queue_->Schedule ([key, req] { req (key); });
 	}
 }
 }

@@ -74,14 +74,13 @@ namespace TouchStreams
 		};
 	public:
 		AlbumsManager (Util::SvcAuth::VkAuthManager*, Util::QueueManager*, ICoreProxy_ptr, QObject* = 0);
+		~AlbumsManager ();
 
 		QStandardItem* GetRootItem () const;
 	public slots:
 		void refetchAlbums ();
 		void handleAlbumsFetched ();
 		void handleTracksFetched ();
-	private slots:
-		void rotateQueue (const QString&);
 	};
 }
 }
