@@ -78,6 +78,16 @@ namespace TouchStreams
 		return AlbumsRootItem_;
 	}
 
+	qlonglong AlbumsManager::GetUserID () const
+	{
+		return UserID_;
+	}
+
+	quint32 AlbumsManager::GetTracksCount () const
+	{
+		return TracksCount_;
+	}
+
 	void AlbumsManager::refetchAlbums ()
 	{
 		RequestQueue_.append ({
@@ -200,6 +210,8 @@ namespace TouchStreams
 			trackItem->setData (QVariant::fromValue<QList<Media::AudioInfo>> ({ info }),
 					Media::RadioItemRole::TracksInfos);
 			albumItem->appendRow (trackItem);
+
+			++TracksCount_;
 		}
 
 		for (auto i = album2urls.begin (); i != album2urls.end (); ++i)

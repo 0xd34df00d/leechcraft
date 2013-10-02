@@ -75,12 +75,15 @@ namespace TouchStreams
 		{
 			AlbumID = Qt::UserRole + 1
 		};
+		quint32 TracksCount_ = 0;
 	public:
 		AlbumsManager (Util::SvcAuth::VkAuthManager*, Util::QueueManager*, ICoreProxy_ptr, QObject* = 0);
 		AlbumsManager (qlonglong, Util::SvcAuth::VkAuthManager*, Util::QueueManager*, ICoreProxy_ptr, QObject* = 0);
 		~AlbumsManager ();
 
 		QStandardItem* GetRootItem () const;
+		qlonglong GetUserID () const;
+		quint32 GetTracksCount () const;
 	public slots:
 		void refetchAlbums ();
 		void handleAlbumsFetched ();
