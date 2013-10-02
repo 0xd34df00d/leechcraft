@@ -94,6 +94,14 @@ namespace TouchStreams
 
 		const auto& data = QJson::Parser ().parse (reply).toMap ();
 		auto albumsList = data ["response"].toList ();
+		if (albumsList.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty albums list"
+					<< data;
+			return;
+		}
+
 		albumsList.removeFirst ();
 
 		if (auto rc = AlbumsRootItem_->rowCount ())
