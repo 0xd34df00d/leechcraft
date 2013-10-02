@@ -75,6 +75,7 @@ namespace TouchStreams
 		{
 			AlbumID = Qt::UserRole + 1
 		};
+
 		quint32 TracksCount_ = 0;
 	public:
 		AlbumsManager (Util::SvcAuth::VkAuthManager*, Util::QueueManager*, ICoreProxy_ptr, QObject* = 0);
@@ -88,6 +89,8 @@ namespace TouchStreams
 		void refetchAlbums ();
 		void handleAlbumsFetched ();
 		void handleTracksFetched ();
+	signals:
+		void finished (AlbumsManager*);
 	};
 }
 }

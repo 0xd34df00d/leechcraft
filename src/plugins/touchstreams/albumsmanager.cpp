@@ -122,6 +122,7 @@ namespace TouchStreams
 			qWarning () << Q_FUNC_INFO
 					<< "empty albums list"
 					<< data;
+			emit finished (this);
 			return;
 		}
 
@@ -219,6 +220,8 @@ namespace TouchStreams
 			auto item = Albums_ [i.key ()].Item_;
 			item->setData (QVariant::fromValue (i.value ()), Media::RadioItemRole::TracksInfos);
 		}
+
+		emit finished (this);
 	}
 }
 }
