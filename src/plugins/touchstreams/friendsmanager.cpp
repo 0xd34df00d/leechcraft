@@ -102,7 +102,6 @@ namespace TouchStreams
 			const auto id = map ["user_id"].toLongLong ();
 
 			auto mgr = new AlbumsManager (id, AuthMgr_, Queue_, Proxy_, this);
-			Friend2Mgr_ [id] = mgr;
 
 			const auto& name = map ["first_name"].toString () + " " + map ["last_name"].toString ();
 
@@ -110,6 +109,25 @@ namespace TouchStreams
 			userItem->setText (name);
 
 			Root_->appendRow (userItem);
+			Friend2Item_ [id] = userItem;
+
+			connect (mgr,
+					SIGNAL (finished (AlbumsManager*)),
+					this,
+					SLOT (handleAlbumsFinished (AlbumsManager*)));
+		}
+	}
+
+	void FriendsManager::handleAlbumsFinished (AlbumsManager *mgr)
+	{
+		mgr->deleteLater ();
+
+		const auto uid = mgr->GetUserID ();
+
+		if (!mgr->GetTracksCount ())
+		{
+			Root_->removeRow (Friend2Item_.take (uid)->row ());
+			return;
 		}
 	}
 }

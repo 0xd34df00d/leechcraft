@@ -62,7 +62,7 @@ namespace TouchStreams
 		Util::QueueManager * const Queue_;
 		QList<std::function<void (QString)>> RequestQueue_;
 
-		QHash<qulonglong, AlbumsManager*> Friend2Mgr_;
+		QHash<qulonglong, QStandardItem*> Friend2Item_;
 
 		QStandardItem *Root_;
 	public:
@@ -73,6 +73,7 @@ namespace TouchStreams
 	private slots:
 		void refetchFriends ();
 		void handleGotFriends ();
+		void handleAlbumsFinished (AlbumsManager*);
 	};
 }
 }
