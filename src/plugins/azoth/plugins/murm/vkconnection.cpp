@@ -47,7 +47,7 @@ namespace Murm
 	VkConnection::VkConnection (const QByteArray& cookies, ICoreProxy_ptr proxy)
 	: AuthMgr_ (new Util::SvcAuth::VkAuthManager ("3778319",
 			{ "messages", "notifications", "friends", "status", "photos" },
-			cookies, proxy, this))
+			cookies, proxy, nullptr, this))
 	, Proxy_ (proxy)
 	, CallQueue_ (new Util::QueueManager (400))
 	, LPManager_ (new LongPollManager (this, proxy))
