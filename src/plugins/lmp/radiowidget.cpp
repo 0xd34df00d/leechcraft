@@ -203,7 +203,6 @@ namespace LMP
 				Player_->PrepareURLInfo (url, MediaInfo::FromAudioInfo (info));
 				sources << url;
 			}
-			qDebug () << Q_FUNC_INFO << sources.size ();
 
 			Player_->Enqueue (sources, false);
 			break;
