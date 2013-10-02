@@ -35,6 +35,7 @@
 #include <QTimer>
 #include <QtDebug>
 #include <qjson/parser.h>
+#include <interfaces/media/iradiostationprovider.h>
 #include <util/svcauth/vkauthmanager.h>
 #include <util/queuemanager.h>
 #include "albumsmanager.h"
@@ -43,6 +44,14 @@ namespace LeechCraft
 {
 namespace TouchStreams
 {
+	namespace
+	{
+		enum FriendRole
+		{
+			PhotoUrlRole = Media::RadioItemRole::MaxRadioRole + 1
+		};
+	}
+
 	FriendsManager::FriendsManager (Util::SvcAuth::VkAuthManager *authMgr,
 			Util::QueueManager *queueMgr, ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
@@ -107,7 +116,8 @@ namespace TouchStreams
 
 			auto userItem = mgr->GetRootItem ();
 			userItem->setText (name);
-
+			userItem->setData (QUrl::fromEncoded (map ["photo"].toByteArray ()), PhotoUrlRole);
+			userItem->setIcon (Proxy_->GetIcon ("user-identity"));
 			Root_->appendRow (userItem);
 			Friend2Item_ [id] = userItem;
 
@@ -129,6 +139,27 @@ namespace TouchStreams
 			Root_->removeRow (Friend2Item_.take (uid)->row ());
 			return;
 		}
+
+		const auto& url = Friend2Item_ [uid]->data (PhotoUrlRole).toUrl ();
+		const auto reply = Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (url));
+		reply->setProperty ("TS/UID", uid);
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handlePhotoFetched ()));
+	}
+
+	void FriendsManager::handlePhotoFetched ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		QPixmap px;
+		if (!px.loadFromData (reply->readAll ()))
+			return;
+
+		const auto uid = reply->property ("TS/UID").toLongLong ();
+		Friend2Item_ [uid]->setIcon (px);
 	}
 }
 }

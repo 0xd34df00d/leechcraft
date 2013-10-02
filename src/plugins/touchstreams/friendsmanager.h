@@ -74,6 +74,7 @@ namespace TouchStreams
 		void refetchFriends ();
 		void handleGotFriends ();
 		void handleAlbumsFinished (AlbumsManager*);
+		void handlePhotoFetched ();
 	};
 }
 }
