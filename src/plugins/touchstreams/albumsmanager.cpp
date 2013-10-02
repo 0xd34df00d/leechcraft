@@ -132,10 +132,13 @@ namespace TouchStreams
 			AlbumsRootItem_->removeRows (0, rc);
 		Albums_.clear ();
 
+		const auto& icon = Proxy_->GetIcon ("media-optical");
+
 		auto allItem = new QStandardItem (tr ("Uncategorized"));
 		allItem->setEditable (false);
 		allItem->setData (-1, Role::AlbumID);
 		allItem->setData (Media::RadioType::TracksList, Media::RadioItemRole::ItemType);
+		allItem->setIcon (icon);
 		AlbumsRootItem_->appendRow (allItem);
 		Albums_ [-1] = AlbumInfo { -1, allItem->text (), allItem };
 
@@ -148,6 +151,7 @@ namespace TouchStreams
 
 			auto item = new QStandardItem (name);
 			item->setEditable (false);
+			item->setIcon (icon);
 			item->setData (Media::RadioType::TracksList, Media::RadioItemRole::ItemType);
 			item->setData (id, Role::AlbumID);
 			Albums_ [id] = AlbumInfo { id, name, item };
