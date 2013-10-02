@@ -81,6 +81,8 @@ namespace TouchStreams
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
+		QString GetServiceName () const;
+		QIcon GetServiceIcon () const;
 		Media::IPendingAudioSearch* Search (const Media::AudioSearchRequest&);
 
 		QList<QStandardItem*> GetRadioListItems () const;

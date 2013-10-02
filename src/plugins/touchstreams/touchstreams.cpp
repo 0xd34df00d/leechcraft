@@ -103,13 +103,24 @@ namespace TouchStreams
 		return XSD_;
 	}
 
+	QString Plugin::GetServiceName () const
+	{
+		return tr ("VKontakte");
+	}
+
+	QIcon Plugin::GetServiceIcon () const
+	{
+		static QIcon icon;
+		return icon;
+	}
+
 	Media::IPendingAudioSearch* Plugin::Search (const Media::AudioSearchRequest& req)
 	{
 		auto realReq = req;
 		if (realReq.FreeForm_.isEmpty ())
 		{
-			QStringList parts = { req.Artist_, req.Album_, req.Title_ };
-			parts.removeAll (QString ());
+			QStringList parts { req.Artist_, req.Album_, req.Title_ };
+			parts.removeAll ({});
 			realReq.FreeForm_ = parts.join (" - ");
 		}
 
