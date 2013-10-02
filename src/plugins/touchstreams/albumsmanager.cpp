@@ -152,11 +152,10 @@ namespace TouchStreams
 		reply->deleteLater ();
 
 		const auto& data = QJson::Parser ().parse (reply).toMap ();
-		auto albumsList = data ["response"].toList ();
-		albumsList.removeFirst ();
+		auto tracksList = data ["response"].toList ();
 
 		QHash<qlonglong, QList<Media::AudioInfo>> album2urls;
-		for (const auto& trackVar : albumsList)
+		for (const auto& trackVar : tracksList)
 		{
 			const auto& map = trackVar.toMap ();
 
