@@ -127,7 +127,6 @@ namespace vlc
 				mediaList << media;
 			else
 			{
-				qDebug () << urls[i] << "recreating";
 				mediaList << libvlc_media_new_location (Instance_, urls [i].toEncoded ());
 				libvlc_media_parse (mediaList [i]);
 				libvlc_media_set_meta (mediaList [i], libvlc_meta_URL, urls [i].toEncoded ());
