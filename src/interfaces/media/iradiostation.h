@@ -111,6 +111,18 @@ namespace Media
 		 */
 		virtual void gotPlaylist (const QString& filename, const QString& format) = 0;
 
+		/** @brief Emitted when just a set of audio infos is available.
+		 *
+		 * This signal can be used by radio stations that get audio
+		 * streams in a form different of a playlist file.
+		 *
+		 * The audio infos in the \em infos list must contain the URL
+		 * field.
+		 *
+		 * @param[out] infos The infos corresponding to this radio station.
+		 */
+		virtual void gotAudioInfos (const QList<AudioInfo>& infos) = 0;
+
 		/** @brief Emitted when there is an error.
 		 *
 		 * @param[out] error The human-readable error text.
