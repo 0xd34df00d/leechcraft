@@ -127,9 +127,6 @@ namespace TouchStreams
 		auto albumsList = data ["response"].toList ();
 		if (albumsList.isEmpty ())
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "empty albums list"
-					<< data;
 			emit finished (this);
 			return;
 		}
