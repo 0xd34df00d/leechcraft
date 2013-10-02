@@ -33,6 +33,7 @@
 #include <QtDebug>
 #include <QWebView>
 #include <util/network/customcookiejar.h>
+#include <util/queuemanager.h>
 
 namespace LeechCraft
 {
@@ -52,11 +53,13 @@ namespace SvcAuth
 	}
 
 	VkAuthManager::VkAuthManager (const QString& id, const QStringList& scope,
-			const QByteArray& cookies, ICoreProxy_ptr proxy, QObject *parent)
+			const QByteArray& cookies, ICoreProxy_ptr proxy,
+			QueueManager *queueMgr, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, AuthNAM_ (new QNetworkAccessManager (this))
 	, Cookies_ (new Util::CustomCookieJar)
+	, Queue_ (queueMgr)
 	, ValidFor_ (0)
 	, IsRequesting_ (false)
 	, URL_ (URLFromClientID (id, scope))
@@ -74,6 +77,7 @@ namespace SvcAuth
 			return;
 		}
 
+		InvokeQueues (Token_);
 		emit gotAuthKey (Token_);
 	}
 
@@ -92,6 +96,58 @@ namespace SvcAuth
 				SIGNAL (urlChanged (QUrl)),
 				this,
 				SLOT (handleViewUrlChanged (QUrl)));
+	}
+
+	void VkAuthManager::ManageQueue (VkAuthManager::RequestQueue_ptr queue)
+	{
+		if (!Queue_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot manage request queue if queue manager wasn't set";
+			return;
+		}
+
+		ManagedQueues_ << queue;
+	}
+
+	void VkAuthManager::UnmanageQueue (VkAuthManager::RequestQueue_ptr queue)
+	{
+		ManagedQueues_.removeAll (queue);
+	}
+
+	void VkAuthManager::ManageQueue (VkAuthManager::PrioRequestQueue_ptr queue)
+	{
+		if (!Queue_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot manage request queue if queue manager wasn't set";
+			return;
+		}
+
+		PrioManagedQueues_ << queue;
+	}
+
+	void VkAuthManager::UnmanageQueue (VkAuthManager::PrioRequestQueue_ptr queue)
+	{
+		PrioManagedQueues_.removeAll (queue);
+	}
+
+	void VkAuthManager::InvokeQueues (const QString& token)
+	{
+		for (auto queue : PrioManagedQueues_)
+			while (!queue->isEmpty ())
+			{
+				const auto& pair = queue->takeFirst ();
+				const auto& f = pair.first;
+				Queue_->Schedule ([f, token] { f (token); }, nullptr, pair.second);
+			}
+
+		for (auto queue : ManagedQueues_)
+			while (!queue->isEmpty ())
+			{
+				const auto& f = queue->takeFirst ();
+				Queue_->Schedule ([f, token] { f (token); });
+			}
 	}
 
 	void VkAuthManager::HandleError ()
@@ -134,6 +190,7 @@ namespace SvcAuth
 		qDebug () << Q_FUNC_INFO << Token_ << ValidFor_;
 		IsRequesting_ = false;
 
+		InvokeQueues (Token_);
 		emit gotAuthKey (Token_);
 
 		return true;
