@@ -40,10 +40,14 @@ namespace Util
 	{
 	}
 
-	void QueueManager::Schedule (std::function<void ()> f, QObject *dep)
+	void QueueManager::Schedule (std::function<void ()> f, QObject *dep, QueuePriority prio)
 	{
 		const auto& now = QDateTime::currentDateTime ();
-		Queue_.push_back ({ f, dep ? OptionalTracker_t { dep } : OptionalTracker_t () });
+
+		if (prio == QueuePriority::High)
+			Queue_.prepend ({ f, dep ? OptionalTracker_t { dep } : OptionalTracker_t () });
+		else
+			Queue_.append ({ f, dep ? OptionalTracker_t { dep } : OptionalTracker_t () });
 
 		const auto diff = LastRequest_.msecsTo (now);
 		if (diff >= Timeout_)
