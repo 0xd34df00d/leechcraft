@@ -20,6 +20,7 @@ set (SRCS
 	audiosearch.cpp
 	xmlsettingsmanager.cpp
 	albumsmanager.cpp
+	friendsmanager.cpp
 	)
 
 CreateTrs ("touchstreams" "en;ru_RU" COMPILED_TRANSLATIONS)
