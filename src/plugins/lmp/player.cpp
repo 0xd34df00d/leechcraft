@@ -508,6 +508,10 @@ namespace LMP
 				SIGNAL (gotPlaylist (QString, QString)),
 				this,
 				SLOT (handleGotRadioPlaylist (QString, QString)));
+		connect (CurrentStation_->GetQObject (),
+				SIGNAL (gotAudioInfos (QList<Media::AudioInfo>)),
+				this,
+				SLOT (handleGotAudioInfos (QList<Media::AudioInfo>)));
 		CurrentStation_->RequestNewStream ();
 
 		auto radioName = station->GetRadioName ();
@@ -1171,6 +1175,27 @@ namespace LMP
 
 		const auto& list = parser (name);
 		Enqueue (list, false);
+	}
+
+	void Player::handleGotAudioInfos (const QList<Media::AudioInfo>& infos)
+	{
+		QList<AudioSource> sources;
+		for (const auto& info : infos)
+		{
+			const auto& url = info.Other_ ["URL"].toUrl ();
+			if (!url.isValid ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "skipping invalid URL";
+				continue;
+			}
+
+			Url2Info_ [url] = info;
+			sources << url;
+		}
+
+		if (!sources.isEmpty ())
+			Enqueue (sources, false);
 	}
 
 	void Player::postPlaylistCleanup (const QString& filename)
