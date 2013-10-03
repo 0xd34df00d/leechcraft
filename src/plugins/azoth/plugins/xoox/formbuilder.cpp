@@ -89,6 +89,7 @@ namespace Xoox
 		void Clear ()
 		{
 			qDeleteAll (Widget2Field_.keys ());
+			Widget2Field_.clear ();
 		}
 	protected:
 		virtual QWidget* CreateWidgetImpl (QXmppDataForm::Field&, QFormLayout*) = 0;
