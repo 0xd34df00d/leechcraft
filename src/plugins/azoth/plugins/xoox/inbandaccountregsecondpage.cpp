@@ -31,10 +31,13 @@
 #include <QVBoxLayout>
 #include <QMessageBox>
 #include <util/network/socketerrorstrings.h>
+#include <util/util.h>
+#include <interfaces/core/ientitymanager.h>
 #include "xmppbobmanager.h"
 #include "inbandaccountregfirstpage.h"
 #include "util.h"
 #include "regformhandlerwidget.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -140,11 +143,12 @@ namespace Xoox
 		{
 			wizard ()->restart ();
 
-			QMessageBox::warning (this,
-					tr ("Account registration"),
+			const auto& e = Util::MakeNotification ("Azoth Xoox",
 					tr ("A socket error occured during registration: %1. "
 						"Registration process needs to be restarted.")
-						.arg (Util::GetSocketErrorString (Client_->socketError ())));
+						.arg (Util::GetSocketErrorString (Client_->socketError ())),
+					Priority::PCritical_);
+			Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 			initializePage ();
 		}
 	}
