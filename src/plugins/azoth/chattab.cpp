@@ -83,6 +83,7 @@
 #include "util.h"
 #include "proxyobject.h"
 #include "customchatstylemanager.h"
+#include "coremessage.h"
 
 namespace LeechCraft
 {
@@ -162,6 +163,7 @@ namespace Azoth
 	, HadHighlight_ (false)
 	, NumUnreadMsgs_ (0)
 	, ScrollbackPos_ (0)
+	, LastAppendedMessage_ (nullptr)
 	, IsMUC_ (false)
 	, PreviousTextHeight_ (0)
 	, MsgFormatter_ (0)
@@ -269,6 +271,7 @@ namespace Azoth
 		SetChatPartState (CPSGone);
 
 		qDeleteAll (HistoryMessages_);
+		qDeleteAll (CoreMessages_);
 		delete Ui_.MsgEdit_->document ();
 
 		delete MUCEventLog_;
@@ -735,6 +738,9 @@ namespace Azoth
 		entry->PurgeMessages (QDateTime ());
 		qDeleteAll (HistoryMessages_);
 		HistoryMessages_.clear ();
+		qDeleteAll (CoreMessages_);
+		CoreMessages_.clear ();
+		LastAppendedMessage_ = nullptr;
 		PrepareTheme ();
 	}
 
@@ -743,6 +749,9 @@ namespace Azoth
 		ScrollbackPos_ += 50;
 		qDeleteAll (HistoryMessages_);
 		HistoryMessages_.clear ();
+		qDeleteAll (CoreMessages_);
+		CoreMessages_.clear ();
+		LastAppendedMessage_ = nullptr;
 		RequestLogs (ScrollbackPos_);
 	}
 
@@ -1833,6 +1842,14 @@ namespace Azoth
 		}
 	}
 
+	namespace
+	{
+		bool IsSameDay (const IMessage *msg1, const IMessage *msg2)
+		{
+			return msg1->GetDateTime ().date () == msg2->GetDateTime ().date ();
+		}
+	}
+
 	void ChatTab::AppendMessage (IMessage *msg)
 	{
 		ICLEntry *other = qobject_cast<ICLEntry*> (msg->OtherPart ());
@@ -1899,10 +1916,33 @@ namespace Azoth
 
 		QWebFrame *frame = Ui_.View_->page ()->mainFrame ();
 
-		ChatMsgAppendInfo info =
+		const bool isActiveChat =  Core::Instance ()
+				.GetChatTabsManager ()->IsActiveChat (GetEntry<ICLEntry> ());
+		if (LastAppendedMessage_ && !IsSameDay (LastAppendedMessage_, msg))
+		{
+			auto datetime = msg->GetDateTime ();
+			const auto& thisDate = datetime.date ();
+			const auto& str = QLocale ().toString (thisDate, QLocale::LongFormat);
+
+			datetime.setTime ({0, 0});
+
+			auto coreMessage = new CoreMessage (str, datetime,
+					IMessage::MTServiceMessage, IMessage::DIn, parent->GetQObject (), this);
+			ChatMsgAppendInfo coreInfo
+			{
+				false,
+				isActiveChat,
+				ToggleRichText_->isChecked ()
+			};
+			Core::Instance ().AppendMessageByTemplate (frame, coreMessage, coreInfo);
+		}
+
+		LastAppendedMessage_ = msg;
+
+		ChatMsgAppendInfo info
 		{
 			Core::Instance ().IsHighlightMessage (msg),
-			Core::Instance ().GetChatTabsManager ()->IsActiveChat (GetEntry<ICLEntry> ()),
+			isActiveChat,
 			ToggleRichText_->isChecked ()
 		};
 
