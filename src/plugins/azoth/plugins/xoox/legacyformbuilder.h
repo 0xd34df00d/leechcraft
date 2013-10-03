@@ -50,10 +50,12 @@ namespace Xoox
 		QHash<QString, ElementActor_t> Tag2Actor_;
 	public:
 		LegacyFormBuilder ();
-		
+
+		void Clear ();
+
 		QWidget* CreateForm (const QXmppElement&, QWidget* = 0);
 		QList<QXmppElement> GetFilledChildren () const;
-		
+
 		QString GetUsername () const;
 		QString GetPassword () const;
 	};
