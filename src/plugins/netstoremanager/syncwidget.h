@@ -32,9 +32,6 @@
 #include <QWidget>
 #include "ui_syncwidget.h"
 
-typedef QPair<QString, QString> SyncDirs_t;
-Q_DECLARE_METATYPE (SyncDirs_t)
-
 class QStandardItemModel;
 
 namespace LeechCraft
@@ -72,6 +69,7 @@ namespace NetStoreManager
 	private:
 		void RemoveInvalidRows ();
 		void RemoveDuplicateRows ();
+		QList<SyncerInfo> GetInfos () const;
 
 	public slots:
 		void accept ();
@@ -80,7 +78,10 @@ namespace NetStoreManager
 		void on_Remove__released ();
 
 	signals:
-		void directoriesToSyncUpdated (const QVariantMap& dirs);
+		void directoriesToSyncUpdated (const QList<SyncerInfo>& infos);
 	};
 }
 }
+
+Q_DECLARE_METATYPE (LeechCraft::NetStoreManager::SyncerInfo)
+Q_DECLARE_METATYPE (QList<LeechCraft::NetStoreManager::SyncerInfo>)

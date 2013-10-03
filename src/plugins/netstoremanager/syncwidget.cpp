@@ -61,15 +61,15 @@ namespace NetStoreManager
 
 	void SyncWidget::RestoreData ()
 	{
-		QVariantMap map = XmlSettingsManager::Instance ().property ("Synchronization").toMap ();
-		for (auto key : map.keys ())
+		const auto& infos = XmlSettingsManager::Instance ().property ("Synchronization").value<QList<SyncerInfo>> ();
+		for (const auto& info : infos)
 		{
-			auto isa = AM_->GetAccountFromUniqueID (key);
+			auto isa = AM_->GetAccountFromUniqueID (info.AccountId_);
 			if (!isa)
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "there is no account with ID"
-						<< key;
+						<< info.AccountId_;
 				continue;
 			}
 			auto isp = qobject_cast<IStoragePlugin*> (isa->GetParentPlugin ());
@@ -79,25 +79,21 @@ namespace NetStoreManager
 			QStandardItem *accItem = new QStandardItem;
 			accItem->setData (isp->GetStorageName () + ": " + isa->GetAccountName (),
 					Qt::EditRole);
-			accItem->setData (key, SyncItemDelegate::AccountId);
+			accItem->setData (info.AccountId_, SyncItemDelegate::AccountId);
 			QStandardItem *localDirItem = new QStandardItem;
-			SyncDirs_t dirs = map [key].value<SyncDirs_t> ();
-			const QString& localPath = dirs.first.isEmpty () ?
-				QDir::homePath () :
-				dirs.first;
-			localDirItem->setData (localPath, Qt::EditRole);
+			localDirItem->setData (info.LocalDirectory_, Qt::EditRole);
 			QStandardItem *remoteDirItem = new QStandardItem;
-			const QString& remotePath = dirs.second.isEmpty () ?
-				("LeechCraft_" + isa->GetAccountName ()) :
-				dirs.second;
-			remoteDirItem->setData (remotePath, Qt::EditRole);
+			remoteDirItem->setData (info.RemoteDirectory_, Qt::EditRole);
 			Model_->appendRow ({ accItem, localDirItem, remoteDirItem });
 
 			Ui_.SyncView_->openPersistentEditor (Model_->indexFromItem (accItem));
 			Ui_.SyncView_->resizeColumnToContents (SyncItemDelegate::Account);
 		}
 
-		emit directoriesToSyncUpdated (map);
+		RemoveInvalidRows ();
+		RemoveDuplicateRows ();
+
+		emit directoriesToSyncUpdated (GetInfos ());
 	}
 
 	void SyncWidget::RemoveInvalidRows ()
@@ -138,38 +134,45 @@ namespace NetStoreManager
 		}
 	}
 
+	QList<SyncerInfo> SyncWidget::GetInfos () const
+	{
+		QList<SyncerInfo> infos;
+		for (int i = 0; i < Model_->rowCount (); ++i)
+		{
+			SyncerInfo info;
+			info.AccountId_ = Model_->item (i, SyncItemDelegate::Account)->
+			data (SyncItemDelegate::AccountId).toByteArray ();
+			info.LocalDirectory_ = Model_->item (i, SyncItemDelegate::LocalDirectory)->text ();
+			info.RemoteDirectory_ = Model_->item (i, SyncItemDelegate::RemoteDirectory)->text ();
+
+			infos << info;
+		}
+
+		return infos;
+	}
+
 	void SyncWidget::accept ()
 	{
 		RemoveInvalidRows ();
 		RemoveDuplicateRows ();
 
-
-		QVariantMap map;
-		for (int i = 0; i < Model_->rowCount (); ++i)
-		{
-			const auto& accId = Model_->item (i, SyncItemDelegate::Account)->
-					data (SyncItemDelegate::AccountId).toByteArray ();
-			map [accId] = QVariant::fromValue<SyncDirs_t> ({ Model_->
-						item (i, SyncItemDelegate::LocalDirectory)->text (),
-					Model_->item (i, SyncItemDelegate::RemoteDirectory)->text () });
-		}
-
-		QVariantMap oldMap = XmlSettingsManager::Instance ().property ("Synchronization").toMap ();
-		if (oldMap.count () == map.count ())
+		auto infos = GetInfos ();
+		auto oldInfos = XmlSettingsManager::Instance ().property ("Synchronization")
+				.value<QList<SyncerInfo>> ();
+		if (oldInfos.count () == infos.count ())
 		{
 			bool found = false;
-			for (auto i1 = oldMap.begin (), i2 = map.begin (), e1 = oldMap.end ();
+			for (auto i1 = oldInfos.begin (), i2 = infos.begin (), e1 = oldInfos.end ();
 					i1 != e1; ++i1, ++i2)
-				if (i1.key () != i2.key () ||
-						i1.value ().value<SyncDirs_t> () != i2.value ().value<SyncDirs_t> ())
+				if (i1 != i2)
 					found = true;
 
 			if (!found)
 				return;
 		}
-		XmlSettingsManager::Instance ().setProperty ("Synchronization", map);
+		XmlSettingsManager::Instance ().setProperty ("Synchronization", QVariant::fromValue (infos));
 
-		emit directoriesToSyncUpdated (map);
+		emit directoriesToSyncUpdated (infos);
 	}
 
 	void SyncWidget::on_Add__released ()
