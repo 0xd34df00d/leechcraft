@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_FORMBUILDER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_FORMBUILDER_H
+#pragma once
+
 #include <memory>
 #include <QXmppDataForm.h>
 
@@ -56,6 +56,8 @@ namespace Xoox
 	public:
 		FormBuilder (const QString& = QString (), XMPPBobManager* = 0);
 
+		void Clear ();
+
 		QString From () const;
 		XMPPBobManager* BobManager () const;
 
@@ -68,5 +70,3 @@ namespace Xoox
 }
 }
 }
-
-#endif
