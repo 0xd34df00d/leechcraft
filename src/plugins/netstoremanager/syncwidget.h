@@ -43,6 +43,20 @@ namespace NetStoreManager
 {
 	class AccountsManager;
 
+	struct SyncerInfo
+	{
+		QByteArray AccountId_;
+		QString LocalDirectory_;
+		QString RemoteDirectory_;
+
+		inline bool operator== (const SyncerInfo& si) const
+		{
+			return AccountId_ == si.AccountId_ &&
+					LocalDirectory_ == si.LocalDirectory_ &&
+					RemoteDirectory_ == si.RemoteDirectory_;
+		}
+	};
+
 	class SyncWidget : public QWidget
 	{
 		Q_OBJECT
@@ -55,6 +69,9 @@ namespace NetStoreManager
 	public:
 		SyncWidget (AccountsManager *am, QWidget *parent = 0);
 		void RestoreData ();
+	private:
+		void RemoveInvalidRows ();
+		void RemoveDuplicateRows ();
 
 	public slots:
 		void accept ();

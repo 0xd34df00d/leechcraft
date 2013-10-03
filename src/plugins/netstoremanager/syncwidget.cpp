@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "syncwidget.h"
+#include <unordered_set>
 #include <QStandardItemModel>
 #include <QMessageBox>
 #include <QtDebug>
@@ -38,6 +39,7 @@
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/istorageplugin.h"
 #include "utils.h"
+#include "syncer.h"
 
 namespace LeechCraft
 {
@@ -98,108 +100,76 @@ namespace NetStoreManager
 		emit directoriesToSyncUpdated (map);
 	}
 
-	void SyncWidget::accept ()
+	void SyncWidget::RemoveInvalidRows ()
 	{
-		QVariantMap map;
-		QVariantMap oldMap = XmlSettingsManager::Instance ().property ("Synchronization").toMap ();
-		for (int i = Model_->rowCount () - 1; i >= 0 ; --i)
+		for (int i = Model_->rowCount () - 1; i >= 0; --i)
 		{
 			QStandardItem *accItem = Model_->item (i, SyncItemDelegate::Account);
 			QStandardItem *localDirItem = Model_->item (i, SyncItemDelegate::LocalDirectory);
-			QStandardItem *remoteDirItem = Model_->item (i, SyncItemDelegate::RemoteDirecory);
+			QStandardItem *remoteDirItem = Model_->item (i, SyncItemDelegate::RemoteDirectory);
 
-			if (!accItem ||
-					accItem->data (SyncItemDelegate::AccountId).isNull () ||
-					!localDirItem ||
-					localDirItem->text ().isEmpty () ||
-					!remoteDirItem ||
-					remoteDirItem->text ().isEmpty ())
-			{
+			if (!accItem ||  accItem->data (SyncItemDelegate::AccountId).toByteArray ().isEmpty () ||
+					!localDirItem || localDirItem->text ().isEmpty () ||
+					!remoteDirItem || remoteDirItem->text ().isEmpty ())
 				Model_->removeRow (i);
-				continue;
-			}
+		}
+	}
 
-			const auto& accId = accItem->data (SyncItemDelegate::AccountId).toString ();
+	void SyncWidget::RemoveDuplicateRows ()
+	{
+		auto hasher = [] (const SyncerInfo& item)
+			{ return qHash (QString::fromUtf8 (item.AccountId_) +
+					item.LocalDirectory_ + item.RemoteDirectory_); };
+		std::unordered_set<SyncerInfo, decltype (hasher)> hash (0, hasher);
 
-			for (int j = i - 1; j >= 0; --j)
-			{
-				if (Model_->item (j, SyncItemDelegate::Account)->data (SyncItemDelegate::AccountId).toString () == accId &&
-						Model_->item (j, SyncItemDelegate::LocalDirectory)->text () == localDirItem->text () &&
-						Model_->item (j, SyncItemDelegate::RemoteDirecory)->text () == remoteDirItem->text ())
-				{
-					Model_->removeRow (j);
-					continue;
-				}
-			}
+		for (int i = 0; i < Model_->rowCount (); ++i)
+		{
+			const auto& accId = Model_->item (i, SyncItemDelegate::Account)->
+					data (SyncItemDelegate::AccountId).toByteArray ();
+			const auto& localDir = Model_->item (i,
+					SyncItemDelegate::LocalDirectory)->text ();
+			const auto& remoteDir = Model_->item (i,
+					SyncItemDelegate::RemoteDirectory)->text ();
+			SyncerInfo info { accId, localDir, remoteDir };
+			if (hash.find (info) == hash.end ())
+				hash.insert (info);
+			else
+				Model_->removeRow (i);
+		}
+	}
 
-			if (!oldMap.contains (accId) ||
-					oldMap [accId].value<SyncDirs_t> ().first != localDirItem->text ())
-			{
-				QDir dir (localDirItem->text ());
-				if (dir.entryList (QDir::NoDotAndDotDot | QDir::AllEntries).count ())
-				{
-					auto res = QMessageBox::warning (this, "LeechCraft",
-							tr ("Local synchronization directory should be empty."
-									"Directory %1 is not empty. Remove all content from it?")
-											.arg (localDirItem->text ()),
-							QMessageBox::Yes | QMessageBox::No,
-							QMessageBox::No);
-					switch (res)
-					{
-					case QMessageBox::Yes:
-					{
-						QDir dir (localDirItem->text ());
-						bool result = false;
-						if (dir.exists (localDirItem->text ()))
-						{
-							for (const auto& info : dir.entryInfoList (QDir::NoDotAndDotDot | QDir::AllEntries))
-							{
-								if (info.isDir ())
-									result = Utils::RemoveDirectoryContent (info.absoluteFilePath ());
-								else
-									result = QFile::remove (info.absoluteFilePath ());
+	void SyncWidget::accept ()
+	{
+		RemoveInvalidRows ();
+		RemoveDuplicateRows ();
 
-								if (!result)
-								{
-									QMessageBox::warning (this, "LeechCraft",
-											tr ("Unable to remove content from directory %1")
-													.arg (localDirItem->text ()),
-											QMessageBox::Yes);
-									continue;
-								}
-							}
-						}
-						break;
-					}
-					case QMessageBox::No:
-					default:
-						Model_->removeRow (i);
-						continue;
-					}
-				}
-			}
 
-			map [accId] = QVariant::fromValue<SyncDirs_t> (qMakePair (localDirItem->text (),
-							remoteDirItem->text ()));
+		QVariantMap map;
+		for (int i = 0; i < Model_->rowCount (); ++i)
+		{
+			const auto& accId = Model_->item (i, SyncItemDelegate::Account)->
+					data (SyncItemDelegate::AccountId).toByteArray ();
+			map [accId] = QVariant::fromValue<SyncDirs_t> ({ Model_->
+						item (i, SyncItemDelegate::LocalDirectory)->text (),
+					Model_->item (i, SyncItemDelegate::RemoteDirectory)->text () });
 		}
 
-		if (oldMap == map)
-			return;
-
+		QVariantMap oldMap = XmlSettingsManager::Instance ().property ("Synchronization").toMap ();
 		if (oldMap.count () == map.count ())
 		{
 			bool found = false;
-			for (auto i1 = oldMap.begin (), i2 = map.begin (), e1 = oldMap.end (); i1 != e1; ++i1, ++i2)
+			for (auto i1 = oldMap.begin (), i2 = map.begin (), e1 = oldMap.end ();
+					i1 != e1; ++i1, ++i2)
 				if (i1.key () != i2.key () ||
-							i1.value ().value<SyncDirs_t> () != i2.value ().value<SyncDirs_t> ())
+						i1.value ().value<SyncDirs_t> () != i2.value ().value<SyncDirs_t> ())
 					found = true;
 
 			if (!found)
 				return;
 		}
+		XmlSettingsManager::Instance ().setProperty ("Synchronization", map);
 
 		emit directoriesToSyncUpdated (map);
-		XmlSettingsManager::Instance ().setProperty ("Synchronization", map);
 	}
 
 	void SyncWidget::on_Add__released ()
