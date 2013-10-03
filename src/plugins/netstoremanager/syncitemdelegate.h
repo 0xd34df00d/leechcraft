@@ -52,7 +52,7 @@ namespace NetStoreManager
 		{
 			Account,
 			LocalDirectory,
-			RemoteDirecory
+			RemoteDirectory
 		};
 
 		enum SyncItemDelegateRoles
