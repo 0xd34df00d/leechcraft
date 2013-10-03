@@ -114,8 +114,8 @@ namespace NetStoreManager
 	void SyncWidget::RemoveDuplicateRows ()
 	{
 		auto hasher = [] (const SyncerInfo& item)
-			{ return qHash (QString::fromUtf8 (item.AccountId_) +
-					item.LocalDirectory_ + item.RemoteDirectory_); };
+			{ return qHash (item.AccountId_) + qHash (item.LocalDirectory_) +
+					qHash (item.RemoteDirectory_); };
 		std::unordered_set<SyncerInfo, decltype (hasher)> hash (0, hasher);
 
 		for (int i = 0; i < Model_->rowCount (); ++i)
@@ -141,7 +141,7 @@ namespace NetStoreManager
 		{
 			SyncerInfo info;
 			info.AccountId_ = Model_->item (i, SyncItemDelegate::Account)->
-			data (SyncItemDelegate::AccountId).toByteArray ();
+					data (SyncItemDelegate::AccountId).toByteArray ();
 			info.LocalDirectory_ = Model_->item (i, SyncItemDelegate::LocalDirectory)->text ();
 			info.RemoteDirectory_ = Model_->item (i, SyncItemDelegate::RemoteDirectory)->text ();
 

@@ -109,9 +109,16 @@ namespace NetStoreManager
 		for (auto syncer : Syncer2Thread_.keys ())
 		{
 			syncer->stop ();
-			auto thread = Syncer2Thread_.take (syncer);
+			auto thread = Syncer2Thread_.value (syncer);
 			thread->quit ();
-			if (!thread->wait (3000))
+		}
+
+		for (auto syncer : Syncer2Thread_.keys ())
+		{
+			syncer->stop ();
+			auto thread = Syncer2Thread_.take (syncer);
+			if (!thread->isFinished () &&
+					!thread->wait (3000))
 				thread->terminate ();
 			syncer->deleteLater ();
 			thread->deleteLater ();
