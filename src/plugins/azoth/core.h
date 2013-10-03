@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_CORE_H
-#define PLUGINS_AZOTH_CORE_H
+#pragma once
+
 #include <functional>
 #include <boost/scoped_ptr.hpp>
 #include <QObject>
@@ -649,5 +649,3 @@ namespace Azoth
 
 Q_DECLARE_METATYPE (LeechCraft::Azoth::Core::CLEntryType);
 Q_DECLARE_METATYPE (LeechCraft::Azoth::ICLEntry*);
-
-#endif
