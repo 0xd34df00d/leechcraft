@@ -62,7 +62,7 @@ namespace Murm
 
 		qulonglong ID_ = -1;
 
-		bool IsRead_ = Dir_ == DOut;
+		bool IsRead_ = Dir_ == DOut || Type_ != MessageType::MTChatMessage;
 	public:
 		VkMessage (Direction, MessageType, VkEntry*);
 
