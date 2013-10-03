@@ -71,7 +71,7 @@ namespace SecMan
 	private slots:
 		void handleDisplayContents ();
 	signals:
-		void gotActions (QList<QAction*>, ActionsEmbedPlace);
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
 }
 }
