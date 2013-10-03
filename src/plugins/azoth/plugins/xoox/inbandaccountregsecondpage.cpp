@@ -139,18 +139,9 @@ namespace Xoox
 				<< Client_->socketError ()
 				<< Client_->xmppStreamError ();
 
-		if (error == QXmppClient::SocketError)
-		{
-			wizard ()->restart ();
-
-			const auto& e = Util::MakeNotification ("Azoth Xoox",
-					tr ("A socket error occured during registration: %1. "
-						"Registration process needs to be restarted.")
-						.arg (Util::GetSocketErrorString (Client_->socketError ())),
-					Priority::PCritical_);
-			Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
+		if (error == QXmppClient::SocketError &&
+				wizard ()->currentPage () == this)
 			initializePage ();
-		}
 	}
 }
 }
