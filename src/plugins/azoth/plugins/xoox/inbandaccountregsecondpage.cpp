@@ -29,6 +29,8 @@
 
 #include "inbandaccountregsecondpage.h"
 #include <QVBoxLayout>
+#include <QMessageBox>
+#include <util/network/socketerrorstrings.h>
 #include "xmppbobmanager.h"
 #include "inbandaccountregfirstpage.h"
 #include "util.h"
@@ -133,6 +135,18 @@ namespace Xoox
 				<< error
 				<< Client_->socketError ()
 				<< Client_->xmppStreamError ();
+
+		if (error == QXmppClient::SocketError)
+		{
+			wizard ()->restart ();
+
+			QMessageBox::warning (this,
+					tr ("Account registration"),
+					tr ("A socket error occured during registration: %1. "
+						"Registration process needs to be restarted.")
+						.arg (Util::GetSocketErrorString (Client_->socketError ())));
+			initializePage ();
+		}
 	}
 }
 }
