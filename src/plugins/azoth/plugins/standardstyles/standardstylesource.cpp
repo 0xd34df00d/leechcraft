@@ -259,8 +259,9 @@ namespace StandardStyles
 				divClass = "statusmsg";
 				break;
 			case IMessage::MTServiceMessage:
-				qWarning () << Q_FUNC_INFO
-						<< "service message";
+				statusIconName = "notification_chat_info";
+				string.append ("* ");
+				divClass = "servicemsg";
 				break;
 			}
 			break;
