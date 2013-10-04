@@ -1555,7 +1555,7 @@ namespace Azoth
 		const auto& openLinkInfo = infos ["org.LeechCraft.Azoth.OpenLastLink"];
 		auto shortcut = new QShortcut (openLinkInfo.Seqs_.value (0),
 				this, SLOT (handleOpenLastLink ()), 0, Qt::WidgetWithChildrenShortcut);
-		sm->RegisterShortcut ("org.LeechCraft.Azoth.OpenLastLink", openLinkInfo, shortcut);
+		sm->RegisterShortcut ("org.LeechCraft.Azoth.OpenLastLink", openLinkInfo, shortcut, true);
 	}
 
 	void ChatTab::InitEntry ()
