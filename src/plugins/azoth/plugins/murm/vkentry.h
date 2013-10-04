@@ -62,6 +62,7 @@ namespace Murm
 		QTimer *RemoteTypingTimer_;
 		QTimer *LocalTypingTimer_;
 
+		bool IsSelf_ = false;
 		bool HasUnread_ = false;
 
 		QImage Avatar_;
@@ -76,6 +77,8 @@ namespace Murm
 		const UserInfo& GetInfo () const;
 
 		void Send (VkMessage*);
+
+		void SetSelf ();
 
 		VkMessage* FindMessage (qulonglong) const;
 		void HandleMessage (MessageInfo);

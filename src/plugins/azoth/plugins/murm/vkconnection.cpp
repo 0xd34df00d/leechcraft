@@ -366,6 +366,20 @@ namespace Murm
 		auto nam = Proxy_->GetNetworkAccessManager ();
 		PreparedCalls_.push_back ([this, nam] (const QString& key) -> QNetworkReply*
 			{
+				QUrl lpUrl ("https://api.vk.com/method/users.get");
+				lpUrl.addQueryItem ("access_token", key);
+				lpUrl.addQueryItem ("fields",
+						"first_name,last_name,nickname,photo,photo_big,sex,"
+						"bdate,city,country,timezone,contacts,education");
+				auto reply = nam->get (QNetworkRequest (lpUrl));
+				connect (reply,
+						SIGNAL (finished ()),
+						this,
+						SLOT (handleGotSelfInfo ()));
+				return reply;
+			});
+		PreparedCalls_.push_back ([this, nam] (const QString& key) -> QNetworkReply*
+			{
 				QUrl lpUrl ("https://api.vk.com/method/friends.getLists");
 				lpUrl.addQueryItem ("access_token", key);
 				auto reply = nam->get (QNetworkRequest (lpUrl));
@@ -514,27 +528,6 @@ namespace Murm
 		emit addedLists ({ { id, name } });
 	}
 
-	void VkConnection::handleGotFriendLists ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!CheckFinishedReply (reply))
-			return;
-
-		QList<ListInfo> lists;
-
-		const auto& data = QJson::Parser ().parse (reply);
-		for (const auto& item : data.toMap () ["response"].toList ())
-		{
-			const auto& map = item.toMap ();
-			lists.append ({ map ["lid"].toULongLong (), map ["name"].toString () });
-		}
-
-		emit gotLists (lists);
-
-		PushFriendsRequest ();
-		AuthMgr_->GetAuthKey ();
-	}
-
 	namespace
 	{
 		UserInfo UserMap2Info (const QVariantMap& userMap)
@@ -574,6 +567,39 @@ namespace Murm
 				lists
 			};
 		}
+	}
+
+	void VkConnection::handleGotSelfInfo ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!CheckFinishedReply (reply))
+			return;
+
+		const auto& data = QJson::Parser ().parse (reply);
+
+		const auto& list = data.toMap () ["response"].toList ();
+		emit gotSelfInfo (UserMap2Info (list.value (0).toMap ()));
+	}
+
+	void VkConnection::handleGotFriendLists ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!CheckFinishedReply (reply))
+			return;
+
+		QList<ListInfo> lists;
+
+		const auto& data = QJson::Parser ().parse (reply);
+		for (const auto& item : data.toMap () ["response"].toList ())
+		{
+			const auto& map = item.toMap ();
+			lists.append ({ map ["lid"].toULongLong (), map ["name"].toString () });
+		}
+
+		emit gotLists (lists);
+
+		PushFriendsRequest ();
+		AuthMgr_->GetAuthKey ();
 	}
 
 	void VkConnection::handleGotFriends ()

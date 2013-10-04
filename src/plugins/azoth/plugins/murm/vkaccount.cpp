@@ -67,6 +67,10 @@ namespace Murm
 				this,
 				SLOT (finishOffline ()));
 		connect (Conn_,
+				SIGNAL (gotSelfInfo (UserInfo)),
+				this,
+				SLOT (handleSelfInfo (UserInfo)));
+		connect (Conn_,
 				SIGNAL (gotUsers (QList<UserInfo>)),
 				this,
 				SLOT (handleUsers (QList<UserInfo>)));
@@ -288,6 +292,12 @@ namespace Murm
 
 		const auto& toPublish = fields.join (QString::fromUtf8 (" — "));
 		Conn_->SetStatus (toPublish);
+	}
+
+	void VkAccount::handleSelfInfo (const UserInfo& info)
+	{
+		handleUsers ({ info });
+		Entries_ [info.ID_]->SetSelf ();
 	}
 
 	void VkAccount::handleUsers (const QList<UserInfo>& infos)

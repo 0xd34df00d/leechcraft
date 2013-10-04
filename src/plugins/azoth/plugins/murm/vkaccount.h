@@ -115,6 +115,7 @@ namespace Murm
 
 		void PublishTune (const QMap<QString, QVariant>& tuneData);
 	private slots:
+		void handleSelfInfo (const UserInfo&);
 		void handleUsers (const QList<UserInfo>&);
 		void handleUserState (qulonglong, bool);
 		void handleMessage (const MessageInfo&);

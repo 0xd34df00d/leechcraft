@@ -142,6 +142,7 @@ namespace Murm
 		void handlePollData (const QVariantMap&);
 
 		void handleFriendListAdded ();
+		void handleGotSelfInfo ();
 		void handleGotFriendLists ();
 		void handleGotFriends ();
 		void handleGotUnreadMessages ();
@@ -160,6 +161,8 @@ namespace Murm
 		void cookiesChanged ();
 
 		void stoppedPolling ();
+
+		void gotSelfInfo (const UserInfo&);
 
 		void gotLists (const QList<ListInfo>&);
 		void addedLists (const QList<ListInfo>&);

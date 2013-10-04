@@ -113,6 +113,12 @@ namespace Murm
 		Account_->Send (this, msg);
 	}
 
+	void VkEntry::SetSelf ()
+	{
+		IsSelf_ = true;
+		emit groupsChanged (Groups ());
+	}
+
 	VkMessage* VkEntry::FindMessage (qulonglong id) const
 	{
 		const auto pos = std::find_if (Messages_.begin (), Messages_.end (),
@@ -353,11 +359,14 @@ namespace Murm
 
 	QStringList VkEntry::Groups () const
 	{
-		return Groups_;
+		return IsSelf_ ? QStringList (tr ("Self contact")) : Groups_;
 	}
 
 	void VkEntry::SetGroups (const QStringList& groups)
 	{
+		if (IsSelf_)
+			return;
+
 		Account_->GetGroupsManager ()->UpdateGroups (Groups_, groups, Info_.ID_);
 
 		Groups_ = groups;
@@ -385,7 +394,7 @@ namespace Murm
 
 	EntryStatus VkEntry::GetStatus (const QString&) const
 	{
-		return { Info_.IsOnline_ ? SOnline : SOffline, {} };
+		return { Info_.IsOnline_ || IsSelf_ ? SOnline : SOffline, {} };
 	}
 
 	QImage VkEntry::GetAvatar () const
