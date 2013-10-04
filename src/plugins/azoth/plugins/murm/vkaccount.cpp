@@ -334,17 +334,33 @@ namespace Murm
 
 	void VkAccount::handleMessage (const MessageInfo& info)
 	{
-		const auto from = info.From_;
-		if (!Entries_.contains (from))
+		if (!(info.Flags_ & MessageFlag::Chat))
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "message from unknown user"
-					<< from;
-			return;
-		}
+			const auto from = info.From_;
+			if (!Entries_.contains (from))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "message from unknown user"
+						<< from;
+				return;
+			}
 
-		const auto entry = Entries_.value (from);
-		entry->HandleMessage (info);
+			Entries_.value (from)->HandleMessage (info);
+		}
+		else
+		{
+			const auto from = info.From_ - 2000000000;
+			if (!ChatEntries_.contains (from))
+			{
+				// TODO handle
+				qWarning () << Q_FUNC_INFO
+						<< "message from unknown conference"
+						<< from;
+				return;
+			}
+
+			ChatEntries_.value (from)->HandleMessage (info);
+		}
 	}
 
 	void VkAccount::handleTypingNotification (qulonglong uid)

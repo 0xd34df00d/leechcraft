@@ -54,6 +54,7 @@ namespace Murm
 		VkChatEntry (const ChatInfo&, VkAccount*);
 
 		void Send (VkMessage*);
+		void HandleMessage (const MessageInfo&);
 
 		Features GetEntryFeatures () const;
 		EntryType GetEntryType () const;

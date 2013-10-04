@@ -52,7 +52,8 @@ namespace Murm
 				LeechCraft::Azoth::IAdvancedMessage
 				LeechCraft::Azoth::IRichTextMessage)
 
-		EntryBase * const Entry_;
+		EntryBase * const OtherPart_;
+		EntryBase * const ParentCLEntry_;
 		const MessageType Type_;
 		const Direction Dir_;
 
@@ -64,7 +65,7 @@ namespace Murm
 
 		bool IsRead_ = Dir_ == DOut || Type_ != MessageType::MTChatMessage;
 	public:
-		VkMessage (Direction, MessageType, EntryBase*);
+		VkMessage (Direction, MessageType, EntryBase*, EntryBase* = nullptr);
 
 		QObject* GetQObject ();
 		void Send ();
@@ -81,6 +82,7 @@ namespace Murm
 		MessageSubType GetMessageSubType () const;
 
 		QObject* OtherPart () const;
+		QObject* ParentCLEntry() const;
 		QString GetOtherVariant () const;
 		QString GetBody () const;
 		void SetBody (const QString& body);

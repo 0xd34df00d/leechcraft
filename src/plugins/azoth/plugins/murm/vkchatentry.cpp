@@ -32,6 +32,7 @@
 #include <QtDebug>
 #include "vkaccount.h"
 #include "vkentry.h"
+#include "vkmessage.h"
 
 namespace LeechCraft
 {
@@ -49,6 +50,37 @@ namespace Murm
 	void VkChatEntry::Send (VkMessage *msg)
 	{
 		Account_->Send (this, msg);
+	}
+
+	void VkChatEntry::HandleMessage (const MessageInfo& info)
+	{
+		const auto from = info.Params_ ["from"].toULongLong ();
+		if (from == 0)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown from"
+					<< info.Params_;
+			return;
+		}
+
+		auto entry = Account_->GetEntry (from);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown entry for"
+					<< from;
+			return;
+		}
+
+		auto msg = new VkMessage (IMessage::DIn, IMessage::MTMUCMessage, this, entry);
+		msg->SetBody (info.Text_);
+		msg->SetDateTime (info.TS_);
+		msg->SetID (info.ID_);
+
+		// TODO
+		// HandleAttaches (msg, info);
+
+		Store (msg);
 	}
 
 	ICLEntry::Features VkChatEntry::GetEntryFeatures () const
