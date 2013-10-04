@@ -39,6 +39,7 @@
 #include "photostorage.h"
 #include "vcarddialog.h"
 #include "groupsmanager.h"
+#include "vkchatentry.h"
 
 namespace LeechCraft
 {
@@ -117,6 +118,21 @@ namespace Murm
 	{
 		IsSelf_ = true;
 		emit groupsChanged (Groups ());
+	}
+
+	void VkEntry::RegisterIn (VkChatEntry *chat)
+	{
+		if (Chats_.contains (chat))
+			return;
+
+		Chats_ << chat;
+		emit groupsChanged (Groups ());
+	}
+
+	void VkEntry::UnregisterIn (VkChatEntry *chat)
+	{
+		if (Chats_.removeAll (chat))
+			emit groupsChanged (Groups ());
 	}
 
 	VkMessage* VkEntry::FindMessage (qulonglong id) const
@@ -359,13 +375,29 @@ namespace Murm
 
 	QStringList VkEntry::Groups () const
 	{
-		return IsSelf_ ? QStringList (tr ("Self contact")) : Groups_;
+		if (IsSelf_)
+			return { tr ("Self contact") };
+
+		auto result = Groups_;
+		if (!Chats_.isEmpty ())
+		{
+			for (auto chat : Chats_)
+				result << chat->GetGroupName ();
+			result.removeDuplicates ();
+		}
+		return result;
 	}
 
-	void VkEntry::SetGroups (const QStringList& groups)
+	void VkEntry::SetGroups (const QStringList& srcGroups)
 	{
 		if (IsSelf_)
 			return;
+
+		auto groups = srcGroups;
+
+		if (!Chats_.isEmpty ())
+			for (auto chat : Chats_)
+				groups.removeAll (chat->GetGroupName ());
 
 		Account_->GetGroupsManager ()->UpdateGroups (Groups_, groups, Info_.ID_);
 

@@ -50,6 +50,7 @@ namespace Murm
 	class VkMessage;
 	class PhotoStorage;
 	class VCardDialog;
+	class VkChatEntry;
 
 	class VkEntry : public EntryBase
 				  , public IUpdatableChatEntry
@@ -70,6 +71,8 @@ namespace Murm
 		QPointer<VCardDialog> VCardDialog_;
 
 		QStringList Groups_;
+
+		QList<VkChatEntry*> Chats_;
 	public:
 		VkEntry (const UserInfo&, VkAccount*);
 
@@ -79,6 +82,9 @@ namespace Murm
 		void Send (VkMessage*);
 
 		void SetSelf ();
+
+		void RegisterIn (VkChatEntry*);
+		void UnregisterIn (VkChatEntry*);
 
 		VkMessage* FindMessage (qulonglong) const;
 		void HandleMessage (MessageInfo);
