@@ -358,7 +358,20 @@ namespace Murm
 
 	void VkAccount::handleMessage (const MessageInfo& info)
 	{
-		if (!(info.Flags_ & MessageFlag::Chat))
+		if (info.Flags_ & MessageFlag::Chat &&
+				info.Params_.contains ("from"))
+		{
+			const auto from = info.From_ - 2000000000;
+			if (!ChatEntries_.contains (from))
+			{
+				PendingMessages_ << info;
+				Conn_->RequestChatInfo (from);
+				return;
+			}
+
+			ChatEntries_.value (from)->HandleMessage (info);
+		}
+		else
 		{
 			const auto from = info.From_;
 			if (!Entries_.contains (from))
@@ -370,18 +383,6 @@ namespace Murm
 			}
 
 			Entries_.value (from)->HandleMessage (info);
-		}
-		else
-		{
-			const auto from = info.From_ - 2000000000;
-			if (!ChatEntries_.contains (from))
-			{
-				PendingMessages_ << info;
-				Conn_->RequestChatInfo (from);
-				return;
-			}
-
-			ChatEntries_.value (from)->HandleMessage (info);
 		}
 	}
 
