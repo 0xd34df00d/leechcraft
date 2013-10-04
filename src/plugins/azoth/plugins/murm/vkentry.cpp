@@ -48,8 +48,7 @@ namespace Azoth
 namespace Murm
 {
 	VkEntry::VkEntry (const UserInfo& info, VkAccount *account)
-	: QObject (account)
-	, Account_ (account)
+	: EntryBase (account)
 	, Info_ (info)
 	, RemoteTypingTimer_ (new QTimer (this))
 	, LocalTypingTimer_ (new QTimer (this))
@@ -323,16 +322,6 @@ namespace Murm
 	{
 		emit chatPartStateChanged (CPSComposing, "");
 		RemoteTypingTimer_->start ();
-	}
-
-	QObject* VkEntry::GetQObject ()
-	{
-		return this;
-	}
-
-	QObject* VkEntry::GetParentAccount () const
-	{
-		return Account_;
 	}
 
 	ICLEntry::Features VkEntry::GetEntryFeatures () const

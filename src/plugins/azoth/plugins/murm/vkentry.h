@@ -36,6 +36,7 @@
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iupdatablechatentry.h>
 #include "structures.h"
+#include "entrybase.h"
 
 class QTimer;
 
@@ -50,15 +51,12 @@ namespace Murm
 	class PhotoStorage;
 	class VCardDialog;
 
-	class VkEntry : public QObject
-				  , public ICLEntry
+	class VkEntry : public EntryBase
 				  , public IUpdatableChatEntry
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
-				LeechCraft::Azoth::IUpdatableChatEntry)
+		Q_INTERFACES (LeechCraft::Azoth::IUpdatableChatEntry)
 
-		VkAccount * const Account_;
 		UserInfo Info_;
 
 		QList<VkMessage*> Messages_;
@@ -87,8 +85,6 @@ namespace Murm
 
 		void HandleTypingNotification ();
 
-		QObject* GetQObject ();
-		QObject* GetParentAccount () const;
 		Features GetEntryFeatures () const;
 		EntryType GetEntryType () const;
 		QString GetEntryName () const;
