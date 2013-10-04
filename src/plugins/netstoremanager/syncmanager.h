@@ -33,9 +33,12 @@
 #include <QVariant>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/isupportfilelistings.h"
+#include "syncwidget.h"
 
 typedef QList<LeechCraft::NetStoreManager::Change> Changes_t;
 Q_DECLARE_METATYPE (Changes_t)
+
+class QThread;
 
 namespace LeechCraft
 {
@@ -54,6 +57,7 @@ namespace NetStoreManager
 		AccountsManager *AM_;
 		FilesWatcherBase *FilesWatcher_;
 		QHash<QString, Syncer*> AccountID2Syncer_;
+		QHash<Syncer*, QThread*> Syncer2Thread_;
 
 	public:
 		SyncManager (AccountsManager *am, QObject *parent = 0);
@@ -68,7 +72,7 @@ namespace NetStoreManager
 		Syncer* GetSyncerByLocalPath (const QString& localPath) const;
 
 	public slots:
-		void handleDirectoriesToSyncUpdated (const QVariantMap& map);
+		void handleDirectoriesToSyncUpdated (const QList<SyncerInfo>& map);
 
 	private slots:
 		void handleDirWasCreated (const QString& path);
