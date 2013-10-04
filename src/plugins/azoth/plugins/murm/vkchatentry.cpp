@@ -44,7 +44,9 @@ namespace Murm
 	: EntryBase (acc)
 	, Info_ (info)
 	{
-		qDebug () << Q_FUNC_INFO << info.ChatID_;
+		for (auto id : info.Users_)
+			if (auto entry = acc->GetEntry (id))
+				entry->RegisterIn (this);
 	}
 
 	void VkChatEntry::Send (VkMessage *msg)
@@ -90,7 +92,15 @@ namespace Murm
 
 	void VkChatEntry::UpdateInfo (const ChatInfo& info)
 	{
-		const bool partsChanged = info.Users_ != Info_.Users_;
+		for (auto id : info.Users_)
+			if (!Info_.Users_.contains (id))
+				if (auto entry = Account_->GetEntry (id))
+					entry->RegisterIn (this);
+		for (auto id : Info_.Users_)
+			if (!info.Users_.contains (id))
+				if (auto entry = Account_->GetEntry (id))
+					entry->UnregisterIn (this);
+
 		const bool titleChanged = info.Title_ != Info_.Title_;
 
 		Info_ = info;
