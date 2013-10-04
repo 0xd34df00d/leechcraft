@@ -33,8 +33,6 @@
 #include <QImage>
 #include <QPointer>
 #include <QStringList>
-#include <interfaces/azoth/iclentry.h>
-#include <interfaces/azoth/iupdatablechatentry.h>
 #include "structures.h"
 #include "entrybase.h"
 
@@ -53,10 +51,8 @@ namespace Murm
 	class VkChatEntry;
 
 	class VkEntry : public EntryBase
-				  , public IUpdatableChatEntry
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IUpdatableChatEntry)
 
 		UserInfo Info_;
 
@@ -109,8 +105,6 @@ namespace Murm
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
 		void MarkMsgsRead ();
 		void ChatTabClosed ();
-	private:
-		void HandleAttaches (VkMessage*, const MessageInfo&);
 	private slots:
 		void handleTypingTimeout ();
 		void sendTyping ();
@@ -118,8 +112,6 @@ namespace Murm
 		void handleGotStorageImage (const QUrl&);
 
 		void handleEntryNameFormat ();
-	signals:
-		void performJS (const QString&);
 	};
 }
 }

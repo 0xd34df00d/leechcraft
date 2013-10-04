@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/iupdatablechatentry.h>
 
 namespace LeechCraft
 {
@@ -40,12 +41,15 @@ namespace Murm
 {
 	class VkAccount;
 	class VkMessage;
+	struct MessageInfo;
 
 	class EntryBase : public QObject
 					, public ICLEntry
+					, public IUpdatableChatEntry
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICLEntry)
+		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
+				LeechCraft::Azoth::IUpdatableChatEntry)
 	protected:
 		VkAccount * const Account_;
 		QList<VkMessage*> Messages_;
@@ -61,6 +65,8 @@ namespace Murm
 		QObject* CreateMessage (IMessage::MessageType type, const QString& variant, const QString& body);
 		QList<QObject*> GetAllMessages () const;
 		void PurgeMessages (const QDateTime& before);
+	protected:
+		void HandleAttaches (VkMessage*, const MessageInfo&);
 	signals:
 		void gotMessage (QObject*);
 		void statusChanged (const EntryStatus&, const QString&);
@@ -72,6 +78,8 @@ namespace Murm
 		void chatPartStateChanged (const ChatPartState&, const QString&);
 		void permsChanged ();
 		void entryGenerallyChanged ();
+
+		void performJS (const QString&);
 	};
 }
 }
