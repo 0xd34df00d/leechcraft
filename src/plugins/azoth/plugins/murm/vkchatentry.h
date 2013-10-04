@@ -59,6 +59,8 @@ namespace Murm
 		const ChatInfo& GetInfo () const;
 		void UpdateInfo (const ChatInfo&);
 
+		void HandleRemoved (qulonglong);
+
 		Features GetEntryFeatures () const;
 		EntryType GetEntryType () const;
 		QString GetEntryName () const;
@@ -97,6 +99,8 @@ namespace Murm
 		void nicknameConflict (const QString& usedNick);
 		void beenKicked (const QString& reason);
 		void beenBanned (const QString& reason);
+
+		void removeEntry (VkChatEntry*);
 	};
 }
 }

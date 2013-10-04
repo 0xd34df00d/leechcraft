@@ -33,6 +33,7 @@
 #include "vkaccount.h"
 #include "vkentry.h"
 #include "vkmessage.h"
+#include "vkconnection.h"
 
 namespace LeechCraft
 {
@@ -94,8 +95,7 @@ namespace Murm
 	{
 		for (auto id : info.Users_)
 			if (!Info_.Users_.contains (id))
-				if (auto entry = Account_->GetEntry (id))
-					entry->RegisterIn (this);
+				HandleRemoved (id);
 		for (auto id : Info_.Users_)
 			if (!info.Users_.contains (id))
 				if (auto entry = Account_->GetEntry (id))
@@ -106,6 +106,20 @@ namespace Murm
 		Info_ = info;
 		if (titleChanged)
 			emit nameChanged (GetEntryName ());
+	}
+
+	void VkChatEntry::HandleRemoved (qulonglong id)
+	{
+		if (id == Account_->GetSelf ()->GetInfo ().ID_)
+		{
+			for (auto id : Info_.Users_)
+				if (auto entry = Account_->GetEntry (id))
+					entry->UnregisterIn (this);
+
+			emit removeEntry (this);
+		}
+		else if (auto entry = Account_->GetEntry (id))
+			entry->RegisterIn (this);
 	}
 
 	ICLEntry::Features VkChatEntry::GetEntryFeatures () const
@@ -228,7 +242,8 @@ namespace Murm
 
 	void VkChatEntry::Leave (const QString&)
 	{
-		// TODO
+		const auto selfId = Account_->GetSelf ()->GetInfo ().ID_;
+		Account_->GetConnection ()->RemoveChatUser (Info_.ChatID_, selfId);
 	}
 
 	QString VkChatEntry::GetNick () const

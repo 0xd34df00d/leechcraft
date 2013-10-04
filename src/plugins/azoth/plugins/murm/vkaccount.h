@@ -70,6 +70,7 @@ namespace Murm
 		GroupsManager * const GroupsMgr_;
 		GeoResolver * const GeoResolver_;
 
+		VkEntry *SelfEntry_;
 		QHash<qulonglong, VkEntry*> Entries_;
 		QHash<qulonglong, VkChatEntry*> ChatEntries_;
 
@@ -85,6 +86,7 @@ namespace Murm
 		void Send (VkChatEntry*, VkMessage*);
 		void CreateChat (const QString&, const QList<VkEntry*>&);
 		VkEntry* GetEntry (qulonglong) const;
+		VkEntry* GetSelf () const;
 
 		ICoreProxy_ptr GetCoreProxy () const;
 		VkConnection* GetConnection () const;
@@ -124,6 +126,9 @@ namespace Murm
 		void handleTypingNotification (qulonglong);
 
 		void handleGotChatInfo (const ChatInfo&);
+		void handleChatUserRemoved (qulonglong, qulonglong);
+
+		void handleRemoveEntry (VkChatEntry*);
 
 		void finishOffline ();
 

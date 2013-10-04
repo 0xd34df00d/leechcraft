@@ -66,6 +66,7 @@ namespace Murm
 				SIGNAL (stoppedPolling ()),
 				this,
 				SLOT (finishOffline ()));
+
 		connect (Conn_,
 				SIGNAL (gotSelfInfo (UserInfo)),
 				this,
@@ -78,6 +79,7 @@ namespace Murm
 				SIGNAL (userStateChanged (qulonglong, bool)),
 				this,
 				SLOT (handleUserState (qulonglong, bool)));
+
 		connect (Conn_,
 				SIGNAL (gotMessage (MessageInfo)),
 				this,
@@ -90,10 +92,15 @@ namespace Murm
 				SIGNAL (statusChanged (EntryStatus)),
 				this,
 				SIGNAL (statusChanged (EntryStatus)));
+
 		connect (Conn_,
 				SIGNAL (gotChatInfo (ChatInfo)),
 				this,
 				SLOT (handleGotChatInfo (ChatInfo)));
+		connect (Conn_,
+				SIGNAL (chatUserRemoved (qulonglong, qulonglong)),
+				this,
+				SLOT (handleChatUserRemoved (qulonglong, qulonglong)));
 	}
 
 	QByteArray VkAccount::Serialize () const
@@ -161,6 +168,11 @@ namespace Murm
 	VkEntry* VkAccount::GetEntry (qulonglong id) const
 	{
 		return Entries_.value (id);
+	}
+
+	VkEntry* VkAccount::GetSelf () const
+	{
+		return SelfEntry_;
 	}
 
 	ICoreProxy_ptr VkAccount::GetCoreProxy () const
@@ -297,7 +309,9 @@ namespace Murm
 	void VkAccount::handleSelfInfo (const UserInfo& info)
 	{
 		handleUsers ({ info });
-		Entries_ [info.ID_]->SetSelf ();
+
+		SelfEntry_ = Entries_ [info.ID_];
+		SelfEntry_->SetSelf ();
 	}
 
 	void VkAccount::handleUsers (const QList<UserInfo>& infos)
@@ -398,6 +412,10 @@ namespace Murm
 		if (!ChatEntries_.contains (info.ChatID_))
 		{
 			auto entry = new VkChatEntry (info, this);
+			connect (entry,
+					SIGNAL (removeEntry (VkChatEntry*)),
+					this,
+					SLOT (handleRemoveEntry (VkChatEntry*)));
 			ChatEntries_ [info.ChatID_] = entry;
 			emit gotCLItems ({ entry });
 
@@ -408,6 +426,25 @@ namespace Murm
 		}
 		else
 			ChatEntries_ [info.ChatID_]->UpdateInfo (info);
+	}
+
+	void VkAccount::handleRemoveEntry (VkChatEntry *entry)
+	{
+		emit removedCLItems ({ entry });
+		entry->deleteLater ();
+	}
+
+	void VkAccount::handleChatUserRemoved (qulonglong chat, qulonglong id)
+	{
+		if (!ChatEntries_.contains (chat))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown chat"
+					<< chat;
+			return;
+		}
+
+		ChatEntries_ [chat]->HandleRemoved (id);
 	}
 
 	void VkAccount::emitUpdateAcc ()
