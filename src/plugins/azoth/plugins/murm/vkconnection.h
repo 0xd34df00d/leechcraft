@@ -122,6 +122,7 @@ namespace Murm
 		void ModifyFriendList (const ListInfo&, const QList<qulonglong>&);
 
 		void CreateChat (const QString&, const QList<qulonglong>&);
+		void RequestChatInfo (qulonglong);
 
 		void SetStatus (const QString&);
 
@@ -148,6 +149,7 @@ namespace Murm
 		void handleGotUnreadMessages ();
 
 		void handleChatCreated ();
+		void handleChatInfo ();
 
 		void handleMessageSent ();
 		void handleCountriesFetched ();
