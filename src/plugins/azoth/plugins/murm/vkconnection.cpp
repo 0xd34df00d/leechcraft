@@ -84,6 +84,7 @@ namespace Murm
 
 		Dispatcher_ [4] = [this] (const QVariantList& items)
 		{
+			qDebug () << items;
 			emit gotMessage ({
 					items.value (1).toULongLong (),
 					items.value (3).toULongLong (),
@@ -692,7 +693,7 @@ namespace Murm
 		for (const auto& msgMapVar : respList)
 		{
 			const auto& map = msgMapVar.toMap ();
-			qDebug () << map;
+			qDebug () << Q_FUNC_INFO << map;
 
 			MessageFlags flags = MessageFlag::Unread;
 			if (map ["out"].toULongLong ())
@@ -752,7 +753,7 @@ namespace Murm
 		auto removeInfo = Reply2ChatRemoveInfo_.take (reply);
 
 		const auto& data = QJson::Parser ().parse (reply);
-		qDebug () << data;
+		qDebug () << Q_FUNC_INFO << data;
 		const auto& map = data.toMap ();
 		if (map ["response"].toULongLong () == 1)
 			emit chatUserRemoved (removeInfo.Chat_, removeInfo.User_);
@@ -882,7 +883,7 @@ namespace Murm
 
 					HandleAttachments (repost, wallMap.take ("attachments"));
 					wallMap.take ("attachment");
-					qDebug () << wallMap;
+					qDebug () << Q_FUNC_INFO << wallMap;
 
 					info.ContainedReposts_.append (repost);
 				}
