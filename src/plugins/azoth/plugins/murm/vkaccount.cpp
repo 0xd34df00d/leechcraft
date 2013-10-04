@@ -393,6 +393,8 @@ namespace Murm
 			ChatEntries_ [info.ChatID_] = entry;
 			emit gotCLItems ({ entry });
 		}
+		else
+			ChatEntries_ [info.ChatID_]->UpdateInfo (info);
 	}
 
 	void VkAccount::emitUpdateAcc ()

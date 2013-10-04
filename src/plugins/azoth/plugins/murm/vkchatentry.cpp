@@ -83,6 +83,21 @@ namespace Murm
 		Store (msg);
 	}
 
+	const ChatInfo& VkChatEntry::GetInfo () const
+	{
+		return Info_;
+	}
+
+	void VkChatEntry::UpdateInfo (const ChatInfo& info)
+	{
+		const bool partsChanged = info.Users_ != Info_.Users_;
+		const bool titleChanged = info.Title_ != Info_.Title_;
+
+		Info_ = info;
+		if (titleChanged)
+			emit nameChanged (GetEntryName ());
+	}
+
 	ICLEntry::Features VkChatEntry::GetEntryFeatures () const
 	{
 		return FSessionEntry;

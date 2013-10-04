@@ -56,6 +56,9 @@ namespace Murm
 		void Send (VkMessage*);
 		void HandleMessage (const MessageInfo&);
 
+		const ChatInfo& GetInfo () const;
+		void UpdateInfo (const ChatInfo&);
+
 		Features GetEntryFeatures () const;
 		EntryType GetEntryType () const;
 		QString GetEntryName () const;
@@ -89,7 +92,7 @@ namespace Murm
 		QVariantMap GetIdentifyingData () const;
 		void InviteToMUC (const QString& userId, const QString& msg);
 	signals:
-		void gotNewParticipants (const QList< QObject* >& parts);
+		void gotNewParticipants (const QList<QObject*>& parts);
 		void mucSubjectChanged (const QString& newSubj);
 		void nicknameConflict (const QString& usedNick);
 		void beenKicked (const QString& reason);
