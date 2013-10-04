@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "vkmessage.h"
-#include "vkentry.h"
+#include "entrybase.h"
 
 namespace LeechCraft
 {
@@ -36,7 +36,7 @@ namespace Azoth
 {
 namespace Murm
 {
-	VkMessage::VkMessage (Direction dir, MessageType type, VkEntry *entry)
+	VkMessage::VkMessage (Direction dir, MessageType type, EntryBase *entry)
 	: QObject (entry)
 	, Entry_ (entry)
 	, Type_ (type)

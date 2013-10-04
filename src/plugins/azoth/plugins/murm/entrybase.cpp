@@ -28,7 +28,9 @@
  **********************************************************************/
 
 #include "entrybase.h"
+#include <interfaces/azoth/azothutil.h>
 #include "vkaccount.h"
+#include "vkmessage.h"
 
 namespace LeechCraft
 {
@@ -42,6 +44,12 @@ namespace Murm
 	{
 	}
 
+	void EntryBase::Store (VkMessage *msg)
+	{
+		Messages_ << msg;
+		emit gotMessage (msg);
+	}
+
 	QObject* EntryBase::GetQObject ()
 	{
 		return this;
@@ -50,6 +58,26 @@ namespace Murm
 	QObject* EntryBase::GetParentAccount () const
 	{
 		return Account_;
+	}
+
+	QObject* EntryBase::CreateMessage (IMessage::MessageType type, const QString&, const QString& body)
+	{
+		auto msg = new VkMessage (IMessage::DOut, type, this);
+		msg->SetBody (body);
+		return msg;
+	}
+
+	QList<QObject*> EntryBase::GetAllMessages () const
+	{
+		QList<QObject*> result;
+		for (auto obj : Messages_)
+			result << obj;
+		return result;
+	}
+
+	void EntryBase::PurgeMessages (const QDateTime& before)
+	{
+		Util::StandardPurgeMessages (Messages_, before);
 	}
 }
 }

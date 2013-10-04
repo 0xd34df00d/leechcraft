@@ -39,6 +39,7 @@ namespace Azoth
 namespace Murm
 {
 	class VkAccount;
+	class VkMessage;
 
 	class EntryBase : public QObject
 					, public ICLEntry
@@ -47,11 +48,30 @@ namespace Murm
 		Q_INTERFACES (LeechCraft::Azoth::ICLEntry)
 	protected:
 		VkAccount * const Account_;
+		QList<VkMessage*> Messages_;
 	public:
 		EntryBase (VkAccount*);
 
+		virtual void Send (VkMessage*) = 0;
+		void Store (VkMessage*);
+
 		QObject* GetQObject ();
 		QObject* GetParentAccount () const;
+
+		QObject* CreateMessage (IMessage::MessageType type, const QString& variant, const QString& body);
+		QList<QObject*> GetAllMessages () const;
+		void PurgeMessages (const QDateTime& before);
+	signals:
+		void gotMessage (QObject*);
+		void statusChanged (const EntryStatus&, const QString&);
+		void availableVariantsChanged (const QStringList&);
+		void avatarChanged (const QImage&);
+		void rawinfoChanged (const QString&);
+		void nameChanged (const QString&);
+		void groupsChanged (const QStringList&);
+		void chatPartStateChanged (const ChatPartState&, const QString&);
+		void permsChanged ();
+		void entryGenerallyChanged ();
 	};
 }
 }

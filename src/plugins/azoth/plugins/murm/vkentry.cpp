@@ -32,7 +32,6 @@
 #include <QtDebug>
 #include <QTimer>
 #include <util/util.h>
-#include <interfaces/azoth/azothutil.h>
 #include "xmlsettingsmanager.h"
 #include "vkaccount.h"
 #include "vkmessage.h"
@@ -112,12 +111,6 @@ namespace Murm
 	void VkEntry::Send (VkMessage *msg)
 	{
 		Account_->Send (this, msg);
-	}
-
-	void VkEntry::Store (VkMessage *msg)
-	{
-		Messages_ << msg;
-		emit gotMessage (msg);
 	}
 
 	VkMessage* VkEntry::FindMessage (qulonglong id) const
@@ -374,26 +367,6 @@ namespace Murm
 	QStringList VkEntry::Variants () const
 	{
 		return Info_.IsOnline_ ? QStringList ("") : QStringList ();
-	}
-
-	QObject* VkEntry::CreateMessage (IMessage::MessageType type, const QString&, const QString& body)
-	{
-		auto msg = new VkMessage (IMessage::DOut, type, this);
-		msg->SetBody (body);
-		return msg;
-	}
-
-	QList<QObject*> VkEntry::GetAllMessages () const
-	{
-		QList<QObject*> result;
-		for (auto obj : Messages_)
-			result << obj;
-		return result;
-	}
-
-	void VkEntry::PurgeMessages (const QDateTime& before)
-	{
-		Util::StandardPurgeMessages (Messages_, before);
 	}
 
 	void VkEntry::SetChatPartState (ChatPartState state, const QString&)

@@ -59,8 +59,6 @@ namespace Murm
 
 		UserInfo Info_;
 
-		QList<VkMessage*> Messages_;
-
 		QTimer *RemoteTypingTimer_;
 		QTimer *LocalTypingTimer_;
 
@@ -78,7 +76,6 @@ namespace Murm
 		const UserInfo& GetInfo () const;
 
 		void Send (VkMessage*);
-		void Store (VkMessage*);
 
 		VkMessage* FindMessage (qulonglong) const;
 		void HandleMessage (MessageInfo);
@@ -94,9 +91,6 @@ namespace Murm
 		QStringList Groups () const;
 		void SetGroups (const QStringList& groups);
 		QStringList Variants () const;
-		QObject* CreateMessage (IMessage::MessageType type, const QString& variant, const QString& body);
-		QList<QObject*> GetAllMessages () const;
-		void PurgeMessages (const QDateTime& before);
 		void SetChatPartState (ChatPartState state, const QString& variant);
 		EntryStatus GetStatus (const QString& variant = QString ()) const;
 		QImage GetAvatar () const;
@@ -116,17 +110,6 @@ namespace Murm
 
 		void handleEntryNameFormat ();
 	signals:
-		void gotMessage (QObject*);
-		void statusChanged (const EntryStatus&, const QString&);
-		void availableVariantsChanged (const QStringList&);
-		void avatarChanged (const QImage&);
-		void rawinfoChanged (const QString&);
-		void nameChanged (const QString&);
-		void groupsChanged (const QStringList&);
-		void chatPartStateChanged (const ChatPartState&, const QString&);
-		void permsChanged ();
-		void entryGenerallyChanged ();
-
 		void performJS (const QString&);
 	};
 }
