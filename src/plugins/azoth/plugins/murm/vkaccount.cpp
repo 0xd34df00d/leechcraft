@@ -365,7 +365,7 @@ namespace Murm
 		if (!ChatEntries_.contains (info.ChatID_))
 		{
 			auto entry = new VkChatEntry (info, this);
-			ChatEntries_ [info.ChatID_] = new VkChatEntry (info, this);
+			ChatEntries_ [info.ChatID_] = entry;
 			emit gotCLItems ({ entry });
 		}
 	}
