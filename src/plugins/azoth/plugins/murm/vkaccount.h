@@ -79,6 +79,8 @@ namespace Murm
 
 		void Send (VkEntry*, VkMessage*);
 
+		void CreateChat (const QString&, const QList<VkEntry*>&);
+
 		ICoreProxy_ptr GetCoreProxy () const;
 		VkConnection* GetConnection () const;
 		PhotoStorage* GetPhotoStorage () const;

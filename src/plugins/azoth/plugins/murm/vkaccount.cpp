@@ -132,6 +132,10 @@ namespace Murm
 				[msg] (qulonglong id) { msg->SetID (id); });
 	}
 
+	void VkAccount::CreateChat (const QString& name, const QList<VkEntry*>& entries)
+	{
+	}
+
 	ICoreProxy_ptr VkAccount::GetCoreProxy () const
 	{
 		return CoreProxy_;
