@@ -42,6 +42,7 @@ namespace Azoth
 namespace Murm
 {
 	class VkEntry;
+	class VkChatEntry;
 	class VkMessage;
 	class VkProtocol;
 	class VkConnection;
@@ -70,6 +71,7 @@ namespace Murm
 		GeoResolver * const GeoResolver_;
 
 		QHash<qulonglong, VkEntry*> Entries_;
+		QHash<qulonglong, VkChatEntry*> ChatEntries_;
 	public:
 		VkAccount (const QString& name, VkProtocol *proto, ICoreProxy_ptr proxy,
 				const QByteArray& id, const QByteArray& cookies);
@@ -78,8 +80,8 @@ namespace Murm
 		static VkAccount* Deserialize (const QByteArray&, VkProtocol*, ICoreProxy_ptr);
 
 		void Send (VkEntry*, VkMessage*);
-
 		void CreateChat (const QString&, const QList<VkEntry*>&);
+		VkEntry* GetEntry (qulonglong) const;
 
 		ICoreProxy_ptr GetCoreProxy () const;
 		VkConnection* GetConnection () const;
@@ -116,6 +118,8 @@ namespace Murm
 		void handleUserState (qulonglong, bool);
 		void handleMessage (const MessageInfo&);
 		void handleTypingNotification (qulonglong);
+
+		void handleGotChatInfo (const ChatInfo&);
 
 		void finishOffline ();
 

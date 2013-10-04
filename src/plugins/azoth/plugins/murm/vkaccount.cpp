@@ -38,6 +38,7 @@
 #include "georesolver.h"
 #include "groupsmanager.h"
 #include "xmlsettingsmanager.h"
+#include "vkchatentry.h"
 
 namespace LeechCraft
 {
@@ -85,6 +86,10 @@ namespace Murm
 				SIGNAL (statusChanged (EntryStatus)),
 				this,
 				SIGNAL (statusChanged (EntryStatus)));
+		connect (Conn_,
+				SIGNAL (gotChatInfo (ChatInfo)),
+				this,
+				SLOT (handleGotChatInfo (ChatInfo)));
 	}
 
 	QByteArray VkAccount::Serialize () const
@@ -134,6 +139,15 @@ namespace Murm
 
 	void VkAccount::CreateChat (const QString& name, const QList<VkEntry*>& entries)
 	{
+		QList<qulonglong> ids;
+		for (auto entry : entries)
+			ids << entry->GetInfo ().ID_;
+		Conn_->CreateChat (name, ids);
+	}
+
+	VkEntry* VkAccount::GetEntry (qulonglong id) const
+	{
+		return Entries_.value (id);
 	}
 
 	ICoreProxy_ptr VkAccount::GetCoreProxy () const
@@ -344,6 +358,16 @@ namespace Murm
 		emit removedCLItems (GetCLEntries ());
 		qDeleteAll (Entries_);
 		Entries_.clear ();
+	}
+
+	void VkAccount::handleGotChatInfo (const ChatInfo& info)
+	{
+		if (!ChatEntries_.contains (info.ChatID_))
+		{
+			auto entry = new VkChatEntry (info, this);
+			ChatEntries_ [info.ChatID_] = new VkChatEntry (info, this);
+			emit gotCLItems ({ entry });
+		}
 	}
 
 	void VkAccount::emitUpdateAcc ()

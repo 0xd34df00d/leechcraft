@@ -309,6 +309,28 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
+	void VkConnection::CreateChat (const QString& title, const QList<qulonglong>& ids)
+	{
+		const auto& joined = CommaJoin (ids);
+		auto nam = Proxy_->GetNetworkAccessManager ();
+		PreparedCalls_.push_back ([=] (const QString& key) -> QNetworkReply*
+			{
+				QUrl url ("https://api.vk.com/method/messages.createChat");
+				url.addQueryItem ("access_token", key);
+				url.addQueryItem ("title", title);
+				url.addQueryItem ("uids", joined);
+
+				auto reply = nam->get (QNetworkRequest (url));
+				Reply2ChatInfo_ [reply] = { 0, title, ids };
+				connect (reply,
+						SIGNAL (finished ()),
+						this,
+						SLOT (handleChatCreated ()));
+				return reply;
+			});
+		AuthMgr_->GetAuthKey ();
+	}
+
 	void VkConnection::SetStatus (const QString& status)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
@@ -617,6 +639,19 @@ namespace Murm
 					{}
 				});
 		}
+	}
+
+	void VkConnection::handleChatCreated ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!CheckFinishedReply (reply))
+			return;
+
+		const auto& data = QJson::Parser ().parse (reply);
+		auto info = Reply2ChatInfo_.take (reply);
+		info.ChatID_ = data.toMap () ["response"].toULongLong ();
+
+		emit gotChatInfo (info);
 	}
 
 	void VkConnection::handleMessageSent ()

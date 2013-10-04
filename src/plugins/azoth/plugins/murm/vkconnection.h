@@ -90,6 +90,8 @@ namespace Murm
 
 		QHash<QNetworkReply*, QString> Reply2ListName_;
 
+		QHash<QNetworkReply*, ChatInfo> Reply2ChatInfo_;
+
 		int APIErrorCount_ = 0;
 		bool ShouldRerunPrepared_ = false;
 	public:
@@ -110,6 +112,8 @@ namespace Murm
 
 		void AddFriendList (const QString&, const QList<qulonglong>&);
 		void ModifyFriendList (const ListInfo&, const QList<qulonglong>&);
+
+		void CreateChat (const QString&, const QList<qulonglong>&);
 
 		void SetStatus (const QString&);
 
@@ -134,6 +138,8 @@ namespace Murm
 		void handleGotFriends ();
 		void handleGotUnreadMessages ();
 
+		void handleChatCreated ();
+
 		void handleMessageSent ();
 		void handleCountriesFetched ();
 		void handleMessageInfoFetched ();
@@ -152,6 +158,7 @@ namespace Murm
 		void gotUsers (const QList<UserInfo>&);
 		void gotMessage (const MessageInfo&);
 		void gotTypingNotification (qulonglong uid);
+		void gotChatInfo (const ChatInfo&);
 
 		void userStateChanged (qulonglong uid, bool online);
 	};
