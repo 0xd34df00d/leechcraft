@@ -32,6 +32,7 @@ set (MURM_SRCS
 	groupsmanager.cpp
 	mucjoinwidget.cpp
 	entrybase.cpp
+	vkchatentry.cpp
 	)
 set (MURM_FORMS
 	vcarddialog.ui
