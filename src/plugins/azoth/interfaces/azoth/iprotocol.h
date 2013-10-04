@@ -78,6 +78,9 @@ namespace Azoth
 			PFSupportsMUCs = 0x01,
 
 			/** One could join MUCs as he wishes.
+			 *
+			 * If this feature is supported, a proper widget should be
+			 * returned from the GetMUCJoinWidget() method.
 			 */
 			PFMUCsJoinable = 0x02,
 
@@ -217,8 +220,11 @@ namespace Azoth
 		 * a newly constructed widget should be returned, and the plugin
 		 * shouldn't delete the widget by itself.
 		 *
-		 * @return The widget used for joining MUCs, which must
-		 * implement IMUCJoinWidget.
+		 * If the protocol doesn't support multi-user chats, it is safe
+		 * to return \b nullptr here.
+		 *
+		 * @return The widget used for joining MUCs, which must implement
+		 * IMUCJoinWidget, or \b nullptr if not supported.
 		 *
 		 * @sa IMUCJoinWidget
 		 */
