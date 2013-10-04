@@ -352,6 +352,27 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
+	void VkConnection::RemoveChatUser (qulonglong chat, qulonglong user)
+	{
+		auto nam = Proxy_->GetNetworkAccessManager ();
+		PreparedCalls_.push_back ([=] (const QString& key) -> QNetworkReply*
+			{
+				QUrl url ("https://api.vk.com/method/messages.removeChatUser");
+				url.addQueryItem ("access_token", key);
+				url.addQueryItem ("chat_id", QString::number (chat));
+				url.addQueryItem ("uid", QString::number (user));
+
+				auto reply = nam->get (QNetworkRequest (url));
+				Reply2ChatRemoveInfo_ [reply] = ChatRemoveInfo { chat, user };
+				connect (reply,
+						SIGNAL (finished ()),
+						this,
+						SLOT (handleChatUserRemoved ()));
+				return reply;
+			});
+		AuthMgr_->GetAuthKey ();
+	}
+
 	void VkConnection::SetStatus (const QString& status)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
@@ -720,6 +741,21 @@ namespace Murm
 				map ["title"].toString (),
 				users
 			});
+	}
+
+	void VkConnection::handleChatUserRemoved ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!CheckFinishedReply (reply))
+			return;
+
+		auto removeInfo = Reply2ChatRemoveInfo_.take (reply);
+
+		const auto& data = QJson::Parser ().parse (reply);
+		qDebug () << data;
+		const auto& map = data.toMap ();
+		if (map ["response"].toULongLong () == 1)
+			emit chatUserRemoved (removeInfo.Chat_, removeInfo.User_);
 	}
 
 	void VkConnection::handleMessageSent ()

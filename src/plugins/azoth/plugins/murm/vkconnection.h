@@ -92,6 +92,13 @@ namespace Murm
 
 		QHash<QNetworkReply*, ChatInfo> Reply2ChatInfo_;
 
+		struct ChatRemoveInfo
+		{
+			qulonglong Chat_;
+			qulonglong User_;
+		};
+		QHash<QNetworkReply*, ChatRemoveInfo> Reply2ChatRemoveInfo_;
+
 		int APIErrorCount_ = 0;
 		bool ShouldRerunPrepared_ = false;
 	public:
@@ -123,6 +130,7 @@ namespace Murm
 
 		void CreateChat (const QString&, const QList<qulonglong>&);
 		void RequestChatInfo (qulonglong);
+		void RemoveChatUser (qulonglong chat, qulonglong user);
 
 		void SetStatus (const QString&);
 
@@ -150,6 +158,7 @@ namespace Murm
 
 		void handleChatCreated ();
 		void handleChatInfo ();
+		void handleChatUserRemoved ();
 
 		void handleMessageSent ();
 		void handleCountriesFetched ();
@@ -171,7 +180,9 @@ namespace Murm
 		void gotUsers (const QList<UserInfo>&);
 		void gotMessage (const MessageInfo&);
 		void gotTypingNotification (qulonglong uid);
+
 		void gotChatInfo (const ChatInfo&);
+		void chatUserRemoved (qulonglong, qulonglong);
 
 		void userStateChanged (qulonglong uid, bool online);
 	};
