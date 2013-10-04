@@ -72,6 +72,8 @@ namespace Murm
 
 		QHash<qulonglong, VkEntry*> Entries_;
 		QHash<qulonglong, VkChatEntry*> ChatEntries_;
+
+		QList<MessageInfo> PendingMessages_;
 	public:
 		VkAccount (const QString& name, VkProtocol *proto, ICoreProxy_ptr proxy,
 				const QByteArray& id, const QByteArray& cookies);

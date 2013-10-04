@@ -362,10 +362,8 @@ namespace Murm
 			const auto from = info.From_ - 2000000000;
 			if (!ChatEntries_.contains (from))
 			{
-				// TODO handle
-				qWarning () << Q_FUNC_INFO
-						<< "message from unknown conference"
-						<< from;
+				PendingMessages_ << info;
+				Conn_->RequestChatInfo (from);
 				return;
 			}
 
@@ -402,6 +400,11 @@ namespace Murm
 			auto entry = new VkChatEntry (info, this);
 			ChatEntries_ [info.ChatID_] = entry;
 			emit gotCLItems ({ entry });
+
+			decltype (PendingMessages_) pending;
+			std::swap (pending, PendingMessages_);
+			for (const auto& info : pending)
+				handleMessage (info);
 		}
 		else
 			ChatEntries_ [info.ChatID_]->UpdateInfo (info);
