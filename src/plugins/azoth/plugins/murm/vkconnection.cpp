@@ -114,15 +114,17 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
-	void VkConnection::SendMessage (qulonglong to,
-			const QString& body, std::function<void (qulonglong)> idSetter)
+	void VkConnection::SendMessage (qulonglong to, const QString& body,
+			std::function<void (qulonglong)> idSetter, MessageType type)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
 		PreparedCalls_.push_back ([=] (const QString& key) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/messages.send");
 				url.addQueryItem ("access_token", key);
-				url.addQueryItem ("uid", QString::number (to));
+
+				const auto& idName = type == MessageType::Dialog ? "uid" : "chat_id";
+				url.addQueryItem (idName, QString::number (to));
 				url.addQueryItem ("message", body);
 				url.addQueryItem ("type", "1");
 

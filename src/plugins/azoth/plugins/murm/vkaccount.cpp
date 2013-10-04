@@ -134,7 +134,16 @@ namespace Murm
 	{
 		Conn_->SendMessage (entry->GetInfo ().ID_,
 				msg->GetBody (),
-				[msg] (qulonglong id) { msg->SetID (id); });
+				[msg] (qulonglong id) { msg->SetID (id); },
+				VkConnection::MessageType::Dialog);
+	}
+
+	void VkAccount::Send (VkChatEntry *entry, VkMessage *msg)
+	{
+		Conn_->SendMessage (entry->GetInfo ().ChatID_,
+				msg->GetBody (),
+				[msg] (qulonglong id) { msg->SetID (id); },
+				VkConnection::MessageType::Chat);
 	}
 
 	void VkAccount::CreateChat (const QString& name, const QList<VkEntry*>& entries)

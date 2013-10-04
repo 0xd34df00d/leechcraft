@@ -80,6 +80,7 @@ namespace Murm
 		static VkAccount* Deserialize (const QByteArray&, VkProtocol*, ICoreProxy_ptr);
 
 		void Send (VkEntry*, VkMessage*);
+		void Send (VkChatEntry*, VkMessage*);
 		void CreateChat (const QString&, const QList<VkEntry*>&);
 		VkEntry* GetEntry (qulonglong) const;
 

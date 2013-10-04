@@ -48,6 +48,7 @@ namespace Murm
 
 	void VkChatEntry::Send (VkMessage *msg)
 	{
+		Account_->Send (this, msg);
 	}
 
 	ICLEntry::Features VkChatEntry::GetEntryFeatures () const

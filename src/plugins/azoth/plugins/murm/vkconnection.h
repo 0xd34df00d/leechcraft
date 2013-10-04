@@ -95,14 +95,22 @@ namespace Murm
 		int APIErrorCount_ = 0;
 		bool ShouldRerunPrepared_ = false;
 	public:
+		enum class MessageType
+		{
+			Dialog,
+			Chat
+		};
+
 		VkConnection (const QByteArray&, ICoreProxy_ptr);
 
 		const QByteArray& GetCookies () const;
 
 		void RerequestFriends ();
 
-		void SendMessage (qulonglong to, const QString& body,
-				std::function<void (qulonglong)> idSetter);
+		void SendMessage (qulonglong to,
+				const QString& body,
+				std::function<void (qulonglong)> idSetter,
+				MessageType type);
 		void SendTyping (qulonglong to);
 		void MarkAsRead (const QList<qulonglong>&);
 		void RequestGeoIds (const QList<int>&, GeoSetter_f, GeoIdType);
