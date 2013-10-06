@@ -74,8 +74,29 @@ namespace TouchStreams
 		return Root_;
 	}
 
-	void FriendsManager::RefreshItems (const QList<QStandardItem*>& items)
+	void FriendsManager::RefreshItems (QList<QStandardItem*> items)
 	{
+		if (items.contains (Root_))
+		{
+			if (auto rc = Root_->rowCount ())
+				Root_->removeRows (0, rc);
+
+			Friend2Item_.clear ();
+			Friend2AlbumsManager_.clear ();
+			Queue_->Clear ();
+			RequestQueue_.clear ();
+
+			refetchFriends ();
+			return;
+		}
+
+		const auto& mgrs = Friend2AlbumsManager_.values ();
+		for (auto mgr : mgrs)
+		{
+			items.removeOne (mgr->RefreshItems (items));
+			if (items.isEmpty ())
+				break;
+		}
 	}
 
 	void FriendsManager::refetchFriends ()
@@ -115,6 +136,7 @@ namespace TouchStreams
 			const auto id = map ["user_id"].toLongLong ();
 
 			auto mgr = new AlbumsManager (id, AuthMgr_, Queue_, Proxy_, this);
+			Friend2AlbumsManager_ [id] = mgr;
 
 			const auto& name = map ["first_name"].toString () + " " + map ["last_name"].toString ();
 
