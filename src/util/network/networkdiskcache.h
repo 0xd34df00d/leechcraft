@@ -33,6 +33,9 @@
 #include <QMutex>
 #include <util/utilconfig.h>
 
+template<typename T>
+class QFutureWatcher;
+
 namespace LeechCraft
 {
 namespace Util
@@ -41,12 +44,14 @@ namespace Util
 	{
 		Q_OBJECT
 
-		bool IsCollectingGarbage_;
 		qint64 CurrentSize_;
 
 		mutable QMutex InsertRemoveMutex_;
+
+		QFutureWatcher<qint64> *GarbageCollectorWatcher_;
 	public:
 		NetworkDiskCache (const QString&, QObject* = 0);
+		~NetworkDiskCache ();
 
 		virtual qint64 cacheSize () const;
 		virtual QIODevice* data (const QUrl& url);
