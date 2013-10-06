@@ -26,6 +26,9 @@
    </item>
    <item>
     <widget class="QTreeView" name="StationsView_">
+     <property name="contextMenuPolicy">
+      <enum>Qt::CustomContextMenu</enum>
+     </property>
      <property name="rootIsDecorated">
       <bool>true</bool>
      </property>

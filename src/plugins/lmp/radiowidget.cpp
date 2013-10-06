@@ -31,6 +31,7 @@
 #include <QStandardItemModel>
 #include <QInputDialog>
 #include <QSortFilterProxyModel>
+#include <QMenu>
 #include <QtDebug>
 #include <util/gui/clearlineeditaddon.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -143,6 +144,50 @@ namespace LMP
 		Core::Instance ().GetPreviewHandler ()->HandlePending (pending);
 	}
 
+	namespace
+	{
+		QStandardItem* GetRootItem (QStandardItem *item)
+		{
+			auto root = item;
+			while (auto parent = root->parent ())
+				root = parent;
+			return root;
+		}
+	}
+
+	void RadioWidget::handleRefresh ()
+	{
+		const auto& unmapped = Ui_.StationsView_->currentIndex ();
+		const auto& index = StationsProxy_->mapToSource (unmapped);
+		const auto item = StationsModel_->itemFromIndex (index);
+		if (item->data (RadioWidgetRole::PileObject).value<QObject*> ())
+			return;
+
+		const auto root = GetRootItem (item);
+		if (!Root2Prov_.contains (root))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown provider for index"
+					<< index;
+			return;
+		}
+
+		Root2Prov_ [root]->RefreshItems ({ item });
+	}
+
+	void RadioWidget::on_StationsView__customContextMenuRequested (const QPoint& point)
+	{
+		const auto& idx = Ui_.StationsView_->indexAt (point);
+		if (!idx.isValid ())
+			return;
+
+		QMenu menu;
+		menu.addAction (tr ("Refresh"),
+				this,
+				SLOT (handleRefresh ()));
+		menu.exec (Ui_.StationsView_->viewport ()->mapToGlobal (point));
+	}
+
 	void RadioWidget::on_StationsView__doubleClicked (const QModelIndex& unmapped)
 	{
 		const auto& index = StationsProxy_->mapToSource (unmapped);
@@ -151,9 +196,7 @@ namespace LMP
 		if (const auto pileObj = item->data (RadioWidgetRole::PileObject).value<QObject*> ())
 			return HandlePile (item, pileObj);
 
-		auto root = item;
-		while (auto parent = root->parent ())
-			root = parent;
+		const auto root = GetRootItem (item);
 		if (!Root2Prov_.contains (root))
 		{
 			qWarning () << Q_FUNC_INFO

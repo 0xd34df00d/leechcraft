@@ -66,6 +66,9 @@ namespace LMP
 	private:
 		void HandlePile (QStandardItem*, QObject*);
 	private slots:
+		void handleRefresh ();
+
+		void on_StationsView__customContextMenuRequested (const QPoint&);
 		void on_StationsView__doubleClicked (const QModelIndex&);
 	};
 }
