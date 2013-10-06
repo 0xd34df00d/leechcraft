@@ -96,8 +96,23 @@ namespace TouchStreams
 		return TracksCount_;
 	}
 
-	void AlbumsManager::RefreshItems (const QList<QStandardItem*>& items)
+	QStandardItem* AlbumsManager::RefreshItems (const QList<QStandardItem*>& items)
 	{
+		for (auto item : items)
+			while (item)
+			{
+				if (AlbumsRootItem_ == item)
+				{
+					if (auto rc = AlbumsRootItem_->rowCount ())
+						AlbumsRootItem_->removeRows (0, rc);
+					refetchAlbums ();
+					return item;
+				}
+
+				item = item->parent ();
+			}
+
+		return nullptr;
 	}
 
 	void AlbumsManager::refetchAlbums ()

@@ -81,7 +81,7 @@ namespace TouchStreams
 		qlonglong GetUserID () const;
 		quint32 GetTracksCount () const;
 
-		void RefreshItems (const QList<QStandardItem*>&);
+		QStandardItem* RefreshItems (const QList<QStandardItem*>&);
 	public slots:
 		void refetchAlbums ();
 		void handleAlbumsFetched ();
