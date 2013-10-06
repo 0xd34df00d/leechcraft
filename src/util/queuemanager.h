@@ -90,6 +90,13 @@ namespace Util
 		void Schedule (std::function<void ()> functor,
 				QObject *dependent = 0,
 				QueuePriority prio = QueuePriority::Normal);
+
+		/** @brief Clears the queue.
+		 *
+		 * Clears the remaining items in the queue, but doesn't abort the
+		 * current operation.
+		 */
+		void Clear ();
 	private slots:
 		void exec ();
 	};

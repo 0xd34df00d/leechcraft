@@ -58,6 +58,11 @@ namespace Util
 					SLOT (exec ()));
 	}
 
+	void QueueManager::Clear ()
+	{
+		Queue_.clear ();
+	}
+
 	void QueueManager::exec ()
 	{
 		if (Queue_.isEmpty ())
