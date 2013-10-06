@@ -109,6 +109,7 @@ namespace Lastfmscrobble
 
 		Media::IRadioStation_ptr GetRadioStation (QStandardItem*, const QString&);
 		QList<QStandardItem*> GetRadioListItems () const;
+		void RefreshItems (const QList<QStandardItem*>&);
 
 		void RequestRecentReleases (int, bool);
 

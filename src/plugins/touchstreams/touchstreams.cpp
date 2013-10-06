@@ -140,6 +140,12 @@ namespace TouchStreams
 		return {};
 	}
 
+	void Plugin::RefreshItems (const QList<QStandardItem*>& items)
+	{
+		AlbumsMgr_->RefreshItems (items);
+		FriendsMgr_->RefreshItems (items);
+	}
+
 	void Plugin::handlePushButton (const QString& name)
 	{
 		if (name == "AllowRequestsTriggered")

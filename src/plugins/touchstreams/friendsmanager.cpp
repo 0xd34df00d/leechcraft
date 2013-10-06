@@ -74,6 +74,10 @@ namespace TouchStreams
 		return Root_;
 	}
 
+	void FriendsManager::RefreshItems (const QList<QStandardItem*>& items)
+	{
+	}
+
 	void FriendsManager::refetchFriends ()
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();

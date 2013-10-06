@@ -96,6 +96,10 @@ namespace TouchStreams
 		return TracksCount_;
 	}
 
+	void AlbumsManager::RefreshItems (const QList<QStandardItem*>& items)
+	{
+	}
+
 	void AlbumsManager::refetchAlbums ()
 	{
 		RequestQueue_.append ({

@@ -70,6 +70,8 @@ namespace TouchStreams
 		~FriendsManager ();
 
 		QStandardItem* GetRootItem () const;
+
+		void RefreshItems (const QList<QStandardItem*>&);
 	private slots:
 		void refetchFriends ();
 		void handleGotFriends ();

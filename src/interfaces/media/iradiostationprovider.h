@@ -164,6 +164,10 @@ namespace Media
 		 * @return The list of root items.
 		 */
 		virtual QList<QStandardItem*> GetRadioListItems () const = 0;
+
+		/** @brief Refreshes the list of radio items.
+		 */
+		virtual void RefreshItems (const QList<QStandardItem*>&) = 0;
 	};
 }
 
