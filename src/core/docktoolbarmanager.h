@@ -67,6 +67,7 @@ namespace LeechCraft
 		void UpdateActionGroup (QAction*, bool);
 	private slots:
 		void updateDockLocation (Qt::DockWidgetArea);
+		void handleDockFloating (bool);
 		void handleActionToggled (bool);
 	signals:
 		void hookAddingDockAction (LeechCraft::IHookProxy_ptr, QMainWindow*, QAction*, Qt::DockWidgetArea);
