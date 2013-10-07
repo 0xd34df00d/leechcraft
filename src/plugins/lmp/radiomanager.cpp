@@ -233,7 +233,7 @@ namespace LMP
 
 		const auto interval = XmlSettingsManager::Instance ()
 				.property ("RadioRefreshTimeout").toInt ();
-		AutoRefreshTimer_->setInterval (interval * 60 * 60);
+		AutoRefreshTimer_->setInterval (interval * 60 * 60 * 1000);
 
 		if (XmlSettingsManager::Instance ().property ("AutoRefreshRadios").toBool ())
 			AutoRefreshTimer_->start ();
