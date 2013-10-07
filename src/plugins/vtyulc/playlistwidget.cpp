@@ -122,7 +122,6 @@ namespace vlc
 		
 		libvlc_media_t *m = libvlc_media_new_location (Instance_, url.toEncoded ());
 		libvlc_media_parse (m);
-		qWarning () << "adding media" << (int)libvlc_media_get_state(m) << (int)libvlc_media_is_parsed(m);
 		if (libvlc_media_get_duration (m) == 0) 
 		{
 			libvlc_media_release (m);
