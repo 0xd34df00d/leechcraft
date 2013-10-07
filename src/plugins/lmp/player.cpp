@@ -641,20 +641,37 @@ namespace LMP
 	{
 		QPair<AudioSource, MediaInfo> PairResolve (const AudioSource& source)
 		{
-			auto resolver = Core::Instance ().GetLocalFileResolver ();
-
 			MediaInfo info;
-			if (source.IsLocalFile ())
+			if (!source.IsLocalFile ())
+				return { source, info };
+
+			info.LocalPath_ = source.GetLocalPath ();
+
+			auto collection = Core::Instance ().GetLocalCollection ();
+
+			const auto trackId = collection->FindTrack (source.GetLocalPath ());
+			if (trackId == -1)
+			{
+				auto resolver = Core::Instance ().GetLocalFileResolver ();
 				try
 				{
 					info = resolver->ResolveInfo (source.GetLocalPath ());
 				}
 				catch (...)
 				{
-					info.LocalPath_ = source.GetLocalPath ();
 				}
+				return { source, info };
+			}
 
-			return qMakePair (source, info);
+			info.Artist_ = collection->GetTrackData (trackId, LocalCollection::Role::ArtistName).toString ();
+			info.Album_ = collection->GetTrackData (trackId, LocalCollection::Role::AlbumName).toString ();
+			info.Title_ = collection->GetTrackData (trackId, LocalCollection::Role::TrackTitle).toString ();
+			info.Genres_ = collection->GetTrackData (trackId, LocalCollection::Role::TrackGenres).toStringList ();
+			info.Length_ = collection->GetTrackData (trackId, LocalCollection::Role::TrackLength).toInt ();
+			info.Year_ = collection->GetTrackData (trackId, LocalCollection::Role::AlbumYear).toInt ();
+			info.TrackNumber_ = collection->GetTrackData (trackId, LocalCollection::Role::TrackNumber).toInt ();
+
+			return { source, info };
 		}
 
 		QList<QPair<AudioSource, MediaInfo>> PairResolveAll (const QList<AudioSource>& sources)
