@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_OTROID_OTROID_H
-#define PLUGINS_AZOTH_PLUGINS_OTROID_OTROID_H
+#pragma once
+
 #include <QObject>
 #include <QDir>
 
@@ -49,6 +49,8 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+class ICLEntry;
+
 namespace OTRoid
 {
 	class Plugin : public QObject
@@ -64,6 +66,7 @@ namespace OTRoid
 		OtrlMessageAppOps OtrOps_;
 
 		QHash<QObject*, QAction*> Entry2Action_;
+		QHash<QAction*, QObject*> Action2Entry_;
 
 		QDir OtrDir_;
 
@@ -84,16 +87,17 @@ namespace OTRoid
 		int IsLoggedIn (const QString& accId, const QString& entryId);
 		void InjectMsg (const QString& accId,
 				const QString& entryId, const QString& msg);
+		void InjectMsg (ICLEntry *entry, const QString& msg);
 		void Notify (const QString& accId, const QString& entryId,
 				Priority, const QString& title,
 				const QString& primary, const QString& secondary);
 		void WriteFingerprints ();
 		QString GetAccountName (const QString& accId);
 
+		void CreatePrivkey (const char*, const char*);
+
 #if OTRL_VERSION_MAJOR >= 4
 		void SetPollTimerInterval (unsigned int seconds);
-#else
-		void LogMsg (const QString&);
 #endif
 	private:
 		const char* GetOTRFilename (const QString&) const;
@@ -114,6 +118,8 @@ namespace OTRoid
 				QObject *chatTab,
 				QObject *message);
 	private slots:
+		void handleOtrAction ();
+
 #if OTRL_VERSION_MAJOR >= 4
 		void pollOTR ();
 #endif
@@ -123,5 +129,3 @@ namespace OTRoid
 }
 }
 }
-
-#endif

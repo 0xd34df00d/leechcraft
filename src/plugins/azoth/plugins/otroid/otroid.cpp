@@ -60,7 +60,9 @@ namespace Azoth
 {
 namespace OTRoid
 {
-	namespace OTR { int IsLoggedIn (void *opData, const char *accName,
+	namespace OTR
+	{
+		int IsLoggedIn (void *opData, const char *accName,
 				const char*, const char *recipient)
 		{
 			Plugin *p = static_cast<Plugin*> (opData);
@@ -77,11 +79,6 @@ namespace OTRoid
 					QString::fromUtf8 (msg));
 		}
 
-		void WriteFingerprints (void *opData)
-		{
-			static_cast<Plugin*> (opData)->WriteFingerprints ();
-		}
-
 		const char* GetAccountName (void *opData, const char *acc, const char*)
 		{
 			const QString& name = static_cast<Plugin*> (opData)->
@@ -93,9 +90,12 @@ namespace OTRoid
 			return result;
 		}
 
-		void FreeAccountName (void*, const char *name)
+		void Notify (void *opdata, OtrlNotifyLevel level,
+				const char *accountname, const char *protocol,
+				const char *username, const char *title,
+				const char *primary, const char *secondary)
 		{
-			delete [] name;
+			qDebug () << Q_FUNC_INFO << accountname << protocol << username << title << primary << secondary;
 		}
 
 #if OTRL_VERSION_MAJOR >= 4
@@ -110,11 +110,6 @@ namespace OTRoid
 		void TimerControl (void *opData, unsigned int interval)
 		{
 			static_cast<Plugin*> (opData)->SetPollTimerInterval (interval);
-		}
-#else
-		void LogMsg (void *opData, const char *msg)
-		{
-			static_cast<Plugin*> (opData)->LogMsg (QString::fromUtf8 (msg).trimmed ());
 		}
 #endif
 	}
@@ -136,9 +131,13 @@ namespace OTRoid
 		memset (&OtrOps_, 0, sizeof (OtrOps_));
 		OtrOps_.is_logged_in = &OTR::IsLoggedIn;
 		OtrOps_.inject_message = &OTR::InjectMessage;
-		OtrOps_.write_fingerprints = &OTR::WriteFingerprints;
+		OtrOps_.write_fingerprints = [] (void *opData)
+				{ static_cast<Plugin*> (opData)->WriteFingerprints (); };
 		OtrOps_.account_name = &OTR::GetAccountName;
-		OtrOps_.account_name_free = &OTR::FreeAccountName;
+		OtrOps_.account_name_free = [] (void*, const char *name) { delete [] name; };
+		OtrOps_.notify = &OTR::Notify;
+		OtrOps_.create_privkey = [] (void *opData, const char *accName, const char *proto)
+				{ static_cast<Plugin*> (opData)->CreatePrivkey (accName, proto); };
 #if OTRL_VERSION_MAJOR >= 4
 		OtrOps_.handle_msg_event = &OTR::HandleMsgEvent;
 		OtrOps_.timer_control = &OTR::TimerControl;
@@ -151,7 +150,8 @@ namespace OTRoid
 
 		SetPollTimerInterval (otrl_message_poll_get_default_interval (UserState_));
 #else
-		OtrOps_.log_message = &OTR::LogMsg;
+		OtrOps_.log_message = [] (void*, const char *msg)
+				{ qDebug () << "OTR:" << QString::fromUtf8 (msg).trimmed (); };
 #endif
 	}
 
@@ -208,10 +208,14 @@ namespace OTRoid
 	{
 		QObject *entryObj = AzothProxy_->GetEntry (entryId, accId);
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-
 		if (!entry)
 			return;
 
+		InjectMsg (entry, body);
+	}
+
+	void Plugin::InjectMsg (ICLEntry *entry, const QString& body)
+	{
 		QObject *msgObj = entry->CreateMessage (IMessage::MTChatMessage,
 				QString (), body);
 		msgObj->setProperty ("Azoth/HiddenMessage", true);
@@ -255,6 +259,10 @@ namespace OTRoid
 		return acc->GetAccountName ();
 	}
 
+	void Plugin::CreatePrivkey (const char *accName, const char *proto)
+	{
+	}
+
 #if OTRL_VERSION_MAJOR >= 4
 	void Plugin::SetPollTimerInterval (unsigned int seconds)
 	{
@@ -263,11 +271,6 @@ namespace OTRoid
 
 		if (seconds)
 			PollTimer_->start (seconds * 1000);
-	}
-#else
-	void Plugin::LogMsg (const QString& msg)
-	{
-		qDebug () << "OTR:" << msg;
 	}
 #endif
 
@@ -293,7 +296,9 @@ namespace OTRoid
 	void Plugin::hookEntryActionsRemoved (IHookProxy_ptr,
 			QObject *entry)
 	{
-		delete Entry2Action_.take (entry);
+		auto act = Entry2Action_.take (entry);
+		Action2Entry_.remove (act);
+		delete act;
 	}
 
 	void Plugin::hookEntryActionsRequested (IHookProxy_ptr proxy, QObject *entry)
@@ -379,12 +384,13 @@ namespace OTRoid
 				!Entry2Action_ [entryObj]->isChecked ())
 			return;
 
+		qDebug () << Q_FUNC_INFO;
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 		IAccount *acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
 		IProtocol *proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 
 		char *newMsg = 0;
-		gcry_error_t err = otrl_message_sending (UserState_,
+		const auto err = otrl_message_sending (UserState_,
 				&OtrOps_,
 				this,
 				acc->GetAccountID ().constData (),
@@ -403,6 +409,7 @@ namespace OTRoid
 				NULL,
 				NULL);
 
+		qDebug () << "new message:" << newMsg << "; err:" << err;
 		if (err)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -427,8 +434,37 @@ namespace OTRoid
 		otr->setCheckable (true);
 		otr->setIcon (GetIcon ());
 		otr->setProperty ("Azoth/OTRoid/IsGood", true);
+		connect (otr,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleOtrAction ()));
 
 		Entry2Action_ [entry] = otr;
+		Action2Entry_ [otr] = entry;
+	}
+
+	void Plugin::handleOtrAction ()
+	{
+		auto act = qobject_cast<QAction*> (sender ());
+		if (!act->isChecked ())
+			return;
+
+		auto entryObj = Action2Entry_ [act];
+		auto entry = qobject_cast<ICLEntry*> (entryObj);
+		auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
+		const auto& accId = acc->GetAccountID ();
+
+		auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
+		const auto& protoId = proto->GetProtocolID ();
+
+		char fingerprint [45];
+		if (!otrl_privkey_fingerprint (UserState_, fingerprint,
+				accId.constData (), protoId.constData ()))
+			CreatePrivkey (accId.constData (), protoId.constData());
+
+		std::shared_ptr<char> msg (otrl_proto_default_query_msg (accId.constData (),
+					OTRL_POLICY_DEFAULT), free);
+		InjectMsg (entry, QString::fromUtf8 (msg.get ()));
 	}
 
 #if OTRL_VERSION_MAJOR >= 4
