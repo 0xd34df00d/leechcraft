@@ -36,6 +36,7 @@ class QAbstractItemModel;
 class QStandardItemModel;
 class QStandardItem;
 class QModelIndex;
+class QTimer;
 
 namespace Media
 {
@@ -54,6 +55,8 @@ namespace LMP
 
 		QStandardItemModel *StationsModel_;
 		QHash<QStandardItem*, Media::IRadioStationProvider*> Root2Prov_;
+
+		QTimer *AutoRefreshTimer_;
 	public:
 		RadioManager (QObject* = 0);
 
@@ -69,6 +72,8 @@ namespace LMP
 		void HandlePile (QStandardItem*, QObject*);
 	public slots:
 		void refreshAll ();
+	private slots:
+		void handleRefreshSettingsChanged ();
 	};
 }
 }

@@ -30,8 +30,8 @@
 #include "radiomanager.h"
 #include <QStandardItemModel>
 #include <QInputDialog>
-#include <QtDebug>
 #include <QTimer>
+#include <QtDebug>
 #include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/media/iaudiopile.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -55,7 +55,17 @@ namespace LMP
 	RadioManager::RadioManager (QObject *parent)
 	: QObject (parent)
 	, StationsModel_ (new QStandardItemModel (this))
+	, AutoRefreshTimer_ (new QTimer (this))
 	{
+		XmlSettingsManager::Instance ().RegisterObject ({ "AutoRefreshRadios",
+					"RadioRefreshTimeout" },
+				this, "handleRefreshSettingsChanged");
+		handleRefreshSettingsChanged ();
+
+		connect (AutoRefreshTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (refreshAll ()));
 	}
 
 	void RadioManager::InitProviders ()
@@ -215,6 +225,18 @@ namespace LMP
 	{
 		for (auto prov : Root2Prov_)
 			prov->RefreshItems (prov->GetRadioListItems ());
+	}
+
+	void RadioManager::handleRefreshSettingsChanged ()
+	{
+		AutoRefreshTimer_->stop ();
+
+		const auto interval = XmlSettingsManager::Instance ()
+				.property ("RadioRefreshTimeout").toInt ();
+		AutoRefreshTimer_->setInterval (interval * 60 * 60);
+
+		if (XmlSettingsManager::Instance ().property ("AutoRefreshRadios").toBool ())
+			AutoRefreshTimer_->start ();
 	}
 }
 }

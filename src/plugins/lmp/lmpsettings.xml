@@ -99,6 +99,13 @@
 				<label value="Refresh radio stations on wake up" />
 				<tooltip>Some radio providers (like VKontakte) tie tracks URLs to the IP. Thus if the IP changes the tracks infos need to be refetched. Disable this option if sleeping and waking up doesn't usually result in changing your IP.</tooltip>
 			</item>
+			<item type="groupbox" checkable="true" property="AutoRefreshRadios" default="true">
+				<label value="Automatically refresh radios" />
+				<item type="spinbox" property="RadioRefreshTimeout" default="1" minimum="1" maximum="24">
+					<label value="Refresh interval:" />
+					<suffix value=" h" />
+				</item>
+			</item>
 		</tab>
 	</page>
 	<page>
