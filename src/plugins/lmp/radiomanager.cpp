@@ -178,12 +178,11 @@ namespace LMP
 			}
 
 			player->Enqueue (sources, false);
-			break;
+			return;
 		}
 		}
 
-		auto station = Root2Prov_ [root]->GetRadioStation (item, param);
-		if (station)
+		if (auto station = Root2Prov_ [root]->GetRadioStation (item, param))
 			player->SetRadioStation (station);
 	}
 
