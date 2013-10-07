@@ -29,11 +29,18 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_radiowidget.h"
+#include <QObject>
+#include <QHash>
 
+class QAbstractItemModel;
+class QStandardItemModel;
 class QStandardItem;
-class QSortFilterProxyModel;
+class QModelIndex;
+
+namespace Media
+{
+	class IRadioStationProvider;
+}
 
 namespace LeechCraft
 {
@@ -41,23 +48,23 @@ namespace LMP
 {
 	class Player;
 
-	class RadioWidget : public QWidget
+	class RadioManager : public QObject
 	{
 		Q_OBJECT
 
-		Ui::RadioWidget Ui_;
-
-		Player *Player_;
-		QSortFilterProxyModel *StationsProxy_;
+		QStandardItemModel *StationsModel_;
+		QHash<QStandardItem*, Media::IRadioStationProvider*> Root2Prov_;
 	public:
-		RadioWidget (QWidget* = 0);
+		RadioManager (QObject* = 0);
 
-		void SetPlayer (Player*);
-	private slots:
-		void handleRefresh ();
+		void InitProviders ();
 
-		void on_StationsView__customContextMenuRequested (const QPoint&);
-		void on_StationsView__doubleClicked (const QModelIndex&);
+		QAbstractItemModel* GetModel () const;
+
+		void Refresh (const QModelIndex&);
+		void Handle (const QModelIndex&, Player*);
+	private:
+		void HandlePile (QStandardItem*, QObject*);
 	};
 }
 }

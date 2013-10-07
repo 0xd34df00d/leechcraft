@@ -103,6 +103,7 @@ set (SRCS
 	palettefixerfilter.cpp
 	playlistmodel.cpp
 	volumenotifycontroller.cpp
+	radiomanager.cpp
 	engine/audiosource.cpp
 	engine/output.cpp
 	engine/path.cpp

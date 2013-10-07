@@ -146,9 +146,10 @@ namespace LMP
 
 	void Plugin::SecondInit ()
 	{
-		Q_FOREACH (const auto& e, GlobAction2Entity_.values ())
+		for (const auto& e : GlobAction2Entity_)
 			emit gotEntity (e);
 
+		Core::Instance ().InitWithOtherPlugins ();
 		PlayerTab_->InitWithOtherPlugins ();
 	}
 
@@ -261,7 +262,9 @@ namespace LMP
 				player->setPause ();
 			}
 			else if (e.Entity_ == "WokeUp")
+			{
 				player->RestorePlayState ();
+			}
 
 			return;
 		}

@@ -51,6 +51,7 @@ namespace LMP
 	class Player;
 	class PreviewHandler;
 	class ProgressManager;
+	class RadioManager;
 
 	class Core : public QObject
 	{
@@ -67,6 +68,8 @@ namespace LMP
 		CloudUploadManager *CloudUpMgr_;
 
 		ProgressManager *ProgressManager_;
+
+		RadioManager *RadioManager_;
 
 		Player *Player_;
 		PreviewHandler *PreviewMgr_;
@@ -88,6 +91,7 @@ namespace LMP
 		void SendEntity (const Entity&);
 
 		void PostInit ();
+		void InitWithOtherPlugins ();
 
 		void AddPlugin (QObject*);
 		QObjectList GetSyncPlugins () const;
@@ -99,8 +103,8 @@ namespace LMP
 		SyncManager* GetSyncManager () const;
 		SyncUnmountableManager* GetSyncUnmountableManager () const;
 		CloudUploadManager* GetCloudUploadManager () const;
-
 		ProgressManager* GetProgressManager () const;
+		RadioManager* GetRadioManager () const;
 
 		Player* GetPlayer () const;
 		PreviewHandler* GetPreviewHandler () const;
