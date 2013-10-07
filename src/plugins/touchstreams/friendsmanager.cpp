@@ -159,6 +159,8 @@ namespace TouchStreams
 		mgr->deleteLater ();
 
 		const auto uid = mgr->GetUserID ();
+		if (!Friend2Item_.contains (uid))
+			return;
 
 		if (!mgr->GetTracksCount ())
 		{
