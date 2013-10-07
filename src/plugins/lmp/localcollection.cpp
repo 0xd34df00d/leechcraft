@@ -601,6 +601,9 @@ namespace LMP
 							.arg (track.Name_);
 					auto item = new QStandardItem (name);
 					item->setEditable (false);
+					item->setData (album->Year_, Role::AlbumYear);
+					item->setData (album->Name_, Role::AlbumName);
+					item->setData (artist.Name_, Role::ArtistName);
 					item->setData (track.Number_, Role::TrackNumber);
 					item->setData (track.Name_, Role::TrackTitle);
 					item->setData (track.FilePath_, Role::TrackPath);
