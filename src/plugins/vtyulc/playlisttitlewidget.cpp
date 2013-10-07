@@ -39,40 +39,16 @@ namespace LeechCraft
 namespace vlc
 {
 	PlaylistTitleWidget::PlaylistTitleWidget (ICoreProxy_ptr proxy, QWidget *parent)
-	: QWidget (parent)
+	: QToolBar (parent)
 	{
-		QVBoxLayout *layout = new QVBoxLayout;
-		layout->addWidget (new QLabel (tr ("Playlist")));
-		QWidget *widget = new QWidget;
-		
-		QHBoxLayout *layout2 = new QHBoxLayout;
-		
-		ClearPlaylist_ = new QToolButton;
-		ClearAction_ = new QAction (ClearPlaylist_);
-		ClearAction_->setIcon (proxy->GetIcon ("edit-clear-list"));
-		ClearAction_->setToolTip (tr ("Clear playlist"));
-		ClearPlaylist_->setDefaultAction (ClearAction_);
-		
-		MagicSort_ = new QToolButton;
-		MagicAction_ = new QAction (MagicSort_);
-		MagicAction_->setIcon (proxy->GetIcon ("tools-wizard"));
-		MagicAction_->setToolTip (tr ("Magic sort"));
-		MagicSort_->setDefaultAction (MagicAction_);
-		
-		AddFiles_ = new QToolButton;
-		AddAction_ = new QAction (AddFiles_);
+		AddAction_ = addAction (tr ("Add files"));
 		AddAction_->setIcon (proxy->GetIcon ("list-add"));
-		AddAction_->setToolTip (tr ("Add files to playlist"));
-		AddFiles_->setDefaultAction (AddAction_);
 		
-		layout2->addWidget (AddFiles_);
-		layout2->addWidget (MagicSort_);
-		layout2->addWidget (ClearPlaylist_);
-		layout2->addStretch (255);
-	
-		widget->setLayout (layout2);		
-		layout->addWidget (widget);
-		setLayout (layout);
+		ClearAction_ = addAction (tr ("Clear playlist"));
+		ClearAction_->setIcon (proxy->GetIcon ("edit-clear-list"));
+		
+		MagicAction_ = addAction (tr ("Magic sort"));
+		MagicAction_->setIcon (proxy->GetIcon ("tools-wizard"));
 	}
 }
 }
