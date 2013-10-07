@@ -109,7 +109,8 @@ namespace LMP
 			TrackNumber,
 			TrackTitle,
 			TrackPath,
-			TrackGenres
+			TrackGenres,
+			TrackLength
 		};
 
 		enum class DynamicPlaylist
@@ -157,7 +158,7 @@ namespace LMP
 		void SetAlbumArt (int, const QString&);
 		Collection::Album_ptr GetAlbum (int albumId) const;
 
-		int FindTrack (const QString&) const;
+		int FindTrack (const QString& path) const;
 		Collection::Album_ptr GetTrackAlbum (int trackId) const;
 		QVariant GetTrackData (int trackId, Role) const;
 

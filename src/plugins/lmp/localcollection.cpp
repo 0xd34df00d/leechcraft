@@ -608,6 +608,7 @@ namespace LMP
 					item->setData (track.Name_, Role::TrackTitle);
 					item->setData (track.FilePath_, Role::TrackPath);
 					item->setData (track.Genres_, Role::TrackGenres);
+					item->setData (track.Length_, Role::TrackLength);
 					item->setData (NodeType::Track, Role::Node);
 					albumItem->appendRow (item);
 
