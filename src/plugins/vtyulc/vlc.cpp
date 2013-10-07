@@ -172,7 +172,7 @@ namespace vlc
 		connect (widget,
 				SIGNAL (deleteMe (QWidget*)),
 				this,
-				SLOT (deleteDeleted (QWidget*)));
+				SLOT (deleted (QWidget*)));
 	}
 
 	LeechCraft::TabClasses_t Plugin::GetTabClasses () const

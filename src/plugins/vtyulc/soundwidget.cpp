@@ -41,9 +41,8 @@ namespace vlc
 	SoundWidget::SoundWidget (QWidget *parent, std::shared_ptr<libvlc_media_player_t> mp)
 	: QWidget (parent)
 	, Mp_ (mp)
-	{
-		libvlc_audio_set_volume (Mp_.get (), 100);
-		
+	{		
+		setVolume (100);
 		connect (this,
 				SIGNAL (volumeChanged (int)),
 				this,
@@ -81,7 +80,10 @@ namespace vlc
 		const int h = height () - 1;
 		const int w = width ();
 		
-		const int currentVolume = libvlc_audio_get_volume (Mp_.get ());
+		int currentVolume = libvlc_audio_get_volume (Mp_.get ());
+		if (currentVolume == -1)
+			currentVolume = 100;
+		
 		for (int i = 1; i <= currentVolume; i++) 
 		{
 			if (i <= 100)
