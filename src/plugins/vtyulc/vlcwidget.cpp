@@ -235,6 +235,7 @@ namespace vlc
 	{
 		Settings_ = new QSettings (QCoreApplication::organizationName (), QCoreApplication::applicationName () + "_VTYULC");
 		RestorePlaylist ();
+		Autostart_ = XmlSettingsManager::Instance ().property ("Autostart").toBool ();
 	}
 
 	void VlcWidget::SaveSettings ()
@@ -484,6 +485,7 @@ namespace vlc
 		OpenButton_ = new QToolButton (Bar_);
 		Open_ = new QAction (OpenButton_);
 		Open_->setProperty ("ActionIcon", "folder");
+		Open_->setToolTip (tr ("Open file"));
 		OpenButton_->setMenu (GenerateMenuForOpenAction ());
 		OpenButton_->setPopupMode (QToolButton::MenuButtonPopup);
 		OpenButton_->setDefaultAction (Open_);
@@ -519,6 +521,7 @@ namespace vlc
 		FullScreenAction_->setProperty ("ActionIcon", "view-fullscreen");
 		Manager_->RegisterAction ("org.vtyulc.toggle_fullscreen", FullScreenAction_, true);
 		TimeLeft_ = new QLabel (this);
+		TimeLeft_->setToolTip (tr ("Time left"));
 		Bar_->addWidget (TimeLeft_);
 		ScrollBar_ = new VlcScrollBar;
 		ScrollBar_->setBaseSize (200, 25);
@@ -534,9 +537,11 @@ namespace vlc
 		tmp->setSizePolicy(pol);
 		Bar_->addWidget (tmp);
 		TimeAll_ = new QLabel;
+		TimeAll_->setToolTip (tr ("Length"));
 		Bar_->addWidget (TimeAll_);
 		SoundWidget_ = new SoundWidget (this, VlcPlayer_->GetPlayer ());
 		SoundWidget_->setFixedSize (100, 25);
+		SoundWidget_->setToolTip (tr ("Volume"));
 		layout = new QVBoxLayout;
 		layout->addWidget (SoundWidget_);
 		layout->setContentsMargins (2, 2, 2, 2);
