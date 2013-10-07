@@ -18,14 +18,8 @@ include_directories (${AZOTH_INCLUDE_DIR}
 set (OTROID_SRCS
 	otroid.cpp
 	)
-set (OTROID_HEADERS
-	otroid.h
-	)
 set (OTROID_RESOURCES azothotroidresources.qrc)
 CreateTrs ("azoth_otroid" "en;ru_RU;uk_UA" OTROID_COMPILED_TRANSLATIONS)
-if (NOT LC_NO_MOC)
-	QT4_WRAP_CPP (OTROID_MOC_SRCS ${OTROID_HEADERS})
-endif ()
 QT4_ADD_RESOURCES (OTROID_RCCS ${OTROID_RESOURCES})
 
 add_library (leechcraft_azoth_otroid SHARED
