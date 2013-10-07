@@ -31,12 +31,14 @@
 #include <QStandardItemModel>
 #include <QInputDialog>
 #include <QtDebug>
+#include <QTimer>
 #include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/media/iaudiopile.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "core.h"
 #include "player.h"
 #include "previewhandler.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -186,6 +188,14 @@ namespace LMP
 			player->SetRadioStation (station);
 	}
 
+	void RadioManager::HandleWokeUp ()
+	{
+		if (XmlSettingsManager::Instance ().property ("RefreshRadioOnWakeup").toBool ())
+			QTimer::singleShot (15000,
+					this,
+					SLOT (refreshAll ()));
+	}
+
 	void RadioManager::HandlePile (QStandardItem*, QObject *pileObj)
 	{
 		const auto& query = QInputDialog::getText (0,
@@ -199,6 +209,12 @@ namespace LMP
 
 		const auto pending = qobject_cast<Media::IAudioPile*> (pileObj)->Search (req);
 		Core::Instance ().GetPreviewHandler ()->HandlePending (pending);
+	}
+
+	void RadioManager::refreshAll ()
+	{
+		for (auto prov : Root2Prov_)
+			prov->RefreshItems (prov->GetRadioListItems ());
 	}
 }
 }

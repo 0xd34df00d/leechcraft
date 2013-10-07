@@ -63,8 +63,12 @@ namespace LMP
 
 		void Refresh (const QModelIndex&);
 		void Handle (const QModelIndex&, Player*);
+
+		void HandleWokeUp ();
 	private:
 		void HandlePile (QStandardItem*, QObject*);
+	public slots:
+		void refreshAll ();
 	};
 }
 }

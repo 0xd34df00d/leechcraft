@@ -47,6 +47,7 @@
 #include "artistbrowsertab.h"
 #include "progressmanager.h"
 #include "volumenotifycontroller.h"
+#include "radiomanager.h"
 
 namespace LeechCraft
 {
@@ -264,6 +265,7 @@ namespace LMP
 			else if (e.Entity_ == "WokeUp")
 			{
 				player->RestorePlayState ();
+				Core::Instance ().GetRadioManager ()->HandleWokeUp ();
 			}
 
 			return;
