@@ -32,6 +32,7 @@
 #include <QCoreApplication>
 #include <QIcon>
 #include <QAction>
+#include <QMessageBox>
 #include <QTranslator>
 
 extern "C"
@@ -66,8 +67,7 @@ namespace OTRoid
 		int IsLoggedIn (void *opData, const char *accName,
 				const char*, const char *recipient)
 		{
-			Plugin *p = static_cast<Plugin*> (opData);
-			return p->IsLoggedIn (QString::fromUtf8 (accName),
+			return static_cast<Plugin*> (opData)->IsLoggedIn (QString::fromUtf8 (accName),
 					QString::fromUtf8 (recipient));
 		}
 
@@ -333,11 +333,7 @@ namespace OTRoid
 		if (!action->property ("Azoth/OTRoid/IsGood").toBool ())
 			return;
 
-		QStringList ours;
-		ours << "contactListContextMenu"
-			<< "tabContextMenu"
-			<< "toolbar";
-
+		const QStringList ours { "contactListContextMenu", "tabContextMenu", "toolbar" };
 		proxy->SetReturnValue (proxy->GetReturnValue ().toStringList () + ours);
 	}
 
