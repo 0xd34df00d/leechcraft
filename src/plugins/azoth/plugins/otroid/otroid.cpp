@@ -350,6 +350,10 @@ namespace OTRoid
 			return;
 		}
 
+		if (msg->GetMessageType () != IMessage::MTChatMessage ||
+			msg->GetDirection () != IMessage::DIn)
+			return;
+
 		QObject *entryObj = msg->ParentCLEntry ();
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 		if (!entry ||
