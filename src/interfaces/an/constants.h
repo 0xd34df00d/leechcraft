@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QString>
+#include <QFlags>
 
 namespace LeechCraft
 {
@@ -117,5 +118,17 @@ namespace AN
 	/** @brief Generic category for generic notifications.
 	 */
 	const QString TypeGeneric = "org.LC.AdvNotifications.Generic.Generic";
+
+	enum NotifyFlag
+	{
+		NotifyNone			= 0,
+		NotifySingleShot	= 1 << 0,
+		NotifyTransient		= 1 << 1,
+		NotifyPersistent	= 1 << 2,
+		NotifyAudio			= 1 << 3
+	};
+	Q_DECLARE_FLAGS (NotifyFlags, NotifyFlag);
+
+	Q_DECLARE_OPERATORS_FOR_FLAGS (NotifyFlags);
 }
 }
