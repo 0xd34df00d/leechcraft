@@ -279,6 +279,17 @@ namespace OTRoid
 
 	void Plugin::CreatePrivkey (const char *accName, const char *proto)
 	{
+		if (QMessageBox::question (nullptr,
+				"Azoth OTRoid",
+				tr ("Private keys for account %1 need to be generated. This may take a "
+					"while (from a few seconds to a couple of minutes), and during this "
+					"time LeechCraft will be unavailable. Do you still wish to continue?"
+					"<br/><br/>As funny as it may sound, moving mouse while the keys "
+					"are generated may actually speed up generation considerably.")
+					.arg (GetAccountName (QString::fromUtf8 (accName))),
+				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
+
 		otrl_privkey_generate (UserState_,
 				GetOTRFilename ("privkey"),
 				accName,
@@ -291,6 +302,11 @@ namespace OTRoid
 					<< "failed";
 			return;
 		}
+
+		QMessageBox::information (nullptr,
+				"Azoth OTRoid",
+				tr ("Keys are generated. Thanks for your patience and sorry for this "
+					"not being in a separate thread."));
 	}
 
 #if OTRL_VERSION_MAJOR >= 4
