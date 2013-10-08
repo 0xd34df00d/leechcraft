@@ -79,17 +79,6 @@ namespace OTRoid
 					QString::fromUtf8 (msg));
 		}
 
-		const char* GetAccountName (void *opData, const char *acc, const char*)
-		{
-			const QString& name = static_cast<Plugin*> (opData)->
-					GetAccountName (QString::fromUtf8 (acc));
-
-			const char *orig = name.toUtf8 ().constData ();
-			char *result = new char [std::strlen (orig)];
-			std::strncpy (result, orig, std::strlen (orig));
-			return result;
-		}
-
 		void Notify (void *opdata, OtrlNotifyLevel level,
 				const char *accountname, const char *protocol,
 				const char *username, const char *title,
@@ -133,7 +122,16 @@ namespace OTRoid
 		OtrOps_.inject_message = &OTR::InjectMessage;
 		OtrOps_.write_fingerprints = [] (void *opData)
 				{ static_cast<Plugin*> (opData)->WriteFingerprints (); };
-		OtrOps_.account_name = &OTR::GetAccountName;
+		OtrOps_.account_name = [] (void *opData, const char *acc, const char*) -> const char*
+				{
+					const auto& name = static_cast<Plugin*> (opData)->
+							GetAccountName (QString::fromUtf8 (acc)).toUtf8 ();
+
+					const char *orig = name.constData ();
+					char *result = new char [name.size ()];
+					std::strncpy (result, orig, name.size ());
+					return result;
+				};
 		OtrOps_.account_name_free = [] (void*, const char *name) { delete [] name; };
 		OtrOps_.notify = &OTR::Notify;
 		OtrOps_.create_privkey = [] (void *opData, const char *accName, const char *proto)
