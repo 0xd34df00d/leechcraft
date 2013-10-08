@@ -59,7 +59,7 @@ namespace Util
 
 	Entity MakeANRule (const QString& title,
 			const QString& senderID, const QString& cat, const QStringList& types,
-			AN::NotifyFlags flags, const QList<QPair<QString, QVariant>>& fields)
+			AN::NotifyFlags flags, const QList<QPair<QString, ANFieldValue>>& fields)
 	{
 		auto e = MakeNotification (title, {}, PLog_);
 		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = senderID;
@@ -69,7 +69,7 @@ namespace Util
 		e.Mime_ += "-rule-create";
 
 		for (const auto& field : fields)
-			e.Additional_ [field.first] = field.second;
+			e.Additional_ [field.first] = QVariant::fromValue (field.second);
 
 		if (flags & AN::NotifySingleShot)
 			e.Additional_ ["org.LC.AdvNotifications.SingleShot"] = true;

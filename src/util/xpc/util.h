@@ -32,6 +32,7 @@
 #include <util/utilconfig.h>
 #include <interfaces/structures.h>
 #include <interfaces/an/constants.h>
+#include <interfaces/an/ianemitter.h>
 
 class IEntityManager;
 
@@ -86,7 +87,7 @@ namespace Util
 	UTIL_API Entity MakeANRule (const QString& title,
 			const QString& senderID, const QString& cat, const QStringList& types,
 			AN::NotifyFlags = AN::NotifyNone,
-			const QList<QPair<QString, QVariant>>& fields = {});
+			const QList<QPair<QString, ANFieldValue>>& fields = {});
 
 	/** @brief Returns the data filter plugins that can handle \em data.
 	 *
