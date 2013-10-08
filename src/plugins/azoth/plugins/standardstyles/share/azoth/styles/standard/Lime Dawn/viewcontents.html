@@ -1,46 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-	<title>Chat</title>
-	<meta name="coloring" content="hash" />
-	<meta name="themename" content="Lime Dawn" />
-	<meta name="author" content="Nikolaj Sjujskij" />
-	<meta name="comment" content="based on Lemon Night by Danil Platonov" />
+    <title>Chat</title>
+    <meta name="coloring" content="hash" />
+    <meta name="themename" content="Lime Dawn" />
+    <meta name="author" content="Nikolaj Sjujskij" />
+    <meta name="comment" content="based on Lemon Night by Danil Platonov" />
 <style type="text/css">
 /*<![CDATA[*/
 
 body {
-	background-color: #2c2c2c;
-	color: #dcdccc;
+    background-color: #2c2c2c;
+    color: #dcdccc;
 }
 a {
-	color: #729fcf;
+    color: #729fcf;
 }
 a:hover {
-	text-decoration: underline;
+    text-decoration: underline;
     background-color: #1c1c1c;
 }
 .statusmsg {
-	color: #67bd3e;
+    color: #67bd3e;
 }
 .slashmechatmsg {
-	color: #98fb98;
+    color: #98fb98;
 }
 .highlightchatmsg {
-	color: #e6ffcc;
+    color: #e6ffcc;
     font-weight: bold;
 }
 .eventmsg {
-	color: #f0e68c;
+    color: #f0e68c;
 }
 .datetime {
-	color: #74461a;
+    color: #74461a;
 }
 .msgin .nickname {
-	color: #5a96b1;
+    color: #5a96b1;
 }
 .msgout .nickname {
-	color: #36a822;
+    color: #36a822;
+}
+
+.servicemsg {
+    font-style: italic;
+    font-weight: bold;
+}
+
+.servicemsg .datetime {
+    display: none;
 }
 
 /*]]>*/
@@ -62,6 +71,7 @@ a:hover {
 <span class="datetime">[00:00:00]</span> <span class="nickname">me</span>:
 <a href=".">Link</a>
 </p>
+<p class="servicemsg"><span class="datetime">[00:00:00]</span> * monday, Jan 01, 2013</p>
 <p class="highlightchatmsg">We were highlighted shamelessly</p>
 <p class="eventmsg">A truly outstanding event took place</p>
 <p class="statusmsg">Hey, you! Change your status, why don't you?</p>
