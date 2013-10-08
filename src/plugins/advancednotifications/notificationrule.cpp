@@ -215,6 +215,11 @@ namespace AdvancedNotifications
 		FieldMatches_ = matches;
 	}
 
+	void NotificationRule::AddFieldMatch (const FieldMatch& match)
+	{
+		FieldMatches_ << match;
+	}
+
 	void NotificationRule::Save (QDataStream& stream) const
 	{
 		stream << static_cast<quint8> (3)

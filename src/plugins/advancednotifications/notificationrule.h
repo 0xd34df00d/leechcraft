@@ -112,6 +112,7 @@ namespace AdvancedNotifications
 
 		FieldMatches_t GetFieldMatches () const;
 		void SetFieldMatches (const FieldMatches_t&);
+		void AddFieldMatch (const FieldMatch&);
 
 		VisualParams GetVisualParams () const;
 		void SetVisualParams (const VisualParams&);
