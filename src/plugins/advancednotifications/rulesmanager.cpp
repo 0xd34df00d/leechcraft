@@ -33,7 +33,12 @@
 #include <QCoreApplication>
 #include <QtDebug>
 #include <interfaces/an/constants.h>
+#include <interfaces/an/ianemitter.h>
 #include <interfaces/structures.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include "core.h"
+#include "typedmatchers.h"
 
 namespace LeechCraft
 {
@@ -163,8 +168,19 @@ namespace AdvancedNotifications
 	void RulesManager::HandleEntity (const Entity& e)
 	{
 		const auto& title = e.Entity_.toString ();
+		const auto& sender = e.Additional_ ["org.LC.AdvNotifications.SenderID"].toByteArray ();
 		const auto& category = e.Additional_ ["org.LC.AdvNotifications.EventCategory"].toString ();
 		const auto& types = e.Additional_ ["org.LC.AdvNotifications.EventType"].toStringList ();
+
+		const auto& proxy = Core::Instance ().GetProxy ();
+		const auto plugin = proxy->GetPluginsManager ()->GetPluginByID (sender);
+		if (!plugin)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no plugin for"
+					<< sender;
+			return;
+		}
 
 		NotificationRule rule (title, category, types);
 
@@ -177,11 +193,11 @@ namespace AdvancedNotifications
 		if (e.Additional_ ["org.LC.AdvNotifications.NotifyTransient"].toBool ())
 			rule.AddMethod (NMVisual);
 
+		const auto& typeSet = types.toSet ();
 		if (e.Additional_ ["org.LC.AdvNotifications.NotifyAudio"].toBool ())
 		{
 			rule.AddMethod (NMAudio);
 
-			const auto& typeSet = types.toSet ();
 			for (const auto& other : Rules_)
 			{
 				const auto& audioParams = other.GetAudioParams ();
@@ -190,6 +206,25 @@ namespace AdvancedNotifications
 					rule.SetAudioParams (audioParams);
 			}
 		}
+
+		if (auto iane = qobject_cast<IANEmitter*> (plugin))
+			for (const auto& field : iane->GetANFields ())
+			{
+				qDebug () << "testing" << field.EventTypes_ << "against" << typeSet;
+				if (field.EventTypes_.toSet ().intersect (typeSet).isEmpty ())
+					continue;
+
+				if (e.Additional_.contains (field.ID_))
+				{
+					const auto& valMatcher = TypedMatcherBase::Create (field.Type_);
+					valMatcher->SetValue (e.Additional_ [field.ID_].value<ANFieldValue> ());
+
+					FieldMatch fieldMatch (field.Type_, valMatcher);
+					fieldMatch.SetPluginID (sender);
+					fieldMatch.SetFieldName (field.Name_);
+					rule.AddFieldMatch (fieldMatch);
+				}
+			}
 
 		Rules_.prepend (rule);
 		RulesModel_->insertRow (0, RuleToRow (rule));
