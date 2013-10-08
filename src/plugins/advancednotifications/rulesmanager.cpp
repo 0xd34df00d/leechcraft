@@ -33,6 +33,7 @@
 #include <QCoreApplication>
 #include <QtDebug>
 #include <interfaces/an/constants.h>
+#include <interfaces/structures.h>
 
 namespace LeechCraft
 {
@@ -157,6 +158,41 @@ namespace AdvancedNotifications
 			RulesModel_->setItem (row, i++, item);
 
 		SaveSettings ();
+	}
+
+	void RulesManager::HandleEntity (const Entity& e)
+	{
+		const auto& title = e.Entity_.toString ();
+		const auto& category = e.Additional_ ["org.LC.AdvNotifications.EventCategory"].toString ();
+		const auto& types = e.Additional_ ["org.LC.AdvNotifications.EventType"].toStringList ();
+
+		NotificationRule rule (title, category, types);
+
+		if (e.Additional_ ["org.LC.AdvNotifications.SingleShot"].toBool ())
+			rule.SetSingleShot (true);
+
+		if (e.Additional_ ["org.LC.AdvNotifications.NotifyPersistent"].toBool ())
+			rule.AddMethod (NMTray);
+
+		if (e.Additional_ ["org.LC.AdvNotifications.NotifyTransient"].toBool ())
+			rule.AddMethod (NMVisual);
+
+		if (e.Additional_ ["org.LC.AdvNotifications.NotifyAudio"].toBool ())
+		{
+			rule.AddMethod (NMAudio);
+
+			const auto& typeSet = types.toSet ();
+			for (const auto& other : Rules_)
+			{
+				const auto& audioParams = other.GetAudioParams ();
+				if (!audioParams.Filename_.isEmpty () &&
+						!other.GetTypes ().intersect (typeSet).isEmpty ())
+					rule.SetAudioParams (audioParams);
+			}
+		}
+
+		Rules_.prepend (rule);
+		RulesModel_->insertRow (0, RuleToRow (rule));
 	}
 
 	void RulesManager::LoadDefaultRules (int version)
