@@ -45,7 +45,6 @@ extern "C"
 #include <libotr/instag.h>
 #endif
 }
-
 #if OTRL_VERSION_MAJOR >= 4
 #include <QTimer>
 #endif
@@ -222,7 +221,13 @@ namespace OTRoid
 		QObject *entryObj = AzothProxy_->GetEntry (entryId, accId);
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no such entry"
+					<< entryId
+					<< accId;
 			return;
+		}
 
 		InjectMsg (entry, body);
 	}
