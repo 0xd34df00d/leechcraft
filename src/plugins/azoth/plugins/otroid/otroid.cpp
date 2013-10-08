@@ -118,8 +118,13 @@ namespace OTRoid
 				GetOTRFilename ("fingerprints"), NULL, NULL);
 
 		memset (&OtrOps_, 0, sizeof (OtrOps_));
+		OtrOps_.policy = [] (void*, ConnContext*) { return OtrlPolicy { OTRL_POLICY_DEFAULT }; };
 		OtrOps_.is_logged_in = &OTR::IsLoggedIn;
 		OtrOps_.inject_message = &OTR::InjectMessage;
+		OtrOps_.update_context_list = [] (void*) {};
+		OtrOps_.new_fingerprint = [] (void*, OtrlUserState,
+				const char *accountname, const char *protocol,
+				const char *username, unsigned char fingerprint[20]) {};
 		OtrOps_.write_fingerprints = [] (void *opData)
 				{ static_cast<Plugin*> (opData)->WriteFingerprints (); };
 		OtrOps_.account_name = [] (void *opData, const char *acc, const char*) -> const char*
@@ -133,7 +138,6 @@ namespace OTRoid
 					return result;
 				};
 		OtrOps_.account_name_free = [] (void*, const char *name) { delete [] name; };
-		OtrOps_.notify = &OTR::Notify;
 		OtrOps_.create_privkey = [] (void *opData, const char *accName, const char *proto)
 				{ static_cast<Plugin*> (opData)->CreatePrivkey (accName, proto); };
 #if OTRL_VERSION_MAJOR >= 4
@@ -148,8 +152,17 @@ namespace OTRoid
 
 		SetPollTimerInterval (otrl_message_poll_get_default_interval (UserState_));
 #else
+		OtrOps_.notify = &OTR::Notify;
 		OtrOps_.log_message = [] (void*, const char *msg)
 				{ qDebug () << "OTR:" << QString::fromUtf8 (msg).trimmed (); };
+		OtrOps_.display_otr_message = [] (void*, const char *accountname,
+				const char *protocol, const char *username, const char *msg) -> int
+			{
+				qDebug () << "OTR disp:"
+						<< accountname << protocol
+						<< username << QString::fromUtf8 (msg);
+				return 0;
+			};
 #endif
 	}
 
