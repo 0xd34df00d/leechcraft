@@ -40,7 +40,7 @@
 #endif
 #include <util/resourceloader.h>
 #include <interfaces/core/ihookproxy.h>
-#include <interfaces/ianemitter.h>
+#include <interfaces/an/ianemitter.h>
 #include <interfaces/iinfo.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/azothcommon.h"

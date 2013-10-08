@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "matchconfigdialog.h"
-#include <interfaces/ianemitter.h>
+#include <interfaces/an/ianemitter.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "core.h"

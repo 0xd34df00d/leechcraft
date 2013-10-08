@@ -33,7 +33,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QInputDialog>
-#include <interfaces/ianemitter.h>
+#include <interfaces/an/ianemitter.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
