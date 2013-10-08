@@ -192,6 +192,7 @@ namespace Azoth
 
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
+		ProxyObject* GetPluginProxy () const;
 
 		QList<ANFieldData> GetANFields () const;
 

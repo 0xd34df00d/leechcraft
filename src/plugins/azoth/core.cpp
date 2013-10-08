@@ -336,6 +336,11 @@ namespace Azoth
 		return Proxy_;
 	}
 
+	ProxyObject* Core::GetPluginProxy () const
+	{
+		return PluginProxyObject_.get ();
+	}
+
 	QList<ANFieldData> Core::GetANFields () const
 	{
 		return ANFields_;
