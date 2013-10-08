@@ -75,6 +75,35 @@ namespace AdvancedNotifications
 		Value_.Contains_ = map ["Cont"].toBool ();
 	}
 
+	namespace
+	{
+		template<typename T>
+		struct ValueSetVisitor : public boost::static_visitor<void>
+		{
+			T& Value_;
+
+			ValueSetVisitor (T& val)
+			: Value_ (val)
+			{
+			}
+
+			void operator() (const T& val) const
+			{
+				Value_ = val;
+			}
+
+			template<typename U>
+			void operator() (const U&) const
+			{
+			}
+		};
+	}
+
+	void StringLikeMatcher::SetValue (const ANFieldValue& value)
+	{
+		boost::apply_visitor (ValueSetVisitor<ANStringFieldValue> { Value_ }, value);
+	}
+
 	QWidget* StringLikeMatcher::GetConfigWidget ()
 	{
 		if (!CW_)
@@ -198,6 +227,11 @@ namespace AdvancedNotifications
 	{
 		Value_.Boundary_ = map ["Bd"].toInt ();
 		Value_.Ops_ = static_cast<ANIntFieldValue::Operations> (map ["Ops"].value<quint16> ());
+	}
+
+	void IntMatcher::SetValue (const ANFieldValue& value)
+	{
+		boost::apply_visitor (ValueSetVisitor<ANIntFieldValue> { Value_ }, value);
 	}
 
 	bool IntMatcher::Match (const QVariant& var) const

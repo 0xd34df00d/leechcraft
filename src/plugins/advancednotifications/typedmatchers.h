@@ -59,6 +59,8 @@ namespace AdvancedNotifications
 		virtual QVariantMap Save () const = 0;
 		virtual void Load (const QVariantMap&) = 0;
 
+		virtual void SetValue (const ANFieldValue&) = 0;
+
 		virtual bool Match (const QVariant&) const = 0;
 
 		virtual QString GetHRDescription () const = 0;
@@ -77,6 +79,8 @@ namespace AdvancedNotifications
 
 		QVariantMap Save () const;
 		void Load (const QVariantMap&);
+
+		void SetValue (const ANFieldValue&);
 
 		QWidget* GetConfigWidget ();
 		void SyncToWidget ();
@@ -109,6 +113,8 @@ namespace AdvancedNotifications
 
 		QVariantMap Save () const;
 		void Load (const QVariantMap&);
+
+		void SetValue (const ANFieldValue&);
 
 		bool Match (const QVariant&) const;
 
