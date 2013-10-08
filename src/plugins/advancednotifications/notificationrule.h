@@ -108,6 +108,7 @@ namespace AdvancedNotifications
 
 		NotificationMethods GetMethods () const;
 		void SetMethods (const NotificationMethods&);
+		void AddMethod (NotificationMethod);
 
 		FieldMatches_t GetFieldMatches () const;
 		void SetFieldMatches (const FieldMatches_t&);

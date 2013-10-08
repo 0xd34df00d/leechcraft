@@ -140,6 +140,11 @@ namespace AdvancedNotifications
 		Methods_ = methods;
 	}
 
+	void NotificationRule::AddMethod (NotificationMethod method)
+	{
+		Methods_ |= method;
+	}
+
 	FieldMatches_t NotificationRule::GetFieldMatches () const
 	{
 		return FieldMatches_;
