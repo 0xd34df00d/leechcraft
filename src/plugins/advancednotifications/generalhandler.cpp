@@ -37,6 +37,7 @@
 #include "cmdrunhandler.h"
 #include "core.h"
 #include "wmurgenthandler.h"
+#include "rulesmanager.h"
 
 namespace LeechCraft
 {
@@ -68,6 +69,13 @@ namespace AdvancedNotifications
 
 	void GeneralHandler::Handle (const Entity& e)
 	{
+		if (e.Mime_ == "x-leechcraft/notification-rule-create")
+		{
+			Core::Instance ().GetRulesManager ()->HandleEntity (e);
+			return;
+		}
+
+
 		if (e.Additional_ ["org.LC.AdvNotifications.EventCategory"] == "org.LC.AdvNotifications.Cancel")
 		{
 			for (const auto& handler : Handlers_)
