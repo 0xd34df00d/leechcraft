@@ -38,6 +38,8 @@ extern "C"
 {
 #include <libotr/version.h>
 #include <libotr/privkey.h>
+#include <libotr/message.h>
+#include <libotr/proto.h>
 
 #if OTRL_VERSION_MAJOR >= 4
 #include <libotr/instag.h>
@@ -119,6 +121,8 @@ namespace OTRoid
 
 		memset (&OtrOps_, 0, sizeof (OtrOps_));
 		OtrOps_.policy = [] (void*, ConnContext*) { return OtrlPolicy { OTRL_POLICY_DEFAULT }; };
+		OtrOps_.create_privkey = [] (void *opData, const char *accName, const char *proto)
+				{ static_cast<Plugin*> (opData)->CreatePrivkey (accName, proto); };
 		OtrOps_.is_logged_in = &OTR::IsLoggedIn;
 		OtrOps_.inject_message = &OTR::InjectMessage;
 		OtrOps_.update_context_list = [] (void*) {};
@@ -138,8 +142,6 @@ namespace OTRoid
 					return result;
 				};
 		OtrOps_.account_name_free = [] (void*, const char *name) { delete [] name; };
-		OtrOps_.create_privkey = [] (void *opData, const char *accName, const char *proto)
-				{ static_cast<Plugin*> (opData)->CreatePrivkey (accName, proto); };
 #if OTRL_VERSION_MAJOR >= 4
 		OtrOps_.handle_msg_event = &OTR::HandleMsgEvent;
 		OtrOps_.timer_control = &OTR::TimerControl;
@@ -272,6 +274,18 @@ namespace OTRoid
 
 	void Plugin::CreatePrivkey (const char *accName, const char *proto)
 	{
+		otrl_privkey_generate (UserState_,
+				GetOTRFilename ("privkey"),
+				accName,
+				proto);
+
+		char fingerprint [45];
+		if (!otrl_privkey_fingerprint (UserState_, fingerprint, accName, proto))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "failed";
+			return;
+		}
 	}
 
 #if OTRL_VERSION_MAJOR >= 4
