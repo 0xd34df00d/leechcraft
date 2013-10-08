@@ -255,10 +255,14 @@ namespace vlc
 		for (int i = 0; i < playlist.size (); i++)
 			PlaylistWidget_->AddUrl (QUrl::fromEncoded (playlist [i].toUtf8 ()), false);
 
-		PlaylistWidget_->SetCurrentMedia (Settings_->value ("LastPlaying").toInt ());
-		long long time = Settings_->value ("LastTime").toLongLong ();
-		if (time)
-			VlcPlayer_->SetCurrentTime (time);
+		int lastPlaying = Settings_->value ("LastPlaying").toInt ();
+		if (lastPlaying < playlist.size () && lastPlaying >= 0)
+		{
+			PlaylistWidget_->SetCurrentMedia (lastPlaying);
+			long long time = Settings_->value ("LastTime").toLongLong ();
+			if (time)
+				VlcPlayer_->SetCurrentTime (time);
+		}
 	}
 
 	QObject* VlcWidget::ParentMultiTabs ()
