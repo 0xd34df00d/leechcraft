@@ -128,7 +128,7 @@ namespace AN
 		NotifyAudio			= 1 << 3
 	};
 	Q_DECLARE_FLAGS (NotifyFlags, NotifyFlag);
+}
+}
 
-	Q_DECLARE_OPERATORS_FOR_FLAGS (NotifyFlags);
-}
-}
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::AN::NotifyFlags);

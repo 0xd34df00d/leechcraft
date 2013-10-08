@@ -34,8 +34,6 @@
 #include "ui_intmatcherconfigwidget.h"
 #include "ui_stringlikematcherconfigwidget.h"
 
-//Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::AdvancedNotifications::IntMatcher::Operations);
-
 namespace LeechCraft
 {
 namespace AdvancedNotifications

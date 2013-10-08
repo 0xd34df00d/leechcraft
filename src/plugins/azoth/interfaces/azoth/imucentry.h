@@ -275,12 +275,11 @@ namespace Azoth
 		 */
 		virtual void beenBanned (const QString& reason) = 0;
 	};
-
-	Q_DECLARE_OPERATORS_FOR_FLAGS (IMUCEntry::MUCFeatures);
 }
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IMUCEntry,
 		"org.Deviant.LeechCraft.Azoth.IMUCEntry/1.0");
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::IMUCEntry::MUCFeatures);
 
 #endif

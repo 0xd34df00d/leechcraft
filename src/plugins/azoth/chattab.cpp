@@ -1102,7 +1102,7 @@ namespace Azoth
 
 			Entity e = Util::MakeEntity (url,
 					QString (),
-					static_cast<TaskParameter> (FromUserInitiated | OnlyHandle));
+					FromUserInitiated | OnlyHandle);
 			if (!raise)
 				e.Additional_ ["BackgroundHandle"] = true;
 			Core::Instance ().SendEntity (e);

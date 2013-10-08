@@ -110,7 +110,6 @@ namespace Proto
 	};
 
 	Q_DECLARE_FLAGS (MsgFlags, MsgFlag);
-	Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::Vader::Proto::MsgFlags);
 
 	const quint32 MsgUserFlagMask = 0x000036A8;
 
@@ -157,7 +156,6 @@ namespace Proto
 	};
 
 	Q_DECLARE_FLAGS (ContactOpFlags, ContactOpFlag);
-	Q_DECLARE_OPERATORS_FOR_FLAGS (ContactOpFlags);
 
 	namespace ContactAck
 	{
@@ -231,8 +229,11 @@ namespace Proto
 	};
 
 	Q_DECLARE_FLAGS (FeatureFlags, FeatureFlag);
-	Q_DECLARE_OPERATORS_FOR_FLAGS (FeatureFlags);
 }
 }
 }
 }
+
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::Vader::Proto::MsgFlags);
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::Vader::Proto::FeatureFlags);
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::Vader::Proto::ContactOpFlags);

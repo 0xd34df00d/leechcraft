@@ -120,8 +120,8 @@ namespace Blogique
 			 */
 			AAORegisterNewAccount = 0x01
 		};
-
 		Q_DECLARE_FLAGS (AccountAddOptions, AccountAddOption)
+
 		/** @brief Returns the protocol object as a QObject.
 		 *
 		 * @return Blogging platform object as QObject.
@@ -301,10 +301,10 @@ namespace Blogique
 
 		virtual void insertTag (const QString& tag) = 0;
 	};
-
-	Q_DECLARE_OPERATORS_FOR_FLAGS (IBloggingPlatform::BloggingPlatfromFeatures);
 }
 }
 
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Blogique::IBloggingPlatform::BloggingPlatfromFeatures);
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Blogique::IBloggingPlatform::AccountAddOptions);
 Q_DECLARE_INTERFACE (LeechCraft::Blogique::IBloggingPlatform,
 		"org.Deviant.LeechCraft.Blogique.IBloggingPlatform/1.0");

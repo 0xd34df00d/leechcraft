@@ -270,12 +270,11 @@ namespace Azoth
 		 */
 		virtual void accountRemoved (QObject *account) = 0;
 	};
-
-	Q_DECLARE_OPERATORS_FOR_FLAGS (IProtocol::ProtocolFeatures);
 }
 }
 
 Q_DECLARE_METATYPE (LeechCraft::Azoth::IProtocol*);
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::IProtocol::ProtocolFeatures);
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IProtocol,
 		"org.Deviant.LeechCraft.Azoth.IProtocol/1.0");
 
