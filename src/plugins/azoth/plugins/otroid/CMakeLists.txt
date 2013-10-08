@@ -20,6 +20,7 @@ set (OTROID_SRCS
 	)
 set (OTROID_RESOURCES azothotroidresources.qrc)
 CreateTrs ("azoth_otroid" "en;ru_RU;uk_UA" OTROID_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget ("azoth_otroid" "en;ru_RU" "${OTROID_SRCS}" "" "")
 QT4_ADD_RESOURCES (OTROID_RCCS ${OTROID_RESOURCES})
 
 add_library (leechcraft_azoth_otroid SHARED
