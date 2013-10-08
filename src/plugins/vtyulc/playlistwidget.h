@@ -32,6 +32,7 @@
 #include <QWidget>
 #include <QUrl>
 #include <QTreeView>
+#include <vlc/libvlc_structures.h>
 
 struct libvlc_media_player_t;
 struct libvlc_media_list_player_t;
@@ -48,6 +49,12 @@ namespace LeechCraft
 namespace vlc
 {
 	class PlaylistModel;
+	
+	struct Playlist {
+		QStringList Playlist_;
+		int Current_;
+		libvlc_time_t Position_;
+	};
 	
 	class PlaylistWidget : public QTreeView
 	{
@@ -88,7 +95,7 @@ namespace vlc
 		void deleteRequested (QAction*);
 		
 	signals:
-		void savePlaylist (QStringList);
+		void savePlaylist (Playlist);
 	};
 }
 }

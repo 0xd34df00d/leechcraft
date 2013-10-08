@@ -96,6 +96,7 @@ namespace vlc
 		
 		QTime GetCurrentTime () const;
 		QTime GetFullTime () const;
+		void SetCurrentTime (libvlc_time_t);
 		
 	private:
 		libvlc_track_description_t* GetTrack (libvlc_track_description_t *t, int track) const;

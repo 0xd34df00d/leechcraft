@@ -154,6 +154,8 @@ namespace vlc
 		void RestoreSettings ();
 		void RestorePlaylist ();
 		
+		void ParsePath (QString);
+		
 	public slots:
 		void autostartChanged ();
 		
@@ -192,7 +194,7 @@ namespace vlc
 		
 		void disableScreenSaver ();
 		
-		void savePlaylist (const QStringList&);
+		void savePlaylist (const Playlist&);
 		
 	signals:
 		void deleteMe (QWidget*);

@@ -56,6 +56,7 @@
 #include <QDockWidget>
 #include <QSettings>
 #include <QStringList>
+#include <boost/graph/graph_concepts.hpp>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/util.h>
 #include <interfaces/entitytesthandleresult.h>
@@ -98,6 +99,7 @@ namespace vlc
 	{
 		VlcMainWidget_ = new SignalledWidget;
 		VlcMainWidget_->SetBackGroundColor (new QColor ("black"));
+		VlcMainWidget_->setAttribute (Qt::WA_NativeWindow);
 		PlaylistWidget_ = new PlaylistWidget (proxy->GetIcon ("media-playback-start"));
 
 		QVBoxLayout *layout = new QVBoxLayout;
@@ -189,9 +191,9 @@ namespace vlc
 				SLOT (disableScreenSaver ()));
 
 		connect (PlaylistWidget_,
-				SIGNAL (savePlaylist (QStringList)),
+				SIGNAL (savePlaylist (Playlist)),
 				this,
-				SLOT (savePlaylist (QStringList)));
+				SLOT (savePlaylist (Playlist)));
 
 		connect (VlcPlayer_,
 				SIGNAL (stable ()),
@@ -222,10 +224,7 @@ namespace vlc
 
 	VlcWidget::~VlcWidget ()
 	{
-		VlcPlayer_->stop ();
-		disableScreenSaver ();
 		delete PlaylistWidget_;
-		delete PlaylistDock_;
 		delete VlcPlayer_;
 		SaveSettings ();
 		emit deleteMe (this);
@@ -236,6 +235,7 @@ namespace vlc
 		Settings_ = new QSettings (QCoreApplication::organizationName (), QCoreApplication::applicationName () + "_VTYULC");
 		RestorePlaylist ();
 		Autostart_ = XmlSettingsManager::Instance ().property ("Autostart").toBool ();
+		QDir::setCurrent (Settings_->value ("WorkingDirectory", QDir::currentPath ()).toString ());
 	}
 
 	void VlcWidget::SaveSettings ()
@@ -243,22 +243,24 @@ namespace vlc
 		delete Settings_;
 	}
 
-	void VlcWidget::savePlaylist (const QStringList& list)
+	void VlcWidget::savePlaylist (const Playlist& playlist)
 	{
-		qDebug () << list;
-		Settings_->setValue ("Playlist", list);
+		Settings_->setValue ("Playlist", playlist.Playlist_);
+		Settings_->setValue ("LastPlaying", playlist.Current_);
+		Settings_->setValue ("LastTime", (long long)playlist.Position_);
 	}
 
 	void VlcWidget::RestorePlaylist ()
 	{
 		QStringList playlist = Settings_->value ("Playlist").toStringList ();
-		if (playlist.size () < 2)
-			return;
-
-		for (int i = 0; i < playlist.size () - 1; i++)
+		
+		for (int i = 0; i < playlist.size (); i++)
 			PlaylistWidget_->AddUrl (QUrl::fromEncoded (playlist [i].toUtf8 ()), false);
 
-		PlaylistWidget_->SetCurrentMedia (playlist [playlist.size () - 1].toInt ());
+		PlaylistWidget_->SetCurrentMedia (Settings_->value ("LastPlaying").toInt ());
+		long long time = Settings_->value ("LastTime").toLongLong ();
+		if (time)
+			VlcPlayer_->SetCurrentTime (time);
 	}
 
 	QObject* VlcWidget::ParentMultiTabs ()
@@ -282,6 +284,9 @@ namespace vlc
 				tr ("Open files"),
 				tr ("Videos (*.mkv *.avi *.mov *.mpg)"));
 
+		if (files.size ())
+			ParsePath (files [0]);
+		
 		PlaylistWidget_->clearPlaylist ();
 		for (int i = 0; i < files.size (); i++)
 			if (QFile::exists (files [i]))
@@ -293,7 +298,10 @@ namespace vlc
 		QStringList files = QFileDialog::getOpenFileNames (this,
 				tr ("Open files"),
 				tr ("Videos (*.mkv *.avi *.mov *.mpg)"));
-
+		
+		if (files.size ())
+			ParsePath (files [0]);
+		
 		for (int i = 0; i < files.size (); i++)
 			if (QFile::exists (files [i]))
 				PlaylistWidget_->AddUrl (QUrl::fromLocalFile (files [i]), Autostart_);
@@ -308,6 +316,7 @@ namespace vlc
 
 		if (QFile::exists (folder))
 		{
+			ParsePath (folder);
 			PlaylistWidget_->clearPlaylist ();
 			PlaylistWidget_->AddUrl ("directory://" + folder, Autostart_);
 		}
@@ -321,6 +330,7 @@ namespace vlc
 
 		if (QFile::exists (folder))
 		{
+			ParsePath (folder);
 			PlaylistWidget_->clearPlaylist ();
 			PlaylistWidget_->AddUrl ("dvdsimple://" + folder, Autostart_);
 		}
@@ -334,6 +344,7 @@ namespace vlc
 
 		if (QFile::exists (folder))
 		{
+			ParsePath (folder);
 			PlaylistWidget_->clearPlaylist ();
 			PlaylistWidget_->AddUrl ("dvd://" + folder, Autostart_);
 		}
@@ -357,7 +368,18 @@ namespace vlc
 				tr ("Media (*.ac3)"));
 
 		if (QFile::exists (url))
+		{
+			ParsePath (url);
 			VlcPlayer_->addUrl (QUrl::fromLocalFile (url));
+		}
+	}
+	
+	void VlcWidget::ParsePath (QString s)
+	{
+		while (s.length () && s[s.length () - 1] != '/')
+			s.remove (s.length () - 1, 1);
+		
+		Settings_->setValue ("WorkingDirectory", s);
 	}
 
 	void VlcWidget::updateInterface ()
@@ -419,7 +441,8 @@ namespace vlc
 
 	void VlcWidget::mouseDoubleClickEvent (QMouseEvent *event)
 	{
-		toggleFullScreen ();
+		VlcMainWidget_->setParent(nullptr);
+		//toggleFullScreen ();
 		event->accept ();
 	}
 

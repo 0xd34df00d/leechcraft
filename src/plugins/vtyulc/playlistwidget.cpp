@@ -71,17 +71,23 @@ namespace vlc
 	
 	PlaylistWidget::~PlaylistWidget ()
 	{
-		QStringList save;
+		Playlist res;
 		int size = libvlc_media_list_count (Playlist_);
 		for (int i = 0; i < size; i++)
-			save << QString (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL));
+			res.Playlist_ << QString (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL));
 		
-		if (LastPlayingItem_ == nullptr)
-			save << "0";
-		else
-			save << QString::number (LastPlayingItem_->row ());
+		if (!libvlc_media_player_get_media (NativePlayer_)) 
+		{
+			res.Current_ = 0;
+			res.Position_ = 0;
+		}
+		else 
+		{
+			res.Current_ = libvlc_media_list_index_of_item (Playlist_, libvlc_media_player_get_media (NativePlayer_));
+			res.Position_ = libvlc_media_player_get_time (NativePlayer_);
+		}
 		
-		emit savePlaylist (save);
+		emit savePlaylist (res);
 		
 		clearPlaylist ();
 

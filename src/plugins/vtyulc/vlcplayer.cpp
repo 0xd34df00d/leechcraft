@@ -155,6 +155,19 @@ namespace vlc
 			return convertTime (0);
 	}
 	
+	void VlcPlayer::SetCurrentTime (libvlc_time_t time)
+	{
+		if (libvlc_media_player_is_playing (Mp_.get ()))
+			libvlc_media_player_set_time (Mp_.get (), time);
+		else
+		{
+			libvlc_media_player_play (Mp_.get ());
+			WaitForPlaying ();
+			libvlc_media_player_set_time (Mp_.get (), time);
+			libvlc_media_player_pause (Mp_.get ());
+		}
+	}
+	
 	void VlcPlayer::Freeze ()
 	{
 		emit unstable ();
