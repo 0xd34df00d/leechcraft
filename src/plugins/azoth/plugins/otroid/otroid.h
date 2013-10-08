@@ -42,6 +42,7 @@ extern "C"
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/azoth/iproxyobject.h>
+#include <interfaces/azoth/imessage.h>
 
 class QTranslator;
 
@@ -87,9 +88,8 @@ namespace OTRoid
 		QSet<QByteArray> GetPluginClasses () const;
 
 		int IsLoggedIn (const QString& accId, const QString& entryId);
-		void InjectMsg (const QString& accId,
-				const QString& entryId, const QString& msg);
-		void InjectMsg (ICLEntry *entry, const QString& msg);
+		void InjectMsg (const QString& accId, const QString& entryId, const QString& msg, IMessage::Direction);
+		void InjectMsg (ICLEntry *entry, const QString& msg, IMessage::Direction);
 		void Notify (const QString& accId, const QString& entryId,
 				Priority, const QString& title,
 				const QString& primary, const QString& secondary);
