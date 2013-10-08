@@ -43,8 +43,10 @@
 #include <util/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/delayedexecutor.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/an/constants.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/imucperms.h"
 #include "interfaces/azoth/iadvancedclentry.h"
@@ -76,6 +78,7 @@
 #include "setstatusdialog.h"
 #include "filesenddialog.h"
 #include "advancedpermchangedialog.h"
+#include "proxyobject.h"
 
 typedef std::function<void (LeechCraft::Azoth::ICLEntry*)> SingleEntryActor_f;
 typedef std::function<void (QList<LeechCraft::Azoth::ICLEntry*>)> MultiEntryActor_f;
@@ -570,7 +573,8 @@ namespace Azoth
 			{ "remove", SingleEntryActor_f (Remove) },
 			{ "sep_afterrostermodify", {} },
 			{ "directedpresence", MultiEntryActor_f (SendDirectedStatus) },
-			{ "authorization", {} }
+			{ "authorization", {} },
+			{ "notifywhen", {} }
 		};
 
 		const std::vector<std::pair<QByteArray, EntryActor_f>> AfterRolesNames
@@ -983,6 +987,19 @@ namespace Azoth
 			rerequestReason->setProperty ("Azoth/WithReason", true);
 		}
 
+		if (entry->GetEntryType () != ICLEntry::ETMUC)
+		{
+			auto notifyMenu = new QMenu (tr ("Notify when"));
+			Entry2Actions_ [entry] ["notifywhen"] = notifyMenu->menuAction ();
+			Action2Areas_ [notifyMenu->menuAction ()] << CLEAAContactListCtxtMenu
+					<< CLEAATabCtxtMenu;
+
+			notifyMenu->addAction (tr ("changes state"),
+					this, SLOT (handleActionNotifyChangesState ()));
+			notifyMenu->addAction (tr ("becomes online"),
+					this, SLOT (handleActionNotifyBecomesOnline ()));
+		}
+
 #ifdef ENABLE_CRYPT
 		if (qobject_cast<ISupportPGP*> (entry->GetParentAccount ()))
 		{
@@ -1355,6 +1372,83 @@ namespace Azoth
 		ManipulateAuth ("rerequestauth",
 				tr ("Enter reason for rerequesting authorization from %1:"),
 				&IAuthable::RerequestAuth);
+	}
+
+	void ActionsManager::handleActionNotifyChangesState ()
+	{
+		QAction *action = qobject_cast<QAction*> (sender ());
+		if (!action)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "is not a QAction";
+			return;
+		}
+
+		auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
+		const auto& hrId = entry->GetHumanReadableID ();
+
+		const auto& e = Util::MakeANRule (tr ("Notify when %1 changes state").arg (hrId),
+				"org.LeechCraft.Azoth",
+				AN::CatIM,
+				{ AN::TypeIMStatusChange },
+				AN::NotifyPersistent | AN::NotifyTransient | AN::NotifySingleShot,
+				{
+					{
+						"org.LC.Plugins.Azoth.SourceID",
+						ANStringFieldValue
+						{
+							QRegExp { entry->GetEntryID (), Qt::CaseSensitive, QRegExp::FixedString },
+							true
+						}
+					}
+				});
+		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
+	}
+
+	void ActionsManager::handleActionNotifyBecomesOnline ()
+	{
+		QAction *action = qobject_cast<QAction*> (sender ());
+		if (!action)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "is not a QAction";
+			return;
+		}
+
+		auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
+		const auto& hrId = entry->GetHumanReadableID ();
+
+		const auto& e = Util::MakeANRule (tr ("Notify when %1 becomes online").arg (hrId),
+				"org.LeechCraft.Azoth",
+				AN::CatIM,
+				{ AN::TypeIMStatusChange },
+				AN::NotifyPersistent | AN::NotifyTransient | AN::NotifySingleShot,
+				{
+					{
+						"org.LC.Plugins.Azoth.SourceID",
+						ANStringFieldValue
+						{
+							QRegExp { entry->GetEntryID (), Qt::CaseSensitive, QRegExp::FixedString },
+							true
+						}
+					},
+					{
+						"org.LC.Plugins.Azoth.NewStatus",
+						ANStringFieldValue
+						{
+							QRegExp
+							{
+								Core::Instance ().GetPluginProxy ()->StateToString (SOnline),
+								Qt::CaseSensitive,
+								QRegExp::FixedString
+							},
+							true
+						}
+					}
+				});
+		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 }
 }
