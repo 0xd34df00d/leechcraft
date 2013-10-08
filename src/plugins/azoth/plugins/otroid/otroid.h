@@ -68,6 +68,8 @@ namespace OTRoid
 		QHash<QObject*, QAction*> Entry2Action_;
 		QHash<QAction*, QObject*> Action2Entry_;
 
+		QHash<QObject*, QString> Msg2OrigText_;
+
 		QDir OtrDir_;
 
 #if OTRL_VERSION_MAJOR >= 4

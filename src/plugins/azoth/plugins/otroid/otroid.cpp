@@ -350,6 +350,13 @@ namespace OTRoid
 			return;
 		}
 
+		if (msg->GetDirection () == IMessage::DOut &&
+				Msg2OrigText_.contains (msgObj))
+		{
+			msg->SetBody (Msg2OrigText_.take (msgObj));
+			return;
+		}
+
 		if (msg->GetMessageType () != IMessage::MTChatMessage ||
 			msg->GetDirection () != IMessage::DIn)
 			return;
@@ -413,7 +420,6 @@ namespace OTRoid
 				!Entry2Action_ [entryObj]->isChecked ())
 			return;
 
-		qDebug () << Q_FUNC_INFO;
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 		IAccount *acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
 		IProtocol *proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
@@ -438,7 +444,6 @@ namespace OTRoid
 				NULL,
 				NULL);
 
-		qDebug () << "new message:" << newMsg << "; err:" << err;
 		if (err)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -447,7 +452,10 @@ namespace OTRoid
 		}
 
 		if (newMsg)
+		{
+			Msg2OrigText_ [msgObj] = msg->GetBody ();
 			msg->SetBody (QString::fromUtf8 (newMsg));
+		}
 
 		otrl_message_free (newMsg);
 	}
