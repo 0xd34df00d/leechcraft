@@ -85,7 +85,24 @@ namespace OTRoid
 				const char *username, const char *title,
 				const char *primary, const char *secondary)
 		{
-			qDebug () << Q_FUNC_INFO << accountname << protocol << username << title << primary << secondary;
+			auto u = [] (const char *cs) { return QString::fromUtf8 (cs); };
+
+			Priority prio = PInfo_;
+			switch (level)
+			{
+			case OTRL_NOTIFY_ERROR:
+				prio = PCritical_;
+				break;
+			case OTRL_NOTIFY_WARNING:
+				prio = PWarning_;
+				break;
+			case OTRL_NOTIFY_INFO:
+				prio = PInfo_;
+				break;
+			}
+
+			static_cast<Plugin*> (opdata)->Notify (u (accountname),
+					u (username), prio, u (title), u (primary), u (secondary));
 		}
 
 #if OTRL_VERSION_MAJOR >= 4
