@@ -57,6 +57,32 @@ namespace Util
 		return e;
 	}
 
+	Entity MakeANRule (const QString& title,
+			const QString& senderID, const QString& cat, const QStringList& types,
+			AN::NotifyFlags flags, const QList<QPair<QString, QVariant>>& fields)
+	{
+		auto e = MakeNotification (title, {}, PLog_);
+		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = senderID;
+		e.Additional_ ["org.LC.AdvNotifications.EventID"] = "org.LC.AdvNotifications.RuleRegister";
+		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = cat;
+		e.Additional_ ["org.LC.AdvNotifications.EventType"] = types;
+		e.Mime_ += "-rule-create";
+
+		for (const auto& field : fields)
+			e.Additional_ [field.first] = field.second;
+
+		if (flags & AN::NotifySingleShot)
+			e.Additional_ ["org.LC.AdvNotifications.SingleShot"] = true;
+		if (flags & AN::NotifyTransient)
+			e.Additional_ ["org.LC.AdvNotifications.NotifyTransient"] = true;
+		if (flags & AN::NotifyPersistent)
+			e.Additional_ ["org.LC.AdvNotifications.NotifyPersistent"] = true;
+		if (flags & AN::NotifyAudio)
+			e.Additional_ ["org.LC.AdvNotifications.NotifyAudio"] = true;
+
+		return e;
+	}
+
 	QList<QObject*> GetDataFilters (const QVariant& data, IEntityManager* manager)
 	{
 		const auto& e = MakeEntity (data, QString (), {}, "x-leechcraft/data-filter-request");
