@@ -56,7 +56,6 @@
 #include <QDockWidget>
 #include <QSettings>
 #include <QStringList>
-#include <boost/graph/graph_concepts.hpp>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/util.h>
 #include <interfaces/entitytesthandleresult.h>
@@ -99,7 +98,6 @@ namespace vlc
 	{
 		VlcMainWidget_ = new SignalledWidget;
 		VlcMainWidget_->SetBackGroundColor (new QColor ("black"));
-		VlcMainWidget_->setAttribute (Qt::WA_NativeWindow);
 		PlaylistWidget_ = new PlaylistWidget (proxy->GetIcon ("media-playback-start"));
 
 		QVBoxLayout *layout = new QVBoxLayout;
@@ -441,8 +439,7 @@ namespace vlc
 
 	void VlcWidget::mouseDoubleClickEvent (QMouseEvent *event)
 	{
-		VlcMainWidget_->setParent(nullptr);
-		//toggleFullScreen ();
+		toggleFullScreen ();
 		event->accept ();
 	}
 
