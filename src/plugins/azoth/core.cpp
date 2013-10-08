@@ -1831,7 +1831,7 @@ namespace Azoth
 
 		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.SourceID",
 				tr ("Sender ID"),
-				tr ("Human-readable ID of the sender (protocol-specific)."),
+				tr ("Non-human-readable ID of the sender (protocol-specific)."),
 				QVariant::String,
 				commonFields);
 
