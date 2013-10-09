@@ -440,18 +440,18 @@ namespace OTRoid
 		{
 			proxy->CancelDefault ();
 			msgObj->setProperty ("Azoth/HiddenMessage", true);
-			otrl_message_free (newMsg);
-			return;
 		}
 
 		if (newMsg)
 		{
 			msg->SetBody (QString::fromUtf8 (newMsg));
 			otrl_message_free (newMsg);
+		}
 
+		if (ignore || newMsg)
+		{
 			if (!Entry2Action_.contains (entryObj))
 				CreateActions (entryObj);
-
 			Entry2Action_ [entryObj]->setChecked (true);
 		}
 	}
