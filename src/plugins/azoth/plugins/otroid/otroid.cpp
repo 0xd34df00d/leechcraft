@@ -535,8 +535,6 @@ namespace OTRoid
 	void Plugin::handleOtrAction ()
 	{
 		auto act = qobject_cast<QAction*> (sender ());
-		if (!act->isChecked ())
-			return;
 
 		auto entryObj = Action2Entry_ [act];
 		auto entry = qobject_cast<ICLEntry*> (entryObj);
@@ -545,6 +543,13 @@ namespace OTRoid
 
 		auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 		const auto& protoId = proto->GetProtocolID ();
+
+		if (!act->isChecked ())
+		{
+			otrl_message_disconnect (UserState_, &OtrOps_, this,
+					accId.constData (), protoId.constData (), entry->GetEntryID ().constData ());
+			return;
+		}
 
 		char fingerprint [45];
 		if (!otrl_privkey_fingerprint (UserState_, fingerprint,
