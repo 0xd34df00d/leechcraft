@@ -547,7 +547,8 @@ namespace OTRoid
 		if (!act->isChecked ())
 		{
 			otrl_message_disconnect (UserState_, &OtrOps_, this,
-					accId.constData (), protoId.constData (), entry->GetEntryID ().constData ());
+					accId.constData (), protoId.constData (),
+					entry->GetEntryID ().toUtf8 ().constData ());
 			return;
 		}
 
