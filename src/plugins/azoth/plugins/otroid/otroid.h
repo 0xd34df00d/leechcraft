@@ -73,6 +73,8 @@ namespace OTRoid
 
 		QDir OtrDir_;
 
+		bool IsGenerating_ = false;
+
 #if OTRL_VERSION_MAJOR >= 4
 		QTimer *PollTimer_;
 #endif

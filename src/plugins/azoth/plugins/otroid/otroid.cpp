@@ -34,6 +34,8 @@
 #include <QAction>
 #include <QMessageBox>
 #include <QTranslator>
+#include <QtConcurrentRun>
+#include <QFutureWatcher>
 
 extern "C"
 {
@@ -298,21 +300,36 @@ namespace OTRoid
 
 	void Plugin::CreatePrivkey (const char *accName, const char *proto)
 	{
+		if (IsGenerating_)
+			return;
+
 		if (QMessageBox::question (nullptr,
 				"Azoth OTRoid",
-				tr ("Private keys for account %1 need to be generated. This may take a "
-					"while (from a few seconds to a couple of minutes), and during this "
-					"time LeechCraft will be unavailable. Do you still wish to continue?"
-					"<br/><br/>As funny as it may sound, moving mouse while the keys "
-					"are generated may actually speed up generation considerably.")
+				tr ("Private keys for account %1 need to be generated. This takes quite some "
+					"time (from a few seconds to a couple of minutes), and while you can use "
+					"LeechCraft in the meantime, all the messages will be sent unencrypted "
+					"until keys are generated. You will be notified when this process finishes. "
+					"Do you want to generate keys now?"
+					"<br /><br />You can also move mouse randomily to help generating entropy.")
 					.arg (GetAccountName (QString::fromUtf8 (accName))),
 				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
-		otrl_privkey_generate (UserState_,
-				GetOTRFilename ("privkey"),
-				accName,
-				proto);
+		IsGenerating_ = true;
+
+		QEventLoop loop;
+		QFutureWatcher<gcry_error_t> watcher;
+		connect (&watcher,
+				SIGNAL (finished ()),
+				&loop,
+				SLOT (quit ()));
+		auto future = QtConcurrent::run (otrl_privkey_generate,
+				UserState_, GetOTRFilename ("privkey"), accName, proto);
+		watcher.setFuture (future);
+
+		loop.exec ();
+
+		IsGenerating_ = false;
 
 		char fingerprint [45];
 		if (!otrl_privkey_fingerprint (UserState_, fingerprint, accName, proto))
@@ -324,8 +341,7 @@ namespace OTRoid
 
 		QMessageBox::information (nullptr,
 				"Azoth OTRoid",
-				tr ("Keys are generated. Thanks for your patience and sorry for this "
-					"not being in a separate thread."));
+				tr ("Keys are generated. Thanks for your patience."));
 	}
 
 #if OTRL_VERSION_MAJOR >= 4
