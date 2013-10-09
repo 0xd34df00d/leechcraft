@@ -80,9 +80,24 @@ namespace Util
 	bool TagsFilterModel::filterAcceptsRow (int source_row, const QModelIndex& index) const
 	{
 		if (NormalMode_)
-			return (index.isValid () && index.model ()->rowCount (index)) ?
-				true :
-				QSortFilterProxyModel::filterAcceptsRow (source_row, index);
+		{
+			if (index.isValid () && sourceModel ()->rowCount (index))
+				return true;
+
+			const auto& pattern = filterRegExp ().pattern ();
+			if (pattern.isEmpty ())
+				return true;
+
+			for (int i = 0, cc = sourceModel ()->columnCount (index); i < cc; ++i)
+			{
+				const auto& rowIdx = sourceModel ()->index (source_row, i, index);
+				const auto& str = rowIdx.data ().toString ();
+				if (str.contains (pattern) || filterRegExp ().exactMatch (str))
+					return true;
+			}
+
+			return false;
+		}
 		else
 		{
 			QStringList filterTags;

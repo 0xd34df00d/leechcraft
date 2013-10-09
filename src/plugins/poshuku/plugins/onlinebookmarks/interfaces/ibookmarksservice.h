@@ -98,11 +98,11 @@ namespace OnlineBookmarks
 		//
 		virtual void bookmarksUploaded () = 0;
 	};
-	Q_DECLARE_OPERATORS_FOR_FLAGS (IBookmarksService::Features)
 }
 }
 }
 
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Poshuku::OnlineBookmarks::IBookmarksService::Features)
 Q_DECLARE_INTERFACE (LeechCraft::Poshuku::OnlineBookmarks::IBookmarksService,
 					 "org.Deviant.LeechCraft.Poshuku.OnlineBookmarks.IBookmarksService/1.0");
 

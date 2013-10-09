@@ -41,7 +41,7 @@
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihaveshortcuts.h>
-#include <interfaces/ianemitter.h>
+#include <interfaces/an/ianemitter.h>
 
 namespace LeechCraft
 {

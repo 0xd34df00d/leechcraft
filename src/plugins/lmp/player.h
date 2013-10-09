@@ -193,6 +193,7 @@ namespace LMP
 		void handleStationError (const QString&);
 		void handleRadioStream (const QUrl&, const Media::AudioInfo&);
 		void handleGotRadioPlaylist (const QString&, const QString&);
+		void handleGotAudioInfos (const QList<Media::AudioInfo>&);
 		void postPlaylistCleanup (const QString&);
 		void handleUpdateSourceQueue ();
 		void handlePlaybackFinished ();

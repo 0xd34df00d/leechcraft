@@ -31,6 +31,7 @@ Rectangle {
     signal imageDownloadRequested(variant url)
     signal copyURLRequested(variant url)
     signal deleteRequested(string id)
+    signal albumSelected(variant index)
 
     property string currentImageId
     property real cellSize: 200
@@ -133,9 +134,21 @@ Rectangle {
             collectionThumbsView.model = collectionVisualModel
         }
 
-        delegate: Item {
+        delegate: ActionButton {
+            id: delegateRoot
+
             width: collectionThumbsView.cellWidth
             height: collectionThumbsView.cellHeight
+
+            onTriggered: {
+                if (itemType == Blasq.ImageItem) {
+                    rootRect.showImage(original)
+                    rootRect.imageSelected(imageId)
+                    rootRect.currentImageId = imageId
+                } else {
+                    rootRect.albumSelected(collectionVisualModel.modelIndex(index))
+                }
+            }
 
             Rectangle {
                 id: itemRect
@@ -234,24 +247,11 @@ Rectangle {
                     color: colorProxy.color_TextBox_TitleTextColor
                 }
 
-                property bool isHovered: itemMouseArea.containsMouse ||
+                property bool isHovered: delegateRoot.isHovered ||
                             openInBrowserAction.isHovered ||
                             downloadOriginalAction.isHovered ||
                             copyURLAction.isHovered ||
                             deleteAction.isHovered
-
-                MouseArea {
-                    id: itemMouseArea
-                    anchors.fill: parent
-
-                    hoverEnabled: true
-                    onReleased: {
-                        rootRect.showImage(original)
-                        rootRect.imageSelected(imageId)
-
-                        rootRect.currentImageId = imageId
-                    }
-                }
 
                 Column {
                     anchors.top: parent.top

@@ -27,11 +27,12 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef INTERFACES_IANEMITTER_H
-#define INTERFACES_IANEMITTER_H
+#pragma once
+
 #include <QtPlugin>
 #include <QVariant>
 #include <QStringList>
+#include <boost/variant/variant.hpp>
 
 namespace LeechCraft
 {
@@ -116,6 +117,30 @@ namespace LeechCraft
 		{
 		}
 	};
+
+	struct ANIntFieldValue
+	{
+		int Boundary_;
+
+		enum Operation
+		{
+			OGreater = 0x01,
+			OLess = 0x02,
+			OEqual = 0x04
+		};
+
+		Q_DECLARE_FLAGS (Operations, Operation)
+
+		Operations Ops_;
+	};
+
+	struct ANStringFieldValue
+	{
+		QRegExp Rx_;
+		bool Contains_;
+	};
+
+	typedef boost::variant<ANIntFieldValue, ANStringFieldValue> ANFieldValue;
 }
 
 /** @brief Interface for plugins emitting AdvancedNotifications entries.
@@ -157,5 +182,7 @@ public:
 
 Q_DECLARE_INTERFACE (IANEmitter, "org.Deviant.LeechCraft.IANEmitter/1.0");
 Q_DECLARE_METATYPE (LeechCraft::ANFieldData);
+Q_DECLARE_METATYPE (LeechCraft::ANFieldValue);
+Q_DECLARE_METATYPE (QList<LeechCraft::ANFieldValue>);
 
-#endif
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::ANIntFieldValue::Operations);

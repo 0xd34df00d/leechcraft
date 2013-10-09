@@ -32,18 +32,22 @@
 #include <QCoreApplication>
 #include <QIcon>
 #include <QAction>
+#include <QMessageBox>
 #include <QTranslator>
+#include <QtConcurrentRun>
+#include <QFutureWatcher>
 
 extern "C"
 {
 #include <libotr/version.h>
 #include <libotr/privkey.h>
+#include <libotr/message.h>
+#include <libotr/proto.h>
 
 #if OTRL_VERSION_MAJOR >= 4
 #include <libotr/instag.h>
 #endif
 }
-
 #if OTRL_VERSION_MAJOR >= 4
 #include <QTimer>
 #endif
@@ -60,42 +64,47 @@ namespace Azoth
 {
 namespace OTRoid
 {
-	namespace OTR { int IsLoggedIn (void *opData, const char *accName,
+	namespace OTR
+	{
+		int IsLoggedIn (void *opData, const char *accName,
 				const char*, const char *recipient)
 		{
-			Plugin *p = static_cast<Plugin*> (opData);
-			return p->IsLoggedIn (QString::fromUtf8 (accName),
+			return static_cast<Plugin*> (opData)->IsLoggedIn (QString::fromUtf8 (accName),
 					QString::fromUtf8 (recipient));
 		}
 
 		void InjectMessage (void *opData, const char *accName,
 				const char*, const char *recipient, const char *msg)
 		{
-			Plugin *p = static_cast<Plugin*> (opData);
-			p->InjectMsg (QString::fromUtf8 (accName),
+			static_cast<Plugin*> (opData)->InjectMsg (QString::fromUtf8 (accName),
 					QString::fromUtf8 (recipient),
-					QString::fromUtf8 (msg));
+					QString::fromUtf8 (msg),
+					IMessage::DOut);
 		}
 
-		void WriteFingerprints (void *opData)
+		void Notify (void *opdata, OtrlNotifyLevel level,
+				const char *accountname, const char *protocol,
+				const char *username, const char *title,
+				const char *primary, const char *secondary)
 		{
-			static_cast<Plugin*> (opData)->WriteFingerprints ();
-		}
+			auto u = [] (const char *cs) { return QString::fromUtf8 (cs); };
 
-		const char* GetAccountName (void *opData, const char *acc, const char*)
-		{
-			const QString& name = static_cast<Plugin*> (opData)->
-					GetAccountName (QString::fromUtf8 (acc));
+			Priority prio = PInfo_;
+			switch (level)
+			{
+			case OTRL_NOTIFY_ERROR:
+				prio = PCritical_;
+				break;
+			case OTRL_NOTIFY_WARNING:
+				prio = PWarning_;
+				break;
+			case OTRL_NOTIFY_INFO:
+				prio = PInfo_;
+				break;
+			}
 
-			const char *orig = name.toUtf8 ().constData ();
-			char *result = new char [std::strlen (orig)];
-			std::strncpy (result, orig, std::strlen (orig));
-			return result;
-		}
-
-		void FreeAccountName (void*, const char *name)
-		{
-			delete [] name;
+			static_cast<Plugin*> (opdata)->Notify (u (accountname),
+					u (username), prio, u (title), u (primary), u (secondary));
 		}
 
 #if OTRL_VERSION_MAJOR >= 4
@@ -110,11 +119,6 @@ namespace OTRoid
 		void TimerControl (void *opData, unsigned int interval)
 		{
 			static_cast<Plugin*> (opData)->SetPollTimerInterval (interval);
-		}
-#else
-		void LogMsg (void *opData, const char *msg)
-		{
-			static_cast<Plugin*> (opData)->LogMsg (QString::fromUtf8 (msg).trimmed ());
 		}
 #endif
 	}
@@ -134,11 +138,28 @@ namespace OTRoid
 				GetOTRFilename ("fingerprints"), NULL, NULL);
 
 		memset (&OtrOps_, 0, sizeof (OtrOps_));
+		OtrOps_.policy = [] (void*, ConnContext*) { return OtrlPolicy { OTRL_POLICY_DEFAULT }; };
+		OtrOps_.create_privkey = [] (void *opData, const char *accName, const char *proto)
+				{ static_cast<Plugin*> (opData)->CreatePrivkey (accName, proto); };
 		OtrOps_.is_logged_in = &OTR::IsLoggedIn;
 		OtrOps_.inject_message = &OTR::InjectMessage;
-		OtrOps_.write_fingerprints = &OTR::WriteFingerprints;
-		OtrOps_.account_name = &OTR::GetAccountName;
-		OtrOps_.account_name_free = &OTR::FreeAccountName;
+		OtrOps_.update_context_list = [] (void*) {};
+		OtrOps_.new_fingerprint = [] (void*, OtrlUserState,
+				const char *accountname, const char *protocol,
+				const char *username, unsigned char fingerprint[20]) {};
+		OtrOps_.write_fingerprints = [] (void *opData)
+				{ static_cast<Plugin*> (opData)->WriteFingerprints (); };
+		OtrOps_.account_name = [] (void *opData, const char *acc, const char*) -> const char*
+				{
+					const auto& name = static_cast<Plugin*> (opData)->
+							GetAccountName (QString::fromUtf8 (acc)).toUtf8 ();
+
+					const char *orig = name.constData ();
+					char *result = new char [name.size ()];
+					std::strncpy (result, orig, name.size ());
+					return result;
+				};
+		OtrOps_.account_name_free = [] (void*, const char *name) { delete [] name; };
 #if OTRL_VERSION_MAJOR >= 4
 		OtrOps_.handle_msg_event = &OTR::HandleMsgEvent;
 		OtrOps_.timer_control = &OTR::TimerControl;
@@ -151,7 +172,17 @@ namespace OTRoid
 
 		SetPollTimerInterval (otrl_message_poll_get_default_interval (UserState_));
 #else
-		OtrOps_.log_message = &OTR::LogMsg;
+		OtrOps_.notify = &OTR::Notify;
+		OtrOps_.log_message = [] (void*, const char *msg)
+				{ qDebug () << "OTR:" << QString::fromUtf8 (msg).trimmed (); };
+		OtrOps_.display_otr_message = [] (void*, const char *accountname,
+				const char *protocol, const char *username, const char *msg) -> int
+			{
+				qDebug () << "OTR disp:"
+						<< accountname << protocol
+						<< username << QString::fromUtf8 (msg);
+				return 0;
+			};
 #endif
 	}
 
@@ -204,23 +235,35 @@ namespace OTRoid
 	}
 
 	void Plugin::InjectMsg (const QString& accId,
-			const QString& entryId, const QString& body)
+			const QString& entryId, const QString& body, IMessage::Direction dir)
 	{
 		QObject *entryObj = AzothProxy_->GetEntry (entryId, accId);
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-
 		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no such entry"
+					<< entryId
+					<< accId;
 			return;
+		}
 
-		QObject *msgObj = entry->CreateMessage (IMessage::MTChatMessage,
-				QString (), body);
+		InjectMsg (entry, body, dir);
+	}
+
+	void Plugin::InjectMsg (ICLEntry *entry, const QString& body, IMessage::Direction dir)
+	{
+		QObject *msgObj = entry->CreateMessage (IMessage::MTChatMessage, {}, body);
 		msgObj->setProperty ("Azoth/HiddenMessage", true);
 
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		if (!msg)
 			return;
 
-		msg->Send ();
+		if (dir == IMessage::DOut)
+			msg->Send ();
+		else
+			msg->Store ();
 	}
 
 	void Plugin::Notify (const QString&, const QString&,
@@ -255,6 +298,52 @@ namespace OTRoid
 		return acc->GetAccountName ();
 	}
 
+	void Plugin::CreatePrivkey (const char *accName, const char *proto)
+	{
+		if (IsGenerating_)
+			return;
+
+		if (QMessageBox::question (nullptr,
+				"Azoth OTRoid",
+				tr ("Private keys for account %1 need to be generated. This takes quite some "
+					"time (from a few seconds to a couple of minutes), and while you can use "
+					"LeechCraft in the meantime, all the messages will be sent unencrypted "
+					"until keys are generated. You will be notified when this process finishes. "
+					"Do you want to generate keys now?"
+					"<br /><br />You can also move mouse randomily to help generating entropy.")
+					.arg (GetAccountName (QString::fromUtf8 (accName))),
+				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
+
+		IsGenerating_ = true;
+
+		QEventLoop loop;
+		QFutureWatcher<gcry_error_t> watcher;
+		connect (&watcher,
+				SIGNAL (finished ()),
+				&loop,
+				SLOT (quit ()));
+		auto future = QtConcurrent::run (otrl_privkey_generate,
+				UserState_, GetOTRFilename ("privkey"), accName, proto);
+		watcher.setFuture (future);
+
+		loop.exec ();
+
+		IsGenerating_ = false;
+
+		char fingerprint [45];
+		if (!otrl_privkey_fingerprint (UserState_, fingerprint, accName, proto))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "failed";
+			return;
+		}
+
+		QMessageBox::information (nullptr,
+				"Azoth OTRoid",
+				tr ("Keys are generated. Thanks for your patience."));
+	}
+
 #if OTRL_VERSION_MAJOR >= 4
 	void Plugin::SetPollTimerInterval (unsigned int seconds)
 	{
@@ -263,11 +352,6 @@ namespace OTRoid
 
 		if (seconds)
 			PollTimer_->start (seconds * 1000);
-	}
-#else
-	void Plugin::LogMsg (const QString& msg)
-	{
-		qDebug () << "OTR:" << msg;
 	}
 #endif
 
@@ -282,18 +366,16 @@ namespace OTRoid
 		if (!action->property ("Azoth/OTRoid/IsGood").toBool ())
 			return;
 
-		QStringList ours;
-		ours << "contactListContextMenu"
-			<< "tabContextMenu"
-			<< "toolbar";
-
+		const QStringList ours { "contactListContextMenu", "tabContextMenu", "toolbar" };
 		proxy->SetReturnValue (proxy->GetReturnValue ().toStringList () + ours);
 	}
 
 	void Plugin::hookEntryActionsRemoved (IHookProxy_ptr,
 			QObject *entry)
 	{
-		delete Entry2Action_.take (entry);
+		auto act = Entry2Action_.take (entry);
+		Action2Entry_.remove (act);
+		delete act;
 	}
 
 	void Plugin::hookEntryActionsRequested (IHookProxy_ptr proxy, QObject *entry)
@@ -319,6 +401,17 @@ namespace OTRoid
 					<< "doesn't implement IMessage";
 			return;
 		}
+
+		if (msg->GetDirection () == IMessage::DOut &&
+				Msg2OrigText_.contains (msgObj))
+		{
+			msg->SetBody (Msg2OrigText_.take (msgObj));
+			return;
+		}
+
+		if (msg->GetMessageType () != IMessage::MTChatMessage ||
+			msg->GetDirection () != IMessage::DIn)
+			return;
 
 		QObject *entryObj = msg->ParentCLEntry ();
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
@@ -384,7 +477,7 @@ namespace OTRoid
 		IProtocol *proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 
 		char *newMsg = 0;
-		gcry_error_t err = otrl_message_sending (UserState_,
+		const auto err = otrl_message_sending (UserState_,
 				&OtrOps_,
 				this,
 				acc->GetAccountID ().constData (),
@@ -411,7 +504,10 @@ namespace OTRoid
 		}
 
 		if (newMsg)
+		{
+			Msg2OrigText_ [msgObj] = msg->GetBody ();
 			msg->SetBody (QString::fromUtf8 (newMsg));
+		}
 
 		otrl_message_free (newMsg);
 	}
@@ -427,8 +523,42 @@ namespace OTRoid
 		otr->setCheckable (true);
 		otr->setIcon (GetIcon ());
 		otr->setProperty ("Azoth/OTRoid/IsGood", true);
+		connect (otr,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleOtrAction ()));
 
 		Entry2Action_ [entry] = otr;
+		Action2Entry_ [otr] = entry;
+	}
+
+	void Plugin::handleOtrAction ()
+	{
+		auto act = qobject_cast<QAction*> (sender ());
+
+		auto entryObj = Action2Entry_ [act];
+		auto entry = qobject_cast<ICLEntry*> (entryObj);
+		auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
+		const auto& accId = acc->GetAccountID ();
+
+		auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
+		const auto& protoId = proto->GetProtocolID ();
+
+		if (!act->isChecked ())
+		{
+			otrl_message_disconnect (UserState_, &OtrOps_, this,
+					accId.constData (), protoId.constData (), entry->GetEntryID ().constData ());
+			return;
+		}
+
+		char fingerprint [45];
+		if (!otrl_privkey_fingerprint (UserState_, fingerprint,
+				accId.constData (), protoId.constData ()))
+			CreatePrivkey (accId.constData (), protoId.constData());
+
+		std::shared_ptr<char> msg (otrl_proto_default_query_msg (accId.constData (),
+					OTRL_POLICY_DEFAULT), free);
+		InjectMsg (entry, QString::fromUtf8 (msg.get ()), IMessage::DOut);
 	}
 
 #if OTRL_VERSION_MAJOR >= 4

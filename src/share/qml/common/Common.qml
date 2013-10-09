@@ -2,7 +2,7 @@ import QtQuick 1.1
 
 QtObject {
     function getTooltipPos(item) {
-        var absPoint = item.mapToItem(quarkDisplayRoot, item.width, item.height);
+        var absPoint = item.mapToItem(quarkDisplayRoot, 0, 0);
         absPoint = quarkProxy.mapToGlobal(absPoint.x, absPoint.y);
         return absPoint;
     }
@@ -14,6 +14,8 @@ QtObject {
 
     function showTextTooltip(item, text) {
         var absPoint = getTooltipPos(item);
+        absPoint.x += item.width;
+        absPoint.y += item.height;
         quarkProxy.showTextTooltip(absPoint.x, absPoint.y, text);
     }
 }

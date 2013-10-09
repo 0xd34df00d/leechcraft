@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_CORE_H
-#define PLUGINS_AZOTH_CORE_H
+#pragma once
+
 #include <functional>
 #include <boost/scoped_ptr.hpp>
 #include <QObject>
@@ -40,7 +40,7 @@
 #endif
 #include <util/resourceloader.h>
 #include <interfaces/core/ihookproxy.h>
-#include <interfaces/ianemitter.h>
+#include <interfaces/an/ianemitter.h>
 #include <interfaces/iinfo.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/azothcommon.h"
@@ -192,6 +192,7 @@ namespace Azoth
 
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
+		ProxyObject* GetPluginProxy () const;
 
 		QList<ANFieldData> GetANFields () const;
 
@@ -649,5 +650,3 @@ namespace Azoth
 
 Q_DECLARE_METATYPE (LeechCraft::Azoth::Core::CLEntryType);
 Q_DECLARE_METATYPE (LeechCraft::Azoth::ICLEntry*);
-
-#endif

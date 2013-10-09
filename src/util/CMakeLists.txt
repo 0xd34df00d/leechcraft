@@ -79,6 +79,7 @@ set (SRCS
 	sysinfo.cpp
 	passutils.cpp
 	queuemanager.cpp
+	delayedexecutor.cpp
 	shortcuts/shortcutmanager.cpp
 	)
 set (FORMS

@@ -140,6 +140,11 @@ namespace AdvancedNotifications
 		Methods_ = methods;
 	}
 
+	void NotificationRule::AddMethod (NotificationMethod method)
+	{
+		Methods_ |= method;
+	}
+
 	FieldMatches_t NotificationRule::GetFieldMatches () const
 	{
 		return FieldMatches_;
@@ -208,6 +213,11 @@ namespace AdvancedNotifications
 	void NotificationRule::SetFieldMatches (const FieldMatches_t& matches)
 	{
 		FieldMatches_ = matches;
+	}
+
+	void NotificationRule::AddFieldMatch (const FieldMatch& match)
+	{
+		FieldMatches_ << match;
 	}
 
 	void NotificationRule::Save (QDataStream& stream) const

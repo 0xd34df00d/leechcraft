@@ -66,6 +66,8 @@ namespace LMP
 		QHash<Media::IPendingAudioSearch*, PendingTrackInfo> Pending2Track_;
 	public:
 		PreviewHandler (Player*, QObject*);
+
+		void HandlePending (Media::IPendingAudioSearch*);
 	public slots:
 		void previewArtist (const QString& artist);
 		void previewTrack (const QString& track, const QString& artist);

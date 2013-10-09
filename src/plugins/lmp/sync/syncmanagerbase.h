@@ -67,12 +67,14 @@ namespace LMP
 		void handleFileTCFailed (const QString&);
 		void handleStartedCopying (const QString&);
 		void handleFinishedCopying ();
+		void handleCopyProgress (qint64, qint64);
 		void handleErrorCopying (const QString&, const QString&);
 	signals:
 		void uploadLog (const QString&);
 
 		void transcodingProgress (int, int, SyncManagerBase*);
 		void uploadProgress (int, int, SyncManagerBase*);
+		void singleUploadProgress (int, int, SyncManagerBase*);
 	};
 }
 }

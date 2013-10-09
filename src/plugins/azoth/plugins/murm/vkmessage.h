@@ -40,7 +40,7 @@ namespace Azoth
 {
 namespace Murm
 {
-	class VkEntry;
+	class EntryBase;
 
 	class VkMessage : public QObject
 					, public IMessage
@@ -52,7 +52,8 @@ namespace Murm
 				LeechCraft::Azoth::IAdvancedMessage
 				LeechCraft::Azoth::IRichTextMessage)
 
-		VkEntry * const Entry_;
+		EntryBase * const OtherPart_;
+		EntryBase * const ParentCLEntry_;
 		const MessageType Type_;
 		const Direction Dir_;
 
@@ -62,9 +63,9 @@ namespace Murm
 
 		qulonglong ID_ = -1;
 
-		bool IsRead_ = Dir_ == DOut;
+		bool IsRead_ = Dir_ == DOut || Type_ != MessageType::MTChatMessage;
 	public:
-		VkMessage (Direction, MessageType, VkEntry*);
+		VkMessage (Direction, MessageType, EntryBase*, EntryBase* = nullptr);
 
 		QObject* GetQObject ();
 		void Send ();
@@ -81,6 +82,7 @@ namespace Murm
 		MessageSubType GetMessageSubType () const;
 
 		QObject* OtherPart () const;
+		QObject* ParentCLEntry() const;
 		QString GetOtherVariant () const;
 		QString GetBody () const;
 		void SetBody (const QString& body);

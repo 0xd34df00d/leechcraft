@@ -180,6 +180,8 @@ namespace Xoox
 
 	void RegFormHandlerWidget::ShowMessage (const QString& msg)
 	{
+		FB_.Clear ();
+		LFB_.Clear ();
 		Clear ();
 
 		layout ()->addWidget (new QLabel (msg));

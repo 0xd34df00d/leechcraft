@@ -143,7 +143,13 @@ namespace LMP
 		emit uploadLog (tr ("File finished copying"));
 
 		emit uploadProgress (++CopiedCount_, TotalCopyCount_, this);
+		emit singleUploadProgress (0, 0, this);
 		CheckUploadFinished ();
+	}
+
+	void SyncManagerBase::handleCopyProgress (qint64 done, qint64 total)
+	{
+		emit singleUploadProgress (done, total, this);
 	}
 
 	void SyncManagerBase::handleErrorCopying (const QString& localPath, const QString& errorStr)

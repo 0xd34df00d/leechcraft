@@ -47,6 +47,14 @@ namespace LMP
 				GetPluginsManager ()->GetAllCastableTo<Media::IAudioPile*> ();
 	}
 
+	void PreviewHandler::HandlePending (Media::IPendingAudioSearch *pending)
+	{
+		connect (pending->GetQObject (),
+				SIGNAL (ready ()),
+				this,
+				SLOT (handlePendingReady ()));
+	}
+
 	void PreviewHandler::previewArtist (const QString& artist)
 	{
 		Media::AudioSearchRequest req;
@@ -104,10 +112,7 @@ namespace LMP
 		for (auto prov : Providers_)
 		{
 			auto pending = prov->Search (req);
-			connect (pending->GetQObject (),
-					SIGNAL (ready ()),
-					this,
-					SLOT (handlePendingReady ()));
+			HandlePending (pending);
 			pendings << pending;
 		}
 		return pendings;

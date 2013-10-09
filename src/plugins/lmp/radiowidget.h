@@ -30,17 +30,10 @@
 #pragma once
 
 #include <QWidget>
-#include <QHash>
 #include "ui_radiowidget.h"
 
-class QStandardItemModel;
 class QStandardItem;
 class QSortFilterProxyModel;
-
-namespace Media
-{
-	class IRadioStationProvider;
-}
 
 namespace LeechCraft
 {
@@ -55,15 +48,15 @@ namespace LMP
 		Ui::RadioWidget Ui_;
 
 		Player *Player_;
-		QStandardItemModel *StationsModel_;
 		QSortFilterProxyModel *StationsProxy_;
-		QHash<QStandardItem*, Media::IRadioStationProvider*> Root2Prov_;
 	public:
 		RadioWidget (QWidget* = 0);
 
 		void SetPlayer (Player*);
-		void InitializeProviders ();
 	private slots:
+		void handleRefresh ();
+
+		void on_StationsView__customContextMenuRequested (const QPoint&);
 		void on_StationsView__doubleClicked (const QModelIndex&);
 	};
 }

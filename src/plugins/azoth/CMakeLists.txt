@@ -143,6 +143,7 @@ set (SRCS
 	customchatstylemanager.cpp
 	advancedpermchangedialog.cpp
 	groupremovedialog.cpp
+	coremessage.cpp
 	)
 set (FORMS
 	mainwidget.ui

@@ -33,9 +33,8 @@
 #include <QImage>
 #include <QPointer>
 #include <QStringList>
-#include <interfaces/azoth/iclentry.h>
-#include <interfaces/azoth/iupdatablechatentry.h>
 #include "structures.h"
+#include "entrybase.h"
 
 class QTimer;
 
@@ -49,23 +48,18 @@ namespace Murm
 	class VkMessage;
 	class PhotoStorage;
 	class VCardDialog;
+	class VkChatEntry;
 
-	class VkEntry : public QObject
-				  , public ICLEntry
-				  , public IUpdatableChatEntry
+	class VkEntry : public EntryBase
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
-				LeechCraft::Azoth::IUpdatableChatEntry)
 
-		VkAccount * const Account_;
 		UserInfo Info_;
-
-		QList<VkMessage*> Messages_;
 
 		QTimer *RemoteTypingTimer_;
 		QTimer *LocalTypingTimer_;
 
+		bool IsSelf_ = false;
 		bool HasUnread_ = false;
 
 		QImage Avatar_;
@@ -73,6 +67,8 @@ namespace Murm
 		QPointer<VCardDialog> VCardDialog_;
 
 		QStringList Groups_;
+
+		QList<VkChatEntry*> Chats_;
 	public:
 		VkEntry (const UserInfo&, VkAccount*);
 
@@ -80,15 +76,17 @@ namespace Murm
 		const UserInfo& GetInfo () const;
 
 		void Send (VkMessage*);
-		void Store (VkMessage*);
+
+		void SetSelf ();
+
+		void RegisterIn (VkChatEntry*);
+		void UnregisterIn (VkChatEntry*);
 
 		VkMessage* FindMessage (qulonglong) const;
 		void HandleMessage (MessageInfo);
 
 		void HandleTypingNotification ();
 
-		QObject* GetQObject ();
-		QObject* GetParentAccount () const;
 		Features GetEntryFeatures () const;
 		EntryType GetEntryType () const;
 		QString GetEntryName () const;
@@ -98,9 +96,6 @@ namespace Murm
 		QStringList Groups () const;
 		void SetGroups (const QStringList& groups);
 		QStringList Variants () const;
-		QObject* CreateMessage (IMessage::MessageType type, const QString& variant, const QString& body);
-		QList<QObject*> GetAllMessages () const;
-		void PurgeMessages (const QDateTime& before);
 		void SetChatPartState (ChatPartState state, const QString& variant);
 		EntryStatus GetStatus (const QString& variant = QString ()) const;
 		QImage GetAvatar () const;
@@ -110,8 +105,6 @@ namespace Murm
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
 		void MarkMsgsRead ();
 		void ChatTabClosed ();
-	private:
-		void HandleAttaches (VkMessage*, const MessageInfo&);
 	private slots:
 		void handleTypingTimeout ();
 		void sendTyping ();
@@ -119,19 +112,6 @@ namespace Murm
 		void handleGotStorageImage (const QUrl&);
 
 		void handleEntryNameFormat ();
-	signals:
-		void gotMessage (QObject*);
-		void statusChanged (const EntryStatus&, const QString&);
-		void availableVariantsChanged (const QStringList&);
-		void avatarChanged (const QImage&);
-		void rawinfoChanged (const QString&);
-		void nameChanged (const QString&);
-		void groupsChanged (const QStringList&);
-		void chatPartStateChanged (const ChatPartState&, const QString&);
-		void permsChanged ();
-		void entryGenerallyChanged ();
-
-		void performJS (const QString&);
 	};
 }
 }

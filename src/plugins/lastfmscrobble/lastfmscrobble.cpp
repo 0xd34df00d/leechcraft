@@ -215,7 +215,11 @@ namespace Lastfmscrobble
 
 	QList<QStandardItem*> Plugin::GetRadioListItems () const
 	{
-		return QList<QStandardItem*> () << RadioRoot_;
+		return { RadioRoot_ };
+	}
+
+	void Plugin::RefreshItems (const QList<QStandardItem*>&)
+	{
 	}
 
 	void Plugin::RequestRecentReleases (int num, bool withRecs)

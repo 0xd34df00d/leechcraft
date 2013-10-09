@@ -30,7 +30,9 @@
 #pragma once
 
 #include <memory>
+#include <functional>
 #include <QWidget>
+#include <QModelIndex>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/core/icoreproxy.h>
@@ -46,6 +48,7 @@ namespace Blasq
 	class AccountsManager;
 	class PhotosProxyModel;
 	class IAccount;
+	class UploadPhotosDialog;
 
 	class PhotosTab : public QWidget
 					, public ITabWidget
@@ -102,19 +105,31 @@ namespace Blasq
 		QModelIndex ImageID2Index (const QString&) const;
 
 		QByteArray GetUniSettingName () const;
+
+		void FinishUploadDialog (UploadPhotosDialog&);
+
+		void PerformCtxMenu (std::function<void (QModelIndex)>);
 	private slots:
 		void handleAccountChosen (int);
 		void handleRowChanged (const QModelIndex&);
 
+		void on_CollectionsTree__customContextMenuRequested (const QPoint&);
+
 		void handleScaleSlider (int);
 
 		void uploadPhotos ();
+		void handleUploadRequested ();
 
 		void handleImageSelected (const QString&);
 		void handleImageOpenRequested (const QVariant&);
+		void handleImageOpenRequested ();
 		void handleImageDownloadRequested (const QVariant&);
+		void handleImageDownloadRequested ();
 		void handleCopyURLRequested (const QVariant&);
+		void handleCopyURLRequested ();
 		void handleDeleteRequested (const QString&);
+		void handleDeleteRequested ();
+		void handleAlbumSelected (const QVariant&);
 		void handleSingleImageMode (bool);
 
 		void handleAccDoneUpdating ();

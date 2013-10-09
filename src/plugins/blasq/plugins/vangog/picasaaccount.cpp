@@ -254,7 +254,7 @@ namespace Vangog
 		case DeleteFeature::DeleteImages:
 			return true;
 		case DeleteFeature::DeleteCollections:
-			return false;
+			return true;
 		}
 
 		qWarning () << Q_FUNC_INFO

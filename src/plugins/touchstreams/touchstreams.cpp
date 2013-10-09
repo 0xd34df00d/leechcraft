@@ -35,6 +35,8 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "audiosearch.h"
+#include "albumsmanager.h"
+#include "friendsmanager.h"
 
 namespace LeechCraft
 {
@@ -46,16 +48,20 @@ namespace TouchStreams
 
 		Util::InstallTranslator ("touchstreams");
 
-		Queue_ = new Util::QueueManager (350);
+		Queue_ = new Util::QueueManager (400);
 
 		AuthMgr_ = new Util::SvcAuth::VkAuthManager ("3298289",
-				{ "audio" },
+				{ "audio", "friends" },
 				XmlSettingsManager::Instance ().property ("Cookies").toByteArray (),
-				proxy);
+				proxy,
+				Queue_);
 		connect (AuthMgr_,
 				SIGNAL (cookiesChanged (QByteArray)),
 				this,
 				SLOT (saveCookies (QByteArray)));
+
+		AlbumsMgr_ = new AlbumsManager (AuthMgr_, Queue_, proxy, this);
+		FriendsMgr_ = new FriendsManager (AuthMgr_, Queue_, proxy, this);
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "touchstreamssettings.xml");
@@ -100,17 +106,44 @@ namespace TouchStreams
 		return XSD_;
 	}
 
+	QString Plugin::GetServiceName () const
+	{
+		return tr ("VKontakte");
+	}
+
+	QIcon Plugin::GetServiceIcon () const
+	{
+		static QIcon icon;
+		return icon;
+	}
+
 	Media::IPendingAudioSearch* Plugin::Search (const Media::AudioSearchRequest& req)
 	{
 		auto realReq = req;
 		if (realReq.FreeForm_.isEmpty ())
 		{
-			QStringList parts = { req.Artist_, req.Album_, req.Title_ };
-			parts.removeAll (QString ());
+			QStringList parts { req.Artist_, req.Album_, req.Title_ };
+			parts.removeAll ({});
 			realReq.FreeForm_ = parts.join (" - ");
 		}
 
 		return new AudioSearch (Proxy_, realReq, AuthMgr_, Queue_);
+	}
+
+	QList<QStandardItem*> Plugin::GetRadioListItems () const
+	{
+		return { AlbumsMgr_->GetRootItem (), FriendsMgr_->GetRootItem () };
+	}
+
+	Media::IRadioStation_ptr Plugin::GetRadioStation (QStandardItem*, const QString&)
+	{
+		return {};
+	}
+
+	void Plugin::RefreshItems (const QList<QStandardItem*>& items)
+	{
+		AlbumsMgr_->RefreshItems (items);
+		FriendsMgr_->RefreshItems (items);
 	}
 
 	void Plugin::handlePushButton (const QString& name)

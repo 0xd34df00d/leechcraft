@@ -98,11 +98,18 @@ namespace LeechCraft
 		connect (dw,
 				SIGNAL (dockLocationChanged (Qt::DockWidgetArea)),
 				this,
-				SLOT (updateDockLocation (Qt::DockWidgetArea)));
+				SLOT (updateDockLocation (Qt::DockWidgetArea)),
+				Qt::UniqueConnection);
+		connect (dw,
+				SIGNAL (topLevelChanged (bool)),
+				this,
+				SLOT (handleDockFloating (bool)),
+				Qt::UniqueConnection);
 		connect (toggleAct,
 				SIGNAL (toggled (bool)),
 				this,
-				SLOT (handleActionToggled (bool)));
+				SLOT (handleActionToggled (bool)),
+				Qt::UniqueConnection);
 
 		if (toggleAct->isChecked ())
 		{
@@ -118,6 +125,10 @@ namespace LeechCraft
 				SIGNAL (dockLocationChanged (Qt::DockWidgetArea)),
 				this,
 				SLOT (updateDockLocation (Qt::DockWidgetArea)));
+		disconnect (dw,
+				SIGNAL (topLevelChanged (bool)),
+				this,
+				SLOT (handleDockFloating (bool)));
 		disconnect (toggleAct,
 				SIGNAL (toggled (bool)),
 				this,
@@ -188,6 +199,13 @@ namespace LeechCraft
 		auto dw = qobject_cast<QDockWidget*> (sender ());
 		RemoveDock (dw);
 		AddDock (dw, area);
+	}
+
+	void DockToolbarManager::handleDockFloating (bool floating)
+	{
+		auto dw = qobject_cast<QDockWidget*> (sender ());
+		if (floating)
+			HandleDockDestroyed (dw, dw->toggleViewAction ());
 	}
 
 	void DockToolbarManager::handleActionToggled (bool enabled)

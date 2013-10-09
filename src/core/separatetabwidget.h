@@ -75,9 +75,11 @@ namespace LeechCraft
 		QAction *AddTabButtonAction_;
 		QAction *DefaultTabAction_;
 		QList<QPointer<QAction>> TabBarActions_;
+
 		QWidget *CurrentWidget_;
 		int CurrentIndex_;
 		QWidget *PreviousWidget_;
+		QToolBar *CurrentToolBar_;
 
 		QStringList TabNames_;
 

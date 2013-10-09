@@ -170,6 +170,15 @@ namespace Azoth
 	void CallManager::handleStateChanged (IMediaCall::State state)
 	{
 		qDebug () << Q_FUNC_INFO << state << (state == IMediaCall::SActive);
+
+		if (state == IMediaCall::SFinished)
+		{
+			if (auto call = qobject_cast<IMediaCall*> (sender ()))
+				Entry2Calls_ [call->GetSourceID ()].removeAll (sender ());
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "sender isn't an IMediaCall";
+		}
 	}
 
 	void CallManager::handleAudioModeChanged (QIODevice::OpenMode mode)

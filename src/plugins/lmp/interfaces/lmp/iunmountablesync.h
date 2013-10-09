@@ -100,6 +100,8 @@ namespace LMP
 	protected:
 		virtual void availableDevicesChanged () = 0;
 
+		virtual void uploadProgress (qint64, qint64) = 0;
+
 		virtual void uploadFinished (const QString&, QFile::FileError, const QString&) = 0;
 	};
 }

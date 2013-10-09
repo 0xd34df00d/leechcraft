@@ -44,6 +44,7 @@
 #include "player.h"
 #include "previewhandler.h"
 #include "progressmanager.h"
+#include "radiomanager.h"
 
 namespace LeechCraft
 {
@@ -57,6 +58,7 @@ namespace LMP
 	, SyncUnmountableManager_ (new SyncUnmountableManager)
 	, CloudUpMgr_ (new CloudUploadManager)
 	, ProgressManager_ (new ProgressManager)
+	, RadioManager_ (new RadioManager)
 	, Player_ (0)
 	, PreviewMgr_ (0)
 	{
@@ -92,6 +94,11 @@ namespace LMP
 
 		Player_ = new Player;
 		PreviewMgr_ = new PreviewHandler (Player_, this);
+	}
+
+	void Core::InitWithOtherPlugins ()
+	{
+		RadioManager_->InitProviders ();
 	}
 
 	void Core::AddPlugin (QObject *pluginObj)
@@ -169,6 +176,11 @@ namespace LMP
 	ProgressManager* Core::GetProgressManager () const
 	{
 		return ProgressManager_;
+	}
+
+	RadioManager* Core::GetRadioManager () const
+	{
+		return RadioManager_;
 	}
 
 	Player* Core::GetPlayer () const

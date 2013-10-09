@@ -63,8 +63,6 @@ namespace Murm
 	{
 		const auto& url = GetURLTemplate ();
 
-		qDebug () << Q_FUNC_INFO << url;
-
 		LastPollDT_ = QDateTime::currentDateTime ();
 		connect (Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (url)),
 				SIGNAL (finished ()),

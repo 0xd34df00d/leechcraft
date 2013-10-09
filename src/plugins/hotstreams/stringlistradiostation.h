@@ -56,6 +56,7 @@ namespace HotStreams
 	signals:
 		void gotNewStream (const QUrl&, const Media::AudioInfo&);
 		void gotPlaylist (const QString&, const QString&);
+		void gotAudioInfos (const QList<Media::AudioInfo>& infos);
 		void gotError (const QString&);
 	};
 }

@@ -84,6 +84,12 @@ namespace Xoox
 			{ InstructionsActor (f, e); };
 	}
 
+	void LegacyFormBuilder::Clear ()
+	{
+		delete Widget_;
+		Widget_ = nullptr;
+	}
+
 	QWidget* LegacyFormBuilder::CreateForm (const QXmppElement& containing,
 			QWidget *parent)
 	{

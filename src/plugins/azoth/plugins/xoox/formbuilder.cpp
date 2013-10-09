@@ -86,6 +86,11 @@ namespace Xoox
 			}
 		}
 
+		void Clear ()
+		{
+			qDeleteAll (Widget2Field_.keys ());
+			Widget2Field_.clear ();
+		}
 	protected:
 		virtual QWidget* CreateWidgetImpl (QXmppDataForm::Field&, QFormLayout*) = 0;
 		virtual QVariant GetData (QWidget*) = 0;
@@ -324,6 +329,12 @@ namespace Xoox
 		Type2Handler_ [QXmppDataForm::Field::TextMultiField].reset (new MultiTextHandler (this));
 		Type2Handler_ [QXmppDataForm::Field::TextPrivateField].reset (new SingleTextHandler (true, this));
 		Type2Handler_ [QXmppDataForm::Field::TextSingleField].reset (new SingleTextHandler (false, this));
+	}
+
+	void FormBuilder::Clear ()
+	{
+		for (auto& handler : Type2Handler_)
+			handler->Clear ();
 	}
 
 	XMPPBobManager* FormBuilder::BobManager () const

@@ -32,6 +32,7 @@
 #include <QApplication>
 #include <QSettings>
 #include "vkaccount.h"
+#include "mucjoinwidget.h"
 
 namespace LeechCraft
 {
@@ -63,7 +64,7 @@ namespace Murm
 
 	IProtocol::ProtocolFeatures VkProtocol::GetFeatures () const
 	{
-		return PFNone;
+		return PFSupportsMUCs | PFMUCsJoinable;
 	}
 
 	QList<QObject*> VkProtocol::GetRegisteredAccounts ()
@@ -109,7 +110,7 @@ namespace Murm
 
 	QWidget* VkProtocol::GetMUCJoinWidget ()
 	{
-		return nullptr;
+		return new MucJoinWidget (Proxy_);
 	}
 
 	void VkProtocol::RemoveAccount (QObject *accObj)

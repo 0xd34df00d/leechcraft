@@ -49,6 +49,10 @@ namespace LMP
 				this,
 				SLOT (handleFinishedCopying ()));
 		connect (CopyMgr_,
+				SIGNAL (copyProgress (qint64, qint64)),
+				this,
+				SLOT (handleCopyProgress (qint64, qint64)));
+		connect (CopyMgr_,
 				SIGNAL (errorCopying (QString, QString)),
 				this,
 				SLOT (handleErrorCopying (QString, QString)));

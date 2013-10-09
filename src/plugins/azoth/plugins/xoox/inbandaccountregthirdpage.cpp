@@ -54,6 +54,10 @@ namespace Xoox
 				SIGNAL (successfulReg ()),
 				this,
 				SLOT (handleSuccessfulReg ()));
+		connect (SecondPage_,
+				SIGNAL (regError (QString)),
+				this,
+				SLOT (handleRegError (QString)));
 	}
 
 	void InBandAccountRegThirdPage::SetConfWidget (GlooxAccountConfigurationWidget *w)

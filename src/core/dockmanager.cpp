@@ -279,7 +279,8 @@ namespace LeechCraft
 		for (auto dock : toShowUnassoc + toShowAssoc)
 		{
 			dock->setVisible (true);
-			toolbarMgr->AddDock (dock, thisWindow->dockWidgetArea (dock));
+			if (!dock->isFloating ())
+				toolbarMgr->AddDock (dock, thisWindow->dockWidgetArea (dock));
 		}
 	}
 

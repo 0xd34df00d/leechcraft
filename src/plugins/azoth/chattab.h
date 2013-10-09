@@ -47,6 +47,7 @@ namespace LeechCraft
 namespace Azoth
 {
 	struct EntryStatus;
+	class CoreMessage;
 	class ICLEntry;
 	class IMUCEntry;
 	class IAccount;
@@ -92,6 +93,8 @@ namespace Azoth
 		int ScrollbackPos_;
 
 		QList<IMessage*> HistoryMessages_;
+		IMessage *LastAppendedMessage_;
+		QList<CoreMessage*> CoreMessages_;
 
 		QIcon TabIcon_;
 		bool IsMUC_;

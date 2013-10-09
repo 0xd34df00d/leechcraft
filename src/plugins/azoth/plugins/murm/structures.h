@@ -60,7 +60,7 @@ namespace Murm
 		QUrl BigPhoto_;
 
 		int Gender_;
-	
+
 		QDate Birthday_;
 
 		QString HomePhone_;
@@ -105,6 +105,14 @@ namespace Murm
 		QDateTime TS_;
 
 		QVariantMap Params_;
+	};
+
+	struct ChatInfo
+	{
+		qulonglong ChatID_;
+
+		QString Title_;
+		QList<qulonglong> Users_;
 	};
 
 	enum class GeoIdType

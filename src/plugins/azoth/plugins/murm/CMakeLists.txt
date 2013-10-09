@@ -30,9 +30,13 @@ set (MURM_SRCS
 	xmlsettingsmanager.cpp
 	longpollmanager.cpp
 	groupsmanager.cpp
+	mucjoinwidget.cpp
+	entrybase.cpp
+	vkchatentry.cpp
 	)
 set (MURM_FORMS
 	vcarddialog.ui
+	mucjoinwidget.ui
 	)
 set (MURM_RESOURCES azothmurmresources.qrc)
 

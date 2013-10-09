@@ -28,15 +28,15 @@
  **********************************************************************/
 
 #include "radiowidget.h"
-#include <QStandardItemModel>
-#include <QInputDialog>
 #include <QSortFilterProxyModel>
+#include <QMenu>
 #include <QtDebug>
 #include <util/gui/clearlineeditaddon.h>
-#include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/iradiostationprovider.h>
 #include "core.h"
 #include "player.h"
+#include "previewhandler.h"
+#include "radiomanager.h"
 
 namespace LeechCraft
 {
@@ -70,13 +70,12 @@ namespace LMP
 	RadioWidget::RadioWidget (QWidget *parent)
 	: QWidget (parent)
 	, Player_ (0)
-	, StationsModel_ (new QStandardItemModel (this))
 	, StationsProxy_ (new StationsFilterModel (this))
 	{
 		Ui_.setupUi (this);
 
 		StationsProxy_->setDynamicSortFilter (true);
-		StationsProxy_->setSourceModel (StationsModel_);
+		StationsProxy_->setSourceModel (Core::Instance ().GetRadioManager ()->GetModel ());
 		Ui_.StationsView_->setModel (StationsProxy_);
 
 		connect (Ui_.StationsSearch_,
@@ -87,67 +86,35 @@ namespace LMP
 		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.StationsSearch_);
 	}
 
-	void RadioWidget::InitializeProviders ()
-	{
-		auto providerObjs = Core::Instance ().GetProxy ()->GetPluginsManager ()->
-				GetAllCastableRoots<Media::IRadioStationProvider*> ();
-		Q_FOREACH (auto provObj, providerObjs)
-		{
-			auto prov = qobject_cast<Media::IRadioStationProvider*> (provObj);
-			Q_FOREACH (auto item, prov->GetRadioListItems ())
-			{
-				StationsModel_->appendRow (item);
-				Root2Prov_ [item] = prov;
-			}
-		}
-	}
-
 	void RadioWidget::SetPlayer (Player *player)
 	{
 		Player_ = player;
 	}
 
+	void RadioWidget::handleRefresh ()
+	{
+		const auto& unmapped = Ui_.StationsView_->currentIndex ();
+		const auto& index = StationsProxy_->mapToSource (unmapped);
+		Core::Instance ().GetRadioManager ()->Refresh (index);
+	}
+
+	void RadioWidget::on_StationsView__customContextMenuRequested (const QPoint& point)
+	{
+		const auto& idx = Ui_.StationsView_->indexAt (point);
+		if (!idx.isValid ())
+			return;
+
+		QMenu menu;
+		menu.addAction (tr ("Refresh"),
+				this,
+				SLOT (handleRefresh ()));
+		menu.exec (Ui_.StationsView_->viewport ()->mapToGlobal (point));
+	}
+
 	void RadioWidget::on_StationsView__doubleClicked (const QModelIndex& unmapped)
 	{
 		const auto& index = StationsProxy_->mapToSource (unmapped);
-		const auto item = StationsModel_->itemFromIndex (index);
-		auto root = item;
-		while (auto parent = root->parent ())
-			root = parent;
-		if (!Root2Prov_.contains (root))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown provider for index"
-					<< index;
-			return;
-		}
-
-		QString param;
-		switch (item->data (Media::RadioItemRole::ItemType).toInt ())
-		{
-		case Media::RadioType::None:
-			return;
-		case Media::RadioType::Predefined:
-			break;
-		case Media::RadioType::SimilarArtists:
-			param = QInputDialog::getText (this,
-					tr ("Similar artists radio"),
-					tr ("Enter artist name for which to tune the similar artists radio station:"));
-			if (param.isEmpty ())
-				return;
-			break;
-		case Media::RadioType::GlobalTag:
-			param = QInputDialog::getText (this,
-					tr ("Global tag radio"),
-					tr ("Enter global tag name:"));
-			if (param.isEmpty ())
-				return;
-			break;
-		}
-
-		auto station = Root2Prov_ [root]->GetRadioStation (item, param);
-		if (station)
-			Player_->SetRadioStation (station);
+		Core::Instance ().GetRadioManager ()->Handle (index, Player_);
 	}
 }
 }
