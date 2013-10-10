@@ -29,6 +29,7 @@
 
 #include "vkaccount.h"
 #include <QUuid>
+#include <QIcon>
 #include <QtDebug>
 #include "vkprotocol.h"
 #include "vkconnection.h"
@@ -304,6 +305,21 @@ namespace Murm
 
 		const auto& toPublish = fields.join (QString::fromUtf8 (" — "));
 		Conn_->SetStatus (toPublish);
+	}
+
+	QObject* VkAccount::GetSelfContact () const
+	{
+		return SelfEntry_;
+	}
+
+	QImage VkAccount::GetSelfAvatar () const
+	{
+		return SelfEntry_ ? SelfEntry_->GetAvatar () : QImage ();
+	}
+
+	QIcon VkAccount::GetAccountIcon () const
+	{
+		return {};
 	}
 
 	void VkAccount::handleSelfInfo (const UserInfo& info)

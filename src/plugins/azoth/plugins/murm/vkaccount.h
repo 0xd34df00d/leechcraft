@@ -32,6 +32,7 @@
 #include <QObject>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/isupporttune.h>
+#include <interfaces/azoth/iextselfinfoaccount.h>
 #include <interfaces/core/icoreproxy.h>
 #include "structures.h"
 
@@ -53,9 +54,12 @@ namespace Murm
 	class VkAccount : public QObject
 					, public IAccount
 					, public ISupportTune
+					, public IExtSelfInfoAccount
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IAccount LeechCraft::Azoth::ISupportTune)
+		Q_INTERFACES (LeechCraft::Azoth::IAccount
+				LeechCraft::Azoth::ISupportTune
+				LeechCraft::Azoth::IExtSelfInfoAccount)
 
 		const ICoreProxy_ptr CoreProxy_;
 
@@ -118,6 +122,10 @@ namespace Murm
 		QObject* GetTransferManager () const;
 
 		void PublishTune (const QMap<QString, QVariant>& tuneData);
+
+		QObject* GetSelfContact () const;
+		QImage GetSelfAvatar () const;
+		QIcon GetAccountIcon () const;
 	private slots:
 		void handleSelfInfo (const UserInfo&);
 		void handleUsers (const QList<UserInfo>&);
