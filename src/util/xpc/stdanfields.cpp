@@ -66,6 +66,42 @@ namespace Util
 								"Paused",
 								"Playing"
 							}
+						},
+						{
+							AN::Field::MediaTitle,
+							QObject::tr ("Title metadata"),
+							QObject::tr ("Title of the track being played."),
+							QVariant::String,
+							{
+								AN::TypeMediaPlaybackStatus
+							}
+						},
+						{
+							AN::Field::MediaAlbum,
+							QObject::tr ("Album metadata"),
+							QObject::tr ("Album of the track being played."),
+							QVariant::String,
+							{
+								AN::TypeMediaPlaybackStatus
+							}
+						},
+						{
+							AN::Field::MediaArtist,
+							QObject::tr ("Artist metadata"),
+							QObject::tr ("Artist of the track being played."),
+							QVariant::String,
+							{
+								AN::TypeMediaPlaybackStatus
+							}
+						},
+						{
+							AN::Field::MediaLength,
+							QObject::tr ("Length metadata"),
+							QObject::tr ("Length of the track being played."),
+							QVariant::Int,
+							{
+								AN::TypeMediaPlaybackStatus
+							}
 						}
 					}
 				}
