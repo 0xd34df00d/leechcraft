@@ -52,7 +52,7 @@ namespace AdvancedNotifications
 	class TypedMatcherBase
 	{
 	protected:
-		QWidget *CW_;
+		QWidget *CW_ = nullptr;
 	public:
 		static TypedMatcherBase_ptr Create (QVariant::Type);
 
