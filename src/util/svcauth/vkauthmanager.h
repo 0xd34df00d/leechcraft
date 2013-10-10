@@ -35,12 +35,15 @@
 #include <interfaces/core/icoreproxy.h>
 #include <util/utilconfig.h>
 
+class QTimer;
+
 namespace LeechCraft
 {
 namespace Util
 {
 class QueueManager;
 enum class QueuePriority;
+
 class CustomCookieJar;
 
 namespace SvcAuth
@@ -62,6 +65,9 @@ namespace SvcAuth
 
 		bool IsRequesting_;
 		const QUrl URL_;
+
+		bool IsRequestScheduled_;
+		QTimer *ScheduleTimer_;
 	public:
 		typedef QList<std::function<void (QString)>> RequestQueue_t;
 		typedef RequestQueue_t* RequestQueue_ptr;
@@ -92,8 +98,8 @@ namespace SvcAuth
 		void RequestAuthKey ();
 		bool CheckIsBlank (QUrl);
 	private slots:
+		void execScheduledRequest ();
 		void handleGotForm ();
-		void handleFormFetchError ();
 		void handleViewUrlChanged (const QUrl&);
 	signals:
 		void gotAuthKey (const QString&);

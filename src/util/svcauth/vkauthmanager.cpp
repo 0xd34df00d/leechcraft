@@ -31,6 +31,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QtDebug>
+#include <QTimer>
 #include <QWebView>
 #include <util/network/customcookiejar.h>
 #include <util/queuemanager.h>
@@ -63,9 +64,17 @@ namespace SvcAuth
 	, ValidFor_ (0)
 	, IsRequesting_ (false)
 	, URL_ (URLFromClientID (id, scope))
+	, IsRequestScheduled_ (false)
+	, ScheduleTimer_ (new QTimer (this))
 	{
 		AuthNAM_->setCookieJar (Cookies_);
 		Cookies_->Load (cookies);
+
+		ScheduleTimer_->setSingleShot (true);
+		connect (ScheduleTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (execScheduledRequest ()));
 	}
 
 	void VkAuthManager::GetAuthKey ()
@@ -163,14 +172,13 @@ namespace SvcAuth
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleGotForm ()));
-		connect (reply,
-				SIGNAL(error (QNetworkReply::NetworkError)),
-				this,
-				SLOT (handleFormFetchError ()));
 	}
 
 	void VkAuthManager::RequestAuthKey ()
 	{
+		if (IsRequestScheduled_ && ScheduleTimer_->isActive ())
+			ScheduleTimer_->stop ();
+
 		if (IsRequesting_)
 			return;
 
@@ -196,10 +204,33 @@ namespace SvcAuth
 		return true;
 	}
 
+	void VkAuthManager::execScheduledRequest ()
+	{
+		IsRequestScheduled_ = false;
+
+		RequestAuthKey ();
+	}
+
 	void VkAuthManager::handleGotForm ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
+
+		if (reply->error () != QNetworkReply::NoError)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< reply->errorString ();
+
+			IsRequesting_ = false;
+
+			if (!IsRequestScheduled_)
+			{
+				IsRequestScheduled_ = true;
+				ScheduleTimer_->start (30000);
+			}
+
+			return;
+		}
 
 		const auto& location = reply->header (QNetworkRequest::LocationHeader).toUrl ();
 		if (location.isEmpty ())
@@ -212,17 +243,6 @@ namespace SvcAuth
 			return;
 
 		RequestURL (location);
-	}
-
-	void VkAuthManager::handleFormFetchError ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		qWarning () << Q_FUNC_INFO
-				<< reply->errorString ();
-
-		HandleError ();
 	}
 
 	void VkAuthManager::handleViewUrlChanged (const QUrl& url)
