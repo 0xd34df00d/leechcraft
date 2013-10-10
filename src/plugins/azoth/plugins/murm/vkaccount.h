@@ -70,7 +70,7 @@ namespace Murm
 		GroupsManager * const GroupsMgr_;
 		GeoResolver * const GeoResolver_;
 
-		VkEntry *SelfEntry_;
+		VkEntry *SelfEntry_ = nullptr;
 		QHash<qulonglong, VkEntry*> Entries_;
 		QHash<qulonglong, VkChatEntry*> ChatEntries_;
 
