@@ -136,6 +136,15 @@ namespace AN
 		NotifyAudio			= 1 << 3
 	};
 	Q_DECLARE_FLAGS (NotifyFlags, NotifyFlag);
+
+	namespace Field
+	{
+		/** @brief The URL to the file being played.
+		*/
+		const QString MediaPlayerURL = CatMediaPlayer + ".Fields.URL";
+
+		const QString MediaPlaybackStatus = CatMediaPlayer + ".Fields.PlaybackStatus";
+	}
 }
 }
 

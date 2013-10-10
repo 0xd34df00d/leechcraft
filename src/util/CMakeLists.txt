@@ -64,6 +64,7 @@ set (SRCS
 	tags/tagscompletionmodel.cpp
 	tags/tagslineedit.cpp
 	tags/tagsfiltermodel.cpp
+	xpc/stdanfields.cpp
 	xpc/stddatafiltermenucreator.cpp
 	xpc/util.cpp
 	util.cpp
