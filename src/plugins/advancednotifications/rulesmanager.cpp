@@ -111,6 +111,9 @@ namespace AdvancedNotifications
 		Cat2HR_ [AN::CatPackageManager] = tr ("Package manager");
 		Type2HR_ [AN::TypePackageUpdated] = tr ("Package updated");
 
+		Cat2HR_ [AN::CatMediaPlayer] = tr ("Media player");
+		Type2HR_ [AN::TypeMediaPlaybackStatus] = tr ("Media playback status changed");
+
 		Cat2HR_ [AN::CatGeneric] = tr ("Generic");
 		Type2HR_ [AN::TypeGeneric] = tr ("Generic");
 

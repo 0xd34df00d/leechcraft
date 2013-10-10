@@ -74,6 +74,8 @@ namespace AdvancedNotifications
 
 		Cat2Types_ [AN::CatPackageManager] << AN::TypePackageUpdated;
 
+		Cat2Types_ [AN::CatMediaPlayer] << AN::TypeMediaPlaybackStatus;
+
 		Cat2Types_ [AN::CatGeneric] << AN::TypeGeneric;
 
 		Ui_.setupUi (this);
