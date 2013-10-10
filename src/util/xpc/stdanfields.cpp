@@ -70,7 +70,14 @@ namespace Util
 					}
 				}
 			});
-		return values.value (type);
+
+		if (!type.isEmpty ())
+			return values.value (type);
+
+		QList<ANFieldData> result;
+		for (const auto& list : values)
+			result << list;
+		return result;
 	}
 }
 }
