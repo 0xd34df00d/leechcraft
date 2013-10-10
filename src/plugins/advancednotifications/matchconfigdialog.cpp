@@ -42,15 +42,15 @@ namespace AdvancedNotifications
 	MatchConfigDialog::MatchConfigDialog (const QString& cat, const QStringList& types, QWidget *parent)
 	: QDialog (parent)
 	, Cat_ (cat)
-	, Types_ (QSet<QString>::fromList (types))
+	, Types_ (types.toSet ())
 	{
 		Ui_.setupUi (this);
 
-		const QObjectList& emitters = Core::Instance ().GetProxy ()->
+		const auto& emitters = Core::Instance ().GetProxy ()->
 				GetPluginsManager ()->GetAllCastableRoots<IANEmitter*> ();
-		Q_FOREACH (QObject *pObj, emitters)
+		for (auto pObj : emitters)
 		{
-			IInfo *ii = qobject_cast<IInfo*> (pObj);
+			auto ii = qobject_cast<IInfo*> (pObj);
 			if (!ii)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -80,8 +80,7 @@ namespace AdvancedNotifications
 				itemData (fieldIdx).value<ANFieldData> ();
 
 		FieldMatch result (data.Type_, CurrentMatcher_);
-		result.SetPluginID (Ui_.SourcePlugin_->
-					itemData (sourceIdx).toByteArray ());
+		result.SetPluginID (Ui_.SourcePlugin_->itemData (sourceIdx).toByteArray ());
 		result.SetFieldName (data.ID_);
 
 		return result;
@@ -123,8 +122,7 @@ namespace AdvancedNotifications
 
 	void MatchConfigDialog::on_FieldName__activated (int idx)
 	{
-		const ANFieldData& data = Ui_.FieldName_->
-				itemData (idx).value<ANFieldData> ();
+		const auto& data = Ui_.FieldName_->itemData (idx).value<ANFieldData> ();
 		Ui_.DescriptionLabel_->setText (data.Description_);
 
 		QLayout *lay = Ui_.ConfigWidget_->layout ();
