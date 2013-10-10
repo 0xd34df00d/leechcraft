@@ -168,27 +168,37 @@ namespace AdvancedNotifications
 		return rule;
 	}
 
+	namespace
+	{
+		QList<ANFieldData> GetPluginFields (const QByteArray& pluginId)
+		{
+			QList<ANFieldData> fields;
+			if (pluginId.isEmpty ())
+				return Util::GetStdANFields ({});
+			else
+			{
+				auto pObj = Core::Instance ().GetProxy ()->
+						GetPluginsManager ()->GetPluginByID (pluginId);
+				auto iae = qobject_cast<IANEmitter*> (pObj);
+				if (!iae)
+					qWarning () << Q_FUNC_INFO
+							<< pObj
+							<< "doesn't implement IANEmitter";
+				else
+					return iae->GetANFields ();
+			}
+
+			return {};
+		}
+	}
+
 	QList<QStandardItem*> NotificationRulesWidget::MatchToRow (const FieldMatch& match) const
 	{
-		QString fieldName = match.GetFieldName ();
+		auto fieldName = match.GetFieldName ();
 
-		QList<ANFieldData> fields;
-		if (match.GetPluginID ().isEmpty ())
-			fields = Util::GetStdANFields ({});
-		else
-		{
-			auto pObj = Core::Instance ().GetProxy ()->
-					GetPluginsManager ()->GetPluginByID (match.GetPluginID ().toUtf8 ());
-			auto iae = qobject_cast<IANEmitter*> (pObj);
-			if (!iae)
-				qWarning () << Q_FUNC_INFO
-						<< pObj
-						<< "doesn't implement IANEmitter";
-			else
-				fields = iae->GetANFields ();
-		}
+		const auto& fields = GetPluginFields (match.GetPluginID ().toUtf8 ());
 
-		auto pos = std::find_if (fields.begin (), fields.end (),
+		const auto pos = std::find_if (fields.begin (), fields.end (),
 				[&fieldName] (decltype (fields.front ()) field) { return field.ID_ == fieldName; });
 		if (pos != fields.end ())
 			fieldName = pos->Name_;
@@ -203,6 +213,21 @@ namespace AdvancedNotifications
 				match.GetMatcher ()->GetHRDescription () :
 				tr ("<empty matcher>"));
 		return items;
+	}
+
+	QList<ANFieldData> NotificationRulesWidget::GetCatTypeANFields () const
+	{
+		QList<ANFieldData> result;
+		result += Util::GetStdANFields (GetCurrentCat ());
+		for (const auto& type : GetSelectedTypes ())
+			result += Util::GetStdANFields (type);
+
+		const auto& emitters = Core::Instance ().GetProxy ()->
+				GetPluginsManager ()->GetAllCastableTo<IANEmitter*> ();
+		for (auto emitter : emitters)
+			result += emitter->GetANFields ();
+
+		return result;
 	}
 
 	void NotificationRulesWidget::handleItemSelected (const QModelIndex& index, const QModelIndex& prevIndex)

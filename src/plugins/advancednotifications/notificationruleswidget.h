@@ -39,6 +39,8 @@ class QStandardItem;
 
 namespace LeechCraft
 {
+struct ANFieldData;
+
 namespace AdvancedNotifications
 {
 	class RulesManager;
@@ -65,6 +67,8 @@ namespace AdvancedNotifications
 
 		NotificationRule GetRuleFromUI () const;
 		QList<QStandardItem*> MatchToRow (const FieldMatch&) const;
+
+		QList<ANFieldData> GetCatTypeANFields () const;
 	private slots:
 		void handleItemSelected (const QModelIndex&, const QModelIndex&);
 
