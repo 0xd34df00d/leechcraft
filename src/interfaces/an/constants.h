@@ -143,7 +143,19 @@ namespace AN
 		*/
 		const QString MediaPlayerURL = CatMediaPlayer + ".Fields.URL";
 
+		/** @brief Playback status of the URL.
+		 *
+		 * A string, one of:
+		 * - Playing
+		 * - Paused
+		 * - Stopped
+		 */
 		const QString MediaPlaybackStatus = CatMediaPlayer + ".Fields.PlaybackStatus";
+
+		const QString MediaTitle = CatMediaPlayer + ".Fields.Title";
+		const QString MediaArtist = CatMediaPlayer + ".Fields.Artist";
+		const QString MediaAlbum = CatMediaPlayer + ".Fields.Album";
+		const QString MediaLength = CatMediaPlayer + ".Fields.Length";
 	}
 }
 }
