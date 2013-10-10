@@ -37,6 +37,7 @@
 #include <QtConcurrentRun>
 #include <QApplication>
 #include <util/util.h>
+#include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "mediainfo.h"
@@ -768,6 +769,49 @@ namespace LMP
 		CurrentStation_.reset ();
 	}
 
+	void Player::EmitStateChange ()
+	{
+		QString stateStr;
+		QString hrStateStr;
+		switch (Source_->GetState ())
+		{
+		case SourceState::Paused:
+			stateStr = "Paused";
+			hrStateStr = tr ("paused");
+			break;
+		case SourceState::Buffering:
+		case SourceState::Playing:
+			stateStr = "Playing";
+			hrStateStr = tr ("playing");
+			break;
+		default:
+			stateStr = "Stopped";
+			hrStateStr = tr ("stopped");
+			break;
+		}
+
+		const auto& mediaInfo = GetCurrentMediaInfo ();
+		const auto& str = tr ("%1 by %2 is now %3")
+				.arg (mediaInfo.Title_)
+				.arg (mediaInfo.Artist_)
+				.arg (hrStateStr);
+
+		auto e = Util::MakeAN ("LMP", {}, PInfo_,
+				"org.LeechCraft.LMP", AN::CatMediaPlayer, AN::TypeMediaPlaybackStatus,
+				"org.LeechCraft.LMP.PlaybackStatus", {}, 0, 1);
+		e.Mime_ += "+advanced";
+		e.Additional_ [AN::Field::MediaPlaybackStatus] = stateStr;
+		e.Additional_ [AN::Field::MediaPlayerURL] =
+				Source_->GetCurrentSource ().ToUrl ().toEncoded ();
+
+		e.Additional_ [AN::Field::MediaArtist] = mediaInfo.Artist_;
+		e.Additional_ [AN::Field::MediaAlbum] = mediaInfo.Album_;
+		e.Additional_ [AN::Field::MediaTitle] = mediaInfo.Title_;
+		e.Additional_ [AN::Field::MediaLength] = mediaInfo.Length_;
+
+		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
+	}
+
 	template<typename T>
 	AudioSource Player::GetRandomBy (QList<AudioSource>::const_iterator pos,
 			std::function<T (AudioSource)> feature) const
@@ -1269,6 +1313,8 @@ namespace LMP
 		}
 
 		SavePlayState (false);
+
+		EmitStateChange ();
 	}
 
 	void Player::handleCurrentSourceChanged (const AudioSource& source)
@@ -1297,7 +1343,7 @@ namespace LMP
 		if (curItem)
 			emit indexChanged (PlaylistModel_->indexFromItem (curItem));
 
-		Q_FOREACH (auto item, Items_.values ())
+		for (auto item : Items_)
 		{
 			if (item == curItem)
 				continue;
@@ -1307,6 +1353,8 @@ namespace LMP
 				break;
 			}
 		}
+
+		EmitStateChange ();
 	}
 
 	void Player::handleMetadata ()
@@ -1332,6 +1380,8 @@ namespace LMP
 		}
 
 		LastPhononMediaInfo_ = info;
+
+		EmitStateChange ();
 	}
 
 	void Player::handleSourceError (const QString& sourceText, SourceError error)

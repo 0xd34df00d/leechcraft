@@ -172,6 +172,8 @@ namespace LMP
 
 		void UnsetRadio ();
 
+		void EmitStateChange ();
+
 		template<typename T>
 		AudioSource GetRandomBy (QList<AudioSource>::const_iterator,
 				std::function<T (AudioSource)>) const;
