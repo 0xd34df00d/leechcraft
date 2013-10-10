@@ -72,10 +72,11 @@ namespace AdvancedNotifications
 	{
 	protected:
 		ANStringFieldValue Value_;
+		const QStringList Allowed_;
 
 		std::shared_ptr<Ui::StringLikeMatcherConfigWidget> Ui_;
 	public:
-		StringLikeMatcher ();
+		StringLikeMatcher (const QStringList& variants = {});
 
 		QVariantMap Save () const;
 		void Load (const QVariantMap&);
@@ -89,6 +90,8 @@ namespace AdvancedNotifications
 	class StringMatcher : public StringLikeMatcher
 	{
 	public:
+		StringMatcher (const QStringList& variants = {});
+
 		bool Match (const QVariant&) const;
 
 		QString GetHRDescription () const;
@@ -97,6 +100,8 @@ namespace AdvancedNotifications
 	class StringListMatcher : public StringLikeMatcher
 	{
 	public:
+		StringListMatcher (const QStringList& variants = {});
+
 		bool Match (const QVariant&) const;
 
 		QString GetHRDescription () const;
