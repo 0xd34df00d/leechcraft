@@ -148,8 +148,7 @@ namespace AdvancedNotifications
 		QLayoutItem *oldItem = 0;
 		while ((oldItem = lay->takeAt (0)) != 0)
 		{
-			if (oldItem->widget ())
-				delete oldItem->widget ();
+			delete oldItem->widget ();
 			delete oldItem;
 		}
 
