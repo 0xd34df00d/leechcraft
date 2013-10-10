@@ -153,7 +153,7 @@ namespace AdvancedNotifications
 			delete oldItem;
 		}
 
-		CurrentMatcher_ = TypedMatcherBase::Create (data.Type_);
+		CurrentMatcher_ = TypedMatcherBase::Create (data.Type_, data);
 		if (CurrentMatcher_)
 			lay->addWidget (CurrentMatcher_->GetConfigWidget ());
 		else

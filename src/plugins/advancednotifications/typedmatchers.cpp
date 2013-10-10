@@ -38,7 +38,7 @@ namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	TypedMatcherBase_ptr TypedMatcherBase::Create (QVariant::Type type)
+	TypedMatcherBase_ptr TypedMatcherBase::Create (QVariant::Type type, const ANFieldData& fieldData)
 	{
 		switch (type)
 		{
