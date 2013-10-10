@@ -39,6 +39,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <util/resourceloader.h>
 #include <util/util.h>
+#include <util/xpc/stdanfields.h>
 #include "xmlsettingsmanager.h"
 #include "matchconfigdialog.h"
 #include "typedmatchers.h"
@@ -171,25 +172,30 @@ namespace AdvancedNotifications
 	{
 		QString fieldName = match.GetFieldName ();
 
-		QObject *pObj = Core::Instance ().GetProxy ()->
-				GetPluginsManager ()->GetPluginByID (match.GetPluginID ().toUtf8 ());
-		IANEmitter *iae = qobject_cast<IANEmitter*> (pObj);
-		if (!iae)
-			qWarning () << Q_FUNC_INFO
-					<< pObj
-					<< "doesn't implement IANEmitter";
+		QList<ANFieldData> fields;
+		if (match.GetPluginID ().isEmpty ())
+			fields = Util::GetStdANFields ({});
 		else
 		{
-			const QList<ANFieldData>& fields = iae->GetANFields ();
-			auto pos = std::find_if (fields.begin (), fields.end (),
-					[&fieldName] (decltype (fields.front ()) field) { return field.ID_ == fieldName; });
-			if (pos != fields.end ())
-				fieldName = pos->Name_;
-			else
+			auto pObj = Core::Instance ().GetProxy ()->
+					GetPluginsManager ()->GetPluginByID (match.GetPluginID ().toUtf8 ());
+			auto iae = qobject_cast<IANEmitter*> (pObj);
+			if (!iae)
 				qWarning () << Q_FUNC_INFO
-						<< "unable to find field"
-						<< fieldName;
+						<< pObj
+						<< "doesn't implement IANEmitter";
+			else
+				fields = iae->GetANFields ();
 		}
+
+		auto pos = std::find_if (fields.begin (), fields.end (),
+				[&fieldName] (decltype (fields.front ()) field) { return field.ID_ == fieldName; });
+		if (pos != fields.end ())
+			fieldName = pos->Name_;
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "unable to find field"
+					<< fieldName;
 
 		QList<QStandardItem*> items;
 		items << new QStandardItem (fieldName);
@@ -246,7 +252,7 @@ namespace AdvancedNotifications
 
 		ResetMatchesModel ();
 		Matches_ = rule.GetFieldMatches ();
-		Q_FOREACH (const FieldMatch& m, Matches_)
+		for (const auto& m : Matches_)
 			MatchesModel_->appendRow (MatchToRow (m));
 
 		const AudioParams& params = rule.GetAudioParams ();
