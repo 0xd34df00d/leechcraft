@@ -102,6 +102,12 @@ namespace AdvancedNotifications
 				<< tr ("Rule description"));
 	}
 
+	QString NotificationRulesWidget::GetCurrentCat () const
+	{
+		const auto idx = Ui_.EventCat_->currentIndex ();
+		return Ui_.EventCat_->itemData (idx).toString ();
+	}
+
 	QStringList NotificationRulesWidget::GetSelectedTypes () const
 	{
 		QStringList types;
@@ -320,7 +326,7 @@ namespace AdvancedNotifications
 
 	void NotificationRulesWidget::on_AddMatch__released ()
 	{
-		MatchConfigDialog dia (GetSelectedTypes (), this);
+		MatchConfigDialog dia (GetCurrentCat (), GetSelectedTypes (), this);
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
@@ -335,7 +341,7 @@ namespace AdvancedNotifications
 		if (!index.isValid ())
 			return;
 
-		MatchConfigDialog dia (GetSelectedTypes (), this);
+		MatchConfigDialog dia (GetCurrentCat (), GetSelectedTypes (), this);
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
@@ -358,9 +364,9 @@ namespace AdvancedNotifications
 		MatchesModel_->removeRow (index.row ());
 	}
 
-	void NotificationRulesWidget::on_EventCat__currentIndexChanged (int idx)
+	void NotificationRulesWidget::on_EventCat__currentIndexChanged (int)
 	{
-		const QString& catId = Ui_.EventCat_->itemData (idx).toString ();
+		const auto& catId = GetCurrentCat ();
 		Ui_.EventTypes_->clear ();
 
 		for (const QString& type : Cat2Types_ [catId])

@@ -59,7 +59,10 @@ namespace AdvancedNotifications
 		NotificationRulesWidget (RulesManager*, QWidget* = 0);
 	private:
 		void ResetMatchesModel ();
+
+		QString GetCurrentCat () const;
 		QStringList GetSelectedTypes () const;
+
 		NotificationRule GetRuleFromUI () const;
 		QList<QStandardItem*> MatchToRow (const FieldMatch&) const;
 	private slots:

@@ -48,10 +48,11 @@ namespace AdvancedNotifications
 
 		Ui::MatchConfigDialog Ui_;
 
+		QString Cat_;
 		QSet<QString> Types_;
 		TypedMatcherBase_ptr CurrentMatcher_;
 	public:
-		MatchConfigDialog (const QStringList&, QWidget* = 0);
+		MatchConfigDialog (const QString&, const QStringList&, QWidget* = 0);
 
 		FieldMatch GetFieldMatch () const;
 	private slots:
