@@ -35,6 +35,8 @@
 
 namespace LeechCraft
 {
+struct ANFieldData;
+
 namespace AdvancedNotifications
 {
 	class TypedMatcherBase;
@@ -55,6 +57,8 @@ namespace AdvancedNotifications
 		MatchConfigDialog (const QString&, const QStringList&, QWidget* = 0);
 
 		FieldMatch GetFieldMatch () const;
+	private:
+		void AddFields (const QList<ANFieldData>&);
 	private slots:
 		void on_SourcePlugin__activated (int);
 		void on_FieldName__activated (int);

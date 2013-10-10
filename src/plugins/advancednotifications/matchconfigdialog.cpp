@@ -31,6 +31,7 @@
 #include <interfaces/an/ianemitter.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <util/xpc/stdanfields.h>
 #include "core.h"
 #include "typedmatchers.h"
 #include "fieldmatch.h"
@@ -45,6 +46,12 @@ namespace AdvancedNotifications
 	, Types_ (types.toSet ())
 	{
 		Ui_.setupUi (this);
+
+		if (!Util::GetStdANFields (Cat_).isEmpty () ||
+				std::any_of (Types_.begin (), Types_.end (),
+						[] (const QString& type)
+							{ return !Util::GetStdANFields (type).isEmpty (); }))
+			Ui_.SourcePlugin_->addItem (tr ("Standard fields"));
 
 		const auto& emitters = Core::Instance ().GetProxy ()->
 				GetPluginsManager ()->GetAllCastableRoots<IANEmitter*> ();
@@ -63,7 +70,7 @@ namespace AdvancedNotifications
 					ii->GetName (), ii->GetUniqueID ());
 		}
 
-		if (!emitters.isEmpty ())
+		if (Ui_.SourcePlugin_->count ())
 			on_SourcePlugin__activated (0);
 	}
 
@@ -86,37 +93,49 @@ namespace AdvancedNotifications
 		return result;
 	}
 
+	void MatchConfigDialog::AddFields (const QList<ANFieldData>& fields)
+	{
+		for (const auto& data : fields)
+		{
+			auto fieldTypes = data.EventTypes_.toSet ();
+			if (!Types_.isEmpty () &&
+					fieldTypes.intersect (Types_).isEmpty ())
+				continue;
+
+			Ui_.FieldName_->addItem (data.Name_, QVariant::fromValue (data));
+		}
+	}
+
 	void MatchConfigDialog::on_SourcePlugin__activated (int idx)
 	{
 		Ui_.FieldName_->clear ();
 
-		const QByteArray& id = Ui_.SourcePlugin_->
-				itemData (idx).toByteArray ();
-		QObject *pObj = Core::Instance ().GetProxy ()->
-				GetPluginsManager ()->GetPluginByID (id);
-		IANEmitter *iae = qobject_cast<IANEmitter*> (pObj);
-		if (!iae)
+		const auto& id = Ui_.SourcePlugin_->itemData (idx).toByteArray ();
+		if (id.isEmpty ())
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "plugin for ID"
-					<< id
-					<< "doesn't implement IANEmitter:"
-					<< pObj;
-			return;
+			AddFields (Util::GetStdANFields (Cat_));
+
+			for (auto type : Types_)
+				AddFields (Util::GetStdANFields (type));
+		}
+		else
+		{
+			auto pObj = Core::Instance ().GetProxy ()->GetPluginsManager ()->GetPluginByID (id);
+			auto iae = qobject_cast<IANEmitter*> (pObj);
+			if (!iae)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "plugin for ID"
+						<< id
+						<< "doesn't implement IANEmitter:"
+						<< pObj;
+				return;
+			}
+
+			AddFields (iae->GetANFields ());
 		}
 
-		const QList<ANFieldData> fields = iae->GetANFields ();
-		Q_FOREACH (const ANFieldData& data, fields)
-		{
-			if (!Types_.isEmpty () &&
-					QSet<QString>::fromList (data.EventTypes_).intersect (Types_).isEmpty ())
-				continue;
-
-			Ui_.FieldName_->addItem (data.Name_,
-					QVariant::fromValue<ANFieldData> (data));
-		}
-
-		if (!fields.isEmpty ())
+		if (Ui_.FieldName_->count ())
 			on_FieldName__activated (0);
 	}
 
