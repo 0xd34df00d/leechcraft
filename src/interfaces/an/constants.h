@@ -111,6 +111,14 @@ namespace AN
 	 */
 	const QString TypePackageUpdated = CatPackageManager + ".PackageUpdated";
 
+	/** @brief Category of media player-related events.
+	 */
+	const QString CatMediaPlayer = "org.LC.AdvNotifications.MediaPlayer";
+
+	/** @brief A media file playback status has been changed.
+	 */
+	const QString TypeMediaPlaybackStatus = CatMediaPlayer + ".PlaybackStatus";
+
 	/** @brief Generic notifications that don't fit into any other category.
 	 */
 	const QString CatGeneric = "org.LC.AdvNotifications.Generic";
