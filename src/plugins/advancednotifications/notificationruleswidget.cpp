@@ -230,6 +230,34 @@ namespace AdvancedNotifications
 		return result;
 	}
 
+	QString NotificationRulesWidget::GetArgumentText ()
+	{
+		const auto& fields = GetCatTypeANFields ();
+
+		if (fields.isEmpty ())
+			return QInputDialog::getText (this,
+					"LeechCraft",
+					tr ("Please enter the argument:"));
+
+		QStringList items;
+		for (const auto& field : fields)
+			items << tr ("Custom field %1 (%2)")
+					.arg (field.Name_)
+					.arg (field.Description_);
+		const auto& value = QInputDialog::getItem (this,
+				"LeechCraft",
+				tr ("Please enter the argument:"),
+				items);
+
+		if (value.isEmpty ())
+			return {};
+
+		const auto idx = items.indexOf (value);
+		return idx >= 0 ?
+				('$' + fields.value (idx).ID_) :
+				value;
+	}
+
 	void NotificationRulesWidget::handleItemSelected (const QModelIndex& index, const QModelIndex& prevIndex)
 	{
 		if (prevIndex.isValid ())
@@ -303,7 +331,7 @@ namespace AdvancedNotifications
 		{
 			Ui_.CommandLineEdit_->setText (cmdParams.Cmd_);
 
-			Q_FOREACH (const QString& arg, cmdParams.Args_)
+			for (const auto& arg : cmdParams.Args_)
 				new QTreeWidgetItem (Ui_.CommandArgsTree_, QStringList (arg));
 		}
 
@@ -468,9 +496,7 @@ namespace AdvancedNotifications
 
 	void NotificationRulesWidget::on_AddArgument__released()
 	{
-		const QString& text = QInputDialog::getText (this,
-				"LeechCraft",
-				tr ("Please enter the argument:"));
+		const auto& text = GetArgumentText ();
 		if (text.isEmpty ())
 			return;
 
@@ -483,16 +509,11 @@ namespace AdvancedNotifications
 		if (!item)
 			return;
 
-		const QString& newText = QInputDialog::getText (this,
-				"LeechCraft",
-				tr ("Please enter new argument text:"),
-				QLineEdit::Normal,
-				item->text (0));
-		if (newText.isEmpty () ||
-				newText == item->text (0))
+		const auto& text = GetArgumentText ();
+		if (text.isEmpty ())
 			return;
 
-		item->setText (0, newText);
+		item->setText (0, text);
 	}
 
 	void NotificationRulesWidget::on_RemoveArgument__released()

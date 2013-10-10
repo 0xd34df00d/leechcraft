@@ -69,6 +69,7 @@ namespace AdvancedNotifications
 		QList<QStandardItem*> MatchToRow (const FieldMatch&) const;
 
 		QList<ANFieldData> GetCatTypeANFields () const;
+		QString GetArgumentText ();
 	private slots:
 		void handleItemSelected (const QModelIndex&, const QModelIndex&);
 
