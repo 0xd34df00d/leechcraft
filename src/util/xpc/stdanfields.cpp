@@ -32,6 +32,7 @@
 #include <QList>
 #include <interfaces/an/ianemitter.h>
 #include <interfaces/an/constants.h>
+#include <util/util.h>
 
 namespace LeechCraft
 {
