@@ -27,10 +27,11 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_MATCHCONFIGDIALOG_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_MATCHCONFIGDIALOG_H
+#pragma once
+
 #include <memory>
 #include <QDialog>
+#include <interfaces/an/ianemitter.h>
 #include "ui_matchconfigdialog.h"
 
 namespace LeechCraft
@@ -53,8 +54,10 @@ namespace AdvancedNotifications
 		QString Cat_;
 		QSet<QString> Types_;
 		TypedMatcherBase_ptr CurrentMatcher_;
+
+		QMap<QObject*, QList<ANFieldData>> FieldsMap_;
 	public:
-		MatchConfigDialog (const QString&, const QStringList&, QWidget* = 0);
+		MatchConfigDialog (const QMap<QObject*, QList<ANFieldData>>&, QWidget* = 0);
 
 		FieldMatch GetFieldMatch () const;
 	private:
@@ -65,5 +68,3 @@ namespace AdvancedNotifications
 	};
 }
 }
-
-#endif

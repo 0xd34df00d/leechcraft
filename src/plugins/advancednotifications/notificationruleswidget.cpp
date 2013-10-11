@@ -408,7 +408,7 @@ namespace AdvancedNotifications
 
 	void NotificationRulesWidget::on_AddMatch__released ()
 	{
-		MatchConfigDialog dia (GetCurrentCat (), GetSelectedTypes (), this);
+		MatchConfigDialog dia (GetRelevantANFieldsWPlugins (), this);
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
@@ -423,7 +423,7 @@ namespace AdvancedNotifications
 		if (!index.isValid ())
 			return;
 
-		MatchConfigDialog dia (GetCurrentCat (), GetSelectedTypes (), this);
+		MatchConfigDialog dia (GetRelevantANFieldsWPlugins (), this);
 		if (dia.exec () != QDialog::Accepted)
 			return;
 

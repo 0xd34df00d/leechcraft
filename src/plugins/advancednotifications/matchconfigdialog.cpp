@@ -28,9 +28,6 @@
  **********************************************************************/
 
 #include "matchconfigdialog.h"
-#include <interfaces/an/ianemitter.h>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/core/ipluginsmanager.h>
 #include <util/xpc/stdanfields.h>
 #include "core.h"
 #include "typedmatchers.h"
@@ -40,34 +37,24 @@ namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	MatchConfigDialog::MatchConfigDialog (const QString& cat, const QStringList& types, QWidget *parent)
+	MatchConfigDialog::MatchConfigDialog (const QMap<QObject*, QList<ANFieldData>>& map,
+			QWidget *parent)
 	: QDialog (parent)
-	, Cat_ (cat)
-	, Types_ (types.toSet ())
+	, FieldsMap_ (map)
 	{
 		Ui_.setupUi (this);
 
-		if (!Util::GetStdANFields (Cat_).isEmpty () ||
-				std::any_of (Types_.begin (), Types_.end (),
-						[] (const QString& type)
-							{ return !Util::GetStdANFields (type).isEmpty (); }))
+		if (!FieldsMap_ [nullptr].isEmpty ())
 			Ui_.SourcePlugin_->addItem (tr ("Standard fields"));
 
-		const auto& emitters = Core::Instance ().GetProxy ()->
-				GetPluginsManager ()->GetAllCastableRoots<IANEmitter*> ();
-		for (auto pObj : emitters)
+		for (auto i = FieldsMap_.begin (); i != FieldsMap_.end (); ++i)
 		{
-			auto ii = qobject_cast<IInfo*> (pObj);
-			if (!ii)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< pObj
-						<< "doesn't implement IInfo";
+			if (!i.key ())
 				continue;
-			}
 
+			auto ii = qobject_cast<IInfo*> (i.key ());
 			Ui_.SourcePlugin_->addItem (ii->GetIcon (),
-					ii->GetName (), ii->GetUniqueID ());
+					ii->GetName (), QVariant::fromValue (i.key ()));
 		}
 
 		if (Ui_.SourcePlugin_->count ())
@@ -83,8 +70,7 @@ namespace AdvancedNotifications
 
 		CurrentMatcher_->SyncToWidget ();
 
-		const ANFieldData& data = Ui_.FieldName_->
-				itemData (fieldIdx).value<ANFieldData> ();
+		const auto& data = Ui_.FieldName_->itemData (fieldIdx).value<ANFieldData> ();
 
 		FieldMatch result (data.Type_, CurrentMatcher_);
 		result.SetPluginID (Ui_.SourcePlugin_->itemData (sourceIdx).toByteArray ());
@@ -96,44 +82,15 @@ namespace AdvancedNotifications
 	void MatchConfigDialog::AddFields (const QList<ANFieldData>& fields)
 	{
 		for (const auto& data : fields)
-		{
-			auto fieldTypes = data.EventTypes_.toSet ();
-			if (!Types_.isEmpty () &&
-					fieldTypes.intersect (Types_).isEmpty ())
-				continue;
-
 			Ui_.FieldName_->addItem (data.Name_, QVariant::fromValue (data));
-		}
 	}
 
 	void MatchConfigDialog::on_SourcePlugin__activated (int idx)
 	{
 		Ui_.FieldName_->clear ();
 
-		const auto& id = Ui_.SourcePlugin_->itemData (idx).toByteArray ();
-		if (id.isEmpty ())
-		{
-			AddFields (Util::GetStdANFields (Cat_));
-
-			for (auto type : Types_)
-				AddFields (Util::GetStdANFields (type));
-		}
-		else
-		{
-			auto pObj = Core::Instance ().GetProxy ()->GetPluginsManager ()->GetPluginByID (id);
-			auto iae = qobject_cast<IANEmitter*> (pObj);
-			if (!iae)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "plugin for ID"
-						<< id
-						<< "doesn't implement IANEmitter:"
-						<< pObj;
-				return;
-			}
-
-			AddFields (iae->GetANFields ());
-		}
+		const auto pObj = Ui_.SourcePlugin_->itemData (idx).value<QObject*> ();
+		AddFields (FieldsMap_ [pObj]);
 
 		if (Ui_.FieldName_->count ())
 			on_FieldName__activated (0);
