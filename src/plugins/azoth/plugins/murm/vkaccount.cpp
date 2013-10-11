@@ -422,6 +422,9 @@ namespace Murm
 		emit removedCLItems (GetCLEntries ());
 		qDeleteAll (Entries_);
 		Entries_.clear ();
+
+		qDeleteAll (ChatEntries_);
+		ChatEntries_.clear ();
 	}
 
 	void VkAccount::handleGotChatInfo (const ChatInfo& info)
