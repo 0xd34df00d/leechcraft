@@ -116,10 +116,12 @@ namespace AdvancedNotifications
 		QStringList types;
 		for (int i = 0; i < Ui_.EventTypes_->topLevelItemCount (); ++i)
 		{
-			QTreeWidgetItem *item = Ui_.EventTypes_->topLevelItem (i);
+			auto item = Ui_.EventTypes_->topLevelItem (i);
 			if (item->checkState (0) == Qt::Checked)
 				types << item->data (0, Qt::UserRole).toString ();
 		}
+		if (types.isEmpty ())
+			types = Cat2Types_ [GetCurrentCat ()];
 		return types;
 	}
 
