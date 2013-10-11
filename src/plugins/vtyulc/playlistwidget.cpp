@@ -71,7 +71,7 @@ namespace vlc
 	
 	PlaylistWidget::~PlaylistWidget ()
 	{
-		Playlist res;
+		QueueState res;
 		int size = libvlc_media_list_count (Playlist_);
 		for (int i = 0; i < size; i++)
 			res.Playlist_ << QString (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL));

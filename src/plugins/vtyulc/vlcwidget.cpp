@@ -189,9 +189,9 @@ namespace vlc
 				SLOT (disableScreenSaver ()));
 
 		connect (PlaylistWidget_,
-				SIGNAL (savePlaylist (Playlist)),
+				SIGNAL (savePlaylist (QueueState)),
 				this,
-				SLOT (savePlaylist (Playlist)));
+				SLOT (savePlaylist (QueueState)));
 
 		connect (VlcPlayer_,
 				SIGNAL (stable ()),
@@ -241,7 +241,7 @@ namespace vlc
 		delete Settings_;
 	}
 
-	void VlcWidget::savePlaylist (const Playlist& playlist)
+	void VlcWidget::savePlaylist (const QueueState& playlist)
 	{
 		Settings_->setValue ("Playlist", playlist.Playlist_);
 		Settings_->setValue ("LastPlaying", playlist.Current_);
@@ -259,7 +259,7 @@ namespace vlc
 		if (lastPlaying < playlist.size () && lastPlaying >= 0)
 		{
 			PlaylistWidget_->SetCurrentMedia (lastPlaying);
-			long long time = Settings_->value ("LastTime").toLongLong ();
+			const long long time = Settings_->value ("LastTime").toLongLong ();
 			if (time)
 				VlcPlayer_->SetCurrentTime (time);
 		}
@@ -286,7 +286,7 @@ namespace vlc
 				tr ("Open files"),
 				tr ("Videos (*.mkv *.avi *.mov *.mpg)"));
 
-		if (files.size ())
+		if (!files.isEmpty ())
 			ParsePath (files [0]);
 		
 		PlaylistWidget_->clearPlaylist ();
@@ -301,7 +301,7 @@ namespace vlc
 				tr ("Open files"),
 				tr ("Videos (*.mkv *.avi *.mov *.mpg)"));
 		
-		if (files.size ())
+		if (!files.isEmpty ())
 			ParsePath (files [0]);
 		
 		for (int i = 0; i < files.size (); i++)

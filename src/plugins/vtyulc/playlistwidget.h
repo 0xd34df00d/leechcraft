@@ -50,7 +50,8 @@ namespace vlc
 {
 	class PlaylistModel;
 	
-	struct Playlist {
+	struct QueueState
+	{
 		QStringList Playlist_;
 		int Current_;
 		libvlc_time_t Position_;
@@ -95,7 +96,7 @@ namespace vlc
 		void deleteRequested (QAction*);
 		
 	signals:
-		void savePlaylist (Playlist);
+		void savePlaylist (const QueueState&);
 	};
 }
 }
