@@ -162,7 +162,7 @@ namespace AdvancedNotifications
 		const int row = index.row ();
 		Rules_ [row] = rule;
 		int i = 0;
-		for (QStandardItem *item : RuleToRow (rule))
+		for (auto item : RuleToRow (rule))
 			RulesModel_->setItem (row, i++, item);
 
 		SaveSettings ();

@@ -347,7 +347,7 @@ namespace AdvancedNotifications
 
 	void NotificationRulesWidget::on_UpdateRule__released ()
 	{
-		const QModelIndex& index = Ui_.RulesTree_->currentIndex ();
+		const auto& index = Ui_.RulesTree_->currentIndex ();
 		if (!index.isValid ())
 			return;
 
