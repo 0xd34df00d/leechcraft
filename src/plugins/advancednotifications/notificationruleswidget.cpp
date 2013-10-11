@@ -227,7 +227,9 @@ namespace AdvancedNotifications
 		const auto& emitters = Core::Instance ().GetProxy ()->
 				GetPluginsManager ()->GetAllCastableTo<IANEmitter*> ();
 		for (auto emitter : emitters)
-			result += emitter->GetANFields ();
+			for (const auto& field : emitter->GetANFields ())
+				if (!GetSelectedTypes ().toSet ().intersect (field.EventTypes_.toSet ()).isEmpty ())
+					result << field;
 
 		return result;
 	}
