@@ -217,26 +217,37 @@ namespace AdvancedNotifications
 		return items;
 	}
 
-	QList<ANFieldData> NotificationRulesWidget::GetCatTypeANFields () const
+	QMap<QObject*, QList<ANFieldData>> NotificationRulesWidget::GetRelevantANFieldsWPlugins () const
 	{
-		QList<ANFieldData> result;
-		result += Util::GetStdANFields (GetCurrentCat ());
+		QMap<QObject*, QList<ANFieldData>> result;
+		result [nullptr] += Util::GetStdANFields (GetCurrentCat ());
 		for (const auto& type : GetSelectedTypes ())
-			result += Util::GetStdANFields (type);
+			result [nullptr] += Util::GetStdANFields (type);
 
 		const auto& emitters = Core::Instance ().GetProxy ()->
-				GetPluginsManager ()->GetAllCastableTo<IANEmitter*> ();
-		for (auto emitter : emitters)
+				GetPluginsManager ()->GetAllCastableRoots<IANEmitter*> ();
+		for (auto emitterObj : emitters)
+		{
+			auto emitter = qobject_cast<IANEmitter*> (emitterObj);
 			for (const auto& field : emitter->GetANFields ())
 				if (!GetSelectedTypes ().toSet ().intersect (field.EventTypes_.toSet ()).isEmpty ())
-					result << field;
+					result [emitterObj] << field;
+		}
 
+		return result;
+	}
+
+	QList<ANFieldData> NotificationRulesWidget::GetRelevantANFields () const
+	{
+		QList<ANFieldData> result;
+		for (const auto& sublist : GetRelevantANFieldsWPlugins ())
+			result += sublist;
 		return result;
 	}
 
 	QString NotificationRulesWidget::GetArgumentText ()
 	{
-		const auto& fields = GetCatTypeANFields ();
+		const auto& fields = GetRelevantANFields ();
 
 		if (fields.isEmpty ())
 			return QInputDialog::getText (this,

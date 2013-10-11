@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_NOTIFICATIONRULESWIDGET_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_NOTIFICATIONRULESWIDGET_H
+#pragma once
+
 #include <QWidget>
 #include <QList>
 #include "ui_notificationruleswidget.h"
@@ -68,7 +68,8 @@ namespace AdvancedNotifications
 		NotificationRule GetRuleFromUI () const;
 		QList<QStandardItem*> MatchToRow (const FieldMatch&) const;
 
-		QList<ANFieldData> GetCatTypeANFields () const;
+		QMap<QObject*, QList<ANFieldData>> GetRelevantANFieldsWPlugins () const;
+		QList<ANFieldData> GetRelevantANFields () const;
 		QString GetArgumentText ();
 	private slots:
 		void handleItemSelected (const QModelIndex&, const QModelIndex&);
@@ -102,5 +103,3 @@ namespace AdvancedNotifications
 	};
 }
 }
-
-#endif
