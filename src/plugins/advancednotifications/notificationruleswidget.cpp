@@ -244,12 +244,17 @@ namespace AdvancedNotifications
 			items << tr ("Custom field %1 (%2)")
 					.arg (field.Name_)
 					.arg (field.Description_);
+
+		bool ok = false;
 		const auto& value = QInputDialog::getItem (this,
 				"LeechCraft",
 				tr ("Please enter the argument:"),
-				items);
+				items,
+				0,
+				true,
+				&ok);
 
-		if (value.isEmpty ())
+		if (value.isEmpty () || !ok)
 			return {};
 
 		const auto idx = items.indexOf (value);
