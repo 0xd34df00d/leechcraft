@@ -93,7 +93,7 @@ namespace Azoth
 		int ScrollbackPos_;
 
 		QList<IMessage*> HistoryMessages_;
-		IMessage *LastAppendedMessage_;
+		QDateTime LastDateTime_;
 		QList<CoreMessage*> CoreMessages_;
 
 		QIcon TabIcon_;

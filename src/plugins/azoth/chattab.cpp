@@ -163,7 +163,6 @@ namespace Azoth
 	, HadHighlight_ (false)
 	, NumUnreadMsgs_ (0)
 	, ScrollbackPos_ (0)
-	, LastAppendedMessage_ (nullptr)
 	, IsMUC_ (false)
 	, PreviousTextHeight_ (0)
 	, MsgFormatter_ (0)
@@ -740,7 +739,7 @@ namespace Azoth
 		HistoryMessages_.clear ();
 		qDeleteAll (CoreMessages_);
 		CoreMessages_.clear ();
-		LastAppendedMessage_ = nullptr;
+		LastDateTime_ = QDateTime ();
 		PrepareTheme ();
 	}
 
@@ -751,7 +750,7 @@ namespace Azoth
 		HistoryMessages_.clear ();
 		qDeleteAll (CoreMessages_);
 		CoreMessages_.clear ();
-		LastAppendedMessage_ = nullptr;
+		LastDateTime_ = QDateTime ();
 		RequestLogs (ScrollbackPos_);
 	}
 
@@ -1844,9 +1843,9 @@ namespace Azoth
 
 	namespace
 	{
-		bool IsSameDay (const IMessage *msg1, const IMessage *msg2)
+		bool IsSameDay (const QDateTime& dt, const IMessage *msg)
 		{
-			return msg1->GetDateTime ().date () == msg2->GetDateTime ().date ();
+			return dt.date () == msg->GetDateTime ().date ();
 		}
 	}
 
@@ -1918,7 +1917,7 @@ namespace Azoth
 
 		const bool isActiveChat =  Core::Instance ()
 				.GetChatTabsManager ()->IsActiveChat (GetEntry<ICLEntry> ());
-		if (LastAppendedMessage_ && !IsSameDay (LastAppendedMessage_, msg))
+		if (!LastDateTime_.isNull () && !IsSameDay (LastDateTime_, msg))
 		{
 			auto datetime = msg->GetDateTime ();
 			const auto& thisDate = datetime.date ();
@@ -1937,7 +1936,7 @@ namespace Azoth
 			Core::Instance ().AppendMessageByTemplate (frame, coreMessage, coreInfo);
 		}
 
-		LastAppendedMessage_ = msg;
+		LastDateTime_ = msg->GetDateTime ();
 
 		ChatMsgAppendInfo info
 		{
