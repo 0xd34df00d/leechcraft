@@ -420,6 +420,8 @@ namespace Murm
 
 	void VkAccount::finishOffline ()
 	{
+		SelfEntry_ = nullptr;
+
 		emit removedCLItems (GetCLEntries ());
 		qDeleteAll (Entries_);
 		Entries_.clear ();
