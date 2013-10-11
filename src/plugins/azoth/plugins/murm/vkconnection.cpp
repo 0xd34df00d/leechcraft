@@ -51,6 +51,7 @@ namespace Murm
 	, Proxy_ (proxy)
 	, CallQueue_ (new Util::QueueManager (400))
 	, LPManager_ (new LongPollManager (this, proxy))
+	, MarkOnlineTimer_ (new QTimer (this))
 	{
 		connect (AuthMgr_,
 				SIGNAL (cookiesChanged (QByteArray)),
@@ -102,6 +103,12 @@ namespace Murm
 			{ emit gotTypingNotification (items.value (1).toULongLong ()); };
 
 		Dispatcher_ [101] = [this] (const QVariantList&) {};	// unknown stuff
+
+		MarkOnlineTimer_->setInterval (12 * 60 * 1000);
+		connect (MarkOnlineTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (markOnline ()));
 	}
 
 	const QByteArray& VkConnection::GetCookies () const
@@ -438,6 +445,20 @@ namespace Murm
 		return CurrentStatus_;
 	}
 
+	void VkConnection::SetMarkingOnlineEnabled (bool enabled)
+	{
+		qDebug () << Q_FUNC_INFO << enabled;
+		MarkingOnline_ = enabled;
+
+		if (enabled)
+		{
+			markOnline ();
+			MarkOnlineTimer_->start ();
+		}
+		else
+			MarkOnlineTimer_->stop ();
+	}
+
 	void VkConnection::QueueRequest (VkConnection::PreparedCall_f call)
 	{
 		PreparedCalls_ << call;
@@ -518,10 +539,30 @@ namespace Murm
 		}
 	}
 
+	void VkConnection::markOnline ()
+	{
+		auto nam = Proxy_->GetNetworkAccessManager ();
+		PreparedCalls_.push_back ([this, nam] (const QString& key) -> QNetworkReply*
+			{
+				QUrl url ("https://api.vk.com/method/account.setOnline");
+				url.addQueryItem ("access_token", key);
+				auto reply = nam->get (QNetworkRequest (url));
+				connect (reply,
+						SIGNAL (finished ()),
+						reply,
+						SLOT (deleteLater ()));
+				return reply;
+			});
+		qDebug () << Q_FUNC_INFO << "request scheduled";
+		AuthMgr_->GetAuthKey ();
+	}
+
 	void VkConnection::handleListening ()
 	{
 		CurrentStatus_ = Status_;
 		emit statusChanged (GetStatus ());
+
+		SetMarkingOnlineEnabled (MarkingOnline_);
 	}
 
 	void VkConnection::handlePollError ()
@@ -536,6 +577,8 @@ namespace Murm
 		emit statusChanged (GetStatus ());
 
 		emit stoppedPolling ();
+
+		MarkOnlineTimer_->stop ();
 	}
 
 	void VkConnection::handlePollData (const QVariantMap& rootMap)

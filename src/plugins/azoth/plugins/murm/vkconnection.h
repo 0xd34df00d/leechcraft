@@ -101,6 +101,9 @@ namespace Murm
 
 		int APIErrorCount_ = 0;
 		bool ShouldRerunPrepared_ = false;
+
+		bool MarkingOnline_ = false;
+		QTimer * const MarkOnlineTimer_;
 	public:
 		enum class MessageType
 		{
@@ -137,6 +140,8 @@ namespace Murm
 		void SetStatus (const EntryStatus&);
 		EntryStatus GetStatus () const;
 
+		void SetMarkingOnlineEnabled (bool);
+
 		void QueueRequest (PreparedCall_f);
 	private:
 		void PushFriendsRequest ();
@@ -144,6 +149,8 @@ namespace Murm
 	private slots:
 		void rerunPrepared ();
 		void callWithKey (const QString&);
+
+		void markOnline ();
 
 		void handleListening ();
 		void handlePollError ();
