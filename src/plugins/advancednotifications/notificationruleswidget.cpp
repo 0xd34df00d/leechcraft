@@ -352,6 +352,7 @@ namespace AdvancedNotifications
 			return;
 
 		RM_->UpdateRule (index, GetRuleFromUI ());
+		Ui_.RulesTree_->setCurrentIndex (index);
 	}
 
 	void NotificationRulesWidget::on_MoveRuleUp__released ()
