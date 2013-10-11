@@ -219,8 +219,9 @@ namespace Murm
 	QList<QObject*> VkAccount::GetCLEntries ()
 	{
 		QList<QObject*> result;
-		result.reserve (Entries_.size ());
+		result.reserve (Entries_.size () + ChatEntries_.size ());
 		std::copy (Entries_.begin (), Entries_.end (), std::back_inserter (result));
+		std::copy (ChatEntries_.begin (), ChatEntries_.end (), std::back_inserter (result));
 		return result;
 	}
 
