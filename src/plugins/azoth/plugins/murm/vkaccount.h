@@ -138,6 +138,8 @@ namespace Murm
 
 		void handleRemoveEntry (VkChatEntry*);
 
+		void handleMarkOnline ();
+
 		void finishOffline ();
 
 		void emitUpdateAcc ();

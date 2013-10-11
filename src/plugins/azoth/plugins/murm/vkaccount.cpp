@@ -102,6 +102,10 @@ namespace Murm
 				SIGNAL (chatUserRemoved (qulonglong, qulonglong)),
 				this,
 				SLOT (handleChatUserRemoved (qulonglong, qulonglong)));
+
+		XmlSettingsManager::Instance ().RegisterObject ("MarkAsOnline",
+				this, "handleMarkOnline");
+		handleMarkOnline ();
 	}
 
 	QByteArray VkAccount::Serialize () const
@@ -416,6 +420,12 @@ namespace Murm
 
 		const auto entry = Entries_.value (uid);
 		entry->HandleTypingNotification ();
+	}
+
+	void VkAccount::handleMarkOnline ()
+	{
+		const auto mark = XmlSettingsManager::Instance ().property ("MarkAsOnline").toBool ();
+		Conn_->SetMarkingOnlineEnabled (mark);
 	}
 
 	void VkAccount::finishOffline ()
