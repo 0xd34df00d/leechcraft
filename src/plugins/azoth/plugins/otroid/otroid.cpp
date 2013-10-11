@@ -548,7 +548,11 @@ namespace OTRoid
 		{
 			otrl_message_disconnect (UserState_, &OtrOps_, this,
 					accId.constData (), protoId.constData (),
+#if OTRL_VERSION_MAJOR >= 4
+					entry->GetEntryID ().toUtf8 ().constData (), OTRL_INSTAG_BEST);
+#else
 					entry->GetEntryID ().toUtf8 ().constData ());
+#endif
 			return;
 		}
 
