@@ -730,6 +730,13 @@ namespace Murm
 
 		const auto& data = QJson::Parser ().parse (reply);
 		auto respList = data.toMap () ["response"].toList ();
+		if (respList.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no response"
+					<< data;
+			return;
+		}
 		respList.removeFirst ();
 
 		for (const auto& msgMapVar : respList)
