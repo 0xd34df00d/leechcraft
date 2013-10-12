@@ -835,13 +835,21 @@ namespace Azoth
 
 	QList<QColor> Core::GenerateColors (const QString& coloring) const
 	{
-		auto fix = [] (qreal h) -> qreal
+		auto compatibleColors = [] (const QColor& c1, const QColor& c2) -> bool
 		{
-			while (h < 0)
-				h += 1;
-			while (h >= 1)
-				h -= 1;
-			return h;
+			int dR = c1.red () - c2.red ();
+			int dG = c1.green () - c2.green ();
+			int dB = c1.blue () - c2.blue ();
+
+			double dV = std::abs (c1.value () - c2.value ());
+			double dC = std::sqrt (0.2126 * dR * dR + 0.7152 * dG * dG + 0.0722 * dB * dB);
+
+			if ((dC < 80. && dV > 100.) ||
+					(dC < 110. && dV <= 100. && dV > 10.) ||
+					(dC < 125. && dV <= 10.))
+				return false;
+
+			return true;
 		};
 
 		QList<QColor> result;
@@ -858,25 +866,17 @@ namespace Azoth
 		{
 			const QColor& bg = QApplication::palette ().color (QPalette::Base);
 
-			const qreal lower = 25. / 360.;
-			const qreal delta = 50. / 360.;
-			const qreal higher = 180. / 360. - delta / 2;
-
-			const qreal alpha = bg.alphaF ();
-
-			qreal h = bg.hueF ();
+			int alpha = bg.alpha ();
 
 			QColor color;
-			for (qreal d = lower; d <= higher; d += delta)
+			for (int hue = 0; hue < 360; hue += 36)
 			{
-				color.setHsvF (fix (h + d), 1, 0.6, alpha);
-				result << color;
-				color.setHsvF (fix (h - d), 1, 0.6, alpha);
-				result << color;
-				color.setHsvF (fix (h + d), 1, 0.9, alpha);
-				result << color;
-				color.setHsvF (fix (h - d), 1, 0.9, alpha);
-				result << color;
+				color.setHsv (hue, 255, 255, alpha);
+				if (compatibleColors (color, bg))
+					result << color;
+				color.setHsv (hue, 255, 170, alpha);
+				if (compatibleColors (color, bg))
+					result << color;
 			}
 		}
 		else
