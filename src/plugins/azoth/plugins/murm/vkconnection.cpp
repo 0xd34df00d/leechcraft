@@ -85,7 +85,6 @@ namespace Murm
 
 		Dispatcher_ [4] = [this] (const QVariantList& items)
 		{
-			qDebug () << items;
 			emit gotMessage ({
 					items.value (1).toULongLong (),
 					items.value (3).toULongLong (),
