@@ -835,20 +835,18 @@ namespace Azoth
 
 	QList<QColor> Core::GenerateColors (const QString& coloring) const
 	{
-		auto compatibleColors = [&] (const QColor& c1, const QColor& c2) -> bool
+		auto compatibleColors = [] (const QColor& c1, const QColor& c2) -> bool
 		{
-			int dR = c1.red() - c2.red();
-			int dG = c1.green() - c2.green();
-			int dB = c1.blue() - c2.blue();
+			int dR = c1.red () - c2.red ();
+			int dG = c1.green () - c2.green ();
+			int dB = c1.blue () - c2.blue ();
 
-			double dV = std::abs (c1.value() - c2.value());
+			double dV = std::abs (c1.value () - c2.value ());
 			double dC = std::sqrt (0.2126 * dR * dR + 0.7152 * dG * dG + 0.0722 * dB * dB);
 
-			if (dC < 80. && dV > 100.)
-				return false;
-			else if (dC < 110. && dV <= 100. && dV > 10.)
-				return false;
-			else if (dC < 125. && dV <= 10.)
+			if ((dC < 80. && dV > 100.) ||
+					(dC < 110. && dV <= 100. && dV > 10.) ||
+					(dC < 125. && dV <= 10.))
 				return false;
 
 			return true;
