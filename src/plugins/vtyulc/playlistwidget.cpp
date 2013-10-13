@@ -117,22 +117,22 @@ namespace vlc
 		timer->start ();
 	}
 	
-	void PlaylistWidget::AddUrl (const QUrl& url, bool start)
+	libvlc_media_t* PlaylistWidget::AddUrl (const QUrl& url, bool start)
 	{
 		for (int i = 0; i < libvlc_media_list_count (Playlist_); i++)
 			if (url.toEncoded () == libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL))
 			{
 				qWarning () << Q_FUNC_INFO << "Ignoring already added url";
-				return;
+				return nullptr;
 			}
 		
 		libvlc_media_t *m = libvlc_media_new_location (Instance_, url.toEncoded ());
 		libvlc_media_parse (m);
-		if (libvlc_media_get_duration (m) == 0) 
+		if (!libvlc_media_is_parsed (m) || libvlc_media_get_duration (m) == 0) 
 		{
 			libvlc_media_release (m);
 			qWarning () << Q_FUNC_INFO << "A little fail:" << url;
-			return;
+			return nullptr;
 		}
 		
 		libvlc_media_set_meta (m, libvlc_meta_URL, url.toEncoded ());
@@ -142,6 +142,8 @@ namespace vlc
 			libvlc_media_list_player_play (Player_);
 		
 		updateInterface ();
+		
+		return m;
 	}
 	
 	bool PlaylistWidget::IsPlaying () const
@@ -249,18 +251,21 @@ namespace vlc
 	void PlaylistWidget::SetCurrentMedia (int current)
 	{
 		libvlc_media_t *media = libvlc_media_list_item_at_index (Playlist_, current);
-		if (current > -1 && current < libvlc_media_list_count (Playlist_))
+		if (media)
+			SetCurrentMedia (media);
+	}
+	
+	void PlaylistWidget::SetCurrentMedia (libvlc_media_t *media)
+	{
+		libvlc_media_list_player_play_item (Player_, media);
+		while (!libvlc_media_player_is_playing (NativePlayer_))
 		{
-			libvlc_media_list_player_play_item (Player_, media);
-			while (!libvlc_media_player_is_playing (NativePlayer_))
-			{
-				QEventLoop loop;
-				QTimer::singleShot (5, &loop, SLOT (quit ()));
-				loop.exec ();
-			}
-			
-			libvlc_media_player_stop (NativePlayer_);
+			QEventLoop loop;
+			QTimer::singleShot (5, &loop, SLOT (quit ()));
+			loop.exec ();
 		}
+		
+		libvlc_media_player_stop (NativePlayer_);
 	}
 	
 	void PlaylistWidget::clearPlaylist ()

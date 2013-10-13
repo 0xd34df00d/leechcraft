@@ -262,14 +262,19 @@ namespace vlc
 	void VlcWidget::RestorePlaylist ()
 	{
 		QStringList playlist = Settings_->value ("Playlist").toStringList ();
-		
-		for (int i = 0; i < playlist.size (); i++)
-			PlaylistWidget_->AddUrl (QUrl::fromEncoded (playlist [i].toUtf8 ()), false);
-
 		int lastPlaying = Settings_->value ("LastPlaying").toInt ();
-		if (lastPlaying < playlist.size () && lastPlaying >= 0)
+	
+		libvlc_media_t *current = nullptr, *media;
+		for (int i = 0; i < playlist.size (); i++)
 		{
-			PlaylistWidget_->SetCurrentMedia (lastPlaying);
+			media = PlaylistWidget_->AddUrl (QUrl::fromEncoded (playlist [i].toUtf8 ()), false);
+			if (i == lastPlaying)
+				current = media;
+		}
+
+		if (current != nullptr)
+		{
+			PlaylistWidget_->SetCurrentMedia (current);
 			const long long time = Settings_->value ("LastTime").toLongLong ();
 			if (time)
 				VlcPlayer_->SetCurrentTime (time);

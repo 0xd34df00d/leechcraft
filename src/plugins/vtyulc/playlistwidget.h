@@ -75,7 +75,8 @@ namespace vlc
 		~PlaylistWidget ();
 		
 		void SetCurrentMedia (int);
-		void AddUrl (const QUrl&, bool start);
+		void SetCurrentMedia (libvlc_media_t*);
+		libvlc_media_t* AddUrl (const QUrl&, bool start);
 		bool IsPlaying () const;
 		void Init (libvlc_instance_t *instance, libvlc_media_player_t *player);
 		void DeleteRequested (int index);
