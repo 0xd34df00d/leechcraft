@@ -66,7 +66,7 @@
 <context>
     <name>LeechCraft::Azoth::Murm::VkAccount</name>
     <message>
-        <location filename="vkaccount.cpp" line="233"/>
+        <location filename="vkaccount.cpp" line="239"/>
         <source>me</source>
         <translation>я</translation>
     </message>
@@ -227,6 +227,11 @@
         <location filename="dummy.cpp" line="7"/>
         <source>Publish current tune to VK status</source>
         <translation>Публиковать текущую песню как статус В Контакте</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="8"/>
+        <source>Mark the user as online on the VK site</source>
+        <translation>Помечать пользователя как активного на сайте</translation>
     </message>
 </context>
 </TS>

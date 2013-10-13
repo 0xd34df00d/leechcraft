@@ -64,7 +64,7 @@
 <context>
     <name>LeechCraft::Azoth::Murm::VkAccount</name>
     <message>
-        <location filename="vkaccount.cpp" line="233"/>
+        <location filename="vkaccount.cpp" line="239"/>
         <source>me</source>
         <translation>me</translation>
     </message>
@@ -225,6 +225,11 @@
         <location filename="dummy.cpp" line="7"/>
         <source>Publish current tune to VK status</source>
         <translation>Publish current tune to VK status</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="8"/>
+        <source>Mark the user as online on the VK site</source>
+        <translation>Mark the user as online on the VK site</translation>
     </message>
 </context>
 </TS>
