@@ -133,6 +133,11 @@ namespace vlc
 		libvlc_media_player_stop (Mp_.get ());
 	}
 	
+	void VlcPlayer::pause ()
+	{
+		libvlc_media_player_pause (Mp_.get ());
+	}
+	
 	void VlcPlayer::changePosition (double pos)
 	{
 		if (libvlc_media_player_get_media (Mp_.get ()))

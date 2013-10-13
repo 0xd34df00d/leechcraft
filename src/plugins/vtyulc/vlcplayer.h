@@ -110,6 +110,7 @@ namespace vlc
 	public slots:
 		void stop ();
 		void togglePlay ();
+		void pause ();
 		void addUrl (const QUrl&);
 		void setUrl (const QUrl&);
 		void changePosition (double);

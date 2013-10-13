@@ -94,6 +94,7 @@ namespace vlc
 	, Parent_ (parent)
 	, Manager_ (manager)
 	, AllowFullScreenPanel_ (false)
+	, VolumeNotificationWidget_ (new VolumeNotification (this))
 	, Autostart_ (true)
 	{
 		VlcMainWidget_ = new SignalledWidget;
@@ -212,6 +213,16 @@ namespace vlc
 				SIGNAL (triggered ()),
 				PlaylistWidget_,
 				SLOT (clearPlaylist ()));
+		
+		connect (VlcMainWidget_,
+				SIGNAL (resized (QResizeEvent*)),
+				this,
+				SLOT (mainWidgetResized (QResizeEvent*)));
+		
+		connect (SoundWidget_,
+				SIGNAL (volumeChanged (int)),
+				VolumeNotificationWidget_,
+				SLOT (showNotification (int)));
 
 		InitNavigations ();
 		InitVolumeActions ();
@@ -492,6 +503,7 @@ namespace vlc
 			FullScreenWidget_->SetBackGroundColor (new QColor ("black"));
 			FullScreenWidget_->showFullScreen ();
 			VlcPlayer_->switchWidget (FullScreenWidget_);
+			VolumeNotificationWidget_->resetGeometry (FullScreenWidget_);
 		}
 		else
 		{
@@ -500,6 +512,7 @@ namespace vlc
 			FullScreenWidget_->hide ();
 			FullScreenPanel_->hide ();
 			VlcPlayer_->switchWidget (VlcMainWidget_);
+			VolumeNotificationWidget_->resetGeometry (VlcMainWidget_);
 		}
 	}
 
@@ -1085,10 +1098,15 @@ namespace vlc
 	{
 		Autostart_ = XmlSettingsManager::Instance ().property ("Autostart").toBool ();
 	}
-
-	void VlcWidget::Pause ()
+	
+	void VlcWidget::Sleep ()
 	{
-		libvlc_media_player_pause (VlcPlayer_->GetPlayer ().get ());
+		VlcPlayer_->pause ();
+	}
+	
+	void VlcWidget::mainWidgetResized (QResizeEvent *event)
+	{
+		VolumeNotificationWidget_->resetGeometry (VlcMainWidget_);
 	}
 }
 }
