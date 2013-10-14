@@ -234,8 +234,8 @@ namespace OTRoid
 		return entry->Variants ().isEmpty () ? 0 : 1;
 	}
 
-	void Plugin::InjectMsg (const QString& accId,
-			const QString& entryId, const QString& body, IMessage::Direction dir)
+	void Plugin::InjectMsg (const QString& accId, const QString& entryId,
+			const QString& body, IMessage::Direction dir, IMessage::MessageType type)
 	{
 		QObject *entryObj = AzothProxy_->GetEntry (entryId, accId);
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
@@ -248,12 +248,13 @@ namespace OTRoid
 			return;
 		}
 
-		InjectMsg (entry, body, dir);
+		InjectMsg (entry, body, dir, type);
 	}
 
-	void Plugin::InjectMsg (ICLEntry *entry, const QString& body, IMessage::Direction dir)
+	void Plugin::InjectMsg (ICLEntry *entry, const QString& body,
+			IMessage::Direction dir, IMessage::MessageType type)
 	{
-		QObject *msgObj = entry->CreateMessage (IMessage::MTChatMessage, {}, body);
+		QObject *msgObj = entry->CreateMessage (type, {}, body);
 		msgObj->setProperty ("Azoth/HiddenMessage", true);
 
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
