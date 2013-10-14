@@ -540,6 +540,9 @@ namespace Murm
 
 	void VkConnection::markOnline ()
 	{
+		if (Status_.State_ == SOffline)
+			return;
+
 		auto nam = Proxy_->GetNetworkAccessManager ();
 		PreparedCalls_.push_back ([this, nam] (const QString& key) -> QNetworkReply*
 			{
