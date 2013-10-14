@@ -117,6 +117,7 @@ namespace Murm
 
 	void VkConnection::RerequestFriends ()
 	{
+		qDebug () << Q_FUNC_INFO;
 		PushFriendsRequest ();
 		AuthMgr_->GetAuthKey ();
 	}
@@ -401,6 +402,7 @@ namespace Murm
 
 	void VkConnection::SetStatus (const EntryStatus& status)
 	{
+		qDebug () << Q_FUNC_INFO << status.State_;
 		LPManager_->ForceServerRequery ();
 
 		Status_ = status;
@@ -569,12 +571,14 @@ namespace Murm
 
 	void VkConnection::handlePollError ()
 	{
+		qDebug () << Q_FUNC_INFO;
 		CurrentStatus_ = EntryStatus ();
 		emit statusChanged (GetStatus ());
 	}
 
 	void VkConnection::handlePollStopped ()
 	{
+		qDebug () << Q_FUNC_INFO;
 		CurrentStatus_ = Status_;
 		emit statusChanged (GetStatus ());
 

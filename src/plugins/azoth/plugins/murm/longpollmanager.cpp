@@ -170,7 +170,11 @@ namespace Murm
 				start ();
 		}
 		else
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "should stop polling, stopping...";
 			emit stopped ();
+		}
 	}
 
 	void LongPollManager::handleGotLPServer()
