@@ -562,7 +562,16 @@ namespace OTRoid
 			CreatePrivkey (accId.constData (), protoId.constData());
 
 		std::shared_ptr<char> msg (otrl_proto_default_query_msg (accId.constData (),
+#if OTRL_VERSION_MAJOR >= 4
+					OTRL_POLICY_ALLOW_V2), free);
+		// Yes, this is a malicious hack. And in the bright future
+		// (OTRL_POLICY_ALLOW_V3 | OTRL_POLICY_ALLOW_V2) or OTRL_POLICY_DEFAULT
+		// should be used. But for now this is only possible solution for fixing
+		// the problem of initialization of private conversation when both sides
+		// use libotr 4.0.x.
+#else
 					OTRL_POLICY_DEFAULT), free);
+#endif
 		InjectMsg (entry, QString::fromUtf8 (msg.get ()), IMessage::DOut);
 	}
 
