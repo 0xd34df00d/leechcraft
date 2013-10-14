@@ -281,6 +281,19 @@ namespace LMP
 
 			return oldRank;
 		}
+
+		uint GetRank (const char *name)
+		{
+			const auto factory = gst_element_factory_find (name);
+			if (!factory)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "cannot find factory";
+				return 0;
+			}
+
+			return gst_plugin_feature_get_rank (GST_PLUGIN_FEATURE (factory));
+		}
 	}
 
 	void SourceObject::SetCurrentSource (const AudioSource& source)
@@ -292,7 +305,7 @@ namespace LMP
 		Metadata_.clear ();
 
 		if (source.ToUrl ().scheme ().startsWith ("http"))
-			PrevSoupRank_ = SetSoupRank (G_MAXINT);
+			PrevSoupRank_ = SetSoupRank (G_MAXINT / 2);
 
 		auto path = source.ToUrl ().toEncoded ();
 		g_object_set (G_OBJECT (Dec_), "uri", path.constData (), nullptr);
@@ -646,18 +659,26 @@ namespace LMP
 		if (!CurrentSource_.ToUrl ().scheme ().startsWith ("http"))
 			return;
 
-		if (PrevSoupRank_)
-		{
-			SetSoupRank (PrevSoupRank_);
-			PrevSoupRank_ = 0;
-		}
+		std::shared_ptr<void> soupRankGuard (nullptr,
+				[&] (void*) -> void
+				{
+					if (PrevSoupRank_)
+					{
+						SetSoupRank (PrevSoupRank_);
+						PrevSoupRank_ = 0;
+					}
+				});
 
 		if (!g_object_class_find_property (G_OBJECT_GET_CLASS (src), "user-agent"))
 		{
 			qDebug () << Q_FUNC_INFO
 					<< "user-agent property not found for"
 					<< CurrentSource_.ToUrl ()
-					<< G_OBJECT_TYPE_NAME (src);
+					<< G_OBJECT_TYPE_NAME (src)
+					<< "soup rank:"
+					<< GetRank ("souphttpsrc")
+					<< "webkit rank:"
+					<< GetRank ("WebKitWebSrc");
 			return;
 		}
 
