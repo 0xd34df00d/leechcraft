@@ -110,12 +110,6 @@ namespace vlc
 		PlaylistDock_->setAllowedAreas (Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 		TitleWidget_ = new PlaylistTitleWidget (proxy, this);
 		PlaylistDock_->setTitleBarWidget (TitleWidget_);
-
-		auto mw = proxy->GetRootWindowsManager ()->GetMWProxy (0);
-		mw->AddDockWidget (Qt::LeftDockWidgetArea, PlaylistDock_);
-		mw->AssociateDockWidget (PlaylistDock_, this);
-		mw->ToggleViewActionVisiblity (PlaylistDock_, false);
-
 		PlaylistDock_->setWidget (PlaylistWidget_);
 
 		VlcPlayer_ = new VlcPlayer (VlcMainWidget_);
@@ -229,6 +223,19 @@ namespace vlc
 		InitRewindActions ();
 		setAcceptDrops (true);
 		RestoreSettings ();
+
+		PlaylistDock_->setMinimumWidth (Settings_->value ("PlaylistWidth", 300).toInt ());
+		PlaylistDock_->update ();
+ 		PlaylistDock_->setMinimumWidth (0);
+		auto mw = proxy->GetRootWindowsManager ()->GetMWProxy (0);
+		mw->AddDockWidget ((Qt::DockWidgetArea)Settings_->value ("PlaylistArea", Qt::RightDockWidgetArea).toInt (), PlaylistDock_);
+		mw->AssociateDockWidget (PlaylistDock_, this);
+		mw->ToggleViewActionVisiblity (PlaylistDock_, false);
+		
+		connect (PlaylistDock_,
+				SIGNAL (dockLocationChanged (Qt::DockWidgetArea)),
+				this,
+				SLOT (savePlaylistPosition (Qt::DockWidgetArea)));
 	}
 
 	VlcWidget::~VlcWidget ()
@@ -249,9 +256,15 @@ namespace vlc
 
 	void VlcWidget::SaveSettings ()
 	{
+		Settings_->setValue ("PlaylistWidth", PlaylistDock_->width ());
 		delete Settings_;
 	}
-
+	
+	void VlcWidget::savePlaylistPosition (Qt::DockWidgetArea area)
+	{
+		Settings_->setValue ("PlaylistArea", (int)area);
+	}
+	
 	void VlcWidget::savePlaylist (const QueueState& playlist)
 	{
 		Settings_->setValue ("Playlist", playlist.Playlist_);

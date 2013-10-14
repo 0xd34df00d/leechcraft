@@ -198,6 +198,7 @@ namespace vlc
 		void disableScreenSaver ();
 		
 		void savePlaylist (const QueueState&);
+		void savePlaylistPosition (Qt::DockWidgetArea);
 		
 	signals:
 		void deleteMe (QWidget*);
