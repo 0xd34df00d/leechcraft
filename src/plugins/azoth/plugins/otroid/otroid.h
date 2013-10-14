@@ -90,8 +90,10 @@ namespace OTRoid
 		QSet<QByteArray> GetPluginClasses () const;
 
 		int IsLoggedIn (const QString& accId, const QString& entryId);
-		void InjectMsg (const QString& accId, const QString& entryId, const QString& msg, IMessage::Direction);
-		void InjectMsg (ICLEntry *entry, const QString& msg, IMessage::Direction);
+		void InjectMsg (const QString& accId, const QString& entryId,
+				const QString& msg, IMessage::Direction, IMessage::MessageType = IMessage::MTChatMessage);
+		void InjectMsg (ICLEntry *entry,
+				const QString& msg, IMessage::Direction, IMessage::MessageType = IMessage::MTChatMessage);
 		void Notify (const QString& accId, const QString& entryId,
 				Priority, const QString& title,
 				const QString& primary, const QString& secondary);
