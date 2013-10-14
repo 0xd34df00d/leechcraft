@@ -44,13 +44,13 @@ namespace SB2
 		{
 		public:
 			LCMenuImageProvider ()
-			: QDeclarativeImageProvider (Image)
+			: QDeclarativeImageProvider (Pixmap)
 			{
 			}
 
-			QImage requestImage (const QString&, QSize*, const QSize&)
+			QPixmap requestPixmap (const QString&, QSize*, const QSize&)
 			{
-				return QImage ("lcicons:/resources/images/leechcraft.svg");
+				return QPixmap ("lcicons:/resources/images/leechcraft.svg");
 			}
 		};
 
