@@ -194,7 +194,7 @@ namespace OTRoid
 					static_cast<Plugin*> (opData)->
 							InjectMsg (QString::fromUtf8 (context->accountname),
 									QString::fromUtf8 (context->username),
-									msg, IMessage::DOut, IMessage::MTServiceMessage);
+									msg, IMessage::DIn, IMessage::MTServiceMessage);
 				};
 		OtrOps_.gone_insecure = [] (void *opData, ConnContext *context)
 				{
@@ -202,7 +202,7 @@ namespace OTRoid
 					static_cast<Plugin*> (opData)->
 							InjectMsg (QString::fromUtf8 (context->accountname),
 									QString::fromUtf8 (context->username),
-									msg, IMessage::DOut, IMessage::MTServiceMessage);
+									msg, IMessage::DIn, IMessage::MTServiceMessage);
 				};
 		OtrOps_.still_secure = [] (void *opData, ConnContext *context, int)
 				{
@@ -210,7 +210,7 @@ namespace OTRoid
 					static_cast<Plugin*> (opData)->
 							InjectMsg (QString::fromUtf8 (context->accountname),
 									QString::fromUtf8 (context->username),
-									msg, IMessage::DOut, IMessage::MTServiceMessage);
+									msg, IMessage::DIn, IMessage::MTServiceMessage);
 				};
 #if OTRL_VERSION_MAJOR >= 4
 		OtrOps_.handle_msg_event = &OTR::HandleMsgEvent;
@@ -476,8 +476,8 @@ namespace OTRoid
 		IProtocol *proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 
 		char *newMsg = 0;
-		OtrlTLV* tlvs = 0;
-		OtrlTLV* tlv = 0;
+		OtrlTLV *tlvs = 0;
+		OtrlTLV *tlv = 0;
 		int ignore = otrl_message_receiving (UserState_, &OtrOps_, this,
 				acc->GetAccountID ().constData (),
 				proto->GetProtocolID ().constData (),
@@ -516,7 +516,7 @@ namespace OTRoid
 			const auto& message = tr ("%1 has ended the private conversation with you; "
 										"you should do the same.").arg (entry->GetEntryID ());
 			InjectMsg (acc->GetAccountID (), entry->GetEntryID (),
-						message, IMessage::DOut, IMessage::MTServiceMessage);
+						message, IMessage::DIn, IMessage::MTServiceMessage);
 		}
 		otrl_tlv_free(tlvs);
 	}
