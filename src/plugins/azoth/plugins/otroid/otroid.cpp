@@ -116,13 +116,18 @@ namespace OTRoid
 					<< event
 					<< message;
 
+			// human readable user name should be here
+			QString contact (QString::fromUtf8 (context->username));
+			int sep = contact.lastIndexOf ("_");
+			if (sep > 0)
+				contact = contact.right (contact.size () - sep - 1);
+
 			QString msg;
 			switch (event)
 			{
 			case OTRL_MSGEVENT_RCVDMSG_UNENCRYPTED:
 				msg = QObject::tr ("The following message received from %1 "
-								   "was not encrypted:")
-								 .arg(QString::fromUtf8 (context->username));
+								   "was not encrypted:").arg (contact);
 				break;
 			case OTRL_MSGEVENT_CONNECTION_ENDED:
 				msg = QObject::tr ("Your message was not sent. Either end your "
@@ -182,9 +187,29 @@ namespace OTRoid
 		OtrOps_.is_logged_in = &OTR::IsLoggedIn;
 		OtrOps_.inject_message = &OTR::InjectMessage;
 		OtrOps_.update_context_list = [] (void*) {};
-		OtrOps_.new_fingerprint = [] (void*, OtrlUserState,
+		OtrOps_.new_fingerprint = [] (void *opData, OtrlUserState,
 				const char *accountname, const char *protocol,
-				const char *username, unsigned char fingerprint[20]) {};
+				const char *username, unsigned char fingerprint[20])
+				{
+					char fpHash[45];
+					otrl_privkey_hash_to_human (fpHash, fingerprint);
+					QString hrHash (fpHash); // human readable fingerprint
+
+					// human readable user name should be here
+					QString contact (username);
+					int sep = contact.lastIndexOf ("_");
+					if (sep > 0)
+						contact = contact.right (contact.size () - sep - 1);
+
+					const auto& msg = QObject::tr ("You have received a new "
+												   "fingerprint from %1: %2")
+												  .arg(contact)
+												  .arg(hrHash);
+					static_cast<Plugin*> (opData)->
+							InjectMsg (QString::fromUtf8 (accountname),
+									QString::fromUtf8 (username),
+									msg, false, IMessage::DIn, IMessage::MTServiceMessage);
+				};
 		OtrOps_.write_fingerprints = [] (void *opData)
 				{ static_cast<Plugin*> (opData)->WriteFingerprints (); };
 		OtrOps_.account_name = [] (void *opData, const char *acc, const char*) -> const char*
@@ -504,8 +529,14 @@ namespace OTRoid
 		OtrlTLV *tlv = otrl_tlv_find (tlvs, OTRL_TLV_DISCONNECTED);
 		if (tlv)
 		{
+			// human readable user name should be here
+			QString contact (entry->GetEntryID ());
+			int sep = contact.lastIndexOf ("_");
+			if (sep > 0)
+				contact = contact.right (contact.size () - sep - 1);
+
 			const auto& message = tr ("%1 has ended the private conversation with you, "
-									  "you should do the same.").arg (entry->GetEntryID ());
+									  "you should do the same.").arg (contact);
 			InjectMsg (acc->GetAccountID (), entry->GetEntryID (),
 						message, false, IMessage::DIn, IMessage::MTServiceMessage);
 		}
