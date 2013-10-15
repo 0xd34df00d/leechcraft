@@ -144,7 +144,7 @@ namespace StandardStyles
 			QObject *msgObj, const ChatMsgAppendInfo& info)
 	{
 		QObject *azothSettings = Proxy_->GetSettingsManager ();
-		const auto& colors = CreateColors (frame->metaData ().value ("coloring"));
+		const auto& colors = CreateColors (frame->metaData ().value ("coloring"), frame);
 
 		const bool isHighlightMsg = info.IsHighlightMsg_;
 		const bool isActiveChat = info.IsActiveChat_;
@@ -339,12 +339,27 @@ namespace StandardStyles
 		return QStringList ();
 	}
 
-	QList<QColor> StandardStyleSource::CreateColors (const QString& scheme)
+	QList<QColor> StandardStyleSource::CreateColors (const QString& scheme, QWebFrame *frame)
 	{
-		if (!Coloring2Colors_.contains (scheme))
-			Coloring2Colors_ [scheme] = Proxy_->GenerateColors (scheme, {});
+		QColor bgColor;
 
-		return Coloring2Colors_ [scheme];
+		const auto js = "window.getComputedStyle(document.body) ['background-color']";
+		auto res = frame->evaluateJavaScript (js).toString ();
+		res.remove (" ");
+		res.remove ("rgb(");
+		res.remove (")");
+		const auto& vals = res.split (',', QString::SkipEmptyParts);
+
+		if (vals.size () == 3)
+			bgColor.setRgb (vals.value (0).toInt (),
+					vals.value (1).toInt (), vals.value (2).toInt ());
+
+		const auto& mangledScheme = scheme + bgColor.name ();
+
+		if (!Coloring2Colors_.contains (mangledScheme))
+			Coloring2Colors_ [mangledScheme] = Proxy_->GenerateColors (scheme, bgColor);
+
+		return Coloring2Colors_ [mangledScheme];
 	}
 
 	QString StandardStyleSource::GetMessageID (QObject *msgObj)
