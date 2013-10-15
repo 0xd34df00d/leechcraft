@@ -115,58 +115,41 @@ namespace OTRoid
 					<< event
 					<< message;
 
-			if (event == OTRL_MSGEVENT_RCVDMSG_UNENCRYPTED)
+			QString msg;
+			switch (event)
 			{
-				const auto& msg = Plugin::tr ("<b>The following message received "
-												"from %1 was <i>not</i> encrypted:</b>")
-											.arg(QString::fromUtf8 (context->username));
-				static_cast<Plugin*> (opData)->
-									InjectMsg (QString::fromUtf8 (context->accountname),
-											QString::fromUtf8 (context->username),
-											msg, IMessage::DOut, IMessage::MTServiceMessage);
-			}
-			else if (event == OTRL_MSGEVENT_CONNECTION_ENDED)
-			{
-				const auto& msg = Plugin::tr ("Your message was not sent. Either end your "
+			case OTRL_MSGEVENT_RCVDMSG_UNENCRYPTED:
+				msg = Plugin::tr ("<b>The following message received "
+								  "from %1 was <i>not</i> encrypted:</b>")
+								 .arg(QString::fromUtf8 (context->username));
+				break;
+			case OTRL_MSGEVENT_CONNECTION_ENDED:
+				msg = Plugin::tr ("Your message was not sent. Either end your "
 												"private conversation, or restart it.");
-				static_cast<Plugin*> (opData)->
-									InjectMsg (QString::fromUtf8 (context->accountname),
-											QString::fromUtf8 (context->username),
-											msg, IMessage::DOut, IMessage::MTServiceMessage);
+				break;
+			case OTRL_MSGEVENT_RCVDMSG_UNRECOGNIZED:
+				msg = Plugin::tr ("Unreadable encrypted message was received.");
+				break;
+			case OTRL_MSGEVENT_RCVDMSG_NOT_IN_PRIVATE:
+				msg = Plugin::tr ("Received an encrypted message but it cannot "
+								  "be read because no private connection is "
+								  "established yet.");
+				break;
+			case OTRL_MSGEVENT_RCVDMSG_UNREADABLE:
+				msg = Plugin::tr ("Received message is unreadable.");
+				break;
+			case OTRL_MSGEVENT_RCVDMSG_MALFORMED:
+				msg = Plugin::tr ("Received message contains malformed data.");
+				break;
 			}
-			else if (event == OTRL_MSGEVENT_RCVDMSG_UNRECOGNIZED)
+
+			if (!msg.isEmpty ())
 			{
-				const auto& msg = Plugin::tr ("Unreadable encrypted message was received.");
 				static_cast<Plugin*> (opData)->
 									InjectMsg (QString::fromUtf8 (context->accountname),
-											QString::fromUtf8 (context->username),
-											msg, IMessage::DOut, IMessage::MTServiceMessage);
-			}
-			else if (event == OTRL_MSGEVENT_RCVDMSG_NOT_IN_PRIVATE)
-			{
-				const auto& msg = Plugin::tr ("Received an encrypted message but it cannot "
-												"be read because no private connection is "
-												"established yet.");
-				static_cast<Plugin*> (opData)->
-									InjectMsg (QString::fromUtf8 (context->accountname),
-											QString::fromUtf8 (context->username),
-											msg, IMessage::DOut, IMessage::MTServiceMessage);
-			}
-			else if (event == OTRL_MSGEVENT_RCVDMSG_UNREADABLE)
-			{
-				const auto& msg = Plugin::tr ("Received message is unreadable.");
-				static_cast<Plugin*> (opData)->
-									InjectMsg (QString::fromUtf8 (context->accountname),
-											QString::fromUtf8 (context->username),
-											msg, IMessage::DOut, IMessage::MTServiceMessage);
-			}
-			else if (event == OTRL_MSGEVENT_RCVDMSG_MALFORMED)
-			{
-				const auto& msg = Plugin::tr ("Received message contains malformed data.");
-				static_cast<Plugin*> (opData)->
-									InjectMsg (QString::fromUtf8 (context->accountname),
-											QString::fromUtf8 (context->username),
-											msg, IMessage::DOut, IMessage::MTServiceMessage);
+											   QString::fromUtf8 (context->username),
+											   msg, IMessage::DOut,
+											   IMessage::MTServiceMessage);
 			}
 		}
 
