@@ -424,13 +424,15 @@ namespace OTRoid
 		IProtocol *proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 
 		char *newMsg = 0;
+		OtrlTLV* tlvs = 0;
+		OtrlTLV* tlv = 0;
 		int ignore = otrl_message_receiving (UserState_, &OtrOps_, this,
 				acc->GetAccountID ().constData (),
 				proto->GetProtocolID ().constData (),
 				entry->GetEntryID ().toUtf8 ().constData (),
 				msg->GetBody ().toUtf8 ().constData (),
 				&newMsg,
-				NULL,
+				&tlvs,
 				NULL,
 #if OTRL_VERSION_MAJOR >= 4
 				NULL,
@@ -455,6 +457,16 @@ namespace OTRoid
 				CreateActions (entryObj);
 			Entry2Action_ [entryObj]->setChecked (true);
 		}
+
+		tlv = otrl_tlv_find(tlvs, OTRL_TLV_DISCONNECTED);
+		if (tlv)
+		{
+			QString msg = tr ("%1 has ended the private conversation with you; "
+                      "you should do the same.").arg (entry->GetEntryID ());
+			InjectMsg (acc->GetAccountID (), entry->GetEntryID (),
+						msg, IMessage::DOut, IMessage::MTServiceMessage);
+		}
+		otrl_tlv_free(tlvs);
 	}
 
 	void Plugin::hookMessageCreated (IHookProxy_ptr proxy, QObject*, QObject *msgObj)
