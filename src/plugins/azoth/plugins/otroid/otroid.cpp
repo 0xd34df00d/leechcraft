@@ -116,7 +116,10 @@ namespace OTRoid
 					<< event
 					<< message;
 
-			const auto& contact = QString::fromUtf8 (context->username);
+			auto plugin = static_cast<Plugin*> (opData);
+
+			const auto& contact = plugin->GetVisibleEntryName (QString::fromUtf8 (context->account_name),
+					QString::fromUtf8 (context->username));
 
 			QString msg;
 			switch (event)
@@ -147,11 +150,10 @@ namespace OTRoid
 
 			if (!msg.isEmpty ())
 			{
-				static_cast<Plugin*> (opData)->
-						InjectMsg (QString::fromUtf8 (context->accountname),
-								QString::fromUtf8 (context->username),
-								msg, false, IMessage::DIn,
-								IMessage::MTServiceMessage);
+				plugin->InjectMsg (QString::fromUtf8 (context->accountname),
+						QString::fromUtf8 (context->username),
+						msg, false, IMessage::DIn,
+						IMessage::MTServiceMessage);
 			}
 		}
 
@@ -169,14 +171,14 @@ namespace OTRoid
 			otrl_privkey_hash_to_human (fpHash, fingerprint);
 			QString hrHash (fpHash); // human readable fingerprint
 
-			const auto& msg = Plugin::tr ("You have received a new "
-					"fingerprint from %1: %2")
-						.arg (username)
-						.arg (hrHash);
-			static_cast<Plugin*> (opData)->
-					InjectMsg (QString::fromUtf8 (accountname),
-							QString::fromUtf8 (username),
-							msg, false, IMessage::DIn, IMessage::MTServiceMessage);
+			const auto plugin = static_cast<Plugin*> (opData);
+
+			const auto& msg = Plugin::tr ("You have received a new fingerprint from %1: %2")
+					.arg (plugin->GetVisibleEntryName (QString::fromUtf8 (accountname), QString::fromUtf8 (username)))
+					.arg (hrHash);
+			plugin->InjectMsg (QString::fromUtf8 (accountname),
+					QString::fromUtf8 (username),
+					msg, false, IMessage::DIn, IMessage::MTServiceMessage);
 		}
 
 		void HandleGoneSecure (void *opData, ConnContext *context)
@@ -385,6 +387,18 @@ namespace OTRoid
 		return acc->GetAccountName ();
 	}
 
+	namespace
+	{
+		QString GetVisibleEntryNameImpl (ICLEntry *entry)
+		{
+			const auto& id = entry->GetHumanReadableID ();
+			const auto& name = entry->GetEntryName ();
+			return name != id ?
+					QString ("%1 (%2)").arg (name).arg (id) :
+					id;
+		}
+	}
+
 	QString Plugin::GetVisibleEntryName (const QString& accId, const QString& entryId)
 	{
 		QObject *entryObj = AzothProxy_->GetEntry (entryId, accId);
@@ -398,11 +412,7 @@ namespace OTRoid
 			return entryId;
 		}
 
-		const auto& id = entry->GetHumanReadableID ();
-		const auto& name = entry->GetEntryName ();
-		return name != id ?
-				QString ("%1 (%2)").arg (name).arg (id) :
-				id;
+		return GetVisibleEntryNameImpl (entry);
 	}
 
 	void Plugin::CreatePrivkey (const char *accName, const char *proto)
@@ -547,9 +557,9 @@ namespace OTRoid
 		OtrlTLV *tlv = otrl_tlv_find (tlvs, OTRL_TLV_DISCONNECTED);
 		if (tlv)
 		{
-			const auto& contact = entry->GetEntryID ();
 			const auto& message = tr ("%1 has ended the private conversation with you, "
-									  "you should do the same.").arg (contact);
+					"you should do the same.")
+						.arg (GetVisibleEntryNameImpl (entry));
 			InjectMsg (acc->GetAccountID (), entry->GetEntryID (),
 						message, false, IMessage::DIn, IMessage::MTServiceMessage);
 		}
