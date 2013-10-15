@@ -119,19 +119,19 @@ add_definitions(-DQT_NO_DEBUG)
 add_definitions(-DQT_SHARED)
 add_definitions(-DQT_GUI_LIB)
 
-add_library (lcutil SHARED
+add_library (leechcraft-util SHARED
 	${SRCS}
 	${UIS_H}
 	)
-target_link_libraries (lcutil
+target_link_libraries (leechcraft-util
 	${QT_LIBRARIES}
 	${MAGIC_LIBRARIES}
 	${ADDITIONAL_LIBS}
-	xmlsettingsdialog
+	leechcraft-xsd
 	)
-set_property (TARGET lcutil PROPERTY SOVERSION 0.5.0)
-install (TARGETS lcutil DESTINATION ${LIBDIR})
+set_property (TARGET leechcraft-util PROPERTY SOVERSION 0.5.0)
+install (TARGETS leechcraft-util DESTINATION ${LIBDIR})
 
 if (USE_QT5)
-	QT5_USE_MODULES (lcutil Declarative Network Xml Sql Widgets)
+	QT5_USE_MODULES (leechcraft-util Declarative Network Xml Sql Widgets)
 endif ()

@@ -31,7 +31,7 @@
 #define XMLSETTINGSDIALOG_CONFIG_H
 #include <QtGlobal>
 
-# if defined(xmlsettingsdialog_EXPORTS)
+# if defined(leechcraft_xsd_EXPORTS)
 #  define XMLSETTINGSMANAGER_API Q_DECL_EXPORT
 # else
 #  define XMLSETTINGSMANAGER_API Q_DECL_IMPORT

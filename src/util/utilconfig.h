@@ -31,9 +31,9 @@
 #define UTIL_CONFIG_H
 #include <QtGlobal>
 
-# if defined(lcutil_EXPORTS)
+#if defined(leechcraft_util_EXPORTS)
 #  define UTIL_API Q_DECL_EXPORT
-# else
+#else
 #  define UTIL_API Q_DECL_IMPORT
 #endif
 

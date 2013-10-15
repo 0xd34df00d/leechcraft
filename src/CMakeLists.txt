@@ -136,7 +136,7 @@ if (NOT CMAKE_VERSION VERSION_LESS 2.8.6)
 endif ()
 
 set (LEECHCRAFT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
-set (LEECHCRAFT_LIBRARIES lcutil xmlsettingsdialog)
+set (LEECHCRAFT_LIBRARIES leechcraft-util leechcraft-xsd)
 
 set (CMAKE_MODULE_PATH "/usr/local/share/apps/cmake/modules;/usr/share/apps/cmake/modules;${CMAKE_MODULE_PATH}")
 
