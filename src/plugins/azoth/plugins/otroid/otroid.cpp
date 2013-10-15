@@ -160,6 +160,30 @@ namespace OTRoid
 					return result;
 				};
 		OtrOps_.account_name_free = [] (void*, const char *name) { delete [] name; };
+		OtrOps_.gone_secure = [] (void *opData, ConnContext *context)
+				{
+					const auto& msg = Plugin::tr ("Private conversation started");
+					static_cast<Plugin*> (opData)->
+							InjectMsg (QString::fromUtf8 (context->accountname),
+									QString::fromUtf8 (context->username),
+									msg, IMessage::DOut, IMessage::MTServiceMessage);
+				};
+		OtrOps_.gone_insecure = [] (void *opData, ConnContext *context)
+				{
+					const auto& msg = Plugin::tr ("Private conversation lost");
+					static_cast<Plugin*> (opData)->
+							InjectMsg (QString::fromUtf8 (context->accountname),
+									QString::fromUtf8 (context->username),
+									msg, IMessage::DOut, IMessage::MTServiceMessage);
+				};
+		OtrOps_.still_secure = [] (void *opData, ConnContext *context, int)
+				{
+					const auto& msg = Plugin::tr ("Private conversation refreshed");
+					static_cast<Plugin*> (opData)->
+							InjectMsg (QString::fromUtf8 (context->accountname),
+									QString::fromUtf8 (context->username),
+									msg, IMessage::DOut, IMessage::MTServiceMessage);
+				};
 #if OTRL_VERSION_MAJOR >= 4
 		OtrOps_.handle_msg_event = &OTR::HandleMsgEvent;
 		OtrOps_.timer_control = &OTR::TimerControl;
