@@ -288,7 +288,8 @@ namespace LMP
 			if (!factory)
 			{
 				qWarning () << Q_FUNC_INFO
-						<< "cannot find factory";
+						<< "cannot find factory"
+						<< name;
 				return 0;
 			}
 
