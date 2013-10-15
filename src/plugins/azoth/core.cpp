@@ -1007,16 +1007,19 @@ namespace Azoth
 		if (!src)
 			return body;
 
+		const bool requireSpace = XmlSettingsManager::Instance ()
+				.property ("RequireSpaceBeforeSmiles").toBool ();
+
 		const QString& img = QString ("<img src=\"%2\" title=\"%1\" />");
 		QList<QByteArray> rawDatas;
-		Q_FOREACH (const QString& str, src->GetEmoticonStrings (pack))
+		for (const auto& str : src->GetEmoticonStrings (pack))
 		{
 			const QString& escaped = Qt::escape (str);
 			if (!body.contains (escaped))
 				continue;
 
 			bool safeReplace = true;
-			Q_FOREACH (const QByteArray& rd, rawDatas)
+			for (const auto& rd : rawDatas)
 				if (rd.indexOf (escaped) != -1)
 				{
 					safeReplace = false;
@@ -1030,12 +1033,17 @@ namespace Azoth
 			const QString& smileStr = img
 					.arg (str)
 					.arg (QString ("data:image/png;base64," + rawData));
-			if (body.startsWith (escaped))
-				body.replace (0, escaped.size (), smileStr);
 
-			auto whites = { " ", "\n", "\t", "<br/>", "<br />", "<br>" };
-			Q_FOREACH (auto white, whites)
-				body.replace (white + escaped, white + smileStr);
+			if (requireSpace)
+			{
+				if (body.startsWith (escaped))
+					body.replace (0, escaped.size (), smileStr);
+				auto whites = { " ", "\n", "\t", "<br/>", "<br />", "<br>" };
+				for (auto white : whites)
+					body.replace (white + escaped, white + smileStr);
+			}
+			else
+				body.replace (escaped, smileStr);
 		}
 
 		return body;

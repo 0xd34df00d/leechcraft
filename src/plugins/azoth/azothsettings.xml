@@ -331,6 +331,9 @@
 			<item type="checkbox" property="SeparateMUCEventLogWindow" default="false">
 				<label value="Separate MUC event log window" />
 			</item>
+			<item type="checkbox" property="RequireSpaceBeforeSmiles" default="true">
+				<label value="Require space before smiles" />
+			</item>
 			<item type="checkbox" property="KPEnterAlias" default="true">
 				<label value="Keypad Enter is analogous to Enter" />
 			</item>
