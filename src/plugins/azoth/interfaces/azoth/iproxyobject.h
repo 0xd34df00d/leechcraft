@@ -221,15 +221,18 @@ namespace Azoth
 		/** @brief Generates the nickname colors for the given scheme.
 		 *
 		 * If the scheme is empty or equals "hash", then a random set of
-		 * colors is generated based on current palette and settings.
+		 * colors is generated based on \em bg and settings.
+		 *
 		 * Otherwise, scheme is interpreted as space-separated list of
 		 * colors, either named, like "green" or "cyan", or their RGB
 		 * values in forms like "#FA12BB".
 		 *
 		 * @param[in] scheme The color scheme to use.
+		 * @param[in] bg The background color to generate colors for.
+		 * Pass an invalid color to use application palette's background.
 		 * @return The list of colors matching the given color scheme.
 		 */
-		virtual QList<QColor> GenerateColors (const QString& scheme) const = 0;
+		virtual QList<QColor> GenerateColors (const QString& scheme, QColor bg) const = 0;
 
 		/** @brief Returns the color for the given nick and color set.
 		 *

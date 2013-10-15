@@ -241,9 +241,9 @@ namespace Azoth
 		return Core::Instance ().GetSelectedChatTemplate (entry, frame);
 	}
 
-	QList<QColor> ProxyObject::GenerateColors (const QString& scheme) const
+	QList<QColor> ProxyObject::GenerateColors (const QString& scheme, QColor bg) const
 	{
-		return Core::Instance ().GenerateColors (scheme);
+		return Core::Instance ().GenerateColors (scheme, bg);
 	}
 
 	QString ProxyObject::GetNickColor (const QString& nick, const QList<QColor>& colors) const

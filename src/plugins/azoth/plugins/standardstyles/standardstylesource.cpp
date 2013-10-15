@@ -342,7 +342,7 @@ namespace StandardStyles
 	QList<QColor> StandardStyleSource::CreateColors (const QString& scheme)
 	{
 		if (!Coloring2Colors_.contains (scheme))
-			Coloring2Colors_ [scheme] = Proxy_->GenerateColors (scheme);
+			Coloring2Colors_ [scheme] = Proxy_->GenerateColors (scheme, {});
 
 		return Coloring2Colors_ [scheme];
 	}

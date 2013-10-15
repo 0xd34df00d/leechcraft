@@ -318,7 +318,7 @@ namespace Azoth
 		void FrameFocused (QObject*, QWebFrame*);
 
 		// Theming stuff
-		QList<QColor> GenerateColors (const QString& coloringScheme) const;
+		QList<QColor> GenerateColors (const QString& coloringScheme, QColor background) const;
 
 		QString GetNickColor (const QString& nick, const QList<QColor>& colors) const;
 

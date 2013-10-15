@@ -833,7 +833,7 @@ namespace Azoth
 		src->FrameFocused (frame);
 	}
 
-	QList<QColor> Core::GenerateColors (const QString& coloring) const
+	QList<QColor> Core::GenerateColors (const QString& coloring, QColor bg) const
 	{
 		auto compatibleColors = [] (const QColor& c1, const QColor& c2) -> bool
 		{
@@ -864,7 +864,8 @@ namespace Azoth
 		if (coloring == "hash" ||
 				coloring.isEmpty ())
 		{
-			const QColor& bg = QApplication::palette ().color (QPalette::Base);
+			if (!bg.isValid ())
+				bg = QApplication::palette ().color (QPalette::Base);
 
 			int alpha = bg.alpha ();
 
@@ -880,8 +881,7 @@ namespace Azoth
 			}
 		}
 		else
-			Q_FOREACH (const QString& str,
-					coloring.split (' ', QString::SkipEmptyParts))
+			for (const auto& str : coloring.split (' ', QString::SkipEmptyParts))
 				result << QColor (str);
 
 		return result;
