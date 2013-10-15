@@ -122,26 +122,26 @@ namespace OTRoid
 			switch (event)
 			{
 			case OTRL_MSGEVENT_RCVDMSG_UNENCRYPTED:
-				msg = QObject::tr ("The following message received from %1 "
+				msg = Plugin::tr ("The following message received from %1 "
 								   "was not encrypted:").arg (contact);
 				break;
 			case OTRL_MSGEVENT_CONNECTION_ENDED:
-				msg = QObject::tr ("Your message was not sent. Either end your "
+				msg = Plugin::tr ("Your message was not sent. Either end your "
 								   "private conversation, or restart it.");
 				break;
 			case OTRL_MSGEVENT_RCVDMSG_UNRECOGNIZED:
-				msg = QObject::tr ("Unreadable encrypted message was received.");
+				msg = Plugin::tr ("Unreadable encrypted message was received.");
 				break;
 			case OTRL_MSGEVENT_RCVDMSG_NOT_IN_PRIVATE:
-				msg = QObject::tr ("Received an encrypted message but it cannot "
+				msg = Plugin::tr ("Received an encrypted message but it cannot "
 								   "be read because no private connection is "
 								   "established yet.");
 				break;
 			case OTRL_MSGEVENT_RCVDMSG_UNREADABLE:
-				msg = QObject::tr ("Received message is unreadable.");
+				msg = Plugin::tr ("Received message is unreadable.");
 				break;
 			case OTRL_MSGEVENT_RCVDMSG_MALFORMED:
-				msg = QObject::tr ("Received message contains malformed data.");
+				msg = Plugin::tr ("Received message contains malformed data.");
 				break;
 			}
 
