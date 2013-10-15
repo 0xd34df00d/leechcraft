@@ -142,6 +142,32 @@ namespace OTRoid
 											QString::fromUtf8 (context->username),
 											msg, IMessage::DOut, IMessage::MTServiceMessage);
 			}
+			else if (event == OTRL_MSGEVENT_RCVDMSG_NOT_IN_PRIVATE)
+			{
+				const auto& msg = Plugin::tr ("Received an encrypted message but it cannot "
+												"be read because no private connection is "
+												"established yet.");
+				static_cast<Plugin*> (opData)->
+									InjectMsg (QString::fromUtf8 (context->accountname),
+											QString::fromUtf8 (context->username),
+											msg, IMessage::DOut, IMessage::MTServiceMessage);
+			}
+			else if (event == OTRL_MSGEVENT_RCVDMSG_UNREADABLE)
+			{
+				const auto& msg = Plugin::tr ("Received message is unreadable.");
+				static_cast<Plugin*> (opData)->
+									InjectMsg (QString::fromUtf8 (context->accountname),
+											QString::fromUtf8 (context->username),
+											msg, IMessage::DOut, IMessage::MTServiceMessage);
+			}
+			else if (event == OTRL_MSGEVENT_RCVDMSG_MALFORMED)
+			{
+				const auto& msg = Plugin::tr ("Received message contains malformed data.");
+				static_cast<Plugin*> (opData)->
+									InjectMsg (QString::fromUtf8 (context->accountname),
+											QString::fromUtf8 (context->username),
+											msg, IMessage::DOut, IMessage::MTServiceMessage);
+			}
 		}
 
 		void TimerControl (void *opData, unsigned int interval)
