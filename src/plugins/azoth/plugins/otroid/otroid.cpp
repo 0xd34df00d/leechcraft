@@ -148,8 +148,17 @@ namespace OTRoid
 				static_cast<Plugin*> (opData)->
 									InjectMsg (QString::fromUtf8 (context->accountname),
 											   QString::fromUtf8 (context->username),
-											   msg, IMessage::DOut,
+											   msg, IMessage::DIn,
 											   IMessage::MTServiceMessage);
+			}
+
+			if (event == OTRL_MSGEVENT_RCVDMSG_UNENCRYPTED)
+			{
+				static_cast<Plugin*> (opData)->
+									InjectMsg (QString::fromUtf8 (context->accountname),
+											   QString::fromUtf8 (context->username),
+											   QString::fromUtf8 (message),
+											   IMessage::DIn);
 			}
 		}
 
@@ -512,13 +521,6 @@ namespace OTRoid
 			otrl_message_free (newMsg);
 		}
 
-		if (ignore || newMsg)
-		{
-			if (!Entry2Action_.contains (entryObj))
-				CreateActions (entryObj);
-			Entry2Action_ [entryObj]->setChecked (true);
-		}
-
 		tlv = otrl_tlv_find(tlvs, OTRL_TLV_DISCONNECTED);
 		if (tlv)
 		{
@@ -528,6 +530,15 @@ namespace OTRoid
 						message, IMessage::DIn, IMessage::MTServiceMessage);
 		}
 		otrl_tlv_free(tlvs);
+
+		if (ignore || newMsg)
+		{
+			if (!Entry2Action_.contains (entryObj))
+				CreateActions (entryObj);
+			if (!tlv)
+				Entry2Action_ [entryObj]->setChecked (true);
+		}
+
 	}
 
 	void Plugin::hookMessageCreated (IHookProxy_ptr proxy, QObject*, QObject *msgObj)
