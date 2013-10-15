@@ -119,27 +119,27 @@ namespace OTRoid
 			switch (event)
 			{
 			case OTRL_MSGEVENT_RCVDMSG_UNENCRYPTED:
-				msg = Plugin::tr ("<b>The following message received "
+				msg = QObject::tr ("<b>The following message received "
 								  "from %1 was <i>not</i> encrypted:</b>")
 								 .arg(QString::fromUtf8 (context->username));
 				break;
 			case OTRL_MSGEVENT_CONNECTION_ENDED:
-				msg = Plugin::tr ("Your message was not sent. Either end your "
+				msg = QObject::tr ("Your message was not sent. Either end your "
 												"private conversation, or restart it.");
 				break;
 			case OTRL_MSGEVENT_RCVDMSG_UNRECOGNIZED:
-				msg = Plugin::tr ("Unreadable encrypted message was received.");
+				msg = QObject::tr ("Unreadable encrypted message was received.");
 				break;
 			case OTRL_MSGEVENT_RCVDMSG_NOT_IN_PRIVATE:
-				msg = Plugin::tr ("Received an encrypted message but it cannot "
+				msg = QObject::tr ("Received an encrypted message but it cannot "
 								  "be read because no private connection is "
 								  "established yet.");
 				break;
 			case OTRL_MSGEVENT_RCVDMSG_UNREADABLE:
-				msg = Plugin::tr ("Received message is unreadable.");
+				msg = QObject::tr ("Received message is unreadable.");
 				break;
 			case OTRL_MSGEVENT_RCVDMSG_MALFORMED:
-				msg = Plugin::tr ("Received message contains malformed data.");
+				msg = QObject::tr ("Received message contains malformed data.");
 				break;
 			}
 
@@ -208,7 +208,7 @@ namespace OTRoid
 		OtrOps_.account_name_free = [] (void*, const char *name) { delete [] name; };
 		OtrOps_.gone_secure = [] (void *opData, ConnContext *context)
 				{
-					const auto& msg = Plugin::tr ("Private conversation started");
+					const auto& msg = QObject::tr ("Private conversation started");
 					static_cast<Plugin*> (opData)->
 							InjectMsg (QString::fromUtf8 (context->accountname),
 									QString::fromUtf8 (context->username),
@@ -216,7 +216,7 @@ namespace OTRoid
 				};
 		OtrOps_.gone_insecure = [] (void *opData, ConnContext *context)
 				{
-					const auto& msg = Plugin::tr ("Private conversation lost");
+					const auto& msg = QObject::tr ("Private conversation lost");
 					static_cast<Plugin*> (opData)->
 							InjectMsg (QString::fromUtf8 (context->accountname),
 									QString::fromUtf8 (context->username),
@@ -224,7 +224,7 @@ namespace OTRoid
 				};
 		OtrOps_.still_secure = [] (void *opData, ConnContext *context, int)
 				{
-					const auto& msg = Plugin::tr ("Private conversation refreshed");
+					const auto& msg = QObject::tr ("Private conversation refreshed");
 					static_cast<Plugin*> (opData)->
 							InjectMsg (QString::fromUtf8 (context->accountname),
 									QString::fromUtf8 (context->username),
@@ -495,7 +495,6 @@ namespace OTRoid
 
 		char *newMsg = 0;
 		OtrlTLV *tlvs = 0;
-		OtrlTLV *tlv = 0;
 		int ignore = otrl_message_receiving (UserState_, &OtrOps_, this,
 				acc->GetAccountID ().constData (),
 				proto->GetProtocolID ().constData (),
@@ -521,10 +520,10 @@ namespace OTRoid
 			otrl_message_free (newMsg);
 		}
 
-		tlv = otrl_tlv_find(tlvs, OTRL_TLV_DISCONNECTED);
+		OtrlTLV *tlv = otrl_tlv_find (tlvs, OTRL_TLV_DISCONNECTED);
 		if (tlv)
 		{
-			const auto& message = tr ("%1 has ended the private conversation with you; "
+			const auto& message = tr ("%1 has ended the private conversation with you, "
 										"you should do the same.").arg (entry->GetEntryID ());
 			InjectMsg (acc->GetAccountID (), entry->GetEntryID (),
 						message, IMessage::DIn, IMessage::MTServiceMessage);
