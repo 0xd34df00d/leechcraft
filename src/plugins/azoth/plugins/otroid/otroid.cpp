@@ -108,12 +108,40 @@ namespace OTRoid
 		}
 
 #if OTRL_VERSION_MAJOR >= 4
-		void HandleMsgEvent (void*, OtrlMessageEvent event,
-				ConnContext*, const char *msg, gcry_error_t)
+		void HandleMsgEvent (void *opData, OtrlMessageEvent event,
+				ConnContext *context, const char *message, gcry_error_t)
 		{
 			qDebug () << Q_FUNC_INFO
 					<< event
-					<< msg;
+					<< message;
+
+			if (event == OTRL_MSGEVENT_RCVDMSG_UNENCRYPTED)
+			{
+				const auto& msg = Plugin::tr ("<b>The following message received "
+												"from %1 was <i>not</i> encrypted:</b>")
+											.arg(QString::fromUtf8 (context->username));
+				static_cast<Plugin*> (opData)->
+									InjectMsg (QString::fromUtf8 (context->accountname),
+											QString::fromUtf8 (context->username),
+											msg, IMessage::DOut, IMessage::MTServiceMessage);
+			}
+			else if (event == OTRL_MSGEVENT_CONNECTION_ENDED)
+			{
+				const auto& msg = Plugin::tr ("Your message was not sent. Either end your "
+												"private conversation, or restart it.");
+				static_cast<Plugin*> (opData)->
+									InjectMsg (QString::fromUtf8 (context->accountname),
+											QString::fromUtf8 (context->username),
+											msg, IMessage::DOut, IMessage::MTServiceMessage);
+			}
+			else if (event == OTRL_MSGEVENT_RCVDMSG_UNRECOGNIZED)
+			{
+				const auto& msg = Plugin::tr ("Unreadable encrypted message was received.");
+				static_cast<Plugin*> (opData)->
+									InjectMsg (QString::fromUtf8 (context->accountname),
+											QString::fromUtf8 (context->username),
+											msg, IMessage::DOut, IMessage::MTServiceMessage);
+			}
 		}
 
 		void TimerControl (void *opData, unsigned int interval)
