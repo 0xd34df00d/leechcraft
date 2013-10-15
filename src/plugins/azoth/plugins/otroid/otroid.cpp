@@ -485,8 +485,8 @@ namespace OTRoid
 		tlv = otrl_tlv_find(tlvs, OTRL_TLV_DISCONNECTED);
 		if (tlv)
 		{
-			QString msg = tr ("%1 has ended the private conversation with you; "
-                      "you should do the same.").arg (entry->GetEntryID ());
+			const auto& msg = tr ("%1 has ended the private conversation with you; "
+								"you should do the same.").arg (entry->GetEntryID ());
 			InjectMsg (acc->GetAccountID (), entry->GetEntryID (),
 						msg, IMessage::DOut, IMessage::MTServiceMessage);
 		}
