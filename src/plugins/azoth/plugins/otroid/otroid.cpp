@@ -639,7 +639,16 @@ namespace OTRoid
 #else
 					entry->GetEntryID ().toUtf8 ().constData ());
 #endif
+			const auto& message = tr ("Private conversation closed");
+			InjectMsg (acc->GetAccountID (), entry->GetEntryID (),
+						message, false, IMessage::DIn, IMessage::MTServiceMessage);
 			return;
+		}
+		else
+		{
+			const auto& message = tr ("Attempting to start a private conversation");
+			InjectMsg (acc->GetAccountID (), entry->GetEntryID (),
+					   message, false, IMessage::DIn, IMessage::MTServiceMessage);
 		}
 
 		char fingerprint [45];
