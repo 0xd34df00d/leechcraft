@@ -152,10 +152,10 @@ namespace OTRoid
 			if (!msg.isEmpty ())
 			{
 				static_cast<Plugin*> (opData)->
-									InjectMsg (QString::fromUtf8 (context->accountname),
-											   QString::fromUtf8 (context->username),
-											   msg, false, IMessage::DIn,
-											   IMessage::MTServiceMessage);
+						InjectMsg (QString::fromUtf8 (context->accountname),
+								QString::fromUtf8 (context->username),
+								msg, false, IMessage::DIn,
+								IMessage::MTServiceMessage);
 			}
 		}
 
