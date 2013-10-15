@@ -120,21 +120,21 @@ namespace OTRoid
 			switch (event)
 			{
 			case OTRL_MSGEVENT_RCVDMSG_UNENCRYPTED:
-				msg = QObject::tr ("<b>The following message received "
-								  "from %1 was <i>not</i> encrypted:</b>")
+				msg = QObject::tr ("The following message received from %1 "
+								   "was not encrypted:")
 								 .arg(QString::fromUtf8 (context->username));
 				break;
 			case OTRL_MSGEVENT_CONNECTION_ENDED:
 				msg = QObject::tr ("Your message was not sent. Either end your "
-												"private conversation, or restart it.");
+								   "private conversation, or restart it.");
 				break;
 			case OTRL_MSGEVENT_RCVDMSG_UNRECOGNIZED:
 				msg = QObject::tr ("Unreadable encrypted message was received.");
 				break;
 			case OTRL_MSGEVENT_RCVDMSG_NOT_IN_PRIVATE:
 				msg = QObject::tr ("Received an encrypted message but it cannot "
-								  "be read because no private connection is "
-								  "established yet.");
+								   "be read because no private connection is "
+								   "established yet.");
 				break;
 			case OTRL_MSGEVENT_RCVDMSG_UNREADABLE:
 				msg = QObject::tr ("Received message is unreadable.");
@@ -526,7 +526,7 @@ namespace OTRoid
 		if (tlv)
 		{
 			const auto& message = tr ("%1 has ended the private conversation with you, "
-										"you should do the same.").arg (entry->GetEntryID ());
+									  "you should do the same.").arg (entry->GetEntryID ());
 			InjectMsg (acc->GetAccountID (), entry->GetEntryID (),
 						message, false, IMessage::DIn, IMessage::MTServiceMessage);
 		}
