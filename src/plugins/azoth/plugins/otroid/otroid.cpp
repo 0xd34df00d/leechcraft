@@ -116,11 +116,7 @@ namespace OTRoid
 					<< event
 					<< message;
 
-			// human readable user name should be here
-			QString contact (QString::fromUtf8 (context->username));
-			int sep = contact.lastIndexOf ("_");
-			if (sep > 0)
-				contact = contact.right (contact.size () - sep - 1);
+			const auto& contact = QString::fromUtf8 (context->username);
 
 			QString msg;
 			switch (event)
@@ -525,12 +521,7 @@ namespace OTRoid
 		OtrlTLV *tlv = otrl_tlv_find (tlvs, OTRL_TLV_DISCONNECTED);
 		if (tlv)
 		{
-			// human readable user name should be here
-			QString contact (entry->GetEntryID ());
-			int sep = contact.lastIndexOf ("_");
-			if (sep > 0)
-				contact = contact.right (contact.size () - sep - 1);
-
+			const auto& contact = entry->GetEntryID ();
 			const auto& message = tr ("%1 has ended the private conversation with you, "
 									  "you should do the same.").arg (contact);
 			InjectMsg (acc->GetAccountID (), entry->GetEntryID (),
