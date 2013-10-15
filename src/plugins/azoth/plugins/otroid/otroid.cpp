@@ -82,7 +82,7 @@ namespace OTRoid
 					IMessage::DOut);
 		}
 
-		void Notify (void *opdata, OtrlNotifyLevel level,
+		void Notify (void *opData, OtrlNotifyLevel level,
 				const char *accountname, const char *protocol,
 				const char *username, const char *title,
 				const char *primary, const char *secondary)
@@ -103,7 +103,7 @@ namespace OTRoid
 				break;
 			}
 
-			static_cast<Plugin*> (opdata)->Notify (u (accountname),
+			static_cast<Plugin*> (opData)->Notify (u (accountname),
 					u (username), prio, u (title), u (primary), u (secondary));
 		}
 
@@ -513,10 +513,10 @@ namespace OTRoid
 		tlv = otrl_tlv_find(tlvs, OTRL_TLV_DISCONNECTED);
 		if (tlv)
 		{
-			const auto& msg = tr ("%1 has ended the private conversation with you; "
-								"you should do the same.").arg (entry->GetEntryID ());
+			const auto& message = tr ("%1 has ended the private conversation with you; "
+										"you should do the same.").arg (entry->GetEntryID ());
 			InjectMsg (acc->GetAccountID (), entry->GetEntryID (),
-						msg, IMessage::DOut, IMessage::MTServiceMessage);
+						message, IMessage::DOut, IMessage::MTServiceMessage);
 		}
 		otrl_tlv_free(tlvs);
 	}
