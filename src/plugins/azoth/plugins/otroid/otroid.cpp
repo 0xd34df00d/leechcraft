@@ -501,6 +501,16 @@ namespace OTRoid
 #endif
 				NULL);
 
+		OtrlTLV *tlv = otrl_tlv_find (tlvs, OTRL_TLV_DISCONNECTED);
+		if (tlv)
+		{
+			const auto& message = tr ("%1 has ended the private conversation with you, "
+									  "you should do the same.").arg (entry->GetEntryID ());
+			InjectMsg (acc->GetAccountID (), entry->GetEntryID (),
+						message, false, IMessage::DIn, IMessage::MTServiceMessage);
+		}
+		otrl_tlv_free (tlvs);
+
 #if (OTRL_VERSION_MAJOR >= 4)
 		// Magic hack to force it work similar to libotr < 4.0.0.
 		// If user received unencrypted message he (she) should be notified.
@@ -520,16 +530,6 @@ namespace OTRoid
 			msg->SetBody (QString::fromUtf8 (newMsg));
 			otrl_message_free (newMsg);
 		}
-
-		OtrlTLV *tlv = otrl_tlv_find (tlvs, OTRL_TLV_DISCONNECTED);
-		if (tlv)
-		{
-			const auto& message = tr ("%1 has ended the private conversation with you, "
-									  "you should do the same.").arg (entry->GetEntryID ());
-			InjectMsg (acc->GetAccountID (), entry->GetEntryID (),
-						message, false, IMessage::DIn, IMessage::MTServiceMessage);
-		}
-		otrl_tlv_free (tlvs);
 
 		if (ignore || newMsg)
 		{
