@@ -101,6 +101,7 @@ namespace OTRoid
 				const QString& primary, const QString& secondary);
 		void WriteFingerprints ();
 		QString GetAccountName (const QString& accId);
+		QString GetVisibleEntryName (const QString& accId, const QString& entryId);
 
 		void CreatePrivkey (const char*, const char*);
 

@@ -385,6 +385,26 @@ namespace OTRoid
 		return acc->GetAccountName ();
 	}
 
+	QString Plugin::GetVisibleEntryName (const QString& accId, const QString& entryId)
+	{
+		QObject *entryObj = AzothProxy_->GetEntry (entryId, accId);
+		auto entry = qobject_cast<ICLEntry*> (entryObj);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no such entry"
+					<< entryId
+					<< accId;
+			return entryId;
+		}
+
+		const auto& id = entry->GetHumanReadableID ();
+		const auto& name = entry->GetEntryName ();
+		return name != id ?
+				QString ("%1 (%2)").arg (name).arg (id) :
+				id;
+	}
+
 	void Plugin::CreatePrivkey (const char *accName, const char *proto)
 	{
 		if (IsGenerating_)
