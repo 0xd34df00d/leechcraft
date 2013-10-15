@@ -530,7 +530,7 @@ namespace OTRoid
 			InjectMsg (acc->GetAccountID (), entry->GetEntryID (),
 						message, false, IMessage::DIn, IMessage::MTServiceMessage);
 		}
-		otrl_tlv_free(tlvs);
+		otrl_tlv_free (tlvs);
 
 		if (ignore || newMsg)
 		{
