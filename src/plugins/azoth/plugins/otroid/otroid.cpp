@@ -79,6 +79,7 @@ namespace OTRoid
 			static_cast<Plugin*> (opData)->InjectMsg (QString::fromUtf8 (accName),
 					QString::fromUtf8 (recipient),
 					QString::fromUtf8 (msg),
+					true,
 					IMessage::DOut);
 		}
 
@@ -305,7 +306,7 @@ namespace OTRoid
 	}
 
 	void Plugin::InjectMsg (const QString& accId, const QString& entryId,
-			const QString& body, IMessage::Direction dir, IMessage::MessageType type)
+			const QString& body, bool hidden, IMessage::Direction dir, IMessage::MessageType type)
 	{
 		QObject *entryObj = AzothProxy_->GetEntry (entryId, accId);
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
@@ -318,14 +319,15 @@ namespace OTRoid
 			return;
 		}
 
-		InjectMsg (entry, body, dir, type);
+		InjectMsg (entry, body, hidden, dir, type);
 	}
 
-	void Plugin::InjectMsg (ICLEntry *entry, const QString& body,
+	void Plugin::InjectMsg (ICLEntry *entry, const QString& body, bool hidden,
 			IMessage::Direction dir, IMessage::MessageType type)
 	{
 		QObject *msgObj = entry->CreateMessage (type, {}, body);
-		msgObj->setProperty ("Azoth/HiddenMessage", true);
+		if (hidden)
+			msgObj->setProperty ("Azoth/HiddenMessage", true);
 
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		if (!msg)
@@ -656,7 +658,7 @@ namespace OTRoid
 #else
 					OTRL_POLICY_DEFAULT), free);
 #endif
-		InjectMsg (entry, QString::fromUtf8 (msg.get ()), IMessage::DOut);
+		InjectMsg (entry, QString::fromUtf8 (msg.get ()), true, IMessage::DOut);
 	}
 
 #if OTRL_VERSION_MAJOR >= 4

@@ -91,9 +91,11 @@ namespace OTRoid
 
 		int IsLoggedIn (const QString& accId, const QString& entryId);
 		void InjectMsg (const QString& accId, const QString& entryId,
-				const QString& msg, IMessage::Direction, IMessage::MessageType = IMessage::MTChatMessage);
+				const QString& msg, bool hidden, IMessage::Direction,
+				IMessage::MessageType = IMessage::MTChatMessage);
 		void InjectMsg (ICLEntry *entry,
-				const QString& msg, IMessage::Direction, IMessage::MessageType = IMessage::MTChatMessage);
+				const QString& msg, bool hidden, IMessage::Direction,
+				IMessage::MessageType = IMessage::MTChatMessage);
 		void Notify (const QString& accId, const QString& entryId,
 				Priority, const QString& title,
 				const QString& primary, const QString& secondary);

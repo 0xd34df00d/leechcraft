@@ -52,6 +52,7 @@ namespace Murm
 	void LongPollManager::ForceServerRequery ()
 	{
 		LPServer_.clear ();
+		ShouldStop_ = false;
 	}
 
 	void LongPollManager::Stop ()
@@ -174,6 +175,7 @@ namespace Murm
 			qDebug () << Q_FUNC_INFO
 					<< "should stop polling, stopping...";
 			emit stopped ();
+			ShouldStop_ = false;
 		}
 	}
 
