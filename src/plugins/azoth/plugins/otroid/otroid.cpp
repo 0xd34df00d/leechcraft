@@ -160,6 +160,7 @@ namespace OTRoid
 			static_cast<Plugin*> (opData)->SetPollTimerInterval (interval);
 		}
 #endif
+
 		void HandleNewFingerprint (void *opData, OtrlUserState,
 				const char *accountname, const char *protocol,
 				const char *username, unsigned char fingerprint [20])
@@ -178,6 +179,32 @@ namespace OTRoid
 							msg, false, IMessage::DIn, IMessage::MTServiceMessage);
 		}
 
+		void HandleGoneSecure (void *opData, ConnContext *context)
+		{
+			const auto& msg = Plugin::tr ("Private conversation started");
+			static_cast<Plugin*> (opData)->
+					InjectMsg (QString::fromUtf8 (context->accountname),
+							QString::fromUtf8 (context->username),
+							msg, false, IMessage::DIn, IMessage::MTServiceMessage);
+		}
+
+		void HandleGoneInsecure (void *opData, ConnContext *context)
+		{
+			const auto& msg = Plugin::tr ("Private conversation lost");
+			static_cast<Plugin*> (opData)->
+					InjectMsg (QString::fromUtf8 (context->accountname),
+							QString::fromUtf8 (context->username),
+							msg, false, IMessage::DIn, IMessage::MTServiceMessage);
+		}
+
+		void HandleStillSecure (void *opData, ConnContext *context, int)
+		{
+			const auto& msg = QObject::tr ("Private conversation refreshed");
+			static_cast<Plugin*> (opData)->
+					InjectMsg (QString::fromUtf8 (context->accountname),
+							QString::fromUtf8 (context->username),
+							msg, false, IMessage::DIn, IMessage::MTServiceMessage);
+		}
 	}
 
 	void Plugin::Init (ICoreProxy_ptr)
@@ -215,30 +242,9 @@ namespace OTRoid
 					return result;
 				};
 		OtrOps_.account_name_free = [] (void*, const char *name) { delete [] name; };
-		OtrOps_.gone_secure = [] (void *opData, ConnContext *context)
-				{
-					const auto& msg = QObject::tr ("Private conversation started");
-					static_cast<Plugin*> (opData)->
-							InjectMsg (QString::fromUtf8 (context->accountname),
-									QString::fromUtf8 (context->username),
-									msg, false, IMessage::DIn, IMessage::MTServiceMessage);
-				};
-		OtrOps_.gone_insecure = [] (void *opData, ConnContext *context)
-				{
-					const auto& msg = QObject::tr ("Private conversation lost");
-					static_cast<Plugin*> (opData)->
-							InjectMsg (QString::fromUtf8 (context->accountname),
-									QString::fromUtf8 (context->username),
-									msg, false, IMessage::DIn, IMessage::MTServiceMessage);
-				};
-		OtrOps_.still_secure = [] (void *opData, ConnContext *context, int)
-				{
-					const auto& msg = QObject::tr ("Private conversation refreshed");
-					static_cast<Plugin*> (opData)->
-							InjectMsg (QString::fromUtf8 (context->accountname),
-									QString::fromUtf8 (context->username),
-									msg, false, IMessage::DIn, IMessage::MTServiceMessage);
-				};
+		OtrOps_.gone_secure = &OTR::HandleGoneSecure;
+		OtrOps_.gone_insecure = &OTR::HandleGoneInsecure;
+		OtrOps_.still_secure = &OTR::HandleStillSecure;
 #if OTRL_VERSION_MAJOR >= 4
 		OtrOps_.handle_msg_event = &OTR::HandleMsgEvent;
 		OtrOps_.timer_control = &OTR::TimerControl;
