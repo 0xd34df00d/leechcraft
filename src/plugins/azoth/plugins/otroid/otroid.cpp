@@ -152,15 +152,6 @@ namespace OTRoid
 											   msg, false, IMessage::DIn,
 											   IMessage::MTServiceMessage);
 			}
-
-			if (event == OTRL_MSGEVENT_RCVDMSG_UNENCRYPTED)
-			{
-				static_cast<Plugin*> (opData)->
-									InjectMsg (QString::fromUtf8 (context->accountname),
-											   QString::fromUtf8 (context->username),
-											   QString::fromUtf8 (message), false,
-											   IMessage::DIn);
-			}
 		}
 
 		void TimerControl (void *opData, unsigned int interval)
@@ -509,6 +500,14 @@ namespace OTRoid
 				NULL,
 #endif
 				NULL);
+
+#if (OTRL_VERSION_MAJOR >= 4)
+		// Magic hack to force it work similar to libotr < 4.0.0.
+		// If user received unencrypted message he (she) should be notified.
+		// See OTRL_MSGEVENT_RCVDMSG_UNENCRYPTED as well.
+		if (!msg->GetBody ().startsWith("?OTR") && ignore && !newMsg)
+			ignore = 0;
+#endif
 
 		if (ignore)
 		{
