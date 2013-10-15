@@ -164,6 +164,24 @@ namespace OTRoid
 			static_cast<Plugin*> (opData)->SetPollTimerInterval (interval);
 		}
 #endif
+		void HandleNewFingerprint (void *opData, OtrlUserState,
+				const char *accountname, const char *protocol,
+				const char *username, unsigned char fingerprint [20])
+		{
+			char fpHash [45];
+			otrl_privkey_hash_to_human (fpHash, fingerprint);
+			QString hrHash (fpHash); // human readable fingerprint
+
+			const auto& msg = Plugin::tr ("You have received a new "
+					"fingerprint from %1: %2")
+						.arg (username)
+						.arg (hrHash);
+			static_cast<Plugin*> (opData)->
+					InjectMsg (QString::fromUtf8 (accountname),
+							QString::fromUtf8 (username),
+							msg, false, IMessage::DIn, IMessage::MTServiceMessage);
+		}
+
 	}
 
 	void Plugin::Init (ICoreProxy_ptr)
@@ -187,29 +205,7 @@ namespace OTRoid
 		OtrOps_.is_logged_in = &OTR::IsLoggedIn;
 		OtrOps_.inject_message = &OTR::InjectMessage;
 		OtrOps_.update_context_list = [] (void*) {};
-		OtrOps_.new_fingerprint = [] (void *opData, OtrlUserState,
-				const char *accountname, const char *protocol,
-				const char *username, unsigned char fingerprint[20])
-				{
-					char fpHash[45];
-					otrl_privkey_hash_to_human (fpHash, fingerprint);
-					QString hrHash (fpHash); // human readable fingerprint
-
-					// human readable user name should be here
-					QString contact (username);
-					int sep = contact.lastIndexOf ("_");
-					if (sep > 0)
-						contact = contact.right (contact.size () - sep - 1);
-
-					const auto& msg = QObject::tr ("You have received a new "
-												   "fingerprint from %1: %2")
-												  .arg(contact)
-												  .arg(hrHash);
-					static_cast<Plugin*> (opData)->
-							InjectMsg (QString::fromUtf8 (accountname),
-									QString::fromUtf8 (username),
-									msg, false, IMessage::DIn, IMessage::MTServiceMessage);
-				};
+		OtrOps_.new_fingerprint = &OTR::HandleNewFingerprint;
 		OtrOps_.write_fingerprints = [] (void *opData)
 				{ static_cast<Plugin*> (opData)->WriteFingerprints (); };
 		OtrOps_.account_name = [] (void *opData, const char *acc, const char*) -> const char*
