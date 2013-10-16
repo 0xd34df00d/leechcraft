@@ -262,12 +262,12 @@ namespace OTRoid
 		OtrOps_.notify = &OTR::Notify;
 		OtrOps_.log_message = [] (void*, const char *msg)
 				{ qDebug () << "OTR:" << QString::fromUtf8 (msg).trimmed (); };
-		OtrOps_.display_otr_message = [] (void*, const char *accountname,
+		OtrOps_.display_otr_message = [] (void *opData, const char *accountname,
 				const char *protocol, const char *username, const char *msg) -> int
 			{
-				qDebug () << "OTR disp:"
-						<< accountname << protocol
-						<< username << QString::fromUtf8 (msg);
+				static_cast<Plugin*> (opData)->InjectMsg (QString::fromUtf8 (accountname),
+						QString::fromUtf8 (username),
+						QString::fromUtf8 (msg), false, IMessage::DIn);
 				return 0;
 			};
 #endif
