@@ -115,7 +115,7 @@ namespace Util
 
 	namespace
 	{
-		qint64 Collector (QString& cacheDirectory, qint64 goal, QMutex *fileOpMutex)
+		qint64 Collector (const QString& cacheDirectory, qint64 goal, QMutex *fileOpMutex)
 		{
 			if (cacheDirectory.isEmpty ())
 				return 0;
