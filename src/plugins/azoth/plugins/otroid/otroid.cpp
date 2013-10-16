@@ -510,6 +510,9 @@ namespace OTRoid
 
 	void Plugin::hookGotMessage (IHookProxy_ptr proxy, QObject *msgObj)
 	{
+		if (IsGenerating_)
+			return;
+
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		if (!msg)
 		{
@@ -597,6 +600,9 @@ namespace OTRoid
 
 	void Plugin::hookMessageCreated (IHookProxy_ptr proxy, QObject*, QObject *msgObj)
 	{
+		if (IsGenerating_)
+			return;
+
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		if (!msg)
 		{
