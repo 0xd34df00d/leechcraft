@@ -118,7 +118,7 @@ namespace OTRoid
 
 			auto plugin = static_cast<Plugin*> (opData);
 
-			const auto& contact = plugin->GetVisibleEntryName (QString::fromUtf8 (context->account_name),
+			const auto& contact = plugin->GetVisibleEntryName (QString::fromUtf8 (context->accountname),
 					QString::fromUtf8 (context->username));
 
 			QString msg;
