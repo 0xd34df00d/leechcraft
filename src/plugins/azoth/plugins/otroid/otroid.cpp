@@ -592,7 +592,8 @@ namespace OTRoid
 		{
 			if (!Entry2Action_.contains (entryObj))
 				CreateActions (entryObj);
-			Entry2Action_ [entryObj]->setChecked (!tlv);
+			if (!tlv)
+				Entry2Action_ [entryObj]->setChecked (true);
 		}
 
 	}
