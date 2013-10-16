@@ -481,6 +481,20 @@ namespace Murm
 	{
 	}
 
+	QVariant VkEntry::GetMetaInfo (DataField field) const
+	{
+		switch (field)
+		{
+		case DataField::BirthDate:
+			return Info_.Birthday_;
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown field"
+				<< static_cast<int> (field);
+		return {};
+	}
+
 	void VkEntry::handleTypingTimeout ()
 	{
 		emit chatPartStateChanged (CPSPaused, "");

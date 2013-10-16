@@ -33,6 +33,7 @@
 #include <QImage>
 #include <QPointer>
 #include <QStringList>
+#include <interfaces/azoth/imetainfoentry.h>
 #include "structures.h"
 #include "entrybase.h"
 
@@ -51,8 +52,10 @@ namespace Murm
 	class VkChatEntry;
 
 	class VkEntry : public EntryBase
+				  , public IMetaInfoEntry
 	{
 		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Azoth::IMetaInfoEntry)
 
 		UserInfo Info_;
 
@@ -105,6 +108,8 @@ namespace Murm
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
 		void MarkMsgsRead ();
 		void ChatTabClosed ();
+
+		QVariant GetMetaInfo (DataField) const;
 	private slots:
 		void handleTypingTimeout ();
 		void sendTyping ();
