@@ -286,8 +286,15 @@ namespace ChatHistory
 				!RequestedLogs_ [accId].contains (entryId))
 			return;
 
-		QObject *entryObj = RequestedLogs_ [accId].take (entryId);
+		auto entryObj = RequestedLogs_ [accId].take (entryId);
 		auto mucEntry = qobject_cast<IMUCEntry*> (entryObj);
+		if (!mucEntry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< entryObj
+					<< "doesn't implement ICLEntry";
+			return;
+		}
 
 		const auto& parts = mucEntry ?
 				mucEntry->GetParticipants () :
@@ -315,7 +322,7 @@ namespace ChatHistory
 					IMessage::MTChatMessage;
 
 			HistoryMessage *msg = new HistoryMessage (dir,
-					participantObj ? participantObj : entryObj,
+					participantObj ? participantObj : entryObj.data (),
 					type,
 					participantObj ? QString () : variant,
 					msgMap ["Message"].toString (),
