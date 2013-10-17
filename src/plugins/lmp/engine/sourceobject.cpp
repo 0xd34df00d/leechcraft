@@ -84,6 +84,9 @@ namespace LMP
 			case GST_MESSAGE_EOS:
 				src->HandleEosMsg (message);
 				break;
+			case GST_MESSAGE_STREAM_STATUS:
+				src->HandleStreamStatusMsg (message);
+				break;
 			default:
 				qDebug () << Q_FUNC_INFO << GST_MESSAGE_TYPE (message);
 				break;
@@ -649,7 +652,17 @@ namespace LMP
 
 	void SourceObject::HandleEosMsg (GstMessage*)
 	{
+		qDebug () << Q_FUNC_INFO;
 		gst_element_set_state (Path_->GetPipeline (), GST_STATE_READY);
+	}
+
+	void SourceObject::HandleStreamStatusMsg (GstMessage *msg)
+	{
+		GstStreamStatusType type;
+		GstElement *owner = nullptr;
+		gst_message_parse_stream_status (msg, &type, &owner);
+
+		qDebug () << Q_FUNC_INFO << type;
 	}
 
 	void SourceObject::SetupSource ()
