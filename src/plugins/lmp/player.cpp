@@ -796,9 +796,9 @@ namespace LMP
 				.arg (mediaInfo.Artist_)
 				.arg (hrStateStr);
 
-		auto e = Util::MakeAN ("LMP", {}, PInfo_,
+		auto e = Util::MakeAN ("LMP", str, PInfo_,
 				"org.LeechCraft.LMP", AN::CatMediaPlayer, AN::TypeMediaPlaybackStatus,
-				"org.LeechCraft.LMP.PlaybackStatus", {}, 0, 1);
+				"org.LeechCraft.LMP.PlaybackStatus", {}, 0, 1, str);
 		e.Mime_ += "+advanced";
 		e.Additional_ [AN::Field::MediaPlaybackStatus] = stateStr;
 		e.Additional_ [AN::Field::MediaPlayerURL] =
