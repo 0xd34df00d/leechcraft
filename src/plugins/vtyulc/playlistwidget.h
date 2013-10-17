@@ -31,7 +31,7 @@
 
 #include <QWidget>
 #include <QUrl>
-#include <QTreeView>
+#include <QListView>
 #include <vlc/libvlc_structures.h>
 
 struct libvlc_media_player_t;
@@ -57,7 +57,7 @@ namespace vlc
 		libvlc_time_t Position_;
 	};
 	
-	class PlaylistWidget : public QTreeView
+	class PlaylistWidget : public QListView
 	{
 		Q_OBJECT
 		
@@ -84,6 +84,9 @@ namespace vlc
 	protected:
 		void mouseDoubleClickEvent (QMouseEvent*);
 		void resizeEvent (QResizeEvent*);
+		
+	private:
+		void updateModelConstants ();
 		
 	public slots:
 		void clearPlaylist ();

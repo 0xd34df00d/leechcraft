@@ -122,7 +122,7 @@ namespace vlc
 		VolumeNotification *VolumeNotificationWidget_;
 		QMenu *ContextMenu_;
 		QSettings *Settings_;
-		QString VideoPath;
+		QString VideoPath_;
 		
 		bool Autostart_;
 		

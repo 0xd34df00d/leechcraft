@@ -52,7 +52,7 @@ namespace LeechCraft
 namespace vlc
 {
 	PlaylistWidget::PlaylistWidget (QIcon playIcon, QWidget *parent)
-	: QTreeView (parent)
+	: QListView (parent)
 	, LastPlayingItem_ (nullptr)
 	, PlayIcon_ (playIcon)
 	{
@@ -60,7 +60,6 @@ namespace vlc
 		setDropIndicatorShown (true);
 		setAcceptDrops (true);
 		setBaseSize (0, 0);
-		setRootIsDecorated (false);
 		setContextMenuPolicy (Qt::CustomContextMenu);
 		
 		connect (this,
@@ -105,6 +104,7 @@ namespace vlc
 		NativePlayer_ = player;
 		
 		Model_ = new PlaylistModel (this, Playlist_, Instance_);
+		updateModelConstants ();
 		setModel (Model_);
 		
 		QTimer *timer = new QTimer (this);
@@ -181,7 +181,7 @@ namespace vlc
 		if (currentRow == -1 || currentRow >= Model_->rowCount ())
 			return;
 				
-		LastPlayingItem_ = Model_->item (currentRow, ColumnName);
+		LastPlayingItem_ = Model_->item (currentRow, 0);
 		LastPlayingItem_->setIcon (QIcon (PlayIcon_));
 		
 		update ();
@@ -242,10 +242,13 @@ namespace vlc
 	
 	void PlaylistWidget::resizeEvent (QResizeEvent *event)
 	{
-		QFontMetrics metrics (font ());
-		const int len =  (metrics.width (" 00:00:00 "));
-		setColumnWidth (0, event->size ().width () - len);
-		setColumnWidth (1, len);
+		updateModelConstants ();
+	}
+	
+	void PlaylistWidget::updateModelConstants()
+	{
+		Model_->Width_ = width () - 10;
+		Model_->updateTable ();
 	}
 	
 	void PlaylistWidget::SetCurrentMedia (int current)

@@ -251,7 +251,7 @@ namespace vlc
 		Settings_ = new QSettings (QCoreApplication::organizationName (), QCoreApplication::applicationName () + "_VTYULC");
 		RestorePlaylist ();
 		Autostart_ = XmlSettingsManager::Instance ().property ("Autostart").toBool ();
-		VideoPath = Settings_->value ("WorkingDirectory", QDir::currentPath ()).toString ();
+		VideoPath_ = Settings_->value ("WorkingDirectory", QDir::currentPath ()).toString ();
 	}
 
 	void VlcWidget::SaveSettings ()
@@ -313,7 +313,7 @@ namespace vlc
 	{
 		QStringList files = QFileDialog::getOpenFileNames (this,
 				tr ("Open files"),
-				VideoPath,
+				VideoPath_,
 				tr ("Videos (*.mkv *.avi *.mov *.mpg);;Any (*.*)"));
 
 		if (!files.isEmpty ())
@@ -329,7 +329,7 @@ namespace vlc
 	{
 		QStringList files = QFileDialog::getOpenFileNames (this,
 				tr ("Open files"),
-				VideoPath,
+				VideoPath_,
 				tr ("Videos (*.mkv *.avi *.mov *.mpg);;Any (*.*)"));
 		
 		if (!files.isEmpty ())
@@ -345,7 +345,7 @@ namespace vlc
 	{
 		QString folder = QFileDialog::getExistingDirectory (this,
 				tr ("Open folder"),
-				VideoPath);
+				VideoPath_);
 
 		if (QFile::exists (folder))
 		{
@@ -359,7 +359,7 @@ namespace vlc
 	{
 		QString folder = QFileDialog::getExistingDirectory (this,
 				tr ("Open DVD"),
-				VideoPath);
+				VideoPath_);
 
 		if (QFile::exists (folder))
 		{
@@ -373,7 +373,7 @@ namespace vlc
 	{
 		QString folder = QFileDialog::getExistingDirectory (this,
 				tr ("Open DVD"),
-				VideoPath);
+				VideoPath_);
 
 		if (QFile::exists (folder))
 		{
@@ -399,7 +399,7 @@ namespace vlc
 		const QString& url = QFileDialog::getOpenFileName (this,
 				tr ("Open file"),
 				tr ("Media (*.ac3);;Any (*.*)"),
-				VideoPath);
+				VideoPath_);
 
 		if (QFile::exists (url))
 		{
