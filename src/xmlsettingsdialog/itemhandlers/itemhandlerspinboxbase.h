@@ -85,7 +85,7 @@ namespace LeechCraft
 			if (item.hasAttribute ("suffix"))
 				box->setSuffix (item.attribute ("suffix"));
 
-			Util::XmlSettingsDialog::LangElements langs = XSD_->GetLangElements (item);
+			const auto& langs = XSD_->GetLangElements (item);
 			if (langs.Valid_)
 			{
 				if (langs.Label_.first)
