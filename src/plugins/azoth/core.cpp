@@ -861,8 +861,7 @@ namespace Azoth
 				return result;
 		}
 
-		if (coloring == "hash" ||
-				coloring.isEmpty ())
+		if (coloring == "hash" || coloring.isEmpty ())
 		{
 			if (!bg.isValid ())
 				bg = QApplication::palette ().color (QPalette::Base);
