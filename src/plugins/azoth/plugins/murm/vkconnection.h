@@ -55,6 +55,7 @@ namespace Azoth
 namespace Murm
 {
 	class LongPollManager;
+	class Logger;
 
 	class VkConnection : public QObject
 	{
@@ -62,6 +63,8 @@ namespace Murm
 
 		LeechCraft::Util::SvcAuth::VkAuthManager * const AuthMgr_;
 		const ICoreProxy_ptr Proxy_;
+
+		Logger& Logger_;
 
 		QByteArray LastCookies_;
 	public:
@@ -111,7 +114,7 @@ namespace Murm
 			Chat
 		};
 
-		VkConnection (const QByteArray&, ICoreProxy_ptr);
+		VkConnection (const QByteArray&, ICoreProxy_ptr, Logger&);
 
 		const QByteArray& GetCookies () const;
 

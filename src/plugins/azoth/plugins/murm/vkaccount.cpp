@@ -40,6 +40,7 @@
 #include "groupsmanager.h"
 #include "xmlsettingsmanager.h"
 #include "vkchatentry.h"
+#include "logger.h"
 
 namespace LeechCraft
 {
@@ -55,7 +56,8 @@ namespace Murm
 	, ID_ (id.isEmpty () ? QUuid::createUuid ().toByteArray () : id)
 	, PhotoStorage_ (new PhotoStorage (proxy->GetNetworkAccessManager (), ID_))
 	, Name_ (name)
-	, Conn_ (new VkConnection (cookies, proxy))
+	, Logger_ (new Logger (ID_, this))
+	, Conn_ (new VkConnection (cookies, proxy, *Logger_))
 	, GroupsMgr_ (new GroupsManager (Conn_))
 	, GeoResolver_ (new GeoResolver (Conn_, this))
 	{

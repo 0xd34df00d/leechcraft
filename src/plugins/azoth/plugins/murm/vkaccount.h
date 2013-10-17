@@ -50,6 +50,7 @@ namespace Murm
 	class PhotoStorage;
 	class GeoResolver;
 	class GroupsManager;
+	class Logger;
 
 	class VkAccount : public QObject
 					, public IAccount
@@ -69,6 +70,8 @@ namespace Murm
 		PhotoStorage * const PhotoStorage_;
 
 		QString Name_;
+
+		Logger * const Logger_;
 
 		VkConnection * const Conn_;
 		GroupsManager * const GroupsMgr_;

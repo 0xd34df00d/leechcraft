@@ -37,6 +37,7 @@
 #include <util/svcauth/vkauthmanager.h>
 #include <util/queuemanager.h>
 #include "longpollmanager.h"
+#include "logger.h"
 
 namespace LeechCraft
 {
@@ -44,15 +45,17 @@ namespace Azoth
 {
 namespace Murm
 {
-	VkConnection::VkConnection (const QByteArray& cookies, ICoreProxy_ptr proxy)
+	VkConnection::VkConnection (const QByteArray& cookies, ICoreProxy_ptr proxy, Logger& logger)
 	: AuthMgr_ (new Util::SvcAuth::VkAuthManager ("3778319",
 			{ "messages", "notifications", "friends", "status", "photos" },
 			cookies, proxy, nullptr, this))
 	, Proxy_ (proxy)
+	, Logger_ (logger)
 	, CallQueue_ (new Util::QueueManager (400))
 	, LPManager_ (new LongPollManager (this, proxy))
 	, MarkOnlineTimer_ (new QTimer (this))
 	{
+		Logger_ << "==========================================";
 		connect (AuthMgr_,
 				SIGNAL (cookiesChanged (QByteArray)),
 				this,
@@ -117,7 +120,7 @@ namespace Murm
 
 	void VkConnection::RerequestFriends ()
 	{
-		qDebug () << Q_FUNC_INFO;
+		Logger_ << "RerequestFriends";
 		PushFriendsRequest ();
 		AuthMgr_->GetAuthKey ();
 	}
@@ -402,7 +405,7 @@ namespace Murm
 
 	void VkConnection::SetStatus (const EntryStatus& status)
 	{
-		qDebug () << Q_FUNC_INFO << status.State_;
+		Logger_ << "setting status" << status.State_;
 		LPManager_->ForceServerRequery ();
 
 		Status_ = status;
@@ -448,7 +451,7 @@ namespace Murm
 
 	void VkConnection::SetMarkingOnlineEnabled (bool enabled)
 	{
-		qDebug () << Q_FUNC_INFO << enabled;
+		Logger_ << "SetMarkingOnlineEnabled" << enabled;
 		MarkingOnline_ = enabled;
 
 		if (enabled)
@@ -536,7 +539,12 @@ namespace Murm
 		while (!PreparedCalls_.isEmpty ())
 		{
 			auto f = PreparedCalls_.takeFirst ();
-			CallQueue_->Schedule ([this, f, key] { RunningCalls_.append ({ f (key), f }); });
+			CallQueue_->Schedule ([this, f, key] () -> void
+					{
+						const auto reply = f (key);
+						Logger_ << reply->request ().url ();
+						RunningCalls_.append ({ reply, f });
+					});
 		}
 	}
 
@@ -557,7 +565,7 @@ namespace Murm
 						SLOT (deleteLater ()));
 				return reply;
 			});
-		qDebug () << Q_FUNC_INFO << "request scheduled";
+		Logger_ << "markOnline";
 		AuthMgr_->GetAuthKey ();
 	}
 
@@ -571,14 +579,14 @@ namespace Murm
 
 	void VkConnection::handlePollError ()
 	{
-		qDebug () << Q_FUNC_INFO;
+		Logger_ << "poll error";
 		CurrentStatus_ = EntryStatus ();
 		emit statusChanged (GetStatus ());
 	}
 
 	void VkConnection::handlePollStopped ()
 	{
-		qDebug () << Q_FUNC_INFO;
+		Logger_ << "poll stopped";
 		CurrentStatus_ = Status_;
 		emit statusChanged (GetStatus ());
 
@@ -589,6 +597,7 @@ namespace Murm
 
 	void VkConnection::handlePollData (const QVariantMap& rootMap)
 	{
+		Logger_ << "got poll data" << rootMap;
 		for (const auto& update : rootMap ["updates"].toList ())
 		{
 			const auto& parmList = update.toList ();
@@ -749,7 +758,7 @@ namespace Murm
 		for (const auto& msgMapVar : respList)
 		{
 			const auto& map = msgMapVar.toMap ();
-			qDebug () << Q_FUNC_INFO << map;
+			Logger_ << "got unread message:" << QVariant { map };
 
 			MessageFlags flags = MessageFlag::Unread;
 			if (map ["out"].toULongLong ())
@@ -809,7 +818,6 @@ namespace Murm
 		auto removeInfo = Reply2ChatRemoveInfo_.take (reply);
 
 		const auto& data = QJson::Parser ().parse (reply);
-		qDebug () << Q_FUNC_INFO << data;
 		const auto& map = data.toMap ();
 		if (map ["response"].toULongLong () == 1)
 			emit chatUserRemoved (removeInfo.Chat_, removeInfo.User_);
@@ -915,7 +923,7 @@ namespace Murm
 			};
 		}
 
-		void HandleAttachments (FullMessageInfo& info, const QVariant& attachments)
+		void HandleAttachments (FullMessageInfo& info, const QVariant& attachments, Logger& logger)
 		{
 			const auto& attList = attachments.toList ();
 			for (const auto& attVar : attList)
@@ -937,14 +945,14 @@ namespace Murm
 					repost.Reposts_ = wallMap ["reposts"].toMap () ["count"].toInt ();
 					repost.PostDate_ = QDateTime::fromTime_t (wallMap ["date"].toLongLong ());
 
-					HandleAttachments (repost, wallMap.take ("attachments"));
+					HandleAttachments (repost, wallMap.take ("attachments"), logger);
 					wallMap.take ("attachment");
-					qDebug () << Q_FUNC_INFO << wallMap;
+					logger << "attachments left:" << wallMap;
 
 					info.ContainedReposts_.append (repost);
 				}
 				else
-					qDebug () << Q_FUNC_INFO << attMap.keys ();
+					logger << "HandleAttachments" << attMap.keys ();
 			}
 		}
 	}
@@ -969,7 +977,7 @@ namespace Murm
 				continue;
 
 			const auto& map = item.toMap ();
-			HandleAttachments (info, map ["attachments"]);
+			HandleAttachments (info, map ["attachments"], Logger_);
 		}
 
 		setter (info);
