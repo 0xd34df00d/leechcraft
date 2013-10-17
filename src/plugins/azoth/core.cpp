@@ -870,7 +870,7 @@ namespace Azoth
 			int alpha = bg.alpha ();
 
 			QColor color;
-			for (int hue = 0; hue < 360; hue += 36)
+			for (int hue = 0; hue < 360; hue += 18)
 			{
 				color.setHsv (hue, 255, 255, alpha);
 				if (compatibleColors (color, bg))
