@@ -504,7 +504,9 @@ namespace Util
 		if (!label.isNull ())
 			result = label.attribute ("value");
 		return QCoreApplication::translate (qPrintable (Basename_),
-				result.toUtf8 ().constData ());
+				result.toUtf8 ().constData (),
+				0,
+				QCoreApplication::Encoding::UnicodeUTF8);
 	}
 
 	QString XmlSettingsDialog::GetDescription (const QDomElement& item) const
@@ -533,7 +535,9 @@ namespace Util
 		{
 			returning.Label_.first = true;
 			returning.Label_.second = QCoreApplication::translate (qPrintable (Basename_),
-					label.attribute ("value").toUtf8 ().constData ());
+					label.attribute ("value").toUtf8 ().constData (),
+					0,
+					QCoreApplication::Encoding::UnicodeUTF8);
 		}
 
 		QDomElement suffix = parent.firstChildElement ("suffix");
@@ -541,7 +545,9 @@ namespace Util
 		{
 			returning.Suffix_.first = true;
 			returning.Suffix_.second = QCoreApplication::translate (qPrintable (Basename_),
-					suffix.attribute ("value").toUtf8 ().constData ());
+					suffix.attribute ("value").toUtf8 ().constData (),
+					0,
+					QCoreApplication::Encoding::UnicodeUTF8);
 		}
 		return returning;
 	}
