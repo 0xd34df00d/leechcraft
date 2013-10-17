@@ -116,6 +116,9 @@ namespace LMP
 	{
 		gdouble value = 1;
 		g_object_get (G_OBJECT (Volume_), "volume", &value, nullptr);
+		const auto exp = XmlSettingsManager::Instance ().property ("VolumeExponent").toDouble ();
+		if (exp != 1)
+			value = std::pow (value, 1 / exp);
 		return value;
 	}
 
@@ -139,6 +142,9 @@ namespace LMP
 
 	void Output::setVolume (double volume)
 	{
+		const auto exp = XmlSettingsManager::Instance ().property ("VolumeExponent").toDouble ();
+		if (exp != 1)
+			volume = std::pow (volume, exp);
 		g_object_set (G_OBJECT (Volume_), "volume", static_cast<gdouble> (volume), nullptr);
 
 		ScheduleSaveVolume ();

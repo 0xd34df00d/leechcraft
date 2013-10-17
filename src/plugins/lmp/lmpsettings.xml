@@ -35,11 +35,6 @@
 			<item type="path" property="CoversStoragePath" default="{LCDIR}/lmp/covers">
 				<label value="Album art storage path:" />
 			</item>
-			<item type="spinbox" property="TransitionTime" default="0" step="100" minimum="-10000" maximum="10000">
-				<label value="Transition time between tracks:" />
-				<suffix value=" ms" />
-				<tooltip value="Setting this to positive values introduces a gap between tracks. Negative values enable crossfade. Zero requests gapless playback." />
-			</item>
 			<item type="groupbox" checkable="true" property="EnableTagsRecoding" default="false">
 				<label value="Enable tracks recoding" />
 				<item type="combobox" property="TagsRecodingRegion">
@@ -78,6 +73,17 @@
 						<label value="turkish" />
 					</option>
 				</item>
+			</item>
+		</tab>
+		<tab>
+			<label value="Audio" />
+			<item type="spinbox" property="TransitionTime" default="0" step="100" minimum="-10000" maximum="10000">
+				<label value="Transition time between tracks:" />
+				<suffix value=" ms" />
+				<tooltip value="Setting this to positive values introduces a gap between tracks. Negative values enable crossfade. Zero requests gapless playback." />
+			</item>
+			<item type="doublespinbox" property="VolumeExponent" default="1" minimum="0.125" maximum="8" step="0.1">
+				<label value="Exponent in volume change formula (α in P = x^α)" />
 			</item>
 		</tab>
 		<tab>
