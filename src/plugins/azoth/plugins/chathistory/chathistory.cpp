@@ -287,15 +287,15 @@ namespace ChatHistory
 			return;
 
 		auto entryObj = RequestedLogs_ [accId].take (entryId);
-		auto mucEntry = qobject_cast<IMUCEntry*> (entryObj);
-		if (!mucEntry)
+		if (!entryObj)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< entryObj
-					<< "doesn't implement ICLEntry";
+					<< "is dead already";
 			return;
 		}
 
+		auto mucEntry = qobject_cast<IMUCEntry*> (entryObj);
 		const auto& parts = mucEntry ?
 				mucEntry->GetParticipants () :
 				QObjectList ();
