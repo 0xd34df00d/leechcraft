@@ -32,6 +32,7 @@
 #include <memory>
 #include <QObject>
 #include <QFile>
+#include <interfaces/azoth/ihaveconsole.h>
 
 class QVariant;
 class QUrl;
@@ -53,10 +54,14 @@ namespace Murm
 			friend class Logger;
 
 			Logger& L_;
+			const IHaveConsole::PacketDirection Dir_;
+
 			bool IsFirst_ = true;
 			std::unique_ptr<QFile> File_;
 
-			LogProxy (Logger&);
+			QByteArray CurrentString_;
+
+			LogProxy (Logger&, IHaveConsole::PacketDirection);
 		public:
 			LogProxy (const LogProxy&) = delete;
 			LogProxy (LogProxy&&) = default;
@@ -99,11 +104,18 @@ namespace Murm
 
 		Logger (const QString& id, QObject* = 0);
 
+		LogProxy operator() (IHaveConsole::PacketDirection dir)
+		{
+			return LogProxy { *this, dir };
+		}
+
 		template<typename T>
 		LogProxy operator<< (const T& t)
 		{
-			return LogProxy { *this } << t;
+			return LogProxy { *this, IHaveConsole::PacketDirection::In } << t;
 		}
+	signals:
+		void gotConsolePacket (const QByteArray&, IHaveConsole::PacketDirection, const QString&);
 	};
 }
 }

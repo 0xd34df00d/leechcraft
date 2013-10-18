@@ -39,8 +39,9 @@ namespace Azoth
 {
 namespace Murm
 {
-	Logger::LogProxy::LogProxy (Logger& l)
+	Logger::LogProxy::LogProxy (Logger& l, IHaveConsole::PacketDirection dir)
 	: L_ (l)
+	, Dir_ { dir }
 	, File_ { new QFile { l.Filename_ } }
 	{
 		File_->open (QIODevice::WriteOnly | QIODevice::Append);
@@ -49,8 +50,11 @@ namespace Murm
 
 	Logger::LogProxy::~LogProxy ()
 	{
-		if (File_)
-			WriteImpl ("\n");
+		if (!File_)
+			return;
+
+		L_.gotConsolePacket (CurrentString_, Dir_, {});
+		WriteImpl ("\n");
 	}
 
 	void Logger::LogProxy::Write (const char *msg)
@@ -75,6 +79,7 @@ namespace Murm
 
 	void Logger::LogProxy::WriteImpl (const QByteArray& ba)
 	{
+		CurrentString_ += ba;
 		File_->write (ba);
 	}
 
@@ -82,8 +87,7 @@ namespace Murm
 	{
 		QJson::Serializer s;
 		s.setIndentMode (QJson::IndentFull);
-		bool ok = false;
-		s.serialize (json, File_.get (), &ok);
+		WriteImpl (s.serialize (json));
 	}
 
 	Logger::Logger (const QString& id, QObject *parent)
