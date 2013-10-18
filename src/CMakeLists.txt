@@ -161,6 +161,7 @@ option (ENABLE_GLANCE "Quick overview of tabs" ${WITH_PLUGINS})
 option (ENABLE_GMAILNOTIFIER "Build GMail Notifier which notifies about new mail in your GMail inbox" ${WITH_PLUGINS})
 option (ENABLE_HISTORYHOLDER "Build HistoryHolder, the keeper of the history" ${WITH_PLUGINS})
 option (ENABLE_HTTP "Build CSTP, the HTTP implementation" ${WITH_PLUGINS})
+option (ENABLE_HTTHARE "Build HttThare for sharing local documents via HTTP" ${WITH_PLUGINS})
 option (ENABLE_KINOTIFY "Build Kinotify, fancy kinetic notifications" ${WITH_PLUGINS})
 option (ENABLE_KNOWHOW "Build KnowHow for displaying tips of the day" ${WITH_PLUGINS})
 option (ENABLE_LMP "Build LMP, the LeechCraft Music Player" ${WITH_PLUGINS})
@@ -313,6 +314,10 @@ endif ()
 
 if (ENABLE_HTTP)
 	add_subdirectory (plugins/cstp)
+endif ()
+
+if (ENABLE_HTTHARE)
+	add_subdirectory (plugins/htthare)
 endif ()
 
 if (ENABLE_LMP)
