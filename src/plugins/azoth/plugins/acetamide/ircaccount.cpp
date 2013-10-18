@@ -87,9 +87,9 @@ namespace Acetamide
 				SIGNAL (removedCLItems (const QList<QObject*>&)));
 
 		connect (ClientConnection_.get (),
-				SIGNAL (gotConsoleLog (QByteArray, int, QString)),
+				SIGNAL (gotConsoleLog (QByteArray, IHaveConsole::PacketDirection, QString)),
 				this,
-				SIGNAL (gotConsolePacket (QByteArray, int, QString)));
+				SIGNAL (gotConsolePacket (QByteArray, IHaveConsole::PacketDirection, QString)));
 	}
 
 	QObject* IrcAccount::GetQObject ()
@@ -428,7 +428,7 @@ namespace Acetamide
 
 	IHaveConsole::PacketFormat IrcAccount::GetPacketFormat () const
 	{
-		return PFPlainText;
+		return PacketFormat::PlainText;
 	}
 
 	void IrcAccount::SetConsoleEnabled (bool enabled)

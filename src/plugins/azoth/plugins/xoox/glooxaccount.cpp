@@ -117,9 +117,9 @@ namespace Xoox
 					this));
 
 		connect (ClientConnection_.get (),
-				SIGNAL (gotConsoleLog (QByteArray, int, QString)),
+				SIGNAL (gotConsoleLog (QByteArray, IHaveConsole::PacketDirection, QString)),
 				this,
-				SIGNAL (gotConsolePacket (QByteArray, int, QString)));
+				SIGNAL (gotConsolePacket (QByteArray, IHaveConsole::PacketDirection, QString)));
 
 		connect (ClientConnection_.get (),
 				SIGNAL (serverAuthFailed ()),
@@ -390,7 +390,7 @@ namespace Xoox
 
 	IHaveConsole::PacketFormat GlooxAccount::GetPacketFormat () const
 	{
-		return PFXML;
+		return PacketFormat::XML;
 	}
 
 	void GlooxAccount::SetConsoleEnabled (bool enabled)

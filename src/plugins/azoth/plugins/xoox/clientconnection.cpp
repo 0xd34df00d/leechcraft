@@ -1291,10 +1291,10 @@ namespace Xoox
 		switch (type)
 		{
 		case QXmppLogger::SentMessage:
-			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PDOut, entryId);
+			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PacketDirection::Out, entryId);
 			break;
 		case QXmppLogger::ReceivedMessage:
-			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PDIn, entryId);
+			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PacketDirection::In, entryId);
 			break;
 		default:
 			break;
@@ -1356,7 +1356,7 @@ namespace Xoox
 	void ClientConnection::HandleRIEX (QString msgFrom, QList<RIEXManager::Item> origItems, QString body)
 	{
 		QList<RIEXItem> items;
-		Q_FOREACH (const RIEXManager::Item& item, origItems)
+		for (const auto& item : origItems)
 		{
 			RIEXItem ri =
 			{
