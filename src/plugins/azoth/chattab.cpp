@@ -84,6 +84,7 @@
 #include "proxyobject.h"
 #include "customchatstylemanager.h"
 #include "coremessage.h"
+#include "dummymsgmanager.h"
 
 namespace LeechCraft
 {
@@ -229,6 +230,7 @@ namespace Azoth
 				this,
 				SLOT (typeTimeout ()));
 
+		DummyMsgManager::Instance ().ClearMessages (GetCLEntry ());
 		PrepareTheme ();
 
 		auto entry = GetEntry<ICLEntry> ();
@@ -271,6 +273,7 @@ namespace Azoth
 
 		qDeleteAll (HistoryMessages_);
 		qDeleteAll (CoreMessages_);
+		DummyMsgManager::Instance ().ClearMessages (GetCLEntry ());
 		delete Ui_.MsgEdit_->document ();
 
 		delete MUCEventLog_;
@@ -739,6 +742,7 @@ namespace Azoth
 		HistoryMessages_.clear ();
 		qDeleteAll (CoreMessages_);
 		CoreMessages_.clear ();
+		DummyMsgManager::Instance ().ClearMessages (GetCLEntry ());
 		LastDateTime_ = QDateTime ();
 		PrepareTheme ();
 	}
@@ -750,6 +754,7 @@ namespace Azoth
 		HistoryMessages_.clear ();
 		qDeleteAll (CoreMessages_);
 		CoreMessages_.clear ();
+		DummyMsgManager::Instance ().ClearMessages (GetCLEntry ());
 		LastDateTime_ = QDateTime ();
 		RequestLogs (ScrollbackPos_);
 	}
@@ -1934,6 +1939,7 @@ namespace Azoth
 				ToggleRichText_->isChecked ()
 			};
 			Core::Instance ().AppendMessageByTemplate (frame, coreMessage, coreInfo);
+			CoreMessages_ << coreMessage;
 		}
 
 		LastDateTime_ = msg->GetDateTime ();
