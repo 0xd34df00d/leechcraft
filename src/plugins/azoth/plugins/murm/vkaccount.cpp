@@ -105,6 +105,11 @@ namespace Murm
 				this,
 				SLOT (handleChatUserRemoved (qulonglong, qulonglong)));
 
+		connect (Logger_,
+				SIGNAL (gotConsolePacket (QByteArray, IHaveConsole::PacketDirection, QString)),
+				this,
+				SIGNAL (gotConsolePacket (QByteArray, IHaveConsole::PacketDirection, QString)));
+
 		XmlSettingsManager::Instance ().RegisterObject ("MarkAsOnline",
 				this, "handleMarkOnline");
 		handleMarkOnline ();
@@ -327,6 +332,15 @@ namespace Murm
 	QIcon VkAccount::GetAccountIcon () const
 	{
 		return {};
+	}
+
+	IHaveConsole::PacketFormat VkAccount::GetPacketFormat () const
+	{
+		return PacketFormat::PlainText;
+	}
+
+	void VkAccount::SetConsoleEnabled (bool)
+	{
 	}
 
 	void VkAccount::handleSelfInfo (const UserInfo& info)
