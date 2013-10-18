@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "coremessage.h"
+#include "dummymsgmanager.h"
 
 namespace LeechCraft
 {
@@ -55,6 +56,10 @@ namespace Azoth
 
 	void CoreMessage::Store ()
 	{
+		QMetaObject::invokeMethod (OtherPart (),
+				"gotMessage",
+				Q_ARG (QObject*, this));
+		DummyMsgManager::Instance ().AddMessage (this);
 	}
 
 	IMessage::Direction CoreMessage::GetDirection () const
