@@ -341,18 +341,28 @@ namespace OTRoid
 	void Plugin::InjectMsg (ICLEntry *entry, const QString& body, bool hidden,
 			IMessage::Direction dir, IMessage::MessageType type)
 	{
-		QObject *msgObj = entry->CreateMessage (type, {}, body);
-		if (hidden)
-			msgObj->setProperty ("Azoth/HiddenMessage", true);
-
-		IMessage *msg = qobject_cast<IMessage*> (msgObj);
-		if (!msg)
-			return;
-
 		if (dir == IMessage::DOut)
+		{
+			QObject *msgObj = entry->CreateMessage (type, {}, body);
+			if (hidden)
+				msgObj->setProperty ("Azoth/HiddenMessage", true);
+
+			IMessage *msg = qobject_cast<IMessage*> (msgObj);
+			if (!msg)
+				return;
+
 			msg->Send ();
+		}
 		else
+		{
+			auto entryObj = entry->GetQObject ();
+			auto msgObj = AzothProxy_->CreateCoreMessage (body,
+					QDateTime::currentDateTime (),
+					type, dir, entryObj, entryObj);
+
+			auto msg = qobject_cast<IMessage*> (msgObj);
 			msg->Store ();
+		}
 	}
 
 	void Plugin::Notify (const QString&, const QString&,
