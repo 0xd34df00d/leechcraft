@@ -36,6 +36,7 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "chattabsmanager.h"
+#include "coremessage.h"
 
 namespace LeechCraft
 {
@@ -384,6 +385,13 @@ namespace Azoth
 		}
 
 		return result;
+	}
+
+	QObject* ProxyObject::CreateCoreMessage (const QString& body, const QDateTime& date,
+			IMessage::MessageType type, IMessage::Direction dir,
+			QObject *other, QObject *parent)
+	{
+		return new CoreMessage (body, date, type, dir, other, parent);
 	}
 }
 }

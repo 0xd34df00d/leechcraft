@@ -75,6 +75,8 @@ namespace Azoth
 		QIcon GetIconForState (State) const;
 		void FormatLinks (QString&);
 		QStringList FindLinks (const QString&);
+		QObject* CreateCoreMessage (const QString&, const QDateTime&,
+				IMessage::MessageType, IMessage::Direction, QObject*, QObject*);
 	};
 }
 }

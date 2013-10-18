@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "interfaces/azoth/azothcommon.h"
-#include "coremessage.h"
 
 namespace LeechCraft
 {
@@ -38,12 +37,6 @@ namespace Azoth
 	{
 		static int order [] = { 7, 3, 4, 5, 6, 1, 2, 8, 9, 10 };
 		return order [s1] < order [s2];
-	}
-
-	QObject* CreateCoreMessage (const QString& body, const QDateTime& date,
-			IMessage::MessageType type, IMessage::Direction dir, QObject *other, QObject *parent)
-	{
-		return new CoreMessage (body, date, type, dir, other, parent);
 	}
 }
 }

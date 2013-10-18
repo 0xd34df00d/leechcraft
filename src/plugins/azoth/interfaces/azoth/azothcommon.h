@@ -58,10 +58,6 @@ namespace Azoth
 
 	bool IsLess (State s1, State s2);
 
-	QObject* CreateCoreMessage (const QString& body, const QDateTime& date,
-			IMessage::MessageType type, IMessage::Direction dir,
-			QObject *other, QObject *parent = nullptr);
-
 	/** Represents possible state of authorizations between two
 	 * entities: our user and a remote contact.
 	 *

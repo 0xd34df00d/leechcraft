@@ -295,6 +295,10 @@ namespace Azoth
 		virtual QIcon GetIconForState (State state) const = 0;
 
 		virtual void FormatLinks (QString& body) = 0;
+
+		virtual QObject* CreateCoreMessage (const QString& body, const QDateTime& date,
+				IMessage::MessageType type, IMessage::Direction dir,
+				QObject *other, QObject *parent = nullptr) = 0;
 	};
 }
 }
