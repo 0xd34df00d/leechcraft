@@ -120,7 +120,7 @@ namespace Murm
 
 	void VkConnection::RerequestFriends ()
 	{
-		Logger_ << "RerequestFriends";
+		Logger_ (IHaveConsole::PacketDirection::Out) << "RerequestFriends";
 		PushFriendsRequest ();
 		AuthMgr_->GetAuthKey ();
 	}
@@ -405,7 +405,7 @@ namespace Murm
 
 	void VkConnection::SetStatus (const EntryStatus& status)
 	{
-		Logger_ << "setting status" << status.State_;
+		Logger_ (IHaveConsole::PacketDirection::Out) << "setting status" << status.State_;
 		LPManager_->ForceServerRequery ();
 
 		Status_ = status;
@@ -451,7 +451,7 @@ namespace Murm
 
 	void VkConnection::SetMarkingOnlineEnabled (bool enabled)
 	{
-		Logger_ << "SetMarkingOnlineEnabled" << enabled;
+		Logger_ (IHaveConsole::PacketDirection::Out) << "SetMarkingOnlineEnabled" << enabled;
 		MarkingOnline_ = enabled;
 
 		if (enabled)
@@ -542,7 +542,7 @@ namespace Murm
 			CallQueue_->Schedule ([this, f, key] () -> void
 					{
 						const auto reply = f (key);
-						Logger_ << reply->request ().url ();
+						Logger_ (IHaveConsole::PacketDirection::Out) << reply->request ().url ();
 						RunningCalls_.append ({ reply, f });
 					});
 		}
@@ -565,7 +565,7 @@ namespace Murm
 						SLOT (deleteLater ()));
 				return reply;
 			});
-		Logger_ << "markOnline";
+		Logger_ (IHaveConsole::PacketDirection::Out) << "markOnline";
 		AuthMgr_->GetAuthKey ();
 	}
 
