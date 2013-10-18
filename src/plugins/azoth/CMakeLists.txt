@@ -152,6 +152,7 @@ set (SRCS
 	advancedpermchangedialog.cpp
 	groupremovedialog.cpp
 	coremessage.cpp
+	dummymsgmanager.cpp
 	)
 set (FORMS
 	mainwidget.ui
