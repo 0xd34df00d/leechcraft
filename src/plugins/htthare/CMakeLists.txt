@@ -12,6 +12,7 @@ include_directories (
 	)
 set (SRCS
 	httthare.cpp
+	server.cpp
 	connection.cpp
 	requesthandler.cpp
 	)
