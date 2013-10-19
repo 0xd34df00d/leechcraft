@@ -12,6 +12,7 @@ include_directories (
 	)
 set (SRCS
 	httthare.cpp
+	connection.cpp
 	requesthandler.cpp
 	)
 #CreateTrs("httthare" "en;ru_RU" COMPILED_TRANSLATIONS)
