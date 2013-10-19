@@ -29,6 +29,7 @@
 
 #include "httthare.h"
 #include <QIcon>
+#include "server.h"
 
 namespace LeechCraft
 {
@@ -36,6 +37,8 @@ namespace HttThare
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		S_ = new Server ("localhost", "14800");
+		S_->Start ();
 	}
 
 	void Plugin::SecondInit ()
@@ -49,6 +52,7 @@ namespace HttThare
 
 	void Plugin::Release ()
 	{
+		S_->Stop ();
 	}
 
 	QString Plugin::GetName () const

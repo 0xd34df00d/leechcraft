@@ -36,11 +36,15 @@ namespace LeechCraft
 {
 namespace HttThare
 {
+	class Server;
+
 	class Plugin : public QObject
 				 , public IInfo
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo)
+
+		Server *S_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
