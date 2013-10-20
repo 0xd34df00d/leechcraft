@@ -54,13 +54,13 @@ namespace Azoth
 		regStyle ("MUCWindowStyle");
 	}
 
-	void ChatTabsManager::OpenChat (const QModelIndex& ti)
+	QWidget* ChatTabsManager::OpenChat (const QModelIndex& ti)
 	{
 		if (!ti.isValid ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "tried to open a chat with invalid index";
-			return;
+			return nullptr;
 		}
 
 		QObject *entryObj = ti.data (Core::CLREntryObject).value<QObject*> ();
@@ -73,10 +73,10 @@ namespace Azoth
 					<< "from the index"
 					<< ti
 					<< "doesn't implement ICLEntry";
-			return;
+			return nullptr;
 		}
 
-		OpenChat (entry);
+		return OpenChat (entry, true);
 	}
 
 	QWidget* ChatTabsManager::OpenChat (const ICLEntry *entry, const DynPropertiesList_t& props)

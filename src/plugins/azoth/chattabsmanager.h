@@ -64,7 +64,7 @@ namespace Azoth
 	public:
 		ChatTabsManager (QObject* = 0);
 
-		void OpenChat (const QModelIndex&);
+		QWidget* OpenChat (const QModelIndex&);
 		QWidget* OpenChat (const ICLEntry*,
 				const DynPropertiesList_t& = DynPropertiesList_t ());
 		void CloseChat (const ICLEntry*);
