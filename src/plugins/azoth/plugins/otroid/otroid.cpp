@@ -360,6 +360,8 @@ namespace OTRoid
 					QDateTime::currentDateTime (),
 					type, dir, entryObj, entryObj);
 
+			PendingInjectedMessages_ << msgObj;
+
 			auto msg = qobject_cast<IMessage*> (msgObj);
 			msg->Store ();
 		}
@@ -521,6 +523,9 @@ namespace OTRoid
 	void Plugin::hookGotMessage (IHookProxy_ptr proxy, QObject *msgObj)
 	{
 		if (IsGenerating_)
+			return;
+
+		if (PendingInjectedMessages_.remove (msgObj))
 			return;
 
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);

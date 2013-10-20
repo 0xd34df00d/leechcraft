@@ -71,6 +71,8 @@ namespace OTRoid
 
 		QHash<QObject*, QString> Msg2OrigText_;
 
+		QSet<QObject*> PendingInjectedMessages_;
+
 		QDir OtrDir_;
 
 		bool IsGenerating_ = false;
