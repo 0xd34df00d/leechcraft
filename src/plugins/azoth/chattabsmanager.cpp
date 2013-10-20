@@ -79,7 +79,8 @@ namespace Azoth
 		return OpenChat (entry, true);
 	}
 
-	QWidget* ChatTabsManager::OpenChat (const ICLEntry *entry, const DynPropertiesList_t& props)
+	QWidget* ChatTabsManager::OpenChat (const ICLEntry *entry,
+			bool fromUser, const DynPropertiesList_t& props)
 	{
 		const QString& id = entry->GetEntryID ();
 		if (Entry2Tab_.contains (id))
@@ -225,7 +226,7 @@ namespace Azoth
 		{
 			auto entry = qobject_cast<ICLEntry*> (msg->OtherPart ());
 			if (!Entry2Tab_.contains (entry->GetEntryID ()))
-				OpenChat (entry);
+				OpenChat (entry, false);
 		}
 	}
 
@@ -308,7 +309,7 @@ namespace Azoth
 					<< entryObj;
 			return;
 		}
-		auto tab = qobject_cast<ChatTab*> (OpenChat (entry, info.Props_));
+		auto tab = qobject_cast<ChatTab*> (OpenChat (entry, false, info.Props_));
 		tab->selectVariant (info.Variant_);
 		tab->prepareMessageText (info.MsgText_);
 	}

@@ -2632,7 +2632,7 @@ namespace Azoth
 
 		auto nh = new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Open chat"),
-				[parentCL, this] () { ChatTabsManager_->OpenChat (parentCL); });
+				[parentCL, this] { ChatTabsManager_->OpenChat (parentCL, true); });
 		nh->AddDependentObject (parentCL->GetQObject ());
 
 		emit gotEntity (e);
@@ -2715,7 +2715,7 @@ namespace Azoth
 		Util::NotificationActionHandler *nh =
 				new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Open chat"),
-				[entry, this] () { ChatTabsManager_->OpenChat (entry); });
+				[entry, this] { ChatTabsManager_->OpenChat (entry, true); });
 		nh->AddDependentObject (entry->GetQObject ());
 
 		emit gotEntity (e);

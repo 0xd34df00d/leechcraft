@@ -217,13 +217,11 @@ namespace Azoth
 
 	void Plugin::RecoverTabs (const QList<TabRecoverInfo>& infos)
 	{
-		Q_FOREACH (const TabRecoverInfo& recInfo, infos)
+		for (const auto& recInfo : infos)
 		{
 			QDataStream str (recInfo.Data_);
 			QByteArray context;
 			str >> context;
-
-			qDebug () << Q_FUNC_INFO << context;
 
 			if (context == "chattab" || context == "chattab2")
 			{
@@ -251,7 +249,7 @@ namespace Azoth
 				if (auto entry = Core::Instance ().GetEntry (entryId))
 				{
 					auto mgr = Core::Instance ().GetChatTabsManager ();
-					mgr->OpenChat (qobject_cast<ICLEntry*> (entry), recInfo.DynProperties_);
+					mgr->OpenChat (qobject_cast<ICLEntry*> (entry), false, recInfo.DynProperties_);
 				}
 				else
 				{

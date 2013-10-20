@@ -89,7 +89,7 @@ namespace Azoth
 			Util::NotificationActionHandler *nh =
 					new Util::NotificationActionHandler (e, this);
 			nh->AddFunction (tr ("Open chat"),
-					[entry] () { Core::Instance ().GetChatTabsManager ()->OpenChat (entry); });
+					[entry] () { Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true); });
 			nh->AddDependentObject (entry->GetQObject ());
 			emit gotEntity (e);
 		}

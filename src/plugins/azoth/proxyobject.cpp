@@ -225,7 +225,7 @@ namespace Azoth
 		ChatTabsManager *mgr = Core::Instance ().GetChatTabsManager ();
 
 		ICLEntry *entry = qobject_cast<ICLEntry*> (GetEntry (entryID, accID));
-		QWidget *chat = mgr->OpenChat (entry);
+		QWidget *chat = mgr->OpenChat (entry, true);
 
 		QMetaObject::invokeMethod (chat,
 				"prepareMessageText",

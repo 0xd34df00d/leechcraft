@@ -350,7 +350,8 @@ namespace Azoth
 			return;
 
 		if (auto entry = w.GetActivatedParticipant ())
-			Core::Instance ().GetChatTabsManager ()->OpenChat (qobject_cast<ICLEntry*> (entry));
+			Core::Instance ().GetChatTabsManager ()->
+					OpenChat (qobject_cast<ICLEntry*> (entry), true);
 	}
 
 	void MainWidget::on_CLTree__customContextMenuRequested (const QPoint& pos)

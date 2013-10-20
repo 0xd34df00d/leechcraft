@@ -61,7 +61,7 @@ namespace Azoth
 			return;
 
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-		auto chatWidget = Core::Instance ().GetChatTabsManager ()->OpenChat (entry);
+		auto chatWidget = Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true);
 
 		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
 		const auto idx = rootWM->GetWindowForTab (qobject_cast<ITabWidget*> (chatWidget));

@@ -1069,14 +1069,13 @@ namespace Azoth
 			newUrl.removeQueryItem ("hrid");
 
 			IAccount *account = qobject_cast<IAccount*> (own->GetParentAccount ());
-			Q_FOREACH (QObject *entryObj, account->GetCLEntries ())
+			for (QObject *entryObj : account->GetCLEntries ())
 			{
 				ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 				if (!entry || entry->GetHumanReadableID () != id)
 					continue;
 
-				QWidget *w = Core::Instance ()
-						.GetChatTabsManager ()->OpenChat (entry);
+				auto w = Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true);
 				QMetaObject::invokeMethod (w,
 						"handleViewLinkClicked",
 						Qt::QueuedConnection,
@@ -1123,7 +1122,7 @@ namespace Azoth
 				Ui_.MsgEdit_->setFocus ();
 			}
 			else
-				Q_FOREACH (auto item, url.queryItems ())
+				for (const auto& item : url.queryItems ())
 					if (item.first == "hrid")
 					{
 						OpenChatWithText (url, item.second, GetEntry<ICLEntry> ());
