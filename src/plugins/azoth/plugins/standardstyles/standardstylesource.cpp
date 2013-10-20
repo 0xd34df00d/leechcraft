@@ -315,11 +315,11 @@ namespace StandardStyles
 		if (!isActiveChat &&
 				!HasBeenAppended_ [frame])
 		{
-			QWebElement hr = elem.findFirst ("hr[class=\"lastSeparator\"]");
-			if (hr.isNull ())
-				elem.appendInside ("<hr class=\"lastSeparator\" />");
-			else
-				elem.appendInside (hr.takeFromDocument ());
+			auto hr = elem.findFirst ("hr[class=\"lastSeparator\"]");
+			if (!hr.isNull ())
+				hr.removeFromDocument ();
+			elem.appendInside ("<hr class=\"lastSeparator\" />");
+
 			HasBeenAppended_ [frame] = true;
 		}
 
