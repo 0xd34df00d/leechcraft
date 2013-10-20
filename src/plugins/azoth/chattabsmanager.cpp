@@ -132,7 +132,7 @@ namespace Azoth
 
 		tab->HasBeenAdded ();
 
-		if (XmlSettingsManager::Instance ()
+		if (fromUser || XmlSettingsManager::Instance ()
 				.property ("JumpToNewTabOnOpen").toBool ())
 			emit raiseTab (tab);
 
