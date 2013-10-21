@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "output.h"
+#include <cmath>
 #include <QtDebug>
 #include <QTimer>
 #include <gst/gst.h>
@@ -152,7 +153,7 @@ namespace LMP
 
 	void Output::setVolume (int volume)
 	{
- 		setVolume (volume / 100.);
+		setVolume (volume / 100.);
 	}
 
 	void Output::toggleMuted ()

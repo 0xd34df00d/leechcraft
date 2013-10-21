@@ -102,7 +102,7 @@ namespace TouchStreams
 	void FriendsManager::refetchFriends ()
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		RequestQueue_.push_back ([this, nam] (const QString& key) -> QNetworkReply*
+		RequestQueue_.push_back ([this, nam] (const QString& key) -> void
 			{
 				QUrl friendsUrl ("https://api.vk.com/method/friends.get");
 				friendsUrl.addQueryItem ("access_token", key);
@@ -113,7 +113,6 @@ namespace TouchStreams
 						SIGNAL (finished ()),
 						this,
 						SLOT (handleGotFriends ()));
-				return reply;
 			});
 	}
 
