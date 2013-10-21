@@ -62,6 +62,8 @@ namespace LMP
 		Playing
 	};
 
+	class MsgPopThread;
+
 	class SourceObject : public QObject
 	{
 		Q_OBJECT
@@ -82,6 +84,7 @@ namespace LMP
 
 		uint PrevSoupRank_;
 
+		MsgPopThread *PopThread_;
 	public:
 		typedef QMap<QString, QString> TagMap_t;
 	private:
@@ -145,6 +148,7 @@ namespace LMP
 		void AddToPath (Path*);
 		void PostAdd (Path*);
 	private slots:
+		void handleMessage (GstMessage*);
 		void updateTotalTime ();
 		void handleTick ();
 	signals:
