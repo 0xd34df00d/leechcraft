@@ -85,12 +85,17 @@ namespace Murm
 		QHash<qulonglong, VkChatEntry*> ChatEntries_;
 
 		QList<MessageInfo> PendingMessages_;
+
+		bool PublishTune_ = false;
+		bool EnableFileLog_ = false;
 	public:
 		VkAccount (const QString& name, VkProtocol *proto, ICoreProxy_ptr proxy,
 				const QByteArray& id, const QByteArray& cookies);
 
 		QByteArray Serialize () const;
 		static VkAccount* Deserialize (const QByteArray&, VkProtocol*, ICoreProxy_ptr);
+
+		void Init ();
 
 		void Send (VkEntry*, VkMessage*);
 		void Send (VkChatEntry*, VkMessage*);

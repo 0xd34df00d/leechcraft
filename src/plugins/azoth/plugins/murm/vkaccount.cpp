@@ -41,6 +41,7 @@
 #include "xmlsettingsmanager.h"
 #include "vkchatentry.h"
 #include "logger.h"
+#include "accountconfigdialog.h"
 
 namespace LeechCraft
 {
@@ -151,6 +152,11 @@ namespace Murm
 				>> cookies;
 
 		return new VkAccount (name, proto, proxy, id, cookies);
+	}
+
+	void VkAccount::Init ()
+	{
+		Logger_->SetFileEnabled (EnableFileLog_);
 	}
 
 	void VkAccount::Send (VkEntry *entry, VkMessage *msg)
@@ -269,6 +275,18 @@ namespace Murm
 
 	void VkAccount::OpenConfigurationDialog ()
 	{
+		AccountConfigDialog dia;
+		dia.SetFileLogEnabled (EnableFileLog_);
+		dia.SetPublishTuneEnabled (PublishTune_);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		EnableFileLog_ = dia.GetFileLogEnabled ();
+		Logger_->SetFileEnabled (EnableFileLog_);
+
+		PublishTune_ = dia.GetPublishTuneEnabled ();
+
+		emit accountChanged (this);
 	}
 
 	EntryStatus VkAccount::GetState () const
