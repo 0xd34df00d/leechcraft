@@ -532,7 +532,7 @@ namespace Murm
 		auto status = GetStatus ();
 		SetStatus (EntryStatus { SOffline, {} });
 
-		AuthMgr_->reauth ();
+		AuthMgr_->clearAuthData ();
 
 		SetStatus (status);
 	}
