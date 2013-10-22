@@ -110,10 +110,6 @@ namespace Murm
 				SIGNAL (gotConsolePacket (QByteArray, IHaveConsole::PacketDirection, QString)),
 				this,
 				SIGNAL (gotConsolePacket (QByteArray, IHaveConsole::PacketDirection, QString)));
-
-		XmlSettingsManager::Instance ().RegisterObject ("MarkAsOnline",
-				this, "handleMarkOnline");
-		handleMarkOnline ();
 	}
 
 	QByteArray VkAccount::Serialize () const
@@ -121,12 +117,13 @@ namespace Murm
 		QByteArray result;
 		QDataStream out (&result, QIODevice::WriteOnly);
 
-		out << static_cast<quint8> (2)
+		out << static_cast<quint8> (3)
 				<< ID_
 				<< Name_
 				<< Conn_->GetCookies ()
 				<< EnableFileLog_
-				<< PublishTune_;
+				<< PublishTune_
+				<< MarkAsOnline_;
 
 		return result;
 	}
@@ -137,7 +134,7 @@ namespace Murm
 
 		quint8 version = 0;
 		in >> version;
-		if (version < 1 || version > 2)
+		if (version < 1 || version > 3)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -158,6 +155,8 @@ namespace Murm
 		if (version >= 2)
 			in >> acc->EnableFileLog_
 					>> acc->PublishTune_;
+		if (version >= 3)
+			in >> acc->MarkAsOnline_;
 
 		acc->Init ();
 
@@ -167,6 +166,7 @@ namespace Murm
 	void VkAccount::Init ()
 	{
 		Logger_->SetFileEnabled (EnableFileLog_);
+		handleMarkOnline ();
 	}
 
 	void VkAccount::Send (VkEntry *entry, VkMessage *msg)
@@ -288,11 +288,15 @@ namespace Murm
 		AccountConfigDialog dia;
 		dia.SetFileLogEnabled (EnableFileLog_);
 		dia.SetPublishTuneEnabled (PublishTune_);
+		dia.SetMarkAsOnline (MarkAsOnline_);
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
 		EnableFileLog_ = dia.GetFileLogEnabled ();
 		Logger_->SetFileEnabled (EnableFileLog_);
+
+		MarkAsOnline_ = dia.GetMarkAsOnline ();
+		handleMarkOnline ();
 
 		PublishTune_ = dia.GetPublishTuneEnabled ();
 
@@ -468,8 +472,7 @@ namespace Murm
 
 	void VkAccount::handleMarkOnline ()
 	{
-		const auto mark = XmlSettingsManager::Instance ().property ("MarkAsOnline").toBool ();
-		Conn_->SetMarkingOnlineEnabled (mark);
+		Conn_->SetMarkingOnlineEnabled (MarkAsOnline_);
 	}
 
 	void VkAccount::finishOffline ()

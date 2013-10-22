@@ -88,6 +88,7 @@ namespace Murm
 
 		bool PublishTune_ = false;
 		bool EnableFileLog_ = false;
+		bool MarkAsOnline_ = false;
 	public:
 		VkAccount (const QString& name, VkProtocol *proto, ICoreProxy_ptr proxy,
 				const QByteArray& id, const QByteArray& cookies);

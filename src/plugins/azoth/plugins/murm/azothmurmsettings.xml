@@ -9,11 +9,5 @@
 				<tooltip>The following variables are allowed: $name, $nick, $surname.</tooltip>
 			</item>
 		</groupbox>
-		<groupbox>
-			<label value="Behavior" />
-			<item type="checkbox" property="MarkAsOnline" default="true">
-				<label value="Mark the user as online on the VK site" />
-			</item>
-		</groupbox>
 	</page>
 </settings>
