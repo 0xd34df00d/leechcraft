@@ -74,6 +74,11 @@ namespace vlc
 		libvlc_media_player_set_xwindow (Mp_.get (), parent->winId ());
 	}
 	
+	VlcPlayer::~VlcPlayer()
+	{
+		libvlc_media_player_stop (Mp_.get ());
+	}
+	
 	void VlcPlayer::Init (QWidget *parent)
 	{
 		libvlc_media_player_set_xwindow (Mp_.get (), parent->winId ());

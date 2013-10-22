@@ -69,6 +69,7 @@ namespace vlc
 		
 	public:
 		explicit VlcPlayer (QWidget *parent = 0);
+		~VlcPlayer();
 		
 		void AddSubtitles (const QString&);
 		bool NowPlaying () const;

@@ -262,7 +262,7 @@ namespace vlc
 	
 	void VlcWidget::savePlaylistPosition (Qt::DockWidgetArea area)
 	{
-		Settings_->setValue ("PlaylistArea", (int)area);
+		Settings_->setValue ("PlaylistArea", static_cast<int> (area));
 	}
 	
 	void VlcWidget::savePlaylist (const QueueState& playlist)
