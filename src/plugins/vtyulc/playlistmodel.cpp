@@ -98,10 +98,8 @@ namespace vlc
 		if (urls.size () == 0)
 			return false;
 		
-		if (parent != invisibleRootItem ()->index ())
-			row = parent.row ();
+		row += parent.row ();
 		
-		fprintf(stderr, "%d\n", row);
 		QUrl insertAfter;
 		for (int i = row; i >= 0; i--)
 		{
@@ -112,7 +110,6 @@ namespace vlc
 				break;
 			}
 		}
-		fprintf(stderr, "%s\n", insertAfter.toEncoded().constData());
 		
 		QList<libvlc_media_t*> mediaList;
 		for (int i = 0; i < urls.size (); i++)
@@ -204,7 +201,7 @@ namespace vlc
 	
 	QString PlaylistModel::ShrinkText (const QString& a, const QString& b)
 	{
-		return FontMetrics_.elidedText (b, Qt::ElideRight, Width_ - FontMetrics_.width (a)) + a;
+		return a + " " + FontMetrics_.elidedText (b, Qt::ElideRight, Width_ - FontMetrics_.width (a + " ") - 16);
 	}
 }
 }

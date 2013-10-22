@@ -92,6 +92,8 @@ namespace vlc
 		void clearPlaylist ();
 		void next ();
 		void prev ();
+		void up ();
+		void down ();
 		
 	private slots:
 		void togglePlay ();

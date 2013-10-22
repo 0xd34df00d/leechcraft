@@ -277,14 +277,42 @@ namespace vlc
 			DeleteRequested (0);
 	}
 	
-	void PlaylistWidget::next()
+	void PlaylistWidget::next ()
 	{
 		libvlc_media_list_player_next (Player_);
 	}
 	
-	void PlaylistWidget::prev()
+	void PlaylistWidget::prev ()
 	{
 		libvlc_media_list_player_previous (Player_);
+	}
+	
+	void PlaylistWidget::down ()
+	{
+		int current = selectionModel ()->currentIndex ().row ();
+		if (current == libvlc_media_list_count (Playlist_) - 1 || current == -1)
+			return;
+		
+		libvlc_media_t *media = libvlc_media_list_item_at_index (Playlist_, current);
+		libvlc_media_list_remove_index (Playlist_, current);
+		libvlc_media_list_insert_media (Playlist_, media, current + 1);
+		
+		selectionModel()->setCurrentIndex (Model_->index (current + 1, 0), QItemSelectionModel::Select);
+		selectionModel()->select (Model_->index (current, 0), QItemSelectionModel::Deselect);
+	}
+
+	void PlaylistWidget::up ()
+	{
+		int current = selectionModel ()->currentIndex ().row ();
+		if (current == 0 || current == -1)
+			return;
+		
+		libvlc_media_t *media = libvlc_media_list_item_at_index (Playlist_, current);
+		libvlc_media_list_remove_index (Playlist_, current);
+		libvlc_media_list_insert_media (Playlist_, media, current - 1);
+		
+		selectionModel ()->setCurrentIndex (Model_->index (current - 1, 0), QItemSelectionModel::Select);
+		selectionModel ()->select (Model_->index (current, 0), QItemSelectionModel::Deselect);
 	}
 }
 }

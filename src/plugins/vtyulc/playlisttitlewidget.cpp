@@ -49,6 +49,12 @@ namespace vlc
 		
 		MagicAction_ = addAction (tr ("Magic sort"));
 		MagicAction_->setIcon (proxy->GetIcon ("tools-wizard"));
+		
+		UpAction_ = addAction (tr ("Up"));
+		UpAction_->setIcon (proxy->GetIcon ("arrow-up"));
+		
+		DownAction_ = addAction (tr ("Down"));
+		DownAction_->setIcon (proxy->GetIcon ("arrow-down"));
 	}
 }
 }

@@ -217,6 +217,16 @@ namespace vlc
 				SIGNAL (volumeChanged (int)),
 				VolumeNotificationWidget_,
 				SLOT (showNotification (int)));
+		
+		connect (TitleWidget_->UpAction_,
+				SIGNAL (triggered ()),
+				PlaylistWidget_,
+				SLOT (up ()));
+		
+		connect (TitleWidget_->DownAction_,
+				SIGNAL (triggered ()),
+				PlaylistWidget_,
+				SLOT (down ()));
 
 		InitNavigations ();
 		InitVolumeActions ();

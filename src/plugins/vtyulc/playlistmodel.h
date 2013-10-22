@@ -64,12 +64,13 @@ namespace vlc
 		Qt::DropActions supportedDropActions () const;
 		
 		void AddUrl (const QUrl&);
+		libvlc_media_t* Take (const QUrl&);
 		
 		int Width_;
 		QFontMetrics FontMetrics_;
 		
+		
 	private:
-		libvlc_media_t* Take (const QUrl&);
 		QString ShrinkText (const QString&, const QString&);
 		
 	public slots:

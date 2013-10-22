@@ -49,6 +49,8 @@ namespace vlc
 		QAction *ClearAction_;
 		QAction *MagicAction_;
 		QAction *AddAction_;
+		QAction *UpAction_;
+		QAction *DownAction_;
 	};
 }
 }
