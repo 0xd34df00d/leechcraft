@@ -530,7 +530,7 @@ namespace Murm
 	void VkConnection::reauth ()
 	{
 		auto status = GetStatus ();
-		SetStatus ({ SOffline, {} });
+		SetStatus (EntryStatus { SOffline, {} });
 
 		AuthMgr_->reauth ();
 
