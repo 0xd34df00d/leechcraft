@@ -187,6 +187,14 @@ namespace SvcAuth
 		return true;
 	}
 
+	void VkAuthManager::clearAuthData ()
+	{
+		Cookies_->Load ({});
+		Token_.clear ();
+		ReceivedAt_ = QDateTime ();
+		ValidFor_ = 0;
+	}
+
 	void VkAuthManager::reauth ()
 	{
 		auto view = new QWebView;

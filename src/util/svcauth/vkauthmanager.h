@@ -98,6 +98,7 @@ namespace SvcAuth
 		void RequestAuthKey ();
 		bool CheckIsBlank (QUrl);
 	public slots:
+		void clearAuthData ();
 		void reauth ();
 	private slots:
 		void execScheduledRequest ();
