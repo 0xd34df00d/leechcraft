@@ -34,10 +34,12 @@ set (MURM_SRCS
 	entrybase.cpp
 	vkchatentry.cpp
 	logger.cpp
+	accountconfigdialog.cpp
 	)
 set (MURM_FORMS
 	vcarddialog.ui
 	mucjoinwidget.ui
+	accountconfigdialog.ui
 	)
 set (MURM_RESOURCES azothmurmresources.qrc)
 
