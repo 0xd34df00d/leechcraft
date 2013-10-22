@@ -136,7 +136,8 @@ namespace Murm
 
 				const auto& idName = type == MessageType::Dialog ? "uid" : "chat_id";
 				url.addQueryItem (idName, QString::number (to));
-				url.addQueryItem ("message", body);
+				url.addEncodedQueryItem ("message",
+						QUrl::toPercentEncoding (body, {}, "+"));
 				url.addQueryItem ("type", "1");
 
 				auto reply = nam->get (QNetworkRequest (url));
