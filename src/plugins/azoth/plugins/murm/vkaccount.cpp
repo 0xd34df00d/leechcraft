@@ -332,7 +332,7 @@ namespace Murm
 
 	void VkAccount::PublishTune (const QMap<QString, QVariant>& tuneData)
 	{
-		if (!XmlSettingsManager::Instance ().property ("PublishTune").toBool ())
+		if (!PublishTune_);
 			return;
 
 		QStringList fields

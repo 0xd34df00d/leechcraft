@@ -11,9 +11,6 @@
 		</groupbox>
 		<groupbox>
 			<label value="Behavior" />
-			<item type="checkbox" property="PublishTune" default="false">
-				<label value="Publish current tune to VK status" />
-			</item>
 			<item type="checkbox" property="MarkAsOnline" default="true">
 				<label value="Mark the user as online on the VK site" />
 			</item>
