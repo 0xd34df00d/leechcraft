@@ -52,6 +52,7 @@ namespace Murm
 	class GeoResolver;
 	class GroupsManager;
 	class Logger;
+	class AccountConfigDialog;
 
 	class VkAccount : public QObject
 					, public IAccount
@@ -89,6 +90,8 @@ namespace Murm
 		bool PublishTune_ = false;
 		bool EnableFileLog_ = false;
 		bool MarkAsOnline_ = false;
+
+		QPointer<AccountConfigDialog> AccConfigDia_;
 	public:
 		VkAccount (const QString& name, VkProtocol *proto, ICoreProxy_ptr proxy,
 				const QByteArray& id, const QByteArray& cookies);
@@ -156,6 +159,8 @@ namespace Murm
 		void handleMarkOnline ();
 
 		void finishOffline ();
+
+		void handleConfigDialogAccepted ();
 
 		void emitUpdateAcc ();
 	signals:

@@ -285,28 +285,29 @@ namespace Murm
 
 	void VkAccount::OpenConfigurationDialog ()
 	{
-		AccountConfigDialog dia;
-		dia.SetFileLogEnabled (EnableFileLog_);
-		dia.SetPublishTuneEnabled (PublishTune_);
-		dia.SetMarkAsOnline (MarkAsOnline_);
+		auto dia = new AccountConfigDialog;
 
-		connect (&dia,
+		AccConfigDia_ = dia;
+
+		dia->SetFileLogEnabled (EnableFileLog_);
+		dia->SetPublishTuneEnabled (PublishTune_);
+		dia->SetMarkAsOnline (MarkAsOnline_);
+
+		connect (dia,
 				SIGNAL (reauthRequested ()),
 				Conn_,
 				SLOT (reauth ()));
 
-		if (dia.exec () != QDialog::Accepted)
-			return;
+		connect (dia,
+				SIGNAL (rejected ()),
+				dia,
+				SLOT (deleteLater ()));
+		connect (dia,
+				SIGNAL (accepted ()),
+				this,
+				SLOT (handleConfigDialogAccepted ()));
 
-		EnableFileLog_ = dia.GetFileLogEnabled ();
-		Logger_->SetFileEnabled (EnableFileLog_);
-
-		MarkAsOnline_ = dia.GetMarkAsOnline ();
-		handleMarkOnline ();
-
-		PublishTune_ = dia.GetPublishTuneEnabled ();
-
-		emit accountChanged (this);
+		dia->show ();
 	}
 
 	EntryStatus VkAccount::GetState () const
@@ -491,6 +492,24 @@ namespace Murm
 
 		qDeleteAll (ChatEntries_);
 		ChatEntries_.clear ();
+	}
+
+	void VkAccount::handleConfigDialogAccepted()
+	{
+		if (!AccConfigDia_)
+			return;
+
+		EnableFileLog_ = AccConfigDia_->GetFileLogEnabled ();
+		Logger_->SetFileEnabled (EnableFileLog_);
+
+		MarkAsOnline_ = AccConfigDia_->GetMarkAsOnline ();
+		handleMarkOnline ();
+
+		PublishTune_ = AccConfigDia_->GetPublishTuneEnabled ();
+
+		emit accountChanged (this);
+
+		AccConfigDia_->deleteLater ();
 	}
 
 	void VkAccount::handleGotChatInfo (const ChatInfo& info)
