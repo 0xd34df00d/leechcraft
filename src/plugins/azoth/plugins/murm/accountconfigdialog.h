@@ -54,6 +54,8 @@ namespace Murm
 
 		bool GetMarkAsOnline () const;
 		void SetMarkAsOnline (bool);
+	signals:
+		void reauthRequested ();
 	};
 }
 }

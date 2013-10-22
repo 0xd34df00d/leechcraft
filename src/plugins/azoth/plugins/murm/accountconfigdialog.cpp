@@ -39,6 +39,11 @@ namespace Murm
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
+
+		connect (Ui_.Reauth_,
+				SIGNAL (released ()),
+				this,
+				SIGNAL (reauthRequested ()));
 	}
 
 	bool AccountConfigDialog::GetFileLogEnabled () const

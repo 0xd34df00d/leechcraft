@@ -149,6 +149,8 @@ namespace Murm
 	private:
 		void PushFriendsRequest ();
 		bool CheckFinishedReply (QNetworkReply*);
+	public slots:
+		void reauth ();
 	private slots:
 		void rerunPrepared ();
 		void callWithKey (const QString&);

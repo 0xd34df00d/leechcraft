@@ -527,6 +527,16 @@ namespace Murm
 		return false;
 	}
 
+	void VkConnection::reauth ()
+	{
+		auto status = GetStatus ();
+		SetStatus ({ SOffline, {} });
+
+		AuthMgr_->reauth ();
+
+		SetStatus (status);
+	}
+
 	void VkConnection::rerunPrepared ()
 	{
 		ShouldRerunPrepared_ = false;

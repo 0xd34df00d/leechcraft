@@ -289,6 +289,12 @@ namespace Murm
 		dia.SetFileLogEnabled (EnableFileLog_);
 		dia.SetPublishTuneEnabled (PublishTune_);
 		dia.SetMarkAsOnline (MarkAsOnline_);
+
+		connect (&dia,
+				SIGNAL (reauthRequested ()),
+				Conn_,
+				SLOT (reauth ()));
+
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
