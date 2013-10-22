@@ -48,6 +48,7 @@ namespace Murm
 		Q_OBJECT
 
 		const QString Filename_;
+		bool FileEnabled_ = true;
 	public:
 		class LogProxy
 		{
@@ -103,6 +104,8 @@ namespace Murm
 		};
 
 		Logger (const QString& id, QObject* = 0);
+
+		void SetFileEnabled (bool);
 
 		LogProxy operator() (IHaveConsole::PacketDirection dir)
 		{

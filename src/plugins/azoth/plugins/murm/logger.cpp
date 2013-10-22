@@ -44,8 +44,11 @@ namespace Murm
 	, Dir_ { dir }
 	, File_ { new QFile { l.Filename_ } }
 	{
-		File_->open (QIODevice::WriteOnly | QIODevice::Append);
-		File_->write ("[" + QDateTime::currentDateTime ().toString (Qt::ISODate).toUtf8 () + "] ");
+		if (L_.FileEnabled_)
+		{
+			File_->open (QIODevice::WriteOnly | QIODevice::Append);
+			File_->write ("[" + QDateTime::currentDateTime ().toString (Qt::ISODate).toUtf8 () + "] ");
+		}
 	}
 
 	Logger::LogProxy::~LogProxy ()
@@ -80,7 +83,9 @@ namespace Murm
 	void Logger::LogProxy::WriteImpl (const QByteArray& ba)
 	{
 		CurrentString_ += ba;
-		File_->write (ba);
+
+		if (L_.FileEnabled_)
+			File_->write (ba);
 	}
 
 	void Logger::LogProxy::Write (const QVariant& json)
@@ -94,6 +99,11 @@ namespace Murm
 	: QObject { parent }
 	, Filename_ { Util::CreateIfNotExists ("azoth/murm").absoluteFilePath (id) + ".log" }
 	{
+	}
+
+	void Logger::SetFileEnabled (bool enabled)
+	{
+		FileEnabled_ = enabled;
 	}
 }
 }
