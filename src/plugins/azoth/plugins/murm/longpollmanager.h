@@ -35,6 +35,8 @@
 #include <QDateTime>
 #include <interfaces/core/icoreproxy.h>
 
+class QNetworkReply;
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -63,6 +65,8 @@ namespace Murm
 		int WaitTimeout_ = 25;
 
 		QDateTime LastPollDT_;
+
+		QNetworkReply *CurrentPollReply_ = nullptr;
 	public:
 		LongPollManager (VkConnection*, ICoreProxy_ptr);
 

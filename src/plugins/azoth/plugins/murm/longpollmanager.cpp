@@ -58,6 +58,9 @@ namespace Murm
 	void LongPollManager::Stop ()
 	{
 		ShouldStop_ = true;
+
+		if (CurrentPollReply_)
+			CurrentPollReply_->abort ();
 	}
 
 	void LongPollManager::Poll ()
@@ -65,7 +68,9 @@ namespace Murm
 		const auto& url = GetURLTemplate ();
 
 		LastPollDT_ = QDateTime::currentDateTime ();
-		connect (Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (url)),
+		CurrentPollReply_ = Proxy_->
+				GetNetworkAccessManager ()->get (QNetworkRequest (url));
+		connect (CurrentPollReply_,
 				SIGNAL (finished ()),
 				this,
 				SLOT (handlePollFinished ()));
@@ -101,20 +106,19 @@ namespace Murm
 
 	void LongPollManager::handlePollFinished ()
 	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
+		CurrentPollReply_->deleteLater ();
 
-		if (reply->error () != QNetworkReply::NoError)
+		if (CurrentPollReply_->error () != QNetworkReply::NoError && !ShouldStop_)
 		{
 			++PollErrorCount_;
 			qWarning () << Q_FUNC_INFO
 					<< "network error:"
-					<< reply->error ()
-					<< reply->errorString ()
+					<< CurrentPollReply_->error ()
+					<< CurrentPollReply_->errorString ()
 					<< "; error count:"
 					<< PollErrorCount_;
 
-			switch (reply->error ())
+			switch (CurrentPollReply_->error ())
 			{
 			case QNetworkReply::RemoteHostClosedError:
 			{
@@ -137,6 +141,8 @@ namespace Murm
 
 			Poll ();
 
+			CurrentPollReply_ = nullptr;
+
 			return;
 		}
 		else if (PollErrorCount_)
@@ -150,10 +156,11 @@ namespace Murm
 			emit listening ();
 		}
 
-		const auto& data = QJson::Parser ().parse (reply);
+		const auto& data = QJson::Parser ().parse (CurrentPollReply_);
 		const auto& rootMap = data.toMap ();
 		if (rootMap.contains ("failed"))
 		{
+			CurrentPollReply_ = nullptr;
 			ForceServerRequery ();
 			start ();
 			return;
@@ -161,10 +168,13 @@ namespace Murm
 
 		emit gotPollData (rootMap);
 
-		LPTS_ = rootMap ["ts"].toULongLong ();
+		if (rootMap.contains ("ts"))
+			LPTS_ = rootMap ["ts"].toULongLong ();
 
 		if (!ShouldStop_)
 		{
+			CurrentPollReply_ = nullptr;
+
 			if (!LPServer_.isEmpty ())
 				Poll ();
 			else
@@ -174,6 +184,7 @@ namespace Murm
 		{
 			qDebug () << Q_FUNC_INFO
 					<< "should stop polling, stopping...";
+			CurrentPollReply_ = nullptr;
 			emit stopped ();
 			ShouldStop_ = false;
 		}
