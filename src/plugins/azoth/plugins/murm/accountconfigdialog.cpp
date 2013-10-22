@@ -60,6 +60,16 @@ namespace Murm
 	{
 		Ui_.PublishTune_->setCheckState (enabled ? Qt::Checked : Qt::Unchecked);
 	}
+
+	bool AccountConfigDialog::GetMarkAsOnline () const
+	{
+		return Ui_.MarkAsOnline_->checkState () == Qt::Checked;
+	}
+
+	void AccountConfigDialog::SetMarkAsOnline (bool enabled)
+	{
+		Ui_.MarkAsOnline_->setCheckState (enabled ? Qt::Checked : Qt::Unchecked);
+	}
 }
 }
 }

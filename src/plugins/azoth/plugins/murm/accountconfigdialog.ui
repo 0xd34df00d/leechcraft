@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>213</height>
+    <height>149</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,6 +29,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QCheckBox" name="MarkAsOnline_">
+     <property name="text">
+      <string>Mark as online</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QPushButton" name="Reauth_">
      <property name="text">
       <string>Reauth</string>
@@ -43,7 +50,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>86</height>
+       <height>6</height>
       </size>
      </property>
     </spacer>

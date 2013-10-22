@@ -51,6 +51,9 @@ namespace Murm
 
 		bool GetPublishTuneEnabled () const;
 		void SetPublishTuneEnabled (bool);
+
+		bool GetMarkAsOnline () const;
+		void SetMarkAsOnline (bool);
 	};
 }
 }
