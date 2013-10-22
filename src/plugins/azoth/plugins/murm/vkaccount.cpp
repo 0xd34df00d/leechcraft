@@ -121,10 +121,12 @@ namespace Murm
 		QByteArray result;
 		QDataStream out (&result, QIODevice::WriteOnly);
 
-		out << static_cast<quint8> (1)
+		out << static_cast<quint8> (2)
 				<< ID_
 				<< Name_
-				<< Conn_->GetCookies ();
+				<< Conn_->GetCookies ()
+				<< EnableFileLog_
+				<< PublishTune_;
 
 		return result;
 	}
@@ -135,7 +137,7 @@ namespace Murm
 
 		quint8 version = 0;
 		in >> version;
-		if (version != 1)
+		if (version < 1 || version > 2)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -151,7 +153,15 @@ namespace Murm
 				>> name
 				>> cookies;
 
-		return new VkAccount (name, proto, proxy, id, cookies);
+		auto acc = new VkAccount (name, proto, proxy, id, cookies);
+
+		if (version >= 2)
+			in >> acc->EnableFileLog_
+					>> acc->PublishTune_;
+
+		acc->Init ();
+
+		return acc;
 	}
 
 	void VkAccount::Init ()
