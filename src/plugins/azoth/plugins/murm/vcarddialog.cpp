@@ -68,7 +68,7 @@ namespace Murm
 			timezoneText.prepend ('+');
 		Ui_.Timezone_->setText (timezoneText);
 
-		QPointer<VCardDialog> safeThis;
+		QPointer<VCardDialog> safeThis (this);
 
 		if (info.Country_ > 0)
 			geo->GetCountry (info.Country_,
