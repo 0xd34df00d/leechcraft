@@ -68,12 +68,22 @@ namespace Murm
 			timezoneText.prepend ('+');
 		Ui_.Timezone_->setText (timezoneText);
 
+		QPointer<VCardDialog> safeThis;
+
 		if (info.Country_ > 0)
 			geo->GetCountry (info.Country_,
-					[this] (const QString& country) { Ui_.Country_->setText (country); });
+					[safeThis, this] (const QString& country)
+					{
+						if (safeThis)
+							Ui_.Country_->setText (country);
+					});
 		if (info.City_ > 0)
 			geo->GetCity (info.City_,
-					[this] (const QString& country) { Ui_.City_->setText (country); });
+					[safeThis, this] (const QString& country)
+					{
+						if (safeThis)
+							Ui_.City_->setText (country);
+					});
 
 		if (!info.BigPhoto_.isValid ())
 			return;
