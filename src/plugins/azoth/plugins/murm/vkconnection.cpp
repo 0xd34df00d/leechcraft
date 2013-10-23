@@ -143,6 +143,10 @@ namespace Murm
 				QNetworkRequest req (url);
 				req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 				auto reply = nam->post (req, query);
+				Logger_ (IHaveConsole::PacketDirection::Out)
+						<< url
+						<< " : posting"
+						<< QString::fromUtf8 (query);
 				MsgReply2Setter_ [reply] = idSetter;
 				connect (reply,
 						SIGNAL (finished ()),
