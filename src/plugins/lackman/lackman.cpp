@@ -263,13 +263,7 @@ namespace LackMan
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
 	{
-		QList<QAction*> result;
-		if (place == ActionsEmbedPlace::ToolsMenu)
-		{
-			result << UpdateAll_;
-			result << UpgradeAll_;
-		}
-		return result;
+		return {};
 	}
 
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& entity) const
