@@ -139,9 +139,9 @@ namespace Murm
 				break;
 			}
 
-			Poll ();
-
 			CurrentPollReply_ = nullptr;
+
+			Poll ();
 
 			return;
 		}
