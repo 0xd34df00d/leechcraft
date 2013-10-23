@@ -140,7 +140,7 @@ namespace Murm
 				query += "&type=1&";
 				query += "message=" + QUrl::toPercentEncoding (body, {}, "+");
 
-				QNetworkRequest req;
+				QNetworkRequest req (url);
 				req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 				auto reply = nam->post (req, query);
 				MsgReply2Setter_ [reply] = idSetter;
