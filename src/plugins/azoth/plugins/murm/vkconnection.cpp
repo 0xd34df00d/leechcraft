@@ -132,15 +132,17 @@ namespace Murm
 		PreparedCalls_.push_back ([=] (const QString& key) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/messages.send");
-				url.addQueryItem ("access_token", key);
 
-				const auto& idName = type == MessageType::Dialog ? "uid" : "chat_id";
-				url.addQueryItem (idName, QString::number (to));
-				url.addEncodedQueryItem ("message",
-						QUrl::toPercentEncoding (body, {}, "+"));
-				url.addQueryItem ("type", "1");
+				auto query = "access_token=" + QUrl::toPercentEncoding (key.toUtf8 ());
+				query += '&';
+				query += type == MessageType::Dialog ? "uid" : "chat_id";
+				query += '=' + QByteArray::number (to);
+				query += "&type=1&";
+				query += "message=" + QUrl::toPercentEncoding (body, {}, "+");
 
-				auto reply = nam->get (QNetworkRequest (url));
+				QNetworkRequest req;
+				req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+				auto reply = nam->post (req, query);
 				MsgReply2Setter_ [reply] = idSetter;
 				connect (reply,
 						SIGNAL (finished ()),
