@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_TEXTEDIT_H
-#define PLUGINS_AZOTH_TEXTEDIT_H
+#pragma once
 
 #include <QTextEdit>
 
@@ -39,11 +38,14 @@ namespace Azoth
 	class TextEdit : public QTextEdit
 	{
 		Q_OBJECT
-
 	public:
 		TextEdit (QWidget *parent = 0);
 	protected:
 		void keyPressEvent (QKeyEvent*);
+	private slots:
+		void deleteWord ();
+		void deleteBOL ();
+		void deleteEOL ();
 	signals:
 		void keyReturnPressed ();
 		void keyTabPressed ();
@@ -52,5 +54,3 @@ namespace Azoth
 	};
 }
 }
-
-#endif // PLUGINS_AZOTH_TEXTEDIT_H

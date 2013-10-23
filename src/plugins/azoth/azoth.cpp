@@ -335,6 +335,28 @@ namespace Azoth
 					QString ("Ctrl+Alt+Shift+M"),
 					proxy->GetIcon ("mail-unread-new")
 				});
+
+		sm->RegisterActionInfo ("org.Azoth.TextEdit.DeleteWord",
+				{
+					tr ("Delete the word before the cursor"),
+					QKeySequence {},
+					{}
+				}
+			);
+		sm->RegisterActionInfo ("org.Azoth.TextEdit.DeleteBOL",
+				{
+					tr ("Delete from cursor to the beginning of line"),
+					QKeySequence { "Ctrl+U" },
+					{}
+				}
+			);
+		sm->RegisterActionInfo ("org.Azoth.TextEdit.DeleteEOL",
+				{
+					tr ("Delete from cursor to the end of line"),
+					QKeySequence { "Ctrl+K" },
+					{}
+				}
+			);
 	}
 
 	void Plugin::InitSettings ()
