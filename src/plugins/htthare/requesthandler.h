@@ -29,18 +29,40 @@
 
 #pragma once
 
-#include <QSet>
-#include <QString>
+#include <memory>
+#include <boost/asio/buffer.hpp>
+#include <QByteArray>
+#include <QUrl>
+#include <QMap>
 
 namespace LeechCraft
 {
 namespace HttThare
 {
+	class Connection;
+	typedef std::shared_ptr<Connection> Connection_ptr;
+
 	class RequestHandler
 	{
-		QSet<QString> Roots_;
+		const Connection_ptr Conn_;
+
+		QUrl Url_;
+		QMap<QString, QString> Headers_;
+
+		QByteArray ResponseLine_;
+		QByteArray ResponseHeaders_;
+		QByteArray ResponseBody_;
 	public:
-		RequestHandler ();
+		RequestHandler (const Connection_ptr&);
+
+		void operator() (QByteArray);
+	private:
+		void ErrorResponse (int, const QByteArray&, const QByteArray& = QByteArray ());
+
+		void HandleGet ();
+		void HandleHead ();
+
+		std::vector<boost::asio::const_buffer> ToBuffers () const;
 	};
 }
 }

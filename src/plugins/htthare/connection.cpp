@@ -70,7 +70,7 @@ namespace HttThare
 		std::istream istr (&Buf_);
 		istr.read (data.data (), transferred);
 
-		qDebug () << data;
+		RequestHandler { shared_from_this () } (data);
 	}
 }
 }
