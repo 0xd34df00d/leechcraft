@@ -4,6 +4,7 @@ include (InitLCPlugin OPTIONAL)
 
 find_package (Boost REQUIRED COMPONENTS system)
 
+set (QT_USE_QTNETWORK TRUE)
 include (${QT_USE_FILE})
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -15,6 +16,7 @@ set (SRCS
 	server.cpp
 	connection.cpp
 	requesthandler.cpp
+	storagemanager.cpp
 	)
 #CreateTrs("httthare" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("httthare" "en;ru_RU" "${SRCS}" "${FORMS}" "")
