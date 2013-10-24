@@ -51,6 +51,7 @@ namespace Murm
 			cookies, proxy, nullptr, this))
 	, Proxy_ (proxy)
 	, Logger_ (logger)
+	, LastCookies_ (cookies)
 	, CallQueue_ (new Util::QueueManager (400))
 	, LPManager_ (new LongPollManager (this, proxy))
 	, MarkOnlineTimer_ (new QTimer (this))
