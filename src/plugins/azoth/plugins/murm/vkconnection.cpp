@@ -535,6 +535,7 @@ namespace Murm
 
 	void VkConnection::reauth ()
 	{
+		Logger_ << "reauthing";
 		auto status = GetStatus ();
 		SetStatus (EntryStatus { SOffline, {} });
 
@@ -588,6 +589,7 @@ namespace Murm
 
 	void VkConnection::handleListening ()
 	{
+		Logger_ << "listening now";
 		CurrentStatus_ = Status_;
 		emit statusChanged (GetStatus ());
 
