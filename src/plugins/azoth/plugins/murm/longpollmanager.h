@@ -33,6 +33,7 @@
 #include <QUrl>
 #include <QVariantMap>
 #include <QDateTime>
+#include <QPointer>
 #include <interfaces/core/icoreproxy.h>
 
 class QNetworkReply;
@@ -66,7 +67,7 @@ namespace Murm
 
 		QDateTime LastPollDT_;
 
-		QNetworkReply *CurrentPollReply_ = nullptr;
+		QPointer<QNetworkReply> CurrentPollReply_;
 	public:
 		LongPollManager (VkConnection*, ICoreProxy_ptr);
 
