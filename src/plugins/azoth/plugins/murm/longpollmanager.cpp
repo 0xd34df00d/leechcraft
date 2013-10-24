@@ -139,6 +139,8 @@ namespace Murm
 				break;
 			}
 
+			CurrentPollReply_ = nullptr;
+
 			Poll ();
 
 			return;
@@ -158,6 +160,7 @@ namespace Murm
 		const auto& rootMap = data.toMap ();
 		if (rootMap.contains ("failed"))
 		{
+			CurrentPollReply_ = nullptr;
 			ForceServerRequery ();
 			start ();
 			return;
@@ -170,6 +173,8 @@ namespace Murm
 
 		if (!ShouldStop_)
 		{
+			CurrentPollReply_ = nullptr;
+
 			if (!LPServer_.isEmpty ())
 				Poll ();
 			else
@@ -179,6 +184,7 @@ namespace Murm
 		{
 			qDebug () << Q_FUNC_INFO
 					<< "should stop polling, stopping...";
+			CurrentPollReply_ = nullptr;
 			emit stopped ();
 			ShouldStop_ = false;
 		}
