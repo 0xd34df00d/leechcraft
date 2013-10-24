@@ -69,7 +69,7 @@ namespace HttThare
 
 	void Server::StartAccept ()
 	{
-		Connection_ptr connection { new Connection { IoService_, RH_ } };
+		Connection_ptr connection { new Connection { IoService_, StorageMgr_ } };
 		Acceptor_.async_accept (connection->GetSocket (),
 				[this, connection] (const boost::system::error_code& ec)
 				{

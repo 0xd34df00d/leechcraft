@@ -35,10 +35,10 @@ namespace LeechCraft
 {
 namespace HttThare
 {
-	Connection::Connection (boost::asio::io_service& service, RequestHandler& rh)
+	Connection::Connection (boost::asio::io_service& service, const StorageManager& stMgr)
 	: Strand_ { service }
 	, Socket_ { service }
-	, RH_ (rh)
+	, StorageMgr_ (stMgr)
 	{
 	}
 

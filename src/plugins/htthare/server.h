@@ -31,7 +31,7 @@
 
 #include <thread>
 #include <boost/asio.hpp>
-#include "requesthandler.h"
+#include "storagemanager.h"
 
 template<typename T>
 class QSet;
@@ -48,7 +48,7 @@ namespace HttThare
 		boost::asio::ip::tcp::acceptor Acceptor_;
 		boost::asio::ip::tcp::socket Socket_;
 
-		RequestHandler RH_;
+		StorageManager StorageMgr_;
 
 		std::vector<std::thread> Threads_;
 	public:

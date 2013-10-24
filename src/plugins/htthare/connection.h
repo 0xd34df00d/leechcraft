@@ -36,16 +36,16 @@ namespace LeechCraft
 {
 namespace HttThare
 {
-	class RequestHandler;
+	class StorageManager;
 
 	class Connection : public std::enable_shared_from_this<Connection>
 	{
 		boost::asio::io_service::strand Strand_;
 		boost::asio::ip::tcp::socket Socket_;
-		RequestHandler& RH_;
+		const StorageManager& StorageMgr_;
 		boost::asio::streambuf Buf_;
 	public:
-		Connection (boost::asio::io_service&, RequestHandler&);
+		Connection (boost::asio::io_service&, const StorageManager&);
 
 		Connection (const Connection&) = delete;
 		Connection& operator= (const Connection&) = delete;
