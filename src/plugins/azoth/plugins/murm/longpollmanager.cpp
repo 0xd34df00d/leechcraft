@@ -65,6 +65,13 @@ namespace Murm
 
 	void LongPollManager::Poll ()
 	{
+		if (CurrentPollReply_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "already polling";
+			return;
+		}
+
 		const auto& url = GetURLTemplate ();
 
 		LastPollDT_ = QDateTime::currentDateTime ();
