@@ -121,8 +121,18 @@ set (FORMS
 	)
 set (RESOURCES mainresources.qrc)
 
+set (UTILITY_SRCS)
+foreach (ITEM IN LISTS UTIL_SRCS XSD_SRCS)
+	list (APPEND UTILITY_SRCS "../${ITEM}")
+endforeach ()
+
+set (UTILITY_FORMS)
+foreach (ITEM IN LISTS UTIL_FORMS XSD_FORMS)
+	list (APPEND UTILITY_FORMS "../${ITEM}")
+endforeach ()
+
 CreateTrs ("" "ru_RU;de;uk_UA;it;ar;eo;es;tr;tt;en;be;fr;pl" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget ("" "en;ru_RU" "${SRCS};${UTIL_SRCS};${XSD_SRCS}" "${FORMS};${UTIL_FORMS};${XSD_FORMS}" "coresettings.xml")
+CreateTrsUpTarget ("" "en;ru_RU" "${SRCS};${UTILITY_SRCS}" "${FORMS};${UTILITY_FORMS}" "coresettings.xml")
 
 if (USE_QT5)
 	QT5_WRAP_UI (UIS_H ${FORMS})
