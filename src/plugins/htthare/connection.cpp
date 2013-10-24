@@ -47,6 +47,11 @@ namespace HttThare
 		return Socket_;
 	}
 
+	boost::asio::io_service::strand& Connection::GetStrand ()
+	{
+		return Strand_;
+	}
+
 	void Connection::Start ()
 	{
 		auto conn = shared_from_this ();

@@ -51,6 +51,7 @@ namespace HttThare
 		Connection& operator= (const Connection&) = delete;
 
 		boost::asio::ip::tcp::socket& GetSocket ();
+		boost::asio::io_service::strand& GetStrand ();
 
 		void Start ();
 	private:
