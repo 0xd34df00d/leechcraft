@@ -86,22 +86,22 @@ namespace BitTorrent
 
 		void on_TorrentsView__customContextMenuRequested (const QPoint&);
 
-		void on_OpenTorrent__triggered ();
-		void on_OpenMultipleTorrents__triggered ();
-		void on_IPFilter__triggered ();
-		void on_CreateTorrent__triggered ();
-		void on_RemoveTorrent__triggered ();
-		void on_Resume__triggered ();
-		void on_Stop__triggered ();
-		void on_MoveUp__triggered ();
-		void on_MoveDown__triggered ();
-		void on_MoveToTop__triggered ();
-		void on_MoveToBottom__triggered ();
-		void on_ForceReannounce__triggered ();
-		void on_ForceRecheck__triggered ();
-		void on_ChangeTrackers__triggered ();
-		void on_MoveFiles__triggered ();
-		void on_MakeMagnetLink__triggered ();
+		void handleOpenTorrentTriggered ();
+		void handleOpenMultipleTorrentsTriggered ();
+		void handleIPFilterTriggered ();
+		void handleCreateTorrentTriggered ();
+		void handleRemoveTorrentTriggered ();
+		void handleResumeTriggered ();
+		void handleStopTriggered ();
+		void handleMoveUpTriggered ();
+		void handleMoveDownTriggered ();
+		void handleMoveToTopTriggered ();
+		void handleMoveToBottomTriggered ();
+		void handleForceReannounceTriggered ();
+		void handleForceRecheckTriggered ();
+		void handleChangeTrackersTriggered ();
+		void handleMoveFilesTriggered ();
+		void handleMakeMagnetLinkTriggered ();
 	signals:
 		void removeTab (QWidget*);
 	};
