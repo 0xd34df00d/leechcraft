@@ -230,7 +230,7 @@ public:
 		 * passed QDomElement.
 		 *
 		 * An example function that boldifies
-		 * <code><lj user="$username"/></code>:
+		 * <code>&lt;lj user="$username"/></code>:
 		 *
 		 * \code
 		 * [] (QDomElement& elem) -> void
@@ -252,7 +252,7 @@ public:
 		 * passed QDomElement.
 		 *
 		 * An example function that turns back the boldified
-		 * <code><lj user="$username"/></code> from ToKnown_:
+		 * <code>&lt;lj user="$username"/></code> from ToKnown_:
 		 *
 		 * \code
 		 * [] (QDomElement& elem) -> void
