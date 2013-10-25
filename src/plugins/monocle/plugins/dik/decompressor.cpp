@@ -187,8 +187,6 @@ namespace Dik
 
 	class HuffDecompressor : public Decompressor
 	{
-		const MobiParser * const P_;
-
 		QList<QByteArray> Dicts_;
 		quint32 EntryBits_;
 
@@ -204,7 +202,6 @@ namespace Dik
 	};
 
 	HuffDecompressor::HuffDecompressor (const MobiParser *parser)
-	: P_ (parser)
 	{
 		const auto& header = parser->GetRecord (0);
 
