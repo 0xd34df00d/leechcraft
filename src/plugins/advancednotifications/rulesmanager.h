@@ -39,7 +39,7 @@ class QModelIndex;
 
 namespace LeechCraft
 {
-class Entity;
+struct Entity;
 
 namespace AdvancedNotifications
 {
