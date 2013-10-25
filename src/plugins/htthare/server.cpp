@@ -43,7 +43,7 @@ namespace HttThare
 	, Socket_ { IoService_ }
 	{
 		ip::tcp::resolver resolver { IoService_ };
-		ip::tcp::endpoint endpoint { *resolver.resolve ({ address.toStdString (), port.toStdString () }) };
+		const ip::tcp::endpoint endpoint = *resolver.resolve ({ address.toStdString (), port.toStdString () });
 
 		Acceptor_.open (endpoint.protocol ());
 		Acceptor_.set_option (ip::tcp::acceptor::reuse_address (true));
