@@ -75,7 +75,7 @@ namespace LeechCraft
 		/** @brief Returns the given image in a Base64-encoded form.
 		 *
 		 * The return result is suitable for inserting into
-		 * <code><img></code>'s <code>src</code> attribute as is.
+		 * <code>&lt;img></code>'s <code>src</code> attribute as is.
 		 *
 		 * @param[in] image The image to represent as Base64-encoded
 		 * form.
