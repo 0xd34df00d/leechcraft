@@ -227,6 +227,8 @@ namespace Azoth
 		 * @param[in] variant The entry variant to transfer with.
 		 * @param[in] name The path to the file that should be
 		 * transferred.
+		 * @param[in] comment The comment describing the file to be
+		 * sent, if applicable.
 		 * @return The transfer job object representing this transfer
 		 * and implement ITransferJob.
 		 */
