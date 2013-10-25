@@ -307,13 +307,6 @@ namespace MTPSync
 
 	namespace
 	{
-		bool IsRightAlbum (const UnmountableFileInfo& info, const LIBMTP_album_t *album)
-		{
-			return info.Artist_ == album->artist &&
-					info.Album_ == album->name &&
-					info.Genres_.join ("; ") == album->genre;
-		}
-
 		void SetAlbumArt (LIBMTP_mtpdevice_t *device, LIBMTP_album_t *album, const QString& path)
 		{
 			if (path.isEmpty ())
