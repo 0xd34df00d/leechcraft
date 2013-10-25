@@ -101,12 +101,7 @@ namespace LeechCraft
 						SLOT (on_TorrentTags__editingFinished ()));
 
 				connect (Core::Instance (),
-						SIGNAL (dataChanged (const QModelIndex&,
-								const QModelIndex&)),
-						this,
-						SLOT (updateTorrentStats ()));
-				connect (this,
-						SIGNAL (currentChanged (int)),
+						SIGNAL (dataChanged (QModelIndex, QModelIndex)),
 						this,
 						SLOT (updateTorrentStats ()));
 
