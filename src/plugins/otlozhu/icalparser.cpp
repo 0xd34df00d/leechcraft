@@ -31,6 +31,8 @@
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/fusion/adapted.hpp>
+#include <boost/fusion/sequence/intrinsic/at_c.hpp>
+#include <boost/phoenix/fusion.hpp>
 #include <QtDebug>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
@@ -119,7 +121,7 @@ namespace Otlozhu
 						eol;
 
 				ItemBegin_ %= "BEGIN:" >>
-						qi::lexeme[+(qi::char_ - '\r' - '\n')] >>
+						qi::lexeme [+(qi::char_ - '\r' - '\n')] >>
 						eol;
 				ItemEnd_ = "END:" >>
 						qi::string (qi::_r1) >>

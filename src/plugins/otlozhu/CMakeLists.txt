@@ -37,6 +37,7 @@ set (RESOURCES otlozhuresources.qrc)
 CreateTrs ("otlozhu" "en;ru_RU" COMPILED_TRANSLATIONS)
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+add_definitions (-DBOOST_SPIRIT_USE_PHOENIX_V3)
 
 add_library (leechcraft_otlozhu SHARED
 	${COMPILED_TRANSLATIONS}
