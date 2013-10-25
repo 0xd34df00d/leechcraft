@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_RANGEWIDGET_H
-#define XMLSETTINGSDIALOG_RANGEWIDGET_h
+#pragma once
+
 #include <QWidget>
 
 class QSpinBox;
@@ -54,7 +54,4 @@ namespace LeechCraft
 	signals:
 		void changed ();
 	};
-};
-
-#endif
-
+}
