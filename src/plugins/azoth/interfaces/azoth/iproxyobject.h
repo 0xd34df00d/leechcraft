@@ -204,7 +204,7 @@ namespace Azoth
 
 		/** @brief Opens the chat with the given entry.
 		 *
-		 * This function allows to open a chat with the given entry
+		 * This function allows one to open a chat with the given entry
 		 * identified by entryID for the given account identified by
 		 * accId.
 		 *
