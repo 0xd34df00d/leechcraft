@@ -28,3 +28,12 @@ target_link_libraries (lc_anhero_crashprocess
 	${Boost_PROGRAM_OPTIONS_LIBRARY}
 	)
 install (TARGETS lc_anhero_crashprocess DESTINATION ${LC_BINDIR})
+
+if (UNIX AND NOT APPLE)
+	add_custom_target (data_lc_anhero_crashprocess_gz ALL
+		"${CMAKE_CURRENT_SOURCE_DIR}/data/compress"
+		DEPENDS data/lc_anhero_crashprocess.1
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data
+		)
+	install (DIRECTORY data/ DESTINATION share/man/man1 FILES_MATCHING PATTERN "*.gz")
+endif ()
