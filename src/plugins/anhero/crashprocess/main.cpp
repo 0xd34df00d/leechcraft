@@ -96,8 +96,6 @@ namespace
 
 			ShowHelp (desc);
 		}
-		if (!vm.count ("pid"))
-			throw std::runtime_error ("PID parameter not set");
 
 		return
 		{
