@@ -74,11 +74,28 @@ namespace
 				.options (desc)
 				.allow_unregistered ()
 				.run (), vm);
-		bpo::notify (vm);
 
 		if (vm.count ("help"))
 			ShowHelp (desc);
 
+		try
+		{
+			bpo::notify (vm);
+		}
+		catch (const bpo::required_option& e)
+		{
+			std::cout << "required option missing" << std::endl;
+			std::cout << e.what () << std::endl;
+
+			ShowHelp (desc);
+		}
+		catch (const bpo::error& e)
+		{
+			std::cout << "invalid options" << std::endl;
+			std::cout << e.what () << std::endl;
+
+			ShowHelp (desc);
+		}
 		if (!vm.count ("pid"))
 			throw std::runtime_error ("PID parameter not set");
 
