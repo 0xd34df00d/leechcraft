@@ -1074,7 +1074,7 @@ namespace Azoth
 
 					changeClass->addSeparator ();
 					auto advanced = changeClass->addMenu (tr ("Advanced..."));
-					advanced->setToolTip (tr ("Allows to set advanced fields like "
+					advanced->setToolTip (tr ("Allows one to set advanced fields like "
 							"reason or global flag"));
 
 					addPossible (advanced,
