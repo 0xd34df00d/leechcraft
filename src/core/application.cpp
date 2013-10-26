@@ -103,11 +103,6 @@ namespace LeechCraft
 		if (VarMap_.count ("version"))
 		{
 			std::cout << "LeechCraft " << LEECHCRAFT_VERSION << " (http://leechcraft.org)" << std::endl;
-#ifdef Q_OS_WIN32
-			std::cout << " <this version does not have UNLIMITED CAT POWER :(>" << std::endl;
-#else
-			std::cout << " this version has the UNLIMITED CAT POWER :3 ε:" << std::endl;
-#endif
 			std::exit (EVersionRequested);
 		}
 
