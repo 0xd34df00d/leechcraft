@@ -29,6 +29,8 @@
 
 #include <stdexcept>
 #include <thread>
+#include <cstdlib>
+#include <iostream>
 
 #ifndef Q_MOC_RUN // see https://bugreports.qt-project.org/browse/QTBUG-22829
 #include <boost/program_options.hpp>
@@ -44,6 +46,17 @@ namespace
 {
 	namespace bpo = boost::program_options;
 
+	void ShowHelp (const bpo::options_description& desc)
+	{
+		std::cout << "LeechCraft (http://leechcraft.org)" << std::endl;
+		std::cout << std::endl;
+		std::cout << "This is the crash handler process and it is not "
+				<< "intended to be run manually." << std::endl;
+		std::cout << std::endl;
+		std::cout << desc << std::endl;
+		std::exit (3);
+	}
+
 	CrashProcess::AppInfo ParseOptions (int argc, char **argv)
 	{
 		bpo::options_description desc ("Known options");
@@ -52,7 +65,8 @@ namespace
 				("pid", bpo::value<uint64_t> ()->required (), "the PID of the crashed process")
 				("path", bpo::value<std::string> ()->required (), "the application path of the crashed process")
 				("version", bpo::value<std::string> ()->required (), "the LeechCraft version at the moment of the crash")
-				("cmdline", bpo::value<std::string> (), "the command line LeechCraft was started with");
+				("cmdline", bpo::value<std::string> (), "the command line LeechCraft was started with")
+				("help", "show help message");
 
 		bpo::command_line_parser parser (argc, argv);
 		bpo::variables_map vm;
@@ -61,6 +75,9 @@ namespace
 				.allow_unregistered ()
 				.run (), vm);
 		bpo::notify (vm);
+
+		if (vm.count ("help"))
+			ShowHelp (desc);
 
 		if (!vm.count ("pid"))
 			throw std::runtime_error ("PID parameter not set");
