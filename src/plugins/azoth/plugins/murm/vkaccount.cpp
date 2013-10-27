@@ -382,6 +382,14 @@ namespace Murm
 	{
 	}
 
+	void VkAccount::TryPendingMessages ()
+	{
+		decltype (PendingMessages_) pending;
+		std::swap (pending, PendingMessages_);
+		for (const auto& info : pending)
+			handleMessage (info);
+	}
+
 	void VkAccount::handleSelfInfo (const UserInfo& info)
 	{
 		handleUsers ({ info });
@@ -524,10 +532,7 @@ namespace Murm
 			ChatEntries_ [info.ChatID_] = entry;
 			emit gotCLItems ({ entry });
 
-			decltype (PendingMessages_) pending;
-			std::swap (pending, PendingMessages_);
-			for (const auto& info : pending)
-				handleMessage (info);
+			TryPendingMessages ();
 		}
 		else
 			ChatEntries_ [info.ChatID_]->UpdateInfo (info);

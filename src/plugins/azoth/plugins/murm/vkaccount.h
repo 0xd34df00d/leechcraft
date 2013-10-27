@@ -144,6 +144,8 @@ namespace Murm
 
 		PacketFormat GetPacketFormat () const;
 		void SetConsoleEnabled (bool);
+	private:
+		void TryPendingMessages ();
 	private slots:
 		void handleSelfInfo (const UserInfo&);
 		void handleUsers (const QList<UserInfo>&);
