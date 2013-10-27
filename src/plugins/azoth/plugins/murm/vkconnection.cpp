@@ -250,6 +250,25 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
+	void VkConnection::GetUserInfo (qulonglong id)
+	{
+		auto nam = Proxy_->GetNetworkAccessManager ();
+		PreparedCalls_.push_back ([this, nam, id] (const QString& key) -> QNetworkReply*
+			{
+				QUrl url ("https://api.vk.com/method/users.get");
+				url.addQueryItem ("access_token", key);
+				url.addQueryItem ("uids", QString::number (id));
+				url.addQueryItem ("fields", UserFields);
+				auto reply = nam->get (QNetworkRequest (url));
+				connect (reply,
+						SIGNAL (finished ()),
+						this,
+						SLOT (handleGotUserInfo ()));
+				return reply;
+			});
+		AuthMgr_->GetAuthKey ();
+	}
+
 	void VkConnection::GetMessageInfo (qulonglong id, MessageInfoSetter_f setter)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
@@ -769,6 +788,16 @@ namespace Murm
 			});
 
 		LPManager_->start ();
+	}
+
+	void VkConnection::handleGotUserInfo ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!CheckFinishedReply (reply))
+			return;
+
+		const auto& users = ParseUsers (reply);
+		emit gotUsers (users);
 	}
 
 	void VkConnection::handleGotUnreadMessages ()

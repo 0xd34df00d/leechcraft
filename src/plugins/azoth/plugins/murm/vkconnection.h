@@ -128,6 +128,8 @@ namespace Murm
 		void MarkAsRead (const QList<qulonglong>&);
 		void RequestGeoIds (const QList<int>&, GeoSetter_f, GeoIdType);
 
+		void GetUserInfo (qulonglong id);
+
 		void GetMessageInfo (qulonglong id, MessageInfoSetter_f setter);
 		void GetPhotoInfos (const QStringList& ids, PhotoInfoSetter_f setter);
 
@@ -166,6 +168,7 @@ namespace Murm
 		void handleGotSelfInfo ();
 		void handleGotFriendLists ();
 		void handleGotFriends ();
+		void handleGotUserInfo ();
 		void handleGotUnreadMessages ();
 
 		void handleChatCreated ();
