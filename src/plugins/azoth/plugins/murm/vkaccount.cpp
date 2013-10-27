@@ -402,6 +402,7 @@ namespace Murm
 	{
 		QList<QObject*> newEntries;
 		QSet<int> newCountries;
+		bool hadNew = false;
 		for (const auto& info : infos)
 		{
 			if (Entries_.contains (info.ID_))
@@ -415,12 +416,17 @@ namespace Murm
 			newEntries << entry;
 
 			newCountries << info.Country_;
+
+			hadNew = true;
 		}
 
 		GeoResolver_->CacheCountries (newCountries.toList ());
 
 		if (!newEntries.isEmpty ())
 			emit gotCLItems (newEntries);
+
+		if (hadNew)
+			TryPendingMessages ();
 	}
 
 	void VkAccount::handleUserState (qulonglong id, bool isOnline)
@@ -463,6 +469,10 @@ namespace Murm
 				qWarning () << Q_FUNC_INFO
 						<< "message from unknown user"
 						<< from;
+
+				PendingMessages_ << info;
+
+				Conn_->GetUserInfo (from);
 				return;
 			}
 
