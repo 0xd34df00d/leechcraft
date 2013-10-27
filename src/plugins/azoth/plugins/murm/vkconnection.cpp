@@ -725,24 +725,33 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
+	namespace
+	{
+		QList<UserInfo> ParseUsers (QNetworkReply *reply)
+		{
+			QList<UserInfo> users;
+
+			const auto& data = QJson::Parser ().parse (reply);
+			for (const auto& item : data.toMap () ["response"].toList ())
+			{
+				const auto& userMap = item.toMap ();
+				if (userMap.contains ("deactivated"))
+					continue;
+
+				users << UserMap2Info (userMap);
+			}
+
+			return users;
+		}
+	}
+
 	void VkConnection::handleGotFriends ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		if (!CheckFinishedReply (reply))
 			return;
 
-		QList<UserInfo> users;
-
-		const auto& data = QJson::Parser ().parse (reply);
-		for (const auto& item : data.toMap () ["response"].toList ())
-		{
-			const auto& userMap = item.toMap ();
-			if (userMap.contains ("deactivated"))
-				continue;
-
-			users << UserMap2Info (userMap);
-		}
-
+		const auto& users = ParseUsers (reply);
 		emit gotUsers (users);
 
 		auto nam = Proxy_->GetNetworkAccessManager ();
