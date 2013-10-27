@@ -45,6 +45,12 @@ namespace Azoth
 {
 namespace Murm
 {
+	namespace
+	{
+		const QString UserFields = "first_name,last_name,nickname,photo,photo_big,sex,"
+				"bdate,city,country,timezone,contacts,education";
+	}
+
 	VkConnection::VkConnection (const QByteArray& cookies, ICoreProxy_ptr proxy, Logger& logger)
 	: AuthMgr_ (new Util::SvcAuth::VkAuthManager ("3778319",
 			{ "messages", "notifications", "friends", "status", "photos" },
@@ -484,9 +490,7 @@ namespace Murm
 			{
 				QUrl friendsUrl ("https://api.vk.com/method/friends.get");
 				friendsUrl.addQueryItem ("access_token", key);
-				friendsUrl.addQueryItem ("fields",
-						"first_name,last_name,nickname,photo,photo_big,sex,"
-						"bdate,city,country,timezone,contacts,education");
+				friendsUrl.addQueryItem ("fields", UserFields);
 				auto reply = nam->get (QNetworkRequest (friendsUrl));
 				connect (reply,
 						SIGNAL (finished ()),
