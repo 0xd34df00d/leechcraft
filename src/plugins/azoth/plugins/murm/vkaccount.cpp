@@ -406,7 +406,7 @@ namespace Murm
 			realId = realId.remove (0, 2);
 
 		bool ok = false;
-		const auto id = realId.toInt (&ok);
+		const auto id = realId.toULongLong (&ok);
 		if (!ok)
 			throw std::runtime_error (tr ("%1 is invalid VKontake ID")
 					.arg (idStr)
