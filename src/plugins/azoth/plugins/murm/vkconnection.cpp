@@ -356,6 +356,28 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
+	void VkConnection::SetNRIList (const QList<qulonglong>& ids)
+	{
+		const auto& joined = CommaJoin (ids);
+		auto nam = Proxy_->GetNetworkAccessManager ();
+
+		PreparedCalls_.push_back ([this, joined, nam] (const QString& key) -> QNetworkReply*
+			{
+				QUrl url ("https://api.vk.com/method/storage.set");
+				url.addQueryItem ("access_token", key);
+				url.addQueryItem ("key", "non_roster_items");
+				url.addQueryItem ("value", joined);
+
+				auto reply = nam->get (QNetworkRequest (url));
+				connect (reply,
+						SIGNAL (finished ()),
+						reply,
+						SLOT (deleteLater ()));
+				return reply;
+			});
+		AuthMgr_->GetAuthKey ();
+	}
+
 	void VkConnection::CreateChat (const QString& title, const QList<qulonglong>& ids)
 	{
 		const auto& joined = CommaJoin (ids);
@@ -506,6 +528,7 @@ namespace Murm
 	void VkConnection::PushFriendsRequest ()
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
+
 		PreparedCalls_.push_back ([this, nam] (const QString& key) -> QNetworkReply*
 			{
 				QUrl friendsUrl ("https://api.vk.com/method/friends.get");
@@ -516,6 +539,19 @@ namespace Murm
 						SIGNAL (finished ()),
 						this,
 						SLOT (handleGotFriends ()));
+				return reply;
+			});
+
+		PreparedCalls_.push_back ([this, nam] (const QString& key) -> QNetworkReply*
+			{
+				QUrl url ("https://api.vk.com/method/storage.get");
+				url.addQueryItem ("access_token", key);
+				url.addQueryItem ("key", "non_roster_items");
+				auto reply = nam->get (QNetworkRequest (url));
+				connect (reply,
+						SIGNAL (finished ()),
+						this,
+						SLOT (handleGotNRI ()));
 				return reply;
 			});
 	}
@@ -789,6 +825,27 @@ namespace Murm
 			});
 
 		LPManager_->start ();
+	}
+
+	void VkConnection::handleGotNRI ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!CheckFinishedReply (reply))
+			return;
+
+		const auto& str = QJson::Parser ().parse (reply).toMap () ["response"].toString ();
+		qDebug () << Q_FUNC_INFO << str;
+
+		QList<qulonglong> ids;
+		for (const auto& sub : str.split (",", QString::SkipEmptyParts))
+		{
+			bool ok = false;
+			const auto id = sub.toULongLong (&ok);
+			if (ok)
+				ids << id;
+		}
+
+		emit gotNRIList (ids);
 	}
 
 	void VkConnection::handleGotUserInfo ()
