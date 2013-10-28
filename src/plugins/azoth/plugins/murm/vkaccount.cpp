@@ -420,7 +420,7 @@ namespace Murm
 		Entries_ [id] = entry;
 		emit gotCLItems ({ entry });
 
-		Conn_->GetUserInfo (id);
+		Conn_->GetUserInfo ({ id });
 
 		return entry;
 	}
@@ -515,7 +515,7 @@ namespace Murm
 
 				PendingMessages_ << info;
 
-				Conn_->GetUserInfo (from);
+				Conn_->GetUserInfo ({ from });
 				return;
 			}
 

@@ -128,7 +128,7 @@ namespace Murm
 		void MarkAsRead (const QList<qulonglong>&);
 		void RequestGeoIds (const QList<int>&, GeoSetter_f, GeoIdType);
 
-		void GetUserInfo (qulonglong id);
+		void GetUserInfo (const QList<qulonglong>& ids);
 
 		void GetMessageInfo (qulonglong id, MessageInfoSetter_f setter);
 		void GetPhotoInfos (const QStringList& ids, PhotoInfoSetter_f setter);

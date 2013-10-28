@@ -250,14 +250,15 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
-	void VkConnection::GetUserInfo (qulonglong id)
+	void VkConnection::GetUserInfo (const QList<qulonglong>& ids)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([this, nam, id] (const QString& key) -> QNetworkReply*
+		const auto& joined = CommaJoin (ids);
+		PreparedCalls_.push_back ([this, nam, joined] (const QString& key) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/users.get");
 				url.addQueryItem ("access_token", key);
-				url.addQueryItem ("uids", QString::number (id));
+				url.addQueryItem ("uids", joined);
 				url.addQueryItem ("fields", UserFields);
 				auto reply = nam->get (QNetworkRequest (url));
 				connect (reply,
