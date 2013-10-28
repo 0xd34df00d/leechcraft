@@ -44,8 +44,6 @@ namespace Azoth
 		virtual ~ISupportNonRoster () {}
 
 		virtual QObject* CreateNonRosterItem (const QString&) = 0;
-
-		virtual void RemoveNonRosterItem (QObject*) = 0;
 	};
 }
 }

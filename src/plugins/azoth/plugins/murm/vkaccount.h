@@ -149,7 +149,6 @@ namespace Murm
 		void SetConsoleEnabled (bool);
 
 		QObject* CreateNonRosterItem (const QString&);
-		void RemoveNonRosterItem (QObject*);
 	private:
 		void TryPendingMessages ();
 	private slots:

@@ -409,10 +409,6 @@ namespace Murm
 		return entry;
 	}
 
-	void VkAccount::RemoveNonRosterItem (QObject *entryObj)
-	{
-	}
-
 	void VkAccount::TryPendingMessages ()
 	{
 		decltype (PendingMessages_) pending;
