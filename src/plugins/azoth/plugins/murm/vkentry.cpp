@@ -393,6 +393,9 @@ namespace Murm
 		if (IsSelf_)
 			return { tr ("Self contact") };
 
+		if (IsNonRoster_)
+			return { tr ("Non-friends") };
+
 		auto result = Groups_;
 		if (!Chats_.isEmpty ())
 		{
@@ -405,7 +408,7 @@ namespace Murm
 
 	void VkEntry::SetGroups (const QStringList& srcGroups)
 	{
-		if (IsSelf_)
+		if (IsSelf_ || IsNonRoster_)
 			return;
 
 		auto groups = srcGroups;
