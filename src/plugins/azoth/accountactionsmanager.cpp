@@ -31,6 +31,7 @@
 #include <QAction>
 #include <QMenu>
 #include <QInputDialog>
+#include <QMessageBox>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include "interfaces/azoth/iaccount.h"
@@ -44,6 +45,7 @@
 #include "interfaces/azoth/ihaveconsole.h"
 #include "interfaces/azoth/ihavemicroblogs.h"
 #include "interfaces/azoth/iregmanagedaccount.h"
+#include "interfaces/azoth/isupportnonroster.h"
 #include "core.h"
 #include "joinconferencedialog.h"
 #include "bookmarksmanagerdialog.h"
@@ -54,6 +56,7 @@
 #include "consolewidget.h"
 #include "servicediscoverywidget.h"
 #include "microblogstab.h"
+#include "chattabsmanager.h"
 
 namespace LeechCraft
 {
@@ -65,6 +68,7 @@ namespace Azoth
 	, AccountJoinConference_ (new QAction (tr ("Join conference..."), this))
 	, AccountManageBookmarks_ (new QAction (tr ("Manage bookmarks..."), this))
 	, AccountAddContact_ (new QAction (tr ("Add contact..."), this))
+	, AccountOpenNonRosterChat_ (new QAction (tr ("Chat with non-CL contact"), this))
 	, AccountViewMicroblogs_ (new QAction (tr ("View microblogs..."), this))
 	, AccountSetActivity_ (new QAction (tr ("Set activity..."), this))
 	, AccountSetMood_ (new QAction (tr ("Set mood..."), this))
@@ -96,6 +100,10 @@ namespace Azoth
 				SIGNAL (triggered ()),
 				this,
 				SLOT (addAccountContact ()));
+		connect (AccountOpenNonRosterChat_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleOpenNonRoster ()));
 		connect (AccountViewMicroblogs_,
 				SIGNAL (triggered ()),
 				this,
@@ -186,6 +194,8 @@ namespace Azoth
 		actions << Util::CreateSeparator (menu);
 
 		actions << AccountAddContact_;
+		if (qobject_cast<ISupportNonRoster*> (accObj))
+			actions << AccountOpenNonRosterChat_;
 		actions << Util::CreateSeparator (menu);
 
 		if (qobject_cast<IHaveMicroblogs*> (accObj))
@@ -323,6 +333,42 @@ namespace Azoth
 
 		dia.GetSelectedAccount ()->RequestAuth (dia.GetContactID (),
 				dia.GetReason (), dia.GetNick (), dia.GetGroups ());
+	}
+
+	void AccountActionsManager::handleOpenNonRoster ()
+	{
+		const auto obj = sender ()->property ("Azoth/AccountObject").value<QObject*> ();
+		const auto isnr = qobject_cast<ISupportNonRoster*> (obj);
+		if (!isnr)
+			return;
+
+		QObject *entryObj = nullptr;
+		QString contactId;
+		while (!entryObj)
+		{
+			contactId = QInputDialog::getText (nullptr,
+					tr ("Open chat with non-roster contact"),
+					tr ("Enter ID of the contact you wish to open chat with:"),
+					QLineEdit::Normal,
+					contactId);
+			if (contactId.isEmpty ())
+				return;
+
+			try
+			{
+				entryObj = isnr->CreateNonRosterItem (contactId);
+			}
+			catch (const std::exception& e)
+			{
+				QMessageBox::critical (nullptr,
+						"LeechCraft Azoth",
+						tr ("Error opening chat: %1")
+							.arg (QString::fromUtf8 (e.what ())));
+			}
+		}
+
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true);
 	}
 
 	void AccountActionsManager::handleAccountMicroblogs ()
