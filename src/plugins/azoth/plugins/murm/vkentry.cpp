@@ -356,7 +356,7 @@ namespace Murm
 
 	ICLEntry::Features VkEntry::GetEntryFeatures () const
 	{
-		return FPermanentEntry | FSupportsGrouping;
+		return (IsNonRoster_ ? FSessionEntry : FPermanentEntry) | FSupportsGrouping;
 	}
 
 	ICLEntry::EntryType VkEntry::GetEntryType () const
