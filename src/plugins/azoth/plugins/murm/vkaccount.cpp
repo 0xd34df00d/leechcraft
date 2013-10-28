@@ -81,6 +81,10 @@ namespace Murm
 				this,
 				SLOT (handleUsers (QList<UserInfo>)));
 		connect (Conn_,
+				SIGNAL (gotNRIList (QList<qulonglong>)),
+				this,
+				SLOT (handleNRIList (QList<qulonglong>)));
+		connect (Conn_,
 				SIGNAL (userStateChanged (qulonglong, bool)),
 				this,
 				SLOT (handleUserState (qulonglong, bool)));
@@ -347,8 +351,14 @@ namespace Murm
 		if (entry->IsNonRoster ())
 		{
 			emit removedCLItems ({ entry });
-			Entries_.remove (entry->GetInfo ().ID_);
+
+			const auto id = entry->GetInfo ().ID_;
+			Entries_.remove (id);
 			entry->deleteLater ();
+
+			NonRosterItems_.removeOne (id);
+			Conn_->SetNRIList (NonRosterItems_);
+
 			return;
 		}
 	}
@@ -412,14 +422,14 @@ namespace Murm
 					.arg (idStr)
 					.toUtf8 ().constData ());
 
-		UserInfo info;
-		info.ID_ = id;
+		if (Entries_.contains (id))
+			return Entries_ [id];
 
-		auto entry = new VkEntry (info, this);
-		entry->SetNonRoster ();
-		Entries_ [id] = entry;
+		const auto entry = CreateNonRosterItem (id);
 		emit gotCLItems ({ entry });
 
+		NonRosterItems_ << id;
+		Conn_->SetNRIList (NonRosterItems_);
 		Conn_->GetUserInfo ({ id });
 
 		return entry;
@@ -431,6 +441,18 @@ namespace Murm
 		std::swap (pending, PendingMessages_);
 		for (const auto& info : pending)
 			handleMessage (info);
+	}
+
+	VkEntry* VkAccount::CreateNonRosterItem (qulonglong id)
+	{
+		UserInfo info;
+		info.ID_ = id;
+
+		auto entry = new VkEntry (info, this);
+		entry->SetNonRoster ();
+		Entries_ [id] = entry;
+
+		return entry;
 	}
 
 	void VkAccount::handleSelfInfo (const UserInfo& info)
@@ -470,6 +492,25 @@ namespace Murm
 
 		if (hadNew)
 			TryPendingMessages ();
+	}
+
+	void VkAccount::handleNRIList (const QList<qulonglong>& ids)
+	{
+		QList<qulonglong> toRequest;
+		QList<QObject*> objs;
+		for (auto id : ids)
+		{
+			if (Entries_.contains (id))
+				continue;
+
+			toRequest << id;
+			objs << CreateNonRosterItem (id);
+		}
+
+		emit gotCLItems (objs);
+		Conn_->GetUserInfo (toRequest);
+
+		NonRosterItems_ = toRequest;
 	}
 
 	void VkAccount::handleUserState (qulonglong id, bool isOnline)

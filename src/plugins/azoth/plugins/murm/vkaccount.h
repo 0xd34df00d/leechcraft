@@ -95,6 +95,8 @@ namespace Murm
 		bool MarkAsOnline_ = false;
 
 		QPointer<AccountConfigDialog> AccConfigDia_;
+
+		QList<qulonglong> NonRosterItems_;
 	public:
 		VkAccount (const QString& name, VkProtocol *proto, ICoreProxy_ptr proxy,
 				const QByteArray& id, const QByteArray& cookies);
@@ -151,9 +153,11 @@ namespace Murm
 		QObject* CreateNonRosterItem (const QString&);
 	private:
 		void TryPendingMessages ();
+		VkEntry* CreateNonRosterItem (qulonglong);
 	private slots:
 		void handleSelfInfo (const UserInfo&);
 		void handleUsers (const QList<UserInfo>&);
+		void handleNRIList (const QList<qulonglong>&);
 		void handleUserState (qulonglong, bool);
 		void handleMessage (const MessageInfo&);
 		void handleTypingNotification (qulonglong);
