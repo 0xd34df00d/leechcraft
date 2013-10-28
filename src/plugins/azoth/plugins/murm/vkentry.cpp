@@ -87,8 +87,13 @@ namespace Murm
 	void VkEntry::UpdateInfo (const UserInfo& info)
 	{
 		const bool updateStatus = info.IsOnline_ != Info_.IsOnline_;
+		const bool updateName = info.FirstName_ != Info_.FirstName_ ||
+				info.LastName_ != Info_.LastName_;
+
 		Info_ = info;
 
+		if (updateName)
+			nameChanged (GetEntryName ());
 		if (updateStatus)
 		{
 			emit statusChanged (GetStatus (""), "");
