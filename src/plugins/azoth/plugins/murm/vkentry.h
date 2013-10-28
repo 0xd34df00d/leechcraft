@@ -63,6 +63,7 @@ namespace Murm
 		QTimer *LocalTypingTimer_;
 
 		bool IsSelf_ = false;
+		bool IsNonRoster_ = false;
 		bool HasUnread_ = false;
 
 		QImage Avatar_;
@@ -81,6 +82,8 @@ namespace Murm
 		void Send (VkMessage*);
 
 		void SetSelf ();
+		void SetNonRoster ();
+		bool IsNonRoster () const;
 
 		void RegisterIn (VkChatEntry*);
 		void UnregisterIn (VkChatEntry*);

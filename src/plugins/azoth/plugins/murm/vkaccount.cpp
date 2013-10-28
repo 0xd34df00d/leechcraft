@@ -398,7 +398,9 @@ namespace Murm
 
 		UserInfo info;
 		info.ID_ = id;
+
 		auto entry = new VkEntry (info, this);
+		entry->SetNonRoster ();
 		Entries_ [id] = entry;
 		emit gotCLItems ({ entry });
 

@@ -124,6 +124,17 @@ namespace Murm
 		emit groupsChanged (Groups ());
 	}
 
+	void VkEntry::SetNonRoster ()
+	{
+		IsNonRoster_ = true;
+		emit groupsChanged (Groups ());
+	}
+
+	bool VkEntry::IsNonRoster () const
+	{
+		return IsNonRoster_;
+	}
+
 	void VkEntry::RegisterIn (VkChatEntry *chat)
 	{
 		if (Chats_.contains (chat))
