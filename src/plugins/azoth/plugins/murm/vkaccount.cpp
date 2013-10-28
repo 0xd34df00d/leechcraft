@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "vkaccount.h"
+#include <stdexcept>
 #include <QUuid>
 #include <QIcon>
 #include <QtDebug>
@@ -379,6 +380,34 @@ namespace Murm
 	}
 
 	void VkAccount::SetConsoleEnabled (bool)
+	{
+	}
+
+	QObject* VkAccount::CreateNonRosterItem (const QString& idStr)
+	{
+		auto realId = idStr;
+		if (realId.startsWith ("id"))
+			realId = realId.remove (0, 2);
+
+		bool ok = false;
+		const auto id = realId.toInt (&ok);
+		if (!ok)
+			throw std::runtime_error (tr ("%1 is invalid VKontake ID")
+					.arg (idStr)
+					.toUtf8 ().constData ());
+
+		UserInfo info;
+		info.ID_ = id;
+		auto entry = new VkEntry (info, this);
+		Entries_ [id] = entry;
+		emit gotCLItems ({ entry });
+
+		Conn_->GetUserInfo (id);
+
+		return entry;
+	}
+
+	void VkAccount::RemoveNonRosterItem (QObject *entryObj)
 	{
 	}
 

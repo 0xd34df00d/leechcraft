@@ -34,6 +34,7 @@
 #include <interfaces/azoth/isupporttune.h>
 #include <interfaces/azoth/iextselfinfoaccount.h>
 #include <interfaces/azoth/ihaveconsole.h>
+#include <interfaces/azoth/isupportnonroster.h>
 #include <interfaces/core/icoreproxy.h>
 #include "structures.h"
 
@@ -59,12 +60,14 @@ namespace Murm
 					, public ISupportTune
 					, public IExtSelfInfoAccount
 					, public IHaveConsole
+					, public ISupportNonRoster
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IAccount
 				LeechCraft::Azoth::ISupportTune
 				LeechCraft::Azoth::IExtSelfInfoAccount
-				LeechCraft::Azoth::IHaveConsole)
+				LeechCraft::Azoth::IHaveConsole
+				LeechCraft::Azoth::ISupportNonRoster)
 
 		const ICoreProxy_ptr CoreProxy_;
 
@@ -144,6 +147,9 @@ namespace Murm
 
 		PacketFormat GetPacketFormat () const;
 		void SetConsoleEnabled (bool);
+
+		QObject* CreateNonRosterItem (const QString&);
+		void RemoveNonRosterItem (QObject*);
 	private:
 		void TryPendingMessages ();
 	private slots:
