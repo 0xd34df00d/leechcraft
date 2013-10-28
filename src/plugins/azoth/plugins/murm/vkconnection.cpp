@@ -834,7 +834,6 @@ namespace Murm
 			return;
 
 		const auto& str = QJson::Parser ().parse (reply).toMap () ["response"].toString ();
-		qDebug () << Q_FUNC_INFO << str;
 
 		QList<qulonglong> ids;
 		for (const auto& sub : str.split (",", QString::SkipEmptyParts))
