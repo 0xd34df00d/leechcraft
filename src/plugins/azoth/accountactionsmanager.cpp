@@ -153,8 +153,7 @@ namespace Azoth
 				QMenu *bmsMenu = new QMenu (tr ("Join bookmarked conference"), menu);
 				actions << bmsMenu->menuAction ();
 
-				Q_FOREACH (const QObject *mucObj,
-						qobject_cast<IAccount*> (accObj)->GetCLEntries ())
+				for (auto mucObj : qobject_cast<IAccount*> (accObj)->GetCLEntries ())
 				{
 					IMUCEntry *muc = qobject_cast<IMUCEntry*> (mucObj);
 					if (!muc)
@@ -163,7 +162,7 @@ namespace Azoth
 					bms.removeAll (muc->GetIdentifyingData ());
 				}
 
-				Q_FOREACH (const QVariant& bm, bms)
+				for (const auto& bm : bms)
 				{
 					const QVariantMap& map = bm.toMap ();
 
@@ -208,7 +207,7 @@ namespace Azoth
 		{
 			actions += accActions;
 			auto proxy = Core::Instance ().GetProxy ();
-			Q_FOREACH (QAction *action, actions)
+			for (auto action : actions)
 				action->setIcon (proxy->GetIcon (action->property ("ActionIcon").toString ()));
 			actions << Util::CreateSeparator (menu);
 		}
@@ -228,7 +227,7 @@ namespace Azoth
 			actions << AccountRename_;
 		actions << AccountModify_;
 
-		Q_FOREACH (QAction *act, actions)
+		for (auto act : actions)
 			act->setProperty ("Azoth/AccountObject",
 					QVariant::fromValue<QObject*> (accObj));
 
