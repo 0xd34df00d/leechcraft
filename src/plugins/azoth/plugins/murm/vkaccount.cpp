@@ -333,8 +333,24 @@ namespace Murm
 	{
 	}
 
-	void VkAccount::RemoveEntry (QObject*)
+	void VkAccount::RemoveEntry (QObject *entryObj)
 	{
+		auto entry = qobject_cast<VkEntry*> (entryObj);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< entry
+					<< "is not a VkEntry";
+			return;
+		}
+
+		if (entry->IsNonRoster ())
+		{
+			emit removedCLItems ({ entry });
+			Entries_.remove (entry->GetInfo ().ID_);
+			entry->deleteLater ();
+			return;
+		}
 	}
 
 	QObject* VkAccount::GetTransferManager () const
