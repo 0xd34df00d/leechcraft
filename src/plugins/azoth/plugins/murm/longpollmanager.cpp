@@ -63,26 +63,6 @@ namespace Murm
 			CurrentPollReply_->abort ();
 	}
 
-	void LongPollManager::Poll ()
-	{
-		if (CurrentPollReply_)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "already polling";
-			return;
-		}
-
-		const auto& url = GetURLTemplate ();
-
-		LastPollDT_ = QDateTime::currentDateTime ();
-		CurrentPollReply_ = Proxy_->
-				GetNetworkAccessManager ()->get (QNetworkRequest (url));
-		connect (CurrentPollReply_,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handlePollFinished ()));
-	}
-
 	QUrl LongPollManager::GetURLTemplate () const
 	{
 		QUrl url = LPURLTemplate_;
@@ -136,7 +116,9 @@ namespace Murm
 
 		CurrentPollReply_ = nullptr;
 
-		Poll ();
+		QTimer::singleShot (100,
+				this,
+				SLOT (poll ()));
 	}
 
 	void LongPollManager::start ()
@@ -157,6 +139,26 @@ namespace Murm
 			return reply;
 		};
 		Conn_->QueueRequest (req);
+	}
+
+	void LongPollManager::poll ()
+	{
+		if (CurrentPollReply_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "already polling";
+			return;
+		}
+
+		const auto& url = GetURLTemplate ();
+
+		LastPollDT_ = QDateTime::currentDateTime ();
+		CurrentPollReply_ = Proxy_->
+				GetNetworkAccessManager ()->get (QNetworkRequest (url));
+		connect (CurrentPollReply_,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handlePollFinished ()));
 	}
 
 	void LongPollManager::handlePollFinished ()
@@ -196,7 +198,7 @@ namespace Murm
 			CurrentPollReply_ = nullptr;
 
 			if (!LPServer_.isEmpty ())
-				Poll ();
+				poll ();
 			else
 				start ();
 		}
@@ -240,7 +242,7 @@ namespace Murm
 
 		emit listening ();
 
-		Poll ();
+		poll ();
 	}
 }
 }

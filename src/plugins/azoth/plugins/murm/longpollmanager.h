@@ -73,13 +73,13 @@ namespace Murm
 		void ForceServerRequery ();
 		void Stop ();
 	private:
-		void Poll ();
-
 		QUrl GetURLTemplate () const;
 		void HandlePollError ();
 	public slots:
 		void start ();
 	private slots:
+		void poll ();
+
 		void handlePollFinished ();
 		void handleGotLPServer ();
 	signals:
