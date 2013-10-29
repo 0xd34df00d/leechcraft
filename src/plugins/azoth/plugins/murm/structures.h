@@ -148,6 +148,22 @@ namespace Murm
 		QUrl URL_;
 	};
 
+	struct VideoInfo
+	{
+		qlonglong OwnerID_;
+		qulonglong ID_;
+
+		QString AccessKey_;
+
+		QString Title_;
+		QString Desc_;
+		qulonglong Duration_;
+
+		qlonglong Views_;
+
+		QUrl Image_;
+	};
+
 	struct FullMessageInfo
 	{
 		qlonglong OwnerID_;
@@ -161,6 +177,7 @@ namespace Murm
 
 		QList<PhotoInfo> Photos_;
 		QList<AudioInfo> Audios_;
+		QList<VideoInfo> Videos_;
 		QList<FullMessageInfo> ContainedReposts_;
 	};
 }
