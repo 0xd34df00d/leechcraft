@@ -116,6 +116,18 @@ namespace Murm
 			WaitTimeout_ = newTimeout;
 			break;
 		}
+		case QNetworkReply::HostNotFoundError:
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot find host"
+					<< LPURLTemplate_
+					<< "scheduling requerying server...";
+			ForceServerRequery ();
+			QTimer::singleShot (1000,
+					this,
+					SLOT (start ()));
+			return;
+		}
 		default:
 			if (PollErrorCount_ == 4)
 				emit pollError ();
