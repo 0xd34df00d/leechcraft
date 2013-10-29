@@ -94,10 +94,10 @@ namespace Murm
 				bool isFirst = true;
 				for (const auto& value : list)
 				{
-					Write (value);
 					if (!isFirst)
 						Write ("; ");
 					isFirst = false;
+					Write (value);
 				}
 				Write (" ]");
 			}
