@@ -76,6 +76,7 @@ namespace Murm
 		void Poll ();
 
 		QUrl GetURLTemplate () const;
+		void HandlePollError ();
 	public slots:
 		void start ();
 	private slots:

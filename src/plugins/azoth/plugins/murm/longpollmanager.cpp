@@ -91,6 +91,42 @@ namespace Murm
 		return url;
 	}
 
+	void LongPollManager::HandlePollError ()
+	{
+		++PollErrorCount_;
+		qWarning () << Q_FUNC_INFO
+				<< "network error:"
+				<< CurrentPollReply_->error ()
+				<< CurrentPollReply_->errorString ()
+				<< "; error count:"
+				<< PollErrorCount_;
+
+		switch (CurrentPollReply_->error ())
+		{
+		case QNetworkReply::RemoteHostClosedError:
+		{
+			const auto diff = LastPollDT_.secsTo (QDateTime::currentDateTime ());
+			const auto newTimeout = std::max ((diff + WaitTimeout_) / 2 - 1, 5);
+			qWarning () << Q_FUNC_INFO
+					<< "got timeout with"
+					<< WaitTimeout_
+					<< diff
+					<< "; new timeout:"
+					<< newTimeout;
+			WaitTimeout_ = newTimeout;
+			break;
+		}
+		default:
+			if (PollErrorCount_ == 4)
+				emit pollError ();
+			break;
+		}
+
+		CurrentPollReply_ = nullptr;
+
+		Poll ();
+	}
+
 	void LongPollManager::start ()
 	{
 		if (!LPServer_.isEmpty ())
@@ -116,42 +152,7 @@ namespace Murm
 		CurrentPollReply_->deleteLater ();
 
 		if (CurrentPollReply_->error () != QNetworkReply::NoError && !ShouldStop_)
-		{
-			++PollErrorCount_;
-			qWarning () << Q_FUNC_INFO
-					<< "network error:"
-					<< CurrentPollReply_->error ()
-					<< CurrentPollReply_->errorString ()
-					<< "; error count:"
-					<< PollErrorCount_;
-
-			switch (CurrentPollReply_->error ())
-			{
-			case QNetworkReply::RemoteHostClosedError:
-			{
-				const auto diff = LastPollDT_.secsTo (QDateTime::currentDateTime ());
-				const auto newTimeout = std::max ((diff + WaitTimeout_) / 2 - 1, 5);
-				qWarning () << Q_FUNC_INFO
-						<< "got timeout with"
-						<< WaitTimeout_
-						<< diff
-						<< "; new timeout:"
-						<< newTimeout;
-				WaitTimeout_ = newTimeout;
-				break;
-			}
-			default:
-				if (PollErrorCount_ == 4)
-					emit pollError ();
-				break;
-			}
-
-			CurrentPollReply_ = nullptr;
-
-			Poll ();
-
-			return;
-		}
+			return HandlePollError ();
 		else if (PollErrorCount_)
 		{
 			qDebug () << Q_FUNC_INFO
