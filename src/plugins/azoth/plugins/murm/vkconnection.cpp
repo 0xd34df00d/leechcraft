@@ -623,6 +623,7 @@ namespace Murm
 		switch (ec)
 		{
 		case 5:
+			RescheduleRequest (reply);
 			reauth ();
 			break;
 		}
