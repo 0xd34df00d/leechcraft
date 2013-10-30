@@ -568,11 +568,20 @@ namespace Murm
 				[reply] (decltype (RunningCalls_.at (0)) call) { return call.first == reply; });
 	}
 
+	void VkConnection::RescheduleRequest (QNetworkReply *reply)
+	{
+		const auto pos = FindRunning (reply);
+		if (pos != RunningCalls_.end ())
+			PreparedCalls_.push_front (pos->second);
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "no running call found for the reply";
+	}
+
 	bool VkConnection::CheckFinishedReply (QNetworkReply *reply)
 	{
 		reply->deleteLater ();
 
-		const auto pos = FindRunning (reply);
 		if (reply->error () == QNetworkReply::NoError)
 		{
 			APIErrorCount_ = 0;
@@ -584,11 +593,7 @@ namespace Murm
 				<< reply->error ()
 				<< reply->errorString ();
 
-		if (pos != RunningCalls_.end ())
-			PreparedCalls_.push_front (pos->second);
-		else
-			qWarning () << Q_FUNC_INFO
-					<< "no running call found for the reply";
+		RescheduleRequest (reply);
 
 		++APIErrorCount_;
 

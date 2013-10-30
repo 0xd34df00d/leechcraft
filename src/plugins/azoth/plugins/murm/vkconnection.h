@@ -157,6 +157,8 @@ namespace Murm
 		RunningCalls_t::const_iterator FindRunning (QNetworkReply*) const;
 		RunningCalls_t::iterator FindRunning (QNetworkReply*);
 
+		void RescheduleRequest (QNetworkReply*);
+
 		bool CheckFinishedReply (QNetworkReply*);
 		bool CheckReplyData (const QVariant&, QNetworkReply*);
 	public slots:
