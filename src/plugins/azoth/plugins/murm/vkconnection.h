@@ -68,7 +68,23 @@ namespace Murm
 
 		QByteArray LastCookies_;
 	public:
-		typedef std::function<QNetworkReply* (QString)> PreparedCall_f;
+		class PreparedCall_f
+		{
+			std::function<QNetworkReply* (QString)> Call_;
+		public:
+			PreparedCall_f () = default;
+
+			template<typename T>
+			PreparedCall_f (T c)
+			: Call_ (c)
+			{
+			}
+
+			QNetworkReply* operator() (const QString& key) const
+			{
+				return Call_ (key);
+			}
+		};
 	private:
 		QList<PreparedCall_f> PreparedCalls_;
 		LeechCraft::Util::QueueManager *CallQueue_;
