@@ -594,6 +594,11 @@ namespace Murm
 		return false;
 	}
 
+	bool VkConnection::CheckReplyData (const QVariant& map, QNetworkReply *reply)
+	{
+		return true;
+	}
+
 	void VkConnection::reauth ()
 	{
 		Logger_ << "reauthing";
@@ -702,8 +707,10 @@ namespace Murm
 		const auto& name = Reply2ListName_.take (reply);
 
 		const auto& data = QJson::Parser ().parse (reply);
-		const auto id = data.toMap () ["response"].toMap () ["lid"].toULongLong ();
+		if (!CheckReplyData (data, reply))
+			return;
 
+		const auto id = data.toMap () ["response"].toMap () ["lid"].toULongLong ();
 		emit addedLists ({ { id, name } });
 	}
 
@@ -755,6 +762,8 @@ namespace Murm
 			return;
 
 		const auto& data = QJson::Parser ().parse (reply);
+		if (!CheckReplyData (data, reply))
+			return;
 
 		const auto& list = data.toMap () ["response"].toList ();
 		emit gotSelfInfo (UserMap2Info (list.value (0).toMap ()));
@@ -766,15 +775,16 @@ namespace Murm
 		if (!CheckFinishedReply (reply))
 			return;
 
-		QList<ListInfo> lists;
-
 		const auto& data = QJson::Parser ().parse (reply);
+		if (!CheckReplyData (data, reply))
+			return;
+
+		QList<ListInfo> lists;
 		for (const auto& item : data.toMap () ["response"].toList ())
 		{
 			const auto& map = item.toMap ();
 			lists.append ({ map ["lid"].toULongLong (), map ["name"].toString () });
 		}
-
 		emit gotLists (lists);
 
 		PushFriendsRequest ();
@@ -783,11 +793,10 @@ namespace Murm
 
 	namespace
 	{
-		QList<UserInfo> ParseUsers (QNetworkReply *reply)
+		QList<UserInfo> ParseUsers (const QVariant& data)
 		{
 			QList<UserInfo> users;
 
-			const auto& data = QJson::Parser ().parse (reply);
 			for (const auto& item : data.toMap () ["response"].toList ())
 			{
 				const auto& userMap = item.toMap ();
@@ -807,7 +816,11 @@ namespace Murm
 		if (!CheckFinishedReply (reply))
 			return;
 
-		const auto& users = ParseUsers (reply);
+		const auto& data = QJson::Parser ().parse (reply);
+		if (!CheckReplyData (data, reply))
+			return;
+
+		const auto& users = ParseUsers (data);
 		emit gotUsers (users);
 
 		auto nam = Proxy_->GetNetworkAccessManager ();
@@ -833,8 +846,11 @@ namespace Murm
 		if (!CheckFinishedReply (reply))
 			return;
 
-		const auto& str = QJson::Parser ().parse (reply).toMap () ["response"].toString ();
+		const auto& data = QJson::Parser ().parse (reply);
+		if (!CheckReplyData (data, reply))
+			return;
 
+		const auto& str = data.toMap () ["response"].toString ();
 		QList<qulonglong> ids;
 		for (const auto& sub : str.split (",", QString::SkipEmptyParts))
 		{
@@ -853,7 +869,11 @@ namespace Murm
 		if (!CheckFinishedReply (reply))
 			return;
 
-		const auto& users = ParseUsers (reply);
+		const auto& data = QJson::Parser ().parse (reply);
+		if (!CheckReplyData (data, reply))
+			return;
+
+		const auto& users = ParseUsers (data);
 		emit gotUsers (users);
 	}
 
@@ -864,6 +884,9 @@ namespace Murm
 			return;
 
 		const auto& data = QJson::Parser ().parse (reply);
+		if (!CheckReplyData (data, reply))
+			return;
+
 		auto respList = data.toMap () ["response"].toList ();
 		if (respList.isEmpty ())
 		{
@@ -900,9 +923,12 @@ namespace Murm
 		if (!CheckFinishedReply (reply))
 			return;
 
-		const auto& data = QJson::Parser ().parse (reply);
-
 		auto info = Reply2ChatInfo_.take (reply);
+
+		const auto& data = QJson::Parser ().parse (reply);
+		if (!CheckReplyData (data, reply))
+			return;
+
 		info.ChatID_ = data.toMap () ["response"].toULongLong ();
 
 		emit gotChatInfo (info);
@@ -915,6 +941,9 @@ namespace Murm
 			return;
 
 		const auto& data = QJson::Parser ().parse (reply);
+		if (!CheckReplyData (data, reply))
+			return;
+
 		const auto& map = data.toMap () ["response"].toMap ();
 
 		QList<qulonglong> users;
@@ -937,6 +966,9 @@ namespace Murm
 		auto removeInfo = Reply2ChatRemoveInfo_.take (reply);
 
 		const auto& data = QJson::Parser ().parse (reply);
+		if (!CheckReplyData (data, reply))
+			return;
+
 		const auto& map = data.toMap ();
 		if (map ["response"].toULongLong () == 1)
 			emit chatUserRemoved (removeInfo.Chat_, removeInfo.User_);
@@ -953,6 +985,9 @@ namespace Murm
 			return;
 
 		const auto& data = QJson::Parser ().parse (reply);
+		if (!CheckReplyData (data, reply))
+			return;
+
 		const auto code = data.toMap ().value ("response", -1).toULongLong ();
 		setter (code);
 	}
@@ -967,9 +1002,11 @@ namespace Murm
 		if (!setter)
 			return;
 
-		QHash<int, QString> result;
-
 		const auto& data = QJson::Parser ().parse (reply);
+		if (!CheckReplyData (data, reply))
+			return;
+
+		QHash<int, QString> result;
 		for (const auto& item : data.toMap () ["response"].toList ())
 		{
 			const auto& map = item.toMap ();
@@ -1103,9 +1140,11 @@ namespace Murm
 		if (!setter)
 			return;
 
-		FullMessageInfo info;
-
 		const auto& data = QJson::Parser ().parse (reply);
+		if (!CheckReplyData (data, reply))
+			return;
+
+		FullMessageInfo info;
 		const auto& infoList = data.toMap () ["response"].toList ();
 		for (const auto& item : infoList)
 		{
@@ -1133,9 +1172,11 @@ namespace Murm
 			return;
 		}
 
-		QList<PhotoInfo> result;
-
 		const auto& data = QJson::Parser ().parse (reply);
+		if (!CheckReplyData (data, reply))
+			return;
+
+		QList<PhotoInfo> result;
 		for (const auto& item : data.toMap () ["response"].toList ())
 			result << PhotoMap2Info (item.toMap ());
 

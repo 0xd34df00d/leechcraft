@@ -153,6 +153,7 @@ namespace Murm
 	private:
 		void PushFriendsRequest ();
 		bool CheckFinishedReply (QNetworkReply*);
+		bool CheckReplyData (const QVariant&, QNetworkReply*);
 	public slots:
 		void reauth ();
 	private slots:
