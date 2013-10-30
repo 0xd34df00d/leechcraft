@@ -569,9 +569,17 @@ namespace Murm
 		if (!CaptchaId2Call_.contains (cid))
 			return;
 
-		const auto& call = CaptchaId2Call_.take (cid);
+		auto call = CaptchaId2Call_.take (cid);
 		if (value.isEmpty ())
 			return;
+
+		call.ClearParams ();
+		call.AddParam ({ "captcha_sid", cid });
+		call.AddParam ({ "captcha_img", value });
+
+		PreparedCalls_.push_front (call);
+
+		AuthMgr_->GetAuthKey ();
 	}
 
 	void VkConnection::PushFriendsRequest ()
