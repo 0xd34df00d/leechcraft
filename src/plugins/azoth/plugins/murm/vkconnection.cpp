@@ -982,11 +982,11 @@ namespace Murm
 	void VkConnection::handleMessageSent ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!CheckFinishedReply (reply))
-			return;
-
 		const auto& setter = MsgReply2Setter_.take (reply);
 		if (!setter)
+			return;
+
+		if (!CheckFinishedReply (reply))
 			return;
 
 		const auto& data = QJson::Parser ().parse (reply);
@@ -1000,11 +1000,11 @@ namespace Murm
 	void VkConnection::handleCountriesFetched ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!CheckFinishedReply (reply))
-			return;
-
 		const auto& setter = CountryReply2Setter_.take (reply);
 		if (!setter)
+			return;
+
+		if (!CheckFinishedReply (reply))
 			return;
 
 		const auto& data = QJson::Parser ().parse (reply);
@@ -1138,11 +1138,11 @@ namespace Murm
 	void VkConnection::handleMessageInfoFetched ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!CheckFinishedReply (reply))
-			return;
-
 		const auto& setter = Reply2MessageSetter_.take (reply);
 		if (!setter)
+			return;
+
+		if (!CheckFinishedReply (reply))
 			return;
 
 		const auto& data = QJson::Parser ().parse (reply);
@@ -1166,9 +1166,6 @@ namespace Murm
 	void VkConnection::handlePhotoInfosFetched ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!CheckFinishedReply (reply))
-			return;
-
 		const auto& setter = Reply2PhotoSetter_.take (reply);
 		if (!setter)
 		{
@@ -1176,6 +1173,9 @@ namespace Murm
 					<< "no setter";
 			return;
 		}
+
+		if (!CheckFinishedReply (reply))
+			return;
 
 		const auto& data = QJson::Parser ().parse (reply);
 		if (!CheckReplyData (data, reply))
