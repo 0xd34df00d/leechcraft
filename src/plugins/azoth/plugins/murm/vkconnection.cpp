@@ -599,9 +599,26 @@ namespace Murm
 		return false;
 	}
 
-	bool VkConnection::CheckReplyData (const QVariant& map, QNetworkReply *reply)
+	bool VkConnection::CheckReplyData (const QVariant& mapVar, QNetworkReply *reply)
 	{
-		return true;
+		const auto& map = mapVar.toMap ();
+		if (!map.contains ("error"))
+			return true;
+
+		const auto& errMap = map ["error"].toMap ();
+		const auto ec = errMap ["error_code"].toULongLong ();
+
+		Logger_ << "got error:" << errMap ["error_code"].toULongLong () << errMap ["error_msg"].toString ();
+		Logger_ << errMap;
+
+		switch (ec)
+		{
+		case 5:
+			reauth ();
+			break;
+		}
+
+		return false;
 	}
 
 	void VkConnection::reauth ()
