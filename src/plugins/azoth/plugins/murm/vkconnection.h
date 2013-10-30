@@ -103,6 +103,8 @@ namespace Murm
 		};
 		QHash<QNetworkReply*, ChatRemoveInfo> Reply2ChatRemoveInfo_;
 
+		QHash<QString, PreparedCall_f> CaptchaId2Call_;
+
 		int APIErrorCount_ = 0;
 		bool ShouldRerunPrepared_ = false;
 
@@ -151,6 +153,8 @@ namespace Murm
 		void SetMarkingOnlineEnabled (bool);
 
 		void QueueRequest (PreparedCall_f);
+
+		void HandleCaptcha (const QString& cid, const QString& value);
 	private:
 		void PushFriendsRequest ();
 
@@ -214,6 +218,8 @@ namespace Murm
 		void chatUserRemoved (qulonglong, qulonglong);
 
 		void userStateChanged (qulonglong uid, bool online);
+
+		void captchaNeeded (const QString& sid, const QUrl& url);
 	};
 }
 }

@@ -525,6 +525,16 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
+	void VkConnection::HandleCaptcha (const QString& cid, const QString& value)
+	{
+		if (!CaptchaId2Call_.contains (cid))
+			return;
+
+		const auto& call = CaptchaId2Call_.take (cid);
+		if (value.isEmpty ())
+			return;
+	}
+
 	void VkConnection::PushFriendsRequest ()
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
@@ -626,6 +636,25 @@ namespace Murm
 			RescheduleRequest (reply);
 			reauth ();
 			break;
+		case 14:
+		{
+			const auto pos = FindRunning (reply);
+			if (pos == RunningCalls_.end ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "non-running reply captcha";
+				break;
+			}
+
+			const auto& cid = errMap ["captcha_sid"].toString ();
+			const auto& img = errMap ["captcha_img"].toString ();
+
+			CaptchaId2Call_ [cid] = pos->second;
+
+			emit captchaNeeded (cid, QUrl::fromEncoded (img.toUtf8 ()));
+
+			break;
+		}
 		}
 
 		return false;
