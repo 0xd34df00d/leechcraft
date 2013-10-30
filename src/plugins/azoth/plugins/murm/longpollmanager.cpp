@@ -127,10 +127,13 @@ namespace Murm
 			return;
 
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		auto req = [this, nam] (const QString& key) -> QNetworkReply*
+		auto req = [this, nam] (const QString& key, const VkConnection::UrlParams_t& params) -> QNetworkReply*
 		{
 			QUrl lpUrl ("https://api.vk.com/method/messages.getLongPollServer");
 			lpUrl.addQueryItem ("access_token", key);
+
+			VkConnection::AddParams (lpUrl, params);
+
 			auto reply = nam->get (QNetworkRequest (lpUrl));
 			connect (reply,
 					SIGNAL (finished ()),

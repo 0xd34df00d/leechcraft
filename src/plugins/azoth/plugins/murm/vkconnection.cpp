@@ -136,7 +136,7 @@ namespace Murm
 			std::function<void (qulonglong)> idSetter, MessageType type)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([=] (const QString& key) -> QNetworkReply*
+		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/messages.send");
 
@@ -146,6 +146,10 @@ namespace Murm
 				query += '=' + QByteArray::number (to);
 				query += "&type=1&";
 				query += "message=" + QUrl::toPercentEncoding (body, {}, "+");
+
+				for (auto i = params.begin (); i != params.end (); ++i)
+					query += "&" + QUrl::toPercentEncoding (i.key ()) +
+							"=" + QUrl::toPercentEncoding (i.value ());
 
 				QNetworkRequest req (url);
 				req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
@@ -167,12 +171,14 @@ namespace Murm
 	void VkConnection::SendTyping (qulonglong to)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([this, nam, to] (const QString& key) -> QNetworkReply*
+		PreparedCalls_.push_back ([this, nam, to] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/messages.setActivity");
 				url.addQueryItem ("access_token", key);
 				url.addQueryItem ("uid", QString::number (to));
 				url.addQueryItem ("type", "typing");
+
+				AddParams (url, params);
 
 				auto reply = nam->get (QNetworkRequest (url));
 				connect (reply,
@@ -201,11 +207,13 @@ namespace Murm
 		const auto& joined = CommaJoin (ids);
 
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([this, nam, joined] (const QString& key) -> QNetworkReply*
+		PreparedCalls_.push_back ([this, nam, joined] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/messages.markAsRead");
 				url.addQueryItem ("access_token", key);
 				url.addQueryItem ("mids", joined);
+
+				AddParams (url, params);
 
 				auto reply = nam->get (QNetworkRequest (url));
 				connect (reply,
@@ -222,7 +230,7 @@ namespace Murm
 		const auto& joined = CommaJoin (codes);
 
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([=] (const QString& key) -> QNetworkReply*
+		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QString method;
 				switch (type)
@@ -239,6 +247,8 @@ namespace Murm
 				url.addQueryItem ("access_token", key);
 				url.addQueryItem ("cids", joined);
 
+				AddParams (url, params);
+
 				auto reply = nam->get (QNetworkRequest (url));
 				CountryReply2Setter_ [reply] = setter;
 				connect (reply,
@@ -254,12 +264,15 @@ namespace Murm
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
 		const auto& joined = CommaJoin (ids);
-		PreparedCalls_.push_back ([this, nam, joined] (const QString& key) -> QNetworkReply*
+		PreparedCalls_.push_back ([this, nam, joined] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/users.get");
 				url.addQueryItem ("access_token", key);
 				url.addQueryItem ("uids", joined);
 				url.addQueryItem ("fields", UserFields);
+
+				AddParams (url, params);
+
 				auto reply = nam->get (QNetworkRequest (url));
 				connect (reply,
 						SIGNAL (finished ()),
@@ -273,12 +286,14 @@ namespace Murm
 	void VkConnection::GetMessageInfo (qulonglong id, MessageInfoSetter_f setter)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([=] (const QString& key) -> QNetworkReply*
+		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/messages.getById");
 				url.addQueryItem ("access_token", key);
 				url.addQueryItem ("mid", QString::number (id));
 				url.addQueryItem ("photo_sizes", "1");
+
+				AddParams (url, params);
 
 				auto reply = nam->get (QNetworkRequest (url));
 				Reply2MessageSetter_ [reply] = setter;
@@ -295,11 +310,13 @@ namespace Murm
 	{
 		const auto& joined = ids.join (",");
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([=] (const QString& key) -> QNetworkReply*
+		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/photos.getById");
 				url.addQueryItem ("access_token", key);
 				url.addQueryItem ("photos", joined);
+
+				AddParams (url, params);
 
 				auto reply = nam->get (QNetworkRequest (url));
 				Reply2PhotoSetter_ [reply] = setter;
@@ -316,12 +333,14 @@ namespace Murm
 	{
 		const auto& joined = CommaJoin (ids);
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([this, joined, name, nam] (const QString& key) -> QNetworkReply*
+		PreparedCalls_.push_back ([this, joined, name, nam] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/friends.addList");
 				url.addQueryItem ("access_token", key);
 				url.addQueryItem ("name", name);
 				url.addQueryItem ("uids", joined);
+
+				AddParams (url, params);
 
 				auto reply = nam->get (QNetworkRequest (url));
 				Reply2ListName_ [reply] = name;
@@ -338,13 +357,15 @@ namespace Murm
 	{
 		const auto& joined = CommaJoin (newContents);
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([this, joined, list, nam] (const QString& key) -> QNetworkReply*
+		PreparedCalls_.push_back ([this, joined, list, nam] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/friends.editList");
 				url.addQueryItem ("access_token", key);
 				url.addQueryItem ("lid", QString::number (list.ID_));
 				url.addQueryItem ("name", list.Name_);
 				url.addQueryItem ("uids", joined);
+
+				AddParams (url, params);
 
 				auto reply = nam->get (QNetworkRequest (url));
 				connect (reply,
@@ -361,12 +382,14 @@ namespace Murm
 		const auto& joined = CommaJoin (ids);
 		auto nam = Proxy_->GetNetworkAccessManager ();
 
-		PreparedCalls_.push_back ([this, joined, nam] (const QString& key) -> QNetworkReply*
+		PreparedCalls_.push_back ([this, joined, nam] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/storage.set");
 				url.addQueryItem ("access_token", key);
 				url.addQueryItem ("key", "non_roster_items");
 				url.addQueryItem ("value", joined);
+
+				AddParams (url, params);
 
 				auto reply = nam->get (QNetworkRequest (url));
 				connect (reply,
@@ -382,12 +405,14 @@ namespace Murm
 	{
 		const auto& joined = CommaJoin (ids);
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([=] (const QString& key) -> QNetworkReply*
+		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/messages.createChat");
 				url.addQueryItem ("access_token", key);
 				url.addQueryItem ("title", title);
 				url.addQueryItem ("uids", joined);
+
+				AddParams (url, params);
 
 				auto reply = nam->get (QNetworkRequest (url));
 				Reply2ChatInfo_ [reply] = { 0, title, ids };
@@ -403,11 +428,13 @@ namespace Murm
 	void VkConnection::RequestChatInfo (qulonglong id)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([=] (const QString& key) -> QNetworkReply*
+		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/messages.getChat");
 				url.addQueryItem ("access_token", key);
 				url.addQueryItem ("chat_id", QString::number (id));
+
+				AddParams (url, params);
 
 				auto reply = nam->get (QNetworkRequest (url));
 				connect (reply,
@@ -422,12 +449,14 @@ namespace Murm
 	void VkConnection::RemoveChatUser (qulonglong chat, qulonglong user)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([=] (const QString& key) -> QNetworkReply*
+		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/messages.removeChatUser");
 				url.addQueryItem ("access_token", key);
 				url.addQueryItem ("chat_id", QString::number (chat));
 				url.addQueryItem ("uid", QString::number (user));
+
+				AddParams (url, params);
 
 				auto reply = nam->get (QNetworkRequest (url));
 				Reply2ChatRemoveInfo_ [reply] = ChatRemoveInfo { chat, user };
@@ -443,11 +472,13 @@ namespace Murm
 	void VkConnection::SetStatus (const QString& status)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([=] (const QString& key) -> QNetworkReply*
+		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/status.set");
 				url.addQueryItem ("access_token", key);
 				url.addQueryItem ("text", status);
+
+				AddParams (url, params);
 
 				auto reply = nam->get (QNetworkRequest (url));
 				connect (reply,
@@ -472,13 +503,14 @@ namespace Murm
 		}
 
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([this, nam] (const QString& key) -> QNetworkReply*
+		PreparedCalls_.push_back ([this, nam] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl lpUrl ("https://api.vk.com/method/users.get");
 				lpUrl.addQueryItem ("access_token", key);
 				lpUrl.addQueryItem ("fields",
 						"first_name,last_name,nickname,photo,photo_big,sex,"
 						"bdate,city,country,timezone,contacts,education");
+				AddParams (lpUrl, params);
 				auto reply = nam->get (QNetworkRequest (lpUrl));
 				connect (reply,
 						SIGNAL (finished ()),
@@ -486,10 +518,11 @@ namespace Murm
 						SLOT (handleGotSelfInfo ()));
 				return reply;
 			});
-		PreparedCalls_.push_back ([this, nam] (const QString& key) -> QNetworkReply*
+		PreparedCalls_.push_back ([this, nam] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl lpUrl ("https://api.vk.com/method/friends.getLists");
 				lpUrl.addQueryItem ("access_token", key);
+				AddParams (lpUrl, params);
 				auto reply = nam->get (QNetworkRequest (lpUrl));
 				connect (reply,
 						SIGNAL (finished ()),
@@ -525,6 +558,12 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
+	void VkConnection::AddParams (QUrl& url, const UrlParams_t& params)
+	{
+		for (auto i = params.begin (); i != params.end (); ++i)
+			url.addQueryItem (i.key (), i.value ());
+	}
+
 	void VkConnection::HandleCaptcha (const QString& cid, const QString& value)
 	{
 		if (!CaptchaId2Call_.contains (cid))
@@ -539,11 +578,12 @@ namespace Murm
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
 
-		PreparedCalls_.push_back ([this, nam] (const QString& key) -> QNetworkReply*
+		PreparedCalls_.push_back ([this, nam] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl friendsUrl ("https://api.vk.com/method/friends.get");
 				friendsUrl.addQueryItem ("access_token", key);
 				friendsUrl.addQueryItem ("fields", UserFields);
+				AddParams (friendsUrl, params);
 				auto reply = nam->get (QNetworkRequest (friendsUrl));
 				connect (reply,
 						SIGNAL (finished ()),
@@ -552,11 +592,12 @@ namespace Murm
 				return reply;
 			});
 
-		PreparedCalls_.push_back ([this, nam] (const QString& key) -> QNetworkReply*
+		PreparedCalls_.push_back ([this, nam] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/storage.get");
 				url.addQueryItem ("access_token", key);
 				url.addQueryItem ("key", "non_roster_items");
+				AddParams (url, params);
 				auto reply = nam->get (QNetworkRequest (url));
 				connect (reply,
 						SIGNAL (finished ()),
@@ -719,10 +760,11 @@ namespace Murm
 			return;
 
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([this, nam] (const QString& key) -> QNetworkReply*
+		PreparedCalls_.push_back ([this, nam] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/account.setOnline");
 				url.addQueryItem ("access_token", key);
+				AddParams (url, params);
 				auto reply = nam->get (QNetworkRequest (url));
 				connect (reply,
 						SIGNAL (finished ()),
@@ -905,11 +947,12 @@ namespace Murm
 		emit gotUsers (users);
 
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([this, nam] (const QString& key) -> QNetworkReply*
+		PreparedCalls_.push_back ([this, nam] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl msgUrl ("https://api.vk.com/method/messages.get");
 				msgUrl.addQueryItem ("access_token", key);
 				msgUrl.addQueryItem ("filters", "1");
+				AddParams (msgUrl, params);
 				auto reply = nam->get (QNetworkRequest (msgUrl));
 				connect (reply,
 						SIGNAL (finished ()),

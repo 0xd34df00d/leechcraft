@@ -68,9 +68,13 @@ namespace Murm
 
 		QByteArray LastCookies_;
 	public:
+		typedef QMap<QString, QString> UrlParams_t;
+
 		class PreparedCall_f
 		{
-			std::function<QNetworkReply* (QString)> Call_;
+			std::function<QNetworkReply* (QString, UrlParams_t)> Call_;
+
+			UrlParams_t Params_;
 		public:
 			PreparedCall_f () = default;
 
@@ -82,7 +86,7 @@ namespace Murm
 
 			QNetworkReply* operator() (const QString& key) const
 			{
-				return Call_ (key);
+				return Call_ (key, Params_);
 			}
 		};
 	private:
@@ -169,6 +173,7 @@ namespace Murm
 		void SetMarkingOnlineEnabled (bool);
 
 		void QueueRequest (PreparedCall_f);
+		static void AddParams (QUrl&, const UrlParams_t&);
 
 		void HandleCaptcha (const QString& cid, const QString& value);
 	private:
