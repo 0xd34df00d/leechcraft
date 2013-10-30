@@ -171,6 +171,9 @@ namespace Murm
 
 		void finishOffline ();
 
+		void handleCaptcha (const QString&, const QUrl&);
+		void handleCaptchaEntered (const QString&, const QString&);
+
 		void handleConfigDialogAccepted ();
 
 		void emitUpdateAcc ();
