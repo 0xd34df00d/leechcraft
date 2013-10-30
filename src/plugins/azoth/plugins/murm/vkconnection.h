@@ -88,6 +88,16 @@ namespace Murm
 			{
 				return Call_ (key, Params_);
 			}
+
+			void ClearParams ()
+			{
+				Params_.clear ();
+			}
+
+			void AddParam (const QPair<QString, QString>& pair)
+			{
+				Params_ [pair.first] = pair.second;
+			}
 		};
 	private:
 		QList<PreparedCall_f> PreparedCalls_;
