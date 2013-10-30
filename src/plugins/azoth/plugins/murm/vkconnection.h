@@ -165,6 +165,8 @@ namespace Murm
 		void rerunPrepared ();
 		void callWithKey (const QString&);
 
+		void handleReplyDestroyed ();
+
 		void markOnline ();
 
 		void handleListening ();

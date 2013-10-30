@@ -573,13 +573,6 @@ namespace Murm
 		reply->deleteLater ();
 
 		const auto pos = FindRunning (reply);
-		std::shared_ptr<void> eraseGuard (nullptr,
-				[this, pos] (void*)
-				{
-					if (pos != RunningCalls_.end ())
-						RunningCalls_.erase (pos);
-				});
-
 		if (reply->error () == QNetworkReply::NoError)
 		{
 			APIErrorCount_ = 0;
@@ -661,8 +654,28 @@ namespace Murm
 						const auto reply = f (key);
 						Logger_ (IHaveConsole::PacketDirection::Out) << reply->request ().url ();
 						RunningCalls_.append ({ reply, f });
+
+						connect (reply,
+								SIGNAL (destroyed ()),
+								this,
+								SLOT (handleReplyDestroyed ()));
 					});
 		}
+	}
+
+	void VkConnection::handleReplyDestroyed ()
+	{
+		const auto reply = static_cast<QNetworkReply*> (sender ());
+		const auto pos = FindRunning (reply);
+
+		if (pos == RunningCalls_.end ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "finished a non-running reply";
+			return;
+		}
+
+		RunningCalls_.erase (pos);
 	}
 
 	void VkConnection::markOnline ()
