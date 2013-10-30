@@ -116,7 +116,7 @@ namespace Murm
 
 		CurrentPollReply_ = nullptr;
 
-		QTimer::singleShot (100,
+		QTimer::singleShot (1000,
 				this,
 				SLOT (poll ()));
 	}
