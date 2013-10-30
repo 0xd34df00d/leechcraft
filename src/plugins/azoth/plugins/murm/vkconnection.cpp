@@ -575,6 +575,11 @@ namespace Murm
 			return true;
 		}
 
+		qWarning () << Q_FUNC_INFO
+				<< "reply error:"
+				<< reply->error ()
+				<< reply->errorString ();
+
 		if (pos != RunningCalls_.end ())
 			PreparedCalls_.push_front (pos->second);
 		else
