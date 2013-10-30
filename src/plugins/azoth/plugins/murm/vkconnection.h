@@ -73,7 +73,8 @@ namespace Murm
 		QList<PreparedCall_f> PreparedCalls_;
 		LeechCraft::Util::QueueManager *CallQueue_;
 
-		QList<QPair<QNetworkReply*, PreparedCall_f>> RunningCalls_;
+		typedef QList<QPair<QNetworkReply*, PreparedCall_f>> RunningCalls_t;
+		RunningCalls_t RunningCalls_;
 
 		EntryStatus Status_;
 		EntryStatus CurrentStatus_;
@@ -152,6 +153,10 @@ namespace Murm
 		void QueueRequest (PreparedCall_f);
 	private:
 		void PushFriendsRequest ();
+
+		RunningCalls_t::const_iterator FindRunning (QNetworkReply*) const;
+		RunningCalls_t::iterator FindRunning (QNetworkReply*);
+
 		bool CheckFinishedReply (QNetworkReply*);
 		bool CheckReplyData (const QVariant&, QNetworkReply*);
 	public slots:

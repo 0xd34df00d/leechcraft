@@ -556,12 +556,23 @@ namespace Murm
 			});
 	}
 
+	auto VkConnection::FindRunning (QNetworkReply *reply) const -> RunningCalls_t::const_iterator
+	{
+		return std::find_if (RunningCalls_.begin (), RunningCalls_.end (),
+				[reply] (decltype (RunningCalls_.at (0)) call) { return call.first == reply; });
+	}
+
+	auto VkConnection::FindRunning (QNetworkReply *reply) -> RunningCalls_t::iterator
+	{
+		return std::find_if (RunningCalls_.begin (), RunningCalls_.end (),
+				[reply] (decltype (RunningCalls_.at (0)) call) { return call.first == reply; });
+	}
+
 	bool VkConnection::CheckFinishedReply (QNetworkReply *reply)
 	{
 		reply->deleteLater ();
 
-		const auto pos = std::find_if (RunningCalls_.begin (), RunningCalls_.end (),
-				[reply] (decltype (RunningCalls_.at (0)) call) { return call.first == reply; });
+		const auto pos = FindRunning (reply);
 		std::shared_ptr<void> eraseGuard (nullptr,
 				[this, pos] (void*)
 				{
