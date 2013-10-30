@@ -604,17 +604,26 @@ namespace Murm
 
 	void VkAccount::handleCaptcha (const QString& cid, const QUrl& url)
 	{
+		if (IsRequestingCaptcha_)
+		{
+			Conn_->HandleCaptcha (cid, {});
+			return;
+		}
+
 		auto dia = new CaptchaDialog (url, cid, CoreProxy_->GetNetworkAccessManager ());
 		connect (dia,
 				SIGNAL (gotCaptcha (QString, QString)),
 				this,
 				SLOT (handleCaptchaEntered (QString, QString)));
 		dia->show ();
+
+		IsRequestingCaptcha_ = true;
 	}
 
 	void VkAccount::handleCaptchaEntered (const QString& cid, const QString& value)
 	{
 		Conn_->HandleCaptcha (cid, value);
+		IsRequestingCaptcha_ = false;
 	}
 
 	void VkAccount::handleConfigDialogAccepted()

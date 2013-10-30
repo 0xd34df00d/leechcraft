@@ -97,6 +97,8 @@ namespace Murm
 		QPointer<AccountConfigDialog> AccConfigDia_;
 
 		QList<qulonglong> NonRosterItems_;
+
+		bool IsRequestingCaptcha_ = false;
 	public:
 		VkAccount (const QString& name, VkProtocol *proto, ICoreProxy_ptr proxy,
 				const QByteArray& id, const QByteArray& cookies);
