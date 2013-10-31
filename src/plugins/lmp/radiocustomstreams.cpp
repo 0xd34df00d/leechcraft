@@ -40,6 +40,8 @@ namespace LMP
 	: QObject (parent)
 	, Root_ (new QStandardItem (tr ("Custom streams")))
 	{
+		Root_->setData (Media::RadioType::CustomAddableStreams, Media::RadioItemRole::ItemType);
+		Root_->setData ("org.LeechCraft.LMP.Custom", Media::RadioItemRole::RadioID);
 	}
 
 	QList<QStandardItem*> RadioCustomStreams::GetRadioListItems () const
