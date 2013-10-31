@@ -126,12 +126,12 @@ namespace Woodpecker
 							if (medium.contains ("media_url_https"))
 							{
 								text.replace (medium ["url"].toString (),
-									QString ("<a href=\"twitter://media/photo/%1\">photo</a>").arg (medium ["media_url_https"].toString ()));
+									QString ("<a class=\"link\" href=\"twitter://media/photo/%1\">%1</a>").arg (medium ["media_url_https"].toString ()));
 							}
 							else if (medium.contains ("media_url"))
 							{
 								text.replace (medium ["url"].toString (), 
-									QString ("<a href=\"twitter://media/photo/%1\">photo</a>").arg (medium ["media_url"].toString ()));
+									QString ("<a class=\"link\" href=\"twitter://media/photo/%1\">%1</a>").arg (medium ["media_url"].toString ()));
 							}
 							else
 							{

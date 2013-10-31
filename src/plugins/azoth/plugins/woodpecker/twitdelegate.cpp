@@ -37,6 +37,7 @@
 #include <QAbstractTextDocumentLayout>
 #include <QRectF>
 #include <QStyleOption>
+#include <QTextBlock>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/structures.h>
 #include <util/util.h>
@@ -193,6 +194,12 @@ namespace Woodpecker
 
 				if (parentWidget && !anchor.isEmpty ())
 				{
+					const auto& url = anchor.mid (anchor.indexOf ("http"));
+					QTextCharFormat format(textDocument->find (url).charFormat ());
+					format.setUnderlineStyle(QTextCharFormat::DotLine);
+					format.setForeground (QBrush (QPalette::LinkVisited));
+					textDocument->find (url).setCharFormat (format);
+					
 					if (anchor.startsWith ("twitter://"))
 					{
 						KQOAuthParameters param;
@@ -214,13 +221,12 @@ namespace Woodpecker
 						}
 						else if (anchor.startsWith ("twitter://media/photo/"))
 						{
-							const auto& photoUrl = anchor.mid (QString ("twitter://media/photo/").size ());
 							const auto& downloader = Core::Instance ().GetCoreProxy ()->GetNetworkAccessManager ();
-							auto reply = downloader->get (QNetworkRequest (photoUrl));
+							auto reply = downloader->get (QNetworkRequest (url));
 							connect (reply,
-									SIGNAL (finished ()),
-									this,
-									SLOT (showImage ()));
+								SIGNAL (finished ()),
+								this,
+								SLOT (showImage ()));
 						}
 					}
 					else
