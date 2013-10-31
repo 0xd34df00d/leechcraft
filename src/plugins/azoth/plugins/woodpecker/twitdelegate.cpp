@@ -174,7 +174,7 @@ namespace Woodpecker
 
 	void TwitDelegate::HandleClick (const QStyleOptionViewItem& option, const QModelIndex& index, const QMouseEvent* me)
 	{
-		QListWidget *parentWidget = qobject_cast<QListWidget*> (parent ());
+		QListView *parentWidget = qobject_cast<QListView*> (parent ());
 
 		const auto currentTweet = index.data (Qt::UserRole).value<Tweet_ptr> ();
 		const auto position = (me->pos () - option.rect.adjusted (ImageSpace + 14, 4, 0, -22).topLeft ());
@@ -239,13 +239,12 @@ namespace Woodpecker
 
 	bool TwitDelegate::editorEvent (QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem& option, const QModelIndex& index)
 	{
-		QListWidget *parentWidget = qobject_cast<QListWidget*> (parent ());
+		QListView *parentWidget = qobject_cast<QListView*> (parent ());
 
 		if (event->type () == QEvent::MouseButtonRelease)
 		{
 			const QMouseEvent *me = static_cast<QMouseEvent*> (event);
-			if (me)
-				HandleClick (option, index, me);
+			HandleClick (option, index, me);
 		}
 		else if (event->type () == QEvent::MouseMove)
 		{
