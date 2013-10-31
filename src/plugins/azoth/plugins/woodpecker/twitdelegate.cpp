@@ -55,13 +55,13 @@ namespace Woodpecker
 	const int ImageSpace = 50;
 	const int IconSize = 48;
 	const int Padding = 5;
-	
+
 	TwitDelegate::TwitDelegate (QObject *parent, Plugin *plugin)
 	: QStyledItemDelegate (parent)
 	, ParentPlugin_ (plugin)
 	{
 	}
-	
+
 	void TwitDelegate::paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
 		const QStyleOptionViewItemV4 o = option;
@@ -77,7 +77,7 @@ namespace Woodpecker
 
 		const auto& bgBrush = QBrush (o.palette.color (QPalette::Base));
 		const auto& selBgBrush = QBrush (o.palette.color (QPalette::Highlight));
-		
+
 		if (option.state & QStyle::State_Selected)
 		{
 			painter->setBrush (selBgBrush);
@@ -91,12 +91,12 @@ namespace Woodpecker
 			painter->drawLine (r.topLeft (), r.bottomLeft ());
 
 			painter->setPen (fontMarkedPen);
-		} 
-		else 
+		}
+		else
 		{
 			// Background
 			// Alternating colors
-			
+
 			painter->setBrush (bgBrush);
 			painter->drawRect (r);
 
@@ -106,13 +106,13 @@ namespace Woodpecker
 			painter->drawLine (r.topRight (), r.bottomRight ());
 			painter->drawLine (r.bottomLeft (), r.bottomRight ());
 			painter->drawLine (r.topLeft (), r.bottomLeft ());
-			
+
 			painter->setPen (fontPen);
 		}
-		
+
 		// Get title, description and icon
 		auto currentTweet = index.data (Qt::UserRole).value<Tweet_ptr> ();
-		if (!currentTweet) 
+		if (!currentTweet)
 		{
 			qDebug () << "Can't recieve twit";
 			return;
@@ -124,11 +124,11 @@ namespace Woodpecker
 		painter->setRenderHints (QPainter::HighQualityAntialiasing | QPainter::Antialiasing);
 		// Icon
 		QIcon ic = QIcon (index.data (Qt::DecorationRole).value<QPixmap>());
-		if (!ic.isNull ()) 
+		if (!ic.isNull ())
 		{
 			r = option.rect.adjusted (Padding, Padding * 2, -Padding * 2, -Padding * 2);
 			if (r.width () > IconSize || r.height () > IconSize)
-				r.adjust(0, 0, -(r.width () - IconSize), -(r.height () - IconSize));
+				r.adjust (0, 0, -(r.width () - IconSize), -(r.height () - IconSize));
 			ic.paint (painter, r, Qt::AlignVCenter | Qt::AlignLeft);
 		}
 
@@ -144,7 +144,7 @@ namespace Woodpecker
 		painter->restore ();
 
 		// Author
-		r = option.rect.adjusted (ImageSpace + Padding, r.height() - mainFont.pixelSize() - Padding * 2, -Padding * 2, 0);
+		r = option.rect.adjusted (ImageSpace + Padding, r.height () - mainFont.pixelSize () - Padding * 2, -Padding * 2, 0);
 		QRect author_rect (r.left () + Padding, r.bottom () - painter->fontMetrics ().height () - 8, painter->fontMetrics ().width (author), r.height ());
 		painter->setFont (mainFont);
 		painter->drawText (author_rect, Qt::AlignLeft, author, &r);
@@ -152,10 +152,10 @@ namespace Woodpecker
 		// Time
 		r = option.rect.adjusted (ImageSpace + Padding, Padding, -Padding * 2, -Padding);
 		painter->setFont (mainFont);
-		painter->drawText (r.right () - painter->fontMetrics ().width (time), 
+		painter->drawText (r.right () - painter->fontMetrics ().width (time),
 						   r.bottom () - painter->fontMetrics ().height (),
-						   r.width (), 
-						   r.height (), 
+						   r.width (),
+						   r.height (),
 						   Qt::AlignLeft, time, &r);
 		painter->setPen (linePen);
 	}
@@ -167,81 +167,85 @@ namespace Woodpecker
 		const auto currentTweet = index.data (Qt::UserRole).value<Tweet_ptr> ();
 		result.setHeight (std::max (
 			qRound (currentTweet->GetDocument ()->documentLayout ()->documentSize ().height () +
-					fm.height () + Padding * 3), 
+					fm.height () + Padding * 3),
 					IconSize + Padding * 2));
 		return result;
 	}
+
+	void TwitDelegate::HandleClick (const QStyleOptionViewItem& option, const QModelIndex& index, const QMouseEvent* me)
+	{
+		QListWidget *parentWidget = qobject_cast<QListWidget*> (parent ());
+
+		const auto currentTweet = index.data (Qt::UserRole).value<Tweet_ptr> ();
+		const auto position = (me->pos () - option.rect.adjusted (ImageSpace + 14, 4, 0, -22).topLeft ());
+
+		const QTextDocument *textDocument = currentTweet->GetDocument ();
+		const int textCursorPosition =
+		textDocument->documentLayout ()->hitTest (position, Qt::FuzzyHit);
+		const QChar character (textDocument->characterAt (textCursorPosition));
+		const QString string (character);
+
+		const auto anchor = textDocument->documentLayout ()->anchorAt (position);
+
+		if (!parentWidget || anchor.isEmpty ())
+			return;
+
+		const auto& url = anchor.mid (anchor.indexOf ("http"));
+		QTextCharFormat format (textDocument->find (url).charFormat ());
+		format.setUnderlineStyle (QTextCharFormat::DotLine);
+		format.setForeground (QBrush (QPalette::LinkVisited));
+		textDocument->find (url).setCharFormat (format);
+
+		if (anchor.startsWith ("twitter://"))
+		{
+			KQOAuthParameters param;
+			if (anchor.startsWith ("twitter://user/@"))
+			{
+				const auto& username = anchor.mid (QString ("twitter://user/@").size ());
+				param.insert ("screen_name", username.toUtf8 ().constData ());
+				ParentPlugin_->AddTab (ParentPlugin_->UserTC_,
+						       tr ("User %1").arg (username),
+						       FeedMode::UserTimeline, param);
+			}
+			else if (anchor.startsWith ("twitter://search/"))
+			{
+				const auto& query = anchor.mid (QString ("twitter://search/").size ());
+				param.insert ("q", query.toUtf8 ());
+				ParentPlugin_->AddTab (ParentPlugin_->SearchTC_,
+						       tr ("Search %1").arg (query),
+						       FeedMode::SearchResult, param);
+			}
+			else if (anchor.startsWith ("twitter://media/photo/"))
+				if (XmlSettingsManager::Instance ()->property ("inline_photo").toBool ())
+				{
+					const auto& downloader = Core::Instance ().GetCoreProxy ()->GetNetworkAccessManager ();
+					auto reply = downloader->get (QNetworkRequest (url));
+					connect (reply,
+						 SIGNAL (finished ()),
+						 this, SLOT (showImage ()));
+				}
+				else
+				{
+					Entity e = Util::MakeEntity (QUrl (url), QString (), OnlyHandle | FromUserInitiated);
+					Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
+				}
+		}
+		else
+		{
+			Entity e = Util::MakeEntity (QUrl (url), QString (), OnlyHandle | FromUserInitiated);
+			Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
+		}
+	};
 
 	bool TwitDelegate::editorEvent (QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem& option, const QModelIndex& index)
 	{
 		QListWidget *parentWidget = qobject_cast<QListWidget*> (parent ());
 
-		if (event->type () == QEvent::MouseButtonRelease) 
+		if (event->type () == QEvent::MouseButtonRelease)
 		{
 			const QMouseEvent *me = static_cast<QMouseEvent*> (event);
 			if (me)
-			{
-				const auto currentTweet = index.data (Qt::UserRole).value<Tweet_ptr> ();
-				const auto position = (me->pos () - option.rect.adjusted (ImageSpace + 14, 4, 0, -22).topLeft ());
-
-				const QTextDocument *textDocument = currentTweet->GetDocument ();
-				const int textCursorPosition =
-					textDocument->documentLayout ()->hitTest (position, Qt::FuzzyHit);
-				const QChar character (textDocument->characterAt (textCursorPosition));
-				const QString string (character);
-
-				const auto anchor = textDocument->documentLayout ()->anchorAt (position);
-
-				if (parentWidget && !anchor.isEmpty ())
-				{
-					const auto& url = anchor.mid (anchor.indexOf ("http"));
-					QTextCharFormat format(textDocument->find (url).charFormat ());
-					format.setUnderlineStyle(QTextCharFormat::DotLine);
-					format.setForeground (QBrush (QPalette::LinkVisited));
-					textDocument->find (url).setCharFormat (format);
-					
-					if (anchor.startsWith ("twitter://"))
-					{
-						KQOAuthParameters param;
-						if (anchor.startsWith ("twitter://user/@"))
-						{
-							const auto& username = anchor.mid (QString ("twitter://user/@").size ());
-							param.insert ("screen_name", username.toUtf8 ().constData ());
-							ParentPlugin_->AddTab (ParentPlugin_->UserTC_,
-													tr ("User %1").arg (username),
-													FeedMode::UserTimeline, param);
-						}
-						else if (anchor.startsWith ("twitter://search/"))
-						{
-							const auto& query = anchor.mid (QString ("twitter://search/").size ());
-							param.insert ("q", query.toUtf8 ());
-							ParentPlugin_->AddTab (ParentPlugin_->SearchTC_,
-												   tr ("Search %1").arg (query),
-												   FeedMode::SearchResult, param);
-						}
-						else if (anchor.startsWith ("twitter://media/photo/"))
-							if (XmlSettingsManager::Instance ()->property ("inline_photo").toBool ())
-							{
-							const auto& downloader = Core::Instance ().GetCoreProxy ()->GetNetworkAccessManager ();
-							auto reply = downloader->get (QNetworkRequest (url));
-							connect (reply,
-								SIGNAL (finished ()),
-								this,
-								SLOT (showImage ()));
-							}
-							else
-							{
-								Entity e = Util::MakeEntity (QUrl (url), QString (), OnlyHandle | FromUserInitiated);
-								Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
-							}
-					}
-					else
-					{
-						Entity e = Util::MakeEntity (QUrl (url), QString (), OnlyHandle | FromUserInitiated);
-						Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
-					}
-				}
-			}
+				HandleClick (option, index, me);
 		}
 		else if (event->type () == QEvent::MouseMove)
 		{
@@ -253,7 +257,7 @@ namespace Woodpecker
 
 				const auto anchor = currentTweet->GetDocument ()->documentLayout ()->anchorAt (position);
 
-				if (parentWidget) 
+				if (parentWidget)
 				{
 					if (!anchor.isEmpty ())
 						parentWidget->setCursor (Qt::PointingHandCursor);
@@ -264,19 +268,19 @@ namespace Woodpecker
 		}
 		return QAbstractItemDelegate::editorEvent (event, model, option, index);
 	}
-	
+
 	void TwitDelegate::showImage ()
 	{
 		const auto& data = qobject_cast<QNetworkReply*> (sender ())->readAll ();
 		sender ()->deleteLater ();
-		
+
 		QPixmap image;
 		if (image.loadFromData (data))
 		{
 			auto position = qobject_cast<QWidget*> (parent ())->geometry ().center ();
 			position.rx () -= image.width () / 2;
 			position.ry () -= image.height () / 2;
-			Util::ShowPixmapLabel(image, position);
+			Util::ShowPixmapLabel (image, position);
 		}
 	}
 }
