@@ -87,14 +87,7 @@ namespace LMP
 
 		auto providerObjs = pm->GetAllCastableRoots<Media::IRadioStationProvider*> ();
 		for (auto provObj : providerObjs)
-		{
-			auto prov = qobject_cast<Media::IRadioStationProvider*> (provObj);
-			for (auto item : prov->GetRadioListItems ())
-			{
-				StationsModel_->appendRow (item);
-				Root2Prov_ [item] = prov;
-			}
-		}
+			InitProvider (provObj);
 	}
 
 	QAbstractItemModel* RadioManager::GetModel () const
@@ -204,6 +197,16 @@ namespace LMP
 			QTimer::singleShot (15000,
 					this,
 					SLOT (refreshAll ()));
+	}
+
+	void RadioManager::InitProvider (QObject *provObj)
+	{
+		auto prov = qobject_cast<Media::IRadioStationProvider*> (provObj);
+		for (auto item : prov->GetRadioListItems ())
+		{
+			StationsModel_->appendRow (item);
+			Root2Prov_ [item] = prov;
+		}
 	}
 
 	void RadioManager::HandlePile (QStandardItem*, QObject *pileObj)

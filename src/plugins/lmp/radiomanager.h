@@ -69,6 +69,7 @@ namespace LMP
 
 		void HandleWokeUp ();
 	private:
+		void InitProvider (QObject*);
 		void HandlePile (QStandardItem*, QObject*);
 	public slots:
 		void refreshAll ();
