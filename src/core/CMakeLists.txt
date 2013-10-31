@@ -165,7 +165,6 @@ target_link_libraries (leechcraft
 		)
 
 install (TARGETS leechcraft DESTINATION ${LC_BINDIR})
-install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES coresettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 if (USE_QT5)
