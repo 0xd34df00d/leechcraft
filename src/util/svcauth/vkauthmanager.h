@@ -55,6 +55,8 @@ namespace SvcAuth
 
 		ICoreProxy_ptr Proxy_;
 
+		const QString AccountHR_;
+
 		QNetworkAccessManager *AuthNAM_;
 		Util::CustomCookieJar *Cookies_;
 
@@ -79,7 +81,7 @@ namespace SvcAuth
 		QList<RequestQueue_ptr> ManagedQueues_;
 		QList<PrioRequestQueue_ptr> PrioManagedQueues_;
 	public:
-		VkAuthManager (const QString& clientId,
+		VkAuthManager (const QString& accountName, const QString& clientId,
 				const QStringList& scope, const QByteArray& cookies,
 				ICoreProxy_ptr, QueueManager* = nullptr, QObject* = nullptr);
 

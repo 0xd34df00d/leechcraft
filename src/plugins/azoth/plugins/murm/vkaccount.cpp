@@ -60,7 +60,7 @@ namespace Murm
 	, PhotoStorage_ (new PhotoStorage (proxy->GetNetworkAccessManager (), ID_))
 	, Name_ (name)
 	, Logger_ (new Logger (ID_, this))
-	, Conn_ (new VkConnection (cookies, proxy, *Logger_))
+	, Conn_ (new VkConnection (name, cookies, proxy, *Logger_))
 	, GroupsMgr_ (new GroupsManager (Conn_))
 	, GeoResolver_ (new GeoResolver (Conn_, this))
 	{

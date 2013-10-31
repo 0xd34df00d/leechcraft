@@ -53,11 +53,13 @@ namespace SvcAuth
 		}
 	}
 
-	VkAuthManager::VkAuthManager (const QString& id, const QStringList& scope,
+	VkAuthManager::VkAuthManager (const QString& accName,
+			const QString& id, const QStringList& scope,
 			const QByteArray& cookies, ICoreProxy_ptr proxy,
 			QueueManager *queueMgr, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
+	, AccountHR_ (accName)
 	, AuthNAM_ (new QNetworkAccessManager (this))
 	, Cookies_ (new Util::CustomCookieJar)
 	, Queue_ (queueMgr)
@@ -198,7 +200,8 @@ namespace SvcAuth
 	void VkAuthManager::reauth ()
 	{
 		auto view = new QWebView;
-		view->setWindowTitle (tr ("VK.com authentication"));
+		view->setWindowTitle (tr ("VK.com authentication for %1")
+				.arg (AccountHR_));
 		view->setWindowFlags (Qt::Window);
 		view->resize (800, 600);
 		view->page ()->setNetworkAccessManager (AuthNAM_);

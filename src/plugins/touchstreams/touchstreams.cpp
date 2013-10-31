@@ -50,7 +50,8 @@ namespace TouchStreams
 
 		Queue_ = new Util::QueueManager (400);
 
-		AuthMgr_ = new Util::SvcAuth::VkAuthManager ("3298289",
+		AuthMgr_ = new Util::SvcAuth::VkAuthManager ("TouchStreams",
+				"3298289",
 				{ "audio", "friends" },
 				XmlSettingsManager::Instance ().property ("Cookies").toByteArray (),
 				proxy,

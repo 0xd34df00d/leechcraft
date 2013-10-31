@@ -51,8 +51,9 @@ namespace Murm
 				"bdate,city,country,timezone,contacts,education";
 	}
 
-	VkConnection::VkConnection (const QByteArray& cookies, ICoreProxy_ptr proxy, Logger& logger)
-	: AuthMgr_ (new Util::SvcAuth::VkAuthManager ("3778319",
+	VkConnection::VkConnection (const QString& name,
+			const QByteArray& cookies, ICoreProxy_ptr proxy, Logger& logger)
+	: AuthMgr_ (new Util::SvcAuth::VkAuthManager (name, "3778319",
 			{ "messages", "notifications", "friends", "status", "photos" },
 			cookies, proxy, nullptr, this))
 	, Proxy_ (proxy)

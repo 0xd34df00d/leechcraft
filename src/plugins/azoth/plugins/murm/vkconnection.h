@@ -147,7 +147,7 @@ namespace Murm
 			Chat
 		};
 
-		VkConnection (const QByteArray&, ICoreProxy_ptr, Logger&);
+		VkConnection (const QString&, const QByteArray&, ICoreProxy_ptr, Logger&);
 
 		const QByteArray& GetCookies () const;
 

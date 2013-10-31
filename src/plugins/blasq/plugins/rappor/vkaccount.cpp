@@ -53,7 +53,8 @@ namespace Rappor
 	, Service_ (service)
 	, Proxy_ (proxy)
 	, CollectionsModel_ (new NamedModel<QStandardItemModel> (this))
-	, AuthMgr_ (new Util::SvcAuth::VkAuthManager ("3762977", { "photos" }, cookies, proxy))
+	, AuthMgr_ (new Util::SvcAuth::VkAuthManager (name,
+			"3762977", { "photos" }, cookies, proxy))
 	, RequestQueue_ (new Util::QueueManager (350, this))
 	, UploadManager_ (new UploadManager (RequestQueue_, Proxy_, this))
 	{
