@@ -37,6 +37,7 @@ class QStandardItemModel;
 class QStandardItem;
 class QModelIndex;
 class QTimer;
+class QUrl;
 
 namespace Media
 {
@@ -65,6 +66,7 @@ namespace LMP
 		QAbstractItemModel* GetModel () const;
 
 		void Refresh (const QModelIndex&);
+		void AddUrl (const QModelIndex&, const QUrl&);
 		void Handle (const QModelIndex&, Player*);
 
 		void HandleWokeUp ();

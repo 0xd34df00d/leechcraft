@@ -30,6 +30,7 @@
 #include "radiowidget.h"
 #include <QSortFilterProxyModel>
 #include <QMenu>
+#include <QInputDialog>
 #include <QtDebug>
 #include <util/gui/clearlineeditaddon.h>
 #include <interfaces/media/iradiostationprovider.h>
@@ -37,6 +38,7 @@
 #include "player.h"
 #include "previewhandler.h"
 #include "radiomanager.h"
+#include "engine/sourceobject.h"
 
 namespace LeechCraft
 {
@@ -98,16 +100,58 @@ namespace LMP
 		Core::Instance ().GetRadioManager ()->Refresh (index);
 	}
 
+	void RadioWidget::handleAddUrl ()
+	{
+		const auto& urlStr = QInputDialog::getText (this,
+				"LMP",
+				tr ("Enter the URL of the stream to add:"));
+		if (urlStr.isEmpty ())
+			return;
+
+		const auto& url = QUrl::fromUserInput (urlStr);
+		if (!url.isValid ())
+			return;
+
+		const auto& unmapped = Ui_.StationsView_->currentIndex ();
+		const auto& index = StationsProxy_->mapToSource (unmapped);
+		Core::Instance ().GetRadioManager ()->AddUrl (index, url);
+	}
+
+	void RadioWidget::handleAddCurrentUrl ()
+	{
+		const auto& url = Player_->GetSourceObject ()->GetCurrentSource ().ToUrl ();
+		if (url.isLocalFile ())
+			return;
+
+		const auto& unmapped = Ui_.StationsView_->currentIndex ();
+		const auto& index = StationsProxy_->mapToSource (unmapped);
+		Core::Instance ().GetRadioManager ()->AddUrl (index, url);
+	}
+
 	void RadioWidget::on_StationsView__customContextMenuRequested (const QPoint& point)
 	{
 		const auto& idx = Ui_.StationsView_->indexAt (point);
 		if (!idx.isValid ())
 			return;
 
+		const auto type = idx.data (Media::RadioItemRole::ItemType).toInt ();
+
 		QMenu menu;
 		menu.addAction (tr ("Refresh"),
 				this,
 				SLOT (handleRefresh ()));
+		if (type == Media::RadioType::CustomAddableStreams)
+		{
+			menu.addAction (tr ("Add an URL..."),
+					this,
+					SLOT (handleAddUrl ()));
+
+			const auto& url = Player_->GetSourceObject ()->GetCurrentSource ().ToUrl ();
+			if (!url.isLocalFile ())
+				menu.addAction (tr ("Add current stream..."),
+						this,
+						SLOT (handleAddCurrentUrl ()));
+		}
 		menu.exec (Ui_.StationsView_->viewport ()->mapToGlobal (point));
 	}
 

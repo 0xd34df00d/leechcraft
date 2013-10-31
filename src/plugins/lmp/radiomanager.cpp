@@ -34,11 +34,13 @@
 #include <QtDebug>
 #include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/media/iaudiopile.h>
+#include <interfaces/media/imodifiableradiostation.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "core.h"
 #include "player.h"
 #include "previewhandler.h"
 #include "xmlsettingsmanager.h"
+#include "radiocustomstreams.h"
 
 namespace LeechCraft
 {
@@ -66,6 +68,8 @@ namespace LMP
 				SIGNAL (timeout ()),
 				this,
 				SLOT (refreshAll ()));
+
+		InitProvider (new RadioCustomStreams (this));
 	}
 
 	void RadioManager::InitProviders ()
@@ -122,6 +126,38 @@ namespace LMP
 		}
 
 		Root2Prov_ [root]->RefreshItems ({ item });
+	}
+
+	void RadioManager::AddUrl (const QModelIndex& index, const QUrl& url)
+	{
+		const auto item = StationsModel_->itemFromIndex (index);
+		const auto root = GetRootItem (item);
+		if (!Root2Prov_.contains (root))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown provider for index"
+					<< index;
+			return;
+		}
+
+		const auto radio = Root2Prov_ [root]->GetRadioStation (item, {});
+		if (!radio)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "got a null radio station from provider";
+			return;
+		}
+
+		auto modifiable = qobject_cast<Media::IModifiableRadioStation*> (radio->GetQObject ());
+		if (!modifiable)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< radio->GetRadioName ()
+					<< "is not modifiable";
+			return;
+		}
+
+		modifiable->AddItem (url);
 	}
 
 	void RadioManager::Handle (const QModelIndex& index, Player *player)
