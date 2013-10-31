@@ -1010,39 +1010,47 @@ namespace Azoth
 				.property ("RequireSpaceBeforeSmiles").toBool ();
 
 		const QString& img = QString ("<img src=\"%2\" title=\"%1\" />");
-		QList<QByteArray> rawDatas;
+		QMap<int, QString> pos2smile;
 		for (const auto& str : src->GetEmoticonStrings (pack))
 		{
-			const QString& escaped = Qt::escape (str);
-			if (!body.contains (escaped))
-				continue;
+			const auto& escaped = Qt::escape (str);
+			int pos = 0;
+			while ((pos = body.indexOf (escaped, pos)) != -1)
+			{
+				const bool isOk = !pos ||
+						!requireSpace ||
+						(requireSpace && pos && body [pos - 1].isSpace ());
+				if (isOk)
+					pos2smile [pos] = str;
 
-			bool safeReplace = true;
-			for (const auto& rd : rawDatas)
-				if (rd.indexOf (escaped) != -1)
-				{
-					safeReplace = false;
-					break;
-				}
-			if (!safeReplace)
-				continue;
+				pos += escaped.size ();
+			}
+		}
 
-			const QByteArray& rawData = src->GetImage (pack, str).toBase64 ();
-			rawDatas << rawData;
-			const QString& smileStr = img
+		if (pos2smile.isEmpty ())
+			return body;
+
+		for (auto i = pos2smile.begin (); i != pos2smile.end (); ++i)
+			for (int j = 1; j < Qt::escape (i.value ()).size (); ++j)
+				pos2smile.remove (i.key () + j);
+
+		QList<QPair<int, QString>> reversed;
+		reversed.reserve (pos2smile.size ());
+		for (auto i = pos2smile.begin (); i != pos2smile.end (); ++i)
+			reversed.push_front ({ i.key (), i.value () });
+
+		for (const auto& pair : reversed)
+		{
+			const auto& str = pair.second;
+			const auto& escaped = Qt::escape (str);
+
+			const auto& rawData = src->GetImage (pack, str).toBase64 ();
+
+			const auto& smileStr = img
 					.arg (str)
 					.arg (QString ("data:image/png;base64," + rawData));
 
-			if (requireSpace)
-			{
-				if (body.startsWith (escaped))
-					body.replace (0, escaped.size (), smileStr);
-				auto whites = { " ", "\n", "\t", "<br/>", "<br />", "<br>" };
-				for (auto white : whites)
-					body.replace (white + escaped, white + smileStr);
-			}
-			else
-				body.replace (escaped, smileStr);
+			body.replace (pair.first, escaped.size (), smileStr);
 		}
 
 		return body;
