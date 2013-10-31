@@ -47,6 +47,7 @@ namespace Woodpecker
 	Q_OBJECT
 	
 		Plugin *const ParentPlugin_;
+		void HandleClick (const QStyleOptionViewItem& option, const QModelIndex& index, const QMouseEvent *me);
 		
 	public:
 		TwitDelegate (QObject *parent = 0, Plugin *plugin = 0);

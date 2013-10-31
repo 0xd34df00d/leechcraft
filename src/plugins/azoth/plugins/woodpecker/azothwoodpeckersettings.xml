@@ -20,11 +20,14 @@
 				<label lang="en" value="Consumer key secret:" />
 			</item>
 		</groupbox>
-	</page>
-	<page>
-		<label lang="en" value="Notification settings" />
-		<item type="checkbox" property="notify" default="true">
-			<label lang="en" value="Show notifications" />
-		</item>
+		<groupbox>
+			<label value="GUI" />
+			<item type="checkbox" property="inline_photo" default="true">
+				<label lang="en" value="Show photos in popup not in browser" />
+			</item>
+			<item type="checkbox" property="notify" default="true">
+				<label lang="en" value="Show notifications" />
+			</item>
+		</groupbox>
 	</page>
 </settings>
