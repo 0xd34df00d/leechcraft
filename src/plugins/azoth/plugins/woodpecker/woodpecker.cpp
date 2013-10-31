@@ -109,8 +109,7 @@ namespace Woodpecker
 		
 		auto newtab = new TwitterPage (tc, this, mode, params);
 		
-		emit addNewTab (name, newtab);
-		emit raiseTab (newtab);
+		MakeTab (newtab, tc);
 	}
 
 	void Plugin::SecondInit ()
