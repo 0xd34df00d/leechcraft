@@ -46,10 +46,12 @@ namespace Woodpecker
 	{
 	Q_OBJECT
 	
-		Plugin *const ParentPlugin_;
+		Plugin * const ParentPlugin_;
+		QListView * const ParentListView_;
+		void HandleClick (const QStyleOptionViewItem& option, const QModelIndex& index, const QMouseEvent *me);
 		
 	public:
-		TwitDelegate (QObject *parent = 0, Plugin *plugin = 0);
+		TwitDelegate (QListView *parent = 0, Plugin *plugin = 0);
 		
 		void paint (QPainter *painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
 		QSize sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const;
