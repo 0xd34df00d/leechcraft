@@ -56,8 +56,9 @@ namespace Woodpecker
 	const int IconSize = 48;
 	const int Padding = 5;
 
-	TwitDelegate::TwitDelegate (QObject *parent, Plugin *plugin)
+	TwitDelegate::TwitDelegate (QListView *parent, Plugin *plugin)
 	: QStyledItemDelegate (parent)
+	, ParentListView_ (parent)
 	, ParentPlugin_ (plugin)
 	{
 	}
@@ -174,8 +175,6 @@ namespace Woodpecker
 
 	void TwitDelegate::HandleClick (const QStyleOptionViewItem& option, const QModelIndex& index, const QMouseEvent* me)
 	{
-		QListView *parentWidget = qobject_cast<QListView*> (parent ());
-
 		const auto currentTweet = index.data (Qt::UserRole).value<Tweet_ptr> ();
 		const auto position = (me->pos () - option.rect.adjusted (ImageSpace + 14, 4, 0, -22).topLeft ());
 
@@ -187,7 +186,7 @@ namespace Woodpecker
 
 		const auto anchor = textDocument->documentLayout ()->anchorAt (position);
 
-		if (!parentWidget || anchor.isEmpty ())
+		if (!ParentListView_ || anchor.isEmpty ())
 			return;
 
 		const auto& url = anchor.mid (anchor.indexOf ("http"));
@@ -239,8 +238,6 @@ namespace Woodpecker
 
 	bool TwitDelegate::editorEvent (QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem& option, const QModelIndex& index)
 	{
-		QListView *parentWidget = qobject_cast<QListView*> (parent ());
-
 		if (event->type () == QEvent::MouseButtonRelease)
 		{
 			const QMouseEvent *me = static_cast<QMouseEvent*> (event);
@@ -256,12 +253,12 @@ namespace Woodpecker
 
 				const auto anchor = currentTweet->GetDocument ()->documentLayout ()->anchorAt (position);
 
-				if (parentWidget)
+				if (ParentListView_)
 				{
 					if (!anchor.isEmpty ())
-						parentWidget->setCursor (Qt::PointingHandCursor);
+						ParentListView_->setCursor (Qt::PointingHandCursor);
 					else
-						parentWidget->unsetCursor ();
+						ParentListView_->unsetCursor ();
 				}
 			}
 		}
