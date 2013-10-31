@@ -135,9 +135,9 @@ namespace Media
 
 		/** @brief Returns a radio station for the given item and query.
 		 *
-		 * The item should be the one of returned from the
-		 * GetRadioListItems() method or its child. The query only makes
-		 * sense for RadioType::SimilarArtists and RadioType::GlobalTag
+		 * The \em item should be the one of returned from the
+		 * GetRadioListItems() method or its child. The \em query is only
+		 * used for RadioType::SimilarArtists and RadioType::GlobalTag
 		 * radio station types, where it is the source artist name and
 		 * tag name correspondingly. Otherwise it can be any string and
 		 * shouldn't be taken into account.
