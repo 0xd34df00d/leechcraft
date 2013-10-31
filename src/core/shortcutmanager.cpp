@@ -148,7 +148,6 @@ namespace LeechCraft
 		settings.beginGroup (objName);
 		Q_FOREACH (const QString& name, info.keys ())
 		{
-			// FIXME use all the sequences here, not the first one
 			const auto& sequences = settings.value (name,
 					QVariant::fromValue<QKeySequences_t> (info [name].Seqs_)).value<QKeySequences_t> ();
 
