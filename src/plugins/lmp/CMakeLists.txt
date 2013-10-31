@@ -104,6 +104,8 @@ set (SRCS
 	playlistmodel.cpp
 	volumenotifycontroller.cpp
 	radiomanager.cpp
+	radiocustomstreams.cpp
+	radiocustomstation.cpp
 	engine/audiosource.cpp
 	engine/output.cpp
 	engine/path.cpp
