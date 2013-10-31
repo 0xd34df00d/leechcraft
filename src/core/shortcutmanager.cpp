@@ -37,6 +37,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ihaveshortcuts.h>
 #include "keysequencer.h"
+#include "coreproxy.h"
 
 namespace LeechCraft
 {
@@ -152,7 +153,12 @@ namespace LeechCraft
 					QVariant::fromValue (info [name].Seqs_)).value<QKeySequences_t> ();
 
 			auto first = new QStandardItem (info [name].UserVisibleText_);
-			first->setIcon (info [name].Icon_);
+
+			auto icon = info [name].Icon_;
+			if (icon.isNull ())
+				icon = CoreProxy ().GetIcon ("configure-shortcuts");
+			first->setIcon (icon);
+
 			first->setData (name, Roles::OriginalName);
 			first->setData (QVariant::fromValue (sequences), Roles::Sequence);
 
