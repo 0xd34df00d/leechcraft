@@ -72,6 +72,19 @@ namespace Media
 		 */
 		Predefined,
 
+		/** @brief A radio station that contains user-addable streams.
+		 *
+		 * This can be used to implement bookmarks, for example, or a
+		 * custom collection.
+		 *
+		 * A radio station returned for the item with this radio type
+		 * from the IRadioStationProvider::GetRadioStation() method
+		 * should also implement IModifiableRadioStation.
+		 *
+		 * @sa IModifiableRadioStation
+		 */
+		CustomAddableStreams,
+
 		/** @brief A predefined list of single tracks, not a stream.
 		 *
 		 * Items of this type should provide RadioItemRole::TracksInfos.
