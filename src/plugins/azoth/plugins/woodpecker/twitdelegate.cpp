@@ -220,19 +220,25 @@ namespace Woodpecker
 												   FeedMode::SearchResult, param);
 						}
 						else if (anchor.startsWith ("twitter://media/photo/"))
-						{
+							if (XmlSettingsManager::Instance ()->property ("inline_photo").toBool ())
+							{
 							const auto& downloader = Core::Instance ().GetCoreProxy ()->GetNetworkAccessManager ();
 							auto reply = downloader->get (QNetworkRequest (url));
 							connect (reply,
 								SIGNAL (finished ()),
 								this,
 								SLOT (showImage ()));
-						}
+							}
+							else
+							{
+								Entity e = Util::MakeEntity (QUrl (url), QString (), OnlyHandle | FromUserInitiated);
+								Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
+							}
 					}
 					else
 					{
-						Entity url = Util::MakeEntity (QUrl (anchor), QString (), OnlyHandle | FromUserInitiated);
-						Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (url);
+						Entity e = Util::MakeEntity (QUrl (url), QString (), OnlyHandle | FromUserInitiated);
+						Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
 					}
 				}
 			}
