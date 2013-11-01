@@ -27,34 +27,73 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "playlisttitlewidget.h"
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QToolButton>
-#include <QAction>
-#include <QLabel>
+#include <QTimer>
+#include <QPainter>
+#include <QBrush>
+#include <QPaintEvent>
+#include "volumenotification.h"
+
+namespace 
+{
+	int globalX (QWidget *widget)
+	{
+		if (widget == nullptr)
+			return 0;
+		else
+			return widget->x () + globalX (widget->parentWidget ());
+	}
+	
+	int globalY (QWidget *widget)
+	{
+		if (widget == nullptr)
+			return 0;
+		else
+			return widget->y () + globalY (widget->parentWidget ());
+	}
+}
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	PlaylistTitleWidget::PlaylistTitleWidget (ICoreProxy_ptr proxy, QWidget *parent)
-	: QToolBar (parent)
+	VolumeNotification::VolumeNotification (QWidget *parent)
+	: QWidget (parent, Qt::Tool | Qt::X11BypassWindowManagerHint)
+	, volume (0)
+	, hideTimer (new QTimer (parent))
 	{
-		AddAction_ = addAction (tr ("Add files"));
-		AddAction_->setIcon (proxy->GetIcon ("list-add"));
+		hideTimer->setInterval (1000);
+		connect (hideTimer,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (hide ()));
 		
-		ClearAction_ = addAction (tr ("Clear playlist"));
-		ClearAction_->setIcon (proxy->GetIcon ("edit-clear-list"));
+		setAttribute (Qt::WA_TranslucentBackground);
+	}
+	
+	void VolumeNotification::showNotification (int newVolume)
+	{
+		hideTimer->start ();
+		volume = newVolume;
+		update ();
+		if (!isVisible())
+			show ();
+	}
+	
+	void VolumeNotification::paintEvent (QPaintEvent *event)
+	{
+		QPainter p(this);
 		
-		MagicAction_ = addAction (tr ("Magic sort"));
-		MagicAction_->setIcon (proxy->GetIcon ("tools-wizard"));
-		
-		UpAction_ = addAction (tr ("Up"));
-		UpAction_->setIcon (proxy->GetIcon ("arrow-up"));
-		
-		DownAction_ = addAction (tr ("Down"));
-		DownAction_->setIcon (proxy->GetIcon ("arrow-down"));
+		p.setFont (QFont ("Arial", 20));
+		p.setPen (QPen (QBrush (Qt::white), 5));
+		p.drawText (1, 20, tr ("Volume: %1%").arg (volume == -1 ? 100 : volume));
+			
+		p.end ();
+		event->accept ();
+	}
+	
+	void VolumeNotification::resetGeometry(QWidget *widget)
+	{
+		setGeometry(widget->width () + globalX (widget) - 200, globalY (widget) + 50, 200, 200);
 	}
 }
 }

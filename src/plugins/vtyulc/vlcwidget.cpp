@@ -94,6 +94,7 @@ namespace vlc
 	, Parent_ (parent)
 	, Manager_ (manager)
 	, AllowFullScreenPanel_ (false)
+	, VolumeNotificationWidget_ (new VolumeNotification (this))
 	, Autostart_ (true)
 	{
 		VlcMainWidget_ = new SignalledWidget;
@@ -109,12 +110,6 @@ namespace vlc
 		PlaylistDock_->setAllowedAreas (Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 		TitleWidget_ = new PlaylistTitleWidget (proxy, this);
 		PlaylistDock_->setTitleBarWidget (TitleWidget_);
-
-		auto mw = proxy->GetRootWindowsManager ()->GetMWProxy (0);
-		mw->AddDockWidget (Qt::LeftDockWidgetArea, PlaylistDock_);
-		mw->AssociateDockWidget (PlaylistDock_, this);
-		mw->ToggleViewActionVisiblity (PlaylistDock_, false);
-
 		PlaylistDock_->setWidget (PlaylistWidget_);
 
 		VlcPlayer_ = new VlcPlayer (VlcMainWidget_);
@@ -189,9 +184,9 @@ namespace vlc
 				SLOT (disableScreenSaver ()));
 
 		connect (PlaylistWidget_,
-				SIGNAL (savePlaylist (QStringList)),
+				SIGNAL (savePlaylist (QueueState)),
 				this,
-				SLOT (savePlaylist (QStringList)));
+				SLOT (savePlaylist (QueueState)));
 
 		connect (VlcPlayer_,
 				SIGNAL (stable ()),
@@ -212,20 +207,50 @@ namespace vlc
 				SIGNAL (triggered ()),
 				PlaylistWidget_,
 				SLOT (clearPlaylist ()));
+		
+		connect (VlcMainWidget_,
+				SIGNAL (resized (QResizeEvent*)),
+				this,
+				SLOT (mainWidgetResized (QResizeEvent*)));
+		
+		connect (SoundWidget_,
+				SIGNAL (volumeChanged (int)),
+				VolumeNotificationWidget_,
+				SLOT (showNotification (int)));
+		
+		connect (TitleWidget_->UpAction_,
+				SIGNAL (triggered ()),
+				PlaylistWidget_,
+				SLOT (up ()));
+		
+		connect (TitleWidget_->DownAction_,
+				SIGNAL (triggered ()),
+				PlaylistWidget_,
+				SLOT (down ()));
 
 		InitNavigations ();
 		InitVolumeActions ();
 		InitRewindActions ();
 		setAcceptDrops (true);
 		RestoreSettings ();
+
+		PlaylistDock_->setMinimumWidth (Settings_->value ("PlaylistWidth", 300).toInt ());
+		PlaylistDock_->update ();
+ 		PlaylistDock_->setMinimumWidth (0);
+		auto mw = proxy->GetRootWindowsManager ()->GetMWProxy (0);
+		mw->AddDockWidget ((Qt::DockWidgetArea)Settings_->value ("PlaylistArea", Qt::RightDockWidgetArea).toInt (), PlaylistDock_);
+		mw->AssociateDockWidget (PlaylistDock_, this);
+		mw->ToggleViewActionVisiblity (PlaylistDock_, false);
+		
+		connect (PlaylistDock_,
+				SIGNAL (dockLocationChanged (Qt::DockWidgetArea)),
+				this,
+				SLOT (savePlaylistPosition (Qt::DockWidgetArea)));
 	}
 
 	VlcWidget::~VlcWidget ()
 	{
-		VlcPlayer_->stop ();
-		disableScreenSaver ();
 		delete PlaylistWidget_;
-		delete PlaylistDock_;
 		delete VlcPlayer_;
 		SaveSettings ();
 		emit deleteMe (this);
@@ -236,29 +261,47 @@ namespace vlc
 		Settings_ = new QSettings (QCoreApplication::organizationName (), QCoreApplication::applicationName () + "_VTYULC");
 		RestorePlaylist ();
 		Autostart_ = XmlSettingsManager::Instance ().property ("Autostart").toBool ();
+		VideoPath_ = Settings_->value ("WorkingDirectory", QDir::currentPath ()).toString ();
 	}
 
 	void VlcWidget::SaveSettings ()
 	{
+		Settings_->setValue ("PlaylistWidth", PlaylistDock_->width ());
 		delete Settings_;
 	}
-
-	void VlcWidget::savePlaylist (const QStringList& list)
+	
+	void VlcWidget::savePlaylistPosition (Qt::DockWidgetArea area)
 	{
-		qDebug () << list;
-		Settings_->setValue ("Playlist", list);
+		Settings_->setValue ("PlaylistArea", static_cast<int> (area));
+	}
+	
+	void VlcWidget::savePlaylist (const QueueState& playlist)
+	{
+		Settings_->setValue ("Playlist", playlist.Playlist_);
+		Settings_->setValue ("LastPlaying", playlist.Current_);
+		Settings_->setValue ("LastTime", (long long)playlist.Position_);
 	}
 
 	void VlcWidget::RestorePlaylist ()
 	{
 		QStringList playlist = Settings_->value ("Playlist").toStringList ();
-		if (playlist.size () < 2)
-			return;
+		int lastPlaying = Settings_->value ("LastPlaying").toInt ();
+	
+		libvlc_media_t *current = nullptr, *media;
+		for (int i = 0; i < playlist.size (); i++)
+		{
+			media = PlaylistWidget_->AddUrl (QUrl::fromEncoded (playlist [i].toUtf8 ()), false);
+			if (i == lastPlaying)
+				current = media;
+		}
 
-		for (int i = 0; i < playlist.size () - 1; i++)
-			PlaylistWidget_->AddUrl (QUrl::fromEncoded (playlist [i].toUtf8 ()), false);
-
-		PlaylistWidget_->SetCurrentMedia (playlist [playlist.size () - 1].toInt ());
+		if (current != nullptr)
+		{
+			PlaylistWidget_->SetCurrentMedia (current);
+			const long long time = Settings_->value ("LastTime").toLongLong ();
+			if (time)
+				VlcPlayer_->SetCurrentTime (time);
+		}
 	}
 
 	QObject* VlcWidget::ParentMultiTabs ()
@@ -280,8 +323,12 @@ namespace vlc
 	{
 		QStringList files = QFileDialog::getOpenFileNames (this,
 				tr ("Open files"),
-				tr ("Videos (*.mkv *.avi *.mov *.mpg)"));
+				VideoPath_,
+				tr ("Videos (*.mkv *.avi *.mov *.mpg);;Any (*.*)"));
 
+		if (!files.isEmpty ())
+			ParsePath (files [0]);
+		
 		PlaylistWidget_->clearPlaylist ();
 		for (int i = 0; i < files.size (); i++)
 			if (QFile::exists (files [i]))
@@ -292,8 +339,12 @@ namespace vlc
 	{
 		QStringList files = QFileDialog::getOpenFileNames (this,
 				tr ("Open files"),
-				tr ("Videos (*.mkv *.avi *.mov *.mpg)"));
-
+				VideoPath_,
+				tr ("Videos (*.mkv *.avi *.mov *.mpg);;Any (*.*)"));
+		
+		if (!files.isEmpty ())
+			ParsePath (files [0]);
+		
 		for (int i = 0; i < files.size (); i++)
 			if (QFile::exists (files [i]))
 				PlaylistWidget_->AddUrl (QUrl::fromLocalFile (files [i]), Autostart_);
@@ -304,10 +355,11 @@ namespace vlc
 	{
 		QString folder = QFileDialog::getExistingDirectory (this,
 				tr ("Open folder"),
-				tr ("Folder with video"));
+				VideoPath_);
 
 		if (QFile::exists (folder))
 		{
+			ParsePath (folder);
 			PlaylistWidget_->clearPlaylist ();
 			PlaylistWidget_->AddUrl ("directory://" + folder, Autostart_);
 		}
@@ -317,10 +369,11 @@ namespace vlc
 	{
 		QString folder = QFileDialog::getExistingDirectory (this,
 				tr ("Open DVD"),
-				tr ("Root of DVD directory"));
+				VideoPath_);
 
 		if (QFile::exists (folder))
 		{
+			ParsePath (folder);
 			PlaylistWidget_->clearPlaylist ();
 			PlaylistWidget_->AddUrl ("dvdsimple://" + folder, Autostart_);
 		}
@@ -330,10 +383,11 @@ namespace vlc
 	{
 		QString folder = QFileDialog::getExistingDirectory (this,
 				tr ("Open DVD"),
-				tr ("Root of DVD directory"));
+				VideoPath_);
 
 		if (QFile::exists (folder))
 		{
+			ParsePath (folder);
 			PlaylistWidget_->clearPlaylist ();
 			PlaylistWidget_->AddUrl ("dvd://" + folder, Autostart_);
 		}
@@ -354,10 +408,22 @@ namespace vlc
 	{
 		const QString& url = QFileDialog::getOpenFileName (this,
 				tr ("Open file"),
-				tr ("Media (*.ac3)"));
+				tr ("Media (*.ac3);;Any (*.*)"),
+				VideoPath_);
 
 		if (QFile::exists (url))
+		{
+			ParsePath (url);
 			VlcPlayer_->addUrl (QUrl::fromLocalFile (url));
+		}
+	}
+	
+	void VlcWidget::ParsePath (QString s)
+	{
+		while (s.length () && s[s.length () - 1] != '/')
+			s.remove (s.length () - 1, 1);
+		
+		Settings_->setValue ("WorkingDirectory", s);
 	}
 
 	void VlcWidget::updateInterface ()
@@ -468,6 +534,7 @@ namespace vlc
 			FullScreenWidget_->SetBackGroundColor (new QColor ("black"));
 			FullScreenWidget_->showFullScreen ();
 			VlcPlayer_->switchWidget (FullScreenWidget_);
+			VolumeNotificationWidget_->resetGeometry (FullScreenWidget_);
 		}
 		else
 		{
@@ -476,6 +543,7 @@ namespace vlc
 			FullScreenWidget_->hide ();
 			FullScreenPanel_->hide ();
 			VlcPlayer_->switchWidget (VlcMainWidget_);
+			VolumeNotificationWidget_->resetGeometry (VlcMainWidget_);
 		}
 	}
 
@@ -1061,10 +1129,15 @@ namespace vlc
 	{
 		Autostart_ = XmlSettingsManager::Instance ().property ("Autostart").toBool ();
 	}
-
-	void VlcWidget::Pause ()
+	
+	void VlcWidget::Sleep ()
 	{
-		libvlc_media_player_pause (VlcPlayer_->GetPlayer ().get ());
+		VlcPlayer_->pause ();
+	}
+	
+	void VlcWidget::mainWidgetResized (QResizeEvent *event)
+	{
+		VolumeNotificationWidget_->resetGeometry (VlcMainWidget_);
 	}
 }
 }

@@ -27,34 +27,33 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "playlisttitlewidget.h"
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QToolButton>
-#include <QAction>
-#include <QLabel>
+#pragma once
+
+#include <QWidget>
+
+class QTimer;
+class QPaintEvent;
 
 namespace LeechCraft
 {
 namespace vlc
 {
-	PlaylistTitleWidget::PlaylistTitleWidget (ICoreProxy_ptr proxy, QWidget *parent)
-	: QToolBar (parent)
+	class VolumeNotification : public QWidget
 	{
-		AddAction_ = addAction (tr ("Add files"));
-		AddAction_->setIcon (proxy->GetIcon ("list-add"));
+		Q_OBJECT
 		
-		ClearAction_ = addAction (tr ("Clear playlist"));
-		ClearAction_->setIcon (proxy->GetIcon ("edit-clear-list"));
+		int volume;
+		QTimer *hideTimer;
+	
+	public:
+		explicit VolumeNotification (QWidget *parent = 0);
+		void resetGeometry (QWidget*);
 		
-		MagicAction_ = addAction (tr ("Magic sort"));
-		MagicAction_->setIcon (proxy->GetIcon ("tools-wizard"));
-		
-		UpAction_ = addAction (tr ("Up"));
-		UpAction_->setIcon (proxy->GetIcon ("arrow-up"));
-		
-		DownAction_ = addAction (tr ("Down"));
-		DownAction_->setIcon (proxy->GetIcon ("arrow-down"));
-	}
+	protected:
+		void paintEvent (QPaintEvent*);
+	
+	public slots:
+		void showNotification (int);
+	};
 }
 }
