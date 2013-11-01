@@ -119,7 +119,7 @@ namespace Xoox
 
 	void RoomConfigWidget::accept ()
 	{
-		QXmppDataForm form = FB_->GetForm ();
+		auto form = FB_->GetForm ();
 		form.setType (QXmppDataForm::Submit);
 		RoomHandler_->setConfiguration (form);
 	}
@@ -225,9 +225,9 @@ namespace Xoox
 				sender () != RoomHandler_)
 			return;
 
-		Q_FOREACH (const QXmppMucItem& perm, perms)
+		for (const auto& perm : perms)
 		{
-			QStandardItem *parentItem = Aff2Cat_ [perm.affiliation ()];
+			auto parentItem = Aff2Cat_ [perm.affiliation ()];
 			if (!parentItem)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -247,7 +247,7 @@ namespace Xoox
 			parentItem->appendRow (items);
 		}
 
-		Q_FOREACH (QStandardItem *item, Aff2Cat_.values ())
+		for (auto item : Aff2Cat_.values ())
 		{
 			item->sortChildren (0);
 			Ui_.PermsTree_->expand (item->index ());
