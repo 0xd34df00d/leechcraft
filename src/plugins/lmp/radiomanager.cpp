@@ -68,12 +68,12 @@ namespace LMP
 				SIGNAL (timeout ()),
 				this,
 				SLOT (refreshAll ()));
-
-		InitProvider (new RadioCustomStreams (this));
 	}
 
 	void RadioManager::InitProviders ()
 	{
+		InitProvider (new RadioCustomStreams (this));
+
 		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
 		auto pileObjs = pm->GetAllCastableRoots<Media::IAudioPile*> ();
 		for (auto pileObj : pileObjs)
