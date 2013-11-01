@@ -83,6 +83,9 @@ namespace LMP
 
 	void RadioCustomStreams::Add (const QUrl& url)
 	{
+		if (GetAllUrls ().contains (url))
+			return;
+
 		CreateItem (url);
 
 		SaveSettings ();
