@@ -126,20 +126,20 @@ namespace Xoox
 
 	void RoomConfigWidget::on_AddPerm__released ()
 	{
-		std::auto_ptr<AffiliationSelectorDialog> dia (new AffiliationSelectorDialog (this));
-		if (dia->exec () != QDialog::Accepted)
+		AffiliationSelectorDialog dia (this);
+		if (dia.exec () != QDialog::Accepted)
 			return;
 
-		const QString& jid = dia->GetJID ();
+		const QString& jid = dia.GetJID ();
 		if (jid.isEmpty ())
 			return;
 
 		QXmppMucItem item;
 		item.setJid (jid);
-		item.setAffiliation (dia->GetAffiliation ());
+		item.setAffiliation (dia.GetAffiliation ());
 		SendItem (item);
 
-		handlePermsReceived (QList<QXmppMucItem> () << item);
+		handlePermsReceived ({ item });
 	}
 
 	void RoomConfigWidget::on_ModifyPerm__released ()
