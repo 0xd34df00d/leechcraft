@@ -32,6 +32,7 @@
 #include <QObject>
 #include <interfaces/media/iradiostationprovider.h>
 
+class QModelIndex;
 class QUrl;
 
 namespace LeechCraft
@@ -53,6 +54,7 @@ namespace LMP
 		void RefreshItems (const QList<QStandardItem*>&);
 
 		void Add (const QUrl&);
+		void Remove (const QModelIndex&);
 	private:
 		void CreateItem (const QUrl&);
 		QList<QUrl> GetAllUrls () const;

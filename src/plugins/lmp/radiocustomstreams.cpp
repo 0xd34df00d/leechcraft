@@ -91,6 +91,17 @@ namespace LMP
 		SaveSettings ();
 	}
 
+	void RadioCustomStreams::Remove (const QModelIndex& index)
+	{
+		for (auto i = 0; i < Root_->rowCount (); ++i)
+			if (Root_->child (i)->index () == index)
+			{
+				Root_->removeRow (i);
+				SaveSettings ();
+				break;
+			}
+	}
+
 	void RadioCustomStreams::CreateItem (const QUrl& url)
 	{
 		auto item = new QStandardItem (url.toString ());

@@ -61,8 +61,9 @@ namespace LMP
 		RCS_->Add (url);
 	}
 
-	void RadioCustomStation::RemoveItem (const QModelIndex&)
+	void RadioCustomStation::RemoveItem (const QModelIndex& index)
 	{
+		RCS_->Remove (index);
 	}
 }
 }
