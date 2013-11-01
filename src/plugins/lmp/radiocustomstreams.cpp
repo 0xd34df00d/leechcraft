@@ -97,6 +97,7 @@ namespace LMP
 		item->setData (Media::RadioType::SingleTrack, Media::RadioItemRole::ItemType);
 
 		Media::AudioInfo info;
+		info.Length_ = 0;
 		info.Other_ ["URL"] = url;
 		item->setData (QVariant::fromValue (QList<Media::AudioInfo> { info }),
 				Media::RadioItemRole::TracksInfos);
@@ -116,7 +117,6 @@ namespace LMP
 	{
 		const auto& urls = XmlSettingsManager::Instance ()
 				.property ("CustomRadioUrls").value<QList<QUrl>> ();
-		qDebug () << Q_FUNC_INFO << urls;
 		for (const auto& url : urls)
 			CreateItem (url);
 	}
@@ -124,7 +124,6 @@ namespace LMP
 	void RadioCustomStreams::SaveSettings () const
 	{
 		const auto& urlsVar = QVariant::fromValue (GetAllUrls ());
-		qDebug () << Q_FUNC_INFO << urlsVar << GetAllUrls ();
 		XmlSettingsManager::Instance ().setProperty ("CustomRadioUrls", urlsVar);
 	}
 }
