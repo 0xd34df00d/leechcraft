@@ -251,7 +251,8 @@ namespace LMP
 
 	void Player::PrepareURLInfo (const QUrl& url, const MediaInfo& info)
 	{
-		Url2Info_ [url] = info;
+		if (!info.IsUseless ())
+			Url2Info_ [url] = info;
 	}
 
 	void Player::Enqueue (const QStringList& paths, bool sort)
