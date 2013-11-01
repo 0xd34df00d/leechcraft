@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "radiocustomstation.h"
+#include <QtDebug>
 #include "radiocustomstreams.h"
 
 namespace LeechCraft
@@ -55,8 +56,9 @@ namespace LMP
 		return tr ("Bookmarks");
 	}
 
-	void RadioCustomStation::AddItem (const QUrl&)
+	void RadioCustomStation::AddItem (const QUrl& url)
 	{
+		RCS_->Add (url);
 	}
 
 	void RadioCustomStation::RemoveItem (const QModelIndex&)
