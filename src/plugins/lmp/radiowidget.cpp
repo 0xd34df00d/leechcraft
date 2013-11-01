@@ -147,7 +147,7 @@ namespace LMP
 					SLOT (handleAddUrl ()));
 
 			const auto& url = Player_->GetSourceObject ()->GetCurrentSource ().ToUrl ();
-			if (!url.isLocalFile ())
+			if (url.isValid () && !url.isLocalFile ())
 				menu.addAction (tr ("Add current stream..."),
 						this,
 						SLOT (handleAddCurrentUrl ()));
