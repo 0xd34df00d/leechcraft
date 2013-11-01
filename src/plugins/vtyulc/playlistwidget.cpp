@@ -52,7 +52,7 @@ namespace LeechCraft
 namespace vlc
 {
 	PlaylistWidget::PlaylistWidget (QIcon playIcon, QWidget *parent)
-	: QTreeView (parent)
+	: QListView (parent)
 	, LastPlayingItem_ (nullptr)
 	, PlayIcon_ (playIcon)
 	{
@@ -60,7 +60,6 @@ namespace vlc
 		setDropIndicatorShown (true);
 		setAcceptDrops (true);
 		setBaseSize (0, 0);
-		setRootIsDecorated (false);
 		setContextMenuPolicy (Qt::CustomContextMenu);
 		
 		connect (this,
@@ -71,17 +70,23 @@ namespace vlc
 	
 	PlaylistWidget::~PlaylistWidget ()
 	{
-		QStringList save;
+		QueueState res;
 		int size = libvlc_media_list_count (Playlist_);
 		for (int i = 0; i < size; i++)
-			save << QString (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL));
+			res.Playlist_ << QString (libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL));
 		
-		if (LastPlayingItem_ == nullptr)
-			save << "0";
-		else
-			save << QString::number (LastPlayingItem_->row ());
+		if (!libvlc_media_player_get_media (NativePlayer_)) 
+		{
+			res.Current_ = 0;
+			res.Position_ = 0;
+		}
+		else 
+		{
+			res.Current_ = libvlc_media_list_index_of_item (Playlist_, libvlc_media_player_get_media (NativePlayer_));
+			res.Position_ = libvlc_media_player_get_time (NativePlayer_);
+		}
 		
-		emit savePlaylist (save);
+		emit savePlaylist (res);
 		
 		clearPlaylist ();
 
@@ -99,6 +104,7 @@ namespace vlc
 		NativePlayer_ = player;
 		
 		Model_ = new PlaylistModel (this, Playlist_, Instance_);
+		updateModelConstants ();
 		setModel (Model_);
 		
 		QTimer *timer = new QTimer (this);
@@ -111,22 +117,22 @@ namespace vlc
 		timer->start ();
 	}
 	
-	void PlaylistWidget::AddUrl (const QUrl& url, bool start)
+	libvlc_media_t* PlaylistWidget::AddUrl (const QUrl& url, bool start)
 	{
 		for (int i = 0; i < libvlc_media_list_count (Playlist_); i++)
 			if (url.toEncoded () == libvlc_media_get_meta (libvlc_media_list_item_at_index (Playlist_, i), libvlc_meta_URL))
 			{
 				qWarning () << Q_FUNC_INFO << "Ignoring already added url";
-				return;
+				return nullptr;
 			}
 		
 		libvlc_media_t *m = libvlc_media_new_location (Instance_, url.toEncoded ());
 		libvlc_media_parse (m);
-		if (libvlc_media_get_duration (m) == 0) 
+		if (!libvlc_media_is_parsed (m) || libvlc_media_get_duration (m) == 0) 
 		{
 			libvlc_media_release (m);
 			qWarning () << Q_FUNC_INFO << "A little fail:" << url;
-			return;
+			return nullptr;
 		}
 		
 		libvlc_media_set_meta (m, libvlc_meta_URL, url.toEncoded ());
@@ -136,6 +142,8 @@ namespace vlc
 			libvlc_media_list_player_play (Player_);
 		
 		updateInterface ();
+		
+		return m;
 	}
 	
 	bool PlaylistWidget::IsPlaying () const
@@ -173,7 +181,7 @@ namespace vlc
 		if (currentRow == -1 || currentRow >= Model_->rowCount ())
 			return;
 				
-		LastPlayingItem_ = Model_->item (currentRow, ColumnName);
+		LastPlayingItem_ = Model_->item (currentRow, 0);
 		LastPlayingItem_->setIcon (QIcon (PlayIcon_));
 		
 		update ();
@@ -234,27 +242,33 @@ namespace vlc
 	
 	void PlaylistWidget::resizeEvent (QResizeEvent *event)
 	{
-		QFontMetrics metrics (font ());
-		const int len =  (metrics.width (" 00:00:00 "));
-		setColumnWidth (0, event->size ().width () - len);
-		setColumnWidth (1, len);
+		updateModelConstants ();
+	}
+	
+	void PlaylistWidget::updateModelConstants()
+	{
+		Model_->Width_ = width () - 10;
+		Model_->updateTable ();
 	}
 	
 	void PlaylistWidget::SetCurrentMedia (int current)
 	{
 		libvlc_media_t *media = libvlc_media_list_item_at_index (Playlist_, current);
-		if (current > -1 && current < libvlc_media_list_count (Playlist_))
+		if (media)
+			SetCurrentMedia (media);
+	}
+	
+	void PlaylistWidget::SetCurrentMedia (libvlc_media_t *media)
+	{
+		libvlc_media_list_player_play_item (Player_, media);
+		while (!libvlc_media_player_is_playing (NativePlayer_))
 		{
-			libvlc_media_list_player_play_item (Player_, media);
-			while (!libvlc_media_player_is_playing (NativePlayer_))
-			{
-				QEventLoop loop;
-				QTimer::singleShot (5, &loop, SLOT (quit ()));
-				loop.exec ();
-			}
-			
-			libvlc_media_player_stop (NativePlayer_);
+			QEventLoop loop;
+			QTimer::singleShot (5, &loop, SLOT (quit ()));
+			loop.exec ();
 		}
+		
+		libvlc_media_player_stop (NativePlayer_);
 	}
 	
 	void PlaylistWidget::clearPlaylist ()
@@ -263,14 +277,42 @@ namespace vlc
 			DeleteRequested (0);
 	}
 	
-	void PlaylistWidget::next()
+	void PlaylistWidget::next ()
 	{
 		libvlc_media_list_player_next (Player_);
 	}
 	
-	void PlaylistWidget::prev()
+	void PlaylistWidget::prev ()
 	{
 		libvlc_media_list_player_previous (Player_);
+	}
+	
+	void PlaylistWidget::down ()
+	{
+		int current = selectionModel ()->currentIndex ().row ();
+		if (current == libvlc_media_list_count (Playlist_) - 1 || current == -1)
+			return;
+		
+		libvlc_media_t *media = libvlc_media_list_item_at_index (Playlist_, current);
+		libvlc_media_list_remove_index (Playlist_, current);
+		libvlc_media_list_insert_media (Playlist_, media, current + 1);
+		
+		selectionModel()->setCurrentIndex (Model_->index (current + 1, 0), QItemSelectionModel::Select);
+		selectionModel()->select (Model_->index (current, 0), QItemSelectionModel::Deselect);
+	}
+
+	void PlaylistWidget::up ()
+	{
+		int current = selectionModel ()->currentIndex ().row ();
+		if (current == 0 || current == -1)
+			return;
+		
+		libvlc_media_t *media = libvlc_media_list_item_at_index (Playlist_, current);
+		libvlc_media_list_remove_index (Playlist_, current);
+		libvlc_media_list_insert_media (Playlist_, media, current - 1);
+		
+		selectionModel ()->setCurrentIndex (Model_->index (current - 1, 0), QItemSelectionModel::Select);
+		selectionModel ()->select (Model_->index (current, 0), QItemSelectionModel::Deselect);
 	}
 }
 }

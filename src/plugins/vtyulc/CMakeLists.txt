@@ -24,6 +24,7 @@ set (SRCS
 	playlistmodel.cpp
 	xmlsettingsmanager.cpp
 	playlisttitlewidget.cpp
+	volumenotification.cpp
 	)
 	
 CreateTrs("vtyulc" "en;ru_RU" COMPILED_TRANSLATIONS)

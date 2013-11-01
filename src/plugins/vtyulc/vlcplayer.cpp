@@ -74,6 +74,11 @@ namespace vlc
 		libvlc_media_player_set_xwindow (Mp_.get (), parent->winId ());
 	}
 	
+	VlcPlayer::~VlcPlayer()
+	{
+		libvlc_media_player_stop (Mp_.get ());
+	}
+	
 	void VlcPlayer::Init (QWidget *parent)
 	{
 		libvlc_media_player_set_xwindow (Mp_.get (), parent->winId ());
@@ -133,6 +138,11 @@ namespace vlc
 		libvlc_media_player_stop (Mp_.get ());
 	}
 	
+	void VlcPlayer::pause ()
+	{
+		libvlc_media_player_pause (Mp_.get ());
+	}
+	
 	void VlcPlayer::changePosition (double pos)
 	{
 		if (libvlc_media_player_get_media (Mp_.get ()))
@@ -153,6 +163,19 @@ namespace vlc
 			return convertTime (libvlc_media_player_get_time (Mp_.get ()));
 		else
 			return convertTime (0);
+	}
+	
+	void VlcPlayer::SetCurrentTime (libvlc_time_t time)
+	{
+		if (libvlc_media_player_is_playing (Mp_.get ()))
+			libvlc_media_player_set_time (Mp_.get (), time);
+		else
+		{
+			libvlc_media_player_play (Mp_.get ());
+			WaitForPlaying ();
+			libvlc_media_player_set_time (Mp_.get (), time);
+			libvlc_media_player_pause (Mp_.get ());
+		}
 	}
 	
 	void VlcPlayer::Freeze ()

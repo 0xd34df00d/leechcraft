@@ -217,7 +217,7 @@ namespace vlc
 	{
 		if (entity.Entity_ == "Sleeping")
 			for (int i = 0; i < Tabs_.size (); i++)
-				Tabs_ [i]->Pause ();
+				Tabs_ [i]->Sleep ();
 	}
 }
 }
