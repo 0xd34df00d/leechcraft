@@ -119,7 +119,7 @@ namespace Media
 		 * This role should be available for RadioType::SingleTrack and
 		 * RadioType::TracksList. The role should return a
 		 * <code>QList<Media::AudioInfo></code>.The list should consist
-		 * of one element for RadioType::SingleSong and of all child
+		 * of one element for RadioType::SingleTrack and of all child
 		 * songs for RadioType::TracksList.
 		 *
 		 * The Media::AudioInfo elements in the list should contain all
