@@ -212,6 +212,8 @@ namespace Xoox
 		if (sender () != RoomHandler_)
 			return;
 
+		FB_->Clear ();
+
 		FormWidget_ = FB_->CreateForm (form);
 		Ui_.ScrollArea_->setWidget (FormWidget_);
 		emit dataReady ();
