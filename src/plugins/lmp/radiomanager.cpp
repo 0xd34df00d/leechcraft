@@ -160,6 +160,38 @@ namespace LMP
 		modifiable->AddItem (url);
 	}
 
+	void RadioManager::RemoveUrl (const QModelIndex& index)
+	{
+		const auto item = StationsModel_->itemFromIndex (index);
+		const auto root = GetRootItem (item);
+		if (!Root2Prov_.contains (root))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown provider for index"
+					<< index;
+			return;
+		}
+
+		const auto radio = Root2Prov_ [root]->GetRadioStation (item, {});
+		if (!radio)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "got a null radio station from provider";
+			return;
+		}
+
+		auto modifiable = qobject_cast<Media::IModifiableRadioStation*> (radio->GetQObject ());
+		if (!modifiable)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< radio->GetRadioName ()
+					<< "is not modifiable";
+			return;
+		}
+
+		modifiable->RemoveItem (index);
+	}
+
 	void RadioManager::Handle (const QModelIndex& index, Player *player)
 	{
 		const auto item = StationsModel_->itemFromIndex (index);

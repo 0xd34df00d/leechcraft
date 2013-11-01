@@ -67,6 +67,7 @@ namespace LMP
 
 		void Refresh (const QModelIndex&);
 		void AddUrl (const QModelIndex&, const QUrl&);
+		void RemoveUrl (const QModelIndex&);
 		void Handle (const QModelIndex&, Player*);
 
 		void HandleWokeUp ();
