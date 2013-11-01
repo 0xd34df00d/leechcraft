@@ -128,6 +128,13 @@ namespace LMP
 		Core::Instance ().GetRadioManager ()->AddUrl (index, url);
 	}
 
+	void RadioWidget::handleRemoveUrl ()
+	{
+		const auto& unmapped = Ui_.StationsView_->currentIndex ();
+		const auto& index = StationsProxy_->mapToSource (unmapped);
+		Core::Instance ().GetRadioManager ()->RemoveUrl (index);
+	}
+
 	void RadioWidget::on_StationsView__customContextMenuRequested (const QPoint& point)
 	{
 		const auto& idx = Ui_.StationsView_->indexAt (point);
@@ -135,6 +142,7 @@ namespace LMP
 			return;
 
 		const auto type = idx.data (Media::RadioItemRole::ItemType).toInt ();
+		const auto parentType = idx.parent ().data (Media::RadioItemRole::ItemType).toInt ();
 
 		QMenu menu;
 		menu.addAction (tr ("Refresh"),
@@ -151,6 +159,12 @@ namespace LMP
 				menu.addAction (tr ("Add current stream..."),
 						this,
 						SLOT (handleAddCurrentUrl ()));
+		}
+		else if (parentType == Media::RadioType::CustomAddableStreams)
+		{
+			menu.addAction (tr ("Remove this URL"),
+					this,
+					SLOT (handleRemoveUrl ()));
 		}
 		menu.exec (Ui_.StationsView_->viewport ()->mapToGlobal (point));
 	}

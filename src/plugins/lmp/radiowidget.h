@@ -55,8 +55,10 @@ namespace LMP
 		void SetPlayer (Player*);
 	private slots:
 		void handleRefresh ();
+
 		void handleAddUrl ();
 		void handleAddCurrentUrl ();
+		void handleRemoveUrl ();
 
 		void on_StationsView__customContextMenuRequested (const QPoint&);
 		void on_StationsView__doubleClicked (const QModelIndex&);
