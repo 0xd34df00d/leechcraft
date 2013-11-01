@@ -29,19 +29,37 @@
 
 #include "radiocustomstreams.h"
 #include <QStandardItemModel>
+#include <QtDebug>
 #include <interfaces/media/iradiostation.h>
+#include <interfaces/media/audiostructs.h>
 #include "radiocustomstation.h"
+#include "xmlsettingsmanager.h"
+#include "core.h"
+
+Q_DECLARE_METATYPE (QList<QUrl>);
 
 namespace LeechCraft
 {
 namespace LMP
 {
+	namespace
+	{
+		enum CustomRole
+		{
+			UrlRole = Media::RadioItemRole::MaxRadioRole + 1
+		};
+	}
+
 	RadioCustomStreams::RadioCustomStreams (QObject *parent)
 	: QObject (parent)
 	, Root_ (new QStandardItem (tr ("Custom streams")))
 	{
+		Root_->setIcon (Core::Instance ().GetProxy ()->GetIcon ("favorites"));
 		Root_->setData (Media::RadioType::CustomAddableStreams, Media::RadioItemRole::ItemType);
 		Root_->setData ("org.LeechCraft.LMP.Custom", Media::RadioItemRole::RadioID);
+		Root_->setEditable (false);
+
+		LoadSettings ();
 	}
 
 	QList<QStandardItem*> RadioCustomStreams::GetRadioListItems () const
@@ -51,11 +69,63 @@ namespace LMP
 
 	Media::IRadioStation_ptr RadioCustomStreams::GetRadioStation (QStandardItem *item, const QString&)
 	{
-		return std::make_shared<RadioCustomStation> (QList<QUrl> {}, this);
+		QList<QUrl> urls;
+		if (item == Root_)
+			urls = GetAllUrls ();
+		else
+			urls << item->data (CustomRole::UrlRole).toUrl ();
+		return std::make_shared<RadioCustomStation> (urls, this);
 	}
 
 	void RadioCustomStreams::RefreshItems (const QList<QStandardItem*>&)
 	{
+	}
+
+	void RadioCustomStreams::Add (const QUrl& url)
+	{
+		CreateItem (url);
+
+		SaveSettings ();
+	}
+
+	void RadioCustomStreams::CreateItem (const QUrl& url)
+	{
+		auto item = new QStandardItem (url.toString ());
+		item->setEditable (false);
+
+		item->setData (url, CustomRole::UrlRole);
+		item->setData (Media::RadioType::SingleTrack, Media::RadioItemRole::ItemType);
+
+		Media::AudioInfo info;
+		info.Other_ ["URL"] = url;
+		item->setData (QVariant::fromValue (QList<Media::AudioInfo> { info }),
+				Media::RadioItemRole::TracksInfos);
+
+		Root_->appendRow (item);
+	}
+
+	QList<QUrl> RadioCustomStreams::GetAllUrls () const
+	{
+		QList<QUrl> result;
+		for (auto i = 0; i < Root_->rowCount (); ++i)
+			result << Root_->child (i)->data (CustomRole::UrlRole).toUrl ();
+		return result;
+	}
+
+	void RadioCustomStreams::LoadSettings ()
+	{
+		const auto& urls = XmlSettingsManager::Instance ()
+				.property ("CustomRadioUrls").value<QList<QUrl>> ();
+		qDebug () << Q_FUNC_INFO << urls;
+		for (const auto& url : urls)
+			CreateItem (url);
+	}
+
+	void RadioCustomStreams::SaveSettings () const
+	{
+		const auto& urlsVar = QVariant::fromValue (GetAllUrls ());
+		qDebug () << Q_FUNC_INFO << urlsVar << GetAllUrls ();
+		XmlSettingsManager::Instance ().setProperty ("CustomRadioUrls", urlsVar);
 	}
 }
 }

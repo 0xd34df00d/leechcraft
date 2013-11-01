@@ -32,6 +32,8 @@
 #include <QObject>
 #include <interfaces/media/iradiostationprovider.h>
 
+class QUrl;
+
 namespace LeechCraft
 {
 namespace LMP
@@ -49,6 +51,14 @@ namespace LMP
 		QList<QStandardItem*> GetRadioListItems () const;
 		Media::IRadioStation_ptr GetRadioStation (QStandardItem*, const QString&);
 		void RefreshItems (const QList<QStandardItem*>&);
+
+		void Add (const QUrl&);
+	private:
+		void CreateItem (const QUrl&);
+		QList<QUrl> GetAllUrls () const;
+
+		void LoadSettings ();
+		void SaveSettings () const;
 	};
 }
 }
