@@ -97,6 +97,7 @@ namespace LMP
 	void RadioWidget::AddUrl (const QUrl& url)
 	{
 		RadioCustomDialog dia (this);
+		dia.SetUrl (url);
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
