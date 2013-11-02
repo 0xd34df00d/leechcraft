@@ -49,7 +49,8 @@
 #include "volumenotifycontroller.h"
 #include "radiomanager.h"
 
-Q_DECLARE_METATYPE (QList<QUrl>);
+typedef QList<QPair<QString, QUrl>> CustomStationsList_t;
+Q_DECLARE_METATYPE (CustomStationsList_t);
 
 namespace LeechCraft
 {
@@ -64,8 +65,8 @@ namespace LMP
 		gchar **argv = argvarr;
 		gst_init (&argc, &argv);
 
-		qRegisterMetaType<QList<QUrl>> ("QList<QUrl>");
-		qRegisterMetaTypeStreamOperators<QList<QUrl>> ();
+		qRegisterMetaType<QList<QPair<QString, QUrl>>> ("QList<QPair<QString, QUrl>>");
+		qRegisterMetaTypeStreamOperators<QList<QPair<QString, QUrl>>> ();
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpsettings.xml");

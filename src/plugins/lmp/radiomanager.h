@@ -66,7 +66,7 @@ namespace LMP
 		QAbstractItemModel* GetModel () const;
 
 		void Refresh (const QModelIndex&);
-		void AddUrl (const QModelIndex&, const QUrl&);
+		void AddUrl (const QModelIndex&, const QUrl&, const QString&);
 		void RemoveUrl (const QModelIndex&);
 		void Handle (const QModelIndex&, Player*);
 

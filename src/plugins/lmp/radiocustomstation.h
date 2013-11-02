@@ -57,7 +57,7 @@ namespace LMP
 		void RequestNewStream ();
 		QString GetRadioName () const;
 
-		void AddItem (const QUrl&);
+		void AddItem (const QUrl&, const QString&);
 		void RemoveItem (const QModelIndex&);
 	signals:
 		void gotNewStream (const QUrl&, const Media::AudioInfo&);

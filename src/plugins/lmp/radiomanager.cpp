@@ -128,7 +128,7 @@ namespace LMP
 		Root2Prov_ [root]->RefreshItems ({ item });
 	}
 
-	void RadioManager::AddUrl (const QModelIndex& index, const QUrl& url)
+	void RadioManager::AddUrl (const QModelIndex& index, const QUrl& url, const QString& name)
 	{
 		const auto item = StationsModel_->itemFromIndex (index);
 		const auto root = GetRootItem (item);
@@ -157,7 +157,7 @@ namespace LMP
 			return;
 		}
 
-		modifiable->AddItem (url);
+		modifiable->AddItem (url, name);
 	}
 
 	void RadioManager::RemoveUrl (const QModelIndex& index)

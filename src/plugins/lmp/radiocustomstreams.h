@@ -53,10 +53,10 @@ namespace LMP
 		Media::IRadioStation_ptr GetRadioStation (QStandardItem*, const QString&);
 		void RefreshItems (const QList<QStandardItem*>&);
 
-		void Add (const QUrl&);
+		void Add (const QUrl&, const QString&);
 		void Remove (const QModelIndex&);
 	private:
-		void CreateItem (const QUrl&);
+		void CreateItem (const QUrl&, const QString&);
 		QList<QUrl> GetAllUrls () const;
 
 		void LoadSettings ();

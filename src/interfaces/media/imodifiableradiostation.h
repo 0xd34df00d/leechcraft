@@ -42,7 +42,7 @@ namespace Media
 	public:
 		virtual ~IModifiableRadioStation () {}
 
-		virtual void AddItem (const QUrl&) = 0;
+		virtual void AddItem (const QUrl&, const QString&) = 0;
 
 		virtual void RemoveItem (const QModelIndex&) = 0;
 	};

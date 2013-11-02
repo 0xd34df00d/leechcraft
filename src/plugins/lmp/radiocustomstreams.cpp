@@ -36,7 +36,8 @@
 #include "xmlsettingsmanager.h"
 #include "core.h"
 
-Q_DECLARE_METATYPE (QList<QUrl>);
+typedef QList<QPair<QString, QUrl>> CustomStationsList_t;
+Q_DECLARE_METATYPE (CustomStationsList_t);
 
 namespace LeechCraft
 {
@@ -81,12 +82,12 @@ namespace LMP
 	{
 	}
 
-	void RadioCustomStreams::Add (const QUrl& url)
+	void RadioCustomStreams::Add (const QUrl& url, const QString& name)
 	{
 		if (GetAllUrls ().contains (url))
 			return;
 
-		CreateItem (url);
+		CreateItem (url, name);
 
 		SaveSettings ();
 	}
@@ -102,11 +103,13 @@ namespace LMP
 			}
 	}
 
-	void RadioCustomStreams::CreateItem (const QUrl& url)
+	void RadioCustomStreams::CreateItem (const QUrl& url, const QString& name)
 	{
-		auto item = new QStandardItem (url.toString ());
+		const auto& urlStr = url.toString ();
+		auto item = new QStandardItem (name.isEmpty () ? urlStr : name);
 		item->setEditable (false);
 
+		item->setToolTip (urlStr);
 		item->setData (url, CustomRole::UrlRole);
 		item->setData (Media::RadioType::SingleTrack, Media::RadioItemRole::ItemType);
 
@@ -129,16 +132,22 @@ namespace LMP
 
 	void RadioCustomStreams::LoadSettings ()
 	{
-		const auto& urls = XmlSettingsManager::Instance ()
-				.property ("CustomRadioUrls").value<QList<QUrl>> ();
-		for (const auto& url : urls)
-			CreateItem (url);
+		const auto& pairs = XmlSettingsManager::Instance ()
+				.property ("CustomRadioUrls").value<CustomStationsList_t> ();
+		for (const auto& pair : pairs)
+			CreateItem (pair.second, pair.first);
 	}
 
 	void RadioCustomStreams::SaveSettings () const
 	{
-		const auto& urlsVar = QVariant::fromValue (GetAllUrls ());
-		XmlSettingsManager::Instance ().setProperty ("CustomRadioUrls", urlsVar);
+		CustomStationsList_t list;
+		for (auto i = 0; i < Root_->rowCount (); ++i)
+		{
+			const auto item = Root_->child (i);
+			list.append ({ item->text (), item->data (CustomRole::UrlRole).toUrl () });
+		}
+		XmlSettingsManager::Instance ()
+				.setProperty ("CustomRadioUrls", QVariant::fromValue (list));
 	}
 }
 }

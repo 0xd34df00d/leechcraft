@@ -56,9 +56,9 @@ namespace LMP
 		return tr ("Bookmarks");
 	}
 
-	void RadioCustomStation::AddItem (const QUrl& url)
+	void RadioCustomStation::AddItem (const QUrl& url, const QString& name)
 	{
-		RCS_->Add (url);
+		RCS_->Add (url, name);
 	}
 
 	void RadioCustomStation::RemoveItem (const QModelIndex& index)

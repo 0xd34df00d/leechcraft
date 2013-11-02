@@ -53,6 +53,8 @@ namespace LMP
 		RadioWidget (QWidget* = 0);
 
 		void SetPlayer (Player*);
+	private:
+		void AddUrl (const QUrl&);
 	private slots:
 		void handleRefresh ();
 

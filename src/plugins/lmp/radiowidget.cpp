@@ -39,6 +39,7 @@
 #include "previewhandler.h"
 #include "radiomanager.h"
 #include "engine/sourceobject.h"
+#include "radiocustomdialog.h"
 
 namespace LeechCraft
 {
@@ -93,6 +94,18 @@ namespace LMP
 		Player_ = player;
 	}
 
+	void RadioWidget::AddUrl (const QUrl& url)
+	{
+		RadioCustomDialog dia (this);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		const auto& unmapped = Ui_.StationsView_->currentIndex ();
+		const auto& index = StationsProxy_->mapToSource (unmapped);
+		Core::Instance ().GetRadioManager ()->
+				AddUrl (index, dia.GetUrl (), dia.GetName ());
+	}
+
 	void RadioWidget::handleRefresh ()
 	{
 		const auto& unmapped = Ui_.StationsView_->currentIndex ();
@@ -102,30 +115,17 @@ namespace LMP
 
 	void RadioWidget::handleAddUrl ()
 	{
-		const auto& urlStr = QInputDialog::getText (this,
-				"LMP",
-				tr ("Enter the URL of the stream to add:"));
-		if (urlStr.isEmpty ())
-			return;
-
-		const auto& url = QUrl::fromUserInput (urlStr);
-		if (!url.isValid ())
-			return;
-
-		const auto& unmapped = Ui_.StationsView_->currentIndex ();
-		const auto& index = StationsProxy_->mapToSource (unmapped);
-		Core::Instance ().GetRadioManager ()->AddUrl (index, url);
+		AddUrl ({});
 	}
 
 	void RadioWidget::handleAddCurrentUrl ()
 	{
-		const auto& url = Player_->GetSourceObject ()->GetCurrentSource ().ToUrl ();
+		const auto& url = Player_->GetSourceObject ()->
+				GetCurrentSource ().ToUrl ();
 		if (url.isLocalFile ())
 			return;
 
-		const auto& unmapped = Ui_.StationsView_->currentIndex ();
-		const auto& index = StationsProxy_->mapToSource (unmapped);
-		Core::Instance ().GetRadioManager ()->AddUrl (index, url);
+		AddUrl (url);
 	}
 
 	void RadioWidget::handleRemoveUrl ()
