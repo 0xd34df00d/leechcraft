@@ -83,7 +83,7 @@
 				<tooltip value="Setting this to positive values introduces a gap between tracks. Negative values enable crossfade. Zero requests gapless playback." />
 			</item>
 			<item type="doublespinbox" property="VolumeExponent" default="1" minimum="0.125" maximum="8" step="0.1">
-				<label value="Exponent in volume change formula (α in P = x^α)" />
+				<label value="Exponent in volume change formula (α in P = x^α):" />
 			</item>
 		</tab>
 		<tab>

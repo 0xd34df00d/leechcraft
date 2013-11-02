@@ -1779,8 +1779,9 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="32"/>
-        <source>Exponent in volume change formula (Î± in P = x^Î±)</source>
-        <translation>Экспонента в формуле изменения звука (α в P = x^α)</translation>
+        <source>Exponent in volume change formula (Î± in P = x^Î±):</source>
+        <oldsource>Exponent in volume change formula (Î± in P = x^Î±)</oldsource>
+        <translation>Экспонента в формуле изменения звука (α в P = x^α):</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="33"/>
