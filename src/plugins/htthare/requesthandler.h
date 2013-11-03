@@ -50,7 +50,8 @@ namespace HttThare
 		QMap<QString, QString> Headers_;
 
 		QByteArray ResponseLine_;
-		QByteArray ResponseHeaders_;
+		QList<QPair<QByteArray, QByteArray>> ResponseHeaders_;
+		QByteArray CookedRH_;
 		QByteArray ResponseBody_;
 	public:
 		RequestHandler (const Connection_ptr&);
@@ -62,7 +63,7 @@ namespace HttThare
 		void HandleGet ();
 		void HandleHead ();
 
-		std::vector<boost::asio::const_buffer> ToBuffers () const;
+		std::vector<boost::asio::const_buffer> ToBuffers ();
 	};
 }
 }

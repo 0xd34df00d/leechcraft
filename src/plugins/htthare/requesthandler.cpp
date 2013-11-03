@@ -95,9 +95,6 @@ namespace HttThare
 				.arg (reason.data ())
 				.arg (full.data ()).toUtf8 ();
 
-		ResponseHeaders_ = "Content-Length: " +
-				QByteArray::number (ResponseBody_.size ()) + "\r\n\r\n";
-
 		auto c = Conn_;
 		boost::asio::async_write (c->GetSocket (),
 				ToBuffers (),
@@ -151,12 +148,22 @@ namespace HttThare
 		}
 	}
 
-	std::vector<boost::asio::const_buffer> RequestHandler::ToBuffers () const
+	std::vector<boost::asio::const_buffer> RequestHandler::ToBuffers ()
 	{
 		std::vector<boost::asio::const_buffer> result;
 
+		if (std::find_if (ResponseHeaders_.begin (), ResponseHeaders_.end (),
+				[] (decltype (ResponseHeaders_.at (0)) pair)
+					{ return pair.first.toLower () == "content-length"; }) == ResponseHeaders_.end ())
+			ResponseHeaders_.append ({ "Content-Length", QByteArray::number (ResponseBody_.size ()) });
+
+		CookedRH_.clear ();
+		for (const auto& pair : ResponseHeaders_)
+			CookedRH_ += pair.first + ": " + pair.second + "\r\n";
+		CookedRH_ += "\r\n";
+
 		result.push_back (BA2Buffer (ResponseLine_));
-		result.push_back (BA2Buffer (ResponseHeaders_));
+		result.push_back (BA2Buffer (CookedRH_));
 		result.push_back (BA2Buffer (ResponseBody_));
 
 		return result;
