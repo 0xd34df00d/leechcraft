@@ -388,7 +388,11 @@
         <number>2</number>
        </property>
        <item row="0" column="0">
-        <widget class="QTreeView" name="CommunitiesView_"/>
+        <widget class="QTreeView" name="CommunitiesView_">
+         <property name="rootIsDecorated">
+          <bool>false</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>

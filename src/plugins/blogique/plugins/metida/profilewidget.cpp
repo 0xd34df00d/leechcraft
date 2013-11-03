@@ -117,7 +117,15 @@ namespace Metida
 		Ui_.NotInGroupUsers_->setHeaderHidden (true);
 
 		Ui_.CommunitiesView_->setModel (CommunitiesModel_);
-		CommunitiesModel_->setHorizontalHeaderLabels ({ tr ("Name") });
+		Ui_.CommunitiesView_->setHeaderHidden (true);
+		Ui_.CommunitiesView_->setContextMenuPolicy (Qt::ActionsContextMenu);
+		QAction *readCommunity = new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("text-field"),
+				tr ("Read community"), this);
+		Ui_.CommunitiesView_->addAction (readCommunity);
+		connect (readCommunity,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleReadCommunity ()));
 
 		Ui_.ColoringFriendsList_->setChecked (XmlSettingsManager::Instance ()
 				.Property ("ColoringFriendsList", true).toBool ());
@@ -443,6 +451,19 @@ namespace Metida
 	{
 		auto index = Ui_.FriendsView_->selectionModel ()->currentIndex ();
 		index = index.sibling (index.row (), Columns::Name);
+		if (!index.isValid ())
+			return;
+		
+		Core::Instance ().GetCoreProxy ()->GetEntityManager ()->
+				HandleEntity (Util::MakeEntity (QUrl (QString ("http://%1.livejournal.com")
+							.arg (index.data ().toString ())), 
+						QString (), 
+						OnlyHandle | FromUserInitiated));
+	}
+
+	void ProfileWidget::handleReadCommunity ()
+	{
+		auto index = Ui_.CommunitiesView_->selectionModel ()->currentIndex ();
 		if (!index.isValid ())
 			return;
 		
