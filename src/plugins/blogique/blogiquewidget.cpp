@@ -50,15 +50,16 @@
 #include "interfaces/blogique/ibloggingplatform.h"
 #include "interfaces/blogique/iblogiquesidewidget.h"
 #include "interfaces/blogique/iprofile.h"
+#include "blogentrieswidget.h"
 #include "blogique.h"
 #include "core.h"
 #include "draftentrieswidget.h"
-#include "blogentrieswidget.h"
-#include "updateentriesdialog.h"
-#include "xmlsettingsmanager.h"
+#include "profiledialog.h"
 #include "storagemanager.h"
 #include "submittodialog.h"
 #include "tagsproxymodel.h"
+#include "updateentriesdialog.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -353,7 +354,7 @@ namespace Blogique
 				SLOT (submitTo ()));
 
 		Ui_.OpenInBrowser_->setProperty ("ActionIcon", "applications-internet");
-		Ui_.UpdateProfile_->setProperty ("ActionIcon", "view-refresh");
+		Ui_.ShowProfile_->setProperty ("ActionIcon", "user-properties");
 		Ui_.PreviewPost_->setProperty ("ActionIcon", "view-preview");
 
 		ToolBar_->addSeparator ();
@@ -652,7 +653,7 @@ namespace Blogique
 			RemovePostingTargetsWidget ();
 
 			ToolBar_->removeAction (Ui_.OpenInBrowser_);
-			ToolBar_->removeAction (Ui_.UpdateProfile_);
+			ToolBar_->removeAction (Ui_.ShowProfile_);
 			ToolBar_->removeAction (Ui_.PreviewPost_);
 			ToolBar_->removeAction (Ui_.SubmitTo_);
 
@@ -684,7 +685,7 @@ namespace Blogique
 		{
 			ToolBar_->insertAction (AccountsBoxAction_, Ui_.OpenInBrowser_);
 			if (ibp->GetFeatures () & IBloggingPlatform::BPFSupportsProfiles)
-				ToolBar_->insertAction (AccountsBoxAction_, Ui_.UpdateProfile_);
+				ToolBar_->insertAction (AccountsBoxAction_, Ui_.ShowProfile_);
 
 			if (ibp->GetFeatures () & IBloggingPlatform::BPFPostPreviewSupport)
 				ToolBar_->insertAction (AccountsBoxAction_, Ui_.PreviewPost_);
@@ -1044,13 +1045,15 @@ namespace Blogique
 			XmlSettingsManager::Instance ().setProperty ("DockWidgetArea", area);
 	}
 
-	void BlogiqueWidget::on_UpdateProfile__triggered ()
+	void BlogiqueWidget::on_ShowProfile__triggered ()
 	{
 		IAccount *acc = Id2Account_.value (AccountsBox_->currentIndex ());
 		if (!acc)
 			return;
 
-		acc->updateProfile ();
+		ProfileDialog *pd = new ProfileDialog (acc, this);
+		pd->setAttribute (Qt::WA_DeleteOnClose);
+		pd->show ();
 	}
 
 	void BlogiqueWidget::on_CurrentTime__released ()
