@@ -61,6 +61,7 @@ namespace HttThare
 		void ErrorResponse (int, const QByteArray&, const QByteArray& = QByteArray ());
 
 		void HandleGet ();
+		void DefaultWrite ();
 		void HandleHead ();
 
 		std::vector<boost::asio::const_buffer> ToBuffers ();

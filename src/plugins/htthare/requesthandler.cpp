@@ -163,38 +163,16 @@ namespace HttThare
 					.arg (QObject::tr ("%1 is not found on this server").arg (path))
 					.toUtf8 ();
 
-			auto c = Conn_;
-			boost::asio::async_write (c->GetSocket (),
-					ToBuffers (),
-					c->GetStrand ().wrap ([c] (const boost::system::error_code& ec, ulong)
-						{
-							if (ec)
-								qWarning () << Q_FUNC_INFO
-										<< ec.message ().c_str ();
-
-							boost::system::error_code iec;
-							c->GetSocket ().shutdown (boost::asio::socket_base::shutdown_both, iec);
-						}));
+			DefaultWrite ();
 		}
 		else if (fi.isDir ())
 		{
 			ResponseLine_ = "HTTP/1.1 200 OK\r\n";
 
-			ResponseBody_ = MakeDirResponse (fi, path);
 			ResponseHeaders_.append ({ "Content-Type", "text/html; charset=utf-8" });
+			ResponseBody_ = MakeDirResponse (fi, path);
 
-			auto c = Conn_;
-			boost::asio::async_write (c->GetSocket (),
-					ToBuffers (),
-					c->GetStrand ().wrap ([c] (const boost::system::error_code& ec, ulong)
-						{
-							if (ec)
-								qWarning () << Q_FUNC_INFO
-										<< ec.message ().c_str ();
-
-							boost::system::error_code iec;
-							c->GetSocket ().shutdown (boost::asio::socket_base::shutdown_both, iec);
-						}));
+			DefaultWrite ();
 		}
 		else
 		{
@@ -230,6 +208,22 @@ namespace HttThare
 							s.shutdown (boost::asio::socket_base::shutdown_both, iec);
 						}));
 		}
+	}
+
+	void RequestHandler::DefaultWrite ()
+	{
+		auto c = Conn_;
+		boost::asio::async_write (c->GetSocket (),
+				ToBuffers (),
+				c->GetStrand ().wrap ([c] (const boost::system::error_code& ec, ulong)
+					{
+						if (ec)
+							qWarning () << Q_FUNC_INFO
+									<< ec.message ().c_str ();
+
+						boost::system::error_code iec;
+						c->GetSocket ().shutdown (boost::asio::socket_base::shutdown_both, iec);
+					}));
 	}
 
 	void RequestHandler::HandleHead ()
