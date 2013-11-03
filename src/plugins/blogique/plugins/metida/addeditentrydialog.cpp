@@ -39,7 +39,8 @@ namespace Blogique
 {
 namespace Metida
 {
-	AddEditEntryDialog::AddEditEntryDialog (LJProfile *profile, QWidget *parent)
+	
+	AddEditEntryDialog::AddEditEntryDialog (LJProfile *profile, AddTypeEntry type, QWidget *parent)
 	: QDialog (parent)
 	, Profile_ (profile)
 	, BackgroundColor_ ("#ffffff")
@@ -64,6 +65,23 @@ namespace Metida
 					frGroup.RealId_,
 					GroupRoles::RealGroupId);
 		}
+
+		switch (type)
+		{
+		case ATEFriend:
+			Ui_.AddTypeEntry_->setCurrentIndex (0);
+			Ui_.AddNewLabel_->setVisible (false);
+			Ui_.AddTypeEntry_->setVisible (false);
+			break;
+		case ATEGroup:
+			Ui_.AddTypeEntry_->setCurrentIndex (1);
+			Ui_.AddNewLabel_->setVisible (false);
+			Ui_.AddTypeEntry_->setVisible (false);
+			break;
+		case ATENone:
+		default:
+			break;
+		};
 	}
 
 	QString AddEditEntryDialog::GetUserName () const

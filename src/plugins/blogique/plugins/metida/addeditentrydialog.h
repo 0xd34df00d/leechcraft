@@ -42,6 +42,7 @@ namespace Metida
 
 	enum AddTypeEntry
 	{
+		ATENone,
 		ATEFriend,
 		ATEGroup
 	};
@@ -67,7 +68,7 @@ namespace Metida
 		QColor BackgroundColor_;
 		QColor ForegroundColor_;
 	public:
-		AddEditEntryDialog (LJProfile *profile, QWidget *parent = 0);
+		AddEditEntryDialog (LJProfile *profile, AddTypeEntry type = ATENone, QWidget *parent = 0);
 
 		QString GetUserName () const;
 		void SetUserName (const QString& name);

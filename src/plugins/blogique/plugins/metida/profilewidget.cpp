@@ -113,7 +113,7 @@ namespace Metida
 			QStandardItem *itemName = new QStandardItem (fr->GetFullName ());
 
 			QIcon icon;
-			FriendsModel::FriendStatus status;
+			FriendsModel::FriendStatus status = FriendsModel::FSFriendOf;
 			if (fr->GetFriendOf () &&
 					fr->GetMyFriend ())
 			{
@@ -184,8 +184,8 @@ namespace Metida
 
 	void ProfileWidget::on_Add__released ()
 	{
-		std::unique_ptr<AddEditEntryDialog> aeed (new AddEditEntryDialog (Profile_));
-
+		AddEditEntryDialog *aeed = new AddEditEntryDialog (Profile_, ATEFriend, this);
+		aeed->setAttribute (Qt::WA_DeleteOnClose);
 		if (aeed->exec () == QDialog::Rejected)
 			return;
 
@@ -193,33 +193,12 @@ namespace Metida
 		if (!account)
 			return;
 
-		switch (aeed->GetAddTypeEntry ())
-		{
-			case ATEFriend:
-			{
-				const QString& userName = aeed->GetUserName ();
-				const QString& bgcolor = aeed->GetBackgroundColorName ();
-				const QString& fgcolor = aeed->GetForegroundColorName ();
-				uint realId =  aeed->GetGroupRealId ();
+		const QString& userName = aeed->GetUserName ();
+		const QString& bgcolor = aeed->GetBackgroundColorName ();
+		const QString& fgcolor = aeed->GetForegroundColorName ();
+		uint realId =  aeed->GetGroupRealId ();
 
-				account->AddNewFriend (userName, bgcolor, fgcolor, realId);
-				break;
-			}
-			case ATEGroup:
-			{
-				int id = Profile_->GetFreeGroupId ();
-				if (id == -1)
-				{
-					QMessageBox::warning (this,
-							tr ("Add new group"),
-							tr ("You cannot add more groups. The limit of 30 groups is reached."));
-					return;
-				}
-
-				account->AddGroup (aeed->GetGroupName (), aeed->GetAcccess (), id);
-				break;
-			}
-		}
+		account->AddNewFriend (userName, bgcolor, fgcolor, realId);
 	}
 
 	void ProfileWidget::on_Edit__released ()
@@ -234,40 +213,25 @@ namespace Metida
 		if (!account)
 			return;
 
-		AddEditEntryDialog dlg (Profile_);
-		dlg.ShowAddTypePossibility (false);
+		AddEditEntryDialog *dlg = new AddEditEntryDialog (Profile_, ATENone, this);
+		dlg->setAttribute (Qt::WA_DeleteOnClose);
+		dlg->ShowAddTypePossibility (false);
+		dlg->SetCurrentAddTypeEntry (ATEFriend);
+		LJFriendEntry_ptr entry = Item2Friend_ [FriendsModel_->itemFromIndex (FriendsProxyModel_->mapToSource (index))];
+		dlg->SetUserName (entry->GetUserName ());
+		dlg->SetBackgroundColor (entry->GetBGColor ());
+		dlg->SetForegroundColor (entry->GetFGColor ());
+		dlg->SetGroup (entry->GetGroupMask ());
 
-		if (!index.parent ().isValid ())
-		{
-			dlg.SetCurrentAddTypeEntry (ATEGroup);
-			dlg.SetGroupName (index.data ().toString ());
-			dlg.SetAccess (Item2FriendGroup_ [FriendsModel_->itemFromIndex (index)].Public_);
+		if (dlg->exec () == QDialog::Rejected)
+			return;
 
-			if (dlg.exec () == QDialog::Rejected)
-				return;
+		const QString& userName = dlg->GetUserName ();
+		const QString& bgcolor = dlg->GetBackgroundColorName ();
+		const QString& fgcolor = dlg->GetForegroundColorName ();
+		uint realId = dlg->GetGroupRealId ();
 
-			account->AddGroup (dlg.GetGroupName (), dlg.GetAcccess (),
-					Item2FriendGroup_ [FriendsModel_->itemFromIndex (index)].Id_);
-		}
-		else
-		{
-			dlg.SetCurrentAddTypeEntry (ATEFriend);
-			LJFriendEntry_ptr entry = Item2Friend_ [FriendsModel_->itemFromIndex (index)];
-			dlg.SetUserName (entry->GetUserName ());
-			dlg.SetBackgroundColor (entry->GetBGColor ());
-			dlg.SetForegroundColor (entry->GetFGColor ());
-			dlg.SetGroup (entry->GetGroupMask ());
-
-			if (dlg.exec () == QDialog::Rejected)
-				return;
-
-			const QString& userName = dlg.GetUserName ();
-			const QString& bgcolor = dlg.GetBackgroundColorName ();
-			const QString& fgcolor = dlg.GetForegroundColorName ();
-			uint realId = dlg.GetGroupRealId ();
-
-			account->AddNewFriend (userName, bgcolor, fgcolor, realId);
-		}
+		account->AddNewFriend (userName, bgcolor, fgcolor, realId);
 	}
 
 	void ProfileWidget::on_Delete__released ()
@@ -277,13 +241,8 @@ namespace Metida
 		if (!index.isValid ())
 			return;
 
-		QString msg;
-		index.parent ().isValid () ?
-			msg = tr ("Are you sure to delete user <b>%1</b> from your friends.")
-					.arg (index.data ().toString ()) :
-			msg = tr ("Are you sure to delete group <b>%1</b>"
-					"<br><i>Note: all friends in this group will <b>not</b> be deleted.</i>")
-					.arg (index.data ().toString ());
+		const QString& msg = tr ("Are you sure to delete user <b>%1</b> from your friends.")
+				.arg (index.data ().toString ());
 		int res = QMessageBox::question (this,
 				tr ("Change friendslist"),
 				msg,
@@ -295,11 +254,7 @@ namespace Metida
 			LJAccount *account = qobject_cast<LJAccount*> (Profile_->GetParentAccount ());
 			if (!account)
 				return;
-
-			if (!index.parent ().isValid ())
-				account->DeleteGroup (Item2FriendGroup_ [FriendsModel_->itemFromIndex (index)].Id_);
-			else
-				account->DeleteFriend (index.data ().toString ());
+			account->DeleteFriend (index.data ().toString ());
 		}
 	}
 
