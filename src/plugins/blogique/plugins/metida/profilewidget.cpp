@@ -53,7 +53,7 @@ namespace Metida
 	: QWidget (parent)
 	, Profile_ (profile)
 	, FriendsModel_ (new QStandardItemModel (this))
-	, FriendsProxyModel_(new FriendsProxyModel (this))
+	, FriendsProxyModel_ (new FriendsProxyModel (this))
 	, GroupsModel_ (new QStandardItemModel (this))
 	, FriendsInGroupModel_ (new QStandardItemModel (this))
 	, FriendsNotInGroupModel_ (new QStandardItemModel (this))
@@ -175,7 +175,7 @@ namespace Metida
 
 	void ProfileWidget::FillFriends (const QList<LJFriendEntry_ptr>& friends)
 	{
-		for (auto fr : friends)
+		for (const auto& fr : friends)
 		{
 			Username2Friend_ [fr->GetUserName ()] = fr; 
 
@@ -275,8 +275,7 @@ namespace Metida
 
 	void ProfileWidget::on_Add__released ()
 	{
-		AddEditEntryDialog *aeed = new AddEditEntryDialog (Profile_, ATEFriend, this);
-		aeed->setAttribute (Qt::WA_DeleteOnClose);
+		std::unique_ptr<AddEditEntryDialog> aeed (new AddEditEntryDialog (Profile_, ATEFriend));
 		if (aeed->exec () == QDialog::Rejected)
 			return;
 

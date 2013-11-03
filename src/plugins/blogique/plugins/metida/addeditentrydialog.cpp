@@ -58,32 +58,20 @@ namespace Metida
 		Ui_.ForegroundColorLabel_->setMinimumWidth (QApplication::fontMetrics ()
 				.width (" #RRGGBB "));
 
-// 		Ui_.Groups_->addItem (tr ("Not defined"));
-// 		Ui_.Groups_->setItemData (Ui_.Groups_->count (), -1, GroupRoles::RealGroupId);
-// 		for (const auto& frGroup : Profile_->GetFriendGroups ())
-// 		{
-// 			Ui_.Groups_->addItem (frGroup.Name_);
-// 			Ui_.Groups_->setItemData (Ui_.Groups_->count () - 1,
-// 					frGroup.RealId_,
-// 					GroupRoles::RealGroupId);
-// 		}
-
 		switch (type)
 		{
 		case ATEFriend:
 			Ui_.AddTypeEntry_->setCurrentIndex (0);
-			Ui_.AddNewLabel_->setVisible (false);
-			Ui_.AddTypeEntry_->setVisible (false);
 			break;
 		case ATEGroup:
 			Ui_.AddTypeEntry_->setCurrentIndex (1);
-			Ui_.AddNewLabel_->setVisible (false);
-			Ui_.AddTypeEntry_->setVisible (false);
 			break;
 		case ATENone:
 		default:
 			break;
 		};
+		Ui_.AddNewLabel_->setVisible (type == ATENone);
+		Ui_.AddTypeEntry_->setVisible (type == ATENone);
 	}
 
 	QString AddEditEntryDialog::GetUserName () const

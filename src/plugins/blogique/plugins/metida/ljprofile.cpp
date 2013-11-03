@@ -93,7 +93,7 @@ namespace Metida
 	{
 		for (const auto friendEntry : friends)
 		{
-			int index = ProfileData_.Friends_.indexOf (friendEntry);
+			const int index = ProfileData_.Friends_.indexOf (friendEntry);
 			if (index == -1)
 				ProfileData_.Friends_ << friendEntry;
 			else
