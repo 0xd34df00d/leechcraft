@@ -27,8 +27,15 @@ namespace NetStoreManager
 	: QSortFilterProxyModel (parent)
 	{
 		setDynamicSortFilter (true);
+		setFilterCaseSensitivity (Qt::CaseInsensitive);
 		setSortCaseSensitivity (Qt::CaseInsensitive);
 		setSortLocaleAware (true);
+	}
+
+	bool FilesProxyModel::filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const
+	{
+		const QModelIndex& index = sourceModel ()->index (sourceRow, 0, sourceParent);
+		return sourceModel ()->data (index).toString ().contains (filterRegExp ());
 	}
 
 	bool FilesProxyModel::lessThan (const QModelIndex& left, const QModelIndex& right) const
