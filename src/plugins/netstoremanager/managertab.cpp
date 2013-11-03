@@ -201,6 +201,10 @@ namespace NetStoreManager
 				SIGNAL (quoteLeftPressed ()),
 				this,
 				SLOT (handleQuoteLeftPressed ()));
+		connect (Ui_.Filter_,
+				SIGNAL (textChanged (QString)),
+				this,
+				SLOT (handleFilterTextChanged (QString)));
 	}
 
 	TabClassInfo ManagerTab::GetTabClassInfo () const
@@ -1018,6 +1022,11 @@ namespace NetStoreManager
 
 		LastParentID_ = GetParentIDInListViewMode ();
 		FillModel (GetCurrentAccount ());
+	}
+
+	void ManagerTab::handleFilterTextChanged (const QString& text)
+	{
+		ProxyModel_->setFilterFixedString (text);
 	}
 
 }
