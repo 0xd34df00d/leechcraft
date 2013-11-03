@@ -52,6 +52,11 @@ namespace HttThare
 		return Strand_;
 	}
 
+	const StorageManager& Connection::GetStorageManager () const
+	{
+		return StorageMgr_;
+	}
+
 	void Connection::Start ()
 	{
 		auto conn = shared_from_this ();

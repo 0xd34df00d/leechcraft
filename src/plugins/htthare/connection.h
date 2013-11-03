@@ -53,6 +53,8 @@ namespace HttThare
 		boost::asio::ip::tcp::socket& GetSocket ();
 		boost::asio::io_service::strand& GetStrand ();
 
+		const StorageManager& GetStorageManager () const;
+
 		void Start ();
 	private:
 		void HandleHeader (const boost::system::error_code&, ulong);
