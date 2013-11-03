@@ -420,7 +420,7 @@ namespace Metida
 		{
 			const auto& friendEntry = Username2Friend_ [item->text ()];
 			uint groupMask = friendEntry->GetGroupMask ();
-			groupMask = groupMask &~ (1 << group.Id_);
+			groupMask = groupMask & ~(1 << group.Id_);
 			handleUserGroupChanged (friendEntry->GetUserName (),
 					friendEntry->GetBGColor ().name (), friendEntry->GetFGColor ().name (),
 					groupMask);
