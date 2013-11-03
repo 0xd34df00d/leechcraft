@@ -29,6 +29,9 @@
 
 #pragma once
 
+class QUrl;
+class QString;
+
 namespace LeechCraft
 {
 namespace HttThare
@@ -37,6 +40,8 @@ namespace HttThare
 	{
 	public:
 		StorageManager ();
+
+		QString ResolvePath (const QUrl&) const;
 	};
 }
 }
