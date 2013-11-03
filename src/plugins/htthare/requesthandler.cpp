@@ -31,7 +31,12 @@
 #include <QList>
 #include <QString>
 #include <QtDebug>
+#include <QFileInfo>
+#include <QDir>
+#include <QDateTime>
+#include <util/util.h>
 #include "connection.h"
+#include "storagemanager.h"
 
 namespace LeechCraft
 {
@@ -59,7 +64,7 @@ namespace HttThare
 			return ErrorResponse (400, "Bad Request");
 
 		const auto& verb = req.at (0).toLower ();
-		Url_ = QUrl::fromEncoded (req.at (1));
+		Url_ = QUrl::fromEncoded (req.at (1).mid (1));
 
 		for (const auto& line : lines)
 		{
@@ -109,31 +114,57 @@ namespace HttThare
 					}));
 	}
 
+	namespace
+	{
+		QByteArray MakeDirResponse (const QFileInfo& fi, const QString& path)
+		{
+			QStringList rows;
+			for (const auto& item : QDir { path }
+					.entryInfoList (QDir::AllEntries | QDir::NoDotAndDotDot, QDir::Name))
+				rows << QString { "<tr><td>%1</td><td>%2</td><td>%3</td></tr>" }
+						.arg (item.fileName ())
+						.arg (Util::MakePrettySize (item.size ()))
+						.arg (item.created ().toString ());
+
+			return QString (R"delim(<html>
+					<head><title>%1</title></head>
+					<body>
+						<table>
+						%2
+						</table>
+					</body>
+				</html>
+				)delim")
+					.arg (fi.fileName ())
+					.arg (rows.join (""))
+					.toUtf8 ();
+		}
+	}
+
 	void RequestHandler::HandleGet ()
 	{
-		ResponseLine_ = "HTTP/1.1 200 OK\r\n";
-		ResponseBody_ = QString (R"delim(<html>
-				<head><title>Test</title></head>
-				<body>
-					<h1>Test</h1>
-				</body>
-			</html>
-			)delim").toUtf8 ();
-		ResponseHeaders_ = "Content-Length: " +
-				QByteArray::number (ResponseBody_.size ()) + "\r\n\r\n";
+		const auto& path = Conn_->GetStorageManager ().ResolvePath (Url_);
+		const QFileInfo fi { path };
+		if (fi.isDir ())
+		{
+			ResponseLine_ = "HTTP/1.1 200 OK\r\n";
 
-		auto c = Conn_;
-		boost::asio::async_write (c->GetSocket (),
-				ToBuffers (),
-				c->GetStrand ().wrap ([c] (const boost::system::error_code& ec, ulong)
-					{
-						if (ec)
-							qWarning () << Q_FUNC_INFO
-									<< ec.message ().c_str ();
+			ResponseBody_ = MakeDirResponse (fi, path);
+			ResponseHeaders_.append ({ "Content-Type", "text/html; charset=utf-8" });
 
-						boost::system::error_code iec;
-						c->GetSocket ().shutdown (boost::asio::socket_base::shutdown_both, iec);
-					}));
+			auto c = Conn_;
+			boost::asio::async_write (c->GetSocket (),
+					ToBuffers (),
+					c->GetStrand ().wrap ([c] (const boost::system::error_code& ec, ulong)
+						{
+							if (ec)
+								qWarning () << Q_FUNC_INFO
+										<< ec.message ().c_str ();
+
+							boost::system::error_code iec;
+							c->GetSocket ().shutdown (boost::asio::socket_base::shutdown_both, iec);
+						}));
+		}
 	}
 
 	void RequestHandler::HandleHead ()
