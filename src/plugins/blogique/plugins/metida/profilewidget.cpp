@@ -158,7 +158,6 @@ namespace Metida
 				SLOT (editGroup ()));
 
 		Ui_.Groups_->addActions ({ newGroup, editGroup, deleteGroup });
-		
 	}
 
 	void ProfileWidget::RereadProfileData ()
