@@ -15,9 +15,9 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="DialogHeaderLabel_">
      <property name="text">
-      <string>Choose friends groups that will be allowed to comment this post:</string>
+      <string/>
      </property>
     </widget>
    </item>

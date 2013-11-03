@@ -91,16 +91,17 @@ namespace Metida
 
 	void LJProfile::AddFriends (const QList<LJFriendEntry_ptr>& friends)
 	{
-		ProfileData_.Friends_ << friends;
-		std::sort (ProfileData_.Friends_.begin (), ProfileData_.Friends_.end (),
-				CompareFriends);
-		ProfileData_.Friends_.erase (std::unique (ProfileData_.Friends_.begin (),
-				ProfileData_.Friends_.end (),
-				[] (decltype (ProfileData_.Friends_.front ()) fr1,
-						decltype (ProfileData_.Friends_.front ()) fr2)
-				{
-					return fr1->GetUserName () == fr2->GetUserName ();
-				}), ProfileData_.Friends_.end ());
+		for (const auto friendEntry : friends)
+		{
+			int index = ProfileData_.Friends_.indexOf (friendEntry);
+			if (index == -1)
+				ProfileData_.Friends_ << friendEntry;
+			else
+				ProfileData_.Friends_.replace (index, friendEntry);
+		}
+		
+		std::sort (ProfileData_.Friends_.begin (), ProfileData_.Friends_.end (), CompareFriends);
+		
 		handleProfileUpdate (ProfileData_);
 		emit profileUpdated ();
 	}

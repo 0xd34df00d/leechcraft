@@ -81,6 +81,8 @@ namespace Metida
 
 		QByteArray Serialize () const;
 		static LJFriendEntry_ptr Deserialize (const QByteArray& data);
+		
+		bool operator== (const LJFriendEntry& entry) const;
 	};
 }
 }

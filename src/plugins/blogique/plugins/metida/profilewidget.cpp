@@ -196,9 +196,9 @@ namespace Metida
 		const QString& userName = aeed->GetUserName ();
 		const QString& bgcolor = aeed->GetBackgroundColorName ();
 		const QString& fgcolor = aeed->GetForegroundColorName ();
-		uint realId =  aeed->GetGroupRealId ();
+		const uint groupMask =  aeed->GetGroupMask ();
 
-		account->AddNewFriend (userName, bgcolor, fgcolor, realId);
+		account->AddNewFriend (userName, bgcolor, fgcolor, groupMask);
 	}
 
 	void ProfileWidget::on_Edit__released ()
@@ -213,15 +213,14 @@ namespace Metida
 		if (!account)
 			return;
 
-		AddEditEntryDialog *dlg = new AddEditEntryDialog (Profile_, ATENone, this);
-		dlg->setAttribute (Qt::WA_DeleteOnClose);
+		std::unique_ptr<AddEditEntryDialog> dlg (new AddEditEntryDialog (Profile_, ATENone));
 		dlg->ShowAddTypePossibility (false);
 		dlg->SetCurrentAddTypeEntry (ATEFriend);
 		LJFriendEntry_ptr entry = Item2Friend_ [FriendsModel_->itemFromIndex (FriendsProxyModel_->mapToSource (index))];
 		dlg->SetUserName (entry->GetUserName ());
 		dlg->SetBackgroundColor (entry->GetBGColor ());
 		dlg->SetForegroundColor (entry->GetFGColor ());
-		dlg->SetGroup (entry->GetGroupMask ());
+		dlg->SetGroupMask (entry->GetGroupMask ());
 
 		if (dlg->exec () == QDialog::Rejected)
 			return;
@@ -229,9 +228,9 @@ namespace Metida
 		const QString& userName = dlg->GetUserName ();
 		const QString& bgcolor = dlg->GetBackgroundColorName ();
 		const QString& fgcolor = dlg->GetForegroundColorName ();
-		uint realId = dlg->GetGroupRealId ();
+		const uint mask = dlg->GetGroupMask ();
 
-		account->AddNewFriend (userName, bgcolor, fgcolor, realId);
+		account->AddNewFriend (userName, bgcolor, fgcolor, mask);
 	}
 
 	void ProfileWidget::on_Delete__released ()

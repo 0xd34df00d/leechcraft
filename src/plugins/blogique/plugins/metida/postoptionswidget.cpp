@@ -373,6 +373,7 @@ namespace Metida
 		{
 			SelectGroupsDialog dlg (qobject_cast<LJProfile*> (Account_->GetProfile ()),
 					AllowMask_);
+			dlg.SetHeaderLabel (tr ("Choose friends groups that will be allowed to comment this post:"));
 
 			if (dlg.exec () == QDialog::Rejected ||
 					dlg.GetSelectedGroupsIds ().isEmpty ())

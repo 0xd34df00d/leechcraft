@@ -80,7 +80,7 @@ namespace Metida
 		void Validate (const QString& login, const QString& pass);
 
 		void AddNewFriend (const QString& username,
-				const QString& bgcolor, const QString& fgcolor, uint groupId);
+				const QString& bgcolor, const QString& fgcolor, uint groupMask);
 		void DeleteFriend (const QString& username);
 
 		void AddGroup (const QString& name, bool isPublic, int id);
@@ -112,7 +112,7 @@ namespace Metida
 				const QString& pass, const QString& challenge);
 		void AddNewFriendRequest (const QString& username,
 				const QString& bgcolor, const QString& fgcolor,
-				int groupId, const QString& challenge);
+				int groupMask, const QString& challenge);
 		void DeleteFriendRequest (const QString& usernames,
 				const QString& challenge);
 

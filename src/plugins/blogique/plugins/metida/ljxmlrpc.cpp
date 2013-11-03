@@ -69,10 +69,10 @@ namespace Metida
 	}
 
 	void LJXmlRPC::AddNewFriend (const QString& username,
-			const QString& bgcolor, const QString& fgcolor, uint groupId)
+			const QString& bgcolor, const QString& fgcolor, uint groupMask)
 	{
-		ApiCallQueue_ << [username, bgcolor, fgcolor, groupId, this] (const QString& challenge)
-				{ AddNewFriendRequest (username, bgcolor, fgcolor, groupId, challenge); };
+		ApiCallQueue_ << [username, bgcolor, fgcolor, groupMask, this] (const QString& challenge)
+				{ AddNewFriendRequest (username, bgcolor, fgcolor, groupMask, challenge); };
 		GenerateChallenge ();
 	}
 
@@ -383,7 +383,7 @@ namespace Metida
 
 	void LJXmlRPC::AddNewFriendRequest (const QString& username,
 			const QString& bgcolor, const QString& fgcolor,
-			int groupId, const QString& challenge)
+			int groupMask, const QString& challenge)
 	{
 		QDomDocument document ("AddNewFriendRequest");
 		auto result = GetStartPart ("LJ.XMLRPC.editfriends", document);
@@ -406,7 +406,7 @@ namespace Metida
 			structField.appendChild (GetSimpleMemberElement ("bgcolor", "string",
 					bgcolor, document));
 		structField.appendChild (GetSimpleMemberElement ("groupmask", "int",
-				QString::number (groupId), document));
+				QString::number (groupMask), document));
 
 		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
 				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
