@@ -41,6 +41,26 @@ namespace Metida
 	{
 		Q_OBJECT
 	public:
+		enum Columns
+		{
+			Nickname_ = 0,
+			FriendStatus_,
+			Name_,
+			Birthday_
+		};
+		
+		enum FriendsRoles
+		{
+			FRFriendStatus = Qt::UserRole + 1
+		};
+		
+		enum FriendStatus
+		{
+			FSFriendOf = 0,
+			FSMyFriend,
+			FSBothFriends
+		};
+
 		FriendsModel (QObject *parent = 0);
 
 		Qt::ItemFlags flags (const QModelIndex& index) const;

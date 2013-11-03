@@ -415,7 +415,7 @@ namespace Metida
 					.arg (ai.Artist_));
 	}
 
-	void PostOptionsWidget::handleHideMainOptions (bool checked)
+	void PostOptionsWidget::handleHideMainOptions (bool)
 	{
 		Ui_.HideMainOptions_->setText (Ui_.HideMainOptions_->isChecked () ?
 			tr ("Collapse") :
@@ -424,7 +424,7 @@ namespace Metida
 				!Ui_.HideMainOptions_->isChecked ());
 	}
 
-	void PostOptionsWidget::handleHideLikeButtons (bool checked)
+	void PostOptionsWidget::handleHideLikeButtons (bool)
 	{
 		Ui_.HideLikeButtons_->setText (Ui_.HideLikeButtons_->isChecked () ?
 			tr ("Collapse") :

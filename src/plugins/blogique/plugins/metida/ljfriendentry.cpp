@@ -190,7 +190,6 @@ namespace Metida
 
 		return result;
 	}
-
 }
 }
 }

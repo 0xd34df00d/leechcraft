@@ -128,9 +128,8 @@ namespace Metida
 			{
 				QByteArray ba;
 				in >> ba;
-				data.Friends_ << LJFriendEntry::Deserialize (ba);
+				data.Friends_ << LJFriendEntry_ptr (LJFriendEntry::Deserialize (ba));
 			}
-
 			data.Friends_.removeAll (0);
 		}
 

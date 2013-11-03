@@ -46,6 +46,7 @@ namespace Metida
 	class LJFriendEntry;
 	class LJProfile;
 	class FriendsModel;
+	class FriendsProxyModel;
 
 	class ProfileWidget : public QWidget
 						, public IProfileWidget
@@ -59,9 +60,10 @@ namespace Metida
 		{
 			Name
 		};
-
+		
 		LJProfile *Profile_;
 		FriendsModel *FriendsModel_;
+		FriendsProxyModel *FriendsProxyModel_;
 		QStandardItemModel *CommunitiesModel_;
 		QHash<QStandardItem*, LJFriendGroup> Item2FriendGroup_;
 		QHash<QStandardItem*, LJFriendEntry_ptr> Item2Friend_;
@@ -70,7 +72,7 @@ namespace Metida
 		ProfileWidget (LJProfile *profile, QWidget *parent = 0);
 	private:
 		void RereadProfileData ();
-		void FillFriends (const QList<LJFriendGroup>& groups);
+		void FillFriends (const QList<LJFriendEntry_ptr>& friends);
 		void FillCommunities (const QStringList& communities);
 		void ReFillModels ();
 
@@ -84,6 +86,7 @@ namespace Metida
 		void on_UpdateProfile__released ();
 		void handleUserGroupChanged (const QString& username,
 				const QString& bgColor, const QString& fgColor, int groupId);
+		void handleFriendFilterTextChanged (const QString& text);
 
 	signals:
 		void coloringItemChanged ();

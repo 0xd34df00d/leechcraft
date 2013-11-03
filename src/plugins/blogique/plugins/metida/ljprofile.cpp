@@ -88,6 +88,7 @@ namespace Metida
 			return fr1->GetUserName () < fr2->GetUserName ();
 		}
 	}
+
 	void LJProfile::AddFriends (const QList<LJFriendEntry_ptr>& friends)
 	{
 		ProfileData_.Friends_ << friends;
@@ -100,7 +101,7 @@ namespace Metida
 				{
 					return fr1->GetUserName () == fr2->GetUserName ();
 				}), ProfileData_.Friends_.end ());
-
+		handleProfileUpdate (ProfileData_);
 		emit profileUpdated ();
 	}
 
@@ -182,7 +183,6 @@ namespace Metida
 		for (int i = 0; i < ProfileData_.AvatarsID_.count (); ++i)
 			SaveOthersAvatars (ProfileData_.AvatarsID_.value (i),
 					ProfileData_.AvatarsUrls_.value (i));
-		emit profileUpdated ();
 	}
 
 	void LJProfile::handleGotTags (const QHash<QString, int>& tags)

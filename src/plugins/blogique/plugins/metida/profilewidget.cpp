@@ -39,6 +39,7 @@
 #include "xmlsettingsmanager.h"
 #include "addeditentrydialog.h"
 #include "friendsmodel.h"
+#include "friendsproxymodel.h"
 #include "core.h"
 
 namespace LeechCraft
@@ -51,13 +52,18 @@ namespace Metida
 	: QWidget (parent)
 	, Profile_ (profile)
 	, FriendsModel_ (new FriendsModel (this))
+	, FriendsProxyModel_(new FriendsProxyModel (this))
 	, CommunitiesModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
 
-		Ui_.FriendsView_->setModel (FriendsModel_);
+		FriendsProxyModel_->setSourceModel (FriendsModel_);
+		Ui_.FriendsView_->setModel (FriendsProxyModel_);
 		Ui_.FriendsView_->setDropIndicatorShown (true);
-
+		FriendsModel_->setHorizontalHeaderLabels ({ tr ("UserName"),
+				tr ("Status"), tr ("FullName"), tr ("Birthday") });
+		CommunitiesModel_->setHorizontalHeaderLabels ({ tr ("Name") });
+		
 		connect (FriendsModel_,
 				SIGNAL (userGroupChanged (const QString&, const QString&,
 						const QString&, int)),
@@ -78,6 +84,11 @@ namespace Metida
 				.Property ("ColoringFriendsList", true).toBool ());
 
 		updateProfile ();
+		
+		connect (Ui_.Filter_,
+				SIGNAL (textChanged (QString)),
+				this,
+				SLOT (handleFriendFilterTextChanged (QString)));
 	}
 
 	void ProfileWidget::RereadProfileData ()
@@ -90,63 +101,44 @@ namespace Metida
 		const QString& path = Util::CreateIfNotExists ("blogique/metida/avatars")
 				.absoluteFilePath (acc->GetAccountID ().toBase64 ().replace ('/', '_'));
 		Ui_.JournalPic_->setPixmap (QPixmap (path));
-
 		ReFillModels ();
 	}
 
-	void ProfileWidget::FillFriends (const QList<LJFriendGroup>& groups)
+	void ProfileWidget::FillFriends (const QList<LJFriendEntry_ptr>& friends)
 	{
-		for (const auto& group : groups)
+		for (auto fr : friends)
 		{
-			QStandardItem *item = new QStandardItem (group.Name_);
-			item->setData (group.RealId_, ItemGroupRoles::GroupId);
-			Item2FriendGroup_ [item] = group;
-			item->setEditable (false);
-			FriendsModel_->appendRow (item);
-		}
-
-		QStandardItem *withoutGroupItem = 0;
-		for (const auto& fr : Profile_->GetFriends ())
-		{
+			
 			QStandardItem *item = new QStandardItem (fr->GetUserName ());
 			QStandardItem *itemName = new QStandardItem (fr->GetFullName ());
 
 			QIcon icon;
+			FriendsModel::FriendStatus status;
 			if (fr->GetFriendOf () &&
 					fr->GetMyFriend ())
+			{
 				icon = Core::Instance ().GetCoreProxy ()->GetIcon ("im-msn");
+				status = FriendsModel::FSBothFriends;
+			}
 			else if (fr->GetFriendOf ())
+			{
 				icon = Core::Instance ().GetCoreProxy ()->GetIcon ("im-user-offline");
+				status = FriendsModel::FSFriendOf;
+			}
 			else if (fr->GetMyFriend ())
+			{
 				icon = Core::Instance ().GetCoreProxy ()->GetIcon ("im-user");
+				status = FriendsModel::FSMyFriend;
+			}
 			QStandardItem *itemStatus = new QStandardItem (icon, QString ());
+			itemStatus->setData (status, FriendsModel::FRFriendStatus);
 			QStandardItem *itemBirthday = new QStandardItem (fr->GetBirthday ());
 			Item2Friend_ [item] = fr;
 
 			item->setData (fr->GetBGColor ().name (), ItemColorRoles::BackgroundColor);
 			item->setData (fr->GetFGColor ().name (), ItemColorRoles::ForegroundColor);
-
-			bool found = false;
-			for (const auto& parentItem : Item2FriendGroup_.keys ())
-			{
-				if (Item2FriendGroup_ [parentItem].RealId_ == fr->GetGroupMask ())
-				{
-					parentItem->appendRow ({ item, itemStatus, itemName, itemBirthday });
-					found = true;
-				}
-			}
-
-			if (!found)
-			{
-				if (!withoutGroupItem)
-				{
-					withoutGroupItem = new QStandardItem (tr ("Without group"));
-					withoutGroupItem->setData (-1, ItemGroupRoles::GroupId);
-					FriendsModel_->appendRow (withoutGroupItem);
-				}
-
-				withoutGroupItem->appendRow ({ item, itemStatus, itemName, itemBirthday });
-			}
+			
+			FriendsModel_->appendRow ({ item, itemStatus, itemName, itemBirthday });
 		}
 
 		Ui_.FriendsView_->header ()->setResizeMode (QHeaderView::ResizeToContents);
@@ -166,16 +158,12 @@ namespace Metida
 	void ProfileWidget::ReFillModels ()
 	{
 		const LJProfileData& data = Profile_->GetProfileData ();
-
-		FriendsModel_->clear ();
-		FriendsModel_->setHorizontalHeaderLabels ({ tr ("UserName"),
-				tr ("Status"), tr ("FullName"), tr ("Birthday") });
+		FriendsModel_->removeRows (0, FriendsModel_->rowCount ());
 		Item2Friend_.clear ();
 		Item2FriendGroup_.clear ();
-		FillFriends (data.FriendGroups_);
-
-		CommunitiesModel_->clear ();
-		CommunitiesModel_->setHorizontalHeaderLabels ({ tr ("Name") });
+		FillFriends (data.Friends_);
+		
+		CommunitiesModel_->removeRows (0, CommunitiesModel_->rowCount());
 		FillCommunities (data.Communities_);
 	}
 
@@ -332,6 +320,12 @@ namespace Metida
 
 		account->AddNewFriend (username, bgColor, fgColor, groupId);
 	}
+	
+	void ProfileWidget::handleFriendFilterTextChanged (const QString& text)
+	{
+		FriendsProxyModel_->setFilterFixedString (text);
+	}
+
 }
 }
 }
