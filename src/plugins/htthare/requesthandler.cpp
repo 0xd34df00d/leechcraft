@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "requesthandler.h"
+#include <sys/sendfile.h>
+#include <errno.h>
 #include <QList>
 #include <QString>
 #include <QtDebug>
@@ -191,6 +193,40 @@ namespace HttThare
 
 							boost::system::error_code iec;
 							c->GetSocket ().shutdown (boost::asio::socket_base::shutdown_both, iec);
+						}));
+		}
+		else
+		{
+			ResponseLine_ = "HTTP/1.1 200 OK\r\n";
+
+			ResponseHeaders_.append ({ "Content-Type", "application/octet-stream" });
+			ResponseHeaders_.append ({ "Content-Length", QByteArray::number (fi.size ()) });
+
+			auto c = Conn_;
+			boost::asio::async_write (c->GetSocket (),
+					ToBuffers (),
+					c->GetStrand ().wrap ([c, path] (const boost::system::error_code& ec, ulong)
+						{
+							if (ec)
+								qWarning () << Q_FUNC_INFO
+										<< ec.message ().c_str ();
+
+							auto& s = c->GetSocket ();
+
+							QFile file (path);
+							file.open (QIODevice::ReadOnly);
+							qDebug () << "sendfile()" << s.native_handle () << file.handle ();
+							const auto rc = sendfile (s.native_handle (),
+									file.handle (), nullptr, file.size ());
+							if (rc == -1)
+								qWarning () << Q_FUNC_INFO
+										<< "sendfile() error:"
+										<< errno
+										<< "; human-readable:"
+										<< strerror (errno);
+
+							boost::system::error_code iec;
+							s.shutdown (boost::asio::socket_base::shutdown_both, iec);
 						}));
 		}
 	}
