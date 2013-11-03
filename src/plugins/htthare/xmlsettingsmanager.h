@@ -27,59 +27,24 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "httthare.h"
-#include <QIcon>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include "server.h"
-#include "xmlsettingsmanager.h"
+#pragma once
+
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
 namespace HttThare
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
-		XSD_.reset (new Util::XmlSettingsDialog);
-		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "httharesettings.xml");
+		Q_OBJECT
 
-		S_ = new Server ("localhost", "14801");
-		S_->Start ();
-	}
-
-	void Plugin::SecondInit ()
-	{
-	}
-
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.HttThare";
-	}
-
-	void Plugin::Release ()
-	{
-		S_->Stop ();
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "HTThare";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Share your files over local network via HTTP.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
-	{
-		return XSD_;
-	}
+		XmlSettingsManager ();
+	public:
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
+	};
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_httthare, LeechCraft::HttThare::Plugin);

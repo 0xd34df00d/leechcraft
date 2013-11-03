@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/ihavesettings.h>
 
 namespace LeechCraft
 {
@@ -40,11 +41,13 @@ namespace HttThare
 
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IHaveSettings)
 
 		Server *S_;
+		Util::XmlSettingsDialog_ptr XSD_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -53,6 +56,8 @@ namespace HttThare
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	};
 }
 }

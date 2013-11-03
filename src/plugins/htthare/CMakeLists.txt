@@ -13,13 +13,14 @@ include_directories (
 	)
 set (SRCS
 	httthare.cpp
+	xmlsettingsmanager.cpp
 	server.cpp
 	connection.cpp
 	requesthandler.cpp
 	storagemanager.cpp
 	)
 #CreateTrs("httthare" "en;ru_RU" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("httthare" "en;ru_RU" "${SRCS}" "${FORMS}" "")
+CreateTrsUpTarget("httthare" "en;ru_RU" "${SRCS}" "${FORMS}" "httharesettings.xml")
 
 add_library (leechcraft_httthare SHARED
 	${COMPILED_TRANSLATIONS}
@@ -31,3 +32,4 @@ target_link_libraries (leechcraft_httthare
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_httthare DESTINATION ${LC_PLUGINS_DEST})
+install (FILES httharesettings.xml DESTINATION ${LC_SETTINGS_DEST})
