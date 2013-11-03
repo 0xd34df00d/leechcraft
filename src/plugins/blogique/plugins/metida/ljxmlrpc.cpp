@@ -1587,6 +1587,7 @@ namespace Metida
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
 			ParseFriends (document);
+			Account_->updateProfile ();
 			return;
 		}
 

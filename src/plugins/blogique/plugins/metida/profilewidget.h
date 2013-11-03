@@ -45,7 +45,6 @@ namespace Metida
 {
 	class LJFriendEntry;
 	class LJProfile;
-	class FriendsModel;
 	class FriendsProxyModel;
 
 	class ProfileWidget : public QWidget
@@ -62,17 +61,23 @@ namespace Metida
 		};
 		
 		LJProfile *Profile_;
-		FriendsModel *FriendsModel_;
+		QStandardItemModel *FriendsModel_;
 		FriendsProxyModel *FriendsProxyModel_;
+		QStandardItemModel *GroupsModel_;
+		QStandardItemModel *FriendsInGroupModel_;
+		QStandardItemModel *FriendsNotInGroupModel_;
 		QStandardItemModel *CommunitiesModel_;
 		QHash<QStandardItem*, LJFriendGroup> Item2FriendGroup_;
 		QHash<QStandardItem*, LJFriendEntry_ptr> Item2Friend_;
+		QMap<LJFriendEntry_ptr, QStandardItem*> Friend2Item_;
+		QHash<QString, LJFriendEntry_ptr> Username2Friend_;
 
 	public:
 		ProfileWidget (LJProfile *profile, QWidget *parent = 0);
 	private:
 		void RereadProfileData ();
 		void FillFriends (const QList<LJFriendEntry_ptr>& friends);
+		void FillGroups (const QList<LJFriendGroup>& friendGroups);
 		void FillCommunities (const QStringList& communities);
 		void ReFillModels ();
 
@@ -84,10 +89,17 @@ namespace Metida
 		void on_Edit__released ();
 		void on_Delete__released ();
 		void on_UpdateProfile__released ();
+		void on_Groups__clicked (const QModelIndex& index);
+		void on_AddUserToGroup__released ();
+		void on_RemoveUserFromGroup__released ();
 		void handleUserGroupChanged (const QString& username,
 				const QString& bgColor, const QString& fgColor, int groupId);
 		void handleFriendFilterTextChanged (const QString& text);
 
+		void addNewGroup ();
+		void deleteGroup ();
+		void editGroup ();
+		
 	signals:
 		void coloringItemChanged ();
 	};

@@ -43,6 +43,26 @@ namespace Metida
 		Q_OBJECT
 
 	public:
+		enum FriendsRoles
+		{
+			FRFriendStatus = Qt::UserRole + 1
+		};
+		
+		enum Columns
+		{
+			Nickname_,
+			FriendStatus_,
+			Username_,
+			Birthday_
+		};
+		
+		enum FriendStatus
+		{
+			FSFriendOf,
+			FSMyFriend,
+			FSBothFriends
+		};
+		
 		FriendsProxyModel (QObject *parent = 0);
 	protected:
 		bool filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const;

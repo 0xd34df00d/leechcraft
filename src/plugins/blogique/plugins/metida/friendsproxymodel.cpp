@@ -30,7 +30,6 @@
 
 #include "friendsproxymodel.h"
 #include <QtDebug>
-#include "friendsmodel.h"
 
 namespace LeechCraft
 {
@@ -47,36 +46,36 @@ namespace Metida
 
 	bool FriendsProxyModel::filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const
 	{
-		const auto& nick = sourceModel ()->index (sourceRow, FriendsModel::Nickname_, sourceParent).data ().toString ();
-		const auto& name = sourceModel ()->index (sourceRow, FriendsModel::Name_, sourceParent).data ().toString ();
-		const auto& birthday = sourceModel ()->index (sourceRow, FriendsModel::Birthday_, sourceParent).data ().toString ();
+		const auto& nick = sourceModel ()->index (sourceRow, Nickname_, sourceParent).data ().toString ();
+		const auto& name = sourceModel ()->index (sourceRow, Username_, sourceParent).data ().toString ();
+		const auto& birthday = sourceModel ()->index (sourceRow, Birthday_, sourceParent).data ().toString ();
 		return nick.contains (filterRegExp ()) || name.contains (filterRegExp ()) || birthday.contains (filterRegExp ());
 	}
 
 	bool FriendsProxyModel::lessThan (const QModelIndex& left, const QModelIndex& right) const
 	{
-		if (left.column () != FriendsModel::FriendStatus_ || right.column () != FriendsModel::FriendStatus_)
+		if (left.column () != FriendStatus_ || right.column () != FriendStatus_)
 			return QSortFilterProxyModel::lessThan (left, right);
 		
-		const int leftStatus = sourceModel ()->data (left, FriendsModel::FRFriendStatus).toInt ();
-		const int rightStatus = sourceModel ()->data (right, FriendsModel::FRFriendStatus).toInt ();
+		const int leftStatus = sourceModel ()->data (left, FRFriendStatus).toInt ();
+		const int rightStatus = sourceModel ()->data (right, FRFriendStatus).toInt ();
 		switch (leftStatus)
 		{
-		case FriendsModel::FSFriendOf:
+		case FSFriendOf:
 			return true;
-		case FriendsModel::FSMyFriend:
+		case FSMyFriend:
 			switch (rightStatus)
 			{
-			case FriendsModel::FSFriendOf:
+			case FSFriendOf:
 				return false;
-			case FriendsModel::FSMyFriend:
+			case FSMyFriend:
 				return true;
-			case FriendsModel::FSBothFriends:
+			case FSBothFriends:
 				return true;
 			default:
 				return true;
 			}
-		case FriendsModel::FSBothFriends:
+		case FSBothFriends:
 			return false;
 		default:
 			return true;

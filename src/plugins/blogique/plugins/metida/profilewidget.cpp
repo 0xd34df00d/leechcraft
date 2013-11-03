@@ -51,8 +51,11 @@ namespace Metida
 	ProfileWidget::ProfileWidget (LJProfile *profile, QWidget *parent)
 	: QWidget (parent)
 	, Profile_ (profile)
-	, FriendsModel_ (new FriendsModel (this))
+	, FriendsModel_ (new QStandardItemModel (this))
 	, FriendsProxyModel_(new FriendsProxyModel (this))
+	, GroupsModel_ (new QStandardItemModel (this))
+	, FriendsInGroupModel_ (new QStandardItemModel (this))
+	, FriendsNotInGroupModel_ (new QStandardItemModel (this))
 	, CommunitiesModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
@@ -62,7 +65,6 @@ namespace Metida
 		Ui_.FriendsView_->setDropIndicatorShown (true);
 		FriendsModel_->setHorizontalHeaderLabels ({ tr ("UserName"),
 				tr ("Status"), tr ("FullName"), tr ("Birthday") });
-		CommunitiesModel_->setHorizontalHeaderLabels ({ tr ("Name") });
 		
 		connect (FriendsModel_,
 				SIGNAL (userGroupChanged (const QString&, const QString&,
@@ -78,7 +80,15 @@ namespace Metida
 				SLOT (handleColoringItemChanged ()));
 		Ui_.FriendsView_->setItemDelegate (friendDelegate);
 
+		Ui_.Groups_->setModel (GroupsModel_);
+		Ui_.Groups_->setHeaderHidden (true);
+		Ui_.InGroupUsers_->setModel (FriendsInGroupModel_);
+		Ui_.InGroupUsers_->setHeaderHidden (true);
+		Ui_.NotInGroupUsers_->setModel (FriendsNotInGroupModel_);
+		Ui_.NotInGroupUsers_->setHeaderHidden (true);
+
 		Ui_.CommunitiesView_->setModel (CommunitiesModel_);
+		CommunitiesModel_->setHorizontalHeaderLabels ({ tr ("Name") });
 
 		Ui_.ColoringFriendsList_->setChecked (XmlSettingsManager::Instance ()
 				.Property ("ColoringFriendsList", true).toBool ());
@@ -89,6 +99,29 @@ namespace Metida
 				SIGNAL (textChanged (QString)),
 				this,
 				SLOT (handleFriendFilterTextChanged (QString)));
+		
+		Ui_.Groups_->setContextMenuPolicy (Qt::ActionsContextMenu);
+		QAction *newGroup = new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("list-add"),
+				tr ("Add group"), this);
+		connect (newGroup,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (addNewGroup ()));
+		QAction *deleteGroup = new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("list-remove"),
+				tr ("Delete group"), this);
+		connect (deleteGroup,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (deleteGroup ()));
+		QAction *editGroup = new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("edit-select"),
+				tr ("Edit group"), this);
+		connect (editGroup,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (editGroup ()));
+
+		Ui_.Groups_->addActions ({ newGroup, editGroup, deleteGroup });
+		
 	}
 
 	void ProfileWidget::RereadProfileData ()
@@ -108,7 +141,8 @@ namespace Metida
 	{
 		for (auto fr : friends)
 		{
-			
+			Username2Friend_ [fr->GetUserName ()] = fr; 
+
 			QStandardItem *item = new QStandardItem (fr->GetUserName ());
 			QStandardItem *itemName = new QStandardItem (fr->GetFullName ());
 
@@ -133,7 +167,12 @@ namespace Metida
 			QStandardItem *itemStatus = new QStandardItem (icon, QString ());
 			itemStatus->setData (status, FriendsModel::FRFriendStatus);
 			QStandardItem *itemBirthday = new QStandardItem (fr->GetBirthday ());
+			if (Friend2Item_.contains (fr))
+				Item2Friend_.remove (Friend2Item_ [fr]);
+			Friend2Item_ [fr] = item;
 			Item2Friend_ [item] = fr;
+				
+			Friend2Item_ [fr] = item;
 
 			item->setData (fr->GetBGColor ().name (), ItemColorRoles::BackgroundColor);
 			item->setData (fr->GetFGColor ().name (), ItemColorRoles::ForegroundColor);
@@ -142,6 +181,18 @@ namespace Metida
 		}
 
 		Ui_.FriendsView_->header ()->setResizeMode (QHeaderView::ResizeToContents);
+	}
+
+	void ProfileWidget::FillGroups (const QList<LJFriendGroup>& groups)
+	{
+		for (const auto& group : groups)
+		{
+			QStandardItem *item = new QStandardItem (group.Name_);
+			item->setData (group.RealId_, ItemGroupRoles::GroupId);
+			Item2FriendGroup_ [item] = group;
+			item->setEditable (false);
+			GroupsModel_->appendRow (item);
+		}
 	}
 
 	void ProfileWidget::FillCommunities (const QStringList& communities)
@@ -160,9 +211,13 @@ namespace Metida
 		const LJProfileData& data = Profile_->GetProfileData ();
 		FriendsModel_->removeRows (0, FriendsModel_->rowCount ());
 		Item2Friend_.clear ();
-		Item2FriendGroup_.clear ();
+		Friend2Item_.clear ();
 		FillFriends (data.Friends_);
-		
+
+		GroupsModel_->removeRows (0, GroupsModel_->rowCount ());
+		Item2FriendGroup_.clear ();
+		FillGroups (data.FriendGroups_);
+
 		CommunitiesModel_->removeRows (0, CommunitiesModel_->rowCount());
 		FillCommunities (data.Communities_);
 	}
@@ -265,14 +320,89 @@ namespace Metida
 		account->updateProfile ();
 	}
 
+	void ProfileWidget::on_Groups__clicked (const QModelIndex& index)
+	{
+		if (!index.isValid ())
+			return;
+		
+		FriendsInGroupModel_->removeRows (0, FriendsInGroupModel_->rowCount ());
+		FriendsNotInGroupModel_->removeRows (0, FriendsNotInGroupModel_->rowCount ());
+
+		const auto& group = Item2FriendGroup_ [GroupsModel_->itemFromIndex (index)];
+		for (const auto& friendEntry : Item2Friend_.values ())
+		{
+			QStandardItem * item = new QStandardItem (friendEntry->GetUserName ());
+			item->setEditable (false);
+			((friendEntry->GetGroupMask () >> group.Id_) & 1) ?
+				FriendsInGroupModel_->appendRow (item) :
+				FriendsNotInGroupModel_->appendRow (item);
+		}
+		FriendsInGroupModel_->sort (0, Qt::AscendingOrder);
+		FriendsNotInGroupModel_->sort (0, Qt::AscendingOrder);
+	}
+
+	void ProfileWidget::on_AddUserToGroup__released ()
+	{
+		const auto& index = Ui_.NotInGroupUsers_->currentIndex ();
+		if (!index.isValid ())
+			return;
+		
+		const auto& groupIndex = Ui_.Groups_->selectionModel ()->selectedRows ().value (0);
+		if (!groupIndex.isValid ())
+			return;
+		const auto& group = Item2FriendGroup_ [GroupsModel_->itemFromIndex (groupIndex)];
+		auto item = new QStandardItem (index.data ().toString ());
+		item->setEditable (false);
+		FriendsNotInGroupModel_->removeRow (index.row ());
+		FriendsInGroupModel_->appendRow (item);
+		if (Username2Friend_.contains (item->text ()))
+		{
+			const auto& friendEntry = Username2Friend_ [item->text ()];
+			uint groupMask = friendEntry->GetGroupMask ();
+			groupMask = groupMask | (1 << group.Id_);
+			handleUserGroupChanged (friendEntry->GetUserName (),
+					friendEntry->GetBGColor ().name (), friendEntry->GetFGColor ().name (),
+					groupMask);
+		}
+		FriendsInGroupModel_->sort (0, Qt::AscendingOrder);
+		FriendsNotInGroupModel_->sort (0, Qt::AscendingOrder);
+	}
+
+	void ProfileWidget::on_RemoveUserFromGroup__released ()
+	{
+		const auto& index = Ui_.InGroupUsers_->currentIndex ();
+		if (!index.isValid ())
+			return;
+		
+		const auto& groupIndex = Ui_.Groups_->selectionModel ()->selectedRows ().value (0);
+		if (!groupIndex.isValid ())
+			return;
+		const auto& group = Item2FriendGroup_ [GroupsModel_->itemFromIndex (groupIndex)];
+		auto item = new QStandardItem (index.data ().toString ());
+		item->setEditable (false);
+		FriendsInGroupModel_->removeRow (index.row ());
+		FriendsNotInGroupModel_->appendRow (item);
+		if (Username2Friend_.contains (item->text ()))
+		{
+			const auto& friendEntry = Username2Friend_ [item->text ()];
+			uint groupMask = friendEntry->GetGroupMask ();
+			groupMask = groupMask &~ (1 << group.Id_);
+			handleUserGroupChanged (friendEntry->GetUserName (),
+					friendEntry->GetBGColor ().name (), friendEntry->GetFGColor ().name (),
+					groupMask);
+		}
+		FriendsInGroupModel_->sort (0, Qt::AscendingOrder);
+		FriendsNotInGroupModel_->sort (0, Qt::AscendingOrder);
+	}
+
 	void ProfileWidget::handleUserGroupChanged (const QString& username,
-			const QString& bgColor, const QString& fgColor, int groupId)
+			const QString& bgColor, const QString& fgColor, int groupMask)
 	{
 		LJAccount *account = qobject_cast<LJAccount*> (Profile_->GetParentAccount ());
 		if (!account)
 			return;
 
-		account->AddNewFriend (username, bgColor, fgColor, groupId);
+		account->AddNewFriend (username, bgColor, fgColor, groupMask);
 	}
 	
 	void ProfileWidget::handleFriendFilterTextChanged (const QString& text)
@@ -280,6 +410,74 @@ namespace Metida
 		FriendsProxyModel_->setFilterFixedString (text);
 	}
 
+	void ProfileWidget::addNewGroup ()
+	{
+		std::unique_ptr<AddEditEntryDialog> aeed (new AddEditEntryDialog (Profile_, ATEGroup));
+		if (aeed->exec () == QDialog::Rejected)
+			return;
+		LJAccount *account = qobject_cast<LJAccount*> (Profile_->GetParentAccount ());
+		if (!account)
+			return;
+
+		int id = Profile_->GetFreeGroupId ();
+		if (id == -1)
+		{
+			QMessageBox::warning (this,
+					tr ("Add new group"),
+					tr ("You cannot add more groups. The limit of 30 groups is reached."));
+			return;
+		}
+
+		account->AddGroup (aeed->GetGroupName (), aeed->GetAcccess (), id);
+	}
+
+	void ProfileWidget::deleteGroup ()
+	{
+		auto index = Ui_.Groups_->selectionModel ()->currentIndex ();
+		if (!index.isValid ())
+			return;
+
+		const QString& msg = tr ("Are you sure to delete group <b>%1</b>"
+					"<br><i>Note: all friends in this group will <b>not</b> be deleted.</i>")
+							.arg (index.data ().toString ());
+		int res = QMessageBox::question (this,
+				tr ("Change groups"),
+				msg,
+				QMessageBox::Ok | QMessageBox::Cancel,
+				QMessageBox::Cancel);
+
+		if (res == QMessageBox::Ok)
+		{
+			LJAccount *account = qobject_cast<LJAccount*> (Profile_->GetParentAccount ());
+			if (!account)
+				return;
+			account->DeleteGroup (Item2FriendGroup_ [FriendsModel_->itemFromIndex (index)].Id_);
+		}
+	}
+
+	void ProfileWidget::editGroup ()
+	{
+		auto index = Ui_.Groups_->selectionModel ()->currentIndex ();
+		if (!index.isValid ())
+			return;
+
+		LJAccount *account = qobject_cast<LJAccount*> (Profile_->GetParentAccount ());
+		if (!account)
+			return;
+
+		QString msg;
+		const auto& item = Item2FriendGroup_ [GroupsModel_->itemFromIndex (index)];
+		std::unique_ptr<AddEditEntryDialog> dlg (new AddEditEntryDialog (Profile_, ATENone));
+		dlg->ShowAddTypePossibility (false);
+		dlg->SetCurrentAddTypeEntry (ATEGroup);
+		dlg->SetGroupName (index.data ().toString ());
+		dlg->SetAccess (item.Public_);
+
+		if (dlg->exec () == QDialog::Rejected)
+			return;
+
+		account->AddGroup (dlg->GetGroupName (), dlg->GetAcccess (), item.Id_);
+	}
 }
 }
 }
