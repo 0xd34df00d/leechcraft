@@ -56,7 +56,7 @@ namespace HttThare
 			line = line.trimmed ();
 		lines.removeAll ({});
 
-		if (lines.size () < 0)
+		if (lines.size () <= 0)
 			return ErrorResponse (400, "Bad Request");
 
 		const auto& req = lines.takeAt (0).split (' ');
