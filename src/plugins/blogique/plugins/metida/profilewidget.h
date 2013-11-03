@@ -95,7 +95,8 @@ namespace Metida
 		void handleUserGroupChanged (const QString& username,
 				const QString& bgColor, const QString& fgColor, int groupId);
 		void handleFriendFilterTextChanged (const QString& text);
-
+		void handleReadJournal ();
+		
 		void addNewGroup ();
 		void deleteGroup ();
 		void editGroup ();

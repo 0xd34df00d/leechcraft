@@ -31,6 +31,7 @@
 #include <stdexcept>
 #include <QtDebug>
 #include <QMessageBox>
+#include <QStandardItemModel>
 #include <util/util.h>
 #include "ljprofile.h"
 #include "ljaccount.h"
@@ -38,9 +39,9 @@
 #include "frienditemdelegate.h"
 #include "xmlsettingsmanager.h"
 #include "addeditentrydialog.h"
-#include "friendsmodel.h"
 #include "friendsproxymodel.h"
 #include "core.h"
+#include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
 {
@@ -79,6 +80,34 @@ namespace Metida
 				friendDelegate,
 				SLOT (handleColoringItemChanged ()));
 		Ui_.FriendsView_->setItemDelegate (friendDelegate);
+		QAction *newFriend = new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("list-add"),
+				tr ("Add friend"), this);
+		connect (newFriend,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (on_Add__released ()));
+		QAction *deleteFriend = new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("list-remove"),
+				tr ("Delete friend"), this);
+		connect (deleteFriend,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (on_Delete__released ()));
+		QAction *editFriend = new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("edit-select"),
+				tr ("Edit friend"), this);
+		connect (editFriend,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (on_Edit__released ()));
+		QAction *readJournal = new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("text-field"),
+				tr ("Read journal"), this);
+		connect (readJournal,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleReadJournal ()));
+		Ui_.FriendsView_->setContextMenuPolicy (Qt::ActionsContextMenu);
+		Ui_.FriendsView_->addActions ({ readJournal, 
+				Util::CreateSeparator (Ui_.FriendsView_), 
+				newFriend, editFriend, deleteFriend });
 
 		Ui_.Groups_->setModel (GroupsModel_);
 		Ui_.Groups_->setHeaderHidden (true);
@@ -147,25 +176,25 @@ namespace Metida
 			QStandardItem *itemName = new QStandardItem (fr->GetFullName ());
 
 			QIcon icon;
-			FriendsModel::FriendStatus status = FriendsModel::FSFriendOf;
+			FriendsProxyModel::FriendStatus status = FriendsProxyModel::FSFriendOf;
 			if (fr->GetFriendOf () &&
 					fr->GetMyFriend ())
 			{
 				icon = Core::Instance ().GetCoreProxy ()->GetIcon ("im-msn");
-				status = FriendsModel::FSBothFriends;
+				status = FriendsProxyModel::FSBothFriends;
 			}
 			else if (fr->GetFriendOf ())
 			{
 				icon = Core::Instance ().GetCoreProxy ()->GetIcon ("im-user-offline");
-				status = FriendsModel::FSFriendOf;
+				status = FriendsProxyModel::FSFriendOf;
 			}
 			else if (fr->GetMyFriend ())
 			{
 				icon = Core::Instance ().GetCoreProxy ()->GetIcon ("im-user");
-				status = FriendsModel::FSMyFriend;
+				status = FriendsProxyModel::FSMyFriend;
 			}
 			QStandardItem *itemStatus = new QStandardItem (icon, QString ());
-			itemStatus->setData (status, FriendsModel::FRFriendStatus);
+			itemStatus->setData (status, FriendsProxyModel::FRFriendStatus);
 			QStandardItem *itemBirthday = new QStandardItem (fr->GetBirthday ());
 			if (Friend2Item_.contains (fr))
 				Item2Friend_.remove (Friend2Item_ [fr]);
@@ -408,6 +437,20 @@ namespace Metida
 	void ProfileWidget::handleFriendFilterTextChanged (const QString& text)
 	{
 		FriendsProxyModel_->setFilterFixedString (text);
+	}
+
+	void ProfileWidget::handleReadJournal ()
+	{
+		auto index = Ui_.FriendsView_->selectionModel ()->currentIndex ();
+		index = index.sibling (index.row (), Columns::Name);
+		if (!index.isValid ())
+			return;
+		
+		Core::Instance ().GetCoreProxy ()->GetEntityManager ()->
+				HandleEntity (Util::MakeEntity (QUrl (QString ("http://%1.livejournal.com")
+							.arg (index.data ().toString ())), 
+						QString (), 
+						OnlyHandle | FromUserInitiated));
 	}
 
 	void ProfileWidget::addNewGroup ()
