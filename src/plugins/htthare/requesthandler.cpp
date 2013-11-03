@@ -151,6 +151,7 @@ namespace HttThare
 		{
 			ResponseLine_ = "HTTP/1.1 404 Not found\r\n";
 
+			ResponseHeaders_.append ({ "Content-Type", "text/html; charset=utf-8" });
 			ResponseBody_ = QString (R"delim(<html>
 					<head><title>%1</title></head>
 					<body>
