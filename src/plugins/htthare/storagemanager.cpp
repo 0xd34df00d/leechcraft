@@ -42,7 +42,7 @@ namespace HttThare
 
 	QString StorageManager::ResolvePath (const QUrl& url) const
 	{
-		return QUrl::fromLocalFile (QDir::homePath ()).resolved (url).toLocalFile ();
+		return QUrl::fromLocalFile (QDir::homePath () + '/').resolved (url).toLocalFile ();
 	}
 }
 }
