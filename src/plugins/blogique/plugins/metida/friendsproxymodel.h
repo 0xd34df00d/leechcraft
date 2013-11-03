@@ -50,10 +50,10 @@ namespace Metida
 		
 		enum Columns
 		{
-			Nickname_,
-			FriendStatus_,
-			Username_,
-			Birthday_
+			CNickname,
+			CFriendStatus,
+			CUsername,
+			CBirthday
 		};
 		
 		enum FriendStatus

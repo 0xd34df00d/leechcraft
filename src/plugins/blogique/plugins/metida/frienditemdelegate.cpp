@@ -41,10 +41,11 @@ namespace Blogique
 {
 namespace Metida
 {
-	FriendItemDelegate::FriendItemDelegate (QTreeView *parent)
+	FriendItemDelegate::FriendItemDelegate (QSortFilterProxyModel *sortModel, QTreeView *parent)
 	: QStyledItemDelegate (parent)
 	, ColoringItems_ (true)
 	, View_ (parent)
+	, SortModel_ (sortModel)
 	{
 		XmlSettingsManager::Instance ().RegisterObject ("ColoringFriendsList",
 				this, "handleColoringItemChanged");
@@ -55,10 +56,9 @@ namespace Metida
 			const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
 		QStyleOptionViewItemV4 o = option;
-		auto proxyModel = static_cast<FriendsProxyModel*> (View_->model ());
-		const QString& backgroundColor = proxyModel->mapToSource (index.sibling (index.row (), Columns::UserName))
+		const QString& backgroundColor = SortModel_->mapToSource (index.sibling (index.row (), Columns::UserName))
 				.data (ItemColorRoles::BackgroundColor).toString ();
-		const QString& foregroundColor = proxyModel->mapToSource (index.sibling (index.row (), Columns::UserName))
+		const QString& foregroundColor = SortModel_->mapToSource (index.sibling (index.row (), Columns::UserName))
 				.data (ItemColorRoles::ForegroundColor).toString ();
 
 		if (ColoringItems_)

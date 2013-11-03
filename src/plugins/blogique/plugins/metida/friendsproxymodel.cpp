@@ -29,7 +29,6 @@
  **********************************************************************/
 
 #include "friendsproxymodel.h"
-#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -46,15 +45,18 @@ namespace Metida
 
 	bool FriendsProxyModel::filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const
 	{
-		const auto& nick = sourceModel ()->index (sourceRow, Nickname_, sourceParent).data ().toString ();
-		const auto& name = sourceModel ()->index (sourceRow, Username_, sourceParent).data ().toString ();
-		const auto& birthday = sourceModel ()->index (sourceRow, Birthday_, sourceParent).data ().toString ();
+		const auto& nick = sourceModel ()->index (sourceRow, CNickname, sourceParent).data ().toString ();
+		const auto& name = sourceModel ()->index (sourceRow, CUsername, sourceParent).data ().toString ();
+		const auto& birthday = sourceModel ()->index (sourceRow, CBirthday, sourceParent).data ().toString ();
 		return nick.contains (filterRegExp ()) || name.contains (filterRegExp ()) || birthday.contains (filterRegExp ());
 	}
 
 	bool FriendsProxyModel::lessThan (const QModelIndex& left, const QModelIndex& right) const
 	{
-		if (left.column () != FriendStatus_ || right.column () != FriendStatus_)
+		if (filterRegExp ().isEmpty ())
+			return true;
+		
+		if (left.column () != CFriendStatus || right.column () != CFriendStatus)
 			return QSortFilterProxyModel::lessThan (left, right);
 		
 		const int leftStatus = sourceModel ()->data (left, FRFriendStatus).toInt ();

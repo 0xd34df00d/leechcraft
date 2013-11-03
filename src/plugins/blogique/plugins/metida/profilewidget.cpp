@@ -33,6 +33,7 @@
 #include <QMessageBox>
 #include <QStandardItemModel>
 #include <util/util.h>
+#include <interfaces/core/ientitymanager.h>
 #include "ljprofile.h"
 #include "ljaccount.h"
 #include "ljfriendentry.h"
@@ -41,7 +42,6 @@
 #include "addeditentrydialog.h"
 #include "friendsproxymodel.h"
 #include "core.h"
-#include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
 {
@@ -74,7 +74,7 @@ namespace Metida
 				SLOT (handleUserGroupChanged (const QString&, const QString&,
 						const QString&, int)));
 
-		FriendItemDelegate *friendDelegate = new FriendItemDelegate (Ui_.FriendsView_);
+		FriendItemDelegate *friendDelegate = new FriendItemDelegate (FriendsProxyModel_, Ui_.FriendsView_);
 		connect (this,
 				SIGNAL (coloringItemChanged ()),
 				friendDelegate,
@@ -203,8 +203,7 @@ namespace Metida
 			QStandardItem *itemStatus = new QStandardItem (icon, QString ());
 			itemStatus->setData (status, FriendsProxyModel::FRFriendStatus);
 			QStandardItem *itemBirthday = new QStandardItem (fr->GetBirthday ());
-			if (Friend2Item_.contains (fr))
-				Item2Friend_.remove (Friend2Item_ [fr]);
+			Item2Friend_.remove (Friend2Item_.value (fr));
 			Friend2Item_ [fr] = item;
 			Item2Friend_ [item] = fr;
 				
@@ -275,18 +274,18 @@ namespace Metida
 
 	void ProfileWidget::on_Add__released ()
 	{
-		std::unique_ptr<AddEditEntryDialog> aeed (new AddEditEntryDialog (Profile_, ATEFriend));
-		if (aeed->exec () == QDialog::Rejected)
+		AddEditEntryDialog aeed (Profile_, ATEFriend);
+		if (aeed.exec () == QDialog::Rejected)
 			return;
 
 		LJAccount *account = qobject_cast<LJAccount*> (Profile_->GetParentAccount ());
 		if (!account)
 			return;
 
-		const QString& userName = aeed->GetUserName ();
-		const QString& bgcolor = aeed->GetBackgroundColorName ();
-		const QString& fgcolor = aeed->GetForegroundColorName ();
-		const uint groupMask =  aeed->GetGroupMask ();
+		const QString& userName = aeed.GetUserName ();
+		const QString& bgcolor = aeed.GetBackgroundColorName ();
+		const QString& fgcolor = aeed.GetForegroundColorName ();
+		const uint groupMask = aeed.GetGroupMask ();
 
 		account->AddNewFriend (userName, bgcolor, fgcolor, groupMask);
 	}
@@ -303,22 +302,22 @@ namespace Metida
 		if (!account)
 			return;
 
-		std::unique_ptr<AddEditEntryDialog> dlg (new AddEditEntryDialog (Profile_, ATENone));
-		dlg->ShowAddTypePossibility (false);
-		dlg->SetCurrentAddTypeEntry (ATEFriend);
+		AddEditEntryDialog dlg (Profile_, ATENone);
+		dlg.ShowAddTypePossibility (false);
+		dlg.SetCurrentAddTypeEntry (ATEFriend);
 		LJFriendEntry_ptr entry = Item2Friend_ [FriendsModel_->itemFromIndex (FriendsProxyModel_->mapToSource (index))];
-		dlg->SetUserName (entry->GetUserName ());
-		dlg->SetBackgroundColor (entry->GetBGColor ());
-		dlg->SetForegroundColor (entry->GetFGColor ());
-		dlg->SetGroupMask (entry->GetGroupMask ());
+		dlg.SetUserName (entry->GetUserName ());
+		dlg.SetBackgroundColor (entry->GetBGColor ());
+		dlg.SetForegroundColor (entry->GetFGColor ());
+		dlg.SetGroupMask (entry->GetGroupMask ());
 
-		if (dlg->exec () == QDialog::Rejected)
+		if (dlg.exec () == QDialog::Rejected)
 			return;
 
-		const QString& userName = dlg->GetUserName ();
-		const QString& bgcolor = dlg->GetBackgroundColorName ();
-		const QString& fgcolor = dlg->GetForegroundColorName ();
-		const uint mask = dlg->GetGroupMask ();
+		const QString& userName = dlg.GetUserName ();
+		const QString& bgcolor = dlg.GetBackgroundColorName ();
+		const QString& fgcolor = dlg.GetForegroundColorName ();
+		const uint mask = dlg.GetGroupMask ();
 
 		account->AddNewFriend (userName, bgcolor, fgcolor, mask);
 	}
@@ -474,8 +473,8 @@ namespace Metida
 
 	void ProfileWidget::addNewGroup ()
 	{
-		std::unique_ptr<AddEditEntryDialog> aeed (new AddEditEntryDialog (Profile_, ATEGroup));
-		if (aeed->exec () == QDialog::Rejected)
+		AddEditEntryDialog aeed (Profile_, ATEGroup);
+		if (aeed.exec () == QDialog::Rejected)
 			return;
 		LJAccount *account = qobject_cast<LJAccount*> (Profile_->GetParentAccount ());
 		if (!account)
@@ -490,7 +489,7 @@ namespace Metida
 			return;
 		}
 
-		account->AddGroup (aeed->GetGroupName (), aeed->GetAcccess (), id);
+		account->AddGroup (aeed.GetGroupName (), aeed.GetAcccess (), id);
 	}
 
 	void ProfileWidget::deleteGroup ()
@@ -529,16 +528,16 @@ namespace Metida
 
 		QString msg;
 		const auto& item = Item2FriendGroup_ [GroupsModel_->itemFromIndex (index)];
-		std::unique_ptr<AddEditEntryDialog> dlg (new AddEditEntryDialog (Profile_, ATENone));
-		dlg->ShowAddTypePossibility (false);
-		dlg->SetCurrentAddTypeEntry (ATEGroup);
-		dlg->SetGroupName (index.data ().toString ());
-		dlg->SetAccess (item.Public_);
+		AddEditEntryDialog dlg (Profile_, ATENone);
+		dlg.ShowAddTypePossibility (false);
+		dlg.SetCurrentAddTypeEntry (ATEGroup);
+		dlg.SetGroupName (index.data ().toString ());
+		dlg.SetAccess (item.Public_);
 
-		if (dlg->exec () == QDialog::Rejected)
+		if (dlg.exec () == QDialog::Rejected)
 			return;
 
-		account->AddGroup (dlg->GetGroupName (), dlg->GetAcccess (), item.Id_);
+		account->AddGroup (dlg.GetGroupName (), dlg.GetAcccess (), item.Id_);
 	}
 }
 }

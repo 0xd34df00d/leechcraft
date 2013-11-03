@@ -234,15 +234,14 @@ namespace Metida
 	
 	void AddEditEntryDialog::on_SelectGroups__released ()
 	{
-		std::unique_ptr<SelectGroupsDialog>dlg (new SelectGroupsDialog (Profile_, GroupMask_));
-		dlg->SetHeaderLabel (tr ("Add friend to groups:"));
-		if (dlg->exec () == QDialog::Rejected)
+		SelectGroupsDialog dlg (Profile_, GroupMask_);
+		dlg.SetHeaderLabel (tr ("Add friend to groups:"));
+		if (dlg.exec () == QDialog::Rejected)
 			return;
 		
-		int groupMask = 0;
-		for (uint id : dlg->GetSelectedGroupsIds ())
-			groupMask = groupMask | (1 << id);
-		GroupMask_ = groupMask;
+		GroupMask_ = 0;
+		for (uint id : dlg.GetSelectedGroupsIds ())
+			GroupMask_ |= (1 << id);
 	}
 
 }

@@ -91,7 +91,7 @@ namespace Metida
 
 	void LJProfile::AddFriends (const QList<LJFriendEntry_ptr>& friends)
 	{
-		for (const auto friendEntry : friends)
+		for (const auto& friendEntry : friends)
 		{
 			const int index = ProfileData_.Friends_.indexOf (friendEntry);
 			if (index == -1)
