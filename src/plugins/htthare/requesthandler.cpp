@@ -145,7 +145,35 @@ namespace HttThare
 	{
 		const auto& path = Conn_->GetStorageManager ().ResolvePath (Url_);
 		const QFileInfo fi { path };
-		if (fi.isDir ())
+		if (!fi.exists ())
+		{
+			ResponseLine_ = "HTTP/1.1 404 Not found\r\n";
+
+			ResponseBody_ = QString (R"delim(<html>
+					<head><title>%1</title></head>
+					<body>
+						%2
+					</body>
+				</html>
+				)delim")
+					.arg (fi.fileName ())
+					.arg (QObject::tr ("%1 is not found on this server").arg (path))
+					.toUtf8 ();
+
+			auto c = Conn_;
+			boost::asio::async_write (c->GetSocket (),
+					ToBuffers (),
+					c->GetStrand ().wrap ([c] (const boost::system::error_code& ec, ulong)
+						{
+							if (ec)
+								qWarning () << Q_FUNC_INFO
+										<< ec.message ().c_str ();
+
+							boost::system::error_code iec;
+							c->GetSocket ().shutdown (boost::asio::socket_base::shutdown_both, iec);
+						}));
+		}
+		else if (fi.isDir ())
 		{
 			ResponseLine_ = "HTTP/1.1 200 OK\r\n";
 
