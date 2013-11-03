@@ -266,7 +266,6 @@ namespace NetStoreManager
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleUpload ()));
-				Upload_ = new QAction (Proxy_->GetIcon ("svn-commit"), tr ("Upload"), this);
 
 		ToolBar_->addActions ({ Refresh_, Util::CreateSeparator (ToolBar_), CreateDir_, Upload_ });
 		ToolBar_->addSeparator ();
