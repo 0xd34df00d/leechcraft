@@ -132,7 +132,7 @@ namespace GoogleDrive
 		Id2OpenAfterDownloadState_.remove (id);
 	}
 
-	void Core::handleJobError (int id, IDownload::Error err)
+	void Core::handleJobError (int id, IDownload::Error)
 	{
 		Id2Downloader_.remove (id);
 		Id2SavePath_.remove (id);
