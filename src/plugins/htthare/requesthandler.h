@@ -37,7 +37,7 @@
 
 namespace LeechCraft
 {
-namespace HttThare
+namespace HttHare
 {
 	class Connection;
 	typedef std::shared_ptr<Connection> Connection_ptr;

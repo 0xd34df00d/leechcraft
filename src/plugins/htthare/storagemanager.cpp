@@ -34,7 +34,7 @@
 
 namespace LeechCraft
 {
-namespace HttThare
+namespace HttHare
 {
 	StorageManager::StorageManager ()
 	{

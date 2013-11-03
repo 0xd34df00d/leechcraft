@@ -33,7 +33,7 @@
 
 namespace LeechCraft
 {
-namespace HttThare
+namespace HttHare
 {
 	class XmlSettingsManager : public Util::BaseSettingsManager
 	{

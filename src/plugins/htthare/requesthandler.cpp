@@ -42,7 +42,7 @@
 
 namespace LeechCraft
 {
-namespace HttThare
+namespace HttHare
 {
 	RequestHandler::RequestHandler (const Connection_ptr& conn)
 	: Conn_ (conn)

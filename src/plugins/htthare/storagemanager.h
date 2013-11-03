@@ -34,7 +34,7 @@ class QString;
 
 namespace LeechCraft
 {
-namespace HttThare
+namespace HttHare
 {
 	class StorageManager
 	{

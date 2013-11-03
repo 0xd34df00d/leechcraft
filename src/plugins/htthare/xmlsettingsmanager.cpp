@@ -32,7 +32,7 @@
 
 namespace LeechCraft
 {
-namespace HttThare
+namespace HttHare
 {
 	XmlSettingsManager::XmlSettingsManager ()
 	{
