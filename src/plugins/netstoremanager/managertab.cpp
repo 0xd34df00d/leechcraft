@@ -271,7 +271,7 @@ namespace NetStoreManager
 				this,
 				SLOT (handleUpload ()));
 
-		ToolBar_->addActions ({ Refresh_, Upload_ });
+		ToolBar_->addActions ({ Refresh_, Util::CreateSeparator (ToolBar_), CreateDir_, Upload_ });
 		ToolBar_->addSeparator ();
 
 		OpenTrash_ = new QAction (Proxy_->GetIcon ("user-trash"),
