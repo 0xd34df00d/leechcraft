@@ -39,6 +39,7 @@
 #include <QPushButton>
 #include <QStandardItemModel>
 #include <QWidgetAction>
+#include <QWebView>
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include <util/qml/themeimageprovider.h>
@@ -59,6 +60,7 @@
 #include "storagemanager.h"
 #include "submittodialog.h"
 #include "tagsproxymodel.h"
+#include "dummytexteditor.h"
 
 namespace LeechCraft
 {
@@ -292,6 +294,22 @@ namespace Blogique
 		QVBoxLayout *editFrameLay = new QVBoxLayout ();
 		editFrameLay->setContentsMargins (0, 0, 0, 0);
 		Ui_.PostFrame_->setLayout (editFrameLay);
+
+		if (plugs.isEmpty ())
+		{
+			DummyTextEditor *dummy = new DummyTextEditor (this);
+			PostEdit_ = qobject_cast<IEditorWidget*> (dummy);
+			if (!PostEdit_)
+				delete dummy;
+
+			connect (dummy,
+					SIGNAL (textChanged ()),
+					this,
+					SLOT (handleEntryChanged ()));
+			PostEditWidget_ = dummy;
+			editFrameLay->setContentsMargins (2, 2, 2, 2);
+			editFrameLay->addWidget (dummy);
+		}
 
 		Q_FOREACH (ITextEditor *plug, plugs)
 		{
