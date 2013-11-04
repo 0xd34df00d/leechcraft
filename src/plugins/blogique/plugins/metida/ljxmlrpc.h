@@ -105,6 +105,7 @@ namespace Metida
 
 		void RequestTags ();
 	private:
+		void CallNextFunctionFromQueue ();
 		void GenerateChallenge () const;
 		void ValidateAccountData (const QString& login,
 				const QString& pass, const QString& challenge);

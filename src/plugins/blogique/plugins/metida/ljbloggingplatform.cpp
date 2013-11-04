@@ -530,6 +530,11 @@ namespace Metida
 		}
 
 		emit accountValidated (acc->GetQObject (), validated);
+		if (validated)
+		{
+			checkForMessages ();
+ 			checkForComments ();
+		}
 	}
 
 	void LJBloggingPlatform::handleMessageChecking ()
