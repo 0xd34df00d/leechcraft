@@ -175,7 +175,7 @@ namespace Metida
 
 		void AddFriends (const QList<LJFriendEntry_ptr>& friends);
 		void AddNewFriend (const QString& username,
-				const QString& bgcolor, const QString& fgcolor, uint groupId);
+				const QString& bgcolor, const QString& fgcolor, uint groupMask);
 		void DeleteFriend (const QString& username);
 
 		void AddGroup (const QString& name, bool isPublic, int id);
