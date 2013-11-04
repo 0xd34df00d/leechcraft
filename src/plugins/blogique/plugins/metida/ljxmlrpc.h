@@ -77,6 +77,8 @@ namespace Metida
 	public:
 		LJXmlRPC (LJAccount *acc, QObject *parent = 0);
 
+		std::shared_ptr<void> MakeRunnerGuard ();
+		
 		void Validate (const QString& login, const QString& pass);
 
 		void AddNewFriend (const QString& username,

@@ -57,57 +57,56 @@ namespace Metida
 	, MaxGetEventsPerDayCount_ (200)
 	{
 	}
+	
+	std::shared_ptr<void> LJXmlRPC::MakeRunnerGuard ()
+	{
+		const bool shouldRun = ApiCallQueue_.isEmpty ();
+		return std::shared_ptr<void> (nullptr, [this, shouldRun] (void*) 
+				{ if (shouldRun) ApiCallQueue_.dequeue () (QString ()); });
+	}
 
 	void LJXmlRPC::Validate (const QString& login, const QString& password)
 	{
+		auto guard = MakeRunnerGuard ();
 		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [login, password, this] (const QString& challenge)
 				{ ValidateAccountData (login, password, challenge); };
 		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [login, password, this] (const QString& challenge)
 				{ RequestFriendsInfo (login, password, challenge); };
-		if (ApiCallQueue_.count () == 4)
-			ApiCallQueue_.dequeue () (QString ());
 	}
 
 	void LJXmlRPC::AddNewFriend (const QString& username,
 			const QString& bgcolor, const QString& fgcolor, uint groupMask)
 	{
+		auto guard = MakeRunnerGuard ();
 		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
-		ApiCallQueue_ << [username, bgcolor, fgcolor, groupId, this] (const QString& challenge)
-				{ AddNewFriendRequest (username, bgcolor, fgcolor, groupId, challenge); };
-		if (ApiCallQueue_.count () == 2)
-			ApiCallQueue_.dequeue () (QString ());
+		ApiCallQueue_ << [username, bgcolor, fgcolor, groupMask, this] (const QString& challenge)
+				{ AddNewFriendRequest (username, bgcolor, fgcolor, groupMask, challenge); };
 	}
 
 	void LJXmlRPC::DeleteFriend (const QString& username)
 	{
+		auto guard = MakeRunnerGuard ();
 		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [username, this] (const QString& challenge)
 				{ DeleteFriendRequest (username, challenge); };
-		if (ApiCallQueue_.count () == 2)
-			ApiCallQueue_.dequeue () (QString ());
-
 	}
 
 	void LJXmlRPC::AddGroup (const QString& name, bool isPublic, int id)
 	{
+		auto guard = MakeRunnerGuard ();
 		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [name, isPublic, id, this] (const QString& challenge)
 				{ AddGroupRequest (name, isPublic, id, challenge); };
-		if (ApiCallQueue_.count () == 2)
-			ApiCallQueue_.dequeue () (QString ());
-
 	}
 
 	void LJXmlRPC::DeleteGroup (int id)
 	{
+		auto guard = MakeRunnerGuard ();
 		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [id, this] (const QString& challenge)
 				{ DeleteGroupRequest (id, challenge); };
-		if (ApiCallQueue_.count () == 2)
-			ApiCallQueue_.dequeue () (QString ());
-
 	}
 
 	void LJXmlRPC::UpdateProfileInfo ()
@@ -117,122 +116,98 @@ namespace Metida
 
 	void LJXmlRPC::Preview (const LJEvent& event)
 	{
+		auto guard = MakeRunnerGuard ();
 		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [event, this] (const QString& challenge)
 				{ PreviewEventRequest (event, challenge); };
-		if (ApiCallQueue_.count () == 2)
-			ApiCallQueue_.dequeue () (QString ());
-
 	}
 
 	void LJXmlRPC::Submit (const LJEvent& event)
 	{
+		auto guard = MakeRunnerGuard ();
 		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [event, this] (const QString& challenge)
 				{ PostEventRequest (event, challenge); };
-		if (ApiCallQueue_.count () == 2)
-			ApiCallQueue_.dequeue () (QString ());
-
 	}
 
 	void LJXmlRPC::GetEventsWithFilter (const Filter& filter)
 	{
+		auto guard = MakeRunnerGuard ();
 		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [filter, this] (const QString& challenge)
 				{ BackupEventsRequest (0, filter, challenge); };
-		if (ApiCallQueue_.count () == 2)
-			ApiCallQueue_.dequeue () (QString ());
-
 	}
 
 	void LJXmlRPC::GetLastEvents (int count)
 	{
+		auto guard = MakeRunnerGuard ();
 		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [count, this] (const QString& challenge)
 				{ GetLastEventsRequest (count, challenge); };
-		if (ApiCallQueue_.count () == 2)
-			ApiCallQueue_.dequeue () (QString ());
-
 	}
 
 	void LJXmlRPC::GetChangedEvents (const QDateTime& dt)
 	{
+		auto guard = MakeRunnerGuard ();
 		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [dt, this] (const QString& challenge)
 				{ GetChangedEventsRequest (dt, challenge); };
-		if (ApiCallQueue_.count () == 2)
-			ApiCallQueue_.dequeue () (QString ());
-
 	}
 
 	void LJXmlRPC::GetEventsByDate (const QDate& date, int skip)
 	{
+		auto guard = MakeRunnerGuard ();
 		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [date, skip, this] (const QString& challenge)
 				{ GetEventsByDateRequest (date, skip, challenge); };
-		if (ApiCallQueue_.count () == 2)
-			ApiCallQueue_.dequeue () (QString ());
-
 	}
 
 	void LJXmlRPC::RemoveEvent (const LJEvent& event)
 	{
+		auto guard = MakeRunnerGuard ();
 		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [event, this] (const QString& challenge)
 				{ RemoveEventRequest (event, challenge); };
-		if (ApiCallQueue_.count () == 2)
-			ApiCallQueue_.dequeue () (QString ());
-
 	}
 
 	void LJXmlRPC::UpdateEvent (const LJEvent& event)
 	{
+		auto guard = MakeRunnerGuard ();
 		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [event, this] (const QString& challenge)
 				{ UpdateEventRequest (event, challenge); };
-		if (ApiCallQueue_.count () == 2)
-			ApiCallQueue_.dequeue () (QString ());
-
 	}
 
 	void LJXmlRPC::RequestStatistics ()
 	{
+		auto guard = MakeRunnerGuard ();
 		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [this] (const QString& challenge)
 				{ BlogStatisticsRequest (challenge); };
-		if (ApiCallQueue_.count () == 2)
-			ApiCallQueue_.dequeue () (QString ());
-
 	}
 
 	void LJXmlRPC::RequestLastInbox ()
 	{
+		auto guard = MakeRunnerGuard ();
 		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [this] (const QString& challenge)
 				{ InboxRequest (challenge); };
-		if (ApiCallQueue_.count () == 2)
-			ApiCallQueue_.dequeue () (QString ());
-
 	}
 
 	void LJXmlRPC::RequestRecentCommments ()
 	{
+		auto guard = MakeRunnerGuard ();
 		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [this] (const QString& challenge)
 				{ RecentCommentsRequest (challenge); };
-		if (ApiCallQueue_.count () == 2)
-			ApiCallQueue_.dequeue () (QString ());
-
 	}
 
 	void LJXmlRPC::RequestTags ()
 	{
+		auto guard = MakeRunnerGuard ();
 		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [this] (const QString& challenge)
 				{ GetUserTagsRequest (challenge); };
-		if (ApiCallQueue_.count () == 2)
-			ApiCallQueue_.dequeue () (QString ());
-
 	}
 
 	void LJXmlRPC::CallNextFunctionFromQueue ()
