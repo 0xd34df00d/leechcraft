@@ -55,14 +55,13 @@
 #include "blogique.h"
 #include "core.h"
 #include "draftentrieswidget.h"
+#include "dummytexteditor.h"
 #include "profiledialog.h"
 #include "storagemanager.h"
 #include "submittodialog.h"
 #include "tagsproxymodel.h"
-#include "dummytexteditor.h"
 #include "updateentriesdialog.h"
 #include "xmlsettingsmanager.h"
-
 
 namespace LeechCraft
 {
