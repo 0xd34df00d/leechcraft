@@ -541,7 +541,7 @@ namespace Metida
 	{
 		if (XmlSettingsManager::Instance ().Property ("CheckingInboxEnabled", true).toBool ())
 			MessageCheckingTimer_->start (XmlSettingsManager::Instance ()
-					.property ("UpdateInboxInterval").toInt () * 1000);
+					.property ("UpdateInboxInterval").toInt () * 60 * 1000);
 		else if (MessageCheckingTimer_->isActive ())
 			MessageCheckingTimer_->stop ();
 	}
