@@ -28,13 +28,21 @@
  **********************************************************************/
 
 #include "storagemanager.h"
+#include <QString>
+#include <QUrl>
+#include <QDir>
 
 namespace LeechCraft
 {
-namespace HttThare
+namespace HttHare
 {
 	StorageManager::StorageManager ()
 	{
+	}
+
+	QString StorageManager::ResolvePath (const QUrl& url) const
+	{
+		return QUrl::fromLocalFile (QDir::homePath () + '/').resolved (url).toLocalFile ();
 	}
 }
 }

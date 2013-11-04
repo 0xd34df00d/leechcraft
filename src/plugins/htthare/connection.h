@@ -34,7 +34,7 @@
 
 namespace LeechCraft
 {
-namespace HttThare
+namespace HttHare
 {
 	class StorageManager;
 
@@ -52,6 +52,8 @@ namespace HttThare
 
 		boost::asio::ip::tcp::socket& GetSocket ();
 		boost::asio::io_service::strand& GetStrand ();
+
+		const StorageManager& GetStorageManager () const;
 
 		void Start ();
 	private:

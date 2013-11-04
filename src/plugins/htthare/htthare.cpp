@@ -27,55 +27,59 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "connection.h"
-#include <QtDebug>
-#include "requesthandler.h"
+#include "htthare.h"
+#include <QIcon>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "server.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
 namespace HttHare
 {
-	Connection::Connection (boost::asio::io_service& service, const StorageManager& stMgr)
-	: Strand_ { service }
-	, Socket_ { service }
-	, StorageMgr_ (stMgr)
+	void Plugin::Init (ICoreProxy_ptr proxy)
+	{
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "httharesettings.xml");
+
+		S_ = new Server ("localhost", "14801");
+		S_->Start ();
+	}
+
+	void Plugin::SecondInit ()
 	{
 	}
 
-	boost::asio::ip::tcp::socket& Connection::GetSocket ()
+	QByteArray Plugin::GetUniqueID () const
 	{
-		return Socket_;
+		return "org.LeechCraft.HttHare";
 	}
 
-	boost::asio::io_service::strand& Connection::GetStrand ()
+	void Plugin::Release ()
 	{
-		return Strand_;
+		S_->Stop ();
 	}
 
-	const StorageManager& Connection::GetStorageManager () const
+	QString Plugin::GetName () const
 	{
-		return StorageMgr_;
+		return "HTThare";
 	}
 
-	void Connection::Start ()
+	QString Plugin::GetInfo () const
 	{
-		auto conn = shared_from_this ();
-		boost::asio::async_read_until (Socket_,
-				Buf_,
-				std::string { "\r\n\r\n" },
-				Strand_.wrap ([conn] (const boost::system::error_code& ec, ulong transferred)
-					{ conn->HandleHeader (ec, transferred); }));
+		return tr ("Share your files over local network via HTTP.");
 	}
 
-	void Connection::HandleHeader (const boost::system::error_code&, ulong transferred)
+	QIcon Plugin::GetIcon () const
 	{
-		QByteArray data;
-		data.resize (transferred);
+		return QIcon ();
+	}
 
-		std::istream istr (&Buf_);
-		istr.read (data.data (), transferred);
-
-		RequestHandler { shared_from_this () } (data);
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 }
 }
+
+LC_EXPORT_PLUGIN (leechcraft_htthare, LeechCraft::HttHare::Plugin);

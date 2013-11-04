@@ -34,7 +34,7 @@
 
 namespace LeechCraft
 {
-namespace HttThare
+namespace HttHare
 {
 	namespace ip = boost::asio::ip;
 

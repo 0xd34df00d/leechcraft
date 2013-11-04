@@ -28,14 +28,21 @@
  **********************************************************************/
 
 #include "requesthandler.h"
+#include <sys/sendfile.h>
+#include <errno.h>
 #include <QList>
 #include <QString>
 #include <QtDebug>
+#include <QFileInfo>
+#include <QDir>
+#include <QDateTime>
+#include <util/util.h>
 #include "connection.h"
+#include "storagemanager.h"
 
 namespace LeechCraft
 {
-namespace HttThare
+namespace HttHare
 {
 	RequestHandler::RequestHandler (const Connection_ptr& conn)
 	: Conn_ (conn)
@@ -51,7 +58,7 @@ namespace HttThare
 			line = line.trimmed ();
 		lines.removeAll ({});
 
-		if (lines.size () < 0)
+		if (lines.size () <= 0)
 			return ErrorResponse (400, "Bad Request");
 
 		const auto& req = lines.takeAt (0).split (' ');
@@ -59,7 +66,7 @@ namespace HttThare
 			return ErrorResponse (400, "Bad Request");
 
 		const auto& verb = req.at (0).toLower ();
-		Url_ = QUrl::fromEncoded (req.at (1));
+		Url_ = QUrl::fromEncoded (req.at (1).mid (1));
 
 		for (const auto& line : lines)
 		{
@@ -95,9 +102,6 @@ namespace HttThare
 				.arg (reason.data ())
 				.arg (full.data ()).toUtf8 ();
 
-		ResponseHeaders_ = "Content-Length: " +
-				QByteArray::number (ResponseBody_.size ()) + "\r\n\r\n";
-
 		auto c = Conn_;
 		boost::asio::async_write (c->GetSocket (),
 				ToBuffers (),
@@ -112,19 +116,102 @@ namespace HttThare
 					}));
 	}
 
+	namespace
+	{
+		QByteArray MakeDirResponse (const QFileInfo& fi, const QString& path)
+		{
+			QStringList rows;
+			for (const auto& item : QDir { path }
+					.entryInfoList (QDir::AllEntries | QDir::NoDotAndDotDot, QDir::Name))
+				rows << QString { "<tr><td>%1</td><td>%2</td><td>%3</td></tr>" }
+						.arg (item.fileName ())
+						.arg (Util::MakePrettySize (item.size ()))
+						.arg (item.created ().toString ());
+
+			return QString (R"delim(<html>
+					<head><title>%1</title></head>
+					<body>
+						<table>
+						%2
+						</table>
+					</body>
+				</html>
+				)delim")
+					.arg (fi.fileName ())
+					.arg (rows.join (""))
+					.toUtf8 ();
+		}
+	}
+
 	void RequestHandler::HandleGet ()
 	{
-		ResponseLine_ = "HTTP/1.1 200 OK\r\n";
-		ResponseBody_ = QString (R"delim(<html>
-				<head><title>Test</title></head>
-				<body>
-					<h1>Test</h1>
-				</body>
-			</html>
-			)delim").toUtf8 ();
-		ResponseHeaders_ = "Content-Length: " +
-				QByteArray::number (ResponseBody_.size ()) + "\r\n\r\n";
+		const auto& path = Conn_->GetStorageManager ().ResolvePath (Url_);
+		const QFileInfo fi { path };
+		if (!fi.exists ())
+		{
+			ResponseLine_ = "HTTP/1.1 404 Not found\r\n";
 
+			ResponseHeaders_.append ({ "Content-Type", "text/html; charset=utf-8" });
+			ResponseBody_ = QString (R"delim(<html>
+					<head><title>%1</title></head>
+					<body>
+						%2
+					</body>
+				</html>
+				)delim")
+					.arg (fi.fileName ())
+					.arg (QObject::tr ("%1 is not found on this server").arg (path))
+					.toUtf8 ();
+
+			DefaultWrite ();
+		}
+		else if (fi.isDir ())
+		{
+			ResponseLine_ = "HTTP/1.1 200 OK\r\n";
+
+			ResponseHeaders_.append ({ "Content-Type", "text/html; charset=utf-8" });
+			ResponseBody_ = MakeDirResponse (fi, path);
+
+			DefaultWrite ();
+		}
+		else
+		{
+			ResponseLine_ = "HTTP/1.1 200 OK\r\n";
+
+			ResponseHeaders_.append ({ "Content-Type", "application/octet-stream" });
+			ResponseHeaders_.append ({ "Content-Length", QByteArray::number (fi.size ()) });
+
+			auto c = Conn_;
+			boost::asio::async_write (c->GetSocket (),
+					ToBuffers (),
+					c->GetStrand ().wrap ([c, path] (const boost::system::error_code& ec, ulong)
+						{
+							if (ec)
+								qWarning () << Q_FUNC_INFO
+										<< ec.message ().c_str ();
+
+							auto& s = c->GetSocket ();
+
+							QFile file (path);
+							file.open (QIODevice::ReadOnly);
+							qDebug () << "sendfile()" << s.native_handle () << file.handle ();
+							const auto rc = sendfile (s.native_handle (),
+									file.handle (), nullptr, file.size ());
+							if (rc == -1)
+								qWarning () << Q_FUNC_INFO
+										<< "sendfile() error:"
+										<< errno
+										<< "; human-readable:"
+										<< strerror (errno);
+
+							boost::system::error_code iec;
+							s.shutdown (boost::asio::socket_base::shutdown_both, iec);
+						}));
+		}
+	}
+
+	void RequestHandler::DefaultWrite ()
+	{
 		auto c = Conn_;
 		boost::asio::async_write (c->GetSocket (),
 				ToBuffers (),
@@ -151,12 +238,22 @@ namespace HttThare
 		}
 	}
 
-	std::vector<boost::asio::const_buffer> RequestHandler::ToBuffers () const
+	std::vector<boost::asio::const_buffer> RequestHandler::ToBuffers ()
 	{
 		std::vector<boost::asio::const_buffer> result;
 
+		if (std::find_if (ResponseHeaders_.begin (), ResponseHeaders_.end (),
+				[] (decltype (ResponseHeaders_.at (0)) pair)
+					{ return pair.first.toLower () == "content-length"; }) == ResponseHeaders_.end ())
+			ResponseHeaders_.append ({ "Content-Length", QByteArray::number (ResponseBody_.size ()) });
+
+		CookedRH_.clear ();
+		for (const auto& pair : ResponseHeaders_)
+			CookedRH_ += pair.first + ": " + pair.second + "\r\n";
+		CookedRH_ += "\r\n";
+
 		result.push_back (BA2Buffer (ResponseLine_));
-		result.push_back (BA2Buffer (ResponseHeaders_));
+		result.push_back (BA2Buffer (CookedRH_));
 		result.push_back (BA2Buffer (ResponseBody_));
 
 		return result;

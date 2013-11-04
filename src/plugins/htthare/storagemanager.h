@@ -29,14 +29,19 @@
 
 #pragma once
 
+class QUrl;
+class QString;
+
 namespace LeechCraft
 {
-namespace HttThare
+namespace HttHare
 {
 	class StorageManager
 	{
 	public:
 		StorageManager ();
+
+		QString ResolvePath (const QUrl&) const;
 	};
 }
 }

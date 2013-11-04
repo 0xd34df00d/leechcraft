@@ -27,55 +27,37 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "connection.h"
-#include <QtDebug>
-#include "requesthandler.h"
+#pragma once
+
+#include <QObject>
+#include <interfaces/iinfo.h>
+#include <interfaces/ihavesettings.h>
 
 namespace LeechCraft
 {
 namespace HttHare
 {
-	Connection::Connection (boost::asio::io_service& service, const StorageManager& stMgr)
-	: Strand_ { service }
-	, Socket_ { service }
-	, StorageMgr_ (stMgr)
+	class Server;
+
+	class Plugin : public QObject
+				 , public IInfo
+				 , public IHaveSettings
 	{
-	}
+		Q_OBJECT
+		Q_INTERFACES (IInfo IHaveSettings)
 
-	boost::asio::ip::tcp::socket& Connection::GetSocket ()
-	{
-		return Socket_;
-	}
+		Server *S_;
+		Util::XmlSettingsDialog_ptr XSD_;
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-	boost::asio::io_service::strand& Connection::GetStrand ()
-	{
-		return Strand_;
-	}
-
-	const StorageManager& Connection::GetStorageManager () const
-	{
-		return StorageMgr_;
-	}
-
-	void Connection::Start ()
-	{
-		auto conn = shared_from_this ();
-		boost::asio::async_read_until (Socket_,
-				Buf_,
-				std::string { "\r\n\r\n" },
-				Strand_.wrap ([conn] (const boost::system::error_code& ec, ulong transferred)
-					{ conn->HandleHeader (ec, transferred); }));
-	}
-
-	void Connection::HandleHeader (const boost::system::error_code&, ulong transferred)
-	{
-		QByteArray data;
-		data.resize (transferred);
-
-		std::istream istr (&Buf_);
-		istr.read (data.data (), transferred);
-
-		RequestHandler { shared_from_this () } (data);
-	}
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+	};
 }
 }

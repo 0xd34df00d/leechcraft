@@ -759,7 +759,13 @@ namespace Xoox
 	QObject* ClientConnection::GetCLEntry (const QString& bareJid, const QString& variant) const
 	{
 		if (RoomHandlers_.contains (bareJid))
-			return RoomHandlers_ [bareJid]->GetParticipantEntry (variant).get ();
+		{
+			const auto rh = RoomHandlers_ [bareJid];
+			if (variant.isEmpty ())
+				return rh->GetCLEntry ();
+			else
+				return rh->GetParticipantEntry (variant).get ();
+		}
 		else if (bareJid == OurBareJID_)
 			return SelfContact_;
 		else if (JID2CLEntry_.contains (bareJid))

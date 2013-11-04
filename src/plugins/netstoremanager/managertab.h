@@ -190,6 +190,8 @@ namespace NetStoreManager
 		void handleGotFileUrl (const QUrl& url, const QByteArray& id = QByteArray ());
 
 		void handleGotChanges (const QList<Change>& changes);
+		
+		void handleFilterTextChanged (const QString& text);
 
 	signals:
 		void removeTab (QWidget*);
