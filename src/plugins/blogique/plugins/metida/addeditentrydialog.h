@@ -42,6 +42,7 @@ namespace Metida
 
 	enum AddTypeEntry
 	{
+		ATENone,
 		ATEFriend,
 		ATEGroup
 	};
@@ -61,13 +62,14 @@ namespace Metida
 		{
 			AddType = Qt::UserRole + 2
 		};
-		
 
 		LJProfile *Profile_;
 		QColor BackgroundColor_;
 		QColor ForegroundColor_;
+		uint GroupMask_;
+
 	public:
-		AddEditEntryDialog (LJProfile *profile, QWidget *parent = 0);
+		AddEditEntryDialog (LJProfile *profile, AddTypeEntry type = ATENone, QWidget *parent = 0);
 
 		QString GetUserName () const;
 		void SetUserName (const QString& name);
@@ -75,8 +77,8 @@ namespace Metida
 		void SetBackgroundColor (const QColor& clr);
 		QString GetForegroundColorName () const;
 		void SetForegroundColor (const QColor& clr);
-		uint GetGroupRealId () const;
-		void SetGroup (uint id);
+		uint GetGroupMask () const;
+		void SetGroupMask (uint mask);
 
 		QString GetGroupName () const;
 		void SetGroupName (const QString& name);
@@ -91,6 +93,7 @@ namespace Metida
 	private slots:
 		void on_SelectBackgroundColor__released ();
 		void on_SelectForegroundColor__released ();
+		void on_SelectGroups__released ();
 	};
 }
 }

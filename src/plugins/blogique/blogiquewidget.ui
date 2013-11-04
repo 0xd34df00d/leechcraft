@@ -334,9 +334,12 @@
     <string>Submit</string>
    </property>
   </action>
-  <action name="UpdateProfile_">
+  <action name="ShowProfile_">
    <property name="text">
-    <string>Update profile</string>
+    <string>Show profile</string>
+   </property>
+   <property name="toolTip">
+    <string>Show profile</string>
    </property>
   </action>
   <action name="SaveNewEntry_">
