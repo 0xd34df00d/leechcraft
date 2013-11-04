@@ -191,6 +191,10 @@ namespace Metida
 		return result;
 	}
 
+	bool LJFriendEntry::operator== (const LJFriendEntry& entry) const
+	{
+		return UserName_ == entry.UserName_;
+	}
 }
 }
 }

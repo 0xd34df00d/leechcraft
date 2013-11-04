@@ -71,7 +71,7 @@ namespace Metida
 	}
 
 	void LJXmlRPC::AddNewFriend (const QString& username,
-			const QString& bgcolor, const QString& fgcolor, uint groupId)
+			const QString& bgcolor, const QString& fgcolor, uint groupMask)
 	{
 		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [username, bgcolor, fgcolor, groupId, this] (const QString& challenge)
@@ -438,7 +438,7 @@ namespace Metida
 
 	void LJXmlRPC::AddNewFriendRequest (const QString& username,
 			const QString& bgcolor, const QString& fgcolor,
-			int groupId, const QString& challenge)
+			int groupMask, const QString& challenge)
 	{
 		QDomDocument document ("AddNewFriendRequest");
 		auto result = GetStartPart ("LJ.XMLRPC.editfriends", document);
@@ -461,7 +461,7 @@ namespace Metida
 			structField.appendChild (GetSimpleMemberElement ("bgcolor", "string",
 					bgcolor, document));
 		structField.appendChild (GetSimpleMemberElement ("groupmask", "int",
-				QString::number (groupId), document));
+				QString::number (groupMask), document));
 
 		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
 				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
@@ -1203,9 +1203,8 @@ namespace Metida
 			return result;
 		}
 
-		QHash<QString, LJFriendEntry_ptr> CreateFriendEntry (const QString& parentKey, const QVariantList& data)
+		void CreateFriendEntry (const QString& parentKey, const QVariantList& data, QHash<QString, LJFriendEntry_ptr>& frHash)
 		{
-			QHash<QString, LJFriendEntry_ptr> frHash;
 			for (const auto& friendEntry : data)
 			{
 				LJFriendEntry_ptr fr = std::make_shared<LJFriendEntry> ();
@@ -1237,7 +1236,7 @@ namespace Metida
 						fr->SetBirthday (fieldEntry.ValueToString ());
 
 					if (parentKey == "friends" ||
-						parentKey == "added")
+							parentKey == "added")
 						fr->SetMyFriend (true);
 
 					if (parentKey == "friendofs")
@@ -1245,21 +1244,19 @@ namespace Metida
 				}
 
 				if (!isCommunity ||
-					personal)
+						personal)
 				{
 					if (parentKey == "friendofs" &&
-						frHash.contains (fr->GetUserName ()))
+							frHash.contains (fr->GetUserName ()))
 						frHash [fr->GetUserName ()]->SetFriendOf (true);
 					else if ((parentKey == "friends" ||
-						parentKey == "added") &&
-						frHash.contains (fr->GetUserName ()))
+							parentKey == "added") &&
+							frHash.contains (fr->GetUserName ()))
 						frHash [fr->GetUserName ()]->SetMyFriend (true);
 					else
 						frHash [fr->GetUserName ()] = fr;
 				}
 			}
-
-			return frHash;
 		}
 
 		LJEventProperties CreateLJEventPropetries (QStringList& tags, const QVariantList& data)
@@ -1358,8 +1355,9 @@ namespace Metida
 			if (res.Name () == "friends" ||
 					res.Name () == "added" ||
 					res.Name () == "friendofs")
-				Account_->AddFriends (CreateFriendEntry (res.Name (), res.Value ()).values ());
+				CreateFriendEntry (res.Name (), res.Value (), frHash);
 		}
+		Account_->AddFriends (frHash.values ());
 	}
 
 	QList<LJEvent> LJXmlRPC::ParseFullEvents (const QDomDocument& document)
@@ -1611,9 +1609,7 @@ namespace Metida
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
 			emit profileUpdated (ParseProfileInfo (document));
-			
 			CallNextFunctionFromQueue ();
-			
 			emit validatingFinished (true);
 			return;
 		}

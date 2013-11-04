@@ -33,7 +33,7 @@
 
 namespace LeechCraft
 {
-namespace HttThare
+namespace HttHare
 {
 	Connection::Connection (boost::asio::io_service& service, const StorageManager& stMgr)
 	: Strand_ { service }
@@ -50,6 +50,11 @@ namespace HttThare
 	boost::asio::io_service::strand& Connection::GetStrand ()
 	{
 		return Strand_;
+	}
+
+	const StorageManager& Connection::GetStorageManager () const
+	{
+		return StorageMgr_;
 	}
 
 	void Connection::Start ()

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,33 +29,22 @@
 
 #pragma once
 
-#include <QStandardItemModel>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
-namespace Blogique
+namespace HttHare
 {
-namespace Metida
-{
-	class FriendsModel : public QStandardItemModel
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
 		Q_OBJECT
+
+		XmlSettingsManager ();
 	public:
-		FriendsModel (QObject *parent = 0);
-
-		Qt::ItemFlags flags (const QModelIndex& index) const;
-
-		Qt::DropActions supportedDropActions () const;
-
-		QStringList mimeTypes () const;
-		QMimeData* mimeData (const QModelIndexList& indexes) const;
-		bool dropMimeData (const QMimeData *data, Qt::DropAction action,
-				int row, int column, const QModelIndex& parent);
-
-	signals:
-		void userGroupChanged (const QString& name,
-				const QString& bgColor, const QString& fgColor, int realGroupId);
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
 	};
-}
 }
 }

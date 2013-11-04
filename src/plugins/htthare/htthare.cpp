@@ -27,17 +27,22 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "httthare.h"
+#include "htthare.h"
 #include <QIcon>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "server.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
-namespace HttThare
+namespace HttHare
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		S_ = new Server ("localhost", "14800");
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "httharesettings.xml");
+
+		S_ = new Server ("localhost", "14801");
 		S_->Start ();
 	}
 
@@ -47,7 +52,7 @@ namespace HttThare
 
 	QByteArray Plugin::GetUniqueID () const
 	{
-		return "org.LeechCraft.HttThare";
+		return "org.LeechCraft.HttHare";
 	}
 
 	void Plugin::Release ()
@@ -69,7 +74,12 @@ namespace HttThare
 	{
 		return QIcon ();
 	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
+	}
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_httthare, LeechCraft::HttThare::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_htthare, LeechCraft::HttHare::Plugin);

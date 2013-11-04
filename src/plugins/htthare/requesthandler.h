@@ -37,7 +37,7 @@
 
 namespace LeechCraft
 {
-namespace HttThare
+namespace HttHare
 {
 	class Connection;
 	typedef std::shared_ptr<Connection> Connection_ptr;
@@ -50,7 +50,8 @@ namespace HttThare
 		QMap<QString, QString> Headers_;
 
 		QByteArray ResponseLine_;
-		QByteArray ResponseHeaders_;
+		QList<QPair<QByteArray, QByteArray>> ResponseHeaders_;
+		QByteArray CookedRH_;
 		QByteArray ResponseBody_;
 	public:
 		RequestHandler (const Connection_ptr&);
@@ -60,9 +61,10 @@ namespace HttThare
 		void ErrorResponse (int, const QByteArray&, const QByteArray& = QByteArray ());
 
 		void HandleGet ();
+		void DefaultWrite ();
 		void HandleHead ();
 
-		std::vector<boost::asio::const_buffer> ToBuffers () const;
+		std::vector<boost::asio::const_buffer> ToBuffers ();
 	};
 }
 }
