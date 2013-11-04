@@ -66,13 +66,6 @@ namespace Metida
 		Ui_.FriendsView_->setDropIndicatorShown (true);
 		FriendsModel_->setHorizontalHeaderLabels ({ tr ("UserName"),
 				tr ("Status"), tr ("FullName"), tr ("Birthday") });
-		
-		connect (FriendsModel_,
-				SIGNAL (userGroupChanged (const QString&, const QString&,
-						const QString&, int)),
-				this,
-				SLOT (handleUserGroupChanged (const QString&, const QString&,
-						const QString&, int)));
 
 		FriendItemDelegate *friendDelegate = new FriendItemDelegate (FriendsProxyModel_, Ui_.FriendsView_);
 		connect (this,

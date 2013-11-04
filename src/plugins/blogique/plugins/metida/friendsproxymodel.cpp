@@ -45,6 +45,8 @@ namespace Metida
 
 	bool FriendsProxyModel::filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const
 	{
+		if (filterRegExp ().isEmpty ())
+			return true;
 		const auto& nick = sourceModel ()->index (sourceRow, CNickname, sourceParent).data ().toString ();
 		const auto& name = sourceModel ()->index (sourceRow, CUsername, sourceParent).data ().toString ();
 		const auto& birthday = sourceModel ()->index (sourceRow, CBirthday, sourceParent).data ().toString ();
@@ -53,9 +55,6 @@ namespace Metida
 
 	bool FriendsProxyModel::lessThan (const QModelIndex& left, const QModelIndex& right) const
 	{
-		if (filterRegExp ().isEmpty ())
-			return true;
-		
 		if (left.column () != CFriendStatus || right.column () != CFriendStatus)
 			return QSortFilterProxyModel::lessThan (left, right);
 		
