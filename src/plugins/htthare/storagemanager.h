@@ -30,8 +30,8 @@
 #pragma once
 
 #include <stdexcept>
+#include <QUrl>
 
-class QUrl;
 class QString;
 
 namespace LeechCraft
@@ -49,7 +49,7 @@ namespace HttHare
 	public:
 		StorageManager ();
 
-		QString ResolvePath (const QUrl&) const;
+		QString ResolvePath (QUrl) const;
 	};
 }
 }

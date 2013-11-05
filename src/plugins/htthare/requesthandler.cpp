@@ -66,7 +66,7 @@ namespace HttHare
 			return ErrorResponse (400, "Bad Request");
 
 		const auto& verb = req.at (0).toLower ();
-		Url_ = QUrl::fromEncoded (req.at (1).mid (1));
+		Url_ = QUrl::fromEncoded (req.at (1));
 
 		for (const auto& line : lines)
 		{

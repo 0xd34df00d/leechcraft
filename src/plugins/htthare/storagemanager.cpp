@@ -45,8 +45,11 @@ namespace HttHare
 	{
 	}
 
-	QString StorageManager::ResolvePath (const QUrl& url) const
+	QString StorageManager::ResolvePath (QUrl url) const
 	{
+		if (url.path ().startsWith ("/"))
+			url.setPath (url.path ().mid (1));
+
 		const auto& path = QUrl::fromLocalFile (QDir::homePath () + '/')
 				.resolved (url).toLocalFile ();
 		const QFileInfo fi { path };
