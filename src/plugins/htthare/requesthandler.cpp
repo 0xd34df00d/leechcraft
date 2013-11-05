@@ -123,10 +123,10 @@ namespace HttHare
 			QStringList rows;
 			for (const auto& item : QDir { path }
 					.entryInfoList (QDir::AllEntries | QDir::NoDotAndDotDot, QDir::Name))
-				rows << QString { "<tr><td>%1</td><td>%2</td><td>%3</td></tr>" }
-						.arg (item.fileName ())
+				rows << QString { "<tr><td><a href='%3'>%3</a></td><td>%1</td><td>%2</td></tr>" }
 						.arg (Util::MakePrettySize (item.size ()))
-						.arg (item.created ().toString ());
+						.arg (item.created ().toString ())
+						.arg (item.fileName ());
 
 			return QString (R"delim(<html>
 					<head><title>%1</title></head>
