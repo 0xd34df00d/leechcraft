@@ -31,6 +31,7 @@
 
 #include <QNetworkDiskCache>
 #include <QMutex>
+#include <QHash>
 #include <util/utilconfig.h>
 
 template<typename T>
@@ -49,6 +50,9 @@ namespace Util
 		mutable QMutex InsertRemoveMutex_;
 
 		QFutureWatcher<qint64> *GarbageCollectorWatcher_;
+
+		QHash<QIODevice*, QUrl> PendingDev2Url_;
+		QHash<QUrl, QList<QIODevice*>> PendingUrl2Devs_;
 	public:
 		NetworkDiskCache (const QString&, QObject* = 0);
 		~NetworkDiskCache ();
