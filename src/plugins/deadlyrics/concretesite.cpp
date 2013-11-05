@@ -243,8 +243,11 @@ namespace DeadLyrics
 			str = (*excluder) (str);
 
 		str = str.trimmed ();
-		if (str.count ("<br", Qt::CaseInsensitive) < 3)
-			str.clear ();
+
+		const auto& contentType = reply->header (QNetworkRequest::ContentTypeHeader);
+		const bool isPlainText = contentType.toString ().toLower () == "text/plain";
+		if (isPlainText)
+			str.replace ("\n", "<br/>");
 
 		if (str.size () >= 100)
 			emit gotLyrics (Query_, QStringList (str));
