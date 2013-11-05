@@ -218,7 +218,7 @@ namespace DeadLyrics
 
 		url.setPath ({});
 		url.setQueryItems ({});
-		req.setRawHeader ("Referer", "");
+		req.setRawHeader ("Referer", url.toString ().toUtf8 ());
 
 		auto reply = nam->get (req);
 		connect (reply,
