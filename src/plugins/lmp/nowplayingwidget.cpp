@@ -178,7 +178,7 @@ namespace LMP
 		if (LyricsVariantPos_ <= 0)
 			return;
 
-		Ui_.LyricsBrowser_->setHtml (PossibleLyrics_.at (--LyricsVariantPos_).Lyrics_);
+		--LyricsVariantPos_;
 		updateLyricsSwitcher ();
 	}
 
@@ -187,17 +187,24 @@ namespace LMP
 		if (LyricsVariantPos_ >= PossibleLyrics_.size () - 1)
 			return;
 
-		Ui_.LyricsBrowser_->setHtml (PossibleLyrics_.at (++LyricsVariantPos_).Lyrics_);
+		++LyricsVariantPos_;
 		updateLyricsSwitcher ();
 	}
 
 	void NowPlayingWidget::updateLyricsSwitcher ()
 	{
 		const auto& size = PossibleLyrics_.size ();
+
 		const auto& str = size ?
-				tr ("%n possible lyrics found", 0, size) :
+				tr ("%n possible lyrics found, showing %1 of %2 from %3", 0, size)
+					.arg (LyricsVariantPos_ + 1)
+					.arg (size)
+					.arg (PossibleLyrics_.at (LyricsVariantPos_).ProviderName_):
 				QString ();
 		Ui_.LyricsCounter_->setText (str);
+
+		if (LyricsVariantPos_ <= size - 1)
+			Ui_.LyricsBrowser_->setHtml (PossibleLyrics_.at (LyricsVariantPos_).Lyrics_);
 
 		Ui_.PrevLyricsButton_->setEnabled (LyricsVariantPos_);
 		Ui_.NextLyricsButton_->setEnabled (LyricsVariantPos_ < size - 1);
