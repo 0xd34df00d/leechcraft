@@ -190,12 +190,26 @@ namespace HttHare
 		}
 		else if (fi.isDir ())
 		{
-			ResponseLine_ = "HTTP/1.1 200 OK\r\n";
+			if (Url_.path ().endsWith ('/'))
+			{
+				ResponseLine_ = "HTTP/1.1 200 OK\r\n";
 
-			ResponseHeaders_.append ({ "Content-Type", "text/html; charset=utf-8" });
-			ResponseBody_ = MakeDirResponse (fi, path);
+				ResponseHeaders_.append ({ "Content-Type", "text/html; charset=utf-8" });
+				ResponseBody_ = MakeDirResponse (fi, path);
 
-			DefaultWrite ();
+				DefaultWrite ();
+			}
+			else
+			{
+				ResponseLine_ = "HTTP/1.1 301 Moved Permanently\r\n";
+
+				auto url = Url_;
+				url.setPath (url.path () + '/');
+				ResponseHeaders_.append ({ "Location", url.toString ().toUtf8 () });
+				ResponseBody_ = MakeDirResponse (fi, path);
+
+				DefaultWrite ();
+			}
 		}
 		else
 		{
