@@ -255,7 +255,11 @@ namespace DeadLyrics
 		const auto& contentType = reply->header (QNetworkRequest::ContentTypeHeader);
 		const bool isPlainText = contentType.toString ().toLower () == "text/plain";
 		if (isPlainText)
+		{
+			str.replace ("\r\n", "<br/>");
+			str.replace ("\r", "<br/>");
 			str.replace ("\n", "<br/>");
+		}
 
 		if (str.size () >= 100)
 			emit gotLyrics (Query_, QStringList (str));
