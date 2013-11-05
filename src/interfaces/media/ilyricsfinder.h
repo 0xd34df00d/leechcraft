@@ -71,7 +71,7 @@ namespace Media
 		}
 	};
 
-	/** @brief Described the various lyrics request options.
+	/** @brief Describes the various lyrics request options.
 	 *
 	 * @sa ILyricsFinder
 	 */
@@ -84,6 +84,18 @@ namespace Media
 		/** @brief Refresh any cached data.
 		 */
 		Refresh = 0x1
+	};
+
+	struct LyricsResultItem
+	{
+		QString ProviderName_;
+		QString Lyrics_;
+	};
+
+	struct LyricsResults
+	{
+		LyricsQuery Query_;
+		QList<LyricsResultItem> Items_;
 	};
 
 	/** @brief Typedef for <code>QFlags<QueryOption></code>.
@@ -116,11 +128,10 @@ namespace Media
 	protected:
 		/** @brief Emitted when search for lyrics is complete.
 		 *
-		 * @param[out] query The query for which the search is complete.
-		 * @param[out] lyrics The list of possible lyrics variants, may
-		 * be empty or contain duplicates.
+		 * @param[out] results The results of the lyrics query,
+		 * containing the original query and the actual results.
 		 */
-		virtual void gotLyrics (const LyricsQuery& query, const QStringList& lyrics) = 0;
+		virtual void gotLyrics (const LyricsResults& results) = 0;
 	};
 }
 

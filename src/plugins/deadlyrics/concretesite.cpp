@@ -262,7 +262,7 @@ namespace DeadLyrics
 		}
 
 		if (str.size () >= 100)
-			emit gotLyrics (Query_, QStringList (str));
+			emit gotLyrics ({ Query_, { { Desc_.Name_, str } } });
 	}
 }
 }

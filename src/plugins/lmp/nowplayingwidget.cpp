@@ -81,18 +81,20 @@ namespace LMP
 		Ui_.SimilarView_->setVisible (!infos.isEmpty ());
 	}
 
-	void NowPlayingWidget::SetLyrics (const QString& lyrics)
+	void NowPlayingWidget::SetLyrics (const Media::LyricsResultItem& item)
 	{
-		if (lyrics.simplified ().isEmpty ())
+		if (item.Lyrics_.simplified ().isEmpty ())
 			return;
 
-		if (PossibleLyrics_.contains (lyrics))
+		if (std::find_if (PossibleLyrics_.begin (), PossibleLyrics_.end (),
+				[item] (decltype (PossibleLyrics_.at (0)) ourItem)
+					{ return ourItem.Lyrics_ == item.Lyrics_; }) != PossibleLyrics_.end ())
 			return;
 
 		if (Ui_.LyricsBrowser_->toPlainText ().isEmpty ())
-			Ui_.LyricsBrowser_->setHtml (lyrics);
+			Ui_.LyricsBrowser_->setHtml (item.Lyrics_);
 
-		PossibleLyrics_ << lyrics;
+		PossibleLyrics_ << item;
 		updateLyricsSwitcher ();
 	}
 
@@ -176,7 +178,7 @@ namespace LMP
 		if (LyricsVariantPos_ <= 0)
 			return;
 
-		Ui_.LyricsBrowser_->setHtml (PossibleLyrics_.at (--LyricsVariantPos_));
+		Ui_.LyricsBrowser_->setHtml (PossibleLyrics_.at (--LyricsVariantPos_).Lyrics_);
 		updateLyricsSwitcher ();
 	}
 
@@ -185,7 +187,7 @@ namespace LMP
 		if (LyricsVariantPos_ >= PossibleLyrics_.size () - 1)
 			return;
 
-		Ui_.LyricsBrowser_->setHtml (PossibleLyrics_.at (++LyricsVariantPos_));
+		Ui_.LyricsBrowser_->setHtml (PossibleLyrics_.at (++LyricsVariantPos_).Lyrics_);
 		updateLyricsSwitcher ();
 	}
 

@@ -69,7 +69,7 @@ namespace DeadLyrics
 	private slots:
 		void handleReplyFinished ();
 	signals:
-		void gotLyrics (const Media::LyricsQuery&, const QStringList&);
+		void gotLyrics (const Media::LyricsResults&);
 	};
 }
 }

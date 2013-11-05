@@ -532,7 +532,7 @@ namespace LMP
 
 	void PlayerTab::RequestLyrics (const MediaInfo& info)
 	{
-		Ui_.NPWidget_->SetLyrics (QString ());
+		Ui_.NPWidget_->SetLyrics ({});
 
 		if (!XmlSettingsManager::Instance ().property ("RequestLyrics").toBool ())
 			return;
@@ -542,9 +542,9 @@ namespace LMP
 		Q_FOREACH (auto finderObj, finders)
 		{
 			connect (finderObj,
-					SIGNAL (gotLyrics (const Media::LyricsQuery&, const QStringList&)),
+					SIGNAL (gotLyrics (Media::LyricsResults)),
 					this,
-					SLOT (handleGotLyrics (const Media::LyricsQuery&, const QStringList&)),
+					SLOT (handleGotLyrics (Media::LyricsResults)),
 					Qt::UniqueConnection);
 			auto finder = qobject_cast<Media::ILyricsFinder*> (finderObj);
 			finder->RequestLyrics ({ info.Artist_, info.Album_, info.Title_ },
@@ -762,12 +762,13 @@ namespace LMP
 		FillSimilar (similar);
 	}
 
-	void PlayerTab::handleGotLyrics (const Media::LyricsQuery&, const QStringList& lyrics)
+	void PlayerTab::handleGotLyrics (const Media::LyricsResults& results)
 	{
-		if (lyrics.isEmpty ())
+		if (results.Items_.isEmpty ())
 			return;
 
-		Ui_.NPWidget_->SetLyrics (lyrics.value (0));
+		for (const auto& item : results.Items_)
+			Ui_.NPWidget_->SetLyrics (item);
 	}
 
 	void PlayerTab::handleScanProgress (int progress)
