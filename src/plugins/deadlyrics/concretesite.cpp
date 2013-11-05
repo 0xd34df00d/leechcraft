@@ -184,10 +184,10 @@ namespace DeadLyrics
 		const auto& album = replace (query.Album_.toLower ());
 		const auto& title = replace (query.Title_.toLower ());
 
-		auto url = Desc_.URLTemplate_;
-		url.replace ("{artist}", artist);
-		url.replace ("{album}", album);
-		url.replace ("{title}", title);
+		auto urlStr = Desc_.URLTemplate_;
+		urlStr.replace ("{artist}", artist);
+		urlStr.replace ("{album}", album);
+		urlStr.replace ("{title}", title);
 
 		auto cap = [] (QString str) -> QString
 		{
@@ -195,14 +195,14 @@ namespace DeadLyrics
 				str [0] = str [0].toUpper ();
 			return str;
 		};
-		url.replace ("{Artist}", cap (artist));
-		url.replace ("{Album}", cap (album));
-		url.replace ("{Title}", cap (title));
+		urlStr.replace ("{Artist}", cap (artist));
+		urlStr.replace ("{Album}", cap (album));
+		urlStr.replace ("{Title}", cap (title));
 
 #ifdef QT_DEBUG
 		qDebug () << Q_FUNC_INFO
 				<< "requesting"
-				<< url
+				<< urlStr
 				<< "from"
 				<< Desc_.Name_
 				<< "for"
@@ -212,7 +212,15 @@ namespace DeadLyrics
 #endif
 
 		auto nam = proxy->GetNetworkAccessManager ();
-		auto reply = nam->get (QNetworkRequest (QUrl (url)));
+
+		QUrl url { urlStr };
+		QNetworkRequest req { url };
+
+		url.setPath ({});
+		url.setQueryItems ({});
+		req.setRawHeader ("Referer", "");
+
+		auto reply = nam->get (req);
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
