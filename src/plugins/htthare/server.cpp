@@ -53,6 +53,12 @@ namespace HttHare
 		StartAccept ();
 	}
 
+	Server::~Server ()
+	{
+		if (!IoService_.stopped ())
+			Stop ();
+	}
+
 	void Server::Start ()
 	{
 		for (auto i = 0; i < 2; ++i)

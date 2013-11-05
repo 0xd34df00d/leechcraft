@@ -53,6 +53,7 @@ namespace HttHare
 		std::vector<std::thread> Threads_;
 	public:
 		Server (const QString& address, const QString& port);
+		~Server ();
 
 		Server (const Server&) = delete;
 		Server& operator= (const Server&) = delete;
