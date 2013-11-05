@@ -52,6 +52,8 @@ namespace Metida
 		SelectGroupsDialog (LJProfile *profile, quint32 allowMask, QWidget *parent = 0);
 
 		QList<uint> GetSelectedGroupsIds () const;
+		
+		void SetHeaderLabel (const QString& text);
 	};
 }
 }
