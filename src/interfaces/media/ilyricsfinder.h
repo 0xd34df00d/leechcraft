@@ -86,15 +86,42 @@ namespace Media
 		Refresh = 0x1
 	};
 
+	/** @brief Describes a single lyrics result item.
+	 *
+	 * A result item is the lyrics themselves and the provider name these
+	 * lyrics were fetched from.
+	 *
+	 * @sa LyricsResults
+	 */
 	struct LyricsResultItem
 	{
+		/** @brief The name of the provider lyrics were fetched from.
+		 */
 		QString ProviderName_;
+
+		/** @brief The HTML-formatted lyrics string.
+		 */
 		QString Lyrics_;
 	};
 
+	/** @brief Describes the result set for a given lyrics query.
+	 *
+	 * The lyrics searching result set consists of the lyrics query and a
+	 * list of lyrics results items.
+	 *
+	 * @sa LyricsResultItem.
+	 */
 	struct LyricsResults
 	{
+		/** @brief The original query these results are for.
+		 */
 		LyricsQuery Query_;
+
+		/** @brief The list of found items for the Query_.
+		 *
+		 * This list may be empty or contain duplicate lyrics (though
+		 * with different ProviderName_ fields).
+		 */
 		QList<LyricsResultItem> Items_;
 	};
 
