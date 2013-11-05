@@ -199,6 +199,18 @@ namespace DeadLyrics
 		url.replace ("{Album}", cap (album));
 		url.replace ("{Title}", cap (title));
 
+#ifdef QT_DEBUG
+		qDebug () << Q_FUNC_INFO
+				<< "requesting"
+				<< url
+				<< "from"
+				<< Desc_.Name_
+				<< "for"
+				<< artist
+				<< album
+				<< title;
+#endif
+
 		auto nam = proxy->GetNetworkAccessManager ();
 		auto reply = nam->get (QNetworkRequest (QUrl (url)));
 		connect (reply,
@@ -218,9 +230,16 @@ namespace DeadLyrics
 		deleteLater ();
 
 		const auto& data = reply->readAll ();
+#ifdef QT_DEBUG
+		qDebug () << Q_FUNC_INFO
+				<< "got from"
+				<< Desc_.Name_
+				<< "the data:"
+				<< data;
+#endif
 		auto str = QString::fromUtf8 (data.constData ());
 
-		Q_FOREACH (auto excluder, Desc_.Matchers_)
+		for (auto excluder : Desc_.Matchers_)
 			str = (*excluder) (str);
 
 		str = str.trimmed ();
