@@ -29,6 +29,8 @@
 
 #pragma once
 
+#include <stdexcept>
+
 class QUrl;
 class QString;
 
@@ -36,6 +38,12 @@ namespace LeechCraft
 {
 namespace HttHare
 {
+	class AccessDeniedException : public std::exception
+	{
+	public:
+		~AccessDeniedException () noexcept;
+	};
+
 	class StorageManager
 	{
 	public:

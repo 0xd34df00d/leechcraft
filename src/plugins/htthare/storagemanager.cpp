@@ -31,18 +31,29 @@
 #include <QString>
 #include <QUrl>
 #include <QDir>
+#include <QtDebug>
 
 namespace LeechCraft
 {
 namespace HttHare
 {
+	AccessDeniedException::~AccessDeniedException () noexcept
+	{
+	}
+
 	StorageManager::StorageManager ()
 	{
 	}
 
 	QString StorageManager::ResolvePath (const QUrl& url) const
 	{
-		return QUrl::fromLocalFile (QDir::homePath () + '/').resolved (url).toLocalFile ();
+		const auto& path = QUrl::fromLocalFile (QDir::homePath () + '/')
+				.resolved (url).toLocalFile ();
+		const QFileInfo fi { path };
+		if (!fi.absoluteFilePath ().startsWith (QDir::homePath ()))
+			throw AccessDeniedException ();
+
+		return path;
 	}
 }
 }
