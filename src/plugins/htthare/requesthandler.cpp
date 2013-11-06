@@ -104,18 +104,7 @@ namespace HttHare
 				.arg (reason.data ())
 				.arg (full.data ()).toUtf8 ();
 
-		auto c = Conn_;
-		boost::asio::async_write (c->GetSocket (),
-				ToBuffers (),
-				c->GetStrand ().wrap ([c] (const boost::system::error_code& ec, ulong)
-					{
-						if (ec)
-							qWarning () << Q_FUNC_INFO
-									<< ec.message ().c_str ();
-
-						boost::system::error_code iec;
-						c->GetSocket ().shutdown (boost::asio::socket_base::shutdown_both, iec);
-					}));
+		DefaultWrite ();
 	}
 
 	namespace
