@@ -196,7 +196,7 @@ namespace LMP
 		const auto& size = PossibleLyrics_.size ();
 
 		const auto& str = size ?
-				tr ("%n possible lyrics found, showing %1 of %2 from %3", 0, size)
+				tr ("showing lyrics from %3 (%1 of %2)")
 					.arg (LyricsVariantPos_ + 1)
 					.arg (size)
 					.arg (PossibleLyrics_.at (LyricsVariantPos_).ProviderName_):
