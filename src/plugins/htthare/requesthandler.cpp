@@ -37,8 +37,10 @@
 #include <QDir>
 #include <QDateTime>
 #include <util/util.h>
+#include <util/sys/mimedetector.h>
 #include "connection.h"
 #include "storagemanager.h"
+#include "iconresolver.h"
 
 namespace LeechCraft
 {
@@ -116,31 +118,58 @@ namespace HttHare
 					}));
 	}
 
-	namespace
+	QByteArray RequestHandler::MakeDirResponse (const QFileInfo& fi, const QString& path, const QUrl& url)
 	{
-		QByteArray MakeDirResponse (const QFileInfo& fi, const QString& path)
-		{
-			QStringList rows;
-			for (const auto& item : QDir { path }
-					.entryInfoList (QDir::AllEntries | QDir::NoDotAndDotDot, QDir::Name))
-				rows << QString { "<tr><td><a href='%3'>%3</a></td><td>%1</td><td>%2</td></tr>" }
-						.arg (Util::MakePrettySize (item.size ()))
-						.arg (item.created ().toString ())
-						.arg (item.fileName ());
+		const auto& entries = QDir { path }
+				.entryInfoList (QDir::AllEntries | QDir::NoDotAndDotDot, QDir::Name);
 
-			return QString (R"delim(<html>
-					<head><title>%1</title></head>
-					<body>
-						<table>
-						%2
-						</table>
-					</body>
-				</html>
-				)delim")
-					.arg (fi.fileName ())
-					.arg (rows.join (""))
-					.toUtf8 ();
+		struct MimeInfo
+		{
+			QString MimeType_;
+			QByteArray Image_;
+		};
+		QHash<QString, QByteArray> mimeCache;
+		QList<MimeInfo> mimes;
+		Util::MimeDetector detector;
+		for (const auto& entry : entries)
+		{
+			const auto& type = detector (entry.filePath ());
+
+			if (!mimeCache.contains (type))
+			{
+				QByteArray image;
+				QMetaObject::invokeMethod (Conn_->GetIconResolver (),
+						"resolveMime",
+						Qt::BlockingQueuedConnection,
+						Q_ARG (QString, type),
+						Q_ARG (QByteArray, image),
+						Q_ARG (int, 16));
+				mimeCache [type] = image;
+			}
+
+			mimes.append ({ type, mimeCache [type] });
 		}
+
+		QString result;
+		result += "<html><head><title>" + fi.fileName () + "</title>";
+		result += "</head><body><h1>" + tr ("Listing of %1").arg (url.toString ()) + "</h1>";
+		result += "<table style='width: 100%'><tr>";
+		result += QString ("<th style='width: 60%'>%1</th><th style='width: 20%'>%2</th><th style='width: 20%'>%3</th>")
+					.arg (tr ("Name"))
+					.arg (tr ("Size"))
+					.arg (tr ("Created"));
+
+		for (const auto& item : entries)
+		{
+			result += "<tr><td><a href='";
+			result += item.fileName () + "'>" + item.fileName () + "</a></td>";
+			result += "<td>" + Util::MakePrettySize (item.size ()) + "</td>";
+			result += "<td>" + item.created ().toString () + "</td></tr>";
+		}
+
+		result += "</table></body></html>";
+
+		return result.toUtf8 ();
 	}
 
 	void RequestHandler::HandleGet ()
@@ -156,14 +185,14 @@ namespace HttHare
 
 			ResponseHeaders_.append ({ "Content-Type", "text/html; charset=utf-8" });
 			ResponseBody_ = QString (R"delim(<html>
-					<head><title>%1</title></head>
+					<head><title>%2</title></head>
 					<body>
-						%2
+						%1
 					</body>
 				</html>
 				)delim")
-					.arg (QFileInfo { Url_.path () }.fileName ())
 					.arg (QObject::tr ("Access forbidden. You could return to the <a href='/'>root</a> of this server.").arg (path))
+					.arg (QFileInfo { Url_.path () }.fileName ())
 					.toUtf8 ();
 
 			DefaultWrite ();
@@ -195,7 +224,7 @@ namespace HttHare
 				ResponseLine_ = "HTTP/1.1 200 OK\r\n";
 
 				ResponseHeaders_.append ({ "Content-Type", "text/html; charset=utf-8" });
-				ResponseBody_ = MakeDirResponse (fi, path);
+				ResponseBody_ = MakeDirResponse (fi, path, Url_);
 
 				DefaultWrite ();
 			}
@@ -206,7 +235,7 @@ namespace HttHare
 				auto url = Url_;
 				url.setPath (url.path () + '/');
 				ResponseHeaders_.append ({ "Location", url.toString ().toUtf8 () });
-				ResponseBody_ = MakeDirResponse (fi, path);
+				ResponseBody_ = MakeDirResponse (fi, path, url);
 
 				DefaultWrite ();
 			}
