@@ -118,15 +118,28 @@ namespace HttHare
 					}));
 	}
 
+	namespace
+	{
+		QString NormalizeClass (QString mime)
+		{
+			return mime.replace ('/', '_')
+					.replace ('-', '_')
+					.replace ('.', '_')
+					.replace ('+', '_');
+		}
+
+		const auto IconSize = 16;
+	}
+
 	QByteArray RequestHandler::MakeDirResponse (const QFileInfo& fi, const QString& path, const QUrl& url)
 	{
 		const auto& entries = QDir { path }
-				.entryInfoList (QDir::AllEntries | QDir::NoDotAndDotDot, QDir::Name);
+				.entryInfoList (QDir::AllEntries | QDir::NoDotAndDotDot,
+						QDir::Name | QDir::DirsFirst);
 
 		struct MimeInfo
 		{
 			QString MimeType_;
-			QByteArray Image_;
 		};
 		QHash<QString, QByteArray> mimeCache;
 		QList<MimeInfo> mimes;
@@ -142,26 +155,36 @@ namespace HttHare
 						"resolveMime",
 						Qt::BlockingQueuedConnection,
 						Q_ARG (QString, type),
-						Q_ARG (QByteArray, image),
-						Q_ARG (int, 16));
+						Q_ARG (QByteArray&, image),
+						Q_ARG (int, IconSize));
 				mimeCache [type] = image;
 			}
 
-			mimes.append ({ type, mimeCache [type] });
+			mimes.append ({ type });
 		}
 
 		QString result;
-		result += "<html><head><title>" + fi.fileName () + "</title>";
-		result += "</head><body><h1>" + tr ("Listing of %1").arg (url.toString ()) + "</h1>";
+		result += "<html><head><title>" + fi.fileName () + "</title><style>";
+		for (auto pos = mimeCache.begin (); pos != mimeCache.end (); ++pos)
+		{
+			result += "." + NormalizeClass (pos.key ()) + " {";
+			result += "background-image: url('" + pos.value () + "');";
+			result += "background-repeat: no-repeat;";
+			result += "padding-left: " + QString::number (IconSize + 4) + ";";
+			result += "}";
+		}
+		result += "</style></head><body><h1>" + tr ("Listing of %1").arg (url.toString ()) + "</h1>";
 		result += "<table style='width: 100%'><tr>";
 		result += QString ("<th style='width: 60%'>%1</th><th style='width: 20%'>%2</th><th style='width: 20%'>%3</th>")
 					.arg (tr ("Name"))
 					.arg (tr ("Size"))
 					.arg (tr ("Created"));
 
-		for (const auto& item : entries)
+		for (int i = 0; i < entries.size (); ++i)
 		{
-			result += "<tr><td><a href='";
+			const auto& item = entries.at (i);
+
+			result += "<tr><td class=" + NormalizeClass (mimes.at (i).MimeType_) + "><a href='";
 			result += item.fileName () + "'>" + item.fileName () + "</a></td>";
 			result += "<td>" + Util::MakePrettySize (item.size ()) + "</td>";
 			result += "<td>" + item.created ().toString () + "</td></tr>";
