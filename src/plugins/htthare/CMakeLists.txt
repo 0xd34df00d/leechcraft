@@ -18,6 +18,7 @@ set (SRCS
 	connection.cpp
 	requesthandler.cpp
 	storagemanager.cpp
+	iconresolver.cpp
 	)
 #CreateTrs("htthare" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("htthare" "en;ru_RU" "${SRCS}" "${FORMS}" "httharesettings.xml")
