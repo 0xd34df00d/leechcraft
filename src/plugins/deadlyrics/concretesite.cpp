@@ -166,6 +166,13 @@ namespace DeadLyrics
 
 		Matchers_ += fillMatchers ("extract", MatcherBase::Mode::Return);
 		Matchers_ += fillMatchers ("exclude", MatcherBase::Mode::Exclude);
+
+		auto invalidElem = elem.firstChildElement ("invalidIndicator");
+		while (!invalidElem.isNull ())
+		{
+			InvalidIndicators_ << invalidElem.attribute ("value");
+			invalidElem = invalidElem.nextSiblingElement ("invalidIndicator");
+		}
 	}
 
 	ConcreteSite::ConcreteSite (const Media::LyricsQuery& query,

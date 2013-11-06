@@ -54,6 +54,8 @@ namespace DeadLyrics
 
 		QList<MatcherBase_ptr> Matchers_;
 
+		QStringList InvalidIndicators_;
+
 		ConcreteSiteDesc (const QDomElement&);
 	};
 
