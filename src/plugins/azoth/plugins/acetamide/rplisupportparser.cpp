@@ -70,7 +70,7 @@ namespace Acetamide
 				*(eps_p[assign_a (val, "true")]
 						>> token[insert_at_a (stringParams, param, val)]
 						>> ch_p (' ')) >>
-				str_p (":are supported by this server");
+						str_p (":are supported") >> *(alnum_p | punct_p | blank_p);
 
 		bool res = parse (reply.toUtf8 ().constData (), isuppport).full;
 		if (!res)
