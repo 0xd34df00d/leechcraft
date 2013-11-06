@@ -57,13 +57,6 @@ namespace Metida
 	, MaxGetEventsPerDayCount_ (200)
 	{
 	}
-	
-	std::shared_ptr<void> LJXmlRPC::MakeRunnerGuard ()
-	{
-		const bool shouldRun = ApiCallQueue_.isEmpty ();
-		return std::shared_ptr<void> (nullptr, [this, shouldRun] (void*) 
-				{ if (shouldRun) ApiCallQueue_.dequeue () (QString ()); });
-	}
 
 	void LJXmlRPC::Validate (const QString& login, const QString& password)
 	{
@@ -208,6 +201,15 @@ namespace Metida
 		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 		ApiCallQueue_ << [this] (const QString& challenge)
 				{ GetUserTagsRequest (challenge); };
+	}
+
+	std::shared_ptr<void> LJXmlRPC::MakeRunnerGuard ()
+	{
+		const bool shouldRun = ApiCallQueue_.isEmpty ();
+		return std::shared_ptr<void> (nullptr, [this, shouldRun] (void*) 
+				{ if (shouldRun) 
+					ApiCallQueue_.dequeue () (QString ()); 
+				});
 	}
 
 	void LJXmlRPC::CallNextFunctionFromQueue ()
