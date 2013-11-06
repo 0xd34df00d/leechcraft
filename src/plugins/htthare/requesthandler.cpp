@@ -219,6 +219,8 @@ namespace HttHare
 					.toUtf8 ();
 
 			DefaultWrite ();
+
+			return;
 		}
 
 		const QFileInfo fi { path };
