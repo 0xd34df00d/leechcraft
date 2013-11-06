@@ -206,9 +206,10 @@ namespace Metida
 	std::shared_ptr<void> LJXmlRPC::MakeRunnerGuard ()
 	{
 		const bool shouldRun = ApiCallQueue_.isEmpty ();
-		return std::shared_ptr<void> (nullptr, [this, shouldRun] (void*) 
-				{ if (shouldRun) 
-					ApiCallQueue_.dequeue () (QString ()); 
+		return std::shared_ptr<void> (nullptr, [this, shouldRun] (void*)
+				{
+					if (shouldRun)
+						ApiCallQueue_.dequeue () (QString ());
 				});
 	}
 
@@ -1705,7 +1706,7 @@ namespace Metida
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
 			const int id = GetEventItemId (document);
-			
+
 			ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
 			ApiCallQueue_ << [id, this] (const QString& challenge)
 					{ GetParticularEventRequest (id, RequestType::Post, challenge); };
