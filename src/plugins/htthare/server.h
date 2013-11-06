@@ -42,6 +42,8 @@ namespace LeechCraft
 {
 namespace HttHare
 {
+	class IconResolver;
+
 	class Server
 	{
 		boost::asio::io_service IoService_;
@@ -51,6 +53,8 @@ namespace HttHare
 		StorageManager StorageMgr_;
 
 		std::vector<std::thread> Threads_;
+
+		IconResolver * const IconResolver_;
 	public:
 		Server (const QString& address, const QString& port);
 		~Server ();
