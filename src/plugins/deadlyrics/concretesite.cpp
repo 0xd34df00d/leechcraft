@@ -34,6 +34,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QTextCodec>
 #include <QtDebug>
 
 namespace LeechCraft
@@ -245,7 +246,17 @@ namespace DeadLyrics
 				<< "the data:"
 				<< data;
 #endif
-		auto str = QString::fromUtf8 (data.constData ());
+
+		const auto codec = QTextCodec::codecForName (Desc_.Charset_.toLatin1 ());
+		if (!codec)
+			qWarning () << Q_FUNC_INFO
+					<< "no codec for charset"
+					<< Desc_.Charset_
+					<< "; will fallback to UTF-8";
+
+		auto str = codec ?
+				codec->toUnicode (data) :
+				QString::fromUtf8 (data.constData ());
 
 		for (auto excluder : Desc_.Matchers_)
 			str = (*excluder) (str);
