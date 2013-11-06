@@ -41,6 +41,7 @@ namespace HttHare
 	, Socket_ { service }
 	, StorageMgr_ (stMgr)
 	, IconResolver_ { resolver }
+	, Buf_ { 2 * 1024 }
 	{
 	}
 
