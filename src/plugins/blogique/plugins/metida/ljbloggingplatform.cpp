@@ -530,13 +530,18 @@ namespace Metida
 		}
 
 		emit accountValidated (acc->GetQObject (), validated);
+		if (validated)
+		{
+			checkForMessages ();
+ 			checkForComments ();
+		}
 	}
 
 	void LJBloggingPlatform::handleMessageChecking ()
 	{
 		if (XmlSettingsManager::Instance ().Property ("CheckingInboxEnabled", true).toBool ())
 			MessageCheckingTimer_->start (XmlSettingsManager::Instance ()
-					.property ("UpdateInboxInterval").toInt () * 1000);
+					.property ("UpdateInboxInterval").toInt () * 60 * 1000);
 		else if (MessageCheckingTimer_->isActive ())
 			MessageCheckingTimer_->stop ();
 	}

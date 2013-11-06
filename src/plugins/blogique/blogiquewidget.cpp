@@ -1138,7 +1138,6 @@ namespace Blogique
 		if (!e.IsEmpty ())
 			acc->preview (e);
 	}
-
 }
 }
 
