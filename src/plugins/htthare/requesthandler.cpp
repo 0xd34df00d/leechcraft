@@ -245,6 +245,61 @@ namespace HttHare
 		}
 	}
 
+	namespace
+	{
+		struct Sendfiler
+		{
+			boost::asio::ip::tcp::socket& Sock_;
+			std::shared_ptr<QFile> File_;
+			off_t Offset_;
+
+			QPair<qint64, qint64> CurrentRange_;
+			QList<QPair<qint64, qint64>> TailRanges_;
+
+			std::function<void (boost::system::error_code, ulong)> Handler_;
+
+			void operator() (boost::system::error_code ec, ulong)
+			{
+				for (qint64 toTransfer = CurrentRange_.second - CurrentRange_.first + 1; toTransfer > 0; )
+				{
+					off_t offset = CurrentRange_.first;
+					const auto rc = sendfile (Sock_.native_handle (),
+							File_->handle (), &offset, toTransfer);
+					ec = boost::system::error_code (rc < 0 ? errno : 0,
+							boost::asio::error::get_system_category ());
+
+					if (rc > 0)
+					{
+						CurrentRange_.first = offset;
+						toTransfer -= rc;
+					}
+
+					if (ec == boost::asio::error::interrupted)
+						continue;
+
+					if (ec == boost::asio::error::would_block ||
+							ec == boost::asio::error::try_again)
+					{
+						Sock_.async_write_some (boost::asio::null_buffers {}, *this);
+						return;
+					}
+
+					if (ec)
+						break;
+
+					if (!toTransfer && !TailRanges_.isEmpty ())
+					{
+						CurrentRange_ = TailRanges_.takeFirst ();
+						Sock_.async_write_some (boost::asio::null_buffers {}, *this);
+						return;
+					}
+				}
+
+				Handler_ (ec, 0);
+			}
+		};
+	}
+
 	void RequestHandler::HandleRequest (Verb verb)
 	{
 		QString path;
@@ -317,7 +372,7 @@ namespace HttHare
 		}
 		else
 		{
-			const auto& ranges = ParseRanges (Headers_.value ("Range"), fi.size ());
+			auto ranges = ParseRanges (Headers_.value ("Range"), fi.size ());
 
 			ResponseHeaders_.append ({ "Content-Type", "application/octet-stream" });
 
@@ -340,7 +395,7 @@ namespace HttHare
 			auto c = Conn_;
 			boost::asio::async_write (c->GetSocket (),
 					ToBuffers (verb),
-					c->GetStrand ().wrap ([c, path, verb, ranges] (const boost::system::error_code& ec, ulong)
+					c->GetStrand ().wrap ([c, path, verb, ranges] (boost::system::error_code ec, ulong) mutable -> void
 						{
 							if (ec)
 								qWarning () << Q_FUNC_INFO
@@ -348,39 +403,34 @@ namespace HttHare
 
 							auto& s = c->GetSocket ();
 
-							if (verb == Verb::Get)
-							{
-								QFile file (path);
-								file.open (QIODevice::ReadOnly);
-
-								if (ranges.isEmpty ())
-								{
-									const auto rc = sendfile (s.native_handle (),
-											file.handle (), nullptr, file.size ());
-									if (rc == -1)
-										qWarning () << Q_FUNC_INFO
-												<< "sendfile() error:"
-												<< errno
-												<< "; human-readable:"
-												<< strerror (errno);
-								}
-								else
-									for (const auto& range : ranges)
+							std::shared_ptr<void> shutdownGuard = std::shared_ptr<void> (nullptr,
+									[&s, &ec] (void*)
 									{
-										off_t offset = range.first;
-										const auto rc = sendfile (s.native_handle (),
-												file.handle (), &offset, range.second - range.first + 1);
-										if (rc == -1)
-											qWarning () << Q_FUNC_INFO
-													<< "sendfile() error:"
-													<< errno
-													<< "; human-readable:"
-													<< strerror (errno);
-									}
-							}
+										s.shutdown (boost::asio::socket_base::shutdown_both, ec);
+									});
 
-							boost::system::error_code iec;
-							s.shutdown (boost::asio::socket_base::shutdown_both, iec);
+							if (verb != Verb::Get)
+								return;
+
+							std::shared_ptr<QFile> file { new QFile { path } };
+							file->open (QIODevice::ReadOnly);
+
+							if (ranges.isEmpty ())
+								ranges.append ({ 0, file->size () - 1 });
+
+							if (!s.native_non_blocking ())
+								s.native_non_blocking (true, ec);
+
+							const auto& headRange = ranges.takeFirst ();
+							Sendfiler
+							{
+								s,
+								file,
+								0,
+								headRange,
+								ranges,
+								[c, shutdownGuard] (boost::system::error_code ec, ulong) {}
+							} (ec, 0);
 						}));
 		}
 	}
