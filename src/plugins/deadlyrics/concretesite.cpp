@@ -265,14 +265,14 @@ namespace DeadLyrics
 				codec->toUnicode (data) :
 				QString::fromUtf8 (data.constData ());
 
+		if (std::any_of (Desc_.InvalidIndicators_.begin (), Desc_.InvalidIndicators_.end (),
+				[&str] (const QString& ind) { return str.contains (ind); }))
+			return;
+
 		for (auto excluder : Desc_.Matchers_)
 			str = (*excluder) (str);
 
 		str = str.trimmed ();
-
-		if (std::any_of (Desc_.InvalidIndicators_.begin (), Desc_.InvalidIndicators_.end (),
-				[&str] (const QString& ind) { return str.contains (ind); }))
-			return;
 
 		const auto& contentType = reply->header (QNetworkRequest::ContentTypeHeader);
 		const bool isPlainText = contentType.toString ().toLower ().startsWith ("text/plain");
