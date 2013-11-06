@@ -7,9 +7,9 @@
 			<item type="checkbox" property="CheckingInboxEnabled" default="true">
 				<label value="Enable messages checking" />
 			</item>
-			<item type="spinbox" property="UpdateInboxInterval" default="30" minimum="5" maximum="3600">
+			<item type="spinbox" property="UpdateInboxInterval" default="15" minimum="1" maximum="600">
 				<label value="Update interval:" />
-				<suffix value=" s" />
+				<suffix value=" min" />
 			</item>
 		</groupbox>
 		<groupbox>
