@@ -267,9 +267,8 @@ namespace DeadLyrics
 		const bool isPlainText = contentType.toString ().toLower ().startsWith ("text/plain");
 		if (isPlainText)
 		{
-			str.replace ("\r\n", "<br/>");
-			str.replace ("\r", "<br/>");
-			str.replace ("\n", "<br/>");
+			str.prepend ("<pre>");
+			str.append ("</pre>");
 		}
 
 		if (str.size () >= 100)
