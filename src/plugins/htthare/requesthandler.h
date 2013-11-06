@@ -58,6 +58,12 @@ namespace HttHare
 		QList<QPair<QByteArray, QByteArray>> ResponseHeaders_;
 		QByteArray CookedRH_;
 		QByteArray ResponseBody_;
+
+		enum class Verb
+		{
+			Get,
+			Head
+		};
 	public:
 		RequestHandler (const Connection_ptr&);
 
@@ -66,11 +72,9 @@ namespace HttHare
 		void ErrorResponse (int, const QByteArray&, const QByteArray& = QByteArray ());
 		QByteArray MakeDirResponse (const QFileInfo&, const QString&, const QUrl&);
 
-		void HandleGet ();
-		void DefaultWrite ();
-		void HandleHead ();
-
-		std::vector<boost::asio::const_buffer> ToBuffers ();
+		void HandleRequest (Verb);
+		void DefaultWrite (Verb);
+		std::vector<boost::asio::const_buffer> ToBuffers (Verb);
 	};
 }
 }

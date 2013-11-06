@@ -79,9 +79,9 @@ namespace HttHare
 		}
 
 		if (verb == "head")
-			HandleHead ();
+			HandleRequest (Verb::Head);
 		else if (verb == "get")
-			HandleGet ();
+			HandleRequest (Verb::Get);
 		else
 			return ErrorResponse (405, "Method Not Allowed",
 					"Method " + verb + " not supported by this server.");
@@ -104,7 +104,7 @@ namespace HttHare
 				.arg (reason.data ())
 				.arg (full.data ()).toUtf8 ();
 
-		DefaultWrite ();
+		DefaultWrite (Verb::Get);
 	}
 
 	namespace
@@ -184,7 +184,7 @@ namespace HttHare
 		return result.toUtf8 ();
 	}
 
-	void RequestHandler::HandleGet ()
+	void RequestHandler::HandleRequest (Verb verb)
 	{
 		QString path;
 		try
@@ -207,7 +207,7 @@ namespace HttHare
 					.arg (QFileInfo { Url_.path () }.fileName ())
 					.toUtf8 ();
 
-			DefaultWrite ();
+			DefaultWrite (verb);
 
 			return;
 		}
@@ -229,7 +229,7 @@ namespace HttHare
 					.arg (QObject::tr ("%1 is not found on this server").arg (path))
 					.toUtf8 ();
 
-			DefaultWrite ();
+			DefaultWrite (verb);
 		}
 		else if (fi.isDir ())
 		{
@@ -240,7 +240,7 @@ namespace HttHare
 				ResponseHeaders_.append ({ "Content-Type", "text/html; charset=utf-8" });
 				ResponseBody_ = MakeDirResponse (fi, path, Url_);
 
-				DefaultWrite ();
+				DefaultWrite (verb);
 			}
 			else
 			{
@@ -251,7 +251,7 @@ namespace HttHare
 				ResponseHeaders_.append ({ "Location", url.toString ().toUtf8 () });
 				ResponseBody_ = MakeDirResponse (fi, path, url);
 
-				DefaultWrite ();
+				DefaultWrite (verb);
 			}
 		}
 		else
@@ -263,8 +263,8 @@ namespace HttHare
 
 			auto c = Conn_;
 			boost::asio::async_write (c->GetSocket (),
-					ToBuffers (),
-					c->GetStrand ().wrap ([c, path] (const boost::system::error_code& ec, ulong)
+					ToBuffers (verb),
+					c->GetStrand ().wrap ([c, path, verb] (const boost::system::error_code& ec, ulong)
 						{
 							if (ec)
 								qWarning () << Q_FUNC_INFO
@@ -272,17 +272,19 @@ namespace HttHare
 
 							auto& s = c->GetSocket ();
 
-							QFile file (path);
-							file.open (QIODevice::ReadOnly);
-							qDebug () << "sendfile()" << s.native_handle () << file.handle ();
-							const auto rc = sendfile (s.native_handle (),
-									file.handle (), nullptr, file.size ());
-							if (rc == -1)
-								qWarning () << Q_FUNC_INFO
-										<< "sendfile() error:"
-										<< errno
-										<< "; human-readable:"
-										<< strerror (errno);
+							if (verb == Verb::Get)
+							{
+								QFile file (path);
+								file.open (QIODevice::ReadOnly);
+								const auto rc = sendfile (s.native_handle (),
+										file.handle (), nullptr, file.size ());
+								if (rc == -1)
+									qWarning () << Q_FUNC_INFO
+											<< "sendfile() error:"
+											<< errno
+											<< "; human-readable:"
+											<< strerror (errno);
+							}
 
 							boost::system::error_code iec;
 							s.shutdown (boost::asio::socket_base::shutdown_both, iec);
@@ -290,11 +292,11 @@ namespace HttHare
 		}
 	}
 
-	void RequestHandler::DefaultWrite ()
+	void RequestHandler::DefaultWrite (Verb verb)
 	{
 		auto c = Conn_;
 		boost::asio::async_write (c->GetSocket (),
-				ToBuffers (),
+				ToBuffers (verb),
 				c->GetStrand ().wrap ([c] (const boost::system::error_code& ec, ulong)
 					{
 						if (ec)
@@ -306,10 +308,6 @@ namespace HttHare
 					}));
 	}
 
-	void RequestHandler::HandleHead ()
-	{
-	}
-
 	namespace
 	{
 		boost::asio::const_buffer BA2Buffer (const QByteArray& ba)
@@ -318,7 +316,7 @@ namespace HttHare
 		}
 	}
 
-	std::vector<boost::asio::const_buffer> RequestHandler::ToBuffers ()
+	std::vector<boost::asio::const_buffer> RequestHandler::ToBuffers (Verb verb)
 	{
 		std::vector<boost::asio::const_buffer> result;
 
@@ -334,7 +332,9 @@ namespace HttHare
 
 		result.push_back (BA2Buffer (ResponseLine_));
 		result.push_back (BA2Buffer (CookedRH_));
-		result.push_back (BA2Buffer (ResponseBody_));
+
+		if (verb == Verb::Get)
+			result.push_back (BA2Buffer (ResponseBody_));
 
 		return result;
 	}
