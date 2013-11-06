@@ -49,6 +49,7 @@ namespace HttHare
 	RequestHandler::RequestHandler (const Connection_ptr& conn)
 	: Conn_ (conn)
 	{
+		ResponseHeaders_.append ({ "Accept-Ranges", "bytes" });
 	}
 
 	void RequestHandler::operator() (QByteArray data)
@@ -184,6 +185,66 @@ namespace HttHare
 		return result.toUtf8 ();
 	}
 
+	namespace
+	{
+		QList<QPair<qint64, qint64>> ParseRanges (QString str, qint64 fullSize)
+		{
+			QList<QPair<qint64, qint64>> result;
+
+			const auto eqPos = str.indexOf ('=');
+			if (eqPos >= 0)
+				str = str.mid (eqPos + 1);
+
+			const auto pcPos = str.indexOf (';');
+			if (pcPos >= 0)
+				str = str.left (pcPos);
+
+			for (const auto& elem : str.split (',', QString::SkipEmptyParts))
+			{
+				const auto dashPos = elem.indexOf ('-');
+
+				if (dashPos < 0)
+					continue;
+
+				const auto& startStr = elem.left (dashPos);
+				const auto& endStr = elem.mid (dashPos + 1);
+				if (startStr.isEmpty ())
+				{
+					bool ok = false;
+					const auto last = endStr.toULongLong (&ok);
+					if (!ok)
+						continue;
+
+					if (last)
+						result.append ({ fullSize - last - 1, fullSize - 1 });
+				}
+				else
+				{
+					bool ok = false;
+					const auto last = endStr.isEmpty () ?
+							(ok = true, fullSize - 1) :
+							endStr.toULongLong (&ok);
+					if (!ok)
+						continue;
+
+					ok = false;
+					const auto first = startStr.toULongLong (&ok);
+					if (!ok)
+						continue;
+
+					if (first <= last)
+						result.append ({ first, last });
+				}
+			}
+
+			for (const auto& range : result)
+				if (!range.first && range.second == fullSize - 1)
+					return {};
+
+			return result;
+		}
+	}
+
 	void RequestHandler::HandleRequest (Verb verb)
 	{
 		QString path;
@@ -256,15 +317,30 @@ namespace HttHare
 		}
 		else
 		{
-			ResponseLine_ = "HTTP/1.1 200 OK\r\n";
+			const auto& ranges = ParseRanges (Headers_.value ("Range"), fi.size ());
 
 			ResponseHeaders_.append ({ "Content-Type", "application/octet-stream" });
-			ResponseHeaders_.append ({ "Content-Length", QByteArray::number (fi.size ()) });
+
+			if (ranges.isEmpty ())
+			{
+				ResponseLine_ = "HTTP/1.1 200 OK\r\n";
+				ResponseHeaders_.append ({ "Content-Length", QByteArray::number (fi.size ()) });
+			}
+			else
+			{
+				ResponseLine_ = "HTTP/1.1 206 Partial content\r\n";
+
+				qint64 totalSize = 0;
+				for (const auto& range : ranges)
+					totalSize += range.second - range.first + 1;
+
+				ResponseHeaders_.append ({ "Content-Length", QByteArray::number (totalSize) });
+			}
 
 			auto c = Conn_;
 			boost::asio::async_write (c->GetSocket (),
 					ToBuffers (verb),
-					c->GetStrand ().wrap ([c, path, verb] (const boost::system::error_code& ec, ulong)
+					c->GetStrand ().wrap ([c, path, verb, ranges] (const boost::system::error_code& ec, ulong)
 						{
 							if (ec)
 								qWarning () << Q_FUNC_INFO
@@ -276,14 +352,31 @@ namespace HttHare
 							{
 								QFile file (path);
 								file.open (QIODevice::ReadOnly);
-								const auto rc = sendfile (s.native_handle (),
-										file.handle (), nullptr, file.size ());
-								if (rc == -1)
-									qWarning () << Q_FUNC_INFO
-											<< "sendfile() error:"
-											<< errno
-											<< "; human-readable:"
-											<< strerror (errno);
+
+								if (ranges.isEmpty ())
+								{
+									const auto rc = sendfile (s.native_handle (),
+											file.handle (), nullptr, file.size ());
+									if (rc == -1)
+										qWarning () << Q_FUNC_INFO
+												<< "sendfile() error:"
+												<< errno
+												<< "; human-readable:"
+												<< strerror (errno);
+								}
+								else
+									for (const auto& range : ranges)
+									{
+										off_t offset = range.first;
+										const auto rc = sendfile (s.native_handle (),
+												file.handle (), &offset, range.second - range.first + 1);
+										if (rc == -1)
+											qWarning () << Q_FUNC_INFO
+													<< "sendfile() error:"
+													<< errno
+													<< "; human-readable:"
+													<< strerror (errno);
+									}
 							}
 
 							boost::system::error_code iec;
