@@ -526,6 +526,10 @@ namespace LMP
 				SIGNAL (toggled (bool)),
 				Ui_.SearchPlaylist_,
 				SLOT (setVisible (bool)));
+		connect (ActionToggleSearch_,
+				SIGNAL (toggled (bool)),
+				Ui_.SearchPlaylist_,
+				SLOT (setFocus ()));
 		Ui_.SearchPlaylist_->setVisible (false);
 	}
 
