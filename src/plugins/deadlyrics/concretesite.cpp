@@ -264,7 +264,7 @@ namespace DeadLyrics
 		str = str.trimmed ();
 
 		const auto& contentType = reply->header (QNetworkRequest::ContentTypeHeader);
-		const bool isPlainText = contentType.toString ().toLower () == "text/plain";
+		const bool isPlainText = contentType.toString ().toLower ().startsWith ("text/plain");
 		if (isPlainText)
 		{
 			str.replace ("\r\n", "<br/>");
