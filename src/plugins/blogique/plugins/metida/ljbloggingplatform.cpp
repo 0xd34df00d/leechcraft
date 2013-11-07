@@ -532,8 +532,10 @@ namespace Metida
 		emit accountValidated (acc->GetQObject (), validated);
 		if (validated)
 		{
-			checkForMessages ();
- 			checkForComments ();
+			if (XmlSettingsManager::Instance ().Property ("CheckingInboxEnabled", true).toBool ())
+				checkForMessages ();
+			if (XmlSettingsManager::Instance ().Property ("CheckingCommentsEnabled", true).toBool ())
+				checkForComments ();
 		}
 	}
 
