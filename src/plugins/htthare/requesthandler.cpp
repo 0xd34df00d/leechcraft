@@ -79,6 +79,13 @@ namespace HttHare
 			Headers_ [line.left (colonPos)] = line.mid (colonPos + 1).trimmed ();
 		}
 
+#ifdef QT_DEBUG
+		qDebug () << Q_FUNC_INFO << "got request";
+		qDebug () << req << Url_;
+		for (auto i = Headers_.begin (); i != Headers_.end (); ++i)
+			qDebug () << '\t' << i.key () << ": " << i.value ();
+#endif
+
 		if (verb == "head")
 			HandleRequest (Verb::Head);
 		else if (verb == "get")
@@ -472,6 +479,13 @@ namespace HttHare
 		for (const auto& pair : ResponseHeaders_)
 			CookedRH_ += pair.first + ": " + pair.second + "\r\n";
 		CookedRH_ += "\r\n";
+
+#ifdef QT_DEBUG
+		qDebug () << Q_FUNC_INFO;
+		qDebug () << '\t' << ResponseLine_.left (ResponseLine_.size () - 2);
+		for (const auto& pair : ResponseHeaders_)
+			qDebug () << '\t' << (pair.first + ": " + pair.second);
+#endif
 
 		result.push_back (BA2Buffer (ResponseLine_));
 		result.push_back (BA2Buffer (CookedRH_));
