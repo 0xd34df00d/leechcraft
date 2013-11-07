@@ -4,45 +4,42 @@
 <context>
     <name>LeechCraft::HttHare::Plugin</name>
     <message>
-        <location filename="htthare.cpp" line="71"/>
+        <location filename="htthare.cpp" line="74"/>
         <source>Share your files over local network via HTTP.</source>
-        <translation type="unfinished"></translation>
+        <translation>Share your files over local network via HTTP.</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::HttHare::RequestHandler</name>
     <message>
-        <location filename="requesthandler.cpp" line="173"/>
+        <location filename="requesthandler.cpp" line="191"/>
         <source>Listing of %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Listing of %1</translation>
     </message>
     <message>
-        <location filename="requesthandler.cpp" line="176"/>
+        <location filename="requesthandler.cpp" line="194"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
-        <location filename="requesthandler.cpp" line="177"/>
+        <location filename="requesthandler.cpp" line="195"/>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Size</translation>
     </message>
     <message>
-        <location filename="requesthandler.cpp" line="178"/>
+        <location filename="requesthandler.cpp" line="196"/>
         <source>Created</source>
-        <translation type="unfinished"></translation>
+        <translation>Created</translation>
     </message>
-</context>
-<context>
-    <name>QObject</name>
     <message>
-        <location filename="requesthandler.cpp" line="329"/>
+        <location filename="requesthandler.cpp" line="347"/>
         <source>Access forbidden. You could return to the &lt;a href=&apos;/&apos;&gt;root&lt;/a&gt; of this server.</source>
-        <translation type="unfinished"></translation>
+        <translation>Access forbidden. You could return to the &lt;a href=&apos;/&apos;&gt;root&lt;/a&gt; of this server.</translation>
     </message>
     <message>
-        <location filename="requesthandler.cpp" line="352"/>
+        <location filename="requesthandler.cpp" line="372"/>
         <source>%1 is not found on this server</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 is not found on this server</translation>
     </message>
 </context>
 <context>
@@ -50,12 +47,12 @@
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>Server</source>
-        <translation type="unfinished"></translation>
+        <translation>Server</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Enable server</source>
-        <translation type="unfinished"></translation>
+        <translation>Enable server</translation>
     </message>
 </context>
 </TS>
