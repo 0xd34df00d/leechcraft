@@ -30,6 +30,7 @@
 #include "htthare.h"
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/util.h>
 #include "server.h"
 #include "xmlsettingsmanager.h"
 
@@ -39,6 +40,8 @@ namespace HttHare
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("htthare");
+
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "httharesettings.xml");
 
