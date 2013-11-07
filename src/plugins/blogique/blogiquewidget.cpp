@@ -53,6 +53,7 @@
 #include "interfaces/blogique/iprofile.h"
 #include "blogentrieswidget.h"
 #include "blogique.h"
+#include "commentswidget.h"
 #include "core.h"
 #include "draftentrieswidget.h"
 #include "dummytexteditor.h"
@@ -80,8 +81,8 @@ namespace Blogique
 	, AccountsBox_ (new QComboBox ())
 	, PostTargetAction_ (0)
 	, ProgressBarAction_ (0)
-	, DraftEntriesWidget_ (new DraftEntriesWidget)
-	, BlogEntriesWidget_ (new BlogEntriesWidget)
+	, DraftEntriesWidget_ (new DraftEntriesWidget (this))
+	, BlogEntriesWidget_ (new BlogEntriesWidget (this))
 	, PrevAccountId_ (-1)
 	, EntryType_ (EntryType::None)
 	, EntryId_ (-1)
