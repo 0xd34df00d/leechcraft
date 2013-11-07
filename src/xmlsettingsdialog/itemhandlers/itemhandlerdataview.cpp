@@ -129,7 +129,11 @@ namespace LeechCraft
 			switch (type)
 			{
 			case DataSources::DataFieldType::Integer:
-				return new QSpinBox ();
+			{
+				auto sb = new QSpinBox ();
+				sb->setRange (-2000000, 2000000);
+				return sb;
+			}
 			case DataSources::DataFieldType::String:
 			case DataSources::DataFieldType::Url:
 				return new QLineEdit ();
