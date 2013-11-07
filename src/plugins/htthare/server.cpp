@@ -48,13 +48,23 @@ namespace HttHare
 
 		for (const auto& pair : addresses)
 		{
-			const ip::tcp::endpoint endpoint = *resolver.resolve ({ pair.first.toStdString (), pair.second.toStdString () });
+			try
+			{
+				const ip::tcp::endpoint endpoint = *resolver.resolve ({ pair.first.toStdString (), pair.second.toStdString () });
 
-			Acceptors_.emplace_back (new ip::tcp::acceptor { IoService_ });
-			Acceptors_.back ()->open (endpoint.protocol ());
-			Acceptors_.back ()->set_option (ip::tcp::acceptor::reuse_address (true));
-			Acceptors_.back ()->bind (endpoint);
-			Acceptors_.back ()->listen ();
+				std::unique_ptr<ip::tcp::acceptor> accPtr { new ip::tcp::acceptor { IoService_ } };
+				accPtr->open (endpoint.protocol ());
+				accPtr->set_option (ip::tcp::acceptor::reuse_address (true));
+				accPtr->bind (endpoint);
+				accPtr->listen ();
+
+				Acceptors_.emplace_back (std::move (accPtr));
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< e.what ();
+			}
 		}
 
 		StartAccept ();
