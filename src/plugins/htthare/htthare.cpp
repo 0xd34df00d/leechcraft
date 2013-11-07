@@ -47,6 +47,11 @@ namespace HttHare
 		qRegisterMetaTypeStreamOperators<AddrList_t> ();
 
 		AddrMgr_ = new AddressesModelManager (this);
+		connect (AddrMgr_,
+				SIGNAL (addressesChanged ()),
+				this,
+				SLOT (reapplyAddresses ()));
+
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "httharesettings.xml");
 
@@ -102,9 +107,18 @@ namespace HttHare
 			S_.reset ();
 		else
 		{
-			S_.reset (new Server ({ { "10.0.0.1", "14801" }, { "localhost", "14801" } }));
+			S_.reset (new Server { AddrMgr_->GetAddresses () });
 			S_->Start ();
 		}
+	}
+
+	void Plugin::reapplyAddresses ()
+	{
+		if (!S_)
+			return;
+
+		S_.reset (new Server { AddrMgr_->GetAddresses () });
+		S_->Start ();
 	}
 }
 }
