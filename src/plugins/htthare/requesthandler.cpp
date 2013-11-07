@@ -41,6 +41,7 @@
 #include "connection.h"
 #include "storagemanager.h"
 #include "iconresolver.h"
+#include "trmanager.h"
 
 namespace LeechCraft
 {
@@ -93,6 +94,24 @@ namespace HttHare
 		else
 			return ErrorResponse (405, "Method Not Allowed",
 					"Method " + verb + " not supported by this server.");
+	}
+
+	QString RequestHandler::Tr (const char *msg)
+	{
+		auto locales = Headers_ ["Accept-Language"].split (',');
+		locales.removeAll ("*");
+		for (auto& locale : locales)
+		{
+			const auto cpPos = locale.indexOf (';');
+			if (cpPos >= 0)
+				locale = locale.left (cpPos);
+			locale = locale.trimmed ();
+		}
+		if (!locales.contains ("en"))
+			locales << "en";
+
+		auto mgr = Conn_->GetTrManager ();
+		return mgr->Translate (locales, "LeechCraft::HttHare::RequestHandler", msg);
 	}
 
 	void RequestHandler::ErrorResponse (int code,
@@ -170,12 +189,12 @@ namespace HttHare
 			result += "padding-left: " + QString::number (IconSize + 4) + ";";
 			result += "}";
 		}
-		result += "</style></head><body><h1>" + tr ("Listing of %1").arg (url.toString ()) + "</h1>";
+		result += "</style></head><body><h1>" + Tr ("Listing of %1").arg (url.toString ()) + "</h1>";
 		result += "<table style='width: 100%'><tr>";
 		result += QString ("<th style='width: 60%'>%1</th><th style='width: 20%'>%2</th><th style='width: 20%'>%3</th>")
-					.arg (tr ("Name"))
-					.arg (tr ("Size"))
-					.arg (tr ("Created"));
+					.arg (Tr ("Name"))
+					.arg (Tr ("Size"))
+					.arg (Tr ("Created"));
 
 		for (int i = 0; i < entries.size (); ++i)
 		{
@@ -326,7 +345,9 @@ namespace HttHare
 					</body>
 				</html>
 				)delim")
-					.arg (QObject::tr ("Access forbidden. You could return to the <a href='/'>root</a> of this server.").arg (path))
+					.arg (Tr ("Access forbidden. You could return "
+								"to the <a href='/'>root</a> of this server.")
+							.arg (path))
 					.arg (QFileInfo { Url_.path () }.fileName ())
 					.toUtf8 ();
 
@@ -349,7 +370,7 @@ namespace HttHare
 				</html>
 				)delim")
 					.arg (fi.fileName ())
-					.arg (QObject::tr ("%1 is not found on this server").arg (path))
+					.arg (Tr ("%1 is not found on this server").arg (path))
 					.toUtf8 ();
 
 			DefaultWrite (verb);

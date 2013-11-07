@@ -69,6 +69,8 @@ namespace HttHare
 
 		void operator() (QByteArray);
 	private:
+		QString Tr (const char*);
+
 		void ErrorResponse (int, const QByteArray&, const QByteArray& = QByteArray ());
 		QByteArray MakeDirResponse (const QFileInfo&, const QString&, const QUrl&);
 
