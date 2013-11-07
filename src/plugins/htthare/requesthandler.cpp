@@ -370,7 +370,8 @@ namespace HttHare
 				</html>
 				)delim")
 					.arg (fi.fileName ())
-					.arg (Tr ("%1 is not found on this server").arg (path))
+					.arg (Tr ("%1 is not found on this server")
+						.arg ("<em>" + path + "</em>"))
 					.toUtf8 ();
 
 			DefaultWrite (verb);
