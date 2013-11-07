@@ -95,7 +95,7 @@ namespace HttHare
 			S_.reset ();
 		else
 		{
-			S_.reset (new Server ("localhost", "14801"));
+			S_.reset (new Server ({ { "10.0.0.1", "14801" }, { "localhost", "14801" } }));
 			S_->Start ();
 		}
 	}

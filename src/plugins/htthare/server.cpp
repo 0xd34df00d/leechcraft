@@ -40,18 +40,22 @@ namespace HttHare
 {
 	namespace ip = boost::asio::ip;
 
-	Server::Server (const QString& address, const QString& port)
-	: Acceptor_ { IoService_ }
-	, IconResolver_ { new IconResolver  }
+	Server::Server (const QList<QPair<QString, QString>>& addresses)
+	: IconResolver_ { new IconResolver  }
 	, TrManager_ { new TrManager }
 	{
 		ip::tcp::resolver resolver { IoService_ };
-		const ip::tcp::endpoint endpoint = *resolver.resolve ({ address.toStdString (), port.toStdString () });
 
-		Acceptor_.open (endpoint.protocol ());
-		Acceptor_.set_option (ip::tcp::acceptor::reuse_address (true));
-		Acceptor_.bind (endpoint);
-		Acceptor_.listen ();
+		for (const auto& pair : addresses)
+		{
+			const ip::tcp::endpoint endpoint = *resolver.resolve ({ pair.first.toStdString (), pair.second.toStdString () });
+
+			Acceptors_.emplace_back (new ip::tcp::acceptor { IoService_ });
+			Acceptors_.back ()->open (endpoint.protocol ());
+			Acceptors_.back ()->set_option (ip::tcp::acceptor::reuse_address (true));
+			Acceptors_.back ()->bind (endpoint);
+			Acceptors_.back ()->listen ();
+		}
 
 		StartAccept ();
 	}
@@ -79,18 +83,20 @@ namespace HttHare
 	void Server::StartAccept ()
 	{
 		Connection_ptr connection { new Connection { IoService_, StorageMgr_, IconResolver_, TrManager_ } };
-		Acceptor_.async_accept (connection->GetSocket (),
-				[this, connection] (const boost::system::error_code& ec)
-				{
-					if (!ec)
-						connection->Start ();
-					else
-						qWarning () << Q_FUNC_INFO
-								<< "cannot accept:"
-								<< ec.message ().c_str ();
 
-					StartAccept ();
-				});
+		for (auto& acceptor : Acceptors_)
+			acceptor->async_accept (connection->GetSocket (),
+					[this, connection] (const boost::system::error_code& ec)
+					{
+						if (!ec)
+							connection->Start ();
+						else
+							qWarning () << Q_FUNC_INFO
+									<< "cannot accept:"
+									<< ec.message ().c_str ();
+
+						StartAccept ();
+					});
 	}
 }
 }

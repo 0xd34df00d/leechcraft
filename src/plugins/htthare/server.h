@@ -48,7 +48,7 @@ namespace HttHare
 	class Server
 	{
 		boost::asio::io_service IoService_;
-		boost::asio::ip::tcp::acceptor Acceptor_;
+		std::vector<std::unique_ptr<boost::asio::ip::tcp::acceptor>> Acceptors_;
 
 		StorageManager StorageMgr_;
 
@@ -57,7 +57,7 @@ namespace HttHare
 		IconResolver * const IconResolver_;
 		TrManager * const TrManager_;
 	public:
-		Server (const QString& address, const QString& port);
+		Server (const QList<QPair<QString, QString>>& addresses);
 		~Server ();
 
 		Server (const Server&) = delete;
