@@ -42,7 +42,6 @@
 #include "ljaccountconfigurationwidget.h"
 #include "postoptionswidget.h"
 #include "localstorage.h"
-#include "recentcommentssidewidget.h"
 #include "xmlsettingsmanager.h"
 #include "polldialog.h"
 
@@ -196,7 +195,7 @@ namespace Metida
 
 	QList<QWidget*> LJBloggingPlatform::GetBlogiqueSideWidgets () const
 	{
-		return { new PostOptionsWidget, new RecentCommentsSideWidget };
+		return { new PostOptionsWidget };
 	}
 
 	void LJBloggingPlatform::SetPluginProxy (QObject *proxy)
