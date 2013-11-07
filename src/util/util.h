@@ -114,6 +114,11 @@ namespace LeechCraft
 		 */
 		UTIL_API QString MakeTimeFromLong (ulong);
 
+		UTIL_API QTranslator* LoadTranslator (const QString& base,
+				const QString& locale,
+				const QString& prefix = "leechcraft",
+				const QString& appname = "leechcraft");
+
 		/** @brief Loads and installs a translator.
 		 *
 		 * Attempts to load and install a translator for the current
