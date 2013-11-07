@@ -36,11 +36,12 @@ namespace LeechCraft
 namespace HttHare
 {
 	Connection::Connection (boost::asio::io_service& service,
-			const StorageManager& stMgr, IconResolver *resolver)
+			const StorageManager& stMgr, IconResolver *resolver, TrManager *trMgr)
 	: Strand_ { service }
 	, Socket_ { service }
 	, StorageMgr_ (stMgr)
 	, IconResolver_ { resolver }
+	, TrManager_ { trMgr }
 	, Buf_ { 2 * 1024 }
 	{
 	}
@@ -58,6 +59,11 @@ namespace HttHare
 	IconResolver* Connection::GetIconResolver () const
 	{
 		return IconResolver_;
+	}
+
+	TrManager* Connection::GetTrManager () const
+	{
+		return TrManager_;
 	}
 
 	const StorageManager& Connection::GetStorageManager () const

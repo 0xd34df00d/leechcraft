@@ -43,6 +43,7 @@ namespace LeechCraft
 namespace HttHare
 {
 	class IconResolver;
+	class TrManager;
 
 	class Server
 	{
@@ -55,6 +56,7 @@ namespace HttHare
 		std::vector<std::thread> Threads_;
 
 		IconResolver * const IconResolver_;
+		TrManager * const TrManager_;
 	public:
 		Server (const QString& address, const QString& port);
 		~Server ();

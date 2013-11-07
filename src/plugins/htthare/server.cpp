@@ -32,6 +32,7 @@
 #include <QtDebug>
 #include "connection.h"
 #include "iconresolver.h"
+#include "trmanager.h"
 
 namespace LeechCraft
 {
@@ -42,7 +43,8 @@ namespace HttHare
 	Server::Server (const QString& address, const QString& port)
 	: Acceptor_ { IoService_ }
 	, Socket_ { IoService_ }
-	, IconResolver_ { new IconResolver () }
+	, IconResolver_ { new IconResolver  }
+	, TrManager_ { new TrManager }
 	{
 		ip::tcp::resolver resolver { IoService_ };
 		const ip::tcp::endpoint endpoint = *resolver.resolve ({ address.toStdString (), port.toStdString () });
@@ -77,7 +79,7 @@ namespace HttHare
 
 	void Server::StartAccept ()
 	{
-		Connection_ptr connection { new Connection { IoService_, StorageMgr_, IconResolver_ } };
+		Connection_ptr connection { new Connection { IoService_, StorageMgr_, IconResolver_, TrManager_ } };
 		Acceptor_.async_accept (connection->GetSocket (),
 				[this, connection] (const boost::system::error_code& ec)
 				{
