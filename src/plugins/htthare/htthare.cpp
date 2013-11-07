@@ -29,6 +29,8 @@
 
 #include "htthare.h"
 #include <QIcon>
+#include <QEventLoop>
+#include <QTimer>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
 #include "server.h"
@@ -116,6 +118,13 @@ namespace HttHare
 	{
 		if (!S_)
 			return;
+
+		S_->Stop ();
+		S_.reset ();
+
+		QEventLoop loop;
+		QTimer::singleShot (100, &loop, SLOT (quit ()));
+		loop.exec ();
 
 		S_.reset (new Server { AddrMgr_->GetAddresses () });
 		S_->Start ();
