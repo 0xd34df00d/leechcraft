@@ -1928,6 +1928,7 @@ namespace Metida
 				auto comments = Id2CommentEntry_.values ();
 				std::sort (comments.begin (), comments.end (), ComapreCommentEntries);
 				emit gotRecentComments (comments);
+				Id2CommentEntry_.clear ();
 				break;
 			}
 			default:
@@ -2128,26 +2129,24 @@ namespace Metida
 					continue;
 
 				auto res = ParseMember (member);
-				if (res.Name () == "tags")
-					for (const auto& tag : res.Value ())
+				if (res.Name () != "tags")
+					continue;
+				for (const auto& tag : res.Value ())
+				{
+					QString name;
+					int uses = 0;
+					for (const auto& tagStruct : tag.toList ())
 					{
-						QString name;
-						int uses = 0;
-						for (const auto& tagStruct : tag.toList ())
-						{
-							auto fieldEntry = tagStruct.value<LJParserTypes::LJParseProfileEntry> ();
-							if (fieldEntry.Name () == "name")
-								name = fieldEntry.ValueToString ();
-							else if (fieldEntry.Name () == "uses")
-								uses = fieldEntry.ValueToInt ();
-
-						}
-						tags [name] = uses;
+						auto fieldEntry = tagStruct.value<LJParserTypes::LJParseProfileEntry> ();
+						if (fieldEntry.Name () == "name")
+							name = fieldEntry.ValueToString ();
+						else if (fieldEntry.Name () == "uses")
+							uses = fieldEntry.ValueToInt ();
 					}
+					tags [name] = uses;
+				}
 			}
-
 			return tags;
-
 		}
 	}
 
