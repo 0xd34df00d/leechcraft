@@ -80,8 +80,9 @@ namespace Hestia
 		void RequestStatistics ();
 		void RequestTags ();
 		void GetEntriesByDate (const QDate& date);
-		void GetEntriesWithFilter(const Filter& filter);
-
+		void GetEntriesWithFilter (const Filter& filter);
+		void RequestRecentComments ();
+		
 		QHash<QString, int> GetTags () const;
 
 		void FillSettings (AccountConfigurationWidget *widget);

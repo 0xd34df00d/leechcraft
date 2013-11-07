@@ -63,7 +63,6 @@ namespace Metida
 			tr ("Insert LJ cut"), this))
 	, FirstSeparator_ (new QAction (this))
 	, MessageCheckingTimer_ (new QTimer (this))
-	, CommentsCheckingTimer_ (new QTimer (this))
 	{
 		FirstSeparator_->setSeparator (true);
 
@@ -80,17 +79,10 @@ namespace Metida
 				SIGNAL (timeout ()),
 				this,
 				SLOT (checkForMessages ()));
-		connect (CommentsCheckingTimer_,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (checkForComments ()));
 
 		XmlSettingsManager::Instance ().RegisterObject ("CheckingInboxEnabled",
 				this, "handleMessageChecking");
-		XmlSettingsManager::Instance ().RegisterObject ("CheckingCommentsEnabled",
-				this, "handleCommentsChecking");
 		handleMessageChecking ();
-		handleCommentsChecking ();
 	}
 
 	QObject* LJBloggingPlatform::GetQObject ()
@@ -529,13 +521,9 @@ namespace Metida
 		}
 
 		emit accountValidated (acc->GetQObject (), validated);
-		if (validated)
-		{
-			if (XmlSettingsManager::Instance ().Property ("CheckingInboxEnabled", true).toBool ())
-				checkForMessages ();
-			if (XmlSettingsManager::Instance ().Property ("CheckingCommentsEnabled", true).toBool ())
-				checkForComments ();
-		}
+		if (validated &&
+				XmlSettingsManager::Instance ().Property ("CheckingInboxEnabled", true).toBool ())
+			checkForMessages ();;
 	}
 
 	void LJBloggingPlatform::handleMessageChecking ()
@@ -547,27 +535,11 @@ namespace Metida
 			MessageCheckingTimer_->stop ();
 	}
 
-	void LJBloggingPlatform::handleCommentsChecking ()
-	{
-		if (XmlSettingsManager::Instance ().Property ("CheckingCommentsEnabled", true).toBool ())
-			CommentsCheckingTimer_->start (XmlSettingsManager::Instance ()
-					.property ("UpdateCommentsInterval").toInt () * 60 * 1000);
-		else if (CommentsCheckingTimer_->isActive ())
-			CommentsCheckingTimer_->stop ();
-	}
-
 	void LJBloggingPlatform::checkForMessages ()
 	{
 		for (auto account : LJAccounts_)
 			account->RequestInbox ();
 	}
-
-	void LJBloggingPlatform::checkForComments ()
-	{
-		for (auto account : LJAccounts_)
-			account->RequestRecentComments ();
-	}
-
 }
 }
 }

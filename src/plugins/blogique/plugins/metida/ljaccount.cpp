@@ -665,6 +665,7 @@ namespace Metida
 
 	void LJAccount::handleGotRecentComments (const QList<LJCommentEntry>& comments)
 	{
+		qDebug () << "got comments:" << comments.count ();
 	}
 }
 }

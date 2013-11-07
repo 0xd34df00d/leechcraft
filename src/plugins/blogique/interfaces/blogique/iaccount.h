@@ -201,6 +201,11 @@ namespace Blogique
 		 */
 		virtual void RequestLastEntries (int count = 0) = 0;
 
+		/** @brief Requests recent comments.
+		 *
+		 */
+		virtual void RequestRecentComments () = 0;
+
 		/** @brief Submit post to blog.
 		 *
 		 * @param[in] event Posting event.

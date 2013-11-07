@@ -53,6 +53,7 @@ namespace Blogique
 	, PluginProxy_ (std::make_shared<PluginProxy> ())
 	, StorageManager_ (new StorageManager (UniqueID_, this))
 	, AutoSaveTimer_ (new QTimer (this))
+	, CommentsCheckingTimer_ (new QTimer (this))
 	{
 		connect (AutoSaveTimer_,
 				SIGNAL (timeout ()),
@@ -61,6 +62,16 @@ namespace Blogique
 		XmlSettingsManager::Instance ().RegisterObject ("AutoSave",
 				this, "handleAutoSaveIntervalChanged");
 		handleAutoSaveIntervalChanged ();
+	
+		XmlSettingsManager::Instance ().RegisterObject ("CheckingCommentsEnabled",
+				this, "handleCommentsCheckingChanged");
+		XmlSettingsManager::Instance ().RegisterObject ("UpdateCommentsInterval",
+				this, "handleCommentsCheckingTimerChanged");
+		connect (CommentsCheckingTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (checkForComments ()));
+		handleCommentsCheckingTimerChanged ();
 	}
 
 	Core& Core::Instance ()
@@ -406,12 +417,36 @@ namespace Blogique
 				.property ("AutoSave").toInt () * 1000);
 	}
 
+	void Core::handleCommentsCheckingChanged ()
+	{
+		if (!XmlSettingsManager::Instance ().Property ("CheckingCommentsEnabled", true).toBool () && 
+				CommentsCheckingTimer_->isActive ())
+			CommentsCheckingTimer_->stop ();
+	}
+
+	void Core::handleCommentsCheckingTimerChanged ()
+	{
+		if (XmlSettingsManager::Instance ().Property ("CheckingCommentsEnabled", true).toBool ())
+			CommentsCheckingTimer_->start (XmlSettingsManager::Instance ()
+					.property ("UpdateCommentsInterval").toInt () * 60 * 1000);
+		else if (CommentsCheckingTimer_->isActive ())
+			CommentsCheckingTimer_->stop ();
+	}
+
 	void Core::exportBlog ()
 	{
 		ExportWizard *wizard = new ExportWizard (Proxy_->GetRootWindowsManager ()->
 				GetPreferredWindow ());
 		wizard->setWindowTitle (tr ("Export blog"));
 		wizard->show ();
+	}
+
+	void Core::checkForComments ()
+	{
+		for (auto acc : GetAccounts ())
+			if (auto bloggingPlatform = qobject_cast<IBloggingPlatform*> (acc->GetParentBloggingPlatform ()))
+				if (bloggingPlatform->GetFeatures () & IBloggingPlatform::BPFSupportComments)
+					acc->RequestRecentComments ();
 	}
 
 }

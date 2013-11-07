@@ -59,6 +59,7 @@ namespace Blogique
 		StorageManager *StorageManager_;
 
 		QTimer *AutoSaveTimer_;
+		QTimer *CommentsCheckingTimer_;
 
 		Core ();
 		Q_DISABLE_COPY (Core)
@@ -98,8 +99,12 @@ namespace Blogique
 		void handleEntryUpdated (const QList<Entry>& entries);
 
 		void handleAutoSaveIntervalChanged ();
+		void handleCommentsCheckingChanged ();
+		void handleCommentsCheckingTimerChanged ();
 
 		void exportBlog ();
+		
+		void checkForComments ();
 
 	signals:
 		void accountAdded (QObject *account);

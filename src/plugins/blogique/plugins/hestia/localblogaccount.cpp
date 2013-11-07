@@ -207,6 +207,10 @@ namespace Hestia
 		}
 	}
 
+	void LocalBlogAccount::RequestRecentComments ()
+	{
+	}
+
 	QHash<QString, int> LocalBlogAccount::GetTags () const
 	{
 		try
