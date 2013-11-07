@@ -194,7 +194,7 @@
     <urlFormat replace=" _@,;&amp;\/&quot;'" with="-"/>
     <urlFormat replace="." with=""/>
     <extract>
-      <item tag="&lt;div class=&quot;tabCont originalText songTextDisplay&quot; id=&quot;tab-top-25534-1&quot;&gt;" end="&lt;/div&gt;"/>
+      <item tag="&lt;div class=&quot;tabCont originalText songTextDisplay&quot; id=&quot;tab-top-25534-1&quot;&gt;"/>
     </extract>
     <invalidIndicator value="Nie znaleziono strony o podanym adresie"/>
     <invalidIndicator value="poprzednia"/>
