@@ -63,6 +63,8 @@ namespace HttHare
 			catch (const std::exception& e)
 			{
 				qWarning () << Q_FUNC_INFO
+						<< "error binding"
+						<< pair
 						<< e.what ();
 			}
 		}
