@@ -132,8 +132,8 @@ namespace HttHare
 		if (port < 1024 || port > 65535)
 			return;
 
-		SaveSettings ();
 		AppendRow ({ data.value (0).toString (), QString::number (port) });
+		SaveSettings ();
 	}
 
 	void AddressesModelManager::removeRequested (const QString&, const QModelIndexList& list)
