@@ -125,7 +125,7 @@ namespace Metida
 		connect (LJXmlRpc_,
 				SIGNAL (gotRecentComments (QList<LJCommentEntry>)),
 				this,
-				SIGNAL (gotRecentComments (QList<LJCommentEntry>)));
+				SLOT (handleGotRecentComments (QList<LJCommentEntry>)));
 
 		connect (LoadLastEvents_,
 				SIGNAL (triggered ()),
@@ -663,6 +663,9 @@ namespace Metida
 		}
 	}
 
+	void LJAccount::handleGotRecentComments (const QList<LJCommentEntry>& comments)
+	{
+	}
 }
 }
 }

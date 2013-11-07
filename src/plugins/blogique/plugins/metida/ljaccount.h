@@ -203,6 +203,8 @@ namespace Metida
 
 		void handleUnreadMessagesExist (bool exists);
 
+		void handleGotRecentComments (const QList<LJCommentEntry>& comments);
+		
 	signals:
 		void accountRenamed (const QString& newName);
 		void accountSettingsChanged ();
@@ -221,11 +223,11 @@ namespace Metida
 		void gettingFilteredEntriesFinished ();
 
 		void gotEntries (const QList<Entry>& entries);
-		void gotRecentComments (const QList<LJCommentEntry>& comments);
-
+		
 		void gotBlogStatistics (const QMap<QDate, int>& statistics);
 		void tagsUpdated (const QHash<QString, int>& tags);
-
+			
+		void gotRecentComments (const QList<RecentComment>& comments);
 	};
 }
 }

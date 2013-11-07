@@ -83,6 +83,7 @@ namespace Blogique
 	, ProgressBarAction_ (0)
 	, DraftEntriesWidget_ (new DraftEntriesWidget (this))
 	, BlogEntriesWidget_ (new BlogEntriesWidget (this))
+	, CommentsWidget_ (new CommentsWidget (this))
 	, PrevAccountId_ (-1)
 	, EntryType_ (EntryType::None)
 	, EntryId_ (-1)
@@ -431,6 +432,7 @@ namespace Blogique
 			w->deleteLater ();
 		}
 		Ui_.Tools_->addItem (DraftEntriesWidget_, DraftEntriesWidget_->GetName ());
+		Ui_.Tools_->addItem (CommentsWidget_, CommentsWidget_->GetName ());
 	}
 
 	void BlogiqueWidget::PrepareQmlWidgets ()
@@ -864,6 +866,11 @@ namespace Blogique
 			return;
 
 		iahe->InsertHTML (tag);
+	}
+
+	void BlogiqueWidget::handleGotRecentComments (const QList<RecentComment>& comments)
+	{
+
 	}
 
 	void BlogiqueWidget::handleGotError (int errorCode,

@@ -51,6 +51,7 @@ namespace Blogique
 	class DraftEntriesWidget;
 	class BlogEntriesWidget;
 	class TagsProxyModel;
+	class CommentsWidget;
 
 	class BlogiqueWidget : public QWidget
 						, public ITabWidget
@@ -83,6 +84,7 @@ namespace Blogique
 
 		DraftEntriesWidget *DraftEntriesWidget_;
 		BlogEntriesWidget *BlogEntriesWidget_;
+		CommentsWidget *CommentsWidget_;
 		QHash<int, IAccount*> Id2Account_;
 		int PrevAccountId_;
 		QList<QWidget*> SidePluginsWidgets_;
@@ -142,6 +144,7 @@ namespace Blogique
 		void handleRequestEntriesEnd ();
 		void handleTagsUpdated (const QHash<QString, int>& tags);
 		void handleInsertTag (const QString& tag);
+		void handleGotRecentComments (const QList<RecentComment>& comments);
 		void handleGotError (int errorCode, const QString& errorString,
 				const QString& localizedErrorString);
 		void handleAccountAdded (QObject *acc);

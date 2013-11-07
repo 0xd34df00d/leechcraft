@@ -23,6 +23,7 @@ set (SRCS
 	blogentrieswidget.cpp
 	blogiquewidget.cpp
 	calendarwidget.cpp
+	commentswidget.cpp
 	core.cpp
 	draftentrieswidget.cpp
 	dummytexteditor.cpp
@@ -45,6 +46,7 @@ set (FORMS
 	addaccountwizardfirstpage.ui
 	blogentrieswidget.ui
 	blogiquewidget.ui
+	commentswidget.ui
 	draftentrieswidget.ui
 	exportwizard.ui
 	profiledialog.ui

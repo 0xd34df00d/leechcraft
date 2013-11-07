@@ -33,6 +33,7 @@
 #include <QSet>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/structures.h>
+#include "interfaces/blogique/iaccount.h"
 
 class QTimer;
 
@@ -122,6 +123,8 @@ namespace Blogique
 		void tagsUpdated (const QHash<QString, int>& tags);
 
 		void insertTag (const QString& tag);
+		
+		void gotRecentComments (const QList<RecentComment>& comments);
 
 		void gotError (int errorCode, const QString& errorString,
 				const QString& localizedErrorString);

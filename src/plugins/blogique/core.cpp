@@ -36,7 +36,6 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/util.h>
 #include <util/notificationactionhandler.h>
-#include "interfaces/blogique/iaccount.h"
 #include "interfaces/blogique/ibloggingplatformplugin.h"
 #include "interfaces/blogique/ibloggingplatform.h"
 #include "exportwizard.h"
@@ -202,6 +201,10 @@ namespace Blogique
 				newTab,
 				SLOT (handleGotError (int, QString, QString)));
 		connect (&Core::Instance (),
+				SIGNAL (gotRecentComments (QList<RecentComment>)),
+				newTab,
+				SLOT (handleGotRecentComments (QList<RecentComment>)));
+		connect (&Core::Instance (),
 				SIGNAL (gotError (int, QString, QString)),
 				newTab,
 				SLOT (handleGotError (int, QString, QString)));
@@ -293,6 +296,10 @@ namespace Blogique
 				SIGNAL (tagsUpdated (QHash<QString, int>)),
 				this,
 				SIGNAL (tagsUpdated (QHash<QString, int>)));
+		connect (accObj,
+				SIGNAL (gotRecentComments (QList<RecentComment>)),
+				this,
+				SIGNAL (gotRecentComments (QList<RecentComment>)));
 		connect (accObj,
 				SIGNAL (gotError (int, QString, QString)),
 				this,

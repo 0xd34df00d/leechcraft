@@ -75,6 +75,10 @@ namespace Blogique
 		};
 	};
 
+	struct RecentComment
+	{
+		
+	};
 
 	struct Filter
 	{
@@ -263,6 +267,12 @@ namespace Blogique
 		 * @note This function is expected to be a signal.
 		 */
 		virtual void gettingFilteredEntriesFinished () = 0;
+
+		/** @brief This signal should be emitted when recent comments are got.
+		 *
+		 * @note This function is expected to be a signal.
+		 */
+		virtual void gotRecentComments (const QList<RecentComment>& comments) = 0;
 
 		virtual void gotError (int errorCode, const QString& errorString,
 				const QString& localizedErrorString = QString ()) = 0;
