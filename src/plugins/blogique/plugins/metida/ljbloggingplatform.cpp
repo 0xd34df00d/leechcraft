@@ -88,9 +88,11 @@ namespace Metida
 
 		XmlSettingsManager::Instance ().RegisterObject ("CheckingInboxEnabled",
 				this, "handleMessageChecking");
+		XmlSettingsManager::Instance ().RegisterObject ("UpdateCommentsInterval",
+				this, "handleMessageUpdateIntervalChanged");
 		XmlSettingsManager::Instance ().RegisterObject ("CheckingCommentsEnabled",
 				this, "handleCommentsChecking");
-		handleMessageChecking ();
+		handleMessageUpdateIntervalChanged ();
 		handleCommentsChecking ();
 	}
 
@@ -540,6 +542,13 @@ namespace Metida
 	}
 
 	void LJBloggingPlatform::handleMessageChecking ()
+	{
+		if (!XmlSettingsManager::Instance ().Property ("CheckingInboxEnabled", true).toBool () &&
+				MessageCheckingTimer_->isActive ())
+			MessageCheckingTimer_->stop ();
+	}
+
+	void LJBloggingPlatform::handleMessageUpdateIntervalChanged ()
 	{
 		if (XmlSettingsManager::Instance ().Property ("CheckingInboxEnabled", true).toBool ())
 			MessageCheckingTimer_->start (XmlSettingsManager::Instance ()
