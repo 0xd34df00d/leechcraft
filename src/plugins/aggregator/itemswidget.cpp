@@ -274,11 +274,13 @@ namespace Aggregator
 
 	Item_ptr ItemsWidget::GetItem (const QModelIndex& index) const
 	{
-		QModelIndex mapped = Impl_->ItemLists_->mapToSource (index);
-		const ItemsListModel *model = static_cast<const ItemsListModel*> (mapped.model ());
+		auto mapped = Impl_->ItemLists_->mapToSource (index);
+		if (!mapped.isValid ())
+			return {};
+
+		auto model = static_cast<const ItemsListModel*> (mapped.model ());
 		ItemShort item = model->GetItem (mapped);
-		return Core::Instance ().GetStorageBackend ()->
-			GetItem (item.ItemID_);
+		return Core::Instance ().GetStorageBackend ()->GetItem (item.ItemID_);
 	}
 
 	QToolBar* ItemsWidget::GetToolBar () const

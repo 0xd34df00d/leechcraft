@@ -42,8 +42,9 @@ namespace HttHare
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "httharesettings.xml");
 
-		S_ = new Server ("localhost", "14801");
-		S_->Start ();
+		XmlSettingsManager::Instance ().RegisterObject ("EnableServer",
+				this, "handleEnableServerChanged");
+		handleEnableServerChanged ();
 	}
 
 	void Plugin::SecondInit ()
@@ -57,7 +58,7 @@ namespace HttHare
 
 	void Plugin::Release ()
 	{
-		S_->Stop ();
+		S_.reset ();
 	}
 
 	QString Plugin::GetName () const
@@ -78,6 +79,22 @@ namespace HttHare
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return XSD_;
+	}
+
+	void Plugin::handleEnableServerChanged ()
+	{
+		const bool enable = XmlSettingsManager::Instance ().property ("EnableServer").toBool ();
+
+		if (enable == static_cast<bool> (S_))
+			return;
+
+		if (S_)
+			S_.reset ();
+		else
+		{
+			S_.reset (new Server ("localhost", "14801"));
+			S_->Start ();
+		}
 	}
 }
 }

@@ -76,7 +76,7 @@ namespace LastSeen
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Azoth LastSeen displays when a contact has been online and available for the list time.");
+		return tr ("Azoth LastSeen displays when a contact has been online and available for the last time.");
 	}
 
 	QIcon Plugin::GetIcon () const
@@ -129,6 +129,7 @@ namespace LastSeen
 				QCoreApplication::applicationName () + "_Azoth_LastSeen");
 		LastAvailable_ = settings.value ("LastAvailable").value<LastHash_t> ();
 		LastOnline_ = settings.value ("LastOnline").value<LastHash_t> ();
+		LastStatusChange_ = settings.value ("LastStatusChange").value<LastHash_t> ();
 	}
 
 	void Plugin::save ()
@@ -137,10 +138,9 @@ namespace LastSeen
 
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_LastSeen");
-		settings.setValue ("LastAvailable",
-				QVariant::fromValue<LastHash_t> (LastAvailable_));
-		settings.setValue ("LastOnline",
-				QVariant::fromValue<LastHash_t> (LastOnline_));
+		settings.setValue ("LastAvailable", QVariant::fromValue (LastAvailable_));
+		settings.setValue ("LastOnline", QVariant::fromValue (LastOnline_));
+		settings.setValue ("LastStatusChange", QVariant::fromValue (LastStatusChange_));
 	}
 
 	void Plugin::hookEntryStatusChanged (IHookProxy_ptr, QObject *entryObj, QString)
@@ -151,6 +151,11 @@ namespace LastSeen
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 		const QString& id = entry->GetEntryID ();
 		const EntryStatus& status = entry->GetStatus ();
+
+		const auto& now = QDateTime::currentDateTime ();
+		LastStatusChange_ [id] = now;
+
+		ScheduleSave ();
 
 		if (!LastState_.contains (id))
 		{
@@ -170,10 +175,10 @@ namespace LastSeen
 		case SConnecting:
 			return;
 		case SOnline:
-			LastAvailable_ [id] = QDateTime::currentDateTime ();
+			LastAvailable_ [id] = now;
 		default:
-			LastOnline_ [id] = QDateTime::currentDateTime ();
-			ScheduleSave ();
+			LastOnline_ [id] = now;
+			break;
 		}
 	}
 
@@ -209,6 +214,15 @@ namespace LastSeen
 				addition += tr ("Was online: %1")
 					.arg (online.toString ());
 			}
+		}
+
+		const auto& lastChange = LastStatusChange_.value (id);
+		if (lastChange.isValid ())
+		{
+			if (!addition.isEmpty ())
+				addition += "<br/>";
+			addition += tr ("Last status change: %1")
+					.arg (lastChange.toString ());
 		}
 
 		if (addition.isEmpty ())

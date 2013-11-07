@@ -31,6 +31,7 @@
 #include <QString>
 #include <QtDebug>
 #include "connection.h"
+#include "iconresolver.h"
 
 namespace LeechCraft
 {
@@ -41,6 +42,7 @@ namespace HttHare
 	Server::Server (const QString& address, const QString& port)
 	: Acceptor_ { IoService_ }
 	, Socket_ { IoService_ }
+	, IconResolver_ { new IconResolver () }
 	{
 		ip::tcp::resolver resolver { IoService_ };
 		const ip::tcp::endpoint endpoint = *resolver.resolve ({ address.toStdString (), port.toStdString () });
@@ -51,6 +53,12 @@ namespace HttHare
 		Acceptor_.listen ();
 
 		StartAccept ();
+	}
+
+	Server::~Server ()
+	{
+		if (!IoService_.stopped ())
+			Stop ();
 	}
 
 	void Server::Start ()
@@ -69,7 +77,7 @@ namespace HttHare
 
 	void Server::StartAccept ()
 	{
-		Connection_ptr connection { new Connection { IoService_, StorageMgr_ } };
+		Connection_ptr connection { new Connection { IoService_, StorageMgr_, IconResolver_ } };
 		Acceptor_.async_accept (connection->GetSocket (),
 				[this, connection] (const boost::system::error_code& ec)
 				{

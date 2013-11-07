@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,33 +29,21 @@
 
 #pragma once
 
-#include <QStandardItemModel>
+#include <QObject>
+
+class QImage;
 
 namespace LeechCraft
 {
-namespace Blogique
+namespace HttHare
 {
-namespace Metida
-{
-	class FriendsModel : public QStandardItemModel
+	class IconResolver : public QObject
 	{
 		Q_OBJECT
 	public:
-		FriendsModel (QObject *parent = 0);
-
-		Qt::ItemFlags flags (const QModelIndex& index) const;
-
-		Qt::DropActions supportedDropActions () const;
-
-		QStringList mimeTypes () const;
-		QMimeData* mimeData (const QModelIndexList& indexes) const;
-		bool dropMimeData (const QMimeData *data, Qt::DropAction action,
-				int row, int column, const QModelIndex& parent);
-
-	signals:
-		void userGroupChanged (const QString& name,
-				const QString& bgColor, const QString& fgColor, int realGroupId);
+		IconResolver (QObject* = 0);
+	public slots:
+		void resolveMime (QString, QByteArray&, int);
 	};
-}
 }
 }

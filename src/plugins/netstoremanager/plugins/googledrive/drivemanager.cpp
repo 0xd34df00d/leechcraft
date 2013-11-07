@@ -552,44 +552,44 @@ namespace GoogleDrive
 	{
 		QString GetLocalMimeTypeFromGoogleMimeType (const QString& mime, const QString& fileExt)
 		{
-			static QMap<QPair<QString, QString>, QString> mimeMap;
-			mimeMap.insert ({ "application/vnd.google-apps.audio", "" }, "audio-x-generic");
-			mimeMap.insert ({ "application/vnd.google-apps.document", "" }, "application-vnd.oasis.opendocument.spreadsheet");
-			mimeMap.insert ({ "application/vnd.google-apps.document", "doc" }, "application-msword");
-			mimeMap.insert ({ "application/vnd.google-apps.document", "docx" }, "application-msword");
-			mimeMap.insert ({ "application/vnd.google-apps.document", "odt" }, "application-vnd.oasis.opendocument.text");
-			mimeMap.insert ({ "application/vnd.google-apps.drawing", "" }, "application-vnd.oasis.opendocument.image");
-			mimeMap.insert ({ "application/vnd.google-apps.file", "" }, "unknown");
-			mimeMap.insert ({ "application/vnd.google-apps.form", "" }, "unknown");
-			mimeMap.insert ({ "application/vnd.google-apps.fusiontable", "" }, "unknown");
-			mimeMap.insert ({ "application/vnd.google-apps.photo", "" }, "image-x-generic");
-			mimeMap.insert ({ "application/vnd.google-apps.presentation", "" }, "application-vnd.oasis.opendocument.presentation");
-			mimeMap.insert ({ "application/vnd.google-apps.presentation", "ppt" }, "application-vnd.ms-powerpoint");
-			mimeMap.insert ({ "application/vnd.google-apps.presentation", "pptx" }, "application-vnd.ms-powerpoint");
-			mimeMap.insert ({ "application/vnd.openxmlformats-officedocument.presentationml.presentation", "pptx" }, "application-vnd.ms-powerpoint");
-			mimeMap.insert ({ "application/vnd.google-apps.presentation", "odp" }, "application-vnd.oasis.opendocument.presentation");
-			mimeMap.insert ({ "application/vnd.google-apps.script", "" }, "text-x-script");
-			mimeMap.insert ({ "application/vnd.google-apps.sites", "" }, "text-html");
-			mimeMap.insert ({ "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "" }, "application-vnd.oasis.opendocument.spreadsheet");
-			mimeMap.insert ({ "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "xlsx" }, "application-vnd.oasis.opendocument.spreadsheet");
-			mimeMap.insert ({ "application/vnd.google-apps.spreadsheet", "" }, "application-vnd.oasis.opendocument.spreadsheet");
-			mimeMap.insert ({ "application/vnd.google-apps.spreadsheet", "xls" }, "x-office-spreadsheet.png");
-			mimeMap.insert ({ "application/vnd.google-apps.spreadsheet", "xlsx" }, "x-office-spreadsheet.png");
-			mimeMap.insert ({ "application/vnd.google-apps.spreadsheet", "ods" }, "application-vnd.oasis.opendocument.spreadsheet");
-			mimeMap.insert ({ "application/x-vnd.oasis.opendocument.spreadsheet", "ods" }, "application-vnd.oasis.opendocument.spreadsheet");
-			mimeMap.insert ({ "application/vnd.google-apps.unknown", "" }, "unknown");
-			mimeMap.insert ({ "application/vnd.google-apps.video", "" }, "video-x-generic");
-			mimeMap.insert ({ "application/x-msdos-program", "" }, "application-x-ms-dos-executable");
-			mimeMap.insert ({ "application/x-msdos-program", "exe" }, "application-x-ms-dos-executable");
-			mimeMap.insert ({ "application/x-dosexec", "" }, "application-x-desktop");
-			mimeMap.insert ({ "application/x-dosexec", "desktop" }, "application-x-desktop");
-			mimeMap.insert ({ "application/x-cab", "" }, "application-x-archive");
-			mimeMap.insert ({ "application/x-cab", "cab" }, "application-x-archive");
-			mimeMap.insert ({ "application/rar", "" }, "application-x-archive");
-			mimeMap.insert ({ "application/rar", "rar" }, "application-x-archive");
-			mimeMap.insert ({ "image/png", "png" }, "image-x-generic");
-			mimeMap.insert ({ "image/jpeg", "jpeg" }, "image-x-generic");
-			mimeMap.insert ({ "application/x-iso9660-image", "iso" }, "application-x-cd-image");
+			static const auto mimeMap = Util::MakeMap<QPair<QString, QString>, QString> ({
+				{ { "application/vnd.google-apps.audio", "" }, "audio-x-generic" },
+				{ { "application/vnd.google-apps.document", "" }, "application-vnd.oasis.opendocument.spreadsheet" },
+				{ { "application/vnd.google-apps.document", "doc" }, "application-msword" },
+				{ { "application/vnd.google-apps.document", "docx" }, "application-msword" },
+				{ { "application/vnd.google-apps.document", "odt" }, "application-vnd.oasis.opendocument.text" },
+				{ { "application/vnd.google-apps.drawing", "" }, "application-vnd.oasis.opendocument.image" },
+				{ { "application/vnd.google-apps.file", "" }, "unknown" },
+				{ { "application/vnd.google-apps.form", "" }, "unknown" },
+				{ { "application/vnd.google-apps.fusiontable", "" }, "unknown" },
+				{ { "application/vnd.google-apps.photo", "" }, "image-x-generic" },
+				{ { "application/vnd.google-apps.presentation", "" }, "application-vnd.oasis.opendocument.presentation" },
+				{ { "application/vnd.google-apps.presentation", "ppt" }, "application-vnd.ms-powerpoint" },
+				{ { "application/vnd.google-apps.presentation", "pptx" }, "application-vnd.ms-powerpoint" },
+				{ { "application/vnd.openxmlformats-officedocument.presentationml.presentation", "pptx" }, "application-vnd.ms-powerpoint" },
+				{ { "application/vnd.google-apps.presentation", "odp" }, "application-vnd.oasis.opendocument.presentation" },
+				{ { "application/vnd.google-apps.script", "" }, "text-x-script" },
+				{ { "application/vnd.google-apps.sites", "" }, "text-html" },
+				{ { "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "" }, "application-vnd.oasis.opendocument.spreadsheet" },
+				{ { "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "xlsx" }, "application-vnd.oasis.opendocument.spreadsheet" },
+				{ { "application/vnd.google-apps.spreadsheet", "" }, "application-vnd.oasis.opendocument.spreadsheet" },
+				{ { "application/vnd.google-apps.spreadsheet", "xls" }, "x-office-spreadsheet.png" },
+				{ { "application/vnd.google-apps.spreadsheet", "xlsx" }, "x-office-spreadsheet.png" },
+				{ { "application/vnd.google-apps.spreadsheet", "ods" }, "application-vnd.oasis.opendocument.spreadsheet" },
+				{ { "application/x-vnd.oasis.opendocument.spreadsheet", "ods" }, "application-vnd.oasis.opendocument.spreadsheet" },
+				{ { "application/vnd.google-apps.unknown", "" }, "unknown" },
+				{ { "application/vnd.google-apps.video", "" }, "video-x-generic" },
+				{ { "application/x-msdos-program", "" }, "application-x-ms-dos-executable" },
+				{ { "application/x-msdos-program", "exe" }, "application-x-ms-dos-executable" },
+				{ { "application/x-dosexec", "" }, "application-x-desktop" },
+				{ { "application/x-dosexec", "desktop" }, "application-x-desktop" },
+				{ { "application/x-cab", "" }, "application-x-archive" },
+				{ { "application/x-cab", "cab" }, "application-x-archive" },
+				{ { "application/rar", "" }, "application-x-archive" },
+				{ { "application/rar", "rar" }, "application-x-archive" },
+				{ { "image/png", "png" }, "image-x-generic" },
+				{ { "image/jpeg", "jpeg" }, "image-x-generic" },
+				{ { "application/x-iso9660-image", "iso" }, "application-x-cd-image" } });
 
 			QString res;
 			if (mimeMap.contains ({ mime, fileExt }))

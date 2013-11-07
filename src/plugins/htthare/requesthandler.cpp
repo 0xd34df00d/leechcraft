@@ -37,8 +37,10 @@
 #include <QDir>
 #include <QDateTime>
 #include <util/util.h>
+#include <util/sys/mimedetector.h>
 #include "connection.h"
 #include "storagemanager.h"
+#include "iconresolver.h"
 
 namespace LeechCraft
 {
@@ -47,6 +49,7 @@ namespace HttHare
 	RequestHandler::RequestHandler (const Connection_ptr& conn)
 	: Conn_ (conn)
 	{
+		ResponseHeaders_.append ({ "Accept-Ranges", "bytes" });
 	}
 
 	void RequestHandler::operator() (QByteArray data)
@@ -66,7 +69,7 @@ namespace HttHare
 			return ErrorResponse (400, "Bad Request");
 
 		const auto& verb = req.at (0).toLower ();
-		Url_ = QUrl::fromEncoded (req.at (1).mid (1));
+		Url_ = QUrl::fromEncoded (req.at (1));
 
 		for (const auto& line : lines)
 		{
@@ -77,9 +80,9 @@ namespace HttHare
 		}
 
 		if (verb == "head")
-			HandleHead ();
+			HandleRequest (Verb::Head);
 		else if (verb == "get")
-			HandleGet ();
+			HandleRequest (Verb::Get);
 		else
 			return ErrorResponse (405, "Method Not Allowed",
 					"Method " + verb + " not supported by this server.");
@@ -102,50 +105,229 @@ namespace HttHare
 				.arg (reason.data ())
 				.arg (full.data ()).toUtf8 ();
 
-		auto c = Conn_;
-		boost::asio::async_write (c->GetSocket (),
-				ToBuffers (),
-				c->GetStrand ().wrap ([c] (const boost::system::error_code& ec, ulong)
-					{
-						if (ec)
-							qWarning () << Q_FUNC_INFO
-									<< ec.message ().c_str ();
-
-						boost::system::error_code iec;
-						c->GetSocket ().shutdown (boost::asio::socket_base::shutdown_both, iec);
-					}));
+		DefaultWrite (Verb::Get);
 	}
 
 	namespace
 	{
-		QByteArray MakeDirResponse (const QFileInfo& fi, const QString& path)
+		QString NormalizeClass (QString mime)
 		{
-			QStringList rows;
-			for (const auto& item : QDir { path }
-					.entryInfoList (QDir::AllEntries | QDir::NoDotAndDotDot, QDir::Name))
-				rows << QString { "<tr><td>%1</td><td>%2</td><td>%3</td></tr>" }
-						.arg (item.fileName ())
-						.arg (Util::MakePrettySize (item.size ()))
-						.arg (item.created ().toString ());
+			return mime.replace ('/', '_')
+					.replace ('-', '_')
+					.replace ('.', '_')
+					.replace ('+', '_');
+		}
 
-			return QString (R"delim(<html>
-					<head><title>%1</title></head>
-					<body>
-						<table>
-						%2
-						</table>
-					</body>
-				</html>
-				)delim")
-					.arg (fi.fileName ())
-					.arg (rows.join (""))
-					.toUtf8 ();
+		const auto IconSize = 16;
+	}
+
+	QByteArray RequestHandler::MakeDirResponse (const QFileInfo& fi, const QString& path, const QUrl& url)
+	{
+		const auto& entries = QDir { path }
+				.entryInfoList (QDir::AllEntries | QDir::NoDotAndDotDot,
+						QDir::Name | QDir::DirsFirst);
+
+		struct MimeInfo
+		{
+			QString MimeType_;
+		};
+		QHash<QString, QByteArray> mimeCache;
+		QList<MimeInfo> mimes;
+		Util::MimeDetector detector;
+		for (const auto& entry : entries)
+		{
+			const auto& type = detector (entry.filePath ());
+
+			if (!mimeCache.contains (type))
+			{
+				QByteArray image;
+				QMetaObject::invokeMethod (Conn_->GetIconResolver (),
+						"resolveMime",
+						Qt::BlockingQueuedConnection,
+						Q_ARG (QString, type),
+						Q_ARG (QByteArray&, image),
+						Q_ARG (int, IconSize));
+				mimeCache [type] = image;
+			}
+
+			mimes.append ({ type });
+		}
+
+		QString result;
+		result += "<html><head><title>" + fi.fileName () + "</title><style>";
+		for (auto pos = mimeCache.begin (); pos != mimeCache.end (); ++pos)
+		{
+			result += "." + NormalizeClass (pos.key ()) + " {";
+			result += "background-image: url('" + pos.value () + "');";
+			result += "background-repeat: no-repeat;";
+			result += "padding-left: " + QString::number (IconSize + 4) + ";";
+			result += "}";
+		}
+		result += "</style></head><body><h1>" + tr ("Listing of %1").arg (url.toString ()) + "</h1>";
+		result += "<table style='width: 100%'><tr>";
+		result += QString ("<th style='width: 60%'>%1</th><th style='width: 20%'>%2</th><th style='width: 20%'>%3</th>")
+					.arg (tr ("Name"))
+					.arg (tr ("Size"))
+					.arg (tr ("Created"));
+
+		for (int i = 0; i < entries.size (); ++i)
+		{
+			const auto& item = entries.at (i);
+
+			result += "<tr><td class=" + NormalizeClass (mimes.at (i).MimeType_) + "><a href='";
+			result += item.fileName () + "'>" + item.fileName () + "</a></td>";
+			result += "<td>" + Util::MakePrettySize (item.size ()) + "</td>";
+			result += "<td>" + item.created ().toString () + "</td></tr>";
+		}
+
+		result += "</table></body></html>";
+
+		return result.toUtf8 ();
+	}
+
+	namespace
+	{
+		QList<QPair<qint64, qint64>> ParseRanges (QString str, qint64 fullSize)
+		{
+			QList<QPair<qint64, qint64>> result;
+
+			const auto eqPos = str.indexOf ('=');
+			if (eqPos >= 0)
+				str = str.mid (eqPos + 1);
+
+			const auto pcPos = str.indexOf (';');
+			if (pcPos >= 0)
+				str = str.left (pcPos);
+
+			for (const auto& elem : str.split (',', QString::SkipEmptyParts))
+			{
+				const auto dashPos = elem.indexOf ('-');
+
+				if (dashPos < 0)
+					continue;
+
+				const auto& startStr = elem.left (dashPos);
+				const auto& endStr = elem.mid (dashPos + 1);
+				if (startStr.isEmpty ())
+				{
+					bool ok = false;
+					const auto last = endStr.toULongLong (&ok);
+					if (!ok)
+						continue;
+
+					if (last)
+						result.append ({ fullSize - last - 1, fullSize - 1 });
+				}
+				else
+				{
+					bool ok = false;
+					const auto last = endStr.isEmpty () ?
+							(ok = true, fullSize - 1) :
+							endStr.toULongLong (&ok);
+					if (!ok)
+						continue;
+
+					ok = false;
+					const auto first = startStr.toULongLong (&ok);
+					if (!ok)
+						continue;
+
+					if (first <= last)
+						result.append ({ first, last });
+				}
+			}
+
+			for (const auto& range : result)
+				if (!range.first && range.second == fullSize - 1)
+					return {};
+
+			return result;
 		}
 	}
 
-	void RequestHandler::HandleGet ()
+	namespace
 	{
-		const auto& path = Conn_->GetStorageManager ().ResolvePath (Url_);
+		struct Sendfiler
+		{
+			boost::asio::ip::tcp::socket& Sock_;
+			std::shared_ptr<QFile> File_;
+			off_t Offset_;
+
+			QPair<qint64, qint64> CurrentRange_;
+			QList<QPair<qint64, qint64>> TailRanges_;
+
+			std::function<void (boost::system::error_code, ulong)> Handler_;
+
+			void operator() (boost::system::error_code ec, ulong)
+			{
+				for (qint64 toTransfer = CurrentRange_.second - CurrentRange_.first + 1; toTransfer > 0; )
+				{
+					off_t offset = CurrentRange_.first;
+					const auto rc = sendfile (Sock_.native_handle (),
+							File_->handle (), &offset, toTransfer);
+					ec = boost::system::error_code (rc < 0 ? errno : 0,
+							boost::asio::error::get_system_category ());
+
+					if (rc > 0)
+					{
+						CurrentRange_.first = offset;
+						toTransfer -= rc;
+					}
+
+					if (ec == boost::asio::error::interrupted)
+						continue;
+
+					if (ec == boost::asio::error::would_block ||
+							ec == boost::asio::error::try_again)
+					{
+						Sock_.async_write_some (boost::asio::null_buffers {}, *this);
+						return;
+					}
+
+					if (ec)
+						break;
+
+					if (!toTransfer && !TailRanges_.isEmpty ())
+					{
+						CurrentRange_ = TailRanges_.takeFirst ();
+						Sock_.async_write_some (boost::asio::null_buffers {}, *this);
+						return;
+					}
+				}
+
+				Handler_ (ec, 0);
+			}
+		};
+	}
+
+	void RequestHandler::HandleRequest (Verb verb)
+	{
+		QString path;
+		try
+		{
+			path = Conn_->GetStorageManager ().ResolvePath (Url_);
+		}
+		catch (const AccessDeniedException&)
+		{
+			ResponseLine_ = "HTTP/1.1 403 Forbidden\r\n";
+
+			ResponseHeaders_.append ({ "Content-Type", "text/html; charset=utf-8" });
+			ResponseBody_ = QString (R"delim(<html>
+					<head><title>%2</title></head>
+					<body>
+						%1
+					</body>
+				</html>
+				)delim")
+					.arg (QObject::tr ("Access forbidden. You could return to the <a href='/'>root</a> of this server.").arg (path))
+					.arg (QFileInfo { Url_.path () }.fileName ())
+					.toUtf8 ();
+
+			DefaultWrite (verb);
+
+			return;
+		}
+
 		const QFileInfo fi { path };
 		if (!fi.exists ())
 		{
@@ -163,28 +345,57 @@ namespace HttHare
 					.arg (QObject::tr ("%1 is not found on this server").arg (path))
 					.toUtf8 ();
 
-			DefaultWrite ();
+			DefaultWrite (verb);
 		}
 		else if (fi.isDir ())
 		{
-			ResponseLine_ = "HTTP/1.1 200 OK\r\n";
+			if (Url_.path ().endsWith ('/'))
+			{
+				ResponseLine_ = "HTTP/1.1 200 OK\r\n";
 
-			ResponseHeaders_.append ({ "Content-Type", "text/html; charset=utf-8" });
-			ResponseBody_ = MakeDirResponse (fi, path);
+				ResponseHeaders_.append ({ "Content-Type", "text/html; charset=utf-8" });
+				ResponseBody_ = MakeDirResponse (fi, path, Url_);
 
-			DefaultWrite ();
+				DefaultWrite (verb);
+			}
+			else
+			{
+				ResponseLine_ = "HTTP/1.1 301 Moved Permanently\r\n";
+
+				auto url = Url_;
+				url.setPath (url.path () + '/');
+				ResponseHeaders_.append ({ "Location", url.toString ().toUtf8 () });
+				ResponseBody_ = MakeDirResponse (fi, path, url);
+
+				DefaultWrite (verb);
+			}
 		}
 		else
 		{
-			ResponseLine_ = "HTTP/1.1 200 OK\r\n";
+			auto ranges = ParseRanges (Headers_.value ("Range"), fi.size ());
 
 			ResponseHeaders_.append ({ "Content-Type", "application/octet-stream" });
-			ResponseHeaders_.append ({ "Content-Length", QByteArray::number (fi.size ()) });
+
+			if (ranges.isEmpty ())
+			{
+				ResponseLine_ = "HTTP/1.1 200 OK\r\n";
+				ResponseHeaders_.append ({ "Content-Length", QByteArray::number (fi.size ()) });
+			}
+			else
+			{
+				ResponseLine_ = "HTTP/1.1 206 Partial content\r\n";
+
+				qint64 totalSize = 0;
+				for (const auto& range : ranges)
+					totalSize += range.second - range.first + 1;
+
+				ResponseHeaders_.append ({ "Content-Length", QByteArray::number (totalSize) });
+			}
 
 			auto c = Conn_;
 			boost::asio::async_write (c->GetSocket (),
-					ToBuffers (),
-					c->GetStrand ().wrap ([c, path] (const boost::system::error_code& ec, ulong)
+					ToBuffers (verb),
+					c->GetStrand ().wrap ([c, path, verb, ranges] (boost::system::error_code ec, ulong) mutable -> void
 						{
 							if (ec)
 								qWarning () << Q_FUNC_INFO
@@ -192,29 +403,43 @@ namespace HttHare
 
 							auto& s = c->GetSocket ();
 
-							QFile file (path);
-							file.open (QIODevice::ReadOnly);
-							qDebug () << "sendfile()" << s.native_handle () << file.handle ();
-							const auto rc = sendfile (s.native_handle (),
-									file.handle (), nullptr, file.size ());
-							if (rc == -1)
-								qWarning () << Q_FUNC_INFO
-										<< "sendfile() error:"
-										<< errno
-										<< "; human-readable:"
-										<< strerror (errno);
+							std::shared_ptr<void> shutdownGuard = std::shared_ptr<void> (nullptr,
+									[&s, &ec] (void*)
+									{
+										s.shutdown (boost::asio::socket_base::shutdown_both, ec);
+									});
 
-							boost::system::error_code iec;
-							s.shutdown (boost::asio::socket_base::shutdown_both, iec);
+							if (verb != Verb::Get)
+								return;
+
+							std::shared_ptr<QFile> file { new QFile { path } };
+							file->open (QIODevice::ReadOnly);
+
+							if (ranges.isEmpty ())
+								ranges.append ({ 0, file->size () - 1 });
+
+							if (!s.native_non_blocking ())
+								s.native_non_blocking (true, ec);
+
+							const auto& headRange = ranges.takeFirst ();
+							Sendfiler
+							{
+								s,
+								file,
+								0,
+								headRange,
+								ranges,
+								[c, shutdownGuard] (boost::system::error_code ec, ulong) {}
+							} (ec, 0);
 						}));
 		}
 	}
 
-	void RequestHandler::DefaultWrite ()
+	void RequestHandler::DefaultWrite (Verb verb)
 	{
 		auto c = Conn_;
 		boost::asio::async_write (c->GetSocket (),
-				ToBuffers (),
+				ToBuffers (verb),
 				c->GetStrand ().wrap ([c] (const boost::system::error_code& ec, ulong)
 					{
 						if (ec)
@@ -226,10 +451,6 @@ namespace HttHare
 					}));
 	}
 
-	void RequestHandler::HandleHead ()
-	{
-	}
-
 	namespace
 	{
 		boost::asio::const_buffer BA2Buffer (const QByteArray& ba)
@@ -238,7 +459,7 @@ namespace HttHare
 		}
 	}
 
-	std::vector<boost::asio::const_buffer> RequestHandler::ToBuffers ()
+	std::vector<boost::asio::const_buffer> RequestHandler::ToBuffers (Verb verb)
 	{
 		std::vector<boost::asio::const_buffer> result;
 
@@ -254,7 +475,9 @@ namespace HttHare
 
 		result.push_back (BA2Buffer (ResponseLine_));
 		result.push_back (BA2Buffer (CookedRH_));
-		result.push_back (BA2Buffer (ResponseBody_));
+
+		if (verb == Verb::Get)
+			result.push_back (BA2Buffer (ResponseBody_));
 
 		return result;
 	}

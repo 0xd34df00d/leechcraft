@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2013  Oleg Linkin <MaledictusDeMagog@gmail.com>
+ * Copyright (C) 2006-2013  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,66 +27,35 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QDialog>
-#include <QNetworkReply>
-#include <QNetworkRequest>
-#include "ui_selectgroupsdialog.h"
-
-class QStandardItemModel;
+#include "iconresolver.h"
+#include <QImage>
+#include <QIcon>
+#include <QtDebug>
+#include <util/util.h>
 
 namespace LeechCraft
 {
-namespace Blasq
+namespace HttHare
 {
-namespace DeathNote
-{
-	class FotoBilderAccount;
-
-	struct FriendsGroup
+	IconResolver::IconResolver (QObject *parent)
+	: QObject (parent)
 	{
-		bool Public_;
-		QString Name_;
-		uint Id_;
-		uint SortOrder_;
-		uint RealId_;
-	};
+	}
 
-	struct ParsedMember
+	void IconResolver::resolveMime (QString mimetype, QByteArray& image, int dim)
 	{
-		QString Name_;
-		QVariantList Value_;
-	};
+		mimetype.replace ('/', '-');
+		auto icon = QIcon::fromTheme (mimetype);
+		if (icon.isNull ())
+		{
+			mimetype.replace ("x-", "");
+			icon = QIcon::fromTheme (mimetype);
+		}
 
-	class SelectGroupsDialog : public QDialog
-	{
-		Q_OBJECT
+		if (icon.isNull ())
+			icon = QIcon::fromTheme ("application-octet-stream");
 
-		Ui::SelectGroupsDialog Ui_;
-		QStandardItemModel *Model_;
-		QString Login_;
-		FotoBilderAccount *Account_;
-
-	public:
-		SelectGroupsDialog (const QString& login, FotoBilderAccount *acc,
-				QWidget *parent = 0);
-
-		uint GetSelectedGroupId () const;
-	private:
-		void RequestFriendsGroups ();
-		void FriendsGroupsRequest (const QString& challenge);
-		void GenerateChallenge ();
-		QString GetPassword () const;
-		QNetworkRequest CreateNetworkRequest ();
-
-	private slots:
-		void handleChallengeReplyFinished ();
-		void handleNetworkError (QNetworkReply::NetworkError error);
-		void handleRequestFriendsGroupsFinished ();
-	};
+		image = Util::GetAsBase64Src (icon.pixmap (dim, dim).toImage ()).toLatin1 ();
+	}
 }
 }
-}
-
-Q_DECLARE_METATYPE (LeechCraft::Blasq::DeathNote::ParsedMember)

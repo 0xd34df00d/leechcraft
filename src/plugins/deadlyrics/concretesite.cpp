@@ -34,6 +34,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QTextCodec>
 #include <QtDebug>
 
 namespace LeechCraft
@@ -165,6 +166,13 @@ namespace DeadLyrics
 
 		Matchers_ += fillMatchers ("extract", MatcherBase::Mode::Return);
 		Matchers_ += fillMatchers ("exclude", MatcherBase::Mode::Exclude);
+
+		auto invalidElem = elem.firstChildElement ("invalidIndicator");
+		while (!invalidElem.isNull ())
+		{
+			InvalidIndicators_ << invalidElem.attribute ("value");
+			invalidElem = invalidElem.nextSiblingElement ("invalidIndicator");
+		}
 	}
 
 	ConcreteSite::ConcreteSite (const Media::LyricsQuery& query,
@@ -184,10 +192,10 @@ namespace DeadLyrics
 		const auto& album = replace (query.Album_.toLower ());
 		const auto& title = replace (query.Title_.toLower ());
 
-		auto url = Desc_.URLTemplate_;
-		url.replace ("{artist}", artist);
-		url.replace ("{album}", album);
-		url.replace ("{title}", title);
+		auto urlStr = Desc_.URLTemplate_;
+		urlStr.replace ("{artist}", artist);
+		urlStr.replace ("{album}", album);
+		urlStr.replace ("{title}", title);
 
 		auto cap = [] (QString str) -> QString
 		{
@@ -195,12 +203,32 @@ namespace DeadLyrics
 				str [0] = str [0].toUpper ();
 			return str;
 		};
-		url.replace ("{Artist}", cap (artist));
-		url.replace ("{Album}", cap (album));
-		url.replace ("{Title}", cap (title));
+		urlStr.replace ("{Artist}", cap (artist));
+		urlStr.replace ("{Album}", cap (album));
+		urlStr.replace ("{Title}", cap (title));
+
+#ifdef QT_DEBUG
+		qDebug () << Q_FUNC_INFO
+				<< "requesting"
+				<< urlStr
+				<< "from"
+				<< Desc_.Name_
+				<< "for"
+				<< artist
+				<< album
+				<< title;
+#endif
 
 		auto nam = proxy->GetNetworkAccessManager ();
-		auto reply = nam->get (QNetworkRequest (QUrl (url)));
+
+		QUrl url { urlStr };
+		QNetworkRequest req { url };
+
+		url.setPath ({});
+		url.setQueryItems ({});
+		req.setRawHeader ("Referer", url.toString ().toUtf8 ());
+
+		auto reply = nam->get (req);
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -218,17 +246,44 @@ namespace DeadLyrics
 		deleteLater ();
 
 		const auto& data = reply->readAll ();
-		auto str = QString::fromUtf8 (data.constData ());
+#ifdef QT_DEBUG
+		qDebug () << Q_FUNC_INFO
+				<< "got from"
+				<< Desc_.Name_
+				<< "the data:"
+				<< data;
+#endif
 
-		Q_FOREACH (auto excluder, Desc_.Matchers_)
+		const auto codec = QTextCodec::codecForName (Desc_.Charset_.toLatin1 ());
+		if (!codec)
+			qWarning () << Q_FUNC_INFO
+					<< "no codec for charset"
+					<< Desc_.Charset_
+					<< "; will fallback to UTF-8";
+
+		auto str = codec ?
+				codec->toUnicode (data) :
+				QString::fromUtf8 (data.constData ());
+
+		if (std::any_of (Desc_.InvalidIndicators_.begin (), Desc_.InvalidIndicators_.end (),
+				[&str] (const QString& ind) { return str.contains (ind); }))
+			return;
+
+		for (auto excluder : Desc_.Matchers_)
 			str = (*excluder) (str);
 
 		str = str.trimmed ();
-		if (str.count ("<br", Qt::CaseInsensitive) < 3)
-			str.clear ();
+
+		const auto& contentType = reply->header (QNetworkRequest::ContentTypeHeader);
+		const bool isPlainText = contentType.toString ().toLower ().startsWith ("text/plain");
+		if (isPlainText)
+		{
+			str.prepend ("<pre>");
+			str.append ("</pre>");
+		}
 
 		if (str.size () >= 100)
-			emit gotLyrics (Query_, QStringList (str));
+			emit gotLyrics ({ Query_, { { Desc_.Name_, str } } });
 	}
 }
 }

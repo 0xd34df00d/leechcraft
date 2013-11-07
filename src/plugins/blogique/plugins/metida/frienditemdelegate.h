@@ -32,6 +32,8 @@
 #include <QStyledItemDelegate>
 
 class QTreeView;
+class QSortFilterProxyModel;
+
 namespace LeechCraft
 {
 namespace Blogique
@@ -59,13 +61,14 @@ namespace Metida
 
 		bool ColoringItems_;
 		QTreeView *View_;
+		QSortFilterProxyModel *SortModel_;
 
 		enum Columns
 		{
 			UserName
 		};
 	public:
-		FriendItemDelegate (QTreeView *view = 0);
+		FriendItemDelegate (QSortFilterProxyModel *sortModel, QTreeView *view = 0);
 		void paint (QPainter *painter, const QStyleOptionViewItem& option,
 				const QModelIndex& index) const;
 
