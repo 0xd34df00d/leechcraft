@@ -33,6 +33,7 @@
 #include <util/util.h>
 #include "server.h"
 #include "xmlsettingsmanager.h"
+#include "addressesmodelmanager.h"
 
 namespace LeechCraft
 {
@@ -42,8 +43,14 @@ namespace HttHare
 	{
 		Util::InstallTranslator ("htthare");
 
+		qRegisterMetaType<AddrList_t> ("LeechCraft::HttHare::AddrList_t");
+		qRegisterMetaTypeStreamOperators<AddrList_t> ();
+
+		AddrMgr_ = new AddressesModelManager (this);
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "httharesettings.xml");
+
+		XSD_->SetDataSource ("AddressesDataView", AddrMgr_->GetModel ());
 
 		XmlSettingsManager::Instance ().RegisterObject ("EnableServer",
 				this, "handleEnableServerChanged");

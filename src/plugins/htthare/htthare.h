@@ -39,6 +39,7 @@ namespace LeechCraft
 namespace HttHare
 {
 	class Server;
+	class AddressesModelManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -48,6 +49,8 @@ namespace HttHare
 		Q_INTERFACES (IInfo IHaveSettings)
 
 		std::shared_ptr<Server> S_;
+		AddressesModelManager *AddrMgr_;
+
 		Util::XmlSettingsDialog_ptr XSD_;
 	public:
 		void Init (ICoreProxy_ptr);
