@@ -403,7 +403,7 @@ namespace HttHare
 		{
 			auto ranges = ParseRanges (Headers_.value ("Range"), fi.size ());
 
-			ResponseHeaders_.append ({ "Content-Type", "application/octet-stream" });
+			ResponseHeaders_.append ({ "Content-Type", Util::MimeDetector {} (path) });
 
 			if (ranges.isEmpty ())
 			{
