@@ -132,6 +132,7 @@ namespace HttHare
 		if (port < 1024 || port > 65535)
 			return;
 
+		SaveSettings ();
 		AppendRow ({ data.value (0).toString (), QString::number (port) });
 	}
 
@@ -140,6 +141,7 @@ namespace HttHare
 		for (const auto& item : list)
 			Model_->removeRow (item.row ());
 
+		SaveSettings ();
 		emit addressesChanged ();
 	}
 }
