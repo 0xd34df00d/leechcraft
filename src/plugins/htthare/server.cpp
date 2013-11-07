@@ -78,6 +78,9 @@ namespace HttHare
 
 	void Server::Start ()
 	{
+		if (Acceptors_.empty ())
+			return;
+
 		for (auto i = 0; i < 2; ++i)
 			Threads_.emplace_back ([this] { IoService_.run (); });
 	}
