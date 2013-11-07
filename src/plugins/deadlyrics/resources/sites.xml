@@ -194,8 +194,10 @@
     <urlFormat replace=" _@,;&amp;\/&quot;'" with="-"/>
     <urlFormat replace="." with=""/>
     <extract>
-      <item begin="&lt;div class=&quot;songText&quot; id=&quot;songContent&quot;&gt;" end="&lt;/div&gt;"/>
+      <item tag="&lt;div class=&quot;tabCont originalText songTextDisplay&quot; id=&quot;tab-top-25534-1&quot;&gt;" end="&lt;/div&gt;"/>
     </extract>
+    <invalidIndicator value="Nie znaleziono strony o podanym adresie"/>
+    <invalidIndicator value="poprzednia"/>
   </provider>
   <provider name="vagalume.com.br" title="{title} de {artist} no VAGALUME" charset="iso-8859-1" url="http://vagalume.com.br/{artist}/{title}.html">
     <urlFormat replace=" _@,;&amp;\/'&quot;." with="-"/>
@@ -208,5 +210,30 @@
     <extract>
       <item tag="&lt;div class=&quot;tab_traducao sideBySide lyricArea tab_tra_pt&quot;&gt;"/>
     </extract>
+  </provider>
+  <provider name="viewlyrics.com" title="The lyrics of {title} by {artist}" charset="utf-8" url="http://www.viewlyrics.com/lyrics/{artist}/{title}/">
+    <urlFormat replace="_@\/&quot;" with=""/>
+    <urlFormat replace=" " with="+"/>
+    <extract>
+      <item tag="&lt;span id=&quot;ctl00_cphBody_LyricsContent&quot;&gt;"/>
+    </extract>
+  </provider>
+  <provider name="animelyrics.com (J-Pop lyrics with Kanji)" title="{title}" charset="sjis" url="http://www.animelyrics.com/jpop/{artist}/{title}.jis.txt">
+    <urlFormat replace=" ._@,;&amp;\/'&quot;-" with=""/>
+    <exclude>
+      <item value="&lt;br&gt;"/>
+      <item begin="&lt;!--" end="--!&gt;"/>
+    </exclude>
+    <invalidIndicator value="File not found, 404"/>
+    <invalidIndicator value="DOCTYPE HTML"/>
+  </provider>
+  <provider name="animelyrics.com (J-Pop lyrics)" title="{title}" charset="utf-8" url="http://www.animelyrics.com/jpop/{artist}/{title}.txt">
+    <urlFormat replace=" ._@,;&amp;\/'&quot;-" with=""/>
+    <exclude>
+      <item value="&lt;br&gt;"/>
+      <item begin="&lt;!--" end="--&gt;"/>
+    </exclude>
+    <invalidIndicator value="File not found, 404"/>
+    <invalidIndicator value="DOCTYPE HTML"/>
   </provider>
 </lyricproviders>
