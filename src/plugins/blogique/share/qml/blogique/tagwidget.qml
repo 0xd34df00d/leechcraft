@@ -43,6 +43,7 @@ Rectangle
 	function updateFlickableHeight ()
 	{
 		var res = TagBalloonList.calculateContentHeight (flowElement.spacing, flowElement.height);
+		console.log (res)
 		flickable.contentHeight = res;
 	}
 
@@ -266,6 +267,11 @@ Rectangle
 				if (!inputFieldExsists)
 					createInputFieldObject ()
 		}
+		
+		onWidthChanged:
+			updateFlickableHeight ();
+		onHeightChanged:
+			updateFlickableHeight ();
 	}
 
 	Loader
