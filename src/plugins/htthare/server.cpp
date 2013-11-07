@@ -42,7 +42,6 @@ namespace HttHare
 
 	Server::Server (const QString& address, const QString& port)
 	: Acceptor_ { IoService_ }
-	, Socket_ { IoService_ }
 	, IconResolver_ { new IconResolver  }
 	, TrManager_ { new TrManager }
 	{

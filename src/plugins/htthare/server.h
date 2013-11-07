@@ -49,7 +49,6 @@ namespace HttHare
 	{
 		boost::asio::io_service IoService_;
 		boost::asio::ip::tcp::acceptor Acceptor_;
-		boost::asio::ip::tcp::socket Socket_;
 
 		StorageManager StorageMgr_;
 
