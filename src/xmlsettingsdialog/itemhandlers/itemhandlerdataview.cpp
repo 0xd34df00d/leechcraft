@@ -350,6 +350,9 @@ namespace LeechCraft
 		if (!indexes.size ())
 			return;
 
+		std::sort (indexes.begin (), indexes.end (),
+				[] (const QModelIndex& l, const QModelIndex& r)
+					{ return l.row () > r.row (); });
 		auto model = view->GetModel ();
 
 		if (!QMetaObject::invokeMethod (model->parent (),
