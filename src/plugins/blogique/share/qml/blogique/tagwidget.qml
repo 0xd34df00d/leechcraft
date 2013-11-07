@@ -266,6 +266,11 @@ Rectangle
 				if (!inputFieldExsists)
 					createInputFieldObject ()
 		}
+		
+		onWidthChanged:
+			updateFlickableHeight ();
+		onHeightChanged:
+			updateFlickableHeight ();
 	}
 
 	Loader
