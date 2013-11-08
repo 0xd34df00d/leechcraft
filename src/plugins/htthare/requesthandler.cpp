@@ -150,7 +150,7 @@ namespace HttHare
 	QByteArray RequestHandler::MakeDirResponse (const QFileInfo& fi, const QString& path, const QUrl& url)
 	{
 		const auto& entries = QDir { path }
-				.entryInfoList (QDir::AllEntries | QDir::NoDotAndDotDot,
+				.entryInfoList (QDir::AllEntries | QDir::NoDot,
 						QDir::Name | QDir::DirsFirst);
 
 		struct MimeInfo
