@@ -204,6 +204,7 @@ namespace Metida
 		void handleLoadChangedEvents ();
 
 		void handleUnreadMessagesIds (const QList<int>& ids);
+		void handleMessagesRead ();
 
 	signals:
 		void accountRenamed (const QString& newName);

@@ -2071,8 +2071,12 @@ namespace Metida
 		if (content.isEmpty ())
 			return;
 
-		if (!document.elementsByTagName ("fault").isEmpty ())
-			ParseForError (content);
+		if (document.elementsByTagName ("fault").isEmpty ())
+		{
+			emit messagesRead ();
+			return;
+		}
+		ParseForError (content);
 	}
 
 	namespace

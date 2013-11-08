@@ -197,6 +197,8 @@ namespace Metida
 		void gotStatistics (const QMap<QDate, int>& statistics);
 
 		void unreadMessagesIds (const QList<int>& unreadIds);
+		void messagesRead ();
+
 		void gotRecentComments (const QList<LJCommentEntry>& comments);
 		void gotTags (const QHash<QString, int>& tags);
 	};
