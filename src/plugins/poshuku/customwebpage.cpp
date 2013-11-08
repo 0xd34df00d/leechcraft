@@ -387,8 +387,12 @@ namespace Poshuku
 		if (proxy->IsCancelled ())
 			return;
 
-		reply->abort ();
-		reply->deleteLater ();
+		std::shared_ptr<void> replyGuard = std::shared_ptr<void> (nullptr,
+				[reply] (void*) -> void
+				{
+					reply->abort ();
+					reply->deleteLater ();
+				});
 
 		const auto& url = reply->url ();
 		const auto& mime = reply->header (QNetworkRequest::ContentTypeHeader).toString ();
