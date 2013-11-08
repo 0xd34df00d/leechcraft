@@ -1255,7 +1255,8 @@ namespace Aggregator
 		if (!current.isValid ())
 		{
 			current = Impl_->ItemsFilterModel_->index (0, 0);
-			if (!current.data (ItemsListModel::ItemRole::IsRead).toBool ())
+			if (current.isValid () &&
+					!current.data (ItemsListModel::ItemRole::IsRead).toBool ())
 			{
 				Impl_->Ui_.Items_->setCurrentIndex (current);
 				return;
