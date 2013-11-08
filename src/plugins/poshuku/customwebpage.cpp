@@ -397,6 +397,8 @@ namespace Poshuku
 		const auto& url = reply->url ();
 		const auto& mime = reply->header (QNetworkRequest::ContentTypeHeader).toString ();
 
+		qDebug () << Q_FUNC_INFO << reply->url () << reply->errorString ();
+
 		auto sendEnt = [reply, mime, url, this] () -> void
 		{
 			auto e = Util::MakeEntity (url,
