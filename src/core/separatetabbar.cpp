@@ -155,7 +155,7 @@ namespace LeechCraft
 		}
 		else if (index != -1 &&
 				event->button () == Qt::MidButton &&
-				index != count () - 1)
+				(!IsLastTab_ || index != count () - 1))
 		{
 			auto rootWM = Core::Instance ().GetRootWindowsManager ();
 			auto tm = rootWM->GetTabManager (Window_);
