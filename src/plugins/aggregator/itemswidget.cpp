@@ -69,9 +69,9 @@ namespace Aggregator
 		QAction *ActionMarkItemAsRead_;
 		QAction *ActionMarkItemAsImportant_;
 
+		QAction *ActionPrevUnreadItem_;
 		QAction *ActionPrevItem_;
 		QAction *ActionNextItem_;
-
 		QAction *ActionNextUnreadItem_;
 
 		QAction *ActionDeleteItem_;
@@ -147,7 +147,12 @@ namespace Aggregator
 		Impl_->Ui_.Items_->addAction (Impl_->ActionItemLinkOpen_);
 		Impl_->Ui_.Items_->setContextMenuPolicy (Qt::ActionsContextMenu);
 
-		addActions ({ Impl_->ActionPrevItem_, Impl_->ActionNextItem_, Impl_->ActionNextUnreadItem_ });
+		addActions ({
+				Impl_->ActionPrevUnreadItem_,
+				Impl_->ActionPrevItem_,
+				Impl_->ActionNextItem_,
+				Impl_->ActionNextUnreadItem_
+			});
 
 		connect (Impl_->Ui_.SearchLine_,
 				SIGNAL (textChanged (const QString&)),
@@ -300,6 +305,8 @@ namespace Aggregator
 			return Impl_->ActionMarkItemAsUnread_;
 		case Action::MarkAsImportant:
 			return Impl_->ActionMarkItemAsImportant_;
+		case Action::PrevUnreadItem:
+			return Impl_->ActionPrevUnreadItem_;
 		case Action::PrevItem:
 			return Impl_->ActionPrevItem_;
 		case Action::NextItem:
@@ -630,6 +637,11 @@ namespace Aggregator
 		Impl_->ActionMarkItemAsImportant_->setProperty ("ActionIcon", "rating");
 		Impl_->ActionMarkItemAsImportant_->setCheckable (true);
 		Impl_->ActionMarkItemAsImportant_->setShortcut ({ "I" });
+
+		Impl_->ActionPrevUnreadItem_ = new QAction (tr ("Previous unread item"), this);
+		Impl_->ActionPrevUnreadItem_->setObjectName ("ActionPrevUnreadItem_");
+		Impl_->ActionPrevUnreadItem_->setProperty ("ActionIcon", "go-first");
+		Impl_->ActionPrevUnreadItem_->setShortcut ({ "Shift+K" });
 
 		Impl_->ActionPrevItem_ = new QAction (tr ("Previous item"), this);
 		Impl_->ActionPrevItem_->setObjectName ("ActionPrevItem_");
@@ -1231,6 +1243,50 @@ namespace Aggregator
 		StorageBackend *sb = Core::Instance ().GetStorageBackend ();
 		Q_FOREACH (IDType_t id, ids)
 			sb->RemoveItem (id);
+	}
+
+	void ItemsWidget::on_ActionPrevUnreadItem__triggered ()
+	{
+		auto current = Impl_->Ui_.Items_->currentIndex ();
+		if (!current.isValid () &&
+				Impl_->ItemsFilterModel_->rowCount ())
+		{
+			current = Impl_->ItemsFilterModel_->index (Impl_->ItemsFilterModel_->rowCount () - 1, 0);
+			if (current.isValid () &&
+					!current.data (ItemsListModel::ItemRole::IsRead).toBool ())
+			{
+				Impl_->Ui_.Items_->setCurrentIndex (current);
+				return;
+			}
+		}
+
+		for (int i = current.row () - 1; i >= 0; --i)
+		{
+			const auto& next = current.sibling (i, current.column ());
+			if (!next.isValid ())
+				break;
+
+			if (!next.data (ItemsListModel::ItemRole::IsRead).toBool ())
+			{
+				Impl_->Ui_.Items_->setCurrentIndex (next);
+				return;
+			}
+		}
+
+		const auto& chanIdx = Impl_->LastSelectedChannel_;
+		if (!chanIdx.isValid ())
+			return;
+
+		for (int i = chanIdx.row () - 1; i >= 0; --i)
+		{
+			const auto& otherChannel = chanIdx.sibling (i, ChannelsModel::ColumnUnread);
+			if (otherChannel.data ().toInt ())
+			{
+				CurrentChannelChanged (otherChannel);
+				on_ActionPrevUnreadItem__triggered ();
+				break;
+			}
+		}
 	}
 
 	void ItemsWidget::on_ActionPrevItem__triggered ()
