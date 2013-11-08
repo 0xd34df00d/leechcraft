@@ -72,6 +72,8 @@ namespace Aggregator
 		QAction *ActionPrevItem_;
 		QAction *ActionNextItem_;
 
+		QAction *ActionNextUnreadItem_;
+
 		QAction *ActionDeleteItem_;
 		QAction *ActionItemCommentsSubscribe_;
 		QAction *ActionItemLinkOpen_;
@@ -145,7 +147,7 @@ namespace Aggregator
 		Impl_->Ui_.Items_->addAction (Impl_->ActionItemLinkOpen_);
 		Impl_->Ui_.Items_->setContextMenuPolicy (Qt::ActionsContextMenu);
 
-		addActions ({ Impl_->ActionPrevItem_, Impl_->ActionNextItem_ });
+		addActions ({ Impl_->ActionPrevItem_, Impl_->ActionNextItem_, Impl_->ActionNextUnreadItem_ });
 
 		connect (Impl_->Ui_.SearchLine_,
 				SIGNAL (textChanged (const QString&)),
@@ -302,6 +304,8 @@ namespace Aggregator
 			return Impl_->ActionPrevItem_;
 		case Action::NextItem:
 			return Impl_->ActionNextItem_;
+		case Action::NextUnreadItem:
+			return Impl_->ActionNextUnreadItem_;
 		case Action::Delete:
 			return Impl_->ActionDeleteItem_;
 		case Action::MaxAction:
@@ -636,6 +640,11 @@ namespace Aggregator
 		Impl_->ActionNextItem_->setObjectName ("ActionNextItem_");
 		Impl_->ActionNextItem_->setProperty ("ActionIcon", "go-next");
 		Impl_->ActionNextItem_->setShortcut ({ "J" });
+
+		Impl_->ActionNextUnreadItem_ = new QAction (tr ("Next unread item"), this);
+		Impl_->ActionNextUnreadItem_->setObjectName ("ActionNextUnreadItem_");
+		Impl_->ActionNextUnreadItem_->setProperty ("ActionIcon", "go-last");
+		Impl_->ActionNextUnreadItem_->setShortcut ({ "Shift+J" });
 
 		Impl_->ActionDeleteItem_ = new QAction (tr ("Delete"), this);
 		Impl_->ActionDeleteItem_->setObjectName ("ActionDeleteItem_");
@@ -1238,6 +1247,24 @@ namespace Aggregator
 		const auto& next = current.sibling (current.row () + 1, current.column ());
 		if (next.isValid ())
 			Impl_->Ui_.Items_->setCurrentIndex (next);
+	}
+
+	void ItemsWidget::on_ActionNextUnreadItem__triggered ()
+	{
+		const auto& current = Impl_->Ui_.Items_->currentIndex ();
+		const auto rc = Impl_->ItemsFilterModel_->rowCount (current.parent ());
+		for (int i = current.row () + 1; i < rc; ++i)
+		{
+			const auto& next = current.sibling (i, current.column ());
+			if (!next.isValid ())
+				break;
+
+			if (!next.data (ItemsListModel::ItemRole::IsRead).toBool ())
+			{
+				Impl_->Ui_.Items_->setCurrentIndex (next);
+				break;
+			}
+		}
 	}
 
 	void ItemsWidget::on_CaseSensitiveSearch__stateChanged (int state)
