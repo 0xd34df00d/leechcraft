@@ -1251,7 +1251,17 @@ namespace Aggregator
 
 	void ItemsWidget::on_ActionNextUnreadItem__triggered ()
 	{
-		const auto& current = Impl_->Ui_.Items_->currentIndex ();
+		auto current = Impl_->Ui_.Items_->currentIndex ();
+		if (!current.isValid ())
+		{
+			current = Impl_->ItemsFilterModel_->index (0, 0);
+			if (!current.data (ItemsListModel::ItemRole::IsRead).toBool ())
+			{
+				Impl_->Ui_.Items_->setCurrentIndex (current);
+				return;
+			}
+		}
+
 		const auto rc = Impl_->ItemsFilterModel_->rowCount (current.parent ());
 		for (int i = current.row () + 1; i < rc; ++i)
 		{
@@ -1262,6 +1272,22 @@ namespace Aggregator
 			if (!next.data (ItemsListModel::ItemRole::IsRead).toBool ())
 			{
 				Impl_->Ui_.Items_->setCurrentIndex (next);
+				return;
+			}
+		}
+
+		const auto& chanIdx = Impl_->LastSelectedChannel_;
+		if (!chanIdx.isValid ())
+			return;
+
+		const auto channelRc = chanIdx.model ()->rowCount (chanIdx.parent ());
+		for (int i = chanIdx.row () + 1; i < channelRc; ++i)
+		{
+			const auto& otherChannel = chanIdx.sibling (i, ChannelsModel::ColumnUnread);
+			if (otherChannel.data ().toInt ())
+			{
+				CurrentChannelChanged (otherChannel);
+				on_ActionNextUnreadItem__triggered ();
 				break;
 			}
 		}
