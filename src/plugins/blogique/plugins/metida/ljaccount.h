@@ -180,6 +180,8 @@ namespace Metida
 
 		void AddGroup (const QString& name, bool isPublic, int id);
 		void DeleteGroup (int id);
+		
+		void SetMessagesAsRead (const QList<int>& ids);
 	private:
 		void CallLastUpdateMethod ();
 
@@ -201,7 +203,7 @@ namespace Metida
 		void handleLoadLastEvents ();
 		void handleLoadChangedEvents ();
 
-		void handleUnreadMessagesExist (bool exists);
+		void handleUnreadMessagesIds (const QList<int>& ids);
 
 	signals:
 		void accountRenamed (const QString& newName);

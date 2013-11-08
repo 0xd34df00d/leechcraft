@@ -187,6 +187,14 @@ namespace Metida
 				{ InboxRequest (challenge); };
 	}
 
+	void LJXmlRPC::SetMessagesAsRead (const QList<int>& ids)
+	{
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
+		ApiCallQueue_ << [this, ids] (const QString& challenge)
+				{ SetMessageAsReadRequest (ids, challenge); };
+	}
+
 	void LJXmlRPC::RequestRecentCommments ()
 	{
 		auto guard = MakeRunnerGuard ();
@@ -1053,6 +1061,40 @@ namespace Metida
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleInboxReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void LJXmlRPC::SetMessageAsReadRequest (const QList<int>& ids, const QString& challenge)
+	{
+		QDomDocument document ("SetMessageAsReadRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.setmessageread", document);
+		document.appendChild (result.first);
+		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
+				Account_->GetPassword (), challenge, document);
+		
+		auto array = GetComplexMemberElement ("qid", "array", document);
+ 		element.appendChild (array.first);
+		
+		for (int id : ids)
+		{
+			QDomElement valueType = document.createElement ("value");
+			array.second.appendChild (valueType);
+			QDomElement type = document.createElement ("int");
+			valueType.appendChild (type);
+			QDomText text = document.createTextNode (QString::number (id));
+			type.appendChild (text);
+		}
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleMessagesSetAsReadFinished ()));
 		connect (reply,
 				SIGNAL (error (QNetworkReply::NetworkError)),
 				this,
@@ -1960,11 +2002,12 @@ namespace Metida
 
 	namespace
 	{
-		bool IsUnreadMessagesExist (QDomDocument document)
+		QList<int> GetUnreadMessagesIds (QDomDocument document)
 		{
+			QList<int> unreadIds;
 			const auto& firstStructElement = document.elementsByTagName ("struct");
 			if (firstStructElement.at (0).isNull ())
-				return false;
+				return unreadIds;
 
 			const auto& members = firstStructElement.at (0).childNodes ();
 			for (int i = 0, count = members.count (); i < count; ++i)
@@ -1975,18 +2018,27 @@ namespace Metida
 					continue;
 
 				auto res = ParseMember (member);
-				if (res.Name () == "items")
-					for (const auto& message : res.Value ())
-						for (const auto& field : message.toList ())
-						{
-							auto fieldEntry = field.value<LJParserTypes::LJParseProfileEntry> ();
-							if (fieldEntry.Name () == "state" &&
-									fieldEntry.ValueToString ().toLower () == "n")
-								return true;
-						}
+				if (res.Name () != "items")
+					continue;
+				
+				for (const auto& message : res.Value ())
+				{
+					bool isUnread = false;
+					int id = -1;
+					for (const auto& field : message.toList ())
+					{
+						auto fieldEntry = field.value<LJParserTypes::LJParseProfileEntry> ();
+						if (fieldEntry.Name () == "state")
+							isUnread = (fieldEntry.ValueToString ().toLower () == "n");
+						if (fieldEntry.Name () == "qid")
+							id = fieldEntry.ValueToInt ();
+					}
+					
+					if (isUnread && id != -1)
+						unreadIds << id;
+				}
 			}
-
-			return false;
+			return unreadIds;
 		}
 	}
 
@@ -2000,13 +2052,27 @@ namespace Metida
 
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
-			emit unreadMessagesExist (IsUnreadMessagesExist (document));
+			const auto& unreadIds = GetUnreadMessagesIds (document);
+			if (!unreadIds.isEmpty ())
+				emit unreadMessagesIds (unreadIds);
 			XmlSettingsManager::Instance ().setProperty ("LastInboxUpdateDate",
 					QDateTime::currentDateTime ());
 			CallNextFunctionFromQueue ();
 			return;
 		}
 		ParseForError (content);
+	}
+
+	void LJXmlRPC::handleMessagesSetAsReadFinished ()
+	{
+		QDomDocument document;
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		QByteArray content = CreateDomDocumentFromReply (reply, document);
+		if (content.isEmpty ())
+			return;
+
+		if (!document.elementsByTagName ("fault").isEmpty ())
+			ParseForError (content);
 	}
 
 	namespace

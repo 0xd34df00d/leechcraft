@@ -119,9 +119,9 @@ namespace Metida
 				this,
 				SIGNAL (gotBlogStatistics (QMap<QDate, int>)));
 		connect (LJXmlRpc_,
-				SIGNAL (unreadMessagesExist (bool)),
+				SIGNAL (unreadMessagesIds (QList<int>)),
 				this,
-				SLOT (handleUnreadMessagesExist (bool)));
+				SLOT (handleUnreadMessagesIds (QList<int>)));
 		connect (LJXmlRpc_,
 				SIGNAL (gotRecentComments (QList<LJCommentEntry>)),
 				this,
@@ -450,6 +450,11 @@ namespace Metida
 		LJXmlRpc_->DeleteGroup (id);
 	}
 
+	void LJAccount::SetMessagesAsRead (const QList<int>& ids)
+	{
+		LJXmlRpc_->SetMessagesAsRead (ids);
+	}
+
 	void LJAccount::CallLastUpdateMethod ()
 	{
 		switch (LastUpdateType_)
@@ -640,29 +645,33 @@ namespace Metida
 		LJXmlRpc_->GetChangedEvents (dt);
 	}
 
-	void LJAccount::handleUnreadMessagesExist (bool exists)
+	void LJAccount::handleUnreadMessagesIds (const QList<int>& ids)
 	{
-		if (exists)
-		{
-			Entity e = Util::MakeNotification ("Blogique Metida",
-					tr ("You have unread messages in account %1")
-							.arg ("<em>" + GetAccountName () + "</em>"),
-					Priority::PInfo_);
-			Util::NotificationActionHandler *nh =
-					new Util::NotificationActionHandler (e, this);
-			nh->AddFunction (tr ("Open inbox"),
-					[this] ()
-					{
-						Entity urlEntity = Util::MakeEntity (QUrl ("http://livejournal.com/inbox/"),
-								QString (),
-								static_cast<TaskParameters> (OnlyHandle | FromUserInitiated));
-						Core::Instance ().SendEntity (urlEntity);
-					});
-			nh->AddDependentObject (this);
-			Core::Instance ().SendEntity (e);
-		}
+		if (ids.isEmpty ())
+			return;
+		
+		Entity e = Util::MakeNotification ("Blogique Metida",
+				tr ("You have unread messages in account %1")
+						.arg ("<em>" + GetAccountName () + "</em>"),
+				Priority::PInfo_);
+		Util::NotificationActionHandler *nh =
+				new Util::NotificationActionHandler (e, this);
+		nh->AddFunction (tr ("Open inbox"),
+				[this] ()
+				{
+					Entity urlEntity = Util::MakeEntity (QUrl ("http://livejournal.com/inbox/"),
+							QString (),
+							static_cast<TaskParameters> (OnlyHandle | FromUserInitiated));
+					Core::Instance ().SendEntity (urlEntity);
+				});
+		nh->AddDependentObject (this);
+		nh->AddFunction (tr ("Set all as read"),
+				[this, ids] ()
+				{
+					SetMessagesAsRead (ids);
+				});
+		Core::Instance ().SendEntity (e);
 	}
-
 }
 }
 }
