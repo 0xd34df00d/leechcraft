@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_ITEMSLISTMODEL_H
-#define PLUGINS_AGGREGATOR_ITEMSLISTMODEL_H
+#pragma once
+
 #include <QAbstractItemModel>
 #include <QStringList>
 #include <QSet>
@@ -53,6 +53,11 @@ namespace Aggregator
 		const QIcon UnreadIcon_;
 		const QIcon ReadIcon_;
 	public:
+		enum ItemRole
+		{
+			IsRead = Qt::UserRole + 1
+		};
+
 		ItemsListModel (QObject* = 0);
 
 		int GetSelectedRow () const;
@@ -82,5 +87,3 @@ namespace Aggregator
 	};
 }
 }
-
-#endif
