@@ -101,9 +101,14 @@ namespace Metida
 		void RequestStatistics ();
 
 		void RequestLastInbox ();
+		void SetMessagesAsRead (const QList<int>& ids);
+		void SendMessage (const QStringList& addresses, const QString& subject, 
+				const QString& text);
+		
 		void RequestRecentCommments ();
 
 		void RequestTags ();
+		
 	private:
 		std::shared_ptr<void> MakeRunnerGuard ();
 		void CallNextFunctionFromQueue ();
@@ -141,6 +146,10 @@ namespace Metida
 		void BlogStatisticsRequest (const QString& challenge);
 
 		void InboxRequest (const QString& challenge);
+		void SetMessageAsReadRequest (const QList<int>& ids, const QString& challenge);
+		void SendMessageRequest (const QStringList& addresses, const QString& subject,
+				const QString& text, const QString& challenge);
+
 		void RecentCommentsRequest (const QString& challenge);
 
 		void GetUserTagsRequest (const QString& challenge);
@@ -169,6 +178,8 @@ namespace Metida
 		void handleGetMultipleEventsReplyFinished ();
 		void handleBlogStatisticsReplyFinished ();
 		void handleInboxReplyFinished ();
+		void handleMessagesSetAsReadFinished ();
+		void handleSendMessageRequestFinished ();
 		void handleRecentCommentsReplyFinished ();
 		void handleGetUserTagsReplyFinished ();
 
@@ -192,7 +203,10 @@ namespace Metida
 
 		void gotStatistics (const QMap<QDate, int>& statistics);
 
-		void unreadMessagesExist (bool exists);
+		void unreadMessagesIds (const QList<int>& unreadIds);
+		void messagesRead ();
+		void messageSent ();
+
 		void gotRecentComments (const QList<LJCommentEntry>& comments);
 		void gotTags (const QHash<QString, int>& tags);
 	};
