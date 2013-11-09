@@ -2075,7 +2075,7 @@ namespace Metida
 					{
 						auto fieldEntry = field.value<LJParserTypes::LJParseProfileEntry> ();
 						if (fieldEntry.Name () == "state")
-							isUnread = (fieldEntry.ValueToString ().toLower () == "n");
+							isUnread = fieldEntry.ValueToString ().toLower () == "n";
 						if (fieldEntry.Name () == "qid")
 							id = fieldEntry.ValueToInt ();
 					}

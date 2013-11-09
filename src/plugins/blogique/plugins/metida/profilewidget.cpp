@@ -43,7 +43,6 @@
 #include "friendsproxymodel.h"
 #include "core.h"
 #include "sendmessagedialog.h"
-#include <../qrosp/third-party/qmetaobjectbuilder.h>
 
 namespace LeechCraft
 {
@@ -75,36 +74,40 @@ namespace Metida
 				friendDelegate,
 				SLOT (handleColoringItemChanged ()));
 		Ui_.FriendsView_->setItemDelegate (friendDelegate);
-		QAction *newFriend = new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("list-add"),
-				tr ("Add friend"), this);
+		QAction *newFriend = new QAction (tr ("Add friend"), this);
+		newFriend->setProperty ("ActionIcon", "list-add");
 		connect (newFriend,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (on_Add__released ()));
-		QAction *deleteFriend = new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("list-remove"),
-				tr ("Delete friend"), this);
+		QAction *deleteFriend = new QAction (tr ("Delete friend"), this);
+		deleteFriend->setProperty ("ActionIcon", "list-remove");
 		connect (deleteFriend,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (on_Delete__released ()));
-		QAction *editFriend = new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("edit-select"),
-				tr ("Edit friend"), this);
+		QAction *editFriend = new QAction (tr ("Edit friend"), this);
+		editFriend->setProperty ("ActionIcon", "edit-select");
 		connect (editFriend,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (on_Edit__released ()));
-		QAction *readJournal = new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("text-field"),
-				tr ("Read journal"), this);
+		QAction *readJournal = new QAction (tr ("Read journal"), this);
+		readJournal->setProperty ("ActionIcon", "text-field");
 		connect (readJournal,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleReadJournal ()));
-		QAction *sendMessage = new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("mail-mark-unread"),
-				tr ("Send message"), this);
+		QAction *sendMessage = new QAction (tr ("Send message"), this);
+		sendMessage->setProperty ("ActionIcon", "mail-mark-unread");
 		connect (sendMessage,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleSendMessage ()));
+		connect (Ui_.FriendsView_,
+				SIGNAL (doubleClicked (QModelIndex)),
+				this,
+				SLOT (handleFriendsViewDoubleClicked (QModelIndex)));
 		Ui_.FriendsView_->setContextMenuPolicy (Qt::ActionsContextMenu);
 		Ui_.FriendsView_->addActions ({ readJournal, 
 				Util::CreateSeparator (Ui_.FriendsView_), 
@@ -122,8 +125,12 @@ namespace Metida
 		Ui_.CommunitiesView_->setModel (CommunitiesModel_);
 		Ui_.CommunitiesView_->setHeaderHidden (true);
 		Ui_.CommunitiesView_->setContextMenuPolicy (Qt::ActionsContextMenu);
-		QAction *readCommunity = new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("text-field"),
-				tr ("Read community"), this);
+		connect (Ui_.CommunitiesView_,
+				SIGNAL (doubleClicked (QModelIndex)),
+				this,
+				SLOT (handleCommunitiesViewDoubleClicked (QModelIndex)));
+		QAction *readCommunity = new QAction (tr ("Read community"), this);
+		readCommunity->setProperty ("ActionIcon", "text-field");
 		Ui_.CommunitiesView_->addAction (readCommunity);
 		connect (readCommunity,
 				SIGNAL (triggered ()),
@@ -141,20 +148,20 @@ namespace Metida
 				SLOT (handleFriendFilterTextChanged (QString)));
 		
 		Ui_.Groups_->setContextMenuPolicy (Qt::ActionsContextMenu);
-		QAction *newGroup = new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("list-add"),
-				tr ("Add group"), this);
+		QAction *newGroup = new QAction (tr ("Add group"), this);
+		newGroup->setProperty ("ActionIcon", "list-add");
 		connect (newGroup,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (addNewGroup ()));
-		QAction *deleteGroup = new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("list-remove"),
-				tr ("Delete group"), this);
+		QAction *deleteGroup = new QAction (tr ("Delete group"), this);
+		deleteGroup->setProperty ("ActionIcon", "list-remove");
 		connect (deleteGroup,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (deleteGroup ()));
-		QAction *editGroup = new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("edit-select"),
-				tr ("Edit group"), this);
+		QAction *editGroup = new QAction (tr ("Edit group"), this);
+		editGroup->setProperty ("ActionIcon", "edit-select");
 		connect (editGroup,
 				SIGNAL (triggered ()),
 				this,
@@ -500,6 +507,22 @@ namespace Metida
 							.arg (index.data ().toString ())), 
 						QString (), 
 						OnlyHandle | FromUserInitiated));
+	}
+
+	void ProfileWidget::handleFriendsViewDoubleClicked (const QModelIndex& index)
+	{
+		if (!index.isValid ())
+			return;
+		
+		handleReadJournal ();
+	}
+
+	void ProfileWidget::handleCommunitiesViewDoubleClicked (const QModelIndex& index)
+	{
+		if (!index.isValid ())
+			return;
+		
+		handleReadCommunity ();
 	}
 
 	void ProfileWidget::addNewGroup ()

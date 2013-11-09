@@ -99,6 +99,8 @@ namespace Metida
 		void handleReadJournal ();
 		void handleSendMessage ();
 		void handleReadCommunity ();
+		void handleFriendsViewDoubleClicked (const QModelIndex& index);
+		void handleCommunitiesViewDoubleClicked (const QModelIndex& index);
 		
 		void addNewGroup ();
 		void deleteGroup ();

@@ -675,11 +675,11 @@ namespace Metida
 				{
 					Entity urlEntity = Util::MakeEntity (QUrl ("http://livejournal.com/inbox/"),
 							QString (),
-							static_cast<TaskParameters> (OnlyHandle | FromUserInitiated));
+							/*static_cast<TaskParameters> (*/OnlyHandle | FromUserInitiated)/*)*/;
 					Core::Instance ().SendEntity (urlEntity);
 				});
 		nh->AddDependentObject (this);
-		nh->AddFunction (tr ("Set all as read"),
+		nh->AddFunction (tr ("Mark all as read"),
 				[this, ids] ()
 				{
 					SetMessagesAsRead (ids);
@@ -690,14 +690,14 @@ namespace Metida
 	void LJAccount::handleMessagesRead ()
 	{
 		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique Metida",
-				tr ("All unread messages set as read"),
+				tr ("All unread messages were marked as read"),
 				Priority::PInfo_));
 	}
 
 	void LJAccount::handleMessageSent ()
 	{
 		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique Metida",
-				tr ("Message sent successfully"),
+				tr ("Message has been sent successfully"),
 				Priority::PInfo_));
 	}
 
