@@ -203,7 +203,7 @@ namespace HttHare
 			result += "<tr><td class=" + NormalizeClass (mimes.at (i).MimeType_) + "><a href='";
 			result += item.fileName () + "'>" + item.fileName () + "</a></td>";
 			result += "<td>" + Util::MakePrettySize (item.size ()) + "</td>";
-			result += "<td>" + item.created ().toString () + "</td></tr>";
+			result += "<td>" + item.created ().toString (Qt::SystemLocaleShortDate) + "</td></tr>";
 		}
 
 		result += "</table></body></html>";
