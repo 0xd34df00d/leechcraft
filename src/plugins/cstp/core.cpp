@@ -636,7 +636,7 @@ namespace CSTP
 			{
 				tp |= IsDownloaded;
 				auto e = Util::MakeEntity (QUrl::fromLocalFile (filename),
-						url,
+						{},
 						tp);
 				e.Additional_ [" Tags"] = tags;
 				emit gotEntity (e);
