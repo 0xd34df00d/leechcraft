@@ -127,6 +127,10 @@ namespace Metida
 				this,
 				SLOT (handleMessagesRead ()));
 		connect (LJXmlRpc_,
+				SIGNAL (messageSent ()),
+				this,
+				SLOT (handleMessageSent ()));
+		connect (LJXmlRpc_,
 				SIGNAL (gotRecentComments (QList<LJCommentEntry>)),
 				this,
 				SIGNAL (gotRecentComments (QList<LJCommentEntry>)));
@@ -459,6 +463,12 @@ namespace Metida
 		LJXmlRpc_->SetMessagesAsRead (ids);
 	}
 
+	void LJAccount::SendMessage (const QStringList& addresses, const QString& subject,
+			const QString& text)
+	{
+		LJXmlRpc_->SendMessage (addresses, subject, text);
+	}
+
 	void LJAccount::CallLastUpdateMethod ()
 	{
 		switch (LastUpdateType_)
@@ -681,6 +691,13 @@ namespace Metida
 	{
 		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique Metida",
 				tr ("All unread messages set as read"),
+				Priority::PInfo_));
+	}
+
+	void LJAccount::handleMessageSent ()
+	{
+		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique Metida",
+				tr ("Message sent successfully"),
 				Priority::PInfo_));
 	}
 

@@ -42,6 +42,8 @@
 #include "addeditentrydialog.h"
 #include "friendsproxymodel.h"
 #include "core.h"
+#include "sendmessagedialog.h"
+#include <../qrosp/third-party/qmetaobjectbuilder.h>
 
 namespace LeechCraft
 {
@@ -97,9 +99,17 @@ namespace Metida
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleReadJournal ()));
+		QAction *sendMessage = new QAction (Core::Instance ().GetCoreProxy ()->GetIcon ("mail-mark-unread"),
+				tr ("Send message"), this);
+		connect (sendMessage,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleSendMessage ()));
 		Ui_.FriendsView_->setContextMenuPolicy (Qt::ActionsContextMenu);
 		Ui_.FriendsView_->addActions ({ readJournal, 
 				Util::CreateSeparator (Ui_.FriendsView_), 
+				sendMessage,
+				Util::CreateSeparator (Ui_.FriendsView_),
 				newFriend, editFriend, deleteFriend });
 
 		Ui_.Groups_->setModel (GroupsModel_);
@@ -422,6 +432,17 @@ namespace Metida
 		FriendsNotInGroupModel_->sort (0, Qt::AscendingOrder);
 	}
 
+	void ProfileWidget::on_SendMessage__released ()
+	{
+		SendMessageDialog dlg (Profile_);
+		dlg.setWindowModality (Qt::WindowModal);
+		if (dlg.exec () == QDialog::Rejected)
+			return;
+		
+		if (auto acc = qobject_cast<LJAccount*> (Profile_->GetParentAccount ()))
+			acc->SendMessage (dlg.GetAddresses (), dlg.GetSubject (), dlg.GetText ());
+	}
+
 	void ProfileWidget::handleUserGroupChanged (const QString& username,
 			const QString& bgColor, const QString& fgColor, int groupMask)
 	{
@@ -449,6 +470,23 @@ namespace Metida
 							.arg (index.data ().toString ())), 
 						QString (), 
 						OnlyHandle | FromUserInitiated));
+	}
+
+	void ProfileWidget::handleSendMessage ()
+	{
+		auto index = Ui_.FriendsView_->selectionModel ()->currentIndex ();
+		index = index.sibling (index.row (), Columns::Name);
+		if (!index.isValid ())
+			return;
+
+		SendMessageDialog dlg (Profile_);
+		dlg.setWindowModality (Qt::WindowModal);
+		dlg.SetAddresses ({ index.data ().toString () });
+		if (dlg.exec () == QDialog::Rejected)
+			return;
+
+		if (auto acc = qobject_cast<LJAccount*> (Profile_->GetParentAccount ()))
+			acc->SendMessage (dlg.GetAddresses (), dlg.GetSubject (), dlg.GetText ());
 	}
 
 	void ProfileWidget::handleReadCommunity ()

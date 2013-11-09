@@ -92,10 +92,12 @@ namespace Metida
 		void on_Groups__clicked (const QModelIndex& index);
 		void on_AddUserToGroup__released ();
 		void on_RemoveUserFromGroup__released ();
+		void on_SendMessage__released ();
 		void handleUserGroupChanged (const QString& username,
 				const QString& bgColor, const QString& fgColor, int groupId);
 		void handleFriendFilterTextChanged (const QString& text);
 		void handleReadJournal ();
+		void handleSendMessage ();
 		void handleReadCommunity ();
 		
 		void addNewGroup ();

@@ -182,6 +182,8 @@ namespace Metida
 		void DeleteGroup (int id);
 		
 		void SetMessagesAsRead (const QList<int>& ids);
+		void SendMessage (const QStringList& addresses, const QString& subject, 
+				const QString& text);
 	private:
 		void CallLastUpdateMethod ();
 
@@ -205,6 +207,7 @@ namespace Metida
 
 		void handleUnreadMessagesIds (const QList<int>& ids);
 		void handleMessagesRead ();
+		void handleMessageSent ();
 
 	signals:
 		void accountRenamed (const QString& newName);
