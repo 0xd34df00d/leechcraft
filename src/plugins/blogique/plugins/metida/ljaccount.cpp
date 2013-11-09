@@ -675,7 +675,7 @@ namespace Metida
 				{
 					Entity urlEntity = Util::MakeEntity (QUrl ("http://livejournal.com/inbox/"),
 							QString (),
-							/*static_cast<TaskParameters> (*/OnlyHandle | FromUserInitiated)/*)*/;
+							OnlyHandle | FromUserInitiated);
 					Core::Instance ().SendEntity (urlEntity);
 				});
 		nh->AddDependentObject (this);
