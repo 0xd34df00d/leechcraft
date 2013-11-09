@@ -175,8 +175,6 @@ namespace CSTP
 		QNetworkReply *rep = e.Entity_.value<QNetworkReply*> ();
 		QStringList tags = e.Additional_ [" Tags"].toStringList ();
 
-		const QUrl source = e.Additional_ ["SourceURL"].toUrl ();
-
 		const QFileInfo fi (e.Location_);
 		const auto& dir = fi.isDir () ? e.Location_ : fi.dir ().path ();
 		const auto& file = MakeFilename (e);
