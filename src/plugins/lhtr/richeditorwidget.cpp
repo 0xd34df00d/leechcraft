@@ -806,6 +806,8 @@ namespace LHTR
 				SetContents (str, ContentType::HTML);
 			}
 
+			setupJS ();
+
 			break;
 		}
 
