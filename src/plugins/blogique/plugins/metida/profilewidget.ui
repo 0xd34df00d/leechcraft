@@ -66,6 +66,13 @@
           </widget>
          </item>
          <item>
+          <widget class="QPushButton" name="SendMessage_">
+           <property name="text">
+            <string>Send message</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <spacer name="verticalSpacer_2">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
