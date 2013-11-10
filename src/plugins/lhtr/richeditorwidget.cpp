@@ -794,7 +794,18 @@ namespace LHTR
 				return;
 
 			HTMLDirty_ = false;
-			Ui_.View_->setContent (ExpandCustomTags (Ui_.HTML_->toPlainText ()).toUtf8 (), MIMEType);
+			const auto& str = ExpandCustomTags (Ui_.HTML_->toPlainText ());
+			Ui_.View_->setContent (str.toUtf8 (), MIMEType);
+
+			auto frame = Ui_.View_->page ()->mainFrame ();
+			if (frame->findFirstElement ("html > body").isNull ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "null html/body element";
+
+				SetContents (str, ContentType::HTML);
+			}
+
 			break;
 		}
 
