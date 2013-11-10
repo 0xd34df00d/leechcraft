@@ -655,9 +655,13 @@ namespace LHTR
 			}
 
 			html = QString::fromUtf8 (reinterpret_cast<char*> (output.bp));
-#else
-			Q_UNUSED (html);
 #endif
+
+			if (!html.startsWith ("<!DOCTYPE "))
+			{
+				html.prepend ("	\"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
+				html.prepend ("<!DOCTYPE html PUBLIC");
+			}
 		}
 	}
 
@@ -678,6 +682,9 @@ namespace LHTR
 					<< html;
 			return html;
 		}
+
+		if (!doc.documentElement ().hasAttribute ("xmlns"))
+			doc.documentElement ().setAttribute ("xmlns", "http://www.w3.org/1999/xhtml");
 
 		for (const auto& tag : CustomTags_)
 		{
@@ -787,7 +794,20 @@ namespace LHTR
 				return;
 
 			HTMLDirty_ = false;
-			Ui_.View_->setContent (ExpandCustomTags (Ui_.HTML_->toPlainText ()).toUtf8 (), MIMEType);
+			const auto& str = ExpandCustomTags (Ui_.HTML_->toPlainText ());
+			Ui_.View_->setContent (str.toUtf8 (), MIMEType);
+
+			auto frame = Ui_.View_->page ()->mainFrame ();
+			if (frame->findFirstElement ("html > body").isNull ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "null html/body element";
+
+				SetContents (str, ContentType::HTML);
+			}
+
+			setupJS ();
+
 			break;
 		}
 

@@ -370,6 +370,8 @@ namespace Aggregator
 
 			return item.Unread_ ? UnreadIcon_ : ReadIcon_;
 		}
+		else if (role == ItemRole::IsRead)
+			return !CurrentItems_ [index.row ()].Unread_;
 		else
 			return QVariant ();
 	}

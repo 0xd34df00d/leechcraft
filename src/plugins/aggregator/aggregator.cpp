@@ -756,11 +756,23 @@ namespace Aggregator
 
 	void Aggregator::on_ActionMarkChannelAsRead__triggered ()
 	{
+		if (QMessageBox::question (nullptr,
+				"LeechCraft",
+				tr ("Are you sure you want to mark all items as read?"),
+				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
+
 		Perform ([] (const QModelIndex& mi) { Core::Instance ().MarkChannelAsRead (mi); });
 	}
 
 	void Aggregator::on_ActionMarkChannelAsUnread__triggered ()
 	{
+		if (QMessageBox::question (nullptr,
+				"LeechCraft",
+				tr ("Are you sure you want to mark all items as unread?"),
+				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
+
 		Perform ([] (const QModelIndex& mi) { Core::Instance ().MarkChannelAsUnread (mi); });
 	}
 

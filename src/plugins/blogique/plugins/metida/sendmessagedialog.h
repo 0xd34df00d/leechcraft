@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,61 +29,35 @@
 
 #pragma once
 
-#include <QAbstractItemModel>
-#include <QStringList>
-#include <QSet>
-#include <QPair>
-#include <QIcon>
-#include "item.h"
+#include <QDialog>
+#include "ui_sendmessagedialog.h"
 
 namespace LeechCraft
 {
-namespace Aggregator
+namespace Blogique
 {
-	class ItemsListModel : public QAbstractItemModel
+namespace Metida
+{
+	class LJAccount;
+	class LJProfile;
+	
+	class SendMessageDialog : public QDialog
 	{
 		Q_OBJECT
 
-		QStringList ItemHeaders_;
-		items_shorts_t CurrentItems_;
-		int CurrentRow_;
-		IDType_t CurrentChannel_;
+		Ui::SendMessageDialog Ui_;
+		LJAccount *Account_;
+		LJProfile *Profile_;
 
-		const QIcon StarredIcon_;
-		const QIcon UnreadIcon_;
-		const QIcon ReadIcon_;
 	public:
-		enum ItemRole
-		{
-			IsRead = Qt::UserRole + 1
-		};
-
-		ItemsListModel (QObject* = 0);
-
-		int GetSelectedRow () const;
-		const IDType_t& GetCurrentChannel () const;
-		void SetCurrentChannel (const IDType_t&);
-		void Selected (const QModelIndex&);
-		void MarkItemReadStatus (const QModelIndex&, bool);
-		const ItemShort& GetItem (const QModelIndex&) const;
-		const items_shorts_t& GetAllItems () const;
-		bool IsItemRead (int) const;
-		QStringList GetCategories (int) const;
-		void Reset (const IDType_t&);
-		void Reset (const QList<IDType_t>&);
-		void RemoveItems (QSet<IDType_t>);
-		void ItemDataUpdated (Item_ptr);
-
-		int columnCount (const QModelIndex& = QModelIndex ()) const;
-		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-		Qt::ItemFlags flags (const QModelIndex&) const;
-		QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
-		QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
-		QModelIndex parent (const QModelIndex&) const;
-		int rowCount (const QModelIndex& = QModelIndex ()) const;
-	private slots:
-		void handleChannelRemoved (IDType_t);
-		void handleItemsRemoved (const QSet<IDType_t>&);
+		explicit SendMessageDialog (LJProfile *profile, QWidget *parent = 0);
+		void accept ();
+		
+		QStringList GetAddresses () const;
+		void SetAddresses (const QStringList& addresses);
+		QString GetSubject () const;
+		QString GetText () const;
 	};
+}
 }
 }

@@ -15,7 +15,7 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/blogique
 	)
 
-set (METIDA_SRCS 
+set (METIDA_SRCS
 	addeditentrydialog.cpp
 	core.cpp
 	frienditemdelegate.cpp
@@ -34,6 +34,7 @@ set (METIDA_SRCS
 	profiletypes.cpp
 	profilewidget.cpp
 	selectgroupsdialog.cpp
+	sendmessagedialog.cpp 
 	updatetypedialog.cpp
 	utils.cpp
 	xmlsettingsmanager.cpp
@@ -74,6 +75,7 @@ set (METIDA_FORMS
 	profilewidget.ui
 	postoptionswidget.ui
 	selectgroupsdialog.ui
+	sendmessagedialog.ui
 	updatetypedialog.ui
 	)
 

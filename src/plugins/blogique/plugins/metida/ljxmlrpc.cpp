@@ -187,6 +187,23 @@ namespace Metida
 				{ InboxRequest (challenge); };
 	}
 
+	void LJXmlRPC::SetMessagesAsRead (const QList<int>& ids)
+	{
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
+		ApiCallQueue_ << [this, ids] (const QString& challenge)
+				{ SetMessageAsReadRequest (ids, challenge); };
+	}
+
+	void LJXmlRPC::SendMessage (const QStringList& addresses, const QString& subject, 
+			const QString& text)
+	{
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
+		ApiCallQueue_ << [this, addresses, subject, text] (const QString& challenge)
+				{ SendMessageRequest (addresses, subject, text, challenge); };
+	}
+
 	void LJXmlRPC::RequestRecentCommments ()
 	{
 		auto guard = MakeRunnerGuard ();
@@ -1059,6 +1076,75 @@ namespace Metida
 				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
+	void LJXmlRPC::SetMessageAsReadRequest (const QList<int>& ids, const QString& challenge)
+	{
+		QDomDocument document ("SetMessageAsReadRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.setmessageread", document);
+		document.appendChild (result.first);
+		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
+				Account_->GetPassword (), challenge, document);
+		
+		auto array = GetComplexMemberElement ("qid", "array", document);
+ 		element.appendChild (array.first);
+		
+		for (int id : ids)
+		{
+			QDomElement valueType = document.createElement ("value");
+			array.second.appendChild (valueType);
+			QDomElement type = document.createElement ("int");
+			valueType.appendChild (type);
+			QDomText text = document.createTextNode (QString::number (id));
+			type.appendChild (text);
+		}
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleMessagesSetAsReadFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
+	void LJXmlRPC::SendMessageRequest (const QStringList& addresses, const QString& subject, 
+			const QString& text, const QString& challenge)
+	{
+		QDomDocument document ("SendMessageRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.sendmessage", document);
+		document.appendChild (result.first);
+		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
+				Account_->GetPassword (), challenge, document);
+		element.appendChild (GetSimpleMemberElement ("subject", "string", subject, document));
+		element.appendChild (GetSimpleMemberElement ("body", "string", text, document));
+		auto array = GetComplexMemberElement ("to", "array", document);
+		element.appendChild (array.first);
+		for (const auto& address : addresses)
+		{
+			QDomElement valueType = document.createElement ("value");
+			array.second.appendChild (valueType);
+			QDomElement type = document.createElement ("string");
+			valueType.appendChild (type);
+			QDomText text = document.createTextNode (address);
+			type.appendChild (text);
+		}
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleSendMessageRequestFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
 	void LJXmlRPC::RecentCommentsRequest (const QString& challenge)
 	{
 		QDomDocument document ("REecentCommentsRequest");
@@ -1115,14 +1201,16 @@ namespace Metida
 		QString errorCode;
 		query.setQuery ("/methodResponse/fault/value/struct/member[name='faultCode']/value/int/text()");
 		if (!query.evaluateTo (&errorCode))
-			return;
+			errorCode = QString ();
 
 		QString errorString;
 		query.setQuery ("/methodResponse/fault/value/struct/member[name='faultString']/value/string/text()");
 		if (!query.evaluateTo (&errorString))
-			return;
-		emit error (errorCode.toInt (), errorString,
-				MetidaUtils::GetLocalizedErrorMessage (errorCode.toInt ()));
+			errorString = QString ();
+		
+		if (!errorCode.isEmpty () && !errorString.isEmpty ())
+			emit error (errorCode.toInt (), errorString,
+					MetidaUtils::GetLocalizedErrorMessage (errorCode.toInt ()));
 	}
 
 	namespace
@@ -1961,11 +2049,12 @@ namespace Metida
 
 	namespace
 	{
-		bool IsUnreadMessagesExist (QDomDocument document)
+		QList<int> GetUnreadMessagesIds (QDomDocument document)
 		{
+			QList<int> unreadIds;
 			const auto& firstStructElement = document.elementsByTagName ("struct");
 			if (firstStructElement.at (0).isNull ())
-				return false;
+				return unreadIds;
 
 			const auto& members = firstStructElement.at (0).childNodes ();
 			for (int i = 0, count = members.count (); i < count; ++i)
@@ -1976,18 +2065,27 @@ namespace Metida
 					continue;
 
 				auto res = ParseMember (member);
-				if (res.Name () == "items")
-					for (const auto& message : res.Value ())
-						for (const auto& field : message.toList ())
-						{
-							auto fieldEntry = field.value<LJParserTypes::LJParseProfileEntry> ();
-							if (fieldEntry.Name () == "state" &&
-									fieldEntry.ValueToString ().toLower () == "n")
-								return true;
-						}
+				if (res.Name () != "items")
+					continue;
+				
+				for (const auto& message : res.Value ())
+				{
+					bool isUnread = false;
+					int id = -1;
+					for (const auto& field : message.toList ())
+					{
+						auto fieldEntry = field.value<LJParserTypes::LJParseProfileEntry> ();
+						if (fieldEntry.Name () == "state")
+							isUnread = fieldEntry.ValueToString ().toLower () == "n";
+						if (fieldEntry.Name () == "qid")
+							id = fieldEntry.ValueToInt ();
+					}
+					
+					if (isUnread && id != -1)
+						unreadIds << id;
+				}
 			}
-
-			return false;
+			return unreadIds;
 		}
 	}
 
@@ -2001,10 +2099,44 @@ namespace Metida
 
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
-			emit unreadMessagesExist (IsUnreadMessagesExist (document));
+			const auto& unreadIds = GetUnreadMessagesIds (document);
+			if (!unreadIds.isEmpty ())
+				emit unreadMessagesIds (unreadIds);
 			XmlSettingsManager::Instance ().setProperty ("LastInboxUpdateDate",
 					QDateTime::currentDateTime ());
 			CallNextFunctionFromQueue ();
+			return;
+		}
+		ParseForError (content);
+	}
+
+	void LJXmlRPC::handleMessagesSetAsReadFinished ()
+	{
+		QDomDocument document;
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		QByteArray content = CreateDomDocumentFromReply (reply, document);
+		if (content.isEmpty ())
+			return;
+
+		if (document.elementsByTagName ("fault").isEmpty ())
+		{
+			emit messagesRead ();
+			return;
+		}
+		ParseForError (content);
+	}
+
+	void LJXmlRPC::handleSendMessageRequestFinished ()
+	{
+		QDomDocument document;
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		QByteArray content = CreateDomDocumentFromReply (reply, document);
+		if (content.isEmpty ())
+			return;
+
+		if (document.elementsByTagName ("fault").isEmpty ())
+		{
+			emit messageSent ();
 			return;
 		}
 		ParseForError (content);

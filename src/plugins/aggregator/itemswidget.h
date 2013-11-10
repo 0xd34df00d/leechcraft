@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_ITEMSWIDGET_H
-#define PLUGINS_AGGREGATOR_ITEMSWIDGET_H
+#pragma once
+
 #include <QWidget>
 #include "ui_itemswidget.h"
 #include "item.h"
@@ -61,8 +61,10 @@ namespace Aggregator
 			MarkAsRead,
 			MarkAsUnread,
 			MarkAsImportant,
+			PrevUnreadItem,
 			PrevItem,
 			NextItem,
+			NextUnreadItem,
 			Delete,
 
 			MaxAction
@@ -135,8 +137,12 @@ namespace Aggregator
 		void on_ActionMarkItemAsRead__triggered ();
 		void on_ActionMarkItemAsImportant__triggered ();
 		void on_ActionDeleteItem__triggered ();
+
+		void on_ActionPrevUnreadItem__triggered ();
 		void on_ActionPrevItem__triggered ();
 		void on_ActionNextItem__triggered ();
+		void on_ActionNextUnreadItem__triggered ();
+
 		void on_CaseSensitiveSearch__stateChanged (int);
 		void on_ActionItemCommentsSubscribe__triggered ();
 		void on_ActionItemLinkOpen__triggered ();
@@ -150,5 +156,3 @@ namespace Aggregator
 	};
 }
 }
-
-#endif

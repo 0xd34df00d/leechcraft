@@ -95,6 +95,7 @@ namespace Metida
 	public slots:
 		void handleAccountValidated (bool validated);
 		void handleMessageChecking ();
+		void handleMessageUpdateIntervalChanged ();
 		void handleCommentsChecking ();
 		void checkForMessages ();
 

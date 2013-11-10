@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2013  Georg Rudoy
+ * Copyright (C) 2010-2012  Oleg Linkin
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,65 +27,70 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "notifier.h"
-#include <QTextDocument>
+#include "sendmessagedialog.h"
+#include <QMessageBox>
+#include <QPushButton>
 #include <util/util.h>
-#include <interfaces/core/ientitymanager.h>
-#include "xmlsettingsmanager.h"
+#include "ljaccount.h"
+#include "ljprofile.h"
 
 namespace LeechCraft
 {
-namespace GmailNotifier
+namespace Blogique
 {
-	Notifier::Notifier (ICoreProxy_ptr proxy, QObject *parent)
-	: QObject (parent)
-	, Proxy_ (proxy)
+namespace Metida
+{
+	SendMessageDialog::SendMessageDialog (LJProfile *profile, QWidget *parent) 
+	: QDialog (parent)
+	, Account_ (0)
+	, Profile_ (profile)
 	{
+		Ui_.setupUi (this);
+		Account_ = qobject_cast<LJAccount*> (Profile_->GetParentAccount ());
+		Ui_.ButtonBox_->addButton (tr ("Send"), QDialogButtonBox::AcceptRole);
 	}
-
-	void Notifier::notifyAbout (const ConvInfos_t& infos)
+	
+	void SendMessageDialog::accept ()
 	{
-		qDebug () << Q_FUNC_INFO << infos.size ();
-		if (infos == PreviousInfos_)
-			return;
-
-		PreviousInfos_ = infos;
-
-		if (infos.isEmpty ())
-			return;
-
-		const int fullShow = XmlSettingsManager::Instance ()->
-				property ("ShowLastNMessages").toInt ();
-
-		auto textWFallback = [] (const QString& text, const QString& fallback)
-			{ return text.isEmpty () ? fallback : Qt::escape (text); };
-
-		int handledMsgs = 0;
-		QString result;
-		for (const auto& info : infos)
+		if (Ui_.Addresses_->text ().isEmpty ())
 		{
-			result += QString::fromUtf8 ("<p><font color=\"#004C00\">\302\273</font>&nbsp;<a href=\"");
-			result += info.Link_.toString () + "\">";
-			result += textWFallback (info.Title_, tr ("No subject")) + "</a> " + tr ("from") + " ";
-			result += "<a href=\"https://mail.google.com/mail?extsrc=mailto&url=mailto:";
-			result += info.AuthorEmail_ + "\">";
-			result += info.AuthorName_ + "</a><br/>";
-			result += tr ("at") + " ";
-			result += info.Modified_.toString (Qt::SystemLocaleLongDate);
-			result += "</p><p class=\"additionaltext\">";
-			result += Qt::escape (info.Summary_) + "</p>";
-
-			if (++handledMsgs == fullShow)
-				break;
+			QMessageBox::warning (this, "LeechCraft",
+					tr ("Please enter a valid username"));
+			return;
+		}
+		else if (Account_)
+		{
+			const auto& addresses = GetAddresses ();
+			if (addresses.count () == 1 && addresses.at (0) == Account_->GetOurLogin ())
+			{
+				QMessageBox::warning (this, "LeechCraft",
+					tr ("Stop trying to message yourself, livejournal is not that kind of service"));
+				return;
+			}
 		}
 
-		if (infos.size () > fullShow)
-			result += "<p><em>&hellip;" +
-					tr ("and %1 more").arg (infos.size () - fullShow) +
-					"</em></p>";
-
-		const auto& e = Util::MakeNotification ("GMail", result, PInfo_);
-		Proxy_->GetEntityManager ()->HandleEntity (e);
+		QDialog::accept ();
 	}
+
+	QStringList SendMessageDialog::GetAddresses () const
+	{
+		return Ui_.Addresses_->text ().split (',');
+	}
+
+	void SendMessageDialog::SetAddresses (const QStringList& addresses)
+	{
+		Ui_.Addresses_->setText (addresses.join (","));
+	}
+
+	QString SendMessageDialog::GetSubject () const
+	{
+		return Ui_.Subject_->text ();
+	}
+
+	QString SendMessageDialog::GetText () const
+	{
+		return Ui_.Text_->toPlainText ();
+	}
+}
 }
 }
