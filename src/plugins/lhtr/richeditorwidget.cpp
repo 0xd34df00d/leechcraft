@@ -683,6 +683,9 @@ namespace LHTR
 			return html;
 		}
 
+		if (!doc.documentElement ().hasAttribute ("xmlns"))
+			doc.documentElement ().setAttribute ("xmlns", "http://www.w3.org/1999/xhtml");
+
 		for (const auto& tag : CustomTags_)
 		{
 			const auto& elems = doc.elementsByTagName (tag.TagName_);
