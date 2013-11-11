@@ -153,6 +153,8 @@ namespace Aggregator
 		void updateItemsFilter ();
 		void selectorVisiblityChanged ();
 		void navBarVisibilityChanged ();
+	signals:
+		void movedToChannel (const QModelIndex&);
 	};
 }
 }

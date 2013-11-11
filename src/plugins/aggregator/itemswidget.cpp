@@ -1282,6 +1282,7 @@ namespace Aggregator
 			const auto& otherChannel = chanIdx.sibling (i, ChannelsModel::ColumnUnread);
 			if (otherChannel.data ().toInt ())
 			{
+				emit movedToChannel (otherChannel);
 				CurrentChannelChanged (otherChannel);
 				on_ActionPrevUnreadItem__triggered ();
 				break;
@@ -1343,6 +1344,7 @@ namespace Aggregator
 			const auto& otherChannel = chanIdx.sibling (i, ChannelsModel::ColumnUnread);
 			if (otherChannel.data ().toInt ())
 			{
+				emit movedToChannel (otherChannel);
 				CurrentChannelChanged (otherChannel);
 				on_ActionNextUnreadItem__triggered ();
 				break;
