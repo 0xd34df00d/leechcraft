@@ -327,9 +327,35 @@ namespace LeechCraft
 
 		QList<QModelIndex> FlatToFoldersProxyModel::MapFromSource (const QModelIndex& source) const
 		{
+			auto tags = source.data (RoleTags).toStringList ();
+			if (tags.isEmpty ())
+				tags << QString ();
+
 			QList<QModelIndex> result;
-			Q_FOREACH (FlatTreeItem_ptr item, Items_.values (QPersistentModelIndex (source)))
-				result << item->Index_;
+			for (const auto& tag : tags)
+			{
+				const auto& folder = FindFolder (tag);
+				if (!folder)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "could not find folder for tag"
+							<< tag
+							<< GetSourceModel ();
+					continue;
+				}
+
+				const auto& folderIdx = index (folder->Row (), 0, {});
+
+				for (int i = 0; i < folder->C_.size (); ++i)
+				{
+					const auto& child = folder->C_.at (i);
+					if (child->Index_ != source)
+						continue;
+
+					result << index (i, 0, folderIdx);
+					break;
+				}
+			}
 			return result;
 		}
 
