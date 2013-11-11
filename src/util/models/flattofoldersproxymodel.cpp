@@ -334,6 +334,15 @@ namespace LeechCraft
 			return result;
 		}
 
+		FlatTreeItem_ptr FlatToFoldersProxyModel::FindFolder (const QString& tag) const
+		{
+			for (const auto& item : Root_->C_)
+				if (item->Tag_ == tag)
+					return item;
+
+			return {};
+		}
+
 		FlatTreeItem_ptr FlatToFoldersProxyModel::GetFolder (const QString& tag)
 		{
 			QList<FlatTreeItem_ptr>& c = Root_->C_;
