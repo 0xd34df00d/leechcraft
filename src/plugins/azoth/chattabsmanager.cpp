@@ -128,7 +128,7 @@ namespace Azoth
 				this,
 				SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
 
-		emit addNewTab (entry->GetEntryName (), tab);
+		emit addNewTab (tab->ReformatTitle (), tab);
 
 		tab->HasBeenAdded ();
 
