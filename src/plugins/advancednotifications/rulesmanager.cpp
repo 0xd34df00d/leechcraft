@@ -224,7 +224,7 @@ namespace AdvancedNotifications
 
 					FieldMatch fieldMatch (field.Type_, valMatcher);
 					fieldMatch.SetPluginID (sender);
-					fieldMatch.SetFieldName (field.Name_);
+					fieldMatch.SetFieldName (field.ID_);
 					rule.AddFieldMatch (fieldMatch);
 				}
 			}
