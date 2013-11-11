@@ -2179,13 +2179,13 @@ namespace Azoth
 		return participantsList;
 	}
 
-	void ChatTab::ReformatTitle ()
+	QString ChatTab::ReformatTitle ()
 	{
 		if (!GetEntry<ICLEntry> ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "GetEntry<ICLEntry> returned NULL";
-			return;
+			return {};
 		}
 
 		QString title = GetEntry<ICLEntry> ()->GetEntryName ();
@@ -2216,6 +2216,8 @@ namespace Azoth
 		path << title;
 
 		setProperty ("WidgetLogicalPath", path);
+
+		return title;
 	}
 
 	void ChatTab::UpdateTextHeight ()

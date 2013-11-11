@@ -155,6 +155,8 @@ namespace Azoth
 		QObject* GetCLEntry () const;
 		QString GetSelectedVariant () const;
 
+		QString ReformatTitle ();
+
 		bool eventFilter (QObject*, QEvent*);
 	public slots:
 		void prepareMessageText (const QString&);
@@ -230,7 +232,6 @@ namespace Azoth
 
 		QStringList GetMUCParticipants () const;
 
-		void ReformatTitle ();
 		void UpdateTextHeight ();
 		void SetChatPartState (ChatPartState);
 
