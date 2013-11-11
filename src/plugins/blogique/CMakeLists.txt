@@ -23,6 +23,7 @@ set (SRCS
 	blogentrieswidget.cpp
 	blogiquewidget.cpp
 	calendarwidget.cpp
+	commentsmodel.cpp
 	commentswidget.cpp
 	core.cpp
 	draftentrieswidget.cpp
