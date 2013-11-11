@@ -1553,12 +1553,20 @@ namespace Azoth
 
 	void Core::IncreaseUnreadCount (ICLEntry* entry, int amount)
 	{
-		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+		for (auto item : Entry2Items_ [entry])
 			{
 				int prevValue = item->data (CLRUnreadMsgCount).toInt ();
 				item->setData (std::max (0, prevValue + amount), CLRUnreadMsgCount);
 				RecalculateUnreadForParents (item);
 			}
+	}
+
+	int Core::GetUnreadCount (ICLEntry *entry) const
+	{
+		const auto item = Entry2Items_.value (entry).value (0);
+		return item ?
+				item->data (CLRUnreadMsgCount).toInt () :
+				0;
 	}
 
 	namespace

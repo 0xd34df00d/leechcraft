@@ -331,6 +331,8 @@ namespace Azoth
 		 * the given amount, which may be negative.
 		 */
 		void IncreaseUnreadCount (ICLEntry *entry, int amount = 1);
+
+		int GetUnreadCount (ICLEntry *entry) const;
 	private:
 		/** Adds the protocol object. The object must implement
 		 * IProtocolPlugin interface.
