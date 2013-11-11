@@ -57,9 +57,8 @@ namespace LeechCraft
 		{
 			if (Parent_)
 			{
-				QList<FlatTreeItem_ptr> c = Parent_->C_;
-				for (int i = 0, size = Parent_->C_.size ();
-						i < size; ++i)
+				const auto& c = Parent_->C_;
+				for (int i = 0, size = c.size (); i < size; ++i)
 					if (c.at (i).get () == this)
 						return i;
 			}
@@ -345,8 +344,8 @@ namespace LeechCraft
 
 		FlatTreeItem_ptr FlatToFoldersProxyModel::GetFolder (const QString& tag)
 		{
-			QList<FlatTreeItem_ptr>& c = Root_->C_;
-			Q_FOREACH (FlatTreeItem_ptr item, c)
+			auto& c = Root_->C_;
+			for (const auto& item : c)
 				if (item->Tag_ == tag)
 					return item;
 
