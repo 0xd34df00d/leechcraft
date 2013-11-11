@@ -79,26 +79,19 @@ namespace Blogique
 	{
 		QString EntrySubject_;
 		QUrl EntryUrl_;
-		
+		qint64 EntryId_;
+
 		QString CommentSubject_;
 		QString CommentText_;
-		QString 
-		int PosterId_;
-		CommentState State_;
-		int ReplyId_;
-		int ParentReplyId_;
-		QString PosterName_;
-		QString Text_;
-		QDateTime PostingDate_;
-		QString NodeSubject_;
-		QUrl NodeUrl_;
+		QString CommentAuthor_;
+		QDateTime CommentDateTime_;
+		qint64 CommentId_;
+		qint64 ParentCommentId_;
 
-		LJCommentEntry ()
-		: NodeId_ (-1)
-		, PosterId_ (-1)
-		, State_ (CommentState::Active)
-		, ReplyId_ (-1)
-		, ParentReplyId_ (-1)
+		RecentComment ()
+		: EntryId_ (-1)
+		, CommentId_ (-1)
+		, ParentCommentId_ (-1)
 		{}
 	};
 

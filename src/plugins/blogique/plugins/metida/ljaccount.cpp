@@ -663,7 +663,7 @@ namespace Metida
 	{
 		if (ids.isEmpty ())
 			return;
-		
+
 		Entity e = Util::MakeNotification ("Blogique Metida",
 				tr ("You have unread messages in account %1")
 						.arg ("<em>" + GetAccountName () + "</em>"),
@@ -686,7 +686,7 @@ namespace Metida
 				});
 		Core::Instance ().SendEntity (e);
 	}
-	
+
 	void LJAccount::handleMessagesRead ()
 	{
 		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique Metida",
@@ -701,9 +701,39 @@ namespace Metida
 				Priority::PInfo_));
 	}
 
+	namespace
+	{
+		RecentComment LJCommentEntry2RecentComment (const LJCommentEntry& comment)
+		{
+			RecentComment recentComment;
+
+			recentComment.EntryId_ = comment.NodeId_;
+			recentComment.EntrySubject_ = comment.NodeSubject_;
+			recentComment.EntryUrl_ = comment.NodeUrl_;
+
+			recentComment.CommentSubject_ = comment.Subject_;
+			recentComment.CommentText_ = comment.Text_;
+			recentComment.CommentAuthor_ = comment.PosterName_;
+			recentComment.CommentDateTime_ = comment.PostingDate_;
+			recentComment.CommentId_ = comment.ReplyId_;
+			recentComment.ParentCommentId_ = comment.ParentReplyId_;
+
+			return recentComment;
+		}
+	}
+
 	void LJAccount::handleGotRecentComments (const QList<LJCommentEntry>& comments)
 	{
-		qDebug () << "got comments:" << comments.count ();
+		if (comments.isEmpty ())
+			return;
+
+		QList<RecentComment> recentComments;
+		std::transform (comments.begin (), comments.end (), std::back_inserter (recentComments),
+				[this] (decltype (comments.first ()) comment)
+				{
+					return LJCommentEntry2RecentComment (comment);
+				});
+		emit gotRecentComments (recentComments);
 	}
 }
 }

@@ -195,7 +195,7 @@ namespace Metida
 				{ SetMessageAsReadRequest (ids, challenge); };
 	}
 
-	void LJXmlRPC::SendMessage (const QStringList& addresses, const QString& subject, 
+	void LJXmlRPC::SendMessage (const QStringList& addresses, const QString& subject,
 			const QString& text)
 	{
 		auto guard = MakeRunnerGuard ();
@@ -1083,10 +1083,10 @@ namespace Metida
 		document.appendChild (result.first);
 		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
 				Account_->GetPassword (), challenge, document);
-		
+
 		auto array = GetComplexMemberElement ("qid", "array", document);
  		element.appendChild (array.first);
-		
+
 		for (int id : ids)
 		{
 			QDomElement valueType = document.createElement ("value");
@@ -1110,7 +1110,7 @@ namespace Metida
 				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
-	void LJXmlRPC::SendMessageRequest (const QStringList& addresses, const QString& subject, 
+	void LJXmlRPC::SendMessageRequest (const QStringList& addresses, const QString& subject,
 			const QString& text, const QString& challenge)
 	{
 		QDomDocument document ("SendMessageRequest");
@@ -1207,7 +1207,7 @@ namespace Metida
 		query.setQuery ("/methodResponse/fault/value/struct/member[name='faultString']/value/string/text()");
 		if (!query.evaluateTo (&errorString))
 			errorString = QString ();
-		
+
 		if (!errorCode.isEmpty () && !errorString.isEmpty ())
 			emit error (errorCode.toInt (), errorString,
 					MetidaUtils::GetLocalizedErrorMessage (errorCode.toInt ()));
@@ -2067,7 +2067,7 @@ namespace Metida
 				auto res = ParseMember (member);
 				if (res.Name () != "items")
 					continue;
-				
+
 				for (const auto& message : res.Value ())
 				{
 					bool isUnread = false;
@@ -2080,7 +2080,7 @@ namespace Metida
 						if (fieldEntry.Name () == "qid")
 							id = fieldEntry.ValueToInt ();
 					}
-					
+
 					if (isUnread && id != -1)
 						unreadIds << id;
 				}
@@ -2229,6 +2229,9 @@ namespace Metida
 					ids << QString::number (comment.NodeId_);
 				}
 			}
+
+			ids.removeDuplicates ();
+			ids.removeAll ("0");
 
 			if (!ids.isEmpty ())
 			{
