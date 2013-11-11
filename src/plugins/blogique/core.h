@@ -101,6 +101,7 @@ namespace Blogique
 		void handleAutoSaveIntervalChanged ();
 		void handleCommentsCheckingChanged ();
 		void handleCommentsCheckingTimerChanged ();
+		void handleGotRecentComments (const QList<RecentComment>& comments);
 
 		void exportBlog ();
 		
@@ -129,7 +130,8 @@ namespace Blogique
 
 		void insertTag (const QString& tag);
 		
-		void gotRecentComments (const QList<RecentComment>& comments);
+		void gotRecentComments (const QByteArray& accountId,
+				const QList<RecentComment>& comments);
 
 		void gotError (int errorCode, const QString& errorString,
 				const QString& localizedErrorString);

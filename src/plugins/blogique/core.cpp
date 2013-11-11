@@ -212,9 +212,9 @@ namespace Blogique
 				newTab,
 				SLOT (handleGotError (int, QString, QString)));
 		connect (&Core::Instance (),
-				SIGNAL (gotRecentComments (QList<RecentComment>)),
+				SIGNAL (gotRecentComments (QByteArray, QList<RecentComment>)),
 				newTab,
-				SLOT (handleGotRecentComments (QList<RecentComment>)));
+				SLOT (handleGotRecentComments (QByteArray, QList<RecentComment>)));
 		connect (&Core::Instance (),
 				SIGNAL (gotError (int, QString, QString)),
 				newTab,
@@ -310,7 +310,7 @@ namespace Blogique
 		connect (accObj,
 				SIGNAL (gotRecentComments (QList<RecentComment>)),
 				this,
-				SIGNAL (gotRecentComments (QList<RecentComment>)));
+				SLOT (handleGotRecentComments (QList<RecentComment>)));
 		connect (accObj,
 				SIGNAL (gotError (int, QString, QString)),
 				this,
@@ -431,6 +431,12 @@ namespace Blogique
 					.property ("UpdateCommentsInterval").toInt () * 60 * 1000);
 		else if (CommentsCheckingTimer_->isActive ())
 			CommentsCheckingTimer_->stop ();
+	}
+
+	void Core::handleGotRecentComments (const QList<RecentComment>& comments)
+	{
+		if (auto account = qobject_cast<IAccount*> (sender ()))
+			emit gotRecentComments (account->GetAccountID (), comments);
 	}
 
 	void Core::exportBlog ()

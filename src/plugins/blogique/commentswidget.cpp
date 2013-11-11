@@ -29,6 +29,12 @@
  **********************************************************************/
 
 #include "commentswidget.h"
+#include <QDeclarativeContext>
+#include <QGraphicsObject>
+#include <util/qml/colorthemeproxy.h>
+#include <util/sys/paths.h>
+#include "commentsmodel.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -36,15 +42,41 @@ namespace Blogique
 {
 	CommentsWidget::CommentsWidget (QWidget *parent)
 	: QWidget (parent)
+	, CommentsModel_ (new CommentsModel (this))
 	{
 		Ui_.setupUi (this);
 		
 		Ui_.CommentsView_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
+		auto context = Ui_.CommentsView_->rootContext ();
+		context->setContextProperty ("colorProxy",
+				new Util::ColorThemeProxy (Core::Instance ()
+						.GetCoreProxy ()->GetColorThemeManager (), this));
+		context->setContextProperty ("commentsModel", CommentsModel_);
+		context->setContextProperty ("parentWidget", this);
+		Ui_.CommentsView_->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,
+				"blogique", "recentcomments.qml")));
 	}
 	
 	QString CommentsWidget::GetName () const
 	{
 		return tr ("Comments");
+	}
+
+	void CommentsWidget::setItemCursor (QGraphicsObject *object, const QString& shape)
+	{
+		Q_ASSERT (object);
+
+		Qt::CursorShape cursor = (shape == "PointingHandCursor") ?
+			Qt::PointingHandCursor :
+			Qt::ArrowCursor;
+
+		object->setCursor (QCursor (cursor));
+	}
+
+	void CommentsWidget::handleGotComments (const QByteArray& accountId, 
+			const QList<RecentComment>& comments)
+	{
+		qDebug () << accountId << comments.count ();
 	}
 
 }

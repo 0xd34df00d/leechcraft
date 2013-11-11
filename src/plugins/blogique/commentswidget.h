@@ -32,21 +32,31 @@
 
 #include <QWidget>
 #include "ui_commentswidget.h"
+#include "interfaces/blogique/iaccount.h"
 
 namespace LeechCraft
 {
 namespace Blogique
 {
+	class CommentsModel;
+	
 	class CommentsWidget : public QWidget
 	{
 		Q_OBJECT
 
 		Ui::CommentsWidget Ui_;
-		
+
+		CommentsModel *CommentsModel_;
+
 	public:
 		CommentsWidget (QWidget *parent = 0);
 		
 		QString GetName () const;
+		
+	public slots:
+		void setItemCursor (QGraphicsObject *object, const QString& shape);
+		void handleGotComments (const QByteArray& accountId, 
+				const QList<RecentComment>& comments);
 	};
 }
 }

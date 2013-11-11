@@ -77,7 +77,29 @@ namespace Blogique
 
 	struct RecentComment
 	{
+		QString EntrySubject_;
+		QUrl EntryUrl_;
 		
+		QString CommentSubject_;
+		QString CommentText_;
+		QString 
+		int PosterId_;
+		CommentState State_;
+		int ReplyId_;
+		int ParentReplyId_;
+		QString PosterName_;
+		QString Text_;
+		QDateTime PostingDate_;
+		QString NodeSubject_;
+		QUrl NodeUrl_;
+
+		LJCommentEntry ()
+		: NodeId_ (-1)
+		, PosterId_ (-1)
+		, State_ (CommentState::Active)
+		, ReplyId_ (-1)
+		, ParentReplyId_ (-1)
+		{}
 	};
 
 	struct Filter

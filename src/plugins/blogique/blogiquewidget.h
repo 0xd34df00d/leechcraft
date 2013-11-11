@@ -144,7 +144,8 @@ namespace Blogique
 		void handleRequestEntriesEnd ();
 		void handleTagsUpdated (const QHash<QString, int>& tags);
 		void handleInsertTag (const QString& tag);
-		void handleGotRecentComments (const QList<RecentComment>& comments);
+		void handleGotRecentComments (const QByteArray& accountId, 
+				const QList<RecentComment>& comments);
 		void handleGotError (int errorCode, const QString& errorString,
 				const QString& localizedErrorString);
 		void handleAccountAdded (QObject *acc);
