@@ -868,7 +868,7 @@ namespace Blogique
 		iahe->InsertHTML (tag);
 	}
 
-	void BlogiqueWidget::handleGotRecentComments (const QByteArray& accountId, 
+	void BlogiqueWidget::handleGotRecentComments (const QByteArray& accountId,
 			const QList<RecentComment>& comments)
 	{
 		CommentsWidget_->handleGotComments (accountId, comments);

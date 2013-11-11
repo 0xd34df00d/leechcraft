@@ -62,7 +62,7 @@ namespace Blogique
 		XmlSettingsManager::Instance ().RegisterObject ("AutoSave",
 				this, "handleAutoSaveIntervalChanged");
 		handleAutoSaveIntervalChanged ();
-	
+
 		XmlSettingsManager::Instance ().RegisterObject ("CheckingCommentsEnabled",
 				this, "handleCommentsCheckingChanged");
 		XmlSettingsManager::Instance ().RegisterObject ("UpdateCommentsInterval",
@@ -419,7 +419,7 @@ namespace Blogique
 
 	void Core::handleCommentsCheckingChanged ()
 	{
-		if (!XmlSettingsManager::Instance ().Property ("CheckingCommentsEnabled", true).toBool () && 
+		if (!XmlSettingsManager::Instance ().Property ("CheckingCommentsEnabled", true).toBool () &&
 				CommentsCheckingTimer_->isActive ())
 			CommentsCheckingTimer_->stop ();
 	}
