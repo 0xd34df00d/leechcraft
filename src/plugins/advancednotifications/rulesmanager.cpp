@@ -231,6 +231,8 @@ namespace AdvancedNotifications
 
 		Rules_.prepend (rule);
 		RulesModel_->insertRow (0, RuleToRow (rule));
+
+		SaveSettings ();
 	}
 
 	void RulesManager::LoadDefaultRules (int version)
