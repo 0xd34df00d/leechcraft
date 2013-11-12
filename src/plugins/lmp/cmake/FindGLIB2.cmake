@@ -12,8 +12,8 @@
 
 
 if(GLIB2_INCLUDE_DIR AND GLIB2_LIBRARIES)
-    # Already in cache, be silent
-    set(GLIB2_FIND_QUIETLY TRUE)
+	# Already in cache, be silent
+	set(GLIB2_FIND_QUIETLY TRUE)
 endif(GLIB2_INCLUDE_DIR AND GLIB2_LIBRARIES)
 
 IF (NOT WIN32)
@@ -22,19 +22,19 @@ IF (NOT WIN32)
 ENDIF ()
 
 find_path(GLIB2_MAIN_INCLUDE_DIR
-          NAMES glib.h
-          HINTS ${PC_LibGLIB2_INCLUDEDIR} ${GLIB2_DIR}/include
-          PATH_SUFFIXES glib-2.0
+		  NAMES glib.h
+		  HINTS ${PC_LibGLIB2_INCLUDEDIR} ${GLIB2_DIR}/include
+		  PATH_SUFFIXES glib-2.0
 		)
 
-find_library(GLIB2_LIBRARY 
-             NAMES glib-2.0 
-             HINTS ${PC_LibGLIB2_LIBDIR} ${GLIB2_DIR}/lib
+find_library(GLIB2_LIBRARY
+			 NAMES glib-2.0
+			 HINTS ${PC_LibGLIB2_LIBDIR} ${GLIB2_DIR}/lib
 )
 
-find_library(GOBJECT2_LIBRARY 
-             NAMES gobject-2.0 
-             HINTS ${PC_LibGLIB2_LIBDIR} ${GLIB2_DIR}/lib
+find_library(GOBJECT2_LIBRARY
+			 NAMES gobject-2.0
+			 HINTS ${PC_LibGLIB2_LIBDIR} ${GLIB2_DIR}/lib
 )
 
 
@@ -44,10 +44,10 @@ set(GLIB2_LIBRARIES ${GLIB2_LIBRARY} ${GOBJECT2_LIBRARY})
 get_filename_component(glib2LibDir "${GLIB2_LIBRARIES}" PATH)
 
 find_path(GLIB2_INTERNAL_INCLUDE_DIR glibconfig.h
-          HINTS ${PC_LibGLIB2_INCLUDEDIR} ${glib2LibDir} ${CMAKE_SYSTEM_LIBRARY_PATH} ${GLIB2_DIR}/lib
-          PATH_SUFFIXES glib-2.0/include)
+		  HINTS ${PC_LibGLIB2_INCLUDEDIR} ${glib2LibDir} ${CMAKE_SYSTEM_LIBRARY_PATH} ${GLIB2_DIR}/lib
+		  PATH_SUFFIXES glib-2.0/include)
 
-set(GLIB2_INCLUDE_DIR "${GLIB2_MAIN_INCLUDE_DIR}")
+set(GLIB2_INCLUDE_DIR "${GLIB2_MAIN_INCLUDE_DIR}" ${PC_LibGLIB2_INCLUDE_DIRS})
 
 # not sure if this include dir is optional or required
 # for now it is optional
