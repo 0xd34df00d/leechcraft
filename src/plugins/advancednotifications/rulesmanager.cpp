@@ -224,13 +224,15 @@ namespace AdvancedNotifications
 
 					FieldMatch fieldMatch (field.Type_, valMatcher);
 					fieldMatch.SetPluginID (sender);
-					fieldMatch.SetFieldName (field.Name_);
+					fieldMatch.SetFieldName (field.ID_);
 					rule.AddFieldMatch (fieldMatch);
 				}
 			}
 
 		Rules_.prepend (rule);
 		RulesModel_->insertRow (0, RuleToRow (rule));
+
+		SaveSettings ();
 	}
 
 	void RulesManager::LoadDefaultRules (int version)
