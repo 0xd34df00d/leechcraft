@@ -45,7 +45,7 @@ namespace Blogique
 	, CommentsModel_ (new CommentsModel (this))
 	{
 		Ui_.setupUi (this);
-		
+
 		Ui_.CommentsView_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
 		auto context = Ui_.CommentsView_->rootContext ();
 		context->setContextProperty ("colorProxy",
@@ -56,7 +56,7 @@ namespace Blogique
 		Ui_.CommentsView_->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,
 				"blogique", "recentcomments.qml")));
 	}
-	
+
 	QString CommentsWidget::GetName () const
 	{
 		return tr ("Comments");
@@ -73,10 +73,23 @@ namespace Blogique
 		object->setCursor (QCursor (cursor));
 	}
 
-	void CommentsWidget::handleGotComments (const QByteArray& accountId, 
+	void CommentsWidget::handleGotComments (const QByteArray& accountId,
 			const QList<RecentComment>& comments)
 	{
-		qDebug () << accountId << comments.count ();
+		for (const auto& comment : comments)
+		{
+			QStandardItem *item = new QStandardItem;
+			item->setData (comment.EntrySubject_, CommentsModel::EntrySubject);
+			item->setData (comment.EntryUrl_, CommentsModel::EntryUrl);
+			item->setData (comment.CommentSubject_, CommentsModel::CommentSubject);
+			item->setData (comment.CommentText_, CommentsModel::CommentBody);
+			item->setData (comment.CommentAuthor_, CommentsModel::CommentAuthor);
+			item->setData (comment.CommentDateTime_, CommentsModel::CommentDate);
+
+			Item2RecentComment_ [item] = comment;
+
+			CommentsModel_->appendRow (item);
+		}
 	}
 
 }

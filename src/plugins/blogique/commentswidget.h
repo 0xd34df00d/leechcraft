@@ -34,12 +34,14 @@
 #include "ui_commentswidget.h"
 #include "interfaces/blogique/iaccount.h"
 
+class QStandardItem;
+
 namespace LeechCraft
 {
 namespace Blogique
 {
 	class CommentsModel;
-	
+
 	class CommentsWidget : public QWidget
 	{
 		Q_OBJECT
@@ -47,15 +49,16 @@ namespace Blogique
 		Ui::CommentsWidget Ui_;
 
 		CommentsModel *CommentsModel_;
+		QHash<QStandardItem*, RecentComment> Item2RecentComment_;
 
 	public:
 		CommentsWidget (QWidget *parent = 0);
-		
+
 		QString GetName () const;
-		
+
 	public slots:
 		void setItemCursor (QGraphicsObject *object, const QString& shape);
-		void handleGotComments (const QByteArray& accountId, 
+		void handleGotComments (const QByteArray& accountId,
 				const QList<RecentComment>& comments);
 	};
 }
