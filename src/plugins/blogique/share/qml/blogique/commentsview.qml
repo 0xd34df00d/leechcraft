@@ -83,6 +83,8 @@ Rectangle
 
 					text: entrySubject
 
+					visible: text != ""
+					
 					elide: Text.ElideRight
 
 					font.bold: true
@@ -116,6 +118,8 @@ Rectangle
 					clip: true
 					font.bold: true
 					color: colorProxy.color_TextBox_TextColor
+					
+					visible: text != ""
 
 					anchors.top: entrySubjectText.bottom
 					anchors.topMargin: 1
@@ -125,22 +129,17 @@ Rectangle
 					anchors.rightMargin: 5
 				}
 
-				Text
+				Flickable
 				{
-					id: commentBodyText
-
-					width: parent.width
-					height: parent.height - entrySubjectText.height -
-							commentSubjectText.height - dateText.height
-
-					text: commentBody
-
-					textFormat: Text.RichText
-
+					id: commentBodyFlickable
+					contentWidth: parent.width - 10
+					contentHeight: commentBodyText.paintedHeight
+					
 					clip: true
-					color: colorProxy.color_TextBox_TextColor
-
-					anchors.top: commentSubjectText.bottom
+					
+					anchors.top: commentSubjectText.text == "" ? 
+						entrySubjectText.bottom :
+						commentSubjectText.bottom
 					anchors.topMargin: 1
 					anchors.bottom: dateText.top
 					anchors.bottomMargin: 5
@@ -148,7 +147,24 @@ Rectangle
 					anchors.leftMargin: 5
 					anchors.right: delegateRect.right
 					anchors.rightMargin: 5
+
+					interactive: commentBodyText.paintedHeight > commentBodyFlickable.height
+
+					Text
+					{
+						id: commentBodyText
+						width: parent.width
+
+						text: commentBody
+
+						textFormat: Text.RichText
+						wrapMode: Text.Wrap
+
+						clip: true
+						color: colorProxy.color_TextBox_TextColor
+					}
 				}
+				
 
 				Text
 				{
@@ -158,9 +174,9 @@ Rectangle
 					width: delegateRect.width - authorNameText.width - 10
 
 					anchors.left: parent.left
-					anchors.leftMargin: 3
+					anchors.leftMargin: 5
 					anchors.bottom: delegateRect.bottom
-					anchors.bottomMargin: 3
+					anchors.bottomMargin: 1
 
 					elide: Text.ElideRight
 					horizontalAlignment: Text.AlignLeft
@@ -175,9 +191,9 @@ Rectangle
 					font.underline: authorNameTextMouseArea.containsMouse
 
 					anchors.right: parent.right
-					anchors.rightMargin: 3
+					anchors.rightMargin: 5
 					anchors.bottom: delegateRect.bottom
-					anchors.bottomMargin: 3
+					anchors.bottomMargin: 1
 
 					horizontalAlignment: Text.AlignRight
 					color: colorProxy.color_TextBox_Aux1TextColor
