@@ -47,7 +47,6 @@ include (CMakeDependentOption)
 
 option (USE_QT5 "Enable Qt5 build" OFF)
 
-
 if (GPTOOLS_CPU AND GPTOOLS_MEM)
 	set (GPTOOLS_CPU FALSE)
 	set (GPTOOLS_MEM FALSE)
@@ -98,7 +97,7 @@ elseif (WIN32)
 	set (LC_GLOBAL_SETTINGS_DEST "settings")
 	set (LC_GLOBAL_SETTINGS_DEST_IN "${CMAKE_INSTALL_PREFIX}/${LC_GLOBAL_SETTINGS_DEST}")
 else ()
-	set (LIBDIR "lib")
+	set (LIBDIR "leechcraft.app/Contents/Frameworks")
 	set (LC_BINDIR "leechcraft.app/Contents/MacOs")
 	set (LC_PLUGINS_DEST "leechcraft.app/Contents/PlugIns")
 	set (LC_TRANSLATIONS_DEST "leechcraft.app/Contents/Resources/translations")
