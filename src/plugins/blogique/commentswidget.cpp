@@ -54,7 +54,7 @@ namespace Blogique
 		context->setContextProperty ("commentsModel", CommentsModel_);
 		context->setContextProperty ("parentWidget", this);
 		Ui_.CommentsView_->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,
-				"blogique", "recentcomments.qml")));
+				"blogique", "commentsview.qml")));
 	}
 
 	QString CommentsWidget::GetName () const
@@ -78,6 +78,9 @@ namespace Blogique
 	{
 		for (const auto& comment : comments)
 		{
+			if (Id2RecentComment_.contains (qMakePair (accountId, comment.CommentId_)))
+				continue;
+
 			QStandardItem *item = new QStandardItem;
 			item->setData (comment.EntrySubject_, CommentsModel::EntrySubject);
 			item->setData (comment.EntryUrl_, CommentsModel::EntryUrl);
@@ -87,6 +90,7 @@ namespace Blogique
 			item->setData (comment.CommentDateTime_, CommentsModel::CommentDate);
 
 			Item2RecentComment_ [item] = comment;
+			Id2RecentComment_ [qMakePair (accountId, comment.CommentId_)] = comment;
 
 			CommentsModel_->appendRow (item);
 		}

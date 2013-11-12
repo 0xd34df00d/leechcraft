@@ -50,6 +50,7 @@ namespace Blogique
 
 		CommentsModel *CommentsModel_;
 		QHash<QStandardItem*, RecentComment> Item2RecentComment_;
+		QMap<QPair<QByteArray, qint64>, RecentComment> Id2RecentComment_;
 
 	public:
 		CommentsWidget (QWidget *parent = 0);
