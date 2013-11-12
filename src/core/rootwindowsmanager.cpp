@@ -38,7 +38,7 @@
 #include "dockmanager.h"
 #include "xmlsettingsmanager.h"
 
-#ifdef Q_OS_UNIX
+#if defined (Q_OS_UNIX) && defined (HAVE_X11)
 #include <X11/Xutil.h>
 #include <QX11Info>
 #endif
