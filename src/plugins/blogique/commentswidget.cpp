@@ -87,7 +87,8 @@ namespace Blogique
 			item->setData (comment.CommentSubject_, CommentsModel::CommentSubject);
 			item->setData (comment.CommentText_, CommentsModel::CommentBody);
 			item->setData (comment.CommentAuthor_, CommentsModel::CommentAuthor);
-			item->setData (comment.CommentDateTime_, CommentsModel::CommentDate);
+			item->setData (comment.CommentDateTime_.toString (Qt::DefaultLocaleShortDate),
+					CommentsModel::CommentDate);
 
 			Item2RecentComment_ [item] = comment;
 			Id2RecentComment_ [qMakePair (accountId, comment.CommentId_)] = comment;
