@@ -108,6 +108,8 @@ namespace KBSwitch
 		void UpdateGroupNames ();
 
 		void AssignWindow (Qt::HANDLE);
+
+		void ApplyKeyRepeat ();
 	public slots:
 		void scheduleApply ();
 		void apply ();

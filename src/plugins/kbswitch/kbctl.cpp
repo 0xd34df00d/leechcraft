@@ -101,7 +101,10 @@ namespace KBSwitch
 
 		XmlSettingsManager::Instance ().RegisterObject ({
 					"ManageSystemWide",
-					"KeyboardModel"
+					"KeyboardModel",
+					"ManageKeyRepeat",
+					"RepeatRate",
+					"RepeatTimeout"
 				},
 				this, "scheduleApply");
 	}
@@ -397,6 +400,21 @@ namespace KBSwitch
 				SLOT (apply ()));
 	}
 
+	void KBCtl::ApplyKeyRepeat ()
+	{
+		if (!XmlSettingsManager::Instance ().property ("ManageKeyRepeat").toBool ())
+			return;
+
+		XkbChangeEnabledControls (Display_, XkbUseCoreKbd, XkbRepeatKeysMask, XkbRepeatKeysMask);
+
+		auto timeout = XmlSettingsManager::Instance ().property ("RepeatTimeout").toUInt ();
+		auto rate = XmlSettingsManager::Instance ().property ("RepeatRate").toUInt ();
+		XkbSetAutoRepeatRate (Display_, XkbUseCoreKbd, timeout, 1000 / rate);
+
+		// X11 is crap, XkbSetAutoRepeatRate() doesn't work next time if we don't call this.
+		XkbGetAutoRepeatRate (Display_, XkbUseCoreKbd, &timeout, &rate);
+	}
+
 	void KBCtl::apply ()
 	{
 		ApplyScheduled_ = false;
@@ -441,6 +459,8 @@ namespace KBSwitch
 
 		qDebug () << Q_FUNC_INFO << args;
 		QProcess::startDetached ("setxkbmap", args);
+
+		ApplyKeyRepeat ();
 	}
 }
 }
