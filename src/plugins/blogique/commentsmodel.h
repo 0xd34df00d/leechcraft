@@ -40,12 +40,15 @@ namespace Blogique
 		Q_OBJECT
 
 	public:
+
 		enum CommentRoles
 		{
-			NodeSubject = Qt::UserRole + 1,
-			NodeUrl,
+			EntrySubject = Qt::UserRole + 1,
+			EntryUrl,
+			CommentSubject,
 			CommentBody,
-			CommentInfo
+			CommentAuthor,
+			CommentDate
 		};
 
 		explicit CommentsModel (QObject *parent = 0);

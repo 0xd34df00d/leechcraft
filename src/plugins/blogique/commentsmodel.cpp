@@ -37,10 +37,12 @@ namespace Blogique
 	: QStandardItemModel (parent)
 	{
 		QHash<int, QByteArray> roleNames;
-		roleNames [NodeSubject] = "nodeSubject";
-		roleNames [NodeUrl] = "nodeUrl";
+		roleNames [EntrySubject] = "entrySubject";
+		roleNames [EntryUrl] = "entryUrl";
+		roleNames [CommentSubject] = "commentSubject";
 		roleNames [CommentBody] = "commentBody";
-		roleNames [CommentInfo] = "commentInfo";
+		roleNames [CommentAuthor] = "commentAuthor";
+		roleNames [CommentDate] = "commentDate";
 		setRoleNames (roleNames);
 	}
 }
