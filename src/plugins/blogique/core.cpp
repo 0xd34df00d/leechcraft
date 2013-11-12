@@ -71,7 +71,6 @@ namespace Blogique
 				SIGNAL (timeout ()),
 				this,
 				SLOT (checkForComments ()));
-		handleCommentsCheckingTimerChanged ();
 	}
 
 	Core& Core::Instance ()
@@ -228,6 +227,7 @@ namespace Blogique
 				newTab,
 				SLOT (handleAccountRemoved (QObject*)));
 
+		handleCommentsCheckingTimerChanged ();
 		return newTab;
 	}
 
