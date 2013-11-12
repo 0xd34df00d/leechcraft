@@ -59,6 +59,7 @@ namespace Xoox
 
 		void Whitelist (const QString&, bool add = true);
 		void HandleIq (const QXmppIq&);
+		void HandleMessage (const QXmppMessage&);
 	private:
 		QString HandleErrorCondition (const QXmppStanza::Error::Condition&);
 		void HandleError (const QXmppIq&);

@@ -1111,6 +1111,7 @@ namespace Xoox
 			qDebug () << Q_FUNC_INFO
 					<< "got error message from"
 					<< msg.from ();
+			ErrorMgr_->HandleMessage (msg);
 			return;
 		}
 
