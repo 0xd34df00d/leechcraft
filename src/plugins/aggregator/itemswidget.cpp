@@ -1277,17 +1277,25 @@ namespace Aggregator
 		if (!chanIdx.isValid ())
 			return;
 
-		for (int i = chanIdx.row () - 1; i >= 0; --i)
+		auto tryRange = [&] (int start, int end) -> bool
 		{
-			const auto& otherChannel = chanIdx.sibling (i, ChannelsModel::ColumnUnread);
-			if (otherChannel.data ().toInt ())
+			for (int i = start; i >= end; --i)
 			{
-				emit movedToChannel (otherChannel);
-				CurrentChannelChanged (otherChannel);
-				on_ActionPrevUnreadItem__triggered ();
-				break;
+				const auto& otherChannel = chanIdx.sibling (i, ChannelsModel::ColumnUnread);
+				if (otherChannel.data ().toInt ())
+				{
+					emit movedToChannel (otherChannel);
+					CurrentChannelChanged (otherChannel);
+					on_ActionPrevUnreadItem__triggered ();
+					return true;
+				}
 			}
-		}
+
+			return false;
+		};
+
+		const auto channelRc = chanIdx.model ()->rowCount (chanIdx.parent ());
+		tryRange (chanIdx.row () - 1, 0) || tryRange (channelRc - 1, chanIdx.row () + 1);
 	}
 
 	void ItemsWidget::on_ActionPrevItem__triggered ()
@@ -1338,18 +1346,25 @@ namespace Aggregator
 		if (!chanIdx.isValid ())
 			return;
 
-		const auto channelRc = chanIdx.model ()->rowCount (chanIdx.parent ());
-		for (int i = chanIdx.row () + 1; i < channelRc; ++i)
-		{
-			const auto& otherChannel = chanIdx.sibling (i, ChannelsModel::ColumnUnread);
-			if (otherChannel.data ().toInt ())
+		auto tryRange = [&] (int start, int end) -> bool
 			{
-				emit movedToChannel (otherChannel);
-				CurrentChannelChanged (otherChannel);
-				on_ActionNextUnreadItem__triggered ();
-				break;
-			}
-		}
+				for (int i = start; i < end; ++i)
+				{
+					const auto& otherChannel = chanIdx.sibling (i, ChannelsModel::ColumnUnread);
+					if (otherChannel.data ().toInt ())
+					{
+						emit movedToChannel (otherChannel);
+						CurrentChannelChanged (otherChannel);
+						on_ActionNextUnreadItem__triggered ();
+						return true;
+					}
+				}
+
+				return false;
+			};
+
+		const auto channelRc = chanIdx.model ()->rowCount (chanIdx.parent ());
+		tryRange (chanIdx.row () + 1, channelRc) || tryRange (0, chanIdx.row ());
 	}
 
 	void ItemsWidget::on_CaseSensitiveSearch__stateChanged (int state)
