@@ -47,6 +47,7 @@ set (SRCS
 	qml/settableiconprovider.cpp
 	qml/standardnamfactory.cpp
 	qml/themeimageprovider.cpp
+	qml/tooltipitem.cpp
 	qml/unhidelistmodel.cpp
 	qml/unhidelistviewbase.cpp
 	qml/widthiconprovider.cpp
