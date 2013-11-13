@@ -1088,7 +1088,7 @@ namespace Azoth
 		connect (clEntry->GetQObject (),
 				SIGNAL (availableVariantsChanged (QStringList)),
 				this,
-				SLOT (handleVariantsChanged (QStringList)));
+				SLOT (handleVariantsChanged ()));
 		connect (clEntry->GetQObject (),
 				SIGNAL (availableVariantsChanged (const QStringList&)),
 				this,
@@ -2377,7 +2377,7 @@ namespace Azoth
 		HandleStatusChanged (status, entry, variant, true);
 	}
 
-	void Core::handleVariantsChanged (const QStringList& newVariants)
+	void Core::handleVariantsChanged ()
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
 		if (!entry)

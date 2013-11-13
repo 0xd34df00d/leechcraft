@@ -485,7 +485,7 @@ namespace Azoth
 
 		/** Removes the old unneeded variants.
 		 */
-		void handleVariantsChanged (const QStringList& newVariants);
+		void handleVariantsChanged ();
 
 		/** Handles ICLEntry's PEP-like (XEP-0163) event from the given
 		 * variant.
