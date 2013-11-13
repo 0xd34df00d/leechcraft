@@ -21,6 +21,20 @@
 				<item type="combobox" property="KeyboardModel" mayHaveDataSource="true">
 					<label value="Keyboard model:" />
 				</item>
+				<item type="groupbox" checkable="true" property="ManageKeyRepeat" default="false">
+					<label value="Manage key repeat settings" />
+					<item type="spinbox" property="RepeatTimeout" default="500" minimum="0" maximum="10000">
+						<label value="Timeout before repeating:" />
+						<suffix value=" ms" />
+					</item>
+					<item type="spinbox" property="RepeatRate" default="25" minimum="1" maximum="100">
+						<label value="Repeat rate:" />
+						<suffix value=" Hz" />
+					</item>
+				</item>
+				<item type="lineedit" property="DummyTestProp">
+					<label value="Test area:" />
+				</item>
 			</item>
 		</tab>
 		<tab>

@@ -101,7 +101,7 @@ namespace Murm
 		return {};
 	}
 
-	void VkProtocol::RegisterAccount (const QString& name, const QList<QWidget*>& widgets)
+	void VkProtocol::RegisterAccount (const QString& name, const QList<QWidget*>&)
 	{
 		auto acc = new VkAccount (name, this, Proxy_, {}, {});
 		acc->Init ();

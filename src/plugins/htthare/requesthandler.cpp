@@ -458,7 +458,7 @@ namespace HttHare
 								0,
 								headRange,
 								ranges,
-								[c, shutdownGuard] (boost::system::error_code ec, ulong) {}
+								[c, shutdownGuard] (boost::system::error_code, ulong) {}
 							} (ec, 0);
 						}));
 		}

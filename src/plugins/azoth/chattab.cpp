@@ -162,7 +162,7 @@ namespace Azoth
 	, CurrentNickIndex_ (0)
 	, LastSpacePosition_(-1)
 	, HadHighlight_ (false)
-	, NumUnreadMsgs_ (0)
+	, NumUnreadMsgs_ (Core::Instance ().GetUnreadCount (GetEntry<ICLEntry> ()))
 	, ScrollbackPos_ (0)
 	, IsMUC_ (false)
 	, PreviousTextHeight_ (0)
@@ -2179,13 +2179,13 @@ namespace Azoth
 		return participantsList;
 	}
 
-	void ChatTab::ReformatTitle ()
+	QString ChatTab::ReformatTitle ()
 	{
 		if (!GetEntry<ICLEntry> ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "GetEntry<ICLEntry> returned NULL";
-			return;
+			return {};
 		}
 
 		QString title = GetEntry<ICLEntry> ()->GetEntryName ();
@@ -2216,6 +2216,8 @@ namespace Azoth
 		path << title;
 
 		setProperty ("WidgetLogicalPath", path);
+
+		return title;
 	}
 
 	void ChatTab::UpdateTextHeight ()

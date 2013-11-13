@@ -133,13 +133,13 @@ namespace SB2
 	}
 
 	void Plugin::hookDockWidgetActionVisToggled (IHookProxy_ptr proxy,
-			QMainWindow *win, QDockWidget *dw, bool visible)
+			QMainWindow*, QDockWidget*, bool)
 	{
 		proxy->CancelDefault ();
 	}
 
 	void Plugin::hookAddingDockAction (IHookProxy_ptr,
-			QMainWindow *win, QAction *act, Qt::DockWidgetArea area)
+			QMainWindow *win, QAction *act, Qt::DockWidgetArea)
 	{
 		auto rootWM = Proxy_->GetRootWindowsManager ();
 		const int idx = rootWM->GetWindowIndex (win);
@@ -148,7 +148,7 @@ namespace SB2
 	}
 
 	void Plugin::hookRemovingDockAction (IHookProxy_ptr,
-			QMainWindow *win, QAction *act, Qt::DockWidgetArea area)
+			QMainWindow *win, QAction *act, Qt::DockWidgetArea)
 	{
 		auto rootWM = Proxy_->GetRootWindowsManager ();
 		const int idx = rootWM->GetWindowIndex (win);

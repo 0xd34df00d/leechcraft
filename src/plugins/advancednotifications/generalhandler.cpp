@@ -76,7 +76,6 @@ namespace AdvancedNotifications
 			return;
 		}
 
-
 		if (e.Additional_ ["org.LC.AdvNotifications.EventCategory"] == "org.LC.AdvNotifications.Cancel")
 		{
 			for (const auto& handler : Handlers_)

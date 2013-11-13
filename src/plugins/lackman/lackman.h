@@ -36,7 +36,6 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihavesettings.h>
-#include <interfaces/iactionsexporter.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/ihaverecoverabletabs.h>
@@ -61,14 +60,13 @@ namespace LackMan
 				 , public IHaveTabs
 				 , public ITabWidget
 				 , public IHaveSettings
-				 , public IActionsExporter
 				 , public IEntityHandler
 				 , public IHaveShortcuts
 				 , public IHaveRecoverableTabs
 				 , public IRecoverableTab
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs ITabWidget IHaveSettings IActionsExporter
+		Q_INTERFACES (IInfo IHaveTabs ITabWidget IHaveSettings
 				IEntityHandler IHaveShortcuts IHaveRecoverableTabs IRecoverableTab)
 
 		Ui::LackMan Ui_;
@@ -105,8 +103,6 @@ namespace LackMan
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
-
 		EntityTestHandleResult CouldHandle (const Entity&) const;
 		void Handle (Entity);
 
@@ -137,8 +133,6 @@ namespace LackMan
 		void changeTooltip (QWidget*, QWidget*);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
-
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 
 		void tabRecoverDataChanged ();
 	};

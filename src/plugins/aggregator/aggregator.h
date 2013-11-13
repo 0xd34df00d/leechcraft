@@ -155,9 +155,14 @@ namespace Aggregator
 		void on_ActionMarkChannelAsRead__triggered ();
 		void on_ActionMarkChannelAsUnread__triggered ();
 		void on_ActionChannelSettings__triggered ();
+
 		void handleFeedsContextMenuRequested (const QPoint&);
+
 		void on_MergeItems__toggled (bool);
+
 		void currentChannelChanged ();
+		void handleItemsMovedToChannel (QModelIndex);
+
 		void unreadNumberChanged (int);
 		void trayIconActivated ();
 		void handleGroupChannels ();

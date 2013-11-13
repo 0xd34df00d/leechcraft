@@ -84,6 +84,28 @@ namespace Xoox
 		}
 	}
 
+	void ClientConnectionErrorMgr::HandleMessage (const QXmppMessage& msg)
+	{
+		if (msg.type () != QXmppMessage::Error)
+			return;
+
+		const auto& error = msg.error ();
+		const auto& condStr = HandleErrorCondition (error.condition ());
+
+		const auto& text = error.text ().isEmpty () ?
+				tr ("Error from %1: %2")
+					.arg (msg.from ())
+					.arg (condStr) :
+				tr ("Error from %1: %2 (%3).")
+					.arg (msg.from ())
+					.arg (condStr)
+					.arg (error.text ());
+		const auto& e = Util::MakeNotification ("Azoth",
+				text,
+				PCritical_);
+		Core::Instance ().SendEntity (e);
+	}
+
 	QString ClientConnectionErrorMgr::HandleErrorCondition (const QXmppStanza::Error::Condition& condition)
 	{
 		switch (condition)

@@ -84,7 +84,7 @@ namespace OTRoid
 		}
 
 		void Notify (void *opData, OtrlNotifyLevel level,
-				const char *accountname, const char *protocol,
+				const char *accountname, const char*,
 				const char *username, const char *title,
 				const char *primary, const char *secondary)
 		{
@@ -164,7 +164,7 @@ namespace OTRoid
 #endif
 
 		void HandleNewFingerprint (void *opData, OtrlUserState,
-				const char *accountname, const char *protocol,
+				const char *accountname, const char*,
 				const char *username, unsigned char fingerprint [20])
 		{
 			char fpHash [45];
@@ -263,7 +263,7 @@ namespace OTRoid
 		OtrOps_.log_message = [] (void*, const char *msg)
 				{ qDebug () << "OTR:" << QString::fromUtf8 (msg).trimmed (); };
 		OtrOps_.display_otr_message = [] (void *opData, const char *accountname,
-				const char *protocol, const char *username, const char *msg) -> int
+				const char*, const char *username, const char *msg) -> int
 			{
 				static_cast<Plugin*> (opData)->InjectMsg (QString::fromUtf8 (accountname),
 						QString::fromUtf8 (username),

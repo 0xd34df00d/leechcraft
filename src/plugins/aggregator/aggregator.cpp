@@ -194,6 +194,12 @@ namespace Aggregator
 		}
 
 		Impl_->Ui_.ItemsWidget_->SetChannelsFilter (Core::Instance ().GetChannelsModel ());
+
+		connect (Impl_->Ui_.ItemsWidget_,
+				SIGNAL (movedToChannel (QModelIndex)),
+				this,
+				SLOT (handleItemsMovedToChannel (QModelIndex)));
+
 		Core::Instance ().GetJobHolderRepresentation ()->setParent (this);
 		Core::Instance ().GetReprWidget ()->SetAppWideActions (Impl_->AppWideActions_);
 		Core::Instance ().GetReprWidget ()->SetChannelActions (Impl_->ChannelActions_);
@@ -891,11 +897,10 @@ namespace Aggregator
 
 	void Aggregator::currentChannelChanged ()
 	{
-		QModelIndex index = Impl_->Ui_.Feeds_->
-				selectionModel ()->currentIndex ();
+		auto index = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
 		if (Impl_->FlatToFolders_->GetSourceModel ())
 		{
-			QModelIndex origIndex = index;
+			auto origIndex = index;
 			index = Impl_->FlatToFolders_->MapToSource (index);
 			if (!index.isValid ())
 			{
@@ -905,6 +910,23 @@ namespace Aggregator
 			}
 		}
 		Impl_->Ui_.ItemsWidget_->CurrentChannelChanged (index);
+	}
+
+	void Aggregator::handleItemsMovedToChannel (QModelIndex index)
+	{
+		if (index.column ())
+			index = index.sibling (index.row (), 0);
+
+		if (Impl_->FlatToFolders_->GetSourceModel ())
+		{
+			const auto& sourceIdx = Impl_->FlatToFolders_->MapFromSource (index).value (0);
+			if (sourceIdx.isValid ())
+				index = sourceIdx;
+		}
+
+		Impl_->Ui_.Feeds_->blockSignals (true);
+		Impl_->Ui_.Feeds_->setCurrentIndex (index);
+		Impl_->Ui_.Feeds_->blockSignals (false);
 	}
 
 	void Aggregator::unreadNumberChanged (int number)

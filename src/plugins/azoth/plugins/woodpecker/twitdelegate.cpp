@@ -58,8 +58,8 @@ namespace Woodpecker
 
 	TwitDelegate::TwitDelegate (QListView *parent, Plugin *plugin)
 	: QStyledItemDelegate (parent)
-	, ParentListView_ (parent)
 	, ParentPlugin_ (plugin)
+	, ParentListView_ (parent)
 	{
 	}
 
@@ -215,6 +215,7 @@ namespace Woodpecker
 						       FeedMode::SearchResult, param);
 			}
 			else if (anchor.startsWith ("twitter://media/photo/"))
+			{
 				if (XmlSettingsManager::Instance ()->property ("inline_photo").toBool ())
 				{
 					const auto& downloader = Core::Instance ().GetCoreProxy ()->GetNetworkAccessManager ();
@@ -228,6 +229,7 @@ namespace Woodpecker
 					Entity e = Util::MakeEntity (QUrl (url), QString (), OnlyHandle | FromUserInitiated);
 					Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
 				}
+			}
 		}
 		else
 		{
