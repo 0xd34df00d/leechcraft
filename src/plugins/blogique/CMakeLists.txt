@@ -33,6 +33,7 @@ set (SRCS
 	pluginproxy.cpp
 	profiledialog.cpp
 	selecttargetdelegate.cpp
+	sortcommentsproxymodel.cpp
 	storagemanager.cpp
 	submittodialog.cpp
 	tagsproxymodel.cpp
