@@ -27,75 +27,70 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QDeclarativeItem>
-#include <QTimer>
-#include <util/utilconfig.h>
+#include "tooltipitem.h"
+#include <QToolTip>
+#include <QtDebug>
 
 namespace LeechCraft
 {
 namespace Util
 {
-	/** @brief ToolTip for Qml objects.
-	 *
-	 * Using the tooltip is pretty easy.
-	 * First of all register tooltip in your widget:
-	 * \code{.cpp}
-	 * qmlRegisterType<Util::ToolTipWidget> ("org.LC.common", 0, 1, "ToolTip");
-	 * \endcode
-	 *
-	 * Then in yout qml import this widget:
-	 * \code{.qml}
-	 * import org.LC.common 0.1
-	 * \endcode
-	 *
-	 * And now you can use tooltip:
-	 * \code{.qml}
-	 * Rectangle {
-	 *		anchors.fill: parent
-	 *
-	 *		MouseArea
-	 *		{
-	 *			anchors.fill: subjectText
-	 *			hoverEnabled: true
-	 *			ToolTip
-	 *			{
-	 *				anchors.fill: parent
-	 *				text: "tooltip text"
-	 *			}
-	 *		}
-	 *	}
-	 * \endcode
-	 */
-	class UTIL_API ToolTipWidget : public QDeclarativeItem
+	ToolTipItem::ToolTipItem (QDeclarativeItem *parent)
+	: QDeclarativeItem (parent)
+	, ContainsMouse_ (false)
 	{
-		Q_OBJECT
-		Q_PROPERTY (QString text READ GetText WRITE SetText NOTIFY textChanged)
-		Q_PROPERTY (bool containsMouse READ IsContainsMouse NOTIFY containsMouseChanged)
+		setAcceptHoverEvents (true);
+		connect (&ShowTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (showToolTip ()));
+		ShowTimer_.setSingleShot (true);
 
-		QTimer Timer_;
-		QString Text_;
-		bool ContainsMouse_;
+	}
 
-	public:
-		ToolTipWidget (QDeclarativeItem *parent = 0);
+	void ToolTipItem::SetText (const QString& text)
+	{
+		if (Text_ != text)
+		{
+			Text_ = text;
+			emit textChanged ();
+		}
+	}
 
-		void SetText (const QString& text);
-		QString GetText () const;
-		bool IsContainsMouse () const;
+	QString ToolTipItem::GetText () const
+	{
+		return Text_;
+	}
 
-		void ShowToolTip (const QString& text) const;
-	protected:
-		void hoverEnterEvent (QGraphicsSceneHoverEvent *event);
-		void hoverLeaveEvent (QGraphicsSceneHoverEvent *event);
+	bool ToolTipItem::ContainsMouse () const
+	{
+		return ContainsMouse_;
+	}
 
-	public slots:
-		void timeout ();
+	void ToolTipItem::ShowToolTip (const QString& text) const
+	{
+		QToolTip::showText (cursor ().pos (), text);
+	}
 
-	signals:
-		void textChanged ();
-		void containsMouseChanged ();
-	};
+	void ToolTipItem::hoverEnterEvent (QGraphicsSceneHoverEvent *event)
+	{
+		ShowTimer_.start (1000);
+		ContainsMouse_ = true;
+		emit containsMouseChanged ();
+		QDeclarativeItem::hoverEnterEvent (event);
+	}
+
+	void ToolTipItem::hoverLeaveEvent (QGraphicsSceneHoverEvent *event)
+	{
+		ShowTimer_.stop ();
+		ContainsMouse_ = false;
+		emit containsMouseChanged ();
+		QDeclarativeItem::hoverLeaveEvent (event);
+	}
+
+	void ToolTipItem::showToolTip ()
+	{
+		ShowToolTip (Text_);
+	}
 }
 }
