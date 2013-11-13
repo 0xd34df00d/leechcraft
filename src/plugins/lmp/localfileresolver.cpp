@@ -102,7 +102,8 @@ namespace LMP
 			genres,
 			audio ? audio->length () : 0,
 			static_cast<qint32> (tag->year ()),
-			static_cast<qint32> (tag->track ())
+			static_cast<qint32> (tag->track ()),
+			{}
 		};
 		{
 			QWriteLocker locker (&CacheLock_);
