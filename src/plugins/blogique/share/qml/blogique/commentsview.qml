@@ -1,5 +1,6 @@
 import QtQuick 1.1
 import Effects 1.0
+import org.LC.common 1.0
 
 Rectangle
 {
@@ -99,6 +100,12 @@ Rectangle
 
 						anchors.fill: entrySubjectText
 						hoverEnabled: true
+
+						ToolTip
+						{
+							anchors.fill: parent
+							text: entrySubject
+						}
 
 						onEntered:
 							parentWidget.setItemCursor (subjectTextMouseArea,
@@ -218,6 +225,38 @@ Rectangle
 								linkActivated ("http://" + authorNameText.text + ".livejournal.com")
 					}
 				}
+
+				MouseArea
+				{
+					id: rectMouseArea
+					z: -1
+					anchors.fill: parent
+					hoverEnabled: true
+				}
+
+				states:
+				[
+					State
+					{
+						name: "hovered"
+						when: rectMouseArea.containsMouse
+						PropertyChanges { target: delegateRect; border.color: colorProxy.color_TextBox_HighlightBorderColor }
+						PropertyChanges { target: upperStop; color: colorProxy.color_TextBox_HighlightTopColor }
+						PropertyChanges { target: lowerStop; color: colorProxy.color_TextBox_HighlightBottomColor }
+					}
+				]
+
+				transitions:
+				[
+					Transition
+					{
+						from: ""
+						to: "hovered"
+						reversible: true
+						PropertyAnimation { properties: "border.color"; duration: 200 }
+						PropertyAnimation { properties: "color"; duration: 200 }
+					}
+				]
 			}
 		}
 	}
@@ -232,78 +271,4 @@ Rectangle
 
 		model: commentsVisualModel
 	}
-
-//
-
-
-//
-//
-// 				Text
-// 				{
-// 					id: commentInfoText
-//
-// 					font.pointSize: 8
-//
-// 					text: commentInfo
-// 					elide: Text.ElideRight
-//
-// 					color: colorProxy.color_TextBox_Aux1TextColor
-//
-// 					anchors.left: delegateRect.left
-// 					anchors.leftMargin: 5
-// 					anchors.right: delegateRect.right
-// 					anchors.rightMargin: 5
-// 					anchors.bottom: delegateRect.bottom
-// 					anchors.bottomMargin: 1
-// 				}
-//
-// 				MouseArea
-// 				{
-// 					id: subjectTextMouseArea
-// 					anchors.fill: subjectText
-// 					hoverEnabled: true
-// 					z: 1
-//
-// 					onEntered:
-// 					recentCommentsView.setItemCursor (subjectTextMouseArea, "PointingHandCursor");
-// 					onExited:
-// 					recentCommentsView.setItemCursor (subjectTextMouseArea, "ArrowCursor");
-// 					onClicked:
-// 					rootRect.linkActivated (nodeUrl)
-// 				}
-//
-// 				MouseArea
-// 				{
-// 					id: rectMouseArea
-// 					z: 0
-// 					anchors.fill: parent
-// 					hoverEnabled: true
-// 				}
-//
-// 				states:
-// 				[
-// 				State
-// 				{
-// 					name: "hovered"
-// 					when: rectMouseArea.containsMouse
-// 					PropertyChanges { target: delegateRect; border.color: colorProxy.color_TextBox_HighlightBorderColor }
-// 					PropertyChanges { target: upperStop; color: colorProxy.color_TextBox_HighlightTopColor }
-// 					PropertyChanges { target: lowerStop; color: colorProxy.color_TextBox_HighlightBottomColor }
-// 				}
-// 				]
-//
-// 				transitions:
-// 				[
-// 				Transition
-// 				{
-// 					from: ""
-// 					to: "hovered"
-// 					reversible: true
-// 					PropertyAnimation { properties: "border.color"; duration: 200 }
-// 					PropertyAnimation { properties: "color"; duration: 200 }
-// 				}
-// 				]
-// 			}
-// 		}
-// 	}
 }

@@ -29,9 +29,11 @@
  **********************************************************************/
 
 #include "commentswidget.h"
+#include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 #include <QGraphicsObject>
 #include <util/qml/colorthemeproxy.h>
+#include <util/qml/tooltipitem.h>
 #include <util/sys/paths.h>
 #include <util/util.h>
 #include <interfaces/core/ientitymanager.h>
@@ -49,6 +51,8 @@ namespace Blogique
 	, ProxyModel_ (new SortCommentsProxyModel (this, this))
 	{
 		Ui_.setupUi (this);
+
+		qmlRegisterType<Util::ToolTipItem> ("org.LC.common", 1, 0, "ToolTip");
 
 		ProxyModel_->setSourceModel (CommentsModel_);
 
