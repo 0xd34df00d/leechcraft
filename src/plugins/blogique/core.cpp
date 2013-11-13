@@ -38,6 +38,7 @@
 #include <util/notificationactionhandler.h>
 #include "interfaces/blogique/ibloggingplatformplugin.h"
 #include "interfaces/blogique/ibloggingplatform.h"
+#include "commentsmanager.h"
 #include "exportwizard.h"
 #include "pluginproxy.h"
 #include "storagemanager.h"
@@ -52,8 +53,8 @@ namespace Blogique
 	: UniqueID_ ("org.LeechCraft.Blogique")
 	, PluginProxy_ (std::make_shared<PluginProxy> ())
 	, StorageManager_ (new StorageManager (UniqueID_, this))
+	, CommentsManager_ (new CommentsManager (this))
 	, AutoSaveTimer_ (new QTimer (this))
-	, CommentsCheckingTimer_ (new QTimer (this))
 	{
 		connect (AutoSaveTimer_,
 				SIGNAL (timeout ()),
@@ -62,15 +63,6 @@ namespace Blogique
 		XmlSettingsManager::Instance ().RegisterObject ("AutoSave",
 				this, "handleAutoSaveIntervalChanged");
 		handleAutoSaveIntervalChanged ();
-
-		XmlSettingsManager::Instance ().RegisterObject ("CheckingCommentsEnabled",
-				this, "handleCommentsCheckingChanged");
-		XmlSettingsManager::Instance ().RegisterObject ("UpdateCommentsInterval",
-				this, "handleCommentsCheckingTimerChanged");
-		connect (CommentsCheckingTimer_,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (checkForComments ()));
 	}
 
 	Core& Core::Instance ()
@@ -179,6 +171,11 @@ namespace Blogique
 		return StorageManager_;
 	}
 
+	CommentsManager* Core::GetCommentsManager () const
+	{
+		return CommentsManager_;
+	}
+
 	BlogiqueWidget* Core::CreateBlogiqueWidget ()
 	{
 		auto newTab = new BlogiqueWidget;
@@ -211,10 +208,6 @@ namespace Blogique
 				newTab,
 				SLOT (handleGotError (int, QString, QString)));
 		connect (&Core::Instance (),
-				SIGNAL (gotRecentComments (QByteArray, QList<RecentComment>)),
-				newTab,
-				SLOT (handleGotRecentComments (QByteArray, QList<RecentComment>)));
-		connect (&Core::Instance (),
 				SIGNAL (gotError (int, QString, QString)),
 				newTab,
 				SLOT (handleGotError (int, QString, QString)));
@@ -227,7 +220,6 @@ namespace Blogique
 				newTab,
 				SLOT (handleAccountRemoved (QObject*)));
 
-		handleCommentsCheckingTimerChanged ();
 		return newTab;
 	}
 
@@ -309,7 +301,7 @@ namespace Blogique
 				SIGNAL (tagsUpdated (QHash<QString, int>)));
 		connect (accObj,
 				SIGNAL (gotRecentComments (QList<RecentComment>)),
-				this,
+				CommentsManager_,
 				SLOT (handleGotRecentComments (QList<RecentComment>)));
 		connect (accObj,
 				SIGNAL (gotError (int, QString, QString)),
@@ -417,28 +409,6 @@ namespace Blogique
 				.property ("AutoSave").toInt () * 1000);
 	}
 
-	void Core::handleCommentsCheckingChanged ()
-	{
-		if (!XmlSettingsManager::Instance ().Property ("CheckingCommentsEnabled", true).toBool () &&
-				CommentsCheckingTimer_->isActive ())
-			CommentsCheckingTimer_->stop ();
-	}
-
-	void Core::handleCommentsCheckingTimerChanged ()
-	{
-		if (XmlSettingsManager::Instance ().Property ("CheckingCommentsEnabled", true).toBool ())
-			CommentsCheckingTimer_->start (XmlSettingsManager::Instance ()
-					.property ("UpdateCommentsInterval").toInt () * 60 * 1000);
-		else if (CommentsCheckingTimer_->isActive ())
-			CommentsCheckingTimer_->stop ();
-	}
-
-	void Core::handleGotRecentComments (const QList<RecentComment>& comments)
-	{
-		if (auto account = qobject_cast<IAccount*> (sender ()))
-			emit gotRecentComments (account->GetAccountID (), comments);
-	}
-
 	void Core::exportBlog ()
 	{
 		ExportWizard *wizard = new ExportWizard (Proxy_->GetRootWindowsManager ()->
@@ -446,15 +416,6 @@ namespace Blogique
 		wizard->setWindowTitle (tr ("Export blog"));
 		wizard->show ();
 	}
-
-	void Core::checkForComments ()
-	{
-		for (auto acc : GetAccounts ())
-			if (auto bloggingPlatform = qobject_cast<IBloggingPlatform*> (acc->GetParentBloggingPlatform ()))
-				if (bloggingPlatform->GetFeatures () & IBloggingPlatform::BPFSupportComments)
-					acc->RequestRecentComments ();
-	}
-
 }
 }
 

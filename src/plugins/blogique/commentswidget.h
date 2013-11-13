@@ -52,20 +52,22 @@ namespace Blogique
 		CommentsModel *CommentsModel_;
 		SortCommentsProxyModel *ProxyModel_;
 		QHash<QStandardItem*, RecentComment> Item2RecentComment_;
-		QMap<QPair<QByteArray, qint64>, RecentComment> Id2RecentComment_;
+		QSet<RecentComment> RecentComments_;
 
 	public:
 		CommentsWidget (QWidget *parent = 0);
 
 		QString GetName () const;
 		RecentComment GetRecentCommentFromIndex (const QModelIndex& index) const;
+	private:
+		void FillModel ();
+		void AddItemsToModel (const QList<RecentComment>& comments);
 
 	private slots:
 		void handleLinkActivated (const QString& url);
+		void handleGotNewComments (const QList<RecentComment>& comments);
 	public slots:
 		void setItemCursor (QGraphicsObject *object, const QString& shape);
-		void handleGotComments (const QByteArray& accountId,
-				const QList<RecentComment>& comments);
 	};
 }
 }

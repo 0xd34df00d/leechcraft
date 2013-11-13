@@ -40,6 +40,7 @@
 #include "commentsmodel.h"
 #include "core.h"
 #include "sortcommentsproxymodel.h"
+#include "commentsmanager.h"
 
 namespace LeechCraft
 {
@@ -70,6 +71,13 @@ namespace Blogique
 				this,
 				SLOT (handleLinkActivated (QString)));
 		ProxyModel_->sort (0, Qt::AscendingOrder);
+
+		FillModel ();
+
+		connect (Core::Instance ().GetCommentsManager (),
+				SIGNAL (gotNewComments (QList<RecentComment>)),
+				this,
+				SLOT (handleGotNewComments (QList<RecentComment>)));
 	}
 
 	QString CommentsWidget::GetName () const
@@ -82,12 +90,45 @@ namespace Blogique
 		return Item2RecentComment_.value (CommentsModel_->itemFromIndex (index), RecentComment ());
 	}
 
+	void CommentsWidget::FillModel ()
+	{
+		AddItemsToModel (Core::Instance ().GetCommentsManager ()->GetComments ());
+	}
+
+	void CommentsWidget::AddItemsToModel (const QList<RecentComment>& comments)
+	{
+		for (const auto& comment : comments)
+		{
+			if (RecentComments_.contains (comment))
+				continue;
+
+			QStandardItem *item = new QStandardItem;
+			item->setData (comment.EntrySubject_, CommentsModel::EntrySubject);
+			item->setData (comment.EntryUrl_, CommentsModel::EntryUrl);
+			item->setData (comment.CommentSubject_, CommentsModel::CommentSubject);
+			item->setData (comment.CommentText_, CommentsModel::CommentBody);
+			item->setData (comment.CommentAuthor_, CommentsModel::CommentAuthor);
+			item->setData (comment.CommentDateTime_.toString (Qt::DefaultLocaleShortDate),
+						   CommentsModel::CommentDate);
+
+			Item2RecentComment_ [item] = comment;
+			RecentComments_ << comment;
+
+			CommentsModel_->appendRow (item);
+		}
+	}
+
 	void CommentsWidget::handleLinkActivated (const QString& url)
 	{
 		Core::Instance ().GetCoreProxy ()->GetEntityManager ()->
 				HandleEntity (Util::MakeEntity (url,
 						QString (),
 						OnlyHandle | FromUserInitiated));
+	}
+
+	void CommentsWidget::handleGotNewComments(const QList<RecentComment>& comments)
+	{
+		AddItemsToModel (comments);
 	}
 
 	void CommentsWidget::setItemCursor (QGraphicsObject *object, const QString& shape)
@@ -100,33 +141,5 @@ namespace Blogique
 
 		object->setCursor (QCursor (cursor));
 	}
-
-	void CommentsWidget::handleGotComments (const QByteArray& accountId,
-			const QList<RecentComment>& comments)
-	{
-		if (comments.isEmpty ())
-			return;
-
-		for (const auto& comment : comments)
-		{
-			if (Id2RecentComment_.contains (qMakePair (accountId, comment.CommentId_)))
-				continue;
-
-			QStandardItem *item = new QStandardItem;
-			item->setData (comment.EntrySubject_, CommentsModel::EntrySubject);
-			item->setData (comment.EntryUrl_, CommentsModel::EntryUrl);
-			item->setData (comment.CommentSubject_, CommentsModel::CommentSubject);
-			item->setData (comment.CommentText_, CommentsModel::CommentBody);
-			item->setData (comment.CommentAuthor_, CommentsModel::CommentAuthor);
-			item->setData (comment.CommentDateTime_.toString (Qt::DefaultLocaleShortDate),
-					CommentsModel::CommentDate);
-
-			Item2RecentComment_ [item] = comment;
-			Id2RecentComment_ [qMakePair (accountId, comment.CommentId_)] = comment;
-
-			CommentsModel_->appendRow (item);
-		}
-	}
-
 }
 }

@@ -47,6 +47,7 @@ namespace Blogique
 	class IAccount;
 	class IBloggingPlatform;
 	class PluginProxy;
+	class CommentsManager;
 
 	class Core : public QObject
 	{
@@ -57,9 +58,9 @@ namespace Blogique
 		QObjectList BlogPlatformPlugins_;
 		std::shared_ptr<PluginProxy> PluginProxy_;
 		StorageManager *StorageManager_;
+		CommentsManager *CommentsManager_;
 
 		QTimer *AutoSaveTimer_;
-		QTimer *CommentsCheckingTimer_;
 
 		Core ();
 		Q_DISABLE_COPY (Core)
@@ -84,6 +85,8 @@ namespace Blogique
 
 		StorageManager* GetStorageManager () const;
 
+		CommentsManager* GetCommentsManager () const;
+
 		BlogiqueWidget* CreateBlogiqueWidget ();
 	private:
 		void AddBlogPlatformPlugin (QObject *plugin);
@@ -99,13 +102,8 @@ namespace Blogique
 		void handleEntryUpdated (const QList<Entry>& entries);
 
 		void handleAutoSaveIntervalChanged ();
-		void handleCommentsCheckingChanged ();
-		void handleCommentsCheckingTimerChanged ();
-		void handleGotRecentComments (const QList<RecentComment>& comments);
 
 		void exportBlog ();
-		
-		void checkForComments ();
 
 	signals:
 		void accountAdded (QObject *account);
@@ -129,7 +127,7 @@ namespace Blogique
 		void tagsUpdated (const QHash<QString, int>& tags);
 
 		void insertTag (const QString& tag);
-		
+
 		void gotRecentComments (const QByteArray& accountId,
 				const QList<RecentComment>& comments);
 
