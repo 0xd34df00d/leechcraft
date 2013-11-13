@@ -77,15 +77,16 @@ namespace Blogique
 
 	struct RecentComment
 	{
+		qint64 EntryId_;
 		QString EntrySubject_;
 		QUrl EntryUrl_;
-		qint64 EntryId_;
 
+		qint64 CommentId_;
 		QString CommentSubject_;
 		QString CommentText_;
 		QString CommentAuthor_;
 		QDateTime CommentDateTime_;
-		qint64 CommentId_;
+
 		qint64 ParentCommentId_;
 
 		RecentComment ()
@@ -93,6 +94,12 @@ namespace Blogique
 		, CommentId_ (-1)
 		, ParentCommentId_ (-1)
 		{}
+
+		bool isValid () const
+		{
+			return EntryId_ != -1 &&
+					CommentId_ != -1;
+		}
 	};
 
 	struct Filter
