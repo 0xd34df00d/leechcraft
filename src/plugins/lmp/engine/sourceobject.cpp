@@ -265,11 +265,6 @@ namespace LMP
 				GST_SEEK_TYPE_NONE, GST_CLOCK_TIME_NONE);
 	}
 
-	void SourceObject::SetTransitionTime (int time)
-	{
-// 		Obj_->setTransitionTime (time);
-	}
-
 	AudioSource SourceObject::GetCurrentSource () const
 	{
 		return CurrentSource_;

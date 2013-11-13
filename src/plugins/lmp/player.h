@@ -206,7 +206,6 @@ namespace LMP
 		void handleSourceError (const QString&, SourceError);
 
 		void refillPlaylist ();
-		void setTransitionTime ();
 	signals:
 		void songChanged (const MediaInfo&);
 		void songInfoUpdated (const MediaInfo&);

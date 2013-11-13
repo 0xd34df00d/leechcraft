@@ -136,10 +136,6 @@ namespace LMP
 				this,
 				SLOT (handleUpdateSourceQueue ()));
 
-		XmlSettingsManager::Instance ().RegisterObject ("TransitionTime",
-				this, "setTransitionTime");
-		setTransitionTime ();
-
 		XmlSettingsManager::Instance ().RegisterObject ("SingleTrackDisplayMask",
 				this, "refillPlaylist");
 
@@ -1406,13 +1402,6 @@ namespace LMP
 	void Player::refillPlaylist ()
 	{
 		ReplaceQueue (GetQueue (), false);
-	}
-
-	void Player::setTransitionTime ()
-	{
-		const int time = XmlSettingsManager::Instance ()
-				.property ("TransitionTime").toInt ();
-		Source_->SetTransitionTime (time);
 	}
 }
 }
