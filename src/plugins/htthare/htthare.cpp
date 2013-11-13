@@ -41,7 +41,7 @@ namespace LeechCraft
 {
 namespace HttHare
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator ("htthare");
 
