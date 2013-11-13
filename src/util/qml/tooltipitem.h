@@ -42,7 +42,7 @@ namespace Util
 	 * Using the tooltip is pretty easy.
 	 * First of all register tooltip in your widget:
 	 * \code{.cpp}
-	 * qmlRegisterType<Util::ToolTipWidget> ("org.LC.common", 1, 0, "ToolTip");
+	 * qmlRegisterType<Util::ToolTipItem> ("org.LC.common", 1, 0, "ToolTip");
 	 * \endcode
 	 *
 	 * Then in yout qml import this widget:
