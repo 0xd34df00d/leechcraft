@@ -101,7 +101,7 @@ namespace Murm
 		return { Proto_ };
 	}
 
-	void Plugin::initPlugin (QObject *proxy)
+	void Plugin::initPlugin (QObject*)
 	{
 	}
 }

@@ -136,7 +136,7 @@ namespace Murm
 		return Info_.Title_;
 	}
 
-	void VkChatEntry::SetEntryName (const QString& name)
+	void VkChatEntry::SetEntryName (const QString&)
 	{
 		// TODO
 	}
@@ -156,7 +156,7 @@ namespace Murm
 		return { tr ("Chats") };
 	}
 
-	void VkChatEntry::SetGroups (const QStringList& groups)
+	void VkChatEntry::SetGroups (const QStringList&)
 	{
 	}
 
