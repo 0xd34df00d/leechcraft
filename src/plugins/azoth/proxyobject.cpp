@@ -356,9 +356,7 @@ namespace Azoth
 			if (shortened.size () > length)
 				shortened = trimmed.left (length / 2) + "..." + trimmed.right (length / 2);
 
-			const auto& str = QString ("<a href=\"%1\" title=\"%1\">%2</a>")
-					.arg (trimmed)
-					.arg (shortened);
+			const auto& str = "<a href=\"" + trimmed + "\" title=\"" + trimmed + "\">" + shortened + "</a>";
 			body.replace (pos, link.length (), str);
 
 			pos += str.length ();
