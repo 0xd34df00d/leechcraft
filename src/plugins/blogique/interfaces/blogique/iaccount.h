@@ -77,30 +77,45 @@ namespace Blogique
 
 	struct RecentComment
 	{
-		qint64 EntryId_;
+		QByteArray AccountID_;
+
+		qint64 EntryID_;
 		QString EntrySubject_;
 		QUrl EntryUrl_;
 
-		qint64 CommentId_;
+		qint64 CommentID_;
 		QString CommentSubject_;
 		QString CommentText_;
 		QString CommentAuthor_;
 		QDateTime CommentDateTime_;
 
-		qint64 ParentCommentId_;
+		qint64 ParentCommentID_;
 
 		RecentComment ()
-		: EntryId_ (-1)
-		, CommentId_ (-1)
-		, ParentCommentId_ (-1)
+		: EntryID_ (-1)
+		, CommentID_ (-1)
+		, ParentCommentID_ (-1)
 		{}
 
 		bool isValid () const
 		{
-			return EntryId_ != -1 &&
-					CommentId_ != -1;
+			return EntryID_ != -1 &&
+					CommentID_ != -1;
+		}
+
+		bool operator== (const RecentComment& newComment) const
+		{
+			return AccountID_ == newComment.AccountID_ &&
+					EntryID_ == newComment.EntryID_ &&
+					CommentID_ == newComment.CommentID_;
 		}
 	};
+
+	inline uint qHash (const RecentComment& comment)
+	{
+		return qHash (comment.AccountID_) + ::qHash (comment.EntryID_) +
+				::qHash (comment.CommentID_);
+	}
 
 	struct Filter
 	{
