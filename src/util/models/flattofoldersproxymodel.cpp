@@ -231,7 +231,7 @@ namespace LeechCraft
 			return SourceModel_->mimeData (sourceIdxs);
 		}
 
-		bool FlatToFoldersProxyModel::dropMimeData (const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent)
+		bool FlatToFoldersProxyModel::dropMimeData (const QMimeData* data, Qt::DropAction action, int, int, const QModelIndex& parent)
 		{
 			if (!SourceModel_)
 				return false;
