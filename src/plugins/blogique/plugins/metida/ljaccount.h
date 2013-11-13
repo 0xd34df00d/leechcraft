@@ -160,8 +160,11 @@ namespace Metida
 		void RequestLastEntries (int count);
 		void RequestStatistics ();
 		void RequestTags ();
+
 		void RequestInbox ();
+
 		void RequestRecentComments ();
+		void DeleteComment (qint64 id, bool deleteThread = false);
 
 		QList<QAction*> GetUpdateActions () const;
 
@@ -180,9 +183,9 @@ namespace Metida
 
 		void AddGroup (const QString& name, bool isPublic, int id);
 		void DeleteGroup (int id);
-		
+
 		void SetMessagesAsRead (const QList<int>& ids);
-		void SendMessage (const QStringList& addresses, const QString& subject, 
+		void SendMessage (const QStringList& addresses, const QString& subject,
 				const QString& text);
 	private:
 		void CallLastUpdateMethod ();
@@ -210,7 +213,7 @@ namespace Metida
 		void handleMessageSent ();
 
 		void handleGotRecentComments (const QList<LJCommentEntry>& comments);
-		
+
 	signals:
 		void accountRenamed (const QString& newName);
 		void accountSettingsChanged ();
@@ -229,10 +232,10 @@ namespace Metida
 		void gettingFilteredEntriesFinished ();
 
 		void gotEntries (const QList<Entry>& entries);
-		
+
 		void gotBlogStatistics (const QMap<QDate, int>& statistics);
 		void tagsUpdated (const QHash<QString, int>& tags);
-			
+
 		void gotRecentComments (const QList<RecentComment>& comments);
 	};
 }

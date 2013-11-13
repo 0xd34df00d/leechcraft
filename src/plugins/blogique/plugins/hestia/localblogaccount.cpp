@@ -211,6 +211,10 @@ namespace Hestia
 	{
 	}
 
+	void LocalBlogAccount::DeleteComment (qint64, bool)
+	{
+	}
+
 	QHash<QString, int> LocalBlogAccount::GetTags () const
 	{
 		try

@@ -82,7 +82,8 @@ namespace Hestia
 		void GetEntriesByDate (const QDate& date);
 		void GetEntriesWithFilter (const Filter& filter);
 		void RequestRecentComments ();
-		
+		void DeleteComment (qint64 id, bool deleteThread = false);
+
 		QHash<QString, int> GetTags () const;
 
 		void FillSettings (AccountConfigurationWidget *widget);

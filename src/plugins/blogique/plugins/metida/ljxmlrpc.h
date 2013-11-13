@@ -76,7 +76,7 @@ namespace Metida
 
 	public:
 		LJXmlRPC (LJAccount *acc, QObject *parent = 0);
-		
+
 		void Validate (const QString& login, const QString& pass);
 
 		void AddNewFriend (const QString& username,
@@ -102,13 +102,14 @@ namespace Metida
 
 		void RequestLastInbox ();
 		void SetMessagesAsRead (const QList<int>& ids);
-		void SendMessage (const QStringList& addresses, const QString& subject, 
+		void SendMessage (const QStringList& addresses, const QString& subject,
 				const QString& text);
-		
+
 		void RequestRecentCommments ();
+		void DeleteComment (qint64 id, bool deleteThread = false);
 
 		void RequestTags ();
-		
+
 	private:
 		std::shared_ptr<void> MakeRunnerGuard ();
 		void CallNextFunctionFromQueue ();
@@ -151,6 +152,7 @@ namespace Metida
 				const QString& text, const QString& challenge);
 
 		void RecentCommentsRequest (const QString& challenge);
+		void DeleteCommentRequest (qint64 id, bool deleteThread, const QString& challenge);
 
 		void GetUserTagsRequest (const QString& challenge);
 
@@ -181,6 +183,7 @@ namespace Metida
 		void handleMessagesSetAsReadFinished ();
 		void handleSendMessageRequestFinished ();
 		void handleRecentCommentsReplyFinished ();
+		void handleDeleteCommentReplyFinished ();
 		void handleGetUserTagsReplyFinished ();
 
 		void handleNetworkError (QNetworkReply::NetworkError error);

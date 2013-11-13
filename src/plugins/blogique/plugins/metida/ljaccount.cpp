@@ -349,6 +349,11 @@ namespace Metida
 		LJXmlRpc_->RequestRecentCommments ();
 	}
 
+	void LJAccount::DeleteComment (qint64 id, bool deleteThread)
+	{
+		LJXmlRpc_->DeleteComment (id, deleteThread);
+	}
+
 	QList<QAction*> LJAccount::GetUpdateActions () const
 	{
 		return { LoadLastEvents_, LoadChangedEvents_ };

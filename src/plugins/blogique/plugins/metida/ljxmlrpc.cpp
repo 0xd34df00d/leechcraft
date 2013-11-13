@@ -212,6 +212,14 @@ namespace Metida
 				{ RecentCommentsRequest (challenge); };
 	}
 
+	void LJXmlRPC::DeleteComment (qint64 id, bool deleteThread)
+	{
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
+		ApiCallQueue_ << [this, id, deleteThread] (const QString& challenge)
+				{ DeleteCommentRequest (id, deleteThread, challenge); };
+	}
+
 	void LJXmlRPC::RequestTags ()
 	{
 		auto guard = MakeRunnerGuard ();
@@ -1170,6 +1178,34 @@ namespace Metida
 				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
 
+	void LJXmlRPC::DeleteCommentRequest (qint64 id, bool deleteThread, const QString& challenge)
+	{
+		QDomDocument document ("REecentCommentsRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.deletecomments", document);
+		document.appendChild (result.first);
+		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
+				Account_->GetPassword (), challenge, document);
+		element.appendChild (GetSimpleMemberElement ("dtalkid", "int",
+				QString::number (id), document));
+		if (deleteThread)
+			element.appendChild (GetSimpleMemberElement ("thread", "boolean",
+					"true", document));
+		element.appendChild (GetSimpleMemberElement ("journal", "string",
+				Account_->GetOurLogin (), document));
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleDeleteCommentReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
+
 	void LJXmlRPC::GetUserTagsRequest (const QString& challenge)
 	{
 		QDomDocument document ("REecentCommentsRequest");
@@ -2006,11 +2042,12 @@ namespace Metida
 				for (const auto& pairKey : Id2CommentEntry_.keys ())
 					for (const auto& event : events)
 					{
-						if (event.ItemID_ == pairKey.first)
-						{
-							Id2CommentEntry_ [pairKey].NodeSubject_ = event.Event_;
-							Id2CommentEntry_ [pairKey].NodeUrl_ = event.Url_;
-						}
+						if (event.ItemID_ != pairKey.first)
+							continue;
+
+						Id2CommentEntry_ [pairKey].NodeSubject_ = event.Event_;
+						Id2CommentEntry_ [pairKey].NodeUrl_ = event.Url_;
+						Id2CommentEntry_ [pairKey].ReplyId_ = 256 * Id2CommentEntry_ [pairKey].ReplyId_ + event.ANum_;
 					}
 
 				auto comments = Id2CommentEntry_.values ();
@@ -2244,6 +2281,17 @@ namespace Metida
 		}
 
 		ParseForError (content);
+	}
+
+	void LJXmlRPC::handleDeleteCommentReplyFinished ()
+	{
+		QDomDocument document;
+		QByteArray content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
+				document);
+		if (content.isEmpty ())
+			return;
+
+		qDebug () << document.toByteArray ();
 	}
 
 	namespace
