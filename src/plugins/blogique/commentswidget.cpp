@@ -37,6 +37,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include "commentsmodel.h"
 #include "core.h"
+#include "sortcommentsproxymodel.h"
 
 namespace LeechCraft
 {
@@ -45,15 +46,18 @@ namespace Blogique
 	CommentsWidget::CommentsWidget (QWidget *parent)
 	: QWidget (parent)
 	, CommentsModel_ (new CommentsModel (this))
+	, ProxyModel_ (new SortCommentsProxyModel (this, this))
 	{
 		Ui_.setupUi (this);
+
+		ProxyModel_->setSourceModel (CommentsModel_);
 
 		Ui_.CommentsView_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
 		auto context = Ui_.CommentsView_->rootContext ();
 		context->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (Core::Instance ()
 						.GetCoreProxy ()->GetColorThemeManager (), this));
-		context->setContextProperty ("commentsModel", CommentsModel_);
+		context->setContextProperty ("commentsModel", ProxyModel_);
 		context->setContextProperty ("parentWidget", this);
 		Ui_.CommentsView_->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,
 				"blogique", "commentsview.qml")));
@@ -61,11 +65,17 @@ namespace Blogique
 				SIGNAL (linkActivated (QString)),
 				this,
 				SLOT (handleLinkActivated (QString)));
+		ProxyModel_->sort (0, Qt::AscendingOrder);
 	}
 
 	QString CommentsWidget::GetName () const
 	{
 		return tr ("Comments");
+	}
+
+	RecentComment CommentsWidget::GetRecentCommentFromIndex (const QModelIndex& index) const
+	{
+		return Item2RecentComment_.value (CommentsModel_->itemFromIndex (index), RecentComment ());
 	}
 
 	void CommentsWidget::handleLinkActivated (const QString& url)
@@ -90,6 +100,9 @@ namespace Blogique
 	void CommentsWidget::handleGotComments (const QByteArray& accountId,
 			const QList<RecentComment>& comments)
 	{
+		if (comments.isEmpty ())
+			return;
+
 		for (const auto& comment : comments)
 		{
 			if (Id2RecentComment_.contains (qMakePair (accountId, comment.CommentId_)))

@@ -41,6 +41,7 @@ namespace LeechCraft
 namespace Blogique
 {
 	class CommentsModel;
+	class SortCommentsProxyModel;
 
 	class CommentsWidget : public QWidget
 	{
@@ -49,6 +50,7 @@ namespace Blogique
 		Ui::CommentsWidget Ui_;
 
 		CommentsModel *CommentsModel_;
+		SortCommentsProxyModel *ProxyModel_;
 		QHash<QStandardItem*, RecentComment> Item2RecentComment_;
 		QMap<QPair<QByteArray, qint64>, RecentComment> Id2RecentComment_;
 
@@ -56,6 +58,7 @@ namespace Blogique
 		CommentsWidget (QWidget *parent = 0);
 
 		QString GetName () const;
+		RecentComment GetRecentCommentFromIndex (const QModelIndex& index) const;
 
 	private slots:
 		void handleLinkActivated (const QString& url);
