@@ -5,6 +5,8 @@ Rectangle
 {
 	id: rootRect
 
+	signal linkActivated (string url)
+
 	gradient: Gradient
 	{
 		GradientStop
@@ -84,7 +86,7 @@ Rectangle
 					text: entrySubject
 
 					visible: text != ""
-					
+
 					elide: Text.ElideRight
 
 					font.bold: true
@@ -104,6 +106,7 @@ Rectangle
 						onExited:
 							parentWidget.setItemCursor (subjectTextMouseArea,
 									"ArrowCursor");
+						onClicked: linkActivated (entryUrl)
 					}
 				}
 
@@ -118,7 +121,7 @@ Rectangle
 					clip: true
 					font.bold: true
 					color: colorProxy.color_TextBox_TextColor
-					
+
 					visible: text != ""
 
 					anchors.top: entrySubjectText.bottom
@@ -134,10 +137,10 @@ Rectangle
 					id: commentBodyFlickable
 					contentWidth: parent.width - 10
 					contentHeight: commentBodyText.paintedHeight
-					
+
 					clip: true
-					
-					anchors.top: commentSubjectText.text == "" ? 
+
+					anchors.top: commentSubjectText.text == "" ?
 						entrySubjectText.bottom :
 						commentSubjectText.bottom
 					anchors.topMargin: 1
@@ -164,7 +167,6 @@ Rectangle
 						color: colorProxy.color_TextBox_TextColor
 					}
 				}
-				
 
 				Text
 				{
@@ -186,7 +188,7 @@ Rectangle
 				Text
 				{
 					id: authorNameText
-					text: commentAuthor
+					text: commentAuthor == "" ? "Anonymous" : commentAuthor
 
 					font.underline: authorNameTextMouseArea.containsMouse
 
@@ -211,6 +213,9 @@ Rectangle
 						onExited:
 							parentWidget.setItemCursor (authorNameTextMouseArea,
 									"ArrowCursor");
+						onClicked:
+							if (commentAuthor != "")
+								linkActivated ("http://" + authorNameText.text + ".livejournal.com")
 					}
 				}
 			}
@@ -228,7 +233,7 @@ Rectangle
 		model: commentsVisualModel
 	}
 
-// 	signal linkActivated (string url)
+//
 
 
 //

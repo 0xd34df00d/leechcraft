@@ -33,6 +33,8 @@
 #include <QGraphicsObject>
 #include <util/qml/colorthemeproxy.h>
 #include <util/sys/paths.h>
+#include <util/util.h>
+#include <interfaces/core/ientitymanager.h>
 #include "commentsmodel.h"
 #include "core.h"
 
@@ -55,11 +57,23 @@ namespace Blogique
 		context->setContextProperty ("parentWidget", this);
 		Ui_.CommentsView_->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,
 				"blogique", "commentsview.qml")));
+		connect (Ui_.CommentsView_->rootObject (),
+				SIGNAL (linkActivated (QString)),
+				this,
+				SLOT (handleLinkActivated (QString)));
 	}
 
 	QString CommentsWidget::GetName () const
 	{
 		return tr ("Comments");
+	}
+
+	void CommentsWidget::handleLinkActivated (const QString& url)
+	{
+		Core::Instance ().GetCoreProxy ()->GetEntityManager ()->
+				HandleEntity (Util::MakeEntity (url,
+						QString (),
+						OnlyHandle | FromUserInitiated));
 	}
 
 	void CommentsWidget::setItemCursor (QGraphicsObject *object, const QString& shape)

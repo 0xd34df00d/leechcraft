@@ -57,6 +57,8 @@ namespace Blogique
 
 		QString GetName () const;
 
+	private slots:
+		void handleLinkActivated (const QString& url);
 	public slots:
 		void setItemCursor (QGraphicsObject *object, const QString& shape);
 		void handleGotComments (const QByteArray& accountId,
