@@ -310,7 +310,7 @@ namespace Woodpecker
 		emit tweetsReady (ParseReply (response));
 	}
 
-	void TwitterInterface::onAuthorizationReceived (const QString& token, const QString& verifier)
+	void TwitterInterface::onAuthorizationReceived (const QString&, const QString&)
 	{
 #ifdef WP_DEBUG
 		qDebug () << Q_FUNC_INFO;
@@ -336,7 +336,7 @@ namespace Woodpecker
 
 	}
 
-	void TwitterInterface::onTemporaryTokenReceived (const QString& token, const QString& tokenSecret)
+	void TwitterInterface::onTemporaryTokenReceived (const QString&, const QString&)
 	{
 		const QUrl userAuthURL ("https://api.twitter.com/oauth/authorize");
 
@@ -345,7 +345,7 @@ namespace Woodpecker
 #ifdef WP_DEBUG
 			qDebug () << Q_FUNC_INFO << "Asking for user's permission to access protected resources. Opening URL: " << userAuthURL;
 #endif
-		OAuthManager_->getUserAuthorization (userAuthURL);
+			OAuthManager_->getUserAuthorization (userAuthURL);
 		}
 		else
 		{
