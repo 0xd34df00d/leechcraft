@@ -305,7 +305,7 @@ namespace StandardStyles
 		}
 
 		if (!statusIconName.isEmpty ())
-			string.prepend (QString ("<img src='%1' style='max-width: 1em; max-height: 1em;' id='%2'/>")
+			string.prepend (QString ("<img src='%1' style='max-width: 1em; max-height: 1em;' id='%2' class='deliveryStatusIcon' />")
 					.arg (GetStatusImage (statusIconName))
 					.arg (msgId));
 		string.append (body);
