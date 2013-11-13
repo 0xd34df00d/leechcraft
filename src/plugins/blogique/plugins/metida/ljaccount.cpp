@@ -703,11 +703,14 @@ namespace Metida
 
 	namespace
 	{
-		RecentComment LJCommentEntry2RecentComment (const LJCommentEntry& comment)
+		RecentComment LJCommentEntry2RecentComment (const LJCommentEntry& comment,
+				const QByteArray& accountID)
 		{
 			RecentComment recentComment;
 
-			recentComment.EntryId_ = comment.NodeId_;
+			recentComment.AccountID_ = accountID;
+
+			recentComment.EntryID_ = comment.NodeId_;
 			recentComment.EntrySubject_ = comment.NodeSubject_;
 			recentComment.EntryUrl_ = comment.NodeUrl_;
 
@@ -715,8 +718,8 @@ namespace Metida
 			recentComment.CommentText_ = comment.Text_;
 			recentComment.CommentAuthor_ = comment.PosterName_;
 			recentComment.CommentDateTime_ = comment.PostingDate_;
-			recentComment.CommentId_ = comment.ReplyId_;
-			recentComment.ParentCommentId_ = comment.ParentReplyId_;
+			recentComment.CommentID_ = comment.ReplyId_;
+			recentComment.ParentCommentID_ = comment.ParentReplyId_;
 
 			return recentComment;
 		}
@@ -731,7 +734,7 @@ namespace Metida
 		std::transform (comments.begin (), comments.end (), std::back_inserter (recentComments),
 				[this] (decltype (comments.first ()) comment)
 				{
-					return LJCommentEntry2RecentComment (comment);
+					return LJCommentEntry2RecentComment (comment, GetAccountID ());
 				});
 		emit gotRecentComments (recentComments);
 	}
