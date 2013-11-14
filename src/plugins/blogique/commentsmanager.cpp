@@ -51,7 +51,7 @@ namespace Blogique
 				SLOT (checkForComments ()));
 	}
 
-	QList<RecentComment> CommentsManager::GetComments () const
+	QList<CommentEntry> CommentsManager::GetComments () const
 	{
 		return RecentComments_.toList ();
 	}
@@ -80,9 +80,9 @@ namespace Blogique
 			CommentsCheckingTimer_->stop ();
 	}
 
-	void CommentsManager::handleGotRecentComments (const QList<RecentComment>& comments)
+	void CommentsManager::handleGotRecentComments (const QList<CommentEntry>& comments)
 	{
-		QList<RecentComment> newComments;
+		QList<CommentEntry> newComments;
 		for (const auto& comment : comments)
 			if (!RecentComments_.contains (comment))
 			{

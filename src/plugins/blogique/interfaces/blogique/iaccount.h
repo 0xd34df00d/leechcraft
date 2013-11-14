@@ -75,7 +75,7 @@ namespace Blogique
 		};
 	};
 
-	struct RecentComment
+	struct CommentEntry
 	{
 		QByteArray AccountID_;
 
@@ -91,7 +91,7 @@ namespace Blogique
 
 		qint64 ParentCommentID_;
 
-		RecentComment ()
+		CommentEntry ()
 		: EntryID_ (-1)
 		, CommentID_ (-1)
 		, ParentCommentID_ (-1)
@@ -103,7 +103,7 @@ namespace Blogique
 					CommentID_ != -1;
 		}
 
-		bool operator== (const RecentComment& newComment) const
+		bool operator== (const CommentEntry& newComment) const
 		{
 			return AccountID_ == newComment.AccountID_ &&
 					EntryID_ == newComment.EntryID_ &&
@@ -111,7 +111,7 @@ namespace Blogique
 		}
 	};
 
-	inline uint qHash (const RecentComment& comment)
+	inline uint qHash (const CommentEntry& comment)
 	{
 		return qHash (comment.AccountID_) + ::qHash (comment.EntryID_) +
 				::qHash (comment.CommentID_);
@@ -245,6 +245,11 @@ namespace Blogique
 		 */
 		virtual void RequestRecentComments () = 0;
 
+		/** @brief Add comment.
+		 *
+		 */
+		virtual void AddComment (const CommentEntry& comment) = 0;
+
 		/** @brief Delete comment.
 		 *
 		 */
@@ -321,7 +326,7 @@ namespace Blogique
 		 *
 		 * @note This function is expected to be a signal.
 		 */
-		virtual void gotRecentComments (const QList<RecentComment>& comments) = 0;
+		virtual void gotRecentComments (const QList<CommentEntry>& comments) = 0;
 
 		virtual void gotError (int errorCode, const QString& errorString,
 				const QString& localizedErrorString = QString ()) = 0;

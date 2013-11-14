@@ -85,9 +85,9 @@ namespace Blogique
 		return tr ("Comments");
 	}
 
-	RecentComment CommentsWidget::GetRecentCommentFromIndex (const QModelIndex& index) const
+	CommentEntry CommentsWidget::GetRecentCommentFromIndex (const QModelIndex& index) const
 	{
-		return Item2RecentComment_.value (CommentsModel_->itemFromIndex (index), RecentComment ());
+		return Item2RecentComment_.value (CommentsModel_->itemFromIndex (index), CommentEntry ());
 	}
 
 	void CommentsWidget::FillModel ()
@@ -95,7 +95,7 @@ namespace Blogique
 		AddItemsToModel (Core::Instance ().GetCommentsManager ()->GetComments ());
 	}
 
-	void CommentsWidget::AddItemsToModel (const QList<RecentComment>& comments)
+	void CommentsWidget::AddItemsToModel (const QList<CommentEntry>& comments)
 	{
 		for (const auto& comment : comments)
 		{
@@ -126,7 +126,7 @@ namespace Blogique
 						OnlyHandle | FromUserInitiated));
 	}
 
-	void CommentsWidget::handleGotNewComments(const QList<RecentComment>& comments)
+	void CommentsWidget::handleGotNewComments(const QList<CommentEntry>& comments)
 	{
 		AddItemsToModel (comments);
 	}

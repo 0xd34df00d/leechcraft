@@ -44,21 +44,21 @@ namespace Blogique
 		Q_OBJECT
 
 		QTimer *CommentsCheckingTimer_;
-		QSet<RecentComment> RecentComments_;
+		QSet<CommentEntry> RecentComments_;
 
 	public:
 		CommentsManager (QObject *parent = 0);
 
-		QList<RecentComment> GetComments () const;
+		QList<CommentEntry> GetComments () const;
 
 	private slots:
 		void checkForComments ();
 		void handleCommentsCheckingChanged ();
 		void handleCommentsCheckingTimerChanged ();
-		void handleGotRecentComments (const QList<RecentComment>& comments);
+		void handleGotRecentComments (const QList<CommentEntry>& comments);
 
 	signals:
-		void gotNewComments (const QList<RecentComment>& comments);
+		void gotNewComments (const QList<CommentEntry>& comments);
 	};
 }
 }

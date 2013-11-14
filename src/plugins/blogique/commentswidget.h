@@ -51,21 +51,21 @@ namespace Blogique
 
 		CommentsModel *CommentsModel_;
 		SortCommentsProxyModel *ProxyModel_;
-		QHash<QStandardItem*, RecentComment> Item2RecentComment_;
-		QSet<RecentComment> RecentComments_;
+		QHash<QStandardItem*, CommentEntry> Item2RecentComment_;
+		QSet<CommentEntry> RecentComments_;
 
 	public:
 		CommentsWidget (QWidget *parent = 0);
 
 		QString GetName () const;
-		RecentComment GetRecentCommentFromIndex (const QModelIndex& index) const;
+		CommentEntry GetRecentCommentFromIndex (const QModelIndex& index) const;
 	private:
 		void FillModel ();
-		void AddItemsToModel (const QList<RecentComment>& comments);
+		void AddItemsToModel (const QList<CommentEntry>& comments);
 
 	private slots:
 		void handleLinkActivated (const QString& url);
-		void handleGotNewComments (const QList<RecentComment>& comments);
+		void handleGotNewComments (const QList<CommentEntry>& comments);
 	public slots:
 		void setItemCursor (QGraphicsObject *object, const QString& shape);
 	};
