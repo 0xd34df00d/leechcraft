@@ -1,4 +1,5 @@
 import QtQuick 1.1
+import org.LC.common 1.0
 
 Item {
     id: actionRoot
@@ -118,13 +119,14 @@ Item {
             anchors.fill: parent
             hoverEnabled: true
 
+            ToolTip {
+                anchors.fill: parent
+                text: textTooltip
+            }
+
             onClicked: mouse.button == Qt.LeftButton ? actionRoot.triggered() : actionRoot.clicked(mouse)
             onPressAndHold: actionRoot.held()
-            onEntered: {
-                actionRoot.hovered();
-                if (textTooltip.length > 0)
-                    buttCommon.showTextTooltip(actionMouseArea, textTooltip);
-            }
+            onEntered: actionRoot.hovered();
             onExited: actionRoot.hoverLeft()
         }
     }
