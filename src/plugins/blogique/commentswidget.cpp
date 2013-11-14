@@ -34,6 +34,7 @@
 #include <QGraphicsObject>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/tooltipitem.h>
+#include <util/qml/themeimageprovider.h>
 #include <util/sys/paths.h>
 #include <util/util.h>
 #include <interfaces/core/ientitymanager.h>
@@ -53,8 +54,6 @@ namespace Blogique
 	{
 		Ui_.setupUi (this);
 
-		qmlRegisterType<Util::ToolTipItem> ("org.LC.common", 1, 0, "ToolTip");
-
 		ProxyModel_->setSourceModel (CommentsModel_);
 
 		Ui_.CommentsView_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
@@ -64,6 +63,10 @@ namespace Blogique
 						.GetCoreProxy ()->GetColorThemeManager (), this));
 		context->setContextProperty ("commentsModel", ProxyModel_);
 		context->setContextProperty ("parentWidget", this);
+		auto engine = Ui_.CommentsView_->engine ();
+		engine->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (Core::Instance ().GetCoreProxy ()));
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
+			engine->addImportPath (cand);
 		Ui_.CommentsView_->setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML,
 				"blogique", "commentsview.qml")));
 		connect (Ui_.CommentsView_->rootObject (),
@@ -75,9 +78,9 @@ namespace Blogique
 		FillModel ();
 
 		connect (Core::Instance ().GetCommentsManager (),
-				SIGNAL (gotNewComments (QList<RecentComment>)),
+				SIGNAL (gotNewComments (QList<CommentEntry>)),
 				this,
-				SLOT (handleGotNewComments (QList<RecentComment>)));
+				SLOT (handleGotNewComments (QList<CommentEntry>)));
 	}
 
 	QString CommentsWidget::GetName () const
@@ -110,6 +113,8 @@ namespace Blogique
 			item->setData (comment.CommentAuthor_, CommentsModel::CommentAuthor);
 			item->setData (comment.CommentDateTime_.toString (Qt::DefaultLocaleShortDate),
 						   CommentsModel::CommentDate);
+			item->setData (comment.CommentUrl_, CommentsModel::CommentUrl);
+			item->setData (comment.CommentID_, CommentsModel::CommentID);
 
 			Item2RecentComment_ [item] = comment;
 			RecentComments_ << comment;

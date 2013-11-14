@@ -300,9 +300,9 @@ namespace Blogique
 				this,
 				SIGNAL (tagsUpdated (QHash<QString, int>)));
 		connect (accObj,
-				SIGNAL (gotRecentComments (QList<RecentComment>)),
+				SIGNAL (gotRecentComments (QList<CommentEntry>)),
 				CommentsManager_,
-				SLOT (handleGotRecentComments (QList<RecentComment>)));
+				SLOT (handleGotRecentComments (QList<CommentEntry>)));
 		connect (accObj,
 				SIGNAL (gotError (int, QString, QString)),
 				this,
