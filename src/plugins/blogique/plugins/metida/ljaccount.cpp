@@ -730,6 +730,10 @@ namespace Metida
 			recentComment.CommentDateTime_ = comment.PostingDate_;
 			recentComment.CommentID_ = comment.ReplyId_;
 			recentComment.ParentCommentID_ = comment.ParentReplyId_;
+			recentComment.CommentUrl_ = QUrl (recentComment.EntryUrl_.toString () +
+					QString ("?thread=%1#t%2")
+							.arg (recentComment.CommentID_)
+							.arg (recentComment.CommentID_));
 
 			return recentComment;
 		}
