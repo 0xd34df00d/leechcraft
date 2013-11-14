@@ -94,7 +94,6 @@ namespace Azoth
 
 		BottomBar_->addWidget (MenuButton_);
 		BottomBar_->addWidget (FastStatusButton_);
-		FastStatusButton_->setPopupMode (QToolButton::MenuButtonPopup);
 
 		Ui_.setupUi (this);
 		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.FilterLine_);
