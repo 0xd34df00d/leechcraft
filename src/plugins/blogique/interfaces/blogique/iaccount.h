@@ -88,6 +88,7 @@ namespace Blogique
 		QString CommentText_;
 		QString CommentAuthor_;
 		QDateTime CommentDateTime_;
+		QUrl CommentUrl_;
 
 		qint64 ParentCommentID_;
 
