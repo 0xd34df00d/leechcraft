@@ -210,12 +210,9 @@ namespace LeechCraft
 				this,
 				SLOT (handleLoadProgress (const QString&)));
 
-		auto mw = Core::Instance ().GetRootWindowsManager ()->MakeMainWindow ();
-		Core::Instance ().DelayedInit ();
-
-		Splash_->showMessage (tr ("Finalizing..."), Qt::AlignLeft | Qt::AlignBottom, QColor ("#FF3000"));
-
-		Splash_->finish (mw);
+		QTimer::singleShot (0,
+				this,
+				SLOT (finishInit ()));
 	}
 
 	const QStringList& Application::Arguments () const
@@ -488,6 +485,16 @@ namespace LeechCraft
 		XmlSettingsManager::Instance ()->RegisterObject ("Language",
 				this, "handleLanguage");
 		PreviousLangName_ = XmlSettingsManager::Instance ()->property ("Language").toString ();
+	}
+
+	void Application::finishInit ()
+	{
+		auto mw = Core::Instance ().GetRootWindowsManager ()->MakeMainWindow ();
+		Core::Instance ().DelayedInit ();
+
+		Splash_->showMessage (tr ("Finalizing..."), Qt::AlignLeft | Qt::AlignBottom, QColor ("#FF3000"));
+
+		Splash_->finish (mw);
 	}
 
 	void Application::handleQuit ()
