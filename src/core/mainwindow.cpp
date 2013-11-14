@@ -85,7 +85,7 @@ LeechCraft::MainWindow::MainWindow (int screen, bool isPrimary)
 	addToolBar (Qt::TopToolBarArea, TopDockToolbar_);
 	addToolBar (Qt::BottomToolBarArea, BottomDockToolbar_);
 
-	if (Application::instance ()->arguments ().contains ("--desktop"))
+	if (Application::instance ()->arguments ().contains ("--desktop") && isPrimary)
 	{
 		setWindowFlags (Qt::FramelessWindowHint);
 		connect (qApp->desktop (),
