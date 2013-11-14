@@ -94,6 +94,12 @@ Q_DECLARE_METATYPE (LeechCraft::ActionInfo);
 class Q_DECL_EXPORT IShortcutProxy
 {
 public:
+	/** @brief Checks whether a given object has been registered already.
+	 *
+	 * @return Returns whether the \em object has been already registered.
+	 */
+	virtual bool HasObject (QObject *object) const = 0;
+
 	/** @brief Returns a QKeySequence for the given action.
 	 *
 	 * Returns a list of key sequences for the action with given id for

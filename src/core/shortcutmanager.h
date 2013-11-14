@@ -57,10 +57,15 @@ namespace LeechCraft
 		};
 
 		ShortcutManager (QWidget* = 0);
+
+		bool HasObject (QObject*) const;
+
 		void AddObject (QObject*);
 		void AddObject (QObject*, const QString&,
 				const QString&, const QIcon&);
 		QKeySequences_t GetShortcuts (QObject*, const QString&);
+	private:
+		int GetObjectRow (QObject*) const;
 	public slots:
 		void on_Tree__activated (const QModelIndex&);
 		virtual void accept ();

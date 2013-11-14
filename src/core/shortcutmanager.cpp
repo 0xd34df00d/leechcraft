@@ -91,6 +91,11 @@ namespace LeechCraft
 				SLOT (expandAll ()));
 	}
 
+	bool ShortcutManager::HasObject (QObject *object) const
+	{
+		return GetObjectRow (object) != -1;
+	}
+
 	void ShortcutManager::AddObject (QObject *object)
 	{
 		IInfo *ii = qobject_cast<IInfo*> (object);
@@ -108,13 +113,8 @@ namespace LeechCraft
 			const QString& objName, const QString& objDescr,
 			const QIcon& objIcon)
 	{
-		for (int i = 0, size = Model_->rowCount (); i < size; ++i)
-		{
-			auto objectItem = Model_->item (i);
-			QObject *o = objectItem->data (Roles::Object).value<QObject*> ();
-			if (o == object)
-				return;
-		}
+		if (HasObject (object))
+			return;
 
 		IHaveShortcuts *ihs = qobject_cast<IHaveShortcuts*> (object);
 
@@ -199,8 +199,21 @@ namespace LeechCraft
 			}
 			return QKeySequences_t ();
 		}
-		AddObject (const_cast<QObject*> (object));
+		AddObject (object);
 		return GetShortcuts (object, originalName);
+	}
+
+	int ShortcutManager::GetObjectRow (QObject *object) const
+	{
+		for (int i = 0, size = Model_->rowCount (); i < size; ++i)
+		{
+			const auto objectItem = Model_->item (i);
+			const auto o = objectItem->data (Roles::Object).value<QObject*> ();
+			if (o == object)
+				return i;
+		}
+
+		return -1;
 	}
 
 	void ShortcutManager::on_Tree__activated (const QModelIndex& prIndex)
