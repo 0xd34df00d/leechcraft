@@ -7,6 +7,8 @@ Rectangle
 	id: rootRect
 
 	signal linkActivated (string url)
+	signal deleteComment (int id)
+	signal markCommentAsRead (int id)
 
 	gradient: Gradient
 	{
@@ -31,6 +33,7 @@ Rectangle
 
 		delegate: Item
 		{
+			id: delegateRoot
 			height: 150
 			width: parent.width
 			smooth: true
@@ -80,8 +83,8 @@ Rectangle
 					anchors.topMargin: 1
 					anchors.left: delegateRect.left
 					anchors.leftMargin: 5
-					anchors.right: delegateRect.right
-					anchors.rightMargin: 5
+					anchors.right: commonActionsColumn.left
+					anchors.rightMargin: 1
 					color: colorProxy.color_TextBox_TitleTextColor
 
 					text: entrySubject
@@ -135,16 +138,16 @@ Rectangle
 					anchors.topMargin: 1
 					anchors.left: delegateRect.left
 					anchors.leftMargin: 5
-					anchors.right: delegateRect.right
-					anchors.rightMargin: 5
+					anchors.right: commonActionsColumn.left
+					anchors.rightMargin: 1
 				}
 
 				Flickable
 				{
 					id: commentBodyFlickable
-					contentWidth: parent.width - 10
+					width: parent.width - 24
+					contentWidth: width
 					contentHeight: commentBodyText.paintedHeight
-
 					clip: true
 
 					anchors.top: commentSubjectText.text == "" ?
@@ -155,15 +158,15 @@ Rectangle
 					anchors.bottomMargin: 5
 					anchors.left: delegateRect.left
 					anchors.leftMargin: 5
-					anchors.right: delegateRect.right
-					anchors.rightMargin: 5
+					anchors.right: commonActionsColumn.left
+					anchors.rightMargin: 1
 
 					interactive: commentBodyText.paintedHeight > commentBodyFlickable.height
 
 					Text
 					{
 						id: commentBodyText
-						width: parent.width
+						anchors.fill: parent
 
 						text: commentBody
 
@@ -223,6 +226,52 @@ Rectangle
 						onClicked:
 							if (commentAuthor != "")
 								linkActivated ("http://" + authorNameText.text + ".livejournal.com")
+					}
+				}
+
+				Column
+				{
+					id: commonActionsColumn
+
+					anchors.top: parent.top
+					anchors.right: parent.right
+					anchors.bottom: authorNameText.top
+					anchors.bottomMargin: 1
+
+					ActionButton {
+						id: openInBrowserAction
+
+						width: 24
+						height: width
+
+						textTooltip: qsTr ("Open in browser")
+
+						actionIconURL: "image://ThemeIcons/go-jump-locationbar"
+						onTriggered: rootRect.linkActivated (commentUrl)
+					}
+
+					ActionButton {
+						id: markAsReadAction
+
+						width: 24
+						height: width
+
+						textTooltip: qsTr ("Mark as read")
+
+						actionIconURL: "image://ThemeIcons/mail-mark-read"
+						onTriggered: rootRect.markCommentAsRead (commentID)
+					}
+
+					ActionButton {
+						id: deleteCommentAction
+
+						width: 24
+						height: width
+
+						textTooltip: qsTr ("Delete comment")
+
+						actionIconURL: "image://ThemeIcons/list-remove"
+						onTriggered: rootRect.DeleteComment (commentID)
 					}
 				}
 
