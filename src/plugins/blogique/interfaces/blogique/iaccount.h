@@ -123,9 +123,11 @@ namespace Blogique
 		QDateTime BeginDate_;
 		QDateTime EndDate_;
 		QStringList Tags_;
+		int Skip_;
 
 		Filter ()
 		: CustomDate_ (false)
+		, Skip_ (0)
 		{}
 	};
 
@@ -242,6 +244,11 @@ namespace Blogique
 		 *
 		 */
 		virtual void RequestRecentComments () = 0;
+
+		/** @brief Delete comment.
+		 *
+		 */
+		virtual void DeleteComment (qint64 id, bool threadDelete = false) = 0;
 
 		/** @brief Submit post to blog.
 		 *
