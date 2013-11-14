@@ -58,7 +58,7 @@ namespace LeechCraft
 
 	MainWindow* RootWindowsManager::MakeMainWindow ()
 	{
-		return CreateWindow ();
+		return CreateWindow (-1, false);
 	}
 
 	TabManager* RootWindowsManager::GetTabManager (MainWindow *win) const
@@ -190,9 +190,9 @@ namespace LeechCraft
 		return Windows_ [index].Window_->GetTabWidget ();
 	}
 
-	MainWindow* RootWindowsManager::CreateWindow ()
+	MainWindow* RootWindowsManager::CreateWindow (int screen, bool primary)
 	{
-		auto win = new MainWindow;
+		auto win = new MainWindow (screen, primary);
 		auto proxy = new MWProxy (win);
 		auto tm = new TabManager (win->GetTabWidget (), win, win->GetTabWidget ());
 
@@ -242,7 +242,7 @@ namespace LeechCraft
 
 	void RootWindowsManager::moveTabToNewWindow ()
 	{
-		CreateWindow ();
+		CreateWindow (-1, false);
 
 		MoveTab (sender ()->property ("TabIndex").toInt (),
 				sender ()->property ("FromWindowIndex").toInt (),
@@ -293,7 +293,7 @@ namespace LeechCraft
 
 		if (winIdx == -1)
 		{
-			CreateWindow ();
+			CreateWindow (-1, false);
 			winIdx = Windows_.size () - 1;
 		}
 

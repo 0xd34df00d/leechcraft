@@ -64,8 +64,8 @@
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
 
-LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
-: QMainWindow (parent, flags)
+LeechCraft::MainWindow::MainWindow (int screen, bool isPrimary)
+: IsPrimary_ (isPrimary)
 , TrayIcon_ (0)
 , IsShown_ (true)
 , WasMaximized_ (false)

@@ -68,6 +68,8 @@ namespace LeechCraft
 
 		Ui::LeechCraft Ui_;
 
+		const bool IsPrimary_;
+
 		QSystemTrayIcon *TrayIcon_;
 		bool IsShown_;
 		bool WasMaximized_;
@@ -87,7 +89,7 @@ namespace LeechCraft
 		QToolBar *TopDockToolbar_;
 		QToolBar *BottomDockToolbar_;
 	public:
-		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
+		MainWindow (int screen, bool isPrimary);
 		void Init ();
 		virtual ~MainWindow ();
 
