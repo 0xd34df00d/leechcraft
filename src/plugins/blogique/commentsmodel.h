@@ -48,7 +48,9 @@ namespace Blogique
 			CommentSubject,
 			CommentBody,
 			CommentAuthor,
-			CommentDate
+			CommentDate,
+			CommentUrl,
+			CommentID
 		};
 
 		explicit CommentsModel (QObject *parent = 0);

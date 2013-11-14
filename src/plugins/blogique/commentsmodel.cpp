@@ -43,6 +43,8 @@ namespace Blogique
 		roleNames [CommentBody] = "commentBody";
 		roleNames [CommentAuthor] = "commentAuthor";
 		roleNames [CommentDate] = "commentDate";
+		roleNames [CommentUrl] = "commentUrl";
+		roleNames [CommentID] = "commentID";
 		setRoleNames (roleNames);
 	}
 }
