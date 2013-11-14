@@ -111,8 +111,6 @@ Item {
             color: colorProxy.color_ToolButton_TextColor
         }
 
-        Common { id: buttCommon }
-
         MouseArea {
             id: actionMouseArea
 
