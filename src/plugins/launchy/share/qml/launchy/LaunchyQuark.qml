@@ -5,8 +5,8 @@ Rectangle {
     id: rootRect
 
     property real itemSize: parent.quarkBaseSize
-    width: viewOrient == "vertical" ? itemSize : (itemSize * launchView.count)
-    height: viewOrient == "vertical" ? (itemSize * launchView.count) : itemSize
+    implicitWidth: viewOrient == "vertical" ? itemSize : (itemSize * launchView.count)
+    implicitHeight: viewOrient == "vertical" ? (itemSize * launchView.count) : itemSize
     color: "transparent"
 
     ListView {
