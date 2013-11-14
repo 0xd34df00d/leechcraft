@@ -92,6 +92,8 @@ namespace Metida
 		void Submit (const LJEvent& event);
 		void GetEventsWithFilter (const Filter& filter);
 		void GetLastEvents (int count);
+		void GetMultiplyEvents (const QList<int>& ids, RequestType rt);
+		void GetParticularEvent (int id, RequestType rt);
 		void GetChangedEvents (const QDateTime& dt);
 		void GetEventsByDate (const QDate& date, int skip = 0);
 
@@ -133,7 +135,7 @@ namespace Metida
 		void RemoveEventRequest (const LJEvent& event, const QString& challenge);
 		void UpdateEventRequest (const LJEvent& event, const QString& challenge);
 
-		void BackupEventsRequest (int skip, const Filter& filter, const QString& challenge);
+		void BackupEventsRequest (const Filter& filter, const QString& challenge);
 
 		void GetLastEventsRequest (int count, const QString& challenge);
 		void GetChangedEventsRequest (const QDateTime& dt, const QString& challenge);
@@ -141,7 +143,7 @@ namespace Metida
 				const QString& challenge = QString ());
 		void GetParticularEventRequest (int id, RequestType prt,
 				const QString& challenge);
-		void GetMultipleEventsRequest (const QStringList& ids, RequestType rt,
+		void GetMultipleEventsRequest (const QList<int>& ids, RequestType rt,
 				const QString& challenge);
 
 		void BlogStatisticsRequest (const QString& challenge);
@@ -159,9 +161,9 @@ namespace Metida
 		void ParseForError (const QByteArray& content);
 		void ParseFriends (const QDomDocument& doc);
 
-		QList<LJEvent> ParseFullEvents (const QDomDocument& doc);
-
-		QMap<QDate, int> ParseStatistics (const QDomDocument& doc);
+// 		QList<LJEvent> ParseFullEvents (const QDomDocument& doc);
+// 
+// 		QMap<QDate, int> ParseStatistics (const QDomDocument& doc);
 
 	private slots:
 		void handleChallengeReplyFinished ();
@@ -211,6 +213,8 @@ namespace Metida
 		void messageSent ();
 
 		void gotRecentComments (const QList<LJCommentEntry>& comments);
+		void commentsDeleted (const QList<qint64>& ids);
+		
 		void gotTags (const QHash<QString, int>& tags);
 	};
 }
