@@ -122,8 +122,6 @@ namespace LMP
 		qint64 GetTotalTime () const;
 		void Seek (qint64);
 
-		void SetTransitionTime (int);
-
 		AudioSource GetCurrentSource () const;
 		void SetCurrentSource (const AudioSource&);
 		void PrepareNextSource (const AudioSource&);

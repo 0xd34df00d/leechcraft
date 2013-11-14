@@ -48,6 +48,7 @@ class QToolButton;
 class QShortcut;
 class QSplashScreen;
 class QSystemTrayIcon;
+class QWidgetAction;
 
 namespace LeechCraft
 {
@@ -76,6 +77,8 @@ namespace LeechCraft
 
 		QToolBar *QLBar_;
 
+		QToolButton *MenuButton_;
+		QWidgetAction *MBAction_;
 		QMenu *MenuView_;
 		QMenu *MenuTools_;
 
@@ -127,7 +130,6 @@ namespace LeechCraft
 		void on_ActionRestart__triggered ();
 		void on_ActionQuit__triggered ();
 		void on_ActionShowStatusBar__triggered ();
-		void on_ActionMenu__triggered ();
 		void on_ActionFullscreenMode__triggered (bool);
 		void handleShortcutFullscreenMode ();
 		void handleToolButtonStyleChanged ();

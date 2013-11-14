@@ -446,10 +446,6 @@ namespace LHTR
 			)delim");
 	}
 
-	void RichEditorWidget::SetTagsMappings (const Replacements_t& rich2html, const Replacements_t& html2rich)
-	{
-	}
-
 	void RichEditorWidget::SetCustomTags (const CustomTags_t& tags)
 	{
 		CustomTags_ = tags;
