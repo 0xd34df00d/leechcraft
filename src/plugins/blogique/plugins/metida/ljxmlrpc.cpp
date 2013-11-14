@@ -1454,7 +1454,7 @@ namespace Metida
 
 			return ljEvent;
 		}
-		
+
 		QMap<QDate, int> ParseStatistics (const QDomDocument& document)
 		{
 			QMap<QDate, int> statistics;
@@ -1493,7 +1493,7 @@ namespace Metida
 
 			return statistics;
 		}
-		
+
 		QList<LJEvent> ParseFullEvents (const QString& login, const QDomDocument& document)
 		{
 			QList<LJEvent> events;
@@ -1893,7 +1893,7 @@ namespace Metida
 				}
 
 				emit gotFilteredEvents (eventsList);
-				
+
 				filter.Skip_ += count;
 				GetEventsWithFilter (filter);
 			}
@@ -2054,6 +2054,7 @@ namespace Metida
 						Id2CommentEntry_ [pairKey].NodeSubject_ = event.Event_;
 						Id2CommentEntry_ [pairKey].NodeUrl_ = event.Url_;
 						Id2CommentEntry_ [pairKey].ReplyId_ = 256 * Id2CommentEntry_ [pairKey].ReplyId_ + event.ANum_;
+						Id2CommentEntry_ [pairKey].NodeId_ = 256 * Id2CommentEntry_ [pairKey].NodeId_ + event.ANum_;
 					}
 
 				auto comments = Id2CommentEntry_.values ();
@@ -2314,7 +2315,7 @@ namespace Metida
 			return ids;
 		}
 	}
-	
+
 	void LJXmlRPC::handleDeleteCommentReplyFinished ()
 	{
 		QDomDocument document;
