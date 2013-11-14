@@ -400,12 +400,17 @@ void LeechCraft::MainWindow::SetStatusBar ()
 void LeechCraft::MainWindow::ReadSettings ()
 {
 	QSettings settings ("Deviant", "Leechcraft");
-	settings.beginGroup ("geometry");
-	resize (settings.value ("size", QSize  (1150, 800)).toSize ());
-	move   (settings.value ("pos",  QPoint (10, 10)).toPoint ());
-	WasMaximized_ = settings.value ("maximized").toBool ();
-	WasMaximized_ ? showMaximized () : showNormal ();
-	settings.endGroup ();
+
+	if (!Application::instance ()->arguments ().contains ("--desktop") || !IsPrimary_)
+	{
+		settings.beginGroup ("geometry");
+		resize (settings.value ("size", QSize  (1150, 800)).toSize ());
+		move   (settings.value ("pos",  QPoint (10, 10)).toPoint ());
+		WasMaximized_ = settings.value ("maximized").toBool ();
+		WasMaximized_ ? showMaximized () : showNormal ();
+		settings.endGroup ();
+	}
+
 	settings.beginGroup ("Window");
 	Ui_.ActionShowStatusBar_->setChecked (settings.value ("StatusBarEnabled", true).toBool ());
 	on_ActionShowStatusBar__triggered ();
