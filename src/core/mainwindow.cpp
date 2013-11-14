@@ -96,6 +96,7 @@ LeechCraft::MainWindow::MainWindow (int screen, bool isPrimary)
 				SIGNAL (workAreaResized (int)),
 				this,
 				SLOT (handleWorkAreaResized (int)));
+		handleWorkAreaResized (screen);
 	}
 }
 
