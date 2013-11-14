@@ -87,6 +87,10 @@ LeechCraft::MainWindow::MainWindow (int screen, bool isPrimary)
 
 	if (Application::instance ()->arguments ().contains ("--desktop") && isPrimary)
 	{
+		auto desktop = Application::desktop ();
+		const auto& sRect = desktop->screenGeometry (screen);
+		move (sRect.x (), sRect.y ());
+
 		setWindowFlags (Qt::FramelessWindowHint);
 		connect (qApp->desktop (),
 				SIGNAL (workAreaResized (int)),
