@@ -13,6 +13,7 @@ if (NOT USE_QT5)
 	set (QT_USE_QTXML TRUE)
 	set (QT_USE_QTSQL TRUE)
 	set (QT_USE_QTSCRIPT TRUE)
+	set (QT_USE_QTDECLARATIVE TRUE)
 	include (${QT_USE_FILE})
 endif ()
 
