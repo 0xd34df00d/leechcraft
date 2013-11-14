@@ -489,12 +489,13 @@ namespace LeechCraft
 
 	void Application::finishInit ()
 	{
-		auto mw = Core::Instance ().GetRootWindowsManager ()->MakeMainWindow ();
+		auto rwm = Core::Instance ().GetRootWindowsManager ();
+		rwm->Initialize ();
 		Core::Instance ().DelayedInit ();
 
 		Splash_->showMessage (tr ("Finalizing..."), Qt::AlignLeft | Qt::AlignBottom, QColor ("#FF3000"));
 
-		Splash_->finish (mw);
+		Splash_->finish (rwm->GetMainWindow (0));
 	}
 
 	void Application::handleQuit ()
