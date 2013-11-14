@@ -62,9 +62,12 @@ namespace Blogique
 	private:
 		void FillModel ();
 		void AddItemsToModel (const QList<CommentEntry>& comments);
+		CommentEntry GetComment (const QString& accountId, int entryId, int commentId) const;
 
 	private slots:
 		void handleLinkActivated (const QString& url);
+		void handleDeleteComment (const QString& accountId, int entryId, int commentId);
+		void handleMarkCommentAsRead (const QString& accountId, int entryId, int commentId);
 		void handleGotNewComments (const QList<CommentEntry>& comments);
 	public slots:
 		void setItemCursor (QGraphicsObject *object, const QString& shape);

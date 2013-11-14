@@ -7,8 +7,8 @@ Rectangle
 	id: rootRect
 
 	signal linkActivated (string url)
-	signal deleteComment (int id)
-	signal markCommentAsRead (int id)
+	signal deleteComment (string accotunId, int entryId, int commentId)
+	signal markCommentAsRead (string accotunId, int entryId, int commentId)
 
 	gradient: Gradient
 	{
@@ -259,7 +259,7 @@ Rectangle
 						textTooltip: qsTr ("Mark as read")
 
 						actionIconURL: "image://ThemeIcons/mail-mark-read"
-						onTriggered: rootRect.markCommentAsRead (commentID)
+						onTriggered: rootRect.markCommentAsRead (accountID, entryID, commentID)
 					}
 
 					ActionButton {
@@ -271,7 +271,7 @@ Rectangle
 						textTooltip: qsTr ("Delete comment")
 
 						actionIconURL: "image://ThemeIcons/list-remove"
-						onTriggered: rootRect.DeleteComment (commentID)
+						onTriggered: rootRect.deleteComment (accountID, entryID, commentID)
 					}
 				}
 

@@ -43,8 +43,10 @@ namespace Blogique
 
 		enum CommentRoles
 		{
-			EntrySubject = Qt::UserRole + 1,
+			AccountID = Qt::UserRole + 1,
+			EntrySubject,
 			EntryUrl,
+			EntryID,
 			CommentSubject,
 			CommentBody,
 			CommentAuthor,

@@ -32,6 +32,7 @@
 #include <QDeclarativeEngine>
 #include <QDeclarativeContext>
 #include <QGraphicsObject>
+#include <QMessageBox>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/tooltipitem.h>
 #include <util/qml/themeimageprovider.h>
@@ -73,6 +74,14 @@ namespace Blogique
 				SIGNAL (linkActivated (QString)),
 				this,
 				SLOT (handleLinkActivated (QString)));
+		connect (Ui_.CommentsView_->rootObject (),
+				SIGNAL (deleteComment (QString, int, int)),
+				this,
+				SLOT (handleDeleteComment (QString, int, int)));
+		connect (Ui_.CommentsView_->rootObject (),
+				SIGNAL (markCommentAsRead (QString, int, intt)),
+				this,
+				SLOT (handleMarkCommentAsRead (QString, int, int)));
 		ProxyModel_->sort (0, Qt::AscendingOrder);
 
 		FillModel ();
@@ -106,8 +115,10 @@ namespace Blogique
 				continue;
 
 			QStandardItem *item = new QStandardItem;
+			item->setData (comment.AccountID_, CommentsModel::AccountID);
 			item->setData (comment.EntrySubject_, CommentsModel::EntrySubject);
 			item->setData (comment.EntryUrl_, CommentsModel::EntryUrl);
+			item->setData (comment.EntryID_, CommentsModel::EntryID);
 			item->setData (comment.CommentSubject_, CommentsModel::CommentSubject);
 			item->setData (comment.CommentText_, CommentsModel::CommentBody);
 			item->setData (comment.CommentAuthor_, CommentsModel::CommentAuthor);
@@ -123,12 +134,48 @@ namespace Blogique
 		}
 	}
 
+	CommentEntry CommentsWidget::GetComment (const QString& accountId, int entryId, int commentId) const
+	{
+		for (const auto& comment : RecentComments_)
+			if (comment.AccountID_ == accountId.toUtf8 () &&
+					comment.EntryID_ == entryId &&
+					comment.CommentID_ == commentId)
+				return comment;
+		return CommentEntry ();
+	}
+
 	void CommentsWidget::handleLinkActivated (const QString& url)
 	{
 		Core::Instance ().GetCoreProxy ()->GetEntityManager ()->
 				HandleEntity (Util::MakeEntity (url,
 						QString (),
 						OnlyHandle | FromUserInitiated));
+	}
+
+	void CommentsWidget::handleDeleteComment (const QString& accountId, int entryId, int commentId)
+	{
+		auto comment = GetComment (accountId, entryId, commentId);
+		if (!comment.isValid ())
+			return;
+
+		if (auto account = Core::Instance ().GetAccountFromID (comment.AccountID_))
+		{
+			auto res = QMessageBox::question (this, "LeechCraft",
+					tr ("Do you want to delete whole comment thread too?"),
+					QMessageBox::Yes | QMessageBox::No);
+			bool deleteThread = false;
+			if (res == QMessageBox::Yes)
+				deleteThread = true;
+
+			account->DeleteComment (commentId, deleteThread);
+		}
+	}
+
+	void CommentsWidget::handleMarkCommentAsRead (const QString& accountId, int entryId, int commentId)
+	{
+		auto comment = GetComment (accountId, entryId, commentId);
+		if (!comment.isValid ())
+			return;
 	}
 
 	void CommentsWidget::handleGotNewComments(const QList<CommentEntry>& comments)

@@ -156,6 +156,14 @@ namespace Blogique
 		return result;
 	}
 
+	IAccount* Core::GetAccountFromID (const QByteArray& id) const
+	{
+		for (auto acc : GetAccounts ())
+			if (acc->GetAccountID () == id)
+				return acc;
+		return 0;
+	}
+
 	void Core::SendEntity (const Entity& e)
 	{
 		emit gotEntity (e);

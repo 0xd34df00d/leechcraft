@@ -80,6 +80,8 @@ namespace Blogique
 		QList<IBloggingPlatform*> GetBloggingPlatforms () const;
 		QList<IAccount*> GetAccounts () const;
 
+		IAccount* GetAccountFromID (const QByteArray& id) const;
+
 		void SendEntity (const Entity& e);
 		void DelayedProfilesUpdate ();
 
