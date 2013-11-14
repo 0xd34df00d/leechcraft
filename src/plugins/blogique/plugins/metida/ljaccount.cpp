@@ -349,6 +349,11 @@ namespace Metida
 		LJXmlRpc_->RequestRecentCommments ();
 	}
 
+	void LJAccount::AddComment (const CommentEntry& comment)
+	{
+		//TODO
+	}
+
 	void LJAccount::DeleteComment (qint64 id, bool deleteThread)
 	{
 		LJXmlRpc_->DeleteComment (id, deleteThread);
@@ -708,10 +713,10 @@ namespace Metida
 
 	namespace
 	{
-		RecentComment LJCommentEntry2RecentComment (const LJCommentEntry& comment,
+		CommentEntry LJCommentEntry2RecentComment (const LJCommentEntry& comment,
 				const QByteArray& accountID)
 		{
-			RecentComment recentComment;
+			CommentEntry recentComment;
 
 			recentComment.AccountID_ = accountID;
 
@@ -735,7 +740,7 @@ namespace Metida
 		if (comments.isEmpty ())
 			return;
 
-		QList<RecentComment> recentComments;
+		QList<CommentEntry> recentComments;
 		std::transform (comments.begin (), comments.end (), std::back_inserter (recentComments),
 				[this] (decltype (comments.first ()) comment)
 				{

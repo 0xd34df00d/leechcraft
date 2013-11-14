@@ -164,6 +164,7 @@ namespace Metida
 		void RequestInbox ();
 
 		void RequestRecentComments ();
+		void AddComment (const CommentEntry& comment);
 		void DeleteComment (qint64 id, bool deleteThread = false);
 
 		QList<QAction*> GetUpdateActions () const;
@@ -236,7 +237,7 @@ namespace Metida
 		void gotBlogStatistics (const QMap<QDate, int>& statistics);
 		void tagsUpdated (const QHash<QString, int>& tags);
 
-		void gotRecentComments (const QList<RecentComment>& comments);
+		void gotRecentComments (const QList<CommentEntry>& comments);
 	};
 }
 }
