@@ -526,8 +526,11 @@ void LeechCraft::MainWindow::handleQuit ()
 				0,
 				0);
 
-	TrayIcon_->hide ();
-	delete TrayIcon_;
+	if (TrayIcon_)
+	{
+		TrayIcon_->hide ();
+		delete TrayIcon_;
+	}
 }
 
 void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)
@@ -578,6 +581,9 @@ void LeechCraft::MainWindow::handleToolButtonStyleChanged ()
 
 void MainWindow::handleShowTrayIconChanged ()
 {
+	if (!TrayIcon_)
+		return;
+
 	const bool isVisible = XmlSettingsManager::Instance ()->
 			property ("ShowTrayIcon").toBool ();
 
@@ -688,6 +694,9 @@ void LeechCraft::MainWindow::FillQuickLaunch ()
 
 void LeechCraft::MainWindow::FillTray ()
 {
+	if (!IsPrimary_)
+		return;
+
 	QMenu *iconMenu = new QMenu (this);
 	QMenu *menu = iconMenu->addMenu (tr ("LeechCraft menu"));
 	menu->addAction (Ui_.ActionAddTask_);
