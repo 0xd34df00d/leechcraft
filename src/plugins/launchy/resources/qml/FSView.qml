@@ -27,6 +27,8 @@ Rectangle {
 
     Keys.onLeftPressed: itemsView.moveCurrentIndexLeft()
     Keys.onRightPressed: itemsView.moveCurrentIndexRight()
+    Keys.onBacktabPressed: itemsView.moveCurrentIndexLeft()
+    Keys.onTabPressed: itemsView.moveCurrentIndexRight()
     Keys.onUpPressed: itemsView.moveCurrentIndexUp()
     Keys.onDownPressed: itemsView.moveCurrentIndexDown()
     Keys.onEnterPressed: trigger()
