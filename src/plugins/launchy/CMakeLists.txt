@@ -22,9 +22,9 @@ set (SRCS
 set (RESOURCES resources.qrc)
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 CreateTrs ("launchy" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("launchy" "en;ru_RU" "${SRCS}" "" "")
 
 add_library (leechcraft_launchy SHARED
-	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${RCCS}
 	)
