@@ -76,7 +76,7 @@ Rectangle {
                         position: 0
                         color: categoryMouseArea.containsMouse ?
                                 colorProxy.color_ToolButton_HoveredTopColor :
-                                    (catsView.currentIndex == index ?
+                                    (catsView.currentIndex == index && !appsFilterInput.text.length ?
                                         colorProxy.color_ToolButton_SelectedTopColor :
                                         colorProxy.color_ToolButton_TopColor)
                         Behavior on color { PropertyAnimation {} }
@@ -85,7 +85,7 @@ Rectangle {
                         position: 1
                         color: categoryMouseArea.containsMouse ?
                                 colorProxy.color_ToolButton_HoveredBottomColor :
-                                    (catsView.currentIndex == index ?
+                                    (catsView.currentIndex == index && !appsFilterInput.text.length ?
                                         colorProxy.color_ToolButton_SelectedBottomColor :
                                         colorProxy.color_ToolButton_BottomColor)
                         Behavior on color { PropertyAnimation {} }
