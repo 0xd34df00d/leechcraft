@@ -58,6 +58,12 @@ Rectangle {
 
             model: catsModel
 
+            onCurrentIndexChanged: {
+                    rootRect.categorySelected(currentIndex);
+                    itemsView.currentIndex = -1;
+                    appsFilterInput.text = "";
+                }
+
             delegate: Rectangle {
                 id: catsViewDelegate
 
@@ -115,12 +121,7 @@ Rectangle {
                     anchors.fill: parent
                     hoverEnabled: true
 
-                    onClicked: {
-                        appsFilterInput.text = "";
-                        rootRect.categorySelected(index);
-                        catsView.currentIndex = index
-                        itemsView.currentIndex = -1
-                    }
+                    onClicked: catsView.currentIndex = index
                 }
             }
 
