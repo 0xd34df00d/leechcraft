@@ -210,6 +210,9 @@ namespace Launchy
 			CatsModel_->appendRow (cat);
 		};
 
+		if (RecentManager_->HasRecents ())
+			addCustomCat ("Recent", "X-Recent", "document-open-recent",
+					Proxy_->GetIcon ("document-open-recent"));
 		addCustomCat ("LeechCraft", "X-LeechCraft", "leechcraft",
 				QIcon ("lcicons:/resources/images/leechcraft.svg"));
 		addCustomCat ("Favorites", "X-Favorites", "favorites",
@@ -235,6 +238,7 @@ namespace Launchy
 				item->setData (QStringList ("X-LeechCraft"), ModelRoles::ItemNativeCategories);
 				item->setData (tc.TabClass_, ModelRoles::ItemID);
 				item->setData (FavManager_->IsFavorite (tc.TabClass_), ModelRoles::IsItemFavorite);
+				item->setData (false, ModelRoles::IsItemRecent);
 
 				auto executor = [iht, tc] { iht->TabOpenRequested (tc.TabClass_); };
 				item->setData (QVariant::fromValue<Executor_f> (executor),
@@ -378,6 +382,8 @@ namespace Launchy
 			appItem->setData (item->GetPermanentID (), ModelRoles::ItemID);
 			appItem->setData (FavManager_->IsFavorite (item->GetPermanentID ()),
 					ModelRoles::IsItemFavorite);
+			appItem->setData (RecentManager_->IsRecent (item->GetPermanentID ()),
+					ModelRoles::IsItemRecent);
 
 			auto executor = [this, item] { item->Execute (Proxy_); };
 			appItem->setData (QVariant::fromValue<Executor_f> (executor),
@@ -435,6 +441,7 @@ namespace Launchy
 			return;
 		}
 
+		RecentManager_->AddRecent (id);
 		item->data (ModelRoles::ExecutorFunctor).value<Executor_f> () ();
 
 		deleteLater ();

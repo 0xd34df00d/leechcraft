@@ -70,6 +70,10 @@ namespace Launchy
 					idx.data (ModelRoles::IsItemFavorite).toBool ())
 				return true;
 
+			if (CategoryNames_.contains ("X-Recent") &&
+					idx.data (ModelRoles::IsItemRecent).toBool ())
+				return true;
+
 			const auto& itemCats = idx.data (ModelRoles::ItemNativeCategories).toStringList ();
 			return std::find_if (CategoryNames_.begin (), CategoryNames_.end (),
 					[&itemCats] (const QString& cat)
