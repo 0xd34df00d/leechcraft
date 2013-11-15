@@ -382,8 +382,13 @@ namespace Launchy
 			appItem->setData (item->GetPermanentID (), ModelRoles::ItemID);
 			appItem->setData (FavManager_->IsFavorite (item->GetPermanentID ()),
 					ModelRoles::IsItemFavorite);
-			appItem->setData (RecentManager_->IsRecent (item->GetPermanentID ()),
+
+			const auto isRecent = RecentManager_->IsRecent (item->GetPermanentID ());
+			appItem->setData (isRecent,
 					ModelRoles::IsItemRecent);
+			if (isRecent)
+				appItem->setData (RecentManager_->GetRecentOrder (item->GetPermanentID ()),
+						ModelRoles::ItemRecentPos);
 
 			auto executor = [this, item] { item->Execute (Proxy_); };
 			appItem->setData (QVariant::fromValue<Executor_f> (executor),

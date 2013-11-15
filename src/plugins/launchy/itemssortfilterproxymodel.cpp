@@ -42,6 +42,7 @@ namespace Launchy
 		setDynamicSortFilter (true);
 		setSourceModel (source);
 		setRoleNames (source->roleNames ());
+		sort (0, Qt::AscendingOrder);
 	}
 
 	QString ItemsSortFilterProxyModel::GetAppFilterText () const
@@ -55,6 +56,16 @@ namespace Launchy
 		QTimer::singleShot (0,
 				this,
 				SLOT (invalidateFilterSlot ()));
+	}
+
+	bool ItemsSortFilterProxyModel::lessThan (const QModelIndex& left, const QModelIndex& right) const
+	{
+		if (!AppFilterText_.isEmpty () || CategoryNames_ != QStringList ("X-Recent"))
+			return QSortFilterProxyModel::lessThan (left, right);
+
+		const auto leftPos = left.data (ModelRoles::ItemRecentPos).toInt ();
+		const auto rightPos = right.data (ModelRoles::ItemRecentPos).toInt ();
+		return leftPos < rightPos;
 	}
 
 	bool ItemsSortFilterProxyModel::filterAcceptsRow (int row, const QModelIndex&) const
