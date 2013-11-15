@@ -265,6 +265,15 @@ namespace LMP
 		std::for_each (sources.begin (), sources.end (),
 				[&parsedSources] (decltype (sources.front ()) path)
 					{ parsedSources += FileToSource (path); });
+
+		for (auto i = parsedSources.begin (); i != parsedSources.end (); )
+		{
+			if (Items_.contains (*i))
+				i = parsedSources.erase (i);
+			else
+				++i;
+		}
+
 		AddToPlaylistModel (parsedSources, sort);
 	}
 
