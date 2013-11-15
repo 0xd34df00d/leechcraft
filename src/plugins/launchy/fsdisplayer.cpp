@@ -48,6 +48,7 @@
 #include "itemssortfilterproxymodel.h"
 #include "modelroles.h"
 #include "favoritesmanager.h"
+#include "recentmanager.h"
 #include "syspathitemprovider.h"
 
 namespace LeechCraft
@@ -114,11 +115,12 @@ namespace Launchy
 	}
 
 	FSDisplayer::FSDisplayer (ICoreProxy_ptr proxy,
-			Util::XDG::ItemsFinder *finder, FavoritesManager *favMgr, QObject *parent)
+			Util::XDG::ItemsFinder *finder, FavoritesManager *favMgr, RecentManager *recMgr, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, Finder_ (finder)
 	, FavManager_ (favMgr)
+	, RecentManager_ (recMgr)
 	, CatsModel_ (new DisplayModel (this))
 	, ItemsModel_ (new DisplayModel (this))
 	, ItemsProxyModel_ (new ItemsSortFilterProxyModel (ItemsModel_, this))
