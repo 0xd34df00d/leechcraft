@@ -384,7 +384,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 
 	MBAction_ = new QWidgetAction (this);
 	MBAction_->setDefaultWidget (MenuButton_);
-	Ui_.MainTabWidget_->AddAction2TabBarLayout (QTabBar::LeftSide, MBAction_);
+	Ui_.MainTabWidget_->InsertAction2TabBarLayout (QTabBar::LeftSide, MBAction_, 0);
 }
 
 void LeechCraft::MainWindow::SetStatusBar ()
