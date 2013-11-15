@@ -43,6 +43,25 @@ namespace Blogique
 	class CommentsModel;
 	class SortCommentsProxyModel;
 
+	struct CommentID
+	{
+		QByteArray AccountID_;
+		qint64 EntryID_;
+		qint64 CommentID_;
+
+		CommentID ()
+		: EntryID_ (-1)
+		, CommentID_ (-1)
+		{}
+
+		bool operator== (const CommentID& otherComment) const
+		{
+			return AccountID_ == otherComment.AccountID_ &&
+					EntryID_ == otherComment.EntryID_ &&
+					CommentID_ == otherComment.CommentID_;
+		}
+	};
+
 	class CommentsWidget : public QWidget
 	{
 		Q_OBJECT
@@ -53,7 +72,7 @@ namespace Blogique
 		SortCommentsProxyModel *ProxyModel_;
 		QHash<QStandardItem*, CommentEntry> Item2RecentComment_;
 		QSet<CommentEntry> RecentComments_;
-
+		QSet<CommentID> ReadComments_;
 	public:
 		CommentsWidget (QWidget *parent = 0);
 
@@ -72,5 +91,11 @@ namespace Blogique
 	public slots:
 		void setItemCursor (QGraphicsObject *object, const QString& shape);
 	};
+
+	QDataStream& operator>> (QDataStream& in, CommentID& comment);
+	QDataStream& operator<< (QDataStream& out, const CommentID& comment);
+	uint qHash (const CommentID& cid);
 }
 }
+
+Q_DECLARE_METATYPE (QList<LeechCraft::Blogique::CommentID>)

@@ -33,16 +33,18 @@
 #include <QDeclarativeContext>
 #include <QGraphicsObject>
 #include <QMessageBox>
+#include <boost/concept_check.hpp>
+#include <interfaces/core/ientitymanager.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/tooltipitem.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/sys/paths.h>
 #include <util/util.h>
-#include <interfaces/core/ientitymanager.h>
+#include "commentsmanager.h"
 #include "commentsmodel.h"
 #include "core.h"
 #include "sortcommentsproxymodel.h"
-#include "commentsmanager.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -53,6 +55,9 @@ namespace Blogique
 	, CommentsModel_ (new CommentsModel (this))
 	, ProxyModel_ (new SortCommentsProxyModel (this, this))
 	{
+		ReadComments_ = XmlSettingsManager::Instance ().property ("ReadComments")
+				.value<QList<CommentID>> ().toSet ();
+
 		Ui_.setupUi (this);
 
 		ProxyModel_->setSourceModel (CommentsModel_);
@@ -79,7 +84,7 @@ namespace Blogique
 				this,
 				SLOT (handleDeleteComment (QString, int, int)));
 		connect (Ui_.CommentsView_->rootObject (),
-				SIGNAL (markCommentAsRead (QString, int, intt)),
+				SIGNAL (markCommentAsRead (QString, int, int)),
 				this,
 				SLOT (handleMarkCommentAsRead (QString, int, int)));
 		ProxyModel_->sort (0, Qt::AscendingOrder);
@@ -114,6 +119,14 @@ namespace Blogique
 			if (RecentComments_.contains (comment))
 				continue;
 
+			CommentID cid;
+			cid.AccountID_ = comment.AccountID_;
+			cid.EntryID_ = comment.EntryID_;
+			cid.CommentID_ = comment.CommentID_;
+
+			if (ReadComments_.contains (cid))
+				return;
+
 			QStandardItem *item = new QStandardItem;
 			item->setData (comment.AccountID_, CommentsModel::AccountID);
 			item->setData (comment.EntrySubject_, CommentsModel::EntrySubject);
@@ -134,7 +147,8 @@ namespace Blogique
 		}
 	}
 
-	CommentEntry CommentsWidget::GetComment (const QString& accountId, int entryId, int commentId) const
+	CommentEntry CommentsWidget::GetComment (const QString& accountId,
+			int entryId, int commentId) const
 	{
 		for (const auto& comment : RecentComments_)
 			if (comment.AccountID_ == accountId.toUtf8 () &&
@@ -152,7 +166,8 @@ namespace Blogique
 						OnlyHandle | FromUserInitiated));
 	}
 
-	void CommentsWidget::handleDeleteComment (const QString& accountId, int entryId, int commentId)
+	void CommentsWidget::handleDeleteComment (const QString& accountId,
+			int entryId, int commentId)
 	{
 		auto comment = GetComment (accountId, entryId, commentId);
 		if (!comment.isValid ())
@@ -171,14 +186,34 @@ namespace Blogique
 		}
 	}
 
-	void CommentsWidget::handleMarkCommentAsRead (const QString& accountId, int entryId, int commentId)
+	void CommentsWidget::handleMarkCommentAsRead (const QString& accountId,
+			int entryId, int commentId)
 	{
 		auto comment = GetComment (accountId, entryId, commentId);
 		if (!comment.isValid ())
 			return;
+
+		CommentID cid;
+		cid.AccountID_ = accountId.toUtf8 ();
+		cid.EntryID_ = entryId;
+		cid.CommentID_ = commentId;
+		ReadComments_.insert (cid);
+
+		XmlSettingsManager::Instance ().setProperty ("ReadComments",
+				QVariant::fromValue<QList<CommentID>> (ReadComments_.toList ()));
+		qDebug () << XmlSettingsManager::Instance ().property ("ReadComments")
+				.value<QList<CommentID>> ().toSet ().count ();
+
+		CommentEntry ce;
+		ce.AccountID_ = accountId.toUtf8 ();
+		ce.EntryID_ =  entryId;
+		ce.CommentID_ = commentId;
+		if (auto item = Item2RecentComment_.key (ce))
+			CommentsModel_->removeRow (item->index ().row ());
+
 	}
 
-	void CommentsWidget::handleGotNewComments(const QList<CommentEntry>& comments)
+	void CommentsWidget::handleGotNewComments (const QList<CommentEntry>& comments)
 	{
 		AddItemsToModel (comments);
 	}
@@ -193,5 +228,32 @@ namespace Blogique
 
 		object->setCursor (QCursor (cursor));
 	}
+
+	QDataStream& operator<< (QDataStream& out, const CommentID& comment)
+	{
+		out << static_cast<qint8> (1)
+				<< comment.AccountID_
+				<< comment.EntryID_
+				<< comment.CommentID_;
+		return out;
+	}
+
+	QDataStream& operator>> (QDataStream& in, CommentID& comment)
+	{
+		qint8 version = 0;
+		in >> version;
+		if (version > 0)
+			in >> comment.AccountID_
+					>> comment.EntryID_
+					>> comment.CommentID_;
+		return in;
+	}
+
+	uint  qHash (const CommentID& cid)
+	{
+		return qHash (cid.AccountID_) + ::qHash (cid.EntryID_) +
+			::qHash (cid.CommentID_);
+	}
+
 }
 }

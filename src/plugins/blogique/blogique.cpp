@@ -32,6 +32,7 @@
 #include <util/util.h>
 #include "accountslistwidget.h"
 #include "blogiquewidget.h"
+#include "commentswidget.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
@@ -46,6 +47,9 @@ namespace Blogique
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"blogiquesettings.xml");
 		XmlSettingsDialog_->SetCustomWidget ("AccountsWidget", new AccountsListWidget);
+
+		qRegisterMetaType<QList<CommentID>> ("QList<LeechCraft::Blogique::CommentID>");
+		qRegisterMetaTypeStreamOperators<QList<CommentID>> ("QList<LeechCraft::Blogique::CommentID>");
 
 		Core::Instance ().SetCoreProxy (proxy);
 
