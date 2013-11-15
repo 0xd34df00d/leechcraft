@@ -430,14 +430,9 @@ namespace LeechCraft
 		if (MainStackedWidget_->indexOf (page) != -1)
 			return -1;
 
-		int newIndex = 0;
 		MainStackedWidget_->addWidget (page);
 		TabNames_ << text;
-		if (!AddTabButtonAction_->isVisible ())
-			newIndex = MainTabBar_->
-					insertTab (MainTabBar_->count () - 1, icon, text);
-		else
-			newIndex = MainTabBar_->addTab (icon, text);
+		int newIndex = MainTabBar_->addTab (icon, text);
 
 		MainTabBar_->setTabToolTip (newIndex, text);
 
@@ -456,12 +451,8 @@ namespace LeechCraft
 	int SeparateTabWidget::InsertTab (int index, QWidget *page,
 			const QIcon& icon, const QString& text)
 	{
-		int newIndex = index;
-		if (index > WidgetCount () && !AddTabButtonAction_->isVisible ())
-			newIndex = WidgetCount ();
-
 		MainStackedWidget_->insertWidget (index, page);
-		int idx = MainTabBar_->insertTab (newIndex, icon, text);
+		int idx = MainTabBar_->insertTab (index, icon, text);
 		MainTabBar_->setTabToolTip (idx, text);
 
 		TabNames_.insert (index, text);
@@ -474,8 +465,7 @@ namespace LeechCraft
 
 	void SeparateTabWidget::RemoveTab (int index)
 	{
-		if (index >= WidgetCount () &&
-				!AddTabButtonAction_->isVisible ())
+		if (index >= WidgetCount ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "invalid index"
@@ -508,11 +498,6 @@ namespace LeechCraft
 		widget->setParent (0);
 	}
 
-	bool SeparateTabWidget::IsAddTabActionVisible () const
-	{
-		return AddTabButtonAction_->isVisible ();
-	}
-
 	void SeparateTabWidget::AddWidget2SeparateTabWidget (QWidget *widget)
 	{
 		widget->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Minimum);
@@ -542,36 +527,6 @@ namespace LeechCraft
 		return PreviousWidget_;
 	}
 
-	void SeparateTabWidget::resizeEvent (QResizeEvent *event)
-	{
-		QWidget::resizeEvent (event);
-		int length = 0;
-		for (int i = 0; i < MainTabBar_->count (); ++i)
-			length += MainTabBar_->tabRect (i).width ();
-
-		if (event->oldSize ().width () > event->size ().width ())
-		{
-			if (length + 30 > MainTabBar_->width () &&
-					!AddTabButtonAction_->isVisible ())
-			{
-				handleShowAddTabButton (true);
-				MainTabBar_->SetLastTab (false);
-				MainTabBar_->removeTab (MainTabBar_->count () - 1);
-			}
-		}
-		else if (event->oldSize ().width () < event->size ().width ())
-		{
-			if (length + 60 < MainTabBar_->width () &&
-					AddTabButtonAction_->isVisible ())
-			{
-				handleShowAddTabButton (false);
-				MainTabBar_->SetLastTab (true);
-				int index = MainTabBar_->addTab (QString ());
-				MainTabBar_->SetTabClosable (index, false);
-			}
-		}
-	}
-
 	void SeparateTabWidget::mousePressEvent (QMouseEvent *event)
 	{
 		const bool mBack = event->button () == Qt::XButton1;
@@ -594,7 +549,6 @@ namespace LeechCraft
 				SIGNAL (addDefaultTab ()),
 				this,
 				SLOT (handleAddDefaultTab ()));
-
 		connect (DefaultTabAction_,
 				SIGNAL (triggered ()),
 				this,
@@ -625,10 +579,6 @@ namespace LeechCraft
 				this,
 				SLOT (handleContextMenuRequested (const QPoint&)));
 		connect (MainTabBar_,
-				SIGNAL (showAddTabButton (bool)),
-				this,
-				SLOT (handleShowAddTabButton (bool)));
-		connect (MainTabBar_,
 				SIGNAL (releasedMouseAfterMove (int)),
 				this,
 				SLOT (releaseMouseAfterMove (int)));
@@ -641,15 +591,12 @@ namespace LeechCraft
 		AddTabButton_->setToolButtonStyle (Qt::ToolButtonIconOnly);
 		AddTabButton_->setArrowType (Qt::NoArrow);
 		AddTabButton_->setDefaultAction (DefaultTabAction_);
-		AddTabButtonAction_ = RightToolBar_->addWidget (AddTabButton_);
-		AddTabButtonAction_->setVisible (false);
-		RightToolBar_->addSeparator ();
+		AddTabButtonAction_ = LeftToolBar_->addWidget (AddTabButton_);
 	}
 
 	void SeparateTabWidget::setCurrentIndex (int index)
 	{
-		if (index >= WidgetCount () &&
-				!AddTabButtonAction_->isVisible ())
+		if (index >= WidgetCount ())
 			index = WidgetCount () - 1;
 
 		auto rootWM = Core::Instance ().GetRootWindowsManager ();
@@ -707,17 +654,6 @@ namespace LeechCraft
 
 	void SeparateTabWidget::handleTabMoved (int from, int to)
 	{
-		if (from == MainTabBar_->count () - 1 &&
-				!AddTabButtonAction_->isVisible ())
-		{
-			MainTabBar_->moveTab (to, from);
-			return;
-		}
-
-		if ((to == MainTabBar_->count () - 1) &&
-				!AddTabButtonAction_->isVisible ())
-			return;
-
 		const auto& str = TabNames_.takeAt (from);
 		TabNames_.insert (to, str);
 
@@ -748,11 +684,6 @@ namespace LeechCraft
 				}
 				menu->addAction (act);
 			}
-		}
-		else if ((index == MainTabBar_->count () - 1) &&
-				!AddTabButtonAction_->isVisible ())
-		{
-			menu->addActions (AddTabButtonContextMenu_->actions ());
 		}
 		else
 		{
@@ -870,10 +801,5 @@ namespace LeechCraft
 		}
 
 		highestIHT->TabOpenRequested (highestTabClass);
-	}
-
-	void SeparateTabWidget::handleShowAddTabButton (bool show)
-	{
-		AddTabButtonAction_->setVisible (show);
 	}
 }
