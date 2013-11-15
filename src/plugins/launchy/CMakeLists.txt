@@ -17,6 +17,7 @@ set (SRCS
 	quarkmanager.cpp
 	itemimageprovider.cpp
 	syspathitemprovider.cpp
+	recentmanager.cpp
 	)
 set (RESOURCES resources.qrc)
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
