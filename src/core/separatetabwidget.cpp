@@ -268,6 +268,13 @@ namespace LeechCraft
 			RightToolBar_->addAction (action);
 	}
 
+	void SeparateTabWidget::InsertAction2TabBarLayout (QTabBar::ButtonPosition pos,
+			QAction *action, int index)
+	{
+		const auto tb = pos == QTabBar::LeftSide ? LeftToolBar_ : RightToolBar_;
+		tb->insertAction (tb->actions ().value (index), action);
+	}
+
 	void SeparateTabWidget::RemoveActionFromTabBarLayout (QTabBar::ButtonPosition pos,
 			QAction *action)
 	{
