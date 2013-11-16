@@ -120,6 +120,7 @@ namespace Hestia
 		void gotBlogStatistics (const QMap<QDate, int>& statistics);
 		void tagsUpdated (const QHash<QString, int>& tags);
 		void gotRecentComments (const QList<CommentEntry>& comments);
+		void commentsDeleted (const QList<qint64>& comments);
 
 		void gotError(int errorCode, const QString& errorString,
 				const QString& localizedErrorString = QString ());
