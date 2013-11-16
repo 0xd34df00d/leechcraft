@@ -232,6 +232,11 @@ Rectangle
 					}
 				}
 
+				property bool isHovered: rectMouseArea.containsMouse ||
+						openInBrowserAction.isHovered ||
+						markAsReadAction.isHovered ||
+						deleteCommentAction.isHovered 
+				
 				Column
 				{
 					id: commonActionsColumn
@@ -247,6 +252,9 @@ Rectangle
 						width: 24
 						height: width
 
+						opacity: delegateRect.isHovered ? 1 : 0
+						Behavior on opacity { PropertyAnimation {} }
+						
 						textTooltip: qsTr ("Open in browser")
 
 						actionIconURL: "image://ThemeIcons/go-jump-locationbar"
@@ -259,6 +267,9 @@ Rectangle
 						width: 24
 						height: width
 
+						opacity: delegateRect.isHovered ? 1 : 0
+						Behavior on opacity { PropertyAnimation {} }
+						
 						textTooltip: qsTr ("Mark as read")
 
 						actionIconURL: "image://ThemeIcons/mail-mark-read"
@@ -271,6 +282,9 @@ Rectangle
 						width: 24
 						height: width
 
+						opacity: delegateRect.isHovered ? 1 : 0
+						Behavior on opacity { PropertyAnimation {} }
+						
 						textTooltip: qsTr ("Delete comment")
 
 						actionIconURL: "image://ThemeIcons/list-remove"
