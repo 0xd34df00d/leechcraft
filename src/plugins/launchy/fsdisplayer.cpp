@@ -211,11 +211,11 @@ namespace Launchy
 		};
 
 		if (RecentManager_->HasRecents ())
-			addCustomCat ("Recent", "X-Recent", "document-open-recent",
+			addCustomCat (tr ("Recent"), "X-Recent", "document-open-recent",
 					Proxy_->GetIcon ("document-open-recent"));
 		addCustomCat ("LeechCraft", "X-LeechCraft", "leechcraft",
 				QIcon ("lcicons:/resources/images/leechcraft.svg"));
-		addCustomCat ("Favorites", "X-Favorites", "favorites",
+		addCustomCat (tr ("Favorites"), "X-Favorites", "favorites",
 				Proxy_->GetIcon ("favorites"));
 	}
 
