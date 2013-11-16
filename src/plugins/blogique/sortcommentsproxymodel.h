@@ -47,7 +47,7 @@ namespace Blogique
 	public:
 		SortCommentsProxyModel (CommentsWidget *widget, QObject *parent = 0);
 	protected:
-		bool lessThan (const QModelIndex& left, const QModelIndex& right);
+		bool lessThan (const QModelIndex& left, const QModelIndex& right ) const;
 	};
 }
 }

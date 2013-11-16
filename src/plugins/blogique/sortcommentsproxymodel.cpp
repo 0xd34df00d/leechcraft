@@ -29,6 +29,7 @@
  **********************************************************************/
 
 #include "sortcommentsproxymodel.h"
+#include <QtDebug>
 #include "commentswidget.h"
 
 namespace LeechCraft
@@ -43,14 +44,11 @@ namespace Blogique
 		setSortCaseSensitivity (Qt::CaseInsensitive);
 	}
 
-	bool SortCommentsProxyModel::lessThan (const QModelIndex& left, const QModelIndex& right)
+	bool SortCommentsProxyModel::lessThan (const QModelIndex& left, const QModelIndex& right) const
 	{
-		const auto& leftRecentCommment = CommentsWidget_->GetRecentCommentFromIndex (mapToSource (left));
-		const auto& rightRecentCommment = CommentsWidget_->GetRecentCommentFromIndex (mapToSource (right));
-		if (!leftRecentCommment.isValid () || !rightRecentCommment.isValid ())
-			return QSortFilterProxyModel::lessThan (left, right);
-
-		return leftRecentCommment.CommentDateTime_ < rightRecentCommment.CommentDateTime_;
+		const auto& leftRecentCommment = CommentsWidget_->GetRecentCommentFromIndex (left);
+		const auto& rightRecentCommment = CommentsWidget_->GetRecentCommentFromIndex (right);
+ 		return leftRecentCommment.CommentDateTime_ < rightRecentCommment.CommentDateTime_;
 	}
 }
 }
