@@ -591,7 +591,7 @@ namespace LeechCraft
 		AddTabButton_->setToolButtonStyle (Qt::ToolButtonIconOnly);
 		AddTabButton_->setArrowType (Qt::NoArrow);
 		AddTabButton_->setDefaultAction (DefaultTabAction_);
-		AddTabButtonAction_ = LeftToolBar_->addWidget (AddTabButton_);
+		AddTabButtonAction_ = RightToolBar_->addWidget (AddTabButton_);
 	}
 
 	void SeparateTabWidget::setCurrentIndex (int index)
