@@ -29,6 +29,7 @@
 
 #include "commentsmanager.h"
 #include <QTimer>
+#include <boost/concept_check.hpp>
 #include "interfaces/blogique/ibloggingplatform.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -83,16 +84,24 @@ namespace Blogique
 
 	void CommentsManager::handleGotRecentComments (const QList<CommentEntry>& comments)
 	{
-		QList<CommentEntry> newComments;
 		for (const auto& comment : comments)
-			if (!RecentComments_.contains (comment))
-			{
-				RecentComments_ << comment;
-				newComments << comment;
-			}
+			RecentComments_ << comment;
+		emit commentsUpdated ();
+	}
 
-		if (!newComments.isEmpty ())
-			emit gotNewComments (newComments);
+	void CommentsManager::handleCommentsDeleted (const QList<qint64>& ids)
+	{
+		if (auto account = qobject_cast<IAccount*> (sender ()))
+		{
+			for (auto id : ids)
+			{
+				CommentEntry ce;
+				ce.AccountID_ = account->GetAccountID ();
+				ce.CommentID_ = id;
+				RecentComments_.remove (ce);
+			}
+			emit commentsUpdated ();
+		}
 	}
 
 }

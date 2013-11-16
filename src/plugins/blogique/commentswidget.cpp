@@ -45,6 +45,7 @@
 #include "core.h"
 #include "sortcommentsproxymodel.h"
 #include "xmlsettingsmanager.h"
+#include "addcommentdialog.h"
 
 namespace LeechCraft
 {
@@ -84,17 +85,21 @@ namespace Blogique
 				SIGNAL (markCommentAsRead (QString, int)),
 				this,
 				SLOT (handleMarkCommentAsRead (QString, int)));
-		ProxyModel_->sort (0, Qt::AscendingOrder);
+		connect (Ui_.CommentsView_->rootObject (),
+				SIGNAL (addComment (QString, int, int)),
+				this,
+				SLOT (handleAddComment (QString, int, int)));
 
 		ReadComments_ = XmlSettingsManager::Instance ().property ("ReadComments")
 				.value<CommentIDs_t> ().toSet ();
 
+		ProxyModel_->sort (0, Qt::DescendingOrder);
 		FillModel ();
 
 		connect (Core::Instance ().GetCommentsManager (),
-				SIGNAL (gotNewComments (QList<CommentEntry>)),
+				SIGNAL (commentsUpdated ()),
 				this,
-				SLOT (handleGotNewComments (QList<CommentEntry>)));
+				SLOT (handleCommentsUpdated ()));
 	}
 
 	QString CommentsWidget::GetName () const
@@ -174,10 +179,8 @@ namespace Blogique
 			auto res = QMessageBox::question (this, "LeechCraft",
 					tr ("Do you want to delete whole comment thread too?"),
 					QMessageBox::Yes | QMessageBox::No);
-			bool deleteThread = false;
-			if (res == QMessageBox::Yes)
-				deleteThread = true;
-
+			bool deleteThread = res == QMessageBox::Yes;
+			
 			account->DeleteComment (commentId, deleteThread);
 		}
 	}
@@ -198,16 +201,35 @@ namespace Blogique
 
 		CommentEntry ce;
 		ce.AccountID_ = comment.AccountID_;
-		ce.EntryID_ =  comment.EntryID_;
 		ce.CommentID_ = comment.CommentID_;
 		if (auto item = Item2RecentComment_.key (ce))
 			CommentsModel_->removeRow (item->index ().row ());
-
 	}
 
-	void CommentsWidget::handleGotNewComments (const QList<CommentEntry>& comments)
+	void CommentsWidget::handleAddComment (const QString& accountId, int entryID, int commentId)
 	{
-		AddItemsToModel (comments);
+		if (auto account = Core::Instance ().GetAccountFromID (accountId.toUtf8 ()))
+		{
+			AddCommentDialog dlg;
+			if (dlg.exec () == QDialog::Rejected)
+				return;
+			
+			CommentEntry ce;
+			ce.AccountID_ = accountId.toUtf8 ();
+			ce.CommentSubject_ = dlg.GetSubject ();
+			ce.CommentText_ = dlg.GetText ();
+			ce.ParentCommentID_ = commentId;
+			ce.EntryID_ = entryID;
+			account->AddComment (ce);
+		}
+	}
+
+	void CommentsWidget::handleCommentsUpdated ()
+	{
+		CommentsModel_->clear ();
+		Item2RecentComment_.clear ();
+		RecentComments_.clear ();
+		FillModel ();
 	}
 
 	void CommentsWidget::setItemCursor (QGraphicsObject *object, const QString& shape)

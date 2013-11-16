@@ -56,9 +56,10 @@ namespace Blogique
 		void handleCommentsCheckingChanged ();
 		void handleCommentsCheckingTimerChanged ();
 		void handleGotRecentComments (const QList<CommentEntry>& comments);
+		void handleCommentsDeleted (const QList<qint64>& ids);
 
 	signals:
-		void gotNewComments (const QList<CommentEntry>& comments);
+		void commentsUpdated ();
 	};
 }
 }

@@ -86,7 +86,8 @@ namespace Blogique
 		void handleLinkActivated (const QString& url);
 		void handleDeleteComment (const QString& accountId, int commentId);
 		void handleMarkCommentAsRead (const QString& accountId, int commentId);
-		void handleGotNewComments (const QList<CommentEntry>& comments);
+		void handleAddComment (const QString& accountId, int entryId, int commentId);
+		void handleCommentsUpdated ();
 	public slots:
 		void setItemCursor (QGraphicsObject *object, const QString& shape);
 	};
