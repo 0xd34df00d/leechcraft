@@ -235,6 +235,14 @@ namespace Metida
 		ApiCallQueue_ << [this, id, deleteThread] (const QString& challenge)
 				{ DeleteCommentRequest (id, deleteThread, challenge); };
 	}
+	
+	void LJXmlRPC::AddComment (const CommentEntry& comment)
+	{
+		auto guard = MakeRunnerGuard ();
+		ApiCallQueue_ << [this] (const QString&) { GenerateChallenge (); };
+		ApiCallQueue_ << [this, comment] (const QString& challenge)
+				{ AddCommentRequest (comment, challenge); };
+	}
 
 	void LJXmlRPC::RequestTags ()
 	{
@@ -1224,6 +1232,37 @@ namespace Metida
 				this,
 				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
 	}
+	
+	void LJXmlRPC::AddCommentRequest (const CommentEntry& comment, const QString& challenge)
+	{
+		QDomDocument document ("AddCommentRequest");
+		auto result = GetStartPart ("LJ.XMLRPC.addcomment", document);
+		document.appendChild (result.first);
+		auto element = FillServicePart (result.second, Account_->GetOurLogin (),
+				Account_->GetPassword (), challenge, document);
+		element.appendChild (GetSimpleMemberElement ("body", "string",
+				comment.CommentText_, document));
+		element.appendChild (GetSimpleMemberElement ("subject", "string",
+				comment.CommentSubject_, document));
+		element.appendChild (GetSimpleMemberElement ("ditemid", "string",
+				QString::number (comment.EntryID_), document));
+		element.appendChild (GetSimpleMemberElement ("parent", "string",
+				QString::number (comment.ParentCommentID_), document));
+		element.appendChild (GetSimpleMemberElement ("journal", "string",
+				Account_->GetOurLogin (), document));
+
+		QNetworkReply *reply = Core::Instance ().GetCoreProxy ()->
+				GetNetworkAccessManager ()->post (CreateNetworkRequest (),
+						document.toByteArray ());
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleAddCommentReplyFinished ()));
+		connect (reply,
+				SIGNAL (error (QNetworkReply::NetworkError)),
+				this,
+				SLOT (handleNetworkError (QNetworkReply::NetworkError)));
+	}
 
 	void LJXmlRPC::GetUserTagsRequest (const QString& challenge)
 	{
@@ -2018,14 +2057,6 @@ namespace Metida
 		ParseForError (content);
 	}
 
-	namespace
-	{
-		bool ComapreCommentEntries (const LJCommentEntry& left, const LJCommentEntry& right)
-		{
-			return left.PostingDate_ > right.PostingDate_;
-		}
-	}
-
 	void LJXmlRPC::handleGetMultipleEventsReplyFinished ()
 	{
 		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
@@ -2058,7 +2089,6 @@ namespace Metida
 					}
 
 				auto comments = Id2CommentEntry_.values ();
-				std::sort (comments.begin (), comments.end (), ComapreCommentEntries);
 				emit gotRecentComments (comments);
 				Id2CommentEntry_.clear ();
 				break;
@@ -2277,7 +2307,6 @@ namespace Metida
 			}
 
 			ids.removeAll (0);
-
 			if (!ids.isEmpty ())
 				GetMultiplyEvents (ids, RequestType::RecentComments);
 			else
@@ -2311,7 +2340,6 @@ namespace Metida
 						for (const auto& id : dtalkid.toList ())
 							ids << id.toLongLong ();
 			}
-
 			return ids;
 		}
 	}
@@ -2327,6 +2355,53 @@ namespace Metida
 		if (document.elementsByTagName ("fault").isEmpty ())
 		{
 			emit commentsDeleted (ParseCommentIds (document));
+			CallNextFunctionFromQueue ();
+			return;
+		}
+
+		ParseForError (content);
+	}
+
+	namespace
+	{
+		QUrl ParseNewCommentUrl (const QDomDocument& document)
+		{
+			QUrl url;
+			const auto& firstStructElement = document.elementsByTagName ("struct");
+			if (firstStructElement.at (0).isNull ())
+				return url;
+
+			const auto& members = firstStructElement.at (0).childNodes ();
+			for (int i = 0, count = members.count (); i < count; ++i)
+			{
+				const QDomNode& member = members.at (i);
+				if (!member.isElement () ||
+						member.toElement ().tagName () != "member")
+					continue;
+
+				auto res = ParseMember (member);
+				if (res.Name () == "commentlink")
+					url = res.ValueToUrl ();
+			}
+
+			return url;
+		}
+	}
+
+	void LJXmlRPC::handleAddCommentReplyFinished ()
+	{
+		QDomDocument document;
+		QByteArray content = CreateDomDocumentFromReply (qobject_cast<QNetworkReply*> (sender ()),
+				document);
+		if (content.isEmpty ())
+			return;
+
+		if (document.elementsByTagName ("fault").isEmpty ())
+		{
+			auto url = ParseNewCommentUrl (document);
+			if (url.isValid ())
+				emit commentSent (url);
+				
 			CallNextFunctionFromQueue ();
 			return;
 		}

@@ -214,6 +214,8 @@ namespace Metida
 		void handleMessageSent ();
 
 		void handleGotRecentComments (const QList<LJCommentEntry>& comments);
+		void handleCommentDeleted (const QList<qint64>& ids);
+		void handleCommentSent (const QUrl& url);
 
 	signals:
 		void accountRenamed (const QString& newName);
@@ -238,6 +240,7 @@ namespace Metida
 		void tagsUpdated (const QHash<QString, int>& tags);
 
 		void gotRecentComments (const QList<CommentEntry>& comments);
+		void commentsDeleted (const QList<qint64>& comments);
 	};
 }
 }

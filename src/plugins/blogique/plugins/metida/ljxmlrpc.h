@@ -109,6 +109,7 @@ namespace Metida
 
 		void RequestRecentCommments ();
 		void DeleteComment (qint64 id, bool deleteThread = false);
+		void AddComment (const CommentEntry& comment);
 
 		void RequestTags ();
 
@@ -155,15 +156,12 @@ namespace Metida
 
 		void RecentCommentsRequest (const QString& challenge);
 		void DeleteCommentRequest (qint64 id, bool deleteThread, const QString& challenge);
+		void AddCommentRequest (const CommentEntry& comment, const QString& challenge);
 
 		void GetUserTagsRequest (const QString& challenge);
 
 		void ParseForError (const QByteArray& content);
 		void ParseFriends (const QDomDocument& doc);
-
-// 		QList<LJEvent> ParseFullEvents (const QDomDocument& doc);
-// 
-// 		QMap<QDate, int> ParseStatistics (const QDomDocument& doc);
 
 	private slots:
 		void handleChallengeReplyFinished ();
@@ -186,6 +184,7 @@ namespace Metida
 		void handleSendMessageRequestFinished ();
 		void handleRecentCommentsReplyFinished ();
 		void handleDeleteCommentReplyFinished ();
+		void handleAddCommentReplyFinished ();
 		void handleGetUserTagsReplyFinished ();
 
 		void handleNetworkError (QNetworkReply::NetworkError error);
@@ -214,6 +213,7 @@ namespace Metida
 
 		void gotRecentComments (const QList<LJCommentEntry>& comments);
 		void commentsDeleted (const QList<qint64>& ids);
+		void commentSent (const QUrl& url);
 		
 		void gotTags (const QHash<QString, int>& tags);
 	};

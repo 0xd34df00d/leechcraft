@@ -134,7 +134,15 @@ namespace Metida
 				SIGNAL (gotRecentComments (QList<LJCommentEntry>)),
 				this,
 				SLOT (handleGotRecentComments (QList<LJCommentEntry>)));
-
+		connect (LJXmlRpc_,
+				SIGNAL (commentsDeleted (QList<qint64>)),
+				this,
+				SLOT (handleCommentDeleted (QList<qint64>)));
+		connect (LJXmlRpc_,
+				SIGNAL (commentSent (QUrl)),
+				this,
+				SLOT (handleCommentSent (QUrl)));
+				
 		connect (LoadLastEvents_,
 				SIGNAL (triggered ()),
 				this,
@@ -351,7 +359,7 @@ namespace Metida
 
 	void LJAccount::AddComment (const CommentEntry& comment)
 	{
-		//TODO
+		LJXmlRpc_->AddComment (comment);
 	}
 
 	void LJAccount::DeleteComment (qint64 id, bool deleteThread)
@@ -752,6 +760,21 @@ namespace Metida
 				});
 		emit gotRecentComments (recentComments);
 	}
+	
+	void LJAccount::handleCommentDeleted (const QList<qint64>& ids)
+	{
+		emit commentsDeleted (ids);
+	}
+
+	void LJAccount::handleCommentSent (const QUrl& url)
+	{
+		Core::Instance ().SendEntity (Util::MakeNotification ("Blogique Metida",
+				tr ("Reply was posted successfully:") + 
+						QString (" <a href=\"%1\">%1</a>\n").arg (url.toString ()),
+				Priority::PInfo_));
+		LJXmlRpc_->RequestRecentCommments ();
+	}
+
 }
 }
 }
