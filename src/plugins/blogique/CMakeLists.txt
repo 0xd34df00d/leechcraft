@@ -19,6 +19,7 @@ set (SRCS
 	accountslistwidget.cpp
 	accountsselectdialog.cpp
 	addaccountwizardfirstpage.cpp
+	addcommentdialog.cpp
 	blogique.cpp
 	blogentrieswidget.cpp
 	blogiquewidget.cpp
@@ -47,6 +48,7 @@ set (FORMS
 	accountslistwidget.ui
 	accountsselectdialog.ui
 	addaccountwizardfirstpage.ui
+	addcommentdialog.ui 
 	blogentrieswidget.ui
 	blogiquewidget.ui
 	commentswidget.ui
