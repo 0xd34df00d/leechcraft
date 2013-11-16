@@ -107,15 +107,13 @@ namespace Blogique
 		bool operator== (const CommentEntry& newComment) const
 		{
 			return AccountID_ == newComment.AccountID_ &&
-					EntryID_ == newComment.EntryID_ &&
 					CommentID_ == newComment.CommentID_;
 		}
 	};
 
 	inline uint qHash (const CommentEntry& comment)
 	{
-		return qHash (comment.AccountID_) + ::qHash (comment.EntryID_) +
-				::qHash (comment.CommentID_);
+		return qHash (comment.AccountID_) + ::qHash (comment.CommentID_);
 	}
 
 	struct Filter
@@ -328,6 +326,12 @@ namespace Blogique
 		 * @note This function is expected to be a signal.
 		 */
 		virtual void gotRecentComments (const QList<CommentEntry>& comments) = 0;
+
+		/** @brief This signal should be emitted when comments was deleted successfully.
+		 *
+		 * @note This function is expected to be a signal.
+		 */
+		virtual void commentsDeleted (const QList<qint64>& comments) = 0;
 
 		virtual void gotError (int errorCode, const QString& errorString,
 				const QString& localizedErrorString = QString ()) = 0;
