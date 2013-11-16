@@ -31,8 +31,9 @@
 #pragma once
 
 #include <QWidget>
-#include "ui_commentswidget.h"
+#include <boost/fusion/adapted/std_pair.hpp>
 #include "interfaces/blogique/iaccount.h"
+#include "ui_commentswidget.h"
 
 class QStandardItem;
 
@@ -46,21 +47,19 @@ namespace Blogique
 	struct CommentID
 	{
 		QByteArray AccountID_;
-		qint64 EntryID_;
 		qint64 CommentID_;
 
 		CommentID ()
-		: EntryID_ (-1)
-		, CommentID_ (-1)
+		: CommentID_ (-1)
 		{}
 
 		bool operator== (const CommentID& otherComment) const
 		{
 			return AccountID_ == otherComment.AccountID_ &&
-					EntryID_ == otherComment.EntryID_ &&
 					CommentID_ == otherComment.CommentID_;
 		}
 	};
+	typedef QList<CommentID> CommentIDs_t;
 
 	class CommentsWidget : public QWidget
 	{
@@ -81,21 +80,21 @@ namespace Blogique
 	private:
 		void FillModel ();
 		void AddItemsToModel (const QList<CommentEntry>& comments);
-		CommentEntry GetComment (const QString& accountId, int entryId, int commentId) const;
+		CommentEntry GetComment (const QString& accountId, int commentId) const;
 
 	private slots:
 		void handleLinkActivated (const QString& url);
-		void handleDeleteComment (const QString& accountId, int entryId, int commentId);
-		void handleMarkCommentAsRead (const QString& accountId, int entryId, int commentId);
+		void handleDeleteComment (const QString& accountId, int commentId);
+		void handleMarkCommentAsRead (const QString& accountId, int commentId);
 		void handleGotNewComments (const QList<CommentEntry>& comments);
 	public slots:
 		void setItemCursor (QGraphicsObject *object, const QString& shape);
 	};
 
-	QDataStream& operator>> (QDataStream& in, CommentID& comment);
-	QDataStream& operator<< (QDataStream& out, const CommentID& comment);
+	QDataStream& operator>> (QDataStream& in, LeechCraft::Blogique::CommentID& comment);
+	QDataStream& operator<< (QDataStream& out, const LeechCraft::Blogique::CommentID& comment);
 	uint qHash (const CommentID& cid);
 }
 }
 
-Q_DECLARE_METATYPE (QList<LeechCraft::Blogique::CommentID>)
+Q_DECLARE_METATYPE (LeechCraft::Blogique::CommentIDs_t)

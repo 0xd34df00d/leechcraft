@@ -50,9 +50,8 @@ namespace LeechCraft
 namespace Blogique
 {
 	Core::Core ()
-	: UniqueID_ ("org.LeechCraft.Blogique")
-	, PluginProxy_ (std::make_shared<PluginProxy> ())
-	, StorageManager_ (new StorageManager (UniqueID_, this))
+	: PluginProxy_ (std::make_shared<PluginProxy> ())
+	, StorageManager_ (new StorageManager ("org.LeechCraft.Blogique", this))
 	, CommentsManager_ (new CommentsManager (this))
 	, AutoSaveTimer_ (new QTimer (this))
 	{
@@ -71,11 +70,6 @@ namespace Blogique
 		return c;
 	}
 
-	QByteArray Core::GetUniqueID () const
-	{
-		return UniqueID_;
-	}
-
 	QIcon Core::GetIcon () const
 	{
 		static QIcon icon ("lcicons:/plugins/blogique/resources/images/blogique.svg");
@@ -90,13 +84,6 @@ namespace Blogique
 	ICoreProxy_ptr Core::GetCoreProxy ()
 	{
 		return Proxy_;
-	}
-
-	QSet<QByteArray> Core::GetExpectedPluginClasses () const
-	{
-		QSet<QByteArray> classes;
-		classes << "org.LeechCraft.Plugins.Blogique.Plugins.IBlogPlatformPlugin";
-		return classes;
 	}
 
 	void Core::AddPlugin (QObject *plugin)

@@ -55,9 +55,6 @@ namespace Blogique
 	, CommentsModel_ (new CommentsModel (this))
 	, ProxyModel_ (new SortCommentsProxyModel (this, this))
 	{
-		ReadComments_ = XmlSettingsManager::Instance ().property ("ReadComments")
-				.value<QList<CommentID>> ().toSet ();
-
 		Ui_.setupUi (this);
 
 		ProxyModel_->setSourceModel (CommentsModel_);
@@ -80,14 +77,17 @@ namespace Blogique
 				this,
 				SLOT (handleLinkActivated (QString)));
 		connect (Ui_.CommentsView_->rootObject (),
-				SIGNAL (deleteComment (QString, int, int)),
+				SIGNAL (deleteComment (QString, int)),
 				this,
-				SLOT (handleDeleteComment (QString, int, int)));
+				SLOT (handleDeleteComment (QString, int)));
 		connect (Ui_.CommentsView_->rootObject (),
-				SIGNAL (markCommentAsRead (QString, int, int)),
+				SIGNAL (markCommentAsRead (QString, int)),
 				this,
-				SLOT (handleMarkCommentAsRead (QString, int, int)));
+				SLOT (handleMarkCommentAsRead (QString, int)));
 		ProxyModel_->sort (0, Qt::AscendingOrder);
+
+		ReadComments_ = XmlSettingsManager::Instance ().property ("ReadComments")
+				.value<CommentIDs_t> ().toSet ();
 
 		FillModel ();
 
@@ -121,11 +121,10 @@ namespace Blogique
 
 			CommentID cid;
 			cid.AccountID_ = comment.AccountID_;
-			cid.EntryID_ = comment.EntryID_;
 			cid.CommentID_ = comment.CommentID_;
 
 			if (ReadComments_.contains (cid))
-				return;
+				continue;
 
 			QStandardItem *item = new QStandardItem;
 			item->setData (comment.AccountID_, CommentsModel::AccountID);
@@ -147,12 +146,10 @@ namespace Blogique
 		}
 	}
 
-	CommentEntry CommentsWidget::GetComment (const QString& accountId,
-			int entryId, int commentId) const
+	CommentEntry CommentsWidget::GetComment (const QString& accountId, int commentId) const
 	{
 		for (const auto& comment : RecentComments_)
 			if (comment.AccountID_ == accountId.toUtf8 () &&
-					comment.EntryID_ == entryId &&
 					comment.CommentID_ == commentId)
 				return comment;
 		return CommentEntry ();
@@ -166,10 +163,9 @@ namespace Blogique
 						OnlyHandle | FromUserInitiated));
 	}
 
-	void CommentsWidget::handleDeleteComment (const QString& accountId,
-			int entryId, int commentId)
+	void CommentsWidget::handleDeleteComment (const QString& accountId, int commentId)
 	{
-		auto comment = GetComment (accountId, entryId, commentId);
+		auto comment = GetComment (accountId, commentId);
 		if (!comment.isValid ())
 			return;
 
@@ -186,28 +182,24 @@ namespace Blogique
 		}
 	}
 
-	void CommentsWidget::handleMarkCommentAsRead (const QString& accountId,
-			int entryId, int commentId)
+	void CommentsWidget::handleMarkCommentAsRead (const QString& accountId, int commentId)
 	{
-		auto comment = GetComment (accountId, entryId, commentId);
+		auto comment = GetComment (accountId, commentId);
 		if (!comment.isValid ())
 			return;
 
 		CommentID cid;
 		cid.AccountID_ = accountId.toUtf8 ();
-		cid.EntryID_ = entryId;
 		cid.CommentID_ = commentId;
 		ReadComments_.insert (cid);
 
 		XmlSettingsManager::Instance ().setProperty ("ReadComments",
-				QVariant::fromValue<QList<CommentID>> (ReadComments_.toList ()));
-		qDebug () << XmlSettingsManager::Instance ().property ("ReadComments")
-				.value<QList<CommentID>> ().toSet ().count ();
+				QVariant::fromValue<CommentIDs_t> (ReadComments_.toList ()));
 
 		CommentEntry ce;
-		ce.AccountID_ = accountId.toUtf8 ();
-		ce.EntryID_ =  entryId;
-		ce.CommentID_ = commentId;
+		ce.AccountID_ = comment.AccountID_;
+		ce.EntryID_ =  comment.EntryID_;
+		ce.CommentID_ = comment.CommentID_;
 		if (auto item = Item2RecentComment_.key (ce))
 			CommentsModel_->removeRow (item->index ().row ());
 
@@ -229,30 +221,27 @@ namespace Blogique
 		object->setCursor (QCursor (cursor));
 	}
 
-	QDataStream& operator<< (QDataStream& out, const CommentID& comment)
+	QDataStream& operator<< (QDataStream& out, const LeechCraft::Blogique::CommentID& comment)
 	{
 		out << static_cast<qint8> (1)
 				<< comment.AccountID_
-				<< comment.EntryID_
 				<< comment.CommentID_;
 		return out;
 	}
 
-	QDataStream& operator>> (QDataStream& in, CommentID& comment)
+	QDataStream& operator>> (QDataStream& in, LeechCraft::Blogique::CommentID& comment)
 	{
 		qint8 version = 0;
 		in >> version;
 		if (version > 0)
 			in >> comment.AccountID_
-					>> comment.EntryID_
 					>> comment.CommentID_;
 		return in;
 	}
 
 	uint  qHash (const CommentID& cid)
 	{
-		return qHash (cid.AccountID_) + ::qHash (cid.EntryID_) +
-			::qHash (cid.CommentID_);
+		return qHash (cid.AccountID_) + ::qHash (cid.CommentID_);
 	}
 
 }

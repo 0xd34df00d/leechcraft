@@ -49,6 +49,7 @@ namespace Blogique
 				SIGNAL (timeout ()),
 				this,
 				SLOT (checkForComments ()));
+		handleCommentsCheckingTimerChanged ();
 	}
 
 	QList<CommentEntry> CommentsManager::GetComments () const

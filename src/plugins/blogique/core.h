@@ -68,13 +68,11 @@ namespace Blogique
 	public:
 		static Core& Instance ();
 
-		QByteArray GetUniqueID () const;
 		QIcon GetIcon () const;
 
 		void SetCoreProxy (ICoreProxy_ptr proxy);
 		ICoreProxy_ptr GetCoreProxy ();
 
-		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject *plugin);
 
 		QList<IBloggingPlatform*> GetBloggingPlatforms () const;
