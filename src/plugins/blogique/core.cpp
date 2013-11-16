@@ -299,6 +299,10 @@ namespace Blogique
 				CommentsManager_,
 				SLOT (handleGotRecentComments (QList<CommentEntry>)));
 		connect (accObj,
+				SIGNAL (commentsDeleted (QList<qint64>)),
+				CommentsManager_,
+				SLOT (handleCommentsDeleted (QList<qint64>)));
+		connect (accObj,
 				SIGNAL (gotError (int, QString, QString)),
 				this,
 				SIGNAL (gotError (int, QString, QString)));
