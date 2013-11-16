@@ -7,8 +7,9 @@ Rectangle
 	id: rootRect
 
 	signal linkActivated (string url)
-	signal deleteComment (string accotunId, int commentId)
+	signal deleteComment (string accountId, int commentId)
 	signal markCommentAsRead (string accotunId, int commentId)
+	signal addComment (string accountId, int entryID, int commentId)
 
 	gradient: Gradient
 	{
@@ -235,7 +236,8 @@ Rectangle
 				property bool isHovered: rectMouseArea.containsMouse ||
 						openInBrowserAction.isHovered ||
 						markAsReadAction.isHovered ||
-						deleteCommentAction.isHovered 
+						deleteCommentAction.isHovered  ||
+						addCommentAction.isHovered
 				
 				Column
 				{
@@ -276,6 +278,21 @@ Rectangle
 						onTriggered: rootRect.markCommentAsRead (accountID, commentID)
 					}
 
+					ActionButton {
+						id: addCommentAction
+
+						width: 24
+						height: width
+
+						opacity: delegateRect.isHovered ? 1 : 0
+						Behavior on opacity { PropertyAnimation {} }
+						
+						textTooltip: qsTr ("Add comment")
+
+						actionIconURL: "image://ThemeIcons/list-add"
+						onTriggered: rootRect.addComment (accountID, entryID, commentID)
+					}
+					
 					ActionButton {
 						id: deleteCommentAction
 
