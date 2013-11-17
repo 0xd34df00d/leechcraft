@@ -267,10 +267,6 @@
         <translation>О Qt...</translation>
     </message>
     <message>
-        <source>Menu</source>
-        <translation>Меню</translation>
-    </message>
-    <message>
         <source>Show status bar</source>
         <translation>Показывать строку состояния</translation>
     </message>
@@ -706,12 +702,12 @@
 <context>
     <name>LeechCraft::NewTabMenuManager</name>
     <message>
-        <source>New tab menu</source>
-        <translation>Меню создания вкладки</translation>
+        <source>New tab</source>
+        <translation>Новая вкладка</translation>
     </message>
     <message>
-        <source>Additional tab menu</source>
-        <translation>Дополнительное меню вкладки</translation>
+        <source>Additional</source>
+        <translation>Дополнительно</translation>
     </message>
 </context>
 <context>
@@ -997,8 +993,8 @@
 <context>
     <name>LeechCraft::Util::SvcAuth::VkAuthManager</name>
     <message>
-        <source>VK.com authentication</source>
-        <translation>Авторизация на VK.com</translation>
+        <source>VK.com authentication for %1</source>
+        <translation>Аутентификация ВКонтакте для %1</translation>
     </message>
 </context>
 <context>

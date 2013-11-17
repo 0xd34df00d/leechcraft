@@ -319,12 +319,12 @@
         <translation>Fullscreen mode</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="134"/>
+        <location filename="leechcraft.ui" line="125"/>
         <source>Restart LeechCraft...</source>
         <translation>Restart LeechCraft...</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="139"/>
+        <location filename="leechcraft.ui" line="130"/>
         <source>New window</source>
         <translation>New window</translation>
     </message>
@@ -339,32 +339,27 @@
         <translation>About Qt...</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="102"/>
-        <source>Menu</source>
-        <translation>Menu</translation>
-    </message>
-    <message>
-        <location filename="leechcraft.ui" line="113"/>
+        <location filename="leechcraft.ui" line="104"/>
         <source>Show status bar</source>
         <translation>Show status bar</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="118"/>
+        <location filename="leechcraft.ui" line="109"/>
         <source>Close tab</source>
         <translation>Close tab</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="121"/>
+        <location filename="leechcraft.ui" line="112"/>
         <source>Ctrl+W</source>
         <translation>Ctrl+W</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="126"/>
+        <location filename="leechcraft.ui" line="117"/>
         <source>New tab</source>
         <translation>New tab</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="129"/>
+        <location filename="leechcraft.ui" line="120"/>
         <source>Ctrl+T</source>
         <translation>Ctrl+T</translation>
     </message>
@@ -596,17 +591,17 @@
 <context>
     <name>LeechCraft::Application</name>
     <message>
-        <location filename="application.cpp" line="144"/>
+        <location filename="application.cpp" line="146"/>
         <source>Could not create path %1/.leechcraft</source>
         <translation>Could not create path %1/.leechcraft</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="206"/>
+        <location filename="application.cpp" line="209"/>
         <source>Initializing LeechCraft...</source>
         <translation>Initializing LeechCraft...</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="216"/>
+        <location filename="application.cpp" line="499"/>
         <source>Finalizing...</source>
         <translation>Finalizing...</translation>
     </message>
@@ -626,7 +621,7 @@
         <translation>Sorry, incorrect password</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="554"/>
+        <location filename="application.cpp" line="565"/>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
         <translation>This change requires restarting LeechCraft. Do you want to restart now?</translation>
     </message>
@@ -815,38 +810,38 @@
 <context>
     <name>LeechCraft::MainWindow</name>
     <message>
-        <location filename="mainwindow.cpp" line="135"/>
+        <location filename="mainwindow.cpp" line="141"/>
         <source>F11</source>
         <comment>FullScreen</comment>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="318"/>
+        <location filename="mainwindow.cpp" line="324"/>
         <source>View</source>
         <translation>View</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="322"/>
+        <location filename="mainwindow.cpp" line="328"/>
         <source>Tools</source>
         <translation>Tools</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="458"/>
+        <location filename="mainwindow.cpp" line="478"/>
         <source>Do you really want to restart?</source>
         <translation>Do you really want to restart?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="474"/>
+        <location filename="mainwindow.cpp" line="494"/>
         <source>Do you really want to quit?</source>
         <translation>Do you really want to quit?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="479"/>
+        <location filename="mainwindow.cpp" line="499"/>
         <source>Always</source>
         <translation>Always</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="678"/>
+        <location filename="mainwindow.cpp" line="701"/>
         <source>LeechCraft menu</source>
         <translation>LeechCraft menu</translation>
     </message>
@@ -879,13 +874,15 @@
     <name>LeechCraft::NewTabMenuManager</name>
     <message>
         <location filename="newtabmenumanager.cpp" line="44"/>
-        <source>New tab menu</source>
-        <translation>New tab menu</translation>
+        <source>New tab</source>
+        <oldsource>New tab menu</oldsource>
+        <translation>New tab</translation>
     </message>
     <message>
         <location filename="newtabmenumanager.cpp" line="45"/>
-        <source>Additional tab menu</source>
-        <translation>Additional tab menu</translation>
+        <source>Additional</source>
+        <oldsource>Additional tab menu</oldsource>
+        <translation>Additional</translation>
     </message>
 </context>
 <context>
@@ -967,17 +964,17 @@
 <context>
     <name>LeechCraft::SeparateTabWidget</name>
     <message>
-        <location filename="separatetabwidget.cpp" line="342"/>
+        <location filename="separatetabwidget.cpp" line="349"/>
         <source>Move tab to</source>
         <translation>Move tab to</translation>
     </message>
     <message>
-        <location filename="separatetabwidget.cpp" line="343"/>
+        <location filename="separatetabwidget.cpp" line="350"/>
         <source>New window</source>
         <translation>New window</translation>
     </message>
     <message>
-        <location filename="separatetabwidget.cpp" line="357"/>
+        <location filename="separatetabwidget.cpp" line="364"/>
         <source>To window %1 (%2)</source>
         <translation>To window %1 (%2)</translation>
     </message>
@@ -1036,27 +1033,27 @@
 <context>
     <name>LeechCraft::ShortcutManager</name>
     <message>
-        <location filename="shortcutmanager.cpp" line="77"/>
+        <location filename="shortcutmanager.cpp" line="78"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="shortcutmanager.cpp" line="77"/>
+        <location filename="shortcutmanager.cpp" line="78"/>
         <source>Shortcut</source>
         <translation>Shortcut</translation>
     </message>
     <message>
-        <location filename="shortcutmanager.cpp" line="77"/>
+        <location filename="shortcutmanager.cpp" line="78"/>
         <source>Alternate</source>
         <translation>Alternate</translation>
     </message>
     <message>
-        <location filename="shortcutmanager.cpp" line="210"/>
+        <location filename="shortcutmanager.cpp" line="228"/>
         <source>Set alternate shortcut:</source>
         <translation>Set alternate shortcut:</translation>
     </message>
     <message>
-        <location filename="shortcutmanager.cpp" line="211"/>
+        <location filename="shortcutmanager.cpp" line="229"/>
         <source>Set primary shortcut:</source>
         <translation>Set primary shortcut:</translation>
     </message>
@@ -1228,12 +1225,12 @@
 <context>
     <name>LeechCraft::Util::FlatToFoldersProxyModel</name>
     <message>
-        <location filename="../util/models/flattofoldersproxymodel.cpp" line="113"/>
+        <location filename="../util/models/flattofoldersproxymodel.cpp" line="112"/>
         <source>untagged</source>
         <translation>untagged</translation>
     </message>
     <message>
-        <location filename="../util/models/flattofoldersproxymodel.cpp" line="117"/>
+        <location filename="../util/models/flattofoldersproxymodel.cpp" line="116"/>
         <source>&lt;unknown tag&gt;</source>
         <translation>&lt;unknown tag&gt;</translation>
     </message>
@@ -1241,9 +1238,9 @@
 <context>
     <name>LeechCraft::Util::SvcAuth::VkAuthManager</name>
     <message>
-        <location filename="../util/svcauth/vkauthmanager.cpp" line="201"/>
-        <source>VK.com authentication</source>
-        <translation>VK.com authentication</translation>
+        <location filename="../util/svcauth/vkauthmanager.cpp" line="203"/>
+        <source>VK.com authentication for %1</source>
+        <translation>VK.com authentication for %1</translation>
     </message>
 </context>
 <context>
@@ -1326,14 +1323,14 @@ If you have read and really understood all these letters, click Cancel button in
         </translation>
     </message>
     <message>
-        <location filename="../util/util.cpp" line="248"/>
-        <location filename="../util/util.cpp" line="265"/>
+        <location filename="../util/util.cpp" line="262"/>
+        <location filename="../util/util.cpp" line="279"/>
         <location filename="../xmlsettingsdialog/itemhandlers/itemhandlerpath.cpp" line="105"/>
         <source>Could not cd into %1</source>
         <translation>Could not cd into %1</translation>
     </message>
     <message>
-        <location filename="../util/util.cpp" line="242"/>
+        <location filename="../util/util.cpp" line="256"/>
         <source>Could not create %1</source>
         <translation>Could not create %1</translation>
     </message>
