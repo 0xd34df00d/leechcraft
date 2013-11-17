@@ -762,9 +762,13 @@ namespace Aggregator
 
 	void Aggregator::on_ActionMarkChannelAsRead__triggered ()
 	{
+		QStringList names;
+		Perform ([&names] (const QModelIndex& mi)
+				{ names << mi.sibling (mi.row (), 0).data ().toString (); });
 		if (QMessageBox::question (nullptr,
 				"LeechCraft",
-				tr ("Are you sure you want to mark all items as read?"),
+				tr ("Are you sure you want to mark all items in channel(s) %1 as read?", 0, names.size ())
+					.arg ("<em>" + names.join ("</em>; <em>") + "</em>"),
 				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
@@ -773,9 +777,13 @@ namespace Aggregator
 
 	void Aggregator::on_ActionMarkChannelAsUnread__triggered ()
 	{
+		QStringList names;
+		Perform ([&names] (const QModelIndex& mi)
+				{ names << mi.sibling (mi.row (), 0).data ().toString (); });
 		if (QMessageBox::question (nullptr,
 				"LeechCraft",
-				tr ("Are you sure you want to mark all items as unread?"),
+				tr ("Are you sure you want to mark all items in channel(s) %1 as unread?", 0, names.size ())
+					.arg ("<em>" + names.join ("</em>; <em>") + "</em>"),
 				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
