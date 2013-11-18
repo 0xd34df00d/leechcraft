@@ -68,6 +68,7 @@ namespace TabsList
 	private slots:
 		void handleShowList ();
 		void navigateToTab ();
+		void removeTab ();
 	signals:
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};

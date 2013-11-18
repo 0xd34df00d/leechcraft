@@ -263,6 +263,8 @@ namespace TabsList
 		layout->setSpacing (1);
 		layout->setContentsMargins (1, 1, 1, 1);
 
+		const QIcon deleteIcon = Proxy_->GetIcon ("tab-close");
+
 		const int currentIdx = tw->CurrentIndex ();
 		QToolButton *toFocus = 0;
 		QList<QToolButton*> allButtons;
@@ -272,8 +274,7 @@ namespace TabsList
 			QString title = QString ("[%1] ").arg (i + 1) + origText;
 			if (title.size () > 100)
 				title = title.left (100) + "...";
-			QAction *action = new QAction (tw->TabIcon (i),
-					title, this);
+			QAction *action = new QAction (tw->TabIcon (i), title, this);
 			action->setProperty ("TabIndex", i);
 			action->setProperty ("ICTW", QVariant::fromValue<ICoreTabWidget*> (tw));
 			connect (action,
@@ -291,7 +292,29 @@ namespace TabsList
 			button->setSizePolicy (QSizePolicy::Expanding,
 					button->sizePolicy ().verticalPolicy ());
 			button->setProperty ("OrigText", origText);
-			layout->addWidget (button);
+
+			auto delAction = new QAction (deleteIcon, tr ("Close tab"), this);
+			delAction->setToolTip (delAction->text ());
+			delAction->setProperty ("TabIndex", i);
+			delAction->setProperty ("ICTW", QVariant::fromValue<ICoreTabWidget*> (tw));
+			connect (delAction,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (removeTab ()));
+			connect (delAction,
+					SIGNAL (triggered ()),
+					widget,
+					SLOT (deleteLater ()));
+
+			auto delButton = new QToolButton ();
+			delButton->setDefaultAction (delAction);
+			delButton->setToolButtonStyle (Qt::ToolButtonIconOnly);
+
+			auto horLay = new QHBoxLayout;
+			horLay->addWidget (button);
+			horLay->addWidget (delButton);
+
+			layout->addLayout (horLay);
 
 			if (currentIdx == i)
 				toFocus = button;
@@ -321,8 +344,15 @@ namespace TabsList
 	void Plugin::navigateToTab ()
 	{
 		const int idx = sender ()->property ("TabIndex").toInt ();
-		auto ictw = sender ()->property ("ICTW").value<ICoreTabWidget*> ();
+		const auto ictw = sender ()->property ("ICTW").value<ICoreTabWidget*> ();
 		ictw->setCurrentTab (idx);
+	}
+
+	void Plugin::removeTab ()
+	{
+		const int idx = sender ()->property ("TabIndex").toInt ();
+		const auto ictw = sender ()->property ("ICTW").value<ICoreTabWidget*> ();
+		RemoveTab (ictw, idx);
 	}
 }
 }
