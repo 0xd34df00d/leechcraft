@@ -34,6 +34,8 @@
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihaveshortcuts.h>
 
+class ICoreTabWidget;
+
 namespace LeechCraft
 {
 namespace TabsList
@@ -61,6 +63,8 @@ namespace TabsList
 
 		QMap<QString, ActionInfo> GetActionInfo () const;
 		void SetShortcut (const QString&, const QKeySequences_t&);
+
+		void RemoveTab (ICoreTabWidget*, int);
 	private slots:
 		void handleShowList ();
 		void navigateToTab ();

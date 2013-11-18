@@ -41,6 +41,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/icoretabwidget.h>
+#include <interfaces/ihavetabs.h>
 
 Q_DECLARE_METATYPE (ICoreTabWidget*)
 
@@ -113,6 +114,14 @@ namespace TabsList
 	void Plugin::SetShortcut (const QString&, const QKeySequences_t& seqs)
 	{
 		ShowList_->setShortcuts (seqs);
+	}
+
+	void Plugin::RemoveTab (ICoreTabWidget *ictw, int idx)
+	{
+		const auto tab = qobject_cast<ITabWidget*> (ictw->Widget (idx));
+		tab->Remove ();
+
+		handleShowList ();
 	}
 
 	namespace
