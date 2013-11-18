@@ -765,12 +765,24 @@ namespace Aggregator
 		QStringList names;
 		Perform ([&names] (const QModelIndex& mi)
 				{ names << mi.sibling (mi.row (), 0).data ().toString (); });
-		if (QMessageBox::question (nullptr,
-				"LeechCraft",
-				tr ("Are you sure you want to mark all items in channel(s) %1 as read?", 0, names.size ())
-					.arg ("<em>" + names.join ("</em>; <em>") + "</em>"),
-				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
-			return;
+		if (XmlSettingsManager::Instance ()->Property ("ConfirmMarkChannelAsRead", true).toBool ())
+		{
+			QMessageBox mbox (QMessageBox::Question,
+					"LeechCraft",
+					tr ("Are you sure you want to mark all items in channel(s) %1 as read?", 0, names.size ())
+						.arg ("<em>" + names.join ("</em>; <em>") + "</em>"),
+					QMessageBox::Yes | QMessageBox::No);
+
+			mbox.setDefaultButton (QMessageBox::No);
+
+			QPushButton always (tr ("Always"));
+			mbox.addButton (&always, QMessageBox::AcceptRole);
+
+			if (mbox.exec () == QMessageBox::No)
+				return;
+			else if (mbox.clickedButton () == &always)
+				XmlSettingsManager::Instance ()->setProperty ("ConfirmMarkChannelAsRead", false);
+		}
 
 		Perform ([] (const QModelIndex& mi) { Core::Instance ().MarkChannelAsRead (mi); });
 	}
