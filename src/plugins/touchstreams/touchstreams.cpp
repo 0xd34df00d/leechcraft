@@ -150,7 +150,10 @@ namespace TouchStreams
 	void Plugin::handlePushButton (const QString& name)
 	{
 		if (name == "AllowRequestsTriggered")
+		{
+			AuthMgr_->clearAuthData ();
 			AuthMgr_->reauth ();
+		}
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "unknown name"
