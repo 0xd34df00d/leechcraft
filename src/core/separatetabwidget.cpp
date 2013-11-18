@@ -545,31 +545,6 @@ namespace LeechCraft
 	void SeparateTabWidget::resizeEvent (QResizeEvent *event)
 	{
 		QWidget::resizeEvent (event);
-		int length = 0;
-		for (int i = 0; i < MainTabBar_->count (); ++i)
-			length += MainTabBar_->tabRect (i).width ();
-
-		if (event->oldSize ().width () > event->size ().width ())
-		{
-			if (length + 30 > MainTabBar_->width () &&
-					!AddTabButtonAction_->isVisible ())
-			{
-				handleShowAddTabButton (true);
-				MainTabBar_->SetLastTab (false);
-				MainTabBar_->removeTab (MainTabBar_->count () - 1);
-			}
-		}
-		else if (event->oldSize ().width () < event->size ().width ())
-		{
-			if (length + 60 < MainTabBar_->width () &&
-					AddTabButtonAction_->isVisible ())
-			{
-				handleShowAddTabButton (false);
-				MainTabBar_->SetLastTab (true);
-				int index = MainTabBar_->addTab (QString ());
-				MainTabBar_->SetTabClosable (index, false);
-			}
-		}
 	}
 
 	void SeparateTabWidget::mousePressEvent (QMouseEvent *event)
