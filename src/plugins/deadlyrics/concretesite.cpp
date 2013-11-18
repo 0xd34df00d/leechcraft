@@ -196,6 +196,8 @@ namespace DeadLyrics
 		urlStr.replace ("{artist}", artist);
 		urlStr.replace ("{album}", album);
 		urlStr.replace ("{title}", title);
+		if (!artist.isEmpty ())
+			urlStr.replace ("{a}", artist.at (0).toLower ());
 
 		auto cap = [] (QString str) -> QString
 		{
