@@ -49,6 +49,8 @@ namespace LeechCraft
 		SeparateTabWidget *TabWidget_;
 
 		QPoint DragStartPos_;
+
+		QWidget *AddTabButton_;
 	public:
 		explicit SeparateTabBar (QWidget* = 0);
 
@@ -57,6 +59,8 @@ namespace LeechCraft
 		void SetTabData (int);
 		void SetTabClosable (int index, bool closable, QWidget *closeButton = 0);
 		void SetTabWidget (SeparateTabWidget*);
+
+		void SetAddTabButton (QWidget*);
 
 		QTabBar::ButtonPosition GetCloseButtonPosition () const;
 

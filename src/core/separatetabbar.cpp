@@ -49,6 +49,7 @@ namespace LeechCraft
 	, Window_ (0)
 	, Id_ (0)
 	, InMove_ (false)
+	, AddTabButton_ (nullptr)
 	{
 		setObjectName ("org_LeechCraft_MainWindow_CentralTabBar");
 		setExpanding (false);
@@ -101,6 +102,12 @@ namespace LeechCraft
 		TabWidget_ = widget;
 	}
 
+	void SeparateTabBar::SetAddTabButton (QWidget *w)
+	{
+		AddTabButton_ = w;
+		setTabButton (count () - 1, GetAntiCloseButtonPosition (), w);
+	}
+
 	QTabBar::ButtonPosition SeparateTabBar::GetCloseButtonPosition () const
 	{
 		return static_cast<QTabBar::ButtonPosition> (style ()->
@@ -124,7 +131,9 @@ namespace LeechCraft
 		auto result = QTabBar::tabSizeHint (index);
 		const int tc = count ();
 		if (index == tc - 1)
-			result.setWidth (30);
+			result.setWidth (AddTabButton_ ?
+					AddTabButton_->width () + style ()->pixelMetric (QStyle::PM_TabBarTabHSpace):
+					30);
 		else
 		{
 			const int target = std::min (size ().width () / (tc + 1), 200);

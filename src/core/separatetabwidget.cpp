@@ -52,6 +52,7 @@
 #include "tabmanager.h"
 #include "rootwindowsmanager.h"
 #include "mainwindow.h"
+#include "iconthemeengine.h"
 
 namespace LeechCraft
 {
@@ -596,10 +597,18 @@ namespace LeechCraft
 	void SeparateTabWidget::AddTabButtonInit ()
 	{
 		DefaultTabAction_->setProperty ("ActionIcon", "list-add");
+
 		AddTabButton_->setPopupMode (QToolButton::MenuButtonPopup);
 		AddTabButton_->setToolButtonStyle (Qt::ToolButtonIconOnly);
-		AddTabButton_->setArrowType (Qt::NoArrow);
 		AddTabButton_->setDefaultAction (DefaultTabAction_);
+		AddTabButton_->setAutoRaise (true);
+
+		auto cont = new QWidget;
+		auto lay = new QHBoxLayout;
+		lay->setContentsMargins (0, 0, 0, 0);
+		lay->addWidget (AddTabButton_);
+		cont->setLayout (lay);
+		MainTabBar_->SetAddTabButton (cont);
 	}
 
 	void SeparateTabWidget::setCurrentIndex (int index)
