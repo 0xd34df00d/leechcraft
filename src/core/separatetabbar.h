@@ -60,9 +60,11 @@ namespace LeechCraft
 		void SetLastTab (bool);
 		void SetTabWidget (SeparateTabWidget*);
 
-		QTabBar::ButtonPosition GetCloseButtonPosition ();
+		QTabBar::ButtonPosition GetCloseButtonPosition () const;
 
 		void SetInMove (bool inMove);
+	private:
+		QTabBar::ButtonPosition GetAntiCloseButtonPosition () const;
 	protected:
 		QSize tabSizeHint (int) const;
 

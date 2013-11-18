@@ -109,7 +109,7 @@ namespace LeechCraft
 		TabWidget_ = widget;
 	}
 
-	QTabBar::ButtonPosition SeparateTabBar::GetCloseButtonPosition ()
+	QTabBar::ButtonPosition SeparateTabBar::GetCloseButtonPosition () const
 	{
 		return static_cast<QTabBar::ButtonPosition> (style ()->
 				styleHint (QStyle::SH_TabBar_CloseButtonPosition));
@@ -118,6 +118,13 @@ namespace LeechCraft
 	void SeparateTabBar::SetInMove (bool inMove)
 	{
 		InMove_ = inMove;
+	}
+
+	QTabBar::ButtonPosition SeparateTabBar::GetAntiCloseButtonPosition () const
+	{
+		return GetCloseButtonPosition () == QTabBar::LeftSide ?
+				QTabBar::RightSide :
+				QTabBar::LeftSide;
 	}
 
 	QSize SeparateTabBar::tabSizeHint (int index) const
