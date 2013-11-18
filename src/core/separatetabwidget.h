@@ -142,6 +142,8 @@ namespace LeechCraft
 				const QIcon& icon, const QString& text);
 		void RemoveTab (int index);
 
+		bool IsAddTabActionVisible () const;
+
 		void AddWidget2SeparateTabWidget (QWidget *widget);
 		void RemoveWidgetFromSeparateTabWidget (QWidget *widget);
 
@@ -151,6 +153,7 @@ namespace LeechCraft
 
 		QWidget* GetPreviousWidget () const;
 	protected:
+		void resizeEvent (QResizeEvent *event);
 		void mousePressEvent (QMouseEvent *event);
 	private:
 		void Init ();
@@ -165,6 +168,7 @@ namespace LeechCraft
 		void handleTabBarPosition ();
 		void handleSelectionBehavior ();
 		void handleAddDefaultTab ();
+		void handleShowAddTabButton (bool show);
 		void handleTabMoved (int from, int to);
 		void handleContextMenuRequested (const QPoint& point);
 		void handleActionDestroyed ();
