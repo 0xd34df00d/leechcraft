@@ -226,8 +226,8 @@ namespace TabsList
 		if (tw->WidgetCount () < 2)
 			return;
 
-		QWidget *widget = new QWidget (rootWM->GetPreferredWindow (),
-				Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+		QWidget *widget = new QWidget (nullptr,
+				Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 		widget->setAttribute (Qt::WA_TranslucentBackground);
 		widget->setWindowModality (Qt::ApplicationModal);
 
