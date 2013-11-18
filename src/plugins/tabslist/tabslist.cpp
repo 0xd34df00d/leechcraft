@@ -132,10 +132,15 @@ namespace TabsList
 			QString SearchText_;
 			
 			QTimer NumSelectTimer_;
+
+			Plugin * const Plugin_;
+			QWidget * const Widget_;
 		public:
-			ListEventFilter (const QList<QToolButton*>& buttons, QObject *parent = 0)
+			ListEventFilter (const QList<QToolButton*>& buttons, Plugin *plugin, QWidget *parent)
 			: QObject (parent)
 			, AllButtons_ (buttons)
+			, Plugin_ (plugin)
+			, Widget_ (parent)
 			{
 				NumSelectTimer_.setSingleShot (true);
 			}
@@ -166,6 +171,20 @@ namespace TabsList
 					break;
 				case Qt::Key_End:
 					AllButtons_.last ()->setFocus ();
+					break;
+				case Qt::Key_Delete:
+					for (int i = 0; i < AllButtons_.size (); ++i)
+					{
+						const auto button = AllButtons_ [i];
+						if (!button->hasFocus ())
+							continue;
+
+						const auto ictw = button->defaultAction ()->
+								property ("ICTW").value<ICoreTabWidget*> ();
+						Widget_->deleteLater ();
+						Plugin_->RemoveTab (ictw, i);
+						break;
+					}
 					break;
 				default:
 					break;
@@ -280,7 +299,7 @@ namespace TabsList
 			allButtons << button;
 		}
 
-		widget->installEventFilter (new ListEventFilter (allButtons, widget));
+		widget->installEventFilter (new ListEventFilter (allButtons, this, widget));
 		widget->setLayout (layout);
 		layout->update ();
 		layout->activate ();
