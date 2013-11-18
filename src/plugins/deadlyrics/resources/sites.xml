@@ -89,12 +89,11 @@
     </extract>
     <invalidIndicator value="The lyrics you requested is not in our archive yet,"/>
   </provider>
-  <provider name="lyricsmode.com" title="{artist} - {title} lyrics" charset="iso-8859-1" url="http://www.lyricsmode.com/lyrics/{a}/{artist}/{title}.html">
+  <provider name="lyricsmode.com" title="{artist} - {title} lyrics" charset="utf-8" url="http://www.lyricsmode.com/lyrics/{a}/{artist}/{title}.html">
     <urlFormat replace=" ._@,;&amp;\/&quot;" with="_"/>
     <extract>
-      <item tag="&lt;div id='songlyrics_h' class='dn'&gt;"/>
+      <item tag="&lt;p id=&quot;lyrics_text&quot;&gt;"/>
     </extract>
-    <invalidIndicator value="Sorry, we have no"/>
   </provider>
   <provider name="lyricsplugin.com" title="{artist} - {title} Lyrics" charset="utf-8" url="http://www.lyricsplugin.com/winamp03/plugin/?title={title}&amp;artist={artist}">
     <urlFormat replace="_@;&amp;\/&quot;" with="-"/>
