@@ -59,6 +59,7 @@ namespace LeechCraft
 
 		setAcceptDrops (true);
 		setMovable (true);
+		setUsesScrollButtons (false);
 	}
 
 	void SeparateTabBar::SetWindow (MainWindow *win)
@@ -111,15 +112,14 @@ namespace LeechCraft
 
 	QSize SeparateTabBar::tabSizeHint (int index) const
 	{
-		QSize size = QTabBar::tabSizeHint (index);
-		const int tc = count ();
+		auto result = QTabBar::tabSizeHint (index);
+		const int tc = count () + 1;
 
-		const int target = std::max (100,
-				this->size ().width () / tc);
-		if (size.width () > target)
-			size.setWidth (target);
+		const int target = std::min (size ().width () / tc, 200);
+		if (result.width () > target)
+			result.setWidth (target);
 
-		return size;
+		return result;
 	}
 
 	void SeparateTabBar::mouseReleaseEvent (QMouseEvent *event)
