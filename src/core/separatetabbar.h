@@ -80,7 +80,6 @@ namespace LeechCraft
 		void tabRemoved (int);
 	signals:
 		void addDefaultTab ();
-		void showAddTabButton (bool);
 		void tabWasInserted (int);
 		void tabWasRemoved (int);
 		void releasedMouseAfterMove (int index);

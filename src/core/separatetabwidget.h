@@ -72,7 +72,6 @@ namespace LeechCraft
 		QPointer<QHBoxLayout> MainToolBarLayout_;
 		QVBoxLayout *MainLayout_;
 		QWidget *DefaultWidget_;
-		QAction *AddTabButtonAction_;
 		QAction *DefaultTabAction_;
 		QList<QPointer<QAction>> TabBarActions_;
 
@@ -142,8 +141,6 @@ namespace LeechCraft
 				const QIcon& icon, const QString& text);
 		void RemoveTab (int index);
 
-		bool IsAddTabActionVisible () const;
-
 		void AddWidget2SeparateTabWidget (QWidget *widget);
 		void RemoveWidgetFromSeparateTabWidget (QWidget *widget);
 
@@ -168,7 +165,6 @@ namespace LeechCraft
 		void handleTabBarPosition ();
 		void handleSelectionBehavior ();
 		void handleAddDefaultTab ();
-		void handleShowAddTabButton (bool show);
 		void handleTabMoved (int from, int to);
 		void handleContextMenuRequested (const QPoint& point);
 		void handleActionDestroyed ();
