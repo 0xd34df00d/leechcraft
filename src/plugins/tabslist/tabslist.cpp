@@ -275,6 +275,7 @@ namespace TabsList
 			if (title.size () > 100)
 				title = title.left (100) + "...";
 			QAction *action = new QAction (tw->TabIcon (i), title, this);
+			action->setToolTip (origText);
 			action->setProperty ("TabIndex", i);
 			action->setProperty ("ICTW", QVariant::fromValue<ICoreTabWidget*> (tw));
 			connect (action,
