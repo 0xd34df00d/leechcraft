@@ -29,6 +29,7 @@
 
 #include "similarview.h"
 #include <QDeclarativeEngine>
+#include <util/qml/themeimageprovider.h>
 #include <util/qml/standardnamfactory.h>
 #include "sysiconsprovider.h"
 #include "similarviewmanager.h"
@@ -43,7 +44,7 @@ namespace LMP
 	, Manager_ (new SimilarViewManager (this, this))
 	{
 		engine ()->addImageProvider ("sysIcons",
-				new SysIconProvider (Core::Instance ().GetProxy ()));
+				new Util::ThemeImageProvider (Core::Instance ().GetProxy ()));
 
 		new Util::StandardNAMFactory ("lmp/cache",
 				[] { return 50 * 1024 * 1024; },
