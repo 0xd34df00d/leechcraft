@@ -12,5 +12,6 @@
 	<file>resources/qml/PreviewAudioButton.qml</file>
 	<file>resources/qml/ArtistBrowserView.qml</file>
 	<file>resources/qml/BrowseButton.qml</file>
+	<file>resources/qml/StdArtistActions.qml</file>
   </qresource>
 </RCC>
