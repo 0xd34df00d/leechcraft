@@ -44,10 +44,8 @@ namespace LHTR
 				 , public IHaveSettings
 	{
 		Q_OBJECT
-#ifdef USE_QT5
-		Q_PLUGIN_METADATA (IID "org.LeechCraft.LHTR");
-#endif
 		Q_INTERFACES (IInfo ITextEditor IHaveSettings)
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.LHTR");
 
 		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr XSD_;
