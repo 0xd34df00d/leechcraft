@@ -44,10 +44,8 @@ namespace Auscrie
 					, public IActionsExporter
 	{
 		Q_OBJECT
-#ifdef USE_QT5
-		Q_PLUGIN_METADATA (IID "org.LeechCraft.Auscrie");
-#endif
 		Q_INTERFACES (IInfo IActionsExporter)
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.Auscrie");
 
 		ICoreProxy_ptr Proxy_;
 		QAction *ShotAction_;
