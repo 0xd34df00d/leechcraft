@@ -131,9 +131,13 @@ namespace LeechCraft
 		auto result = QTabBar::tabSizeHint (index);
 		const int tc = count ();
 		if (index == tc - 1)
+		{
+			QStyleOptionTab opt;
+			opt.init (this);
 			result.setWidth (AddTabButton_ ?
-					AddTabButton_->width () + style ()->pixelMetric (QStyle::PM_TabBarTabHSpace):
+					AddTabButton_->sizeHint ().width () + style ()->pixelMetric (QStyle::PM_TabBarTabHSpace, &opt, this):
 					30);
+		}
 		else
 		{
 			const int target = std::min (size ().width () / (tc + 1), 200);
