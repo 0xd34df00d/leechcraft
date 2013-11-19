@@ -35,14 +35,13 @@
 #include <QDeclarativeImageProvider>
 #include <util/qml/colorthemeproxy.h>
 #include <util/util.h>
-#include "similarmodel.h"
-#include "core.h"
-#include "sysiconsprovider.h"
-#include "localcollection.h"
-#include "previewhandler.h"
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/isimilarartists.h>
 #include <interfaces/media/ipendingsimilarartists.h>
+#include "similarmodel.h"
+#include "core.h"
+#include "localcollection.h"
+#include "previewhandler.h"
 
 namespace LeechCraft
 {

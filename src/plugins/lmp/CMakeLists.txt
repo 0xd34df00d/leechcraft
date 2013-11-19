@@ -91,7 +91,6 @@ set (SRCS
 	sortingcriteriadialog.cpp
 	similarmodel.cpp
 	hypeswidget.cpp
-	sysiconsprovider.cpp
 	previewhandler.cpp
 	bioviewmanager.cpp
 	similarviewmanager.cpp

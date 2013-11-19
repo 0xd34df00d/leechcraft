@@ -31,7 +31,6 @@
 #include <QDeclarativeEngine>
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/standardnamfactory.h>
-#include "sysiconsprovider.h"
 #include "similarviewmanager.h"
 #include "core.h"
 
