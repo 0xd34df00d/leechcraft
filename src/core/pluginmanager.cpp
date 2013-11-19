@@ -490,7 +490,7 @@ namespace LeechCraft
 		AvailablePlugins_.clear ();
 		FeatureProviders_.clear ();
 		for (auto loader : PluginContainers_)
-			loader->Unload ();
+			loader->Instance ()->deleteLater ();
 	}
 
 	QString PluginManager::Name (const PluginManager::Size_t& pos) const
